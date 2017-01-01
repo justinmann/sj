@@ -66,7 +66,7 @@
 
 
 #include <stdio.h>
-#include "nodes/Node.h"
+#include "../node/Node.h"
 #include "parser.hpp"
 
 #pragma clang diagnostic ignored "-Wunreachable-code"
