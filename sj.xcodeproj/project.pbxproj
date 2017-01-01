@@ -56,6 +56,9 @@
 		9CF16C211E19A888006E9CB8 /* NVoid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16C131E19A888006E9CB8 /* NVoid.cpp */; };
 		9CF16C261E19A8A9006E9CB8 /* parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16C231E19A8A9006E9CB8 /* parser.cpp */; };
 		9CF16C271E19A8A9006E9CB8 /* tokens.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16C251E19A8A9006E9CB8 /* tokens.cpp */; };
+		9CFDBF921E19BCCE00F5436F /* CFunction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CFDBF8E1E19BCCE00F5436F /* CFunction.cpp */; };
+		9CFDBF931E19BCCE00F5436F /* CVar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CFDBF901E19BCCE00F5436F /* CVar.cpp */; };
+		9CFDBF961E19BD9500F5436F /* CType.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CFDBF941E19BD9500F5436F /* CType.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -138,6 +141,12 @@
 		9CF16C231E19A8A9006E9CB8 /* parser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = parser.cpp; path = parser/parser.cpp; sourceTree = "<group>"; };
 		9CF16C241E19A8A9006E9CB8 /* parser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = parser.hpp; path = parser/parser.hpp; sourceTree = "<group>"; };
 		9CF16C251E19A8A9006E9CB8 /* tokens.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tokens.cpp; path = parser/tokens.cpp; sourceTree = "<group>"; };
+		9CFDBF8E1E19BCCE00F5436F /* CFunction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CFunction.cpp; path = compiler/CFunction.cpp; sourceTree = "<group>"; };
+		9CFDBF8F1E19BCCE00F5436F /* CFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CFunction.h; path = compiler/CFunction.h; sourceTree = "<group>"; };
+		9CFDBF901E19BCCE00F5436F /* CVar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CVar.cpp; path = compiler/CVar.cpp; sourceTree = "<group>"; };
+		9CFDBF911E19BCCE00F5436F /* CVar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CVar.h; path = compiler/CVar.h; sourceTree = "<group>"; };
+		9CFDBF941E19BD9500F5436F /* CType.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CType.cpp; path = compiler/CType.cpp; sourceTree = "<group>"; };
+		9CFDBF951E19BD9500F5436F /* CType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CType.h; path = compiler/CType.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -245,6 +254,12 @@
 		9CF16BF41E19A84D006E9CB8 /* compiler */ = {
 			isa = PBXGroup;
 			children = (
+				9CFDBF941E19BD9500F5436F /* CType.cpp */,
+				9CFDBF951E19BD9500F5436F /* CType.h */,
+				9CFDBF8E1E19BCCE00F5436F /* CFunction.cpp */,
+				9CFDBF8F1E19BCCE00F5436F /* CFunction.h */,
+				9CFDBF901E19BCCE00F5436F /* CVar.cpp */,
+				9CFDBF911E19BCCE00F5436F /* CVar.h */,
 				9CF16BF51E19A85F006E9CB8 /* Compiler.cpp */,
 				9CF16BF61E19A85F006E9CB8 /* Compiler.h */,
 			);
@@ -360,9 +375,11 @@
 				9CF16C171E19A888006E9CB8 /* NBool.cpp in Sources */,
 				9CF16BF71E19A85F006E9CB8 /* Compiler.cpp in Sources */,
 				9C7B48E41E19A2DD00D378A1 /* main.cpp in Sources */,
+				9CFDBF921E19BCCE00F5436F /* CFunction.cpp in Sources */,
 				9CF16C1C1E19A888006E9CB8 /* NIf.cpp in Sources */,
 				9CF16C261E19A8A9006E9CB8 /* parser.cpp in Sources */,
 				9CF16C271E19A8A9006E9CB8 /* tokens.cpp in Sources */,
+				9CFDBF931E19BCCE00F5436F /* CVar.cpp in Sources */,
 				9CF16C151E19A888006E9CB8 /* NAssignment.cpp in Sources */,
 				9CF16C1A1E19A888006E9CB8 /* NDouble.cpp in Sources */,
 				9CF16C201E19A888006E9CB8 /* NVariable.cpp in Sources */,
@@ -370,6 +387,7 @@
 				9CF16C181E19A888006E9CB8 /* NCast.cpp in Sources */,
 				9CF16C191E19A888006E9CB8 /* NCompare.cpp in Sources */,
 				9CF16C1D1E19A888006E9CB8 /* NInteger.cpp in Sources */,
+				9CFDBF961E19BD9500F5436F /* CType.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

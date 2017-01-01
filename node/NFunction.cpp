@@ -17,7 +17,12 @@ NodeType NFunction::getNodeType() const {
 }
 
 void NFunction::define(Compiler *compiler, CResult& result) {
-    auto tf = make_shared<TFunction>(compiler->currentFunction, this);
+    if (invalid.size() > 0) {
+        result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
+        return;
+    }
+    
+    auto tf = make_shared<CFunction>(compiler->currentFunction, this);
     compiler->currentFunction->funcs[name] = tf;   
     auto prev = compiler->currentFunction;
     compiler->currentFunction = tf.get();
@@ -28,11 +33,21 @@ void NFunction::define(Compiler *compiler, CResult& result) {
 }
 
 shared_ptr<CType> NFunction::getReturnType(Compiler *compiler, CResult& result) const {
+    if (invalid.size() > 0) {
+        result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
+        return nullptr;
+    }
+
     return compiler->typeVoid;
 }
 
 shared_ptr<CType> NFunction::getBlockType(Compiler *compiler, CResult& result) const {
-    auto tf = compiler->currentFunction->getTFunction(name);
+    if (invalid.size() > 0) {
+        result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
+        return nullptr;
+    }
+
+    auto tf = compiler->currentFunction->getCFunction(name);
     auto prev = compiler->currentFunction;
     compiler->currentFunction = tf;
 
@@ -43,8 +58,13 @@ shared_ptr<CType> NFunction::getBlockType(Compiler *compiler, CResult& result) c
 }
 
 Value* NFunction::compile(Compiler* compiler, CResult& result) const {
-    auto tf = compiler->currentFunction->getTFunction(name);
-    auto function = tf->getFunction(compiler, result);
+    if (invalid.size() > 0) {
+        result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
+        return nullptr;
+    }
+
+    auto tf = compiler->currentFunction->getCFunction(name);
+    auto function = tf->geCFunction(compiler, result);
     if (!function) {
         return nullptr;
     }

@@ -13,7 +13,7 @@ void NAssignment::define(Compiler* compiler, CResult& result) {
             var = iter->second;
         }
     } else {
-        var = shared_ptr<TVar>((TVar*)new TLocalVar(compiler->currentFunction, this));
+        var = shared_ptr<CVar>((CVar*)new CLocalVar(compiler->currentFunction, this));
         compiler->currentFunction->vars[name] = var;
     }
 }

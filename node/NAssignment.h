@@ -19,7 +19,7 @@ public:
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result) const;
     virtual Value* compile(Compiler* compiler, CResult& result) const;
     
-    shared_ptr<TVar> var;
+    shared_ptr<CVar> var;
     const string typeName;
     const string name;
     const shared_ptr<NBase> rightSide;

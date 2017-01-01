@@ -5,7 +5,7 @@ NodeType NCall::getNodeType() const {
 }
 
 shared_ptr<CType> NCall::getReturnType(Compiler *compiler, CResult& result) const {
-    TFunction* callee = compiler->currentFunction->getTFunction(name);
+    CFunction* callee = compiler->currentFunction->getCFunction(name);
     if (!callee) {
         result.addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", name.c_str());
         return nullptr;
@@ -17,7 +17,7 @@ shared_ptr<CType> NCall::getReturnType(Compiler *compiler, CResult& result) cons
 Value* NCall::compile(Compiler* compiler, CResult& result) const {
     compiler->emitLocation(this);
     
-    TFunction* callee = compiler->currentFunction->getTFunction(name);
+    CFunction* callee = compiler->currentFunction->getCFunction(name);
     
     // Look up the name in the global module table.
     if (!callee) {
@@ -118,6 +118,6 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
     vector<Value *> argsV;
     argsV.push_back(thisValue);
     
-    auto func = callee->getFunction(compiler, result);
+    auto func = callee->geCFunction(compiler, result);
     return compiler->builder.CreateCall(func, argsV, "calltmp");
 }

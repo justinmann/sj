@@ -26,12 +26,12 @@ shared_ptr<CType> NVariable::getReturnType(Compiler* compiler, CResult& result) 
             if (name == "this") {
                 varType = compiler->currentFunction->getThisType(compiler, result);
             } else {
-                auto tvar = compiler->currentFunction->getTVariable(name);
-                if (!tvar) {
+                auto CVar = compiler->currentFunction->getCVariable(name);
+                if (!CVar) {
                     result.addError(loc, CErrorCode::UnknownVariable, "cannot find var '%s'", name.c_str());
                     return nullptr;
                 }
-                varType = tvar->getType(compiler, result);
+                varType = CVar->getType(compiler, result);
             }
         } else {
             auto it = varType->membersByName.find(name);
@@ -63,13 +63,13 @@ Value* NVariable::compile(Compiler* compiler, CResult& result) const {
                 varType = compiler->currentFunction->getThisType(compiler, result);
                 value = compiler->currentFunction->getThis();
             } else {
-                auto tvar = compiler->currentFunction->getTVariable(name);
-                if (!tvar) {
+                auto CVar = compiler->currentFunction->getCVariable(name);
+                if (!CVar) {
                     result.addError(loc, CErrorCode::UnknownVariable, "cannot find var '%s'", name.c_str());
                     return nullptr;
                 }
-                varType = tvar->getType(compiler, result);
-                auto ptr = tvar->getValue(compiler, result);
+                varType = CVar->getType(compiler, result);
+                auto ptr = CVar->getValue(compiler, result);
                 value = compiler->builder.CreateLoad(ptr);
             }
         } else {

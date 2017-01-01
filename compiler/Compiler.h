@@ -1,13 +1,13 @@
 //
-//  Compiler.hpp
+//  Compiler.h
 //  sj
 //
 //  Created by Mann, Justin on 12/25/16.
 //  Copyright © 2016 Mann, Justin. All rights reserved.
 //
 
-#ifndef Compiler_hpp
-#define Compiler_hpp
+#ifndef Compiler_h
+#define Compiler_h
 
 // #define YYDEBUG 1
 // #define DWARF_ENABLED
@@ -33,6 +33,10 @@
 
 using namespace llvm;
 using namespace std;
+
+#include "CType.h"
+#include "CVar.h"
+#include "CFunction.h"
 
 template< typename... Args >
 std::string strprintf( const char* format, Args... args ) {
@@ -82,7 +86,8 @@ enum CErrorCode {
     ParameterByIndexAfterByName,
     ParameterRedefined,
     ParameterDoesNotExist,
-    TooManyParameters
+    TooManyParameters,
+    InvalidFunction
 };
 
 class CLoc {
@@ -126,91 +131,6 @@ public:
     }
 };
 
-class Compiler;
-
-class CType {
-public:
-    string name;
-    Type* llvmAllocType;
-    Type* llvmRefType;
-    vector<shared_ptr<CType>> members;
-    map<string, pair<int, shared_ptr<CType>>> membersByName;
-    
-    CType(const char* name, Type* type);
-    CType(Compiler* compiler, const char* name, vector<pair<string, shared_ptr<CType>>> members_);
-#ifdef DWARF_ENABLED
-    DIType* getDIType();
-#endif
-};
-
-class TFunction;
-class Compiler;
-
-class TVar {
-public:
-    TVar(TFunction* parent) : parent(parent) { assert(parent != nullptr); }
-    virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result) = 0;
-    virtual Value* getValue(Compiler* compiler, CResult& result) = 0;
-    
-    TFunction* parent;
-};
-
-class TLocalVar : TVar {
-public:
-    TLocalVar(TFunction* parent, const NAssignment* node) : node(node), TVar(parent), value(nullptr), isInGetType(false) { }
-    virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    virtual Value* getValue(Compiler* compiler, CResult& result);
-    
-private:
-    bool isInGetType;
-    const NAssignment* node;
-    shared_ptr<CType> type;
-    AllocaInst* value;
-};
-
-class TFunctionVar : TVar {
-public:
-    TFunctionVar(TFunction* parent, const NFunction* nfunction, const int index, const NAssignment* nassignment) : nfunction(nfunction), index(index), nassignment(nassignment), TVar(parent), type(nullptr), value(nullptr), isInGetType(false) { }
-    virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    virtual Value* getValue(Compiler* compiler, CResult& result);
-    
-private:
-    bool isInGetType;
-    const NFunction* nfunction;
-    const NAssignment* nassignment;
-    const int index;
-    shared_ptr<CType> type;
-    Value* value;
-};
-
-class TFunction {
-public:
-    TFunction* parent;
-    const NFunction* node;
-    map<string, shared_ptr<TVar>> vars;
-    map<string, shared_ptr<TFunction>> funcs;
-    
-    TFunction(TFunction* parent, const NFunction* node);
-    shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result);
-    shared_ptr<CType> getThisType(Compiler* compiler, CResult& result);
-    Function* getFunction(Compiler* compiler, CResult& result);
-    BasicBlock* getBasicBlock();
-    Value* getArgumentValue(int index, Compiler* compiler);
-    Argument* getThis();
-    TFunction* getTFunction(const string& name) const;
-    TVar* getTVariable(const string& name) const;
-    int getThisIndex(const string& name) const;
-    
-private:
-    bool isInGetType;
-    bool isInGetFunction;
-    shared_ptr<CType> returnType;
-    shared_ptr<CType> thisType;
-    Function* func;
-    BasicBlock* basicBlock;
-    Value* thisValue;
-};
-
 class Compiler
 {
 public:
@@ -235,7 +155,7 @@ public:
     unique_ptr<DIBuilder> DBuilder;
 #endif
     // compiler vars
-    TFunction* currentFunction;
+    CFunction* currentFunction;
     
     bool printTokens;
     shared_ptr<CType> typeInt;
@@ -248,4 +168,4 @@ private:
     void InitializeModuleAndPassManager();
 };
 
-#endif /* Compiler_hpp */
+#endif /* Compiler_h */
