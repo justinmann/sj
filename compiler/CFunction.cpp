@@ -29,15 +29,16 @@ Value* CFunctionVar::getValue(Compiler* compiler, CResult& result) {
     return value;
 }
 
-CFunction::CFunction(CFunction* parent, const NFunction* node) : parent(parent), node(node), returnType(nullptr), thisType(nullptr), func(nullptr), isInGetType(false), isInGeCFunction(false) {
+CFunction::CFunction(CFunction* parent, const NFunction* node) : parent(parent), node(node), returnType(nullptr), thisType(nullptr), func(nullptr), isInGetType(false), isInGetFunction(false) {
     if (node) {
         int index = 0;
-        for (auto &arg : node->assignments) {
-            if (arg->getNodeType() == NodeType_Assignment) {
-                auto t = (const NAssignment*)arg.get();
-                vars[t->name] = shared_ptr<CVar>((CVar*)new CFunctionVar(this, node, index, t));
-            }
+        for (auto it : node->assignments) {
+            vars[it->name] = shared_ptr<CVar>((CVar*)new CFunctionVar(this, node, index, it.get()));
             index++;
+        }
+        
+        for (auto it : node->functions) {
+            funcs[it->name] = make_shared<CFunction>(this, it.get());
         }
     }
 }
@@ -75,18 +76,18 @@ shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result) {
             memberTypes.push_back(pair<string, shared_ptr<CType>>(t->name, shared_ptr<CType>(memberType)));
         }
         
-        thisType = make_shared<CType>(compiler, node->name.c_str(), memberTypes);
+        thisType = make_shared<CType>(compiler, node->name.c_str(), this, memberTypes);
     }
     return thisType;
 }
 
-Function* CFunction::geCFunction(Compiler* compiler, CResult& result) {
-    if (isInGeCFunction) {
+Function* CFunction::getFunction(Compiler* compiler, CResult& result) {
+    if (isInGetFunction) {
         result.errors.push_back(CError(CLoc::undefined, CErrorCode::TypeLoop));
         return nullptr;
     }
     
-    isInGeCFunction = true;
+    isInGetFunction = true;
     if (!func) {
         auto returnType = getReturnType(compiler, result);
         if (returnType) {
@@ -130,7 +131,7 @@ Function* CFunction::geCFunction(Compiler* compiler, CResult& result) {
             compiler->builder.restoreIP(prevInsertPoint);
         }
     }
-    isInGeCFunction = false;
+    isInGetFunction = false;
    
     return func;
 }

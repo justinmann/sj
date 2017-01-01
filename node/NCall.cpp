@@ -1,30 +1,74 @@
 #include "Node.h"
+#include <sstream>
+
+NCall::NCall(CLoc loc, const char* name, NodeList arguments) : arguments(arguments), NBase(loc) {
+    istringstream f(name);
+    string s;
+    while (getline(f, s, '.')) {
+        names.push_back(s);
+    }
+}
 
 NodeType NCall::getNodeType() const {
     return NodeType_Call;
 }
 
-shared_ptr<CType> NCall::getReturnType(Compiler *compiler, CResult& result) const {
-    CFunction* callee = compiler->currentFunction->getCFunction(name);
+CFunction* NCall::getCFunction(Compiler *compiler, CResult& result) const {
+    auto cfunction = compiler->currentFunction;
+    
+    // If more than one name in the list, then we need to iterate down to correct function
+    if (names.size() > 1) {
+        // Handle first name in list, the first name can come a local var or function argument
+        auto cvar = cfunction->getCVariable(names[0]);
+        if (!cvar) {
+            result.addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", names[0].c_str());
+            return nullptr;
+        }
+        auto ctype = cvar->getType(compiler, result);
+        
+        // Iterate through the member vars
+        for (int i = 1; i < names.size() - 1; i++) {
+            auto it = ctype->membersByName.find(names[i]);
+            if (it == ctype->membersByName.end()) {
+                result.addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", names[i].c_str());
+                return nullptr;
+            }
+            ctype = it->second.second;
+        }
+        
+        cfunction = ctype->cfunction;
+        if (!cfunction) {
+            result.addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", names[names.size() - 2].c_str());
+            return nullptr;
+        }
+    }
+    
+    // Handle last name in list
+    CFunction* callee = cfunction->getCFunction(names.back());
     if (!callee) {
-        result.addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", name.c_str());
+        result.addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", names.back().c_str());
         return nullptr;
     }
     
+    return callee;
+}
+
+shared_ptr<CType> NCall::getReturnType(Compiler *compiler, CResult& result) const {
+    auto callee = getCFunction(compiler, result);
+    if (!callee) {
+        return nullptr;
+    }
     return callee->getReturnType(compiler, result);
 }
 
 Value* NCall::compile(Compiler* compiler, CResult& result) const {
     compiler->emitLocation(this);
     
-    CFunction* callee = compiler->currentFunction->getCFunction(name);
-    
-    // Look up the name in the global module table.
+    auto callee = getCFunction(compiler, result);
     if (!callee) {
-        result.errors.push_back(CError(loc, CErrorCode::UnknownFunction, name.c_str()));
         return nullptr;
     }
-    
+
     // Create this on stack, and get a pointer
     auto thisType = callee->getThisType(compiler, result);
     auto thisValue = compiler->builder.CreateAlloca(thisType->llvmAllocType, 0, "thisValue");
@@ -118,6 +162,6 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
     vector<Value *> argsV;
     argsV.push_back(thisValue);
     
-    auto func = callee->geCFunction(compiler, result);
+    auto func = callee->getFunction(compiler, result);
     return compiler->builder.CreateCall(func, argsV, "calltmp");
 }

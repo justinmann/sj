@@ -38,6 +38,8 @@ using namespace std;
 #include "CVar.h"
 #include "CFunction.h"
 
+#pragma clang diagnostic ignored "-Wformat-security"
+
 template< typename... Args >
 std::string strprintf( const char* format, Args... args ) {
     int length = std::snprintf( nullptr, 0, format, args... );

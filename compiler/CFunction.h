@@ -36,7 +36,7 @@ public:
     CFunction(CFunction* parent, const NFunction* node);
     shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result);
     shared_ptr<CType> getThisType(Compiler* compiler, CResult& result);
-    Function* geCFunction(Compiler* compiler, CResult& result);
+    Function* getFunction(Compiler* compiler, CResult& result);
     BasicBlock* getBasicBlock();
     Value* getArgumentValue(int index, Compiler* compiler);
     Argument* getThis();
@@ -46,7 +46,7 @@ public:
     
 private:
     bool isInGetType;
-    bool isInGeCFunction;
+    bool isInGetFunction;
     shared_ptr<CType> returnType;
     shared_ptr<CType> thisType;
     Function* func;

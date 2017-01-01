@@ -62,15 +62,20 @@ Value* NFunction::compile(Compiler* compiler, CResult& result) const {
         result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
         return nullptr;
     }
-
+    
     auto tf = compiler->currentFunction->getCFunction(name);
-    auto function = tf->geCFunction(compiler, result);
+    auto function = tf->getFunction(compiler, result);
     if (!function) {
         return nullptr;
     }
     
     auto prev = compiler->currentFunction;
     compiler->currentFunction = tf;
+    
+    // Create all of the inner functions, before creating the code for this function
+    for (auto it : functions) {
+        it->compile(compiler, result);
+    }
     
     auto prevInsertPoint = compiler->builder.saveIP();
     compiler->builder.SetInsertPoint(tf->getBasicBlock());

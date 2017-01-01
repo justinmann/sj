@@ -24,7 +24,7 @@ shared_ptr<CType> CLocalVar::getType(Compiler* compiler, CResult& result) {
 
 Value* CLocalVar::getValue(Compiler* compiler, CResult& result) {
     if (!value) {
-        Function* f = parent->geCFunction(compiler, result);
+        Function* f = parent->getFunction(compiler, result);
         IRBuilder<> builder(&f->getEntryBlock(), f->getEntryBlock().begin());
         value = builder.CreateAlloca(getType(compiler, result)->llvmRefType, 0, node->name.c_str());
     }

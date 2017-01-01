@@ -276,14 +276,6 @@ void test() {
 }
 
 int main(int argc, char **argv) {
-    /*shared_ptr<CResult> result;
-    Compiler compiler;
-
-    result = compiler.run("class(x: 0) { this }\n"
-                          "c: class()\n"
-                          "c.x");
-    assert(result->type == RESULT_INT && result->iResult == 1);
-*/
     test();
 	return 0;
 }

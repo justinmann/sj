@@ -10,6 +10,7 @@
 #define CType_h
 
 class Compiler;
+class CFunction;
 
 class CType {
 public:
@@ -18,9 +19,10 @@ public:
     Type* llvmRefType;
     vector<shared_ptr<CType>> members;
     map<string, pair<int, shared_ptr<CType>>> membersByName;
+    CFunction* cfunction;
     
     CType(const char* name, Type* type);
-    CType(Compiler* compiler, const char* name, vector<pair<string, shared_ptr<CType>>> members_);
+    CType(Compiler* compiler, const char* name, CFunction* cfunction, vector<pair<string, shared_ptr<CType>>> members_);
 #ifdef DWARF_ENABLED
     DIType* getDIType();
 #endif

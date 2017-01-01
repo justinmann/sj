@@ -220,7 +220,7 @@ shared_ptr<CResult> Compiler::run(const char* code) {
     if (compilerResult->errors.size() > 0)
         return compilerResult;
 
-    auto function = currentFunction->getCFunction("__anon_expr")->geCFunction(this, *compilerResult);
+    auto function = currentFunction->getCFunction("__anon_expr")->getFunction(this, *compilerResult);
     auto returnType = function->getReturnType();
 
     auto H = TheJIT->addModule(move(module));

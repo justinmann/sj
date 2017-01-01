@@ -10,7 +10,7 @@
 
 CType::CType(const char* name, Type* type) : name(name), llvmAllocType(type), llvmRefType(type) { }
 
-CType::CType(Compiler* compiler, const char* name, vector<pair<string, shared_ptr<CType>>> members_) {
+CType::CType(Compiler* compiler, const char* name, CFunction* cfunction, vector<pair<string, shared_ptr<CType>>> members_) : name(name), cfunction(cfunction) {
     auto structType = StructType::create(compiler->context, name);
     
     vector<Type*> structMembers;
