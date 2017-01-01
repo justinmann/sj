@@ -1,7 +1,7 @@
 #include "Node.h"
 
 NodeType NAssignment::getNodeType() const {
-    return NodeType::Assignment;
+    return NodeType_Assignment;
 }
 
 void NAssignment::define(Compiler* compiler, CResult& result) {

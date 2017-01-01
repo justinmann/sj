@@ -1,7 +1,7 @@
 #include "Node.h"
 
 NodeType NVoid::getNodeType() const {
-    return NodeType::Void;
+    return NodeType_Void;
 }
 
 shared_ptr<CType> NVoid::getReturnType(Compiler* compiler, CResult& result) const {

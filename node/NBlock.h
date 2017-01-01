@@ -11,10 +11,10 @@
 
 class NBlock : public NBase {
 public:
-    const shared_ptr<NodeList> statements;
+    NodeList statements;
     
-    NBlock(CLoc loc) : NBase(loc), statements(make_shared<NodeList>()) { }
-    NBlock(CLoc loc, shared_ptr<NodeList> statements) : statements(statements), NBase(loc) { }
+    NBlock(CLoc loc) : NBase(loc) { }
+    NBlock(CLoc loc, NodeList statements) : statements(statements), NBase(loc) { }
     virtual NodeType getNodeType() const;
     virtual void define(Compiler* compiler, CResult& result);
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result) const;

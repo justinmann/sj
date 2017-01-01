@@ -2,7 +2,7 @@
 #include "parser.hpp"
 
 NodeType NCast::getNodeType() const {
-    return NodeType::Cast;
+    return NodeType_Cast;
 }
 
 void NCast::define(Compiler* compiler, CResult& result) {

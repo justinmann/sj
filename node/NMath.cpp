@@ -1,7 +1,7 @@
 #include "Node.h"
 
 NodeType NMath::getNodeType() const {
-    return NodeType::Math;
+    return NodeType_Math;
 }
 
 void NMath::define(Compiler* compiler, CResult& result) {

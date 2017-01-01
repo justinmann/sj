@@ -1,10 +1,22 @@
 #include "Node.h"
 
-NodeType NFunctionDeclaration::getNodeType() const {
-    return NodeType::FunctionDeclaration;
+NFunction::NFunction(CLoc loc, const char* type, const char* name, NodeList arguments, shared_ptr<NBlock> block) : type(type), name(name), block(block), NBase(loc) {
+    for (auto it : arguments) {
+        if (it->getNodeType() == NodeType_Assignment) {
+            assignments.push_back(static_pointer_cast<NAssignment>(it));
+        } else if (it->getNodeType() == NodeType_Function) {
+            functions.push_back(static_pointer_cast<NFunction>(it));
+        } else {
+            invalid.push_back(it);
+        }
+    }
 }
 
-void NFunctionDeclaration::define(Compiler *compiler, CResult& result) {
+NodeType NFunction::getNodeType() const {
+    return NodeType_Function;
+}
+
+void NFunction::define(Compiler *compiler, CResult& result) {
     auto tf = make_shared<TFunction>(compiler->currentFunction, this);
     compiler->currentFunction->funcs[name] = tf;   
     auto prev = compiler->currentFunction;
@@ -15,11 +27,11 @@ void NFunctionDeclaration::define(Compiler *compiler, CResult& result) {
     compiler->currentFunction = prev;
 }
 
-shared_ptr<CType> NFunctionDeclaration::getReturnType(Compiler *compiler, CResult& result) const {
+shared_ptr<CType> NFunction::getReturnType(Compiler *compiler, CResult& result) const {
     return compiler->typeVoid;
 }
 
-shared_ptr<CType> NFunctionDeclaration::getBlockType(Compiler *compiler, CResult& result) const {
+shared_ptr<CType> NFunction::getBlockType(Compiler *compiler, CResult& result) const {
     auto tf = compiler->currentFunction->getTFunction(name);
     auto prev = compiler->currentFunction;
     compiler->currentFunction = tf;
@@ -30,7 +42,7 @@ shared_ptr<CType> NFunctionDeclaration::getBlockType(Compiler *compiler, CResult
     return returnType;
 }
 
-Value* NFunctionDeclaration::compile(Compiler* compiler, CResult& result) const {
+Value* NFunction::compile(Compiler* compiler, CResult& result) const {
     auto tf = compiler->currentFunction->getTFunction(name);
     auto function = tf->getFunction(compiler, result);
     if (!function) {

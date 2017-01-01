@@ -49,7 +49,7 @@ std::string strprintf( const char* format, Args... args ) {
 
 std::string Type_print(Type* type);
 
-class NFunctionDeclaration;
+class NFunction;
 class KaleidoscopeJIT;
 class NBlock;
 class NBase;
@@ -170,14 +170,14 @@ private:
 
 class TFunctionVar : TVar {
 public:
-    TFunctionVar(TFunction* parent, const NFunctionDeclaration* functionDeclaration, const int index, const NAssignment* assignment) : functionDeclaration(functionDeclaration), index(index), assignment(assignment), TVar(parent), type(nullptr), value(nullptr), isInGetType(false) { }
+    TFunctionVar(TFunction* parent, const NFunction* nfunction, const int index, const NAssignment* nassignment) : nfunction(nfunction), index(index), nassignment(nassignment), TVar(parent), type(nullptr), value(nullptr), isInGetType(false) { }
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     virtual Value* getValue(Compiler* compiler, CResult& result);
     
 private:
     bool isInGetType;
-    const NFunctionDeclaration* functionDeclaration;
-    const NAssignment* assignment;
+    const NFunction* nfunction;
+    const NAssignment* nassignment;
     const int index;
     shared_ptr<CType> type;
     Value* value;
@@ -186,11 +186,11 @@ private:
 class TFunction {
 public:
     TFunction* parent;
-    const NFunctionDeclaration* node;
+    const NFunction* node;
     map<string, shared_ptr<TVar>> vars;
     map<string, shared_ptr<TFunction>> funcs;
     
-    TFunction(TFunction* parent, const NFunctionDeclaration* node);
+    TFunction(TFunction* parent, const NFunction* node);
     shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result);
     shared_ptr<CType> getThisType(Compiler* compiler, CResult& result);
     Function* getFunction(Compiler* compiler, CResult& result);

@@ -47,11 +47,11 @@
 		9CF16C181E19A888006E9CB8 /* NCast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16C001E19A888006E9CB8 /* NCast.cpp */; };
 		9CF16C191E19A888006E9CB8 /* NCompare.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16C021E19A888006E9CB8 /* NCompare.cpp */; };
 		9CF16C1A1E19A888006E9CB8 /* NDouble.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16C041E19A888006E9CB8 /* NDouble.cpp */; };
-		9CF16C1B1E19A888006E9CB8 /* NFunctionDeclaration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16C061E19A888006E9CB8 /* NFunctionDeclaration.cpp */; };
+		9CF16C1B1E19A888006E9CB8 /* NFunction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16C061E19A888006E9CB8 /* NFunction.cpp */; };
 		9CF16C1C1E19A888006E9CB8 /* NIf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16C081E19A888006E9CB8 /* NIf.cpp */; };
 		9CF16C1D1E19A888006E9CB8 /* NInteger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16C0A1E19A888006E9CB8 /* NInteger.cpp */; };
 		9CF16C1E1E19A888006E9CB8 /* NMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16C0C1E19A888006E9CB8 /* NMath.cpp */; };
-		9CF16C1F1E19A888006E9CB8 /* NMethodCall.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16C0E1E19A888006E9CB8 /* NMethodCall.cpp */; };
+		9CF16C1F1E19A888006E9CB8 /* NCall.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16C0E1E19A888006E9CB8 /* NCall.cpp */; };
 		9CF16C201E19A888006E9CB8 /* NVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16C111E19A888006E9CB8 /* NVariable.cpp */; };
 		9CF16C211E19A888006E9CB8 /* NVoid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16C131E19A888006E9CB8 /* NVoid.cpp */; };
 		9CF16C261E19A8A9006E9CB8 /* parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16C231E19A8A9006E9CB8 /* parser.cpp */; };
@@ -120,16 +120,16 @@
 		9CF16C031E19A888006E9CB8 /* NCompare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NCompare.h; path = node/NCompare.h; sourceTree = "<group>"; };
 		9CF16C041E19A888006E9CB8 /* NDouble.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NDouble.cpp; path = node/NDouble.cpp; sourceTree = "<group>"; };
 		9CF16C051E19A888006E9CB8 /* NDouble.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NDouble.h; path = node/NDouble.h; sourceTree = "<group>"; };
-		9CF16C061E19A888006E9CB8 /* NFunctionDeclaration.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NFunctionDeclaration.cpp; path = node/NFunctionDeclaration.cpp; sourceTree = "<group>"; };
-		9CF16C071E19A888006E9CB8 /* NFunctionDeclaration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NFunctionDeclaration.h; path = node/NFunctionDeclaration.h; sourceTree = "<group>"; };
+		9CF16C061E19A888006E9CB8 /* NFunction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NFunction.cpp; path = node/NFunction.cpp; sourceTree = "<group>"; };
+		9CF16C071E19A888006E9CB8 /* NFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NFunction.h; path = node/NFunction.h; sourceTree = "<group>"; };
 		9CF16C081E19A888006E9CB8 /* NIf.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NIf.cpp; path = node/NIf.cpp; sourceTree = "<group>"; };
 		9CF16C091E19A888006E9CB8 /* NIf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NIf.h; path = node/NIf.h; sourceTree = "<group>"; };
 		9CF16C0A1E19A888006E9CB8 /* NInteger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NInteger.cpp; path = node/NInteger.cpp; sourceTree = "<group>"; };
 		9CF16C0B1E19A888006E9CB8 /* NInteger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NInteger.h; path = node/NInteger.h; sourceTree = "<group>"; };
 		9CF16C0C1E19A888006E9CB8 /* NMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NMath.cpp; path = node/NMath.cpp; sourceTree = "<group>"; };
 		9CF16C0D1E19A888006E9CB8 /* NMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NMath.h; path = node/NMath.h; sourceTree = "<group>"; };
-		9CF16C0E1E19A888006E9CB8 /* NMethodCall.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NMethodCall.cpp; path = node/NMethodCall.cpp; sourceTree = "<group>"; };
-		9CF16C0F1E19A888006E9CB8 /* NMethodCall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NMethodCall.h; path = node/NMethodCall.h; sourceTree = "<group>"; };
+		9CF16C0E1E19A888006E9CB8 /* NCall.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NCall.cpp; path = node/NCall.cpp; sourceTree = "<group>"; };
+		9CF16C0F1E19A888006E9CB8 /* NCall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NCall.h; path = node/NCall.h; sourceTree = "<group>"; };
 		9CF16C101E19A888006E9CB8 /* Node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Node.h; path = node/Node.h; sourceTree = "<group>"; };
 		9CF16C111E19A888006E9CB8 /* NVariable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NVariable.cpp; path = node/NVariable.cpp; sourceTree = "<group>"; };
 		9CF16C121E19A888006E9CB8 /* NVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NVariable.h; path = node/NVariable.h; sourceTree = "<group>"; };
@@ -267,16 +267,16 @@
 				9CF16C031E19A888006E9CB8 /* NCompare.h */,
 				9CF16C041E19A888006E9CB8 /* NDouble.cpp */,
 				9CF16C051E19A888006E9CB8 /* NDouble.h */,
-				9CF16C061E19A888006E9CB8 /* NFunctionDeclaration.cpp */,
-				9CF16C071E19A888006E9CB8 /* NFunctionDeclaration.h */,
+				9CF16C061E19A888006E9CB8 /* NFunction.cpp */,
+				9CF16C071E19A888006E9CB8 /* NFunction.h */,
 				9CF16C081E19A888006E9CB8 /* NIf.cpp */,
 				9CF16C091E19A888006E9CB8 /* NIf.h */,
 				9CF16C0A1E19A888006E9CB8 /* NInteger.cpp */,
 				9CF16C0B1E19A888006E9CB8 /* NInteger.h */,
 				9CF16C0C1E19A888006E9CB8 /* NMath.cpp */,
 				9CF16C0D1E19A888006E9CB8 /* NMath.h */,
-				9CF16C0E1E19A888006E9CB8 /* NMethodCall.cpp */,
-				9CF16C0F1E19A888006E9CB8 /* NMethodCall.h */,
+				9CF16C0E1E19A888006E9CB8 /* NCall.cpp */,
+				9CF16C0F1E19A888006E9CB8 /* NCall.h */,
 				9CF16C101E19A888006E9CB8 /* Node.h */,
 				9CF16C111E19A888006E9CB8 /* NVariable.cpp */,
 				9CF16C121E19A888006E9CB8 /* NVariable.h */,
@@ -353,9 +353,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9CF16C1F1E19A888006E9CB8 /* NMethodCall.cpp in Sources */,
+				9CF16C1F1E19A888006E9CB8 /* NCall.cpp in Sources */,
 				9CF16C161E19A888006E9CB8 /* NBlock.cpp in Sources */,
-				9CF16C1B1E19A888006E9CB8 /* NFunctionDeclaration.cpp in Sources */,
+				9CF16C1B1E19A888006E9CB8 /* NFunction.cpp in Sources */,
 				9CF16C1E1E19A888006E9CB8 /* NMath.cpp in Sources */,
 				9CF16C171E19A888006E9CB8 /* NBool.cpp in Sources */,
 				9CF16BF71E19A85F006E9CB8 /* Compiler.cpp in Sources */,

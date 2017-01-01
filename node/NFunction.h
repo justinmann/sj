@@ -1,30 +1,31 @@
 //
-//  NFunctionDeclaration.h
+//  NFunction.h
 //  sj
 //
 //  Created by Mann, Justin on 12/25/16.
 //  Copyright © 2016 Mann, Justin. All rights reserved.
 //
 
-#ifndef NFunctionDeclaration_h
-#define NFunctionDeclaration_h
+#ifndef NFunction_h
+#define NFunction_h
 
 #include "NBlock.h"
 
-class NFunctionDeclaration : public NBase {
+class NFunction : public NBase {
 public:
     const string type;
     const string name;
-    const shared_ptr<NodeList> arguments;
+    NodeList invalid;
+    vector<shared_ptr<NAssignment>> assignments;
+    vector<shared_ptr<NFunction>> functions;
     const shared_ptr<NBlock> block;
     
-    NFunctionDeclaration(CLoc loc, const char* type, const char* name, shared_ptr<NodeList> arguments, shared_ptr<NBlock> block) : type(type), name(name), arguments(arguments), block(block), NBase(loc) { }
+    NFunction(CLoc loc, const char* type, const char* name, NodeList arguments, shared_ptr<NBlock> block);
     virtual NodeType getNodeType() const;
     virtual void define(Compiler* compiler, CResult& result);
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result) const;
     virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result) const;
     virtual Value* compile(Compiler* compiler, CResult& result) const;
-    Function* functionGen(Compiler* compiler) const;
 };
 
-#endif /* NFunctionDeclaration_h */
+#endif /* NFunction_h */

@@ -1,7 +1,7 @@
 #include "Node.h"
 
 NodeType NIf::getNodeType() const {
-    return NodeType::If;
+    return NodeType_If;
 }
 
 shared_ptr<CType> NIf::getReturnType(Compiler* compiler, CResult& result) const {

@@ -1,7 +1,7 @@
 #include "Node.h"
 
 NodeType NBool::getNodeType() const {
-    return NodeType::Bool;
+    return NodeType_Bool;
 }
 
 shared_ptr<CType> NBool::getReturnType(Compiler* compiler, CResult& result) const {

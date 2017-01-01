@@ -1,7 +1,7 @@
 #include "Node.h"
 
 NodeType NDouble::getNodeType() const {
-    return NodeType::Double;
+    return NodeType_Double;
 }
 
 shared_ptr<CType> NDouble::getReturnType(Compiler* compiler, CResult& result) const {

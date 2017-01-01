@@ -82,8 +82,8 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 program 			: stmts 										{ result->block = std::shared_ptr<NBlock>($1); }
 					;
 
-stmts 				: stmt											{ $$ = new NBlock(LOC); if ($1) $$->statements->push_back(shared_ptr<NBase>($1)); }
-					| stmts TEND stmt								{ if ($3) $1->statements->push_back(shared_ptr<NBase>($3)); }
+stmts 				: stmt											{ $$ = new NBlock(LOC); if ($1) $$->statements.push_back(shared_ptr<NBase>($1)); }
+					| stmts TEND stmt								{ if ($3) $1->statements.push_back(shared_ptr<NBase>($3)); }
 					;
 					
 stmt 				: /* Blank! */									{ $$ = nullptr; }
@@ -100,11 +100,11 @@ var_decl 			: TIDENTIFIER assign expr						{ /* x = 1 */ 		$$ = new NAssignment(
 					| TIDENTIFIER TQUOTE TIDENTIFIER assign expr	{ /* x'int = 2 */ 	$$ = new NAssignment(LOC, $3->c_str(), $1->c_str(), shared_ptr<NBase>($5), $4); }
 					;
 
-func_decl 			: TIDENTIFIER TLPAREN func_args TRPAREN block 						{ /* f()'int */ $$ = new NFunctionDeclaration(LOC, "", $1->c_str(), shared_ptr<NodeList>($3), shared_ptr<NBlock>($5)); }
-					| TIDENTIFIER TLPAREN func_args TRPAREN TQUOTE TIDENTIFIER block 	{ /* f() */     $$ = new NFunctionDeclaration(LOC, $6->c_str(), $1->c_str(), shared_ptr<NodeList>($3), shared_ptr<NBlock>($7)); }
+func_decl 			: TIDENTIFIER TLPAREN func_args TRPAREN block 						{ /* f()'int */ $$ = new NFunction(LOC, "", $1->c_str(), *($3), shared_ptr<NBlock>($5)); }
+					| TIDENTIFIER TLPAREN func_args TRPAREN TQUOTE TIDENTIFIER block 	{ /* f() */     $$ = new NFunction(LOC, $6->c_str(), $1->c_str(), *($3), shared_ptr<NBlock>($7)); }
 					;
 
-func_call			: TIDENTIFIER TLPAREN func_args TRPAREN			{ $$ = new NMethodCall(LOC, $1->c_str(), shared_ptr<NodeList>($3)); delete $1; }
+func_call			: TIDENTIFIER TLPAREN func_args TRPAREN			{ $$ = new NCall(LOC, $1->c_str(), *($3)); delete $1; }
 					;
 
 func_args  			: /* Blank! */ 									{ $$ = new NodeList(); }
@@ -113,6 +113,7 @@ func_args  			: /* Blank! */ 									{ $$ = new NodeList(); }
 					;
 
 func_arg			: var_decl 										
+					| func_decl 										
 					| expr 											
 					; 
 

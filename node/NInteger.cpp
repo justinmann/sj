@@ -1,7 +1,7 @@
 #include "Node.h"
 
 NodeType NInteger::getNodeType() const {
-    return NodeType::Integer;
+    return NodeType_Integer;
 }
 
 shared_ptr<CType> NInteger::getReturnType(Compiler* compiler, CResult& result) const {

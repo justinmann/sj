@@ -1,15 +1,20 @@
 #include "Node.h"
 
-NodeType NMethodCall::getNodeType() const {
-    return NodeType::MethodCall;
+NodeType NCall::getNodeType() const {
+    return NodeType_Call;
 }
 
-shared_ptr<CType> NMethodCall::getReturnType(Compiler *compiler, CResult& result) const {
+shared_ptr<CType> NCall::getReturnType(Compiler *compiler, CResult& result) const {
     TFunction* callee = compiler->currentFunction->getTFunction(name);
+    if (!callee) {
+        result.addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", name.c_str());
+        return nullptr;
+    }
+    
     return callee->getReturnType(compiler, result);
 }
 
-Value* NMethodCall::compile(Compiler* compiler, CResult& result) const {
+Value* NCall::compile(Compiler* compiler, CResult& result) const {
     compiler->emitLocation(this);
     
     TFunction* callee = compiler->currentFunction->getTFunction(name);
@@ -24,17 +29,17 @@ Value* NMethodCall::compile(Compiler* compiler, CResult& result) const {
     auto thisType = callee->getThisType(compiler, result);
     auto thisValue = compiler->builder.CreateAlloca(thisType->llvmAllocType, 0, "thisValue");
     
-    if (arguments->size() > callee->node->arguments->size()) {
+    if (arguments.size() > callee->node->assignments.size()) {
         result.errors.push_back(CError(CLoc::undefined, CErrorCode::TooManyParameters));
         return nullptr;
     }
     
     // Fill in parameters
-    vector<NBase*> parameters(callee->node->arguments->size());
+    vector<NBase*> parameters(callee->node->assignments.size());
     auto argIndex = 0;
     auto hasSetByName = false;
-    for (auto it : *arguments) {
-        if (it->getNodeType() == NodeType::Assignment) {
+    for (auto it : arguments) {
+        if (it->getNodeType() == NodeType_Assignment) {
             auto parameterAssignment = (const NAssignment*)it.get();
             auto index = callee->getThisIndex(parameterAssignment->name);
             if (index == -1) {
@@ -66,9 +71,9 @@ Value* NMethodCall::compile(Compiler* compiler, CResult& result) const {
     }
     
     argIndex = 0;
-    for (auto it : *callee->node->arguments) {
+    for (auto it : callee->node->assignments) {
         if (parameters[argIndex] == nullptr) {
-            if (it->getNodeType() != NodeType::Assignment) {
+            if (it->getNodeType() != NodeType_Assignment) {
                 result.errors.push_back(CError(CLoc::undefined, CErrorCode::NotVariable));
                 return nullptr;
             }
@@ -81,8 +86,8 @@ Value* NMethodCall::compile(Compiler* compiler, CResult& result) const {
     
     // Fill in "this"
     argIndex = 0;
-    for (auto it : *callee->node->arguments) {
-        if (it->getNodeType() != NodeType::Assignment) {
+    for (auto it : callee->node->assignments) {
+        if (it->getNodeType() != NodeType_Assignment) {
             result.errors.push_back(CError(CLoc::undefined, CErrorCode::NotVariable));
             return nullptr;
         }

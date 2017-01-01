@@ -1,7 +1,7 @@
 #include "Node.h"
 
 NodeType NCompare::getNodeType() const {
-    return NodeType::Compare;
+    return NodeType_Compare;
 }
 
 void NCompare::define(Compiler* compiler, CResult& result) {

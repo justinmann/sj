@@ -102,7 +102,7 @@ shared_ptr<CType> TFunctionVar::getType(Compiler* compiler, CResult& result) {
     
     isInGetType = true;
     if (!type) {
-        type = shared_ptr<CType>(assignment->getReturnType(compiler, result));
+        type = nassignment->getReturnType(compiler, result);
     }
     isInGetType = false;
     return type;
@@ -115,11 +115,11 @@ Value* TFunctionVar::getValue(Compiler* compiler, CResult& result) {
     return value;
 }
 
-TFunction::TFunction(TFunction* parent, const NFunctionDeclaration* node) : parent(parent), node(node), returnType(nullptr), thisType(nullptr), func(nullptr), isInGetType(false), isInGetFunction(false) {
+TFunction::TFunction(TFunction* parent, const NFunction* node) : parent(parent), node(node), returnType(nullptr), thisType(nullptr), func(nullptr), isInGetType(false), isInGetFunction(false) {
     if (node) {
         int index = 0;
-        for (auto &arg : *node->arguments) {
-            if (arg->getNodeType() == NodeType::Assignment) {
+        for (auto &arg : node->assignments) {
+            if (arg->getNodeType() == NodeType_Assignment) {
                 auto t = (const NAssignment*)arg.get();
                 vars[t->name] = shared_ptr<TVar>((TVar*)new TFunctionVar(this, node, index, t));
             }
@@ -146,8 +146,8 @@ shared_ptr<CType> TFunction::getThisType(Compiler* compiler, CResult& result) {
     if (!thisType) {
         // Verify all arguments are assignments with valid types
         vector<pair<string, shared_ptr<CType>>> memberTypes;
-        for (auto &it : *node->arguments) {
-            if (it->getNodeType() != NodeType::Assignment) {
+        for (auto &it : node->assignments) {
+            if (it->getNodeType() != NodeType_Assignment) {
                 result.errors.push_back(CError(CLoc::undefined, CErrorCode::NotVariable));
                 return nullptr;
             }
@@ -266,8 +266,8 @@ TVar* TFunction::getTVariable(const string& name) const {
 
 int TFunction::getThisIndex(const string& name) const {
     auto argIndex = 0;
-    for (auto it : *node->arguments) {
-        if (it->getNodeType() == NodeType::Assignment) {
+    for (auto it : node->assignments) {
+        if (it->getNodeType() == NodeType_Assignment) {
             auto t = (const NAssignment*)it.get();
             if (t->name == name) {
                 return argIndex;
@@ -432,8 +432,8 @@ shared_ptr<CResult> Compiler::run(const char* code) {
     if (compilerResult->errors.size() > 0)
         return compilerResult;
     
-    auto anonArgs = make_shared<NodeList>();
-    auto anonFunction = make_unique<NFunctionDeclaration>(CLoc::undefined, "", "__anon_expr", anonArgs, compilerResult->block);
+    auto anonArgs = NodeList();
+    auto anonFunction = make_unique<NFunction>(CLoc::undefined, "", "__anon_expr", anonArgs, compilerResult->block);
     currentFunction = new TFunction(nullptr, nullptr);
     anonFunction->define(this, *compilerResult);
     // Early exit if compile fails
@@ -441,16 +441,15 @@ shared_ptr<CResult> Compiler::run(const char* code) {
         return compilerResult;   
     
     anonFunction->compile(this, *compilerResult);
-    auto function = currentFunction->getTFunction("__anon_expr")->getFunction(this, *compilerResult);
-    auto returnType = function->getReturnType();
-    
 #ifdef MODULE_OUTPUT
     module->dump();
-#endif
-    
+#endif    
     // Early exit if compilation fails
     if (compilerResult->errors.size() > 0)
         return compilerResult;
+
+    auto function = currentFunction->getTFunction("__anon_expr")->getFunction(this, *compilerResult);
+    auto returnType = function->getReturnType();
 
     auto H = TheJIT->addModule(move(module));
     

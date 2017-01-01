@@ -10,7 +10,7 @@ NVariable::NVariable(CLoc loc, const char* name) : NBase(loc) {
 }
 
 NodeType NVariable::getNodeType() const {
-    return NodeType::Variable;
+    return NodeType_Variable;
 }
 
 shared_ptr<CType> NVariable::getReturnType(Compiler* compiler, CResult& result) const {
