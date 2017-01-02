@@ -59,20 +59,24 @@ shared_ptr<CType> NVariable::getParentValue(Compiler* compiler, CResult& result,
                     
                     while (cfunction && varIndex == -1) {
                         parentType = cfunction->getThisType(compiler, result);
-                        auto it = parentType->membersByName.find(name);
-                        if (it != parentType->membersByName.end()) {
-                            varIndex = it->second.first;
-                            varType = it->second.second;
+                        if (parentType == nullptr) {
+                            cfunction = nullptr;
                         } else {
-                            if (value) {
-                                auto parentIndex = parentType->cfunction->getThisIndex("parent");
-                                vector<Value*> v;
-                                v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
-                                v.push_back(ConstantInt::get(compiler->context, APInt(32, parentIndex)));
-                                auto ptr = compiler->builder.CreateInBoundsGEP(parentType->llvmAllocType, *value, ArrayRef<Value *>(v), "paramPtr");
-                                *value = compiler->builder.CreateLoad(ptr);
+                            auto it = parentType->membersByName.find(name);
+                            if (it != parentType->membersByName.end()) {
+                                varIndex = it->second.first;
+                                varType = it->second.second;
+                            } else {
+                                if (value) {
+                                    auto parentIndex = parentType->cfunction->getThisIndex("parent");
+                                    vector<Value*> v;
+                                    v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+                                    v.push_back(ConstantInt::get(compiler->context, APInt(32, parentIndex)));
+                                    auto ptr = compiler->builder.CreateInBoundsGEP(parentType->llvmAllocType, *value, ArrayRef<Value *>(v), "paramPtr");
+                                    *value = compiler->builder.CreateLoad(ptr);
+                                }
+                                cfunction = cfunction->parent;
                             }
-                            cfunction = cfunction->parent;
                         }
                     }
                     

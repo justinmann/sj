@@ -11,9 +11,11 @@
 
 #include "NBase.h"
 
+class NCall;
+
 class NAssignment : public NBase {
 public:
-    NAssignment(CLoc loc, const char* typeName, const char* name, shared_ptr<NBase> rightSide, bool isMutable) : typeName(typeName), name(name), rightSide(rightSide), isMutable(isMutable), NBase(loc) { }
+    NAssignment(CLoc loc, const char* typeName, const char* name, shared_ptr<NBase> rightSide, bool isMutable);
     virtual NodeType getNodeType() const;
     virtual void define(Compiler* compiler, CResult& result);
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result) const;
@@ -23,6 +25,7 @@ public:
     const string typeName;
     const string name;
     const shared_ptr<NBase> rightSide;
+    shared_ptr<NCall> call;
     bool isMutable;
 };
 

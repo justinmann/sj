@@ -32,6 +32,10 @@ Value* NIf::compile(Compiler* compiler, CResult& result) const {
     compiler->builder.CreateCondBr(c, ifBB, elseBB);
     compiler->builder.SetInsertPoint(ifBB);
     auto ifValue = ifBlock->compile(compiler, result);
+    if (returnType != compiler->typeVoid && !ifValue) {
+        result.errors.push_back(CError(loc, CErrorCode::NoDefaultValue, "type does not have a default value"));
+        return nullptr;
+    }
     compiler->builder.CreateBr(mergeBB);
     
     // Else block
@@ -40,6 +44,10 @@ Value* NIf::compile(Compiler* compiler, CResult& result) const {
     Value* elseValue = nullptr;
     if (elseBlock) {
         elseValue = elseBlock->compile(compiler, result);
+        if (returnType != compiler->typeVoid && !elseValue) {
+            result.errors.push_back(CError(loc, CErrorCode::NoDefaultValue, "type does not have a default value"));
+            return nullptr;
+        }
     } else if (returnType != compiler->typeVoid) {
         elseValue = compiler->getDefaultValue(returnType);
         if (!elseValue) {
