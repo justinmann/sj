@@ -16,6 +16,8 @@ void NAssignment::define(Compiler* compiler, CResult& result) {
         var = shared_ptr<CVar>((CVar*)new CLocalVar(compiler->currentFunction, this));
         compiler->currentFunction->vars[name] = var;
     }
+    
+    rightSide->define(compiler, result);
 }
 
 shared_ptr<CType> NAssignment::getReturnType(Compiler *compiler, CResult& result) const {

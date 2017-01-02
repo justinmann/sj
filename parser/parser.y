@@ -96,11 +96,11 @@ stmt 				: /* Blank! */									{ $$ = nullptr; }
 block 				: TLBRACE stmts TRBRACE 						{ $$ = $2; }
 					;
 
-var_decl 			: TIDENTIFIER assign expr						{ /* x = 1 */ 		$$ = new NAssignment(LOC, "", $1->c_str(), shared_ptr<NBase>($3), $2); }
-					| TIDENTIFIER TQUOTE TIDENTIFIER assign expr	{ /* x'int = 2 */ 	$$ = new NAssignment(LOC, $3->c_str(), $1->c_str(), shared_ptr<NBase>($5), $4); }
+var_decl 			: TIDENTIFIER assign stmt						{ /* x = 1 */ 		$$ = new NAssignment(LOC, "", $1->c_str(), shared_ptr<NBase>($3), $2); }
+					| TIDENTIFIER TQUOTE TIDENTIFIER assign stmt	{ /* x'int = 2 */ 	$$ = new NAssignment(LOC, $3->c_str(), $1->c_str(), shared_ptr<NBase>($5), $4); }
 					;
 
-func_decl 			: TIDENTIFIER func_block block 						{ /* f()'int */ $$ = new NFunction(LOC, "", $1->c_str(), *($2), shared_ptr<NBlock>($3)); }
+func_decl 			: TIDENTIFIER func_block block 					{ /* f()'int */ $$ = new NFunction(LOC, "", $1->c_str(), *($2), shared_ptr<NBlock>($3)); }
 					| TIDENTIFIER func_block TQUOTE TIDENTIFIER block 	{ /* f() */     $$ = new NFunction(LOC, $4->c_str(), $1->c_str(), *($2), shared_ptr<NBlock>($5)); }
 					;
 

@@ -296,17 +296,82 @@ void testClass() {
     assert(result->type == RESULT_INT && result->iResult == 1);
 
     result = compiler.run(R"DELIM(
-                          a(
-                             x: 1,
-                             b: (
-                                 c() { x }
-                             ) { this }
-                          ) { this }
-                          a: a()
-                          a.b.c()
-                          d: a.b
-                          d.c()
-                          )DELIM");
+		class(
+			foo(x: 0) {
+				if x > 0 {
+					bar(x - 1)
+				} else {
+					0
+				}
+			}
+			bar(x: 0) {
+				foo(x)
+			}
+		) { this }
+		c: class()
+		c.foo(4)
+    )DELIM");
+    assert(result->type == RESULT_INT && result->iResult == 0);
+    
+    result = compiler.run(R"DELIM(
+		math(
+			sub(x: 0, y: 0) {
+				x - y
+			}
+		) { this }
+		class(
+			m: math()
+			foo(x: 0) {
+				if x > 0 {
+					bar(m.sub(x, 1))
+				} else {
+					0
+				}
+			}
+			bar(x: 0) {
+				foo(x)
+			}
+		) { this }
+		c: class()
+		c.foo(4)
+    )DELIM");
+    assert(result->type == RESULT_INT && result->iResult == 0);
+
+    result = compiler.run(R"DELIM(
+		math: gg(
+			sub(x: 0, y: 0) {
+				x - y
+			}
+		) { this }
+		class(
+			foo(x: 0) {
+				if x > 0 {
+					bar(math.sub(x, 1))
+				} else {
+					0
+				}
+			}
+			bar(x: 0) {
+				foo(x)
+			}
+		) { this }
+		c: class()
+		c.foo(4)
+    )DELIM");
+    assert(result->type == RESULT_INT && result->iResult == 0);
+
+    result = compiler.run(R"DELIM(
+        a(
+            x: 1,
+            b: (
+                c() { x }
+            ) { this }
+        ) { this }
+        a: a()
+        a.b.c()
+        d: a.b
+        d.c()
+    )DELIM");
     assert(result->type == RESULT_INT && result->iResult == 1);
 }
 

@@ -37,7 +37,9 @@ CFunction* NCall::getCFunction(Compiler *compiler, CResult& result) const {
         if (cfunction == compiler->currentFunction) {
             while (cfunction && !callee) {
                 cfunction = cfunction->parent;
-                callee = cfunction->getCFunction(functionName);
+                if (cfunction) {
+                    callee = cfunction->getCFunction(functionName);
+                }
             }
         }
     }
@@ -205,6 +207,12 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
     vector<Value *> argsV;
     argsV.push_back(thisValue);
     
+    auto prev = compiler->currentFunction;
+    compiler->currentFunction = callee->parent;
+    
     auto func = callee->getFunction(compiler, result);
+    
+    compiler->currentFunction = prev;
+
     return compiler->builder.CreateCall(func, argsV, "calltmp");
 }

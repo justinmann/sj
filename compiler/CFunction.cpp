@@ -70,7 +70,7 @@ shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result) {
             
             auto memberType = t->getReturnType(compiler, result);
             if (!memberType) {
-                assert(false);
+                result.addError(t->loc, CErrorCode::InvalidType, "cannot determine type for '%s'", t->name.c_str());
                 return nullptr;
             }
             memberTypes.push_back(pair<string, shared_ptr<CType>>(t->name, shared_ptr<CType>(memberType)));

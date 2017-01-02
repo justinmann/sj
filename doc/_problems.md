@@ -9,75 +9,25 @@
 * interface
 
 
-* class
-* function returning class
-```javascript
-funcNew() {
-	classA()
-}
-
-globalA : classA()
-funcRef() {
-	globalA
-}
-```
-
-----
-class(
-  	foo(x: 0) {
-		if x > 0 {
-			bar(x - 1)
-		} else {
-			0
-		}
-	}
-	bar(x: 0) {
-		foo(x)
-	}
-) { this }
-c: class()
-c.foo(4)
-----
-math(
-	sub(x: 0, y: 0) {
-		x - y
-	}
-)
-class(
-	m: math()
-  	foo(x: 0) {
-		if x > 0 {
-			bar(m.sub(x, 1))
-		} else {
-			0
-		}
-	}
-	bar(x: 0) {
-		foo(x)
-	}
-) { this }
-c: class()
-c.foo(4)
-----
-math: (
-	sub(x: 0, y: 0) {
-		x - y
-	}
-) { this }
-class(
-  	foo(x: 0) {
-		if x > 0 {
-			bar(math.sub(x, 1))
-		} else {
-			0
-		}
-	}
-	bar(x: 0) {
-		foo(x)
-	}
-)
-c: class()
-c.foo(4)
+		math: (
+			sub(x: 0, y: 0) {
+				x - y
+			}
+		) { this }
+		class(
+			foo(x: 0) {
+				if x > 0 {
+					bar(math.sub(x, 1))
+				} else {
+					0
+				}
+			}
+			bar(x: 0) {
+				foo(x)
+			}
+		)
+		c: class()
+		c.foo(4)
 
 
 a : funcNew() // stack alloc classA, call funcNew
