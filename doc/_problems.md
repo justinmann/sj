@@ -1,8 +1,5 @@
-* "parent"
-* this. implicit parent lookup
-* dot for function call
-
 * list
+* llvm inline optimization
 * string
 * heap alloc
 * ref counting
@@ -14,6 +11,7 @@
 
 * class
 * function returning class
+```javascript
 funcNew() {
 	classA()
 }
@@ -22,68 +20,65 @@ globalA : classA()
 funcRef() {
 	globalA
 }
+```
 
-*********
-a(
-	x: 1
-	b() { x }
+----
+class(
+  	foo(x: 0) {
+		if x > 0 {
+			bar(x - 1)
+		} else {
+			0
+		}
+	}
+	bar(x: 0) {
+		foo(x)
+	}
 ) { this }
-
-a: a()
-a.b()
---
-struct a_t {
-	int x;
-};
-struct b_t {
-	b_t parent;
-};
-
-a_t a(a_t& this) { return this; }
-int b(b_t& this) { return this.parent.x; }
-
-a_t = { 1 };
-a = a(a_t);
-b_t = { a };
-b(b_t);
-***********
-a(
-	x: 1
-	b: (
-		c() { x }
-	) { this }
+c: class()
+c.foo(4)
+----
+math(
+	sub(x: 0, y: 0) {
+		x - y
+	}
+)
+class(
+	m: math()
+  	foo(x: 0) {
+		if x > 0 {
+			bar(m.sub(x, 1))
+		} else {
+			0
+		}
+	}
+	bar(x: 0) {
+		foo(x)
+	}
 ) { this }
-a: a()
-a.b.c()
-d: a.b
-d.c()
---
-struct a_t {
-	int x;
-	b_t b;
-};
+c: class()
+c.foo(4)
+----
+math: (
+	sub(x: 0, y: 0) {
+		x - y
+	}
+) { this }
+class(
+  	foo(x: 0) {
+		if x > 0 {
+			bar(math.sub(x, 1))
+		} else {
+			0
+		}
+	}
+	bar(x: 0) {
+		foo(x)
+	}
+)
+c: class()
+c.foo(4)
 
-struct b_t {
-	a_t parent;
-};
-
-struct c_t {
-	b_t parent;
-};
-
-a_t a(a_t& this) { return this; }
-b_t b(b_t& this) { return this; }
-int c(c_t& this) { return this.parent.parent.x; }
-
-a_t = { x = 1, b = { parent = a_t } };
-a = a(a_t);
-c_t = { parent = a.b };
-c(c_t);
-
-d = a.b;
-c_t = { parent = d };
-c(c_t);
-***********
 
 a : funcNew() // stack alloc classA, call funcNew
 a = funcNew() // heap alloc classA, call funcNew
