@@ -22,10 +22,10 @@ void NFunction::define(Compiler *compiler, CResult& result) {
         return;
     }
     
-    auto tf = make_shared<CFunction>(compiler->currentFunction, this);
+    auto tf = CFunction::create(compiler->currentFunction, shared_from_this());
     compiler->currentFunction->funcs[name] = tf;   
     auto prev = compiler->currentFunction;
-    compiler->currentFunction = tf.get();
+    compiler->currentFunction = tf;
 
     block->define(compiler, result);
     

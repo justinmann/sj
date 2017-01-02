@@ -157,7 +157,7 @@ public:
     unique_ptr<DIBuilder> DBuilder;
 #endif
     // compiler vars
-    CFunction* currentFunction;
+    shared_ptr<CFunction> currentFunction;
     
     bool printTokens;
     shared_ptr<CType> typeInt;

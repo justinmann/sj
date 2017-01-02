@@ -21,7 +21,8 @@ void NAssignment::define(Compiler* compiler, CResult& result) {
             var = iter->second;
         }
     } else {
-        var = shared_ptr<CVar>((CVar*)new CLocalVar(compiler->currentFunction, this));
+        shared_ptr<NAssignment> t = shared_from_this();
+        var = CLocalVar::create(compiler->currentFunction, t);
         compiler->currentFunction->vars[name] = var;
     }
     
@@ -70,7 +71,7 @@ Value* NAssignment::compile(Compiler* compiler, CResult& result) const {
     }
     
     // Get place to store data
-    auto alloca = var->getValue(compiler, result);
+    auto alloca = var->getValue(compiler, result, compiler->currentFunction->getThis());
     
     // Store value
     compiler->builder.CreateStore(value, alloca);

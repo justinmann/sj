@@ -27,6 +27,9 @@ public:
     const shared_ptr<NBase> rightSide;
     shared_ptr<NCall> call;
     bool isMutable;
+
+private:
+    shared_ptr<NAssignment> shared_from_this() { return static_pointer_cast<NAssignment>(NBase::shared_from_this()); }
 };
 
 #endif /* NAssignment_h */

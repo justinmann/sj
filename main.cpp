@@ -151,6 +151,12 @@ void testAssignment() {
 
     result = compiler.run("x : 1; x : 2; x + 1");
     assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::ImmutableAssignment);
+
+    result = compiler.run("x : y : 2");
+    assert(result->type == RESULT_INT && result->iResult == 2);
+
+    result = compiler.run("x : y : 2; x + y");
+    assert(result->type == RESULT_INT && result->iResult == 4);
 }
 
 void testIf() {
@@ -336,7 +342,18 @@ void testClass() {
 		c.foo(4)
     )DELIM");
     assert(result->type == RESULT_INT && result->iResult == 0);
-
+/*
+    result = compiler.run(R"DELIM(
+        class() {
+			m: 1
+			inner() {
+				m
+			}
+			inner()
+		}
+    )DELIM");
+    assert(result->type == RESULT_INT && result->iResult == 1);
+    
     result = compiler.run(R"DELIM(
 		math: gg(
 			sub(x: 0, y: 0) {
@@ -373,6 +390,8 @@ void testClass() {
         d.c()
     )DELIM");
     assert(result->type == RESULT_INT && result->iResult == 1);
+*/
+    
 }
 
 void test() {

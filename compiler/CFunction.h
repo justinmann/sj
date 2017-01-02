@@ -11,37 +11,37 @@
 
 class NFunction;
 
-class CFunctionVar : CVar {
+class CFunctionVar : public CVar {
 public:
-    CFunctionVar(CFunction* parent, const NFunction* nfunction, const int index, const NAssignment* nassignment) : nfunction(nfunction), index(index), nassignment(nassignment), CVar(parent), type(nullptr), value(nullptr), isInGetType(false) { }
+    static shared_ptr<CFunctionVar> create(shared_ptr<CFunction> parent, shared_ptr<NFunction> nfunction, int index, shared_ptr<NAssignment> nassignment);
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    virtual Value* getValue(Compiler* compiler, CResult& result);
+    virtual Value* getValue(Compiler* compiler, CResult& result, Value* thisValue);
     
 private:
     bool isInGetType;
-    const NFunction* nfunction;
-    const NAssignment* nassignment;
-    const int index;
+    shared_ptr<NFunction> nfunction;
+    shared_ptr<NAssignment> nassignment;
+    int index;
     shared_ptr<CType> type;
     Value* value;
 };
 
-class CFunction {
+class CFunction : public enable_shared_from_this<CFunction> {
 public:
-    CFunction* parent;
-    const NFunction* node;
+    weak_ptr<CFunction> parent;
+    shared_ptr<NFunction> node;
     map<string, shared_ptr<CVar>> vars;
     map<string, shared_ptr<CFunction>> funcs;
     
-    CFunction(CFunction* parent, const NFunction* node);
+    static shared_ptr<CFunction> create(shared_ptr<CFunction> parent, shared_ptr<NFunction> node);
     shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result);
     shared_ptr<CType> getThisType(Compiler* compiler, CResult& result);
     Function* getFunction(Compiler* compiler, CResult& result);
     BasicBlock* getBasicBlock();
-    Value* getArgumentValue(int index, Compiler* compiler);
+    Value* getArgumentValue(Compiler* compiler, CResult& result, Value* thisValue, int index);
     Argument* getThis();
-    CFunction* getCFunction(const string& name) const;
-    CVar* getCVariable(const string& name) const;
+    shared_ptr<CFunction> getCFunction(const string& name) const;
+    shared_ptr<CVar> getCVariable(const string& name) const;
     int getThisIndex(const string& name) const;
     
 private:

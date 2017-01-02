@@ -10,7 +10,7 @@
 
 CType::CType(const char* name, Type* type) : name(name), llvmAllocType(type), llvmRefType(type) { }
 
-CType::CType(Compiler* compiler, const char* name, CFunction* cfunction, vector<pair<string, shared_ptr<CType>>> members_) : name(name), cfunction(cfunction) {
+CType::CType(Compiler* compiler, const char* name, shared_ptr<CFunction> cfunction_, vector<pair<string, shared_ptr<CType>>> members_) : name(name), cfunction(cfunction_) {
     auto structType = StructType::create(compiler->context, name);
     
     vector<Type*> structMembers;
@@ -23,9 +23,9 @@ CType::CType(Compiler* compiler, const char* name, CFunction* cfunction, vector<
     }
     
     // if we have a parent then we get a parent pointer
-    if (cfunction->parent) {
+    if (cfunction_->parent.lock()) {
         CResult result;
-        auto parentType = cfunction->parent->getThisType(compiler, result);
+        auto parentType = cfunction_->parent.lock()->getThisType(compiler, result);
         if (parentType) {
             membersByName["parent"] = pair<int, shared_ptr<CType>>(index, parentType);
             members.push_back(parentType);

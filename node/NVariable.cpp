@@ -39,59 +39,45 @@ shared_ptr<CType> NVariable::getParentValue(Compiler* compiler, CResult& result,
                     *value = compiler->currentFunction->getThis();
                 }
             } else {
-                // Check for a local or argument value
-                CVar* cvar = compiler->currentFunction->getCVariable(name);
-                if (cvar) {
-                    varType = cvar->getType(compiler, result);
-                    if (value) {
-                        auto ptr = cvar->getValue(compiler, result);
-                        *value = compiler->builder.CreateLoad(ptr);
-                    }
-                } else {
-                    // Now we need to look up the parent chain
-                    auto cfunction = compiler->currentFunction;
-                    auto varIndex = -1;
-                    shared_ptr<CType> parentType = nullptr;
-                    
-                    if (value) {
-                        *value = compiler->currentFunction->getThis();
-                    }
-                    
-                    while (cfunction && varIndex == -1) {
-                        parentType = cfunction->getThisType(compiler, result);
-                        if (parentType == nullptr) {
-                            cfunction = nullptr;
-                        } else {
-                            auto it = parentType->membersByName.find(name);
-                            if (it != parentType->membersByName.end()) {
-                                varIndex = it->second.first;
-                                varType = it->second.second;
-                            } else {
-                                if (value) {
-                                    auto parentIndex = parentType->cfunction->getThisIndex("parent");
-                                    vector<Value*> v;
-                                    v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
-                                    v.push_back(ConstantInt::get(compiler->context, APInt(32, parentIndex)));
-                                    auto ptr = compiler->builder.CreateInBoundsGEP(parentType->llvmAllocType, *value, ArrayRef<Value *>(v), "paramPtr");
-                                    *value = compiler->builder.CreateLoad(ptr);
-                                }
-                                cfunction = cfunction->parent;
+                // Now we need to look up the parent chain
+                auto cfunction = compiler->currentFunction;
+                shared_ptr<CVar> cvar = nullptr;
+                shared_ptr<CType> parentType = nullptr;
+                Value* thisValue = nullptr;
+                
+                if (value) {
+                    thisValue = compiler->currentFunction->getThis();
+                }
+                
+                while (cfunction && !cvar) {
+                    parentType = cfunction->getThisType(compiler, result);
+                    if (parentType == nullptr) {
+                        cfunction = nullptr;
+                    } else {
+                        cvar = cfunction->getCVariable(name);
+                        if (!cvar) {
+                            if (value) {
+                                auto parentIndex = parentType->cfunction.lock()->getThisIndex("parent");
+                                vector<Value*> v;
+                                v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+                                v.push_back(ConstantInt::get(compiler->context, APInt(32, parentIndex)));
+                                auto ptr = compiler->builder.CreateInBoundsGEP(parentType->llvmAllocType, thisValue, ArrayRef<Value *>(v), "paramPtr");
+                                thisValue = compiler->builder.CreateLoad(ptr);
                             }
+                            cfunction = shared_ptr<CFunction>(cfunction->parent);
                         }
                     }
-                    
-                    if (cfunction == nullptr) {
-                        result.addError(loc, CErrorCode::UnknownVariable, "cannot find var '%s'", name.c_str());
-                        return nullptr;
-                    }
-
-                    if (value) {
-                        vector<Value*> v;
-                        v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
-                        v.push_back(ConstantInt::get(compiler->context, APInt(32, varIndex)));
-                        auto ptr = compiler->builder.CreateInBoundsGEP(parentType->llvmAllocType, *value, ArrayRef<Value *>(v), "paramPtr");
-                        *value = compiler->builder.CreateLoad(ptr);
-                    }
+                }
+                
+                if (cfunction == nullptr) {
+                    result.addError(loc, CErrorCode::UnknownVariable, "cannot find var '%s'", name.c_str());
+                    return nullptr;
+                }
+                
+                varType = cvar->getType(compiler, result);
+                if (value) {
+                    auto ptr = cvar->getValue(compiler, result, thisValue);
+                    *value = compiler->builder.CreateLoad(ptr);
                 }
             }
         } else {

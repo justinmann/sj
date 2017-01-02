@@ -205,8 +205,8 @@ shared_ptr<CResult> Compiler::run(const char* code) {
         return compilerResult;
     
     auto anonArgs = NodeList();
-    auto anonFunction = make_unique<NFunction>(CLoc::undefined, "", "__anon_expr", anonArgs, compilerResult->block);
-    currentFunction = new CFunction(nullptr, nullptr);
+    auto anonFunction = make_shared<NFunction>(CLoc::undefined, "", "__anon_expr", anonArgs, compilerResult->block);
+    currentFunction = CFunction::create(nullptr, nullptr);
     anonFunction->define(this, *compilerResult);
     // Early exit if compile fails
     if (compilerResult->errors.size() > 0)

@@ -8,6 +8,15 @@
 
 #include "Node.h"
 
+shared_ptr<CFunctionVar> CFunctionVar::create(shared_ptr<CFunction> parent, shared_ptr<NFunction> nfunction, int index, shared_ptr<NAssignment> nassignment) {
+    auto c = make_shared<CFunctionVar>();
+    c->nfunction = nfunction;
+    c->index = index;
+    c->nassignment = nassignment;
+    c->parent = parent;
+    return c;
+}
+
 shared_ptr<CType> CFunctionVar::getType(Compiler* compiler, CResult& result) {
     if (isInGetType) {
         result.errors.push_back(CError(CLoc::undefined, CErrorCode::TypeLoop));
@@ -22,25 +31,27 @@ shared_ptr<CType> CFunctionVar::getType(Compiler* compiler, CResult& result) {
     return type;
 }
 
-Value* CFunctionVar::getValue(Compiler* compiler, CResult& result) {
-    if (!value) {
-        value = parent->getArgumentValue(index, compiler);
-    }
-    return value;
+Value* CFunctionVar::getValue(Compiler* compiler, CResult& result, Value* thisValue) {
+    return parent.lock()->getArgumentValue(compiler, result, thisValue, index);
 }
 
-CFunction::CFunction(CFunction* parent, const NFunction* node) : parent(parent), node(node), returnType(nullptr), thisType(nullptr), func(nullptr), isInGetType(false), isInGetFunction(false) {
+shared_ptr<CFunction> CFunction::create(shared_ptr<CFunction> parent, shared_ptr<NFunction> node) {
+    auto c = make_shared<CFunction>();
+    c->parent = parent;
+    c->node = node;
+    
     if (node) {
         int index = 0;
         for (auto it : node->assignments) {
-            vars[it->name] = shared_ptr<CVar>((CVar*)new CFunctionVar(this, node, index, it.get()));
+            c->vars[it->name] = CFunctionVar::create(c, node, index, it);
             index++;
         }
         
         for (auto it : node->functions) {
-            funcs[it->name] = make_shared<CFunction>(this, it.get());
+            c->funcs[it->name] = CFunction::create(c, it);
         }
     }
+    return c;
 }
 
 shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CResult& result) {
@@ -58,7 +69,7 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CResult& result) 
 }
 
 shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result) {
-    if (!thisType && parent) {
+    if (!thisType && parent.lock()) {
         // Verify all arguments are assignments with valid types
         vector<pair<string, shared_ptr<CType>>> memberTypes;
         for (auto &it : node->assignments) {
@@ -76,7 +87,7 @@ shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result) {
             memberTypes.push_back(pair<string, shared_ptr<CType>>(t->name, shared_ptr<CType>(memberType)));
         }
         
-        thisType = make_shared<CType>(compiler, node->name.c_str(), this, memberTypes);
+        thisType = make_shared<CType>(compiler, node->name.c_str(), shared_from_this(), memberTypes);
     }
     return thisType;
 }
@@ -146,9 +157,8 @@ Argument* CFunction::getThis() {
     return (Argument*)func->args().begin();
 }
 
-Value* CFunction::getArgumentValue(int index, Compiler* compiler) {
-    assert(func != nullptr);
-    auto thisValue = getThis();
+Value* CFunction::getArgumentValue(Compiler* compiler, CResult& result, Value* thisValue, int index) {
+    assert(thisValue->getType() == thisType->llvmRefType);
     vector<Value*> v;
     v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
     v.push_back(ConstantInt::get(compiler->context, APInt(32, index)));
@@ -157,18 +167,18 @@ Value* CFunction::getArgumentValue(int index, Compiler* compiler) {
 }
 
 
-CFunction* CFunction::getCFunction(const string& name) const {
+shared_ptr<CFunction> CFunction::getCFunction(const string& name) const {
     auto t = funcs.find(name);
     if (t != funcs.end()) {
-        return t->second.get();
+        return t->second;
     }
     return nullptr;
 }
 
-CVar* CFunction::getCVariable(const string& name) const {
+shared_ptr<CVar> CFunction::getCVariable(const string& name) const {
     auto t = vars.find(name);
     if (t != vars.end()) {
-        return t->second.get();
+        return t->second;
     }
     return nullptr;
 }

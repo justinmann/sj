@@ -9,7 +9,7 @@
 #ifndef NBase_h
 #define NBase_h
 
-class NBase {
+class NBase : public enable_shared_from_this<NBase> {
 public:   
     const CLoc loc;
     

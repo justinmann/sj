@@ -20,7 +20,7 @@ public:
     virtual void define(Compiler* compiler, CResult& result) { }
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result) const;
     virtual Value* compile(Compiler* compiler, CResult& result) const;
-    CFunction* getCFunction(Compiler *compiler, CResult& result) const;
+    shared_ptr<CFunction> getCFunction(Compiler *compiler, CResult& result) const;
 };
 
 #endif /* NCall_h */

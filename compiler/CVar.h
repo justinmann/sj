@@ -15,22 +15,21 @@ class CResult;
 
 class CVar {
 public:
-    CVar(CFunction* parent) : parent(parent) { assert(parent != nullptr); }
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result) = 0;
-    virtual Value* getValue(Compiler* compiler, CResult& result) = 0;
+    virtual Value* getValue(Compiler* compiler, CResult& result, Value* thisValue) = 0;
     
-    CFunction* parent;
+    weak_ptr<CFunction> parent;
 };
 
-class CLocalVar : CVar {
+class CLocalVar : public CVar {
 public:
-    CLocalVar(CFunction* parent, const NAssignment* node) : node(node), CVar(parent), value(nullptr), isInGetType(false) { }
+    static shared_ptr<CLocalVar> create(shared_ptr<CFunction> parent, shared_ptr<NAssignment> node);
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    virtual Value* getValue(Compiler* compiler, CResult& result);
+    virtual Value* getValue(Compiler* compiler, CResult& result, Value* thisValue);
     
 private:
     bool isInGetType;
-    const NAssignment* node;
+    shared_ptr<NAssignment> node;
     shared_ptr<CType> type;
     AllocaInst* value;
 };

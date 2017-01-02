@@ -15,7 +15,7 @@ NodeType NCall::getNodeType() const {
     return NodeType_Call;
 }
 
-CFunction* NCall::getCFunction(Compiler *compiler, CResult& result) const {
+shared_ptr<CFunction> NCall::getCFunction(Compiler *compiler, CResult& result) const {
     auto cfunction = compiler->currentFunction;
     
     // If more than one name in the list, then we need to iterate down to correct function
@@ -26,17 +26,16 @@ CFunction* NCall::getCFunction(Compiler *compiler, CResult& result) const {
             return nullptr;
         }
         
-        cfunction = ctype->cfunction;
+        cfunction = shared_ptr<CFunction>(ctype->cfunction);
     }
     
     // Handle last name in list
-    CFunction* callee = cfunction->getCFunction(functionName);
-    
+    auto callee = cfunction->getCFunction(functionName);    
     if (!callee) {
         // If we are still using "this" then we can check to see if it is a function on parent
         if (cfunction == compiler->currentFunction) {
             while (cfunction && !callee) {
-                cfunction = cfunction->parent;
+                cfunction = shared_ptr<CFunction>(cfunction->parent);
                 if (cfunction) {
                     callee = cfunction->getCFunction(functionName);
                 }
@@ -59,7 +58,7 @@ shared_ptr<CType> NCall::getReturnType(Compiler *compiler, CResult& result) cons
     }
     
     auto prev = compiler->currentFunction;
-    compiler->currentFunction = callee->parent;
+    compiler->currentFunction = shared_ptr<CFunction>(callee->parent);
 
     auto type = callee->getReturnType(compiler, result);
     
@@ -86,7 +85,7 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
     }
     
     // Fill in parameters
-    vector<NBase*> parameters(callee->node->assignments.size());
+    vector<shared_ptr<NBase>> parameters(callee->node->assignments.size());
     auto argIndex = 0;
     auto hasSetByName = false;
     for (auto it : arguments) {
@@ -103,7 +102,7 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
                 return nullptr;
             }
             
-            parameters[index] = parameterAssignment->rightSide.get();
+            parameters[index] = parameterAssignment->rightSide;
             hasSetByName = true;
         } else {
             if (hasSetByName) {
@@ -116,7 +115,7 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
                 return nullptr;
             }
             
-            parameters[argIndex] = it.get();
+            parameters[argIndex] = it;
         }
         argIndex++;
     }
@@ -128,8 +127,8 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
                 result.errors.push_back(CError(CLoc::undefined, CErrorCode::NotVariable));
                 return nullptr;
             }
-            auto defaultAssignment = (const NAssignment*)it.get();
-            parameters[argIndex] = defaultAssignment->rightSide.get();
+            auto defaultAssignment = static_pointer_cast<NAssignment>(it);
+            parameters[argIndex] = defaultAssignment->rightSide;
         }
         argIndex++;
     }
@@ -183,7 +182,7 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
                 parentValue = compiler->builder.CreateLoad(ptr);
             } else {
                 auto temp = compiler->currentFunction;
-                while (temp && temp != callee->parent) {
+                while (temp && temp != callee->parent.lock()) {
                     auto parentIndex = temp->getThisIndex("parent");
                     vector<Value*> v;
                     v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
@@ -191,7 +190,7 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
                     auto ptr = compiler->builder.CreateInBoundsGEP(temp->getThisType(compiler, result)->llvmAllocType, parentValue, ArrayRef<Value *>(v), "paramPtr");
                     parentValue = compiler->builder.CreateLoad(ptr);
                     
-                    temp = temp->parent;
+                    temp = shared_ptr<CFunction>(temp->parent);
                 }
             }
         }
@@ -208,7 +207,7 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
     argsV.push_back(thisValue);
     
     auto prev = compiler->currentFunction;
-    compiler->currentFunction = callee->parent;
+    compiler->currentFunction = shared_ptr<CFunction>(callee->parent);
     
     auto func = callee->getFunction(compiler, result);
     
