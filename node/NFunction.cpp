@@ -48,6 +48,7 @@ shared_ptr<CType> NFunction::getBlockType(Compiler *compiler, CResult& result) c
     }
 
     auto tf = compiler->currentFunction->getCFunction(name);
+    assert(tf);
     auto prev = compiler->currentFunction;
     compiler->currentFunction = tf;
 
@@ -64,6 +65,7 @@ Value* NFunction::compile(Compiler* compiler, CResult& result) const {
     }
     
     auto tf = compiler->currentFunction->getCFunction(name);
+    assert(tf);
     auto function = tf->getFunction(compiler, result);
     if (!function) {
         return nullptr;
@@ -97,6 +99,8 @@ Value* NFunction::compile(Compiler* compiler, CResult& result) const {
     
     // Validate the generated code, checking for consistency.
     verifyFunction(*function);
+    
+    // compiler->TheFPM->run(*function);
     
     compiler->builder.restoreIP(prevInsertPoint);
     compiler->currentFunction = prev;

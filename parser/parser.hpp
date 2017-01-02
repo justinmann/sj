@@ -62,19 +62,18 @@ extern int yydebug;
     TLBRACE = 272,
     TRBRACE = 273,
     TCOMMA = 274,
-    TDOT = 275,
-    TCOLON = 276,
-    TQUOTE = 277,
-    TPLUS = 278,
-    TMINUS = 279,
-    TMUL = 280,
-    TDIV = 281,
-    TTRUE = 282,
-    TFALSE = 283,
-    TCAST = 284,
-    TVOID = 285,
-    TIF = 286,
-    TELSE = 287
+    TCOLON = 275,
+    TQUOTE = 276,
+    TPLUS = 277,
+    TMINUS = 278,
+    TMUL = 279,
+    TDIV = 280,
+    TTRUE = 281,
+    TFALSE = 282,
+    TCAST = 283,
+    TVOID = 284,
+    TIF = 285,
+    TELSE = 286
   };
 #endif
 

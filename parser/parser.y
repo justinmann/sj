@@ -55,16 +55,16 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 }
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
-%token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID 
+%token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID
 %token <token> TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND error
-%token <token> TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TDOT TCOLON TQUOTE
+%token <token> TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE
 %token <token> TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program expr var stmt var_decl func_decl func_call func_arg
 %type <block> stmts block
 %type <nif> if_expr
-%type <exprvec> func_args
+%type <exprvec> func_args func_block
 %type <isMutable> assign
 
 /* Operator precedence */
@@ -100,15 +100,21 @@ var_decl 			: TIDENTIFIER assign expr						{ /* x = 1 */ 		$$ = new NAssignment(
 					| TIDENTIFIER TQUOTE TIDENTIFIER assign expr	{ /* x'int = 2 */ 	$$ = new NAssignment(LOC, $3->c_str(), $1->c_str(), shared_ptr<NBase>($5), $4); }
 					;
 
-func_decl 			: TIDENTIFIER TLPAREN func_args TRPAREN block 						{ /* f()'int */ $$ = new NFunction(LOC, "", $1->c_str(), *($3), shared_ptr<NBlock>($5)); }
-					| TIDENTIFIER TLPAREN func_args TRPAREN TQUOTE TIDENTIFIER block 	{ /* f() */     $$ = new NFunction(LOC, $6->c_str(), $1->c_str(), *($3), shared_ptr<NBlock>($7)); }
+func_decl 			: TIDENTIFIER func_block block 						{ /* f()'int */ $$ = new NFunction(LOC, "", $1->c_str(), *($2), shared_ptr<NBlock>($3)); }
+					| TIDENTIFIER func_block TQUOTE TIDENTIFIER block 	{ /* f() */     $$ = new NFunction(LOC, $4->c_str(), $1->c_str(), *($2), shared_ptr<NBlock>($5)); }
 					;
 
-func_call			: TIDENTIFIER TLPAREN func_args TRPAREN			{ $$ = new NCall(LOC, $1->c_str(), *($3)); delete $1; }
+func_call			: TIDENTIFIER func_block						{ $$ = new NCall(LOC, $1->c_str(), *($2)); delete $1; }
+					;
+					
+func_block			: TLPAREN TRPAREN								{ $$ = new NodeList(); }
+					| TLPAREN func_args TRPAREN						{ $$ = $2; }
+					| TLPAREN TEND func_args TRPAREN				{ $$ = $3; }
+					| TLPAREN TEND func_args TEND TRPAREN			{ $$ = $3; }
 					;
 
-func_args  			: /* Blank! */ 									{ $$ = new NodeList(); }
-					| func_arg										{ $$ = new NodeList(); $$->push_back(shared_ptr<NBase>($1)); }
+func_args  			: func_arg										{ $$ = new NodeList(); $$->push_back(shared_ptr<NBase>($1)); }
+					| func_args TEND func_arg 						{ $1->push_back(shared_ptr<NBase>($3)); }
 					| func_args TCOMMA func_arg 					{ $1->push_back(shared_ptr<NBase>($3)); }
 					;
 

@@ -170,6 +170,28 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
         Value* parentValue = compiler->currentFunction->getThis();
         if (dotNames.size() > 0) {
             NVariable::getParentValue(compiler, result, loc, dotNames, &parentValue);
+        } else {
+            // if recursively calling ourselves then re-use parent
+            if (callee == compiler->currentFunction) {
+                auto parentIndex = compiler->currentFunction->getThisIndex("parent");
+                vector<Value*> v;
+                v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+                v.push_back(ConstantInt::get(compiler->context, APInt(32, parentIndex)));
+                auto ptr = compiler->builder.CreateInBoundsGEP(compiler->currentFunction->getThisType(compiler, result)->llvmAllocType, parentValue, ArrayRef<Value *>(v), "paramPtr");
+                parentValue = compiler->builder.CreateLoad(ptr);
+            } else {
+                auto temp = compiler->currentFunction;
+                while (temp && temp != callee->parent) {
+                    auto parentIndex = temp->getThisIndex("parent");
+                    vector<Value*> v;
+                    v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+                    v.push_back(ConstantInt::get(compiler->context, APInt(32, parentIndex)));
+                    auto ptr = compiler->builder.CreateInBoundsGEP(temp->getThisType(compiler, result)->llvmAllocType, parentValue, ArrayRef<Value *>(v), "paramPtr");
+                    parentValue = compiler->builder.CreateLoad(ptr);
+                    
+                    temp = temp->parent;
+                }
+            }
         }
         
         vector<Value*> v;
@@ -177,7 +199,6 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
         v.push_back(ConstantInt::get(compiler->context, APInt(32, argIndex)));
         auto paramPtr = compiler->builder.CreateInBoundsGEP(thisType->llvmAllocType, thisValue, ArrayRef<Value *>(v), "paramPtr");
         
-        printf("NCall: %s == %s\n", Type_print(parentValue->getType()).c_str(), Type_print(paramPtr->getType()).c_str());
         compiler->builder.CreateStore(parentValue, paramPtr);
     }
     

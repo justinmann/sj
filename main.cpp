@@ -225,6 +225,37 @@ void testFunction() {
 
     result = compiler.run("func(x: 1, y: 2) { x + y }; func(1.0)");
     assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::TypeMismatch);
+
+    result = compiler.run(R"DELIM(
+        func(x: 0)'int {
+            if x > 0 {
+                func(x - 1)
+            } else {
+                0
+            }
+        }
+        func(4)
+    )DELIM");
+    assert(result->type == RESULT_INT && result->iResult == 0);
+
+    result = compiler.run(R"DELIM(
+        bar() { 9 }
+        func() {
+            bar()
+        }
+        func()
+    )DELIM");
+    assert(result->type == RESULT_INT && result->iResult == 9);
+
+    result = compiler.run(R"DELIM(
+        func(
+            bar() { 9 }
+        ) {
+            bar()
+        }
+        func()
+    )DELIM");
+    assert(result->type == RESULT_INT && result->iResult == 9);
 }
 
 void testClass() {
@@ -257,6 +288,25 @@ void testClass() {
     result = compiler.run("class(func() { 1 }) { this }\n"
                           "c: class()\n"
                           "c.func()");
+    assert(result->type == RESULT_INT && result->iResult == 1);
+
+    result = compiler.run("class(x:0, func() { x }) { this }\n"
+                          "c: class(1)\n"
+                          "c.func()");
+    assert(result->type == RESULT_INT && result->iResult == 1);
+
+    result = compiler.run(R"DELIM(
+                          a(
+                             x: 1,
+                             b: (
+                                 c() { x }
+                             ) { this }
+                          ) { this }
+                          a: a()
+                          a.b.c()
+                          d: a.b
+                          d.c()
+                          )DELIM");
     assert(result->type == RESULT_INT && result->iResult == 1);
 }
 
