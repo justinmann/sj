@@ -5,8 +5,10 @@ NCall::NCall(CLoc loc, const char* name, NodeList arguments) : arguments(argumen
     istringstream f(name);
     string s;
     while (getline(f, s, '.')) {
-        names.push_back(s);
+        dotNames.push_back(s);
     }
+    functionName = dotNames.back();
+    dotNames.pop_back();
 }
 
 NodeType NCall::getNodeType() const {
@@ -17,36 +19,31 @@ CFunction* NCall::getCFunction(Compiler *compiler, CResult& result) const {
     auto cfunction = compiler->currentFunction;
     
     // If more than one name in the list, then we need to iterate down to correct function
-    if (names.size() > 1) {
-        // Handle first name in list, the first name can come a local var or function argument
-        auto cvar = cfunction->getCVariable(names[0]);
-        if (!cvar) {
-            result.addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", names[0].c_str());
+    if (dotNames.size() > 0) {
+        auto ctype = NVariable::getParentValue(compiler, result, loc, dotNames, nullptr);
+        if (!ctype) {
+            result.addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", dotNames.back().c_str());
             return nullptr;
-        }
-        auto ctype = cvar->getType(compiler, result);
-        
-        // Iterate through the member vars
-        for (int i = 1; i < names.size() - 1; i++) {
-            auto it = ctype->membersByName.find(names[i]);
-            if (it == ctype->membersByName.end()) {
-                result.addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", names[i].c_str());
-                return nullptr;
-            }
-            ctype = it->second.second;
         }
         
         cfunction = ctype->cfunction;
-        if (!cfunction) {
-            result.addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", names[names.size() - 2].c_str());
-            return nullptr;
-        }
     }
     
     // Handle last name in list
-    CFunction* callee = cfunction->getCFunction(names.back());
+    CFunction* callee = cfunction->getCFunction(functionName);
+    
     if (!callee) {
-        result.addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", names.back().c_str());
+        // If we are still using "this" then we can check to see if it is a function on parent
+        if (cfunction == compiler->currentFunction) {
+            while (cfunction && !callee) {
+                cfunction = cfunction->parent;
+                callee = cfunction->getCFunction(functionName);
+            }
+        }
+    }
+    
+    if (!callee) {
+        result.addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", functionName.c_str());
         return nullptr;
     }
     
@@ -58,7 +55,15 @@ shared_ptr<CType> NCall::getReturnType(Compiler *compiler, CResult& result) cons
     if (!callee) {
         return nullptr;
     }
-    return callee->getReturnType(compiler, result);
+    
+    auto prev = compiler->currentFunction;
+    compiler->currentFunction = callee->parent;
+
+    auto type = callee->getReturnType(compiler, result);
+    
+    compiler->currentFunction = prev;
+    
+    return type;
 }
 
 Value* NCall::compile(Compiler* compiler, CResult& result) const {
@@ -68,7 +73,7 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
     if (!callee) {
         return nullptr;
     }
-
+    
     // Create this on stack, and get a pointer
     auto thisType = callee->getThisType(compiler, result);
     auto thisValue = compiler->builder.CreateAlloca(thisType->llvmAllocType, 0, "thisValue");
@@ -128,7 +133,7 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
     }
     
     
-    // Fill in "this"
+    // Fill in "this" with normal arguments
     argIndex = 0;
     for (auto it : callee->node->assignments) {
         if (it->getNodeType() != NodeType_Assignment) {
@@ -157,7 +162,24 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
         compiler->builder.CreateStore(value, paramPtr);
 
         argIndex++;
-    }    
+    }
+    
+    // Add "parent" to "this"
+    argIndex = callee->getThisIndex("parent");
+    if (argIndex != -1) {
+        Value* parentValue = compiler->currentFunction->getThis();
+        if (dotNames.size() > 0) {
+            NVariable::getParentValue(compiler, result, loc, dotNames, &parentValue);
+        }
+        
+        vector<Value*> v;
+        v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+        v.push_back(ConstantInt::get(compiler->context, APInt(32, argIndex)));
+        auto paramPtr = compiler->builder.CreateInBoundsGEP(thisType->llvmAllocType, thisValue, ArrayRef<Value *>(v), "paramPtr");
+        
+        printf("NCall: %s == %s\n", Type_print(parentValue->getType()).c_str(), Type_print(paramPtr->getType()).c_str());
+        compiler->builder.CreateStore(parentValue, paramPtr);
+    }
     
     vector<Value *> argsV;
     argsV.push_back(thisValue);

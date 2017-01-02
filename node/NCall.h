@@ -11,7 +11,8 @@
 
 class NCall : public NBase {
 public:
-    vector<string> names;
+    vector<string> dotNames;
+    string functionName;
     const NodeList arguments;
     
     NCall(CLoc loc, const char* name, NodeList arguments);

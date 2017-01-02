@@ -58,7 +58,7 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CResult& result) 
 }
 
 shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result) {
-    if (!thisType) {
+    if (!thisType && parent) {
         // Verify all arguments are assignments with valid types
         vector<pair<string, shared_ptr<CType>>> memberTypes;
         for (auto &it : node->assignments) {
@@ -162,9 +162,6 @@ CFunction* CFunction::getCFunction(const string& name) const {
     if (t != funcs.end()) {
         return t->second.get();
     }
-    if (parent) {
-        return parent->getCFunction(name);
-    }
     return nullptr;
 }
 
@@ -173,22 +170,15 @@ CVar* CFunction::getCVariable(const string& name) const {
     if (t != vars.end()) {
         return t->second.get();
     }
-    if (parent) {
-        return parent->getCVariable(name);
-    }
     return nullptr;
 }
 
 int CFunction::getThisIndex(const string& name) const {
-    auto argIndex = 0;
-    for (auto it : node->assignments) {
-        if (it->getNodeType() == NodeType_Assignment) {
-            auto t = (const NAssignment*)it.get();
-            if (t->name == name) {
-                return argIndex;
-            }
-        }
-        argIndex++;
+    assert(thisType);
+    
+    auto it = thisType->membersByName.find(name);
+    if (it != thisType->membersByName.end()) {
+        return it->second.first;
     }
     return -1;
 }
