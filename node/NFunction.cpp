@@ -17,22 +17,57 @@ NodeType NFunction::getNodeType() const {
 }
 
 void NFunction::define(Compiler *compiler, CResult& result) {
+    assert(compiler->state == CompilerState::Define);
     if (invalid.size() > 0) {
         result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
         return;
     }
     
-    auto tf = CFunction::create(compiler->currentFunction, shared_from_this());
-    compiler->currentFunction->funcs[name] = tf;   
+    auto tf = CFunction::create(compiler, result, compiler->currentFunction, shared_from_this());
+    compiler->currentFunction->funcsByName[name] = tf;
     auto prev = compiler->currentFunction;
     compiler->currentFunction = tf;
+
+    for (auto it : functions) {
+        it->define(compiler, result);
+    }
+    
+    for (auto it : assignments) {
+        it->rightSide->define(compiler, result);
+    }
 
     block->define(compiler, result);
     
     compiler->currentFunction = prev;
 }
 
+void NFunction::fixVar(Compiler *compiler, CResult& result) {
+    assert(compiler->state == CompilerState::FixVar);
+    if (invalid.size() > 0) {
+        result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
+        return;
+    }
+    
+    auto tf = compiler->currentFunction->getCFunction(name);
+    assert(tf);
+    auto prev = compiler->currentFunction;
+    compiler->currentFunction = tf;
+    
+    for (auto it : functions) {
+        it->fixVar(compiler, result);
+    }
+
+    for (auto it : assignments) {
+        it->rightSide->fixVar(compiler, result);
+    }
+    
+    block->fixVar(compiler, result);
+    
+    compiler->currentFunction = prev;
+}
+
 shared_ptr<CType> NFunction::getReturnType(Compiler *compiler, CResult& result) const {
+    assert(compiler->state >= CompilerState::FixVar);
     if (invalid.size() > 0) {
         result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
         return nullptr;
@@ -42,6 +77,7 @@ shared_ptr<CType> NFunction::getReturnType(Compiler *compiler, CResult& result) 
 }
 
 shared_ptr<CType> NFunction::getBlockType(Compiler *compiler, CResult& result) const {
+    assert(compiler->state >= CompilerState::FixVar);
     if (invalid.size() > 0) {
         result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
         return nullptr;
@@ -59,6 +95,7 @@ shared_ptr<CType> NFunction::getBlockType(Compiler *compiler, CResult& result) c
 }
 
 Value* NFunction::compile(Compiler* compiler, CResult& result) const {
+    assert(compiler->state == CompilerState::Compile);
     if (invalid.size() > 0) {
         result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
         return nullptr;
@@ -89,7 +126,7 @@ Value* NFunction::compile(Compiler* compiler, CResult& result) const {
         }
         compiler->builder.CreateRet(RetVal);
     } else {
-        if (function->getReturnType() != compiler->typeVoid->llvmRefType) {
+        if (!function->getReturnType()->isVoidTy()) {
             result.errors.push_back(CError(loc, CErrorCode::TypeMismatch, "no return for non-void function"));
         }
         compiler->builder.CreateRetVoid();        

@@ -5,15 +5,24 @@ NodeType NCompare::getNodeType() const {
 }
 
 void NCompare::define(Compiler* compiler, CResult& result) {
+    assert(compiler->state == CompilerState::Define);
     leftSide->define(compiler, result);
     rightSide->define(compiler, result);
 }
 
+void NCompare::fixVar(Compiler* compiler, CResult& result) {
+    assert(compiler->state == CompilerState::FixVar);
+    leftSide->fixVar(compiler, result);
+    rightSide->fixVar(compiler, result);
+}
+
 shared_ptr<CType> NCompare::getReturnType(Compiler* compiler, CResult& result) const {
+    assert(compiler->state >= CompilerState::FixVar);
     return compiler->typeBool;
 }
 
 Value* NCompare::compile(Compiler* compiler, CResult& result) const {
+    assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
     Value *L = leftSide->compile(compiler, result);
@@ -26,7 +35,7 @@ Value* NCompare::compile(Compiler* compiler, CResult& result) const {
         return nullptr;
     }
     
-    if (L->getType() == compiler->typeInt->llvmRefType) {
+    if (L->getType()->isIntegerTy() && L->getType()->getScalarSizeInBits() == 64) {
         switch (op) {
             case NCompareOp::EQ:
                 return compiler->builder.CreateICmpEQ(L, R, "eqtmp");
@@ -44,7 +53,7 @@ Value* NCompare::compile(Compiler* compiler, CResult& result) const {
                 result.errors.push_back(CError(loc, CErrorCode::Internal, "unknown comparison type"));
                 return nullptr;
         }
-    } else if (L->getType() == compiler->typeFloat->llvmRefType) {
+    } else if (L->getType()->isDoubleTy()) {
         switch (op) {
             case NCompareOp::EQ:
                 return compiler->builder.CreateFCmpOEQ(L, R, "eqtmp");

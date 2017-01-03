@@ -5,12 +5,21 @@ NodeType NBlock::getNodeType() const {
 }
 
 void NBlock::define(Compiler* compiler, CResult& result) {
+    assert(compiler->state == CompilerState::Define);
     for (auto it : statements) {
         it->define(compiler, result);
     }
 }
 
+void NBlock::fixVar(Compiler* compiler, CResult& result) {
+    assert(compiler->state == CompilerState::FixVar);
+    for (auto it : statements) {
+        it->fixVar(compiler, result);
+    }
+}
+
 shared_ptr<CType> NBlock::getReturnType(Compiler* compiler, CResult& result) const {
+    assert(compiler->state >= CompilerState::FixVar);
     if (statements.size() == 0) {
         return nullptr;
     }
@@ -18,6 +27,7 @@ shared_ptr<CType> NBlock::getReturnType(Compiler* compiler, CResult& result) con
 }
 
 Value* NBlock::compile(Compiler* compiler, CResult& result) const {
+    assert(compiler->state == CompilerState::Compile);
     Value *last = nullptr;
     for (auto it : statements) {
         last = it->compile(compiler, result);

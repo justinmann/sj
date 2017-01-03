@@ -5,10 +5,12 @@ NodeType NVoid::getNodeType() const {
 }
 
 shared_ptr<CType> NVoid::getReturnType(Compiler* compiler, CResult& result) const {
+    assert(compiler->state >= CompilerState::FixVar);
     return compiler->typeVoid;
 }
 
 Value* NVoid::compile(Compiler* compiler, CResult& result) const {
+    assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     return nullptr;
 }

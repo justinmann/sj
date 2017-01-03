@@ -5,15 +5,24 @@ NodeType NMath::getNodeType() const {
 }
 
 void NMath::define(Compiler* compiler, CResult& result) {
+    assert(compiler->state == CompilerState::Define);
     leftSide->define(compiler, result);
     rightSide->define(compiler, result);
 }
 
+void NMath::fixVar(Compiler* compiler, CResult& result) {
+    assert(compiler->state == CompilerState::FixVar);
+    leftSide->fixVar(compiler, result);
+    rightSide->fixVar(compiler, result);
+}
+
 shared_ptr<CType> NMath::getReturnType(Compiler* compiler, CResult& result) const {
+    assert(compiler->state >= CompilerState::FixVar);
     return leftSide->getReturnType(compiler, result);
 }
 
 Value* NMath::compile(Compiler* compiler, CResult& result) const {
+    assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
     Value *L = leftSide->compile(compiler, result);
@@ -26,7 +35,7 @@ Value* NMath::compile(Compiler* compiler, CResult& result) const {
         return nullptr;
     }
     
-    if (L->getType() == compiler->typeInt->llvmRefType) {
+    if (L->getType()->isIntegerTy()) {
         switch (op) {
             case NMathOp::Add:
                 return compiler->builder.CreateAdd(L, R, "addtmp");
@@ -40,7 +49,7 @@ Value* NMath::compile(Compiler* compiler, CResult& result) const {
                 result.errors.push_back(CError(loc, CErrorCode::Internal, "unknown math type"));
                 return nullptr;
         }
-    } else if (L->getType() == compiler->typeFloat->llvmRefType) {
+    } else if (L->getType()->isDoubleTy()) {
         switch (op) {
             case NMathOp::Add:
                 return compiler->builder.CreateFAdd(L, R, "addtmp");

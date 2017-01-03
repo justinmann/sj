@@ -5,10 +5,12 @@ NodeType NInteger::getNodeType() const {
 }
 
 shared_ptr<CType> NInteger::getReturnType(Compiler* compiler, CResult& result) const {
+    assert(compiler->state >= CompilerState::FixVar);
     return compiler->typeInt;
 }
 
 Value* NInteger::compile(Compiler* compiler, CResult& result) const {
+    assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
     char* e;

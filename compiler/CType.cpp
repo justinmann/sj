@@ -8,36 +8,54 @@
 
 #include "Node.h"
 
-CType::CType(const char* name, Type* type) : name(name), llvmAllocType(type), llvmRefType(type) { }
+CType::CType(const char* name, Type* type) : name(name), _llvmAllocType(type), _llvmRefType(type) { }
 
-CType::CType(Compiler* compiler, const char* name, shared_ptr<CFunction> cfunction_, vector<pair<string, shared_ptr<CType>>> members_) : name(name), cfunction(cfunction_) {
-    auto structType = StructType::create(compiler->context, name);
-    
-    vector<Type*> structMembers;
-    auto index = 0;
-    for (auto it : members_) {
-        membersByName[it.first] = pair<int, shared_ptr<CType>>(index, it.second);
-        members.push_back(it.second);
-        structMembers.push_back(it.second->llvmRefType);
-        index++;
-    }
-    
-    // if we have a parent then we get a parent pointer
-    if (cfunction_->parent.lock()) {
-        CResult result;
-        auto parentType = cfunction_->parent.lock()->getThisType(compiler, result);
-        if (parentType) {
-            membersByName["parent"] = pair<int, shared_ptr<CType>>(index, parentType);
-            members.push_back(parentType);
-            structMembers.push_back(parentType->llvmRefType);
+CType::CType(Compiler* compiler, const char* name, shared_ptr<CFunction> cfunction_) : name(name), cfunction(cfunction_), _llvmAllocType(nullptr), _llvmRefType(nullptr) {
+}
+
+Type* CType::llvmAllocType(Compiler* compiler, CResult& result) {
+    assert(compiler->state == CompilerState::Compile);
+    if (!_llvmAllocType) {
+        auto structType = StructType::create(compiler->context, name);
+        _llvmAllocType = structType;
+
+        vector<Type*> structMembers;
+        auto index = 0;
+        for (auto it : cfunction.lock()->thisVars) {
+            auto ctype = it->getType(compiler, result);
+            if (!ctype) {
+                result.addError(it->nassignment->loc, CErrorCode::InvalidType, "cannot determine type for '%s'", it->name.c_str());
+                return nullptr;
+            }
+
+            membersByName[it->name] = pair<int, shared_ptr<CType>>(index, ctype);
+            members.push_back(ctype);
+            structMembers.push_back(ctype->llvmRefType(compiler, result));
             index++;
         }
+        
+        // if we have a parent then we get a parent pointer
+        if (cfunction.lock()->parent.lock()) {
+            CResult result;
+            auto parentType = cfunction.lock()->parent.lock()->getThisType(compiler, result);
+            if (parentType) {
+                membersByName["parent"] = pair<int, shared_ptr<CType>>(index, parentType);
+                members.push_back(parentType);
+                structMembers.push_back(parentType->llvmRefType(compiler, result));
+                index++;
+            }
+        }
+        
+        structType->setBody(ArrayRef<Type *>(structMembers));        
     }
-    
-    structType->setBody(ArrayRef<Type *>(structMembers));
-    
-    llvmAllocType = structType;
-    llvmRefType = llvmAllocType->getPointerTo();
+    return _llvmAllocType;
+}
+
+Type* CType::llvmRefType(Compiler *compiler, CResult& result) {
+    if (!_llvmRefType) {
+        _llvmRefType = llvmAllocType(compiler, result)->getPointerTo();
+    }
+    return _llvmRefType;
 }
 
 

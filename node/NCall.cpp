@@ -15,18 +15,44 @@ NodeType NCall::getNodeType() const {
     return NodeType_Call;
 }
 
+void NCall::define(Compiler* compiler, CResult& result) {
+    assert(compiler->state == CompilerState::Define);
+    for (auto it : arguments) {
+        if (it->getNodeType() == NodeType_Assignment) {
+            auto parameterAssignment = static_pointer_cast<NAssignment>(it);
+            parameterAssignment->rightSide->define(compiler, result);
+        } else {
+            it->define(compiler, result);
+        }
+    }
+}
+
+void NCall::fixVar(Compiler* compiler, CResult& result) {
+    assert(compiler->state == CompilerState::FixVar);
+    NVariable::getParentValue(compiler, result, loc, dotNames, nullptr);
+
+    for (auto it : arguments) {
+        if (it->getNodeType() == NodeType_Assignment) {
+            auto parameterAssignment = static_pointer_cast<NAssignment>(it);
+            parameterAssignment->rightSide->fixVar(compiler, result);
+        } else {
+            it->fixVar(compiler, result);
+        }
+    }
+}
+
 shared_ptr<CFunction> NCall::getCFunction(Compiler *compiler, CResult& result) const {
     auto cfunction = compiler->currentFunction;
     
     // If more than one name in the list, then we need to iterate down to correct function
     if (dotNames.size() > 0) {
-        auto ctype = NVariable::getParentValue(compiler, result, loc, dotNames, nullptr);
+        shared_ptr<CType> ctype = NVariable::getParentValue(compiler, result, loc, dotNames, nullptr);
         if (!ctype) {
             result.addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", dotNames.back().c_str());
             return nullptr;
         }
         
-        cfunction = shared_ptr<CFunction>(ctype->cfunction);
+        cfunction = ctype->cfunction.lock();
     }
     
     // Handle last name in list
@@ -52,6 +78,7 @@ shared_ptr<CFunction> NCall::getCFunction(Compiler *compiler, CResult& result) c
 }
 
 shared_ptr<CType> NCall::getReturnType(Compiler *compiler, CResult& result) const {
+    assert(compiler->state >= CompilerState::FixVar);
     auto callee = getCFunction(compiler, result);
     if (!callee) {
         return nullptr;
@@ -68,6 +95,7 @@ shared_ptr<CType> NCall::getReturnType(Compiler *compiler, CResult& result) cons
 }
 
 Value* NCall::compile(Compiler* compiler, CResult& result) const {
+    assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
     auto callee = getCFunction(compiler, result);
@@ -77,7 +105,7 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
     
     // Create this on stack, and get a pointer
     auto thisType = callee->getThisType(compiler, result);
-    auto thisValue = compiler->builder.CreateAlloca(thisType->llvmAllocType, 0, "thisValue");
+    auto thisValue = compiler->builder.CreateAlloca(thisType->llvmAllocType(compiler, result), 0, "thisValue");
     
     if (arguments.size() > callee->node->assignments.size()) {
         result.errors.push_back(CError(CLoc::undefined, CErrorCode::TooManyParameters));
@@ -90,7 +118,7 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
     auto hasSetByName = false;
     for (auto it : arguments) {
         if (it->getNodeType() == NodeType_Assignment) {
-            auto parameterAssignment = (const NAssignment*)it.get();
+            auto parameterAssignment = static_pointer_cast<NAssignment>(it);
             auto index = callee->getThisIndex(parameterAssignment->name);
             if (index == -1) {
                 result.errors.push_back(CError(CLoc::undefined, CErrorCode::ParameterDoesNotExist));
@@ -141,13 +169,13 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
             result.errors.push_back(CError(CLoc::undefined, CErrorCode::NotVariable));
             return nullptr;
         }
-        auto defaultAssignment = (const NAssignment*)it.get();
+        auto defaultAssignment = static_pointer_cast<NAssignment>(it);
         auto argType = defaultAssignment->getReturnType(compiler, result);
         
         vector<Value*> v;
         v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
         v.push_back(ConstantInt::get(compiler->context, APInt(32, argIndex)));
-        auto paramPtr = compiler->builder.CreateInBoundsGEP(thisType->llvmAllocType, thisValue, ArrayRef<Value *>(v), "paramPtr");
+        auto paramPtr = compiler->builder.CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), defaultAssignment->name.c_str());
         
         auto value = parameters[argIndex]->compile(compiler, result);
         if (!value) {
@@ -155,7 +183,7 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
             return nullptr;
         }
         
-        if (value->getType() != argType->llvmRefType) {
+        if (value->getType() != argType->llvmRefType(compiler, result)) {
             result.errors.push_back(CError(CLoc::undefined, CErrorCode::TypeMismatch, "value does not match"));
             return nullptr;
         }
@@ -178,8 +206,8 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
                 vector<Value*> v;
                 v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
                 v.push_back(ConstantInt::get(compiler->context, APInt(32, parentIndex)));
-                auto ptr = compiler->builder.CreateInBoundsGEP(compiler->currentFunction->getThisType(compiler, result)->llvmAllocType, parentValue, ArrayRef<Value *>(v), "paramPtr");
-                parentValue = compiler->builder.CreateLoad(ptr);
+                auto ptr = compiler->builder.CreateInBoundsGEP(compiler->currentFunction->getThisType(compiler, result)->llvmAllocType(compiler, result), parentValue, ArrayRef<Value *>(v), "parent");
+                parentValue = compiler->builder.CreateLoad(ptr, "parent");
             } else {
                 auto temp = compiler->currentFunction;
                 while (temp && temp != callee->parent.lock()) {
@@ -187,8 +215,8 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
                     vector<Value*> v;
                     v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
                     v.push_back(ConstantInt::get(compiler->context, APInt(32, parentIndex)));
-                    auto ptr = compiler->builder.CreateInBoundsGEP(temp->getThisType(compiler, result)->llvmAllocType, parentValue, ArrayRef<Value *>(v), "paramPtr");
-                    parentValue = compiler->builder.CreateLoad(ptr);
+                    auto ptr = compiler->builder.CreateInBoundsGEP(temp->getThisType(compiler, result)->llvmAllocType(compiler, result), parentValue, ArrayRef<Value *>(v), "parent");
+                    parentValue = compiler->builder.CreateLoad(ptr, "parent");
                     
                     temp = shared_ptr<CFunction>(temp->parent);
                 }
@@ -198,9 +226,9 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
         vector<Value*> v;
         v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
         v.push_back(ConstantInt::get(compiler->context, APInt(32, argIndex)));
-        auto paramPtr = compiler->builder.CreateInBoundsGEP(thisType->llvmAllocType, thisValue, ArrayRef<Value *>(v), "paramPtr");
+        auto paramPtr = compiler->builder.CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "parent");
         
-        compiler->builder.CreateStore(parentValue, paramPtr);
+        compiler->builder.CreateStore(parentValue, paramPtr, "parent");
     }
     
     vector<Value *> argsV;

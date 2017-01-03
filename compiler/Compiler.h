@@ -133,6 +133,12 @@ public:
     }
 };
 
+enum CompilerState {
+    Define,
+    FixVar,
+    Compile
+};
+
 class Compiler
 {
 public:
@@ -146,6 +152,7 @@ public:
     Value* getDefaultValue(shared_ptr<CType> type);
     
     // llvm vars
+    CompilerState state;
     LLVMContext context;
     IRBuilder<> builder;
     unique_ptr<Module> module;
@@ -159,7 +166,6 @@ public:
     // compiler vars
     shared_ptr<CFunction> currentFunction;
     
-    bool printTokens;
     shared_ptr<CType> typeInt;
     shared_ptr<CType> typeFloat;
     shared_ptr<CType> typeBool;

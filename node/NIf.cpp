@@ -4,7 +4,34 @@ NodeType NIf::getNodeType() const {
     return NodeType_If;
 }
 
+void NIf::define(Compiler* compiler, CResult& result) {
+    assert(compiler->state == CompilerState::Define);
+    condition->define(compiler, result);
+
+    if (elseBlock) {
+        elseBlock->define(compiler, result);
+    }
+    
+    if (ifBlock) {
+        ifBlock->define(compiler, result);
+    }
+}
+
+void NIf::fixVar(Compiler* compiler, CResult& result) {
+    assert(compiler->state == CompilerState::FixVar);
+    condition->fixVar(compiler, result);
+    
+    if (elseBlock) {
+        elseBlock->fixVar(compiler, result);
+    }
+
+    if (ifBlock) {
+        ifBlock->fixVar(compiler, result);
+    }
+}
+
 shared_ptr<CType> NIf::getReturnType(Compiler* compiler, CResult& result) const {
+    assert(compiler->state >= CompilerState::FixVar);
     if (elseBlock) {
         return elseBlock->getReturnType(compiler, result);
     }
@@ -17,6 +44,7 @@ shared_ptr<CType> NIf::getReturnType(Compiler* compiler, CResult& result) const 
 }
 
 Value* NIf::compile(Compiler* compiler, CResult& result) const {
+    assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
     shared_ptr<CType> returnType = getReturnType(compiler, result);
@@ -69,7 +97,7 @@ Value* NIf::compile(Compiler* compiler, CResult& result) const {
         return nullptr;
     }
     
-    auto phiNode = compiler->builder.CreatePHI(returnType->llvmRefType, (unsigned)2, "iftmp");
+    auto phiNode = compiler->builder.CreatePHI(returnType->llvmRefType(compiler, result), (unsigned)2, "iftmp");
     phiNode->addIncoming(ifValue, ifBB);
     phiNode->addIncoming(elseValue, elseBB);
     return phiNode;

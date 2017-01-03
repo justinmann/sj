@@ -13,14 +13,12 @@ class NFunction;
 
 class CFunctionVar : public CVar {
 public:
-    static shared_ptr<CFunctionVar> create(shared_ptr<CFunction> parent, shared_ptr<NFunction> nfunction, int index, shared_ptr<NAssignment> nassignment);
+    static shared_ptr<CFunctionVar> create(const string& name, shared_ptr<CFunction> parent, shared_ptr<NFunction> nfunction, int index, shared_ptr<NAssignment> nassignment, shared_ptr<CType> type);
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     virtual Value* getValue(Compiler* compiler, CResult& result, Value* thisValue);
     
-private:
     bool isInGetType;
     shared_ptr<NFunction> nfunction;
-    shared_ptr<NAssignment> nassignment;
     int index;
     shared_ptr<CType> type;
     Value* value;
@@ -30,10 +28,12 @@ class CFunction : public enable_shared_from_this<CFunction> {
 public:
     weak_ptr<CFunction> parent;
     shared_ptr<NFunction> node;
-    map<string, shared_ptr<CVar>> vars;
-    map<string, shared_ptr<CFunction>> funcs;
+    vector<shared_ptr<CFunctionVar>> thisVars;
+    map<string, pair<int, shared_ptr<CFunctionVar>>> thisVarsByName;
+    map<string, shared_ptr<CLocalVar>> localVarsByName;
+    map<string, shared_ptr<CFunction>> funcsByName;
     
-    static shared_ptr<CFunction> create(shared_ptr<CFunction> parent, shared_ptr<NFunction> node);
+    static shared_ptr<CFunction> create(Compiler* compiler, CResult& result, shared_ptr<CFunction> parent, shared_ptr<NFunction> node);
     shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result);
     shared_ptr<CType> getThisType(Compiler* compiler, CResult& result);
     Function* getFunction(Compiler* compiler, CResult& result);
@@ -41,8 +41,9 @@ public:
     Value* getArgumentValue(Compiler* compiler, CResult& result, Value* thisValue, int index);
     Argument* getThis();
     shared_ptr<CFunction> getCFunction(const string& name) const;
-    shared_ptr<CVar> getCVariable(const string& name) const;
+    shared_ptr<CVar> getCVar(const string& name) const;
     int getThisIndex(const string& name) const;
+    shared_ptr<CFunctionVar> localVarToThisVar(Compiler* compiler, shared_ptr<CLocalVar> cvar);
     
 private:
     bool isInGetType;

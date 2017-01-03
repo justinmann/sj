@@ -13,23 +13,31 @@ class CFunction;
 class NAssignment;
 class CResult;
 
+enum CVarType {
+    Local,
+    Private,
+    Public
+};
+
 class CVar {
 public:
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result) = 0;
     virtual Value* getValue(Compiler* compiler, CResult& result, Value* thisValue) = 0;
     
+    string name;
+    CVarType mode;
     weak_ptr<CFunction> parent;
+    shared_ptr<NAssignment> nassignment;
 };
 
 class CLocalVar : public CVar {
 public:
-    static shared_ptr<CLocalVar> create(shared_ptr<CFunction> parent, shared_ptr<NAssignment> node);
+    static shared_ptr<CLocalVar> create(const string& name, shared_ptr<CFunction> parent, shared_ptr<NAssignment> nassignment);
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     virtual Value* getValue(Compiler* compiler, CResult& result, Value* thisValue);
     
 private:
     bool isInGetType;
-    shared_ptr<NAssignment> node;
     shared_ptr<CType> type;
     AllocaInst* value;
 };

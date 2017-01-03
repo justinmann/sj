@@ -5,10 +5,12 @@ NodeType NDouble::getNodeType() const {
 }
 
 shared_ptr<CType> NDouble::getReturnType(Compiler* compiler, CResult& result) const {
+    assert(compiler->state >= CompilerState::FixVar);
     return compiler->typeFloat;
 }
 
 Value* NDouble::compile(Compiler* compiler, CResult& result) const {
+    assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
 
     char* e;

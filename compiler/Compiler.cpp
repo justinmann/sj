@@ -206,12 +206,20 @@ shared_ptr<CResult> Compiler::run(const char* code) {
     
     auto anonArgs = NodeList();
     auto anonFunction = make_shared<NFunction>(CLoc::undefined, "", "__anon_expr", anonArgs, compilerResult->block);
-    currentFunction = CFunction::create(nullptr, nullptr);
+    currentFunction = CFunction::create(this, *compilerResult, nullptr, nullptr);
+    state = CompilerState::Define;
     anonFunction->define(this, *compilerResult);
     // Early exit if compile fails
     if (compilerResult->errors.size() > 0)
-        return compilerResult;   
+        return compilerResult;
     
+    state = CompilerState::FixVar;
+    anonFunction->fixVar(this, *compilerResult);
+    // Early exit if compile fails
+    if (compilerResult->errors.size() > 0)
+        return compilerResult;
+
+    state = CompilerState::Compile;
     anonFunction->compile(this, *compilerResult);
 #ifdef MODULE_OUTPUT
     module->dump();
@@ -220,8 +228,10 @@ shared_ptr<CResult> Compiler::run(const char* code) {
     if (compilerResult->errors.size() > 0)
         return compilerResult;
 
-    auto function = currentFunction->getCFunction("__anon_expr")->getFunction(this, *compilerResult);
+    auto cfunction = currentFunction->getCFunction("__anon_expr");
+    auto function = cfunction->getFunction(this, *compilerResult);
     auto returnType = function->getReturnType();
+    auto thisType = cfunction->getThisType(this, *compilerResult);
 
     auto H = TheJIT->addModule(move(module));
     
@@ -229,34 +239,40 @@ shared_ptr<CResult> Compiler::run(const char* code) {
     auto ExprSymbol = TheJIT->findSymbol("__anon_expr");
     assert(ExprSymbol && "Function not found");
     
+    auto thisSize = cfunction->thisVarsByName.size() * 8;
+    auto thisPtr = malloc(thisSize);
+    
     // Get the symbol's address and cast it to the right type (takes no
     // arguments, returns a double) so we can call it as a native function.
-    if (returnType == typeInt->llvmRefType) {
-        int64_t (*FP)() = (int64_t (*)())(intptr_t)ExprSymbol.getAddress();
-        int64_t result = FP();
+    
+    if (returnType->isIntegerTy() && returnType->getScalarSizeInBits() == 64) {
+        int64_t (*FP)(void*) = (int64_t (*)(void*))(intptr_t)ExprSymbol.getAddress();
+        int64_t result = FP(thisPtr);
         
         compilerResult->type = RESULT_INT;
         compilerResult->iResult = result;
-    } else if (returnType == typeBool->llvmRefType) {
-        bool (*FP)() = (bool (*)())(intptr_t)ExprSymbol.getAddress();
-        bool result = FP();
+    } else if (returnType->isIntegerTy() && returnType->getScalarSizeInBits() == 1) {
+        bool (*FP)(void*) = (bool (*)(void*))(intptr_t)ExprSymbol.getAddress();
+        bool result = FP(thisPtr);
         
         compilerResult->type = RESULT_BOOL;
         compilerResult->bResult = result;
-    } else if (returnType == typeFloat->llvmRefType) {
-        double (*FP)() = (double (*)())(intptr_t)ExprSymbol.getAddress();
-        double result = FP();
+    } else if (returnType->isDoubleTy()) {
+        double (*FP)(void*) = (double (*)(void*))(intptr_t)ExprSymbol.getAddress();
+        double result = FP(thisPtr);
 
         compilerResult->type = RESULT_FLOAT;
         compilerResult->fResult = result;
-    } else if (returnType == typeVoid->llvmRefType) {
-        void (*FP)() = (void (*)())(intptr_t)ExprSymbol.getAddress();
-        FP();
+    } else if (returnType->isVoidTy()) {
+        void (*FP)(void*) = (void (*)(void*))(intptr_t)ExprSymbol.getAddress();
+        FP(thisPtr);
 
         compilerResult->type = RESULT_VOID;
     } else {
         assert(false);
     }
+    
+    free(thisPtr);
 
     // Delete the anonymous expression module from the JIT.
     TheJIT->removeModule(H);

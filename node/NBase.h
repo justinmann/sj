@@ -17,6 +17,7 @@ public:
     virtual ~NBase() { }
     virtual NodeType getNodeType() const = 0;
     virtual void define(Compiler* compiler, CResult& result) = 0;
+    virtual void fixVar(Compiler* compiler, CResult& result) = 0;
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result) const = 0;
     virtual Value* compile(Compiler* compiler, CResult& result) const = 0;
 };

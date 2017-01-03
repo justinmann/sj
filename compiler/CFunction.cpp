@@ -8,12 +8,15 @@
 
 #include "Node.h"
 
-shared_ptr<CFunctionVar> CFunctionVar::create(shared_ptr<CFunction> parent, shared_ptr<NFunction> nfunction, int index, shared_ptr<NAssignment> nassignment) {
+shared_ptr<CFunctionVar> CFunctionVar::create(const string& name, shared_ptr<CFunction> parent, shared_ptr<NFunction> nfunction, int index, shared_ptr<NAssignment> nassignment, shared_ptr<CType> type) {
     auto c = make_shared<CFunctionVar>();
+    c->mode = CVarType::Public;
+    c->name = name;
     c->nfunction = nfunction;
     c->index = index;
     c->nassignment = nassignment;
     c->parent = parent;
+    c->type = type;
     return c;
 }
 
@@ -35,20 +38,31 @@ Value* CFunctionVar::getValue(Compiler* compiler, CResult& result, Value* thisVa
     return parent.lock()->getArgumentValue(compiler, result, thisValue, index);
 }
 
-shared_ptr<CFunction> CFunction::create(shared_ptr<CFunction> parent, shared_ptr<NFunction> node) {
+shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, shared_ptr<CFunction> parent, shared_ptr<NFunction> node) {
     auto c = make_shared<CFunction>();
     c->parent = parent;
     c->node = node;
     
     if (node) {
-        int index = 0;
         for (auto it : node->assignments) {
-            c->vars[it->name] = CFunctionVar::create(c, node, index, it);
-            index++;
+            int index = (int)c->thisVars.size();
+            auto thisVar = CFunctionVar::create(it->name, c, node, index, it, nullptr);
+            c->thisVarsByName[it->name] = pair<int, shared_ptr<CFunctionVar>>(index, thisVar);
+            c->thisVars.push_back(thisVar);
+        }
+        
+        if (parent) {
+            auto parentType = parent->getThisType(compiler, result);
+            if (parentType) {
+                int index = (int)c->thisVars.size();
+                auto parentVar = CFunctionVar::create("parent", c, node, index, nullptr, parentType);
+                c->thisVarsByName[parentVar->name] = pair<int, shared_ptr<CFunctionVar>>(index, parentVar);
+                c->thisVars.push_back(parentVar);
+            }
         }
         
         for (auto it : node->functions) {
-            c->funcs[it->name] = CFunction::create(c, it);
+            c->funcsByName[it->name] = CFunction::create(compiler, result, c, it);
         }
     }
     return c;
@@ -69,25 +83,8 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CResult& result) 
 }
 
 shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result) {
-    if (!thisType && parent.lock()) {
-        // Verify all arguments are assignments with valid types
-        vector<pair<string, shared_ptr<CType>>> memberTypes;
-        for (auto &it : node->assignments) {
-            if (it->getNodeType() != NodeType_Assignment) {
-                result.errors.push_back(CError(CLoc::undefined, CErrorCode::NotVariable));
-                return nullptr;
-            }
-            auto t = (const NAssignment*)it.get();
-            
-            auto memberType = t->getReturnType(compiler, result);
-            if (!memberType) {
-                result.addError(t->loc, CErrorCode::InvalidType, "cannot determine type for '%s'", t->name.c_str());
-                return nullptr;
-            }
-            memberTypes.push_back(pair<string, shared_ptr<CType>>(t->name, shared_ptr<CType>(memberType)));
-        }
-        
-        thisType = make_shared<CType>(compiler, node->name.c_str(), shared_from_this(), memberTypes);
+    if (!thisType && node != nullptr) {
+        thisType = make_shared<CType>(compiler, node->name.c_str(), shared_from_this());
     }
     return thisType;
 }
@@ -103,8 +100,8 @@ Function* CFunction::getFunction(Compiler* compiler, CResult& result) {
         auto returnType = getReturnType(compiler, result);
         if (returnType) {
             vector<Type*> argTypes;
-            argTypes.push_back(getThisType(compiler, result)->llvmRefType);
-            FunctionType *FT = FunctionType::get(returnType->llvmRefType, argTypes, false);
+            argTypes.push_back(getThisType(compiler, result)->llvmRefType(compiler, result));
+            FunctionType *FT = FunctionType::get(returnType->llvmRefType(compiler, result), argTypes, false);
             func = Function::Create(FT, Function::ExternalLinkage, node->name.c_str(), compiler->module.get());
             func->args().begin()->setName("this");
             
@@ -158,39 +155,70 @@ Argument* CFunction::getThis() {
 }
 
 Value* CFunction::getArgumentValue(Compiler* compiler, CResult& result, Value* thisValue, int index) {
-    assert(thisValue->getType() == thisType->llvmRefType);
+    assert(thisValue->getType() == thisType->llvmRefType(compiler, result));
     vector<Value*> v;
     v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
     v.push_back(ConstantInt::get(compiler->context, APInt(32, index)));
-    auto paramPtr = compiler->builder.CreateInBoundsGEP(thisType->llvmAllocType, thisValue, ArrayRef<Value *>(v), "paramPtr");
+    auto paramPtr = compiler->builder.CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "paramPtr");
     return paramPtr;
 }
 
 
 shared_ptr<CFunction> CFunction::getCFunction(const string& name) const {
-    auto t = funcs.find(name);
-    if (t != funcs.end()) {
+    auto t = funcsByName.find(name);
+    if (t != funcsByName.end()) {
         return t->second;
     }
     return nullptr;
 }
 
-shared_ptr<CVar> CFunction::getCVariable(const string& name) const {
-    auto t = vars.find(name);
-    if (t != vars.end()) {
-        return t->second;
+shared_ptr<CVar> CFunction::getCVar(const string& name) const {
+    auto t1 = localVarsByName.find(name);
+    if (t1 != localVarsByName.end()) {
+        return t1->second;
     }
+
+    auto t2 = thisVarsByName.find(name);
+    if (t2 != thisVarsByName.end()) {
+        return t2->second.second;
+    }
+    
     return nullptr;
 }
 
 int CFunction::getThisIndex(const string& name) const {
-    assert(thisType);
-    
-    auto it = thisType->membersByName.find(name);
-    if (it != thisType->membersByName.end()) {
+    auto it = thisVarsByName.find(name);
+    if (it != thisVarsByName.end()) {
         return it->second.first;
     }
     return -1;
+}
+
+shared_ptr<CFunctionVar> CFunction::localVarToThisVar(Compiler* compiler, shared_ptr<CLocalVar> localVar) {
+    assert(compiler->state <= CompilerState::FixVar); // Cannot change vars after type has been created
+    assert(localVar->mode == CVarType::Local);
+    
+    auto pos = localVarsByName.end();
+    for (auto it = localVarsByName.begin(); it != localVarsByName.end(); it++) {
+        if (it->second == localVar) {
+            pos = it;
+            break;
+        }
+    }
+    
+    if (pos == localVarsByName.end()) {
+        assert(false);
+        return nullptr;
+    }
+    
+    
+    auto thisVar = CFunctionVar::create(localVar->name, shared_from_this(), node, (int)thisVars.size(), localVar->nassignment, nullptr);
+    int index = (int)thisVars.size();
+    thisVars.push_back(thisVar);
+    thisVarsByName[pos->first] = pair<int, shared_ptr<CFunctionVar>>(index, thisVar);
+    localVarsByName.erase(pos);
+    
+    return thisVar;
 }
 
 

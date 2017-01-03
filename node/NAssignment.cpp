@@ -2,7 +2,7 @@
 
 NAssignment::NAssignment(CLoc loc, const char* typeName, const char* name, shared_ptr<NBase> rightSide, bool isMutable) : typeName(typeName), name(name), rightSide(rightSide), isMutable(isMutable), NBase(loc) {
     // If we are assigning a function to a var then we will call the function to get its value
-    if (rightSide->getNodeType() == NodeType::NodeType_Function) {
+    if (rightSide && rightSide->getNodeType() == NodeType::NodeType_Function) {
         auto nfunction = static_pointer_cast<NFunction>(rightSide);
         call = make_shared<NCall>(loc, nfunction->name.c_str(), NodeList());
     }
@@ -13,17 +13,12 @@ NodeType NAssignment::getNodeType() const {
 }
 
 void NAssignment::define(Compiler* compiler, CResult& result) {
-    auto iter = compiler->currentFunction->vars.find(name);
-    if (iter != compiler->currentFunction->vars.end()) {
-        if (!isMutable) {
-            result.errors.push_back(CError(loc, CErrorCode::ImmutableAssignment));
-        } else {
-            var = iter->second;
-        }
-    } else {
-        shared_ptr<NAssignment> t = shared_from_this();
-        var = CLocalVar::create(compiler->currentFunction, t);
-        compiler->currentFunction->vars[name] = var;
+    assert(compiler->state == CompilerState::Define);
+    auto iter = compiler->currentFunction->localVarsByName.find(name);
+    if (iter == compiler->currentFunction->localVarsByName.end()) {
+        compiler->currentFunction->localVarsByName[name] = CLocalVar::create(name, compiler->currentFunction, shared_from_this());;
+    } else if (!isMutable) {
+        result.errors.push_back(CError(loc, CErrorCode::ImmutableAssignment));
     }
     
     if (call) {
@@ -33,7 +28,17 @@ void NAssignment::define(Compiler* compiler, CResult& result) {
     rightSide->define(compiler, result);
 }
 
+void NAssignment::fixVar(Compiler* compiler, CResult& result) {
+    assert(compiler->state == CompilerState::FixVar);
+    if (call) {
+        call->fixVar(compiler, result);
+    }
+    
+    rightSide->fixVar(compiler, result);
+}
+
 shared_ptr<CType> NAssignment::getReturnType(Compiler *compiler, CResult& result) const {
+    assert(compiler->state >= CompilerState::FixVar);
     if (call) {
         return call->getReturnType(compiler, result);
     }
@@ -41,6 +46,7 @@ shared_ptr<CType> NAssignment::getReturnType(Compiler *compiler, CResult& result
 }
 
 Value* NAssignment::compile(Compiler* compiler, CResult& result) const {
+    assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
     // Compute value
@@ -64,14 +70,19 @@ Value* NAssignment::compile(Compiler* compiler, CResult& result) const {
             return nullptr;
         }
 
-        if (value->getType() != valueType->llvmRefType) {
+        if (value->getType() != valueType->llvmRefType(compiler, result)) {
             result.errors.push_back(CError(loc, CErrorCode::TypeMismatch, "invalid type"));
             return nullptr;
         }
     }
     
     // Get place to store data
-    auto alloca = var->getValue(compiler, result, compiler->currentFunction->getThis());
+    auto cvar = compiler->currentFunction->getCVar(name);
+    if (!cvar) {
+        result.errors.push_back(CError(loc, CErrorCode::Internal, "var disappeared"));
+        return nullptr;
+    }
+    auto alloca = cvar->getValue(compiler, result, compiler->currentFunction->getThis());
     
     // Store value
     compiler->builder.CreateStore(value, alloca);

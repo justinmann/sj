@@ -342,7 +342,7 @@ void testClass() {
 		c.foo(4)
     )DELIM");
     assert(result->type == RESULT_INT && result->iResult == 0);
-/*
+
     result = compiler.run(R"DELIM(
         class() {
 			m: 1
@@ -351,6 +351,7 @@ void testClass() {
 			}
 			inner()
 		}
+        class()
     )DELIM");
     assert(result->type == RESULT_INT && result->iResult == 1);
     
@@ -390,8 +391,6 @@ void testClass() {
         d.c()
     )DELIM");
     assert(result->type == RESULT_INT && result->iResult == 1);
-*/
-    
 }
 
 void test() {
@@ -409,7 +408,7 @@ void test() {
     }
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv) {   
     test();
 	return 0;
 }
