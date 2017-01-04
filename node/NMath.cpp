@@ -69,3 +69,16 @@ Value* NMath::compile(Compiler* compiler, CResult& result) const {
     
     return NULL;
 }
+
+void NMath::dump(Compiler* compiler, int level) const {
+    dumpf(level, "type: 'NMath'");
+    dumpf(level, "op: %d", op);
+    
+    dumpf(level, "leftSide: {");
+    leftSide->dump(compiler, level + 1);
+    dumpf(level, "}");
+    
+    dumpf(level, "rightSide: {");
+    rightSide->dump(compiler, level + 1);
+    dumpf(level, "}");
+}

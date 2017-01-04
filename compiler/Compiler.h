@@ -12,6 +12,7 @@
 // #define YYDEBUG 1
 // #define DWARF_ENABLED
 // #define MODULE_OUTPUT
+// #define NODE_OUTPUT
 
 #include <stdio.h>
 #include <iostream>

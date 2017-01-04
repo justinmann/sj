@@ -88,3 +88,20 @@ Value* NAssignment::compile(Compiler* compiler, CResult& result) const {
     compiler->builder.CreateStore(value, alloca);
     return value;
 }
+
+void NAssignment::dump(Compiler* compiler, int level) const {
+    dumpf(level, "type: 'NAssignment'");
+    dumpf(level, "name: %s", name.c_str());
+    dumpf(level, "typeName: %s", typeName.c_str());
+    dumpf(level, "isMutable: %s", bool_to_str(isMutable));
+    
+    if (call) {
+        dumpf(level, "call: {");
+        call->dump(compiler, level + 1);
+        dumpf(level, "}");
+    }
+    
+    dumpf(level, "rightSide: {");
+    rightSide->dump(compiler, level + 1);
+    dumpf(level, "}");
+}

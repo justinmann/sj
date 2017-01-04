@@ -14,3 +14,7 @@ Value* NBool::compile(Compiler* compiler, CResult& result) const {
     compiler->emitLocation(this);
     return ConstantInt::get(compiler->context, APInt(1, value));
 }
+
+void NBool::dump(Compiler* compiler, int level) const {
+    dumpf(level, "value: %s", bool_to_str(value));
+}

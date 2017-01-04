@@ -145,4 +145,32 @@ Value* NFunction::compile(Compiler* compiler, CResult& result) const {
     return nullptr;
 }
 
+void NFunction::dump(Compiler* compiler, int level) const {
+    dumpf(level, "type: 'NFunction'");
+    dumpf(level, "name: '%s'", name.c_str());
+    
+    if (functions.size() > 0) {
+        dumpf(level, "functions: {");
+        for (auto it : functions) {
+            dumpf(level + 1, "%s: {", it->name.c_str());
+            it->dump(compiler, level + 2);
+            dumpf(level + 1, "}");
+        }
+        dumpf(level, "}");
+    }
+    
+    if (assignments.size() > 0) {
+        dumpf(level, "assignments: {");
+        for (auto it : assignments) {
+            dumpf(level + 1, "%s: {", it->name.c_str());
+            it->rightSide->dump(compiler, level + 2);
+            dumpf(level + 1, "}");
+        }
+        dumpf(level, "}");
+    }
+    
+    dumpf(level, "block: {");
+    block->dump(compiler, level + 1);
+    dumpf(level, "}");
+}
 

@@ -243,3 +243,28 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
 
     return compiler->builder.CreateCall(func, argsV, "calltmp");
 }
+
+void NCall::dump(Compiler* compiler, int level) const {
+    dumpf(level, "type: 'NCall'");
+    dumpf(level, "functionName: '%s'", functionName.c_str());
+
+    if (arguments.size() > 0) {
+        dumpf(level, "arguments: {");
+        auto argIndex = 0;
+        for (auto it : arguments) {
+            if (it->getNodeType() == NodeType_Assignment) {
+                auto parameterAssignment = static_pointer_cast<NAssignment>(it);
+                dumpf(level + 1, "%s: {", parameterAssignment->name.c_str());
+                parameterAssignment->rightSide->dump(compiler, level + 2);
+                dumpf(level + 1, "}");
+            } else {
+                dumpf(level + 1, "'%d': {", argIndex);
+                it->dump(compiler, level + 2);
+                dumpf(level + 1, "}");
+            }
+            argIndex ++;
+        }
+        dumpf(level, "}");
+    }
+}
+

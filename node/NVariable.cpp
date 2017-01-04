@@ -130,3 +130,9 @@ shared_ptr<CType> NVariable::getParentValue(Compiler* compiler, CResult& result,
     
     return ctype;
 }
+
+void NVariable::dump(Compiler* compiler, int level) const {
+    dumpf(level, "type: 'NVariable'");
+    dumpf(level, "name: '%s'", names[0].c_str());
+}
+

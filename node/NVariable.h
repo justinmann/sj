@@ -19,7 +19,8 @@ public:
     virtual void fixVar(Compiler* compiler, CResult& result);
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result) const;
     virtual Value* compile(Compiler* compiler, CResult& result) const;
-    
+    virtual void dump(Compiler* compiler, int level) const;
+  
     static shared_ptr<CType> getParentValue(Compiler* compiler, CResult& result, const CLoc& loc, const vector<string>& names, Value** value);
 };
 

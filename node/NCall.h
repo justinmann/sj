@@ -22,6 +22,7 @@ public:
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result) const;
     virtual Value* compile(Compiler* compiler, CResult& result) const;
     shared_ptr<CFunction> getCFunction(Compiler *compiler, CResult& result) const;
+    virtual void dump(Compiler* compiler, int level) const;
 };
 
 #endif /* NCall_h */

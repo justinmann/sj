@@ -17,6 +17,7 @@ public:
     virtual void fixVar(Compiler* compiler, CResult& result) {}
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result) const;
     virtual Value* compile(Compiler* compiler, CResult& result) const;
+    virtual void dump(Compiler* compiler, int level) const;
 };
 
 #endif /* NVoid_h */

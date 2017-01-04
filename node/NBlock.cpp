@@ -34,3 +34,16 @@ Value* NBlock::compile(Compiler* compiler, CResult& result) const {
     }
     return last;
 }
+
+void NBlock::dump(Compiler* compiler, int level) const {
+    dumpf(level, "type: 'NBlock'");
+    if (statements.size() > 0) {
+        dumpf(level, "statements: [");
+        dumpf(level + 1, "{");
+        for (auto it : statements) {
+            it->dump(compiler, level + 2);
+        }
+        dumpf(level + 1, "}");
+        dumpf(level, "]");
+    }
+}

@@ -55,3 +55,11 @@ Value* NCast::compile(Compiler* compiler, CResult& result) const {
     
     return NULL;
 }
+
+void NCast::dump(Compiler* compiler, int level) const {
+    dumpf(level, "type: 'NCast'");
+    dumpf(level, "typeName: '%s'", type.c_str());
+    dumpf(level, "node: {");
+    node->dump(compiler, level + 1);
+    dumpf(level, "}", type.c_str());
+}

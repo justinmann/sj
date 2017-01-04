@@ -102,3 +102,26 @@ Value* NIf::compile(Compiler* compiler, CResult& result) const {
     phiNode->addIncoming(elseValue, elseBB);
     return phiNode;
 }
+
+void NIf::dump(Compiler* compiler, int level) const {
+    dumpf(level, "type: 'NIf'");
+    
+    if (condition) {
+        dumpf(level, "condition: {");
+        condition->dump(compiler, level + 1);
+        dumpf(level, "}");
+    }
+
+    if (ifBlock) {
+        dumpf(level, "if: {");
+        ifBlock->dump(compiler, level + 1);
+        dumpf(level, "}");
+    }
+
+    if (elseBlock) {
+        dumpf(level, "else: {");
+        elseBlock->dump(compiler, level + 1);
+        dumpf(level, "}");
+    }
+}
+

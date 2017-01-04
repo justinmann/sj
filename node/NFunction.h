@@ -27,6 +27,7 @@ public:
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result) const;
     virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result) const;
     virtual Value* compile(Compiler* compiler, CResult& result) const;
+    virtual void dump(Compiler* compiler, int level) const;
     
 private:
     shared_ptr<NFunction> shared_from_this() { return static_pointer_cast<NFunction>(NBase::shared_from_this()); }

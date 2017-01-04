@@ -22,3 +22,7 @@ Value* NDouble::compile(Compiler* compiler, CResult& result) const {
     
     return ConstantFP::get(compiler->context, APFloat(t));
 }
+
+void NDouble::dump(Compiler* compiler, int level) const {
+    dumpf(level, "value: %s", value.c_str());
+}

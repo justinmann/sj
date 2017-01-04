@@ -29,3 +29,7 @@ Value* NInteger::compile(Compiler* compiler, CResult& result) const {
     
     return ConstantInt::get(compiler->context, APInt(64, t));
 }
+
+void NInteger::dump(Compiler* compiler, int level) const {
+    dumpf(level, "value: %s", value.c_str());
+}

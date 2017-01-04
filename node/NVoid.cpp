@@ -14,3 +14,7 @@ Value* NVoid::compile(Compiler* compiler, CResult& result) const {
     compiler->emitLocation(this);
     return nullptr;
 }
+
+void NVoid::dump(Compiler* compiler, int level) const {
+    dumpf(level, "value: 'void'");
+}
