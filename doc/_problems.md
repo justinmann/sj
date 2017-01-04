@@ -1,3 +1,6 @@
+* add full path and current context to func/var missing errors
+* add full path to node dump
+
 * required parameter
 func(i:'int)
 
@@ -9,6 +12,7 @@ func(i:'int)
 math.cos(4.0)
 
 * template
+
 class<t>(
 	x:'t
 	get() { x }
@@ -49,9 +53,6 @@ list<t>(
 }
 
 * list syntax
-a: [1, 2, 3]
-a[1]
-
 * lambda
 item(
 	x: 0
