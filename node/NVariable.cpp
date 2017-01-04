@@ -99,7 +99,7 @@ shared_ptr<CType> NVariable::getParentValue(Compiler* compiler, CResult& result,
                 }
 
                 
-                cfunction = cthisvar->nassignment->rightSide->getReturnType(compiler, result)->cfunction.lock();
+                cfunction = cthisvar->getParentCFunction(compiler, result);
             }
         } else {
             auto cvar = cfunction->getCVar(name);
@@ -124,7 +124,7 @@ shared_ptr<CType> NVariable::getParentValue(Compiler* compiler, CResult& result,
                 *value = compiler->builder.CreateLoad(ptr);
             }
             
-            cfunction = cthisvar->nassignment->rightSide->getReturnType(compiler, result)->cfunction.lock();
+            cfunction = cthisvar->getParentCFunction(compiler, result);
         }
     }
     

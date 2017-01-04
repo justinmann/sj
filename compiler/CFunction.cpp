@@ -38,6 +38,14 @@ Value* CFunctionVar::getValue(Compiler* compiler, CResult& result, Value* thisVa
     return parent.lock()->getArgumentValue(compiler, result, thisValue, index);
 }
 
+shared_ptr<CFunction> CFunctionVar::getParentCFunction(Compiler* compiler, CResult& result) {
+    auto ctype = nassignment->rightSide->getReturnType(compiler, result);
+    if (ctype && !ctype->cfunction.expired()) {
+        return ctype->cfunction.lock();
+    }
+    return nullptr;
+}
+
 shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, shared_ptr<CFunction> parent, shared_ptr<NFunction> node) {
     auto c = make_shared<CFunction>();
     c->parent = parent;

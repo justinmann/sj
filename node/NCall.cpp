@@ -60,7 +60,7 @@ shared_ptr<CFunction> NCall::getCFunction(Compiler *compiler, CResult& result) c
     if (!callee) {
         // If we are still using "this" then we can check to see if it is a function on parent
         if (cfunction == compiler->currentFunction) {
-            while (cfunction && !callee) {
+            while (cfunction && !cfunction->parent.expired() && !callee) {
                 cfunction = shared_ptr<CFunction>(cfunction->parent);
                 if (cfunction) {
                     callee = cfunction->getCFunction(functionName);
