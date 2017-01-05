@@ -23,7 +23,8 @@ class CVar {
 public:
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result) = 0;
     virtual Value* getValue(Compiler* compiler, CResult& result, Value* thisValue) = 0;
-    
+    string fullName();
+
     string name;
     CVarType mode;
     weak_ptr<CFunction> parent;

@@ -1,10 +1,10 @@
 #include "Node.h"
 
-NAssignment::NAssignment(CLoc loc, const char* typeName, const char* name, shared_ptr<NBase> rightSide, bool isMutable) : typeName(typeName), name(name), rightSide(rightSide), isMutable(isMutable), NBase(loc) {
+NAssignment::NAssignment(CLoc loc, const char* typeName, const char* name, shared_ptr<NBase> rightSide_, bool isMutable) : typeName(typeName), name(name), rightSide(rightSide_), isMutable(isMutable), inFunctionDeclaration(false),NBase(loc) {
     // If we are assigning a function to a var then we will call the function to get its value
     if (rightSide && rightSide->getNodeType() == NodeType::NodeType_Function) {
-        auto nfunction = static_pointer_cast<NFunction>(rightSide);
-        call = make_shared<NCall>(loc, nfunction->name.c_str(), NodeList());
+        nfunction = static_pointer_cast<NFunction>(rightSide);
+        rightSide = make_shared<NCall>(loc, nfunction->name.c_str(), NodeList());
     }
 }
 
@@ -14,15 +14,18 @@ NodeType NAssignment::getNodeType() const {
 
 void NAssignment::define(Compiler* compiler, CResult& result) {
     assert(compiler->state == CompilerState::Define);
-    auto iter = compiler->currentFunction->localVarsByName.find(name);
-    if (iter == compiler->currentFunction->localVarsByName.end()) {
-        compiler->currentFunction->localVarsByName[name] = CLocalVar::create(name, compiler->currentFunction, shared_from_this());;
-    } else if (!isMutable) {
-        result.errors.push_back(CError(loc, CErrorCode::ImmutableAssignment));
+    
+    if (!inFunctionDeclaration) {
+        auto iter = compiler->currentFunction->localVarsByName.find(name);
+        if (iter == compiler->currentFunction->localVarsByName.end()) {
+            compiler->currentFunction->localVarsByName[name] = CLocalVar::create(name, compiler->currentFunction, shared_from_this());;
+        } else if (!isMutable) {
+            result.errors.push_back(CError(loc, CErrorCode::ImmutableAssignment));
+        }
     }
     
-    if (call) {
-        call->define(compiler, result);
+    if (nfunction) {
+        nfunction->define(compiler, result);
     }
     
     rightSide->define(compiler, result);
@@ -30,8 +33,8 @@ void NAssignment::define(Compiler* compiler, CResult& result) {
 
 void NAssignment::fixVar(Compiler* compiler, CResult& result) {
     assert(compiler->state == CompilerState::FixVar);
-    if (call) {
-        call->fixVar(compiler, result);
+    if (nfunction) {
+        nfunction->fixVar(compiler, result);
     }
     
     rightSide->fixVar(compiler, result);
@@ -39,9 +42,6 @@ void NAssignment::fixVar(Compiler* compiler, CResult& result) {
 
 shared_ptr<CType> NAssignment::getReturnType(Compiler *compiler, CResult& result) const {
     assert(compiler->state >= CompilerState::FixVar);
-    if (call) {
-        return call->getReturnType(compiler, result);
-    }
     return rightSide->getReturnType(compiler, result);
 }
 
@@ -52,12 +52,6 @@ Value* NAssignment::compile(Compiler* compiler, CResult& result) const {
     // Compute value
     Value *value = rightSide->compile(compiler, result);
 
-    // If we have a "call" then the right side is a function declaration, execute the function
-    if (call) {
-        assert(value == nullptr);
-        value = call->compile(compiler, result);
-    }
-    
     if (!value) {
         result.errors.push_back(CError(loc, CErrorCode::ExpressionEmpty, "trying to assign an empty value"));
         return nullptr;
@@ -95,9 +89,9 @@ void NAssignment::dump(Compiler* compiler, int level) const {
     dumpf(level, "typeName: %s", typeName.c_str());
     dumpf(level, "isMutable: %s", bool_to_str(isMutable));
     
-    if (call) {
-        dumpf(level, "call: {");
-        call->dump(compiler, level + 1);
+    if (nfunction) {
+        dumpf(level, "function: {");
+        nfunction->dump(compiler, level + 1);
         dumpf(level, "}");
     }
     

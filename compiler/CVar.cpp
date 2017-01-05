@@ -8,6 +8,10 @@
 
 #include "Node.h"
 
+string CVar::fullName() {
+    return strprintf("%s.%s", parent.lock()->fullName().c_str(), name.c_str());
+}
+
 shared_ptr<CLocalVar> CLocalVar::create(const string& name, shared_ptr<CFunction> parent, shared_ptr<NAssignment> nassignment) {
     auto c = make_shared<CLocalVar>();
     c->mode = CVarType::Local;
@@ -25,7 +29,7 @@ shared_ptr<CType> CLocalVar::getType(Compiler* compiler, CResult& result) {
     
     isInGetType = true;
     if (!type) {
-        type = shared_ptr<CType>(nassignment->getReturnType(compiler, result));
+        type = nassignment->getReturnType(compiler, result);
     }
     isInGetType = false;
     return type;

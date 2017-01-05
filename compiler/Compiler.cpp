@@ -200,26 +200,29 @@ shared_ptr<CResult> Compiler::run(const char* code) {
     InitializeModuleAndPassManager();
     
     auto compilerResult = compile(code);
+#ifdef NODE_OUTPUT
+    compilerResult->block->dump(this, 0);
+#endif
     // Early exit if compile fails
     if (compilerResult->errors.size() > 0)
         return compilerResult;
     
     auto anonArgs = NodeList();
-    auto anonFunction = make_shared<NFunction>(CLoc::undefined, "", "__anon_expr", anonArgs, compilerResult->block);
-    currentFunction = CFunction::create(this, *compilerResult, nullptr, nullptr);
+    auto anonFunction = make_shared<NFunction>(CLoc::undefined, "", "global", anonArgs, compilerResult->block);
+    currentFunction = CFunction::create(this, *compilerResult, nullptr, "", nullptr);
     state = CompilerState::Define;
-    
-#ifdef NODE_OUTPUT
-    compilerResult->block->dump(this, 0);
-#endif
-    
     anonFunction->define(this, *compilerResult);
+    
     // Early exit if compile fails
     if (compilerResult->errors.size() > 0)
         return compilerResult;
     
     state = CompilerState::FixVar;
     anonFunction->fixVar(this, *compilerResult);
+#ifdef VAR_OUTPUT
+    currentFunction->dump(this, *compilerResult, 0);
+#endif
+    
     // Early exit if compile fails
     if (compilerResult->errors.size() > 0)
         return compilerResult;
@@ -233,15 +236,15 @@ shared_ptr<CResult> Compiler::run(const char* code) {
     if (compilerResult->errors.size() > 0)
         return compilerResult;
 
-    auto cfunction = currentFunction->getCFunction("__anon_expr");
+    auto cfunction = currentFunction->getCFunction("global");
     auto function = cfunction->getFunction(this, *compilerResult);
     auto returnType = function->getReturnType();
     auto thisType = cfunction->getThisType(this, *compilerResult);
 
     auto H = TheJIT->addModule(move(module));
     
-    // Search the JIT for the __anon_expr symbol.
-    auto ExprSymbol = TheJIT->findSymbol("__anon_expr");
+    // Search the JIT for the global symbol.
+    auto ExprSymbol = TheJIT->findSymbol("global");
     assert(ExprSymbol && "Function not found");
     
     auto thisSize = cfunction->thisVarsByName.size() * 8;

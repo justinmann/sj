@@ -195,10 +195,10 @@
 		9C64AD4C1E0F823300340A7D = {
 			isa = PBXGroup;
 			children = (
+				9C7B48E11E19A2DD00D378A1 /* main.cpp */,
 				9CF16C221E19A89B006E9CB8 /* parser */,
 				9CF16BF81E19A86B006E9CB8 /* node */,
 				9CF16BF41E19A84D006E9CB8 /* compiler */,
-				9C7B48E11E19A2DD00D378A1 /* main.cpp */,
 				9C64AD561E0F823300340A7D /* Products */,
 				9C64AD751E0F8D6800340A7D /* Frameworks */,
 			);

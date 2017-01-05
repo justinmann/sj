@@ -3,7 +3,9 @@
 NFunction::NFunction(CLoc loc, const char* type, const char* name, NodeList arguments, shared_ptr<NBlock> block) : type(type), name(name), block(block), NBase(loc) {
     for (auto it : arguments) {
         if (it->getNodeType() == NodeType_Assignment) {
-            assignments.push_back(static_pointer_cast<NAssignment>(it));
+            auto nassignment = static_pointer_cast<NAssignment>(it);
+            nassignment->inFunctionDeclaration = true;
+            assignments.push_back(nassignment);
         } else if (it->getNodeType() == NodeType_Function) {
             functions.push_back(static_pointer_cast<NFunction>(it));
         } else {
@@ -23,7 +25,7 @@ void NFunction::define(Compiler *compiler, CResult& result) {
         return;
     }
     
-    auto tf = CFunction::create(compiler, result, compiler->currentFunction, shared_from_this());
+    auto tf = CFunction::create(compiler, result, compiler->currentFunction, name, shared_from_this());
     compiler->currentFunction->funcsByName[name] = tf;
     auto prev = compiler->currentFunction;
     compiler->currentFunction = tf;
@@ -33,7 +35,7 @@ void NFunction::define(Compiler *compiler, CResult& result) {
     }
     
     for (auto it : assignments) {
-        it->rightSide->define(compiler, result);
+        it->define(compiler, result);
     }
 
     block->define(compiler, result);
@@ -58,7 +60,7 @@ void NFunction::fixVar(Compiler *compiler, CResult& result) {
     }
 
     for (auto it : assignments) {
-        it->rightSide->fixVar(compiler, result);
+        it->fixVar(compiler, result);
     }
     
     block->fixVar(compiler, result);
@@ -116,6 +118,12 @@ Value* NFunction::compile(Compiler* compiler, CResult& result) const {
         it->compile(compiler, result);
     }
     
+    for (auto it : assignments) {
+        if (it->nfunction) {
+            it->compile(compiler, result);
+        }
+    }
+    
     auto prevInsertPoint = compiler->builder.saveIP();
     compiler->builder.SetInsertPoint(tf->getBasicBlock());
     
@@ -163,7 +171,7 @@ void NFunction::dump(Compiler* compiler, int level) const {
         dumpf(level, "assignments: {");
         for (auto it : assignments) {
             dumpf(level + 1, "%s: {", it->name.c_str());
-            it->rightSide->dump(compiler, level + 2);
+            it->dump(compiler, level + 2);
             dumpf(level + 1, "}");
         }
         dumpf(level, "}");

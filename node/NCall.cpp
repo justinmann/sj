@@ -9,6 +9,13 @@ NCall::NCall(CLoc loc, const char* name, NodeList arguments) : arguments(argumen
     }
     functionName = dotNames.back();
     dotNames.pop_back();
+
+    for (auto it : arguments) {
+        if (it->getNodeType() == NodeType_Assignment) {
+            auto parameterAssignment = static_pointer_cast<NAssignment>(it);
+            parameterAssignment->inFunctionDeclaration = true;
+        }
+    }
 }
 
 NodeType NCall::getNodeType() const {
@@ -20,7 +27,7 @@ void NCall::define(Compiler* compiler, CResult& result) {
     for (auto it : arguments) {
         if (it->getNodeType() == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
-            parameterAssignment->rightSide->define(compiler, result);
+            parameterAssignment->define(compiler, result);
         } else {
             it->define(compiler, result);
         }
@@ -34,7 +41,8 @@ void NCall::fixVar(Compiler* compiler, CResult& result) {
     for (auto it : arguments) {
         if (it->getNodeType() == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
-            parameterAssignment->rightSide->fixVar(compiler, result);
+            assert(parameterAssignment->inFunctionDeclaration);
+            parameterAssignment->fixVar(compiler, result);
         } else {
             it->fixVar(compiler, result);
         }
@@ -53,6 +61,11 @@ shared_ptr<CFunction> NCall::getCFunction(Compiler *compiler, CResult& result) c
         }
         
         cfunction = ctype->cfunction.lock();
+
+        if (!cfunction) {
+            result.addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", dotNames.back().c_str());
+            return nullptr;
+        }
     }
     
     // Handle last name in list
@@ -119,6 +132,7 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
     for (auto it : arguments) {
         if (it->getNodeType() == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
+            assert(parameterAssignment->inFunctionDeclaration);
             auto index = callee->getThisIndex(parameterAssignment->name);
             if (index == -1) {
                 result.errors.push_back(CError(CLoc::undefined, CErrorCode::ParameterDoesNotExist));
@@ -156,40 +170,9 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
                 return nullptr;
             }
             auto defaultAssignment = static_pointer_cast<NAssignment>(it);
+            assert(defaultAssignment->inFunctionDeclaration);
             parameters[argIndex] = defaultAssignment->rightSide;
         }
-        argIndex++;
-    }
-    
-    
-    // Fill in "this" with normal arguments
-    argIndex = 0;
-    for (auto it : callee->node->assignments) {
-        if (it->getNodeType() != NodeType_Assignment) {
-            result.errors.push_back(CError(CLoc::undefined, CErrorCode::NotVariable));
-            return nullptr;
-        }
-        auto defaultAssignment = static_pointer_cast<NAssignment>(it);
-        auto argType = defaultAssignment->getReturnType(compiler, result);
-        
-        vector<Value*> v;
-        v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
-        v.push_back(ConstantInt::get(compiler->context, APInt(32, argIndex)));
-        auto paramPtr = compiler->builder.CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), defaultAssignment->name.c_str());
-        
-        auto value = parameters[argIndex]->compile(compiler, result);
-        if (!value) {
-            result.errors.push_back(CError(CLoc::undefined, CErrorCode::TypeMismatch, "value is empty"));
-            return nullptr;
-        }
-        
-        if (value->getType() != argType->llvmRefType(compiler, result)) {
-            result.errors.push_back(CError(CLoc::undefined, CErrorCode::TypeMismatch, "value does not match"));
-            return nullptr;
-        }
-
-        compiler->builder.CreateStore(value, paramPtr);
-
         argIndex++;
     }
     
@@ -231,12 +214,43 @@ Value* NCall::compile(Compiler* compiler, CResult& result) const {
         compiler->builder.CreateStore(parentValue, paramPtr, "parent");
     }
     
-    vector<Value *> argsV;
-    argsV.push_back(thisValue);
-    
+    // Fill in "this" with normal arguments
     auto prev = compiler->currentFunction;
-    compiler->currentFunction = shared_ptr<CFunction>(callee->parent);
+    compiler->currentFunction = callee;
+
+    argIndex = 0;
+    for (auto it : callee->node->assignments) {
+        if (it->getNodeType() != NodeType_Assignment) {
+            result.errors.push_back(CError(CLoc::undefined, CErrorCode::NotVariable));
+            return nullptr;
+        }
+        auto defaultAssignment = static_pointer_cast<NAssignment>(it);
+        assert(defaultAssignment->inFunctionDeclaration);
+        auto argType = defaultAssignment->getReturnType(compiler, result);
+        
+        vector<Value*> v;
+        v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+        v.push_back(ConstantInt::get(compiler->context, APInt(32, argIndex)));
+        auto paramPtr = compiler->builder.CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), defaultAssignment->name.c_str());
+        
+        auto value = parameters[argIndex]->compile(compiler, result);
+        if (!value) {
+            result.errors.push_back(CError(CLoc::undefined, CErrorCode::TypeMismatch, "value is empty"));
+            return nullptr;
+        }
+        
+        if (value->getType() != argType->llvmRefType(compiler, result)) {
+            result.errors.push_back(CError(CLoc::undefined, CErrorCode::TypeMismatch, "value does not match"));
+            return nullptr;
+        }
+
+        compiler->builder.CreateStore(value, paramPtr);
+
+        argIndex++;
+    }
     
+    vector<Value *> argsV;
+    argsV.push_back(thisValue);    
     auto func = callee->getFunction(compiler, result);
     
     compiler->currentFunction = prev;
@@ -254,8 +268,9 @@ void NCall::dump(Compiler* compiler, int level) const {
         for (auto it : arguments) {
             if (it->getNodeType() == NodeType_Assignment) {
                 auto parameterAssignment = static_pointer_cast<NAssignment>(it);
+                assert(parameterAssignment->inFunctionDeclaration);
                 dumpf(level + 1, "%s: {", parameterAssignment->name.c_str());
-                parameterAssignment->rightSide->dump(compiler, level + 2);
+                parameterAssignment->dump(compiler, level + 2);
                 dumpf(level + 1, "}");
             } else {
                 dumpf(level + 1, "'%d': {", argIndex);

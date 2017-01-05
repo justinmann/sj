@@ -28,7 +28,12 @@ shared_ptr<CType> CFunctionVar::getType(Compiler* compiler, CResult& result) {
     
     isInGetType = true;
     if (!type) {
+        auto t = compiler->currentFunction;
+        compiler->currentFunction = parent.lock();
+        
         type = nassignment->getReturnType(compiler, result);
+        
+        compiler->currentFunction = t;
     }
     isInGetType = false;
     return type;
@@ -39,16 +44,17 @@ Value* CFunctionVar::getValue(Compiler* compiler, CResult& result, Value* thisVa
 }
 
 shared_ptr<CFunction> CFunctionVar::getParentCFunction(Compiler* compiler, CResult& result) {
-    auto ctype = nassignment->rightSide->getReturnType(compiler, result);
+    auto ctype = getType(compiler, result);
     if (ctype && !ctype->cfunction.expired()) {
         return ctype->cfunction.lock();
     }
     return nullptr;
 }
 
-shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, shared_ptr<CFunction> parent, shared_ptr<NFunction> node) {
+shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, shared_ptr<CFunction> parent, const string& name, shared_ptr<NFunction> node) {
     auto c = make_shared<CFunction>();
     c->parent = parent;
+    c->name = name;
     c->node = node;
     
     if (node) {
@@ -70,7 +76,7 @@ shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, sha
         }
         
         for (auto it : node->functions) {
-            c->funcsByName[it->name] = CFunction::create(compiler, result, c, it);
+            c->funcsByName[it->name] = CFunction::create(compiler, result, c, it->name, it);
         }
     }
     return c;
@@ -130,9 +136,7 @@ Function* CFunction::getFunction(Compiler* compiler, CResult& result) {
             DIScope *FContext = Unit;
             unsigned LineNo = node->loc.line;
             unsigned ScopeLine = LineNo;
-            DISubprogram *SP = compiler->DBuilder->createFunction(FContext, node->name.c_str(), StringRef(), Unit, LineNo,
-                                                                  ditypes, false /* internal linkage */, true /* definition */, ScopeLine,
-                                                                  DINode::FlagPrototyped, false);
+            DISubprogram *SP = compiler->DBuilder->createFunction(FContext, node->name.c_str(), StringRef(), Unit, LineNo, ditypes, false /* internal linkage */, true /* definition */, ScopeLine, DINode::FlagPrototyped, false);
             func->setSubprogram(SP);
             
             // Push the current scope.
@@ -227,6 +231,54 @@ shared_ptr<CFunctionVar> CFunction::localVarToThisVar(Compiler* compiler, shared
     localVarsByName.erase(pos);
     
     return thisVar;
+}
+
+string CFunction::fullName() {
+    string n = name;
+    auto p = parent;
+    while (!p.expired() && !p.lock()->parent.expired()) {
+        n.insert(0, ".");
+        n.insert(0, p.lock()->name);
+        p = p.lock()->parent;
+    }
+    return n;
+}
+
+void CFunction::dump(Compiler* compiler, CResult& result, int level) {
+    // Skip if this is the function around global
+    if (!parent.expired()) {
+        dumpf(level, "%s: {", fullName().c_str());
+        
+        if ((thisVarsByName.size() > 1) || (thisVarsByName.size() > 0 && thisVarsByName.find("parent") == thisVarsByName.end())) {
+            dumpf(level + 1, "thisVars: {");
+            for (auto it : thisVarsByName) {
+                if (it.first == "parent")
+                    continue;
+                
+                auto ctype = it.second.second->getType(compiler, result);
+                dumpf(level + 2, "%s: '%s'", it.second.second->name.c_str(), ctype ? ctype->name.c_str() : "undefined");
+            }
+            dumpf(level + 1, "}");
+        }
+
+        if (localVarsByName.size() > 0) {
+            dumpf(level + 1, "localVars: {");
+            for (auto it : localVarsByName) {
+                auto ctype = it.second->getType(compiler, result);
+                dumpf(level + 2, "%s: '%s'", it.second->name.c_str(), ctype ? ctype->name.c_str() : "undefined");
+            }
+            dumpf(level + 1, "}");
+        }
+        
+        dumpf(level, "}");
+        dumpf(level, "");
+    }
+    
+    if (funcsByName.size() > 0) {
+        for (auto it : funcsByName) {
+            it.second->dump(compiler, result, level);
+        }
+    }    
 }
 
 

@@ -76,7 +76,7 @@ shared_ptr<CType> NVariable::getParentValue(Compiler* compiler, CResult& result,
                             auto ptr = compiler->builder.CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "paramPtr");
                             thisValue = compiler->builder.CreateLoad(ptr, "parent");
                         }
-                        cfunction = shared_ptr<CFunction>(cfunction->parent);
+                        cfunction = cfunction->parent.lock();
                     }
                 }
                 

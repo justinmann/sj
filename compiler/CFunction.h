@@ -28,13 +28,14 @@ public:
 class CFunction : public enable_shared_from_this<CFunction> {
 public:
     weak_ptr<CFunction> parent;
+    string name;
     shared_ptr<NFunction> node;
     vector<shared_ptr<CFunctionVar>> thisVars;
     map<string, pair<int, shared_ptr<CFunctionVar>>> thisVarsByName;
     map<string, shared_ptr<CLocalVar>> localVarsByName;
     map<string, shared_ptr<CFunction>> funcsByName;
     
-    static shared_ptr<CFunction> create(Compiler* compiler, CResult& result, shared_ptr<CFunction> parent, shared_ptr<NFunction> node);
+    static shared_ptr<CFunction> create(Compiler* compiler, CResult& result, shared_ptr<CFunction> parent, const string& name, shared_ptr<NFunction> node);
     shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result);
     shared_ptr<CType> getThisType(Compiler* compiler, CResult& result);
     Function* getFunction(Compiler* compiler, CResult& result);
@@ -45,6 +46,8 @@ public:
     shared_ptr<CVar> getCVar(const string& name) const;
     int getThisIndex(const string& name) const;
     shared_ptr<CFunctionVar> localVarToThisVar(Compiler* compiler, shared_ptr<CLocalVar> cvar);
+    string fullName();
+    void dump(Compiler* compiler, CResult& result, int level);
     
 private:
     bool isInGetType;

@@ -25,8 +25,9 @@ public:
     
     const string typeName;
     const string name;
-    const shared_ptr<NBase> rightSide;
-    shared_ptr<NCall> call;
+    bool inFunctionDeclaration;
+    shared_ptr<NBase> rightSide;
+    shared_ptr<NFunction> nfunction;
     bool isMutable;
 
 private:

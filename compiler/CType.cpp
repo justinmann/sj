@@ -33,19 +33,7 @@ Type* CType::llvmAllocType(Compiler* compiler, CResult& result) {
             structMembers.push_back(ctype->llvmRefType(compiler, result));
             index++;
         }
-        
-        // if we have a parent then we get a parent pointer
-        if (cfunction.lock()->parent.lock()) {
-            CResult result;
-            auto parentType = cfunction.lock()->parent.lock()->getThisType(compiler, result);
-            if (parentType) {
-                membersByName["parent"] = pair<int, shared_ptr<CType>>(index, parentType);
-                members.push_back(parentType);
-                structMembers.push_back(parentType->llvmRefType(compiler, result));
-                index++;
-            }
-        }
-        
+
         structType->setBody(ArrayRef<Type *>(structMembers));        
     }
     return _llvmAllocType;
