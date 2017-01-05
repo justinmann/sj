@@ -1,11 +1,7 @@
-* add full path and current context to func/var missing errors
-* add full path to node dump
-
 * required parameter
 func(i:'int)
 
 * comments
-* llvm inline optimization
 * work docs
 
 * extern class
@@ -74,6 +70,7 @@ l[0].x
 * stream
 
 ** future
+* llvm optimization
 * derived class
 * private var
 * interface
