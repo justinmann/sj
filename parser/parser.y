@@ -18,9 +18,9 @@
 
 int yyerror(YYLTYPE *locp, void *scanner, CResult* result, const char *msg) {
   if (locp) {
-  	result->warnings.push_back(CError(CLoc(locp->first_line, locp->first_column), CErrorCode::Parser, msg));
+  	result->addWarning(CLoc(locp->first_line, locp->first_column), CErrorCode::Parser, msg);
   } else {
-  	result->warnings.push_back(CError(CLoc::undefined, CErrorCode::Parser, msg));
+  	result->addWarning(CLoc::undefined, CErrorCode::Parser, msg);
   }
   return (0);
 }

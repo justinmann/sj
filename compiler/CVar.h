@@ -22,7 +22,7 @@ enum CVarType {
 class CVar {
 public:
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result) = 0;
-    virtual Value* getValue(Compiler* compiler, CResult& result, Value* thisValue) = 0;
+    virtual Value* getValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder) = 0;
     string fullName();
 
     string name;
@@ -35,7 +35,7 @@ class CLocalVar : public CVar {
 public:
     static shared_ptr<CLocalVar> create(const string& name, shared_ptr<CFunction> parent, shared_ptr<NAssignment> nassignment);
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    virtual Value* getValue(Compiler* compiler, CResult& result, Value* thisValue);
+    virtual Value* getValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder);
     
 private:
     bool isInGetType;

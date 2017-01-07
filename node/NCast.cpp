@@ -5,38 +5,38 @@ NodeType NCast::getNodeType() const {
     return NodeType_Cast;
 }
 
-void NCast::define(Compiler* compiler, CResult& result) {
+void NCast::define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::Define);
-    node->define(compiler, result);
+    node->define(compiler, result, thisFunction);
 }
 
-void NCast::fixVar(Compiler* compiler, CResult& result) {
+void NCast::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::FixVar);
-    node->fixVar(compiler, result);
+    node->fixVar(compiler, result, thisFunction);
 }
 
-shared_ptr<CType> NCast::getReturnType(Compiler* compiler, CResult& result) const {
+shared_ptr<CType> NCast::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
     assert(compiler->state >= CompilerState::FixVar);
     auto t = compiler->getType(type.c_str());
     if (!t) {
-        result.errors.push_back(CError(loc, CErrorCode::InvalidType, "type does not exist"));
+        result.addError(loc, CErrorCode::InvalidType, "type does not exist");
     }
     return t;
 }
 
-Value* NCast::compile(Compiler* compiler, CResult& result) const {
+Value* NCast::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
-    Value *v = node->compile(compiler, result);
+    Value *v = node->compile(compiler, result, thisFunction, thisValue, builder);
     if (!v)
         return nullptr;
     
-    auto fromType = node->getReturnType(compiler, result);
+    auto fromType = node->getReturnType(compiler, result, thisFunction);
     auto toType = compiler->getType(type.c_str());
     
     if (!toType) {
-        result.errors.push_back(CError(loc, CErrorCode::InvalidType, "type does not exist"));
+        result.addError(loc, CErrorCode::InvalidType, "type does not exist");
     }
 
     if (fromType == toType) {
@@ -44,14 +44,14 @@ Value* NCast::compile(Compiler* compiler, CResult& result) const {
     }
     
     if (fromType == compiler->typeInt && toType == compiler->typeFloat) {
-        return compiler->builder.CreateSIToFP(v, toType->llvmRefType(compiler, result));
+        return builder->CreateSIToFP(v, toType->llvmRefType(compiler, result));
     }
 
     if (fromType == compiler->typeFloat && toType == compiler->typeInt) {
-        return compiler->builder.CreateFPToSI(v, toType->llvmRefType(compiler, result));
+        return builder->CreateFPToSI(v, toType->llvmRefType(compiler, result));
     }
     
-    result.errors.push_back(CError(loc, CErrorCode::InvalidCast, "cannot cast"));
+    result.addError(loc, CErrorCode::InvalidCast, "cannot cast");
     
     return NULL;
 }

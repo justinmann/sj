@@ -22,25 +22,20 @@ shared_ptr<CFunctionVar> CFunctionVar::create(const string& name, shared_ptr<CFu
 
 shared_ptr<CType> CFunctionVar::getType(Compiler* compiler, CResult& result) {
     if (isInGetType) {
-        result.errors.push_back(CError(CLoc::undefined, CErrorCode::TypeLoop));
+        result.addError(CLoc::undefined, CErrorCode::TypeLoop, "while trying to determine type a cycle was detected");
         return nullptr;
     }
     
     isInGetType = true;
     if (!type) {
-        auto t = compiler->currentFunction;
-        compiler->currentFunction = parent.lock();
-        
-        type = nassignment->getReturnType(compiler, result);
-        
-        compiler->currentFunction = t;
+        type = nassignment->getReturnType(compiler, result, parent.lock());
     }
     isInGetType = false;
     return type;
 }
 
-Value* CFunctionVar::getValue(Compiler* compiler, CResult& result, Value* thisValue) {
-    return parent.lock()->getArgumentValue(compiler, result, thisValue, index);
+Value* CFunctionVar::getValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder) {
+    return parent.lock()->getArgumentValue(compiler, result, thisValue, index, builder);
 }
 
 shared_ptr<CFunction> CFunctionVar::getParentCFunction(Compiler* compiler, CResult& result) {
@@ -84,13 +79,13 @@ shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, sha
 
 shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CResult& result) {
     if (isInGetType) {
-        result.errors.push_back(CError(CLoc::undefined, CErrorCode::TypeLoop));
+        result.addError(CLoc::undefined, CErrorCode::TypeLoop, "while trying to determine type a cycle was detected");
         return nullptr;
     }
     
     isInGetType = true;
     if (!returnType) {
-        returnType = shared_ptr<CType>(node->getBlockType(compiler, result));
+        returnType = node->getBlockType(compiler, result, shared_from_this());
     }
     isInGetType = false;
     return returnType;
@@ -104,8 +99,10 @@ shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result) {
 }
 
 Function* CFunction::getFunction(Compiler* compiler, CResult& result) {
+    assert(compiler->state == CompilerState::Compile);
+    
     if (isInGetFunction) {
-        result.errors.push_back(CError(CLoc::undefined, CErrorCode::TypeLoop));
+        result.addError(CLoc::undefined, CErrorCode::TypeLoop, "while trying to determine type a cycle was detected");
         return nullptr;
     }
     
@@ -113,17 +110,22 @@ Function* CFunction::getFunction(Compiler* compiler, CResult& result) {
     if (!func) {
         auto returnType = getReturnType(compiler, result);
         if (returnType) {
+            auto thisRefType = getThisType(compiler, result)->llvmRefType(compiler, result);
             vector<Type*> argTypes;
-            argTypes.push_back(getThisType(compiler, result)->llvmRefType(compiler, result));
+            argTypes.push_back(thisRefType);
             FunctionType *FT = FunctionType::get(returnType->llvmRefType(compiler, result), argTypes, false);
             func = Function::Create(FT, Function::ExternalLinkage, node->name.c_str(), compiler->module.get());
             func->args().begin()->setName("this");
             
             // Create a new basic block to start insertion into.
             basicBlock = BasicBlock::Create(compiler->context, "entry", func);
-            auto prevInsertPoint = compiler->builder.saveIP();
-            compiler->builder.SetInsertPoint(basicBlock);
             
+            IRBuilder<> builder(basicBlock);
+            auto thisAlloca = builder.CreateAlloca(thisRefType, 0);
+            auto thisArgument = (Argument*)func->args().begin();
+            builder.CreateStore(thisArgument, thisAlloca);
+            thisValue = builder.CreateLoad(thisAlloca);
+                        
     #ifdef DWARF_ENABLED
             SmallVector<Metadata *, 8> EltTys;
             for (auto &argType : argTypes) {
@@ -147,8 +149,6 @@ Function* CFunction::getFunction(Compiler* compiler, CResult& result) {
             // will run past them when breaking on a function)
             compiler->emitLocation(nullptr);
     #endif
-
-            compiler->builder.restoreIP(prevInsertPoint);
         }
     }
     isInGetFunction = false;
@@ -156,22 +156,20 @@ Function* CFunction::getFunction(Compiler* compiler, CResult& result) {
     return func;
 }
 
-BasicBlock* CFunction::getBasicBlock() {
-    assert(func != nullptr);
-    return basicBlock;
+Value* CFunction::getThisArgument(Compiler* compiler, CResult& result) {
+    if (!func) {
+        getFunction(compiler, result);
+    }
+    
+    return thisValue;
 }
 
-Argument* CFunction::getThis() {
-    assert(func != nullptr);
-    return (Argument*)func->args().begin();
-}
-
-Value* CFunction::getArgumentValue(Compiler* compiler, CResult& result, Value* thisValue, int index) {
+Value* CFunction::getArgumentValue(Compiler* compiler, CResult& result, Value* thisValue, int index, IRBuilder<>* builder) {
     assert(thisValue->getType() == thisType->llvmRefType(compiler, result));
     vector<Value*> v;
     v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
     v.push_back(ConstantInt::get(compiler->context, APInt(32, index)));
-    auto paramPtr = compiler->builder.CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "paramPtr");
+    auto paramPtr = builder->CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "paramPtr");
     return paramPtr;
 }
 

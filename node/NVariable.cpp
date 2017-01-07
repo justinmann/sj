@@ -13,47 +13,47 @@ NodeType NVariable::getNodeType() const {
     return NodeType_Variable;
 }
 
-void NVariable::fixVar(Compiler* compiler, CResult& result) {
+void NVariable::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::FixVar);
-    getParentValue(compiler, result, loc, names, nullptr);
+    getParentValue(compiler, result, loc, thisFunction, nullptr, nullptr, names, nullptr);
 }
 
-shared_ptr<CType> NVariable::getReturnType(Compiler* compiler, CResult& result) const {
+shared_ptr<CType> NVariable::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
     assert(compiler->state >= CompilerState::FixVar);
-    return getParentValue(compiler, result, loc, names, nullptr);
+    return getParentValue(compiler, result, loc, thisFunction, nullptr, nullptr, names, nullptr);
 }
 
-Value* NVariable::compile(Compiler* compiler, CResult& result) const {
+Value* NVariable::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     Value* value = nullptr;
-    getParentValue(compiler, result, loc, names, &value);
+    getParentValue(compiler, result, loc, thisFunction, thisValue, builder, names, &value);
     return value;
 }
 
-shared_ptr<CType> NVariable::getParentValue(Compiler* compiler, CResult& result, const CLoc& loc, const vector<string>& names, Value** value) {
+shared_ptr<CType> NVariable::getParentValue(Compiler* compiler, CResult& result, const CLoc& loc, shared_ptr<CFunction> thisFunction, Value* thisValue22, IRBuilder<>* builder, const vector<string>& names, Value** value) {
     if (value) {
         *value = nullptr;
     }
     
     if (names.size() == 1 && names[0] == "this") {
         if (value) {
-            *value = compiler->currentFunction->getThis();
+            *value = thisValue22;
         }
         
-        return compiler->currentFunction->getThisType(compiler, result);
+        return thisFunction->getThisType(compiler, result);
     }
     
-    auto cfunction = compiler->currentFunction;
+    auto cfunction = thisFunction;
     shared_ptr<CType> ctype = nullptr;
     auto isFirst = true;
     for (auto name : names) {
         if (isFirst) {
             isFirst = false;
             if (name == "this") {
-                ctype = compiler->currentFunction->getThisType(compiler, result);
+                ctype = thisFunction->getThisType(compiler, result);
                 if (value) {
-                    *value = compiler->currentFunction->getThis();
+                    *value = thisValue22;
                 }
             } else {
                 // Now we need to look up the parent chain
@@ -61,7 +61,7 @@ shared_ptr<CType> NVariable::getParentValue(Compiler* compiler, CResult& result,
                 Value* thisValue = nullptr;
                 
                 if (value) {
-                    thisValue = compiler->currentFunction->getThis();
+                    thisValue = thisValue22;
                 }
                 
                 while (cfunction && !cvar) {
@@ -70,13 +70,23 @@ shared_ptr<CType> NVariable::getParentValue(Compiler* compiler, CResult& result,
                         if (value) {
                             auto thisType = cfunction->getThisType(compiler, result);
                             auto parentIndex = cfunction->getThisIndex("parent");
-                            vector<Value*> v;
-                            v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
-                            v.push_back(ConstantInt::get(compiler->context, APInt(32, parentIndex)));
-                            auto ptr = compiler->builder.CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "paramPtr");
-                            thisValue = compiler->builder.CreateLoad(ptr, "parent");
+                            if (parentIndex == -1) {
+                                cfunction = nullptr;
+                            } else {
+                                vector<Value*> v;
+                                v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+                                v.push_back(ConstantInt::get(compiler->context, APInt(32, parentIndex)));
+                                auto llvmAllocType = thisType->llvmAllocType(compiler, result);
+                                auto thisValueType = thisValue->getType();
+                                assert(thisValueType == llvmAllocType->getPointerTo());
+                                auto ptr = builder->CreateInBoundsGEP(llvmAllocType, thisValue, ArrayRef<Value *>(v), "paramPtr");
+                                thisValue = builder->CreateLoad(ptr, "parent");
+                            }
                         }
-                        cfunction = cfunction->parent.lock();
+                        
+                        if (cfunction) {
+                            cfunction = cfunction->parent.lock();
+                        }
                     }
                 }
                 
@@ -85,7 +95,7 @@ shared_ptr<CType> NVariable::getParentValue(Compiler* compiler, CResult& result,
                     return nullptr;
                 }
                 
-                if (cfunction != compiler->currentFunction && cvar->mode == CVarType::Local) {
+                if (cfunction != thisFunction && cvar->mode == CVarType::Local) {
                     cvar = cfunction->localVarToThisVar(compiler, static_pointer_cast<CLocalVar>(cvar));
                 }
                 
@@ -93,9 +103,9 @@ shared_ptr<CType> NVariable::getParentValue(Compiler* compiler, CResult& result,
                 ctype = cvar->getType(compiler, result);
                 if (value) {
                     // local vars can only be accessed within their function
-                    assert(cvar->mode != CVarType::Local || cfunction == compiler->currentFunction);
-                    auto ptr = cvar->getValue(compiler, result, thisValue);
-                    *value = compiler->builder.CreateLoad(ptr);
+                    assert(cvar->mode != CVarType::Local || cfunction == thisFunction);
+                    auto ptr = cvar->getValue(compiler, result, thisValue, builder);
+                    *value = builder->CreateLoad(ptr);
                 }
 
                 
@@ -120,8 +130,8 @@ shared_ptr<CType> NVariable::getParentValue(Compiler* compiler, CResult& result,
                 vector<Value*> v;
                 v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
                 v.push_back(ConstantInt::get(compiler->context, APInt(32, varIndex)));
-                auto ptr = compiler->builder.CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), *value, ArrayRef<Value *>(v), name.c_str());
-                *value = compiler->builder.CreateLoad(ptr);
+                auto ptr = builder->CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), *value, ArrayRef<Value *>(v), name.c_str());
+                *value = builder->CreateLoad(ptr);
             }
             
             cfunction = cthisvar->getParentCFunction(compiler, result);

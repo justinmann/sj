@@ -17,10 +17,10 @@ class NAssignment : public NBase {
 public:
     NAssignment(CLoc loc, const char* typeName, const char* name, shared_ptr<NBase> rightSide, bool isMutable);
     virtual NodeType getNodeType() const;
-    virtual void define(Compiler* compiler, CResult& result);
-    virtual void fixVar(Compiler* compiler, CResult& result);
-    virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result) const;
-    virtual Value* compile(Compiler* compiler, CResult& result) const;
+    virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
+    virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
+    virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const;
+    virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const;
     virtual void dump(Compiler* compiler, int level) const;
     
     const string typeName;

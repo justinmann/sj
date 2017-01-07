@@ -14,6 +14,7 @@
 // #define VAR_OUTPUT
 // #define NODE_OUTPUT
 // #define MODULE_OUTPUT
+// #define ASSERT_ON_ERROR
 
 #include <stdio.h>
 #include <iostream>
@@ -28,6 +29,7 @@
 #include "llvm/IR/LegacyPassManager.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Verifier.h"
+#include "llvm/Support/raw_os_ostream.h"
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Transforms/Scalar.h"
 #include "llvm/ExecutionEngine/ExecutionEngine.h"
@@ -54,6 +56,8 @@ std::string strprintf( const char* format, Args... args ) {
     delete[] buf;
     return str;
 }
+
+IRBuilder<> getEntryBuilder(IRBuilder<>* builder);
 
 std::string Type_print(Type* type);
 
@@ -132,6 +136,16 @@ public:
         string str = strprintf(format, args...);
         errors.push_back(CError(loc, code, str));
         printf("ERROR: %s\n", str.c_str());
+#ifdef ASSERT_ON_ERROR
+        assert(false);
+#endif
+    }
+
+    template< typename... Args >
+    void addWarning(const CLoc loc, const CErrorCode code, const char* format, Args... args) {
+        string str = strprintf(format, args...);
+        warnings.push_back(CError(loc, code, str));
+        printf("ERROR: %s\n", str.c_str());
     }
 };
 
@@ -156,7 +170,6 @@ public:
     // llvm vars
     CompilerState state;
     LLVMContext context;
-    IRBuilder<> builder;
     unique_ptr<Module> module;
     unique_ptr<KaleidoscopeJIT> TheJIT;
     unique_ptr<legacy::FunctionPassManager> TheFPM;
@@ -165,8 +178,6 @@ public:
     vector<DIScope *> LexicalBlocks;
     unique_ptr<DIBuilder> DBuilder;
 #endif
-    // compiler vars
-    shared_ptr<CFunction> currentFunction;
     
     shared_ptr<CType> typeInt;
     shared_ptr<CType> typeFloat;

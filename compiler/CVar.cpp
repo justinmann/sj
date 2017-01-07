@@ -23,23 +23,22 @@ shared_ptr<CLocalVar> CLocalVar::create(const string& name, shared_ptr<CFunction
 
 shared_ptr<CType> CLocalVar::getType(Compiler* compiler, CResult& result) {
     if (isInGetType) {
-        result.errors.push_back(CError(CLoc::undefined, CErrorCode::TypeLoop));
+        result.addError(CLoc::undefined, CErrorCode::TypeLoop, "while trying to determine type a cycle was detected");
         return nullptr;
     }
     
     isInGetType = true;
     if (!type) {
-        type = nassignment->getReturnType(compiler, result);
+        type = nassignment->getReturnType(compiler, result, parent.lock());
     }
     isInGetType = false;
     return type;
 }
 
-Value* CLocalVar::getValue(Compiler* compiler, CResult& result, Value* thisValue) {
+Value* CLocalVar::getValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder) {
     if (!value) {
-        Function* f = parent.lock()->getFunction(compiler, result);
-        IRBuilder<> builder(&f->getEntryBlock(), f->getEntryBlock().begin());
-        value = builder.CreateAlloca(getType(compiler, result)->llvmRefType(compiler, result), 0, name.c_str());
+        IRBuilder<> entryBuilder = getEntryBuilder(builder);
+        value = entryBuilder.CreateAlloca(getType(compiler, result)->llvmRefType(compiler, result), 0, name.c_str());
     }
     return value;
 }

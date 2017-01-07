@@ -27,10 +27,10 @@ public:
     NBase(const CLoc loc) : loc(loc) { }
     virtual ~NBase() { }
     virtual NodeType getNodeType() const = 0;
-    virtual void define(Compiler* compiler, CResult& result) = 0;
-    virtual void fixVar(Compiler* compiler, CResult& result) = 0;
-    virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result) const = 0;
-    virtual Value* compile(Compiler* compiler, CResult& result) const = 0;
+    virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) = 0;
+    virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) = 0;
+    virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const = 0;
+    virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const = 0;
     virtual void dump(Compiler* compiler, int level = 0) const = 0;
 };
 

@@ -4,74 +4,75 @@ NodeType NIf::getNodeType() const {
     return NodeType_If;
 }
 
-void NIf::define(Compiler* compiler, CResult& result) {
+void NIf::define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::Define);
-    condition->define(compiler, result);
+    condition->define(compiler, result, thisFunction);
 
     if (elseBlock) {
-        elseBlock->define(compiler, result);
+        elseBlock->define(compiler, result, thisFunction);
     }
     
     if (ifBlock) {
-        ifBlock->define(compiler, result);
+        ifBlock->define(compiler, result, thisFunction);
     }
 }
 
-void NIf::fixVar(Compiler* compiler, CResult& result) {
+void NIf::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::FixVar);
-    condition->fixVar(compiler, result);
+    condition->fixVar(compiler, result, thisFunction);
     
     if (elseBlock) {
-        elseBlock->fixVar(compiler, result);
+        elseBlock->fixVar(compiler, result, thisFunction);
     }
 
     if (ifBlock) {
-        ifBlock->fixVar(compiler, result);
+        ifBlock->fixVar(compiler, result, thisFunction);
     }
 }
 
-shared_ptr<CType> NIf::getReturnType(Compiler* compiler, CResult& result) const {
+shared_ptr<CType> NIf::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
     assert(compiler->state >= CompilerState::FixVar);
     if (elseBlock) {
-        return elseBlock->getReturnType(compiler, result);
+        return elseBlock->getReturnType(compiler, result, thisFunction);
     }
     
     if (ifBlock) {
-        return ifBlock->getReturnType(compiler, result);
+        return ifBlock->getReturnType(compiler, result, thisFunction);
     }
 
     return nullptr;
 }
 
-Value* NIf::compile(Compiler* compiler, CResult& result) const {
+Value* NIf::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
-    shared_ptr<CType> returnType = getReturnType(compiler, result);
+    shared_ptr<CType> returnType = getReturnType(compiler, result, thisFunction);
     
-    Function *function = compiler->builder.GetInsertBlock()->getParent();
+    Function *function = builder->GetInsertBlock()->getParent();
     auto ifBB = BasicBlock::Create(compiler->context);
     auto elseBB = BasicBlock::Create(compiler->context);
     auto mergeBB = BasicBlock::Create(compiler->context);
     
     // If block
     function->getBasicBlockList().push_back(ifBB);
-    auto c = condition->compile(compiler, result);
-    compiler->builder.CreateCondBr(c, ifBB, elseBB);
-    compiler->builder.SetInsertPoint(ifBB);
-    auto ifValue = ifBlock->compile(compiler, result);
+    auto c = condition->compile(compiler, result, thisFunction, thisValue, builder);
+    builder->CreateCondBr(c, ifBB, elseBB);
+    builder->SetInsertPoint(ifBB);
+    auto ifValue = ifBlock->compile(compiler, result, thisFunction, thisValue, builder);
     if (returnType != compiler->typeVoid && !ifValue) {
         result.errors.push_back(CError(loc, CErrorCode::NoDefaultValue, "type does not have a default value"));
         return nullptr;
     }
-    compiler->builder.CreateBr(mergeBB);
+    auto ifEndBB = builder->GetInsertBlock();
+    builder->CreateBr(mergeBB);
     
     // Else block
     function->getBasicBlockList().push_back(elseBB);
-    compiler->builder.SetInsertPoint(elseBB);
+    builder->SetInsertPoint(elseBB);
     Value* elseValue = nullptr;
     if (elseBlock) {
-        elseValue = elseBlock->compile(compiler, result);
+        elseValue = elseBlock->compile(compiler, result, thisFunction, thisValue, builder);
         if (returnType != compiler->typeVoid && !elseValue) {
             result.errors.push_back(CError(loc, CErrorCode::NoDefaultValue, "type does not have a default value"));
             return nullptr;
@@ -83,11 +84,13 @@ Value* NIf::compile(Compiler* compiler, CResult& result) const {
             return nullptr;
         }
     }
-    compiler->builder.CreateBr(mergeBB);
+    
+    auto elseEndBB = builder->GetInsertBlock();
+    builder->CreateBr(mergeBB);
     
     // Merge block
     function->getBasicBlockList().push_back(mergeBB);
-    compiler->builder.SetInsertPoint(mergeBB);
+    builder->SetInsertPoint(mergeBB);
     if (returnType == compiler->typeVoid) {
         return nullptr;
     }
@@ -97,9 +100,9 @@ Value* NIf::compile(Compiler* compiler, CResult& result) const {
         return nullptr;
     }
     
-    auto phiNode = compiler->builder.CreatePHI(returnType->llvmRefType(compiler, result), (unsigned)2, "iftmp");
-    phiNode->addIncoming(ifValue, ifBB);
-    phiNode->addIncoming(elseValue, elseBB);
+    auto phiNode = builder->CreatePHI(returnType->llvmRefType(compiler, result), (unsigned)2, "iftmp");
+    phiNode->addIncoming(ifValue, ifEndBB);
+    phiNode->addIncoming(elseValue, elseEndBB);
     return phiNode;
 }
 

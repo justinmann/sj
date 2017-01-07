@@ -4,12 +4,12 @@ NodeType NInteger::getNodeType() const {
     return NodeType_Integer;
 }
 
-shared_ptr<CType> NInteger::getReturnType(Compiler* compiler, CResult& result) const {
+shared_ptr<CType> NInteger::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
     assert(compiler->state >= CompilerState::FixVar);
     return compiler->typeInt;
 }
 
-Value* NInteger::compile(Compiler* compiler, CResult& result) const {
+Value* NInteger::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
@@ -18,12 +18,12 @@ Value* NInteger::compile(Compiler* compiler, CResult& result) const {
     auto t = strtoll(value.c_str(), &e, 10);
     
     if (ERANGE == errno) {
-        result.errors.push_back(CError(loc, CErrorCode::InvalidNumber));
+        result.addError(loc, CErrorCode::InvalidNumber, "not a valid int '%s'", value.c_str());
         return nullptr;
     }
 
     if (*e != '\0') {
-        result.errors.push_back(CError(loc, CErrorCode::InvalidNumber));
+        result.addError(loc, CErrorCode::InvalidNumber, "not a valid int '%s'", value.c_str());
         return nullptr;
     }
     

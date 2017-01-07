@@ -6,6 +6,10 @@ NFunction::NFunction(CLoc loc, const char* type, const char* name, NodeList argu
             auto nassignment = static_pointer_cast<NAssignment>(it);
             nassignment->inFunctionDeclaration = true;
             assignments.push_back(nassignment);
+            
+            if (nassignment->nfunction) {
+                functions.push_back(nassignment->nfunction);
+            }
         } else if (it->getNodeType() == NodeType_Function) {
             functions.push_back(static_pointer_cast<NFunction>(it));
         } else {
@@ -18,57 +22,49 @@ NodeType NFunction::getNodeType() const {
     return NodeType_Function;
 }
 
-void NFunction::define(Compiler *compiler, CResult& result) {
+void NFunction::define(Compiler *compiler, CResult& result, shared_ptr<CFunction> parentFunction) {
     assert(compiler->state == CompilerState::Define);
     if (invalid.size() > 0) {
         result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
         return;
     }
     
-    auto tf = CFunction::create(compiler, result, compiler->currentFunction, name, shared_from_this());
-    compiler->currentFunction->funcsByName[name] = tf;
-    auto prev = compiler->currentFunction;
-    compiler->currentFunction = tf;
+    auto thisFunction = CFunction::create(compiler, result, parentFunction, name, shared_from_this());
+    parentFunction->funcsByName[name] = thisFunction;
 
     for (auto it : functions) {
-        it->define(compiler, result);
+        it->define(compiler, result, thisFunction);
     }
     
     for (auto it : assignments) {
-        it->define(compiler, result);
+        it->define(compiler, result, thisFunction);
     }
 
-    block->define(compiler, result);
-    
-    compiler->currentFunction = prev;
+    block->define(compiler, result, thisFunction);
 }
 
-void NFunction::fixVar(Compiler *compiler, CResult& result) {
+void NFunction::fixVar(Compiler *compiler, CResult& result, shared_ptr<CFunction> parentFunction) {
     assert(compiler->state == CompilerState::FixVar);
     if (invalid.size() > 0) {
         result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
         return;
     }
     
-    auto tf = compiler->currentFunction->getCFunction(name);
-    assert(tf);
-    auto prev = compiler->currentFunction;
-    compiler->currentFunction = tf;
+    auto thisFunction = parentFunction->getCFunction(name);
+    assert(thisFunction);
     
     for (auto it : functions) {
-        it->fixVar(compiler, result);
+        it->fixVar(compiler, result, thisFunction);
     }
 
     for (auto it : assignments) {
-        it->fixVar(compiler, result);
+        it->fixVar(compiler, result, thisFunction);
     }
     
-    block->fixVar(compiler, result);
-    
-    compiler->currentFunction = prev;
+    block->fixVar(compiler, result, thisFunction);
 }
 
-shared_ptr<CType> NFunction::getReturnType(Compiler *compiler, CResult& result) const {
+shared_ptr<CType> NFunction::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction) const {
     assert(compiler->state >= CompilerState::FixVar);
     if (invalid.size() > 0) {
         result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
@@ -78,77 +74,65 @@ shared_ptr<CType> NFunction::getReturnType(Compiler *compiler, CResult& result) 
     return compiler->typeVoid;
 }
 
-shared_ptr<CType> NFunction::getBlockType(Compiler *compiler, CResult& result) const {
+shared_ptr<CType> NFunction::getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
     assert(compiler->state >= CompilerState::FixVar);
+    assert(thisFunction->name == name);
     if (invalid.size() > 0) {
         result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
         return nullptr;
     }
 
-    auto tf = compiler->currentFunction->getCFunction(name);
-    assert(tf);
-    auto prev = compiler->currentFunction;
-    compiler->currentFunction = tf;
+    auto returnType = block->getReturnType(compiler, result, thisFunction);
 
-    auto returnType = block->getReturnType(compiler, result);
-
-    compiler->currentFunction = prev;
     return returnType;
 }
 
-Value* NFunction::compile(Compiler* compiler, CResult& result) const {
+Value* NFunction::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder) const {
     assert(compiler->state == CompilerState::Compile);
     if (invalid.size() > 0) {
         result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
         return nullptr;
     }
     
-    auto tf = compiler->currentFunction->getCFunction(name);
-    assert(tf);
-    auto function = tf->getFunction(compiler, result);
+    auto thisFunction = parentFunction->getCFunction(name);
+    assert(thisFunction);
+    auto function = thisFunction->getFunction(compiler, result);
     if (!function) {
         return nullptr;
     }
     
-    auto prev = compiler->currentFunction;
-    compiler->currentFunction = tf;
-    
     // Create all of the inner functions, before creating the code for this function
+    IRBuilder<> newBuilder(thisFunction->basicBlock);
+    
     for (auto it : functions) {
-        it->compile(compiler, result);
+        it->compile(compiler, result, thisFunction, thisFunction->getThisArgument(compiler, result), &newBuilder);
     }
     
-    for (auto it : assignments) {
-        if (it->nfunction) {
-            it->compile(compiler, result);
-        }
-    }
-    
-    auto prevInsertPoint = compiler->builder.saveIP();
-    compiler->builder.SetInsertPoint(tf->getBasicBlock());
-    
-    Value *RetVal = block->compile(compiler, result);
+    Value *RetVal = block->compile(compiler, result, thisFunction, thisFunction->getThisArgument(compiler, result), &newBuilder);
     if (RetVal) {
         if (function->getReturnType() != RetVal->getType()) {
             result.addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match return value type '%s'", Type_print(function->getReturnType()).c_str(), Type_print(RetVal->getType()).c_str());
         }
-        compiler->builder.CreateRet(RetVal);
+        newBuilder.CreateRet(RetVal);
     } else {
         if (!function->getReturnType()->isVoidTy()) {
-            result.errors.push_back(CError(loc, CErrorCode::TypeMismatch, "no return for non-void function"));
+            result.addError(loc, CErrorCode::TypeMismatch, "no return for non-void function");
         }
-        compiler->builder.CreateRetVoid();        
+        newBuilder.CreateRetVoid();
     }
     
-    assert(tf->getBasicBlock()->getTerminator());
-    
     // Validate the generated code, checking for consistency.
-    verifyFunction(*function);
+    if (verifyFunction(*function) && result.errors.size() == 0) {
+        function->dump();
+        auto output = new raw_os_ostream(std::cout);
+        verifyFunction(*function, output);
+        output->flush();
+        assert(false);
+    }
     
-    // compiler->TheFPM->run(*function);
-    
-    compiler->builder.restoreIP(prevInsertPoint);
-    compiler->currentFunction = prev;
+    /*
+    compiler->TheFPM->run(*function);
+    */
     
     return nullptr;
 }

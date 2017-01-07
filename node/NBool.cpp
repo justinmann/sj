@@ -4,12 +4,12 @@ NodeType NBool::getNodeType() const {
     return NodeType_Bool;
 }
 
-shared_ptr<CType> NBool::getReturnType(Compiler* compiler, CResult& result) const {
+shared_ptr<CType> NBool::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
     assert(compiler->state >= CompilerState::FixVar);
     return compiler->typeBool;
 }
 
-Value* NBool::compile(Compiler* compiler, CResult& result) const {
+Value* NBool::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     return ConstantInt::get(compiler->context, APInt(1, value));

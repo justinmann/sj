@@ -12,74 +12,74 @@ NodeType NAssignment::getNodeType() const {
     return NodeType_Assignment;
 }
 
-void NAssignment::define(Compiler* compiler, CResult& result) {
+void NAssignment::define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     
     if (!inFunctionDeclaration) {
-        auto iter = compiler->currentFunction->localVarsByName.find(name);
-        if (iter == compiler->currentFunction->localVarsByName.end()) {
-            compiler->currentFunction->localVarsByName[name] = CLocalVar::create(name, compiler->currentFunction, shared_from_this());;
+        auto iter = thisFunction->localVarsByName.find(name);
+        if (iter == thisFunction->localVarsByName.end()) {
+            thisFunction->localVarsByName[name] = CLocalVar::create(name, thisFunction, shared_from_this());;
         } else if (!isMutable) {
-            result.errors.push_back(CError(loc, CErrorCode::ImmutableAssignment));
+            result.addError(loc, CErrorCode::ImmutableAssignment, "assigning to immutable variable is not allowed");
         }
     }
     
     if (nfunction) {
-        nfunction->define(compiler, result);
+        nfunction->define(compiler, result, thisFunction);
     }
     
-    rightSide->define(compiler, result);
+    rightSide->define(compiler, result, thisFunction);
 }
 
-void NAssignment::fixVar(Compiler* compiler, CResult& result) {
+void NAssignment::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::FixVar);
     if (nfunction) {
-        nfunction->fixVar(compiler, result);
+        nfunction->fixVar(compiler, result, thisFunction);
     }
     
-    rightSide->fixVar(compiler, result);
+    rightSide->fixVar(compiler, result, thisFunction);
 }
 
-shared_ptr<CType> NAssignment::getReturnType(Compiler *compiler, CResult& result) const {
+shared_ptr<CType> NAssignment::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
     assert(compiler->state >= CompilerState::FixVar);
-    return rightSide->getReturnType(compiler, result);
+    return rightSide->getReturnType(compiler, result, thisFunction);
 }
 
-Value* NAssignment::compile(Compiler* compiler, CResult& result) const {
+Value* NAssignment::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
     // Compute value
-    Value *value = rightSide->compile(compiler, result);
+    Value *value = rightSide->compile(compiler, result, thisFunction, thisValue, builder);
 
     if (!value) {
-        result.errors.push_back(CError(loc, CErrorCode::ExpressionEmpty, "trying to assign an empty value"));
+        result.addError(loc, CErrorCode::ExpressionEmpty, "trying to assign an empty value");
         return nullptr;
     }
     
     if (typeName.size() > 0) {
         shared_ptr<CType> valueType = compiler->getType(typeName.c_str());
         if (!valueType) {
-            result.errors.push_back(CError(loc, CErrorCode::InvalidType, "explicit type does not exist"));
+            result.addError(loc, CErrorCode::InvalidType, "explicit type does not exist");
             return nullptr;
         }
 
         if (value->getType() != valueType->llvmRefType(compiler, result)) {
-            result.errors.push_back(CError(loc, CErrorCode::TypeMismatch, "invalid type"));
+            result.addError(loc, CErrorCode::TypeMismatch, "invalid type");
             return nullptr;
         }
     }
     
     // Get place to store data
-    auto cvar = compiler->currentFunction->getCVar(name);
+    auto cvar = thisFunction->getCVar(name);
     if (!cvar) {
-        result.errors.push_back(CError(loc, CErrorCode::Internal, "var disappeared"));
+        result.addError(loc, CErrorCode::Internal, "var disappeared");
         return nullptr;
     }
-    auto alloca = cvar->getValue(compiler, result, compiler->currentFunction->getThis());
+    auto alloca = cvar->getValue(compiler, result, thisValue, builder);
     
     // Store value
-    compiler->builder.CreateStore(value, alloca);
+    builder->CreateStore(value, alloca);
     return value;
 }
 

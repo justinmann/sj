@@ -51,6 +51,12 @@ std::string Type_print(Type* type) {
     return rso.str();
 }
 
+IRBuilder<> getEntryBuilder(IRBuilder<>* builder) {
+    Function *function = builder->GetInsertBlock()->getParent();
+    return IRBuilder<>(&function->getEntryBlock(), function->getEntryBlock().begin());
+}
+
+
 class KaleidoscopeJIT {
 private:
     unique_ptr<TargetMachine> TM;
@@ -111,7 +117,7 @@ public:
     
 };
 
-Compiler::Compiler() : builder(context) {
+Compiler::Compiler() {
     InitializeNativeTarget();
     InitializeNativeTargetAsmPrinter();
     InitializeNativeTargetAsmParser();
@@ -209,16 +215,16 @@ shared_ptr<CResult> Compiler::run(const char* code) {
     
     auto anonArgs = NodeList();
     auto anonFunction = make_shared<NFunction>(CLoc::undefined, "", "global", anonArgs, compilerResult->block);
-    currentFunction = CFunction::create(this, *compilerResult, nullptr, "", nullptr);
+    auto currentFunction = CFunction::create(this, *compilerResult, nullptr, "", nullptr);
     state = CompilerState::Define;
-    anonFunction->define(this, *compilerResult);
+    anonFunction->define(this, *compilerResult, currentFunction);
     
     // Early exit if compile fails
     if (compilerResult->errors.size() > 0)
         return compilerResult;
     
     state = CompilerState::FixVar;
-    anonFunction->fixVar(this, *compilerResult);
+    anonFunction->fixVar(this, *compilerResult, currentFunction);
 #ifdef VAR_OUTPUT
     currentFunction->dump(this, *compilerResult, 0);
 #endif
@@ -228,10 +234,21 @@ shared_ptr<CResult> Compiler::run(const char* code) {
         return compilerResult;
 
     state = CompilerState::Compile;
-    anonFunction->compile(this, *compilerResult);
+    anonFunction->compile(this, *compilerResult, currentFunction, nullptr, nullptr);
 #ifdef MODULE_OUTPUT
     module->dump();
 #endif    
+    
+    if (verifyModule(*module.get()) && compilerResult->errors.size() == 0) {
+        module->dump();
+        
+        auto output = new raw_os_ostream(std::cout);
+        verifyModule(*module.get(), output);
+        output->flush();
+
+        assert(false);
+    }
+    
     // Early exit if compilation fails
     if (compilerResult->errors.size() > 0)
         return compilerResult;
@@ -321,7 +338,7 @@ Value* Compiler::getDefaultValue(shared_ptr<CType> type) {
 void Compiler::emitLocation(const NBase *node) {
 #ifdef DWARF_ENABLED
     if (!node)
-        return builder.SetCurrentDebugLocation(DebugLoc());
+        return builder->SetCurrentDebugLocation(DebugLoc());
     
     DIScope *Scope;
     if (LexicalBlocks.empty())
@@ -329,7 +346,7 @@ void Compiler::emitLocation(const NBase *node) {
     else
         Scope = LexicalBlocks.back();
     
-    builder.SetCurrentDebugLocation(DebugLoc::get(node->loc.line, node->loc.col, Scope));
+    builder->SetCurrentDebugLocation(DebugLoc::get(node->loc.line, node->loc.col, Scope));
 #endif
 }
 
