@@ -49,6 +49,10 @@ Value* NAssignment::compile(Compiler* compiler, CResult& result, shared_ptr<CFun
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
+    if (!inFunctionDeclaration && nfunction) {
+        nfunction->compile(compiler, result, thisFunction, thisValue, builder);
+    }
+    
     // Compute value
     Value *value = rightSide->compile(compiler, result, thisFunction, thisValue, builder);
 
