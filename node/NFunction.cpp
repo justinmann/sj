@@ -1,6 +1,12 @@
 #include "Node.h"
 
+int NFunction::counter = 0;
+
 NFunction::NFunction(CLoc loc, const char* type, const char* name, NodeList arguments, shared_ptr<NBlock> block) : type(type), name(name), block(block), NBase(loc) {
+    if (this->name == "^") {
+        this->name = strprintf("anon_%d", counter++);
+    }
+    
     for (auto it : arguments) {
         if (it->getNodeType() == NodeType_Assignment) {
             auto nassignment = static_pointer_cast<NAssignment>(it);

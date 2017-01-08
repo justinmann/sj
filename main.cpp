@@ -382,7 +382,7 @@ void testClass() {
     assert(result->type == RESULT_INT && result->iResult == 1);
     
     result = compiler.run(R"DELIM(
-		math: gg(
+		math: ^(
 			sub(x: 0, y: 0) {
 				x - y
 			}

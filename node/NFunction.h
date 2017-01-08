@@ -14,7 +14,7 @@
 class NFunction : public NBase {
 public:
     const string type;
-    const string name;
+    string name;
     NodeList invalid;
     vector<shared_ptr<NAssignment>> assignments;
     vector<shared_ptr<NFunction>> functions;
@@ -30,7 +30,9 @@ public:
     virtual void dump(Compiler* compiler, int level) const;
     
 private:
-    shared_ptr<NFunction> shared_from_this() { return static_pointer_cast<NFunction>(NBase::shared_from_this()); }
+    shared_ptr<NFunction> shared_from_this() { return static_pointer_cast<NFunction>(NBase::shared_from_this()); };
+    
+    static int counter;
 };
 
 #endif /* NFunction_h */
