@@ -430,6 +430,37 @@ void testClass() {
     )DELIM");
     assert(result->type == RESULT_INT && result->iResult == 1);
 }
+                          
+void testThrow() {
+    shared_ptr<CResult> result;
+    Compiler compiler;
+    
+    try {
+        result = compiler.run("throw(0)");
+        assert(false);
+    } catch(...) { }
+
+    try {
+        result = compiler.run("throw(1)");
+        assert(false);
+    } catch (...) { }
+    
+    result = compiler.run(R"DELIM(
+		foo() {
+			throw(1)
+		}
+
+		bar() {	
+			foo()
+			1
+		} catch {
+			2
+		}
+
+		bar()
+    )DELIM");
+    assert(result->type == RESULT_INT && result->iResult == 2);
+}
 
 void test() {
     //for (int i = 0; i < 10000; i++)
@@ -444,15 +475,12 @@ void test() {
         testIf();
         testFunction();
         testClass();
+        testThrow();
     }
 }
 
 int main(int argc, char **argv) {   
-    shared_ptr<CResult> result;
-    Compiler compiler;
-    
-    result = compiler.run("/* hi */");
-    assert(result->type == RESULT_VOID);
+    testThrow();
 
     
     test();

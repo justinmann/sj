@@ -41,6 +41,7 @@ int count_lines(const char* s, const int len) {
 %%
 
 " as "					TOKEN_VAL(TCAST);
+"throw"					TOKEN_VAL(TTHROW);
 "true"					TOKEN_VAL(TTRUE);
 "false"					TOKEN_VAL(TFALSE);
 "void"					TOKEN_VAL(TVOID);

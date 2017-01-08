@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9C3786561E21EE0400202E28 /* NThrow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C3786541E21EE0400202E28 /* NThrow.cpp */; };
 		9C64AD941E0F8D6800340A7D /* libLLVMAnalysis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD761E0F8D6800340A7D /* libLLVMAnalysis.a */; };
 		9C64AD951E0F8D6800340A7D /* libLLVMAsmPrinter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD771E0F8D6800340A7D /* libLLVMAsmPrinter.a */; };
 		9C64AD961E0F8D6800340A7D /* libLLVMBitReader.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD781E0F8D6800340A7D /* libLLVMBitReader.a */; };
@@ -75,6 +76,8 @@
 
 /* Begin PBXFileReference section */
 		9C3786521E21D64000202E28 /* sj.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sj.pch; sourceTree = "<group>"; };
+		9C3786541E21EE0400202E28 /* NThrow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NThrow.cpp; path = node/NThrow.cpp; sourceTree = "<group>"; };
+		9C3786551E21EE0400202E28 /* NThrow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NThrow.h; path = node/NThrow.h; sourceTree = "<group>"; };
 		9C64AD551E0F823300340A7D /* sj */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sj; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C64AD761E0F8D6800340A7D /* libLLVMAnalysis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMAnalysis.a; path = ../install/lib/libLLVMAnalysis.a; sourceTree = "<group>"; };
 		9C64AD771E0F8D6800340A7D /* libLLVMAsmPrinter.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMAsmPrinter.a; path = ../install/lib/libLLVMAsmPrinter.a; sourceTree = "<group>"; };
@@ -271,6 +274,8 @@
 		9CF16BF81E19A86B006E9CB8 /* node */ = {
 			isa = PBXGroup;
 			children = (
+				9C3786541E21EE0400202E28 /* NThrow.cpp */,
+				9C3786551E21EE0400202E28 /* NThrow.h */,
 				9CF16BF91E19A888006E9CB8 /* NAssignment.cpp */,
 				9CF16BFA1E19A888006E9CB8 /* NAssignment.h */,
 				9CF16BFB1E19A888006E9CB8 /* NBase.h */,
@@ -375,6 +380,7 @@
 				9CF16C1B1E19A888006E9CB8 /* NFunction.cpp in Sources */,
 				9CF16C1E1E19A888006E9CB8 /* NMath.cpp in Sources */,
 				9CF16C171E19A888006E9CB8 /* NBool.cpp in Sources */,
+				9C3786561E21EE0400202E28 /* NThrow.cpp in Sources */,
 				9CF16BF71E19A85F006E9CB8 /* Compiler.cpp in Sources */,
 				9C7B48E41E19A2DD00D378A1 /* main.cpp in Sources */,
 				9CFDBF921E19BCCE00F5436F /* CFunction.cpp in Sources */,

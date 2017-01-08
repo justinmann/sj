@@ -12,6 +12,7 @@
 #include <iostream>
 #include <sstream>
 #include <stdio.h>
+#include <unwind.h>
 #include <vector>
 
 #include "llvm/ADT/APFloat.h"

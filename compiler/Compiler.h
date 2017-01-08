@@ -9,14 +9,14 @@
 #ifndef Compiler_h
 #define Compiler_h
 
+#include "../sj.pch"
+
 // #define YYDEBUG 1
 // #define DWARF_ENABLED
 // #define VAR_OUTPUT
 // #define NODE_OUTPUT
 // #define MODULE_OUTPUT
 // #define ASSERT_ON_ERROR
-
-#include "../sj.pch"
 
 using namespace llvm;
 using namespace std;
@@ -133,6 +133,38 @@ public:
     }
 };
 
+/// This is our simplistic type info
+struct OurExceptionType_t {
+    /// type info type
+    int64_t type;
+};
+
+
+/// This is our Exception class which relies on a negative offset to calculate
+/// pointers to its instances from pointers to its unwindException member.
+///
+/// Note: The above unwind.h defines struct _Unwind_Exception to be aligned
+///       on a double word boundary. This is necessary to match the standard:
+///       http://mentorembedded.github.com/cxx-abi/abi-eh.html
+struct OurBaseException_t {
+    struct OurExceptionType_t type;
+    
+    // Note: This is properly aligned in unwind.h
+    struct _Unwind_Exception unwindException;
+};
+
+
+// Note: Not needed since we are C++
+typedef struct OurBaseException_t OurException;
+typedef struct _Unwind_Exception OurUnwindException;
+
+class SJException : public exception {
+public:
+    SJException(int64_t v) : v(v) { }
+    int64_t v;
+};
+
+
 enum CompilerState {
     Define,
     FixVar,
@@ -150,6 +182,7 @@ public:
     void emitLocation(const NBase *node);
     shared_ptr<CType> getType(const char* name) const;
     Value* getDefaultValue(shared_ptr<CType> type);
+    Function* getRaiseException();
     
     // llvm vars
     CompilerState state;
@@ -171,6 +204,8 @@ public:
 private:
     shared_ptr<CResult> compile(const char* code);
     void InitializeModuleAndPassManager();
+    
+    Function* raiseException;
 };
 
 #endif /* Compiler_h */

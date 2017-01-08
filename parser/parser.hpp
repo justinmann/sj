@@ -73,7 +73,8 @@ extern int yydebug;
     TCAST = 283,
     TVOID = 284,
     TIF = 285,
-    TELSE = 286
+    TELSE = 286,
+    TTHROW = 287
   };
 #endif
 

@@ -58,7 +58,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID
 %token <token> TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND error
 %token <token> TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE
-%token <token> TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE
+%token <token> TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program expr var stmt var_decl func_decl func_call func_arg
@@ -138,6 +138,7 @@ expr				: func_call
 					| TLPAREN expr TRPAREN 							{ $$ = $2; }
 					| expr TCAST TIDENTIFIER   						{ $$ = new NCast(LOC, $3->c_str(), shared_ptr<NBase>($1)); }
 					| if_expr										{ $$ = (NBase*)$1; }
+					| TTHROW TLPAREN expr TRPAREN					{ $$ = new NThrow(LOC, shared_ptr<NBase>($3)); }
 					| var
 					;
 					

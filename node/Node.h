@@ -20,6 +20,7 @@ enum NodeType {
     NodeType_If,
     NodeType_Integer,
     NodeType_Math,
+    NodeType_Throw,
     NodeType_Variable,
     NodeType_Void
 };
@@ -29,13 +30,14 @@ enum NodeType {
 #include "NBlock.h"
 #include "NBool.h"
 #include "NCast.h"
+#include "NCall.h"
 #include "NCompare.h"
 #include "NDouble.h"
 #include "NFunction.h"
 #include "NIf.h"
 #include "NInteger.h"
 #include "NMath.h"
-#include "NCall.h"
+#include "NThrow.h"
 #include "NVariable.h"
 #include "NVoid.h"
 
