@@ -74,6 +74,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9C3786521E21D64000202E28 /* sj.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sj.pch; sourceTree = "<group>"; };
 		9C64AD551E0F823300340A7D /* sj */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sj; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C64AD761E0F8D6800340A7D /* libLLVMAnalysis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMAnalysis.a; path = ../install/lib/libLLVMAnalysis.a; sourceTree = "<group>"; };
 		9C64AD771E0F8D6800340A7D /* libLLVMAsmPrinter.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMAsmPrinter.a; path = ../install/lib/libLLVMAsmPrinter.a; sourceTree = "<group>"; };
@@ -195,6 +196,7 @@
 		9C64AD4C1E0F823300340A7D = {
 			isa = PBXGroup;
 			children = (
+				9C3786521E21D64000202E28 /* sj.pch */,
 				9C7B48E11E19A2DD00D378A1 /* main.cpp */,
 				9CF16C221E19A89B006E9CB8 /* parser */,
 				9CF16BF81E19A86B006E9CB8 /* node */,
@@ -485,6 +487,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = sj.pch;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				HEADER_SEARCH_PATHS = ../install/include;
 				LIBRARY_SEARCH_PATHS = ../install/lib;
@@ -496,6 +500,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = sj.pch;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				HEADER_SEARCH_PATHS = ../install/include;
 				LIBRARY_SEARCH_PATHS = ../install/lib;

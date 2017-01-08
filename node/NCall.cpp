@@ -1,5 +1,4 @@
 #include "Node.h"
-#include <sstream>
 
 NCall::NCall(CLoc loc, const char* name, NodeList arguments) : arguments(arguments), NBase(loc) {
     istringstream f(name);

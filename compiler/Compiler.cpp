@@ -8,26 +8,7 @@
 
 #include "Node.h"
 
-#include "llvm/ADT/APFloat.h"
-#include "llvm/ExecutionEngine/ExecutionEngine.h"
-#include "llvm/ExecutionEngine/RuntimeDyld.h"
-#include "llvm/ExecutionEngine/SectionMemoryManager.h"
-#include "llvm/ExecutionEngine/Orc/CompileUtils.h"
-#include "llvm/ExecutionEngine/Orc/JITSymbol.h"
-#include "llvm/ExecutionEngine/Orc/IRCompileLayer.h"
-#include "llvm/ExecutionEngine/Orc/LambdaResolver.h"
-#include "llvm/ExecutionEngine/Orc/ObjectLinkingLayer.h"
-#include "llvm/IR/BasicBlock.h"
-#include "llvm/IR/Constants.h"
-#include "llvm/IR/DataLayout.h"
-#include "llvm/IR/DerivedTypes.h"
-#include "llvm/IR/Function.h"
-#include "llvm/IR/Mangler.h"
-#include "llvm/IR/Type.h"
-#include "llvm/Support/DynamicLibrary.h"
-#include "llvm/Support/raw_ostream.h"
-#include "llvm/Target/TargetMachine.h"
-#include "llvm/Transforms/Scalar/GVN.h"
+
 
 using namespace llvm::orc;
 
