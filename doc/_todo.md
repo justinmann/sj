@@ -1,10 +1,11 @@
+^ special function name
+
 * required parameter
 func(i:'int)
 
-* work docs
+* exception
 
-* extern class
-math.cos(4.0)
+* for loop
 
 * template
 
@@ -27,6 +28,9 @@ b.set(class(5))
 b.set(class(6))
 b.get(0)
 b.setSize(12)
+
+* extern class
+math.cos(4.0)
 
 * list
 list<t>(
