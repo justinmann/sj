@@ -21,7 +21,7 @@ void NBlock::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> t
 shared_ptr<CType> NBlock::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
     assert(compiler->state >= CompilerState::FixVar);
     if (statements.size() == 0) {
-        return nullptr;
+        return compiler->typeVoid;
     }
     return statements.back()->getReturnType(compiler, result, thisFunction);
 }

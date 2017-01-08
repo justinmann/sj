@@ -1,7 +1,6 @@
 * required parameter
 func(i:'int)
 
-* comments
 * work docs
 
 * extern class

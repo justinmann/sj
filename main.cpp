@@ -159,6 +159,32 @@ void testAssignment() {
     assert(result->type == RESULT_INT && result->iResult == 4);
 }
 
+void testComment() {
+    shared_ptr<CResult> result;
+    Compiler compiler;
+    
+    result = compiler.run("/* hi */");
+    assert(result->type == RESULT_VOID);
+    
+    result = compiler.run("1/* comment */");
+    assert(result->type == RESULT_INT && result->iResult == 1);
+    
+    result = compiler.run(R"DELIM(
+                          1
+    /* 
+     ** comment **
+     */
+                          )DELIM");
+    assert(result->type == RESULT_INT && result->iResult == 1);
+    
+    
+    result = compiler.run("// comment\n1");
+    assert(result->type == RESULT_INT && result->iResult == 1);
+
+    result = compiler.run("1 // comment\n");
+    assert(result->type == RESULT_INT && result->iResult == 1);
+}
+
 void testIf() {
     shared_ptr<CResult> result;
     Compiler compiler;
@@ -402,6 +428,7 @@ void test() {
         testCast();
         testParser();
         testAssignment();
+        testComment();
         testIf();
         testFunction();
         testClass();
@@ -409,6 +436,13 @@ void test() {
 }
 
 int main(int argc, char **argv) {   
+    shared_ptr<CResult> result;
+    Compiler compiler;
+    
+    result = compiler.run("/* hi */");
+    assert(result->type == RESULT_VOID);
+
+    
     test();
 	return 0;
 }

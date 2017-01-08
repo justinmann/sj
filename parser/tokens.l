@@ -23,6 +23,16 @@ struct YYLOCATION {
 };
 #define YY_EXTRA_TYPE YYLOCATION
 
+int count_lines(const char* s, const int len) {
+	int lines = 0;
+	for (int i = 0; i < len; i++) {
+		if (s[i] == '\n') {
+			lines++;
+		}
+	}
+	return lines;
+}
+
 #define SAVE_LOC yylloc_param->first_line = yyg->yyextra_r.l; yylloc_param->first_column = yyg->yyextra_r.c; yyg->yyextra_r.c += yyleng
 #define TOKEN_STR(t) SAVE_LOC; yylval->string = new std::string(yytext, yyleng); return t
 #define TOKEN_VAL(t) SAVE_LOC; yylval->token = t; return t
@@ -42,6 +52,8 @@ struct YYLOCATION {
 [0-9]+					TOKEN_STR(TINTEGER);
 \n						yyg->yyextra_r.l++; yyg->yyextra_r.c = 0; TOKEN_VAL(TEND);
 ;						TOKEN_VAL(TEND);
+"/*"([^*]|\*+[^*/])*\*+"/"	yyg->yyextra_r.l += count_lines(yytext, yyleng);
+"//"[^\n]*((\n))		yyg->yyextra_r.l++; yyg->yyextra_r.c = 0;
 "="						TOKEN_VAL(TEQUAL);
 "=="					TOKEN_VAL(TCEQ);
 "!="					TOKEN_VAL(TCNE);
