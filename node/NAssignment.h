@@ -20,7 +20,7 @@ public:
     virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
     virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const;
-    virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const;
+    virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const;
     virtual void dump(Compiler* compiler, int level) const;
     
     const string typeName;

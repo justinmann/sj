@@ -74,7 +74,8 @@ extern int yydebug;
     TVOID = 284,
     TIF = 285,
     TELSE = 286,
-    TTHROW = 287
+    TTHROW = 287,
+    TCATCH = 288
   };
 #endif
 

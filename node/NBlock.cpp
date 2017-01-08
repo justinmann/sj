@@ -26,11 +26,11 @@ shared_ptr<CType> NBlock::getReturnType(Compiler* compiler, CResult& result, sha
     return statements.back()->getReturnType(compiler, result, thisFunction);
 }
 
-Value* NBlock::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const {
+Value* NBlock::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
     assert(compiler->state == CompilerState::Compile);
     Value *last = nullptr;
     for (auto it : statements) {
-        last = it->compile(compiler, result, thisFunction, thisValue, builder);
+        last = it->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
     }
     return last;
 }

@@ -19,14 +19,15 @@ public:
     vector<shared_ptr<NAssignment>> assignments;
     vector<shared_ptr<NFunction>> functions;
     const shared_ptr<NBlock> block;
+    const shared_ptr<NBlock> catchBlock;
     
-    NFunction(CLoc loc, const char* type, const char* name, NodeList arguments, shared_ptr<NBlock> block);
+    NFunction(CLoc loc, const char* type, const char* name, NodeList arguments, shared_ptr<NBlock> block, shared_ptr<NBlock> catchBlock);
     virtual NodeType getNodeType() const;
     virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction);
     virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction);
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction) const;
     virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const;
-    virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder) const;
+    virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder, BasicBlock* catchBB) const;
     virtual void dump(Compiler* compiler, int level) const;
     
 private:

@@ -58,11 +58,11 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID
 %token <token> TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND error
 %token <token> TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE
-%token <token> TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW
+%token <token> TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW TCATCH
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program expr var stmt var_decl func_decl func_call func_arg
-%type <block> stmts block
+%type <block> stmts block catch
 %type <nif> if_expr
 %type <exprvec> func_args func_block
 %type <isMutable> assign
@@ -100,9 +100,12 @@ var_decl 			: TIDENTIFIER assign stmt						{ /* x = 1 */ 		$$ = new NAssignment(
 					| TIDENTIFIER TQUOTE TIDENTIFIER assign stmt	{ /* x'int = 2 */ 	$$ = new NAssignment(LOC, $3->c_str(), $1->c_str(), shared_ptr<NBase>($5), $4); }
 					;
 
-func_decl 			: TIDENTIFIER func_block block 					{ /* f()'int */ $$ = new NFunction(LOC, "", $1->c_str(), *($2), shared_ptr<NBlock>($3)); }
-					| TIDENTIFIER func_block TQUOTE TIDENTIFIER block 	{ /* f() */     $$ = new NFunction(LOC, $4->c_str(), $1->c_str(), *($2), shared_ptr<NBlock>($5)); }
+func_decl 			: TIDENTIFIER func_block block catch					{ /* f()'int */ $$ = new NFunction(LOC, "", $1->c_str(), *($2), shared_ptr<NBlock>($3), shared_ptr<NBlock>($4)); }
+					| TIDENTIFIER func_block TQUOTE TIDENTIFIER block catch	{ /* f() */     $$ = new NFunction(LOC, $4->c_str(), $1->c_str(), *($2), shared_ptr<NBlock>($5), shared_ptr<NBlock>($6)); }
 					;
+
+catch				: /* Blank! */									{ $$ = nullptr; }
+					| TCATCH block									{ $$ = $2; }
 
 func_call			: TIDENTIFIER func_block						{ $$ = new NCall(LOC, $1->c_str(), *($2)); delete $1; }
 					;

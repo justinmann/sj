@@ -9,7 +9,7 @@ shared_ptr<CType> NBool::getReturnType(Compiler* compiler, CResult& result, shar
     return compiler->typeBool;
 }
 
-Value* NBool::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const {
+Value* NBool::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     return ConstantInt::get(compiler->context, APInt(1, value));

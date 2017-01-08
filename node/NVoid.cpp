@@ -9,7 +9,7 @@ shared_ptr<CType> NVoid::getReturnType(Compiler* compiler, CResult& result, shar
     return compiler->typeVoid;
 }
 
-Value* NVoid::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const {
+Value* NVoid::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     return nullptr;

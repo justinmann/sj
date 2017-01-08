@@ -24,11 +24,11 @@ shared_ptr<CType> NCast::getReturnType(Compiler* compiler, CResult& result, shar
     return t;
 }
 
-Value* NCast::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const {
+Value* NCast::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
-    Value *v = node->compile(compiler, result, thisFunction, thisValue, builder);
+    Value *v = node->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
     if (!v)
         return nullptr;
     

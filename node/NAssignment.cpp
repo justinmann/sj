@@ -64,7 +64,7 @@ shared_ptr<CType> NAssignment::getReturnType(Compiler* compiler, CResult& result
     return rightSide->getReturnType(compiler, result, thisFunction);
 }
 
-Value* NAssignment::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const {
+Value* NAssignment::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
@@ -74,11 +74,11 @@ Value* NAssignment::compile(Compiler* compiler, CResult& result, shared_ptr<CFun
     }
 
     if (!inFunctionDeclaration && nfunction) {
-        nfunction->compile(compiler, result, thisFunction, thisValue, builder);
+        nfunction->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
     }
     
     // Compute value
-    Value *value = rightSide->compile(compiler, result, thisFunction, thisValue, builder);
+    Value *value = rightSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
 
     if (!value) {
         result.addError(loc, CErrorCode::ExpressionEmpty, "trying to assign an empty value");

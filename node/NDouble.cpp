@@ -9,7 +9,7 @@ shared_ptr<CType> NDouble::getReturnType(Compiler* compiler, CResult& result, sh
     return compiler->typeFloat;
 }
 
-Value* NDouble::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const {
+Value* NDouble::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
 

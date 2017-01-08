@@ -116,6 +116,7 @@ Function* CFunction::getFunction(Compiler* compiler, CResult& result) {
             FunctionType *FT = FunctionType::get(returnType->llvmRefType(compiler, result), argTypes, false);
             func = Function::Create(FT, Function::ExternalLinkage, node->name.c_str(), compiler->module.get());
             func->args().begin()->setName("this");
+            func->setPersonalityFn(compiler->exception->getPersonality());
             
             // Create a new basic block to start insertion into.
             basicBlock = BasicBlock::Create(compiler->context, "entry", func);

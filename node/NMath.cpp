@@ -21,12 +21,12 @@ shared_ptr<CType> NMath::getReturnType(Compiler* compiler, CResult& result, shar
     return leftSide->getReturnType(compiler, result, thisFunction);
 }
 
-Value* NMath::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const {
+Value* NMath::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
-    Value *L = leftSide->compile(compiler, result, thisFunction, thisValue, builder);
-    Value *R = rightSide->compile(compiler, result, thisFunction, thisValue, builder);
+    Value *L = leftSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    Value *R = rightSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
     if (!L || !R)
         return nullptr;
     

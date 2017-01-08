@@ -10,45 +10,6 @@
 
 using namespace llvm::orc;
 
-const unsigned char ourBaseExcpClassChars[] =
-{'o', 'b', 'j', '\0', 'b', 'a', 's', '\0'};
-
-static uint64_t ourBaseExceptionClass = 0;
-static uint64_t ourBaseFromUnwindOffset = 0;
-
-uint64_t genClass(const unsigned char classChars[], size_t classCharsSize)
-{
-    uint64_t ret = classChars[0];
-    
-    for (unsigned i = 1; i < classCharsSize; ++i) {
-        ret <<= 8;
-        ret += classChars[i];
-    }
-    
-    return(ret);
-}
-
-void deleteOurException(OurUnwindException *expToDelete) {
-#ifdef DEBUG
-    fprintf(stderr,
-            "deleteOurException(...).\n");
-#endif
-    
-    if (expToDelete &&
-        (expToDelete->exception_class == ourBaseExceptionClass)) {
-        free(((char*) expToDelete) + ourBaseFromUnwindOffset);
-    }
-}
-
-void deleteFromUnwindOurException(_Unwind_Reason_Code reason, OurUnwindException *expToDelete) {
-#ifdef DEBUG
-    fprintf(stderr,
-            "deleteFromUnwindOurException(...).\n");
-#endif
-    
-    deleteOurException(expToDelete);
-}
-
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 struct YYLOCATION {
     int l;
@@ -136,17 +97,6 @@ public:
 };
 
 Compiler::Compiler() {
-    // Setup exception data
-    size_t numChars = sizeof(ourBaseExcpClassChars) / sizeof(char);
-    // Create our _Unwind_Exception::exception_class value
-    ourBaseExceptionClass = genClass(ourBaseExcpClassChars, numChars);
-    
-    struct OurBaseException_t dummyException;
-    // Calculate offset of OurException::unwindException member.
-    ourBaseFromUnwindOffset = ((uintptr_t) &dummyException) -
-    ((uintptr_t) &(dummyException.unwindException));
-
-    
     InitializeNativeTarget();
     InitializeNativeTargetAsmPrinter();
     InitializeNativeTargetAsmParser();
@@ -168,11 +118,12 @@ Compiler::~Compiler() {
 }
 
 void Compiler::InitializeModuleAndPassManager() {
-    raiseException = nullptr;
     // Open a new module.
     module = llvm::make_unique<Module>("my cool jit", context);
     module->setDataLayout(TheJIT->getTargetMachine().createDataLayout());
     
+    exception = llvm::make_unique<Exception>(&context, module.get());
+
     // Create a new pass manager attached to it.
     TheFPM = llvm::make_unique<legacy::FunctionPassManager>(module.get());
     
@@ -244,7 +195,7 @@ shared_ptr<CResult> Compiler::run(const char* code) {
         return compilerResult;
     
     auto anonArgs = NodeList();
-    auto anonFunction = make_shared<NFunction>(CLoc::undefined, "", "global", anonArgs, compilerResult->block);
+    auto anonFunction = make_shared<NFunction>(CLoc::undefined, "", "global", anonArgs, compilerResult->block, nullptr);
     auto currentFunction = CFunction::create(this, *compilerResult, nullptr, "", nullptr);
     state = CompilerState::Define;
     anonFunction->define(this, *compilerResult, currentFunction);
@@ -264,7 +215,7 @@ shared_ptr<CResult> Compiler::run(const char* code) {
         return compilerResult;
 
     state = CompilerState::Compile;
-    anonFunction->compile(this, *compilerResult, currentFunction, nullptr, nullptr);
+    anonFunction->compile(this, *compilerResult, currentFunction, nullptr, nullptr, nullptr);
 #ifdef MODULE_OUTPUT
     module->dump();
 #endif    
@@ -365,23 +316,6 @@ Value* Compiler::getDefaultValue(shared_ptr<CType> type) {
     }
 }
 
-
-
-uint64_t genClass(const unsigned char classChars[], size_t classCharsSize);
-void deleteOurException(OurUnwindException *expToDelete);
-void deleteFromUnwindOurException(_Unwind_Reason_Code reason, OurUnwindException *expToDelete);
-
-Function* Compiler::getRaiseException() {
-    if (!raiseException) {
-        vector<Type*> args;
-        args.push_back(Type::getInt64Ty(context));
-        auto functType = FunctionType::get(Type::getVoidTy(context), args, false);
-        raiseException = Function::Create(functType, Function::ExternalLinkage, "raiseException", module.get());
-        raiseException->setDoesNotReturn();
-    }
-    return raiseException;
-}
-
 void Compiler::emitLocation(const NBase *node) {
 #ifdef DWARF_ENABLED
     if (!node)
@@ -396,16 +330,3 @@ void Compiler::emitLocation(const NBase *node) {
     builder->SetCurrentDebugLocation(DebugLoc::get(node->loc.line, node->loc.col, Scope));
 #endif
 }
-
-extern "C" void raiseException(int64_t type) {
-    size_t size = sizeof(OurException);
-    OurException *ret = (OurException*) memset(malloc(size), 0, size);
-    (ret->type).type = type;
-    (ret->unwindException).exception_class = ourBaseExceptionClass;
-    (ret->unwindException).exception_cleanup = deleteFromUnwindOurException;
-    
-    auto t = (&(ret->unwindException));
-    
-    _Unwind_RaiseException(t);
-}
-

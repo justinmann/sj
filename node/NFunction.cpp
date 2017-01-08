@@ -2,7 +2,7 @@
 
 int NFunction::counter = 0;
 
-NFunction::NFunction(CLoc loc, const char* type, const char* name, NodeList arguments, shared_ptr<NBlock> block) : type(type), name(name), block(block), NBase(loc) {
+NFunction::NFunction(CLoc loc, const char* type, const char* name, NodeList arguments, shared_ptr<NBlock> block, shared_ptr<NBlock> catchBlock) : type(type), name(name), block(block), catchBlock(catchBlock), NBase(loc) {
     if (this->name == "^") {
         this->name = strprintf("anon_%d", counter++);
     }
@@ -93,8 +93,9 @@ shared_ptr<CType> NFunction::getBlockType(Compiler* compiler, CResult& result, s
     return returnType;
 }
 
-Value* NFunction::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder) const {
+Value* NFunction::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder, BasicBlock* parentCatchBB) const {
     assert(compiler->state == CompilerState::Compile);
+    assert(parentCatchBB == nullptr);
     if (invalid.size() > 0) {
         result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
         return nullptr;
@@ -108,27 +109,75 @@ Value* NFunction::compile(Compiler* compiler, CResult& result, shared_ptr<CFunct
     }
     
     // Create all of the inner functions, before creating the code for this function
-    IRBuilder<> newBuilder(thisFunction->basicBlock);
-    
     for (auto it : functions) {
-        it->compile(compiler, result, thisFunction, thisFunction->getThisArgument(compiler, result), &newBuilder);
+        it->compile(compiler, result, thisFunction, thisFunction->getThisArgument(compiler, result), nullptr, nullptr);
     }
     
-    Value *RetVal = block->compile(compiler, result, thisFunction, thisFunction->getThisArgument(compiler, result), &newBuilder);
-    if (RetVal) {
+    BasicBlock* catchBB = nullptr;
+    if (catchBlock) {
+        catchBB = BasicBlock::Create(compiler->context);
+        IRBuilder<> catchBuilder(catchBB);
+        
+        llvm::Type *caughtResultFieldTypes[] = {
+            catchBuilder.getInt8PtrTy(),
+            catchBuilder.getInt32Ty()
+        };
+        auto caughtResultType = llvm::StructType::get(compiler->context, ArrayRef<Type*>(caughtResultFieldTypes));
+        auto caughtResult = catchBuilder.CreateLandingPad(caughtResultType, 1);
+        caughtResult->setCleanup(true);
+        Value *unwindException = catchBuilder.CreateExtractValue(caughtResult, 0);
+        Value *retTypeInfoIndex = catchBuilder.CreateExtractValue(caughtResult, 1);
+        
+        // Set up type infos to be caught
+        // TODO: caughtResult->addClause(module.getGlobalVariable(ourTypeInfoNames[exceptionTypesToCatch[i]]));
+        
+        Value *RetVal = catchBlock->compile(compiler, result, thisFunction, thisFunction->getThisArgument(compiler, result), &catchBuilder, nullptr);
+        if (function->getReturnType()->isVoidTy()) {
+            catchBuilder.CreateRetVoid();
+        } else {
+            if (!RetVal) {
+                result.addError(loc, CErrorCode::TypeMismatch, "no return for non-void function");
+                return nullptr;
+            }
+            
+            if (function->getReturnType() != RetVal->getType()) {
+                result.addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match return value type '%s'", Type_print(function->getReturnType()).c_str(), Type_print(RetVal->getType()).c_str());
+                return nullptr;
+            }
+            
+            catchBuilder.CreateRet(RetVal);
+        } 
+    }
+    
+    IRBuilder<> newBuilder(thisFunction->basicBlock);
+    Value *RetVal = block->compile(compiler, result, thisFunction, thisFunction->getThisArgument(compiler, result), &newBuilder, catchBB);
+    if (function->getReturnType()->isVoidTy()) {
+        newBuilder.CreateRetVoid();
+    } else {
+        if (!RetVal) {
+            result.addError(loc, CErrorCode::TypeMismatch, "no return for non-void function");
+            return nullptr;
+        }
+        
         if (function->getReturnType() != RetVal->getType()) {
             result.addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match return value type '%s'", Type_print(function->getReturnType()).c_str(), Type_print(RetVal->getType()).c_str());
+            return nullptr;
         }
+
         newBuilder.CreateRet(RetVal);
-    } else {
-        if (!function->getReturnType()->isVoidTy()) {
-            result.addError(loc, CErrorCode::TypeMismatch, "no return for non-void function");
-        }
-        newBuilder.CreateRetVoid();
+    }
+    
+    if (catchBB) {
+        function->getBasicBlockList().push_back(catchBB);
+    }
+    
+    if (catchBB) {
+        compiler->module->dump();
     }
     
     // Validate the generated code, checking for consistency.
     if (verifyFunction(*function) && result.errors.size() == 0) {
+        compiler->module->dump();
         function->dump();
         auto output = new raw_os_ostream(std::cout);
         verifyFunction(*function, output);

@@ -300,6 +300,14 @@ void testFunction() {
         func()
     )DELIM");
     assert(result->type == RESULT_INT && result->iResult == 9);
+
+    result = compiler.run(R"DELIM(
+		foo() {
+			void
+		}
+		foo()
+    )DELIM");
+    assert(result->type == RESULT_VOID);
 }
 
 void testClass() {
@@ -445,6 +453,16 @@ void testThrow() {
         assert(false);
     } catch (...) { }
     
+    try {
+    result = compiler.run(R"DELIM(
+		foo() {
+			throw(1)
+		}
+		foo()
+    )DELIM");
+        assert(false);
+    } catch(...) { }
+
     result = compiler.run(R"DELIM(
 		foo() {
 			throw(1)
@@ -480,6 +498,9 @@ void test() {
 }
 
 int main(int argc, char **argv) {   
+    shared_ptr<CResult> result;
+    Compiler compiler;
+    
     testThrow();
 
     

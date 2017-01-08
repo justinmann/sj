@@ -9,7 +9,7 @@ shared_ptr<CType> NInteger::getReturnType(Compiler* compiler, CResult& result, s
     return compiler->typeInt;
 }
 
-Value* NInteger::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const {
+Value* NInteger::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     

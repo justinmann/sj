@@ -23,129 +23,135 @@ Grammar
    10 var_decl: TIDENTIFIER assign stmt
    11         | TIDENTIFIER TQUOTE TIDENTIFIER assign stmt
 
-   12 func_decl: TIDENTIFIER func_block block
-   13          | TIDENTIFIER func_block TQUOTE TIDENTIFIER block
+   12 func_decl: TIDENTIFIER func_block block catch
+   13          | TIDENTIFIER func_block TQUOTE TIDENTIFIER block catch
 
-   14 func_call: TIDENTIFIER func_block
+   14 catch: %empty
+   15      | TCATCH block
 
-   15 func_block: TLPAREN TRPAREN
-   16           | TLPAREN func_args TRPAREN
-   17           | TLPAREN TEND func_args TRPAREN
-   18           | TLPAREN TEND func_args TEND TRPAREN
+   16 func_call: TIDENTIFIER func_block
 
-   19 func_args: func_arg
-   20          | func_args TEND func_arg
-   21          | func_args TCOMMA func_arg
+   17 func_block: TLPAREN TRPAREN
+   18           | TLPAREN func_args TRPAREN
+   19           | TLPAREN TEND func_args TRPAREN
+   20           | TLPAREN TEND func_args TEND TRPAREN
 
-   22 func_arg: var_decl
-   23         | func_decl
-   24         | expr
-   25         | TIDENTIFIER assign TQUOTE TIDENTIFIER
+   21 func_args: func_arg
+   22          | func_args TEND func_arg
+   23          | func_args TCOMMA func_arg
 
-   26 expr: func_call
-   27     | expr TPLUS var
-   28     | expr TMINUS var
-   29     | expr TMUL var
-   30     | expr TDIV var
-   31     | expr TCEQ var
-   32     | expr TCNE var
-   33     | expr TCLT var
-   34     | expr TCLE var
-   35     | expr TCGT var
-   36     | expr TCGE var
-   37     | TLPAREN expr TRPAREN
-   38     | expr TCAST TIDENTIFIER
-   39     | if_expr
-   40     | TTHROW TLPAREN expr TRPAREN
-   41     | var
+   24 func_arg: var_decl
+   25         | func_decl
+   26         | expr
+   27         | TIDENTIFIER assign TQUOTE TIDENTIFIER
 
-   42 if_expr: TIF expr block
-   43        | TIF expr block TELSE block
-   44        | TIF expr block TELSE if_expr
+   28 expr: func_call
+   29     | expr TPLUS var
+   30     | expr TMINUS var
+   31     | expr TMUL var
+   32     | expr TDIV var
+   33     | expr TCEQ var
+   34     | expr TCNE var
+   35     | expr TCLT var
+   36     | expr TCLE var
+   37     | expr TCGT var
+   38     | expr TCGE var
+   39     | TLPAREN expr TRPAREN
+   40     | expr TCAST TIDENTIFIER
+   41     | if_expr
+   42     | TTHROW TLPAREN expr TRPAREN
+   43     | var
 
-   45 var: TMINUS TINTEGER
-   46    | TINTEGER
-   47    | TMINUS TDOUBLE
-   48    | TDOUBLE
-   49    | TTRUE
-   50    | TFALSE
-   51    | TVOID
-   52    | TIDENTIFIER
+   44 if_expr: TIF expr block
+   45        | TIF expr block TELSE block
+   46        | TIF expr block TELSE if_expr
 
-   53 assign: TEQUAL
-   54       | TCOLON
+   47 var: TMINUS TINTEGER
+   48    | TINTEGER
+   49    | TMINUS TDOUBLE
+   50    | TDOUBLE
+   51    | TTRUE
+   52    | TFALSE
+   53    | TVOID
+   54    | TIDENTIFIER
+
+   55 assign: TEQUAL
+   56       | TCOLON
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
 error (256) 8
-TIDENTIFIER (258) 10 11 12 13 14 25 38 52
-TINTEGER (259) 45 46
-TDOUBLE (260) 47 48
+TIDENTIFIER (258) 10 11 12 13 16 27 40 54
+TINTEGER (259) 47 48
+TDOUBLE (260) 49 50
 TINVALID (261)
-TCEQ (262) 31
-TCNE (263) 32
-TCLT (264) 33
-TCLE (265) 34
-TCGT (266) 35
-TCGE (267) 36
-TEQUAL (268) 53
-TEND (269) 3 17 18 20
-TLPAREN (270) 15 16 17 18 37 40
-TRPAREN (271) 15 16 17 18 37 40
+TCEQ (262) 33
+TCNE (263) 34
+TCLT (264) 35
+TCLE (265) 36
+TCGT (266) 37
+TCGE (267) 38
+TEQUAL (268) 55
+TEND (269) 3 19 20 22
+TLPAREN (270) 17 18 19 20 39 42
+TRPAREN (271) 17 18 19 20 39 42
 TLBRACE (272) 9
 TRBRACE (273) 9
-TCOMMA (274) 21
-TCOLON (275) 54
-TQUOTE (276) 11 13 25
-TPLUS (277) 27
-TMINUS (278) 28 45 47
-TMUL (279) 29
-TDIV (280) 30
-TTRUE (281) 49
-TFALSE (282) 50
-TCAST (283) 38
-TVOID (284) 51
-TIF (285) 42 43 44
-TELSE (286) 43 44
-TTHROW (287) 40
+TCOMMA (274) 23
+TCOLON (275) 56
+TQUOTE (276) 11 13 27
+TPLUS (277) 29
+TMINUS (278) 30 47 49
+TMUL (279) 31
+TDIV (280) 32
+TTRUE (281) 51
+TFALSE (282) 52
+TCAST (283) 40
+TVOID (284) 53
+TIF (285) 44 45 46
+TELSE (286) 45 46
+TTHROW (287) 42
+TCATCH (288) 15
 
 
 Nonterminals, with rules where they appear
 
-$accept (33)
+$accept (34)
     on left: 0
-program (34)
+program (35)
     on left: 1, on right: 0
-stmts (35)
+stmts (36)
     on left: 2 3, on right: 1 3 9
-stmt (36)
+stmt (37)
     on left: 4 5 6 7 8, on right: 2 3 10 11
-block (37)
-    on left: 9, on right: 12 13 42 43 44
-var_decl (38)
-    on left: 10 11, on right: 5 22
-func_decl (39)
-    on left: 12 13, on right: 6 23
-func_call (40)
-    on left: 14, on right: 26
-func_block (41)
-    on left: 15 16 17 18, on right: 12 13 14
-func_args (42)
-    on left: 19 20 21, on right: 16 17 18 20 21
-func_arg (43)
-    on left: 22 23 24 25, on right: 19 20 21
-expr (44)
-    on left: 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41, on right:
-    7 24 27 28 29 30 31 32 33 34 35 36 37 38 40 42 43 44
-if_expr (45)
-    on left: 42 43 44, on right: 39 44
-var (46)
-    on left: 45 46 47 48 49 50 51 52, on right: 27 28 29 30 31 32 33
-    34 35 36 41
-assign (47)
-    on left: 53 54, on right: 10 11 25
+block (38)
+    on left: 9, on right: 12 13 15 44 45 46
+var_decl (39)
+    on left: 10 11, on right: 5 24
+func_decl (40)
+    on left: 12 13, on right: 6 25
+catch (41)
+    on left: 14 15, on right: 12 13
+func_call (42)
+    on left: 16, on right: 28
+func_block (43)
+    on left: 17 18 19 20, on right: 12 13 16
+func_args (44)
+    on left: 21 22 23, on right: 18 19 20 22 23
+func_arg (45)
+    on left: 24 25 26 27, on right: 21 22 23
+expr (46)
+    on left: 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43, on right:
+    7 26 29 30 31 32 33 34 35 36 37 38 39 40 42 44 45 46
+if_expr (47)
+    on left: 44 45 46, on right: 41 46
+var (48)
+    on left: 47 48 49 50 51 52 53 54, on right: 29 30 31 32 33 34 35
+    36 37 38 43
+assign (49)
+    on left: 55 56, on right: 10 11 27
 
 
 State 0
@@ -189,17 +195,17 @@ State 2
 
    10 var_decl: TIDENTIFIER . assign stmt
    11         | TIDENTIFIER . TQUOTE TIDENTIFIER assign stmt
-   12 func_decl: TIDENTIFIER . func_block block
-   13          | TIDENTIFIER . func_block TQUOTE TIDENTIFIER block
-   14 func_call: TIDENTIFIER . func_block
-   52 var: TIDENTIFIER .
+   12 func_decl: TIDENTIFIER . func_block block catch
+   13          | TIDENTIFIER . func_block TQUOTE TIDENTIFIER block catch
+   16 func_call: TIDENTIFIER . func_block
+   54 var: TIDENTIFIER .
 
     TEQUAL   shift, and go to state 21
     TLPAREN  shift, and go to state 22
     TCOLON   shift, and go to state 23
     TQUOTE   shift, and go to state 24
 
-    $default  reduce using rule 52 (var)
+    $default  reduce using rule 54 (var)
 
     func_block  go to state 25
     assign      go to state 26
@@ -207,21 +213,21 @@ State 2
 
 State 3
 
-   46 var: TINTEGER .
-
-    $default  reduce using rule 46 (var)
-
-
-State 4
-
-   48 var: TDOUBLE .
+   48 var: TINTEGER .
 
     $default  reduce using rule 48 (var)
 
 
+State 4
+
+   50 var: TDOUBLE .
+
+    $default  reduce using rule 50 (var)
+
+
 State 5
 
-   37 expr: TLPAREN . expr TRPAREN
+   39 expr: TLPAREN . expr TRPAREN
 
     TIDENTIFIER  shift, and go to state 27
     TINTEGER     shift, and go to state 3
@@ -242,8 +248,8 @@ State 5
 
 State 6
 
-   45 var: TMINUS . TINTEGER
-   47    | TMINUS . TDOUBLE
+   47 var: TMINUS . TINTEGER
+   49    | TMINUS . TDOUBLE
 
     TINTEGER  shift, and go to state 29
     TDOUBLE   shift, and go to state 30
@@ -251,30 +257,30 @@ State 6
 
 State 7
 
-   49 var: TTRUE .
-
-    $default  reduce using rule 49 (var)
-
-
-State 8
-
-   50 var: TFALSE .
-
-    $default  reduce using rule 50 (var)
-
-
-State 9
-
-   51 var: TVOID .
+   51 var: TTRUE .
 
     $default  reduce using rule 51 (var)
 
 
+State 8
+
+   52 var: TFALSE .
+
+    $default  reduce using rule 52 (var)
+
+
+State 9
+
+   53 var: TVOID .
+
+    $default  reduce using rule 53 (var)
+
+
 State 10
 
-   42 if_expr: TIF . expr block
-   43        | TIF . expr block TELSE block
-   44        | TIF . expr block TELSE if_expr
+   44 if_expr: TIF . expr block
+   45        | TIF . expr block TELSE block
+   46        | TIF . expr block TELSE if_expr
 
     TIDENTIFIER  shift, and go to state 27
     TINTEGER     shift, and go to state 3
@@ -295,7 +301,7 @@ State 10
 
 State 11
 
-   40 expr: TTHROW . TLPAREN expr TRPAREN
+   42 expr: TTHROW . TLPAREN expr TRPAREN
 
     TLPAREN  shift, and go to state 32
 
@@ -340,25 +346,25 @@ State 16
 
 State 17
 
-   26 expr: func_call .
+   28 expr: func_call .
 
-    $default  reduce using rule 26 (expr)
+    $default  reduce using rule 28 (expr)
 
 
 State 18
 
     7 stmt: expr .
-   27 expr: expr . TPLUS var
-   28     | expr . TMINUS var
-   29     | expr . TMUL var
-   30     | expr . TDIV var
-   31     | expr . TCEQ var
-   32     | expr . TCNE var
-   33     | expr . TCLT var
-   34     | expr . TCLE var
-   35     | expr . TCGT var
-   36     | expr . TCGE var
-   38     | expr . TCAST TIDENTIFIER
+   29 expr: expr . TPLUS var
+   30     | expr . TMINUS var
+   31     | expr . TMUL var
+   32     | expr . TDIV var
+   33     | expr . TCEQ var
+   34     | expr . TCNE var
+   35     | expr . TCLT var
+   36     | expr . TCLE var
+   37     | expr . TCGT var
+   38     | expr . TCGE var
+   40     | expr . TCAST TIDENTIFIER
 
     TCEQ    shift, and go to state 35
     TCNE    shift, and go to state 36
@@ -377,31 +383,31 @@ State 18
 
 State 19
 
-   39 expr: if_expr .
-
-    $default  reduce using rule 39 (expr)
-
-
-State 20
-
-   41 expr: var .
+   41 expr: if_expr .
 
     $default  reduce using rule 41 (expr)
 
 
+State 20
+
+   43 expr: var .
+
+    $default  reduce using rule 43 (expr)
+
+
 State 21
 
-   53 assign: TEQUAL .
+   55 assign: TEQUAL .
 
-    $default  reduce using rule 53 (assign)
+    $default  reduce using rule 55 (assign)
 
 
 State 22
 
-   15 func_block: TLPAREN . TRPAREN
-   16           | TLPAREN . func_args TRPAREN
-   17           | TLPAREN . TEND func_args TRPAREN
-   18           | TLPAREN . TEND func_args TEND TRPAREN
+   17 func_block: TLPAREN . TRPAREN
+   18           | TLPAREN . func_args TRPAREN
+   19           | TLPAREN . TEND func_args TRPAREN
+   20           | TLPAREN . TEND func_args TEND TRPAREN
 
     TIDENTIFIER  shift, and go to state 46
     TINTEGER     shift, and go to state 3
@@ -428,9 +434,9 @@ State 22
 
 State 23
 
-   54 assign: TCOLON .
+   56 assign: TCOLON .
 
-    $default  reduce using rule 54 (assign)
+    $default  reduce using rule 56 (assign)
 
 
 State 24
@@ -442,14 +448,14 @@ State 24
 
 State 25
 
-   12 func_decl: TIDENTIFIER func_block . block
-   13          | TIDENTIFIER func_block . TQUOTE TIDENTIFIER block
-   14 func_call: TIDENTIFIER func_block .
+   12 func_decl: TIDENTIFIER func_block . block catch
+   13          | TIDENTIFIER func_block . TQUOTE TIDENTIFIER block catch
+   16 func_call: TIDENTIFIER func_block .
 
     TLBRACE  shift, and go to state 55
     TQUOTE   shift, and go to state 56
 
-    $default  reduce using rule 14 (func_call)
+    $default  reduce using rule 16 (func_call)
 
     block  go to state 57
 
@@ -487,30 +493,30 @@ State 26
 
 State 27
 
-   14 func_call: TIDENTIFIER . func_block
-   52 var: TIDENTIFIER .
+   16 func_call: TIDENTIFIER . func_block
+   54 var: TIDENTIFIER .
 
     TLPAREN  shift, and go to state 22
 
-    $default  reduce using rule 52 (var)
+    $default  reduce using rule 54 (var)
 
     func_block  go to state 59
 
 
 State 28
 
-   27 expr: expr . TPLUS var
-   28     | expr . TMINUS var
-   29     | expr . TMUL var
-   30     | expr . TDIV var
-   31     | expr . TCEQ var
-   32     | expr . TCNE var
-   33     | expr . TCLT var
-   34     | expr . TCLE var
-   35     | expr . TCGT var
-   36     | expr . TCGE var
-   37     | TLPAREN expr . TRPAREN
-   38     | expr . TCAST TIDENTIFIER
+   29 expr: expr . TPLUS var
+   30     | expr . TMINUS var
+   31     | expr . TMUL var
+   32     | expr . TDIV var
+   33     | expr . TCEQ var
+   34     | expr . TCNE var
+   35     | expr . TCLT var
+   36     | expr . TCLE var
+   37     | expr . TCGT var
+   38     | expr . TCGE var
+   39     | TLPAREN expr . TRPAREN
+   40     | expr . TCAST TIDENTIFIER
 
     TCEQ     shift, and go to state 35
     TCNE     shift, and go to state 36
@@ -528,34 +534,34 @@ State 28
 
 State 29
 
-   45 var: TMINUS TINTEGER .
-
-    $default  reduce using rule 45 (var)
-
-
-State 30
-
-   47 var: TMINUS TDOUBLE .
+   47 var: TMINUS TINTEGER .
 
     $default  reduce using rule 47 (var)
 
 
+State 30
+
+   49 var: TMINUS TDOUBLE .
+
+    $default  reduce using rule 49 (var)
+
+
 State 31
 
-   27 expr: expr . TPLUS var
-   28     | expr . TMINUS var
-   29     | expr . TMUL var
-   30     | expr . TDIV var
-   31     | expr . TCEQ var
-   32     | expr . TCNE var
-   33     | expr . TCLT var
-   34     | expr . TCLE var
-   35     | expr . TCGT var
-   36     | expr . TCGE var
-   38     | expr . TCAST TIDENTIFIER
-   42 if_expr: TIF expr . block
-   43        | TIF expr . block TELSE block
-   44        | TIF expr . block TELSE if_expr
+   29 expr: expr . TPLUS var
+   30     | expr . TMINUS var
+   31     | expr . TMUL var
+   32     | expr . TDIV var
+   33     | expr . TCEQ var
+   34     | expr . TCNE var
+   35     | expr . TCLT var
+   36     | expr . TCLE var
+   37     | expr . TCGT var
+   38     | expr . TCGE var
+   40     | expr . TCAST TIDENTIFIER
+   44 if_expr: TIF expr . block
+   45        | TIF expr . block TELSE block
+   46        | TIF expr . block TELSE if_expr
 
     TCEQ     shift, and go to state 35
     TCNE     shift, and go to state 36
@@ -575,7 +581,7 @@ State 31
 
 State 32
 
-   40 expr: TTHROW TLPAREN . expr TRPAREN
+   42 expr: TTHROW TLPAREN . expr TRPAREN
 
     TIDENTIFIER  shift, and go to state 27
     TINTEGER     shift, and go to state 3
@@ -632,7 +638,7 @@ State 34
 
 State 35
 
-   31 expr: expr TCEQ . var
+   33 expr: expr TCEQ . var
 
     TIDENTIFIER  shift, and go to state 64
     TINTEGER     shift, and go to state 3
@@ -647,7 +653,7 @@ State 35
 
 State 36
 
-   32 expr: expr TCNE . var
+   34 expr: expr TCNE . var
 
     TIDENTIFIER  shift, and go to state 64
     TINTEGER     shift, and go to state 3
@@ -662,7 +668,7 @@ State 36
 
 State 37
 
-   33 expr: expr TCLT . var
+   35 expr: expr TCLT . var
 
     TIDENTIFIER  shift, and go to state 64
     TINTEGER     shift, and go to state 3
@@ -677,7 +683,7 @@ State 37
 
 State 38
 
-   34 expr: expr TCLE . var
+   36 expr: expr TCLE . var
 
     TIDENTIFIER  shift, and go to state 64
     TINTEGER     shift, and go to state 3
@@ -692,7 +698,7 @@ State 38
 
 State 39
 
-   35 expr: expr TCGT . var
+   37 expr: expr TCGT . var
 
     TIDENTIFIER  shift, and go to state 64
     TINTEGER     shift, and go to state 3
@@ -707,7 +713,7 @@ State 39
 
 State 40
 
-   36 expr: expr TCGE . var
+   38 expr: expr TCGE . var
 
     TIDENTIFIER  shift, and go to state 64
     TINTEGER     shift, and go to state 3
@@ -722,7 +728,7 @@ State 40
 
 State 41
 
-   27 expr: expr TPLUS . var
+   29 expr: expr TPLUS . var
 
     TIDENTIFIER  shift, and go to state 64
     TINTEGER     shift, and go to state 3
@@ -737,7 +743,7 @@ State 41
 
 State 42
 
-   28 expr: expr TMINUS . var
+   30 expr: expr TMINUS . var
 
     TIDENTIFIER  shift, and go to state 64
     TINTEGER     shift, and go to state 3
@@ -752,7 +758,7 @@ State 42
 
 State 43
 
-   29 expr: expr TMUL . var
+   31 expr: expr TMUL . var
 
     TIDENTIFIER  shift, and go to state 64
     TINTEGER     shift, and go to state 3
@@ -767,7 +773,7 @@ State 43
 
 State 44
 
-   30 expr: expr TDIV . var
+   32 expr: expr TDIV . var
 
     TIDENTIFIER  shift, and go to state 64
     TINTEGER     shift, and go to state 3
@@ -782,7 +788,7 @@ State 44
 
 State 45
 
-   38 expr: expr TCAST . TIDENTIFIER
+   40 expr: expr TCAST . TIDENTIFIER
 
     TIDENTIFIER  shift, and go to state 75
 
@@ -791,18 +797,18 @@ State 46
 
    10 var_decl: TIDENTIFIER . assign stmt
    11         | TIDENTIFIER . TQUOTE TIDENTIFIER assign stmt
-   12 func_decl: TIDENTIFIER . func_block block
-   13          | TIDENTIFIER . func_block TQUOTE TIDENTIFIER block
-   14 func_call: TIDENTIFIER . func_block
-   25 func_arg: TIDENTIFIER . assign TQUOTE TIDENTIFIER
-   52 var: TIDENTIFIER .
+   12 func_decl: TIDENTIFIER . func_block block catch
+   13          | TIDENTIFIER . func_block TQUOTE TIDENTIFIER block catch
+   16 func_call: TIDENTIFIER . func_block
+   27 func_arg: TIDENTIFIER . assign TQUOTE TIDENTIFIER
+   54 var: TIDENTIFIER .
 
     TEQUAL   shift, and go to state 21
     TLPAREN  shift, and go to state 22
     TCOLON   shift, and go to state 23
     TQUOTE   shift, and go to state 24
 
-    $default  reduce using rule 52 (var)
+    $default  reduce using rule 54 (var)
 
     func_block  go to state 25
     assign      go to state 76
@@ -810,8 +816,8 @@ State 46
 
 State 47
 
-   17 func_block: TLPAREN TEND . func_args TRPAREN
-   18           | TLPAREN TEND . func_args TEND TRPAREN
+   19 func_block: TLPAREN TEND . func_args TRPAREN
+   20           | TLPAREN TEND . func_args TEND TRPAREN
 
     TIDENTIFIER  shift, and go to state 46
     TINTEGER     shift, and go to state 3
@@ -836,30 +842,30 @@ State 47
 
 State 48
 
-   15 func_block: TLPAREN TRPAREN .
+   17 func_block: TLPAREN TRPAREN .
 
-    $default  reduce using rule 15 (func_block)
+    $default  reduce using rule 17 (func_block)
 
 
 State 49
 
-   22 func_arg: var_decl .
+   24 func_arg: var_decl .
 
-    $default  reduce using rule 22 (func_arg)
+    $default  reduce using rule 24 (func_arg)
 
 
 State 50
 
-   23 func_arg: func_decl .
+   25 func_arg: func_decl .
 
-    $default  reduce using rule 23 (func_arg)
+    $default  reduce using rule 25 (func_arg)
 
 
 State 51
 
-   16 func_block: TLPAREN func_args . TRPAREN
-   20 func_args: func_args . TEND func_arg
-   21          | func_args . TCOMMA func_arg
+   18 func_block: TLPAREN func_args . TRPAREN
+   22 func_args: func_args . TEND func_arg
+   23          | func_args . TCOMMA func_arg
 
     TEND     shift, and go to state 78
     TRPAREN  shift, and go to state 79
@@ -868,25 +874,25 @@ State 51
 
 State 52
 
-   19 func_args: func_arg .
+   21 func_args: func_arg .
 
-    $default  reduce using rule 19 (func_args)
+    $default  reduce using rule 21 (func_args)
 
 
 State 53
 
-   24 func_arg: expr .
-   27 expr: expr . TPLUS var
-   28     | expr . TMINUS var
-   29     | expr . TMUL var
-   30     | expr . TDIV var
-   31     | expr . TCEQ var
-   32     | expr . TCNE var
-   33     | expr . TCLT var
-   34     | expr . TCLE var
-   35     | expr . TCGT var
-   36     | expr . TCGE var
-   38     | expr . TCAST TIDENTIFIER
+   26 func_arg: expr .
+   29 expr: expr . TPLUS var
+   30     | expr . TMINUS var
+   31     | expr . TMUL var
+   32     | expr . TDIV var
+   33     | expr . TCEQ var
+   34     | expr . TCNE var
+   35     | expr . TCLT var
+   36     | expr . TCLE var
+   37     | expr . TCGT var
+   38     | expr . TCGE var
+   40     | expr . TCAST TIDENTIFIER
 
     TCEQ    shift, and go to state 35
     TCNE    shift, and go to state 36
@@ -900,7 +906,7 @@ State 53
     TDIV    shift, and go to state 44
     TCAST   shift, and go to state 45
 
-    $default  reduce using rule 24 (func_arg)
+    $default  reduce using rule 26 (func_arg)
 
 
 State 54
@@ -944,16 +950,20 @@ State 55
 
 State 56
 
-   13 func_decl: TIDENTIFIER func_block TQUOTE . TIDENTIFIER block
+   13 func_decl: TIDENTIFIER func_block TQUOTE . TIDENTIFIER block catch
 
     TIDENTIFIER  shift, and go to state 83
 
 
 State 57
 
-   12 func_decl: TIDENTIFIER func_block block .
+   12 func_decl: TIDENTIFIER func_block block . catch
 
-    $default  reduce using rule 12 (func_decl)
+    TCATCH  shift, and go to state 84
+
+    $default  reduce using rule 14 (catch)
+
+    catch  go to state 85
 
 
 State 58
@@ -965,43 +975,43 @@ State 58
 
 State 59
 
-   14 func_call: TIDENTIFIER func_block .
+   16 func_call: TIDENTIFIER func_block .
 
-    $default  reduce using rule 14 (func_call)
+    $default  reduce using rule 16 (func_call)
 
 
 State 60
 
-   37 expr: TLPAREN expr TRPAREN .
+   39 expr: TLPAREN expr TRPAREN .
 
-    $default  reduce using rule 37 (expr)
+    $default  reduce using rule 39 (expr)
 
 
 State 61
 
-   42 if_expr: TIF expr block .
-   43        | TIF expr block . TELSE block
-   44        | TIF expr block . TELSE if_expr
+   44 if_expr: TIF expr block .
+   45        | TIF expr block . TELSE block
+   46        | TIF expr block . TELSE if_expr
 
-    TELSE  shift, and go to state 84
+    TELSE  shift, and go to state 86
 
-    $default  reduce using rule 42 (if_expr)
+    $default  reduce using rule 44 (if_expr)
 
 
 State 62
 
-   27 expr: expr . TPLUS var
-   28     | expr . TMINUS var
-   29     | expr . TMUL var
-   30     | expr . TDIV var
-   31     | expr . TCEQ var
-   32     | expr . TCNE var
-   33     | expr . TCLT var
-   34     | expr . TCLE var
-   35     | expr . TCGT var
-   36     | expr . TCGE var
-   38     | expr . TCAST TIDENTIFIER
-   40     | TTHROW TLPAREN expr . TRPAREN
+   29 expr: expr . TPLUS var
+   30     | expr . TMINUS var
+   31     | expr . TMUL var
+   32     | expr . TDIV var
+   33     | expr . TCEQ var
+   34     | expr . TCNE var
+   35     | expr . TCLT var
+   36     | expr . TCLE var
+   37     | expr . TCGT var
+   38     | expr . TCGE var
+   40     | expr . TCAST TIDENTIFIER
+   42     | TTHROW TLPAREN expr . TRPAREN
 
     TCEQ     shift, and go to state 35
     TCNE     shift, and go to state 36
@@ -1009,7 +1019,7 @@ State 62
     TCLE     shift, and go to state 38
     TCGT     shift, and go to state 39
     TCGE     shift, and go to state 40
-    TRPAREN  shift, and go to state 85
+    TRPAREN  shift, and go to state 87
     TPLUS    shift, and go to state 41
     TMINUS   shift, and go to state 42
     TMUL     shift, and go to state 43
@@ -1026,99 +1036,99 @@ State 63
 
 State 64
 
-   52 var: TIDENTIFIER .
+   54 var: TIDENTIFIER .
 
-    $default  reduce using rule 52 (var)
+    $default  reduce using rule 54 (var)
 
 
 State 65
 
-   31 expr: expr TCEQ var .
-
-    $default  reduce using rule 31 (expr)
-
-
-State 66
-
-   32 expr: expr TCNE var .
-
-    $default  reduce using rule 32 (expr)
-
-
-State 67
-
-   33 expr: expr TCLT var .
+   33 expr: expr TCEQ var .
 
     $default  reduce using rule 33 (expr)
 
 
-State 68
+State 66
 
-   34 expr: expr TCLE var .
+   34 expr: expr TCNE var .
 
     $default  reduce using rule 34 (expr)
 
 
-State 69
+State 67
 
-   35 expr: expr TCGT var .
+   35 expr: expr TCLT var .
 
     $default  reduce using rule 35 (expr)
 
 
-State 70
+State 68
 
-   36 expr: expr TCGE var .
+   36 expr: expr TCLE var .
 
     $default  reduce using rule 36 (expr)
 
 
+State 69
+
+   37 expr: expr TCGT var .
+
+    $default  reduce using rule 37 (expr)
+
+
+State 70
+
+   38 expr: expr TCGE var .
+
+    $default  reduce using rule 38 (expr)
+
+
 State 71
 
-   27 expr: expr TPLUS var .
-
-    $default  reduce using rule 27 (expr)
-
-
-State 72
-
-   28 expr: expr TMINUS var .
-
-    $default  reduce using rule 28 (expr)
-
-
-State 73
-
-   29 expr: expr TMUL var .
+   29 expr: expr TPLUS var .
 
     $default  reduce using rule 29 (expr)
 
 
-State 74
+State 72
 
-   30 expr: expr TDIV var .
+   30 expr: expr TMINUS var .
 
     $default  reduce using rule 30 (expr)
 
 
+State 73
+
+   31 expr: expr TMUL var .
+
+    $default  reduce using rule 31 (expr)
+
+
+State 74
+
+   32 expr: expr TDIV var .
+
+    $default  reduce using rule 32 (expr)
+
+
 State 75
 
-   38 expr: expr TCAST TIDENTIFIER .
+   40 expr: expr TCAST TIDENTIFIER .
 
-    $default  reduce using rule 38 (expr)
+    $default  reduce using rule 40 (expr)
 
 
 State 76
 
    10 var_decl: TIDENTIFIER assign . stmt
-   25 func_arg: TIDENTIFIER assign . TQUOTE TIDENTIFIER
+   27 func_arg: TIDENTIFIER assign . TQUOTE TIDENTIFIER
 
     error        shift, and go to state 1
     TIDENTIFIER  shift, and go to state 2
     TINTEGER     shift, and go to state 3
     TDOUBLE      shift, and go to state 4
     TLPAREN      shift, and go to state 5
-    TQUOTE       shift, and go to state 86
+    TQUOTE       shift, and go to state 88
     TMINUS       shift, and go to state 6
     TTRUE        shift, and go to state 7
     TFALSE       shift, and go to state 8
@@ -1141,19 +1151,19 @@ State 76
 
 State 77
 
-   17 func_block: TLPAREN TEND func_args . TRPAREN
-   18           | TLPAREN TEND func_args . TEND TRPAREN
-   20 func_args: func_args . TEND func_arg
-   21          | func_args . TCOMMA func_arg
+   19 func_block: TLPAREN TEND func_args . TRPAREN
+   20           | TLPAREN TEND func_args . TEND TRPAREN
+   22 func_args: func_args . TEND func_arg
+   23          | func_args . TCOMMA func_arg
 
-    TEND     shift, and go to state 87
-    TRPAREN  shift, and go to state 88
+    TEND     shift, and go to state 89
+    TRPAREN  shift, and go to state 90
     TCOMMA   shift, and go to state 80
 
 
 State 78
 
-   20 func_args: func_args TEND . func_arg
+   22 func_args: func_args TEND . func_arg
 
     TIDENTIFIER  shift, and go to state 46
     TINTEGER     shift, and go to state 3
@@ -1169,7 +1179,7 @@ State 78
     var_decl   go to state 49
     func_decl  go to state 50
     func_call  go to state 17
-    func_arg   go to state 89
+    func_arg   go to state 91
     expr       go to state 53
     if_expr    go to state 19
     var        go to state 20
@@ -1177,14 +1187,14 @@ State 78
 
 State 79
 
-   16 func_block: TLPAREN func_args TRPAREN .
+   18 func_block: TLPAREN func_args TRPAREN .
 
-    $default  reduce using rule 16 (func_block)
+    $default  reduce using rule 18 (func_block)
 
 
 State 80
 
-   21 func_args: func_args TCOMMA . func_arg
+   23 func_args: func_args TCOMMA . func_arg
 
     TIDENTIFIER  shift, and go to state 46
     TINTEGER     shift, and go to state 3
@@ -1200,7 +1210,7 @@ State 80
     var_decl   go to state 49
     func_decl  go to state 50
     func_call  go to state 17
-    func_arg   go to state 90
+    func_arg   go to state 92
     expr       go to state 53
     if_expr    go to state 19
     var        go to state 20
@@ -1228,7 +1238,7 @@ State 81
     TRBRACE  reduce using rule 4 (stmt)
     TCOMMA   reduce using rule 4 (stmt)
 
-    stmt       go to state 91
+    stmt       go to state 93
     var_decl   go to state 15
     func_decl  go to state 16
     func_call  go to state 17
@@ -1243,54 +1253,70 @@ State 82
     9 block: TLBRACE stmts . TRBRACE
 
     TEND     shift, and go to state 34
-    TRBRACE  shift, and go to state 92
+    TRBRACE  shift, and go to state 94
 
 
 State 83
 
-   13 func_decl: TIDENTIFIER func_block TQUOTE TIDENTIFIER . block
+   13 func_decl: TIDENTIFIER func_block TQUOTE TIDENTIFIER . block catch
 
     TLBRACE  shift, and go to state 55
 
-    block  go to state 93
+    block  go to state 95
 
 
 State 84
 
-   43 if_expr: TIF expr block TELSE . block
-   44        | TIF expr block TELSE . if_expr
+   15 catch: TCATCH . block
 
     TLBRACE  shift, and go to state 55
-    TIF      shift, and go to state 10
 
-    block    go to state 94
-    if_expr  go to state 95
+    block  go to state 96
 
 
 State 85
 
-   40 expr: TTHROW TLPAREN expr TRPAREN .
+   12 func_decl: TIDENTIFIER func_block block catch .
 
-    $default  reduce using rule 40 (expr)
+    $default  reduce using rule 12 (func_decl)
 
 
 State 86
 
-   25 func_arg: TIDENTIFIER assign TQUOTE . TIDENTIFIER
+   45 if_expr: TIF expr block TELSE . block
+   46        | TIF expr block TELSE . if_expr
 
-    TIDENTIFIER  shift, and go to state 96
+    TLBRACE  shift, and go to state 55
+    TIF      shift, and go to state 10
+
+    block    go to state 97
+    if_expr  go to state 98
 
 
 State 87
 
-   18 func_block: TLPAREN TEND func_args TEND . TRPAREN
-   20 func_args: func_args TEND . func_arg
+   42 expr: TTHROW TLPAREN expr TRPAREN .
+
+    $default  reduce using rule 42 (expr)
+
+
+State 88
+
+   27 func_arg: TIDENTIFIER assign TQUOTE . TIDENTIFIER
+
+    TIDENTIFIER  shift, and go to state 99
+
+
+State 89
+
+   20 func_block: TLPAREN TEND func_args TEND . TRPAREN
+   22 func_args: func_args TEND . func_arg
 
     TIDENTIFIER  shift, and go to state 46
     TINTEGER     shift, and go to state 3
     TDOUBLE      shift, and go to state 4
     TLPAREN      shift, and go to state 5
-    TRPAREN      shift, and go to state 97
+    TRPAREN      shift, and go to state 100
     TMINUS       shift, and go to state 6
     TTRUE        shift, and go to state 7
     TFALSE       shift, and go to state 8
@@ -1301,77 +1327,95 @@ State 87
     var_decl   go to state 49
     func_decl  go to state 50
     func_call  go to state 17
-    func_arg   go to state 89
+    func_arg   go to state 91
     expr       go to state 53
     if_expr    go to state 19
     var        go to state 20
 
 
-State 88
-
-   17 func_block: TLPAREN TEND func_args TRPAREN .
-
-    $default  reduce using rule 17 (func_block)
-
-
-State 89
-
-   20 func_args: func_args TEND func_arg .
-
-    $default  reduce using rule 20 (func_args)
-
-
 State 90
 
-   21 func_args: func_args TCOMMA func_arg .
+   19 func_block: TLPAREN TEND func_args TRPAREN .
 
-    $default  reduce using rule 21 (func_args)
+    $default  reduce using rule 19 (func_block)
 
 
 State 91
+
+   22 func_args: func_args TEND func_arg .
+
+    $default  reduce using rule 22 (func_args)
+
+
+State 92
+
+   23 func_args: func_args TCOMMA func_arg .
+
+    $default  reduce using rule 23 (func_args)
+
+
+State 93
 
    11 var_decl: TIDENTIFIER TQUOTE TIDENTIFIER assign stmt .
 
     $default  reduce using rule 11 (var_decl)
 
 
-State 92
+State 94
 
     9 block: TLBRACE stmts TRBRACE .
 
     $default  reduce using rule 9 (block)
 
 
-State 93
-
-   13 func_decl: TIDENTIFIER func_block TQUOTE TIDENTIFIER block .
-
-    $default  reduce using rule 13 (func_decl)
-
-
-State 94
-
-   43 if_expr: TIF expr block TELSE block .
-
-    $default  reduce using rule 43 (if_expr)
-
-
 State 95
 
-   44 if_expr: TIF expr block TELSE if_expr .
+   13 func_decl: TIDENTIFIER func_block TQUOTE TIDENTIFIER block . catch
 
-    $default  reduce using rule 44 (if_expr)
+    TCATCH  shift, and go to state 84
+
+    $default  reduce using rule 14 (catch)
+
+    catch  go to state 101
 
 
 State 96
 
-   25 func_arg: TIDENTIFIER assign TQUOTE TIDENTIFIER .
+   15 catch: TCATCH block .
 
-    $default  reduce using rule 25 (func_arg)
+    $default  reduce using rule 15 (catch)
 
 
 State 97
 
-   18 func_block: TLPAREN TEND func_args TEND TRPAREN .
+   45 if_expr: TIF expr block TELSE block .
 
-    $default  reduce using rule 18 (func_block)
+    $default  reduce using rule 45 (if_expr)
+
+
+State 98
+
+   46 if_expr: TIF expr block TELSE if_expr .
+
+    $default  reduce using rule 46 (if_expr)
+
+
+State 99
+
+   27 func_arg: TIDENTIFIER assign TQUOTE TIDENTIFIER .
+
+    $default  reduce using rule 27 (func_arg)
+
+
+State 100
+
+   20 func_block: TLPAREN TEND func_args TEND TRPAREN .
+
+    $default  reduce using rule 20 (func_block)
+
+
+State 101
+
+   13 func_decl: TIDENTIFIER func_block TQUOTE TIDENTIFIER block catch .
+
+    $default  reduce using rule 13 (func_decl)

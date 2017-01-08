@@ -23,7 +23,7 @@ shared_ptr<CType> NVariable::getReturnType(Compiler* compiler, CResult& result, 
     return getParentValue(compiler, result, loc, thisFunction, nullptr, nullptr, names, nullptr);
 }
 
-Value* NVariable::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const {
+Value* NVariable::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     Value* value = nullptr;

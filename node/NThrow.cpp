@@ -17,14 +17,14 @@ shared_ptr<CType> NThrow::getReturnType(Compiler* compiler, CResult& result, sha
     return compiler->typeVoid;
 }
 
-Value* NThrow::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const {
+Value* NThrow::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
     assert(compiler->state == CompilerState::Compile);
     
-    auto value = node->compile(compiler, result, thisFunction, thisValue, builder);
+    auto value = node->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
     assert(value->getType()->isIntegerTy(64));
     compiler->emitLocation(this);
     
-    auto raiseException = compiler->getRaiseException();
+    auto raiseException = compiler->exception->getRaiseException();
     auto args = ArrayRef<Value*>(value);
     builder->CreateCall(raiseException, args);
     

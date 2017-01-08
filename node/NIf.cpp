@@ -43,7 +43,7 @@ shared_ptr<CType> NIf::getReturnType(Compiler* compiler, CResult& result, shared
     return nullptr;
 }
 
-Value* NIf::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const {
+Value* NIf::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
@@ -56,10 +56,10 @@ Value* NIf::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> t
     
     // If block
     function->getBasicBlockList().push_back(ifBB);
-    auto c = condition->compile(compiler, result, thisFunction, thisValue, builder);
+    auto c = condition->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
     builder->CreateCondBr(c, ifBB, elseBB);
     builder->SetInsertPoint(ifBB);
-    auto ifValue = ifBlock->compile(compiler, result, thisFunction, thisValue, builder);
+    auto ifValue = ifBlock->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
     if (returnType != compiler->typeVoid && !ifValue) {
         result.errors.push_back(CError(loc, CErrorCode::NoDefaultValue, "type does not have a default value"));
         return nullptr;
@@ -72,7 +72,7 @@ Value* NIf::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> t
     builder->SetInsertPoint(elseBB);
     Value* elseValue = nullptr;
     if (elseBlock) {
-        elseValue = elseBlock->compile(compiler, result, thisFunction, thisValue, builder);
+        elseValue = elseBlock->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
         if (returnType != compiler->typeVoid && !elseValue) {
             result.errors.push_back(CError(loc, CErrorCode::NoDefaultValue, "type does not have a default value"));
             return nullptr;

@@ -104,11 +104,11 @@ shared_ptr<CType> NCall::getReturnType(Compiler* compiler, CResult& result, shar
     return type;
 }
 
-Value* NCall::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue22, IRBuilder<>* builder) const {
+Value* NCall::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
-    auto callee = getCFunction(compiler, result, thisFunction, thisValue22, builder);
+    auto callee = getCFunction(compiler, result, thisFunction, thisValue, builder);
     if (!callee) {
         return nullptr;
     }
@@ -183,9 +183,9 @@ Value* NCall::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction>
         auto isDefaultAssignment = parameters[argIndex] == defaultAssignment->rightSide;
         Value* value;
         if (isDefaultAssignment) {
-            value = parameters[argIndex]->compile(compiler, result, callee, newValue, builder);
+            value = parameters[argIndex]->compile(compiler, result, callee, newValue, builder, catchBB);
         } else {
-            value = parameters[argIndex]->compile(compiler, result, thisFunction, thisValue22, builder);
+            value = parameters[argIndex]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
         }
         
         if (!value) {
@@ -211,9 +211,9 @@ Value* NCall::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction>
     // Add "parent" to "this"
     argIndex = callee->getThisIndex("parent");
     if (argIndex != -1) {
-        Value* parentValue = thisValue22;
+        Value* parentValue = thisValue;
         if (dotNames.size() > 0) {
-            NVariable::getParentValue(compiler, result, loc, thisFunction, thisValue22, builder, dotNames, &parentValue);
+            NVariable::getParentValue(compiler, result, loc, thisFunction, thisValue, builder, dotNames, &parentValue);
         } else {
             // if recursively calling ourselves then re-use parent
             if (callee == thisFunction) {
@@ -250,7 +250,20 @@ Value* NCall::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction>
     argsV.push_back(newValue);
     auto func = callee->getFunction(compiler, result);
 
-    return builder->CreateCall(func, argsV, "calltmp");
+    Value* returnValue = nullptr;
+    
+    if (catchBB) {
+        auto continueBB = BasicBlock::Create(compiler->context);
+        returnValue = builder->CreateInvoke(func, continueBB, catchBB, argsV);
+        
+        Function *function = builder->GetInsertBlock()->getParent();
+        function->getBasicBlockList().push_back(continueBB);
+        builder->SetInsertPoint(continueBB);
+    } else {
+        returnValue = builder->CreateCall(func, argsV);
+    }
+    
+    return returnValue;
 }
 
 void NCall::dump(Compiler* compiler, int level) const {
