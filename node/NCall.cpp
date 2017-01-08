@@ -120,7 +120,7 @@ Value* NCall::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction>
     auto newValue = entryBuilder.CreateAlloca(newType->llvmAllocType(compiler, result), 0, newType->name.c_str());
 
     if (arguments.size() > callee->node->assignments.size()) {
-        result.addError(CLoc::undefined, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments.size(), callee->node->assignments.size());
+        result.addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments.size(), callee->node->assignments.size());
         return nullptr;
     }
     
@@ -134,12 +134,12 @@ Value* NCall::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction>
             assert(parameterAssignment->inFunctionDeclaration);
             auto index = callee->getThisIndex(parameterAssignment->name);
             if (index == -1) {
-                result.addError(CLoc::undefined, CErrorCode::ParameterDoesNotExist, "cannot find parameter '%s'", parameterAssignment->name.c_str());
+                result.addError(loc, CErrorCode::ParameterDoesNotExist, "cannot find parameter '%s'", parameterAssignment->name.c_str());
                 return nullptr;
             }
             
             if (parameters[index] != nullptr) {
-                result.addError(CLoc::undefined, CErrorCode::ParameterRedefined, "defined parameter '%s' twice", parameterAssignment->name.c_str());
+                result.addError(loc, CErrorCode::ParameterRedefined, "defined parameter '%s' twice", parameterAssignment->name.c_str());
                 return nullptr;
             }
             
@@ -147,12 +147,12 @@ Value* NCall::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction>
             hasSetByName = true;
         } else {
             if (hasSetByName) {
-                result.addError(CLoc::undefined, CErrorCode::ParameterByIndexAfterByName, "all named parameters must be after the un-named parameters");
+                result.addError(loc, CErrorCode::ParameterByIndexAfterByName, "all named parameters must be after the un-named parameters");
                 return nullptr;
             }
             
             if (parameters[argIndex] != nullptr) {
-                result.addError(CLoc::undefined, CErrorCode::Internal, "re-defining the same parameters which should be impossible for un-named parameters");
+                result.addError(loc, CErrorCode::Internal, "re-defining the same parameters which should be impossible for un-named parameters");
                 return nullptr;
             }
             
@@ -166,6 +166,10 @@ Value* NCall::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction>
         if (parameters[argIndex] == nullptr) {
             auto defaultAssignment = static_pointer_cast<NAssignment>(it);
             assert(defaultAssignment->inFunctionDeclaration);
+            if (!defaultAssignment->rightSide) {
+                result.addError(loc, CErrorCode::ParameterRequired, "must assign value to parameter '%s'", it->name.c_str());
+                return nullptr;
+            }
             parameters[argIndex] = defaultAssignment->rightSide;
         }
         argIndex++;

@@ -258,8 +258,20 @@ void testFunction() {
     result = compiler.run("func(x: 1, y: 2) { x + y }; func(1.0)");
     assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::TypeMismatch);
 
+    result = compiler.run("func(x: 'int) { x }; func(1)");
+    assert(result->type == RESULT_INT && result->iResult == 1);
+
+    result = compiler.run("func(x: 'float) { x }; func(1.0)");
+    assert(result->type == RESULT_FLOAT && result->fResult == 1.0);
+
+    result = compiler.run("func(x: 'float) { x }; func(1)");
+    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::TypeMismatch);
+
+    result = compiler.run("func(x: 'int) { x }; func()");
+    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::ParameterRequired);
+
     result = compiler.run(R"DELIM(
-        func(x: 0)'int {
+        func(x: 'int)'int {
             if x > 0 {
                 func(x - 1)
             } else {
@@ -329,7 +341,7 @@ void testClass() {
 
     result = compiler.run(R"DELIM(
 		class(
-			foo(x: 0) {
+			foo(x: 'int) {
 				if x > 0 {
 					bar(x - 1)
 				} else {
@@ -347,7 +359,7 @@ void testClass() {
     
     result = compiler.run(R"DELIM(
 		math(
-			sub(x: 0, y: 0) {
+			sub(x: 'int, y: 'int) {
 				x - y
 			}
 		) { this }
@@ -383,7 +395,7 @@ void testClass() {
     
     result = compiler.run(R"DELIM(
 		math: ^(
-			sub(x: 0, y: 0) {
+                sub(x: 'int, y: 'int) {
 				x - y
 			}
 		) { this }

@@ -77,6 +77,7 @@ enum CErrorCode {
     ParameterByIndexAfterByName,
     ParameterRedefined,
     ParameterDoesNotExist,
+    ParameterRequired,
     TooManyParameters,
     InvalidFunction
 };

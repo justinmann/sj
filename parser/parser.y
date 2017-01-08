@@ -120,7 +120,8 @@ func_args  			: func_arg										{ $$ = new NodeList(); $$->push_back(shared_pt
 
 func_arg			: var_decl 										
 					| func_decl 										
-					| expr 											
+					| expr 	
+					| TIDENTIFIER assign TQUOTE TIDENTIFIER		    { $$ = new NAssignment(LOC, $4->c_str(), $1->c_str(), nullptr, $2); }								
 					; 
 
 expr				: func_call 	

@@ -28,7 +28,9 @@ void NAssignment::define(Compiler* compiler, CResult& result, shared_ptr<CFuncti
         nfunction->define(compiler, result, thisFunction);
     }
     
-    rightSide->define(compiler, result, thisFunction);
+    if (rightSide) {
+        rightSide->define(compiler, result, thisFunction);
+    }
 }
 
 void NAssignment::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
@@ -37,11 +39,28 @@ void NAssignment::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFuncti
         nfunction->fixVar(compiler, result, thisFunction);
     }
     
-    rightSide->fixVar(compiler, result, thisFunction);
+    if (rightSide) {
+        rightSide->fixVar(compiler, result, thisFunction);
+    }
 }
 
 shared_ptr<CType> NAssignment::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
     assert(compiler->state >= CompilerState::FixVar);
+    
+    if (typeName.size() > 0) {
+        shared_ptr<CType> valueType = compiler->getType(typeName.c_str());
+        if (!valueType) {
+            result.addError(loc, CErrorCode::InvalidType, "explicit type does not exist");
+            return nullptr;
+        }
+        return valueType;
+    }
+    
+    if (!rightSide) {
+        result.addError(loc, CErrorCode::Internal, "only required assignment should not have a right side, and they must have typeName");
+        return nullptr;
+    }
+    
     return rightSide->getReturnType(compiler, result, thisFunction);
 }
 
@@ -49,6 +68,11 @@ Value* NAssignment::compile(Compiler* compiler, CResult& result, shared_ptr<CFun
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
+    if (!rightSide) {
+        result.addError(loc, CErrorCode::Internal, "only required assignment should not have a right side, and they should not be compiled");
+        return nullptr;
+    }
+
     if (!inFunctionDeclaration && nfunction) {
         nfunction->compile(compiler, result, thisFunction, thisValue, builder);
     }
