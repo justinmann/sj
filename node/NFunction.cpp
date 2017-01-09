@@ -2,7 +2,7 @@
 
 int NFunction::counter = 0;
 
-NFunction::NFunction(CLoc loc, const char* type, const char* name, NodeList arguments, shared_ptr<NBlock> block, shared_ptr<NBlock> catchBlock) : type(type), name(name), block(block), catchBlock(catchBlock), NBase(loc) {
+NFunction::NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, NodeList arguments, shared_ptr<NBlock> block, shared_ptr<NBlock> catchBlock) : type(type), typeName(typeName), name(name), block(block), catchBlock(catchBlock), NBase(loc) {
     if (this->name == "^") {
         this->name = strprintf("anon_%d", counter++);
     }
@@ -35,18 +35,33 @@ void NFunction::define(Compiler *compiler, CResult& result, shared_ptr<CFunction
         return;
     }
     
-    auto thisFunction = CFunction::create(compiler, result, parentFunction, name, shared_from_this());
-    parentFunction->funcsByName[name] = thisFunction;
+    if (type == FT_Extern) {
+        // This is an extern function definition
+        if (functions.size() > 0) {
+            result.addError(loc, CErrorCode::InvalidFunction, "extern function init block can not contain function definitions");
+            return;
+        }
+        
+        auto thisFunction = CFunction::create(compiler, result, parentFunction, type, name, shared_from_this());
+        parentFunction->funcsByName[name] = thisFunction;
+        
+        for (auto it : assignments) {
+            it->define(compiler, result, thisFunction);
+        }
+    } else {
+        auto thisFunction = CFunction::create(compiler, result, parentFunction, type, name, shared_from_this());
+        parentFunction->funcsByName[name] = thisFunction;
 
-    for (auto it : functions) {
-        it->define(compiler, result, thisFunction);
-    }
-    
-    for (auto it : assignments) {
-        it->define(compiler, result, thisFunction);
-    }
+        for (auto it : functions) {
+            it->define(compiler, result, thisFunction);
+        }
+        
+        for (auto it : assignments) {
+            it->define(compiler, result, thisFunction);
+        }
 
-    block->define(compiler, result, thisFunction);
+        block->define(compiler, result, thisFunction);
+    }
 }
 
 void NFunction::fixVar(Compiler *compiler, CResult& result, shared_ptr<CFunction> parentFunction) {
@@ -67,7 +82,9 @@ void NFunction::fixVar(Compiler *compiler, CResult& result, shared_ptr<CFunction
         it->fixVar(compiler, result, thisFunction);
     }
     
-    block->fixVar(compiler, result, thisFunction);
+    if (block) {
+        block->fixVar(compiler, result, thisFunction);
+    }
 }
 
 shared_ptr<CType> NFunction::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction) const {
@@ -88,14 +105,32 @@ shared_ptr<CType> NFunction::getBlockType(Compiler* compiler, CResult& result, s
         return nullptr;
     }
 
-    auto returnType = block->getReturnType(compiler, result, thisFunction);
+    if (typeName.size() > 0) {
+        shared_ptr<CType> valueType = compiler->getType(typeName.c_str());
+        if (!valueType) {
+            result.addError(loc, CErrorCode::InvalidType, "explicit type does not exist");
+            return nullptr;
+        }
+        return valueType;
+    }
 
-    return returnType;
+    if (!block && type == FT_Extern) {
+        result.addError(loc, CErrorCode::InvalidFunction, "extern function must specify return type");
+        return nullptr;
+    }
+    
+    return block->getReturnType(compiler, result, thisFunction);
 }
 
 Value* NFunction::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder, BasicBlock* parentCatchBB) const {
     assert(compiler->state == CompilerState::Compile);
     assert(parentCatchBB == nullptr);
+    
+    if (block == nullptr) {
+        // This is an extern function definition, there is no code to comile
+        return nullptr;
+    }
+    
     if (invalid.size() > 0) {
         result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
         return nullptr;
@@ -213,8 +248,10 @@ void NFunction::dump(Compiler* compiler, int level) const {
         dumpf(level, "}");
     }
     
-    dumpf(level, "block: {");
-    block->dump(compiler, level + 1);
-    dumpf(level, "}");
+    if (block) {
+        dumpf(level, "block: {");
+        block->dump(compiler, level + 1);
+        dumpf(level, "}");
+    }
 }
 

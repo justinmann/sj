@@ -25,9 +25,16 @@ public:
     Value* value;
 };
 
+enum CFunctionType {
+    FT_Private,
+    FT_Public,
+    FT_Extern
+};
+
 class CFunction : public enable_shared_from_this<CFunction> {
 public:
     weak_ptr<CFunction> parent;
+    CFunctionType type;
     string name;
     shared_ptr<NFunction> node;
     vector<shared_ptr<CFunctionVar>> thisVars;
@@ -36,7 +43,7 @@ public:
     map<string, shared_ptr<CFunction>> funcsByName;
     BasicBlock* basicBlock;
     
-    static shared_ptr<CFunction> create(Compiler* compiler, CResult& result, shared_ptr<CFunction> parent, const string& name, shared_ptr<NFunction> node);
+    static shared_ptr<CFunction> create(Compiler* compiler, CResult& result, shared_ptr<CFunction> parent, CFunctionType type, const string& name, shared_ptr<NFunction> node);
     shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result);
     shared_ptr<CType> getThisType(Compiler* compiler, CResult& result);
     Function* getFunction(Compiler* compiler, CResult& result);
@@ -54,7 +61,7 @@ private:
     bool isInGetFunction;
     shared_ptr<CType> returnType;
     shared_ptr<CType> thisType;
-    Function* func;
+    Function* function;
     Value* thisValue;
 };
 

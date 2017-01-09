@@ -439,6 +439,15 @@ void testClass() {
     assert(result->type == RESULT_INT && result->iResult == 1);
 }
                           
+void testExtern() {
+    shared_ptr<CResult> result;
+    Compiler compiler;
+    
+    result = compiler.run("#cos(x:'float)'float\n"
+                          "cos(1.0)");
+    assert(result->type == RESULT_FLOAT && result->fResult == 0.54030230586813977);
+}
+                          
 void testThrow() {
     shared_ptr<CResult> result;
     Compiler compiler;
@@ -480,30 +489,18 @@ void testThrow() {
     assert(result->type == RESULT_INT && result->iResult == 2);
 }
 
-void test() {
-    //for (int i = 0; i < 10000; i++)
-    {
-        testMath();
-        testComparison();
-        testVoid();
-        testCast();
-        testParser();
-        testAssignment();
-        testComment();
-        testIf();
-        testFunction();
-        testClass();
-        testThrow();
-    }
-}
-
 int main(int argc, char **argv) {   
-    shared_ptr<CResult> result;
-    Compiler compiler;
-    
+    testMath();
+    testComparison();
+    testVoid();
+    testCast();
+    testParser();
+    testAssignment();
+    testComment();
+    testIf();
+    testFunction();
+    testClass();
+    testExtern();
     testThrow();
-
-    
-    test();
 	return 0;
 }

@@ -46,9 +46,10 @@ shared_ptr<CFunction> CFunctionVar::getParentCFunction(Compiler* compiler, CResu
     return nullptr;
 }
 
-shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, shared_ptr<CFunction> parent, const string& name, shared_ptr<NFunction> node) {
+shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, shared_ptr<CFunction> parent, CFunctionType type, const string& name, shared_ptr<NFunction> node) {
     auto c = make_shared<CFunction>();
     c->parent = parent;
+    c->type = type;
     c->name = name;
     c->node = node;
     
@@ -60,7 +61,7 @@ shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, sha
             c->thisVars.push_back(thisVar);
         }
         
-        if (parent) {
+        if (parent && type != FT_Extern) {
             auto parentType = parent->getThisType(compiler, result);
             if (parentType) {
                 int index = (int)c->thisVars.size();
@@ -71,7 +72,8 @@ shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, sha
         }
         
         for (auto it : node->functions) {
-            c->funcsByName[it->name] = CFunction::create(compiler, result, c, it->name, it);
+            assert(type != FT_Extern && "Not allowed for extern functions");
+            c->funcsByName[it->name] = CFunction::create(compiler, result, c, FT_Private, it->name, it);
         }
     }
     return c;
@@ -92,6 +94,7 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CResult& result) 
 }
 
 shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result) {
+    assert(type != FT_Extern);
     if (!thisType && node != nullptr) {
         thisType = make_shared<CType>(compiler, node->name.c_str(), shared_from_this());
     }
@@ -107,58 +110,74 @@ Function* CFunction::getFunction(Compiler* compiler, CResult& result) {
     }
     
     isInGetFunction = true;
-    if (!func) {
+    if (!function) {
         auto returnType = getReturnType(compiler, result);
         if (returnType) {
-            auto thisRefType = getThisType(compiler, result)->llvmRefType(compiler, result);
-            vector<Type*> argTypes;
-            argTypes.push_back(thisRefType);
-            FunctionType *FT = FunctionType::get(returnType->llvmRefType(compiler, result), argTypes, false);
-            func = Function::Create(FT, Function::ExternalLinkage, node->name.c_str(), compiler->module.get());
-            func->args().begin()->setName("this");
-            func->setPersonalityFn(compiler->exception->getPersonality());
-            
-            // Create a new basic block to start insertion into.
-            basicBlock = BasicBlock::Create(compiler->context, "entry", func);
-            
-            IRBuilder<> builder(basicBlock);
-            auto thisAlloca = builder.CreateAlloca(thisRefType, 0);
-            auto thisArgument = (Argument*)func->args().begin();
-            builder.CreateStore(thisArgument, thisAlloca);
-            thisValue = builder.CreateLoad(thisAlloca);
-                        
-    #ifdef DWARF_ENABLED
-            SmallVector<Metadata *, 8> EltTys;
-            for (auto &argType : argTypes) {
-                EltTys.push_back(compiler->getDIType(argType));
+            if (type == FT_Extern) {
+                vector<Type*> argTypes;
+                for (auto it : thisVars) {
+                    auto ctype = it->getType(compiler, result);
+                    if (!ctype) {
+                        result.addError(it->nassignment->loc, CErrorCode::InvalidType, "cannot determine type for '%s'", it->name.c_str());
+                        return nullptr;
+                    }
+                    
+                    argTypes.push_back(ctype->llvmRefType(compiler, result));
+                }
+                
+                auto functionType = FunctionType::get(returnType->llvmRefType(compiler, result), argTypes, false);
+                function = Function::Create(functionType, Function::ExternalLinkage, node->name.c_str(), compiler->module.get());
+            } else {
+                auto thisRefType = getThisType(compiler, result)->llvmRefType(compiler, result);
+                vector<Type*> argTypes;
+                argTypes.push_back(thisRefType);
+                auto functionType = FunctionType::get(returnType->llvmRefType(compiler, result), argTypes, false);
+                function = Function::Create(functionType, type == FT_Public ? Function::ExternalLinkage : Function::PrivateLinkage, node->name.c_str(), compiler->module.get());
+                function->args().begin()->setName("this");
+                function->setPersonalityFn(compiler->exception->getPersonality());
+                
+                // Create a new basic block to start insertion into.
+                basicBlock = BasicBlock::Create(compiler->context, "entry", function);
+                
+                IRBuilder<> builder(basicBlock);
+                auto thisAlloca = builder.CreateAlloca(thisRefType, 0);
+                auto thisArgument = (Argument*)function->args().begin();
+                builder.CreateStore(thisArgument, thisAlloca);
+                thisValue = builder.CreateLoad(thisAlloca);
+                            
+        #ifdef DWARF_ENABLED
+                SmallVector<Metadata *, 8> EltTys;
+                for (auto &argType : argTypes) {
+                    EltTys.push_back(compiler->getDIType(argType));
+                }
+                auto ditypes = compiler->DBuilder->createSubroutineType(compiler->DBuilder->getOrCreateTypeArray(EltTys));
+                
+                // Create a subprogram DIE for this function.
+                DIFile *Unit = compiler->DBuilder->createFile(compiler->TheCU->getFilename(), compiler->TheCU->getDirectory());
+                DIScope *FContext = Unit;
+                unsigned LineNo = node->loc.line;
+                unsigned ScopeLine = LineNo;
+                DISubprogram *SP = compiler->DBuilder->createFunction(FContext, node->name.c_str(), StringRef(), Unit, LineNo, ditypes, false /* internal linkage */, true /* definition */, ScopeLine, DINode::FlagPrototyped, false);
+                func->setSubprogram(SP);
+                
+                // Push the current scope.
+                compiler->LexicalBlocks.push_back(SP);
+                
+                // Unset the location for the prologue emission (leading instructions with no
+                // location in a function are considered part of the prologue and the debugger
+                // will run past them when breaking on a function)
+                compiler->emitLocation(nullptr);
+        #endif
             }
-            auto ditypes = compiler->DBuilder->createSubroutineType(compiler->DBuilder->getOrCreateTypeArray(EltTys));
-            
-            // Create a subprogram DIE for this function.
-            DIFile *Unit = compiler->DBuilder->createFile(compiler->TheCU->getFilename(), compiler->TheCU->getDirectory());
-            DIScope *FContext = Unit;
-            unsigned LineNo = node->loc.line;
-            unsigned ScopeLine = LineNo;
-            DISubprogram *SP = compiler->DBuilder->createFunction(FContext, node->name.c_str(), StringRef(), Unit, LineNo, ditypes, false /* internal linkage */, true /* definition */, ScopeLine, DINode::FlagPrototyped, false);
-            func->setSubprogram(SP);
-            
-            // Push the current scope.
-            compiler->LexicalBlocks.push_back(SP);
-            
-            // Unset the location for the prologue emission (leading instructions with no
-            // location in a function are considered part of the prologue and the debugger
-            // will run past them when breaking on a function)
-            compiler->emitLocation(nullptr);
-    #endif
         }
     }
     isInGetFunction = false;
    
-    return func;
+    return function;
 }
 
 Value* CFunction::getThisArgument(Compiler* compiler, CResult& result) {
-    if (!func) {
+    if (!function) {
         getFunction(compiler, result);
     }
     

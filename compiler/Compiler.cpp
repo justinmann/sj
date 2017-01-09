@@ -61,6 +61,7 @@ public:
         // Lambda 2: Search for external symbols in the host process.
         auto Resolver = createLambdaResolver(
                                              [&](const string &Name) {
+                                                 printf("Looking for %s\n", Name.c_str());
                                                  if (auto Sym = CompileLayer.findSymbol(Name, false))
                                                      return Sym.toRuntimeDyldSymbol();
                                                  return RuntimeDyld::SymbolInfo(nullptr);
@@ -195,8 +196,8 @@ shared_ptr<CResult> Compiler::run(const char* code) {
         return compilerResult;
     
     auto anonArgs = NodeList();
-    auto anonFunction = make_shared<NFunction>(CLoc::undefined, "", "global", anonArgs, compilerResult->block, nullptr);
-    auto currentFunction = CFunction::create(this, *compilerResult, nullptr, "", nullptr);
+    auto anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, "", "global", anonArgs, compilerResult->block, nullptr);
+    auto currentFunction = CFunction::create(this, *compilerResult, nullptr, FT_Public, "", nullptr);
     state = CompilerState::Define;
     anonFunction->define(this, *compilerResult, currentFunction);
     

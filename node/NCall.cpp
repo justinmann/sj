@@ -113,12 +113,6 @@ Value* NCall::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction>
         return nullptr;
     }
     
-    // Create this on stack, and get a pointer
-    auto newType = callee->getThisType(compiler, result);
-    
-    auto entryBuilder = getEntryBuilder(builder);
-    auto newValue = entryBuilder.CreateAlloca(newType->llvmAllocType(compiler, result), 0, newType->name.c_str());
-
     if (arguments.size() > callee->node->assignments.size()) {
         result.addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments.size(), callee->node->assignments.size());
         return nullptr;
@@ -174,96 +168,136 @@ Value* NCall::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction>
         }
         argIndex++;
     }
-        
-    // Fill in "this" with normal arguments
-    argIndex = 0;
-    for (auto defaultAssignment : callee->node->assignments) {
-        assert(defaultAssignment->inFunctionDeclaration);
-        auto argType = defaultAssignment->getReturnType(compiler, result, callee);
-        auto isDefaultAssignment = parameters[argIndex] == defaultAssignment->rightSide;
-        Value* value;
-        if (isDefaultAssignment) {
-            value = parameters[argIndex]->compile(compiler, result, callee, newValue, builder, catchBB);
-        } else {
-            value = parameters[argIndex]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
-        }
-        
-        if (!value) {
-            result.addError(CLoc::undefined, CErrorCode::TypeMismatch, "value is empty");
-            return nullptr;
-        }
-        
-        if (value->getType() != argType->llvmRefType(compiler, result)) {
-            result.addError(CLoc::undefined, CErrorCode::TypeMismatch, "value does not match");
-            return nullptr;
-        }
-
-        vector<Value*> v;
-        v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
-        v.push_back(ConstantInt::get(compiler->context, APInt(32, argIndex)));
-        auto paramPtr = builder->CreateInBoundsGEP(newType->llvmAllocType(compiler, result), newValue, ArrayRef<Value *>(v), defaultAssignment->name.c_str());
-        
-        builder->CreateStore(value, paramPtr);
-
-        argIndex++;
-    }
     
-    // Add "parent" to "this"
-    argIndex = callee->getThisIndex("parent");
-    if (argIndex != -1) {
-        Value* parentValue = thisValue;
-        if (dotNames.size() > 0) {
-            NVariable::getParentValue(compiler, result, loc, thisFunction, thisValue, builder, dotNames, &parentValue);
-        } else {
-            // if recursively calling ourselves then re-use parent
-            if (callee == thisFunction) {
-                auto parentIndex = thisFunction->getThisIndex("parent");
-                vector<Value*> v;
-                v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
-                v.push_back(ConstantInt::get(compiler->context, APInt(32, parentIndex)));
-                auto ptr = builder->CreateInBoundsGEP(thisFunction->getThisType(compiler, result)->llvmAllocType(compiler, result), parentValue, ArrayRef<Value *>(v), "parent");
-                parentValue = builder->CreateLoad(ptr, "parent");
+    if (callee->type == FT_Extern) {
+        vector<Value *> argsV;
+        auto func = callee->getFunction(compiler, result);
+
+        // Fill in "this" with normal arguments
+        argIndex = 0;
+        for (auto defaultAssignment : callee->node->assignments) {
+            assert(defaultAssignment->inFunctionDeclaration);
+            auto argType = defaultAssignment->getReturnType(compiler, result, callee);
+            auto isDefaultAssignment = parameters[argIndex] == defaultAssignment->rightSide;
+            Value* value;
+            if (isDefaultAssignment) {
+                value = parameters[argIndex]->compile(compiler, result, callee, nullptr, builder, catchBB);
             } else {
-                auto temp = thisFunction;
-                while (temp && temp != callee->parent.lock()) {
-                    auto parentIndex = temp->getThisIndex("parent");
+                value = parameters[argIndex]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+            }
+            
+            if (!value) {
+                result.addError(CLoc::undefined, CErrorCode::TypeMismatch, "value is empty");
+                return nullptr;
+            }
+            
+            if (value->getType() != argType->llvmRefType(compiler, result)) {
+                result.addError(CLoc::undefined, CErrorCode::TypeMismatch, "value does not match");
+                return nullptr;
+            }
+            
+            argsV.push_back(value);
+            
+            argIndex++;
+        }
+        
+        return builder->CreateCall(func, argsV);
+    } else {
+        // Create this on stack, and get a pointer
+        auto newType = callee->getThisType(compiler, result);
+        auto entryBuilder = getEntryBuilder(builder);
+        auto newValue = entryBuilder.CreateAlloca(newType->llvmAllocType(compiler, result), 0, newType->name.c_str());
+        
+        // Fill in "this" with normal arguments
+        argIndex = 0;
+        for (auto defaultAssignment : callee->node->assignments) {
+            assert(defaultAssignment->inFunctionDeclaration);
+            auto argType = defaultAssignment->getReturnType(compiler, result, callee);
+            auto isDefaultAssignment = parameters[argIndex] == defaultAssignment->rightSide;
+            Value* value;
+            if (isDefaultAssignment) {
+                value = parameters[argIndex]->compile(compiler, result, callee, newValue, builder, catchBB);
+            } else {
+                value = parameters[argIndex]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+            }
+            
+            if (!value) {
+                result.addError(CLoc::undefined, CErrorCode::TypeMismatch, "value is empty");
+                return nullptr;
+            }
+            
+            if (value->getType() != argType->llvmRefType(compiler, result)) {
+                result.addError(CLoc::undefined, CErrorCode::TypeMismatch, "value does not match");
+                return nullptr;
+            }
+
+            vector<Value*> v;
+            v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+            v.push_back(ConstantInt::get(compiler->context, APInt(32, argIndex)));
+            auto paramPtr = builder->CreateInBoundsGEP(newType->llvmAllocType(compiler, result), newValue, ArrayRef<Value *>(v), defaultAssignment->name.c_str());
+            
+            builder->CreateStore(value, paramPtr);
+
+            argIndex++;
+        }
+        
+        // Add "parent" to "this"
+        argIndex = callee->getThisIndex("parent");
+        if (argIndex != -1) {
+            Value* parentValue = thisValue;
+            if (dotNames.size() > 0) {
+                NVariable::getParentValue(compiler, result, loc, thisFunction, thisValue, builder, dotNames, &parentValue);
+            } else {
+                // if recursively calling ourselves then re-use parent
+                if (callee == thisFunction) {
+                    auto parentIndex = thisFunction->getThisIndex("parent");
                     vector<Value*> v;
                     v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
                     v.push_back(ConstantInt::get(compiler->context, APInt(32, parentIndex)));
-                    auto ptr = builder->CreateInBoundsGEP(temp->getThisType(compiler, result)->llvmAllocType(compiler, result), parentValue, ArrayRef<Value *>(v), "parent");
+                    auto ptr = builder->CreateInBoundsGEP(thisFunction->getThisType(compiler, result)->llvmAllocType(compiler, result), parentValue, ArrayRef<Value *>(v), "parent");
                     parentValue = builder->CreateLoad(ptr, "parent");
-                    
-                    temp = temp->parent.lock();
+                } else {
+                    auto temp = thisFunction;
+                    while (temp && temp != callee->parent.lock()) {
+                        auto parentIndex = temp->getThisIndex("parent");
+                        vector<Value*> v;
+                        v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+                        v.push_back(ConstantInt::get(compiler->context, APInt(32, parentIndex)));
+                        auto ptr = builder->CreateInBoundsGEP(temp->getThisType(compiler, result)->llvmAllocType(compiler, result), parentValue, ArrayRef<Value *>(v), "parent");
+                        parentValue = builder->CreateLoad(ptr, "parent");
+                        
+                        temp = temp->parent.lock();
+                    }
                 }
             }
+            
+            vector<Value*> v;
+            v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+            v.push_back(ConstantInt::get(compiler->context, APInt(32, argIndex)));
+            auto paramPtr = builder->CreateInBoundsGEP(newType->llvmAllocType(compiler, result), newValue, ArrayRef<Value *>(v), "parent");
+            
+            builder->CreateStore(parentValue, paramPtr, "parent");
+        }
+
+        vector<Value *> argsV;
+        argsV.push_back(newValue);
+        auto func = callee->getFunction(compiler, result);
+
+        Value* returnValue = nullptr;
+        
+        if (catchBB) {
+            auto continueBB = BasicBlock::Create(compiler->context);
+            returnValue = builder->CreateInvoke(func, continueBB, catchBB, argsV);
+            
+            Function *function = builder->GetInsertBlock()->getParent();
+            function->getBasicBlockList().push_back(continueBB);
+            builder->SetInsertPoint(continueBB);
+        } else {
+            returnValue = builder->CreateCall(func, argsV);
         }
         
-        vector<Value*> v;
-        v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
-        v.push_back(ConstantInt::get(compiler->context, APInt(32, argIndex)));
-        auto paramPtr = builder->CreateInBoundsGEP(newType->llvmAllocType(compiler, result), newValue, ArrayRef<Value *>(v), "parent");
-        
-        builder->CreateStore(parentValue, paramPtr, "parent");
+        return returnValue;
     }
-
-    vector<Value *> argsV;
-    argsV.push_back(newValue);
-    auto func = callee->getFunction(compiler, result);
-
-    Value* returnValue = nullptr;
-    
-    if (catchBB) {
-        auto continueBB = BasicBlock::Create(compiler->context);
-        returnValue = builder->CreateInvoke(func, continueBB, catchBB, argsV);
-        
-        Function *function = builder->GetInsertBlock()->getParent();
-        function->getBasicBlockList().push_back(continueBB);
-        builder->SetInsertPoint(continueBB);
-    } else {
-        returnValue = builder->CreateCall(func, argsV);
-    }
-    
-    return returnValue;
 }
 
 void NCall::dump(Compiler* compiler, int level) const {

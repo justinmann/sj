@@ -13,7 +13,8 @@
 
 class NFunction : public NBase {
 public:
-    const string type;
+    CFunctionType type;
+    const string typeName;
     string name;
     NodeList invalid;
     vector<shared_ptr<NAssignment>> assignments;
@@ -21,7 +22,7 @@ public:
     const shared_ptr<NBlock> block;
     const shared_ptr<NBlock> catchBlock;
     
-    NFunction(CLoc loc, const char* type, const char* name, NodeList arguments, shared_ptr<NBlock> block, shared_ptr<NBlock> catchBlock);
+    NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, NodeList arguments, shared_ptr<NBlock> block, shared_ptr<NBlock> catchBlock);
     virtual NodeType getNodeType() const;
     virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction);
     virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction);

@@ -75,7 +75,8 @@ extern int yydebug;
     TIF = 285,
     TELSE = 286,
     TTHROW = 287,
-    TCATCH = 288
+    TCATCH = 288,
+    THASH = 289
   };
 #endif
 
