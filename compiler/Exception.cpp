@@ -1,3 +1,4 @@
+
 //
 //  Compiler.cpp
 //  sj
@@ -16,7 +17,7 @@ typedef uint64_t _Unwind_Exception_Class;
 /// This is our simplistic type info
 struct OurExceptionType_t {
     /// type info type
-    int64_t type;
+    int64_t exceptionType;
 };
 
 
@@ -44,7 +45,7 @@ void deleteFromUnwindOurException(_Unwind_Reason_Code reason, OurUnwindException
 uintptr_t readULEB128(const uint8_t **data);
 uintptr_t readSLEB128(const uint8_t **data);
 
-Exception::Exception(LLVMContext* context, Module* module) : context(context), module(module), raiseException(nullptr), personality(nullptr) {
+Exception::Exception(LLVMContext* context, Module* module) : context(context), module(module), raiseException(nullptr), personality(nullptr), debugBreak(nullptr) {
     // Setup exception data
     size_t numChars = sizeof(ourBaseExcpClassChars) / sizeof(char);
     // Create our _Unwind_Exception::exception_class value
@@ -52,8 +53,23 @@ Exception::Exception(LLVMContext* context, Module* module) : context(context), m
     
     struct OurBaseException_t dummyException;
     // Calculate offset of OurException::unwindException member.
-    ourBaseFromUnwindOffset = ((uintptr_t) &dummyException) -
-    ((uintptr_t) &(dummyException.unwindException));
+    ourBaseFromUnwindOffset = ((uintptr_t) &dummyException) - ((uintptr_t) &(dummyException.unwindException));
+    
+    // Create our type info type
+    auto ourTypeInfoType = StructType::get(*context, ArrayRef<Type*>(Type::getInt32Ty(*context)));
+    
+    // Type infos
+    vector<llvm::Constant*> structVals;
+    structVals.push_back(llvm::ConstantInt::get(Type::getInt32Ty(*context), 999));
+    auto nextStruct = llvm::ConstantStruct::get(ourTypeInfoType, structVals);
+    
+    // Note: Does not seem to work without allocation
+    new GlobalVariable(*module,
+                     ourTypeInfoType,
+                     true,
+                     llvm::GlobalValue::ExternalLinkage,
+                     nextStruct,
+                     "sjExceptionType");
 }
 
 Function* Exception::getRaiseException() {
@@ -80,6 +96,17 @@ Function* Exception::getPersonality() {
     }
     return personality;
 }
+
+Function* Exception::getDebugBreak() {
+    if (!debugBreak) {
+        vector<Type*> args;
+        args.push_back(Type::getInt64Ty(*context));
+        auto functType = FunctionType::get(Type::getVoidTy(*context), args, false);
+        debugBreak = Function::Create(functType, Function::ExternalLinkage, "debugBreak", module);
+    }
+    return debugBreak;
+}
+
 
 uint64_t genClass(const unsigned char classChars[], size_t classCharsSize)
 {
@@ -310,7 +337,7 @@ static bool handleActionValue(int64_t *resultAction,
     struct OurBaseException_t *excp = (struct OurBaseException_t*)
     (((char*) exceptionObject) + ourBaseFromUnwindOffset);
     struct OurExceptionType_t *excpType = &(excp->type);
-    int type = excpType->type;
+    int64_t exceptionType = excpType->exceptionType;
     
 #ifdef DEBUG
     fprintf(stderr,
@@ -356,7 +383,7 @@ static bool handleActionValue(int64_t *resultAction,
             uintptr_t P = readEncodedPointer(&EntryP, TTypeEncoding);
             struct OurExceptionType_t *ThisClassInfo =
             reinterpret_cast<struct OurExceptionType_t *>(P);
-            if (ThisClassInfo->type == type) {
+            if (ThisClassInfo->exceptionType == exceptionType) {
                 *resultAction = i + 1;
                 ret = true;
                 break;
@@ -437,7 +464,7 @@ static _Unwind_Reason_Code handleLsda(int version, const uint8_t *lsda,
     // includes current PC.
     
     uint8_t         callSiteEncoding = *lsda++;
-    uint32_t        callSiteTableLength = readULEB128(&lsda);
+    uintptr_t       callSiteTableLength = readULEB128(&lsda);
     const uint8_t   *callSiteTableStart = lsda;
     const uint8_t   *callSiteTableEnd = callSiteTableStart +
     callSiteTableLength;
@@ -561,7 +588,7 @@ static _Unwind_Reason_Code handleLsda(int version, const uint8_t *lsda,
 extern "C" void raiseException(int64_t type) {
     size_t size = sizeof(OurException);
     OurException *ret = (OurException*) memset(malloc(size), 0, size);
-    (ret->type).type = type;
+    (ret->type).exceptionType = 999;
     (ret->unwindException).exception_class = ourBaseExceptionClass;
     (ret->unwindException).exception_cleanup = deleteFromUnwindOurException;
     
@@ -613,6 +640,10 @@ extern "C" _Unwind_Reason_Code ourPersonality(int version, _Unwind_Action action
                       exceptionClass,
                       exceptionObject,
                       context));
+}
+
+extern "C" void debugBreak(int64_t t) {
+    // assert(false);
 }
 
 

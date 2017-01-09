@@ -124,12 +124,9 @@ Value* NFunction::compile(Compiler* compiler, CResult& result, shared_ptr<CFunct
         };
         auto caughtResultType = llvm::StructType::get(compiler->context, ArrayRef<Type*>(caughtResultFieldTypes));
         auto caughtResult = catchBuilder.CreateLandingPad(caughtResultType, 1);
-        caughtResult->setCleanup(true);
+        caughtResult->addClause(compiler->module->getGlobalVariable("sjExceptionType"));
         Value *unwindException = catchBuilder.CreateExtractValue(caughtResult, 0);
         Value *retTypeInfoIndex = catchBuilder.CreateExtractValue(caughtResult, 1);
-        
-        // Set up type infos to be caught
-        // TODO: caughtResult->addClause(module.getGlobalVariable(ourTypeInfoNames[exceptionTypesToCatch[i]]));
         
         Value *RetVal = catchBlock->compile(compiler, result, thisFunction, thisFunction->getThisArgument(compiler, result), &catchBuilder, nullptr);
         if (function->getReturnType()->isVoidTy()) {
