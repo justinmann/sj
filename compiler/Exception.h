@@ -15,14 +15,13 @@ public:
     Exception(LLVMContext* context, Module* module);
     Function* getRaiseException();
     Function* getPersonality();
-    Function* getDebugBreak();
     
 private:
     LLVMContext* context;
     Module* module;
     Function* raiseException;
     Function* personality;
-    Function* debugBreak;
+    Value* sjExceptionType;
 };
 
 #endif /* Exception_h */

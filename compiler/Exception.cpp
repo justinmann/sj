@@ -45,7 +45,7 @@ void deleteFromUnwindOurException(_Unwind_Reason_Code reason, OurUnwindException
 uintptr_t readULEB128(const uint8_t **data);
 uintptr_t readSLEB128(const uint8_t **data);
 
-Exception::Exception(LLVMContext* context, Module* module) : context(context), module(module), raiseException(nullptr), personality(nullptr), debugBreak(nullptr) {
+Exception::Exception(LLVMContext* context, Module* module) : context(context), module(module), raiseException(nullptr), personality(nullptr) {
     // Setup exception data
     size_t numChars = sizeof(ourBaseExcpClassChars) / sizeof(char);
     // Create our _Unwind_Exception::exception_class value
@@ -64,7 +64,7 @@ Exception::Exception(LLVMContext* context, Module* module) : context(context), m
     auto nextStruct = llvm::ConstantStruct::get(ourTypeInfoType, structVals);
     
     // Note: Does not seem to work without allocation
-    new GlobalVariable(*module,
+    sjExceptionType = new GlobalVariable(*module,
                      ourTypeInfoType,
                      true,
                      llvm::GlobalValue::ExternalLinkage,
@@ -97,17 +97,6 @@ Function* Exception::getPersonality() {
     return personality;
 }
 
-Function* Exception::getDebugBreak() {
-    if (!debugBreak) {
-        vector<Type*> args;
-        args.push_back(Type::getInt64Ty(*context));
-        auto functType = FunctionType::get(Type::getVoidTy(*context), args, false);
-        debugBreak = Function::Create(functType, Function::ExternalLinkage, "debugBreak", module);
-    }
-    return debugBreak;
-}
-
-
 uint64_t genClass(const unsigned char classChars[], size_t classCharsSize)
 {
     uint64_t ret = classChars[0];
@@ -121,7 +110,7 @@ uint64_t genClass(const unsigned char classChars[], size_t classCharsSize)
 }
 
 void deleteOurException(OurUnwindException *expToDelete) {
-#ifdef DEBUG
+#ifdef EXCEPTION_OUTPUT
     fprintf(stderr,
             "deleteOurException(...).\n");
 #endif
@@ -133,7 +122,7 @@ void deleteOurException(OurUnwindException *expToDelete) {
 }
 
 void deleteFromUnwindOurException(_Unwind_Reason_Code reason, OurUnwindException *expToDelete) {
-#ifdef DEBUG
+#ifdef EXCEPTION_OUTPUT
     fprintf(stderr,
             "deleteFromUnwindOurException(...).\n");
 #endif
@@ -339,7 +328,7 @@ static bool handleActionValue(int64_t *resultAction,
     struct OurExceptionType_t *excpType = &(excp->type);
     int64_t exceptionType = excpType->exceptionType;
     
-#ifdef DEBUG
+#ifdef EXCEPTION_OUTPUT
     fprintf(stderr,
             "handleActionValue(...): exceptionObject = <%p>, "
             "excp = <%p>.\n",
@@ -360,7 +349,7 @@ static bool handleActionValue(int64_t *resultAction,
         tempActionPos = actionPos;
         actionOffset = readSLEB128(&tempActionPos);
         
-#ifdef DEBUG
+#ifdef EXCEPTION_OUTPUT
         fprintf(stderr,
                 "handleActionValue(...):typeOffset: <%" PRIi64 ">, "
                 "actionOffset: <%" PRIi64 ">.\n",
@@ -373,7 +362,7 @@ static bool handleActionValue(int64_t *resultAction,
         // Note: A typeOffset == 0 implies that a cleanup llvm.eh.selector
         //       argument has been matched.
         if (typeOffset > 0) {
-#ifdef DEBUG
+#ifdef EXCEPTION_OUTPUT
             fprintf(stderr,
                     "handleActionValue(...):actionValue <%d> found.\n",
                     i);
@@ -390,7 +379,7 @@ static bool handleActionValue(int64_t *resultAction,
             }
         }
         
-#ifdef DEBUG
+#ifdef EXCEPTION_OUTPUT
         fprintf(stderr,
                 "handleActionValue(...):actionValue not found.\n");
 #endif
@@ -424,7 +413,7 @@ static _Unwind_Reason_Code handleLsda(int version, const uint8_t *lsda,
     if (!lsda)
         return(ret);
     
-#ifdef DEBUG
+#ifdef EXCEPTION_OUTPUT
     fprintf(stderr,
             "handleLsda(...):lsda is non-zero.\n");
 #endif
@@ -489,7 +478,7 @@ static _Unwind_Reason_Code handleLsda(int version, const uint8_t *lsda,
         }
         
         if (landingPad == 0) {
-#ifdef DEBUG
+#ifdef EXCEPTION_OUTPUT
             fprintf(stderr,
                     "handleLsda(...): No landing pad found.\n");
 #endif
@@ -501,7 +490,7 @@ static _Unwind_Reason_Code handleLsda(int version, const uint8_t *lsda,
             actionEntry += ((uintptr_t) actionTableStart) - 1;
         }
         else {
-#ifdef DEBUG
+#ifdef EXCEPTION_OUTPUT
             fprintf(stderr,
                     "handleLsda(...):No action table found.\n");
 #endif
@@ -510,7 +499,7 @@ static _Unwind_Reason_Code handleLsda(int version, const uint8_t *lsda,
         bool exceptionMatched = false;
         
         if ((start <= pcOffset) && (pcOffset < (start + length))) {
-#ifdef DEBUG
+#ifdef EXCEPTION_OUTPUT
             fprintf(stderr,
                     "handleLsda(...): Landing pad found.\n");
 #endif
@@ -526,7 +515,7 @@ static _Unwind_Reason_Code handleLsda(int version, const uint8_t *lsda,
             }
             
             if (!(actions & _UA_SEARCH_PHASE)) {
-#ifdef DEBUG
+#ifdef EXCEPTION_OUTPUT
                 fprintf(stderr,
                         "handleLsda(...): installed landing pad "
                         "context.\n");
@@ -561,7 +550,7 @@ static _Unwind_Reason_Code handleLsda(int version, const uint8_t *lsda,
                 ret = _URC_INSTALL_CONTEXT;
             }
             else if (exceptionMatched) {
-#ifdef DEBUG
+#ifdef EXCEPTION_OUTPUT
                 fprintf(stderr,
                         "handleLsda(...): setting handler found.\n");
 #endif
@@ -572,7 +561,7 @@ static _Unwind_Reason_Code handleLsda(int version, const uint8_t *lsda,
                 //       found. Otherwise the clean up handlers will be
                 //       re-found and executed during the clean up
                 //       phase.
-#ifdef DEBUG
+#ifdef EXCEPTION_OUTPUT
                 fprintf(stderr,
                         "handleLsda(...): cleanup handler found.\n");
 #endif
@@ -612,7 +601,7 @@ extern "C" _Unwind_Reason_Code ourPersonality(int version, _Unwind_Action action
                                    _Unwind_Exception_Class exceptionClass,
                                    struct _Unwind_Exception *exceptionObject,
                                    struct _Unwind_Context *context) {
-#ifdef DEBUG
+#ifdef EXCEPTION_OUTPUT
     fprintf(stderr,
             "We are in ourPersonality(...):actions is <%d>.\n",
             actions);
@@ -627,7 +616,7 @@ extern "C" _Unwind_Reason_Code ourPersonality(int version, _Unwind_Action action
     
     const uint8_t *lsda = (const uint8_t *)_Unwind_GetLanguageSpecificData(context);
     
-#ifdef DEBUG
+#ifdef EXCEPTION_OUTPUT
     fprintf(stderr,
             "ourPersonality(...):lsda = <%p>.\n",
             (void*)lsda);
@@ -642,8 +631,5 @@ extern "C" _Unwind_Reason_Code ourPersonality(int version, _Unwind_Action action
                       context));
 }
 
-extern "C" void debugBreak(int64_t t) {
-    // assert(false);
-}
 
 

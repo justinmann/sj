@@ -61,7 +61,9 @@ public:
         // Lambda 2: Search for external symbols in the host process.
         auto Resolver = createLambdaResolver(
                                              [&](const string &Name) {
+#ifdef SYMBOL_OUTPUT
                                                  printf("Looking for %s\n", Name.c_str());
+#endif
                                                  if (auto Sym = CompileLayer.findSymbol(Name, false))
                                                      return Sym.toRuntimeDyldSymbol();
                                                  return RuntimeDyld::SymbolInfo(nullptr);
@@ -179,6 +181,31 @@ shared_ptr<CResult> Compiler::compile(const char* code) {
 
 extern int yydebug;
 
+extern "C" void throwException() {
+    throw CJException();
+}
+
+class NMatchReturn : public NBase {
+public:
+    const shared_ptr<NBase> inner;
+    NMatchReturn(const CLoc loc, shared_ptr<NBase> inner) : inner(inner), NBase(loc) { };
+    virtual NodeType getNodeType() const { return NodeType_Variable; }
+    virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) { }
+    virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) { }
+    
+    virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
+        return inner->getReturnType(compiler, result, thisFunction);
+    }
+    
+    virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
+        return compiler->getDefaultValue(inner->getReturnType(compiler, result, thisFunction));
+    }
+    
+    virtual void dump(Compiler* compiler, int level) const {
+        
+    }
+};
+
 shared_ptr<CResult> Compiler::run(const char* code) {
 #ifdef YYDEBUG
     yydebug = 1; // use this to trigger the verbose debug output from bison
@@ -196,7 +223,16 @@ shared_ptr<CResult> Compiler::run(const char* code) {
         return compilerResult;
     
     auto anonArgs = NodeList();
-    auto anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, "", "global", anonArgs, compilerResult->block, nullptr);
+    
+    auto catchBlock = make_shared<NBlock>(CLoc::undefined);
+    catchBlock->statements.push_back(make_shared<NCall>(CLoc::undefined, "throwException", NodeList()));
+    catchBlock->statements.push_back(make_shared<NMatchReturn>(CLoc::undefined, compilerResult->block));
+    
+    // Define an extern for throwException at the beginning of the block
+    auto throwExceptionFunction = make_shared<NFunction>(CLoc::undefined, FT_Extern, "void", "throwException", NodeList(), nullptr, nullptr);
+    compilerResult->block->statements.insert(compilerResult->block->statements.begin(), throwExceptionFunction);
+    
+    auto anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, "", "global", anonArgs, compilerResult->block, catchBlock);
     auto currentFunction = CFunction::create(this, *compilerResult, nullptr, FT_Public, "", nullptr);
     state = CompilerState::Define;
     anonFunction->define(this, *compilerResult, currentFunction);

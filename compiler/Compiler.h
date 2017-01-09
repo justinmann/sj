@@ -17,6 +17,9 @@
 // #define NODE_OUTPUT
 // #define MODULE_OUTPUT
 // #define ASSERT_ON_ERROR
+// #define ERROR_OUTPUT
+// #define SYMBOL_OUTPUT
+// #define EXCEPTION_OUTPUT
 
 using namespace llvm;
 using namespace std;
@@ -120,7 +123,9 @@ public:
     void addError(const CLoc loc, const CErrorCode code, const char* format, Args... args) {
         string str = strprintf(format, args...);
         errors.push_back(CError(loc, code, str));
+#ifdef ERROR_OUTPUT
         printf("ERROR: %s\n", str.c_str());
+#endif
 #ifdef ASSERT_ON_ERROR
         assert(false);
 #endif
@@ -130,7 +135,9 @@ public:
     void addWarning(const CLoc loc, const CErrorCode code, const char* format, Args... args) {
         string str = strprintf(format, args...);
         warnings.push_back(CError(loc, code, str));
-        printf("ERROR: %s\n", str.c_str());
+#ifdef ERROR_OUTPUT
+        printf("WARN: %s\n", str.c_str());
+#endif
     }
 };
 
@@ -138,6 +145,9 @@ enum CompilerState {
     Define,
     FixVar,
     Compile
+};
+
+class CJException : public exception {
 };
 
 class Compiler

@@ -19,10 +19,10 @@ public:
     NodeList invalid;
     vector<shared_ptr<NAssignment>> assignments;
     vector<shared_ptr<NFunction>> functions;
-    const shared_ptr<NBlock> block;
-    const shared_ptr<NBlock> catchBlock;
+    const shared_ptr<NBase> block;
+    const shared_ptr<NBase> catchBlock;
     
-    NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, NodeList arguments, shared_ptr<NBlock> block, shared_ptr<NBlock> catchBlock);
+    NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, NodeList arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock);
     virtual NodeType getNodeType() const;
     virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction);
     virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction);

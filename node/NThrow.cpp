@@ -26,8 +26,17 @@ Value* NThrow::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction
     
     auto raiseException = compiler->exception->getRaiseException();
     auto args = ArrayRef<Value*>(value);
-    builder->CreateCall(raiseException, args);
     
+    if (catchBB) {
+        auto continueBB = BasicBlock::Create(compiler->context);
+        builder->CreateInvoke(raiseException, continueBB, catchBB, args);
+        
+        Function *function = builder->GetInsertBlock()->getParent();
+        function->getBasicBlockList().push_back(continueBB);
+        builder->SetInsertPoint(continueBB);
+    } else {
+        builder->CreateCall(raiseException, args);
+    }
     return nullptr;
 }
 

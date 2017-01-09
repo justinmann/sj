@@ -2,7 +2,7 @@
 
 int NFunction::counter = 0;
 
-NFunction::NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, NodeList arguments, shared_ptr<NBlock> block, shared_ptr<NBlock> catchBlock) : type(type), typeName(typeName), name(name), block(block), catchBlock(catchBlock), NBase(loc) {
+NFunction::NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, NodeList arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock) : type(type), typeName(typeName), name(name), block(block), catchBlock(catchBlock), NBase(loc) {
     if (this->name == "^") {
         this->name = strprintf("anon_%d", counter++);
     }
@@ -124,7 +124,6 @@ shared_ptr<CType> NFunction::getBlockType(Compiler* compiler, CResult& result, s
 
 Value* NFunction::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder, BasicBlock* parentCatchBB) const {
     assert(compiler->state == CompilerState::Compile);
-    assert(parentCatchBB == nullptr);
     
     if (block == nullptr) {
         // This is an extern function definition, there is no code to comile
@@ -143,6 +142,9 @@ Value* NFunction::compile(Compiler* compiler, CResult& result, shared_ptr<CFunct
         return nullptr;
     }
     
+    IRBuilder<> newBuilder(thisFunction->basicBlock);
+    Value *RetVal = nullptr;
+    
     // Create all of the inner functions, before creating the code for this function
     for (auto it : functions) {
         it->compile(compiler, result, thisFunction, thisFunction->getThisArgument(compiler, result), nullptr, nullptr);
@@ -160,8 +162,8 @@ Value* NFunction::compile(Compiler* compiler, CResult& result, shared_ptr<CFunct
         auto caughtResultType = llvm::StructType::get(compiler->context, ArrayRef<Type*>(caughtResultFieldTypes));
         auto caughtResult = catchBuilder.CreateLandingPad(caughtResultType, 1);
         caughtResult->addClause(compiler->module->getGlobalVariable("sjExceptionType"));
-        Value *unwindException = catchBuilder.CreateExtractValue(caughtResult, 0);
-        Value *retTypeInfoIndex = catchBuilder.CreateExtractValue(caughtResult, 1);
+        // Value *unwindException = catchBuilder.CreateExtractValue(caughtResult, 0);
+        // Value *retTypeInfoIndex = catchBuilder.CreateExtractValue(caughtResult, 1);
         
         Value *RetVal = catchBlock->compile(compiler, result, thisFunction, thisFunction->getThisArgument(compiler, result), &catchBuilder, nullptr);
         if (function->getReturnType()->isVoidTy()) {
@@ -169,47 +171,42 @@ Value* NFunction::compile(Compiler* compiler, CResult& result, shared_ptr<CFunct
         } else {
             if (!RetVal) {
                 result.addError(loc, CErrorCode::TypeMismatch, "no return for non-void function");
-                return nullptr;
+                goto error;
             }
             
             if (function->getReturnType() != RetVal->getType()) {
                 result.addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match return value type '%s'", Type_print(function->getReturnType()).c_str(), Type_print(RetVal->getType()).c_str());
-                return nullptr;
+                goto error;
             }
             
             catchBuilder.CreateRet(RetVal);
         } 
     }
     
-    IRBuilder<> newBuilder(thisFunction->basicBlock);
-    Value *RetVal = block->compile(compiler, result, thisFunction, thisFunction->getThisArgument(compiler, result), &newBuilder, catchBB);
+    RetVal = block->compile(compiler, result, thisFunction, thisFunction->getThisArgument(compiler, result), &newBuilder, catchBB);
     if (function->getReturnType()->isVoidTy()) {
         newBuilder.CreateRetVoid();
     } else {
         if (!RetVal) {
             result.addError(loc, CErrorCode::TypeMismatch, "no return for non-void function");
-            return nullptr;
+            goto error;
         }
         
         if (function->getReturnType() != RetVal->getType()) {
             result.addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match return value type '%s'", Type_print(function->getReturnType()).c_str(), Type_print(RetVal->getType()).c_str());
-            return nullptr;
+            goto error;
         }
 
         newBuilder.CreateRet(RetVal);
     }
     
+error:
     if (catchBB) {
         function->getBasicBlockList().push_back(catchBB);
     }
     
-    if (catchBB) {
-        compiler->module->dump();
-    }
-    
     // Validate the generated code, checking for consistency.
-    if (verifyFunction(*function) && result.errors.size() == 0) {
-        compiler->module->dump();
+    if (result.errors.size() == 0 && verifyFunction(*function)) {
         function->dump();
         auto output = new raw_os_ostream(std::cout);
         verifyFunction(*function, output);
@@ -220,7 +217,6 @@ Value* NFunction::compile(Compiler* compiler, CResult& result, shared_ptr<CFunct
     /*
     compiler->TheFPM->run(*function);
     */
-    
     return nullptr;
 }
 

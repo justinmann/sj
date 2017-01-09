@@ -455,23 +455,24 @@ void testThrow() {
     try {
         result = compiler.run("throw(0)");
         assert(false);
-    } catch(...) { }
+    } catch(CJException& e) { }
 
     try {
         result = compiler.run("throw(1)");
         assert(false);
-    } catch (...) { }
+    } catch (CJException& e) { }
     
     try {
-    result = compiler.run(R"DELIM(
-		foo() {
-			throw(1)
-		}
-		foo()
-    )DELIM");
+        result = compiler.run(R"DELIM(
+            foo() {
+                throw(1)
+            }
+            foo()
+        )DELIM");
         assert(false);
-    } catch(...) { }
-
+    } catch(CJException& e) { }
+    
+    try {
     result = compiler.run(R"DELIM(
 		foo() {
 			throw(1)
@@ -487,9 +488,15 @@ void testThrow() {
 		bar()
     )DELIM");
     assert(result->type == RESULT_INT && result->iResult == 2);
+    } catch(CJException& e) {
+        printf("Throwing exception ??\n");
+    }
 }
 
-int main(int argc, char **argv) {   
+int main(int argc, char **argv) {
+    shared_ptr<CResult> result;
+    Compiler compiler;
+
     testMath();
     testComparison();
     testVoid();
@@ -502,5 +509,6 @@ int main(int argc, char **argv) {
     testClass();
     testExtern();
     testThrow();
-	return 0;
+
+    return 0;
 }
