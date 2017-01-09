@@ -181,8 +181,10 @@ shared_ptr<CResult> Compiler::compile(const char* code) {
 
 extern int yydebug;
 
+bool hasException = false;
+
 extern "C" void throwException() {
-    throw CJException();
+    hasException = true;
 }
 
 class NMatchReturn : public NBase {
@@ -287,7 +289,7 @@ shared_ptr<CResult> Compiler::run(const char* code) {
     
     // Get the symbol's address and cast it to the right type (takes no
     // arguments, returns a double) so we can call it as a native function.
-    
+    hasException = false;
     if (returnType->isIntegerTy() && returnType->getScalarSizeInBits() == 64) {
         int64_t (*FP)(void*) = (int64_t (*)(void*))(intptr_t)ExprSymbol.getAddress();
         int64_t result = FP(thisPtr);
@@ -319,6 +321,10 @@ shared_ptr<CResult> Compiler::run(const char* code) {
 
     // Delete the anonymous expression module from the JIT.
     TheJIT->removeModule(H);
+    
+    if (hasException) {
+        throw SJException();
+    }
     
     return compilerResult;
 }

@@ -147,7 +147,7 @@ enum CompilerState {
     Compile
 };
 
-class CJException : public exception {
+class SJException : public exception {
 };
 
 class Compiler
