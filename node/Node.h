@@ -23,7 +23,8 @@ enum NodeType {
     NodeType_Math,
     NodeType_Throw,
     NodeType_Variable,
-    NodeType_Void
+    NodeType_Void,
+    NodeType_While
 };
 
 #include "NAssignment.h"
@@ -42,6 +43,7 @@ enum NodeType {
 #include "NThrow.h"
 #include "NVariable.h"
 #include "NVoid.h"
+#include "NWhile.h"
 
 #endif /* Node_h */
 

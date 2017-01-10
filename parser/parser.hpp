@@ -78,7 +78,8 @@ extern int yydebug;
     TCATCH = 288,
     THASH = 289,
     TFOR = 290,
-    TTO = 291
+    TTO = 291,
+    TWHILE = 292
   };
 #endif
 

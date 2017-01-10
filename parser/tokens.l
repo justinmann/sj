@@ -50,6 +50,7 @@ int count_lines(const char* s, const int len) {
 "else"					TOKEN_VAL(TELSE);
 "for" 					TOKEN_VAL(TFOR);
 "to" 					TOKEN_VAL(TTO);
+"while"					TOKEN_VAL(TWHILE);
 [ \t]+					SAVE_LOC; 
 "^"						TOKEN_STR(TIDENTIFIER);
 "#"						TOKEN_VAL(THASH);

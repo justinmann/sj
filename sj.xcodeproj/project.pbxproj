@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		9C039B0D1E2498DB00D6C727 /* NFor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C039B0B1E2498DB00D6C727 /* NFor.cpp */; };
+		9C039B101E24B1DD00D6C727 /* NWhile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C039B0E1E24B1DD00D6C727 /* NWhile.cpp */; };
 		9C3786561E21EE0400202E28 /* NThrow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C3786541E21EE0400202E28 /* NThrow.cpp */; };
 		9C3786591E2225FC00202E28 /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C3786571E2225FC00202E28 /* Exception.cpp */; };
 		9C64AD941E0F8D6800340A7D /* libLLVMAnalysis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD761E0F8D6800340A7D /* libLLVMAnalysis.a */; };
@@ -79,6 +80,8 @@
 /* Begin PBXFileReference section */
 		9C039B0B1E2498DB00D6C727 /* NFor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NFor.cpp; path = node/NFor.cpp; sourceTree = "<group>"; };
 		9C039B0C1E2498DB00D6C727 /* NFor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NFor.h; path = node/NFor.h; sourceTree = "<group>"; };
+		9C039B0E1E24B1DD00D6C727 /* NWhile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NWhile.cpp; path = node/NWhile.cpp; sourceTree = "<group>"; };
+		9C039B0F1E24B1DD00D6C727 /* NWhile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NWhile.h; path = node/NWhile.h; sourceTree = "<group>"; };
 		9C3786521E21D64000202E28 /* sj.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sj.pch; sourceTree = "<group>"; };
 		9C3786541E21EE0400202E28 /* NThrow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NThrow.cpp; path = node/NThrow.cpp; sourceTree = "<group>"; };
 		9C3786551E21EE0400202E28 /* NThrow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NThrow.h; path = node/NThrow.h; sourceTree = "<group>"; };
@@ -282,6 +285,8 @@
 		9CF16BF81E19A86B006E9CB8 /* node */ = {
 			isa = PBXGroup;
 			children = (
+				9C039B0E1E24B1DD00D6C727 /* NWhile.cpp */,
+				9C039B0F1E24B1DD00D6C727 /* NWhile.h */,
 				9C039B0B1E2498DB00D6C727 /* NFor.cpp */,
 				9C039B0C1E2498DB00D6C727 /* NFor.h */,
 				9C3786541E21EE0400202E28 /* NThrow.cpp */,
@@ -395,6 +400,7 @@
 				9C039B0D1E2498DB00D6C727 /* NFor.cpp in Sources */,
 				9CF16BF71E19A85F006E9CB8 /* Compiler.cpp in Sources */,
 				9C7B48E41E19A2DD00D378A1 /* main.cpp in Sources */,
+				9C039B101E24B1DD00D6C727 /* NWhile.cpp in Sources */,
 				9CFDBF921E19BCCE00F5436F /* CFunction.cpp in Sources */,
 				9CF16C1C1E19A888006E9CB8 /* NIf.cpp in Sources */,
 				9CF16C261E19A8A9006E9CB8 /* parser.cpp in Sources */,

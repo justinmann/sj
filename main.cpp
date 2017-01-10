@@ -235,6 +235,20 @@ void testFor() {
     assert(result->type == RESULT_INT && result->iResult == 0);
 }
 
+void testWhile() {
+    shared_ptr<CResult> result;
+    Compiler compiler;
+    
+    result = compiler.run("while false {}");
+    assert(result->type == RESULT_VOID);
+    
+    result = compiler.run("while 1.0 {}");
+    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::TypeMismatch);
+    
+    result = compiler.run("x = 10; while x > 0 { x = x - 1 }; x");
+    assert(result->type == RESULT_INT && result->iResult == 0);
+}
+
 void testFunction() {
     shared_ptr<CResult> result;
     Compiler compiler;
@@ -516,6 +530,7 @@ int main(int argc, char **argv) {
     shared_ptr<CResult> result;
     Compiler compiler;
     
+    
     testMath();
     testComparison();
     testVoid();
@@ -525,6 +540,7 @@ int main(int argc, char **argv) {
     testComment();
     testIf();
     testFor();
+    testWhile();
     testFunction();
     testClass();
     testExtern();
