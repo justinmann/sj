@@ -89,22 +89,25 @@ Value* NFor::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> 
         result.addError(loc, CErrorCode::TypeMismatch, "end value must be a int");
         return nullptr;
     }
+    
+    auto loopBB = BasicBlock::Create(compiler->context, "loop");
+    auto afterBB = BasicBlock::Create(compiler->context, "afterloop");
+    
+    auto startCondition = builder->CreateICmpSLE(StartVal, EndVal);
+    builder->CreateCondBr(startCondition, loopBB, afterBB);
 
     // Make the new basic block for the loop header, inserting after current
     // block.
     Function *TheFunction = builder->GetInsertBlock()->getParent();
-    BasicBlock *PreheaderBB = builder->GetInsertBlock();
-    BasicBlock *LoopBB = BasicBlock::Create(compiler->context, "loop", TheFunction);
-    
-    // Insert an explicit fall through from the current block to the LoopBB.
-    builder->CreateBr(LoopBB);
+    BasicBlock *preheaderBB = builder->GetInsertBlock();
+    TheFunction->getBasicBlockList().push_back(loopBB);
     
     // Start insertion in LoopBB.
-    builder->SetInsertPoint(LoopBB);
+    builder->SetInsertPoint(loopBB);
     
     // Start the PHI node with an entry for Start.
     auto Variable = builder->CreatePHI(Type::getInt64Ty(compiler->context), 2, varName);
-    Variable->addIncoming(StartVal, PreheaderBB);
+    Variable->addIncoming(StartVal, preheaderBB);
     
     // Within the loop, the variable is defined equal to the PHI node.  If it
     // shadows an existing variable, we have to restore it, so save it now.
@@ -128,18 +131,17 @@ Value* NFor::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> 
     auto endCondition = builder->CreateICmpSLT(Variable, EndVal);
     
     // Create the "after loop" block and insert it.
-    BasicBlock *LoopEndBB = builder->GetInsertBlock();
-    BasicBlock *AfterBB =
-    BasicBlock::Create(compiler->context, "afterloop", TheFunction);
+    BasicBlock *loopEndBB = builder->GetInsertBlock();
     
     // Insert the conditional branch into the end of LoopEndBB.
-    builder->CreateCondBr(endCondition, LoopBB, AfterBB);
+    builder->CreateCondBr(endCondition, loopBB, afterBB);
     
     // Any new code will be inserted in AfterBB.
-    builder->SetInsertPoint(AfterBB);
+    TheFunction->getBasicBlockList().push_back(afterBB);
+    builder->SetInsertPoint(afterBB);
     
     // Add a new entry to the PHI node for the backedge.
-    Variable->addIncoming(NextVar, LoopEndBB);
+    Variable->addIncoming(NextVar, loopEndBB);
     
     // Restore the unshadowed variable.
     

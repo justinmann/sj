@@ -232,7 +232,7 @@ void testFor() {
     assert(result->type == RESULT_INT && result->iResult == 9);
 
     result = compiler.run("y = 0\nfor x: 2 to 1 { y = y + x }\ny");
-    assert(result->type == RESULT_INT && result->iResult == 2);
+    assert(result->type == RESULT_INT && result->iResult == 0);
 }
 
 void testFunction() {
