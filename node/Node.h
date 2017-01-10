@@ -16,6 +16,7 @@ enum NodeType {
     NodeType_Call,
     NodeType_Compare,
     NodeType_Double,
+    NodeType_For,
     NodeType_Function,
     NodeType_If,
     NodeType_Integer,
@@ -33,6 +34,7 @@ enum NodeType {
 #include "NCall.h"
 #include "NCompare.h"
 #include "NDouble.h"
+#include "NFor.h"
 #include "NFunction.h"
 #include "NIf.h"
 #include "NInteger.h"

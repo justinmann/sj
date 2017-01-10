@@ -40,7 +40,7 @@ int count_lines(const char* s, const int len) {
 
 %%
 
-" as "					TOKEN_VAL(TCAST);
+"as"					TOKEN_VAL(TCAST);
 "throw"					TOKEN_VAL(TTHROW);
 "catch"					TOKEN_VAL(TCATCH);
 "true"					TOKEN_VAL(TTRUE);
@@ -48,6 +48,8 @@ int count_lines(const char* s, const int len) {
 "void"					TOKEN_VAL(TVOID);
 "if"					TOKEN_VAL(TIF);
 "else"					TOKEN_VAL(TELSE);
+"for" 					TOKEN_VAL(TFOR);
+"to" 					TOKEN_VAL(TTO);
 [ \t]+					SAVE_LOC; 
 "^"						TOKEN_STR(TIDENTIFIER);
 "#"						TOKEN_VAL(THASH);

@@ -212,6 +212,29 @@ void testIf() {
     
 }
 
+void testFor() {
+    shared_ptr<CResult> result;
+    Compiler compiler;
+    
+    result = compiler.run("for x: 1 to 10 { }");
+    assert(result->type == RESULT_VOID);
+    
+    result = compiler.run("for x: 1.0 to 10 { }");
+    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::TypeMismatch);
+    
+    result = compiler.run("for x: 1 to 10.0 { }");
+    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::TypeMismatch);
+    
+    result = compiler.run("x: 1\nfor x: 1 to 10 { }");
+    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::InvalidVariable);
+    
+    result = compiler.run("y = 0\nfor x: 2 to 4 { y = y + x }\ny");
+    assert(result->type == RESULT_INT && result->iResult == 9);
+
+    result = compiler.run("y = 0\nfor x: 2 to 1 { y = y + x }\ny");
+    assert(result->type == RESULT_INT && result->iResult == 2);
+}
+
 void testFunction() {
     shared_ptr<CResult> result;
     Compiler compiler;
@@ -501,6 +524,7 @@ int main(int argc, char **argv) {
     testAssignment();
     testComment();
     testIf();
+    testFor();
     testFunction();
     testClass();
     testExtern();

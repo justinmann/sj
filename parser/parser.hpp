@@ -76,7 +76,9 @@ extern int yydebug;
     TELSE = 286,
     TTHROW = 287,
     TCATCH = 288,
-    THASH = 289
+    THASH = 289,
+    TFOR = 290,
+    TTO = 291
   };
 #endif
 

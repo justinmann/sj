@@ -39,7 +39,7 @@ public:
     shared_ptr<NFunction> node;
     vector<shared_ptr<CFunctionVar>> thisVars;
     map<string, pair<int, shared_ptr<CFunctionVar>>> thisVarsByName;
-    map<string, shared_ptr<CLocalVar>> localVarsByName;
+    map<string, shared_ptr<CVar>> localVarsByName;
     map<string, shared_ptr<CFunction>> funcsByName;
     BasicBlock* basicBlock;
     

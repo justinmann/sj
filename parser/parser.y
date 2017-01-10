@@ -58,10 +58,10 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID
 %token <token> TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND error
 %token <token> TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE
-%token <token> TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW TCATCH THASH
+%token <token> TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW TCATCH THASH TFOR TTO
 
 /* Non Terminal symbols. Types refer to union decl above */
-%type <node> program expr var stmt var_decl func_decl func_call func_arg
+%type <node> program expr var stmt var_decl func_decl func_call func_arg for_expr
 %type <block> stmts block catch
 %type <nif> if_expr
 %type <exprvec> func_args func_block
@@ -143,8 +143,12 @@ expr				: func_call
 					| TLPAREN expr TRPAREN 							{ $$ = $2; }
 					| expr TCAST TIDENTIFIER   						{ $$ = new NCast(LOC, $3->c_str(), shared_ptr<NBase>($1)); }
 					| if_expr										{ $$ = (NBase*)$1; }
+					| for_expr										
 					| TTHROW TLPAREN expr TRPAREN					{ $$ = new NThrow(LOC, shared_ptr<NBase>($3)); }
 					| var
+					;
+
+for_expr			: TFOR TIDENTIFIER TCOLON expr TTO expr block   { $$ = new NFor(LOC, $2->c_str(), shared_ptr<NBase>($4), shared_ptr<NBase>($6), shared_ptr<NBase>($7)); }
 					;
 					
 if_expr		 		: TIF expr block								{ $$ = new NIf(LOC, shared_ptr<NBase>($2), shared_ptr<NBase>($3), nullptr); }

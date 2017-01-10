@@ -105,7 +105,11 @@ shared_ptr<CType> NVariable::getParentValue(Compiler* compiler, CResult& result,
                     // local vars can only be accessed within their function
                     assert(cvar->mode != CVarType::Local || cfunction == thisFunction);
                     auto ptr = cvar->getValue(compiler, result, thisValue, builder);
-                    *value = builder->CreateLoad(ptr);
+                    if (ptr->getType()->isPointerTy()) {
+                        *value = builder->CreateLoad(ptr);
+                    } else {
+                        *value = ptr;
+                    }
                 }
 
                 

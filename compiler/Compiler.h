@@ -69,6 +69,7 @@ enum CErrorCode {
     InvalidType,
     InvalidArgumentCount,
     InvalidCharacter,
+    InvalidVariable,
     UnknownFunction,
     UnknownVariable,
     ImmutableAssignment,
