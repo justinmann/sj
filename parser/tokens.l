@@ -61,6 +61,10 @@ int count_lines(const char* s, const int len) {
 ;						TOKEN_VAL(TEND);
 "/*"([^*]|\*+[^*/])*\*+"/"	yyg->yyextra_r.l += count_lines(yytext, yyleng);
 "//"[^\n]*((\n))		yyg->yyextra_r.l++; yyg->yyextra_r.c = 0;
+"++"					TOKEN_VAL(TPLUSPLUS);
+"--"					TOKEN_VAL(TMINUSMINUS);
+"+="					TOKEN_VAL(TPLUSEQUAL);
+"-="					TOKEN_VAL(TMINUSEQUAL);
 "="						TOKEN_VAL(TEQUAL);
 "=="					TOKEN_VAL(TCEQ);
 "!="					TOKEN_VAL(TCNE);

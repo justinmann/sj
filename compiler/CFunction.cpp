@@ -12,6 +12,7 @@ shared_ptr<CFunctionVar> CFunctionVar::create(const string& name, shared_ptr<CFu
     auto c = make_shared<CFunctionVar>();
     c->mode = CVarType::Public;
     c->name = name;
+    c->isMutable = nassignment != nullptr ? nassignment->isMutable : false;
     c->nfunction = nfunction;
     c->index = index;
     c->nassignment = nassignment;
@@ -34,16 +35,33 @@ shared_ptr<CType> CFunctionVar::getType(Compiler* compiler, CResult& result) {
     return type;
 }
 
-Value* CFunctionVar::getValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder) {
+Value* CFunctionVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder) {
+    return builder->CreateLoad(getStoreValue(compiler, result, thisValue, builder));
+}
+
+Value* CFunctionVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder) {
     return parent.lock()->getArgumentValue(compiler, result, thisValue, index, builder);
 }
 
-shared_ptr<CFunction> CFunctionVar::getParentCFunction(Compiler* compiler, CResult& result) {
-    auto ctype = getType(compiler, result);
-    if (ctype && !ctype->cfunction.expired()) {
-        return ctype->cfunction.lock();
-    }
-    return nullptr;
+shared_ptr<CThisVar> CThisVar::create(shared_ptr<CFunction> parent) {
+    auto c = make_shared<CThisVar>();
+    c->mode = CVarType::Public;
+    c->name = "this";
+    c->isMutable = false;
+    c->parent = parent;
+    return c;
+}
+
+shared_ptr<CType> CThisVar::getType(Compiler* compiler, CResult& result) {
+    return parent.lock()->getThisType(compiler, result);
+}
+
+Value* CThisVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder) {
+    assert(false);
+}
+
+Value* CThisVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder) {
+    assert(false);
 }
 
 shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, shared_ptr<CFunction> parent, CFunctionType type, const string& name, shared_ptr<NFunction> node) {
@@ -56,8 +74,11 @@ shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, sha
     if (node) {
         for (auto it : node->assignments) {
             int index = (int)c->thisVars.size();
-            auto thisVar = CFunctionVar::create(it->name, c, node, index, it, nullptr);
-            c->thisVarsByName[it->name] = pair<int, shared_ptr<CFunctionVar>>(index, thisVar);
+            if (it->names.size() != 1) {
+                result.addError(it->loc, CErrorCode::InvalidDot, "cannot use '.' in variable declaration for a function: '%s'", it->fullName.c_str());
+            }
+            auto thisVar = CFunctionVar::create(it->names[0], c, node, index, it, nullptr);
+            c->thisVarsByName[it->names[0]] = pair<int, shared_ptr<CFunctionVar>>(index, thisVar);
             c->thisVars.push_back(thisVar);
         }
         

@@ -15,14 +15,22 @@ class CFunctionVar : public CVar {
 public:
     static shared_ptr<CFunctionVar> create(const string& name, shared_ptr<CFunction> parent, shared_ptr<NFunction> nfunction, int index, shared_ptr<NAssignment> nassignment, shared_ptr<CType> type);
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    virtual Value* getValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder);
-    shared_ptr<CFunction> getParentCFunction(Compiler* compiler, CResult& result);
+    virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder);
+    virtual Value* getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder);
     
     bool isInGetType;
     shared_ptr<NFunction> nfunction;
     int index;
     shared_ptr<CType> type;
     Value* value;
+};
+
+class CThisVar : public CVar {
+public:
+    static shared_ptr<CThisVar> create(shared_ptr<CFunction> parent);
+    virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
+    virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder);
+    virtual Value* getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder);
 };
 
 enum CFunctionType {

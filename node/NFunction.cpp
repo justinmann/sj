@@ -237,7 +237,7 @@ void NFunction::dump(Compiler* compiler, int level) const {
     if (assignments.size() > 0) {
         dumpf(level, "assignments: {");
         for (auto it : assignments) {
-            dumpf(level + 1, "%s: {", it->name.c_str());
+            dumpf(level + 1, "%s: {", it->fullName.c_str());
             it->dump(compiler, level + 2);
             dumpf(level + 1, "}");
         }

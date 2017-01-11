@@ -5,6 +5,7 @@ public:
     CForVar(shared_ptr<CFunction> parent_, const string& name_, Value* value_) {
         name = name_;
         mode = CVarType::Local;
+        isMutable = false;
         parent = parent_;
         value = value_;
     }
@@ -13,10 +14,15 @@ public:
         return compiler->typeInt;
     }
     
-    virtual Value* getValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder) {
+    virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder) {
         return value;
     }
     
+    virtual Value* getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder) {
+        assert(false);
+        return nullptr;
+    }
+
 private:
     Value* value;
 };

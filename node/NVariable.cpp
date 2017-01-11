@@ -2,6 +2,8 @@
 #include <sstream>
 
 NVariable::NVariable(CLoc loc, const char* name) : NBase(loc) {
+    fullName = name;
+    
     istringstream f(name);
     string s;
     while (getline(f, s, '.')) {
@@ -15,23 +17,27 @@ NodeType NVariable::getNodeType() const {
 
 void NVariable::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::FixVar);
-    getParentValue(compiler, result, loc, thisFunction, nullptr, nullptr, names, nullptr);
+    getParentValue(compiler, result, loc, thisFunction, nullptr, nullptr, names, VT_LOAD, nullptr);
 }
 
 shared_ptr<CType> NVariable::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
     assert(compiler->state >= CompilerState::FixVar);
-    return getParentValue(compiler, result, loc, thisFunction, nullptr, nullptr, names, nullptr);
+    auto cvar = getParentValue(compiler, result, loc, thisFunction, nullptr, nullptr, names, VT_LOAD, nullptr);
+    if (!cvar) {
+        return nullptr;
+    }
+    return cvar->getType(compiler, result);
 }
 
 Value* NVariable::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     Value* value = nullptr;
-    getParentValue(compiler, result, loc, thisFunction, thisValue, builder, names, &value);
+    getParentValue(compiler, result, loc, thisFunction, thisValue, builder, names, VT_LOAD, &value);
     return value;
 }
 
-shared_ptr<CType> NVariable::getParentValue(Compiler* compiler, CResult& result, const CLoc& loc, shared_ptr<CFunction> thisFunction, Value* thisValue22, IRBuilder<>* builder, const vector<string>& names, Value** value) {
+shared_ptr<CVar> NVariable::getParentValue(Compiler* compiler, CResult& result, const CLoc& loc, shared_ptr<CFunction> thisFunction, Value* thisValue22, IRBuilder<>* builder, const vector<string>& names, ValueType vt, Value** value) {
     if (value) {
         *value = nullptr;
     }
@@ -41,20 +47,26 @@ shared_ptr<CType> NVariable::getParentValue(Compiler* compiler, CResult& result,
             *value = thisValue22;
         }
         
-        return thisFunction->getThisType(compiler, result);
+        return CThisVar::create(thisFunction);
     }
     
     auto cfunction = thisFunction;
-    shared_ptr<CType> ctype = nullptr;
+    shared_ptr<CVar> cvarResult = nullptr;
     auto isFirst = true;
     for (auto name : names) {
+        auto isLast = name == names.back();
         if (isFirst) {
             isFirst = false;
             if (name == "this") {
-                ctype = thisFunction->getThisType(compiler, result);
                 if (value) {
+                    if (vt == VT_STORE) {
+                        result.addError(loc, CErrorCode::ImmutableAssignment, "cannot store value in this");
+                        return nullptr;
+                    }
                     *value = thisValue22;
                 }
+                
+                cvarResult = CThisVar::create(thisFunction);
             } else {
                 // Now we need to look up the parent chain
                 shared_ptr<CVar> cvar = nullptr;
@@ -91,7 +103,6 @@ shared_ptr<CType> NVariable::getParentValue(Compiler* compiler, CResult& result,
                 }
                 
                 if (cfunction == nullptr) {
-                    result.addError(loc, CErrorCode::UnknownVariable, "cannot find var '%s'", name.c_str());
                     return nullptr;
                 }
                 
@@ -100,25 +111,24 @@ shared_ptr<CType> NVariable::getParentValue(Compiler* compiler, CResult& result,
                 }
                 
                 auto cthisvar = static_pointer_cast<CFunctionVar>(cvar);
-                ctype = cvar->getType(compiler, result);
                 if (value) {
                     // local vars can only be accessed within their function
                     assert(cvar->mode != CVarType::Local || cfunction == thisFunction);
-                    auto ptr = cvar->getValue(compiler, result, thisValue, builder);
-                    if (ptr->getType()->isPointerTy()) {
-                        *value = builder->CreateLoad(ptr);
+                    
+                    if (vt == VT_LOAD || !isLast) {
+                        *value = cvar->getLoadValue(compiler, result, thisValue, builder);
                     } else {
-                        *value = ptr;
+                        *value = cvar->getStoreValue(compiler, result, thisValue, builder);
                     }
                 }
 
                 
-                cfunction = cthisvar->getParentCFunction(compiler, result);
+                cfunction = cthisvar->getCFunctionForValue(compiler, result);
+                cvarResult = cthisvar;
             }
         } else {
             auto cvar = cfunction->getCVar(name);
             if (!cvar) {
-                result.addError(loc, CErrorCode::UnknownVariable, "cannot find var '%s'", name.c_str());
                 return nullptr;
             }
             
@@ -127,7 +137,6 @@ shared_ptr<CType> NVariable::getParentValue(Compiler* compiler, CResult& result,
             }
             
             auto cthisvar = static_pointer_cast<CFunctionVar>(cvar);
-            ctype = cthisvar->getType(compiler, result);
             if (value) {
                 auto thisType = cfunction->getThisType(compiler, result);
                 auto varIndex = cthisvar->index;
@@ -135,18 +144,24 @@ shared_ptr<CType> NVariable::getParentValue(Compiler* compiler, CResult& result,
                 v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
                 v.push_back(ConstantInt::get(compiler->context, APInt(32, varIndex)));
                 auto ptr = builder->CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), *value, ArrayRef<Value *>(v), name.c_str());
-                *value = builder->CreateLoad(ptr);
+
+                if (vt == VT_LOAD || !isLast) {
+                    *value = builder->CreateLoad(ptr);
+                } else {
+                    *value = ptr;
+                }
             }
             
-            cfunction = cthisvar->getParentCFunction(compiler, result);
+            cfunction = cthisvar->getCFunctionForValue(compiler, result);
+            cvarResult = cthisvar;
         }
     }
     
-    return ctype;
+    return cvarResult;
 }
 
 void NVariable::dump(Compiler* compiler, int level) const {
     dumpf(level, "type: 'NVariable'");
-    dumpf(level, "name: '%s'", names[0].c_str());
+    dumpf(level, "name: '%s'", fullName.c_str());
 }
 

@@ -35,7 +35,7 @@ void NCall::define(Compiler* compiler, CResult& result, shared_ptr<CFunction> th
 
 void NCall::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {    
     assert(compiler->state == CompilerState::FixVar);
-    NVariable::getParentValue(compiler, result, loc, thisFunction, nullptr, nullptr, dotNames, nullptr);
+    NVariable::getParentValue(compiler, result, loc, thisFunction, nullptr, nullptr, dotNames, VT_LOAD, nullptr);
 
     for (auto it : arguments) {
         if (it->getNodeType() == NodeType_Assignment) {
@@ -56,13 +56,13 @@ shared_ptr<CFunction> NCall::getCFunction(Compiler* compiler, CResult& result, s
     
     // If more than one name in the list, then we need to iterate down to correct function
     if (dotNames.size() > 0) {
-        shared_ptr<CType> ctype = NVariable::getParentValue(compiler, result, loc, thisFunction, thisValue, builder, dotNames, nullptr);
-        if (!ctype) {
+        auto cvar = NVariable::getParentValue(compiler, result, loc, thisFunction, thisValue, builder, dotNames, VT_LOAD, nullptr);
+        if (!cvar) {
             result.addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", dotNames.back().c_str());
             return nullptr;
         }
         
-        cfunction = ctype->cfunction.lock();
+        cfunction = cvar->getCFunctionForValue(compiler, result);
 
         if (!cfunction) {
             result.addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", dotNames.back().c_str());
@@ -126,14 +126,14 @@ Value* NCall::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction>
         if (it->getNodeType() == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
             assert(parameterAssignment->inFunctionDeclaration);
-            auto index = callee->getThisIndex(parameterAssignment->name);
+            auto index = callee->getThisIndex(parameterAssignment->names[0]);
             if (index == -1) {
-                result.addError(loc, CErrorCode::ParameterDoesNotExist, "cannot find parameter '%s'", parameterAssignment->name.c_str());
+                result.addError(loc, CErrorCode::ParameterDoesNotExist, "cannot find parameter '%s'", parameterAssignment->fullName.c_str());
                 return nullptr;
             }
             
             if (parameters[index] != nullptr) {
-                result.addError(loc, CErrorCode::ParameterRedefined, "defined parameter '%s' twice", parameterAssignment->name.c_str());
+                result.addError(loc, CErrorCode::ParameterRedefined, "defined parameter '%s' twice", parameterAssignment->fullName.c_str());
                 return nullptr;
             }
             
@@ -161,7 +161,7 @@ Value* NCall::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction>
             auto defaultAssignment = static_pointer_cast<NAssignment>(it);
             assert(defaultAssignment->inFunctionDeclaration);
             if (!defaultAssignment->rightSide) {
-                result.addError(loc, CErrorCode::ParameterRequired, "must assign value to parameter '%s'", it->name.c_str());
+                result.addError(loc, CErrorCode::ParameterRequired, "must assign value to parameter '%s'", it->fullName.c_str());
                 return nullptr;
             }
             parameters[argIndex] = defaultAssignment->rightSide;
@@ -234,7 +234,7 @@ Value* NCall::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction>
             vector<Value*> v;
             v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
             v.push_back(ConstantInt::get(compiler->context, APInt(32, argIndex)));
-            auto paramPtr = builder->CreateInBoundsGEP(newType->llvmAllocType(compiler, result), newValue, ArrayRef<Value *>(v), defaultAssignment->name.c_str());
+            auto paramPtr = builder->CreateInBoundsGEP(newType->llvmAllocType(compiler, result), newValue, ArrayRef<Value *>(v), defaultAssignment->fullName.c_str());
             
             builder->CreateStore(value, paramPtr);
 
@@ -246,7 +246,7 @@ Value* NCall::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction>
         if (argIndex != -1) {
             Value* parentValue = thisValue;
             if (dotNames.size() > 0) {
-                NVariable::getParentValue(compiler, result, loc, thisFunction, thisValue, builder, dotNames, &parentValue);
+                NVariable::getParentValue(compiler, result, loc, thisFunction, thisValue, builder, dotNames, VT_LOAD, &parentValue);
             } else {
                 // if recursively calling ourselves then re-use parent
                 if (callee == thisFunction) {
@@ -311,7 +311,7 @@ void NCall::dump(Compiler* compiler, int level) const {
             if (it->getNodeType() == NodeType_Assignment) {
                 auto parameterAssignment = static_pointer_cast<NAssignment>(it);
                 assert(parameterAssignment->inFunctionDeclaration);
-                dumpf(level + 1, "%s: {", parameterAssignment->name.c_str());
+                dumpf(level + 1, "%s: {", parameterAssignment->fullName.c_str());
                 parameterAssignment->dump(compiler, level + 2);
                 dumpf(level + 1, "}");
             } else {

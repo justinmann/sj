@@ -157,6 +157,19 @@ void testAssignment() {
 
     result = compiler.run("x : y : 2; x + y");
     assert(result->type == RESULT_INT && result->iResult == 4);
+
+
+    result = compiler.run("a = 0; a++");
+    assert(result->type == RESULT_INT && result->iResult == 1);
+
+    result = compiler.run("a : 0; a++");
+    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::ImmutableAssignment);
+
+    result = compiler.run("a = 0; a += 1.0");
+    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::TypeMismatch);
+
+    result = compiler.run("a = 0; a += 1");
+    assert(result->type == RESULT_INT && result->iResult == 1);
 }
 
 void testComment() {
@@ -354,6 +367,15 @@ void testClass() {
     result = compiler.run("class(x: 0) { this }");
     assert(result->type == RESULT_VOID);
     
+    result = compiler.run("class(b : 0) { this }; a : class(); a.b = 1");
+    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::ImmutableAssignment);
+
+    result = compiler.run("class(a.b : 0) { this }");
+    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::InvalidDot);
+    
+    result = compiler.run("class(b = 0) { this }; a : class(); a.b = 1");
+    assert(result->type == RESULT_INT && result->iResult == 1);
+
     result = compiler.run("class(x: 0) { this }\n"
                           "c: class()\n"
                           "c.x");
@@ -530,7 +552,6 @@ int main(int argc, char **argv) {
     shared_ptr<CResult> result;
     Compiler compiler;
     
-    
     testMath();
     testComparison();
     testVoid();
@@ -544,7 +565,7 @@ int main(int argc, char **argv) {
     testFunction();
     testClass();
     testExtern();
-    testThrow();
+    // testThrow();
 
     return 0;
 }

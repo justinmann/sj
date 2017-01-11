@@ -1,6 +1,14 @@
 #include "Node.h"
 
-NAssignment::NAssignment(CLoc loc, const char* typeName, const char* name, shared_ptr<NBase> rightSide_, bool isMutable) : typeName(typeName), name(name), rightSide(rightSide_), isMutable(isMutable), inFunctionDeclaration(false),NBase(loc) {
+NAssignment::NAssignment(CLoc loc, const char* typeName, const char* name, shared_ptr<NBase> rightSide_, bool isMutable) : typeName(typeName), rightSide(rightSide_), isMutable(isMutable), inFunctionDeclaration(false),NBase(loc) {
+    fullName = name;
+
+    istringstream f(name);
+    string s;
+    while (getline(f, s, '.')) {
+        names.push_back(s);
+    }
+
     // If we are assigning a function to a var then we will call the function to get its value
     if (rightSide && rightSide->getNodeType() == NodeType::NodeType_Function) {
         nfunction = static_pointer_cast<NFunction>(rightSide);
@@ -15,15 +23,6 @@ NodeType NAssignment::getNodeType() const {
 void NAssignment::define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     
-    if (!inFunctionDeclaration) {
-        auto iter = thisFunction->localVarsByName.find(name);
-        if (iter == thisFunction->localVarsByName.end()) {
-            thisFunction->localVarsByName[name] = CLocalVar::create(name, thisFunction, shared_from_this());;
-        } else if (!isMutable) {
-            result.addError(loc, CErrorCode::ImmutableAssignment, "assigning to immutable variable is not allowed");
-        }
-    }
-    
     if (nfunction) {
         nfunction->define(compiler, result, thisFunction);
     }
@@ -35,6 +34,31 @@ void NAssignment::define(Compiler* compiler, CResult& result, shared_ptr<CFuncti
 
 void NAssignment::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::FixVar);
+
+    // function vars are not created here, this is only for local vars
+    if (!inFunctionDeclaration) {
+        // We need to see if var already exists, if not create a new local var
+        auto cvar = NVariable::getParentValue(compiler, result, loc, thisFunction, nullptr, nullptr, names, VT_STORE, nullptr);
+        if (cvar) {
+            if (!isMutable) {
+                result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var");
+                return;
+            } else if (!cvar->isMutable) {
+                result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var");
+                return;
+            }
+        } else {
+            if (names.size() == 1) {
+                auto iter = thisFunction->localVarsByName.find(names[0]);
+                if (iter != thisFunction->localVarsByName.end()) {
+                    result.addError(loc, CErrorCode::Internal, "the previous search on NVariable should find a local value with same name");
+                    return;
+                }
+                thisFunction->localVarsByName[names[0]] = CLocalVar::create(names[0], thisFunction, shared_from_this());;
+            }
+        }
+    }
+    
     if (nfunction) {
         nfunction->fixVar(compiler, result, thisFunction);
     }
@@ -48,7 +72,7 @@ shared_ptr<CType> NAssignment::getReturnType(Compiler* compiler, CResult& result
     assert(compiler->state >= CompilerState::FixVar);
     
     if (typeName.size() > 0) {
-        shared_ptr<CType> valueType = compiler->getType(typeName.c_str());
+        auto valueType = compiler->getType(typeName.c_str());
         if (!valueType) {
             result.addError(loc, CErrorCode::InvalidType, "explicit type does not exist");
             return nullptr;
@@ -93,18 +117,18 @@ Value* NAssignment::compile(Compiler* compiler, CResult& result, shared_ptr<CFun
         }
 
         if (value->getType() != valueType->llvmRefType(compiler, result)) {
-            result.addError(loc, CErrorCode::TypeMismatch, "invalid type");
+            result.addError(loc, CErrorCode::TypeMismatch, "returned type '%s' does not match explicit type '%s'", Type_print(value->getType()).c_str(), Type_print(valueType->llvmRefType(compiler, result)).c_str());
             return nullptr;
         }
     }
     
     // Get place to store data
-    auto cvar = thisFunction->getCVar(name);
+    Value* alloca = nullptr;
+    auto cvar = NVariable::getParentValue(compiler, result, loc, thisFunction, thisValue, builder, names, VT_STORE, &alloca);
     if (!cvar) {
-        result.addError(loc, CErrorCode::Internal, "var disappeared");
+        result.addError(loc, CErrorCode::InvalidVariable, "var does not exist '%s'", fullName.c_str());
         return nullptr;
     }
-    auto alloca = cvar->getValue(compiler, result, thisValue, builder);
     
     // Store value
     builder->CreateStore(value, alloca);
@@ -113,7 +137,7 @@ Value* NAssignment::compile(Compiler* compiler, CResult& result, shared_ptr<CFun
 
 void NAssignment::dump(Compiler* compiler, int level) const {
     dumpf(level, "type: 'NAssignment'");
-    dumpf(level, "name: %s", name.c_str());
+    dumpf(level, "name: %s", fullName.c_str());
     dumpf(level, "typeName: %s", typeName.c_str());
     dumpf(level, "isMutable: %s", bool_to_str(isMutable));
     
@@ -127,3 +151,8 @@ void NAssignment::dump(Compiler* compiler, int level) const {
     rightSide->dump(compiler, level + 1);
     dumpf(level, "}");
 }
+
+shared_ptr<NAssignment> NAssignment::shared_from_this() {
+    return static_pointer_cast<NAssignment>(NBase::shared_from_this());
+}
+

@@ -44,6 +44,7 @@
 		9C64ADB31E0F8DA700340A7D /* libz.1.2.8.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64ADB21E0F8DA700340A7D /* libz.1.2.8.tbd */; };
 		9C64ADB51E0F910300340A7D /* libcurses.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64ADB41E0F910300340A7D /* libcurses.tbd */; };
 		9C7B48E41E19A2DD00D378A1 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C7B48E11E19A2DD00D378A1 /* main.cpp */; };
+		9CB7416D1E25EB310041A8A6 /* NMathAssignment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CB7416B1E25EB310041A8A6 /* NMathAssignment.cpp */; };
 		9CF16BF71E19A85F006E9CB8 /* Compiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16BF51E19A85F006E9CB8 /* Compiler.cpp */; };
 		9CF16C151E19A888006E9CB8 /* NAssignment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16BF91E19A888006E9CB8 /* NAssignment.cpp */; };
 		9CF16C161E19A888006E9CB8 /* NBlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16BFC1E19A888006E9CB8 /* NBlock.cpp */; };
@@ -121,6 +122,8 @@
 		9C64ADB21E0F8DA700340A7D /* libz.1.2.8.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.1.2.8.tbd; path = usr/lib/libz.1.2.8.tbd; sourceTree = SDKROOT; };
 		9C64ADB41E0F910300340A7D /* libcurses.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcurses.tbd; path = usr/lib/libcurses.tbd; sourceTree = SDKROOT; };
 		9C7B48E11E19A2DD00D378A1 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		9CB7416B1E25EB310041A8A6 /* NMathAssignment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NMathAssignment.cpp; path = node/NMathAssignment.cpp; sourceTree = "<group>"; };
+		9CB7416C1E25EB310041A8A6 /* NMathAssignment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NMathAssignment.h; path = node/NMathAssignment.h; sourceTree = "<group>"; };
 		9CF16BF51E19A85F006E9CB8 /* Compiler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Compiler.cpp; path = compiler/Compiler.cpp; sourceTree = "<group>"; };
 		9CF16BF61E19A85F006E9CB8 /* Compiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Compiler.h; path = compiler/Compiler.h; sourceTree = "<group>"; };
 		9CF16BF91E19A888006E9CB8 /* NAssignment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NAssignment.cpp; path = node/NAssignment.cpp; sourceTree = "<group>"; };
@@ -285,6 +288,8 @@
 		9CF16BF81E19A86B006E9CB8 /* node */ = {
 			isa = PBXGroup;
 			children = (
+				9CB7416B1E25EB310041A8A6 /* NMathAssignment.cpp */,
+				9CB7416C1E25EB310041A8A6 /* NMathAssignment.h */,
 				9C039B0E1E24B1DD00D6C727 /* NWhile.cpp */,
 				9C039B0F1E24B1DD00D6C727 /* NWhile.h */,
 				9C039B0B1E2498DB00D6C727 /* NFor.cpp */,
@@ -390,6 +395,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9CB7416D1E25EB310041A8A6 /* NMathAssignment.cpp in Sources */,
 				9CF16C1F1E19A888006E9CB8 /* NCall.cpp in Sources */,
 				9C3786591E2225FC00202E28 /* Exception.cpp in Sources */,
 				9CF16C161E19A888006E9CB8 /* NBlock.cpp in Sources */,

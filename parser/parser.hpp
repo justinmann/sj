@@ -79,7 +79,11 @@ extern int yydebug;
     THASH = 289,
     TFOR = 290,
     TTO = 291,
-    TWHILE = 292
+    TWHILE = 292,
+    TPLUSPLUS = 293,
+    TMINUSMINUS = 294,
+    TPLUSEQUAL = 295,
+    TMINUSEQUAL = 296
   };
 #endif
 

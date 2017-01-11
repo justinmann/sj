@@ -6,14 +6,19 @@
 //  Copyright © 2016 Mann, Justin. All rights reserved.
 //
 
-#ifndef NAssignment_h
-#define NAssignment_h
+#ifndef NMathAssignment_h
+#define NMathAssignment_h
 
-#include "NBase.h"
+enum NMathAssignmentOp {
+    NMAO_Inc,
+    NMAO_Dec,
+    NMAO_Add,
+    NMAO_Sub
+};
 
-class NAssignment : public NBase {
+class NMathAssignment : public NBase {
 public:
-    NAssignment(CLoc loc, const char* typeName, const char* name, shared_ptr<NBase> rightSide, bool isMutable);
+    NMathAssignment(CLoc loc, const char* name, NMathAssignmentOp op, shared_ptr<NBase> rightSide);
     virtual NodeType getNodeType() const;
     virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
     virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
@@ -21,16 +26,13 @@ public:
     virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const;
     virtual void dump(Compiler* compiler, int level) const;
     
-    const string typeName;
     string fullName;
     vector<string> names;
-    bool inFunctionDeclaration;
+    NMathAssignmentOp op;
     shared_ptr<NBase> rightSide;
-    shared_ptr<NFunction> nfunction;
-    bool isMutable;
 
 private:
-    shared_ptr<NAssignment> shared_from_this();
+    shared_ptr<NAssignment> shared_from_this() { return static_pointer_cast<NAssignment>(NBase::shared_from_this()); }
 };
 
 #endif /* NAssignment_h */
