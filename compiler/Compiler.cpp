@@ -227,14 +227,14 @@ shared_ptr<CResult> Compiler::run(const char* code) {
     auto anonArgs = NodeList();
     
     auto catchBlock = make_shared<NBlock>(CLoc::undefined);
-    catchBlock->statements.push_back(make_shared<NCall>(CLoc::undefined, "throwException", NodeList()));
+    catchBlock->statements.push_back(make_shared<NCall>(CLoc::undefined, "throwException", StringList(), NodeList()));
     catchBlock->statements.push_back(make_shared<NMatchReturn>(CLoc::undefined, compilerResult->block));
     
     // Define an extern for throwException at the beginning of the block
-    auto throwExceptionFunction = make_shared<NFunction>(CLoc::undefined, FT_Extern, "void", "throwException", NodeList(), nullptr, nullptr);
+    auto throwExceptionFunction = make_shared<NFunction>(CLoc::undefined, FT_Extern, "void", "throwException", StringList(), NodeList(), nullptr, nullptr);
     compilerResult->block->statements.insert(compilerResult->block->statements.begin(), throwExceptionFunction);
     
-    auto anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, "", "global", anonArgs, compilerResult->block, catchBlock);
+    auto anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, "", "global", StringList(), anonArgs, compilerResult->block, catchBlock);
     auto currentFunction = CFunction::create(this, *compilerResult, nullptr, FT_Public, "", nullptr);
     state = CompilerState::Define;
     anonFunction->define(this, *compilerResult, currentFunction);

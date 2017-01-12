@@ -1,6 +1,6 @@
 #include "Node.h"
 
-NCall::NCall(CLoc loc, const char* name, NodeList arguments) : arguments(arguments), NBase(loc) {
+NCall::NCall(CLoc loc, const char* name, StringList templateTypes, NodeList arguments) : templateTypes(templateTypes), arguments(arguments), NBase(loc) {
     istringstream f(name);
     string s;
     while (getline(f, s, '.')) {
@@ -35,7 +35,11 @@ void NCall::define(Compiler* compiler, CResult& result, shared_ptr<CFunction> th
 
 void NCall::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {    
     assert(compiler->state == CompilerState::FixVar);
-    NVariable::getParentValue(compiler, result, loc, thisFunction, nullptr, nullptr, dotNames, VT_LOAD, nullptr);
+    
+    // Must call this, so any local vars used outside of the function can be promoted to function vars
+    if (dotNames.size() > 0) {
+        NVariable::getParentValue(compiler, result, loc, thisFunction, nullptr, nullptr, dotNames, VT_LOAD, nullptr);
+    }
 
     for (auto it : arguments) {
         if (it->getNodeType() == NodeType_Assignment) {
