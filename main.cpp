@@ -91,6 +91,12 @@ void testComparison() {
     
     result = compiler.run("-3.0 != 4.0");
     assert(result->type == RESULT_BOOL && result->bResult == true);
+
+    result = compiler.run("!true");
+    assert(result->type == RESULT_BOOL && result->bResult == false);
+
+    result = compiler.run("!-3.0 != 4.0");
+    assert(result->type == RESULT_BOOL && result->bResult == false);
 }
 
 void testVoid() {
@@ -502,7 +508,7 @@ void testExtern() {
     shared_ptr<CResult> result;
     Compiler compiler;
     
-    result = compiler.run("#cos(x:'float)'float\n"
+    result = compiler.run("extern cos(x:'float)'float\n"
                           "cos(1.0)");
     assert(result->type == RESULT_FLOAT && result->fResult == 0.54030230586813977);
 }

@@ -53,7 +53,7 @@ int count_lines(const char* s, const int len) {
 "while"					TOKEN_VAL(TWHILE);
 [ \t]+					SAVE_LOC; 
 "^"						TOKEN_STR(TIDENTIFIER);
-"#"						TOKEN_VAL(THASH);
+"extern"				TOKEN_VAL(TEXTERN);
 [a-zA-Z_][a-zA-Z0-9_\.]*	TOKEN_STR(TIDENTIFIER);
 [0-9]+\.[0-9]*			TOKEN_STR(TDOUBLE);
 [0-9]+					TOKEN_STR(TINTEGER);
@@ -61,6 +61,7 @@ int count_lines(const char* s, const int len) {
 ;						TOKEN_VAL(TEND);
 "/*"([^*]|\*+[^*/])*\*+"/"	yyg->yyextra_r.l += count_lines(yytext, yyleng);
 "//"[^\n]*((\n))		yyg->yyextra_r.l++; yyg->yyextra_r.c = 0;
+"!"						TOKEN_VAL(TEXCLAIM);
 "++"					TOKEN_VAL(TPLUSPLUS);
 "--"					TOKEN_VAL(TMINUSMINUS);
 "+="					TOKEN_VAL(TPLUSEQUAL);

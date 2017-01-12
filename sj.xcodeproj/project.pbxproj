@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		9C039B0D1E2498DB00D6C727 /* NFor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C039B0B1E2498DB00D6C727 /* NFor.cpp */; };
 		9C039B101E24B1DD00D6C727 /* NWhile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C039B0E1E24B1DD00D6C727 /* NWhile.cpp */; };
+		9C29C0B21E273F7E001C1FC6 /* NNot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C29C0B01E273F7E001C1FC6 /* NNot.cpp */; };
 		9C3786561E21EE0400202E28 /* NThrow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C3786541E21EE0400202E28 /* NThrow.cpp */; };
 		9C3786591E2225FC00202E28 /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C3786571E2225FC00202E28 /* Exception.cpp */; };
 		9C64AD941E0F8D6800340A7D /* libLLVMAnalysis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD761E0F8D6800340A7D /* libLLVMAnalysis.a */; };
@@ -83,6 +84,8 @@
 		9C039B0C1E2498DB00D6C727 /* NFor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NFor.h; path = node/NFor.h; sourceTree = "<group>"; };
 		9C039B0E1E24B1DD00D6C727 /* NWhile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NWhile.cpp; path = node/NWhile.cpp; sourceTree = "<group>"; };
 		9C039B0F1E24B1DD00D6C727 /* NWhile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NWhile.h; path = node/NWhile.h; sourceTree = "<group>"; };
+		9C29C0B01E273F7E001C1FC6 /* NNot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NNot.cpp; path = node/NNot.cpp; sourceTree = "<group>"; };
+		9C29C0B11E273F7E001C1FC6 /* NNot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NNot.h; path = node/NNot.h; sourceTree = "<group>"; };
 		9C3786521E21D64000202E28 /* sj.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sj.pch; sourceTree = "<group>"; };
 		9C3786541E21EE0400202E28 /* NThrow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NThrow.cpp; path = node/NThrow.cpp; sourceTree = "<group>"; };
 		9C3786551E21EE0400202E28 /* NThrow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NThrow.h; path = node/NThrow.h; sourceTree = "<group>"; };
@@ -288,14 +291,8 @@
 		9CF16BF81E19A86B006E9CB8 /* node */ = {
 			isa = PBXGroup;
 			children = (
-				9CB7416B1E25EB310041A8A6 /* NMathAssignment.cpp */,
-				9CB7416C1E25EB310041A8A6 /* NMathAssignment.h */,
-				9C039B0E1E24B1DD00D6C727 /* NWhile.cpp */,
-				9C039B0F1E24B1DD00D6C727 /* NWhile.h */,
-				9C039B0B1E2498DB00D6C727 /* NFor.cpp */,
-				9C039B0C1E2498DB00D6C727 /* NFor.h */,
-				9C3786541E21EE0400202E28 /* NThrow.cpp */,
-				9C3786551E21EE0400202E28 /* NThrow.h */,
+				9C29C0B01E273F7E001C1FC6 /* NNot.cpp */,
+				9C29C0B11E273F7E001C1FC6 /* NNot.h */,
 				9CF16BF91E19A888006E9CB8 /* NAssignment.cpp */,
 				9CF16BFA1E19A888006E9CB8 /* NAssignment.h */,
 				9CF16BFB1E19A888006E9CB8 /* NBase.h */,
@@ -303,12 +300,16 @@
 				9CF16BFD1E19A888006E9CB8 /* NBlock.h */,
 				9CF16BFE1E19A888006E9CB8 /* NBool.cpp */,
 				9CF16BFF1E19A888006E9CB8 /* NBool.h */,
+				9CF16C0E1E19A888006E9CB8 /* NCall.cpp */,
+				9CF16C0F1E19A888006E9CB8 /* NCall.h */,
 				9CF16C001E19A888006E9CB8 /* NCast.cpp */,
 				9CF16C011E19A888006E9CB8 /* NCast.h */,
 				9CF16C021E19A888006E9CB8 /* NCompare.cpp */,
 				9CF16C031E19A888006E9CB8 /* NCompare.h */,
 				9CF16C041E19A888006E9CB8 /* NDouble.cpp */,
 				9CF16C051E19A888006E9CB8 /* NDouble.h */,
+				9C039B0B1E2498DB00D6C727 /* NFor.cpp */,
+				9C039B0C1E2498DB00D6C727 /* NFor.h */,
 				9CF16C061E19A888006E9CB8 /* NFunction.cpp */,
 				9CF16C071E19A888006E9CB8 /* NFunction.h */,
 				9CF16C081E19A888006E9CB8 /* NIf.cpp */,
@@ -317,13 +318,17 @@
 				9CF16C0B1E19A888006E9CB8 /* NInteger.h */,
 				9CF16C0C1E19A888006E9CB8 /* NMath.cpp */,
 				9CF16C0D1E19A888006E9CB8 /* NMath.h */,
-				9CF16C0E1E19A888006E9CB8 /* NCall.cpp */,
-				9CF16C0F1E19A888006E9CB8 /* NCall.h */,
+				9CB7416B1E25EB310041A8A6 /* NMathAssignment.cpp */,
+				9CB7416C1E25EB310041A8A6 /* NMathAssignment.h */,
 				9CF16C101E19A888006E9CB8 /* Node.h */,
+				9C3786541E21EE0400202E28 /* NThrow.cpp */,
+				9C3786551E21EE0400202E28 /* NThrow.h */,
 				9CF16C111E19A888006E9CB8 /* NVariable.cpp */,
 				9CF16C121E19A888006E9CB8 /* NVariable.h */,
 				9CF16C131E19A888006E9CB8 /* NVoid.cpp */,
 				9CF16C141E19A888006E9CB8 /* NVoid.h */,
+				9C039B0E1E24B1DD00D6C727 /* NWhile.cpp */,
+				9C039B0F1E24B1DD00D6C727 /* NWhile.h */,
 			);
 			name = node;
 			sourceTree = "<group>";
@@ -415,6 +420,7 @@
 				9CF16C151E19A888006E9CB8 /* NAssignment.cpp in Sources */,
 				9CF16C1A1E19A888006E9CB8 /* NDouble.cpp in Sources */,
 				9CF16C201E19A888006E9CB8 /* NVariable.cpp in Sources */,
+				9C29C0B21E273F7E001C1FC6 /* NNot.cpp in Sources */,
 				9CF16C211E19A888006E9CB8 /* NVoid.cpp in Sources */,
 				9CF16C181E19A888006E9CB8 /* NCast.cpp in Sources */,
 				9CF16C191E19A888006E9CB8 /* NCompare.cpp in Sources */,

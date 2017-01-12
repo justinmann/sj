@@ -22,6 +22,7 @@ enum NodeType {
     NodeType_Integer,
     NodeType_Math,
     NodeType_MathAssignment,
+    NodeType_Not,
     NodeType_Throw,
     NodeType_Variable,
     NodeType_Void,
@@ -42,6 +43,7 @@ enum NodeType {
 #include "NInteger.h"
 #include "NMath.h"
 #include "NMathAssignment.h"
+#include "NNot.h"
 #include "NThrow.h"
 #include "NVariable.h"
 #include "NVoid.h"

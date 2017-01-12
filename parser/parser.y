@@ -56,7 +56,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW TCATCH THASH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TEXCLAIM
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program expr var stmt var_decl func_decl func_call func_arg for_expr while_expr
@@ -65,6 +65,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %type <exprvec> func_args func_block
 %type <isMutable> assign
 %type <string> type
+%type <strList> temp_args temp_block
 
 /* Operator precedence */
 %left TPLUS TMINUS
@@ -101,11 +102,13 @@ var_decl 			: TIDENTIFIER assign stmt						{ /* x = 1 */ 		$$ = new NAssignment(
 					| TIDENTIFIER TMINUSMINUS                       { $$ = new NMathAssignment(LOC, $1->c_str(), NMAO_Dec, nullptr); delete $1; }
 					| TIDENTIFIER TPLUSEQUAL stmt                   { $$ = new NMathAssignment(LOC, $1->c_str(), NMAO_Add, shared_ptr<NBase>($3)); delete $1; }
 					| TIDENTIFIER TMINUSEQUAL stmt                  { $$ = new NMathAssignment(LOC, $1->c_str(), NMAO_Sub, shared_ptr<NBase>($3)); delete $1; }
+					| TEXCLAIM stmt                                 { $$ = new NNot(LOC, shared_ptr<NBase>($2)); }
 					;
 
 func_decl 			: TIDENTIFIER func_block block catch			{ /* f()'int */		$$ = new NFunction(LOC, FT_Private, "", $1->c_str(), *($2), shared_ptr<NBlock>($3), shared_ptr<NBlock>($4)); }
 					| TIDENTIFIER func_block type block catch		{ /* f() */			$$ = new NFunction(LOC, FT_Private, $3->c_str(), $1->c_str(), *($2), shared_ptr<NBlock>($4), shared_ptr<NBlock>($5)); }
-					| THASH TIDENTIFIER func_block type 			{ /* #f()'int */	$$ = new NFunction(LOC, FT_Extern, $4->c_str(), $2->c_str(), *($3), nullptr, nullptr); }
+					| TIDENTIFIER temp_block func_block type block catch		{ /* f() */			$$ = new NFunction(LOC, FT_Private, $4->c_str(), $1->c_str(), *($3), shared_ptr<NBlock>($5), shared_ptr<NBlock>($6)); }
+					| TEXTERN TIDENTIFIER func_block type 			{ /* #f()'int */	$$ = new NFunction(LOC, FT_Extern, $4->c_str(), $2->c_str(), *($3), nullptr, nullptr); }
 					;
 
 catch				: /* Blank! */									{ $$ = nullptr; }
@@ -130,6 +133,13 @@ func_arg			: var_decl
 					| expr 	
 					| TIDENTIFIER assign type		    			{ $$ = new NAssignment(LOC, $3->c_str(), $1->c_str(), nullptr, $2); delete $3; }								
 					; 
+
+temp_block			: TEXCLAIM temp_args							{ $$ = $2; }
+					;
+
+temp_args			: TIDENTIFIER									{ $$ = new vector<string>(); $$->push_back(*$1); delete $1; }
+					| temp_args TCOMMA TIDENTIFIER					{ $1->push_back(*$3); delete $3; }
+					;
 
 expr				: func_call 	
 					| expr TPLUS var 								{ $$ = new NMath(LOC, shared_ptr<NBase>($1), NMathOp::Add, shared_ptr<NBase>($3)); }

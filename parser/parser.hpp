@@ -76,14 +76,15 @@ extern int yydebug;
     TELSE = 286,
     TTHROW = 287,
     TCATCH = 288,
-    THASH = 289,
+    TEXTERN = 289,
     TFOR = 290,
     TTO = 291,
     TWHILE = 292,
     TPLUSPLUS = 293,
     TMINUSMINUS = 294,
     TPLUSEQUAL = 295,
-    TMINUSEQUAL = 296
+    TMINUSEQUAL = 296,
+    TEXCLAIM = 297
   };
 #endif
 
