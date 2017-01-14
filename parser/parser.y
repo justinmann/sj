@@ -56,7 +56,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TEXCLAIM
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program expr var stmt var_decl func_decl func_call func_arg for_expr while_expr
@@ -136,7 +136,8 @@ func_arg			: var_decl
 					| TIDENTIFIER assign type		    			{ $$ = new NAssignment(LOC, $3->c_str(), $1->c_str(), nullptr, $2); delete $3; }								
 					; 
 
-temp_block			: TEXCLAIM temp_args							{ $$ = $2; }
+temp_block			: TEXCLAIM TIDENTIFIER							{ $$ = new vector<string>(); $$->push_back(*$2); delete $2; }
+					| TEXCLAIM TLBRACKET temp_args TRBRACKET		{ $$ = $3; }					
 					;
 
 temp_args			: TIDENTIFIER									{ $$ = new vector<string>(); $$->push_back(*$1); delete $1; }

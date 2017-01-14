@@ -278,7 +278,7 @@ void testFunction() {
     result = compiler.run("func() { 1 }; func()");
     assert(result->type == RESULT_INT && result->iResult == 1);
 
-    result = compiler.run("func() { func() }");
+    result = compiler.run("func() { func() }; func()");
     assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::TypeLoop);
 
     result = compiler.run("func() { -3.0 }; func() < 4.0");

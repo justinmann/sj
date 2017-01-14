@@ -49,7 +49,6 @@ public:
     map<string, pair<int, shared_ptr<CFunctionVar>>> thisVarsByName;
     map<string, shared_ptr<CVar>> localVarsByName;
     map<string, shared_ptr<CFunction>> funcsByName;
-    BasicBlock* basicBlock;
     
     static shared_ptr<CFunction> create(Compiler* compiler, CResult& result, shared_ptr<CFunction> parent, CFunctionType type, const string& name, shared_ptr<NFunction> node);
     shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result);
@@ -70,7 +69,6 @@ private:
     shared_ptr<CType> returnType;
     shared_ptr<CType> thisType;
     Function* function;
-    Value* thisValue;
 };
 
 #endif /* CFunction_h */

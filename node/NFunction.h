@@ -30,6 +30,8 @@ public:
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction) const;
     virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const;
     virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder, BasicBlock* catchBB) const;
+    Function* compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const;
+    void compileBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Function* function) const;
     virtual void dump(Compiler* compiler, int level) const;
     
 private:

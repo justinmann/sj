@@ -255,29 +255,32 @@ shared_ptr<CResult> Compiler::run(const char* code) {
 
     state = CompilerState::Compile;
     anonFunction->compile(this, *compilerResult, currentFunction, nullptr, nullptr, nullptr);
+    auto cfunction = currentFunction->getCFunction("global");
+    auto function = cfunction->getFunction(this, *compilerResult);
+    if (!function) {
+        return compilerResult;
+    }
+    auto returnType = function->getReturnType();
+    auto thisType = cfunction->getThisType(this, *compilerResult);
+
 #ifdef MODULE_OUTPUT
     module->dump();
-#endif    
+#endif
     
+    // Early exit if compilation fails
+    if (compilerResult->errors.size() > 0)
+        return compilerResult;
+
     if (verifyModule(*module.get()) && compilerResult->errors.size() == 0) {
         module->dump();
         
         auto output = new raw_os_ostream(std::cout);
         verifyModule(*module.get(), output);
         output->flush();
-
+        
         assert(false);
     }
     
-    // Early exit if compilation fails
-    if (compilerResult->errors.size() > 0)
-        return compilerResult;
-
-    auto cfunction = currentFunction->getCFunction("global");
-    auto function = cfunction->getFunction(this, *compilerResult);
-    auto returnType = function->getReturnType();
-    auto thisType = cfunction->getThisType(this, *compilerResult);
-
     auto H = TheJIT->addModule(move(module));
     
     // Search the JIT for the global symbol.

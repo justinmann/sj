@@ -123,10 +123,15 @@ shared_ptr<CType> NFunction::getBlockType(Compiler* compiler, CResult& result, s
 }
 
 Value* NFunction::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder, BasicBlock* parentCatchBB) const {
+    return nullptr;
+}
+
+Function* NFunction::compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
     assert(compiler->state == CompilerState::Compile);
-    
-    if (block == nullptr) {
-        // This is an extern function definition, there is no code to comile
+    assert(thisFunction->name == name);
+
+    auto returnType = getBlockType(compiler, result, thisFunction);
+    if (!returnType) {
         return nullptr;
     }
     
@@ -135,20 +140,69 @@ Value* NFunction::compile(Compiler* compiler, CResult& result, shared_ptr<CFunct
         return nullptr;
     }
     
-    auto thisFunction = parentFunction->getCFunction(name);
-    assert(thisFunction);
-    auto function = thisFunction->getFunction(compiler, result);
-    if (!function) {
-        return nullptr;
+    if (type == FT_Extern) {
+        vector<Type*> argTypes;
+        for (auto it : thisFunction->thisVars) {
+            auto ctype = it->getType(compiler, result);
+            if (!ctype) {
+                result.addError(it->nassignment->loc, CErrorCode::InvalidType, "cannot determine type for '%s'", it->name.c_str());
+                return nullptr;
+            }
+            
+            argTypes.push_back(ctype->llvmRefType(compiler, result));
+        }
+        
+        auto functionType = FunctionType::get(returnType->llvmRefType(compiler, result), argTypes, false);
+        return Function::Create(functionType, Function::ExternalLinkage, name.c_str(), compiler->module.get());
+    } else {
+        auto thisRefType = thisFunction->getThisType(compiler, result)->llvmRefType(compiler, result);
+        vector<Type*> argTypes;
+        argTypes.push_back(thisRefType);
+        auto functionType = FunctionType::get(returnType->llvmRefType(compiler, result), argTypes, false);
+        auto function = Function::Create(functionType, type == FT_Public ? Function::ExternalLinkage : Function::PrivateLinkage, name.c_str(), compiler->module.get());
+        function->args().begin()->setName("this");
+        function->setPersonalityFn(compiler->exception->getPersonality());
+        
+#ifdef DWARF_ENABLED
+        SmallVector<Metadata *, 8> EltTys;
+        for (auto &argType : argTypes) {
+            EltTys.push_back(compiler->getDIType(argType));
+        }
+        auto ditypes = compiler->DBuilder->createSubroutineType(compiler->DBuilder->getOrCreateTypeArray(EltTys));
+        
+        // Create a subprogram DIE for this function.
+        DIFile *Unit = compiler->DBuilder->createFile(compiler->TheCU->getFilename(), compiler->TheCU->getDirectory());
+        DIScope *FContext = Unit;
+        unsigned LineNo = node->loc.line;
+        unsigned ScopeLine = LineNo;
+        DISubprogram *SP = compiler->DBuilder->createFunction(FContext, node->name.c_str(), StringRef(), Unit, LineNo, ditypes, false /* internal linkage */, true /* definition */, ScopeLine, DINode::FlagPrototyped, false);
+        func->setSubprogram(SP);
+        
+        // Push the current scope.
+        compiler->LexicalBlocks.push_back(SP);
+        
+        // Unset the location for the prologue emission (leading instructions with no
+        // location in a function are considered part of the prologue and the debugger
+        // will run past them when breaking on a function)
+        compiler->emitLocation(nullptr);
+#endif
+        return function;
+    }
+}
+
+void NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Function* function) const {
+    assert(compiler->state == CompilerState::Compile);
+    assert(thisFunction->name == name);
+    
+    if (!block) {
+        return;
     }
     
-    IRBuilder<> newBuilder(thisFunction->basicBlock);
+    // Create body of function
+    // Create a new basic block to start insertion into.
+    auto basicBlock = BasicBlock::Create(compiler->context, "entry", function);
+    IRBuilder<> newBuilder(basicBlock);
     Value *RetVal = nullptr;
-    
-    // Create all of the inner functions, before creating the code for this function
-    for (auto it : functions) {
-        it->compile(compiler, result, thisFunction, thisFunction->getThisArgument(compiler, result), nullptr, nullptr);
-    }
     
     BasicBlock* catchBB = nullptr;
     if (catchBlock) {
@@ -165,7 +219,8 @@ Value* NFunction::compile(Compiler* compiler, CResult& result, shared_ptr<CFunct
         // Value *unwindException = catchBuilder.CreateExtractValue(caughtResult, 0);
         // Value *retTypeInfoIndex = catchBuilder.CreateExtractValue(caughtResult, 1);
         
-        Value *RetVal = catchBlock->compile(compiler, result, thisFunction, thisFunction->getThisArgument(compiler, result), &catchBuilder, nullptr);
+        auto thisArgument = (Argument*)function->args().begin();
+        Value *RetVal = catchBlock->compile(compiler, result, thisFunction, thisArgument, &catchBuilder, nullptr);
         if (function->getReturnType()->isVoidTy()) {
             catchBuilder.CreateRetVoid();
         } else {
@@ -217,7 +272,6 @@ error:
     /*
     compiler->TheFPM->run(*function);
     */
-    return nullptr;
 }
 
 void NFunction::dump(Compiler* compiler, int level) const {

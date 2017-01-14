@@ -84,7 +84,9 @@ extern int yydebug;
     TMINUSMINUS = 294,
     TPLUSEQUAL = 295,
     TMINUSEQUAL = 296,
-    TEXCLAIM = 297
+    TLBRACKET = 297,
+    TRBRACKET = 298,
+    TEXCLAIM = 299
   };
 #endif
 

@@ -130,69 +130,15 @@ Function* CFunction::getFunction(Compiler* compiler, CResult& result) {
         return nullptr;
     }
     
-    isInGetFunction = true;
     if (!function) {
-        auto returnType = getReturnType(compiler, result);
-        if (returnType) {
-            if (type == FT_Extern) {
-                vector<Type*> argTypes;
-                for (auto it : thisVars) {
-                    auto ctype = it->getType(compiler, result);
-                    if (!ctype) {
-                        result.addError(it->nassignment->loc, CErrorCode::InvalidType, "cannot determine type for '%s'", it->name.c_str());
-                        return nullptr;
-                    }
-                    
-                    argTypes.push_back(ctype->llvmRefType(compiler, result));
-                }
-                
-                auto functionType = FunctionType::get(returnType->llvmRefType(compiler, result), argTypes, false);
-                function = Function::Create(functionType, Function::ExternalLinkage, node->name.c_str(), compiler->module.get());
-            } else {
-                auto thisRefType = getThisType(compiler, result)->llvmRefType(compiler, result);
-                vector<Type*> argTypes;
-                argTypes.push_back(thisRefType);
-                auto functionType = FunctionType::get(returnType->llvmRefType(compiler, result), argTypes, false);
-                function = Function::Create(functionType, type == FT_Public ? Function::ExternalLinkage : Function::PrivateLinkage, node->name.c_str(), compiler->module.get());
-                function->args().begin()->setName("this");
-                function->setPersonalityFn(compiler->exception->getPersonality());
-                
-                // Create a new basic block to start insertion into.
-                basicBlock = BasicBlock::Create(compiler->context, "entry", function);
-                
-                IRBuilder<> builder(basicBlock);
-                auto thisAlloca = builder.CreateAlloca(thisRefType, 0);
-                auto thisArgument = (Argument*)function->args().begin();
-                builder.CreateStore(thisArgument, thisAlloca);
-                thisValue = builder.CreateLoad(thisAlloca);
-                            
-        #ifdef DWARF_ENABLED
-                SmallVector<Metadata *, 8> EltTys;
-                for (auto &argType : argTypes) {
-                    EltTys.push_back(compiler->getDIType(argType));
-                }
-                auto ditypes = compiler->DBuilder->createSubroutineType(compiler->DBuilder->getOrCreateTypeArray(EltTys));
-                
-                // Create a subprogram DIE for this function.
-                DIFile *Unit = compiler->DBuilder->createFile(compiler->TheCU->getFilename(), compiler->TheCU->getDirectory());
-                DIScope *FContext = Unit;
-                unsigned LineNo = node->loc.line;
-                unsigned ScopeLine = LineNo;
-                DISubprogram *SP = compiler->DBuilder->createFunction(FContext, node->name.c_str(), StringRef(), Unit, LineNo, ditypes, false /* internal linkage */, true /* definition */, ScopeLine, DINode::FlagPrototyped, false);
-                func->setSubprogram(SP);
-                
-                // Push the current scope.
-                compiler->LexicalBlocks.push_back(SP);
-                
-                // Unset the location for the prologue emission (leading instructions with no
-                // location in a function are considered part of the prologue and the debugger
-                // will run past them when breaking on a function)
-                compiler->emitLocation(nullptr);
-        #endif
-            }
+        isInGetFunction = true;
+        function = node->compileDefinition(compiler, result, shared_from_this());
+        isInGetFunction = false;
+        
+        if (function) {
+            node->compileBody(compiler, result, shared_from_this(), function);
         }
     }
-    isInGetFunction = false;
    
     return function;
 }
@@ -202,7 +148,7 @@ Value* CFunction::getThisArgument(Compiler* compiler, CResult& result) {
         getFunction(compiler, result);
     }
     
-    return thisValue;
+    return (Argument*)function->args().begin();
 }
 
 Value* CFunction::getArgumentValue(Compiler* compiler, CResult& result, Value* thisValue, int index, IRBuilder<>* builder) {
