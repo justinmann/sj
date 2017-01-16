@@ -14,8 +14,8 @@ string CVar::fullName() {
 
 shared_ptr<CFunction> CVar::getCFunctionForValue(Compiler* compiler, CResult& result) {
     auto ctype = getType(compiler, result);
-    if (ctype && !ctype->cfunction.expired()) {
-        return ctype->cfunction.lock();
+    if (ctype && !ctype->parent.expired()) {
+        return ctype->parent.lock();
     }
     return nullptr;
 }

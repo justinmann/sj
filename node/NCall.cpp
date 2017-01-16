@@ -1,6 +1,6 @@
 #include "Node.h"
 
-NCall::NCall(CLoc loc, const char* name, StringList templateTypes, NodeList arguments) : templateTypes(templateTypes), arguments(arguments), NBase(loc) {
+NCall::NCall(CLoc loc, const char* name, StringList templateTypeNames, NodeList arguments) : templateTypeNames(templateTypeNames), arguments(arguments), NBase(loc) {
     istringstream f(name);
     string s;
     while (getline(f, s, '.')) {
@@ -21,7 +21,7 @@ NodeType NCall::getNodeType() const {
     return NodeType_Call;
 }
 
-void NCall::define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+void NCall::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     for (auto it : arguments) {
         if (it->getNodeType() == NodeType_Assignment) {
@@ -75,12 +75,12 @@ shared_ptr<CFunction> NCall::getCFunction(Compiler* compiler, CResult& result, s
     }
     
     // Handle last name in list
-    auto callee = cfunction->getCFunction(functionName);    
+    auto callee = cfunction->getCFunction(functionName);
     if (!callee) {
         // If we are still using "this" then we can check to see if it is a function on parent
         if (cfunction == thisFunction) {
             while (cfunction && !cfunction->parent.expired() && !callee) {
-                cfunction = shared_ptr<CFunction>(cfunction->parent);
+                cfunction = cfunction->parent.lock();
                 if (cfunction) {
                     callee = cfunction->getCFunction(functionName);
                 }
@@ -94,6 +94,23 @@ shared_ptr<CFunction> NCall::getCFunction(Compiler* compiler, CResult& result, s
     }
     
     return callee;
+}
+
+map<string, shared_ptr<CType>> NCall::getTemplateTypes(Compiler* compiler, CResult& result, const map<string, shared_ptr<CType>>& templateTypes) const {
+    map<string, shared_ptr<CType>> newTemplateTypes;
+    for (auto typeName : templateTypeNames) {
+        auto t = templateTypes.find(typeName);
+        if (t != templateTypes.end()) {
+            newTemplateTypes[typeName] = t->second;
+        } else {
+            auto ctype = compiler->getType(typeName.c_str());
+            if (!ctype) {
+                result.addError(loc, CErrorCode::InvalidTemplateArg, "cannot find type: '%s'", typeName.c_str());
+            }
+            newTemplateTypes[typeName] = ctype;
+        }
+    }
+    return newTemplateTypes;
 }
 
 shared_ptr<CType> NCall::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
@@ -131,7 +148,7 @@ Value* NCall::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction>
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
             assert(parameterAssignment->inFunctionDeclaration);
             auto index = callee->getThisIndex(parameterAssignment->names[0]);
-            if (index == -1) {
+            if (index < 0) {
                 result.addError(loc, CErrorCode::ParameterDoesNotExist, "cannot find parameter '%s'", parameterAssignment->fullName.c_str());
                 return nullptr;
             }
@@ -213,7 +230,7 @@ Value* NCall::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction>
         auto newValue = entryBuilder.CreateAlloca(newType->llvmAllocType(compiler, result), 0, newType->name.c_str());
         
         // Fill in "this" with normal arguments
-        argIndex = 0;
+        auto argIndex = 0;
         for (auto defaultAssignment : callee->node->assignments) {
             assert(defaultAssignment->inFunctionDeclaration);
             auto argType = defaultAssignment->getReturnType(compiler, result, callee);
@@ -234,57 +251,41 @@ Value* NCall::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction>
                 result.addError(CLoc::undefined, CErrorCode::TypeMismatch, "value does not match");
                 return nullptr;
             }
-
-            vector<Value*> v;
-            v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
-            v.push_back(ConstantInt::get(compiler->context, APInt(32, argIndex)));
-            auto paramPtr = builder->CreateInBoundsGEP(newType->llvmAllocType(compiler, result), newValue, ArrayRef<Value *>(v), defaultAssignment->fullName.c_str());
             
+            auto paramPtr = callee->getArgumentPointer(compiler, result, newValue, argIndex, builder);
             builder->CreateStore(value, paramPtr);
 
             argIndex++;
         }
         
         // Add "parent" to "this"
-        argIndex = callee->getThisIndex("parent");
-        if (argIndex != -1) {
+        auto hasParent = callee->getHasParent(compiler, result);
+        if (hasParent) {
             Value* parentValue = thisValue;
             if (dotNames.size() > 0) {
                 NVariable::getParentValue(compiler, result, loc, thisFunction, thisValue, builder, dotNames, VT_LOAD, &parentValue);
             } else {
                 // if recursively calling ourselves then re-use parent
                 if (callee == thisFunction) {
-                    auto parentIndex = thisFunction->getThisIndex("parent");
-                    vector<Value*> v;
-                    v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
-                    v.push_back(ConstantInt::get(compiler->context, APInt(32, parentIndex)));
-                    auto ptr = builder->CreateInBoundsGEP(thisFunction->getThisType(compiler, result)->llvmAllocType(compiler, result), parentValue, ArrayRef<Value *>(v), "parent");
-                    parentValue = builder->CreateLoad(ptr, "parent");
+                    auto parentPtr = callee->getParentPointer(compiler, result, builder, parentValue);
+                    parentValue = builder->CreateLoad(parentPtr);
                 } else {
                     auto temp = thisFunction;
                     while (temp && temp != callee->parent.lock()) {
-                        auto parentIndex = temp->getThisIndex("parent");
-                        vector<Value*> v;
-                        v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
-                        v.push_back(ConstantInt::get(compiler->context, APInt(32, parentIndex)));
-                        auto ptr = builder->CreateInBoundsGEP(temp->getThisType(compiler, result)->llvmAllocType(compiler, result), parentValue, ArrayRef<Value *>(v), "parent");
-                        parentValue = builder->CreateLoad(ptr, "parent");
-                        
+                        auto parentPtr = temp->getParentPointer(compiler, result, builder, parentValue);
+                        parentValue = builder->CreateLoad(parentPtr);
                         temp = temp->parent.lock();
                     }
                 }
             }
             
-            vector<Value*> v;
-            v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
-            v.push_back(ConstantInt::get(compiler->context, APInt(32, argIndex)));
-            auto paramPtr = builder->CreateInBoundsGEP(newType->llvmAllocType(compiler, result), newValue, ArrayRef<Value *>(v), "parent");
-            
+            auto paramPtr = callee->getParentPointer(compiler, result, builder, newValue);
             builder->CreateStore(parentValue, paramPtr, "parent");
         }
 
         vector<Value *> argsV;
         argsV.push_back(newValue);
+
         auto func = callee->getFunction(compiler, result);
 
         Value* returnValue = nullptr;

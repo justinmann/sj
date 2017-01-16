@@ -13,16 +13,17 @@ class NCall : public NBase {
 public:
     vector<string> dotNames;
     string functionName;
-    const StringList templateTypes;
+    const StringList templateTypeNames;
     const NodeList arguments;
     
-    NCall(CLoc loc, const char* name, StringList templateTypes, NodeList arguments);
+    NCall(CLoc loc, const char* name, StringList templateTypeNames, NodeList arguments);
     virtual NodeType getNodeType() const;
-    virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
+    virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction);
     virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const;
     virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const;
     shared_ptr<CFunction> getCFunction(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const;
+    map<string, shared_ptr<CType>> getTemplateTypes(Compiler* compiler, CResult& result, const map<string, shared_ptr<CType>>& templateTypes) const;
     virtual void dump(Compiler* compiler, int level) const;
 };
 

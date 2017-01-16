@@ -18,6 +18,9 @@ shared_ptr<CFunctionVar> CFunctionVar::create(const string& name, shared_ptr<CFu
     c->nassignment = nassignment;
     c->parent = parent;
     c->type = type;
+    
+    assert(type != nullptr || nassignment != nullptr);
+    
     return c;
 }
 
@@ -40,7 +43,7 @@ Value* CFunctionVar::getLoadValue(Compiler* compiler, CResult& result, Value* th
 }
 
 Value* CFunctionVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder) {
-    return parent.lock()->getArgumentValue(compiler, result, thisValue, index, builder);
+    return parent.lock()->getArgumentPointer(compiler, result, thisValue, index, builder);
 }
 
 shared_ptr<CThisVar> CThisVar::create(shared_ptr<CFunction> parent) {
@@ -64,39 +67,36 @@ Value* CThisVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisV
     assert(false);
 }
 
-shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, shared_ptr<CFunction> parent, CFunctionType type, const string& name, shared_ptr<NFunction> node) {
+shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, weak_ptr<CFunctionDefinition> definition_, map<string, shared_ptr<CType>>& templateTypes_, weak_ptr<CFunction> parent_, CFunctionType type_, const string& name_, shared_ptr<NFunction> node_) {
     auto c = make_shared<CFunction>();
-    c->parent = parent;
-    c->type = type;
-    c->name = name;
-    c->node = node;
+    c->definition = definition_;
+    c->templateTypes = templateTypes_;
+    c->parent = parent_;
+    c->type = type_;
+    c->name = name_;
+    c->node = node_;
+    c->hasParent = false;
+    c->_structType = nullptr;
+    c->function = nullptr;
     
-    if (node) {
-        for (auto it : node->assignments) {
-            int index = (int)c->thisVars.size();
+    if (c->node) {
+        for (auto it : c->node->assignments) {
             if (it->names.size() != 1) {
                 result.addError(it->loc, CErrorCode::InvalidDot, "cannot use '.' in variable declaration for a function: '%s'", it->fullName.c_str());
             }
-            auto thisVar = CFunctionVar::create(it->names[0], c, node, index, it, nullptr);
-            c->thisVarsByName[it->names[0]] = pair<int, shared_ptr<CFunctionVar>>(index, thisVar);
+
+            int index = (int)c->thisVars.size();
+            auto thisVar = CFunctionVar::create(it->names[0], c, c->node, index, it, nullptr);
+            c->thisVarsByName[it->names[0]] = pair<int, shared_ptr<CVar>>(index, thisVar);
             c->thisVars.push_back(thisVar);
         }
-        
-        if (parent && type != FT_Extern) {
-            auto parentType = parent->getThisType(compiler, result);
-            if (parentType) {
-                int index = (int)c->thisVars.size();
-                auto parentVar = CFunctionVar::create("parent", c, node, index, nullptr, parentType);
-                c->thisVarsByName[parentVar->name] = pair<int, shared_ptr<CFunctionVar>>(index, parentVar);
-                c->thisVars.push_back(parentVar);
-            }
-        }
-        
-        for (auto it : node->functions) {
-            assert(type != FT_Extern && "Not allowed for extern functions");
-            c->funcsByName[it->name] = CFunction::create(compiler, result, c, FT_Private, it->name, it);
-        }
     }
+    
+    for (auto it : c->definition.lock()->funcsByName) {
+        assert(c->type != FT_Extern && "Not allowed for extern functions");
+        c->funcsByName[it.first] = CFunction::create(compiler, result, it.second, c->templateTypes, c, it.second->type, it.first, it.second->node);
+    }
+    
     return c;
 }
 
@@ -107,19 +107,53 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CResult& result) 
     }
     
     isInGetType = true;
+    
     if (!returnType) {
         returnType = node->getBlockType(compiler, result, shared_from_this());
     }
+    
     isInGetType = false;
     return returnType;
 }
 
 shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result) {
-    assert(type != FT_Extern);
-    if (!thisType && node != nullptr) {
-        thisType = make_shared<CType>(compiler, node->name.c_str(), shared_from_this());
+    if (type == FT_Extern) {
+        return nullptr;
     }
+
+    if (!thisType && node != nullptr) {
+        thisType = make_shared<CType>(node->name.c_str(), shared_from_this());
+
+    }
+ 
     return thisType;
+}
+
+Type* CFunction::getStructType(Compiler* compiler, CResult& result) {
+    if (!_structType) {
+        _structType = StructType::create(compiler->context, name);
+
+        vector<Type*> structMembers;
+        if (!parent.expired()) {
+            auto parentType = parent.lock()->getThisType(compiler, result);
+            if (parentType) {
+                structMembers.push_back(parentType->llvmRefType(compiler, result));
+                hasParent = true;
+            }
+        }
+        
+        for (auto it : thisVars) {
+            auto ctype = it->getType(compiler, result);
+            if (!ctype) {
+                result.addError(it->nassignment->loc, CErrorCode::InvalidType, "cannot determine type for '%s'", it->name.c_str());
+                return nullptr;
+            }
+            structMembers.push_back(ctype->llvmRefType(compiler, result));
+        }
+        
+        _structType->setBody(ArrayRef<Type *>(structMembers));
+    }
+    return _structType;
 }
 
 Function* CFunction::getFunction(Compiler* compiler, CResult& result) {
@@ -144,22 +178,19 @@ Function* CFunction::getFunction(Compiler* compiler, CResult& result) {
 }
 
 Value* CFunction::getThisArgument(Compiler* compiler, CResult& result) {
-    if (!function) {
-        getFunction(compiler, result);
-    }
-    
+    auto function = getFunction(compiler, result);
     return (Argument*)function->args().begin();
 }
 
-Value* CFunction::getArgumentValue(Compiler* compiler, CResult& result, Value* thisValue, int index, IRBuilder<>* builder) {
+Value* CFunction::getArgumentPointer(Compiler* compiler, CResult& result, Value* thisValue, int index, IRBuilder<>* builder) {
+    auto thisType = getThisType(compiler, result);
     assert(thisValue->getType() == thisType->llvmRefType(compiler, result));
     vector<Value*> v;
     v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
-    v.push_back(ConstantInt::get(compiler->context, APInt(32, index)));
+    v.push_back(ConstantInt::get(compiler->context, APInt(32, index + getArgStart(compiler, result))));
     auto paramPtr = builder->CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "paramPtr");
     return paramPtr;
 }
-
 
 shared_ptr<CFunction> CFunction::getCFunction(const string& name) const {
     auto t = funcsByName.find(name);
@@ -219,6 +250,56 @@ shared_ptr<CFunctionVar> CFunction::localVarToThisVar(Compiler* compiler, shared
 }
 
 string CFunction::fullName() {
+    return definition.lock()->fullName();
+}
+
+int CFunction::getArgStart(Compiler* compiler, CResult& result) {
+    getThisType(compiler, result);
+    if (hasParent)
+        return 1;
+    
+    return 0;
+}
+
+bool CFunction::getHasParent(Compiler* compiler, CResult& result) {
+    getThisType(compiler, result);
+    return hasParent;
+}
+
+Value* CFunction::getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    if (type != FT_Extern) {
+        vector<Value*> v;
+        v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+        v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+        return builder->CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "parent");
+    }
+    return nullptr;
+}
+
+
+shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parent, CFunctionType type, const string& name, shared_ptr<NFunction> node) {
+    auto c = make_shared<CFunctionDefinition>();
+    c->parent = parent;
+    c->type = type;
+    c->name = name;
+    c->node = node;
+    
+    if (node) {
+        for (auto it : node->functions) {
+            assert(type != FT_Extern && "Not allowed for extern functions");
+            c->funcsByName[it->name] = CFunctionDefinition::create(compiler, result, c, FT_Private, it->name, it);
+        }
+        
+        for (auto it : node->assignments) {
+            if (it->names.size() != 1) {
+                result.addError(it->loc, CErrorCode::InvalidDot, "cannot use '.' in variable declaration for a function: '%s'", it->fullName.c_str());
+            }
+        }
+    }
+    return c;
+}
+
+string CFunctionDefinition::fullName() {
     string n = name;
     auto p = parent;
     while (!p.expired() && !p.lock()->parent.expired()) {
@@ -229,41 +310,18 @@ string CFunction::fullName() {
     return n;
 }
 
-void CFunction::dump(Compiler* compiler, CResult& result, int level) {
-    // Skip if this is the function around global
-    if (!parent.expired()) {
-        dumpf(level, "%s: {", fullName().c_str());
-        
-        if ((thisVarsByName.size() > 1) || (thisVarsByName.size() > 0 && thisVarsByName.find("parent") == thisVarsByName.end())) {
-            dumpf(level + 1, "thisVars: {");
-            for (auto it : thisVarsByName) {
-                if (it.first == "parent")
-                    continue;
-                
-                auto ctype = it.second.second->getType(compiler, result);
-                dumpf(level + 2, "%s: '%s'", it.second.second->name.c_str(), ctype ? ctype->name.c_str() : "undefined");
-            }
-            dumpf(level + 1, "}");
-        }
+shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CResult& result, map<string, shared_ptr<CType>>& templateTypes) {
+    auto funcParent = parent.expired() ? nullptr : parent.lock()->getFunction(compiler, result, templateTypes);
+    auto func = CFunction::create(compiler, result, shared_from_this(), templateTypes, funcParent, type, name, node);
+    return func;
+}
 
-        if (localVarsByName.size() > 0) {
-            dumpf(level + 1, "localVars: {");
-            for (auto it : localVarsByName) {
-                auto ctype = it.second->getType(compiler, result);
-                dumpf(level + 2, "%s: '%s'", it.second->name.c_str(), ctype ? ctype->name.c_str() : "undefined");
-            }
-            dumpf(level + 1, "}");
-        }
-        
-        dumpf(level, "}");
-        dumpf(level, "");
-    }
-    
+void CFunctionDefinition::dump(Compiler* compiler, CResult& result, int level) {
+    // Skip if this is the function around global    
     if (funcsByName.size() > 0) {
         for (auto it : funcsByName) {
             it.second->dump(compiler, result, level);
         }
-    }    
+    }
 }
-
 

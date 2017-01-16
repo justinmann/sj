@@ -20,7 +20,7 @@ NodeType NAssignment::getNodeType() const {
     return NodeType_Assignment;
 }
 
-void NAssignment::define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+void NAssignment::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     
     if (nfunction) {

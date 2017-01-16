@@ -4,7 +4,7 @@ NodeType NBlock::getNodeType() const {
     return NodeType_Block;
 }
 
-void NBlock::define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+void NBlock::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     for (auto it : statements) {
         it->define(compiler, result, thisFunction);

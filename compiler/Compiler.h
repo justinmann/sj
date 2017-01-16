@@ -71,6 +71,7 @@ enum CErrorCode {
     InvalidCharacter,
     InvalidVariable,
     InvalidDot,
+    InvalidTemplateArg,
     UnknownFunction,
     UnknownVariable,
     ImmutableAssignment,
@@ -124,10 +125,10 @@ public:
     template< typename... Args >
     void addError(const CLoc loc, const CErrorCode code, const char* format, Args... args) {
         string str = strprintf(format, args...);
-        errors.push_back(CError(loc, code, str));
 #ifdef ERROR_OUTPUT
         printf("ERROR: %s\n", str.c_str());
 #endif
+        errors.push_back(CError(loc, code, str));
 #ifdef ASSERT_ON_ERROR
         assert(false);
 #endif

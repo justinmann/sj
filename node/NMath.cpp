@@ -4,7 +4,7 @@ NodeType NMath::getNodeType() const {
     return NodeType_Math;
 }
 
-void NMath::define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+void NMath::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     leftSide->define(compiler, result, thisFunction);
     rightSide->define(compiler, result, thisFunction);

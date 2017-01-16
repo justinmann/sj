@@ -1,13 +1,5 @@
 #include "node/node.h"
 
-/*** TODO:
- 
- get code from console
- get code from file
- compile to binary
- 
- ***/
-
 void testMath() {
     shared_ptr<CResult> result;
     Compiler compiler;

@@ -4,7 +4,7 @@ NodeType NNot::getNodeType() const {
     return NodeType_Not;
 }
 
-void NNot::define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+void NNot::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     node->define(compiler, result, thisFunction);
 }

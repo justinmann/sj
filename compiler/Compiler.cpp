@@ -192,7 +192,7 @@ public:
     const shared_ptr<NBase> inner;
     NMatchReturn(const CLoc loc, shared_ptr<NBase> inner) : inner(inner), NBase(loc) { };
     virtual NodeType getNodeType() const { return NodeType_Variable; }
-    virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) { }
+    virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) { }
     virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) { }
     
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
@@ -235,15 +235,17 @@ shared_ptr<CResult> Compiler::run(const char* code) {
     compilerResult->block->statements.insert(compilerResult->block->statements.begin(), throwExceptionFunction);
     
     auto anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, "", "global", StringList(), anonArgs, compilerResult->block, catchBlock);
-    auto currentFunction = CFunction::create(this, *compilerResult, nullptr, FT_Public, "", nullptr);
+    auto currentFunctionDefintion = CFunctionDefinition::create(this, *compilerResult, nullptr, FT_Public, "", nullptr);
     state = CompilerState::Define;
-    anonFunction->define(this, *compilerResult, currentFunction);
+    anonFunction->define(this, *compilerResult, currentFunctionDefintion);
     
     // Early exit if compile fails
     if (compilerResult->errors.size() > 0)
         return compilerResult;
     
     state = CompilerState::FixVar;
+    auto templateTypes = map<string, shared_ptr<CType>>();
+    auto currentFunction = currentFunctionDefintion->getFunction(this, *compilerResult, templateTypes);
     anonFunction->fixVar(this, *compilerResult, currentFunction);
 #ifdef VAR_OUTPUT
     currentFunction->dump(this, *compilerResult, 0);

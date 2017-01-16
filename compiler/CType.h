@@ -15,22 +15,20 @@ class CResult;
 
 class CType {
 public:
-    string name;
-    weak_ptr<CFunction> cfunction;
-    
-    CType(const char* name, Type* type);
-    CType(Compiler* compiler, const char* name, shared_ptr<CFunction> cfunction);
+    CType(const char* name, Type* llvmType);
+    CType(const char* name, weak_ptr<CFunction> parent);
 #ifdef DWARF_ENABLED
     DIType* getDIType();
 #endif
+
+    string name;
+    weak_ptr<CFunction> parent;
     Type* llvmAllocType(Compiler* compiler, CResult& result);
     Type* llvmRefType(Compiler* compiler, CResult& result);
     
 private:
     Type* _llvmAllocType;
     Type* _llvmRefType;
-    vector<shared_ptr<CType>> members;
-    map<string, pair<int, shared_ptr<CType>>> membersByName;
 };
 
 #endif /* CType_h */

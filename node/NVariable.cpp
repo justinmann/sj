@@ -81,17 +81,11 @@ shared_ptr<CVar> NVariable::getParentValue(Compiler* compiler, CResult& result, 
                     if (!cvar) {
                         if (value) {
                             auto thisType = cfunction->getThisType(compiler, result);
-                            auto parentIndex = cfunction->getThisIndex("parent");
-                            if (parentIndex == -1) {
+                            auto hasParent = cfunction->getHasParent(compiler, result);
+                            if (!hasParent) {
                                 cfunction = nullptr;
                             } else {
-                                vector<Value*> v;
-                                v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
-                                v.push_back(ConstantInt::get(compiler->context, APInt(32, parentIndex)));
-                                auto llvmAllocType = thisType->llvmAllocType(compiler, result);
-                                auto thisValueType = thisValue->getType();
-                                assert(thisValueType == llvmAllocType->getPointerTo());
-                                auto ptr = builder->CreateInBoundsGEP(llvmAllocType, thisValue, ArrayRef<Value *>(v), "paramPtr");
+                                auto ptr = cfunction->getParentPointer(compiler, result, builder, thisValue);
                                 thisValue = builder->CreateLoad(ptr, "parent");
                             }
                         }
@@ -138,17 +132,10 @@ shared_ptr<CVar> NVariable::getParentValue(Compiler* compiler, CResult& result, 
             
             auto cthisvar = static_pointer_cast<CFunctionVar>(cvar);
             if (value) {
-                auto thisType = cfunction->getThisType(compiler, result);
-                auto varIndex = cthisvar->index;
-                vector<Value*> v;
-                v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
-                v.push_back(ConstantInt::get(compiler->context, APInt(32, varIndex)));
-                auto ptr = builder->CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), *value, ArrayRef<Value *>(v), name.c_str());
-
                 if (vt == VT_LOAD || !isLast) {
-                    *value = builder->CreateLoad(ptr);
+                    *value = cthisvar->getLoadValue(compiler, result, *value, builder);
                 } else {
-                    *value = ptr;
+                    *value = cthisvar->getStoreValue(compiler, result, *value, builder);
                 }
             }
             

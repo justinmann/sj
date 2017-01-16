@@ -4,7 +4,7 @@ NodeType NThrow::getNodeType() const {
     return NodeType_Throw;
 }
 
-void NThrow::define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+void NThrow::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     node->define(compiler, result, thisFunction);
 }
 

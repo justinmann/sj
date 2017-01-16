@@ -4,7 +4,7 @@ NodeType NCompare::getNodeType() const {
     return NodeType_Compare;
 }
 
-void NCompare::define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+void NCompare::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     leftSide->define(compiler, result, thisFunction);
     rightSide->define(compiler, result, thisFunction);
@@ -31,7 +31,7 @@ Value* NCompare::compile(Compiler* compiler, CResult& result, shared_ptr<CFuncti
         return nullptr;
     
     if (L->getType() != R->getType()) {
-        result.addError(loc, CErrorCode::TypeMismatch, "left and right values are not the same type");
+        result.addError(loc, CErrorCode::TypeMismatch, "left type '%s' does not match right type '%s'", Type_print(L->getType()).c_str(), Type_print(R->getType()).c_str());
         return nullptr;
     }
     

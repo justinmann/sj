@@ -4,7 +4,7 @@ NodeType NWhile::getNodeType() const {
     return NodeType_While;
 }
 
-void NWhile::define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+void NWhile::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     cond->define(compiler, result, thisFunction);
     body->define(compiler, result, thisFunction);

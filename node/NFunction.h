@@ -25,7 +25,7 @@ public:
     
     NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, StringList templateTypes, NodeList arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock);
     virtual NodeType getNodeType() const;
-    virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction);
+    virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parentFunction);
     virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction);
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction) const;
     virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const;

@@ -14,7 +14,7 @@ NodeType NMathAssignment::getNodeType() const {
     return NodeType_MathAssignment;
 }
 
-void NMathAssignment::define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+void NMathAssignment::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     if (rightSide) {
         rightSide->define(compiler, result, thisFunction);

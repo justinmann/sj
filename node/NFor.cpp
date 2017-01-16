@@ -31,21 +31,11 @@ NodeType NFor::getNodeType() const {
     return NodeType_For;
 }
 
-void NFor::define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+void NFor::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     start->define(compiler, result, thisFunction);
     end->define(compiler, result, thisFunction);
-    
-    if (thisFunction->localVarsByName.find(varName) != thisFunction->localVarsByName.end()) {
-        result.addError(loc, CErrorCode::InvalidVariable, "var '%s' already exists within function, must have a unique name", varName.c_str());
-        return;
-    }
-    
-    thisFunction->localVarsByName[varName] = make_shared<CForVar>(thisFunction, varName, nullptr);
-    
     body->define(compiler, result, thisFunction);
-
-    thisFunction->localVarsByName.erase(varName);
 }
 
 void NFor::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {

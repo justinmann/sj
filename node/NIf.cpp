@@ -4,7 +4,7 @@ NodeType NIf::getNodeType() const {
     return NodeType_If;
 }
 
-void NIf::define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+void NIf::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     condition->define(compiler, result, thisFunction);
 

@@ -28,7 +28,7 @@ NodeType NFunction::getNodeType() const {
     return NodeType_Function;
 }
 
-void NFunction::define(Compiler *compiler, CResult& result, shared_ptr<CFunction> parentFunction) {
+void NFunction::define(Compiler *compiler, CResult& result, shared_ptr<CFunctionDefinition> parentFunction) {
     assert(compiler->state == CompilerState::Define);
     if (invalid.size() > 0) {
         result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
@@ -42,14 +42,14 @@ void NFunction::define(Compiler *compiler, CResult& result, shared_ptr<CFunction
             return;
         }
         
-        auto thisFunction = CFunction::create(compiler, result, parentFunction, type, name, shared_from_this());
+        auto thisFunction = CFunctionDefinition::create(compiler, result, parentFunction, type, name, shared_from_this());
         parentFunction->funcsByName[name] = thisFunction;
         
         for (auto it : assignments) {
             it->define(compiler, result, thisFunction);
         }
     } else {
-        auto thisFunction = CFunction::create(compiler, result, parentFunction, type, name, shared_from_this());
+        auto thisFunction = CFunctionDefinition::create(compiler, result, parentFunction, type, name, shared_from_this());
         parentFunction->funcsByName[name] = thisFunction;
 
         for (auto it : functions) {
@@ -155,9 +155,8 @@ Function* NFunction::compileDefinition(Compiler* compiler, CResult& result, shar
         auto functionType = FunctionType::get(returnType->llvmRefType(compiler, result), argTypes, false);
         return Function::Create(functionType, Function::ExternalLinkage, name.c_str(), compiler->module.get());
     } else {
-        auto thisRefType = thisFunction->getThisType(compiler, result)->llvmRefType(compiler, result);
         vector<Type*> argTypes;
-        argTypes.push_back(thisRefType);
+        argTypes.push_back(thisFunction->getThisType(compiler, result)->llvmRefType(compiler, result));
         auto functionType = FunctionType::get(returnType->llvmRefType(compiler, result), argTypes, false);
         auto function = Function::Create(functionType, type == FT_Public ? Function::ExternalLinkage : Function::PrivateLinkage, name.c_str(), compiler->module.get());
         function->args().begin()->setName("this");
@@ -203,6 +202,7 @@ void NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
     auto basicBlock = BasicBlock::Create(compiler->context, "entry", function);
     IRBuilder<> newBuilder(basicBlock);
     Value *RetVal = nullptr;
+    Argument* thisArgument = nullptr;
     
     BasicBlock* catchBB = nullptr;
     if (catchBlock) {
@@ -238,7 +238,8 @@ void NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
         } 
     }
     
-    RetVal = block->compile(compiler, result, thisFunction, thisFunction->getThisArgument(compiler, result), &newBuilder, catchBB);
+    thisArgument = (Argument*)function->args().begin();
+    RetVal = block->compile(compiler, result, thisFunction, thisArgument, &newBuilder, catchBB);
     if (function->getReturnType()->isVoidTy()) {
         newBuilder.CreateRetVoid();
     } else {

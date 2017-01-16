@@ -5,7 +5,7 @@ NodeType NCast::getNodeType() const {
     return NodeType_Cast;
 }
 
-void NCast::define(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+void NCast::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     node->define(compiler, result, thisFunction);
 }
