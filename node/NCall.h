@@ -23,7 +23,6 @@ public:
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const;
     virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const;
     shared_ptr<CFunction> getCFunction(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const;
-    map<string, shared_ptr<CType>> getTemplateTypes(Compiler* compiler, CResult& result, const map<string, shared_ptr<CType>>& templateTypes) const;
     virtual void dump(Compiler* compiler, int level) const;
 };
 

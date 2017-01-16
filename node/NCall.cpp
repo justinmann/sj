@@ -35,10 +35,9 @@ void NCall::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefi
 
 void NCall::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {    
     assert(compiler->state == CompilerState::FixVar);
-    
-    // Must call this, so any local vars used outside of the function can be promoted to function vars
-    if (dotNames.size() > 0) {
-        NVariable::getParentValue(compiler, result, loc, thisFunction, nullptr, nullptr, dotNames, VT_LOAD, nullptr);
+    auto callee = getCFunction(compiler, result, thisFunction, nullptr, nullptr);
+    if (!callee) {
+        return;
     }
 
     for (auto it : arguments) {
@@ -75,14 +74,14 @@ shared_ptr<CFunction> NCall::getCFunction(Compiler* compiler, CResult& result, s
     }
     
     // Handle last name in list
-    auto callee = cfunction->getCFunction(functionName);
+    auto callee = cfunction->getCFunction(compiler, result, loc, functionName, templateTypeNames);
     if (!callee) {
         // If we are still using "this" then we can check to see if it is a function on parent
         if (cfunction == thisFunction) {
             while (cfunction && !cfunction->parent.expired() && !callee) {
                 cfunction = cfunction->parent.lock();
                 if (cfunction) {
-                    callee = cfunction->getCFunction(functionName);
+                    callee = cfunction->getCFunction(compiler, result, loc, functionName, templateTypeNames);
                 }
             }
         }
@@ -94,23 +93,6 @@ shared_ptr<CFunction> NCall::getCFunction(Compiler* compiler, CResult& result, s
     }
     
     return callee;
-}
-
-map<string, shared_ptr<CType>> NCall::getTemplateTypes(Compiler* compiler, CResult& result, const map<string, shared_ptr<CType>>& templateTypes) const {
-    map<string, shared_ptr<CType>> newTemplateTypes;
-    for (auto typeName : templateTypeNames) {
-        auto t = templateTypes.find(typeName);
-        if (t != templateTypes.end()) {
-            newTemplateTypes[typeName] = t->second;
-        } else {
-            auto ctype = compiler->getType(typeName.c_str());
-            if (!ctype) {
-                result.addError(loc, CErrorCode::InvalidTemplateArg, "cannot find type: '%s'", typeName.c_str());
-            }
-            newTemplateTypes[typeName] = ctype;
-        }
-    }
-    return newTemplateTypes;
 }
 
 shared_ptr<CType> NCall::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {

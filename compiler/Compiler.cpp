@@ -244,9 +244,11 @@ shared_ptr<CResult> Compiler::run(const char* code) {
         return compilerResult;
     
     state = CompilerState::FixVar;
-    auto templateTypes = map<string, shared_ptr<CType>>();
-    auto currentFunction = currentFunctionDefintion->getFunction(this, *compilerResult, templateTypes);
+    auto templateTypes = vector<shared_ptr<CType>>();
+    auto currentFunction = currentFunctionDefintion->getFunction(this, *compilerResult, templateTypes, weak_ptr<CFunction>());
     anonFunction->fixVar(this, *compilerResult, currentFunction);
+    auto templateTypeNames = vector<string>();
+    auto cfunction = currentFunction->getCFunction(this, *compilerResult, CLoc::undefined, "global", templateTypeNames);
 #ifdef VAR_OUTPUT
     currentFunction->dump(this, *compilerResult, 0);
 #endif
@@ -257,7 +259,6 @@ shared_ptr<CResult> Compiler::run(const char* code) {
 
     state = CompilerState::Compile;
     anonFunction->compile(this, *compilerResult, currentFunction, nullptr, nullptr, nullptr);
-    auto cfunction = currentFunction->getCFunction("global");
     auto function = cfunction->getFunction(this, *compilerResult);
     if (!function) {
         return compilerResult;
@@ -334,17 +335,16 @@ shared_ptr<CResult> Compiler::run(const char* code) {
     return compilerResult;
 }
 
-shared_ptr<CType> Compiler::getType(const char* name) const {
-    if (strcmp(name, "int") == 0) {
+shared_ptr<CType> Compiler::getType(const string& name) const {
+    if (name == "int") {
         return typeInt;
-    } else if (strcmp(name, "bool") == 0) {
+    } else if (name == "bool") {
         return typeBool;
-    } else if (strcmp(name, "float") == 0) {
+    } else if (name == "float") {
         return typeFloat;
-    } else if (strcmp(name, "void") == 0) {
+    } else if (name == "void") {
         return typeVoid;
     } else {
-        assert(false);
         return nullptr;
     }
 }

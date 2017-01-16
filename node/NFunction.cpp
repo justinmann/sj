@@ -2,7 +2,7 @@
 
 int NFunction::counter = 0;
 
-NFunction::NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, StringList templateTypes, NodeList arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock) : type(type), typeName(typeName), name(name), templateTypes(templateTypes), block(block), catchBlock(catchBlock), NBase(loc) {
+NFunction::NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, StringList templateTypeNames, NodeList arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock) : type(type), typeName(typeName), name(name), templateTypeNames(templateTypeNames), block(block), catchBlock(catchBlock), NBase(loc) {
     if (this->name == "^") {
         this->name = strprintf("anon_%d", counter++);
     }
@@ -65,14 +65,14 @@ void NFunction::define(Compiler *compiler, CResult& result, shared_ptr<CFunction
 }
 
 void NFunction::fixVar(Compiler *compiler, CResult& result, shared_ptr<CFunction> parentFunction) {
+}
+
+void NFunction::fixVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::FixVar);
     if (invalid.size() > 0) {
         result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
         return;
     }
-    
-    auto thisFunction = parentFunction->getCFunction(name);
-    assert(thisFunction);
     
     for (auto it : functions) {
         it->fixVar(compiler, result, thisFunction);
@@ -85,6 +85,12 @@ void NFunction::fixVar(Compiler *compiler, CResult& result, shared_ptr<CFunction
     if (block) {
         block->fixVar(compiler, result, thisFunction);
     }
+    
+    if (catchBlock) {
+        catchBlock->fixVar(compiler, result, thisFunction);
+    }
+    
+    getBlockType(compiler, result, thisFunction);
 }
 
 shared_ptr<CType> NFunction::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction) const {

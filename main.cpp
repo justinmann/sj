@@ -421,7 +421,7 @@ void testClass() {
 		c.foo(4)
     )DELIM");
     assert(result->type == RESULT_INT && result->iResult == 0);
-    
+
     result = compiler.run(R"DELIM(
 		math(
 			sub(x: 'int, y: 'int) {
@@ -546,10 +546,54 @@ void testThrow() {
     assert(result->type == RESULT_INT && result->iResult == 2);
 }
 
-int main(int argc, char **argv) {
+void testTemplate() {
     shared_ptr<CResult> result;
     Compiler compiler;
     
+    result = compiler.run(R"DELIM(
+        class!t() { 1 }
+        a: class!int()
+        b: class!float()
+        c: class!bool()
+    )DELIM");
+    assert(result->type != RESULT_ERROR);
+
+    result = compiler.run(R"DELIM(
+        class!t(
+            x:'t
+        ) { this }
+        c: class!int(1)
+        c.x
+    )DELIM");
+    assert(result->type == RESULT_INT && result->iResult == 1);
+    
+    result = compiler.run(R"DELIM(
+                          class![t1, t2]() { 1 }
+                          a: class![int, bool]()
+                          c: class![bool, float]()
+                          )DELIM");
+    assert(result->type != RESULT_ERROR);
+    
+    result = compiler.run(R"DELIM(
+        class!t() { 1 }
+        func() { }
+        d: class!func()
+    )DELIM");
+    assert(result->type != RESULT_ERROR);
+    
+    result = compiler.run(R"DELIM(
+                          class![t1, t2]() { 1 }
+                          func() { }
+                          b: class![float, func]()
+                          d: class![func, int]()
+                          )DELIM");
+    assert(result->type != RESULT_ERROR);
+}
+                          
+int main(int argc, char **argv) {
+    shared_ptr<CResult> result;
+    Compiler compiler;
+        
     testMath();
     testComparison();
     testVoid();
@@ -563,6 +607,7 @@ int main(int argc, char **argv) {
     testFunction();
     testClass();
     testExtern();
+    testTemplate();
     // testThrow();
 
     return 0;

@@ -24,6 +24,16 @@
 using namespace llvm;
 using namespace std;
 
+class CLoc {
+public:
+    unsigned line;
+    unsigned col;
+    
+    CLoc() : line(0), col(0) {}
+    CLoc(const unsigned line, const unsigned col) : line(line), col(col) {}
+    static CLoc undefined;
+};
+
 #include "CType.h"
 #include "CVar.h"
 #include "CFunction.h"
@@ -86,16 +96,9 @@ enum CErrorCode {
     ParameterDoesNotExist,
     ParameterRequired,
     TooManyParameters,
-    InvalidFunction
-};
-
-class CLoc {
-public:
-    const unsigned line;
-    const unsigned col;
-    
-    CLoc(const unsigned line, const unsigned col) : line(line), col(col) {}
-    static CLoc undefined;
+    InvalidFunction,
+    StoringVoid,
+    TemplateUnspecified
 };
 
 class CError {
@@ -105,8 +108,8 @@ public:
     const unsigned col;
     const string msg;
     
-    CError(const CLoc loc, const CErrorCode code): line(loc.line), col(loc.col), code(code) { }
-    CError(const CLoc loc, const CErrorCode code, const string& msg): line(loc.line), col(loc.col), code(code), msg(msg) { }
+    CError(const CLoc& loc, const CErrorCode code): line(loc.line), col(loc.col), code(code) { }
+    CError(const CLoc& loc, const CErrorCode code, const string& msg): line(loc.line), col(loc.col), code(code), msg(msg) { }
 };
 
 class CResult {
@@ -123,7 +126,7 @@ public:
     shared_ptr<NBlock> block;
     
     template< typename... Args >
-    void addError(const CLoc loc, const CErrorCode code, const char* format, Args... args) {
+    void addError(const CLoc& loc, const CErrorCode code, const char* format, Args... args) {
         string str = strprintf(format, args...);
 #ifdef ERROR_OUTPUT
         printf("ERROR: %s\n", str.c_str());
@@ -135,7 +138,7 @@ public:
     }
 
     template< typename... Args >
-    void addWarning(const CLoc loc, const CErrorCode code, const char* format, Args... args) {
+    void addWarning(const CLoc& loc, const CErrorCode code, const char* format, Args... args) {
         string str = strprintf(format, args...);
         warnings.push_back(CError(loc, code, str));
 #ifdef ERROR_OUTPUT
@@ -162,7 +165,7 @@ public:
     shared_ptr<CResult> run(const char* code);
     
     void emitLocation(const NBase *node);
-    shared_ptr<CType> getType(const char* name) const;
+    shared_ptr<CType> getType(const string& name) const;
     Value* getDefaultValue(shared_ptr<CType> type);
 
     // llvm vars

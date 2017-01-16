@@ -116,7 +116,6 @@ shared_ptr<CVar> NVariable::getParentValue(Compiler* compiler, CResult& result, 
                     }
                 }
 
-                
                 cfunction = cthisvar->getCFunctionForValue(compiler, result);
                 cvarResult = cthisvar;
             }

@@ -67,7 +67,7 @@ Value* CThisVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisV
     assert(false);
 }
 
-shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, weak_ptr<CFunctionDefinition> definition_, map<string, shared_ptr<CType>>& templateTypes_, weak_ptr<CFunction> parent_, CFunctionType type_, const string& name_, shared_ptr<NFunction> node_) {
+shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, weak_ptr<CFunctionDefinition> definition_, vector<shared_ptr<CType>>& templateTypes_, weak_ptr<CFunction> parent_, CFunctionType type_, const string& name_, shared_ptr<NFunction> node_) {
     auto c = make_shared<CFunction>();
     c->definition = definition_;
     c->templateTypes = templateTypes_;
@@ -80,6 +80,13 @@ shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, wea
     c->function = nullptr;
     
     if (c->node) {
+        assert(node_->templateTypeNames.size() == templateTypes_.size());
+        auto index = 0;
+        for (auto templateTypeName : node_->templateTypeNames) {
+            c->templateTypesByName[templateTypeName] = templateTypes_[index];
+            index++;
+        }
+        
         for (auto it : c->node->assignments) {
             if (it->names.size() != 1) {
                 result.addError(it->loc, CErrorCode::InvalidDot, "cannot use '.' in variable declaration for a function: '%s'", it->fullName.c_str());
@@ -90,11 +97,6 @@ shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, wea
             c->thisVarsByName[it->names[0]] = pair<int, shared_ptr<CVar>>(index, thisVar);
             c->thisVars.push_back(thisVar);
         }
-    }
-    
-    for (auto it : c->definition.lock()->funcsByName) {
-        assert(c->type != FT_Extern && "Not allowed for extern functions");
-        c->funcsByName[it.first] = CFunction::create(compiler, result, it.second, c->templateTypes, c, it.second->type, it.first, it.second->node);
     }
     
     return c;
@@ -192,10 +194,30 @@ Value* CFunction::getArgumentPointer(Compiler* compiler, CResult& result, Value*
     return paramPtr;
 }
 
-shared_ptr<CFunction> CFunction::getCFunction(const string& name) const {
-    auto t = funcsByName.find(name);
-    if (t != funcsByName.end()) {
-        return t->second;
+shared_ptr<CFunction> CFunction::getCFunction(Compiler* compiler, CResult& result, const CLoc& loc, const string& name, const vector<string>& templateTypeNames) {
+    auto def = definition.lock();
+    auto t = def->funcsByName.find(name);
+    if (t != def->funcsByName.end()) {
+        auto funcDef = t->second;
+        
+        if (templateTypeNames.size() != funcDef->node->templateTypeNames.size()) {
+            result.addError(loc, CErrorCode::InvalidTemplateArg, "size does not match");
+            return nullptr;
+        }
+        
+        // Map template type string list to type list
+        vector<shared_ptr<CType>> templateTypes;
+        for (auto templateTypeName : templateTypeNames) {
+            auto ctype = getVarType(compiler, result, templateTypeName);
+            if (!ctype) {
+                result.addError(loc, CErrorCode::TemplateUnspecified, "cannot find template type: '%s'", templateTypeName.c_str());
+                return nullptr;
+            }
+            templateTypes.push_back(ctype);
+        }
+        
+        // Get function for type list
+        return funcDef->getFunction(compiler, result, templateTypes, shared_from_this());
     }
     return nullptr;
 }
@@ -266,6 +288,28 @@ bool CFunction::getHasParent(Compiler* compiler, CResult& result) {
     return hasParent;
 }
 
+shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, const string& name) {
+    auto t = templateTypesByName.find(name);
+    if (t != templateTypesByName.end()) {
+        return t->second;
+    }
+    
+    auto t2 = definition.lock()->funcsByName.find(name);
+    if (t2 != definition.lock()->funcsByName.end()) {
+        if (t2->second->node->templateTypeNames.size() == 0) {
+            auto templateTypes = vector<shared_ptr<CType>>();
+            auto cfunc = t2->second->getFunction(compiler, result, templateTypes, shared_from_this());
+            return cfunc->getThisType(compiler, result);
+        }
+    }
+    
+    if (!parent.expired()) {
+        return parent.lock()->getVarType(compiler, result, name);
+    }
+    
+    return compiler->getType(name);
+}
+
 Value* CFunction::getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
     if (type != FT_Extern) {
         vector<Value*> v;
@@ -310,9 +354,20 @@ string CFunctionDefinition::fullName() {
     return n;
 }
 
-shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CResult& result, map<string, shared_ptr<CType>>& templateTypes) {
-    auto funcParent = parent.expired() ? nullptr : parent.lock()->getFunction(compiler, result, templateTypes);
+shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CResult& result, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent) {
+    auto it = cfunctions.find(templateTypes);
+    if (it != cfunctions.end()) {
+        return it->second;
+    }
+    
+    assert(funcParent.expired() || funcParent.lock()->definition.lock() == parent.lock());
     auto func = CFunction::create(compiler, result, shared_from_this(), templateTypes, funcParent, type, name, node);
+    cfunctions[templateTypes] = func;
+
+    if (node) {
+        node->fixVarBody(compiler, result, func);
+    }
+    
     return func;
 }
 

@@ -54,7 +54,7 @@ void NAssignment::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFuncti
                     result.addError(loc, CErrorCode::Internal, "the previous search on NVariable should find a local value with same name");
                     return;
                 }
-                thisFunction->localVarsByName[names[0]] = CLocalVar::create(names[0], thisFunction, shared_from_this());;
+                thisFunction->localVarsByName[names[0]] = CLocalVar::create(loc, names[0], thisFunction, shared_from_this());;
             }
         }
     }
@@ -72,7 +72,7 @@ shared_ptr<CType> NAssignment::getReturnType(Compiler* compiler, CResult& result
     assert(compiler->state >= CompilerState::FixVar);
     
     if (typeName.size() > 0) {
-        auto valueType = compiler->getType(typeName.c_str());
+        auto valueType = thisFunction->getVarType(compiler, result, typeName);
         if (!valueType) {
             result.addError(loc, CErrorCode::InvalidType, "explicit type does not exist");
             return nullptr;
@@ -127,6 +127,11 @@ Value* NAssignment::compile(Compiler* compiler, CResult& result, shared_ptr<CFun
     auto cvar = NVariable::getParentValue(compiler, result, loc, thisFunction, thisValue, builder, names, VT_STORE, &alloca);
     if (!cvar) {
         result.addError(loc, CErrorCode::InvalidVariable, "var does not exist '%s'", fullName.c_str());
+        return nullptr;
+    }
+    
+    if (!alloca) {
+        result.addError(loc, CErrorCode::InvalidVariable, "var cannot be assigned '%s'", fullName.c_str());
         return nullptr;
     }
     

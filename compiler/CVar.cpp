@@ -20,8 +20,9 @@ shared_ptr<CFunction> CVar::getCFunctionForValue(Compiler* compiler, CResult& re
     return nullptr;
 }
 
-shared_ptr<CLocalVar> CLocalVar::create(const string& name, shared_ptr<CFunction> parent, shared_ptr<NAssignment> nassignment) {
+shared_ptr<CLocalVar> CLocalVar::create(const CLoc& loc, const string& name, shared_ptr<CFunction> parent, shared_ptr<NAssignment> nassignment) {
     auto c = make_shared<CLocalVar>();
+    c->loc = loc;
     c->mode = CVarType::Local;
     c->name = name;
     c->isMutable = nassignment->isMutable;
@@ -52,7 +53,12 @@ Value* CLocalVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisV
 Value* CLocalVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder) {
     if (!value) {
         IRBuilder<> entryBuilder = getEntryBuilder(builder);
-        value = entryBuilder.CreateAlloca(getType(compiler, result)->llvmRefType(compiler, result), 0, name.c_str());
+        auto valueType = getType(compiler, result)->llvmRefType(compiler, result);
+        if (valueType->isVoidTy()) {
+            result.addError(loc, CErrorCode::StoringVoid, "cannot save a void value");
+            return nullptr;
+        }
+        value = entryBuilder.CreateAlloca(valueType, 0, name.c_str());
     }
     return value;
 }

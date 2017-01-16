@@ -16,17 +16,18 @@ public:
     CFunctionType type;
     const string typeName;
     string name;
-    const StringList templateTypes;
+    const StringList templateTypeNames;
     NodeList invalid;
     vector<shared_ptr<NAssignment>> assignments;
     vector<shared_ptr<NFunction>> functions;
     const shared_ptr<NBase> block;
     const shared_ptr<NBase> catchBlock;
     
-    NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, StringList templateTypes, NodeList arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock);
+    NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, StringList templateTypeNames, NodeList arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock);
     virtual NodeType getNodeType() const;
     virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parentFunction);
     virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction);
+    void fixVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction);
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction) const;
     virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const;
     virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder, BasicBlock* catchBB) const;

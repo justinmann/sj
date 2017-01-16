@@ -38,12 +38,13 @@ public:
 
 class CLocalVar : public CVar {
 public:
-    static shared_ptr<CLocalVar> create(const string& name, shared_ptr<CFunction> parent, shared_ptr<NAssignment> nassignment);
+    static shared_ptr<CLocalVar> create(const CLoc& loc, const string& name, shared_ptr<CFunction> parent, shared_ptr<NAssignment> nassignment);
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder);
     virtual Value* getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder);
     
 private:
+    CLoc loc;
     bool isInGetType;
     shared_ptr<CType> type;
     AllocaInst* value;
