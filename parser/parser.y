@@ -49,7 +49,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 	NAssignment* var_decl;
 	std::vector<shared_ptr<NBase>>* exprvec;
 	std::string* string;
-	std::vector<std::string>* strList;
+	TemplateTypeNames* templateTypeNames;
 	int token;
 	bool isMutable;
 }
@@ -65,7 +65,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %type <exprvec> func_args func_block
 %type <isMutable> assign
 %type <string> type
-%type <strList> temp_args temp_block
+%type <templateTypeNames> temp_args temp_block
 
 /* Operator precedence */
 %left TPLUS TMINUS
@@ -105,18 +105,18 @@ var_decl 			: TIDENTIFIER assign stmt						{ /* x = 1 */ 		$$ = new NAssignment(
 					| TEXCLAIM stmt                                 { $$ = new NNot(LOC, shared_ptr<NBase>($2)); }
 					;
 
-func_decl 			: TIDENTIFIER func_block block catch			{ /* f()'int */		$$ = new NFunction(LOC, FT_Private, "", $1->c_str(), StringList(), *($2), shared_ptr<NBlock>($3), shared_ptr<NBlock>($4)); }
-					| TIDENTIFIER func_block type block catch		{ /* f() */			$$ = new NFunction(LOC, FT_Private, $3->c_str(), $1->c_str(), StringList(), *($2), shared_ptr<NBlock>($4), shared_ptr<NBlock>($5)); }
-					| TIDENTIFIER temp_block func_block block catch		{ /* f() */			$$ = new NFunction(LOC, FT_Private, "", $1->c_str(), *($2), *($3), shared_ptr<NBlock>($4), shared_ptr<NBlock>($5)); }
-					| TIDENTIFIER temp_block func_block type block catch		{ /* f() */			$$ = new NFunction(LOC, FT_Private, $4->c_str(), $1->c_str(), *($2), *($3), shared_ptr<NBlock>($5), shared_ptr<NBlock>($6)); }
-					| TEXTERN TIDENTIFIER func_block type 			{ /* #f()'int */	$$ = new NFunction(LOC, FT_Extern, $4->c_str(), $2->c_str(), StringList(), *($3), nullptr, nullptr); }
+func_decl 			: TIDENTIFIER func_block block catch			{ /* f()'int */		$$ = new NFunction(LOC, FT_Private, "", $1->c_str(), nullptr, *($2), shared_ptr<NBlock>($3), shared_ptr<NBlock>($4)); }
+					| TIDENTIFIER func_block type block catch		{ /* f() */			$$ = new NFunction(LOC, FT_Private, $3->c_str(), $1->c_str(), nullptr, *($2), shared_ptr<NBlock>($4), shared_ptr<NBlock>($5)); }
+					| TIDENTIFIER temp_block func_block block catch		{ /* f() */			$$ = new NFunction(LOC, FT_Private, "", $1->c_str(), shared_ptr<TemplateTypeNames>($2), *($3), shared_ptr<NBlock>($4), shared_ptr<NBlock>($5)); }
+					| TIDENTIFIER temp_block func_block type block catch		{ /* f() */			$$ = new NFunction(LOC, FT_Private, $4->c_str(), $1->c_str(), shared_ptr<TemplateTypeNames>($2), *($3), shared_ptr<NBlock>($5), shared_ptr<NBlock>($6)); }
+					| TEXTERN TIDENTIFIER func_block type 			{ /* #f()'int */	$$ = new NFunction(LOC, FT_Extern, $4->c_str(), $2->c_str(), nullptr, *($3), nullptr, nullptr); }
 					;
 
 catch				: /* Blank! */									{ $$ = nullptr; }
 					| TCATCH block									{ $$ = $2; }
 
-func_call			: TIDENTIFIER func_block						{ $$ = new NCall(LOC, $1->c_str(), StringList(), *($2)); delete $1; }
-					| TIDENTIFIER temp_block func_block				{ $$ = new NCall(LOC, $1->c_str(), *($2), *($3)); delete $1; }
+func_call			: TIDENTIFIER func_block						{ $$ = new NCall(LOC, $1->c_str(), nullptr, *($2)); delete $1; }
+					| TIDENTIFIER temp_block func_block				{ $$ = new NCall(LOC, $1->c_str(), shared_ptr<TemplateTypeNames>($2), *($3)); delete $1; }
 					;
 					
 func_block			: TLPAREN TRPAREN								{ $$ = new NodeList(); }
@@ -136,12 +136,13 @@ func_arg			: var_decl
 					| TIDENTIFIER assign type		    			{ $$ = new NAssignment(LOC, $3->c_str(), $1->c_str(), nullptr, $2); delete $3; }								
 					; 
 
-temp_block			: TEXCLAIM TIDENTIFIER							{ $$ = new vector<string>(); $$->push_back(*$2); delete $2; }
+temp_block			: TEXCLAIM TIDENTIFIER							{ $$ = new TemplateTypeNames(); $$->push_back(pair<string, shared_ptr<TemplateTypeNames>>(*$2, nullptr)); delete $2; }
 					| TEXCLAIM TLBRACKET temp_args TRBRACKET		{ $$ = $3; }					
 					;
 
-temp_args			: TIDENTIFIER									{ $$ = new vector<string>(); $$->push_back(*$1); delete $1; }
-					| temp_args TCOMMA TIDENTIFIER					{ $1->push_back(*$3); delete $3; }
+temp_args			: TIDENTIFIER									{ $$ = new TemplateTypeNames(); $$->push_back(pair<string, shared_ptr<TemplateTypeNames>>(*$1, nullptr)); delete $1; }
+					| TIDENTIFIER temp_block						{ $$ = new TemplateTypeNames(); $$->push_back(pair<string, shared_ptr<TemplateTypeNames>>(*$1, shared_ptr<TemplateTypeNames>($2))); delete $1; }
+					| temp_args TCOMMA TIDENTIFIER					{ $1->push_back(pair<string, shared_ptr<TemplateTypeNames>>(*$3, nullptr)); delete $3; }
 					;
 
 expr				: func_call 	

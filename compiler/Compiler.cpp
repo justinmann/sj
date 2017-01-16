@@ -227,14 +227,14 @@ shared_ptr<CResult> Compiler::run(const char* code) {
     auto anonArgs = NodeList();
     
     auto catchBlock = make_shared<NBlock>(CLoc::undefined);
-    catchBlock->statements.push_back(make_shared<NCall>(CLoc::undefined, "throwException", StringList(), NodeList()));
+    catchBlock->statements.push_back(make_shared<NCall>(CLoc::undefined, "throwException", nullptr, NodeList()));
     catchBlock->statements.push_back(make_shared<NMatchReturn>(CLoc::undefined, compilerResult->block));
     
     // Define an extern for throwException at the beginning of the block
-    auto throwExceptionFunction = make_shared<NFunction>(CLoc::undefined, FT_Extern, "void", "throwException", StringList(), NodeList(), nullptr, nullptr);
+    auto throwExceptionFunction = make_shared<NFunction>(CLoc::undefined, FT_Extern, "void", "throwException", nullptr, NodeList(), nullptr, nullptr);
     compilerResult->block->statements.insert(compilerResult->block->statements.begin(), throwExceptionFunction);
     
-    auto anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, "", "global", StringList(), anonArgs, compilerResult->block, catchBlock);
+    auto anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, "", "global", nullptr, anonArgs, compilerResult->block, catchBlock);
     auto currentFunctionDefintion = CFunctionDefinition::create(this, *compilerResult, nullptr, FT_Public, "", nullptr);
     state = CompilerState::Define;
     anonFunction->define(this, *compilerResult, currentFunctionDefintion);
@@ -245,10 +245,9 @@ shared_ptr<CResult> Compiler::run(const char* code) {
     
     state = CompilerState::FixVar;
     auto templateTypes = vector<shared_ptr<CType>>();
-    auto currentFunction = currentFunctionDefintion->getFunction(this, *compilerResult, templateTypes, weak_ptr<CFunction>());
+    auto currentFunction = currentFunctionDefintion->getFunction(this, *compilerResult, CLoc::undefined, templateTypes, weak_ptr<CFunction>());
     anonFunction->fixVar(this, *compilerResult, currentFunction);
-    auto templateTypeNames = vector<string>();
-    auto cfunction = currentFunction->getCFunction(this, *compilerResult, CLoc::undefined, "global", templateTypeNames);
+    auto cfunction = currentFunction->getCFunction(this, *compilerResult, CLoc::undefined, "global", nullptr);
 #ifdef VAR_OUTPUT
     currentFunction->dump(this, *compilerResult, 0);
 #endif

@@ -1,6 +1,6 @@
 #include "Node.h"
 
-NCall::NCall(CLoc loc, const char* name, StringList templateTypeNames, NodeList arguments) : templateTypeNames(templateTypeNames), arguments(arguments), NBase(loc) {
+NCall::NCall(CLoc loc, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, NodeList arguments) : templateTypeNames(templateTypeNames), arguments(arguments), NBase(loc) {
     istringstream f(name);
     string s;
     while (getline(f, s, '.')) {

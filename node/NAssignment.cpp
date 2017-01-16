@@ -12,7 +12,7 @@ NAssignment::NAssignment(CLoc loc, const char* typeName, const char* name, share
     // If we are assigning a function to a var then we will call the function to get its value
     if (rightSide && rightSide->getNodeType() == NodeType::NodeType_Function) {
         nfunction = static_pointer_cast<NFunction>(rightSide);
-        rightSide = make_shared<NCall>(loc, nfunction->name.c_str(), StringList(), NodeList());
+        rightSide = make_shared<NCall>(loc, nfunction->name.c_str(), nullptr, NodeList());
     }
 }
 
@@ -72,7 +72,7 @@ shared_ptr<CType> NAssignment::getReturnType(Compiler* compiler, CResult& result
     assert(compiler->state >= CompilerState::FixVar);
     
     if (typeName.size() > 0) {
-        auto valueType = thisFunction->getVarType(compiler, result, typeName);
+        auto valueType = thisFunction->getVarType(compiler, result, loc, typeName, nullptr);
         if (!valueType) {
             result.addError(loc, CErrorCode::InvalidType, "explicit type does not exist");
             return nullptr;

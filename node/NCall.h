@@ -13,10 +13,10 @@ class NCall : public NBase {
 public:
     vector<string> dotNames;
     string functionName;
-    const StringList templateTypeNames;
+    shared_ptr<TemplateTypeNames> templateTypeNames;
     const NodeList arguments;
     
-    NCall(CLoc loc, const char* name, StringList templateTypeNames, NodeList arguments);
+    NCall(CLoc loc, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, NodeList arguments);
     virtual NodeType getNodeType() const;
     virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction);
     virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);

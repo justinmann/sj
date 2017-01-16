@@ -11,6 +11,8 @@
 
 class NFunction;
 
+class TemplateTypeNames : public vector<pair<string, shared_ptr<TemplateTypeNames>>> {};
+
 class CFunctionVar : public CVar {
 public:
     static shared_ptr<CFunctionVar> create(const string& name, shared_ptr<CFunction> parent, shared_ptr<NFunction> nfunction, int index, shared_ptr<NAssignment> nassignment, shared_ptr<CType> type);
@@ -43,8 +45,8 @@ class CFunctionDefinition;
 
 class CFunction : public enable_shared_from_this<CFunction> {
 public:
-    static shared_ptr<CFunction> create(Compiler* compiler, CResult& result, weak_ptr<CFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> parent, CFunctionType type, const string& name, shared_ptr<NFunction> node);
-    shared_ptr<CFunction> getCFunction(Compiler* compiler, CResult& result, const CLoc& loc, const string& name, const vector<string>& templateTypeNames);
+    static shared_ptr<CFunction> create(Compiler* compiler, CResult& result, const CLoc& loc, weak_ptr<CFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> parent, CFunctionType type, const string& name, shared_ptr<NFunction> node);
+    shared_ptr<CFunction> getCFunction(Compiler* compiler, CResult& result, const CLoc& loc, const string& name, shared_ptr<TemplateTypeNames> templateTypeNames);
     shared_ptr<CVar> getCVar(const string& name) const;
     shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result);
     int getThisIndex(const string& name) const;
@@ -58,7 +60,7 @@ public:
     Value* getArgumentPointer(Compiler* compiler, CResult& result, Value* thisValue, int index, IRBuilder<>* builder);
     Value* getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
     string fullName();
-    shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, const string& name);
+    shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, const CLoc& loc, const string& name, shared_ptr<TemplateTypeNames> subTypeNames);
 
     CFunctionType type;
     string name;
@@ -92,7 +94,7 @@ public:
     static shared_ptr<CFunctionDefinition> create(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parent, CFunctionType type, const string& name, shared_ptr<NFunction> node);
     string fullName();
     void dump(Compiler* compiler, CResult& result, int level);
-    shared_ptr<CFunction> getFunction(Compiler* compiler, CResult& result, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent);
+    shared_ptr<CFunction> getFunction(Compiler* compiler, CResult& result, const CLoc& loc, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent);
     
 private:
     map<vector<shared_ptr<CType>>, shared_ptr<CFunction>> cfunctions;

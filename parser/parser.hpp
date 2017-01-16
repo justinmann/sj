@@ -103,7 +103,7 @@ union YYSTYPE
 	NAssignment* var_decl;
 	std::vector<shared_ptr<NBase>>* exprvec;
 	std::string* string;
-	std::vector<std::string>* strList;
+	TemplateTypeNames* templateTypeNames;
 	int token;
 	bool isMutable;
 

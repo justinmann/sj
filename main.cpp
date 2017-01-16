@@ -588,12 +588,28 @@ void testTemplate() {
                           d: class![func, int]()
                           )DELIM");
     assert(result->type != RESULT_ERROR);
+    
+    result = compiler.run(R"DELIM(
+                          class!t() { 1 }
+                          func!t() { 1 }
+                          d: class![func!int]()
+                          )DELIM");
+    assert(result->type != RESULT_ERROR);
+    
+    result = compiler.run(R"DELIM(
+                          class!t(
+                                  func!t() { 1 }
+                                  ) { this }
+                          c: class!int()
+                          1
+                          )DELIM");
+    assert(result->type != RESULT_ERROR);
 }
                           
 int main(int argc, char **argv) {
     shared_ptr<CResult> result;
     Compiler compiler;
-        
+
     testMath();
     testComparison();
     testVoid();
