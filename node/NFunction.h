@@ -27,13 +27,15 @@ public:
     virtual NodeType getNodeType() const;
     virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parentFunction);
     virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction);
-    void fixVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction);
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction) const;
     virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const;
     virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder, BasicBlock* catchBB) const;
-    Function* compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const;
-    void compileBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Function* function) const;
     virtual void dump(Compiler* compiler, int level) const;
+
+    virtual Value* call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, IRBuilder<>* builder, BasicBlock* catchBB, const vector<string>& dotNames, vector<shared_ptr<NBase>>& parameters);
+    virtual void fixVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction);
+    Function* compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const;
+    virtual void compileBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Function* function) const;
     
 private:
     shared_ptr<NFunction> shared_from_this() { return static_pointer_cast<NFunction>(NBase::shared_from_this()); };

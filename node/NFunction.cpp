@@ -48,6 +48,10 @@ void NFunction::define(Compiler *compiler, CResult& result, shared_ptr<CFunction
         for (auto it : assignments) {
             it->define(compiler, result, thisFunction);
         }
+        
+        if (block) {
+            block->define(compiler, result, thisFunction);
+        }
     } else {
         auto thisFunction = CFunctionDefinition::create(compiler, result, parentFunction, type, name, shared_from_this());
         parentFunction->funcsByName[name] = thisFunction;
@@ -60,7 +64,9 @@ void NFunction::define(Compiler *compiler, CResult& result, shared_ptr<CFunction
             it->define(compiler, result, thisFunction);
         }
 
-        block->define(compiler, result, thisFunction);
+        if (block) {
+            block->define(compiler, result, thisFunction);
+        }
     }
 }
 
@@ -120,12 +126,16 @@ shared_ptr<CType> NFunction::getBlockType(Compiler* compiler, CResult& result, s
         return valueType;
     }
 
-    if (!block && type == FT_Extern) {
+    if (type == FT_Extern) {
         result.addError(loc, CErrorCode::InvalidFunction, "extern function must specify return type");
         return nullptr;
     }
     
-    return block->getReturnType(compiler, result, thisFunction);
+    if (block) {
+        return block->getReturnType(compiler, result, thisFunction);
+    }
+    
+    return compiler->typeVoid;
 }
 
 Value* NFunction::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder, BasicBlock* parentCatchBB) const {
@@ -279,6 +289,122 @@ error:
     /*
     compiler->TheFPM->run(*function);
     */
+}
+
+Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, IRBuilder<>* builder, BasicBlock* catchBB, const vector<string>& dotNames, vector<shared_ptr<NBase>>& parameters) {
+    if (type == FT_Extern) {
+        vector<Value *> argsV;
+        auto func = callee->getFunction(compiler, result);
+        
+        // Fill in "this" with normal arguments
+        auto argIndex = 0;
+        for (auto defaultAssignment : assignments) {
+            assert(defaultAssignment->inFunctionDeclaration);
+            auto argType = defaultAssignment->getReturnType(compiler, result, thisFunction);
+            auto isDefaultAssignment = parameters[argIndex] == defaultAssignment->rightSide;
+            Value* value;
+            if (isDefaultAssignment) {
+                value = parameters[argIndex]->compile(compiler, result, callee, nullptr, builder, catchBB);
+            } else {
+                value = parameters[argIndex]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+            }
+            
+            if (!value) {
+                result.addError(CLoc::undefined, CErrorCode::TypeMismatch, "value is empty");
+                return nullptr;
+            }
+            
+            if (value->getType() != argType->llvmRefType(compiler, result)) {
+                result.addError(CLoc::undefined, CErrorCode::TypeMismatch, "value does not match");
+                return nullptr;
+            }
+            
+            argsV.push_back(value);
+            
+            argIndex++;
+        }
+        
+        return builder->CreateCall(func, argsV);
+    } else {
+        // Create this on stack, and get a pointer
+        auto newType = callee->getThisType(compiler, result);
+        auto entryBuilder = getEntryBuilder(builder);
+        auto newValue = entryBuilder.CreateAlloca(newType->llvmAllocType(compiler, result), 0, newType->name.c_str());
+        
+        // Fill in "this" with normal arguments
+        auto argIndex = 0;
+        for (auto defaultAssignment : assignments) {
+            assert(defaultAssignment->inFunctionDeclaration);
+            auto argType = defaultAssignment->getReturnType(compiler, result, callee);
+            auto isDefaultAssignment = parameters[argIndex] == defaultAssignment->rightSide;
+            Value* value;
+            if (isDefaultAssignment) {
+                value = parameters[argIndex]->compile(compiler, result, callee, newValue, builder, catchBB);
+            } else {
+                value = parameters[argIndex]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+            }
+            
+            if (!value) {
+                result.addError(CLoc::undefined, CErrorCode::TypeMismatch, "value is empty");
+                return nullptr;
+            }
+            
+            if (value->getType() != argType->llvmRefType(compiler, result)) {
+                result.addError(CLoc::undefined, CErrorCode::TypeMismatch, "value does not match");
+                return nullptr;
+            }
+            
+            auto paramPtr = callee->getArgumentPointer(compiler, result, newValue, argIndex, builder);
+            builder->CreateStore(value, paramPtr);
+            
+            argIndex++;
+        }
+        
+        // Add "parent" to "this"
+        auto hasParent = callee->getHasParent(compiler, result);
+        if (hasParent) {
+            Value* parentValue = thisValue;
+            if (dotNames.size() > 0) {
+                NVariable::getParentValue(compiler, result, loc, thisFunction, thisValue, builder, dotNames, VT_LOAD, &parentValue);
+            } else {
+                // if recursively calling ourselves then re-use parent
+                if (callee == thisFunction) {
+                    auto parentPtr = callee->getParentPointer(compiler, result, builder, parentValue);
+                    parentValue = builder->CreateLoad(parentPtr);
+                } else {
+                    auto temp = thisFunction;
+                    while (temp && temp != callee->parent.lock()) {
+                        auto parentPtr = temp->getParentPointer(compiler, result, builder, parentValue);
+                        parentValue = builder->CreateLoad(parentPtr);
+                        temp = temp->parent.lock();
+                    }
+                }
+            }
+            
+            auto paramPtr = callee->getParentPointer(compiler, result, builder, newValue);
+            builder->CreateStore(parentValue, paramPtr, "parent");
+        }
+        
+        vector<Value *> argsV;
+        argsV.push_back(newValue);
+        
+        auto func = callee->getFunction(compiler, result);
+        
+        Value* returnValue = nullptr;
+        
+        if (catchBB) {
+            auto continueBB = BasicBlock::Create(compiler->context);
+            returnValue = builder->CreateInvoke(func, continueBB, catchBB, argsV);
+            
+            Function *function = builder->GetInsertBlock()->getParent();
+            function->getBasicBlockList().push_back(continueBB);
+            builder->SetInsertPoint(continueBB);
+        } else {
+            returnValue = builder->CreateCall(func, argsV);
+        }
+        
+        return returnValue;
+    }
 }
 
 void NFunction::dump(Compiler* compiler, int level) const {

@@ -334,7 +334,7 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, con
 }
 
 Value* CFunction::getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
-    if (type != FT_Extern) {
+    if (hasParent) {
         vector<Value*> v;
         v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
         v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
