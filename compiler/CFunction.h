@@ -11,7 +11,16 @@
 
 class NFunction;
 
-class TemplateTypeNames : public vector<pair<string, shared_ptr<TemplateTypeNames>>> {};
+class TemplateTypeNames : public vector<pair<string, shared_ptr<TemplateTypeNames>>> {
+public:
+    TemplateTypeNames() : vector<pair<string, shared_ptr<TemplateTypeNames>>>() {
+        
+    }
+    
+    TemplateTypeNames(const string& name) : vector<pair<string, shared_ptr<TemplateTypeNames>>>() {
+        push_back(pair<string, shared_ptr<TemplateTypeNames>>(name, nullptr));
+    }
+};
 
 class CFunctionVar : public CVar {
 public:

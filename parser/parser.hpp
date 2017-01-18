@@ -101,7 +101,7 @@ union YYSTYPE
 	NBlock* block;
 	NIf* nif;
 	NAssignment* var_decl;
-	std::vector<shared_ptr<NBase>>* exprvec;
+	NodeList* exprvec;
 	std::string* string;
 	TemplateTypeNames* templateTypeNames;
 	int token;

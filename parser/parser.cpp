@@ -188,7 +188,7 @@ union YYSTYPE
 	NBlock* block;
 	NIf* nif;
 	NAssignment* var_decl;
-	std::vector<shared_ptr<NBase>>* exprvec;
+	NodeList* exprvec;
 	std::string* string;
 	TemplateTypeNames* templateTypeNames;
 	int token;
@@ -1662,31 +1662,31 @@ yyreduce:
 
   case 18:
 
-    { /* f()'int */		(yyval.node) = new NFunction(LOC, FT_Private, "", (yyvsp[-3].string)->c_str(), nullptr, *((yyvsp[-2].exprvec)), shared_ptr<NBlock>((yyvsp[-1].block)), shared_ptr<NBlock>((yyvsp[0].block))); }
+    { /* f()'int */		(yyval.node) = new NFunction(LOC, FT_Private, "", (yyvsp[-3].string)->c_str(), nullptr, shared_ptr<NodeList>((yyvsp[-2].exprvec)), shared_ptr<NBlock>((yyvsp[-1].block)), shared_ptr<NBlock>((yyvsp[0].block))); }
 
     break;
 
   case 19:
 
-    { /* f() */			(yyval.node) = new NFunction(LOC, FT_Private, (yyvsp[-2].string)->c_str(), (yyvsp[-4].string)->c_str(), nullptr, *((yyvsp[-3].exprvec)), shared_ptr<NBlock>((yyvsp[-1].block)), shared_ptr<NBlock>((yyvsp[0].block))); }
+    { /* f() */			(yyval.node) = new NFunction(LOC, FT_Private, (yyvsp[-2].string)->c_str(), (yyvsp[-4].string)->c_str(), nullptr, shared_ptr<NodeList>((yyvsp[-3].exprvec)), shared_ptr<NBlock>((yyvsp[-1].block)), shared_ptr<NBlock>((yyvsp[0].block))); }
 
     break;
 
   case 20:
 
-    { /* f() */			(yyval.node) = new NFunction(LOC, FT_Private, "", (yyvsp[-4].string)->c_str(), shared_ptr<TemplateTypeNames>((yyvsp[-3].templateTypeNames)), *((yyvsp[-2].exprvec)), shared_ptr<NBlock>((yyvsp[-1].block)), shared_ptr<NBlock>((yyvsp[0].block))); }
+    { /* f() */			(yyval.node) = new NFunction(LOC, FT_Private, "", (yyvsp[-4].string)->c_str(), shared_ptr<TemplateTypeNames>((yyvsp[-3].templateTypeNames)), shared_ptr<NodeList>((yyvsp[-2].exprvec)), shared_ptr<NBlock>((yyvsp[-1].block)), shared_ptr<NBlock>((yyvsp[0].block))); }
 
     break;
 
   case 21:
 
-    { /* f() */			(yyval.node) = new NFunction(LOC, FT_Private, (yyvsp[-2].string)->c_str(), (yyvsp[-5].string)->c_str(), shared_ptr<TemplateTypeNames>((yyvsp[-4].templateTypeNames)), *((yyvsp[-3].exprvec)), shared_ptr<NBlock>((yyvsp[-1].block)), shared_ptr<NBlock>((yyvsp[0].block))); }
+    { /* f() */			(yyval.node) = new NFunction(LOC, FT_Private, (yyvsp[-2].string)->c_str(), (yyvsp[-5].string)->c_str(), shared_ptr<TemplateTypeNames>((yyvsp[-4].templateTypeNames)), shared_ptr<NodeList>((yyvsp[-3].exprvec)), shared_ptr<NBlock>((yyvsp[-1].block)), shared_ptr<NBlock>((yyvsp[0].block))); }
 
     break;
 
   case 22:
 
-    { /* #f()'int */	(yyval.node) = new NFunction(LOC, FT_Extern, (yyvsp[0].string)->c_str(), (yyvsp[-2].string)->c_str(), nullptr, *((yyvsp[-1].exprvec)), nullptr, nullptr); }
+    { /* #f()'int */	(yyval.node) = new NFunction(LOC, FT_Extern, (yyvsp[0].string)->c_str(), (yyvsp[-2].string)->c_str(), nullptr, shared_ptr<NodeList>((yyvsp[-1].exprvec)), nullptr, nullptr); }
 
     break;
 
@@ -1704,13 +1704,13 @@ yyreduce:
 
   case 25:
 
-    { (yyval.node) = new NCall(LOC, (yyvsp[-1].string)->c_str(), nullptr, *((yyvsp[0].exprvec))); delete (yyvsp[-1].string); }
+    { (yyval.node) = new NCall(LOC, (yyvsp[-1].string)->c_str(), nullptr, shared_ptr<NodeList>((yyvsp[0].exprvec))); delete (yyvsp[-1].string); }
 
     break;
 
   case 26:
 
-    { (yyval.node) = new NCall(LOC, (yyvsp[-2].string)->c_str(), shared_ptr<TemplateTypeNames>((yyvsp[-1].templateTypeNames)), *((yyvsp[0].exprvec))); delete (yyvsp[-2].string); }
+    { (yyval.node) = new NCall(LOC, (yyvsp[-2].string)->c_str(), shared_ptr<TemplateTypeNames>((yyvsp[-1].templateTypeNames)), shared_ptr<NodeList>((yyvsp[0].exprvec))); delete (yyvsp[-2].string); }
 
     break;
 

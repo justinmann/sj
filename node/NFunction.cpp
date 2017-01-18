@@ -2,24 +2,26 @@
 
 int NFunction::counter = 0;
 
-NFunction::NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, NodeList arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock) : type(type), typeName(typeName), name(name), templateTypeNames(templateTypeNames), block(block), catchBlock(catchBlock), NBase(loc) {
+NFunction::NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock) : type(type), typeName(typeName), name(name), templateTypeNames(templateTypeNames), block(block), catchBlock(catchBlock), NBase(loc) {
     if (this->name == "^") {
         this->name = strprintf("anon_%d", counter++);
     }
     
-    for (auto it : arguments) {
-        if (it->getNodeType() == NodeType_Assignment) {
-            auto nassignment = static_pointer_cast<NAssignment>(it);
-            nassignment->inFunctionDeclaration = true;
-            assignments.push_back(nassignment);
-            
-            if (nassignment->nfunction) {
-                functions.push_back(nassignment->nfunction);
+    if (arguments) {
+        for (auto it : *arguments) {
+            if (it->getNodeType() == NodeType_Assignment) {
+                auto nassignment = static_pointer_cast<NAssignment>(it);
+                nassignment->inFunctionDeclaration = true;
+                assignments.push_back(nassignment);
+                
+                if (nassignment->nfunction) {
+                    functions.push_back(nassignment->nfunction);
+                }
+            } else if (it->getNodeType() == NodeType_Function) {
+                functions.push_back(static_pointer_cast<NFunction>(it));
+            } else {
+                invalid.push_back(it);
             }
-        } else if (it->getNodeType() == NodeType_Function) {
-            functions.push_back(static_pointer_cast<NFunction>(it));
-        } else {
-            invalid.push_back(it);
         }
     }
 }

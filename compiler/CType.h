@@ -23,8 +23,8 @@ public:
 
     string name;
     weak_ptr<CFunction> parent;
-    Type* llvmAllocType(Compiler* compiler, CResult& result);
-    Type* llvmRefType(Compiler* compiler, CResult& result);
+    virtual Type* llvmAllocType(Compiler* compiler, CResult& result);
+    virtual Type* llvmRefType(Compiler* compiler, CResult& result);
     
 private:
     Type* _llvmAllocType;

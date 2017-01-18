@@ -1,6 +1,6 @@
 #include "Node.h"
 
-NCall::NCall(CLoc loc, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, NodeList arguments) : templateTypeNames(templateTypeNames), arguments(arguments), NBase(loc) {
+NCall::NCall(CLoc loc, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, shared_ptr<NodeList> arguments) : templateTypeNames(templateTypeNames), arguments(arguments), NBase(loc) {
     istringstream f(name);
     string s;
     while (getline(f, s, '.')) {
@@ -9,10 +9,14 @@ NCall::NCall(CLoc loc, const char* name, shared_ptr<TemplateTypeNames> templateT
     functionName = dotNames.back();
     dotNames.pop_back();
 
-    for (auto it : arguments) {
-        if (it->getNodeType() == NodeType_Assignment) {
-            auto parameterAssignment = static_pointer_cast<NAssignment>(it);
-            parameterAssignment->inFunctionDeclaration = true;
+    if (!this->arguments) {
+        this->arguments = make_shared<NodeList>();
+    } else {
+        for (auto it : *arguments) {
+            if (it->getNodeType() == NodeType_Assignment) {
+                auto parameterAssignment = static_pointer_cast<NAssignment>(it);
+                parameterAssignment->inFunctionDeclaration = true;
+            }
         }
     }
 }
@@ -23,7 +27,7 @@ NodeType NCall::getNodeType() const {
 
 void NCall::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
-    for (auto it : arguments) {
+    for (auto it : *arguments) {
         if (it->getNodeType() == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
             parameterAssignment->define(compiler, result, thisFunction);
@@ -40,7 +44,7 @@ void NCall::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> th
         return;
     }
 
-    for (auto it : arguments) {
+    for (auto it : *arguments) {
         if (it->getNodeType() == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
             assert(parameterAssignment->inFunctionDeclaration);
@@ -116,8 +120,8 @@ Value* NCall::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction>
         return nullptr;
     }
     
-    if (arguments.size() > callee->node->assignments.size()) {
-        result.addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments.size(), callee->node->assignments.size());
+    if (arguments->size() > callee->node->assignments.size()) {
+        result.addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments->size(), callee->node->assignments.size());
         return nullptr;
     }
     
@@ -125,7 +129,7 @@ Value* NCall::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction>
     vector<shared_ptr<NBase>> parameters(callee->node->assignments.size());
     auto argIndex = 0;
     auto hasSetByName = false;
-    for (auto it : arguments) {
+    for (auto it : *arguments) {
         if (it->getNodeType() == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
             assert(parameterAssignment->inFunctionDeclaration);
@@ -179,10 +183,10 @@ void NCall::dump(Compiler* compiler, int level) const {
     dumpf(level, "type: 'NCall'");
     dumpf(level, "functionName: '%s'", functionName.c_str());
 
-    if (arguments.size() > 0) {
+    if (arguments->size() > 0) {
         dumpf(level, "arguments: {");
         auto argIndex = 0;
-        for (auto it : arguments) {
+        for (auto it : *arguments) {
             if (it->getNodeType() == NodeType_Assignment) {
                 auto parameterAssignment = static_pointer_cast<NAssignment>(it);
                 assert(parameterAssignment->inFunctionDeclaration);

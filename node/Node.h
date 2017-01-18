@@ -5,7 +5,26 @@
 
 class NBase;
 
-typedef vector<shared_ptr<NBase>> NodeList;
+class NodeList : public vector<shared_ptr<NBase>> {
+public:
+    NodeList() : vector<shared_ptr<NBase>>() { }
+    
+    NodeList(shared_ptr<NBase> i0) : vector<shared_ptr<NBase>>() {
+        push_back(i0);
+    }
+    
+    NodeList(shared_ptr<NBase> i0, shared_ptr<NBase> i1) : vector<shared_ptr<NBase>>() {
+        push_back(i0);
+        push_back(i1);
+    }
+
+    NodeList(shared_ptr<NBase> i0, shared_ptr<NBase> i1, shared_ptr<NBase> i2) : vector<shared_ptr<NBase>>() {
+        push_back(i0);
+        push_back(i1);
+        push_back(i2);
+    }
+};
+
 typedef vector<string> StringList;
 
 enum NodeType {

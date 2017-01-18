@@ -14,9 +14,9 @@ public:
     vector<string> dotNames;
     string functionName;
     shared_ptr<TemplateTypeNames> templateTypeNames;
-    const NodeList arguments;
+    shared_ptr<NodeList> arguments;
     
-    NCall(CLoc loc, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, NodeList arguments);
+    NCall(CLoc loc, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, shared_ptr<NodeList> arguments);
     virtual NodeType getNodeType() const;
     virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction);
     virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);

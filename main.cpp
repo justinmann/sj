@@ -606,10 +606,32 @@ void testTemplate() {
     assert(result->type != RESULT_ERROR);
 }
                           
+void testArray() {
+    shared_ptr<CResult> result;
+    Compiler compiler;
+    
+    result = compiler.run(R"DELIM(
+        a : array!int(1)
+        a.set(0, 1)
+        a.get(0)
+    )DELIM");
+    assert(result->type == RESULT_INT && result->iResult == 1);
+
+
+    result = compiler.run(R"DELIM(
+        class(x: 0) { this }
+        a : array!class(1)
+        a.set(0, class(1))
+        b : a.get(0)
+        b.x
+    )DELIM");
+    assert(result->type == RESULT_INT && result->iResult == 1);
+}
+                          
 int main(int argc, char **argv) {
     shared_ptr<CResult> result;
     Compiler compiler;
-
+    
     testMath();
     testComparison();
     testVoid();
@@ -624,6 +646,7 @@ int main(int argc, char **argv) {
     testClass();
     testExtern();
     testTemplate();
+    testArray();
     // testThrow();
 
     return 0;

@@ -12,7 +12,7 @@ NAssignment::NAssignment(CLoc loc, const char* typeName, const char* name, share
     // If we are assigning a function to a var then we will call the function to get its value
     if (rightSide && rightSide->getNodeType() == NodeType::NodeType_Function) {
         nfunction = static_pointer_cast<NFunction>(rightSide);
-        rightSide = make_shared<NCall>(loc, nfunction->name.c_str(), nullptr, NodeList());
+        rightSide = make_shared<NCall>(loc, nfunction->name.c_str(), nullptr, nullptr);
     }
 }
 

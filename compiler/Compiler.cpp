@@ -208,6 +208,96 @@ public:
     }
 };
 
+class CArrayType : public CType {
+public:
+    CArrayType(const char* name, weak_ptr<CFunction> parent) : CType(name, parent) { }
+
+    virtual Type* llvmAllocType(Compiler* compiler, CResult& result) {
+        auto itemType = parent.lock()->templateTypes[0]->llvmRefType(compiler, result);
+        return itemType->getPointerTo();
+    }
+    
+    virtual Type* llvmRefType(Compiler* compiler, CResult& result) {
+        auto itemType = parent.lock()->templateTypes[0]->llvmRefType(compiler, result);
+        return itemType->getPointerTo();
+    }
+};
+
+
+class ArrayGetFunction : public NFunction {
+public:
+    ArrayGetFunction() : NFunction(CLoc::undefined, FT_Private, "item", "get", nullptr, make_shared<NodeList>(
+        make_shared<NAssignment>(CLoc::undefined, "int", "index", nullptr, false)
+    ), nullptr, nullptr) { }
+    
+    virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
+        return thisFunction->getVarType(compiler, result, CLoc::undefined, "item", nullptr);
+    }
+    
+    virtual Value* call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, IRBuilder<>* builder, BasicBlock* catchBB, const vector<string>& dotNames, vector<shared_ptr<NBase>>& parameters) {
+        
+        Value* parentValue = nullptr;
+        NVariable::getParentValue(compiler, result, loc, thisFunction, thisValue, builder, dotNames, VT_LOAD, &parentValue);
+        
+        auto indexValue = parameters[0]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+        
+        vector<Value*> v;
+        v.push_back(indexValue);
+        auto itemPtr = builder->CreateGEP(parentValue, ArrayRef<llvm::Value *>(v));
+        return builder->CreateLoad(itemPtr);
+    }
+};
+
+class ArraySetFunction : public NFunction {
+public:
+    ArraySetFunction() : NFunction(CLoc::undefined, FT_Private, "void", "set", nullptr, make_shared<NodeList>(
+        make_shared<NAssignment>(CLoc::undefined, "int", "index", nullptr, false),
+        make_shared<NAssignment>(CLoc::undefined, "item", "item", nullptr, false)
+    ), nullptr, nullptr) { }
+    
+    virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
+        return compiler->typeVoid;
+    }
+    
+    virtual Value* call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, IRBuilder<>* builder, BasicBlock* catchBB, const vector<string>& dotNames, vector<shared_ptr<NBase>>& parameters) {
+
+        Value* parentValue = nullptr;
+        NVariable::getParentValue(compiler, result, loc, thisFunction, thisValue, builder, dotNames, VT_LOAD, &parentValue);
+
+        auto indexValue = parameters[0]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+        auto itemValue = parameters[1]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+
+        vector<Value*> v;
+        v.push_back(indexValue);
+        auto itemPtr = builder->CreateGEP(parentValue, ArrayRef<llvm::Value *>(v));
+        builder->CreateStore(itemValue, itemPtr);
+
+        return nullptr;
+    }
+};
+
+class ArrayCreateFunction : public NFunction {
+public:
+    ArrayCreateFunction() : NFunction(CLoc::undefined, FT_Private, "", "array", make_shared<TemplateTypeNames>("item"), make_shared<NodeList>(
+        make_shared<NAssignment>(CLoc::undefined, "", "size", make_shared<NInteger>(CLoc::undefined, "0"), false),
+        make_shared<ArrayGetFunction>(),
+        make_shared<ArraySetFunction>()
+    ), nullptr, nullptr) { }
+    
+    virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
+        return make_shared<CArrayType>("", thisFunction);
+    }
+    
+    virtual Value* call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, IRBuilder<>* builder, BasicBlock* catchBB, const vector<string>& dotNames, vector<shared_ptr<NBase>>& parameters) {
+        auto sizeValue = parameters[0]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+        auto itemType = callee->templateTypes[0]->llvmRefType(compiler, result);
+        
+        auto alloca = builder->CreateAlloca(itemType, sizeValue);
+        printf("alloca: %s\n", Type_print(alloca->getType()).c_str());
+        return alloca;
+    }
+};
+
 shared_ptr<CResult> Compiler::run(const char* code) {
 #ifdef YYDEBUG
     yydebug = 1; // use this to trigger the verbose debug output from bison
@@ -224,17 +314,18 @@ shared_ptr<CResult> Compiler::run(const char* code) {
     if (compilerResult->errors.size() > 0)
         return compilerResult;
     
-    auto anonArgs = NodeList();
-    
     auto catchBlock = make_shared<NBlock>(CLoc::undefined);
-    catchBlock->statements.push_back(make_shared<NCall>(CLoc::undefined, "throwException", nullptr, NodeList()));
+    catchBlock->statements.push_back(make_shared<NCall>(CLoc::undefined, "throwException", nullptr, nullptr));
     catchBlock->statements.push_back(make_shared<NMatchReturn>(CLoc::undefined, compilerResult->block));
     
     // Define an extern for throwException at the beginning of the block
-    auto throwExceptionFunction = make_shared<NFunction>(CLoc::undefined, FT_Extern, "void", "throwException", nullptr, NodeList(), nullptr, nullptr);
+    auto throwExceptionFunction = make_shared<NFunction>(CLoc::undefined, FT_Extern, "void", "throwException", nullptr, nullptr, nullptr, nullptr);
     compilerResult->block->statements.insert(compilerResult->block->statements.begin(), throwExceptionFunction);
     
-    auto anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, "", "global", nullptr, anonArgs, compilerResult->block, catchBlock);
+    auto arrayFunction = make_shared<ArrayCreateFunction>();
+    compilerResult->block->statements.insert(compilerResult->block->statements.begin(), arrayFunction);
+    
+    auto anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, "", "global", nullptr, nullptr, compilerResult->block, catchBlock);
     auto currentFunctionDefintion = CFunctionDefinition::create(this, *compilerResult, nullptr, FT_Public, "", nullptr);
     state = CompilerState::Define;
     anonFunction->define(this, *compilerResult, currentFunctionDefintion);
