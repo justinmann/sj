@@ -1,153 +1,98 @@
 #include "Node.h"
-#include <sstream>
 
-NVariable::NVariable(CLoc loc, const char* name) : NBase(loc) {
-    fullName = name;
-    
-    istringstream f(name);
-    string s;
-    while (getline(f, s, '.')) {
-        names.push_back(s);
-    }
+shared_ptr<CParentVar> CParentVar::create(shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_) {
+    auto c = make_shared<CParentVar>();
+    c->name = "";
+    c->mode = childVar_->mode;
+    c->isMutable = childVar_->isMutable;
+    c->nassignment = nullptr;
+    c->parentFunction = parentFunction_;
+    c->childVar = childVar_;
+    return c;
 }
+
+shared_ptr<CType> CParentVar::getType(Compiler* compiler, CResult& result) {
+    return childVar->getType(compiler, result);
+}
+
+Value* CParentVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    auto parentPtr = parentFunction->getParentPointer(compiler, result, builder, dotValue);
+    if (!parentPtr) {
+        return nullptr;
+    }
+    
+    auto parentValue = builder->CreateLoad(parentPtr, "parent");
+
+    return childVar->getLoadValue(compiler, result, thisValue, parentValue, builder, catchBB);
+}
+
+Value* CParentVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    auto parentPtr = parentFunction->getParentPointer(compiler, result, builder, dotValue);
+    if (!parentPtr) {
+        return nullptr;
+    }
+    
+    auto parentValue = builder->CreateLoad(parentPtr, "parent");
+
+    return childVar->getStoreValue(compiler, result, thisValue, parentValue, builder, catchBB);
+}
+
+string CParentVar::fullName() {
+    return childVar->fullName();
+}
+
+
+NVariable::NVariable(CLoc loc, const char* name) : name(name), NVariableBase(loc) { }
 
 NodeType NVariable::getNodeType() const {
     return NodeType_Variable;
 }
 
-void NVariable::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+void NVariable::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) const {
     assert(compiler->state == CompilerState::FixVar);
-    getParentValue(compiler, result, loc, thisFunction, nullptr, nullptr, names, VT_LOAD, nullptr);
+    getVar(compiler, result, thisFunction, dotVar);
 }
 
-shared_ptr<CType> NVariable::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
-    assert(compiler->state >= CompilerState::FixVar);
-    auto cvar = getParentValue(compiler, result, loc, thisFunction, nullptr, nullptr, names, VT_LOAD, nullptr);
-    if (!cvar) {
-        return nullptr;
-    }
-    return cvar->getType(compiler, result);
+string NVariable::getName() const {
+    return name;
 }
 
-Value* NVariable::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
-    assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(this);
-    Value* value = nullptr;
-    getParentValue(compiler, result, loc, thisFunction, thisValue, builder, names, VT_LOAD, &value);
-    return value;
-}
-
-shared_ptr<CVar> NVariable::getParentValue(Compiler* compiler, CResult& result, const CLoc& loc, shared_ptr<CFunction> thisFunction, Value* thisValue22, IRBuilder<>* builder, const vector<string>& names, ValueType vt, Value** value) {
-    if (value) {
-        *value = nullptr;
-    }
-    
-    if (names.size() == 1 && names[0] == "this") {
-        if (value) {
-            *value = thisValue22;
-        }
-        
-        return CThisVar::create(thisFunction);
-    }
+shared_ptr<CVar> NVariable::getVar(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) const {
+    shared_ptr<CVar> cvar = nullptr;
     
     auto cfunction = thisFunction;
-    shared_ptr<CVar> cvarResult = nullptr;
-    auto isFirst = true;
-    for (auto name : names) {
-        auto isLast = name == names.back();
-        if (isFirst) {
-            isFirst = false;
-            if (name == "this") {
-                if (value) {
-                    if (vt == VT_STORE) {
-                        result.addError(loc, CErrorCode::ImmutableAssignment, "cannot store value in this");
-                        return nullptr;
-                    }
-                    *value = thisValue22;
-                }
-                
-                cvarResult = CThisVar::create(thisFunction);
-            } else {
-                // Now we need to look up the parent chain
-                shared_ptr<CVar> cvar = nullptr;
-                Value* thisValue = nullptr;
-                
-                if (value) {
-                    thisValue = thisValue22;
-                }
-                
-                while (cfunction && !cvar) {
-                    cvar = cfunction->getCVar(name);
-                    if (!cvar) {
-                        if (value) {
-                            auto thisType = cfunction->getThisType(compiler, result);
-                            auto hasParent = cfunction->getHasParent(compiler, result);
-                            if (!hasParent) {
-                                cfunction = nullptr;
-                            } else {
-                                auto ptr = cfunction->getParentPointer(compiler, result, builder, thisValue);
-                                thisValue = builder->CreateLoad(ptr, "parent");
-                            }
-                        }
-                        
-                        if (cfunction) {
-                            cfunction = cfunction->parent.lock();
-                        }
-                    }
-                }
-                
-                if (cfunction == nullptr) {
-                    return nullptr;
-                }
-                
-                if (cfunction != thisFunction && cvar->mode == CVarType::Local) {
-                    cvar = cfunction->localVarToThisVar(compiler, static_pointer_cast<CLocalVar>(cvar));
-                }
-                
-                auto cthisvar = static_pointer_cast<CFunctionVar>(cvar);
-                if (value) {
-                    // local vars can only be accessed within their function
-                    assert(cvar->mode != CVarType::Local || cfunction == thisFunction);
-                    
-                    if (vt == VT_LOAD || !isLast) {
-                        *value = cvar->getLoadValue(compiler, result, thisValue, builder);
-                    } else {
-                        *value = cvar->getStoreValue(compiler, result, thisValue, builder);
-                    }
-                }
-
-                cfunction = cthisvar->getCFunctionForValue(compiler, result);
-                cvarResult = cthisvar;
+    if (dotVar) {
+        cfunction = dotVar->getCFunctionForValue(compiler, result);
+    }
+    
+    auto parentFunctions = vector<shared_ptr<CFunction>>();
+    while (cfunction && !cvar) {
+        cvar = cfunction->getCVar(name);
+        if (!cvar) {
+            if (cfunction) {
+                parentFunctions.insert(parentFunctions.begin(), cfunction);
+                cfunction = cfunction->parent.lock();
             }
-        } else {
-            auto cvar = cfunction->getCVar(name);
-            if (!cvar) {
-                return nullptr;
-            }
-            
-            if (cvar->mode == CVarType::Local) {
-                cvar = cfunction->localVarToThisVar(compiler, static_pointer_cast<CLocalVar>(cvar));
-            }
-            
-            auto cthisvar = static_pointer_cast<CFunctionVar>(cvar);
-            if (value) {
-                if (vt == VT_LOAD || !isLast) {
-                    *value = cthisvar->getLoadValue(compiler, result, *value, builder);
-                } else {
-                    *value = cthisvar->getStoreValue(compiler, result, *value, builder);
-                }
-            }
-            
-            cfunction = cthisvar->getCFunctionForValue(compiler, result);
-            cvarResult = cthisvar;
         }
     }
     
-    return cvarResult;
+    if (cfunction == nullptr) {
+        return nullptr;
+    }
+    
+    if (cfunction != thisFunction && cvar->mode == CVarType::Local) {
+        cvar = cfunction->localVarToThisVar(compiler, static_pointer_cast<CLocalVar>(cvar));
+    }
+    
+    for (auto it : parentFunctions) {
+        cvar = CParentVar::create(it, cvar);
+    }
+    
+    return cvar;
 }
 
 void NVariable::dump(Compiler* compiler, int level) const {
     dumpf(level, "type: 'NVariable'");
-    dumpf(level, "name: '%s'", fullName.c_str());
+    dumpf(level, "name: '%s'", name.c_str());
 }
 

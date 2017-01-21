@@ -38,19 +38,20 @@ shared_ptr<CType> CFunctionVar::getType(Compiler* compiler, CResult& result) {
     return type;
 }
 
-Value* CFunctionVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder) {
-    return builder->CreateLoad(getStoreValue(compiler, result, thisValue, builder));
+Value* CFunctionVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    return builder->CreateLoad(getStoreValue(compiler, result, thisValue, dotValue, builder, catchBB));
 }
 
-Value* CFunctionVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder) {
-    return parent.lock()->getArgumentPointer(compiler, result, thisValue, index, builder);
+Value* CFunctionVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    return parent.lock()->getArgumentPointer(compiler, result, dotValue, index, builder);
 }
 
-shared_ptr<CThisVar> CThisVar::create(shared_ptr<CFunction> parent) {
+shared_ptr<CThisVar> CThisVar::create(CLoc loc_, shared_ptr<CFunction> parent) {
     auto c = make_shared<CThisVar>();
     c->mode = CVarType::Public;
     c->name = "this";
     c->isMutable = false;
+    c->loc = loc_;
     c->parent = parent;
     return c;
 }
@@ -59,12 +60,13 @@ shared_ptr<CType> CThisVar::getType(Compiler* compiler, CResult& result) {
     return parent.lock()->getThisType(compiler, result);
 }
 
-Value* CThisVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder) {
-    assert(false);
+Value* CThisVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    return thisValue;
 }
 
-Value* CThisVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder) {
-    assert(false);
+Value* CThisVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    result.addError(loc, CErrorCode::ImmutableAssignment, "cannot assign to this");
+    return nullptr;
 }
 
 shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, const CLoc& loc, weak_ptr<CFunctionDefinition> definition_, vector<shared_ptr<CType>>& templateTypes_, weak_ptr<CFunction> parent_, CFunctionType type_, const string& name_, shared_ptr<NFunction> node_) {
@@ -94,13 +96,13 @@ shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, con
         }
         
         for (auto it : c->node->assignments) {
-            if (it->names.size() != 1) {
-                result.addError(it->loc, CErrorCode::InvalidDot, "cannot use '.' in variable declaration for a function: '%s'", it->fullName.c_str());
+            if (it->var) {
+                result.addError(it->loc, CErrorCode::InvalidDot, "cannot use '.' in variable declaration for a function: '%s'", it->name.c_str());
             }
 
             int index = (int)c->thisVars.size();
-            auto thisVar = CFunctionVar::create(it->names[0], c, c->node, index, it, nullptr);
-            c->thisVarsByName[it->names[0]] = pair<int, shared_ptr<CVar>>(index, thisVar);
+            auto thisVar = CFunctionVar::create(it->name, c, c->node, index, it, nullptr);
+            c->thisVarsByName[it->name] = pair<int, shared_ptr<CVar>>(index, thisVar);
             c->thisVars.push_back(thisVar);
         }
     }
@@ -358,8 +360,8 @@ shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, 
         }
         
         for (auto it : node->assignments) {
-            if (it->names.size() != 1) {
-                result.addError(it->loc, CErrorCode::InvalidDot, "cannot use '.' in variable declaration for a function: '%s'", it->fullName.c_str());
+            if (it->var) {
+                result.addError(it->loc, CErrorCode::InvalidDot, "cannot use '.' in variable declaration for a function: '%s'", it->name.c_str());
             }
         }
     }

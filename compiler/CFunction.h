@@ -26,8 +26,8 @@ class CFunctionVar : public CVar {
 public:
     static shared_ptr<CFunctionVar> create(const string& name, shared_ptr<CFunction> parent, shared_ptr<NFunction> nfunction, int index, shared_ptr<NAssignment> nassignment, shared_ptr<CType> type);
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder);
-    virtual Value* getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder);
+    virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
+    virtual Value* getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     
     bool isInGetType;
     shared_ptr<NFunction> nfunction;
@@ -38,10 +38,12 @@ public:
 
 class CThisVar : public CVar {
 public:
-    static shared_ptr<CThisVar> create(shared_ptr<CFunction> parent);
+    static shared_ptr<CThisVar> create(CLoc loc_, shared_ptr<CFunction> parent);
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder);
-    virtual Value* getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder);
+    virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
+    virtual Value* getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
+    
+    CLoc loc;
 };
 
 enum CFunctionType {

@@ -18,7 +18,7 @@ enum NMathAssignmentOp {
 
 class NMathAssignment : public NBase {
 public:
-    NMathAssignment(CLoc loc, const char* name, NMathAssignmentOp op, shared_ptr<NBase> rightSide);
+    NMathAssignment(CLoc loc, shared_ptr<NVariableBase> var, NMathAssignmentOp op, shared_ptr<NBase> rightSide);
     virtual NodeType getNodeType() const;
     virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction);
     virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
@@ -26,8 +26,7 @@ public:
     virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const;
     virtual void dump(Compiler* compiler, int level) const;
     
-    string fullName;
-    vector<string> names;
+    shared_ptr<NVariableBase> var;
     NMathAssignmentOp op;
     shared_ptr<NBase> rightSide;
 

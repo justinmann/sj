@@ -1,13 +1,6 @@
 #include "Node.h"
 
-NMathAssignment::NMathAssignment(CLoc loc, const char* name, NMathAssignmentOp op, shared_ptr<NBase> rightSide) : op(op), rightSide(rightSide), NBase(loc) {
-    fullName = name;
-
-    istringstream f(name);
-    string s;
-    while (getline(f, s, '.')) {
-        names.push_back(s);
-    }
+NMathAssignment::NMathAssignment(CLoc loc, shared_ptr<NVariableBase> var, NMathAssignmentOp op, shared_ptr<NBase> rightSide) : var(var), op(op), rightSide(rightSide), NBase(loc) {
 }
 
 NodeType NMathAssignment::getNodeType() const {
@@ -30,7 +23,7 @@ void NMathAssignment::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFu
 
 shared_ptr<CType> NMathAssignment::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
     assert(compiler->state >= CompilerState::FixVar);
-    auto cvar = NVariable::getParentValue(compiler, result, loc, thisFunction, nullptr, nullptr, names, VT_STORE, nullptr);
+    auto cvar = var->getVar(compiler, result, thisFunction, nullptr);
     auto ctype = cvar->getType(compiler, result);
     if (ctype != compiler->typeInt) {
         result.addError(loc, CErrorCode::TypeMismatch, "operation only valid on int");
@@ -43,19 +36,17 @@ Value* NMathAssignment::compile(Compiler* compiler, CResult& result, shared_ptr<
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
-    Value* destValue = nullptr;
-    auto cvar = NVariable::getParentValue(compiler, result, loc, thisFunction, thisValue, builder, names, VT_STORE, &destValue);
+    auto cvar = var->getVar(compiler, result, thisFunction, nullptr);
     if (!cvar) {
-        result.addError(loc, CErrorCode::InvalidVariable, "cannot find var '%s'", fullName.c_str());
         return nullptr;
     }
     
     if (!cvar->isMutable) {
-        result.addError(loc, CErrorCode::ImmutableAssignment, "invalid on immutable variable", fullName.c_str());
+        result.addError(loc, CErrorCode::ImmutableAssignment, "invalid on immutable variable");
         return nullptr;
     }
     
-    Value* leftValue = builder->CreateLoad(destValue);
+    auto leftValue = cvar->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB);
     
     // Compute value
     Value *rightValue = nullptr;
@@ -100,13 +91,13 @@ Value* NMathAssignment::compile(Compiler* compiler, CResult& result, shared_ptr<
     }
 
     // Store value
+    Value* destValue = cvar->getStoreValue(compiler, result, thisValue, thisValue, builder, catchBB);
     builder->CreateStore(resultValue, destValue);
     return resultValue;
 }
 
 void NMathAssignment::dump(Compiler* compiler, int level) const {
     dumpf(level, "type: 'NMathAssignment'");
-    dumpf(level, "name: %s", fullName.c_str());
     dumpf(level, "op: %d", op);
     
     if (rightSide) {

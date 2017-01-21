@@ -1,14 +1,96 @@
 #include "Node.h"
 
-NCall::NCall(CLoc loc, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, shared_ptr<NodeList> arguments) : templateTypeNames(templateTypeNames), arguments(arguments), NBase(loc) {
-    istringstream f(name);
-    string s;
-    while (getline(f, s, '.')) {
-        dotNames.push_back(s);
-    }
-    functionName = dotNames.back();
-    dotNames.pop_back();
+shared_ptr<CCallVar> CCallVar::create(CLoc loc_, const string& name_, shared_ptr<NodeList> arguments_, shared_ptr<CFunction> thisFunction_, weak_ptr<CVar> dotVar_, shared_ptr<CFunction> callee_) {
+    auto c = make_shared<CCallVar>();
+    c->name = name_;
+    c->mode = Local;
+    c->isMutable = true;
+    c->nassignment = nullptr;
+    c->loc = loc_;
+    c->arguments = arguments_;
+    c->thisFunction = thisFunction_;
+    c->dotVar = dotVar_;
+    c->callee = callee_;
+    return c;
+}
 
+shared_ptr<CType> CCallVar::getType(Compiler* compiler, CResult& result) {
+    return callee->getReturnType(compiler, result);
+}
+
+Value* CCallVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    assert(compiler->state == CompilerState::Compile);
+    // compiler->emitLocation(call.get());
+    
+    if (arguments->size() > callee->node->assignments.size()) {
+        result.addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments->size(), callee->node->assignments.size());
+        return nullptr;
+    }
+    
+    // Fill in parameters
+    vector<shared_ptr<NBase>> parameters(callee->node->assignments.size());
+    auto argIndex = 0;
+    auto hasSetByName = false;
+    for (auto it : *arguments) {
+        if (it->getNodeType() == NodeType_Assignment) {
+            auto parameterAssignment = static_pointer_cast<NAssignment>(it);
+            assert(parameterAssignment->inFunctionDeclaration);
+            auto index = callee->getThisIndex(parameterAssignment->name);
+            if (index < 0) {
+                result.addError(loc, CErrorCode::ParameterDoesNotExist, "cannot find parameter '%s'", parameterAssignment->name.c_str());
+                return nullptr;
+            }
+            
+            if (parameters[index] != nullptr) {
+                result.addError(loc, CErrorCode::ParameterRedefined, "defined parameter '%s' twice", parameterAssignment->name.c_str());
+                return nullptr;
+            }
+            
+            parameters[index] = parameterAssignment->rightSide;
+            hasSetByName = true;
+        } else {
+            if (hasSetByName) {
+                result.addError(loc, CErrorCode::ParameterByIndexAfterByName, "all named parameters must be after the un-named parameters");
+                return nullptr;
+            }
+            
+            if (parameters[argIndex] != nullptr) {
+                result.addError(loc, CErrorCode::Internal, "re-defining the same parameters which should be impossible for un-named parameters");
+                return nullptr;
+            }
+            
+            parameters[argIndex] = it;
+        }
+        argIndex++;
+    }
+    
+    argIndex = 0;
+    for (auto it : callee->node->assignments) {
+        if (parameters[argIndex] == nullptr) {
+            auto defaultAssignment = static_pointer_cast<NAssignment>(it);
+            assert(defaultAssignment->inFunctionDeclaration);
+            if (!defaultAssignment->rightSide) {
+                result.addError(loc, CErrorCode::ParameterRequired, "must assign value to parameter '%s'", it->name.c_str());
+                return nullptr;
+            }
+            parameters[argIndex] = defaultAssignment->rightSide;
+        }
+        argIndex++;
+    }
+    
+    return callee->node->call(compiler, result, thisFunction, thisValue, callee, dotVar.lock(), builder, catchBB, parameters);
+}
+
+Value* CCallVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    result.addError(loc, CErrorCode::ImmutableAssignment, "cannot assign value to function result");
+    return nullptr;
+}
+
+string CCallVar::fullName() {
+    return name + "()";
+}
+
+NCall::NCall(CLoc loc, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, shared_ptr<NodeList> arguments) : name(name), templateTypeNames(templateTypeNames), arguments(arguments), NVariableBase(loc) {
     if (!this->arguments) {
         this->arguments = make_shared<NodeList>();
     } else {
@@ -37,9 +119,9 @@ void NCall::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefi
     }
 }
 
-void NCall::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {    
+void NCall::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) const {
     assert(compiler->state == CompilerState::FixVar);
-    auto callee = getCFunction(compiler, result, thisFunction, nullptr, nullptr);
+    auto callee = getCFunction(compiler, result, thisFunction, dotVar);
     if (!callee) {
         return;
     }
@@ -55,133 +137,54 @@ void NCall::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> th
     }
 }
 
-shared_ptr<CFunction> NCall::getCFunction(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder) const {
-    assert(compiler->state >= CompilerState::FixVar);
+string NCall::getName() const {
+    return name + "()";
+}
 
+shared_ptr<CFunction> NCall::getCFunction(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) const {
+    assert(compiler->state >= CompilerState::FixVar);
+    
     // parentFunction will be specified if the NCall is used as the default NAssignment for a NFunction
     auto cfunction = thisFunction;
     
-    // If more than one name in the list, then we need to iterate down to correct function
-    if (dotNames.size() > 0) {
-        auto cvar = NVariable::getParentValue(compiler, result, loc, thisFunction, thisValue, builder, dotNames, VT_LOAD, nullptr);
-        if (!cvar) {
-            result.addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", dotNames.back().c_str());
-            return nullptr;
-        }
-        
-        cfunction = cvar->getCFunctionForValue(compiler, result);
-
+    if (dotVar) {
+        cfunction = dotVar->getCFunctionForValue(compiler, result);
         if (!cfunction) {
-            result.addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", dotNames.back().c_str());
+            result.addError(loc, CErrorCode::InvalidVariable, "parent is not a function: '%s'", dotVar->fullName().c_str());
             return nullptr;
         }
     }
     
     // Handle last name in list
-    auto callee = cfunction->getCFunction(compiler, result, loc, functionName, templateTypeNames);
+    auto callee = cfunction->getCFunction(compiler, result, loc, name, templateTypeNames);
     if (!callee) {
         // If we are still using "this" then we can check to see if it is a function on parent
         if (cfunction == thisFunction) {
             while (cfunction && !cfunction->parent.expired() && !callee) {
                 cfunction = cfunction->parent.lock();
                 if (cfunction) {
-                    callee = cfunction->getCFunction(compiler, result, loc, functionName, templateTypeNames);
+                    callee = cfunction->getCFunction(compiler, result, loc, name, templateTypeNames);
                 }
             }
         }
     }
     
     if (!callee) {
-        result.addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", functionName.c_str());
+        result.addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", name.c_str());
         return nullptr;
     }
     
     return callee;
 }
 
-shared_ptr<CType> NCall::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
-    assert(compiler->state >= CompilerState::FixVar);
-    auto callee = getCFunction(compiler, result, thisFunction, nullptr, nullptr);
-    if (!callee) {
-        return nullptr;
-    }
-    
-    auto type = callee->getReturnType(compiler, result);
-    
-    return type;
-}
-
-Value* NCall::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
-    assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(this);
-    
-    auto callee = getCFunction(compiler, result, thisFunction, thisValue, builder);
-    if (!callee) {
-        return nullptr;
-    }
-    
-    if (arguments->size() > callee->node->assignments.size()) {
-        result.addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments->size(), callee->node->assignments.size());
-        return nullptr;
-    }
-    
-    // Fill in parameters
-    vector<shared_ptr<NBase>> parameters(callee->node->assignments.size());
-    auto argIndex = 0;
-    auto hasSetByName = false;
-    for (auto it : *arguments) {
-        if (it->getNodeType() == NodeType_Assignment) {
-            auto parameterAssignment = static_pointer_cast<NAssignment>(it);
-            assert(parameterAssignment->inFunctionDeclaration);
-            auto index = callee->getThisIndex(parameterAssignment->names[0]);
-            if (index < 0) {
-                result.addError(loc, CErrorCode::ParameterDoesNotExist, "cannot find parameter '%s'", parameterAssignment->fullName.c_str());
-                return nullptr;
-            }
-            
-            if (parameters[index] != nullptr) {
-                result.addError(loc, CErrorCode::ParameterRedefined, "defined parameter '%s' twice", parameterAssignment->fullName.c_str());
-                return nullptr;
-            }
-            
-            parameters[index] = parameterAssignment->rightSide;
-            hasSetByName = true;
-        } else {
-            if (hasSetByName) {
-                result.addError(loc, CErrorCode::ParameterByIndexAfterByName, "all named parameters must be after the un-named parameters");
-                return nullptr;
-            }
-            
-            if (parameters[argIndex] != nullptr) {
-                result.addError(loc, CErrorCode::Internal, "re-defining the same parameters which should be impossible for un-named parameters");
-                return nullptr;
-            }
-            
-            parameters[argIndex] = it;
-        }
-        argIndex++;
-    }
-    
-    argIndex = 0;
-    for (auto it : callee->node->assignments) {
-        if (parameters[argIndex] == nullptr) {
-            auto defaultAssignment = static_pointer_cast<NAssignment>(it);
-            assert(defaultAssignment->inFunctionDeclaration);
-            if (!defaultAssignment->rightSide) {
-                result.addError(loc, CErrorCode::ParameterRequired, "must assign value to parameter '%s'", it->fullName.c_str());
-                return nullptr;
-            }
-            parameters[argIndex] = defaultAssignment->rightSide;
-        }
-        argIndex++;
-    }
-    
-    return callee->node->call(compiler, result, thisFunction, thisValue, callee, builder, catchBB, dotNames, parameters);
+shared_ptr<CVar> NCall::getVar(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) const {
+    auto callee = getCFunction(compiler, result, thisFunction, dotVar);
+    return CCallVar::create(loc, name, arguments, thisFunction, dotVar, callee);
 }
 
 void NCall::dump(Compiler* compiler, int level) const {
     dumpf(level, "type: 'NCall'");
-    dumpf(level, "functionName: '%s'", functionName.c_str());
+    dumpf(level, "functionName: '%s'", name.c_str());
 
     if (arguments->size() > 0) {
         dumpf(level, "arguments: {");
@@ -190,7 +193,7 @@ void NCall::dump(Compiler* compiler, int level) const {
             if (it->getNodeType() == NodeType_Assignment) {
                 auto parameterAssignment = static_pointer_cast<NAssignment>(it);
                 assert(parameterAssignment->inFunctionDeclaration);
-                dumpf(level + 1, "%s: {", parameterAssignment->fullName.c_str());
+                dumpf(level + 1, "%s: {", parameterAssignment->name.c_str());
                 parameterAssignment->dump(compiler, level + 2);
                 dumpf(level + 1, "}");
             } else {

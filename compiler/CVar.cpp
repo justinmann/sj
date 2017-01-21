@@ -45,12 +45,12 @@ shared_ptr<CType> CLocalVar::getType(Compiler* compiler, CResult& result) {
     return type;
 }
 
-Value* CLocalVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder) {
-    auto value = getStoreValue(compiler, result, thisValue, builder);
+Value* CLocalVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    auto value = getStoreValue(compiler, result, thisValue, dotValue, builder, catchBB);
     return builder->CreateLoad(value);
 }
 
-Value* CLocalVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, IRBuilder<>* builder) {
+Value* CLocalVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     if (!value) {
         IRBuilder<> entryBuilder = getEntryBuilder(builder);
         auto valueType = getType(compiler, result)->llvmRefType(compiler, result);

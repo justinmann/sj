@@ -54,7 +54,9 @@ int count_lines(const char* s, const int len) {
 [ \t]+					SAVE_LOC; 
 "^"						TOKEN_STR(TIDENTIFIER);
 "extern"				TOKEN_VAL(TEXTERN);
-[a-zA-Z_][a-zA-Z0-9_\.]*	TOKEN_STR(TIDENTIFIER);
+"this"					TOKEN_VAL(TTHIS);
+"."						TOKEN_VAL(TDOT);
+[a-zA-Z_][a-zA-Z0-9_]*	TOKEN_STR(TIDENTIFIER);
 [0-9]+\.[0-9]*			TOKEN_STR(TDOUBLE);
 [0-9]+					TOKEN_STR(TINTEGER);
 \n						yyg->yyextra_r.l++; yyg->yyextra_r.c = 0; TOKEN_VAL(TEND);

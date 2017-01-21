@@ -28,11 +28,11 @@ public:
     virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parentFunction);
     virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction);
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction) const;
-    virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const;
     virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder, BasicBlock* catchBB) const;
     virtual void dump(Compiler* compiler, int level) const;
 
-    virtual Value* call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, IRBuilder<>* builder, BasicBlock* catchBB, const vector<string>& dotNames, vector<shared_ptr<NBase>>& parameters);
+    virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const;
+    virtual Value* call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters);
     virtual void fixVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction);
     Function* compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const;
     virtual void compileBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Function* function) const;

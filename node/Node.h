@@ -34,6 +34,7 @@ enum NodeType {
     NodeType_Cast,
     NodeType_Call,
     NodeType_Compare,
+    NodeType_Dot,
     NodeType_Double,
     NodeType_For,
     NodeType_Function,
@@ -42,6 +43,7 @@ enum NodeType {
     NodeType_Math,
     NodeType_MathAssignment,
     NodeType_Not,
+    NodeType_This,
     NodeType_Throw,
     NodeType_Variable,
     NodeType_Void,
@@ -55,6 +57,7 @@ enum NodeType {
 #include "NCast.h"
 #include "NCall.h"
 #include "NCompare.h"
+#include "NDot.h"
 #include "NDouble.h"
 #include "NFor.h"
 #include "NFunction.h"
@@ -63,6 +66,7 @@ enum NodeType {
 #include "NMath.h"
 #include "NMathAssignment.h"
 #include "NNot.h"
+#include "NThis.h"
 #include "NThrow.h"
 #include "NVariable.h"
 #include "NVoid.h"

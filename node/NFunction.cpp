@@ -293,7 +293,7 @@ error:
     */
 }
 
-Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, IRBuilder<>* builder, BasicBlock* catchBB, const vector<string>& dotNames, vector<shared_ptr<NBase>>& parameters) {
+Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
     if (type == FT_Extern) {
         vector<Value *> argsV;
         auto func = callee->getFunction(compiler, result);
@@ -366,8 +366,8 @@ Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction
         auto hasParent = callee->getHasParent(compiler, result);
         if (hasParent) {
             Value* parentValue = thisValue;
-            if (dotNames.size() > 0) {
-                NVariable::getParentValue(compiler, result, loc, thisFunction, thisValue, builder, dotNames, VT_LOAD, &parentValue);
+            if (dotVar) {
+                parentValue = dotVar->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB);
             } else {
                 // if recursively calling ourselves then re-use parent
                 if (callee == thisFunction) {
@@ -426,7 +426,7 @@ void NFunction::dump(Compiler* compiler, int level) const {
     if (assignments.size() > 0) {
         dumpf(level, "assignments: {");
         for (auto it : assignments) {
-            dumpf(level + 1, "%s: {", it->fullName.c_str());
+            dumpf(level + 1, "%s: {", it->name.c_str());
             it->dump(compiler, level + 2);
             dumpf(level + 1, "}");
         }

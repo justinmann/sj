@@ -156,7 +156,6 @@ void testAssignment() {
     result = compiler.run("x : y : 2; x + y");
     assert(result->type == RESULT_INT && result->iResult == 4);
 
-
     result = compiler.run("a = 0; a++");
     assert(result->type == RESULT_INT && result->iResult == 1);
 
@@ -402,6 +401,13 @@ void testClass() {
     result = compiler.run("class(x:0, func() { x }) { this }\n"
                           "c: class(1)\n"
                           "c.func()");
+    assert(result->type == RESULT_INT && result->iResult == 1);
+
+    result = compiler.run(R"DELIM(
+        class(x : 0) { this }
+        func() { class(1) }
+        func().x
+    )DELIM");
     assert(result->type == RESULT_INT && result->iResult == 1);
 
     result = compiler.run(R"DELIM(

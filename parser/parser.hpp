@@ -86,7 +86,9 @@ extern int yydebug;
     TMINUSEQUAL = 296,
     TLBRACKET = 297,
     TRBRACKET = 298,
-    TEXCLAIM = 299
+    TEXCLAIM = 299,
+    TDOT = 300,
+    TTHIS = 301
   };
 #endif
 
@@ -100,7 +102,7 @@ union YYSTYPE
 	NBase* node;
 	NBlock* block;
 	NIf* nif;
-	NAssignment* var_decl;
+	NVariableBase* var;
 	NodeList* exprvec;
 	std::string* string;
 	TemplateTypeNames* templateTypeNames;
