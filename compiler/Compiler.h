@@ -37,6 +37,7 @@ public:
 #include "CType.h"
 #include "CVar.h"
 #include "CFunction.h"
+#include "CArrayType.h"
 #include "Exception.h"
 
 #pragma clang diagnostic ignored "-Wformat-security"

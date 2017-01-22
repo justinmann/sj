@@ -623,7 +623,6 @@ void testArray() {
     )DELIM");
     assert(result->type == RESULT_INT && result->iResult == 1);
 
-
     result = compiler.run(R"DELIM(
         class(x: 0) { this }
         a : array!class(1)
@@ -632,11 +631,39 @@ void testArray() {
         b.x
     )DELIM");
     assert(result->type == RESULT_INT && result->iResult == 1);
+    
+    result = compiler.run(R"DELIM(
+        a : [1, 2, 3]
+        a[0] = 2		// find method 'set'
+        a[0]			// find method 'get'
+    )DELIM");
+    assert(result->type == RESULT_INT && result->iResult == 2);
+    
+    result = compiler.run(R"DELIM(
+        class(x : 'int) { this }
+        a : [class(1), class(2), class(3)]
+        c : a[0]
+        c.x
+    )DELIM");
+    assert(result->type == RESULT_INT && result->iResult == 1);
+}
+
+void testInclude() {
+    shared_ptr<CResult> result;
+    Compiler compiler;
+
+    result = compiler.run(R"DELIM(
+                          include "list.sj"
+                          include 'list.sj'
+                        )DELIM");
+    assert(result->type == RESULT_INT && result->iResult == 1);
 }
                           
 int main(int argc, char **argv) {
     shared_ptr<CResult> result;
     Compiler compiler;
+
+    testInclude();
     
     testMath();
     testComparison();

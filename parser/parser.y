@@ -55,15 +55,15 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 }
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
-%token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS
+%token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID TSTRING
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE
 
 /* Non Terminal symbols. Types refer to union decl above */
-%type <node> program expr expr_right const stmt var_decl func_decl func_arg for_expr while_expr assign
+%type <node> program expr expr_right const stmt var_decl func_decl func_arg for_expr while_expr assign array
 %type <var> var var_right
 %type <block> stmts block catch
 %type <nif> if_expr
-%type <exprvec> func_args func_block
+%type <exprvec> func_args func_block array_args
 %type <isMutable> assign_type
 %type <string> type
 %type <templateTypeNames> temp_args temp_block
@@ -91,6 +91,7 @@ stmt 				: /* Blank! */									{ $$ = nullptr; }
 					| var_decl
 					| func_decl 
 					| expr
+					| TINCLUDE TSTRING								{ $$ = new NInclude(LOC, $2->c_str()); delete $2; }
 					| error	 										{ $$ = nullptr; /* yyclearin; */ result->errors.push_back(CError(LOC, CErrorCode::InvalidCharacter)); }
 					;
 
@@ -103,7 +104,7 @@ var_decl 			: assign
 					| var TPLUSEQUAL stmt                   		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Add, shared_ptr<NBase>($3)); }
 					| var TMINUSEQUAL stmt                  		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Sub, shared_ptr<NBase>($3)); }
 					| var TLBRACKET expr TRBRACKET					{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NCall>(LOC, "get", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3)))); }
-					| var TLBRACKET expr TRBRACKET TEQUAL stmt		{ $$ = new NCall(LOC, "set", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3), shared_ptr<NBase>($6))); }
+					| var TLBRACKET expr TRBRACKET TEQUAL stmt		{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NCall>(LOC, "set", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3), shared_ptr<NBase>($6)))); }
 					| TEXCLAIM stmt                                 { $$ = new NNot(LOC, shared_ptr<NBase>($2)); }
 					;
 
@@ -157,6 +158,7 @@ expr				: expr TPLUS expr_right 						{ $$ = new NMath(LOC, shared_ptr<NBase>($1
 					| while_expr								
 					| TTHROW TLPAREN expr TRPAREN					{ $$ = new NThrow(LOC, shared_ptr<NBase>($3)); }
 					| expr_right
+					| array
 					;
 
 expr_right			: var 											{ $$ = $1; }
@@ -202,6 +204,13 @@ assign				: TIDENTIFIER assign_type stmt					{ $$ = new NAssignment(LOC, nullptr
 
 assign_type 		: TEQUAL										{ $$ = true; }
 					| TCOLON										{ $$ = false; }
+					;
+
+array				: TLBRACKET array_args TRBRACKET				{ $$ = new NArray(LOC, shared_ptr<NodeList>($2)); }
+					;
+
+array_args 			: expr											{ $$ = new NodeList(); $$->push_back(shared_ptr<NBase>($1)); }
+					| array_args TCOMMA expr 						{ $1->push_back(shared_ptr<NBase>($3)); }
 					;
 
 type 				: TQUOTE TIDENTIFIER							{ $$ = $2; }

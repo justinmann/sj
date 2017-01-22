@@ -28,6 +28,7 @@ public:
 typedef vector<string> StringList;
 
 enum NodeType {
+    NodeType_Array,
     NodeType_Assignment,
     NodeType_Block,
     NodeType_Bool,
@@ -39,6 +40,7 @@ enum NodeType {
     NodeType_For,
     NodeType_Function,
     NodeType_If,
+    NodeType_Include,
     NodeType_Integer,
     NodeType_Math,
     NodeType_MathAssignment,
@@ -50,6 +52,7 @@ enum NodeType {
     NodeType_While
 };
 
+#include "NArray.h"
 #include "NAssignment.h"
 #include "NBase.h"
 #include "NBlock.h"
@@ -62,6 +65,7 @@ enum NodeType {
 #include "NFor.h"
 #include "NFunction.h"
 #include "NIf.h"
+#include "NInclude.h"
 #include "NInteger.h"
 #include "NMath.h"
 #include "NMathAssignment.h"
