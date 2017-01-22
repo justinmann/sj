@@ -63,12 +63,13 @@ int count_lines(const char* s, const int len) {
 \n						yyg->yyextra_r.l++; yyg->yyextra_r.c = 0; TOKEN_VAL(TEND);
 ;						TOKEN_VAL(TEND);
 "\""([^\"])*"\""		yyg->yyextra_r.l += count_lines(yytext, yyleng); SAVE_LOC; yylval->string = new std::string(yytext + 1, yyleng - 2); return TSTRING;
-"'"([^'])*"'"			yyg->yyextra_r.l += count_lines(yytext, yyleng); SAVE_LOC; yylval->string = new std::string(yytext + 1, yyleng - 2); return TSTRING;
 "/*"([^*]|\*+[^*/])*\*+"/"	yyg->yyextra_r.l += count_lines(yytext, yyleng); TOKEN_VAL(TEND);
 "//"[^\n]*((\n))		yyg->yyextra_r.l++; yyg->yyextra_r.c = 0; TOKEN_VAL(TEND);
 "!"						TOKEN_VAL(TEXCLAIM);
 "["						TOKEN_VAL(TLBRACKET);
 "]"						TOKEN_VAL(TRBRACKET);
+"&&"					TOKEN_VAL(TAND);
+"||"					TOKEN_VAL(TOR);
 "++"					TOKEN_VAL(TPLUSPLUS);
 "--"					TOKEN_VAL(TMINUSMINUS);
 "+="					TOKEN_VAL(TPLUSEQUAL);

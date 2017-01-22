@@ -28,6 +28,7 @@ public:
 typedef vector<string> StringList;
 
 enum NodeType {
+    NodeType_And,
     NodeType_Array,
     NodeType_Assignment,
     NodeType_Block,
@@ -45,6 +46,7 @@ enum NodeType {
     NodeType_Math,
     NodeType_MathAssignment,
     NodeType_Not,
+    NodeType_Or,
     NodeType_This,
     NodeType_Throw,
     NodeType_Variable,
@@ -52,6 +54,7 @@ enum NodeType {
     NodeType_While
 };
 
+#include "NAnd.h"
 #include "NArray.h"
 #include "NAssignment.h"
 #include "NBase.h"
@@ -70,6 +73,7 @@ enum NodeType {
 #include "NMath.h"
 #include "NMathAssignment.h"
 #include "NNot.h"
+#include "NOr.h"
 #include "NThis.h"
 #include "NThrow.h"
 #include "NVariable.h"

@@ -90,7 +90,9 @@ extern int yydebug;
     TEXCLAIM = 300,
     TDOT = 301,
     TTHIS = 302,
-    TINCLUDE = 303
+    TINCLUDE = 303,
+    TAND = 304,
+    TOR = 305
   };
 #endif
 

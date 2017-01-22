@@ -56,7 +56,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID TSTRING
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program expr expr_right const stmt var_decl func_decl func_arg for_expr while_expr assign array
@@ -116,18 +116,16 @@ func_decl 			: TIDENTIFIER temp_block func_block block catch		{ /* f() */			$$ =
 catch				: /* Blank! */									{ $$ = nullptr; }
 					| TCATCH block									{ $$ = $2; }
 
-func_block			: TLPAREN TRPAREN								{ $$ = new NodeList(); }
-					| TLPAREN func_args TRPAREN						{ $$ = $2; }
-					| TLPAREN TEND func_args TRPAREN				{ $$ = $3; }
-					| TLPAREN TEND func_args TEND TRPAREN			{ $$ = $3; }
+func_block			: TLPAREN func_args TRPAREN						{ $$ = $2; }
 					;
 
-func_args  			: func_arg										{ $$ = new NodeList(); $$->push_back(shared_ptr<NBase>($1)); }
-					| func_args TEND func_arg 						{ $1->push_back(shared_ptr<NBase>($3)); }
-					| func_args TCOMMA func_arg 					{ $1->push_back(shared_ptr<NBase>($3)); }
+func_args  			: func_arg										{ $$ = new NodeList(); if ($1) { $$->push_back(shared_ptr<NBase>($1)); } }
+					| func_args TEND func_arg 						{ if ($3) { $1->push_back(shared_ptr<NBase>($3)); } }
+					| func_args TCOMMA func_arg 					{ if ($3) { $1->push_back(shared_ptr<NBase>($3)); } }
 					;
 
-func_arg			: assign 										
+func_arg			: /* Blank! */									{ $$ = nullptr; }
+					| assign 										
 					| func_decl 										
 					| expr 	
 					; 
@@ -143,6 +141,8 @@ temp_args			: TIDENTIFIER temp_block						{ $$ = new TemplateTypeNames(); $$->pu
 
 expr				: expr TPLUS expr_right 						{ $$ = new NMath(LOC, shared_ptr<NBase>($1), NMathOp::Add, shared_ptr<NBase>($3)); }
 					| expr TMINUS expr_right 						{ $$ = new NMath(LOC, shared_ptr<NBase>($1), NMathOp::Sub, shared_ptr<NBase>($3)); }
+					| expr TAND expr_right 							{ $$ = new NAnd(LOC, shared_ptr<NBase>($1), shared_ptr<NBase>($3)); }
+					| expr TOR expr_right 							{ $$ = new NOr(LOC, shared_ptr<NBase>($1), shared_ptr<NBase>($3)); }
 					| expr TMUL expr_right 							{ $$ = new NMath(LOC, shared_ptr<NBase>($1), NMathOp::Mul, shared_ptr<NBase>($3)); }
 					| expr TDIV expr_right 							{ $$ = new NMath(LOC, shared_ptr<NBase>($1), NMathOp::Div, shared_ptr<NBase>($3)); }
 					| expr TCEQ expr_right 							{ $$ = new NCompare(LOC, shared_ptr<NBase>($1), NCompareOp::EQ, shared_ptr<NBase>($3)); }

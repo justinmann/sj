@@ -5,7 +5,7 @@ NodeType NInclude::getNodeType() const {
 }
 
 void NInclude::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
-    
+    compiler->includeFile(result, fileName);
 }
 
 void NInclude::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
@@ -13,7 +13,7 @@ void NInclude::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction>
 }
 
 shared_ptr<CType> NInclude::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
-    return nullptr;
+    return compiler->typeVoid;
 }
 
 Value* NInclude::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {

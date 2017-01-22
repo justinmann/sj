@@ -130,7 +130,7 @@ public:
     void addError(const CLoc& loc, const CErrorCode code, const char* format, Args... args) {
         string str = strprintf(format, args...);
 #ifdef ERROR_OUTPUT
-        printf("ERROR: %s\n", str.c_str());
+        printf("ERROR: %d:%d %s\n", loc.line, loc.col, str.c_str());
 #endif
         errors.push_back(CError(loc, code, str));
 #ifdef ASSERT_ON_ERROR
@@ -143,7 +143,7 @@ public:
         string str = strprintf(format, args...);
         warnings.push_back(CError(loc, code, str));
 #ifdef ERROR_OUTPUT
-        printf("WARN: %s\n", str.c_str());
+        printf("WARN: %d:%d %s\n", loc.line, loc.col, str.c_str());
 #endif
     }
 };
@@ -163,11 +163,12 @@ public:
     Compiler();
     ~Compiler();
 
-    shared_ptr<CResult> run(const char* code);
+    shared_ptr<CResult> run(const string& code);
     
     void emitLocation(const NBase *node);
     shared_ptr<CType> getType(const string& name) const;
     Value* getDefaultValue(shared_ptr<CType> type);
+    void includeFile(CResult& result, const string& fileName);
 
     // llvm vars
     CompilerState state;
@@ -188,8 +189,11 @@ public:
     shared_ptr<CType> typeVoid;
     
 private:
-    shared_ptr<CResult> compile(const char* code);
+    shared_ptr<CResult> compileFile(const string& fileName);
+    shared_ptr<CResult> compile(const string& code);
     void InitializeModuleAndPassManager();
+    
+    map<string, shared_ptr<NBlock>> includedBlocks;
 };
 
 #endif /* Compiler_h */

@@ -7,6 +7,8 @@
 //
 
 #include "Node.h"
+#include <fstream>
+#include <streambuf>
 
 using namespace llvm::orc;
 
@@ -165,13 +167,27 @@ void Compiler::InitializeModuleAndPassManager() {
 #endif
 }
 
-shared_ptr<CResult> Compiler::compile(const char* code) {
+shared_ptr<CResult> Compiler::compileFile(const string& fileName) {
+    std::ifstream t(fileName);
+    std::string str;
+    
+    t.seekg(0, std::ios::end);
+    str.reserve(t.tellg());
+    t.seekg(0, std::ios::beg);
+    
+    str.assign((std::istreambuf_iterator<char>(t)),
+               std::istreambuf_iterator<char>());
+    
+    return compile(str);
+}
+
+shared_ptr<CResult> Compiler::compile(const string& code) {
     auto compilerResult = make_shared<CResult>();
     void* scanner;
     
     YYLOCATION loc = { 1, 1 };
     yylex_init_extra(loc, &scanner);
-    auto yy_buf = yy_scan_string(code, scanner);
+    auto yy_buf = yy_scan_string(code.c_str(), scanner);
     yyparse(scanner, compilerResult.get());
     yy_delete_buffer(yy_buf, scanner);
     yylex_destroy(scanner);
@@ -208,7 +224,7 @@ public:
     }
 };
 
-shared_ptr<CResult> Compiler::run(const char* code) {
+shared_ptr<CResult> Compiler::run(const string& code) {
 #ifdef YYDEBUG
     yydebug = 1; // use this to trigger the verbose debug output from bison
 #endif
@@ -244,11 +260,21 @@ shared_ptr<CResult> Compiler::run(const char* code) {
     if (compilerResult->errors.size() > 0)
         return compilerResult;
     
+    auto globalFunctionDefinition = currentFunctionDefintion->funcsByName["global"];
+    for (auto it : includedBlocks) {
+        it.second->define(this, *compilerResult, globalFunctionDefinition);
+        compilerResult->block->statements.insert(compilerResult->block->statements.begin(), it.second);
+    }
+    
+    // Early exit if compile fails
+    if (compilerResult->errors.size() > 0)
+        return compilerResult;
+
     state = CompilerState::FixVar;
     auto templateTypes = vector<shared_ptr<CType>>();
     auto currentFunction = currentFunctionDefintion->getFunction(this, *compilerResult, CLoc::undefined, templateTypes, weak_ptr<CFunction>());
     anonFunction->fixVar(this, *compilerResult, currentFunction);
-    auto cfunction = currentFunction->getCFunction(this, *compilerResult, CLoc::undefined, "global", nullptr);
+    auto cfunction = currentFunction->getCFunction(this, *compilerResult, CLoc::undefined, "global", nullptr, nullptr);
 #ifdef VAR_OUTPUT
     currentFunction->dump(this, *compilerResult, 0);
 #endif
@@ -377,4 +403,24 @@ void Compiler::emitLocation(const NBase *node) {
     
     builder->SetCurrentDebugLocation(DebugLoc::get(node->loc.line, node->loc.col, Scope));
 #endif
+}
+
+void Compiler::includeFile(CResult& result, const string& fileName) {
+    assert(state == CompilerState::Define);
+    
+    if (includedBlocks.find(fileName) == includedBlocks.end()) {
+        auto r = compileFile(fileName);
+        for (auto it : r->warnings) {
+            result.warnings.push_back(it);
+        }
+
+        if (r->errors.size() > 0) {
+            for (auto it : r->errors) {
+                result.errors.push_back(it);
+            }
+            return ;
+        }
+        
+        includedBlocks[fileName] = r->block;
+    }
 }

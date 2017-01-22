@@ -57,7 +57,7 @@ class CFunctionDefinition;
 class CFunction : public enable_shared_from_this<CFunction> {
 public:
     static shared_ptr<CFunction> create(Compiler* compiler, CResult& result, const CLoc& loc, weak_ptr<CFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> parent, CFunctionType type, const string& name, shared_ptr<NFunction> node);
-    shared_ptr<CFunction> getCFunction(Compiler* compiler, CResult& result, const CLoc& loc, const string& name, shared_ptr<TemplateTypeNames> templateTypeNames);
+    shared_ptr<CFunction> getCFunction(Compiler* compiler, CResult& result, const CLoc& loc, const string& name, shared_ptr<CFunction> callerFunction, shared_ptr<TemplateTypeNames> templateTypeNames);
     shared_ptr<CVar> getCVar(const string& name) const;
     shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result);
     int getThisIndex(const string& name) const;

@@ -156,14 +156,14 @@ shared_ptr<CFunction> NCall::getCFunction(Compiler* compiler, CResult& result, s
     }
     
     // Handle last name in list
-    auto callee = cfunction->getCFunction(compiler, result, loc, name, templateTypeNames);
+    auto callee = cfunction->getCFunction(compiler, result, loc, name, thisFunction, templateTypeNames);
     if (!callee) {
         // If we are still using "this" then we can check to see if it is a function on parent
         if (cfunction == thisFunction) {
             while (cfunction && !cfunction->parent.expired() && !callee) {
                 cfunction = cfunction->parent.lock();
                 if (cfunction) {
-                    callee = cfunction->getCFunction(compiler, result, loc, name, templateTypeNames);
+                    callee = cfunction->getCFunction(compiler, result, loc, name, thisFunction, templateTypeNames);
                 }
             }
         }

@@ -202,7 +202,7 @@ Value* CFunction::getArgumentPointer(Compiler* compiler, CResult& result, Value*
     return paramPtr;
 }
 
-shared_ptr<CFunction> CFunction::getCFunction(Compiler* compiler, CResult& result, const CLoc& loc, const string& name, shared_ptr<TemplateTypeNames> templateTypeNames) {
+shared_ptr<CFunction> CFunction::getCFunction(Compiler* compiler, CResult& result, const CLoc& loc, const string& name, shared_ptr<CFunction> callerFunction, shared_ptr<TemplateTypeNames> templateTypeNames) {
     auto def = definition.lock();
     auto t = def->funcsByName.find(name);
     if (t != def->funcsByName.end()) {
@@ -217,11 +217,19 @@ shared_ptr<CFunction> CFunction::getCFunction(Compiler* compiler, CResult& resul
             
             // Map template type string list to type list
             for (auto templateTypeName : *templateTypeNames) {
-                auto ctype = getVarType(compiler, result, loc, templateTypeName.first, templateTypeName.second);
-                if (!ctype) {
-                    result.addError(loc, CErrorCode::TemplateUnspecified, "cannot find template type: '%s'", templateTypeName.first.c_str());
-                    return nullptr;
+                shared_ptr<CType> ctype = nullptr;
+                if (callerFunction) {
+                    ctype = callerFunction->getVarType(compiler, result, loc, templateTypeName.first, templateTypeName.second);
                 }
+                
+                if (!ctype) {
+                    auto ctype = getVarType(compiler, result, loc, templateTypeName.first, templateTypeName.second);
+                    if (!ctype) {
+                        result.addError(loc, CErrorCode::TemplateUnspecified, "cannot find template type: '%s'", templateTypeName.first.c_str());
+                        return nullptr;
+                    }
+                }
+                
                 templateTypes.push_back(ctype);
             }
         } else {
