@@ -44,7 +44,7 @@ void NAssignment::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFuncti
             }
         }
         
-        auto cvar = cfunction->getCVar(name);
+        auto cvar = cfunction->getCVar(compiler, result, loc, name);
         if (cvar) {
             if (!isMutable) {
                 result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var");
@@ -139,7 +139,7 @@ Value* NAssignment::compile(Compiler* compiler, CResult& result, shared_ptr<CFun
         cfunction = parentVar->getCFunctionForValue(compiler, result);
     }
     
-    auto cvar = cfunction->getCVar(name);
+    auto cvar = cfunction->getCVar(compiler, result, loc, name);
     if (!cvar) {
         result.addError(loc, CErrorCode::InvalidVariable, "var does not exist '%s'", name.c_str());
         return nullptr;

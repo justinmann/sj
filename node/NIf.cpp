@@ -57,6 +57,9 @@ Value* NIf::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> t
     // If block
     function->getBasicBlockList().push_back(ifBB);
     auto c = condition->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    if (!c) {
+        return nullptr;
+    }
     builder->CreateCondBr(c, ifBB, elseBB);
     builder->SetInsertPoint(ifBB);
     auto ifValue = ifBlock->compile(compiler, result, thisFunction, thisValue, builder, catchBB);

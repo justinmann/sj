@@ -656,11 +656,10 @@ void testInclude() {
                           include "list.sj"
                           
                           a : list!int(1, 1, [1])
-                          a.add(2)
                           a[0] = 3
                           a[0]
                         )DELIM");
-    assert(result->type == RESULT_INT && result->iResult == 1);
+    assert(result->type == RESULT_INT && result->iResult == 3);
 }
                           
 int main(int argc, char **argv) {

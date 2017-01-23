@@ -58,37 +58,12 @@ string NVariable::getName() const {
 }
 
 shared_ptr<CVar> NVariable::getVar(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) const {
-    shared_ptr<CVar> cvar = nullptr;
-    
     auto cfunction = thisFunction;
     if (dotVar) {
         cfunction = dotVar->getCFunctionForValue(compiler, result);
     }
     
-    auto parentFunctions = vector<shared_ptr<CFunction>>();
-    while (cfunction && !cvar) {
-        cvar = cfunction->getCVar(name);
-        if (!cvar) {
-            if (cfunction) {
-                parentFunctions.insert(parentFunctions.begin(), cfunction);
-                cfunction = cfunction->parent.lock();
-            }
-        }
-    }
-    
-    if (cfunction == nullptr) {
-        return nullptr;
-    }
-    
-    if (cfunction != thisFunction && cvar->mode == CVarType::Local) {
-        cvar = cfunction->localVarToThisVar(compiler, static_pointer_cast<CLocalVar>(cvar));
-    }
-    
-    for (auto it : parentFunctions) {
-        cvar = CParentVar::create(it, cvar);
-    }
-    
-    return cvar;
+    return cfunction->getCVar(compiler, result, loc, name);
 }
 
 void NVariable::dump(Compiler* compiler, int level) const {

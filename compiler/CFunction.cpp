@@ -245,7 +245,7 @@ shared_ptr<CFunction> CFunction::getCFunction(Compiler* compiler, CResult& resul
     return nullptr;
 }
 
-shared_ptr<CVar> CFunction::getCVar(const string& name) const {
+shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, CResult& result, const CLoc& loc, const string& name) {
     auto t1 = localVarsByName.find(name);
     if (t1 != localVarsByName.end()) {
         return t1->second;
@@ -254,6 +254,16 @@ shared_ptr<CVar> CFunction::getCVar(const string& name) const {
     auto t2 = thisVarsByName.find(name);
     if (t2 != thisVarsByName.end()) {
         return t2->second.second;
+    }
+    
+    if (!parent.expired()) {
+        auto t3 = parent.lock()->getCVar(compiler, result, loc, name);
+        if (t3) {
+            if (t3->mode == Local) {
+                t3 = parent.lock()->localVarToThisVar(compiler, static_pointer_cast<CLocalVar>(t3));
+            }
+            return CParentVar::create(shared_from_this(), t3);
+        }
     }
     
     return nullptr;
