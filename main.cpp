@@ -660,6 +660,23 @@ void testInclude() {
                           a[0]
                         )DELIM");
     assert(result->type == RESULT_INT && result->iResult == 3);
+
+
+    result = compiler.run(R"DELIM(
+                          class() {
+                              include "list.sj"
+                          }
+                          )DELIM");
+    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::IncludeOnlyInGlobal);
+
+    result = compiler.run(R"DELIM(
+                          include "common.sj"
+
+                          a : list!int(1, 1, [1])
+                          a[0] = 3
+                          a[0]
+                          )DELIM");
+    assert(result->type == RESULT_INT && result->iResult == 3);
 }
                           
 int main(int argc, char **argv) {

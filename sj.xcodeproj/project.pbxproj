@@ -53,6 +53,7 @@
 		9C908F0B1E348830005E253C /* list.sj in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9C908F0A1E348549005E253C /* list.sj */; };
 		9C908F0E1E348C54005E253C /* NOr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C908F0C1E348C54005E253C /* NOr.cpp */; };
 		9C908F111E348D5A005E253C /* NAnd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C908F0F1E348D5A005E253C /* NAnd.cpp */; };
+		9C908F131E35962A005E253C /* common.sj in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9C908F121E35960E005E253C /* common.sj */; };
 		9CB7416D1E25EB310041A8A6 /* NMathAssignment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CB7416B1E25EB310041A8A6 /* NMathAssignment.cpp */; };
 		9CF16BF71E19A85F006E9CB8 /* Compiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16BF51E19A85F006E9CB8 /* Compiler.cpp */; };
 		9CF16C151E19A888006E9CB8 /* NAssignment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16BF91E19A888006E9CB8 /* NAssignment.cpp */; };
@@ -82,6 +83,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
+				9C908F131E35962A005E253C /* common.sj in CopyFiles */,
 				9C908F0B1E348830005E253C /* list.sj in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -149,6 +151,7 @@
 		9C908F0D1E348C54005E253C /* NOr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NOr.h; path = node/NOr.h; sourceTree = "<group>"; };
 		9C908F0F1E348D5A005E253C /* NAnd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NAnd.cpp; path = node/NAnd.cpp; sourceTree = "<group>"; };
 		9C908F101E348D5A005E253C /* NAnd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NAnd.h; path = node/NAnd.h; sourceTree = "<group>"; };
+		9C908F121E35960E005E253C /* common.sj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = common.sj; path = include/common.sj; sourceTree = "<group>"; };
 		9CB7416B1E25EB310041A8A6 /* NMathAssignment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NMathAssignment.cpp; path = node/NMathAssignment.cpp; sourceTree = "<group>"; };
 		9CB7416C1E25EB310041A8A6 /* NMathAssignment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NMathAssignment.h; path = node/NMathAssignment.h; sourceTree = "<group>"; };
 		9CF16BF51E19A85F006E9CB8 /* Compiler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Compiler.cpp; path = compiler/Compiler.cpp; sourceTree = "<group>"; };
@@ -299,6 +302,7 @@
 		9C908F091E34853E005E253C /* include */ = {
 			isa = PBXGroup;
 			children = (
+				9C908F121E35960E005E253C /* common.sj */,
 				9C908F0A1E348549005E253C /* list.sj */,
 			);
 			name = include;

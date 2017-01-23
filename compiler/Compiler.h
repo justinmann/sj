@@ -77,6 +77,7 @@ enum CErrorCode {
     Internal,
     Parser,
     TypeMismatch,
+    IncludeOnlyInGlobal,
     InvalidType,
     InvalidArgumentCount,
     InvalidCharacter,

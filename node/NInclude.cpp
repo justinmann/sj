@@ -5,6 +5,10 @@ NodeType NInclude::getNodeType() const {
 }
 
 void NInclude::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
+    if (thisFunction->name != "global") {
+        result.addError(loc, CErrorCode::IncludeOnlyInGlobal, "can only use include in the global scope");
+    }
+    
     compiler->includeFile(result, fileName);
 }
 
