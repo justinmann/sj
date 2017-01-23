@@ -633,6 +633,8 @@ void testArray() {
     assert(result->type == RESULT_INT && result->iResult == 1);
     
     result = compiler.run(R"DELIM(
+        include "list.sj"
+        
         a : [1, 2, 3]
         a[0] = 2		// find method 'set'
         a[0]			// find method 'get'
@@ -640,6 +642,8 @@ void testArray() {
     assert(result->type == RESULT_INT && result->iResult == 2);
     
     result = compiler.run(R"DELIM(
+        include "list.sj"
+        
         class(x : 'int) { this }
         a : [class(1), class(2), class(3)]
         c : a[0]
@@ -655,7 +659,7 @@ void testInclude() {
     result = compiler.run(R"DELIM(
                           include "list.sj"
                           
-                          a : list!int(1, 1, [1])
+                          a : [1]
                           a[0] = 3
                           a[0]
                         )DELIM");
@@ -672,7 +676,7 @@ void testInclude() {
     result = compiler.run(R"DELIM(
                           include "common.sj"
 
-                          a : list!int(1, 1, [1])
+                          a : [1]
                           a[0] = 3
                           a[0]
                           )DELIM");

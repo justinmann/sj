@@ -213,7 +213,7 @@ assign_type 		: TEQUAL										{ $$ = true; }
 					| TCOLON										{ $$ = false; }
 					;
 
-array				: TLBRACKET array_args TRBRACKET				{ $$ = new NArray(LOC, shared_ptr<NodeList>($2)); }
+array				: TLBRACKET array_args TRBRACKET				{ $$ = new NList(LOC, shared_ptr<NodeList>($2)); }
 					;
 
 array_args 			: expr											{ $$ = new NodeList(); $$->push_back(shared_ptr<NBase>($1)); }

@@ -1,6 +1,8 @@
 #include "Node.h"
 
 shared_ptr<CCallVar> CCallVar::create(CLoc loc_, const string& name_, shared_ptr<NodeList> arguments_, shared_ptr<CFunction> thisFunction_, weak_ptr<CVar> dotVar_, shared_ptr<CFunction> callee_) {
+    assert(callee_);
+
     auto c = make_shared<CCallVar>();
     c->name = name_;
     c->mode = Local;
@@ -179,6 +181,10 @@ shared_ptr<CFunction> NCall::getCFunction(Compiler* compiler, CResult& result, s
 
 shared_ptr<CVar> NCall::getVar(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) const {
     auto callee = getCFunction(compiler, result, thisFunction, dotVar);
+    if (!callee) {
+        return nullptr;
+    }
+    
     return CCallVar::create(loc, name, arguments, thisFunction, dotVar, callee);
 }
 

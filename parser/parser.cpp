@@ -2006,7 +2006,7 @@ yyreduce:
 
   case 87:
 
-    { (yyval.node) = new NArray(LOC, shared_ptr<NodeList>((yyvsp[-1].exprvec))); }
+    { (yyval.node) = new NList(LOC, shared_ptr<NodeList>((yyvsp[-1].exprvec))); }
 
     break;
 

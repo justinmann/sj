@@ -63,6 +63,38 @@ void NArray::dump(Compiler* compiler, int level) const {
     // dumpf(level, "value: %s", value.c_str());
 }
 
+NList::NList(CLoc loc, shared_ptr<NodeList> elements) : NBase(loc) {
+    array = make_shared<NArray>(loc, elements);
+}
+
+NodeType NList::getNodeType() const {
+    return NodeType_List;
+}
+
+void NList::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
+    array->define(compiler, result, thisFunction);
+}
+
+void NList::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+    array->fixVar(compiler, result, thisFunction);
+    auto size = make_shared<NInteger>(loc, array->elements->size());
+    createCall = make_shared<NCall>(loc, "list", make_shared<TemplateTypeNames>(array->itemType->name), make_shared<NodeList>(size, size, array));
+}
+
+shared_ptr<CType> NList::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
+    assert(compiler->state >= CompilerState::FixVar);
+    return createCall->getReturnType(compiler, result, thisFunction);
+}
+
+Value* NList::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
+    assert(compiler->state == CompilerState::Compile);
+    return createCall->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+}
+
+void NList::dump(Compiler* compiler, int level) const {
+    // dumpf(level, "value: %s", value.c_str());
+}
+
 shared_ptr<CType> NArrayGetFunction::getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
     return thisFunction->getVarType(compiler, result, CLoc::undefined, "item", nullptr);
 }

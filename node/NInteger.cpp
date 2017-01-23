@@ -13,23 +13,26 @@ Value* NInteger::compile(Compiler* compiler, CResult& result, shared_ptr<CFuncti
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
-    char* e;
-    errno = 0;
-    auto t = strtoll(value.c_str(), &e, 10);
-    
-    if (ERANGE == errno) {
-        result.addError(loc, CErrorCode::InvalidNumber, "not a valid int '%s'", value.c_str());
-        return nullptr;
-    }
+    if (strValue.size() > 0) {
+        char* e;
+        errno = 0;
+        auto v = strtoll(strValue.c_str(), &e, 10);
+        
+        if (ERANGE == errno) {
+            result.addError(loc, CErrorCode::InvalidNumber, "not a valid int '%s'", strValue.c_str());
+            return nullptr;
+        }
 
-    if (*e != '\0') {
-        result.addError(loc, CErrorCode::InvalidNumber, "not a valid int '%s'", value.c_str());
-        return nullptr;
+        if (*e != '\0') {
+            result.addError(loc, CErrorCode::InvalidNumber, "not a valid int '%s'", strValue.c_str());
+            return nullptr;
+        }
+        return ConstantInt::get(compiler->context, APInt(64, v));
+    } else {
+        return ConstantInt::get(compiler->context, APInt(64, value));
     }
-    
-    return ConstantInt::get(compiler->context, APInt(64, t));
 }
 
 void NInteger::dump(Compiler* compiler, int level) const {
-    dumpf(level, "value: %s", value.c_str());
+    dumpf(level, "value: %s", strValue.c_str());
 }

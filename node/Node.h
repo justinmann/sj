@@ -43,6 +43,7 @@ enum NodeType {
     NodeType_If,
     NodeType_Include,
     NodeType_Integer,
+    NodeType_List,
     NodeType_Math,
     NodeType_MathAssignment,
     NodeType_Not,

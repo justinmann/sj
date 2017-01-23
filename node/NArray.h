@@ -30,6 +30,20 @@ public:
     virtual void dump(Compiler* compiler, int level) const;
 };
 
+class NList : public NBase {
+public:
+    shared_ptr<NCall> createCall;
+    shared_ptr<NArray> array;
+    
+    NList(CLoc loc, shared_ptr<NodeList> elements);
+    virtual NodeType getNodeType() const;
+    virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction);
+    virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
+    virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const;
+    virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const;
+    virtual void dump(Compiler* compiler, int level) const;
+};
+
 class NArrayGetFunction : public NFunction {
 public:
     NArrayGetFunction() : NFunction(CLoc::undefined, FT_Private, "item", "get", nullptr, make_shared<NodeList>(

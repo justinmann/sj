@@ -11,9 +11,11 @@
 
 class NInteger : public NBase {
 public:
-    string value;
+    string strValue;
+    int64_t value;
     
-    NInteger(CLoc loc, const char* value) : value(value), NBase(loc) { }
+    NInteger(CLoc loc, const char* value) : strValue(value), NBase(loc) { }
+    NInteger(CLoc loc, const int64_t value) : value(value), NBase(loc) { }
     virtual NodeType getNodeType() const;
     virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) { }
     virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) { }
