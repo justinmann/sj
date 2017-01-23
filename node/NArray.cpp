@@ -135,6 +135,10 @@ shared_ptr<CType> NArrayCreateFunction::getBlockType(Compiler* compiler, CResult
 }
 
 Value* NArrayCreateFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
+    if (parameters.size() == 0) {
+        return nullptr;
+    }
+    
     auto sizeValue = parameters[0]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
     auto itemType = callee->templateTypes[0]->llvmRefType(compiler, result);
     

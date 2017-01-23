@@ -363,6 +363,13 @@ Value* CFunction::getParentPointer(Compiler* compiler, CResult& result, IRBuilde
     return nullptr;
 }
 
+Value* CFunction::getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    auto parameters = vector<shared_ptr<NBase>>();
+    for (auto defaultAssignment : node->assignments) {
+        parameters.push_back(defaultAssignment->rightSide);
+    }
+    return node->call(compiler, result, thisFunction, thisValue, shared_from_this(), nullptr, builder, catchBB, parameters);
+}
 
 shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parent, CFunctionType type, const string& name, shared_ptr<NFunction> node) {
     auto c = make_shared<CFunctionDefinition>();

@@ -109,10 +109,11 @@ Compiler::Compiler() {
     TheJIT = llvm::make_unique<KaleidoscopeJIT>();
     
     // Initialize value types
-    typeInt = make_shared<CType>("int", Type::getInt64Ty(context));
-    typeBool = make_shared<CType>("bool", Type::getInt1Ty(context));
-    typeFloat = make_shared<CType>("float", Type::getDoubleTy(context));
-    typeVoid = make_shared<CType>("void", Type::getVoidTy(context));
+    typeInt = make_shared<CType>("int", Type::getInt64Ty(context), ConstantInt::get(context, APInt(64, 0)));
+    typeBool = make_shared<CType>("bool", Type::getInt1Ty(context), ConstantInt::get(context, APInt(1, 0)));
+    typeFloat = make_shared<CType>("float", Type::getDoubleTy(context), ConstantFP::get(context, APFloat(0.0)));
+    typeChar = make_shared<CType>("char", Type::getInt8Ty(context), ConstantInt::get(context, APInt(8, 0)));
+    typeVoid = make_shared<CType>("void", Type::getVoidTy(context), nullptr);
 }
 
 Compiler::~Compiler() {
@@ -216,7 +217,7 @@ public:
     }
     
     virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
-        return compiler->getDefaultValue(inner->getReturnType(compiler, result, thisFunction));
+        return inner->getReturnType(compiler, result, thisFunction)->getDefaultValue(compiler, result, thisFunction, thisValue, builder, catchBB);
     }
     
     virtual void dump(Compiler* compiler, int level) const {
@@ -346,6 +347,7 @@ shared_ptr<CResult> Compiler::run(const string& code) {
 
         compilerResult->type = RESULT_VOID;
     } else {
+        printf("Unknown return type: %s\n", Type_print(returnType).c_str());
         assert(false);
     }
     
@@ -366,6 +368,8 @@ shared_ptr<CType> Compiler::getType(const string& name) const {
         return typeInt;
     } else if (name == "bool") {
         return typeBool;
+    } else if (name == "char") {
+        return typeChar;
     } else if (name == "float") {
         return typeFloat;
     } else if (name == "void") {
@@ -375,20 +379,7 @@ shared_ptr<CType> Compiler::getType(const string& name) const {
     }
 }
 
-Value* Compiler::getDefaultValue(shared_ptr<CType> type) {
-    if (type == typeInt) {
-        return ConstantInt::get(context, APInt(64, 0));
-    } else if (type == typeBool) {
-        return ConstantInt::get(context, APInt(1, 0));
-    } else if (type == typeFloat) {
-        return ConstantFP::get(context, APFloat(0.0));
-    } else if (type == typeVoid) {
-        return nullptr;
-    } else {
-        assert(false);
-        return nullptr;
-    }
-}
+
 
 void Compiler::emitLocation(const NBase *node) {
 #ifdef DWARF_ENABLED

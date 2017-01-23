@@ -15,7 +15,7 @@ class CResult;
 
 class CType {
 public:
-    CType(const char* name, Type* llvmType);
+    CType(const char* name, Type* llvmType, Value* value);
     CType(const char* name, weak_ptr<CFunction> parent);
 #ifdef DWARF_ENABLED
     DIType* getDIType();
@@ -25,10 +25,12 @@ public:
     weak_ptr<CFunction> parent;
     virtual Type* llvmAllocType(Compiler* compiler, CResult& result);
     virtual Type* llvmRefType(Compiler* compiler, CResult& result);
-    
+    virtual Value* getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB);
+
 private:
     Type* _llvmAllocType;
     Type* _llvmRefType;
+    Value* _value;
 };
 
 #endif /* CType_h */

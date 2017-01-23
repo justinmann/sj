@@ -224,7 +224,7 @@ void NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
     
     BasicBlock* catchBB = nullptr;
     if (catchBlock) {
-        catchBB = BasicBlock::Create(compiler->context);
+        catchBB = BasicBlock::Create(compiler->context, "catch", function);
         IRBuilder<> catchBuilder(catchBB);
         
         llvm::Type *caughtResultFieldTypes[] = {
@@ -276,6 +276,7 @@ void NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
     
 error:
     if (catchBB) {
+        function->getBasicBlockList().remove(catchBB);
         function->getBasicBlockList().push_back(catchBB);
     }
     

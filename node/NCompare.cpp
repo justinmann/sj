@@ -35,7 +35,7 @@ Value* NCompare::compile(Compiler* compiler, CResult& result, shared_ptr<CFuncti
         return nullptr;
     }
     
-    if (L->getType()->isIntegerTy() && L->getType()->getScalarSizeInBits() == 64) {
+    if ((L->getType()->isIntegerTy(64) || L->getType()->isIntegerTy(8)) && L->getType()->getScalarSizeInBits() == R->getType()->getScalarSizeInBits()) {
         switch (op) {
             case NCompareOp::EQ:
                 return builder->CreateICmpEQ(L, R, "eqtmp");

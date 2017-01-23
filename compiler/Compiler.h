@@ -70,7 +70,8 @@ enum CResultType {
     RESULT_VOID,
     RESULT_INT,
     RESULT_BOOL,
-    RESULT_FLOAT
+    RESULT_FLOAT,
+    RESULT_STR
 };
 
 enum CErrorCode {
@@ -122,6 +123,7 @@ public:
         bool bResult;
         double fResult;
     };
+    string strResult;
     
     vector<CError> errors;
     vector<CError> warnings;
@@ -168,7 +170,6 @@ public:
     
     void emitLocation(const NBase *node);
     shared_ptr<CType> getType(const string& name) const;
-    Value* getDefaultValue(shared_ptr<CType> type);
     void includeFile(CResult& result, const string& fileName);
 
     // llvm vars
@@ -187,6 +188,7 @@ public:
     shared_ptr<CType> typeInt;
     shared_ptr<CType> typeFloat;
     shared_ptr<CType> typeBool;
+    shared_ptr<CType> typeChar;
     shared_ptr<CType> typeVoid;
     
 private:

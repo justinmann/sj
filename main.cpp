@@ -682,10 +682,26 @@ void testInclude() {
                           )DELIM");
     assert(result->type == RESULT_INT && result->iResult == 3);
 }
+
+void testString() {
+    shared_ptr<CResult> result;
+    Compiler compiler;
+
+    result = compiler.run(R"DELIM(
+                        include "list.sj"
+                          
+                          a : "hello"
+                          c : a[0]
+                          c == 'h'
+                        )DELIM");
+    assert(result->type == RESULT_BOOL && result->bResult);
+}
                           
 int main(int argc, char **argv) {
     shared_ptr<CResult> result;
     Compiler compiler;
+    
+    testString();
 
     testMath();
     testComparison();

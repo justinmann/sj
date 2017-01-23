@@ -81,7 +81,7 @@ Value* NIf::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> t
             return nullptr;
         }
     } else if (returnType != compiler->typeVoid) {
-        elseValue = compiler->getDefaultValue(returnType);
+        elseValue = returnType->getDefaultValue(compiler, result, thisFunction, thisValue, builder, catchBB);
         if (!elseValue) {
             result.errors.push_back(CError(loc, CErrorCode::NoDefaultValue, "type does not have a default value"));
             return nullptr;

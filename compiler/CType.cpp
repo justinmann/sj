@@ -8,10 +8,10 @@
 
 #include "Node.h"
 
-CType::CType(const char* name, Type* llvmAllocType) : name(name), _llvmAllocType(llvmAllocType), _llvmRefType(llvmAllocType) {
+CType::CType(const char* name, Type* llvmAllocType, Value* value) : name(name), _llvmAllocType(llvmAllocType), _llvmRefType(llvmAllocType), _value(value) {
 }
 
-CType::CType(const char* name, weak_ptr<CFunction> parent) : name(name), parent(parent), _llvmAllocType(nullptr), _llvmRefType(nullptr) {
+CType::CType(const char* name, weak_ptr<CFunction> parent) : name(name), parent(parent), _llvmAllocType(nullptr), _llvmRefType(nullptr), _value(nullptr) {
 }
 
 Type* CType::llvmAllocType(Compiler* compiler, CResult& result) {
@@ -26,4 +26,12 @@ Type* CType::llvmRefType(Compiler* compiler, CResult& result) {
         _llvmRefType = llvmAllocType(compiler, result)->getPointerTo();
     }
     return _llvmRefType;
+}
+
+Value* CType::getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    if (parent.expired()) {
+        return _value;
+    } else {
+        return parent.lock()->getDefaultValue(compiler, result, thisFunction, thisValue, builder, catchBB);
+    }
 }

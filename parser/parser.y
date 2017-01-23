@@ -55,7 +55,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 }
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
-%token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID TSTRING
+%token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID TSTRING TCHAR
 %token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR
 
 /* Non Terminal symbols. Types refer to union decl above */
@@ -199,6 +199,8 @@ const 				: TMINUS TINTEGER 								{ $2->insert(0, "-"); $$ = new NInteger(LOC,
 					| TTRUE											{ $$ = new NBool(LOC, true); }
 					| TFALSE										{ $$ = new NBool(LOC, false); }
 					| TVOID											{ $$ = new NVoid(LOC); }
+					| TSTRING										{ $$ = new NString(LOC, $1->c_str()); delete $1; }
+					| TCHAR											{ $$ = new NChar(LOC, $1->c_str()[0]); delete $1; }
 					;
 										
 assign				: TIDENTIFIER assign_type stmt					{ $$ = new NAssignment(LOC, nullptr, "", $1->c_str(), shared_ptr<NBase>($3), $2); }
