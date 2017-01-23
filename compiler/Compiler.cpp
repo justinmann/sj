@@ -287,10 +287,10 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     state = CompilerState::Compile;
     anonFunction->compile(this, *compilerResult, currentFunction, nullptr, nullptr, nullptr);
     auto function = cfunction->getFunction(this, *compilerResult);
+    auto returnType = cfunction->getReturnType(this, *compilerResult);
     if (!function) {
         return compilerResult;
     }
-    auto returnType = function->getReturnType();
     auto thisType = cfunction->getThisType(this, *compilerResult);
 
 #ifdef MODULE_OUTPUT
@@ -323,31 +323,44 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     // Get the symbol's address and cast it to the right type (takes no
     // arguments, returns a double) so we can call it as a native function.
     hasException = false;
-    if (returnType->isIntegerTy() && returnType->getScalarSizeInBits() == 64) {
+    if (returnType == typeInt) {
         int64_t (*FP)(void*) = (int64_t (*)(void*))(intptr_t)ExprSymbol.getAddress();
         int64_t result = FP(thisPtr);
         
         compilerResult->type = RESULT_INT;
         compilerResult->iResult = result;
-    } else if (returnType->isIntegerTy() && returnType->getScalarSizeInBits() == 1) {
+    } else if (returnType == typeBool) {
         bool (*FP)(void*) = (bool (*)(void*))(intptr_t)ExprSymbol.getAddress();
         bool result = FP(thisPtr);
         
         compilerResult->type = RESULT_BOOL;
         compilerResult->bResult = result;
-    } else if (returnType->isDoubleTy()) {
+    } else if (returnType == typeFloat) {
         double (*FP)(void*) = (double (*)(void*))(intptr_t)ExprSymbol.getAddress();
         double result = FP(thisPtr);
 
         compilerResult->type = RESULT_FLOAT;
         compilerResult->fResult = result;
-    } else if (returnType->isVoidTy()) {
+    } else if (returnType == typeVoid) {
         void (*FP)(void*) = (void (*)(void*))(intptr_t)ExprSymbol.getAddress();
         FP(thisPtr);
 
         compilerResult->type = RESULT_VOID;
+    } else if (returnType->name == "list_char") {
+        // TODO: this will not work, until struct can be heap alloced
+        struct list_char {
+            int64_t parent;
+            int64_t size;
+            int64_t count;
+            char* str;
+        };
+        
+        list_char* (*FP)(void*) = (list_char* (*)(void*))(intptr_t)ExprSymbol.getAddress();
+        list_char* result = FP(thisPtr);
+
+        assert(false);
     } else {
-        printf("Unknown return type: %s\n", Type_print(returnType).c_str());
+        printf("Unknown return type: %s\n", returnType->name.c_str());
         assert(false);
     }
     

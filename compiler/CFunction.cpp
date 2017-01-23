@@ -81,6 +81,10 @@ shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, con
     c->_structType = nullptr;
     c->function = nullptr;
     
+    for (auto it : templateTypes_) {
+        c->name = c->name + "_" + it->name;
+    }
+    
     if (c->node) {
         if (node_->templateTypeNames) {
             assert(node_->templateTypeNames->size() == templateTypes_.size());
@@ -132,7 +136,7 @@ shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result) {
     }
 
     if (!thisType && node != nullptr) {
-        thisType = make_shared<CType>(node->name.c_str(), shared_from_this());
+        thisType = make_shared<CType>(name.c_str(), shared_from_this());
 
     }
  

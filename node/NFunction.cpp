@@ -113,7 +113,7 @@ shared_ptr<CType> NFunction::getReturnType(Compiler* compiler, CResult& result, 
 
 shared_ptr<CType> NFunction::getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
     assert(compiler->state >= CompilerState::FixVar);
-    assert(thisFunction->name == name);
+    assert(thisFunction->node.get() == this);
     if (invalid.size() > 0) {
         result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
         return nullptr;
@@ -146,7 +146,7 @@ Value* NFunction::compile(Compiler* compiler, CResult& result, shared_ptr<CFunct
 
 Function* NFunction::compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
     assert(compiler->state == CompilerState::Compile);
-    assert(thisFunction->name == name);
+    assert(thisFunction->node.get() == this);
 
     auto returnType = getBlockType(compiler, result, thisFunction);
     if (!returnType) {
@@ -209,7 +209,7 @@ Function* NFunction::compileDefinition(Compiler* compiler, CResult& result, shar
 
 void NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Function* function) const {
     assert(compiler->state == CompilerState::Compile);
-    assert(thisFunction->name == name);
+    assert(thisFunction->node.get() == this);
     
     if (!block) {
         return;
