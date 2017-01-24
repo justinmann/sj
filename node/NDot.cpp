@@ -43,10 +43,6 @@ void NDot::defineImpl(Compiler *compiler, CResult &result, shared_ptr<CFunctionD
     right->define(compiler, result, thisFunction);
 }
 
-string NDot::getName() const {
-    return left->getName() + "." + right->getName();
-}
-
 shared_ptr<CVar> NDot::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) {
     auto leftVar = left->getVar(compiler, result, thisFunction, dotVar);
     if (!leftVar) {

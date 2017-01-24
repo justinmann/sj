@@ -117,10 +117,6 @@ void NCall::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction
     }
 }
 
-string NCall::getName() const {
-    return name + "()";
-}
-
 shared_ptr<CFunction> NCall::getCFunction(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) {
     assert(compiler->state >= CompilerState::FixVar);
     

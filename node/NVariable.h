@@ -17,8 +17,6 @@ enum ValueType {
 class NVariableBase : public NBase {
 public:
     NVariableBase(NodeType nodeType, CLoc loc) : NBase(nodeType, loc) { }
-    virtual string getName() const = 0;
-
     virtual shared_ptr<CVar> getVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar);
 
 protected:
@@ -61,7 +59,6 @@ public:
     string name;
     
     NVariable(CLoc loc, const char* name);
-    virtual string getName() const;
     virtual void dump(Compiler* compiler, int level) const;
     
 protected:

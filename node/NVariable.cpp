@@ -53,10 +53,6 @@ string CParentVar::fullName() {
 
 NVariable::NVariable(CLoc loc, const char* name) : name(name), NVariableBase(NodeType_Variable, loc) { }
 
-string NVariable::getName() const {
-    return name;
-}
-
 shared_ptr<CVar> NVariable::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) {
     auto cfunction = thisFunction;
     if (dotVar) {

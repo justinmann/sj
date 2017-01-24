@@ -2,10 +2,6 @@
 
 NThis::NThis(CLoc loc) : NVariableBase(NodeType_This, loc) { }
 
-string NThis::getName() const {
-    return "this";
-}
-
 shared_ptr<CVar> NThis::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) {
     if (dotVar) {
         result.addError(loc, CErrorCode::InvalidVariable, "this must be the first var in a dot chain");

@@ -35,7 +35,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
             auto t = var->getVar(compiler, result, thisFunction, nullptr);
             cfunction = t->getCFunctionForValue(compiler, result);
             if (!cfunction) {
-                result.addError(loc, CErrorCode::InvalidVariable, "var must be a function: '%s'", var->getName().c_str());
+                result.addError(loc, CErrorCode::InvalidVariable, "var must be a function: '%s'", t->fullName().c_str());
                 return nullptr;
             }
         }
@@ -66,10 +66,9 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
     }
     
     if (rightSide) {
-        rightSide->getVar(compiler, result, thisFunction);
+        return rightSide->getVar(compiler, result, thisFunction);
     }
     
-    // TODO: incompatible with heap allocation
     return nullptr;
 }
 

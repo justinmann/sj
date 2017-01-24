@@ -1,36 +1,20 @@
 #include "Node.h"
 
-void NIf::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
-    assert(compiler->state == CompilerState::Define);
-    condition->define(compiler, result, thisFunction);
-
-    if (elseBlock) {
-        elseBlock->define(compiler, result, thisFunction);
-    }
-    
-    if (ifBlock) {
-        ifBlock->define(compiler, result, thisFunction);
-    }
+shared_ptr<CIfElseVar> CIfElseVar::create(const CLoc& loc_, shared_ptr<CFunction> thisFunction_, shared_ptr<NBase> condition_, shared_ptr<NBase> ifBlock_, shared_ptr<NBase> elseBlock_) {
+    auto c = make_shared<CIfElseVar>();
+    c->name = "";
+    c->mode = Private;
+    c->isMutable = true;
+    c->nassignment = nullptr;
+    c->loc = loc_;
+    c->thisFunction = thisFunction_;
+    c->condition = condition_;
+    c->ifBlock = ifBlock_;
+    c->elseBlock = elseBlock_;
+    return c;
 }
 
-shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
-    assert(compiler->state == CompilerState::FixVar);
-    condition->getVar(compiler, result, thisFunction);
-    
-    if (elseBlock) {
-        elseBlock->getVar(compiler, result, thisFunction);
-    }
-
-    if (ifBlock) {
-        ifBlock->getVar(compiler, result, thisFunction);
-    }
-    
-    // TODO: This needs to return a CVar so it can detect needed heap allocation
-    return nullptr;
-}
-
-shared_ptr<CType> NIf::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
-    assert(compiler->state >= CompilerState::FixVar);
+shared_ptr<CType> CIfElseVar::getType(Compiler* compiler, CResult& result) {
     if (elseBlock) {
         return elseBlock->getType(compiler, result, thisFunction);
     }
@@ -38,15 +22,13 @@ shared_ptr<CType> NIf::getTypeImpl(Compiler* compiler, CResult& result, shared_p
     if (ifBlock) {
         return ifBlock->getType(compiler, result, thisFunction);
     }
-
+    
     return nullptr;
 }
 
-Value* NIf::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* CIfElseVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(this);
-    
-    shared_ptr<CType> returnType = getType(compiler, result, thisFunction);
+    shared_ptr<CType> returnType = getType(compiler, result);
     
     Function *function = builder->GetInsertBlock()->getParent();
     auto ifBB = BasicBlock::Create(compiler->context);
@@ -106,6 +88,43 @@ Value* NIf::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctio
     phiNode->addIncoming(ifValue, ifEndBB);
     phiNode->addIncoming(elseValue, elseEndBB);
     return phiNode;
+}
+
+Value* CIfElseVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    assert(false);
+    return nullptr;
+}
+
+string CIfElseVar::fullName() {
+    return "";
+}
+
+void NIf::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
+    assert(compiler->state == CompilerState::Define);
+    condition->define(compiler, result, thisFunction);
+
+    if (elseBlock) {
+        elseBlock->define(compiler, result, thisFunction);
+    }
+    
+    if (ifBlock) {
+        ifBlock->define(compiler, result, thisFunction);
+    }
+}
+
+shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) {
+    assert(compiler->state == CompilerState::FixVar);
+    condition->getVar(compiler, result, thisFunction);
+    
+    if (elseBlock) {
+        elseBlock->getVar(compiler, result, thisFunction);
+    }
+    
+    if (ifBlock) {
+        ifBlock->getVar(compiler, result, thisFunction);
+    }
+    
+    return CIfElseVar::create(loc, thisFunction, condition, ifBlock, elseBlock);
 }
 
 void NIf::dump(Compiler* compiler, int level) const {
