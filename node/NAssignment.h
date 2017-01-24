@@ -15,11 +15,6 @@
 class NAssignment : public NBase {
 public:
     NAssignment(CLoc loc, shared_ptr<NVariableBase> var, const char* typeName, const char* name, shared_ptr<NBase> rightSide, bool isMutable);
-    virtual NodeType getNodeType() const;
-    virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction);
-    virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
-    virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const;
-    virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const;
     virtual void dump(Compiler* compiler, int level) const;
     
     shared_ptr<NVariableBase> var;
@@ -29,6 +24,12 @@ public:
     shared_ptr<NBase> rightSide;
     shared_ptr<NFunction> nfunction;
     bool isMutable;
+
+protected:
+    virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction);
+    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
+    virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
+    virtual Value* compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB);
 
 private:
     shared_ptr<NAssignment> shared_from_this();

@@ -1,32 +1,30 @@
 #include "Node.h"
 
-NodeType NBlock::getNodeType() const {
-    return NodeType_Block;
-}
-
-void NBlock::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
+void NBlock::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     for (auto it : statements) {
         it->define(compiler, result, thisFunction);
     }
 }
 
-void NBlock::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CVar> NBlock::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::FixVar);
+    shared_ptr<CVar> lastVar = nullptr;
     for (auto it : statements) {
-        it->fixVar(compiler, result, thisFunction);
+        lastVar = it->getVar(compiler, result, thisFunction);
     }
+    return lastVar;
 }
 
-shared_ptr<CType> NBlock::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
+shared_ptr<CType> NBlock::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state >= CompilerState::FixVar);
     if (statements.size() == 0) {
         return compiler->typeVoid;
     }
-    return statements.back()->getReturnType(compiler, result, thisFunction);
+    return statements.back()->getType(compiler, result, thisFunction);
 }
 
-Value* NBlock::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
+Value* NBlock::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     Value *last = nullptr;
     for (auto it : statements) {

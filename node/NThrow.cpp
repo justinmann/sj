@@ -1,23 +1,20 @@
 #include "Node.h"
 
-NodeType NThrow::getNodeType() const {
-    return NodeType_Throw;
-}
-
-void NThrow::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
+void NThrow::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     node->define(compiler, result, thisFunction);
 }
 
-void NThrow::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
-    node->fixVar(compiler, result, thisFunction);
+shared_ptr<CVar> NThrow::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+    node->getVar(compiler, result, thisFunction);
+    return nullptr;
 }
 
-shared_ptr<CType> NThrow::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
+shared_ptr<CType> NThrow::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state >= CompilerState::FixVar);
     return compiler->typeVoid;
 }
 
-Value* NThrow::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
+Value* NThrow::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     
     auto value = node->compile(compiler, result, thisFunction, thisValue, builder, catchBB);

@@ -1,27 +1,24 @@
 #include "Node.h"
 
-NodeType NMath::getNodeType() const {
-    return NodeType_Math;
-}
-
-void NMath::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
+void NMath::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     leftSide->define(compiler, result, thisFunction);
     rightSide->define(compiler, result, thisFunction);
 }
 
-void NMath::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CVar> NMath::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::FixVar);
-    leftSide->fixVar(compiler, result, thisFunction);
-    rightSide->fixVar(compiler, result, thisFunction);
+    leftSide->getVar(compiler, result, thisFunction);
+    rightSide->getVar(compiler, result, thisFunction);
+    return nullptr;
 }
 
-shared_ptr<CType> NMath::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
+shared_ptr<CType> NMath::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state >= CompilerState::FixVar);
-    return leftSide->getReturnType(compiler, result, thisFunction);
+    return leftSide->getType(compiler, result, thisFunction);
 }
 
-Value* NMath::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
+Value* NMath::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     

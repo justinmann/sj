@@ -16,24 +16,32 @@ enum ValueType {
 
 class NVariableBase : public NBase {
 public:
-    NVariableBase(CLoc loc) : NBase(loc) { }
-    
-    virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
-        fixVar(compiler, result, thisFunction, nullptr);
+    NVariableBase(NodeType nodeType, CLoc loc) : NBase(nodeType, loc) { }
+    virtual string getName() const = 0;
+
+    virtual shared_ptr<CVar> getVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar);
+
+protected:
+    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+        return getVarImpl(compiler, result, thisFunction, nullptr);
     }
-    virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
+    
+    virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
         auto var = getVar(compiler, result, thisFunction, nullptr);
+        if (!var) {
+            return nullptr;
+        }
         return var->getType(compiler, result);
     }
     
-    virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
+    virtual Value* compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
         auto var = getVar(compiler, result, thisFunction, nullptr);
-        return var->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB);
+        auto value = var->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB);
+        // assert(value);
+        return value;
     }
     
-    virtual string getName() const = 0;
-    virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) const = 0;
-    virtual shared_ptr<CVar> getVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) const = 0;
+    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) = 0;
 };
 
 class CParentVar : public CVar {
@@ -54,11 +62,11 @@ public:
     
     NVariable(CLoc loc, const char* name);
     virtual string getName() const;
-    virtual NodeType getNodeType() const;
-    virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) { }
-    virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) const;
-    virtual shared_ptr<CVar> getVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) const;
     virtual void dump(Compiler* compiler, int level) const;
+    
+protected:
+    virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) { }
+    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar);
 };
 
 #endif /* NVariable_h */

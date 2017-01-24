@@ -1,15 +1,11 @@
 #include "Node.h"
 
-NodeType NBool::getNodeType() const {
-    return NodeType_Bool;
-}
-
-shared_ptr<CType> NBool::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
+shared_ptr<CType> NBool::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state >= CompilerState::FixVar);
     return compiler->typeBool;
 }
 
-Value* NBool::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
+Value* NBool::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     return ConstantInt::get(compiler->context, APInt(1, value));

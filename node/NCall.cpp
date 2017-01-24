@@ -34,7 +34,7 @@ Value* CCallVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisVa
     auto argIndex = 0;
     auto hasSetByName = false;
     for (auto it : *arguments) {
-        if (it->getNodeType() == NodeType_Assignment) {
+        if (it->nodeType == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
             assert(parameterAssignment->inFunctionDeclaration);
             auto index = callee->getThisIndex(parameterAssignment->name);
@@ -92,12 +92,12 @@ string CCallVar::fullName() {
     return name + "()";
 }
 
-NCall::NCall(CLoc loc, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, shared_ptr<NodeList> arguments) : name(name), templateTypeNames(templateTypeNames), arguments(arguments), NVariableBase(loc) {
+NCall::NCall(CLoc loc, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, shared_ptr<NodeList> arguments) : name(name), templateTypeNames(templateTypeNames), arguments(arguments), NVariableBase(NodeType_Call, loc) {
     if (!this->arguments) {
         this->arguments = make_shared<NodeList>();
     } else {
         for (auto it : *arguments) {
-            if (it->getNodeType() == NodeType_Assignment) {
+            if (it->nodeType == NodeType_Assignment) {
                 auto parameterAssignment = static_pointer_cast<NAssignment>(it);
                 parameterAssignment->inFunctionDeclaration = true;
             }
@@ -105,14 +105,10 @@ NCall::NCall(CLoc loc, const char* name, shared_ptr<TemplateTypeNames> templateT
     }
 }
 
-NodeType NCall::getNodeType() const {
-    return NodeType_Call;
-}
-
-void NCall::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
+void NCall::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     for (auto it : *arguments) {
-        if (it->getNodeType() == NodeType_Assignment) {
+        if (it->nodeType == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
             parameterAssignment->define(compiler, result, thisFunction);
         } else {
@@ -121,29 +117,11 @@ void NCall::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefi
     }
 }
 
-void NCall::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) const {
-    assert(compiler->state == CompilerState::FixVar);
-    auto callee = getCFunction(compiler, result, thisFunction, dotVar);
-    if (!callee) {
-        return;
-    }
-
-    for (auto it : *arguments) {
-        if (it->getNodeType() == NodeType_Assignment) {
-            auto parameterAssignment = static_pointer_cast<NAssignment>(it);
-            assert(parameterAssignment->inFunctionDeclaration);
-            parameterAssignment->fixVar(compiler, result, thisFunction);
-        } else {
-            it->fixVar(compiler, result, thisFunction);
-        }
-    }
-}
-
 string NCall::getName() const {
     return name + "()";
 }
 
-shared_ptr<CFunction> NCall::getCFunction(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) const {
+shared_ptr<CFunction> NCall::getCFunction(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) {
     assert(compiler->state >= CompilerState::FixVar);
     
     // parentFunction will be specified if the NCall is used as the default NAssignment for a NFunction
@@ -179,10 +157,20 @@ shared_ptr<CFunction> NCall::getCFunction(Compiler* compiler, CResult& result, s
     return callee;
 }
 
-shared_ptr<CVar> NCall::getVar(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) const {
+shared_ptr<CVar> NCall::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) {
     auto callee = getCFunction(compiler, result, thisFunction, dotVar);
     if (!callee) {
         return nullptr;
+    }
+    
+    for (auto it : *arguments) {
+        if (it->nodeType == NodeType_Assignment) {
+            auto parameterAssignment = static_pointer_cast<NAssignment>(it);
+            assert(parameterAssignment->inFunctionDeclaration);
+            parameterAssignment->getVar(compiler, result, thisFunction);
+        } else {
+            it->getVar(compiler, result, thisFunction);
+        }
     }
     
     return CCallVar::create(loc, name, arguments, thisFunction, dotVar, callee);
@@ -196,7 +184,7 @@ void NCall::dump(Compiler* compiler, int level) const {
         dumpf(level, "arguments: {");
         auto argIndex = 0;
         for (auto it : *arguments) {
-            if (it->getNodeType() == NodeType_Assignment) {
+            if (it->nodeType == NodeType_Assignment) {
                 auto parameterAssignment = static_pointer_cast<NAssignment>(it);
                 assert(parameterAssignment->inFunctionDeclaration);
                 dumpf(level + 1, "%s: {", parameterAssignment->name.c_str());

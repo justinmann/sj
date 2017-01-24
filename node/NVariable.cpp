@@ -1,5 +1,14 @@
 #include "Node.h"
 
+shared_ptr<CVar> NVariableBase::getVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) {
+    if (!_hasGetVar) {
+        _var = getVarImpl(compiler, result, thisFunction, dotVar);
+        _hasGetVar = true;
+    }
+    return _var;
+}
+
+
 shared_ptr<CParentVar> CParentVar::create(shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_) {
     auto c = make_shared<CParentVar>();
     c->name = "";
@@ -42,22 +51,13 @@ string CParentVar::fullName() {
 }
 
 
-NVariable::NVariable(CLoc loc, const char* name) : name(name), NVariableBase(loc) { }
-
-NodeType NVariable::getNodeType() const {
-    return NodeType_Variable;
-}
-
-void NVariable::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) const {
-    assert(compiler->state == CompilerState::FixVar);
-    getVar(compiler, result, thisFunction, dotVar);
-}
+NVariable::NVariable(CLoc loc, const char* name) : name(name), NVariableBase(NodeType_Variable, loc) { }
 
 string NVariable::getName() const {
     return name;
 }
 
-shared_ptr<CVar> NVariable::getVar(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) const {
+shared_ptr<CVar> NVariable::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) {
     auto cfunction = thisFunction;
     if (dotVar) {
         cfunction = dotVar->getCFunctionForValue(compiler, result);

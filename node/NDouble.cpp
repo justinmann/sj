@@ -1,15 +1,11 @@
 #include "Node.h"
 
-NodeType NDouble::getNodeType() const {
-    return NodeType_Double;
-}
-
-shared_ptr<CType> NDouble::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
+shared_ptr<CType> NDouble::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state >= CompilerState::FixVar);
     return compiler->typeFloat;
 }
 
-Value* NDouble::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
+Value* NDouble::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
 

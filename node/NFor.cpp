@@ -2,12 +2,11 @@
 
 class CForVar : public CVar {
 public:
-    CForVar(shared_ptr<CFunction> parent_, const string& name_, Value* value_) {
+    CForVar(shared_ptr<CFunction> parent_, const string& name_) {
         name = name_;
         mode = CVarType::Local;
         isMutable = false;
         parent = parent_;
-        value = value_;
     }
     
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result) {
@@ -15,6 +14,7 @@ public:
     }
     
     virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+        assert(value);
         return value;
     }
     
@@ -23,44 +23,43 @@ public:
         return nullptr;
     }
 
-private:
     Value* value;
 };
 
-NodeType NFor::getNodeType() const {
-    return NodeType_For;
-}
-
-void NFor::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
+void NFor::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     start->define(compiler, result, thisFunction);
     end->define(compiler, result, thisFunction);
     body->define(compiler, result, thisFunction);
 }
 
-void NFor::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CVar> NFor::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::FixVar);
-    start->fixVar(compiler, result, thisFunction);
-    end->fixVar(compiler, result, thisFunction);
+    start->getVar(compiler, result, thisFunction);
+    end->getVar(compiler, result, thisFunction);
 
     if (thisFunction->localVarsByName.find(varName) != thisFunction->localVarsByName.end()) {
         result.addError(loc, CErrorCode::InvalidVariable, "var '%s' already exists within function, must have a unique name", varName.c_str());
-        return;
+        return nullptr;
     }
     
-    thisFunction->localVarsByName[varName] = make_shared<CForVar>(thisFunction, varName, nullptr);
+    _forVar = make_shared<CForVar>(thisFunction, varName);
+    
+    thisFunction->localVarsByName[varName] = _forVar;
 
-    body->fixVar(compiler, result, thisFunction);
+    body->getVar(compiler, result, thisFunction);
 
     thisFunction->localVarsByName.erase(varName);
+    
+    return nullptr;
 }
 
-shared_ptr<CType> NFor::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
+shared_ptr<CType> NFor::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state >= CompilerState::FixVar);
     return compiler->typeVoid;
 }
 
-Value* NFor::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
+Value* NFor::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
@@ -112,7 +111,8 @@ Value* NFor::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> 
         return nullptr;
     }
     
-    thisFunction->localVarsByName[varName] = make_shared<CForVar>(thisFunction, varName, Variable);
+    thisFunction->localVarsByName[varName] = _forVar;
+    _forVar->value = Variable;
     
     // Emit the body of the loop.  This, like any other expr, can change the
     // current BB.  Note that we ignore the value computed by the body, but don't
@@ -142,7 +142,8 @@ Value* NFor::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> 
     // Restore the unshadowed variable.
     
     thisFunction->localVarsByName.erase(varName);
-    
+    _forVar->value = nullptr;
+
     // for expr always returns 0.0.
     return nullptr;
 }

@@ -1,27 +1,24 @@
 #include "Node.h"
 
-NMathAssignment::NMathAssignment(CLoc loc, shared_ptr<NVariableBase> var, NMathAssignmentOp op, shared_ptr<NBase> rightSide) : var(var), op(op), rightSide(rightSide), NBase(loc) {
+NMathAssignment::NMathAssignment(CLoc loc, shared_ptr<NVariableBase> var, NMathAssignmentOp op, shared_ptr<NBase> rightSide) : var(var), op(op), rightSide(rightSide), NBase(NodeType_MathAssignment, loc) {
 }
 
-NodeType NMathAssignment::getNodeType() const {
-    return NodeType_MathAssignment;
-}
-
-void NMathAssignment::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
+void NMathAssignment::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     if (rightSide) {
         rightSide->define(compiler, result, thisFunction);
     }
 }
 
-void NMathAssignment::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::FixVar);
     if (rightSide) {
-        rightSide->fixVar(compiler, result, thisFunction);
+        rightSide->getVar(compiler, result, thisFunction);
     }
+    return nullptr;
 }
 
-shared_ptr<CType> NMathAssignment::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
+shared_ptr<CType> NMathAssignment::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state >= CompilerState::FixVar);
     auto cvar = var->getVar(compiler, result, thisFunction, nullptr);
     auto ctype = cvar->getType(compiler, result);
@@ -32,7 +29,7 @@ shared_ptr<CType> NMathAssignment::getReturnType(Compiler* compiler, CResult& re
     return ctype;
 }
 
-Value* NMathAssignment::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
+Value* NMathAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     

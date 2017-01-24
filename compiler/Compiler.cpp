@@ -124,6 +124,8 @@ Compiler::~Compiler() {
 }
 
 void Compiler::InitializeModuleAndPassManager() {
+    includedBlocks.clear();
+    
     // Open a new module.
     module = llvm::make_unique<Module>("my cool jit", context);
     module->setDataLayout(TheJIT->getTargetMachine().createDataLayout());
@@ -207,21 +209,19 @@ extern "C" void throwException() {
 class NMatchReturn : public NBase {
 public:
     const shared_ptr<NBase> inner;
-    NMatchReturn(const CLoc loc, shared_ptr<NBase> inner) : inner(inner), NBase(loc) { };
-    virtual NodeType getNodeType() const { return NodeType_Variable; }
-    virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) { }
-    virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) { }
+    NMatchReturn(const CLoc loc, shared_ptr<NBase> inner) : inner(inner), NBase(NodeType_Variable, loc) { };
+    virtual void dump(Compiler* compiler, int level) const { }
+
+protected:
+    virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) { }
+    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) { return nullptr; }
     
-    virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
-        return inner->getReturnType(compiler, result, thisFunction);
+    virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+        return inner->getType(compiler, result, thisFunction);
     }
     
-    virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
-        return inner->getReturnType(compiler, result, thisFunction)->getDefaultValue(compiler, result, thisFunction, thisValue, builder, catchBB);
-    }
-    
-    virtual void dump(Compiler* compiler, int level) const {
-        
+    virtual Value* compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+        return inner->getType(compiler, result, thisFunction)->getDefaultValue(compiler, result, thisFunction, thisValue, builder, catchBB);
     }
 };
 
@@ -274,7 +274,7 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     state = CompilerState::FixVar;
     auto templateTypes = vector<shared_ptr<CType>>();
     auto currentFunction = currentFunctionDefintion->getFunction(this, *compilerResult, CLoc::undefined, templateTypes, weak_ptr<CFunction>());
-    anonFunction->fixVar(this, *compilerResult, currentFunction);
+    anonFunction->getVar(this, *compilerResult, currentFunction);
     auto cfunction = currentFunction->getCFunction(this, *compilerResult, CLoc::undefined, "global", nullptr, nullptr);
 #ifdef VAR_OUTPUT
     currentFunction->dump(this, *compilerResult, 0);

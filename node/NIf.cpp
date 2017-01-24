@@ -1,10 +1,6 @@
 #include "Node.h"
 
-NodeType NIf::getNodeType() const {
-    return NodeType_If;
-}
-
-void NIf::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
+void NIf::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     condition->define(compiler, result, thisFunction);
 
@@ -17,37 +13,40 @@ void NIf::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefini
     }
 }
 
-void NIf::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::FixVar);
-    condition->fixVar(compiler, result, thisFunction);
+    condition->getVar(compiler, result, thisFunction);
     
     if (elseBlock) {
-        elseBlock->fixVar(compiler, result, thisFunction);
+        elseBlock->getVar(compiler, result, thisFunction);
     }
 
     if (ifBlock) {
-        ifBlock->fixVar(compiler, result, thisFunction);
+        ifBlock->getVar(compiler, result, thisFunction);
     }
+    
+    // TODO: This needs to return a CVar so it can detect needed heap allocation
+    return nullptr;
 }
 
-shared_ptr<CType> NIf::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
+shared_ptr<CType> NIf::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state >= CompilerState::FixVar);
     if (elseBlock) {
-        return elseBlock->getReturnType(compiler, result, thisFunction);
+        return elseBlock->getType(compiler, result, thisFunction);
     }
     
     if (ifBlock) {
-        return ifBlock->getReturnType(compiler, result, thisFunction);
+        return ifBlock->getType(compiler, result, thisFunction);
     }
 
     return nullptr;
 }
 
-Value* NIf::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
+Value* NIf::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
-    shared_ptr<CType> returnType = getReturnType(compiler, result, thisFunction);
+    shared_ptr<CType> returnType = getType(compiler, result, thisFunction);
     
     Function *function = builder->GetInsertBlock()->getParent();
     auto ifBB = BasicBlock::Create(compiler->context);

@@ -2,14 +2,14 @@
 
 int NFunction::counter = 0;
 
-NFunction::NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock) : type(type), typeName(typeName), name(name), templateTypeNames(templateTypeNames), block(block), catchBlock(catchBlock), NBase(loc) {
+NFunction::NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock) : type(type), typeName(typeName), name(name), templateTypeNames(templateTypeNames), block(block), catchBlock(catchBlock), NBase(NodeType_Function, loc) {
     if (this->name == "^") {
         this->name = strprintf("anon_%d", counter++);
     }
     
     if (arguments) {
         for (auto it : *arguments) {
-            if (it->getNodeType() == NodeType_Assignment) {
+            if (it->nodeType == NodeType_Assignment) {
                 auto nassignment = static_pointer_cast<NAssignment>(it);
                 nassignment->inFunctionDeclaration = true;
                 assignments.push_back(nassignment);
@@ -17,7 +17,7 @@ NFunction::NFunction(CLoc loc, CFunctionType type, const char* typeName, const c
                 if (nassignment->nfunction) {
                     functions.push_back(nassignment->nfunction);
                 }
-            } else if (it->getNodeType() == NodeType_Function) {
+            } else if (it->nodeType == NodeType_Function) {
                 functions.push_back(static_pointer_cast<NFunction>(it));
             } else {
                 invalid.push_back(it);
@@ -26,11 +26,7 @@ NFunction::NFunction(CLoc loc, CFunctionType type, const char* typeName, const c
     }
 }
 
-NodeType NFunction::getNodeType() const {
-    return NodeType_Function;
-}
-
-void NFunction::define(Compiler *compiler, CResult& result, shared_ptr<CFunctionDefinition> parentFunction) {
+void NFunction::defineImpl(Compiler *compiler, CResult& result, shared_ptr<CFunctionDefinition> parentFunction) {
     assert(compiler->state == CompilerState::Define);
     if (invalid.size() > 0) {
         result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
@@ -72,10 +68,25 @@ void NFunction::define(Compiler *compiler, CResult& result, shared_ptr<CFunction
     }
 }
 
-void NFunction::fixVar(Compiler *compiler, CResult& result, shared_ptr<CFunction> parentFunction) {
+shared_ptr<CVar> NFunction::getVarImpl(Compiler *compiler, CResult& result, shared_ptr<CFunction> parentFunction) {
+    return nullptr;
 }
 
-void NFunction::fixVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CType> NFunction::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction) {
+    assert(compiler->state >= CompilerState::FixVar);
+    if (invalid.size() > 0) {
+        result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
+        return nullptr;
+    }
+    
+    return compiler->typeVoid;
+}
+
+Value* NFunction::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder, BasicBlock* parentCatchBB) {
+    return nullptr;
+}
+
+void NFunction::getVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::FixVar);
     if (invalid.size() > 0) {
         result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
@@ -83,35 +94,25 @@ void NFunction::fixVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunc
     }
     
     for (auto it : functions) {
-        it->fixVar(compiler, result, thisFunction);
+        it->getVar(compiler, result, thisFunction);
     }
 
     for (auto it : assignments) {
-        it->fixVar(compiler, result, thisFunction);
+        it->getVar(compiler, result, thisFunction);
     }
     
     if (block) {
-        block->fixVar(compiler, result, thisFunction);
+        block->getVar(compiler, result, thisFunction);
     }
     
     if (catchBlock) {
-        catchBlock->fixVar(compiler, result, thisFunction);
+        catchBlock->getVar(compiler, result, thisFunction);
     }
     
     getBlockType(compiler, result, thisFunction);
 }
 
-shared_ptr<CType> NFunction::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction) const {
-    assert(compiler->state >= CompilerState::FixVar);
-    if (invalid.size() > 0) {
-        result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
-        return nullptr;
-    }
-
-    return compiler->typeVoid;
-}
-
-shared_ptr<CType> NFunction::getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
+shared_ptr<CType> NFunction::getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state >= CompilerState::FixVar);
     assert(thisFunction->node.get() == this);
     if (invalid.size() > 0) {
@@ -134,17 +135,13 @@ shared_ptr<CType> NFunction::getBlockType(Compiler* compiler, CResult& result, s
     }
     
     if (block) {
-        return block->getReturnType(compiler, result, thisFunction);
+        return block->getType(compiler, result, thisFunction);
     }
     
     return compiler->typeVoid;
 }
 
-Value* NFunction::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder, BasicBlock* parentCatchBB) const {
-    return nullptr;
-}
-
-Function* NFunction::compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
+Function* NFunction::compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::Compile);
     assert(thisFunction->node.get() == this);
 
@@ -207,7 +204,7 @@ Function* NFunction::compileDefinition(Compiler* compiler, CResult& result, shar
     }
 }
 
-void NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Function* function) const {
+void NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Function* function) {
     assert(compiler->state == CompilerState::Compile);
     assert(thisFunction->node.get() == this);
     
@@ -303,7 +300,7 @@ Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction
         auto argIndex = 0;
         for (auto defaultAssignment : assignments) {
             assert(defaultAssignment->inFunctionDeclaration);
-            auto argType = defaultAssignment->getReturnType(compiler, result, thisFunction);
+            auto argType = defaultAssignment->getType(compiler, result, thisFunction);
             auto isDefaultAssignment = parameters[argIndex] == defaultAssignment->rightSide;
             Value* value;
             if (isDefaultAssignment) {
@@ -338,7 +335,7 @@ Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction
         auto argIndex = 0;
         for (auto defaultAssignment : assignments) {
             assert(defaultAssignment->inFunctionDeclaration);
-            auto argType = defaultAssignment->getReturnType(compiler, result, callee);
+            auto argType = defaultAssignment->getType(compiler, result, callee);
             auto isDefaultAssignment = parameters[argIndex] == defaultAssignment->rightSide;
             Value* value;
             if (isDefaultAssignment) {

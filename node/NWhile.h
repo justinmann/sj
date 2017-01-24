@@ -15,12 +15,13 @@ public:
     shared_ptr<NBase> cond;
     shared_ptr<NBase> body;
     
-    NWhile(CLoc loc, shared_ptr<NBase> cond, shared_ptr<NBase> body) : cond(cond), body(body), NBase(loc) { }
-    virtual NodeType getNodeType() const;
-    virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction);
-    virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
-    virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const;
-    virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const;
+    NWhile(CLoc loc, shared_ptr<NBase> cond, shared_ptr<NBase> body) : cond(cond), body(body), NBase(NodeType_While, loc) { }
+
+protected:
+    virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction);
+    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
+    virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
+    virtual Value* compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB);
     virtual void dump(Compiler* compiler, int level) const;
 };
 

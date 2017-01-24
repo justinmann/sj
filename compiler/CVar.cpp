@@ -39,7 +39,7 @@ shared_ptr<CType> CLocalVar::getType(Compiler* compiler, CResult& result) {
     
     isInGetType = true;
     if (!type) {
-        type = nassignment->getReturnType(compiler, result, parent.lock());
+        type = nassignment->getType(compiler, result, parent.lock());
     }
     isInGetType = false;
     return type;

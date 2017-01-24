@@ -1,21 +1,17 @@
 #include "Node.h"
-#include "parser.hpp"
 
-NodeType NCast::getNodeType() const {
-    return NodeType_Cast;
-}
-
-void NCast::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
+void NCast::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     node->define(compiler, result, thisFunction);
 }
 
-void NCast::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::FixVar);
-    node->fixVar(compiler, result, thisFunction);
+    node->getVar(compiler, result, thisFunction);
+    return nullptr;
 }
 
-shared_ptr<CType> NCast::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
+shared_ptr<CType> NCast::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state >= CompilerState::FixVar);
     auto t = compiler->getType(type.c_str());
     if (!t) {
@@ -24,7 +20,7 @@ shared_ptr<CType> NCast::getReturnType(Compiler* compiler, CResult& result, shar
     return t;
 }
 
-Value* NCast::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
+Value* NCast::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
@@ -32,7 +28,7 @@ Value* NCast::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction>
     if (!v)
         return nullptr;
     
-    auto fromType = node->getReturnType(compiler, result, thisFunction);
+    auto fromType = node->getType(compiler, result, thisFunction);
     auto toType = compiler->getType(type.c_str());
     
     if (!toType) {

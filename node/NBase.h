@@ -20,18 +20,34 @@ void dumpf(int level, const char* format, Args... args ) {
 
 #define bool_to_str(x) ((x) ? "true" : "false")
 
+class NVariableBase;
+
 class NBase : public enable_shared_from_this<NBase> {
-public:   
+public:
+    const NodeType nodeType;
     const CLoc loc;
     
-    NBase(const CLoc loc) : loc(loc) { }
-    virtual ~NBase() { }
-    virtual NodeType getNodeType() const = 0;
-    virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) = 0;
-    virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) = 0;
-    virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const = 0;
-    virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const = 0;
+    NBase(const NodeType nodeType, const CLoc loc) : nodeType(nodeType), loc(loc), _hasDefined(false), _hasGetVar(false), _hasGetType(false) { }
+    void define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction);
+    shared_ptr<CVar> getVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
+    shared_ptr<CType> getType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
+    Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB);
     virtual void dump(Compiler* compiler, int level = 0) const = 0;
+    
+protected:
+    virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) = 0;
+    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) = 0;
+    virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) = 0;
+    virtual Value* compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) = 0;
+    
+private:
+    bool _hasDefined;
+    bool _hasGetVar;
+    bool _hasGetType;
+    shared_ptr<CVar> _var;
+    shared_ptr<CType> _type;
+    
+    friend class NVariableBase;
 };
 
 #endif /* NBase_h */

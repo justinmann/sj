@@ -708,8 +708,6 @@ int main(int argc, char **argv) {
     shared_ptr<CResult> result;
     Compiler compiler;
     
-    testString();
-
     testMath();
     testComparison();
     testVoid();
@@ -726,6 +724,8 @@ int main(int argc, char **argv) {
     testTemplate();
     testArray();
     testInclude();
+    testString();
+    
     // testThrow();
 
     return 0;

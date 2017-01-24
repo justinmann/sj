@@ -1,10 +1,6 @@
 #include "Node.h"
 
-NodeType NInclude::getNodeType() const {
-    return NodeType_Include;
-}
-
-void NInclude::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
+void NInclude::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     if (thisFunction->name != "global") {
         result.addError(loc, CErrorCode::IncludeOnlyInGlobal, "can only use include in the global scope");
     }
@@ -12,15 +8,16 @@ void NInclude::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionD
     compiler->includeFile(result, fileName);
 }
 
-void NInclude::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CVar> NInclude::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::FixVar);
+    return nullptr;
 }
 
-shared_ptr<CType> NInclude::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
+shared_ptr<CType> NInclude::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     return compiler->typeVoid;
 }
 
-Value* NInclude::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
+Value* NInclude::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     return nullptr;
 }
 

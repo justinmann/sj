@@ -1,18 +1,14 @@
 #include "Node.h"
 
-NAssignment::NAssignment(CLoc loc, shared_ptr<NVariableBase> var, const char* typeName, const char* name, shared_ptr<NBase> rightSide_, bool isMutable) : var(var), typeName(typeName), name(name), rightSide(rightSide_), isMutable(isMutable), inFunctionDeclaration(false),NBase(loc) {
+NAssignment::NAssignment(CLoc loc, shared_ptr<NVariableBase> var, const char* typeName, const char* name, shared_ptr<NBase> rightSide_, bool isMutable) : var(var), typeName(typeName), name(name), rightSide(rightSide_), isMutable(isMutable), inFunctionDeclaration(false), NBase(NodeType_Assignment, loc) {
     // If we are assigning a function to a var then we will call the function to get its value
-    if (rightSide && rightSide->getNodeType() == NodeType::NodeType_Function) {
+    if (rightSide && rightSide->nodeType == NodeType_Function) {
         nfunction = static_pointer_cast<NFunction>(rightSide);
         rightSide = make_shared<NCall>(loc, nfunction->name.c_str(), nullptr, nullptr);
     }
 }
 
-NodeType NAssignment::getNodeType() const {
-    return NodeType_Assignment;
-}
-
-void NAssignment::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
+void NAssignment::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     
     if (var) {
@@ -28,7 +24,7 @@ void NAssignment::define(Compiler* compiler, CResult& result, shared_ptr<CFuncti
     }
 }
 
-void NAssignment::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::FixVar);
 
     // function vars are not created here, this is only for local vars
@@ -40,7 +36,7 @@ void NAssignment::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFuncti
             cfunction = t->getCFunctionForValue(compiler, result);
             if (!cfunction) {
                 result.addError(loc, CErrorCode::InvalidVariable, "var must be a function: '%s'", var->getName().c_str());
-                return;
+                return nullptr;
             }
         }
         
@@ -48,17 +44,17 @@ void NAssignment::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFuncti
         if (cvar) {
             if (!isMutable) {
                 result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var");
-                return;
+                return nullptr;
             } else if (!cvar->isMutable) {
                 result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var");
-                return;
+                return nullptr;
             }
         } else {
             if (!var) {
                 auto iter = cfunction->localVarsByName.find(name);
                 if (iter != cfunction->localVarsByName.end()) {
                     result.addError(loc, CErrorCode::Internal, "the previous search on NVariable should find a local value with same name");
-                    return;
+                    return nullptr;
                 }
                 cfunction->localVarsByName[name] = CLocalVar::create(loc, name, thisFunction, shared_from_this());;
             }
@@ -66,15 +62,18 @@ void NAssignment::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFuncti
     }
     
     if (nfunction) {
-        nfunction->fixVar(compiler, result, thisFunction);
+        nfunction->getVar(compiler, result, thisFunction);
     }
     
     if (rightSide) {
-        rightSide->fixVar(compiler, result, thisFunction);
+        rightSide->getVar(compiler, result, thisFunction);
     }
+    
+    // TODO: incompatible with heap allocation
+    return nullptr;
 }
 
-shared_ptr<CType> NAssignment::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
+shared_ptr<CType> NAssignment::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state >= CompilerState::FixVar);
 
     if (typeName.size() > 0) {
@@ -91,10 +90,10 @@ shared_ptr<CType> NAssignment::getReturnType(Compiler* compiler, CResult& result
         return nullptr;
     }
     
-    return rightSide->getReturnType(compiler, result, thisFunction);
+    return rightSide->getType(compiler, result, thisFunction);
 }
 
-Value* NAssignment::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
+Value* NAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     

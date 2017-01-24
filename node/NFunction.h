@@ -24,19 +24,20 @@ public:
     const shared_ptr<NBase> catchBlock;
     
     NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock);
-    virtual NodeType getNodeType() const;
-    virtual void define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parentFunction);
-    virtual void fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction);
-    virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction) const;
-    virtual Value* compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder, BasicBlock* catchBB) const;
-    virtual void dump(Compiler* compiler, int level) const;
 
-    virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const;
+    virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
     virtual Value* call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters);
-    virtual void fixVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction);
-    Function* compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const;
-    virtual void compileBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Function* function) const;
+    virtual void getVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction);
+    Function* compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
+    virtual void compileBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Function* function);
+    virtual void dump(Compiler* compiler, int level) const;
     
+protected:
+    virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parentFunction);
+    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction);
+    virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction);
+    virtual Value* compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder, BasicBlock* catchBB);
+
 private:
     shared_ptr<NFunction> shared_from_this() { return static_pointer_cast<NFunction>(NBase::shared_from_this()); };
     

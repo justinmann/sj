@@ -32,7 +32,7 @@ shared_ptr<CType> CFunctionVar::getType(Compiler* compiler, CResult& result) {
     
     isInGetType = true;
     if (!type) {
-        type = nassignment->getReturnType(compiler, result, parent.lock());
+        type = nassignment->getType(compiler, result, parent.lock());
     }
     isInGetType = false;
     return type;
@@ -419,7 +419,7 @@ shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CResu
     cfunctions[templateTypes] = func;
 
     if (node) {
-        node->fixVarBody(compiler, result, func);
+        node->getVarBody(compiler, result, func);
     }
     
     return func;

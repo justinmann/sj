@@ -38,28 +38,16 @@ string CDotVar::fullName() {
     return leftVar->fullName() + "." + rightVar->fullName();
 }
 
-NodeType NDot::getNodeType() const {
-    return NodeType_Dot;
-}
-
-void NDot::define(Compiler *compiler, CResult &result, shared_ptr<CFunctionDefinition> thisFunction) {
+void NDot::defineImpl(Compiler *compiler, CResult &result, shared_ptr<CFunctionDefinition> thisFunction) {
     left->define(compiler, result, thisFunction);
     right->define(compiler, result, thisFunction);
-}
-
-void NDot::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) const {
-    assert(compiler->state == CompilerState::FixVar);
-    
-    left->fixVar(compiler, result, thisFunction, dotVar);
-    auto leftVar = left->getVar(compiler, result, thisFunction, dotVar);
-    right->fixVar(compiler, result, thisFunction, leftVar);
 }
 
 string NDot::getName() const {
     return left->getName() + "." + right->getName();
 }
 
-shared_ptr<CVar> NDot::getVar(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) const {
+shared_ptr<CVar> NDot::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) {
     auto leftVar = left->getVar(compiler, result, thisFunction, dotVar);
     if (!leftVar) {
         return nullptr;

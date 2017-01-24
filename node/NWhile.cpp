@@ -1,27 +1,24 @@
 #include "Node.h"
 
-NodeType NWhile::getNodeType() const {
-    return NodeType_While;
-}
-
-void NWhile::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
+void NWhile::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     cond->define(compiler, result, thisFunction);
     body->define(compiler, result, thisFunction);
 }
 
-void NWhile::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CVar> NWhile::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::FixVar);
-    cond->fixVar(compiler, result, thisFunction);
-    body->fixVar(compiler, result, thisFunction);
+    cond->getVar(compiler, result, thisFunction);
+    body->getVar(compiler, result, thisFunction);
+    return nullptr;
 }
 
-shared_ptr<CType> NWhile::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
+shared_ptr<CType> NWhile::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state >= CompilerState::FixVar);
     return compiler->typeVoid;
 }
 
-Value* NWhile::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
+Value* NWhile::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     

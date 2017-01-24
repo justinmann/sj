@@ -1,27 +1,24 @@
 #include "Node.h"
 
-NodeType NAnd::getNodeType() const {
-    return NodeType_And;
-}
-
-void NAnd::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
+void NAnd::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     left->define(compiler, result, thisFunction);
     right->define(compiler, result, thisFunction);
 }
 
-void NAnd::fixVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CVar> NAnd::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::FixVar);
-    left->fixVar(compiler, result, thisFunction);
-    right->fixVar(compiler, result, thisFunction);
+    left->getVar(compiler, result, thisFunction);
+    right->getVar(compiler, result, thisFunction);
+    return nullptr;
 }
 
-shared_ptr<CType> NAnd::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) const {
+shared_ptr<CType> NAnd::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state >= CompilerState::FixVar);
     return compiler->typeBool;
 }
 
-Value* NAnd::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) const {
+Value* NAnd::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
