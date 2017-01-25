@@ -32,6 +32,16 @@ shared_ptr<CType> NArray::getTypeImpl(Compiler* compiler, CResult& result, share
     return createCall->getType(compiler, result, thisFunction);
 }
 
+int NArray::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
+    if (isHeapVar) {
+        if (!this->isHeapVar) {
+            this->isHeapVar = true;
+            return 1;
+        }
+    }
+    return 0;
+}
+
 Value* NArray::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
@@ -78,6 +88,10 @@ shared_ptr<CVar> NList::getVarImpl(Compiler* compiler, CResult& result, shared_p
 shared_ptr<CType> NList::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state >= CompilerState::FixVar);
     return createCall->getType(compiler, result, thisFunction);
+}
+
+int NList::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
+    return createCall->setHeapVar(compiler, result, thisFunction, nullptr, isHeapVar);
 }
 
 Value* NList::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {

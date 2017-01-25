@@ -18,6 +18,12 @@ shared_ptr<CType> NOr::getTypeImpl(Compiler* compiler, CResult& result, shared_p
     return compiler->typeBool;
 }
 
+int NOr::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
+    auto count = left->setHeapVar(compiler, result, thisFunction, false);
+    count += right->setHeapVar(compiler, result, thisFunction, false);
+    return count;
+}
+
 Value* NOr::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);

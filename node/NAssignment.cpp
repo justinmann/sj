@@ -31,21 +31,25 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
     if (!inFunctionDeclaration) {
         // We need to see if var already exists, if not create a new local var
         auto cfunction = thisFunction;
+        shared_ptr<CVar> parentVar = nullptr;
         if (var) {
-            auto t = var->getVar(compiler, result, thisFunction, nullptr);
-            cfunction = t->getCFunctionForValue(compiler, result);
+            parentVar = var->getVar(compiler, result, thisFunction, nullptr);
+            if (!parentVar) {
+                return nullptr;
+            }
+            cfunction = parentVar->getCFunctionForValue(compiler, result);
             if (!cfunction) {
-                result.addError(loc, CErrorCode::InvalidVariable, "var must be a function: '%s'", t->fullName().c_str());
+                result.addError(loc, CErrorCode::InvalidVariable, "var must be a function: '%s'", parentVar->fullName().c_str());
                 return nullptr;
             }
         }
         
-        auto cvar = cfunction->getCVar(compiler, result, loc, name);
-        if (cvar) {
+        _assignVar = cfunction->getCVar(compiler, result, loc, name);
+        if (_assignVar) {
             if (!isMutable) {
                 result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var");
                 return nullptr;
-            } else if (!cvar->isMutable) {
+            } else if (!_assignVar->isMutable) {
                 result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var");
                 return nullptr;
             }
@@ -56,8 +60,13 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
                     result.addError(loc, CErrorCode::Internal, "the previous search on NVariable should find a local value with same name");
                     return nullptr;
                 }
-                cfunction->localVarsByName[name] = CLocalVar::create(loc, name, thisFunction, shared_from_this());;
+                _assignVar = CNormalVar::createLocalVar(loc, name, thisFunction, shared_from_this());
+                cfunction->localVarsByName[name] = _assignVar;
             }
+        }
+        
+        if (var) {
+            _assignVar = CDotVar::create(parentVar, _assignVar);
         }
     }
     
@@ -90,6 +99,18 @@ shared_ptr<CType> NAssignment::getTypeImpl(Compiler* compiler, CResult& result, 
     }
     
     return rightSide->getType(compiler, result, thisFunction);
+}
+
+int NAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
+    if (_assignVar != nullptr && _assignVar->mode != Local) {
+        // TODO: does not need to be a heap var if parent is a local var
+        isHeapVar = true;
+    }
+    
+    if (rightSide) {
+        return rightSide->setHeapVar(compiler, result, thisFunction, isHeapVar);
+    }
+    return 0;
 }
 
 Value* NAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
@@ -127,27 +148,7 @@ Value* NAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<
     }
     
     // Get place to store data
-    auto cfunction = thisFunction;
-    shared_ptr<CVar> parentVar = nullptr;
-    if (var) {
-        parentVar = var->getVar(compiler, result, thisFunction, nullptr);
-        if (!parentVar) {
-            return nullptr;
-        }
-        cfunction = parentVar->getCFunctionForValue(compiler, result);
-    }
-    
-    auto cvar = cfunction->getCVar(compiler, result, loc, name);
-    if (!cvar) {
-        result.addError(loc, CErrorCode::InvalidVariable, "var does not exist '%s'", name.c_str());
-        return nullptr;
-    }
-    
-    if (var) {
-        cvar = CDotVar::create(parentVar, cvar);
-    }
-
-    auto alloca = cvar->getStoreValue(compiler, result, thisValue, thisValue, builder, catchBB);
+    auto alloca = _assignVar->getStoreValue(compiler, result, thisValue, thisValue, builder, catchBB);
     if (!alloca) {
         result.addError(loc, CErrorCode::InvalidVariable, "var cannot be assigned '%s'", name.c_str());
         return nullptr;

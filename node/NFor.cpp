@@ -59,6 +59,15 @@ shared_ptr<CType> NFor::getTypeImpl(Compiler* compiler, CResult& result, shared_
     return compiler->typeVoid;
 }
 
+int NFor::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
+    auto count = start->setHeapVar(compiler, result, thisFunction, false);
+    count += end->setHeapVar(compiler, result, thisFunction, false);
+    thisFunction->localVarsByName[varName] = _forVar;
+    count += body->setHeapVar(compiler, result, thisFunction, false);
+    thisFunction->localVarsByName.erase(varName);
+    return count;
+}
+
 Value* NFor::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);

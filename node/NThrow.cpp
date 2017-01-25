@@ -14,6 +14,10 @@ shared_ptr<CType> NThrow::getTypeImpl(Compiler* compiler, CResult& result, share
     return compiler->typeVoid;
 }
 
+int NThrow::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
+    return node->setHeapVar(compiler, result, thisFunction, true);
+}
+
 Value* NThrow::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     

@@ -127,6 +127,20 @@ shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, CResult& result, shared_ptr
     return CIfElseVar::create(loc, thisFunction, condition, ifBlock, elseBlock);
 }
 
+int NIf::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar, bool isHeapVar) {
+    auto count = condition->setHeapVar(compiler, result, thisFunction, false);
+
+    if (elseBlock) {
+        count += elseBlock->setHeapVar(compiler, result, thisFunction, isHeapVar);
+    }
+    
+    if (ifBlock) {
+        count += ifBlock->setHeapVar(compiler, result, thisFunction, isHeapVar);
+    }
+    
+    return count;
+}
+
 void NIf::dump(Compiler* compiler, int level) const {
     dumpf(level, "type: 'NIf'");
     

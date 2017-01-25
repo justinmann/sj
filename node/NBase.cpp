@@ -26,6 +26,11 @@ shared_ptr<CType> NBase::getType(Compiler* compiler, CResult& result, shared_ptr
     return _type;
 }
 
+int NBase::setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
+    return setHeapVarImpl(compiler, result, thisFunction, isHeapVar);
+}
+
+
 Value* NBase::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     return compileImpl(compiler, result, thisFunction, thisValue, builder, catchBB);

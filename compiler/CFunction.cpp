@@ -8,44 +8,6 @@
 
 #include "Node.h"
 
-shared_ptr<CFunctionVar> CFunctionVar::create(const string& name, shared_ptr<CFunction> parent, shared_ptr<NFunction> nfunction, int index, shared_ptr<NAssignment> nassignment, shared_ptr<CType> type) {
-    auto c = make_shared<CFunctionVar>();
-    c->mode = CVarType::Public;
-    c->name = name;
-    c->isMutable = nassignment != nullptr ? nassignment->isMutable : false;
-    c->nfunction = nfunction;
-    c->index = index;
-    c->nassignment = nassignment;
-    c->parent = parent;
-    c->type = type;
-    
-    assert(type != nullptr || nassignment != nullptr);
-    
-    return c;
-}
-
-shared_ptr<CType> CFunctionVar::getType(Compiler* compiler, CResult& result) {
-    if (isInGetType) {
-        result.addError(CLoc::undefined, CErrorCode::TypeLoop, "while trying to determine type a cycle was detected");
-        return nullptr;
-    }
-    
-    isInGetType = true;
-    if (!type) {
-        type = nassignment->getType(compiler, result, parent.lock());
-    }
-    isInGetType = false;
-    return type;
-}
-
-Value* CFunctionVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    return builder->CreateLoad(getStoreValue(compiler, result, thisValue, dotValue, builder, catchBB));
-}
-
-Value* CFunctionVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    return parent.lock()->getArgumentPointer(compiler, result, dotValue, index, builder);
-}
-
 shared_ptr<CThisVar> CThisVar::create(CLoc loc_, shared_ptr<CFunction> parent) {
     auto c = make_shared<CThisVar>();
     c->mode = CVarType::Public;
@@ -105,7 +67,7 @@ shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, con
             }
 
             int index = (int)c->thisVars.size();
-            auto thisVar = CFunctionVar::create(it->name, c, c->node, index, it, nullptr);
+            auto thisVar = CNormalVar::createFunctionVar(c->node->loc, it->name, c, c->node, index, it, nullptr);
             c->thisVarsByName[it->name] = pair<int, shared_ptr<CVar>>(index, thisVar);
             c->thisVars.push_back(thisVar);
         }
@@ -264,7 +226,7 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, CResult& result, const C
         auto t3 = parent.lock()->getCVar(compiler, result, loc, name);
         if (t3) {
             if (t3->mode == Local) {
-                t3 = parent.lock()->localVarToThisVar(compiler, static_pointer_cast<CLocalVar>(t3));
+                parent.lock()->localVarToThisVar(compiler, static_pointer_cast<CNormalVar>(t3));
             }
             return CParentVar::create(shared_from_this(), t3);
         }
@@ -281,7 +243,7 @@ int CFunction::getThisIndex(const string& name) const {
     return -1;
 }
 
-shared_ptr<CFunctionVar> CFunction::localVarToThisVar(Compiler* compiler, shared_ptr<CLocalVar> localVar) {
+void CFunction::localVarToThisVar(Compiler* compiler, shared_ptr<CNormalVar> localVar) {
     assert(compiler->state <= CompilerState::FixVar); // Cannot change vars after type has been created
     assert(localVar->mode == CVarType::Local);
     
@@ -295,17 +257,14 @@ shared_ptr<CFunctionVar> CFunction::localVarToThisVar(Compiler* compiler, shared
     
     if (pos == localVarsByName.end()) {
         assert(false);
-        return nullptr;
+        return;
     }
     
-    
-    auto thisVar = CFunctionVar::create(localVar->name, shared_from_this(), node, (int)thisVars.size(), localVar->nassignment, nullptr);
+    localVar->makeFunctionVar(node, (int)thisVars.size());
     int index = (int)thisVars.size();
-    thisVars.push_back(thisVar);
-    thisVarsByName[pos->first] = pair<int, shared_ptr<CFunctionVar>>(index, thisVar);
+    thisVars.push_back(localVar);
+    thisVarsByName[pos->first] = pair<int, shared_ptr<CNormalVar>>(index, localVar);
     localVarsByName.erase(pos);
-    
-    return thisVar;
 }
 
 string CFunction::fullName() {

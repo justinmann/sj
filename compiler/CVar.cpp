@@ -12,6 +12,14 @@ string CVar::fullName() {
     return strprintf("%s.%s", parent.lock()->fullName().c_str(), name.c_str());
 }
 
+int CVar::setHeapVar() {
+    if (!isHeapVar) {
+        isHeapVar = true;
+        return 1;
+    }
+    return 0;
+}
+
 shared_ptr<CFunction> CVar::getCFunctionForValue(Compiler* compiler, CResult& result) {
     auto ctype = getType(compiler, result);
     if (ctype && !ctype->parent.expired()) {
@@ -20,8 +28,8 @@ shared_ptr<CFunction> CVar::getCFunctionForValue(Compiler* compiler, CResult& re
     return nullptr;
 }
 
-shared_ptr<CLocalVar> CLocalVar::create(const CLoc& loc, const string& name, shared_ptr<CFunction> parent, shared_ptr<NAssignment> nassignment) {
-    auto c = make_shared<CLocalVar>();
+shared_ptr<CNormalVar> CNormalVar::createLocalVar(const CLoc& loc, const string& name, shared_ptr<CFunction> parent, shared_ptr<NAssignment> nassignment) {
+    auto c = make_shared<CNormalVar>();
     c->loc = loc;
     c->mode = CVarType::Local;
     c->name = name;
@@ -31,7 +39,31 @@ shared_ptr<CLocalVar> CLocalVar::create(const CLoc& loc, const string& name, sha
     return c;
 }
 
-shared_ptr<CType> CLocalVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CNormalVar> CNormalVar::createFunctionVar(const CLoc& loc, const string& name, shared_ptr<CFunction> parent, shared_ptr<NFunction> nfunction, int index, shared_ptr<NAssignment> nassignment, shared_ptr<CType> type) {
+    auto c = make_shared<CNormalVar>();
+    c->loc = loc;
+    c->mode = CVarType::Public;
+    c->name = name;
+    c->isMutable = nassignment != nullptr ? nassignment->isMutable : false;
+    c->nfunction = nfunction;
+    c->index = index;
+    c->nassignment = nassignment;
+    c->parent = parent;
+    c->type = type;
+    
+    assert(type != nullptr || nassignment != nullptr);
+    
+    return c;
+}
+
+void CNormalVar::makeFunctionVar(shared_ptr<NFunction> nfunction, int index) {
+    assert(mode == CVarType::Local);
+    mode = CVarType::Public;
+    this->nfunction = nfunction;
+    this->index = index;
+}
+
+shared_ptr<CType> CNormalVar::getType(Compiler* compiler, CResult& result) {
     if (isInGetType) {
         result.addError(CLoc::undefined, CErrorCode::TypeLoop, "while trying to determine type a cycle was detected");
         return nullptr;
@@ -45,20 +77,30 @@ shared_ptr<CType> CLocalVar::getType(Compiler* compiler, CResult& result) {
     return type;
 }
 
-Value* CLocalVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    auto value = getStoreValue(compiler, result, thisValue, dotValue, builder, catchBB);
-    return builder->CreateLoad(value);
+Value* CNormalVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    if (mode == Local) {
+        auto value = getStoreValue(compiler, result, thisValue, dotValue, builder, catchBB);
+        return builder->CreateLoad(value);
+    } else {
+        return builder->CreateLoad(getStoreValue(compiler, result, thisValue, dotValue, builder, catchBB));
+    }
 }
 
-Value* CLocalVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    if (!value) {
-        IRBuilder<> entryBuilder = getEntryBuilder(builder);
-        auto valueType = getType(compiler, result)->llvmRefType(compiler, result);
-        if (valueType->isVoidTy()) {
-            result.addError(loc, CErrorCode::StoringVoid, "cannot save a void value");
-            return nullptr;
+Value* CNormalVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    if (mode == Local) {
+        if (!value) {
+            IRBuilder<> entryBuilder = getEntryBuilder(builder);
+            auto valueType = getType(compiler, result)->llvmRefType(compiler, result);
+            if (valueType->isVoidTy()) {
+                result.addError(loc, CErrorCode::StoringVoid, "cannot save a void value");
+                return nullptr;
+            }
+            value = entryBuilder.CreateAlloca(valueType, 0, name.c_str());
         }
-        value = entryBuilder.CreateAlloca(valueType, 0, name.c_str());
+        return value;
+    } else {
+        return parent.lock()->getArgumentPointer(compiler, result, dotValue, index, builder);
     }
-    return value;
 }
+
+

@@ -18,10 +18,15 @@ class NVariableBase : public NBase {
 public:
     NVariableBase(NodeType nodeType, CLoc loc) : NBase(nodeType, loc) { }
     virtual shared_ptr<CVar> getVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar);
+    virtual int setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar, bool isHeapVar);
 
 protected:
     virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
         return getVarImpl(compiler, result, thisFunction, nullptr);
+    }
+    
+    virtual int setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
+        return setHeapVarImpl(compiler, result, thisFunction, nullptr, isHeapVar);
     }
     
     virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
@@ -34,12 +39,11 @@ protected:
     
     virtual Value* compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
         auto var = getVar(compiler, result, thisFunction, nullptr);
-        auto value = var->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB);
-        // assert(value);
-        return value;
+        return var->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB);
     }
     
     virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) = 0;
+    virtual int setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar, bool isHeapVar) = 0;
 };
 
 class CParentVar : public CVar {
@@ -64,6 +68,7 @@ public:
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) { }
     virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar);
+    virtual int setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar, bool isHeapVar);
 };
 
 #endif /* NVariable_h */

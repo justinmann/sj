@@ -29,6 +29,14 @@ shared_ptr<CType> NMathAssignment::getTypeImpl(Compiler* compiler, CResult& resu
     return ctype;
 }
 
+int NMathAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
+    auto count = var->setHeapVar(compiler, result, thisFunction, nullptr, false);
+    if (rightSide) {
+        count += rightSide->setHeapVar(compiler, result, thisFunction, false);
+    }
+    return count;
+}
+
 Value* NMathAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);

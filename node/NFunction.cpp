@@ -109,6 +109,26 @@ void NFunction::getVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunc
         catchBlock->getVar(compiler, result, thisFunction);
     }
     
+    auto count = 0;
+    do {
+        count = 0;
+        for (auto it : functions) {
+            count += it->setHeapVar(compiler, result, thisFunction, false);
+        }
+        
+        for (auto it : assignments) {
+            count += it->setHeapVar(compiler, result, thisFunction, false);
+        }
+        
+        if (block) {
+            count += block->setHeapVar(compiler, result, thisFunction, true);
+        }
+        
+        if (catchBlock) {
+            count += catchBlock->setHeapVar(compiler, result, thisFunction, true);
+        }
+    } while (count > 0);
+
     getBlockType(compiler, result, thisFunction);
 }
 

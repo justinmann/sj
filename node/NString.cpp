@@ -13,6 +13,10 @@ shared_ptr<CType> NStringArray::getTypeImpl(Compiler* compiler, CResult& result,
     return createCall->getType(compiler, result, thisFunction);
 }
 
+int NStringArray::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
+    return 0;
+}
+
 Value* NStringArray::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
@@ -33,6 +37,10 @@ shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, CResult& result, shared
 shared_ptr<CType> NString::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state >= CompilerState::FixVar);
     return createCall->getType(compiler, result, thisFunction);
+}
+
+int NString::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
+    return createCall->setHeapVar(compiler, result, thisFunction, nullptr, isHeapVar);
 }
 
 Value* NString::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {

@@ -57,6 +57,17 @@ shared_ptr<CVar> NDot::getVarImpl(Compiler *compiler, CResult &result, shared_pt
     return CDotVar::create(leftVar, rightVar);
 }
 
+int NDot::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar, bool isHeapVar) {
+    auto leftVar = left->getVar(compiler, result, thisFunction, dotVar);
+    if (!leftVar) {
+        return 0;
+    }
+    
+    auto count = left->setHeapVar(compiler, result, thisFunction, dotVar, false);
+    count += right->setHeapVar(compiler, result, thisFunction, leftVar, isHeapVar);
+    return count;
+}
+
 void NDot::dump(Compiler* compiler, int level) const {
     dumpf(level, "type: 'NDot'");
 }

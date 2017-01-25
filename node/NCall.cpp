@@ -172,6 +172,25 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler *compiler, CResult &result, shared_p
     return CCallVar::create(loc, name, arguments, thisFunction, dotVar, callee);
 }
 
+int NCall::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar, bool isHeapVar) {
+    auto count = 0;
+    for (auto it : *arguments) {
+        if (it->nodeType == NodeType_Assignment) {
+            auto parameterAssignment = static_pointer_cast<NAssignment>(it);
+            assert(parameterAssignment->inFunctionDeclaration);
+            count += parameterAssignment->setHeapVar(compiler, result, thisFunction, isHeapVar);
+        } else {
+            count += it->setHeapVar(compiler, result, thisFunction, isHeapVar);
+        }
+    }
+
+    if (isHeapVar) {
+        auto var = getVar(compiler, result, thisFunction, dotVar);
+        count += var->setHeapVar();
+    }
+    return count;
+}
+
 void NCall::dump(Compiler* compiler, int level) const {
     dumpf(level, "type: 'NCall'");
     dumpf(level, "functionName: '%s'", name.c_str());

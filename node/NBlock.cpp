@@ -24,6 +24,15 @@ shared_ptr<CType> NBlock::getTypeImpl(Compiler* compiler, CResult& result, share
     return statements.back()->getType(compiler, result, thisFunction);
 }
 
+int NBlock::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
+    auto count = 0;
+    for (auto it : statements) {
+        auto isLast = it == statements.back();
+        count += it->setHeapVar(compiler, result, thisFunction, isLast ? isHeapVar : false);
+    }
+    return count;
+}
+
 Value* NBlock::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     Value *last = nullptr;

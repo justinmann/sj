@@ -18,6 +18,12 @@ shared_ptr<CType> NCompare::getTypeImpl(Compiler* compiler, CResult& result, sha
     return compiler->typeBool;
 }
 
+int NCompare::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
+    auto count = leftSide->setHeapVar(compiler, result, thisFunction, false);
+    count += rightSide->setHeapVar(compiler, result, thisFunction, false);
+    return count;
+}
+
 Value* NCompare::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);

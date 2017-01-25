@@ -18,6 +18,12 @@ shared_ptr<CType> NWhile::getTypeImpl(Compiler* compiler, CResult& result, share
     return compiler->typeVoid;
 }
 
+int NWhile::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
+    auto count = cond->setHeapVar(compiler, result, thisFunction, false);
+    count += body->setHeapVar(compiler, result, thisFunction, false);
+    return count;
+}
+
 Value* NWhile::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);

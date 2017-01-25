@@ -8,6 +8,9 @@ shared_ptr<CVar> NVariableBase::getVar(Compiler* compiler, CResult& result, shar
     return _var;
 }
 
+int NVariableBase::setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar, bool isHeapVar) {
+    return setHeapVarImpl(compiler, result, thisFunction, dotVar, isHeapVar);
+}
 
 shared_ptr<CParentVar> CParentVar::create(shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_) {
     auto c = make_shared<CParentVar>();
@@ -60,6 +63,14 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler *compiler, CResult &result, shar
     }
     
     return cfunction->getCVar(compiler, result, loc, name);
+}
+
+int NVariable::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar, bool isHeapVar) {
+    auto var = getVar(compiler, result, thisFunction, dotVar);
+    if (var) {
+        return var->setHeapVar();
+    }
+    return 0;
 }
 
 void NVariable::dump(Compiler* compiler, int level) const {
