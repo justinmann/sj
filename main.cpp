@@ -695,13 +695,12 @@ void testString() {
                           c == 'h'
                         )DELIM");
     assert(result->type == RESULT_BOOL && result->bResult);
-/*
+
     result = compiler.run(R"DELIM(
                           include "list.sj"
                           "hello"
                           )DELIM");
     assert(result->type == RESULT_STR && result->strResult == "hello");
-*/
 }
 
 void testHeap() {
@@ -726,8 +725,6 @@ int main(int argc, char **argv) {
     shared_ptr<CResult> result;
     Compiler compiler;
     
-    testString();
-
     testMath();
     testComparison();
     testVoid();

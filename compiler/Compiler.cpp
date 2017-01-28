@@ -350,7 +350,6 @@ shared_ptr<CResult> Compiler::run(const string& code) {
 
         compilerResult->type = RESULT_VOID;
     } else if (returnType->name == "list_char") {
-        // TODO: this will not work, until struct can be heap alloced
         struct list_char {
             int64_t parent;
             int64_t size;
@@ -360,8 +359,10 @@ shared_ptr<CResult> Compiler::run(const string& code) {
         
         list_char* (*FP)(void*) = (list_char* (*)(void*))(intptr_t)ExprSymbol.getAddress();
         list_char* result = FP(thisPtr);
-
-        assert(false);
+        
+        compilerResult->type = RESULT_STR;
+        compilerResult->strResult = result->str;
+        // TODO: we need to delete the result, right now we are leaking
     } else {
         printf("Unknown return type: %s\n", returnType->name.c_str());
         assert(false);

@@ -142,15 +142,39 @@ shared_ptr<CType> NArrayCreateFunction::getBlockType(Compiler* compiler, CResult
     return make_shared<CArrayType>("", thisFunction);
 }
 
+shared_ptr<CVar> NArrayCreateFunction::getReturnVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+    return thisFunction->getThisVar();
+}
+
 Value* NArrayCreateFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
     if (parameters.size() == 0) {
         return nullptr;
     }
     
-    auto sizeValue = parameters[0]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    auto countValue = parameters[0]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
     auto itemType = callee->templateTypes[0]->llvmRefType(compiler, result);
     
-    auto alloca = builder->CreateAlloca(itemType, sizeValue);
-    // printf("alloca: %s\n", Type_print(alloca->getType()).c_str());
-    return alloca;
+    auto thisVar = thisFunction->getThisVar();
+    Value* arrayValue = nullptr;
+    if (thisVar->getHeapVar(compiler, result)) {
+        auto allocFunc = compiler->getAllocFunction();
+        
+        // Compute the size of the struct by getting a pointer to the second element from null
+        vector<Value*> v;
+        v.push_back(ConstantInt::get(compiler->context, APInt(32, 1)));
+        auto arrayType = itemType->getPointerTo();
+        auto nullPtr = ConstantPointerNull::get(arrayType);
+        auto sizePtr = builder->CreateGEP(nullPtr, ArrayRef<llvm::Value *>(v));
+        auto itemSizeValue = builder->CreatePtrToInt(sizePtr, Type::getInt64Ty(compiler->context));
+        auto sizeValue = builder->CreateMul(itemSizeValue, countValue);
+        
+        // Allocate and mutate to correct type
+        vector<Value*> allocArgs;
+        allocArgs.push_back(sizeValue);
+        arrayValue = builder->CreateCall(allocFunc, allocArgs);
+        arrayValue->mutateType(arrayType);
+    } else {
+        arrayValue = builder->CreateAlloca(itemType, countValue);
+    }
+    return arrayValue;
 }
