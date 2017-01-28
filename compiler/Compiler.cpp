@@ -126,6 +126,8 @@ Compiler::~Compiler() {
 void Compiler::InitializeModuleAndPassManager() {
     includedBlocks.clear();
     
+    allocFunction = nullptr;
+    
     // Open a new module.
     module = llvm::make_unique<Module>("my cool jit", context);
     module->setDataLayout(TheJIT->getTargetMachine().createDataLayout());
@@ -429,3 +431,14 @@ void Compiler::includeFile(CResult& result, const string& fileName) {
         includedBlocks[fileName] = r->block;
     }
 }
+
+Function* Compiler::getAllocFunction() {
+    if (!allocFunction) {
+        vector<Type*> argTypes;
+        argTypes.push_back(Type::getInt64Ty(context));
+        auto functionType = FunctionType::get(Type::getInt8PtrTy(context), argTypes, false);
+        allocFunction = Function::Create(functionType, Function::ExternalLinkage, "_Znwm", module.get());
+    }
+    return allocFunction;
+}
+

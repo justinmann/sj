@@ -171,6 +171,7 @@ public:
     void emitLocation(const NBase *node);
     shared_ptr<CType> getType(const string& name) const;
     void includeFile(CResult& result, const string& fileName);
+    Function* getAllocFunction();
 
     // llvm vars
     CompilerState state;
@@ -197,6 +198,7 @@ private:
     void InitializeModuleAndPassManager();
     
     map<string, shared_ptr<NBlock>> includedBlocks;
+    Function* allocFunction;
 };
 
 #endif /* Compiler_h */

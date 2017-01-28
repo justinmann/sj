@@ -357,7 +357,21 @@ Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction
         Value* newValue = nullptr;
         if (thisVar->getHeapVar(compiler, result)) {
             // heap alloc this
-            assert(false);
+            auto allocFunc = compiler->getAllocFunction();
+            
+            // Compute the size of the struct by getting a pointer to the second element from null
+            vector<Value*> v;
+            v.push_back(ConstantInt::get(compiler->context, APInt(32, 1)));
+            auto thisPointerType = newType->llvmAllocType(compiler, result)->getPointerTo();
+            auto nullPtr = ConstantPointerNull::get(thisPointerType);
+            auto sizePtr = builder->CreateGEP(nullPtr, ArrayRef<llvm::Value *>(v));
+            auto sizeValue = builder->CreatePtrToInt(sizePtr, Type::getInt64Ty(compiler->context));
+            
+            // Allocate and mutate to correct type
+            vector<Value*> allocArgs;
+            allocArgs.push_back(sizeValue);
+            newValue = builder->CreateCall(allocFunc, allocArgs);
+            newValue->mutateType(thisPointerType);
         } else {
             // stack alloc this
             auto entryBuilder = getEntryBuilder(builder);
