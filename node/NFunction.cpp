@@ -87,7 +87,10 @@ Value* NFunction::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CF
 }
 
 shared_ptr<CVar> NFunction::getReturnVar(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
-    return block->getVar(compiler, result, thisFunction);
+    if (block) {
+        return block->getVar(compiler, result, thisFunction);
+    }
+    return nullptr;
 }
 
 void NFunction::getVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction) {

@@ -101,9 +101,12 @@ bool CCallVar::getHeapVar(Compiler* compiler, CResult& result) {
 }
 
 int CCallVar::setHeapVar(Compiler* compiler, CResult& result) {
-    auto returnVar = callee->getReturnVar(compiler, result);
-    if (returnVar) {
-        return returnVar->setHeapVar(compiler, result);
+    if (!isHeapVar) {
+        isHeapVar = true;
+        auto returnVar = callee->getReturnVar(compiler, result);
+        if (returnVar) {
+            return returnVar->setHeapVar(compiler, result);
+        }
     }
     return 0;
 }

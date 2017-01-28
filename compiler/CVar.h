@@ -38,7 +38,7 @@ public:
     weak_ptr<CFunction> parent;
     shared_ptr<NAssignment> nassignment;
     
-private:
+protected:
     bool isHeapVar;
 };
 
