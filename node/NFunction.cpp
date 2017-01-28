@@ -82,7 +82,7 @@ shared_ptr<CType> NFunction::getTypeImpl(Compiler* compiler, CResult& result, sh
     return compiler->typeVoid;
 }
 
-Value* NFunction::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder, BasicBlock* parentCatchBB) {
+Value* NFunction::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder, BasicBlock* parentCatchBB, bool isReturnRetained) {
     return nullptr;
 }
 
@@ -243,8 +243,11 @@ void NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
     // Create a new basic block to start insertion into.
     auto basicBlock = BasicBlock::Create(compiler->context, "entry", function);
     IRBuilder<> newBuilder(basicBlock);
-    Value *RetVal = nullptr;
+    Value *returnValue = nullptr;
     Argument* thisArgument = nullptr;
+    shared_ptr<CVar> returnVar = nullptr;
+    auto returnType = block->getType(compiler, result, thisFunction);
+    auto returnFunction = returnType->parent.expired() ? nullptr : returnType->parent.lock();
     
     BasicBlock* catchBB = nullptr;
     if (catchBlock) {
@@ -262,40 +265,42 @@ void NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
         // Value *retTypeInfoIndex = catchBuilder.CreateExtractValue(caughtResult, 1);
         
         auto thisArgument = (Argument*)function->args().begin();
-        Value *RetVal = catchBlock->compile(compiler, result, thisFunction, thisArgument, &catchBuilder, nullptr);
+        returnVar = catchBlock->getVar(compiler, result, thisFunction);
+        returnValue = catchBlock->compile(compiler, result, thisFunction, thisArgument, &catchBuilder, nullptr, true);
         if (function->getReturnType()->isVoidTy()) {
             catchBuilder.CreateRetVoid();
         } else {
-            if (!RetVal) {
+            if (!returnValue) {
                 result.addError(loc, CErrorCode::TypeMismatch, "no return for non-void function");
                 goto error;
             }
             
-            if (function->getReturnType() != RetVal->getType()) {
-                result.addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match return value type '%s'", Type_print(function->getReturnType()).c_str(), Type_print(RetVal->getType()).c_str());
+            if (function->getReturnType() != returnValue->getType()) {
+                result.addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match return value type '%s'", Type_print(function->getReturnType()).c_str(), Type_print(returnValue->getType()).c_str());
                 goto error;
             }
             
-            catchBuilder.CreateRet(RetVal);
+            catchBuilder.CreateRet(returnValue);
         } 
     }
     
     thisArgument = (Argument*)function->args().begin();
-    RetVal = block->compile(compiler, result, thisFunction, thisArgument, &newBuilder, catchBB);
+    returnVar = block->getVar(compiler, result, thisFunction);
+    returnValue = block->compile(compiler, result, thisFunction, thisArgument, &newBuilder, catchBB, true);
     if (function->getReturnType()->isVoidTy()) {
         newBuilder.CreateRetVoid();
     } else {
-        if (!RetVal) {
+        if (!returnValue) {
             result.addError(loc, CErrorCode::TypeMismatch, "no return for non-void function");
             goto error;
         }
         
-        if (function->getReturnType() != RetVal->getType()) {
-            result.addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match return value type '%s'", Type_print(function->getReturnType()).c_str(), Type_print(RetVal->getType()).c_str());
+        if (function->getReturnType() != returnValue->getType()) {
+            result.addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match return value type '%s'", Type_print(function->getReturnType()).c_str(), Type_print(returnValue->getType()).c_str());
             goto error;
         }
-
-        newBuilder.CreateRet(RetVal);
+        
+        newBuilder.CreateRet(returnValue);
     }
     
 error:
@@ -306,7 +311,8 @@ error:
     
     // Validate the generated code, checking for consistency.
     if (result.errors.size() == 0 && verifyFunction(*function)) {
-        function->dump();
+        compiler->module->dump();
+        // function->dump();
         auto output = new raw_os_ostream(std::cout);
         verifyFunction(*function, output);
         output->flush();
@@ -318,7 +324,7 @@ error:
     */
 }
 
-Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
+Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, bool isReturnRetained) {
     if (type == FT_Extern) {
         vector<Value *> argsV;
         auto func = callee->getFunction(compiler, result);
@@ -330,10 +336,12 @@ Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction
             auto argType = defaultAssignment->getType(compiler, result, thisFunction);
             auto isDefaultAssignment = parameters[argIndex] == defaultAssignment->rightSide;
             Value* value;
+            
+            // TODO: Retain parameters
             if (isDefaultAssignment) {
-                value = parameters[argIndex]->compile(compiler, result, callee, nullptr, builder, catchBB);
+                value = parameters[argIndex]->compile(compiler, result, callee, nullptr, builder, catchBB, true);
             } else {
-                value = parameters[argIndex]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+                value = parameters[argIndex]->compile(compiler, result, thisFunction, thisValue, builder, catchBB, true);
             }
             
             if (!value) {
@@ -354,18 +362,20 @@ Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction
         return builder->CreateCall(func, argsV);
     } else {
         // Create this on stack, and get a pointer
-        auto newType = callee->getThisType(compiler, result);
-        
-        auto thisVar = callee->getThisVar();
-        Value* newValue = nullptr;
-        if (thisVar->getHeapVar(compiler, result)) {
+        Value* calleeValue = nullptr;
+        auto calleeType = callee->getThisType(compiler, result);
+        auto calleeVar = callee->getThisVar();
+        auto calleeHeapVar = calleeVar->getHeapVar(compiler, result);
+        auto calleeFunction = calleeVar->getCFunctionForValue(compiler, result);
+
+        if (calleeHeapVar) {
             // heap alloc this
             auto allocFunc = compiler->getAllocFunction();
             
             // Compute the size of the struct by getting a pointer to the second element from null
             vector<Value*> v;
             v.push_back(ConstantInt::get(compiler->context, APInt(32, 1)));
-            auto thisPointerType = newType->llvmAllocType(compiler, result)->getPointerTo();
+            auto thisPointerType = calleeType->llvmAllocType(compiler, result)->getPointerTo();
             auto nullPtr = ConstantPointerNull::get(thisPointerType);
             auto sizePtr = builder->CreateGEP(nullPtr, ArrayRef<llvm::Value *>(v));
             auto sizeValue = builder->CreatePtrToInt(sizePtr, Type::getInt64Ty(compiler->context));
@@ -373,12 +383,14 @@ Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction
             // Allocate and mutate to correct type
             vector<Value*> allocArgs;
             allocArgs.push_back(sizeValue);
-            newValue = builder->CreateCall(allocFunc, allocArgs);
-            newValue->mutateType(thisPointerType);
+            calleeValue = builder->CreateCall(allocFunc, allocArgs);
+            calleeValue->mutateType(thisPointerType);
+            calleeFunction->initHeap(compiler, result, builder, calleeValue);
         } else {
             // stack alloc this
             auto entryBuilder = getEntryBuilder(builder);
-            newValue = entryBuilder.CreateAlloca(newType->llvmAllocType(compiler, result), 0, newType->name.c_str());
+            calleeValue = entryBuilder.CreateAlloca(calleeType->llvmAllocType(compiler, result), 0, calleeType->name.c_str());
+            calleeFunction->initStack(compiler, result, builder, calleeValue);
         }
         
         // Fill in "this" with normal arguments
@@ -388,10 +400,11 @@ Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction
             auto argType = defaultAssignment->getType(compiler, result, callee);
             auto isDefaultAssignment = parameters[argIndex] == defaultAssignment->rightSide;
             Value* value;
+            // TODO: Retain parameters
             if (isDefaultAssignment) {
-                value = parameters[argIndex]->compile(compiler, result, callee, newValue, builder, catchBB);
+                value = parameters[argIndex]->compile(compiler, result, callee, calleeValue, builder, catchBB, true);
             } else {
-                value = parameters[argIndex]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+                value = parameters[argIndex]->compile(compiler, result, thisFunction, thisValue, builder, catchBB, true);
             }
             
             if (!value) {
@@ -404,7 +417,7 @@ Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction
                 return nullptr;
             }
             
-            auto paramPtr = callee->getArgumentPointer(compiler, result, newValue, argIndex, builder);
+            auto paramPtr = callee->getArgumentPointer(compiler, result, calleeValue, argIndex, builder);
             builder->CreateStore(value, paramPtr);
             
             argIndex++;
@@ -415,7 +428,7 @@ Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction
         if (hasParent) {
             Value* parentValue = thisValue;
             if (dotVar) {
-                parentValue = dotVar->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB);
+                parentValue = dotVar->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB, false);
             } else {
                 // if recursively calling ourselves then re-use parent
                 if (callee == thisFunction) {
@@ -431,17 +444,15 @@ Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction
                 }
             }
             
-            auto paramPtr = callee->getParentPointer(compiler, result, builder, newValue);
+            auto paramPtr = callee->getParentPointer(compiler, result, builder, calleeValue);
             builder->CreateStore(parentValue, paramPtr, "parent");
         }
         
         vector<Value *> argsV;
-        argsV.push_back(newValue);
-        
+        argsV.push_back(calleeValue);
         auto func = callee->getFunction(compiler, result);
         
         Value* returnValue = nullptr;
-        
         if (catchBB) {
             auto continueBB = BasicBlock::Create(compiler->context);
             returnValue = builder->CreateInvoke(func, continueBB, catchBB, argsV);
@@ -451,6 +462,28 @@ Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction
             builder->SetInsertPoint(continueBB);
         } else {
             returnValue = builder->CreateCall(func, argsV);
+        }
+        
+        // Release "this" value
+        if (calleeFunction) {
+            if (calleeHeapVar) {
+                calleeFunction->releaseHeap(compiler, result, builder, calleeValue);
+            } else {
+                calleeFunction->releaseStack(compiler, result, builder, calleeValue);
+            }
+        }
+        
+        // Release return value
+        if (!isReturnRetained) {
+            auto returnVar = callee->getReturnVar(compiler, result);
+            if (returnVar) {
+                auto returnFunction = returnVar->getCFunctionForValue(compiler, result);
+                if (returnFunction) {
+                    returnFunction->retainHeap(compiler, result, builder, returnValue);
+                    // TODO: Builder should be block at end of function
+                    returnFunction->releaseHeap(compiler, result, builder, returnValue);
+                }
+            }
         }
         
         return returnValue;

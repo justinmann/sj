@@ -17,7 +17,7 @@ shared_ptr<CType> NInclude::getTypeImpl(Compiler* compiler, CResult& result, sha
     return compiler->typeVoid;
 }
 
-Value* NInclude::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* NInclude::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     return nullptr;
 }
 

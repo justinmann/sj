@@ -17,7 +17,7 @@ class CCallVar : public CVar {
 public:
     static shared_ptr<CCallVar> create(CLoc loc_, const string& name_, shared_ptr<NodeList> arguments_, shared_ptr<CFunction> thisFunction_, weak_ptr<CVar> dotVar_, shared_ptr<CFunction> callee_);
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
+    virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained);
     virtual Value* getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     string fullName();
     virtual bool getHeapVar(Compiler* compiler, CResult& result);
@@ -28,6 +28,9 @@ public:
     shared_ptr<CFunction> thisFunction;
     weak_ptr<CVar> dotVar;
     shared_ptr<CFunction> callee;
+    
+private:
+    bool isInGetHeapVar;
 };
 
 class NCall : public NVariableBase {

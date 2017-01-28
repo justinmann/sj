@@ -13,6 +13,7 @@ shared_ptr<CCallVar> CCallVar::create(CLoc loc_, const string& name_, shared_ptr
     c->thisFunction = thisFunction_;
     c->dotVar = dotVar_;
     c->callee = callee_;
+    c->isInGetHeapVar = false;
     return c;
 }
 
@@ -20,7 +21,7 @@ shared_ptr<CType> CCallVar::getType(Compiler* compiler, CResult& result) {
     return callee->getReturnType(compiler, result);
 }
 
-Value* CCallVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* CCallVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     assert(compiler->state == CompilerState::Compile);
     // compiler->emitLocation(call.get());
     
@@ -80,7 +81,7 @@ Value* CCallVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisVa
         argIndex++;
     }
     
-    return callee->node->call(compiler, result, thisFunction, thisValue, callee, dotVar.lock(), builder, catchBB, parameters);
+    return callee->node->call(compiler, result, thisFunction, thisValue, callee, dotVar.lock(), builder, catchBB, parameters, isReturnRetained);
 }
 
 Value* CCallVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
@@ -93,11 +94,22 @@ string CCallVar::fullName() {
 }
 
 bool CCallVar::getHeapVar(Compiler* compiler, CResult& result) {
+    if (isHeapVar) {
+        return true;
+    }
+
+    if (isInGetHeapVar) {
+        result.addError(loc, CErrorCode::TypeLoop, "cycle detected");
+        return false;
+    }
+    
+    isInGetHeapVar = true;
     auto returnVar = thisFunction->getReturnVar(compiler, result);
     if (returnVar) {
-        return returnVar->getHeapVar(compiler, result);
+        isHeapVar = returnVar->getHeapVar(compiler, result);
     }
-    return false;
+    isInGetHeapVar = false;
+    return isHeapVar;
 }
 
 int CCallVar::setHeapVar(Compiler* compiler, CResult& result) {

@@ -26,7 +26,7 @@ shared_ptr<CType> CIfElseVar::getType(Compiler* compiler, CResult& result) {
     return nullptr;
 }
 
-Value* CIfElseVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* CIfElseVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     assert(compiler->state == CompilerState::Compile);
     shared_ptr<CType> returnType = getType(compiler, result);
     
@@ -37,13 +37,13 @@ Value* CIfElseVar::getLoadValue(Compiler* compiler, CResult& result, Value* this
     
     // If block
     function->getBasicBlockList().push_back(ifBB);
-    auto c = condition->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    auto c = condition->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
     if (!c) {
         return nullptr;
     }
     builder->CreateCondBr(c, ifBB, elseBB);
     builder->SetInsertPoint(ifBB);
-    auto ifValue = ifBlock->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    auto ifValue = ifBlock->compile(compiler, result, thisFunction, thisValue, builder, catchBB, isReturnRetained);
     if (returnType != compiler->typeVoid && !ifValue) {
         result.errors.push_back(CError(loc, CErrorCode::NoDefaultValue, "type does not have a default value"));
         return nullptr;
@@ -56,13 +56,13 @@ Value* CIfElseVar::getLoadValue(Compiler* compiler, CResult& result, Value* this
     builder->SetInsertPoint(elseBB);
     Value* elseValue = nullptr;
     if (elseBlock) {
-        elseValue = elseBlock->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+        elseValue = elseBlock->compile(compiler, result, thisFunction, thisValue, builder, catchBB, isReturnRetained);
         if (returnType != compiler->typeVoid && !elseValue) {
             result.errors.push_back(CError(loc, CErrorCode::NoDefaultValue, "type does not have a default value"));
             return nullptr;
         }
     } else if (returnType != compiler->typeVoid) {
-        elseValue = returnType->getDefaultValue(compiler, result, thisFunction, thisValue, builder, catchBB);
+        elseValue = returnType->getDefaultValue(compiler, result, thisFunction, thisValue, builder, catchBB, isReturnRetained);
         if (!elseValue) {
             result.errors.push_back(CError(loc, CErrorCode::NoDefaultValue, "type does not have a default value"));
             return nullptr;
@@ -129,13 +129,17 @@ shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, CResult& result, shared_ptr
 
 int NIf::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar, bool isHeapVar) {
     auto count = condition->setHeapVar(compiler, result, thisFunction, false);
-
     if (elseBlock) {
         count += elseBlock->setHeapVar(compiler, result, thisFunction, isHeapVar);
     }
     
     if (ifBlock) {
         count += ifBlock->setHeapVar(compiler, result, thisFunction, isHeapVar);
+    }
+    
+    if (isHeapVar) {
+        auto var = getVar(compiler, result, thisFunction, dotVar);
+        count += var->setHeapVar(compiler, result);
     }
     
     return count;

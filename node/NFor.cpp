@@ -13,7 +13,7 @@ public:
         return compiler->typeInt;
     }
     
-    virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
         assert(value);
         return value;
     }
@@ -68,12 +68,12 @@ int NFor::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFuncti
     return count;
 }
 
-Value* NFor::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* NFor::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
     // Emit the start code first, without 'variable' in scope.
-    Value *StartVal = start->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    Value *StartVal = start->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
     if (!StartVal) {
         return nullptr;
     }
@@ -84,7 +84,7 @@ Value* NFor::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFuncti
     }
     
     // Compute the end condition.
-    Value *EndVal = end->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    Value *EndVal = end->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
     if (!EndVal) {
         return nullptr;
     }
@@ -126,7 +126,7 @@ Value* NFor::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFuncti
     // Emit the body of the loop.  This, like any other expr, can change the
     // current BB.  Note that we ignore the value computed by the body, but don't
     // allow an error.
-    body->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    body->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
     
     // Emit the step value.
     Value *StepVal = ConstantInt::get(compiler->context, APInt(64, 1));

@@ -223,8 +223,8 @@ protected:
         return inner->getType(compiler, result, thisFunction);
     }
     
-    virtual Value* compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-        return inner->getType(compiler, result, thisFunction)->getDefaultValue(compiler, result, thisFunction, thisValue, builder, catchBB);
+    virtual Value* compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+        return inner->getType(compiler, result, thisFunction)->getDefaultValue(compiler, result, thisFunction, thisValue, builder, catchBB, isReturnRetained);
     }
 };
 
@@ -288,7 +288,7 @@ shared_ptr<CResult> Compiler::run(const string& code) {
         return compilerResult;
 
     state = CompilerState::Compile;
-    anonFunction->compile(this, *compilerResult, currentFunction, nullptr, nullptr, nullptr);
+    anonFunction->compile(this, *compilerResult, currentFunction, nullptr, nullptr, nullptr, true);
     auto function = cfunction->getFunction(this, *compilerResult);
     auto returnType = cfunction->getReturnType(this, *compilerResult);
     if (!function) {
@@ -351,6 +351,7 @@ shared_ptr<CResult> Compiler::run(const string& code) {
         compilerResult->type = RESULT_VOID;
     } else if (returnType->name == "list_char") {
         struct list_char {
+            int64_t refCount;
             int64_t parent;
             int64_t size;
             int64_t count;

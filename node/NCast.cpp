@@ -24,11 +24,11 @@ int NCast::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunct
     return node->setHeapVar(compiler, result, thisFunction, false);
 }
 
-Value* NCast::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* NCast::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
-    Value *v = node->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    Value *v = node->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
     if (!v)
         return nullptr;
     

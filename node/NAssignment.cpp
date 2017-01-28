@@ -113,7 +113,7 @@ int NAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<
     return 0;
 }
 
-Value* NAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* NAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
@@ -123,11 +123,12 @@ Value* NAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<
     }
 
     if (!inFunctionDeclaration && nfunction) {
-        nfunction->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+        nfunction->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
     }
     
     // Compute value
-    Value *value = rightSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    // TODO: retain value
+    Value *value = rightSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB, true);
 
     if (!value) {
         result.addError(loc, CErrorCode::ExpressionEmpty, "trying to assign an empty value");

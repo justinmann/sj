@@ -24,12 +24,12 @@ int NCompare::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFu
     return count;
 }
 
-Value* NCompare::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* NCompare::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
-    Value *L = leftSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
-    Value *R = rightSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    Value *L = leftSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
+    Value *R = rightSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
     if (!L || !R)
         return nullptr;
     

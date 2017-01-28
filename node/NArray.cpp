@@ -42,7 +42,7 @@ int NArray::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunc
     return 0;
 }
 
-Value* NArray::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* NArray::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
@@ -51,7 +51,8 @@ Value* NArray::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunc
     
     auto index = 0;
     for (auto it : *elements) {
-        auto itemValue = it->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+        // TODO: retain value
+        auto itemValue = it->compile(compiler, result, thisFunction, thisValue, builder, catchBB, true);
         if (!itemValue) {
             return nullptr;
         }
@@ -94,9 +95,9 @@ int NList::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunct
     return createCall->setHeapVar(compiler, result, thisFunction, nullptr, isHeapVar);
 }
 
-Value* NList::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* NList::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     assert(compiler->state == CompilerState::Compile);
-    return createCall->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    return createCall->compile(compiler, result, thisFunction, thisValue, builder, catchBB, isReturnRetained);
 }
 
 void NList::dump(Compiler* compiler, int level) const {
@@ -107,11 +108,12 @@ shared_ptr<CType> NArrayGetFunction::getBlockType(Compiler* compiler, CResult& r
     return thisFunction->getVarType(compiler, result, CLoc::undefined, "item", nullptr);
 }
 
-Value* NArrayGetFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
+Value* NArrayGetFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, bool returnIsRetained) {
+    // TODO: handle retained
     
-    Value* parentValue = dotVar->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB);
+    Value* parentValue = dotVar->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB, false);
     
-    auto indexValue = parameters[0]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    auto indexValue = parameters[0]->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
     
     vector<Value*> v;
     v.push_back(indexValue);
@@ -123,12 +125,15 @@ shared_ptr<CType> NArraySetFunction::getBlockType(Compiler* compiler, CResult& r
     return compiler->typeVoid;
 }
 
-Value* NArraySetFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
+Value* NArraySetFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, bool returnIsRetained) {
+    // TODO: handle retained
     
-    Value* parentValue = dotVar->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB);
+    Value* parentValue = dotVar->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB, false);
     
-    auto indexValue = parameters[0]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
-    auto itemValue = parameters[1]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    auto indexValue = parameters[0]->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
+    
+    // TODO: retain value
+    auto itemValue = parameters[1]->compile(compiler, result, thisFunction, thisValue, builder, catchBB, true);
     
     vector<Value*> v;
     v.push_back(indexValue);
@@ -146,12 +151,13 @@ shared_ptr<CVar> NArrayCreateFunction::getReturnVar(Compiler* compiler, CResult&
     return thisFunction->getThisVar();
 }
 
-Value* NArrayCreateFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
+Value* NArrayCreateFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, bool returnIsRetained) {
+    // TODO: handle retained
     if (parameters.size() == 0) {
         return nullptr;
     }
     
-    auto countValue = parameters[0]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    auto countValue = parameters[0]->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
     auto itemType = callee->templateTypes[0]->llvmRefType(compiler, result);
     
     auto thisVar = thisFunction->getThisVar();

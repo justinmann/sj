@@ -9,8 +9,8 @@ void NBase::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefi
 }
 
 shared_ptr<CVar> NBase::getVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
-    assert(compiler->state == CompilerState::FixVar);
     if (!_hasGetVar) {
+        assert(compiler->state == CompilerState::FixVar);
         _var = getVarImpl(compiler, result, thisFunction);
         _hasGetVar = true;
     }
@@ -31,8 +31,8 @@ int NBase::setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CFunction>
 }
 
 
-Value* NBase::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* NBase::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     assert(compiler->state == CompilerState::Compile);
-    return compileImpl(compiler, result, thisFunction, thisValue, builder, catchBB);
+    return compileImpl(compiler, result, thisFunction, thisValue, builder, catchBB, isReturnRetained);
 }
 

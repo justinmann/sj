@@ -5,7 +5,7 @@ shared_ptr<CType> NDouble::getTypeImpl(Compiler* compiler, CResult& result, shar
     return compiler->typeFloat;
 }
 
-Value* NDouble::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* NDouble::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
 

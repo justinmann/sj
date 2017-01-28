@@ -24,11 +24,11 @@ int NAnd::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFuncti
     return count;
 }
 
-Value* NAnd::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* NAnd::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
-    Value *l = left->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    Value *l = left->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
     if (!l) {
         return nullptr;
     }
@@ -38,7 +38,7 @@ Value* NAnd::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFuncti
         return nullptr;
     }
     
-    Value *r = right->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    Value *r = right->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
     if (!r) {
         return nullptr;
     }

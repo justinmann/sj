@@ -17,7 +17,7 @@ int NStringArray::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr
     return 0;
 }
 
-Value* NStringArray::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* NStringArray::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     return builder->CreateGlobalStringPtr(str);
@@ -43,9 +43,9 @@ int NString::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFun
     return createCall->setHeapVar(compiler, result, thisFunction, nullptr, isHeapVar);
 }
 
-Value* NString::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* NString::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     assert(compiler->state == CompilerState::Compile);
-    return createCall->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    return createCall->compile(compiler, result, thisFunction, thisValue, builder, catchBB, isReturnRetained);
 }
 
 void NString::dump(Compiler* compiler, int level) const {

@@ -20,11 +20,11 @@ int NNot::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFuncti
     return node->setHeapVar(compiler, result, thisFunction, false);
 }
 
-Value* NNot::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* NNot::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
-    Value *v = node->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    Value *v = node->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
     if (!v)
         return nullptr;
     

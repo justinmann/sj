@@ -24,12 +24,12 @@ int NMath::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunct
     return count;
 }
 
-Value* NMath::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* NMath::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
-    Value *L = leftSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
-    Value *R = rightSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    Value *L = leftSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
+    Value *R = rightSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
     if (!L || !R)
         return nullptr;
     

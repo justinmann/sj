@@ -5,7 +5,7 @@ shared_ptr<CType> NChar::getTypeImpl(Compiler* compiler, CResult& result, shared
     return compiler->typeChar;
 }
 
-Value* NChar::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* NChar::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);    
     return ConstantInt::get(compiler->context, APInt(8, value));

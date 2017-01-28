@@ -5,7 +5,7 @@ shared_ptr<CType> NInteger::getTypeImpl(Compiler* compiler, CResult& result, sha
     return compiler->typeInt;
 }
 
-Value* NInteger::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* NInteger::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     

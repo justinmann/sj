@@ -81,7 +81,7 @@ shared_ptr<CType> CNormalVar::getType(Compiler* compiler, CResult& result) {
     return type;
 }
 
-Value* CNormalVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* CNormalVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     if (mode == Local) {
         auto value = getStoreValue(compiler, result, thisValue, dotValue, builder, catchBB);
         return builder->CreateLoad(value);

@@ -16,17 +16,17 @@ shared_ptr<CType> CDotVar::getType(Compiler* compiler, CResult& result) {
     return rightVar->getType(compiler, result);
 }
 
-Value* CDotVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    auto leftValue = leftVar->getLoadValue(compiler, result, thisValue, dotValue, builder, catchBB);
+Value* CDotVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+    auto leftValue = leftVar->getLoadValue(compiler, result, thisValue, dotValue, builder, catchBB, false);
     if (!leftValue) {
         return nullptr;
     }
     
-    return rightVar->getLoadValue(compiler, result, thisValue, leftValue, builder, catchBB);
+    return rightVar->getLoadValue(compiler, result, thisValue, leftValue, builder, catchBB, isReturnRetained);
 }
 
 Value* CDotVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    auto leftValue = leftVar->getLoadValue(compiler, result, thisValue, dotValue, builder, catchBB);
+    auto leftValue = leftVar->getLoadValue(compiler, result, thisValue, dotValue, builder, catchBB, false);
     if (!leftValue) {
         return nullptr;
     }

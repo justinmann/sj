@@ -13,7 +13,7 @@ class CIfElseVar : public CVar {
 public:
     static shared_ptr<CIfElseVar> create(const CLoc& loc, shared_ptr<CFunction> thisFunction, shared_ptr<NBase> condition, shared_ptr<NBase> ifBlock, shared_ptr<NBase> elseBlock);
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
+    virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained);
     virtual Value* getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     string fullName();
     

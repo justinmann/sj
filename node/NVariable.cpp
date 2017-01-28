@@ -27,7 +27,7 @@ shared_ptr<CType> CParentVar::getType(Compiler* compiler, CResult& result) {
     return childVar->getType(compiler, result);
 }
 
-Value* CParentVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* CParentVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     auto parentPtr = parentFunction->getParentPointer(compiler, result, builder, dotValue);
     if (!parentPtr) {
         return nullptr;
@@ -35,7 +35,7 @@ Value* CParentVar::getLoadValue(Compiler* compiler, CResult& result, Value* this
     
     auto parentValue = builder->CreateLoad(parentPtr, "parent");
 
-    return childVar->getLoadValue(compiler, result, thisValue, parentValue, builder, catchBB);
+    return childVar->getLoadValue(compiler, result, thisValue, parentValue, builder, catchBB, isReturnRetained);
 }
 
 Value* CParentVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {

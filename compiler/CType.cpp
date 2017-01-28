@@ -28,10 +28,10 @@ Type* CType::llvmRefType(Compiler* compiler, CResult& result) {
     return _llvmRefType;
 }
 
-Value* CType::getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* CType::getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     if (parent.expired()) {
         return _value;
     } else {
-        return parent.lock()->getDefaultValue(compiler, result, thisFunction, thisValue, builder, catchBB);
+        return parent.lock()->getDefaultValue(compiler, result, thisFunction, thisValue, builder, catchBB, isReturnRetained);
     }
 }

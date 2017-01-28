@@ -37,7 +37,7 @@ int NMathAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_
     return count;
 }
 
-Value* NMathAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* NMathAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
@@ -51,12 +51,12 @@ Value* NMathAssignment::compileImpl(Compiler* compiler, CResult& result, shared_
         return nullptr;
     }
     
-    auto leftValue = cvar->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB);
+    auto leftValue = cvar->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB, false);
     
     // Compute value
     Value *rightValue = nullptr;
     if (rightSide) {
-        rightValue = rightSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+        rightValue = rightSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
     }
 
     Value* resultValue = nullptr;

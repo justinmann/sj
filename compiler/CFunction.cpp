@@ -12,7 +12,7 @@ class CThisVar : public CVar {
 public:
     static shared_ptr<CThisVar> create(shared_ptr<CFunction> parent);
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
+    virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained);
     virtual Value* getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     
     CLoc loc;
@@ -32,7 +32,7 @@ shared_ptr<CType> CThisVar::getType(Compiler* compiler, CResult& result) {
     return parent.lock()->getThisType(compiler, result);
 }
 
-Value* CThisVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* CThisVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     return thisValue;
 }
 
@@ -49,6 +49,7 @@ shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, con
     c->type = type_;
     c->name = name_;
     c->node = node_;
+    c->hasRefCount = false;
     c->hasParent = false;
     c->_structType = nullptr;
     c->function = nullptr;
@@ -122,8 +123,12 @@ shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result) {
 Type* CFunction::getStructType(Compiler* compiler, CResult& result) {
     if (!_structType) {
         _structType = StructType::create(compiler->context, name);
-
+        
         vector<Type*> structMembers;
+
+        structMembers.push_back(Type::getInt64Ty(compiler->context));
+        hasRefCount = true;
+
         if (!parent.expired()) {
             auto parentType = parent.lock()->getThisType(compiler, result);
             if (parentType) {
@@ -287,10 +292,16 @@ string CFunction::fullName() {
 
 int CFunction::getArgStart(Compiler* compiler, CResult& result) {
     getThisType(compiler, result);
-    if (hasParent)
-        return 1;
     
-    return 0;
+    int argStart = 0;
+    
+    if (hasRefCount)
+        argStart++;
+    
+    if (hasParent)
+        argStart++;
+    
+    return argStart;
 }
 
 bool CFunction::getHasParent(Compiler* compiler, CResult& result) {
@@ -332,20 +343,21 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, con
 
 Value* CFunction::getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
     if (hasParent) {
+        assert(hasRefCount);
         vector<Value*> v;
         v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
-        v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+        v.push_back(ConstantInt::get(compiler->context, APInt(32, 1)));
         return builder->CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "parent");
     }
     return nullptr;
 }
 
-Value* CFunction::getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* CFunction::getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     auto parameters = vector<shared_ptr<NBase>>();
     for (auto defaultAssignment : node->assignments) {
         parameters.push_back(defaultAssignment->rightSide);
     }
-    return node->call(compiler, result, thisFunction, thisValue, shared_from_this(), nullptr, builder, catchBB, parameters);
+    return node->call(compiler, result, thisFunction, thisValue, shared_from_this(), nullptr, builder, catchBB, parameters, isReturnRetained);
 }
 
 shared_ptr<CVar> CFunction::getThisVar() {
@@ -353,6 +365,75 @@ shared_ptr<CVar> CFunction::getThisVar() {
         thisVar = CThisVar::create(shared_from_this());
     }
     return thisVar;
+}
+
+Value* CFunction::getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    if (hasRefCount) {
+        vector<Value*> v;
+        v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+        v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+        return builder->CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "refCount");
+    }
+    return nullptr;
+}
+
+void CFunction::initStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    /* auto refCount = getRefCount(compiler, result, builder, thisValue);
+    if (refCount) {
+        builder->CreateStore(ConstantInt::get(compiler->context, APInt(64, 0)), refCount);
+    } */
+}
+
+void CFunction::initHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    auto refCount = getRefCount(compiler, result, builder, thisValue);
+    assert(refCount);
+    builder->CreateStore(ConstantInt::get(compiler->context, APInt(64, 0)), refCount);
+}
+
+void CFunction::retainStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+/*
+    auto refCount = getRefCount(compiler, result, builder, thisValue);
+    assert(refCount);
+    auto foo = builder->CreateAdd(refCount, ConstantInt::get(compiler->context, APInt(64, 1)));
+    builder->CreateStore(foo, refCount); */
+}
+
+void CFunction::retainHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    auto refCount = getRefCount(compiler, result, builder, thisValue);
+    assert(refCount);
+    auto load = builder->CreateLoad(refCount);
+    auto add = builder->CreateAdd(load, ConstantInt::get(compiler->context, APInt(64, 1)));
+    builder->CreateStore(add, refCount);
+}
+
+void CFunction::releaseStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    // auto refCount = getRefCount(compiler, result, builder, thisValue);
+    // auto foo = builder->CreateSub(refCount, ConstantInt::get(compiler->context, APInt(64, 1)));
+    // If not zero then error
+}
+
+void CFunction::releaseHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    auto refCount = getRefCount(compiler, result, builder, thisValue);
+    auto load = builder->CreateLoad(refCount);
+    auto sub = builder->CreateSub(load, ConstantInt::get(compiler->context, APInt(64, 1)));
+    builder->CreateStore(sub, refCount);
+
+    Function *function = builder->GetInsertBlock()->getParent();
+    auto ifBB = BasicBlock::Create(compiler->context);
+    auto mergeBB = BasicBlock::Create(compiler->context);
+    
+    auto c = builder->CreateICmpEQ(sub, ConstantInt::get(compiler->context, APInt(64, 0)));
+    builder->CreateCondBr(c, ifBB, mergeBB);
+
+    // If zero then delete
+    function->getBasicBlockList().push_back(ifBB);
+    builder->SetInsertPoint(ifBB);
+    // Delete "this"
+    builder->CreateBr(mergeBB);
+    
+    // Merge block
+    function->getBasicBlockList().push_back(mergeBB);
+    builder->SetInsertPoint(mergeBB);
 }
 
 shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parent, CFunctionType type, const string& name, shared_ptr<NFunction> node) {

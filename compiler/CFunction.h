@@ -51,8 +51,16 @@ public:
     Value* getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
     string fullName();
     shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, const CLoc& loc, const string& name, shared_ptr<TemplateTypeNames> subTypeNames);
-    Value* getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB);
+    Value* getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained);
     shared_ptr<CVar> getThisVar();
+    
+    Value* getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
+    void initStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
+    void initHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
+    void retainStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
+    void retainHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
+    void releaseStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
+    void releaseHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
 
     CFunctionType type;
     string name;
@@ -66,6 +74,7 @@ public:
     map<string, shared_ptr<CVar>> localVarsByName;
 
 private:
+    bool hasRefCount;
     bool hasParent;
     bool isInGetType;
     bool isInGetFunction;

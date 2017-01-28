@@ -24,7 +24,7 @@ int NWhile::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunc
     return count;
 }
 
-Value* NWhile::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* NWhile::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
@@ -39,7 +39,7 @@ Value* NWhile::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunc
     TheFunction->getBasicBlockList().push_back(loopBB);
     builder->SetInsertPoint(loopBB);
     
-    auto condition = cond->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    auto condition = cond->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
     if (!condition->getType()->isIntegerTy(1)) {
         result.addError(loc, CErrorCode::TypeMismatch, "condition for while must be a bool");
         return nullptr;
@@ -53,7 +53,7 @@ Value* NWhile::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunc
     // Emit the body of the loop.  This, like any other expr, can change the
     // current BB.  Note that we ignore the value computed by the body, but don't
     // allow an error.
-    body->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    body->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
     
     builder->CreateBr(loopBB);
     
