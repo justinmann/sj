@@ -12,7 +12,11 @@ string CVar::fullName() {
     return strprintf("%s.%s", parent.lock()->fullName().c_str(), name.c_str());
 }
 
-int CVar::setHeapVar() {
+bool CVar::getHeapVar(Compiler *compiler, CResult &result) {
+    return isHeapVar;
+}
+
+int CVar::setHeapVar(Compiler* compiler, CResult& result) {
     if (!isHeapVar) {
         isHeapVar = true;
         return 1;

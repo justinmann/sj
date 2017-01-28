@@ -92,6 +92,22 @@ string CCallVar::fullName() {
     return name + "()";
 }
 
+bool CCallVar::getHeapVar(Compiler* compiler, CResult& result) {
+    auto returnVar = thisFunction->getReturnVar(compiler, result);
+    if (returnVar) {
+        return returnVar->getHeapVar(compiler, result);
+    }
+    return false;
+}
+
+int CCallVar::setHeapVar(Compiler* compiler, CResult& result) {
+    auto returnVar = callee->getReturnVar(compiler, result);
+    if (returnVar) {
+        return returnVar->setHeapVar(compiler, result);
+    }
+    return 0;
+}
+
 NCall::NCall(CLoc loc, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, shared_ptr<NodeList> arguments) : name(name), templateTypeNames(templateTypeNames), arguments(arguments), NVariableBase(NodeType_Call, loc) {
     if (!this->arguments) {
         this->arguments = make_shared<NodeList>();
@@ -186,7 +202,7 @@ int NCall::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunct
 
     if (isHeapVar) {
         auto var = getVar(compiler, result, thisFunction, dotVar);
-        count += var->setHeapVar();
+        count += var->setHeapVar(compiler, result);
     }
     return count;
 }

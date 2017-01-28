@@ -20,7 +20,9 @@ public:
     virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     virtual Value* getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     string fullName();
-    
+    virtual bool getHeapVar(Compiler* compiler, CResult& result);
+    virtual int setHeapVar(Compiler* compiler, CResult& result);
+
     CLoc loc;
     shared_ptr<NodeList> arguments;
     shared_ptr<CFunction> thisFunction;

@@ -86,6 +86,10 @@ Value* NFunction::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CF
     return nullptr;
 }
 
+shared_ptr<CVar> NFunction::getReturnVar(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+    return block->getVar(compiler, result, thisFunction);
+}
+
 void NFunction::getVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state == CompilerState::FixVar);
     if (invalid.size() > 0) {
@@ -348,8 +352,17 @@ Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction
     } else {
         // Create this on stack, and get a pointer
         auto newType = callee->getThisType(compiler, result);
-        auto entryBuilder = getEntryBuilder(builder);
-        auto newValue = entryBuilder.CreateAlloca(newType->llvmAllocType(compiler, result), 0, newType->name.c_str());
+        
+        auto thisVar = callee->getThisVar();
+        Value* newValue = nullptr;
+        if (thisVar->getHeapVar(compiler, result)) {
+            // heap alloc this
+            assert(false);
+        } else {
+            // stack alloc this
+            auto entryBuilder = getEntryBuilder(builder);
+            newValue = entryBuilder.CreateAlloca(newType->llvmAllocType(compiler, result), 0, newType->name.c_str());
+        }
         
         // Fill in "this" with normal arguments
         auto argIndex = 0;

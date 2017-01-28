@@ -7,7 +7,7 @@ shared_ptr<CVar> NThis::getVarImpl(Compiler *compiler, CResult &result, shared_p
         result.addError(loc, CErrorCode::InvalidVariable, "this must be the first var in a dot chain");
         return nullptr;
     }
-    return CThisVar::create(loc, thisFunction);
+    return thisFunction->getThisVar();
 }
 
 void NThis::dump(Compiler* compiler, int level) const {

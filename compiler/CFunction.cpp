@@ -8,12 +8,22 @@
 
 #include "Node.h"
 
-shared_ptr<CThisVar> CThisVar::create(CLoc loc_, shared_ptr<CFunction> parent) {
+class CThisVar : public CVar {
+public:
+    static shared_ptr<CThisVar> create(shared_ptr<CFunction> parent);
+    virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
+    virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
+    virtual Value* getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
+    
+    CLoc loc;
+};
+
+shared_ptr<CThisVar> CThisVar::create(shared_ptr<CFunction> parent) {
     auto c = make_shared<CThisVar>();
     c->mode = CVarType::Public;
     c->name = "this";
     c->isMutable = false;
-    c->loc = loc_;
+    c->loc = CLoc::undefined;
     c->parent = parent;
     return c;
 }
@@ -90,6 +100,10 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CResult& result) 
     
     isInGetType = false;
     return returnType;
+}
+
+shared_ptr<CVar> CFunction::getReturnVar(Compiler* compiler, CResult& result) {
+    return node->getReturnVar(compiler, result, shared_from_this());
 }
 
 shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result) {
@@ -332,6 +346,13 @@ Value* CFunction::getDefaultValue(Compiler* compiler, CResult& result, shared_pt
         parameters.push_back(defaultAssignment->rightSide);
     }
     return node->call(compiler, result, thisFunction, thisValue, shared_from_this(), nullptr, builder, catchBB, parameters);
+}
+
+shared_ptr<CVar> CFunction::getThisVar() {
+    if (!thisVar) {
+        thisVar = CThisVar::create(shared_from_this());
+    }
+    return thisVar;
 }
 
 shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parent, CFunctionType type, const string& name, shared_ptr<NFunction> node) {

@@ -68,7 +68,7 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler *compiler, CResult &result, shar
 int NVariable::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar, bool isHeapVar) {
     auto var = getVar(compiler, result, thisFunction, dotVar);
     if (var) {
-        return var->setHeapVar();
+        return var->setHeapVar(compiler, result);
     }
     return 0;
 }

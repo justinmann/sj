@@ -29,14 +29,17 @@ public:
     virtual Value* getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) = 0;
     string fullName();
     shared_ptr<CFunction> getCFunctionForValue(Compiler* compiler, CResult& result);
-    int setHeapVar();
+    virtual bool getHeapVar(Compiler* compiler, CResult& result);
+    virtual int setHeapVar(Compiler* compiler, CResult& result);
 
     string name;
     CVarType mode;
     bool isMutable;
-    bool isHeapVar;
     weak_ptr<CFunction> parent;
     shared_ptr<NAssignment> nassignment;
+    
+private:
+    bool isHeapVar;
 };
 
 class NFunction;

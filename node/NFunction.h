@@ -27,6 +27,7 @@ public:
 
     virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
     virtual Value* call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters);
+    shared_ptr<CVar> getReturnVar(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction);
     virtual void getVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction);
     Function* compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
     virtual void compileBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Function* function);

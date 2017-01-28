@@ -22,15 +22,7 @@ public:
     }
 };
 
-class CThisVar : public CVar {
-public:
-    static shared_ptr<CThisVar> create(CLoc loc_, shared_ptr<CFunction> parent);
-    virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
-    virtual Value* getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
-    
-    CLoc loc;
-};
+
 
 enum CFunctionType {
     FT_Private,
@@ -46,6 +38,7 @@ public:
     shared_ptr<CFunction> getCFunction(Compiler* compiler, CResult& result, const CLoc& loc, const string& name, shared_ptr<CFunction> callerFunction, shared_ptr<TemplateTypeNames> templateTypeNames);
     shared_ptr<CVar> getCVar(Compiler* compiler, CResult& result, const CLoc& loc, const string& name);
     shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result);
+    shared_ptr<CVar> getReturnVar(Compiler* compiler, CResult& result);
     int getThisIndex(const string& name) const;
     shared_ptr<CType> getThisType(Compiler* compiler, CResult& result);
     Type* getStructType(Compiler* compiler, CResult& result);
@@ -59,6 +52,7 @@ public:
     string fullName();
     shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, const CLoc& loc, const string& name, shared_ptr<TemplateTypeNames> subTypeNames);
     Value* getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB);
+    shared_ptr<CVar> getThisVar();
 
     CFunctionType type;
     string name;
@@ -79,6 +73,7 @@ private:
     llvm::StructType* _structType;
     shared_ptr<CType> returnType;
     shared_ptr<CType> thisType;
+    shared_ptr<CVar> thisVar;
 };
 
 class CFunctionDefinition : public enable_shared_from_this<CFunctionDefinition> {
