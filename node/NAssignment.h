@@ -33,6 +33,7 @@ protected:
     virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB);
 
 private:
+    bool _isFirstAssignment;
     shared_ptr<CVar> _assignVar;
     shared_ptr<NAssignment> shared_from_this();
 };

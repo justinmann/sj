@@ -1,6 +1,6 @@
 #include "Node.h"
 
-NAssignment::NAssignment(CLoc loc, shared_ptr<NVariableBase> var, const char* typeName, const char* name, shared_ptr<NBase> rightSide_, bool isMutable) : var(var), typeName(typeName), name(name), rightSide(rightSide_), isMutable(isMutable), inFunctionDeclaration(false), NBase(NodeType_Assignment, loc) {
+NAssignment::NAssignment(CLoc loc, shared_ptr<NVariableBase> var, const char* typeName, const char* name, shared_ptr<NBase> rightSide_, bool isMutable) : var(var), typeName(typeName), name(name), rightSide(rightSide_), isMutable(isMutable), inFunctionDeclaration(false), _isFirstAssignment(false), NBase(NodeType_Assignment, loc) {
     // If we are assigning a function to a var then we will call the function to get its value
     if (rightSide && rightSide->nodeType == NodeType_Function) {
         nfunction = static_pointer_cast<NFunction>(rightSide);
@@ -62,6 +62,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
                 }
                 _assignVar = CNormalVar::createLocalVar(loc, name, thisFunction, shared_from_this());
                 cfunction->localVarsByName[name] = _assignVar;
+                _isFirstAssignment = true;
             }
         }
         
@@ -153,6 +154,11 @@ shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& re
     if (!alloca) {
         result.addError(loc, CErrorCode::InvalidVariable, "var cannot be assigned '%s'", name.c_str());
         return nullptr;
+    }
+    
+    if (value->valueFunction && !_isFirstAssignment) {
+        auto currentValue = builder->CreateLoad(alloca);
+        value->valueFunction->releaseHeap(compiler, result, builder, currentValue);
     }
     
     // Store value
