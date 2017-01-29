@@ -24,44 +24,47 @@ int NMath::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunct
     return count;
 }
 
-Value* NMath::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+shared_ptr<ReturnValue> NMath::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
-    Value *L = leftSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
-    Value *R = rightSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
+    auto L = leftSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    auto R = rightSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
     if (!L || !R)
         return nullptr;
     
-    if (L->getType() != R->getType()) {
+    if (L->value->getType() != R->value->getType()) {
         result.addError(loc, CErrorCode::TypeMismatch, "left and right values are not the same type");
         return nullptr;
     }
     
-    if (L->getType()->isIntegerTy()) {
+    assert(L->type == RVT_SIMPLE);
+    assert(R->type == RVT_SIMPLE);
+    
+    if (L->value->getType()->isIntegerTy()) {
         switch (op) {
             case NMathOp::Add:
-                return builder->CreateAdd(L, R, "addtmp");
+                return make_shared<ReturnValue>(builder->CreateAdd(L->value, R->value, "addtmp"));
             case NMathOp::Sub:
-                return builder->CreateSub(L, R, "subtmp");
+                return make_shared<ReturnValue>(builder->CreateSub(L->value, R->value, "subtmp"));
             case NMathOp::Mul:
-                return builder->CreateMul(L, R, "multmp");
+                return make_shared<ReturnValue>(builder->CreateMul(L->value, R->value, "multmp"));
             case NMathOp::Div:
-                return builder->CreateSDiv(L, R, "divtmp");
+                return make_shared<ReturnValue>(builder->CreateSDiv(L->value, R->value, "divtmp"));
             default:
                 result.addError(loc, CErrorCode::Internal, "unknown math type");
                 return nullptr;
         }
-    } else if (L->getType()->isDoubleTy()) {
+    } else if (L->value->getType()->isDoubleTy()) {
         switch (op) {
             case NMathOp::Add:
-                return builder->CreateFAdd(L, R, "addtmp");
+                return make_shared<ReturnValue>(builder->CreateFAdd(L->value, R->value, "addtmp"));
             case NMathOp::Sub:
-                return builder->CreateFSub(L, R, "subtmp");
+                return make_shared<ReturnValue>(builder->CreateFSub(L->value, R->value, "subtmp"));
             case NMathOp::Mul:
-                return builder->CreateFMul(L, R, "multmp");
+                return make_shared<ReturnValue>(builder->CreateFMul(L->value, R->value, "multmp"));
             case NMathOp::Div:
-                return builder->CreateFDiv(L, R, "divtmp");
+                return make_shared<ReturnValue>(builder->CreateFDiv(L->value, R->value, "divtmp"));
             default:
                 result.addError(loc, CErrorCode::Internal, "unknown math type");
                 return nullptr;

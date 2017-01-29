@@ -82,7 +82,7 @@ shared_ptr<CType> NFunction::getTypeImpl(Compiler* compiler, CResult& result, sh
     return compiler->typeVoid;
 }
 
-Value* NFunction::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder, BasicBlock* parentCatchBB, bool isReturnRetained) {
+shared_ptr<ReturnValue> NFunction::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder, BasicBlock* parentCatchBB) {
     return nullptr;
 }
 
@@ -231,19 +231,19 @@ Function* NFunction::compileDefinition(Compiler* compiler, CResult& result, shar
     }
 }
 
-void NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Function* function) {
+bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Function* function) {
     assert(compiler->state == CompilerState::Compile);
     assert(thisFunction->node.get() == this);
     
     if (!block) {
-        return;
+        return false;
     }
     
     // Create body of function
     // Create a new basic block to start insertion into.
     auto basicBlock = BasicBlock::Create(compiler->context, "entry", function);
     IRBuilder<> newBuilder(basicBlock);
-    Value *returnValue = nullptr;
+    shared_ptr<ReturnValue> returnValue = nullptr;
     Argument* thisArgument = nullptr;
     shared_ptr<CVar> returnVar = nullptr;
     auto returnType = block->getType(compiler, result, thisFunction);
@@ -252,6 +252,28 @@ void NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
     BasicBlock* catchBB = nullptr;
     if (catchBlock) {
         catchBB = BasicBlock::Create(compiler->context, "catch", function);
+    }
+    
+    thisArgument = (Argument*)function->args().begin();
+    returnVar = block->getVar(compiler, result, thisFunction);
+    returnValue = block->compile(compiler, result, thisFunction, thisArgument, &newBuilder, catchBB);
+    if (function->getReturnType()->isVoidTy()) {
+        newBuilder.CreateRetVoid();
+    } else {
+        if (!returnValue) {
+            result.addError(loc, CErrorCode::TypeMismatch, "no return for non-void function");
+            goto error;
+        }
+        
+        if (function->getReturnType() != returnValue->value->getType()) {
+            result.addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match return value type '%s'", Type_print(function->getReturnType()).c_str(), Type_print(returnValue->value->getType()).c_str());
+            goto error;
+        }
+        
+        newBuilder.CreateRet(returnValue->value);
+    }
+    
+    if (catchBlock) {
         IRBuilder<> catchBuilder(catchBB);
         
         llvm::Type *caughtResultFieldTypes[] = {
@@ -266,41 +288,24 @@ void NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
         
         auto thisArgument = (Argument*)function->args().begin();
         returnVar = catchBlock->getVar(compiler, result, thisFunction);
-        returnValue = catchBlock->compile(compiler, result, thisFunction, thisArgument, &catchBuilder, nullptr, true);
+        auto catchReturnValue = catchBlock->compile(compiler, result, thisFunction, thisArgument, &catchBuilder, nullptr);
         if (function->getReturnType()->isVoidTy()) {
             catchBuilder.CreateRetVoid();
         } else {
-            if (!returnValue) {
+            if (!catchReturnValue) {
                 result.addError(loc, CErrorCode::TypeMismatch, "no return for non-void function");
                 goto error;
             }
             
-            if (function->getReturnType() != returnValue->getType()) {
-                result.addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match return value type '%s'", Type_print(function->getReturnType()).c_str(), Type_print(returnValue->getType()).c_str());
+            if (function->getReturnType() != catchReturnValue->value->getType()) {
+                result.addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match return value type '%s'", Type_print(function->getReturnType()).c_str(), Type_print(catchReturnValue->value->getType()).c_str());
                 goto error;
             }
             
-            catchBuilder.CreateRet(returnValue);
-        } 
-    }
-    
-    thisArgument = (Argument*)function->args().begin();
-    returnVar = block->getVar(compiler, result, thisFunction);
-    returnValue = block->compile(compiler, result, thisFunction, thisArgument, &newBuilder, catchBB, true);
-    if (function->getReturnType()->isVoidTy()) {
-        newBuilder.CreateRetVoid();
-    } else {
-        if (!returnValue) {
-            result.addError(loc, CErrorCode::TypeMismatch, "no return for non-void function");
-            goto error;
+            assert(catchReturnValue->type == returnValue->type);
+            assert(catchReturnValue->mustRelease == returnValue->mustRelease);
+            catchBuilder.CreateRet(catchReturnValue->value);
         }
-        
-        if (function->getReturnType() != returnValue->getType()) {
-            result.addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match return value type '%s'", Type_print(function->getReturnType()).c_str(), Type_print(returnValue->getType()).c_str());
-            goto error;
-        }
-        
-        newBuilder.CreateRet(returnValue);
     }
     
 error:
@@ -319,14 +324,14 @@ error:
         assert(false);
     }
     
-    /*
-    compiler->TheFPM->run(*function);
-    */
+    assert(!returnValue || returnValue->type == RVT_SIMPLE || returnValue->type == RVT_HEAP);
+    return returnValue ? returnValue->mustRelease : false;
 }
 
-Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, bool isReturnRetained) {
+shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
     if (type == FT_Extern) {
-        vector<Value *> argsV;
+        vector<shared_ptr<ReturnValue>> argReturnValues;
+        vector<Value *> argValues;
         auto func = callee->getFunction(compiler, result);
         
         // Fill in "this" with normal arguments
@@ -335,32 +340,37 @@ Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction
             assert(defaultAssignment->inFunctionDeclaration);
             auto argType = defaultAssignment->getType(compiler, result, thisFunction);
             auto isDefaultAssignment = parameters[argIndex] == defaultAssignment->rightSide;
-            Value* value;
+            shared_ptr<ReturnValue> argReturnValue;
             
-            // TODO: Retain parameters
             if (isDefaultAssignment) {
-                value = parameters[argIndex]->compile(compiler, result, callee, nullptr, builder, catchBB, true);
+                argReturnValue = parameters[argIndex]->compile(compiler, result, callee, nullptr, builder, catchBB);
             } else {
-                value = parameters[argIndex]->compile(compiler, result, thisFunction, thisValue, builder, catchBB, true);
+                argReturnValue = parameters[argIndex]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
             }
             
-            if (!value) {
+            if (!argReturnValue) {
                 result.addError(CLoc::undefined, CErrorCode::TypeMismatch, "value is empty");
                 return nullptr;
             }
             
-            if (value->getType() != argType->llvmRefType(compiler, result)) {
+            if (argReturnValue->value->getType() != argType->llvmRefType(compiler, result)) {
                 result.addError(CLoc::undefined, CErrorCode::TypeMismatch, "value does not match");
                 return nullptr;
             }
             
-            argsV.push_back(value);
-            
+            argReturnValues.push_back(argReturnValue);
+            argValues.push_back(argReturnValue->value);
             argIndex++;
         }
         
-        return builder->CreateCall(func, argsV);
+        auto returnValue = make_shared<ReturnValue>(builder->CreateCall(func, argValues));
+        for (auto it : argReturnValues) {
+            it->releaseIfNeeded(compiler, result, builder);
+        }
+        return returnValue;
     } else {
+        vector<shared_ptr<ReturnValue>> argReturnValues;
+
         // Create this on stack, and get a pointer
         Value* calleeValue = nullptr;
         auto calleeType = callee->getThisType(compiler, result);
@@ -399,36 +409,38 @@ Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction
             assert(defaultAssignment->inFunctionDeclaration);
             auto argType = defaultAssignment->getType(compiler, result, callee);
             auto isDefaultAssignment = parameters[argIndex] == defaultAssignment->rightSide;
-            Value* value;
-            // TODO: Retain parameters
+            shared_ptr<ReturnValue> argReturnValue;
             if (isDefaultAssignment) {
-                value = parameters[argIndex]->compile(compiler, result, callee, calleeValue, builder, catchBB, true);
+                argReturnValue = parameters[argIndex]->compile(compiler, result, callee, calleeValue, builder, catchBB);
             } else {
-                value = parameters[argIndex]->compile(compiler, result, thisFunction, thisValue, builder, catchBB, true);
+                argReturnValue = parameters[argIndex]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
             }
-            
-            if (!value) {
+                        
+            if (!argReturnValue) {
                 result.addError(CLoc::undefined, CErrorCode::TypeMismatch, "value is empty");
                 return nullptr;
             }
             
-            if (value->getType() != argType->llvmRefType(compiler, result)) {
+            if (argReturnValue->value->getType() != argType->llvmRefType(compiler, result)) {
                 result.addError(CLoc::undefined, CErrorCode::TypeMismatch, "value does not match");
                 return nullptr;
             }
             
+            argReturnValues.push_back(argReturnValue);
             auto paramPtr = callee->getArgumentPointer(compiler, result, calleeValue, argIndex, builder);
-            builder->CreateStore(value, paramPtr);
+            builder->CreateStore(argReturnValue->value, paramPtr);
             
             argIndex++;
         }
         
         // Add "parent" to "this"
         auto hasParent = callee->getHasParent(compiler, result);
+        shared_ptr<ReturnValue> dotReturnValue;
         if (hasParent) {
             Value* parentValue = thisValue;
             if (dotVar) {
-                parentValue = dotVar->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB, false);
+                dotReturnValue = dotVar->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB);
+                parentValue = dotReturnValue->value;
             } else {
                 // if recursively calling ourselves then re-use parent
                 if (callee == thisFunction) {
@@ -464,6 +476,8 @@ Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction
             returnValue = builder->CreateCall(func, argsV);
         }
         
+        // TODO: if return is "this" then do not release
+        
         // Release "this" value
         if (calleeFunction) {
             if (calleeHeapVar) {
@@ -473,20 +487,18 @@ Value* NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction
             }
         }
         
-        // Release return value
-        if (!isReturnRetained) {
-            auto returnVar = callee->getReturnVar(compiler, result);
-            if (returnVar) {
-                auto returnFunction = returnVar->getCFunctionForValue(compiler, result);
-                if (returnFunction) {
-                    returnFunction->retainHeap(compiler, result, builder, returnValue);
-                    // TODO: Builder should be block at end of function
-                    returnFunction->releaseHeap(compiler, result, builder, returnValue);
-                }
-            }
+        if (dotReturnValue) {
+            dotReturnValue->releaseIfNeeded(compiler, result, builder);
         }
         
-        return returnValue;
+        for (auto it : argReturnValues) {
+            it->releaseIfNeeded(compiler, result, builder);
+        }
+        
+        auto returnType = callee->getReturnType(compiler, result);
+        auto returnFunction = returnType->parent.lock();
+        auto mustRelease = calleeFunction->getReturnMustRelease(compiler, result);
+        return make_shared<ReturnValue>(returnFunction, mustRelease, returnFunction ? RVT_HEAP : RVT_SIMPLE, returnValue);
     }
 }
 

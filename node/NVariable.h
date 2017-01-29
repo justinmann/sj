@@ -37,9 +37,9 @@ protected:
         return var->getType(compiler, result);
     }
     
-    virtual Value* compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+    virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
         auto var = getVar(compiler, result, thisFunction, nullptr);
-        return var->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB, isReturnRetained);
+        return var->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB);
     }
     
     virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) = 0;
@@ -50,7 +50,7 @@ class CParentVar : public CVar {
 public:
     static shared_ptr<CParentVar> create(shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_);
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained);
+    virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     virtual Value* getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     string fullName();
     

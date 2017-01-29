@@ -43,6 +43,7 @@ public:
     shared_ptr<CType> getThisType(Compiler* compiler, CResult& result);
     Type* getStructType(Compiler* compiler, CResult& result);
     Function* getFunction(Compiler* compiler, CResult& result);
+    bool getReturnMustRelease(Compiler* compiler, CResult& result);
     Value* getThisArgument(Compiler* compiler, CResult& result);
     void localVarToThisVar(Compiler* compiler, shared_ptr<CNormalVar> cvar);
     int getArgStart(Compiler* compiler, CResult& result);
@@ -51,7 +52,7 @@ public:
     Value* getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
     string fullName();
     shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, const CLoc& loc, const string& name, shared_ptr<TemplateTypeNames> subTypeNames);
-    Value* getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained);
+    shared_ptr<ReturnValue> getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB);
     shared_ptr<CVar> getThisVar();
     
     Value* getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
@@ -78,6 +79,7 @@ private:
     bool hasParent;
     bool isInGetType;
     bool isInGetFunction;
+    bool returnMustRelease;
     Function* function;
     llvm::StructType* _structType;
     shared_ptr<CType> returnType;

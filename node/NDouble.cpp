@@ -5,7 +5,7 @@ shared_ptr<CType> NDouble::getTypeImpl(Compiler* compiler, CResult& result, shar
     return compiler->typeFloat;
 }
 
-Value* NDouble::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+shared_ptr<ReturnValue> NDouble::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
 
@@ -16,7 +16,7 @@ Value* NDouble::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFun
         return nullptr;
     }
     
-    return ConstantFP::get(compiler->context, APFloat(t));
+    return make_shared<ReturnValue>(ConstantFP::get(compiler->context, APFloat(t)));
 }
 
 void NDouble::dump(Compiler* compiler, int level) const {

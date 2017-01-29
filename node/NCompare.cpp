@@ -24,52 +24,55 @@ int NCompare::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFu
     return count;
 }
 
-Value* NCompare::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+shared_ptr<ReturnValue> NCompare::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
-    Value *L = leftSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
-    Value *R = rightSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
+    auto L = leftSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    auto R = rightSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
     if (!L || !R)
         return nullptr;
     
-    if (L->getType() != R->getType()) {
-        result.addError(loc, CErrorCode::TypeMismatch, "left type '%s' does not match right type '%s'", Type_print(L->getType()).c_str(), Type_print(R->getType()).c_str());
+    assert(L->type == RVT_SIMPLE);
+    assert(R->type == RVT_SIMPLE);
+    
+    if (L->value->getType() != R->value->getType()) {
+        result.addError(loc, CErrorCode::TypeMismatch, "left type '%s' does not match right type '%s'", Type_print(L->value->getType()).c_str(), Type_print(R->value->getType()).c_str());
         return nullptr;
     }
     
-    if ((L->getType()->isIntegerTy(64) || L->getType()->isIntegerTy(8)) && L->getType()->getScalarSizeInBits() == R->getType()->getScalarSizeInBits()) {
+    if ((L->value->getType()->isIntegerTy(64) || L->value->getType()->isIntegerTy(8)) && L->value->getType()->getScalarSizeInBits() == R->value->getType()->getScalarSizeInBits()) {
         switch (op) {
             case NCompareOp::EQ:
-                return builder->CreateICmpEQ(L, R, "eqtmp");
+                return make_shared<ReturnValue>(builder->CreateICmpEQ(L->value, R->value, "eqtmp"));
             case NCompareOp::NE:
-                return builder->CreateICmpNE(L, R, "netmp");
+                return make_shared<ReturnValue>(builder->CreateICmpNE(L->value, R->value, "netmp"));
             case NCompareOp::LT:
-                return builder->CreateICmpSLT(L, R, "lttmp");
+                return make_shared<ReturnValue>(builder->CreateICmpSLT(L->value, R->value, "lttmp"));
             case NCompareOp::LE:
-                return builder->CreateICmpSLE(L, R, "letmp");
+                return make_shared<ReturnValue>(builder->CreateICmpSLE(L->value, R->value, "letmp"));
             case NCompareOp::GT:
-                return builder->CreateICmpSGT(L, R, "gttmp");
+                return make_shared<ReturnValue>(builder->CreateICmpSGT(L->value, R->value, "gttmp"));
             case NCompareOp::GE:
-                return builder->CreateICmpSGE(L, R, "getmp");
+                return make_shared<ReturnValue>(builder->CreateICmpSGE(L->value, R->value, "getmp"));
             default:
                 result.addError(loc, CErrorCode::Internal, "unknown comparison type");
                 return nullptr;
         }
-    } else if (L->getType()->isDoubleTy()) {
+    } else if (L->value->getType()->isDoubleTy()) {
         switch (op) {
             case NCompareOp::EQ:
-                return builder->CreateFCmpOEQ(L, R, "eqtmp");
+                return make_shared<ReturnValue>(builder->CreateFCmpOEQ(L->value, R->value, "eqtmp"));
             case NCompareOp::NE:
-                return builder->CreateFCmpONE(L, R, "netmp");
+                return make_shared<ReturnValue>(builder->CreateFCmpONE(L->value, R->value, "netmp"));
             case NCompareOp::LT:
-                return builder->CreateFCmpOLT(L, R, "lttmp");
+                return make_shared<ReturnValue>(builder->CreateFCmpOLT(L->value, R->value, "lttmp"));
             case NCompareOp::LE:
-                return builder->CreateFCmpOLE(L, R, "letmp");
+                return make_shared<ReturnValue>(builder->CreateFCmpOLE(L->value, R->value, "letmp"));
             case NCompareOp::GT:
-                return builder->CreateFCmpOGT(L, R, "gttmp");
+                return make_shared<ReturnValue>(builder->CreateFCmpOGT(L->value, R->value, "gttmp"));
             case NCompareOp::GE:
-                return builder->CreateFCmpOGE(L, R, "getmp");
+                return make_shared<ReturnValue>(builder->CreateFCmpOGE(L->value, R->value, "getmp"));
             default:
                 result.addError(loc, CErrorCode::Internal, "unknown comparison type");
                 return nullptr;
@@ -78,7 +81,7 @@ Value* NCompare::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFu
         result.addError(loc, CErrorCode::InvalidType, "comparison is not supported on this type");
     }
     
-    return NULL;
+    return nullptr;
 }
 
 void NCompare::dump(Compiler* compiler, int level) const {

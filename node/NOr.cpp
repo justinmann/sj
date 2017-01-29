@@ -24,31 +24,35 @@ int NOr::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctio
     return count;
 }
 
-Value* NOr::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+shared_ptr<ReturnValue> NOr::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
-    Value *l = left->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
+    auto l = left->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
     if (!l) {
         return nullptr;
     }
     
-    if (!l->getType()->isIntegerTy(1)) {
+    assert(l->type == RVT_SIMPLE);
+    
+    if (!l->value->getType()->isIntegerTy(1)) {
         result.addError(loc, CErrorCode::TypeMismatch, "must be bool");
         return nullptr;
     }
     
-    Value *r = right->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
+    auto r = right->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
     if (!r) {
         return nullptr;
     }
     
-    if (!r->getType()->isIntegerTy(1)) {
+    assert(l->type == RVT_SIMPLE);
+
+    if (!r->value->getType()->isIntegerTy(1)) {
         result.addError(loc, CErrorCode::TypeMismatch, "must be bool");
         return nullptr;
     }
     
-    return builder->CreateOr(l, r);
+    return make_shared<ReturnValue>(builder->CreateOr(l->value, r->value));
 }
 
 void NOr::dump(Compiler* compiler, int level) const {

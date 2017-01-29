@@ -12,7 +12,7 @@ class CThisVar : public CVar {
 public:
     static shared_ptr<CThisVar> create(shared_ptr<CFunction> parent);
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained);
+    virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     virtual Value* getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     
     CLoc loc;
@@ -32,8 +32,8 @@ shared_ptr<CType> CThisVar::getType(Compiler* compiler, CResult& result) {
     return parent.lock()->getThisType(compiler, result);
 }
 
-Value* CThisVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
-    return thisValue;
+shared_ptr<ReturnValue> CThisVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    return make_shared<ReturnValue>(parent.lock(), false, RVT_HEAP, thisValue);
 }
 
 Value* CThisVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
@@ -165,11 +165,16 @@ Function* CFunction::getFunction(Compiler* compiler, CResult& result) {
         isInGetFunction = false;
         
         if (function) {
-            node->compileBody(compiler, result, shared_from_this(), function);
+            returnMustRelease = node->compileBody(compiler, result, shared_from_this(), function);
         }
     }
    
     return function;
+}
+
+bool CFunction::getReturnMustRelease(Compiler* compiler, CResult& result) {
+    getFunction(compiler, result);
+    return returnMustRelease;
 }
 
 Value* CFunction::getThisArgument(Compiler* compiler, CResult& result) {
@@ -352,12 +357,12 @@ Value* CFunction::getParentPointer(Compiler* compiler, CResult& result, IRBuilde
     return nullptr;
 }
 
-Value* CFunction::getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+shared_ptr<ReturnValue> CFunction::getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     auto parameters = vector<shared_ptr<NBase>>();
     for (auto defaultAssignment : node->assignments) {
         parameters.push_back(defaultAssignment->rightSide);
     }
-    return node->call(compiler, result, thisFunction, thisValue, shared_from_this(), nullptr, builder, catchBB, parameters, isReturnRetained);
+    return node->call(compiler, result, thisFunction, thisValue, shared_from_this(), nullptr, builder, catchBB, parameters);
 }
 
 shared_ptr<CVar> CFunction::getThisVar() {

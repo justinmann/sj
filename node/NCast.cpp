@@ -24,13 +24,15 @@ int NCast::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunct
     return node->setHeapVar(compiler, result, thisFunction, false);
 }
 
-Value* NCast::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+shared_ptr<ReturnValue> NCast::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
-    Value *v = node->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
+    auto v = node->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
     if (!v)
         return nullptr;
+    
+    assert(v->type == RVT_SIMPLE);
     
     auto fromType = node->getType(compiler, result, thisFunction);
     auto toType = compiler->getType(type.c_str());
@@ -44,11 +46,11 @@ Value* NCast::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunct
     }
     
     if (fromType == compiler->typeInt && toType == compiler->typeFloat) {
-        return builder->CreateSIToFP(v, toType->llvmRefType(compiler, result));
+        return make_shared<ReturnValue>(builder->CreateSIToFP(v->value, toType->llvmRefType(compiler, result)));
     }
 
     if (fromType == compiler->typeFloat && toType == compiler->typeInt) {
-        return builder->CreateFPToSI(v, toType->llvmRefType(compiler, result));
+        return make_shared<ReturnValue>(builder->CreateFPToSI(v->value, toType->llvmRefType(compiler, result)));
     }
     
     result.addError(loc, CErrorCode::InvalidCast, "cannot cast");

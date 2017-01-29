@@ -1,5 +1,38 @@
 #include "Node.h"
 
+bool isSimpleType(Type* type) {
+    if (!type->isPointerTy()) {
+        return true;
+    }
+    
+    auto elemType = type->getPointerElementType();
+    if (elemType->isStructTy()) {
+        return false;
+    }
+    
+    return true;
+}
+
+void ReturnValue::retainIfNeeded(Compiler* compiler, CResult& result, IRBuilder<>* builder) {
+    if (!mustRelease) {
+        if (type == RVT_STACK) {
+            valueFunction->retainStack(compiler, result, builder, value);
+        } else if (type == RVT_HEAP) {
+            valueFunction->retainHeap(compiler, result, builder, value);
+        }
+    }
+}
+
+void ReturnValue::releaseIfNeeded(Compiler* compiler, CResult& result, IRBuilder<>* builder) {
+    if (mustRelease) {
+        if (type == RVT_STACK) {
+            valueFunction->releaseStack(compiler, result, builder, value);
+        } else if (type == RVT_HEAP) {
+            valueFunction->releaseHeap(compiler, result, builder, value);
+        }
+    }
+}
+
 void NBase::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     if (!_hasDefined) {
@@ -31,8 +64,8 @@ int NBase::setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CFunction>
 }
 
 
-Value* NBase::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+shared_ptr<ReturnValue> NBase::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
-    return compileImpl(compiler, result, thisFunction, thisValue, builder, catchBB, isReturnRetained);
+    return compileImpl(compiler, result, thisFunction, thisValue, builder, catchBB);
 }
 

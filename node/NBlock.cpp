@@ -33,12 +33,15 @@ int NBlock::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunc
     return count;
 }
 
-Value* NBlock::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+shared_ptr<ReturnValue> NBlock::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
-    Value *last = nullptr;
+    shared_ptr<ReturnValue> last = nullptr;
     for (auto it : statements) {
         auto isLast = it == statements.back();
-        last = it->compile(compiler, result, thisFunction, thisValue, builder, catchBB, isLast ? isReturnRetained : false);
+        last = it->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+        if (!isLast && last) {
+            last->releaseIfNeeded(compiler, result, builder);
+        }
     }
     return last;
 }

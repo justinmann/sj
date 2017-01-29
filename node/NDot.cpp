@@ -16,22 +16,26 @@ shared_ptr<CType> CDotVar::getType(Compiler* compiler, CResult& result) {
     return rightVar->getType(compiler, result);
 }
 
-Value* CDotVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
-    auto leftValue = leftVar->getLoadValue(compiler, result, thisValue, dotValue, builder, catchBB, false);
+shared_ptr<ReturnValue> CDotVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    auto leftValue = leftVar->getLoadValue(compiler, result, thisValue, dotValue, builder, catchBB);
     if (!leftValue) {
         return nullptr;
     }
     
-    return rightVar->getLoadValue(compiler, result, thisValue, leftValue, builder, catchBB, isReturnRetained);
+    auto loadValue = rightVar->getLoadValue(compiler, result, thisValue, leftValue->value, builder, catchBB);
+    leftValue->releaseIfNeeded(compiler, result, builder);
+    return loadValue;
 }
 
 Value* CDotVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    auto leftValue = leftVar->getLoadValue(compiler, result, thisValue, dotValue, builder, catchBB, false);
+    auto leftValue = leftVar->getLoadValue(compiler, result, thisValue, dotValue, builder, catchBB);
     if (!leftValue) {
         return nullptr;
     }
 
-    return rightVar->getStoreValue(compiler, result, thisValue, leftValue, builder, catchBB);
+    auto storeValue = rightVar->getStoreValue(compiler, result, thisValue, leftValue->value, builder, catchBB);
+    leftValue->releaseIfNeeded(compiler, result, builder);
+    return storeValue;
 }
 
 string CDotVar::fullName() {

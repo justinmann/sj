@@ -24,7 +24,7 @@ int NWhile::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunc
     return count;
 }
 
-Value* NWhile::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+shared_ptr<ReturnValue> NWhile::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
@@ -39,13 +39,14 @@ Value* NWhile::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunc
     TheFunction->getBasicBlockList().push_back(loopBB);
     builder->SetInsertPoint(loopBB);
     
-    auto condition = cond->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
-    if (!condition->getType()->isIntegerTy(1)) {
+    auto condition = cond->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    if (!condition->value->getType()->isIntegerTy(1)) {
         result.addError(loc, CErrorCode::TypeMismatch, "condition for while must be a bool");
         return nullptr;
     }
+    assert(condition->type == RVT_SIMPLE);
 
-    builder->CreateCondBr(condition, continueBB, afterBB);
+    builder->CreateCondBr(condition->value, continueBB, afterBB);
     
     TheFunction->getBasicBlockList().push_back(continueBB);
     builder->SetInsertPoint(continueBB);
@@ -53,7 +54,10 @@ Value* NWhile::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunc
     // Emit the body of the loop.  This, like any other expr, can change the
     // current BB.  Note that we ignore the value computed by the body, but don't
     // allow an error.
-    body->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
+    auto bodyResult = body->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    if (bodyResult) {
+        bodyResult->releaseIfNeeded(compiler, result, builder);
+    }
     
     builder->CreateBr(loopBB);
     

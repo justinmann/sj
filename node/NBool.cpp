@@ -5,10 +5,10 @@ shared_ptr<CType> NBool::getTypeImpl(Compiler* compiler, CResult& result, shared
     return compiler->typeBool;
 }
 
-Value* NBool::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+shared_ptr<ReturnValue> NBool::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
-    return ConstantInt::get(compiler->context, APInt(1, value));
+    return make_shared<ReturnValue>(ConstantInt::get(compiler->context, APInt(1, value)));
 }
 
 void NBool::dump(Compiler* compiler, int level) const {

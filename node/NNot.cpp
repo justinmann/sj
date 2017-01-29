@@ -20,20 +20,22 @@ int NNot::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFuncti
     return node->setHeapVar(compiler, result, thisFunction, false);
 }
 
-Value* NNot::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+shared_ptr<ReturnValue> NNot::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
-    Value *v = node->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
+    auto v = node->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
     if (!v)
         return nullptr;
     
-    if (!v->getType()->isIntegerTy(1)) {
+    assert(v->type == RVT_SIMPLE);
+    
+    if (!v->value->getType()->isIntegerTy(1)) {
         result.addError(loc, CErrorCode::TypeMismatch, "must be bool");
         return nullptr;
     }
     
-    return builder->CreateNot(v);
+    return make_shared<ReturnValue>(builder->CreateNot(v->value));
 }
 
 void NNot::dump(Compiler* compiler, int level) const {

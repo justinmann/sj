@@ -37,7 +37,7 @@ int NMathAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_
     return count;
 }
 
-Value* NMathAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+shared_ptr<ReturnValue> NMathAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
@@ -51,12 +51,12 @@ Value* NMathAssignment::compileImpl(Compiler* compiler, CResult& result, shared_
         return nullptr;
     }
     
-    auto leftValue = cvar->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB, false);
+    auto leftValue = cvar->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB);
     
     // Compute value
-    Value *rightValue = nullptr;
+    shared_ptr<ReturnValue> rightValue = nullptr;
     if (rightSide) {
-        rightValue = rightSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
+        rightValue = rightSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
     }
 
     Value* resultValue = nullptr;
@@ -67,12 +67,12 @@ Value* NMathAssignment::compileImpl(Compiler* compiler, CResult& result, shared_
                 return nullptr;
             }
             
-            if (!rightValue->getType()->isIntegerTy(64)) {
+            if (!rightValue->value->getType()->isIntegerTy(64)) {
                 result.addError(loc, CErrorCode::TypeMismatch, "can only add by int");
                 return nullptr;
             }
             
-            resultValue = builder->CreateAdd(leftValue, rightValue);
+            resultValue = builder->CreateAdd(leftValue->value, rightValue->value);
             break;
         case NMAO_Sub:
             if (!rightValue) {
@@ -80,25 +80,30 @@ Value* NMathAssignment::compileImpl(Compiler* compiler, CResult& result, shared_
                 return nullptr;
             }
             
-            if (!rightValue->getType()->isIntegerTy(64)) {
+            if (!rightValue->value->getType()->isIntegerTy(64)) {
                 result.addError(loc, CErrorCode::TypeMismatch, "can only add by int");
                 return nullptr;
             }
             
-            resultValue = builder->CreateSub(leftValue, rightValue);
+            resultValue = builder->CreateSub(leftValue->value, rightValue->value);
             break;
         case NMAO_Inc:
-            resultValue = builder->CreateAdd(leftValue, ConstantInt::get(compiler->context, APInt(64, 1)));
+            resultValue = builder->CreateAdd(leftValue->value, ConstantInt::get(compiler->context, APInt(64, 1)));
             break;
         case NMAO_Dec:
-            resultValue = builder->CreateSub(leftValue, ConstantInt::get(compiler->context, APInt(64, 1)));
+            resultValue = builder->CreateSub(leftValue->value, ConstantInt::get(compiler->context, APInt(64, 1)));
             break;
+    }
+    
+    leftValue->releaseIfNeeded(compiler, result, builder);
+    if (rightValue) {
+        rightValue->releaseIfNeeded(compiler, result, builder);
     }
 
     // Store value
     Value* destValue = cvar->getStoreValue(compiler, result, thisValue, thisValue, builder, catchBB);
     builder->CreateStore(resultValue, destValue);
-    return resultValue;
+    return make_shared<ReturnValue>(resultValue);
 }
 
 void NMathAssignment::dump(Compiler* compiler, int level) const {

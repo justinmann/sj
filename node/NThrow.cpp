@@ -18,15 +18,15 @@ int NThrow::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunc
     return node->setHeapVar(compiler, result, thisFunction, true);
 }
 
-Value* NThrow::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+shared_ptr<ReturnValue> NThrow::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     
-    auto value = node->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
-    assert(value->getType()->isIntegerTy(64));
+    auto value = node->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    assert(value->value->getType()->isIntegerTy(64));
     compiler->emitLocation(this);
     
     auto raiseException = compiler->exception->getRaiseException();
-    auto args = ArrayRef<Value*>(value);
+    auto args = ArrayRef<Value*>(value->value);
     
     if (catchBB) {
         auto continueBB = BasicBlock::Create(compiler->context);

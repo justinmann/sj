@@ -113,7 +113,7 @@ int NAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<
     return 0;
 }
 
-Value* NAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
@@ -123,13 +123,11 @@ Value* NAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<
     }
 
     if (!inFunctionDeclaration && nfunction) {
-        nfunction->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
+        nfunction->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
     }
     
     // Compute value
-    // TODO: retain value
-    Value *value = rightSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB, true);
-
+    auto value = rightSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
     if (!value) {
         result.addError(loc, CErrorCode::ExpressionEmpty, "trying to assign an empty value");
         return nullptr;
@@ -142,11 +140,13 @@ Value* NAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<
             return nullptr;
         }
 
-        if (value->getType() != valueType->llvmRefType(compiler, result)) {
-            result.addError(loc, CErrorCode::TypeMismatch, "returned type '%s' does not match explicit type '%s'", Type_print(value->getType()).c_str(), Type_print(valueType->llvmRefType(compiler, result)).c_str());
+        if (value->value->getType() != valueType->llvmRefType(compiler, result)) {
+            result.addError(loc, CErrorCode::TypeMismatch, "returned type '%s' does not match explicit type '%s'", Type_print(value->value->getType()).c_str(), Type_print(valueType->llvmRefType(compiler, result)).c_str());
             return nullptr;
         }
     }
+    
+    value->retainIfNeeded(compiler, result, builder);
     
     // Get place to store data
     auto alloca = _assignVar->getStoreValue(compiler, result, thisValue, thisValue, builder, catchBB);
@@ -156,8 +156,8 @@ Value* NAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<
     }
     
     // Store value
-    builder->CreateStore(value, alloca);
-    return value;
+    builder->CreateStore(value->value, alloca);
+    return make_shared<ReturnValue>(value->valueFunction, false, value->type, value->value);
 }
 
 void NAssignment::dump(Compiler* compiler, int level) const {

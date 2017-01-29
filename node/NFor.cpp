@@ -13,9 +13,9 @@ public:
         return compiler->typeInt;
     }
     
-    virtual Value* getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+    virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
         assert(value);
-        return value;
+        return make_shared<ReturnValue>(value);
     }
     
     virtual Value* getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
@@ -68,28 +68,32 @@ int NFor::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFuncti
     return count;
 }
 
-Value* NFor::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+shared_ptr<ReturnValue> NFor::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
     // Emit the start code first, without 'variable' in scope.
-    Value *StartVal = start->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
-    if (!StartVal) {
+    auto startValue = start->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    if (!startValue) {
         return nullptr;
     }
     
-    if (!StartVal->getType()->isIntegerTy(64)) {
+    assert(startValue->type == RVT_SIMPLE);
+    
+    if (!startValue->value->getType()->isIntegerTy(64)) {
         result.addError(loc, CErrorCode::TypeMismatch, "start value must be a int");
         return nullptr;
     }
     
     // Compute the end condition.
-    Value *EndVal = end->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
-    if (!EndVal) {
+    auto endValue = end->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    if (!endValue) {
         return nullptr;
     }
     
-    if (!EndVal->getType()->isIntegerTy(64)) {
+    assert(endValue->type == RVT_SIMPLE);
+    
+    if (!endValue->value->getType()->isIntegerTy(64)) {
         result.addError(loc, CErrorCode::TypeMismatch, "end value must be a int");
         return nullptr;
     }
@@ -97,7 +101,7 @@ Value* NFor::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFuncti
     auto loopBB = BasicBlock::Create(compiler->context, "loop");
     auto afterBB = BasicBlock::Create(compiler->context, "afterloop");
     
-    auto startCondition = builder->CreateICmpSLE(StartVal, EndVal);
+    auto startCondition = builder->CreateICmpSLE(startValue->value, endValue->value);
     builder->CreateCondBr(startCondition, loopBB, afterBB);
 
     // Make the new basic block for the loop header, inserting after current
@@ -111,7 +115,7 @@ Value* NFor::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFuncti
     
     // Start the PHI node with an entry for Start.
     auto Variable = builder->CreatePHI(Type::getInt64Ty(compiler->context), 2, varName);
-    Variable->addIncoming(StartVal, preheaderBB);
+    Variable->addIncoming(startValue->value, preheaderBB);
     
     // Within the loop, the variable is defined equal to the PHI node.  If it
     // shadows an existing variable, we have to restore it, so save it now.
@@ -126,14 +130,17 @@ Value* NFor::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFuncti
     // Emit the body of the loop.  This, like any other expr, can change the
     // current BB.  Note that we ignore the value computed by the body, but don't
     // allow an error.
-    body->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
+    auto bodyValue = body->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    if (bodyValue) {
+        bodyValue->releaseIfNeeded(compiler, result, builder);
+    }
     
     // Emit the step value.
     Value *StepVal = ConstantInt::get(compiler->context, APInt(64, 1));
     Value *NextVar = builder->CreateAdd(Variable, StepVal, "nextvar");
     
     // Convert condition to a bool by comparing equal to 0.0.
-    auto endCondition = builder->CreateICmpSLT(Variable, EndVal);
+    auto endCondition = builder->CreateICmpSLT(Variable, endValue->value);
     
     // Create the "after loop" block and insert it.
     BasicBlock *loopEndBB = builder->GetInsertBlock();

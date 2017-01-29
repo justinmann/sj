@@ -17,10 +17,11 @@ int NStringArray::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr
     return 0;
 }
 
-Value* NStringArray::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+shared_ptr<ReturnValue> NStringArray::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
-    return builder->CreateGlobalStringPtr(str);
+    auto varFunction = createCall->getVar(compiler, result, thisFunction, nullptr)->getCFunctionForValue(compiler, result);
+    return make_shared<ReturnValue>(varFunction, false, RVT_GLOBAL, builder->CreateGlobalStringPtr(str));
 }
 
 void NStringArray::dump(Compiler* compiler, int level) const {
@@ -43,9 +44,9 @@ int NString::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFun
     return createCall->setHeapVar(compiler, result, thisFunction, nullptr, isHeapVar);
 }
 
-Value* NString::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+shared_ptr<ReturnValue> NString::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
-    return createCall->compile(compiler, result, thisFunction, thisValue, builder, catchBB, isReturnRetained);
+    return createCall->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
 }
 
 void NString::dump(Compiler* compiler, int level) const {

@@ -21,7 +21,7 @@ shared_ptr<CType> CCallVar::getType(Compiler* compiler, CResult& result) {
     return callee->getReturnType(compiler, result);
 }
 
-Value* CCallVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+shared_ptr<ReturnValue> CCallVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     // compiler->emitLocation(call.get());
     
@@ -81,7 +81,7 @@ Value* CCallVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisVa
         argIndex++;
     }
     
-    return callee->node->call(compiler, result, thisFunction, thisValue, callee, dotVar.lock(), builder, catchBB, parameters, isReturnRetained);
+    return callee->node->call(compiler, result, thisFunction, thisValue, callee, dotVar.lock(), builder, catchBB, parameters);
 }
 
 Value* CCallVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {

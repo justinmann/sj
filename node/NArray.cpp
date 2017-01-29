@@ -42,11 +42,12 @@ int NArray::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunc
     return 0;
 }
 
-Value* NArray::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+shared_ptr<ReturnValue> NArray::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
     auto var = getVar(compiler, result, thisFunction);
+    auto functionVar = var->getCFunctionForValue(compiler, result);
     auto isHeapVar = var->getHeapVar(compiler, result);
     auto sizeValue = ConstantInt::get(compiler->context, APInt(64, elements->size()));
     Value* arrayValue = nullptr;
@@ -74,32 +75,24 @@ Value* NArray::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunc
     
     auto index = 0;
     for (auto it : *elements) {
-        auto itemValue = it->compile(compiler, result, thisFunction, thisValue, builder, catchBB, true);
+        auto itemValue = it->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
         if (!itemValue) {
             return nullptr;
         }
         
-        // retain item
-        auto itemVar = it->getVar(compiler, result, thisFunction);
-        if (itemVar) {
-            auto itemFunction = itemVar->getCFunctionForValue(compiler, result);
-            if (itemFunction) {
-                if (isHeapVar) {
-                    itemFunction->retainHeap(compiler, result, builder, itemValue);
-                } else {
-                    itemFunction->retainStack(compiler, result, builder, itemValue);
-                }
-            }
+        if (isHeapVar) {
+            assert(itemValue->type == RVT_HEAP);
         }
+        itemValue->retainIfNeeded(compiler, result, builder);
     
         vector<Value*> v;
         v.push_back(ConstantInt::get(compiler->context, APInt(64, index)));
         auto itemPtr = builder->CreateGEP(arrayValue, ArrayRef<llvm::Value *>(v));
-        builder->CreateStore(itemValue, itemPtr);
+        builder->CreateStore(itemValue->value, itemPtr);
         index++;
     }
     
-    return arrayValue;
+    return make_shared<ReturnValue>(functionVar, true, isHeapVar ? RVT_HEAP : RVT_STACK, arrayValue);
 }
 
 void NArray::dump(Compiler* compiler, int level) const {
@@ -130,9 +123,9 @@ int NList::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunct
     return createCall->setHeapVar(compiler, result, thisFunction, nullptr, isHeapVar);
 }
 
-Value* NList::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, bool isReturnRetained) {
+shared_ptr<ReturnValue> NList::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
-    return createCall->compile(compiler, result, thisFunction, thisValue, builder, catchBB, isReturnRetained);
+    return createCall->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
 }
 
 void NList::dump(Compiler* compiler, int level) const {
@@ -143,37 +136,42 @@ shared_ptr<CType> NArrayGetFunction::getBlockType(Compiler* compiler, CResult& r
     return thisFunction->getVarType(compiler, result, CLoc::undefined, "item", nullptr);
 }
 
-Value* NArrayGetFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, bool returnIsRetained) {
-    // TODO: handle retained
+shared_ptr<ReturnValue> NArrayGetFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
+    auto parentValue = dotVar->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB);
     
-    Value* parentValue = dotVar->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB, false);
-    
-    auto indexValue = parameters[0]->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
+    auto indexValue = parameters[0]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    assert(indexValue->type == RVT_SIMPLE);
     
     vector<Value*> v;
-    v.push_back(indexValue);
-    auto itemPtr = builder->CreateGEP(parentValue, ArrayRef<llvm::Value *>(v));
-    return builder->CreateLoad(itemPtr);
+    v.push_back(indexValue->value);
+    auto itemPtr = builder->CreateGEP(parentValue->value, ArrayRef<llvm::Value *>(v));
+    auto itemType = getBlockType(compiler, result, callee);
+    auto itemFunction = itemType->parent.lock();
+    auto returnValue = make_shared<ReturnValue>(itemFunction, false, itemFunction ? RVT_HEAP : RVT_SIMPLE, builder->CreateLoad(itemPtr));
+    parentValue->releaseIfNeeded(compiler, result, builder);
+    return returnValue;
 }
 
 shared_ptr<CType> NArraySetFunction::getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     return compiler->typeVoid;
 }
 
-Value* NArraySetFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, bool returnIsRetained) {
-    // TODO: handle retained
+shared_ptr<ReturnValue> NArraySetFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
     
-    Value* parentValue = dotVar->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB, false);
+    auto parentValue = dotVar->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB);
     
-    auto indexValue = parameters[0]->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
-    
-    // TODO: retain value
-    auto itemValue = parameters[1]->compile(compiler, result, thisFunction, thisValue, builder, catchBB, true);
+    auto indexValue = parameters[0]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    assert(indexValue->type == RVT_SIMPLE);
+
+    auto itemValue = parameters[1]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    itemValue->retainIfNeeded(compiler, result, builder);
     
     vector<Value*> v;
-    v.push_back(indexValue);
-    auto itemPtr = builder->CreateGEP(parentValue, ArrayRef<llvm::Value *>(v));
-    builder->CreateStore(itemValue, itemPtr);
+    v.push_back(indexValue->value);
+    auto itemPtr = builder->CreateGEP(parentValue->value, ArrayRef<llvm::Value *>(v));
+    builder->CreateStore(itemValue->value, itemPtr);
+    
+    parentValue->releaseIfNeeded(compiler, result, builder);
     
     return nullptr;
 }
@@ -186,17 +184,17 @@ shared_ptr<CVar> NArrayCreateFunction::getReturnVar(Compiler* compiler, CResult&
     return thisFunction->getThisVar();
 }
 
-Value* NArrayCreateFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, bool returnIsRetained) {
-    // TODO: handle retained
+shared_ptr<ReturnValue> NArrayCreateFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
     if (parameters.size() == 0) {
         return nullptr;
     }
     
-    auto countValue = parameters[0]->compile(compiler, result, thisFunction, thisValue, builder, catchBB, false);
+    auto countValue = parameters[0]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    assert(countValue->type == RVT_SIMPLE);
     auto itemType = callee->templateTypes[0]->llvmRefType(compiler, result);
     
     auto thisVar = thisFunction->getThisVar();
-    Value* arrayValue = nullptr;
+    shared_ptr<ReturnValue> arrayValue = nullptr;
     if (thisVar->getHeapVar(compiler, result)) {
         auto allocFunc = compiler->getAllocFunction();
         
@@ -207,15 +205,18 @@ Value* NArrayCreateFunction::call(Compiler* compiler, CResult& result, shared_pt
         auto nullPtr = ConstantPointerNull::get(arrayType);
         auto sizePtr = builder->CreateGEP(nullPtr, ArrayRef<llvm::Value *>(v));
         auto itemSizeValue = builder->CreatePtrToInt(sizePtr, Type::getInt64Ty(compiler->context));
-        auto sizeValue = builder->CreateMul(itemSizeValue, countValue);
+        auto sizeValue = builder->CreateMul(itemSizeValue, countValue->value);
         
         // Allocate and mutate to correct type
         vector<Value*> allocArgs;
         allocArgs.push_back(sizeValue);
-        arrayValue = builder->CreateCall(allocFunc, allocArgs);
-        arrayValue->mutateType(arrayType);
+        auto value = builder->CreateCall(allocFunc, allocArgs);
+        value->mutateType(arrayType);
+        arrayValue = make_shared<ReturnValue>(value);
     } else {
-        arrayValue = builder->CreateAlloca(itemType, countValue);
+        auto value = builder->CreateAlloca(itemType, countValue->value);
+        arrayValue = make_shared<ReturnValue>(value);
     }
+    
     return arrayValue;
 }
