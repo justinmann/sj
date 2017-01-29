@@ -46,25 +46,60 @@ Value* NArray::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunc
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
+    auto var = getVar(compiler, result, thisFunction);
+    auto isHeapVar = var->getHeapVar(compiler, result);
     auto sizeValue = ConstantInt::get(compiler->context, APInt(64, elements->size()));
-    auto alloca = builder->CreateAlloca(itemType->llvmRefType(compiler, result), sizeValue);
+    Value* arrayValue = nullptr;
+    if (isHeapVar) {
+        auto allocFunc = compiler->getAllocFunction();
+        
+        // Compute the size of the struct by getting a pointer to the second element from null
+        vector<Value*> v;
+        v.push_back(ConstantInt::get(compiler->context, APInt(32, 1)));
+        auto arrayType = itemType->llvmRefType(compiler, result)->getPointerTo();
+        auto nullPtr = ConstantPointerNull::get(arrayType);
+        auto sizePtr = builder->CreateGEP(nullPtr, ArrayRef<llvm::Value *>(v));
+        auto itemSizeValue = builder->CreatePtrToInt(sizePtr, Type::getInt64Ty(compiler->context));
+        auto countValue = ConstantInt::get(compiler->context, APInt(64, elements->size()));
+        auto sizeValue = builder->CreateMul(itemSizeValue, countValue);
+        
+        // Allocate and mutate to correct type
+        vector<Value*> allocArgs;
+        allocArgs.push_back(sizeValue);
+        arrayValue = builder->CreateCall(allocFunc, allocArgs);
+        arrayValue->mutateType(arrayType);
+    } else {
+        arrayValue = builder->CreateAlloca(itemType->llvmRefType(compiler, result), sizeValue);
+    }
     
     auto index = 0;
     for (auto it : *elements) {
-        // TODO: retain value
         auto itemValue = it->compile(compiler, result, thisFunction, thisValue, builder, catchBB, true);
         if (!itemValue) {
             return nullptr;
         }
+        
+        // retain item
+        auto itemVar = it->getVar(compiler, result, thisFunction);
+        if (itemVar) {
+            auto itemFunction = itemVar->getCFunctionForValue(compiler, result);
+            if (itemFunction) {
+                if (isHeapVar) {
+                    itemFunction->retainHeap(compiler, result, builder, itemValue);
+                } else {
+                    itemFunction->retainStack(compiler, result, builder, itemValue);
+                }
+            }
+        }
     
         vector<Value*> v;
         v.push_back(ConstantInt::get(compiler->context, APInt(64, index)));
-        auto itemPtr = builder->CreateGEP(alloca, ArrayRef<llvm::Value *>(v));
+        auto itemPtr = builder->CreateGEP(arrayValue, ArrayRef<llvm::Value *>(v));
         builder->CreateStore(itemValue, itemPtr);
         index++;
     }
     
-    return alloca;
+    return arrayValue;
 }
 
 void NArray::dump(Compiler* compiler, int level) const {
