@@ -92,7 +92,7 @@ shared_ptr<ReturnValue> NArray::compileImpl(Compiler* compiler, CResult& result,
         index++;
     }
     
-    return make_shared<ReturnValue>(functionVar, true, isHeapVar ? RVT_HEAP : RVT_STACK, arrayValue);
+    return make_shared<ReturnValue>(functionVar, true, RVT_HEAP, arrayValue);
 }
 
 void NArray::dump(Compiler* compiler, int level) const {

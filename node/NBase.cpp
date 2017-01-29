@@ -14,22 +14,14 @@ bool isSimpleType(Type* type) {
 }
 
 void ReturnValue::retainIfNeeded(Compiler* compiler, CResult& result, IRBuilder<>* builder) {
-    if (!mustRelease) {
-        if (type == RVT_STACK) {
-            valueFunction->retainStack(compiler, result, builder, value);
-        } else if (type == RVT_HEAP) {
-            valueFunction->retainHeap(compiler, result, builder, value);
-        }
+    if (!mustRelease && type == RVT_HEAP) {
+        valueFunction->retainHeap(compiler, result, builder, value);
     }
 }
 
 void ReturnValue::releaseIfNeeded(Compiler* compiler, CResult& result, IRBuilder<>* builder) {
-    if (mustRelease) {
-        if (type == RVT_STACK) {
-            valueFunction->releaseStack(compiler, result, builder, value);
-        } else if (type == RVT_HEAP) {
-            valueFunction->releaseHeap(compiler, result, builder, value);
-        }
+    if (mustRelease && type == RVT_HEAP) {
+        valueFunction->releaseHeap(compiler, result, builder, value);
     }
 }
 

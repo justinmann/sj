@@ -82,13 +82,8 @@ shared_ptr<CType> CNormalVar::getType(Compiler* compiler, CResult& result) {
 }
 
 shared_ptr<ReturnValue> CNormalVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    if (mode == Local) {
-        auto value = getStoreValue(compiler, result, thisValue, dotValue, builder, catchBB);
-        return make_shared<ReturnValue>(type->parent.lock(), false, RVT_STACK, builder->CreateLoad(value));
-    } else {
-        auto value = getStoreValue(compiler, result, thisValue, dotValue, builder, catchBB);
-        return make_shared<ReturnValue>(type->parent.lock(), false, RVT_HEAP, builder->CreateLoad(value));
-    }
+    auto value = getStoreValue(compiler, result, thisValue, dotValue, builder, catchBB);
+    return make_shared<ReturnValue>(type->parent.lock(), false, RVT_HEAP, builder->CreateLoad(value));
 }
 
 Value* CNormalVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {

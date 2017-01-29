@@ -24,9 +24,7 @@ class NVariableBase;
 
 enum ReturnValueType {
     RVT_SIMPLE,
-    RVT_HEAP,
-    RVT_STACK,
-    RVT_GLOBAL
+    RVT_HEAP
 };
 
 bool isSimpleType(Type* type);
@@ -39,12 +37,16 @@ public:
     Value* value;
     
     ReturnValue(Value* value) : valueFunction(nullptr), mustRelease(false), type(RVT_SIMPLE), value(value) {
+        assert(value);
         assert(isSimpleType(value->getType()));
     }
     
     ReturnValue(shared_ptr<CFunction> valueFunction, bool mustRelease, ReturnValueType type, Value* value) : valueFunction(valueFunction), mustRelease(mustRelease), type(type), value(value) {
+        assert(value);
         if (isSimpleType(value->getType())) {
             this->type = RVT_SIMPLE;
+        } else {
+            assert(valueFunction);
         }
     }
     

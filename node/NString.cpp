@@ -21,7 +21,7 @@ shared_ptr<ReturnValue> NStringArray::compileImpl(Compiler* compiler, CResult& r
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     auto varFunction = createCall->getVar(compiler, result, thisFunction, nullptr)->getCFunctionForValue(compiler, result);
-    return make_shared<ReturnValue>(varFunction, false, RVT_GLOBAL, builder->CreateGlobalStringPtr(str));
+    return make_shared<ReturnValue>(varFunction, false, RVT_SIMPLE, builder->CreateGlobalStringPtr(str));
 }
 
 void NStringArray::dump(Compiler* compiler, int level) const {
