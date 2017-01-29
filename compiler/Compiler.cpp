@@ -350,7 +350,8 @@ shared_ptr<CResult> Compiler::run(const string& code) {
 
         compilerResult->type = RESULT_VOID;
     } else if (returnType->name == "list_char") {
-        struct list_char {
+        class list_char {
+        public:
             int64_t refCount;
             int64_t parent;
             int64_t size;
@@ -363,7 +364,9 @@ shared_ptr<CResult> Compiler::run(const string& code) {
         
         compilerResult->type = RESULT_STR;
         compilerResult->strResult = result->str;
-        // TODO: we need to delete the result, right now we are leaking
+        
+        // Delete the result
+        delete result;
     } else {
         printf("Unknown return type: %s\n", returnType->name.c_str());
         assert(false);
