@@ -332,8 +332,8 @@ error:
     
     // Validate the generated code, checking for consistency.
     if (result.errors.size() == 0 && verifyFunction(*function)) {
-        compiler->module->dump();
-        // function->dump();
+        // compiler->module->dump();
+        function->dump();
         auto output = new raw_os_ostream(std::cout);
         verifyFunction(*function, output);
         output->flush();
@@ -342,6 +342,85 @@ error:
     
     assert(!returnValue || returnValue->type == RVT_SIMPLE || returnValue->type == RVT_HEAP);
     return returnValue ? returnValue->mustRelease : false;
+}
+
+Function* NFunction::compileDestructorDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+    assert(compiler->state == CompilerState::Compile);
+    assert(thisFunction->node.get() == this);
+    
+    if (invalid.size() > 0) {
+        result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
+        return nullptr;
+    }
+    
+    if (type == FT_Extern) {
+        return nullptr;
+    }
+    
+    auto hasDestructor = false;
+    for (auto it : thisFunction->thisVars) {
+        if (!it->getType(compiler, result)->parent.expired()) {
+            hasDestructor = true;
+        }
+    }
+    
+    if (!hasDestructor) {
+        return nullptr;
+    }
+    
+    vector<Type*> argTypes;
+    argTypes.push_back(thisFunction->getThisType(compiler, result)->llvmRefType(compiler, result));
+    auto functionType = FunctionType::get(Type::getVoidTy(compiler->context), argTypes, false);
+    auto function = Function::Create(functionType, type == FT_Public ? Function::ExternalLinkage : Function::PrivateLinkage, strprintf("%s_destructor", name.c_str()).c_str(), compiler->module.get());
+    function->args().begin()->setName("this");
+    
+#ifdef DWARF_ENABLED
+    SmallVector<Metadata *, 8> EltTys;
+    for (auto &argType : argTypes) {
+        EltTys.push_back(compiler->getDIType(argType));
+    }
+    auto ditypes = compiler->DBuilder->createSubroutineType(compiler->DBuilder->getOrCreateTypeArray(EltTys));
+    
+    // Create a subprogram DIE for this function.
+    DIFile *Unit = compiler->DBuilder->createFile(compiler->TheCU->getFilename(), compiler->TheCU->getDirectory());
+    DIScope *FContext = Unit;
+    unsigned LineNo = node->loc.line;
+    unsigned ScopeLine = LineNo;
+    DISubprogram *SP = compiler->DBuilder->createFunction(FContext, node->name.c_str(), StringRef(), Unit, LineNo, ditypes, false /* internal linkage */, true /* definition */, ScopeLine, DINode::FlagPrototyped, false);
+    func->setSubprogram(SP);
+    
+    // Push the current scope.
+    compiler->LexicalBlocks.push_back(SP);
+    
+    // Unset the location for the prologue emission (leading instructions with no
+    // location in a function are considered part of the prologue and the debugger
+    // will run past them when breaking on a function)
+    compiler->emitLocation(nullptr);
+#endif
+    return function;
+}
+
+void NFunction::compileDestructorBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Function* function) {
+    assert(compiler->state == CompilerState::Compile);
+    assert(thisFunction->node.get() == this);
+    
+    // Create body of function
+    // Create a new basic block to start insertion into.
+    auto basicBlock = BasicBlock::Create(compiler->context, "entry", function);
+    IRBuilder<> newBuilder(basicBlock);
+    shared_ptr<ReturnValue> returnValue = nullptr;
+    Argument* thisArgument = (Argument*)function->args().begin();
+    
+    for (auto it : thisFunction->thisVars) {
+        if (!it->getType(compiler, result)->parent.expired()) {
+            auto value = it->getLoadValue(compiler, result, thisArgument, thisArgument, &newBuilder, nullptr);
+            if (value->type == RVT_HEAP) {
+                value->valueFunction->releaseHeap(compiler, result, &newBuilder, value->value);
+            }
+        }
+    }
+    
+    newBuilder.CreateRetVoid();
 }
 
 shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
@@ -409,8 +488,8 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
             // Allocate and mutate to correct type
             vector<Value*> allocArgs;
             allocArgs.push_back(sizeValue);
-            calleeValue = builder->CreateCall(allocFunc, allocArgs);
-            calleeValue->mutateType(thisPointerType);
+            auto calleeValueAsVoidPtr = builder->CreateCall(allocFunc, allocArgs);
+            calleeValue = builder->CreateBitCast(calleeValueAsVoidPtr, thisPointerType);
             calleeFunction->initHeap(compiler, result, builder, calleeValue);
         } else {
             // stack alloc this
@@ -441,7 +520,8 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
                 result.addError(CLoc::undefined, CErrorCode::TypeMismatch, "value does not match");
                 return nullptr;
             }
-            
+         
+            argReturnValue->retainIfNeeded(compiler, result, builder);
             argReturnValues.push_back(argReturnValue);
             auto paramPtr = callee->getArgumentPointer(compiler, result, calleeValue, argIndex, builder);
             builder->CreateStore(argReturnValue->value, paramPtr);
@@ -506,10 +586,10 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
         if (dotReturnValue) {
             dotReturnValue->releaseIfNeeded(compiler, result, builder);
         }
-        
+        /*
         for (auto it : argReturnValues) {
             it->releaseIfNeeded(compiler, result, builder);
-        }
+        }*/
         
         auto returnType = callee->getReturnType(compiler, result);
         auto returnFunction = returnType->parent.lock();

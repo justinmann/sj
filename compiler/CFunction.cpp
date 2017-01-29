@@ -7,6 +7,7 @@
 //
 
 #include "Node.h"
+#define STACK_REF_COUNT         1000000000000
 
 class CThisVar : public CVar {
 public:
@@ -175,6 +176,17 @@ Function* CFunction::getFunction(Compiler* compiler, CResult& result) {
 bool CFunction::getReturnMustRelease(Compiler* compiler, CResult& result) {
     getFunction(compiler, result);
     return returnMustRelease;
+}
+
+Function* CFunction::getDestructor(Compiler* compiler, CResult& result) {
+    if (!destructorFunction) {
+        destructorFunction = node->compileDestructorDefinition(compiler, result, shared_from_this());        
+        if (destructorFunction) {
+            node->compileDestructorBody(compiler, result, shared_from_this(), destructorFunction);
+        }
+    }
+    
+    return destructorFunction;
 }
 
 Value* CFunction::getThisArgument(Compiler* compiler, CResult& result) {
@@ -383,24 +395,22 @@ Value* CFunction::getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* 
 }
 
 void CFunction::initStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
-    /* auto refCount = getRefCount(compiler, result, builder, thisValue);
-    if (refCount) {
-        builder->CreateStore(ConstantInt::get(compiler->context, APInt(64, 0)), refCount);
-    } */
+    auto refCount = getRefCount(compiler, result, builder, thisValue);
+    assert(refCount);
+    builder->CreateStore(ConstantInt::get(compiler->context, APInt(64, STACK_REF_COUNT)), refCount);
 }
 
 void CFunction::initHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
     auto refCount = getRefCount(compiler, result, builder, thisValue);
     assert(refCount);
-    builder->CreateStore(ConstantInt::get(compiler->context, APInt(64, 0)), refCount);
+    builder->CreateStore(ConstantInt::get(compiler->context, APInt(64, 1)), refCount);
 }
 
 void CFunction::retainStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
-/*
     auto refCount = getRefCount(compiler, result, builder, thisValue);
     assert(refCount);
     auto foo = builder->CreateAdd(refCount, ConstantInt::get(compiler->context, APInt(64, 1)));
-    builder->CreateStore(foo, refCount); */
+    builder->CreateStore(foo, refCount);
 }
 
 void CFunction::retainHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
@@ -412,9 +422,35 @@ void CFunction::retainHeap(Compiler* compiler, CResult& result, IRBuilder<>* bui
 }
 
 void CFunction::releaseStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
-    // auto refCount = getRefCount(compiler, result, builder, thisValue);
-    // auto foo = builder->CreateSub(refCount, ConstantInt::get(compiler->context, APInt(64, 1)));
-    // If not zero then error
+    auto refCount = getRefCount(compiler, result, builder, thisValue);
+    auto load = builder->CreateLoad(refCount);
+    auto sub = builder->CreateSub(load, ConstantInt::get(compiler->context, APInt(64, 1)));
+    builder->CreateStore(sub, refCount);
+    
+    Function *function = builder->GetInsertBlock()->getParent();
+    auto ifBB = BasicBlock::Create(compiler->context);
+    auto mergeBB = BasicBlock::Create(compiler->context);
+    
+    auto c = builder->CreateICmpNE(sub, ConstantInt::get(compiler->context, APInt(64, STACK_REF_COUNT)));
+    builder->CreateCondBr(c, ifBB, mergeBB);
+    
+    // If not at special stack ref count then fail
+    function->getBasicBlockList().push_back(ifBB);
+    builder->SetInsertPoint(ifBB);
+    // TODO: debug output failure, stack object is still being used
+    builder->CreateBr(mergeBB);
+    
+    // Merge block
+    function->getBasicBlockList().push_back(mergeBB);
+    builder->SetInsertPoint(mergeBB);
+
+    // Call destructor
+    auto destructor = getDestructor(compiler, result);
+    if (destructor) {
+        auto args = vector<Value*>();
+        args.push_back(thisValue);
+        builder->CreateCall(destructor, ArrayRef<Value*>(args));
+    }
 }
 
 void CFunction::releaseHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
@@ -433,7 +469,22 @@ void CFunction::releaseHeap(Compiler* compiler, CResult& result, IRBuilder<>* bu
     // If zero then delete
     function->getBasicBlockList().push_back(ifBB);
     builder->SetInsertPoint(ifBB);
+    
+    // Call destructor
+    auto destructor = getDestructor(compiler, result);
+    if (destructor) {
+        auto args = vector<Value*>();
+        args.push_back(thisValue);
+        builder->CreateCall(destructor, ArrayRef<Value*>(args));
+    }
+    
     // Delete "this"
+    auto thisValueAsVoidPtr = builder->CreateBitCast(thisValue, Type::getInt8PtrTy(compiler->context));
+    auto args = vector<Value*>();
+    args.push_back(thisValueAsVoidPtr);
+    auto free = compiler->getFreeFunction();
+    builder->CreateCall(free, ArrayRef<Value*>(args));
+    
     builder->CreateBr(mergeBB);
     
     // Merge block

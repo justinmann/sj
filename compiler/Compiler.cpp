@@ -127,9 +127,10 @@ void Compiler::InitializeModuleAndPassManager() {
     includedBlocks.clear();
     
     allocFunction = nullptr;
+    freeFunction = nullptr;
     
     // Open a new module.
-    module = llvm::make_unique<Module>("my cool jit", context);
+    module = llvm::make_unique<Module>("sj", context);
     module->setDataLayout(TheJIT->getTargetMachine().createDataLayout());
     
     exception = llvm::make_unique<Exception>(&context, module.get());
@@ -365,8 +366,8 @@ shared_ptr<CResult> Compiler::run(const string& code) {
         compilerResult->type = RESULT_STR;
         compilerResult->strResult = result->str;
         
-        // Delete the result
-        delete result;
+        // TODO: Delete the result
+        // delete result;
     } else {
         printf("Unknown return type: %s\n", returnType->name.c_str());
         assert(false);
@@ -447,3 +448,12 @@ Function* Compiler::getAllocFunction() {
     return allocFunction;
 }
 
+Function* Compiler::getFreeFunction() {
+    if (!freeFunction) {
+        vector<Type*> argTypes;
+        argTypes.push_back(Type::getInt8PtrTy(context));
+        auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
+        freeFunction = Function::Create(functionType, Function::ExternalLinkage, "_ZdlPv", module.get());
+    }
+    return freeFunction;
+}

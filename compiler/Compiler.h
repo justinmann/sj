@@ -172,6 +172,7 @@ public:
     shared_ptr<CType> getType(const string& name) const;
     void includeFile(CResult& result, const string& fileName);
     Function* getAllocFunction();
+    Function* getFreeFunction();
 
     // llvm vars
     CompilerState state;
@@ -199,6 +200,7 @@ private:
     
     map<string, shared_ptr<NBlock>> includedBlocks;
     Function* allocFunction;
+    Function* freeFunction;
 };
 
 #endif /* Compiler_h */

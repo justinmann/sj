@@ -43,6 +43,7 @@ public:
     shared_ptr<CType> getThisType(Compiler* compiler, CResult& result);
     Type* getStructType(Compiler* compiler, CResult& result);
     Function* getFunction(Compiler* compiler, CResult& result);
+    Function* getDestructor(Compiler* compiler, CResult& result);
     bool getReturnMustRelease(Compiler* compiler, CResult& result);
     Value* getThisArgument(Compiler* compiler, CResult& result);
     void localVarToThisVar(Compiler* compiler, shared_ptr<CNormalVar> cvar);
@@ -81,6 +82,7 @@ private:
     bool isInGetFunction;
     bool returnMustRelease;
     Function* function;
+    Function* destructorFunction;
     llvm::StructType* _structType;
     shared_ptr<CType> returnType;
     shared_ptr<CType> thisType;

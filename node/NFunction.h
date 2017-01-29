@@ -31,6 +31,8 @@ public:
     virtual void getVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction);
     Function* compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
     virtual bool compileBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Function* function);
+    Function* compileDestructorDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
+    virtual void compileDestructorBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Function* function);
     virtual void dump(Compiler* compiler, int level) const;
     
 protected:
