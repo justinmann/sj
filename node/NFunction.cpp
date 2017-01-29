@@ -270,6 +270,22 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
             goto error;
         }
         
+        // Release all of the local vars
+        for (auto it : thisFunction->localVarsByName) {
+            auto type = it.second->getType(compiler, result);
+            if (!type->parent.expired()) {
+                auto localValue = it.second->getLoadValue(compiler, result, thisArgument, nullptr, &newBuilder, catchBB);
+                if (localValue->type == RVT_HEAP) {
+                    assert(!localValue->mustRelease);
+                    if (it.second->getHeapVar(compiler, result)) {
+                        type->parent.lock()->releaseHeap(compiler, result, &newBuilder, localValue->value);
+                    } else {
+                        type->parent.lock()->releaseStack(compiler, result, &newBuilder, localValue->value);
+                    }
+                }
+            }
+        }
+        
         newBuilder.CreateRet(returnValue->value);
     }
     
