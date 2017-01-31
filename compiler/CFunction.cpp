@@ -395,18 +395,24 @@ Value* CFunction::getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* 
 }
 
 void CFunction::initStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    compiler->recordRetain(builder, thisValue);
+
     auto refCount = getRefCount(compiler, result, builder, thisValue);
     assert(refCount);
-    builder->CreateStore(ConstantInt::get(compiler->context, APInt(64, STACK_REF_COUNT)), refCount);
+    builder->CreateStore(ConstantInt::get(compiler->context, APInt(64, STACK_REF_COUNT + 1)), refCount);
 }
 
 void CFunction::initHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    compiler->recordRetain(builder, thisValue);
+
     auto refCount = getRefCount(compiler, result, builder, thisValue);
     assert(refCount);
     builder->CreateStore(ConstantInt::get(compiler->context, APInt(64, 1)), refCount);
 }
 
 void CFunction::retainStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    compiler->recordRetain(builder, thisValue);
+
     auto refCount = getRefCount(compiler, result, builder, thisValue);
     assert(refCount);
     auto foo = builder->CreateAdd(refCount, ConstantInt::get(compiler->context, APInt(64, 1)));
@@ -414,6 +420,8 @@ void CFunction::retainStack(Compiler* compiler, CResult& result, IRBuilder<>* bu
 }
 
 void CFunction::retainHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    compiler->recordRetain(builder, thisValue);
+
     auto refCount = getRefCount(compiler, result, builder, thisValue);
     assert(refCount);
     auto load = builder->CreateLoad(refCount);
@@ -422,6 +430,9 @@ void CFunction::retainHeap(Compiler* compiler, CResult& result, IRBuilder<>* bui
 }
 
 void CFunction::releaseStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    compiler->recordRelease(builder, thisValue);
+    
+#ifdef DEBUG_CALLSTACK
     auto refCount = getRefCount(compiler, result, builder, thisValue);
     auto load = builder->CreateLoad(refCount);
     auto sub = builder->CreateSub(load, ConstantInt::get(compiler->context, APInt(64, 1)));
@@ -437,12 +448,15 @@ void CFunction::releaseStack(Compiler* compiler, CResult& result, IRBuilder<>* b
     // If not at special stack ref count then fail
     function->getBasicBlockList().push_back(ifBB);
     builder->SetInsertPoint(ifBB);
-    // TODO: debug output failure, stack object is still being used
+    
+    compiler->callDebug(builder, "did not release: " + name, thisValue);
+
     builder->CreateBr(mergeBB);
     
     // Merge block
     function->getBasicBlockList().push_back(mergeBB);
     builder->SetInsertPoint(mergeBB);
+#endif
 
     // Call destructor
     auto destructor = getDestructor(compiler, result);
@@ -454,6 +468,8 @@ void CFunction::releaseStack(Compiler* compiler, CResult& result, IRBuilder<>* b
 }
 
 void CFunction::releaseHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    compiler->recordRelease(builder, thisValue);
+
     auto refCount = getRefCount(compiler, result, builder, thisValue);
     auto load = builder->CreateLoad(refCount);
     auto sub = builder->CreateSub(load, ConstantInt::get(compiler->context, APInt(64, 1)));
@@ -463,7 +479,7 @@ void CFunction::releaseHeap(Compiler* compiler, CResult& result, IRBuilder<>* bu
     auto ifBB = BasicBlock::Create(compiler->context);
     auto mergeBB = BasicBlock::Create(compiler->context);
     
-    auto c = builder->CreateICmpEQ(sub, ConstantInt::get(compiler->context, APInt(64, 0)));
+    auto c = builder->CreateICmpSLE(sub, ConstantInt::get(compiler->context, APInt(64, 0)));
     builder->CreateCondBr(c, ifBB, mergeBB);
 
     // If zero then delete

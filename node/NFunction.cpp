@@ -249,6 +249,8 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
     auto returnType = block->getType(compiler, result, thisFunction);
     auto returnFunction = returnType->parent.expired() ? nullptr : returnType->parent.lock();
     
+    compiler->callPushFunction(&newBuilder, name);
+    
     BasicBlock* catchBB = nullptr;
     if (catchBlock) {
         catchBB = BasicBlock::Create(compiler->context, "catch", function);
@@ -257,6 +259,9 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
     thisArgument = (Argument*)function->args().begin();
     returnVar = block->getVar(compiler, result, thisFunction);
     returnValue = block->compile(compiler, result, thisFunction, thisArgument, &newBuilder, catchBB);
+
+    compiler->callPopFunction(&newBuilder);
+    
     if (function->getReturnType()->isVoidTy()) {
         newBuilder.CreateRetVoid();
     } else {
@@ -269,6 +274,15 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
             result.addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match return value type '%s'", Type_print(function->getReturnType()).c_str(), Type_print(returnValue->value->getType()).c_str());
             goto error;
         }
+        
+        // Store return value, before releasing everything
+        auto entryBuilder = getEntryBuilder(&newBuilder);
+        auto returnAlloca = entryBuilder.CreateAlloca(returnValue->value->getType());
+        newBuilder.CreateStore(returnValue->value, returnAlloca);
+
+        auto releaseBlock = BasicBlock::Create(compiler->context, "release", function);
+        newBuilder.CreateBr(releaseBlock);
+        newBuilder.SetInsertPoint(releaseBlock);
         
         // Release all of the local vars
         for (auto it : thisFunction->localVarsByName) {
@@ -286,7 +300,10 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
             }
         }
         
-        newBuilder.CreateRet(returnValue->value);
+        auto returnBlock = BasicBlock::Create(compiler->context, "return", function);
+        newBuilder.CreateBr(returnBlock);
+        newBuilder.SetInsertPoint(returnBlock);
+        newBuilder.CreateRet(newBuilder.CreateLoad(returnAlloca));
     }
     
     if (catchBlock) {
@@ -560,6 +577,8 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
         argsV.push_back(calleeValue);
         auto func = callee->getFunction(compiler, result);
         
+        auto returnType = callee->getReturnType(compiler, result);
+        auto returnFunction = returnType->parent.lock();
         Value* returnValue = nullptr;
         if (catchBB) {
             auto continueBB = BasicBlock::Create(compiler->context);
@@ -572,10 +591,14 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
             returnValue = builder->CreateCall(func, argsV);
         }
         
-        // TODO: if return is "this" then do not release
-        
-        // Release "this" value
-        if (calleeFunction) {
+        auto mustRelease = calleeFunction->getReturnMustRelease(compiler, result);
+
+        if (returnType == calleeType) {
+            assert(!mustRelease);
+            mustRelease = true;
+            // If calleeType is returnType then the function is returning "this", make the caller free it
+        } else if (calleeFunction) {
+            // Release "this" value
             if (calleeHeapVar) {
                 calleeFunction->releaseHeap(compiler, result, builder, calleeValue);
             } else {
@@ -586,14 +609,7 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
         if (dotReturnValue) {
             dotReturnValue->releaseIfNeeded(compiler, result, builder);
         }
-        /*
-        for (auto it : argReturnValues) {
-            it->releaseIfNeeded(compiler, result, builder);
-        }*/
         
-        auto returnType = callee->getReturnType(compiler, result);
-        auto returnFunction = returnType->parent.lock();
-        auto mustRelease = calleeFunction->getReturnMustRelease(compiler, result);
         return make_shared<ReturnValue>(returnFunction, mustRelease, returnFunction ? RVT_HEAP : RVT_SIMPLE, returnValue);
     }
 }

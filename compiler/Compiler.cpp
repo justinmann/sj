@@ -37,6 +37,44 @@ IRBuilder<> getEntryBuilder(IRBuilder<>* builder) {
     return IRBuilder<>(&function->getEntryBlock(), function->getEntryBlock().begin());
 }
 
+#ifdef DEBUG_CALLSTACK
+const char* callstack[9999];
+int callstackIndex = 0;
+map<void*, vector<vector<const char*>>> retains;
+map<void*, vector<vector<const char*>>> releases;
+
+extern "C" void pushFunction(const char* str) {
+    callstack[callstackIndex] = str;
+    callstackIndex++;
+}
+
+extern "C" void popFunction() {
+    callstackIndex--;
+}
+
+extern "C" void debugFunction(const char* str, void* v) {
+    printf("ERROR: %s\n", str);
+    for (int i = 0; i < callstackIndex; i++) {
+        printf("%s\n", callstack[i]);
+    }
+}
+
+extern "C" void recordRetain(void* v) {
+    vector<const char*> stack(callstackIndex);
+    for (int i = 0; i < callstackIndex; i++) {
+        stack.push_back(callstack[i]);
+    }
+    retains[v].push_back(stack);
+}
+
+extern "C" void recordRelease(void* v) {
+    vector<const char*> stack(callstackIndex);
+    for (int i = 0; i < callstackIndex; i++) {
+        stack.push_back(callstack[i]);
+    }
+    releases[v].push_back(stack);
+}
+#endif
 
 class KaleidoscopeJIT {
 private:
@@ -125,9 +163,21 @@ Compiler::~Compiler() {
 
 void Compiler::InitializeModuleAndPassManager() {
     includedBlocks.clear();
+    functionNames.clear();
     
     allocFunction = nullptr;
     freeFunction = nullptr;
+#ifdef DEBUG_CALLSTACK
+    pushFunction = nullptr;
+    popFunction = nullptr;
+    debugFunction = nullptr;
+    recordRetainFunction = nullptr;
+    recordReleaseFunction = nullptr;
+    
+    callstackIndex = 0;
+    retains.clear();
+    releases.clear();
+#endif
     
     // Open a new module.
     module = llvm::make_unique<Module>("sj", context);
@@ -401,8 +451,6 @@ shared_ptr<CType> Compiler::getType(const string& name) const {
     }
 }
 
-
-
 void Compiler::emitLocation(const NBase *node) {
 #ifdef DWARF_ENABLED
     if (!node)
@@ -457,3 +505,107 @@ Function* Compiler::getFreeFunction() {
     }
     return freeFunction;
 }
+
+void Compiler::callPushFunction(IRBuilder<>* builder, const string& name) {
+#ifdef DEBUG_CALLSTACK
+    if (!pushFunction) {
+        vector<Type*> argTypes;
+        argTypes.push_back(Type::getInt8PtrTy(context));
+        auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
+        pushFunction = Function::Create(functionType, Function::ExternalLinkage, "pushFunction", module.get());
+    }
+    
+    GlobalValue* nameValue;
+    auto it = functionNames.find(name);
+    if (it == functionNames.end()) {
+        nameValue = builder->CreateGlobalString(name);
+        functionNames[name] = nameValue;
+    } else {
+        nameValue = it->second;
+    }
+    
+    auto namePtr = builder->CreateBitCast(nameValue, Type::getInt8PtrTy(context));
+
+    vector<Value*> args;
+    args.push_back(namePtr);
+    builder->CreateCall(pushFunction, ArrayRef<Value*>(args));
+#endif
+}
+
+
+void Compiler::callPopFunction(IRBuilder<>* builder) {
+#ifdef DEBUG_CALLSTACK
+    if (!popFunction) {
+        vector<Type*> argTypes;
+        auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
+        popFunction = Function::Create(functionType, Function::ExternalLinkage, "popFunction", module.get());
+    }
+
+    vector<Value*> args;
+    builder->CreateCall(popFunction, ArrayRef<Value*>(args));
+#endif
+}
+
+void Compiler::callDebug(IRBuilder<>* builder, const string& name, Value* valueMisc) {
+#ifdef DEBUG_CALLSTACK
+    if (!debugFunction) {
+        vector<Type*> argTypes;
+        argTypes.push_back(Type::getInt8PtrTy(context));
+        argTypes.push_back(Type::getInt8PtrTy(context));
+        auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
+        debugFunction = Function::Create(functionType, Function::ExternalLinkage, "debugFunction", module.get());
+    }
+    
+    GlobalValue* nameValue;
+    auto it = functionNames.find(name);
+    if (it == functionNames.end()) {
+        nameValue = builder->CreateGlobalString(name);
+        functionNames[name] = nameValue;
+    } else {
+        nameValue = it->second;
+    }
+    
+    auto namePtr = builder->CreateBitCast(nameValue, Type::getInt8PtrTy(context));
+    auto valuePtr = builder->CreateBitCast(valueMisc, Type::getInt8PtrTy(context));
+
+    vector<Value*> args;
+    args.push_back(namePtr);
+    args.push_back(valuePtr);
+    builder->CreateCall(debugFunction, ArrayRef<Value*>(args));
+#endif
+}
+
+void Compiler::recordRetain(IRBuilder<>* builder, Value* value) {
+#ifdef DEBUG_CALLSTACK
+    if (!recordRetainFunction) {
+        vector<Type*> argTypes;
+        argTypes.push_back(Type::getInt8PtrTy(context));
+        auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
+        recordRetainFunction = Function::Create(functionType, Function::ExternalLinkage, "recordRetain", module.get());
+    }
+    
+    auto valuePtr = builder->CreateBitCast(value, Type::getInt8PtrTy(context));
+    
+    vector<Value*> args;
+    args.push_back(valuePtr);
+    builder->CreateCall(recordRetainFunction, ArrayRef<Value*>(args));
+#endif
+}
+
+void Compiler::recordRelease(IRBuilder<>* builder, Value* value) {
+#ifdef DEBUG_CALLSTACK
+    if (!recordReleaseFunction) {
+        vector<Type*> argTypes;
+        argTypes.push_back(Type::getInt8PtrTy(context));
+        auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
+        recordReleaseFunction = Function::Create(functionType, Function::ExternalLinkage, "recordRelease", module.get());
+    }
+    
+    auto valuePtr = builder->CreateBitCast(value, Type::getInt8PtrTy(context));
+    
+    vector<Value*> args;
+    args.push_back(valuePtr);
+    builder->CreateCall(recordReleaseFunction, ArrayRef<Value*>(args));
+#endif
+}
+

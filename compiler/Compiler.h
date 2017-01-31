@@ -20,6 +20,7 @@
 // #define ERROR_OUTPUT
 // #define SYMBOL_OUTPUT
 // #define EXCEPTION_OUTPUT
+// #define DEBUG_CALLSTACK
 
 using namespace llvm;
 using namespace std;
@@ -173,6 +174,11 @@ public:
     void includeFile(CResult& result, const string& fileName);
     Function* getAllocFunction();
     Function* getFreeFunction();
+    void callPushFunction(IRBuilder<>* builder, const string& name);
+    void callPopFunction(IRBuilder<>* builder);
+    void callDebug(IRBuilder<>* builder, const string& name, Value* valueMisc);
+    void recordRetain(IRBuilder<>* builder, Value* value);
+    void recordRelease(IRBuilder<>* builder, Value* value);
 
     // llvm vars
     CompilerState state;
@@ -199,8 +205,16 @@ private:
     void InitializeModuleAndPassManager();
     
     map<string, shared_ptr<NBlock>> includedBlocks;
+    map<string, GlobalValue*> functionNames;
     Function* allocFunction;
     Function* freeFunction;
+#ifdef DEBUG_CALLSTACK
+    Function* pushFunction;
+    Function* popFunction;
+    Function* debugFunction;
+    Function* recordRetainFunction;
+    Function* recordReleaseFunction;
+#endif
 };
 
 #endif /* Compiler_h */
