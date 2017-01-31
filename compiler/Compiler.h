@@ -177,8 +177,8 @@ public:
     void callPushFunction(IRBuilder<>* builder, const string& name);
     void callPopFunction(IRBuilder<>* builder);
     void callDebug(IRBuilder<>* builder, const string& name, Value* valueMisc);
-    void recordRetain(IRBuilder<>* builder, Value* value);
-    void recordRelease(IRBuilder<>* builder, Value* value);
+    void recordRetain(IRBuilder<>* builder, Value* value, const string& name);
+    void recordRelease(IRBuilder<>* builder, Value* value, const string& name);
 
     // llvm vars
     CompilerState state;

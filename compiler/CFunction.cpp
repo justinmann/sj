@@ -395,7 +395,7 @@ Value* CFunction::getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* 
 }
 
 void CFunction::initStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
-    compiler->recordRetain(builder, thisValue);
+    compiler->recordRetain(builder, thisValue, name);
 
     auto refCount = getRefCount(compiler, result, builder, thisValue);
     assert(refCount);
@@ -403,7 +403,7 @@ void CFunction::initStack(Compiler* compiler, CResult& result, IRBuilder<>* buil
 }
 
 void CFunction::initHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
-    compiler->recordRetain(builder, thisValue);
+    compiler->recordRetain(builder, thisValue, name);
 
     auto refCount = getRefCount(compiler, result, builder, thisValue);
     assert(refCount);
@@ -411,7 +411,7 @@ void CFunction::initHeap(Compiler* compiler, CResult& result, IRBuilder<>* build
 }
 
 void CFunction::retainStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
-    compiler->recordRetain(builder, thisValue);
+    compiler->recordRetain(builder, thisValue, name);
 
     auto refCount = getRefCount(compiler, result, builder, thisValue);
     assert(refCount);
@@ -420,7 +420,7 @@ void CFunction::retainStack(Compiler* compiler, CResult& result, IRBuilder<>* bu
 }
 
 void CFunction::retainHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
-    compiler->recordRetain(builder, thisValue);
+    compiler->recordRetain(builder, thisValue, name);
 
     auto refCount = getRefCount(compiler, result, builder, thisValue);
     assert(refCount);
@@ -430,7 +430,7 @@ void CFunction::retainHeap(Compiler* compiler, CResult& result, IRBuilder<>* bui
 }
 
 void CFunction::releaseStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
-    compiler->recordRelease(builder, thisValue);
+    compiler->recordRelease(builder, thisValue, name);
     
 #ifdef DEBUG_CALLSTACK
     auto refCount = getRefCount(compiler, result, builder, thisValue);
@@ -468,7 +468,7 @@ void CFunction::releaseStack(Compiler* compiler, CResult& result, IRBuilder<>* b
 }
 
 void CFunction::releaseHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
-    compiler->recordRelease(builder, thisValue);
+    compiler->recordRelease(builder, thisValue, name);
 
     auto refCount = getRefCount(compiler, result, builder, thisValue);
     auto load = builder->CreateLoad(refCount);

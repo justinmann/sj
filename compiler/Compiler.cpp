@@ -42,6 +42,7 @@ const char* callstack[9999];
 int callstackIndex = 0;
 map<void*, vector<vector<const char*>>> retains;
 map<void*, vector<vector<const char*>>> releases;
+map<void*, const char*> objTypes;
 
 extern "C" void pushFunction(const char* str) {
     callstack[callstackIndex] = str;
@@ -59,20 +60,22 @@ extern "C" void debugFunction(const char* str, void* v) {
     }
 }
 
-extern "C" void recordRetain(void* v) {
+extern "C" void recordRetain(void* v, const char* str) {
     vector<const char*> stack(callstackIndex);
     for (int i = 0; i < callstackIndex; i++) {
         stack.push_back(callstack[i]);
     }
     retains[v].push_back(stack);
+    objTypes[v] = str;
 }
 
-extern "C" void recordRelease(void* v) {
+extern "C" void recordRelease(void* v, const char* str) {
     vector<const char*> stack(callstackIndex);
     for (int i = 0; i < callstackIndex; i++) {
         stack.push_back(callstack[i]);
     }
     releases[v].push_back(stack);
+    objTypes[v] = str;
 }
 #endif
 
@@ -424,6 +427,18 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     }
     
     free(thisPtr);
+    
+    
+#ifdef DEBUG_CALLSTACK
+    for (auto it : retains) {
+        auto retainStacks = &it.second;
+        auto releaseStacks = &releases[it.first];
+        if (retainStacks->size() != releaseStacks->size()) {
+            printf("%s: %" PRIx64 ": retain %lu release %lu\n", objTypes[it.first], (unsigned long long)it.first, retainStacks->size(), releaseStacks->size());
+        }
+    }
+
+#endif
 
     // Delete the anonymous expression module from the JIT.
     TheJIT->removeModule(H);
@@ -575,36 +590,60 @@ void Compiler::callDebug(IRBuilder<>* builder, const string& name, Value* valueM
 #endif
 }
 
-void Compiler::recordRetain(IRBuilder<>* builder, Value* value) {
+void Compiler::recordRetain(IRBuilder<>* builder, Value* value, const string& name) {
 #ifdef DEBUG_CALLSTACK
     if (!recordRetainFunction) {
         vector<Type*> argTypes;
+        argTypes.push_back(Type::getInt8PtrTy(context));
         argTypes.push_back(Type::getInt8PtrTy(context));
         auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
         recordRetainFunction = Function::Create(functionType, Function::ExternalLinkage, "recordRetain", module.get());
     }
     
+    GlobalValue* nameValue;
+    auto it = functionNames.find(name);
+    if (it == functionNames.end()) {
+        nameValue = builder->CreateGlobalString(name);
+        functionNames[name] = nameValue;
+    } else {
+        nameValue = it->second;
+    }
+    
+    auto namePtr = builder->CreateBitCast(nameValue, Type::getInt8PtrTy(context));
     auto valuePtr = builder->CreateBitCast(value, Type::getInt8PtrTy(context));
     
     vector<Value*> args;
     args.push_back(valuePtr);
+    args.push_back(namePtr);
     builder->CreateCall(recordRetainFunction, ArrayRef<Value*>(args));
 #endif
 }
 
-void Compiler::recordRelease(IRBuilder<>* builder, Value* value) {
+void Compiler::recordRelease(IRBuilder<>* builder, Value* value, const string& name) {
 #ifdef DEBUG_CALLSTACK
     if (!recordReleaseFunction) {
         vector<Type*> argTypes;
+        argTypes.push_back(Type::getInt8PtrTy(context));
         argTypes.push_back(Type::getInt8PtrTy(context));
         auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
         recordReleaseFunction = Function::Create(functionType, Function::ExternalLinkage, "recordRelease", module.get());
     }
     
-    auto valuePtr = builder->CreateBitCast(value, Type::getInt8PtrTy(context));
+    GlobalValue* nameValue;
+    auto it = functionNames.find(name);
+    if (it == functionNames.end()) {
+        nameValue = builder->CreateGlobalString(name);
+        functionNames[name] = nameValue;
+    } else {
+        nameValue = it->second;
+    }
+    
+    auto namePtr = builder->CreateBitCast(nameValue, Type::getInt8PtrTy(context));
+        auto valuePtr = builder->CreateBitCast(value, Type::getInt8PtrTy(context));
     
     vector<Value*> args;
     args.push_back(valuePtr);
+    args.push_back(namePtr);
     builder->CreateCall(recordReleaseFunction, ArrayRef<Value*>(args));
 #endif
 }
