@@ -344,6 +344,7 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     state = CompilerState::Compile;
     anonFunction->compile(this, *compilerResult, currentFunction, nullptr, nullptr, nullptr);
     auto function = cfunction->getFunction(this, *compilerResult);
+    cfunction->getDestructor(this, *compilerResult);
     auto returnType = cfunction->getReturnType(this, *compilerResult);
     if (!function) {
         return compilerResult;
@@ -371,8 +372,9 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     auto H = TheJIT->addModule(move(module));
     
     // Search the JIT for the global symbol.
-    auto ExprSymbol = TheJIT->findSymbol("global");
-    assert(ExprSymbol && "Function not found");
+    auto globalFunction = TheJIT->findSymbol("global");
+    auto globalDestructor = TheJIT->findSymbol("global_destructor");
+    assert(globalFunction && "Function not found");
     
     auto thisSize = cfunction->thisVarsByName.size() * 8;
     auto thisPtr = malloc(thisSize);
@@ -381,25 +383,25 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     // arguments, returns a double) so we can call it as a native function.
     hasException = false;
     if (returnType == typeInt) {
-        int64_t (*FP)(void*) = (int64_t (*)(void*))(intptr_t)ExprSymbol.getAddress();
+        int64_t (*FP)(void*) = (int64_t (*)(void*))(intptr_t)globalFunction.getAddress();
         int64_t result = FP(thisPtr);
         
         compilerResult->type = RESULT_INT;
         compilerResult->iResult = result;
     } else if (returnType == typeBool) {
-        bool (*FP)(void*) = (bool (*)(void*))(intptr_t)ExprSymbol.getAddress();
+        bool (*FP)(void*) = (bool (*)(void*))(intptr_t)globalFunction.getAddress();
         bool result = FP(thisPtr);
         
         compilerResult->type = RESULT_BOOL;
         compilerResult->bResult = result;
     } else if (returnType == typeFloat) {
-        double (*FP)(void*) = (double (*)(void*))(intptr_t)ExprSymbol.getAddress();
+        double (*FP)(void*) = (double (*)(void*))(intptr_t)globalFunction.getAddress();
         double result = FP(thisPtr);
 
         compilerResult->type = RESULT_FLOAT;
         compilerResult->fResult = result;
     } else if (returnType == typeVoid) {
-        void (*FP)(void*) = (void (*)(void*))(intptr_t)ExprSymbol.getAddress();
+        void (*FP)(void*) = (void (*)(void*))(intptr_t)globalFunction.getAddress();
         FP(thisPtr);
 
         compilerResult->type = RESULT_VOID;
@@ -413,7 +415,7 @@ shared_ptr<CResult> Compiler::run(const string& code) {
             char* str;
         };
         
-        list_char* (*FP)(void*) = (list_char* (*)(void*))(intptr_t)ExprSymbol.getAddress();
+        list_char* (*FP)(void*) = (list_char* (*)(void*))(intptr_t)globalFunction.getAddress();
         list_char* result = FP(thisPtr);
         
         compilerResult->type = RESULT_STR;
@@ -426,6 +428,10 @@ shared_ptr<CResult> Compiler::run(const string& code) {
         assert(false);
     }
     
+    if (globalDestructor) {
+        void (*FP)(void*) = (void (*)(void*))(intptr_t)globalDestructor.getAddress();
+        FP(thisPtr);
+    }
     free(thisPtr);
     
     
