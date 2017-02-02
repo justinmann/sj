@@ -74,12 +74,24 @@ public:
     virtual shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters);
 };
 
+class NArrayDeleteFunction : public NFunction {
+public:
+    NArrayDeleteFunction() : NFunction(CLoc::undefined, FT_Private, "void", "delete", nullptr, make_shared<NodeList>(
+                                                                                                                     make_shared<NAssignment>(CLoc::undefined, nullptr, "int", "size", nullptr, false)
+                                                                                                                     ), nullptr, nullptr) { }
+    
+    virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
+    virtual shared_ptr<CVar> getReturnVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction)  { return nullptr; }
+    virtual shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters);
+};
+
 class NArrayCreateFunction : public NFunction {
 public:
     NArrayCreateFunction() : NFunction(CLoc::undefined, FT_Private, "", "array", make_shared<TemplateTypeNames>("item"), make_shared<NodeList>(
                                                                                                                                               make_shared<NAssignment>(CLoc::undefined, nullptr, "", "size", make_shared<NInteger>(CLoc::undefined, "0"), false),
                                                                                                                                               make_shared<NArrayGetFunction>(),
-                                                                                                                                              make_shared<NArraySetFunction>()
+                                                                                                                                               make_shared<NArraySetFunction>(),
+                                                                                                                                               make_shared<NArrayDeleteFunction>()
                                                                                                                                               ), nullptr, nullptr) { }
     
     virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);

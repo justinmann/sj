@@ -217,7 +217,9 @@ int NCall::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunct
 
     if (isHeapVar) {
         auto var = getVar(compiler, result, thisFunction, dotVar);
-        count += var->setHeapVar(compiler, result);
+        if (var) {
+            count += var->setHeapVar(compiler, result);
+        }
     }
     return count;
 }

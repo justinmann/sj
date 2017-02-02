@@ -619,7 +619,9 @@ void testArray() {
     result = compiler.run(R"DELIM(
         a : array!int(1)
         a.set(0, 1)
-        a.get(0)
+        c : a.get(0)
+        a.delete(1)
+        c
     )DELIM");
     assert(result->type == RESULT_INT && result->iResult == 1);
 
@@ -628,7 +630,9 @@ void testArray() {
         a : array!class(1)
         a.set(0, class(1))
         b : a.get(0)
-        b.x
+        c : b.x
+        a.delete(1)
+        c
     )DELIM");
     assert(result->type == RESULT_INT && result->iResult == 1);
     
