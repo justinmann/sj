@@ -432,7 +432,11 @@ void NFunction::compileDestructorBody(Compiler* compiler, CResult& result, share
         if (!it->getType(compiler, result)->parent.expired()) {
             auto value = it->getLoadValue(compiler, result, thisArgument, thisArgument, &newBuilder, nullptr);
             if (value->type == RVT_HEAP) {
-                value->valueFunction->releaseHeap(compiler, result, &newBuilder, value->value);
+                if (it->getHeapVar(compiler, result)) {
+                    value->valueFunction->releaseHeap(compiler, result, &newBuilder, value->value);
+                } else {
+                    value->valueFunction->releaseStack(compiler, result, &newBuilder, value->value);
+                }
             }
         }
     }
