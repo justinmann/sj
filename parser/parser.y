@@ -56,12 +56,12 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID TSTRING TCHAR
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program expr expr_and expr_comp expr_math const stmt var_decl func_decl func_arg for_expr while_expr assign array
 %type <var> var var_right
-%type <block> stmts block catch
+%type <block> stmts block catch destroy
 %type <nif> if_expr
 %type <exprvec> func_args func_block array_args
 %type <isMutable> assign_type
@@ -109,13 +109,18 @@ var_decl 			: assign
 					| TEXCLAIM stmt                                 { $$ = new NNot(LOC, shared_ptr<NBase>($2)); }
 					;
 
-func_decl 			: TIDENTIFIER temp_block func_block block catch		{ /* f() */			$$ = new NFunction(LOC, FT_Private, "", $1->c_str(), shared_ptr<TemplateTypeNames>($2), shared_ptr<NodeList>($3), shared_ptr<NBlock>($4), shared_ptr<NBlock>($5)); }
-					| TIDENTIFIER temp_block func_block type block catch		{ /* f() */			$$ = new NFunction(LOC, FT_Private, $4->c_str(), $1->c_str(), shared_ptr<TemplateTypeNames>($2), shared_ptr<NodeList>($3), shared_ptr<NBlock>($5), shared_ptr<NBlock>($6)); }
-					| TEXTERN TIDENTIFIER func_block type 			{ /* #f()'int */	$$ = new NFunction(LOC, FT_Extern, $4->c_str(), $2->c_str(), nullptr, shared_ptr<NodeList>($3), nullptr, nullptr); }
+func_decl 			: TIDENTIFIER temp_block func_block block catch destroy			{ $$ = new NFunction(LOC, FT_Private, "", $1->c_str(), shared_ptr<TemplateTypeNames>($2), shared_ptr<NodeList>($3), shared_ptr<NBlock>($4), shared_ptr<NBlock>($5), shared_ptr<NBlock>($6)); }
+					| TIDENTIFIER temp_block func_block type block catch destroy 	{ $$ = new NFunction(LOC, FT_Private, $4->c_str(), $1->c_str(), shared_ptr<TemplateTypeNames>($2), shared_ptr<NodeList>($3), shared_ptr<NBlock>($5), shared_ptr<NBlock>($6), shared_ptr<NBlock>($7)); }
+					| TEXTERN TIDENTIFIER func_block type 							{ $$ = new NFunction(LOC, FT_Extern,  $4->c_str(), $2->c_str(), nullptr, shared_ptr<NodeList>($3), nullptr, nullptr, nullptr); }
 					;
 
 catch				: /* Blank! */									{ $$ = nullptr; }
 					| TCATCH block									{ $$ = $2; }
+					;
+
+destroy				: /* Blank! */									{ $$ = nullptr; }
+					| TDESTROY block								{ $$ = $2; }
+					;
 
 func_block			: TLPAREN func_args TRPAREN						{ $$ = $2; }
 					;

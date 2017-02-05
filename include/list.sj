@@ -26,4 +26,8 @@ list!t(
 		}
 		items.set(index, element)
 	}
-) { this }
+) {
+    this
+} destroy {
+    items.delete(space)
+}

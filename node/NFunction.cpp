@@ -2,7 +2,7 @@
 
 int NFunction::counter = 0;
 
-NFunction::NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock) : type(type), typeName(typeName), name(name), templateTypeNames(templateTypeNames), block(block), catchBlock(catchBlock), NBase(NodeType_Function, loc) {
+NFunction::NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock) : type(type), typeName(typeName), name(name), templateTypeNames(templateTypeNames), block(block), catchBlock(catchBlock), destroyBlock(destroyBlock), NBase(NodeType_Function, loc) {
     if (this->name == "^") {
         this->name = strprintf("anon_%d", counter++);
     }
@@ -116,6 +116,10 @@ void NFunction::getVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunc
         catchBlock->getVar(compiler, result, thisFunction);
     }
     
+    if (destroyBlock) {
+        destroyBlock->getVar(compiler, result, thisFunction);
+    }
+    
     auto count = 0;
     do {
         count = 0;
@@ -133,6 +137,10 @@ void NFunction::getVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunc
         
         if (catchBlock) {
             count += catchBlock->setHeapVar(compiler, result, thisFunction, true);
+        }
+
+        if (destroyBlock) {
+            count += destroyBlock->setHeapVar(compiler, result, thisFunction, true);
         }
     } while (count > 0);
 
@@ -374,7 +382,7 @@ Function* NFunction::compileDestructorDefinition(Compiler* compiler, CResult& re
         return nullptr;
     }
     
-    auto hasDestructor = false;
+    auto hasDestructor = destroyBlock != nullptr;
     for (auto it : thisFunction->thisVars) {
         if (!it->getType(compiler, result)->parent.expired()) {
             hasDestructor = true;
@@ -427,6 +435,10 @@ void NFunction::compileDestructorBody(Compiler* compiler, CResult& result, share
     IRBuilder<> newBuilder(basicBlock);
     shared_ptr<ReturnValue> returnValue = nullptr;
     Argument* thisArgument = (Argument*)function->args().begin();
+    
+    if (destroyBlock) {
+        destroyBlock->compile(compiler, result, thisFunction, thisArgument, &newBuilder, nullptr);
+    }
     
     for (auto it : thisFunction->thisVars) {
         if (!it->getType(compiler, result)->parent.expired()) {

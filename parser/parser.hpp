@@ -93,7 +93,8 @@ extern int yydebug;
     TTHIS = 303,
     TINCLUDE = 304,
     TAND = 305,
-    TOR = 306
+    TOR = 306,
+    TDESTROY = 307
   };
 #endif
 

@@ -303,13 +303,13 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     catchBlock->statements.push_back(make_shared<NMatchReturn>(CLoc::undefined, compilerResult->block));
     
     // Define an extern for throwException at the beginning of the block
-    auto throwExceptionFunction = make_shared<NFunction>(CLoc::undefined, FT_Extern, "void", "throwException", nullptr, nullptr, nullptr, nullptr);
+    auto throwExceptionFunction = make_shared<NFunction>(CLoc::undefined, FT_Extern, "void", "throwException", nullptr, nullptr, nullptr, nullptr, nullptr);
     compilerResult->block->statements.insert(compilerResult->block->statements.begin(), throwExceptionFunction);
     
     auto arrayFunction = make_shared<NArrayCreateFunction>();
     compilerResult->block->statements.insert(compilerResult->block->statements.begin(), arrayFunction);
     
-    auto anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, "", "global", nullptr, nullptr, compilerResult->block, catchBlock);
+    auto anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, "", "global", nullptr, nullptr, compilerResult->block, catchBlock, nullptr);
     auto currentFunctionDefintion = CFunctionDefinition::create(this, *compilerResult, nullptr, FT_Public, "", nullptr);
     state = CompilerState::Define;
     anonFunction->define(this, *compilerResult, currentFunctionDefintion);

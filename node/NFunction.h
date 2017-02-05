@@ -22,8 +22,9 @@ public:
     vector<shared_ptr<NFunction>> functions;
     const shared_ptr<NBase> block;
     const shared_ptr<NBase> catchBlock;
+    const shared_ptr<NBase> destroyBlock;
     
-    NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock);
+    NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock);
 
     virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
     virtual shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters);
