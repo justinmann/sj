@@ -111,12 +111,13 @@ enum CErrorCode {
 class CError {
 public:
     const CErrorCode code;
+    shared_ptr<string> fileName;
     const unsigned line;
     const unsigned col;
     const string msg;
     
-    CError(const CLoc& loc, const CErrorCode code): line(loc.line), col(loc.col), code(code) { }
-    CError(const CLoc& loc, const CErrorCode code, const string& msg): line(loc.line), col(loc.col), code(code), msg(msg) { }
+    CError(const CLoc& loc, const CErrorCode code): fileName(loc.fileName), line(loc.line), col(loc.col), code(code) { }
+    CError(const CLoc& loc, const CErrorCode code, const string& msg): fileName(loc.fileName), line(loc.line), col(loc.col), code(code), msg(msg) { }
 };
 
 class CResult {
