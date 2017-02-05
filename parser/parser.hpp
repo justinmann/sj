@@ -94,7 +94,8 @@ extern int yydebug;
     TINCLUDE = 304,
     TAND = 305,
     TOR = 306,
-    TDESTROY = 307
+    TDESTROY = 307,
+    TMOD = 308
   };
 #endif
 

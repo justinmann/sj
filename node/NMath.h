@@ -13,7 +13,8 @@ enum NMathOp {
     Add,
     Sub,
     Div,
-    Mul
+    Mul,
+    Mod
 };
 
 class NMath : public NBase {

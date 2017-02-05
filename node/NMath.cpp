@@ -51,6 +51,8 @@ shared_ptr<ReturnValue> NMath::compileImpl(Compiler* compiler, CResult& result, 
                 return make_shared<ReturnValue>(builder->CreateMul(L->value, R->value, "multmp"));
             case NMathOp::Div:
                 return make_shared<ReturnValue>(builder->CreateSDiv(L->value, R->value, "divtmp"));
+            case NMathOp::Mod:
+                return make_shared<ReturnValue>(builder->CreateSRem(L->value, R->value, "modetmp"));
             default:
                 result.addError(loc, CErrorCode::Internal, "unknown math type");
                 return nullptr;
@@ -65,6 +67,9 @@ shared_ptr<ReturnValue> NMath::compileImpl(Compiler* compiler, CResult& result, 
                 return make_shared<ReturnValue>(builder->CreateFMul(L->value, R->value, "multmp"));
             case NMathOp::Div:
                 return make_shared<ReturnValue>(builder->CreateFDiv(L->value, R->value, "divtmp"));
+            case NMathOp::Mod:
+                result.addError(loc, CErrorCode::InvalidType, "mod operation are not supported on this type");
+                return nullptr;
             default:
                 result.addError(loc, CErrorCode::Internal, "unknown math type");
                 return nullptr;

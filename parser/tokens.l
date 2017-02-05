@@ -94,6 +94,7 @@ int count_lines(const char* s, const int len) {
 "-"						TOKEN_VAL(TMINUS);
 "*"						TOKEN_VAL(TMUL);
 "/"						TOKEN_VAL(TDIV);
+"%"						TOKEN_VAL(TMOD);
 .						TOKEN_STR(TINVALID);
 
 %%

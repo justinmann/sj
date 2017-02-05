@@ -15,6 +15,7 @@
 #pragma clang diagnostic ignored "-Wunused-variable"
 
 #define LOC CLoc(yyloc.first_line, yyloc.first_column)
+#define LLOC CLoc(yylloc.first_line, yylloc.first_column)
 
 int yyerror(YYLTYPE *locp, void *scanner, CResult* result, const char *msg) {
   if (locp) {
@@ -56,22 +57,23 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID TSTRING TCHAR
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY TMOD
 
 /* Non Terminal symbols. Types refer to union decl above */
-%type <node> program expr expr_and expr_comp expr_math const stmt var_decl func_decl func_arg for_expr while_expr assign array
+%type <node> program expr expr_and expr_comp expr_math expr_var const stmt var_decl func_decl func_arg for_expr while_expr assign array
 %type <var> var var_right
 %type <block> stmts block catch destroy
 %type <nif> if_expr
 %type <exprvec> func_args func_block array_args
 %type <isMutable> assign_type
-%type <string> type
+%type <string> type return_type
 %type <templateTypeNames> temp_args temp_block
 
 /* Operator precedence */
 %left TAND TOR
 %left TPLUS TMINUS
 %left TMUL TDIV
+%left TMOD
 
 /* Starting rule in the grammar*/
 
@@ -93,7 +95,7 @@ stmt 				: /* Blank! */									{ $$ = nullptr; }
 					| func_decl 
 					| expr
 					| TINCLUDE TSTRING								{ $$ = new NInclude(LOC, $2->c_str()); delete $2; }
-					| error	 										{ $$ = nullptr; /* yyclearin; */ result->errors.push_back(CError(LOC, CErrorCode::InvalidCharacter)); }
+					| error	 										{ $$ = nullptr; /* yyclearin; */ result->addError(LLOC, CErrorCode::InvalidCharacter, "Something failed to parse"); }
 					;
 
 block 				: TLBRACE stmts TRBRACE 						{ $$ = $2; }
@@ -106,12 +108,11 @@ var_decl 			: assign
 					| var TMINUSEQUAL stmt                  		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Sub, shared_ptr<NBase>($3)); }
 					| var TLBRACKET expr TRBRACKET					{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NCall>(LOC, "get", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3)))); }
 					| var TLBRACKET expr TRBRACKET TEQUAL stmt		{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NCall>(LOC, "set", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3), shared_ptr<NBase>($6)))); }
-					| TEXCLAIM stmt                                 { $$ = new NNot(LOC, shared_ptr<NBase>($2)); }
 					;
 
 func_decl 			: TIDENTIFIER temp_block func_block block catch destroy			{ $$ = new NFunction(LOC, FT_Private, "", $1->c_str(), shared_ptr<TemplateTypeNames>($2), shared_ptr<NodeList>($3), shared_ptr<NBlock>($4), shared_ptr<NBlock>($5), shared_ptr<NBlock>($6)); }
-					| TIDENTIFIER temp_block func_block type block catch destroy 	{ $$ = new NFunction(LOC, FT_Private, $4->c_str(), $1->c_str(), shared_ptr<TemplateTypeNames>($2), shared_ptr<NodeList>($3), shared_ptr<NBlock>($5), shared_ptr<NBlock>($6), shared_ptr<NBlock>($7)); }
-					| TEXTERN TIDENTIFIER func_block type 							{ $$ = new NFunction(LOC, FT_Extern,  $4->c_str(), $2->c_str(), nullptr, shared_ptr<NodeList>($3), nullptr, nullptr, nullptr); }
+					| TIDENTIFIER temp_block func_block return_type block catch destroy 	{ $$ = new NFunction(LOC, FT_Private, $4->c_str(), $1->c_str(), shared_ptr<TemplateTypeNames>($2), shared_ptr<NodeList>($3), shared_ptr<NBlock>($5), shared_ptr<NBlock>($6), shared_ptr<NBlock>($7)); }
+					| TEXTERN TLPAREN TSTRING TRPAREN TIDENTIFIER func_block return_type 	{ $$ = new NFunction(LOC, FT_Extern, $3->c_str(), $7->c_str(), $5->c_str(), shared_ptr<NodeList>($6)); delete $3; }
 					;
 
 catch				: /* Blank! */									{ $$ = nullptr; }
@@ -171,7 +172,12 @@ expr_math			: expr_math TPLUS expr_math 					{ $$ = new NMath(LOC, shared_ptr<NB
 					| expr_math TMINUS expr_math 					{ $$ = new NMath(LOC, shared_ptr<NBase>($1), NMathOp::Sub, shared_ptr<NBase>($3)); }
 					| expr_math TMUL expr_math 						{ $$ = new NMath(LOC, shared_ptr<NBase>($1), NMathOp::Mul, shared_ptr<NBase>($3)); }
 					| expr_math TDIV expr_math 						{ $$ = new NMath(LOC, shared_ptr<NBase>($1), NMathOp::Div, shared_ptr<NBase>($3)); }
-					| TLPAREN expr TRPAREN 							{ $$ = $2; }
+					| expr_math TMOD expr_math 						{ $$ = new NMath(LOC, shared_ptr<NBase>($1), NMathOp::Mod, shared_ptr<NBase>($3)); }
+					| TEXCLAIM expr_var                             { $$ = new NNot(LOC, shared_ptr<NBase>($2)); }
+					| expr_var
+					;
+
+expr_var 			: TLPAREN expr TRPAREN 							{ $$ = $2; }
 					| var 											{ $$ = $1; }
 					| array
 					| const
@@ -227,7 +233,11 @@ array_args 			: expr											{ $$ = new NodeList(); $$->push_back(shared_ptr<N
 					| array_args TCOMMA expr 						{ $1->push_back(shared_ptr<NBase>($3)); }
 					;
 
-type 				: TQUOTE TIDENTIFIER							{ $$ = $2; }
+return_type			: TQUOTE TIDENTIFIER temp_block					{ $$ = $2; }
+					| TQUOTE TVOID									{ $$ = new string("void"); }
+					;
+
+type 				: TQUOTE TIDENTIFIER temp_block					{ $$ = $2; }
 					;
 
 %%

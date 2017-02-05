@@ -3,6 +3,8 @@
 int NFunction::counter = 0;
 
 NFunction::NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock) : type(type), typeName(typeName), name(name), templateTypeNames(templateTypeNames), block(block), catchBlock(catchBlock), destroyBlock(destroyBlock), NBase(NodeType_Function, loc) {
+    assert(type != FT_Extern);
+    
     if (this->name == "^") {
         this->name = strprintf("anon_%d", counter++);
     }
@@ -25,6 +27,29 @@ NFunction::NFunction(CLoc loc, CFunctionType type, const char* typeName, const c
         }
     }
 }
+
+NFunction::NFunction(CLoc loc, CFunctionType type, const char* externName, const char* typeName, const char* name, shared_ptr<NodeList> arguments): type(type), externName(externName), typeName(typeName), name(name), NBase(NodeType_Function, loc) {
+    assert(type == FT_Extern);
+    
+    if (arguments) {
+        for (auto it : *arguments) {
+            if (it->nodeType == NodeType_Assignment) {
+                auto nassignment = static_pointer_cast<NAssignment>(it);
+                nassignment->inFunctionDeclaration = true;
+                assignments.push_back(nassignment);
+                
+                if (nassignment->nfunction) {
+                    functions.push_back(nassignment->nfunction);
+                }
+            } else if (it->nodeType == NodeType_Function) {
+                functions.push_back(static_pointer_cast<NFunction>(it));
+            } else {
+                invalid.push_back(it);
+            }
+        }
+    }
+}
+
 
 void NFunction::defineImpl(Compiler *compiler, CResult& result, shared_ptr<CFunctionDefinition> parentFunction) {
     assert(compiler->state == CompilerState::Define);

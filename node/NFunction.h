@@ -14,6 +14,7 @@
 class NFunction : public NBase {
 public:
     CFunctionType type;
+    const string externName;
     const string typeName;
     string name;
     shared_ptr<TemplateTypeNames> templateTypeNames;
@@ -24,7 +25,11 @@ public:
     const shared_ptr<NBase> catchBlock;
     const shared_ptr<NBase> destroyBlock;
     
+    // For normal
     NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock);
+
+    // For extern
+    NFunction(CLoc loc, CFunctionType type, const char* externName, const char* typeName, const char* name, shared_ptr<NodeList> arguments);
 
     virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
     virtual shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters);
