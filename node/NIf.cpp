@@ -46,7 +46,7 @@ shared_ptr<ReturnValue> CIfElseVar::getLoadValue(Compiler* compiler, CResult& re
     builder->SetInsertPoint(ifBB);
     auto ifValue = ifBlock->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
     if (returnType != compiler->typeVoid && !ifValue) {
-        result.errors.push_back(CError(loc, CErrorCode::NoDefaultValue, "type does not have a default value"));
+        result.addError(loc, CErrorCode::NoDefaultValue, "type does not have a default value");
         return nullptr;
     }
     auto ifEndBB = builder->GetInsertBlock();
@@ -59,13 +59,13 @@ shared_ptr<ReturnValue> CIfElseVar::getLoadValue(Compiler* compiler, CResult& re
     if (elseBlock) {
         elseValue = elseBlock->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
         if (returnType != compiler->typeVoid && !elseValue) {
-            result.errors.push_back(CError(loc, CErrorCode::NoDefaultValue, "type does not have a default value"));
+            result.addError(loc, CErrorCode::NoDefaultValue, "type does not have a default value");
             return nullptr;
         }
     } else if (returnType != compiler->typeVoid) {
         elseValue = returnType->getDefaultValue(compiler, result, thisFunction, thisValue, builder, catchBB);
         if (!elseValue) {
-            result.errors.push_back(CError(loc, CErrorCode::NoDefaultValue, "type does not have a default value"));
+            result.addError(loc, CErrorCode::NoDefaultValue, "type does not have a default value");
             return nullptr;
         }
     }
@@ -81,7 +81,7 @@ shared_ptr<ReturnValue> CIfElseVar::getLoadValue(Compiler* compiler, CResult& re
     }
     
     if (ifValue->value->getType() != elseValue->value->getType()) {
-        result.errors.push_back(CError(loc, CErrorCode::TypeMismatch, "if and else clause have different return types"));
+        result.addError(loc, CErrorCode::TypeMismatch, "if and else clause have different return types");
         return nullptr;
     }
     
