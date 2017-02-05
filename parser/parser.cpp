@@ -200,7 +200,8 @@ union YYSTYPE
 	NVariableBase* var;
 	NodeList* exprvec;
 	std::string* string;
-	TemplateTypeNames* templateTypeNames;
+	CTypeName* typeName;
+	CTypeNameList* templateTypeNames;
 	int token;
 	bool isMutable;
 
@@ -538,16 +539,16 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    86,    86,    89,    90,    93,    94,    95,    96,    97,
-      98,   101,   104,   105,   106,   107,   108,   109,   110,   113,
-     114,   115,   118,   119,   122,   123,   126,   129,   130,   131,
-     134,   135,   136,   137,   140,   141,   142,   145,   146,   149,
-     150,   151,   152,   153,   154,   157,   158,   159,   162,   163,
-     164,   165,   166,   167,   168,   171,   172,   173,   174,   175,
-     176,   177,   180,   181,   182,   183,   186,   189,   192,   193,
-     194,   197,   198,   201,   202,   203,   206,   207,   208,   209,
-     210,   211,   212,   213,   214,   217,   218,   219,   220,   221,
-     222,   225,   226,   229,   232,   233,   236,   237,   240
+       0,    87,    87,    90,    91,    94,    95,    96,    97,    98,
+      99,   102,   105,   106,   107,   108,   109,   110,   111,   114,
+     115,   116,   119,   120,   123,   124,   127,   130,   131,   132,
+     135,   136,   137,   138,   141,   142,   143,   146,   147,   150,
+     151,   152,   153,   154,   155,   158,   159,   160,   163,   164,
+     165,   166,   167,   168,   169,   172,   173,   174,   175,   176,
+     177,   178,   181,   182,   183,   184,   187,   190,   193,   194,
+     195,   198,   199,   202,   203,   204,   207,   208,   209,   210,
+     211,   212,   213,   214,   215,   218,   219,   220,   221,   222,
+     223,   226,   227,   230,   233,   234,   237,   238,   241
 };
 #endif
 
@@ -1694,19 +1695,19 @@ yyreduce:
 
   case 19:
 
-    { (yyval.node) = new NFunction(LOC, FT_Private, "", (yyvsp[-5].string)->c_str(), shared_ptr<TemplateTypeNames>((yyvsp[-4].templateTypeNames)), shared_ptr<NodeList>((yyvsp[-3].exprvec)), shared_ptr<NBlock>((yyvsp[-2].block)), shared_ptr<NBlock>((yyvsp[-1].block)), shared_ptr<NBlock>((yyvsp[0].block))); }
+    { (yyval.node) = new NFunction(LOC, FT_Private, nullptr, (yyvsp[-5].string)->c_str(), shared_ptr<CTypeNameList>((yyvsp[-4].templateTypeNames)), shared_ptr<NodeList>((yyvsp[-3].exprvec)), shared_ptr<NBlock>((yyvsp[-2].block)), shared_ptr<NBlock>((yyvsp[-1].block)), shared_ptr<NBlock>((yyvsp[0].block))); }
 
     break;
 
   case 20:
 
-    { (yyval.node) = new NFunction(LOC, FT_Private, (yyvsp[-3].string)->c_str(), (yyvsp[-6].string)->c_str(), shared_ptr<TemplateTypeNames>((yyvsp[-5].templateTypeNames)), shared_ptr<NodeList>((yyvsp[-4].exprvec)), shared_ptr<NBlock>((yyvsp[-2].block)), shared_ptr<NBlock>((yyvsp[-1].block)), shared_ptr<NBlock>((yyvsp[0].block))); }
+    { (yyval.node) = new NFunction(LOC, FT_Private, shared_ptr<CTypeName>((yyvsp[-3].typeName)), (yyvsp[-6].string)->c_str(), shared_ptr<CTypeNameList>((yyvsp[-5].templateTypeNames)), shared_ptr<NodeList>((yyvsp[-4].exprvec)), shared_ptr<NBlock>((yyvsp[-2].block)), shared_ptr<NBlock>((yyvsp[-1].block)), shared_ptr<NBlock>((yyvsp[0].block))); }
 
     break;
 
   case 21:
 
-    { (yyval.node) = new NFunction(LOC, FT_Extern, (yyvsp[-4].string)->c_str(), (yyvsp[0].string)->c_str(), (yyvsp[-2].string)->c_str(), shared_ptr<NodeList>((yyvsp[-1].exprvec))); delete (yyvsp[-4].string); }
+    { (yyval.node) = new NFunction(LOC, FT_Extern, (yyvsp[-4].string)->c_str(), shared_ptr<CTypeName>((yyvsp[0].typeName)), (yyvsp[-2].string)->c_str(), shared_ptr<NodeList>((yyvsp[-1].exprvec))); delete (yyvsp[-4].string); }
 
     break;
 
@@ -1772,7 +1773,7 @@ yyreduce:
 
   case 35:
 
-    { (yyval.templateTypeNames) = new TemplateTypeNames(); (yyval.templateTypeNames)->push_back(pair<string, shared_ptr<TemplateTypeNames>>(*(yyvsp[0].string), nullptr)); delete (yyvsp[0].string); }
+    { (yyval.templateTypeNames) = new CTypeNameList(); (yyval.templateTypeNames)->push_back(make_shared<CTypeName>(*(yyvsp[0].string))); delete (yyvsp[0].string); }
 
     break;
 
@@ -1784,13 +1785,13 @@ yyreduce:
 
   case 37:
 
-    { (yyval.templateTypeNames) = new TemplateTypeNames(); (yyval.templateTypeNames)->push_back(pair<string, shared_ptr<TemplateTypeNames>>(*(yyvsp[-1].string), shared_ptr<TemplateTypeNames>((yyvsp[0].templateTypeNames)))); delete (yyvsp[-1].string); }
+    { (yyval.templateTypeNames) = new CTypeNameList(); (yyval.templateTypeNames)->push_back(make_shared<CTypeName>(*(yyvsp[-1].string), shared_ptr<CTypeNameList>((yyvsp[0].templateTypeNames)))); delete (yyvsp[-1].string); }
 
     break;
 
   case 38:
 
-    { (yyvsp[-2].templateTypeNames)->push_back(pair<string, shared_ptr<TemplateTypeNames>>(*(yyvsp[0].string), nullptr)); delete (yyvsp[0].string); }
+    { (yyvsp[-2].templateTypeNames)->push_back(make_shared<CTypeName>(*(yyvsp[0].string))); delete (yyvsp[0].string); }
 
     break;
 
@@ -1946,7 +1947,7 @@ yyreduce:
 
   case 73:
 
-    { (yyval.var) = new NCall(LOC, (yyvsp[-2].string)->c_str(), shared_ptr<TemplateTypeNames>((yyvsp[-1].templateTypeNames)), shared_ptr<NodeList>((yyvsp[0].exprvec))); delete (yyvsp[-2].string); }
+    { (yyval.var) = new NCall(LOC, (yyvsp[-2].string)->c_str(), shared_ptr<CTypeNameList>((yyvsp[-1].templateTypeNames)), shared_ptr<NodeList>((yyvsp[0].exprvec))); delete (yyvsp[-2].string); }
 
     break;
 
@@ -2018,37 +2019,37 @@ yyreduce:
 
   case 85:
 
-    { (yyval.node) = new NAssignment(LOC, nullptr, "", (yyvsp[-2].string)->c_str(), shared_ptr<NBase>((yyvsp[0].node)), (yyvsp[-1].isMutable)); }
+    { (yyval.node) = new NAssignment(LOC, nullptr, nullptr, (yyvsp[-2].string)->c_str(), shared_ptr<NBase>((yyvsp[0].node)), (yyvsp[-1].isMutable)); }
 
     break;
 
   case 86:
 
-    { (yyval.node) = new NAssignment(LOC, nullptr, (yyvsp[0].string)->c_str(), (yyvsp[-2].string)->c_str(), nullptr, (yyvsp[-1].isMutable)); delete (yyvsp[0].string); }
+    { (yyval.node) = new NAssignment(LOC, nullptr, shared_ptr<CTypeName>((yyvsp[0].typeName)), (yyvsp[-2].string)->c_str(), nullptr, (yyvsp[-1].isMutable)); }
 
     break;
 
   case 87:
 
-    { (yyval.node) = new NAssignment(LOC, nullptr, (yyvsp[-2].string)->c_str(), (yyvsp[-3].string)->c_str(), shared_ptr<NBase>((yyvsp[0].node)), (yyvsp[-1].isMutable)); }
+    { (yyval.node) = new NAssignment(LOC, nullptr, shared_ptr<CTypeName>((yyvsp[-2].typeName)), (yyvsp[-3].string)->c_str(), shared_ptr<NBase>((yyvsp[0].node)), (yyvsp[-1].isMutable)); }
 
     break;
 
   case 88:
 
-    { (yyval.node) = new NAssignment(LOC, shared_ptr<NVariableBase>((yyvsp[-4].var)), "", (yyvsp[-2].string)->c_str(), shared_ptr<NBase>((yyvsp[0].node)), (yyvsp[-1].isMutable)); }
+    { (yyval.node) = new NAssignment(LOC, shared_ptr<NVariableBase>((yyvsp[-4].var)), nullptr, (yyvsp[-2].string)->c_str(), shared_ptr<NBase>((yyvsp[0].node)), (yyvsp[-1].isMutable)); }
 
     break;
 
   case 89:
 
-    { (yyval.node) = new NAssignment(LOC, shared_ptr<NVariableBase>((yyvsp[-4].var)), (yyvsp[0].string)->c_str(), (yyvsp[-2].string)->c_str(), nullptr, (yyvsp[-1].isMutable)); delete (yyvsp[0].string); }
+    { (yyval.node) = new NAssignment(LOC, shared_ptr<NVariableBase>((yyvsp[-4].var)), shared_ptr<CTypeName>((yyvsp[0].typeName)), (yyvsp[-2].string)->c_str(), nullptr, (yyvsp[-1].isMutable)); }
 
     break;
 
   case 90:
 
-    { (yyval.node) = new NAssignment(LOC, shared_ptr<NVariableBase>((yyvsp[-5].var)), (yyvsp[-2].string)->c_str(), (yyvsp[-3].string)->c_str(), shared_ptr<NBase>((yyvsp[0].node)), (yyvsp[-1].isMutable)); }
+    { (yyval.node) = new NAssignment(LOC, shared_ptr<NVariableBase>((yyvsp[-5].var)), shared_ptr<CTypeName>((yyvsp[-2].typeName)), (yyvsp[-3].string)->c_str(), shared_ptr<NBase>((yyvsp[0].node)), (yyvsp[-1].isMutable)); }
 
     break;
 
@@ -2084,19 +2085,19 @@ yyreduce:
 
   case 96:
 
-    { (yyval.string) = (yyvsp[-1].string); }
+    { (yyval.typeName) = new CTypeName(*(yyvsp[-1].string), shared_ptr<CTypeNameList>((yyvsp[0].templateTypeNames))); delete (yyvsp[-1].string); }
 
     break;
 
   case 97:
 
-    { (yyval.string) = new string("void"); }
+    { (yyval.typeName) = new CTypeName("void"); }
 
     break;
 
   case 98:
 
-    { (yyval.string) = (yyvsp[-1].string); }
+    { (yyval.typeName) = new CTypeName(*(yyvsp[-1].string), shared_ptr<CTypeNameList>((yyvsp[0].templateTypeNames))); delete (yyvsp[-1].string); }
 
     break;
 

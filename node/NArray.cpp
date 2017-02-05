@@ -23,7 +23,7 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, CResult& result, shared_
         return nullptr;
     }
     
-    createCall = make_shared<NCall>(loc, "array", make_shared<TemplateTypeNames>(itemType->name), nullptr);
+    createCall = make_shared<NCall>(loc, "array", make_shared<CTypeNameList>(itemType->name), nullptr);
     return createCall->getVar(compiler, result, thisFunction, nullptr);
 }
 
@@ -110,7 +110,7 @@ void NList::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction
 shared_ptr<CVar> NList::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     array->getVar(compiler, result, thisFunction);
     auto size = make_shared<NInteger>(loc, array->elements->size());
-    createCall = make_shared<NCall>(loc, "list", make_shared<TemplateTypeNames>(array->itemType->name), make_shared<NodeList>(size, size, array));
+    createCall = make_shared<NCall>(loc, "list", make_shared<CTypeNameList>(array->itemType->name), make_shared<NodeList>(size, size, array));
     return createCall->getVar(compiler, result, thisFunction, nullptr);
 }
 
@@ -133,7 +133,7 @@ void NList::dump(Compiler* compiler, int level) const {
 }
 
 shared_ptr<CType> NArrayGetFunction::getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
-    return thisFunction->getVarType(compiler, result, CLoc::undefined, "item", nullptr);
+    return thisFunction->getVarType(compiler, result, CLoc::undefined, make_shared<CTypeName>("item"));
 }
 
 shared_ptr<ReturnValue> NArrayGetFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
@@ -184,7 +184,7 @@ shared_ptr<ReturnValue> NArrayDeleteFunction::call(Compiler* compiler, CResult& 
     auto parentValue = dotVar->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB);
     auto parentHeapVar = dotVar->getHeapVar(compiler, result);
     
-    auto itemType = callee->getVarType(compiler, result, CLoc::undefined, "item", nullptr);
+    auto itemType = callee->getVarType(compiler, result, CLoc::undefined, make_shared<CTypeName>("item"));
     auto itemFunction = itemType->parent.lock();
     if (itemFunction) {
         auto sizeValue = parameters[0]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);

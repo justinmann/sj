@@ -53,8 +53,8 @@ protected:
 
 class NArrayGetFunction : public NFunction {
 public:
-    NArrayGetFunction() : NFunction(CLoc::undefined, FT_Private, "item", "get", nullptr, make_shared<NodeList>(
-                                                                                                              make_shared<NAssignment>(CLoc::undefined, nullptr, "int", "index", nullptr, false)
+    NArrayGetFunction() : NFunction(CLoc::undefined, FT_Private, make_shared<CTypeName>("item"), "get", nullptr, make_shared<NodeList>(
+                                                                                                              make_shared<NAssignment>(CLoc::undefined, nullptr, make_shared<CTypeName>("int"), "index", nullptr, false)
                                                                                                               ), nullptr, nullptr, nullptr) { }
     
     virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
@@ -64,9 +64,9 @@ public:
 
 class NArraySetFunction : public NFunction {
 public:
-    NArraySetFunction() : NFunction(CLoc::undefined, FT_Private, "void", "set", nullptr, make_shared<NodeList>(
-                                                                                                              make_shared<NAssignment>(CLoc::undefined, nullptr, "int", "index", nullptr, false),
-                                                                                                              make_shared<NAssignment>(CLoc::undefined, nullptr, "item", "item", nullptr, false)
+    NArraySetFunction() : NFunction(CLoc::undefined, FT_Private, make_shared<CTypeName>("void"), "set", nullptr, make_shared<NodeList>(
+                                                                                                              make_shared<NAssignment>(CLoc::undefined, nullptr, make_shared<CTypeName>("int"), "index", nullptr, false),
+                                                                                                              make_shared<NAssignment>(CLoc::undefined, nullptr, make_shared<CTypeName>("item"), "item", nullptr, false)
                                                                                                               ), nullptr, nullptr, nullptr) { }
     
     virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
@@ -76,8 +76,8 @@ public:
 
 class NArrayDeleteFunction : public NFunction {
 public:
-    NArrayDeleteFunction() : NFunction(CLoc::undefined, FT_Private, "void", "delete", nullptr, make_shared<NodeList>(
-                                                                                                                     make_shared<NAssignment>(CLoc::undefined, nullptr, "int", "size", nullptr, false)
+    NArrayDeleteFunction() : NFunction(CLoc::undefined, FT_Private, make_shared<CTypeName>("void"), "delete", nullptr, make_shared<NodeList>(
+                                                                                                                     make_shared<NAssignment>(CLoc::undefined, nullptr, make_shared<CTypeName>("int"), "size", nullptr, false)
                                                                                                                      ), nullptr, nullptr, nullptr) { }
     
     virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
@@ -87,8 +87,8 @@ public:
 
 class NArrayCreateFunction : public NFunction {
 public:
-    NArrayCreateFunction() : NFunction(CLoc::undefined, FT_Private, "", "array", make_shared<TemplateTypeNames>("item"), make_shared<NodeList>(
-                                                                                                                                              make_shared<NAssignment>(CLoc::undefined, nullptr, "", "size", make_shared<NInteger>(CLoc::undefined, "0"), false),
+    NArrayCreateFunction() : NFunction(CLoc::undefined, FT_Private, nullptr, "array", make_shared<CTypeNameList>("item"), make_shared<NodeList>(
+                                                                                                                                              make_shared<NAssignment>(CLoc::undefined, nullptr, nullptr, "size", make_shared<NInteger>(CLoc::undefined, "0"), false),
                                                                                                                                               make_shared<NArrayGetFunction>(),
                                                                                                                                                make_shared<NArraySetFunction>(),
                                                                                                                                                make_shared<NArrayDeleteFunction>()

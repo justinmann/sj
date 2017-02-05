@@ -1,6 +1,6 @@
 #include "Node.h"
 
-NAssignment::NAssignment(CLoc loc, shared_ptr<NVariableBase> var, const char* typeName, const char* name, shared_ptr<NBase> rightSide_, bool isMutable) : var(var), typeName(typeName), name(name), rightSide(rightSide_), isMutable(isMutable), inFunctionDeclaration(false), _isFirstAssignment(false), NBase(NodeType_Assignment, loc) {
+NAssignment::NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTypeName> typeName, const char* name, shared_ptr<NBase> rightSide_, bool isMutable) : var(var), typeName(typeName), name(name), rightSide(rightSide_), isMutable(isMutable), inFunctionDeclaration(false), _isFirstAssignment(false), NBase(NodeType_Assignment, loc) {
     // If we are assigning a function to a var then we will call the function to get its value
     if (rightSide && rightSide->nodeType == NodeType_Function) {
         nfunction = static_pointer_cast<NFunction>(rightSide);
@@ -85,8 +85,8 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
 shared_ptr<CType> NAssignment::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state >= CompilerState::FixVar);
 
-    if (typeName.size() > 0) {
-        auto valueType = thisFunction->getVarType(compiler, result, loc, typeName, nullptr);
+    if (typeName) {
+        auto valueType = thisFunction->getVarType(compiler, result, loc, typeName);
         if (!valueType) {
             result.addError(loc, CErrorCode::InvalidType, "explicit type does not exist");
             return nullptr;
@@ -134,8 +134,8 @@ shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& re
         return nullptr;
     }
     
-    if (typeName.size() > 0) {
-        shared_ptr<CType> valueType = compiler->getType(typeName.c_str());
+    if (typeName) {
+        shared_ptr<CType> valueType = thisFunction->getVarType(compiler, result, loc, typeName);
         if (!valueType) {
             result.addError(loc, CErrorCode::InvalidType, "explicit type does not exist");
             return nullptr;
@@ -169,7 +169,9 @@ shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& re
 void NAssignment::dump(Compiler* compiler, int level) const {
     dumpf(level, "type: 'NAssignment'");
     dumpf(level, "name: %s", name.c_str());
-    dumpf(level, "typeName: %s", typeName.c_str());
+    if (typeName) {
+        dumpf(level, "typeName: %s", typeName->name.c_str());
+    }
     dumpf(level, "isMutable: %s", bool_to_str(isMutable));
     
     if (nfunction) {

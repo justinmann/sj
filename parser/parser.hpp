@@ -112,7 +112,8 @@ union YYSTYPE
 	NVariableBase* var;
 	NodeList* exprvec;
 	std::string* string;
-	TemplateTypeNames* templateTypeNames;
+	CTypeName* typeName;
+	CTypeNameList* templateTypeNames;
 	int token;
 	bool isMutable;
 

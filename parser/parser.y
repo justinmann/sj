@@ -50,7 +50,8 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 	NVariableBase* var;
 	NodeList* exprvec;
 	std::string* string;
-	TemplateTypeNames* templateTypeNames;
+	CTypeName* typeName;
+	CTypeNameList* templateTypeNames;
 	int token;
 	bool isMutable;
 }
@@ -66,7 +67,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %type <nif> if_expr
 %type <exprvec> func_args func_block array_args
 %type <isMutable> assign_type
-%type <string> type return_type
+%type <typeName> type return_type
 %type <templateTypeNames> temp_args temp_block
 
 /* Operator precedence */
@@ -110,9 +111,9 @@ var_decl 			: assign
 					| var TLBRACKET expr TRBRACKET TEQUAL stmt		{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NCall>(LOC, "set", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3), shared_ptr<NBase>($6)))); }
 					;
 
-func_decl 			: TIDENTIFIER temp_block func_block block catch destroy			{ $$ = new NFunction(LOC, FT_Private, "", $1->c_str(), shared_ptr<TemplateTypeNames>($2), shared_ptr<NodeList>($3), shared_ptr<NBlock>($4), shared_ptr<NBlock>($5), shared_ptr<NBlock>($6)); }
-					| TIDENTIFIER temp_block func_block return_type block catch destroy 	{ $$ = new NFunction(LOC, FT_Private, $4->c_str(), $1->c_str(), shared_ptr<TemplateTypeNames>($2), shared_ptr<NodeList>($3), shared_ptr<NBlock>($5), shared_ptr<NBlock>($6), shared_ptr<NBlock>($7)); }
-					| TEXTERN TLPAREN TSTRING TRPAREN TIDENTIFIER func_block return_type 	{ $$ = new NFunction(LOC, FT_Extern, $3->c_str(), $7->c_str(), $5->c_str(), shared_ptr<NodeList>($6)); delete $3; }
+func_decl 			: TIDENTIFIER temp_block func_block block catch destroy			{ $$ = new NFunction(LOC, FT_Private, nullptr, $1->c_str(), shared_ptr<CTypeNameList>($2), shared_ptr<NodeList>($3), shared_ptr<NBlock>($4), shared_ptr<NBlock>($5), shared_ptr<NBlock>($6)); }
+					| TIDENTIFIER temp_block func_block return_type block catch destroy 	{ $$ = new NFunction(LOC, FT_Private, shared_ptr<CTypeName>($4), $1->c_str(), shared_ptr<CTypeNameList>($2), shared_ptr<NodeList>($3), shared_ptr<NBlock>($5), shared_ptr<NBlock>($6), shared_ptr<NBlock>($7)); }
+					| TEXTERN TLPAREN TSTRING TRPAREN TIDENTIFIER func_block return_type 	{ $$ = new NFunction(LOC, FT_Extern, $3->c_str(), shared_ptr<CTypeName>($7), $5->c_str(), shared_ptr<NodeList>($6)); delete $3; }
 					;
 
 catch				: /* Blank! */									{ $$ = nullptr; }
@@ -138,12 +139,12 @@ func_arg			: /* Blank! */									{ $$ = nullptr; }
 					; 
 
 temp_block			: /* Blank! */									{ $$ = nullptr; }
-					| TEXCLAIM TIDENTIFIER							{ $$ = new TemplateTypeNames(); $$->push_back(pair<string, shared_ptr<TemplateTypeNames>>(*$2, nullptr)); delete $2; }
+					| TEXCLAIM TIDENTIFIER							{ $$ = new CTypeNameList(); $$->push_back(make_shared<CTypeName>(*$2)); delete $2; }
 					| TEXCLAIM TLBRACKET temp_args TRBRACKET		{ $$ = $3; }					
 					;
 
-temp_args			: TIDENTIFIER temp_block						{ $$ = new TemplateTypeNames(); $$->push_back(pair<string, shared_ptr<TemplateTypeNames>>(*$1, shared_ptr<TemplateTypeNames>($2))); delete $1; }
-					| temp_args TCOMMA TIDENTIFIER					{ $1->push_back(pair<string, shared_ptr<TemplateTypeNames>>(*$3, nullptr)); delete $3; }
+temp_args			: TIDENTIFIER temp_block						{ $$ = new CTypeNameList(); $$->push_back(make_shared<CTypeName>(*$1, shared_ptr<CTypeNameList>($2))); delete $1; }
+					| temp_args TCOMMA TIDENTIFIER					{ $1->push_back(make_shared<CTypeName>(*$3)); delete $3; }
 					;
 
 expr 				: if_expr										{ $$ = (NBase*)$1; }
@@ -198,7 +199,7 @@ var					: var TDOT var_right							{ $$ = new NDot(LOC, shared_ptr<NVariableBase
 					| var_right										
 					;
 
-var_right			: TIDENTIFIER temp_block func_block				{ $$ = new NCall(LOC, $1->c_str(), shared_ptr<TemplateTypeNames>($2), shared_ptr<NodeList>($3)); delete $1; }
+var_right			: TIDENTIFIER temp_block func_block				{ $$ = new NCall(LOC, $1->c_str(), shared_ptr<CTypeNameList>($2), shared_ptr<NodeList>($3)); delete $1; }
 	 				| TIDENTIFIER									{ $$ = new NVariable(LOC, $1->c_str()); delete $1; }
 	 				| TTHIS											{ $$ = new NThis(LOC); }
 	 				;
@@ -214,12 +215,12 @@ const 				: TMINUS TINTEGER 								{ $2->insert(0, "-"); $$ = new NInteger(LOC,
 					| TCHAR											{ $$ = new NChar(LOC, $1->c_str()[0]); delete $1; }
 					;
 										
-assign				: TIDENTIFIER assign_type stmt					{ $$ = new NAssignment(LOC, nullptr, "", $1->c_str(), shared_ptr<NBase>($3), $2); }
-					| TIDENTIFIER assign_type type					{ $$ = new NAssignment(LOC, nullptr, $3->c_str(), $1->c_str(), nullptr, $2); delete $3; }								
-					| TIDENTIFIER type assign_type stmt				{ $$ = new NAssignment(LOC, nullptr, $2->c_str(), $1->c_str(), shared_ptr<NBase>($4), $3); }
-					| var TDOT TIDENTIFIER assign_type stmt			{ $$ = new NAssignment(LOC, shared_ptr<NVariableBase>($1), "", $3->c_str(), shared_ptr<NBase>($5), $4); }
-					| var TDOT TIDENTIFIER assign_type type			{ $$ = new NAssignment(LOC, shared_ptr<NVariableBase>($1), $5->c_str(), $3->c_str(), nullptr, $4); delete $5; }								
-					| var TDOT TIDENTIFIER type assign_type stmt	{ $$ = new NAssignment(LOC, shared_ptr<NVariableBase>($1), $4->c_str(), $3->c_str(), shared_ptr<NBase>($6), $5); }
+assign				: TIDENTIFIER assign_type stmt					{ $$ = new NAssignment(LOC, nullptr, nullptr, $1->c_str(), shared_ptr<NBase>($3), $2); }
+					| TIDENTIFIER assign_type type					{ $$ = new NAssignment(LOC, nullptr, shared_ptr<CTypeName>($3), $1->c_str(), nullptr, $2); }								
+					| TIDENTIFIER type assign_type stmt				{ $$ = new NAssignment(LOC, nullptr, shared_ptr<CTypeName>($2), $1->c_str(), shared_ptr<NBase>($4), $3); }
+					| var TDOT TIDENTIFIER assign_type stmt			{ $$ = new NAssignment(LOC, shared_ptr<NVariableBase>($1), nullptr, $3->c_str(), shared_ptr<NBase>($5), $4); }
+					| var TDOT TIDENTIFIER assign_type type			{ $$ = new NAssignment(LOC, shared_ptr<NVariableBase>($1), shared_ptr<CTypeName>($5), $3->c_str(), nullptr, $4); }								
+					| var TDOT TIDENTIFIER type assign_type stmt	{ $$ = new NAssignment(LOC, shared_ptr<NVariableBase>($1), shared_ptr<CTypeName>($4), $3->c_str(), shared_ptr<NBase>($6), $5); }
 					;
 
 assign_type 		: TEQUAL										{ $$ = true; }
@@ -233,11 +234,11 @@ array_args 			: expr											{ $$ = new NodeList(); $$->push_back(shared_ptr<N
 					| array_args TCOMMA expr 						{ $1->push_back(shared_ptr<NBase>($3)); }
 					;
 
-return_type			: TQUOTE TIDENTIFIER temp_block					{ $$ = $2; }
-					| TQUOTE TVOID									{ $$ = new string("void"); }
+return_type			: TQUOTE TIDENTIFIER temp_block					{ $$ = new CTypeName(*$2, shared_ptr<CTypeNameList>($3)); delete $2; }
+					| TQUOTE TVOID									{ $$ = new CTypeName("void"); }
 					;
 
-type 				: TQUOTE TIDENTIFIER temp_block					{ $$ = $2; }
+type 				: TQUOTE TIDENTIFIER temp_block					{ $$ = new CTypeName(*$2, shared_ptr<CTypeNameList>($3)); delete $2; }
 					;
 
 %%

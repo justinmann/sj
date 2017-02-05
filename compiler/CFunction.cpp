@@ -9,6 +9,11 @@
 #include "Node.h"
 #define STACK_REF_COUNT         1000000000000
 
+CTypeNameList::CTypeNameList(const string& name) {
+    push_back(make_shared<CTypeName>(name));
+}
+
+
 class CThisVar : public CVar {
 public:
     static shared_ptr<CThisVar> create(shared_ptr<CFunction> parent);
@@ -64,11 +69,11 @@ shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, con
             assert(node_->templateTypeNames->size() == templateTypes_.size());
             auto index = 0;
             for (auto templateTypeName : *node_->templateTypeNames) {
-                if (templateTypeName.second != nullptr) {
+                if (templateTypeName->templateTypeNames != nullptr) {
                     result.addError(loc, CErrorCode::InvalidType, "cannot use ! in template type name");
                     return nullptr;
                 }
-                c->templateTypesByName[templateTypeName.first] = templateTypes_[index];
+                c->templateTypesByName[templateTypeName->name] = templateTypes_[index];
                 index++;
             }
         }
@@ -204,7 +209,7 @@ Value* CFunction::getArgumentPointer(Compiler* compiler, CResult& result, Value*
     return paramPtr;
 }
 
-shared_ptr<CFunction> CFunction::getCFunction(Compiler* compiler, CResult& result, const CLoc& loc, const string& name, shared_ptr<CFunction> callerFunction, shared_ptr<TemplateTypeNames> templateTypeNames) {
+shared_ptr<CFunction> CFunction::getCFunction(Compiler* compiler, CResult& result, const CLoc& loc, const string& name, shared_ptr<CFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames) {
     auto def = definition.lock();
     auto t = def->funcsByName.find(name);
     if (t != def->funcsByName.end()) {
@@ -221,13 +226,13 @@ shared_ptr<CFunction> CFunction::getCFunction(Compiler* compiler, CResult& resul
             for (auto templateTypeName : *templateTypeNames) {
                 shared_ptr<CType> ctype = nullptr;
                 if (callerFunction) {
-                    ctype = callerFunction->getVarType(compiler, result, loc, templateTypeName.first, templateTypeName.second);
+                    ctype = callerFunction->getVarType(compiler, result, loc, templateTypeName);
                 }
                 
                 if (!ctype) {
-                    auto ctype = getVarType(compiler, result, loc, templateTypeName.first, templateTypeName.second);
+                    auto ctype = getVarType(compiler, result, loc, templateTypeName);
                     if (!ctype) {
-                        result.addError(loc, CErrorCode::TemplateUnspecified, "cannot find template type: '%s'", templateTypeName.first.c_str());
+                        result.addError(loc, CErrorCode::TemplateUnspecified, "cannot find template type: '%s'", templateTypeName->name.c_str());
                         return nullptr;
                     }
                 }
@@ -326,20 +331,20 @@ bool CFunction::getHasParent(Compiler* compiler, CResult& result) {
     return hasParent;
 }
 
-shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, const CLoc& loc, const string& name, shared_ptr<TemplateTypeNames> subTypeNames) {
-    if (subTypeNames == nullptr) {
-        auto t = templateTypesByName.find(name);
+shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, const CLoc& loc, shared_ptr<CTypeName> typeName) {
+    if (typeName->templateTypeNames == nullptr) {
+        auto t = templateTypesByName.find(typeName->name);
         if (t != templateTypesByName.end()) {
             return t->second;
         }
     }
     
-    auto t2 = definition.lock()->funcsByName.find(name);
+    auto t2 = definition.lock()->funcsByName.find(typeName->name);
     if (t2 != definition.lock()->funcsByName.end()) {
         auto templateTypes = vector<shared_ptr<CType>>();
-        if (subTypeNames) {
-            for (auto it : *subTypeNames) {
-                auto t = getVarType(compiler, result, loc, it.first, it.second);
+        if (typeName->templateTypeNames) {
+            for (auto it : *typeName->templateTypeNames) {
+                auto t = getVarType(compiler, result, loc, it);
                 if (!t) {
                     return nullptr;
                 }
@@ -351,11 +356,11 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, con
         return cfunc->getThisType(compiler, result);
     }
     
-    if (subTypeNames == nullptr && !parent.expired()) {
-        return parent.lock()->getVarType(compiler, result, loc, name, subTypeNames);
+    if (!parent.expired()) {
+        return parent.lock()->getVarType(compiler, result, loc, typeName);
     }
     
-    return compiler->getType(name);
+    return compiler->getType(typeName->name);
 }
 
 Value* CFunction::getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {

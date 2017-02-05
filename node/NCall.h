@@ -37,10 +37,10 @@ class NCall : public NVariableBase {
 public:
     shared_ptr<NBase> thisNode;
     string name;
-    shared_ptr<TemplateTypeNames> templateTypeNames;
+    shared_ptr<CTypeNameList> templateTypeNames;
     shared_ptr<NodeList> arguments;
     
-    NCall(CLoc loc, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, shared_ptr<NodeList> arguments);
+    NCall(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments);
     virtual void dump(Compiler* compiler, int level) const;
 
 protected:

@@ -2,7 +2,7 @@
 
 int NFunction::counter = 0;
 
-NFunction::NFunction(CLoc loc, CFunctionType type, const char* typeName, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock) : type(type), typeName(typeName), name(name), templateTypeNames(templateTypeNames), block(block), catchBlock(catchBlock), destroyBlock(destroyBlock), NBase(NodeType_Function, loc) {
+NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock) : type(type), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), block(block), catchBlock(catchBlock), destroyBlock(destroyBlock), NBase(NodeType_Function, loc) {
     assert(type != FT_Extern);
     
     if (this->name == "^") {
@@ -28,7 +28,7 @@ NFunction::NFunction(CLoc loc, CFunctionType type, const char* typeName, const c
     }
 }
 
-NFunction::NFunction(CLoc loc, CFunctionType type, const char* externName, const char* typeName, const char* name, shared_ptr<NodeList> arguments): type(type), externName(externName), typeName(typeName), name(name), NBase(NodeType_Function, loc) {
+NFunction::NFunction(CLoc loc, CFunctionType type, const char* externName, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<NodeList> arguments): type(type), externName(externName), returnTypeName(returnTypeName), name(name), NBase(NodeType_Function, loc) {
     assert(type == FT_Extern);
     
     if (arguments) {
@@ -180,10 +180,10 @@ shared_ptr<CType> NFunction::getBlockType(Compiler* compiler, CResult& result, s
         return nullptr;
     }
 
-    if (typeName.size() > 0) {
-        shared_ptr<CType> valueType = compiler->getType(typeName.c_str());
+    if (returnTypeName) {
+        shared_ptr<CType> valueType = thisFunction->getVarType(compiler, result, loc, returnTypeName);
         if (!valueType) {
-            result.addError(loc, CErrorCode::InvalidType, "explicit type does not exist");
+            result.addError(loc, CErrorCode::InvalidType, "explicit type '%s' does not exist", returnTypeName->name.c_str());
             return nullptr;
         }
         return valueType;
@@ -516,11 +516,15 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
             argIndex++;
         }
         
-        auto returnValue = make_shared<ReturnValue>(builder->CreateCall(func, argValues));
+        auto returnType = callee->getReturnType(compiler, result);
+        auto returnFunction = returnType->parent.lock();
+        auto returnValue = builder->CreateCall(func, argValues);
         for (auto it : argReturnValues) {
             it->releaseIfNeeded(compiler, result, builder);
         }
-        return returnValue;
+        
+        // All extern function must return a var that needs to be released
+        return make_shared<ReturnValue>(returnFunction, true, returnFunction ? RVT_HEAP : RVT_SIMPLE, returnValue);
     } else {
         vector<shared_ptr<ReturnValue>> argReturnValues;
 

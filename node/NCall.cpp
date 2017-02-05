@@ -123,7 +123,7 @@ int CCallVar::setHeapVar(Compiler* compiler, CResult& result) {
     return 0;
 }
 
-NCall::NCall(CLoc loc, const char* name, shared_ptr<TemplateTypeNames> templateTypeNames, shared_ptr<NodeList> arguments) : name(name), templateTypeNames(templateTypeNames), arguments(arguments), NVariableBase(NodeType_Call, loc) {
+NCall::NCall(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments) : name(name), templateTypeNames(templateTypeNames), arguments(arguments), NVariableBase(NodeType_Call, loc) {
     if (!this->arguments) {
         this->arguments = make_shared<NodeList>();
     } else {

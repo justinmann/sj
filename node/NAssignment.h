@@ -14,11 +14,11 @@
 
 class NAssignment : public NBase {
 public:
-    NAssignment(CLoc loc, shared_ptr<NVariableBase> var, const char* typeName, const char* name, shared_ptr<NBase> rightSide, bool isMutable);
+    NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTypeName> typeName, const char* name, shared_ptr<NBase> rightSide, bool isMutable);
     virtual void dump(Compiler* compiler, int level) const;
     
     shared_ptr<NVariableBase> var;
-    const string typeName;
+    shared_ptr<CTypeName> typeName;
     string name;
     bool inFunctionDeclaration;
     shared_ptr<NBase> rightSide;

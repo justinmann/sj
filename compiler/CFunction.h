@@ -11,18 +11,22 @@
 
 class NFunction;
 
-class TemplateTypeNames : public vector<pair<string, shared_ptr<TemplateTypeNames>>> {
+class CTypeName;
+
+class CTypeNameList : public vector<shared_ptr<CTypeName>> {
 public:
-    TemplateTypeNames() : vector<pair<string, shared_ptr<TemplateTypeNames>>>() {
-        
-    }
-    
-    TemplateTypeNames(const string& name) : vector<pair<string, shared_ptr<TemplateTypeNames>>>() {
-        push_back(pair<string, shared_ptr<TemplateTypeNames>>(name, nullptr));
-    }
+    CTypeNameList() { }
+    CTypeNameList(const string& name);
 };
 
+class CTypeName {
+public:
+    string name;
+    shared_ptr<CTypeNameList> templateTypeNames;
 
+    CTypeName(const string& name) : name(name) { }
+    CTypeName(const string& name, shared_ptr<CTypeNameList> templateTypeNames) : name(name), templateTypeNames(templateTypeNames) { }
+};
 
 enum CFunctionType {
     FT_Private,
@@ -35,7 +39,7 @@ class CFunctionDefinition;
 class CFunction : public enable_shared_from_this<CFunction> {
 public:
     static shared_ptr<CFunction> create(Compiler* compiler, CResult& result, const CLoc& loc, weak_ptr<CFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> parent, CFunctionType type, const string& name, shared_ptr<NFunction> node);
-    shared_ptr<CFunction> getCFunction(Compiler* compiler, CResult& result, const CLoc& loc, const string& name, shared_ptr<CFunction> callerFunction, shared_ptr<TemplateTypeNames> templateTypeNames);
+    shared_ptr<CFunction> getCFunction(Compiler* compiler, CResult& result, const CLoc& loc, const string& name, shared_ptr<CFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames);
     shared_ptr<CVar> getCVar(Compiler* compiler, CResult& result, const CLoc& loc, const string& name);
     shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result);
     shared_ptr<CVar> getReturnVar(Compiler* compiler, CResult& result);
@@ -52,7 +56,7 @@ public:
     Value* getArgumentPointer(Compiler* compiler, CResult& result, Value* thisValue, int index, IRBuilder<>* builder);
     Value* getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
     string fullName();
-    shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, const CLoc& loc, const string& name, shared_ptr<TemplateTypeNames> subTypeNames);
+    shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, const CLoc& loc, shared_ptr<CTypeName> typeName);
     shared_ptr<ReturnValue> getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB);
     shared_ptr<CVar> getThisVar();
     
