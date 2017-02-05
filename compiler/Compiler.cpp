@@ -9,6 +9,7 @@
 #include "Node.h"
 #include <fstream>
 #include <streambuf>
+#include "library.h"
 
 using namespace llvm::orc;
 
@@ -408,15 +409,6 @@ shared_ptr<CResult> Compiler::run(const string& code) {
 
         compilerResult->type = RESULT_VOID;
     } else if (returnType->name == "list_char") {
-        class list_char {
-        public:
-            int64_t refCount;
-            int64_t parent;
-            int64_t size;
-            int64_t count;
-            char* str;
-        };
-        
         list_char* (*FP)(void*) = (list_char* (*)(void*))(intptr_t)globalFunction.getAddress();
         list_char* result = FP(thisPtr);
         

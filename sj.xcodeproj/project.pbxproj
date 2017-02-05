@@ -11,6 +11,9 @@
 		9C039B101E24B1DD00D6C727 /* NWhile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C039B0E1E24B1DD00D6C727 /* NWhile.cpp */; };
 		9C1E74261E46A5C6003BEBA5 /* highlow.sj in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9C1E74251E46A35E003BEBA5 /* highlow.sj */; };
 		9C1E742A1E46AC55003BEBA5 /* random.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C1E74281E46AC55003BEBA5 /* random.cpp */; };
+		9C1E742C1E46D11B003BEBA5 /* parse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C1E742B1E46D11B003BEBA5 /* parse.cpp */; };
+		9C1E742E1E46D133003BEBA5 /* console.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C1E742D1E46D133003BEBA5 /* console.cpp */; };
+		9C1E74311E46D1C4003BEBA5 /* library.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C1E742F1E46D1C4003BEBA5 /* library.cpp */; };
 		9C29C0B21E273F7E001C1FC6 /* NNot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C29C0B01E273F7E001C1FC6 /* NNot.cpp */; };
 		9C3786561E21EE0400202E28 /* NThrow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C3786541E21EE0400202E28 /* NThrow.cpp */; };
 		9C3786591E2225FC00202E28 /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C3786571E2225FC00202E28 /* Exception.cpp */; };
@@ -103,7 +106,10 @@
 		9C039B0F1E24B1DD00D6C727 /* NWhile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NWhile.h; path = node/NWhile.h; sourceTree = "<group>"; };
 		9C1E74251E46A35E003BEBA5 /* highlow.sj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = highlow.sj; path = include/highlow.sj; sourceTree = "<group>"; };
 		9C1E74281E46AC55003BEBA5 /* random.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = random.cpp; path = library/random.cpp; sourceTree = "<group>"; };
-		9C1E74291E46AC55003BEBA5 /* random.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = random.hpp; path = library/random.hpp; sourceTree = "<group>"; };
+		9C1E742B1E46D11B003BEBA5 /* parse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = parse.cpp; path = library/parse.cpp; sourceTree = "<group>"; };
+		9C1E742D1E46D133003BEBA5 /* console.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = console.cpp; path = library/console.cpp; sourceTree = "<group>"; };
+		9C1E742F1E46D1C4003BEBA5 /* library.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = library.cpp; path = library/library.cpp; sourceTree = "<group>"; };
+		9C1E74301E46D1C4003BEBA5 /* library.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = library.h; path = library/library.h; sourceTree = "<group>"; };
 		9C29C0B01E273F7E001C1FC6 /* NNot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NNot.cpp; path = node/NNot.cpp; sourceTree = "<group>"; };
 		9C29C0B11E273F7E001C1FC6 /* NNot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NNot.h; path = node/NNot.h; sourceTree = "<group>"; };
 		9C3786521E21D64000202E28 /* sj.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sj.pch; sourceTree = "<group>"; };
@@ -256,7 +262,10 @@
 			isa = PBXGroup;
 			children = (
 				9C1E74281E46AC55003BEBA5 /* random.cpp */,
-				9C1E74291E46AC55003BEBA5 /* random.hpp */,
+				9C1E742B1E46D11B003BEBA5 /* parse.cpp */,
+				9C1E742D1E46D133003BEBA5 /* console.cpp */,
+				9C1E742F1E46D1C4003BEBA5 /* library.cpp */,
+				9C1E74301E46D1C4003BEBA5 /* library.h */,
 			);
 			name = library;
 			sourceTree = "<group>";
@@ -487,13 +496,16 @@
 				9CDED2CC1E3701C8002D9666 /* NBase.cpp in Sources */,
 				9C3786591E2225FC00202E28 /* Exception.cpp in Sources */,
 				9CF16C161E19A888006E9CB8 /* NBlock.cpp in Sources */,
+				9C1E742E1E46D133003BEBA5 /* console.cpp in Sources */,
 				9CF16C1B1E19A888006E9CB8 /* NFunction.cpp in Sources */,
 				9CF16C1E1E19A888006E9CB8 /* NMath.cpp in Sources */,
+				9C1E74311E46D1C4003BEBA5 /* library.cpp in Sources */,
 				9C908F0E1E348C54005E253C /* NOr.cpp in Sources */,
 				9CF16C171E19A888006E9CB8 /* NBool.cpp in Sources */,
 				9C908F111E348D5A005E253C /* NAnd.cpp in Sources */,
 				9C3786561E21EE0400202E28 /* NThrow.cpp in Sources */,
 				9C1E742A1E46AC55003BEBA5 /* random.cpp in Sources */,
+				9C1E742C1E46D11B003BEBA5 /* parse.cpp in Sources */,
 				9C039B0D1E2498DB00D6C727 /* NFor.cpp in Sources */,
 				9CF16BF71E19A85F006E9CB8 /* Compiler.cpp in Sources */,
 				9C7B48E41E19A2DD00D378A1 /* main.cpp in Sources */,

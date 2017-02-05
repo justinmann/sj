@@ -6,12 +6,8 @@
 //  Copyright © 2017 Mann, Justin. All rights reserved.
 //
 
-#include "random.hpp"
+#include <stdio.h>
 
 extern "C" int64_t random_nextInt() {
-    return 0;
-}
-
-extern "C" double random_nextFloat() {
-    return 0.0;
+    return (uint64_t)rand() << 32 | (uint64_t)rand();
 }
