@@ -398,6 +398,12 @@ shared_ptr<CResult> Compiler::run(const string& code) {
         
         compilerResult->type = RESULT_BOOL;
         compilerResult->bResult = result;
+    } else if (returnType == typeChar) {
+        char (*FP)(void*) = (char (*)(void*))(intptr_t)globalFunction.getAddress();
+        char result = FP(thisPtr);
+        
+        compilerResult->type = RESULT_CHAR;
+        compilerResult->cResult = result;
     } else if (returnType == typeFloat) {
         double (*FP)(void*) = (double (*)(void*))(intptr_t)globalFunction.getAddress();
         double result = FP(thisPtr);

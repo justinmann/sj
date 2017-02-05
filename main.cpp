@@ -705,6 +705,24 @@ void testString() {
                           "hello"
                           )DELIM");
     assert(result->type == RESULT_STR && result->strResult == "hello");
+
+    result = compiler.run("'\n'");
+    assert(result->type == RESULT_CHAR && result->cResult == '\n');
+
+    result = compiler.run("'\''");
+    assert(result->type == RESULT_CHAR && result->cResult == '\'');
+
+    result = compiler.run(R"DELIM(
+                          include "list.sj"
+                          "he\nllo"
+                          )DELIM");
+    assert(result->type == RESULT_STR && result->strResult == "he\nllo");
+
+    result = compiler.run(R"DELIM(
+                          include "list.sj"
+                          "he\"llo"
+                          )DELIM");
+    assert(result->type == RESULT_STR && result->strResult == "he\"llo");
 }
 
 void testHeap() {

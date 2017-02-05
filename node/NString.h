@@ -27,10 +27,11 @@ protected:
 
 class NString : public NBase {
 public:
-    const string str;
+    bool isValid;
+    string str;
     shared_ptr<NCall> createCall;
     
-    NString(CLoc loc, const string& str) : str(str), NBase(NodeType_String, loc) { }
+    NString(CLoc loc, const string& str);
     virtual void dump(Compiler* compiler, int level) const;
 
 protected:

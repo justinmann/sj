@@ -28,7 +28,46 @@ void NStringArray::dump(Compiler* compiler, int level) const {
     // dumpf(level, "value: %s", value.c_str());
 }
 
+NString::NString(CLoc loc, const string& str_) : NBase(NodeType_String, loc) {
+    isValid = true;
+    stringstream ss;
+    bool isEscaped = false;
+    for (auto it : str_) {
+        if (isEscaped) {
+            switch (it) {
+                case '\'': ss << '\''; break;
+                case '\"': ss << '\"'; break;
+                case '\\': ss << '\\'; break;
+                case 'a': ss << '\a'; break;
+                case 'b': ss << '\b'; break;
+                case 'f': ss << '\f'; break;
+                case 'n': ss << '\n'; break;
+                case 'r': ss << '\r'; break;
+                case 't': ss << '\t'; break;
+                case 'v': ss << '\v'; break;
+                default: isValid = false; break;
+            }
+            isEscaped = false;
+        } else if (it == '\\') {
+            isEscaped = true;
+        } else {
+            ss << it;
+        }
+    }
+    
+    if (isEscaped) {
+        isValid = false;
+    }
+    
+    str = ss.str();
+}
+
 shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+    if (!isValid) {
+        result.addError(loc, CErrorCode::InvalidString, "string contains an invalid escape");
+        return nullptr;
+    }
+    
     auto size = make_shared<NInteger>(loc, str.size());
     auto stringArray = make_shared<NStringArray>(loc, str);
     createCall = make_shared<NCall>(loc, "list", make_shared<CTypeNameList>("char"), make_shared<NodeList>(size, size, stringArray));
@@ -37,15 +76,30 @@ shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, CResult& result, shared
 
 shared_ptr<CType> NString::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
     assert(compiler->state >= CompilerState::FixVar);
+    if (!isValid) {
+        result.addError(loc, CErrorCode::InvalidString, "string contains an invalid escape");
+        return nullptr;
+    }
+
     return createCall->getType(compiler, result, thisFunction);
 }
 
 int NString::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
+    if (!isValid) {
+        result.addError(loc, CErrorCode::InvalidString, "string contains an invalid escape");
+        return 0;
+    }
+
     return createCall->setHeapVar(compiler, result, thisFunction, nullptr, isHeapVar);
 }
 
 shared_ptr<ReturnValue> NString::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
+    if (!isValid) {
+        result.addError(loc, CErrorCode::InvalidString, "string contains an invalid escape");
+        return nullptr;
+    }
+
     return createCall->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
 }
 

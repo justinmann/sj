@@ -72,6 +72,7 @@ enum CResultType {
     RESULT_VOID,
     RESULT_INT,
     RESULT_BOOL,
+    RESULT_CHAR,
     RESULT_FLOAT,
     RESULT_STR
 };
@@ -86,6 +87,7 @@ enum CErrorCode {
     InvalidCharacter,
     InvalidVariable,
     InvalidDot,
+    InvalidString,
     InvalidTemplateArg,
     UnknownFunction,
     UnknownVariable,
@@ -124,6 +126,7 @@ public:
         int64_t iResult;
         bool bResult;
         double fResult;
+        char cResult;
     };
     string strResult;
     
