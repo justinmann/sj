@@ -72,12 +72,12 @@
 #pragma clang diagnostic ignored "-Wunreachable-code"
 #pragma clang diagnostic ignored "-Wunused-variable"
 
-#define LOC CLoc(yyloc.first_line, yyloc.first_column)
-#define LLOC CLoc(yylloc.first_line, yylloc.first_column)
+#define LOC CLoc(result->fileName, yyloc.first_line, yyloc.first_column)
+#define LLOC CLoc(result->fileName, yylloc.first_line, yylloc.first_column)
 
 int yyerror(YYLTYPE *locp, void *scanner, CResult* result, const char *msg) {
   if (locp) {
-  	result->addWarning(CLoc(locp->first_line, locp->first_column), CErrorCode::Parser, msg);
+  	result->addWarning(CLoc(result->fileName, locp->first_line, locp->first_column), CErrorCode::Parser, msg);
   } else {
   	result->addWarning(CLoc::undefined, CErrorCode::Parser, msg);
   }

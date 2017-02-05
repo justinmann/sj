@@ -23,7 +23,7 @@ extern int yylex_destroy(void*);
 extern YY_BUFFER_STATE yy_scan_string(const char*, void*);
 extern void yy_delete_buffer(YY_BUFFER_STATE, void*);
 
-CLoc CLoc::undefined = CLoc(-1, -1);
+CLoc CLoc::undefined = CLoc();
 
 std::string Type_print(Type* type) {
     std::string type_str;
@@ -237,11 +237,12 @@ shared_ptr<CResult> Compiler::compileFile(const string& fileName) {
     str.assign((std::istreambuf_iterator<char>(t)),
                std::istreambuf_iterator<char>());
     
-    return compile(str);
+    return compile(fileName, str);
 }
 
-shared_ptr<CResult> Compiler::compile(const string& code) {
+shared_ptr<CResult> Compiler::compile(const string& fileName, const string& code) {
     auto compilerResult = make_shared<CResult>();
+    compilerResult->fileName = make_shared<string>(fileName);
     void* scanner;
     
     YYLOCATION loc = { 1, 1 };
@@ -290,7 +291,7 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     // Recreate module, since we just took away and stored it in the JIT
     InitializeModuleAndPassManager();
     
-    auto compilerResult = compile(code);
+    auto compilerResult = compile("repl", code);
 #ifdef NODE_OUTPUT
     compilerResult->block->dump(this, 0);
 #endif
@@ -319,9 +320,10 @@ shared_ptr<CResult> Compiler::run(const string& code) {
         return compilerResult;
     
     auto globalFunctionDefinition = currentFunctionDefintion->funcsByName["global"];
-    for (auto it : includedBlocks) {
-        it.second->define(this, *compilerResult, globalFunctionDefinition);
-        compilerResult->block->statements.insert(compilerResult->block->statements.begin(), it.second);
+    for (auto index = 0; index < includedBlocks.size(); index++) {
+        auto block = includedBlocks[index].second;
+        block->define(this, *compilerResult, globalFunctionDefinition);
+        compilerResult->block->statements.insert(compilerResult->block->statements.begin(), block->statements.begin(), block->statements.end());
     }
     
     // Early exit if compile fails
@@ -490,7 +492,7 @@ void Compiler::emitLocation(const NBase *node) {
 void Compiler::includeFile(CResult& result, const string& fileName) {
     assert(state == CompilerState::Define);
     
-    if (includedBlocks.find(fileName) == includedBlocks.end()) {
+    if (includedBlockFileNames.find(fileName) == includedBlockFileNames.end()) {
         auto r = compileFile(fileName);
         for (auto it : r->warnings) {
             result.warnings.push_back(it);
@@ -503,7 +505,9 @@ void Compiler::includeFile(CResult& result, const string& fileName) {
             return ;
         }
         
-        includedBlocks[fileName] = r->block;
+        assert(r->block);
+        includedBlockFileNames[fileName] = true;
+        includedBlocks.push_back(pair<string, shared_ptr<NBlock>>(fileName, r->block));
     }
 }
 

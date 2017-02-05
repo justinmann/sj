@@ -27,11 +27,12 @@ using namespace std;
 
 class CLoc {
 public:
+    shared_ptr<string> fileName;
     unsigned line;
     unsigned col;
     
-    CLoc() : line(0), col(0) {}
-    CLoc(const unsigned line, const unsigned col) : line(line), col(col) {}
+    CLoc() : fileName(nullptr), line(0), col(0) {}
+    CLoc(shared_ptr<string> fileName, const unsigned line, const unsigned col) : fileName(fileName), line(line), col(col) {}
     static CLoc undefined;
 };
 
@@ -128,6 +129,7 @@ public:
     
     vector<CError> errors;
     vector<CError> warnings;
+    shared_ptr<string> fileName;
     shared_ptr<NBlock> block;
     
     template< typename... Args >
@@ -201,10 +203,11 @@ public:
     
 private:
     shared_ptr<CResult> compileFile(const string& fileName);
-    shared_ptr<CResult> compile(const string& code);
+    shared_ptr<CResult> compile(const string& fileName, const string& code);
     void InitializeModuleAndPassManager();
     
-    map<string, shared_ptr<NBlock>> includedBlocks;
+    map<string, bool> includedBlockFileNames;
+    vector<pair<string, shared_ptr<NBlock>>> includedBlocks;
     map<string, GlobalValue*> functionNames;
     Function* allocFunction;
     Function* freeFunction;
