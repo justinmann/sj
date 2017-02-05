@@ -87,7 +87,7 @@ void testComparison() {
     result = compiler.run("!true");
     assert(result->type == RESULT_BOOL && result->bResult == false);
 
-    result = compiler.run("!-3.0 != 4.0");
+    result = compiler.run("!(-3.0 != 4.0)");
     assert(result->type == RESULT_BOOL && result->bResult == false);
 }
 
@@ -728,9 +728,6 @@ void testHeap() {
 int main(int argc, char **argv) {
     shared_ptr<CResult> result;
     Compiler compiler;
-    
-    result = compiler.run("include \"highlow.sj\"");
-    assert(result->type == RESULT_VOID);
 
     testMath();
     testComparison();
@@ -752,6 +749,7 @@ int main(int argc, char **argv) {
     testHeap();
 
     // testThrow();
+    // compiler.run("include \"highlow.sj\"");
 
     return 0;
 }

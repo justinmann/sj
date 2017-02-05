@@ -228,7 +228,7 @@ Function* NFunction::compileDefinition(Compiler* compiler, CResult& result, shar
         }
         
         auto functionType = FunctionType::get(returnType->llvmRefType(compiler, result), argTypes, false);
-        return Function::Create(functionType, Function::ExternalLinkage, name.c_str(), compiler->module.get());
+        return Function::Create(functionType, Function::ExternalLinkage, externName.c_str(), compiler->module.get());
     } else {
         vector<Type*> argTypes;
         argTypes.push_back(thisFunction->getThisType(compiler, result)->llvmRefType(compiler, result));
@@ -524,7 +524,7 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
         }
         
         // All extern function must return a var that needs to be released
-        return make_shared<ReturnValue>(returnFunction, true, returnFunction ? RVT_HEAP : RVT_SIMPLE, returnValue);
+        return make_shared<ReturnValue>(returnFunction, returnFunction ? true : false, returnFunction ? RVT_HEAP : RVT_SIMPLE, returnValue);
     } else {
         vector<shared_ptr<ReturnValue>> argReturnValues;
 

@@ -166,6 +166,7 @@ Compiler::~Compiler() {
 }
 
 void Compiler::InitializeModuleAndPassManager() {
+    includedBlockFileNames.clear();
     includedBlocks.clear();
     functionNames.clear();
     
