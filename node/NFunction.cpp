@@ -2,7 +2,7 @@
 
 int NFunction::counter = 0;
 
-NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock) : type(type), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), block(block), catchBlock(catchBlock), destroyBlock(destroyBlock), NBase(NodeType_Function, loc) {
+NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock) : type(type), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), block(block), catchBlock(catchBlock), destroyBlock(destroyBlock), isInGetType(false), NBase(NodeType_Function, loc) {
     assert(type != FT_Extern);
     
     if (this->name == "^") {
@@ -93,11 +93,11 @@ void NFunction::defineImpl(Compiler *compiler, CResult& result, shared_ptr<CFunc
     }
 }
 
-shared_ptr<CVar> NFunction::getVarImpl(Compiler *compiler, CResult& result, shared_ptr<CFunction> parentFunction) {
+shared_ptr<CVar> NFunction::getVarImpl(Compiler *compiler, CResult& result, shared_ptr<CFunction> parentFunction, shared_ptr<CVar> parentVar) {
     return nullptr;
 }
 
-shared_ptr<CType> NFunction::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction) {
+shared_ptr<CType> NFunction::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, shared_ptr<CVar> parentVar) {
     assert(compiler->state >= CompilerState::FixVar);
     if (invalid.size() > 0) {
         result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
@@ -107,18 +107,18 @@ shared_ptr<CType> NFunction::getTypeImpl(Compiler* compiler, CResult& result, sh
     return compiler->typeVoid;
 }
 
-shared_ptr<ReturnValue> NFunction::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder, BasicBlock* parentCatchBB) {
+shared_ptr<ReturnValue> NFunction::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, shared_ptr<CVar> parentVar, Value* parentValue, IRBuilder<>* builder, BasicBlock* parentCatchBB) {
     return nullptr;
 }
 
-shared_ptr<CVar> NFunction::getReturnVar(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CVar> NFunction::getReturnVar(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     if (block) {
-        return block->getVar(compiler, result, thisFunction);
+        return block->getVar(compiler, result, thisFunction, thisVar);
     }
     return nullptr;
 }
 
-void NFunction::getVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+void NFunction::getVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state == CompilerState::FixVar);
     if (invalid.size() > 0) {
         result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
@@ -126,53 +126,57 @@ void NFunction::getVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunc
     }
     
     for (auto it : functions) {
-        it->getVar(compiler, result, thisFunction);
+        it->getVar(compiler, result, thisFunction, thisVar);
     }
 
     for (auto it : assignments) {
-        it->getVar(compiler, result, thisFunction);
+        it->getVar(compiler, result, thisFunction, thisVar);
     }
     
     if (block) {
-        block->getVar(compiler, result, thisFunction);
+        block->getVar(compiler, result, thisFunction, thisVar);
     }
     
     if (catchBlock) {
-        catchBlock->getVar(compiler, result, thisFunction);
+        catchBlock->getVar(compiler, result, thisFunction, thisVar);
     }
     
     if (destroyBlock) {
-        destroyBlock->getVar(compiler, result, thisFunction);
+        destroyBlock->getVar(compiler, result, thisFunction, thisVar);
     }
     
+    getBlockType(compiler, result, thisFunction, thisVar);
+}
+
+int NFunction::setHeapVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
+    assert(compiler->state == CompilerState::FixVar);
     auto count = 0;
     do {
         count = 0;
         for (auto it : functions) {
-            count += it->setHeapVar(compiler, result, thisFunction, false);
+            count += it->setHeapVar(compiler, result, thisFunction, thisVar, false);
         }
         
         for (auto it : assignments) {
-            count += it->setHeapVar(compiler, result, thisFunction, false);
+            count += it->setHeapVar(compiler, result, thisFunction, thisVar, false);
         }
         
         if (block) {
-            count += block->setHeapVar(compiler, result, thisFunction, true);
+            count += block->setHeapVar(compiler, result, thisFunction, thisVar, true);
         }
         
         if (catchBlock) {
-            count += catchBlock->setHeapVar(compiler, result, thisFunction, true);
+            count += catchBlock->setHeapVar(compiler, result, thisFunction, thisVar, true);
         }
-
+        
         if (destroyBlock) {
-            count += destroyBlock->setHeapVar(compiler, result, thisFunction, true);
+            count += destroyBlock->setHeapVar(compiler, result, thisFunction, thisVar, true);
         }
     } while (count > 0);
-
-    getBlockType(compiler, result, thisFunction);
+    return 0;
 }
 
-shared_ptr<CType> NFunction::getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CType> NFunction::getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
     assert(thisFunction->node.get() == this);
     if (invalid.size() > 0) {
@@ -195,17 +199,25 @@ shared_ptr<CType> NFunction::getBlockType(Compiler* compiler, CResult& result, s
     }
     
     if (block) {
-        return block->getType(compiler, result, thisFunction);
+        if (isInGetType) {
+            result.addError(CLoc::undefined, CErrorCode::TypeLoop, "while trying to determine type a cycle was detected");
+            return nullptr;
+        }
+        
+        isInGetType = true;
+        auto type = block->getType(compiler, result, thisFunction, thisVar);
+        isInGetType = false;
+        return type;
     }
     
     return compiler->typeVoid;
 }
 
-Function* NFunction::compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+Function* NFunction::compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state == CompilerState::Compile);
     assert(thisFunction->node.get() == this);
 
-    auto returnType = getBlockType(compiler, result, thisFunction);
+    auto returnType = getBlockType(compiler, result, thisFunction, thisVar);
     if (!returnType) {
         return nullptr;
     }
@@ -264,7 +276,7 @@ Function* NFunction::compileDefinition(Compiler* compiler, CResult& result, shar
     }
 }
 
-bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Function* function) {
+bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Function* function) {
     assert(compiler->state == CompilerState::Compile);
     assert(thisFunction->node.get() == this);
     
@@ -279,7 +291,7 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
     shared_ptr<ReturnValue> returnValue = nullptr;
     Argument* thisArgument = nullptr;
     shared_ptr<CVar> returnVar = nullptr;
-    auto returnType = block->getType(compiler, result, thisFunction);
+    auto returnType = block->getType(compiler, result, thisFunction, thisVar);
     auto returnFunction = returnType->parent.expired() ? nullptr : returnType->parent.lock();
     
     compiler->callPushFunction(&newBuilder, name);
@@ -290,8 +302,8 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
     }
     
     thisArgument = (Argument*)function->args().begin();
-    returnVar = block->getVar(compiler, result, thisFunction);
-    returnValue = block->compile(compiler, result, thisFunction, thisArgument, &newBuilder, catchBB);
+    returnVar = block->getVar(compiler, result, thisFunction, thisVar);
+    returnValue = block->compile(compiler, result, thisFunction, thisVar, thisArgument, &newBuilder, catchBB);
 
     compiler->callPopFunction(&newBuilder);
     
@@ -321,10 +333,10 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
         for (auto it : thisFunction->localVarsByName) {
             auto type = it.second->getType(compiler, result);
             if (!type->parent.expired()) {
-                auto localValue = it.second->getLoadValue(compiler, result, thisArgument, nullptr, &newBuilder, catchBB);
+                auto localValue = it.second->getLoadValue(compiler, result, thisVar, thisArgument, nullptr, &newBuilder, catchBB);
                 if (localValue->type == RVT_HEAP) {
                     assert(!localValue->mustRelease);
-                    if (it.second->getHeapVar(compiler, result)) {
+                    if (it.second->getHeapVar(compiler, result, thisVar)) {
                         type->parent.lock()->releaseHeap(compiler, result, &newBuilder, localValue->value);
                     } else {
                         type->parent.lock()->releaseStack(compiler, result, &newBuilder, localValue->value);
@@ -353,8 +365,8 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
         // Value *retTypeInfoIndex = catchBuilder.CreateExtractValue(caughtResult, 1);
         
         auto thisArgument = (Argument*)function->args().begin();
-        returnVar = catchBlock->getVar(compiler, result, thisFunction);
-        auto catchReturnValue = catchBlock->compile(compiler, result, thisFunction, thisArgument, &catchBuilder, nullptr);
+        returnVar = catchBlock->getVar(compiler, result, thisFunction, thisVar);
+        auto catchReturnValue = catchBlock->compile(compiler, result, thisFunction, thisVar, thisArgument, &catchBuilder, nullptr);
         if (function->getReturnType()->isVoidTy()) {
             catchBuilder.CreateRetVoid();
         } else {
@@ -462,14 +474,14 @@ void NFunction::compileDestructorBody(Compiler* compiler, CResult& result, share
     Argument* thisArgument = (Argument*)function->args().begin();
     
     if (destroyBlock) {
-        destroyBlock->compile(compiler, result, thisFunction, thisArgument, &newBuilder, nullptr);
+        destroyBlock->compile(compiler, result, thisFunction, nullptr, thisArgument, &newBuilder, nullptr);
     }
     
     for (auto it : thisFunction->thisVars) {
         if (!it->getType(compiler, result)->parent.expired()) {
-            auto value = it->getLoadValue(compiler, result, thisArgument, thisArgument, &newBuilder, nullptr);
+            auto value = it->getLoadValue(compiler, result, nullptr, thisArgument, thisArgument, &newBuilder, nullptr);
             if (value->type == RVT_HEAP) {
-                if (it->getHeapVar(compiler, result)) {
+                if (it->getHeapVar(compiler, result, nullptr)) {
                     value->valueFunction->releaseHeap(compiler, result, &newBuilder, value->value);
                 } else {
                     value->valueFunction->releaseStack(compiler, result, &newBuilder, value->value);
@@ -481,24 +493,37 @@ void NFunction::compileDestructorBody(Compiler* compiler, CResult& result, share
     newBuilder.CreateRetVoid();
 }
 
-shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
+shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
     if (type == FT_Extern) {
         vector<shared_ptr<ReturnValue>> argReturnValues;
         vector<Value *> argValues;
-        auto func = callee->getFunction(compiler, result);
+        auto func = callee->getFunction(compiler, result, calleeVar);
         
         // Fill in "this" with normal arguments
         auto argIndex = 0;
         for (auto defaultAssignment : assignments) {
+            auto argVar = callee->thisVars[argIndex];
+            auto argHeapVar = argVar->getHeapVar(compiler, result, thisVar);
+            
             assert(defaultAssignment->inFunctionDeclaration);
-            auto argType = defaultAssignment->getType(compiler, result, thisFunction);
+            auto argType = defaultAssignment->getType(compiler, result, thisFunction, thisVar);
             auto isDefaultAssignment = parameters[argIndex] == defaultAssignment->rightSide;
             shared_ptr<ReturnValue> argReturnValue;
             
             if (isDefaultAssignment) {
-                argReturnValue = parameters[argIndex]->compile(compiler, result, callee, nullptr, builder, catchBB);
+                auto paramVar = parameters[argIndex]->getVar(compiler, result, callee, calleeVar);
+                if (paramVar) {
+                    auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
+                    assert(paramHeapVar == argHeapVar);
+                }
+                argReturnValue = parameters[argIndex]->compile(compiler, result, callee, calleeVar, nullptr, builder, catchBB);
             } else {
-                argReturnValue = parameters[argIndex]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+                auto paramVar = parameters[argIndex]->getVar(compiler, result, thisFunction, thisVar);
+                if (paramVar) {
+                    auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
+                    assert(paramHeapVar == argHeapVar);
+                }
+                argReturnValue = parameters[argIndex]->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
             }
             
             if (!argReturnValue) {
@@ -516,7 +541,7 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
             argIndex++;
         }
         
-        auto returnType = callee->getReturnType(compiler, result);
+        auto returnType = callee->getReturnType(compiler, result, calleeVar);
         auto returnFunction = returnType->parent.lock();
         auto returnValue = builder->CreateCall(func, argValues);
         for (auto it : argReturnValues) {
@@ -531,8 +556,7 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
         // Create this on stack, and get a pointer
         Value* calleeValue = nullptr;
         auto calleeType = callee->getThisType(compiler, result);
-        auto calleeVar = callee->getThisVar();
-        auto calleeHeapVar = calleeVar->getHeapVar(compiler, result);
+        auto calleeHeapVar = calleeVar->getHeapVar(compiler, result, thisVar);
         auto calleeFunction = calleeVar->getCFunctionForValue(compiler, result);
 
         if (calleeHeapVar) {
@@ -563,14 +587,27 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
         // Fill in "this" with normal arguments
         auto argIndex = 0;
         for (auto defaultAssignment : assignments) {
+            auto argVar = callee->thisVars[argIndex];
+            auto argHeapVar = argVar->getHeapVar(compiler, result, thisVar);
+
             assert(defaultAssignment->inFunctionDeclaration);
-            auto argType = defaultAssignment->getType(compiler, result, callee);
+            auto argType = defaultAssignment->getType(compiler, result, callee, calleeVar);
             auto isDefaultAssignment = parameters[argIndex] == defaultAssignment->rightSide;
             shared_ptr<ReturnValue> argReturnValue;
             if (isDefaultAssignment) {
-                argReturnValue = parameters[argIndex]->compile(compiler, result, callee, calleeValue, builder, catchBB);
+                auto paramVar = parameters[argIndex]->getVar(compiler, result, callee, calleeVar);
+                if (paramVar) {
+                    auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
+                    assert(paramHeapVar == argHeapVar);
+                }
+                argReturnValue = parameters[argIndex]->compile(compiler, result, callee, calleeVar, calleeValue, builder, catchBB);
             } else {
-                argReturnValue = parameters[argIndex]->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+                auto paramVar = parameters[argIndex]->getVar(compiler, result, thisFunction, thisVar);
+                if (paramVar) {
+                    auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
+                    assert(paramHeapVar == argHeapVar);
+                }
+                argReturnValue = parameters[argIndex]->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
             }
                         
             if (!argReturnValue) {
@@ -597,7 +634,7 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
         if (hasParent) {
             Value* parentValue = thisValue;
             if (dotVar) {
-                dotReturnValue = dotVar->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB);
+                dotReturnValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, thisValue, builder, catchBB);
                 parentValue = dotReturnValue->value;
             } else {
                 // if recursively calling ourselves then re-use parent
@@ -620,9 +657,9 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
         
         vector<Value *> argsV;
         argsV.push_back(calleeValue);
-        auto func = callee->getFunction(compiler, result);
+        auto func = callee->getFunction(compiler, result, calleeVar);
         
-        auto returnType = callee->getReturnType(compiler, result);
+        auto returnType = callee->getReturnType(compiler, result, calleeVar);
         auto returnFunction = returnType->parent.lock();
         Value* returnValue = nullptr;
         if (catchBB) {

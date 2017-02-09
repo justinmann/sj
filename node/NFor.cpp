@@ -4,7 +4,7 @@ class CForVar : public CVar {
 public:
     CForVar(shared_ptr<CFunction> parent_, const string& name_) {
         name = name_;
-        mode = CVarType::Local;
+        mode = CVarType::Var_Local;
         isMutable = false;
         parent = parent_;
     }
@@ -13,12 +13,12 @@ public:
         return compiler->typeInt;
     }
     
-    virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
         assert(value);
         return make_shared<ReturnValue>(value);
     }
     
-    virtual Value* getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    virtual Value* getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
         assert(false);
         return nullptr;
     }
@@ -33,10 +33,10 @@ void NFor::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionD
     body->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NFor::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CVar> NFor::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state == CompilerState::FixVar);
-    start->getVar(compiler, result, thisFunction);
-    end->getVar(compiler, result, thisFunction);
+    start->getVar(compiler, result, thisFunction, thisVar);
+    end->getVar(compiler, result, thisFunction, thisVar);
 
     if (thisFunction->localVarsByName.find(varName) != thisFunction->localVarsByName.end()) {
         result.addError(loc, CErrorCode::InvalidVariable, "var '%s' already exists within function, must have a unique name", varName.c_str());
@@ -47,33 +47,33 @@ shared_ptr<CVar> NFor::getVarImpl(Compiler* compiler, CResult& result, shared_pt
     
     thisFunction->localVarsByName[varName] = _forVar;
 
-    body->getVar(compiler, result, thisFunction);
+    body->getVar(compiler, result, thisFunction, thisVar);
 
     thisFunction->localVarsByName.erase(varName);
     
     return nullptr;
 }
 
-shared_ptr<CType> NFor::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CType> NFor::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
     return compiler->typeVoid;
 }
 
-int NFor::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
-    auto count = start->setHeapVar(compiler, result, thisFunction, false);
-    count += end->setHeapVar(compiler, result, thisFunction, false);
+int NFor::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
+    auto count = start->setHeapVar(compiler, result, thisFunction, thisVar, false);
+    count += end->setHeapVar(compiler, result, thisFunction, thisVar, false);
     thisFunction->localVarsByName[varName] = _forVar;
-    count += body->setHeapVar(compiler, result, thisFunction, false);
+    count += body->setHeapVar(compiler, result, thisFunction, thisVar, false);
     thisFunction->localVarsByName.erase(varName);
     return count;
 }
 
-shared_ptr<ReturnValue> NFor::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NFor::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
     // Emit the start code first, without 'variable' in scope.
-    auto startValue = start->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    auto startValue = start->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     if (!startValue) {
         return nullptr;
     }
@@ -86,7 +86,7 @@ shared_ptr<ReturnValue> NFor::compileImpl(Compiler* compiler, CResult& result, s
     }
     
     // Compute the end condition.
-    auto endValue = end->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    auto endValue = end->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     if (!endValue) {
         return nullptr;
     }
@@ -130,7 +130,7 @@ shared_ptr<ReturnValue> NFor::compileImpl(Compiler* compiler, CResult& result, s
     // Emit the body of the loop.  This, like any other expr, can change the
     // current BB.  Note that we ignore the value computed by the body, but don't
     // allow an error.
-    auto bodyValue = body->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    auto bodyValue = body->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     if (bodyValue) {
         bodyValue->releaseIfNeeded(compiler, result, builder);
     }

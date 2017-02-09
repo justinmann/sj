@@ -24,7 +24,7 @@ void NAssignment::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFu
     }
 }
 
-shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state == CompilerState::FixVar);
 
     // function vars are not created here, this is only for local vars
@@ -33,7 +33,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
         auto cfunction = thisFunction;
         shared_ptr<CVar> parentVar = nullptr;
         if (var) {
-            parentVar = var->getVar(compiler, result, thisFunction, nullptr);
+            parentVar = var->getVar(compiler, result, thisFunction, thisVar, nullptr);
             if (!parentVar) {
                 return nullptr;
             }
@@ -72,17 +72,17 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
     }
     
     if (nfunction) {
-        nfunction->getVar(compiler, result, thisFunction);
+        nfunction->getVar(compiler, result, thisFunction, thisVar);
     }
     
     if (rightSide) {
-        return rightSide->getVar(compiler, result, thisFunction);
+        return rightSide->getVar(compiler, result, thisFunction, thisVar);
     }
     
     return nullptr;
 }
 
-shared_ptr<CType> NAssignment::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CType> NAssignment::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
 
     if (typeName) {
@@ -99,22 +99,22 @@ shared_ptr<CType> NAssignment::getTypeImpl(Compiler* compiler, CResult& result, 
         return nullptr;
     }
     
-    return rightSide->getType(compiler, result, thisFunction);
+    return rightSide->getType(compiler, result, thisFunction, thisVar);
 }
 
-int NAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
-    if (_assignVar != nullptr && _assignVar->mode != Local) {
+int NAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
+    if (_assignVar != nullptr && _assignVar->mode != Var_Local) {
         // TODO: does not need to be a heap var if parent is a local var
         isHeapVar = true;
     }
     
     if (rightSide) {
-        return rightSide->setHeapVar(compiler, result, thisFunction, isHeapVar);
+        return rightSide->setHeapVar(compiler, result, thisFunction, thisVar, isHeapVar);
     }
     return 0;
 }
 
-shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
@@ -124,11 +124,11 @@ shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& re
     }
 
     if (!inFunctionDeclaration && nfunction) {
-        nfunction->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+        nfunction->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     }
     
     // Compute value
-    auto value = rightSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    auto value = rightSide->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     if (!value) {
         result.addError(loc, CErrorCode::ExpressionEmpty, "trying to assign an empty value");
         return nullptr;
@@ -150,7 +150,7 @@ shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& re
     value->retainIfNeeded(compiler, result, builder);
     
     // Get place to store data
-    auto alloca = _assignVar->getStoreValue(compiler, result, thisValue, thisValue, builder, catchBB);
+    auto alloca = _assignVar->getStoreValue(compiler, result, thisVar, thisValue, thisValue, builder, catchBB);
     if (!alloca) {
         result.addError(loc, CErrorCode::InvalidVariable, "var cannot be assigned '%s'", name.c_str());
         return nullptr;

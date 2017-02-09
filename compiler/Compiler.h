@@ -179,6 +179,7 @@ public:
     shared_ptr<CType> getType(const string& name) const;
     void includeFile(CResult& result, const string& fileName);
     Function* getAllocFunction();
+    Function* getReallocFunction();
     Function* getFreeFunction();
     void callPushFunction(IRBuilder<>* builder, const string& name);
     void callPopFunction(IRBuilder<>* builder);
@@ -214,6 +215,7 @@ private:
     vector<pair<string, shared_ptr<NBlock>>> includedBlocks;
     map<string, GlobalValue*> functionNames;
     Function* allocFunction;
+    Function* reallocFunction;
     Function* freeFunction;
 #ifdef DEBUG_CALLSTACK
     Function* pushFunction;

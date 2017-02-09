@@ -6,25 +6,25 @@ void NWhile::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctio
     body->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NWhile::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CVar> NWhile::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state == CompilerState::FixVar);
-    cond->getVar(compiler, result, thisFunction);
-    body->getVar(compiler, result, thisFunction);
+    cond->getVar(compiler, result, thisFunction, thisVar);
+    body->getVar(compiler, result, thisFunction, thisVar);
     return nullptr;
 }
 
-shared_ptr<CType> NWhile::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CType> NWhile::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
     return compiler->typeVoid;
 }
 
-int NWhile::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
-    auto count = cond->setHeapVar(compiler, result, thisFunction, false);
-    count += body->setHeapVar(compiler, result, thisFunction, false);
+int NWhile::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
+    auto count = cond->setHeapVar(compiler, result, thisFunction, thisVar, false);
+    count += body->setHeapVar(compiler, result, thisFunction, thisVar, false);
     return count;
 }
 
-shared_ptr<ReturnValue> NWhile::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NWhile::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
@@ -39,7 +39,7 @@ shared_ptr<ReturnValue> NWhile::compileImpl(Compiler* compiler, CResult& result,
     TheFunction->getBasicBlockList().push_back(loopBB);
     builder->SetInsertPoint(loopBB);
     
-    auto condition = cond->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    auto condition = cond->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     if (!condition->value->getType()->isIntegerTy(1)) {
         result.addError(loc, CErrorCode::TypeMismatch, "condition for while must be a bool");
         return nullptr;
@@ -54,7 +54,7 @@ shared_ptr<ReturnValue> NWhile::compileImpl(Compiler* compiler, CResult& result,
     // Emit the body of the loop.  This, like any other expr, can change the
     // current BB.  Note that we ignore the value computed by the body, but don't
     // allow an error.
-    auto bodyResult = body->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    auto bodyResult = body->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     if (bodyResult) {
         bodyResult->releaseIfNeeded(compiler, result, builder);
     }

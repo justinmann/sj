@@ -8,16 +8,16 @@ void NInclude::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunct
     compiler->includeFile(result, fileName);
 }
 
-shared_ptr<CVar> NInclude::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CVar> NInclude::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state == CompilerState::FixVar);
     return nullptr;
 }
 
-shared_ptr<CType> NInclude::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CType> NInclude::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     return compiler->typeVoid;
 }
 
-shared_ptr<ReturnValue> NInclude::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NInclude::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     return nullptr;
 }
 

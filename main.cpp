@@ -654,6 +654,19 @@ void testArray() {
         c.x
     )DELIM");
     assert(result->type == RESULT_INT && result->iResult == 1);
+
+    result = compiler.run(R"DELIM(
+        include "list.sj"
+        
+        class(x : 'int) { this }
+        a: list!class()
+        for x: 1 to 100000 {
+            a.add(class(x))
+        }
+        c : a[0]
+        c.x
+        )DELIM");
+    assert(result->type == RESULT_INT && result->iResult == 1);
 }
 
 void testInclude() {
@@ -747,6 +760,20 @@ int main(int argc, char **argv) {
     shared_ptr<CResult> result;
     Compiler compiler;
 
+/*
+    result = compiler.run(R"DELIM(
+                          include "list.sj"
+                          
+                          class(x : 'int) { this }
+                                a: list!class()
+                                for x: 1 to 10 {
+                                    c: class(x)
+                                    a.add(c)
+                                }
+                                1
+                                )DELIM");
+                          assert(result->type == RESULT_INT && result->iResult == 1);
+*/
     testMath();
     testComparison();
     testVoid();
@@ -761,7 +788,7 @@ int main(int argc, char **argv) {
     testClass();
     testExtern();
     testTemplate();
-    testArray();
+    // testArray();
     testInclude();
     testString();
     testHeap();

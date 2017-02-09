@@ -6,30 +6,30 @@ void NCompare::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunct
     rightSide->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NCompare::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CVar> NCompare::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state == CompilerState::FixVar);
-    leftSide->getVar(compiler, result, thisFunction);
-    rightSide->getVar(compiler, result, thisFunction);
+    leftSide->getVar(compiler, result, thisFunction, thisVar);
+    rightSide->getVar(compiler, result, thisFunction, thisVar);
     return nullptr;
 }
 
-shared_ptr<CType> NCompare::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CType> NCompare::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
     return compiler->typeBool;
 }
 
-int NCompare::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
-    auto count = leftSide->setHeapVar(compiler, result, thisFunction, false);
-    count += rightSide->setHeapVar(compiler, result, thisFunction, false);
+int NCompare::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
+    auto count = leftSide->setHeapVar(compiler, result, thisFunction, thisVar, false);
+    count += rightSide->setHeapVar(compiler, result, thisFunction, thisVar, false);
     return count;
 }
 
-shared_ptr<ReturnValue> NCompare::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NCompare::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
-    auto L = leftSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
-    auto R = rightSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    auto L = leftSide->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+    auto R = rightSide->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     if (!L || !R)
         return nullptr;
     

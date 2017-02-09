@@ -5,9 +5,9 @@ list!t(
 	
 	add(element : 't) {
 		if (count < space) {
-			throw(0)
-			/* space = count * 2
-			items = items.grow(space) */
+			space = count * 2
+			items = items.grow(space)
+            void
 		}
 		items.set(count, element)
 		count = count + 1 

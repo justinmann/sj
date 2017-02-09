@@ -13,13 +13,13 @@ CTypeNameList::CTypeNameList(const string& name) {
     push_back(make_shared<CTypeName>(name));
 }
 
-
+/*
 class CThisVar : public CVar {
 public:
     static shared_ptr<CThisVar> create(shared_ptr<CFunction> parent);
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
-    virtual Value* getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
+    virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
+    virtual Value* getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     
     CLoc loc;
 };
@@ -38,14 +38,17 @@ shared_ptr<CType> CThisVar::getType(Compiler* compiler, CResult& result) {
     return parent.lock()->getThisType(compiler, result);
 }
 
-shared_ptr<ReturnValue> CThisVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+
+
+shared_ptr<ReturnValue> CThisVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     return make_shared<ReturnValue>(parent.lock(), false, RVT_HEAP, thisValue);
 }
 
-Value* CThisVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* CThisVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     result.addError(loc, CErrorCode::ImmutableAssignment, "cannot assign to this");
     return nullptr;
 }
+*/
 
 shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, const CLoc& loc, weak_ptr<CFunctionDefinition> definition_, vector<shared_ptr<CType>>& templateTypes_, weak_ptr<CFunction> parent_, CFunctionType type_, const string& name_, shared_ptr<NFunction> node_) {
     auto c = make_shared<CFunction>();
@@ -93,7 +96,16 @@ shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, con
     return c;
 }
 
-shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CResult& result) {
+shared_ptr<CVar> CFunction::createThisVar(Compiler* compiler, CResult& result) {
+    auto thisVar = CNormalVar::createThisVar(CLoc::undefined, shared_from_this(), getThisType(compiler, result));
+    if (node) {
+        node->getVarBody(compiler, result, shared_from_this(), thisVar);
+        node->setHeapVarBody(compiler, result, shared_from_this(), thisVar);
+    }
+    return thisVar;
+}
+
+shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
     if (isInGetType) {
         result.addError(CLoc::undefined, CErrorCode::TypeLoop, "while trying to determine type a cycle was detected");
         return nullptr;
@@ -102,15 +114,15 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CResult& result) 
     isInGetType = true;
     
     if (!returnType) {
-        returnType = node->getBlockType(compiler, result, shared_from_this());
+        returnType = node->getBlockType(compiler, result, shared_from_this(), thisVar);
     }
     
     isInGetType = false;
     return returnType;
 }
 
-shared_ptr<CVar> CFunction::getReturnVar(Compiler* compiler, CResult& result) {
-    return node->getReturnVar(compiler, result, shared_from_this());
+shared_ptr<CVar> CFunction::getReturnVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
+    return node->getReturnVar(compiler, result, shared_from_this(), thisVar);
 }
 
 shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result) {
@@ -157,7 +169,7 @@ Type* CFunction::getStructType(Compiler* compiler, CResult& result) {
     return _structType;
 }
 
-Function* CFunction::getFunction(Compiler* compiler, CResult& result) {
+Function* CFunction::getFunction(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
     assert(compiler->state == CompilerState::Compile);
     
     if (isInGetFunction) {
@@ -167,11 +179,11 @@ Function* CFunction::getFunction(Compiler* compiler, CResult& result) {
     
     if (!function) {
         isInGetFunction = true;
-        function = node->compileDefinition(compiler, result, shared_from_this());
+        function = node->compileDefinition(compiler, result, shared_from_this(), thisVar);
         isInGetFunction = false;
         
         if (function) {
-            returnMustRelease = node->compileBody(compiler, result, shared_from_this(), function);
+            returnMustRelease = node->compileBody(compiler, result, shared_from_this(), thisVar, function);
         }
     }
    
@@ -179,7 +191,7 @@ Function* CFunction::getFunction(Compiler* compiler, CResult& result) {
 }
 
 bool CFunction::getReturnMustRelease(Compiler* compiler, CResult& result) {
-    getFunction(compiler, result);
+    assert(function);
     return returnMustRelease;
 }
 
@@ -195,7 +207,7 @@ Function* CFunction::getDestructor(Compiler* compiler, CResult& result) {
 }
 
 Value* CFunction::getThisArgument(Compiler* compiler, CResult& result) {
-    auto function = getFunction(compiler, result);
+    assert(function);
     return (Argument*)function->args().begin();
 }
 
@@ -266,7 +278,7 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, CResult& result, const C
     if (!parent.expired()) {
         auto t3 = parent.lock()->getCVar(compiler, result, loc, name);
         if (t3) {
-            if (t3->mode == Local) {
+            if (t3->mode == Var_Local) {
                 parent.lock()->localVarToThisVar(compiler, static_pointer_cast<CNormalVar>(t3));
             }
             return CParentVar::create(shared_from_this(), t3);
@@ -286,7 +298,7 @@ int CFunction::getThisIndex(const string& name) const {
 
 void CFunction::localVarToThisVar(Compiler* compiler, shared_ptr<CNormalVar> localVar) {
     assert(compiler->state <= CompilerState::FixVar); // Cannot change vars after type has been created
-    assert(localVar->mode == CVarType::Local);
+    assert(localVar->mode == CVarType::Var_Local);
     
     auto pos = localVarsByName.end();
     for (auto it = localVarsByName.begin(); it != localVarsByName.end(); it++) {
@@ -374,19 +386,12 @@ Value* CFunction::getParentPointer(Compiler* compiler, CResult& result, IRBuilde
     return nullptr;
 }
 
-shared_ptr<ReturnValue> CFunction::getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> CFunction::getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     auto parameters = vector<shared_ptr<NBase>>();
     for (auto defaultAssignment : node->assignments) {
         parameters.push_back(defaultAssignment->rightSide);
     }
-    return node->call(compiler, result, thisFunction, thisValue, shared_from_this(), nullptr, builder, catchBB, parameters);
-}
-
-shared_ptr<CVar> CFunction::getThisVar() {
-    if (!thisVar) {
-        thisVar = CThisVar::create(shared_from_this());
-    }
-    return thisVar;
+    return node->call(compiler, result, thisFunction, thisVar, thisValue, shared_from_this(), nullptr, nullptr, builder, catchBB, parameters);
 }
 
 Value* CFunction::getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
@@ -547,19 +552,15 @@ string CFunctionDefinition::fullName() {
 }
 
 shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CResult& result, const CLoc& loc, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent) {
+    shared_ptr<CFunction> func;
     auto it = cfunctions.find(templateTypes);
     if (it != cfunctions.end()) {
-        return it->second;
+        func = it->second;
+    } else {
+        assert(funcParent.expired() || funcParent.lock()->definition.lock() == parent.lock());
+        func = CFunction::create(compiler, result, loc, shared_from_this(), templateTypes, funcParent, type, name, node);
+        cfunctions[templateTypes] = func;
     }
-    
-    assert(funcParent.expired() || funcParent.lock()->definition.lock() == parent.lock());
-    auto func = CFunction::create(compiler, result, loc, shared_from_this(), templateTypes, funcParent, type, name, node);
-    cfunctions[templateTypes] = func;
-
-    if (node) {
-        node->getVarBody(compiler, result, func);
-    }
-    
     return func;
 }
 

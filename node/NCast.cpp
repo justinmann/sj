@@ -5,13 +5,13 @@ void NCast::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction
     node->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state == CompilerState::FixVar);
-    node->getVar(compiler, result, thisFunction);
+    node->getVar(compiler, result, thisFunction, thisVar);
     return nullptr;
 }
 
-shared_ptr<CType> NCast::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CType> NCast::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
     auto t = compiler->getType(type.c_str());
     if (!t) {
@@ -20,21 +20,21 @@ shared_ptr<CType> NCast::getTypeImpl(Compiler* compiler, CResult& result, shared
     return t;
 }
 
-int NCast::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
-    return node->setHeapVar(compiler, result, thisFunction, false);
+int NCast::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
+    return node->setHeapVar(compiler, result, thisFunction, thisVar, false);
 }
 
-shared_ptr<ReturnValue> NCast::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NCast::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
-    auto v = node->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    auto v = node->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     if (!v)
         return nullptr;
     
     assert(v->type == RVT_SIMPLE);
     
-    auto fromType = node->getType(compiler, result, thisFunction);
+    auto fromType = node->getType(compiler, result, thisFunction, thisVar);
     auto toType = compiler->getType(type.c_str());
     
     if (!toType) {

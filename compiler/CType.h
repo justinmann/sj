@@ -13,6 +13,7 @@ class Compiler;
 class CFunction;
 class CResult;
 class ReturnValue;
+class CVar;
 
 class CType {
 public:
@@ -26,7 +27,7 @@ public:
     weak_ptr<CFunction> parent;
     virtual Type* llvmAllocType(Compiler* compiler, CResult& result);
     virtual Type* llvmRefType(Compiler* compiler, CResult& result);
-    virtual shared_ptr<ReturnValue> getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB);
+    virtual shared_ptr<ReturnValue> getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB);
 
 private:
     Type* _llvmAllocType;

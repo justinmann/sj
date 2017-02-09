@@ -1,11 +1,11 @@
 #include "Node.h"
 
-shared_ptr<CCallVar> CCallVar::create(CLoc loc_, const string& name_, shared_ptr<NodeList> arguments_, shared_ptr<CFunction> thisFunction_, weak_ptr<CVar> dotVar_, shared_ptr<CFunction> callee_) {
+shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CResult& result, CLoc loc_, const string& name_, shared_ptr<NodeList> arguments_, shared_ptr<CFunction> thisFunction_, weak_ptr<CVar> dotVar_, shared_ptr<CFunction> callee_) {
     assert(callee_);
 
     auto c = make_shared<CCallVar>();
     c->name = name_;
-    c->mode = Local;
+    c->mode = Var_Local;
     c->isMutable = true;
     c->nassignment = nullptr;
     c->loc = loc_;
@@ -17,11 +17,18 @@ shared_ptr<CCallVar> CCallVar::create(CLoc loc_, const string& name_, shared_ptr
     return c;
 }
 
-shared_ptr<CType> CCallVar::getType(Compiler* compiler, CResult& result) {
-    return callee->getReturnType(compiler, result);
+shared_ptr<CVar> CCallVar::getThisVar(Compiler* compiler, CResult& result) {
+    if (!calleeVar) {
+        calleeVar = callee->createThisVar(compiler, result);
+    }
+    return calleeVar;
 }
 
-shared_ptr<ReturnValue> CCallVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<CType> CCallVar::getType(Compiler* compiler, CResult& result) {
+    return callee->getReturnType(compiler, result, getThisVar(compiler, result));
+}
+
+shared_ptr<ReturnValue> CCallVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     // compiler->emitLocation(call.get());
     
@@ -81,10 +88,10 @@ shared_ptr<ReturnValue> CCallVar::getLoadValue(Compiler* compiler, CResult& resu
         argIndex++;
     }
     
-    return callee->node->call(compiler, result, thisFunction, thisValue, callee, dotVar.lock(), builder, catchBB, parameters);
+    return callee->node->call(compiler, result, thisFunction, thisVar, thisValue, callee, getThisVar(compiler, result), dotVar.lock(), builder, catchBB, parameters);
 }
 
-Value* CCallVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* CCallVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     result.addError(loc, CErrorCode::ImmutableAssignment, "cannot assign value to function result");
     return nullptr;
 }
@@ -93,7 +100,7 @@ string CCallVar::fullName() {
     return name + "()";
 }
 
-bool CCallVar::getHeapVar(Compiler* compiler, CResult& result) {
+bool CCallVar::getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
     if (isHeapVar) {
         return true;
     }
@@ -104,20 +111,20 @@ bool CCallVar::getHeapVar(Compiler* compiler, CResult& result) {
     }
     
     isInGetHeapVar = true;
-    auto returnVar = thisFunction->getReturnVar(compiler, result);
+    auto returnVar = thisFunction->getReturnVar(compiler, result, thisVar);
     if (returnVar) {
-        isHeapVar = returnVar->getHeapVar(compiler, result);
+        isHeapVar = returnVar->getHeapVar(compiler, result, thisVar);
     }
     isInGetHeapVar = false;
     return isHeapVar;
 }
 
-int CCallVar::setHeapVar(Compiler* compiler, CResult& result) {
+int CCallVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
     if (!isHeapVar) {
         isHeapVar = true;
-        auto returnVar = callee->getReturnVar(compiler, result);
+        auto returnVar = callee->getReturnVar(compiler, result, thisVar);
         if (returnVar) {
-            return returnVar->setHeapVar(compiler, result);
+            return returnVar->setHeapVar(compiler, result, thisVar);
         }
     }
     return 0;
@@ -184,7 +191,7 @@ shared_ptr<CFunction> NCall::getCFunction(Compiler* compiler, CResult& result, s
     return callee;
 }
 
-shared_ptr<CVar> NCall::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) {
+shared_ptr<CVar> NCall::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
     auto callee = getCFunction(compiler, result, thisFunction, dotVar);
     if (!callee) {
         return nullptr;
@@ -194,31 +201,50 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler *compiler, CResult &result, shared_p
         if (it->nodeType == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
             assert(parameterAssignment->inFunctionDeclaration);
-            parameterAssignment->getVar(compiler, result, thisFunction);
+            parameterAssignment->getVar(compiler, result, thisFunction, thisVar);
         } else {
-            it->getVar(compiler, result, thisFunction);
+            it->getVar(compiler, result, thisFunction, thisVar);
         }
     }
     
-    return CCallVar::create(loc, name, arguments, thisFunction, dotVar, callee);
+    if (!_callVar) {
+        _callVar = CCallVar::create(compiler, result, loc, name, arguments, thisFunction, dotVar, callee);
+        _callVar->getThisVar(compiler, result);
+    }
+    return _callVar;
 }
 
-int NCall::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar, bool isHeapVar) {
+int NCall::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar) {
+
+    auto callee = getCFunction(compiler, result, thisFunction, dotVar);
+    if (!callee) {
+        return 0;
+    }
+    
+    if (arguments->size() > callee->thisVars.size()) {
+        result.addError(loc, CErrorCode::TooManyParameters, "argument count is wrong");
+        return 0;
+    }
+    
     auto count = 0;
+    auto index = 0;
     for (auto it : *arguments) {
+        auto parameterVar = callee->thisVars[index];
+        auto parameterHeapVar = isHeapVar || parameterVar->getHeapVar(compiler, result, thisVar);
         if (it->nodeType == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
             assert(parameterAssignment->inFunctionDeclaration);
-            count += parameterAssignment->setHeapVar(compiler, result, thisFunction, isHeapVar);
+            count += parameterAssignment->setHeapVar(compiler, result, thisFunction, thisVar, parameterHeapVar);
         } else {
-            count += it->setHeapVar(compiler, result, thisFunction, isHeapVar);
+            count += it->setHeapVar(compiler, result, thisFunction, thisVar, parameterHeapVar);
         }
+        index++;
     }
 
     if (isHeapVar) {
-        auto var = getVar(compiler, result, thisFunction, dotVar);
+        auto var = getVar(compiler, result, thisFunction, thisVar, dotVar);
         if (var) {
-            count += var->setHeapVar(compiler, result);
+            count += var->setHeapVar(compiler, result, thisVar);
         }
     }
     return count;

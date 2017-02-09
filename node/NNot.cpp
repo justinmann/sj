@@ -5,26 +5,26 @@ void NNot::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionD
     node->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NNot::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CVar> NNot::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state == CompilerState::FixVar);
-    node->getVar(compiler, result, thisFunction);
+    node->getVar(compiler, result, thisFunction, thisVar);
     return nullptr;
 }
 
-shared_ptr<CType> NNot::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CType> NNot::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
     return compiler->typeBool;
 }
 
-int NNot::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
-    return node->setHeapVar(compiler, result, thisFunction, false);
+int NNot::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
+    return node->setHeapVar(compiler, result, thisFunction, thisVar, false);
 }
 
-shared_ptr<ReturnValue> NNot::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NNot::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
-    auto v = node->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    auto v = node->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     if (!v)
         return nullptr;
     

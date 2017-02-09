@@ -1,15 +1,15 @@
 #include "Node.h"
 
-shared_ptr<CVar> NVariableBase::getVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) {
+shared_ptr<CVar> NVariableBase::getVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
     if (!_hasGetVar) {
-        _var = getVarImpl(compiler, result, thisFunction, dotVar);
+        _var = getVarImpl(compiler, result, thisFunction, thisVar, dotVar);
         _hasGetVar = true;
     }
     return _var;
 }
 
-int NVariableBase::setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar, bool isHeapVar) {
-    return setHeapVarImpl(compiler, result, thisFunction, dotVar, isHeapVar);
+int NVariableBase::setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar) {
+    return setHeapVarImpl(compiler, result, thisFunction, thisVar, dotVar, isHeapVar);
 }
 
 shared_ptr<CParentVar> CParentVar::create(shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_) {
@@ -27,18 +27,15 @@ shared_ptr<CType> CParentVar::getType(Compiler* compiler, CResult& result) {
     return childVar->getType(compiler, result);
 }
 
-shared_ptr<ReturnValue> CParentVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    auto parentPtr = parentFunction->getParentPointer(compiler, result, builder, dotValue);
-    if (!parentPtr) {
-        return nullptr;
-    }
-    
-    auto parentValue = builder->CreateLoad(parentPtr, "parent");
-
-    return childVar->getLoadValue(compiler, result, thisValue, parentValue, builder, catchBB);
+bool CParentVar::getHeapVar(Compiler *compiler, CResult &result, shared_ptr<CVar> thisVar) {
+    return childVar->getHeapVar(compiler, result, thisVar);
 }
 
-Value* CParentVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+int CParentVar::setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CVar> thisVar) {
+    return childVar->setHeapVar(compiler, result, thisVar);
+}
+
+shared_ptr<ReturnValue> CParentVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     auto parentPtr = parentFunction->getParentPointer(compiler, result, builder, dotValue);
     if (!parentPtr) {
         return nullptr;
@@ -46,17 +43,27 @@ Value* CParentVar::getStoreValue(Compiler* compiler, CResult& result, Value* thi
     
     auto parentValue = builder->CreateLoad(parentPtr, "parent");
 
-    return childVar->getStoreValue(compiler, result, thisValue, parentValue, builder, catchBB);
+    return childVar->getLoadValue(compiler, result, thisVar, thisValue, parentValue, builder, catchBB);
+}
+
+Value* CParentVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    auto parentPtr = parentFunction->getParentPointer(compiler, result, builder, dotValue);
+    if (!parentPtr) {
+        return nullptr;
+    }
+    
+    auto parentValue = builder->CreateLoad(parentPtr, "parent");
+
+    return childVar->getStoreValue(compiler, result, thisVar, thisValue, parentValue, builder, catchBB);
 }
 
 string CParentVar::fullName() {
     return childVar->fullName();
 }
 
-
 NVariable::NVariable(CLoc loc, const char* name) : name(name), NVariableBase(NodeType_Variable, loc) { }
 
-shared_ptr<CVar> NVariable::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) {
+shared_ptr<CVar> NVariable::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
     auto cfunction = thisFunction;
     if (dotVar) {
         cfunction = dotVar->getCFunctionForValue(compiler, result);
@@ -65,10 +72,10 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler *compiler, CResult &result, shar
     return cfunction->getCVar(compiler, result, loc, name);
 }
 
-int NVariable::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar, bool isHeapVar) {
-    auto var = getVar(compiler, result, thisFunction, dotVar);
+int NVariable::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar) {
+    auto var = getVar(compiler, result, thisFunction, thisVar, dotVar);
     if (var && isHeapVar) {
-        return var->setHeapVar(compiler, result);
+        return var->setHeapVar(compiler, result, thisVar);
     }
     return 0;
 }

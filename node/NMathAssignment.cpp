@@ -10,17 +10,17 @@ void NMathAssignment::defineImpl(Compiler* compiler, CResult& result, shared_ptr
     }
 }
 
-shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state == CompilerState::FixVar);
     if (rightSide) {
-        rightSide->getVar(compiler, result, thisFunction);
+        rightSide->getVar(compiler, result, thisFunction, thisVar);
     }
     return nullptr;
 }
 
-shared_ptr<CType> NMathAssignment::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CType> NMathAssignment::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
-    auto cvar = var->getVar(compiler, result, thisFunction, nullptr);
+    auto cvar = var->getVar(compiler, result, thisFunction, thisVar, nullptr);
     auto ctype = cvar->getType(compiler, result);
     if (ctype != compiler->typeInt) {
         result.addError(loc, CErrorCode::TypeMismatch, "operation only valid on int");
@@ -29,19 +29,19 @@ shared_ptr<CType> NMathAssignment::getTypeImpl(Compiler* compiler, CResult& resu
     return ctype;
 }
 
-int NMathAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
-    auto count = var->setHeapVar(compiler, result, thisFunction, nullptr, false);
+int NMathAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
+    auto count = var->setHeapVar(compiler, result, thisFunction, thisVar, nullptr, false);
     if (rightSide) {
-        count += rightSide->setHeapVar(compiler, result, thisFunction, false);
+        count += rightSide->setHeapVar(compiler, result, thisFunction, thisVar, false);
     }
     return count;
 }
 
-shared_ptr<ReturnValue> NMathAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NMathAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(this);
     
-    auto cvar = var->getVar(compiler, result, thisFunction, nullptr);
+    auto cvar = var->getVar(compiler, result, thisFunction, thisVar, nullptr);
     if (!cvar) {
         return nullptr;
     }
@@ -51,12 +51,12 @@ shared_ptr<ReturnValue> NMathAssignment::compileImpl(Compiler* compiler, CResult
         return nullptr;
     }
     
-    auto leftValue = cvar->getLoadValue(compiler, result, thisValue, thisValue, builder, catchBB);
+    auto leftValue = cvar->getLoadValue(compiler, result, thisVar, thisValue, thisValue, builder, catchBB);
     
     // Compute value
     shared_ptr<ReturnValue> rightValue = nullptr;
     if (rightSide) {
-        rightValue = rightSide->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+        rightValue = rightSide->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     }
 
     Value* resultValue = nullptr;
@@ -101,7 +101,7 @@ shared_ptr<ReturnValue> NMathAssignment::compileImpl(Compiler* compiler, CResult
     }
 
     // Store value
-    Value* destValue = cvar->getStoreValue(compiler, result, thisValue, thisValue, builder, catchBB);
+    Value* destValue = cvar->getStoreValue(compiler, result, thisVar, thisValue, thisValue, builder, catchBB);
     builder->CreateStore(resultValue, destValue);
     return make_shared<ReturnValue>(resultValue);
 }

@@ -171,6 +171,7 @@ void Compiler::InitializeModuleAndPassManager() {
     functionNames.clear();
     
     allocFunction = nullptr;
+    reallocFunction = nullptr;
     freeFunction = nullptr;
 #ifdef DEBUG_CALLSTACK
     pushFunction = nullptr;
@@ -273,15 +274,15 @@ public:
 
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) { }
-    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) { return nullptr; }
-    virtual int setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) { return 0; }
+    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) { return nullptr; }
+    virtual int setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) { return 0; }
     
-    virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
-        return inner->getType(compiler, result, thisFunction);
+    virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
+        return inner->getType(compiler, result, thisFunction, thisVar);
     }
     
-    virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-        return inner->getType(compiler, result, thisFunction)->getDefaultValue(compiler, result, thisFunction, thisValue, builder, catchBB);
+    virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+        return inner->getType(compiler, result, thisFunction, thisVar)->getDefaultValue(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     }
 };
 
@@ -335,8 +336,11 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     state = CompilerState::FixVar;
     auto templateTypes = vector<shared_ptr<CType>>();
     auto currentFunction = currentFunctionDefintion->getFunction(this, *compilerResult, CLoc::undefined, templateTypes, weak_ptr<CFunction>());
-    anonFunction->getVar(this, *compilerResult, currentFunction);
-    auto cfunction = currentFunction->getCFunction(this, *compilerResult, CLoc::undefined, "global", nullptr, nullptr);
+    auto currentVar = currentFunction->createThisVar(this, *compilerResult);
+    anonFunction->getVar(this, *compilerResult, currentFunction, currentVar);
+    auto globalFunction = currentFunction->getCFunction(this, *compilerResult, CLoc::undefined, "global", nullptr, nullptr);
+    auto globalVar = globalFunction->createThisVar(this, *compilerResult);
+
 #ifdef VAR_OUTPUT
     currentFunction->dump(this, *compilerResult, 0);
 #endif
@@ -346,14 +350,14 @@ shared_ptr<CResult> Compiler::run(const string& code) {
         return compilerResult;
 
     state = CompilerState::Compile;
-    anonFunction->compile(this, *compilerResult, currentFunction, nullptr, nullptr, nullptr);
-    auto function = cfunction->getFunction(this, *compilerResult);
-    cfunction->getDestructor(this, *compilerResult);
-    auto returnType = cfunction->getReturnType(this, *compilerResult);
+    anonFunction->compile(this, *compilerResult, currentFunction, currentVar, nullptr, nullptr, nullptr);
+    auto function = globalFunction->getFunction(this, *compilerResult, globalVar);
+    globalFunction->getDestructor(this, *compilerResult);
+    auto returnType = globalFunction->getReturnType(this, *compilerResult, globalVar);
     if (!function) {
         return compilerResult;
     }
-    auto thisType = cfunction->getThisType(this, *compilerResult);
+    auto thisType = globalFunction->getThisType(this, *compilerResult);
 
 #ifdef MODULE_OUTPUT
     module->dump();
@@ -376,47 +380,47 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     auto H = TheJIT->addModule(move(module));
     
     // Search the JIT for the global symbol.
-    auto globalFunction = TheJIT->findSymbol("global");
-    auto globalDestructor = TheJIT->findSymbol("global_destructor");
+    auto globalFunctionSymbol = TheJIT->findSymbol("global");
+    auto globalDestructorSymbol = TheJIT->findSymbol("global_destructor");
     assert(globalFunction && "Function not found");
     
-    auto thisSize = cfunction->thisVarsByName.size() * 8;
+    auto thisSize = globalFunction->thisVarsByName.size() * 8;
     auto thisPtr = malloc(thisSize);
     
     // Get the symbol's address and cast it to the right type (takes no
     // arguments, returns a double) so we can call it as a native function.
     hasException = false;
     if (returnType == typeInt) {
-        int64_t (*FP)(void*) = (int64_t (*)(void*))(intptr_t)globalFunction.getAddress();
+        int64_t (*FP)(void*) = (int64_t (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
         int64_t result = FP(thisPtr);
         
         compilerResult->type = RESULT_INT;
         compilerResult->iResult = result;
     } else if (returnType == typeBool) {
-        bool (*FP)(void*) = (bool (*)(void*))(intptr_t)globalFunction.getAddress();
+        bool (*FP)(void*) = (bool (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
         bool result = FP(thisPtr);
         
         compilerResult->type = RESULT_BOOL;
         compilerResult->bResult = result;
     } else if (returnType == typeChar) {
-        char (*FP)(void*) = (char (*)(void*))(intptr_t)globalFunction.getAddress();
+        char (*FP)(void*) = (char (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
         char result = FP(thisPtr);
         
         compilerResult->type = RESULT_CHAR;
         compilerResult->cResult = result;
     } else if (returnType == typeFloat) {
-        double (*FP)(void*) = (double (*)(void*))(intptr_t)globalFunction.getAddress();
+        double (*FP)(void*) = (double (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
         double result = FP(thisPtr);
 
         compilerResult->type = RESULT_FLOAT;
         compilerResult->fResult = result;
     } else if (returnType == typeVoid) {
-        void (*FP)(void*) = (void (*)(void*))(intptr_t)globalFunction.getAddress();
+        void (*FP)(void*) = (void (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
         FP(thisPtr);
 
         compilerResult->type = RESULT_VOID;
     } else if (returnType->name == "list_char") {
-        list_char* (*FP)(void*) = (list_char* (*)(void*))(intptr_t)globalFunction.getAddress();
+        list_char* (*FP)(void*) = (list_char* (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
         list_char* result = FP(thisPtr);
         
         compilerResult->type = RESULT_STR;
@@ -429,11 +433,11 @@ shared_ptr<CResult> Compiler::run(const string& code) {
         assert(false);
     }
     
-    if (globalDestructor) {
-        void (*FP)(void*) = (void (*)(void*))(intptr_t)globalDestructor.getAddress();
+    if (globalDestructorSymbol) {
+        void (*FP)(void*) = (void (*)(void*))(intptr_t)globalDestructorSymbol.getAddress();
         FP(thisPtr);
     }
-    free(thisPtr);
+    // TODO: free(thisPtr);
     
     
 #ifdef DEBUG_CALLSTACK
@@ -515,9 +519,20 @@ Function* Compiler::getAllocFunction() {
         vector<Type*> argTypes;
         argTypes.push_back(Type::getInt64Ty(context));
         auto functionType = FunctionType::get(Type::getInt8PtrTy(context), argTypes, false);
-        allocFunction = Function::Create(functionType, Function::ExternalLinkage, "_Znwm", module.get());
+        allocFunction = Function::Create(functionType, Function::ExternalLinkage, "malloc", module.get());
     }
     return allocFunction;
+}
+
+Function* Compiler::getReallocFunction() {
+    if (!reallocFunction) {
+        vector<Type*> argTypes;
+        argTypes.push_back(Type::getInt8PtrTy(context));
+        argTypes.push_back(Type::getInt64Ty(context));
+        auto functionType = FunctionType::get(Type::getInt8PtrTy(context), argTypes, false);
+        reallocFunction = Function::Create(functionType, Function::ExternalLinkage, "realloc", module.get());
+    }
+    return reallocFunction;
 }
 
 Function* Compiler::getFreeFunction() {
@@ -525,7 +540,7 @@ Function* Compiler::getFreeFunction() {
         vector<Type*> argTypes;
         argTypes.push_back(Type::getInt8PtrTy(context));
         auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
-        freeFunction = Function::Create(functionType, Function::ExternalLinkage, "_ZdlPv", module.get());
+        freeFunction = Function::Create(functionType, Function::ExternalLinkage, "free", module.get());
     }
     return freeFunction;
 }

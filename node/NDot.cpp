@@ -16,24 +16,24 @@ shared_ptr<CType> CDotVar::getType(Compiler* compiler, CResult& result) {
     return rightVar->getType(compiler, result);
 }
 
-shared_ptr<ReturnValue> CDotVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    auto leftValue = leftVar->getLoadValue(compiler, result, thisValue, dotValue, builder, catchBB);
+shared_ptr<ReturnValue> CDotVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    auto leftValue = leftVar->getLoadValue(compiler, result, thisVar, thisValue, dotValue, builder, catchBB);
     if (!leftValue) {
         return nullptr;
     }
     
-    auto loadValue = rightVar->getLoadValue(compiler, result, thisValue, leftValue->value, builder, catchBB);
+    auto loadValue = rightVar->getLoadValue(compiler, result, thisVar, thisValue, leftValue->value, builder, catchBB);
     leftValue->releaseIfNeeded(compiler, result, builder);
     return loadValue;
 }
 
-Value* CDotVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    auto leftValue = leftVar->getLoadValue(compiler, result, thisValue, dotValue, builder, catchBB);
+Value* CDotVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    auto leftValue = leftVar->getLoadValue(compiler, result, thisVar, thisValue, dotValue, builder, catchBB);
     if (!leftValue) {
         return nullptr;
     }
 
-    auto storeValue = rightVar->getStoreValue(compiler, result, thisValue, leftValue->value, builder, catchBB);
+    auto storeValue = rightVar->getStoreValue(compiler, result, thisVar, thisValue, leftValue->value, builder, catchBB);
     leftValue->releaseIfNeeded(compiler, result, builder);
     return storeValue;
 }
@@ -47,13 +47,13 @@ void NDot::defineImpl(Compiler *compiler, CResult &result, shared_ptr<CFunctionD
     right->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NDot::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) {
-    auto leftVar = left->getVar(compiler, result, thisFunction, dotVar);
+shared_ptr<CVar> NDot::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
+    auto leftVar = left->getVar(compiler, result, thisFunction, thisVar, dotVar);
     if (!leftVar) {
         return nullptr;
     }
 
-    auto rightVar = right->getVar(compiler, result, thisFunction, leftVar);
+    auto rightVar = right->getVar(compiler, result, thisFunction, thisVar, leftVar);
     if (!rightVar) {
         return nullptr;
     }
@@ -61,14 +61,14 @@ shared_ptr<CVar> NDot::getVarImpl(Compiler *compiler, CResult &result, shared_pt
     return CDotVar::create(leftVar, rightVar);
 }
 
-int NDot::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar, bool isHeapVar) {
-    auto leftVar = left->getVar(compiler, result, thisFunction, dotVar);
+int NDot::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar) {
+    auto leftVar = left->getVar(compiler, result, thisFunction, thisVar, dotVar);
     if (!leftVar) {
         return 0;
     }
     
-    auto count = left->setHeapVar(compiler, result, thisFunction, dotVar, false);
-    count += right->setHeapVar(compiler, result, thisFunction, leftVar, isHeapVar);
+    auto count = left->setHeapVar(compiler, result, thisFunction, thisVar, dotVar, false);
+    count += right->setHeapVar(compiler, result, thisFunction, thisVar, leftVar, isHeapVar);
     return count;
 }
 

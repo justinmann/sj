@@ -31,27 +31,29 @@ public:
     // For extern
     NFunction(CLoc loc, CFunctionType type, const char* externName, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<NodeList> arguments);
 
-    virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
-    virtual shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters);
-    virtual shared_ptr<CVar> getReturnVar(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction);
-    virtual void getVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction);
-    Function* compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
-    virtual bool compileBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Function* function);
-    Function* compileDestructorDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
+    virtual shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar);
+    virtual shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters);
+    virtual shared_ptr<CVar> getReturnVar(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar);
+    virtual void getVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar);
+    virtual int setHeapVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar);
+    Function* compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar);
+    virtual bool compileBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Function* function);
+    virtual Function* compileDestructorDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
     virtual void compileDestructorBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Function* function);
     virtual void dump(Compiler* compiler, int level) const;
     
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parentFunction);
-    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction);
-    virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction);
-    virtual int setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, bool isHeapVar) { return 0; }
-    virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, Value* parentValue, IRBuilder<>* builder, BasicBlock* catchBB);
+    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, shared_ptr<CVar> parentVar);
+    virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, shared_ptr<CVar> parentVar);
+    virtual int setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) { return 0; }
+    virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, shared_ptr<CVar> parentVar, Value* parentValue, IRBuilder<>* builder, BasicBlock* catchBB);
 
 private:
     shared_ptr<NFunction> shared_from_this() { return static_pointer_cast<NFunction>(NBase::shared_from_this()); };
     
     static int counter;
+    bool isInGetType;
 };
 
 #endif /* NFunction_h */

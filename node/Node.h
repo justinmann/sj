@@ -30,6 +30,14 @@ public:
         push_back(i2);
         push_back(i3);
     }
+
+    NodeList(shared_ptr<NBase> i0, shared_ptr<NBase> i1, shared_ptr<NBase> i2, shared_ptr<NBase> i3, shared_ptr<NBase> i4) : vector<shared_ptr<NBase>>() {
+        push_back(i0);
+        push_back(i1);
+        push_back(i2);
+        push_back(i3);
+        push_back(i4);
+    }
 };
 
 typedef vector<string> StringList;

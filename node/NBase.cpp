@@ -33,31 +33,31 @@ void NBase::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefi
     }
 }
 
-shared_ptr<CVar> NBase::getVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CVar> NBase::getVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     if (!_hasGetVar) {
         assert(compiler->state == CompilerState::FixVar);
-        _var = getVarImpl(compiler, result, thisFunction);
+        _var = getVarImpl(compiler, result, thisFunction, thisVar);
         _hasGetVar = true;
     }
     return _var;
 }
 
-shared_ptr<CType> NBase::getType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+shared_ptr<CType> NBase::getType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
     if (!_hasGetType) {
-        _type = getTypeImpl(compiler, result, thisFunction);
+        _type = getTypeImpl(compiler, result, thisFunction, thisVar);
         _hasGetType = true;
     }
     return _type;
 }
 
-int NBase::setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, bool isHeapVar) {
-    return setHeapVarImpl(compiler, result, thisFunction, isHeapVar);
+int NBase::setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
+    return setHeapVarImpl(compiler, result, thisFunction, thisVar, isHeapVar);
 }
 
 
-shared_ptr<ReturnValue> NBase::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NBase::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
-    return compileImpl(compiler, result, thisFunction, thisValue, builder, catchBB);
+    return compileImpl(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
 }
 

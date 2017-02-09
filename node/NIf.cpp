@@ -1,13 +1,14 @@
 #include "Node.h"
 
-shared_ptr<CIfElseVar> CIfElseVar::create(const CLoc& loc_, shared_ptr<CFunction> thisFunction_, shared_ptr<NBase> condition_, shared_ptr<NBase> ifBlock_, shared_ptr<NBase> elseBlock_) {
+shared_ptr<CIfElseVar> CIfElseVar::create(const CLoc& loc_, shared_ptr<CFunction> thisFunction_, shared_ptr<CVar> thisVar_, shared_ptr<NBase> condition_, shared_ptr<NBase> ifBlock_, shared_ptr<NBase> elseBlock_) {
     auto c = make_shared<CIfElseVar>();
     c->name = "";
-    c->mode = Private;
+    c->mode = Var_Private;
     c->isMutable = true;
     c->nassignment = nullptr;
     c->loc = loc_;
     c->thisFunction = thisFunction_;
+    c->thisVar = thisVar_;
     c->condition = condition_;
     c->ifBlock = ifBlock_;
     c->elseBlock = elseBlock_;
@@ -16,17 +17,17 @@ shared_ptr<CIfElseVar> CIfElseVar::create(const CLoc& loc_, shared_ptr<CFunction
 
 shared_ptr<CType> CIfElseVar::getType(Compiler* compiler, CResult& result) {
     if (elseBlock) {
-        return elseBlock->getType(compiler, result, thisFunction);
+        return elseBlock->getType(compiler, result, thisFunction, thisVar);
     }
     
     if (ifBlock) {
-        return ifBlock->getType(compiler, result, thisFunction);
+        return ifBlock->getType(compiler, result, thisFunction, thisVar);
     }
     
     return nullptr;
 }
 
-shared_ptr<ReturnValue> CIfElseVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> CIfElseVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     shared_ptr<CType> returnType = getType(compiler, result);
     
@@ -37,14 +38,14 @@ shared_ptr<ReturnValue> CIfElseVar::getLoadValue(Compiler* compiler, CResult& re
     
     // If block
     function->getBasicBlockList().push_back(ifBB);
-    auto c = condition->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    auto c = condition->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     if (!c) {
         return nullptr;
     }
     assert(c->type == RVT_SIMPLE);
     builder->CreateCondBr(c->value, ifBB, elseBB);
     builder->SetInsertPoint(ifBB);
-    auto ifValue = ifBlock->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+    auto ifValue = ifBlock->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     if (returnType != compiler->typeVoid && !ifValue) {
         result.addError(loc, CErrorCode::NoDefaultValue, "type does not have a default value");
         return nullptr;
@@ -57,13 +58,13 @@ shared_ptr<ReturnValue> CIfElseVar::getLoadValue(Compiler* compiler, CResult& re
     builder->SetInsertPoint(elseBB);
     shared_ptr<ReturnValue> elseValue = nullptr;
     if (elseBlock) {
-        elseValue = elseBlock->compile(compiler, result, thisFunction, thisValue, builder, catchBB);
+        elseValue = elseBlock->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
         if (returnType != compiler->typeVoid && !elseValue) {
             result.addError(loc, CErrorCode::NoDefaultValue, "type does not have a default value");
             return nullptr;
         }
     } else if (returnType != compiler->typeVoid) {
-        elseValue = returnType->getDefaultValue(compiler, result, thisFunction, thisValue, builder, catchBB);
+        elseValue = returnType->getDefaultValue(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
         if (!elseValue) {
             result.addError(loc, CErrorCode::NoDefaultValue, "type does not have a default value");
             return nullptr;
@@ -97,7 +98,7 @@ shared_ptr<ReturnValue> CIfElseVar::getLoadValue(Compiler* compiler, CResult& re
     return make_shared<ReturnValue>(varFunction, ifValue->mustRelease, ifValue->type, phiNode);
 }
 
-Value* CIfElseVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* CIfElseVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(false);
     return nullptr;
 }
@@ -119,34 +120,34 @@ void NIf::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDe
     }
 }
 
-shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar) {
+shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
     assert(compiler->state == CompilerState::FixVar);
-    condition->getVar(compiler, result, thisFunction);
+    condition->getVar(compiler, result, thisFunction, thisVar);
     
     if (elseBlock) {
-        elseBlock->getVar(compiler, result, thisFunction);
+        elseBlock->getVar(compiler, result, thisFunction, thisVar);
     }
     
     if (ifBlock) {
-        ifBlock->getVar(compiler, result, thisFunction);
+        ifBlock->getVar(compiler, result, thisFunction, thisVar);
     }
     
-    return CIfElseVar::create(loc, thisFunction, condition, ifBlock, elseBlock);
+    return CIfElseVar::create(loc, thisFunction, thisVar, condition, ifBlock, elseBlock);
 }
 
-int NIf::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> dotVar, bool isHeapVar) {
-    auto count = condition->setHeapVar(compiler, result, thisFunction, false);
+int NIf::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar) {
+    auto count = condition->setHeapVar(compiler, result, thisFunction, thisVar, false);
     if (elseBlock) {
-        count += elseBlock->setHeapVar(compiler, result, thisFunction, isHeapVar);
+        count += elseBlock->setHeapVar(compiler, result, thisFunction, thisVar, isHeapVar);
     }
     
     if (ifBlock) {
-        count += ifBlock->setHeapVar(compiler, result, thisFunction, isHeapVar);
+        count += ifBlock->setHeapVar(compiler, result, thisFunction, thisVar, isHeapVar);
     }
     
     if (isHeapVar) {
-        auto var = getVar(compiler, result, thisFunction, dotVar);
-        count += var->setHeapVar(compiler, result);
+        auto var = getVar(compiler, result, thisFunction, thisVar, dotVar);
+        count += var->setHeapVar(compiler, result, thisVar);
     }
     
     return count;

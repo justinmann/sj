@@ -12,16 +12,19 @@ string CVar::fullName() {
     return strprintf("%s.%s", parent.lock()->fullName().c_str(), name.c_str());
 }
 
-bool CVar::getHeapVar(Compiler *compiler, CResult &result) {
+bool CVar::getHeapVar(Compiler *compiler, CResult &result, shared_ptr<CVar> thisVar) {
     return isHeapVar;
 }
 
-int CVar::setHeapVar(Compiler* compiler, CResult& result) {
+int CVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
+    auto count = 0;
+    
     if (!isHeapVar) {
         isHeapVar = true;
-        return 1;
+        count += 1;
     }
-    return 0;
+    
+    return count;
 }
 
 shared_ptr<CFunction> CVar::getCFunctionForValue(Compiler* compiler, CResult& result) {
@@ -32,12 +35,23 @@ shared_ptr<CFunction> CVar::getCFunctionForValue(Compiler* compiler, CResult& re
     return nullptr;
 }
 
+shared_ptr<CNormalVar> CNormalVar::createThisVar(const CLoc& loc, shared_ptr<CFunction> parent, shared_ptr<CType> type) {
+    auto c = make_shared<CNormalVar>();
+    c->loc = loc;
+    c->mode = CVarType::Var_This;
+    c->name = "this";
+    c->isMutable = false;
+    c->type = type;
+    c->parent = parent;
+    return c;
+}
+
 shared_ptr<CNormalVar> CNormalVar::createLocalVar(const CLoc& loc, const string& name, shared_ptr<CFunction> parent, shared_ptr<NAssignment> nassignment) {
     auto c = make_shared<CNormalVar>();
     c->loc = loc;
-    c->mode = CVarType::Local;
+    c->mode = CVarType::Var_Local;
     c->name = name;
-    c->isMutable = nassignment->isMutable;
+    c->isMutable = nassignment != nullptr ? nassignment->isMutable : false;
     c->nassignment = nassignment;
     c->parent = parent;
     return c;
@@ -46,7 +60,7 @@ shared_ptr<CNormalVar> CNormalVar::createLocalVar(const CLoc& loc, const string&
 shared_ptr<CNormalVar> CNormalVar::createFunctionVar(const CLoc& loc, const string& name, shared_ptr<CFunction> parent, shared_ptr<NFunction> nfunction, int index, shared_ptr<NAssignment> nassignment, shared_ptr<CType> type) {
     auto c = make_shared<CNormalVar>();
     c->loc = loc;
-    c->mode = CVarType::Public;
+    c->mode = CVarType::Var_Public;
     c->name = name;
     c->isMutable = nassignment != nullptr ? nassignment->isMutable : false;
     c->nfunction = nfunction;
@@ -61,8 +75,8 @@ shared_ptr<CNormalVar> CNormalVar::createFunctionVar(const CLoc& loc, const stri
 }
 
 void CNormalVar::makeFunctionVar(shared_ptr<NFunction> nfunction, int index) {
-    assert(mode == CVarType::Local);
-    mode = CVarType::Public;
+    assert(mode == CVarType::Var_Local);
+    mode = CVarType::Var_Public;
     this->nfunction = nfunction;
     this->index = index;
 }
@@ -75,19 +89,25 @@ shared_ptr<CType> CNormalVar::getType(Compiler* compiler, CResult& result) {
     
     isInGetType = true;
     if (!type) {
-        type = nassignment->getType(compiler, result, parent.lock());
+        type = nassignment->getType(compiler, result, parent.lock(), nullptr); // TODO:
     }
     isInGetType = false;
     return type;
 }
 
-shared_ptr<ReturnValue> CNormalVar::getLoadValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    auto value = getStoreValue(compiler, result, thisValue, dotValue, builder, catchBB);
-    return make_shared<ReturnValue>(type->parent.lock(), false, RVT_HEAP, builder->CreateLoad(value));
+shared_ptr<ReturnValue> CNormalVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    if (mode == Var_This) {
+        return make_shared<ReturnValue>(parent.lock(), false, RVT_HEAP, thisValue);
+    } else {
+        auto value = getStoreValue(compiler, result, thisVar, thisValue, dotValue, builder, catchBB);
+        return make_shared<ReturnValue>(type->parent.lock(), false, RVT_HEAP, builder->CreateLoad(value));
+    }
 }
 
-Value* CNormalVar::getStoreValue(Compiler* compiler, CResult& result, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    if (mode == Local) {
+Value* CNormalVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    if (mode == Var_This) {
+        assert(false);
+    } else if (mode == Var_Local) {
         if (!value) {
             IRBuilder<> entryBuilder = getEntryBuilder(builder);
             auto valueType = getType(compiler, result)->llvmRefType(compiler, result);
