@@ -4,8 +4,8 @@ list!t(
 	items = array!t(16)
 	
 	add(element : 't) {
-		if (count < space) {
-			space = count * 2
+		if (count + 1 >= space) {
+			space = space * 2
 			items = items.grow(space)
             void
 		}
