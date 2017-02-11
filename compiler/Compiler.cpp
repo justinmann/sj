@@ -80,6 +80,25 @@ extern "C" void recordRelease(void* v, const char* str) {
 }
 #endif
 
+#ifdef DEBUG_ALLOC
+extern "C" void* debugMalloc(int64_t size) {
+    auto p = malloc(size);
+    printf("alloc: %llx (%lld)\n", (int64_t)p, size);
+    return p;
+}
+
+extern "C" void* debugRealloc(void* oldp, int64_t size) {
+    auto newp = realloc(oldp, size);
+    printf("realloc: %llx to %llx (%lld)\n", (int64_t)oldp, (int64_t)newp, size);
+    return newp;
+}
+
+extern "C" void debugFree(void* p) {
+    free(p);
+    printf("free: %llx\n", (int64_t)p);
+}
+#endif
+
 class KaleidoscopeJIT {
 private:
     unique_ptr<TargetMachine> TM;
@@ -526,7 +545,11 @@ Function* Compiler::getAllocFunction() {
         vector<Type*> argTypes;
         argTypes.push_back(Type::getInt64Ty(context));
         auto functionType = FunctionType::get(Type::getInt8PtrTy(context), argTypes, false);
+#ifdef DEBUG_ALLOC
+        allocFunction = Function::Create(functionType, Function::ExternalLinkage, "debugMalloc", module.get());
+#else
         allocFunction = Function::Create(functionType, Function::ExternalLinkage, "malloc", module.get());
+#endif
     }
     return allocFunction;
 }
@@ -537,7 +560,11 @@ Function* Compiler::getReallocFunction() {
         argTypes.push_back(Type::getInt8PtrTy(context));
         argTypes.push_back(Type::getInt64Ty(context));
         auto functionType = FunctionType::get(Type::getInt8PtrTy(context), argTypes, false);
+#ifdef DEBUG_ALLOC
+        reallocFunction = Function::Create(functionType, Function::ExternalLinkage, "debugRealloc", module.get());
+#else
         reallocFunction = Function::Create(functionType, Function::ExternalLinkage, "realloc", module.get());
+#endif
     }
     return reallocFunction;
 }
@@ -547,7 +574,11 @@ Function* Compiler::getFreeFunction() {
         vector<Type*> argTypes;
         argTypes.push_back(Type::getInt8PtrTy(context));
         auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
+#ifdef DEBUG_ALLOC
+        freeFunction = Function::Create(functionType, Function::ExternalLinkage, "debugFree", module.get());
+#else
         freeFunction = Function::Create(functionType, Function::ExternalLinkage, "free", module.get());
+#endif
     }
     return freeFunction;
 }
