@@ -184,7 +184,7 @@ public:
     Function* getFreeFunction();
     void callPushFunction(IRBuilder<>* builder, const string& name);
     void callPopFunction(IRBuilder<>* builder);
-    void callDebug(IRBuilder<>* builder, const string& name, Value* valueMisc);
+    void callDebug(IRBuilder<>* builder, const string& name, Value* valuePtr, Value* valueInt);
     void recordRetain(IRBuilder<>* builder, Value* value, const string& name);
     void recordRelease(IRBuilder<>* builder, Value* value, const string& name);
 

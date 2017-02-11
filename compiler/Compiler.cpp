@@ -54,8 +54,8 @@ extern "C" void popFunction() {
     callstackIndex--;
 }
 
-extern "C" void debugFunction(const char* str, void* v) {
-    printf("ERROR: %s\n", str);
+extern "C" void debugFunction(const char* str, void* v, int64_t t) {
+    printf("ERROR: %s %llx %lld\n", str, (int64_t)v, t);
     for (int i = 0; i < callstackIndex; i++) {
         printf("%s\n", callstack[i]);
     }
@@ -625,12 +625,13 @@ void Compiler::callPopFunction(IRBuilder<>* builder) {
 #endif
 }
 
-void Compiler::callDebug(IRBuilder<>* builder, const string& name, Value* valueMisc) {
+void Compiler::callDebug(IRBuilder<>* builder, const string& name, Value* valuePtr, Value* valueInt) {
 #ifdef DEBUG_CALLSTACK
     if (!debugFunction) {
         vector<Type*> argTypes;
         argTypes.push_back(Type::getInt8PtrTy(context));
         argTypes.push_back(Type::getInt8PtrTy(context));
+        argTypes.push_back(Type::getInt64Ty(context));
         auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
         debugFunction = Function::Create(functionType, Function::ExternalLinkage, "debugFunction", module.get());
     }
@@ -645,11 +646,21 @@ void Compiler::callDebug(IRBuilder<>* builder, const string& name, Value* valueM
     }
     
     auto namePtr = builder->CreateBitCast(nameValue, Type::getInt8PtrTy(context));
-    auto valuePtr = builder->CreateBitCast(valueMisc, Type::getInt8PtrTy(context));
+    Value* valueVoidPtr = nullptr;
+    if (!valuePtr) {
+        valueVoidPtr = ConstantPointerNull::get(Type::getInt8PtrTy(context));
+    } else {
+        valueVoidPtr = builder->CreateBitCast(valuePtr, Type::getInt8PtrTy(context));
+    }
+
+    if (!valueInt) {
+        valueInt = ConstantInt::get(context, APInt(64, 0));
+    }
 
     vector<Value*> args;
     args.push_back(namePtr);
-    args.push_back(valuePtr);
+    args.push_back(valueVoidPtr);
+    args.push_back(valueInt);
     builder->CreateCall(debugFunction, ArrayRef<Value*>(args));
 #endif
 }
