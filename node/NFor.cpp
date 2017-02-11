@@ -23,8 +23,17 @@ public:
         return nullptr;
     }
     
-    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    virtual bool getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
+        return false;
+    }
+    
+    virtual int setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
         assert(false);
+        return 0;
+    }
+    
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+        ss << name;
     }
 
     Value* value;
@@ -179,6 +188,8 @@ void NFor::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisF
     if (end) {
         end->dump(compiler, result, thisFunction, thisVar, functions, ss, level + 1);
     }
+    
+    ss << " ";
     
     body->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
 }

@@ -24,7 +24,7 @@ public:
     string fullName();
     virtual bool getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
     virtual int setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
-    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level);
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
 
     CLoc loc;
     shared_ptr<NodeList> arguments;
@@ -34,6 +34,7 @@ public:
     shared_ptr<CVar> calleeVar;
     
 private:
+    bool isHeapVar;
     bool isInGetHeapVar;
 };
 

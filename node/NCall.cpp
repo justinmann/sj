@@ -13,6 +13,7 @@ shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CResult& result, CLoc 
     c->thisFunction = thisFunction_;
     c->dotVar = dotVar_;
     c->callee = callee_;
+    c->isHeapVar = false;
     c->isInGetHeapVar = false;
     return c;
 }
@@ -139,7 +140,7 @@ int CCallVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> t
     return 0;
 }
 
-void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     if (functions.find(callee) == functions.end()) {
         functions[callee] = "";
         stringstream temp;
@@ -148,12 +149,14 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> t
     }
     
     auto returnVar = thisFunction->getReturnVar(compiler, result, thisVar);
-    ss << alloc_mode(compiler, result, thisVar, returnVar);
+    if (returnVar) {
+        ss << alloc_mode(compiler, result, thisVar, returnVar);
+    }
     ss << callee->fullName(true) << "(";
 
     auto calleeVar = getThisVar(compiler, result);
     ss << alloc_mode(compiler, result, thisVar, calleeVar);
-    ss << (calleeVar->isMutable ? "= " : ": ");
+    ss << "this" << (calleeVar->isMutable ? " = " : " : ");
     ss << callee->fullName(true) << "(";
     
     vector<shared_ptr<NBase>> parameters(callee->node->assignments.size());
@@ -161,7 +164,24 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> t
         return;
     }
     
-    if (parameters.size() > 0) {
+    if (parameters.size() > 0 || thisFunction->getHasParent(compiler, result)) {
+        ss << "\n";
+        dumpf(ss, level + 1);
+        
+        if (thisFunction->getHasParent(compiler, result)) {
+            ss << "parent:";
+            if (dotSS.gcount()) {
+                ss << dotSS.str();
+            } else {
+                ss << "this";
+            }
+            
+            if (parameters.size() > 0) {
+                ss << ",\n";
+                dumpf(ss, level + 1);
+            }
+        }
+        
         auto paramIndex = 0;
         for (auto it : parameters) {
             auto paramVar = callee->thisVars[paramIndex];
@@ -169,13 +189,15 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> t
             ss << paramVar->name.c_str();
             ss << "'" << paramVar->getType(compiler, result)->name.c_str();
             ss << (paramVar->isMutable ? " = " : " : ");
-            it->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+            it->dump(compiler, result, thisFunction, thisVar, functions, ss, level + 1);
             if (paramIndex != parameters.size() - 1) {
                 ss << ",\n";
                 dumpf(ss, level + 1);
             }
             paramIndex++;
         }
+        ss << "\n";
+        dumpf(ss, level);
     }
     ss << "))";
 }

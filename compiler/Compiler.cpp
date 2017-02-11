@@ -353,7 +353,7 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     for (auto it : functionDumps) {
         printf("%s\n\n", it.second.c_str());
     }
-    printf("global %s\n", ss.str().c_str());
+    printf("global %s\n\n", ss.str().c_str());
 #endif
 
     state = CompilerState::Compile;

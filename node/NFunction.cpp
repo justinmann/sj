@@ -701,15 +701,14 @@ void NFunction::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CFuncti
     ss << "(";
     
     if (assignments.size() > 0) {
-        auto argIndex = 0;
-        for (auto it : assignments) {
-            auto argVar = thisFunction->thisVars[argIndex];
-            if (it != assignments.front()) {
-                printf(", ");
+        for (auto it : thisFunction->thisVars) {
+            if (it != thisFunction->thisVars.front()) {
+                ss << ", ";
             }
-            ss << alloc_mode(compiler, result, thisVar, argVar);
-            it->dump(compiler, result, thisFunction, thisVar, functions, ss, level + 1);
-            argIndex++;
+            ss << alloc_mode(compiler, result, thisVar, it);
+            ss << it->name;
+            ss << "'" << it->getType(compiler, result)->name;
+            ss << (it->isMutable ? "=" : ":");
         }
     }
     

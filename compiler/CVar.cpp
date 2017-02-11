@@ -12,21 +12,6 @@ string CVar::fullName() {
     return strprintf("%s.%s", parent.lock()->fullName(false).c_str(), name.c_str());
 }
 
-bool CVar::getHeapVar(Compiler *compiler, CResult &result, shared_ptr<CVar> thisVar) {
-    return isHeapVar;
-}
-
-int CVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
-    auto count = 0;
-    
-    if (!isHeapVar) {
-        isHeapVar = true;
-        count += 1;
-    }
-    
-    return count;
-}
-
 shared_ptr<CFunction> CVar::getCFunctionForValue(Compiler* compiler, CResult& result) {
     auto ctype = getType(compiler, result);
     if (ctype && !ctype->parent.expired()) {
@@ -68,6 +53,7 @@ shared_ptr<CNormalVar> CNormalVar::createFunctionVar(const CLoc& loc, const stri
     c->nassignment = nassignment;
     c->parent = parent;
     c->type = type;
+    c->isHeapVar = false;
     
     assert(type != nullptr || nassignment != nullptr);
     
@@ -123,7 +109,30 @@ Value* CNormalVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr
     }
 }
 
-void CNormalVar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+bool CNormalVar::getHeapVar(Compiler *compiler, CResult &result, shared_ptr<CVar> thisVar) {
+    return isHeapVar;
+}
+
+int CNormalVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
+    auto count = 0;
+    
+    if (!isHeapVar) {
+        isHeapVar = true;
+        count += 1;
+    }
+    
+    return count;
+}
+
+void CNormalVar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+    if (dotSS.gcount()) {
+        ss << dotSS.str() << ".";
+    }
+    
+    if (mode == Var_Public || mode == Var_Private) {
+        ss << "this.";
+    }
+    
     ss << name;
 }
 

@@ -25,24 +25,21 @@ class ReturnValue;
 
 class CVar {
 public:
-    CVar() : isHeapVar(false) { }
+    CVar() { }
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result) = 0;
     virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) = 0;
     virtual Value* getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) = 0;
     string fullName();
     shared_ptr<CFunction> getCFunctionForValue(Compiler* compiler, CResult& result);
-    virtual bool getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
-    virtual int setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
-    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) = 0;
+    virtual bool getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) = 0;
+    virtual int setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) = 0;
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) = 0;
 
     string name;
     CVarType mode;
     bool isMutable;
     weak_ptr<CFunction> parent;
     shared_ptr<NAssignment> nassignment;
-    
-protected:
-    bool isHeapVar;
 };
 
 class NFunction;
@@ -57,7 +54,9 @@ public:
     virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     virtual Value* getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     void makeFunctionVar(shared_ptr<NFunction> nfunction, int index);
-    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level);
+    virtual bool getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
+    virtual int setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
     
 private:
     CLoc loc;
@@ -66,6 +65,7 @@ private:
     int index;
     shared_ptr<CType> type;
     Value* value;
+    bool isHeapVar;
 };
 
 #endif /* CVar_h */

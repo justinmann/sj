@@ -9,16 +9,21 @@
 #ifndef NIf_h
 #define NIf_h
 
+class NIf;
+
 class CIfElseVar : public CVar {
 public:
-    static shared_ptr<CIfElseVar> create(const CLoc& loc, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<NBase> condition, shared_ptr<NBase> ifBlock, shared_ptr<NBase> elseBlock);
+    static shared_ptr<CIfElseVar> create(const CLoc& loc, shared_ptr<NIf> nif, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<NBase> condition, shared_ptr<NBase> ifBlock, shared_ptr<NBase> elseBlock);
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     virtual Value* getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     string fullName();
-    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level);
+    virtual bool getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
+    virtual int setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
     
     CLoc loc;
+    shared_ptr<NIf> nif;
     shared_ptr<CFunction> thisFunction;
     shared_ptr<CVar> thisVar;
     shared_ptr<NBase> condition;
@@ -33,6 +38,7 @@ public:
     shared_ptr<NBase> elseBlock;
     
     NIf(CLoc loc, shared_ptr<NBase> condition, shared_ptr<NBase> ifBlock, shared_ptr<NBase> elseBlock) : condition(condition), ifBlock(ifBlock), elseBlock(elseBlock), NVariableBase(NodeType_If, loc) { }
+    shared_ptr<NIf> shared_from_this();
 
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction);

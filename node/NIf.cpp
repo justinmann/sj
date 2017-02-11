@@ -1,12 +1,13 @@
 #include "Node.h"
 
-shared_ptr<CIfElseVar> CIfElseVar::create(const CLoc& loc_, shared_ptr<CFunction> thisFunction_, shared_ptr<CVar> thisVar_, shared_ptr<NBase> condition_, shared_ptr<NBase> ifBlock_, shared_ptr<NBase> elseBlock_) {
+shared_ptr<CIfElseVar> CIfElseVar::create(const CLoc& loc_, shared_ptr<NIf> nif_, shared_ptr<CFunction> thisFunction_, shared_ptr<CVar> thisVar_, shared_ptr<NBase> condition_, shared_ptr<NBase> ifBlock_, shared_ptr<NBase> elseBlock_) {
     auto c = make_shared<CIfElseVar>();
     c->name = "";
     c->mode = Var_Private;
     c->isMutable = true;
     c->nassignment = nullptr;
     c->loc = loc_;
+    c->nif = nif_;
     c->thisFunction = thisFunction_;
     c->thisVar = thisVar_;
     c->condition = condition_;
@@ -107,7 +108,19 @@ string CIfElseVar::fullName() {
     return "";
 }
 
-void CIfElseVar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+bool CIfElseVar::getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
+    if (ifBlock) {
+        auto var = ifBlock->getVar(compiler, result, thisFunction, thisVar);
+        return var->getHeapVar(compiler, result, thisVar);
+    }
+    return false;
+}
+
+int CIfElseVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
+    return nif->setHeapVar(compiler, result, thisFunction, thisVar, nullptr, true);
+}
+
+void CIfElseVar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     ss << "if ";
     condition->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
 
@@ -147,7 +160,7 @@ shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, CResult& result, shared_ptr
         ifBlock->getVar(compiler, result, thisFunction, thisVar);
     }
     
-    return CIfElseVar::create(loc, thisFunction, thisVar, condition, ifBlock, elseBlock);
+    return CIfElseVar::create(loc, shared_from_this(), thisFunction, thisVar, condition, ifBlock, elseBlock);
 }
 
 int NIf::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar) {
@@ -160,12 +173,9 @@ int NIf::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunctio
         count += ifBlock->setHeapVar(compiler, result, thisFunction, thisVar, isHeapVar);
     }
     
-    if (isHeapVar) {
-        auto var = getVar(compiler, result, thisFunction, thisVar, dotVar);
-        count += var->setHeapVar(compiler, result, thisVar);
-    }
-    
     return count;
 }
 
-
+shared_ptr<NIf> NIf::shared_from_this() {
+    return static_pointer_cast<NIf>(NBase::shared_from_this());
+}
