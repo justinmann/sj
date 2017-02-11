@@ -58,10 +58,7 @@ shared_ptr<ReturnValue> NCast::compileImpl(Compiler* compiler, CResult& result, 
     return NULL;
 }
 
-void NCast::dump(Compiler* compiler, int level) const {
-    dumpf(level, "type: 'NCast'");
-    dumpf(level, "typeName: '%s'", type.c_str());
-    dumpf(level, "node: {");
-    node->dump(compiler, level + 1);
-    dumpf(level, "}", type.c_str());
+void NCast::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    node->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+    ss << " as " << type;
 }

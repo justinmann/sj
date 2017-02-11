@@ -55,14 +55,8 @@ shared_ptr<ReturnValue> NAnd::compileImpl(Compiler* compiler, CResult& result, s
     return make_shared<ReturnValue>(builder->CreateAnd(l->value, r->value));
 }
 
-void NAnd::dump(Compiler* compiler, int level) const {
-    dumpf(level, "type: 'NAnd'");
-    
-    dumpf(level, "left: {");
-    left->dump(compiler, level + 1);
-    dumpf(level, "}");
-
-    dumpf(level, "right: {");
-    right->dump(compiler, level + 1);
-    dumpf(level, "}");
+void NAnd::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    left->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+    ss << " && ";
+    right->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
 }

@@ -42,6 +42,12 @@ string CDotVar::fullName() {
     return leftVar->fullName() + "." + rightVar->fullName();
 }
 
+void CDotVar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    leftVar->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+    ss << ".";
+    rightVar->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+}
+
 void NDot::defineImpl(Compiler *compiler, CResult &result, shared_ptr<CFunctionDefinition> thisFunction) {
     left->define(compiler, result, thisFunction);
     right->define(compiler, result, thisFunction);
@@ -71,8 +77,3 @@ int NDot::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFuncti
     count += right->setHeapVar(compiler, result, thisFunction, thisVar, leftVar, isHeapVar);
     return count;
 }
-
-void NDot::dump(Compiler* compiler, int level) const {
-    dumpf(level, "type: 'NDot'");
-}
-

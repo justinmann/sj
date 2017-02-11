@@ -22,6 +22,10 @@ public:
         assert(false);
         return nullptr;
     }
+    
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+        assert(false);
+    }
 
     Value* value;
 };
@@ -164,20 +168,18 @@ shared_ptr<ReturnValue> NFor::compileImpl(Compiler* compiler, CResult& result, s
     return nullptr;
 }
 
-void NFor::dump(Compiler* compiler, int level) const {
-    dumpf(level, "type: 'NFor'");
-    dumpf(level, "varName: %s", varName.c_str());
-
+void NFor::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    ss << "for " << varName << " : ";
     if (start) {
-        dumpf(level, "start: {");
-        start->dump(compiler, level + 1);
-        dumpf(level, "}");
+        start->dump(compiler, result, thisFunction, thisVar, functions, ss, level + 1);
     }
+    
+    ss << " to ";
 
     if (end) {
-        dumpf(level, "end: {");
-        end->dump(compiler, level + 1);
-        dumpf(level, "}");
+        end->dump(compiler, result, thisFunction, thisVar, functions, ss, level + 1);
     }
+    
+    body->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
 }
 

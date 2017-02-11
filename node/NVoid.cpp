@@ -11,6 +11,6 @@ shared_ptr<ReturnValue> NVoid::compileImpl(Compiler* compiler, CResult& result, 
     return nullptr;
 }
 
-void NVoid::dump(Compiler* compiler, int level) const {
-    dumpf(level, "value: 'void'");
+void NVoid::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    ss << "void";
 }

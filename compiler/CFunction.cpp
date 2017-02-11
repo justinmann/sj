@@ -13,43 +13,6 @@ CTypeNameList::CTypeNameList(const string& name) {
     push_back(make_shared<CTypeName>(name));
 }
 
-/*
-class CThisVar : public CVar {
-public:
-    static shared_ptr<CThisVar> create(shared_ptr<CFunction> parent);
-    virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
-    virtual Value* getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
-    
-    CLoc loc;
-};
-
-shared_ptr<CThisVar> CThisVar::create(shared_ptr<CFunction> parent) {
-    auto c = make_shared<CThisVar>();
-    c->mode = CVarType::Public;
-    c->name = "this";
-    c->isMutable = false;
-    c->loc = CLoc::undefined;
-    c->parent = parent;
-    return c;
-}
-
-shared_ptr<CType> CThisVar::getType(Compiler* compiler, CResult& result) {
-    return parent.lock()->getThisType(compiler, result);
-}
-
-
-
-shared_ptr<ReturnValue> CThisVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    return make_shared<ReturnValue>(parent.lock(), false, RVT_HEAP, thisValue);
-}
-
-Value* CThisVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    result.addError(loc, CErrorCode::ImmutableAssignment, "cannot assign to this");
-    return nullptr;
-}
-*/
-
 shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, const CLoc& loc, weak_ptr<CFunctionDefinition> definition_, vector<shared_ptr<CType>>& templateTypes_, weak_ptr<CFunction> parent_, CFunctionType type_, const string& name_, shared_ptr<NFunction> node_) {
     auto c = make_shared<CFunction>();
     c->definition = definition_;
@@ -320,8 +283,31 @@ void CFunction::localVarToThisVar(Compiler* compiler, shared_ptr<CNormalVar> loc
     localVarsByName.erase(pos);
 }
 
-string CFunction::fullName() {
-    return definition.lock()->fullName();
+string CFunction::fullName(bool includeTemplateTypes) {
+    stringstream ss;
+    ss << definition.lock()->fullName();
+    if (includeTemplateTypes) {
+        if (templateTypes.size() > 0) {
+            ss << "!";
+        }
+        
+        if (templateTypes.size() > 1) {
+            ss << "[";
+        }
+        
+        for (auto it : templateTypes) {
+            if (it != templateTypes.front()) {
+                ss << ", ";
+            }
+            
+            ss << it->name;
+        }
+        
+        if (templateTypes.size() > 1) {
+            ss << "]";
+        }
+    }
+    return ss.str();
 }
 
 int CFunction::getArgStart(Compiler* compiler, CResult& result) {
@@ -543,8 +529,8 @@ shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, 
 string CFunctionDefinition::fullName() {
     string n = name;
     auto p = parent;
-    while (!p.expired() && !p.lock()->parent.expired()) {
-        n.insert(0, ".");
+    while (!p.expired() && !p.lock()->parent.expired() && p.lock()->name != "global") {
+        n.insert(0, "_");
         n.insert(0, p.lock()->name);
         p = p.lock()->parent;
     }

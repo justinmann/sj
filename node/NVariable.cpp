@@ -61,6 +61,11 @@ string CParentVar::fullName() {
     return childVar->fullName();
 }
 
+void CParentVar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    ss << ".parent";
+    childVar->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+}
+
 NVariable::NVariable(CLoc loc, const char* name) : name(name), NVariableBase(NodeType_Variable, loc) { }
 
 shared_ptr<CVar> NVariable::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
@@ -79,9 +84,3 @@ int NVariable::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CF
     }
     return 0;
 }
-
-void NVariable::dump(Compiler* compiler, int level) const {
-    dumpf(level, "type: 'NVariable'");
-    dumpf(level, "name: '%s'", name.c_str());
-}
-

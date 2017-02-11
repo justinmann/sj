@@ -12,7 +12,6 @@
 class NThis : public NVariableBase {
 public:
     NThis(CLoc loc);
-    virtual void dump(Compiler* compiler, int level) const;
 
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) { }

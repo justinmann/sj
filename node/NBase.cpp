@@ -1,5 +1,21 @@
 #include "Node.h"
 
+void dumpf(stringstream& ss, int level) {
+    for (int i = 0; i < level; i++) {
+        ss << "  ";
+    }
+}
+
+const char* alloc_mode(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, shared_ptr<CVar> var) {
+    /*if (var->getType(compiler, result)->parent.expired()) {
+        return "[value]";
+    } else*/ if (var->getHeapVar(compiler, result, thisVar)) {
+        return "[heap]";
+    } else {
+        return "[stack]";
+    }
+}
+
 bool isSimpleType(Type* type) {
     if (!type->isPointerTy()) {
         return true;

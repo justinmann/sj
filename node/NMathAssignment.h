@@ -19,7 +19,7 @@ enum NMathAssignmentOp {
 class NMathAssignment : public NBase {
 public:
     NMathAssignment(CLoc loc, shared_ptr<NVariableBase> var, NMathAssignmentOp op, shared_ptr<NBase> rightSide);
-    virtual void dump(Compiler* compiler, int level) const;
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level);
     
     shared_ptr<NVariableBase> var;
     NMathAssignmentOp op;

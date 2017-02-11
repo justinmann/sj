@@ -84,15 +84,27 @@ shared_ptr<ReturnValue> NCompare::compileImpl(Compiler* compiler, CResult& resul
     return nullptr;
 }
 
-void NCompare::dump(Compiler* compiler, int level) const {
-    dumpf(level, "type: 'NCompare'");
-    dumpf(level, "op: %d", op);
-    
-    dumpf(level, "leftSide: {");
-    leftSide->dump(compiler, level + 1);
-    dumpf(level, "}");
-    
-    dumpf(level, "rightSide: {");
-    rightSide->dump(compiler, level + 1);
-    dumpf(level, "}");
+void NCompare::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    leftSide->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+    switch (op) {
+        case NCompareOp::EQ:
+            ss << " == ";
+            break;
+        case NCompareOp::NE:
+            ss << " != ";
+            break;
+        case NCompareOp::LT:
+            ss << " < ";
+            break;
+        case NCompareOp::LE:
+            ss << " <= ";
+            break;
+        case NCompareOp::GT:
+            ss << " > ";
+            break;
+        case NCompareOp::GE:
+            ss << " >= ";
+            break;
+    }
+    rightSide->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
 }

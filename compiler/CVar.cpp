@@ -9,7 +9,7 @@
 #include "Node.h"
 
 string CVar::fullName() {
-    return strprintf("%s.%s", parent.lock()->fullName().c_str(), name.c_str());
+    return strprintf("%s.%s", parent.lock()->fullName(false).c_str(), name.c_str());
 }
 
 bool CVar::getHeapVar(Compiler *compiler, CResult &result, shared_ptr<CVar> thisVar) {
@@ -121,6 +121,10 @@ Value* CNormalVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr
     } else {
         return parent.lock()->getArgumentPointer(compiler, result, dotValue, index, builder);
     }
+}
+
+void CNormalVar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    ss << name;
 }
 
 

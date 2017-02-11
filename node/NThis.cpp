@@ -9,8 +9,3 @@ shared_ptr<CVar> NThis::getVarImpl(Compiler *compiler, CResult &result, shared_p
     }
     return thisVar;
 }
-
-void NThis::dump(Compiler* compiler, int level) const {
-    dumpf(level, "type: 'NThis'");
-}
-

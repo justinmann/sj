@@ -18,7 +18,8 @@ public:
     virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     virtual Value* getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     string fullName();
-    
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level);
+
     shared_ptr<CVar> leftVar;
     shared_ptr<CVar> rightVar;
 };
@@ -29,7 +30,6 @@ public:
     shared_ptr<NVariableBase> right;
     
     NDot(CLoc loc, shared_ptr<NVariableBase> left, shared_ptr<NVariableBase> right) : left(left), right(right), NVariableBase(NodeType_Dot, loc) {}
-    virtual void dump(Compiler* compiler, int level) const;
 
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction);

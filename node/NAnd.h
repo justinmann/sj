@@ -17,7 +17,7 @@ public:
     const shared_ptr<NBase> right;
     
     NAnd(CLoc loc, shared_ptr<NBase> left, shared_ptr<NBase> right) : left(left), right(right), NBase(NodeType_And, loc) { }
-    virtual void dump(Compiler* compiler, int level) const;
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level);
     
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction);

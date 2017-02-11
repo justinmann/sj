@@ -24,7 +24,7 @@ shared_ptr<ReturnValue> NStringArray::compileImpl(Compiler* compiler, CResult& r
     return make_shared<ReturnValue>(varFunction, false, RVT_SIMPLE, builder->CreateGlobalStringPtr(str));
 }
 
-void NStringArray::dump(Compiler* compiler, int level) const {
+void NStringArray::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
     // dumpf(level, "value: %s", value.c_str());
 }
 
@@ -103,6 +103,6 @@ shared_ptr<ReturnValue> NString::compileImpl(Compiler* compiler, CResult& result
     return createCall->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
 }
 
-void NString::dump(Compiler* compiler, int level) const {
-    dumpf(level, "value: 'string'");
+void NString::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    ss << "\"" << str << "\"";
 }

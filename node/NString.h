@@ -15,7 +15,7 @@ public:
     shared_ptr<NCall> createCall;
     
     NStringArray(CLoc loc, const string& str) : str(str), NBase(NodeType_StringArray, loc) { }
-    virtual void dump(Compiler* compiler, int level) const;
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level);
 
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction);
@@ -32,7 +32,7 @@ public:
     shared_ptr<NCall> createCall;
     
     NString(CLoc loc, const string& str);
-    virtual void dump(Compiler* compiler, int level) const;
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level);
 
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {}

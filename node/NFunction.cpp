@@ -696,34 +696,28 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
     }
 }
 
-void NFunction::dump(Compiler* compiler, int level) const {
-    dumpf(level, "type: 'NFunction'");
-    dumpf(level, "name: '%s'", name.c_str());
-    
-    if (functions.size() > 0) {
-        dumpf(level, "functions: {");
-        for (auto it : functions) {
-            dumpf(level + 1, "%s: {", it->name.c_str());
-            it->dump(compiler, level + 2);
-            dumpf(level + 1, "}");
-        }
-        dumpf(level, "}");
-    }
+void NFunction::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    ss << thisFunction->fullName(true);
+    ss << "(";
     
     if (assignments.size() > 0) {
-        dumpf(level, "assignments: {");
+        auto argIndex = 0;
         for (auto it : assignments) {
-            dumpf(level + 1, "%s: {", it->name.c_str());
-            it->dump(compiler, level + 2);
-            dumpf(level + 1, "}");
+            auto argVar = thisFunction->thisVars[argIndex];
+            if (it != assignments.front()) {
+                printf(", ");
+            }
+            ss << alloc_mode(compiler, result, thisVar, argVar);
+            it->dump(compiler, result, thisFunction, thisVar, functions, ss, level + 1);
+            argIndex++;
         }
-        dumpf(level, "}");
     }
     
+    ss << ")";
+    
     if (block) {
-        dumpf(level, "block: {");
-        block->dump(compiler, level + 1);
-        dumpf(level, "}");
+        ss << " ";
+        block->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
     }
 }
 

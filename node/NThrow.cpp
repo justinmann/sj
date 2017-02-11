@@ -41,6 +41,6 @@ shared_ptr<ReturnValue> NThrow::compileImpl(Compiler* compiler, CResult& result,
     return nullptr;
 }
 
-void NThrow::dump(Compiler* compiler, int level) const {
-    dumpf(level, "throw: ''");
+void NThrow::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    ss << "throw";
 }

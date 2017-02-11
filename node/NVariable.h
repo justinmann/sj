@@ -19,7 +19,11 @@ public:
     NVariableBase(NodeType nodeType, CLoc loc) : NBase(nodeType, loc) { }
     virtual shared_ptr<CVar> getVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar);
     virtual int setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar);
-
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level = 0) {
+        auto var = getVar(compiler, result, thisFunction, thisVar, nullptr);
+        var->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+    }
+    
 protected:
     virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
         return getVarImpl(compiler, result, thisFunction, thisVar, nullptr);
@@ -55,6 +59,7 @@ public:
     virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     virtual Value* getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     string fullName();
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level);
     
     shared_ptr<CFunction> parentFunction;
     shared_ptr<CVar> childVar;
@@ -65,7 +70,6 @@ public:
     string name;
     
     NVariable(CLoc loc, const char* name);
-    virtual void dump(Compiler* compiler, int level) const;
     
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) { }

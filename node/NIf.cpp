@@ -107,6 +107,21 @@ string CIfElseVar::fullName() {
     return "";
 }
 
+void CIfElseVar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    ss << "if ";
+    condition->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+
+    if (ifBlock) {
+        ss << " ";
+        ifBlock->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+    }
+    
+    if (elseBlock) {
+        ss << " else ";
+        elseBlock->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+    }
+}
+
 void NIf::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     condition->define(compiler, result, thisFunction);
@@ -153,25 +168,4 @@ int NIf::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunctio
     return count;
 }
 
-void NIf::dump(Compiler* compiler, int level) const {
-    dumpf(level, "type: 'NIf'");
-    
-    if (condition) {
-        dumpf(level, "condition: {");
-        condition->dump(compiler, level + 1);
-        dumpf(level, "}");
-    }
-
-    if (ifBlock) {
-        dumpf(level, "if: {");
-        ifBlock->dump(compiler, level + 1);
-        dumpf(level, "}");
-    }
-
-    if (elseBlock) {
-        dumpf(level, "else: {");
-        elseBlock->dump(compiler, level + 1);
-        dumpf(level, "}");
-    }
-}
 

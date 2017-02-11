@@ -19,7 +19,7 @@ public:
     shared_ptr<NBase> body;
     
     NFor(CLoc loc, const char* varName, shared_ptr<NBase> start, shared_ptr<NBase> end, shared_ptr<NBase> body) : varName(varName), start(start), end(end), body(body), NBase(NodeType_For, loc) { }
-    virtual void dump(Compiler* compiler, int level) const;
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level);
 
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction);

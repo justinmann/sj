@@ -81,15 +81,26 @@ shared_ptr<ReturnValue> NMath::compileImpl(Compiler* compiler, CResult& result, 
     return NULL;
 }
 
-void NMath::dump(Compiler* compiler, int level) const {
-    dumpf(level, "type: 'NMath'");
-    dumpf(level, "op: %d", op);
+void NMath::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    leftSide->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
     
-    dumpf(level, "leftSide: {");
-    leftSide->dump(compiler, level + 1);
-    dumpf(level, "}");
+    switch (op) {
+        case NMathOp::Add:
+            ss << " + ";
+            break;
+        case NMathOp::Sub:
+            ss << " - ";
+            break;
+        case NMathOp::Mul:
+            ss << " * ";
+            break;
+        case NMathOp::Div:
+            ss << " / ";
+            break;
+        case NMathOp::Mod:
+            ss << " %% ";
+            break;
+    }
     
-    dumpf(level, "rightSide: {");
-    rightSide->dump(compiler, level + 1);
-    dumpf(level, "}");
+    rightSide->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
 }

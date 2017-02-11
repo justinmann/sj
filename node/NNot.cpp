@@ -38,10 +38,7 @@ shared_ptr<ReturnValue> NNot::compileImpl(Compiler* compiler, CResult& result, s
     return make_shared<ReturnValue>(builder->CreateNot(v->value));
 }
 
-void NNot::dump(Compiler* compiler, int level) const {
-    dumpf(level, "type: 'NNot'");
-    
-    dumpf(level, "node: {");
-    node->dump(compiler, level + 1);
-    dumpf(level, "}");
+void NNot::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    ss << "!";
+    node->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
 }

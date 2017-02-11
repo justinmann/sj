@@ -22,7 +22,7 @@ public:
     shared_ptr<CType> itemType;
     
     NArray(CLoc loc, shared_ptr<NodeList> elements) : elements(elements), isHeapVar(false), NBase(NodeType_Array, loc) { }
-    virtual void dump(Compiler* compiler, int level) const;
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level);
 
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction);
@@ -41,7 +41,7 @@ public:
     shared_ptr<NArray> array;
     
     NList(CLoc loc, shared_ptr<NodeList> elements);
-    virtual void dump(Compiler* compiler, int level) const;
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level);
 
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction);

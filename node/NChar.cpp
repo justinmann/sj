@@ -11,6 +11,6 @@ shared_ptr<ReturnValue> NChar::compileImpl(Compiler* compiler, CResult& result, 
     return make_shared<ReturnValue>(ConstantInt::get(compiler->context, APInt(8, value)));
 }
 
-void NChar::dump(Compiler* compiler, int level) const {
-    dumpf(level, "value: %c", value);
+void NChar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    ss << "'" << value << "'";
 }

@@ -29,6 +29,6 @@ shared_ptr<ReturnValue> NInteger::compileImpl(Compiler* compiler, CResult& resul
     }
 }
 
-void NInteger::dump(Compiler* compiler, int level) const {
-    dumpf(level, "value: %s", strValue.c_str());
+void NInteger::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    ss << strValue;
 }

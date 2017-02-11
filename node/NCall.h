@@ -18,11 +18,13 @@ public:
     static shared_ptr<CCallVar> create(Compiler* compiler, CResult& result, CLoc loc_, const string& name_, shared_ptr<NodeList> arguments_, shared_ptr<CFunction> thisFunction_, weak_ptr<CVar> dotVar_, shared_ptr<CFunction> callee_);
     shared_ptr<CVar> getThisVar(Compiler* compiler, CResult& result);
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
+    bool getParameters(Compiler* compiler, CResult& result, vector<shared_ptr<NBase>>& parameters);
     virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     virtual Value* getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     string fullName();
     virtual bool getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
     virtual int setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level);
 
     CLoc loc;
     shared_ptr<NodeList> arguments;
@@ -43,7 +45,6 @@ public:
     shared_ptr<NodeList> arguments;
     
     NCall(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments);
-    virtual void dump(Compiler* compiler, int level) const;
 
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction);

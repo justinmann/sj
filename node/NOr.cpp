@@ -55,14 +55,8 @@ shared_ptr<ReturnValue> NOr::compileImpl(Compiler* compiler, CResult& result, sh
     return make_shared<ReturnValue>(builder->CreateOr(l->value, r->value));
 }
 
-void NOr::dump(Compiler* compiler, int level) const {
-    dumpf(level, "type: 'NOr'");
-    
-    dumpf(level, "left: {");
-    left->dump(compiler, level + 1);
-    dumpf(level, "}");
-
-    dumpf(level, "right: {");
-    right->dump(compiler, level + 1);
-    dumpf(level, "}");
+void NOr::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    left->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+    ss << " || ";
+    right->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
 }

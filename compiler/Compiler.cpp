@@ -270,7 +270,7 @@ class NMatchReturn : public NBase {
 public:
     const shared_ptr<NBase> inner;
     NMatchReturn(const CLoc loc, shared_ptr<NBase> inner) : inner(inner), NBase(NodeType_Variable, loc) { };
-    virtual void dump(Compiler* compiler, int level) const { }
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) { }
 
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) { }
@@ -295,9 +295,6 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     InitializeModuleAndPassManager();
     
     auto compilerResult = compile("repl", code);
-#ifdef NODE_OUTPUT
-    compilerResult->block->dump(this, 0);
-#endif
     // Early exit if compile fails
     if (compilerResult->errors.size() > 0)
         return compilerResult;
@@ -348,6 +345,16 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     // Early exit if compile fails
     if (compilerResult->errors.size() > 0)
         return compilerResult;
+
+#ifdef NODE_OUTPUT
+    map<shared_ptr<CFunction>, string> functionDumps;
+    stringstream ss;
+    compilerResult->block->dump(this, *compilerResult, globalFunction, globalVar, functionDumps, ss, 0);
+    for (auto it : functionDumps) {
+        printf("%s\n\n", it.second.c_str());
+    }
+    printf("global %s\n", ss.str().c_str());
+#endif
 
     state = CompilerState::Compile;
     anonFunction->compile(this, *compilerResult, currentFunction, currentVar, nullptr, nullptr, nullptr);

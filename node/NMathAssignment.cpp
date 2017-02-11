@@ -106,13 +106,25 @@ shared_ptr<ReturnValue> NMathAssignment::compileImpl(Compiler* compiler, CResult
     return make_shared<ReturnValue>(resultValue);
 }
 
-void NMathAssignment::dump(Compiler* compiler, int level) const {
-    dumpf(level, "type: 'NMathAssignment'");
-    dumpf(level, "op: %d", op);
+void NMathAssignment::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    var->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+    
+    switch (op) {
+        case NMAO_Add:
+            ss << " += ";
+            break;
+        case NMAO_Sub:
+            ss << " -= ";
+            break;
+        case NMAO_Inc:
+            ss << "++";
+            break;
+        case NMAO_Dec:
+            ss << "--";
+            break;
+    }
     
     if (rightSide) {
-        dumpf(level, "rightSide: {");
-        rightSide->dump(compiler, level + 1);
-        dumpf(level, "}");
+        rightSide->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
     }
 }

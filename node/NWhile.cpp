@@ -68,19 +68,15 @@ shared_ptr<ReturnValue> NWhile::compileImpl(Compiler* compiler, CResult& result,
     return nullptr;
 }
 
-void NWhile::dump(Compiler* compiler, int level) const {
-    dumpf(level, "type: 'NWhile'");
+void NWhile::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    ss << "while ";
 
     if (cond) {
-        dumpf(level, "cond: {");
-        cond->dump(compiler, level + 1);
-        dumpf(level, "}");
+        cond->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
     }
 
     if (body) {
-        dumpf(level, "body: {");
-        body->dump(compiler, level + 1);
-        dumpf(level, "}");
+        body->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
     }
 }
 

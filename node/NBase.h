@@ -9,14 +9,8 @@
 #ifndef NBase_h
 #define NBase_h
 
-template< typename... Args >
-void dumpf(int level, const char* format, Args... args ) {
-    for (int i = 0; i < level; i++) {
-        printf("  ");
-    }
-    printf(format, args...);
-    printf("\n");
-}
+void dumpf(stringstream& ss, int level);
+const char* alloc_mode(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, shared_ptr<CVar> var);
 
 #define bool_to_str(x) ((x) ? "true" : "false")
 
@@ -65,7 +59,7 @@ public:
     shared_ptr<CType> getType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar);
     int setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar);
     shared_ptr<ReturnValue> compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB);
-    virtual void dump(Compiler* compiler, int level = 0) const = 0;
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level = 0) = 0;
     
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) = 0;

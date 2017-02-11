@@ -40,7 +40,8 @@ public:
     virtual bool compileBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Function* function);
     virtual Function* compileDestructorDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction);
     virtual void compileDestructorBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Function* function);
-    virtual void dump(Compiler* compiler, int level) const;
+    virtual void dumpBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level);
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) { }
     
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parentFunction);

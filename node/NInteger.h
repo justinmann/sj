@@ -16,7 +16,7 @@ public:
     
     NInteger(CLoc loc, const char* value) : strValue(value), NBase(NodeType_Integer, loc) { }
     NInteger(CLoc loc, const int64_t value) : value(value), NBase(NodeType_Integer, loc) { }
-    virtual void dump(Compiler* compiler, int level) const;
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level);
 
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) { }

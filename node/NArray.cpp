@@ -95,7 +95,7 @@ shared_ptr<ReturnValue> NArray::compileImpl(Compiler* compiler, CResult& result,
     return make_shared<ReturnValue>(functionVar, true, RVT_HEAP, arrayValue);
 }
 
-void NArray::dump(Compiler* compiler, int level) const {
+void NArray::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
     // dumpf(level, "value: %s", value.c_str());
 }
 
@@ -128,7 +128,7 @@ shared_ptr<ReturnValue> NList::compileImpl(Compiler* compiler, CResult& result, 
     return createCall->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
 }
 
-void NList::dump(Compiler* compiler, int level) const {
+void NList::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
     // dumpf(level, "value: %s", value.c_str());
 }
 

@@ -11,6 +11,6 @@ shared_ptr<ReturnValue> NBool::compileImpl(Compiler* compiler, CResult& result, 
     return make_shared<ReturnValue>(ConstantInt::get(compiler->context, APInt(1, value)));
 }
 
-void NBool::dump(Compiler* compiler, int level) const {
-    dumpf(level, "value: %s", bool_to_str(value));
+void NBool::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    ss << bool_to_str(value);
 }

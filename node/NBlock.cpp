@@ -46,15 +46,17 @@ shared_ptr<ReturnValue> NBlock::compileImpl(Compiler* compiler, CResult& result,
     return last;
 }
 
-void NBlock::dump(Compiler* compiler, int level) const {
-    dumpf(level, "type: 'NBlock'");
-    if (statements.size() > 0) {
-        dumpf(level, "statements: [");
-        dumpf(level + 1, "{");
-        for (auto it : statements) {
-            it->dump(compiler, level + 2);
+void NBlock::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    ss << "{\n";
+    for (auto it : statements) {
+        stringstream line;
+        it->dump(compiler, result, thisFunction, thisVar, functions, line, level + 1);
+        auto t = line.str();
+        if (t.size() > 0) {
+            dumpf(ss, level + 1);
+            ss << t << "\n";
         }
-        dumpf(level + 1, "}");
-        dumpf(level, "]");
     }
+    dumpf(ss, level);
+    ss << "}";
 }

@@ -21,7 +21,6 @@ shared_ptr<ReturnValue> NInclude::compileImpl(Compiler* compiler, CResult& resul
     return nullptr;
 }
 
-void NInclude::dump(Compiler* compiler, int level) const {
-    dumpf(level, "type: 'NThis'");
+void NInclude::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
 }
 

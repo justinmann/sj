@@ -56,7 +56,7 @@ public:
     bool getHasParent(Compiler* compiler, CResult& result);
     Value* getArgumentPointer(Compiler* compiler, CResult& result, Value* thisValue, int index, IRBuilder<>* builder);
     Value* getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
-    string fullName();
+    string fullName(bool includeTemplateTypes);
     shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, const CLoc& loc, shared_ptr<CTypeName> typeName);
     shared_ptr<ReturnValue> getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB);
     

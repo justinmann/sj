@@ -166,23 +166,16 @@ shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& re
     return make_shared<ReturnValue>(value->valueFunction, false, value->type, value->value);
 }
 
-void NAssignment::dump(Compiler* compiler, int level) const {
-    dumpf(level, "type: 'NAssignment'");
-    dumpf(level, "name: %s", name.c_str());
-    if (typeName) {
-        dumpf(level, "typeName: %s", typeName->name.c_str());
+void NAssignment::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+    auto type = getType(compiler, result, thisFunction, thisVar);
+    ss << name;
+    ss << "'" << (type ? type->name.c_str() : "unknown");
+    ss << (isMutable ? " = " : " : ");
+    if (rightSide) {
+        rightSide->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+    } else {
+        ss << "undefined";
     }
-    dumpf(level, "isMutable: %s", bool_to_str(isMutable));
-    
-    if (nfunction) {
-        dumpf(level, "function: {");
-        nfunction->dump(compiler, level + 1);
-        dumpf(level, "}");
-    }
-    
-    dumpf(level, "rightSide: {");
-    rightSide->dump(compiler, level + 1);
-    dumpf(level, "}");
 }
 
 shared_ptr<NAssignment> NAssignment::shared_from_this() {
