@@ -7,6 +7,7 @@ public:
         mode = CVarType::Var_Local;
         isMutable = false;
         parent = parent_;
+        isHeapVar = false;
     }
     
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result) {
@@ -24,11 +25,14 @@ public:
     }
     
     virtual bool getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
-        return false;
+        return isHeapVar;
     }
     
     virtual int setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
-        assert(false);
+        if (!isHeapVar) {
+            isHeapVar = true;
+            return 1;
+        }
         return 0;
     }
     
@@ -37,6 +41,7 @@ public:
     }
 
     Value* value;
+    bool isHeapVar;
 };
 
 void NFor::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {

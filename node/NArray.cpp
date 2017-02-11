@@ -176,7 +176,9 @@ shared_ptr<ReturnValue> NArraySetFunction::call(Compiler* compiler, CResult& res
 
     auto itemValue = parameters[1]->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     auto itemVar = parameters[1]->getVar(compiler, result, thisFunction, thisVar);
-    assert(itemVar == nullptr || itemVar->getHeapVar(compiler, result, thisVar) == parentHeapVar);
+    if (parentHeapVar) {
+        assert(itemVar == nullptr || itemVar->getHeapVar(compiler, result, thisVar));
+    }
     itemValue->retainIfNeeded(compiler, result, builder);
     
     vector<Value*> v;

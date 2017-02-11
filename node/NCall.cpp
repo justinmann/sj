@@ -121,9 +121,9 @@ bool CCallVar::getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> 
     }
     
     isInGetHeapVar = true;
-    auto returnVar = thisFunction->getReturnVar(compiler, result, thisVar);
+    auto returnVar = callee->getReturnVar(compiler, result, calleeVar);
     if (returnVar) {
-        isHeapVar = returnVar->getHeapVar(compiler, result, thisVar);
+        isHeapVar = returnVar->getHeapVar(compiler, result, calleeVar);
     }
     isInGetHeapVar = false;
     return isHeapVar;
@@ -132,9 +132,9 @@ bool CCallVar::getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> 
 int CCallVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
     if (!isHeapVar) {
         isHeapVar = true;
-        auto returnVar = callee->getReturnVar(compiler, result, thisVar);
+        auto returnVar = callee->getReturnVar(compiler, result, calleeVar);
         if (returnVar) {
-            return returnVar->setHeapVar(compiler, result, thisVar);
+            return returnVar->setHeapVar(compiler, result, calleeVar);
         }
     }
     return 0;
@@ -148,7 +148,7 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> t
         functions[callee] = temp.str();
     }
     
-    auto returnVar = thisFunction->getReturnVar(compiler, result, thisVar);
+    auto returnVar = callee->getReturnVar(compiler, result, calleeVar);
     if (returnVar) {
         ss << alloc_mode(compiler, result, thisVar, returnVar);
     }
@@ -304,20 +304,37 @@ int NCall::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunct
         return 0;
     }
     
+    vector<shared_ptr<NBase>> parameters(callee->node->assignments.size());
+    if (!_callVar->getParameters(compiler, result, parameters)) {
+        return 0;
+    }
+    
+    auto calleeVar = _callVar->getThisVar(compiler, result);
     auto count = 0;
     auto index = 0;
-    for (auto it : *arguments) {
+    for (auto argVar : parameters) {
         auto parameterVar = callee->thisVars[index];
+        
         if (isHeapVar) {
             parameterVar->setHeapVar(compiler, result, thisVar);
         }
+        
+        auto isDefaultAssignment = argVar == callee->node->assignments[index]->rightSide;
         auto parameterHeapVar = parameterVar->getHeapVar(compiler, result, thisVar);
-        if (it->nodeType == NodeType_Assignment) {
-            auto parameterAssignment = static_pointer_cast<NAssignment>(it);
+        if (argVar->nodeType == NodeType_Assignment) {
+            auto parameterAssignment = static_pointer_cast<NAssignment>(argVar);
             assert(parameterAssignment->inFunctionDeclaration);
-            count += parameterAssignment->setHeapVar(compiler, result, thisFunction, thisVar, parameterHeapVar);
+            if (isDefaultAssignment) {
+                count += parameterAssignment->setHeapVar(compiler, result, callee, calleeVar, parameterHeapVar);
+            } else {
+                count += parameterAssignment->setHeapVar(compiler, result, thisFunction, thisVar, parameterHeapVar);
+            }
         } else {
-            count += it->setHeapVar(compiler, result, thisFunction, thisVar, parameterHeapVar);
+            if (isDefaultAssignment) {
+                count += argVar->setHeapVar(compiler, result, callee, calleeVar, parameterHeapVar);
+            } else {
+                count += argVar->setHeapVar(compiler, result, thisFunction, thisVar, parameterHeapVar);
+            }
         }
         index++;
     }

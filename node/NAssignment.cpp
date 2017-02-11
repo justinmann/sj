@@ -103,15 +103,26 @@ shared_ptr<CType> NAssignment::getTypeImpl(Compiler* compiler, CResult& result, 
 }
 
 int NAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
+    auto count = 0;
+    
     if (_assignVar != nullptr && _assignVar->mode != Var_Local) {
         // TODO: does not need to be a heap var if parent is a local var
         isHeapVar = true;
     }
     
     if (rightSide) {
-        return rightSide->setHeapVar(compiler, result, thisFunction, thisVar, isHeapVar);
+        count += rightSide->setHeapVar(compiler, result, thisFunction, thisVar, isHeapVar);
+        
+        // Check if right side is heap, if so the var being assigned must also be heap
+        if (_assignVar) {
+            auto rightVar = rightSide->getVar(compiler, result, thisFunction, thisVar);
+            if (rightVar && rightVar->getHeapVar(compiler, result, thisVar)) {
+                count += _assignVar->setHeapVar(compiler, result, thisVar);
+            }
+        }
     }
-    return 0;
+    
+    return count;
 }
 
 shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
