@@ -249,29 +249,6 @@ Function* NFunction::compileDefinition(Compiler* compiler, CResult& result, shar
         function->args().begin()->setName("this");
         function->setPersonalityFn(compiler->exception->getPersonality());
         
-#ifdef DWARF_ENABLED
-        SmallVector<Metadata *, 8> EltTys;
-        for (auto &argType : argTypes) {
-            EltTys.push_back(compiler->getDIType(argType));
-        }
-        auto ditypes = compiler->DBuilder->createSubroutineType(compiler->DBuilder->getOrCreateTypeArray(EltTys));
-        
-        // Create a subprogram DIE for this function.
-        DIFile *Unit = compiler->DBuilder->createFile(compiler->TheCU->getFilename(), compiler->TheCU->getDirectory());
-        DIScope *FContext = Unit;
-        unsigned LineNo = node->loc.line;
-        unsigned ScopeLine = LineNo;
-        DISubprogram *SP = compiler->DBuilder->createFunction(FContext, node->name.c_str(), StringRef(), Unit, LineNo, ditypes, false /* internal linkage */, true /* definition */, ScopeLine, DINode::FlagPrototyped, false);
-        func->setSubprogram(SP);
-        
-        // Push the current scope.
-        compiler->LexicalBlocks.push_back(SP);
-        
-        // Unset the location for the prologue emission (leading instructions with no
-        // location in a function are considered part of the prologue and the debugger
-        // will run past them when breaking on a function)
-        compiler->emitLocation(nullptr);
-#endif
         return function;
     }
 }
@@ -293,6 +270,37 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
     shared_ptr<CVar> returnVar = nullptr;
     auto returnType = block->getType(compiler, result, thisFunction, thisVar);
     auto returnFunction = returnType->parent.expired() ? nullptr : returnType->parent.lock();
+    thisArgument = (Argument*)function->args().begin();
+
+#ifdef DWARF_ENABLED
+    SmallVector<Metadata *, 8> EltTys;
+    EltTys.push_back(returnType->getDIType(compiler, result));
+    EltTys.push_back(thisFunction->getThisType(compiler, result)->getDIType(compiler, result));
+    auto ditypes = compiler->DBuilder->createSubroutineType(compiler->DBuilder->getOrCreateTypeArray(EltTys));
+    
+    // Create a subprogram DIE for this function.
+    DIFile *Unit = compiler->DBuilder->createFile(compiler->TheCU->getFilename(), compiler->TheCU->getDirectory());
+    DIScope *FContext = Unit;
+    unsigned LineNo = loc.line;
+    unsigned ScopeLine = LineNo;
+    DISubprogram *SP = compiler->DBuilder->createFunction(FContext, name.c_str(), StringRef(), Unit, LineNo, ditypes, false /* internal linkage */, true /* definition */, ScopeLine, DINode::FlagPrototyped, false);
+    function->setSubprogram(SP);
+    
+    // Push the current scope.
+    compiler->LexicalBlocks.push_back(SP);
+    
+    // Unset the location for the prologue emission (leading instructions with no
+    // location in a function are considered part of the prologue and the debugger
+    // will run past them when breaking on a function)
+    compiler->emitLocation(&newBuilder, nullptr);
+
+    // Create a debug descriptor for the variable.
+    DILocalVariable *D = compiler->DBuilder->createParameterVariable(SP, "this", 1, Unit, LineNo, thisFunction->getThisType(compiler, result)->getDIType(compiler, result), true);
+    
+    compiler->DBuilder->insertDeclare(thisArgument, D, compiler->DBuilder->createExpression(),
+                                      DebugLoc::get(LineNo, 0, SP),
+                                      newBuilder.GetInsertBlock());
+#endif
     
     compiler->callPushFunction(&newBuilder, name);
     
@@ -301,7 +309,6 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
         catchBB = BasicBlock::Create(compiler->context, "catch", function);
     }
     
-    thisArgument = (Argument*)function->args().begin();
     returnVar = block->getVar(compiler, result, thisFunction, thisVar);
     returnValue = block->compile(compiler, result, thisFunction, thisVar, thisArgument, &newBuilder, catchBB);
 
@@ -392,9 +399,14 @@ error:
         function->getBasicBlockList().push_back(catchBB);
     }
     
+#ifdef DWARF_ENABLED
+    compiler->LexicalBlocks.pop_back();
+#endif
+    
     // Validate the generated code, checking for consistency.
     if (result.errors.size() == 0 && verifyFunction(*function)) {
-        // compiler->module->dump();
+        compiler->module->dump();
+        printf("---------\n");
         function->dump();
         auto output = new raw_os_ostream(std::cout);
         verifyFunction(*function, output);
@@ -436,29 +448,6 @@ Function* NFunction::compileDestructorDefinition(Compiler* compiler, CResult& re
     auto function = Function::Create(functionType, type == FT_Public ? Function::ExternalLinkage : Function::PrivateLinkage, strprintf("%s_destructor", name.c_str()).c_str(), compiler->module.get());
     function->args().begin()->setName("this");
     
-#ifdef DWARF_ENABLED
-    SmallVector<Metadata *, 8> EltTys;
-    for (auto &argType : argTypes) {
-        EltTys.push_back(compiler->getDIType(argType));
-    }
-    auto ditypes = compiler->DBuilder->createSubroutineType(compiler->DBuilder->getOrCreateTypeArray(EltTys));
-    
-    // Create a subprogram DIE for this function.
-    DIFile *Unit = compiler->DBuilder->createFile(compiler->TheCU->getFilename(), compiler->TheCU->getDirectory());
-    DIScope *FContext = Unit;
-    unsigned LineNo = node->loc.line;
-    unsigned ScopeLine = LineNo;
-    DISubprogram *SP = compiler->DBuilder->createFunction(FContext, node->name.c_str(), StringRef(), Unit, LineNo, ditypes, false /* internal linkage */, true /* definition */, ScopeLine, DINode::FlagPrototyped, false);
-    func->setSubprogram(SP);
-    
-    // Push the current scope.
-    compiler->LexicalBlocks.push_back(SP);
-    
-    // Unset the location for the prologue emission (leading instructions with no
-    // location in a function are considered part of the prologue and the debugger
-    // will run past them when breaking on a function)
-    compiler->emitLocation(nullptr);
-#endif
     return function;
 }
 
@@ -470,6 +459,30 @@ void NFunction::compileDestructorBody(Compiler* compiler, CResult& result, share
     // Create a new basic block to start insertion into.
     auto basicBlock = BasicBlock::Create(compiler->context, "entry", function);
     IRBuilder<> newBuilder(basicBlock);
+    
+#ifdef DWARF_ENABLED
+    SmallVector<Metadata *, 8> EltTys;
+    EltTys.push_back(thisFunction->getThisType(compiler, result)->getDIType(compiler, result));
+    auto ditypes = compiler->DBuilder->createSubroutineType(compiler->DBuilder->getOrCreateTypeArray(EltTys));
+    
+    // Create a subprogram DIE for this function.
+    DIFile *Unit = compiler->DBuilder->createFile(compiler->TheCU->getFilename(), compiler->TheCU->getDirectory());
+    DIScope *FContext = Unit;
+    unsigned LineNo = loc.line;
+    unsigned ScopeLine = LineNo;
+    DISubprogram *SP = compiler->DBuilder->createFunction(FContext, name.c_str(), StringRef(), Unit, LineNo, ditypes, false /* internal linkage */, true /* definition */, ScopeLine, DINode::FlagPrototyped, false);
+    function->setSubprogram(SP);
+    
+    // Push the current scope.
+    compiler->LexicalBlocks.push_back(SP);
+    
+    // Unset the location for the prologue emission (leading instructions with no
+    // location in a function are considered part of the prologue and the debugger
+    // will run past them when breaking on a function)
+    compiler->emitLocation(&newBuilder, nullptr);
+#endif
+
+    
     shared_ptr<ReturnValue> returnValue = nullptr;
     Argument* thisArgument = (Argument*)function->args().begin();
     

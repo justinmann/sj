@@ -88,7 +88,7 @@ int NFor::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFuncti
 
 shared_ptr<ReturnValue> NFor::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(this);
+    compiler->emitLocation(builder, this);
     
     // Emit the start code first, without 'variable' in scope.
     auto startValue = start->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);

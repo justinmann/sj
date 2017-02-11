@@ -21,6 +21,7 @@
 // #define SYMBOL_OUTPUT
 // #define EXCEPTION_OUTPUT
 // #define DEBUG_CALLSTACK
+// #define DEBUG_ALLOC
 
 using namespace llvm;
 using namespace std;
@@ -175,7 +176,7 @@ public:
 
     shared_ptr<CResult> run(const string& code);
     
-    void emitLocation(const NBase *node);
+    void emitLocation(IRBuilder<>* builder, const NBase *node);
     shared_ptr<CType> getType(const string& name) const;
     void includeFile(CResult& result, const string& fileName);
     Function* getAllocFunction();

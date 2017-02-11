@@ -168,13 +168,6 @@ Compiler::Compiler() {
     InitializeNativeTargetAsmParser();
     
     TheJIT = llvm::make_unique<KaleidoscopeJIT>();
-    
-    // Initialize value types
-    typeInt = make_shared<CType>("int", Type::getInt64Ty(context), ConstantInt::get(context, APInt(64, 0)));
-    typeBool = make_shared<CType>("bool", Type::getInt1Ty(context), ConstantInt::get(context, APInt(1, 0)));
-    typeFloat = make_shared<CType>("float", Type::getDoubleTy(context), ConstantFP::get(context, APFloat(0.0)));
-    typeChar = make_shared<CType>("char", Type::getInt8Ty(context), ConstantInt::get(context, APInt(8, 0)));
-    typeVoid = make_shared<CType>("void", Type::getVoidTy(context), nullptr);
 }
 
 Compiler::~Compiler() {
@@ -239,12 +232,21 @@ void Compiler::InitializeModuleAndPassManager() {
     // Create the compile unit for the module.
     // Currently down as "fib.ks" as a filename since we're redirecting stdin
     // but we'd like actual source locations.
-    TheCU = DBuilder->createCompileUnit(dwarf::DW_LANG_C, "fib.ks", ".", "Kaleidoscope Compiler", 0, "", 0);
+    TheCU = DBuilder->createCompileUnit(dwarf::DW_LANG_C, "repl.sj", ".", "SJ Compiler", 0, "", 0);
 
-    ditypeInt = DBuilder->createBasicType("int", 64, 64, dwarf::DW_ATE_signed);
-    ditypeBool = DBuilder->createBasicType("bool", 1, 64, dwarf::DW_ATE_boolean);
-    ditypeFloat = DBuilder->createBasicType("double", 64, 64, dwarf::DW_ATE_float);
-    ditypeVoid = nullptr;
+    // Initialize value types
+    typeInt = make_shared<CType>("int", Type::getInt64Ty(context), DBuilder->createBasicType("int", 64, 64, dwarf::DW_ATE_signed), ConstantInt::get(context, APInt(64, 0)));
+    typeBool = make_shared<CType>("bool", Type::getInt1Ty(context), DBuilder->createBasicType("bool", 1, 64, dwarf::DW_ATE_boolean), ConstantInt::get(context, APInt(1, 0)));
+    typeFloat = make_shared<CType>("float", Type::getDoubleTy(context), DBuilder->createBasicType("double", 64, 64, dwarf::DW_ATE_float), ConstantFP::get(context, APFloat(0.0)));
+    typeChar = make_shared<CType>("char", Type::getInt8Ty(context), DBuilder->createBasicType("char", 8, 64, dwarf::DW_ATE_UTF), ConstantInt::get(context, APInt(8, 0)));
+    typeVoid = make_shared<CType>("void", Type::getVoidTy(context), nullptr, nullptr);
+#else
+    // Initialize value types
+    typeInt = make_shared<CType>("int", Type::getInt64Ty(context), ConstantInt::get(context, APInt(64, 0)));
+    typeBool = make_shared<CType>("bool", Type::getInt1Ty(context), ConstantInt::get(context, APInt(1, 0)));
+    typeFloat = make_shared<CType>("float", Type::getDoubleTy(context), ConstantFP::get(context, APFloat(0.0)));
+    typeChar = make_shared<CType>("char", Type::getInt8Ty(context), ConstantInt::get(context, APInt(8, 0)));
+    typeVoid = make_shared<CType>("void", Type::getVoidTy(context), nullptr);
 #endif
 }
 
@@ -503,7 +505,7 @@ shared_ptr<CType> Compiler::getType(const string& name) const {
     }
 }
 
-void Compiler::emitLocation(const NBase *node) {
+void Compiler::emitLocation(IRBuilder<>* builder, const NBase *node) {
 #ifdef DWARF_ENABLED
     if (!node)
         return builder->SetCurrentDebugLocation(DebugLoc());

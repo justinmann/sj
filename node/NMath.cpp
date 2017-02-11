@@ -26,7 +26,7 @@ int NMath::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunct
 
 shared_ptr<ReturnValue> NMath::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(this);
+    compiler->emitLocation(builder, this);
     
     auto L = leftSide->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     auto R = rightSide->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);

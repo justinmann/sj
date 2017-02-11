@@ -26,7 +26,7 @@ int NCast::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunct
 
 shared_ptr<ReturnValue> NCast::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(this);
+    compiler->emitLocation(builder, this);
     
     auto v = node->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     if (!v)

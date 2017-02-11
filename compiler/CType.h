@@ -17,10 +17,15 @@ class CVar;
 
 class CType {
 public:
+#ifdef DWARF_ENABLED
+    CType(const char* name, Type* llvmType, DIType* diType, Value* value);
+#else
     CType(const char* name, Type* llvmType, Value* value);
+#endif
+
     CType(const char* name, weak_ptr<CFunction> parent);
 #ifdef DWARF_ENABLED
-    DIType* getDIType();
+    DIType* getDIType(Compiler* compiler, CResult& result);
 #endif
 
     string name;
@@ -33,6 +38,9 @@ private:
     Type* _llvmAllocType;
     Type* _llvmRefType;
     Value* _value;
+#ifdef DWARF_ENABLED
+    DIType* _diType;
+#endif
 };
 
 #endif /* CType_h */

@@ -7,7 +7,7 @@ shared_ptr<CType> NVoid::getTypeImpl(Compiler* compiler, CResult& result, shared
 
 shared_ptr<ReturnValue> NVoid::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(this);
+    compiler->emitLocation(builder, this);
     return nullptr;
 }
 

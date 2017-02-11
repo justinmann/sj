@@ -84,7 +84,7 @@ bool CCallVar::getParameters(Compiler* compiler, CResult& result, vector<shared_
 
 shared_ptr<ReturnValue> CCallVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
-    // compiler->emitLocation(call.get());
+    // compiler->emitLocation(builder, call.get());
     
     if (arguments->size() > callee->node->assignments.size()) {
         result.addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments->size(), callee->node->assignments.size());

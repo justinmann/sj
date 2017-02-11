@@ -39,7 +39,7 @@ int NMathAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_
 
 shared_ptr<ReturnValue> NMathAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(this);
+    compiler->emitLocation(builder, this);
     
     auto cvar = var->getVar(compiler, result, thisFunction, thisVar, nullptr);
     if (!cvar) {

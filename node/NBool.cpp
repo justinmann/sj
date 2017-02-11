@@ -7,7 +7,7 @@ shared_ptr<CType> NBool::getTypeImpl(Compiler* compiler, CResult& result, shared
 
 shared_ptr<ReturnValue> NBool::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(this);
+    compiler->emitLocation(builder, this);
     return make_shared<ReturnValue>(ConstantInt::get(compiler->context, APInt(1, value)));
 }
 

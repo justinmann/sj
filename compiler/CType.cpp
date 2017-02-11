@@ -8,11 +8,31 @@
 
 #include "Node.h"
 
+#ifdef DWARF_ENABLED
+CType::CType(const char* name, Type* llvmAllocType, DIType* diType, Value* value) : name(name), _llvmAllocType(llvmAllocType), _llvmRefType(llvmAllocType), _diType(diType), _value(value) {
+}
+#else
 CType::CType(const char* name, Type* llvmAllocType, Value* value) : name(name), _llvmAllocType(llvmAllocType), _llvmRefType(llvmAllocType), _value(value) {
 }
+#endif
 
 CType::CType(const char* name, weak_ptr<CFunction> parent) : name(name), parent(parent), _llvmAllocType(nullptr), _llvmRefType(nullptr), _value(nullptr) {
+#ifdef DWARF_ENABLED
+    _diType = nullptr;
+#endif
 }
+
+#ifdef DWARF_ENABLED
+DIType* CType::getDIType(Compiler* compiler, CResult& result) {
+    if (_diType) {
+        return _diType;
+    }
+    
+    _diType = compiler->DBuilder->createBasicType("int", 64, 64, dwarf::DW_ATE_signed);
+    // TODO: Actually create a debug type for structs
+    return _diType;
+}
+#endif
 
 Type* CType::llvmAllocType(Compiler* compiler, CResult& result) {
     if (!_llvmAllocType) {

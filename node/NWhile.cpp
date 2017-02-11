@@ -26,7 +26,7 @@ int NWhile::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunc
 
 shared_ptr<ReturnValue> NWhile::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(this);
+    compiler->emitLocation(builder, this);
     
     Function *TheFunction = builder->GetInsertBlock()->getParent();
     auto loopBB = BasicBlock::Create(compiler->context, "loop");

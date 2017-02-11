@@ -44,7 +44,7 @@ int NArray::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunc
 
 shared_ptr<ReturnValue> NArray::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(this);
+    compiler->emitLocation(builder, this);
     
     auto var = getVar(compiler, result, thisFunction, thisVar);
     auto functionVar = var->getCFunctionForValue(compiler, result);

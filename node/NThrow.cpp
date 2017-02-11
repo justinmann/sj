@@ -23,7 +23,7 @@ shared_ptr<ReturnValue> NThrow::compileImpl(Compiler* compiler, CResult& result,
     
     auto value = node->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     assert(value->value->getType()->isIntegerTy(64));
-    compiler->emitLocation(this);
+    compiler->emitLocation(builder, this);
     
     auto raiseException = compiler->exception->getRaiseException();
     auto args = ArrayRef<Value*>(value->value);

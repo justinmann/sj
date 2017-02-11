@@ -26,7 +26,7 @@ int NAnd::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFuncti
 
 shared_ptr<ReturnValue> NAnd::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(this);
+    compiler->emitLocation(builder, this);
     
     auto l = left->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     if (!l) {
