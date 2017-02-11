@@ -29,5 +29,5 @@ list!t(
 ) {
     this
 } destroy {
-    items.delete(space)
+    items.delete(count)
 }

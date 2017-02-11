@@ -251,6 +251,8 @@ shared_ptr<ReturnValue> NArrayDeleteFunction::call(Compiler* compiler, CResult& 
     if (itemFunction) {
         auto sizeValue = parameters[0]->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
         assert(sizeValue->type == RVT_SIMPLE);
+        
+        compiler->callDebug(builder, "array_delete_size", nullptr, sizeValue->value);
 
         // Delete items
         auto startValue = ConstantInt::get(compiler->context, APInt(64, 0));
@@ -259,7 +261,7 @@ shared_ptr<ReturnValue> NArrayDeleteFunction::call(Compiler* compiler, CResult& 
         auto loopBB = BasicBlock::Create(compiler->context, "loop");
         auto afterBB = BasicBlock::Create(compiler->context, "afterloop");
         
-        auto startCondition = builder->CreateICmpSLE(startValue, endValue);
+        auto startCondition = builder->CreateICmpSLT(startValue, endValue);
         builder->CreateCondBr(startCondition, loopBB, afterBB);
         
         // Make the new basic block for the loop header, inserting after current block.
@@ -274,6 +276,8 @@ shared_ptr<ReturnValue> NArrayDeleteFunction::call(Compiler* compiler, CResult& 
         auto indexValue = builder->CreatePHI(Type::getInt64Ty(compiler->context), 2);
         indexValue->addIncoming(startValue, preheaderBB);
         
+        compiler->callDebug(builder, "array_delete_item", nullptr, indexValue);
+
         vector<Value*> v;
         v.push_back(indexValue);
         auto itemPtr = builder->CreateGEP(parentValue->value, ArrayRef<llvm::Value *>(v));
@@ -289,7 +293,7 @@ shared_ptr<ReturnValue> NArrayDeleteFunction::call(Compiler* compiler, CResult& 
         Value *NextVar = builder->CreateAdd(indexValue, StepVal, "nextvar");
         
         // Convert condition to a bool by comparing equal to 0.0.
-        auto endCondition = builder->CreateICmpSLT(indexValue, endValue);
+        auto endCondition = builder->CreateICmpSLT(NextVar, endValue);
         
         // Create the "after loop" block and insert it.
         BasicBlock *loopEndBB = builder->GetInsertBlock();
@@ -306,7 +310,6 @@ shared_ptr<ReturnValue> NArrayDeleteFunction::call(Compiler* compiler, CResult& 
     }
     
     // Delete array
-    /* TODO:
     if (parentHeapVar) {
         auto freeFunc = compiler->getFreeFunction();
         
@@ -315,7 +318,7 @@ shared_ptr<ReturnValue> NArrayDeleteFunction::call(Compiler* compiler, CResult& 
         vector<Value*> allocArgs;
         allocArgs.push_back(arrayPtr);
         builder->CreateCall(freeFunc, allocArgs);
-    } */
+    }
     
     return nullptr;
 }
