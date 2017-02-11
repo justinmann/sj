@@ -283,7 +283,10 @@ int NCall::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunct
     auto index = 0;
     for (auto it : *arguments) {
         auto parameterVar = callee->thisVars[index];
-        auto parameterHeapVar = isHeapVar || parameterVar->getHeapVar(compiler, result, thisVar);
+        if (isHeapVar) {
+            parameterVar->setHeapVar(compiler, result, thisVar);
+        }
+        auto parameterHeapVar = parameterVar->getHeapVar(compiler, result, thisVar);
         if (it->nodeType == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
             assert(parameterAssignment->inFunctionDeclaration);
