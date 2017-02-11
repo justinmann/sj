@@ -211,20 +211,28 @@ shared_ptr<ReturnValue> NArrayGrowFunction::call(Compiler* compiler, CResult& re
     assert(parentHeapVar);
     
     auto itemType = callee->getVarType(compiler, result, CLoc::undefined, make_shared<CTypeName>("item"));
+    auto itemLLVMType = itemType->llvmRefType(compiler, result);
     auto itemFunction = itemType->parent.lock();
     
-    auto sizeValue = parameters[0]->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
-    assert(sizeValue->type == RVT_SIMPLE);
+    auto countValue = parameters[0]->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+    assert(countValue->type == RVT_SIMPLE);
+
+    vector<Value*> v;
+    v.push_back(ConstantInt::get(compiler->context, APInt(32, 1)));
+    auto nullPtr = ConstantPointerNull::get((PointerType*)itemLLVMType);
+    auto sizePtr = builder->CreateGEP(nullPtr, ArrayRef<llvm::Value *>(v));
+    auto itemSizeValue = builder->CreatePtrToInt(sizePtr, Type::getInt64Ty(compiler->context));
+    auto sizeValue = builder->CreateMul(itemSizeValue, countValue->value);
 
     auto arrayPtr = builder->CreateBitCast(parentValue->value, Type::getInt8PtrTy(compiler->context));
 
     vector<Value*> reallocArgs;
     reallocArgs.push_back(arrayPtr);
-    reallocArgs.push_back(sizeValue->value);
+    reallocArgs.push_back(sizeValue);
 
     auto realloc = compiler->getReallocFunction();
     auto returnPtr = builder->CreateCall(realloc, reallocArgs);
-    auto returnArray = builder->CreateBitCast(returnPtr, itemType->llvmRefType(compiler, result)->getPointerTo());
+    auto returnArray = builder->CreateBitCast(returnPtr, itemLLVMType->getPointerTo());
 
     auto arrayFunction = callee->parent.lock();
     return make_shared<ReturnValue>(returnArray);
