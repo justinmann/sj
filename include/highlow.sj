@@ -1,5 +1,7 @@
 include "common.sj"
 
+console.write("Shall we play\n")
+
 num : random.nextInt() % 10 + 1
 isCorrect = false
 guessCount = 0

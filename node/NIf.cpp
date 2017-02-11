@@ -111,7 +111,9 @@ string CIfElseVar::fullName() {
 bool CIfElseVar::getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
     if (ifBlock) {
         auto var = ifBlock->getVar(compiler, result, thisFunction, thisVar);
-        return var->getHeapVar(compiler, result, thisVar);
+        if (var) {
+            return var->getHeapVar(compiler, result, thisVar);
+        }
     }
     return false;
 }
