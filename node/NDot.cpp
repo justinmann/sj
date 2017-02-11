@@ -50,10 +50,10 @@ int CDotVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> th
     return rightVar->setHeapVar(compiler, result, leftVar);
 }
 
-void CDotVar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CDotVar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     stringstream temp;
-    leftVar->dump(compiler, result, thisFunction, thisVar, functions, temp, dotSS, level);
-    rightVar->dump(compiler, result, thisFunction, thisVar, functions, ss, temp, level);
+    leftVar->dump(compiler, result, thisFunction, thisVar, dotVar, functions, temp, dotSS, level);
+    rightVar->dump(compiler, result, thisFunction, thisVar, leftVar, functions, ss, temp, level);
 }
 
 void NDot::defineImpl(Compiler *compiler, CResult &result, shared_ptr<CFunctionDefinition> thisFunction) {

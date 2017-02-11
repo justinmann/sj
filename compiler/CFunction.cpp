@@ -98,6 +98,13 @@ shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result) {
 
     }
  
+    if (!parent.expired()) {
+        auto parentType = parent.lock()->getThisType(compiler, result);
+        if (parentType) {
+            hasParent = true;
+        }
+    }
+
     return thisType;
 }
 
@@ -109,13 +116,10 @@ Type* CFunction::getStructType(Compiler* compiler, CResult& result) {
 
         structMembers.push_back(Type::getInt64Ty(compiler->context));
         hasRefCount = true;
-
-        if (!parent.expired()) {
+        
+        if (hasParent) {
             auto parentType = parent.lock()->getThisType(compiler, result);
-            if (parentType) {
-                structMembers.push_back(parentType->llvmRefType(compiler, result));
-                hasParent = true;
-            }
+            structMembers.push_back(parentType->llvmRefType(compiler, result));
         }
         
         for (auto it : thisVars) {

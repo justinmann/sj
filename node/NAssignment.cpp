@@ -168,6 +168,9 @@ shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& re
 
 void NAssignment::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
     auto type = getType(compiler, result, thisFunction, thisVar);
+    if (_assignVar) {
+        ss << alloc_mode(compiler, result, thisVar, _assignVar);
+    }
     ss << name;
     ss << "'" << (type ? type->name.c_str() : "unknown");
     ss << (isMutable ? " = " : " : ");

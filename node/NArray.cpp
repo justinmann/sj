@@ -311,7 +311,7 @@ shared_ptr<ReturnValue> NArrayDeleteFunction::call(Compiler* compiler, CResult& 
 }
 
 shared_ptr<CType> NArrayCreateFunction::getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    return make_shared<CArrayType>("", thisFunction);
+    return make_shared<CArrayType>("array", thisFunction);
 }
 
 shared_ptr<CVar> NArrayCreateFunction::getReturnVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {

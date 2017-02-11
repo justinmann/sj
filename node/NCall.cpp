@@ -140,7 +140,7 @@ int CCallVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> t
     return 0;
 }
 
-void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     if (functions.find(callee) == functions.end()) {
         functions[callee] = "";
         stringstream temp;
@@ -164,15 +164,18 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> t
         return;
     }
     
-    if (parameters.size() > 0 || thisFunction->getHasParent(compiler, result)) {
+    if (parameters.size() > 0 || callee->getHasParent(compiler, result)) {
         ss << "\n";
         dumpf(ss, level + 1);
         
-        if (thisFunction->getHasParent(compiler, result)) {
-            ss << "parent:";
-            if (dotSS.gcount()) {
-                ss << dotSS.str();
+        if (callee->getHasParent(compiler, result)) {
+            ss << "parent: ";
+            auto t = dotSS.str();
+            if (t.size() > 0) {
+                ss << alloc_mode(compiler, result, thisVar, dotVar);
+                ss << t;
             } else {
+                ss << alloc_mode(compiler, result, thisVar, thisVar);
                 ss << "this";
             }
             

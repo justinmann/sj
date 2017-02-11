@@ -22,7 +22,7 @@ public:
     virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level = 0) {
         auto var = getVar(compiler, result, thisFunction, thisVar, nullptr);
         stringstream dotSS;
-        var->dump(compiler, result, thisFunction, thisVar, functions, ss, dotSS, level);
+        var->dump(compiler, result, thisFunction, thisVar, nullptr, functions, ss, dotSS, level);
     }
     
 protected:
@@ -60,7 +60,7 @@ public:
     virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     virtual Value* getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     string fullName();
-    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
     
     shared_ptr<CFunction> parentFunction;
     shared_ptr<CVar> childVar;
