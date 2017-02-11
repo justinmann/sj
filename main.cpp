@@ -759,21 +759,7 @@ void testHeap() {
 int main(int argc, char **argv) {
     shared_ptr<CResult> result;
     Compiler compiler;
-
-/*
-    result = compiler.run(R"DELIM(
-                          include "list.sj"
-                          
-                          class(x : 'int) { this }
-                                a: list!class()
-                                for x: 1 to 10 {
-                                    c: class(x)
-                                    a.add(c)
-                                }
-                                1
-                                )DELIM");
-                          assert(result->type == RESULT_INT && result->iResult == 1);
-*/
+    
     testMath();
     testComparison();
     testVoid();
@@ -788,7 +774,7 @@ int main(int argc, char **argv) {
     testClass();
     testExtern();
     testTemplate();
-    // testArray();
+    testArray();
     testInclude();
     testString();
     testHeap();

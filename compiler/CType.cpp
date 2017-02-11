@@ -51,7 +51,6 @@ Type* CType::llvmRefType(Compiler* compiler, CResult& result) {
 shared_ptr<ReturnValue> CType::getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     if (parent.expired()) {
         return _value ? make_shared<ReturnValue>(_value) : nullptr;
-    } else {
-        return parent.lock()->getDefaultValue(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     }
+    return nullptr;
 }

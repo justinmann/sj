@@ -14,7 +14,7 @@ shared_ptr<CType> NStringArray::getTypeImpl(Compiler* compiler, CResult& result,
 }
 
 int NStringArray::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
-    return 0;
+    return createCall->NBase::setHeapVar(compiler, result, thisFunction, thisVar, isHeapVar);
 }
 
 shared_ptr<ReturnValue> NStringArray::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {

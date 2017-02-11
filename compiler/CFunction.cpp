@@ -375,14 +375,6 @@ Value* CFunction::getParentPointer(Compiler* compiler, CResult& result, IRBuilde
     return nullptr;
 }
 
-shared_ptr<ReturnValue> CFunction::getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    auto parameters = vector<shared_ptr<NBase>>();
-    for (auto defaultAssignment : node->assignments) {
-        parameters.push_back(defaultAssignment->rightSide);
-    }
-    return node->call(compiler, result, thisFunction, thisVar, thisValue, shared_from_this(), nullptr, nullptr, builder, catchBB, parameters);
-}
-
 Value* CFunction::getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
     if (hasRefCount) {
         vector<Value*> v;

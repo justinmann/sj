@@ -58,7 +58,6 @@ public:
     Value* getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
     string fullName(bool includeTemplateTypes);
     shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, const CLoc& loc, shared_ptr<CTypeName> typeName);
-    shared_ptr<ReturnValue> getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB);
     
     Value* getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
     void initStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);

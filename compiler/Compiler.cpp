@@ -295,16 +295,77 @@ public:
 
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) { }
-    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) { return nullptr; }
-    virtual int setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) { return 0; }
+    
+    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
+        auto type = getType(compiler, result, thisFunction, thisVar);
+        if (type && !_callVar && !type->parent.expired()) {
+            _callee = type->parent.lock();
+            _callVar = CCallVar::create(compiler, result, CLoc::undefined, "??", make_shared<NodeList>(), thisFunction, weak_ptr<CVar>(), _callee);
+            _callVar->getThisVar(compiler, result);
+        }
+        return nullptr;
+    }
+    
+    virtual int setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
+        if (_callVar) {
+            vector<shared_ptr<NBase>> parameters(_callee->node->assignments.size());
+            if (!_callVar->getParameters(compiler, result, parameters)) {
+                return 0;
+            }
+            
+            auto calleeVar = _callVar->getThisVar(compiler, result);
+            auto count = 0;
+            auto index = 0;
+            for (auto argVar : parameters) {
+                auto parameterVar = _callee->thisVars[index];
+                
+                if (isHeapVar) {
+                    parameterVar->setHeapVar(compiler, result, thisVar);
+                }
+                
+                auto isDefaultAssignment = argVar == _callee->node->assignments[index]->rightSide;
+                auto parameterHeapVar = parameterVar->getHeapVar(compiler, result, thisVar);
+                if (argVar->nodeType == NodeType_Assignment) {
+                    auto parameterAssignment = static_pointer_cast<NAssignment>(argVar);
+                    assert(parameterAssignment->inFunctionDeclaration);
+                    if (isDefaultAssignment) {
+                        count += parameterAssignment->setHeapVar(compiler, result, _callee, calleeVar, parameterHeapVar);
+                    } else {
+                        count += parameterAssignment->setHeapVar(compiler, result, thisFunction, thisVar, parameterHeapVar);
+                    }
+                } else {
+                    if (isDefaultAssignment) {
+                        count += argVar->setHeapVar(compiler, result, _callee, calleeVar, parameterHeapVar);
+                    } else {
+                        count += argVar->setHeapVar(compiler, result, thisFunction, thisVar, parameterHeapVar);
+                    }
+                }
+                index++;
+            }
+            
+            if (isHeapVar) {
+                count += calleeVar->setHeapVar(compiler, result, thisVar);
+            }
+            return count;
+        }
+        return 0;
+    }
     
     virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
         return inner->getType(compiler, result, thisFunction, thisVar);
     }
     
     virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-        return inner->getType(compiler, result, thisFunction, thisVar)->getDefaultValue(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+        auto type = getType(compiler, result, thisFunction, thisVar);
+        if (_callVar) {
+            return _callVar->getLoadValue(compiler, result, thisVar, thisValue, nullptr, builder, catchBB);
+        }
+        return type->getDefaultValue(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     }
+    
+private:
+    shared_ptr<CFunction> _callee;
+    shared_ptr<CCallVar> _callVar;
 };
 
 shared_ptr<CResult> Compiler::run(const string& code) {
