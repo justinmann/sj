@@ -354,10 +354,12 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     state = CompilerState::FixVar;
     auto templateTypes = vector<shared_ptr<CType>>();
     auto currentFunction = currentFunctionDefintion->getFunction(this, *compilerResult, CLoc::undefined, templateTypes, weak_ptr<CFunction>());
-    auto currentVar = currentFunction->createThisVar(this, *compilerResult);
+    shared_ptr<CVar> currentVar;
+    currentFunction->createThisVar(this, *compilerResult, currentVar);
     anonFunction->getVar(this, *compilerResult, currentFunction, currentVar);
     auto globalFunction = currentFunction->getCFunction(this, *compilerResult, CLoc::undefined, "global", nullptr, nullptr);
-    auto globalVar = globalFunction->createThisVar(this, *compilerResult);
+    shared_ptr<CVar> globalVar;
+    globalFunction->createThisVar(this, *compilerResult, globalVar);
 
 #ifdef VAR_OUTPUT
     currentFunction->dump(this, *compilerResult, 0);

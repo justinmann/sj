@@ -59,13 +59,12 @@ shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, con
     return c;
 }
 
-shared_ptr<CVar> CFunction::createThisVar(Compiler* compiler, CResult& result) {
-    auto thisVar = CNormalVar::createThisVar(CLoc::undefined, shared_from_this(), getThisType(compiler, result));
+void CFunction::createThisVar(Compiler* compiler, CResult& result, shared_ptr<CVar>& thisVar) {
+    thisVar = CNormalVar::createThisVar(CLoc::undefined, shared_from_this(), getThisType(compiler, result));
     if (node) {
         node->getVarBody(compiler, result, shared_from_this(), thisVar);
         node->setHeapVarBody(compiler, result, shared_from_this(), thisVar);
     }
-    return thisVar;
 }
 
 shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
@@ -449,7 +448,7 @@ void CFunction::releaseStack(Compiler* compiler, CResult& result, IRBuilder<>* b
     function->getBasicBlockList().push_back(ifBB);
     builder->SetInsertPoint(ifBB);
     
-    compiler->callDebug(builder, "did not release: " + name, thisValue);
+    compiler->callDebug(builder, "did not release: " + name, thisValue, nullptr);
 
     builder->CreateBr(mergeBB);
     

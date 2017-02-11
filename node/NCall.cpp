@@ -20,7 +20,7 @@ shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CResult& result, CLoc 
 
 shared_ptr<CVar> CCallVar::getThisVar(Compiler* compiler, CResult& result) {
     if (!calleeVar) {
-        calleeVar = callee->createThisVar(compiler, result);
+        callee->createThisVar(compiler, result, calleeVar);
     }
     return calleeVar;
 }
