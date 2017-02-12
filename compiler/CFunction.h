@@ -62,6 +62,8 @@ public:
     shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, const CLoc& loc, shared_ptr<CTypeName> typeName);
     
     Value* getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
+    void setHasRefCount();
+
     void initStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
     void initHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
     void retainStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
@@ -82,7 +84,10 @@ public:
 
 private:
     bool hasRefCount;
+    size_t indexRefCount;
     bool hasParent;
+    size_t indexParent;
+    size_t indexVars;
     bool isInGetType;
     bool isInGetFunction;
     bool returnMustRelease;

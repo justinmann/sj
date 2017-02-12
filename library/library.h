@@ -14,7 +14,6 @@
 class list_char {
 public:
     int64_t refCount;
-    int64_t parent;
     int64_t size;
     int64_t count;
     char* str;

@@ -118,6 +118,12 @@ int CNormalVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar>
     
     if (!isHeapVar) {
         isHeapVar = true;
+        
+        auto t = getType(compiler, result);
+        if (!t->parent.expired()) {
+            t->parent.lock()->setHasRefCount();
+        }
+        
         count += 1;
     }
     

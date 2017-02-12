@@ -29,7 +29,6 @@ extern "C" list_char* console_readLine() {
 
     list_char* result = new list_char();
     result->refCount = 1;
-    result->parent = 0;
     result->count = index;
     result->size = size;
     result->str = str;

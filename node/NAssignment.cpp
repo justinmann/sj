@@ -119,6 +119,13 @@ int NAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<
             if (rightVar && rightVar->getHeapVar(compiler, result, thisVar)) {
                 count += _assignVar->setHeapVar(compiler, result, thisVar);
             }
+            
+            if (rightVar) {
+                auto t = rightVar->getType(compiler, result);
+                if (!t->parent.expired()) {
+                    t->parent.lock()->setHasRefCount();
+                }
+            }
         }
     }
     

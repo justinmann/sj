@@ -106,14 +106,18 @@ Type* CFunction::getStructType(Compiler* compiler, CResult& result) {
         
         vector<Type*> structMembers;
 
-        structMembers.push_back(Type::getInt64Ty(compiler->context));
-        hasRefCount = true;
+        if (hasRefCount) {
+            indexRefCount = structMembers.size();
+            structMembers.push_back(Type::getInt64Ty(compiler->context));
+        }
         
         if (hasParent) {
+            indexParent = structMembers.size();
             auto parentType = parent.lock()->getThisType(compiler, result);
             structMembers.push_back(parentType->llvmRefType(compiler, result));
         }
         
+        indexVars = structMembers.size();
         for (auto it : thisVars) {
             auto ctype = it->getType(compiler, result);
             if (!ctype) {
@@ -308,16 +312,8 @@ string CFunction::fullName(bool includeTemplateTypes) {
 
 int CFunction::getArgStart(Compiler* compiler, CResult& result) {
     getThisType(compiler, result);
-    
-    int argStart = 0;
-    
-    if (hasRefCount)
-        argStart++;
-    
-    if (hasParent)
-        argStart++;
-    
-    return argStart;
+    assert(_structType);
+    return (int)indexVars;
 }
 
 bool CFunction::getHasParent(Compiler* compiler, CResult& result) {
@@ -326,6 +322,7 @@ bool CFunction::getHasParent(Compiler* compiler, CResult& result) {
 }
 
 void CFunction::setHasParent(Compiler* compiler, CResult& result) {
+    assert(!_structType);
     if (parent.expired()) {
         return;
     }
@@ -381,36 +378,47 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, con
 }
 
 Value* CFunction::getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    assert(_structType);
     assert(hasParent);
     if (hasParent) {
-        assert(hasRefCount);
         vector<Value*> v;
         v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
-        v.push_back(ConstantInt::get(compiler->context, APInt(32, 1)));
+        v.push_back(ConstantInt::get(compiler->context, APInt(32, indexParent)));
         return builder->CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "parent");
     }
     return nullptr;
 }
 
 Value* CFunction::getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    assert(_structType);
+    assert(hasRefCount);
     if (hasRefCount) {
         vector<Value*> v;
         v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
-        v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+        v.push_back(ConstantInt::get(compiler->context, APInt(32, indexRefCount)));
         return builder->CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "refCount");
     }
     return nullptr;
 }
 
-void CFunction::initStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
-    compiler->recordRetain(builder, thisValue, name);
+void CFunction::setHasRefCount() {
+    assert(!_structType);
+    hasRefCount = true;
+}
 
-    auto refCount = getRefCount(compiler, result, builder, thisValue);
-    assert(refCount);
-    builder->CreateStore(ConstantInt::get(compiler->context, APInt(64, STACK_REF_COUNT + 1)), refCount);
+void CFunction::initStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    assert(_structType);
+    compiler->recordRetain(builder, thisValue, name);
+    if (hasRefCount) {
+        auto refCount = getRefCount(compiler, result, builder, thisValue);
+        assert(refCount);
+        builder->CreateStore(ConstantInt::get(compiler->context, APInt(64, STACK_REF_COUNT + 1)), refCount);
+    }
 }
 
 void CFunction::initHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    assert(_structType);
+    assert(hasRefCount);
     compiler->recordRetain(builder, thisValue, name);
 
     auto refCount = getRefCount(compiler, result, builder, thisValue);
@@ -419,6 +427,8 @@ void CFunction::initHeap(Compiler* compiler, CResult& result, IRBuilder<>* build
 }
 
 void CFunction::retainStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    assert(_structType);
+    assert(hasRefCount);
     compiler->recordRetain(builder, thisValue, name);
 
     auto refCount = getRefCount(compiler, result, builder, thisValue);
@@ -428,6 +438,8 @@ void CFunction::retainStack(Compiler* compiler, CResult& result, IRBuilder<>* bu
 }
 
 void CFunction::retainHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    assert(_structType);
+    assert(hasRefCount);
     compiler->recordRetain(builder, thisValue, name);
 
     auto refCount = getRefCount(compiler, result, builder, thisValue);
@@ -438,32 +450,35 @@ void CFunction::retainHeap(Compiler* compiler, CResult& result, IRBuilder<>* bui
 }
 
 void CFunction::releaseStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    assert(_structType);
     compiler->recordRelease(builder, thisValue, name);
     
 #ifdef DEBUG_CALLSTACK
-    auto refCount = getRefCount(compiler, result, builder, thisValue);
-    auto load = builder->CreateLoad(refCount);
-    auto sub = builder->CreateSub(load, ConstantInt::get(compiler->context, APInt(64, 1)));
-    builder->CreateStore(sub, refCount);
-    
-    Function *function = builder->GetInsertBlock()->getParent();
-    auto ifBB = BasicBlock::Create(compiler->context);
-    auto mergeBB = BasicBlock::Create(compiler->context);
-    
-    auto c = builder->CreateICmpNE(sub, ConstantInt::get(compiler->context, APInt(64, STACK_REF_COUNT)));
-    builder->CreateCondBr(c, ifBB, mergeBB);
-    
-    // If not at special stack ref count then fail
-    function->getBasicBlockList().push_back(ifBB);
-    builder->SetInsertPoint(ifBB);
-    
-    compiler->callDebug(builder, "did not release: " + name, thisValue, nullptr);
+    if (hasRefCount) {
+        auto refCount = getRefCount(compiler, result, builder, thisValue);
+        auto load = builder->CreateLoad(refCount);
+        auto sub = builder->CreateSub(load, ConstantInt::get(compiler->context, APInt(64, 1)));
+        builder->CreateStore(sub, refCount);
+        
+        Function *function = builder->GetInsertBlock()->getParent();
+        auto ifBB = BasicBlock::Create(compiler->context);
+        auto mergeBB = BasicBlock::Create(compiler->context);
+        
+        auto c = builder->CreateICmpNE(sub, ConstantInt::get(compiler->context, APInt(64, STACK_REF_COUNT)));
+        builder->CreateCondBr(c, ifBB, mergeBB);
+        
+        // If not at special stack ref count then fail
+        function->getBasicBlockList().push_back(ifBB);
+        builder->SetInsertPoint(ifBB);
+        
+        compiler->callDebug(builder, "did not release: " + name, thisValue, nullptr);
 
-    builder->CreateBr(mergeBB);
-    
-    // Merge block
-    function->getBasicBlockList().push_back(mergeBB);
-    builder->SetInsertPoint(mergeBB);
+        builder->CreateBr(mergeBB);
+        
+        // Merge block
+        function->getBasicBlockList().push_back(mergeBB);
+        builder->SetInsertPoint(mergeBB);
+    }
 #endif
 
     // Call destructor
@@ -476,6 +491,7 @@ void CFunction::releaseStack(Compiler* compiler, CResult& result, IRBuilder<>* b
 }
 
 void CFunction::releaseHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    assert(hasRefCount);
     compiler->recordRelease(builder, thisValue, name);
 
     auto refCount = getRefCount(compiler, result, builder, thisValue);
