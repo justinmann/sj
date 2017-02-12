@@ -52,7 +52,7 @@ shared_ptr<ReturnValue> NAnd::compileImpl(Compiler* compiler, CResult& result, s
         return nullptr;
     }
     
-    return make_shared<ReturnValue>(builder->CreateAnd(l->value, r->value));
+    return make_shared<ReturnValue>(false, builder->CreateAnd(l->value, r->value));
 }
 
 void NAnd::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {

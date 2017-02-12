@@ -87,11 +87,20 @@ shared_ptr<CVar> CFunction::getReturnVar(Compiler* compiler, CResult& result, sh
     return node->getReturnVar(compiler, result, shared_from_this(), thisVar);
 }
 
-shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result) {
-    if (type == FT_Extern) {
-        return nullptr;
-    }
 
+bool CFunction::getHasThis() {
+    if (type == FT_Extern) {
+        return false;
+    }
+    
+    if (!hasRefCount) {
+        return false;
+    }
+    
+    return true;
+}
+
+shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result) {
     if (!thisType && node != nullptr) {
         thisType = make_shared<CType>(name.c_str(), shared_from_this());
 
@@ -100,34 +109,47 @@ shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result) {
     return thisType;
 }
 
-Type* CFunction::getStructType(Compiler* compiler, CResult& result) {
-    if (!_structType) {
-        _structType = StructType::create(compiler->context, name);
+shared_ptr<vector<Type*>> CFunction::getTypeList(Compiler* compiler, CResult& result) {
+    if (!typeList) {
+        typeList = make_shared<vector<Type*>>();
         
-        vector<Type*> structMembers;
-
         if (hasRefCount) {
-            indexRefCount = structMembers.size();
-            structMembers.push_back(Type::getInt64Ty(compiler->context));
+            indexRefCount = typeList->size();
+            typeList->push_back(Type::getInt64Ty(compiler->context));
         }
         
         if (hasParent) {
-            indexParent = structMembers.size();
+            indexParent = typeList->size();
             auto parentType = parent.lock()->getThisType(compiler, result);
-            structMembers.push_back(parentType->llvmRefType(compiler, result));
+            auto parentLLVMType = parentType->llvmRefType(compiler, result);
+            assert(parentLLVMType);
+            typeList->push_back(parentLLVMType);
         }
         
-        indexVars = structMembers.size();
+        indexVars = typeList->size();
         for (auto it : thisVars) {
             auto ctype = it->getType(compiler, result);
             if (!ctype) {
                 result.addError(it->nassignment->loc, CErrorCode::InvalidType, "cannot determine type for '%s'", it->name.c_str());
                 return nullptr;
             }
-            structMembers.push_back(ctype->llvmRefType(compiler, result));
+            auto llvmType = ctype->llvmRefType(compiler, result);
+            assert(llvmType);
+            typeList->push_back(llvmType);
         }
-        
-        _structType->setBody(ArrayRef<Type *>(structMembers));
+    }
+    return typeList;
+}
+
+Type* CFunction::getStructType(Compiler* compiler, CResult& result) {
+    if (!getHasThis()) {
+        return nullptr;
+    }
+    
+    if (!_structType) {
+        _structType = StructType::create(compiler->context, name);
+        auto typeList = getTypeList(compiler, result);
+        _structType->setBody(ArrayRef<Type *>(*typeList.get()));
     }
     return _structType;
 }
@@ -170,18 +192,42 @@ Function* CFunction::getDestructor(Compiler* compiler, CResult& result) {
 }
 
 Value* CFunction::getThisArgument(Compiler* compiler, CResult& result) {
-    assert(function);
+    assert(getHasThis());
     return (Argument*)function->args().begin();
 }
 
-Value* CFunction::getArgumentPointer(Compiler* compiler, CResult& result, Value* thisValue, int index, IRBuilder<>* builder) {
-    auto thisType = getThisType(compiler, result);
-    assert(thisValue->getType() == thisType->llvmRefType(compiler, result));
-    vector<Value*> v;
-    v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
-    v.push_back(ConstantInt::get(compiler->context, APInt(32, index + getArgStart(compiler, result))));
-    auto paramPtr = builder->CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "paramPtr");
-    return paramPtr;
+Value* CFunction::getArgumentPointer(Compiler* compiler, CResult& result, bool thisInEntry, Value* thisValue, int index, IRBuilder<>* builder) {
+    if (thisInEntry) {
+        auto function = getFunctionFromBuilder(builder);
+        auto it = argumentPointers[function][thisValue].find(index);
+        if (it == argumentPointers[function][thisValue].end()) {
+            Value* argValue = nullptr;
+            auto entryBuilder = compiler->getEntryBuilder(function);
+            if (getHasThis()) {
+                assert(thisValue->getType() == thisType->llvmRefType(compiler, result));
+                vector<Value*> v;
+                v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+                v.push_back(ConstantInt::get(compiler->context, APInt(32, index + getArgStart(compiler, result))));
+                argValue = entryBuilder->CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "paramPtr");
+            } else {
+                auto t = (Argument*)std::next(function->args().begin(), index + indexVars);
+                auto argType = thisVars[index]->getType(compiler, result);
+                argValue = entryBuilder->CreateAlloca(argType->llvmRefType(compiler, result));
+                entryBuilder->CreateStore(t, argValue);
+            }
+            argumentPointers[function][thisValue][index] = argValue;
+            return argValue;
+        } else {
+            return it->second;
+        }
+    } else {
+        assert(getHasThis());
+        assert(thisValue->getType() == thisType->llvmRefType(compiler, result));
+        vector<Value*> v;
+        v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+        v.push_back(ConstantInt::get(compiler->context, APInt(32, index + getArgStart(compiler, result))));
+        return builder->CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "paramPtr");
+    }
 }
 
 shared_ptr<CFunction> CFunction::getCFunction(Compiler* compiler, CResult& result, const CLoc& loc, const string& name, shared_ptr<CFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames) {
@@ -312,7 +358,6 @@ string CFunction::fullName(bool includeTemplateTypes) {
 
 int CFunction::getArgStart(Compiler* compiler, CResult& result) {
     getThisType(compiler, result);
-    assert(_structType);
     return (int)indexVars;
 }
 
@@ -330,6 +375,9 @@ void CFunction::setHasParent(Compiler* compiler, CResult& result) {
     if (parent.lock()->getThisType(compiler, result) == nullptr) {
         return;
     }
+    
+    // Force parent to have a "this" struct
+    parent.lock()->setHasRefCount();
     
     if (!hasParent) {
         getThisType(compiler, result);
@@ -377,16 +425,56 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, con
     return compiler->getType(typeName->name);
 }
 
-Value* CFunction::getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
-    assert(_structType);
+Value* CFunction::getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, bool thisInEntry, Value* thisValue) {
     assert(hasParent);
-    if (hasParent) {
+    if (thisInEntry) {
+        auto function = getFunctionFromBuilder(builder);
+        auto it = parentPointers.find(function);
+        if (it == parentPointers.end()) {
+            Value* parentValue = nullptr;
+            if (getHasThis()) {
+                vector<Value*> v;
+                v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+                v.push_back(ConstantInt::get(compiler->context, APInt(32, indexParent)));
+                parentValue = compiler->getEntryBuilder(function)->CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "parent");
+            } else {
+                auto entryBuilder = compiler->getEntryBuilder(function);
+                auto t = (Argument*)std::next(function->args().begin(), indexParent);
+                auto argType = parent.lock()->getThisType(compiler, result);
+                parentValue = entryBuilder->CreateAlloca(argType->llvmRefType(compiler, result));
+                entryBuilder->CreateStore(t, parentValue);
+            }
+            parentPointers[function] = parentValue;
+            return parentValue;
+        } else {
+            return it->second;
+        }
+    } else {
+        assert(getHasThis());
         vector<Value*> v;
         v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
         v.push_back(ConstantInt::get(compiler->context, APInt(32, indexParent)));
         return builder->CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "parent");
     }
-    return nullptr;
+}
+
+Value* CFunction::getParentValue(Compiler* compiler, CResult& result, IRBuilder<>* builder, bool thisInEntry, Value* thisValue) {
+    assert(hasParent);
+    if (thisInEntry) {
+        auto function = getFunctionFromBuilder(builder);
+        auto it = parentValues.find(function);
+        if (it == parentValues.end()) {
+            auto parentPointer = getParentPointer(compiler, result, builder, thisInEntry, thisValue);
+            auto parentValue = compiler->getEntryBuilder(function)->CreateLoad(parentPointer, "parent");
+            parentValues[function] = parentValue;
+            return parentValue;
+        } else {
+            return it->second;
+        }
+    } else {
+        auto parentPointer = getParentPointer(compiler, result, builder, thisInEntry, thisValue);
+        return builder->CreateLoad(parentPointer, "parent");
+    }
 }
 
 Value* CFunction::getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {

@@ -46,11 +46,11 @@ shared_ptr<ReturnValue> NCast::compileImpl(Compiler* compiler, CResult& result, 
     }
     
     if (fromType == compiler->typeInt && toType == compiler->typeFloat) {
-        return make_shared<ReturnValue>(builder->CreateSIToFP(v->value, toType->llvmRefType(compiler, result)));
+        return make_shared<ReturnValue>(false, builder->CreateSIToFP(v->value, toType->llvmRefType(compiler, result)));
     }
 
     if (fromType == compiler->typeFloat && toType == compiler->typeInt) {
-        return make_shared<ReturnValue>(builder->CreateFPToSI(v->value, toType->llvmRefType(compiler, result)));
+        return make_shared<ReturnValue>(false, builder->CreateFPToSI(v->value, toType->llvmRefType(compiler, result)));
     }
     
     result.addError(loc, CErrorCode::InvalidCast, "cannot cast");

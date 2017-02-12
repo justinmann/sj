@@ -28,7 +28,7 @@ shared_ptr<CType> CIfElseVar::getType(Compiler* compiler, CResult& result) {
     return nullptr;
 }
 
-shared_ptr<ReturnValue> CIfElseVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> CIfElseVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     shared_ptr<CType> returnType = getType(compiler, result);
     
@@ -96,10 +96,10 @@ shared_ptr<ReturnValue> CIfElseVar::getLoadValue(Compiler* compiler, CResult& re
     auto phiNode = builder->CreatePHI(returnType->llvmRefType(compiler, result), (unsigned)2, "iftmp");
     phiNode->addIncoming(ifValue->value, ifEndBB);
     phiNode->addIncoming(elseValue->value, elseEndBB);
-    return make_shared<ReturnValue>(varFunction, ifValue->mustRelease, ifValue->type, phiNode);
+    return make_shared<ReturnValue>(varFunction, ifValue->mustRelease, ifValue->type, false, phiNode);
 }
 
-Value* CIfElseVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* CIfElseVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(false);
     return nullptr;
 }

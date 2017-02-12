@@ -16,24 +16,24 @@ shared_ptr<CType> CDotVar::getType(Compiler* compiler, CResult& result) {
     return rightVar->getType(compiler, result);
 }
 
-shared_ptr<ReturnValue> CDotVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    auto leftValue = leftVar->getLoadValue(compiler, result, thisVar, thisValue, dotValue, builder, catchBB);
+shared_ptr<ReturnValue> CDotVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    auto leftValue = leftVar->getLoadValue(compiler, result, thisVar, thisValue, dotInEntry, dotValue, builder, catchBB);
     if (!leftValue) {
         return nullptr;
     }
     
-    auto loadValue = rightVar->getLoadValue(compiler, result, thisVar, thisValue, leftValue->value, builder, catchBB);
+    auto loadValue = rightVar->getLoadValue(compiler, result, thisVar, thisValue, leftValue->inEntry, leftValue->value, builder, catchBB);
     leftValue->releaseIfNeeded(compiler, result, builder);
     return loadValue;
 }
 
-Value* CDotVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    auto leftValue = leftVar->getLoadValue(compiler, result, thisVar, thisValue, dotValue, builder, catchBB);
+Value* CDotVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    auto leftValue = leftVar->getLoadValue(compiler, result, thisVar, thisValue, dotInEntry, dotValue, builder, catchBB);
     if (!leftValue) {
         return nullptr;
     }
 
-    auto storeValue = rightVar->getStoreValue(compiler, result, thisVar, thisValue, leftValue->value, builder, catchBB);
+    auto storeValue = rightVar->getStoreValue(compiler, result, thisVar, thisValue, leftValue->inEntry, leftValue->value, builder, catchBB);
     leftValue->releaseIfNeeded(compiler, result, builder);
     return storeValue;
 }

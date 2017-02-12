@@ -4,10 +4,8 @@ console.write("Shall we play\n")
 
 num : random.nextInt() % 10 + 1
 isCorrect = false
-guessCount = 0
 
 while !isCorrect {
-    guessCount ++
     str : console.readLine()
     guess : parse.toInt(str)
     isCorrect = if guess < num {

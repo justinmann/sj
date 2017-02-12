@@ -168,7 +168,7 @@ shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& re
     value->retainIfNeeded(compiler, result, builder);
     
     // Get place to store data
-    auto alloca = _assignVar->getStoreValue(compiler, result, thisVar, thisValue, thisValue, builder, catchBB);
+    auto alloca = _assignVar->getStoreValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB);
     if (!alloca) {
         result.addError(loc, CErrorCode::InvalidVariable, "var cannot be assigned '%s'", name.c_str());
         return nullptr;
@@ -181,7 +181,7 @@ shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& re
     
     // Store value
     builder->CreateStore(value->value, alloca);
-    return make_shared<ReturnValue>(value->valueFunction, false, value->type, value->value);
+    return make_shared<ReturnValue>(value->valueFunction, false, value->type, value->inEntry, value->value);
 }
 
 void NAssignment::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {

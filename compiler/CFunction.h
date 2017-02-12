@@ -44,8 +44,10 @@ public:
     shared_ptr<CVar> getCVar(Compiler* compiler, CResult& result, const CLoc& loc, const string& name);
     shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
     shared_ptr<CVar> getReturnVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
+    bool getHasThis();
     int getThisIndex(const string& name) const;
     shared_ptr<CType> getThisType(Compiler* compiler, CResult& result);
+    shared_ptr<vector<Type*>> getTypeList(Compiler* compiler, CResult& result);
     Type* getStructType(Compiler* compiler, CResult& result);
     Function* getFunction(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
     Function* getDestructor(Compiler* compiler, CResult& result);
@@ -56,8 +58,9 @@ public:
     bool getHasParent(Compiler* compiler, CResult& result);
     void setHasParent(Compiler* compiler, CResult& result);
     void onHasParent(std::function<void(Compiler*, CResult&)> notify);
-    Value* getArgumentPointer(Compiler* compiler, CResult& result, Value* thisValue, int index, IRBuilder<>* builder);
-    Value* getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
+    Value* getArgumentPointer(Compiler* compiler, CResult& result, bool thisInEntry, Value* thisValue, int index, IRBuilder<>* builder);
+    Value* getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, bool thisInEntry, Value* thisValue);
+    Value* getParentValue(Compiler* compiler, CResult& result, IRBuilder<>* builder, bool thisInEntry, Value* thisValue);
     string fullName(bool includeTemplateTypes);
     shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, const CLoc& loc, shared_ptr<CTypeName> typeName);
     
@@ -97,7 +100,11 @@ private:
     shared_ptr<CType> returnType;
     shared_ptr<CType> thisType;
     shared_ptr<CVar> thisVar;
+    shared_ptr<vector<Type*>> typeList;
     vector<std::function<void(Compiler*, CResult&)>> delegateHasParent;
+    map<Function*, Value*> parentPointers;
+    map<Function*, Value*> parentValues;
+    map<Function*, map<Value*, map<int, Value*>>> argumentPointers;
 };
 
 class CFunctionDefinition : public enable_shared_from_this<CFunctionDefinition> {

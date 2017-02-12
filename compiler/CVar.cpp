@@ -81,31 +81,32 @@ shared_ptr<CType> CNormalVar::getType(Compiler* compiler, CResult& result) {
     return type;
 }
 
-shared_ptr<ReturnValue> CNormalVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> CNormalVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     if (mode == Var_This) {
-        return make_shared<ReturnValue>(parent.lock(), false, RVT_HEAP, thisValue);
+        return make_shared<ReturnValue>(parent.lock(), false, RVT_HEAP, true, thisValue);
     } else {
-        auto value = getStoreValue(compiler, result, thisVar, thisValue, dotValue, builder, catchBB);
-        return make_shared<ReturnValue>(type->parent.lock(), false, RVT_HEAP, builder->CreateLoad(value));
+        // TODO: Can be smarter about whether or not return value is in entry
+        auto value = getStoreValue(compiler, result, thisVar, thisValue, dotInEntry, dotValue, builder, catchBB);
+        return make_shared<ReturnValue>(type->parent.lock(), false, RVT_HEAP, false, builder->CreateLoad(value));
     }
 }
 
-Value* CNormalVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* CNormalVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     if (mode == Var_This) {
         assert(false);
     } else if (mode == Var_Local) {
         if (!value) {
-            IRBuilder<> entryBuilder = getEntryBuilder(builder);
+            auto entryBuilder = compiler->getEntryBuilder(getFunctionFromBuilder(builder));
             auto valueType = getType(compiler, result)->llvmRefType(compiler, result);
             if (valueType->isVoidTy()) {
                 result.addError(loc, CErrorCode::StoringVoid, "cannot save a void value");
                 return nullptr;
             }
-            value = entryBuilder.CreateAlloca(valueType, 0, name.c_str());
+            value = entryBuilder->CreateAlloca(valueType, 0, name.c_str());
         }
         return value;
     } else {
-        return parent.lock()->getArgumentPointer(compiler, result, dotValue, index, builder);
+        return parent.lock()->getArgumentPointer(compiler, result, dotInEntry, dotValue, index, builder);
     }
 }
 

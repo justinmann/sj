@@ -23,9 +23,9 @@ shared_ptr<ReturnValue> NInteger::compileImpl(Compiler* compiler, CResult& resul
             result.addError(loc, CErrorCode::InvalidNumber, "not a valid int '%s'", strValue.c_str());
             return nullptr;
         }
-        return make_shared<ReturnValue>(ConstantInt::get(compiler->context, APInt(64, v)));
+        return make_shared<ReturnValue>(false, ConstantInt::get(compiler->context, APInt(64, v)));
     } else {
-        return make_shared<ReturnValue>(ConstantInt::get(compiler->context, APInt(64, value)));
+        return make_shared<ReturnValue>(false, ConstantInt::get(compiler->context, APInt(64, value)));
     }
 }
 

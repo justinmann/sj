@@ -101,7 +101,7 @@ bool CCallVar::getParameters(Compiler* compiler, CResult& result, vector<shared_
     return true;
 }
 
-shared_ptr<ReturnValue> CCallVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> CCallVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     // compiler->emitLocation(builder, call.get());
     
@@ -120,7 +120,7 @@ shared_ptr<ReturnValue> CCallVar::getLoadValue(Compiler* compiler, CResult& resu
     
 }
 
-Value* CCallVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+Value* CCallVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     result.addError(loc, CErrorCode::ImmutableAssignment, "cannot assign value to function result");
     return nullptr;
 }
@@ -336,6 +336,11 @@ int NCall::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunct
         
         if (isHeapVar) {
             parameterVar->setHeapVar(compiler, result, thisVar);
+        }
+        
+        auto parameterType = parameterVar->getType(compiler, result);
+        if (!parameterType->parent.expired() && !parameterType->parent.lock()->getHasThis()) {
+            parameterType->parent.lock()->setHasRefCount();
         }
         
         auto isDefaultAssignment = argVar == callee->node->assignments[index]->rightSide;

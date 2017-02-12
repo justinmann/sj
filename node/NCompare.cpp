@@ -44,17 +44,17 @@ shared_ptr<ReturnValue> NCompare::compileImpl(Compiler* compiler, CResult& resul
     if ((L->value->getType()->isIntegerTy(64) || L->value->getType()->isIntegerTy(8)) && L->value->getType()->getScalarSizeInBits() == R->value->getType()->getScalarSizeInBits()) {
         switch (op) {
             case NCompareOp::EQ:
-                return make_shared<ReturnValue>(builder->CreateICmpEQ(L->value, R->value, "eqtmp"));
+                return make_shared<ReturnValue>(false, builder->CreateICmpEQ(L->value, R->value, "eqtmp"));
             case NCompareOp::NE:
-                return make_shared<ReturnValue>(builder->CreateICmpNE(L->value, R->value, "netmp"));
+                return make_shared<ReturnValue>(false, builder->CreateICmpNE(L->value, R->value, "netmp"));
             case NCompareOp::LT:
-                return make_shared<ReturnValue>(builder->CreateICmpSLT(L->value, R->value, "lttmp"));
+                return make_shared<ReturnValue>(false, builder->CreateICmpSLT(L->value, R->value, "lttmp"));
             case NCompareOp::LE:
-                return make_shared<ReturnValue>(builder->CreateICmpSLE(L->value, R->value, "letmp"));
+                return make_shared<ReturnValue>(false, builder->CreateICmpSLE(L->value, R->value, "letmp"));
             case NCompareOp::GT:
-                return make_shared<ReturnValue>(builder->CreateICmpSGT(L->value, R->value, "gttmp"));
+                return make_shared<ReturnValue>(false, builder->CreateICmpSGT(L->value, R->value, "gttmp"));
             case NCompareOp::GE:
-                return make_shared<ReturnValue>(builder->CreateICmpSGE(L->value, R->value, "getmp"));
+                return make_shared<ReturnValue>(false, builder->CreateICmpSGE(L->value, R->value, "getmp"));
             default:
                 result.addError(loc, CErrorCode::Internal, "unknown comparison type");
                 return nullptr;
@@ -62,17 +62,17 @@ shared_ptr<ReturnValue> NCompare::compileImpl(Compiler* compiler, CResult& resul
     } else if (L->value->getType()->isDoubleTy()) {
         switch (op) {
             case NCompareOp::EQ:
-                return make_shared<ReturnValue>(builder->CreateFCmpOEQ(L->value, R->value, "eqtmp"));
+                return make_shared<ReturnValue>(false, builder->CreateFCmpOEQ(L->value, R->value, "eqtmp"));
             case NCompareOp::NE:
-                return make_shared<ReturnValue>(builder->CreateFCmpONE(L->value, R->value, "netmp"));
+                return make_shared<ReturnValue>(false, builder->CreateFCmpONE(L->value, R->value, "netmp"));
             case NCompareOp::LT:
-                return make_shared<ReturnValue>(builder->CreateFCmpOLT(L->value, R->value, "lttmp"));
+                return make_shared<ReturnValue>(false, builder->CreateFCmpOLT(L->value, R->value, "lttmp"));
             case NCompareOp::LE:
-                return make_shared<ReturnValue>(builder->CreateFCmpOLE(L->value, R->value, "letmp"));
+                return make_shared<ReturnValue>(false, builder->CreateFCmpOLE(L->value, R->value, "letmp"));
             case NCompareOp::GT:
-                return make_shared<ReturnValue>(builder->CreateFCmpOGT(L->value, R->value, "gttmp"));
+                return make_shared<ReturnValue>(false, builder->CreateFCmpOGT(L->value, R->value, "gttmp"));
             case NCompareOp::GE:
-                return make_shared<ReturnValue>(builder->CreateFCmpOGE(L->value, R->value, "getmp"));
+                return make_shared<ReturnValue>(false, builder->CreateFCmpOGE(L->value, R->value, "getmp"));
             default:
                 result.addError(loc, CErrorCode::Internal, "unknown comparison type");
                 return nullptr;

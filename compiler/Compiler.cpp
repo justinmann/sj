@@ -33,9 +33,13 @@ std::string Type_print(Type* type) {
     return rso.str();
 }
 
+Function* getFunctionFromBuilder(IRBuilder<>* builder) {
+    return builder->GetInsertBlock()->getParent();
+}
+
 IRBuilder<> getEntryBuilder(IRBuilder<>* builder) {
-    Function *function = builder->GetInsertBlock()->getParent();
-    return IRBuilder<>(&function->getEntryBlock(), function->getEntryBlock().begin());
+    Function *function = getFunctionFromBuilder(builder);
+    return IRBuilder<>(&function->getEntryBlock(), function->getEntryBlock().end()--);
 }
 
 #ifdef DEBUG_CALLSTACK
@@ -62,6 +66,7 @@ extern "C" void debugFunction(const char* str, void* v, int64_t t) {
 }
 
 extern "C" void recordRetain(void* v, const char* str) {
+    printf("RETAIN: %llx %s\n", (int64_t)v, str);
     vector<const char*> stack(callstackIndex);
     for (int i = 0; i < callstackIndex; i++) {
         stack.push_back(callstack[i]);
@@ -71,6 +76,7 @@ extern "C" void recordRetain(void* v, const char* str) {
 }
 
 extern "C" void recordRelease(void* v, const char* str) {
+    printf("RELEASE: %llx %s\n", (int64_t)v, str);
     vector<const char*> stack(callstackIndex);
     for (int i = 0; i < callstackIndex; i++) {
         stack.push_back(callstack[i]);
@@ -181,6 +187,7 @@ void Compiler::InitializeModuleAndPassManager() {
     includedBlockFileNames.clear();
     includedBlocks.clear();
     functionNames.clear();
+    entryBuilders.clear();
     
     allocFunction = nullptr;
     reallocFunction = nullptr;
@@ -358,7 +365,7 @@ protected:
     virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
         auto type = getType(compiler, result, thisFunction, thisVar);
         if (_callVar) {
-            return _callVar->getLoadValue(compiler, result, thisVar, thisValue, nullptr, builder, catchBB);
+            return _callVar->getLoadValue(compiler, result, thisVar, thisValue, false, nullptr, builder, catchBB);
         }
         return type->getDefaultValue(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     }
@@ -602,6 +609,18 @@ void Compiler::includeFile(CResult& result, const string& fileName) {
         assert(r->block);
         includedBlockFileNames[fileName] = true;
         includedBlocks.push_back(pair<string, shared_ptr<NBlock>>(fileName, r->block));
+    }
+}
+
+shared_ptr<IRBuilder<>> Compiler::getEntryBuilder(Function* function) {
+    auto it = entryBuilders.find(function);
+    if (it == entryBuilders.end()) {
+        auto basicBlock = BasicBlock::Create(context, "entry", function);
+        auto builder = make_shared<IRBuilder<>>(basicBlock);
+        entryBuilders[function] = builder;
+        return builder;
+    } else {
+        return it->second;
     }
 }
 

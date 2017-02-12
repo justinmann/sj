@@ -51,7 +51,7 @@ shared_ptr<ReturnValue> NMathAssignment::compileImpl(Compiler* compiler, CResult
         return nullptr;
     }
     
-    auto leftValue = cvar->getLoadValue(compiler, result, thisVar, thisValue, thisValue, builder, catchBB);
+    auto leftValue = cvar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB);
     
     // Compute value
     shared_ptr<ReturnValue> rightValue = nullptr;
@@ -101,9 +101,9 @@ shared_ptr<ReturnValue> NMathAssignment::compileImpl(Compiler* compiler, CResult
     }
 
     // Store value
-    Value* destValue = cvar->getStoreValue(compiler, result, thisVar, thisValue, thisValue, builder, catchBB);
+    Value* destValue = cvar->getStoreValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB);
     builder->CreateStore(resultValue, destValue);
-    return make_shared<ReturnValue>(resultValue);
+    return make_shared<ReturnValue>(false, resultValue);
 }
 
 void NMathAssignment::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {

@@ -44,15 +44,15 @@ shared_ptr<ReturnValue> NMath::compileImpl(Compiler* compiler, CResult& result, 
     if (L->value->getType()->isIntegerTy()) {
         switch (op) {
             case NMathOp::Add:
-                return make_shared<ReturnValue>(builder->CreateAdd(L->value, R->value, "addtmp"));
+                return make_shared<ReturnValue>(false, builder->CreateAdd(L->value, R->value, "addtmp"));
             case NMathOp::Sub:
-                return make_shared<ReturnValue>(builder->CreateSub(L->value, R->value, "subtmp"));
+                return make_shared<ReturnValue>(false, builder->CreateSub(L->value, R->value, "subtmp"));
             case NMathOp::Mul:
-                return make_shared<ReturnValue>(builder->CreateMul(L->value, R->value, "multmp"));
+                return make_shared<ReturnValue>(false, builder->CreateMul(L->value, R->value, "multmp"));
             case NMathOp::Div:
-                return make_shared<ReturnValue>(builder->CreateSDiv(L->value, R->value, "divtmp"));
+                return make_shared<ReturnValue>(false, builder->CreateSDiv(L->value, R->value, "divtmp"));
             case NMathOp::Mod:
-                return make_shared<ReturnValue>(builder->CreateSRem(L->value, R->value, "modetmp"));
+                return make_shared<ReturnValue>(false, builder->CreateSRem(L->value, R->value, "modetmp"));
             default:
                 result.addError(loc, CErrorCode::Internal, "unknown math type");
                 return nullptr;
@@ -60,13 +60,13 @@ shared_ptr<ReturnValue> NMath::compileImpl(Compiler* compiler, CResult& result, 
     } else if (L->value->getType()->isDoubleTy()) {
         switch (op) {
             case NMathOp::Add:
-                return make_shared<ReturnValue>(builder->CreateFAdd(L->value, R->value, "addtmp"));
+                return make_shared<ReturnValue>(false, builder->CreateFAdd(L->value, R->value, "addtmp"));
             case NMathOp::Sub:
-                return make_shared<ReturnValue>(builder->CreateFSub(L->value, R->value, "subtmp"));
+                return make_shared<ReturnValue>(false, builder->CreateFSub(L->value, R->value, "subtmp"));
             case NMathOp::Mul:
-                return make_shared<ReturnValue>(builder->CreateFMul(L->value, R->value, "multmp"));
+                return make_shared<ReturnValue>(false, builder->CreateFMul(L->value, R->value, "multmp"));
             case NMathOp::Div:
-                return make_shared<ReturnValue>(builder->CreateFDiv(L->value, R->value, "divtmp"));
+                return make_shared<ReturnValue>(false, builder->CreateFDiv(L->value, R->value, "divtmp"));
             case NMathOp::Mod:
                 result.addError(loc, CErrorCode::InvalidType, "mod operation are not supported on this type");
                 return nullptr;

@@ -38,26 +38,22 @@ int CParentVar::setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CVar>
     return childVar->setHeapVar(compiler, result, thisVar);
 }
 
-shared_ptr<ReturnValue> CParentVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    auto parentPtr = parentFunction->getParentPointer(compiler, result, builder, dotValue);
-    if (!parentPtr) {
+shared_ptr<ReturnValue> CParentVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    auto parentValue = parentFunction->getParentValue(compiler, result, builder, dotInEntry, dotValue);
+    if (!parentValue) {
         return nullptr;
     }
-    
-    auto parentValue = builder->CreateLoad(parentPtr, "parent");
 
-    return childVar->getLoadValue(compiler, result, thisVar, thisValue, parentValue, builder, catchBB);
+    return childVar->getLoadValue(compiler, result, thisVar, thisValue, dotInEntry, parentValue, builder, catchBB);
 }
 
-Value* CParentVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    auto parentPtr = parentFunction->getParentPointer(compiler, result, builder, dotValue);
-    if (!parentPtr) {
+Value* CParentVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    auto parentValue = parentFunction->getParentValue(compiler, result, builder, dotInEntry, dotValue);
+    if (!parentValue) {
         return nullptr;
     }
-    
-    auto parentValue = builder->CreateLoad(parentPtr, "parent");
 
-    return childVar->getStoreValue(compiler, result, thisVar, thisValue, parentValue, builder, catchBB);
+    return childVar->getStoreValue(compiler, result, thisVar, thisValue, dotInEntry, parentValue, builder, catchBB);
 }
 
 string CParentVar::fullName() {

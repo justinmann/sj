@@ -43,14 +43,17 @@ Type* CType::llvmAllocType(Compiler* compiler, CResult& result) {
 
 Type* CType::llvmRefType(Compiler* compiler, CResult& result) {
     if (!_llvmRefType) {
-        _llvmRefType = llvmAllocType(compiler, result)->getPointerTo();
+        auto t = llvmAllocType(compiler, result);
+        if (t) {
+            _llvmRefType = t->getPointerTo();
+        }
     }
     return _llvmRefType;
 }
 
 shared_ptr<ReturnValue> CType::getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     if (parent.expired()) {
-        return _value ? make_shared<ReturnValue>(_value) : nullptr;
+        return _value ? make_shared<ReturnValue>(false, _value) : nullptr;
     }
     return nullptr;
 }

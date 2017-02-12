@@ -58,7 +58,7 @@ std::string strprintf( const char* format, Args... args ) {
     return str;
 }
 
-IRBuilder<> getEntryBuilder(IRBuilder<>* builder);
+Function* getFunctionFromBuilder(IRBuilder<>* builder);
 
 std::string Type_print(Type* type);
 
@@ -179,6 +179,7 @@ public:
     void emitLocation(IRBuilder<>* builder, const NBase *node);
     shared_ptr<CType> getType(const string& name) const;
     void includeFile(CResult& result, const string& fileName);
+    shared_ptr<IRBuilder<>> getEntryBuilder(Function* function);
     Function* getAllocFunction();
     Function* getReallocFunction();
     Function* getFreeFunction();
@@ -215,6 +216,7 @@ private:
     map<string, bool> includedBlockFileNames;
     vector<pair<string, shared_ptr<NBlock>>> includedBlocks;
     map<string, GlobalValue*> functionNames;
+    map<Function*, shared_ptr<IRBuilder<>>> entryBuilders;
     Function* allocFunction;
     Function* reallocFunction;
     Function* freeFunction;

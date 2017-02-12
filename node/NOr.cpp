@@ -52,7 +52,7 @@ shared_ptr<ReturnValue> NOr::compileImpl(Compiler* compiler, CResult& result, sh
         return nullptr;
     }
     
-    return make_shared<ReturnValue>(builder->CreateOr(l->value, r->value));
+    return make_shared<ReturnValue>(false, builder->CreateOr(l->value, r->value));
 }
 
 void NOr::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {

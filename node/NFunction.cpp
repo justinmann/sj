@@ -227,28 +227,23 @@ Function* NFunction::compileDefinition(Compiler* compiler, CResult& result, shar
         return nullptr;
     }
     
-    if (type == FT_Extern) {
-        vector<Type*> argTypes;
-        for (auto it : thisFunction->thisVars) {
-            auto ctype = it->getType(compiler, result);
-            if (!ctype) {
-                result.addError(it->nassignment->loc, CErrorCode::InvalidType, "cannot determine type for '%s'", it->name.c_str());
-                return nullptr;
-            }
-            
-            argTypes.push_back(ctype->llvmRefType(compiler, result));
+    if (!thisFunction->getHasThis()) {
+        auto argTypes = thisFunction->getTypeList(compiler, result);
+        auto functionType = FunctionType::get(returnType->llvmRefType(compiler, result), ArrayRef<Type*>(*argTypes.get()), false);
+        if (thisFunction->type == FT_Extern) {
+            return Function::Create(functionType, Function::ExternalLinkage, externName.c_str(), compiler->module.get());
+        } else {
+            auto function = Function::Create(functionType, type == FT_Public ? Function::ExternalLinkage : Function::PrivateLinkage, name.c_str(), compiler->module.get());
+            function->setPersonalityFn(compiler->exception->getPersonality());
+            return function;
         }
-        
-        auto functionType = FunctionType::get(returnType->llvmRefType(compiler, result), argTypes, false);
-        return Function::Create(functionType, Function::ExternalLinkage, externName.c_str(), compiler->module.get());
     } else {
         vector<Type*> argTypes;
         argTypes.push_back(thisFunction->getThisType(compiler, result)->llvmRefType(compiler, result));
         auto functionType = FunctionType::get(returnType->llvmRefType(compiler, result), argTypes, false);
         auto function = Function::Create(functionType, type == FT_Public ? Function::ExternalLinkage : Function::PrivateLinkage, name.c_str(), compiler->module.get());
         function->args().begin()->setName("this");
-        function->setPersonalityFn(compiler->exception->getPersonality());
-        
+        function->setPersonalityFn(compiler->exception->getPersonality());        
         return function;
     }
 }
@@ -263,14 +258,12 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
     
     // Create body of function
     // Create a new basic block to start insertion into.
-    auto basicBlock = BasicBlock::Create(compiler->context, "entry", function);
-    IRBuilder<> newBuilder(basicBlock);
+    auto entryBuilder = compiler->getEntryBuilder(function);
     shared_ptr<ReturnValue> returnValue = nullptr;
-    Argument* thisArgument = nullptr;
     shared_ptr<CVar> returnVar = nullptr;
     auto returnType = block->getType(compiler, result, thisFunction, thisVar);
     auto returnFunction = returnType->parent.expired() ? nullptr : returnType->parent.lock();
-    thisArgument = (Argument*)function->args().begin();
+    auto thisArgument = thisFunction->getHasThis() ? thisFunction->getThisArgument(compiler, result) : nullptr;
 
 #ifdef DWARF_ENABLED
     SmallVector<Metadata *, 8> EltTys;
@@ -302,7 +295,9 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
                                       newBuilder.GetInsertBlock());
 #endif
     
-    compiler->callPushFunction(&newBuilder, name);
+    auto bodyBB = BasicBlock::Create(compiler->context, "body", function);
+    IRBuilder<> bodyBuilder(bodyBB);
+    compiler->callPushFunction(&bodyBuilder, name);
     
     BasicBlock* catchBB = nullptr;
     if (catchBlock) {
@@ -310,12 +305,12 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
     }
     
     returnVar = block->getVar(compiler, result, thisFunction, thisVar);
-    returnValue = block->compile(compiler, result, thisFunction, thisVar, thisArgument, &newBuilder, catchBB);
+    returnValue = block->compile(compiler, result, thisFunction, thisVar, thisArgument, &bodyBuilder, catchBB);
 
-    compiler->callPopFunction(&newBuilder);
+    compiler->callPopFunction(&bodyBuilder);
     
     if (function->getReturnType()->isVoidTy()) {
-        newBuilder.CreateRetVoid();
+        bodyBuilder.CreateRetVoid();
     } else {
         if (!returnValue) {
             result.addError(loc, CErrorCode::TypeMismatch, "no return for non-void function");
@@ -327,35 +322,23 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
             goto error;
         }
         
-        // Store return value, before releasing everything
-        auto entryBuilder = getEntryBuilder(&newBuilder);
-        auto returnAlloca = entryBuilder.CreateAlloca(returnValue->value->getType());
-        newBuilder.CreateStore(returnValue->value, returnAlloca);
-
-        auto releaseBlock = BasicBlock::Create(compiler->context, "release", function);
-        newBuilder.CreateBr(releaseBlock);
-        newBuilder.SetInsertPoint(releaseBlock);
-        
         // Release all of the local vars
         for (auto it : thisFunction->localVarsByName) {
             auto type = it.second->getType(compiler, result);
             if (!type->parent.expired()) {
-                auto localValue = it.second->getLoadValue(compiler, result, thisVar, thisArgument, nullptr, &newBuilder, catchBB);
+                auto localValue = it.second->getLoadValue(compiler, result, thisVar, thisArgument, true, nullptr, &bodyBuilder, catchBB);
                 if (localValue->type == RVT_HEAP) {
                     assert(!localValue->mustRelease);
                     if (it.second->getHeapVar(compiler, result, thisVar)) {
-                        type->parent.lock()->releaseHeap(compiler, result, &newBuilder, localValue->value);
+                        type->parent.lock()->releaseHeap(compiler, result, &bodyBuilder, localValue->value);
                     } else {
-                        type->parent.lock()->releaseStack(compiler, result, &newBuilder, localValue->value);
+                        type->parent.lock()->releaseStack(compiler, result, &bodyBuilder, localValue->value);
                     }
                 }
             }
         }
         
-        auto returnBlock = BasicBlock::Create(compiler->context, "return", function);
-        newBuilder.CreateBr(returnBlock);
-        newBuilder.SetInsertPoint(returnBlock);
-        newBuilder.CreateRet(newBuilder.CreateLoad(returnAlloca));
+        bodyBuilder.CreateRet(returnValue->value);
     }
     
     if (catchBlock) {
@@ -392,6 +375,8 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
             catchBuilder.CreateRet(catchReturnValue->value);
         }
     }
+    
+    entryBuilder->CreateBr(bodyBB);
     
 error:
     if (catchBB) {
@@ -457,8 +442,7 @@ void NFunction::compileDestructorBody(Compiler* compiler, CResult& result, share
     
     // Create body of function
     // Create a new basic block to start insertion into.
-    auto basicBlock = BasicBlock::Create(compiler->context, "entry", function);
-    IRBuilder<> newBuilder(basicBlock);
+    auto entryBuilder = compiler->getEntryBuilder(function);
     
 #ifdef DWARF_ENABLED
     SmallVector<Metadata *, 8> EltTys;
@@ -482,38 +466,68 @@ void NFunction::compileDestructorBody(Compiler* compiler, CResult& result, share
     compiler->emitLocation(&newBuilder, nullptr);
 #endif
 
+    auto bodyBB = BasicBlock::Create(compiler->context, "body", function);
+    IRBuilder<> bodyBuilder(bodyBB);
     
     shared_ptr<ReturnValue> returnValue = nullptr;
     Argument* thisArgument = (Argument*)function->args().begin();
     
     if (destroyBlock) {
-        destroyBlock->compile(compiler, result, thisFunction, nullptr, thisArgument, &newBuilder, nullptr);
+        destroyBlock->compile(compiler, result, thisFunction, nullptr, thisArgument, &bodyBuilder, nullptr);
     }
     
     for (auto it : thisFunction->thisVars) {
-        if (!it->getType(compiler, result)->parent.expired()) {
-            auto value = it->getLoadValue(compiler, result, nullptr, thisArgument, thisArgument, &newBuilder, nullptr);
-            if (value->type == RVT_HEAP) {
-                if (it->getHeapVar(compiler, result, nullptr)) {
-                    value->valueFunction->releaseHeap(compiler, result, &newBuilder, value->value);
-                } else {
-                    value->valueFunction->releaseStack(compiler, result, &newBuilder, value->value);
-                }
+        auto type = it->getType(compiler, result);
+        if (!type->parent.expired() && !isSimpleType(type->llvmRefType(compiler, result))) {
+            auto value = it->getLoadValue(compiler, result, nullptr, thisArgument, true, thisArgument, &bodyBuilder, nullptr);
+            assert(value->type == RVT_HEAP);
+            if (it->getHeapVar(compiler, result, nullptr)) {
+                value->valueFunction->releaseHeap(compiler, result, &bodyBuilder, value->value);
+            } else {
+                value->valueFunction->releaseStack(compiler, result, &bodyBuilder, value->value);
             }
         }
     }
     
-    newBuilder.CreateRetVoid();
+    entryBuilder->CreateBr(bodyBB);
+    
+    bodyBuilder.CreateRetVoid();
 }
 
 shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
-    if (type == FT_Extern) {
+    if (!callee->getHasThis()) {
         vector<shared_ptr<ReturnValue>> argReturnValues;
         vector<Value *> argValues;
         auto func = callee->getFunction(compiler, result, calleeVar);
+        auto calleeFunction = calleeVar->getCFunctionForValue(compiler, result);
+
+        // Add "parent" to "this"
+        auto hasParent = callee->getHasParent(compiler, result);
+        shared_ptr<ReturnValue> dotReturnValue;
+        if (hasParent) {
+            Value* parentValue = thisValue;
+            if (dotVar) {
+                dotReturnValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB);
+                parentValue = dotReturnValue->value;
+            } else {
+                // if recursively calling ourselves then re-use parent
+                if (callee == thisFunction) {
+                    parentValue = callee->getParentValue(compiler, result, builder, true, parentValue);
+                } else {
+                    auto temp = thisFunction;
+                    while (temp && temp != callee->parent.lock()) {
+                        parentValue = temp->getParentValue(compiler, result, builder, true, parentValue);
+                        temp = temp->parent.lock();
+                    }
+                }
+            }
+            
+            argValues.push_back(parentValue);
+        }
         
-        // Fill in "this" with normal arguments
+        assert(argValues.size() == callee->getArgStart(compiler, result));
         auto argIndex = 0;
+        // Fill in "this" with normal arguments
         for (auto defaultAssignment : assignments) {
             auto argVar = callee->thisVars[argIndex];
             auto argHeapVar = argVar->getHeapVar(compiler, result, thisVar);
@@ -557,12 +571,22 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
         auto returnType = callee->getReturnType(compiler, result, calleeVar);
         auto returnFunction = returnType->parent.lock();
         auto returnValue = builder->CreateCall(func, argValues);
-        for (auto it : argReturnValues) {
-            it->releaseIfNeeded(compiler, result, builder);
-        }
         
-        // All extern function must return a var that needs to be released
-        return make_shared<ReturnValue>(returnFunction, returnFunction ? true : false, returnFunction ? RVT_HEAP : RVT_SIMPLE, returnValue);
+        if (callee->type == FT_Extern) {
+            // All extern function must return a var that needs to be released
+            for (auto it : argReturnValues) {
+                it->releaseIfNeeded(compiler, result, builder);
+            }
+            return make_shared<ReturnValue>(returnFunction, returnFunction ? true : false, returnFunction ? RVT_HEAP : RVT_SIMPLE, false, returnValue);
+        } else {
+            auto mustRelease = calleeFunction->getReturnMustRelease(compiler, result);
+            
+            if (dotReturnValue) {
+                dotReturnValue->releaseIfNeeded(compiler, result, builder);
+            }
+            
+            return make_shared<ReturnValue>(returnFunction, mustRelease, returnFunction ? RVT_HEAP : RVT_SIMPLE, false, returnValue);
+        }
     } else {
         vector<shared_ptr<ReturnValue>> argReturnValues;
 
@@ -571,7 +595,8 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
         auto calleeType = callee->getThisType(compiler, result);
         auto calleeHeapVar = calleeVar->getHeapVar(compiler, result, thisVar);
         auto calleeFunction = calleeVar->getCFunctionForValue(compiler, result);
-
+        auto calleeInEntry = false;
+        
         if (calleeHeapVar) {
             // heap alloc this
             auto allocFunc = compiler->getAllocFunction();
@@ -590,11 +615,13 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
             auto calleeValueAsVoidPtr = builder->CreateCall(allocFunc, allocArgs);
             calleeValue = builder->CreateBitCast(calleeValueAsVoidPtr, thisPointerType);
             calleeFunction->initHeap(compiler, result, builder, calleeValue);
+            calleeInEntry = false;
         } else {
             // stack alloc this
-            auto entryBuilder = getEntryBuilder(builder);
-            calleeValue = entryBuilder.CreateAlloca(calleeType->llvmAllocType(compiler, result), 0, calleeType->name.c_str());
+            auto entryBuilder = compiler->getEntryBuilder(getFunctionFromBuilder(builder));
+            calleeValue = entryBuilder->CreateAlloca(calleeType->llvmAllocType(compiler, result), 0, calleeType->name.c_str());
             calleeFunction->initStack(compiler, result, builder, calleeValue);
+            calleeInEntry = true;
         }
         
         // Fill in "this" with normal arguments
@@ -635,7 +662,7 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
          
             argReturnValue->retainIfNeeded(compiler, result, builder);
             argReturnValues.push_back(argReturnValue);
-            auto paramPtr = callee->getArgumentPointer(compiler, result, calleeValue, argIndex, builder);
+            auto paramPtr = callee->getArgumentPointer(compiler, result, calleeInEntry, calleeValue, argIndex, builder);
             builder->CreateStore(argReturnValue->value, paramPtr);
             
             argIndex++;
@@ -647,24 +674,22 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
         if (hasParent) {
             Value* parentValue = thisValue;
             if (dotVar) {
-                dotReturnValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, thisValue, builder, catchBB);
+                dotReturnValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB);
                 parentValue = dotReturnValue->value;
             } else {
                 // if recursively calling ourselves then re-use parent
                 if (callee == thisFunction) {
-                    auto parentPtr = callee->getParentPointer(compiler, result, builder, parentValue);
-                    parentValue = builder->CreateLoad(parentPtr);
+                    parentValue = callee->getParentValue(compiler, result, builder, true, parentValue);
                 } else {
                     auto temp = thisFunction;
                     while (temp && temp != callee->parent.lock()) {
-                        auto parentPtr = temp->getParentPointer(compiler, result, builder, parentValue);
-                        parentValue = builder->CreateLoad(parentPtr);
+                        parentValue = temp->getParentValue(compiler, result, builder, true, parentValue);
                         temp = temp->parent.lock();
                     }
                 }
             }
             
-            auto paramPtr = callee->getParentPointer(compiler, result, builder, calleeValue);
+            auto paramPtr = callee->getParentPointer(compiler, result, builder, calleeInEntry, calleeValue);
             builder->CreateStore(parentValue, paramPtr, "parent");
         }
         
@@ -705,7 +730,7 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
             dotReturnValue->releaseIfNeeded(compiler, result, builder);
         }
         
-        return make_shared<ReturnValue>(returnFunction, mustRelease, returnFunction ? RVT_HEAP : RVT_SIMPLE, returnValue);
+        return make_shared<ReturnValue>(returnFunction, mustRelease, returnFunction ? RVT_HEAP : RVT_SIMPLE, false, returnValue);
     }
 }
 

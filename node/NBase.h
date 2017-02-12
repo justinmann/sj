@@ -26,16 +26,17 @@ bool isSimpleType(Type* type);
 class ReturnValue {
 public:
     shared_ptr<CFunction> valueFunction;
+    bool inEntry;
     bool mustRelease;
     ReturnValueType type;
     Value* value;
     
-    ReturnValue(Value* value) : valueFunction(nullptr), mustRelease(false), type(RVT_SIMPLE), value(value) {
+    ReturnValue(bool inEntry, Value* value) : inEntry(inEntry), valueFunction(nullptr), mustRelease(false), type(RVT_SIMPLE), value(value) {
         assert(value);
         assert(isSimpleType(value->getType()));
     }
     
-    ReturnValue(shared_ptr<CFunction> valueFunction, bool mustRelease, ReturnValueType type, Value* value) : valueFunction(valueFunction), mustRelease(mustRelease), type(type), value(value) {
+    ReturnValue(shared_ptr<CFunction> valueFunction, bool mustRelease, ReturnValueType type, bool inEntry, Value* value) : inEntry(inEntry), valueFunction(valueFunction), mustRelease(mustRelease), type(type), value(value) {
         assert(value);
         if (isSimpleType(value->getType())) {
             this->type = RVT_SIMPLE;

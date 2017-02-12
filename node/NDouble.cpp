@@ -16,7 +16,7 @@ shared_ptr<ReturnValue> NDouble::compileImpl(Compiler* compiler, CResult& result
         return nullptr;
     }
     
-    return make_shared<ReturnValue>(ConstantFP::get(compiler->context, APFloat(t)));
+    return make_shared<ReturnValue>(false, ConstantFP::get(compiler->context, APFloat(t)));
 }
 
 void NDouble::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
