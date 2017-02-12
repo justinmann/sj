@@ -15,6 +15,25 @@ shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CResult& result, CLoc 
     c->callee = callee_;
     c->isHeapVar = false;
     c->isInGetHeapVar = false;
+    
+    auto onHasParent = [callee_, thisFunction_](Compiler* compiler, CResult& result) {
+        if (callee_ == thisFunction_) {
+            callee_->setHasParent(compiler, result);
+        } else {
+            auto temp = thisFunction_;
+            while (temp && temp != callee_->parent.lock()) {
+                temp->setHasParent(compiler, result);
+                temp = temp->parent.lock();
+            }
+        }
+    };
+    
+    if (callee_->getHasParent(compiler, result)) {
+        onHasParent(compiler, result);
+    } else {
+        callee_->onHasParent(onHasParent);
+    }
+    
     return c;
 }
 

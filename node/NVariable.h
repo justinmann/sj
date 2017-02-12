@@ -53,7 +53,7 @@ protected:
 
 class CParentVar : public CVar {
 public:
-    static shared_ptr<CParentVar> create(shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_);
+    static shared_ptr<CParentVar> create(Compiler *compiler, CResult &result, shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_);
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     virtual int setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
     virtual bool getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);

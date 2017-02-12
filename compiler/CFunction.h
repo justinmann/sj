@@ -54,6 +54,8 @@ public:
     void localVarToThisVar(Compiler* compiler, shared_ptr<CNormalVar> cvar);
     int getArgStart(Compiler* compiler, CResult& result);
     bool getHasParent(Compiler* compiler, CResult& result);
+    void setHasParent(Compiler* compiler, CResult& result);
+    void onHasParent(std::function<void(Compiler*, CResult&)> notify);
     Value* getArgumentPointer(Compiler* compiler, CResult& result, Value* thisValue, int index, IRBuilder<>* builder);
     Value* getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
     string fullName(bool includeTemplateTypes);
@@ -90,6 +92,7 @@ private:
     shared_ptr<CType> returnType;
     shared_ptr<CType> thisType;
     shared_ptr<CVar> thisVar;
+    vector<std::function<void(Compiler*, CResult&)>> delegateHasParent;
 };
 
 class CFunctionDefinition : public enable_shared_from_this<CFunctionDefinition> {

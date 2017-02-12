@@ -12,7 +12,7 @@ int NVariableBase::setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CF
     return setHeapVarImpl(compiler, result, thisFunction, thisVar, dotVar, isHeapVar);
 }
 
-shared_ptr<CParentVar> CParentVar::create(shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_) {
+shared_ptr<CParentVar> CParentVar::create(Compiler *compiler, CResult &result, shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_) {
     auto c = make_shared<CParentVar>();
     c->name = "";
     c->mode = childVar_->mode;
@@ -20,6 +20,9 @@ shared_ptr<CParentVar> CParentVar::create(shared_ptr<CFunction> parentFunction_,
     c->nassignment = nullptr;
     c->parentFunction = parentFunction_;
     c->childVar = childVar_;
+
+    parentFunction_->setHasParent(compiler, result);
+
     return c;
 }
 

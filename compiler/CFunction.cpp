@@ -97,13 +97,6 @@ shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result) {
 
     }
  
-    if (!parent.expired()) {
-        auto parentType = parent.lock()->getThisType(compiler, result);
-        if (parentType) {
-            hasParent = true;
-        }
-    }
-
     return thisType;
 }
 
@@ -247,7 +240,7 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, CResult& result, const C
             if (t3->mode == Var_Local) {
                 parent.lock()->localVarToThisVar(compiler, static_pointer_cast<CNormalVar>(t3));
             }
-            return CParentVar::create(shared_from_this(), t3);
+            return CParentVar::create(compiler, result, shared_from_this(), t3);
         }
     }
     
@@ -332,6 +325,29 @@ bool CFunction::getHasParent(Compiler* compiler, CResult& result) {
     return hasParent;
 }
 
+void CFunction::setHasParent(Compiler* compiler, CResult& result) {
+    if (parent.expired()) {
+        return;
+    }
+    
+    if (parent.lock()->getThisType(compiler, result) == nullptr) {
+        return;
+    }
+    
+    if (!hasParent) {
+        getThisType(compiler, result);
+        hasParent = true;
+        
+        for (auto it : delegateHasParent) {
+            it(compiler, result);
+        }
+    }
+}
+
+void CFunction::onHasParent(std::function<void(Compiler*, CResult&)> notify) {
+    delegateHasParent.push_back(notify);
+}
+
 shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, const CLoc& loc, shared_ptr<CTypeName> typeName) {
     if (typeName->templateTypeNames == nullptr) {
         auto t = templateTypesByName.find(typeName->name);
@@ -365,6 +381,7 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, con
 }
 
 Value* CFunction::getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    assert(hasParent);
     if (hasParent) {
         assert(hasRefCount);
         vector<Value*> v;
