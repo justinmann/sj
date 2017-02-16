@@ -8,16 +8,17 @@
 //
 
 #include "Node.h"
+#include "llvm/IR/Intrinsics.h"
 
 const unsigned char ourBaseExcpClassChars[] = {'o', 'b', 'j', '\0', 'b', 'a', 's', '\0'};
 static uint64_t ourBaseExceptionClass = 0;
-static uint64_t ourBaseFromUnwindOffset = 0;
+static int64_t ourBaseFromUnwindOffset = 0;
 typedef uint64_t _Unwind_Exception_Class;
 
 /// This is our simplistic type info
 struct OurExceptionType_t {
     /// type info type
-    int64_t exceptionType;
+    int32_t exceptionType;
 };
 
 
@@ -40,12 +41,12 @@ typedef struct OurBaseException_t OurException;
 typedef struct _Unwind_Exception OurUnwindException;
 
 uint64_t genClass(const unsigned char classChars[], size_t classCharsSize);
-void deleteOurException(OurUnwindException *expToDelete);
+extern "C" void deleteOurException(OurUnwindException *expToDelete);
 void deleteFromUnwindOurException(_Unwind_Reason_Code reason, OurUnwindException *expToDelete);
 uintptr_t readULEB128(const uint8_t **data);
 uintptr_t readSLEB128(const uint8_t **data);
 
-Exception::Exception(LLVMContext* context, Module* module) : context(context), module(module), raiseException(nullptr), personality(nullptr) {
+Exception::Exception(LLVMContext* context, Module* module) : context(context), module(module), raiseException(nullptr), personality(nullptr), deleteException(nullptr), unwindResume(nullptr), beginCatch(nullptr), endCatch(nullptr) {
     // Setup exception data
     size_t numChars = sizeof(ourBaseExcpClassChars) / sizeof(char);
     // Create our _Unwind_Exception::exception_class value
@@ -53,7 +54,7 @@ Exception::Exception(LLVMContext* context, Module* module) : context(context), m
     
     struct OurBaseException_t dummyException;
     // Calculate offset of OurException::unwindException member.
-    ourBaseFromUnwindOffset = ((uintptr_t) &dummyException) - ((uintptr_t) &(dummyException.unwindException));
+    ourBaseFromUnwindOffset = ((intptr_t) &dummyException) - ((intptr_t) &(dummyException.unwindException));
     
     // Create our type info type
     auto ourTypeInfoType = StructType::get(*context, ArrayRef<Type*>(Type::getInt32Ty(*context)));
@@ -70,6 +71,11 @@ Exception::Exception(LLVMContext* context, Module* module) : context(context), m
                      llvm::GlobalValue::ExternalLinkage,
                      nextStruct,
                      "sjExceptionType");
+    
+    // llvm.eh.typeid.for intrinsic
+    getDeclaration(module, llvm::Intrinsic::eh_typeid_for);
+    
+    new GlobalVariable(*module, Type::getInt8PtrTy(*context), true, GlobalValue::LinkageTypes::ExternalLinkage, nullptr, "_ZTIPv", nullptr, GlobalValue::ThreadLocalMode::NotThreadLocal, 0, false);
 }
 
 Function* Exception::getRaiseException() {
@@ -83,22 +89,55 @@ Function* Exception::getRaiseException() {
     return raiseException;
 }
 
+
 Function* Exception::getPersonality() {
     if (!personality) {
-        vector<Type*> args;
-        args.push_back(Type::getInt32Ty(*context));
-        args.push_back(Type::getInt32Ty(*context));
-        args.push_back(Type::getInt64Ty(*context));
-        args.push_back(Type::getInt8PtrTy(*context));
-        args.push_back(Type::getInt8PtrTy(*context));
-        auto functType = FunctionType::get(Type::getInt32Ty(*context), args, false);
-        personality = Function::Create(functType, Function::ExternalLinkage, "ourPersonality", module);
+        auto functType = FunctionType::get(Type::getInt32Ty(*context), true);
+        personality = Function::Create(functType, Function::ExternalLinkage, "__gxx_personality_v0", module);
     }
     return personality;
 }
 
-uint64_t genClass(const unsigned char classChars[], size_t classCharsSize)
-{
+Function* Exception::getDeleteException() {
+    if (!deleteException) {
+        vector<Type*> args;
+        args.push_back(Type::getInt8PtrTy(*context));
+        auto functType = FunctionType::get(Type::getInt32Ty(*context), args, false);
+        deleteException = Function::Create(functType, Function::ExternalLinkage, "deleteOurException", module);
+    }
+    return deleteException;
+}
+
+Function* Exception::getUnwindResume() {
+    if (!unwindResume) {
+        vector<Type*> args;
+        args.push_back(Type::getInt8PtrTy(*context));
+        auto functType = FunctionType::get(Type::getInt32Ty(*context), args, false);
+        unwindResume = Function::Create(functType, Function::ExternalLinkage, "_Unwind_Resume", module);
+    }
+    return unwindResume;
+}
+
+Function* Exception::getBeginCatch() {
+    if (!beginCatch) {
+        vector<Type*> args;
+        args.push_back(Type::getInt8PtrTy(*context));
+        auto functType = FunctionType::get(Type::getInt8PtrTy(*context), args, false);
+        beginCatch = Function::Create(functType, Function::ExternalLinkage, "__cxa_begin_catch", module);
+    }
+    return beginCatch;
+}
+
+Function* Exception::getEndCatch() {
+    if (!endCatch) {
+        vector<Type*> args;
+        auto functType = FunctionType::get(Type::getVoidTy(*context), args, false);
+        endCatch = Function::Create(functType, Function::ExternalLinkage, "__cxa_end_catch", module);
+    }
+    return endCatch;
+}
+
+uint64_t genClass(const unsigned char classChars[], size_t classCharsSize) {
     uint64_t ret = classChars[0];
     
     for (unsigned i = 1; i < classCharsSize; ++i) {
@@ -109,10 +148,9 @@ uint64_t genClass(const unsigned char classChars[], size_t classCharsSize)
     return(ret);
 }
 
-void deleteOurException(OurUnwindException *expToDelete) {
+extern "C" void deleteOurException(OurUnwindException *expToDelete) {
 #ifdef EXCEPTION_OUTPUT
-    fprintf(stderr,
-            "deleteOurException(...).\n");
+    fprintf(stderr, "deleteOurException(...).\n");
 #endif
     
     if (expToDelete &&
@@ -123,8 +161,7 @@ void deleteOurException(OurUnwindException *expToDelete) {
 
 void deleteFromUnwindOurException(_Unwind_Reason_Code reason, OurUnwindException *expToDelete) {
 #ifdef EXCEPTION_OUTPUT
-    fprintf(stderr,
-            "deleteFromUnwindOurException(...).\n");
+    fprintf(stderr, "deleteFromUnwindOurException(...).\n");
 #endif
     
     deleteOurException(expToDelete);
@@ -225,7 +262,7 @@ static uintptr_t readEncodedPointer(const uint8_t **data, uint8_t encoding) {
 uintptr_t readULEB128(const uint8_t **data) {
     uintptr_t result = 0;
     uintptr_t shift = 0;
-    unsigned char byte;
+    unsigned char byte = 0;
     const uint8_t *p = *data;
     
     do {
@@ -248,7 +285,7 @@ uintptr_t readULEB128(const uint8_t **data) {
 uintptr_t readSLEB128(const uint8_t **data) {
     uintptr_t result = 0;
     uintptr_t shift = 0;
-    unsigned char byte;
+    unsigned char byte = 0;
     const uint8_t *p = *data;
     
     do {
@@ -414,8 +451,7 @@ static _Unwind_Reason_Code handleLsda(int version, const uint8_t *lsda,
         return(ret);
     
 #ifdef EXCEPTION_OUTPUT
-    fprintf(stderr,
-            "handleLsda(...):lsda is non-zero.\n");
+    fprintf(stderr, "handleLsda(...):lsda is non-zero.\n");
 #endif
     
     // Get the current instruction pointer and offset it before next
@@ -571,19 +607,16 @@ static _Unwind_Reason_Code handleLsda(int version, const uint8_t *lsda,
         }
     }
     
+#ifdef EXCEPTION_OUTPUT
+    fprintf(stderr, "handleLsda(...): exit <%d>\n", ret);
+#endif
+
     return(ret);
 }
 
 extern "C" void raiseException(int64_t type) {
-    size_t size = sizeof(OurException);
-    OurException *ret = (OurException*) memset(malloc(size), 0, size);
-    (ret->type).exceptionType = 999;
-    (ret->unwindException).exception_class = ourBaseExceptionClass;
-    (ret->unwindException).exception_cleanup = deleteFromUnwindOurException;
-    
-    auto t = (&(ret->unwindException));
-    
-    _Unwind_RaiseException(t);
+    auto t = new SJException();
+    throw (void*)t;
 }
 
 /// This is the personality function which is embedded (dwarf emitted), in the
@@ -597,20 +630,20 @@ extern "C" void raiseException(int64_t type) {
 /// @param exceptionObject thrown _Unwind_Exception instance.
 /// @param context unwind system context
 /// @returns minimally supported unwinding control indicator
-extern "C" _Unwind_Reason_Code ourPersonality(int version, _Unwind_Action actions,
+extern "C" _Unwind_Reason_Code SJPersonality(int version, _Unwind_Action actions,
                                    _Unwind_Exception_Class exceptionClass,
                                    struct _Unwind_Exception *exceptionObject,
                                    struct _Unwind_Context *context) {
 #ifdef EXCEPTION_OUTPUT
     fprintf(stderr,
-            "We are in ourPersonality(...):actions is <%d>.\n",
+            "We are in SJPersonality(...):actions is <%d>.\n",
             actions);
     
     if (actions & _UA_SEARCH_PHASE) {
-        fprintf(stderr, "ourPersonality(...):In search phase.\n");
+        fprintf(stderr, "SJPersonality(...):In search phase.\n");
     }
     else {
-        fprintf(stderr, "ourPersonality(...):In non-search phase.\n");
+        fprintf(stderr, "SJPersonality(...):In non-search phase.\n");
     }
 #endif
     
@@ -618,17 +651,17 @@ extern "C" _Unwind_Reason_Code ourPersonality(int version, _Unwind_Action action
     
 #ifdef EXCEPTION_OUTPUT
     fprintf(stderr,
-            "ourPersonality(...):lsda = <%p>.\n",
+            "SJPersonality(...):lsda = <%p>.\n",
             (void*)lsda);
 #endif
     
     // The real work of the personality function is captured here
-    return(handleLsda(version,
-                      lsda,
-                      actions,
-                      exceptionClass,
-                      exceptionObject,
-                      context));
+    auto code = handleLsda(version, lsda, actions, exceptionClass, exceptionObject, context);
+
+#ifdef EXCEPTION_OUTPUT
+    fprintf(stderr, "SJPersonality(...) exit = <%d>.\n", code);
+#endif
+    return code;
 }
 
 

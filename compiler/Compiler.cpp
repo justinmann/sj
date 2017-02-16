@@ -58,13 +58,6 @@ extern "C" void popFunction() {
     callstackIndex--;
 }
 
-extern "C" void debugFunction(const char* str, void* v, int64_t t) {
-    printf("ERROR: %s %llx %lld\n", str, (int64_t)v, t);
-    for (int i = 0; i < callstackIndex; i++) {
-        printf("%s\n", callstack[i]);
-    }
-}
-
 extern "C" void recordRetain(void* v, const char* str) {
     printf("RETAIN: %llx %s\n", (int64_t)v, str);
     vector<const char*> stack(callstackIndex);
@@ -105,9 +98,18 @@ extern "C" void debugFree(void* p) {
 }
 #endif
 
+extern "C" void debugFunction(const char* str, void* v, int64_t t) {
+    printf("ERROR: %s %llx %lld\n", str, (int64_t)v, t);
+#ifdef DEBUG_CALLSTACK
+    for (int i = 0; i < callstackIndex; i++) {
+        printf("%s\n", callstack[i]);
+    }
+#endif
+}
+
 class KaleidoscopeJIT {
 private:
-    unique_ptr<TargetMachine> TM;
+    shared_ptr<TargetMachine> TM;
     const DataLayout DL;
     ObjectLinkingLayer<> ObjectLayer;
     IRCompileLayer<decltype(ObjectLayer)> CompileLayer;
@@ -115,9 +117,7 @@ private:
 public:
     typedef decltype(CompileLayer)::ModuleSetHandleT ModuleHandle;
     
-    KaleidoscopeJIT()
-    : TM(EngineBuilder().selectTarget()), DL(TM->createDataLayout()),
-    CompileLayer(ObjectLayer, SimpleCompiler(*TM)) {
+    KaleidoscopeJIT(shared_ptr<TargetMachine> tm) : TM(tm), DL(TM->createDataLayout()), CompileLayer(ObjectLayer, SimpleCompiler(*TM)) {
         llvm::sys::DynamicLibrary::LoadLibraryPermanently(nullptr);
     }
     
@@ -173,7 +173,10 @@ Compiler::Compiler() {
     InitializeNativeTargetAsmPrinter();
     InitializeNativeTargetAsmParser();
     
-    TheJIT = llvm::make_unique<KaleidoscopeJIT>();
+    auto opts = TargetOptions();
+    // opts.ExceptionModel = ExceptionHandling::DwarfCFI;
+    auto tm = shared_ptr<TargetMachine>(EngineBuilder().setTargetOptions(opts).selectTarget());
+    TheJIT = llvm::make_unique<KaleidoscopeJIT>(tm);
 }
 
 Compiler::~Compiler() {
@@ -192,10 +195,10 @@ void Compiler::InitializeModuleAndPassManager() {
     allocFunction = nullptr;
     reallocFunction = nullptr;
     freeFunction = nullptr;
+    debugFunction = nullptr;
 #ifdef DEBUG_CALLSTACK
     pushFunction = nullptr;
     popFunction = nullptr;
-    debugFunction = nullptr;
     recordRetainFunction = nullptr;
     recordReleaseFunction = nullptr;
     
@@ -553,7 +556,7 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     TheJIT->removeModule(H);
     
     if (hasException) {
-        throw SJException();
+        throw (void*)new SJException();
     }
     
     return compilerResult;
@@ -708,7 +711,6 @@ void Compiler::callPopFunction(IRBuilder<>* builder) {
 }
 
 void Compiler::callDebug(IRBuilder<>* builder, const string& name, Value* valuePtr, Value* valueInt) {
-#ifdef DEBUG_CALLSTACK
     if (!debugFunction) {
         vector<Type*> argTypes;
         argTypes.push_back(Type::getInt8PtrTy(context));
@@ -744,7 +746,6 @@ void Compiler::callDebug(IRBuilder<>* builder, const string& name, Value* valueP
     args.push_back(valueVoidPtr);
     args.push_back(valueInt);
     builder->CreateCall(debugFunction, ArrayRef<Value*>(args));
-#endif
 }
 
 void Compiler::recordRetain(IRBuilder<>* builder, Value* value, const string& name) {

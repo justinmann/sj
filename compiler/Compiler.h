@@ -220,10 +220,10 @@ private:
     Function* allocFunction;
     Function* reallocFunction;
     Function* freeFunction;
+    Function* debugFunction;
 #ifdef DEBUG_CALLSTACK
     Function* pushFunction;
     Function* popFunction;
-    Function* debugFunction;
     Function* recordRetainFunction;
     Function* recordReleaseFunction;
 #endif

@@ -234,7 +234,12 @@ Function* NFunction::compileDefinition(Compiler* compiler, CResult& result, shar
             return Function::Create(functionType, Function::ExternalLinkage, externName.c_str(), compiler->module.get());
         } else {
             auto function = Function::Create(functionType, type == FT_Public ? Function::ExternalLinkage : Function::PrivateLinkage, name.c_str(), compiler->module.get());
-            function->setPersonalityFn(compiler->exception->getPersonality());
+            if (catchBlock) {
+                auto personality = compiler->exception->getPersonality();
+                auto folder = ConstantFolder();
+                auto t = folder.CreateCast(Instruction::BitCast, personality, Type::getInt8PtrTy(compiler->context));
+                function->setPersonalityFn(t);
+            }
             return function;
         }
     } else {
@@ -243,7 +248,12 @@ Function* NFunction::compileDefinition(Compiler* compiler, CResult& result, shar
         auto functionType = FunctionType::get(returnType->llvmRefType(compiler, result), argTypes, false);
         auto function = Function::Create(functionType, type == FT_Public ? Function::ExternalLinkage : Function::PrivateLinkage, name.c_str(), compiler->module.get());
         function->args().begin()->setName("this");
-        function->setPersonalityFn(compiler->exception->getPersonality());        
+        if (catchBlock) {
+            auto personality = compiler->exception->getPersonality();
+            auto folder = ConstantFolder();
+            auto t = folder.CreateCast(Instruction::BitCast, personality, Type::getInt8PtrTy(compiler->context));
+            function->setPersonalityFn(t);
+        }
         return function;
     }
 }
@@ -341,7 +351,47 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
         bodyBuilder.CreateRet(returnValue->value);
     }
     
-    if (catchBlock) {
+    if (catchBB) {
+    /*
+     ; <label>:7                                       ; preds = %0
+     %8 = landingpad { i8*, i32 }
+     catch i8* bitcast (i8** @_ZTIPv to i8*)
+     %9 = extractvalue { i8*, i32 } %8, 0
+     store i8* %9, i8** %2, align 8
+     %10 = extractvalue { i8*, i32 } %8, 1
+     store i32 %10, i32* %3, align 4
+     br label %11
+     
+     ; <label>:11                                      ; preds = %7
+     %12 = load i32, i32* %3, align 4
+     %13 = call i32 @llvm.eh.typeid.for(i8* bitcast (i8** @_ZTIPv to i8*)) #5
+     %14 = icmp eq i32 %12, %13
+     br i1 %14, label %15, label %24
+     
+     ; <label>:15                                      ; preds = %11
+     %16 = load i8*, i8** %2, align 8
+     %17 = call i8* @__cxa_begin_catch(i8* %16) #5
+     store i8* %17, i8** %4, align 8
+     %18 = load i8*, i8** %4, align 8
+     %19 = bitcast i8* %18 to %struct.SJException*
+     %20 = getelementptr inbounds %struct.SJException, %struct.SJException* %19, i32 0, i32 0
+     %21 = load i32, i32* %20, align 4
+     store i32 %21, i32* %1, align 4
+     call void @__cxa_end_catch() #5
+     br label %22
+     
+     ; <label>:22                                      ; preds = %15, %6
+     %23 = load i32, i32* %1, align 4
+     ret i32 %23
+     
+     ; <label>:24                                      ; preds = %11
+     %25 = load i8*, i8** %2, align 8
+     %26 = load i32, i32* %3, align 4
+     %27 = insertvalue { i8*, i32 } undef, i8* %25, 0
+     %28 = insertvalue { i8*, i32 } %27, i32 %26, 1
+     resume { i8*, i32 } %28
+    */
+    
         IRBuilder<> catchBuilder(catchBB);
         
         llvm::Type *caughtResultFieldTypes[] = {
@@ -349,33 +399,53 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
             catchBuilder.getInt32Ty()
         };
         auto caughtResultType = llvm::StructType::get(compiler->context, ArrayRef<Type*>(caughtResultFieldTypes));
-        auto caughtResult = catchBuilder.CreateLandingPad(caughtResultType, 1);
-        caughtResult->addClause(compiler->module->getGlobalVariable("sjExceptionType"));
-        // Value *unwindException = catchBuilder.CreateExtractValue(caughtResult, 0);
-        // Value *retTypeInfoIndex = catchBuilder.CreateExtractValue(caughtResult, 1);
         
-        auto thisArgument = (Argument*)function->args().begin();
-        returnVar = catchBlock->getVar(compiler, result, thisFunction, thisVar);
-        auto catchReturnValue = catchBlock->compile(compiler, result, thisFunction, thisVar, thisArgument, &catchBuilder, nullptr);
-        if (function->getReturnType()->isVoidTy()) {
-            catchBuilder.CreateRetVoid();
+        auto caughtResult = catchBuilder.CreateLandingPad(caughtResultType, 1);
+        auto t = compiler->module->getGlobalVariable("_ZTIPv");
+        auto j = catchBuilder.CreateBitCast(t, Type::getInt8PtrTy(compiler->context));
+        caughtResult->addClause((Constant*)j);
+
+        Value *unwindException = catchBuilder.CreateExtractValue(caughtResult, 0);
+        Value *retTypeInfoIndex = catchBuilder.CreateExtractValue(caughtResult, 1);
+        
+        if (catchBlock) {
+            auto exceptionValue = catchBuilder.CreateCall(compiler->exception->getBeginCatch(), unwindException);
+#ifdef EXCEPTION_OUTPUT
+            Value *i64 = catchBuilder.CreateIntCast(retTypeInfoIndex, Type::getInt64Ty(compiler->context), true);
+            compiler->callDebug(&catchBuilder, strprintf("CAUGHT EXCEPTION %s", name.c_str()), exceptionValue, i64);
+#endif
+        
+            returnVar = catchBlock->getVar(compiler, result, thisFunction, thisVar);
+            auto catchReturnValue = catchBlock->compile(compiler, result, thisFunction, thisVar, thisArgument, &catchBuilder, nullptr);
+
+            catchBuilder.CreateCall(compiler->exception->getEndCatch());
+
+            if (function->getReturnType()->isVoidTy()) {
+                catchBuilder.CreateRetVoid();
+            } else {
+                if (!catchReturnValue) {
+                    result.addError(loc, CErrorCode::TypeMismatch, "no return for non-void function");
+                    goto error;
+                }
+                
+                if (function->getReturnType() != catchReturnValue->value->getType()) {
+                    result.addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match return value type '%s'", Type_print(function->getReturnType()).c_str(), Type_print(catchReturnValue->value->getType()).c_str());
+                    goto error;
+                }
+                
+                assert(catchReturnValue->type == returnValue->type);
+                assert(catchReturnValue->mustRelease == returnValue->mustRelease);
+                catchBuilder.CreateRet(catchReturnValue->value);
+            }            
         } else {
-            if (!catchReturnValue) {
-                result.addError(loc, CErrorCode::TypeMismatch, "no return for non-void function");
-                goto error;
-            }
-            
-            if (function->getReturnType() != catchReturnValue->value->getType()) {
-                result.addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match return value type '%s'", Type_print(function->getReturnType()).c_str(), Type_print(catchReturnValue->value->getType()).c_str());
-                goto error;
-            }
-            
-            assert(catchReturnValue->type == returnValue->type);
-            assert(catchReturnValue->mustRelease == returnValue->mustRelease);
-            catchBuilder.CreateRet(catchReturnValue->value);
+#ifdef EXCEPTION_OUTPUT
+            Value *i64 = catchBuilder.CreateIntCast(retTypeInfoIndex, Type::getInt64Ty(compiler->context), true);
+            compiler->callDebug(&catchBuilder, strprintf("RESUME EXCEPTION %s", name.c_str()), unwindException, i64);
+#endif
+            catchBuilder.CreateResume(caughtResult);
+            // catchBuilder.CreateUnreachable();
         }
     }
-    
     entryBuilder->CreateBr(bodyBB);
     
 error:
@@ -570,15 +640,28 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
         
         auto returnType = callee->getReturnType(compiler, result, calleeVar);
         auto returnFunction = returnType->parent.lock();
-        auto returnValue = builder->CreateCall(func, argValues);
         
         if (callee->type == FT_Extern) {
+            auto returnValue = builder->CreateCall(func, argValues);
             // All extern function must return a var that needs to be released
             for (auto it : argReturnValues) {
                 it->releaseIfNeeded(compiler, result, builder);
             }
             return make_shared<ReturnValue>(returnFunction, returnFunction ? true : false, returnFunction ? RVT_HEAP : RVT_SIMPLE, false, returnValue);
         } else {
+            Value* returnValue = nullptr;
+            
+            if (catchBB) {
+                auto continueBB = BasicBlock::Create(compiler->context);
+                returnValue = builder->CreateInvoke(func, continueBB, catchBB, argValues);
+                
+                Function *function = builder->GetInsertBlock()->getParent();
+                function->getBasicBlockList().push_back(continueBB);
+                builder->SetInsertPoint(continueBB);
+            } else {
+                returnValue = builder->CreateCall(func, argValues);
+            }
+            
             auto mustRelease = calleeFunction->getReturnMustRelease(compiler, result);
             
             if (dotReturnValue) {

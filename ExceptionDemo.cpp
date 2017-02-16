@@ -48,6 +48,9 @@
 //
 //===----------------------------------------------------------------------===//
 
+#include "sj.pch"
+#include "Node.h"
+
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/IR/Verifier.h"
 #include "llvm/ExecutionEngine/MCJIT.h"
@@ -776,7 +779,7 @@ static _Unwind_Reason_Code handleLsda(int version, const uint8_t *lsda,
 /// @param exceptionObject thrown _Unwind_Exception instance.
 /// @param context unwind system context
 /// @returns minimally supported unwinding control indicator
-_Unwind_Reason_Code ourPersonality2(int version, _Unwind_Action actions,
+_Unwind_Reason_Code ourPersonality(int version, _Unwind_Action actions,
                                    _Unwind_Exception_Class exceptionClass,
                                    struct _Unwind_Exception *exceptionObject,
                                    struct _Unwind_Context *context) {
@@ -1288,9 +1291,11 @@ static llvm::Function *createCatchWrappedInvokeFunction(
   // Note: Index is not relative to pointer but instead to structure
   //       unlike a true getelementptr (GEP) instruction
   typeInfoThrown = builder.CreateStructGEP(ourExceptionType, typeInfoThrown, 0);
-
+    printf("%s\n", Type_print(typeInfoThrown->getType()).c_str());
+    printf("%s\n", Type_print(typeInfoThrown->getType()->getScalarType()).c_str());
+    printf("%s\n", Type_print(cast<PointerType>(typeInfoThrown->getType()->getScalarType())->getElementType()).c_str());
   llvm::Value *typeInfoThrownType =
-      builder.CreateStructGEP(builder.getInt8PtrTy(), typeInfoThrown, 0);
+      builder.CreateStructGEP(ourTypeInfoType, typeInfoThrown, 0);
 
   generateIntegerPrint(context,
                        module,
@@ -1880,7 +1885,7 @@ static void createStandardUtilityFunctions(unsigned numTypeInfos,
 /// <= 6 and >= 1 will be caught by test functions; and type info types > 6
 /// will result in exceptions which pass through to the test harness. All other
 /// type info types are not supported and could cause a crash.
-int main(int argc, char *argv[]) {
+/* int main(int argc, char *argv[]) {
   if (argc == 1) {
     fprintf(stderr,
             "\nUsage: ExceptionDemo <exception type to throw> "
@@ -1982,4 +1987,4 @@ int main(int argc, char *argv[]) {
   delete executionEngine;
 
   return 0;
-}
+}*/
