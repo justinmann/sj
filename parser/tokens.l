@@ -58,6 +58,7 @@ int count_lines(const char* s, const int len) {
 "this"					TOKEN_VAL(TTHIS);
 "include"				TOKEN_VAL(TINCLUDE);
 "interface"				TOKEN_VAL(TINTERFACE);
+"implements"			TOKEN_VAL(TIMPLEMENT);
 "."						TOKEN_VAL(TDOT);
 [a-zA-Z_][a-zA-Z0-9_]*	TOKEN_STR(TIDENTIFIER);
 [0-9]+\.[0-9]*			TOKEN_STR(TDOUBLE);

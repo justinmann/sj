@@ -402,7 +402,7 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     auto arrayFunction = make_shared<NArrayCreateFunction>();
     compilerResult->block->statements.insert(compilerResult->block->statements.begin(), arrayFunction);
     
-    auto anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, nullptr, "global", nullptr, nullptr, compilerResult->block, catchBlock, nullptr);
+    auto anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, nullptr, "global", nullptr, nullptr, nullptr, compilerResult->block, catchBlock, nullptr);
     auto currentFunctionDefintion = CFunctionDefinition::create(this, *compilerResult, nullptr, FT_Public, "", nullptr);
     state = CompilerState::Define;
     anonFunction->define(this, *compilerResult, currentFunctionDefintion);

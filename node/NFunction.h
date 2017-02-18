@@ -18,6 +18,7 @@ public:
     shared_ptr<CTypeName> returnTypeName;
     string name;
     shared_ptr<CTypeNameList> templateTypeNames;
+    shared_ptr<vector<string>> interfaces;
     NodeList invalid;
     vector<shared_ptr<NAssignment>> assignments;
     vector<shared_ptr<NFunction>> functions;
@@ -26,7 +27,7 @@ public:
     const shared_ptr<NBase> destroyBlock;
     
     // For normal
-    NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock);
+    NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<vector<string>> interfaces, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock);
 
     // For extern
     NFunction(CLoc loc, CFunctionType type, const char* externName, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<NodeList> arguments);

@@ -96,7 +96,8 @@ extern int yydebug;
     TOR = 306,
     TDESTROY = 307,
     TMOD = 308,
-    TINTERFACE = 309
+    TINTERFACE = 309,
+    TIMPLEMENT = 310
   };
 #endif
 
@@ -113,6 +114,7 @@ union YYSTYPE
 	NVariableBase* var;
 	NodeList* exprvec;
 	std::string* string;
+	vector<std::string>* stringList;
 	CTypeName* typeName;
 	CTypeNameList* templateTypeNames;
 	CInterfaceMethod* interfaceMethod;

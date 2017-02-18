@@ -766,6 +766,11 @@ void testInterface() {
                                           test2: (:int) int
                                           test3: (:int, :char) list!char
                                           )
+                          
+                          class implements itest, ifoo () { this }
+                          
+                          a: class()
+                          
                           void
                           )DELIM");
     assert(result->type != RESULT_ERROR);

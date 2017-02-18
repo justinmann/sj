@@ -2,7 +2,7 @@
 
 int NFunction::counter = 0;
 
-NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock) : type(type), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), block(block), catchBlock(catchBlock), destroyBlock(destroyBlock), isInGetType(false), NBase(NodeType_Function, loc) {
+NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<vector<string>> interfaces, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock) : type(type), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), interfaces(interfaces), block(block), catchBlock(catchBlock), destroyBlock(destroyBlock), isInGetType(false), NBase(NodeType_Function, loc) {
     assert(type != FT_Extern);
     
     if (this->name == "^") {
@@ -229,7 +229,9 @@ Function* NFunction::compileDefinition(Compiler* compiler, CResult& result, shar
     
     if (!thisFunction->getHasThis()) {
         auto argTypes = thisFunction->getTypeList(compiler, result);
-        auto functionType = FunctionType::get(returnType->llvmRefType(compiler, result), ArrayRef<Type*>(*argTypes.get()), false);
+        auto returnLLVMType = returnType->llvmRefType(compiler, result);
+        assert(returnLLVMType);
+        auto functionType = FunctionType::get(returnLLVMType, ArrayRef<Type*>(*argTypes.get()), false);
         if (thisFunction->type == FT_Extern) {
             return Function::Create(functionType, Function::ExternalLinkage, externName.c_str(), compiler->module.get());
         } else {
@@ -782,6 +784,16 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
 
 void NFunction::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
     ss << thisFunction->fullName(true);
+    if (interfaces) {
+        ss << " implements ";
+        for (auto it : *interfaces) {
+            if (it != interfaces->front()) {
+                ss << ", ";
+            }
+            ss << it;
+        }
+        ss << " ";
+    }
     ss << "(";
     
     if (assignments.size() > 0) {

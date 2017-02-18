@@ -53,7 +53,7 @@ protected:
 
 class NArrayGetFunction : public NFunction {
 public:
-    NArrayGetFunction() : NFunction(CLoc::undefined, FT_Private, make_shared<CTypeName>("item"), "get", nullptr, make_shared<NodeList>(
+    NArrayGetFunction() : NFunction(CLoc::undefined, FT_Private, make_shared<CTypeName>("item"), "get", nullptr, nullptr, make_shared<NodeList>(
                                                                                                               make_shared<NAssignment>(CLoc::undefined, nullptr, make_shared<CTypeName>("int"), "index", nullptr, false)
                                                                                                               ), nullptr, nullptr, nullptr) { }
     
@@ -66,7 +66,7 @@ public:
 
 class NArraySetFunction : public NFunction {
 public:
-    NArraySetFunction() : NFunction(CLoc::undefined, FT_Private, make_shared<CTypeName>("void"), "set", nullptr, make_shared<NodeList>(
+    NArraySetFunction() : NFunction(CLoc::undefined, FT_Private, make_shared<CTypeName>("void"), "set", nullptr, nullptr, make_shared<NodeList>(
                                                                                                               make_shared<NAssignment>(CLoc::undefined, nullptr, make_shared<CTypeName>("int"), "index", nullptr, false),
                                                                                                               make_shared<NAssignment>(CLoc::undefined, nullptr, make_shared<CTypeName>("item"), "item", nullptr, false)
                                                                                                               ), nullptr, nullptr, nullptr) { }
@@ -81,7 +81,7 @@ public:
 
 class NArrayGrowFunction : public NFunction {
 public:
-    NArrayGrowFunction() : NFunction(CLoc::undefined, FT_Private, make_shared<CTypeName>("array", make_shared<CTypeNameList>("item")), "grow", nullptr, make_shared<NodeList>(
+    NArrayGrowFunction() : NFunction(CLoc::undefined, FT_Private, make_shared<CTypeName>("array", make_shared<CTypeNameList>("item")), "grow", nullptr, nullptr, make_shared<NodeList>(
                                                                                                                                              make_shared<NAssignment>(CLoc::undefined, nullptr, make_shared<CTypeName>("int"), "size", nullptr, false)
                                                                                                                                              ), nullptr, nullptr, nullptr) { }
     
@@ -95,7 +95,7 @@ public:
 
 class NArrayDeleteFunction : public NFunction {
 public:
-    NArrayDeleteFunction() : NFunction(CLoc::undefined, FT_Private, make_shared<CTypeName>("void"), "delete", nullptr, make_shared<NodeList>(
+    NArrayDeleteFunction() : NFunction(CLoc::undefined, FT_Private, make_shared<CTypeName>("void"), "delete", nullptr, nullptr, make_shared<NodeList>(
                                                                                                                      make_shared<NAssignment>(CLoc::undefined, nullptr, make_shared<CTypeName>("int"), "size", nullptr, false)
                                                                                                                      ), nullptr, nullptr, nullptr) { }
     
@@ -108,7 +108,7 @@ public:
 
 class NArrayCreateFunction : public NFunction {
 public:
-    NArrayCreateFunction() : NFunction(CLoc::undefined, FT_Private, nullptr, "array", make_shared<CTypeNameList>("item"), make_shared<NodeList>(
+    NArrayCreateFunction() : NFunction(CLoc::undefined, FT_Private, nullptr, "array", make_shared<CTypeNameList>("item"), nullptr, make_shared<NodeList>(
                                                                                                                                               make_shared<NAssignment>(CLoc::undefined, nullptr, nullptr, "size", make_shared<NInteger>(CLoc::undefined, "0"), false),
                                                                                                                                               make_shared<NArrayGetFunction>(),
                                                                                                                                                make_shared<NArraySetFunction>(),
