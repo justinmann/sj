@@ -67,8 +67,8 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %type <nif> if_expr
 %type <exprvec> func_args func_block array_args
 %type <isMutable> assign_type
-%type <typeName> type return_type
-%type <templateTypeNames> temp_args temp_block
+%type <typeName> arg_type_quote arg_type return_type_quote return_type func_type func_arg_type
+%type <templateTypeNames> temp_args temp_block func_arg_type_list
 
 /* Operator precedence */
 %left TAND TOR
@@ -112,8 +112,8 @@ var_decl 			: assign
 					;
 
 func_decl 			: TIDENTIFIER temp_block func_block block catch destroy			{ $$ = new NFunction(LOC, FT_Private, nullptr, $1->c_str(), shared_ptr<CTypeNameList>($2), shared_ptr<NodeList>($3), shared_ptr<NBlock>($4), shared_ptr<NBlock>($5), shared_ptr<NBlock>($6)); }
-					| TIDENTIFIER temp_block func_block return_type block catch destroy 	{ $$ = new NFunction(LOC, FT_Private, shared_ptr<CTypeName>($4), $1->c_str(), shared_ptr<CTypeNameList>($2), shared_ptr<NodeList>($3), shared_ptr<NBlock>($5), shared_ptr<NBlock>($6), shared_ptr<NBlock>($7)); }
-					| TEXTERN TLPAREN TSTRING TRPAREN TIDENTIFIER func_block return_type 	{ $$ = new NFunction(LOC, FT_Extern, $3->c_str(), shared_ptr<CTypeName>($7), $5->c_str(), shared_ptr<NodeList>($6)); delete $3; }
+					| TIDENTIFIER temp_block func_block return_type_quote block catch destroy 	{ $$ = new NFunction(LOC, FT_Private, shared_ptr<CTypeName>($4), $1->c_str(), shared_ptr<CTypeNameList>($2), shared_ptr<NodeList>($3), shared_ptr<NBlock>($5), shared_ptr<NBlock>($6), shared_ptr<NBlock>($7)); }
+					| TEXTERN TLPAREN TSTRING TRPAREN TIDENTIFIER func_block return_type_quote 	{ $$ = new NFunction(LOC, FT_Extern, $3->c_str(), shared_ptr<CTypeName>($7), $5->c_str(), shared_ptr<NodeList>($6)); delete $3; }
 					;
 
 catch				: /* Blank! */									{ $$ = nullptr; }
@@ -215,12 +215,12 @@ const 				: TMINUS TINTEGER 								{ $2->insert(0, "-"); $$ = new NInteger(LOC,
 					| TCHAR											{ $$ = new NChar(LOC, $1->c_str()[0]); delete $1; }
 					;
 										
-assign				: TIDENTIFIER assign_type stmt					{ $$ = new NAssignment(LOC, nullptr, nullptr, $1->c_str(), shared_ptr<NBase>($3), $2); }
-					| TIDENTIFIER assign_type type					{ $$ = new NAssignment(LOC, nullptr, shared_ptr<CTypeName>($3), $1->c_str(), nullptr, $2); }								
-					| TIDENTIFIER type assign_type stmt				{ $$ = new NAssignment(LOC, nullptr, shared_ptr<CTypeName>($2), $1->c_str(), shared_ptr<NBase>($4), $3); }
-					| var TDOT TIDENTIFIER assign_type stmt			{ $$ = new NAssignment(LOC, shared_ptr<NVariableBase>($1), nullptr, $3->c_str(), shared_ptr<NBase>($5), $4); }
-					| var TDOT TIDENTIFIER assign_type type			{ $$ = new NAssignment(LOC, shared_ptr<NVariableBase>($1), shared_ptr<CTypeName>($5), $3->c_str(), nullptr, $4); }								
-					| var TDOT TIDENTIFIER type assign_type stmt	{ $$ = new NAssignment(LOC, shared_ptr<NVariableBase>($1), shared_ptr<CTypeName>($4), $3->c_str(), shared_ptr<NBase>($6), $5); }
+assign				: TIDENTIFIER assign_type stmt						{ $$ = new NAssignment(LOC, nullptr, nullptr, $1->c_str(), shared_ptr<NBase>($3), $2); }
+					| TIDENTIFIER assign_type arg_type_quote			{ $$ = new NAssignment(LOC, nullptr, shared_ptr<CTypeName>($3), $1->c_str(), nullptr, $2); }								
+					| TIDENTIFIER arg_type_quote assign_type stmt		{ $$ = new NAssignment(LOC, nullptr, shared_ptr<CTypeName>($2), $1->c_str(), shared_ptr<NBase>($4), $3); }
+					| var TDOT TIDENTIFIER assign_type stmt				{ $$ = new NAssignment(LOC, shared_ptr<NVariableBase>($1), nullptr, $3->c_str(), shared_ptr<NBase>($5), $4); }
+					| var TDOT TIDENTIFIER assign_type arg_type_quote	{ $$ = new NAssignment(LOC, shared_ptr<NVariableBase>($1), shared_ptr<CTypeName>($5), $3->c_str(), nullptr, $4); }								
+					| var TDOT TIDENTIFIER arg_type_quote assign_type stmt	{ $$ = new NAssignment(LOC, shared_ptr<NVariableBase>($1), shared_ptr<CTypeName>($4), $3->c_str(), shared_ptr<NBase>($6), $5); }
 					;
 
 assign_type 		: TEQUAL										{ $$ = true; }
@@ -234,11 +234,30 @@ array_args 			: expr											{ $$ = new NodeList(); $$->push_back(shared_ptr<N
 					| array_args TCOMMA expr 						{ $1->push_back(shared_ptr<NBase>($3)); }
 					;
 
-return_type			: TQUOTE TIDENTIFIER temp_block					{ $$ = new CTypeName(*$2, shared_ptr<CTypeNameList>($3)); delete $2; }
-					| TQUOTE TVOID									{ $$ = new CTypeName("void"); }
+return_type_quote	: TQUOTE return_type							{ $$ = $2; }
 					;
 
-type 				: TQUOTE TIDENTIFIER temp_block					{ $$ = new CTypeName(*$2, shared_ptr<CTypeNameList>($3)); delete $2; }
+arg_type_quote		: TQUOTE arg_type								{ $$ = $2; }
+					;
+
+arg_type			: TIDENTIFIER temp_block						{ $$ = new CTypeName(*$1, shared_ptr<CTypeNameList>($2)); delete $1; }
+					| func_type										{ $$ = $1; }
+					;
+
+return_type			: arg_type										{ $$ = $1; }
+					| TVOID											{ $$ = new CTypeName("void"); }
+					;
+
+func_type			: TLPAREN func_arg_type_list TRPAREN return_type { $$ = new CTypeName(shared_ptr<CTypeNameList>($2), shared_ptr<CTypeName>($4)); }
+					;
+
+func_arg_type 		: TEQUAL arg_type 								{ $$ = $2; $$->mutability = CTM_Mutable; }
+					| TCOLON arg_type 								{ $$ = $2; $$->mutability = CTM_Immutable; }
+					;
+
+func_arg_type_list	: /* Blank! */									{ $$ = nullptr; }
+					| func_arg_type 								{ $$ = new CTypeNameList(); $$->push_back(shared_ptr<CTypeName>($1)); }
+					| func_arg_type_list TCOMMA func_arg_type 		{ $1->push_back(shared_ptr<CTypeName>($3)); }
 					;
 
 %%

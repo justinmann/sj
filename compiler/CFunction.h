@@ -19,13 +19,24 @@ public:
     CTypeNameList(const string& name);
 };
 
+enum CTypeImmutability {
+    CTM_Undefined,
+    CTM_Mutable,
+    CTM_Immutable,
+};
+
 class CTypeName {
 public:
+    bool isFunction;
+    CTypeImmutability mutability;
     string name;
     shared_ptr<CTypeNameList> templateTypeNames;
+    shared_ptr<CTypeNameList> argTypeNames;
+    shared_ptr<CTypeName> returnTypeName;
 
-    CTypeName(const string& name) : name(name) { }
-    CTypeName(const string& name, shared_ptr<CTypeNameList> templateTypeNames) : name(name), templateTypeNames(templateTypeNames) { }
+    CTypeName(const string& name) : isFunction(false), mutability(CTM_Undefined), name(name) { }
+    CTypeName(const string& name, shared_ptr<CTypeNameList> templateTypeNames) : isFunction(false), mutability(CTM_Undefined), name(name), templateTypeNames(templateTypeNames) { }
+    CTypeName(shared_ptr<CTypeNameList> argTypeNames, shared_ptr<CTypeName> returnTypeName) : isFunction(true), mutability(CTM_Undefined), argTypeNames(argTypeNames), returnTypeName(returnTypeName) { }
 };
 
 enum CFunctionType {
