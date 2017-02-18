@@ -95,7 +95,8 @@ extern int yydebug;
     TAND = 305,
     TOR = 306,
     TDESTROY = 307,
-    TMOD = 308
+    TMOD = 308,
+    TINTERFACE = 309
   };
 #endif
 
@@ -114,6 +115,8 @@ union YYSTYPE
 	std::string* string;
 	CTypeName* typeName;
 	CTypeNameList* templateTypeNames;
+	CInterfaceMethod* interfaceMethod;
+	CInterfaceMethodList* interfaceMethodList;
 	int token;
 	bool isMutable;
 

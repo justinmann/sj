@@ -37,6 +37,8 @@ public:
     CTypeName(const string& name) : isFunction(false), mutability(CTM_Undefined), name(name) { }
     CTypeName(const string& name, shared_ptr<CTypeNameList> templateTypeNames) : isFunction(false), mutability(CTM_Undefined), name(name), templateTypeNames(templateTypeNames) { }
     CTypeName(shared_ptr<CTypeNameList> argTypeNames, shared_ptr<CTypeName> returnTypeName) : isFunction(true), mutability(CTM_Undefined), argTypeNames(argTypeNames), returnTypeName(returnTypeName) { }
+    
+    string getName();
 };
 
 enum CFunctionType {

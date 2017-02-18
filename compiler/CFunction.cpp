@@ -13,6 +13,43 @@ CTypeNameList::CTypeNameList(const string& name) {
     push_back(make_shared<CTypeName>(name));
 }
 
+string CTypeName::getName() {
+    if (isFunction) {
+        string str = "(";
+        for (auto it : *argTypeNames) {
+            if (it != argTypeNames->front()) {
+                str += ", ";
+            }
+            if (it->mutability == CTM_Mutable) {
+                str += "=";
+            } else {
+                str += ":";
+            }
+            str += it->getName();
+        }
+        str += ")" + returnTypeName->getName();
+        return str;
+    } else {
+        string str = name;
+        if (templateTypeNames) {
+            if (templateTypeNames->size() == 1) {
+                str += "!" + (*templateTypeNames)[0]->getName();
+            } else {
+                str += "![";
+                for (auto it : *templateTypeNames) {
+                    if (it != templateTypeNames->front()) {
+                        str += ", ";
+                    }
+                    str += it->getName();
+                }
+                str += "]";
+            }
+        }
+        return str;
+    }
+}
+
+
 shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, const CLoc& loc, weak_ptr<CFunctionDefinition> definition_, vector<shared_ptr<CType>>& templateTypes_, weak_ptr<CFunction> parent_, CFunctionType type_, const string& name_, shared_ptr<NFunction> node_) {
     auto c = make_shared<CFunction>();
     c->definition = definition_;

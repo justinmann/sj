@@ -52,16 +52,18 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 	std::string* string;
 	CTypeName* typeName;
 	CTypeNameList* templateTypeNames;
+	CInterfaceMethod* interfaceMethod;
+	CInterfaceMethodList* interfaceMethodList;
 	int token;
 	bool isMutable;
 }
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID TSTRING TCHAR
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY TMOD
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY TMOD TINTERFACE
 
 /* Non Terminal symbols. Types refer to union decl above */
-%type <node> program expr expr_and expr_comp expr_math expr_var const stmt var_decl func_decl func_arg for_expr while_expr assign array
+%type <node> program expr expr_and expr_comp expr_math expr_var const stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl
 %type <var> var var_right
 %type <block> stmts block catch destroy
 %type <nif> if_expr
@@ -69,6 +71,8 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %type <isMutable> assign_type
 %type <typeName> arg_type_quote arg_type return_type_quote return_type func_type func_arg_type
 %type <templateTypeNames> temp_args temp_block func_arg_type_list
+%type <interfaceMethod> interface_arg
+%type <interfaceMethodList> interface_args interface_block
 
 /* Operator precedence */
 %left TAND TOR
@@ -94,6 +98,7 @@ stmts 				: stmt											{ $$ = new NBlock(LOC); if ($1) $$->statements.push_b
 stmt 				: /* Blank! */									{ $$ = nullptr; }
 					| var_decl
 					| func_decl 
+					| interface_decl
 					| expr
 					| TINCLUDE TSTRING								{ $$ = new NInclude(LOC, $2->c_str()); delete $2; }
 					| error	 										{ $$ = nullptr; /* yyclearin; */ result->addError(LLOC, CErrorCode::InvalidCharacter, "Something failed to parse"); }
@@ -137,6 +142,21 @@ func_arg			: /* Blank! */									{ $$ = nullptr; }
 					| func_decl 										
 					| expr 	
 					; 
+
+interface_decl		: TINTERFACE TIDENTIFIER temp_block interface_block		{ $$ = new NInterface(LOC, $2->c_str(), shared_ptr<CTypeNameList>($3), shared_ptr<CInterfaceMethodList>($4)); delete $2; }
+					;
+
+interface_block		: TLPAREN interface_args TRPAREN 				{ $$ = $2; }
+					;
+
+interface_args		: interface_arg									{ $$ = new CInterfaceMethodList(); if ($1) { $$->push_back(shared_ptr<CInterfaceMethod>($1)); } }
+					| interface_args TEND interface_arg 			{ if ($3) { $1->push_back(shared_ptr<CInterfaceMethod>($3)); } }
+					| interface_args TCOMMA interface_arg 			{ if ($3) { $1->push_back(shared_ptr<CInterfaceMethod>($3)); } }
+					;
+
+interface_arg 		: /* Blank! */									{ $$ = nullptr; }
+					| TIDENTIFIER TCOLON func_type                  { $$ = new CInterfaceMethod($1->c_str(), shared_ptr<CTypeName>($3)); delete $1; }
+					;
 
 temp_block			: /* Blank! */									{ $$ = nullptr; }
 					| TEXCLAIM TIDENTIFIER							{ $$ = new CTypeNameList(); $$->push_back(make_shared<CTypeName>(*$2)); delete $2; }
@@ -255,7 +275,7 @@ func_arg_type 		: TEQUAL arg_type 								{ $$ = $2; $$->mutability = CTM_Mutabl
 					| TCOLON arg_type 								{ $$ = $2; $$->mutability = CTM_Immutable; }
 					;
 
-func_arg_type_list	: /* Blank! */									{ $$ = nullptr; }
+func_arg_type_list	: /* Blank! */									{ $$ = new CTypeNameList(); }
 					| func_arg_type 								{ $$ = new CTypeNameList(); $$->push_back(shared_ptr<CTypeName>($1)); }
 					| func_arg_type_list TCOMMA func_arg_type 		{ $1->push_back(shared_ptr<CTypeName>($3)); }
 					;

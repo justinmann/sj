@@ -755,11 +755,26 @@ void testHeap() {
     )DELIM");
     assert(result->type == RESULT_INT && result->iResult == 2);
 }
+
+void testInterface() {
+    shared_ptr<CResult> result;
+    Compiler compiler;
+
+    result = compiler.run(R"DELIM(
+                          interface itest(
+                                          test1: () void
+                                          test2: (:int) int
+                                          test3: (:int, :char) list!char
+                                          )
+                          void
+                          )DELIM");
+    assert(result->type != RESULT_ERROR);
+}
                           
 int main(int argc, char **argv) {
     shared_ptr<CResult> result;
     Compiler compiler;
-    
+
     testMath();
     testComparison();
     testVoid();
@@ -778,6 +793,7 @@ int main(int argc, char **argv) {
     testInclude();
     testString();
     testHeap();
+    testInterface();
 
     // testThrow();
     // compiler.run("include \"highlow.sj\"");
