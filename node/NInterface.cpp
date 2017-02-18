@@ -12,7 +12,7 @@ shared_ptr<ReturnValue> NInterface::compileImpl(Compiler* compiler, CResult& res
 }
 
 void NInterface::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
-    ss << "interface " << name;
+    ss << "#" << name;
     if (templateTypeNames) {
         if (templateTypeNames->size() == 1) {
             ss << "!" << (*templateTypeNames)[0]->getName();

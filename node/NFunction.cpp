@@ -785,12 +785,12 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
 void NFunction::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
     ss << thisFunction->fullName(true);
     if (interfaces) {
-        ss << " implements ";
+        ss << " ";
         for (auto it : *interfaces) {
             if (it != interfaces->front()) {
                 ss << ", ";
             }
-            ss << it;
+            ss << "#" << it;
         }
         ss << " ";
     }

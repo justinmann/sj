@@ -96,8 +96,7 @@ extern int yydebug;
     TOR = 306,
     TDESTROY = 307,
     TMOD = 308,
-    TINTERFACE = 309,
-    TIMPLEMENT = 310
+    THASH = 309
   };
 #endif
 

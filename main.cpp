@@ -761,18 +761,18 @@ void testInterface() {
     Compiler compiler;
 
     result = compiler.run(R"DELIM(
-                          interface itest(
-                                          test1: () void
-                                          test2: (:int) int
-                                          test3: (:int, :char) list!char
-                                          )
-                          
-                          class implements itest, ifoo () { this }
-                          
-                          a: class()
-                          
-                          void
-                          )DELIM");
+        #test(
+            test1: () void
+            test2: (:int) int
+            test3: (:int, :char) list!char
+        )
+
+        class #test, #foo () { this }
+
+        a: class()
+
+        void
+    )DELIM");
     assert(result->type != RESULT_ERROR);
 }
                           

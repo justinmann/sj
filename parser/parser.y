@@ -61,7 +61,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID TSTRING TCHAR
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY TMOD TINTERFACE TIMPLEMENT
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY TMOD THASH
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program expr expr_and expr_comp expr_math expr_var const stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl
@@ -171,14 +171,14 @@ func_arg			: /* Blank! */									{ $$ = nullptr; }
 					| expr 	
 					; 
 
-implement 			: TIMPLEMENT implement_args						{ $$ = $2; }
+implement 			: implement_args						{ $$ = $1; }
 					;
 
-implement_args 		: TIDENTIFIER									{ $$ = new vector<string>(); $$->push_back($1->c_str()); delete $1; }							
-					| implement_args TCOMMA TIDENTIFIER 			{ $$ = $1; $$->push_back($3->c_str()); delete $3; }
+implement_args 		: THASH TIDENTIFIER								{ $$ = new vector<string>(); $$->push_back($2->c_str()); delete $2; }							
+					| implement_args TCOMMA THASH TIDENTIFIER 		{ $$ = $1; $$->push_back($4->c_str()); delete $4; }
 					;
 
-interface_decl		: TINTERFACE TIDENTIFIER temp_block_optional interface_block { $$ = new NInterface(LOC, $2->c_str(), shared_ptr<CTypeNameList>($3), shared_ptr<CInterfaceMethodList>($4)); delete $2; }
+interface_decl		: THASH TIDENTIFIER temp_block_optional interface_block { $$ = new NInterface(LOC, $2->c_str(), shared_ptr<CTypeNameList>($3), shared_ptr<CInterfaceMethodList>($4)); delete $2; }
 					;
 
 interface_block		: TLPAREN interface_args TRPAREN 				{ $$ = $2; }
