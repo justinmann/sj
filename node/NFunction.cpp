@@ -352,46 +352,7 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
     }
     
     if (catchBB) {
-    /*
-     ; <label>:7                                       ; preds = %0
-     %8 = landingpad { i8*, i32 }
-     catch i8* bitcast (i8** @_ZTIPv to i8*)
-     %9 = extractvalue { i8*, i32 } %8, 0
-     store i8* %9, i8** %2, align 8
-     %10 = extractvalue { i8*, i32 } %8, 1
-     store i32 %10, i32* %3, align 4
-     br label %11
-     
-     ; <label>:11                                      ; preds = %7
-     %12 = load i32, i32* %3, align 4
-     %13 = call i32 @llvm.eh.typeid.for(i8* bitcast (i8** @_ZTIPv to i8*)) #5
-     %14 = icmp eq i32 %12, %13
-     br i1 %14, label %15, label %24
-     
-     ; <label>:15                                      ; preds = %11
-     %16 = load i8*, i8** %2, align 8
-     %17 = call i8* @__cxa_begin_catch(i8* %16) #5
-     store i8* %17, i8** %4, align 8
-     %18 = load i8*, i8** %4, align 8
-     %19 = bitcast i8* %18 to %struct.SJException*
-     %20 = getelementptr inbounds %struct.SJException, %struct.SJException* %19, i32 0, i32 0
-     %21 = load i32, i32* %20, align 4
-     store i32 %21, i32* %1, align 4
-     call void @__cxa_end_catch() #5
-     br label %22
-     
-     ; <label>:22                                      ; preds = %15, %6
-     %23 = load i32, i32* %1, align 4
-     ret i32 %23
-     
-     ; <label>:24                                      ; preds = %11
-     %25 = load i8*, i8** %2, align 8
-     %26 = load i32, i32* %3, align 4
-     %27 = insertvalue { i8*, i32 } undef, i8* %25, 0
-     %28 = insertvalue { i8*, i32 } %27, i32 %26, 1
-     resume { i8*, i32 } %28
-    */
-    
+   
         IRBuilder<> catchBuilder(catchBB);
         
         llvm::Type *caughtResultFieldTypes[] = {
@@ -405,12 +366,14 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
         auto j = catchBuilder.CreateBitCast(t, Type::getInt8PtrTy(compiler->context));
         caughtResult->addClause((Constant*)j);
 
+#ifdef EXCEPTION_OUTPUT
         Value *unwindException = catchBuilder.CreateExtractValue(caughtResult, 0);
         Value *retTypeInfoIndex = catchBuilder.CreateExtractValue(caughtResult, 1);
-        
+#endif
+
         if (catchBlock) {
-            auto exceptionValue = catchBuilder.CreateCall(compiler->exception->getBeginCatch(), unwindException);
 #ifdef EXCEPTION_OUTPUT
+            auto exceptionValue = catchBuilder.CreateCall(compiler->exception->getBeginCatch(), unwindException);
             Value *i64 = catchBuilder.CreateIntCast(retTypeInfoIndex, Type::getInt64Ty(compiler->context), true);
             compiler->callDebug(&catchBuilder, strprintf("CAUGHT EXCEPTION %s", name.c_str()), exceptionValue, i64);
 #endif
