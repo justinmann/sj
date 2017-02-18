@@ -53,8 +53,6 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 	vector<std::string>* stringList;
 	CTypeName* typeName;
 	CTypeNameList* templateTypeNames;
-	CInterfaceMethod* interfaceMethod;
-	CInterfaceMethodList* interfaceMethodList;
 	int token;
 	bool isMutable;
 }
@@ -64,17 +62,15 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TCAST TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY TMOD THASH
 
 /* Non Terminal symbols. Types refer to union decl above */
-%type <node> program expr expr_and expr_comp expr_math expr_var const stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl
+%type <node> program expr expr_and expr_comp expr_math expr_var const stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg
 %type <var> var var_right
 %type <block> stmts block catch destroy
 %type <nif> if_expr
-%type <exprvec> func_args func_block array_args
+%type <exprvec> func_args func_block array_args interface_args interface_block
 %type <isMutable> assign_type
 %type <typeName> arg_type_quote arg_type return_type_quote return_type func_type func_arg_type func_type_name
 %type <templateTypeNames> temp_args temp_block temp_block_optional func_arg_type_list
 %type <stringList> implement implement_args
-%type <interfaceMethod> interface_arg
-%type <interfaceMethodList> interface_args interface_block
 
 /* Operator precedence */
 %left TAND TOR
@@ -178,19 +174,19 @@ implement_args 		: THASH TIDENTIFIER								{ $$ = new vector<string>(); $$->pus
 					| implement_args TCOMMA THASH TIDENTIFIER 		{ $$ = $1; $$->push_back($4->c_str()); delete $4; }
 					;
 
-interface_decl		: THASH TIDENTIFIER temp_block_optional interface_block { $$ = new NInterface(LOC, $2->c_str(), shared_ptr<CTypeNameList>($3), shared_ptr<CInterfaceMethodList>($4)); delete $2; }
+interface_decl		: THASH TIDENTIFIER temp_block_optional interface_block { $$ = new NInterface(LOC, $2->c_str(), shared_ptr<CTypeNameList>($3), shared_ptr<NodeList>($4)); delete $2; }
 					;
 
 interface_block		: TLPAREN interface_args TRPAREN 				{ $$ = $2; }
 					;
 
-interface_args		: interface_arg									{ $$ = new CInterfaceMethodList(); if ($1) { $$->push_back(shared_ptr<CInterfaceMethod>($1)); } }
-					| interface_args TEND interface_arg 			{ if ($3) { $1->push_back(shared_ptr<CInterfaceMethod>($3)); } }
-					| interface_args TCOMMA interface_arg 			{ if ($3) { $1->push_back(shared_ptr<CInterfaceMethod>($3)); } }
+interface_args		: interface_arg									{ $$ = new NodeList(); if ($1) { $$->push_back(shared_ptr<NBase>($1)); } }
+					| interface_args TEND interface_arg 			{ if ($3) { $1->push_back(shared_ptr<NBase>($3)); } }
+					| interface_args TCOMMA interface_arg 			{ if ($3) { $1->push_back(shared_ptr<NBase>($3)); } }
 					;
 
 interface_arg 		: /* Blank! */									{ $$ = nullptr; }
-					| TIDENTIFIER TCOLON func_type                  { $$ = new CInterfaceMethod($1->c_str(), shared_ptr<CTypeName>($3)); delete $1; }
+					| func_type_name func_block return_type_quote 	{ $$ = new NInterfaceMethod(LOC, $1->name.c_str(), $1->templateTypeNames, shared_ptr<NodeList>($2), shared_ptr<CTypeName>($3)); }
 					;
 
 expr 				: if_expr										{ $$ = (NBase*)$1; }

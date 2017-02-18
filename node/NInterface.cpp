@@ -1,5 +1,14 @@
 #include "Node.h"
 
+NInterface::NInterface(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> methodList_) : NBase(NodeType_Interface, loc), name(name), templateTypeNames(templateTypeNames) {
+    if (methodList_) {
+        for (auto it : *methodList_) {
+            assert(it->nodeType == NodeType_InterfaceMethod);
+            methodList.push_back(static_pointer_cast<NInterfaceMethod>(it));
+        }
+    }
+}
+
 shared_ptr<CType> NInterface::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
     return compiler->typeVoid;
@@ -25,9 +34,10 @@ void NInterface::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction>
         }
     }
     ss << "(\n";
-    for (auto it : *methodList) {
+    for (auto it : methodList) {
         dumpf(ss, level + 1);
-        ss << it->name << ": " << it->methodTypeName->getName() << "\n";
+        it->dump(compiler, result, thisFunction, thisVar, functions, ss, level + 1);
+        ss << "\n";
     }
     dumpf(ss, level);
     ss << ")";

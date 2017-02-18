@@ -60,6 +60,7 @@ enum NodeType {
     NodeType_Include,
     NodeType_Integer,
     NodeType_Interface,
+    NodeType_InterfaceMethod,
     NodeType_List,
     NodeType_Math,
     NodeType_MathAssignment,
@@ -92,6 +93,7 @@ enum NodeType {
 #include "NInclude.h"
 #include "NInteger.h"
 #include "NInterface.h"
+#include "NInterfaceMethod.h"
 #include "NMath.h"
 #include "NMathAssignment.h"
 #include "NNot.h"

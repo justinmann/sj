@@ -116,8 +116,6 @@ union YYSTYPE
 	vector<std::string>* stringList;
 	CTypeName* typeName;
 	CTypeNameList* templateTypeNames;
-	CInterfaceMethod* interfaceMethod;
-	CInterfaceMethodList* interfaceMethodList;
 	int token;
 	bool isMutable;
 

@@ -762,9 +762,9 @@ void testInterface() {
 
     result = compiler.run(R"DELIM(
         #test(
-            test1: () void
-            test2: (:int) int
-            test3: (:int, :char) list!char
+            test1()'void
+            test2(x: 1)'int
+            test3(x: 2, z: 'c')'list!char
         )
 
         class #test, #foo () { this }

@@ -1,23 +1,22 @@
 //
-//  NInterface.h
+//  NInterfaceMethod.h
 //  sj
 //
 //  Created by Mann, Justin on 12/25/16.
 //  Copyright © 2016 Mann, Justin. All rights reserved.
 //
 
-#ifndef NInterface_h
-#define NInterface_h
+#ifndef NInterfaceMethod_h
+#define NInterfaceMethod_h
 
-class NInterfaceMethod;
-
-class NInterface : public NBase {
+class NInterfaceMethod : public NBase {
 public:
     string name;
     shared_ptr<CTypeNameList> templateTypeNames;
-    vector<shared_ptr<NInterfaceMethod>> methodList;
+    vector<shared_ptr<NAssignment>> assignments;
+    shared_ptr<CTypeName> returnTypeName;
 
-    NInterface(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> methodList);
+    NInterfaceMethod(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<CTypeName> returnTypeName);
     virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level);
 
 protected:
@@ -28,4 +27,4 @@ protected:
     virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB);
 };
 
-#endif /* NInterface_h */
+#endif /* NInterfaceMethod_h */
