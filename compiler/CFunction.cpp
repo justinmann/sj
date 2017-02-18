@@ -9,12 +9,12 @@
 #include "Node.h"
 #define STACK_REF_COUNT         1000000000000
 
-CTypeNameList::CTypeNameList(const string& name) {
-    push_back(make_shared<CTypeName>(name));
+CTypeNameList::CTypeNameList(CTypeCategory category, const string& name) {
+    push_back(make_shared<CTypeName>(category, name));
 }
 
 string CTypeName::getName() {
-    if (isFunction) {
+    if (category == CTC_Function) {
         string str = "(";
         for (auto it : *argTypeNames) {
             if (it != argTypeNames->front()) {
@@ -30,7 +30,11 @@ string CTypeName::getName() {
         str += ")" + returnTypeName->getName();
         return str;
     } else {
-        string str = name;
+        string str = "";
+        if (category == CTC_Interface) {
+            str += "#";
+        }
+        str += name;
         if (templateTypeNames) {
             if (templateTypeNames->size() == 1) {
                 str += "!" + (*templateTypeNames)[0]->getName();

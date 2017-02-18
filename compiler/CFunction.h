@@ -13,30 +13,36 @@ class NFunction;
 
 class CTypeName;
 
-class CTypeNameList : public vector<shared_ptr<CTypeName>> {
-public:
-    CTypeNameList() { }
-    CTypeNameList(const string& name);
-};
-
 enum CTypeImmutability {
     CTM_Undefined,
     CTM_Mutable,
     CTM_Immutable,
 };
 
+enum CTypeCategory {
+    CTC_Value,
+    CTC_Interface,
+    CTC_Function
+};
+
+class CTypeNameList : public vector<shared_ptr<CTypeName>> {
+public:
+    CTypeNameList() { }
+    CTypeNameList(CTypeCategory category, const string& name);
+};
+
 class CTypeName {
 public:
-    bool isFunction;
+    CTypeCategory category;
     CTypeImmutability mutability;
     string name;
     shared_ptr<CTypeNameList> templateTypeNames;
     shared_ptr<CTypeNameList> argTypeNames;
     shared_ptr<CTypeName> returnTypeName;
 
-    CTypeName(const string& name) : isFunction(false), mutability(CTM_Undefined), name(name) { }
-    CTypeName(const string& name, shared_ptr<CTypeNameList> templateTypeNames) : isFunction(false), mutability(CTM_Undefined), name(name), templateTypeNames(templateTypeNames) { }
-    CTypeName(shared_ptr<CTypeNameList> argTypeNames, shared_ptr<CTypeName> returnTypeName) : isFunction(true), mutability(CTM_Undefined), argTypeNames(argTypeNames), returnTypeName(returnTypeName) { }
+    CTypeName(CTypeCategory category, const string& name) : category(category), mutability(CTM_Undefined), name(name) { }
+    CTypeName(CTypeCategory category, const string& name, shared_ptr<CTypeNameList> templateTypeNames) : category(category), mutability(CTM_Undefined), name(name), templateTypeNames(templateTypeNames) { }
+    CTypeName(shared_ptr<CTypeNameList> argTypeNames, shared_ptr<CTypeName> returnTypeName) : category(CTC_Function), mutability(CTM_Undefined), argTypeNames(argTypeNames), returnTypeName(returnTypeName) { }
     
     string getName();
 };

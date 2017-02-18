@@ -396,7 +396,7 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     catchBlock->statements.push_back(make_shared<NMatchReturn>(CLoc::undefined, compilerResult->block));
     
     // Define an extern for throwException at the beginning of the block
-    auto throwExceptionFunction = make_shared<NFunction>(CLoc::undefined, FT_Extern, "throwException", make_shared<CTypeName>("void"), "throwException", nullptr);
+    auto throwExceptionFunction = make_shared<NFunction>(CLoc::undefined, FT_Extern, "throwException", make_shared<CTypeName>(CTC_Value, "void"), "throwException", nullptr);
     compilerResult->block->statements.insert(compilerResult->block->statements.begin(), throwExceptionFunction);
     
     auto arrayFunction = make_shared<NArrayCreateFunction>();

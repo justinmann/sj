@@ -4,7 +4,7 @@ void NStringArray::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CF
 }
 
 shared_ptr<CVar> NStringArray::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    createCall = make_shared<NCall>(loc, "array", make_shared<CTypeNameList>("char"), nullptr);
+    createCall = make_shared<NCall>(loc, "array", make_shared<CTypeNameList>(CTC_Value, "char"), nullptr);
     return createCall->getVar(compiler, result, thisFunction, thisVar, nullptr);
 }
 
@@ -70,7 +70,7 @@ shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, CResult& result, shared
     
     auto size = make_shared<NInteger>(loc, str.size());
     auto stringArray = make_shared<NStringArray>(loc, str);
-    createCall = make_shared<NCall>(loc, "list", make_shared<CTypeNameList>("char"), make_shared<NodeList>(size, size, stringArray));
+    createCall = make_shared<NCall>(loc, "list", make_shared<CTypeNameList>(CTC_Value, "char"), make_shared<NodeList>(size, size, stringArray));
     return createCall->getVar(compiler, result, thisFunction, thisVar, nullptr);
 }
 

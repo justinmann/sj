@@ -761,8 +761,10 @@ void testInterface() {
     Compiler compiler;
 
     result = compiler.run(R"DELIM(
+        #foo()
+        
         #test(
-            test1()'void
+            test1()'#foo
             test2(x: 1)'int
             test3(x: 2, z: 'c')'list!char
         )

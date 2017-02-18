@@ -141,8 +141,8 @@ func_decl 			: func_type_name func_block block catch destroy			{
 					}
 					;
 
-func_type_name		: TIDENTIFIER									{ $$ = new CTypeName($1->c_str()); delete $1; }
-					| TIDENTIFIER temp_block 						{ $$ = new CTypeName($1->c_str(), shared_ptr<CTypeNameList>($2)); delete $1; }
+func_type_name		: TIDENTIFIER									{ $$ = new CTypeName(CTC_Value, $1->c_str()); delete $1; }
+					| TIDENTIFIER temp_block 						{ $$ = new CTypeName(CTC_Value, $1->c_str(), shared_ptr<CTypeNameList>($2)); delete $1; }
 					;
 
 catch				: /* Blank! */									{ $$ = nullptr; }
@@ -282,12 +282,13 @@ return_type_quote	: TQUOTE return_type							{ $$ = $2; }
 arg_type_quote		: TQUOTE arg_type								{ $$ = $2; }
 					;
 
-arg_type			: TIDENTIFIER temp_block_optional				{ $$ = new CTypeName(*$1, shared_ptr<CTypeNameList>($2)); delete $1; }
+arg_type			: TIDENTIFIER temp_block_optional				{ $$ = new CTypeName(CTC_Value, *$1, shared_ptr<CTypeNameList>($2)); delete $1; }
+					| THASH TIDENTIFIER temp_block_optional			{ $$ = new CTypeName(CTC_Interface, *$2, shared_ptr<CTypeNameList>($3)); delete $2; }
 					| func_type										{ $$ = $1; }
 					;
 
 return_type			: arg_type										{ $$ = $1; }
-					| TVOID											{ $$ = new CTypeName("void"); }
+					| TVOID											{ $$ = new CTypeName(CTC_Value, "void"); }
 					;
 
 func_type			: TLPAREN func_arg_type_list TRPAREN return_type { $$ = new CTypeName(shared_ptr<CTypeNameList>($2), shared_ptr<CTypeName>($4)); }
@@ -306,12 +307,12 @@ temp_block_optional : /* Blank! */									{ $$ = nullptr; }
 					| temp_block									{ $$ = $1; }
 					;
 
-temp_block			: TEXCLAIM TIDENTIFIER							{ $$ = new CTypeNameList(); $$->push_back(make_shared<CTypeName>(*$2)); delete $2; }
+temp_block			: TEXCLAIM TIDENTIFIER							{ $$ = new CTypeNameList(); $$->push_back(make_shared<CTypeName>(CTC_Value, *$2)); delete $2; }
 					| TEXCLAIM TLBRACKET temp_args TRBRACKET		{ $$ = $3; }					
 					;
 
-temp_args			: TIDENTIFIER temp_block_optional				{ $$ = new CTypeNameList(); $$->push_back(make_shared<CTypeName>(*$1, shared_ptr<CTypeNameList>($2))); delete $1; }
-					| temp_args TCOMMA TIDENTIFIER					{ $1->push_back(make_shared<CTypeName>(*$3)); delete $3; }
+temp_args			: TIDENTIFIER temp_block_optional				{ $$ = new CTypeNameList(); $$->push_back(make_shared<CTypeName>(CTC_Value, *$1, shared_ptr<CTypeNameList>($2))); delete $1; }
+					| temp_args TCOMMA TIDENTIFIER					{ $1->push_back(make_shared<CTypeName>(CTC_Value, *$3)); delete $3; }
 					;
 
 %%

@@ -23,7 +23,7 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, CResult& result, shared_
         return nullptr;
     }
     
-    createCall = make_shared<NCall>(loc, "array", make_shared<CTypeNameList>(itemType->name), nullptr);
+    createCall = make_shared<NCall>(loc, "array", make_shared<CTypeNameList>(CTC_Value, itemType->name), nullptr);
     return createCall->getVar(compiler, result, thisFunction, thisVar, nullptr);
 }
 
@@ -110,7 +110,7 @@ void NList::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction
 shared_ptr<CVar> NList::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
     array->getVar(compiler, result, thisFunction, thisVar);
     auto size = make_shared<NInteger>(loc, array->elements->size());
-    createCall = make_shared<NCall>(loc, "list", make_shared<CTypeNameList>(array->itemType->name), make_shared<NodeList>(size, size, array));
+    createCall = make_shared<NCall>(loc, "list", make_shared<CTypeNameList>(CTC_Value, array->itemType->name), make_shared<NodeList>(size, size, array));
     return createCall->getVar(compiler, result, thisFunction, thisVar, nullptr);
 }
 
@@ -133,7 +133,7 @@ void NList::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> this
 }
 
 shared_ptr<CType> NArrayGetFunction::getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    return thisFunction->getVarType(compiler, result, CLoc::undefined, make_shared<CTypeName>("item"));
+    return thisFunction->getVarType(compiler, result, CLoc::undefined, make_shared<CTypeName>(CTC_Value, "item"));
 }
 
 shared_ptr<ReturnValue> NArrayGetFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
@@ -210,7 +210,7 @@ shared_ptr<ReturnValue> NArrayGrowFunction::call(Compiler* compiler, CResult& re
     auto parentHeapVar = dotVar->getHeapVar(compiler, result, thisVar);
     assert(parentHeapVar);
     
-    auto itemType = callee->getVarType(compiler, result, CLoc::undefined, make_shared<CTypeName>("item"));
+    auto itemType = callee->getVarType(compiler, result, CLoc::undefined, make_shared<CTypeName>(CTC_Value, "item"));
     auto itemLLVMType = itemType->llvmRefType(compiler, result);
     auto itemFunction = itemType->parent.lock();
     
@@ -246,7 +246,7 @@ shared_ptr<ReturnValue> NArrayDeleteFunction::call(Compiler* compiler, CResult& 
     auto parentValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB);
     auto parentHeapVar = dotVar->getHeapVar(compiler, result, thisVar);
     
-    auto itemType = callee->getVarType(compiler, result, CLoc::undefined, make_shared<CTypeName>("item"));
+    auto itemType = callee->getVarType(compiler, result, CLoc::undefined, make_shared<CTypeName>(CTC_Value, "item"));
     auto itemFunction = itemType->parent.lock();
     if (itemFunction) {
         auto sizeValue = parameters[0]->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
