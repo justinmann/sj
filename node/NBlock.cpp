@@ -1,13 +1,13 @@
 #include "Node.h"
 
-void NBlock::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
+void NBlock::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     for (auto it : statements) {
         it->define(compiler, result, thisFunction);
     }
 }
 
-shared_ptr<CVar> NBlock::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CVar> NBlock::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state == CompilerState::FixVar);
     shared_ptr<CVar> lastVar = nullptr;
     for (auto it : statements) {
@@ -16,7 +16,7 @@ shared_ptr<CVar> NBlock::getVarImpl(Compiler* compiler, CResult& result, shared_
     return lastVar;
 }
 
-shared_ptr<CType> NBlock::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CType> NBlock::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
     if (statements.size() == 0) {
         return compiler->typeVoid;
@@ -24,7 +24,7 @@ shared_ptr<CType> NBlock::getTypeImpl(Compiler* compiler, CResult& result, share
     return statements.back()->getType(compiler, result, thisFunction, thisVar);
 }
 
-int NBlock::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
+int NBlock::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
     auto count = 0;
     for (auto it : statements) {
         auto isLast = it == statements.back();
@@ -33,7 +33,7 @@ int NBlock::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunc
     return count;
 }
 
-shared_ptr<ReturnValue> NBlock::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NBlock::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     shared_ptr<ReturnValue> last = nullptr;
     for (auto it : statements) {
@@ -46,7 +46,7 @@ shared_ptr<ReturnValue> NBlock::compileImpl(Compiler* compiler, CResult& result,
     return last;
 }
 
-void NBlock::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+void NBlock::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << "{\n";
     for (auto it : statements) {
         stringstream line;

@@ -52,6 +52,7 @@
 		9C7489171E58162E008A032C /* CInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C7489161E58162E008A032C /* CInterface.cpp */; };
 		9C74891A1E581783008A032C /* NInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C7489181E581783008A032C /* NInterface.cpp */; };
 		9C74891D1E58DD79008A032C /* NInterfaceMethod.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C74891B1E58DD79008A032C /* NInterfaceMethod.cpp */; };
+		9C7489201E592744008A032C /* NBaseFunction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C74891E1E592744008A032C /* NBaseFunction.cpp */; };
 		9C7B48E41E19A2DD00D378A1 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C7B48E11E19A2DD00D378A1 /* main.cpp */; };
 		9C908EFC1E3343C2005E253C /* NDot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C908EFA1E3343C2005E253C /* NDot.cpp */; };
 		9C908EFF1E33EFBF005E253C /* NThis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C908EFD1E33EFBF005E253C /* NThis.cpp */; };
@@ -82,7 +83,7 @@
 		9CF16C211E19A888006E9CB8 /* NVoid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16C131E19A888006E9CB8 /* NVoid.cpp */; };
 		9CF16C261E19A8A9006E9CB8 /* parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16C231E19A8A9006E9CB8 /* parser.cpp */; };
 		9CF16C271E19A8A9006E9CB8 /* tokens.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16C251E19A8A9006E9CB8 /* tokens.cpp */; };
-		9CFDBF921E19BCCE00F5436F /* CFunction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CFDBF8E1E19BCCE00F5436F /* CFunction.cpp */; };
+		9CFDBF921E19BCCE00F5436F /* CTypeName.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CFDBF8E1E19BCCE00F5436F /* CTypeName.cpp */; };
 		9CFDBF931E19BCCE00F5436F /* CVar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CFDBF901E19BCCE00F5436F /* CVar.cpp */; };
 		9CFDBF961E19BD9500F5436F /* CType.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CFDBF941E19BD9500F5436F /* CType.cpp */; };
 /* End PBXBuildFile section */
@@ -159,6 +160,8 @@
 		9C7489191E581783008A032C /* NInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NInterface.h; path = node/NInterface.h; sourceTree = "<group>"; };
 		9C74891B1E58DD79008A032C /* NInterfaceMethod.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NInterfaceMethod.cpp; path = node/NInterfaceMethod.cpp; sourceTree = "<group>"; };
 		9C74891C1E58DD79008A032C /* NInterfaceMethod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NInterfaceMethod.h; path = node/NInterfaceMethod.h; sourceTree = "<group>"; };
+		9C74891E1E592744008A032C /* NBaseFunction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NBaseFunction.cpp; path = node/NBaseFunction.cpp; sourceTree = "<group>"; };
+		9C74891F1E592744008A032C /* NBaseFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NBaseFunction.h; path = node/NBaseFunction.h; sourceTree = "<group>"; };
 		9C7B48E11E19A2DD00D378A1 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		9C908EFA1E3343C2005E253C /* NDot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NDot.cpp; path = node/NDot.cpp; sourceTree = "<group>"; };
 		9C908EFB1E3343C2005E253C /* NDot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NDot.h; path = node/NDot.h; sourceTree = "<group>"; };
@@ -216,8 +219,8 @@
 		9CF16C231E19A8A9006E9CB8 /* parser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = parser.cpp; path = parser/parser.cpp; sourceTree = "<group>"; };
 		9CF16C241E19A8A9006E9CB8 /* parser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = parser.hpp; path = parser/parser.hpp; sourceTree = "<group>"; };
 		9CF16C251E19A8A9006E9CB8 /* tokens.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tokens.cpp; path = parser/tokens.cpp; sourceTree = "<group>"; };
-		9CFDBF8E1E19BCCE00F5436F /* CFunction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CFunction.cpp; path = compiler/CFunction.cpp; sourceTree = "<group>"; };
-		9CFDBF8F1E19BCCE00F5436F /* CFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CFunction.h; path = compiler/CFunction.h; sourceTree = "<group>"; };
+		9CFDBF8E1E19BCCE00F5436F /* CTypeName.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CTypeName.cpp; path = compiler/CTypeName.cpp; sourceTree = "<group>"; };
+		9CFDBF8F1E19BCCE00F5436F /* CTypeName.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CTypeName.h; path = compiler/CTypeName.h; sourceTree = "<group>"; };
 		9CFDBF901E19BCCE00F5436F /* CVar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CVar.cpp; path = compiler/CVar.cpp; sourceTree = "<group>"; };
 		9CFDBF911E19BCCE00F5436F /* CVar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CVar.h; path = compiler/CVar.h; sourceTree = "<group>"; };
 		9CFDBF941E19BD9500F5436F /* CType.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CType.cpp; path = compiler/CType.cpp; sourceTree = "<group>"; };
@@ -356,8 +359,8 @@
 			children = (
 				9C908F031E345911005E253C /* CArrayType.cpp */,
 				9C908F041E345911005E253C /* CArrayType.h */,
-				9CFDBF8E1E19BCCE00F5436F /* CFunction.cpp */,
-				9CFDBF8F1E19BCCE00F5436F /* CFunction.h */,
+				9CFDBF8E1E19BCCE00F5436F /* CTypeName.cpp */,
+				9CFDBF8F1E19BCCE00F5436F /* CTypeName.h */,
 				9C7489161E58162E008A032C /* CInterface.cpp */,
 				9C7489151E58162E008A032C /* CInterface.h */,
 				9CF16BF51E19A85F006E9CB8 /* Compiler.cpp */,
@@ -383,6 +386,8 @@
 				9CF16BFA1E19A888006E9CB8 /* NAssignment.h */,
 				9CDED2CB1E3701C8002D9666 /* NBase.cpp */,
 				9CF16BFB1E19A888006E9CB8 /* NBase.h */,
+				9C74891E1E592744008A032C /* NBaseFunction.cpp */,
+				9C74891F1E592744008A032C /* NBaseFunction.h */,
 				9CF16BFC1E19A888006E9CB8 /* NBlock.cpp */,
 				9CF16BFD1E19A888006E9CB8 /* NBlock.h */,
 				9CF16BFE1E19A888006E9CB8 /* NBool.cpp */,
@@ -518,6 +523,7 @@
 				9C7489171E58162E008A032C /* CInterface.cpp in Sources */,
 				9C1E74311E46D1C4003BEBA5 /* library.cpp in Sources */,
 				9C908F0E1E348C54005E253C /* NOr.cpp in Sources */,
+				9C7489201E592744008A032C /* NBaseFunction.cpp in Sources */,
 				9CF16C171E19A888006E9CB8 /* NBool.cpp in Sources */,
 				9C908F111E348D5A005E253C /* NAnd.cpp in Sources */,
 				9C3786561E21EE0400202E28 /* NThrow.cpp in Sources */,
@@ -527,7 +533,7 @@
 				9CF16BF71E19A85F006E9CB8 /* Compiler.cpp in Sources */,
 				9C7B48E41E19A2DD00D378A1 /* main.cpp in Sources */,
 				9C039B101E24B1DD00D6C727 /* NWhile.cpp in Sources */,
-				9CFDBF921E19BCCE00F5436F /* CFunction.cpp in Sources */,
+				9CFDBF921E19BCCE00F5436F /* CTypeName.cpp in Sources */,
 				9C74891D1E58DD79008A032C /* NInterfaceMethod.cpp in Sources */,
 				9C908F021E345670005E253C /* NArray.cpp in Sources */,
 				9C908F051E345911005E253C /* CArrayType.cpp in Sources */,

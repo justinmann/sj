@@ -79,6 +79,7 @@ enum NodeType {
 #include "NArray.h"
 #include "NAssignment.h"
 #include "NBase.h"
+#include "NBaseFunction.h"
 #include "NBlock.h"
 #include "NBool.h"
 #include "NCast.h"

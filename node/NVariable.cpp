@@ -1,6 +1,6 @@
 #include "Node.h"
 
-shared_ptr<CVar> NVariableBase::getVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
+shared_ptr<CVar> NVariableBase::getVar(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
     if (!_hasGetVar) {
         _var = getVarImpl(compiler, result, thisFunction, thisVar, dotVar);
         _hasGetVar = true;
@@ -8,7 +8,7 @@ shared_ptr<CVar> NVariableBase::getVar(Compiler* compiler, CResult& result, shar
     return _var;
 }
 
-int NVariableBase::setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar) {
+int NVariableBase::setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar) {
     return setHeapVarImpl(compiler, result, thisFunction, thisVar, dotVar, isHeapVar);
 }
 
@@ -60,23 +60,23 @@ string CParentVar::fullName() {
     return childVar->fullName();
 }
 
-void CParentVar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CParentVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     ss << ".parent";
     childVar->dump(compiler, result, thisFunction, thisVar, dotVar, functions, ss, dotSS, level);
 }
 
 NVariable::NVariable(CLoc loc, const char* name) : name(name), NVariableBase(NodeType_Variable, loc) { }
 
-shared_ptr<CVar> NVariable::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
-    auto cfunction = thisFunction;
+shared_ptr<CVar> NVariable::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
+    auto cfunction = static_pointer_cast<CBaseFunction>(thisFunction);
     if (dotVar) {
         cfunction = dotVar->getCFunctionForValue(compiler, result);
     }
     
-    return cfunction->getCVar(compiler, result, loc, name);
+    return cfunction->getCVar(compiler, result, name);
 }
 
-int NVariable::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar) {
+int NVariable::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar) {
     auto var = getVar(compiler, result, thisFunction, thisVar, dotVar);
     if (var && isHeapVar) {
         return var->setHeapVar(compiler, result, thisVar);

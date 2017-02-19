@@ -38,13 +38,15 @@ public:
 };
 
 #include "CType.h"
+#include "CTypeName.h"
 #include "CVar.h"
 #include "CInterface.h"
-#include "CFunction.h"
 #include "CArrayType.h"
 #include "Exception.h"
 
 #pragma clang diagnostic ignored "-Wformat-security"
+
+#define STACK_REF_COUNT         1000000000000
 
 template< typename... Args >
 std::string strprintf( const char* format, Args... args ) {

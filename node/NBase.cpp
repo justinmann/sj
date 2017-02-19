@@ -41,7 +41,7 @@ void ReturnValue::releaseIfNeeded(Compiler* compiler, CResult& result, IRBuilder
     }
 }
 
-void NBase::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
+void NBase::define(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     if (!_hasDefined) {
         _hasDefined = true;
@@ -49,7 +49,7 @@ void NBase::define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefi
     }
 }
 
-shared_ptr<CVar> NBase::getVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CVar> NBase::getVar(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     if (!_hasGetVar) {
         assert(compiler->state == CompilerState::FixVar);
         _var = getVarImpl(compiler, result, thisFunction, thisVar);
@@ -58,7 +58,7 @@ shared_ptr<CVar> NBase::getVar(Compiler* compiler, CResult& result, shared_ptr<C
     return _var;
 }
 
-shared_ptr<CType> NBase::getType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CType> NBase::getType(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
     if (!_hasGetType) {
         _type = getTypeImpl(compiler, result, thisFunction, thisVar);
@@ -67,12 +67,12 @@ shared_ptr<CType> NBase::getType(Compiler* compiler, CResult& result, shared_ptr
     return _type;
 }
 
-int NBase::setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
+int NBase::setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
     return setHeapVarImpl(compiler, result, thisFunction, thisVar, isHeapVar);
 }
 
 
-shared_ptr<ReturnValue> NBase::compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NBase::compile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     return compileImpl(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
 }

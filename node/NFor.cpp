@@ -2,7 +2,7 @@
 
 class CForVar : public CVar {
 public:
-    CForVar(shared_ptr<CFunction> parent_, const string& name_) {
+    CForVar(shared_ptr<CBaseFunction> parent_, const string& name_) {
         name = name_;
         mode = CVarType::Var_Local;
         isMutable = false;
@@ -36,7 +36,7 @@ public:
         return 0;
     }
     
-    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
         ss << name;
     }
 
@@ -44,49 +44,52 @@ public:
     bool isHeapVar;
 };
 
-void NFor::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
+void NFor::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     start->define(compiler, result, thisFunction);
     end->define(compiler, result, thisFunction);
     body->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NFor::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CVar> NFor::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state == CompilerState::FixVar);
     start->getVar(compiler, result, thisFunction, thisVar);
     end->getVar(compiler, result, thisFunction, thisVar);
+    
+    auto thisFun = static_pointer_cast<CFunction>(thisFunction);
 
-    if (thisFunction->localVarsByName.find(varName) != thisFunction->localVarsByName.end()) {
+    if (thisFun->localVarsByName.find(varName) != thisFun->localVarsByName.end()) {
         result.addError(loc, CErrorCode::InvalidVariable, "var '%s' already exists within function, must have a unique name", varName.c_str());
         return nullptr;
     }
     
     _forVar = make_shared<CForVar>(thisFunction, varName);
     
-    thisFunction->localVarsByName[varName] = _forVar;
+    thisFun->localVarsByName[varName] = _forVar;
 
     body->getVar(compiler, result, thisFunction, thisVar);
 
-    thisFunction->localVarsByName.erase(varName);
+    thisFun->localVarsByName.erase(varName);
     
     return nullptr;
 }
 
-shared_ptr<CType> NFor::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CType> NFor::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
     return compiler->typeVoid;
 }
 
-int NFor::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
+int NFor::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
     auto count = start->setHeapVar(compiler, result, thisFunction, thisVar, false);
     count += end->setHeapVar(compiler, result, thisFunction, thisVar, false);
-    thisFunction->localVarsByName[varName] = _forVar;
+    auto thisFun = static_pointer_cast<CFunction>(thisFunction);
+    thisFun->localVarsByName[varName] = _forVar;
     count += body->setHeapVar(compiler, result, thisFunction, thisVar, false);
-    thisFunction->localVarsByName.erase(varName);
+    thisFun->localVarsByName.erase(varName);
     return count;
 }
 
-shared_ptr<ReturnValue> NFor::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NFor::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(builder, this);
     
@@ -137,12 +140,13 @@ shared_ptr<ReturnValue> NFor::compileImpl(Compiler* compiler, CResult& result, s
     
     // Within the loop, the variable is defined equal to the PHI node.  If it
     // shadows an existing variable, we have to restore it, so save it now.
-    if (thisFunction->localVarsByName.find(varName) != thisFunction->localVarsByName.end()) {
+    auto thisFun = static_pointer_cast<CFunction>(thisFunction);
+    if (thisFun->localVarsByName.find(varName) != thisFun->localVarsByName.end()) {
         result.addError(loc, CErrorCode::InvalidVariable, "var '%s' already exists within function, must have a unique name", varName.c_str());
         return nullptr;
     }
     
-    thisFunction->localVarsByName[varName] = _forVar;
+    thisFun->localVarsByName[varName] = _forVar;
     _forVar->value = Variable;
     
     // Emit the body of the loop.  This, like any other expr, can change the
@@ -175,14 +179,14 @@ shared_ptr<ReturnValue> NFor::compileImpl(Compiler* compiler, CResult& result, s
     
     // Restore the unshadowed variable.
     
-    thisFunction->localVarsByName.erase(varName);
+    thisFun->localVarsByName.erase(varName);
     _forVar->value = nullptr;
 
     // for expr always returns 0.0.
     return nullptr;
 }
 
-void NFor::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+void NFor::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << "for " << varName << " : ";
     if (start) {
         start->dump(compiler, result, thisFunction, thisVar, functions, ss, level + 1);

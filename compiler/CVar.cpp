@@ -12,7 +12,7 @@ string CVar::fullName() {
     return strprintf("%s.%s", parent.lock()->fullName(false).c_str(), name.c_str());
 }
 
-shared_ptr<CFunction> CVar::getCFunctionForValue(Compiler* compiler, CResult& result) {
+shared_ptr<CBaseFunction> CVar::getCFunctionForValue(Compiler* compiler, CResult& result) {
     auto ctype = getType(compiler, result);
     if (ctype && !ctype->parent.expired()) {
         return ctype->parent.lock();
@@ -20,7 +20,7 @@ shared_ptr<CFunction> CVar::getCFunctionForValue(Compiler* compiler, CResult& re
     return nullptr;
 }
 
-shared_ptr<CNormalVar> CNormalVar::createThisVar(const CLoc& loc, shared_ptr<CFunction> parent, shared_ptr<CType> type) {
+shared_ptr<CNormalVar> CNormalVar::createThisVar(const CLoc& loc, shared_ptr<CBaseFunction> parent, shared_ptr<CType> type) {
     auto c = make_shared<CNormalVar>();
     c->loc = loc;
     c->mode = CVarType::Var_This;
@@ -31,7 +31,7 @@ shared_ptr<CNormalVar> CNormalVar::createThisVar(const CLoc& loc, shared_ptr<CFu
     return c;
 }
 
-shared_ptr<CNormalVar> CNormalVar::createLocalVar(const CLoc& loc, const string& name, shared_ptr<CFunction> parent, shared_ptr<NAssignment> nassignment) {
+shared_ptr<CNormalVar> CNormalVar::createLocalVar(const CLoc& loc, const string& name, shared_ptr<CBaseFunction> parent, shared_ptr<NAssignment> nassignment) {
     auto c = make_shared<CNormalVar>();
     c->loc = loc;
     c->mode = CVarType::Var_Local;
@@ -42,13 +42,12 @@ shared_ptr<CNormalVar> CNormalVar::createLocalVar(const CLoc& loc, const string&
     return c;
 }
 
-shared_ptr<CNormalVar> CNormalVar::createFunctionVar(const CLoc& loc, const string& name, shared_ptr<CFunction> parent, shared_ptr<NFunction> nfunction, int index, shared_ptr<NAssignment> nassignment, shared_ptr<CType> type) {
+shared_ptr<CNormalVar> CNormalVar::createFunctionVar(const CLoc& loc, const string& name, shared_ptr<CBaseFunction> parent, int index, shared_ptr<NAssignment> nassignment, shared_ptr<CType> type) {
     auto c = make_shared<CNormalVar>();
     c->loc = loc;
     c->mode = CVarType::Var_Public;
     c->name = name;
     c->isMutable = nassignment != nullptr ? nassignment->isMutable : false;
-    c->nfunction = nfunction;
     c->index = index;
     c->nassignment = nassignment;
     c->parent = parent;
@@ -60,10 +59,9 @@ shared_ptr<CNormalVar> CNormalVar::createFunctionVar(const CLoc& loc, const stri
     return c;
 }
 
-void CNormalVar::makeFunctionVar(shared_ptr<NFunction> nfunction, int index) {
+void CNormalVar::makeFunctionVar(int index) {
     assert(mode == CVarType::Var_Local);
     mode = CVarType::Var_Public;
-    this->nfunction = nfunction;
     this->index = index;
 }
 
@@ -106,7 +104,8 @@ Value* CNormalVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr
         }
         return value;
     } else {
-        return parent.lock()->getArgumentPointer(compiler, result, dotInEntry, dotValue, index, builder);
+        auto fun = static_pointer_cast<CFunction>(parent.lock());
+        return fun->getArgumentPointer(compiler, result, dotInEntry, dotValue, index, builder);
     }
 }
 
@@ -131,7 +130,7 @@ int CNormalVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar>
     return count;
 }
 
-void CNormalVar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CNormalVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     if (dotSS.gcount()) {
         ss << dotSS.str() << ".";
     }

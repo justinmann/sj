@@ -1,30 +1,30 @@
 #include "Node.h"
 
-void NStringArray::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
+void NStringArray::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
 }
 
-shared_ptr<CVar> NStringArray::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CVar> NStringArray::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     createCall = make_shared<NCall>(loc, "array", make_shared<CTypeNameList>(CTC_Value, "char"), nullptr);
     return createCall->getVar(compiler, result, thisFunction, thisVar, nullptr);
 }
 
-shared_ptr<CType> NStringArray::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CType> NStringArray::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
     return createCall->getType(compiler, result, thisFunction, thisVar);
 }
 
-int NStringArray::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
+int NStringArray::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
     return createCall->NBase::setHeapVar(compiler, result, thisFunction, thisVar, isHeapVar);
 }
 
-shared_ptr<ReturnValue> NStringArray::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NStringArray::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(builder, this);
     auto varFunction = createCall->getVar(compiler, result, thisFunction, thisVar, nullptr)->getCFunctionForValue(compiler, result);
     return make_shared<ReturnValue>(varFunction, false, RVT_SIMPLE, false, builder->CreateGlobalStringPtr(str));
 }
 
-void NStringArray::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+void NStringArray::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     // dumpf(level, "value: %s", value.c_str());
 }
 
@@ -62,7 +62,7 @@ NString::NString(CLoc loc, const string& str_) : NBase(NodeType_String, loc) {
     str = ss.str();
 }
 
-shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     if (!isValid) {
         result.addError(loc, CErrorCode::InvalidString, "string contains an invalid escape");
         return nullptr;
@@ -74,7 +74,7 @@ shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, CResult& result, shared
     return createCall->getVar(compiler, result, thisFunction, thisVar, nullptr);
 }
 
-shared_ptr<CType> NString::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CType> NString::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
     if (!isValid) {
         result.addError(loc, CErrorCode::InvalidString, "string contains an invalid escape");
@@ -84,7 +84,7 @@ shared_ptr<CType> NString::getTypeImpl(Compiler* compiler, CResult& result, shar
     return createCall->getType(compiler, result, thisFunction, thisVar);
 }
 
-int NString::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
+int NString::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
     if (!isValid) {
         result.addError(loc, CErrorCode::InvalidString, "string contains an invalid escape");
         return 0;
@@ -93,7 +93,7 @@ int NString::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFun
     return createCall->setHeapVar(compiler, result, thisFunction, thisVar, nullptr, isHeapVar);
 }
 
-shared_ptr<ReturnValue> NString::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NString::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     if (!isValid) {
         result.addError(loc, CErrorCode::InvalidString, "string contains an invalid escape");
@@ -103,6 +103,6 @@ shared_ptr<ReturnValue> NString::compileImpl(Compiler* compiler, CResult& result
     return createCall->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
 }
 
-void NString::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+void NString::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << "\"" << str << "\"";
 }

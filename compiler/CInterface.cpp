@@ -75,3 +75,7 @@ shared_ptr<CType> CInterface::getVarType(Compiler* compiler, CResult& result, sh
     
     return compiler->getType(typeName->name);
 }
+
+shared_ptr<CInterface> CInterfaceDefinition::getInterface() {
+    return nullptr;
+}

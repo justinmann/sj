@@ -302,12 +302,12 @@ class NMatchReturn : public NBase {
 public:
     const shared_ptr<NBase> inner;
     NMatchReturn(const CLoc loc, shared_ptr<NBase> inner) : inner(inner), NBase(NodeType_Variable, loc) { };
-    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) { }
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) { }
 
 protected:
-    virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) { }
+    virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) { }
     
-    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
+    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
         auto type = getType(compiler, result, thisFunction, thisVar);
         if (type && !_callVar && !type->parent.expired()) {
             _callee = type->parent.lock();
@@ -317,9 +317,9 @@ protected:
         return nullptr;
     }
     
-    virtual int setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
+    virtual int setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
         if (_callVar) {
-            vector<shared_ptr<NBase>> parameters(_callee->node->assignments.size());
+            vector<shared_ptr<NBase>> parameters(_callee->argDefaultValues.size());
             if (!_callVar->getParameters(compiler, result, parameters)) {
                 return 0;
             }
@@ -328,13 +328,13 @@ protected:
             auto count = 0;
             auto index = 0;
             for (auto argVar : parameters) {
-                auto parameterVar = _callee->thisVars[index];
+                auto parameterVar = _callee->argVars[index];
                 
                 if (isHeapVar) {
                     parameterVar->setHeapVar(compiler, result, thisVar);
                 }
                 
-                auto isDefaultAssignment = argVar == _callee->node->assignments[index]->rightSide;
+                auto isDefaultAssignment = argVar == _callee->argDefaultValues[index];
                 auto parameterHeapVar = parameterVar->getHeapVar(compiler, result, thisVar);
                 if (argVar->nodeType == NodeType_Assignment) {
                     auto parameterAssignment = static_pointer_cast<NAssignment>(argVar);
@@ -362,11 +362,11 @@ protected:
         return 0;
     }
     
-    virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
+    virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
         return inner->getType(compiler, result, thisFunction, thisVar);
     }
     
-    virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
         auto type = getType(compiler, result, thisFunction, thisVar);
         if (_callVar) {
             return _callVar->getLoadValue(compiler, result, thisVar, thisValue, false, nullptr, builder, catchBB);
@@ -375,7 +375,7 @@ protected:
     }
     
 private:
-    shared_ptr<CFunction> _callee;
+    shared_ptr<CBaseFunction> _callee;
     shared_ptr<CCallVar> _callVar;
 };
 
@@ -425,11 +425,12 @@ shared_ptr<CResult> Compiler::run(const string& code) {
 
     state = CompilerState::FixVar;
     auto templateTypes = vector<shared_ptr<CType>>();
-    auto currentFunction = currentFunctionDefintion->getFunction(this, *compilerResult, CLoc::undefined, templateTypes, weak_ptr<CFunction>());
+    auto currentFunction = make_shared<CFunction>(currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr);
+    currentFunction->init(this, *compilerResult, nullptr);
     shared_ptr<CVar> currentVar;
     currentFunction->createThisVar(this, *compilerResult, currentVar);
     anonFunction->getVar(this, *compilerResult, currentFunction, currentVar);
-    auto globalFunction = currentFunction->getCFunction(this, *compilerResult, CLoc::undefined, "global", nullptr, nullptr);
+    auto globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, *compilerResult, "global", nullptr, nullptr));
     shared_ptr<CVar> globalVar;
     globalFunction->createThisVar(this, *compilerResult, globalVar);
 
@@ -486,7 +487,7 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     auto globalDestructorSymbol = TheJIT->findSymbol("global_destructor");
     assert(globalFunction && "Function not found");
     
-    auto thisSize = globalFunction->thisVarsByName.size() * 8;
+    auto thisSize = globalFunction->argVars.size() * 8;
     auto thisPtr = malloc(thisSize);
     
     // Get the symbol's address and cast it to the right type (takes no

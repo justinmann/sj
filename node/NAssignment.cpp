@@ -8,7 +8,7 @@ NAssignment::NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTy
     }
 }
 
-void NAssignment::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
+void NAssignment::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     
     if (var) {
@@ -24,7 +24,7 @@ void NAssignment::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFu
     }
 }
 
-shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state == CompilerState::FixVar);
 
     // function vars are not created here, this is only for local vars
@@ -37,14 +37,14 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
             if (!parentVar) {
                 return nullptr;
             }
-            cfunction = parentVar->getCFunctionForValue(compiler, result);
+            cfunction = static_pointer_cast<CFunction>(parentVar->getCFunctionForValue(compiler, result));
             if (!cfunction) {
                 result.addError(loc, CErrorCode::InvalidVariable, "var must be a function: '%s'", parentVar->fullName().c_str());
                 return nullptr;
             }
         }
         
-        _assignVar = cfunction->getCVar(compiler, result, loc, name);
+        _assignVar = cfunction->getCVar(compiler, result, name);
         if (_assignVar) {
             if (!isMutable) {
                 result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var");
@@ -55,13 +55,15 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
             }
         } else {
             if (!var) {
-                auto iter = cfunction->localVarsByName.find(name);
-                if (iter != cfunction->localVarsByName.end()) {
+                auto fun = static_pointer_cast<CFunction>(cfunction);
+            
+                auto iter = fun->localVarsByName.find(name);
+                if (iter != fun->localVarsByName.end()) {
                     result.addError(loc, CErrorCode::Internal, "the previous search on NVariable should find a local value with same name");
                     return nullptr;
                 }
                 _assignVar = CNormalVar::createLocalVar(loc, name, thisFunction, shared_from_this());
-                cfunction->localVarsByName[name] = _assignVar;
+                fun->localVarsByName[name] = _assignVar;
                 _isFirstAssignment = true;
             }
         }
@@ -82,11 +84,11 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
     return nullptr;
 }
 
-shared_ptr<CType> NAssignment::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CType> NAssignment::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
 
     if (typeName) {
-        auto valueType = thisFunction->getVarType(compiler, result, loc, typeName);
+        auto valueType = thisFunction->getVarType(compiler, result, typeName);
         if (!valueType) {
             result.addError(loc, CErrorCode::InvalidType, "explicit type does not exist");
             return nullptr;
@@ -102,7 +104,7 @@ shared_ptr<CType> NAssignment::getTypeImpl(Compiler* compiler, CResult& result, 
     return rightSide->getType(compiler, result, thisFunction, thisVar);
 }
 
-int NAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
+int NAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
     auto count = 0;
     
     if (_assignVar != nullptr && _assignVar->mode != Var_Local) {
@@ -132,7 +134,7 @@ int NAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<
     return count;
 }
 
-shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(builder, this);
     
@@ -153,7 +155,7 @@ shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& re
     }
     
     if (typeName) {
-        shared_ptr<CType> valueType = thisFunction->getVarType(compiler, result, loc, typeName);
+        shared_ptr<CType> valueType = thisFunction->getVarType(compiler, result, typeName);
         if (!valueType) {
             result.addError(loc, CErrorCode::InvalidType, "explicit type does not exist");
             return nullptr;
@@ -184,7 +186,7 @@ shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& re
     return make_shared<ReturnValue>(value->valueFunction, false, value->type, value->inEntry, value->value);
 }
 
-void NAssignment::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+void NAssignment::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     auto type = getType(compiler, result, thisFunction, thisVar);
     if (_assignVar) {
         ss << alloc_mode(compiler, result, thisVar, _assignVar);

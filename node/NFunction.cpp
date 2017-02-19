@@ -2,7 +2,7 @@
 
 int NFunction::counter = 0;
 
-NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<vector<string>> interfaceNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock) : type(type), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), interfaceNames(interfaceNames), block(block), catchBlock(catchBlock), destroyBlock(destroyBlock), isInGetType(false), NBase(NodeType_Function, loc) {
+NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<vector<string>> interfaceNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock) : type(type), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), interfaceNames(interfaceNames), block(block), catchBlock(catchBlock), destroyBlock(destroyBlock), isInGetType(false), NBaseFunction(NodeType_Function, loc) {
     assert(type != FT_Extern);
     
     if (this->name == "^") {
@@ -28,7 +28,7 @@ NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnT
     }
 }
 
-NFunction::NFunction(CLoc loc, CFunctionType type, const char* externName, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<NodeList> arguments): type(type), externName(externName), returnTypeName(returnTypeName), name(name), NBase(NodeType_Function, loc) {
+NFunction::NFunction(CLoc loc, CFunctionType type, const char* externName, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<NodeList> arguments): type(type), externName(externName), returnTypeName(returnTypeName), name(name), NBaseFunction(NodeType_Function, loc) {
     assert(type == FT_Extern);
     
     if (arguments) {
@@ -51,7 +51,7 @@ NFunction::NFunction(CLoc loc, CFunctionType type, const char* externName, share
 }
 
 
-void NFunction::defineImpl(Compiler *compiler, CResult& result, shared_ptr<CFunctionDefinition> parentFunction) {
+void NFunction::defineImpl(Compiler *compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> parentFunction) {
     assert(compiler->state == CompilerState::Define);
     if (invalid.size() > 0) {
         result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
@@ -70,8 +70,8 @@ void NFunction::defineImpl(Compiler *compiler, CResult& result, shared_ptr<CFunc
             return;
         }
         
-        auto thisFunction = CFunctionDefinition::create(compiler, result, parentFunction, type, name, nullptr, shared_from_this());
-        parentFunction->funcsByName[name] = thisFunction;
+        auto thisFunction = CFunctionDefinition::create(compiler, result, static_pointer_cast<CFunctionDefinition>(parentFunction), type, name, nullptr, shared_from_this());
+        parentFunction->addChildFunction(name, thisFunction);
         
         for (auto it : assignments) {
             it->define(compiler, result, thisFunction);
@@ -81,8 +81,8 @@ void NFunction::defineImpl(Compiler *compiler, CResult& result, shared_ptr<CFunc
             block->define(compiler, result, thisFunction);
         }
     } else {
-        auto thisFunction = getFunctionDefinition(compiler, result, parentFunction);
-        parentFunction->funcsByName[name] = thisFunction;
+        auto thisFunction = getFunctionDefinition(compiler, result, static_pointer_cast<CFunctionDefinition>(parentFunction));
+        parentFunction->addChildFunction(name, thisFunction);
 
         for (auto it : functions) {
             it->define(compiler, result, thisFunction);
@@ -111,8 +111,9 @@ shared_ptr<CFunctionDefinition> NFunction::getFunctionDefinition(Compiler *compi
     return CFunctionDefinition::create(compiler, result, parentFunction, type, name, interfaces, shared_from_this());
 }
 
-shared_ptr<CVar> NFunction::getVarImpl(Compiler *compiler, CResult& result, shared_ptr<CFunction> parentFunction, shared_ptr<CVar> parentVar) {
+shared_ptr<CVar> NFunction::getVarImpl(Compiler *compiler, CResult& result, shared_ptr<CBaseFunction> parentFunction, shared_ptr<CVar> parentVar) {
     // Verify that all interfaces are implemented
+    /* TODO:
     for (auto interface : *parentFunction->interfaces) {
         // TODO: check if there is a special interface object composition method
         
@@ -154,12 +155,12 @@ shared_ptr<CVar> NFunction::getVarImpl(Compiler *compiler, CResult& result, shar
                 }
             }
         }
-    }
+    } */
 
     return nullptr;
 }
 
-shared_ptr<CType> NFunction::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, shared_ptr<CVar> parentVar) {
+shared_ptr<CType> NFunction::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> parentFunction, shared_ptr<CVar> parentVar) {
     assert(compiler->state >= CompilerState::FixVar);
     if (invalid.size() > 0) {
         result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
@@ -169,132 +170,93 @@ shared_ptr<CType> NFunction::getTypeImpl(Compiler* compiler, CResult& result, sh
     return compiler->typeVoid;
 }
 
-shared_ptr<ReturnValue> NFunction::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> parentFunction, shared_ptr<CVar> parentVar, Value* parentValue, IRBuilder<>* builder, BasicBlock* parentCatchBB) {
+shared_ptr<ReturnValue> NFunction::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> parentFunction, shared_ptr<CVar> parentVar, Value* parentValue, IRBuilder<>* builder, BasicBlock* parentCatchBB) {
     return nullptr;
 }
 
-shared_ptr<CVar> NFunction::getReturnVar(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CFunction> NFunction::createCFunction(Compiler* compiler, CResult& result, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) {
+    auto fun = make_shared<CFunction>(definition, type, templateTypes, parent, interfaces);
+    return fun->init(compiler, result, shared_from_this());
+}
+
+shared_ptr<CVar> CFunction::getReturnVar(Compiler *compiler, CResult& result, shared_ptr<CVar> thisVar) {
     if (block) {
-        return block->getVar(compiler, result, thisFunction, thisVar);
+        return block->getVar(compiler, result, shared_from_this(), thisVar);
     }
     return nullptr;
 }
 
-void NFunction::getVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    assert(compiler->state == CompilerState::FixVar);
-    if (invalid.size() > 0) {
-        result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
-        return;
-    }
-    
+void CFunction::getVarBody(Compiler *compiler, CResult& result, shared_ptr<CVar> thisVar) {
+    assert(compiler->state == CompilerState::FixVar);   
     for (auto it : functions) {
-        it->getVar(compiler, result, thisFunction, thisVar);
+        it->getVar(compiler, result, shared_from_this(), thisVar);
     }
 
-    for (auto it : assignments) {
-        it->getVar(compiler, result, thisFunction, thisVar);
+    for (auto it : argDefaultValues) {
+        if (it) {
+            it->getVar(compiler, result, shared_from_this(), thisVar);
+        }
     }
     
     if (block) {
-        block->getVar(compiler, result, thisFunction, thisVar);
+        block->getVar(compiler, result, shared_from_this(), thisVar);
     }
     
     if (catchBlock) {
-        catchBlock->getVar(compiler, result, thisFunction, thisVar);
+        catchBlock->getVar(compiler, result, shared_from_this(), thisVar);
     }
     
     if (destroyBlock) {
-        destroyBlock->getVar(compiler, result, thisFunction, thisVar);
+        destroyBlock->getVar(compiler, result, shared_from_this(), thisVar);
     }
     
-    getBlockType(compiler, result, thisFunction, thisVar);
+    getReturnType(compiler, result, thisVar);
 }
 
-int NFunction::setHeapVarBody(Compiler *compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
+int CFunction::setHeapVarBody(Compiler *compiler, CResult& result, shared_ptr<CVar> thisVar) {
     assert(compiler->state == CompilerState::FixVar);
     auto count = 0;
     do {
         count = 0;
         for (auto it : functions) {
-            count += it->setHeapVar(compiler, result, thisFunction, thisVar, false);
+            count += it->setHeapVar(compiler, result, shared_from_this(), thisVar, false);
         }
         
-        for (auto it : assignments) {
-            count += it->setHeapVar(compiler, result, thisFunction, thisVar, false);
+        for (auto it : argDefaultValues) {
+            if (it) {
+                count += it->setHeapVar(compiler, result, shared_from_this(), thisVar, false);
+            }
         }
         
         if (block) {
-            count += block->setHeapVar(compiler, result, thisFunction, thisVar, true);
+            count += block->setHeapVar(compiler, result, shared_from_this(), thisVar, true);
         }
         
         if (catchBlock) {
-            count += catchBlock->setHeapVar(compiler, result, thisFunction, thisVar, true);
+            count += catchBlock->setHeapVar(compiler, result, shared_from_this(), thisVar, true);
         }
         
         if (destroyBlock) {
-            count += destroyBlock->setHeapVar(compiler, result, thisFunction, thisVar, true);
+            count += destroyBlock->setHeapVar(compiler, result, shared_from_this(), thisVar, true);
         }
     } while (count > 0);
     return 0;
 }
 
-shared_ptr<CType> NFunction::getBlockType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    assert(compiler->state >= CompilerState::FixVar);
-    assert(thisFunction->node.get() == this);
-    if (invalid.size() > 0) {
-        result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
-        return nullptr;
-    }
-
-    if (returnTypeName) {
-        shared_ptr<CType> valueType = thisFunction->getVarType(compiler, result, loc, returnTypeName);
-        if (!valueType) {
-            result.addError(loc, CErrorCode::InvalidType, "explicit type '%s' does not exist", returnTypeName->name.c_str());
-            return nullptr;
-        }
-        return valueType;
-    }
-
-    if (type == FT_Extern) {
-        result.addError(loc, CErrorCode::InvalidFunction, "extern function must specify return type");
-        return nullptr;
-    }
-    
-    if (block) {
-        if (isInGetType) {
-            result.addError(CLoc::undefined, CErrorCode::TypeLoop, "while trying to determine type a cycle was detected");
-            return nullptr;
-        }
-        
-        isInGetType = true;
-        auto type = block->getType(compiler, result, thisFunction, thisVar);
-        isInGetType = false;
-        return type;
-    }
-    
-    return compiler->typeVoid;
-}
-
-Function* NFunction::compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
+Function* CFunction::compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
     assert(compiler->state == CompilerState::Compile);
-    assert(thisFunction->node.get() == this);
 
-    auto returnType = getBlockType(compiler, result, thisFunction, thisVar);
+    auto returnType = getReturnType(compiler, result, thisVar);
     if (!returnType) {
         return nullptr;
     }
     
-    if (invalid.size() > 0) {
-        result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
-        return nullptr;
-    }
-    
-    if (!thisFunction->getHasThis()) {
-        auto argTypes = thisFunction->getTypeList(compiler, result);
+    if (!getHasThis()) {
+        auto argTypes = getTypeList(compiler, result);
         auto returnLLVMType = returnType->llvmRefType(compiler, result);
         assert(returnLLVMType);
         auto functionType = FunctionType::get(returnLLVMType, ArrayRef<Type*>(*argTypes.get()), false);
-        if (thisFunction->type == FT_Extern) {
+        if (type == FT_Extern) {
             return Function::Create(functionType, Function::ExternalLinkage, externName.c_str(), compiler->module.get());
         } else {
             auto function = Function::Create(functionType, type == FT_Public ? Function::ExternalLinkage : Function::PrivateLinkage, name.c_str(), compiler->module.get());
@@ -308,7 +270,7 @@ Function* NFunction::compileDefinition(Compiler* compiler, CResult& result, shar
         }
     } else {
         vector<Type*> argTypes;
-        argTypes.push_back(thisFunction->getThisType(compiler, result)->llvmRefType(compiler, result));
+        argTypes.push_back(getThisType(compiler, result)->llvmRefType(compiler, result));
         auto functionType = FunctionType::get(returnType->llvmRefType(compiler, result), argTypes, false);
         auto function = Function::Create(functionType, type == FT_Public ? Function::ExternalLinkage : Function::PrivateLinkage, name.c_str(), compiler->module.get());
         function->args().begin()->setName("this");
@@ -322,9 +284,8 @@ Function* NFunction::compileDefinition(Compiler* compiler, CResult& result, shar
     }
 }
 
-bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Function* function) {
+bool CFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Function* function) {
     assert(compiler->state == CompilerState::Compile);
-    assert(thisFunction->node.get() == this);
     
     if (!block) {
         return false;
@@ -335,9 +296,9 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
     auto entryBuilder = compiler->getEntryBuilder(function);
     shared_ptr<ReturnValue> returnValue = nullptr;
     shared_ptr<CVar> returnVar = nullptr;
-    auto returnType = block->getType(compiler, result, thisFunction, thisVar);
+    auto returnType = block->getType(compiler, result, shared_from_this(), thisVar);
     auto returnFunction = returnType->parent.expired() ? nullptr : returnType->parent.lock();
-    auto thisArgument = thisFunction->getHasThis() ? thisFunction->getThisArgument(compiler, result) : nullptr;
+    auto thisArgument = getHasThis() ? getThisArgument(compiler, result) : nullptr;
 
 #ifdef DWARF_ENABLED
     SmallVector<Metadata *, 8> EltTys;
@@ -378,8 +339,8 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
         catchBB = BasicBlock::Create(compiler->context, "catch", function);
     }
     
-    returnVar = block->getVar(compiler, result, thisFunction, thisVar);
-    returnValue = block->compile(compiler, result, thisFunction, thisVar, thisArgument, &bodyBuilder, catchBB);
+    returnVar = block->getVar(compiler, result, shared_from_this(), thisVar);
+    returnValue = block->compile(compiler, result, shared_from_this(), thisVar, thisArgument, &bodyBuilder, catchBB);
 
     compiler->callPopFunction(&bodyBuilder);
     
@@ -397,7 +358,7 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
         }
         
         // Release all of the local vars
-        for (auto it : thisFunction->localVarsByName) {
+        for (auto it : localVarsByName) {
             auto type = it.second->getType(compiler, result);
             if (!type->parent.expired()) {
                 auto localValue = it.second->getLoadValue(compiler, result, thisVar, thisArgument, true, nullptr, &bodyBuilder, catchBB);
@@ -442,8 +403,8 @@ bool NFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CFun
             compiler->callDebug(&catchBuilder, strprintf("CAUGHT EXCEPTION %s", name.c_str()), exceptionValue, i64);
 #endif
         
-            returnVar = catchBlock->getVar(compiler, result, thisFunction, thisVar);
-            auto catchReturnValue = catchBlock->compile(compiler, result, thisFunction, thisVar, thisArgument, &catchBuilder, nullptr);
+            returnVar = catchBlock->getVar(compiler, result, shared_from_this(), thisVar);
+            auto catchReturnValue = catchBlock->compile(compiler, result, shared_from_this(), thisVar, thisArgument, &catchBuilder, nullptr);
 
             catchBuilder.CreateCall(compiler->exception->getEndCatch());
 
@@ -500,21 +461,15 @@ error:
     return returnValue ? returnValue->mustRelease : false;
 }
 
-Function* NFunction::compileDestructorDefinition(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction) {
+Function* CFunction::compileDestructorDefinition(Compiler* compiler, CResult& result) {
     assert(compiler->state == CompilerState::Compile);
-    assert(thisFunction->node.get() == this);
-    
-    if (invalid.size() > 0) {
-        result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
-        return nullptr;
-    }
-    
+
     if (type == FT_Extern) {
         return nullptr;
     }
     
     auto hasDestructor = destroyBlock != nullptr;
-    for (auto it : thisFunction->thisVars) {
+    for (auto it : thisVars) {
         if (!it->getType(compiler, result)->parent.expired()) {
             hasDestructor = true;
         }
@@ -525,7 +480,7 @@ Function* NFunction::compileDestructorDefinition(Compiler* compiler, CResult& re
     }
     
     vector<Type*> argTypes;
-    argTypes.push_back(thisFunction->getThisType(compiler, result)->llvmRefType(compiler, result));
+    argTypes.push_back(getThisType(compiler, result)->llvmRefType(compiler, result));
     auto functionType = FunctionType::get(Type::getVoidTy(compiler->context), argTypes, false);
     auto function = Function::Create(functionType, type == FT_Public ? Function::ExternalLinkage : Function::PrivateLinkage, strprintf("%s_destructor", name.c_str()).c_str(), compiler->module.get());
     function->args().begin()->setName("this");
@@ -533,9 +488,8 @@ Function* NFunction::compileDestructorDefinition(Compiler* compiler, CResult& re
     return function;
 }
 
-void NFunction::compileDestructorBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, Function* function) {
+void CFunction::compileDestructorBody(Compiler* compiler, CResult& result, Function* function) {
     assert(compiler->state == CompilerState::Compile);
-    assert(thisFunction->node.get() == this);
     
     // Create body of function
     // Create a new basic block to start insertion into.
@@ -570,10 +524,10 @@ void NFunction::compileDestructorBody(Compiler* compiler, CResult& result, share
     Argument* thisArgument = (Argument*)function->args().begin();
     
     if (destroyBlock) {
-        destroyBlock->compile(compiler, result, thisFunction, nullptr, thisArgument, &bodyBuilder, nullptr);
+        destroyBlock->compile(compiler, result, shared_from_this(), nullptr, thisArgument, &bodyBuilder, nullptr);
     }
     
-    for (auto it : thisFunction->thisVars) {
+    for (auto it : thisVars) {
         auto type = it->getType(compiler, result);
         if (!type->parent.expired() && !isSimpleType(type->llvmRefType(compiler, result))) {
             auto value = it->getLoadValue(compiler, result, nullptr, thisArgument, true, thisArgument, &bodyBuilder, nullptr);
@@ -591,15 +545,15 @@ void NFunction::compileDestructorBody(Compiler* compiler, CResult& result, share
     bodyBuilder.CreateRetVoid();
 }
 
-shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CFunction> callee, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
-    if (!callee->getHasThis()) {
+shared_ptr<ReturnValue> CFunction::call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
+    if (!getHasThis()) {
         vector<shared_ptr<ReturnValue>> argReturnValues;
         vector<Value *> argValues;
-        auto func = callee->getFunction(compiler, result, calleeVar);
+        auto func = getFunction(compiler, result, calleeVar);
         auto calleeFunction = calleeVar->getCFunctionForValue(compiler, result);
 
         // Add "parent" to "this"
-        auto hasParent = callee->getHasParent(compiler, result);
+        auto hasParent = getHasParent(compiler, result);
         shared_ptr<ReturnValue> dotReturnValue;
         if (hasParent) {
             Value* parentValue = thisValue;
@@ -608,11 +562,11 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
                 parentValue = dotReturnValue->value;
             } else {
                 // if recursively calling ourselves then re-use parent
-                if (callee == thisFunction) {
-                    parentValue = callee->getParentValue(compiler, result, builder, true, parentValue);
+                if (shared_from_this() == thisFunction) {
+                    parentValue = getParentValue(compiler, result, builder, true, parentValue);
                 } else {
-                    auto temp = thisFunction;
-                    while (temp && temp != callee->parent.lock()) {
+                    auto temp = static_pointer_cast<CBaseFunction>(thisFunction);
+                    while (temp && temp != parent.lock()) {
                         parentValue = temp->getParentValue(compiler, result, builder, true, parentValue);
                         temp = temp->parent.lock();
                     }
@@ -622,41 +576,39 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
             argValues.push_back(parentValue);
         }
         
-        assert(argValues.size() == callee->getArgStart(compiler, result));
+        assert(argValues.size() == getArgStart(compiler, result));
         auto argIndex = 0;
         // Fill in "this" with normal arguments
-        for (auto defaultAssignment : assignments) {
-            auto argVar = callee->thisVars[argIndex];
-            auto argHeapVar = argVar->getHeapVar(compiler, result, thisVar);
-            
-            assert(defaultAssignment->inFunctionDeclaration);
-            auto argType = defaultAssignment->getType(compiler, result, thisFunction, thisVar);
-            auto isDefaultAssignment = parameters[argIndex] == defaultAssignment->rightSide;
+        for (auto defaultAssignment : argDefaultValues) {
+            auto argVar = argVars[argIndex];
+            auto argHeapVar = argVar->getHeapVar(compiler, result, thisVar);            
+            auto argType = argVar->getType(compiler, result);
+            auto isDefaultAssignment = parameters[argIndex] == defaultAssignment;
             shared_ptr<ReturnValue> argReturnValue;
             
             if (isDefaultAssignment) {
-                auto paramVar = parameters[argIndex]->getVar(compiler, result, callee, calleeVar);
+                auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), calleeVar);
                 if (paramVar) {
                     auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
                     assert(paramHeapVar == argHeapVar);
                 }
-                argReturnValue = parameters[argIndex]->compile(compiler, result, callee, calleeVar, nullptr, builder, catchBB);
+                argReturnValue = parameters[argIndex]->compile(compiler, result, shared_from_this(), calleeVar, nullptr, builder, catchBB);
             } else {
-                auto paramVar = parameters[argIndex]->getVar(compiler, result, thisFunction, thisVar);
+                auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), thisVar);
                 if (paramVar) {
                     auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
                     assert(paramHeapVar == argHeapVar);
                 }
-                argReturnValue = parameters[argIndex]->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+                argReturnValue = parameters[argIndex]->compile(compiler, result, shared_from_this(), thisVar, thisValue, builder, catchBB);
             }
             
             if (!argReturnValue) {
-                result.addError(CLoc::undefined, CErrorCode::TypeMismatch, "value is empty");
+                result.addError(loc, CErrorCode::TypeMismatch, "value is empty");
                 return nullptr;
             }
             
             if (argReturnValue->value->getType() != argType->llvmRefType(compiler, result)) {
-                result.addError(CLoc::undefined, CErrorCode::TypeMismatch, "value does not match");
+                result.addError(loc, CErrorCode::TypeMismatch, "value does not match");
                 return nullptr;
             }
             
@@ -665,10 +617,10 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
             argIndex++;
         }
         
-        auto returnType = callee->getReturnType(compiler, result, calleeVar);
+        auto returnType = getReturnType(compiler, result, calleeVar);
         auto returnFunction = returnType->parent.lock();
         
-        if (callee->type == FT_Extern) {
+        if (type == FT_Extern) {
             auto returnValue = builder->CreateCall(func, argValues);
             // All extern function must return a var that needs to be released
             for (auto it : argReturnValues) {
@@ -702,7 +654,7 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
 
         // Create this on stack, and get a pointer
         Value* calleeValue = nullptr;
-        auto calleeType = callee->getThisType(compiler, result);
+        auto calleeType = getThisType(compiler, result);
         auto calleeHeapVar = calleeVar->getHeapVar(compiler, result, thisVar);
         auto calleeFunction = calleeVar->getCFunctionForValue(compiler, result);
         auto calleeInEntry = false;
@@ -736,50 +688,48 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
         
         // Fill in "this" with normal arguments
         auto argIndex = 0;
-        for (auto defaultAssignment : assignments) {
-            auto argVar = callee->thisVars[argIndex];
+        for (auto defaultAssignment : argDefaultValues) {
+            auto argVar = argVars[argIndex];
             auto argHeapVar = argVar->getHeapVar(compiler, result, thisVar);
-
-            assert(defaultAssignment->inFunctionDeclaration);
-            auto argType = defaultAssignment->getType(compiler, result, callee, calleeVar);
-            auto isDefaultAssignment = parameters[argIndex] == defaultAssignment->rightSide;
+            auto argType = argVar->getType(compiler, result);
+            auto isDefaultAssignment = parameters[argIndex] == defaultAssignment;
             shared_ptr<ReturnValue> argReturnValue;
             if (isDefaultAssignment) {
-                auto paramVar = parameters[argIndex]->getVar(compiler, result, callee, calleeVar);
+                auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), calleeVar);
                 if (paramVar) {
                     auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
                     assert(paramHeapVar == argHeapVar);
                 }
-                argReturnValue = parameters[argIndex]->compile(compiler, result, callee, calleeVar, calleeValue, builder, catchBB);
+                argReturnValue = parameters[argIndex]->compile(compiler, result, shared_from_this(), calleeVar, calleeValue, builder, catchBB);
             } else {
-                auto paramVar = parameters[argIndex]->getVar(compiler, result, thisFunction, thisVar);
+                auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), thisVar);
                 if (paramVar) {
                     auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
                     assert(paramHeapVar == argHeapVar);
                 }
-                argReturnValue = parameters[argIndex]->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+                argReturnValue = parameters[argIndex]->compile(compiler, result, shared_from_this(), thisVar, thisValue, builder, catchBB);
             }
                         
             if (!argReturnValue) {
-                result.addError(CLoc::undefined, CErrorCode::TypeMismatch, "value is empty");
+                result.addError(loc, CErrorCode::TypeMismatch, "value is empty");
                 return nullptr;
             }
             
             if (argReturnValue->value->getType() != argType->llvmRefType(compiler, result)) {
-                result.addError(CLoc::undefined, CErrorCode::TypeMismatch, "value does not match");
+                result.addError(loc, CErrorCode::TypeMismatch, "value does not match");
                 return nullptr;
             }
          
             argReturnValue->retainIfNeeded(compiler, result, builder);
             argReturnValues.push_back(argReturnValue);
-            auto paramPtr = callee->getArgumentPointer(compiler, result, calleeInEntry, calleeValue, argIndex, builder);
+            auto paramPtr = getArgumentPointer(compiler, result, calleeInEntry, calleeValue, argIndex, builder);
             builder->CreateStore(argReturnValue->value, paramPtr);
             
             argIndex++;
         }
         
         // Add "parent" to "this"
-        auto hasParent = callee->getHasParent(compiler, result);
+        auto hasParent = getHasParent(compiler, result);
         shared_ptr<ReturnValue> dotReturnValue;
         if (hasParent) {
             Value* parentValue = thisValue;
@@ -788,26 +738,26 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
                 parentValue = dotReturnValue->value;
             } else {
                 // if recursively calling ourselves then re-use parent
-                if (callee == thisFunction) {
-                    parentValue = callee->getParentValue(compiler, result, builder, true, parentValue);
+                if (shared_from_this() == thisFunction) {
+                    parentValue = getParentValue(compiler, result, builder, true, parentValue);
                 } else {
-                    auto temp = thisFunction;
-                    while (temp && temp != callee->parent.lock()) {
+                    auto temp = static_pointer_cast<CBaseFunction>(thisFunction);
+                    while (temp && temp != parent.lock()) {
                         parentValue = temp->getParentValue(compiler, result, builder, true, parentValue);
                         temp = temp->parent.lock();
                     }
                 }
             }
             
-            auto paramPtr = callee->getParentPointer(compiler, result, builder, calleeInEntry, calleeValue);
+            auto paramPtr = getParentPointer(compiler, result, builder, calleeInEntry, calleeValue);
             builder->CreateStore(parentValue, paramPtr, "parent");
         }
         
         vector<Value *> argsV;
         argsV.push_back(calleeValue);
-        auto func = callee->getFunction(compiler, result, calleeVar);
+        auto func = getFunction(compiler, result, calleeVar);
         
-        auto returnType = callee->getReturnType(compiler, result, calleeVar);
+        auto returnType = getReturnType(compiler, result, calleeVar);
         auto returnFunction = returnType->parent.lock();
         Value* returnValue = nullptr;
         if (catchBB) {
@@ -844,8 +794,8 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
     }
 }
 
-void NFunction::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
-    ss << thisFunction->fullName(true);
+void CFunction::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+    ss << fullName(true);
     if (interfaceNames) {
         ss << " ";
         for (auto it : *interfaceNames) {
@@ -858,9 +808,9 @@ void NFunction::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CFuncti
     }
     ss << "(";
     
-    if (assignments.size() > 0) {
-        for (auto it : thisFunction->thisVars) {
-            if (it != thisFunction->thisVars.front()) {
+    if (argDefaultValues.size() > 0) {
+        for (auto it : argVars) {
+            if (it != argVars.front()) {
                 ss << ", ";
             }
             ss << alloc_mode(compiler, result, thisVar, it);
@@ -874,7 +824,735 @@ void NFunction::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CFuncti
     
     if (block) {
         ss << " ";
-        block->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+        block->dump(compiler, result, shared_from_this(), thisVar, functions, ss, level);
     }
 }
 
+CFunction::CFunction(weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) :
+    CBaseFunction(parent, definition),
+    templateTypes(templateTypes),
+    type(type),
+    name(definition.lock()->name),
+    interfaces(interfaces),
+    hasRefCount(false),
+    hasParent(false),
+    _structType(nullptr),
+    function(nullptr),
+    loc(CLoc::undefined),
+    block(nullptr),
+    catchBlock(nullptr),
+    destroyBlock(nullptr),
+    returnTypeName(nullptr),
+    interfaceNames(nullptr),
+    isInGetType(false),
+    isInGetFunction(false),
+    destructorFunction(nullptr),
+    returnMustRelease(false) {}
+
+
+shared_ptr<CFunction> CFunction::init(Compiler* compiler, CResult& result, shared_ptr<NFunction> node) {
+    for (auto it : templateTypes) {
+        name = name + "_" + it->name;
+    }
+    
+    if (node) {
+        loc = node->loc;
+        functions = node->functions;
+        block = node->block;
+        catchBlock = node->catchBlock;
+        destroyBlock = node->destroyBlock;
+        returnTypeName = node->returnTypeName;
+        externName = node->externName;
+        interfaceNames = node->interfaceNames;
+
+        if (node->templateTypeNames) {
+            assert(node->templateTypeNames->size() == templateTypes.size());
+            auto index = 0;
+            for (auto templateTypeName : *node->templateTypeNames) {
+                if (templateTypeName->templateTypeNames != nullptr) {
+                    result.addError(loc, CErrorCode::InvalidType, "cannot use ! in template type name");
+                    return nullptr;
+                }
+                templateTypesByName[templateTypeName->name] = templateTypes[index];
+                index++;
+            }
+        }
+        
+        for (auto it : node->assignments) {
+            if (it->var) {
+                result.addError(it->loc, CErrorCode::InvalidDot, "cannot use '.' in variable declaration for a function: '%s'", it->name.c_str());
+                return nullptr;
+            }
+            
+            int index = (int)argVars.size();
+            auto thisVar = CNormalVar::createFunctionVar(node->loc, it->name, shared_from_this(), index, it, nullptr);
+            thisVarsByName[it->name] = pair<int, shared_ptr<CVar>>(index, thisVar);
+            thisVars.push_back(thisVar);
+            argVars.push_back(thisVar);
+            argDefaultValues.push_back(it->rightSide);
+        }
+    }
+    
+    return shared_from_this();
+}
+
+void CFunction::createThisVar(Compiler* compiler, CResult& result, shared_ptr<CVar>& thisVar) {
+    thisVar = CNormalVar::createThisVar(loc, shared_from_this(), getThisType(compiler, result));
+    getVarBody(compiler, result, thisVar);
+    setHeapVarBody(compiler, result, thisVar);
+}
+
+shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
+    if (isInGetType) {
+        result.addError(loc, CErrorCode::TypeLoop, "while trying to determine type a cycle was detected");
+        return nullptr;
+    }
+    
+    isInGetType = true;
+    
+    if (!returnType) {
+        assert(compiler->state >= CompilerState::FixVar);
+        
+        if (returnTypeName) {
+            shared_ptr<CType> valueType = getVarType(compiler, result, returnTypeName);
+            if (!valueType) {
+                result.addError(loc, CErrorCode::InvalidType, "explicit type '%s' does not exist", returnTypeName->name.c_str());
+                returnType = nullptr;
+            }
+            returnType = valueType;
+        }
+        
+        if (returnType == nullptr && type == FT_Extern) {
+            result.addError(loc, CErrorCode::InvalidFunction, "extern function must specify return type");
+            returnType = nullptr;
+        }
+        
+        if (returnType == nullptr && block) {
+            auto type = block->getType(compiler, result, shared_from_this(), thisVar);
+            returnType = type;
+        }
+        
+        if (returnType == nullptr) {
+            returnType = compiler->typeVoid;
+        }
+    }
+    
+    isInGetType = false;
+    return returnType;
+}
+
+shared_ptr<vector<shared_ptr<CVar>>> CFunction::getArgVars(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
+    auto args = make_shared<vector<shared_ptr<CVar>>>();
+    for (auto it : argDefaultValues) {
+        auto var = it->getVar(compiler, result, shared_from_this(), thisVar);
+        assert(var);
+        args->push_back(var);
+    }
+    return args;
+}
+
+bool CFunction::getHasThis() {
+    if (type == FT_Extern) {
+        return false;
+    }
+    
+    if (!hasRefCount) {
+        return false;
+    }
+    
+    return true;
+}
+
+shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result) {
+    if (!thisType) {
+        thisType = make_shared<CType>(name.c_str(), shared_from_this());
+    }
+    
+    return thisType;
+}
+
+shared_ptr<vector<Type*>> CFunction::getTypeList(Compiler* compiler, CResult& result) {
+    if (!typeList) {
+        typeList = make_shared<vector<Type*>>();
+        
+        if (hasRefCount) {
+            indexRefCount = typeList->size();
+            typeList->push_back(Type::getInt64Ty(compiler->context));
+        }
+        
+        if (hasParent) {
+            indexParent = typeList->size();
+            auto parentType = parent.lock()->getThisType(compiler, result);
+            auto parentLLVMType = parentType->llvmRefType(compiler, result);
+            assert(parentLLVMType);
+            typeList->push_back(parentLLVMType);
+        }
+        
+        indexVars = typeList->size();
+        for (auto it : thisVars) {
+            auto ctype = it->getType(compiler, result);
+            if (!ctype) {
+                result.addError(it->nassignment->loc, CErrorCode::InvalidType, "cannot determine type for '%s'", it->name.c_str());
+                return nullptr;
+            }
+            auto llvmType = ctype->llvmRefType(compiler, result);
+            assert(llvmType);
+            typeList->push_back(llvmType);
+        }
+    }
+    return typeList;
+}
+
+Type* CFunction::getStructType(Compiler* compiler, CResult& result) {
+    if (!getHasThis()) {
+        return nullptr;
+    }
+    
+    if (!_structType) {
+        _structType = StructType::create(compiler->context, name);
+        auto typeList = getTypeList(compiler, result);
+        _structType->setBody(ArrayRef<Type *>(*typeList.get()));
+    }
+    return _structType;
+}
+
+Function* CFunction::getFunction(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
+    assert(compiler->state == CompilerState::Compile);
+    
+    if (isInGetFunction) {
+        result.addError(loc, CErrorCode::TypeLoop, "while trying to determine type a cycle was detected");
+        return nullptr;
+    }
+    
+    if (!function) {
+        isInGetFunction = true;
+        function = compileDefinition(compiler, result, thisVar);
+        isInGetFunction = false;
+        
+        if (function) {
+            returnMustRelease = compileBody(compiler, result, thisVar, function);
+        }
+    }
+    
+    return function;
+}
+
+bool CFunction::getReturnMustRelease(Compiler* compiler, CResult& result) {
+    assert(function);
+    return returnMustRelease;
+}
+
+Function* CFunction::getDestructor(Compiler* compiler, CResult& result) {
+    if (!destructorFunction) {
+        destructorFunction = compileDestructorDefinition(compiler, result);
+        if (destructorFunction) {
+            compileDestructorBody(compiler, result, destructorFunction);
+        }
+    }
+    
+    return destructorFunction;
+}
+
+Value* CFunction::getThisArgument(Compiler* compiler, CResult& result) {
+    assert(getHasThis());
+    return (Argument*)function->args().begin();
+}
+
+Value* CFunction::getArgumentPointer(Compiler* compiler, CResult& result, bool thisInEntry, Value* thisValue, int index, IRBuilder<>* builder) {
+    if (thisInEntry) {
+        auto function = getFunctionFromBuilder(builder);
+        auto it = argumentPointers[function][thisValue].find(index);
+        if (it == argumentPointers[function][thisValue].end()) {
+            Value* argValue = nullptr;
+            auto entryBuilder = compiler->getEntryBuilder(function);
+            if (getHasThis()) {
+                assert(thisValue->getType() == thisType->llvmRefType(compiler, result));
+                vector<Value*> v;
+                v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+                v.push_back(ConstantInt::get(compiler->context, APInt(32, index + getArgStart(compiler, result))));
+                argValue = entryBuilder->CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "paramPtr");
+            } else {
+                auto t = (Argument*)std::next(function->args().begin(), index + indexVars);
+                auto argType = thisVars[index]->getType(compiler, result);
+                argValue = entryBuilder->CreateAlloca(argType->llvmRefType(compiler, result));
+                entryBuilder->CreateStore(t, argValue);
+            }
+            argumentPointers[function][thisValue][index] = argValue;
+            return argValue;
+        } else {
+            return it->second;
+        }
+    } else {
+        assert(getHasThis());
+        assert(thisValue->getType() == thisType->llvmRefType(compiler, result));
+        vector<Value*> v;
+        v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+        v.push_back(ConstantInt::get(compiler->context, APInt(32, index + getArgStart(compiler, result))));
+        return builder->CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "paramPtr");
+    }
+}
+
+shared_ptr<CBaseFunction> CFunction::getCFunction(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames) {
+    auto def = static_pointer_cast<CFunctionDefinition>(definition.lock());
+    auto t = def->funcsByName.find(name);
+    if (t != def->funcsByName.end()) {
+        auto funcDef = t->second;
+        
+        vector<shared_ptr<CType>> templateTypes;
+        if (templateTypeNames) {
+            if (templateTypeNames->size() != funcDef->node->templateTypeNames->size()) {
+                result.addError(loc, CErrorCode::InvalidTemplateArg, "size does not match");
+                return nullptr;
+            }
+            
+            // Map template type string list to type list
+            for (auto templateTypeName : *templateTypeNames) {
+                shared_ptr<CType> ctype = nullptr;
+                if (callerFunction) {
+                    ctype = callerFunction->getVarType(compiler, result, templateTypeName);
+                }
+                
+                if (!ctype) {
+                    auto ctype = getVarType(compiler, result, templateTypeName);
+                    if (!ctype) {
+                        result.addError(loc, CErrorCode::TemplateUnspecified, "cannot find template type: '%s'", templateTypeName->name.c_str());
+                        return nullptr;
+                    }
+                }
+                
+                templateTypes.push_back(ctype);
+            }
+        } else {
+            if (funcDef->node->templateTypeNames != nullptr) {
+                result.addError(loc, CErrorCode::InvalidTemplateArg, "size does not match");
+                return nullptr;
+            }
+        }
+        
+        // Get function for type list
+        return funcDef->getFunction(compiler, result, loc, templateTypes, shared_from_this());
+    }
+    return nullptr;
+}
+
+shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, CResult& result, const string& name) {
+    auto t1 = localVarsByName.find(name);
+    if (t1 != localVarsByName.end()) {
+        return t1->second;
+    }
+    
+    auto t2 = thisVarsByName.find(name);
+    if (t2 != thisVarsByName.end()) {
+        return t2->second.second;
+    }
+    
+    if (!parent.expired()) {
+        auto parentFunction = static_pointer_cast<CFunction>(parent.lock());
+        auto t3 = parentFunction->getCVar(compiler, result, name);
+        if (t3) {
+            if (t3->mode == Var_Local) {
+                parentFunction->localVarToThisVar(compiler, static_pointer_cast<CNormalVar>(t3));
+            }
+            return CParentVar::create(compiler, result, shared_from_this(), t3);
+        }
+    }
+    
+    return nullptr;
+}
+
+int CFunction::getThisIndex(const string& name) const {
+    auto it = thisVarsByName.find(name);
+    if (it != thisVarsByName.end()) {
+        return it->second.first;
+    }
+    return -1;
+}
+
+void CFunction::localVarToThisVar(Compiler* compiler, shared_ptr<CNormalVar> localVar) {
+    assert(compiler->state <= CompilerState::FixVar); // Cannot change vars after type has been created
+    assert(localVar->mode == CVarType::Var_Local);
+    
+    auto pos = localVarsByName.end();
+    for (auto it = localVarsByName.begin(); it != localVarsByName.end(); it++) {
+        if (it->second == localVar) {
+            pos = it;
+            break;
+        }
+    }
+    
+    if (pos == localVarsByName.end()) {
+        assert(false);
+        return;
+    }
+    
+    localVar->makeFunctionVar((int)thisVars.size());
+    int index = (int)thisVars.size();
+    thisVars.push_back(localVar);
+    thisVarsByName[pos->first] = pair<int, shared_ptr<CNormalVar>>(index, localVar);
+    localVarsByName.erase(pos);
+}
+
+string CFunction::fullName(bool includeTemplateTypes) {
+    stringstream ss;
+    ss << definition.lock()->fullName();
+    if (includeTemplateTypes) {
+        if (templateTypes.size() > 0) {
+            ss << "!";
+        }
+        
+        if (templateTypes.size() > 1) {
+            ss << "[";
+        }
+        
+        for (auto it : templateTypes) {
+            if (it != templateTypes.front()) {
+                ss << ", ";
+            }
+            
+            ss << it->name;
+        }
+        
+        if (templateTypes.size() > 1) {
+            ss << "]";
+        }
+    }
+    return ss.str();
+}
+
+int CFunction::getArgStart(Compiler* compiler, CResult& result) {
+    getThisType(compiler, result);
+    return (int)indexVars;
+}
+
+bool CFunction::getHasParent(Compiler* compiler, CResult& result) {
+    getThisType(compiler, result);
+    return hasParent;
+}
+
+void CFunction::setHasParent(Compiler* compiler, CResult& result) {
+    assert(!_structType);
+    if (parent.expired()) {
+        return;
+    }
+    
+    if (parent.lock()->getThisType(compiler, result) == nullptr) {
+        return;
+    }
+    
+    // Force parent to have a "this" struct
+    parent.lock()->setHasRefCount();
+    
+    if (!hasParent) {
+        getThisType(compiler, result);
+        hasParent = true;
+        
+        for (auto it : delegateHasParent) {
+            it(compiler, result);
+        }
+    }
+}
+
+void CFunction::onHasParent(std::function<void(Compiler*, CResult&)> notify) {
+    delegateHasParent.push_back(notify);
+}
+
+shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName) {
+    if (typeName->templateTypeNames == nullptr) {
+        auto t = templateTypesByName.find(typeName->name);
+        if (t != templateTypesByName.end()) {
+            return t->second;
+        }
+    }
+    
+    auto functionDefinition = static_pointer_cast<CFunctionDefinition>(definition.lock());
+    auto t2 = functionDefinition->funcsByName.find(typeName->name);
+    if (t2 != functionDefinition->funcsByName.end()) {
+        auto templateTypes = vector<shared_ptr<CType>>();
+        if (typeName->templateTypeNames) {
+            for (auto it : *typeName->templateTypeNames) {
+                auto t = getVarType(compiler, result, it);
+                if (!t) {
+                    return nullptr;
+                }
+                templateTypes.push_back(t);
+            }
+        }
+        
+        auto cfunc = t2->second->getFunction(compiler, result, loc, templateTypes, shared_from_this());
+        return cfunc->getThisType(compiler, result);
+    }
+    
+    if (!parent.expired()) {
+        return parent.lock()->getVarType(compiler, result, typeName);
+    }
+    
+    return compiler->getType(typeName->name);
+}
+
+Value* CFunction::getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, bool thisInEntry, Value* thisValue) {
+    assert(hasParent);
+    if (thisInEntry) {
+        auto function = getFunctionFromBuilder(builder);
+        auto it = parentPointers.find(function);
+        if (it == parentPointers.end()) {
+            Value* parentValue = nullptr;
+            if (getHasThis()) {
+                vector<Value*> v;
+                v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+                v.push_back(ConstantInt::get(compiler->context, APInt(32, indexParent)));
+                parentValue = compiler->getEntryBuilder(function)->CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "parent");
+            } else {
+                auto entryBuilder = compiler->getEntryBuilder(function);
+                auto t = (Argument*)std::next(function->args().begin(), indexParent);
+                auto argType = parent.lock()->getThisType(compiler, result);
+                parentValue = entryBuilder->CreateAlloca(argType->llvmRefType(compiler, result));
+                entryBuilder->CreateStore(t, parentValue);
+            }
+            parentPointers[function] = parentValue;
+            return parentValue;
+        } else {
+            return it->second;
+        }
+    } else {
+        assert(getHasThis());
+        vector<Value*> v;
+        v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+        v.push_back(ConstantInt::get(compiler->context, APInt(32, indexParent)));
+        return builder->CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "parent");
+    }
+}
+
+Value* CFunction::getParentValue(Compiler* compiler, CResult& result, IRBuilder<>* builder, bool thisInEntry, Value* thisValue) {
+    assert(hasParent);
+    if (thisInEntry) {
+        auto function = getFunctionFromBuilder(builder);
+        auto it = parentValues.find(function);
+        if (it == parentValues.end()) {
+            auto parentPointer = getParentPointer(compiler, result, builder, thisInEntry, thisValue);
+            auto parentValue = compiler->getEntryBuilder(function)->CreateLoad(parentPointer, "parent");
+            parentValues[function] = parentValue;
+            return parentValue;
+        } else {
+            return it->second;
+        }
+    } else {
+        auto parentPointer = getParentPointer(compiler, result, builder, thisInEntry, thisValue);
+        return builder->CreateLoad(parentPointer, "parent");
+    }
+}
+
+Value* CFunction::getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    assert(_structType);
+    assert(hasRefCount);
+    if (hasRefCount) {
+        vector<Value*> v;
+        v.push_back(ConstantInt::get(compiler->context, APInt(32, 0)));
+        v.push_back(ConstantInt::get(compiler->context, APInt(32, indexRefCount)));
+        return builder->CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "refCount");
+    }
+    return nullptr;
+}
+
+void CFunction::setHasRefCount() {
+    assert(!_structType);
+    hasRefCount = true;
+}
+
+void CFunction::initStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    assert(_structType);
+    compiler->recordRetain(builder, thisValue, name);
+    if (hasRefCount) {
+        auto refCount = getRefCount(compiler, result, builder, thisValue);
+        assert(refCount);
+        builder->CreateStore(ConstantInt::get(compiler->context, APInt(64, STACK_REF_COUNT + 1)), refCount);
+    }
+}
+
+void CFunction::initHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    assert(_structType);
+    assert(hasRefCount);
+    compiler->recordRetain(builder, thisValue, name);
+    
+    auto refCount = getRefCount(compiler, result, builder, thisValue);
+    assert(refCount);
+    builder->CreateStore(ConstantInt::get(compiler->context, APInt(64, 1)), refCount);
+}
+
+void CFunction::retainStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    assert(_structType);
+    assert(hasRefCount);
+    compiler->recordRetain(builder, thisValue, name);
+    
+    auto refCount = getRefCount(compiler, result, builder, thisValue);
+    assert(refCount);
+    auto foo = builder->CreateAdd(refCount, ConstantInt::get(compiler->context, APInt(64, 1)));
+    builder->CreateStore(foo, refCount);
+}
+
+void CFunction::retainHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    assert(_structType);
+    assert(hasRefCount);
+    compiler->recordRetain(builder, thisValue, name);
+    
+    auto refCount = getRefCount(compiler, result, builder, thisValue);
+    assert(refCount);
+    auto load = builder->CreateLoad(refCount);
+    auto add = builder->CreateAdd(load, ConstantInt::get(compiler->context, APInt(64, 1)));
+    builder->CreateStore(add, refCount);
+}
+
+void CFunction::releaseStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    assert(_structType);
+    compiler->recordRelease(builder, thisValue, name);
+    
+#ifdef DEBUG_CALLSTACK
+    if (hasRefCount) {
+        auto refCount = getRefCount(compiler, result, builder, thisValue);
+        auto load = builder->CreateLoad(refCount);
+        auto sub = builder->CreateSub(load, ConstantInt::get(compiler->context, APInt(64, 1)));
+        builder->CreateStore(sub, refCount);
+        
+        Function *function = builder->GetInsertBlock()->getParent();
+        auto ifBB = BasicBlock::Create(compiler->context);
+        auto mergeBB = BasicBlock::Create(compiler->context);
+        
+        auto c = builder->CreateICmpNE(sub, ConstantInt::get(compiler->context, APInt(64, STACK_REF_COUNT)));
+        builder->CreateCondBr(c, ifBB, mergeBB);
+        
+        // If not at special stack ref count then fail
+        function->getBasicBlockList().push_back(ifBB);
+        builder->SetInsertPoint(ifBB);
+        
+        compiler->callDebug(builder, "did not release: " + name, thisValue, nullptr);
+        
+        builder->CreateBr(mergeBB);
+        
+        // Merge block
+        function->getBasicBlockList().push_back(mergeBB);
+        builder->SetInsertPoint(mergeBB);
+    }
+#endif
+    
+    // Call destructor
+    auto destructor = getDestructor(compiler, result);
+    if (destructor) {
+        auto args = vector<Value*>();
+        args.push_back(thisValue);
+        builder->CreateCall(destructor, ArrayRef<Value*>(args));
+    }
+}
+
+void CFunction::releaseHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    assert(hasRefCount);
+    compiler->recordRelease(builder, thisValue, name);
+    
+    auto refCount = getRefCount(compiler, result, builder, thisValue);
+    auto load = builder->CreateLoad(refCount);
+    auto sub = builder->CreateSub(load, ConstantInt::get(compiler->context, APInt(64, 1)));
+    builder->CreateStore(sub, refCount);
+    
+    Function *function = builder->GetInsertBlock()->getParent();
+    auto ifBB = BasicBlock::Create(compiler->context);
+    auto mergeBB = BasicBlock::Create(compiler->context);
+    
+    auto c = builder->CreateICmpSLE(sub, ConstantInt::get(compiler->context, APInt(64, 0)));
+    builder->CreateCondBr(c, ifBB, mergeBB);
+    
+    // If zero then delete
+    function->getBasicBlockList().push_back(ifBB);
+    builder->SetInsertPoint(ifBB);
+    
+    // Call destructor
+    auto destructor = getDestructor(compiler, result);
+    if (destructor) {
+        auto args = vector<Value*>();
+        args.push_back(thisValue);
+        builder->CreateCall(destructor, ArrayRef<Value*>(args));
+    }
+    
+    // Delete "this"
+    auto thisValueAsVoidPtr = builder->CreateBitCast(thisValue, Type::getInt8PtrTy(compiler->context));
+    auto args = vector<Value*>();
+    args.push_back(thisValueAsVoidPtr);
+    auto free = compiler->getFreeFunction();
+    builder->CreateCall(free, ArrayRef<Value*>(args));
+    
+    builder->CreateBr(mergeBB);
+    
+    // Merge block
+    function->getBasicBlockList().push_back(mergeBB);
+    builder->SetInsertPoint(mergeBB);
+}
+
+shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterfaceDefinition>>> interfaceDefinitions, shared_ptr<NFunction> node) {
+    auto c = make_shared<CFunctionDefinition>();
+    c->parent = parent;
+    c->type = type;
+    c->name = name;
+    c->interfaceDefinitions = interfaceDefinitions;
+    c->node = node;
+    
+    if (node) {
+        for (auto it : node->functions) {
+            assert(type != FT_Extern && "Not allowed for extern functions");
+            c->funcsByName[it->name] = it->getFunctionDefinition(compiler, result, c);
+        }
+        
+        for (auto it : node->assignments) {
+            if (it->var) {
+                result.addError(it->loc, CErrorCode::InvalidDot, "cannot use '.' in variable declaration for a function: '%s'", it->name.c_str());
+            }
+        }
+    }
+    return c;
+}
+
+string CFunctionDefinition::fullName() {
+    string n = name;
+    auto p = parent;
+    while (!p.expired() && !p.lock()->parent.expired() && p.lock()->name != "global") {
+        n.insert(0, "_");
+        n.insert(0, p.lock()->name);
+        p = p.lock()->parent;
+    }
+    return n;
+}
+
+void CFunctionDefinition::addChildFunction(string& name, shared_ptr<CBaseFunctionDefinition> childFunction) {
+    funcsByName[name] = static_pointer_cast<CFunctionDefinition>(childFunction);
+}
+
+shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CResult& result, const CLoc& loc, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent) {
+    shared_ptr<CFunction> func;
+    auto it = cfunctions.find(templateTypes);
+    if (it != cfunctions.end()) {
+        func = it->second;
+    } else {
+        assert(funcParent.expired() || funcParent.lock()->definition.lock() == parent.lock());
+        
+        shared_ptr<vector<shared_ptr<CInterface>>> interfaces;
+        if (interfaceDefinitions) {
+            interfaces = make_shared<vector<shared_ptr<CInterface>>>();
+            for (auto it : *interfaceDefinitions) {
+                auto interface = it->getInterface();
+                if (!interface) {
+                    return nullptr;
+                }
+                interfaces->push_back(interface);
+            }
+        }
+        
+        func = node->createCFunction(compiler, result, shared_from_this(), templateTypes, funcParent, type, name, interfaces);
+        cfunctions[templateTypes] = func;
+    }
+    return func;
+}
+
+void CFunctionDefinition::dump(Compiler* compiler, CResult& result, int level) {
+    // Skip if this is the function around global
+    if (funcsByName.size() > 0) {
+        for (auto it : funcsByName) {
+            it.second->dump(compiler, result, level);
+        }
+    }
+}

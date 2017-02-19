@@ -16,7 +16,7 @@ CType::CType(const char* name, Type* llvmAllocType, Value* value) : name(name), 
 }
 #endif
 
-CType::CType(const char* name, weak_ptr<CFunction> parent) : name(name), parent(parent), _llvmAllocType(nullptr), _llvmRefType(nullptr), _value(nullptr) {
+CType::CType(const char* name, weak_ptr<CBaseFunction> parent) : name(name), parent(parent), _llvmAllocType(nullptr), _llvmRefType(nullptr), _value(nullptr) {
 #ifdef DWARF_ENABLED
     _diType = nullptr;
 #endif
@@ -51,7 +51,7 @@ Type* CType::llvmRefType(Compiler* compiler, CResult& result) {
     return _llvmRefType;
 }
 
-shared_ptr<ReturnValue> CType::getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> CType::getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     if (parent.expired()) {
         return _value ? make_shared<ReturnValue>(false, _value) : nullptr;
     }

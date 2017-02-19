@@ -15,6 +15,8 @@ const char* alloc_mode(Compiler* compiler, CResult& result, shared_ptr<CVar> thi
 #define bool_to_str(x) ((x) ? "true" : "false")
 
 class NVariableBase;
+class CBaseFunctionDefinition;
+class CFunction;
 
 enum ReturnValueType {
     RVT_SIMPLE,
@@ -25,7 +27,7 @@ bool isSimpleType(Type* type);
 
 class ReturnValue {
 public:
-    shared_ptr<CFunction> valueFunction;
+    shared_ptr<CBaseFunction> valueFunction;
     bool inEntry;
     bool mustRelease;
     ReturnValueType type;
@@ -36,7 +38,7 @@ public:
         assert(isSimpleType(value->getType()));
     }
     
-    ReturnValue(shared_ptr<CFunction> valueFunction, bool mustRelease, ReturnValueType type, bool inEntry, Value* value) : inEntry(inEntry), valueFunction(valueFunction), mustRelease(mustRelease), type(type), value(value) {
+    ReturnValue(shared_ptr<CBaseFunction> valueFunction, bool mustRelease, ReturnValueType type, bool inEntry, Value* value) : inEntry(inEntry), valueFunction(valueFunction), mustRelease(mustRelease), type(type), value(value) {
         assert(value);
         if (isSimpleType(value->getType())) {
             this->type = RVT_SIMPLE;
@@ -55,19 +57,19 @@ public:
     const CLoc loc;
     
     NBase(const NodeType nodeType, const CLoc loc) : nodeType(nodeType), loc(loc), _hasDefined(false), _hasGetVar(false), _hasGetType(false) { }
-    void define(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction);
-    shared_ptr<CVar> getVar(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar);
-    shared_ptr<CType> getType(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar);
-    int setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar);
-    shared_ptr<ReturnValue> compile(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB);
-    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level = 0) = 0;
+    void define(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    shared_ptr<CVar> getVar(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar);
+    shared_ptr<CType> getType(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar);
+    int setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar);
+    shared_ptr<ReturnValue> compile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB);
+    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level = 0) = 0;
     
 protected:
-    virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) = 0;
-    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) = 0;
-    virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) = 0;
-    virtual int setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) = 0;
-    virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) = 0;
+    virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) = 0;
+    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) = 0;
+    virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) = 0;
+    virtual int setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) = 0;
+    virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) = 0;
     
 private:
     bool _hasDefined;

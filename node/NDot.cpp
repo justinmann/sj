@@ -50,18 +50,18 @@ int CDotVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> th
     return rightVar->setHeapVar(compiler, result, leftVar);
 }
 
-void CDotVar::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CDotVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     stringstream temp;
     leftVar->dump(compiler, result, thisFunction, thisVar, dotVar, functions, temp, dotSS, level);
     rightVar->dump(compiler, result, thisFunction, thisVar, leftVar, functions, ss, temp, level);
 }
 
-void NDot::defineImpl(Compiler *compiler, CResult &result, shared_ptr<CFunctionDefinition> thisFunction) {
+void NDot::defineImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     left->define(compiler, result, thisFunction);
     right->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NDot::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
+shared_ptr<CVar> NDot::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
     auto leftVar = left->getVar(compiler, result, thisFunction, thisVar, dotVar);
     if (!leftVar) {
         return nullptr;
@@ -75,7 +75,7 @@ shared_ptr<CVar> NDot::getVarImpl(Compiler *compiler, CResult &result, shared_pt
     return CDotVar::create(leftVar, rightVar);
 }
 
-int NDot::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar) {
+int NDot::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar) {
     auto leftVar = left->getVar(compiler, result, thisFunction, thisVar, dotVar);
     if (!leftVar) {
         return 0;

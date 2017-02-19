@@ -3,14 +3,14 @@
 NMathAssignment::NMathAssignment(CLoc loc, shared_ptr<NVariableBase> var, NMathAssignmentOp op, shared_ptr<NBase> rightSide) : var(var), op(op), rightSide(rightSide), NBase(NodeType_MathAssignment, loc) {
 }
 
-void NMathAssignment::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
+void NMathAssignment::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     if (rightSide) {
         rightSide->define(compiler, result, thisFunction);
     }
 }
 
-shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state == CompilerState::FixVar);
     if (rightSide) {
         rightSide->getVar(compiler, result, thisFunction, thisVar);
@@ -18,7 +18,7 @@ shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result
     return nullptr;
 }
 
-shared_ptr<CType> NMathAssignment::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CType> NMathAssignment::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
     auto cvar = var->getVar(compiler, result, thisFunction, thisVar, nullptr);
     auto ctype = cvar->getType(compiler, result);
@@ -29,7 +29,7 @@ shared_ptr<CType> NMathAssignment::getTypeImpl(Compiler* compiler, CResult& resu
     return ctype;
 }
 
-int NMathAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
+int NMathAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
     auto count = var->setHeapVar(compiler, result, thisFunction, thisVar, nullptr, false);
     if (rightSide) {
         count += rightSide->setHeapVar(compiler, result, thisFunction, thisVar, false);
@@ -37,7 +37,7 @@ int NMathAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_
     return count;
 }
 
-shared_ptr<ReturnValue> NMathAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NMathAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(builder, this);
     
@@ -106,7 +106,7 @@ shared_ptr<ReturnValue> NMathAssignment::compileImpl(Compiler* compiler, CResult
     return make_shared<ReturnValue>(false, resultValue);
 }
 
-void NMathAssignment::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
+void NMathAssignment::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     var->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
     
     switch (op) {
