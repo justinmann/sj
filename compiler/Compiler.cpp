@@ -191,6 +191,7 @@ void Compiler::InitializeModuleAndPassManager() {
     includedBlocks.clear();
     functionNames.clear();
     entryBuilders.clear();
+    interfaceDefinitions.clear();
     
     allocFunction = nullptr;
     reallocFunction = nullptr;
@@ -403,7 +404,7 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     compilerResult->block->statements.insert(compilerResult->block->statements.begin(), arrayFunction);
     
     auto anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, nullptr, "global", nullptr, nullptr, nullptr, compilerResult->block, catchBlock, nullptr);
-    auto currentFunctionDefintion = CFunctionDefinition::create(this, *compilerResult, nullptr, FT_Public, "", nullptr);
+    auto currentFunctionDefintion = CFunctionDefinition::create(this, *compilerResult, nullptr, FT_Public, "", nullptr, nullptr);
     state = CompilerState::Define;
     anonFunction->define(this, *compilerResult, currentFunctionDefintion);
     
@@ -804,5 +805,16 @@ void Compiler::recordRelease(IRBuilder<>* builder, Value* value, const string& n
     args.push_back(namePtr);
     builder->CreateCall(recordReleaseFunction, ArrayRef<Value*>(args));
 #endif
+}
+
+shared_ptr<CInterfaceDefinition> Compiler::getInterfaceDefinition(string& name) {
+    auto it = interfaceDefinitions.find(name);
+    if (it == interfaceDefinitions.end()) {
+        auto result = make_shared<CInterfaceDefinition>(name);
+        interfaceDefinitions[name] = result;
+        return result;
+    } else {
+        return it->second;
+    }
 }
 

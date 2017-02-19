@@ -9,7 +9,7 @@
 #ifndef NInterfaceMethod_h
 #define NInterfaceMethod_h
 
-class NInterfaceMethod : public NBase {
+class NInterfaceMethod : public NFunction {
 public:
     string name;
     shared_ptr<CTypeNameList> templateTypeNames;
@@ -17,6 +17,7 @@ public:
     shared_ptr<CTypeName> returnTypeName;
 
     NInterfaceMethod(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<CTypeName> returnTypeName);
+    shared_ptr<CType> getBlockType(Compiler* compiler, CResult& result, shared_ptr<CInterfaceMethod> method);
     virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level);
 
 protected:

@@ -776,6 +776,21 @@ void testInterface() {
         void
     )DELIM");
     assert(result->type != RESULT_ERROR);
+    
+    result = compiler.run(R"DELIM(
+        #test(
+            test1()'int
+        )
+
+        class #test (
+            test1() { 5 }
+        ) { this }
+
+        a: class()
+
+        void
+    )DELIM");
+    assert(result->type != RESULT_ERROR);
 }
                           
 int main(int argc, char **argv) {

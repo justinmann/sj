@@ -54,13 +54,14 @@ string CTypeName::getName() {
 }
 
 
-shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, const CLoc& loc, weak_ptr<CFunctionDefinition> definition_, vector<shared_ptr<CType>>& templateTypes_, weak_ptr<CFunction> parent_, CFunctionType type_, const string& name_, shared_ptr<NFunction> node_) {
+shared_ptr<CFunction> CFunction::create(Compiler* compiler, CResult& result, const CLoc& loc, weak_ptr<CFunctionDefinition> definition_, vector<shared_ptr<CType>>& templateTypes_, weak_ptr<CFunction> parent_, CFunctionType type_, const string& name_, shared_ptr<vector<shared_ptr<CInterface>>> interfaces_, shared_ptr<NFunction> node_) {
     auto c = make_shared<CFunction>();
     c->definition = definition_;
     c->templateTypes = templateTypes_;
     c->parent = parent_;
     c->type = type_;
     c->name = name_;
+    c->interfaces = interfaces_;
     c->node = node_;
     c->hasRefCount = false;
     c->hasParent = false;
@@ -128,6 +129,15 @@ shared_ptr<CVar> CFunction::getReturnVar(Compiler* compiler, CResult& result, sh
     return node->getReturnVar(compiler, result, shared_from_this(), thisVar);
 }
 
+shared_ptr<vector<shared_ptr<CVar>>> CFunction::getArgVars(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
+    auto args = make_shared<vector<shared_ptr<CVar>>>();
+    for (auto it : node->assignments) {
+        auto var = it->getVar(compiler, result, shared_from_this(), thisVar);
+        assert(var);
+        args->push_back(var);
+    }
+    return args;
+}
 
 bool CFunction::getHasThis() {
     if (type == FT_Extern) {
@@ -661,17 +671,18 @@ void CFunction::releaseHeap(Compiler* compiler, CResult& result, IRBuilder<>* bu
     builder->SetInsertPoint(mergeBB);
 }
 
-shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parent, CFunctionType type, const string& name, shared_ptr<NFunction> node) {
+shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterfaceDefinition>>> interfaceDefinitions, shared_ptr<NFunction> node) {
     auto c = make_shared<CFunctionDefinition>();
     c->parent = parent;
     c->type = type;
     c->name = name;
+    c->interfaceDefinitions = interfaceDefinitions;
     c->node = node;
     
     if (node) {
         for (auto it : node->functions) {
             assert(type != FT_Extern && "Not allowed for extern functions");
-            c->funcsByName[it->name] = CFunctionDefinition::create(compiler, result, c, FT_Private, it->name, it);
+            c->funcsByName[it->name] = it->getFunctionDefinition(compiler, result, c);
         }
         
         for (auto it : node->assignments) {
@@ -701,7 +712,20 @@ shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CResu
         func = it->second;
     } else {
         assert(funcParent.expired() || funcParent.lock()->definition.lock() == parent.lock());
-        func = CFunction::create(compiler, result, loc, shared_from_this(), templateTypes, funcParent, type, name, node);
+        
+        shared_ptr<vector<shared_ptr<CInterface>>> interfaces;
+        if (interfaceDefinitions) {
+            interfaces = make_shared<vector<shared_ptr<CInterface>>>();
+            for (auto it : *interfaceDefinitions) {
+                auto interface = it->getInterface();
+                if (!interface) {
+                    return nullptr;
+                }
+                interfaces->push_back(interface);
+            }
+        }
+        
+        func = CFunction::create(compiler, result, loc, shared_from_this(), templateTypes, funcParent, type, name, interfaces, node);
         cfunctions[templateTypes] = func;
     }
     return func;

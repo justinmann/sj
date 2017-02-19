@@ -1,6 +1,6 @@
 #include "Node.h"
 
-NInterfaceMethod::NInterfaceMethod(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments_, shared_ptr<CTypeName> returnTypeName) : NBase(NodeType_InterfaceMethod, loc), name(name), templateTypeNames(templateTypeNames), returnTypeName(returnTypeName) {
+NInterfaceMethod::NInterfaceMethod(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments_, shared_ptr<CTypeName> returnTypeName) : NFunction(NodeType_InterfaceMethod, loc), name(name), templateTypeNames(templateTypeNames), returnTypeName(returnTypeName) {
     if (arguments_) {
         for (auto it : *arguments_) {
             assert(it->nodeType == NodeType_Assignment);
@@ -17,6 +17,18 @@ shared_ptr<CType> NInterfaceMethod::getTypeImpl(Compiler* compiler, CResult& res
 shared_ptr<ReturnValue> NInterfaceMethod::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(builder, this);
+    return nullptr;
+}
+
+shared_ptr<CType> NInterfaceMethod::getBlockType(Compiler* compiler, CResult& result, shared_ptr<CInterfaceMethod> method) {
+    assert(compiler->state >= CompilerState::FixVar);
+    /* TODO:
+    shared_ptr<CType> valueType = method->getVarType(compiler, result, loc, returnTypeName);
+    if (!valueType) {
+        result.addError(loc, CErrorCode::InvalidType, "explicit type '%s' does not exist", returnTypeName->name.c_str());
+        return nullptr;
+    }
+    return valueType; */
     return nullptr;
 }
 

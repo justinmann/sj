@@ -54,15 +54,18 @@ enum CFunctionType {
 };
 
 class CFunctionDefinition;
+class CInterface;
+class CInterfaceDefinition;
 
 class CFunction : public enable_shared_from_this<CFunction> {
 public:
-    static shared_ptr<CFunction> create(Compiler* compiler, CResult& result, const CLoc& loc, weak_ptr<CFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> parent, CFunctionType type, const string& name, shared_ptr<NFunction> node);
+    static shared_ptr<CFunction> create(Compiler* compiler, CResult& result, const CLoc& loc, weak_ptr<CFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, shared_ptr<NFunction> node);
     void createThisVar(Compiler* compiler, CResult& result, shared_ptr<CVar>& thisVar);
     shared_ptr<CFunction> getCFunction(Compiler* compiler, CResult& result, const CLoc& loc, const string& name, shared_ptr<CFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames);
     shared_ptr<CVar> getCVar(Compiler* compiler, CResult& result, const CLoc& loc, const string& name);
     shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
     shared_ptr<CVar> getReturnVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
+    shared_ptr<vector<shared_ptr<CVar>>> getArgVars(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
     bool getHasThis();
     int getThisIndex(const string& name) const;
     shared_ptr<CType> getThisType(Compiler* compiler, CResult& result);
@@ -99,6 +102,7 @@ public:
     weak_ptr<CFunctionDefinition> definition;
     vector<shared_ptr<CType>> templateTypes;
     map<string, shared_ptr<CType>> templateTypesByName;
+    shared_ptr<vector<shared_ptr<CInterface>>> interfaces;
     shared_ptr<NFunction> node;
     vector<shared_ptr<CVar>> thisVars;
     map<string, pair<int, shared_ptr<CVar>>> thisVarsByName;
@@ -130,11 +134,12 @@ class CFunctionDefinition : public enable_shared_from_this<CFunctionDefinition> 
 public:
     CFunctionType type;
     string name;
+    shared_ptr<vector<shared_ptr<CInterfaceDefinition>>> interfaceDefinitions;
     shared_ptr<NFunction> node;
     weak_ptr<CFunctionDefinition> parent;
     map<string, shared_ptr<CFunctionDefinition>> funcsByName;
     
-    static shared_ptr<CFunctionDefinition> create(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parent, CFunctionType type, const string& name, shared_ptr<NFunction> node);
+    static shared_ptr<CFunctionDefinition> create(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterfaceDefinition>>> interfaceDefinitions, shared_ptr<NFunction> node);
     string fullName();
     void dump(Compiler* compiler, CResult& result, int level);
     shared_ptr<CFunction> getFunction(Compiler* compiler, CResult& result, const CLoc& loc, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent);

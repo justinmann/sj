@@ -20,6 +20,19 @@ shared_ptr<ReturnValue> NInterface::compileImpl(Compiler* compiler, CResult& res
     return nullptr;
 }
 
+void NInterface::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> thisFunction) {
+    auto def = compiler->getInterfaceDefinition(name);
+    if (def->ninterface) {
+        result.addError(loc, CErrorCode::InvalidType, "interface can only be defined once: '%s'", name.c_str());
+        return;
+    }
+    def->ninterface = shared_from_this();
+
+    for (auto it : methodList) {
+        it->define(compiler, result, thisFunction);
+    }
+}
+
 void NInterface::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
     ss << "#" << name;
     if (templateTypeNames) {
@@ -41,4 +54,8 @@ void NInterface::dump(Compiler* compiler, CResult& result, shared_ptr<CFunction>
     }
     dumpf(ss, level);
     ss << ")";
+}
+
+shared_ptr<NInterface> NInterface::shared_from_this() {
+    return static_pointer_cast<NInterface>(NBase::shared_from_this());
 }

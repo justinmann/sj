@@ -39,10 +39,10 @@ public:
 
 #include "CType.h"
 #include "CVar.h"
+#include "CInterface.h"
 #include "CFunction.h"
 #include "CArrayType.h"
 #include "Exception.h"
-#include "CInterface.h"
 
 #pragma clang diagnostic ignored "-Wformat-security"
 
@@ -107,7 +107,9 @@ enum CErrorCode {
     TooManyParameters,
     InvalidFunction,
     StoringVoid,
-    TemplateUnspecified
+    TemplateUnspecified,
+    InterfaceMethodDoesNotExist,
+    InterfaceMethodTypeMismatch
 };
 
 class CError {
@@ -189,6 +191,7 @@ public:
     void callDebug(IRBuilder<>* builder, const string& name, Value* valuePtr, Value* valueInt);
     void recordRetain(IRBuilder<>* builder, Value* value, const string& name);
     void recordRelease(IRBuilder<>* builder, Value* value, const string& name);
+    shared_ptr<CInterfaceDefinition> getInterfaceDefinition(string& name);
 
     // llvm vars
     CompilerState state;
@@ -218,6 +221,7 @@ private:
     vector<pair<string, shared_ptr<NBlock>>> includedBlocks;
     map<string, GlobalValue*> functionNames;
     map<Function*, shared_ptr<IRBuilder<>>> entryBuilders;
+    map<string, shared_ptr<CInterfaceDefinition>> interfaceDefinitions;
     Function* allocFunction;
     Function* reallocFunction;
     Function* freeFunction;

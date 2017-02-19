@@ -2,7 +2,7 @@
 
 int NFunction::counter = 0;
 
-NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<vector<string>> interfaces, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock) : type(type), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), interfaces(interfaces), block(block), catchBlock(catchBlock), destroyBlock(destroyBlock), isInGetType(false), NBase(NodeType_Function, loc) {
+NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<vector<string>> interfaceNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock) : type(type), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), interfaceNames(interfaceNames), block(block), catchBlock(catchBlock), destroyBlock(destroyBlock), isInGetType(false), NBase(NodeType_Function, loc) {
     assert(type != FT_Extern);
     
     if (this->name == "^") {
@@ -65,7 +65,12 @@ void NFunction::defineImpl(Compiler *compiler, CResult& result, shared_ptr<CFunc
             return;
         }
         
-        auto thisFunction = CFunctionDefinition::create(compiler, result, parentFunction, type, name, shared_from_this());
+        if (interfaceNames) {
+            result.addError(loc, CErrorCode::InvalidType, "extern function cannot have an interface");
+            return;
+        }
+        
+        auto thisFunction = CFunctionDefinition::create(compiler, result, parentFunction, type, name, nullptr, shared_from_this());
         parentFunction->funcsByName[name] = thisFunction;
         
         for (auto it : assignments) {
@@ -76,7 +81,7 @@ void NFunction::defineImpl(Compiler *compiler, CResult& result, shared_ptr<CFunc
             block->define(compiler, result, thisFunction);
         }
     } else {
-        auto thisFunction = CFunctionDefinition::create(compiler, result, parentFunction, type, name, shared_from_this());
+        auto thisFunction = getFunctionDefinition(compiler, result, parentFunction);
         parentFunction->funcsByName[name] = thisFunction;
 
         for (auto it : functions) {
@@ -93,7 +98,64 @@ void NFunction::defineImpl(Compiler *compiler, CResult& result, shared_ptr<CFunc
     }
 }
 
+shared_ptr<CFunctionDefinition> NFunction::getFunctionDefinition(Compiler *compiler, CResult& result, shared_ptr<CFunctionDefinition> parentFunction) {
+    shared_ptr<vector<shared_ptr<CInterfaceDefinition>>> interfaces;
+    if (interfaceNames) {
+        interfaces = make_shared<vector<shared_ptr<CInterfaceDefinition>>>();
+        for (auto it : *interfaceNames) {
+            auto interface = compiler->getInterfaceDefinition(it);
+            interfaces->push_back(interface);
+        }
+    }
+    
+    return CFunctionDefinition::create(compiler, result, parentFunction, type, name, interfaces, shared_from_this());
+}
+
 shared_ptr<CVar> NFunction::getVarImpl(Compiler *compiler, CResult& result, shared_ptr<CFunction> parentFunction, shared_ptr<CVar> parentVar) {
+    // Verify that all interfaces are implemented
+    for (auto interface : *parentFunction->interfaces) {
+        // TODO: check if there is a special interface object composition method
+        
+        for (auto method : *interface->methods) {
+            auto cfunc = parentFunction->getCFunction(compiler, result, loc, method->ninterfaceMethod->name, nullptr, nullptr);
+            if (cfunc == nullptr) {
+                result.addError(loc, CErrorCode::InterfaceMethodDoesNotExist, "no interface method '%s'", method->ninterfaceMethod->name.c_str());
+                return nullptr;
+            }
+            
+            auto functionReturnType = cfunc->getReturnType(compiler, result, parentVar);
+            auto interfaceReturnType = method->getReturnType(compiler, result);
+            if (functionReturnType != interfaceReturnType) {
+                result.addError(loc, CErrorCode::InterfaceMethodTypeMismatch, "method '%s' return type '%s' does not match interface '%s'", method->ninterfaceMethod->name.c_str(), functionReturnType->name.c_str(), interfaceReturnType->name.c_str());
+                return nullptr;
+            }
+            
+            auto functionArgVars = cfunc->getArgVars(compiler, result, parentVar);
+            auto interfaceArgVars = method->getArgVars();
+            if (functionArgVars->size() != interfaceArgVars->size()) {
+                result.addError(loc, CErrorCode::InterfaceMethodTypeMismatch, "method '%s' arg count does not match '%d' vs '%d'", method->ninterfaceMethod->name.c_str(), functionArgVars->size(), interfaceArgVars->size());
+                return nullptr;
+            }
+            
+            for (int i = 0; i < functionArgVars->size(); i++) {
+                auto functionArgVar = (*functionArgVars)[i];
+                auto interfaceArgVar = (*interfaceArgVars)[i];
+                
+                if (functionArgVar->isMutable != interfaceArgVar->isMutable) {
+                    result.addError(loc, CErrorCode::InterfaceMethodTypeMismatch, "method '%s' parameter %d does not match mutability", method->ninterfaceMethod->name.c_str(), i);
+                    return nullptr;
+                }
+                
+                auto functionArgType = functionArgVar->getType(compiler, result);
+                auto interfaceArgType = interfaceArgVar->getType(compiler, result);
+                if (functionArgType != interfaceArgType) {
+                    result.addError(loc, CErrorCode::InterfaceMethodTypeMismatch, "method '%s' parameter %d type '%s' does not match interface '%s'", method->ninterfaceMethod->name.c_str(), i, functionArgType->name.c_str(), interfaceArgType->name.c_str());
+                    return nullptr;
+                }
+            }
+        }
+    }
+
     return nullptr;
 }
 
@@ -784,10 +846,10 @@ shared_ptr<ReturnValue> NFunction::call(Compiler* compiler, CResult& result, sha
 
 void NFunction::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CFunction>, string>& functions, stringstream& ss, int level) {
     ss << thisFunction->fullName(true);
-    if (interfaces) {
+    if (interfaceNames) {
         ss << " ";
-        for (auto it : *interfaces) {
-            if (it != interfaces->front()) {
+        for (auto it : *interfaceNames) {
+            if (it != interfaceNames->front()) {
                 ss << ", ";
             }
             ss << "#" << it;
