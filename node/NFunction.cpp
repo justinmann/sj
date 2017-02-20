@@ -828,14 +828,50 @@ void CFunction::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CVar> t
     }
 }
 
+shared_ptr<ReturnValue> CFunction::cast(Compiler* compiler, CResult& result, IRBuilder<>* builder, shared_ptr<ReturnValue> fromValue, shared_ptr<CInterface> interface) {
+    if (!interfaces) {
+        result.addError(loc, CErrorCode::InterfaceDoesNotExist, "function does not implement interface '%s'", interface->name.c_str());
+        return nullptr;
+    }
+
+    bool foundInterface = false;
+    for (auto it : *interfaces) {
+        if (it == interface) {
+            foundInterface = true;
+        }
+    }
+    
+    if (!foundInterface) {
+        result.addError(loc, CErrorCode::InterfaceDoesNotExist, "function does not implement interface '%s'", interface->name.c_str());
+        return nullptr;
+    }
+    
+    // TODO: cache function list
+    shared_ptr<vector<Function*>> interfaceMethods = make_shared<vector<Function*>>();
+    for (auto it : *interface->methods) {
+        auto cfunc = static_pointer_cast<CFunction>(getCFunction(compiler, result, it->name, nullptr, nullptr));
+        if (!cfunc) {
+            result.addError(loc, CErrorCode::InterfaceMethodDoesNotExist, "cannot find interface method: '%s'", it->name.c_str());
+            return nullptr;
+        }
+        
+        assert(!cfunc->getHasThis());
+        
+        // TODO: Verify func type matches
+        auto fun = cfunc->getFunction(compiler, result, nullptr);
+        interfaceMethods->push_back(fun);
+    }
+    
+    // TODO: get all function pointers for the interface
+    // TODO: pass function pointers & fromValue into interface::cast
+    return interface->cast(compiler, result, builder, fromValue, interfaceMethods);
+}
+
 CFunction::CFunction(weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) :
-    CBaseFunction(parent, definition),
+    CBaseFunction(definition.lock()->name, parent, definition),
     templateTypes(templateTypes),
     type(type),
-    name(definition.lock()->name),
     interfaces(interfaces),
-    hasRefCount(false),
-    hasParent(false),
     _structType(nullptr),
     function(nullptr),
     loc(CLoc::undefined),
@@ -1142,6 +1178,22 @@ shared_ptr<CBaseFunction> CFunction::getCFunction(Compiler* compiler, CResult& r
     return nullptr;
 }
 
+shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames) {
+    auto def = static_pointer_cast<CFunctionDefinition>(definition.lock());
+    auto t = def->interfacesByName.find(name);
+    if (t != def->interfacesByName.end()) {
+        auto interfaceDef = t->second;
+        
+        vector<shared_ptr<CType>> templateTypes;
+        if (!getTemplateTypes(compiler, result, loc, shared_from_this(), callerFunction, templateTypeNames, interfaceDef->ninterface->templateTypeNames, templateTypes)) {
+            return nullptr;
+        }
+        
+        return interfaceDef->getInterface(compiler, result, templateTypes, shared_from_this());
+    }
+    return nullptr;
+}
+
 shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, CResult& result, const string& name) {
     auto t1 = localVarsByName.find(name);
     if (t1 != localVarsByName.end()) {
@@ -1231,69 +1283,48 @@ int CFunction::getArgStart(Compiler* compiler, CResult& result) {
     return (int)indexVars;
 }
 
-bool CFunction::getHasParent(Compiler* compiler, CResult& result) {
-    getThisType(compiler, result);
-    return hasParent;
-}
-
-void CFunction::setHasParent(Compiler* compiler, CResult& result) {
-    assert(!_structType);
-    if (parent.expired()) {
-        return;
-    }
-    
-    if (parent.lock()->getThisType(compiler, result) == nullptr) {
-        return;
-    }
-    
-    // Force parent to have a "this" struct
-    parent.lock()->setHasRefCount();
-    
-    if (!hasParent) {
-        getThisType(compiler, result);
-        hasParent = true;
-        
-        for (auto it : delegateHasParent) {
-            it(compiler, result);
-        }
-    }
-}
-
-void CFunction::onHasParent(std::function<void(Compiler*, CResult&)> notify) {
-    delegateHasParent.push_back(notify);
-}
-
 shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName) {
-    if (typeName->templateTypeNames == nullptr) {
-        auto t = templateTypesByName.find(typeName->name);
-        if (t != templateTypesByName.end()) {
-            return t->second;
+    if (typeName->category == CTC_Interface) {
+        auto interface = getCInterface(compiler, result, typeName->name, nullptr, typeName->templateTypeNames);
+        if (interface) {
+            return interface->getThisType(compiler, result);
         }
-    }
-    
-    auto functionDefinition = static_pointer_cast<CFunctionDefinition>(definition.lock());
-    auto t2 = functionDefinition->funcsByName.find(typeName->name);
-    if (t2 != functionDefinition->funcsByName.end()) {
-        auto templateTypes = vector<shared_ptr<CType>>();
-        if (typeName->templateTypeNames) {
-            for (auto it : *typeName->templateTypeNames) {
-                auto t = getVarType(compiler, result, it);
-                if (!t) {
-                    return nullptr;
-                }
-                templateTypes.push_back(t);
+    } else {
+        assert(typeName->category == CTC_Value);
+        if (typeName->templateTypeNames == nullptr) {
+            auto t = templateTypesByName.find(typeName->name);
+            if (t != templateTypesByName.end()) {
+                return t->second;
             }
         }
         
-        auto cfunc = t2->second->getFunction(compiler, result, loc, templateTypes, shared_from_this());
-        return cfunc->getThisType(compiler, result);
+        auto functionDefinition = static_pointer_cast<CFunctionDefinition>(definition.lock());
+        auto t2 = functionDefinition->funcsByName.find(typeName->name);
+        if (t2 != functionDefinition->funcsByName.end()) {
+            auto templateTypes = vector<shared_ptr<CType>>();
+            if (typeName->templateTypeNames) {
+                for (auto it : *typeName->templateTypeNames) {
+                    auto t = getVarType(compiler, result, it);
+                    if (!t) {
+                        return nullptr;
+                    }
+                    templateTypes.push_back(t);
+                }
+            }
+            
+            auto cfunc = t2->second->getFunction(compiler, result, loc, templateTypes, shared_from_this());
+            return cfunc->getThisType(compiler, result);
+        }
     }
     
     if (!parent.expired()) {
         return parent.lock()->getVarType(compiler, result, typeName);
     }
     
-    return compiler->getType(typeName->name);
+    if (typeName->category == CTC_Value) {
+        return compiler->getType(typeName->name);
+    }
+    return nullptr;
 }
 
 Value* CFunction::getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, bool thisInEntry, Value* thisValue) {
@@ -1358,137 +1389,6 @@ Value* CFunction::getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* 
         return builder->CreateInBoundsGEP(thisType->llvmAllocType(compiler, result), thisValue, ArrayRef<Value *>(v), "refCount");
     }
     return nullptr;
-}
-
-void CFunction::setHasRefCount() {
-    assert(!_structType);
-    hasRefCount = true;
-}
-
-void CFunction::initStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
-    assert(_structType);
-    compiler->recordRetain(builder, thisValue, name);
-    if (hasRefCount) {
-        auto refCount = getRefCount(compiler, result, builder, thisValue);
-        assert(refCount);
-        builder->CreateStore(ConstantInt::get(compiler->context, APInt(64, STACK_REF_COUNT + 1)), refCount);
-    }
-}
-
-void CFunction::initHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
-    assert(_structType);
-    assert(hasRefCount);
-    compiler->recordRetain(builder, thisValue, name);
-    
-    auto refCount = getRefCount(compiler, result, builder, thisValue);
-    assert(refCount);
-    builder->CreateStore(ConstantInt::get(compiler->context, APInt(64, 1)), refCount);
-}
-
-void CFunction::retainStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
-    assert(_structType);
-    assert(hasRefCount);
-    compiler->recordRetain(builder, thisValue, name);
-    
-    auto refCount = getRefCount(compiler, result, builder, thisValue);
-    assert(refCount);
-    auto foo = builder->CreateAdd(refCount, ConstantInt::get(compiler->context, APInt(64, 1)));
-    builder->CreateStore(foo, refCount);
-}
-
-void CFunction::retainHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
-    assert(_structType);
-    assert(hasRefCount);
-    compiler->recordRetain(builder, thisValue, name);
-    
-    auto refCount = getRefCount(compiler, result, builder, thisValue);
-    assert(refCount);
-    auto load = builder->CreateLoad(refCount);
-    auto add = builder->CreateAdd(load, ConstantInt::get(compiler->context, APInt(64, 1)));
-    builder->CreateStore(add, refCount);
-}
-
-void CFunction::releaseStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
-    assert(_structType);
-    compiler->recordRelease(builder, thisValue, name);
-    
-#ifdef DEBUG_CALLSTACK
-    if (hasRefCount) {
-        auto refCount = getRefCount(compiler, result, builder, thisValue);
-        auto load = builder->CreateLoad(refCount);
-        auto sub = builder->CreateSub(load, ConstantInt::get(compiler->context, APInt(64, 1)));
-        builder->CreateStore(sub, refCount);
-        
-        Function *function = builder->GetInsertBlock()->getParent();
-        auto ifBB = BasicBlock::Create(compiler->context);
-        auto mergeBB = BasicBlock::Create(compiler->context);
-        
-        auto c = builder->CreateICmpNE(sub, ConstantInt::get(compiler->context, APInt(64, STACK_REF_COUNT)));
-        builder->CreateCondBr(c, ifBB, mergeBB);
-        
-        // If not at special stack ref count then fail
-        function->getBasicBlockList().push_back(ifBB);
-        builder->SetInsertPoint(ifBB);
-        
-        compiler->callDebug(builder, "did not release: " + name, thisValue, nullptr);
-        
-        builder->CreateBr(mergeBB);
-        
-        // Merge block
-        function->getBasicBlockList().push_back(mergeBB);
-        builder->SetInsertPoint(mergeBB);
-    }
-#endif
-    
-    // Call destructor
-    auto destructor = getDestructor(compiler, result);
-    if (destructor) {
-        auto args = vector<Value*>();
-        args.push_back(thisValue);
-        builder->CreateCall(destructor, ArrayRef<Value*>(args));
-    }
-}
-
-void CFunction::releaseHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
-    assert(hasRefCount);
-    compiler->recordRelease(builder, thisValue, name);
-    
-    auto refCount = getRefCount(compiler, result, builder, thisValue);
-    auto load = builder->CreateLoad(refCount);
-    auto sub = builder->CreateSub(load, ConstantInt::get(compiler->context, APInt(64, 1)));
-    builder->CreateStore(sub, refCount);
-    
-    Function *function = builder->GetInsertBlock()->getParent();
-    auto ifBB = BasicBlock::Create(compiler->context);
-    auto mergeBB = BasicBlock::Create(compiler->context);
-    
-    auto c = builder->CreateICmpSLE(sub, ConstantInt::get(compiler->context, APInt(64, 0)));
-    builder->CreateCondBr(c, ifBB, mergeBB);
-    
-    // If zero then delete
-    function->getBasicBlockList().push_back(ifBB);
-    builder->SetInsertPoint(ifBB);
-    
-    // Call destructor
-    auto destructor = getDestructor(compiler, result);
-    if (destructor) {
-        auto args = vector<Value*>();
-        args.push_back(thisValue);
-        builder->CreateCall(destructor, ArrayRef<Value*>(args));
-    }
-    
-    // Delete "this"
-    auto thisValueAsVoidPtr = builder->CreateBitCast(thisValue, Type::getInt8PtrTy(compiler->context));
-    auto args = vector<Value*>();
-    args.push_back(thisValueAsVoidPtr);
-    auto free = compiler->getFreeFunction();
-    builder->CreateCall(free, ArrayRef<Value*>(args));
-    
-    builder->CreateBr(mergeBB);
-    
-    // Merge block
-    function->getBasicBlockList().push_back(mergeBB);
-    builder->SetInsertPoint(mergeBB);
 }
 
 shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterfaceDefinition>>> interfaceDefinitions, shared_ptr<NFunction> node) {

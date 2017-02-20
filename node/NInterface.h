@@ -31,14 +31,37 @@ private:
     shared_ptr<NInterface> shared_from_this();
 };
 
-class CInterface : public enable_shared_from_this<CInterface> {
+class CInterface : public CBaseFunction, public enable_shared_from_this<CInterface> {
 public:
     shared_ptr<CInterfaceMethodList> methods;
     map<string, shared_ptr<CType>> templateTypesByName;
     
     CInterface(weak_ptr<CInterfaceDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> parent);
     shared_ptr<CInterface> init(Compiler* compiler, CResult& result, shared_ptr<NInterface> node);
+    string fullName(bool includeTemplateTypes);
+    
+    bool getHasThis();
+    shared_ptr<CType> getThisType(Compiler* compiler, CResult& result);
+    int getThisIndex(const string& name) const;
+    void createThisVar(Compiler* compiler, CResult& result, shared_ptr<CVar>& thisVar);
+    Type* getStructType(Compiler* compiler, CResult& result);
+    Value* getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
+
+    shared_ptr<CVar> getCVar(Compiler* compiler, CResult& result, const string& name);
+    shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames);
+    Value* getParentValue(Compiler* compiler, CResult& result, IRBuilder<>* builder, bool thisInEntry, Value* thisValue);
     shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName);
+    shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
+    shared_ptr<CVar> getReturnVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
+    
+    shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters);
+    void dumpBody(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
+    bool getReturnMustRelease(Compiler* compiler, CResult& result);
+    Function* getDestructor(Compiler* compiler, CResult& result);
+    shared_ptr<ReturnValue> cast(Compiler* compiler, CResult& result, IRBuilder<>* builder, shared_ptr<ReturnValue> fromValue, shared_ptr<vector<Function*>> interfaceMethodValues);
+    
+private:
+    shared_ptr<CType> thisType;
 };
 
 class CInterfaceDefinition : public CBaseFunctionDefinition, public enable_shared_from_this<CInterfaceDefinition> {

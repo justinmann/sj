@@ -248,7 +248,7 @@ shared_ptr<CFunction> NArrayGrowFunction::createCFunction(Compiler* compiler, CR
 }
 
 shared_ptr<CType> CArrayGrowFunction::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
-    return make_shared<CArrayType>("", parent.lock());
+    return make_shared<CArrayType>("", static_pointer_cast<CFunction>(parent.lock()));
 }
 
 int CArrayGrowFunction::setHeapVarBody(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {

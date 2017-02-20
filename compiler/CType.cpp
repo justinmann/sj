@@ -9,14 +9,20 @@
 #include "Node.h"
 
 #ifdef DWARF_ENABLED
-CType::CType(const char* name, Type* llvmAllocType, DIType* diType, Value* value) : name(name), _llvmAllocType(llvmAllocType), _llvmRefType(llvmAllocType), _diType(diType), _value(value) {
+CType::CType(const char* name, Type* llvmAllocType, DIType* diType, Value* value) : category(CTC_Value), name(name), _llvmAllocType(llvmAllocType), _llvmRefType(llvmAllocType), _diType(diType), _value(value) {
 }
 #else
-CType::CType(const char* name, Type* llvmAllocType, Value* value) : name(name), _llvmAllocType(llvmAllocType), _llvmRefType(llvmAllocType), _value(value) {
+CType::CType(const char* name, Type* llvmAllocType, Value* value) : category(CTC_Value), name(name), _llvmAllocType(llvmAllocType), _llvmRefType(llvmAllocType), _value(value) {
 }
 #endif
 
-CType::CType(const char* name, weak_ptr<CBaseFunction> parent) : name(name), parent(parent), _llvmAllocType(nullptr), _llvmRefType(nullptr), _value(nullptr) {
+CType::CType(const char* name, weak_ptr<CFunction> parent) : category(CTC_Function), name(name), parent(parent), _llvmAllocType(nullptr), _llvmRefType(nullptr), _value(nullptr) {
+#ifdef DWARF_ENABLED
+    _diType = nullptr;
+#endif
+}
+
+CType::CType(const char* name, weak_ptr<CInterface> parent) : category(CTC_Interface), name(name), parent(parent), _llvmAllocType(nullptr), _llvmRefType(nullptr), _value(nullptr) {
 #ifdef DWARF_ENABLED
     _diType = nullptr;
 #endif

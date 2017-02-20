@@ -31,6 +31,9 @@ void NInterface::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBas
     for (auto it : methodList) {
         it->define(compiler, result, thisFunction);
     }
+    
+    auto fun = static_pointer_cast<CFunctionDefinition>(thisFunction);
+    fun->interfacesByName[name] = def;
 }
 
 void NInterface::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
@@ -60,11 +63,62 @@ shared_ptr<NInterface> NInterface::shared_from_this() {
     return static_pointer_cast<NInterface>(NBase::shared_from_this());
 }
 
-CInterface::CInterface(weak_ptr<CInterfaceDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> parent) {
+CInterface::CInterface(weak_ptr<CInterfaceDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> parent) : CBaseFunction(definition.lock()->name, parent, definition) {
 }
 
 shared_ptr<CInterface> CInterface::init(Compiler* compiler, CResult& result, shared_ptr<NInterface> node) {
     return shared_from_this();
+}
+
+string CInterface::fullName(bool includeTemplateTypes) {
+    assert(false);
+    return "";
+}
+
+bool CInterface::getHasThis() {
+    assert(false);
+    return false;
+}
+
+shared_ptr<CType> CInterface::getThisType(Compiler* compiler, CResult& result) {
+    if (!thisType) {
+        thisType = make_shared<CType>(name.c_str(), shared_from_this());
+    }
+    return thisType;
+}
+
+int CInterface::getThisIndex(const string& name) const {
+    assert(false);
+    return -1;
+}
+
+void CInterface::createThisVar(Compiler* compiler, CResult& result, shared_ptr<CVar>& thisVar) {
+    assert(false);
+}
+
+Type* CInterface::getStructType(Compiler* compiler, CResult& result) {
+    assert(false);
+    return nullptr;
+}
+
+Value* CInterface::getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+    assert(false);
+    return nullptr;
+}
+
+shared_ptr<CVar> CInterface::getCVar(Compiler* compiler, CResult& result, const string& name) {
+    assert(false);
+    return nullptr;
+}
+
+shared_ptr<CBaseFunction> CInterface::getCFunction(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames) {
+    assert(false);
+    return nullptr;
+}
+
+Value* CInterface::getParentValue(Compiler* compiler, CResult& result, IRBuilder<>* builder, bool thisInEntry, Value* thisValue) {
+    assert(false);
+    return nullptr;
 }
 
 shared_ptr<CType> CInterface::getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName) {
@@ -76,6 +130,43 @@ shared_ptr<CType> CInterface::getVarType(Compiler* compiler, CResult& result, sh
     }
     
     return compiler->getType(typeName->name);
+}
+
+shared_ptr<CType> CInterface::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
+    assert(false);
+    return nullptr;
+}
+
+shared_ptr<CVar> CInterface::getReturnVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
+    assert(false);
+    return nullptr;
+}
+
+shared_ptr<ReturnValue> CInterface::call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
+    assert(false);
+}
+
+void CInterface::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+    assert(false);
+}
+
+bool CInterface::getReturnMustRelease(Compiler* compiler, CResult& result) {
+    assert(false);
+    return false;
+}
+
+Function* CInterface::getDestructor(Compiler* compiler, CResult& result) {
+    return nullptr;
+}
+
+shared_ptr<ReturnValue> CInterface::cast(Compiler* compiler, CResult& result, IRBuilder<>* builder, shared_ptr<ReturnValue> fromValue, shared_ptr<vector<Function*>> interfaceMethodValues) {
+    // TODO: alloc instance of struct type
+    // TODO: store interfaceMethods
+    // TODO: store "this"
+    // TODO: retain "this"
+    // TODO: create return value
+    assert(false);
+    return nullptr;
 }
 
 CInterfaceDefinition::CInterfaceDefinition(string& name_) {

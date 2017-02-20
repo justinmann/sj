@@ -66,6 +66,7 @@ public:
     
     void createThisVar(Compiler* compiler, CResult& result, shared_ptr<CVar>& thisVar);
     shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames);
+    shared_ptr<CInterface> getCInterface(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames);
     shared_ptr<CVar> getCVar(Compiler* compiler, CResult& result, const string& name);
     shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
     shared_ptr<CVar> getReturnVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
@@ -81,17 +82,12 @@ public:
     Value* getThisArgument(Compiler* compiler, CResult& result);
     void localVarToThisVar(Compiler* compiler, shared_ptr<CNormalVar> cvar);
     int getArgStart(Compiler* compiler, CResult& result);
-    bool getHasParent(Compiler* compiler, CResult& result);
-    void setHasParent(Compiler* compiler, CResult& result);
-    void onHasParent(std::function<void(Compiler*, CResult&)> notify);
     Value* getArgumentPointer(Compiler* compiler, CResult& result, bool thisInEntry, Value* thisValue, int index, IRBuilder<>* builder);
     Value* getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, bool thisInEntry, Value* thisValue);
     Value* getParentValue(Compiler* compiler, CResult& result, IRBuilder<>* builder, bool thisInEntry, Value* thisValue);
     string fullName(bool includeTemplateTypes);
     shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName);
-    
     Value* getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
-    void setHasRefCount();
     
     virtual shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters);
     virtual void getVarBody(Compiler *compiler, CResult& result, shared_ptr<CVar> thisVar);
@@ -101,26 +97,17 @@ public:
     virtual Function* compileDestructorDefinition(Compiler* compiler, CResult& result);
     virtual void compileDestructorBody(Compiler* compiler, CResult& result, Function* function);
     virtual void dumpBody(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
-    
-    void initStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
-    void initHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
-    void retainStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
-    void retainHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
-    void releaseStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
-    void releaseHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
+    shared_ptr<ReturnValue> cast(Compiler* compiler, CResult& result, IRBuilder<>* builder, shared_ptr<ReturnValue> fromValue, shared_ptr<CInterface> interface);
     
     CLoc loc;
     CFunctionType type;
-    string name;
     vector<shared_ptr<CType>> templateTypes;
     map<string, shared_ptr<CType>> templateTypesByName;
     shared_ptr<vector<shared_ptr<CInterface>>> interfaces;
     map<string, shared_ptr<CVar>> localVarsByName;
 
 private:
-    bool hasRefCount;
     size_t indexRefCount;
-    bool hasParent;
     size_t indexParent;
     size_t indexVars;
     bool isInGetType;
@@ -133,7 +120,6 @@ private:
     shared_ptr<CType> thisType;
     shared_ptr<CVar> thisVar;
     shared_ptr<vector<Type*>> typeList;
-    vector<std::function<void(Compiler*, CResult&)>> delegateHasParent;
     map<Function*, Value*> parentPointers;
     map<Function*, Value*> parentValues;
     map<Function*, map<Value*, map<int, Value*>>> argumentPointers;
@@ -154,6 +140,7 @@ public:
     shared_ptr<vector<shared_ptr<CInterfaceDefinition>>> interfaceDefinitions;
     shared_ptr<NFunction> node;
     map<string, shared_ptr<CFunctionDefinition>> funcsByName;
+    map<string, shared_ptr<CInterfaceDefinition>> interfacesByName;
     
     static shared_ptr<CFunctionDefinition> create(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterfaceDefinition>>> interfaceDefinitions, shared_ptr<NFunction> node);
     string fullName();

@@ -12,9 +12,22 @@
 class Compiler;
 class CBaseFunction;
 class CFunction;
+class CInterface;
 class CResult;
 class ReturnValue;
 class CVar;
+
+enum CTypeImmutability {
+    CTM_Undefined,
+    CTM_Mutable,
+    CTM_Immutable,
+};
+
+enum CTypeCategory {
+    CTC_Value,
+    CTC_Interface,
+    CTC_Function
+};
 
 class CType {
 public:
@@ -24,11 +37,13 @@ public:
     CType(const char* name, Type* llvmType, Value* value);
 #endif
 
-    CType(const char* name, weak_ptr<CBaseFunction> parent);
+    CType(const char* name, weak_ptr<CFunction> parent);
+    CType(const char* name, weak_ptr<CInterface> parent);
 #ifdef DWARF_ENABLED
     DIType* getDIType(Compiler* compiler, CResult& result);
 #endif
 
+    CTypeCategory category;
     string name;
     weak_ptr<CBaseFunction> parent;
     virtual Type* llvmAllocType(Compiler* compiler, CResult& result);

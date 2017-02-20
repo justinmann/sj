@@ -53,6 +53,12 @@ shared_ptr<ReturnValue> NCast::compileImpl(Compiler* compiler, CResult& result, 
         return make_shared<ReturnValue>(false, builder->CreateFPToSI(v->value, toType->llvmRefType(compiler, result)));
     }
     
+    if (toType->category == CTC_Interface) {
+        auto interface = static_pointer_cast<CInterface>(toType->parent.lock());
+        auto function = static_pointer_cast<CFunction>(v->valueFunction);
+        return function->cast(compiler, result, builder, v, interface);
+    }
+    
     result.addError(loc, CErrorCode::InvalidCast, "cannot cast");
     
     return NULL;

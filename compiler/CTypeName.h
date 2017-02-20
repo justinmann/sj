@@ -9,21 +9,11 @@
 #ifndef CTypeName_h
 #define CTypeName_h
 
+#include "CType.h"
+
 class NFunction;
 
 class CTypeName;
-
-enum CTypeImmutability {
-    CTM_Undefined,
-    CTM_Mutable,
-    CTM_Immutable,
-};
-
-enum CTypeCategory {
-    CTC_Value,
-    CTC_Interface,
-    CTC_Function
-};
 
 class CTypeNameList : public vector<shared_ptr<CTypeName>> {
 public:
