@@ -11,10 +11,10 @@
 
 class NCast : public NBase {
 public:
-    const string type;
+    const shared_ptr<CTypeName> typeName;
     const shared_ptr<NBase> node;
     
-    NCast(CLoc loc, const char* type, shared_ptr<NBase> node) : type(type), node(node), NBase(NodeType_Cast, loc) { }
+    NCast(CLoc loc, shared_ptr<CTypeName> typeName, shared_ptr<NBase> node) : typeName(typeName), node(node), NBase(NodeType_Cast, loc) { }
     virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
 
 protected:

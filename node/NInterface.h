@@ -31,4 +31,28 @@ private:
     shared_ptr<NInterface> shared_from_this();
 };
 
+class CInterface : public enable_shared_from_this<CInterface> {
+public:
+    shared_ptr<CInterfaceMethodList> methods;
+    map<string, shared_ptr<CType>> templateTypesByName;
+    
+    CInterface(weak_ptr<CInterfaceDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> parent);
+    shared_ptr<CInterface> init(Compiler* compiler, CResult& result, shared_ptr<NInterface> node);
+    shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName);
+};
+
+class CInterfaceDefinition : public CBaseFunctionDefinition, public enable_shared_from_this<CInterfaceDefinition> {
+public:
+    shared_ptr<NInterface> ninterface;
+
+    CInterfaceDefinition(string& name);
+    string fullName();
+    void addChildFunction(string& name, shared_ptr<CBaseFunctionDefinition> childFunction);
+    shared_ptr<CInterface> getInterface(Compiler* compiler, CResult& result, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent);
+    
+private:
+    map<vector<shared_ptr<CType>>, shared_ptr<CInterface>> cinterfaces;
+    vector<shared_ptr<CBaseFunctionDefinition>> methods;
+};
+
 #endif /* NInterface_h */

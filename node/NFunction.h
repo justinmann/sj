@@ -159,7 +159,7 @@ public:
     string fullName();
     void addChildFunction(string& name, shared_ptr<CBaseFunctionDefinition> childFunction);
     void dump(Compiler* compiler, CResult& result, int level);
-    shared_ptr<CFunction> getFunction(Compiler* compiler, CResult& result, const CLoc& loc, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent);
+    shared_ptr<CFunction> getFunction(Compiler* compiler, CResult& result, CLoc& loc, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent);
     
 private:
     map<vector<shared_ptr<CType>>, shared_ptr<CFunction>> cfunctions;

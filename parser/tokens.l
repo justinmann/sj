@@ -40,7 +40,7 @@ int count_lines(const char* s, const int len) {
 
 %%
 
-"as"					TOKEN_VAL(TCAST);
+"as"					TOKEN_VAL(TAS);
 "throw"					TOKEN_VAL(TTHROW);
 "catch"					TOKEN_VAL(TCATCH);
 "destroy"				TOKEN_VAL(TDESTROY);

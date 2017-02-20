@@ -763,32 +763,76 @@ void testInterface() {
     result = compiler.run(R"DELIM(
         #foo()
         
-        #test(
-            test1()'#foo
-            test2(x: 1)'int
-            test3(x: 2, z: 'c')'list!char
-        )
-
-        class #test, #foo () { this }
+        class #foo () { this }
 
         a: class()
+        b: a as #foo
 
         void
     )DELIM");
     assert(result->type != RESULT_ERROR);
     
     result = compiler.run(R"DELIM(
-        #test(
-            test1()'int
+        #foo(
+            test()'int
         )
-
-        class #test (
-            test1() { 5 }
+        
+        class #foo (
+            test() {
+                5
+            }
         ) { this }
 
-        a: class()
+        a: class() as #foo
+        a.test()
+    )DELIM");
+    assert(result->type != RESULT_ERROR);
 
-        void
+    result = compiler.run(R"DELIM(
+        #foo(
+            test()'list!char
+        )
+        
+        class #foo (
+            test() {
+                "5"
+            }
+        ) { this }
+
+        a: class() as #foo
+        a.test()
+    )DELIM");
+    assert(result->type != RESULT_ERROR);
+
+    result = compiler.run(R"DELIM(
+        #foo!item(
+            test()'item
+        )
+        
+        class #foo!int (
+            test() {
+                5
+            }
+        ) { this }
+
+        a: class() as #foo!int
+        a.test()
+    )DELIM");
+    assert(result->type != RESULT_ERROR);
+
+    result = compiler.run(R"DELIM(
+        #foo!item(
+            test()'item
+        )
+        
+        class!item #foo!item (
+            test() {
+                5
+            }
+        ) { this }
+
+        a: class!int() as #foo!int
+        a.test()
     )DELIM");
     assert(result->type != RESULT_ERROR);
 }
@@ -796,6 +840,8 @@ void testInterface() {
 int main(int argc, char **argv) {
     shared_ptr<CResult> result;
     Compiler compiler;
+
+    testInterface();
 
     testMath();
     testComparison();
@@ -815,7 +861,6 @@ int main(int argc, char **argv) {
     testInclude();
     testString();
     testHeap();
-    testInterface();
 
     // testThrow();
     // compiler.run("include \"highlow.sj\"");

@@ -64,18 +64,3 @@ shared_ptr<CType> CInterfaceMethod::getVarType(Compiler* compiler, CResult& resu
     
     return compiler->getType(typeName->name);
 }
-
-shared_ptr<CType> CInterface::getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName) {
-    if (typeName->templateTypeNames == nullptr) {
-        auto t = templateTypesByName.find(typeName->name);
-        if (t != templateTypesByName.end()) {
-            return t->second;
-        }
-    }
-    
-    return compiler->getType(typeName->name);
-}
-
-shared_ptr<CInterface> CInterfaceDefinition::getInterface() {
-    return nullptr;
-}

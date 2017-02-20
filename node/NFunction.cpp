@@ -1092,6 +1092,40 @@ Value* CFunction::getArgumentPointer(Compiler* compiler, CResult& result, bool t
     }
 }
 
+bool getTemplateTypes(Compiler* compiler, CResult& result, CLoc& loc, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> calleeTemplateTypeNames, shared_ptr<CTypeNameList> funcTemplateTypeNames, vector<shared_ptr<CType>>& templateTypes) {
+    if (calleeTemplateTypeNames) {
+        if (calleeTemplateTypeNames->size() != funcTemplateTypeNames->size()) {
+            result.addError(loc, CErrorCode::InvalidTemplateArg, "size does not match");
+            return false;
+        }
+        
+        // Map template type string list to type list
+        for (auto templateTypeName : *calleeTemplateTypeNames) {
+            shared_ptr<CType> ctype = nullptr;
+            if (callerFunction) {
+                ctype = callerFunction->getVarType(compiler, result, templateTypeName);
+            }
+            
+            if (!ctype) {
+                auto ctype = thisFunction->getVarType(compiler, result, templateTypeName);
+                if (!ctype) {
+                    result.addError(loc, CErrorCode::TemplateUnspecified, "cannot find template type: '%s'", templateTypeName->name.c_str());
+                    return false;
+                }
+            }
+            
+            templateTypes.push_back(ctype);
+        }
+    } else {
+        if (funcTemplateTypeNames != nullptr) {
+            result.addError(loc, CErrorCode::InvalidTemplateArg, "size does not match");
+            return false;
+        }
+    }
+    return true;
+}
+
+
 shared_ptr<CBaseFunction> CFunction::getCFunction(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames) {
     auto def = static_pointer_cast<CFunctionDefinition>(definition.lock());
     auto t = def->funcsByName.find(name);
@@ -1099,37 +1133,10 @@ shared_ptr<CBaseFunction> CFunction::getCFunction(Compiler* compiler, CResult& r
         auto funcDef = t->second;
         
         vector<shared_ptr<CType>> templateTypes;
-        if (templateTypeNames) {
-            if (templateTypeNames->size() != funcDef->node->templateTypeNames->size()) {
-                result.addError(loc, CErrorCode::InvalidTemplateArg, "size does not match");
-                return nullptr;
-            }
-            
-            // Map template type string list to type list
-            for (auto templateTypeName : *templateTypeNames) {
-                shared_ptr<CType> ctype = nullptr;
-                if (callerFunction) {
-                    ctype = callerFunction->getVarType(compiler, result, templateTypeName);
-                }
-                
-                if (!ctype) {
-                    auto ctype = getVarType(compiler, result, templateTypeName);
-                    if (!ctype) {
-                        result.addError(loc, CErrorCode::TemplateUnspecified, "cannot find template type: '%s'", templateTypeName->name.c_str());
-                        return nullptr;
-                    }
-                }
-                
-                templateTypes.push_back(ctype);
-            }
-        } else {
-            if (funcDef->node->templateTypeNames != nullptr) {
-                result.addError(loc, CErrorCode::InvalidTemplateArg, "size does not match");
-                return nullptr;
-            }
+        if (!getTemplateTypes(compiler, result, loc, shared_from_this(), callerFunction, templateTypeNames, funcDef->node->templateTypeNames, templateTypes)) {
+            return nullptr;
         }
-        
-        // Get function for type list
+
         return funcDef->getFunction(compiler, result, loc, templateTypes, shared_from_this());
     }
     return nullptr;
@@ -1522,7 +1529,7 @@ void CFunctionDefinition::addChildFunction(string& name, shared_ptr<CBaseFunctio
     funcsByName[name] = static_pointer_cast<CFunctionDefinition>(childFunction);
 }
 
-shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CResult& result, const CLoc& loc, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent) {
+shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CResult& result, CLoc& loc, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent) {
     shared_ptr<CFunction> func;
     auto it = cfunctions.find(templateTypes);
     if (it != cfunctions.end()) {
@@ -1534,8 +1541,14 @@ shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CResu
         if (interfaceDefinitions) {
             interfaces = make_shared<vector<shared_ptr<CInterface>>>();
             for (auto it : *interfaceDefinitions) {
-                auto interface = it->getInterface();
+                vector<shared_ptr<CType>> interfaceTemplateTypes;
+                if (!getTemplateTypes(compiler, result, loc, funcParent.lock(), nullptr, it->ninterface->templateTypeNames, it->ninterface->templateTypeNames, interfaceTemplateTypes)) {
+                    return nullptr;
+                }
+                
+                auto interface = it->getInterface(compiler, result, interfaceTemplateTypes, funcParent);
                 if (!interface) {
+                    result.addError(loc, CErrorCode::InterfaceDoesNotExist, "cannot find interface '%s'", it->name.c_str());
                     return nullptr;
                 }
                 interfaces->push_back(interface);

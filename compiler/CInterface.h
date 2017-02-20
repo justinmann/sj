@@ -34,23 +34,4 @@ public:
     shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName);
 };
 
-class CInterface {
-public:
-    shared_ptr<CInterfaceMethodList> methods;
-    map<string, shared_ptr<CType>> templateTypesByName;
-
-    shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName);
-};
-
-class CInterfaceDefinition {
-public:
-    CInterfaceDefinition(string& name) : name(name) { }
-    shared_ptr<CInterface> getInterface();
-    
-    shared_ptr<NInterface> ninterface;
-    
-private:
-    string name;
-};
-
 #endif /* CInterface */

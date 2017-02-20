@@ -72,7 +72,7 @@ extern int yydebug;
     TDIV = 282,
     TTRUE = 283,
     TFALSE = 284,
-    TCAST = 285,
+    TAS = 285,
     TVOID = 286,
     TIF = 287,
     TELSE = 288,

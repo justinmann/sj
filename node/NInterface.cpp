@@ -59,3 +59,50 @@ void NInterface::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunct
 shared_ptr<NInterface> NInterface::shared_from_this() {
     return static_pointer_cast<NInterface>(NBase::shared_from_this());
 }
+
+CInterface::CInterface(weak_ptr<CInterfaceDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> parent) {
+}
+
+shared_ptr<CInterface> CInterface::init(Compiler* compiler, CResult& result, shared_ptr<NInterface> node) {
+    return shared_from_this();
+}
+
+shared_ptr<CType> CInterface::getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName) {
+    if (typeName->templateTypeNames == nullptr) {
+        auto t = templateTypesByName.find(typeName->name);
+        if (t != templateTypesByName.end()) {
+            return t->second;
+        }
+    }
+    
+    return compiler->getType(typeName->name);
+}
+
+CInterfaceDefinition::CInterfaceDefinition(string& name_) {
+    name = name_;
+}
+
+string CInterfaceDefinition::fullName() {
+    return name;
+}
+
+void CInterfaceDefinition::addChildFunction(string& name, shared_ptr<CBaseFunctionDefinition> childFunction) {
+    methods.push_back(childFunction);
+}
+
+shared_ptr<CInterface> CInterfaceDefinition::getInterface(Compiler* compiler, CResult& result, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent) {
+    shared_ptr<CInterface> interface;
+    auto it = cinterfaces.find(templateTypes);
+    if (it != cinterfaces.end()) {
+        interface = it->second;
+    } else {
+        if (!ninterface) {
+            return nullptr;
+        }
+        
+        interface = make_shared<CInterface>(shared_from_this(), templateTypes, funcParent);
+        interface = interface->init(compiler, result, ninterface);
+        cinterfaces[templateTypes] = interface;
+    }
+    return interface;
+}

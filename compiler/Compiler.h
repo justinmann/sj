@@ -70,6 +70,7 @@ class KaleidoscopeJIT;
 class NBlock;
 class NBase;
 class NAssignment;
+class CInterfaceDefinition;
 
 enum CResultType {
     RESULT_ERROR,
@@ -110,6 +111,7 @@ enum CErrorCode {
     InvalidFunction,
     StoringVoid,
     TemplateUnspecified,
+    InterfaceDoesNotExist,
     InterfaceMethodDoesNotExist,
     InterfaceMethodTypeMismatch
 };
@@ -170,8 +172,7 @@ enum CompilerState {
     Compile
 };
 
-class SJException : public exception {
-};
+class SJException : public exception { };
 
 class Compiler
 {

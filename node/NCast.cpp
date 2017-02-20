@@ -13,7 +13,7 @@ shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, CResult& result, shared_p
 
 shared_ptr<CType> NCast::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
-    auto t = compiler->getType(type.c_str());
+    auto t = thisFunction->getVarType(compiler, result, typeName);
     if (!t) {
         result.addError(loc, CErrorCode::InvalidType, "type does not exist");
     }
@@ -32,10 +32,8 @@ shared_ptr<ReturnValue> NCast::compileImpl(Compiler* compiler, CResult& result, 
     if (!v)
         return nullptr;
     
-    assert(v->type == RVT_SIMPLE);
-    
     auto fromType = node->getType(compiler, result, thisFunction, thisVar);
-    auto toType = compiler->getType(type.c_str());
+    auto toType = thisFunction->getVarType(compiler, result, typeName);
     
     if (!toType) {
         result.addError(loc, CErrorCode::InvalidType, "type does not exist");
@@ -46,10 +44,12 @@ shared_ptr<ReturnValue> NCast::compileImpl(Compiler* compiler, CResult& result, 
     }
     
     if (fromType == compiler->typeInt && toType == compiler->typeFloat) {
+        assert(v->type == RVT_SIMPLE);
         return make_shared<ReturnValue>(false, builder->CreateSIToFP(v->value, toType->llvmRefType(compiler, result)));
     }
 
     if (fromType == compiler->typeFloat && toType == compiler->typeInt) {
+        assert(v->type == RVT_SIMPLE);
         return make_shared<ReturnValue>(false, builder->CreateFPToSI(v->value, toType->llvmRefType(compiler, result)));
     }
     
@@ -60,5 +60,5 @@ shared_ptr<ReturnValue> NCast::compileImpl(Compiler* compiler, CResult& result, 
 
 void NCast::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     node->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
-    ss << " as " << type;
+    ss << " as " << typeName->getName();
 }

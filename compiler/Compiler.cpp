@@ -443,7 +443,7 @@ shared_ptr<CResult> Compiler::run(const string& code) {
         return compilerResult;
 
 #ifdef NODE_OUTPUT
-    map<shared_ptr<CFunction>, string> functionDumps;
+    map<shared_ptr<CBaseFunction>, string> functionDumps;
     stringstream ss;
     compilerResult->block->dump(this, *compilerResult, globalFunction, globalVar, functionDumps, ss, 0);
     for (auto it : functionDumps) {

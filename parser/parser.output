@@ -77,7 +77,7 @@ Grammar
    50     | while_expr
    51     | expr_and
    52     | TTHROW TLPAREN expr TRPAREN
-   53     | expr TCAST TIDENTIFIER
+   53     | expr TAS arg_type
 
    54 expr_and: expr_comp TAND expr_and
    55         | expr_comp TOR expr_and
@@ -178,8 +178,8 @@ Terminals, with rules where they appear
 
 $end (0) 0
 error (256) 10
-TIDENTIFIER (258) 23 24 25 39 40 41 53 75 83 94 95 96 97 98 99 107
-    108 120 122 123
+TIDENTIFIER (258) 23 24 25 39 40 41 75 83 94 95 96 97 98 99 107 108
+    120 122 123
 TINTEGER (259) 85 86
 TDOUBLE (260) 87 88
 TINVALID (261)
@@ -206,7 +206,7 @@ TMUL (281) 66
 TDIV (282) 67
 TTRUE (283) 89
 TFALSE (284) 90
-TCAST (285) 53
+TAS (285) 53
 TVOID (286) 91 111
 TIF (287) 77 78 79
 TELSE (288) 78 79
@@ -310,7 +310,7 @@ return_type_quote (89)
 arg_type_quote (90)
     on left: 106, on right: 95 96 98 99
 arg_type (91)
-    on left: 107 108 109, on right: 106 110 113 114
+    on left: 107 108 109, on right: 53 106 110 113 114
 return_type (92)
     on left: 110 111, on right: 105 112
 func_type (93)
@@ -748,9 +748,9 @@ State 28
 State 29
 
     8 stmt: expr .
-   53 expr: expr . TCAST TIDENTIFIER
+   53 expr: expr . TAS arg_type
 
-    TCAST  shift, and go to state 72
+    TAS  shift, and go to state 72
 
     $default  reduce using rule 8 (stmt)
 
@@ -1016,11 +1016,11 @@ State 50
 
 State 51
 
-   53 expr: expr . TCAST TIDENTIFIER
+   53 expr: expr . TAS arg_type
    71 expr_var: TLPAREN expr . TRPAREN
 
     TRPAREN  shift, and go to state 103
-    TCAST    shift, and go to state 72
+    TAS      shift, and go to state 72
 
 
 State 52
@@ -1049,13 +1049,13 @@ State 54
 
 State 55
 
-   53 expr: expr . TCAST TIDENTIFIER
+   53 expr: expr . TAS arg_type
    77 if_expr: TIF expr . block
    78        | TIF expr . block TELSE block
    79        | TIF expr . block TELSE if_expr
 
     TLBRACE  shift, and go to state 105
-    TCAST    shift, and go to state 72
+    TAS      shift, and go to state 72
 
     block  go to state 106
 
@@ -1113,21 +1113,21 @@ State 58
 
 State 59
 
-   53 expr: expr . TCAST TIDENTIFIER
+   53 expr: expr . TAS arg_type
    76 while_expr: TWHILE expr . block
 
     TLBRACE  shift, and go to state 105
-    TCAST    shift, and go to state 72
+    TAS      shift, and go to state 72
 
     block  go to state 110
 
 
 State 60
 
-   53 expr: expr . TCAST TIDENTIFIER
+   53 expr: expr . TAS arg_type
   103 array_args: expr .
 
-    TCAST  shift, and go to state 72
+    TAS  shift, and go to state 72
 
     $default  reduce using rule 103 (array_args)
 
@@ -1312,9 +1312,14 @@ State 71
 
 State 72
 
-   53 expr: expr TCAST . TIDENTIFIER
+   53 expr: expr TAS . arg_type
 
-    TIDENTIFIER  shift, and go to state 128
+    TIDENTIFIER  shift, and go to state 92
+    TLPAREN      shift, and go to state 93
+    THASH        shift, and go to state 94
+
+    arg_type   go to state 128
+    func_type  go to state 96
 
 
 State 73
@@ -2059,10 +2064,10 @@ State 106
 State 107
 
    52 expr: TTHROW TLPAREN expr . TRPAREN
-   53     | expr . TCAST TIDENTIFIER
+   53     | expr . TAS arg_type
 
     TRPAREN  shift, and go to state 158
-    TCAST    shift, and go to state 72
+    TAS      shift, and go to state 72
 
 
 State 108
@@ -2211,9 +2216,9 @@ State 118
 State 119
 
    37 func_arg: expr .
-   53 expr: expr . TCAST TIDENTIFIER
+   53 expr: expr . TAS arg_type
 
-    TCAST  shift, and go to state 72
+    TAS  shift, and go to state 72
 
     $default  reduce using rule 37 (func_arg)
 
@@ -2300,7 +2305,7 @@ State 127
 
 State 128
 
-   53 expr: expr TCAST TIDENTIFIER .
+   53 expr: expr TAS arg_type .
 
     $default  reduce using rule 53 (expr)
 
@@ -2517,9 +2522,9 @@ State 144
 
    17 var_decl: var TLBRACKET expr . TRBRACKET
    18         | var TLBRACKET expr . TRBRACKET TEQUAL stmt
-   53 expr: expr . TCAST TIDENTIFIER
+   53 expr: expr . TAS arg_type
 
-    TCAST      shift, and go to state 72
+    TAS        shift, and go to state 72
     TRBRACKET  shift, and go to state 176
 
 
@@ -2676,19 +2681,19 @@ State 159
 
 State 160
 
-   53 expr: expr . TCAST TIDENTIFIER
+   53 expr: expr . TAS arg_type
    75 for_expr: TFOR TIDENTIFIER TCOLON expr . TTO expr block
 
-    TCAST  shift, and go to state 72
-    TTO    shift, and go to state 191
+    TAS  shift, and go to state 72
+    TTO  shift, and go to state 191
 
 
 State 161
 
-   53 expr: expr . TCAST TIDENTIFIER
+   53 expr: expr . TAS arg_type
   104 array_args: array_args TCOMMA expr .
 
-    TCAST  shift, and go to state 72
+    TAS  shift, and go to state 72
 
     $default  reduce using rule 104 (array_args)
 
@@ -3359,11 +3364,11 @@ State 212
 
 State 213
 
-   53 expr: expr . TCAST TIDENTIFIER
+   53 expr: expr . TAS arg_type
    75 for_expr: TFOR TIDENTIFIER TCOLON expr TTO expr . block
 
     TLBRACE  shift, and go to state 105
-    TCAST    shift, and go to state 72
+    TAS      shift, and go to state 72
 
     block  go to state 225
 
