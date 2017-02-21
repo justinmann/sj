@@ -20,7 +20,8 @@ shared_ptr<CType> NCast::getTypeImpl(Compiler* compiler, CResult& result, shared
     return t;
 }
 
-int NCast::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
+int NCast::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar_) {
+    isHeapVar = isHeapVar_;
     return node->setHeapVar(compiler, result, thisFunction, thisVar, false);
 }
 
@@ -56,7 +57,7 @@ shared_ptr<ReturnValue> NCast::compileImpl(Compiler* compiler, CResult& result, 
     if (toType->category == CTC_Interface) {
         auto interface = static_pointer_cast<CInterface>(toType->parent.lock());
         auto function = static_pointer_cast<CFunction>(v->valueFunction);
-        return function->cast(compiler, result, builder, v, interface);
+        return function->cast(compiler, result, builder, v, isHeapVar, interface);
     }
     
     result.addError(loc, CErrorCode::InvalidCast, "cannot cast");

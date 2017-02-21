@@ -33,7 +33,7 @@ private:
 
 class CInterface : public CBaseFunction, public enable_shared_from_this<CInterface> {
 public:
-    shared_ptr<CInterfaceMethodList> methods;
+    CInterfaceMethodList methods;
     map<string, shared_ptr<CType>> templateTypesByName;
     
     CInterface(weak_ptr<CInterfaceDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> parent);
@@ -58,10 +58,11 @@ public:
     void dumpBody(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
     bool getReturnMustRelease(Compiler* compiler, CResult& result);
     Function* getDestructor(Compiler* compiler, CResult& result);
-    shared_ptr<ReturnValue> cast(Compiler* compiler, CResult& result, IRBuilder<>* builder, shared_ptr<ReturnValue> fromValue, shared_ptr<vector<Function*>> interfaceMethodValues);
+    shared_ptr<ReturnValue> cast(Compiler* compiler, CResult& result, IRBuilder<>* builder, shared_ptr<ReturnValue> fromValue, bool isHeap, vector<Function*>& interfaceMethodValues);
     
 private:
     shared_ptr<CType> thisType;
+    StructType* _structType;
 };
 
 class CInterfaceDefinition : public CBaseFunctionDefinition, public enable_shared_from_this<CInterfaceDefinition> {

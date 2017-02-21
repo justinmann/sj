@@ -64,3 +64,8 @@ shared_ptr<CType> CInterfaceMethod::getVarType(Compiler* compiler, CResult& resu
     
     return compiler->getType(typeName->name);
 }
+
+Function* CInterfaceMethod::getFunction() {
+    assert(false);
+    return nullptr;
+}

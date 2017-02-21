@@ -32,6 +32,7 @@ public:
     shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result);
     shared_ptr<vector<shared_ptr<CVar>>> getArgVars();
     shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName);
+    Function* getFunction();
 };
 
 #endif /* CInterface */

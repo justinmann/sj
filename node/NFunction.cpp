@@ -828,7 +828,7 @@ void CFunction::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CVar> t
     }
 }
 
-shared_ptr<ReturnValue> CFunction::cast(Compiler* compiler, CResult& result, IRBuilder<>* builder, shared_ptr<ReturnValue> fromValue, shared_ptr<CInterface> interface) {
+shared_ptr<ReturnValue> CFunction::cast(Compiler* compiler, CResult& result, IRBuilder<>* builder, shared_ptr<ReturnValue> fromValue, bool isHeap, shared_ptr<CInterface> interface) {
     if (!interfaces) {
         result.addError(loc, CErrorCode::InterfaceDoesNotExist, "function does not implement interface '%s'", interface->name.c_str());
         return nullptr;
@@ -846,9 +846,10 @@ shared_ptr<ReturnValue> CFunction::cast(Compiler* compiler, CResult& result, IRB
         return nullptr;
     }
     
+    // get all function pointers for the interface
     // TODO: cache function list
-    shared_ptr<vector<Function*>> interfaceMethods = make_shared<vector<Function*>>();
-    for (auto it : *interface->methods) {
+    vector<Function*> interfaceMethods = vector<Function*>();
+    for (auto it : interface->methods) {
         auto cfunc = static_pointer_cast<CFunction>(getCFunction(compiler, result, it->name, nullptr, nullptr));
         if (!cfunc) {
             result.addError(loc, CErrorCode::InterfaceMethodDoesNotExist, "cannot find interface method: '%s'", it->name.c_str());
@@ -859,12 +860,11 @@ shared_ptr<ReturnValue> CFunction::cast(Compiler* compiler, CResult& result, IRB
         
         // TODO: Verify func type matches
         auto fun = cfunc->getFunction(compiler, result, nullptr);
-        interfaceMethods->push_back(fun);
+        interfaceMethods.push_back(fun);
     }
     
-    // TODO: get all function pointers for the interface
-    // TODO: pass function pointers & fromValue into interface::cast
-    return interface->cast(compiler, result, builder, fromValue, interfaceMethods);
+    // pass function pointers & fromValue into interface::cast
+    return interface->cast(compiler, result, builder, fromValue, isHeap, interfaceMethods);
 }
 
 CFunction::CFunction(weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) :

@@ -97,7 +97,7 @@ public:
     virtual Function* compileDestructorDefinition(Compiler* compiler, CResult& result);
     virtual void compileDestructorBody(Compiler* compiler, CResult& result, Function* function);
     virtual void dumpBody(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
-    shared_ptr<ReturnValue> cast(Compiler* compiler, CResult& result, IRBuilder<>* builder, shared_ptr<ReturnValue> fromValue, shared_ptr<CInterface> interface);
+    shared_ptr<ReturnValue> cast(Compiler* compiler, CResult& result, IRBuilder<>* builder, shared_ptr<ReturnValue> fromValue, bool isHeap, shared_ptr<CInterface> interface);
     
     CLoc loc;
     CFunctionType type;

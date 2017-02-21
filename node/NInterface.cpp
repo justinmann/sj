@@ -63,7 +63,7 @@ shared_ptr<NInterface> NInterface::shared_from_this() {
     return static_pointer_cast<NInterface>(NBase::shared_from_this());
 }
 
-CInterface::CInterface(weak_ptr<CInterfaceDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> parent) : CBaseFunction(definition.lock()->name, parent, definition) {
+CInterface::CInterface(weak_ptr<CInterfaceDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> parent) : _structType(nullptr), CBaseFunction(definition.lock()->name, parent, definition) {
 }
 
 shared_ptr<CInterface> CInterface::init(Compiler* compiler, CResult& result, shared_ptr<NInterface> node) {
@@ -97,8 +97,19 @@ void CInterface::createThisVar(Compiler* compiler, CResult& result, shared_ptr<C
 }
 
 Type* CInterface::getStructType(Compiler* compiler, CResult& result) {
-    assert(false);
-    return nullptr;
+    if (!_structType) {
+        _structType = StructType::create(compiler->context, name + "_interface");
+        
+        auto typeList = vector<Type*>();
+        typeList.push_back(Type::getInt8PtrTy(compiler->context));
+        
+        for (auto it : methods) {
+            typeList.push_back(it->getFunction()->getType());
+        }
+        
+        _structType->setBody(ArrayRef<Type *>(typeList));
+    }
+    return _structType;
 }
 
 Value* CInterface::getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
@@ -159,14 +170,52 @@ Function* CInterface::getDestructor(Compiler* compiler, CResult& result) {
     return nullptr;
 }
 
-shared_ptr<ReturnValue> CInterface::cast(Compiler* compiler, CResult& result, IRBuilder<>* builder, shared_ptr<ReturnValue> fromValue, shared_ptr<vector<Function*>> interfaceMethodValues) {
-    // TODO: alloc instance of struct type
-    // TODO: store interfaceMethods
-    // TODO: store "this"
-    // TODO: retain "this"
-    // TODO: create return value
-    assert(false);
-    return nullptr;
+shared_ptr<ReturnValue> CInterface::cast(Compiler* compiler, CResult& result, IRBuilder<>* builder, shared_ptr<ReturnValue> fromValue, bool isHeap, vector<Function*>& interfaceMethodValues) {
+    auto interfaceType = getStructType(compiler, result);
+    Value* value;
+    // alloc instance of struct type
+    if (isHeap) {
+        // heap alloc this
+        auto allocFunc = compiler->getAllocFunction();
+        
+        // Compute the size of the struct by getting a pointer to the second element from null
+        vector<Value*> v;
+        v.push_back(ConstantInt::get(compiler->context, APInt(32, 1)));
+        auto thisPointerType = interfaceType->getPointerTo();
+        auto nullPtr = ConstantPointerNull::get(thisPointerType);
+        auto sizePtr = builder->CreateGEP(nullPtr, ArrayRef<llvm::Value *>(v));
+        auto sizeValue = builder->CreatePtrToInt(sizePtr, Type::getInt64Ty(compiler->context));
+        
+        // Allocate and mutate to correct type
+        vector<Value*> allocArgs;
+        allocArgs.push_back(sizeValue);
+        auto valueAsVoidPtr = builder->CreateCall(allocFunc, allocArgs);
+        value = builder->CreateBitCast(valueAsVoidPtr, thisPointerType);
+        initHeap(compiler, result, builder, value);
+    } else {
+        value = builder->CreateAlloca(interfaceType);
+        initStack(compiler, result, builder, value);
+    }
+
+    // store "this"
+    auto index = 0;
+    auto thisPtr = builder->CreateStructGEP(interfaceType, value, index);
+    auto fromVoidPtr = builder->CreateBitCast(fromValue->value, Type::getInt8PtrTy(compiler->context));
+    builder->CreateStore(fromVoidPtr, thisPtr);
+    index++;
+
+    // retain "this"
+    fromValue->retainIfNeeded(compiler, result, builder);
+    
+    // store interfaceMethods
+    for (auto it : interfaceMethodValues) {
+        auto functionPtr = builder->CreateStructGEP(interfaceType, value, index);
+        builder->CreateStore(it, functionPtr);
+        index++;
+    }
+    
+    // create return value
+    return make_shared<ReturnValue>(shared_from_this(), true, RVT_HEAP, false, value);
 }
 
 CInterfaceDefinition::CInterfaceDefinition(string& name_) {
