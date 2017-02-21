@@ -7,5 +7,7 @@ shared_ptr<CVar> NThis::getVarImpl(Compiler *compiler, CResult &result, shared_p
         result.addError(loc, CErrorCode::InvalidVariable, "this must be the first var in a dot chain");
         return nullptr;
     }
+    
+    thisVar->parent.lock()->setHasRefCount();    
     return thisVar;
 }

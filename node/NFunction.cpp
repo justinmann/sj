@@ -857,9 +857,15 @@ shared_ptr<ReturnValue> CFunction::cast(Compiler* compiler, CResult& result, IRB
         }
         
         assert(!cfunc->getHasThis());
+        assert(cfunc->getHasParent(compiler, result));
         
-        // TODO: Verify func type matches
         auto fun = cfunc->getFunction(compiler, result, nullptr);
+        auto returnType = cfunc->getReturnType(compiler, result, nullptr);
+        if (!returnType->parent.expired()) {
+            assert(cfunc->getReturnMustRelease(compiler, result));
+        }
+
+        // TODO: Verify func type matches
         interfaceMethods.push_back(fun);
     }
     
@@ -936,6 +942,23 @@ void CFunction::createThisVar(Compiler* compiler, CResult& result, shared_ptr<CV
     thisVar = CNormalVar::createThisVar(loc, shared_from_this(), getThisType(compiler, result));
     getVarBody(compiler, result, thisVar);
     setHeapVarBody(compiler, result, thisVar);
+
+    if (interfaces) {
+        // Make all functions used by an interface are defined
+        for (auto interface : *interfaces) {
+            for (auto it : interface->methods) {
+                auto cfunc = static_pointer_cast<CFunction>(getCFunction(compiler, result, it->name, nullptr, nullptr));
+                if (!cfunc) {
+                    result.addError(loc, CErrorCode::InterfaceMethodDoesNotExist, "cannot find interface method: '%s'", it->name.c_str());
+                    return;
+                }
+                
+                assert(!cfunc->getHasThis());
+                cfunc->setHasParent(compiler, result); // All interface methods must take the parent has first pointer even if they don't need it
+                cfunc->getVarBody(compiler, result, thisVar);
+            }
+        }
+    }
 }
 
 shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {

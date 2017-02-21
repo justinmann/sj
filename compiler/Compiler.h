@@ -40,7 +40,6 @@ public:
 #include "CType.h"
 #include "CTypeName.h"
 #include "CVar.h"
-#include "CInterface.h"
 #include "CArrayType.h"
 #include "Exception.h"
 

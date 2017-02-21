@@ -31,9 +31,12 @@ private:
     shared_ptr<NInterface> shared_from_this();
 };
 
+class CInterfaceMethod;
+
 class CInterface : public CBaseFunction, public enable_shared_from_this<CInterface> {
 public:
-    CInterfaceMethodList methods;
+    vector<shared_ptr<CInterfaceMethod>> methods;
+    map<string, shared_ptr<CInterfaceMethod>> methodByName;
     map<string, shared_ptr<CType>> templateTypesByName;
     
     CInterface(weak_ptr<CInterfaceDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> parent);

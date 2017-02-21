@@ -67,6 +67,18 @@ CInterface::CInterface(weak_ptr<CInterfaceDefinition> definition, vector<shared_
 }
 
 shared_ptr<CInterface> CInterface::init(Compiler* compiler, CResult& result, shared_ptr<NInterface> node) {
+    auto structIndex = 1;
+    for (auto it : node->methodList) {
+        auto method = make_shared<CInterfaceMethod>(it->name, shared_from_this(), structIndex);
+        method = method->init(compiler, result, it);
+        if (!method) {
+            return nullptr;
+        }
+        methods.push_back(method);
+        methodByName[method->name] = method;
+        structIndex++;
+    }
+
     return shared_from_this();
 }
 
@@ -104,7 +116,7 @@ Type* CInterface::getStructType(Compiler* compiler, CResult& result) {
         typeList.push_back(Type::getInt8PtrTy(compiler->context));
         
         for (auto it : methods) {
-            typeList.push_back(it->getFunction()->getType());
+            typeList.push_back(it->getFunctionType(compiler, result)->getPointerTo());
         }
         
         _structType->setBody(ArrayRef<Type *>(typeList));
@@ -123,7 +135,12 @@ shared_ptr<CVar> CInterface::getCVar(Compiler* compiler, CResult& result, const 
 }
 
 shared_ptr<CBaseFunction> CInterface::getCFunction(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames) {
-    assert(false);
+    if (templateTypeNames == nullptr) {
+        auto it = methodByName.find(name);
+        if (it != methodByName.end()) {
+            return it->second;
+        }        
+    }
     return nullptr;
 }
 
@@ -198,20 +215,24 @@ shared_ptr<ReturnValue> CInterface::cast(Compiler* compiler, CResult& result, IR
     }
 
     // store "this"
-    auto index = 0;
-    auto thisPtr = builder->CreateStructGEP(interfaceType, value, index);
+    auto structIndex = 0;
+    auto thisPtr = builder->CreateStructGEP(interfaceType, value, structIndex);
     auto fromVoidPtr = builder->CreateBitCast(fromValue->value, Type::getInt8PtrTy(compiler->context));
     builder->CreateStore(fromVoidPtr, thisPtr);
-    index++;
+    structIndex++;
 
     // retain "this"
     fromValue->retainIfNeeded(compiler, result, builder);
     
     // store interfaceMethods
+    auto methodIndex = 0;
     for (auto it : interfaceMethodValues) {
-        auto functionPtr = builder->CreateStructGEP(interfaceType, value, index);
-        builder->CreateStore(it, functionPtr);
-        index++;
+        auto functionPtr = builder->CreateStructGEP(interfaceType, value, structIndex);
+        auto t = methods[methodIndex]->getFunctionType(compiler, result)->getPointerTo();
+        auto functionWithVoidForParent = builder->CreateBitCast(it, t);
+        builder->CreateStore(functionWithVoidForParent, functionPtr);
+        methodIndex++;
+        structIndex++;
     }
     
     // create return value
@@ -227,7 +248,7 @@ string CInterfaceDefinition::fullName() {
 }
 
 void CInterfaceDefinition::addChildFunction(string& name, shared_ptr<CBaseFunctionDefinition> childFunction) {
-    methods.push_back(childFunction);
+    assert(false);
 }
 
 shared_ptr<CInterface> CInterfaceDefinition::getInterface(Compiler* compiler, CResult& result, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent) {

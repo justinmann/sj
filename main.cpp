@@ -765,8 +765,7 @@ void testInterface() {
         
         class #foo () { this }
 
-        a: class()
-        b: a as #foo
+        a: class() as #foo
 
         void
     )DELIM");
@@ -785,10 +784,13 @@ void testInterface() {
 
         a: class() as #foo
         a.test()
+        1
     )DELIM");
     assert(result->type != RESULT_ERROR);
 
     result = compiler.run(R"DELIM(
+        include "common.sj"
+        
         #foo(
             test()'list!char
         )
@@ -801,6 +803,7 @@ void testInterface() {
 
         a: class() as #foo
         a.test()
+        1
     )DELIM");
     assert(result->type != RESULT_ERROR);
 

@@ -49,7 +49,6 @@
 		9C64ADB11E0F8D6800340A7D /* libLLVMXCoreAsmPrinter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD931E0F8D6800340A7D /* libLLVMXCoreAsmPrinter.a */; };
 		9C64ADB31E0F8DA700340A7D /* libz.1.2.8.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64ADB21E0F8DA700340A7D /* libz.1.2.8.tbd */; };
 		9C64ADB51E0F910300340A7D /* libcurses.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64ADB41E0F910300340A7D /* libcurses.tbd */; };
-		9C7489171E58162E008A032C /* CInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C7489161E58162E008A032C /* CInterface.cpp */; };
 		9C74891A1E581783008A032C /* NInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C7489181E581783008A032C /* NInterface.cpp */; };
 		9C74891D1E58DD79008A032C /* NInterfaceMethod.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C74891B1E58DD79008A032C /* NInterfaceMethod.cpp */; };
 		9C7489201E592744008A032C /* NBaseFunction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C74891E1E592744008A032C /* NBaseFunction.cpp */; };
@@ -154,8 +153,6 @@
 		9C64AD931E0F8D6800340A7D /* libLLVMXCoreAsmPrinter.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMXCoreAsmPrinter.a; path = ../install/lib/libLLVMXCoreAsmPrinter.a; sourceTree = "<group>"; };
 		9C64ADB21E0F8DA700340A7D /* libz.1.2.8.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.1.2.8.tbd; path = usr/lib/libz.1.2.8.tbd; sourceTree = SDKROOT; };
 		9C64ADB41E0F910300340A7D /* libcurses.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcurses.tbd; path = usr/lib/libcurses.tbd; sourceTree = SDKROOT; };
-		9C7489151E58162E008A032C /* CInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CInterface.h; path = compiler/CInterface.h; sourceTree = "<group>"; };
-		9C7489161E58162E008A032C /* CInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CInterface.cpp; path = compiler/CInterface.cpp; sourceTree = "<group>"; };
 		9C7489181E581783008A032C /* NInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NInterface.cpp; path = node/NInterface.cpp; sourceTree = "<group>"; };
 		9C7489191E581783008A032C /* NInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NInterface.h; path = node/NInterface.h; sourceTree = "<group>"; };
 		9C74891B1E58DD79008A032C /* NInterfaceMethod.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NInterfaceMethod.cpp; path = node/NInterfaceMethod.cpp; sourceTree = "<group>"; };
@@ -361,8 +358,6 @@
 				9C908F041E345911005E253C /* CArrayType.h */,
 				9CFDBF8E1E19BCCE00F5436F /* CTypeName.cpp */,
 				9CFDBF8F1E19BCCE00F5436F /* CTypeName.h */,
-				9C7489161E58162E008A032C /* CInterface.cpp */,
-				9C7489151E58162E008A032C /* CInterface.h */,
 				9CF16BF51E19A85F006E9CB8 /* Compiler.cpp */,
 				9CF16BF61E19A85F006E9CB8 /* Compiler.h */,
 				9CFDBF941E19BD9500F5436F /* CType.cpp */,
@@ -520,7 +515,6 @@
 				9CF16C1B1E19A888006E9CB8 /* NFunction.cpp in Sources */,
 				9C74891A1E581783008A032C /* NInterface.cpp in Sources */,
 				9CF16C1E1E19A888006E9CB8 /* NMath.cpp in Sources */,
-				9C7489171E58162E008A032C /* CInterface.cpp in Sources */,
 				9C1E74311E46D1C4003BEBA5 /* library.cpp in Sources */,
 				9C908F0E1E348C54005E253C /* NOr.cpp in Sources */,
 				9C7489201E592744008A032C /* NBaseFunction.cpp in Sources */,
