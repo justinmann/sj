@@ -41,6 +41,20 @@ public:
     bool isHeapVar;
 };
 
+class CInterfaceMethodArgVar : public CVar {
+public:
+    CInterfaceMethodArgVar(shared_ptr<CType> returnType) : returnType(returnType), isHeapVar(false) { }
+    shared_ptr<CType> getType(Compiler* compiler, CResult& result);
+    shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
+    Value* getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
+    bool getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
+    int setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
+    void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
+    
+    shared_ptr<CType> returnType;
+    bool isHeapVar;
+};
+
 class CInterfaceMethod : public CBaseFunction, public enable_shared_from_this<CInterfaceMethod> {
 public:
     shared_ptr<CType> returnType;

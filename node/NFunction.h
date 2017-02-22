@@ -59,10 +59,12 @@ private:
     friend class CFunctionDefinition;
 };
 
+class CInterfaceMethod;
+
 class CFunction : public CBaseFunction, public enable_shared_from_this<CFunction> {
 public:
     CFunction(weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces);
-    shared_ptr<CFunction> init(Compiler* compiler, CResult& result, shared_ptr<NFunction> node);
+    shared_ptr<CFunction> init(Compiler* compiler, CResult& result, shared_ptr<NFunction> node, shared_ptr<CInterfaceMethod> interfaceMethod);
     
     void createThisVar(Compiler* compiler, CResult& result, shared_ptr<CVar>& thisVar);
     shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames);

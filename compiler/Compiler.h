@@ -112,7 +112,8 @@ enum CErrorCode {
     TemplateUnspecified,
     InterfaceDoesNotExist,
     InterfaceMethodDoesNotExist,
-    InterfaceMethodTypeMismatch
+    InterfaceMethodTypeMismatch,
+    InterfaceMethodConflict
 };
 
 class CError {

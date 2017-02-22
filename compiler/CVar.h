@@ -49,7 +49,7 @@ public:
     static shared_ptr<CNormalVar> createThisVar(const CLoc& loc, shared_ptr<CBaseFunction> parent, shared_ptr<CType> type);
     
     static shared_ptr<CNormalVar> createLocalVar(const CLoc& loc, const string& name, shared_ptr<CBaseFunction> parent, shared_ptr<NAssignment> nassignment);
-    static shared_ptr<CNormalVar> createFunctionVar(const CLoc& loc, const string& name, shared_ptr<CBaseFunction> parent, int index, shared_ptr<NAssignment> nassignment, shared_ptr<CType> type);
+    static shared_ptr<CNormalVar> createFunctionVar(const CLoc& loc, const string& name, shared_ptr<CBaseFunction> parent, int index, shared_ptr<NAssignment> nassignment, shared_ptr<CType> type, shared_ptr<CVar> interfaceMethodArgVar_);
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     virtual Value* getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
@@ -65,6 +65,7 @@ private:
     shared_ptr<CType> type;
     Value* value;
     bool isHeapVar;
+    shared_ptr<CVar> interfaceMethodArgVar;
 };
 
 #endif /* CVar_h */

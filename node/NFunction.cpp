@@ -176,7 +176,22 @@ shared_ptr<ReturnValue> NFunction::compileImpl(Compiler* compiler, CResult& resu
 
 shared_ptr<CFunction> NFunction::createCFunction(Compiler* compiler, CResult& result, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) {
     auto fun = make_shared<CFunction>(definition, type, templateTypes, parent, interfaces);
-    return fun->init(compiler, result, shared_from_this());
+    
+    shared_ptr<CInterfaceMethod> interfaceMethod;
+    if (interfaces) {
+        for (auto it : *interfaces) {
+            auto t = it->methodByName.find(definition.lock()->name);
+            if (t != it->methodByName.end()) {
+                if (interfaceMethod) {
+                    result.addError(loc, CErrorCode::InterfaceMethodConflict, "two interfaces on this class want to use method: '%s'", definition.lock()->name.c_str());
+                    return nullptr;
+                }
+                interfaceMethod = t->second;
+            }
+        }
+    }
+    
+    return fun->init(compiler, result, shared_from_this(), interfaceMethod);
 }
 
 shared_ptr<CVar> CFunction::getReturnVar(Compiler *compiler, CResult& result, shared_ptr<CVar> thisVar) {
@@ -892,7 +907,7 @@ CFunction::CFunction(weak_ptr<CBaseFunctionDefinition> definition, CFunctionType
     returnMustRelease(false) {}
 
 
-shared_ptr<CFunction> CFunction::init(Compiler* compiler, CResult& result, shared_ptr<NFunction> node) {
+shared_ptr<CFunction> CFunction::init(Compiler* compiler, CResult& result, shared_ptr<NFunction> node, shared_ptr<CInterfaceMethod> interfaceMethod) {
     for (auto it : templateTypes) {
         name = name + "_" + it->name;
     }
@@ -927,7 +942,7 @@ shared_ptr<CFunction> CFunction::init(Compiler* compiler, CResult& result, share
             }
             
             int index = (int)argVars.size();
-            auto thisVar = CNormalVar::createFunctionVar(node->loc, it->name, shared_from_this(), index, it, nullptr);
+            auto thisVar = CNormalVar::createFunctionVar(node->loc, it->name, shared_from_this(), index, it, nullptr, interfaceMethod->argVars[index]);
             thisVarsByName[it->name] = pair<int, shared_ptr<CVar>>(index, thisVar);
             thisVars.push_back(thisVar);
             argVars.push_back(thisVar);

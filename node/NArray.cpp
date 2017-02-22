@@ -148,7 +148,7 @@ NArrayGetFunction::NArrayGetFunction() : NFunction(CLoc::undefined, FT_Private, 
 
 shared_ptr<CFunction> NArrayGetFunction::createCFunction(Compiler* compiler, CResult& result, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) {
     auto fun = make_shared<CArrayGetFunction>(definition, type, templateTypes, parent, interfaces);
-    return fun->init(compiler, result, NFunction::shared_from_this());
+    return fun->init(compiler, result, NFunction::shared_from_this(), nullptr);
 }
 
 shared_ptr<CType> CArrayGetFunction::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
@@ -189,7 +189,7 @@ NArraySetFunction::NArraySetFunction() : NFunction(CLoc::undefined, FT_Private, 
 
 shared_ptr<CFunction> NArraySetFunction::createCFunction(Compiler* compiler, CResult& result, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) {
     auto fun = make_shared<CArraySetFunction>(definition, type, templateTypes, parent, interfaces);
-    return fun->init(compiler, result, NFunction::shared_from_this());
+    return fun->init(compiler, result, NFunction::shared_from_this(), nullptr);
 }
 
 shared_ptr<CType> CArraySetFunction::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
@@ -244,7 +244,7 @@ NArrayGrowFunction::NArrayGrowFunction() : NFunction(CLoc::undefined, FT_Private
 
 shared_ptr<CFunction> NArrayGrowFunction::createCFunction(Compiler* compiler, CResult& result, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) {
     auto fun = make_shared<CArrayGrowFunction>(definition, type, templateTypes, parent, interfaces);
-    return fun->init(compiler, result, NFunction::shared_from_this());
+    return fun->init(compiler, result, NFunction::shared_from_this(), nullptr);
 }
 
 shared_ptr<CType> CArrayGrowFunction::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
@@ -306,7 +306,7 @@ NArrayDeleteFunction::NArrayDeleteFunction() : NFunction(CLoc::undefined, FT_Pri
 
 shared_ptr<CFunction> NArrayDeleteFunction::createCFunction(Compiler* compiler, CResult& result, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) {
     auto fun = make_shared<CArrayDeleteFunction>(definition, type, templateTypes, parent, interfaces);
-    return fun->init(compiler, result, NFunction::shared_from_this());
+    return fun->init(compiler, result, NFunction::shared_from_this(), nullptr);
 }
 
 shared_ptr<CType> CArrayDeleteFunction::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
@@ -417,7 +417,7 @@ NArrayCreateFunction::NArrayCreateFunction() : NFunction(CLoc::undefined, FT_Pri
 
 shared_ptr<CFunction> NArrayCreateFunction::createCFunction(Compiler* compiler, CResult& result, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) {
     auto fun = make_shared<CArrayCreateFunction>(definition, type, templateTypes, parent, interfaces);
-    return fun->init(compiler, result, NFunction::shared_from_this());
+    return fun->init(compiler, result, NFunction::shared_from_this(), nullptr);
 }
 
 shared_ptr<CType> CArrayCreateFunction::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {

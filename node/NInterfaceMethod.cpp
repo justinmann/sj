@@ -67,12 +67,55 @@ bool CInterfaceMethodReturnVar::getHeapVar(Compiler* compiler, CResult& result, 
 int CInterfaceMethodReturnVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
     if (!isHeapVar) {
         isHeapVar = true;
+
+        auto t = getType(compiler, result);
+        if (!t->parent.expired()) {
+            t->parent.lock()->setHasRefCount();
+        }
+        
         return 1;
     }
     return 0;
 }
 
 void CInterfaceMethodReturnVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+    assert(false);
+}
+
+
+shared_ptr<CType> CInterfaceMethodArgVar::getType(Compiler* compiler, CResult& result) {
+    return returnType;
+}
+
+shared_ptr<ReturnValue> CInterfaceMethodArgVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    assert(false);
+    return nullptr;
+}
+
+Value* CInterfaceMethodArgVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    assert(false);
+    return nullptr;
+}
+
+bool CInterfaceMethodArgVar::getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
+    return isHeapVar;
+}
+
+int CInterfaceMethodArgVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
+    if (!isHeapVar) {
+        isHeapVar = true;
+        
+        auto t = getType(compiler, result);
+        if (!t->parent.expired()) {
+            t->parent.lock()->setHasRefCount();
+        }
+        
+        return 1;
+    }
+    return 0;
+}
+
+void CInterfaceMethodArgVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     assert(false);
 }
 
@@ -97,8 +140,9 @@ shared_ptr<CInterfaceMethod> CInterfaceMethod::init(Compiler* compiler, CResult&
         }
         
         int index = (int)argVars.size();
-        auto thisVar = CNormalVar::createFunctionVar(loc, it->name, shared_from_this(), index, it, nullptr);
-        argVars.push_back(thisVar);
+        auto argType = it->getType(compiler, result, nullptr, nullptr);
+        auto argVar = make_shared<CInterfaceMethodArgVar>(argType);
+        argVars.push_back(argVar);
         argDefaultValues.push_back(it->rightSide);
     }
     

@@ -426,7 +426,7 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     state = CompilerState::FixVar;
     auto templateTypes = vector<shared_ptr<CType>>();
     auto currentFunction = make_shared<CFunction>(currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr);
-    currentFunction->init(this, *compilerResult, nullptr);
+    currentFunction->init(this, *compilerResult, nullptr, nullptr);
     shared_ptr<CVar> currentVar;
     currentFunction->createThisVar(this, *compilerResult, currentVar);
     anonFunction->getVar(this, *compilerResult, currentFunction, currentVar);

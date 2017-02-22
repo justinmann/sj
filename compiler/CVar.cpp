@@ -42,7 +42,7 @@ shared_ptr<CNormalVar> CNormalVar::createLocalVar(const CLoc& loc, const string&
     return c;
 }
 
-shared_ptr<CNormalVar> CNormalVar::createFunctionVar(const CLoc& loc, const string& name, shared_ptr<CBaseFunction> parent, int index, shared_ptr<NAssignment> nassignment, shared_ptr<CType> type) {
+shared_ptr<CNormalVar> CNormalVar::createFunctionVar(const CLoc& loc, const string& name, shared_ptr<CBaseFunction> parent, int index, shared_ptr<NAssignment> nassignment, shared_ptr<CType> type, shared_ptr<CVar> interfaceMethodArgVar_) {
     auto c = make_shared<CNormalVar>();
     c->loc = loc;
     c->mode = CVarType::Var_Public;
@@ -53,6 +53,7 @@ shared_ptr<CNormalVar> CNormalVar::createFunctionVar(const CLoc& loc, const stri
     c->parent = parent;
     c->type = type;
     c->isHeapVar = false;
+    c->interfaceMethodArgVar = interfaceMethodArgVar_;
     
     assert(type != nullptr || nassignment != nullptr);
     
@@ -110,10 +111,17 @@ Value* CNormalVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr
 }
 
 bool CNormalVar::getHeapVar(Compiler *compiler, CResult &result, shared_ptr<CVar> thisVar) {
+    if (interfaceMethodArgVar) {
+        return interfaceMethodArgVar->getHeapVar(compiler, result, thisVar);
+    }
     return isHeapVar;
 }
 
 int CNormalVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
+    if (interfaceMethodArgVar) {
+        return interfaceMethodArgVar->setHeapVar(compiler, result, thisVar);
+    }
+    
     auto count = 0;
     
     if (!isHeapVar) {

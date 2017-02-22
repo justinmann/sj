@@ -838,6 +838,10 @@ void testInterface() {
         a.test()
     )DELIM");
     assert(result->type != RESULT_ERROR);
+    
+    // TODO: test interface as heap var
+    // TODO: test interface with heap var arg
+    // TODO: test interface with heap var return
 }
                           
 int main(int argc, char **argv) {
