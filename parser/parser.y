@@ -50,7 +50,6 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 	NVariableBase* var;
 	NodeList* exprvec;
 	std::string* string;
-	vector<std::string>* stringList;
 	CTypeName* typeName;
 	CTypeNameList* templateTypeNames;
 	int token;
@@ -68,9 +67,8 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %type <nif> if_expr
 %type <exprvec> func_args func_block array_args interface_args interface_block
 %type <isMutable> assign_type
-%type <typeName> arg_type_quote arg_type return_type_quote return_type func_type func_arg_type func_type_name
-%type <templateTypeNames> temp_args temp_block temp_block_optional func_arg_type_list
-%type <stringList> implement implement_args
+%type <typeName> arg_type_quote arg_type return_type_quote return_type func_type func_arg_type func_type_name implement_arg
+%type <templateTypeNames> temp_args temp_block temp_block_optional func_arg_type_list implement implement_args
 
 /* Operator precedence */
 %left TAND TOR
@@ -122,7 +120,7 @@ func_decl 			: func_type_name func_block block catch destroy			{
 					}
 					| func_type_name implement func_block block catch destroy			{ 
 						$$ = new NFunction(LOC, FT_Private, nullptr, $1->name.c_str(), $1->templateTypeNames, 
-							shared_ptr<vector<string>>($2), shared_ptr<NodeList>($3), 
+							shared_ptr<CTypeNameList>($2), shared_ptr<NodeList>($3), 
 							shared_ptr<NBlock>($4), shared_ptr<NBlock>($5), shared_ptr<NBlock>($6)); 
 					}
 					| func_type_name func_block return_type_quote block catch destroy { 
@@ -132,7 +130,7 @@ func_decl 			: func_type_name func_block block catch destroy			{
 					}
 					| func_type_name implement func_block return_type_quote block catch destroy { 
 						$$ = new NFunction(LOC, FT_Private, shared_ptr<CTypeName>($4), $1->name.c_str(), $1->templateTypeNames, 
-							shared_ptr<vector<string>>($2), shared_ptr<NodeList>($3), 
+							shared_ptr<CTypeNameList>($2), shared_ptr<NodeList>($3), 
 							shared_ptr<NBlock>($5), shared_ptr<NBlock>($6), shared_ptr<NBlock>($7)); 
 					}
 					| TEXTERN TLPAREN TSTRING TRPAREN TIDENTIFIER func_block return_type_quote { 
@@ -167,11 +165,14 @@ func_arg			: /* Blank! */									{ $$ = nullptr; }
 					| expr 	
 					; 
 
-implement 			: implement_args						{ $$ = $1; }
+implement 			: implement_args								{ $$ = $1; }
 					;
 
-implement_args 		: THASH TIDENTIFIER								{ $$ = new vector<string>(); $$->push_back($2->c_str()); delete $2; }							
-					| implement_args TCOMMA THASH TIDENTIFIER 		{ $$ = $1; $$->push_back($4->c_str()); delete $4; }
+implement_args 		: implement_arg									{ $$ = new CTypeNameList(); $$->push_back(shared_ptr<CTypeName>($1)); }							
+					| implement_args TCOMMA implement_arg 			{ $$ = $1; $$->push_back(shared_ptr<CTypeName>($3)); }
+					;
+
+implement_arg 		: THASH TIDENTIFIER temp_block_optional			{ $$ = new CTypeName(CTC_Interface, $2->c_str(), shared_ptr<CTypeNameList>($3)); delete $2; }							
 					;
 
 interface_decl		: THASH TIDENTIFIER temp_block_optional interface_block { $$ = new NInterface(LOC, $2->c_str(), shared_ptr<CTypeNameList>($3), shared_ptr<NodeList>($4)); delete $2; }

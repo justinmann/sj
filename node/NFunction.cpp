@@ -2,7 +2,7 @@
 
 int NFunction::counter = 0;
 
-NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<vector<string>> interfaceNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock) : type(type), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), interfaceNames(interfaceNames), block(block), catchBlock(catchBlock), destroyBlock(destroyBlock), isInGetType(false), NBaseFunction(NodeType_Function, loc) {
+NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock) : type(type), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), interfaceTypeNames(interfaceTypeNames), block(block), catchBlock(catchBlock), destroyBlock(destroyBlock), isInGetType(false), NBaseFunction(NodeType_Function, loc) {
     assert(type != FT_Extern);
     
     if (this->name == "^") {
@@ -65,7 +65,7 @@ void NFunction::defineImpl(Compiler *compiler, CResult& result, shared_ptr<CBase
             return;
         }
         
-        if (interfaceNames) {
+        if (interfaceTypeNames) {
             result.addError(loc, CErrorCode::InvalidType, "extern function cannot have an interface");
             return;
         }
@@ -99,12 +99,12 @@ void NFunction::defineImpl(Compiler *compiler, CResult& result, shared_ptr<CBase
 }
 
 shared_ptr<CFunctionDefinition> NFunction::getFunctionDefinition(Compiler *compiler, CResult& result, shared_ptr<CFunctionDefinition> parentFunction) {
-    shared_ptr<vector<shared_ptr<CInterfaceDefinition>>> interfaces;
-    if (interfaceNames) {
-        interfaces = make_shared<vector<shared_ptr<CInterfaceDefinition>>>();
-        for (auto it : *interfaceNames) {
-            auto interface = compiler->getInterfaceDefinition(it);
-            interfaces->push_back(interface);
+    shared_ptr<vector<pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameList>>>> interfaces;
+    if (interfaceTypeNames) {
+        interfaces = make_shared<vector<pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameList>>>>();
+        for (auto it : *interfaceTypeNames) {
+            auto interface = compiler->getInterfaceDefinition(it->name);
+            interfaces->push_back(pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameList>>(interface, it->templateTypeNames));
         }
     }
     
@@ -811,13 +811,13 @@ shared_ptr<ReturnValue> CFunction::call(Compiler* compiler, CResult& result, sha
 
 void CFunction::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << fullName(true);
-    if (interfaceNames) {
+    if (interfaceTypeNames) {
         ss << " ";
-        for (auto it : *interfaceNames) {
-            if (it != interfaceNames->front()) {
+        for (auto it : *interfaceTypeNames) {
+            if (it != interfaceTypeNames->front()) {
                 ss << ", ";
             }
-            ss << "#" << it;
+            ss << "#" << it->getName();
         }
         ss << " ";
     }
@@ -900,7 +900,7 @@ CFunction::CFunction(weak_ptr<CBaseFunctionDefinition> definition, CFunctionType
     catchBlock(nullptr),
     destroyBlock(nullptr),
     returnTypeName(nullptr),
-    interfaceNames(nullptr),
+    interfaceTypeNames(nullptr),
     isInGetType(false),
     isInGetFunction(false),
     destructorFunction(nullptr),
@@ -920,7 +920,7 @@ shared_ptr<CFunction> CFunction::init(Compiler* compiler, CResult& result, share
         destroyBlock = node->destroyBlock;
         returnTypeName = node->returnTypeName;
         externName = node->externName;
-        interfaceNames = node->interfaceNames;
+        interfaceTypeNames = node->interfaceTypeNames;
 
         if (node->templateTypeNames) {
             assert(node->templateTypeNames->size() == templateTypes.size());
@@ -942,7 +942,8 @@ shared_ptr<CFunction> CFunction::init(Compiler* compiler, CResult& result, share
             }
             
             int index = (int)argVars.size();
-            auto thisVar = CNormalVar::createFunctionVar(node->loc, it->name, shared_from_this(), index, it, nullptr, interfaceMethod->argVars[index]);
+            auto interfaceMethodArgVar = interfaceMethod ? interfaceMethod->argVars[index] : nullptr;
+            auto thisVar = CNormalVar::createFunctionVar(node->loc, it->name, shared_from_this(), index, it, nullptr, interfaceMethodArgVar);
             thisVarsByName[it->name] = pair<int, shared_ptr<CVar>>(index, thisVar);
             thisVars.push_back(thisVar);
             argVars.push_back(thisVar);
@@ -1181,7 +1182,7 @@ bool getTemplateTypes(Compiler* compiler, CResult& result, CLoc& loc, shared_ptr
             }
             
             if (!ctype) {
-                auto ctype = thisFunction->getVarType(compiler, result, templateTypeName);
+                ctype = thisFunction->getVarType(compiler, result, templateTypeName);
                 if (!ctype) {
                     result.addError(loc, CErrorCode::TemplateUnspecified, "cannot find template type: '%s'", templateTypeName->name.c_str());
                     return false;
@@ -1429,7 +1430,7 @@ Value* CFunction::getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* 
     return nullptr;
 }
 
-shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterfaceDefinition>>> interfaceDefinitions, shared_ptr<NFunction> node) {
+shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parent, CFunctionType type, const string& name, shared_ptr<vector<pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameList>>>> interfaceDefinitions, shared_ptr<NFunction> node) {
     auto c = make_shared<CFunctionDefinition>();
     c->parent = parent;
     c->type = type;
@@ -1478,22 +1479,33 @@ shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CResu
         shared_ptr<vector<shared_ptr<CInterface>>> interfaces;
         if (interfaceDefinitions) {
             interfaces = make_shared<vector<shared_ptr<CInterface>>>();
+        }
+        
+        func = node->createCFunction(compiler, result, shared_from_this(), templateTypes, funcParent, type, name, interfaces);
+
+        if (interfaceDefinitions) {
             for (auto it : *interfaceDefinitions) {
                 vector<shared_ptr<CType>> interfaceTemplateTypes;
-                if (!getTemplateTypes(compiler, result, loc, funcParent.lock(), nullptr, it->ninterface->templateTypeNames, it->ninterface->templateTypeNames, interfaceTemplateTypes)) {
+                if (!it.first->ninterface) {
+                    result.addError(loc, CErrorCode::InterfaceDoesNotExist, "cannot find interface '%s'", it.first->typeName->getName().c_str());
                     return nullptr;
                 }
                 
-                auto interface = it->getInterface(compiler, result, interfaceTemplateTypes, funcParent);
+                if (it.first->ninterface->templateTypeNames) {
+                    if (!getTemplateTypes(compiler, result, loc, func, nullptr, it.second, it.first->ninterface->templateTypeNames, interfaceTemplateTypes)) {
+                        return nullptr;
+                    }
+                }
+                
+                auto interface = it.first->getInterface(compiler, result, interfaceTemplateTypes, funcParent);
                 if (!interface) {
-                    result.addError(loc, CErrorCode::InterfaceDoesNotExist, "cannot find interface '%s'", it->name.c_str());
+                    result.addError(loc, CErrorCode::InterfaceDoesNotExist, "cannot find interface '%s'", it.first->name.c_str());
                     return nullptr;
                 }
                 interfaces->push_back(interface);
             }
         }
         
-        func = node->createCFunction(compiler, result, shared_from_this(), templateTypes, funcParent, type, name, interfaces);
         cfunctions[templateTypes] = func;
     }
     return func;

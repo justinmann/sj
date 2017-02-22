@@ -139,7 +139,7 @@ shared_ptr<CInterfaceMethod> CInterfaceMethod::init(Compiler* compiler, CResult&
             return nullptr;
         }
         
-        int index = (int)argVars.size();
+        // int index = (int)argVars.size();
         auto argType = it->getType(compiler, result, nullptr, nullptr);
         auto argVar = make_shared<CInterfaceMethodArgVar>(argType);
         argVars.push_back(argVar);

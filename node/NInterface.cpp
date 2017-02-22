@@ -26,6 +26,7 @@ void NInterface::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBas
         result.addError(loc, CErrorCode::InvalidType, "interface can only be defined once: '%s'", name.c_str());
         return;
     }
+    def->typeName = make_shared<CTypeName>(CTC_Interface, name, templateTypeNames);
     def->ninterface = shared_from_this();
 
     for (auto it : methodList) {
@@ -63,10 +64,24 @@ shared_ptr<NInterface> NInterface::shared_from_this() {
     return static_pointer_cast<NInterface>(NBase::shared_from_this());
 }
 
-CInterface::CInterface(weak_ptr<CInterfaceDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> parent) : _structType(nullptr), CBaseFunction(definition.lock()->name, parent, definition) {
+CInterface::CInterface(weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent) : _structType(nullptr), CBaseFunction(definition.lock()->name, parent, definition) {
 }
 
-shared_ptr<CInterface> CInterface::init(Compiler* compiler, CResult& result, shared_ptr<NInterface> node) {
+shared_ptr<CInterface> CInterface::init(Compiler* compiler, CResult& result, shared_ptr<NInterface> node, vector<shared_ptr<CType>>& templateTypes) {
+    if (node->templateTypeNames) {
+        assert(node->templateTypeNames->size() == templateTypes.size());
+        auto index = 0;
+        for (auto templateTypeName : *node->templateTypeNames) {
+            if (templateTypeName->templateTypeNames != nullptr) {
+                result.addError(node->loc, CErrorCode::InvalidType, "cannot use ! in template type name");
+                return nullptr;
+            }
+            assert(templateTypes[index]);
+            templateTypesByName[templateTypeName->name] = templateTypes[index];
+            index++;
+        }
+    }
+    
     auto structIndex = 1;
     for (auto it : node->methodList) {
         auto method = make_shared<CInterfaceMethod>(it->name, shared_from_this(), structIndex);
@@ -78,7 +93,7 @@ shared_ptr<CInterface> CInterface::init(Compiler* compiler, CResult& result, sha
         methodByName[method->name] = method;
         structIndex++;
     }
-
+    
     return shared_from_this();
 }
 
@@ -155,6 +170,10 @@ shared_ptr<CType> CInterface::getVarType(Compiler* compiler, CResult& result, sh
         if (t != templateTypesByName.end()) {
             return t->second;
         }
+    }
+    
+    if (!parent.expired()) {
+        return parent.lock()->getVarType(compiler, result, typeName);
     }
     
     return compiler->getType(typeName->name);
@@ -239,12 +258,11 @@ shared_ptr<ReturnValue> CInterface::cast(Compiler* compiler, CResult& result, IR
     return make_shared<ReturnValue>(shared_from_this(), true, RVT_HEAP, false, value);
 }
 
-CInterfaceDefinition::CInterfaceDefinition(string& name_) {
-    name = name_;
+CInterfaceDefinition::CInterfaceDefinition(string& name) {
 }
 
 string CInterfaceDefinition::fullName() {
-    return name;
+    return typeName->getName();
 }
 
 void CInterfaceDefinition::addChildFunction(string& name, shared_ptr<CBaseFunctionDefinition> childFunction) {
@@ -261,8 +279,14 @@ shared_ptr<CInterface> CInterfaceDefinition::getInterface(Compiler* compiler, CR
             return nullptr;
         }
         
-        interface = make_shared<CInterface>(shared_from_this(), templateTypes, funcParent);
-        interface = interface->init(compiler, result, ninterface);
+        if (typeName->templateTypeNames) {
+            assert(templateTypes.size() == typeName->templateTypeNames->size());
+        } else {
+            assert(templateTypes.size() == 0);
+        }
+        
+        interface = make_shared<CInterface>(shared_from_this(), funcParent);
+        interface = interface->init(compiler, result, ninterface, templateTypes);
         cinterfaces[templateTypes] = interface;
     }
     return interface;

@@ -27,7 +27,7 @@ public:
     shared_ptr<CTypeName> returnTypeName;
     string name;
     shared_ptr<CTypeNameList> templateTypeNames;
-    shared_ptr<vector<string>> interfaceNames;
+    shared_ptr<CTypeNameList> interfaceTypeNames;
     NodeList invalid;
     vector<shared_ptr<NAssignment>> assignments;
     vector<shared_ptr<NFunction>> functions;
@@ -36,7 +36,7 @@ public:
     const shared_ptr<NBase> destroyBlock;
     
     // For normal
-    NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<vector<string>> interfaceNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock);
+    NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock);
 
     // For extern
     NFunction(CLoc loc, CFunctionType type, const char* externName, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<NodeList> arguments);
@@ -131,7 +131,7 @@ private:
     shared_ptr<NBase> destroyBlock;
     shared_ptr<CTypeName> returnTypeName;
     string externName;
-    shared_ptr<vector<string>> interfaceNames;
+    shared_ptr<CTypeNameList> interfaceTypeNames;
     vector<shared_ptr<CVar>> thisVars;
     map<string, pair<int, shared_ptr<CVar>>> thisVarsByName;
 };
@@ -139,12 +139,12 @@ private:
 class CFunctionDefinition : public CBaseFunctionDefinition, public enable_shared_from_this<CFunctionDefinition> {
 public:
     CFunctionType type;
-    shared_ptr<vector<shared_ptr<CInterfaceDefinition>>> interfaceDefinitions;
+    shared_ptr<vector<pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameList>>>> interfaceDefinitions;
     shared_ptr<NFunction> node;
     map<string, shared_ptr<CFunctionDefinition>> funcsByName;
     map<string, shared_ptr<CInterfaceDefinition>> interfacesByName;
     
-    static shared_ptr<CFunctionDefinition> create(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterfaceDefinition>>> interfaceDefinitions, shared_ptr<NFunction> node);
+    static shared_ptr<CFunctionDefinition> create(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parent, CFunctionType type, const string& name, shared_ptr<vector<pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameList>>>> interfaceDefinitions, shared_ptr<NFunction> node);
     string fullName();
     void addChildFunction(string& name, shared_ptr<CBaseFunctionDefinition> childFunction);
     void dump(Compiler* compiler, CResult& result, int level);

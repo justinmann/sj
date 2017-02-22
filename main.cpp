@@ -820,6 +820,7 @@ void testInterface() {
 
         a: class() as #foo!int
         a.test()
+        1
     )DELIM");
     assert(result->type != RESULT_ERROR);
 
@@ -836,6 +837,7 @@ void testInterface() {
 
         a: class!int() as #foo!int
         a.test()
+        1
     )DELIM");
     assert(result->type != RESULT_ERROR);
     

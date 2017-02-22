@@ -113,7 +113,6 @@ union YYSTYPE
 	NVariableBase* var;
 	NodeList* exprvec;
 	std::string* string;
-	vector<std::string>* stringList;
 	CTypeName* typeName;
 	CTypeNameList* templateTypeNames;
 	int token;

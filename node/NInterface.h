@@ -39,8 +39,8 @@ public:
     map<string, shared_ptr<CInterfaceMethod>> methodByName;
     map<string, shared_ptr<CType>> templateTypesByName;
     
-    CInterface(weak_ptr<CInterfaceDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> parent);
-    shared_ptr<CInterface> init(Compiler* compiler, CResult& result, shared_ptr<NInterface> node);
+    CInterface(weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent);
+    shared_ptr<CInterface> init(Compiler* compiler, CResult& result, shared_ptr<NInterface> node, vector<shared_ptr<CType>>& templateTypes);
     string fullName(bool includeTemplateTypes);
     
     bool getHasThis();
@@ -70,6 +70,7 @@ private:
 
 class CInterfaceDefinition : public CBaseFunctionDefinition, public enable_shared_from_this<CInterfaceDefinition> {
 public:
+    shared_ptr<CTypeName> typeName;
     shared_ptr<NInterface> ninterface;
 
     CInterfaceDefinition(string& name);
