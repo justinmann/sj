@@ -28,7 +28,7 @@ shared_ptr<CType> CIfElseVar::getType(Compiler* compiler, CResult& result) {
     return nullptr;
 }
 
-shared_ptr<ReturnValue> CIfElseVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> CIfElseVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
     assert(compiler->state == CompilerState::Compile);
     shared_ptr<CType> returnType = getType(compiler, result);
     
@@ -39,14 +39,14 @@ shared_ptr<ReturnValue> CIfElseVar::getLoadValue(Compiler* compiler, CResult& re
     
     // If block
     function->getBasicBlockList().push_back(ifBB);
-    auto c = condition->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+    auto c = condition->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
     if (!c) {
         return nullptr;
     }
     assert(c->type == RVT_SIMPLE);
     builder->CreateCondBr(c->value, ifBB, elseBB);
     builder->SetInsertPoint(ifBB);
-    auto ifValue = ifBlock->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+    auto ifValue = ifBlock->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
     if (returnType != compiler->typeVoid && !ifValue) {
         result.addError(loc, CErrorCode::NoDefaultValue, "type does not have a default value");
         return nullptr;
@@ -59,7 +59,7 @@ shared_ptr<ReturnValue> CIfElseVar::getLoadValue(Compiler* compiler, CResult& re
     builder->SetInsertPoint(elseBB);
     shared_ptr<ReturnValue> elseValue = nullptr;
     if (elseBlock) {
-        elseValue = elseBlock->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+        elseValue = elseBlock->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
         if (returnType != compiler->typeVoid && !elseValue) {
             result.addError(loc, CErrorCode::NoDefaultValue, "type does not have a default value");
             return nullptr;
@@ -88,7 +88,7 @@ shared_ptr<ReturnValue> CIfElseVar::getLoadValue(Compiler* compiler, CResult& re
     }
     
     assert(ifValue->type == elseValue->type);
-    assert(ifValue->mustRelease == elseValue->mustRelease);
+    assert(ifValue->releaseMode == elseValue->releaseMode);
     
     auto varType = getType(compiler, result);
     auto varFunction = varType->parent.lock();
@@ -96,7 +96,7 @@ shared_ptr<ReturnValue> CIfElseVar::getLoadValue(Compiler* compiler, CResult& re
     auto phiNode = builder->CreatePHI(returnType->llvmRefType(compiler, result), (unsigned)2, "iftmp");
     phiNode->addIncoming(ifValue->value, ifEndBB);
     phiNode->addIncoming(elseValue->value, elseEndBB);
-    return make_shared<ReturnValue>(varFunction, ifValue->mustRelease, ifValue->type, false, phiNode);
+    return make_shared<ReturnValue>(varFunction, ifValue->releaseMode, ifValue->type, false, phiNode);
 }
 
 Value* CIfElseVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {

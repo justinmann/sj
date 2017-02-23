@@ -24,12 +24,12 @@ int NMath::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseF
     return count;
 }
 
-shared_ptr<ReturnValue> NMath::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NMath::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(builder, this);
     
-    auto L = leftSide->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
-    auto R = rightSide->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+    auto L = leftSide->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
+    auto R = rightSide->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
     if (!L || !R)
         return nullptr;
     

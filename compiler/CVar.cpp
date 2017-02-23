@@ -55,6 +55,11 @@ shared_ptr<CNormalVar> CNormalVar::createFunctionVar(const CLoc& loc, const stri
     c->isHeapVar = false;
     c->interfaceMethodArgVar = interfaceMethodArgVar_;
     
+    if (interfaceMethodArgVar_) {
+        auto t = static_pointer_cast<CInterfaceMethodArgVar>(interfaceMethodArgVar_);
+        t->functionVars.push_back(c);
+    }
+    
     assert(type != nullptr || nassignment != nullptr);
     
     return c;
@@ -80,13 +85,13 @@ shared_ptr<CType> CNormalVar::getType(Compiler* compiler, CResult& result) {
     return type;
 }
 
-shared_ptr<ReturnValue> CNormalVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> CNormalVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
     if (mode == Var_This) {
-        return make_shared<ReturnValue>(parent.lock(), false, RVT_HEAP, true, thisValue);
+        return make_shared<ReturnValue>(parent.lock(), RVR_MustRetain, RVT_HEAP, true, thisValue);
     } else {
         // TODO: Can be smarter about whether or not return value is in entry
         auto value = getStoreValue(compiler, result, thisVar, thisValue, dotInEntry, dotValue, builder, catchBB);
-        return make_shared<ReturnValue>(type->parent.lock(), false, RVT_HEAP, false, builder->CreateLoad(value));
+        return make_shared<ReturnValue>(type->parent.lock(), RVR_MustRetain, RVT_HEAP, false, builder->CreateLoad(value));
     }
 }
 
@@ -118,11 +123,11 @@ bool CNormalVar::getHeapVar(Compiler *compiler, CResult &result, shared_ptr<CVar
 }
 
 int CNormalVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
-    if (interfaceMethodArgVar) {
-        return interfaceMethodArgVar->setHeapVar(compiler, result, thisVar);
-    }
-    
     auto count = 0;
+
+    if (interfaceMethodArgVar) {
+        count += interfaceMethodArgVar->setHeapVar(compiler, result, thisVar);
+    }
     
     if (!isHeapVar) {
         isHeapVar = true;

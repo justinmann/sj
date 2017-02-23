@@ -8,6 +8,14 @@ void NCast::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunc
 shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state == CompilerState::FixVar);
     node->getVar(compiler, result, thisFunction, thisVar);
+    
+    auto toType = thisFunction->getVarType(compiler, result, typeName);
+    if (toType->category == CTC_Interface) {
+        auto interface = static_pointer_cast<CInterface>(toType->parent.lock());
+        interface->createThisVar(compiler, result, interfaceVar);
+        return interfaceVar;
+    }
+
     return nullptr;
 }
 
@@ -25,11 +33,11 @@ int NCast::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseF
     return node->setHeapVar(compiler, result, thisFunction, thisVar, false);
 }
 
-shared_ptr<ReturnValue> NCast::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NCast::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(builder, this);
     
-    auto v = node->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+    auto v = node->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
     if (!v)
         return nullptr;
     

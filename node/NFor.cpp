@@ -14,7 +14,7 @@ public:
         return compiler->typeInt;
     }
     
-    virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
         assert(value);
         return make_shared<ReturnValue>(false, value);
     }
@@ -89,12 +89,12 @@ int NFor::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFu
     return count;
 }
 
-shared_ptr<ReturnValue> NFor::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NFor::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(builder, this);
     
     // Emit the start code first, without 'variable' in scope.
-    auto startValue = start->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+    auto startValue = start->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
     if (!startValue) {
         return nullptr;
     }
@@ -107,7 +107,7 @@ shared_ptr<ReturnValue> NFor::compileImpl(Compiler* compiler, CResult& result, s
     }
     
     // Compute the end condition.
-    auto endValue = end->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+    auto endValue = end->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
     if (!endValue) {
         return nullptr;
     }
@@ -152,7 +152,7 @@ shared_ptr<ReturnValue> NFor::compileImpl(Compiler* compiler, CResult& result, s
     // Emit the body of the loop.  This, like any other expr, can change the
     // current BB.  Note that we ignore the value computed by the body, but don't
     // allow an error.
-    auto bodyValue = body->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+    auto bodyValue = body->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
     if (bodyValue) {
         bodyValue->releaseIfNeeded(compiler, result, builder);
     }

@@ -30,13 +30,13 @@ bool isSimpleType(Type* type) {
 }
 
 void ReturnValue::retainIfNeeded(Compiler* compiler, CResult& result, IRBuilder<>* builder) {
-    if (!mustRelease && type == RVT_HEAP) {
+    if (releaseMode == RVR_MustRetain) {
         valueFunction->retainHeap(compiler, result, builder, value);
     }
 }
 
 void ReturnValue::releaseIfNeeded(Compiler* compiler, CResult& result, IRBuilder<>* builder) {
-    if (mustRelease && type == RVT_HEAP) {
+    if (releaseMode == RVR_MustRelease) {
         valueFunction->releaseHeap(compiler, result, builder, value);
     }
 }
@@ -72,8 +72,8 @@ int NBase::setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CBaseFunct
 }
 
 
-shared_ptr<ReturnValue> NBase::compile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NBase::compile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
     assert(compiler->state == CompilerState::Compile);
-    return compileImpl(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+    return compileImpl(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, returnRefType);
 }
 

@@ -42,7 +42,7 @@ int NArray::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBase
     return 0;
 }
 
-shared_ptr<ReturnValue> NArray::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NArray::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(builder, this);
     
@@ -75,7 +75,7 @@ shared_ptr<ReturnValue> NArray::compileImpl(Compiler* compiler, CResult& result,
     
     auto index = 0;
     for (auto it : *elements) {
-        auto itemValue = it->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+        auto itemValue = it->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
         if (!itemValue) {
             return nullptr;
         }
@@ -92,7 +92,7 @@ shared_ptr<ReturnValue> NArray::compileImpl(Compiler* compiler, CResult& result,
         index++;
     }
     
-    return make_shared<ReturnValue>(functionVar, true, RVT_HEAP, false, arrayValue);
+    return make_shared<ReturnValue>(functionVar, RVR_MustRelease, RVT_HEAP, false, arrayValue);
 }
 
 void NArray::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
@@ -123,9 +123,9 @@ int NList::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseF
     return createCall->setHeapVar(compiler, result, thisFunction, thisVar, nullptr, isHeapVar);
 }
 
-shared_ptr<ReturnValue> NList::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NList::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
     assert(compiler->state == CompilerState::Compile);
-    return createCall->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+    return createCall->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, returnRefType);
 }
 
 void NList::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
@@ -139,14 +139,15 @@ public:
     virtual shared_ptr<CVar> getReturnVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) { return nullptr; }
     virtual Function* compileDestructorDefinition(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction) { return nullptr; }
     virtual void compileDestructorBody(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, Function* function) { }
-    virtual shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters);
+    virtual shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType);
 };
 
 NArrayGetFunction::NArrayGetFunction() : NFunction(CLoc::undefined, FT_Private, make_shared<CTypeName>(CTC_Value, "item"), "get", nullptr, nullptr, make_shared<NodeList>(
                                                                                                                                                            make_shared<NAssignment>(CLoc::undefined, nullptr, make_shared<CTypeName>(CTC_Value, "int"), "index", nullptr, false)
                                                                                                                                                            ), nullptr, nullptr, nullptr) { }
 
-shared_ptr<CFunction> NArrayGetFunction::createCFunction(Compiler* compiler, CResult& result, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) {
+shared_ptr<CFunction> NArrayGetFunction::createCFunction(Compiler* compiler, CResult& result, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, shared_ptr<CInterfaceMethod> interfaceMethod) {
+    assert(!interfaceMethod);
     auto fun = make_shared<CArrayGetFunction>(definition, type, templateTypes, parent, interfaces);
     return fun->init(compiler, result, NFunction::shared_from_this(), nullptr);
 }
@@ -155,10 +156,10 @@ shared_ptr<CType> CArrayGetFunction::getReturnType(Compiler* compiler, CResult& 
     return getVarType(compiler, result, make_shared<CTypeName>(CTC_Value, "item"));
 }
 
-shared_ptr<ReturnValue> CArrayGetFunction::call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
-    auto parentValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB);
+shared_ptr<ReturnValue> CArrayGetFunction::call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType) {
+    auto parentValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB, RRT_Auto);
     
-    auto indexValue = parameters[0]->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+    auto indexValue = parameters[0]->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
     assert(indexValue->type == RVT_SIMPLE);
     
     vector<Value*> v;
@@ -166,7 +167,7 @@ shared_ptr<ReturnValue> CArrayGetFunction::call(Compiler* compiler, CResult& res
     auto itemPtr = builder->CreateGEP(parentValue->value, ArrayRef<llvm::Value *>(v));
     auto itemType = getReturnType(compiler, result, thisVar);
     auto itemFunction = itemType->parent.lock();
-    auto returnValue = make_shared<ReturnValue>(itemFunction, false, itemFunction ? RVT_HEAP : RVT_SIMPLE, false, builder->CreateLoad(itemPtr));
+    auto returnValue = make_shared<ReturnValue>(itemFunction, RVR_MustRetain, itemFunction ? RVT_HEAP : RVT_SIMPLE, false, builder->CreateLoad(itemPtr));
     parentValue->releaseIfNeeded(compiler, result, builder);
     return returnValue;
 }
@@ -179,7 +180,7 @@ public:
     virtual int setHeapVarBody(Compiler *compiler, CResult& result, shared_ptr<CVar> thisVar);
     virtual Function* compileDestructorDefinition(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction) { return nullptr; }
     virtual void compileDestructorBody(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, Function* function) { }
-    virtual shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters);
+    virtual shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType);
 };
 
 NArraySetFunction::NArraySetFunction() : NFunction(CLoc::undefined, FT_Private, make_shared<CTypeName>(CTC_Value, "void"), "set", nullptr, nullptr, make_shared<NodeList>(
@@ -187,7 +188,8 @@ NArraySetFunction::NArraySetFunction() : NFunction(CLoc::undefined, FT_Private, 
                                                                                                                                                            make_shared<NAssignment>(CLoc::undefined, nullptr, make_shared<CTypeName>(CTC_Value, "item"), "item", nullptr, false)
                                                                                                                                                            ), nullptr, nullptr, nullptr) { }
 
-shared_ptr<CFunction> NArraySetFunction::createCFunction(Compiler* compiler, CResult& result, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) {
+shared_ptr<CFunction> NArraySetFunction::createCFunction(Compiler* compiler, CResult& result, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, shared_ptr<CInterfaceMethod> interfaceMethod) {
+    assert(!interfaceMethod);
     auto fun = make_shared<CArraySetFunction>(definition, type, templateTypes, parent, interfaces);
     return fun->init(compiler, result, NFunction::shared_from_this(), nullptr);
 }
@@ -201,16 +203,16 @@ int CArraySetFunction::setHeapVarBody(Compiler* compiler, CResult& result, share
     return 0;
 }
 
-shared_ptr<ReturnValue> CArraySetFunction::call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
+shared_ptr<ReturnValue> CArraySetFunction::call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType) {
     
-    auto parentValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB);
+    auto parentValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB, RRT_Auto);
     auto parentFunction = dotVar->getCFunctionForValue(compiler, result);
     auto parentHeapVar = dotVar->getHeapVar(compiler, result, thisVar);
     
-    auto indexValue = parameters[0]->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+    auto indexValue = parameters[0]->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
     assert(indexValue->type == RVT_SIMPLE);
 
-    auto itemValue = parameters[1]->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+    auto itemValue = parameters[1]->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
     auto itemVar = parameters[1]->getVar(compiler, result, thisFunction, thisVar);
     if (parentHeapVar) {
         assert(itemVar == nullptr || itemVar->getHeapVar(compiler, result, thisVar));
@@ -235,14 +237,15 @@ public:
     virtual int setHeapVarBody(Compiler *compiler, CResult& result, shared_ptr<CVar> thisVar);
     virtual Function* compileDestructorDefinition(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction) { return nullptr; }
     virtual void compileDestructorBody(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, Function* function) { }
-    virtual shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters);
+    virtual shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType);
 };
 
 NArrayGrowFunction::NArrayGrowFunction() : NFunction(CLoc::undefined, FT_Private, make_shared<CTypeName>(CTC_Value, "array", make_shared<CTypeNameList>(CTC_Value, "item")), "grow", nullptr, nullptr, make_shared<NodeList>(
                                                                                                                                                                                                              make_shared<NAssignment>(CLoc::undefined, nullptr, make_shared<CTypeName>(CTC_Value, "int"), "size", nullptr, false)
                                                                                                                                                                                                              ), nullptr, nullptr, nullptr) { }
 
-shared_ptr<CFunction> NArrayGrowFunction::createCFunction(Compiler* compiler, CResult& result, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) {
+shared_ptr<CFunction> NArrayGrowFunction::createCFunction(Compiler* compiler, CResult& result, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, shared_ptr<CInterfaceMethod> interfaceMethod) {
+    assert(!interfaceMethod);
     auto fun = make_shared<CArrayGrowFunction>(definition, type, templateTypes, parent, interfaces);
     return fun->init(compiler, result, NFunction::shared_from_this(), nullptr);
 }
@@ -256,8 +259,8 @@ int CArrayGrowFunction::setHeapVarBody(Compiler* compiler, CResult& result, shar
     return 0;
 }
 
-shared_ptr<ReturnValue> CArrayGrowFunction::call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
-    auto parentValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB);
+shared_ptr<ReturnValue> CArrayGrowFunction::call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType) {
+    auto parentValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB, RRT_Auto);
     auto parentFunction = dotVar->getCFunctionForValue(compiler, result);
     auto parentHeapVar = dotVar->getHeapVar(compiler, result, thisVar);
     assert(parentHeapVar);
@@ -266,7 +269,7 @@ shared_ptr<ReturnValue> CArrayGrowFunction::call(Compiler* compiler, CResult& re
     auto itemLLVMType = itemType->llvmRefType(compiler, result);
     auto itemFunction = itemType->parent.lock();
     
-    auto countValue = parameters[0]->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+    auto countValue = parameters[0]->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
     assert(countValue->type == RVT_SIMPLE);
 
     vector<Value*> v;
@@ -297,14 +300,15 @@ public:
     virtual shared_ptr<CVar> getReturnVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) { return nullptr; }
     virtual Function* compileDestructorDefinition(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction) { return nullptr; }
     virtual void compileDestructorBody(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, Function* function) { }
-    virtual shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters);
+    virtual shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType);
 };
 
 NArrayDeleteFunction::NArrayDeleteFunction() : NFunction(CLoc::undefined, FT_Private, make_shared<CTypeName>(CTC_Value, "void"), "delete", nullptr, nullptr, make_shared<NodeList>(
                                                                                                                                                                  make_shared<NAssignment>(CLoc::undefined, nullptr, make_shared<CTypeName>(CTC_Value, "int"), "size", nullptr, false)
                                                                                                                                                                  ), nullptr, nullptr, nullptr) { }
 
-shared_ptr<CFunction> NArrayDeleteFunction::createCFunction(Compiler* compiler, CResult& result, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) {
+shared_ptr<CFunction> NArrayDeleteFunction::createCFunction(Compiler* compiler, CResult& result, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, shared_ptr<CInterfaceMethod> interfaceMethod) {
+    assert(!interfaceMethod);
     auto fun = make_shared<CArrayDeleteFunction>(definition, type, templateTypes, parent, interfaces);
     return fun->init(compiler, result, NFunction::shared_from_this(), nullptr);
 }
@@ -313,14 +317,14 @@ shared_ptr<CType> CArrayDeleteFunction::getReturnType(Compiler* compiler, CResul
     return compiler->typeVoid;
 }
 
-shared_ptr<ReturnValue> CArrayDeleteFunction::call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
-    auto parentValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB);
+shared_ptr<ReturnValue> CArrayDeleteFunction::call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType) {
+    auto parentValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB, RRT_Auto);
     auto parentHeapVar = dotVar->getHeapVar(compiler, result, thisVar);
     
     auto itemType = getVarType(compiler, result, make_shared<CTypeName>(CTC_Value, "item"));
     auto itemFunction = itemType->parent.lock();
     if (itemFunction) {
-        auto sizeValue = parameters[0]->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+        auto sizeValue = parameters[0]->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
         assert(sizeValue->type == RVT_SIMPLE);
         
         compiler->callDebug(builder, "array_delete_size", nullptr, sizeValue->value);
@@ -403,7 +407,7 @@ public:
     virtual shared_ptr<CVar> getReturnVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
     virtual Function* compileDestructorDefinition(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction) { return nullptr; }
     virtual void compileDestructorBody(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, Function* function) { }
-    virtual shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters);
+    virtual shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType);
 };
 
 NArrayCreateFunction::NArrayCreateFunction() : NFunction(CLoc::undefined, FT_Private, nullptr, "array", make_shared<CTypeNameList>(CTC_Value, "item"), nullptr,
@@ -415,7 +419,8 @@ NArrayCreateFunction::NArrayCreateFunction() : NFunction(CLoc::undefined, FT_Pri
                                                              make_shared<NArrayDeleteFunction>()
                                                          ), nullptr, nullptr, nullptr) { }
 
-shared_ptr<CFunction> NArrayCreateFunction::createCFunction(Compiler* compiler, CResult& result, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) {
+shared_ptr<CFunction> NArrayCreateFunction::createCFunction(Compiler* compiler, CResult& result, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, shared_ptr<CInterfaceMethod> interfaceMethod) {
+    assert(!interfaceMethod);
     auto fun = make_shared<CArrayCreateFunction>(definition, type, templateTypes, parent, interfaces);
     return fun->init(compiler, result, NFunction::shared_from_this(), nullptr);
 }
@@ -428,12 +433,14 @@ shared_ptr<CVar> CArrayCreateFunction::getReturnVar(Compiler* compiler, CResult&
     return thisVar;
 }
 
-shared_ptr<ReturnValue> CArrayCreateFunction::call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
+shared_ptr<ReturnValue> CArrayCreateFunction::call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType) {
     if (parameters.size() == 0) {
         return nullptr;
     }
     
-    auto countValue = parameters[0]->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+    assert(returnRefType == RRT_Auto || returnRefType == RRT_MustRelease);
+    
+    auto countValue = parameters[0]->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
     assert(countValue->type == RVT_SIMPLE);
     auto itemType = templateTypes[0]->llvmRefType(compiler, result);
     
@@ -457,10 +464,10 @@ shared_ptr<ReturnValue> CArrayCreateFunction::call(Compiler* compiler, CResult& 
         allocArgs.push_back(sizeValue);
         auto value = builder->CreateCall(allocFunc, allocArgs);
         value->mutateType(arrayType);
-        arrayValue = make_shared<ReturnValue>(calleeFunction, true, RVT_HEAP, false, value);
+        arrayValue = make_shared<ReturnValue>(calleeFunction, RVR_MustRelease, RVT_HEAP, false, value);
     } else {
         auto value = builder->CreateAlloca(itemType, countValue->value);
-        arrayValue = make_shared<ReturnValue>(calleeFunction, true, RVT_HEAP, false, value);
+        arrayValue = make_shared<ReturnValue>(calleeFunction, RVR_MustRelease, RVT_HEAP, false, value);
     }
     
     return arrayValue;

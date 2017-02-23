@@ -50,12 +50,14 @@ map<void*, vector<vector<const char*>>> releases;
 map<void*, const char*> objTypes;
 
 extern "C" void pushFunction(const char* str) {
+    printf("push: %s\n", str);
     callstack[callstackIndex] = str;
     callstackIndex++;
 }
 
 extern "C" void popFunction() {
     callstackIndex--;
+    printf("pop: %s\n", callstack[callstackIndex]);
 }
 
 extern "C" void recordRetain(void* v, const char* str) {
@@ -366,10 +368,10 @@ protected:
         return inner->getType(compiler, result, thisFunction, thisVar);
     }
     
-    virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
         auto type = getType(compiler, result, thisFunction, thisVar);
         if (_callVar) {
-            return _callVar->getLoadValue(compiler, result, thisVar, thisValue, false, nullptr, builder, catchBB);
+            return _callVar->getLoadValue(compiler, result, thisVar, thisValue, false, nullptr, builder, catchBB, returnRefType);
         }
         return type->getDefaultValue(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
     }
@@ -453,7 +455,7 @@ shared_ptr<CResult> Compiler::run(const string& code) {
 #endif
 
     state = CompilerState::Compile;
-    anonFunction->compile(this, *compilerResult, currentFunction, currentVar, nullptr, nullptr, nullptr);
+    anonFunction->compile(this, *compilerResult, currentFunction, currentVar, nullptr, nullptr, nullptr, RRT_Auto);
     auto function = globalFunction->getFunction(this, *compilerResult, globalVar);
     globalFunction->getDestructor(this, *compilerResult);
     auto returnType = globalFunction->getReturnType(this, *compilerResult, globalVar);
@@ -487,7 +489,8 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     auto globalDestructorSymbol = TheJIT->findSymbol("global_destructor");
     assert(globalFunction && "Function not found");
     
-    auto thisSize = globalFunction->argVars.size() * 8;
+    auto structType = globalFunction->getStructType(this, *compilerResult);
+    auto thisSize = structType ? structType->getStructNumElements() * 8 : 0;
     auto thisPtr = malloc(thisSize);
     
     // Get the symbol's address and cast it to the right type (takes no

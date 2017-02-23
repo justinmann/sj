@@ -14,7 +14,7 @@ shared_ptr<CType> NInterfaceMethod::getTypeImpl(Compiler* compiler, CResult& res
     return compiler->typeVoid;
 }
 
-shared_ptr<ReturnValue> NInterfaceMethod::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NInterfaceMethod::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(builder, this);
     return nullptr;
@@ -50,7 +50,7 @@ shared_ptr<CType> CInterfaceMethodReturnVar::getType(Compiler* compiler, CResult
     return returnType;
 }
 
-shared_ptr<ReturnValue> CInterfaceMethodReturnVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> CInterfaceMethodReturnVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
     assert(false);
     return nullptr;
 }
@@ -73,6 +73,10 @@ int CInterfaceMethodReturnVar::setHeapVar(Compiler* compiler, CResult& result, s
             t->parent.lock()->setHasRefCount();
         }
         
+        for (auto it : returnVars) {
+            it->setHeapVar(compiler, result, thisVar);
+        }
+        
         return 1;
     }
     return 0;
@@ -87,7 +91,7 @@ shared_ptr<CType> CInterfaceMethodArgVar::getType(Compiler* compiler, CResult& r
     return returnType;
 }
 
-shared_ptr<ReturnValue> CInterfaceMethodArgVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> CInterfaceMethodArgVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
     assert(false);
     return nullptr;
 }
@@ -110,6 +114,10 @@ int CInterfaceMethodArgVar::setHeapVar(Compiler* compiler, CResult& result, shar
             t->parent.lock()->setHasRefCount();
         }
         
+        for (auto it : functionVars) {
+            it->setHeapVar(compiler, result, thisVar);
+        }
+        
         return 1;
     }
     return 0;
@@ -119,7 +127,7 @@ void CInterfaceMethodArgVar::dump(Compiler* compiler, CResult& result, shared_pt
     assert(false);
 }
 
-CInterfaceMethod::CInterfaceMethod(string& name, weak_ptr<CInterface> parent, int structIndex) : functionType(nullptr), structIndex(structIndex), CBaseFunction(name, parent, weak_ptr<CBaseFunctionDefinition>()) {
+CInterfaceMethod::CInterfaceMethod(string& name, weak_ptr<CInterface> parent, int methodIndex) : functionType(nullptr), methodIndex(methodIndex), CBaseFunction(name, parent, weak_ptr<CBaseFunctionDefinition>()) {
     
 }
 
@@ -157,8 +165,8 @@ shared_ptr<CInterfaceMethod> CInterfaceMethod::init(Compiler* compiler, CResult&
 }
 
 string CInterfaceMethod::fullName(bool includeTemplateTypes) {
-    assert(false);
-    return "";
+    // TODO: includeTemplateTypes
+    return name;
 }
 
 bool CInterfaceMethod::getHasThis() {
@@ -222,8 +230,10 @@ shared_ptr<CVar> CInterfaceMethod::getReturnVar(Compiler* compiler, CResult& res
     return returnVar;
 }
 
-shared_ptr<ReturnValue> CInterfaceMethod::call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
-    auto interfaceType = parent.lock()->getStructType(compiler, result);
+shared_ptr<ReturnValue> CInterfaceMethod::call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType) {
+    assert(returnRefType == RRT_Auto || returnRefType == RRT_MustRelease);
+    auto interace = static_pointer_cast<CInterface>(parent.lock());
+    auto interfaceType = interace->getStructType(compiler, result);
     
     vector<shared_ptr<ReturnValue>> argReturnValues;
     vector<Value *> argValues;
@@ -231,13 +241,13 @@ shared_ptr<ReturnValue> CInterfaceMethod::call(Compiler* compiler, CResult& resu
     // Add "parent" to "this"
     assert(dotVar);
     assert(getHasParent(compiler, result));
-    auto dotReturnValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB);
+    auto dotReturnValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB, RRT_Auto);
     auto interfaceValue = dotReturnValue->value;
     auto parentValuePtr = builder->CreateStructGEP(interfaceType, interfaceValue, 0);
     auto parentValue = builder->CreateLoad(parentValuePtr);
     argValues.push_back(parentValue);
     
-    auto functionPtr = builder->CreateStructGEP(interfaceType, interfaceValue, structIndex);
+    auto functionPtr = builder->CreateStructGEP(interfaceType, interfaceValue, methodIndex + interace->getArgStart());
     auto function = builder->CreateLoad(functionPtr);
     // auto function = builder->CreateBitCast(functionVoid, getFunctionType(compiler, result)-);
     
@@ -256,14 +266,14 @@ shared_ptr<ReturnValue> CInterfaceMethod::call(Compiler* compiler, CResult& resu
                 auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
                 assert(paramHeapVar == argHeapVar);
             }
-            argReturnValue = parameters[argIndex]->compile(compiler, result, shared_from_this(), calleeVar, nullptr, builder, catchBB);
+            argReturnValue = parameters[argIndex]->compile(compiler, result, shared_from_this(), calleeVar, nullptr, builder, catchBB, RRT_Auto);
         } else {
             auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), thisVar);
             if (paramVar) {
                 auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
                 assert(paramHeapVar == argHeapVar);
             }
-            argReturnValue = parameters[argIndex]->compile(compiler, result, shared_from_this(), thisVar, thisValue, builder, catchBB);
+            argReturnValue = parameters[argIndex]->compile(compiler, result, shared_from_this(), thisVar, thisValue, builder, catchBB, RRT_Auto);
         }
         
         if (!argReturnValue) {
@@ -303,11 +313,20 @@ shared_ptr<ReturnValue> CInterfaceMethod::call(Compiler* compiler, CResult& resu
         dotReturnValue->releaseIfNeeded(compiler, result, builder);
     }
     
-    return make_shared<ReturnValue>(returnFunction, mustRelease, returnFunction ? RVT_HEAP : RVT_SIMPLE, false, returnValue);
+    return make_shared<ReturnValue>(returnFunction, mustRelease ? RVR_MustRelease : RVR_MustRetain, returnFunction ? RVT_HEAP : RVT_SIMPLE, false, returnValue);
 }
 
 void CInterfaceMethod::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-    assert(false);
+    for (auto it : implementations) {
+        if (functions.find(it) == functions.end()) {
+            functions[it] = "";
+            stringstream temp;
+            it->dumpBody(compiler, result, nullptr, functions, temp, 0);
+            functions[it] = temp.str();
+        }
+    }
+    // TODO:
+    ss << name << "(" << ")";
 }
 
 bool CInterfaceMethod::getReturnMustRelease(Compiler* compiler, CResult& result) {

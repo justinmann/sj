@@ -33,12 +33,12 @@ int NBlock::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBase
     return count;
 }
 
-shared_ptr<ReturnValue> NBlock::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NBlock::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
     assert(compiler->state == CompilerState::Compile);
     shared_ptr<ReturnValue> last = nullptr;
     for (auto it : statements) {
         auto isLast = it == statements.back();
-        last = it->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+        last = it->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, isLast ? returnRefType : RRT_Auto);
         if (!isLast && last) {
             last->releaseIfNeeded(compiler, result, builder);
         }

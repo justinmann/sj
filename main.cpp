@@ -769,7 +769,7 @@ void testInterface() {
 
         void
     )DELIM");
-    assert(result->type != RESULT_ERROR);
+    assert(result->type == RESULT_VOID);
     
     result = compiler.run(R"DELIM(
         #foo(
@@ -784,9 +784,8 @@ void testInterface() {
 
         a: class() as #foo
         a.test()
-        1
     )DELIM");
-    assert(result->type != RESULT_ERROR);
+    assert(result->type == RESULT_INT && result->iResult == 5);
 
     result = compiler.run(R"DELIM(
         include "common.sj"
@@ -803,7 +802,6 @@ void testInterface() {
 
         a: class() as #foo
         a.test()
-        1
     )DELIM");
     assert(result->type != RESULT_ERROR);
 
@@ -820,7 +818,6 @@ void testInterface() {
 
         a: class() as #foo!int
         a.test()
-        1
     )DELIM");
     assert(result->type != RESULT_ERROR);
 
@@ -837,7 +834,6 @@ void testInterface() {
 
         a: class!int() as #foo!int
         a.test()
-        1
     )DELIM");
     assert(result->type != RESULT_ERROR);
     
@@ -850,7 +846,7 @@ int main(int argc, char **argv) {
     shared_ptr<CResult> result;
     Compiler compiler;
 
-    testInterface();
+    //testInterface();
 
     testMath();
     testComparison();

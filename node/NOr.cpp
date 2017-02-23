@@ -24,11 +24,11 @@ int NOr::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFun
     return count;
 }
 
-shared_ptr<ReturnValue> NOr::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NOr::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(builder, this);
     
-    auto l = left->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+    auto l = left->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
     if (!l) {
         return nullptr;
     }
@@ -40,7 +40,7 @@ shared_ptr<ReturnValue> NOr::compileImpl(Compiler* compiler, CResult& result, sh
         return nullptr;
     }
     
-    auto r = right->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+    auto r = right->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
     if (!r) {
         return nullptr;
     }

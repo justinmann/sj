@@ -134,7 +134,7 @@ int NAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<
     return count;
 }
 
-shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
     assert(compiler->state == CompilerState::Compile);
     compiler->emitLocation(builder, this);
     
@@ -144,11 +144,11 @@ shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& re
     }
 
     if (!inFunctionDeclaration && nfunction) {
-        nfunction->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+        nfunction->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
     }
     
     // Compute value
-    auto value = rightSide->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+    auto value = rightSide->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, returnRefType);
     if (!value) {
         result.addError(loc, CErrorCode::ExpressionEmpty, "trying to assign an empty value");
         return nullptr;
@@ -183,7 +183,7 @@ shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& re
     
     // Store value
     builder->CreateStore(value->value, alloca);
-    return make_shared<ReturnValue>(value->valueFunction, false, value->type, value->inEntry, value->value);
+    return make_shared<ReturnValue>(value->valueFunction, RVR_MustRetain, value->type, value->inEntry, value->value);
 }
 
 void NAssignment::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {

@@ -16,19 +16,19 @@ shared_ptr<CType> CDotVar::getType(Compiler* compiler, CResult& result) {
     return rightVar->getType(compiler, result);
 }
 
-shared_ptr<ReturnValue> CDotVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    auto leftValue = leftVar->getLoadValue(compiler, result, thisVar, thisValue, dotInEntry, dotValue, builder, catchBB);
+shared_ptr<ReturnValue> CDotVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
+    auto leftValue = leftVar->getLoadValue(compiler, result, thisVar, thisValue, dotInEntry, dotValue, builder, catchBB, RRT_Auto);
     if (!leftValue) {
         return nullptr;
     }
     
-    auto loadValue = rightVar->getLoadValue(compiler, result, thisVar, thisValue, leftValue->inEntry, leftValue->value, builder, catchBB);
+    auto loadValue = rightVar->getLoadValue(compiler, result, thisVar, thisValue, leftValue->inEntry, leftValue->value, builder, catchBB, returnRefType);
     leftValue->releaseIfNeeded(compiler, result, builder);
     return loadValue;
 }
 
 Value* CDotVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    auto leftValue = leftVar->getLoadValue(compiler, result, thisVar, thisValue, dotInEntry, dotValue, builder, catchBB);
+    auto leftValue = leftVar->getLoadValue(compiler, result, thisVar, thisValue, dotInEntry, dotValue, builder, catchBB, RRT_Auto);
     if (!leftValue) {
         return nullptr;
     }

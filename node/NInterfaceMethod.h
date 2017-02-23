@@ -24,14 +24,14 @@ protected:
     virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) { return nullptr; }
     virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar);
     virtual int setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) { return 0; } 
-    virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB);
+    virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType);
 };
 
 class CInterfaceMethodReturnVar : public CVar {
 public:
     CInterfaceMethodReturnVar(shared_ptr<CType> returnType) : returnType(returnType), isHeapVar(false) { }
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
+    shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType);
     Value* getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     bool getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
     int setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
@@ -39,13 +39,14 @@ public:
     
     shared_ptr<CType> returnType;
     bool isHeapVar;
+    vector<shared_ptr<CVar>> returnVars;
 };
 
 class CInterfaceMethodArgVar : public CVar {
 public:
     CInterfaceMethodArgVar(shared_ptr<CType> returnType) : returnType(returnType), isHeapVar(false) { }
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
+    shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType);
     Value* getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     bool getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
     int setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
@@ -53,14 +54,16 @@ public:
     
     shared_ptr<CType> returnType;
     bool isHeapVar;
+    vector<shared_ptr<CVar>> functionVars;
 };
 
 class CInterfaceMethod : public CBaseFunction, public enable_shared_from_this<CInterfaceMethod> {
 public:
     shared_ptr<CType> returnType;
     vector<shared_ptr<CType>> argTypes;
+    vector<shared_ptr<CBaseFunction>> implementations;
     
-    CInterfaceMethod(string& name, weak_ptr<CInterface> parent, int structIndex);
+    CInterfaceMethod(string& name, weak_ptr<CInterface> parent, int methodIndex);
     shared_ptr<CInterfaceMethod> init(Compiler* compiler, CResult& result, shared_ptr<NInterfaceMethod> method);
     string fullName(bool includeTemplateTypes);
     
@@ -78,7 +81,7 @@ public:
     shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
     shared_ptr<CVar> getReturnVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
     
-    shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters);
+    shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType);
     void dumpBody(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
     bool getReturnMustRelease(Compiler* compiler, CResult& result);
     Function* getDestructor(Compiler* compiler, CResult& result);
@@ -87,7 +90,7 @@ public:
 private:
     shared_ptr<CInterfaceMethodReturnVar> returnVar;
     Type* functionType;
-    int structIndex;
+    int methodIndex;
     CLoc loc;
 };
 

@@ -18,10 +18,10 @@ int NThrow::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBase
     return node->setHeapVar(compiler, result, thisFunction, thisVar, true);
 }
 
-shared_ptr<ReturnValue> NThrow::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+shared_ptr<ReturnValue> NThrow::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
     assert(compiler->state == CompilerState::Compile);
     
-    auto value = node->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+    auto value = node->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
     assert(value->value->getType()->isIntegerTy(64));
     compiler->emitLocation(builder, this);
     

@@ -112,51 +112,6 @@ shared_ptr<CFunctionDefinition> NFunction::getFunctionDefinition(Compiler *compi
 }
 
 shared_ptr<CVar> NFunction::getVarImpl(Compiler *compiler, CResult& result, shared_ptr<CBaseFunction> parentFunction, shared_ptr<CVar> parentVar) {
-    // Verify that all interfaces are implemented
-    /* TODO:
-    for (auto interface : *parentFunction->interfaces) {
-        // TODO: check if there is a special interface object composition method
-        
-        for (auto method : *interface->methods) {
-            auto cfunc = parentFunction->getCFunction(compiler, result, loc, method->ninterfaceMethod->name, nullptr, nullptr);
-            if (cfunc == nullptr) {
-                result.addError(loc, CErrorCode::InterfaceMethodDoesNotExist, "no interface method '%s'", method->ninterfaceMethod->name.c_str());
-                return nullptr;
-            }
-            
-            auto functionReturnType = cfunc->getReturnType(compiler, result, parentVar);
-            auto interfaceReturnType = method->getReturnType(compiler, result);
-            if (functionReturnType != interfaceReturnType) {
-                result.addError(loc, CErrorCode::InterfaceMethodTypeMismatch, "method '%s' return type '%s' does not match interface '%s'", method->ninterfaceMethod->name.c_str(), functionReturnType->name.c_str(), interfaceReturnType->name.c_str());
-                return nullptr;
-            }
-            
-            auto functionArgVars = cfunc->getArgVars(compiler, result, parentVar);
-            auto interfaceArgVars = method->getArgVars();
-            if (functionArgVars->size() != interfaceArgVars->size()) {
-                result.addError(loc, CErrorCode::InterfaceMethodTypeMismatch, "method '%s' arg count does not match '%d' vs '%d'", method->ninterfaceMethod->name.c_str(), functionArgVars->size(), interfaceArgVars->size());
-                return nullptr;
-            }
-            
-            for (int i = 0; i < functionArgVars->size(); i++) {
-                auto functionArgVar = (*functionArgVars)[i];
-                auto interfaceArgVar = (*interfaceArgVars)[i];
-                
-                if (functionArgVar->isMutable != interfaceArgVar->isMutable) {
-                    result.addError(loc, CErrorCode::InterfaceMethodTypeMismatch, "method '%s' parameter %d does not match mutability", method->ninterfaceMethod->name.c_str(), i);
-                    return nullptr;
-                }
-                
-                auto functionArgType = functionArgVar->getType(compiler, result);
-                auto interfaceArgType = interfaceArgVar->getType(compiler, result);
-                if (functionArgType != interfaceArgType) {
-                    result.addError(loc, CErrorCode::InterfaceMethodTypeMismatch, "method '%s' parameter %d type '%s' does not match interface '%s'", method->ninterfaceMethod->name.c_str(), i, functionArgType->name.c_str(), interfaceArgType->name.c_str());
-                    return nullptr;
-                }
-            }
-        }
-    } */
-
     return nullptr;
 }
 
@@ -170,35 +125,144 @@ shared_ptr<CType> NFunction::getTypeImpl(Compiler* compiler, CResult& result, sh
     return compiler->typeVoid;
 }
 
-shared_ptr<ReturnValue> NFunction::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> parentFunction, shared_ptr<CVar> parentVar, Value* parentValue, IRBuilder<>* builder, BasicBlock* parentCatchBB) {
+shared_ptr<ReturnValue> NFunction::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> parentFunction, shared_ptr<CVar> parentVar, Value* parentValue, IRBuilder<>* builder, BasicBlock* parentCatchBB, ReturnRefType returnRefType) {
     return nullptr;
 }
 
-shared_ptr<CFunction> NFunction::createCFunction(Compiler* compiler, CResult& result, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) {
+shared_ptr<CFunction> NFunction::createCFunction(Compiler* compiler, CResult& result, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, CFunctionType type, const string& name, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, shared_ptr<CInterfaceMethod> interfaceMethod) {
     auto fun = make_shared<CFunction>(definition, type, templateTypes, parent, interfaces);
-    
-    shared_ptr<CInterfaceMethod> interfaceMethod;
-    if (interfaces) {
-        for (auto it : *interfaces) {
-            auto t = it->methodByName.find(definition.lock()->name);
-            if (t != it->methodByName.end()) {
-                if (interfaceMethod) {
-                    result.addError(loc, CErrorCode::InterfaceMethodConflict, "two interfaces on this class want to use method: '%s'", definition.lock()->name.c_str());
-                    return nullptr;
-                }
-                interfaceMethod = t->second;
-            }
-        }
-    }
-    
     return fun->init(compiler, result, shared_from_this(), interfaceMethod);
 }
 
-shared_ptr<CVar> CFunction::getReturnVar(Compiler *compiler, CResult& result, shared_ptr<CVar> thisVar) {
-    if (block) {
-        return block->getVar(compiler, result, shared_from_this(), thisVar);
+CFunctionReturnVar::CFunctionReturnVar(shared_ptr<CVar> returnVar, shared_ptr<CInterfaceMethodReturnVar> interfaceMethodReturnVar) : returnVar(returnVar), interfaceMethodReturnVar(interfaceMethodReturnVar) {
+}
+
+void CFunctionReturnVar::init() {
+    if (interfaceMethodReturnVar) {
+        interfaceMethodReturnVar->returnVars.push_back(shared_from_this());
     }
-    return nullptr;
+}
+
+shared_ptr<CType> CFunctionReturnVar::getType(Compiler* compiler, CResult& result) {
+    return returnVar->getType(compiler, result);
+}
+
+shared_ptr<ReturnValue> CFunctionReturnVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
+    return returnVar->getLoadValue(compiler, result, thisVar, thisValue, dotInEntry, dotValue, builder, catchBB, returnRefType);
+}
+
+Value* CFunctionReturnVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    return returnVar->getStoreValue(compiler, result, thisVar, thisValue, dotInEntry, dotValue, builder, catchBB);
+}
+
+bool CFunctionReturnVar::getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
+    auto isHeapVar = returnVar->getHeapVar(compiler, result, thisVar);
+    if (interfaceMethodReturnVar) {
+        assert(isHeapVar == interfaceMethodReturnVar->getHeapVar(compiler, result, nullptr));
+    }
+    return isHeapVar;
+}
+
+int CFunctionReturnVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
+    auto count = returnVar->setHeapVar(compiler, result, thisVar);
+    if (interfaceMethodReturnVar) {
+        count += interfaceMethodReturnVar->setHeapVar(compiler, result, nullptr);
+    }
+    return count;
+}
+
+void CFunctionReturnVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+    returnVar->dump(compiler, result, thisFunction, thisVar, dotVar, functions, ss, dotSS, level);
+}
+
+CFunction::CFunction(weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) :
+CBaseFunction(definition.lock()->name, parent, definition),
+templateTypes(templateTypes),
+type(type),
+interfaces(interfaces),
+_structType(nullptr),
+function(nullptr),
+loc(CLoc::undefined),
+block(nullptr),
+catchBlock(nullptr),
+destroyBlock(nullptr),
+returnTypeName(nullptr),
+interfaceTypeNames(nullptr),
+isInGetType(false),
+isInGetFunction(false),
+destructorFunction(nullptr),
+returnMustRelease(false) {}
+
+
+shared_ptr<CFunction> CFunction::init(Compiler* compiler, CResult& result, shared_ptr<NFunction> node, shared_ptr<CInterfaceMethod> interfaceMethod_) {
+    interfaceMethod = interfaceMethod_;
+    
+    if (interfaceMethod) {
+        interfaceMethod->implementations.push_back(shared_from_this());
+    }
+    
+    for (auto it : templateTypes) {
+        name = name + "_" + it->name;
+    }
+    
+    if (node) {
+        loc = node->loc;
+        functions = node->functions;
+        block = node->block;
+        catchBlock = node->catchBlock;
+        destroyBlock = node->destroyBlock;
+        returnTypeName = node->returnTypeName;
+        externName = node->externName;
+        interfaceTypeNames = node->interfaceTypeNames;
+        
+        if (node->templateTypeNames) {
+            assert(node->templateTypeNames->size() == templateTypes.size());
+            auto index = 0;
+            for (auto templateTypeName : *node->templateTypeNames) {
+                if (templateTypeName->templateTypeNames != nullptr) {
+                    result.addError(loc, CErrorCode::InvalidType, "cannot use ! in template type name");
+                    return nullptr;
+                }
+                templateTypesByName[templateTypeName->name] = templateTypes[index];
+                index++;
+            }
+        }
+        
+        for (auto it : node->assignments) {
+            if (it->var) {
+                result.addError(it->loc, CErrorCode::InvalidDot, "cannot use '.' in variable declaration for a function: '%s'", it->name.c_str());
+                return nullptr;
+            }
+            
+            int index = (int)argVars.size();
+            auto interfaceMethodArgVar = interfaceMethod ? interfaceMethod->argVars[index] : nullptr;
+            auto thisVar = CNormalVar::createFunctionVar(node->loc, it->name, shared_from_this(), index, it, nullptr, interfaceMethodArgVar);
+            thisVarsByName[it->name] = pair<int, shared_ptr<CVar>>(index, thisVar);
+            thisVars.push_back(thisVar);
+            argVars.push_back(thisVar);
+            argDefaultValues.push_back(it->rightSide);
+        }
+    }
+    
+    return shared_from_this();
+}
+
+shared_ptr<CVar> CFunction::getReturnVar(Compiler *compiler, CResult& result, shared_ptr<CVar> thisVar) {
+    if (!functionReturnVar) {
+        if (block) {
+            shared_ptr<CInterfaceMethodReturnVar> interfaceMethodReturnVar;
+            if (interfaceMethod) {
+                interfaceMethodReturnVar = static_pointer_cast<CInterfaceMethodReturnVar>(interfaceMethod->getReturnVar(compiler, result, nullptr));
+            }
+            
+            auto returnVar = block->getVar(compiler, result, shared_from_this(), thisVar);
+            if (returnVar) {
+                functionReturnVar = make_shared<CFunctionReturnVar>(returnVar, interfaceMethodReturnVar);
+                functionReturnVar->init();
+            }
+        }
+    }
+    return functionReturnVar;
 }
 
 void CFunction::getVarBody(Compiler *compiler, CResult& result, shared_ptr<CVar> thisVar) {
@@ -355,7 +419,7 @@ bool CFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CVar
     }
     
     returnVar = block->getVar(compiler, result, shared_from_this(), thisVar);
-    returnValue = block->compile(compiler, result, shared_from_this(), thisVar, thisArgument, &bodyBuilder, catchBB);
+    returnValue = block->compile(compiler, result, shared_from_this(), thisVar, thisArgument, &bodyBuilder, catchBB, interfaceMethod ? RRT_MustRelease : RRT_Auto);
 
     compiler->callPopFunction(&bodyBuilder);
     
@@ -376,9 +440,9 @@ bool CFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CVar
         for (auto it : localVarsByName) {
             auto type = it.second->getType(compiler, result);
             if (!type->parent.expired()) {
-                auto localValue = it.second->getLoadValue(compiler, result, thisVar, thisArgument, true, nullptr, &bodyBuilder, catchBB);
+                auto localValue = it.second->getLoadValue(compiler, result, thisVar, thisArgument, true, nullptr, &bodyBuilder, catchBB, RRT_Auto);
                 if (localValue->type == RVT_HEAP) {
-                    assert(!localValue->mustRelease);
+                    assert(localValue->releaseMode == RVR_MustRetain);
                     if (it.second->getHeapVar(compiler, result, thisVar)) {
                         type->parent.lock()->releaseHeap(compiler, result, &bodyBuilder, localValue->value);
                     } else {
@@ -419,7 +483,7 @@ bool CFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CVar
 #endif
         
             returnVar = catchBlock->getVar(compiler, result, shared_from_this(), thisVar);
-            auto catchReturnValue = catchBlock->compile(compiler, result, shared_from_this(), thisVar, thisArgument, &catchBuilder, nullptr);
+            auto catchReturnValue = catchBlock->compile(compiler, result, shared_from_this(), thisVar, thisArgument, &catchBuilder, nullptr, returnValue && returnValue->releaseMode == RVR_MustRelease ? RRT_MustRelease : RRT_MustRetain);
 
             catchBuilder.CreateCall(compiler->exception->getEndCatch());
 
@@ -437,7 +501,7 @@ bool CFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CVar
                 }
                 
                 assert(catchReturnValue->type == returnValue->type);
-                assert(catchReturnValue->mustRelease == returnValue->mustRelease);
+                assert(catchReturnValue->releaseMode == returnValue->releaseMode);
                 catchBuilder.CreateRet(catchReturnValue->value);
             }            
         } else {
@@ -473,7 +537,7 @@ error:
     }
     
     assert(!returnValue || returnValue->type == RVT_SIMPLE || returnValue->type == RVT_HEAP);
-    return returnValue ? returnValue->mustRelease : false;
+    return returnValue ? returnValue->releaseMode == RVR_MustRelease : false;
 }
 
 Function* CFunction::compileDestructorDefinition(Compiler* compiler, CResult& result) {
@@ -539,13 +603,13 @@ void CFunction::compileDestructorBody(Compiler* compiler, CResult& result, Funct
     Argument* thisArgument = (Argument*)function->args().begin();
     
     if (destroyBlock) {
-        destroyBlock->compile(compiler, result, shared_from_this(), nullptr, thisArgument, &bodyBuilder, nullptr);
+        destroyBlock->compile(compiler, result, shared_from_this(), nullptr, thisArgument, &bodyBuilder, nullptr, RRT_Auto);
     }
     
     for (auto it : thisVars) {
         auto type = it->getType(compiler, result);
         if (!type->parent.expired() && !isSimpleType(type->llvmRefType(compiler, result))) {
-            auto value = it->getLoadValue(compiler, result, nullptr, thisArgument, true, thisArgument, &bodyBuilder, nullptr);
+            auto value = it->getLoadValue(compiler, result, nullptr, thisArgument, true, thisArgument, &bodyBuilder, nullptr, RRT_Auto);
             assert(value->type == RVT_HEAP);
             if (it->getHeapVar(compiler, result, nullptr)) {
                 value->valueFunction->releaseHeap(compiler, result, &bodyBuilder, value->value);
@@ -560,7 +624,7 @@ void CFunction::compileDestructorBody(Compiler* compiler, CResult& result, Funct
     bodyBuilder.CreateRetVoid();
 }
 
-shared_ptr<ReturnValue> CFunction::call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters) {
+shared_ptr<ReturnValue> CFunction::call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType) {
     if (!getHasThis()) {
         vector<shared_ptr<ReturnValue>> argReturnValues;
         vector<Value *> argValues;
@@ -573,7 +637,7 @@ shared_ptr<ReturnValue> CFunction::call(Compiler* compiler, CResult& result, sha
         if (hasParent) {
             Value* parentValue = thisValue;
             if (dotVar) {
-                dotReturnValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB);
+                dotReturnValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB, RRT_Auto);
                 parentValue = dotReturnValue->value;
             } else {
                 // if recursively calling ourselves then re-use parent
@@ -607,14 +671,14 @@ shared_ptr<ReturnValue> CFunction::call(Compiler* compiler, CResult& result, sha
                     auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
                     assert(paramHeapVar == argHeapVar);
                 }
-                argReturnValue = parameters[argIndex]->compile(compiler, result, shared_from_this(), calleeVar, nullptr, builder, catchBB);
+                argReturnValue = parameters[argIndex]->compile(compiler, result, shared_from_this(), calleeVar, nullptr, builder, catchBB, RRT_Auto);
             } else {
                 auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), thisVar);
                 if (paramVar) {
                     auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
                     assert(paramHeapVar == argHeapVar);
                 }
-                argReturnValue = parameters[argIndex]->compile(compiler, result, shared_from_this(), thisVar, thisValue, builder, catchBB);
+                argReturnValue = parameters[argIndex]->compile(compiler, result, shared_from_this(), thisVar, thisValue, builder, catchBB, RRT_Auto);
             }
             
             if (!argReturnValue) {
@@ -641,7 +705,7 @@ shared_ptr<ReturnValue> CFunction::call(Compiler* compiler, CResult& result, sha
             for (auto it : argReturnValues) {
                 it->releaseIfNeeded(compiler, result, builder);
             }
-            return make_shared<ReturnValue>(returnFunction, returnFunction ? true : false, returnFunction ? RVT_HEAP : RVT_SIMPLE, false, returnValue);
+            return make_shared<ReturnValue>(returnFunction, returnFunction ? RVR_MustRelease : RVR_MustRetain, returnFunction ? RVT_HEAP : RVT_SIMPLE, false, returnValue);
         } else {
             Value* returnValue = nullptr;
             
@@ -662,7 +726,7 @@ shared_ptr<ReturnValue> CFunction::call(Compiler* compiler, CResult& result, sha
                 dotReturnValue->releaseIfNeeded(compiler, result, builder);
             }
             
-            return make_shared<ReturnValue>(returnFunction, mustRelease, returnFunction ? RVT_HEAP : RVT_SIMPLE, false, returnValue);
+            return make_shared<ReturnValue>(returnFunction, mustRelease ? RVR_MustRelease : RVR_MustRetain, returnFunction ? RVT_HEAP : RVT_SIMPLE, false, returnValue);
         }
     } else {
         vector<shared_ptr<ReturnValue>> argReturnValues;
@@ -715,14 +779,14 @@ shared_ptr<ReturnValue> CFunction::call(Compiler* compiler, CResult& result, sha
                     auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
                     assert(paramHeapVar == argHeapVar);
                 }
-                argReturnValue = parameters[argIndex]->compile(compiler, result, shared_from_this(), calleeVar, calleeValue, builder, catchBB);
+                argReturnValue = parameters[argIndex]->compile(compiler, result, shared_from_this(), calleeVar, calleeValue, builder, catchBB, RRT_Auto);
             } else {
                 auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), thisVar);
                 if (paramVar) {
                     auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
                     assert(paramHeapVar == argHeapVar);
                 }
-                argReturnValue = parameters[argIndex]->compile(compiler, result, shared_from_this(), thisVar, thisValue, builder, catchBB);
+                argReturnValue = parameters[argIndex]->compile(compiler, result, shared_from_this(), thisVar, thisValue, builder, catchBB, RRT_Auto);
             }
                         
             if (!argReturnValue) {
@@ -749,7 +813,7 @@ shared_ptr<ReturnValue> CFunction::call(Compiler* compiler, CResult& result, sha
         if (hasParent) {
             Value* parentValue = thisValue;
             if (dotVar) {
-                dotReturnValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB);
+                dotReturnValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB, RRT_Auto);
                 parentValue = dotReturnValue->value;
             } else {
                 // if recursively calling ourselves then re-use parent
@@ -805,7 +869,7 @@ shared_ptr<ReturnValue> CFunction::call(Compiler* compiler, CResult& result, sha
             dotReturnValue->releaseIfNeeded(compiler, result, builder);
         }
         
-        return make_shared<ReturnValue>(returnFunction, mustRelease, returnFunction ? RVT_HEAP : RVT_SIMPLE, false, returnValue);
+        return make_shared<ReturnValue>(returnFunction, mustRelease ? RVR_MustRelease : RVR_MustRetain, returnFunction ? RVT_HEAP : RVT_SIMPLE, false, returnValue);
     }
 }
 
@@ -888,71 +952,7 @@ shared_ptr<ReturnValue> CFunction::cast(Compiler* compiler, CResult& result, IRB
     return interface->cast(compiler, result, builder, fromValue, isHeap, interfaceMethods);
 }
 
-CFunction::CFunction(weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) :
-    CBaseFunction(definition.lock()->name, parent, definition),
-    templateTypes(templateTypes),
-    type(type),
-    interfaces(interfaces),
-    _structType(nullptr),
-    function(nullptr),
-    loc(CLoc::undefined),
-    block(nullptr),
-    catchBlock(nullptr),
-    destroyBlock(nullptr),
-    returnTypeName(nullptr),
-    interfaceTypeNames(nullptr),
-    isInGetType(false),
-    isInGetFunction(false),
-    destructorFunction(nullptr),
-    returnMustRelease(false) {}
 
-
-shared_ptr<CFunction> CFunction::init(Compiler* compiler, CResult& result, shared_ptr<NFunction> node, shared_ptr<CInterfaceMethod> interfaceMethod) {
-    for (auto it : templateTypes) {
-        name = name + "_" + it->name;
-    }
-    
-    if (node) {
-        loc = node->loc;
-        functions = node->functions;
-        block = node->block;
-        catchBlock = node->catchBlock;
-        destroyBlock = node->destroyBlock;
-        returnTypeName = node->returnTypeName;
-        externName = node->externName;
-        interfaceTypeNames = node->interfaceTypeNames;
-
-        if (node->templateTypeNames) {
-            assert(node->templateTypeNames->size() == templateTypes.size());
-            auto index = 0;
-            for (auto templateTypeName : *node->templateTypeNames) {
-                if (templateTypeName->templateTypeNames != nullptr) {
-                    result.addError(loc, CErrorCode::InvalidType, "cannot use ! in template type name");
-                    return nullptr;
-                }
-                templateTypesByName[templateTypeName->name] = templateTypes[index];
-                index++;
-            }
-        }
-        
-        for (auto it : node->assignments) {
-            if (it->var) {
-                result.addError(it->loc, CErrorCode::InvalidDot, "cannot use '.' in variable declaration for a function: '%s'", it->name.c_str());
-                return nullptr;
-            }
-            
-            int index = (int)argVars.size();
-            auto interfaceMethodArgVar = interfaceMethod ? interfaceMethod->argVars[index] : nullptr;
-            auto thisVar = CNormalVar::createFunctionVar(node->loc, it->name, shared_from_this(), index, it, nullptr, interfaceMethodArgVar);
-            thisVarsByName[it->name] = pair<int, shared_ptr<CVar>>(index, thisVar);
-            thisVars.push_back(thisVar);
-            argVars.push_back(thisVar);
-            argDefaultValues.push_back(it->rightSide);
-        }
-    }
-    
-    return shared_from_this();
-}
 
 void CFunction::createThisVar(Compiler* compiler, CResult& result, shared_ptr<CVar>& thisVar) {
     thisVar = CNormalVar::createThisVar(loc, shared_from_this(), getThisType(compiler, result));
@@ -1211,7 +1211,7 @@ shared_ptr<CBaseFunction> CFunction::getCFunction(Compiler* compiler, CResult& r
         if (!getTemplateTypes(compiler, result, loc, shared_from_this(), callerFunction, templateTypeNames, funcDef->node->templateTypeNames, templateTypes)) {
             return nullptr;
         }
-
+        
         return funcDef->getFunction(compiler, result, loc, templateTypes, shared_from_this());
     }
     return nullptr;
@@ -1481,7 +1481,23 @@ shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CResu
             interfaces = make_shared<vector<shared_ptr<CInterface>>>();
         }
         
-        func = node->createCFunction(compiler, result, shared_from_this(), templateTypes, funcParent, type, name, interfaces);
+        shared_ptr<CInterfaceMethod> interfaceMethod;
+        if (!funcParent.expired()) {
+            if (funcParent.lock()->interfaces) {
+                for (auto it : *funcParent.lock()->interfaces) {
+                    auto t = it->methodByName.find(name);
+                    if (t != it->methodByName.end()) {
+                        if (interfaceMethod) {
+                            result.addError(loc, CErrorCode::InterfaceMethodConflict, "two interfaces on this class want to use method: '%s'", name.c_str());
+                            return nullptr;
+                        }
+                        interfaceMethod = t->second;
+                    }
+                }
+            }
+        }
+        
+        func = node->createCFunction(compiler, result, shared_from_this(), templateTypes, funcParent, type, name, interfaces, interfaceMethod);
 
         if (interfaceDefinitions) {
             for (auto it : *interfaceDefinitions) {
