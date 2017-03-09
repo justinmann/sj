@@ -137,8 +137,11 @@ shared_ptr<CFunction> NFunction::createCFunction(Compiler* compiler, CResult& re
 CFunctionReturnVar::CFunctionReturnVar(shared_ptr<CVar> returnVar, shared_ptr<CInterfaceMethodReturnVar> interfaceMethodReturnVar) : returnVar(returnVar), interfaceMethodReturnVar(interfaceMethodReturnVar) {
 }
 
-void CFunctionReturnVar::init() {
+void CFunctionReturnVar::init(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
     if (interfaceMethodReturnVar) {
+        if (returnVar->getHeapVar(compiler, result, thisVar)) {
+            interfaceMethodReturnVar->setHeapVar(compiler, result, nullptr);
+        }
         interfaceMethodReturnVar->returnVars.push_back(shared_from_this());
     }
 }
@@ -258,7 +261,7 @@ shared_ptr<CVar> CFunction::getReturnVar(Compiler *compiler, CResult& result, sh
             auto returnVar = block->getVar(compiler, result, shared_from_this(), thisVar);
             if (returnVar) {
                 functionReturnVar = make_shared<CFunctionReturnVar>(returnVar, interfaceMethodReturnVar);
-                functionReturnVar->init();
+                functionReturnVar->init(compiler, result, thisVar);
             }
         }
     }
@@ -971,7 +974,8 @@ void CFunction::createThisVar(Compiler* compiler, CResult& result, shared_ptr<CV
                 
                 assert(!cfunc->getHasThis());
                 cfunc->setHasParent(compiler, result); // All interface methods must take the parent has first pointer even if they don't need it
-                cfunc->getVarBody(compiler, result, thisVar);
+                cfunc->getVarBody(compiler, result, nullptr);
+                cfunc->setHeapVarBody(compiler, result, nullptr);
             }
         }
     }

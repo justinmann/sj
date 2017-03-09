@@ -846,7 +846,7 @@ int main(int argc, char **argv) {
     shared_ptr<CResult> result;
     Compiler compiler;
 
-    //testInterface();
+    testInterface();
 
     testMath();
     testComparison();

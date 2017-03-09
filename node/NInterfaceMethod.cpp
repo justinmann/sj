@@ -226,6 +226,7 @@ shared_ptr<CType> CInterfaceMethod::getReturnType(Compiler* compiler, CResult& r
 shared_ptr<CVar> CInterfaceMethod::getReturnVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
     if (!returnVar) {
         returnVar = make_shared<CInterfaceMethodReturnVar>(returnType);
+        returnVar->setHeapVar(compiler, result, nullptr);
     }
     return returnVar;
 }
