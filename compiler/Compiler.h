@@ -143,6 +143,7 @@ public:
     vector<CError> warnings;
     shared_ptr<string> fileName;
     shared_ptr<NBlock> block;
+    shared_ptr<CType> returnType;
     
     template< typename... Args >
     void addError(const CLoc& loc, const CErrorCode code, const char* format, Args... args) {
@@ -181,6 +182,7 @@ public:
     ~Compiler();
 
     shared_ptr<CResult> run(const string& code);
+    shared_ptr<CResult> compile(const string& fileName);
     
     void emitLocation(IRBuilder<>* builder, const NBase *node);
     shared_ptr<CType> getType(const string& name) const;
@@ -200,7 +202,6 @@ public:
     CompilerState state;
     LLVMContext context;
     unique_ptr<Module> module;
-    unique_ptr<KaleidoscopeJIT> TheJIT;
     unique_ptr<legacy::FunctionPassManager> TheFPM;
     unique_ptr<Exception> exception;
 #ifdef DWARF_ENABLED
@@ -216,9 +217,10 @@ public:
     shared_ptr<CType> typeVoid;
     
 private:
-    shared_ptr<CResult> compileFile(const string& fileName);
-    shared_ptr<CResult> compile(const string& fileName, const string& code);
-    void InitializeModuleAndPassManager();
+    void reset();
+    shared_ptr<CResult> genNodeFile(const string& fileName);
+    shared_ptr<CResult> genNode(const string& fileName, const string& code);
+    shared_ptr<CFunction> nodeToIL(CResult& result);
     
     map<string, bool> includedBlockFileNames;
     vector<pair<string, shared_ptr<NBlock>>> includedBlocks;

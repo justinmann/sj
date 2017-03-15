@@ -7,7 +7,8 @@
 //
 
 #include <stdio.h>
+#include <cstdlib>
 
-extern "C" int64_t random_nextInt() {
-    return (uint64_t)rand() << 32 | (uint64_t)rand();
+extern "C" __int64_t random_nextInt() {
+    return (__uint64_t)rand() << 32 | (__uint64_t)rand();
 }

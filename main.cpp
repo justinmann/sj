@@ -1,4 +1,5 @@
 #include "node/node.h"
+#include <unistd.h>
 
 void testMath() {
     shared_ptr<CResult> result;
@@ -845,30 +846,53 @@ void testInterface() {
 int main(int argc, char **argv) {
     shared_ptr<CResult> result;
     Compiler compiler;
+    
+    char cwd[1024];
+    getcwd(cwd, sizeof(cwd));
+    
+    if (argc == 1) {
+        printf("-test or [filename]\n");
+        return 0;
+    }
+    
+    if (strcmp(argv[1], "-test") == 0) {
+        testInterface();
+        testMath();
+        testComparison();
+        testVoid();
+        testCast();
+        testParser();
+        testAssignment();
+        testComment();
+        testIf();
+        testFor();
+        testWhile();
+        testFunction();
+        testClass();
+        testExtern();
+        testTemplate();
+        testArray();
+        testInclude();
+        testString();
+        testHeap();
+        // testThrow();
+    } else {
+        result = compiler.compile(argv[1]);
+        for (auto error : result->errors) {
+            printf("ERROR: %s %d:%d %d %s\n", error.fileName->c_str(), error.line, error.col, error.code, error.msg.c_str());
+        }
 
-    testInterface();
-
-    testMath();
-    testComparison();
-    testVoid();
-    testCast();
-    testParser();
-    testAssignment();
-    testComment();
-    testIf();
-    testFor();
-    testWhile();
-    testFunction();
-    testClass();
-    testExtern();
-    testTemplate();
-    testArray();
-    testInclude();
-    testString();
-    testHeap();
-
-    // testThrow();
-    // compiler.run("include \"highlow.sj\"");
+        for (auto warning : result->warnings) {
+            printf("WARNING: %s %d:%d %d %s\n", warning.fileName->c_str(), warning.line, warning.col, warning.code, warning.msg.c_str());
+        }
+        
+        if (result->errors.size() == 0) {
+            printf("SUCCESS\n");
+            return 0;
+        } else {
+            return -1;
+        }
+    }
 
     return 0;
 }

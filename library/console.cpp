@@ -7,6 +7,7 @@
 //
 
 #include <stdio.h>
+#include <cstdlib>
 #include "library.h"
 
 extern "C" list_char* console_readLine() {

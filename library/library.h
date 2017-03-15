@@ -13,9 +13,9 @@
 
 class list_char {
 public:
-    int64_t refCount;
-    int64_t size;
-    int64_t count;
+    __int64_t refCount;
+    __int64_t size;
+    __int64_t count;
     char* str;
 };
 

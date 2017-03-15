@@ -7,6 +7,11 @@
 //
 
 #include <stdio.h>
+#include <iostream>
+#include <sstream>
+#include <stdio.h>
+#include <unwind.h>
+#include <vector>
 #include "library.h"
 
 extern "C" int64_t parse_toInt(list_char* str) {

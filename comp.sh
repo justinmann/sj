@@ -1,0 +1,1 @@
+clang++ app.cpp library/random.cpp library/parse.cpp library/console.cpp Debug/output.o -std=c++11

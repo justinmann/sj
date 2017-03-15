@@ -10,6 +10,7 @@
 #include <fstream>
 #include <streambuf>
 #include "library.h"
+#include "llvm/Support/TargetRegistry.h"
 
 using namespace llvm::orc;
 
@@ -174,11 +175,6 @@ Compiler::Compiler() {
     InitializeNativeTarget();
     InitializeNativeTargetAsmPrinter();
     InitializeNativeTargetAsmParser();
-    
-    auto opts = TargetOptions();
-    // opts.ExceptionModel = ExceptionHandling::DwarfCFI;
-    auto tm = shared_ptr<TargetMachine>(EngineBuilder().setTargetOptions(opts).selectTarget());
-    TheJIT = llvm::make_unique<KaleidoscopeJIT>(tm);
 }
 
 Compiler::~Compiler() {
@@ -188,7 +184,7 @@ Compiler::~Compiler() {
 #endif
 }
 
-void Compiler::InitializeModuleAndPassManager() {
+void Compiler::reset() {
     includedBlockFileNames.clear();
     includedBlocks.clear();
     functionNames.clear();
@@ -212,13 +208,12 @@ void Compiler::InitializeModuleAndPassManager() {
     
     // Open a new module.
     module = llvm::make_unique<Module>("sj", context);
-    module->setDataLayout(TheJIT->getTargetMachine().createDataLayout());
     
     exception = llvm::make_unique<Exception>(&context, module.get());
 
     // Create a new pass manager attached to it.
     TheFPM = llvm::make_unique<legacy::FunctionPassManager>(module.get());
-    
+    /*
     // Do simple "peephole" optimizations and bit-twiddling optzns.
     TheFPM->add(createInstructionCombiningPass());
     // Reassociate expressions.
@@ -227,7 +222,7 @@ void Compiler::InitializeModuleAndPassManager() {
     TheFPM->add(createGVNPass());
     // Simplify the control flow graph (deleting unreachable blocks, etc).
     TheFPM->add(createCFGSimplificationPass());
-    
+    */
     TheFPM->doInitialization();
 
 #ifdef DWARF_ENABLED
@@ -263,7 +258,7 @@ void Compiler::InitializeModuleAndPassManager() {
 #endif
 }
 
-shared_ptr<CResult> Compiler::compileFile(const string& fileName) {
+shared_ptr<CResult> Compiler::genNodeFile(const string& fileName) {
     std::ifstream t(fileName);
     std::string str;
     
@@ -274,10 +269,14 @@ shared_ptr<CResult> Compiler::compileFile(const string& fileName) {
     str.assign((std::istreambuf_iterator<char>(t)),
                std::istreambuf_iterator<char>());
     
-    return compile(fileName, str);
+    return genNode(fileName, str);
 }
 
-shared_ptr<CResult> Compiler::compile(const string& fileName, const string& code) {
+shared_ptr<CResult> Compiler::genNode(const string& fileName, const string& code) {
+#ifdef YYDEBUG
+    yydebug = 1; // use this to trigger the verbose debug output from bison
+#endif
+
     auto compilerResult = make_shared<CResult>();
     compilerResult->fileName = make_shared<string>(fileName);
     void* scanner;
@@ -381,105 +380,83 @@ private:
     shared_ptr<CCallVar> _callVar;
 };
 
+shared_ptr<CResult> Compiler::compile(const string& fileName) {
+    reset();
+    
+    auto TargetTriple = sys::getDefaultTargetTriple();
+    module->setTargetTriple(TargetTriple);
+    
+    std::string Error;
+    auto Target = TargetRegistry::lookupTarget(TargetTriple, Error);
+    
+    // Print an error and exit if we couldn't find the requested target.
+    // This generally occurs if we've forgotten to initialise the
+    // TargetRegistry or we have a bogus target triple.
+    if (!Target) {
+        errs() << Error;
+        return nullptr;
+    }
+    
+    auto CPU = "generic";
+    auto Features = "";
+    
+    TargetOptions opt;
+    auto RM = Optional<Reloc::Model>();
+    auto TheTargetMachine = Target->createTargetMachine(TargetTriple, CPU, Features, opt, RM);
+    module->setDataLayout(TheTargetMachine->createDataLayout());
+    
+    auto result = genNodeFile(fileName);
+    // Early exit if compile fails
+    if (result->errors.size() > 0)
+        return result;
+    
+    auto globalFunction = nodeToIL(*result);
+    if (!globalFunction) {
+        return result;
+    }
+    
+    auto Filename = "output.o";
+    std::error_code EC;
+    raw_fd_ostream dest(Filename, EC, sys::fs::F_None);
+    
+    if (EC) {
+        errs() << "Could not open file: " << EC.message();
+        return result;
+    }
+    
+    legacy::PassManager pass;
+    auto FileType = TargetMachine::CGFT_ObjectFile; // TargetMachine::CGFT_AssemblyFile;
+    
+    if (TheTargetMachine->addPassesToEmitFile(pass, dest, FileType)) {
+        errs() << "TheTargetMachine can't emit a file of this type";
+        return result;
+    }
+    
+    auto t = pass.run(*module);
+    dest.flush();
+    
+    return result;
+}
+
 shared_ptr<CResult> Compiler::run(const string& code) {
-#ifdef YYDEBUG
-    yydebug = 1; // use this to trigger the verbose debug output from bison
-#endif
+    auto opts = TargetOptions();
+    // opts.ExceptionModel = ExceptionHandling::DwarfCFI;
+    auto tm = shared_ptr<TargetMachine>(EngineBuilder().setTargetOptions(opts).selectTarget());
+    unique_ptr<KaleidoscopeJIT> TheJIT = llvm::make_unique<KaleidoscopeJIT>(tm);
     
     // Recreate module, since we just took away and stored it in the JIT
-    InitializeModuleAndPassManager();
+    reset();
     
-    auto compilerResult = compile("repl", code);
+    module->setDataLayout(TheJIT->getTargetMachine().createDataLayout());
+    
+    auto result = genNode("repl", code);
     // Early exit if compile fails
-    if (compilerResult->errors.size() > 0)
-        return compilerResult;
+    if (result->errors.size() > 0)
+        return result;
     
-    auto catchBlock = make_shared<NBlock>(CLoc::undefined);
-    catchBlock->statements.push_back(make_shared<NCall>(CLoc::undefined, "throwException", nullptr, nullptr));
-    catchBlock->statements.push_back(make_shared<NMatchReturn>(CLoc::undefined, compilerResult->block));
-    
-    // Define an extern for throwException at the beginning of the block
-    auto throwExceptionFunction = make_shared<NFunction>(CLoc::undefined, FT_Extern, "throwException", make_shared<CTypeName>(CTC_Value, "void"), "throwException", nullptr);
-    compilerResult->block->statements.insert(compilerResult->block->statements.begin(), throwExceptionFunction);
-    
-    auto arrayFunction = make_shared<NArrayCreateFunction>();
-    compilerResult->block->statements.insert(compilerResult->block->statements.begin(), arrayFunction);
-    
-    auto anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, nullptr, "global", nullptr, nullptr, nullptr, compilerResult->block, catchBlock, nullptr);
-    auto currentFunctionDefintion = CFunctionDefinition::create(this, *compilerResult, nullptr, FT_Public, "", nullptr, nullptr);
-    state = CompilerState::Define;
-    anonFunction->define(this, *compilerResult, currentFunctionDefintion);
-    
-    // Early exit if compile fails
-    if (compilerResult->errors.size() > 0)
-        return compilerResult;
-    
-    auto globalFunctionDefinition = currentFunctionDefintion->funcsByName["global"];
-    for (auto index = 0; index < includedBlocks.size(); index++) {
-        auto block = includedBlocks[index].second;
-        block->define(this, *compilerResult, globalFunctionDefinition);
-        compilerResult->block->statements.insert(compilerResult->block->statements.begin(), block->statements.begin(), block->statements.end());
-    }
-    
-    // Early exit if compile fails
-    if (compilerResult->errors.size() > 0)
-        return compilerResult;
-
-    state = CompilerState::FixVar;
-    auto templateTypes = vector<shared_ptr<CType>>();
-    auto currentFunction = make_shared<CFunction>(currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr);
-    currentFunction->init(this, *compilerResult, nullptr, nullptr);
-    shared_ptr<CVar> currentVar;
-    currentFunction->createThisVar(this, *compilerResult, currentVar);
-    anonFunction->getVar(this, *compilerResult, currentFunction, currentVar);
-    auto globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, *compilerResult, "global", nullptr, nullptr));
-    shared_ptr<CVar> globalVar;
-    globalFunction->createThisVar(this, *compilerResult, globalVar);
-
-#ifdef VAR_OUTPUT
-    currentFunction->dump(this, *compilerResult, 0);
-#endif
-    
-    // Early exit if compile fails
-    if (compilerResult->errors.size() > 0)
-        return compilerResult;
-
-#ifdef NODE_OUTPUT
-    map<shared_ptr<CBaseFunction>, string> functionDumps;
-    stringstream ss;
-    compilerResult->block->dump(this, *compilerResult, globalFunction, globalVar, functionDumps, ss, 0);
-    for (auto it : functionDumps) {
-        printf("%s\n\n", it.second.c_str());
-    }
-    printf("global %s\n\n", ss.str().c_str());
-#endif
-
-    state = CompilerState::Compile;
-    anonFunction->compile(this, *compilerResult, currentFunction, currentVar, nullptr, nullptr, nullptr, RRT_Auto);
-    auto function = globalFunction->getFunction(this, *compilerResult, globalVar);
-    globalFunction->getDestructor(this, *compilerResult);
-    auto returnType = globalFunction->getReturnType(this, *compilerResult, globalVar);
-    if (!function) {
-        return compilerResult;
-    }
-    auto thisType = globalFunction->getThisType(this, *compilerResult);
-
-#ifdef MODULE_OUTPUT
-    module->dump();
-#endif
-    
-    // Early exit if compilation fails
-    if (compilerResult->errors.size() > 0)
-        return compilerResult;
-
-    if (verifyModule(*module.get()) && compilerResult->errors.size() == 0) {
-        module->dump();
-        
-        auto output = new raw_os_ostream(std::cout);
-        verifyModule(*module.get(), output);
-        output->flush();
-        
-        assert(false);
+    auto globalFunction = nodeToIL(*result);
+    if (!globalFunction) {
+        return result;
     }
     
     auto H = TheJIT->addModule(move(module));
@@ -487,55 +464,55 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     // Search the JIT for the global symbol.
     auto globalFunctionSymbol = TheJIT->findSymbol("global");
     auto globalDestructorSymbol = TheJIT->findSymbol("global_destructor");
-    assert(globalFunction && "Function not found");
+    assert(globalFunctionSymbol && "Function not found");
     
-    auto structType = globalFunction->getStructType(this, *compilerResult);
+    auto structType = globalFunction->getStructType(this, *result);
     auto thisSize = structType ? structType->getStructNumElements() * 8 : 0;
     auto thisPtr = malloc(thisSize);
     
     // Get the symbol's address and cast it to the right type (takes no
     // arguments, returns a double) so we can call it as a native function.
     hasException = false;
-    if (returnType == typeInt) {
+    if (result->returnType == typeInt) {
         int64_t (*FP)(void*) = (int64_t (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
-        int64_t result = FP(thisPtr);
+        int64_t resultValue = FP(thisPtr);
         
-        compilerResult->type = RESULT_INT;
-        compilerResult->iResult = result;
-    } else if (returnType == typeBool) {
+        result->type = RESULT_INT;
+        result->iResult = resultValue;
+    } else if (result->returnType == typeBool) {
         bool (*FP)(void*) = (bool (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
-        bool result = FP(thisPtr);
+        bool resultValue = FP(thisPtr);
         
-        compilerResult->type = RESULT_BOOL;
-        compilerResult->bResult = result;
-    } else if (returnType == typeChar) {
+        result->type = RESULT_BOOL;
+        result->bResult = resultValue;
+    } else if (result->returnType == typeChar) {
         char (*FP)(void*) = (char (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
-        char result = FP(thisPtr);
+        char resultValue = FP(thisPtr);
         
-        compilerResult->type = RESULT_CHAR;
-        compilerResult->cResult = result;
-    } else if (returnType == typeFloat) {
+        result->type = RESULT_CHAR;
+        result->cResult = resultValue;
+    } else if (result->returnType == typeFloat) {
         double (*FP)(void*) = (double (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
-        double result = FP(thisPtr);
-
-        compilerResult->type = RESULT_FLOAT;
-        compilerResult->fResult = result;
-    } else if (returnType == typeVoid) {
+        double resultValue = FP(thisPtr);
+        
+        result->type = RESULT_FLOAT;
+        result->fResult = resultValue;
+    } else if (result->returnType == typeVoid) {
         void (*FP)(void*) = (void (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
         FP(thisPtr);
-
-        compilerResult->type = RESULT_VOID;
-    } else if (returnType->name == "list_char") {
-        list_char* (*FP)(void*) = (list_char* (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
-        list_char* result = FP(thisPtr);
         
-        compilerResult->type = RESULT_STR;
-        compilerResult->strResult = result->str;
+        result->type = RESULT_VOID;
+    } else if (result->returnType->name == "list_char") {
+        list_char* (*FP)(void*) = (list_char* (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
+        list_char* resultValue = FP(thisPtr);
+        
+        result->type = RESULT_STR;
+        result->strResult = resultValue->str;
         
         // TODO: Delete the result
         // delete result;
     } else {
-        printf("Unknown return type: %s\n", returnType->name.c_str());
+        printf("Unknown return type: %s\n", result->returnType->name.c_str());
         assert(false);
     }
     
@@ -554,9 +531,9 @@ shared_ptr<CResult> Compiler::run(const string& code) {
             printf("%s: %" PRIx64 ": retain %lu release %lu\n", objTypes[it.first], (unsigned long long)it.first, retainStacks->size(), releaseStacks->size());
         }
     }
-
+    
 #endif
-
+    
     // Delete the anonymous expression module from the JIT.
     TheJIT->removeModule(H);
     
@@ -564,8 +541,101 @@ shared_ptr<CResult> Compiler::run(const string& code) {
         throw (void*)new SJException();
     }
     
-    return compilerResult;
+    return result;
 }
+
+shared_ptr<CFunction> Compiler::nodeToIL(CResult& result) {
+    auto catchBlock = make_shared<NBlock>(CLoc::undefined);
+    catchBlock->statements.push_back(make_shared<NCall>(CLoc::undefined, "throwException", nullptr, nullptr));
+    catchBlock->statements.push_back(make_shared<NMatchReturn>(CLoc::undefined, result.block));
+    
+    // Define an extern for throwException at the beginning of the block
+    auto throwExceptionFunction = make_shared<NFunction>(CLoc::undefined, FT_Extern, "throwException", make_shared<CTypeName>(CTC_Value, "void"), "throwException", nullptr);
+    result.block->statements.insert(result.block->statements.begin(), throwExceptionFunction);
+    
+    auto arrayFunction = make_shared<NArrayCreateFunction>();
+    result.block->statements.insert(result.block->statements.begin(), arrayFunction);
+
+    auto anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, nullptr, "global", nullptr, nullptr, nullptr, result.block, catchBlock, nullptr);
+    auto currentFunctionDefintion = CFunctionDefinition::create(this, result, nullptr, FT_Public, "", nullptr, nullptr);
+    state = CompilerState::Define;
+    anonFunction->define(this, result, currentFunctionDefintion);
+    
+    // Early exit if compile fails
+    if (result.errors.size() > 0)
+        return nullptr;
+
+    auto globalFunctionDefinition = currentFunctionDefintion->funcsByName["global"];
+    for (auto index = 0; index < includedBlocks.size(); index++) {
+        auto block = includedBlocks[index].second;
+        block->define(this, result, globalFunctionDefinition);
+        result.block->statements.insert(result.block->statements.begin(), block->statements.begin(), block->statements.end());
+    }
+    
+    // Early exit if compile fails
+    if (result.errors.size() > 0)
+        return nullptr;
+
+    state = CompilerState::FixVar;
+    auto templateTypes = vector<shared_ptr<CType>>();
+    auto currentFunction = make_shared<CFunction>(currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr);
+    currentFunction->init(this, result, nullptr, nullptr);
+    shared_ptr<CVar> currentVar;
+    currentFunction->createThisVar(this, result, currentVar);
+    anonFunction->getVar(this, result, currentFunction, currentVar);
+    auto globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, result, "global", nullptr, nullptr));
+    shared_ptr<CVar> globalVar;
+    globalFunction->createThisVar(this, result, globalVar);
+    
+#ifdef VAR_OUTPUT
+    currentFunction->dump(this, *compilerResult, 0);
+#endif
+    
+    // Early exit if compile fails
+    if (result.errors.size() > 0)
+        return nullptr;
+    
+#ifdef NODE_OUTPUT
+    map<shared_ptr<CBaseFunction>, string> functionDumps;
+    stringstream ss;
+    compilerResult->block->dump(this, *compilerResult, globalFunction, globalVar, functionDumps, ss, 0);
+    for (auto it : functionDumps) {
+        printf("%s\n\n", it.second.c_str());
+    }
+    printf("global %s\n\n", ss.str().c_str());
+#endif
+    
+    state = CompilerState::Compile;
+    anonFunction->compile(this, result, currentFunction, currentVar, nullptr, nullptr, nullptr, RRT_Auto);
+    auto function = globalFunction->getFunction(this, result, globalVar);
+    globalFunction->getDestructor(this, result);
+    result.returnType = globalFunction->getReturnType(this, result, globalVar);
+    if (!function) {
+        return nullptr;
+    }
+    auto thisType = globalFunction->getThisType(this, result);
+    
+#ifdef MODULE_OUTPUT
+    module->dump();
+#endif
+
+    // Early exit if compilation fails
+    if (result.errors.size() > 0)
+        return nullptr;
+    
+    if (verifyModule(*module.get()) && result.errors.size() == 0) {
+        module->dump();
+        
+        auto output = new raw_os_ostream(std::cout);
+        verifyModule(*module.get(), output);
+        output->flush();
+        
+        assert(false);
+    }
+    
+    return globalFunction;
+}
+
 
 shared_ptr<CType> Compiler::getType(const string& name) const {
     if (name == "int") {
@@ -602,7 +672,7 @@ void Compiler::includeFile(CResult& result, const string& fileName) {
     assert(state == CompilerState::Define);
     
     if (includedBlockFileNames.find(fileName) == includedBlockFileNames.end()) {
-        auto r = compileFile(fileName);
+        auto r = genNodeFile(fileName);
         for (auto it : r->warnings) {
             result.warnings.push_back(it);
         }
