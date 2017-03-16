@@ -114,6 +114,8 @@ shared_ptr<ReturnValue> CCallVar::getLoadValue(Compiler* compiler, CResult& resu
         return nullptr;
     }
     
+    compiler->emitLocation(builder, &loc);
+    
     return callee->call(compiler, result, thisFunction, thisVar, thisValue, getThisVar(compiler, result), dotVar.lock(), builder, catchBB, parameters, returnRefType);
     
 }

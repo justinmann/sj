@@ -64,6 +64,10 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "highlow.sj"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-test"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

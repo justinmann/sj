@@ -177,13 +177,6 @@ Compiler::Compiler() {
     InitializeNativeTargetAsmParser();
 }
 
-Compiler::~Compiler() {
-#ifdef DWARF_ENABLED
-    // Finalize the debug info.
-    DBuilder->finalize();
-#endif
-}
-
 void Compiler::reset() {
     includedBlockFileNames.clear();
     includedBlocks.clear();
@@ -237,11 +230,6 @@ void Compiler::reset() {
     // Construct the DIBuilder, we do this here because we need the module.
     DBuilder = llvm::make_unique<DIBuilder>(*module);
     
-    // Create the compile unit for the module.
-    // Currently down as "fib.ks" as a filename since we're redirecting stdin
-    // but we'd like actual source locations.
-    TheCU = DBuilder->createCompileUnit(dwarf::DW_LANG_C, "repl.sj", ".", "SJ Compiler", 0, "", 0);
-
     // Initialize value types
     typeInt = make_shared<CType>("int", Type::getInt64Ty(context), DBuilder->createBasicType("int", 64, 64, dwarf::DW_ATE_signed), ConstantInt::get(context, APInt(64, 0)));
     typeBool = make_shared<CType>("bool", Type::getInt1Ty(context), DBuilder->createBasicType("bool", 1, 64, dwarf::DW_ATE_boolean), ConstantInt::get(context, APInt(1, 0)));
@@ -383,6 +371,9 @@ private:
 shared_ptr<CResult> Compiler::compile(const string& fileName) {
     reset();
     
+    // Create the compile unit for the module.
+    TheCU = DBuilder->createCompileUnit(dwarf::DW_LANG_C, fileName, ".", "SJ Compiler", 0, "", 0);
+    
     auto TargetTriple = sys::getDefaultTargetTriple();
     module->setTargetTriple(TargetTriple);
     
@@ -432,7 +423,7 @@ shared_ptr<CResult> Compiler::compile(const string& fileName) {
         return result;
     }
     
-    auto t = pass.run(*module);
+    pass.run(*module);
     dest.flush();
     
     return result;
@@ -446,6 +437,9 @@ shared_ptr<CResult> Compiler::run(const string& code) {
     
     // Recreate module, since we just took away and stored it in the JIT
     reset();
+    
+    // Create the compile unit for the module.
+    TheCU = DBuilder->createCompileUnit(dwarf::DW_LANG_C, "repl.sj", ".", "SJ Compiler", 0, "", 0);
     
     module->setDataLayout(TheJIT->getTargetMachine().createDataLayout());
     
@@ -615,6 +609,10 @@ shared_ptr<CFunction> Compiler::nodeToIL(CResult& result) {
     }
     auto thisType = globalFunction->getThisType(this, result);
     
+#ifdef DWARF_ENABLED
+    DBuilder->finalize();
+#endif
+    
 #ifdef MODULE_OUTPUT
     module->dump();
 #endif
@@ -625,6 +623,8 @@ shared_ptr<CFunction> Compiler::nodeToIL(CResult& result) {
     
     if (verifyModule(*module.get()) && result.errors.size() == 0) {
         module->dump();
+        
+        printf("----\n");
         
         auto output = new raw_os_ostream(std::cout);
         verifyModule(*module.get(), output);
@@ -653,9 +653,9 @@ shared_ptr<CType> Compiler::getType(const string& name) const {
     }
 }
 
-void Compiler::emitLocation(IRBuilder<>* builder, const NBase *node) {
+void Compiler::emitLocation(IRBuilder<>* builder, const CLoc *loc) {
 #ifdef DWARF_ENABLED
-    if (!node)
+    if (!loc)
         return builder->SetCurrentDebugLocation(DebugLoc());
     
     DIScope *Scope;
@@ -664,7 +664,7 @@ void Compiler::emitLocation(IRBuilder<>* builder, const NBase *node) {
     else
         Scope = LexicalBlocks.back();
     
-    builder->SetCurrentDebugLocation(DebugLoc::get(node->loc.line, node->loc.col, Scope));
+    builder->SetCurrentDebugLocation(DebugLoc::get(loc->line, loc->col, Scope));
 #endif
 }
 

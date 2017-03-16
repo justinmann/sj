@@ -33,6 +33,7 @@
 		9C5FDE191E78FDFA0020AF70 /* console.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = console.cpp; path = ../../library/console.cpp; sourceTree = "<group>"; };
 		9C5FDE1A1E78FDFA0020AF70 /* random.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = random.cpp; path = ../../library/random.cpp; sourceTree = "<group>"; };
 		9C5FDE1B1E78FDFA0020AF70 /* parse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = parse.cpp; path = ../../library/parse.cpp; sourceTree = "<group>"; };
+		9CD22BBA1E7A4E40001D2EB2 /* highlow.sj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = highlow.sj; path = ../../include/highlow.sj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +67,7 @@
 		9C5FDE0D1E78FDB20020AF70 /* test */ = {
 			isa = PBXGroup;
 			children = (
+				9CD22BBA1E7A4E40001D2EB2 /* highlow.sj */,
 				9C5FDE191E78FDFA0020AF70 /* console.cpp */,
 				9C5FDE1A1E78FDFA0020AF70 /* random.cpp */,
 				9C5FDE1B1E78FDFA0020AF70 /* parse.cpp */,
@@ -262,6 +264,7 @@
 				9C5FDE141E78FDB20020AF70 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

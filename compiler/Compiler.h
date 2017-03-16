@@ -12,7 +12,7 @@
 #include "../sj.pch"
 
 // #define YYDEBUG 1
-// #define DWARF_ENABLED
+#define DWARF_ENABLED
 // #define VAR_OUTPUT
 // #define NODE_OUTPUT
 // #define MODULE_OUTPUT
@@ -179,12 +179,11 @@ class Compiler
 {
 public:
     Compiler();
-    ~Compiler();
 
     shared_ptr<CResult> run(const string& code);
     shared_ptr<CResult> compile(const string& fileName);
     
-    void emitLocation(IRBuilder<>* builder, const NBase *node);
+    void emitLocation(IRBuilder<>* builder, const CLoc *loc);
     shared_ptr<CType> getType(const string& name) const;
     void includeFile(CResult& result, const string& fileName);
     shared_ptr<IRBuilder<>> getEntryBuilder(Function* function);

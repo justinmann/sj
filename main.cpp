@@ -856,6 +856,8 @@ int main(int argc, char **argv) {
     }
     
     if (strcmp(argv[1], "-test") == 0) {
+        // result = compiler.run("include \"highlow.sj\"");
+
         testInterface();
         testMath();
         testComparison();
@@ -875,7 +877,7 @@ int main(int argc, char **argv) {
         testInclude();
         testString();
         testHeap();
-        // testThrow();
+        // testThrow();        
     } else {
         result = compiler.compile(argv[1]);
         for (auto error : result->errors) {

@@ -19,7 +19,7 @@ int NStringArray::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr
 
 shared_ptr<ReturnValue> NStringArray::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
     assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(builder, this);
+    compiler->emitLocation(builder, &this->loc);
     auto varFunction = createCall->getVar(compiler, result, thisFunction, thisVar, nullptr)->getCFunctionForValue(compiler, result);
     return make_shared<ReturnValue>(varFunction, RVR_Value, RVT_SIMPLE, false, builder->CreateGlobalStringPtr(str));
 }

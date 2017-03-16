@@ -136,7 +136,7 @@ int NAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<
 
 shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
     assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(builder, this);
+    compiler->emitLocation(builder, &this->loc);
     
     if (!rightSide) {
         result.addError(loc, CErrorCode::Internal, "only required assignment should not have a right side, and they should not be compiled");

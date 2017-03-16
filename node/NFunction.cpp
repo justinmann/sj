@@ -385,11 +385,11 @@ bool CFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CVar
 #ifdef DWARF_ENABLED
     SmallVector<Metadata *, 8> EltTys;
     EltTys.push_back(returnType->getDIType(compiler, result));
-    EltTys.push_back(thisFunction->getThisType(compiler, result)->getDIType(compiler, result));
+    EltTys.push_back(getThisType(compiler, result)->getDIType(compiler, result));
     auto ditypes = compiler->DBuilder->createSubroutineType(compiler->DBuilder->getOrCreateTypeArray(EltTys));
     
     // Create a subprogram DIE for this function.
-    DIFile *Unit = compiler->DBuilder->createFile(compiler->TheCU->getFilename(), compiler->TheCU->getDirectory());
+    DIFile *Unit = loc.fileName ? compiler->DBuilder->createFile(*loc.fileName.get(), ".") : compiler->DBuilder->createFile(compiler->TheCU->getFilename(), compiler->TheCU->getDirectory());
     DIScope *FContext = Unit;
     unsigned LineNo = loc.line;
     unsigned ScopeLine = LineNo;
@@ -402,14 +402,15 @@ bool CFunction::compileBody(Compiler* compiler, CResult& result, shared_ptr<CVar
     // Unset the location for the prologue emission (leading instructions with no
     // location in a function are considered part of the prologue and the debugger
     // will run past them when breaking on a function)
-    compiler->emitLocation(&newBuilder, nullptr);
+    compiler->emitLocation(entryBuilder.get(), nullptr);
 
-    // Create a debug descriptor for the variable.
-    DILocalVariable *D = compiler->DBuilder->createParameterVariable(SP, "this", 1, Unit, LineNo, thisFunction->getThisType(compiler, result)->getDIType(compiler, result), true);
-    
-    compiler->DBuilder->insertDeclare(thisArgument, D, compiler->DBuilder->createExpression(),
-                                      DebugLoc::get(LineNo, 0, SP),
-                                      newBuilder.GetInsertBlock());
+    if (thisArgument) {
+        // Create a debug descriptor for the variable.
+        DILocalVariable *D = compiler->DBuilder->createParameterVariable(SP, "this", 1, Unit, LineNo, getThisType(compiler, result)->getDIType(compiler, result), true);
+        compiler->DBuilder->insertDeclare(thisArgument, D, compiler->DBuilder->createExpression(),
+                                          DebugLoc::get(LineNo, 0, SP),
+                                          entryBuilder->GetInsertBlock());
+    }
 #endif
     
     auto bodyBB = BasicBlock::Create(compiler->context, "body", function);
@@ -528,6 +529,7 @@ error:
     compiler->LexicalBlocks.pop_back();
 #endif
     
+#ifndef DWARF_ENABLED
     // Validate the generated code, checking for consistency.
     if (result.errors.size() == 0 && verifyFunction(*function)) {
         compiler->module->dump();
@@ -538,7 +540,8 @@ error:
         output->flush();
         assert(false);
     }
-    
+#endif
+
     assert(!returnValue || returnValue->type == RVT_SIMPLE || returnValue->type == RVT_HEAP);
     return returnValue ? returnValue->releaseMode == RVR_MustRelease : false;
 }
@@ -579,11 +582,11 @@ void CFunction::compileDestructorBody(Compiler* compiler, CResult& result, Funct
     
 #ifdef DWARF_ENABLED
     SmallVector<Metadata *, 8> EltTys;
-    EltTys.push_back(thisFunction->getThisType(compiler, result)->getDIType(compiler, result));
+    EltTys.push_back(getThisType(compiler, result)->getDIType(compiler, result));
     auto ditypes = compiler->DBuilder->createSubroutineType(compiler->DBuilder->getOrCreateTypeArray(EltTys));
     
     // Create a subprogram DIE for this function.
-    DIFile *Unit = compiler->DBuilder->createFile(compiler->TheCU->getFilename(), compiler->TheCU->getDirectory());
+    DIFile *Unit = loc.fileName ? compiler->DBuilder->createFile(*loc.fileName.get(), ".") : compiler->DBuilder->createFile(compiler->TheCU->getFilename(), compiler->TheCU->getDirectory());
     DIScope *FContext = Unit;
     unsigned LineNo = loc.line;
     unsigned ScopeLine = LineNo;
@@ -596,7 +599,7 @@ void CFunction::compileDestructorBody(Compiler* compiler, CResult& result, Funct
     // Unset the location for the prologue emission (leading instructions with no
     // location in a function are considered part of the prologue and the debugger
     // will run past them when breaking on a function)
-    compiler->emitLocation(&newBuilder, nullptr);
+    compiler->emitLocation(entryBuilder.get(), nullptr);
 #endif
 
     auto bodyBB = BasicBlock::Create(compiler->context, "body", function);
@@ -623,6 +626,10 @@ void CFunction::compileDestructorBody(Compiler* compiler, CResult& result, Funct
     }
     
     entryBuilder->CreateBr(bodyBB);
+    
+#ifdef DWARF_ENABLED
+    compiler->LexicalBlocks.pop_back();
+#endif
     
     bodyBuilder.CreateRetVoid();
 }
