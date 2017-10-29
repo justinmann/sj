@@ -65,7 +65,7 @@ void CParentVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunct
     childVar->dump(compiler, result, thisFunction, thisVar, dotVar, functions, ss, dotSS, level);
 }
 
-NVariable::NVariable(CLoc loc, const char* name) : name(name), NVariableBase(NodeType_Variable, loc) { }
+NVariable::NVariable(CLoc loc, const char* name) : NVariableBase(NodeType_Variable, loc), name(name) { }
 
 shared_ptr<CVar> NVariable::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
     auto cfunction = static_pointer_cast<CBaseFunction>(thisFunction);

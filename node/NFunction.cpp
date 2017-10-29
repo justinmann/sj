@@ -2,7 +2,7 @@
 
 int NFunction::counter = 0;
 
-NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock) : type(type), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), interfaceTypeNames(interfaceTypeNames), block(block), catchBlock(catchBlock), destroyBlock(destroyBlock), isInGetType(false), NBaseFunction(NodeType_Function, loc) {
+NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock) : NBaseFunction(NodeType_Function, loc), type(type), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), interfaceTypeNames(interfaceTypeNames), block(block), catchBlock(catchBlock), destroyBlock(destroyBlock), isInGetType(false) {
     assert(type != FT_Extern);
     
     if (this->name == "^") {
@@ -28,7 +28,7 @@ NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnT
     }
 }
 
-NFunction::NFunction(CLoc loc, CFunctionType type, const char* externName, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<NodeList> arguments): type(type), externName(externName), returnTypeName(returnTypeName), name(name), NBaseFunction(NodeType_Function, loc) {
+NFunction::NFunction(CLoc loc, CFunctionType type, const char* externName, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<NodeList> arguments): NBaseFunction(NodeType_Function, loc), type(type), externName(externName), returnTypeName(returnTypeName), name(name) {
     assert(type == FT_Extern);
     
     if (arguments) {
@@ -180,21 +180,22 @@ void CFunctionReturnVar::dump(Compiler* compiler, CResult& result, shared_ptr<CB
 
 CFunction::CFunction(weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) :
 CBaseFunction(definition.lock()->name, parent, definition),
-templateTypes(templateTypes),
-type(type),
-interfaces(interfaces),
 //_structType(nullptr),
 //function(nullptr),
 loc(CLoc::undefined),
+type(type),
+templateTypes(templateTypes),
+interfaces(interfaces),
+isInGetType(false),
+isInGetFunction(false),
+returnMustRelease(false),
 block(nullptr),
 catchBlock(nullptr),
 destroyBlock(nullptr),
 returnTypeName(nullptr),
-interfaceTypeNames(nullptr),
-isInGetType(false),
-isInGetFunction(false),
+interfaceTypeNames(nullptr)
 //destructorFunction(nullptr),
-returnMustRelease(false) {}
+ {}
 
 
 shared_ptr<CFunction> CFunction::init(Compiler* compiler, CResult& result, shared_ptr<NFunction> node, shared_ptr<CInterfaceMethod> interfaceMethod_) {

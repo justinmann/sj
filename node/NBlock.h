@@ -14,7 +14,7 @@ public:
     NodeList statements;
     
     NBlock(CLoc loc) : NBase(NodeType_Block, loc) { }
-    NBlock(CLoc loc, NodeList statements) : statements(statements), NBase(NodeType_Block, loc) { }
+    NBlock(CLoc loc, NodeList statements) : NBase(NodeType_Block, loc), statements(statements) { }
     virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
 
 protected:

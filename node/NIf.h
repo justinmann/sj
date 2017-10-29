@@ -37,7 +37,7 @@ public:
     shared_ptr<NBase> ifBlock;
     shared_ptr<NBase> elseBlock;
     
-    NIf(CLoc loc, shared_ptr<NBase> condition, shared_ptr<NBase> ifBlock, shared_ptr<NBase> elseBlock) : condition(condition), ifBlock(ifBlock), elseBlock(elseBlock), NVariableBase(NodeType_If, loc) { }
+    NIf(CLoc loc, shared_ptr<NBase> condition, shared_ptr<NBase> ifBlock, shared_ptr<NBase> elseBlock) : NVariableBase(NodeType_If, loc), condition(condition), ifBlock(ifBlock), elseBlock(elseBlock) { }
     shared_ptr<NIf> shared_from_this();
 
 protected:

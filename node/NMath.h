@@ -23,7 +23,7 @@ public:
     const shared_ptr<NBase> leftSide;
     const shared_ptr<NBase> rightSide;
     
-    NMath(CLoc loc, shared_ptr<NBase> leftSide, NMathOp op, shared_ptr<NBase> rightSide) : leftSide(leftSide), rightSide(rightSide), op(op), NBase(NodeType_Math, loc) { }
+    NMath(CLoc loc, shared_ptr<NBase> leftSide, NMathOp op, shared_ptr<NBase> rightSide) : NBase(NodeType_Math, loc), op(op), leftSide(leftSide), rightSide(rightSide) { }
     virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
 
 protected:

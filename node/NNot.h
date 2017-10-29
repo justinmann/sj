@@ -13,7 +13,7 @@ class NNot : public NBase {
 public:
     const shared_ptr<NBase> node;
     
-    NNot(CLoc loc, shared_ptr<NBase> node) : node(node), NBase(NodeType_Not, loc) { }
+    NNot(CLoc loc, shared_ptr<NBase> node) : NBase(NodeType_Not, loc), node(node) { }
     virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
 
 protected:

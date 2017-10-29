@@ -15,7 +15,7 @@ public:
     shared_ptr<NBase> cond;
     shared_ptr<NBase> body;
     
-    NWhile(CLoc loc, shared_ptr<NBase> cond, shared_ptr<NBase> body) : cond(cond), body(body), NBase(NodeType_While, loc) { }
+    NWhile(CLoc loc, shared_ptr<NBase> cond, shared_ptr<NBase> body) : NBase(NodeType_While, loc), cond(cond), body(body) { }
 
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);

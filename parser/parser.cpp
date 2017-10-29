@@ -69,9 +69,6 @@
 #include "../node/Node.h"
 #include "parser.hpp"
 
-#pragma clang diagnostic ignored "-Wunreachable-code"
-#pragma clang diagnostic ignored "-Wunused-variable"
-
 #define LOC CLoc(result->fileName, yyloc.first_line, yyloc.first_column)
 #define LLOC CLoc(result->fileName, yylloc.first_line, yylloc.first_column)
 
@@ -118,8 +115,8 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* In a future release of Bison, this section will be replaced
    by #include "parser.hpp".  */
-#ifndef YY_YY_PARSER_HPP_INCLUDED
-# define YY_YY_PARSER_HPP_INCLUDED
+#ifndef YY_YY_PARSER_PARSER_HPP_INCLUDED
+# define YY_YY_PARSER_PARSER_HPP_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -232,7 +229,7 @@ struct YYLTYPE
 
 int yyparse (void *scanner, CResult* result);
 
-#endif /* !YY_YY_PARSER_HPP_INCLUDED  */
+#endif /* !YY_YY_PARSER_PARSER_HPP_INCLUDED  */
 
 /* Copy the second part of user declarations.  */
 
@@ -540,19 +537,19 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    87,    87,    90,    91,    94,    95,    96,    97,    98,
-      99,   100,   103,   106,   107,   108,   109,   110,   111,   112,
-     115,   121,   126,   131,   136,   142,   143,   146,   147,   150,
-     151,   154,   157,   158,   159,   162,   163,   164,   165,   168,
-     171,   172,   175,   178,   181,   184,   185,   186,   189,   190,
-     193,   194,   195,   196,   197,   198,   201,   202,   203,   206,
-     207,   208,   209,   210,   211,   212,   215,   216,   217,   218,
-     219,   220,   221,   224,   225,   226,   227,   230,   233,   236,
-     237,   238,   241,   242,   245,   246,   247,   250,   251,   252,
-     253,   254,   255,   256,   257,   258,   261,   262,   263,   264,
-     265,   266,   269,   270,   273,   276,   277,   280,   283,   286,
-     287,   288,   291,   292,   295,   298,   299,   302,   303,   304,
-     307,   308,   311,   312,   315,   316
+       0,    84,    84,    87,    88,    91,    92,    93,    94,    95,
+      96,    97,   100,   103,   104,   105,   106,   107,   108,   109,
+     112,   118,   123,   128,   133,   139,   140,   143,   144,   147,
+     148,   151,   154,   155,   156,   159,   160,   161,   162,   165,
+     168,   169,   172,   175,   178,   181,   182,   183,   186,   187,
+     190,   191,   192,   193,   194,   195,   198,   199,   200,   203,
+     204,   205,   206,   207,   208,   209,   212,   213,   214,   215,
+     216,   217,   218,   221,   222,   223,   224,   227,   230,   233,
+     234,   235,   238,   239,   242,   243,   244,   247,   248,   249,
+     250,   251,   252,   253,   254,   255,   258,   259,   260,   261,
+     262,   263,   266,   267,   270,   273,   274,   277,   280,   283,
+     284,   285,   288,   289,   292,   295,   296,   299,   300,   301,
+     304,   305,   308,   309,   312,   313
 };
 #endif
 

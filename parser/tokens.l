@@ -6,16 +6,17 @@
 %option reentrant
 %option stack
 %option warn
+%option never-interactive
 
 %{
 #include <string>
-#include "node.h"
+#include "../node/Node.h"
 #include "parser.hpp"
 
-#pragma clang diagnostic ignored "-Wdeprecated-register"
-#pragma clang diagnostic ignored "-Wunused-function"
-#pragma clang diagnostic ignored "-Wdocumentation"
-#pragma clang diagnostic ignored "-Wunreachable-code"
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#pragma GCC diagnostic ignored "-Wunused-function"
+#endif
 
 struct YYLOCATION {
     int l;

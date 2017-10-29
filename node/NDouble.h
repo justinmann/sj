@@ -13,7 +13,7 @@ class NDouble : public NBase {
 public:
     string value;
     
-    NDouble(CLoc loc, const char* value) : value(value), NBase(NodeType_Double, loc) { }
+    NDouble(CLoc loc, const char* value) : NBase(NodeType_Double, loc), value(value) { }
     virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
 
 protected:

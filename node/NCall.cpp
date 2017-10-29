@@ -205,7 +205,7 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctio
                 }
             }
             
-            auto paramIndex = 0;
+            auto paramIndex = (size_t)0;
             for (auto it : parameters) {
                 auto paramVar = callee->argVars[paramIndex];
                 ss << alloc_mode(compiler, result, thisVar, paramVar);
@@ -245,7 +245,7 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctio
                 }
             }
             
-            auto paramIndex = 0;
+            auto paramIndex = (size_t)0;
             for (auto it : parameters) {
                 auto paramVar = callee->argVars[paramIndex];
                 ss << alloc_mode(compiler, result, thisVar, paramVar);
@@ -267,7 +267,7 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctio
 }
 
 
-NCall::NCall(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments) : name(name), templateTypeNames(templateTypeNames), arguments(arguments), NVariableBase(NodeType_Call, loc) {
+NCall::NCall(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments) : NVariableBase(NodeType_Call, loc), name(name), templateTypeNames(templateTypeNames), arguments(arguments) {
     if (!this->arguments) {
         this->arguments = make_shared<NodeList>();
     } else {

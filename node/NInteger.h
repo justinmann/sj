@@ -14,8 +14,8 @@ public:
     string strValue;
     int64_t value;
     
-    NInteger(CLoc loc, const char* value) : strValue(value), NBase(NodeType_Integer, loc) { }
-    NInteger(CLoc loc, const int64_t value) : value(value), NBase(NodeType_Integer, loc) { }
+    NInteger(CLoc loc, const char* value) : NBase(NodeType_Integer, loc), strValue(value) { }
+    NInteger(CLoc loc, const int64_t value) : NBase(NodeType_Integer, loc), value(value) { }
     virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
 
 protected:

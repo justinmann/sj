@@ -13,7 +13,7 @@ class NChar : public NBase {
 public:
     const char value;
     
-    NChar(CLoc loc, char value) : value(value), NBase(NodeType_Char, loc) { }
+    NChar(CLoc loc, char value) : NBase(NodeType_Char, loc), value(value) { }
     virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
 
 protected:

@@ -13,7 +13,7 @@ class NInclude : public NBase {
 public:
     string fileName;
     
-    NInclude(CLoc loc, const char* fileName) : fileName(fileName), NBase(NodeType_Include, loc) { }
+    NInclude(CLoc loc, const char* fileName) : NBase(NodeType_Include, loc), fileName(fileName) { }
     virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
 
 protected:

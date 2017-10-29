@@ -11,9 +11,6 @@
 #include "../node/Node.h"
 #include "parser.hpp"
 
-#pragma clang diagnostic ignored "-Wunreachable-code"
-#pragma clang diagnostic ignored "-Wunused-variable"
-
 #define LOC CLoc(result->fileName, yyloc.first_line, yyloc.first_column)
 #define LLOC CLoc(result->fileName, yylloc.first_line, yylloc.first_column)
 

@@ -1,5 +1,6 @@
-#include "node/node.h"
+#include "node/Node.h"
 #include <unistd.h>
+#include <string.h>
 
 void testMath() {
     shared_ptr<CResult> result;

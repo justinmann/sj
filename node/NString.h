@@ -14,7 +14,7 @@ public:
     const string str;
     shared_ptr<NCall> createCall;
     
-    NStringArray(CLoc loc, const string& str) : str(str), NBase(NodeType_StringArray, loc) { }
+    NStringArray(CLoc loc, const string& str) : NBase(NodeType_StringArray, loc), str(str) { }
     virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
 
 protected:

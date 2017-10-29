@@ -6,7 +6,7 @@
 //  Copyright © 2016 Mann, Justin. All rights reserved.
 //
 
-#include "../Node/Node.h"
+#include "../node/Node.h"
 
 CTypeNameList::CTypeNameList(CTypeCategory category, const string& name) {
     push_back(make_shared<CTypeName>(category, name));

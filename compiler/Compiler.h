@@ -22,6 +22,7 @@
 // #define EXCEPTION_OUTPUT
 // #define DEBUG_CALLSTACK
 // #define DEBUG_ALLOC
+#define YY_NO_UNISTD_H
 
 using namespace std;
 
@@ -46,8 +47,13 @@ public:
 
 #define STACK_REF_COUNT         1000000000000
 
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wformat-security"
+#endif
+
 template< typename... Args >
 std::string strprintf( const char* format, Args... args ) {
+
     int length = std::snprintf( nullptr, 0, format, args... );
     assert( length >= 0 );
     
@@ -123,8 +129,8 @@ public:
     const unsigned col;
     const string msg;
     
-    CError(const CLoc& loc, const CErrorCode code): fileName(loc.fileName), line(loc.line), col(loc.col), code(code) { }
-    CError(const CLoc& loc, const CErrorCode code, const string& msg): fileName(loc.fileName), line(loc.line), col(loc.col), code(code), msg(msg) { }
+    CError(const CLoc& loc, const CErrorCode code): code(code), fileName(loc.fileName), line(loc.line), col(loc.col) { }
+    CError(const CLoc& loc, const CErrorCode code, const string& msg): code(code), fileName(loc.fileName), line(loc.line), col(loc.col), msg(msg) { }
 };
 
 class CResult {

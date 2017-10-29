@@ -21,7 +21,7 @@ public:
     shared_ptr<NCall> createCall;
     shared_ptr<CType> itemType;
     
-    NArray(CLoc loc, shared_ptr<NodeList> elements) : elements(elements), isHeapVar(false), NBase(NodeType_Array, loc) { }
+    NArray(CLoc loc, shared_ptr<NodeList> elements) : NBase(NodeType_Array, loc), elements(elements), isHeapVar(false) { }
     virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
 
 protected:

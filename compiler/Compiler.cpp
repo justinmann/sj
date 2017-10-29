@@ -102,7 +102,7 @@ extern "C" void debugFree(void* p) {
 #endif
 
 extern "C" void debugFunction(const char* str, void* v, int64_t t) {
-    printf("ERROR: %s %llx %lld\n", str, (int64_t)v, t);
+    printf("ERROR: %s %lx %ld\n", str, (uint64_t)v, t);
 #ifdef DEBUG_CALLSTACK
     for (int i = 0; i < callstackIndex; i++) {
         printf("%s\n", callstack[i]);
@@ -290,7 +290,7 @@ extern "C" void throwException() {
 class NMatchReturn : public NBase {
 public:
     const shared_ptr<NBase> inner;
-    NMatchReturn(const CLoc loc, shared_ptr<NBase> inner) : inner(inner), NBase(NodeType_Variable, loc) { };
+    NMatchReturn(const CLoc loc, shared_ptr<NBase> inner) : NBase(NodeType_Variable, loc), inner(inner) { };
     virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) { }
 
 protected:

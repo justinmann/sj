@@ -127,7 +127,7 @@ void CInterfaceMethodArgVar::dump(Compiler* compiler, CResult& result, shared_pt
     assert(false);
 }
 
-CInterfaceMethod::CInterfaceMethod(string& name, weak_ptr<CInterface> parent, int methodIndex) : /*functionType(nullptr),*/ methodIndex(methodIndex), CBaseFunction(name, parent, weak_ptr<CBaseFunctionDefinition>()) {
+CInterfaceMethod::CInterfaceMethod(string& name, weak_ptr<CInterface> parent, int methodIndex) : CBaseFunction(name, parent, weak_ptr<CBaseFunctionDefinition>()), /*functionType(nullptr),*/ methodIndex(methodIndex) {
     
 }
 

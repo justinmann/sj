@@ -18,7 +18,6 @@
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
-#include <io.h>
 
 /* end standard C headers. */
 
@@ -526,13 +525,13 @@ static yyconst flex_int16_t yy_chk[204] =
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 #include <string>
-#include "../node/node.h"
+#include "../node/Node.h"
 #include "parser.hpp"
 
-#pragma clang diagnostic ignored "-Wdeprecated-register"
-#pragma clang diagnostic ignored "-Wunused-function"
-#pragma clang diagnostic ignored "-Wdocumentation"
-#pragma clang diagnostic ignored "-Wunreachable-code"
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#pragma GCC diagnostic ignored "-Wunused-function"
+#endif
 
 struct YYLOCATION {
     int l;
@@ -561,7 +560,7 @@ int count_lines(const char* s, const int len) {
  * down here because we want the user's section 1 to have been scanned first.
  * The user has a chance to override it with an option.
  */
-// #include <unistd.h>
+#include <unistd.h>
 #endif
 
 #ifndef YY_EXTRA_TYPE
@@ -875,16 +874,12 @@ yy_match:
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 154 );
+		while ( yy_current_state != 124 );
+		yy_cp = yyg->yy_last_accepting_cpos;
+		yy_current_state = yyg->yy_last_accepting_state;
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
-		if ( yy_act == 0 )
-			{ /* have to back up */
-			yy_cp = yyg->yy_last_accepting_cpos;
-			yy_current_state = yyg->yy_last_accepting_state;
-			yy_act = yy_accept[yy_current_state];
-			}
 
 		YY_DO_BEFORE_ACTION;
 
@@ -1206,7 +1201,8 @@ case YY_STATE_EOF(INITIAL):
 
 			else
 				{
-				yy_cp = yyg->yy_c_buf_p;
+				yy_cp = yyg->yy_last_accepting_cpos;
+				yy_current_state = yyg->yy_last_accepting_state;
 				goto yy_find_action;
 				}
 			}
@@ -1728,7 +1724,7 @@ static void yy_load_buffer_state  (yyscan_t yyscanner)
         b->yy_bs_column = 0;
     }
 
-        b->yy_is_interactive = file ? (_isatty( _fileno(file) ) > 0) : 0;
+        b->yy_is_interactive = 0;
     
 	errno = oerrno;
 }
