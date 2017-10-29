@@ -185,7 +185,8 @@ class Compiler
 public:
     Compiler();
 
-    shared_ptr<CResult> run(const string& code);
+	shared_ptr<CResult> parse(const string& filename);
+	shared_ptr<CResult> run(const string& code);
     shared_ptr<CResult> compile(const string& fileName);
     
 //    void emitLocation(IRBuilder<>* builder, const CLoc *loc);

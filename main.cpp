@@ -2,11 +2,13 @@
 #ifdef __GNUC__
 #include <unistd.h>
 #include <dirent.h>
+#define PATH_SEPERATOR "/"
 #endif
 #ifdef _MSC_VER 
 #include <direct.h>
 #define getcwd _getcwd
 #include "windows/dirent.h"
+#define PATH_SEPERATOR "\\"
 #endif
 #include <string.h>
 
@@ -851,6 +853,31 @@ void testInterface() {
     // TODO: test interface with heap var arg
     // TODO: test interface with heap var return
 }
+
+void runTest(std::string path) {
+	printf("Running %s\n", path.c_str());
+
+	Compiler compiler;
+	compiler.parse(path);
+// 	compiler.transpile();
+	// Compare file output
+}
+
+void runAllTests(std::string path) {
+	DIR *dir;
+	struct dirent *ent;
+	if ((dir = opendir(path.c_str())) != NULL) {
+		/* print all the files and directories within directory */
+		while ((ent = readdir(dir)) != NULL) {
+			if (ent->d_type == DT_DIR && strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..")) {
+				runAllTests(path.append(PATH_SEPERATOR).append(ent->d_name));
+			} else if (ent->d_type == DT_REG) {
+				runTest(path.append(PATH_SEPERATOR).append(ent->d_name));
+			}
+		}
+		closedir(dir);
+	}
+}
                           
 int main(int argc, char **argv) {
     shared_ptr<CResult> result;
@@ -865,42 +892,27 @@ int main(int argc, char **argv) {
     }
     
     if (strcmp(argv[1], "-test") == 0) {
-		DIR *dir;
-		struct dirent *ent;
-		if ((dir = opendir(cwd)) != NULL) {
-			/* print all the files and directories within directory */
-			while ((ent = readdir(dir)) != NULL) {
-				printf("%s\n", ent->d_name);
-			}
-			closedir(dir);
-		}
-		else {
-			/* could not open directory */
-			perror("");
-			return EXIT_FAILURE;
-		}
-
+		runAllTests(".");
         // result = compiler.run("include \"highlow.sj\"");
-
-        testInterface();
-        testMath();
-        testComparison();
-        testVoid();
-        testCast();
-        testParser();
-        testAssignment();
-        testComment();
-        testIf();
-        testFor();
-        testWhile();
-        testFunction();
-        testClass();
-        testExtern();
-        testTemplate();
-        testArray();
-        testInclude();
-        testString();
-        testHeap();
+        //testInterface();
+        //testMath();
+        //testComparison();
+        //testVoid();
+        //testCast();
+        //testParser();
+        //testAssignment();
+        //testComment();
+        //testIf();
+        //testFor();
+        //testWhile();
+        //testFunction();
+        //testClass();
+        //testExtern();
+        //testTemplate();
+        //testArray();
+        //testInclude();
+        //testString();
+        //testHeap();
         // testThrow();        
     } else {
         result = compiler.compile(argv[1]);

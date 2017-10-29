@@ -368,6 +368,14 @@ private:
     shared_ptr<CCallVar> _callVar;
 };
 
+shared_ptr<CResult> Compiler::parse(const string& fileName) {
+	auto result = genNodeFile(fileName);
+	// Early exit if compile fails
+	if (result->errors.size() > 0)
+	    return result;
+	return result;
+}
+
 shared_ptr<CResult> Compiler::compile(const string& fileName) {
     //reset();
     //
