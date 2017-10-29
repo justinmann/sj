@@ -1,5 +1,13 @@
 #include "node/Node.h"
+#ifdef __GNUC__
 #include <unistd.h>
+#include <dirent.h>
+#endif
+#ifdef _MSC_VER 
+#include <direct.h>
+#define getcwd _getcwd
+#include "windows/dirent.h"
+#endif
 #include <string.h>
 
 void testMath() {
@@ -857,6 +865,21 @@ int main(int argc, char **argv) {
     }
     
     if (strcmp(argv[1], "-test") == 0) {
+		DIR *dir;
+		struct dirent *ent;
+		if ((dir = opendir(cwd)) != NULL) {
+			/* print all the files and directories within directory */
+			while ((ent = readdir(dir)) != NULL) {
+				printf("%s\n", ent->d_name);
+			}
+			closedir(dir);
+		}
+		else {
+			/* could not open directory */
+			perror("");
+			return EXIT_FAILURE;
+		}
+
         // result = compiler.run("include \"highlow.sj\"");
 
         testInterface();

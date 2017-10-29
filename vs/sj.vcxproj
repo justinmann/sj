@@ -193,6 +193,7 @@
     <ClCompile Include="..\compiler\CTypeName.cpp" />
     <ClCompile Include="..\compiler\CVar.cpp" />
     <ClCompile Include="..\compiler\Exception.cpp" />
+    <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\node\NAnd.cpp" />
     <ClCompile Include="..\node\NArray.cpp" />
     <ClCompile Include="..\node\NAssignment.cpp" />
@@ -225,7 +226,6 @@
     <ClCompile Include="..\node\NWhile.cpp" />
     <ClCompile Include="..\parser\parser.cpp" />
     <ClCompile Include="..\parser\tokens.cpp" />
-    <ClCompile Include="sj.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
