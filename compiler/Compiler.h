@@ -23,7 +23,6 @@
 // #define DEBUG_CALLSTACK
 // #define DEBUG_ALLOC
 
-using namespace llvm;
 using namespace std;
 
 class CLoc {
@@ -43,7 +42,7 @@ public:
 #include "CArrayType.h"
 #include "Exception.h"
 
-#pragma clang diagnostic ignored "-Wformat-security"
+// #pragma clang diagnostic ignored "-Wformat-security"
 
 #define STACK_REF_COUNT         1000000000000
 
@@ -60,9 +59,9 @@ std::string strprintf( const char* format, Args... args ) {
     return str;
 }
 
-Function* getFunctionFromBuilder(IRBuilder<>* builder);
+// Function* getFunctionFromBuilder(IRBuilder<>* builder);
 
-std::string Type_print(Type* type);
+// std::string Type_print(Type* type);
 
 class NFunction;
 class KaleidoscopeJIT;
@@ -183,31 +182,31 @@ public:
     shared_ptr<CResult> run(const string& code);
     shared_ptr<CResult> compile(const string& fileName);
     
-    void emitLocation(IRBuilder<>* builder, const CLoc *loc);
+//    void emitLocation(IRBuilder<>* builder, const CLoc *loc);
     shared_ptr<CType> getType(const string& name) const;
     void includeFile(CResult& result, const string& fileName);
-    shared_ptr<IRBuilder<>> getEntryBuilder(Function* function);
-    Function* getAllocFunction();
-    Function* getReallocFunction();
-    Function* getFreeFunction();
-    void callPushFunction(IRBuilder<>* builder, const string& name);
-    void callPopFunction(IRBuilder<>* builder);
-    void callDebug(IRBuilder<>* builder, const string& name, Value* valuePtr, Value* valueInt);
-    void recordRetain(IRBuilder<>* builder, Value* value, const string& name);
-    void recordRelease(IRBuilder<>* builder, Value* value, const string& name);
+//    shared_ptr<IRBuilder<>> getEntryBuilder(Function* function);
+    //Function* getAllocFunction();
+    //Function* getReallocFunction();
+    //Function* getFreeFunction();
+    //void callPushFunction(IRBuilder<>* builder, const string& name);
+    //void callPopFunction(IRBuilder<>* builder);
+    //void callDebug(IRBuilder<>* builder, const string& name, Value* valuePtr, Value* valueInt);
+    //void recordRetain(IRBuilder<>* builder, Value* value, const string& name);
+    //void recordRelease(IRBuilder<>* builder, Value* value, const string& name);
     shared_ptr<CInterfaceDefinition> getInterfaceDefinition(string& name);
 
     // llvm vars
     CompilerState state;
-    LLVMContext context;
-    unique_ptr<Module> module;
-    unique_ptr<legacy::FunctionPassManager> TheFPM;
-    unique_ptr<Exception> exception;
-#ifdef DWARF_ENABLED
-    DICompileUnit *TheCU;
-    vector<DIScope *> LexicalBlocks;
-    unique_ptr<DIBuilder> DBuilder;
-#endif
+    //LLVMContext context;
+    //unique_ptr<Module> module;
+    //unique_ptr<legacy::FunctionPassManager> TheFPM;
+    //unique_ptr<Exception> exception;
+//#ifdef DWARF_ENABLED
+//    DICompileUnit *TheCU;
+//    vector<DIScope *> LexicalBlocks;
+//    unique_ptr<DIBuilder> DBuilder;
+//#endif
     
     shared_ptr<CType> typeInt;
     shared_ptr<CType> typeFloat;
@@ -223,13 +222,13 @@ private:
     
     map<string, bool> includedBlockFileNames;
     vector<pair<string, shared_ptr<NBlock>>> includedBlocks;
-    map<string, GlobalValue*> functionNames;
-    map<Function*, shared_ptr<IRBuilder<>>> entryBuilders;
+    //map<string, GlobalValue*> functionNames;
+    //map<Function*, shared_ptr<IRBuilder<>>> entryBuilders;
     map<string, shared_ptr<CInterfaceDefinition>> interfaceDefinitions;
-    Function* allocFunction;
-    Function* reallocFunction;
-    Function* freeFunction;
-    Function* debugFunction;
+    //Function* allocFunction;
+    //Function* reallocFunction;
+    //Function* freeFunction;
+    //Function* debugFunction;
 #ifdef DEBUG_CALLSTACK
     Function* pushFunction;
     Function* popFunction;

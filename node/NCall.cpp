@@ -49,7 +49,7 @@ shared_ptr<CType> CCallVar::getType(Compiler* compiler, CResult& result) {
 }
 
 bool CCallVar::getParameters(Compiler* compiler, CResult& result, vector<shared_ptr<NBase>>& parameters) {
-    auto argIndex = 0;
+    auto argIndex = (size_t)0;
     auto hasSetByName = false;
     for (auto it : *arguments) {
         if (it->nodeType == NodeType_Assignment) {
@@ -99,31 +99,31 @@ bool CCallVar::getParameters(Compiler* compiler, CResult& result, vector<shared_
     return true;
 }
 
-shared_ptr<ReturnValue> CCallVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-    assert(compiler->state == CompilerState::Compile);
-    // compiler->emitLocation(builder, call.get());
-    
-    if (arguments->size() > callee->argDefaultValues.size()) {
-        result.addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments->size(), callee->argDefaultValues.size());
-        return nullptr;
-    }
-    
-    // Fill in parameters
-    vector<shared_ptr<NBase>> parameters(callee->argDefaultValues.size());
-    if (!getParameters(compiler, result, parameters)) {
-        return nullptr;
-    }
-    
-    compiler->emitLocation(builder, &loc);
-    
-    return callee->call(compiler, result, thisFunction, thisVar, thisValue, getThisVar(compiler, result), dotVar.lock(), builder, catchBB, parameters, returnRefType);
-    
-}
-
-Value* CCallVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    result.addError(loc, CErrorCode::ImmutableAssignment, "cannot assign value to function result");
-    return nullptr;
-}
+//shared_ptr<ReturnValue> CCallVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
+//    assert(compiler->state == CompilerState::Compile);
+//    // compiler->emitLocation(builder, call.get());
+//    
+//    if (arguments->size() > callee->argDefaultValues.size()) {
+//        result.addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments->size(), callee->argDefaultValues.size());
+//        return nullptr;
+//    }
+//    
+//    // Fill in parameters
+//    vector<shared_ptr<NBase>> parameters(callee->argDefaultValues.size());
+//    if (!getParameters(compiler, result, parameters)) {
+//        return nullptr;
+//    }
+//    
+//    compiler->emitLocation(builder, &loc);
+//    
+//    return callee->call(compiler, result, thisFunction, thisVar, thisValue, getThisVar(compiler, result), dotVar.lock(), builder, catchBB, parameters, returnRefType);
+//    
+//}
+//
+//Value* CCallVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+//    result.addError(loc, CErrorCode::ImmutableAssignment, "cannot assign value to function result");
+//    return nullptr;
+//}
 
 string CCallVar::fullName() {
     return name + "()";

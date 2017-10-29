@@ -38,23 +38,23 @@ int CParentVar::setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CVar>
     return childVar->setHeapVar(compiler, result, thisVar);
 }
 
-shared_ptr<ReturnValue> CParentVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-    auto parentValue = parentFunction->getParentValue(compiler, result, builder, dotInEntry, dotValue);
-    if (!parentValue) {
-        return nullptr;
-    }
-
-    return childVar->getLoadValue(compiler, result, thisVar, thisValue, dotInEntry, parentValue, builder, catchBB, returnRefType);
-}
-
-Value* CParentVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    auto parentValue = parentFunction->getParentValue(compiler, result, builder, dotInEntry, dotValue);
-    if (!parentValue) {
-        return nullptr;
-    }
-
-    return childVar->getStoreValue(compiler, result, thisVar, thisValue, dotInEntry, parentValue, builder, catchBB);
-}
+//shared_ptr<ReturnValue> CParentVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
+//    auto parentValue = parentFunction->getParentValue(compiler, result, builder, dotInEntry, dotValue);
+//    if (!parentValue) {
+//        return nullptr;
+//    }
+//
+//    return childVar->getLoadValue(compiler, result, thisVar, thisValue, dotInEntry, parentValue, builder, catchBB, returnRefType);
+//}
+//
+//Value* CParentVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+//    auto parentValue = parentFunction->getParentValue(compiler, result, builder, dotInEntry, dotValue);
+//    if (!parentValue) {
+//        return nullptr;
+//    }
+//
+//    return childVar->getStoreValue(compiler, result, thisVar, thisValue, dotInEntry, parentValue, builder, catchBB);
+//}
 
 string CParentVar::fullName() {
     return childVar->fullName();

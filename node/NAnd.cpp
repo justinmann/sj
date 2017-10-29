@@ -24,36 +24,36 @@ int NAnd::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFu
     return count;
 }
 
-shared_ptr<ReturnValue> NAnd::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-    assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(builder, &this->loc);
-    
-    auto l = left->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
-    if (!l) {
-        return nullptr;
-    }
-    
-    assert(l->type == RVT_SIMPLE);
-
-    if (!l->value->getType()->isIntegerTy(1)) {
-        result.addError(loc, CErrorCode::TypeMismatch, "must be bool");
-        return nullptr;
-    }
-    
-    auto r = right->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
-    if (!r) {
-        return nullptr;
-    }
-    
-    assert(r->type == RVT_SIMPLE);
-    
-    if (!r->value->getType()->isIntegerTy(1)) {
-        result.addError(loc, CErrorCode::TypeMismatch, "must be bool");
-        return nullptr;
-    }
-    
-    return make_shared<ReturnValue>(false, builder->CreateAnd(l->value, r->value));
-}
+//shared_ptr<ReturnValue> NAnd::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
+//    assert(compiler->state == CompilerState::Compile);
+//    compiler->emitLocation(builder, &this->loc);
+//    
+//    auto l = left->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
+//    if (!l) {
+//        return nullptr;
+//    }
+//    
+//    assert(l->type == RVT_SIMPLE);
+//
+//    if (!l->value->getType()->isIntegerTy(1)) {
+//        result.addError(loc, CErrorCode::TypeMismatch, "must be bool");
+//        return nullptr;
+//    }
+//    
+//    auto r = right->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
+//    if (!r) {
+//        return nullptr;
+//    }
+//    
+//    assert(r->type == RVT_SIMPLE);
+//    
+//    if (!r->value->getType()->isIntegerTy(1)) {
+//        result.addError(loc, CErrorCode::TypeMismatch, "must be bool");
+//        return nullptr;
+//    }
+//    
+//    return make_shared<ReturnValue>(false, builder->CreateAnd(l->value, r->value));
+//}
 
 void NAnd::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     left->dump(compiler, result, thisFunction, thisVar, functions, ss, level);

@@ -14,15 +14,15 @@ public:
         return compiler->typeInt;
     }
     
-    virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-        assert(value);
-        return make_shared<ReturnValue>(false, value);
-    }
-    
-    virtual Value* getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-        assert(false);
-        return nullptr;
-    }
+    //virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
+    //    assert(value);
+    //    return make_shared<ReturnValue>(false, value);
+    //}
+    //
+    //virtual Value* getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+    //    assert(false);
+    //    return nullptr;
+    //}
     
     virtual bool getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
         return isHeapVar;
@@ -40,7 +40,7 @@ public:
         ss << name;
     }
 
-    Value* value;
+    //Value* value;
     bool isHeapVar;
 };
 
@@ -89,102 +89,102 @@ int NFor::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFu
     return count;
 }
 
-shared_ptr<ReturnValue> NFor::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-    assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(builder, &this->loc);
-    
-    // Emit the start code first, without 'variable' in scope.
-    auto startValue = start->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
-    if (!startValue) {
-        return nullptr;
-    }
-    
-    assert(startValue->type == RVT_SIMPLE);
-    
-    if (!startValue->value->getType()->isIntegerTy(64)) {
-        result.addError(loc, CErrorCode::TypeMismatch, "start value must be a int");
-        return nullptr;
-    }
-    
-    // Compute the end condition.
-    auto endValue = end->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
-    if (!endValue) {
-        return nullptr;
-    }
-    
-    assert(endValue->type == RVT_SIMPLE);
-    
-    if (!endValue->value->getType()->isIntegerTy(64)) {
-        result.addError(loc, CErrorCode::TypeMismatch, "end value must be a int");
-        return nullptr;
-    }
-    
-    auto loopBB = BasicBlock::Create(compiler->context, "loop");
-    auto afterBB = BasicBlock::Create(compiler->context, "afterloop");
-    
-    auto startCondition = builder->CreateICmpSLE(startValue->value, endValue->value);
-    builder->CreateCondBr(startCondition, loopBB, afterBB);
-
-    // Make the new basic block for the loop header, inserting after current
-    // block.
-    Function *TheFunction = builder->GetInsertBlock()->getParent();
-    BasicBlock *preheaderBB = builder->GetInsertBlock();
-    TheFunction->getBasicBlockList().push_back(loopBB);
-    
-    // Start insertion in LoopBB.
-    builder->SetInsertPoint(loopBB);
-    
-    // Start the PHI node with an entry for Start.
-    auto Variable = builder->CreatePHI(Type::getInt64Ty(compiler->context), 2, varName);
-    Variable->addIncoming(startValue->value, preheaderBB);
-    
-    // Within the loop, the variable is defined equal to the PHI node.  If it
-    // shadows an existing variable, we have to restore it, so save it now.
-    auto thisFun = static_pointer_cast<CFunction>(thisFunction);
-    if (thisFun->localVarsByName.find(varName) != thisFun->localVarsByName.end()) {
-        result.addError(loc, CErrorCode::InvalidVariable, "var '%s' already exists within function, must have a unique name", varName.c_str());
-        return nullptr;
-    }
-    
-    thisFun->localVarsByName[varName] = _forVar;
-    _forVar->value = Variable;
-    
-    // Emit the body of the loop.  This, like any other expr, can change the
-    // current BB.  Note that we ignore the value computed by the body, but don't
-    // allow an error.
-    auto bodyValue = body->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
-    if (bodyValue) {
-        bodyValue->releaseIfNeeded(compiler, result, builder);
-    }
-    
-    // Emit the step value.
-    Value *StepVal = ConstantInt::get(compiler->context, APInt(64, 1));
-    Value *NextVar = builder->CreateAdd(Variable, StepVal, "nextvar");
-    
-    // Convert condition to a bool by comparing equal to 0.0.
-    auto endCondition = builder->CreateICmpSLT(Variable, endValue->value);
-    
-    // Create the "after loop" block and insert it.
-    BasicBlock *loopEndBB = builder->GetInsertBlock();
-    
-    // Insert the conditional branch into the end of LoopEndBB.
-    builder->CreateCondBr(endCondition, loopBB, afterBB);
-    
-    // Any new code will be inserted in AfterBB.
-    TheFunction->getBasicBlockList().push_back(afterBB);
-    builder->SetInsertPoint(afterBB);
-    
-    // Add a new entry to the PHI node for the backedge.
-    Variable->addIncoming(NextVar, loopEndBB);
-    
-    // Restore the unshadowed variable.
-    
-    thisFun->localVarsByName.erase(varName);
-    _forVar->value = nullptr;
-
-    // for expr always returns 0.0.
-    return nullptr;
-}
+//shared_ptr<ReturnValue> NFor::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
+//    assert(compiler->state == CompilerState::Compile);
+//    compiler->emitLocation(builder, &this->loc);
+//    
+//    // Emit the start code first, without 'variable' in scope.
+//    auto startValue = start->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
+//    if (!startValue) {
+//        return nullptr;
+//    }
+//    
+//    assert(startValue->type == RVT_SIMPLE);
+//    
+//    if (!startValue->value->getType()->isIntegerTy(64)) {
+//        result.addError(loc, CErrorCode::TypeMismatch, "start value must be a int");
+//        return nullptr;
+//    }
+//    
+//    // Compute the end condition.
+//    auto endValue = end->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
+//    if (!endValue) {
+//        return nullptr;
+//    }
+//    
+//    assert(endValue->type == RVT_SIMPLE);
+//    
+//    if (!endValue->value->getType()->isIntegerTy(64)) {
+//        result.addError(loc, CErrorCode::TypeMismatch, "end value must be a int");
+//        return nullptr;
+//    }
+//    
+//    auto loopBB = BasicBlock::Create(compiler->context, "loop");
+//    auto afterBB = BasicBlock::Create(compiler->context, "afterloop");
+//    
+//    auto startCondition = builder->CreateICmpSLE(startValue->value, endValue->value);
+//    builder->CreateCondBr(startCondition, loopBB, afterBB);
+//
+//    // Make the new basic block for the loop header, inserting after current
+//    // block.
+//    Function *TheFunction = builder->GetInsertBlock()->getParent();
+//    BasicBlock *preheaderBB = builder->GetInsertBlock();
+//    TheFunction->getBasicBlockList().push_back(loopBB);
+//    
+//    // Start insertion in LoopBB.
+//    builder->SetInsertPoint(loopBB);
+//    
+//    // Start the PHI node with an entry for Start.
+//    auto Variable = builder->CreatePHI(Type::getInt64Ty(compiler->context), 2, varName);
+//    Variable->addIncoming(startValue->value, preheaderBB);
+//    
+//    // Within the loop, the variable is defined equal to the PHI node.  If it
+//    // shadows an existing variable, we have to restore it, so save it now.
+//    auto thisFun = static_pointer_cast<CFunction>(thisFunction);
+//    if (thisFun->localVarsByName.find(varName) != thisFun->localVarsByName.end()) {
+//        result.addError(loc, CErrorCode::InvalidVariable, "var '%s' already exists within function, must have a unique name", varName.c_str());
+//        return nullptr;
+//    }
+//    
+//    thisFun->localVarsByName[varName] = _forVar;
+//    _forVar->value = Variable;
+//    
+//    // Emit the body of the loop.  This, like any other expr, can change the
+//    // current BB.  Note that we ignore the value computed by the body, but don't
+//    // allow an error.
+//    auto bodyValue = body->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
+//    if (bodyValue) {
+//        bodyValue->releaseIfNeeded(compiler, result, builder);
+//    }
+//    
+//    // Emit the step value.
+//    Value *StepVal = ConstantInt::get(compiler->context, APInt(64, 1));
+//    Value *NextVar = builder->CreateAdd(Variable, StepVal, "nextvar");
+//    
+//    // Convert condition to a bool by comparing equal to 0.0.
+//    auto endCondition = builder->CreateICmpSLT(Variable, endValue->value);
+//    
+//    // Create the "after loop" block and insert it.
+//    BasicBlock *loopEndBB = builder->GetInsertBlock();
+//    
+//    // Insert the conditional branch into the end of LoopEndBB.
+//    builder->CreateCondBr(endCondition, loopBB, afterBB);
+//    
+//    // Any new code will be inserted in AfterBB.
+//    TheFunction->getBasicBlockList().push_back(afterBB);
+//    builder->SetInsertPoint(afterBB);
+//    
+//    // Add a new entry to the PHI node for the backedge.
+//    Variable->addIncoming(NextVar, loopEndBB);
+//    
+//    // Restore the unshadowed variable.
+//    
+//    thisFun->localVarsByName.erase(varName);
+//    _forVar->value = nullptr;
+//
+//    // for expr always returns 0.0.
+//    return nullptr;
+//}
 
 void NFor::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << "for " << varName << " : ";

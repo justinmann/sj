@@ -28,81 +28,81 @@ shared_ptr<CType> CIfElseVar::getType(Compiler* compiler, CResult& result) {
     return nullptr;
 }
 
-shared_ptr<ReturnValue> CIfElseVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-    assert(compiler->state == CompilerState::Compile);
-    shared_ptr<CType> returnType = getType(compiler, result);
-    
-    Function *function = builder->GetInsertBlock()->getParent();
-    auto ifBB = BasicBlock::Create(compiler->context);
-    auto elseBB = BasicBlock::Create(compiler->context);
-    auto mergeBB = BasicBlock::Create(compiler->context);
-    
-    // If block
-    function->getBasicBlockList().push_back(ifBB);
-    auto c = condition->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
-    if (!c) {
-        return nullptr;
-    }
-    assert(c->type == RVT_SIMPLE);
-    builder->CreateCondBr(c->value, ifBB, elseBB);
-    builder->SetInsertPoint(ifBB);
-    auto ifValue = ifBlock->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
-    if (returnType != compiler->typeVoid && !ifValue) {
-        result.addError(loc, CErrorCode::NoDefaultValue, "type does not have a default value");
-        return nullptr;
-    }
-    auto ifEndBB = builder->GetInsertBlock();
-    builder->CreateBr(mergeBB);
-    
-    // Else block
-    function->getBasicBlockList().push_back(elseBB);
-    builder->SetInsertPoint(elseBB);
-    shared_ptr<ReturnValue> elseValue = nullptr;
-    if (elseBlock) {
-        elseValue = elseBlock->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
-        if (returnType != compiler->typeVoid && !elseValue) {
-            result.addError(loc, CErrorCode::NoDefaultValue, "type does not have a default value");
-            return nullptr;
-        }
-    } else if (returnType != compiler->typeVoid) {
-        elseValue = returnType->getDefaultValue(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
-        if (!elseValue) {
-            result.addError(loc, CErrorCode::NoDefaultValue, "type does not have a default value");
-            return nullptr;
-        }
-    }
-    
-    auto elseEndBB = builder->GetInsertBlock();
-    builder->CreateBr(mergeBB);
-    
-    // Merge block
-    function->getBasicBlockList().push_back(mergeBB);
-    builder->SetInsertPoint(mergeBB);
-    if (returnType == compiler->typeVoid) {
-        return nullptr;
-    }
-    
-    if (ifValue->value->getType() != elseValue->value->getType()) {
-        result.addError(loc, CErrorCode::TypeMismatch, "if and else clause have different return types");
-        return nullptr;
-    }
-    
-    assert(ifValue->type == elseValue->type);
-    assert(ifValue->releaseMode == elseValue->releaseMode);
-    
-    auto varType = getType(compiler, result);
-    auto varFunction = varType->parent.lock();
-    
-    auto phiNode = builder->CreatePHI(returnType->llvmRefType(compiler, result), (unsigned)2, "iftmp");
-    phiNode->addIncoming(ifValue->value, ifEndBB);
-    phiNode->addIncoming(elseValue->value, elseEndBB);
-    return make_shared<ReturnValue>(varFunction, ifValue->releaseMode, ifValue->type, false, phiNode);
-}
-
-Value* CIfElseVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    assert(false);
-    return nullptr;
-}
+//shared_ptr<ReturnValue> CIfElseVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
+//    assert(compiler->state == CompilerState::Compile);
+//    shared_ptr<CType> returnType = getType(compiler, result);
+//    
+//    Function *function = builder->GetInsertBlock()->getParent();
+//    auto ifBB = BasicBlock::Create(compiler->context);
+//    auto elseBB = BasicBlock::Create(compiler->context);
+//    auto mergeBB = BasicBlock::Create(compiler->context);
+//    
+//    // If block
+//    function->getBasicBlockList().push_back(ifBB);
+//    auto c = condition->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
+//    if (!c) {
+//        return nullptr;
+//    }
+//    assert(c->type == RVT_SIMPLE);
+//    builder->CreateCondBr(c->value, ifBB, elseBB);
+//    builder->SetInsertPoint(ifBB);
+//    auto ifValue = ifBlock->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
+//    if (returnType != compiler->typeVoid && !ifValue) {
+//        result.addError(loc, CErrorCode::NoDefaultValue, "type does not have a default value");
+//        return nullptr;
+//    }
+//    auto ifEndBB = builder->GetInsertBlock();
+//    builder->CreateBr(mergeBB);
+//    
+//    // Else block
+//    function->getBasicBlockList().push_back(elseBB);
+//    builder->SetInsertPoint(elseBB);
+//    shared_ptr<ReturnValue> elseValue = nullptr;
+//    if (elseBlock) {
+//        elseValue = elseBlock->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
+//        if (returnType != compiler->typeVoid && !elseValue) {
+//            result.addError(loc, CErrorCode::NoDefaultValue, "type does not have a default value");
+//            return nullptr;
+//        }
+//    } else if (returnType != compiler->typeVoid) {
+//        elseValue = returnType->getDefaultValue(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+//        if (!elseValue) {
+//            result.addError(loc, CErrorCode::NoDefaultValue, "type does not have a default value");
+//            return nullptr;
+//        }
+//    }
+//    
+//    auto elseEndBB = builder->GetInsertBlock();
+//    builder->CreateBr(mergeBB);
+//    
+//    // Merge block
+//    function->getBasicBlockList().push_back(mergeBB);
+//    builder->SetInsertPoint(mergeBB);
+//    if (returnType == compiler->typeVoid) {
+//        return nullptr;
+//    }
+//    
+//    if (ifValue->value->getType() != elseValue->value->getType()) {
+//        result.addError(loc, CErrorCode::TypeMismatch, "if and else clause have different return types");
+//        return nullptr;
+//    }
+//    
+//    assert(ifValue->type == elseValue->type);
+//    assert(ifValue->releaseMode == elseValue->releaseMode);
+//    
+//    auto varType = getType(compiler, result);
+//    auto varFunction = varType->parent.lock();
+//    
+//    auto phiNode = builder->CreatePHI(returnType->llvmRefType(compiler, result), (unsigned)2, "iftmp");
+//    phiNode->addIncoming(ifValue->value, ifEndBB);
+//    phiNode->addIncoming(elseValue->value, elseEndBB);
+//    return make_shared<ReturnValue>(varFunction, ifValue->releaseMode, ifValue->type, false, phiNode);
+//}
+//
+//Value* CIfElseVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+//    assert(false);
+//    return nullptr;
+//}
 
 string CIfElseVar::fullName() {
     return "";

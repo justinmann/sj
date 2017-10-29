@@ -14,11 +14,11 @@ shared_ptr<CType> NInterface::getTypeImpl(Compiler* compiler, CResult& result, s
     return compiler->typeVoid;
 }
 
-shared_ptr<ReturnValue> NInterface::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-    assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(builder, &this->loc);
-    return nullptr;
-}
+//shared_ptr<ReturnValue> NInterface::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
+//    assert(compiler->state == CompilerState::Compile);
+//    compiler->emitLocation(builder, &this->loc);
+//    return nullptr;
+//}
 
 void NInterface::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     auto def = compiler->getInterfaceDefinition(name);
@@ -72,15 +72,15 @@ shared_ptr<CType> CInterfaceVar::getType(Compiler* compiler, CResult& result) {
     return parent.lock()->getThisType(compiler, result);
 }
 
-shared_ptr<ReturnValue> CInterfaceVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-    assert(false);
-    return nullptr;
-}
-
-Value* CInterfaceVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    assert(false);
-    return nullptr;
-}
+//shared_ptr<ReturnValue> CInterfaceVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
+//    assert(false);
+//    return nullptr;
+//}
+//
+//Value* CInterfaceVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+//    assert(false);
+//    return nullptr;
+//}
 
 bool CInterfaceVar::getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
     return isHeapVar;
@@ -104,7 +104,7 @@ void CInterfaceVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFu
     assert(false);
 }
 
-CInterface::CInterface(weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent) : _structType(nullptr), CBaseFunction(definition.lock()->name, parent, definition) {
+CInterface::CInterface(weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent) : /*_structType(nullptr),*/ CBaseFunction(definition.lock()->name, parent, definition) {
 }
 
 shared_ptr<CInterface> CInterface::init(Compiler* compiler, CResult& result, shared_ptr<NInterface> node, vector<shared_ptr<CType>>& templateTypes) {
@@ -163,29 +163,29 @@ void CInterface::createThisVar(Compiler* compiler, CResult& result, shared_ptr<C
     thisVar = make_shared<CInterfaceVar>(shared_from_this());
 }
 
-Type* CInterface::getStructType(Compiler* compiler, CResult& result) {
-    if (!_structType) {
-        _structType = StructType::create(compiler->context, name + "_interface");
-        
-        auto typeList = vector<Type*>();
-        typeList.push_back(Type::getInt8PtrTy(compiler->context));
-        
-        if (hasRefCount) {
-            typeList.push_back(Type::getInt64Ty(compiler->context));
-        }
-        
-        for (auto it : methods) {
-            typeList.push_back(it->getFunctionType(compiler, result)->getPointerTo());
-        }
-        
-        _structType->setBody(ArrayRef<Type *>(typeList));
-    }
-    return _structType;
-}
-
-Value* CInterface::getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
-    return builder->CreateStructGEP(_structType, thisValue, 1);
-}
+//Type* CInterface::getStructType(Compiler* compiler, CResult& result) {
+//    if (!_structType) {
+//        _structType = StructType::create(compiler->context, name + "_interface");
+//        
+//        auto typeList = vector<Type*>();
+//        typeList.push_back(Type::getInt8PtrTy(compiler->context));
+//        
+//        if (hasRefCount) {
+//            typeList.push_back(Type::getInt64Ty(compiler->context));
+//        }
+//        
+//        for (auto it : methods) {
+//            typeList.push_back(it->getFunctionType(compiler, result)->getPointerTo());
+//        }
+//        
+//        _structType->setBody(ArrayRef<Type *>(typeList));
+//    }
+//    return _structType;
+//}
+//
+//Value* CInterface::getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
+//    return builder->CreateStructGEP(_structType, thisValue, 1);
+//}
 
 int CInterface::getArgStart() {
     if (hasRefCount) {
@@ -209,10 +209,10 @@ shared_ptr<CBaseFunction> CInterface::getCFunction(Compiler* compiler, CResult& 
     return nullptr;
 }
 
-Value* CInterface::getParentValue(Compiler* compiler, CResult& result, IRBuilder<>* builder, bool thisInEntry, Value* thisValue) {
-    assert(false);
-    return nullptr;
-}
+//Value* CInterface::getParentValue(Compiler* compiler, CResult& result, IRBuilder<>* builder, bool thisInEntry, Value* thisValue) {
+//    assert(false);
+//    return nullptr;
+//}
 
 shared_ptr<CType> CInterface::getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName) {
     if (typeName->templateTypeNames == nullptr) {
@@ -239,9 +239,9 @@ shared_ptr<CVar> CInterface::getReturnVar(Compiler* compiler, CResult& result, s
     return nullptr;
 }
 
-shared_ptr<ReturnValue> CInterface::call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType) {
-    assert(false);
-}
+//shared_ptr<ReturnValue> CInterface::call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType) {
+//    assert(false);
+//}
 
 void CInterface::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     assert(false);
@@ -252,65 +252,65 @@ bool CInterface::getReturnMustRelease(Compiler* compiler, CResult& result) {
     return false;
 }
 
-Function* CInterface::getDestructor(Compiler* compiler, CResult& result) {
-    return nullptr;
-}
-
-shared_ptr<ReturnValue> CInterface::cast(Compiler* compiler, CResult& result, IRBuilder<>* builder, shared_ptr<ReturnValue> fromValue, bool isHeap, vector<Function*>& interfaceMethodValues) {
-    auto interfaceType = getStructType(compiler, result);
-    Value* value;
-    // alloc instance of struct type
-    if (isHeap) {
-        // heap alloc this
-        auto allocFunc = compiler->getAllocFunction();
-        
-        // Compute the size of the struct by getting a pointer to the second element from null
-        vector<Value*> v;
-        v.push_back(ConstantInt::get(compiler->context, APInt(32, 1)));
-        auto thisPointerType = interfaceType->getPointerTo();
-        auto nullPtr = ConstantPointerNull::get(thisPointerType);
-        auto sizePtr = builder->CreateGEP(nullPtr, ArrayRef<llvm::Value *>(v));
-        auto sizeValue = builder->CreatePtrToInt(sizePtr, Type::getInt64Ty(compiler->context));
-        
-        // Allocate and mutate to correct type
-        vector<Value*> allocArgs;
-        allocArgs.push_back(sizeValue);
-        auto valueAsVoidPtr = builder->CreateCall(allocFunc, allocArgs);
-        value = builder->CreateBitCast(valueAsVoidPtr, thisPointerType);
-        initHeap(compiler, result, builder, value);
-    } else {
-        value = builder->CreateAlloca(interfaceType);
-        initStack(compiler, result, builder, value);
-    }
-
-    // store "this"
-    auto structIndex = 0;
-    auto thisPtr = builder->CreateStructGEP(interfaceType, value, structIndex);
-    auto fromVoidPtr = builder->CreateBitCast(fromValue->value, Type::getInt8PtrTy(compiler->context));
-    builder->CreateStore(fromVoidPtr, thisPtr);
-    structIndex++;
-    
-    if (hasRefCount) {
-        structIndex++;
-    }
-
-    // retain "this"
-    fromValue->retainIfNeeded(compiler, result, builder);
-    
-    // store interfaceMethods
-    auto methodIndex = 0;
-    for (auto it : interfaceMethodValues) {
-        auto functionPtr = builder->CreateStructGEP(interfaceType, value, structIndex);
-        auto t = methods[methodIndex]->getFunctionType(compiler, result)->getPointerTo();
-        auto functionWithVoidForParent = builder->CreateBitCast(it, t);
-        builder->CreateStore(functionWithVoidForParent, functionPtr);
-        methodIndex++;
-        structIndex++;
-    }
-    
-    // create return value
-    return make_shared<ReturnValue>(shared_from_this(), RVR_MustRelease, RVT_HEAP, false, value);
-}
+//Function* CInterface::getDestructor(Compiler* compiler, CResult& result) {
+//    return nullptr;
+//}
+//
+//shared_ptr<ReturnValue> CInterface::cast(Compiler* compiler, CResult& result, IRBuilder<>* builder, shared_ptr<ReturnValue> fromValue, bool isHeap, vector<Function*>& interfaceMethodValues) {
+//    auto interfaceType = getStructType(compiler, result);
+//    Value* value;
+//    // alloc instance of struct type
+//    if (isHeap) {
+//        // heap alloc this
+//        auto allocFunc = compiler->getAllocFunction();
+//        
+//        // Compute the size of the struct by getting a pointer to the second element from null
+//        vector<Value*> v;
+//        v.push_back(ConstantInt::get(compiler->context, APInt(32, 1)));
+//        auto thisPointerType = interfaceType->getPointerTo();
+//        auto nullPtr = ConstantPointerNull::get(thisPointerType);
+//        auto sizePtr = builder->CreateGEP(nullPtr, ArrayRef<llvm::Value *>(v));
+//        auto sizeValue = builder->CreatePtrToInt(sizePtr, Type::getInt64Ty(compiler->context));
+//        
+//        // Allocate and mutate to correct type
+//        vector<Value*> allocArgs;
+//        allocArgs.push_back(sizeValue);
+//        auto valueAsVoidPtr = builder->CreateCall(allocFunc, allocArgs);
+//        value = builder->CreateBitCast(valueAsVoidPtr, thisPointerType);
+//        initHeap(compiler, result, builder, value);
+//    } else {
+//        value = builder->CreateAlloca(interfaceType);
+//        initStack(compiler, result, builder, value);
+//    }
+//
+//    // store "this"
+//    auto structIndex = 0;
+//    auto thisPtr = builder->CreateStructGEP(interfaceType, value, structIndex);
+//    auto fromVoidPtr = builder->CreateBitCast(fromValue->value, Type::getInt8PtrTy(compiler->context));
+//    builder->CreateStore(fromVoidPtr, thisPtr);
+//    structIndex++;
+//    
+//    if (hasRefCount) {
+//        structIndex++;
+//    }
+//
+//    // retain "this"
+//    fromValue->retainIfNeeded(compiler, result, builder);
+//    
+//    // store interfaceMethods
+//    auto methodIndex = 0;
+//    for (auto it : interfaceMethodValues) {
+//        auto functionPtr = builder->CreateStructGEP(interfaceType, value, structIndex);
+//        auto t = methods[methodIndex]->getFunctionType(compiler, result)->getPointerTo();
+//        auto functionWithVoidForParent = builder->CreateBitCast(it, t);
+//        builder->CreateStore(functionWithVoidForParent, functionPtr);
+//        methodIndex++;
+//        structIndex++;
+//    }
+//    
+//    // create return value
+//    return make_shared<ReturnValue>(shared_from_this(), RVR_MustRelease, RVT_HEAP, false, value);
+//}
 
 CInterfaceDefinition::CInterfaceDefinition(string& name) {
 }

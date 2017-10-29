@@ -6,13 +6,13 @@
 //  Copyright © 2016 Mann, Justin. All rights reserved.
 //
 
-#include "Node.h"
+#include "../node/Node.h"
 #include <fstream>
 #include <streambuf>
-#include "library.h"
-#include "llvm/Support/TargetRegistry.h"
+//#include "library.h"
+//#include "llvm/Support/TargetRegistry.h"
 
-using namespace llvm::orc;
+//using namespace llvm::orc;
 
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 struct YYLOCATION {
@@ -27,21 +27,21 @@ extern void yy_delete_buffer(YY_BUFFER_STATE, void*);
 
 CLoc CLoc::undefined = CLoc();
 
-std::string Type_print(Type* type) {
-    std::string type_str;
-    llvm::raw_string_ostream rso(type_str);
-    type->print(rso);
-    return rso.str();
-}
+//std::string Type_print(Type* type) {
+//    std::string type_str;
+//    llvm::raw_string_ostream rso(type_str);
+//    type->print(rso);
+//    return rso.str();
+//}
+//
+//Function* getFunctionFromBuilder(IRBuilder<>* builder) {
+//    return builder->GetInsertBlock()->getParent();
+//}
 
-Function* getFunctionFromBuilder(IRBuilder<>* builder) {
-    return builder->GetInsertBlock()->getParent();
-}
-
-IRBuilder<> getEntryBuilder(IRBuilder<>* builder) {
-    Function *function = getFunctionFromBuilder(builder);
-    return IRBuilder<>(&function->getEntryBlock(), function->getEntryBlock().end()--);
-}
+//IRBuilder<> getEntryBuilder(IRBuilder<>* builder) {
+//    Function *function = getFunctionFromBuilder(builder);
+//    return IRBuilder<>(&function->getEntryBlock(), function->getEntryBlock().end()--);
+//}
 
 #ifdef DEBUG_CALLSTACK
 const char* callstack[9999];
@@ -110,84 +110,84 @@ extern "C" void debugFunction(const char* str, void* v, int64_t t) {
 #endif
 }
 
-class KaleidoscopeJIT {
-private:
-    shared_ptr<TargetMachine> TM;
-    const DataLayout DL;
-    ObjectLinkingLayer<> ObjectLayer;
-    IRCompileLayer<decltype(ObjectLayer)> CompileLayer;
-    
-public:
-    typedef decltype(CompileLayer)::ModuleSetHandleT ModuleHandle;
-    
-    KaleidoscopeJIT(shared_ptr<TargetMachine> tm) : TM(tm), DL(TM->createDataLayout()), CompileLayer(ObjectLayer, SimpleCompiler(*TM)) {
-        llvm::sys::DynamicLibrary::LoadLibraryPermanently(nullptr);
-    }
-    
-    TargetMachine &getTargetMachine() { return *TM; }
-    
-    ModuleHandle addModule(unique_ptr<Module> M) {
-        // Build our symbol resolver:
-        // Lambda 1: Look back into the JIT itself to find symbols that are part of
-        //           the same "logical dylib".
-        // Lambda 2: Search for external symbols in the host process.
-        auto Resolver = createLambdaResolver(
-                                             [&](const string &Name) {
-#ifdef SYMBOL_OUTPUT
-                                                 printf("Looking for %s\n", Name.c_str());
-#endif
-                                                 if (auto Sym = CompileLayer.findSymbol(Name, false))
-                                                     return Sym.toRuntimeDyldSymbol();
-                                                 return RuntimeDyld::SymbolInfo(nullptr);
-                                             },
-                                             [](const string &Name) {
-                                                 if (auto SymAddr =
-                                                     RTDyldMemoryManager::getSymbolAddressInProcess(Name))
-                                                     return RuntimeDyld::SymbolInfo(SymAddr, JITSymbolFlags::Exported);
-                                                 return RuntimeDyld::SymbolInfo(nullptr);
-                                             });
-        
-        // Build a singlton module set to hold our module.
-        vector<unique_ptr<Module>> Ms;
-        Ms.push_back(move(M));
-        
-        // Add the set to the JIT with the resolver we created above and a newly
-        // created SectionMemoryManager.
-        return CompileLayer.addModuleSet(move(Ms),
-                                         make_unique<SectionMemoryManager>(),
-                                         move(Resolver));
-    }
-    
-    JITSymbol findSymbol(const string Name) {
-        string MangledName;
-        raw_string_ostream MangledNameStream(MangledName);
-        Mangler::getNameWithPrefix(MangledNameStream, Name, DL);
-        return CompileLayer.findSymbol(MangledNameStream.str(), true);
-    }
-    
-    void removeModule(ModuleHandle H) {
-        CompileLayer.removeModuleSet(H);
-    }
-    
-};
+//class KaleidoscopeJIT {
+//private:
+//    shared_ptr<TargetMachine> TM;
+//    const DataLayout DL;
+//    ObjectLinkingLayer<> ObjectLayer;
+//    IRCompileLayer<decltype(ObjectLayer)> CompileLayer;
+//    
+//public:
+//    typedef decltype(CompileLayer)::ModuleSetHandleT ModuleHandle;
+//    
+//    KaleidoscopeJIT(shared_ptr<TargetMachine> tm) : TM(tm), DL(TM->createDataLayout()), CompileLayer(ObjectLayer, SimpleCompiler(*TM)) {
+//        llvm::sys::DynamicLibrary::LoadLibraryPermanently(nullptr);
+//    }
+//    
+//    TargetMachine &getTargetMachine() { return *TM; }
+//    
+//    ModuleHandle addModule(unique_ptr<Module> M) {
+//        // Build our symbol resolver:
+//        // Lambda 1: Look back into the JIT itself to find symbols that are part of
+//        //           the same "logical dylib".
+//        // Lambda 2: Search for external symbols in the host process.
+//        auto Resolver = createLambdaResolver(
+//                                             [&](const string &Name) {
+//#ifdef SYMBOL_OUTPUT
+//                                                 printf("Looking for %s\n", Name.c_str());
+//#endif
+//                                                 if (auto Sym = CompileLayer.findSymbol(Name, false))
+//                                                     return Sym.toRuntimeDyldSymbol();
+//                                                 return RuntimeDyld::SymbolInfo(nullptr);
+//                                             },
+//                                             [](const string &Name) {
+//                                                 if (auto SymAddr =
+//                                                     RTDyldMemoryManager::getSymbolAddressInProcess(Name))
+//                                                     return RuntimeDyld::SymbolInfo(SymAddr, JITSymbolFlags::Exported);
+//                                                 return RuntimeDyld::SymbolInfo(nullptr);
+//                                             });
+//        
+//        // Build a singlton module set to hold our module.
+//        vector<unique_ptr<Module>> Ms;
+//        Ms.push_back(move(M));
+//        
+//        // Add the set to the JIT with the resolver we created above and a newly
+//        // created SectionMemoryManager.
+//        return CompileLayer.addModuleSet(move(Ms),
+//                                         make_unique<SectionMemoryManager>(),
+//                                         move(Resolver));
+//    }
+//    
+//    JITSymbol findSymbol(const string Name) {
+//        string MangledName;
+//        raw_string_ostream MangledNameStream(MangledName);
+//        Mangler::getNameWithPrefix(MangledNameStream, Name, DL);
+//        return CompileLayer.findSymbol(MangledNameStream.str(), true);
+//    }
+//    
+//    void removeModule(ModuleHandle H) {
+//        CompileLayer.removeModuleSet(H);
+//    }
+//    
+//};
 
 Compiler::Compiler() {
-    InitializeNativeTarget();
-    InitializeNativeTargetAsmPrinter();
-    InitializeNativeTargetAsmParser();
+    //InitializeNativeTarget();
+    //InitializeNativeTargetAsmPrinter();
+    //InitializeNativeTargetAsmParser();
 }
 
 void Compiler::reset() {
     includedBlockFileNames.clear();
     includedBlocks.clear();
-    functionNames.clear();
-    entryBuilders.clear();
-    interfaceDefinitions.clear();
-    
-    allocFunction = nullptr;
-    reallocFunction = nullptr;
-    freeFunction = nullptr;
-    debugFunction = nullptr;
+    //functionNames.clear();
+    //entryBuilders.clear();
+    //interfaceDefinitions.clear();
+    //
+    //allocFunction = nullptr;
+    //reallocFunction = nullptr;
+    //freeFunction = nullptr;
+    //debugFunction = nullptr;
 #ifdef DEBUG_CALLSTACK
     pushFunction = nullptr;
     popFunction = nullptr;
@@ -200,12 +200,12 @@ void Compiler::reset() {
 #endif
     
     // Open a new module.
-    module = llvm::make_unique<Module>("sj", context);
-    
-    exception = llvm::make_unique<Exception>(&context, module.get());
+    //module = llvm::make_unique<Module>("sj", context);
+    //
+    //exception = llvm::make_unique<Exception>(&context, module.get());
 
-    // Create a new pass manager attached to it.
-    TheFPM = llvm::make_unique<legacy::FunctionPassManager>(module.get());
+    //// Create a new pass manager attached to it.
+    //TheFPM = llvm::make_unique<legacy::FunctionPassManager>(module.get());
     /*
     // Do simple "peephole" optimizations and bit-twiddling optzns.
     TheFPM->add(createInstructionCombiningPass());
@@ -216,34 +216,34 @@ void Compiler::reset() {
     // Simplify the control flow graph (deleting unreachable blocks, etc).
     TheFPM->add(createCFGSimplificationPass());
     */
-    TheFPM->doInitialization();
-
-#ifdef DWARF_ENABLED
-    // Add the current debug info version into the module.
-    module->addModuleFlag(Module::Warning, "Debug Info Version",
-                          DEBUG_METADATA_VERSION);
-    
-    // Darwin only supports dwarf2.
-    if (Triple(sys::getProcessTriple()).isOSDarwin())
-        module->addModuleFlag(llvm::Module::Warning, "Dwarf Version", 2);
-    
-    // Construct the DIBuilder, we do this here because we need the module.
-    DBuilder = llvm::make_unique<DIBuilder>(*module);
-    
-    // Initialize value types
-    typeInt = make_shared<CType>("int", Type::getInt64Ty(context), DBuilder->createBasicType("int", 64, 64, dwarf::DW_ATE_signed), ConstantInt::get(context, APInt(64, 0)));
-    typeBool = make_shared<CType>("bool", Type::getInt1Ty(context), DBuilder->createBasicType("bool", 1, 64, dwarf::DW_ATE_boolean), ConstantInt::get(context, APInt(1, 0)));
-    typeFloat = make_shared<CType>("float", Type::getDoubleTy(context), DBuilder->createBasicType("double", 64, 64, dwarf::DW_ATE_float), ConstantFP::get(context, APFloat(0.0)));
-    typeChar = make_shared<CType>("char", Type::getInt8Ty(context), DBuilder->createBasicType("char", 8, 64, dwarf::DW_ATE_UTF), ConstantInt::get(context, APInt(8, 0)));
-    typeVoid = make_shared<CType>("void", Type::getVoidTy(context), nullptr, nullptr);
-#else
-    // Initialize value types
-    typeInt = make_shared<CType>("int", Type::getInt64Ty(context), ConstantInt::get(context, APInt(64, 0)));
-    typeBool = make_shared<CType>("bool", Type::getInt1Ty(context), ConstantInt::get(context, APInt(1, 0)));
-    typeFloat = make_shared<CType>("float", Type::getDoubleTy(context), ConstantFP::get(context, APFloat(0.0)));
-    typeChar = make_shared<CType>("char", Type::getInt8Ty(context), ConstantInt::get(context, APInt(8, 0)));
-    typeVoid = make_shared<CType>("void", Type::getVoidTy(context), nullptr);
-#endif
+//    TheFPM->doInitialization();
+//
+//#ifdef DWARF_ENABLED
+//    // Add the current debug info version into the module.
+//    module->addModuleFlag(Module::Warning, "Debug Info Version",
+//                          DEBUG_METADATA_VERSION);
+//    
+//    // Darwin only supports dwarf2.
+//    if (Triple(sys::getProcessTriple()).isOSDarwin())
+//        module->addModuleFlag(llvm::Module::Warning, "Dwarf Version", 2);
+//    
+//    // Construct the DIBuilder, we do this here because we need the module.
+//    DBuilder = llvm::make_unique<DIBuilder>(*module);
+//    
+//    // Initialize value types
+//    typeInt = make_shared<CType>("int", Type::getInt64Ty(context), DBuilder->createBasicType("int", 64, 64, dwarf::DW_ATE_signed), ConstantInt::get(context, APInt(64, 0)));
+//    typeBool = make_shared<CType>("bool", Type::getInt1Ty(context), DBuilder->createBasicType("bool", 1, 64, dwarf::DW_ATE_boolean), ConstantInt::get(context, APInt(1, 0)));
+//    typeFloat = make_shared<CType>("float", Type::getDoubleTy(context), DBuilder->createBasicType("double", 64, 64, dwarf::DW_ATE_float), ConstantFP::get(context, APFloat(0.0)));
+//    typeChar = make_shared<CType>("char", Type::getInt8Ty(context), DBuilder->createBasicType("char", 8, 64, dwarf::DW_ATE_UTF), ConstantInt::get(context, APInt(8, 0)));
+//    typeVoid = make_shared<CType>("void", Type::getVoidTy(context), nullptr, nullptr);
+//#else
+//    // Initialize value types
+//    typeInt = make_shared<CType>("int", Type::getInt64Ty(context), ConstantInt::get(context, APInt(64, 0)));
+//    typeBool = make_shared<CType>("bool", Type::getInt1Ty(context), ConstantInt::get(context, APInt(1, 0)));
+//    typeFloat = make_shared<CType>("float", Type::getDoubleTy(context), ConstantFP::get(context, APFloat(0.0)));
+//    typeChar = make_shared<CType>("char", Type::getInt8Ty(context), ConstantInt::get(context, APInt(8, 0)));
+//    typeVoid = make_shared<CType>("void", Type::getVoidTy(context), nullptr);
+//#endif
 }
 
 shared_ptr<CResult> Compiler::genNodeFile(const string& fileName) {
@@ -251,7 +251,7 @@ shared_ptr<CResult> Compiler::genNodeFile(const string& fileName) {
     std::string str;
     
     t.seekg(0, std::ios::end);
-    str.reserve(t.tellg());
+    str.reserve((size_t)t.tellg());
     t.seekg(0, std::ios::beg);
     
     str.assign((std::istreambuf_iterator<char>(t)),
@@ -355,13 +355,13 @@ protected:
         return inner->getType(compiler, result, thisFunction, thisVar);
     }
     
-    virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-        auto type = getType(compiler, result, thisFunction, thisVar);
-        if (_callVar) {
-            return _callVar->getLoadValue(compiler, result, thisVar, thisValue, false, nullptr, builder, catchBB, returnRefType);
-        }
-        return type->getDefaultValue(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
-    }
+    //virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
+    //    auto type = getType(compiler, result, thisFunction, thisVar);
+    //    if (_callVar) {
+    //        return _callVar->getLoadValue(compiler, result, thisVar, thisValue, false, nullptr, builder, catchBB, returnRefType);
+    //    }
+    //    return type->getDefaultValue(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB);
+    //}
     
 private:
     shared_ptr<CBaseFunction> _callee;
@@ -369,272 +369,274 @@ private:
 };
 
 shared_ptr<CResult> Compiler::compile(const string& fileName) {
-    reset();
-    
-    // Create the compile unit for the module.
-    TheCU = DBuilder->createCompileUnit(dwarf::DW_LANG_C, fileName, ".", "SJ Compiler", 0, "", 0);
-    
-    auto TargetTriple = sys::getDefaultTargetTriple();
-    module->setTargetTriple(TargetTriple);
-    
-    std::string Error;
-    auto Target = TargetRegistry::lookupTarget(TargetTriple, Error);
-    
-    // Print an error and exit if we couldn't find the requested target.
-    // This generally occurs if we've forgotten to initialise the
-    // TargetRegistry or we have a bogus target triple.
-    if (!Target) {
-        errs() << Error;
-        return nullptr;
-    }
-    
-    auto CPU = "generic";
-    auto Features = "";
-    
-    TargetOptions opt;
-    auto RM = Optional<Reloc::Model>();
-    auto TheTargetMachine = Target->createTargetMachine(TargetTriple, CPU, Features, opt, RM);
-    module->setDataLayout(TheTargetMachine->createDataLayout());
-    
-    auto result = genNodeFile(fileName);
-    // Early exit if compile fails
-    if (result->errors.size() > 0)
-        return result;
-    
-    auto globalFunction = nodeToIL(*result);
-    if (!globalFunction) {
-        return result;
-    }
-    
-    auto Filename = "output.o";
-    std::error_code EC;
-    raw_fd_ostream dest(Filename, EC, sys::fs::F_None);
-    
-    if (EC) {
-        errs() << "Could not open file: " << EC.message();
-        return result;
-    }
-    
-    legacy::PassManager pass;
-    auto FileType = TargetMachine::CGFT_ObjectFile; // TargetMachine::CGFT_AssemblyFile;
-    
-    if (TheTargetMachine->addPassesToEmitFile(pass, dest, FileType)) {
-        errs() << "TheTargetMachine can't emit a file of this type";
-        return result;
-    }
-    
-    pass.run(*module);
-    dest.flush();
-    
-    return result;
+    //reset();
+    //
+    //// Create the compile unit for the module.
+    //TheCU = DBuilder->createCompileUnit(dwarf::DW_LANG_C, fileName, ".", "SJ Compiler", 0, "", 0);
+    //
+    //auto TargetTriple = sys::getDefaultTargetTriple();
+    //module->setTargetTriple(TargetTriple);
+    //
+    //std::string Error;
+    //auto Target = TargetRegistry::lookupTarget(TargetTriple, Error);
+    //
+    //// Print an error and exit if we couldn't find the requested target.
+    //// This generally occurs if we've forgotten to initialise the
+    //// TargetRegistry or we have a bogus target triple.
+    //if (!Target) {
+    //    errs() << Error;
+    //    return nullptr;
+    //}
+    //
+    //auto CPU = "generic";
+    //auto Features = "";
+    //
+    //TargetOptions opt;
+    //auto RM = Optional<Reloc::Model>();
+    //auto TheTargetMachine = Target->createTargetMachine(TargetTriple, CPU, Features, opt, RM);
+    //module->setDataLayout(TheTargetMachine->createDataLayout());
+    //
+    //auto result = genNodeFile(fileName);
+    //// Early exit if compile fails
+    //if (result->errors.size() > 0)
+    //    return result;
+    //
+    //auto globalFunction = nodeToIL(*result);
+    //if (!globalFunction) {
+    //    return result;
+    //}
+    //
+    //auto Filename = "output.o";
+    //std::error_code EC;
+    //raw_fd_ostream dest(Filename, EC, sys::fs::F_None);
+    //
+    //if (EC) {
+    //    errs() << "Could not open file: " << EC.message();
+    //    return result;
+    //}
+    //
+    //legacy::PassManager pass;
+    //auto FileType = TargetMachine::CGFT_ObjectFile; // TargetMachine::CGFT_AssemblyFile;
+    //
+    //if (TheTargetMachine->addPassesToEmitFile(pass, dest, FileType)) {
+    //    errs() << "TheTargetMachine can't emit a file of this type";
+    //    return result;
+    //}
+    //
+    //pass.run(*module);
+    //dest.flush();
+    //
+    //return result;
+	return nullptr;
 }
 
 shared_ptr<CResult> Compiler::run(const string& code) {
-    auto opts = TargetOptions();
-    // opts.ExceptionModel = ExceptionHandling::DwarfCFI;
-    auto tm = shared_ptr<TargetMachine>(EngineBuilder().setTargetOptions(opts).selectTarget());
-    unique_ptr<KaleidoscopeJIT> TheJIT = llvm::make_unique<KaleidoscopeJIT>(tm);
-    
-    // Recreate module, since we just took away and stored it in the JIT
-    reset();
-    
-    // Create the compile unit for the module.
-    TheCU = DBuilder->createCompileUnit(dwarf::DW_LANG_C, "repl.sj", ".", "SJ Compiler", 0, "", 0);
-    
-    module->setDataLayout(TheJIT->getTargetMachine().createDataLayout());
-    
-    auto result = genNode("repl", code);
-    // Early exit if compile fails
-    if (result->errors.size() > 0)
-        return result;
-    
-    auto globalFunction = nodeToIL(*result);
-    if (!globalFunction) {
-        return result;
-    }
-    
-    auto H = TheJIT->addModule(move(module));
-    
-    // Search the JIT for the global symbol.
-    auto globalFunctionSymbol = TheJIT->findSymbol("global");
-    auto globalDestructorSymbol = TheJIT->findSymbol("global_destructor");
-    assert(globalFunctionSymbol && "Function not found");
-    
-    auto structType = globalFunction->getStructType(this, *result);
-    auto thisSize = structType ? structType->getStructNumElements() * 8 : 0;
-    auto thisPtr = malloc(thisSize);
-    
-    // Get the symbol's address and cast it to the right type (takes no
-    // arguments, returns a double) so we can call it as a native function.
-    hasException = false;
-    if (result->returnType == typeInt) {
-        int64_t (*FP)(void*) = (int64_t (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
-        int64_t resultValue = FP(thisPtr);
-        
-        result->type = RESULT_INT;
-        result->iResult = resultValue;
-    } else if (result->returnType == typeBool) {
-        bool (*FP)(void*) = (bool (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
-        bool resultValue = FP(thisPtr);
-        
-        result->type = RESULT_BOOL;
-        result->bResult = resultValue;
-    } else if (result->returnType == typeChar) {
-        char (*FP)(void*) = (char (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
-        char resultValue = FP(thisPtr);
-        
-        result->type = RESULT_CHAR;
-        result->cResult = resultValue;
-    } else if (result->returnType == typeFloat) {
-        double (*FP)(void*) = (double (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
-        double resultValue = FP(thisPtr);
-        
-        result->type = RESULT_FLOAT;
-        result->fResult = resultValue;
-    } else if (result->returnType == typeVoid) {
-        void (*FP)(void*) = (void (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
-        FP(thisPtr);
-        
-        result->type = RESULT_VOID;
-    } else if (result->returnType->name == "list_char") {
-        list_char* (*FP)(void*) = (list_char* (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
-        list_char* resultValue = FP(thisPtr);
-        
-        result->type = RESULT_STR;
-        result->strResult = resultValue->str;
-        
-        // TODO: Delete the result
-        // delete result;
-    } else {
-        printf("Unknown return type: %s\n", result->returnType->name.c_str());
-        assert(false);
-    }
-    
-    if (globalDestructorSymbol) {
-        void (*FP)(void*) = (void (*)(void*))(intptr_t)globalDestructorSymbol.getAddress();
-        FP(thisPtr);
-    }
-    // TODO: free(thisPtr);
-    
-    
-#ifdef DEBUG_CALLSTACK
-    for (auto it : retains) {
-        auto retainStacks = &it.second;
-        auto releaseStacks = &releases[it.first];
-        if (retainStacks->size() != releaseStacks->size()) {
-            printf("%s: %" PRIx64 ": retain %lu release %lu\n", objTypes[it.first], (unsigned long long)it.first, retainStacks->size(), releaseStacks->size());
-        }
-    }
-    
-#endif
-    
-    // Delete the anonymous expression module from the JIT.
-    TheJIT->removeModule(H);
-    
-    if (hasException) {
-        throw (void*)new SJException();
-    }
-    
-    return result;
+//    auto opts = TargetOptions();
+//    // opts.ExceptionModel = ExceptionHandling::DwarfCFI;
+//    auto tm = shared_ptr<TargetMachine>(EngineBuilder().setTargetOptions(opts).selectTarget());
+//    unique_ptr<KaleidoscopeJIT> TheJIT = llvm::make_unique<KaleidoscopeJIT>(tm);
+//    
+//    // Recreate module, since we just took away and stored it in the JIT
+//    reset();
+//    
+//    // Create the compile unit for the module.
+//    TheCU = DBuilder->createCompileUnit(dwarf::DW_LANG_C, "repl.sj", ".", "SJ Compiler", 0, "", 0);
+//    
+//    module->setDataLayout(TheJIT->getTargetMachine().createDataLayout());
+//    
+//    auto result = genNode("repl", code);
+//    // Early exit if compile fails
+//    if (result->errors.size() > 0)
+//        return result;
+//    
+//    auto globalFunction = nodeToIL(*result);
+//    if (!globalFunction) {
+//        return result;
+//    }
+//    
+//    auto H = TheJIT->addModule(move(module));
+//    
+//    // Search the JIT for the global symbol.
+//    auto globalFunctionSymbol = TheJIT->findSymbol("global");
+//    auto globalDestructorSymbol = TheJIT->findSymbol("global_destructor");
+//    assert(globalFunctionSymbol && "Function not found");
+//    
+//    auto structType = globalFunction->getStructType(this, *result);
+//    auto thisSize = structType ? structType->getStructNumElements() * 8 : 0;
+//    auto thisPtr = malloc(thisSize);
+//    
+//    // Get the symbol's address and cast it to the right type (takes no
+//    // arguments, returns a double) so we can call it as a native function.
+//    hasException = false;
+//    if (result->returnType == typeInt) {
+//        int64_t (*FP)(void*) = (int64_t (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
+//        int64_t resultValue = FP(thisPtr);
+//        
+//        result->type = RESULT_INT;
+//        result->iResult = resultValue;
+//    } else if (result->returnType == typeBool) {
+//        bool (*FP)(void*) = (bool (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
+//        bool resultValue = FP(thisPtr);
+//        
+//        result->type = RESULT_BOOL;
+//        result->bResult = resultValue;
+//    } else if (result->returnType == typeChar) {
+//        char (*FP)(void*) = (char (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
+//        char resultValue = FP(thisPtr);
+//        
+//        result->type = RESULT_CHAR;
+//        result->cResult = resultValue;
+//    } else if (result->returnType == typeFloat) {
+//        double (*FP)(void*) = (double (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
+//        double resultValue = FP(thisPtr);
+//        
+//        result->type = RESULT_FLOAT;
+//        result->fResult = resultValue;
+//    } else if (result->returnType == typeVoid) {
+//        void (*FP)(void*) = (void (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
+//        FP(thisPtr);
+//        
+//        result->type = RESULT_VOID;
+//    } else if (result->returnType->name == "list_char") {
+//        list_char* (*FP)(void*) = (list_char* (*)(void*))(intptr_t)globalFunctionSymbol.getAddress();
+//        list_char* resultValue = FP(thisPtr);
+//        
+//        result->type = RESULT_STR;
+//        result->strResult = resultValue->str;
+//        
+//        // TODO: Delete the result
+//        // delete result;
+//    } else {
+//        printf("Unknown return type: %s\n", result->returnType->name.c_str());
+//        assert(false);
+//    }
+//    
+//    if (globalDestructorSymbol) {
+//        void (*FP)(void*) = (void (*)(void*))(intptr_t)globalDestructorSymbol.getAddress();
+//        FP(thisPtr);
+//    }
+//    // TODO: free(thisPtr);
+//    
+//    
+//#ifdef DEBUG_CALLSTACK
+//    for (auto it : retains) {
+//        auto retainStacks = &it.second;
+//        auto releaseStacks = &releases[it.first];
+//        if (retainStacks->size() != releaseStacks->size()) {
+//            printf("%s: %" PRIx64 ": retain %lu release %lu\n", objTypes[it.first], (unsigned long long)it.first, retainStacks->size(), releaseStacks->size());
+//        }
+//    }
+//    
+//#endif
+//    
+//    // Delete the anonymous expression module from the JIT.
+//    TheJIT->removeModule(H);
+//    
+//    if (hasException) {
+//        throw (void*)new SJException();
+//    }
+//    
+//    return result;
+	return nullptr;
 }
 
-shared_ptr<CFunction> Compiler::nodeToIL(CResult& result) {
-    auto catchBlock = make_shared<NBlock>(CLoc::undefined);
-    catchBlock->statements.push_back(make_shared<NCall>(CLoc::undefined, "throwException", nullptr, nullptr));
-    catchBlock->statements.push_back(make_shared<NMatchReturn>(CLoc::undefined, result.block));
-    
-    // Define an extern for throwException at the beginning of the block
-    auto throwExceptionFunction = make_shared<NFunction>(CLoc::undefined, FT_Extern, "throwException", make_shared<CTypeName>(CTC_Value, "void"), "throwException", nullptr);
-    result.block->statements.insert(result.block->statements.begin(), throwExceptionFunction);
-    
-    auto arrayFunction = make_shared<NArrayCreateFunction>();
-    result.block->statements.insert(result.block->statements.begin(), arrayFunction);
-
-    auto anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, nullptr, "global", nullptr, nullptr, nullptr, result.block, catchBlock, nullptr);
-    auto currentFunctionDefintion = CFunctionDefinition::create(this, result, nullptr, FT_Public, "", nullptr, nullptr);
-    state = CompilerState::Define;
-    anonFunction->define(this, result, currentFunctionDefintion);
-    
-    // Early exit if compile fails
-    if (result.errors.size() > 0)
-        return nullptr;
-
-    auto globalFunctionDefinition = currentFunctionDefintion->funcsByName["global"];
-    for (auto index = 0; index < includedBlocks.size(); index++) {
-        auto block = includedBlocks[index].second;
-        block->define(this, result, globalFunctionDefinition);
-        result.block->statements.insert(result.block->statements.begin(), block->statements.begin(), block->statements.end());
-    }
-    
-    // Early exit if compile fails
-    if (result.errors.size() > 0)
-        return nullptr;
-
-    state = CompilerState::FixVar;
-    auto templateTypes = vector<shared_ptr<CType>>();
-    auto currentFunction = make_shared<CFunction>(currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr);
-    currentFunction->init(this, result, nullptr, nullptr);
-    shared_ptr<CVar> currentVar;
-    currentFunction->createThisVar(this, result, currentVar);
-    anonFunction->getVar(this, result, currentFunction, currentVar);
-    auto globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, result, "global", nullptr, nullptr));
-    shared_ptr<CVar> globalVar;
-    globalFunction->createThisVar(this, result, globalVar);
-    
-#ifdef VAR_OUTPUT
-    currentFunction->dump(this, *compilerResult, 0);
-#endif
-    
-    // Early exit if compile fails
-    if (result.errors.size() > 0)
-        return nullptr;
-    
-#ifdef NODE_OUTPUT
-    map<shared_ptr<CBaseFunction>, string> functionDumps;
-    stringstream ss;
-    compilerResult->block->dump(this, *compilerResult, globalFunction, globalVar, functionDumps, ss, 0);
-    for (auto it : functionDumps) {
-        printf("%s\n\n", it.second.c_str());
-    }
-    printf("global %s\n\n", ss.str().c_str());
-#endif
-    
-    state = CompilerState::Compile;
-    anonFunction->compile(this, result, currentFunction, currentVar, nullptr, nullptr, nullptr, RRT_Auto);
-    auto function = globalFunction->getFunction(this, result, globalVar);
-    globalFunction->getDestructor(this, result);
-    result.returnType = globalFunction->getReturnType(this, result, globalVar);
-    if (!function) {
-        return nullptr;
-    }
-    auto thisType = globalFunction->getThisType(this, result);
-    
-#ifdef DWARF_ENABLED
-    DBuilder->finalize();
-#endif
-    
-#ifdef MODULE_OUTPUT
-    module->dump();
-#endif
-
-    // Early exit if compilation fails
-    if (result.errors.size() > 0)
-        return nullptr;
-    
-    if (verifyModule(*module.get()) && result.errors.size() == 0) {
-        module->dump();
-        
-        printf("----\n");
-        
-        auto output = new raw_os_ostream(std::cout);
-        verifyModule(*module.get(), output);
-        output->flush();
-        
-        assert(false);
-    }
-    
-    return globalFunction;
-}
+//shared_ptr<CFunction> Compiler::nodeToIL(CResult& result) {
+//    auto catchBlock = make_shared<NBlock>(CLoc::undefined);
+//    catchBlock->statements.push_back(make_shared<NCall>(CLoc::undefined, "throwException", nullptr, nullptr));
+//    catchBlock->statements.push_back(make_shared<NMatchReturn>(CLoc::undefined, result.block));
+//    
+//    // Define an extern for throwException at the beginning of the block
+//    auto throwExceptionFunction = make_shared<NFunction>(CLoc::undefined, FT_Extern, "throwException", make_shared<CTypeName>(CTC_Value, "void"), "throwException", nullptr);
+//    result.block->statements.insert(result.block->statements.begin(), throwExceptionFunction);
+//    
+//    auto arrayFunction = make_shared<NArrayCreateFunction>();
+//    result.block->statements.insert(result.block->statements.begin(), arrayFunction);
+//
+//    auto anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, nullptr, "global", nullptr, nullptr, nullptr, result.block, catchBlock, nullptr);
+//    auto currentFunctionDefintion = CFunctionDefinition::create(this, result, nullptr, FT_Public, "", nullptr, nullptr);
+//    state = CompilerState::Define;
+//    anonFunction->define(this, result, currentFunctionDefintion);
+//    
+//    // Early exit if compile fails
+//    if (result.errors.size() > 0)
+//        return nullptr;
+//
+//    auto globalFunctionDefinition = currentFunctionDefintion->funcsByName["global"];
+//    for (auto index = 0; index < includedBlocks.size(); index++) {
+//        auto block = includedBlocks[index].second;
+//        block->define(this, result, globalFunctionDefinition);
+//        result.block->statements.insert(result.block->statements.begin(), block->statements.begin(), block->statements.end());
+//    }
+//    
+//    // Early exit if compile fails
+//    if (result.errors.size() > 0)
+//        return nullptr;
+//
+//    state = CompilerState::FixVar;
+//    auto templateTypes = vector<shared_ptr<CType>>();
+//    auto currentFunction = make_shared<CFunction>(currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr);
+//    currentFunction->init(this, result, nullptr, nullptr);
+//    shared_ptr<CVar> currentVar;
+//    currentFunction->createThisVar(this, result, currentVar);
+//    anonFunction->getVar(this, result, currentFunction, currentVar);
+//    auto globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, result, "global", nullptr, nullptr));
+//    shared_ptr<CVar> globalVar;
+//    globalFunction->createThisVar(this, result, globalVar);
+//    
+//#ifdef VAR_OUTPUT
+//    currentFunction->dump(this, *compilerResult, 0);
+//#endif
+//    
+//    // Early exit if compile fails
+//    if (result.errors.size() > 0)
+//        return nullptr;
+//    
+//#ifdef NODE_OUTPUT
+//    map<shared_ptr<CBaseFunction>, string> functionDumps;
+//    stringstream ss;
+//    compilerResult->block->dump(this, *compilerResult, globalFunction, globalVar, functionDumps, ss, 0);
+//    for (auto it : functionDumps) {
+//        printf("%s\n\n", it.second.c_str());
+//    }
+//    printf("global %s\n\n", ss.str().c_str());
+//#endif
+//    
+//    state = CompilerState::Compile;
+//    anonFunction->compile(this, result, currentFunction, currentVar, nullptr, nullptr, nullptr, RRT_Auto);
+//    auto function = globalFunction->getFunction(this, result, globalVar);
+//    globalFunction->getDestructor(this, result);
+//    result.returnType = globalFunction->getReturnType(this, result, globalVar);
+//    if (!function) {
+//        return nullptr;
+//    }
+//    auto thisType = globalFunction->getThisType(this, result);
+//    
+//#ifdef DWARF_ENABLED
+//    DBuilder->finalize();
+//#endif
+//    
+//#ifdef MODULE_OUTPUT
+//    module->dump();
+//#endif
+//
+//    // Early exit if compilation fails
+//    if (result.errors.size() > 0)
+//        return nullptr;
+//    
+//    if (verifyModule(*module.get()) && result.errors.size() == 0) {
+//        module->dump();
+//        
+//        printf("----\n");
+//        
+//        auto output = new raw_os_ostream(std::cout);
+//        verifyModule(*module.get(), output);
+//        output->flush();
+//        
+//        assert(false);
+//    }
+//    
+//    return globalFunction;
+//}
 
 
 shared_ptr<CType> Compiler::getType(const string& name) const {
@@ -653,20 +655,20 @@ shared_ptr<CType> Compiler::getType(const string& name) const {
     }
 }
 
-void Compiler::emitLocation(IRBuilder<>* builder, const CLoc *loc) {
-#ifdef DWARF_ENABLED
-    if (!loc)
-        return builder->SetCurrentDebugLocation(DebugLoc());
-    
-    DIScope *Scope;
-    if (LexicalBlocks.empty())
-        Scope = TheCU;
-    else
-        Scope = LexicalBlocks.back();
-    
-    builder->SetCurrentDebugLocation(DebugLoc::get(loc->line, loc->col, Scope));
-#endif
-}
+//void Compiler::emitLocation(IRBuilder<>* builder, const CLoc *loc) {
+//#ifdef DWARF_ENABLED
+//    if (!loc)
+//        return builder->SetCurrentDebugLocation(DebugLoc());
+//    
+//    DIScope *Scope;
+//    if (LexicalBlocks.empty())
+//        Scope = TheCU;
+//    else
+//        Scope = LexicalBlocks.back();
+//    
+//    builder->SetCurrentDebugLocation(DebugLoc::get(loc->line, loc->col, Scope));
+//#endif
+//}
 
 void Compiler::includeFile(CResult& result, const string& fileName) {
     assert(state == CompilerState::Define);
@@ -690,196 +692,196 @@ void Compiler::includeFile(CResult& result, const string& fileName) {
     }
 }
 
-shared_ptr<IRBuilder<>> Compiler::getEntryBuilder(Function* function) {
-    auto it = entryBuilders.find(function);
-    if (it == entryBuilders.end()) {
-        auto basicBlock = BasicBlock::Create(context, "entry", function);
-        auto builder = make_shared<IRBuilder<>>(basicBlock);
-        entryBuilders[function] = builder;
-        return builder;
-    } else {
-        return it->second;
-    }
-}
-
-Function* Compiler::getAllocFunction() {
-    if (!allocFunction) {
-        vector<Type*> argTypes;
-        argTypes.push_back(Type::getInt64Ty(context));
-        auto functionType = FunctionType::get(Type::getInt8PtrTy(context), argTypes, false);
-#ifdef DEBUG_ALLOC
-        allocFunction = Function::Create(functionType, Function::ExternalLinkage, "debugMalloc", module.get());
-#else
-        allocFunction = Function::Create(functionType, Function::ExternalLinkage, "malloc", module.get());
-#endif
-    }
-    return allocFunction;
-}
-
-Function* Compiler::getReallocFunction() {
-    if (!reallocFunction) {
-        vector<Type*> argTypes;
-        argTypes.push_back(Type::getInt8PtrTy(context));
-        argTypes.push_back(Type::getInt64Ty(context));
-        auto functionType = FunctionType::get(Type::getInt8PtrTy(context), argTypes, false);
-#ifdef DEBUG_ALLOC
-        reallocFunction = Function::Create(functionType, Function::ExternalLinkage, "debugRealloc", module.get());
-#else
-        reallocFunction = Function::Create(functionType, Function::ExternalLinkage, "realloc", module.get());
-#endif
-    }
-    return reallocFunction;
-}
-
-Function* Compiler::getFreeFunction() {
-    if (!freeFunction) {
-        vector<Type*> argTypes;
-        argTypes.push_back(Type::getInt8PtrTy(context));
-        auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
-#ifdef DEBUG_ALLOC
-        freeFunction = Function::Create(functionType, Function::ExternalLinkage, "debugFree", module.get());
-#else
-        freeFunction = Function::Create(functionType, Function::ExternalLinkage, "free", module.get());
-#endif
-    }
-    return freeFunction;
-}
-
-void Compiler::callPushFunction(IRBuilder<>* builder, const string& name) {
-#ifdef DEBUG_CALLSTACK
-    if (!pushFunction) {
-        vector<Type*> argTypes;
-        argTypes.push_back(Type::getInt8PtrTy(context));
-        auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
-        pushFunction = Function::Create(functionType, Function::ExternalLinkage, "pushFunction", module.get());
-    }
-    
-    GlobalValue* nameValue;
-    auto it = functionNames.find(name);
-    if (it == functionNames.end()) {
-        nameValue = builder->CreateGlobalString(name);
-        functionNames[name] = nameValue;
-    } else {
-        nameValue = it->second;
-    }
-    
-    auto namePtr = builder->CreateBitCast(nameValue, Type::getInt8PtrTy(context));
-
-    vector<Value*> args;
-    args.push_back(namePtr);
-    builder->CreateCall(pushFunction, ArrayRef<Value*>(args));
-#endif
-}
-
-
-void Compiler::callPopFunction(IRBuilder<>* builder) {
-#ifdef DEBUG_CALLSTACK
-    if (!popFunction) {
-        vector<Type*> argTypes;
-        auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
-        popFunction = Function::Create(functionType, Function::ExternalLinkage, "popFunction", module.get());
-    }
-
-    vector<Value*> args;
-    builder->CreateCall(popFunction, ArrayRef<Value*>(args));
-#endif
-}
-
-void Compiler::callDebug(IRBuilder<>* builder, const string& name, Value* valuePtr, Value* valueInt) {
-    if (!debugFunction) {
-        vector<Type*> argTypes;
-        argTypes.push_back(Type::getInt8PtrTy(context));
-        argTypes.push_back(Type::getInt8PtrTy(context));
-        argTypes.push_back(Type::getInt64Ty(context));
-        auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
-        debugFunction = Function::Create(functionType, Function::ExternalLinkage, "debugFunction", module.get());
-    }
-    
-    GlobalValue* nameValue;
-    auto it = functionNames.find(name);
-    if (it == functionNames.end()) {
-        nameValue = builder->CreateGlobalString(name);
-        functionNames[name] = nameValue;
-    } else {
-        nameValue = it->second;
-    }
-    
-    auto namePtr = builder->CreateBitCast(nameValue, Type::getInt8PtrTy(context));
-    Value* valueVoidPtr = nullptr;
-    if (!valuePtr) {
-        valueVoidPtr = ConstantPointerNull::get(Type::getInt8PtrTy(context));
-    } else {
-        valueVoidPtr = builder->CreateBitCast(valuePtr, Type::getInt8PtrTy(context));
-    }
-
-    if (!valueInt) {
-        valueInt = ConstantInt::get(context, APInt(64, 0));
-    }
-
-    vector<Value*> args;
-    args.push_back(namePtr);
-    args.push_back(valueVoidPtr);
-    args.push_back(valueInt);
-    builder->CreateCall(debugFunction, ArrayRef<Value*>(args));
-}
-
-void Compiler::recordRetain(IRBuilder<>* builder, Value* value, const string& name) {
-#ifdef DEBUG_CALLSTACK
-    if (!recordRetainFunction) {
-        vector<Type*> argTypes;
-        argTypes.push_back(Type::getInt8PtrTy(context));
-        argTypes.push_back(Type::getInt8PtrTy(context));
-        auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
-        recordRetainFunction = Function::Create(functionType, Function::ExternalLinkage, "recordRetain", module.get());
-    }
-    
-    GlobalValue* nameValue;
-    auto it = functionNames.find(name);
-    if (it == functionNames.end()) {
-        nameValue = builder->CreateGlobalString(name);
-        functionNames[name] = nameValue;
-    } else {
-        nameValue = it->second;
-    }
-    
-    auto namePtr = builder->CreateBitCast(nameValue, Type::getInt8PtrTy(context));
-    auto valuePtr = builder->CreateBitCast(value, Type::getInt8PtrTy(context));
-    
-    vector<Value*> args;
-    args.push_back(valuePtr);
-    args.push_back(namePtr);
-    builder->CreateCall(recordRetainFunction, ArrayRef<Value*>(args));
-#endif
-}
-
-void Compiler::recordRelease(IRBuilder<>* builder, Value* value, const string& name) {
-#ifdef DEBUG_CALLSTACK
-    if (!recordReleaseFunction) {
-        vector<Type*> argTypes;
-        argTypes.push_back(Type::getInt8PtrTy(context));
-        argTypes.push_back(Type::getInt8PtrTy(context));
-        auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
-        recordReleaseFunction = Function::Create(functionType, Function::ExternalLinkage, "recordRelease", module.get());
-    }
-    
-    GlobalValue* nameValue;
-    auto it = functionNames.find(name);
-    if (it == functionNames.end()) {
-        nameValue = builder->CreateGlobalString(name);
-        functionNames[name] = nameValue;
-    } else {
-        nameValue = it->second;
-    }
-    
-    auto namePtr = builder->CreateBitCast(nameValue, Type::getInt8PtrTy(context));
-        auto valuePtr = builder->CreateBitCast(value, Type::getInt8PtrTy(context));
-    
-    vector<Value*> args;
-    args.push_back(valuePtr);
-    args.push_back(namePtr);
-    builder->CreateCall(recordReleaseFunction, ArrayRef<Value*>(args));
-#endif
-}
+//shared_ptr<IRBuilder<>> Compiler::getEntryBuilder(Function* function) {
+//    auto it = entryBuilders.find(function);
+//    if (it == entryBuilders.end()) {
+//        auto basicBlock = BasicBlock::Create(context, "entry", function);
+//        auto builder = make_shared<IRBuilder<>>(basicBlock);
+//        entryBuilders[function] = builder;
+//        return builder;
+//    } else {
+//        return it->second;
+//    }
+//}
+//
+//Function* Compiler::getAllocFunction() {
+//    if (!allocFunction) {
+//        vector<Type*> argTypes;
+//        argTypes.push_back(Type::getInt64Ty(context));
+//        auto functionType = FunctionType::get(Type::getInt8PtrTy(context), argTypes, false);
+//#ifdef DEBUG_ALLOC
+//        allocFunction = Function::Create(functionType, Function::ExternalLinkage, "debugMalloc", module.get());
+//#else
+//        allocFunction = Function::Create(functionType, Function::ExternalLinkage, "malloc", module.get());
+//#endif
+//    }
+//    return allocFunction;
+//}
+//
+//Function* Compiler::getReallocFunction() {
+//    if (!reallocFunction) {
+//        vector<Type*> argTypes;
+//        argTypes.push_back(Type::getInt8PtrTy(context));
+//        argTypes.push_back(Type::getInt64Ty(context));
+//        auto functionType = FunctionType::get(Type::getInt8PtrTy(context), argTypes, false);
+//#ifdef DEBUG_ALLOC
+//        reallocFunction = Function::Create(functionType, Function::ExternalLinkage, "debugRealloc", module.get());
+//#else
+//        reallocFunction = Function::Create(functionType, Function::ExternalLinkage, "realloc", module.get());
+//#endif
+//    }
+//    return reallocFunction;
+//}
+//
+//Function* Compiler::getFreeFunction() {
+//    if (!freeFunction) {
+//        vector<Type*> argTypes;
+//        argTypes.push_back(Type::getInt8PtrTy(context));
+//        auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
+//#ifdef DEBUG_ALLOC
+//        freeFunction = Function::Create(functionType, Function::ExternalLinkage, "debugFree", module.get());
+//#else
+//        freeFunction = Function::Create(functionType, Function::ExternalLinkage, "free", module.get());
+//#endif
+//    }
+//    return freeFunction;
+//}
+//
+//void Compiler::callPushFunction(IRBuilder<>* builder, const string& name) {
+//#ifdef DEBUG_CALLSTACK
+//    if (!pushFunction) {
+//        vector<Type*> argTypes;
+//        argTypes.push_back(Type::getInt8PtrTy(context));
+//        auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
+//        pushFunction = Function::Create(functionType, Function::ExternalLinkage, "pushFunction", module.get());
+//    }
+//    
+//    GlobalValue* nameValue;
+//    auto it = functionNames.find(name);
+//    if (it == functionNames.end()) {
+//        nameValue = builder->CreateGlobalString(name);
+//        functionNames[name] = nameValue;
+//    } else {
+//        nameValue = it->second;
+//    }
+//    
+//    auto namePtr = builder->CreateBitCast(nameValue, Type::getInt8PtrTy(context));
+//
+//    vector<Value*> args;
+//    args.push_back(namePtr);
+//    builder->CreateCall(pushFunction, ArrayRef<Value*>(args));
+//#endif
+//}
+//
+//
+//void Compiler::callPopFunction(IRBuilder<>* builder) {
+//#ifdef DEBUG_CALLSTACK
+//    if (!popFunction) {
+//        vector<Type*> argTypes;
+//        auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
+//        popFunction = Function::Create(functionType, Function::ExternalLinkage, "popFunction", module.get());
+//    }
+//
+//    vector<Value*> args;
+//    builder->CreateCall(popFunction, ArrayRef<Value*>(args));
+//#endif
+//}
+//
+//void Compiler::callDebug(IRBuilder<>* builder, const string& name, Value* valuePtr, Value* valueInt) {
+//    if (!debugFunction) {
+//        vector<Type*> argTypes;
+//        argTypes.push_back(Type::getInt8PtrTy(context));
+//        argTypes.push_back(Type::getInt8PtrTy(context));
+//        argTypes.push_back(Type::getInt64Ty(context));
+//        auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
+//        debugFunction = Function::Create(functionType, Function::ExternalLinkage, "debugFunction", module.get());
+//    }
+//    
+//    GlobalValue* nameValue;
+//    auto it = functionNames.find(name);
+//    if (it == functionNames.end()) {
+//        nameValue = builder->CreateGlobalString(name);
+//        functionNames[name] = nameValue;
+//    } else {
+//        nameValue = it->second;
+//    }
+//    
+//    auto namePtr = builder->CreateBitCast(nameValue, Type::getInt8PtrTy(context));
+//    Value* valueVoidPtr = nullptr;
+//    if (!valuePtr) {
+//        valueVoidPtr = ConstantPointerNull::get(Type::getInt8PtrTy(context));
+//    } else {
+//        valueVoidPtr = builder->CreateBitCast(valuePtr, Type::getInt8PtrTy(context));
+//    }
+//
+//    if (!valueInt) {
+//        valueInt = ConstantInt::get(context, APInt(64, 0));
+//    }
+//
+//    vector<Value*> args;
+//    args.push_back(namePtr);
+//    args.push_back(valueVoidPtr);
+//    args.push_back(valueInt);
+//    builder->CreateCall(debugFunction, ArrayRef<Value*>(args));
+//}
+//
+//void Compiler::recordRetain(IRBuilder<>* builder, Value* value, const string& name) {
+//#ifdef DEBUG_CALLSTACK
+//    if (!recordRetainFunction) {
+//        vector<Type*> argTypes;
+//        argTypes.push_back(Type::getInt8PtrTy(context));
+//        argTypes.push_back(Type::getInt8PtrTy(context));
+//        auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
+//        recordRetainFunction = Function::Create(functionType, Function::ExternalLinkage, "recordRetain", module.get());
+//    }
+//    
+//    GlobalValue* nameValue;
+//    auto it = functionNames.find(name);
+//    if (it == functionNames.end()) {
+//        nameValue = builder->CreateGlobalString(name);
+//        functionNames[name] = nameValue;
+//    } else {
+//        nameValue = it->second;
+//    }
+//    
+//    auto namePtr = builder->CreateBitCast(nameValue, Type::getInt8PtrTy(context));
+//    auto valuePtr = builder->CreateBitCast(value, Type::getInt8PtrTy(context));
+//    
+//    vector<Value*> args;
+//    args.push_back(valuePtr);
+//    args.push_back(namePtr);
+//    builder->CreateCall(recordRetainFunction, ArrayRef<Value*>(args));
+//#endif
+//}
+//
+//void Compiler::recordRelease(IRBuilder<>* builder, Value* value, const string& name) {
+//#ifdef DEBUG_CALLSTACK
+//    if (!recordReleaseFunction) {
+//        vector<Type*> argTypes;
+//        argTypes.push_back(Type::getInt8PtrTy(context));
+//        argTypes.push_back(Type::getInt8PtrTy(context));
+//        auto functionType = FunctionType::get(Type::getVoidTy(context), argTypes, false);
+//        recordReleaseFunction = Function::Create(functionType, Function::ExternalLinkage, "recordRelease", module.get());
+//    }
+//    
+//    GlobalValue* nameValue;
+//    auto it = functionNames.find(name);
+//    if (it == functionNames.end()) {
+//        nameValue = builder->CreateGlobalString(name);
+//        functionNames[name] = nameValue;
+//    } else {
+//        nameValue = it->second;
+//    }
+//    
+//    auto namePtr = builder->CreateBitCast(nameValue, Type::getInt8PtrTy(context));
+//        auto valuePtr = builder->CreateBitCast(value, Type::getInt8PtrTy(context));
+//    
+//    vector<Value*> args;
+//    args.push_back(valuePtr);
+//    args.push_back(namePtr);
+//    builder->CreateCall(recordReleaseFunction, ArrayRef<Value*>(args));
+//#endif
+//}
 
 shared_ptr<CInterfaceDefinition> Compiler::getInterfaceDefinition(string& name) {
     auto it = interfaceDefinitions.find(name);

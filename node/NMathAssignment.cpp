@@ -37,74 +37,74 @@ int NMathAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_
     return count;
 }
 
-shared_ptr<ReturnValue> NMathAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-    assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(builder, &this->loc);
-    
-    auto cvar = var->getVar(compiler, result, thisFunction, thisVar, nullptr);
-    if (!cvar) {
-        return nullptr;
-    }
-    
-    if (!cvar->isMutable) {
-        result.addError(loc, CErrorCode::ImmutableAssignment, "invalid on immutable variable");
-        return nullptr;
-    }
-    
-    auto leftValue = cvar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB, RRT_Auto);
-    
-    // Compute value
-    shared_ptr<ReturnValue> rightValue = nullptr;
-    if (rightSide) {
-        rightValue = rightSide->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
-    }
-
-    Value* resultValue = nullptr;
-    switch (op) {
-        case NMAO_Add:
-            if (!rightValue) {
-                result.addError(loc, CErrorCode::ExpressionEmpty, "add by an empty value");
-                return nullptr;
-            }
-            
-            if (!rightValue->value->getType()->isIntegerTy(64)) {
-                result.addError(loc, CErrorCode::TypeMismatch, "can only add by int");
-                return nullptr;
-            }
-            
-            resultValue = builder->CreateAdd(leftValue->value, rightValue->value);
-            break;
-        case NMAO_Sub:
-            if (!rightValue) {
-                result.addError(loc, CErrorCode::ExpressionEmpty, "add by an empty value");
-                return nullptr;
-            }
-            
-            if (!rightValue->value->getType()->isIntegerTy(64)) {
-                result.addError(loc, CErrorCode::TypeMismatch, "can only add by int");
-                return nullptr;
-            }
-            
-            resultValue = builder->CreateSub(leftValue->value, rightValue->value);
-            break;
-        case NMAO_Inc:
-            resultValue = builder->CreateAdd(leftValue->value, ConstantInt::get(compiler->context, APInt(64, 1)));
-            break;
-        case NMAO_Dec:
-            resultValue = builder->CreateSub(leftValue->value, ConstantInt::get(compiler->context, APInt(64, 1)));
-            break;
-    }
-    
-    leftValue->releaseIfNeeded(compiler, result, builder);
-    if (rightValue) {
-        rightValue->releaseIfNeeded(compiler, result, builder);
-    }
-
-    // Store value
-    Value* destValue = cvar->getStoreValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB);
-    builder->CreateStore(resultValue, destValue);
-    return make_shared<ReturnValue>(false, resultValue);
-}
+//shared_ptr<ReturnValue> NMathAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
+//    assert(compiler->state == CompilerState::Compile);
+//    compiler->emitLocation(builder, &this->loc);
+//    
+//    auto cvar = var->getVar(compiler, result, thisFunction, thisVar, nullptr);
+//    if (!cvar) {
+//        return nullptr;
+//    }
+//    
+//    if (!cvar->isMutable) {
+//        result.addError(loc, CErrorCode::ImmutableAssignment, "invalid on immutable variable");
+//        return nullptr;
+//    }
+//    
+//    auto leftValue = cvar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB, RRT_Auto);
+//    
+//    // Compute value
+//    shared_ptr<ReturnValue> rightValue = nullptr;
+//    if (rightSide) {
+//        rightValue = rightSide->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
+//    }
+//
+//    Value* resultValue = nullptr;
+//    switch (op) {
+//        case NMAO_Add:
+//            if (!rightValue) {
+//                result.addError(loc, CErrorCode::ExpressionEmpty, "add by an empty value");
+//                return nullptr;
+//            }
+//            
+//            if (!rightValue->value->getType()->isIntegerTy(64)) {
+//                result.addError(loc, CErrorCode::TypeMismatch, "can only add by int");
+//                return nullptr;
+//            }
+//            
+//            resultValue = builder->CreateAdd(leftValue->value, rightValue->value);
+//            break;
+//        case NMAO_Sub:
+//            if (!rightValue) {
+//                result.addError(loc, CErrorCode::ExpressionEmpty, "add by an empty value");
+//                return nullptr;
+//            }
+//            
+//            if (!rightValue->value->getType()->isIntegerTy(64)) {
+//                result.addError(loc, CErrorCode::TypeMismatch, "can only add by int");
+//                return nullptr;
+//            }
+//            
+//            resultValue = builder->CreateSub(leftValue->value, rightValue->value);
+//            break;
+//        case NMAO_Inc:
+//            resultValue = builder->CreateAdd(leftValue->value, ConstantInt::get(compiler->context, APInt(64, 1)));
+//            break;
+//        case NMAO_Dec:
+//            resultValue = builder->CreateSub(leftValue->value, ConstantInt::get(compiler->context, APInt(64, 1)));
+//            break;
+//    }
+//    
+//    leftValue->releaseIfNeeded(compiler, result, builder);
+//    if (rightValue) {
+//        rightValue->releaseIfNeeded(compiler, result, builder);
+//    }
+//
+//    // Store value
+//    Value* destValue = cvar->getStoreValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB);
+//    builder->CreateStore(resultValue, destValue);
+//    return make_shared<ReturnValue>(false, resultValue);
+//}
 
 void NMathAssignment::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     var->dump(compiler, result, thisFunction, thisVar, functions, ss, level);

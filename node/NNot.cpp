@@ -20,23 +20,23 @@ int NNot::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFu
     return node->setHeapVar(compiler, result, thisFunction, thisVar, false);
 }
 
-shared_ptr<ReturnValue> NNot::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-    assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(builder, &this->loc);
-    
-    auto v = node->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
-    if (!v)
-        return nullptr;
-    
-    assert(v->type == RVT_SIMPLE);
-    
-    if (!v->value->getType()->isIntegerTy(1)) {
-        result.addError(loc, CErrorCode::TypeMismatch, "must be bool");
-        return nullptr;
-    }
-    
-    return make_shared<ReturnValue>(false, builder->CreateNot(v->value));
-}
+//shared_ptr<ReturnValue> NNot::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
+//    assert(compiler->state == CompilerState::Compile);
+//    compiler->emitLocation(builder, &this->loc);
+//    
+//    auto v = node->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
+//    if (!v)
+//        return nullptr;
+//    
+//    assert(v->type == RVT_SIMPLE);
+//    
+//    if (!v->value->getType()->isIntegerTy(1)) {
+//        result.addError(loc, CErrorCode::TypeMismatch, "must be bool");
+//        return nullptr;
+//    }
+//    
+//    return make_shared<ReturnValue>(false, builder->CreateNot(v->value));
+//}
 
 void NNot::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << "!";

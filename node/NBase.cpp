@@ -16,30 +16,30 @@ const char* alloc_mode(Compiler* compiler, CResult& result, shared_ptr<CVar> thi
     }
 }
 
-bool isSimpleType(Type* type) {
-    if (!type->isPointerTy()) {
-        return true;
-    }
-    
-    auto elemType = type->getPointerElementType();
-    if (elemType->isStructTy()) {
-        return false;
-    }
-    
-    return true;
-}
+//bool isSimpleType(Type* type) {
+//    if (!type->isPointerTy()) {
+//        return true;
+//    }
+//    
+//    auto elemType = type->getPointerElementType();
+//    if (elemType->isStructTy()) {
+//        return false;
+//    }
+//    
+//    return true;
+//}
 
-void ReturnValue::retainIfNeeded(Compiler* compiler, CResult& result, IRBuilder<>* builder) {
-    if (releaseMode == RVR_MustRetain) {
-        valueFunction->retainHeap(compiler, result, builder, value);
-    }
-}
-
-void ReturnValue::releaseIfNeeded(Compiler* compiler, CResult& result, IRBuilder<>* builder) {
-    if (releaseMode == RVR_MustRelease) {
-        valueFunction->releaseHeap(compiler, result, builder, value);
-    }
-}
+//void ReturnValue::retainIfNeeded(Compiler* compiler, CResult& result, IRBuilder<>* builder) {
+//    if (releaseMode == RVR_MustRetain) {
+//        valueFunction->retainHeap(compiler, result, builder, value);
+//    }
+//}
+//
+//void ReturnValue::releaseIfNeeded(Compiler* compiler, CResult& result, IRBuilder<>* builder) {
+//    if (releaseMode == RVR_MustRelease) {
+//        valueFunction->releaseHeap(compiler, result, builder, value);
+//    }
+//}
 
 void NBase::define(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
@@ -72,8 +72,8 @@ int NBase::setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CBaseFunct
 }
 
 
-shared_ptr<ReturnValue> NBase::compile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-    assert(compiler->state == CompilerState::Compile);
-    return compileImpl(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, returnRefType);
-}
+//shared_ptr<ReturnValue> NBase::compile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
+//    assert(compiler->state == CompilerState::Compile);
+//    return compileImpl(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, returnRefType);
+//}
 

@@ -5,19 +5,19 @@ shared_ptr<CType> NDouble::getTypeImpl(Compiler* compiler, CResult& result, shar
     return compiler->typeFloat;
 }
 
-shared_ptr<ReturnValue> NDouble::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-    assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(builder, &this->loc);
-
-    char* e;
-    auto t = strtod(value.c_str(), &e);
-    if (*e != '\0') {
-        result.addError(loc, CErrorCode::InvalidNumber, "not a valid float '%s'", value.c_str());
-        return nullptr;
-    }
-    
-    return make_shared<ReturnValue>(false, ConstantFP::get(compiler->context, APFloat(t)));
-}
+//shared_ptr<ReturnValue> NDouble::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
+//    assert(compiler->state == CompilerState::Compile);
+//    compiler->emitLocation(builder, &this->loc);
+//
+//    char* e;
+//    auto t = strtod(value.c_str(), &e);
+//    if (*e != '\0') {
+//        result.addError(loc, CErrorCode::InvalidNumber, "not a valid float '%s'", value.c_str());
+//        return nullptr;
+//    }
+//    
+//    return make_shared<ReturnValue>(false, ConstantFP::get(compiler->context, APFloat(t)));
+//}
 
 void NDouble::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << value;

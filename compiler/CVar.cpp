@@ -6,7 +6,7 @@
 //  Copyright © 2016 Mann, Justin. All rights reserved.
 //
 
-#include "Node.h"
+#include "../node/Node.h"
 
 string CVar::fullName() {
     return strprintf("%s.%s", parent.lock()->fullName(false).c_str(), name.c_str());
@@ -85,35 +85,35 @@ shared_ptr<CType> CNormalVar::getType(Compiler* compiler, CResult& result) {
     return type;
 }
 
-shared_ptr<ReturnValue> CNormalVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-    if (mode == Var_This) {
-        return make_shared<ReturnValue>(parent.lock(), RVR_MustRetain, RVT_HEAP, true, thisValue);
-    } else {
-        // TODO: Can be smarter about whether or not return value is in entry
-        auto value = getStoreValue(compiler, result, thisVar, thisValue, dotInEntry, dotValue, builder, catchBB);
-        return make_shared<ReturnValue>(type->parent.lock(), RVR_MustRetain, RVT_HEAP, false, builder->CreateLoad(value));
-    }
-}
-
-Value* CNormalVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-    if (mode == Var_This) {
-        assert(false);
-    } else if (mode == Var_Local) {
-        if (!value) {
-            auto entryBuilder = compiler->getEntryBuilder(getFunctionFromBuilder(builder));
-            auto valueType = getType(compiler, result)->llvmRefType(compiler, result);
-            if (valueType->isVoidTy()) {
-                result.addError(loc, CErrorCode::StoringVoid, "cannot save a void value");
-                return nullptr;
-            }
-            value = entryBuilder->CreateAlloca(valueType, 0, name.c_str());
-        }
-        return value;
-    } else {
-        auto fun = static_pointer_cast<CFunction>(parent.lock());
-        return fun->getArgumentPointer(compiler, result, dotInEntry, dotValue, index, builder);
-    }
-}
+//shared_ptr<ReturnValue> CNormalVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
+//    if (mode == Var_This) {
+//        return make_shared<ReturnValue>(parent.lock(), RVR_MustRetain, RVT_HEAP, true, thisValue);
+//    } else {
+//        // TODO: Can be smarter about whether or not return value is in entry
+//        auto value = getStoreValue(compiler, result, thisVar, thisValue, dotInEntry, dotValue, builder, catchBB);
+//        return make_shared<ReturnValue>(type->parent.lock(), RVR_MustRetain, RVT_HEAP, false, builder->CreateLoad(value));
+//    }
+//}
+//
+//Value* CNormalVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
+//    if (mode == Var_This) {
+//        assert(false);
+//    } else if (mode == Var_Local) {
+//        if (!value) {
+//            auto entryBuilder = compiler->getEntryBuilder(getFunctionFromBuilder(builder));
+//            auto valueType = getType(compiler, result)->llvmRefType(compiler, result);
+//            if (valueType->isVoidTy()) {
+//                result.addError(loc, CErrorCode::StoringVoid, "cannot save a void value");
+//                return nullptr;
+//            }
+//            value = entryBuilder->CreateAlloca(valueType, 0, name.c_str());
+//        }
+//        return value;
+//    } else {
+//        auto fun = static_pointer_cast<CFunction>(parent.lock());
+//        return fun->getArgumentPointer(compiler, result, dotInEntry, dotValue, index, builder);
+//    }
+//}
 
 bool CNormalVar::getHeapVar(Compiler *compiler, CResult &result, shared_ptr<CVar> thisVar) {
     if (interfaceMethodArgVar) {

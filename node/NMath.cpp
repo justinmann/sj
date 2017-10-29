@@ -24,62 +24,62 @@ int NMath::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseF
     return count;
 }
 
-shared_ptr<ReturnValue> NMath::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-    assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(builder, &this->loc);
-    
-    auto L = leftSide->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
-    auto R = rightSide->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
-    if (!L || !R)
-        return nullptr;
-    
-    if (L->value->getType() != R->value->getType()) {
-        result.addError(loc, CErrorCode::TypeMismatch, "left and right values are not the same type");
-        return nullptr;
-    }
-    
-    assert(L->type == RVT_SIMPLE);
-    assert(R->type == RVT_SIMPLE);
-    
-    if (L->value->getType()->isIntegerTy()) {
-        switch (op) {
-            case NMathOp::Add:
-                return make_shared<ReturnValue>(false, builder->CreateAdd(L->value, R->value, "addtmp"));
-            case NMathOp::Sub:
-                return make_shared<ReturnValue>(false, builder->CreateSub(L->value, R->value, "subtmp"));
-            case NMathOp::Mul:
-                return make_shared<ReturnValue>(false, builder->CreateMul(L->value, R->value, "multmp"));
-            case NMathOp::Div:
-                return make_shared<ReturnValue>(false, builder->CreateSDiv(L->value, R->value, "divtmp"));
-            case NMathOp::Mod:
-                return make_shared<ReturnValue>(false, builder->CreateSRem(L->value, R->value, "modetmp"));
-            default:
-                result.addError(loc, CErrorCode::Internal, "unknown math type");
-                return nullptr;
-        }
-    } else if (L->value->getType()->isDoubleTy()) {
-        switch (op) {
-            case NMathOp::Add:
-                return make_shared<ReturnValue>(false, builder->CreateFAdd(L->value, R->value, "addtmp"));
-            case NMathOp::Sub:
-                return make_shared<ReturnValue>(false, builder->CreateFSub(L->value, R->value, "subtmp"));
-            case NMathOp::Mul:
-                return make_shared<ReturnValue>(false, builder->CreateFMul(L->value, R->value, "multmp"));
-            case NMathOp::Div:
-                return make_shared<ReturnValue>(false, builder->CreateFDiv(L->value, R->value, "divtmp"));
-            case NMathOp::Mod:
-                result.addError(loc, CErrorCode::InvalidType, "mod operation are not supported on this type");
-                return nullptr;
-            default:
-                result.addError(loc, CErrorCode::Internal, "unknown math type");
-                return nullptr;
-        }
-    } else {
-        result.addError(loc, CErrorCode::InvalidType, "math operations are not supported on this type");
-    }
-    
-    return NULL;
-}
+//shared_ptr<ReturnValue> NMath::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
+//    assert(compiler->state == CompilerState::Compile);
+//    compiler->emitLocation(builder, &this->loc);
+//    
+//    auto L = leftSide->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
+//    auto R = rightSide->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
+//    if (!L || !R)
+//        return nullptr;
+//    
+//    if (L->value->getType() != R->value->getType()) {
+//        result.addError(loc, CErrorCode::TypeMismatch, "left and right values are not the same type");
+//        return nullptr;
+//    }
+//    
+//    assert(L->type == RVT_SIMPLE);
+//    assert(R->type == RVT_SIMPLE);
+//    
+//    if (L->value->getType()->isIntegerTy()) {
+//        switch (op) {
+//            case NMathOp::Add:
+//                return make_shared<ReturnValue>(false, builder->CreateAdd(L->value, R->value, "addtmp"));
+//            case NMathOp::Sub:
+//                return make_shared<ReturnValue>(false, builder->CreateSub(L->value, R->value, "subtmp"));
+//            case NMathOp::Mul:
+//                return make_shared<ReturnValue>(false, builder->CreateMul(L->value, R->value, "multmp"));
+//            case NMathOp::Div:
+//                return make_shared<ReturnValue>(false, builder->CreateSDiv(L->value, R->value, "divtmp"));
+//            case NMathOp::Mod:
+//                return make_shared<ReturnValue>(false, builder->CreateSRem(L->value, R->value, "modetmp"));
+//            default:
+//                result.addError(loc, CErrorCode::Internal, "unknown math type");
+//                return nullptr;
+//        }
+//    } else if (L->value->getType()->isDoubleTy()) {
+//        switch (op) {
+//            case NMathOp::Add:
+//                return make_shared<ReturnValue>(false, builder->CreateFAdd(L->value, R->value, "addtmp"));
+//            case NMathOp::Sub:
+//                return make_shared<ReturnValue>(false, builder->CreateFSub(L->value, R->value, "subtmp"));
+//            case NMathOp::Mul:
+//                return make_shared<ReturnValue>(false, builder->CreateFMul(L->value, R->value, "multmp"));
+//            case NMathOp::Div:
+//                return make_shared<ReturnValue>(false, builder->CreateFDiv(L->value, R->value, "divtmp"));
+//            case NMathOp::Mod:
+//                result.addError(loc, CErrorCode::InvalidType, "mod operation are not supported on this type");
+//                return nullptr;
+//            default:
+//                result.addError(loc, CErrorCode::Internal, "unknown math type");
+//                return nullptr;
+//        }
+//    } else {
+//        result.addError(loc, CErrorCode::InvalidType, "math operations are not supported on this type");
+//    }
+//    
+//    return NULL;
+//}
 
 void NMath::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     leftSide->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
