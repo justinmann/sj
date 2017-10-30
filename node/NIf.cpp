@@ -184,18 +184,10 @@ shared_ptr<NIf> NIf::shared_from_this() {
 
 shared_ptr<CType> NIf::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
 	auto type = getType(compiler, result, thisFunction, thisVar);
-	string ifResultName;
-
-	if (type != compiler->typeVoid) {
-		auto index = 0;
-		do {
-			index++;
-			stringstream ss;
-			ss << "ifResult" << index;
-			ifResultName = ss.str();
-		} while (function->variables.find(ifResultName) != function->variables.end());
-		function->variables[ifResultName] = type->name;
-	}
+    string ifResultName;
+    if (type != compiler->typeVoid) {
+        ifResultName = function->createLocalVariable("ifResult", type->name);
+    }
 
 	stringstream ifLine;
 	ifLine << "if (";

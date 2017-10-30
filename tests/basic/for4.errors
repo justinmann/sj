@@ -1,0 +1,1 @@
+ERROR:7 ./basic/for4.sj[2:1] var 'x' already exists within function, must have a unique name

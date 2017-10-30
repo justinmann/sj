@@ -90,8 +90,42 @@ int NFor::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFu
 }
 
 shared_ptr<CType> NFor::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
-	assert(false);
-	return nullptr;
+    function->variables[varName] = compiler->typeInt->name;
+    auto loopEndName = function->createLocalVariable("loopEnd", compiler->typeInt->name);
+    
+    stringstream loopCounterLine;
+    loopCounterLine << varName << " = ";
+    auto loopCounterType = start->transpile(compiler, result, thisFunction, thisVar, output, function, loopCounterLine);
+    if (loopCounterType != compiler->typeInt) {
+        result.addError(loc, CErrorCode::TypeMismatch, "start value must be a int");
+        return nullptr;
+    }
+    function->statements.push_back(loopCounterLine.str());
+    
+    stringstream loopEndLine;
+    loopEndLine << loopEndName << " = ";
+    auto loopEndType = end->transpile(compiler, result, thisFunction, thisVar, output, function, loopEndLine);
+    if (loopEndType != compiler->typeInt) {
+        result.addError(loc, CErrorCode::TypeMismatch, "end value must be a int");
+        return nullptr;
+    }
+    function->statements.push_back(loopEndLine.str());
+    
+    stringstream whileLine;
+    whileLine << "while (" << varName << " <= " << loopEndName << ") {";
+    function->statements.push_back(whileLine.str());
+
+    stringstream bodyLine;
+    body->transpile(compiler, result, thisFunction, thisVar, output, function, bodyLine);
+    function->statements.push_back(bodyLine.str());
+
+    stringstream loopCounterIncLine;
+    loopCounterIncLine << varName << "++";
+    function->statements.push_back(loopCounterIncLine.str());
+
+    function->statements.push_back("}");
+    
+    return compiler->typeVoid;
 }
 
 //shared_ptr<ReturnValue> NFor::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {

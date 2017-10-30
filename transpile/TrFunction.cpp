@@ -31,3 +31,17 @@ void TrFunction::writeBodyToStream(ostream& stream) {
 		stream << "\n";
 	}
 }
+
+string TrFunction::createLocalVariable(string prefix, string type) {
+    string varName;
+    
+    auto index = 0;
+    do {
+        index++;
+        stringstream ss;
+        ss << prefix << index;
+        varName = ss.str();
+    } while (variables.find(varName) != variables.end());
+    variables[varName] = type;
+    return varName;
+}

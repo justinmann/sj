@@ -8,4 +8,5 @@ public:
 	std::vector<string> statements;
 
 	void writeBodyToStream(ostream& stream);
+    string createLocalVariable(string prefix, string type);
 };

@@ -432,7 +432,9 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 					state = CompilerState::Compile;
 					result->block->transpile(this, *result, globalFunction, nullptr, &output, &output.mainFunction, empty);
 					assert(empty.str().size() == 0);
-					output.writeToStream(stream, errorStream);
+                    if (result->errors.size() == 0) {
+                        output.writeToStream(stream);
+                    }
 				}
 			}
 		}
