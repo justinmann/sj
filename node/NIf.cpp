@@ -183,18 +183,20 @@ shared_ptr<NIf> NIf::shared_from_this() {
 }
 
 shared_ptr<CType> NIf::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
-	auto index = 0;
-	string ifResultName;
-	do {
-		index++;
-		stringstream ss;
-		ss << "ifResult" << index;
-		ifResultName = ss.str();
-	} while (function->variables.find(ifResultName) != function->variables.end());
-
 	auto type = getType(compiler, result, thisFunction, thisVar);
-	function->variables[ifResultName] = type->name;
-	
+	string ifResultName;
+
+	if (type != compiler->typeVoid) {
+		auto index = 0;
+		do {
+			index++;
+			stringstream ss;
+			ss << "ifResult" << index;
+			ifResultName = ss.str();
+		} while (function->variables.find(ifResultName) != function->variables.end());
+		function->variables[ifResultName] = type->name;
+	}
+
 	stringstream ifLine;
 	ifLine << "if (";
 	condition->transpile(compiler, result, thisFunction, thisVar, output, function, ifLine);
@@ -204,23 +206,29 @@ shared_ptr<CType> NIf::transpile(Compiler* compiler, CResult& result, shared_ptr
 	if (ifBlock) {
 		ifBlock->transpile(compiler, result, thisFunction, thisVar, output, function, stringstream());
 
-		auto lastLine = function->statements.back();
-		lastLine = ifResultName + " = " + lastLine;
-		function->statements.pop_back();
-		function->statements.push_back(lastLine);
+		if (type != compiler->typeVoid) {
+			auto lastLine = function->statements.back();
+			lastLine = ifResultName + " = " + lastLine;
+			function->statements.pop_back();
+			function->statements.push_back(lastLine);
+		}
 	}
 
 	if (elseBlock) {
 		function->statements.push_back("} else {");
 		elseBlock->transpile(compiler, result, thisFunction, thisVar, output, function, stringstream());
 
-		auto lastLine = function->statements.back();
-		lastLine = ifResultName + " = " + lastLine;
-		function->statements.pop_back();
-		function->statements.push_back(lastLine);
+		if (type != compiler->typeVoid) {
+			auto lastLine = function->statements.back();
+			lastLine = ifResultName + " = " + lastLine;
+			function->statements.pop_back();
+			function->statements.push_back(lastLine);
+		}
 	}
 
 	function->statements.push_back("}");
-	function->statements.push_back(ifResultName);
+	if (type != compiler->typeVoid) {
+		function->statements.push_back(ifResultName);
+	}
 	return type;
 }
