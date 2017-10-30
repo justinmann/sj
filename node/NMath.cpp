@@ -84,7 +84,7 @@ int NMath::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseF
 void NMath::transpile(TrOutput* output, TrFunction* function, stringstream* line) {
 	*line << "(";
 	leftSide->transpile(output, function, line);
-	*line << ") ";
+	*line << ")";
 	switch (op) {
 	case NMathOp::Add:
 		*line << " + ";
@@ -102,7 +102,7 @@ void NMath::transpile(TrOutput* output, TrFunction* function, stringstream* line
 		*line << " %% ";
 		break;
 	}
-	*line << " (";
+	*line << "(";
 	rightSide->transpile(output, function, line);
 	*line << ")";
 }
