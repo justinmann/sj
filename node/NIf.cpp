@@ -204,7 +204,9 @@ shared_ptr<CType> NIf::transpile(Compiler* compiler, CResult& result, shared_ptr
 	function->statements.push_back(ifLine.str());
 
 	if (ifBlock) {
-		ifBlock->transpile(compiler, result, thisFunction, thisVar, output, function, stringstream());
+		stringstream empty;
+		ifBlock->transpile(compiler, result, thisFunction, thisVar, output, function, empty);
+		assert(empty.str().size() == 0);
 
 		if (type != compiler->typeVoid) {
 			auto lastLine = function->statements.back();
@@ -216,7 +218,9 @@ shared_ptr<CType> NIf::transpile(Compiler* compiler, CResult& result, shared_ptr
 
 	if (elseBlock) {
 		function->statements.push_back("} else {");
-		elseBlock->transpile(compiler, result, thisFunction, thisVar, output, function, stringstream());
+		stringstream empty;
+		elseBlock->transpile(compiler, result, thisFunction, thisVar, output, function, empty);
+		assert(empty.str().size() == 0);
 
 		if (type != compiler->typeVoid) {
 			auto lastLine = function->statements.back();

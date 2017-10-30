@@ -393,65 +393,58 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 	auto templateTypes = vector<shared_ptr<CType>>();
 	shared_ptr<CFunction> currentFunction;
 	shared_ptr<CFunction> globalFunction;
+	stringstream empty;
 
 	auto result = genNodeFile(fileName);
-	if (result->errors.size() > 0)
-		goto done;
+	if (result->errors.size() == 0) {
+		anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, nullptr, "global", nullptr, nullptr, nullptr, result->block, nullptr, nullptr);
+		currentFunctionDefintion = CFunctionDefinition::create(this, *result, nullptr, FT_Public, "", nullptr, nullptr);
+		state = CompilerState::Define;
+		anonFunction->define(this, *result, currentFunctionDefintion);
 
-	anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, nullptr, "global", nullptr, nullptr, nullptr, result->block, nullptr, nullptr);
-	currentFunctionDefintion = CFunctionDefinition::create(this, *result, nullptr, FT_Public, "", nullptr, nullptr);
-	state = CompilerState::Define;
-	anonFunction->define(this, *result, currentFunctionDefintion);
+		if (result->errors.size() == 0) {
+			globalFunctionDefinition = currentFunctionDefintion->funcsByName["global"];
+			for (auto index = (size_t)0; index < includedBlocks.size(); index++) {
+				auto block = includedBlocks[index].second;
+				block->define(this, *result, globalFunctionDefinition);
+				result->block->statements.insert(result->block->statements.begin(), block->statements.begin(), block->statements.end());
+			}
 
-	// Early exit if compile fails
-	if (result->errors.size() > 0)
-		goto done;
-
-	globalFunctionDefinition = currentFunctionDefintion->funcsByName["global"];
-	for (auto index = (size_t)0; index < includedBlocks.size(); index++) {
-		auto block = includedBlocks[index].second;
-		block->define(this, *result, globalFunctionDefinition);
-		result->block->statements.insert(result->block->statements.begin(), block->statements.begin(), block->statements.end());
-	}
-
-	// Early exit if compile fails
-	if (result->errors.size() > 0)
-		goto done;
-
-	state = CompilerState::FixVar;
-	currentFunction = make_shared<CFunction>(currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr);
-	currentFunction->init(this, *result, nullptr, nullptr);
-	currentFunction->createThisVar(this, *result, currentVar);
-	anonFunction->getVar(this, *result, currentFunction, currentVar);
-	globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, *result, "global", nullptr, nullptr));
-	globalFunction->createThisVar(this, *result, globalVar);
+			if (result->errors.size() == 0) {
+				state = CompilerState::FixVar;
+				currentFunction = make_shared<CFunction>(currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr);
+				currentFunction->init(this, *result, nullptr, nullptr);
+				currentFunction->createThisVar(this, *result, currentVar);
+				anonFunction->getVar(this, *result, currentFunction, currentVar);
+				globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, *result, "global", nullptr, nullptr));
+				globalFunction->createThisVar(this, *result, globalVar);
 
 #ifdef VAR_OUTPUT
-	currentFunction->dump(this, *compilerResult, 0);
+				currentFunction->dump(this, *compilerResult, 0);
 #endif
 
-	// Early exit if compile fails
-	if (result->errors.size() > 0)
-		goto done;
-
+				if (result->errors.size() == 0) {
 #ifdef NODE_OUTPUT
-	map<shared_ptr<CBaseFunction>, string> functionDumps;
-	stringstream ss;
-	compilerResult->block->dump(this, *compilerResult, globalFunction, globalVar, functionDumps, ss, 0);
-	for (auto it : functionDumps) {
-		printf("%s\n\n", it.second.c_str());
-	}
-	printf("global %s\n\n", ss.str().c_str());
+					map<shared_ptr<CBaseFunction>, string> functionDumps;
+					stringstream ss;
+					compilerResult->block->dump(this, *compilerResult, globalFunction, globalVar, functionDumps, ss, 0);
+					for (auto it : functionDumps) {
+						printf("%s\n\n", it.second.c_str());
+					}
+					printf("global %s\n\n", ss.str().c_str());
 #endif
 
-	state = CompilerState::Compile;
-	result->block->transpile(this, *result, globalFunction, nullptr, &output, &output.mainFunction, stringstream());
-	output.writeToStream(stream, errorStream);
+					state = CompilerState::Compile;
+					result->block->transpile(this, *result, globalFunction, nullptr, &output, &output.mainFunction, empty);
+					assert(empty.str().size() == 0);
+					output.writeToStream(stream, errorStream);
+				}
+			}
+		}
+	}
 
-done:
-	// Early exit if compile fails
 	if (result->errors.size() > 0) {
-		for each (auto error in result->errors)
+		for (auto error : result->errors)
 		{
 			error.writeToStream(errorStream);
 			errorStream << "\n";

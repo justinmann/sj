@@ -1,13 +1,13 @@
 #include "../compiler/Compiler.h"
 
 void TrFunction::writeBodyToStream(ostream& stream) {
-	for each (auto variable in variables)
+	for (auto variable : variables)
 	{
 		stream << "    " << variable.second << " " << variable.first << ";\n";
 	}
 
 	auto level = 1;
-	for each (auto statement in statements)
+	for (auto statement : statements)
 	{	
 		if (statement.size() == 0)
 			continue;

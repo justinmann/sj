@@ -8,7 +8,7 @@ void TrOutput::writeToStream(ostream& stream, ostream& errorStream) {
 	stream << "    return 0;\n";
 	stream << "}\n";
 
-	for each (auto error in errors)
+	for (auto error : errors)
 	{
 		error.writeToStream(errorStream);
 		errorStream << "\n";

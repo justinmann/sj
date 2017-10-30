@@ -292,15 +292,6 @@ void testClass() {
     )DELIM");
     assert(result->type == RESULT_INT && result->iResult == 1);
 }
-                          
-void testExtern() {
-    shared_ptr<CResult> result;
-    Compiler compiler;
-    
-    result = compiler.run("extern(\"cos\") cos(x:'float)'float\n"
-                          "cos(1.0)");
-    assert(result->type == RESULT_FLOAT && result->fResult == 0.54030230586813977);
-}
 
 void testTemplate() {
     shared_ptr<CResult> result;
