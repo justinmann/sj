@@ -380,7 +380,7 @@ private:
 };
 
 void CError::writeToStream(ostream& stream) {
-	stream << "ERROR:" << code << " " << fileName << "[" << line << ":" << col << "] " << msg;
+	stream << "ERROR:" << code << " " << *fileName << "[" << line << ":" << col << "] " << msg;
 }
 
 bool Compiler::transpile(const string& fileName, ostream& stream, ostream& errorStream) {

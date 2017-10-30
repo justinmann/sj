@@ -1,1 +1,1 @@
-ERROR:2 00D496EC[1:1] returned type 'float' does not match explicit type 'int'
+ERROR:2 .\basic\assignment3.sj[1:1] returned type 'float' does not match explicit type 'int'

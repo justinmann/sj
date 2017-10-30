@@ -13,32 +13,6 @@
 #include <string.h>
 #include <fstream>
 
-void testIf() {
-    shared_ptr<CResult> result;
-    Compiler compiler;
-    
-    result = compiler.run("if true { 1 } else { 2 }");
-    assert(result->type == RESULT_INT && result->iResult == 1);
-    
-    result = compiler.run("if false { 1 } else { 2 }");
-    assert(result->type == RESULT_INT && result->iResult == 2);
-    
-    result = compiler.run("if false { 1 }");
-    assert(result->type == RESULT_INT && result->iResult == 0);
-    
-    result = compiler.run("if false { 1 } else if true { 2 }");
-    assert(result->type == RESULT_INT && result->iResult == 2);
-    
-    result = compiler.run("if false { 1 } else if false { 2 } else if false { 2 } else if false { 2 } else if false { 2 } else if false { 2 } else if false { 2 } else { 3 }");
-    assert(result->type == RESULT_INT && result->iResult == 3);
-    
-    result = compiler.run("if false { void }");
-    assert(result->type == RESULT_VOID);
-    
-    result = compiler.run("if false { 1 } else { 1.0 }");
-    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::TypeMismatch);    
-}
-
 void testFor() {
     shared_ptr<CResult> result;
     Compiler compiler;
