@@ -186,8 +186,7 @@ class Compiler
 public:
     Compiler();
 
-	shared_ptr<NBlock> parse(const string& filename, ostream& errorStream);
-	bool transpile(shared_ptr<NBlock> block, ostream& stream, ostream& errorStream);
+	bool transpile(const string& fileName, ostream& stream, ostream& errorStream);
 	shared_ptr<CResult> run(const string& code);
     shared_ptr<CResult> compile(const string& fileName);
     

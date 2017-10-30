@@ -37,6 +37,45 @@ int NMathAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_
     return count;
 }
 
+shared_ptr<CType> NMathAssignment::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+	auto cvar = var->getVar(compiler, result, thisFunction, thisVar, nullptr);
+	if (!cvar) {
+		return nullptr;
+	}
+	    
+	if (!cvar->isMutable) {
+	    result.addError(loc, CErrorCode::ImmutableAssignment, "invalid on immutable variable");
+		return nullptr;
+	}
+
+	auto leftType = var->transpile(compiler, result, thisFunction, thisVar, output, function, line);
+
+	switch (op) {
+	case NMAO_Add:
+		line << " += ";
+		break;
+	case NMAO_Sub:
+		line << " -= ";
+		break;
+	case NMAO_Inc:
+		line << "++";
+		break;
+	case NMAO_Dec:
+		line << "--";
+		break;
+	}
+
+	if (rightSide) {
+		auto rightType = rightSide->transpile(compiler, result, thisFunction, thisVar, output, function, line);
+		if (leftType != rightType) {
+			result.addError(loc, CErrorCode::TypeMismatch, "left and right values are not the same type");
+			return nullptr;
+		}
+	}
+
+	return leftType;
+}
+
 //shared_ptr<ReturnValue> NMathAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
 //    assert(compiler->state == CompilerState::Compile);
 //    compiler->emitLocation(builder, &this->loc);

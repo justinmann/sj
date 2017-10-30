@@ -14,7 +14,7 @@ public:
     bool value;
     
     NBool(CLoc loc, bool value) : NBase(NodeType_Bool, loc), value(value) { }
-	virtual void transpile(TrOutput* output, TrFunction* function, stringstream* line);
+	virtual shared_ptr<CType> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line);
 	virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
 
 protected:

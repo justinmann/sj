@@ -37,6 +37,11 @@ void NInterface::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBas
     fun->interfacesByName[name] = def;
 }
 
+shared_ptr<CType> NInterface::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+	assert(false);
+	return nullptr;
+}
+
 void NInterface::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << "#" << name;
     if (templateTypeNames) {

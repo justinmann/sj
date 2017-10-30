@@ -11,6 +11,11 @@ shared_ptr<CType> NChar::getTypeImpl(Compiler* compiler, CResult& result, shared
 //    return make_shared<ReturnValue>(false, ConstantInt::get(compiler->context, APInt(8, value)));
 //}
 
+shared_ptr<CType> NChar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+	assert(false);
+	return nullptr;
+}
+
 void NChar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << "'" << value << "'";
 }

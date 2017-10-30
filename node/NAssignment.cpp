@@ -134,6 +134,32 @@ int NAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<
     return count;
 }
 
+shared_ptr<CType> NAssignment::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+	assert(compiler->state == CompilerState::Compile);
+	    
+	if (!rightSide) {
+	    result.addError(loc, CErrorCode::Internal, "only required assignment should not have a right side, and they should not be compiled");
+		return nullptr;
+	}
+		    
+	auto ctype = getType(compiler, result, thisFunction, thisVar);
+	if (var) {
+		var->transpile(compiler, result, thisFunction, thisVar, output, function, line);
+	} else {
+		function->variables[name] = ctype->name;
+		line << name;
+	}
+	line << " = ";
+
+	auto rightType = rightSide->transpile(compiler, result, thisFunction, thisVar, output, function, line);
+	if (rightType != ctype) {
+		result.addError(loc, CErrorCode::TypeMismatch, "returned type '%s' does not match explicit type '%s'", rightType->name.c_str(), ctype->name.c_str());
+		return nullptr;
+	}
+
+	return ctype;
+}
+
 //shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
 //    assert(compiler->state == CompilerState::Compile);
 //    compiler->emitLocation(builder, &this->loc);

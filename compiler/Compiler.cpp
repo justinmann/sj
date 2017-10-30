@@ -180,6 +180,12 @@ Compiler::Compiler() {
     //InitializeNativeTarget();
     //InitializeNativeTargetAsmPrinter();
     //InitializeNativeTargetAsmParser();
+
+	typeInt = make_shared<CType>("int");
+	typeBool = make_shared<CType>("bool");
+	typeFloat = make_shared<CType>("float");
+	typeChar = make_shared<CType>("char");
+	typeVoid = make_shared<CType>("void");
 }
 
 void Compiler::reset() {
@@ -377,8 +383,72 @@ void CError::writeToStream(ostream& stream) {
 	stream << "ERROR:" << code << " " << fileName << "[" << line << ":" << col << "] " << msg;
 }
 
-shared_ptr<NBlock> Compiler::parse(const string& fileName, ostream& errorStream) {
+bool Compiler::transpile(const string& fileName, ostream& stream, ostream& errorStream) {
+	TrOutput output;
+	shared_ptr<CVar> currentVar;
+	shared_ptr<CVar> globalVar;
+	shared_ptr<CFunctionDefinition> globalFunctionDefinition;
+	shared_ptr<NFunction> anonFunction;
+	shared_ptr<CFunctionDefinition> currentFunctionDefintion;
+	auto templateTypes = vector<shared_ptr<CType>>();
+	shared_ptr<CFunction> currentFunction;
+	shared_ptr<CFunction> globalFunction;
+
 	auto result = genNodeFile(fileName);
+	if (result->errors.size() > 0)
+		goto done;
+
+	anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, nullptr, "global", nullptr, nullptr, nullptr, result->block, nullptr, nullptr);
+	currentFunctionDefintion = CFunctionDefinition::create(this, *result, nullptr, FT_Public, "", nullptr, nullptr);
+	state = CompilerState::Define;
+	anonFunction->define(this, *result, currentFunctionDefintion);
+
+	// Early exit if compile fails
+	if (result->errors.size() > 0)
+		goto done;
+
+	globalFunctionDefinition = currentFunctionDefintion->funcsByName["global"];
+	for (auto index = (size_t)0; index < includedBlocks.size(); index++) {
+		auto block = includedBlocks[index].second;
+		block->define(this, *result, globalFunctionDefinition);
+		result->block->statements.insert(result->block->statements.begin(), block->statements.begin(), block->statements.end());
+	}
+
+	// Early exit if compile fails
+	if (result->errors.size() > 0)
+		goto done;
+
+	state = CompilerState::FixVar;
+	currentFunction = make_shared<CFunction>(currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr);
+	currentFunction->init(this, *result, nullptr, nullptr);
+	currentFunction->createThisVar(this, *result, currentVar);
+	anonFunction->getVar(this, *result, currentFunction, currentVar);
+	globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, *result, "global", nullptr, nullptr));
+	globalFunction->createThisVar(this, *result, globalVar);
+
+#ifdef VAR_OUTPUT
+	currentFunction->dump(this, *compilerResult, 0);
+#endif
+
+	// Early exit if compile fails
+	if (result->errors.size() > 0)
+		goto done;
+
+#ifdef NODE_OUTPUT
+	map<shared_ptr<CBaseFunction>, string> functionDumps;
+	stringstream ss;
+	compilerResult->block->dump(this, *compilerResult, globalFunction, globalVar, functionDumps, ss, 0);
+	for (auto it : functionDumps) {
+		printf("%s\n\n", it.second.c_str());
+	}
+	printf("global %s\n\n", ss.str().c_str());
+#endif
+
+	state = CompilerState::Compile;
+	result->block->transpile(this, *result, globalFunction, nullptr, &output, &output.mainFunction, stringstream());
+	output.writeToStream(stream, errorStream);
+
+done:
 	// Early exit if compile fails
 	if (result->errors.size() > 0) {
 		for each (auto error in result->errors)
@@ -386,16 +456,9 @@ shared_ptr<NBlock> Compiler::parse(const string& fileName, ostream& errorStream)
 			error.writeToStream(errorStream);
 			errorStream << "\n";
 		}
-		return nullptr;
+		return false;
 	}
-	return result->block;
-}
-
-bool Compiler::transpile(shared_ptr<NBlock> block, ostream& stream, ostream& error) {
-	TrOutput output;
-	block->transpile(&output, &output.mainFunction, nullptr);
-	output.writeToStream(stream, error);
-	return output.errors.size() > 0;
+	return true;
 }
 
 shared_ptr<CResult> Compiler::compile(const string& fileName) {

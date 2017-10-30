@@ -4,7 +4,7 @@
 
 class TrFunction {
 public:
-	std::vector<TrVariable> variables;
+	std::map<string, string> variables;
 	std::vector<string> statements;
 
 	void writeBodyToStream(ostream& stream);

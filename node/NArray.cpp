@@ -42,6 +42,11 @@ int NArray::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBase
     return 0;
 }
 
+shared_ptr<CType> NArray::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+	assert(false);
+	return nullptr;
+}
+
 //shared_ptr<ReturnValue> NArray::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
 //    assert(compiler->state == CompilerState::Compile);
 //    compiler->emitLocation(builder, &this->loc);
@@ -127,6 +132,11 @@ int NList::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseF
 //    assert(compiler->state == CompilerState::Compile);
 //    return createCall->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, returnRefType);
 //}
+
+shared_ptr<CType> NList::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+	assert(false);
+	return nullptr;
+}
 
 void NList::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     // dumpf(level, "value: %s", value.c_str());

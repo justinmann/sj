@@ -81,30 +81,37 @@ int NMath::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseF
 //    return NULL;
 //}
 
-void NMath::transpile(TrOutput* output, TrFunction* function, stringstream* line) {
-	*line << "(";
-	leftSide->transpile(output, function, line);
-	*line << ")";
+shared_ptr<CType> NMath::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+	line << "(";
+	auto leftType = leftSide->transpile(compiler, result, thisFunction, thisVar, output, function, line);
+	line << ")";
 	switch (op) {
 	case NMathOp::Add:
-		*line << " + ";
+		line << " + ";
 		break;
 	case NMathOp::Sub:
-		*line << " - ";
+		line << " - ";
 		break;
 	case NMathOp::Mul:
-		*line << " * ";
+		line << " * ";
 		break;
 	case NMathOp::Div:
-		*line << " / ";
+		line << " / ";
 		break;
 	case NMathOp::Mod:
-		*line << " %% ";
+		line << " %% ";
 		break;
 	}
-	*line << "(";
-	rightSide->transpile(output, function, line);
-	*line << ")";
+	line << "(";
+	auto rightType = rightSide->transpile(compiler, result, thisFunction, thisVar, output, function, line);
+	line << ")";
+
+	if (leftType != rightType) {
+		result.addError(loc, CErrorCode::TypeMismatch, "left and right values are not the same type");
+		return nullptr;
+	}
+	
+	return leftType;
 }
 
 void NMath::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {

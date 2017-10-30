@@ -13,90 +13,6 @@
 #include <string.h>
 #include <fstream>
 
-void testParser() {
-    shared_ptr<CResult> result;
-    Compiler compiler;
-    
-    result = compiler.run("@");
-    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::InvalidCharacter && result->errors[0].line == 1 && result->errors[0].col == 1);
-
-    result = compiler.run("   @");
-    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::InvalidCharacter && result->errors[0].line == 1 && result->errors[0].col == 4);
-
-    result = compiler.run("\n\n\n\n    @\n");
-    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::InvalidCharacter && result->errors[0].line == 5 && result->errors[0].col == 5);
-}
-
-void testAssignment() {
-    shared_ptr<CResult> result;
-    Compiler compiler;
-    
-    result = compiler.run("x = 1");
-    assert(result->type == RESULT_INT && result->iResult == 1);
-
-    result = compiler.run("x'int = 1");
-    assert(result->type == RESULT_INT && result->iResult == 1);
-
-    result = compiler.run("x'int = 1.0");
-    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::TypeMismatch);
-
-    result = compiler.run("x = 1; x = 2; x + 1");
-    assert(result->type == RESULT_INT && result->iResult == 3);
-
-    result = compiler.run("y : 1; x = 2; x + y");
-    assert(result->type == RESULT_INT && result->iResult == 3);
-
-    result = compiler.run("x : 1; x + 1");
-    assert(result->type == RESULT_INT && result->iResult == 2);
-
-    result = compiler.run("x : 1; x : 2; x + 1");
-    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::ImmutableAssignment);
-
-    result = compiler.run("x : y : 2");
-    assert(result->type == RESULT_INT && result->iResult == 2);
-
-    result = compiler.run("x : y : 2; x + y");
-    assert(result->type == RESULT_INT && result->iResult == 4);
-
-    result = compiler.run("a = 0; a++");
-    assert(result->type == RESULT_INT && result->iResult == 1);
-
-    result = compiler.run("a : 0; a++");
-    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::ImmutableAssignment);
-
-    result = compiler.run("a = 0; a += 1.0");
-    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::TypeMismatch);
-
-    result = compiler.run("a = 0; a += 1");
-    assert(result->type == RESULT_INT && result->iResult == 1);
-}
-
-void testComment() {
-    shared_ptr<CResult> result;
-    Compiler compiler;
-    
-    result = compiler.run("/* hi */");
-    assert(result->type == RESULT_VOID);
-    
-    result = compiler.run("1/* comment */");
-    assert(result->type == RESULT_INT && result->iResult == 1);
-    
-    result = compiler.run(R"DELIM(
-                          1
-    /* 
-     ** comment **
-     */
-                          )DELIM");
-    assert(result->type == RESULT_INT && result->iResult == 1);
-    
-    
-    result = compiler.run("// comment\n1");
-    assert(result->type == RESULT_INT && result->iResult == 1);
-
-    result = compiler.run("1 // comment\n");
-    assert(result->type == RESULT_INT && result->iResult == 1);
-}
-
 void testIf() {
     shared_ptr<CResult> result;
     Compiler compiler;
@@ -120,8 +36,7 @@ void testIf() {
     assert(result->type == RESULT_VOID);
     
     result = compiler.run("if false { 1 } else { 1.0 }");
-    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::TypeMismatch);
-    
+    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::TypeMismatch);    
 }
 
 void testFor() {
@@ -719,10 +634,7 @@ void runTest(std::string path, bool updateResult) {
 			error.open(errorFileName);
 
 			Compiler compiler;
-			auto block = compiler.parse(path, error);
-			if (block) {
-				compiler.transpile(block, code, error);
-			}
+			compiler.transpile(path, code, error);
 
 			code.close();
 			error.close();
@@ -731,10 +643,7 @@ void runTest(std::string path, bool updateResult) {
 			stringstream errorA;
 
 			Compiler compiler;
-			auto block = compiler.parse(path, errorA);
-			if (block) {
-				compiler.transpile(block, codeA, errorA);
-			}
+			compiler.transpile(path, codeA, errorA);
 
 			codeA.seekg(0, codeA.beg);
 			errorA.seekg(0, errorA.beg);

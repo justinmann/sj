@@ -181,3 +181,8 @@ int NIf::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseFun
 shared_ptr<NIf> NIf::shared_from_this() {
     return static_pointer_cast<NIf>(NBase::shared_from_this());
 }
+
+shared_ptr<CType> NIf::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+	assert(false);
+	return nullptr;
+}

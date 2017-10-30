@@ -414,3 +414,7 @@ int NCall::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseF
     return count;
 }
 
+shared_ptr<CType> NCall::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+	assert(false);
+	return nullptr;
+}

@@ -24,6 +24,11 @@ int NStringArray::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr
 //    return make_shared<ReturnValue>(varFunction, RVR_Value, RVT_SIMPLE, false, builder->CreateGlobalStringPtr(str));
 //}
 
+shared_ptr<CType> NStringArray::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+	assert(false);
+	return nullptr;
+}
+
 void NStringArray::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     // dumpf(level, "value: %s", value.c_str());
 }
@@ -91,6 +96,11 @@ int NString::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBas
     }
 
     return createCall->setHeapVar(compiler, result, thisFunction, thisVar, nullptr, isHeapVar);
+}
+
+shared_ptr<CType> NString::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+	assert(false);
+	return nullptr;
 }
 
 //shared_ptr<ReturnValue> NString::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {

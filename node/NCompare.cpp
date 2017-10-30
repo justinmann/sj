@@ -84,33 +84,34 @@ int NCompare::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBa
 //    return nullptr;
 //}
 
-void NCompare::transpile(TrOutput* output, TrFunction* function, stringstream* line) {
-	*line << "(";
-	leftSide->transpile(output, function, line);
-	*line << ")";
+shared_ptr<CType> NCompare::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+	line << "(";
+	leftSide->transpile(compiler, result, thisFunction, thisVar, output, function, line);
+	line << ")";
 	switch (op) {
 	case NCompareOp::EQ:
-		*line << " == ";
+		line << " == ";
 		break;
 	case NCompareOp::NE:
-		*line << " != ";
+		line << " != ";
 		break;
 	case NCompareOp::LT:
-		*line << " < ";
+		line << " < ";
 		break;
 	case NCompareOp::LE:
-		*line << " <= ";
+		line << " <= ";
 		break;
 	case NCompareOp::GT:
-		*line << " > ";
+		line << " > ";
 		break;
 	case NCompareOp::GE:
-		*line << " >= ";
+		line << " >= ";
 		break;
 	}
-	*line << "(";
-	rightSide->transpile(output, function, line);
-	*line << ")";
+	line << "(";
+	rightSide->transpile(compiler, result, thisFunction, thisVar, output, function, line);
+	line << ")";
+	return compiler->typeBool;
 }
 
 void NCompare::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {

@@ -33,13 +33,13 @@ int NBlock::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBase
     return count;
 }
 
-void NBlock::transpile(TrOutput* output, TrFunction* function, stringstream* line) {
-	assert(line == nullptr);
+shared_ptr<CType> NBlock::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
 	for (auto it : statements) {
 		stringstream currentLine;
-		it->transpile(output, function, &currentLine);
+		it->transpile(compiler, result, thisFunction, thisVar, output, function, currentLine);
 		function->statements.push_back(currentLine.str());
 	}
+	return nullptr;
 }
 
 

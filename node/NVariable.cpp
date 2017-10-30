@@ -83,3 +83,8 @@ int NVariable::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CB
     }
     return 0;
 }
+
+shared_ptr<CType> NVariable::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+	line << name;
+	return getType(compiler, result, thisFunction, thisVar);
+}
