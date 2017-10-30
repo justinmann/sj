@@ -13,32 +13,6 @@
 #include <string.h>
 #include <fstream>
 
-void testMath() {
-    shared_ptr<CResult> result;
-    Compiler compiler;
-    
-    result = compiler.run("9223372036854775807");
-    assert(result->type == RESULT_INT && result->iResult == 9223372036854775807);
-
-    result = compiler.run("92233720368547758070");
-    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::InvalidNumber);
-
-    result = compiler.run("4 + 5");
-    assert(result->type == RESULT_INT && result->iResult == 9);
-    
-    result = compiler.run("4.0 + 5.0");
-    assert(result->type == RESULT_FLOAT && result->fResult == 9.0);
-    
-    result = compiler.run("-4 + 5");
-    assert(result->type == RESULT_INT && result->iResult == 1);
-    
-    result = compiler.run("4 + -5");
-    assert(result->type == RESULT_INT && result->iResult == -1);
-    
-    result = compiler.run("4 + 5.0");
-    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::TypeMismatch);
-}
-
 void testComparison() {
     shared_ptr<CResult> result;
     Compiler compiler;

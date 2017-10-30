@@ -19,6 +19,10 @@ shared_ptr<CType> NDouble::getTypeImpl(Compiler* compiler, CResult& result, shar
 //    return make_shared<ReturnValue>(false, ConstantFP::get(compiler->context, APFloat(t)));
 //}
 
+void NDouble::transpile(TrOutput* output, TrFunction* function, stringstream* line) {
+	*line << value;
+}
+
 void NDouble::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << value;
 }
