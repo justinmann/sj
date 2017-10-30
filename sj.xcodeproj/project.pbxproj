@@ -9,44 +9,12 @@
 /* Begin PBXBuildFile section */
 		9C039B0D1E2498DB00D6C727 /* NFor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C039B0B1E2498DB00D6C727 /* NFor.cpp */; };
 		9C039B101E24B1DD00D6C727 /* NWhile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C039B0E1E24B1DD00D6C727 /* NWhile.cpp */; };
-		9C1E74261E46A5C6003BEBA5 /* highlow.sj in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9C1E74251E46A35E003BEBA5 /* highlow.sj */; };
-		9C1E742A1E46AC55003BEBA5 /* random.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C1E74281E46AC55003BEBA5 /* random.cpp */; };
-		9C1E742C1E46D11B003BEBA5 /* parse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C1E742B1E46D11B003BEBA5 /* parse.cpp */; };
-		9C1E742E1E46D133003BEBA5 /* console.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C1E742D1E46D133003BEBA5 /* console.cpp */; };
-		9C1E74311E46D1C4003BEBA5 /* library.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C1E742F1E46D1C4003BEBA5 /* library.cpp */; };
 		9C29C0B21E273F7E001C1FC6 /* NNot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C29C0B01E273F7E001C1FC6 /* NNot.cpp */; };
 		9C3786561E21EE0400202E28 /* NThrow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C3786541E21EE0400202E28 /* NThrow.cpp */; };
 		9C3786591E2225FC00202E28 /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C3786571E2225FC00202E28 /* Exception.cpp */; };
-		9C64AD941E0F8D6800340A7D /* libLLVMAnalysis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD761E0F8D6800340A7D /* libLLVMAnalysis.a */; };
-		9C64AD951E0F8D6800340A7D /* libLLVMAsmPrinter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD771E0F8D6800340A7D /* libLLVMAsmPrinter.a */; };
-		9C64AD961E0F8D6800340A7D /* libLLVMBitReader.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD781E0F8D6800340A7D /* libLLVMBitReader.a */; };
-		9C64AD971E0F8D6800340A7D /* libLLVMBitWriter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD791E0F8D6800340A7D /* libLLVMBitWriter.a */; };
-		9C64AD981E0F8D6800340A7D /* libLLVMCodeGen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD7A1E0F8D6800340A7D /* libLLVMCodeGen.a */; };
-		9C64AD991E0F8D6800340A7D /* libLLVMCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD7B1E0F8D6800340A7D /* libLLVMCore.a */; };
-		9C64AD9A1E0F8D6800340A7D /* libLLVMDebugInfoCodeView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD7C1E0F8D6800340A7D /* libLLVMDebugInfoCodeView.a */; };
-		9C64AD9B1E0F8D6800340A7D /* libLLVMExecutionEngine.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD7D1E0F8D6800340A7D /* libLLVMExecutionEngine.a */; };
-		9C64AD9C1E0F8D6800340A7D /* libLLVMInstCombine.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD7E1E0F8D6800340A7D /* libLLVMInstCombine.a */; };
-		9C64AD9D1E0F8D6800340A7D /* libLLVMInstrumentation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD7F1E0F8D6800340A7D /* libLLVMInstrumentation.a */; };
-		9C64AD9E1E0F8D6800340A7D /* libLLVMMC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD801E0F8D6800340A7D /* libLLVMMC.a */; };
-		9C64AD9F1E0F8D6800340A7D /* libLLVMMCDisassembler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD811E0F8D6800340A7D /* libLLVMMCDisassembler.a */; };
-		9C64ADA01E0F8D6800340A7D /* libLLVMMCJIT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD821E0F8D6800340A7D /* libLLVMMCJIT.a */; };
-		9C64ADA11E0F8D6800340A7D /* libLLVMMCParser.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD831E0F8D6800340A7D /* libLLVMMCParser.a */; };
-		9C64ADA21E0F8D6800340A7D /* libLLVMObject.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD841E0F8D6800340A7D /* libLLVMObject.a */; };
-		9C64ADA31E0F8D6800340A7D /* libLLVMProfileData.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD851E0F8D6800340A7D /* libLLVMProfileData.a */; };
-		9C64ADA41E0F8D6800340A7D /* libLLVMRuntimeDyld.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD861E0F8D6800340A7D /* libLLVMRuntimeDyld.a */; };
-		9C64ADA51E0F8D6800340A7D /* libLLVMScalarOpts.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD871E0F8D6800340A7D /* libLLVMScalarOpts.a */; };
-		9C64ADA61E0F8D6800340A7D /* libLLVMSelectionDAG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD881E0F8D6800340A7D /* libLLVMSelectionDAG.a */; };
-		9C64ADA71E0F8D6800340A7D /* libLLVMSupport.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD891E0F8D6800340A7D /* libLLVMSupport.a */; };
-		9C64ADA81E0F8D6800340A7D /* libLLVMTarget.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD8A1E0F8D6800340A7D /* libLLVMTarget.a */; };
-		9C64ADA91E0F8D6800340A7D /* libLLVMTransformUtils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD8B1E0F8D6800340A7D /* libLLVMTransformUtils.a */; };
-		9C64ADAA1E0F8D6800340A7D /* libLLVMX86AsmParser.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD8C1E0F8D6800340A7D /* libLLVMX86AsmParser.a */; };
-		9C64ADAB1E0F8D6800340A7D /* libLLVMX86AsmPrinter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD8D1E0F8D6800340A7D /* libLLVMX86AsmPrinter.a */; };
-		9C64ADAC1E0F8D6800340A7D /* libLLVMX86CodeGen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD8E1E0F8D6800340A7D /* libLLVMX86CodeGen.a */; };
-		9C64ADAD1E0F8D6800340A7D /* libLLVMX86Desc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD8F1E0F8D6800340A7D /* libLLVMX86Desc.a */; };
-		9C64ADAE1E0F8D6800340A7D /* libLLVMX86Disassembler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD901E0F8D6800340A7D /* libLLVMX86Disassembler.a */; };
-		9C64ADAF1E0F8D6800340A7D /* libLLVMX86Info.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD911E0F8D6800340A7D /* libLLVMX86Info.a */; };
-		9C64ADB01E0F8D6800340A7D /* libLLVMX86Utils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD921E0F8D6800340A7D /* libLLVMX86Utils.a */; };
-		9C64ADB11E0F8D6800340A7D /* libLLVMXCoreAsmPrinter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64AD931E0F8D6800340A7D /* libLLVMXCoreAsmPrinter.a */; };
+		9C5F0CBA1FA78A5A004CD51D /* TrFunction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C5F0CB11FA78A59004CD51D /* TrFunction.cpp */; };
+		9C5F0CBC1FA78A5A004CD51D /* TrOutput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C5F0CB41FA78A59004CD51D /* TrOutput.cpp */; };
+		9C5F0CBE1FA78A5A004CD51D /* TrVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C5F0CB71FA78A59004CD51D /* TrVariable.cpp */; };
 		9C64ADB31E0F8DA700340A7D /* libz.1.2.8.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64ADB21E0F8DA700340A7D /* libz.1.2.8.tbd */; };
 		9C64ADB51E0F910300340A7D /* libcurses.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64ADB41E0F910300340A7D /* libcurses.tbd */; };
 		9C74891A1E581783008A032C /* NInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C7489181E581783008A032C /* NInterface.cpp */; };
@@ -58,10 +26,8 @@
 		9C908F021E345670005E253C /* NArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C908F001E345670005E253C /* NArray.cpp */; };
 		9C908F051E345911005E253C /* CArrayType.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C908F031E345911005E253C /* CArrayType.cpp */; };
 		9C908F081E347E69005E253C /* NInclude.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C908F061E347E69005E253C /* NInclude.cpp */; };
-		9C908F0B1E348830005E253C /* list.sj in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9C908F0A1E348549005E253C /* list.sj */; };
 		9C908F0E1E348C54005E253C /* NOr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C908F0C1E348C54005E253C /* NOr.cpp */; };
 		9C908F111E348D5A005E253C /* NAnd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C908F0F1E348D5A005E253C /* NAnd.cpp */; };
-		9C908F131E35962A005E253C /* common.sj in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9C908F121E35960E005E253C /* common.sj */; };
 		9C908F161E35B9E7005E253C /* NString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C908F141E35B9E7005E253C /* NString.cpp */; };
 		9C908F191E35C9D6005E253C /* NChar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C908F171E35C9D6005E253C /* NChar.cpp */; };
 		9CB7416D1E25EB310041A8A6 /* NMathAssignment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CB7416B1E25EB310041A8A6 /* NMathAssignment.cpp */; };
@@ -94,9 +60,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				9C1E74261E46A5C6003BEBA5 /* highlow.sj in CopyFiles */,
-				9C908F131E35962A005E253C /* common.sj in CopyFiles */,
-				9C908F0B1E348830005E253C /* list.sj in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -107,12 +70,6 @@
 		9C039B0C1E2498DB00D6C727 /* NFor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NFor.h; path = node/NFor.h; sourceTree = "<group>"; };
 		9C039B0E1E24B1DD00D6C727 /* NWhile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NWhile.cpp; path = node/NWhile.cpp; sourceTree = "<group>"; };
 		9C039B0F1E24B1DD00D6C727 /* NWhile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NWhile.h; path = node/NWhile.h; sourceTree = "<group>"; };
-		9C1E74251E46A35E003BEBA5 /* highlow.sj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = highlow.sj; path = include/highlow.sj; sourceTree = "<group>"; };
-		9C1E74281E46AC55003BEBA5 /* random.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = random.cpp; path = library/random.cpp; sourceTree = "<group>"; };
-		9C1E742B1E46D11B003BEBA5 /* parse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = parse.cpp; path = library/parse.cpp; sourceTree = "<group>"; };
-		9C1E742D1E46D133003BEBA5 /* console.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = console.cpp; path = library/console.cpp; sourceTree = "<group>"; };
-		9C1E742F1E46D1C4003BEBA5 /* library.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = library.cpp; path = library/library.cpp; sourceTree = "<group>"; };
-		9C1E74301E46D1C4003BEBA5 /* library.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = library.h; path = library/library.h; sourceTree = "<group>"; };
 		9C29C0B01E273F7E001C1FC6 /* NNot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NNot.cpp; path = node/NNot.cpp; sourceTree = "<group>"; };
 		9C29C0B11E273F7E001C1FC6 /* NNot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NNot.h; path = node/NNot.h; sourceTree = "<group>"; };
 		9C3786521E21D64000202E28 /* sj.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sj.pch; sourceTree = "<group>"; };
@@ -120,37 +77,13 @@
 		9C3786551E21EE0400202E28 /* NThrow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NThrow.h; path = node/NThrow.h; sourceTree = "<group>"; };
 		9C3786571E2225FC00202E28 /* Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Exception.cpp; path = compiler/Exception.cpp; sourceTree = "<group>"; };
 		9C3786581E2225FC00202E28 /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Exception.h; path = compiler/Exception.h; sourceTree = "<group>"; };
+		9C5F0CB11FA78A59004CD51D /* TrFunction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TrFunction.cpp; sourceTree = "<group>"; };
+		9C5F0CB21FA78A59004CD51D /* TrFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrFunction.h; sourceTree = "<group>"; };
+		9C5F0CB41FA78A59004CD51D /* TrOutput.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TrOutput.cpp; sourceTree = "<group>"; };
+		9C5F0CB51FA78A59004CD51D /* TrOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrOutput.h; sourceTree = "<group>"; };
+		9C5F0CB71FA78A59004CD51D /* TrVariable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TrVariable.cpp; sourceTree = "<group>"; };
+		9C5F0CB81FA78A59004CD51D /* TrVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrVariable.h; sourceTree = "<group>"; };
 		9C64AD551E0F823300340A7D /* sj */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sj; sourceTree = BUILT_PRODUCTS_DIR; };
-		9C64AD761E0F8D6800340A7D /* libLLVMAnalysis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMAnalysis.a; path = ../install/lib/libLLVMAnalysis.a; sourceTree = "<group>"; };
-		9C64AD771E0F8D6800340A7D /* libLLVMAsmPrinter.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMAsmPrinter.a; path = ../install/lib/libLLVMAsmPrinter.a; sourceTree = "<group>"; };
-		9C64AD781E0F8D6800340A7D /* libLLVMBitReader.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMBitReader.a; path = ../install/lib/libLLVMBitReader.a; sourceTree = "<group>"; };
-		9C64AD791E0F8D6800340A7D /* libLLVMBitWriter.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMBitWriter.a; path = ../install/lib/libLLVMBitWriter.a; sourceTree = "<group>"; };
-		9C64AD7A1E0F8D6800340A7D /* libLLVMCodeGen.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMCodeGen.a; path = ../install/lib/libLLVMCodeGen.a; sourceTree = "<group>"; };
-		9C64AD7B1E0F8D6800340A7D /* libLLVMCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMCore.a; path = ../install/lib/libLLVMCore.a; sourceTree = "<group>"; };
-		9C64AD7C1E0F8D6800340A7D /* libLLVMDebugInfoCodeView.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMDebugInfoCodeView.a; path = ../install/lib/libLLVMDebugInfoCodeView.a; sourceTree = "<group>"; };
-		9C64AD7D1E0F8D6800340A7D /* libLLVMExecutionEngine.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMExecutionEngine.a; path = ../install/lib/libLLVMExecutionEngine.a; sourceTree = "<group>"; };
-		9C64AD7E1E0F8D6800340A7D /* libLLVMInstCombine.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMInstCombine.a; path = ../install/lib/libLLVMInstCombine.a; sourceTree = "<group>"; };
-		9C64AD7F1E0F8D6800340A7D /* libLLVMInstrumentation.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMInstrumentation.a; path = ../install/lib/libLLVMInstrumentation.a; sourceTree = "<group>"; };
-		9C64AD801E0F8D6800340A7D /* libLLVMMC.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMMC.a; path = ../install/lib/libLLVMMC.a; sourceTree = "<group>"; };
-		9C64AD811E0F8D6800340A7D /* libLLVMMCDisassembler.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMMCDisassembler.a; path = ../install/lib/libLLVMMCDisassembler.a; sourceTree = "<group>"; };
-		9C64AD821E0F8D6800340A7D /* libLLVMMCJIT.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMMCJIT.a; path = ../install/lib/libLLVMMCJIT.a; sourceTree = "<group>"; };
-		9C64AD831E0F8D6800340A7D /* libLLVMMCParser.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMMCParser.a; path = ../install/lib/libLLVMMCParser.a; sourceTree = "<group>"; };
-		9C64AD841E0F8D6800340A7D /* libLLVMObject.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMObject.a; path = ../install/lib/libLLVMObject.a; sourceTree = "<group>"; };
-		9C64AD851E0F8D6800340A7D /* libLLVMProfileData.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMProfileData.a; path = ../install/lib/libLLVMProfileData.a; sourceTree = "<group>"; };
-		9C64AD861E0F8D6800340A7D /* libLLVMRuntimeDyld.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMRuntimeDyld.a; path = ../install/lib/libLLVMRuntimeDyld.a; sourceTree = "<group>"; };
-		9C64AD871E0F8D6800340A7D /* libLLVMScalarOpts.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMScalarOpts.a; path = ../install/lib/libLLVMScalarOpts.a; sourceTree = "<group>"; };
-		9C64AD881E0F8D6800340A7D /* libLLVMSelectionDAG.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMSelectionDAG.a; path = ../install/lib/libLLVMSelectionDAG.a; sourceTree = "<group>"; };
-		9C64AD891E0F8D6800340A7D /* libLLVMSupport.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMSupport.a; path = ../install/lib/libLLVMSupport.a; sourceTree = "<group>"; };
-		9C64AD8A1E0F8D6800340A7D /* libLLVMTarget.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMTarget.a; path = ../install/lib/libLLVMTarget.a; sourceTree = "<group>"; };
-		9C64AD8B1E0F8D6800340A7D /* libLLVMTransformUtils.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMTransformUtils.a; path = ../install/lib/libLLVMTransformUtils.a; sourceTree = "<group>"; };
-		9C64AD8C1E0F8D6800340A7D /* libLLVMX86AsmParser.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMX86AsmParser.a; path = ../install/lib/libLLVMX86AsmParser.a; sourceTree = "<group>"; };
-		9C64AD8D1E0F8D6800340A7D /* libLLVMX86AsmPrinter.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMX86AsmPrinter.a; path = ../install/lib/libLLVMX86AsmPrinter.a; sourceTree = "<group>"; };
-		9C64AD8E1E0F8D6800340A7D /* libLLVMX86CodeGen.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMX86CodeGen.a; path = ../install/lib/libLLVMX86CodeGen.a; sourceTree = "<group>"; };
-		9C64AD8F1E0F8D6800340A7D /* libLLVMX86Desc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMX86Desc.a; path = ../install/lib/libLLVMX86Desc.a; sourceTree = "<group>"; };
-		9C64AD901E0F8D6800340A7D /* libLLVMX86Disassembler.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMX86Disassembler.a; path = ../install/lib/libLLVMX86Disassembler.a; sourceTree = "<group>"; };
-		9C64AD911E0F8D6800340A7D /* libLLVMX86Info.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMX86Info.a; path = ../install/lib/libLLVMX86Info.a; sourceTree = "<group>"; };
-		9C64AD921E0F8D6800340A7D /* libLLVMX86Utils.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMX86Utils.a; path = ../install/lib/libLLVMX86Utils.a; sourceTree = "<group>"; };
-		9C64AD931E0F8D6800340A7D /* libLLVMXCoreAsmPrinter.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLLVMXCoreAsmPrinter.a; path = ../install/lib/libLLVMXCoreAsmPrinter.a; sourceTree = "<group>"; };
 		9C64ADB21E0F8DA700340A7D /* libz.1.2.8.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.1.2.8.tbd; path = usr/lib/libz.1.2.8.tbd; sourceTree = SDKROOT; };
 		9C64ADB41E0F910300340A7D /* libcurses.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcurses.tbd; path = usr/lib/libcurses.tbd; sourceTree = SDKROOT; };
 		9C7489181E581783008A032C /* NInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NInterface.cpp; path = node/NInterface.cpp; sourceTree = "<group>"; };
@@ -170,12 +103,10 @@
 		9C908F041E345911005E253C /* CArrayType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CArrayType.h; path = compiler/CArrayType.h; sourceTree = "<group>"; };
 		9C908F061E347E69005E253C /* NInclude.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NInclude.cpp; path = node/NInclude.cpp; sourceTree = "<group>"; };
 		9C908F071E347E69005E253C /* NInclude.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NInclude.h; path = node/NInclude.h; sourceTree = "<group>"; };
-		9C908F0A1E348549005E253C /* list.sj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = list.sj; path = include/list.sj; sourceTree = "<group>"; };
 		9C908F0C1E348C54005E253C /* NOr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NOr.cpp; path = node/NOr.cpp; sourceTree = "<group>"; };
 		9C908F0D1E348C54005E253C /* NOr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NOr.h; path = node/NOr.h; sourceTree = "<group>"; };
 		9C908F0F1E348D5A005E253C /* NAnd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NAnd.cpp; path = node/NAnd.cpp; sourceTree = "<group>"; };
 		9C908F101E348D5A005E253C /* NAnd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NAnd.h; path = node/NAnd.h; sourceTree = "<group>"; };
-		9C908F121E35960E005E253C /* common.sj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = common.sj; path = include/common.sj; sourceTree = "<group>"; };
 		9C908F141E35B9E7005E253C /* NString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NString.cpp; path = node/NString.cpp; sourceTree = "<group>"; };
 		9C908F151E35B9E7005E253C /* NString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NString.h; path = node/NString.h; sourceTree = "<group>"; };
 		9C908F171E35C9D6005E253C /* NChar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NChar.cpp; path = node/NChar.cpp; sourceTree = "<group>"; };
@@ -231,63 +162,33 @@
 			files = (
 				9C64ADB51E0F910300340A7D /* libcurses.tbd in Frameworks */,
 				9C64ADB31E0F8DA700340A7D /* libz.1.2.8.tbd in Frameworks */,
-				9C64AD941E0F8D6800340A7D /* libLLVMAnalysis.a in Frameworks */,
-				9C64AD951E0F8D6800340A7D /* libLLVMAsmPrinter.a in Frameworks */,
-				9C64AD961E0F8D6800340A7D /* libLLVMBitReader.a in Frameworks */,
-				9C64AD971E0F8D6800340A7D /* libLLVMBitWriter.a in Frameworks */,
-				9C64AD981E0F8D6800340A7D /* libLLVMCodeGen.a in Frameworks */,
-				9C64AD991E0F8D6800340A7D /* libLLVMCore.a in Frameworks */,
-				9C64AD9A1E0F8D6800340A7D /* libLLVMDebugInfoCodeView.a in Frameworks */,
-				9C64AD9B1E0F8D6800340A7D /* libLLVMExecutionEngine.a in Frameworks */,
-				9C64AD9C1E0F8D6800340A7D /* libLLVMInstCombine.a in Frameworks */,
-				9C64AD9D1E0F8D6800340A7D /* libLLVMInstrumentation.a in Frameworks */,
-				9C64AD9E1E0F8D6800340A7D /* libLLVMMC.a in Frameworks */,
-				9C64AD9F1E0F8D6800340A7D /* libLLVMMCDisassembler.a in Frameworks */,
-				9C64ADA01E0F8D6800340A7D /* libLLVMMCJIT.a in Frameworks */,
-				9C64ADA11E0F8D6800340A7D /* libLLVMMCParser.a in Frameworks */,
-				9C64ADA21E0F8D6800340A7D /* libLLVMObject.a in Frameworks */,
-				9C64ADA31E0F8D6800340A7D /* libLLVMProfileData.a in Frameworks */,
-				9C64ADA41E0F8D6800340A7D /* libLLVMRuntimeDyld.a in Frameworks */,
-				9C64ADA51E0F8D6800340A7D /* libLLVMScalarOpts.a in Frameworks */,
-				9C64ADA61E0F8D6800340A7D /* libLLVMSelectionDAG.a in Frameworks */,
-				9C64ADA71E0F8D6800340A7D /* libLLVMSupport.a in Frameworks */,
-				9C64ADA81E0F8D6800340A7D /* libLLVMTarget.a in Frameworks */,
-				9C64ADA91E0F8D6800340A7D /* libLLVMTransformUtils.a in Frameworks */,
-				9C64ADAA1E0F8D6800340A7D /* libLLVMX86AsmParser.a in Frameworks */,
-				9C64ADAB1E0F8D6800340A7D /* libLLVMX86AsmPrinter.a in Frameworks */,
-				9C64ADAC1E0F8D6800340A7D /* libLLVMX86CodeGen.a in Frameworks */,
-				9C64ADAD1E0F8D6800340A7D /* libLLVMX86Desc.a in Frameworks */,
-				9C64ADAE1E0F8D6800340A7D /* libLLVMX86Disassembler.a in Frameworks */,
-				9C64ADAF1E0F8D6800340A7D /* libLLVMX86Info.a in Frameworks */,
-				9C64ADB01E0F8D6800340A7D /* libLLVMX86Utils.a in Frameworks */,
-				9C64ADB11E0F8D6800340A7D /* libLLVMXCoreAsmPrinter.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		9C1E74271E46AC07003BEBA5 /* library */ = {
+		9C5F0CB01FA78A59004CD51D /* transpile */ = {
 			isa = PBXGroup;
 			children = (
-				9C1E74281E46AC55003BEBA5 /* random.cpp */,
-				9C1E742B1E46D11B003BEBA5 /* parse.cpp */,
-				9C1E742D1E46D133003BEBA5 /* console.cpp */,
-				9C1E742F1E46D1C4003BEBA5 /* library.cpp */,
-				9C1E74301E46D1C4003BEBA5 /* library.h */,
+				9C5F0CB11FA78A59004CD51D /* TrFunction.cpp */,
+				9C5F0CB21FA78A59004CD51D /* TrFunction.h */,
+				9C5F0CB41FA78A59004CD51D /* TrOutput.cpp */,
+				9C5F0CB51FA78A59004CD51D /* TrOutput.h */,
+				9C5F0CB71FA78A59004CD51D /* TrVariable.cpp */,
+				9C5F0CB81FA78A59004CD51D /* TrVariable.h */,
 			);
-			name = library;
+			path = transpile;
 			sourceTree = "<group>";
 		};
 		9C64AD4C1E0F823300340A7D = {
 			isa = PBXGroup;
 			children = (
-				9C1E74271E46AC07003BEBA5 /* library */,
 				9C3786521E21D64000202E28 /* sj.pch */,
 				9C7B48E11E19A2DD00D378A1 /* main.cpp */,
-				9C908F091E34853E005E253C /* include */,
 				9CF16C221E19A89B006E9CB8 /* parser */,
 				9CF16BF81E19A86B006E9CB8 /* node */,
+				9C5F0CB01FA78A59004CD51D /* transpile */,
 				9CF16BF41E19A84D006E9CB8 /* compiler */,
 				9C64AD561E0F823300340A7D /* Products */,
 				9C64AD751E0F8D6800340A7D /* Frameworks */,
@@ -307,48 +208,8 @@
 			children = (
 				9C64ADB41E0F910300340A7D /* libcurses.tbd */,
 				9C64ADB21E0F8DA700340A7D /* libz.1.2.8.tbd */,
-				9C64AD761E0F8D6800340A7D /* libLLVMAnalysis.a */,
-				9C64AD771E0F8D6800340A7D /* libLLVMAsmPrinter.a */,
-				9C64AD781E0F8D6800340A7D /* libLLVMBitReader.a */,
-				9C64AD791E0F8D6800340A7D /* libLLVMBitWriter.a */,
-				9C64AD7A1E0F8D6800340A7D /* libLLVMCodeGen.a */,
-				9C64AD7B1E0F8D6800340A7D /* libLLVMCore.a */,
-				9C64AD7C1E0F8D6800340A7D /* libLLVMDebugInfoCodeView.a */,
-				9C64AD7D1E0F8D6800340A7D /* libLLVMExecutionEngine.a */,
-				9C64AD7E1E0F8D6800340A7D /* libLLVMInstCombine.a */,
-				9C64AD7F1E0F8D6800340A7D /* libLLVMInstrumentation.a */,
-				9C64AD801E0F8D6800340A7D /* libLLVMMC.a */,
-				9C64AD811E0F8D6800340A7D /* libLLVMMCDisassembler.a */,
-				9C64AD821E0F8D6800340A7D /* libLLVMMCJIT.a */,
-				9C64AD831E0F8D6800340A7D /* libLLVMMCParser.a */,
-				9C64AD841E0F8D6800340A7D /* libLLVMObject.a */,
-				9C64AD851E0F8D6800340A7D /* libLLVMProfileData.a */,
-				9C64AD861E0F8D6800340A7D /* libLLVMRuntimeDyld.a */,
-				9C64AD871E0F8D6800340A7D /* libLLVMScalarOpts.a */,
-				9C64AD881E0F8D6800340A7D /* libLLVMSelectionDAG.a */,
-				9C64AD891E0F8D6800340A7D /* libLLVMSupport.a */,
-				9C64AD8A1E0F8D6800340A7D /* libLLVMTarget.a */,
-				9C64AD8B1E0F8D6800340A7D /* libLLVMTransformUtils.a */,
-				9C64AD8C1E0F8D6800340A7D /* libLLVMX86AsmParser.a */,
-				9C64AD8D1E0F8D6800340A7D /* libLLVMX86AsmPrinter.a */,
-				9C64AD8E1E0F8D6800340A7D /* libLLVMX86CodeGen.a */,
-				9C64AD8F1E0F8D6800340A7D /* libLLVMX86Desc.a */,
-				9C64AD901E0F8D6800340A7D /* libLLVMX86Disassembler.a */,
-				9C64AD911E0F8D6800340A7D /* libLLVMX86Info.a */,
-				9C64AD921E0F8D6800340A7D /* libLLVMX86Utils.a */,
-				9C64AD931E0F8D6800340A7D /* libLLVMXCoreAsmPrinter.a */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		9C908F091E34853E005E253C /* include */ = {
-			isa = PBXGroup;
-			children = (
-				9C908F121E35960E005E253C /* common.sj */,
-				9C908F0A1E348549005E253C /* list.sj */,
-				9C1E74251E46A35E003BEBA5 /* highlow.sj */,
-			);
-			name = include;
 			sourceTree = "<group>";
 		};
 		9CF16BF41E19A84D006E9CB8 /* compiler */ = {
@@ -474,7 +335,7 @@
 		9C64AD4D1E0F823300340A7D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = "Mann, Justin";
 				TargetAttributes = {
 					9C64AD541E0F823300340A7D = {
@@ -511,18 +372,15 @@
 				9CDED2CC1E3701C8002D9666 /* NBase.cpp in Sources */,
 				9C3786591E2225FC00202E28 /* Exception.cpp in Sources */,
 				9CF16C161E19A888006E9CB8 /* NBlock.cpp in Sources */,
-				9C1E742E1E46D133003BEBA5 /* console.cpp in Sources */,
 				9CF16C1B1E19A888006E9CB8 /* NFunction.cpp in Sources */,
 				9C74891A1E581783008A032C /* NInterface.cpp in Sources */,
+				9C5F0CBC1FA78A5A004CD51D /* TrOutput.cpp in Sources */,
 				9CF16C1E1E19A888006E9CB8 /* NMath.cpp in Sources */,
-				9C1E74311E46D1C4003BEBA5 /* library.cpp in Sources */,
 				9C908F0E1E348C54005E253C /* NOr.cpp in Sources */,
 				9C7489201E592744008A032C /* NBaseFunction.cpp in Sources */,
 				9CF16C171E19A888006E9CB8 /* NBool.cpp in Sources */,
 				9C908F111E348D5A005E253C /* NAnd.cpp in Sources */,
 				9C3786561E21EE0400202E28 /* NThrow.cpp in Sources */,
-				9C1E742A1E46AC55003BEBA5 /* random.cpp in Sources */,
-				9C1E742C1E46D11B003BEBA5 /* parse.cpp in Sources */,
 				9C039B0D1E2498DB00D6C727 /* NFor.cpp in Sources */,
 				9CF16BF71E19A85F006E9CB8 /* Compiler.cpp in Sources */,
 				9C7B48E41E19A2DD00D378A1 /* main.cpp in Sources */,
@@ -544,6 +402,8 @@
 				9C908F191E35C9D6005E253C /* NChar.cpp in Sources */,
 				9CF16C211E19A888006E9CB8 /* NVoid.cpp in Sources */,
 				9CF16C181E19A888006E9CB8 /* NCast.cpp in Sources */,
+				9C5F0CBA1FA78A5A004CD51D /* TrFunction.cpp in Sources */,
+				9C5F0CBE1FA78A5A004CD51D /* TrVariable.cpp in Sources */,
 				9C908EFF1E33EFBF005E253C /* NThis.cpp in Sources */,
 				9CF16C191E19A888006E9CB8 /* NCompare.cpp in Sources */,
 				9CF16C1D1E19A888006E9CB8 /* NInteger.cpp in Sources */,
@@ -563,7 +423,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -571,7 +433,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -610,7 +476,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -618,7 +486,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;

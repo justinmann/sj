@@ -102,12 +102,7 @@ extern "C" void debugFree(void* p) {
 #endif
 
 extern "C" void debugFunction(const char* str, void* v, int64_t t) {
-#ifdef _MSC_VER
     printf("ERROR: %s %llx %lld\n", str, (uint64_t)v, t);
-#endif
-#ifdef __GNUC__
-	printf("ERROR: %s %lx %ld\n", str, (uint64_t)v, t);
-#endif
 #ifdef DEBUG_CALLSTACK
     for (int i = 0; i < callstackIndex; i++) {
         printf("%s\n", callstack[i]);

@@ -1,7 +1,7 @@
 TARGET = sjc
 LIBS = -lm
 CC = g++
-CFLAGS = -g -Wall -std=c++11
+CFLAGS = -g -Wall -std=c++11 -m64
 OBJECTS = $(patsubst %.cpp, %.o, $(wildcard node/*.cpp)) $(patsubst %.cpp, %.o, $(wildcard compiler/*.cpp)) $(patsubst %.cpp, %.o, $(wildcard transpile/*.cpp)) parser/parser.o parser/tokens.o main.o
 HEADERS = $(wildcard *.h)
 

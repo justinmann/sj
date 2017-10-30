@@ -634,7 +634,7 @@ void runTest(std::string path, bool updateResult) {
 
 			// Compare error output
 			line = 0;
-			ifstream errorB(codeFileName);
+			ifstream errorB(errorFileName);
 			if (errorB.is_open())
 			{
 				while (getline(errorB, lineB))
