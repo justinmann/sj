@@ -25,8 +25,23 @@ int NWhile::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBase
 }
 
 shared_ptr<CType> NWhile::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
-	assert(false);
-	return nullptr;
+    stringstream whileLine;
+    whileLine << "while (";
+    auto condType = cond->transpile(compiler, result, thisFunction, thisVar, output, function, whileLine);
+    if (condType != compiler->typeBool) {
+        result.addError(loc, CErrorCode::TypeMismatch, "condition for while must be a bool");
+        return nullptr;
+    }
+    whileLine << ") {";
+    function->statements.push_back(whileLine.str());
+    
+    stringstream bodyLine;
+    body->transpile(compiler, result, thisFunction, thisVar, output, function, bodyLine);
+    function->statements.push_back(bodyLine.str());
+    
+    function->statements.push_back("}");
+    
+    return compiler->typeVoid;
 }
 
 //shared_ptr<ReturnValue> NWhile::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {

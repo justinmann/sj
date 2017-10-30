@@ -11,7 +11,6 @@
 
 class NWhile : public NBase {
 public:
-    string varName;
     shared_ptr<NBase> cond;
     shared_ptr<NBase> body;
     
