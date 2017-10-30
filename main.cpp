@@ -13,26 +13,6 @@
 #include <string.h>
 #include <fstream>
 
-void testVoid() {
-    shared_ptr<CResult> result;
-    Compiler compiler;
-
-    result = compiler.run("void");
-    assert(result->type == RESULT_VOID);
-}
-
-void testCast() {
-    shared_ptr<CResult> result;
-    Compiler compiler;
-    
-    result = compiler.run("5 as float");
-    assert(result->type == RESULT_FLOAT && result->fResult == 5.0);
-
-    result = compiler.run("5.0 as int");
-    assert(result->type == RESULT_INT && result->iResult == 5);
-}
-
-
 void testParser() {
     shared_ptr<CResult> result;
     Compiler compiler;
@@ -727,39 +707,73 @@ void runTest(std::string path, bool updateResult) {
 	if (*(path.end() - 2) == 's' && *(path.end() - 1) == 'j') {
 		printf("Running %s\n", path.c_str());
 
-		Compiler compiler;
-		auto result = compiler.parse(path);
+		auto codeFileName = path;
+		codeFileName.replace(codeFileName.end() - 3, codeFileName.end(), ".c");
+		auto errorFileName = path;
+		errorFileName.replace(errorFileName.end() - 3, errorFileName.end(), ".errors");
 
-		auto cFileName = path.replace(path.end() - 3, path.end(), ".c");
 		if (updateResult) {
-			ofstream file;
-			file.open(cFileName);
-			auto errors = compiler.transpile(result->block, file);
-			file.close();
-		} else {
-			stringstream testA;
-			auto errors = compiler.transpile(result->block, testA);
+			ofstream code;
+			code.open(codeFileName);
+			ofstream error;
+			error.open(errorFileName);
 
-			testA.seekg(0, testA.beg);
+			Compiler compiler;
+			auto block = compiler.parse(path, error);
+			if (block) {
+				compiler.transpile(block, code, error);
+			}
+
+			code.close();
+			error.close();
+		} else {
+			stringstream codeA;
+			stringstream errorA;
+
+			Compiler compiler;
+			auto block = compiler.parse(path, errorA);
+			if (block) {
+				compiler.transpile(block, codeA, errorA);
+			}
+
+			codeA.seekg(0, codeA.beg);
+			errorA.seekg(0, errorA.beg);
+
+			// Compare file output
 			int line = 0;
 			string lineA;
 			string lineB;
-			ifstream testB(cFileName);
-			if (testB.is_open())
+			ifstream codeB(codeFileName);
+			if (codeB.is_open())
 			{
-				while (getline(testB, lineB))
+				while (getline(codeB, lineB))
 				{
 					line++;
-					getline(testA, lineA);
+					getline(codeA, lineA);
 
 					if (lineA.compare(lineB) != 0) {
 						cout << "Line " << line << " does not match:\n" << lineA << "\n" << lineB << "\n";
 					}
 				}
-				testB.close();
+				codeB.close();
 			}
 
-			// Compare file output
+			// Compare error output
+			line = 0;
+			ifstream errorB(codeFileName);
+			if (errorB.is_open())
+			{
+				while (getline(errorB, lineB))
+				{
+					line++;
+					getline(errorA, lineA);
+
+					if (lineA.compare(lineB) != 0) {
+						cout << "Error " << line << " does not match:\n" << lineA << "\n" << lineB << "\n";
+					}
+				}
+				errorB.close();
+			}
 		}
 	}
 }

@@ -373,19 +373,29 @@ private:
     shared_ptr<CCallVar> _callVar;
 };
 
-shared_ptr<CResult> Compiler::parse(const string& fileName) {
-	auto result = genNodeFile(fileName);
-	// Early exit if compile fails
-	if (result->errors.size() > 0)
-	    return result;
-	return result;
+void CError::writeToStream(ostream& stream) {
+	stream << "ERROR:" << code << " " << fileName << "[" << line << ":" << col << "] " << msg;
 }
 
-shared_ptr<vector<CError>> Compiler::transpile(shared_ptr<NBlock> block, ostream& stream) {
+shared_ptr<NBlock> Compiler::parse(const string& fileName, ostream& errorStream) {
+	auto result = genNodeFile(fileName);
+	// Early exit if compile fails
+	if (result->errors.size() > 0) {
+		for each (auto error in result->errors)
+		{
+			error.writeToStream(errorStream);
+			errorStream << "\n";
+		}
+		return nullptr;
+	}
+	return result->block;
+}
+
+bool Compiler::transpile(shared_ptr<NBlock> block, ostream& stream, ostream& error) {
 	TrOutput output;
 	block->transpile(&output, &output.mainFunction, nullptr);
-	output.writeToStream(stream);
-	return output.errors;
+	output.writeToStream(stream, error);
+	return output.errors.size() > 0;
 }
 
 shared_ptr<CResult> Compiler::compile(const string& fileName) {

@@ -129,6 +129,7 @@ public:
     
     CError(const CLoc& loc, const CErrorCode code): code(code), fileName(loc.fileName), line(loc.line), col(loc.col) { }
     CError(const CLoc& loc, const CErrorCode code, const string& msg): code(code), fileName(loc.fileName), line(loc.line), col(loc.col), msg(msg) { }
+	void writeToStream(ostream& stream);
 };
 
 class CResult {
@@ -185,8 +186,8 @@ class Compiler
 public:
     Compiler();
 
-	shared_ptr<CResult> parse(const string& filename);
-	shared_ptr<vector<CError>> transpile(shared_ptr<NBlock> block, ostream& stream);
+	shared_ptr<NBlock> parse(const string& filename, ostream& errorStream);
+	bool transpile(shared_ptr<NBlock> block, ostream& stream, ostream& errorStream);
 	shared_ptr<CResult> run(const string& code);
     shared_ptr<CResult> compile(const string& fileName);
     
