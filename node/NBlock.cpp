@@ -33,6 +33,16 @@ int NBlock::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBase
     return count;
 }
 
+void NBlock::transpile(TrOutput* output, TrFunction* function, stringstream* line) {
+	assert(line == nullptr);
+	for (auto it : statements) {
+		stringstream currentLine;
+		it->transpile(output, function, &currentLine);
+		function->statements.push_back(currentLine.str());
+	}
+}
+
+
 //shared_ptr<ReturnValue> NBlock::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
 //    assert(compiler->state == CompilerState::Compile);
 //    shared_ptr<ReturnValue> last = nullptr;

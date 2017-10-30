@@ -102,7 +102,12 @@ extern "C" void debugFree(void* p) {
 #endif
 
 extern "C" void debugFunction(const char* str, void* v, int64_t t) {
-    printf("ERROR: %s %lx %ld\n", str, (uint64_t)v, t);
+#ifdef _MSC_VER
+    printf("ERROR: %s %llx %lld\n", str, (uint64_t)v, t);
+#endif
+#ifdef __GNUC__
+	printf("ERROR: %s %lx %ld\n", str, (uint64_t)v, t);
+#endif
 #ifdef DEBUG_CALLSTACK
     for (int i = 0; i < callstackIndex; i++) {
         printf("%s\n", callstack[i]);
@@ -374,6 +379,13 @@ shared_ptr<CResult> Compiler::parse(const string& fileName) {
 	if (result->errors.size() > 0)
 	    return result;
 	return result;
+}
+
+shared_ptr<vector<CError>> Compiler::transpile(shared_ptr<NBlock> block, ostream& stream) {
+	TrOutput output;
+	block->transpile(&output, &output.mainFunction, nullptr);
+	output.writeToStream(stream);
+	return output.errors;
 }
 
 shared_ptr<CResult> Compiler::compile(const string& fileName) {

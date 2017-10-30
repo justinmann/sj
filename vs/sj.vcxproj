@@ -184,6 +184,9 @@
     <ClInclude Include="..\node\NVoid.h" />
     <ClInclude Include="..\node\NWhile.h" />
     <ClInclude Include="..\parser\parser.hpp" />
+    <ClInclude Include="..\transpile\TrFunction.h" />
+    <ClInclude Include="..\transpile\TrOutput.h" />
+    <ClInclude Include="..\transpile\TrVariable.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
@@ -226,6 +229,12 @@
     <ClCompile Include="..\node\NWhile.cpp" />
     <ClCompile Include="..\parser\parser.cpp" />
     <ClCompile Include="..\parser\tokens.cpp" />
+    <ClCompile Include="..\transpile\TrFunction.cpp" />
+    <ClCompile Include="..\transpile\TrOutput.cpp" />
+    <ClCompile Include="..\transpile\TrVariable.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\sj.pch" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

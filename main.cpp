@@ -11,6 +11,7 @@
 #define PATH_SEPERATOR "\\"
 #endif
 #include <string.h>
+#include <fstream>
 
 void testMath() {
     shared_ptr<CResult> result;
@@ -522,47 +523,6 @@ void testExtern() {
                           "cos(1.0)");
     assert(result->type == RESULT_FLOAT && result->fResult == 0.54030230586813977);
 }
-                          
-void testThrow() {
-    shared_ptr<CResult> result;
-    Compiler compiler;
-    
-    try {
-        result = compiler.run("throw(0)");
-        assert(false);
-    } catch(SJException& e) { }
-
-    try {
-        result = compiler.run("throw(1)");
-        assert(false);
-    } catch (SJException& e) { }
-    
-    try {
-        result = compiler.run(R"DELIM(
-            foo() {
-                throw(1)
-            }
-            foo()
-        )DELIM");
-        assert(false);
-    } catch(SJException& e) { }
-    
-    result = compiler.run(R"DELIM(
-		foo() {
-			throw(1)
-		}
-
-		bar() {	
-			foo()
-			1
-		} catch {
-			2
-		}
-
-		bar()
-    )DELIM");
-    assert(result->type == RESULT_INT && result->iResult == 2);
-}
 
 void testTemplate() {
     shared_ptr<CResult> result;
@@ -854,25 +814,61 @@ void testInterface() {
     // TODO: test interface with heap var return
 }
 
-void runTest(std::string path) {
-	printf("Running %s\n", path.c_str());
+void runTest(std::string path, bool updateResult) {
+	if (*(path.end() - 2) == 's' && *(path.end() - 1) == 'j') {
+		printf("Running %s\n", path.c_str());
 
-	Compiler compiler;
-	compiler.parse(path);
-// 	compiler.transpile();
-	// Compare file output
+		Compiler compiler;
+		auto result = compiler.parse(path);
+
+		auto cFileName = path.replace(path.end() - 3, path.end(), ".c");
+		if (updateResult) {
+			ofstream file;
+			file.open(cFileName);
+			auto errors = compiler.transpile(result->block, file);
+			file.close();
+		} else {
+			stringstream testA;
+			auto errors = compiler.transpile(result->block, testA);
+
+			testA.seekg(0, testA.beg);
+			int line = 0;
+			string lineA;
+			string lineB;
+			ifstream testB(cFileName);
+			if (testB.is_open())
+			{
+				while (getline(testB, lineB))
+				{
+					line++;
+					getline(testA, lineA);
+
+					if (lineA.compare(lineB) != 0) {
+						cout << "Line " << line << " does not match:\n" << lineA << "\n" << lineB << "\n";
+					}
+				}
+				testB.close();
+			}
+
+			// Compare file output
+		}
+	}
 }
 
-void runAllTests(std::string path) {
+void runAllTests(std::string path, bool updateResult) {
 	DIR *dir;
 	struct dirent *ent;
 	if ((dir = opendir(path.c_str())) != NULL) {
 		/* print all the files and directories within directory */
 		while ((ent = readdir(dir)) != NULL) {
 			if (ent->d_type == DT_DIR && strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..")) {
-				runAllTests(path.append(PATH_SEPERATOR).append(ent->d_name));
+				string directoryPath = path;
+				directoryPath.append(PATH_SEPERATOR).append(ent->d_name);
+				runAllTests(directoryPath, updateResult);
 			} else if (ent->d_type == DT_REG) {
-				runTest(path.append(PATH_SEPERATOR).append(ent->d_name));
+				string filePath = path;
+				filePath.append(PATH_SEPERATOR).append(ent->d_name);
+				runTest(filePath, updateResult);
 			}
 		}
 		closedir(dir);
@@ -891,29 +887,10 @@ int main(int argc, char **argv) {
         return 0;
     }
     
-    if (strcmp(argv[1], "-test") == 0) {
-		runAllTests(".");
-        // result = compiler.run("include \"highlow.sj\"");
-        //testInterface();
-        //testMath();
-        //testComparison();
-        //testVoid();
-        //testCast();
-        //testParser();
-        //testAssignment();
-        //testComment();
-        //testIf();
-        //testFor();
-        //testWhile();
-        //testFunction();
-        //testClass();
-        //testExtern();
-        //testTemplate();
-        //testArray();
-        //testInclude();
-        //testString();
-        //testHeap();
-        // testThrow();        
+	if (strcmp(argv[1], "-test") == 0) {
+		runAllTests(".", false);
+	} else if (strcmp(argv[1], "-testUpdate") == 0) {
+		runAllTests(".", true);
     } else {
         result = compiler.compile(argv[1]);
         for (auto error : result->errors) {

@@ -16,7 +16,8 @@ public:
     
     NInteger(CLoc loc, const char* value) : NBase(NodeType_Integer, loc), strValue(value) { }
     NInteger(CLoc loc, const int64_t value) : NBase(NodeType_Integer, loc), value(value) { }
-    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
+	virtual void transpile(TrOutput* output, TrFunction* function, stringstream* line);
+	virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
 
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) { }

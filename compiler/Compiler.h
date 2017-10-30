@@ -43,8 +43,6 @@ public:
 #include "CArrayType.h"
 #include "Exception.h"
 
-// #pragma clang diagnostic ignored "-Wformat-security"
-
 #define STACK_REF_COUNT         1000000000000
 
 #ifdef __GNUC__
@@ -172,6 +170,8 @@ public:
     }
 };
 
+#include "../transpile/TrOutput.h"
+
 enum CompilerState {
     Define,
     FixVar,
@@ -186,6 +186,7 @@ public:
     Compiler();
 
 	shared_ptr<CResult> parse(const string& filename);
+	shared_ptr<vector<CError>> transpile(shared_ptr<NBlock> block, ostream& stream);
 	shared_ptr<CResult> run(const string& code);
     shared_ptr<CResult> compile(const string& fileName);
     

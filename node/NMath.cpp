@@ -81,6 +81,32 @@ int NMath::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseF
 //    return NULL;
 //}
 
+void NMath::transpile(TrOutput* output, TrFunction* function, stringstream* line) {
+	*line << "(";
+	leftSide->transpile(output, function, line);
+	*line << ") ";
+	switch (op) {
+	case NMathOp::Add:
+		*line << " + ";
+		break;
+	case NMathOp::Sub:
+		*line << " - ";
+		break;
+	case NMathOp::Mul:
+		*line << " * ";
+		break;
+	case NMathOp::Div:
+		*line << " / ";
+		break;
+	case NMathOp::Mod:
+		*line << " %% ";
+		break;
+	}
+	*line << " (";
+	rightSide->transpile(output, function, line);
+	*line << ")";
+}
+
 void NMath::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     leftSide->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
     

@@ -71,6 +71,9 @@ int NBase::setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CBaseFunct
     return setHeapVarImpl(compiler, result, thisFunction, thisVar, isHeapVar);
 }
 
+void NBase::transpile(TrOutput* output, TrFunction* function, stringstream* line) {
+	assert(false);
+}
 
 //shared_ptr<ReturnValue> NBase::compile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
 //    assert(compiler->state == CompilerState::Compile);

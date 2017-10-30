@@ -22,6 +22,9 @@
     <Filter Include="Parser">
       <UniqueIdentifier>{95ed43c8-bb5f-48b8-9ebc-a3b697340b50}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Transpile">
+      <UniqueIdentifier>{f4fa1fbd-4468-4f50-ae86-5eb40757c57d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -144,6 +147,15 @@
     <ClInclude Include="..\parser\parser.hpp">
       <Filter>Parser</Filter>
     </ClInclude>
+    <ClInclude Include="..\transpile\TrOutput.h">
+      <Filter>Transpile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\transpile\TrFunction.h">
+      <Filter>Transpile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\transpile\TrVariable.h">
+      <Filter>Transpile</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\node\NAnd.cpp">
@@ -263,5 +275,19 @@
     <ClCompile Include="..\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\transpile\TrOutput.cpp">
+      <Filter>Transpile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\transpile\TrFunction.cpp">
+      <Filter>Transpile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\transpile\TrVariable.cpp">
+      <Filter>Transpile</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\sj.pch">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
