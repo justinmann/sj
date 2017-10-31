@@ -388,7 +388,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 	auto templateTypes = vector<shared_ptr<CType>>();
 	shared_ptr<CFunction> currentFunction;
 	shared_ptr<CFunction> globalFunction;
-	stringstream empty;
+	stringstream returnLine;
 
 	auto result = genNodeFile(fileName);
 	if (result->errors.size() == 0) {
@@ -430,8 +430,8 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 #endif
 
 					state = CompilerState::Compile;
-					result->block->transpile(this, *result, globalFunction, nullptr, &output, &output.mainFunction, empty);
-					assert(empty.str().size() == 0);
+					result->block->transpile(this, *result, globalFunction, nullptr, &output, &output.mainFunction, returnLine);
+                    output.mainFunction.statements.push_back(returnLine.str());
                     if (result->errors.size() == 0) {
                         output.writeToStream(stream);
                     }

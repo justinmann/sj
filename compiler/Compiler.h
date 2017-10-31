@@ -37,6 +37,7 @@ public:
     static CLoc undefined;
 };
 
+#include "../transpile/TrOutput.h"
 #include "CType.h"
 #include "CTypeName.h"
 #include "CVar.h"
@@ -170,8 +171,6 @@ public:
 #endif
     }
 };
-
-#include "../transpile/TrOutput.h"
 
 enum CompilerState {
     Define,

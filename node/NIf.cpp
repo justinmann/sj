@@ -122,6 +122,10 @@ int CIfElseVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar>
     return nif->setHeapVar(compiler, result, thisFunction, thisVar, nullptr, true);
 }
 
+shared_ptr<CType> CIfElseVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+    assert(false);
+}
+
 void CIfElseVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     ss << "if ";
     condition->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
@@ -196,35 +200,36 @@ shared_ptr<CType> NIf::transpile(Compiler* compiler, CResult& result, shared_ptr
 	function->statements.push_back(ifLine.str());
 
 	if (ifBlock) {
-		stringstream empty;
-		ifBlock->transpile(compiler, result, thisFunction, thisVar, output, function, empty);
-		assert(empty.str().size() == 0);
+        stringstream resultLine;
+        if (type != compiler->typeVoid) {
+            resultLine << ifResultName + " = ";
+        }
 
-		if (type != compiler->typeVoid) {
-			auto lastLine = function->statements.back();
-			lastLine = ifResultName + " = " + lastLine;
-			function->statements.pop_back();
-			function->statements.push_back(lastLine);
-		}
+        ifBlock->transpile(compiler, result, thisFunction, thisVar, output, function, resultLine);
+        
+        if (type != compiler->typeVoid) {
+            function->statements.push_back(resultLine.str());
+        }
 	}
 
 	if (elseBlock) {
 		function->statements.push_back("} else {");
-		stringstream empty;
-		elseBlock->transpile(compiler, result, thisFunction, thisVar, output, function, empty);
-		assert(empty.str().size() == 0);
 
-		if (type != compiler->typeVoid) {
-			auto lastLine = function->statements.back();
-			lastLine = ifResultName + " = " + lastLine;
-			function->statements.pop_back();
-			function->statements.push_back(lastLine);
-		}
-	}
+        stringstream resultLine;
+        if (type != compiler->typeVoid) {
+            resultLine << ifResultName + " = ";
+        }
+
+		elseBlock->transpile(compiler, result, thisFunction, thisVar, output, function, resultLine);
+
+        if (type != compiler->typeVoid) {
+            function->statements.push_back(resultLine.str());
+        }
+    }
 
 	function->statements.push_back("}");
 	if (type != compiler->typeVoid) {
-		function->statements.push_back(ifResultName);
+        line << ifResultName;
 	}
 	return type;
 }

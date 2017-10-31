@@ -39,6 +39,12 @@ shared_ptr<CType> NBlock::transpile(Compiler* compiler, CResult& result, shared_
 		it->transpile(compiler, result, thisFunction, thisVar, output, function, currentLine);
 		function->statements.push_back(currentLine.str());
 	}
+    
+    if (function->statements.size() > 0) {
+        line << function->statements.back();
+        function->statements.pop_back();
+    }
+    
 	return nullptr;
 }
 

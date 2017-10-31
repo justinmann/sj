@@ -1,0 +1,1 @@
+func(x: 1, y: 2) { x + y }; func(q: 1)

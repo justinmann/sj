@@ -87,6 +87,10 @@ int CInterfaceMethodReturnVar::setHeapVar(Compiler* compiler, CResult& result, s
     return 0;
 }
 
+shared_ptr<CType> CInterfaceMethodReturnVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+    assert(false);
+}
+
 void CInterfaceMethodReturnVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     assert(false);
 }
@@ -126,6 +130,10 @@ int CInterfaceMethodArgVar::setHeapVar(Compiler* compiler, CResult& result, shar
         return 1;
     }
     return 0;
+}
+
+shared_ptr<CType> CInterfaceMethodArgVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+    assert(false);
 }
 
 void CInterfaceMethodArgVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
@@ -234,6 +242,11 @@ shared_ptr<CVar> CInterfaceMethod::getReturnVar(Compiler* compiler, CResult& res
         returnVar->setHeapVar(compiler, result, nullptr);
     }
     return returnVar;
+}
+
+shared_ptr<CType> CInterfaceMethod::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line, vector<shared_ptr<NBase>>& parameters) {
+    assert(false);
+    return nullptr;
 }
 
 //shared_ptr<ReturnValue> CInterfaceMethod::call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType) {

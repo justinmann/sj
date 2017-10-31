@@ -126,7 +126,6 @@ shared_ptr<CType> NFunction::getTypeImpl(Compiler* compiler, CResult& result, sh
 }
 
 shared_ptr<CType> NFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
-	assert(false);
 	return nullptr;
 }
 
@@ -177,6 +176,10 @@ int CFunctionReturnVar::setHeapVar(Compiler* compiler, CResult& result, shared_p
         count += interfaceMethodReturnVar->setHeapVar(compiler, result, nullptr);
     }
     return count;
+}
+
+shared_ptr<CType> CFunctionReturnVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+    assert(false);
 }
 
 void CFunctionReturnVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
@@ -329,6 +332,132 @@ int CFunction::setHeapVarBody(Compiler *compiler, CResult& result, shared_ptr<CV
         }
     } while (count > 0);
     return 0;
+}
+
+shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line, vector<shared_ptr<NBase>>& parameters) {
+    assert(compiler->state == CompilerState::Compile);
+
+    auto returnType = getReturnType(compiler, result, thisVar);
+    if (!returnType) {
+        return nullptr;
+    }
+
+    auto argTypes = getCTypeList(compiler, result);
+
+    // Create function body
+    if (!getHasThis()) {
+        if (output->functions.find(name) == output->functions.end()) {
+            auto trFunction = make_shared<TrFunction>();
+            output->functions[name] = trFunction;
+            
+            stringstream definition;
+            definition << returnType->name << " " << name << "(";
+            auto isFirstArg = true;
+            for (auto argType : *argTypes) {
+                if (isFirstArg) {
+                    isFirstArg = false;
+                } else {
+                    definition << ", ";
+                }
+                definition << argType.second->name << " " << argType.first;
+            }
+            definition << ")";
+            trFunction->definition = definition.str();
+            
+            stringstream returnLine;
+            block->transpile(compiler, result, shared_from_this(), nullptr, output, trFunction.get(), returnLine);
+            if (returnLine.str().size() > 0) {
+                trFunction->statements.push_back("return " + returnLine.str());
+            }
+        }
+
+        vector<string> argValues;
+        
+        // Add "parent" to "this"
+        auto hasParent = getHasParent(compiler, result);
+        shared_ptr<ReturnValue> dotReturnValue;
+        if (hasParent) {
+            argValues.push_back("_parent");
+//            Value* parentValue = thisValue;
+//            if (dotVar) {
+//                dotReturnValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB, RRT_Auto);
+//                parentValue = dotReturnValue->value;
+//            } else {
+//                // if recursively calling ourselves then re-use parent
+//                if (shared_from_this() == thisFunction) {
+//                    parentValue = getParentValue(compiler, result, builder, true, parentValue);
+//                } else {
+//                    auto temp = static_pointer_cast<CBaseFunction>(thisFunction);
+//                    while (temp && temp != parent.lock()) {
+//                        parentValue = temp->getParentValue(compiler, result, builder, true, parentValue);
+//                        temp = temp->parent.lock();
+//                    }
+//                }
+//            }
+//
+//            argValues.push_back(parentValue);
+        }
+
+        assert(argValues.size() == getArgStart(compiler, result));
+        auto argIndex = 0;
+        // Fill in "this" with normal arguments
+        for (auto defaultAssignment : argDefaultValues) {
+            auto argVar = argVars[argIndex];
+            auto argHeapVar = argVar->getHeapVar(compiler, result, thisVar);
+            auto argType = argVar->getType(compiler, result);
+            auto isDefaultAssignment = parameters[argIndex] == defaultAssignment;
+            shared_ptr<CType> argReturnType;
+
+            stringstream argStream;
+            if (isDefaultAssignment) {
+//                auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), calleeVar);
+//                if (paramVar) {
+//                    auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
+//                    assert(paramHeapVar == argHeapVar);
+//                }
+                argReturnType = parameters[argIndex]->transpile(compiler, result, shared_from_this(), nullptr /*calleeVar*/, output, function, argStream);
+            } else {
+//                auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), thisVar);
+//                if (paramVar) {
+//                    auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
+//                    assert(paramHeapVar == argHeapVar);
+//                }
+                argReturnType = parameters[argIndex]->transpile(compiler, result, shared_from_this(), thisVar, output, function, argStream);
+            }
+            
+            auto argReturnValue = argStream.str();
+
+            if (argReturnValue.size() == 0) {
+                result.addError(loc, CErrorCode::TypeMismatch, "value is empty");
+                return nullptr;
+            }
+
+            if (argReturnType != argType) {
+                result.addError(loc, CErrorCode::TypeMismatch, "value does not match");
+                return nullptr;
+            }
+
+            argValues.push_back(argReturnValue);
+            argIndex++;
+        }
+        
+        line << name << "(";
+        bool isFirstParameter = true;
+        for (auto argValue : argValues) {
+            if (isFirstParameter) {
+                isFirstParameter = false;
+            } else {
+                line << ", ";
+            }
+            
+            line << "(" << argValue << ")";
+        }
+        line << ")";
+    } else {
+        assert(false);
+    }
+    
+    return nullptr;
 }
 
 //Function* CFunction::compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
@@ -1061,6 +1190,34 @@ shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result) {
     }
     
     return thisType;
+}
+
+shared_ptr<vector<pair<string, shared_ptr<CType>>>> CFunction::getCTypeList(Compiler* compiler, CResult& result) {
+    if (!ctypeList) {
+        ctypeList = make_shared<vector<pair<string, shared_ptr<CType>>>>();
+
+        if (hasRefCount) {
+            indexRefCount = ctypeList->size();
+            ctypeList->push_back(make_pair("_this", compiler->typeInt));
+        }
+
+        if (hasParent) {
+            indexParent = ctypeList->size();
+            auto parentType = parent.lock()->getThisType(compiler, result);
+            ctypeList->push_back(make_pair("_parent", parentType));
+        }
+
+        indexVars = ctypeList->size();
+        for (auto it : thisVars) {
+            auto ctype = it->getType(compiler, result);
+            if (!ctype) {
+                result.addError(it->nassignment->loc, CErrorCode::InvalidType, "cannot determine type for '%s'", it->name.c_str());
+                return nullptr;
+            }
+            ctypeList->push_back(make_pair(it->name, ctype));
+        }
+    }
+    return ctypeList;
 }
 
 //shared_ptr<vector<Type*>> CFunction::getTypeList(Compiler* compiler, CResult& result) {

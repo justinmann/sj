@@ -1,0 +1,1 @@
+func(x: 1) { x }; func()

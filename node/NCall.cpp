@@ -159,6 +159,24 @@ int CCallVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> t
     return 0;
 }
 
+shared_ptr<CType> CCallVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+    assert(compiler->state == CompilerState::Compile);
+    // compiler->emitLocation(builder, call.get());
+
+    if (arguments->size() > callee->argDefaultValues.size()) {
+        result.addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments->size(), callee->argDefaultValues.size());
+        return nullptr;
+    }
+
+    // Fill in parameters
+    vector<shared_ptr<NBase>> parameters(callee->argDefaultValues.size());
+    if (!getParameters(compiler, result, parameters)) {
+        return nullptr;
+    }
+
+    return callee->transpile(compiler, result, thisFunction, thisVar, output, function, line, parameters);
+}
+
 void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     if (functions.find(callee) == functions.end()) {
         functions[callee] = "";
@@ -414,7 +432,4 @@ int NCall::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseF
     return count;
 }
 
-shared_ptr<CType> NCall::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
-	assert(false);
-	return nullptr;
-}
+
