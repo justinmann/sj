@@ -372,7 +372,7 @@ void runTest(std::string path, bool updateResult) {
 	}
 }
 
-void runAllTests(std::string path, bool updateResult) {
+void runAllTests(std::string path, bool updateResult, const char* wildcard) {
 	DIR *dir;
 	struct dirent *ent;
 	if ((dir = opendir(path.c_str())) != NULL) {
@@ -381,11 +381,13 @@ void runAllTests(std::string path, bool updateResult) {
 			if (ent->d_type == DT_DIR && strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..")) {
 				string directoryPath = path;
 				directoryPath.append(PATH_SEPERATOR).append(ent->d_name);
-				runAllTests(directoryPath, updateResult);
+				runAllTests(directoryPath, updateResult,wildcard);
 			} else if (ent->d_type == DT_REG) {
 				string filePath = path;
 				filePath.append(PATH_SEPERATOR).append(ent->d_name);
-				runTest(filePath, updateResult);
+                if (wildcard == nullptr || filePath.find(wildcard) != -1) {
+                    runTest(filePath, updateResult);
+                }
 			}
 		}
 		closedir(dir);
@@ -405,9 +407,9 @@ int main(int argc, char **argv) {
     }
     
 	if (strcmp(argv[1], "-test") == 0) {
-		runAllTests(".", false);
+		runAllTests(".", false, argv[2]);
 	} else if (strcmp(argv[1], "-testUpdate") == 0) {
-		runAllTests(".", true);
+		runAllTests(".", true, argv[2]);
     } else {
         result = compiler.compile(argv[1]);
         for (auto error : result->errors) {

@@ -69,6 +69,10 @@
             argument = "-testUpdate"
             isEnabled = "YES">
          </CommandLineArgument>
+         <CommandLineArgument
+            argument = "class4"
+            isEnabled = "YES">
+         </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>
       </AdditionalOptions>
