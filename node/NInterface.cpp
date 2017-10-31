@@ -105,7 +105,7 @@ int CInterfaceVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CV
     return 0;
 }
 
-shared_ptr<CType> CInterfaceVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+shared_ptr<CType> CInterfaceVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line, shared_ptr<CVar> dotVar) {
     assert(false);
 	return nullptr;
 }
@@ -249,7 +249,7 @@ shared_ptr<CVar> CInterface::getReturnVar(Compiler* compiler, CResult& result, s
     return nullptr;
 }
 
-shared_ptr<CType> CInterface::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line, vector<shared_ptr<NBase>>& parameters) {
+shared_ptr<CType> CInterface::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line, shared_ptr<CVar> calleeVar, vector<shared_ptr<NBase>>& parameters) {
     assert(false);
     return nullptr;
 }

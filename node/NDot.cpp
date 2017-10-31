@@ -50,9 +50,10 @@ int CDotVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> th
     return rightVar->setHeapVar(compiler, result, leftVar);
 }
 
-shared_ptr<CType> CDotVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
-    assert(false);
-	return nullptr;
+shared_ptr<CType> CDotVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line, shared_ptr<CVar> dotVar) {
+	leftVar->transpile(compiler, result, thisFunction, thisVar, output, function, line, dotVar);
+	line << "->";
+	return rightVar->transpile(compiler, result, thisFunction, thisVar, output, function, line, leftVar);
 }
 
 void CDotVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
@@ -90,9 +91,3 @@ int NDot::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseFu
     count += right->setHeapVar(compiler, result, thisFunction, thisVar, leftVar, isHeapVar);
     return count;
 }
-
-shared_ptr<CType> NDot::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
-	assert(false);
-	return nullptr;
-}
-

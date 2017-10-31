@@ -159,7 +159,7 @@ int CCallVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> t
     return 0;
 }
 
-shared_ptr<CType> CCallVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+shared_ptr<CType> CCallVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line, shared_ptr<CVar> dotVar) {
     assert(compiler->state == CompilerState::Compile);
     // compiler->emitLocation(builder, call.get());
 
@@ -174,7 +174,7 @@ shared_ptr<CType> CCallVar::transpile(Compiler* compiler, CResult& result, share
         return nullptr;
     }
 
-    return callee->transpile(compiler, result, thisFunction, thisVar, output, function, line, parameters);
+    return callee->transpile(compiler, result, thisFunction, thisVar, output, function, line, calleeVar, parameters);
 }
 
 void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

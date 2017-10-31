@@ -178,7 +178,7 @@ int CFunctionReturnVar::setHeapVar(Compiler* compiler, CResult& result, shared_p
     return count;
 }
 
-shared_ptr<CType> CFunctionReturnVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+shared_ptr<CType> CFunctionReturnVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line, shared_ptr<CVar> dotVar) {
     assert(false);
 	return nullptr;
 }
@@ -335,7 +335,7 @@ int CFunction::setHeapVarBody(Compiler *compiler, CResult& result, shared_ptr<CV
     return 0;
 }
 
-shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line, vector<shared_ptr<NBase>>& parameters) {
+shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line, shared_ptr<CVar> calleeVar, vector<shared_ptr<NBase>>& parameters) {
     assert(compiler->state == CompilerState::Compile);
 
     auto returnType = getReturnType(compiler, result, thisVar);
@@ -455,10 +455,33 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
         }
         line << ")";
     } else {
-        assert(false);
-    }
+		string structName = "class_" + name;
+		if (output->structs.find(name) == output->structs.end()) {
+			for (auto argType : *argTypes) {
+				stringstream ss;
+				ss << argType.second->name << " " << argType.first;
+				output->structs[structName].push_back(ss.str());
+			}
+		}
+
+		if (output->functions.find(name) == output->functions.end()) {
+			auto trFunction = make_shared<TrFunction>();
+			output->functions[name] = trFunction;
+
+			stringstream functionDefinition;
+			functionDefinition << returnType->name << " " << name << "(" << structName << "* _this)";
+			trFunction->definition = functionDefinition.str();
+
+			stringstream returnLine;
+
+			block->transpile(compiler, result, shared_from_this(), calleeVar, output, trFunction.get(), returnLine);
+			if (returnLine.str().size() > 0) {
+				trFunction->statements.push_back("return " + returnLine.str());
+			}
+		}
+	}
     
-    return nullptr;
+    return returnType;
 }
 
 //Function* CFunction::compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {

@@ -27,6 +27,5 @@ Release/
 a.out
 vs/.vs/
 *.o
-todo.txt
 sjc
 vs/sj.vcxproj.user

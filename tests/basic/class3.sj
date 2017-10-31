@@ -1,0 +1,1 @@
+class(a.b : 0) { this }

@@ -1,0 +1,8 @@
+* add prefix on function name
+* release objects
+* create instance 
+
+* output annotated sj
+* output simplified sj
+* switch to 32-bit int by default
+* use double in c output
