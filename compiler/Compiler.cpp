@@ -374,8 +374,17 @@ private:
     shared_ptr<CCallVar> _callVar;
 };
 
+std::string ReplaceAll(std::string str, const std::string& from, const std::string& to) {
+	size_t start_pos = 0;
+	while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
+		str.replace(start_pos, from.length(), to);
+		start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+	}
+	return str;
+}
+
 void CError::writeToStream(ostream& stream) {
-	stream << "ERROR:" << code << " " << *fileName << "[" << line << ":" << col << "] " << msg;
+	stream << "ERROR:" << code << " " << ReplaceAll(*fileName, "\\", "/") << "[" << line << ":" << col << "] " << msg;
 }
 
 bool Compiler::transpile(const string& fileName, ostream& stream, ostream& errorStream) {

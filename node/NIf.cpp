@@ -124,6 +124,7 @@ int CIfElseVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar>
 
 shared_ptr<CType> CIfElseVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
     assert(false);
+	return nullptr;
 }
 
 void CIfElseVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

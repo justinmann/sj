@@ -89,6 +89,7 @@ int CInterfaceMethodReturnVar::setHeapVar(Compiler* compiler, CResult& result, s
 
 shared_ptr<CType> CInterfaceMethodReturnVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
     assert(false);
+	return nullptr;
 }
 
 void CInterfaceMethodReturnVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
@@ -134,6 +135,7 @@ int CInterfaceMethodArgVar::setHeapVar(Compiler* compiler, CResult& result, shar
 
 shared_ptr<CType> CInterfaceMethodArgVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
     assert(false);
+	return nullptr;
 }
 
 void CInterfaceMethodArgVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

@@ -180,6 +180,7 @@ int CFunctionReturnVar::setHeapVar(Compiler* compiler, CResult& result, shared_p
 
 shared_ptr<CType> CFunctionReturnVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
     assert(false);
+	return nullptr;
 }
 
 void CFunctionReturnVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
