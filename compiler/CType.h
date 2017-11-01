@@ -44,7 +44,8 @@ public:
 #endif
 
     CTypeCategory category;
-    string nameVal;
+    string name;
+    string nameValue;
 	string nameRef;
     weak_ptr<CBaseFunction> parent;
     //virtual Type* llvmAllocType(Compiler* compiler, CResult& result);

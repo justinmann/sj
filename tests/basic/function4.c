@@ -1,10 +1,10 @@
-float sj_func();
+float sjf_func();
 
-float sj_func() {
+float sjf_func() {
     return -3.0;
 }
 
 int main() {
-    (sj_func()) < (4.0);
+    (sjf_func()) < (4.0);
     return 0;
 }

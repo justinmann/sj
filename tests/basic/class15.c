@@ -1,51 +1,49 @@
-typedef struct class_anon_0 {
-    int _this;
-}
+typedef struct {
+    sjs_global* _parent;
+} sjs_class;
 
-typedef struct class_class {
-    int _this;
-    global _parent;
-}
+sjs_anon_0* sjf_anon_0(sjs_anon_0* _this);
+int sjf_bar(sjs_class* _parent, int x);
+sjs_class* sjf_class(sjs_class* _this);
+int sjf_foo(sjs_class* _parent, int x);
+int sjf_sub(int x, int y);
 
-anon_0* sj_anon_0(class_anon_0* _this);
-int sj_bar(class* _parent, int x);
-class* sj_class(class_class* _this);
-int sj_foo(class* _parent, int x);
-int sj_sub(int x, int y);
-
-anon_0* sj_anon_0(class_anon_0* _this) {
+sjs_anon_0* sjf_anon_0(sjs_anon_0* _this) {
     return _this;
 }
 
-int sj_bar(class* _parent, int x) {
-    return sj_foo((_parent), (x));
+int sjf_bar(sjs_class* _parent, int x) {
+    return sjf_foo((_parent), (x));
 }
 
-class* sj_class(class_class* _this) {
+sjs_class* sjf_class(sjs_class* _this) {
     return _this;
 }
 
-int sj_foo(class* _parent, int x) {
+int sjf_foo(sjs_class* _parent, int x) {
     int ifResult1;
     if ((x) > (0)) {
-        ifResult1 = sj_bar((_parent), (_parentsj_sub((x), (1))));
+        ifResult1 = sjf_bar((_parent), (_parentsjf_sub((x), (1))));
     } else {
         ifResult1 = 0;
     }
     return ifResult1;
 }
 
-int sj_sub(int x, int y) {
+int sjf_sub(int x, int y) {
     return (x) - (y);
 }
 
 int main() {
-    class* c;
-    anon_0* math;
-    anon_0* objectRef1;
-    class* objectRef2;
-    math = sj_anon_0(objectRef1);
-    c = sj_class(objectRef2);
-    csj_foo((_parent), (4));
+    sjs_class* c;
+    sjs_anon_0* math;
+    sjs_class sjd_temp1;
+    sjs_anon_0* sjv_temp1;
+    sjs_class* sjv_temp2;
+    sjv_temp1 = malloc(sizeof(sjs_anon_0));
+    math = sjf_anon_0(sjv_temp1);
+    sjv_temp2 = &sjd_temp1;
+    c = sjf_class(sjv_temp2);
+    csjf_foo((_parent), (4));
     return 0;
 }

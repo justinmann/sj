@@ -161,7 +161,6 @@ int CCallVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> t
 
 shared_ptr<CType> CCallVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine, shared_ptr<CVar> dotVar) {
     assert(compiler->state == CompilerState::Compile);
-    // compiler->emitLocation(builder, call.get());
 
     if (arguments->size() > callee->argDefaultValues.size()) {
         result.addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments->size(), callee->argDefaultValues.size());
@@ -174,7 +173,7 @@ shared_ptr<CType> CCallVar::transpile(Compiler* compiler, CResult& result, share
         return nullptr;
     }
 
-    return callee->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine, calleeVar, parameters);
+    return callee->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine, getThisVar(compiler, result), parameters);
 }
 
 void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
@@ -228,7 +227,7 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctio
                 auto paramVar = callee->argVars[paramIndex];
                 ss << alloc_mode(compiler, result, thisVar, paramVar);
                 ss << paramVar->name.c_str();
-                ss << "'" << paramVar->getType(compiler, result)->nameVal.c_str();
+                ss << "'" << paramVar->getType(compiler, result)->name.c_str();
                 ss << (paramVar->isMutable ? " = " : " : ");
                 it->dump(compiler, result, thisFunction, thisVar, functions, ss, level + 1);
                 if (paramIndex != parameters.size() - 1) {
@@ -268,7 +267,7 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctio
                 auto paramVar = callee->argVars[paramIndex];
                 ss << alloc_mode(compiler, result, thisVar, paramVar);
                 ss << paramVar->name.c_str();
-                ss << "'" << paramVar->getType(compiler, result)->nameVal.c_str();
+                ss << "'" << paramVar->getType(compiler, result)->name.c_str();
                 ss << (paramVar->isMutable ? " = " : " : ");
                 it->dump(compiler, result, thisFunction, thisVar, functions, ss, level + 1);
                 if (paramIndex != parameters.size() - 1) {
@@ -431,5 +430,4 @@ int NCall::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseF
     }
     return count;
 }
-
 

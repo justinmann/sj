@@ -161,7 +161,7 @@ shared_ptr<CType> NAssignment::transpile(Compiler* compiler, CResult& result, sh
 
 	auto rightType = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine);
 	if (rightType != ctype) {
-		result.addError(loc, CErrorCode::TypeMismatch, "returned type '%s' does not match explicit type '%s'", rightType->nameVal.c_str(), ctype->nameVal.c_str());
+		result.addError(loc, CErrorCode::TypeMismatch, "returned type '%s' does not match explicit type '%s'", rightType->name.c_str(), ctype->name.c_str());
 		return nullptr;
 	}
 
@@ -226,7 +226,7 @@ void NAssignment::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunc
         ss << alloc_mode(compiler, result, thisVar, _assignVar);
     }
     ss << name;
-    ss << "'" << (type ? type->nameVal.c_str() : "unknown");
+    ss << "'" << (type ? type->name.c_str() : "unknown");
     ss << (isMutable ? " = " : " : ");
     if (rightSide) {
         rightSide->dump(compiler, result, thisFunction, thisVar, functions, ss, level);

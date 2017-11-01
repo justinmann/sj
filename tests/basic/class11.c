@@ -1,21 +1,21 @@
-typedef struct class_class {
-    int _this;
+typedef struct {
     int x;
-}
+} sjs_class;
 
-class* sj_class(class_class* _this);
-class* sj_func();
+sjs_class* sjf_class(sjs_class* _this);
+sjs_class* sjf_func();
 
-class* sj_class(class_class* _this) {
+sjs_class* sjf_class(sjs_class* _this) {
     return _this;
 }
 
-class* sj_func() {
-    class* objectRef1;
-    return sj_class(objectRef1);
+sjs_class* sjf_func() {
+    sjs_class* sjv_temp1;
+    sjv_temp1 = malloc(sizeof(sjs_class));
+    return sjf_class(sjv_temp1);
 }
 
 int main() {
-    sj_func()->x;
+    sjf_func()->x;
     return 0;
 }

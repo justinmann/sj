@@ -1,22 +1,20 @@
-typedef struct class_class {
-    int _this;
-}
+sjs_class* sjf_class(sjs_class* _this);
+int sjf_func();
 
-class* sj_class(class_class* _this);
-int sj_func();
-
-class* sj_class(class_class* _this) {
+sjs_class* sjf_class(sjs_class* _this) {
     return _this;
 }
 
-int sj_func() {
+int sjf_func() {
     return 1;
 }
 
 int main() {
-    class* c;
-    class* objectRef1;
-    c = sj_class(objectRef1);
-    csj_func();
+    sjs_class* c;
+    sjs_class sjd_temp1;
+    sjs_class* sjv_temp1;
+    sjv_temp1 = &sjd_temp1;
+    c = sjf_class(sjv_temp1);
+    csjf_func();
     return 0;
 }

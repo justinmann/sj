@@ -1,23 +1,19 @@
-typedef struct class_class {
-    int _this;
+int sjf_bar(int x);
+sjs_class* sjf_class(sjs_class* _this);
+int sjf_foo(int x);
+
+int sjf_bar(int x) {
+    return sjf_foo((x));
 }
 
-int sj_bar(int x);
-class* sj_class(class_class* _this);
-int sj_foo(int x);
-
-int sj_bar(int x) {
-    return sj_foo((x));
-}
-
-class* sj_class(class_class* _this) {
+sjs_class* sjf_class(sjs_class* _this) {
     return _this;
 }
 
-int sj_foo(int x) {
+int sjf_foo(int x) {
     int ifResult1;
     if ((x) > (0)) {
-        ifResult1 = sj_bar(((x) - (1)));
+        ifResult1 = sjf_bar(((x) - (1)));
     } else {
         ifResult1 = 0;
     }
@@ -25,9 +21,11 @@ int sj_foo(int x) {
 }
 
 int main() {
-    class* c;
-    class* objectRef1;
-    c = sj_class(objectRef1);
-    csj_foo((4));
+    sjs_class* c;
+    sjs_class sjd_temp1;
+    sjs_class* sjv_temp1;
+    sjv_temp1 = &sjd_temp1;
+    c = sjf_class(sjv_temp1);
+    csjf_foo((4));
     return 0;
 }

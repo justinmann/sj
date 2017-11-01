@@ -1,9 +1,9 @@
-int sj_func(int x);
+int sjf_func(int x);
 
-int sj_func(int x) {
+int sjf_func(int x) {
     int ifResult1;
     if ((x) > (0)) {
-        ifResult1 = sj_func(((x) - (1)));
+        ifResult1 = sjf_func(((x) - (1)));
     } else {
         ifResult1 = 0;
     }
@@ -11,6 +11,6 @@ int sj_func(int x) {
 }
 
 int main() {
-    sj_func((4));
+    sjf_func((4));
     return 0;
 }

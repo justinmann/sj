@@ -96,7 +96,7 @@ int NFor::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFu
 
 shared_ptr<CType> NFor::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
     trBlock->variables[varName] = make_shared<TrVariable>(compiler->typeInt->nameRef, varName);
-    auto trLoopEndVar = trBlock->createTempVariable("loopEnd", compiler->typeInt->nameVal);
+    auto trLoopEndVar = trBlock->createTempVariable("loopEnd", compiler->typeInt->nameValue);
     
     stringstream loopCounterLine;
     loopCounterLine << varName << " = ";

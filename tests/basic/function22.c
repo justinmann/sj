@@ -1,9 +1,9 @@
-void sj_foo();
+void sjf_foo();
 
-void sj_foo() {
+void sjf_foo() {
 }
 
 int main() {
-    sj_foo();
+    sjf_foo();
     return 0;
 }

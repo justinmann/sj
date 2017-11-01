@@ -1,27 +1,28 @@
-typedef struct class_a {
-    int _this;
+typedef struct {
     int x;
-    aa b;
-}
+    sjs_aa* b;
+} sjs_a;
 
-a* sj_a(class_a* _this);
-int sj_c(aa* _parent);
+sjs_a* sjf_a(sjs_a* _this);
+int sjf_c(sjs_aa* _parent);
 
-a* sj_a(class_a* _this) {
+sjs_a* sjf_a(sjs_a* _this) {
     return _this;
 }
 
-int sj_c(aa* _parent) {
+int sjf_c(sjs_aa* _parent) {
     return x;
 }
 
 int main() {
-    a* a;
-    aa* d;
-    a* objectRef1;
-    a = sj_a(objectRef1);
-    a->bsj_c((_parent));
+    sjs_a* a;
+    sjs_aa* d;
+    sjs_a sjd_temp1;
+    sjs_a* sjv_temp1;
+    sjv_temp1 = &sjd_temp1;
+    a = sjf_a(sjv_temp1);
+    a->bsjf_c((_parent));
     d = a->b;
-    dsj_c((_parent));
+    dsjf_c((_parent));
     return 0;
 }

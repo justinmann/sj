@@ -3,11 +3,11 @@
 void TrOutput::writeToStream(ostream& stream) {
 	if (structs.size() > 0) {
 		for (auto t : structs) {
-			stream << "typedef struct " << t.first << " {\n";
+			stream << "typedef struct {\n";
 			for (auto line : t.second) {
 				stream << "    " << line << ";\n";
 			}
-			stream << "}\n";
+            stream << "} " << t.first << ";\n";
 			stream << "\n";
 		}
 	}

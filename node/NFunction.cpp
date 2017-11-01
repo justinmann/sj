@@ -215,7 +215,7 @@ shared_ptr<CFunction> CFunction::init(Compiler* compiler, CResult& result, share
     }
     
     for (auto it : templateTypes) {
-        name = name + "_" + it->nameVal;
+        name = name + "_" + it->name;
     }
     
     if (node) {
@@ -353,7 +353,7 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
             trOutput->functions[name] = trFunctionBlock;
             
             stringstream definition;
-            definition << returnType->nameRef << " sj_" << name << "(";
+            definition << returnType->nameRef << " sjf_" << name << "(";
             auto isFirstArg = true;
             for (auto argType : *argTypes) {
                 if (isFirstArg) {
@@ -443,7 +443,7 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
             argIndex++;
         }
         
-        trLine << "sj_" << name << "(";
+        trLine << "sjf_" << name << "(";
         bool isFirstParameter = true;
         for (auto argValue : argValues) {
             if (isFirstParameter) {
@@ -456,11 +456,14 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
         }
         trLine << ")";
     } else {
-		string structName = "class_" + name;
+		string structName = "sjs_" + name;
 		if (trOutput->structs.find(name) == trOutput->structs.end()) {
 			for (auto argType : *argTypes) {
+                if (argType.first.compare("_this") == 0)
+                    continue;
+                
 				stringstream ss;
-				ss << argType.second->nameVal << " " << argType.first;
+				ss << argType.second->nameRef << " " << argType.first;
 				trOutput->structs[structName].push_back(ss.str());
 			}
 		}
@@ -471,7 +474,7 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
 			trOutput->functions[name] = trFunctionBlock;
 
 			stringstream functionDefinition;
-			functionDefinition << returnType->nameRef << " sj_" << name << "(" << structName << "* _this)";
+			functionDefinition << returnType->nameRef << " sjf_" << name << "(" << structName << "* _this)";
 			trFunctionBlock->definition = functionDefinition.str();
 
 			stringstream returnLine;
@@ -481,9 +484,20 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
 				trFunctionBlock->statements.push_back("return " + returnLine.str());
 			}
 		}
-
-		auto objectRef = trBlock->createTempVariable("objectRef", thisType->nameRef);
-		trLine << "sj_" << name << "(" << objectRef->name << ")";
+        
+        auto objectRef = trBlock->createTempVariable("sjv_temp", thisType->nameRef);
+        if (calleeVar->getHeapVar(compiler, result, thisVar)) {
+            stringstream initLine;
+            initLine << objectRef->name << " = malloc(sizeof(" << structName << "))";
+            trBlock->statements.push_back(TrStatement(initLine.str()));
+        } else {
+            auto objectVal = trBlock->createTempVariable("sjd_temp", thisType->nameValue);
+            stringstream initLine;
+            initLine << objectRef->name << " = &" << objectVal->name;
+            trBlock->statements.push_back(TrStatement(initLine.str()));
+        }
+        
+		trLine << "sjf_" << name << "(" << objectRef->name << ")";
 	}
     
     return returnType;
@@ -1068,7 +1082,7 @@ void CFunction::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CVar> t
             }
             ss << alloc_mode(compiler, result, thisVar, it);
             ss << it->name;
-            ss << "'" << it->getType(compiler, result)->nameVal;
+            ss << "'" << it->getType(compiler, result)->name;
             ss << (it->isMutable ? "=" : ":");
         }
     }
@@ -1510,7 +1524,7 @@ string CFunction::fullName(bool includeTemplateTypes) {
                 ss << ", ";
             }
             
-            ss << it->nameVal;
+            ss << it->name;
         }
         
         if (templateTypes.size() > 1) {
