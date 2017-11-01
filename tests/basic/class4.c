@@ -13,6 +13,7 @@ int main() {
     sjs_class sjd_temp1;
     sjs_class* sjv_temp1;
     sjv_temp1 = &sjd_temp1;
+    sjv_temp1->b = 0;
     a = sjf_class(sjv_temp1);
     a = 1;
     return 0;

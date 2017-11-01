@@ -18,6 +18,7 @@ int main() {
     sjs_class sjd_temp1;
     sjs_class* sjv_temp1;
     sjv_temp1 = &sjd_temp1;
+    sjv_temp1->x = 1;
     c = sjf_class(sjv_temp1);
     csjf_func((_parent));
     return 0;

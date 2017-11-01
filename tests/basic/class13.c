@@ -5,6 +5,7 @@ typedef struct {
 int sjf_bar(sjs_class* _parent, int x);
 sjs_class* sjf_class(sjs_class* _this);
 int sjf_foo(sjs_class* _parent, int x);
+sjs_math* sjf_math(sjs_math* _this);
 int sjf_sub(int x, int y);
 
 int sjf_bar(sjs_class* _parent, int x) {
@@ -25,16 +26,24 @@ int sjf_foo(sjs_class* _parent, int x) {
     return ifResult1;
 }
 
+sjs_math* sjf_math(sjs_math* _this) {
+    return _this;
+}
+
 int sjf_sub(int x, int y) {
     return (x) - (y);
 }
 
 int main() {
     sjs_class* c;
-    sjs_class sjd_temp1;
-    sjs_class* sjv_temp1;
+    sjs_math sjd_temp1;
+    sjs_class sjd_temp2;
+    sjs_math* sjv_temp1;
+    sjs_class* sjv_temp2;
     sjv_temp1 = &sjd_temp1;
-    c = sjf_class(sjv_temp1);
+    sjv_temp2 = &sjd_temp2;
+    sjv_temp2->m = sjf_math(sjv_temp1);
+    c = sjf_class(sjv_temp2);
     csjf_foo((_parent), (4));
     return 0;
 }

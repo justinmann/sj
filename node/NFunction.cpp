@@ -335,6 +335,14 @@ int CFunction::setHeapVarBody(Compiler *compiler, CResult& result, shared_ptr<CV
     return 0;
 }
 
+class ArgData {
+public:
+    ArgData(shared_ptr<CVar> var_, string value_) : var(var_), value(value_) { }
+    
+    shared_ptr<CVar> var;
+    string value;
+};
+
 shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine, shared_ptr<CVar> calleeVar, vector<shared_ptr<NBase>>& parameters) {
     assert(compiler->state == CompilerState::Compile);
 
@@ -345,8 +353,51 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
 
     auto argTypes = getCTypeList(compiler, result);
 
-    // Create function body
+    vector<ArgData> argValues;
+    auto argIndex = 0;
+    // Fill in "this" with normal arguments
+    for (auto defaultAssignment : argDefaultValues) {
+        auto argVar = argVars[argIndex];
+        // auto argHeapVar = argVar->getHeapVar(compiler, result, thisVar);
+        auto argType = argVar->getType(compiler, result);
+        auto isDefaultAssignment = parameters[argIndex] == defaultAssignment;
+        shared_ptr<CType> argReturnType;
+        
+        stringstream argStream;
+        if (isDefaultAssignment) {
+            //                auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), calleeVar);
+            //                if (paramVar) {
+            //                    auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
+            //                    assert(paramHeapVar == argHeapVar);
+            //                }
+            argReturnType = parameters[argIndex]->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trBlock, argStream);
+        } else {
+            //                auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), thisVar);
+            //                if (paramVar) {
+            //                    auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
+            //                    assert(paramHeapVar == argHeapVar);
+            //                }
+            argReturnType = parameters[argIndex]->transpile(compiler, result, shared_from_this(), thisVar, trOutput, trBlock, argStream);
+        }
+        
+        auto argReturnValue = argStream.str();
+        
+        if (argReturnValue.size() == 0) {
+            result.addError(loc, CErrorCode::TypeMismatch, "value is empty");
+            return nullptr;
+        }
+        
+        if (argReturnType != argType) {
+            result.addError(loc, CErrorCode::TypeMismatch, "value does not match");
+            return nullptr;
+        }
+        
+        argValues.push_back(ArgData(argVar, argReturnValue));
+        argIndex++;
+    }
+
     if (!getHasThis()) {
+        // Create function body
         if (trOutput->functions.find(name) == trOutput->functions.end()) {
             auto trFunctionBlock = make_shared<TrBlock>();
             trFunctionBlock->parent = trBlock;
@@ -372,77 +423,33 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
                 trFunctionBlock->statements.push_back("return " + returnLine.str());
             }
         }
-
-        vector<string> argValues;
         
         // Add "parent" to "this"
         auto hasParent = getHasParent(compiler, result);
         shared_ptr<ReturnValue> dotReturnValue;
         if (hasParent) {
-            argValues.push_back("_parent");
-//            Value* parentValue = thisValue;
-//            if (dotVar) {
-//                dotReturnValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB, RRT_Auto);
-//                parentValue = dotReturnValue->value;
-//            } else {
-//                // if recursively calling ourselves then re-use parent
-//                if (shared_from_this() == thisFunction) {
-//                    parentValue = getParentValue(compiler, result, builder, true, parentValue);
-//                } else {
-//                    auto temp = static_pointer_cast<CBaseFunction>(thisFunction);
-//                    while (temp && temp != parent.lock()) {
-//                        parentValue = temp->getParentValue(compiler, result, builder, true, parentValue);
-//                        temp = temp->parent.lock();
-//                    }
-//                }
-//            }
-//
-//            argValues.push_back(parentValue);
+            argValues.insert(argValues.begin(), ArgData(nullptr, "_parent"));
+            //            Value* parentValue = thisValue;
+            //            if (dotVar) {
+            //                dotReturnValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB, RRT_Auto);
+            //                parentValue = dotReturnValue->value;
+            //            } else {
+            //                // if recursively calling ourselves then re-use parent
+            //                if (shared_from_this() == thisFunction) {
+            //                    parentValue = getParentValue(compiler, result, builder, true, parentValue);
+            //                } else {
+            //                    auto temp = static_pointer_cast<CBaseFunction>(thisFunction);
+            //                    while (temp && temp != parent.lock()) {
+            //                        parentValue = temp->getParentValue(compiler, result, builder, true, parentValue);
+            //                        temp = temp->parent.lock();
+            //                    }
+            //                }
+            //            }
+            //
+            //            argValues.push_back(parentValue);
         }
 
-        assert(argValues.size() == getArgStart(compiler, result));
-        auto argIndex = 0;
-        // Fill in "this" with normal arguments
-        for (auto defaultAssignment : argDefaultValues) {
-            auto argVar = argVars[argIndex];
-            auto argHeapVar = argVar->getHeapVar(compiler, result, thisVar);
-            auto argType = argVar->getType(compiler, result);
-            auto isDefaultAssignment = parameters[argIndex] == defaultAssignment;
-            shared_ptr<CType> argReturnType;
-
-            stringstream argStream;
-            if (isDefaultAssignment) {
-//                auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), calleeVar);
-//                if (paramVar) {
-//                    auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
-//                    assert(paramHeapVar == argHeapVar);
-//                }
-                argReturnType = parameters[argIndex]->transpile(compiler, result, shared_from_this(), nullptr /*calleeVar*/, trOutput, trBlock, argStream);
-            } else {
-//                auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), thisVar);
-//                if (paramVar) {
-//                    auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
-//                    assert(paramHeapVar == argHeapVar);
-//                }
-                argReturnType = parameters[argIndex]->transpile(compiler, result, shared_from_this(), thisVar, trOutput, trBlock, argStream);
-            }
-            
-            auto argReturnValue = argStream.str();
-
-            if (argReturnValue.size() == 0) {
-                result.addError(loc, CErrorCode::TypeMismatch, "value is empty");
-                return nullptr;
-            }
-
-            if (argReturnType != argType) {
-                result.addError(loc, CErrorCode::TypeMismatch, "value does not match");
-                return nullptr;
-            }
-
-            argValues.push_back(argReturnValue);
-            argIndex++;
-        }
-        
+        // Call function
         trLine << "sjf_" << name << "(";
         bool isFirstParameter = true;
         for (auto argValue : argValues) {
@@ -452,10 +459,11 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
                 trLine << ", ";
             }
             
-            trLine << "(" << argValue << ")";
+            trLine << "(" << argValue.value << ")";
         }
         trLine << ")";
     } else {
+        // Create struct
 		string structName = "sjs_" + name;
 		if (trOutput->structs.find(name) == trOutput->structs.end()) {
 			for (auto argType : *argTypes) {
@@ -468,6 +476,7 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
 			}
 		}
 
+        // Create function body
 		if (trOutput->functions.find(name) == trOutput->functions.end()) {
 			auto trFunctionBlock = make_shared<TrBlock>();
             trFunctionBlock->parent = trBlock;
@@ -485,6 +494,7 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
 			}
 		}
         
+        // Initialize "this"
         auto objectRef = trBlock->createTempVariable("sjv_temp", thisType->nameRef);
         if (calleeVar->getHeapVar(compiler, result, thisVar)) {
             stringstream initLine;
@@ -497,6 +507,13 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
             trBlock->statements.push_back(TrStatement(initLine.str()));
         }
         
+        for (auto argValue : argValues) {
+            stringstream argAssignLine;
+            argAssignLine << objectRef->name << "->" << argValue.var->name << " = " << argValue.value;
+            trBlock->statements.push_back(TrStatement(argAssignLine.str()));
+        }
+        
+        // Call function
 		trLine << "sjf_" << name << "(" << objectRef->name << ")";
 	}
     
