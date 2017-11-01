@@ -23,7 +23,7 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, CResult& result, shared_
         return nullptr;
     }
     
-    createCall = make_shared<NCall>(loc, "array", make_shared<CTypeNameList>(CTC_Value, itemType->name), nullptr);
+    createCall = make_shared<NCall>(loc, "array", make_shared<CTypeNameList>(CTC_Value, itemType->nameRef), nullptr);
     return createCall->getVar(compiler, result, thisFunction, thisVar, nullptr);
 }
 
@@ -115,7 +115,7 @@ void NList::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunc
 shared_ptr<CVar> NList::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     array->getVar(compiler, result, thisFunction, thisVar);
     auto size = make_shared<NInteger>(loc, array->elements->size());
-    createCall = make_shared<NCall>(loc, "list", make_shared<CTypeNameList>(CTC_Value, array->itemType->name), make_shared<NodeList>(size, size, array));
+    createCall = make_shared<NCall>(loc, "list", make_shared<CTypeNameList>(CTC_Value, array->itemType->nameRef), make_shared<NodeList>(size, size, array));
     return createCall->getVar(compiler, result, thisFunction, thisVar, nullptr);
 }
 

@@ -228,7 +228,7 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctio
                 auto paramVar = callee->argVars[paramIndex];
                 ss << alloc_mode(compiler, result, thisVar, paramVar);
                 ss << paramVar->name.c_str();
-                ss << "'" << paramVar->getType(compiler, result)->name.c_str();
+                ss << "'" << paramVar->getType(compiler, result)->nameVal.c_str();
                 ss << (paramVar->isMutable ? " = " : " : ");
                 it->dump(compiler, result, thisFunction, thisVar, functions, ss, level + 1);
                 if (paramIndex != parameters.size() - 1) {
@@ -268,7 +268,7 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctio
                 auto paramVar = callee->argVars[paramIndex];
                 ss << alloc_mode(compiler, result, thisVar, paramVar);
                 ss << paramVar->name.c_str();
-                ss << "'" << paramVar->getType(compiler, result)->name.c_str();
+                ss << "'" << paramVar->getType(compiler, result)->nameVal.c_str();
                 ss << (paramVar->isMutable ? " = " : " : ");
                 it->dump(compiler, result, thisFunction, thisVar, functions, ss, level + 1);
                 if (paramIndex != parameters.size() - 1) {

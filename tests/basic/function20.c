@@ -1,15 +1,15 @@
-int bar();
-int func();
+int sj_bar();
+int sj_func();
 
-int bar() {
+int sj_bar() {
     return 9;
 }
 
-int func() {
-    return bar();
+int sj_func() {
+    return sj_bar();
 }
 
 int main() {
-    func();
+    sj_func();
     return 0;
 }

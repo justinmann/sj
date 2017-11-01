@@ -191,7 +191,7 @@ shared_ptr<CType> NIf::transpile(Compiler* compiler, CResult& result, shared_ptr
 	auto type = getType(compiler, result, thisFunction, thisVar);
     string ifResultName;
     if (type != compiler->typeVoid) {
-        ifResultName = function->createLocalVariable("ifResult", type->name);
+        ifResultName = function->createLocalVariable("ifResult", type->nameRef);
     }
 
 	stringstream ifLine;

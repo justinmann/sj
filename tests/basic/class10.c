@@ -3,20 +3,20 @@ int _this;
 int x;
 }
 
-class class(class_class* _this);
-int func(class _parent);
+class* sj_class(class_class* _this);
+int sj_func(class* _parent);
 
-class class(class_class* _this) {
+class* sj_class(class_class* _this) {
     return _this;
 }
 
-int func(class _parent) {
+int sj_func(class* _parent) {
     return x;
 }
 
 int main() {
-    class c;
+    class* c;
     c = ;
-    c->func((_parent));
+    c->sj_func((_parent));
     return 0;
 }

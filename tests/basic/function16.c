@@ -1,10 +1,10 @@
-float func(float x);
+float sj_func(float x);
 
-float func(float x) {
+float sj_func(float x) {
     return x;
 }
 
 int main() {
-    func((1.0));
+    sj_func((1.0));
     return 0;
 }

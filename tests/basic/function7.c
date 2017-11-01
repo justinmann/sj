@@ -1,10 +1,10 @@
-int func(int x);
+int sj_func(int x);
 
-int func(int x) {
+int sj_func(int x) {
     return x;
 }
 
 int main() {
-    func((3));
+    sj_func((3));
     return 0;
 }

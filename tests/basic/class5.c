@@ -3,14 +3,14 @@ int _this;
 int x;
 }
 
-class class(class_class* _this);
+class* sj_class(class_class* _this);
 
-class class(class_class* _this) {
+class* sj_class(class_class* _this) {
     return _this;
 }
 
 int main() {
-    class c;
+    class* c;
     c = ;
     c->x;
     return 0;

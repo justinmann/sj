@@ -3,17 +3,17 @@ int _this;
 int x;
 }
 
-class class(class_class* _this);
-class func();
+class* sj_class(class_class* _this);
+class* sj_func();
 
-class class(class_class* _this) {
+class* sj_class(class_class* _this) {
     return _this;
 }
 
-class func() {
+class* sj_func() {
 }
 
 int main() {
-    func()->x;
+    sj_func()->x;
     return 0;
 }

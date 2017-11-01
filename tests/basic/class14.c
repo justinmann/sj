@@ -3,16 +3,16 @@ int _this;
 int m;
 }
 
-int class(class_class* _this);
-int inner(class _parent);
+int sj_class(class_class* _this);
+int sj_inner(class* _parent);
 
-int class(class_class* _this) {
+int sj_class(class_class* _this) {
     int m;
     m = 1;
-    return inner((_parent));
+    return sj_inner((_parent));
 }
 
-int inner(class _parent) {
+int sj_inner(class* _parent) {
     return m;
 }
 

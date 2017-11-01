@@ -2,20 +2,20 @@ typedef struct class_class {
 int _this;
 }
 
-class class(class_class* _this);
-int func();
+class* sj_class(class_class* _this);
+int sj_func();
 
-class class(class_class* _this) {
+class* sj_class(class_class* _this) {
     return _this;
 }
 
-int func() {
+int sj_func() {
     return 1;
 }
 
 int main() {
-    class c;
+    class* c;
     c = ;
-    c->func();
+    c->sj_func();
     return 0;
 }
