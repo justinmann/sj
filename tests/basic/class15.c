@@ -36,7 +36,6 @@ int sjf_sub(int x, int y) {
 
 int main() {
     sjs_class* c;
-    sjs_anon_0* math;
     sjs_class sjd_temp1;
     sjs_anon_0* sjv_temp1;
     sjs_class* sjv_temp2;

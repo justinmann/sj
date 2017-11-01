@@ -143,20 +143,20 @@ shared_ptr<CType> NAssignment::transpile(Compiler* compiler, CResult& result, sh
 	}
 		    
 	auto ctype = getType(compiler, result, thisFunction, thisVar);
-	if (var) {
-		var->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine);
-	} else {
-        auto var = trBlock->getVariable(name);
+    _assignVar->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine, nullptr);
+    
+    if (_assignVar->mode == Var_Local) {
+        auto var = trBlock->getVariable(_assignVar->name);
         if (!var) {
-            var = trBlock->createVariable(name, ctype->nameRef);
+            var = trBlock->createVariable(_assignVar->name, ctype->nameRef);
         } else {
             if (!isMutable) {
                 result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var");
                 return nullptr;
             }
         }
-		trLine << name;
-	}
+    }
+    
 	trLine << " = ";
 
 	auto rightType = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine);

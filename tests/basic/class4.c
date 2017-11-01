@@ -15,6 +15,6 @@ int main() {
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->b = 0;
     a = sjf_class(sjv_temp1);
-    a = 1;
+    a->b = 1;
     return 0;
 }

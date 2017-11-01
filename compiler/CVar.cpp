@@ -147,6 +147,7 @@ shared_ptr<CType> CNormalVar::transpile(Compiler* compiler, CResult& result, sha
     if (dotVar) {
         trLine << "->";
     }
+    
 	trLine << name;
 	return getType(compiler, result);
 }

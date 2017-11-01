@@ -1,6 +1,4 @@
-* create instance 
 * release objects
-
 * output annotated sj
 * output simplified sj
 * switch to 32-bit int by default
