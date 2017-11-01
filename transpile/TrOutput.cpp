@@ -5,7 +5,7 @@ void TrOutput::writeToStream(ostream& stream) {
 		for (auto t : structs) {
 			stream << "typedef struct " << t.first << " {\n";
 			for (auto line : t.second) {
-				stream << line << ";\n";
+				stream << "    " << line << ";\n";
 			}
 			stream << "}\n";
 			stream << "\n";

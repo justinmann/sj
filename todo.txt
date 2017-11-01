@@ -1,6 +1,5 @@
-* add prefix on function name
-* release objects
 * create instance 
+* release objects
 
 * output annotated sj
 * output simplified sj

@@ -1,6 +1,6 @@
 typedef struct class_class {
-int _this;
-math m;
+    int _this;
+    math m;
 }
 
 int sj_bar(class* _parent, int x);
@@ -32,7 +32,8 @@ int sj_sub(int x, int y) {
 
 int main() {
     class* c;
-    c = ;
+    class* objectRef1;
+    c = sj_class(objectRef1);
     c->sj_foo((_parent), (4));
     return 0;
 }

@@ -479,6 +479,9 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
 				trFunction->statements.push_back("return " + returnLine.str());
 			}
 		}
+
+		auto objectRef = function->createLocalVariable("objectRef", thisType->nameRef);
+		line << "sj_" << name << "(" << objectRef << ")";
 	}
     
     return returnType;

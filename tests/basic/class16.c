@@ -1,7 +1,7 @@
 typedef struct class_a {
-int _this;
-int x;
-aa b;
+    int _this;
+    int x;
+    aa b;
 }
 
 a* sj_a(class_a* _this);
@@ -18,7 +18,8 @@ int sj_c(aa* _parent) {
 int main() {
     a* a;
     aa* d;
-    a = ;
+    a* objectRef1;
+    a = sj_a(objectRef1);
     a->b->sj_c((_parent));
     d = a->b;
     d->sj_c((_parent));

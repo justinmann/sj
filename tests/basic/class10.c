@@ -1,6 +1,6 @@
 typedef struct class_class {
-int _this;
-int x;
+    int _this;
+    int x;
 }
 
 class* sj_class(class_class* _this);
@@ -16,7 +16,8 @@ int sj_func(class* _parent) {
 
 int main() {
     class* c;
-    c = ;
+    class* objectRef1;
+    c = sj_class(objectRef1);
     c->sj_func((_parent));
     return 0;
 }
