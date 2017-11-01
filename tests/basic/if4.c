@@ -1,9 +1,9 @@
 int main() {
     int ifResult1;
-    int ifResult2;
     if (false) {
         ifResult1 = 1;
     } else {
+        int ifResult2;
         if (true) {
             ifResult2 = 2;
         }

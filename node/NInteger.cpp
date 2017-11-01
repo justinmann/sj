@@ -29,8 +29,8 @@ shared_ptr<CType> NInteger::getTypeImpl(Compiler* compiler, CResult& result, sha
 //    }
 //}
 
-shared_ptr<CType> NInteger::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
-	line << strValue;
+shared_ptr<CType> NInteger::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
+	trLine << strValue;
 	return compiler->typeInt;
 }
 

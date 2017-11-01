@@ -122,7 +122,7 @@ int CIfElseVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar>
     return nif->setHeapVar(compiler, result, thisFunction, thisVar, nullptr, true);
 }
 
-shared_ptr<CType> CIfElseVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line, shared_ptr<CVar> dotVar) {
+shared_ptr<CType> CIfElseVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine, shared_ptr<CVar> dotVar) {
     assert(false);
 	return nullptr;
 }
@@ -187,50 +187,55 @@ shared_ptr<NIf> NIf::shared_from_this() {
     return static_pointer_cast<NIf>(NBase::shared_from_this());
 }
 
-shared_ptr<CType> NIf::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+shared_ptr<CType> NIf::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
 	auto type = getType(compiler, result, thisFunction, thisVar);
-    string ifResultName;
+    shared_ptr<TrVariable> trResultVar;
     if (type != compiler->typeVoid) {
-        ifResultName = function->createLocalVariable("ifResult", type->nameRef);
+        trResultVar = trBlock->createTempVariable("ifResult", type->nameRef);
     }
 
 	stringstream ifLine;
 	ifLine << "if (";
-	condition->transpile(compiler, result, thisFunction, thisVar, output, function, ifLine);
-	ifLine << ") {";
-	function->statements.push_back(ifLine.str());
+	condition->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, ifLine);
+	ifLine << ")";
+    auto trIfBlock = make_shared<TrBlock>();
+    trIfBlock->parent = trBlock;
+    auto trStatement = TrStatement(ifLine.str(), trIfBlock);
 
 	if (ifBlock) {
         stringstream resultLine;
         if (type != compiler->typeVoid) {
-            resultLine << ifResultName + " = ";
+            resultLine << trResultVar->name + " = ";
         }
 
-        ifBlock->transpile(compiler, result, thisFunction, thisVar, output, function, resultLine);
+        ifBlock->transpile(compiler, result, thisFunction, thisVar, trOutput, trIfBlock.get(), resultLine);
         
         if (type != compiler->typeVoid) {
-            function->statements.push_back(resultLine.str());
+            trIfBlock->statements.push_back(resultLine.str());
         }
 	}
 
 	if (elseBlock) {
-		function->statements.push_back("} else {");
+        auto trElseBlock = make_shared<TrBlock>();
+        trElseBlock->parent = trBlock;
+        trStatement.elseBlock = trElseBlock;
 
         stringstream resultLine;
         if (type != compiler->typeVoid) {
-            resultLine << ifResultName + " = ";
+            resultLine << trResultVar->name + " = ";
         }
 
-		elseBlock->transpile(compiler, result, thisFunction, thisVar, output, function, resultLine);
+		elseBlock->transpile(compiler, result, thisFunction, thisVar, trOutput, trElseBlock.get(), resultLine);
 
         if (type != compiler->typeVoid) {
-            function->statements.push_back(resultLine.str());
+            trElseBlock->statements.push_back(resultLine.str());
         }
     }
 
-	function->statements.push_back("}");
-	if (type != compiler->typeVoid) {
-        line << ifResultName;
+    trBlock->statements.push_back(trStatement);
+
+    if (type != compiler->typeVoid) {
+        trLine << trResultVar->name;
 	}
 	return type;
 }

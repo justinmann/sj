@@ -28,7 +28,7 @@ class* sj_class(class_class* _this) {
 int sj_foo(class* _parent, int x) {
     int ifResult1;
     if ((x) > (0)) {
-        ifResult1 = sj_bar((_parent), (_parent->sj_sub((x), (1))));
+        ifResult1 = sj_bar((_parent), (_parentsj_sub((x), (1))));
     } else {
         ifResult1 = 0;
     }
@@ -46,6 +46,6 @@ int main() {
     class* objectRef2;
     math = sj_anon_0(objectRef1);
     c = sj_class(objectRef2);
-    c->sj_foo((_parent), (4));
+    csj_foo((_parent), (4));
     return 0;
 }

@@ -41,7 +41,7 @@ int NThrow::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBase
 //    return nullptr;
 //}
 
-shared_ptr<CType> NThrow::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+shared_ptr<CType> NThrow::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
 	assert(false);
 	return nullptr;
 }

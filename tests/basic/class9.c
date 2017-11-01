@@ -17,6 +17,6 @@ int main() {
     class* c;
     class* objectRef1;
     c = sj_class(objectRef1);
-    c->sj_func();
+    csj_func();
     return 0;
 }

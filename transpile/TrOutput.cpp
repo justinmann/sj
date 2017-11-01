@@ -22,14 +22,14 @@ void TrOutput::writeToStream(ostream& stream) {
         
     for (auto function : functions) {
         stream << function.second->definition << " {\n";
-        function.second->writeBodyToStream(stream);
+        function.second->writeBodyToStream(stream, 1);
         stream << "}\n";
         stream << "\n";
     }
 
     stream << "int main() {\n";
 
-	mainFunction.writeBodyToStream(stream);
+	mainFunction.writeBodyToStream(stream, 1);
 
 	stream << "    return 0;\n";
 	stream << "}\n";

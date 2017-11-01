@@ -60,8 +60,8 @@ string CParentVar::fullName() {
     return childVar->fullName();
 }
 
-shared_ptr<CType> CParentVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line, shared_ptr<CVar> dotVar) {
-	line << "_parent";
+shared_ptr<CType> CParentVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine, shared_ptr<CVar> dotVar) {
+	trLine << "_parent";
 	return getType(compiler, result);
 }
 
@@ -89,7 +89,7 @@ int NVariable::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CB
     return 0;
 }
 
-shared_ptr<CType> NVariable::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
-	line << name;
+shared_ptr<CType> NVariable::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
+	trLine << name;
 	return getType(compiler, result, thisFunction, thisVar);
 }

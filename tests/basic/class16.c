@@ -20,8 +20,8 @@ int main() {
     aa* d;
     a* objectRef1;
     a = sj_a(objectRef1);
-    a->b->sj_c((_parent));
+    a->bsj_c((_parent));
     d = a->b;
-    d->sj_c((_parent));
+    dsj_c((_parent));
     return 0;
 }

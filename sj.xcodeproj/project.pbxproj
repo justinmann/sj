@@ -12,7 +12,7 @@
 		9C29C0B21E273F7E001C1FC6 /* NNot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C29C0B01E273F7E001C1FC6 /* NNot.cpp */; };
 		9C3786561E21EE0400202E28 /* NThrow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C3786541E21EE0400202E28 /* NThrow.cpp */; };
 		9C3786591E2225FC00202E28 /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C3786571E2225FC00202E28 /* Exception.cpp */; };
-		9C5F0CBA1FA78A5A004CD51D /* TrFunction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C5F0CB11FA78A59004CD51D /* TrFunction.cpp */; };
+		9C5F0CBA1FA78A5A004CD51D /* TrBlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C5F0CB11FA78A59004CD51D /* TrBlock.cpp */; };
 		9C5F0CBC1FA78A5A004CD51D /* TrOutput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C5F0CB41FA78A59004CD51D /* TrOutput.cpp */; };
 		9C5F0CBE1FA78A5A004CD51D /* TrVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C5F0CB71FA78A59004CD51D /* TrVariable.cpp */; };
 		9C64ADB31E0F8DA700340A7D /* libz.1.2.8.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64ADB21E0F8DA700340A7D /* libz.1.2.8.tbd */; };
@@ -32,6 +32,7 @@
 		9C908F191E35C9D6005E253C /* NChar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C908F171E35C9D6005E253C /* NChar.cpp */; };
 		9CB7416D1E25EB310041A8A6 /* NMathAssignment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CB7416B1E25EB310041A8A6 /* NMathAssignment.cpp */; };
 		9CDED2CC1E3701C8002D9666 /* NBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CDED2CB1E3701C8002D9666 /* NBase.cpp */; };
+		9CE83C5E1FAA33A80045B0C6 /* TrStatement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CE83C5C1FAA33A80045B0C6 /* TrStatement.cpp */; };
 		9CF16BF71E19A85F006E9CB8 /* Compiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16BF51E19A85F006E9CB8 /* Compiler.cpp */; };
 		9CF16C151E19A888006E9CB8 /* NAssignment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16BF91E19A888006E9CB8 /* NAssignment.cpp */; };
 		9CF16C161E19A888006E9CB8 /* NBlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF16BFC1E19A888006E9CB8 /* NBlock.cpp */; };
@@ -77,8 +78,8 @@
 		9C3786551E21EE0400202E28 /* NThrow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NThrow.h; path = node/NThrow.h; sourceTree = "<group>"; };
 		9C3786571E2225FC00202E28 /* Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Exception.cpp; path = compiler/Exception.cpp; sourceTree = "<group>"; };
 		9C3786581E2225FC00202E28 /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Exception.h; path = compiler/Exception.h; sourceTree = "<group>"; };
-		9C5F0CB11FA78A59004CD51D /* TrFunction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TrFunction.cpp; sourceTree = "<group>"; };
-		9C5F0CB21FA78A59004CD51D /* TrFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrFunction.h; sourceTree = "<group>"; };
+		9C5F0CB11FA78A59004CD51D /* TrBlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TrBlock.cpp; sourceTree = "<group>"; };
+		9C5F0CB21FA78A59004CD51D /* TrBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrBlock.h; sourceTree = "<group>"; };
 		9C5F0CB41FA78A59004CD51D /* TrOutput.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TrOutput.cpp; sourceTree = "<group>"; };
 		9C5F0CB51FA78A59004CD51D /* TrOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrOutput.h; sourceTree = "<group>"; };
 		9C5F0CB71FA78A59004CD51D /* TrVariable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TrVariable.cpp; sourceTree = "<group>"; };
@@ -114,6 +115,8 @@
 		9CB7416B1E25EB310041A8A6 /* NMathAssignment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NMathAssignment.cpp; path = node/NMathAssignment.cpp; sourceTree = "<group>"; };
 		9CB7416C1E25EB310041A8A6 /* NMathAssignment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NMathAssignment.h; path = node/NMathAssignment.h; sourceTree = "<group>"; };
 		9CDED2CB1E3701C8002D9666 /* NBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NBase.cpp; path = node/NBase.cpp; sourceTree = "<group>"; };
+		9CE83C5C1FAA33A80045B0C6 /* TrStatement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TrStatement.cpp; sourceTree = "<group>"; };
+		9CE83C5D1FAA33A80045B0C6 /* TrStatement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrStatement.h; sourceTree = "<group>"; };
 		9CF16BF51E19A85F006E9CB8 /* Compiler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Compiler.cpp; path = compiler/Compiler.cpp; sourceTree = "<group>"; };
 		9CF16BF61E19A85F006E9CB8 /* Compiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Compiler.h; path = compiler/Compiler.h; sourceTree = "<group>"; };
 		9CF16BF91E19A888006E9CB8 /* NAssignment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NAssignment.cpp; path = node/NAssignment.cpp; sourceTree = "<group>"; };
@@ -171,8 +174,10 @@
 		9C5F0CB01FA78A59004CD51D /* transpile */ = {
 			isa = PBXGroup;
 			children = (
-				9C5F0CB11FA78A59004CD51D /* TrFunction.cpp */,
-				9C5F0CB21FA78A59004CD51D /* TrFunction.h */,
+				9CE83C5C1FAA33A80045B0C6 /* TrStatement.cpp */,
+				9CE83C5D1FAA33A80045B0C6 /* TrStatement.h */,
+				9C5F0CB11FA78A59004CD51D /* TrBlock.cpp */,
+				9C5F0CB21FA78A59004CD51D /* TrBlock.h */,
 				9C5F0CB41FA78A59004CD51D /* TrOutput.cpp */,
 				9C5F0CB51FA78A59004CD51D /* TrOutput.h */,
 				9C5F0CB71FA78A59004CD51D /* TrVariable.cpp */,
@@ -385,6 +390,7 @@
 				9CF16BF71E19A85F006E9CB8 /* Compiler.cpp in Sources */,
 				9C7B48E41E19A2DD00D378A1 /* main.cpp in Sources */,
 				9C039B101E24B1DD00D6C727 /* NWhile.cpp in Sources */,
+				9CE83C5E1FAA33A80045B0C6 /* TrStatement.cpp in Sources */,
 				9CFDBF921E19BCCE00F5436F /* CTypeName.cpp in Sources */,
 				9C74891D1E58DD79008A032C /* NInterfaceMethod.cpp in Sources */,
 				9C908F021E345670005E253C /* NArray.cpp in Sources */,
@@ -402,7 +408,7 @@
 				9C908F191E35C9D6005E253C /* NChar.cpp in Sources */,
 				9CF16C211E19A888006E9CB8 /* NVoid.cpp in Sources */,
 				9CF16C181E19A888006E9CB8 /* NCast.cpp in Sources */,
-				9C5F0CBA1FA78A5A004CD51D /* TrFunction.cpp in Sources */,
+				9C5F0CBA1FA78A5A004CD51D /* TrBlock.cpp in Sources */,
 				9C5F0CBE1FA78A5A004CD51D /* TrVariable.cpp in Sources */,
 				9C908EFF1E33EFBF005E253C /* NThis.cpp in Sources */,
 				9CF16C191E19A888006E9CB8 /* NCompare.cpp in Sources */,

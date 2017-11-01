@@ -37,7 +37,7 @@ int NMathAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_
     return count;
 }
 
-shared_ptr<CType> NMathAssignment::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+shared_ptr<CType> NMathAssignment::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
 	auto cvar = var->getVar(compiler, result, thisFunction, thisVar, nullptr);
 	if (!cvar) {
 		return nullptr;
@@ -48,25 +48,25 @@ shared_ptr<CType> NMathAssignment::transpile(Compiler* compiler, CResult& result
 		return nullptr;
 	}
 
-	auto leftType = var->transpile(compiler, result, thisFunction, thisVar, output, function, line);
+	auto leftType = var->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine);
 
 	switch (op) {
 	case NMAO_Add:
-		line << " += ";
+		trLine << " += ";
 		break;
 	case NMAO_Sub:
-		line << " -= ";
+		trLine << " -= ";
 		break;
 	case NMAO_Inc:
-		line << "++";
+		trLine << "++";
 		break;
 	case NMAO_Dec:
-		line << "--";
+		trLine << "--";
 		break;
 	}
 
 	if (rightSide) {
-		auto rightType = rightSide->transpile(compiler, result, thisFunction, thisVar, output, function, line);
+		auto rightType = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine);
 		if (leftType != rightType) {
 			result.addError(loc, CErrorCode::TypeMismatch, "left and right values are not the same type");
 			return nullptr;

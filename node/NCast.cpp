@@ -33,10 +33,10 @@ int NCast::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseF
     return node->setHeapVar(compiler, result, thisFunction, thisVar, false);
 }
 
-shared_ptr<CType> NCast::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
-	line << "(" << typeName->getName() << ")(";
-	node->transpile(compiler, result, thisFunction, thisVar, output, function, line);
-	line << ")";
+shared_ptr<CType> NCast::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
+	trLine << "(" << typeName->getName() << ")(";
+	node->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine);
+	trLine << ")";
 	return getType(compiler, result, thisFunction, thisVar);
 }
 

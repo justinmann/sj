@@ -1,12 +1,12 @@
 #pragma once
 
-#include "TrFunction.h"
+#include "TrBlock.h"
 
 class TrOutput {
 public:
-	map<string, shared_ptr<TrFunction>> functions;
+	map<string, shared_ptr<TrBlock>> functions;
 	map<string, vector<string>> structs;
-	TrFunction mainFunction;
+	TrBlock mainFunction;
 
 	void writeToStream(ostream& stream);
 };

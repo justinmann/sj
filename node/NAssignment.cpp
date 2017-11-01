@@ -134,7 +134,7 @@ int NAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<
     return count;
 }
 
-shared_ptr<CType> NAssignment::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+shared_ptr<CType> NAssignment::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
 	assert(compiler->state == CompilerState::Compile);
 	    
 	if (!rightSide) {
@@ -144,14 +144,22 @@ shared_ptr<CType> NAssignment::transpile(Compiler* compiler, CResult& result, sh
 		    
 	auto ctype = getType(compiler, result, thisFunction, thisVar);
 	if (var) {
-		var->transpile(compiler, result, thisFunction, thisVar, output, function, line);
+		var->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine);
 	} else {
-		function->variables[name] = ctype->nameRef;
-		line << name;
+        auto var = trBlock->getVariable(name);
+        if (!var) {
+            var = trBlock->createVariable(name, ctype->nameRef);
+        } else {
+            if (!isMutable) {
+                result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var");
+                return nullptr;
+            }
+        }
+		trLine << name;
 	}
-	line << " = ";
+	trLine << " = ";
 
-	auto rightType = rightSide->transpile(compiler, result, thisFunction, thisVar, output, function, line);
+	auto rightType = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine);
 	if (rightType != ctype) {
 		result.addError(loc, CErrorCode::TypeMismatch, "returned type '%s' does not match explicit type '%s'", rightType->nameVal.c_str(), ctype->nameVal.c_str());
 		return nullptr;

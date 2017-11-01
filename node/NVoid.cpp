@@ -11,7 +11,7 @@ shared_ptr<CType> NVoid::getTypeImpl(Compiler* compiler, CResult& result, shared
 //    return nullptr;
 //}
 
-shared_ptr<CType> NVoid::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+shared_ptr<CType> NVoid::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
 	return compiler->typeVoid;
 }
 

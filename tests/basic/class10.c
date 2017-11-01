@@ -18,6 +18,6 @@ int main() {
     class* c;
     class* objectRef1;
     c = sj_class(objectRef1);
-    c->sj_func((_parent));
+    csj_func((_parent));
     return 0;
 }

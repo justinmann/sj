@@ -20,10 +20,10 @@ int NNot::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFu
     return node->setHeapVar(compiler, result, thisFunction, thisVar, false);
 }
 
-shared_ptr<CType> NNot::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
-	line << "!(";
-	node->transpile(compiler, result, thisFunction, thisVar, output, function, line);
-	line << ")";
+shared_ptr<CType> NNot::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
+	trLine << "!(";
+	node->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine);
+	trLine << ")";
 	return compiler->typeBool;
 }
 

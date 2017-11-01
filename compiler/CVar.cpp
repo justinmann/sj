@@ -143,8 +143,11 @@ int CNormalVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar>
     return count;
 }
 
-shared_ptr<CType> CNormalVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line, shared_ptr<CVar> dotVar) {
-	line << name;
+shared_ptr<CType> CNormalVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine, shared_ptr<CVar> dotVar) {
+    if (dotVar) {
+        trLine << "->";
+    }
+	trLine << name;
 	return getType(compiler, result);
 }
 

@@ -11,8 +11,8 @@ shared_ptr<CType> NBool::getTypeImpl(Compiler* compiler, CResult& result, shared
 //    return make_shared<ReturnValue>(false, ConstantInt::get(compiler->context, APInt(1, value)));
 //}
 
-shared_ptr<CType> NBool::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
-	line << bool_to_str(value);
+shared_ptr<CType> NBool::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
+	trLine << bool_to_str(value);
 	return compiler->typeBool;
 }
 

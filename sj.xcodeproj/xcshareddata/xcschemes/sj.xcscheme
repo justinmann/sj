@@ -71,7 +71,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "class4"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>

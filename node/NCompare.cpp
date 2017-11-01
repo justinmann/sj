@@ -84,33 +84,33 @@ int NCompare::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBa
 //    return nullptr;
 //}
 
-shared_ptr<CType> NCompare::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
-	line << "(";
-	leftSide->transpile(compiler, result, thisFunction, thisVar, output, function, line);
-	line << ")";
+shared_ptr<CType> NCompare::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
+	trLine << "(";
+	leftSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine);
+	trLine << ")";
 	switch (op) {
 	case NCompareOp::EQ:
-		line << " == ";
+		trLine << " == ";
 		break;
 	case NCompareOp::NE:
-		line << " != ";
+		trLine << " != ";
 		break;
 	case NCompareOp::LT:
-		line << " < ";
+		trLine << " < ";
 		break;
 	case NCompareOp::LE:
-		line << " <= ";
+		trLine << " <= ";
 		break;
 	case NCompareOp::GT:
-		line << " > ";
+		trLine << " > ";
 		break;
 	case NCompareOp::GE:
-		line << " >= ";
+		trLine << " >= ";
 		break;
 	}
-	line << "(";
-	rightSide->transpile(compiler, result, thisFunction, thisVar, output, function, line);
-	line << ")";
+	trLine << "(";
+	rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine);
+	trLine << ")";
 	return compiler->typeBool;
 }
 

@@ -28,6 +28,6 @@ int main() {
     class* c;
     class* objectRef1;
     c = sj_class(objectRef1);
-    c->sj_foo((4));
+    csj_foo((4));
     return 0;
 }

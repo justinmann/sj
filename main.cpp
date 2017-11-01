@@ -306,6 +306,7 @@ void testInterface() {
 void runTest(std::string path, bool updateResult) {
 	if (*(path.end() - 2) == 's' && *(path.end() - 1) == 'j') {
 		printf("Running %s\n", path.c_str());
+        TrBlock::resetVarNames();
 
 		auto codeFileName = path;
 		codeFileName.replace(codeFileName.end() - 3, codeFileName.end(), ".c");

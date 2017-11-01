@@ -36,7 +36,7 @@ public:
         return 0;
     }
     
-    shared_ptr<CType> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line, shared_ptr<CVar> dotVar) {
+    shared_ptr<CType> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine, shared_ptr<CVar> dotVar) {
         assert(false);
 		return nullptr;
 	}
@@ -94,42 +94,42 @@ int NFor::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFu
     return count;
 }
 
-shared_ptr<CType> NFor::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
-    function->variables[varName] = compiler->typeInt->nameRef;
-    auto loopEndName = function->createLocalVariable("loopEnd", compiler->typeInt->nameVal);
+shared_ptr<CType> NFor::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
+    trBlock->variables[varName] = make_shared<TrVariable>(compiler->typeInt->nameRef, varName);
+    auto trLoopEndVar = trBlock->createTempVariable("loopEnd", compiler->typeInt->nameVal);
     
     stringstream loopCounterLine;
     loopCounterLine << varName << " = ";
-    auto loopCounterType = start->transpile(compiler, result, thisFunction, thisVar, output, function, loopCounterLine);
+    auto loopCounterType = start->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, loopCounterLine);
     if (loopCounterType != compiler->typeInt) {
         result.addError(loc, CErrorCode::TypeMismatch, "start value must be a int");
         return nullptr;
     }
-    function->statements.push_back(loopCounterLine.str());
+    trBlock->statements.push_back(loopCounterLine.str());
     
     stringstream loopEndLine;
-    loopEndLine << loopEndName << " = ";
-    auto loopEndType = end->transpile(compiler, result, thisFunction, thisVar, output, function, loopEndLine);
+    loopEndLine << trLoopEndVar->name << " = ";
+    auto loopEndType = end->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, loopEndLine);
     if (loopEndType != compiler->typeInt) {
         result.addError(loc, CErrorCode::TypeMismatch, "end value must be a int");
         return nullptr;
     }
-    function->statements.push_back(loopEndLine.str());
+    trBlock->statements.push_back(loopEndLine.str());
     
+    auto trForBlock = make_shared<TrBlock>();
+    trForBlock->parent = trBlock;
     stringstream whileLine;
-    whileLine << "while (" << varName << " <= " << loopEndName << ") {";
-    function->statements.push_back(whileLine.str());
+    whileLine << "while (" << varName << " <= " << trLoopEndVar->name << ")";
+    trBlock->statements.push_back(TrStatement(whileLine.str(), trForBlock));
 
     stringstream bodyLine;
-    body->transpile(compiler, result, thisFunction, thisVar, output, function, bodyLine);
-    function->statements.push_back(bodyLine.str());
+    body->transpile(compiler, result, thisFunction, thisVar, trOutput, trForBlock.get(), bodyLine);
+    trForBlock->statements.push_back(bodyLine.str());
 
     stringstream loopCounterIncLine;
     loopCounterIncLine << varName << "++";
-    function->statements.push_back(loopCounterIncLine.str());
+    trForBlock->statements.push_back(loopCounterIncLine.str());
 
-    function->statements.push_back("}");
-    
     return compiler->typeVoid;
 }
 

@@ -125,7 +125,7 @@ shared_ptr<CType> NFunction::getTypeImpl(Compiler* compiler, CResult& result, sh
     return compiler->typeVoid;
 }
 
-shared_ptr<CType> NFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line) {
+shared_ptr<CType> NFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
 	return nullptr;
 }
 
@@ -178,7 +178,7 @@ int CFunctionReturnVar::setHeapVar(Compiler* compiler, CResult& result, shared_p
     return count;
 }
 
-shared_ptr<CType> CFunctionReturnVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line, shared_ptr<CVar> dotVar) {
+shared_ptr<CType> CFunctionReturnVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine, shared_ptr<CVar> dotVar) {
     assert(false);
 	return nullptr;
 }
@@ -335,7 +335,7 @@ int CFunction::setHeapVarBody(Compiler *compiler, CResult& result, shared_ptr<CV
     return 0;
 }
 
-shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* output, TrFunction* function, stringstream& line, shared_ptr<CVar> calleeVar, vector<shared_ptr<NBase>>& parameters) {
+shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine, shared_ptr<CVar> calleeVar, vector<shared_ptr<NBase>>& parameters) {
     assert(compiler->state == CompilerState::Compile);
 
     auto returnType = getReturnType(compiler, result, thisVar);
@@ -347,9 +347,10 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
 
     // Create function body
     if (!getHasThis()) {
-        if (output->functions.find(name) == output->functions.end()) {
-            auto trFunction = make_shared<TrFunction>();
-            output->functions[name] = trFunction;
+        if (trOutput->functions.find(name) == trOutput->functions.end()) {
+            auto trFunctionBlock = make_shared<TrBlock>();
+            trFunctionBlock->parent = trBlock;
+            trOutput->functions[name] = trFunctionBlock;
             
             stringstream definition;
             definition << returnType->nameRef << " sj_" << name << "(";
@@ -363,12 +364,12 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
                 definition << argType.second->nameRef << " " << argType.first;
             }
             definition << ")";
-            trFunction->definition = definition.str();
+            trFunctionBlock->definition = definition.str();
             
             stringstream returnLine;
-            block->transpile(compiler, result, shared_from_this(), nullptr, output, trFunction.get(), returnLine);
+            block->transpile(compiler, result, shared_from_this(), nullptr, trOutput, trFunctionBlock.get(), returnLine);
             if (returnLine.str().size() > 0) {
-                trFunction->statements.push_back("return " + returnLine.str());
+                trFunctionBlock->statements.push_back("return " + returnLine.str());
             }
         }
 
@@ -416,14 +417,14 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
 //                    auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
 //                    assert(paramHeapVar == argHeapVar);
 //                }
-                argReturnType = parameters[argIndex]->transpile(compiler, result, shared_from_this(), nullptr /*calleeVar*/, output, function, argStream);
+                argReturnType = parameters[argIndex]->transpile(compiler, result, shared_from_this(), nullptr /*calleeVar*/, trOutput, trBlock, argStream);
             } else {
 //                auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), thisVar);
 //                if (paramVar) {
 //                    auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
 //                    assert(paramHeapVar == argHeapVar);
 //                }
-                argReturnType = parameters[argIndex]->transpile(compiler, result, shared_from_this(), thisVar, output, function, argStream);
+                argReturnType = parameters[argIndex]->transpile(compiler, result, shared_from_this(), thisVar, trOutput, trBlock, argStream);
             }
             
             auto argReturnValue = argStream.str();
@@ -442,46 +443,47 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
             argIndex++;
         }
         
-        line << "sj_" << name << "(";
+        trLine << "sj_" << name << "(";
         bool isFirstParameter = true;
         for (auto argValue : argValues) {
             if (isFirstParameter) {
                 isFirstParameter = false;
             } else {
-                line << ", ";
+                trLine << ", ";
             }
             
-            line << "(" << argValue << ")";
+            trLine << "(" << argValue << ")";
         }
-        line << ")";
+        trLine << ")";
     } else {
 		string structName = "class_" + name;
-		if (output->structs.find(name) == output->structs.end()) {
+		if (trOutput->structs.find(name) == trOutput->structs.end()) {
 			for (auto argType : *argTypes) {
 				stringstream ss;
 				ss << argType.second->nameVal << " " << argType.first;
-				output->structs[structName].push_back(ss.str());
+				trOutput->structs[structName].push_back(ss.str());
 			}
 		}
 
-		if (output->functions.find(name) == output->functions.end()) {
-			auto trFunction = make_shared<TrFunction>();
-			output->functions[name] = trFunction;
+		if (trOutput->functions.find(name) == trOutput->functions.end()) {
+			auto trFunctionBlock = make_shared<TrBlock>();
+            trFunctionBlock->parent = trBlock;
+			trOutput->functions[name] = trFunctionBlock;
 
 			stringstream functionDefinition;
 			functionDefinition << returnType->nameRef << " sj_" << name << "(" << structName << "* _this)";
-			trFunction->definition = functionDefinition.str();
+			trFunctionBlock->definition = functionDefinition.str();
 
 			stringstream returnLine;
 
-			block->transpile(compiler, result, shared_from_this(), calleeVar, output, trFunction.get(), returnLine);
+			block->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trFunctionBlock.get(), returnLine);
 			if (returnLine.str().size() > 0) {
-				trFunction->statements.push_back("return " + returnLine.str());
+				trFunctionBlock->statements.push_back("return " + returnLine.str());
 			}
 		}
 
-		auto objectRef = function->createLocalVariable("objectRef", thisType->nameRef);
-		line << "sj_" << name << "(" << objectRef << ")";
+		auto objectRef = trBlock->createTempVariable("objectRef", thisType->nameRef);
+		trLine << "sj_" << name << "(" << objectRef->name << ")";
 	}
     
     return returnType;
