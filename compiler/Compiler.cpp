@@ -265,6 +265,9 @@ shared_ptr<CResult> Compiler::genNodeFile(const string& fileName) {
     
     return genNode(fileName, str);
 }
+#ifdef YYDEBUG
+extern int yydebug;
+#endif
 
 shared_ptr<CResult> Compiler::genNode(const string& fileName, const string& code) {
 #ifdef YYDEBUG

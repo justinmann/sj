@@ -84,6 +84,7 @@ enum NodeType {
 #include "NBool.h"
 #include "NCast.h"
 #include "NCall.h"
+#include "NCCode.h"
 #include "NChar.h"
 #include "NCompare.h"
 #include "NDot.h"

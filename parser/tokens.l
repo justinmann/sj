@@ -41,6 +41,7 @@ int count_lines(const char* s, const int len) {
 
 %%
 
+"c{"(.|\n)*"}c"	  			SAVE_LOC; yylval->string = new std::string(yytext + 2, yyleng - 4); return TCCODE;
 "as"					TOKEN_VAL(TAS);
 "throw"					TOKEN_VAL(TTHROW);
 "catch"					TOKEN_VAL(TCATCH);
@@ -59,6 +60,7 @@ int count_lines(const char* s, const int len) {
 "this"					TOKEN_VAL(TTHIS);
 "include"				TOKEN_VAL(TINCLUDE);
 "#"						TOKEN_VAL(THASH);
+"@"						TOKEN_VAL(TAT);
 "."						TOKEN_VAL(TDOT);
 [a-zA-Z_][a-zA-Z0-9_]*	TOKEN_STR(TIDENTIFIER);
 [0-9]+\.[0-9]*			TOKEN_STR(TDOUBLE);

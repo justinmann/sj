@@ -1,5 +1,11 @@
+* ptr, f32, f64, i32, i64, u32, u64
+* @hasThis annotation
+* @hasParent annotation
+* delete block
+* heap type for variable
+* template type string replace in c block
+
 * release objects
 * output annotated sj
 * output simplified sj
-* switch to 32-bit int by default
 * use double in c output

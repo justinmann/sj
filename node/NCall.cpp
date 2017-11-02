@@ -293,7 +293,7 @@ NCall::NCall(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeN
         this->arguments = make_shared<NodeList>();
     } else {
         for (auto it : *arguments) {
-            if (it->nodeType == NodeType_Assignment) {
+            if (it != nullptr && it->nodeType == NodeType_Assignment) {
                 auto parameterAssignment = static_pointer_cast<NAssignment>(it);
                 parameterAssignment->inFunctionDeclaration = true;
             }

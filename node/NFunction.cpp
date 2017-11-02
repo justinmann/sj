@@ -430,9 +430,13 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
             trFunctionBlock->definition = definition.str();
             
             stringstream returnLine;
-            block->transpile(compiler, result, shared_from_this(), nullptr, trOutput, trFunctionBlock.get(), returnLine);
+            auto returnType = block->transpile(compiler, result, shared_from_this(), nullptr, trOutput, trFunctionBlock.get(), returnLine);
             if (returnLine.str().size() > 0) {
-                trFunctionBlock->statements.push_back("return " + returnLine.str());
+                if (returnType != compiler->typeVoid) {
+                    trFunctionBlock->statements.push_back("return " + returnLine.str());
+                } else {
+                    trFunctionBlock->statements.push_back(returnLine.str());
+                }
             }
         }
         
@@ -512,9 +516,13 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
 
 			stringstream returnLine;
 
-			block->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trFunctionBlock.get(), returnLine);
+			auto returnType = block->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trFunctionBlock.get(), returnLine);
 			if (returnLine.str().size() > 0) {
-				trFunctionBlock->statements.push_back("return " + returnLine.str());
+                if (returnType != compiler->typeVoid) {
+                    trFunctionBlock->statements.push_back("return " + returnLine.str());
+                } else {
+                    trFunctionBlock->statements.push_back(returnLine.str());
+                }
 			}
 		}
         

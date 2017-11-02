@@ -11,7 +11,7 @@
 
 #include "../sj.pch"
 
-// #define YYDEBUG 1
+#define YYDEBUG 1
 #define DWARF_ENABLED
 // #define VAR_OUTPUT
 // #define NODE_OUTPUT

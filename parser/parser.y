@@ -54,13 +54,13 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 }
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
-%token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID TSTRING TCHAR
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY TMOD THASH
+%token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID TSTRING TCHAR TCCODE
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY TMOD THASH TAT
 
 /* Non Terminal symbols. Types refer to union decl above */
-%type <node> program expr expr_and expr_comp expr_math expr_var const stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg
+%type <node> program expr expr_and expr_comp expr_math expr_var const stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch destroy
 %type <var> var var_right
-%type <block> stmts block catch destroy
+%type <block> stmts
 %type <nif> if_expr
 %type <exprvec> func_args func_block array_args interface_args interface_block
 %type <isMutable> assign_type
@@ -93,11 +93,13 @@ stmt 				: /* Blank! */									{ $$ = nullptr; }
 					| func_decl 
 					| interface_decl
 					| expr
+					| TCCODE										{ $$ = new NCCode(LOC, $1->c_str()); delete $1; }
 					| TINCLUDE TSTRING								{ $$ = new NInclude(LOC, $2->c_str()); delete $2; }
 					| error	 										{ $$ = nullptr; /* yyclearin; */ result->addError(LLOC, CErrorCode::InvalidCharacter, "Something failed to parse"); }
 					;
 
 block 				: TLBRACE stmts TRBRACE 						{ $$ = $2; }
+					| TCCODE										{ $$ = new NCCode(LOC, $1->c_str()); delete $1; }
 					;
 
 var_decl 			: assign
@@ -112,23 +114,23 @@ var_decl 			: assign
 func_decl 			: func_type_name func_block block catch destroy			{ 
 						$$ = new NFunction(LOC, FT_Private, nullptr, $1->name.c_str(), $1->templateTypeNames, 
 							nullptr, shared_ptr<NodeList>($2), 
-							shared_ptr<NBlock>($3), shared_ptr<NBlock>($4), shared_ptr<NBlock>($5));
+							shared_ptr<NBase>($3), shared_ptr<NBase>($4), shared_ptr<NBase>($5));
 						delete $1; 
 					}
 					| func_type_name implement func_block block catch destroy			{ 
 						$$ = new NFunction(LOC, FT_Private, nullptr, $1->name.c_str(), $1->templateTypeNames, 
 							shared_ptr<CTypeNameList>($2), shared_ptr<NodeList>($3), 
-							shared_ptr<NBlock>($4), shared_ptr<NBlock>($5), shared_ptr<NBlock>($6)); 
+							shared_ptr<NBase>($4), shared_ptr<NBase>($5), shared_ptr<NBase>($6)); 
 					}
 					| func_type_name func_block return_type_quote block catch destroy { 
 						$$ = new NFunction(LOC, FT_Private, shared_ptr<CTypeName>($3), $1->name.c_str(), $1->templateTypeNames, 
 							nullptr, shared_ptr<NodeList>($2), 
-							shared_ptr<NBlock>($4), shared_ptr<NBlock>($5), shared_ptr<NBlock>($6)); 
+							shared_ptr<NBase>($4), shared_ptr<NBase>($5), shared_ptr<NBase>($6)); 
 					}
 					| func_type_name implement func_block return_type_quote block catch destroy { 
 						$$ = new NFunction(LOC, FT_Private, shared_ptr<CTypeName>($4), $1->name.c_str(), $1->templateTypeNames, 
 							shared_ptr<CTypeNameList>($2), shared_ptr<NodeList>($3), 
-							shared_ptr<NBlock>($5), shared_ptr<NBlock>($6), shared_ptr<NBlock>($7)); 
+							shared_ptr<NBase>($5), shared_ptr<NBase>($6), shared_ptr<NBase>($7)); 
 					}
 					| TEXTERN TLPAREN TSTRING TRPAREN TIDENTIFIER func_block return_type_quote { 
 						$$ = new NFunction(LOC, FT_Extern, $3->c_str(), shared_ptr<CTypeName>($7), $5->c_str(), shared_ptr<NodeList>($6)); 
