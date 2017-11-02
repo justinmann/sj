@@ -20,6 +20,6 @@ int main() {
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->x = 1;
     c = sjf_class(sjv_temp1);
-    csjf_func((_parent));
+    sjf_func((c));
     return 0;
 }

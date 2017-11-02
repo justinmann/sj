@@ -35,8 +35,8 @@ int main() {
     sjv_temp2->x = 1;
     sjv_temp2->b = sjf_aa(sjv_temp1);
     a = sjf_a(sjv_temp2);
-    a->bsjf_c((_parent));
+    sjf_c((a->b));
     d = a->b;
-    dsjf_c((_parent));
+    sjf_c((d));
     return 0;
 }

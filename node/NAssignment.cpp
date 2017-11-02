@@ -159,11 +159,13 @@ shared_ptr<CType> NAssignment::transpile(Compiler* compiler, CResult& result, sh
     
 	trLine << " = ";
 
-	auto rightType = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine);
+    stringstream rightLine;
+	auto rightType = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, rightLine);
 	if (rightType != ctype) {
 		result.addError(loc, CErrorCode::TypeMismatch, "returned type '%s' does not match explicit type '%s'", rightType->name.c_str(), ctype->name.c_str());
 		return nullptr;
 	}
+    trLine << rightLine.str();
 
 	return ctype;
 }

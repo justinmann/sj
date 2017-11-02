@@ -44,6 +44,6 @@ int main() {
     sjv_temp2 = &sjd_temp2;
     sjv_temp2->m = sjf_math(sjv_temp1);
     c = sjf_class(sjv_temp2);
-    csjf_foo((_parent), (4));
+    sjf_foo((c), (4));
     return 0;
 }

@@ -428,7 +428,15 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
         auto hasParent = getHasParent(compiler, result);
         shared_ptr<ReturnValue> dotReturnValue;
         if (hasParent) {
-            argValues.insert(argValues.begin(), ArgData(nullptr, "_parent"));
+            auto parentValue = trLine.str();
+            if (parentValue.size() == 0) {
+                parentValue = "_parent";
+            }
+            trLine.str("");
+            trLine.clear();
+
+            argValues.insert(argValues.begin(), ArgData(nullptr, parentValue));
+            
             //            Value* parentValue = thisValue;
             //            if (dotVar) {
             //                dotReturnValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB, RRT_Auto);
