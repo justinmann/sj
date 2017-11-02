@@ -1,3 +1,11 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct td_sjs_class sjs_class;
+
+struct td_sjs_class {
+};
+
 sjs_class* sjf_class(sjs_class* _this);
 int sjf_class_func();
 
@@ -15,6 +23,6 @@ int main() {
     sjs_class* sjv_temp1;
     sjv_temp1 = &sjd_temp1;
     c = sjf_class(sjv_temp1);
-    csjf_class_func();
+    sjf_class_func();
     return 0;
 }

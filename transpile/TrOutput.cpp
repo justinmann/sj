@@ -1,13 +1,22 @@
 #include "../compiler/Compiler.h"
 
 void TrOutput::writeToStream(ostream& stream) {
+    stream << "#include <stdio.h>\n";
+    stream << "#include <stdlib.h>\n";
+    stream << "\n";
+    
 	if (structs.size() > 0) {
-		for (auto t : structs) {
-			stream << "typedef struct {\n";
+        for (auto t : structs) {
+            stream << "typedef struct td_" << t.first << " " << t.first << ";\n";
+        }
+        stream << "\n";
+
+        for (auto t : structs) {
+			stream << "struct td_" << t.first << " {\n";
 			for (auto line : t.second) {
 				stream << "    " << line << ";\n";
 			}
-            stream << "} " << t.first << ";\n";
+            stream << "};\n";
 			stream << "\n";
 		}
 	}

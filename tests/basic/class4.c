@@ -1,6 +1,11 @@
-typedef struct {
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct td_sjs_class sjs_class;
+
+struct td_sjs_class {
     int b;
-} sjs_class;
+};
 
 sjs_class* sjf_class(sjs_class* _this);
 

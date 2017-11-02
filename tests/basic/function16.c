@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <stdlib.h>
+
 float sjf_func(float x);
 
 float sjf_func(float x) {

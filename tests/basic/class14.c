@@ -1,13 +1,18 @@
-typedef struct {
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct td_sjs_class sjs_class;
+
+struct td_sjs_class {
     int m;
-} sjs_class;
+};
 
 int sjf_class(sjs_class* _this);
 int sjf_class_inner(sjs_class* _parent);
 
 int sjf_class(sjs_class* _this) {
-    m = 1;
-    return sjf_class_inner((_parent));
+    _this->m = 1;
+    return sjf_class_inner((_this));
 }
 
 int sjf_class_inner(sjs_class* _parent) {

@@ -1,11 +1,17 @@
-typedef struct {
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct td_sjs_a sjs_a;
+typedef struct td_sjs_aa sjs_aa;
+
+struct td_sjs_a {
     int x;
     sjs_aa* b;
-} sjs_a;
+};
 
-typedef struct {
+struct td_sjs_aa {
     sjs_a* _parent;
-} sjs_aa;
+};
 
 sjs_a* sjf_a(sjs_a* _this);
 sjs_aa* sjf_a_aa(sjs_aa* _this);

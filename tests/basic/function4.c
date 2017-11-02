@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <stdlib.h>
+
 float sjf_func();
 
 float sjf_func() {
@@ -5,6 +8,6 @@ float sjf_func() {
 }
 
 int main() {
-    (sjf_func()) < (4.0);
+    sjf_func()) < (4.0);
     return 0;
 }

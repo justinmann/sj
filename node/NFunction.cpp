@@ -435,16 +435,18 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
             }
         }
         
+        // Get parent from the current line string
+        auto parentValue = trLine.str();
+        trLine.str("");
+        trLine.clear();
+
         // Add "parent" to "this"
         auto hasParent = getHasParent(compiler, result);
         shared_ptr<ReturnValue> dotReturnValue;
         if (hasParent) {
-            auto parentValue = trLine.str();
             if (parentValue.size() == 0) {
                 parentValue = "_parent";
             }
-            trLine.str("");
-            trLine.clear();
 
             argValues.insert(argValues.begin(), ArgData(nullptr, parentValue));
             
@@ -484,7 +486,8 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
     } else {
         // Create struct
 		string structName = "sjs_" + name;
-		if (trOutput->structs.find(name) == trOutput->structs.end()) {
+		if (trOutput->structs.find(structName) == trOutput->structs.end()) {
+            trOutput->structs[structName].begin();
 			for (auto argType : *argTypes) {
                 if (argType.first.compare("_this") == 0)
                     continue;
@@ -513,11 +516,16 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
 			}
 		}
         
+        // Get parent from the current line string
+        auto parentValue = trLine.str();
+        trLine.str("");
+        trLine.clear();
+
         // Initialize "this"
         auto objectRef = trBlock->createTempVariable("sjv_temp", thisType->nameRef);
         if (calleeVar->getHeapVar(compiler, result, thisVar)) {
             stringstream initLine;
-            initLine << objectRef->name << " = malloc(sizeof(" << structName << "))";
+            initLine << objectRef->name << " = (" << structName << "*)malloc(sizeof(" << structName << "))";
             trBlock->statements.push_back(TrStatement(initLine.str()));
         } else {
             auto objectVal = trBlock->createTempVariable("sjd_temp", thisType->nameValue);

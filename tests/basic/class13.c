@@ -1,6 +1,15 @@
-typedef struct {
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct td_sjs_class sjs_class;
+typedef struct td_sjs_math sjs_math;
+
+struct td_sjs_class {
     sjs_math* m;
-} sjs_class;
+};
+
+struct td_sjs_math {
+};
 
 sjs_class* sjf_class(sjs_class* _this);
 int sjf_class_bar(sjs_class* _parent, int x);
@@ -19,7 +28,7 @@ int sjf_class_bar(sjs_class* _parent, int x) {
 int sjf_class_foo(sjs_class* _parent, int x) {
     int ifResult1;
     if ((x) > (0)) {
-        ifResult1 = sjf_class_bar((_parent), (_parent->msjf_math_sub((x), (1))));
+        ifResult1 = sjf_class_bar((_parent), (sjf_math_sub((x), (1))));
     } else {
         ifResult1 = 0;
     }

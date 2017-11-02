@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <stdlib.h>
+
 int main() {
     int loopEnd1;
     int x;
