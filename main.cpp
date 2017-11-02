@@ -12,66 +12,6 @@
 #endif
 #include <string.h>
 #include <fstream>
-
-void testTemplate() {
-    shared_ptr<CResult> result;
-    Compiler compiler;
-    
-    result = compiler.run(R"DELIM(
-        class!t() { 1 }
-        a: class!int()
-        b: class!float()
-        c: class!bool()
-    )DELIM");
-    assert(result->type != RESULT_ERROR);
-
-    result = compiler.run(R"DELIM(
-        class!t(
-            x:'t
-        ) { this }
-        c: class!int(1)
-        c.x
-    )DELIM");
-    assert(result->type == RESULT_INT && result->iResult == 1);
-    
-    result = compiler.run(R"DELIM(
-                          class![t1, t2]() { 1 }
-                          a: class![int, bool]()
-                          c: class![bool, float]()
-                          )DELIM");
-    assert(result->type != RESULT_ERROR);
-    
-    result = compiler.run(R"DELIM(
-        class!t() { 1 }
-        func() { }
-        d: class!func()
-    )DELIM");
-    assert(result->type != RESULT_ERROR);
-    
-    result = compiler.run(R"DELIM(
-                          class![t1, t2]() { 1 }
-                          func() { }
-                          b: class![float, func]()
-                          d: class![func, int]()
-                          )DELIM");
-    assert(result->type != RESULT_ERROR);
-    
-    result = compiler.run(R"DELIM(
-                          class!t() { 1 }
-                          func!t() { 1 }
-                          d: class![func!int]()
-                          )DELIM");
-    assert(result->type != RESULT_ERROR);
-    
-    result = compiler.run(R"DELIM(
-                          class!t(
-                                  func!t() { 1 }
-                                  ) { this }
-                          c: class!int()
-                          1
-                          )DELIM");
-    assert(result->type != RESULT_ERROR);
-}
                           
 void testArray() {
     shared_ptr<CResult> result;
