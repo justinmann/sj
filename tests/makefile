@@ -1,7 +1,7 @@
 TARGET = test
 LIBS = -lm
-CC = g++
-CFLAGS = -g -Wall -Wno-unused-value -Wno-unused-but-set-variable -std=c++11
+CC = gcc
+CFLAGS = -g -Wall -std=c11
 OBJECTS = $(patsubst %.c, %.o, $(wildcard basic/*.c))
 HEADERS = $(wildcard *.h)
 

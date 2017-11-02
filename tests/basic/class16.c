@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 typedef struct td_sjs_a sjs_a;
 typedef struct td_sjs_aa sjs_aa;
