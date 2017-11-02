@@ -3,13 +3,13 @@ typedef struct {
 } sjs_class;
 
 sjs_class* sjf_class(sjs_class* _this);
-int sjf_func(sjs_class* _parent);
+int sjf_class_func(sjs_class* _parent);
 
 sjs_class* sjf_class(sjs_class* _this) {
     return _this;
 }
 
-int sjf_func(sjs_class* _parent) {
+int sjf_class_func(sjs_class* _parent) {
     return _parent->x;
 }
 
@@ -20,6 +20,6 @@ int main() {
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->x = 1;
     c = sjf_class(sjv_temp1);
-    sjf_func((c));
+    sjf_class_func((c));
     return 0;
 }

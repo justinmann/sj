@@ -3,14 +3,14 @@ typedef struct {
 } sjs_class;
 
 int sjf_class(sjs_class* _this);
-int sjf_inner(sjs_class* _parent);
+int sjf_class_inner(sjs_class* _parent);
 
 int sjf_class(sjs_class* _this) {
     m = 1;
-    return sjf_inner((_parent));
+    return sjf_class_inner((_parent));
 }
 
-int sjf_inner(sjs_class* _parent) {
+int sjf_class_inner(sjs_class* _parent) {
     return _parent->m;
 }
 

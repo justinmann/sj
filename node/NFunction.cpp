@@ -395,16 +395,27 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
         argValues.push_back(ArgData(argVar, argReturnValue));
         argIndex++;
     }
+    
+    string functionName = name;
+    if (!parent.expired()) {
+        auto tempType = parent.lock();
+        while (tempType != nullptr && tempType->name.compare("global") != 0) {
+            functionName.insert(0, "_");
+            functionName.insert(0, tempType->name);
+            tempType = tempType->parent.lock();
+        }
+    }
+    functionName.insert(0, "sjf_");
 
     if (!getHasThis()) {
         // Create function body
-        if (trOutput->functions.find(name) == trOutput->functions.end()) {
+        if (trOutput->functions.find(functionName) == trOutput->functions.end()) {
             auto trFunctionBlock = make_shared<TrBlock>();
             trFunctionBlock->parent = trBlock;
-            trOutput->functions[name] = trFunctionBlock;
+            trOutput->functions[functionName] = trFunctionBlock;
             
             stringstream definition;
-            definition << returnType->nameRef << " sjf_" << name << "(";
+            definition << returnType->nameRef << " " << functionName << "(";
             auto isFirstArg = true;
             for (auto argType : *argTypes) {
                 if (isFirstArg) {
@@ -458,7 +469,7 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
         }
 
         // Call function
-        trLine << "sjf_" << name << "(";
+        trLine << functionName << "(";
         bool isFirstParameter = true;
         for (auto argValue : argValues) {
             if (isFirstParameter) {
@@ -485,13 +496,13 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
 		}
 
         // Create function body
-		if (trOutput->functions.find(name) == trOutput->functions.end()) {
+		if (trOutput->functions.find(functionName) == trOutput->functions.end()) {
 			auto trFunctionBlock = make_shared<TrBlock>();
             trFunctionBlock->parent = trBlock;
-			trOutput->functions[name] = trFunctionBlock;
+			trOutput->functions[functionName] = trFunctionBlock;
 
 			stringstream functionDefinition;
-			functionDefinition << returnType->nameRef << " sjf_" << name << "(" << structName << "* _this)";
+			functionDefinition << returnType->nameRef << " " << functionName << "(" << structName << "* _this)";
 			trFunctionBlock->definition = functionDefinition.str();
 
 			stringstream returnLine;

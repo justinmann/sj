@@ -1,12 +1,12 @@
-int sjf_bar();
 int sjf_func();
-
-int sjf_bar() {
-    return 9;
-}
+int sjf_func_bar();
 
 int sjf_func() {
-    return sjf_bar();
+    return sjf_func_bar();
+}
+
+int sjf_func_bar() {
+    return 9;
 }
 
 int main() {

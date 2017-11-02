@@ -8,18 +8,18 @@ typedef struct {
 } sjs_aa;
 
 sjs_a* sjf_a(sjs_a* _this);
-sjs_aa* sjf_aa(sjs_aa* _this);
-int sjf_c(sjs_aa* _parent);
+sjs_aa* sjf_a_aa(sjs_aa* _this);
+int sjf_a_aa_c(sjs_aa* _parent);
 
 sjs_a* sjf_a(sjs_a* _this) {
     return _this;
 }
 
-sjs_aa* sjf_aa(sjs_aa* _this) {
+sjs_aa* sjf_a_aa(sjs_aa* _this) {
     return _this;
 }
 
-int sjf_c(sjs_aa* _parent) {
+int sjf_a_aa_c(sjs_aa* _parent) {
     return _parent->_parent->x;
 }
 
@@ -35,8 +35,8 @@ int main() {
     sjv_temp2->x = 1;
     sjv_temp2->b = sjf_aa(sjv_temp1);
     a = sjf_a(sjv_temp2);
-    sjf_c((a->b));
+    sjf_a_aa_c((a->b));
     d = a->b;
-    sjf_c((d));
+    sjf_a_aa_c((d));
     return 0;
 }
