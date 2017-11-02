@@ -85,9 +85,12 @@ int NCompare::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBa
 //}
 
 shared_ptr<CType> NCompare::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
-	trLine << "(";
-	leftSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine);
-	trLine << ")";
+    stringstream leftLine;
+    leftSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, leftLine);
+    stringstream rightLine;
+    rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, rightLine);
+
+    trLine << "(" << leftLine.str() << ")";
 	switch (op) {
 	case NCompareOp::EQ:
 		trLine << " == ";
@@ -108,9 +111,7 @@ shared_ptr<CType> NCompare::transpile(Compiler* compiler, CResult& result, share
 		trLine << " >= ";
 		break;
 	}
-	trLine << "(";
-	rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine);
-	trLine << ")";
+	trLine << "(" << rightLine.str() << ")";
 	return compiler->typeBool;
 }
 

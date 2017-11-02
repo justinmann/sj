@@ -9,7 +9,7 @@ float sjf_func() {
 }
 
 bool sjf_global() {
-    return sjf_func()) < (4.0);
+    return (sjf_func()) < (4.0);
 }
 
 int main() {
