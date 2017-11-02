@@ -4,7 +4,7 @@
 int sjf_global();
 
 int sjf_global() {
-    return 92233720368547758070;
+    return 2147483647;
 }
 
 int main() {

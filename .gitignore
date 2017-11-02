@@ -29,3 +29,5 @@ vs/.vs/
 *.o
 sjc
 vs/sj.vcxproj.user
+
+tests/test
