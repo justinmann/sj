@@ -1,12 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main() {
+int sjf_global();
+
+int sjf_global() {
     int x;
     x = 10;
     while ((x) > (0)) {
         x = (x) - (1);
     }
-    x;
+    return x;
+}
+
+int main() {
+    sjf_global();
     return 0;
 }

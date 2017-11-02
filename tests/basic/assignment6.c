@@ -1,9 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main() {
+int sjf_global();
+
+int sjf_global() {
     int x;
     x = 1;
-    (x) + (1);
+    return (x) + (1);
+}
+
+int main() {
+    sjf_global();
     return 0;
 }

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 int sjf_func(int x);
+int sjf_global();
 
 int sjf_func(int x) {
     int ifResult1;
@@ -13,7 +14,11 @@ int sjf_func(int x) {
     return ifResult1;
 }
 
+int sjf_global() {
+    return sjf_func((4));
+}
+
 int main() {
-    sjf_func((4));
+    sjf_global();
     return 0;
 }

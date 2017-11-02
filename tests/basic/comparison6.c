@@ -1,7 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+bool sjf_global();
+
+bool sjf_global() {
+    return (4) <= (4);
+}
+
 int main() {
-    (4) <= (4);
+    sjf_global();
     return 0;
 }

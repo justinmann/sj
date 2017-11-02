@@ -16,6 +16,7 @@ struct td_sjs_aa {
 sjs_a* sjf_a(sjs_a* _this);
 sjs_aa* sjf_a_aa(sjs_aa* _this);
 int sjf_a_aa_c(sjs_aa* _parent);
+int sjf_global();
 
 sjs_a* sjf_a(sjs_a* _this) {
     return _this;
@@ -29,7 +30,7 @@ int sjf_a_aa_c(sjs_aa* _parent) {
     return _parent->_parent->x;
 }
 
-int main() {
+int sjf_global() {
     sjs_a* a;
     sjs_aa* d;
     sjs_aa sjd_temp1;
@@ -43,6 +44,10 @@ int main() {
     a = sjf_a(sjv_temp2);
     sjf_a_aa_c((a->b));
     d = a->b;
-    sjf_a_aa_c((d));
+    return sjf_a_aa_c((d));
+}
+
+int main() {
+    sjf_global();
     return 0;
 }

@@ -9,6 +9,7 @@ struct td_sjs_class {
 sjs_class* sjf_class(sjs_class* _this);
 int sjf_class_bar(int x);
 int sjf_class_foo(int x);
+int sjf_global();
 
 sjs_class* sjf_class(sjs_class* _this) {
     return _this;
@@ -28,12 +29,16 @@ int sjf_class_foo(int x) {
     return ifResult1;
 }
 
-int main() {
+int sjf_global() {
     sjs_class* c;
     sjs_class sjd_temp1;
     sjs_class* sjv_temp1;
     sjv_temp1 = &sjd_temp1;
     c = sjf_class(sjv_temp1);
-    sjf_class_foo((4));
+    return sjf_class_foo((4));
+}
+
+int main() {
+    sjf_global();
     return 0;
 }

@@ -404,7 +404,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 		anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, nullptr, "global", nullptr, nullptr, nullptr, result->block, nullptr, nullptr);
 		currentFunctionDefintion = CFunctionDefinition::create(this, *result, nullptr, FT_Public, "", nullptr, nullptr);
 		state = CompilerState::Define;
-		anonFunction->define(this, *result, currentFunctionDefintion);
+        anonFunction->define(this, *result, currentFunctionDefintion);
 
 		if (result->errors.size() == 0) {
 			globalFunctionDefinition = currentFunctionDefintion->funcsByName["global"];
@@ -438,9 +438,11 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 					printf("global %s\n\n", ss.str().c_str());
 #endif
 
-					state = CompilerState::Compile;
-					result->block->transpile(this, *result, globalFunction, nullptr, &output, &output.mainFunction, returnLine);
+					state = CompilerState::Compile;                    
+                    vector<shared_ptr<NBase>> parameters;
+                    globalFunction->transpile(this, *result, nullptr, nullptr, &output, &output.mainFunction, returnLine, globalVar, parameters);
                     output.mainFunction.statements.push_back(returnLine.str());
+
                     if (result->errors.size() == 0) {
                         output.writeToStream(stream);
                     }

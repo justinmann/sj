@@ -22,8 +22,12 @@ shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CResult& result, CLoc 
         } else {
             auto temp = static_pointer_cast<CBaseFunction>(thisFunction_);
             while (temp && temp != callee_->parent.lock()) {
-                temp->setHasParent(compiler, result);
-                temp = temp->parent.lock();
+                auto nextParent = temp->parent.lock();
+                // If my parent does not have a parent then leave off the parent
+                if (nextParent != nullptr && !nextParent->parent.expired()) {
+                    temp->setHasParent(compiler, result);
+                }
+                temp = nextParent;
             }
         }
     };

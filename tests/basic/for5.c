@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main() {
+int sjf_global();
+
+int sjf_global() {
     int loopEnd1;
     int x;
     int y;
@@ -12,6 +14,10 @@ int main() {
         y = (y) + (x);
         x++;
     }
-    y;
+    return y;
+}
+
+int main() {
+    sjf_global();
     return 0;
 }

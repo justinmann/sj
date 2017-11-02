@@ -1,10 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main() {
+int sjf_global();
+
+int sjf_global() {
     int x;
     int y;
     x = y = 2;
-    (x) + (y);
+    return (x) + (y);
+}
+
+int main() {
+    sjf_global();
     return 0;
 }

@@ -2,12 +2,17 @@
 #include <stdlib.h>
 
 int sjf_func(int x);
+int sjf_global();
 
 int sjf_func(int x) {
     return x;
 }
 
+int sjf_global() {
+    return sjf_func((3));
+}
+
 int main() {
-    sjf_func((3));
+    sjf_global();
     return 0;
 }

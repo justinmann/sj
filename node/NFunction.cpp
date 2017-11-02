@@ -399,7 +399,7 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
     string functionName = name;
     if (!parent.expired()) {
         auto tempType = parent.lock();
-        while (tempType != nullptr && tempType->name.compare("global") != 0) {
+        while (tempType != nullptr && tempType->name.compare("global") != 0 && tempType->name.size() > 0) {
             functionName.insert(0, "_");
             functionName.insert(0, tempType->name);
             tempType = tempType->parent.lock();
