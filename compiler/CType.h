@@ -31,34 +31,19 @@ enum CTypeCategory {
 
 class CType {
 public:
-#ifdef DWARF_ENABLED
-    CType(const char* name/*, Type* llvmType, DIType* diType, Value* value*/);
-#else
-    CType(const char* name/*, Type* llvmType, Value* value*/);
-#endif
-
+    CType(const char* name, const char* defaultValue);
     CType(const char* name, weak_ptr<CFunction> parent);
     CType(const char* name, weak_ptr<CInterface> parent);
-#ifdef DWARF_ENABLED
-    //DIType* getDIType(Compiler* compiler, CResult& result);
-#endif
 
     CTypeCategory category;
     string name;
     string nameValue;
 	string nameRef;
     weak_ptr<CBaseFunction> parent;
-    //virtual Type* llvmAllocType(Compiler* compiler, CResult& result);
-    //virtual Type* llvmRefType(Compiler* compiler, CResult& result);
-    //virtual shared_ptr<ReturnValue> getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB);
+    void transpileDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, stringstream& line);
 
 private:
-    //Type* _llvmAllocType;
-    //Type* _llvmRefType;
-    //Value* _value;
-#ifdef DWARF_ENABLED
-    //DIType* _diType;
-#endif
+    string _defaultValue;
 };
 
 #endif /* CType_h */

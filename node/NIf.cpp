@@ -203,37 +203,39 @@ shared_ptr<CType> NIf::transpile(Compiler* compiler, CResult& result, shared_ptr
     trIfBlock->parent = trBlock;
     auto trStatement = TrStatement(ifLine.str(), trIfBlock);
 
-	if (ifBlock) {
-        stringstream resultLine;
-        if (type != compiler->typeVoid) {
-            resultLine << trResultVar->name + " = ";
-        }
+    stringstream resultLine;
+    if (type != compiler->typeVoid) {
+        resultLine << trResultVar->name + " = ";
+    }
 
-        ifBlock->transpile(compiler, result, thisFunction, thisVar, trOutput, trIfBlock.get(), resultLine);
-        
-        if (type != compiler->typeVoid) {
-            trIfBlock->statements.push_back(resultLine.str());
-        }
-	}
+    ifBlock->transpile(compiler, result, thisFunction, thisVar, trOutput, trIfBlock.get(), resultLine);
+    
+    if (type != compiler->typeVoid) {
+        trIfBlock->statements.push_back(resultLine.str());
+    }
 
-	if (elseBlock) {
+    if (elseBlock || type != compiler->typeVoid) {
         auto trElseBlock = make_shared<TrBlock>();
         trElseBlock->parent = trBlock;
-		trElseBlock->hasThis = trBlock->hasThis;
-		trStatement.elseBlock = trElseBlock;
+        trElseBlock->hasThis = trBlock->hasThis;
+        trStatement.elseBlock = trElseBlock;
 
         stringstream resultLine;
         if (type != compiler->typeVoid) {
             resultLine << trResultVar->name + " = ";
         }
 
-		elseBlock->transpile(compiler, result, thisFunction, thisVar, trOutput, trElseBlock.get(), resultLine);
-
+        if (elseBlock) {
+            elseBlock->transpile(compiler, result, thisFunction, thisVar, trOutput, trElseBlock.get(), resultLine);
+        } else {
+            type->transpileDefaultValue(compiler, result, thisFunction, thisVar, resultLine);
+        }
+        
         if (type != compiler->typeVoid) {
             trElseBlock->statements.push_back(resultLine.str());
         }
     }
-
+    
     trBlock->statements.push_back(trStatement);
 
     if (type != compiler->typeVoid) {

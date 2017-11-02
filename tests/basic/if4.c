@@ -12,6 +12,8 @@ int sjf_global() {
         int ifResult2;
         if (true) {
             ifResult2 = 2;
+        } else {
+            ifResult2 = 0;
         }
         ifResult1 = ifResult2;
     }

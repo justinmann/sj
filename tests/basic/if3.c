@@ -8,6 +8,8 @@ int sjf_global() {
     int ifResult1;
     if (false) {
         ifResult1 = 1;
+    } else {
+        ifResult1 = 0;
     }
     return ifResult1;
 }

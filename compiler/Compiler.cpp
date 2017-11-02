@@ -176,11 +176,11 @@ Compiler::Compiler() {
     //InitializeNativeTargetAsmPrinter();
     //InitializeNativeTargetAsmParser();
 
-	typeInt = make_shared<CType>("int");
-	typeBool = make_shared<CType>("bool");
-	typeFloat = make_shared<CType>("float");
-	typeChar = make_shared<CType>("char");
-	typeVoid = make_shared<CType>("void");
+	typeInt = make_shared<CType>("int", "0");
+	typeBool = make_shared<CType>("bool", "false");
+	typeFloat = make_shared<CType>("float", "0.0");
+	typeChar = make_shared<CType>("char", "'\0'");
+	typeVoid = make_shared<CType>("void", "");
 }
 
 void Compiler::reset() {
