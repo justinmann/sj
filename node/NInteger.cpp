@@ -30,7 +30,25 @@ shared_ptr<CType> NInteger::getTypeImpl(Compiler* compiler, CResult& result, sha
 //}
 
 shared_ptr<CType> NInteger::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
-	trLine << strValue;
+
+    if (strValue.size() > 0) {
+        char* e;
+        errno = 0;
+        auto v = strtol(strValue.c_str(), &e, 10);
+
+        if (ERANGE == errno || v > INT_MAX || v < INT_MIN) {
+            result.addError(loc, CErrorCode::InvalidNumber, "not a valid int '%s'", strValue.c_str());
+            return nullptr;
+        }
+
+        if (*e != '\0') {
+            result.addError(loc, CErrorCode::InvalidNumber, "not a valid int '%s'", strValue.c_str());
+            return nullptr;
+        }
+
+        trLine << v;
+    }
+    
 	return compiler->typeInt;
 }
 
