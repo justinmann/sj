@@ -23,7 +23,7 @@ sjs_class* sjf_class(sjs_class* _this) {
 int sjf_foo(sjs_class* _parent, int x) {
     int ifResult1;
     if ((x) > (0)) {
-        ifResult1 = sjf_bar((_parent), (_parentsjf_sub((x), (1))));
+        ifResult1 = sjf_bar((_parent), (_parent->_parent->mathsjf_sub((x), (1))));
     } else {
         ifResult1 = 0;
     }

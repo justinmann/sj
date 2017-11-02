@@ -20,7 +20,7 @@ sjs_aa* sjf_aa(sjs_aa* _this) {
 }
 
 int sjf_c(sjs_aa* _parent) {
-    return x;
+    return _parent->_parent->x;
 }
 
 int main() {

@@ -11,7 +11,7 @@ int sjf_class(sjs_class* _this) {
 }
 
 int sjf_inner(sjs_class* _parent) {
-    return m;
+    return _parent->m;
 }
 
 int main() {

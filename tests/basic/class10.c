@@ -10,7 +10,7 @@ sjs_class* sjf_class(sjs_class* _this) {
 }
 
 int sjf_func(sjs_class* _parent) {
-    return x;
+    return _parent->x;
 }
 
 int main() {
