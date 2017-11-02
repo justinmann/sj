@@ -150,10 +150,13 @@
     <ClInclude Include="..\transpile\TrOutput.h">
       <Filter>Transpile</Filter>
     </ClInclude>
-    <ClInclude Include="..\transpile\TrFunction.h">
+    <ClInclude Include="..\transpile\TrVariable.h">
       <Filter>Transpile</Filter>
     </ClInclude>
-    <ClInclude Include="..\transpile\TrVariable.h">
+    <ClInclude Include="..\transpile\TrBlock.h">
+      <Filter>Transpile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\transpile\TrStatement.h">
       <Filter>Transpile</Filter>
     </ClInclude>
   </ItemGroup>
@@ -278,10 +281,13 @@
     <ClCompile Include="..\transpile\TrOutput.cpp">
       <Filter>Transpile</Filter>
     </ClCompile>
-    <ClCompile Include="..\transpile\TrFunction.cpp">
+    <ClCompile Include="..\transpile\TrVariable.cpp">
       <Filter>Transpile</Filter>
     </ClCompile>
-    <ClCompile Include="..\transpile\TrVariable.cpp">
+    <ClCompile Include="..\transpile\TrBlock.cpp">
+      <Filter>Transpile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\transpile\TrStatement.cpp">
       <Filter>Transpile</Filter>
     </ClCompile>
   </ItemGroup>
