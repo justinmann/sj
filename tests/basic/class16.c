@@ -39,7 +39,7 @@ int main() {
     sjv_temp1 = &sjd_temp1;
     sjv_temp2 = &sjd_temp2;
     sjv_temp2->x = 1;
-    sjv_temp2->b = sjf_aa(sjv_temp1);
+    sjv_temp2->b = sjf_a_aa(sjv_temp1);
     a = sjf_a(sjv_temp2);
     sjf_a_aa_c((a->b));
     d = a->b;

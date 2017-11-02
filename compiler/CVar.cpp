@@ -146,7 +146,11 @@ int CNormalVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar>
 shared_ptr<CType> CNormalVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine, shared_ptr<CVar> dotVar) {
     if (dotVar) {
         trLine << "->";
-    }
+	} else {
+		if (trBlock->hasThis && (mode == Var_Public || mode == Var_Private)) {
+			trLine << "_this->";
+		}
+	}
     
 	trLine << name;
 	return getType(compiler, result);

@@ -36,6 +36,7 @@ shared_ptr<CType> NWhile::transpile(Compiler* compiler, CResult& result, shared_
     
     auto trWhileBlock = make_shared<TrBlock>();
     trWhileBlock->parent = trBlock;
+    trWhileBlock->hasThis = trBlock->hasThis;
     stringstream bodyLine;
     body->transpile(compiler, result, thisFunction, thisVar, trOutput, trWhileBlock.get(), bodyLine);
     trWhileBlock->statements.push_back(bodyLine.str());

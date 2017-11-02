@@ -118,6 +118,7 @@ shared_ptr<CType> NFor::transpile(Compiler* compiler, CResult& result, shared_pt
     
     auto trForBlock = make_shared<TrBlock>();
     trForBlock->parent = trBlock;
+	trForBlock->hasThis = trBlock->hasThis;
     stringstream whileLine;
     whileLine << "while (" << varName << " <= " << trLoopEndVar->name << ")";
     trBlock->statements.push_back(TrStatement(whileLine.str(), trForBlock));

@@ -8,6 +8,7 @@ public:
     TrBlock() : parent(nullptr) { }
     
     TrBlock* parent;
+	bool hasThis;
     string definition;
     map<string, shared_ptr<TrVariable>> variables;
 	vector<TrStatement> statements;

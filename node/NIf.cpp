@@ -199,6 +199,7 @@ shared_ptr<CType> NIf::transpile(Compiler* compiler, CResult& result, shared_ptr
 	condition->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, ifLine);
 	ifLine << ")";
     auto trIfBlock = make_shared<TrBlock>();
+    trIfBlock->hasThis = trBlock->hasThis;
     trIfBlock->parent = trBlock;
     auto trStatement = TrStatement(ifLine.str(), trIfBlock);
 
@@ -218,7 +219,8 @@ shared_ptr<CType> NIf::transpile(Compiler* compiler, CResult& result, shared_ptr
 	if (elseBlock) {
         auto trElseBlock = make_shared<TrBlock>();
         trElseBlock->parent = trBlock;
-        trStatement.elseBlock = trElseBlock;
+		trElseBlock->hasThis = trBlock->hasThis;
+		trStatement.elseBlock = trElseBlock;
 
         stringstream resultLine;
         if (type != compiler->typeVoid) {

@@ -411,7 +411,8 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
         // Create function body
         if (trOutput->functions.find(functionName) == trOutput->functions.end()) {
             auto trFunctionBlock = make_shared<TrBlock>();
-            trFunctionBlock->parent = trBlock;
+            trFunctionBlock->parent = nullptr;
+			trFunctionBlock->hasThis = false;
             trOutput->functions[functionName] = trFunctionBlock;
             
             stringstream definition;
@@ -445,7 +446,7 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
         shared_ptr<ReturnValue> dotReturnValue;
         if (hasParent) {
             if (parentValue.size() == 0) {
-                parentValue = "_parent";
+                parentValue = trBlock->hasThis ? "_this" : "_parent";
             }
 
             argValues.insert(argValues.begin(), ArgData(nullptr, parentValue));
@@ -501,7 +502,8 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
         // Create function body
 		if (trOutput->functions.find(functionName) == trOutput->functions.end()) {
 			auto trFunctionBlock = make_shared<TrBlock>();
-            trFunctionBlock->parent = trBlock;
+            trFunctionBlock->parent = nullptr;
+			trFunctionBlock->hasThis = true;
 			trOutput->functions[functionName] = trFunctionBlock;
 
 			stringstream functionDefinition;
@@ -541,7 +543,7 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
         }
         
         // Call function
-		trLine << "sjf_" << name << "(" << objectRef->name << ")";
+		trLine << functionName << "(" << objectRef->name << ")";
 	}
     
     return returnType;
