@@ -4,3 +4,8 @@
 * invoke destroy block in release
 * heap type for variable
 * template type string replace in c block
+
+* [x] -> getAt(x)
+* [x] = y -> setAt(x, y)
+* a.x -> getX()
+* a.x = y -> setX(y)
