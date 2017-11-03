@@ -5,3 +5,5 @@ class(
 } destroy {
 	x = 2
 }
+
+c: class()

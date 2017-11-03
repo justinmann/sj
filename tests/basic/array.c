@@ -16,14 +16,23 @@ struct td_sjs_class {
 };
 
 sjs_array_class* sjf_array_class(sjs_array_class* _this);
+sjs_array_class* sjf_array_class_destroy(sjs_array_class* _this);
 void sjf_array_class_set(int32_t index, sjs_class* item);
 void sjf_array_class_setSize(int32_t x);
 sjs_class* sjf_class(sjs_class* _this);
+sjs_class* sjf_class_destroy(sjs_class* _this);
 void sjf_global();
 
 sjs_array_class* sjf_array_class(sjs_array_class* _this) {
     sjf_array_class_setSize((_this->count));
     return _this;
+}
+
+sjs_array_class* sjf_array_class_destroy(sjs_array_class* _this) {
+    
+	free((##t)_this->_data);	
+;
+    free(_this);
 }
 
 void sjf_array_class_set(int32_t index, sjs_class* item) {
@@ -60,6 +69,10 @@ void sjf_array_class_setSize(int32_t x) {
 
 sjs_class* sjf_class(sjs_class* _this) {
     return _this;
+}
+
+sjs_class* sjf_class_destroy(sjs_class* _this) {
+    free(_this);
 }
 
 void sjf_global() {

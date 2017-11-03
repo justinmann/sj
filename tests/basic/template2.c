@@ -9,10 +9,15 @@ struct td_sjs_class_i32 {
 };
 
 sjs_class_i32* sjf_class_i32(sjs_class_i32* _this);
+sjs_class_i32* sjf_class_i32_destroy(sjs_class_i32* _this);
 int32_t sjf_global();
 
 sjs_class_i32* sjf_class_i32(sjs_class_i32* _this) {
     return _this;
+}
+
+sjs_class_i32* sjf_class_i32_destroy(sjs_class_i32* _this) {
+    free(_this);
 }
 
 int32_t sjf_global() {

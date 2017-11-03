@@ -121,7 +121,9 @@ public:
     //virtual void compileDestructorBody(Compiler* compiler, CResult& result, Function* function);
     virtual void dumpBody(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
     //shared_ptr<ReturnValue> cast(Compiler* compiler, CResult& result, IRBuilder<>* builder, shared_ptr<ReturnValue> fromValue, bool isHeap, shared_ptr<CInterface> interface);
-    
+    virtual string getCInitFunctionName();
+    virtual string getCDestroyFunctionName();
+
     CLoc loc;
     CFunctionType type;
     vector<shared_ptr<CType>> templateTypes;

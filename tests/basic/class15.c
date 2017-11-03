@@ -19,14 +19,21 @@ struct td_sjs_global {
 };
 
 sjs_anon_0* sjf_anon_0(sjs_anon_0* _this);
+sjs_anon_0* sjf_anon_0_destroy(sjs_anon_0* _this);
 int32_t sjf_anon_0_sub(sjs_anon_0* _parent, int32_t x, int32_t y);
 sjs_class* sjf_class(sjs_class* _this);
 int32_t sjf_class_bar(sjs_class* _parent, int32_t x);
+sjs_class* sjf_class_destroy(sjs_class* _this);
 int32_t sjf_class_foo(sjs_class* _parent, int32_t x);
 int32_t sjf_global(sjs_global* _this);
+int32_t sjf_global_destroy(sjs_global* _this);
 
 sjs_anon_0* sjf_anon_0(sjs_anon_0* _this) {
     return _this;
+}
+
+sjs_anon_0* sjf_anon_0_destroy(sjs_anon_0* _this) {
+    free(_this);
 }
 
 int32_t sjf_anon_0_sub(sjs_anon_0* _parent, int32_t x, int32_t y) {
@@ -39,6 +46,10 @@ sjs_class* sjf_class(sjs_class* _this) {
 
 int32_t sjf_class_bar(sjs_class* _parent, int32_t x) {
     return sjf_class_foo((_parent), (x));
+}
+
+sjs_class* sjf_class_destroy(sjs_class* _this) {
+    free(_this);
 }
 
 int32_t sjf_class_foo(sjs_class* _parent, int32_t x) {
@@ -62,6 +73,10 @@ int32_t sjf_global(sjs_global* _this) {
     sjv_temp2 = &sjd_temp1;
     c = sjf_class(sjv_temp2);
     return sjf_class_foo((c), (4));
+}
+
+int32_t sjf_global_destroy(sjs_global* _this) {
+    free(_this);
 }
 
 int main() {

@@ -14,9 +14,11 @@ struct td_sjs_math {
 
 sjs_class* sjf_class(sjs_class* _this);
 int32_t sjf_class_bar(sjs_class* _parent, int32_t x);
+sjs_class* sjf_class_destroy(sjs_class* _this);
 int32_t sjf_class_foo(sjs_class* _parent, int32_t x);
 int32_t sjf_global();
 sjs_math* sjf_math(sjs_math* _this);
+sjs_math* sjf_math_destroy(sjs_math* _this);
 int32_t sjf_math_sub(int32_t x, int32_t y);
 
 sjs_class* sjf_class(sjs_class* _this) {
@@ -25,6 +27,10 @@ sjs_class* sjf_class(sjs_class* _this) {
 
 int32_t sjf_class_bar(sjs_class* _parent, int32_t x) {
     return sjf_class_foo((_parent), (x));
+}
+
+sjs_class* sjf_class_destroy(sjs_class* _this) {
+    free(_this);
 }
 
 int32_t sjf_class_foo(sjs_class* _parent, int32_t x) {
@@ -52,6 +58,10 @@ int32_t sjf_global() {
 
 sjs_math* sjf_math(sjs_math* _this) {
     return _this;
+}
+
+sjs_math* sjf_math_destroy(sjs_math* _this) {
+    free(_this);
 }
 
 int32_t sjf_math_sub(int32_t x, int32_t y) {

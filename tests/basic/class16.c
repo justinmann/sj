@@ -17,6 +17,8 @@ struct td_sjs_aa {
 sjs_a* sjf_a(sjs_a* _this);
 sjs_aa* sjf_a_aa(sjs_aa* _this);
 int32_t sjf_a_aa_c(sjs_aa* _parent);
+sjs_aa* sjf_a_aa_destroy(sjs_aa* _this);
+sjs_a* sjf_a_destroy(sjs_a* _this);
 int32_t sjf_global();
 
 sjs_a* sjf_a(sjs_a* _this) {
@@ -29,6 +31,14 @@ sjs_aa* sjf_a_aa(sjs_aa* _this) {
 
 int32_t sjf_a_aa_c(sjs_aa* _parent) {
     return _parent->_parent->x;
+}
+
+sjs_aa* sjf_a_aa_destroy(sjs_aa* _this) {
+    free(_this);
+}
+
+sjs_a* sjf_a_destroy(sjs_a* _this) {
+    free(_this);
 }
 
 int32_t sjf_global() {

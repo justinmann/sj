@@ -9,12 +9,17 @@ struct td_sjs_class {
 };
 
 int32_t sjf_class(sjs_class* _this);
+int32_t sjf_class_destroy(sjs_class* _this);
 int32_t sjf_class_inner(sjs_class* _parent);
 int32_t sjf_global();
 
 int32_t sjf_class(sjs_class* _this) {
     _this->m = 1;
     return sjf_class_inner((_this));
+}
+
+int32_t sjf_class_destroy(sjs_class* _this) {
+    free(_this);
 }
 
 int32_t sjf_class_inner(sjs_class* _parent) {

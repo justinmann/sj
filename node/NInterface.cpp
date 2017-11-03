@@ -249,6 +249,16 @@ shared_ptr<CVar> CInterface::getReturnVar(Compiler* compiler, CResult& result, s
     return nullptr;
 }
 
+string CInterface::getCInitFunctionName() {
+    assert(false);
+    return "";
+}
+
+string CInterface::getCDestroyFunctionName() {
+    assert(false);
+    return "";
+}
+
 shared_ptr<CType> CInterface::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine, shared_ptr<CVar> calleeVar, vector<shared_ptr<NBase>>& parameters) {
     assert(false);
     return nullptr;

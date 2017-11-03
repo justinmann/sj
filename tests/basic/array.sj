@@ -60,7 +60,9 @@ array!t (
 ) { 
 	setSize(count)
 	this 
-}
+} destroy c{
+	free((##t)_this->_data);	
+}c
 
 class(
 	bob : 1

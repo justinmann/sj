@@ -47,6 +47,8 @@ public:
     virtual shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName) = 0;
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) = 0;
     virtual shared_ptr<CVar> getReturnVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) = 0;
+    virtual string getCInitFunctionName() = 0;
+    virtual string getCDestroyFunctionName() = 0;
 
     //virtual void initStack(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
     //virtual void initHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
