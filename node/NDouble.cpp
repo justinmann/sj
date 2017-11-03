@@ -2,7 +2,7 @@
 
 shared_ptr<CType> NDouble::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
-    return compiler->typeFloat;
+    return compiler->typeF64;
 }
 
 //shared_ptr<ReturnValue> NDouble::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
@@ -21,7 +21,7 @@ shared_ptr<CType> NDouble::getTypeImpl(Compiler* compiler, CResult& result, shar
 
 shared_ptr<CType> NDouble::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
 	trLine << value;
-	return compiler->typeFloat;
+	return compiler->typeF64;
 }
 
 void NDouble::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {

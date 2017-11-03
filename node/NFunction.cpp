@@ -1295,7 +1295,7 @@ shared_ptr<vector<pair<string, shared_ptr<CType>>>> CFunction::getCTypeList(Comp
 
         if (hasRefCount) {
             indexRefCount = ctypeList->size();
-            ctypeList->push_back(make_pair("_this", compiler->typeInt));
+            ctypeList->push_back(make_pair("_this", compiler->typePtr));
         }
 
         if (hasParent) {

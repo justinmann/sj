@@ -176,11 +176,16 @@ Compiler::Compiler() {
     //InitializeNativeTargetAsmPrinter();
     //InitializeNativeTargetAsmParser();
 
-	typeInt = make_shared<CType>("int", "0");
-	typeBool = make_shared<CType>("bool", "false");
-	typeFloat = make_shared<CType>("float", "0.0");
-	typeChar = make_shared<CType>("char", "'\0'");
-	typeVoid = make_shared<CType>("void", "");
+	typeI32 = make_shared<CType>("i32", "int32_t", "(int32_t)0");
+    typeI64 = make_shared<CType>("i64", "int64_t", "(int64_t)0");
+    typeU32 = make_shared<CType>("u32", "uint32_t", "(uint32_t)0");
+    typeU64 = make_shared<CType>("u64", "uint64_t", "(uint64_t)0");
+    typePtr = make_shared<CType>("ptr", "uintptr_t", "(uintptr_t)0");
+    typeF32 = make_shared<CType>("f32", "float", "0.0f");
+    typeF64 = make_shared<CType>("f64", "double", "0.0");
+	typeBool = make_shared<CType>("bool", "bool", "false");
+	typeChar = make_shared<CType>("char", "char", "'\0'");
+	typeVoid = make_shared<CType>("void", "void", "");
 }
 
 void Compiler::reset() {
@@ -387,7 +392,7 @@ std::string ReplaceAll(std::string str, const std::string& from, const std::stri
 }
 
 void CError::writeToStream(ostream& stream) {
-	stream << "ERROR:" << code << " " << ReplaceAll(*fileName, "\\", "/") << "[" << line << ":" << col << "] " << msg;
+    stream << "ERROR:" << code << " " << (fileName != nullptr ? ReplaceAll(*fileName, "\\", "/") : "unknown") << "[" << line << ":" << col << "] " << msg;
 }
 
 bool Compiler::transpile(const string& fileName, ostream& stream, ostream& errorStream) {
@@ -737,14 +742,24 @@ shared_ptr<CResult> Compiler::run(const string& code) {
 
 
 shared_ptr<CType> Compiler::getType(const string& name) const {
-    if (name == "int") {
-        return typeInt;
+    if (name == "i32") {
+        return typeI32;
+    } else if (name == "i64") {
+        return typeI64;
+    } else if (name == "u32") {
+        return typeU32;
+    } else if (name == "u64") {
+        return typeU64;
+    } else if (name == "f32") {
+        return typeF32;
+    } else if (name == "f64") {
+        return typeF64;
+    } else if (name == "ptr") {
+        return typePtr;
     } else if (name == "bool") {
         return typeBool;
     } else if (name == "char") {
         return typeChar;
-    } else if (name == "float") {
-        return typeFloat;
     } else if (name == "void") {
         return typeVoid;
     } else {

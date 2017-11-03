@@ -10,7 +10,7 @@ shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, CResult& result, shared_p
     node->getVar(compiler, result, thisFunction, thisVar);
     
     auto toType = thisFunction->getVarType(compiler, result, typeName);
-    if (toType->category == CTC_Interface) {
+    if (toType != nullptr && toType->category == CTC_Interface) {
         auto interface = static_pointer_cast<CInterface>(toType->parent.lock());
         interface->createThisVar(compiler, result, interfaceVar);
         return interfaceVar;
@@ -34,7 +34,8 @@ int NCast::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseF
 }
 
 shared_ptr<CType> NCast::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
-	trLine << "(" << typeName->getName() << ")(";
+    auto type = getType(compiler, result, thisFunction, thisVar);
+	trLine << "(" << type->nameRef << ")(";
 	node->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine);
 	trLine << ")";
 	return getType(compiler, result, thisFunction, thisVar);

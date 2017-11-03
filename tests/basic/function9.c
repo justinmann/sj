@@ -2,14 +2,14 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-int sjf_func(int x, int y);
-int sjf_global();
+int32_t sjf_func(int32_t x, int32_t y);
+int32_t sjf_global();
 
-int sjf_func(int x, int y) {
+int32_t sjf_func(int32_t x, int32_t y) {
     return (x) + (y);
 }
 
-int sjf_global() {
+int32_t sjf_global() {
     return sjf_func((2), (1));
 }
 

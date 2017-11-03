@@ -1,5 +1,5 @@
 class(
-	foo(x: 'int) {
+	foo(x: 'i32) {
 		if x > 0 {
 			bar(x - 1)
 		} else {

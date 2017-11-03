@@ -2,7 +2,7 @@
 
 shared_ptr<CType> NInteger::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
-    return compiler->typeInt;
+    return compiler->typeI32;
 }
 
 //shared_ptr<ReturnValue> NInteger::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
@@ -49,7 +49,7 @@ shared_ptr<CType> NInteger::transpile(Compiler* compiler, CResult& result, share
         trLine << v;
     }
     
-	return compiler->typeInt;
+	return compiler->typeI32;
 }
 
 void NInteger::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {

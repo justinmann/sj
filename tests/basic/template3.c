@@ -2,23 +2,23 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-int sjf_class_bool_float();
-int sjf_class_int_bool();
-int sjf_global();
+int32_t sjf_class_bool_f32();
+int32_t sjf_class_i32_bool();
+int32_t sjf_global();
 
-int sjf_class_bool_float() {
+int32_t sjf_class_bool_f32() {
     return 1;
 }
 
-int sjf_class_int_bool() {
+int32_t sjf_class_i32_bool() {
     return 1;
 }
 
-int sjf_global() {
-    int a;
-    int c;
-    a = sjf_class_int_bool();
-    return c = sjf_class_bool_float();
+int32_t sjf_global() {
+    int32_t a;
+    int32_t c;
+    a = sjf_class_i32_bool();
+    return c = sjf_class_bool_f32();
 }
 
 int main() {

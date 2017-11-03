@@ -2,34 +2,34 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-int sjf_global();
+int32_t sjf_global();
 
-int sjf_global() {
-    int ifResult1;
+int32_t sjf_global() {
+    int32_t ifResult1;
     if (false) {
         ifResult1 = 1;
     } else {
-        int ifResult2;
+        int32_t ifResult2;
         if (false) {
             ifResult2 = 2;
         } else {
-            int ifResult3;
+            int32_t ifResult3;
             if (false) {
                 ifResult3 = 2;
             } else {
-                int ifResult4;
+                int32_t ifResult4;
                 if (false) {
                     ifResult4 = 2;
                 } else {
-                    int ifResult5;
+                    int32_t ifResult5;
                     if (false) {
                         ifResult5 = 2;
                     } else {
-                        int ifResult6;
+                        int32_t ifResult6;
                         if (false) {
                             ifResult6 = 2;
                         } else {
-                            int ifResult7;
+                            int32_t ifResult7;
                             if (false) {
                                 ifResult7 = 2;
                             } else {

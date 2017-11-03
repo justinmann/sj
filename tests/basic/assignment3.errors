@@ -1,1 +1,1 @@
-ERROR:2 ./basic/assignment3.sj[1:1] returned type 'float' does not match explicit type 'int'
+ERROR:2 ./basic/assignment3.sj[1:1] returned type 'f64' does not match explicit type 'i32'

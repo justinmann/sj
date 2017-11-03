@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-float sjf_global();
+double sjf_global();
 
-float sjf_global() {
+double sjf_global() {
     return (4.0) + (5.0);
 }
 

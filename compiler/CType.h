@@ -31,7 +31,7 @@ enum CTypeCategory {
 
 class CType {
 public:
-    CType(const char* name, const char* defaultValue);
+    CType(const char* name, const char* cname, const char* defaultValue);
     CType(const char* name, weak_ptr<CFunction> parent);
     CType(const char* name, weak_ptr<CInterface> parent);
 

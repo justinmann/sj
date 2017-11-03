@@ -215,8 +215,13 @@ public:
 //    unique_ptr<DIBuilder> DBuilder;
 //#endif
     
-    shared_ptr<CType> typeInt;
-    shared_ptr<CType> typeFloat;
+    shared_ptr<CType> typeI32;
+    shared_ptr<CType> typeI64;
+    shared_ptr<CType> typeU32;
+    shared_ptr<CType> typeU64;
+    shared_ptr<CType> typePtr;
+    shared_ptr<CType> typeF32;
+    shared_ptr<CType> typeF64;
     shared_ptr<CType> typeBool;
     shared_ptr<CType> typeChar;
     shared_ptr<CType> typeVoid;

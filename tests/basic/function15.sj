@@ -1,1 +1,1 @@
-func(x: 'int) { x }; func(1)
+func(x: 'i32) { x }; func(1)

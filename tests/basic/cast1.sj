@@ -1,1 +1,1 @@
-5 as float
+5 as f32

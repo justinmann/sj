@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-int sjf_global();
+int32_t sjf_global();
 
-int sjf_global() {
+int32_t sjf_global() {
     return (4) + (5);
 }
 

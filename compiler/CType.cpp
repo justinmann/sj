@@ -8,7 +8,7 @@
 
 #include "../node/Node.h"
 
-CType::CType(const char* name, const char* defaultValue) : category(CTC_Value), name(name), nameValue(name), nameRef(name), _defaultValue(defaultValue) {
+CType::CType(const char* name, const char* cname, const char* defaultValue) : category(CTC_Value), name(name), nameValue(cname), nameRef(cname), _defaultValue(defaultValue) {
 }
 
 CType::CType(const char* name, weak_ptr<CFunction> parent) : category(CTC_Function), name(name), nameValue(string("sjs_") + name), nameRef(string("sjs_") + name + "*"), parent(parent) {

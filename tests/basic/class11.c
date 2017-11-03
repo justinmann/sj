@@ -5,12 +5,12 @@
 typedef struct td_sjs_class sjs_class;
 
 struct td_sjs_class {
-    int x;
+    int32_t x;
 };
 
 sjs_class* sjf_class(sjs_class* _this);
 sjs_class* sjf_func();
-int sjf_global();
+int32_t sjf_global();
 
 sjs_class* sjf_class(sjs_class* _this) {
     return _this;
@@ -23,7 +23,7 @@ sjs_class* sjf_func() {
     return sjf_class(sjv_temp1);
 }
 
-int sjf_global() {
+int32_t sjf_global() {
     return sjf_func()->x;
 }
 

@@ -1,5 +1,5 @@
 math(
-	sub(x: 'int, y: 'int) {
+	sub(x: 'i32, y: 'i32) {
 		x - y
 	}
 ) { this }

@@ -11,7 +11,7 @@ public:
     }
     
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result) {
-        return compiler->typeInt;
+        return compiler->typeI32;
     }
     
     //virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
@@ -95,13 +95,13 @@ int NFor::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFu
 }
 
 shared_ptr<CType> NFor::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
-    trBlock->variables[varName] = make_shared<TrVariable>(compiler->typeInt->nameRef, varName);
-    auto trLoopEndVar = trBlock->createTempVariable("loopEnd", compiler->typeInt->nameValue);
+    trBlock->variables[varName] = make_shared<TrVariable>(compiler->typeI32->nameRef, varName);
+    auto trLoopEndVar = trBlock->createTempVariable("loopEnd", compiler->typeI32->nameValue);
     
     stringstream loopCounterLine;
     loopCounterLine << varName << " = ";
     auto loopCounterType = start->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, loopCounterLine);
-    if (loopCounterType != compiler->typeInt) {
+    if (loopCounterType != compiler->typeI32) {
         result.addError(loc, CErrorCode::TypeMismatch, "start value must be a int");
         return nullptr;
     }
@@ -110,7 +110,7 @@ shared_ptr<CType> NFor::transpile(Compiler* compiler, CResult& result, shared_pt
     stringstream loopEndLine;
     loopEndLine << trLoopEndVar->name << " = ";
     auto loopEndType = end->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, loopEndLine);
-    if (loopEndType != compiler->typeInt) {
+    if (loopEndType != compiler->typeI32) {
         result.addError(loc, CErrorCode::TypeMismatch, "end value must be a int");
         return nullptr;
     }

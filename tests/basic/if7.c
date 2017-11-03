@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-float sjf_global();
+double sjf_global();
 
-float sjf_global() {
-    float ifResult1;
+double sjf_global() {
+    double ifResult1;
     if (false) {
         ifResult1 = 1;
     } else {

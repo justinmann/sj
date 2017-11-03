@@ -8,20 +8,20 @@ struct td_sjs_class {
 };
 
 sjs_class* sjf_class(sjs_class* _this);
-int sjf_class_bar(int x);
-int sjf_class_foo(int x);
-int sjf_global();
+int32_t sjf_class_bar(int32_t x);
+int32_t sjf_class_foo(int32_t x);
+int32_t sjf_global();
 
 sjs_class* sjf_class(sjs_class* _this) {
     return _this;
 }
 
-int sjf_class_bar(int x) {
+int32_t sjf_class_bar(int32_t x) {
     return sjf_class_foo((x));
 }
 
-int sjf_class_foo(int x) {
-    int ifResult1;
+int32_t sjf_class_foo(int32_t x) {
+    int32_t ifResult1;
     if ((x) > (0)) {
         ifResult1 = sjf_class_bar(((x) - (1)));
     } else {
@@ -30,7 +30,7 @@ int sjf_class_foo(int x) {
     return ifResult1;
 }
 
-int sjf_global() {
+int32_t sjf_global() {
     sjs_class* c;
     sjs_class sjd_temp1;
     sjs_class* sjv_temp1;

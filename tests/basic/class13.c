@@ -13,22 +13,22 @@ struct td_sjs_math {
 };
 
 sjs_class* sjf_class(sjs_class* _this);
-int sjf_class_bar(sjs_class* _parent, int x);
-int sjf_class_foo(sjs_class* _parent, int x);
-int sjf_global();
+int32_t sjf_class_bar(sjs_class* _parent, int32_t x);
+int32_t sjf_class_foo(sjs_class* _parent, int32_t x);
+int32_t sjf_global();
 sjs_math* sjf_math(sjs_math* _this);
-int sjf_math_sub(int x, int y);
+int32_t sjf_math_sub(int32_t x, int32_t y);
 
 sjs_class* sjf_class(sjs_class* _this) {
     return _this;
 }
 
-int sjf_class_bar(sjs_class* _parent, int x) {
+int32_t sjf_class_bar(sjs_class* _parent, int32_t x) {
     return sjf_class_foo((_parent), (x));
 }
 
-int sjf_class_foo(sjs_class* _parent, int x) {
-    int ifResult1;
+int32_t sjf_class_foo(sjs_class* _parent, int32_t x) {
+    int32_t ifResult1;
     if ((x) > (0)) {
         ifResult1 = sjf_class_bar((_parent), (sjf_math_sub((x), (1))));
     } else {
@@ -37,7 +37,7 @@ int sjf_class_foo(sjs_class* _parent, int x) {
     return ifResult1;
 }
 
-int sjf_global() {
+int32_t sjf_global() {
     sjs_class* c;
     sjs_math sjd_temp1;
     sjs_class sjd_temp2;
@@ -54,7 +54,7 @@ sjs_math* sjf_math(sjs_math* _this) {
     return _this;
 }
 
-int sjf_math_sub(int x, int y) {
+int32_t sjf_math_sub(int32_t x, int32_t y) {
     return (x) - (y);
 }
 

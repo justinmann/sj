@@ -402,7 +402,7 @@ int NCall::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseF
         }
         
         auto parameterType = parameterVar->getType(compiler, result);
-        if (!parameterType->parent.expired() && !parameterType->parent.lock()->getHasThis()) {
+        if (parameterType != nullptr && !parameterType->parent.expired() && !parameterType->parent.lock()->getHasThis()) {
             parameterType->parent.lock()->setHasRefCount();
         }
         

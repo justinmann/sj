@@ -1,4 +1,4 @@
 class!t() { 1 }
-a: class!int()
-b: class!float()
+a: class!i32()
+b: class!f32()
 c: class!bool()

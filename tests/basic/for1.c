@@ -5,8 +5,8 @@
 void sjf_global();
 
 void sjf_global() {
-    int loopEnd1;
-    int x;
+    int32_t loopEnd1;
+    int32_t x;
     x = 1;
     loopEnd1 = 10;
     while (x <= loopEnd1) {

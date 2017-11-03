@@ -2,18 +2,18 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-int sjf_global();
+int32_t sjf_global();
 
-int sjf_global() {
-    int ifResult1;
+int32_t sjf_global() {
+    int32_t ifResult1;
     if (false) {
         ifResult1 = 1;
     } else {
-        int ifResult2;
+        int32_t ifResult2;
         if (true) {
             ifResult2 = 2;
         } else {
-            ifResult2 = 0;
+            ifResult2 = (int32_t)0;
         }
         ifResult1 = ifResult2;
     }

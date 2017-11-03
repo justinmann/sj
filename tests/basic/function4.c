@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-float sjf_func();
+double sjf_func();
 bool sjf_global();
 
-float sjf_func() {
+double sjf_func() {
     return -3.0;
 }
 

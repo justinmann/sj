@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-int sjf_global();
+int64_t sjf_global();
 
-int sjf_global() {
-    return (int)(5.0);
+int64_t sjf_global() {
+    return (int64_t)(5.0);
 }
 
 int main() {

@@ -2,23 +2,23 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-int sjf_class_float_func();
-int sjf_class_func_int();
-int sjf_global();
+int32_t sjf_class_f32_func();
+int32_t sjf_class_func_i32();
+int32_t sjf_global();
 
-int sjf_class_float_func() {
+int32_t sjf_class_f32_func() {
     return 1;
 }
 
-int sjf_class_func_int() {
+int32_t sjf_class_func_i32() {
     return 1;
 }
 
-int sjf_global() {
-    int b;
-    int d;
-    b = sjf_class_float_func();
-    return d = sjf_class_func_int();
+int32_t sjf_global() {
+    int32_t b;
+    int32_t d;
+    b = sjf_class_f32_func();
+    return d = sjf_class_func_i32();
 }
 
 int main() {

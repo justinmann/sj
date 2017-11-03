@@ -22,7 +22,7 @@ shared_ptr<CType> NMathAssignment::getTypeImpl(Compiler* compiler, CResult& resu
     assert(compiler->state >= CompilerState::FixVar);
     auto cvar = var->getVar(compiler, result, thisFunction, thisVar, nullptr);
     auto ctype = cvar->getType(compiler, result);
-    if (ctype != compiler->typeInt) {
+    if (ctype != compiler->typeI32 && ctype != compiler->typeI64 && ctype != compiler->typeU32 && ctype != compiler->typeU64) {
         result.addError(loc, CErrorCode::TypeMismatch, "operation only valid on int");
         return nullptr;
     }

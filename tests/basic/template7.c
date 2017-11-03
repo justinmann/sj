@@ -2,24 +2,24 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-typedef struct td_sjs_class_int sjs_class_int;
+typedef struct td_sjs_class_i32 sjs_class_i32;
 
-struct td_sjs_class_int {
+struct td_sjs_class_i32 {
 };
 
-sjs_class_int* sjf_class_int(sjs_class_int* _this);
-int sjf_global();
+sjs_class_i32* sjf_class_i32(sjs_class_i32* _this);
+int32_t sjf_global();
 
-sjs_class_int* sjf_class_int(sjs_class_int* _this) {
+sjs_class_i32* sjf_class_i32(sjs_class_i32* _this) {
     return _this;
 }
 
-int sjf_global() {
-    sjs_class_int* c;
-    sjs_class_int sjd_temp1;
-    sjs_class_int* sjv_temp1;
+int32_t sjf_global() {
+    sjs_class_i32* c;
+    sjs_class_i32 sjd_temp1;
+    sjs_class_i32* sjv_temp1;
     sjv_temp1 = &sjd_temp1;
-    c = sjf_class_int(sjv_temp1);
+    c = sjf_class_i32(sjv_temp1);
     return 1;
 }
 

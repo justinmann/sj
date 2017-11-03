@@ -79,7 +79,10 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler *compiler, CResult &result, shar
         cfunction = dotVar->getCFunctionForValue(compiler, result);
     }
     
-    return cfunction->getCVar(compiler, result, name);
+    if (cfunction) {
+        return cfunction->getCVar(compiler, result, name);
+    }
+    return nullptr;
 }
 
 int NVariable::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar) {

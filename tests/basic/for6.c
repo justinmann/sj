@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-int sjf_global();
+int32_t sjf_global();
 
-int sjf_global() {
-    int loopEnd1;
-    int x;
-    int y;
+int32_t sjf_global() {
+    int32_t loopEnd1;
+    int32_t x;
+    int32_t y;
     y = 0;
     x = 2;
     loopEnd1 = 1;

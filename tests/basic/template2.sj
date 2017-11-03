@@ -1,5 +1,5 @@
 class!t(
     x:'t
 ) { this }
-c: class!int(1)
+c: class!i32(1)
 c.x

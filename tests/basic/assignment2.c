@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-int sjf_global();
+int64_t sjf_global();
 
-int sjf_global() {
-    int x;
-    return x = 1;
+int64_t sjf_global() {
+    int64_t x;
+    return x = (int64_t)(1);
 }
 
 int main() {

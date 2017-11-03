@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-int sjf_global();
+int32_t sjf_global();
 
-int sjf_global() {
-    int x;
+int32_t sjf_global() {
+    int32_t x;
     x = 10;
     while ((x) > (0)) {
         x = (x) - (1);
