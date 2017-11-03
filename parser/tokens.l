@@ -41,7 +41,9 @@ int count_lines(const char* s, const int len) {
 
 %%
 
-"c{"(.|\n)*"}c"	  			SAVE_LOC; yylval->string = new std::string(yytext + 2, yyleng - 4); return TCCODE;
+"c{"([^\}]|\}+[^\}c])*"}c" SAVE_LOC; yylval->string = new std::string(yytext + 2, yyleng - 4); return TCCODE;
+"/*"([^*]|\*+[^*/])*\*+"/"	yyg->yyextra_r.l += count_lines(yytext, yyleng); TOKEN_VAL(TEND);
+"//"[^\n]*((\n))		yyg->yyextra_r.l++; yyg->yyextra_r.c = 0; TOKEN_VAL(TEND);
 "as"					TOKEN_VAL(TAS);
 "throw"					TOKEN_VAL(TTHROW);
 "catch"					TOKEN_VAL(TCATCH);
@@ -70,8 +72,6 @@ int count_lines(const char* s, const int len) {
 "'\''"					yyg->yyextra_r.l += count_lines(yytext, yyleng); SAVE_LOC; yylval->string = new std::string(yytext + 1, yyleng - 2); return TCHAR;
 "'"([^'])"'"			yyg->yyextra_r.l += count_lines(yytext, yyleng); SAVE_LOC; yylval->string = new std::string(yytext + 1, yyleng - 2); return TCHAR;
 \"(\\.|[^\"])*\"		yyg->yyextra_r.l += count_lines(yytext, yyleng); SAVE_LOC; yylval->string = new std::string(yytext + 1, yyleng - 2); return TSTRING;
-"/*"([^*]|\*+[^*/])*\*+"/"	yyg->yyextra_r.l += count_lines(yytext, yyleng); TOKEN_VAL(TEND);
-"//"[^\n]*((\n))		yyg->yyextra_r.l++; yyg->yyextra_r.c = 0; TOKEN_VAL(TEND);
 "!"						TOKEN_VAL(TEXCLAIM);
 "["						TOKEN_VAL(TLBRACKET);
 "]"						TOKEN_VAL(TRBRACKET);

@@ -1,7 +1,8 @@
-* @hasThis annotation
-* @hasParent annotation
 * release objects
 * invoke destroy block in release
+
+* @hasThis annotation
+* @hasParent annotation
 * heap type for variable
 * template type string replace in c block
 

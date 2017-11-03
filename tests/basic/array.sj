@@ -1,22 +1,22 @@
-@hasThis
-array't (
+// @hasThis
+array!t (
 	count = 0
 	_size = 0
 	_data = 0 as ptr
 
-	@hasParent
-	get(index : 'i32)'heap t c{
+//	@hasParent
+	get(index : 'i32)'t c{
 		if (index >= count || index < 0) {
 			exit(-1);
 		}
 
 		#t#* p = _parent->data;
 		#t# val = p[index];
-		return val;
+		return val;		
 	}c
 
-	@hasParent
-	set(index : 'i32, item : 'heap t)'void c{
+//	@hasParent
+	set(index : 'i32, item : 't)'void c{
 		if (index >= count || index < 0) {
 			exit(-1);
 		}
@@ -27,8 +27,8 @@ array't (
 		p[index] = item;
 	}c
 
-	@hasParent
-	find(item : 'heap t)'i32 c{	
+//	@hasParent
+	find(item : 't)'i32 c{	
 		##t* p = _parent->data;
 		for (int index = 0; index < count; i++) {
 			if (p[index] == item) {
@@ -40,7 +40,7 @@ array't (
 
 	getSize() { _size }
 
-	@hasParent
+//	@hasParent
 	setSize(x : 'i32) c{
 		if (x < 0) {
 			exit(-1);
@@ -60,11 +60,7 @@ array't (
 ) { 
 	setSize(count)
 	this 
-} destroy c{
-	if (_this->sjv_data != 0) { 
-		free(_this->sjv_data);
-	}
-}c
+}
 
 class(
 	bob : 1
@@ -72,6 +68,6 @@ class(
 	this
 }
 
-a : array'class(count = 2)
+a : array!class(count = 2)
 a.set(0, class(bob : 1))
 a.set(1, class(bob : 2))
