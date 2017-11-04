@@ -161,6 +161,7 @@
     <ClInclude Include="..\node\NBool.h" />
     <ClInclude Include="..\node\NCall.h" />
     <ClInclude Include="..\node\NCast.h" />
+    <ClInclude Include="..\node\NCCode.h" />
     <ClInclude Include="..\node\NChar.h" />
     <ClInclude Include="..\node\NCompare.h" />
     <ClInclude Include="..\node\NDot.h" />
@@ -207,6 +208,7 @@
     <ClCompile Include="..\node\NBool.cpp" />
     <ClCompile Include="..\node\NCall.cpp" />
     <ClCompile Include="..\node\NCast.cpp" />
+    <ClCompile Include="..\node\NCCode.cpp" />
     <ClCompile Include="..\node\NChar.cpp" />
     <ClCompile Include="..\node\NCompare.cpp" />
     <ClCompile Include="..\node\NDot.cpp" />
