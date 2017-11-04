@@ -1,6 +1,7 @@
+#include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 typedef struct td_sjs_anon_0 sjs_anon_0;
 typedef struct td_sjs_class sjs_class;

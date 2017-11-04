@@ -1,9 +1,10 @@
 #include "../compiler/Compiler.h"
 
 void TrOutput::writeToStream(ostream& stream) {
+    stream << "#include <stdbool.h>\n";
+    stream << "#include <stdint.h>\n";
     stream << "#include <stdio.h>\n";
     stream << "#include <stdlib.h>\n";
-    stream << "#include <stdbool.h>\n";
     stream << "\n";
     
 	if (structs.size() > 0) {
