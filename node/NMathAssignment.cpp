@@ -37,7 +37,7 @@ int NMathAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_
     return count;
 }
 
-shared_ptr<CType> NMathAssignment::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
+shared_ptr<ReturnValue> NMathAssignment::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
 	auto cvar = var->getVar(compiler, result, thisFunction, thisVar, nullptr);
 	if (!cvar) {
 		return nullptr;
@@ -67,7 +67,7 @@ shared_ptr<CType> NMathAssignment::transpile(Compiler* compiler, CResult& result
 
 	if (rightSide) {
 		auto rightType = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine);
-		if (leftType != rightType) {
+		if (leftType->type != rightType->type) {
 			result.addError(loc, CErrorCode::TypeMismatch, "left and right values are not the same type");
 			return nullptr;
 		}

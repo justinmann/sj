@@ -20,7 +20,7 @@ shared_ptr<CType> NInterfaceMethod::getTypeImpl(Compiler* compiler, CResult& res
 //    return nullptr;
 //}
 
-shared_ptr<CType> NInterfaceMethod::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
+shared_ptr<ReturnValue> NInterfaceMethod::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
 	assert(false);
 	return nullptr;
 }
@@ -87,7 +87,7 @@ int CInterfaceMethodReturnVar::setHeapVar(Compiler* compiler, CResult& result, s
     return 0;
 }
 
-shared_ptr<CType> CInterfaceMethodReturnVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine, shared_ptr<CVar> dotVar) {
+shared_ptr<ReturnValue> CInterfaceMethodReturnVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine, shared_ptr<CVar> dotVar) {
     assert(false);
 	return nullptr;
 }
@@ -133,7 +133,7 @@ int CInterfaceMethodArgVar::setHeapVar(Compiler* compiler, CResult& result, shar
     return 0;
 }
 
-shared_ptr<CType> CInterfaceMethodArgVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine, shared_ptr<CVar> dotVar) {
+shared_ptr<ReturnValue> CInterfaceMethodArgVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine, shared_ptr<CVar> dotVar) {
     assert(false);
 	return nullptr;
 }
@@ -256,7 +256,7 @@ string CInterfaceMethod::getCDestroyFunctionName() {
     return "";
 }
 
-shared_ptr<CType> CInterfaceMethod::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine, shared_ptr<CVar> calleeVar, vector<shared_ptr<NBase>>& parameters) {
+shared_ptr<ReturnValue> CInterfaceMethod::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine, shared_ptr<CVar> calleeVar, vector<shared_ptr<NBase>>& parameters) {
     assert(false);
     return nullptr;
 }
@@ -272,7 +272,7 @@ shared_ptr<CType> CInterfaceMethod::transpile(Compiler* compiler, CResult& resul
 //    // Add "parent" to "this"
 //    assert(dotVar);
 //    assert(getHasParent(compiler, result));
-//    auto dotReturnValue = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB, RRT_Auto);
+//    auto dotshared_ptr<ReturnValue> = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB, RRT_Auto);
 //    auto interfaceValue = dotReturnValue->value;
 //    auto parentValuePtr = builder->CreateStructGEP(interfaceType, interfaceValue, 0);
 //    auto parentValue = builder->CreateLoad(parentValuePtr);
@@ -297,14 +297,14 @@ shared_ptr<CType> CInterfaceMethod::transpile(Compiler* compiler, CResult& resul
 //                auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
 //                assert(paramHeapVar == argHeapVar);
 //            }
-//            argReturnValue = parameters[argIndex]->compile(compiler, result, shared_from_this(), calleeVar, nullptr, builder, catchBB, RRT_Auto);
+//            argshared_ptr<ReturnValue> = parameters[argIndex]->compile(compiler, result, shared_from_this(), calleeVar, nullptr, builder, catchBB, RRT_Auto);
 //        } else {
 //            auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), thisVar);
 //            if (paramVar) {
 //                auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
 //                assert(paramHeapVar == argHeapVar);
 //            }
-//            argReturnValue = parameters[argIndex]->compile(compiler, result, shared_from_this(), thisVar, thisValue, builder, catchBB, RRT_Auto);
+//            argshared_ptr<ReturnValue> = parameters[argIndex]->compile(compiler, result, shared_from_this(), thisVar, thisValue, builder, catchBB, RRT_Auto);
 //        }
 //        
 //        if (!argReturnValue) {

@@ -60,10 +60,9 @@ string CParentVar::fullName() {
     return childVar->fullName();
 }
 
-shared_ptr<CType> CParentVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine, shared_ptr<CVar> dotVar) {
+shared_ptr<ReturnValue> CParentVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine, shared_ptr<CVar> dotVar) {
 	trLine << "_parent->";
-    childVar->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine, dotVar);
-	return getType(compiler, result);
+    return childVar->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine, dotVar);
 }
 
 void CParentVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

@@ -1,11 +1,35 @@
 * retain on assign
+* release on each statement in block
+* handle retain/release for local alloc
+	func() {
+		class()
+		// retain and return with mustRelease
+	}
 
 * @hasThis annotation
 * @hasParent annotation
 * heap type for variable
 * template type string replace in c block
 
-* [x] -> getAt(x)
-* [x] = y -> setAt(x, y)
-* a.x -> getX()
-* a.x = y -> setX(y)
+* operators
+	[x] 		-> getAt(x)
+	[x] = y 	-> setAt(x, y)
+	a.x 		-> getX()
+	a.x = y 	-> setX(y)
+	a * b 		-> a.multiply(b)
+	a / b 		-> a.divide(b)
+	a + b 		-> a.add(b)
+	a - b 		-> a.subtract(b)
+	a *= b 		-> a = a.add(b)
+	a /= b 		-> a = a.divide(b)
+	a += b 		-> a = a.add(b)
+	a -= b 		-> a = a.subtract(b)
+	a < b 		-> a.isLess(b)
+	a <= b 		-> a.isLessOrEqual(b)
+	a > b 		-> a.isGreater(b)
+	a >= b 		-> a.isGreaterOrEqual(b)
+	a == b 		-> a.isEqual(b)
+	a as type	-> a.asType()'t
+
+* interface
+* lambda

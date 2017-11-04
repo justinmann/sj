@@ -84,7 +84,7 @@ int NCompare::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBa
 //    return nullptr;
 //}
 
-shared_ptr<CType> NCompare::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
+shared_ptr<ReturnValue> NCompare::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
     stringstream leftLine;
     leftSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, leftLine);
     stringstream rightLine;
@@ -112,7 +112,7 @@ shared_ptr<CType> NCompare::transpile(Compiler* compiler, CResult& result, share
 		break;
 	}
 	trLine << "(" << rightLine.str() << ")";
-	return compiler->typeBool;
+	return make_shared<ReturnValue>(compiler->typeBool, RVR_MustRetain);
 }
 
 void NCompare::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {

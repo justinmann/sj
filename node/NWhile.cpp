@@ -24,11 +24,11 @@ int NWhile::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBase
     return count;
 }
 
-shared_ptr<CType> NWhile::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
+shared_ptr<ReturnValue> NWhile::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
     stringstream whileLine;
     whileLine << "while (";
     auto condType = cond->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, whileLine);
-    if (condType != compiler->typeBool) {
+    if (condType->type != compiler->typeBool) {
         result.addError(loc, CErrorCode::TypeMismatch, "condition for while must be a bool");
         return nullptr;
     }
@@ -43,7 +43,7 @@ shared_ptr<CType> NWhile::transpile(Compiler* compiler, CResult& result, shared_
     
     trBlock->statements.push_back(TrStatement(whileLine.str(), trWhileBlock));
     
-    return compiler->typeVoid;
+    return make_shared<ReturnValue>(compiler->typeVoid, RVR_MustRetain);
 }
 
 //shared_ptr<ReturnValue> NWhile::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
