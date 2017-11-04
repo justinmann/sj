@@ -1,5 +1,6 @@
-* release objects
-* invoke destroy block in release
+* retain on assign
+* init _refCount
+* remove free from destroy block
 
 * @hasThis annotation
 * @hasParent annotation

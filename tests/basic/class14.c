@@ -30,6 +30,7 @@ int32_t sjf_global() {
     sjs_class sjd_temp1;
     sjs_class* sjv_temp1;
     sjv_temp1 = &sjd_temp1;
+    sjf_class_destroy(sjv_temp1);
     return sjf_class(sjv_temp1);
 }
 

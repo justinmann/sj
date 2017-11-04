@@ -420,13 +420,13 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
             definition << ")";
             trFunctionBlock->definition = definition.str();
             
-            stringstream returnLine;
-            auto returnType = block->transpile(compiler, result, shared_from_this(), nullptr, trOutput, trFunctionBlock.get(), returnLine);
-            if (returnLine.str().size() > 0) {
+            stringstream lastLine;
+            auto returnType = block->transpile(compiler, result, shared_from_this(), nullptr, trOutput, trFunctionBlock.get(), lastLine);
+            if (lastLine.str().size() > 0) {
                 if (returnType != compiler->typeVoid) {
-                    trFunctionBlock->statements.push_back("return " + returnLine.str());
+                    trFunctionBlock->returnLine = lastLine.str();
                 } else {
-                    trFunctionBlock->statements.push_back(returnLine.str());
+                    trFunctionBlock->statements.push_back(lastLine.str());
                 }
             }
         }
@@ -505,14 +505,13 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
 			functionDefinition << returnType->nameRef << " " << functionName << "(" << structName << "* _this)";
 			trFunctionBlock->definition = functionDefinition.str();
 
-			stringstream returnLine;
-
-			auto returnType = block->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trFunctionBlock.get(), returnLine);
-			if (returnLine.str().size() > 0) {
+			stringstream lastLine;
+			auto returnType = block->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trFunctionBlock.get(), lastLine);
+			if (lastLine.str().size() > 0) {
                 if (returnType != compiler->typeVoid) {
-                    trFunctionBlock->statements.push_back("return " + returnLine.str());
+                    trFunctionBlock->returnLine = lastLine.str();
                 } else {
-                    trFunctionBlock->statements.push_back(returnLine.str());
+                    trFunctionBlock->statements.push_back(lastLine.str());
                 }
 			}
 		}
@@ -571,13 +570,14 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
         trLine.clear();
 
         // Initialize "this"
-        auto objectRef = trBlock->createTempVariable("sjv_temp", thisType->nameRef);
-        if (calleeVar->getHeapVar(compiler, result, thisVar)) {
+        auto objectHeapVar = calleeVar->getHeapVar(compiler, result, thisVar);
+        auto objectRef = trBlock->createTempVariable("sjv_temp", thisType->nameRef, objectHeapVar ? TRM_RELEASE : TRM_STACKDESTROY, functionDestroyName);
+        if (objectHeapVar) {
             stringstream initLine;
             initLine << objectRef->name << " = (" << structName << "*)malloc(sizeof(" << structName << "))";
             trBlock->statements.push_back(TrStatement(initLine.str()));
         } else {
-            auto objectVal = trBlock->createTempVariable("sjd_temp", thisType->nameValue);
+            auto objectVal = trBlock->createTempVariable("sjd_temp", thisType->nameValue, TRM_DONOTHING, "");
             stringstream initLine;
             initLine << objectRef->name << " = &" << objectVal->name;
             trBlock->statements.push_back(TrStatement(initLine.str()));

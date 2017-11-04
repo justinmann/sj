@@ -191,7 +191,10 @@ shared_ptr<CType> NIf::transpile(Compiler* compiler, CResult& result, shared_ptr
 	auto type = getType(compiler, result, thisFunction, thisVar);
     shared_ptr<TrVariable> trResultVar;
     if (type != compiler->typeVoid) {
-        trResultVar = trBlock->createTempVariable("ifResult", type->nameRef);
+        auto resultVar = getVar(compiler, result, thisFunction, thisVar, nullptr);
+        auto resultHeapVar = resultVar->getHeapVar(compiler, result, thisVar);
+        auto resultFunction = resultVar->getCFunctionForValue(compiler, result);
+        trResultVar = trBlock->createTempVariable("ifResult", type->nameRef, resultHeapVar ? TRM_RELEASE : TRM_DONOTHING, resultFunction ? resultFunction->getCDestroyFunctionName() : "");
     }
 
 	stringstream ifLine;

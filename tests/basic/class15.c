@@ -59,6 +59,10 @@ int32_t sjf_class_foo(sjs_class* _parent, int32_t x) {
     } else {
         ifResult1 = 0;
     }
+    ifResult1->_refCount--;
+    if (ifResult1->_refCount == 0) {
+        free(ifResult1);
+    }
     return ifResult1;
 }
 
@@ -72,6 +76,12 @@ int32_t sjf_global(sjs_global* _this) {
     _this->math = sjf_anon_0(sjv_temp1);
     sjv_temp2 = &sjd_temp1;
     c = sjf_class(sjv_temp2);
+    sjv_temp1->_refCount--;
+    if (sjv_temp1->_refCount == 0) {
+        sjf_anon_0_destroy(sjv_temp1);
+        free(sjv_temp1);
+    }
+    sjf_class_destroy(sjv_temp2);
     return sjf_class_foo((c), (4));
 }
 
@@ -84,5 +94,6 @@ int main() {
     sjs_global* sjv_temp3;
     sjv_temp3 = &sjd_temp2;
     sjf_global(sjv_temp3);
+    sjf_global_destroy(sjv_temp3);
     return 0;
 }

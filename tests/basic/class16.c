@@ -55,6 +55,8 @@ int32_t sjf_global() {
     a = sjf_a(sjv_temp2);
     sjf_a_aa_c((a->b));
     d = a->b;
+    sjf_a_aa_destroy(sjv_temp1);
+    sjf_a_destroy(sjv_temp2);
     return sjf_a_aa_c((d));
 }
 

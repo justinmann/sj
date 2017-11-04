@@ -32,6 +32,10 @@ int32_t sjf_class_foo(int32_t x) {
     } else {
         ifResult1 = 0;
     }
+    ifResult1->_refCount--;
+    if (ifResult1->_refCount == 0) {
+        free(ifResult1);
+    }
     return ifResult1;
 }
 
@@ -41,6 +45,7 @@ int32_t sjf_global() {
     sjs_class* sjv_temp1;
     sjv_temp1 = &sjd_temp1;
     c = sjf_class(sjv_temp1);
+    sjf_class_destroy(sjv_temp1);
     return sjf_class_foo((4));
 }
 

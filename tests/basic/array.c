@@ -93,6 +93,13 @@ void sjf_global() {
     sjv_temp3 = &sjd_temp2;
     sjv_temp3->bob = 2;
     sjf_array_class_set((1), (sjf_class(sjv_temp3)));
+    sjf_array_class_destroy(sjv_temp1);
+    sjv_temp2->_refCount--;
+    if (sjv_temp2->_refCount == 0) {
+        sjf_class_destroy(sjv_temp2);
+        free(sjv_temp2);
+    }
+    sjf_class_destroy(sjv_temp3);
 }
 
 int main() {

@@ -148,7 +148,11 @@ shared_ptr<CType> NAssignment::transpile(Compiler* compiler, CResult& result, sh
     if (_assignVar->mode == Var_Local) {
         auto var = trBlock->getVariable(_assignVar->name);
         if (!var) {
-            var = trBlock->createVariable(_assignVar->name, ctype->nameRef);
+            auto assignVarFunction = _assignVar->getCFunctionForValue(compiler, result);
+            var = trBlock->createVariable(
+                _assignVar->name, ctype->nameRef, 
+                assignVarFunction && _assignVar->getHeapVar(compiler, result, thisVar) ? TRM_RELEASE : TRM_DONOTHING,
+                assignVarFunction ? assignVarFunction->getCDestroyFunctionName() : "");
         } else {
             if (!isMutable) {
                 result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var");
