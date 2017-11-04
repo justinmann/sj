@@ -22,7 +22,6 @@ sjs_class* sjf_class(sjs_class* _this) {
 }
 
 void sjf_class_destroy(sjs_class* _this) {
-    free(_this);
 }
 
 sjs_class* sjf_func() {

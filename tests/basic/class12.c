@@ -28,7 +28,6 @@ int32_t sjf_class_bar(int32_t x) {
 }
 
 void sjf_class_destroy(sjs_class* _this) {
-    free(_this);
 }
 
 int32_t sjf_class_foo(int32_t x) {

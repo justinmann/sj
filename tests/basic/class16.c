@@ -43,11 +43,10 @@ int32_t sjf_a_aa_c(sjs_aa* _parent) {
 }
 
 void sjf_a_aa_destroy(sjs_aa* _this) {
-    free(_this);
 }
 
 void sjf_a_destroy(sjs_a* _this) {
-    free(_this);
+    sjf_a_aa_destroy(_this->b);
 }
 
 int32_t sjf_global() {

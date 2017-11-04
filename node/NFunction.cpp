@@ -547,28 +547,32 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
             for (auto argVar : argVars) {
                 auto argHeapVar = argVar->getHeapVar(compiler, result, thisVar);
                 auto argFunction = argVar->getCFunctionForValue(compiler, result);
-                if (argHeapVar && argFunction) {
-                    shared_ptr<TrBlock> trFreeVarBlock = make_shared<TrBlock>();
-                    stringstream ifArgNullStream;
-                    ifArgNullStream << "if (_this->" << argVar->name << " != 0)";
-                    trDestroyBlock->statements.push_back(TrStatement(ifArgNullStream.str(), trFreeVarBlock));
+                if (argFunction) {
+                    if (argHeapVar) {
+                        stringstream releaseStream;
+                        releaseStream << "_this->" << argVar->name << "->_refCount--";
+                        trDestroyBlock->statements.push_back(releaseStream.str());
 
-                    stringstream releaseStream;
-                    releaseStream << "_this->" << argVar->name << "->_refCount--";
-                    trFreeVarBlock->statements.push_back(releaseStream.str());
+                        shared_ptr<TrBlock> trDestroyVarBlock = make_shared<TrBlock>();
+                        stringstream ifArgFreeStream;
+                        ifArgFreeStream << "if (_this->" << argVar->name << "->_refCount <= 0)";
+                        trDestroyBlock->statements.push_back(TrStatement(ifArgFreeStream.str(), trDestroyVarBlock));
 
-                    shared_ptr<TrBlock> trDestroyVarBlock = make_shared<TrBlock>();
-                    stringstream ifArgFreeStream;
-                    ifArgFreeStream << "if (_this->" << argVar->name << "->_refCount <= 0)";
-                    trFreeVarBlock->statements.push_back(TrStatement(ifArgFreeStream.str(), trDestroyVarBlock));
+                        stringstream destroyStream;
+                        destroyStream << argFunction->getCDestroyFunctionName() << "(" << "_this->" << argVar->name << ")";
+                        trDestroyVarBlock->statements.push_back(destroyStream.str());
 
-                    stringstream destroyStream;
-                    destroyStream << argFunction->getCDestroyFunctionName() << "(" << "_this->" << argVar->name << ")";
-                    trDestroyVarBlock->statements.push_back(destroyStream.str());
+                        stringstream freeStream;
+                        freeStream << "free(" << "_this->" << argVar->name << ")";
+                        trDestroyVarBlock->statements.push_back(freeStream.str());
+                    }
+                    else {
+                        stringstream destroyStream;
+                        destroyStream << argFunction->getCDestroyFunctionName() << "(" << "_this->" << argVar->name << ")";
+                        trDestroyBlock->statements.push_back(destroyStream.str());
+                    }
                 }
             }
-
-            trDestroyBlock->statements.push_back(string("free(_this)"));
         }
 
         // Get parent from the current line string

@@ -37,7 +37,6 @@ void sjf_array_class_destroy(sjs_array_class* _this) {
     
 	free((##t)_this->_data);	
 ;
-    free(_this);
 }
 
 void sjf_array_class_set(int32_t index, sjs_class* item) {
@@ -79,7 +78,6 @@ sjs_class* sjf_class(sjs_class* _this) {
 }
 
 void sjf_class_destroy(sjs_class* _this) {
-    free(_this);
 }
 
 void sjf_global() {

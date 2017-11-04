@@ -39,7 +39,6 @@ sjs_anon_0* sjf_anon_0(sjs_anon_0* _this) {
 }
 
 void sjf_anon_0_destroy(sjs_anon_0* _this) {
-    free(_this);
 }
 
 int32_t sjf_anon_0_sub(sjs_anon_0* _parent, int32_t x, int32_t y) {
@@ -61,7 +60,6 @@ int32_t sjf_class_bar(sjs_class* _parent, int32_t x) {
 }
 
 void sjf_class_destroy(sjs_class* _this) {
-    free(_this);
 }
 
 int32_t sjf_class_foo(sjs_class* _parent, int32_t x) {
@@ -100,7 +98,6 @@ int32_t sjf_global(sjs_global* _this) {
 }
 
 void sjf_global_destroy(sjs_global* _this) {
-    free(_this);
 }
 
 int main() {

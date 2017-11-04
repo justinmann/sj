@@ -37,7 +37,7 @@ int32_t sjf_class_bar(sjs_class* _parent, int32_t x) {
 }
 
 void sjf_class_destroy(sjs_class* _this) {
-    free(_this);
+    sjf_math_destroy(_this->m);
 }
 
 int32_t sjf_class_foo(sjs_class* _parent, int32_t x) {
@@ -78,7 +78,6 @@ sjs_math* sjf_math(sjs_math* _this) {
 }
 
 void sjf_math_destroy(sjs_math* _this) {
-    free(_this);
 }
 
 int32_t sjf_math_sub(int32_t x, int32_t y) {
