@@ -6,7 +6,9 @@
 bool sjf_global();
 
 bool sjf_global() {
-    return (-3) < (4);
+    bool _retVal;
+    _retVal = ((-3) < (4));
+    return _retVal;
 }
 
 int main() {

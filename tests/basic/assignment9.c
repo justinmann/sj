@@ -6,10 +6,12 @@
 int32_t sjf_global();
 
 int32_t sjf_global() {
+    int32_t _retVal;
     int32_t x;
     int32_t y;
     x = y = 2;
-    return (x) + (y);
+    _retVal = ((x) + (y));
+    return _retVal;
 }
 
 int main() {

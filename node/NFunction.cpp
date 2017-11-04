@@ -423,8 +423,12 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
             stringstream lastLine;
             auto returnType = block->transpile(compiler, result, shared_from_this(), nullptr, trOutput, trFunctionBlock.get(), lastLine);
             if (lastLine.str().size() > 0) {
-                if (returnType != compiler->typeVoid) {
-                    trFunctionBlock->returnLine = lastLine.str();
+                if (returnType && returnType != compiler->typeVoid) {
+                    auto retVal = trFunctionBlock->createVariable("_retVal", returnType->nameRef, TRM_DONOTHING, "");
+                    stringstream storeReturnLine;
+                    storeReturnLine << retVal->name << " = (" << lastLine.str() << ")";
+                    trFunctionBlock->statements.push_back(storeReturnLine.str());
+                    trFunctionBlock->returnLine = retVal->name;
                 } else {
                     trFunctionBlock->statements.push_back(lastLine.str());
                 }
@@ -483,8 +487,8 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
         // Create struct
 		string structName = "sjs_" + name;
 		if (trOutput->structs.find(structName) == trOutput->structs.end()) {
-            trOutput->structs[structName].begin();
-			for (auto argType : *argTypes) {
+            trOutput->structs[structName].push_back("int _refCount");
+            for (auto argType : *argTypes) {
                 if (argType.first.compare("_this") == 0)
                     continue;
                 
@@ -508,8 +512,12 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
 			stringstream lastLine;
 			auto returnType = block->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trFunctionBlock.get(), lastLine);
 			if (lastLine.str().size() > 0) {
-                if (returnType != compiler->typeVoid) {
-                    trFunctionBlock->returnLine = lastLine.str();
+                if (returnType && returnType != compiler->typeVoid) {
+                    auto retVal = trFunctionBlock->createVariable("_retVal", returnType->nameRef, TRM_DONOTHING, "");
+                    stringstream storeReturnLine;
+                    storeReturnLine << retVal->name << " = (" << lastLine.str() << ")";
+                    trFunctionBlock->statements.push_back(storeReturnLine.str());
+                    trFunctionBlock->returnLine = retVal->name;
                 } else {
                     trFunctionBlock->statements.push_back(lastLine.str());
                 }
@@ -525,15 +533,14 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
             trOutput->functions[functionDestroyName] = trDestroyBlock;
             
             stringstream functionDefinition;
-            functionDefinition << returnType->nameRef << " " << functionDestroyName << "(" << structName << "* _this)";
+            functionDefinition << "void " << functionDestroyName << "(" << structName << "* _this)";
             trDestroyBlock->definition = functionDefinition.str();
             
-            stringstream returnLine;
-            
+            stringstream lastLine;
             if (destroyBlock) {
-                destroyBlock->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trDestroyBlock.get(), returnLine);
-                if (returnLine.str().size() > 0) {
-                    trDestroyBlock->statements.push_back(returnLine.str());
+                destroyBlock->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trDestroyBlock.get(), lastLine);
+                if (lastLine.str().size() > 0) {
+                    trDestroyBlock->statements.push_back(lastLine.str());
                 }
             }
             
@@ -583,6 +590,10 @@ shared_ptr<CType> CFunction::transpile(Compiler* compiler, CResult& result, shar
             trBlock->statements.push_back(TrStatement(initLine.str()));
         }
         
+        stringstream argRefCountLine;
+        argRefCountLine << objectRef->name << "->_refCount = 1";
+        trBlock->statements.push_back(TrStatement(argRefCountLine.str()));
+
         for (auto argValue : argValues) {
             stringstream argAssignLine;
             argAssignLine << objectRef->name << "->" << argValue.var->name << " = " << argValue.value;

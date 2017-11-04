@@ -6,13 +6,15 @@
 int32_t sjf_global();
 
 int32_t sjf_global() {
+    int32_t _retVal;
     int32_t ifResult1;
     if (false) {
         ifResult1 = 1;
     } else {
         ifResult1 = (int32_t)0;
     }
-    return ifResult1;
+    _retVal = (ifResult1);
+    return _retVal;
 }
 
 int main() {

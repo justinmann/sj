@@ -6,8 +6,10 @@
 int64_t sjf_global();
 
 int64_t sjf_global() {
+    int64_t _retVal;
     int64_t x;
-    return x = (int64_t)(1);
+    _retVal = (x = (int64_t)(1));
+    return _retVal;
 }
 
 int main() {

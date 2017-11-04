@@ -6,7 +6,9 @@
 bool sjf_global();
 
 bool sjf_global() {
-    return false;
+    bool _retVal;
+    _retVal = (false);
+    return _retVal;
 }
 
 int main() {

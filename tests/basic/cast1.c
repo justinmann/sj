@@ -6,7 +6,9 @@
 float sjf_global();
 
 float sjf_global() {
-    return (float)(5);
+    float _retVal;
+    _retVal = ((float)(5));
+    return _retVal;
 }
 
 int main() {

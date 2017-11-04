@@ -7,11 +7,15 @@ double sjf_func();
 bool sjf_global();
 
 double sjf_func() {
-    return -3.0;
+    double _retVal;
+    _retVal = (-3.0);
+    return _retVal;
 }
 
 bool sjf_global() {
-    return (sjf_func()) < (4.0);
+    bool _retVal;
+    _retVal = ((sjf_func()) < (4.0));
+    return _retVal;
 }
 
 int main() {

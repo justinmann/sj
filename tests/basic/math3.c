@@ -6,7 +6,9 @@
 int32_t sjf_global();
 
 int32_t sjf_global() {
-    return 2147483647;
+    int32_t _retVal;
+    _retVal = (2147483647);
+    return _retVal;
 }
 
 int main() {

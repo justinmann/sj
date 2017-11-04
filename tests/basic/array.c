@@ -7,29 +7,33 @@ typedef struct td_sjs_array_class sjs_array_class;
 typedef struct td_sjs_class sjs_class;
 
 struct td_sjs_array_class {
+    int _refCount;
     int32_t count;
     int32_t _size;
     uintptr_t _data;
 };
 
 struct td_sjs_class {
+    int _refCount;
     int32_t bob;
 };
 
 sjs_array_class* sjf_array_class(sjs_array_class* _this);
-sjs_array_class* sjf_array_class_destroy(sjs_array_class* _this);
+void sjf_array_class_destroy(sjs_array_class* _this);
 void sjf_array_class_set(int32_t index, sjs_class* item);
 void sjf_array_class_setSize(int32_t x);
 sjs_class* sjf_class(sjs_class* _this);
-sjs_class* sjf_class_destroy(sjs_class* _this);
+void sjf_class_destroy(sjs_class* _this);
 void sjf_global();
 
 sjs_array_class* sjf_array_class(sjs_array_class* _this) {
+    sjs_array_class* _retVal;
     sjf_array_class_setSize((_this->count));
-    return _this;
+    _retVal = (_this);
+    return _retVal;
 }
 
-sjs_array_class* sjf_array_class_destroy(sjs_array_class* _this) {
+void sjf_array_class_destroy(sjs_array_class* _this) {
     
 	free((##t)_this->_data);	
 ;
@@ -69,10 +73,12 @@ void sjf_array_class_setSize(int32_t x) {
 }
 
 sjs_class* sjf_class(sjs_class* _this) {
-    return _this;
+    sjs_class* _retVal;
+    _retVal = (_this);
+    return _retVal;
 }
 
-sjs_class* sjf_class_destroy(sjs_class* _this) {
+void sjf_class_destroy(sjs_class* _this) {
     free(_this);
 }
 
@@ -84,14 +90,17 @@ void sjf_global() {
     sjs_class* sjv_temp2;
     sjs_class* sjv_temp3;
     sjv_temp1 = &sjd_temp1;
+    sjv_temp1->_refCount = 1;
     sjv_temp1->count = 2;
     sjv_temp1->_size = 0;
     sjv_temp1->_data = (uintptr_t)(0);
     a = sjf_array_class(sjv_temp1);
     sjv_temp2 = (sjs_class*)malloc(sizeof(sjs_class));
+    sjv_temp2->_refCount = 1;
     sjv_temp2->bob = 1;
     sjf_array_class_set((0), (sjf_class(sjv_temp2)));
     sjv_temp3 = &sjd_temp2;
+    sjv_temp3->_refCount = 1;
     sjv_temp3->bob = 2;
     sjf_array_class_set((1), (sjf_class(sjv_temp3)));
     sjf_array_class_destroy(sjv_temp1);
