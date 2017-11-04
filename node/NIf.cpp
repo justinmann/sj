@@ -122,70 +122,68 @@ int CIfElseVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar>
     return nif->setHeapVar(compiler, result, thisFunction, thisVar, nullptr, true);
 }
 
-shared_ptr<ReturnValue> CIfElseVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine, shared_ptr<CVar> dotVar) {
+shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue) {
     auto type = getType(compiler, result);
-    shared_ptr<TrVariable> trResultVar;
+    shared_ptr<ReturnValue> trResultVar;
     if (type != compiler->typeVoid) {
         auto resultHeapVar = getHeapVar(compiler, result, thisVar);
         auto resultFunction = getCFunctionForValue(compiler, result);
-        trResultVar = trBlock->createTempVariable(
-            "ifResult",
-            type->nameRef,
-            resultFunction && resultHeapVar ? TRM_RELEASE : TRM_DONOTHING,
-            resultFunction ? resultFunction->getCDestroyFunctionName() : "");
+        trResultVar = trBlock->createTempVariable("ifResult", type, resultHeapVar, RVR_MustRetain);
     }
 
+    auto conditionReturnValue = condition->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock);
+
     stringstream ifLine;
-    ifLine << "if (";
-    condition->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, ifLine);
-    ifLine << ")";
+    ifLine << "if (" << conditionReturnValue->name << ")";
     auto trIfBlock = make_shared<TrBlock>();
     trIfBlock->hasThis = trBlock->hasThis;
     trIfBlock->parent = trBlock;
     auto trStatement = TrStatement(ifLine.str(), trIfBlock);
 
-    stringstream resultLine;
-    if (type != compiler->typeVoid) {
-        resultLine << trResultVar->name + " = ";
-    }
-
-    auto ifReturnValue = ifBlock->transpile(compiler, result, thisFunction, thisVar, trOutput, trIfBlock.get(), resultLine);
-    assert(ifReturnValue->releaseMode == RVR_MustRetain);
+    auto ifReturnValue = ifBlock->transpile(compiler, result, thisFunction, thisVar, trOutput, trIfBlock.get());
+    assert(ifReturnValue == nullptr || ifReturnValue->release == RVR_MustRetain);
 
     if (type != compiler->typeVoid) {
+        stringstream resultLine;
+        if (type != compiler->typeVoid) {
+            resultLine << trResultVar->name + " = " << ifReturnValue->name;
+        }
+
         trIfBlock->statements.push_back(resultLine.str());
     }
 
     if (elseBlock || type != compiler->typeVoid) {
+        shared_ptr<ReturnValue> elseReturnValue;
         auto trElseBlock = make_shared<TrBlock>();
         trElseBlock->parent = trBlock;
         trElseBlock->hasThis = trBlock->hasThis;
         trStatement.elseBlock = trElseBlock;
 
-        stringstream resultLine;
-        if (type != compiler->typeVoid) {
-            resultLine << trResultVar->name + " = ";
-        }
-
         if (elseBlock) {
-            auto elseReturnValue = elseBlock->transpile(compiler, result, thisFunction, thisVar, trOutput, trElseBlock.get(), resultLine);
-            assert(elseReturnValue->releaseMode == RVR_MustRetain);
+            elseReturnValue = elseBlock->transpile(compiler, result, thisFunction, thisVar, trOutput, trElseBlock.get());
+            assert(elseReturnValue == nullptr || elseReturnValue->release == RVR_MustRetain);
         }
         else {
-            type->transpileDefaultValue(compiler, result, thisFunction, thisVar, resultLine);
+            elseReturnValue = type->transpileDefaultValue(compiler, result, thisFunction, thisVar);
         }
 
         if (type != compiler->typeVoid) {
+            stringstream resultLine;
+            if (type != compiler->typeVoid) {
+                resultLine << trResultVar->name + " = " << elseReturnValue->name;
+            }
+
             trElseBlock->statements.push_back(resultLine.str());
         }
     }
 
     trBlock->statements.push_back(trStatement);
 
-    if (type != compiler->typeVoid) {
-        trLine << trResultVar->name;
-    }
-    return make_shared<ReturnValue>(type, RVR_MustRetain);
+    return trResultVar;
+}
+
+void CIfElseVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue) {
+    assert(false);
 }
 
 void CIfElseVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

@@ -30,7 +30,7 @@ shared_ptr<CType> NInteger::getTypeImpl(Compiler* compiler, CResult& result, sha
 //    }
 //}
 
-shared_ptr<ReturnValue> NInteger::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
+shared_ptr<ReturnValue> NInteger::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock) {
 
     if (strValue.size() > 0) {
         char* e;
@@ -47,10 +47,11 @@ shared_ptr<ReturnValue> NInteger::transpile(Compiler* compiler, CResult& result,
             return nullptr;
         }
 
-        trLine << v;
+        stringstream line;
+        line << v;
+        return make_shared<ReturnValue>(compiler->typeI32, false, RVR_MustRetain, line.str());
     }
-    
-	return make_shared<ReturnValue>(compiler->typeI32, RVR_MustRetain);
+    return nullptr;
 }
 
 void NInteger::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {

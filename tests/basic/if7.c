@@ -6,18 +6,17 @@
 double sjf_global();
 
 double sjf_global() {
-    double _retVal;
     double ifResult1;
     if (false) {
         ifResult1 = 1;
     } else {
         ifResult1 = 1.0;
     }
-    _retVal = (ifResult1);
-    return _retVal;
+    return ifResult1;
 }
 
 int main() {
-    sjf_global();
+    double result1;
+    result1 = sjf_global();
     return 0;
 }

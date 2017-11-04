@@ -6,12 +6,13 @@
 double sjf_global();
 
 double sjf_global() {
-    double _retVal;
-    _retVal = ((4.0) + (5.0));
-    return _retVal;
+    double result2;
+    result2 = 4.0 + 5.0;
+    return result2;
 }
 
 int main() {
-    sjf_global();
+    double result1;
+    result1 = sjf_global();
     return 0;
 }

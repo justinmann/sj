@@ -12,10 +12,15 @@ enum ReturnValueRelease {
 
 class ReturnValue {
 public:
-    ReturnValue(shared_ptr<CType> type_, ReturnValueRelease releaseMode_) : type(type_), releaseMode(releaseMode_) {}
+    ReturnValue(shared_ptr<CType> type_, bool isHeap_, ReturnValueRelease release_, string name_);
+    ReturnValue(string typeName_, string name_);
+    void writeReleaseToStream(ostream& stream, int level);
 
     shared_ptr<CType> type;
-    ReturnValueRelease releaseMode;
+    string typeName;
+    bool isHeap;
+    ReturnValueRelease release;
+    string name;
 }; 
 
 class TrBlock {
@@ -25,16 +30,16 @@ public:
     TrBlock* parent;
 	bool hasThis;
     string definition;
-    map<string, shared_ptr<TrVariable>> variables;
+    map<string, shared_ptr<ReturnValue>> variables;
 	vector<TrStatement> statements;
     string returnLine;
-    shared_ptr<ReturnValue> returnValue;
 
 	void writeBodyToStream(ostream& stream, int level);
-    shared_ptr<TrVariable> getVariable(string name);
-    shared_ptr<TrVariable> createVariable(string name, string type, TrReleaseMode releaseMode, string destroyFunctionName);
-    shared_ptr<TrVariable> createTempVariable(string prefix, string type, TrReleaseMode releaseMode, string destroyFunctionName);
-    
+    shared_ptr<ReturnValue> getVariable(string name);
+    shared_ptr<ReturnValue> createVariable(string name, shared_ptr<CType> type, bool isHeap, ReturnValueRelease release);
+    shared_ptr<ReturnValue> createTempVariable(string prefix, shared_ptr<CType> type, bool isHeap, ReturnValueRelease release);
+    shared_ptr<ReturnValue> createTempVariable(string prefix, string typeName);
+
     static void addSpacing(ostream& stream, int level);
     static void resetVarNames();
 private:

@@ -15,29 +15,36 @@ void sjf_class_i32_destroy(sjs_class_i32* _this);
 int32_t sjf_global();
 
 sjs_class_i32* sjf_class_i32(sjs_class_i32* _this) {
-    sjs_class_i32* _retVal;
-    _retVal = (_this);
-    return _retVal;
+    return _this;
 }
 
 void sjf_class_i32_destroy(sjs_class_i32* _this) {
 }
 
 int32_t sjf_global() {
-    int32_t _retVal;
     sjs_class_i32* c;
+    sjs_class_i32* result2;
     sjs_class_i32 sjd_temp1;
     sjs_class_i32* sjv_temp1;
+    int32_t temp1;
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
     sjv_temp1->x = 1;
-    c = sjf_class_i32(sjv_temp1);
-    _retVal = (c->x);
+    result2 = sjf_class_i32(sjv_temp1);
+    c = result2;
+    temp1 = c->x;
+    sjf_class_i32_destroy(c);
+    result2->_refCount--;
+    if (result2->_refCount == 0) {
+        sjf_class_i32_destroy(result2);
+        free(result2);
+    }
     sjf_class_i32_destroy(sjv_temp1);
-    return _retVal;
+    return temp1;
 }
 
 int main() {
-    sjf_global();
+    int32_t result1;
+    result1 = sjf_global();
     return 0;
 }

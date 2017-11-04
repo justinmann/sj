@@ -7,18 +7,19 @@ double sjf_func();
 bool sjf_global();
 
 double sjf_func() {
-    double _retVal;
-    _retVal = (-3.0);
-    return _retVal;
+    return -3.0;
 }
 
 bool sjf_global() {
-    bool _retVal;
-    _retVal = ((sjf_func()) < (4.0));
-    return _retVal;
+    double result2;
+    bool result3;
+    result2 = sjf_func();
+    result3 = result2 < 4.0;
+    return result3;
 }
 
 int main() {
-    sjf_global();
+    bool result1;
+    result1 = sjf_global();
     return 0;
 }

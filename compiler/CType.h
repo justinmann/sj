@@ -29,7 +29,7 @@ enum CTypeCategory {
     CTC_Function
 };
 
-class CType {
+class CType : public enable_shared_from_this<CType> {
 public:
     CType(const char* name, const char* cname, const char* defaultValue);
     CType(const char* name, weak_ptr<CFunction> parent);
@@ -40,7 +40,7 @@ public:
     string nameValue;
 	string nameRef;
     weak_ptr<CBaseFunction> parent;
-    void transpileDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, stringstream& line);
+    shared_ptr<ReturnValue> transpileDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar);
 
 private:
     string _defaultValue;

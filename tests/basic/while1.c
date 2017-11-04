@@ -6,7 +6,10 @@
 void sjf_global();
 
 void sjf_global() {
-    while (false) {
+    bool whileValue1;
+    whileValue1 = false;
+    while (whileValue1) {
+        whileValue1 = false;
     }
 }
 

@@ -20,11 +20,13 @@ int NNot::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFu
     return node->setHeapVar(compiler, result, thisFunction, thisVar, false);
 }
 
-shared_ptr<ReturnValue> NNot::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
-	trLine << "!(";
-	node->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine);
-	trLine << ")";
-	return make_shared<ReturnValue>(compiler->typeBool, RVR_MustRetain);
+shared_ptr<ReturnValue> NNot::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock) {    
+    auto value = node->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock);
+    auto resultValue = trBlock->createTempVariable("result", compiler->typeBool, false, RVR_MustRetain);
+    stringstream line;
+    line << resultValue->name << " = !" << value->name;
+    trBlock->statements.push_back(line.str());
+    return resultValue;
 }
 
 //shared_ptr<ReturnValue> NNot::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {

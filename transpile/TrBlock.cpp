@@ -1,10 +1,13 @@
-#include "../compiler/Compiler.h"
+#include "../node/Node.h"
+
+ReturnValue::ReturnValue(shared_ptr<CType> type_, bool isHeap_, ReturnValueRelease release_, string name_) : type(type_), typeName(type_->nameRef), isHeap(isHeap_), release(release_), name(name_) {}
+ReturnValue::ReturnValue(string typeName_, string name_) : type(nullptr), typeName(typeName_), isHeap(false), release(RVR_MustRetain), name(name_) {}
 
 void TrBlock::writeBodyToStream(ostream& stream, int level) {
 	for (auto variable : variables)
 	{
         addSpacing(stream, level);
-        stream << variable.second->type << " " << variable.first << ";\n";
+        stream << variable.second->typeName << " " << variable.first << ";\n";
 	}
 
 	for (auto statement : statements)
@@ -40,7 +43,7 @@ void TrBlock::writeBodyToStream(ostream& stream, int level) {
     }
 }
 
-shared_ptr<TrVariable> TrBlock::getVariable(string name) {
+shared_ptr<ReturnValue> TrBlock::getVariable(string name) {
     auto var = variables.find(name);
     if (var == variables.end()) {
         if (parent != nullptr) {
@@ -51,19 +54,29 @@ shared_ptr<TrVariable> TrBlock::getVariable(string name) {
     return var->second;
 }
 
-shared_ptr<TrVariable> TrBlock::createVariable(string name, string type, TrReleaseMode releaseMode, string destroyFunctionName) {
+shared_ptr<ReturnValue> TrBlock::createVariable(string name, shared_ptr<CType> type, bool isHeap, ReturnValueRelease release) {
     assert(getVariable(name) == nullptr);
-    auto var = make_shared<TrVariable>(type, name, releaseMode, destroyFunctionName);
+    auto var = make_shared<ReturnValue>(type, isHeap, release, name);
     variables[name] = var;
     return var;
 }
 
-shared_ptr<TrVariable> TrBlock::createTempVariable(string prefix, string type, TrReleaseMode releaseMode, string destroyFunctionName) {
+shared_ptr<ReturnValue> TrBlock::createTempVariable(string prefix, shared_ptr<CType> type, bool isHeap, ReturnValueRelease release) {
     auto nextIndex = ++varNames[prefix];
     stringstream varStream;
     varStream << prefix << nextIndex;
     auto varStr = varStream.str();
-    auto var = make_shared<TrVariable>(type, varStr, releaseMode, destroyFunctionName);
+    auto var = make_shared<ReturnValue>(type, isHeap, release, varStr);
+    variables[varStr] = var;
+    return var;
+}
+
+shared_ptr<ReturnValue> TrBlock::createTempVariable(string prefix, string typeName) {
+    auto nextIndex = ++varNames[prefix];
+    stringstream varStream;
+    varStream << prefix << nextIndex;
+    auto varStr = varStream.str();
+    auto var = make_shared<ReturnValue>(typeName, varStr);
     variables[varStr] = var;
     return var;
 }
@@ -79,4 +92,30 @@ void TrBlock::addSpacing(ostream& stream, int level) {
 }
 
 map<string, int> TrBlock::varNames;
+
+void ReturnValue::writeReleaseToStream(ostream& stream, int level) {
+    assert(release == RVR_MustRetain);
+
+    if (!type || type->parent.expired())
+        return;
+
+    if (!isHeap) {
+        TrBlock::addSpacing(stream, level);
+        stream << type->parent.lock()->getCDestroyFunctionName() << "(" << name << ");\n";
+    }
+    else if (release == RVR_MustRetain) {
+        TrBlock::addSpacing(stream, level);
+        stream << name << "->_refCount--;\n";
+        TrBlock::addSpacing(stream, level);
+        stream << "if (" << name << "->_refCount == 0) {\n";
+        if (!type->parent.expired()) {
+            TrBlock::addSpacing(stream, level + 1);
+            stream << type->parent.lock()->getCDestroyFunctionName() << "(" << name << ");\n";
+        }
+        TrBlock::addSpacing(stream, level + 1);
+        stream << "free(" << name << ");\n";
+        TrBlock::addSpacing(stream, level);
+        stream << "}\n";
+    }
+}
 

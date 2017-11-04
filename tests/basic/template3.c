@@ -8,27 +8,27 @@ int32_t sjf_class_i32_bool();
 int32_t sjf_global();
 
 int32_t sjf_class_bool_f32() {
-    int32_t _retVal;
-    _retVal = (1);
-    return _retVal;
+    return 1;
 }
 
 int32_t sjf_class_i32_bool() {
-    int32_t _retVal;
-    _retVal = (1);
-    return _retVal;
+    return 1;
 }
 
 int32_t sjf_global() {
-    int32_t _retVal;
     int32_t a;
     int32_t c;
-    a = sjf_class_i32_bool();
-    _retVal = (c = sjf_class_bool_f32());
-    return _retVal;
+    int32_t result2;
+    int32_t result3;
+    result2 = sjf_class_i32_bool();
+    a = result2;
+    result3 = sjf_class_bool_f32();
+    c = result3;
+    return result3;
 }
 
 int main() {
-    sjf_global();
+    int32_t result1;
+    result1 = sjf_global();
     return 0;
 }

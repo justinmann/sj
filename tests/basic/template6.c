@@ -7,19 +7,19 @@ int32_t sjf_class_func_i32();
 int32_t sjf_global();
 
 int32_t sjf_class_func_i32() {
-    int32_t _retVal;
-    _retVal = (1);
-    return _retVal;
+    return 1;
 }
 
 int32_t sjf_global() {
-    int32_t _retVal;
     int32_t d;
-    _retVal = (d = sjf_class_func_i32());
-    return _retVal;
+    int32_t result2;
+    result2 = sjf_class_func_i32();
+    d = result2;
+    return result2;
 }
 
 int main() {
-    sjf_global();
+    int32_t result1;
+    result1 = sjf_global();
     return 0;
 }

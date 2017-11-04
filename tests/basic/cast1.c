@@ -6,12 +6,13 @@
 float sjf_global();
 
 float sjf_global() {
-    float _retVal;
-    _retVal = ((float)(5));
-    return _retVal;
+    float result2;
+    result2 = (float)5;
+    return result2;
 }
 
 int main() {
-    sjf_global();
+    float result1;
+    result1 = sjf_global();
     return 0;
 }

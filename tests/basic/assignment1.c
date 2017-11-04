@@ -6,13 +6,13 @@
 int32_t sjf_global();
 
 int32_t sjf_global() {
-    int32_t _retVal;
     int32_t x;
-    _retVal = (x = 1);
-    return _retVal;
+    x = 1;
+    return 1;
 }
 
 int main() {
-    sjf_global();
+    int32_t result1;
+    result1 = sjf_global();
     return 0;
 }

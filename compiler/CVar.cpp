@@ -143,17 +143,60 @@ int CNormalVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar>
     return count;
 }
 
-shared_ptr<ReturnValue> CNormalVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine, shared_ptr<CVar> dotVar) {
-    if (dotVar) {
-        trLine << "->";
-	} else {
-		if (trBlock->hasThis && (mode == Var_Public || mode == Var_Private)) {
-			trLine << "_this->";
-		}
-	}
-    
-	trLine << name;
-	return make_shared<ReturnValue>(getType(compiler, result), RVR_MustRetain);
+shared_ptr<ReturnValue> CNormalVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue) {
+    auto returnType = getType(compiler, result);
+    auto returnIsHeap = getHeapVar(compiler, result, thisVar);
+    if (dotValue) {
+        auto returnValue = trBlock->createTempVariable("temp", returnType, returnIsHeap, RVR_MustRetain);
+        stringstream lineStream;
+        lineStream << returnValue->name << " = " << dotValue->name << "->" << name;
+        trBlock->statements.push_back(lineStream.str());
+        return returnValue;
+    } else if (trBlock->hasThis && (mode == Var_Public || mode == Var_Private)) {
+        auto returnValue = trBlock->createTempVariable("temp", returnType, returnIsHeap, RVR_MustRetain);
+        stringstream lineStream;
+        lineStream << returnValue->name << " = " << "_this->" << name;
+        trBlock->statements.push_back(lineStream.str());
+        return returnValue;
+    } else {
+        return make_shared<ReturnValue>(returnType, returnIsHeap, RVR_MustRetain, name);
+    }    
+}
+
+void CNormalVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue) {
+    stringstream lineStream;
+
+    if (!returnValue)
+        return;
+
+    auto returnType = getType(compiler, result);
+    if (returnType != returnValue->type) {
+        result.addError(loc, CErrorCode::TypeMismatch, "returned type '%s' does not match explicit type '%s'", returnType->name.c_str(), returnValue->type->name.c_str());
+        return;
+    }
+
+    if (dotValue) {
+        lineStream << dotValue->name << "->" << name << " = " << returnValue->name;
+    }
+    else if (trBlock->hasThis && (mode == Var_Public || mode == Var_Private)) {
+        lineStream << "_this->" << name << " = " << returnValue->name;
+    }
+    else {
+        if (!trBlock->getVariable(name)) {
+            trBlock->createVariable(name, returnType, getHeapVar(compiler, result, thisVar), RVR_MustRetain);
+        }
+        else if (!isMutable) {
+            // Check is mutable or first assignment
+            result.addError(loc, CErrorCode::TypeMismatch, "cannot assign to immutable variable", returnType->name.c_str(), returnValue->type->name.c_str());
+            return;
+        }
+        else {
+            // TODO: Free previous value
+        }
+        lineStream << name << " = " << returnValue->name;
+    }
+
+    trBlock->statements.push_back(lineStream.str());
 }
 
 void CNormalVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
