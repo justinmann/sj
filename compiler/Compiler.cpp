@@ -261,6 +261,12 @@ shared_ptr<CResult> Compiler::genNodeFile(const string& fileName) {
     std::ifstream t(fileName);
     std::string str;
     
+    if (t.fail()) {
+        auto result = make_shared<CResult>();
+        result->addError(CLoc(), CErrorCode::InvalidString, "file does not exist '%s'", fileName.c_str());
+        return result;
+    }
+    
     t.seekg(0, std::ios::end);
     str.reserve((size_t)t.tellg());
     t.seekg(0, std::ios::beg);

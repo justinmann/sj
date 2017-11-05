@@ -5,6 +5,8 @@ void NInclude::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseF
         result.addError(loc, CErrorCode::IncludeOnlyInGlobal, "can only use include in the global scope");
     }
     
+    // TODO: allow a relative path combine for filename
+    // fileName = path.append(fileName, *loc.fileName);
     compiler->includeFile(result, fileName);
 }
 

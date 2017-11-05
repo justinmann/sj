@@ -6,6 +6,8 @@
 * lambda
 
 -- tasks --
+* add boost
+* allow relative path for include
 * retain class values
 
 -- operators --
@@ -59,3 +61,17 @@
 	t: tuple![i32, i32](1, 2)
 	a = t.getAt(0)
 	b = t.getAt(1)
+
+-- library --
+* directory structure for pure sj library
+lib/common/common.sj
+lib/common/array.sj
+lib/common/string.sj
+lib/common/tuple.sj
+
+* directory structure for linked library
+* link command: link "freetype.lib"
+lib/freetype/freetype.sj
+lib/freetype/freetype.h
+lib/freetype/freetype.lib
+lib/freetype/source/*
