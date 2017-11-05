@@ -1,14 +1,5 @@
 * retain class values
 
-* #forceParent# -> force current function to include a parent
-* #forceHeap(class)# -> force a var to be on heap
-* #type(class)# -> sjf_class*
-* #functionName(class)# -> sjf_class
-* #structName(class)# -> sjs_class
-* #isHeap(class)# -> true
-* #isValue(i32)# -> true
-* make c special commands support templates #type(t)# -> sjf_class 
-
 * operators
 	[x] 		-> getAt(x)
 	[x] = y 	-> setAt(x, y)

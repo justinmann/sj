@@ -117,7 +117,8 @@ enum CErrorCode {
     InterfaceDoesNotExist,
     InterfaceMethodDoesNotExist,
     InterfaceMethodTypeMismatch,
-    InterfaceMethodConflict
+    InterfaceMethodConflict,
+    InvalidMacro
 };
 
 class CError {
