@@ -16,6 +16,7 @@ int32_t sjf_class_foo(int32_t x);
 int32_t sjf_global();
 
 sjs_class* sjf_class(sjs_class* _this) {
+    _this->_refCount++;
 
     return _this;
 }

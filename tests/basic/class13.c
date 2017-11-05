@@ -25,6 +25,7 @@ void sjf_math_destroy(sjs_math* _this);
 int32_t sjf_math_sub(int32_t x, int32_t y);
 
 sjs_class* sjf_class(sjs_class* _this) {
+    _this->_refCount++;
 
     return _this;
 }
@@ -80,6 +81,7 @@ int32_t sjf_global() {
     sjv_temp2 = &sjd_temp2;
     sjv_temp2->_refCount = 1;
     sjv_temp2->m = result3;
+    sjv_temp2->m++;
     result2 = sjf_class(sjv_temp2);
     c = result2;
     c->_refCount++;
@@ -103,6 +105,7 @@ int32_t sjf_global() {
 }
 
 sjs_math* sjf_math(sjs_math* _this) {
+    _this->_refCount++;
 
     return _this;
 }

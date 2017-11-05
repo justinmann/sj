@@ -140,7 +140,7 @@ shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& re
     trIfBlock->parent = trBlock;
     auto trStatement = TrStatement(ifLine.str(), trIfBlock);
 
-    auto ifReturnValue = ifBlock->transpile(compiler, result, thisFunction, thisVar, trOutput, trIfBlock.get(), isReturnValue);
+    auto ifReturnValue = ifBlock->transpile(compiler, result, thisFunction, thisVar, trOutput, trIfBlock.get(), false);
     assert(ifReturnValue == nullptr || ifReturnValue->release == RVR_MustRetain);
 
     if (type != compiler->typeVoid) {
@@ -160,7 +160,7 @@ shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& re
         trStatement.elseBlock = trElseBlock;
 
         if (elseBlock) {
-            elseReturnValue = elseBlock->transpile(compiler, result, thisFunction, thisVar, trOutput, trElseBlock.get(), isReturnValue);
+            elseReturnValue = elseBlock->transpile(compiler, result, thisFunction, thisVar, trOutput, trElseBlock.get(), false);
             assert(elseReturnValue == nullptr || elseReturnValue->release == RVR_MustRetain);
         }
         else {

@@ -16,6 +16,7 @@ sjs_class* sjf_func();
 int32_t sjf_global();
 
 sjs_class* sjf_class(sjs_class* _this) {
+    _this->_refCount++;
 
     return _this;
 }
@@ -32,11 +33,6 @@ sjs_class* sjf_func() {
     sjv_temp1->x = 1;
     result3 = sjf_class(sjv_temp1);
 
-    result3->_refCount--;
-    if (result3->_refCount == 0) {
-        sjf_class_destroy(result3);
-        free(result3);
-    }
     sjv_temp1->_refCount--;
     if (sjv_temp1->_refCount == 0) {
         sjf_class_destroy(sjv_temp1);

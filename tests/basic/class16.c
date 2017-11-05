@@ -25,11 +25,13 @@ void sjf_a_destroy(sjs_a* _this);
 int32_t sjf_global();
 
 sjs_a* sjf_a(sjs_a* _this) {
+    _this->_refCount++;
 
     return _this;
 }
 
 sjs_aa* sjf_a_aa(sjs_aa* _this) {
+    _this->_refCount++;
 
     return _this;
 }
@@ -74,6 +76,7 @@ int32_t sjf_global() {
     sjv_temp2->_refCount = 1;
     sjv_temp2->x = 1;
     sjv_temp2->b = result3;
+    sjv_temp2->b++;
     result2 = sjf_a(sjv_temp2);
     a = result2;
     a->_refCount++;

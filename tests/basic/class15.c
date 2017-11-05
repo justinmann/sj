@@ -33,6 +33,7 @@ int32_t sjf_global(sjs_global* _this);
 void sjf_global_destroy(sjs_global* _this);
 
 sjs_anon_0* sjf_anon_0(sjs_anon_0* _this) {
+    _this->_refCount++;
 
     return _this;
 }
@@ -53,6 +54,7 @@ int32_t sjf_anon_0_sub(sjs_anon_0* _parent, int32_t x, int32_t y) {
 }
 
 sjs_class* sjf_class(sjs_class* _this) {
+    _this->_refCount++;
 
     return _this;
 }

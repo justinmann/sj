@@ -110,10 +110,8 @@ void TrBlock::addSpacing(ostream& stream, int level) {
 map<string, int> TrBlock::varNames;
 
 bool ReturnValue::writeReleaseToStream(ostream& stream, int level) {
-    if (release == RVR_Ignore)
+    if (release == RVR_Ignore || release == RVR_MustRelease)
         return false;
-
-    assert(release == RVR_MustRetain);
 
     if (!type || type->parent.expired())
         return false;

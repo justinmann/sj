@@ -177,7 +177,13 @@ shared_ptr<ReturnValue> CCallVar::transpileGet(Compiler* compiler, CResult& resu
         return nullptr;
     }
 
-    return callee->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue, dotValue, calleeVar, parameters);
+    auto returnValue = callee->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue, dotValue, calleeVar, parameters);
+
+    // If this is a must release result and we are going to use this as a result value then we need to change the release type
+    if (!isReturnValue && returnValue && returnValue->release == RVR_MustRelease) {
+        returnValue->release = RVR_MustRetain;
+    }
+    return returnValue;
 }
 
 void CCallVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue) {

@@ -356,7 +356,7 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
         return nullptr;
     }
 
-    auto returnValue = returnType != compiler->typeVoid ? trBlock->createTempVariable("result", returnType, true, RVR_MustRetain) : nullptr;
+    auto returnValue = returnType != compiler->typeVoid ? trBlock->createTempVariable("result", returnType, true, RVR_MustRelease) : nullptr;
 
     auto argTypes = getCTypeList(compiler, result);
 
@@ -392,7 +392,7 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
             return nullptr;
         }
 
-        assert(argReturnValue == nullptr || argReturnValue->release == RVR_MustRetain);
+        // TODO: assert(argReturnValue == nullptr || argReturnValue->release == RVR_MustRetain);
         
         argValues.push_back(ArgData(argVar, argReturnValue));
         argIndex++;
@@ -424,13 +424,14 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
             trFunctionBlock->definition = definition.str();
             
             auto bodyReturnValue = block->transpile(compiler, result, shared_from_this(), nullptr, trOutput, trFunctionBlock.get(), true);
-            if (bodyReturnValue) {
+            if (bodyReturnValue && bodyReturnValue->type != compiler->typeVoid) {
                 assert(bodyReturnValue->type == returnType);
-                assert(bodyReturnValue->release == RVR_MustRetain);
-
-                if (bodyReturnValue && bodyReturnValue->type != compiler->typeVoid) {
-                    trFunctionBlock->returnLine = bodyReturnValue->name;
+                if (bodyReturnValue->release == RVR_MustRetain && !bodyReturnValue->type->parent.expired()) {
+                    stringstream retainReturn;
+                    retainReturn << bodyReturnValue->name << "->_refCount++";
+                    trFunctionBlock->statements.push_back(retainReturn.str());
                 }
+                trFunctionBlock->returnLine = bodyReturnValue->name;
             }
         } 
         
@@ -511,12 +512,14 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
 			trFunctionBlock->definition = functionDefinition.str();
 
             auto bodyReturnValue = block->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trFunctionBlock.get(), true);
-            if (!bodyReturnValue) {
-                assert(bodyReturnValue->type == returnType);
-                assert(bodyReturnValue->release == RVR_MustRetain);
-            }
-
             if (bodyReturnValue && bodyReturnValue->type && bodyReturnValue->type != compiler->typeVoid) {
+                assert(bodyReturnValue->type == returnType);
+                if (bodyReturnValue->release == RVR_MustRetain && !bodyReturnValue->type->parent.expired()) {
+                    stringstream retainReturn;
+                    retainReturn << bodyReturnValue->name << "->_refCount++";
+                    trFunctionBlock->statements.push_back(retainReturn.str());
+                }
+
                 trFunctionBlock->returnLine = bodyReturnValue->name;
 			}
 		} 
@@ -590,6 +593,12 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
             stringstream argAssignLine;
             argAssignLine << objectRef->name << "->" << argValue.var->name << " = " << argValue.name;
             trBlock->statements.push_back(TrStatement(argAssignLine.str()));
+
+            if (argValue.value->release == RVR_MustRetain && !argValue.value->type->parent.expired()) {
+                stringstream argRetainLine;
+                argRetainLine << objectRef->name << "->" << argValue.var->name << "++";
+                trBlock->statements.push_back(TrStatement(argRetainLine.str()));
+            }
         }
 
         // Call function

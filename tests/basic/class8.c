@@ -16,6 +16,7 @@ void sjf_class_destroy(sjs_class* _this);
 int32_t sjf_global();
 
 sjs_class* sjf_class(sjs_class* _this) {
+    _this->_refCount++;
 
     return _this;
 }
