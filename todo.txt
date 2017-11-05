@@ -1,10 +1,15 @@
-* release objects
-* invoke destroy block in release
+* add retain for assignments
+* add retain for function init
+* release vars at block end
 
-* @hasThis annotation
-* @hasParent annotation
-* heap type for variable
-* template type string replace in c block
+* #forceParent# -> force current function to include a parent
+* #forceHeap(class)# -> force a var to be on heap
+* #type(class)# -> sjf_class*
+* #functionName(class)# -> sjf_class
+* #structName(class)# -> sjs_class
+* #isHeap(class)# -> true
+* #isValue(i32)# -> true
+* make c special commands support templates #type(t)# -> sjf_class 
 
 * [x] -> getAt(x)
 * [x] = y -> setAt(x, y)

@@ -1,35 +1,43 @@
-// @hasThis
 array!t (
 	count = 0
 	_size = 0
 	_data = 0 as ptr
 
-//	@hasParent
 	get(index : 'i32)'t c{
+		#forceParent
+
 		if (index >= count || index < 0) {
 			exit(-1);
 		}
 
-		#t#* p = _parent->data;
-		#t# val = p[index];
+		#type(t)* p = _parent->data;
+		#type(t) val = p[index];
+		if (!#isValue(t)) {
+			if (val == 0) {
+				exit(-1);
+			}
+		}
 		return val;		
 	}c
 
-//	@hasParent
 	set(index : 'i32, item : 't)'void c{
+		#forceParent
+		#forceHeap(item)
+
 		if (index >= count || index < 0) {
 			exit(-1);
 		}
 
-		#t#* p = _parent->data;
-		#t#_release(p[index]);
-		#t#_retain(item);
+		#type(t)* p = _parent->data;
+		#release(t)(p[index]);
+		#retain(t)(item);
 		p[index] = item;
 	}c
 
-//	@hasParent
 	find(item : 't)'i32 c{	
-		##t* p = _parent->data;
+		#forceParent
+
+		#type(t)* p = _parent->data;
 		for (int index = 0; index < count; i++) {
 			if (p[index] == item) {
 				return index;
@@ -40,8 +48,9 @@ array!t (
 
 	getSize() { _size }
 
-//	@hasParent
 	setSize(x : 'i32) c{
+		#forceParent
+
 		if (x < 0) {
 			exit(-1);
 		}
@@ -49,9 +58,9 @@ array!t (
 		if (_size != x) {
 			if (x != 0) {
 				if (_parent->_data == 0) {
-					_parent->_data = malloc(x * sizeof(##t));
+					_parent->_data = malloc(x * sizeof(#type(t)));
 				} else {
-					_parent->_data = realloc(x * sizeof(##t));
+					_parent->_data = realloc(x * sizeof(#type(t)));
 				}
 			}
 			_size = x;
@@ -61,7 +70,7 @@ array!t (
 	setSize(count)
 	this 
 } destroy c{
-	free((##t)_this->_data);	
+	free((#type(t)*)_this->_data);	
 }c
 
 class(
