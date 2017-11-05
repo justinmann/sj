@@ -1,6 +1,14 @@
+-- features --
+* string
+* operators
+* interface
+* tuple
+* lambda
+
+-- tasks --
 * retain class values
 
-* operators
+-- operators --
 	[x] 		-> getAt(x)
 	[x] = y 	-> setAt(x, y)
 	a.x 		-> getX()
@@ -20,5 +28,34 @@
 	a == b 		-> a.isEqual(b)
 	a as type	-> a.asType()'t
 
-* interface
-* lambda
+-- array --
+* array init
+	[1, 2, 3]
+	---------
+	t: array()
+	t.size = 3
+	t.add(1)
+	t.add(2)
+	t.add(3)
+
+-- string --
+* val: "hello"
+	char* s = "hello"
+	t: array!char()
+	t.setData(s, ARRAYSIZE(s))
+	val: string(data: s)
+* console.print(s : 'list!char) {
+	s.nullTerminate()
+	c{
+		printf((char*)s->_data);
+	}c
+}
+
+-- tuple --
+* create interface for all array classes
+* create special class for 1, 2, 3 element arrays
+* special array assign operation
+	[a, b] = [1, 2]
+	t: tuple![i32, i32](1, 2)
+	a = t.getAt(0)
+	b = t.getAt(1)
