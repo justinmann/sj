@@ -36,11 +36,14 @@ public:
         return 0;
     }
     
-    shared_ptr<CType> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine, shared_ptr<CVar> dotVar) {
-        trLine << name;
-		return getType(compiler, result);
+    shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue) {
+		return make_shared<ReturnValue>(getType(compiler, result), false, RVR_MustRetain, name);
 	}
 
+    void transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> value) {
+        assert(false);
+    }
+    
     virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
         ss << name;
     }
@@ -94,26 +97,28 @@ int NFor::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFu
     return count;
 }
 
-shared_ptr<CType> NFor::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
-    trBlock->variables[varName] = make_shared<TrVariable>(compiler->typeI32->nameRef, varName);
-    auto trLoopEndVar = trBlock->createTempVariable("loopEnd", compiler->typeI32->nameValue);
+shared_ptr<ReturnValue> NFor::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
+    trBlock->createVariable(varName, compiler->typeI32, false, RVR_MustRetain);
+    auto trLoopEndVar = trBlock->createTempVariable("loopEnd", compiler->typeI32, false, RVR_MustRetain);
     
-    stringstream loopCounterLine;
-    loopCounterLine << varName << " = ";
-    auto loopCounterType = start->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, loopCounterLine);
-    if (loopCounterType != compiler->typeI32) {
+    auto loopCounterReturnValue = start->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
+    if (loopCounterReturnValue->type != compiler->typeI32) {
         result.addError(loc, CErrorCode::TypeMismatch, "start value must be a int");
         return nullptr;
     }
+
+    stringstream loopCounterLine;
+    loopCounterLine << varName << " = " << loopCounterReturnValue->name;
     trBlock->statements.push_back(loopCounterLine.str());
     
-    stringstream loopEndLine;
-    loopEndLine << trLoopEndVar->name << " = ";
-    auto loopEndType = end->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, loopEndLine);
-    if (loopEndType != compiler->typeI32) {
+    auto loopEndReturnValue = end->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
+    if (loopEndReturnValue->type != compiler->typeI32) {
         result.addError(loc, CErrorCode::TypeMismatch, "end value must be a int");
         return nullptr;
     }
+
+    stringstream loopEndLine;
+    loopEndLine << trLoopEndVar->name << " = " << loopEndReturnValue->name;
     trBlock->statements.push_back(loopEndLine.str());
     
     auto trForBlock = make_shared<TrBlock>();
@@ -123,15 +128,13 @@ shared_ptr<CType> NFor::transpile(Compiler* compiler, CResult& result, shared_pt
     whileLine << "while (" << varName << " <= " << trLoopEndVar->name << ")";
     trBlock->statements.push_back(TrStatement(whileLine.str(), trForBlock));
 
-    stringstream bodyLine;
-    body->transpile(compiler, result, thisFunction, thisVar, trOutput, trForBlock.get(), bodyLine);
-    trForBlock->statements.push_back(bodyLine.str());
+    body->transpile(compiler, result, thisFunction, thisVar, trOutput, trForBlock.get(), false);
 
     stringstream loopCounterIncLine;
     loopCounterIncLine << varName << "++";
     trForBlock->statements.push_back(loopCounterIncLine.str());
 
-    return compiler->typeVoid;
+    return nullptr;
 }
 
 //shared_ptr<ReturnValue> NFor::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {

@@ -1,14 +1,22 @@
+#include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 bool sjf_global();
 
 bool sjf_global() {
-    return (4) >= (4);
+    bool result2;
+
+    result2 = 4 >= 4;
+
+    return result2;
 }
 
 int main() {
-    sjf_global();
+    bool result1;
+
+    result1 = sjf_global();
+
     return 0;
 }

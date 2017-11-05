@@ -1,14 +1,24 @@
+#include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 bool sjf_global();
 
 bool sjf_global() {
-    return !((-3.0) != (4.0));
+    bool result2;
+    bool result3;
+
+    result2 = -3.0 != 4.0;
+    result3 = !result2;
+
+    return result3;
 }
 
 int main() {
-    sjf_global();
+    bool result1;
+
+    result1 = sjf_global();
+
     return 0;
 }

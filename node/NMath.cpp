@@ -81,37 +81,44 @@ int NMath::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseF
 //    return NULL;
 //}
 
-shared_ptr<CType> NMath::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
-	trLine << "(";
-	auto leftType = leftSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine);
-	trLine << ")";
+shared_ptr<ReturnValue> NMath::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
+    auto leftValue = leftSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
+    auto rightValue = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
+
+    if (!leftValue || !rightValue) {
+        assert(false);
+        return nullptr;
+    }
+
+    if (leftValue->type != rightValue->type) {
+        result.addError(loc, CErrorCode::TypeMismatch, "left and right values are not the same type");
+        return nullptr;
+    }
+
+    auto resultValue = trBlock->createTempVariable("result", leftValue->type, false, RVR_MustRetain);
+    stringstream line;
+    line << resultValue->name << " = " << leftValue->name;
 	switch (op) {
 	case NMathOp::Add:
-		trLine << " + ";
+        line << " + ";
 		break;
 	case NMathOp::Sub:
-		trLine << " - ";
+        line << " - ";
 		break;
 	case NMathOp::Mul:
-		trLine << " * ";
+        line << " * ";
 		break;
 	case NMathOp::Div:
-		trLine << " / ";
+        line << " / ";
 		break;
 	case NMathOp::Mod:
-		trLine << " %% ";
+        line << " %% ";
 		break;
 	}
-	trLine << "(";
-	auto rightType = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine);
-	trLine << ")";
+    line << rightValue->name;
+    trBlock->statements.push_back(line.str());
 
-	if (leftType != rightType) {
-		result.addError(loc, CErrorCode::TypeMismatch, "left and right values are not the same type");
-		return nullptr;
-	}
-	
-	return leftType;
+	return resultValue;
 }
 
 void NMath::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {

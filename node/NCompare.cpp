@@ -84,35 +84,42 @@ int NCompare::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBa
 //    return nullptr;
 //}
 
-shared_ptr<CType> NCompare::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
-    stringstream leftLine;
-    leftSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, leftLine);
-    stringstream rightLine;
-    rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, rightLine);
+shared_ptr<ReturnValue> NCompare::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
+    auto leftValue = leftSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
+    auto rightValue = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
 
-    trLine << "(" << leftLine.str() << ")";
+    if (!leftValue || !rightValue) {
+        assert(false);
+        return nullptr;
+    }
+
+    auto resultValue = trBlock->createTempVariable("result", compiler->typeBool, false, RVR_MustRetain);
+    stringstream line;
+    line << resultValue->name << " = " << leftValue->name;
 	switch (op) {
 	case NCompareOp::EQ:
-		trLine << " == ";
+        line << " == ";
 		break;
 	case NCompareOp::NE:
-		trLine << " != ";
+        line << " != ";
 		break;
 	case NCompareOp::LT:
-		trLine << " < ";
+        line << " < ";
 		break;
 	case NCompareOp::LE:
-		trLine << " <= ";
+        line << " <= ";
 		break;
 	case NCompareOp::GT:
-		trLine << " > ";
+        line << " > ";
 		break;
 	case NCompareOp::GE:
-		trLine << " >= ";
+        line << " >= ";
 		break;
 	}
-	trLine << "(" << rightLine.str() << ")";
-	return compiler->typeBool;
+    line << rightValue->name;
+    trBlock->statements.push_back(line.str());
+
+	return resultValue;
 }
 
 void NCompare::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {

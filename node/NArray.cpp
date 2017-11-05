@@ -42,7 +42,7 @@ int NArray::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBase
     return 0;
 }
 
-shared_ptr<CType> NArray::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
+shared_ptr<ReturnValue> NArray::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
 	assert(false);
 	return nullptr;
 }
@@ -133,7 +133,7 @@ int NList::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseF
 //    return createCall->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, returnRefType);
 //}
 
-shared_ptr<CType> NList::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
+shared_ptr<ReturnValue> NList::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
 	assert(false);
 	return nullptr;
 }

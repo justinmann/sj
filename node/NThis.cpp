@@ -2,9 +2,12 @@
 
 NThis::NThis(CLoc loc) : NVariableBase(NodeType_This, loc) { }
 
-shared_ptr<CType> NThis::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
-	trLine << "_this";
-	return thisVar->getType(compiler, result);
+shared_ptr<ReturnValue> NThis::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
+	return make_shared<ReturnValue>(
+        thisVar->getType(compiler, result), 
+        thisVar->getHeapVar(compiler, result, thisVar), 
+        RVR_MustRetain, 
+        "_this");
 }
 
 shared_ptr<CVar> NThis::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {

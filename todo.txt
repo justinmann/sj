@@ -1,6 +1,4 @@
-* add retain for assignments
-* add retain for function init
-* release vars at block end
+* retain class values
 
 * #forceParent# -> force current function to include a parent
 * #forceHeap(class)# -> force a var to be on heap
@@ -11,7 +9,25 @@
 * #isValue(i32)# -> true
 * make c special commands support templates #type(t)# -> sjf_class 
 
-* [x] -> getAt(x)
-* [x] = y -> setAt(x, y)
-* a.x -> getX()
-* a.x = y -> setX(y)
+* operators
+	[x] 		-> getAt(x)
+	[x] = y 	-> setAt(x, y)
+	a.x 		-> getX()
+	a.x = y 	-> setX(y)
+	a * b 		-> a.multiply(b)
+	a / b 		-> a.divide(b)
+	a + b 		-> a.add(b)
+	a - b 		-> a.subtract(b)
+	a *= b 		-> a = a.add(b)
+	a /= b 		-> a = a.divide(b)
+	a += b 		-> a = a.add(b)
+	a -= b 		-> a = a.subtract(b)
+	a < b 		-> a.isLess(b)
+	a <= b 		-> a.isLessOrEqual(b)
+	a > b 		-> a.isGreater(b)
+	a >= b 		-> a.isGreaterOrEqual(b)
+	a == b 		-> a.isEqual(b)
+	a as type	-> a.asType()'t
+
+* interface
+* lambda

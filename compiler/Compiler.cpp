@@ -405,7 +405,6 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 	auto templateTypes = vector<shared_ptr<CType>>();
 	shared_ptr<CFunction> currentFunction;
 	shared_ptr<CFunction> globalFunction;
-	stringstream returnLine;
 
 	auto result = genNodeFile(fileName);
 	if (result->errors.size() == 0) {
@@ -448,8 +447,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 
 					state = CompilerState::Compile;                    
                     vector<shared_ptr<NBase>> parameters;
-                    globalFunction->transpile(this, *result, nullptr, nullptr, &output, &output.mainFunction, returnLine, globalVar, parameters);
-                    output.mainFunction.statements.push_back(returnLine.str());
+                    globalFunction->transpile(this, *result, nullptr, nullptr, &output, &output.mainFunction, false, nullptr, globalVar, parameters);
 
                     if (result->errors.size() == 0) {
                         output.writeToStream(stream);

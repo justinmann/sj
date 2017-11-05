@@ -37,7 +37,7 @@ int NMathAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_
     return count;
 }
 
-shared_ptr<CType> NMathAssignment::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
+shared_ptr<ReturnValue> NMathAssignment::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
 	auto cvar = var->getVar(compiler, result, thisFunction, thisVar, nullptr);
 	if (!cvar) {
 		return nullptr;
@@ -48,32 +48,38 @@ shared_ptr<CType> NMathAssignment::transpile(Compiler* compiler, CResult& result
 		return nullptr;
 	}
 
-	auto leftType = var->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine);
-
-	switch (op) {
-	case NMAO_Add:
-		trLine << " += ";
-		break;
-	case NMAO_Sub:
-		trLine << " -= ";
-		break;
-	case NMAO_Inc:
-		trLine << "++";
-		break;
-	case NMAO_Dec:
-		trLine << "--";
-		break;
-	}
-
+    shared_ptr<ReturnValue> leftReturn = var->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
+    shared_ptr<ReturnValue> rightReturn;
 	if (rightSide) {
-		auto rightType = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine);
-		if (leftType != rightType) {
+        rightReturn = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
+		if (leftReturn->type != rightReturn->type) {
 			result.addError(loc, CErrorCode::TypeMismatch, "left and right values are not the same type");
 			return nullptr;
 		}
 	}
 
-	return leftType;
+    auto mathReturnValue = trBlock->createTempVariable("result", leftReturn->type, false, RVR_MustRetain);
+
+    stringstream lineStream;
+    switch (op) {
+    case NMAO_Add:
+        lineStream << mathReturnValue->name << " = " << leftReturn->name << " + " << rightReturn->name;
+        break;
+    case NMAO_Sub:
+        lineStream << mathReturnValue->name << " = " << leftReturn->name << " - " << rightReturn->name;
+        break;
+    case NMAO_Inc:
+        lineStream << mathReturnValue->name << " = " << leftReturn->name << " + 1";
+        break;
+    case NMAO_Dec:
+        lineStream << mathReturnValue->name << " = " << leftReturn->name << " - 1";
+        break;
+    }
+    trBlock->statements.push_back(lineStream.str());
+
+    var->transpileSet(compiler, result, thisFunction, thisVar, trOutput, trBlock, mathReturnValue);
+
+    return mathReturnValue;
 }
 
 //shared_ptr<ReturnValue> NMathAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {

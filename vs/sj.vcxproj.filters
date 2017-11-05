@@ -159,6 +159,9 @@
     <ClInclude Include="..\transpile\TrStatement.h">
       <Filter>Transpile</Filter>
     </ClInclude>
+    <ClInclude Include="..\node\NCCode.h">
+      <Filter>Node</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\node\NAnd.cpp">
@@ -289,6 +292,9 @@
     </ClCompile>
     <ClCompile Include="..\transpile\TrStatement.cpp">
       <Filter>Transpile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NCCode.cpp">
+      <Filter>Node</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

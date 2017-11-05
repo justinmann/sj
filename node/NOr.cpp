@@ -24,7 +24,7 @@ int NOr::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFun
     return count;
 }
 
-shared_ptr<CType> NOr::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
+shared_ptr<ReturnValue> NOr::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
 	assert(false);
 	return nullptr;
 }

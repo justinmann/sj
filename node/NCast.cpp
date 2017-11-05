@@ -33,12 +33,21 @@ int NCast::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseF
     return node->setHeapVar(compiler, result, thisFunction, thisVar, false);
 }
 
-shared_ptr<CType> NCast::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
+shared_ptr<ReturnValue> NCast::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
     auto type = getType(compiler, result, thisFunction, thisVar);
-	trLine << "(" << type->nameRef << ")(";
-	node->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, trLine);
-	trLine << ")";
-	return getType(compiler, result, thisFunction, thisVar);
+
+    auto returnValue = node->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
+    if (!returnValue) {
+        assert(false);
+        return nullptr;
+    }
+
+    auto resultValue = trBlock->createTempVariable("result", type, false, RVR_MustRetain);
+    stringstream line;
+    line << resultValue->name << " = " << "(" << type->nameRef << ")" << returnValue->name;
+    trBlock->statements.push_back(line.str());
+
+	return resultValue;
 }
 
 //shared_ptr<ReturnValue> NCast::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {

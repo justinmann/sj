@@ -24,26 +24,39 @@ int NWhile::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBase
     return count;
 }
 
-shared_ptr<CType> NWhile::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, stringstream& trLine) {
-    stringstream whileLine;
-    whileLine << "while (";
-    auto condType = cond->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, whileLine);
-    if (condType != compiler->typeBool) {
+shared_ptr<ReturnValue> NWhile::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
+    auto whileValue = trBlock->createTempVariable("whileValue", compiler->typeBool, false, RVR_MustRetain);
+
+    auto condReturnValue = cond->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
+    if (condReturnValue->type != compiler->typeBool) {
         result.addError(loc, CErrorCode::TypeMismatch, "condition for while must be a bool");
         return nullptr;
     }
-    whileLine << ")";
-    
+
+    stringstream setWhileLine;
+    setWhileLine << whileValue->name << " = " << condReturnValue->name;
+    trBlock->statements.push_back(setWhileLine.str());
+
+    stringstream whileLine;
+    whileLine << "while (" << whileValue->name << ")";    
     auto trWhileBlock = make_shared<TrBlock>();
     trWhileBlock->parent = trBlock;
     trWhileBlock->hasThis = trBlock->hasThis;
-    stringstream bodyLine;
-    body->transpile(compiler, result, thisFunction, thisVar, trOutput, trWhileBlock.get(), bodyLine);
-    trWhileBlock->statements.push_back(bodyLine.str());
-    
+    body->transpile(compiler, result, thisFunction, thisVar, trOutput, trWhileBlock.get(), false);
+
+    auto innerCondReturnValue = cond->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
+    if (innerCondReturnValue->type != compiler->typeBool) {
+        result.addError(loc, CErrorCode::TypeMismatch, "condition for while must be a bool");
+        return nullptr;
+    }
+
+    stringstream innerSetWhileLine;
+    innerSetWhileLine << whileValue->name << " = " << innerCondReturnValue->name;
+    trWhileBlock->statements.push_back(innerSetWhileLine.str());
+
     trBlock->statements.push_back(TrStatement(whileLine.str(), trWhileBlock));
     
-    return compiler->typeVoid;
+    return nullptr;
 }
 
 //shared_ptr<ReturnValue> NWhile::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {

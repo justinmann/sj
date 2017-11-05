@@ -17,10 +17,11 @@ CType::CType(const char* name, weak_ptr<CFunction> parent) : category(CTC_Functi
 CType::CType(const char* name, weak_ptr<CInterface> parent) : category(CTC_Interface), name(name), nameValue(string("sjs_") + name), nameRef(string("sjs_") + name + "*"), parent(parent) {
 }
 
-void CType::transpileDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, stringstream& line) {
+shared_ptr<ReturnValue> CType::transpileDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     if (parent.expired()) {
-        line << _defaultValue;
+        return make_shared<ReturnValue>(shared_from_this(), false, RVR_MustRetain, _defaultValue);
     } else {
         assert(false);
+        return nullptr;
     }
 }
