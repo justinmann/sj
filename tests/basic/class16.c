@@ -35,9 +35,12 @@ sjs_aa* sjf_a_aa(sjs_aa* _this) {
 int32_t sjf_a_aa_c(sjs_aa* _parent) {
     sjs_a* temp2;
     int32_t temp3;
+
     temp2 = _parent->_parent;
     temp3 = temp2->x;
+
     sjf_a_destroy(temp2);
+
     return temp3;
 }
 
@@ -61,6 +64,7 @@ int32_t sjf_global() {
     sjs_a* sjv_temp2;
     sjs_aa* temp1;
     sjs_aa* temp4;
+
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
     result3 = sjf_a_aa(sjv_temp1);
@@ -70,11 +74,14 @@ int32_t sjf_global() {
     sjv_temp2->b = result3;
     result2 = sjf_a(sjv_temp2);
     a = result2;
+    a->_refCount++;
     temp1 = a->b;
     result4 = sjf_a_aa_c(temp1);
     temp4 = a->b;
     d = temp4;
+    d->_refCount++;
     result5 = sjf_a_aa_c(d);
+
     sjf_a_destroy(a);
     sjf_a_aa_destroy(d);
     result2->_refCount--;
@@ -91,11 +98,15 @@ int32_t sjf_global() {
     sjf_a_destroy(sjv_temp2);
     sjf_a_aa_destroy(temp1);
     sjf_a_aa_destroy(temp4);
+
     return result5;
 }
 
 int main() {
     int32_t result1;
+
     result1 = sjf_global();
+
+
     return 0;
 }

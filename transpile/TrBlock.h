@@ -7,7 +7,8 @@ class CType;
 
 enum ReturnValueRelease {
     RVR_MustRelease,
-    RVR_MustRetain
+    RVR_MustRetain,
+    RVR_Ignore
 };
 
 class ReturnValue {

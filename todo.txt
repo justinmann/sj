@@ -1,4 +1,3 @@
-* retain on assign
 * release on each statement in block
 * handle retain/release for local alloc
 	func() {
@@ -33,3 +32,56 @@
 
 * interface
 * lambda
+
+
+sjs_class* sjf_func() {
+    sjs_class* a;
+    sjs_class* result3;
+    sjs_class* result4;
+    sjs_class* sjv_temp1;
+    sjs_class* sjv_temp2;
+
+    sjv_temp1 = (sjs_class*)malloc(sizeof(sjs_class));
+    sjv_temp1->_refCount = 1;
+    result3 = sjf_class(sjv_temp1);
+    a = result3;
+x    a->_refCount++;
+
+    sjv_temp2 = (sjs_class*)malloc(sizeof(sjs_class));
+    sjv_temp2->_refCount = 1;
+    result4 = sjf_class(sjv_temp2);    
+x    a->_refCount--;
+x    if (a->_refCount == 0) {
+x        sjf_class_destroy(a);
+x        free(a);
+x    }
+    a = result4;
+x    a->_refCount++;
+
+    a->_refCount--;
+    if (a->_refCount == 0) {
+        sjf_class_destroy(a);
+        free(a);
+    }
+
+    result3->_refCount--;
+    if (result3->_refCount == 0) {
+        sjf_class_destroy(result3);
+        free(result3);
+    }
+    
+xx delete 
+x    result4->_refCount--;
+x    if (result4->_refCount == 0) {
+x        sjf_class_destroy(result4);
+x        free(result4);x
+x    }
+    
+    sjv_temp1->_refCount--;
+    if (sjv_temp1->_refCount == 0) {
+        sjf_class_destroy(sjv_temp1);
+        free(sjv_temp1);
+    }
+    
+    return result4;
+}

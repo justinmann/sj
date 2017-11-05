@@ -24,7 +24,10 @@ void sjf_class_destroy(sjs_class* _this) {
 
 int32_t sjf_class_func(sjs_class* _parent) {
     int32_t temp1;
+
     temp1 = _parent->x;
+
+
     return temp1;
 }
 
@@ -34,12 +37,15 @@ int32_t sjf_global() {
     int32_t result3;
     sjs_class sjd_temp1;
     sjs_class* sjv_temp1;
+
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
     sjv_temp1->x = 1;
     result2 = sjf_class(sjv_temp1);
     c = result2;
+    c->_refCount++;
     result3 = sjf_class_func(c);
+
     sjf_class_destroy(c);
     result2->_refCount--;
     if (result2->_refCount == 0) {
@@ -47,11 +53,15 @@ int32_t sjf_global() {
         free(result2);
     }
     sjf_class_destroy(sjv_temp1);
+
     return result3;
 }
 
 int main() {
     int32_t result1;
+
     result1 = sjf_global();
+
+
     return 0;
 }

@@ -175,11 +175,13 @@ void CNormalVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CB
         return;
     }
 
+    string varName;
+
     if (dotValue) {
-        lineStream << dotValue->name << "->" << name << " = " << returnValue->name;
+        varName = dotValue->name + "->" + name;
     }
     else if (trBlock->hasThis && (mode == Var_Public || mode == Var_Private)) {
-        lineStream << "_this->" << name << " = " << returnValue->name;
+        varName = "_this->" + name;
     }
     else {
         if (!trBlock->getVariable(name)) {
@@ -193,10 +195,17 @@ void CNormalVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CB
         else {
             // TODO: Free previous value
         }
-        lineStream << name << " = " << returnValue->name;
+        varName = name;
     }
 
+    lineStream << varName << " = " << returnValue->name;
     trBlock->statements.push_back(lineStream.str());
+
+    if (returnValue->release == RVR_MustRetain && !returnType->parent.expired() && returnType->parent.lock()->hasRefCount) {
+        stringstream refStream;
+        refStream << varName << "->_refCount++";
+        trBlock->statements.push_back(refStream.str());
+    }
 }
 
 void CNormalVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

@@ -11,6 +11,9 @@ bool sjf_global() {
 
 int main() {
     bool result1;
+
     result1 = sjf_global();
+
+
     return 0;
 }

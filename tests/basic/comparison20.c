@@ -8,13 +8,19 @@ bool sjf_global();
 bool sjf_global() {
     bool result2;
     bool result3;
+
     result2 = -3.0 != 4.0;
     result3 = !result2;
+
+
     return result3;
 }
 
 int main() {
     bool result1;
+
     result1 = sjf_global();
+
+
     return 0;
 }

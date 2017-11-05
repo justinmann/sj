@@ -7,10 +7,13 @@ void sjf_global();
 
 void sjf_global() {
     bool whileValue1;
+
     whileValue1 = false;
     while (whileValue1) {
         whileValue1 = false;
     }
+
+
 }
 
 int main() {

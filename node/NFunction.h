@@ -161,6 +161,7 @@ private:
     shared_ptr<CInterfaceMethod> interfaceMethod;
     shared_ptr<CFunctionReturnVar> functionReturnVar;
     shared_ptr<vector<pair<string, shared_ptr<CType>>>> ctypeList;
+    shared_ptr<CVar> _thisVar;
 };
 
 class CFunctionDefinition : public CBaseFunctionDefinition, public enable_shared_from_this<CFunctionDefinition> {

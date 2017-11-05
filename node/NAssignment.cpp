@@ -108,7 +108,7 @@ int NAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<
     auto count = 0;
     
     if (_assignVar != nullptr && _assignVar->mode != Var_Local) {
-        // TODO: does not need to be a heap var if parent is a local var
+        // Force heap var for right side if assigning to variables out of scope
         isHeapVar = true;
     }
     

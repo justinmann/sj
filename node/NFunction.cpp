@@ -1262,27 +1262,30 @@ void CFunction::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CVar> t
 
 
 void CFunction::createThisVar(Compiler* compiler, CResult& result, shared_ptr<CVar>& thisVar) {
-    thisVar = CNormalVar::createThisVar(loc, shared_from_this(), getThisType(compiler, result));
-    getVarBody(compiler, result, thisVar);
-    setHeapVarBody(compiler, result, thisVar);
+    if (!_thisVar) {
+        _thisVar = CNormalVar::createThisVar(loc, shared_from_this(), getThisType(compiler, result));
+        getVarBody(compiler, result, _thisVar);
+        setHeapVarBody(compiler, result, _thisVar);
 
-    if (interfaces) {
-        // Make all functions used by an interface are defined
-        for (auto interface : *interfaces) {
-            for (auto it : interface->methods) {
-                auto cfunc = static_pointer_cast<CFunction>(getCFunction(compiler, result, it->name, nullptr, nullptr));
-                if (!cfunc) {
-                    result.addError(loc, CErrorCode::InterfaceMethodDoesNotExist, "cannot find interface method: '%s'", it->name.c_str());
-                    return;
+        if (interfaces) {
+            // Make all functions used by an interface are defined
+            for (auto interface : *interfaces) {
+                for (auto it : interface->methods) {
+                    auto cfunc = static_pointer_cast<CFunction>(getCFunction(compiler, result, it->name, nullptr, nullptr));
+                    if (!cfunc) {
+                        result.addError(loc, CErrorCode::InterfaceMethodDoesNotExist, "cannot find interface method: '%s'", it->name.c_str());
+                        return;
+                    }
+
+                    assert(!cfunc->getHasThis());
+                    cfunc->setHasParent(compiler, result); // All interface methods must take the parent has first pointer even if they don't need it
+                    cfunc->getVarBody(compiler, result, nullptr);
+                    cfunc->setHeapVarBody(compiler, result, nullptr);
                 }
-                
-                assert(!cfunc->getHasThis());
-                cfunc->setHasParent(compiler, result); // All interface methods must take the parent has first pointer even if they don't need it
-                cfunc->getVarBody(compiler, result, nullptr);
-                cfunc->setHeapVarBody(compiler, result, nullptr);
             }
         }
     }
+    thisVar = _thisVar;
 }
 
 shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {

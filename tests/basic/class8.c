@@ -30,15 +30,18 @@ int32_t sjf_global() {
     sjs_class* sjv_temp1;
     int32_t temp1;
     int32_t temp2;
+
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
     sjv_temp1->x = 1;
     sjv_temp1->y = 2;
     result2 = sjf_class(sjv_temp1);
     c = result2;
+    c->_refCount++;
     temp1 = c->x;
     temp2 = c->y;
     result3 = temp1 + temp2;
+
     sjf_class_destroy(c);
     result2->_refCount--;
     if (result2->_refCount == 0) {
@@ -46,11 +49,15 @@ int32_t sjf_global() {
         free(result2);
     }
     sjf_class_destroy(sjv_temp1);
+
     return result3;
 }
 
 int main() {
     int32_t result1;
+
     result1 = sjf_global();
+
+
     return 0;
 }
