@@ -25,14 +25,13 @@ sjs_class* sjf_func() {
     sjs_class* a;
     sjs_class* result3;
     sjs_class* result4;
-    sjs_class sjd_temp1;
     sjs_class* sjv_temp1;
     sjs_class* sjv_temp2;
     sjv_temp1 = (sjs_class*)malloc(sizeof(sjs_class));
     sjv_temp1->_refCount = 1;
     result3 = sjf_class(sjv_temp1);
     a = result3;
-    sjv_temp2 = &sjd_temp1;
+    sjv_temp2 = (sjs_class*)malloc(sizeof(sjs_class));
     sjv_temp2->_refCount = 1;
     result4 = sjf_class(sjv_temp2);
     a = result4;
@@ -56,7 +55,11 @@ sjs_class* sjf_func() {
         sjf_class_destroy(sjv_temp1);
         free(sjv_temp1);
     }
-    sjf_class_destroy(sjv_temp2);
+    sjv_temp2->_refCount--;
+    if (sjv_temp2->_refCount == 0) {
+        sjf_class_destroy(sjv_temp2);
+        free(sjv_temp2);
+    }
     return result4;
 }
 
