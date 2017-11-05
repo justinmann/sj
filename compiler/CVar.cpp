@@ -176,15 +176,20 @@ void CNormalVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CB
     }
 
     string varName;
+    bool isFirstAssignment = false;
 
     if (dotValue) {
         varName = dotValue->name + "->" + name;
     }
     else if (trBlock->hasThis && (mode == Var_Public || mode == Var_Private)) {
+        if (!isMutable) {
+            isFirstAssignment = true;
+        }
         varName = "_this->" + name;
     }
     else {
         if (!trBlock->getVariable(name)) {
+            isFirstAssignment = true;
             trBlock->createVariable(name, returnType, getHeapVar(compiler, result, thisVar), RVR_MustRetain);
         }
         else if (!isMutable) {
@@ -192,10 +197,11 @@ void CNormalVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CB
             result.addError(loc, CErrorCode::TypeMismatch, "cannot assign to immutable variable", returnType->name.c_str(), returnValue->type->name.c_str());
             return;
         }
-        else {
-            // TODO: Free previous value
-        }
         varName = name;
+    }
+
+    if (!isFirstAssignment && !returnType->parent.expired() && returnType->parent.lock()->hasRefCount) {
+        ReturnValue::addReleaseToStatements(trBlock, varName, returnType);
     }
 
     lineStream << varName << " = " << returnValue->name;

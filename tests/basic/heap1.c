@@ -36,6 +36,11 @@ sjs_class* sjf_func() {
     sjv_temp2 = (sjs_class*)malloc(sizeof(sjs_class));
     sjv_temp2->_refCount = 1;
     result4 = sjf_class(sjv_temp2);
+    a->_refCount--;
+    if (a->_refCount == 0) {
+        sjf_class_destroy(a);
+        free(a);
+    }
     a = result4;
     a->_refCount++;
 

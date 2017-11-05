@@ -134,3 +134,24 @@ void ReturnValue::writeReleaseToStream(ostream& stream, int level) {
     }
 }
 
+void ReturnValue::addReleaseToStatements(TrBlock* block, string name, shared_ptr<CType> type) {
+    assert(!type->parent.expired());
+
+    stringstream lineStream;
+    lineStream << name << "->_refCount--";
+    block->statements.push_back(lineStream.str());
+
+    auto ifBlock = make_shared<TrBlock>();
+    stringstream ifStream;
+    ifStream << "if (" << name << "->_refCount == 0)";
+    block->statements.push_back(TrStatement(ifStream.str(), ifBlock));
+
+    stringstream destroyStream;
+    destroyStream << type->parent.lock()->getCDestroyFunctionName() << "(" << name << ")";
+    ifBlock->statements.push_back(destroyStream.str());
+
+    stringstream freeStream;
+    freeStream << "free(" << name << ")";
+    ifBlock->statements.push_back(freeStream.str());
+}
+

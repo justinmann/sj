@@ -16,6 +16,7 @@ public:
     ReturnValue(shared_ptr<CType> type_, bool isHeap_, ReturnValueRelease release_, string name_);
     ReturnValue(string typeName_, string name_);
     void writeReleaseToStream(ostream& stream, int level);
+    static void addReleaseToStatements(TrBlock* block, string name, shared_ptr<CType> type);
 
     shared_ptr<CType> type;
     string typeName;
