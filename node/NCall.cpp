@@ -163,7 +163,7 @@ int CCallVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> t
     return 0;
 }
 
-shared_ptr<ReturnValue> CCallVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue) {
+shared_ptr<ReturnValue> CCallVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue) {
     assert(compiler->state == CompilerState::Compile);
 
     if (arguments->size() > callee->argDefaultValues.size()) {
@@ -177,7 +177,7 @@ shared_ptr<ReturnValue> CCallVar::transpileGet(Compiler* compiler, CResult& resu
         return nullptr;
     }
 
-    return callee->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, dotValue, calleeVar, parameters);
+    return callee->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue, dotValue, calleeVar, parameters);
 }
 
 void CCallVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue) {

@@ -36,7 +36,7 @@ public:
         return 0;
     }
     
-    shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue) {
+    shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue) {
 		return make_shared<ReturnValue>(getType(compiler, result), false, RVR_MustRetain, name);
 	}
 
@@ -97,11 +97,11 @@ int NFor::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFu
     return count;
 }
 
-shared_ptr<ReturnValue> NFor::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock) {
+shared_ptr<ReturnValue> NFor::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
     trBlock->createVariable(varName, compiler->typeI32, false, RVR_MustRetain);
     auto trLoopEndVar = trBlock->createTempVariable("loopEnd", compiler->typeI32, false, RVR_MustRetain);
     
-    auto loopCounterReturnValue = start->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock);
+    auto loopCounterReturnValue = start->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
     if (loopCounterReturnValue->type != compiler->typeI32) {
         result.addError(loc, CErrorCode::TypeMismatch, "start value must be a int");
         return nullptr;
@@ -111,7 +111,7 @@ shared_ptr<ReturnValue> NFor::transpile(Compiler* compiler, CResult& result, sha
     loopCounterLine << varName << " = " << loopCounterReturnValue->name;
     trBlock->statements.push_back(loopCounterLine.str());
     
-    auto loopEndReturnValue = end->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock);
+    auto loopEndReturnValue = end->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
     if (loopEndReturnValue->type != compiler->typeI32) {
         result.addError(loc, CErrorCode::TypeMismatch, "end value must be a int");
         return nullptr;
@@ -128,7 +128,7 @@ shared_ptr<ReturnValue> NFor::transpile(Compiler* compiler, CResult& result, sha
     whileLine << "while (" << varName << " <= " << trLoopEndVar->name << ")";
     trBlock->statements.push_back(TrStatement(whileLine.str(), trForBlock));
 
-    body->transpile(compiler, result, thisFunction, thisVar, trOutput, trForBlock.get());
+    body->transpile(compiler, result, thisFunction, thisVar, trOutput, trForBlock.get(), false);
 
     stringstream loopCounterIncLine;
     loopCounterIncLine << varName << "++";

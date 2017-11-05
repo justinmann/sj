@@ -19,7 +19,7 @@ shared_ptr<CType> NDouble::getTypeImpl(Compiler* compiler, CResult& result, shar
 //    return make_shared<ReturnValue>(false, ConstantFP::get(compiler->context, APFloat(t)));
 //}
 
-shared_ptr<ReturnValue> NDouble::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock) {
+shared_ptr<ReturnValue> NDouble::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
 	return make_shared<ReturnValue>(compiler->typeF64, false, RVR_MustRetain, value);
 }
 

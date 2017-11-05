@@ -58,7 +58,7 @@ public:
     //virtual void releaseHeap(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
 
     //virtual shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType) = 0;
-    virtual shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, vector<shared_ptr<NBase>>& parameters) = 0;
+    virtual shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, vector<shared_ptr<NBase>>& parameters) = 0;
     virtual void dumpBody(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) = 0;
     virtual bool getReturnMustRelease(Compiler* compiler, CResult& result) = 0;
     //virtual Function* getDestructor(Compiler* compiler, CResult& result) = 0;

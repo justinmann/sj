@@ -25,7 +25,7 @@ public:
     const shared_ptr<NBase> rightSide;
     
     NCompare(CLoc loc, shared_ptr<NBase> leftSide, NCompareOp op, shared_ptr<NBase> rightSide) : NBase(NodeType_Compare, loc), op(op), leftSide(leftSide), rightSide(rightSide) { }
-	virtual shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock);
+	virtual shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue);
 	virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
 
 protected:

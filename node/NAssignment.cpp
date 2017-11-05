@@ -134,7 +134,7 @@ int NAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<
     return count;
 }
 
-shared_ptr<ReturnValue> NAssignment::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock) {
+shared_ptr<ReturnValue> NAssignment::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
 	assert(compiler->state == CompilerState::Compile);
 	    
 	if (!rightSide) {
@@ -142,7 +142,7 @@ shared_ptr<ReturnValue> NAssignment::transpile(Compiler* compiler, CResult& resu
 		return nullptr;
 	}
 		    
-	auto rightReturn = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock);
+	auto rightReturn = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue);
     if (!rightReturn) {
         result.addError(loc, CErrorCode::TypeMismatch, "no return value");
         return nullptr;

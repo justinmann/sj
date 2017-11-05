@@ -125,7 +125,7 @@ shared_ptr<CType> NFunction::getTypeImpl(Compiler* compiler, CResult& result, sh
     return compiler->typeVoid;
 }
 
-shared_ptr<ReturnValue> NFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock) {
+shared_ptr<ReturnValue> NFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
 	return nullptr;
 }
 
@@ -178,7 +178,7 @@ int CFunctionReturnVar::setHeapVar(Compiler* compiler, CResult& result, shared_p
     return count;
 }
 
-shared_ptr<ReturnValue> CFunctionReturnVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue) {
+shared_ptr<ReturnValue> CFunctionReturnVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue) {
     assert(false);
 	return nullptr;
 }
@@ -349,7 +349,7 @@ public:
     shared_ptr<ReturnValue> value;
 };
 
-shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, vector<shared_ptr<NBase>>& parameters) {
+shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, vector<shared_ptr<NBase>>& parameters) {
     assert(compiler->state == CompilerState::Compile);
     auto returnType = getReturnType(compiler, result, thisVar);
     if (!returnType) {
@@ -377,14 +377,14 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
                 auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
                 assert(paramHeapVar == argHeapVar);
             }
-            argReturnValue = parameters[argIndex]->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trBlock);
+            argReturnValue = parameters[argIndex]->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trBlock, false);
         } else {
             auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), thisVar);
             if (paramVar) {
                 auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
                 assert(paramHeapVar == argHeapVar);
             }
-            argReturnValue = parameters[argIndex]->transpile(compiler, result, shared_from_this(), thisVar, trOutput, trBlock);
+            argReturnValue = parameters[argIndex]->transpile(compiler, result, shared_from_this(), thisVar, trOutput, trBlock, false);
         }
         
         if (argReturnValue && argReturnValue->type != argType) {
@@ -423,7 +423,7 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
             definition << ")";
             trFunctionBlock->definition = definition.str();
             
-            auto bodyReturnValue = block->transpile(compiler, result, shared_from_this(), nullptr, trOutput, trFunctionBlock.get());
+            auto bodyReturnValue = block->transpile(compiler, result, shared_from_this(), nullptr, trOutput, trFunctionBlock.get(), true);
             if (bodyReturnValue) {
                 assert(bodyReturnValue->type == returnType);
                 assert(bodyReturnValue->release == RVR_MustRetain);
@@ -510,7 +510,7 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
 			functionDefinition << returnType->nameRef << " " << functionName << "(" << structName << "* _this)";
 			trFunctionBlock->definition = functionDefinition.str();
 
-            auto bodyReturnValue = block->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trFunctionBlock.get());
+            auto bodyReturnValue = block->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trFunctionBlock.get(), true);
             if (!bodyReturnValue) {
                 assert(bodyReturnValue->type == returnType);
                 assert(bodyReturnValue->release == RVR_MustRetain);
@@ -534,7 +534,7 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
             trDestroyBlock->definition = functionDefinition.str();
             
             if (destroyBlock) {
-                destroyBlock->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trDestroyBlock.get());
+                destroyBlock->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trDestroyBlock.get(), false);
             }
             
             for (auto argVar : argVars) {

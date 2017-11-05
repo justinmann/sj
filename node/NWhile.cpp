@@ -24,10 +24,10 @@ int NWhile::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBase
     return count;
 }
 
-shared_ptr<ReturnValue> NWhile::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock) {
+shared_ptr<ReturnValue> NWhile::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
     auto whileValue = trBlock->createTempVariable("whileValue", compiler->typeBool, false, RVR_MustRetain);
 
-    auto condReturnValue = cond->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock);
+    auto condReturnValue = cond->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
     if (condReturnValue->type != compiler->typeBool) {
         result.addError(loc, CErrorCode::TypeMismatch, "condition for while must be a bool");
         return nullptr;
@@ -42,9 +42,9 @@ shared_ptr<ReturnValue> NWhile::transpile(Compiler* compiler, CResult& result, s
     auto trWhileBlock = make_shared<TrBlock>();
     trWhileBlock->parent = trBlock;
     trWhileBlock->hasThis = trBlock->hasThis;
-    body->transpile(compiler, result, thisFunction, thisVar, trOutput, trWhileBlock.get());
+    body->transpile(compiler, result, thisFunction, thisVar, trOutput, trWhileBlock.get(), false);
 
-    auto innerCondReturnValue = cond->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock);
+    auto innerCondReturnValue = cond->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
     if (innerCondReturnValue->type != compiler->typeBool) {
         result.addError(loc, CErrorCode::TypeMismatch, "condition for while must be a bool");
         return nullptr;

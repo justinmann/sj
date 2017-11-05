@@ -11,7 +11,7 @@ shared_ptr<CType> NChar::getTypeImpl(Compiler* compiler, CResult& result, shared
 //    return make_shared<ReturnValue>(false, ConstantInt::get(compiler->context, APInt(8, value)));
 //}
 
-shared_ptr<ReturnValue> NChar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock) {
+shared_ptr<ReturnValue> NChar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
 	assert(false);
 	return nullptr;
 }

@@ -143,7 +143,7 @@ int CNormalVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar>
     return count;
 }
 
-shared_ptr<ReturnValue> CNormalVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue) {
+shared_ptr<ReturnValue> CNormalVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue) {
     auto returnType = getType(compiler, result);
     auto returnIsHeap = getHeapVar(compiler, result, thisVar);
     if (dotValue) {

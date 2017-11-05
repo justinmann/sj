@@ -60,7 +60,7 @@ string CParentVar::fullName() {
     return childVar->fullName();
 }
 
-shared_ptr<ReturnValue> CParentVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue) {
+shared_ptr<ReturnValue> CParentVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue) {
     shared_ptr<ReturnValue> parentValue;
     if (dotValue) {
         parentValue = trBlock->createTempVariable(
@@ -80,7 +80,7 @@ shared_ptr<ReturnValue> CParentVar::transpileGet(Compiler* compiler, CResult& re
             RVR_MustRetain,
             "_parent");
     }
-    return childVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, parentValue);
+    return childVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue, parentValue);
 }
 
 void CParentVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue) {
