@@ -12,11 +12,10 @@ void sjf_global() {
     while (whileValue1) {
         whileValue1 = false;
     }
-
-
 }
 
 int main() {
     sjf_global();
+
     return 0;
 }

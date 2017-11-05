@@ -32,7 +32,6 @@ sjs_array_class* sjf_array_class(sjs_array_class* _this) {
     temp1 = _this->count;
     sjf_array_class_setSize(temp1);
 
-
     return _this;
 }
 
@@ -75,6 +74,7 @@ void sjf_array_class_setSize(int32_t x) {
 }
 
 sjs_class* sjf_class(sjs_class* _this) {
+
     return _this;
 }
 
@@ -139,10 +139,10 @@ void sjf_global() {
         sjf_class_destroy(sjv_temp3);
         free(sjv_temp3);
     }
-
 }
 
 int main() {
     sjf_global();
+
     return 0;
 }

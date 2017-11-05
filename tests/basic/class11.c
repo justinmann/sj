@@ -16,6 +16,7 @@ sjs_class* sjf_func();
 int32_t sjf_global();
 
 sjs_class* sjf_class(sjs_class* _this) {
+
     return _this;
 }
 
@@ -65,7 +66,6 @@ int main() {
     int32_t result1;
 
     result1 = sjf_global();
-
 
     return 0;
 }

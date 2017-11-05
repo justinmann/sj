@@ -24,10 +24,12 @@ sjs_anon_1* sjf_class_get(sjs_class* _parent);
 sjs_anon_1* sjf_global();
 
 sjs_class* sjf_class(sjs_class* _this) {
+
     return _this;
 }
 
 sjs_anon_1* sjf_class_anon_1(sjs_anon_1* _this) {
+
     return _this;
 }
 

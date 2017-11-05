@@ -10,7 +10,6 @@ float sjf_global() {
 
     result2 = (float)5;
 
-
     return result2;
 }
 
@@ -18,7 +17,6 @@ int main() {
     float result1;
 
     result1 = sjf_global();
-
 
     return 0;
 }

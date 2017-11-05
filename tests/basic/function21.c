@@ -12,11 +12,11 @@ int32_t sjf_func() {
 
     result3 = sjf_func_bar();
 
-
     return result3;
 }
 
 int32_t sjf_func_bar() {
+
     return 9;
 }
 
@@ -25,7 +25,6 @@ int32_t sjf_global() {
 
     result2 = sjf_func();
 
-
     return result2;
 }
 
@@ -33,7 +32,6 @@ int main() {
     int32_t result1;
 
     result1 = sjf_global();
-
 
     return 0;
 }

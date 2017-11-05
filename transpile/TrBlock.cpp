@@ -14,8 +14,13 @@ void TrBlock::writeBodyToStream(ostream& stream, int level) {
         stream << "\n";
     }
 
+    bool previousLineBlock = false;
 	for (auto statement : statements)
 	{
+        if (previousLineBlock) {
+            stream << "\n";
+        }
+
         if (statement.block != nullptr) {
             addSpacing(stream, level);
             stream << statement.line << " {\n";
@@ -30,26 +35,25 @@ void TrBlock::writeBodyToStream(ostream& stream, int level) {
 
             addSpacing(stream, level);
             stream << "}\n";
+            previousLineBlock = true;
         } else if (statement.line.size() > 0) {
             addSpacing(stream, level);
             stream << statement.line << ";\n";
         }
 	}
 
-    if (variables.size() > 0) {
-        stream << "\n";
-    }
-
+    stringstream varStream;
     for (auto variable : variables)
     {
-        variable.second->writeReleaseToStream(stream, level);
+        variable.second->writeReleaseToStream(varStream, level);
     }
-
-    if (variables.size() > 0) {
-        stream << "\n";
+    auto varString = varStream.str();
+    if (varString.size() > 0) {
+        stream << "\n" << varString;
     }
 
     if (returnLine.size() > 0) {
+        stream << "\n";
         addSpacing(stream, level);
         stream << "return " << returnLine << ";\n";
     }
@@ -105,14 +109,14 @@ void TrBlock::addSpacing(ostream& stream, int level) {
 
 map<string, int> TrBlock::varNames;
 
-void ReturnValue::writeReleaseToStream(ostream& stream, int level) {
+bool ReturnValue::writeReleaseToStream(ostream& stream, int level) {
     if (release == RVR_Ignore)
-        return;
+        return false;
 
     assert(release == RVR_MustRetain);
 
     if (!type || type->parent.expired())
-        return;
+        return false;
 
     if (!isHeap) {
         TrBlock::addSpacing(stream, level);
@@ -132,6 +136,8 @@ void ReturnValue::writeReleaseToStream(ostream& stream, int level) {
         TrBlock::addSpacing(stream, level);
         stream << "}\n";
     }
+
+    return true;
 }
 
 void ReturnValue::addReleaseToStatements(TrBlock* block, string name, shared_ptr<CType> type) {

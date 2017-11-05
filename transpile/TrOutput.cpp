@@ -42,6 +42,7 @@ void TrOutput::writeToStream(ostream& stream) {
 
 	mainFunction.writeBodyToStream(stream, 1);
 
+    stream << "\n";
 	stream << "    return 0;\n";
 	stream << "}\n";
 }

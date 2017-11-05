@@ -9,14 +9,17 @@ int32_t sjf_class_i32();
 int32_t sjf_global();
 
 int32_t sjf_class_bool() {
+
     return 1;
 }
 
 int32_t sjf_class_f32() {
+
     return 1;
 }
 
 int32_t sjf_class_i32() {
+
     return 1;
 }
 
@@ -35,7 +38,6 @@ int32_t sjf_global() {
     result4 = sjf_class_bool();
     c = result4;
 
-
     return result4;
 }
 
@@ -43,7 +45,6 @@ int main() {
     int32_t result1;
 
     result1 = sjf_global();
-
 
     return 0;
 }

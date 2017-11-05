@@ -13,5 +13,6 @@ void sjf_global() {
 
 int main() {
     sjf_global();
+
     return 0;
 }

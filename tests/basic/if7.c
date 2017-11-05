@@ -14,7 +14,6 @@ double sjf_global() {
         ifResult1 = 1.0;
     }
 
-
     return ifResult1;
 }
 
@@ -22,7 +21,6 @@ int main() {
     double result1;
 
     result1 = sjf_global();
-
 
     return 0;
 }

@@ -19,10 +19,7 @@ int32_t sjf_global() {
         result2 = y + x;
         y = result2;
         x++;
-
-
     }
-
 
     return y;
 }
@@ -31,7 +28,6 @@ int main() {
     int32_t result1;
 
     result1 = sjf_global();
-
 
     return 0;
 }

@@ -14,11 +14,10 @@ void sjf_global() {
     while (x <= loopEnd1) {
         x++;
     }
-
-
 }
 
 int main() {
     sjf_global();
+
     return 0;
 }

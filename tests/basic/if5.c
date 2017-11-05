@@ -43,31 +43,24 @@ int32_t sjf_global() {
                             } else {
                                 ifResult7 = 3;
                             }
+
                             ifResult6 = ifResult7;
-
-
                         }
+
                         ifResult5 = ifResult6;
-
-
                     }
+
                     ifResult4 = ifResult5;
-
-
                 }
+
                 ifResult3 = ifResult4;
-
-
             }
+
             ifResult2 = ifResult3;
-
-
         }
+
         ifResult1 = ifResult2;
-
-
     }
-
 
     return ifResult1;
 }
@@ -76,7 +69,6 @@ int main() {
     int32_t result1;
 
     result1 = sjf_global();
-
 
     return 0;
 }

@@ -15,6 +15,7 @@ sjs_class* sjf_func();
 sjs_class* sjf_global();
 
 sjs_class* sjf_class(sjs_class* _this) {
+
     return _this;
 }
 
@@ -41,7 +42,9 @@ sjs_class* sjf_func() {
         sjf_class_destroy(a);
         free(a);
     }
+
     a = result4;
+
     a->_refCount++;
 
     a->_refCount--;

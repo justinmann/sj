@@ -25,10 +25,12 @@ void sjf_a_destroy(sjs_a* _this);
 int32_t sjf_global();
 
 sjs_a* sjf_a(sjs_a* _this) {
+
     return _this;
 }
 
 sjs_aa* sjf_a_aa(sjs_aa* _this) {
+
     return _this;
 }
 
@@ -106,7 +108,6 @@ int main() {
     int32_t result1;
 
     result1 = sjf_global();
-
 
     return 0;
 }

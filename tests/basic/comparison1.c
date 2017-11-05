@@ -6,6 +6,7 @@
 bool sjf_global();
 
 bool sjf_global() {
+
     return true;
 }
 
@@ -13,7 +14,6 @@ int main() {
     bool result1;
 
     result1 = sjf_global();
-
 
     return 0;
 }
