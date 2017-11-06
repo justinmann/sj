@@ -1,6 +1,5 @@
 array!t (
-	count = 0
-	_size = 0
+	size = 0
 	_data = 0 as ptr
 
 	getAt(index : 'i32)'t c{
@@ -45,30 +44,15 @@ array!t (
 		}
 		return -1;
 	}c
-
-	getSize() { _size }
-
-	setSize(x : 'i32) c{
-		#forceParent()
-
-		if (x < 0) {
+) {
+	c{
+		if (_this->size < 0) {
 			exit(-1);
 		}
 
-		if (_parent->_size != x) {
-			if (x != 0) {
-				if (_parent->_data == 0) {
-					_parent->_data = (uintptr_t)malloc(x * sizeof(#type(t)));
-				} else {
-					_parent->_data = (uintptr_t)realloc((void*)_parent->_data, x * sizeof(#type(t)));
-				}
-			}
-			_parent->_size = x;
-		}
+		_this->_data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
 	}c
-) { 
-	setSize(count)
-	this 
+	this
 } destroy c{
 	free((#type(t)*)_this->_data);	
 }c

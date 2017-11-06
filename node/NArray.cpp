@@ -7,22 +7,13 @@ void NArray::initStatements(Compiler* compiler, CResult& result, shared_ptr<CBas
     if (statements.size() == 0) {
         auto firstElement = elements->front();
         if (firstElement != nullptr) {
-            auto arrayName = "array";
+            auto arrayName = "_array";
             
             // create and store array value
             auto elementType = firstElement->getType(compiler, result, thisFunction, thisVar);
-            auto createArray = make_shared<NCall>(loc, "array", make_shared<CTypeNameList>(CTC_Value, elementType->name), make_shared<NodeList>());
+            auto createArray = make_shared<NCall>(loc, "array", make_shared<CTypeNameList>(CTC_Value, elementType->name), make_shared<NodeList>(make_shared<NInteger>(loc, elements->size())));
             auto storeArray = make_shared<NAssignment>(loc, nullptr, nullptr, arrayName, createArray, false);
             statements.push_back(storeArray);
-            
-            // set array size
-            auto setSize = make_shared<NDot>(loc,
-                                             make_shared<NVariable>(loc, arrayName),
-                                             make_shared<NCall>(loc,
-                                                                "setSize",
-                                                                nullptr,
-                                                                make_shared<NodeList>(make_shared<NInteger>(loc, elements->size()))));
-            statements.push_back(setSize);
             
             auto index = 0;
             for (auto element : *elements) {

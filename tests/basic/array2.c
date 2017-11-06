@@ -7,22 +7,24 @@ typedef struct td_sjs_array_i32 sjs_array_i32;
 
 struct td_sjs_array_i32 {
     int _refCount;
-    int32_t count;
-    int32_t _size;
+    int32_t size;
     uintptr_t _data;
 };
 
 sjs_array_i32* sjf_array_i32(sjs_array_i32* _this);
 void sjf_array_i32_destroy(sjs_array_i32* _this);
+int32_t sjf_array_i32_getAt(sjs_array_i32* _parent, int32_t index);
 void sjf_array_i32_setAt(sjs_array_i32* _parent, int32_t index, int32_t item);
-void sjf_array_i32_setSize(sjs_array_i32* _parent, int32_t x);
-sjs_array_i32* sjf_global();
+int32_t sjf_global();
 
 sjs_array_i32* sjf_array_i32(sjs_array_i32* _this) {
-    int32_t temp1;
+    
+		if (_this->size < 0) {
+			exit(-1);
+		}
 
-    temp1 = _this->count;
-    sjf_array_i32_setSize(_this, temp1);
+		_this->_data = (uintptr_t)malloc(_this->size * sizeof(int32_t));
+	;
     _this->_refCount++;
 
     return _this;
@@ -32,6 +34,25 @@ void sjf_array_i32_destroy(sjs_array_i32* _this) {
     
 	free((int32_t*)_this->_data);	
 ;
+}
+
+int32_t sjf_array_i32_getAt(sjs_array_i32* _parent, int32_t index) {
+    
+		
+
+		if (index >= count || index < 0) {
+			exit(-1);
+		}
+
+		int32_t* p = (int32_t*)_parent->_data;
+		int32_t val = p[index];
+		if (!true) {
+			if (val == 0) {
+				exit(-1);
+			}
+		}
+		return val;		
+	;
 }
 
 void sjf_array_i32_setAt(sjs_array_i32* _parent, int32_t index, int32_t item) {
@@ -50,62 +71,32 @@ void sjf_array_i32_setAt(sjs_array_i32* _parent, int32_t index, int32_t item) {
 	;
 }
 
-void sjf_array_i32_setSize(sjs_array_i32* _parent, int32_t x) {
-    
-		
-
-		if (x < 0) {
-			exit(-1);
-		}
-
-		if (_parent->_size != x) {
-			if (x != 0) {
-				if (_parent->_data == 0) {
-					_parent->_data = (uintptr_t)malloc(x * sizeof(int32_t));
-				} else {
-					_parent->_data = (uintptr_t)realloc((void*)_parent->_data, x * sizeof(int32_t));
-				}
-			}
-			_parent->_size = x;
-		}
-	;
-}
-
-sjs_array_i32* sjf_global() {
+int32_t sjf_global() {
+    sjs_array_i32* _array;
     sjs_array_i32* a;
-    sjs_array_i32* array;
     sjs_array_i32* result2;
     uintptr_t result3;
+    int32_t result4;
     sjs_array_i32 sjd_temp1;
     sjs_array_i32* sjv_temp1;
 
     result3 = (uintptr_t)0;
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
-    sjv_temp1->count = 0;
-    sjv_temp1->_size = 0;
+    sjv_temp1->size = 3;
     sjv_temp1->_data = result3;
     result2 = sjf_array_i32(sjv_temp1);
-    array = result2;
-    array->_refCount++;
-    sjf_array_i32_setSize(array, 3);
-    sjf_array_i32_setAt(array, 0, 1);
-    sjf_array_i32_setAt(array, 1, 2);
-    sjf_array_i32_setAt(array, 2, 3);
-    a = array;
+    _array = result2;
+    _array->_refCount++;
+    sjf_array_i32_setAt(_array, 0, 1);
+    sjf_array_i32_setAt(_array, 1, 2);
+    sjf_array_i32_setAt(_array, 2, 3);
+    a = _array;
     a->_refCount++;
-    array->_refCount++;
+    result4 = sjf_array_i32_getAt(a, 0);
 
-    a->_refCount--;
-    if (a->_refCount == 0) {
-        sjf_array_i32_destroy(a);
-        free(a);
-    }
-    array->_refCount--;
-    if (array->_refCount == 0) {
-        sjf_array_i32_destroy(array);
-        free(array);
-    }
+    sjf_array_i32_destroy(_array);
+    sjf_array_i32_destroy(a);
     result2->_refCount--;
     if (result2->_refCount == 0) {
         sjf_array_i32_destroy(result2);
@@ -113,11 +104,11 @@ sjs_array_i32* sjf_global() {
     }
     sjf_array_i32_destroy(sjv_temp1);
 
-    return array;
+    return result4;
 }
 
 int main() {
-    sjs_array_i32* result1;
+    int32_t result1;
 
     result1 = sjf_global();
 

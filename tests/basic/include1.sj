@@ -6,5 +6,5 @@ class(
 	this
 }
 
-a : array!class(count = 2)
-a.set(0, class(bob : 1))
+a : array!class(size = 2)
+a.setAt(0, class(bob : 1))

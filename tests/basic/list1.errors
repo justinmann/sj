@@ -1,1 +1,3 @@
-ERROR:9 unknown[0:0] file does not exist './../lib/common/list.sj'
+ERROR:11 basic/list1.sj[4:4] function 'list' does not exist
+ERROR:7 basic/list1.sj[6:7] parent is not a function: 'global.a'
+ERROR:7 basic/list1.sj[8:5] parent is not a function: 'global.a'
