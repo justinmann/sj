@@ -90,7 +90,7 @@ shared_ptr<CType> NAssignment::getTypeImpl(Compiler* compiler, CResult& result, 
     if (typeName) {
         auto valueType = thisFunction->getVarType(compiler, result, typeName);
         if (!valueType) {
-            result.addError(loc, CErrorCode::InvalidType, "explicit type does not exist");
+            result.addError(loc, CErrorCode::InvalidType, "explicit type '%s' does not exist", typeName->name.c_str());
             return nullptr;
         }
         return valueType;

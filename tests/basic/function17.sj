@@ -1,1 +1,1 @@
-func(x: 'float) { x }; func(1)
+func(x: 'f32) { x }; func(1)

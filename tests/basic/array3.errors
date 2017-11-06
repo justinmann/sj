@@ -1,4 +1,0 @@
-ERROR:27 unknown[0:0] cannot find template type: 'sjs_class*'
-ERROR:11 basic/array3.sj[4:5] function 'array' does not exist
-ERROR:11 basic/array3.sj[4:5] function 'list' does not exist
-ERROR:7 basic/array3.sj[5:5] parent is not a function: 'global.a'

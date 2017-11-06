@@ -50,6 +50,10 @@ shared_ptr<ReturnValue> NInteger::transpile(Compiler* compiler, CResult& result,
         stringstream line;
         line << v;
         return make_shared<ReturnValue>(compiler->typeI32, false, RVR_MustRetain, line.str());
+    } else if (hasValue) {
+        stringstream line;
+        line << value;
+        return make_shared<ReturnValue>(compiler->typeI32, false, RVR_MustRetain, line.str());
     }
     return nullptr;
 }

@@ -3,7 +3,7 @@ array!t (
 	_size = 0
 	_data = 0 as ptr
 
-	get(index : 'i32)'t c{
+	getAt(index : 'i32)'t c{
 		#forceParent()
 
 		if (index >= count || index < 0) {
@@ -20,7 +20,7 @@ array!t (
 		return val;		
 	}c
 
-	set(index : 'i32, item : 't)'void c{
+	setAt(index : 'i32, item : 't)'void c{
 		#forceParent()
 		#forceHeap(item)
 
