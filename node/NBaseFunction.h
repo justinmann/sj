@@ -44,6 +44,7 @@ public:
     virtual shared_ptr<CVar> getCVar(Compiler* compiler, CResult& result, const string& name) = 0;
     virtual shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames) = 0;
     //virtual Value* getParentValue(Compiler* compiler, CResult& result, IRBuilder<>* builder, bool thisInEntry, Value* thisValue) = 0;
+    virtual shared_ptr<CBaseFunctionDefinition> getFunctionDefinition(string name) = 0;
     virtual shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName) = 0;
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) = 0;
     virtual shared_ptr<CVar> getReturnVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) = 0;

@@ -44,15 +44,32 @@ array!t (
 		}
 		return -1;
 	}c
-) {
-	c{
-		if (_this->size < 0) {
-			exit(-1);
+
+	grow(newSize :' i32)'array!t c{
+		#forceParent()
+
+		if (_parent->_size != newSize) {
+			if (newSize < _parent->_size) {
+				exit(-1);
+			}
+			
+			_parent->_data = (uintptr_t)realloc((void*)_parent->_data, newSize * sizeof(#type(t)));
+			_parent->_size = newSize;
 		}
 
-		_this->_data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
-	}c
-	this
-} destroy c{
+		return _parent;
+	}c 
+)'array!t c{
+	#forceThis()
+
+	if (_this->size < 0) {
+		exit(-1);
+	}
+
+	_this->_data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
+
+	#retain(array!t, _this);
+	return _this;
+}c destroy c{
 	free((#type(t)*)_this->_data);	
 }c

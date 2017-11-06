@@ -75,8 +75,8 @@ void sjf_array_i32_setAt(sjs_array_i32* _parent, int32_t index, int32_t item) {
 }
 
 int32_t sjf_global() {
-    sjs_array_i32* _array;
     sjs_array_i32* a;
+    int32_t c;
     sjs_array_i32* result2;
     uintptr_t result3;
     int32_t result4;
@@ -86,19 +86,15 @@ int32_t sjf_global() {
     result3 = (uintptr_t)0;
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
-    sjv_temp1->size = 3;
+    sjv_temp1->size = 1;
     sjv_temp1->_data = result3;
     result2 = sjf_array_i32(sjv_temp1);
-    _array = result2;
-    _array->_refCount++;
-    sjf_array_i32_setAt(_array, 0, 1);
-    sjf_array_i32_setAt(_array, 1, 2);
-    sjf_array_i32_setAt(_array, 2, 3);
-    a = _array;
+    a = result2;
     a->_refCount++;
+    sjf_array_i32_setAt(a, 0, 1);
     result4 = sjf_array_i32_getAt(a, 0);
+    c = result4;
 
-    sjf_array_i32_destroy(_array);
     sjf_array_i32_destroy(a);
     result2->_refCount--;
     if (result2->_refCount == 0) {
@@ -107,7 +103,7 @@ int32_t sjf_global() {
     }
     sjf_array_i32_destroy(sjv_temp1);
 
-    return result4;
+    return c;
 }
 
 int main() {

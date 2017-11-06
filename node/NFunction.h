@@ -109,6 +109,8 @@ public:
     //Value* getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, bool thisInEntry, Value* thisValue);
     //Value* getParentValue(Compiler* compiler, CResult& result, IRBuilder<>* builder, bool thisInEntry, Value* thisValue);
     string fullName(bool includeTemplateTypes);
+    shared_ptr<CBaseFunctionDefinition> getFunctionDefinition(string name);
+    shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, string name);
     shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName);
     //Value* getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
     

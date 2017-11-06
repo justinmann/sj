@@ -1670,6 +1670,33 @@ int CFunction::getArgStart(Compiler* compiler, CResult& result) {
     return (int)indexVars;
 }
 
+shared_ptr<CBaseFunctionDefinition> CFunction::getFunctionDefinition(string name) {
+    auto functionDefinition = static_pointer_cast<CFunctionDefinition>(definition.lock());
+    auto t2 = functionDefinition->funcsByName.find(name);
+    if (t2 != functionDefinition->funcsByName.end()) {
+        return t2->second;
+    }
+    
+    if (!parent.expired()) {
+        return parent.lock()->getFunctionDefinition(name);
+    }
+
+    return nullptr;
+}
+
+shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, string name) {
+    auto t = templateTypesByName.find(name);
+    if (t != templateTypesByName.end()) {
+        return t->second;
+    }
+
+    if (!parent.expired()) {
+        return static_pointer_cast<CFunction>(parent.lock())->getVarType(compiler, result, name);
+    }
+    
+    return compiler->getType(name);
+}
+
 shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName) {
     if (typeName->category == CTC_Interface) {
         auto interface = getCInterface(compiler, result, typeName->name, nullptr, typeName->templateTypeNames);
@@ -1679,15 +1706,14 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, sha
     } else {
         assert(typeName->category == CTC_Value);
         if (typeName->templateTypeNames == nullptr) {
-            auto t = templateTypesByName.find(typeName->name);
-            if (t != templateTypesByName.end()) {
-                return t->second;
+            auto ctype = getVarType(compiler, result, typeName->name);
+            if (ctype) {
+                return ctype;
             }
         }
         
-        auto functionDefinition = static_pointer_cast<CFunctionDefinition>(definition.lock());
-        auto t2 = functionDefinition->funcsByName.find(typeName->name);
-        if (t2 != functionDefinition->funcsByName.end()) {
+        auto baseFunctionDefinition = getFunctionDefinition(typeName->name);
+        if (baseFunctionDefinition != nullptr) {
             auto templateTypes = vector<shared_ptr<CType>>();
             if (typeName->templateTypeNames) {
                 for (auto it : *typeName->templateTypeNames) {
@@ -1699,17 +1725,10 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, sha
                 }
             }
             
-            auto cfunc = t2->second->getFunction(compiler, result, loc, templateTypes, shared_from_this());
+            auto functionDefinition = static_pointer_cast<CFunctionDefinition>(baseFunctionDefinition);
+            auto cfunc = functionDefinition->getFunction(compiler, result, loc, templateTypes, shared_from_this());
             return cfunc->getThisType(compiler, result);
         }
-    }
-    
-    if (!parent.expired()) {
-        return parent.lock()->getVarType(compiler, result, typeName);
-    }
-    
-    if (typeName->category == CTC_Value) {
-        return compiler->getType(typeName->name);
     }
     return nullptr;
 }

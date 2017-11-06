@@ -27,15 +27,18 @@ int32_t sjf_global();
 
 sjs_array_class* sjf_array_class(sjs_array_class* _this) {
     
-		if (_this->size < 0) {
-			exit(-1);
-		}
+	
 
-		_this->_data = (uintptr_t)malloc(_this->size * sizeof(sjs_class*));
-	;
-    _this->_refCount++;
+	if (_this->size < 0) {
+		exit(-1);
+	}
 
-    return _this;
+	_this->_data = (uintptr_t)malloc(_this->size * sizeof(sjs_class*));
+
+	 _this->_refCount++;
+;
+	return _this;
+;
 }
 
 void sjf_array_class_destroy(sjs_array_class* _this) {

@@ -12,6 +12,51 @@ CTypeNameList::CTypeNameList(CTypeCategory category, const string& name) {
     push_back(make_shared<CTypeName>(category, name));
 }
 
+shared_ptr<CTypeName> CTypeName::parse(string name) {
+    if (name.front() == '(') {
+        assert(false);
+        return make_shared<CTypeName>(CTC_Function, name);
+    } else if (name.front() == '#') {
+        assert(false);
+        return make_shared<CTypeName>(CTC_Interface, name);
+    } else {
+        auto bang = name.find('!');
+        if (bang != string::npos) {
+            auto typeName = name.substr(0, bang);
+            auto templateNames = name.substr(bang + 1, name.size() - bang - 1);
+            auto typeNameList = make_shared<CTypeNameList>();
+            if (templateNames.front() == '[' && templateNames.back() == ']') {
+                templateNames = templateNames.substr(1, templateNames.size() - 2);
+                string::size_type prev_pos = 0;
+                string::size_type pos = 0;
+                while((pos = templateNames.find(',', pos)) != std::string::npos)
+                {
+                    std::string substring(templateNames.substr(prev_pos, pos - prev_pos) );
+                    
+                    auto templateType = parse(substring);
+                    if (!templateType) {
+                        return nullptr;
+                    }
+                    typeNameList->push_back(templateType);
+                    
+                    prev_pos = ++pos;
+                }
+            } else {
+                auto templateType = parse(templateNames);
+                if (!templateType) {
+                    return nullptr;
+                }
+                typeNameList->push_back(templateType);
+            }
+            
+            return make_shared<CTypeName>(CTC_Value, typeName, typeNameList);
+        } else {
+            return make_shared<CTypeName>(CTC_Value, name);
+        }
+    }
+    return nullptr;
+}
+
 string CTypeName::getName() {
     if (category == CTC_Function) {
         string str = "(";
