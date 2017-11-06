@@ -1,15 +1,4 @@
 #include "node/Node.h"
-#ifdef __GNUC__
-#include <unistd.h>
-#include <dirent.h>
-#define PATH_SEPERATOR "/"
-#endif
-#ifdef _MSC_VER 
-#include <direct.h>
-#define getcwd _getcwd
-#include "windows/dirent.h"
-#define PATH_SEPERATOR "\\"
-#endif
 #include <string.h>
 #include <fstream>
 #include <boost/filesystem.hpp>
@@ -71,37 +60,6 @@ void testArray() {
         c.x
         )DELIM");
     assert(result->type == RESULT_INT && result->iResult == 1);
-}
-
-void testInclude() {
-    shared_ptr<CResult> result;
-    Compiler compiler;
-
-    result = compiler.run(R"DELIM(
-                          include "list.sj"
-                          
-                          a : [1]
-                          a[0] = 3
-                          a[0]
-                        )DELIM");
-    assert(result->type == RESULT_INT && result->iResult == 3);
-
-
-    result = compiler.run(R"DELIM(
-                          class() {
-                              include "list.sj"
-                          }
-                          )DELIM");
-    assert(result->type == RESULT_ERROR && result->errors[0].code == CErrorCode::IncludeOnlyInGlobal);
-
-    result = compiler.run(R"DELIM(
-                          include "common.sj"
-
-                          a : [1]
-                          a[0] = 3
-                          a[0]
-                          )DELIM");
-    assert(result->type == RESULT_INT && result->iResult == 3);
 }
 
 void testString() {
@@ -246,16 +204,13 @@ void testInterface() {
     // TODO: test interface with heap var return
 }
 
-void runTest(std::string path, bool updateResult) {
-	if (*(path.end() - 2) == 's' && *(path.end() - 1) == 'j') {
-        auto testRelativePath = fs::path(path);
-        auto testFileName = (fs::current_path() / testRelativePath).lexically_normal();
-        auto f = testFileName.c_str();
-		printf("Running %s\n", testFileName.string().c_str());
+void runTest(fs::path path, bool updateResult) {    
+	if (path.extension().string().compare(".sj") == 0) {
+		printf("Running %s\n", path.string().c_str());
         TrBlock::resetVarNames();
 
-        auto codeFileName = fs::change_extension(testFileName, ".c");
-        auto errorFileName = fs::change_extension(testFileName, ".errors");
+        auto codeFileName = fs::change_extension(path, ".c");
+        auto errorFileName = fs::change_extension(path, ".errors");
 
 		if (updateResult) {
 			ofstream code;
@@ -264,7 +219,7 @@ void runTest(std::string path, bool updateResult) {
 			error.open(errorFileName.c_str());
 
 			Compiler compiler;
-			compiler.transpile(testFileName.string(), code, error);
+			compiler.transpile(path.string(), code, error);
 
 			code.close();
 			error.close();
@@ -273,7 +228,7 @@ void runTest(std::string path, bool updateResult) {
 			stringstream errorA;
 
 			Compiler compiler;
-			compiler.transpile(testFileName.string(), codeA, errorA);
+			compiler.transpile(path.string(), codeA, errorA);
 
 			codeA.seekg(0, codeA.beg);
 			errorA.seekg(0, errorA.beg);
@@ -317,34 +272,20 @@ void runTest(std::string path, bool updateResult) {
 	}
 }
 
-void runAllTests(std::string path, bool updateResult, const char* wildcard) {
-	DIR *dir;
-	struct dirent *ent;
-	if ((dir = opendir(path.c_str())) != NULL) {
-		/* print all the files and directories within directory */
-		while ((ent = readdir(dir)) != NULL) {
-			if (ent->d_type == DT_DIR && strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..")) {
-				string directoryPath = path;
-				directoryPath.append(PATH_SEPERATOR).append(ent->d_name);
-				runAllTests(directoryPath, updateResult,wildcard);
-			} else if (ent->d_type == DT_REG) {
-				string filePath = path;
-				filePath.append(PATH_SEPERATOR).append(ent->d_name);
-                if (wildcard == nullptr || filePath.find(wildcard) != -1) {
-                    runTest(filePath, updateResult);
-                }
-			}
-		}
-		closedir(dir);
-	}
+void runAllTests(fs::path path, bool updateResult, const char* wildcard) {
+    for (auto child : fs::directory_iterator(path)) {
+        if (fs::is_directory(child.path())) {
+            runAllTests(child.path(), updateResult, wildcard);
+        }
+        else if (fs::is_regular_file(child.path())) {
+            runTest(child.path(), updateResult);
+        }
+    }
 }
                           
 int main(int argc, char **argv) {
     shared_ptr<CResult> result;
     Compiler compiler;
-    
-    char cwd[1024];
-    getcwd(cwd, sizeof(cwd));
     
     if (argc == 1) {
         printf("-test or [filename]\n");

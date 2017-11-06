@@ -6,9 +6,30 @@
 * lambda
 
 -- tasks --
-* add boost
-* allow relative path for include
 * retain class values
+
+-- string --
+* val: "hello"
+	char* s = "hello"
+	t: array!char()
+	t.setData(s, ARRAYSIZE(s))
+	val: string(data: s)
+* console.print(s : 'list!char) {
+	s.nullTerminate()
+	c{
+		printf((char*)s->_data);
+	}c
+}
+
+-- array --
+* array init
+	[1, 2, 3]
+	---------
+	t: array()
+	t.size = 3
+	t.add(1)
+	t.add(2)
+	t.add(3)
 
 -- operators --
 	[x] 		-> getAt(x)
@@ -29,29 +50,6 @@
 	a >= b 		-> a.isGreaterOrEqual(b)
 	a == b 		-> a.isEqual(b)
 	a as type	-> a.asType()'t
-
--- array --
-* array init
-	[1, 2, 3]
-	---------
-	t: array()
-	t.size = 3
-	t.add(1)
-	t.add(2)
-	t.add(3)
-
--- string --
-* val: "hello"
-	char* s = "hello"
-	t: array!char()
-	t.setData(s, ARRAYSIZE(s))
-	val: string(data: s)
-* console.print(s : 'list!char) {
-	s.nullTerminate()
-	c{
-		printf((char*)s->_data);
-	}c
-}
 
 -- tuple --
 * create interface for all array classes
