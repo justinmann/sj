@@ -1,0 +1,5 @@
+ERROR:27 unknown[0:0] cannot find template type: 'int'
+ERROR:11 basic/array5.sj[3:5] function 'array' does not exist
+ERROR:7 basic/array5.sj[4:3] parent is not a function: 'global.a'
+ERROR:7 basic/array5.sj[5:7] parent is not a function: 'global.a'
+ERROR:7 basic/array5.sj[6:3] parent is not a function: 'global.a'

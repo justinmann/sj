@@ -7,6 +7,13 @@
 
 -- tasks --
 * retain class values
+* fix tests:
+	array2
+	array3
+	array4
+	array5
+	list1
+	string1
 
 -- string --
 * val: "hello"
