@@ -1,10 +1,20 @@
 #include "Node.h"
+#include <boost/filesystem.hpp>
+
+namespace fs = boost::filesystem;
 
 void NInclude::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     if (thisFunction->name != "global") {
         result.addError(loc, CErrorCode::IncludeOnlyInGlobal, "can only use include in the global scope");
     }
     
+    auto relativePath = fs::path(fileName);
+
+    auto path = fs::path(*loc.fileName);
+    path = path.remove_filename();
+    path /= relativePath;
+    auto t = path.lexically_normal();
+
     // TODO: allow a relative path combine for filename
     // fileName = path.append(fileName, *loc.fileName);
     compiler->includeFile(result, fileName);

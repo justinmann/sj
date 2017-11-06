@@ -12,6 +12,9 @@
 #endif
 #include <string.h>
 #include <fstream>
+#include <boost/filesystem.hpp>
+
+namespace fs = boost::filesystem;
                           
 void testArray() {
     shared_ptr<CResult> result;
@@ -245,6 +248,10 @@ void testInterface() {
 
 void runTest(std::string path, bool updateResult) {
 	if (*(path.end() - 2) == 's' && *(path.end() - 1) == 'j') {
+        auto testRelativePath = fs::path(path);
+        auto testFileName = (fs::current_path() / testRelativePath).lexically_normal();
+//        testFileName.fil
+
 		printf("Running %s\n", path.c_str());
         TrBlock::resetVarNames();
 
