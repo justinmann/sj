@@ -12,8 +12,7 @@ shared_ptr<CType> NChar::getTypeImpl(Compiler* compiler, CResult& result, shared
 //}
 
 shared_ptr<ReturnValue> NChar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
-	assert(false);
-	return nullptr;
+    return make_shared<ReturnValue>(compiler->typeChar, false, RVR_MustRetain, "'" + value + "'");
 }
 
 void NChar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {

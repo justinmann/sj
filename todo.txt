@@ -8,7 +8,6 @@
 -- tasks --
 * retain class values
 * fix tests:
-	list1
 	string1
 
 -- string --

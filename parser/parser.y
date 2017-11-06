@@ -254,7 +254,7 @@ const 				: TMINUS TINTEGER 								{ $2->insert(0, "-"); $$ = new NInteger(LOC,
 					| TFALSE										{ $$ = new NBool(LOC, false); }
 					| TVOID											{ $$ = new NVoid(LOC); }
 					| TSTRING										{ $$ = new NString(LOC, $1->c_str()); delete $1; }
-					| TCHAR											{ $$ = new NChar(LOC, $1->c_str()[0]); delete $1; }
+					| TCHAR											{ $$ = new NChar(LOC, $1->c_str()); delete $1; }
 					;
 										
 assign				: TIDENTIFIER assign_type stmt						{ $$ = new NAssignment(LOC, nullptr, nullptr, $1->c_str(), shared_ptr<NBase>($3), $2); }

@@ -1,11 +1,12 @@
-include "../../lib/common/string.sj"
+include "../../lib/common/list.sj"
 
-// "he\"llo"
-// "he\nllo"
-// '\''
-// '\n'
-// "hello"
+// a : "he\"llo"
+// b : "he\nllo"
+c : 'a'
+d : '\''
+e : '\n'
+// f : "hello"
 
-// a : "hello"
-// c : a[0]
-// c == 'h'
+// g : "hello"
+// h : a[0]
+// i : h == 'h'

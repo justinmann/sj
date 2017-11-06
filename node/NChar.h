@@ -11,9 +11,9 @@
 
 class NChar : public NBase {
 public:
-    const char value;
+    string value;
     
-    NChar(CLoc loc, char value) : NBase(NodeType_Char, loc), value(value) { }
+    NChar(CLoc loc, const char* value) : NBase(NodeType_Char, loc), value(value) { }
 	virtual shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue);
 	virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
 

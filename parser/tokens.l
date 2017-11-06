@@ -71,7 +71,8 @@ void updateLocation(YYLOCATION& loc, const char* s, const int len) {
 [0-9]+					TOKEN_STR(TINTEGER, 0, 0);
 \n						TOKEN_VAL(TEND);
 ;						TOKEN_VAL(TEND);
-"'\''"					TOKEN_STR(TCHAR, 1, 1);
+"'\\''"					TOKEN_STR(TCHAR, 1, 1);
+"'\\"([^'])"'"			TOKEN_STR(TCHAR, 1, 1);
 "'"([^'])"'"			TOKEN_STR(TCHAR, 1, 1);
 \"(\\.|[^\"])*\"		TOKEN_STR(TSTRING, 1, 1);
 "!"						TOKEN_VAL(TEXCLAIM);

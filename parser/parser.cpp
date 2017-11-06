@@ -2166,7 +2166,7 @@ yyreduce:
 
   case 97:
 
-    { (yyval.node) = new NChar(LOC, (yyvsp[0].string)->c_str()[0]); delete (yyvsp[0].string); }
+    { (yyval.node) = new NChar(LOC, (yyvsp[0].string)->c_str()); delete (yyvsp[0].string); }
 
     break;
 
