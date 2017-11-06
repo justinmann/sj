@@ -250,24 +250,21 @@ void runTest(std::string path, bool updateResult) {
 	if (*(path.end() - 2) == 's' && *(path.end() - 1) == 'j') {
         auto testRelativePath = fs::path(path);
         auto testFileName = (fs::current_path() / testRelativePath).lexically_normal();
-//        testFileName.fil
-
-		printf("Running %s\n", path.c_str());
+        auto f = testFileName.c_str();
+		printf("Running %s\n", testFileName.string().c_str());
         TrBlock::resetVarNames();
 
-		auto codeFileName = path;
-		codeFileName.replace(codeFileName.end() - 3, codeFileName.end(), ".c");
-		auto errorFileName = path;
-		errorFileName.replace(errorFileName.end() - 3, errorFileName.end(), ".errors");
+        auto codeFileName = fs::change_extension(testFileName, ".c");
+        auto errorFileName = fs::change_extension(testFileName, ".errors");
 
 		if (updateResult) {
 			ofstream code;
-			code.open(codeFileName);
+			code.open(codeFileName.c_str());
 			ofstream error;
-			error.open(errorFileName);
+			error.open(errorFileName.c_str());
 
 			Compiler compiler;
-			compiler.transpile(path, code, error);
+			compiler.transpile(testFileName.string(), code, error);
 
 			code.close();
 			error.close();
@@ -276,7 +273,7 @@ void runTest(std::string path, bool updateResult) {
 			stringstream errorA;
 
 			Compiler compiler;
-			compiler.transpile(path, codeA, errorA);
+			compiler.transpile(testFileName.string(), codeA, errorA);
 
 			codeA.seekg(0, codeA.beg);
 			errorA.seekg(0, errorA.beg);
@@ -285,7 +282,7 @@ void runTest(std::string path, bool updateResult) {
 			int line = 0;
 			string lineA;
 			string lineB;
-			ifstream codeB(codeFileName);
+			ifstream codeB(codeFileName.c_str());
 			if (codeB.is_open())
 			{
 				while (getline(codeB, lineB))
@@ -302,7 +299,7 @@ void runTest(std::string path, bool updateResult) {
 
 			// Compare error output
 			line = 0;
-			ifstream errorB(errorFileName);
+			ifstream errorB(errorFileName.c_str());
 			if (errorB.is_open())
 			{
 				while (getline(errorB, lineB))

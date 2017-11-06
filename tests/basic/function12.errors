@@ -1,1 +1,1 @@
-ERROR:22 ./basic/function12.sj[1:29] cannot find parameter 'q'
+ERROR:22 basic/function12.sj[1:29] cannot find parameter 'q'

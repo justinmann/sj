@@ -9,10 +9,9 @@
 #include "../node/Node.h"
 #include <fstream>
 #include <streambuf>
-//#include "library.h"
-//#include "llvm/Support/TargetRegistry.h"
+#include <boost/filesystem.hpp>
 
-//using namespace llvm::orc;
+namespace fs = boost::filesystem;
 
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 struct YYLOCATION {
@@ -398,7 +397,11 @@ std::string ReplaceAll(std::string str, const std::string& from, const std::stri
 }
 
 void CError::writeToStream(ostream& stream) {
-    stream << "ERROR:" << code << " " << (fileName != nullptr ? ReplaceAll(*fileName, "\\", "/") : "unknown") << "[" << line << ":" << col << "] " << msg;
+    stream 
+        << "ERROR:" << code << " " 
+        << (fileName != nullptr ? fs::relative(fs::path(*fileName), fs::current_path()).generic_string() : "unknown")
+        << "[" << line << ":" << col << "] " 
+        << msg;
 }
 
 bool Compiler::transpile(const string& fileName, ostream& stream, ostream& errorStream) {

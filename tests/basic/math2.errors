@@ -1,1 +1,1 @@
-ERROR:19 ./basic/math2.sj[1:1] not a valid int '2147483648'
+ERROR:19 basic/math2.sj[1:1] not a valid int '2147483648'

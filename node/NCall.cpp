@@ -386,6 +386,9 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler *compiler, CResult &result, shared_p
 }
 
 int NCall::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar) {
+    if (!_callVar) {
+        return 0;
+    }
 
     auto callee = getCFunction(compiler, result, thisFunction, dotVar);
     if (!callee) {
@@ -398,7 +401,7 @@ int NCall::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseF
     }
     
     vector<shared_ptr<NBase>> parameters(callee->argVars.size());
-    if (!_callVar->getParameters(compiler, result, parameters)) {
+    if (_callVar && !_callVar->getParameters(compiler, result, parameters)) {
         return 0;
     }
     

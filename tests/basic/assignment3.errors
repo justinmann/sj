@@ -1,1 +1,1 @@
-ERROR:2 ./basic/assignment3.sj[1:1] returned type 'f64' does not match explicit type 'i32'
+ERROR:2 basic/assignment3.sj[1:1] returned type 'f64' does not match explicit type 'i32'

@@ -1,1 +1,1 @@
-ERROR:13 ./basic/assignment11.sj[1:8] invalid on immutable variable
+ERROR:13 basic/assignment11.sj[1:8] invalid on immutable variable

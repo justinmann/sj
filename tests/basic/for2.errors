@@ -1,1 +1,1 @@
-ERROR:2 ./basic/for2.sj[1:1] start value must be a int
+ERROR:2 basic/for2.sj[1:1] start value must be a int

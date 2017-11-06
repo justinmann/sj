@@ -72,13 +72,3 @@ array!t (
 } destroy c{
 	free((#type(t)*)_this->_data);	
 }c
-
-class(
-	bob : 1
-) {
-	this
-}
-
-a : array!class(count = 2)
-a.set(0, class(bob : 1))
-a.set(1, class(bob : 2))
