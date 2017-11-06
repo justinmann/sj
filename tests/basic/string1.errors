@@ -1,6 +1,1 @@
-ERROR:6 basic/string1.sj[11:12] Something failed to parse
-ERROR:6 basic/string1.sj[11:12] Something failed to parse
-ERROR:6 basic/string1.sj[11:13] Something failed to parse
-ERROR:6 basic/string1.sj[11:15] Something failed to parse
-ERROR:6 basic/string1.sj[11:17] Something failed to parse
-ERROR:6 basic/string1.sj[11:20] Something failed to parse
+ERROR:9 unknown[0:0] file does not exist './../lib/common/string.sj'

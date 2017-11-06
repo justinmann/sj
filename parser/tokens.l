@@ -24,26 +24,28 @@ struct YYLOCATION {
 };
 #define YY_EXTRA_TYPE YYLOCATION
 
-int count_lines(const char* s, const int len) {
-	int lines = 0;
+void updateLocation(YYLOCATION& loc, const char* s, const int len) {
+	int lastReturn = 0;
 	for (int i = 0; i < len; i++) {
 		if (s[i] == '\n') {
-			lines++;
+			loc.l++;
+			loc.c = 0;
+			lastReturn = 0;
 		}
 	}
-	return lines;
+	loc.c += len - lastReturn;
 }
 
-#define SAVE_LOC yylloc_param->first_line = yyg->yyextra_r.l; yylloc_param->first_column = yyg->yyextra_r.c; yyg->yyextra_r.c += yyleng
-#define TOKEN_STR(t) SAVE_LOC; yylval->string = new std::string(yytext, yyleng); return t
+#define SAVE_LOC yylloc_param->first_line = yyg->yyextra_r.l; yylloc_param->first_column = yyg->yyextra_r.c; updateLocation(yyg->yyextra_r, yytext, yyleng)
+#define TOKEN_STR(t, leftTrim, rightTrim) SAVE_LOC; yylval->string = new std::string(yytext + leftTrim, yyleng - leftTrim - rightTrim); return t
 #define TOKEN_VAL(t) SAVE_LOC; yylval->token = t; return t
 %}
 
 %%
 
-"c{"([^\}]|\}+[^\}c])*"}c" SAVE_LOC; yylval->string = new std::string(yytext + 2, yyleng - 4); return TCCODE;
-"/*"([^*]|\*+[^*/])*\*+"/"	yyg->yyextra_r.l += count_lines(yytext, yyleng); TOKEN_VAL(TEND);
-"//"[^\n]*((\n))		yyg->yyextra_r.l++; yyg->yyextra_r.c = 0; TOKEN_VAL(TEND);
+"c{"([^\}]|\}+[^\}c])*"}c" TOKEN_STR(TCCODE, 2, 2);
+"/*"([^*]|\*+[^*/])*\*+"/"	TOKEN_VAL(TEND);
+"//".*					TOKEN_VAL(TEND);
 "as"					TOKEN_VAL(TAS);
 "throw"					TOKEN_VAL(TTHROW);
 "catch"					TOKEN_VAL(TCATCH);
@@ -57,21 +59,21 @@ int count_lines(const char* s, const int len) {
 "to" 					TOKEN_VAL(TTO);
 "while"					TOKEN_VAL(TWHILE);
 [ \t]+					SAVE_LOC; 
-"^"						TOKEN_STR(TIDENTIFIER);
+"^"						TOKEN_STR(TIDENTIFIER, 0, 0);
 "extern"				TOKEN_VAL(TEXTERN);
 "this"					TOKEN_VAL(TTHIS);
 "include"				TOKEN_VAL(TINCLUDE);
 "#"						TOKEN_VAL(THASH);
 "@"						TOKEN_VAL(TAT);
 "."						TOKEN_VAL(TDOT);
-[a-zA-Z_][a-zA-Z0-9_]*	TOKEN_STR(TIDENTIFIER);
-[0-9]+\.[0-9]*			TOKEN_STR(TDOUBLE);
-[0-9]+					TOKEN_STR(TINTEGER);
-\n						yyg->yyextra_r.l++; yyg->yyextra_r.c = 0; TOKEN_VAL(TEND);
+[a-zA-Z_][a-zA-Z0-9_]*	TOKEN_STR(TIDENTIFIER, 0, 0);
+[0-9]+\.[0-9]*			TOKEN_STR(TDOUBLE, 0, 0);
+[0-9]+					TOKEN_STR(TINTEGER, 0, 0);
+\n						TOKEN_VAL(TEND);
 ;						TOKEN_VAL(TEND);
-"'\''"					yyg->yyextra_r.l += count_lines(yytext, yyleng); SAVE_LOC; yylval->string = new std::string(yytext + 1, yyleng - 2); return TCHAR;
-"'"([^'])"'"			yyg->yyextra_r.l += count_lines(yytext, yyleng); SAVE_LOC; yylval->string = new std::string(yytext + 1, yyleng - 2); return TCHAR;
-\"(\\.|[^\"])*\"		yyg->yyextra_r.l += count_lines(yytext, yyleng); SAVE_LOC; yylval->string = new std::string(yytext + 1, yyleng - 2); return TSTRING;
+"'\''"					TOKEN_STR(TCHAR, 1, 1);
+"'"([^'])"'"			TOKEN_STR(TCHAR, 1, 1);
+\"(\\.|[^\"])*\"		TOKEN_STR(TSTRING, 1, 1);
 "!"						TOKEN_VAL(TEXCLAIM);
 "["						TOKEN_VAL(TLBRACKET);
 "]"						TOKEN_VAL(TRBRACKET);
@@ -100,6 +102,6 @@ int count_lines(const char* s, const int len) {
 "*"						TOKEN_VAL(TMUL);
 "/"						TOKEN_VAL(TDIV);
 "%"						TOKEN_VAL(TMOD);
-.						TOKEN_STR(TINVALID);
+.						TOKEN_STR(TINVALID, 0, 0);
 
 %%

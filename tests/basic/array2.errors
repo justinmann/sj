@@ -1,8 +1,4 @@
-ERROR:6 basic/array2.sj[4:8] Something failed to parse
-ERROR:6 basic/array2.sj[4:8] Something failed to parse
-ERROR:6 basic/array2.sj[4:9] Something failed to parse
-ERROR:6 basic/array2.sj[4:11] Something failed to parse
-ERROR:6 basic/array2.sj[4:16] Something failed to parse
-ERROR:6 basic/array2.sj[4:23] Something failed to parse
-ERROR:6 basic/array2.sj[4:24] Something failed to parse
-ERROR:6 basic/array2.sj[4:27] Something failed to parse
+ERROR:27 unknown[0:0] cannot find template type: 'int32_t'
+ERROR:11 basic/array2.sj[3:5] function 'array' does not exist
+ERROR:11 basic/array2.sj[3:5] function 'list' does not exist
+ERROR:7 basic/array2.sj[4:1] parent is not a function: 'global.a'
