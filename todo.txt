@@ -7,7 +7,6 @@
 
 -- tasks --
 * retain class values
-* === and !== for pointer comparison
 
 -- string --
 * console.print(s : 'list!char) {
