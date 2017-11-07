@@ -6,7 +6,7 @@ NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnT
     assert(type != FT_Extern);
     
     if (this->name == "^") {
-        this->name = strprintf("anon_%d", counter++);
+        this->name = TrBlock::nextVarName("anon");
     }
     
     if (arguments) {
@@ -349,7 +349,7 @@ public:
     shared_ptr<ReturnValue> value;
 };
 
-shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, vector<shared_ptr<NBase>>& parameters) {
+shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<shared_ptr<NBase>>& parameters) {
     assert(compiler->state == CompilerState::Compile);
     auto returnType = getReturnType(compiler, result, thisVar);
     if (!returnType) {
@@ -375,20 +375,20 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
             auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), calleeVar);
             if (paramVar) {
                 auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
-                assert(paramHeapVar == argHeapVar);
+                assert(!argHeapVar || paramHeapVar == argHeapVar);
             }
             argReturnValue = parameters[argIndex]->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trBlock, false);
         } else {
             auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), thisVar);
             if (paramVar) {
                 auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
-                assert(paramHeapVar == argHeapVar);
+                assert(!argHeapVar || paramHeapVar == argHeapVar);
             }
             argReturnValue = parameters[argIndex]->transpile(compiler, result, shared_from_this(), thisVar, trOutput, trBlock, false);
         }
         
         if (argReturnValue && argReturnValue->type != argType) {
-            result.addError(loc, CErrorCode::TypeMismatch, "value does not match");
+            result.addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' type '%s' does not match '%s'", argVar->name.c_str(), argReturnValue->type->name.c_str(), argType->name.c_str());
             return nullptr;
         }
 
@@ -1670,18 +1670,18 @@ int CFunction::getArgStart(Compiler* compiler, CResult& result) {
     return (int)indexVars;
 }
 
-shared_ptr<CBaseFunctionDefinition> CFunction::getFunctionDefinition(string name) {
+pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> CFunction::getFunctionDefinition(string name) {
     auto functionDefinition = static_pointer_cast<CFunctionDefinition>(definition.lock());
     auto t2 = functionDefinition->funcsByName.find(name);
     if (t2 != functionDefinition->funcsByName.end()) {
-        return t2->second;
+        return make_pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>>(shared_from_this(), t2->second);
     }
     
     if (!parent.expired()) {
         return parent.lock()->getFunctionDefinition(name);
     }
 
-    return nullptr;
+    return make_pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>>(nullptr, nullptr);
 }
 
 shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, string name) {
@@ -1713,7 +1713,7 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, sha
         }
         
         auto baseFunctionDefinition = getFunctionDefinition(typeName->name);
-        if (baseFunctionDefinition != nullptr) {
+        if (baseFunctionDefinition.second != nullptr) {
             auto templateTypes = vector<shared_ptr<CType>>();
             if (typeName->templateTypeNames) {
                 for (auto it : *typeName->templateTypeNames) {
@@ -1725,8 +1725,8 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, sha
                 }
             }
             
-            auto functionDefinition = static_pointer_cast<CFunctionDefinition>(baseFunctionDefinition);
-            auto cfunc = functionDefinition->getFunction(compiler, result, loc, templateTypes, shared_from_this());
+            auto functionDefinition = static_pointer_cast<CFunctionDefinition>(baseFunctionDefinition.second);
+            auto cfunc = functionDefinition->getFunction(compiler, result, loc, templateTypes, baseFunctionDefinition.first);
             return cfunc->getThisType(compiler, result);
         }
     }

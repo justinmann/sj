@@ -1,4 +1,4 @@
-include "../../lib/common/list.sj"
+include "../../lib/common/common.sj"
 
 a : "he\"llo"
 b : "he\nllo"

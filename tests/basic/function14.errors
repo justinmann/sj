@@ -1,1 +1,1 @@
-ERROR:2 basic/function14.sj[1:1] value does not match
+ERROR:2 basic/function14.sj[1:29] parameter 'x' type 'f64' does not match 'i32'

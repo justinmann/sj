@@ -145,6 +145,9 @@ int CNormalVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar>
 
 shared_ptr<ReturnValue> CNormalVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue) {
     auto returnType = getType(compiler, result);
+    if (!returnType)
+        return nullptr;
+
     auto returnIsHeap = getHeapVar(compiler, result, thisVar);
     if (dotValue) {
         auto returnValue = trBlock->createTempVariable("temp", returnType, returnIsHeap, RVR_MustRetain);

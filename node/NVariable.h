@@ -29,6 +29,10 @@ public:
 
     shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
         auto var = getVar(compiler, result, thisFunction, thisVar, nullptr);
+        if (!var) {
+            return nullptr;
+        }
+
         auto returnValue = var->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue, nullptr);
         return returnValue;
     }

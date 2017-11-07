@@ -3,11 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct td_sjs_anon_0 sjs_anon_0;
+typedef struct td_sjs_anon1 sjs_anon1;
 typedef struct td_sjs_class sjs_class;
 typedef struct td_sjs_global sjs_global;
 
-struct td_sjs_anon_0 {
+struct td_sjs_anon1 {
     int _refCount;
     int32_t test;
 };
@@ -19,12 +19,12 @@ struct td_sjs_class {
 
 struct td_sjs_global {
     int _refCount;
-    sjs_anon_0* math;
+    sjs_anon1* math;
 };
 
-sjs_anon_0* sjf_anon_0(sjs_anon_0* _this);
-void sjf_anon_0_destroy(sjs_anon_0* _this);
-int32_t sjf_anon_0_sub(sjs_anon_0* _parent, int32_t x, int32_t y);
+sjs_anon1* sjf_anon1(sjs_anon1* _this);
+void sjf_anon1_destroy(sjs_anon1* _this);
+int32_t sjf_anon1_sub(sjs_anon1* _parent, int32_t x, int32_t y);
 sjs_class* sjf_class(sjs_class* _this);
 int32_t sjf_class_bar(sjs_class* _parent, int32_t x);
 void sjf_class_destroy(sjs_class* _this);
@@ -32,16 +32,16 @@ int32_t sjf_class_foo(sjs_class* _parent, int32_t x);
 int32_t sjf_global(sjs_global* _this);
 void sjf_global_destroy(sjs_global* _this);
 
-sjs_anon_0* sjf_anon_0(sjs_anon_0* _this) {
+sjs_anon1* sjf_anon1(sjs_anon1* _this) {
     _this->_refCount++;
 
     return _this;
 }
 
-void sjf_anon_0_destroy(sjs_anon_0* _this) {
+void sjf_anon1_destroy(sjs_anon1* _this) {
 }
 
-int32_t sjf_anon_0_sub(sjs_anon_0* _parent, int32_t x, int32_t y) {
+int32_t sjf_anon1_sub(sjs_anon1* _parent, int32_t x, int32_t y) {
     int32_t result8;
     int32_t result9;
     int32_t temp3;
@@ -79,18 +79,18 @@ int32_t sjf_class_foo(sjs_class* _parent, int32_t x) {
         int32_t result6;
         int32_t result7;
         sjs_global* temp1;
-        sjs_anon_0* temp2;
+        sjs_anon1* temp2;
 
         temp1 = _parent->_parent;
         temp2 = temp1->math;
-        result7 = sjf_anon_0_sub(temp2, x, 1);
+        result7 = sjf_anon1_sub(temp2, x, 1);
         result6 = sjf_class_bar(_parent, result7);
         ifResult1 = result6;
 
         sjf_global_destroy(temp1);
         temp2->_refCount--;
         if (temp2->_refCount == 0) {
-            sjf_anon_0_destroy(temp2);
+            sjf_anon1_destroy(temp2);
             free(temp2);
         }
     } else {
@@ -102,17 +102,17 @@ int32_t sjf_class_foo(sjs_class* _parent, int32_t x) {
 
 int32_t sjf_global(sjs_global* _this) {
     sjs_class* c;
-    sjs_anon_0* result2;
+    sjs_anon1* result2;
     sjs_class* result3;
     int32_t result4;
     sjs_class sjd_temp1;
-    sjs_anon_0* sjv_temp1;
+    sjs_anon1* sjv_temp1;
     sjs_class* sjv_temp2;
 
-    sjv_temp1 = (sjs_anon_0*)malloc(sizeof(sjs_anon_0));
+    sjv_temp1 = (sjs_anon1*)malloc(sizeof(sjs_anon1));
     sjv_temp1->_refCount = 1;
     sjv_temp1->test = 1;
-    result2 = sjf_anon_0(sjv_temp1);
+    result2 = sjf_anon1(sjv_temp1);
     _this->math = result2;
     _this->math->_refCount++;
     sjv_temp2 = &sjd_temp1;
@@ -125,7 +125,7 @@ int32_t sjf_global(sjs_global* _this) {
     sjf_class_destroy(c);
     result2->_refCount--;
     if (result2->_refCount == 0) {
-        sjf_anon_0_destroy(result2);
+        sjf_anon1_destroy(result2);
         free(result2);
     }
     result3->_refCount--;
@@ -135,7 +135,7 @@ int32_t sjf_global(sjs_global* _this) {
     }
     sjv_temp1->_refCount--;
     if (sjv_temp1->_refCount == 0) {
-        sjf_anon_0_destroy(sjv_temp1);
+        sjf_anon1_destroy(sjv_temp1);
         free(sjv_temp1);
     }
     sjf_class_destroy(sjv_temp2);

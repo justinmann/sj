@@ -86,7 +86,6 @@ shared_ptr<ReturnValue> NMath::transpile(Compiler* compiler, CResult& result, sh
     auto rightValue = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
 
     if (!leftValue || !rightValue) {
-        assert(false);
         return nullptr;
     }
 

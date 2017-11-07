@@ -17,6 +17,10 @@ shared_ptr<CVar> NCompare::getVarImpl(Compiler* compiler, CResult& result, share
     
     auto leftType = leftVar->getType(compiler, result);
     auto rightType = rightVar->getType(compiler, result);
+    if (!leftType || !rightType) {
+        return nullptr;
+    }
+
     if (leftType != rightType) {
         result.addError(loc, CErrorCode::TypeMismatch, "left type '%s' does not match right type '%s'", leftType->name.c_str(), rightType->name.c_str());
         return nullptr;
@@ -88,7 +92,6 @@ shared_ptr<ReturnValue> NCompare::transpile(Compiler* compiler, CResult& result,
         auto rightValue = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
 
         if (!leftValue || !rightValue) {
-            assert(false);
             return nullptr;
         }
         

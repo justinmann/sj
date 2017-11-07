@@ -456,7 +456,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 
 					state = CompilerState::Compile;                    
                     vector<shared_ptr<NBase>> parameters;
-                    globalFunction->transpile(this, *result, nullptr, nullptr, &output, &output.mainFunction, false, nullptr, globalVar, parameters);
+                    globalFunction->transpile(this, *result, nullptr, nullptr, &output, &output.mainFunction, false, nullptr, globalVar, CLoc::undefined, parameters);
 
                     if (result->errors.size() == 0) {
                         output.writeToStream(stream);

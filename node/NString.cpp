@@ -62,14 +62,22 @@ void NString::initStatements(Compiler* compiler, CResult& result, shared_ptr<CBa
     varName = TrBlock::nextVarName("sjg_string");
     
     auto createArray = make_shared<NCall>(
-                                          loc,
-                                          "array",
-                                          make_shared<CTypeNameList>(CTC_Value, compiler->typeChar->name),
-                                          make_shared<NodeList>(
-                                                                make_shared<NInteger>(loc, str.size()),
-                                                                make_shared<NGlobalPtrVar>(loc, varName)
-                                                                ));
-    statements.push_back(createArray);
+        loc,
+        "array",
+        make_shared<CTypeNameList>(CTC_Value, compiler->typeChar->name),
+        make_shared<NodeList>(
+            make_shared<NInteger>(loc, str.size() + 1),
+            make_shared<NGlobalPtrVar>(loc, varName)));
+
+    auto createString = make_shared<NCall>(
+        loc,
+        "string",
+        nullptr,
+        make_shared<NodeList>(
+            make_shared<NInteger>(loc, str.size()),
+            createArray));
+
+    statements.push_back(createString);
 }
 
 shared_ptr<ReturnValue> NString::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {

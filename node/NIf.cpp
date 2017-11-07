@@ -132,6 +132,9 @@ shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& re
     }
 
     auto conditionReturnValue = condition->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
+    if (!conditionReturnValue) {
+        return nullptr;
+    }
 
     stringstream ifLine;
     ifLine << "if (" << conditionReturnValue->name << ")";
