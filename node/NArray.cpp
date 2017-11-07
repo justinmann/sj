@@ -7,18 +7,18 @@ void NArray::initStatements(Compiler* compiler, CResult& result, shared_ptr<CBas
     if (statements.size() == 0) {
         auto firstElement = elements->front();
         if (firstElement != nullptr) {
-            auto arrayName = "_array";
+            auto arrayName = TrBlock::nextVarName("sjv_array");
             
             // create and store array value
             auto elementType = firstElement->getType(compiler, result, thisFunction, thisVar);
             auto createArray = make_shared<NCall>(loc, "array", make_shared<CTypeNameList>(CTC_Value, elementType->name), make_shared<NodeList>(make_shared<NInteger>(loc, elements->size())));
-            auto storeArray = make_shared<NAssignment>(loc, nullptr, nullptr, arrayName, createArray, false);
+            auto storeArray = make_shared<NAssignment>(loc, nullptr, nullptr, arrayName.c_str(), createArray, false);
             statements.push_back(storeArray);
             
             auto index = 0;
             for (auto element : *elements) {
                 auto setAtItem = make_shared<NDot>(loc,
-                                                   make_shared<NVariable>(loc, arrayName),
+                                                   make_shared<NVariable>(loc, arrayName.c_str()),
                                                    make_shared<NCall>(loc,
                                                                       "setAt",
                                                                       nullptr,
@@ -28,7 +28,7 @@ void NArray::initStatements(Compiler* compiler, CResult& result, shared_ptr<CBas
             }
             
             // return return array value
-            auto arrayVar = make_shared<NVariable>(loc, arrayName);
+            auto arrayVar = make_shared<NVariable>(loc, arrayName.c_str());
             statements.push_back(arrayVar);
         }
     }

@@ -8,7 +8,8 @@ typedef struct td_sjs_array_i32 sjs_array_i32;
 struct td_sjs_array_i32 {
     int _refCount;
     int32_t size;
-    uintptr_t _data;
+    uintptr_t data;
+    bool _isGlobal;
 };
 
 sjs_array_i32* sjf_array_i32(sjs_array_i32* _this);
@@ -25,7 +26,11 @@ sjs_array_i32* sjf_array_i32(sjs_array_i32* _this) {
 		exit(-1);
 	}
 
-	_this->_data = (uintptr_t)malloc(_this->size * sizeof(int32_t));
+	if (_this->data) {
+		_this->_isGlobal = true;
+	} else {
+		_this->data = (uintptr_t)malloc(_this->size * sizeof(int32_t));
+	}
 
 	 _this->_refCount++;
 ;
@@ -35,7 +40,7 @@ sjs_array_i32* sjf_array_i32(sjs_array_i32* _this) {
 
 void sjf_array_i32_destroy(sjs_array_i32* _this) {
     
-	free((int32_t*)_this->_data);	
+	free((int32_t*)_this->data);	
 ;
 }
 
@@ -43,11 +48,11 @@ int32_t sjf_array_i32_getAt(sjs_array_i32* _parent, int32_t index) {
     
 		
 
-		if (index >= count || index < 0) {
+		if (index >= _parent->size || index < 0) {
 			exit(-1);
 		}
 
-		int32_t* p = (int32_t*)_parent->_data;
+		int32_t* p = (int32_t*)_parent->data;
 		int32_t val = p[index];
 		if (!true) {
 			if (val == 0) {
@@ -63,11 +68,11 @@ void sjf_array_i32_setAt(sjs_array_i32* _parent, int32_t index, int32_t item) {
 		
 		
 
-		if (index >= _parent->count || index < 0) {
+		if (index >= _parent->size || index < 0) {
 			exit(-1);
 		}
 
-		int32_t* p = (int32_t*)_parent->_data;
+		int32_t* p = (int32_t*)_parent->data;
 		;
 		;
 		p[index] = item;
@@ -87,7 +92,8 @@ int32_t sjf_global() {
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
     sjv_temp1->size = 1;
-    sjv_temp1->_data = result3;
+    sjv_temp1->data = result3;
+    sjv_temp1->_isGlobal = false;
     result2 = sjf_array_i32(sjv_temp1);
     a = result2;
     a->_refCount++;

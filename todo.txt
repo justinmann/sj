@@ -11,11 +11,6 @@
 	string1
 
 -- string --
-* val: "hello"
-	char* s = "hello"
-	t: array!char()
-	t.setData(s, ARRAYSIZE(s))
-	val: string(data: s)
 * console.print(s : 'list!char) {
 	s.nullTerminate()
 	c{

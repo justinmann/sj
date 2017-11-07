@@ -9,7 +9,8 @@ typedef struct td_sjs_class sjs_class;
 struct td_sjs_array_class {
     int _refCount;
     int32_t size;
-    uintptr_t _data;
+    uintptr_t data;
+    bool _isGlobal;
 };
 
 struct td_sjs_class {
@@ -33,7 +34,11 @@ sjs_array_class* sjf_array_class(sjs_array_class* _this) {
 		exit(-1);
 	}
 
-	_this->_data = (uintptr_t)malloc(_this->size * sizeof(sjs_class*));
+	if (_this->data) {
+		_this->_isGlobal = true;
+	} else {
+		_this->data = (uintptr_t)malloc(_this->size * sizeof(sjs_class*));
+	}
 
 	 _this->_refCount++;
 ;
@@ -43,7 +48,7 @@ sjs_array_class* sjf_array_class(sjs_array_class* _this) {
 
 void sjf_array_class_destroy(sjs_array_class* _this) {
     
-	free((sjs_class**)_this->_data);	
+	free((sjs_class**)_this->data);	
 ;
 }
 
@@ -51,11 +56,11 @@ sjs_class* sjf_array_class_getAt(sjs_array_class* _parent, int32_t index) {
     
 		
 
-		if (index >= count || index < 0) {
+		if (index >= _parent->size || index < 0) {
 			exit(-1);
 		}
 
-		sjs_class** p = (sjs_class**)_parent->_data;
+		sjs_class** p = (sjs_class**)_parent->data;
 		sjs_class* val = p[index];
 		if (!false) {
 			if (val == 0) {
@@ -71,11 +76,11 @@ void sjf_array_class_setAt(sjs_array_class* _parent, int32_t index, sjs_class* i
 		
 		
 
-		if (index >= _parent->count || index < 0) {
+		if (index >= _parent->size || index < 0) {
 			exit(-1);
 		}
 
-		sjs_class** p = (sjs_class**)_parent->_data;
+		sjs_class** p = (sjs_class**)_parent->data;
 		 p[index]->_refCount--;
 if ( p[index]->_refCount == 0) {
     sjf_class_destroy( p[index]);
@@ -114,7 +119,8 @@ int32_t sjf_global() {
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
     sjv_temp1->size = 1;
-    sjv_temp1->_data = result3;
+    sjv_temp1->data = result3;
+    sjv_temp1->_isGlobal = false;
     result2 = sjf_array_class(sjv_temp1);
     a = result2;
     a->_refCount++;

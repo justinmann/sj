@@ -78,23 +78,24 @@ shared_ptr<ReturnValue> TrBlock::createVariable(string name, shared_ptr<CType> t
 }
 
 shared_ptr<ReturnValue> TrBlock::createTempVariable(string prefix, shared_ptr<CType> type, bool isHeap, ReturnValueRelease release) {
-    auto nextIndex = ++varNames[prefix];
-    stringstream varStream;
-    varStream << prefix << nextIndex;
-    auto varStr = varStream.str();
+    auto varStr = nextVarName(prefix);
     auto var = make_shared<ReturnValue>(type, isHeap, release, varStr);
     variables[varStr] = var;
     return var;
 }
 
 shared_ptr<ReturnValue> TrBlock::createTempVariable(string prefix, string typeName) {
-    auto nextIndex = ++varNames[prefix];
-    stringstream varStream;
-    varStream << prefix << nextIndex;
-    auto varStr = varStream.str();
+    auto varStr = nextVarName(prefix);
     auto var = make_shared<ReturnValue>(typeName, varStr);
     variables[varStr] = var;
     return var;
+}
+
+string TrBlock::nextVarName(string prefix) {
+    auto nextIndex = ++varNames[prefix];
+    stringstream varStream;
+    varStream << prefix << nextIndex;
+    return varStream.str();
 }
 
 void TrBlock::resetVarNames() {

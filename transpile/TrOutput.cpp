@@ -7,6 +7,13 @@ void TrOutput::writeToStream(ostream& stream) {
     stream << "#include <stdlib.h>\n";
     stream << "\n";
     
+    if (strings.size() > 0) {
+        for (auto t : strings) {
+            stream << "const char* " << t.first << " = \"" << t.second << "\";\n";
+        }
+        stream << "\n";
+    }
+    
 	if (structs.size() > 0) {
         for (auto t : structs) {
             stream << "typedef struct td_" << t.first << " " << t.first << ";\n";
@@ -22,7 +29,7 @@ void TrOutput::writeToStream(ostream& stream) {
 			stream << "\n";
 		}
 	}
-
+    
 	if (functions.size() > 0) {
 		for (auto function : functions) {
 			stream << function.second->definition << ";\n";

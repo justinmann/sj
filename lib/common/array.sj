@@ -1,15 +1,16 @@
 array!t (
 	size = 0
-	_data = 0 as ptr
+	data = 0 as ptr
+	_isGlobal = false
 
 	getAt(index : 'i32)'t c{
 		#forceParent()
 
-		if (index >= count || index < 0) {
+		if (index >= _parent->size || index < 0) {
 			exit(-1);
 		}
 
-		#type(t)* p = (#type(t)*)_parent->_data;
+		#type(t)* p = (#type(t)*)_parent->data;
 		#type(t) val = p[index];
 		if (!#isValue(t)) {
 			if (val == 0) {
@@ -23,11 +24,11 @@ array!t (
 		#forceParent()
 		#forceHeap(item)
 
-		if (index >= _parent->count || index < 0) {
+		if (index >= _parent->size || index < 0) {
 			exit(-1);
 		}
 
-		#type(t)* p = (#type(t)*)_parent->_data;
+		#type(t)* p = (#type(t)*)_parent->data;
 		#release(t, p[index]);
 		#retain(t, item);
 		p[index] = item;
@@ -36,8 +37,8 @@ array!t (
 	find(item : 't)'i32 c{	
 		#forceParent()
 
-		#type(t)* p = (#type(t)*)_parent->_data;
-		for (int index = 0; index < count; i++) {
+		#type(t)* p = (#type(t)*)_parent->data;
+		for (int index = 0; index < _parent->size; i++) {
 			if (p[index] == item) {
 				return index;
 			}
@@ -48,13 +49,20 @@ array!t (
 	grow(newSize :' i32)'array!t c{
 		#forceParent()
 
-		if (_parent->_size != newSize) {
-			if (newSize < _parent->_size) {
+		if (_parent->size != newSize) {
+			if (newSize < _parent->size) {
 				exit(-1);
 			}
 			
-			_parent->_data = (uintptr_t)realloc((void*)_parent->_data, newSize * sizeof(#type(t)));
-			_parent->_size = newSize;
+			if (_parent->_isGlobal) {
+				_parent->_isGlobal = false;
+				#type(t)* p = _parent->data;
+				_parent->data = (uintptr_t)malloc(newSize * sizeof(#type(t)));
+				memcpy(_parent->data, p, _parent->size * sizeof(#type(t)));
+			} else {
+				_parent->data = (uintptr_t)realloc((void*)_parent->data, newSize * sizeof(#type(t)));
+			}
+			_parent->size = newSize;
 		}
 
 		return _parent;
@@ -66,10 +74,14 @@ array!t (
 		exit(-1);
 	}
 
-	_this->_data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
+	if (_this->data) {
+		_this->_isGlobal = true;
+	} else {
+		_this->data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
+	}
 
 	#retain(array!t, _this);
 	return _this;
 }c destroy c{
-	free((#type(t)*)_this->_data);	
+	free((#type(t)*)_this->data);	
 }c

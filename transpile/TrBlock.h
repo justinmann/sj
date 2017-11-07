@@ -44,6 +44,7 @@ public:
 
     static void addSpacing(ostream& stream, int level);
     static void resetVarNames();
+    static string nextVarName(string prefix);
 private:
     static map<string, int> varNames;
 };
