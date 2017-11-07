@@ -20,6 +20,7 @@ sjs_array_char* sjf_array_char(sjs_array_char* _this);
 void sjf_array_char_destroy(sjs_array_char* _this);
 char sjf_array_char_getAt(sjs_array_char* _parent, int32_t index);
 bool sjf_array_char_isEqual(sjs_array_char* _parent, sjs_array_char* test);
+bool sjf_array_char_isLessOrEqual(sjs_array_char* _parent, sjs_array_char* test);
 bool sjf_global();
 
 sjs_array_char* sjf_array_char(sjs_array_char* _this) {
@@ -79,6 +80,14 @@ bool sjf_array_char_isEqual(sjs_array_char* _parent, sjs_array_char* test) {
 	;
 }
 
+bool sjf_array_char_isLessOrEqual(sjs_array_char* _parent, sjs_array_char* test) {
+    
+		
+
+		return memcmp((void*)_parent->data, (void*)test->data, min(_parent->size, test->size) * sizeof(char)) <= 0;		
+	;
+}
+
 bool sjf_global() {
     sjs_array_char* a;
     sjs_array_char* b;
@@ -89,12 +98,14 @@ bool sjf_global() {
     char h;
     bool i;
     bool j;
+    bool k;
     sjs_array_char* result2;
     sjs_array_char* result3;
     sjs_array_char* result4;
     char result5;
     bool result6;
     bool result7;
+    bool result8;
     sjs_array_char sjd_temp1;
     sjs_array_char sjd_temp2;
     sjs_array_char sjd_temp3;
@@ -135,6 +146,8 @@ bool sjf_global() {
     i = result6;
     result7 = sjf_array_char_isEqual(f, a);
     j = result7;
+    result8 = sjf_array_char_isLessOrEqual(f, a);
+    k = result8;
 
     sjf_array_char_destroy(a);
     sjf_array_char_destroy(b);
@@ -158,7 +171,7 @@ bool sjf_global() {
     sjf_array_char_destroy(sjv_temp2);
     sjf_array_char_destroy(sjv_temp3);
 
-    return result7;
+    return result8;
 }
 
 int main() {

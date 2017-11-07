@@ -24,10 +24,32 @@ shared_ptr<CVar> NCompare::getVarImpl(Compiler* compiler, CResult& result, share
 
     // Check to see if we have operator overloading
     if (!leftType->parent.expired()) {
-        auto functionCall = make_shared<NCall>(loc, "isEqual", nullptr, make_shared<NodeList>(rightSide));
-        comparisonNode = make_shared<NDot>(loc, leftSide, functionCall);
-        // comparisonNode->define(compiler, result, thisFunction->definition.lock());
-        return comparisonNode->getVar(compiler, result, thisFunction, thisVar);
+        switch (op) {
+            case NCompareOp::EQ:
+                comparisonNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "isEqual", nullptr, make_shared<NodeList>(rightSide)));
+                return comparisonNode->getVar(compiler, result, thisFunction, thisVar);
+                break;
+            case NCompareOp::NE:
+                comparisonNode =  make_shared<NNot>(loc, make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "isEqual", nullptr, make_shared<NodeList>(rightSide))));
+                return comparisonNode->getVar(compiler, result, thisFunction, thisVar);
+                break;
+            case NCompareOp::LT:
+                comparisonNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "isLess", nullptr, make_shared<NodeList>(rightSide)));
+                return comparisonNode->getVar(compiler, result, thisFunction, thisVar);
+                break;
+            case NCompareOp::LE:
+                comparisonNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "isLessOrEqual", nullptr, make_shared<NodeList>(rightSide)));
+                return comparisonNode->getVar(compiler, result, thisFunction, thisVar);
+                break;
+            case NCompareOp::GT:
+                comparisonNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "isGreater", nullptr, make_shared<NodeList>(rightSide)));
+                return comparisonNode->getVar(compiler, result, thisFunction, thisVar);
+                break;
+            case NCompareOp::GE:
+                comparisonNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "isGreaterOrEqual", nullptr, make_shared<NodeList>(rightSide)));
+                return comparisonNode->getVar(compiler, result, thisFunction, thisVar);
+                break;
+        }
     }
     
     return nullptr;

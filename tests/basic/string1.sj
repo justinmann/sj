@@ -9,3 +9,4 @@ f : "hello"
 h : a[0]
 i : h == 'h'
 j : f == a
+k : f <= a

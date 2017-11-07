@@ -1,13 +1,12 @@
 -- features --
-* operators
 * console
+* operators
 * interface
 * tuple
 * lambda
 
 -- tasks --
 * retain class values
-* == only works for isEqual or basic type
 * === and !== for pointer comparison
 
 -- string --
@@ -29,12 +28,6 @@
 	a /= b 		-> a = a.divide(b)
 	a += b 		-> a = a.add(b)
 	a -= b 		-> a = a.subtract(b)
-	a < b 		-> a.isLess(b)
-	a <= b 		-> a.isLessOrEqual(b)
-	a > b 		-> a.isGreater(b)
-	a >= b 		-> a.isGreaterOrEqual(b)
-	a != b 		-> a.isEqual(b)
-	a == b 		-> a.isEqual(b)
 	a as type	-> a.asType()'t
 
 -- tuple --

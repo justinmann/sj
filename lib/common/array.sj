@@ -77,6 +77,30 @@ array!t (
 
 		return memcmp((void*)_parent->data, (void*)test->data, _parent->size * sizeof(#type(t))) == 0;		
 	}c
+
+	isGreater(test :' array!t)'bool c{
+		#forceParent()
+
+		return memcmp((void*)_parent->data, (void*)test->data, min(_parent->size, test->size) * sizeof(#type(t))) > 0;		
+	}c
+
+	isGreaterOrEqual(test :' array!t)'bool c{
+		#forceParent()
+
+		return memcmp((void*)_parent->data, (void*)test->data, min(_parent->size, test->size) * sizeof(#type(t))) >= 0;		
+	}c
+
+	isLess(test :' array!t)'bool c{
+		#forceParent()
+
+		return memcmp((void*)_parent->data, (void*)test->data, min(_parent->size, test->size) * sizeof(#type(t))) < 0;		
+	}c
+
+	isLessOrEqual(test :' array!t)'bool c{
+		#forceParent()
+
+		return memcmp((void*)_parent->data, (void*)test->data, min(_parent->size, test->size) * sizeof(#type(t))) <= 0;		
+	}c
 )'array!t c{
 	#forceThis()
 
