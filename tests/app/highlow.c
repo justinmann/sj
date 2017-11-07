@@ -76,7 +76,6 @@ sjs_string* sjf_anon1_readLine() {
     int32_t result14;
     sjs_array_char* result15;
     int32_t size;
-    sjs_array_char sjd_temp5;
     sjs_array_char* sjv_temp6;
     sjs_string* sjv_temp7;
 
@@ -105,7 +104,7 @@ sjs_string* sjf_anon1_readLine() {
 		    size = index;
 		;
     result14 = size - 1;
-    sjv_temp6 = &sjd_temp5;
+    sjv_temp6 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     sjv_temp6->_refCount = 1;
     sjv_temp6->size = size;
     sjv_temp6->data = data;
@@ -123,7 +122,11 @@ sjs_string* sjf_anon1_readLine() {
         sjf_array_char_destroy(result15);
         free(result15);
     }
-    sjf_array_char_destroy(sjv_temp6);
+    sjv_temp6->_refCount--;
+    if (sjv_temp6->_refCount == 0) {
+        sjf_array_char_destroy(sjv_temp6);
+        free(sjv_temp6);
+    }
     sjv_temp7->_refCount--;
     if (sjv_temp7->_refCount == 0) {
         sjf_string_destroy(sjv_temp7);
@@ -180,22 +183,19 @@ int32_t sjf_anon3_nextInt() {
 
 sjs_array_char* sjf_array_char(sjs_array_char* _this) {
     
-	
+		if (_this->size < 0) {
+			exit(-1);
+		}
 
-	if (_this->size < 0) {
-		exit(-1);
-	}
+		if (_this->data) {
+			_this->_isGlobal = true;
+		} else {
+			_this->data = (uintptr_t)malloc(_this->size * sizeof(char));
+		}
+	;
+    _this->_refCount++;
 
-	if (_this->data) {
-		_this->_isGlobal = true;
-	} else {
-		_this->data = (uintptr_t)malloc(_this->size * sizeof(char));
-	}
-
-	 _this->_refCount++;
-;
-	return _this;
-;
+    return _this;
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
@@ -226,8 +226,6 @@ void sjf_global() {
     sjs_anon3 sjd_temp1;
     sjs_anon2 sjd_temp2;
     sjs_anon1 sjd_temp3;
-    sjs_array_char sjd_temp4;
-    sjs_array_char sjd_temp8;
     sjs_anon3* sjv_temp1;
     sjs_array_char* sjv_temp12;
     sjs_string* sjv_temp13;
@@ -254,7 +252,7 @@ void sjf_global() {
     result3 = sjf_anon1(sjv_temp3);
     console = result3;
     console->_refCount++;
-    sjv_temp4 = &sjd_temp4;
+    sjv_temp4 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     sjv_temp4->_refCount = 1;
     sjv_temp4->size = 15;
     sjv_temp4->data = (uintptr_t)sjg_string1;
@@ -292,11 +290,10 @@ void sjf_global() {
         if (result17) {
             sjs_string* result18;
             sjs_array_char* result19;
-            sjs_array_char sjd_temp6;
             sjs_array_char* sjv_temp8;
             sjs_string* sjv_temp9;
 
-            sjv_temp8 = &sjd_temp6;
+            sjv_temp8 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
             sjv_temp8->_refCount = 1;
             sjv_temp8->size = 9;
             sjv_temp8->data = (uintptr_t)sjg_string3;
@@ -321,7 +318,11 @@ void sjf_global() {
                 sjf_array_char_destroy(result19);
                 free(result19);
             }
-            sjf_array_char_destroy(sjv_temp8);
+            sjv_temp8->_refCount--;
+            if (sjv_temp8->_refCount == 0) {
+                sjf_array_char_destroy(sjv_temp8);
+                free(sjv_temp8);
+            }
             sjv_temp9->_refCount--;
             if (sjv_temp9->_refCount == 0) {
                 sjf_string_destroy(sjv_temp9);
@@ -335,11 +336,10 @@ void sjf_global() {
             if (result20) {
                 sjs_string* result21;
                 sjs_array_char* result22;
-                sjs_array_char sjd_temp7;
                 sjs_array_char* sjv_temp10;
                 sjs_string* sjv_temp11;
 
-                sjv_temp10 = &sjd_temp7;
+                sjv_temp10 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
                 sjv_temp10->_refCount = 1;
                 sjv_temp10->size = 10;
                 sjv_temp10->data = (uintptr_t)sjg_string2;
@@ -364,7 +364,11 @@ void sjf_global() {
                     sjf_array_char_destroy(result22);
                     free(result22);
                 }
-                sjf_array_char_destroy(sjv_temp10);
+                sjv_temp10->_refCount--;
+                if (sjv_temp10->_refCount == 0) {
+                    sjf_array_char_destroy(sjv_temp10);
+                    free(sjv_temp10);
+                }
                 sjv_temp11->_refCount--;
                 if (sjv_temp11->_refCount == 0) {
                     sjf_string_destroy(sjv_temp11);
@@ -393,7 +397,7 @@ void sjf_global() {
         }
     }
 
-    sjv_temp12 = &sjd_temp8;
+    sjv_temp12 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
 
     sjv_temp12->_refCount = 1;
 
@@ -458,7 +462,11 @@ void sjf_global() {
         free(result6);
     }
     sjf_anon3_destroy(sjv_temp1);
-    sjf_array_char_destroy(sjv_temp12);
+    sjv_temp12->_refCount--;
+    if (sjv_temp12->_refCount == 0) {
+        sjf_array_char_destroy(sjv_temp12);
+        free(sjv_temp12);
+    }
     sjv_temp13->_refCount--;
     if (sjv_temp13->_refCount == 0) {
         sjf_string_destroy(sjv_temp13);
@@ -466,7 +474,11 @@ void sjf_global() {
     }
     sjf_anon2_destroy(sjv_temp2);
     sjf_anon1_destroy(sjv_temp3);
-    sjf_array_char_destroy(sjv_temp4);
+    sjv_temp4->_refCount--;
+    if (sjv_temp4->_refCount == 0) {
+        sjf_array_char_destroy(sjv_temp4);
+        free(sjv_temp4);
+    }
     sjv_temp5->_refCount--;
     if (sjv_temp5->_refCount == 0) {
         sjf_string_destroy(sjv_temp5);

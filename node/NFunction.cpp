@@ -385,7 +385,12 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
             argReturnValue = parameters[argIndex]->transpile(compiler, result, shared_from_this(), thisVar, trOutput, trBlock, false);
         }
         
-        if (argReturnValue && argReturnValue->type != argType) {
+        if (argReturnValue == nullptr) {
+            result.addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' has no value", argVar->name.c_str());
+            return nullptr;
+        }
+
+        if (argReturnValue->type != argType) {
             result.addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' type '%s' does not match '%s'", argVar->name.c_str(), argReturnValue->type->name.c_str(), argType->name.c_str());
             return nullptr;
         }

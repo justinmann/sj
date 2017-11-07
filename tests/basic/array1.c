@@ -21,22 +21,19 @@ int32_t sjf_global();
 
 sjs_array_i32* sjf_array_i32(sjs_array_i32* _this) {
     
-	
+		if (_this->size < 0) {
+			exit(-1);
+		}
 
-	if (_this->size < 0) {
-		exit(-1);
-	}
+		if (_this->data) {
+			_this->_isGlobal = true;
+		} else {
+			_this->data = (uintptr_t)malloc(_this->size * sizeof(int32_t));
+		}
+	;
+    _this->_refCount++;
 
-	if (_this->data) {
-		_this->_isGlobal = true;
-	} else {
-		_this->data = (uintptr_t)malloc(_this->size * sizeof(int32_t));
-	}
-
-	 _this->_refCount++;
-;
-	return _this;
-;
+    return _this;
 }
 
 void sjf_array_i32_destroy(sjs_array_i32* _this) {

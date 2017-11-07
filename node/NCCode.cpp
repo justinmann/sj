@@ -53,10 +53,6 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
         thisFunction->setHasParent(compiler, result);
         return "";
     }
-    else if (functionName.compare("forceThis") == 0) {
-        thisVar->parent.lock()->setHasRefCount();
-        return "";
-    }
     else if (functionName.compare("forceHeap") == 0) {
         auto cvar = thisFunction->getCVar(compiler, result, param);
         if (cvar) {

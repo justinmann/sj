@@ -7,22 +7,20 @@ list!class([stack]count'i32=, [stack]data'array_class=) {
 }
 
 array!class([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=) {
+  c{
 
-	#forceThis()
+		if (_this->size < 0) {
+			exit(-1);
+		}
 
-	if (_this->size < 0) {
-		exit(-1);
-	}
-
-	if (_this->data) {
-		_this->_isGlobal = true;
-	} else {
-		_this->data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
-	}
-
-	#retain(array!t, _this);
-	return _this;
-
+		if (_this->data) {
+			_this->_isGlobal = true;
+		} else {
+			_this->data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
+		}
+	
+}c
+  this
 }
 
 list_add([heap]item'class:) {
@@ -48,7 +46,7 @@ list_setSize([heap]size'i32:) {
   ))
 }
 
-array_grow([heap]newSize'i32:) {
+array_grow([heap]newSize'i32:) c{
 
 		#forceParent()
 
@@ -70,9 +68,9 @@ array_grow([heap]newSize'i32:) {
 
 		return _parent;
 	
-}
+}c
 
-array_setAt([stack]index'i32:, [heap]item'class:) {
+array_setAt([stack]index'i32:, [heap]item'class:) c{
 
 		#forceParent()
 		#forceHeap(item)
@@ -86,7 +84,7 @@ array_setAt([stack]index'i32:, [heap]item'class:) {
 		#retain(t, item);
 		p[index] = item;
 	
-}
+}c
 
 list_getAt([heap]index'i32:) {
   array_getAt([stack]this : array_getAt(
@@ -95,7 +93,7 @@ list_getAt([heap]index'i32:) {
   ))
 }
 
-array_getAt([heap]index'i32:) {
+array_getAt([heap]index'i32:) c{
 
 		#forceParent()
 
@@ -112,13 +110,13 @@ array_getAt([heap]index'i32:) {
 		}
 		return val;		
 	
-}
+}c
 
 global {
   [stack]a'list_class : [stack]list!class([stack]this : list!class(
     parent: [stack]this,
     [stack]count'i32 = 0,
-    [stack]data'array_class = array!class([stack]this : array!class(
+    [stack]data'array_class = [stack]array!class([stack]this : array!class(
       [stack]size'i32 = 0,
       [stack]data'ptr = 0 as ptr,
       [stack]_isGlobal'bool = false

@@ -28,22 +28,19 @@ void sjf_global();
 
 sjs_array_class* sjf_array_class(sjs_array_class* _this) {
     
-	
+		if (_this->size < 0) {
+			exit(-1);
+		}
 
-	if (_this->size < 0) {
-		exit(-1);
-	}
+		if (_this->data) {
+			_this->_isGlobal = true;
+		} else {
+			_this->data = (uintptr_t)malloc(_this->size * sizeof(sjs_class*));
+		}
+	;
+    _this->_refCount++;
 
-	if (_this->data) {
-		_this->_isGlobal = true;
-	} else {
-		_this->data = (uintptr_t)malloc(_this->size * sizeof(sjs_class*));
-	}
-
-	 _this->_refCount++;
-;
-	return _this;
-;
+    return _this;
 }
 
 void sjf_array_class_destroy(sjs_array_class* _this) {

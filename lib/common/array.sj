@@ -101,21 +101,19 @@ array!t (
 
 		return memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) <= 0;		
 	}c
-)'array!t c{
-	#forceThis()
+)'array!t {
+	c{
+		if (_this->size < 0) {
+			exit(-1);
+		}
 
-	if (_this->size < 0) {
-		exit(-1);
-	}
-
-	if (_this->data) {
-		_this->_isGlobal = true;
-	} else {
-		_this->data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
-	}
-
-	#retain(array!t, _this);
-	return _this;
-}c destroy c{
+		if (_this->data) {
+			_this->_isGlobal = true;
+		} else {
+			_this->data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
+		}
+	}c
+	this
+} destroy c{
 	free((#type(t)*)_this->data);	
 }c

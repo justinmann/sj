@@ -1,0 +1,20 @@
+c([heap]b'b:) {
+  this
+}
+
+b([heap]a'a:) {
+  this
+}
+
+a() {
+  this
+}
+
+global {
+  [heap]c([heap]this : c(
+    [heap]b'b : [heap]b([heap]this : b(
+      [heap]a'a : [heap]a([heap]this : a())
+    ))
+  ))
+}
+

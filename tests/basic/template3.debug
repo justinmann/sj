@@ -1,8 +1,8 @@
-class![i32, bool]() {
+class![bool, f32]() {
   1
 }
 
-class![bool, f32]() {
+class![i32, bool]() {
   1
 }
 

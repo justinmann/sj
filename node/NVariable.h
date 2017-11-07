@@ -24,7 +24,9 @@ public:
     virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level = 0) {
         auto var = getVar(compiler, result, thisFunction, thisVar, nullptr);
         stringstream dotSS;
-        var->dump(compiler, result, thisFunction, thisVar, nullptr, functions, ss, dotSS, level);
+        if (var) {
+            var->dump(compiler, result, thisFunction, thisVar, nullptr, functions, ss, dotSS, level);
+        }
     }
 
     shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {

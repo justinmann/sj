@@ -3,25 +3,23 @@ class([heap]bob'i32:) {
 }
 
 array!class([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=) {
+  c{
 
-	#forceThis()
+		if (_this->size < 0) {
+			exit(-1);
+		}
 
-	if (_this->size < 0) {
-		exit(-1);
-	}
-
-	if (_this->data) {
-		_this->_isGlobal = true;
-	} else {
-		_this->data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
-	}
-
-	#retain(array!t, _this);
-	return _this;
-
+		if (_this->data) {
+			_this->_isGlobal = true;
+		} else {
+			_this->data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
+		}
+	
+}c
+  this
 }
 
-array_setAt([heap]index'i32:, [heap]item'class:) {
+array_setAt([heap]index'i32:, [heap]item'class:) c{
 
 		#forceParent()
 		#forceHeap(item)
@@ -35,10 +33,10 @@ array_setAt([heap]index'i32:, [heap]item'class:) {
 		#retain(t, item);
 		p[index] = item;
 	
-}
+}c
 
 global {
-  [stack]a'array_class : array!class([stack]this : array!class(
+  [stack]a'array_class : [stack]array!class([stack]this : array!class(
     [stack]size'i32 = 2,
     [stack]data'ptr = 0 as ptr,
     [stack]_isGlobal'bool = false
