@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct td_sjs_array_class sjs_array_class;
 typedef struct td_sjs_class sjs_class;

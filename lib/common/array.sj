@@ -56,9 +56,9 @@ array!t (
 			
 			if (_parent->_isGlobal) {
 				_parent->_isGlobal = false;
-				#type(t)* p = _parent->data;
+				#type(t)* p = (#type(t)*)_parent->data;
 				_parent->data = (uintptr_t)malloc(newSize * sizeof(#type(t)));
-				memcpy(_parent->data, p, _parent->size * sizeof(#type(t)));
+				memcpy((void*)_parent->data, p, _parent->size * sizeof(#type(t)));
 			} else {
 				_parent->data = (uintptr_t)realloc((void*)_parent->data, newSize * sizeof(#type(t)));
 			}
@@ -81,25 +81,25 @@ array!t (
 	isGreater(test :' array!t)'bool c{
 		#forceParent()
 
-		return memcmp((void*)_parent->data, (void*)test->data, min(_parent->size, test->size) * sizeof(#type(t))) > 0;		
+		return memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) > 0;		
 	}c
 
 	isGreaterOrEqual(test :' array!t)'bool c{
 		#forceParent()
 
-		return memcmp((void*)_parent->data, (void*)test->data, min(_parent->size, test->size) * sizeof(#type(t))) >= 0;		
+		return memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) >= 0;		
 	}c
 
 	isLess(test :' array!t)'bool c{
 		#forceParent()
 
-		return memcmp((void*)_parent->data, (void*)test->data, min(_parent->size, test->size) * sizeof(#type(t))) < 0;		
+		return memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) < 0;		
 	}c
 
 	isLessOrEqual(test :' array!t)'bool c{
 		#forceParent()
 
-		return memcmp((void*)_parent->data, (void*)test->data, min(_parent->size, test->size) * sizeof(#type(t))) <= 0;		
+		return memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) <= 0;		
 	}c
 )'array!t c{
 	#forceThis()

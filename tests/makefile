@@ -2,7 +2,7 @@ TARGET = test
 LIBS = -lm
 CC = gcc
 CFLAGS = -g -Wall -Wno-unused-but-set-variable -std=c11
-OBJECTS = $(patsubst %.c, %.o, $(wildcard basic/*.c))
+OBJECTS = $(patsubst %.c, %.o, $(wildcard basic/*.c)) $(patsubst %.c, %.o, $(wildcard app/*.c))
 HEADERS = $(wildcard *.h)
 
 .PHONY: default all clean
@@ -13,6 +13,7 @@ all: default
 default: $(TARGET)
 
 clean:
+	-rm -f app/*.o
 	-rm -f basic/*.o
 	-rm -f $(TARGET)
 

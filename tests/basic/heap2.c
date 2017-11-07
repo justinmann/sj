@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct td_sjs_anon1 sjs_anon1;
 typedef struct td_sjs_class sjs_class;
@@ -78,7 +79,7 @@ sjs_anon1* sjf_global() {
     sjv_temp2 = &sjd_temp1;
     sjv_temp2->_refCount = 1;
     sjv_temp2->data = result3;
-    sjv_temp2->data++;
+    sjv_temp2->data->_refCount++;
     result2 = sjf_class(sjv_temp2);
     c = result2;
     c->_refCount++;

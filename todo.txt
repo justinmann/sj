@@ -1,5 +1,4 @@
 -- features --
-* console
 * operators
 * interface
 * tuple
@@ -7,14 +6,7 @@
 
 -- tasks --
 * retain class values
-
--- string --
-* console.print(s : 'list!char) {
-	s.nullTerminate()
-	c{
-		printf((char*)s->_data);
-	}c
-}
+* if function is heap and has this value then all arguments must be heap
 
 -- operators --
 	a.x 		-> getX()

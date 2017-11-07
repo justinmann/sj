@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct td_sjs_a sjs_a;
 typedef struct td_sjs_aa sjs_aa;
@@ -76,7 +77,7 @@ int32_t sjf_global() {
     sjv_temp2->_refCount = 1;
     sjv_temp2->x = 1;
     sjv_temp2->b = result3;
-    sjv_temp2->b++;
+    sjv_temp2->b->_refCount++;
     result2 = sjf_a(sjv_temp2);
     a = result2;
     a->_refCount++;

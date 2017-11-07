@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct td_sjs_array_class sjs_array_class;
 typedef struct td_sjs_class sjs_class;
@@ -102,9 +103,9 @@ sjs_array_class* sjf_array_class_grow(sjs_array_class* _parent, int32_t newSize)
 			
 			if (_parent->_isGlobal) {
 				_parent->_isGlobal = false;
-				sjs_class** p = _parent->data;
+				sjs_class** p = (sjs_class**)_parent->data;
 				_parent->data = (uintptr_t)malloc(newSize * sizeof(sjs_class*));
-				memcpy(_parent->data, p, _parent->size * sizeof(sjs_class*));
+				memcpy((void*)_parent->data, p, _parent->size * sizeof(sjs_class*));
 			} else {
 				_parent->data = (uintptr_t)realloc((void*)_parent->data, newSize * sizeof(sjs_class*));
 			}
@@ -172,7 +173,7 @@ int32_t sjf_global(sjs_global* _this) {
     sjv_temp2->_refCount = 1;
     sjv_temp2->count = 0;
     sjv_temp2->data = result3;
-    sjv_temp2->data++;
+    sjv_temp2->data->_refCount++;
     result2 = sjf_list_class(sjv_temp2);
     a = result2;
     a->_refCount++;

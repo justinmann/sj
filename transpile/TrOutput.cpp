@@ -5,6 +5,7 @@ void TrOutput::writeToStream(ostream& stream) {
     stream << "#include <stdint.h>\n";
     stream << "#include <stdio.h>\n";
     stream << "#include <stdlib.h>\n";
+    stream << "#include <string.h>\n";
     stream << "\n";
     
     if (strings.size() > 0) {

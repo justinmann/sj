@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int32_t sjf_class_bool_f32();
 int32_t sjf_class_i32_bool();

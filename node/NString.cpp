@@ -35,7 +35,7 @@ shared_ptr<CType> NGlobalPtrVar::getTypeImpl(Compiler* compiler, CResult& result
 }
 
 shared_ptr<ReturnValue> NGlobalPtrVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
-    return make_shared<ReturnValue>(compiler->typePtr, false, RVR_MustRetain, str);
+    return make_shared<ReturnValue>(compiler->typePtr, false, RVR_MustRetain, "(uintptr_t)" + str);
 }
 
 void NGlobalPtrVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level)  {
@@ -66,7 +66,7 @@ void NString::initStatements(Compiler* compiler, CResult& result, shared_ptr<CBa
         "array",
         make_shared<CTypeNameList>(CTC_Value, compiler->typeChar->name),
         make_shared<NodeList>(
-            make_shared<NInteger>(loc, str.size() + 1),
+            make_shared<NInteger>(loc, str.size()),
             make_shared<NGlobalPtrVar>(loc, varName)));
 
     auto createString = make_shared<NCall>(
@@ -74,7 +74,7 @@ void NString::initStatements(Compiler* compiler, CResult& result, shared_ptr<CBa
         "string",
         nullptr,
         make_shared<NodeList>(
-            make_shared<NInteger>(loc, str.size()),
+            make_shared<NInteger>(loc, str.size() - 1),
             createArray));
 
     statements.push_back(createString);

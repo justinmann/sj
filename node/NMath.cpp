@@ -111,7 +111,7 @@ shared_ptr<ReturnValue> NMath::transpile(Compiler* compiler, CResult& result, sh
         line << " / ";
 		break;
 	case NMathOp::Mod:
-        line << " %% ";
+        line << " % ";
 		break;
 	}
     line << rightValue->name;

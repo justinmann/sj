@@ -2,37 +2,41 @@ console : ^(
 	_fd = 0 as ptr
 
 	write(data : 'string)'void c{
-		fwrite(data->data, sizeof(char), data->size, (FILE*)_parent->_fd);
+		#forceParent()
+			
+		fwrite(data->data->data, sizeof(char), data->count, (FILE*)_parent->_fd);
 	}c
 
 	readLine()'string { 
 		data = 0 as ptr
-		size = 0
+		size = 1024
 		c{
-		    auto str = (char*)malloc(size);
-		    auto index = 0;
-		    auto ch = ' ';
+		    char* str = (char*)malloc(size);
+		    int index = 0;
+		    char ch = ' ';
 		    do {
 		        ch = getchar();
 		        if (ch != '\n') {
 		            str[index] = ch;
 		            index++;
-		            if (index > size) {
+		            if (index >= size) {
 		                size *= 2;
 		                str = (char*)realloc(str, size);
 		            }
 		        }
 		    } while (ch != '\n');
 
-		    data = str;
+			str[index] = 0;
+		    index++;
+		    data = (uintptr_t)str;
 		    size = index;
 		}c
 
-		string(count = size, data = array!char(size = size, data = data))
+		string(count = size - 1, data = array!char(size = size, data = data))
 	}
 ) { 
 	c{ 
-		_this->_fd = (uintptr_t)fopen(stdout, "w");
+		_this->_fd = (uintptr_t)stdout;
 	}c
 	this
 }

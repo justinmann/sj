@@ -1,7 +1,5 @@
 #include "Node.h"
 
-int NFunction::counter = 0;
-
 NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock) : NBaseFunction(NodeType_Function, loc), type(type), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), interfaceTypeNames(interfaceTypeNames), block(block), catchBlock(catchBlock), destroyBlock(destroyBlock), isInGetType(false) {
     assert(type != FT_Extern);
     
@@ -596,7 +594,7 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
 
             if (argValue.value->release == RVR_MustRetain && !argValue.value->type->parent.expired()) {
                 stringstream argRetainLine;
-                argRetainLine << objectRef->name << "->" << argValue.var->name << "++";
+                argRetainLine << objectRef->name << "->" << argValue.var->name << "->_refCount++";
                 trBlock->statements.push_back(TrStatement(argRetainLine.str()));
             }
         }
