@@ -9,6 +9,8 @@
 #ifndef NVariable_h
 #define NVariable_h
 
+#include "NBase.h"
+
 enum ValueType {
     VT_STORE,
     VT_LOAD

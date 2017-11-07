@@ -58,8 +58,8 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY TMOD THASH TAT
 
 /* Non Terminal symbols. Types refer to union decl above */
-%type <node> program expr expr_and expr_comp expr_math expr_var const stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch destroy
-%type <var> var var_right
+%type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch destroy expr
+%type <var> var var_right expr_math expr_var const expr_and expr_comp
 %type <block> stmts
 %type <nif> if_expr
 %type <exprvec> func_args func_block array_args interface_args interface_block
@@ -92,7 +92,7 @@ stmt 				: /* Blank! */									{ $$ = nullptr; }
 					| var_decl
 					| func_decl 
 					| interface_decl
-					| expr
+					| expr 											{ $$ = $1; }
 					| TCCODE										{ $$ = new NCCode(LOC, $1->c_str()); delete $1; }
 					| TINCLUDE TSTRING								{ $$ = new NInclude(LOC, $2->c_str()); delete $2; }
 					| error	 										{ $$ = nullptr; /* yyclearin; */ result->addError(LLOC, CErrorCode::InvalidCharacter, "Something failed to parse"); }
@@ -161,7 +161,7 @@ func_args  			: func_arg										{ $$ = new NodeList(); if ($1) { $$->push_back
 func_arg			: /* Blank! */									{ $$ = nullptr; }
 					| assign 										
 					| func_decl 										
-					| expr 	
+					| expr 											{ $$ = $1; }
 					; 
 
 implement 			: implement_args								{ $$ = $1; }
@@ -189,41 +189,42 @@ interface_arg 		: /* Blank! */									{ $$ = nullptr; }
 					| func_type_name func_block return_type_quote 	{ $$ = new NInterfaceMethod(LOC, $1->name.c_str(), $1->templateTypeNames, shared_ptr<NodeList>($2), shared_ptr<CTypeName>($3)); }
 					;
 
-expr 				: if_expr										{ $$ = (NBase*)$1; }
-					| for_expr		
+expr 				: if_expr										{ $$ = $1; }
+					| for_expr										
 					| while_expr								
-					| expr_and
+					| expr_and										{ $$ = $1; }
+					| array
 					| TTHROW TLPAREN expr TRPAREN					{ $$ = new NThrow(LOC, shared_ptr<NBase>($3)); }
-					| expr TAS arg_type   							{ $$ = new NCast(LOC, shared_ptr<CTypeName>($3), shared_ptr<NBase>($1)); }
+					| TVOID											{ $$ = new NVoid(LOC); }
 					;
 
-expr_and			: expr_comp TAND expr_and 						{ $$ = new NAnd(LOC, shared_ptr<NBase>($1), shared_ptr<NBase>($3)); }
-					| expr_comp TOR expr_and 						{ $$ = new NOr(LOC, shared_ptr<NBase>($1), shared_ptr<NBase>($3)); }
+expr_and			: expr_comp TAND expr_and 						{ $$ = new NAnd(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($3)); }
+					| expr_comp TOR expr_and 						{ $$ = new NOr(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($3)); }
 					| expr_comp
 					;					
 
-expr_comp 			: expr_math TCEQ expr_math 						{ $$ = new NCompare(LOC, shared_ptr<NBase>($1), NCompareOp::EQ, shared_ptr<NBase>($3)); }
-					| expr_math TCNE expr_math 						{ $$ = new NCompare(LOC, shared_ptr<NBase>($1), NCompareOp::NE, shared_ptr<NBase>($3)); }
-					| expr_math TCLT expr_math 						{ $$ = new NCompare(LOC, shared_ptr<NBase>($1), NCompareOp::LT, shared_ptr<NBase>($3)); }
-					| expr_math TCLE expr_math 						{ $$ = new NCompare(LOC, shared_ptr<NBase>($1), NCompareOp::LE, shared_ptr<NBase>($3)); }
-					| expr_math TCGT expr_math 						{ $$ = new NCompare(LOC, shared_ptr<NBase>($1), NCompareOp::GT, shared_ptr<NBase>($3)); }
-					| expr_math TCGE expr_math 						{ $$ = new NCompare(LOC, shared_ptr<NBase>($1), NCompareOp::GE, shared_ptr<NBase>($3)); }
-					| expr_math
+expr_comp 			: expr_math TCEQ expr_math 						{ $$ = new NCompare(LOC, shared_ptr<NVariableBase>($1), NCompareOp::EQ, shared_ptr<NVariableBase>($3)); }
+					| expr_math TCNE expr_math 						{ $$ = new NCompare(LOC, shared_ptr<NVariableBase>($1), NCompareOp::NE, shared_ptr<NVariableBase>($3)); }
+					| expr_math TCLT expr_math 						{ $$ = new NCompare(LOC, shared_ptr<NVariableBase>($1), NCompareOp::LT, shared_ptr<NVariableBase>($3)); }
+					| expr_math TCLE expr_math 						{ $$ = new NCompare(LOC, shared_ptr<NVariableBase>($1), NCompareOp::LE, shared_ptr<NVariableBase>($3)); }
+					| expr_math TCGT expr_math 						{ $$ = new NCompare(LOC, shared_ptr<NVariableBase>($1), NCompareOp::GT, shared_ptr<NVariableBase>($3)); }
+					| expr_math TCGE expr_math 						{ $$ = new NCompare(LOC, shared_ptr<NVariableBase>($1), NCompareOp::GE, shared_ptr<NVariableBase>($3)); }
+					| expr_math										{ $$ = $1; }
 					;
 
-expr_math			: expr_math TPLUS expr_math 					{ $$ = new NMath(LOC, shared_ptr<NBase>($1), NMathOp::Add, shared_ptr<NBase>($3)); }
-					| expr_math TMINUS expr_math 					{ $$ = new NMath(LOC, shared_ptr<NBase>($1), NMathOp::Sub, shared_ptr<NBase>($3)); }
-					| expr_math TMUL expr_math 						{ $$ = new NMath(LOC, shared_ptr<NBase>($1), NMathOp::Mul, shared_ptr<NBase>($3)); }
-					| expr_math TDIV expr_math 						{ $$ = new NMath(LOC, shared_ptr<NBase>($1), NMathOp::Div, shared_ptr<NBase>($3)); }
-					| expr_math TMOD expr_math 						{ $$ = new NMath(LOC, shared_ptr<NBase>($1), NMathOp::Mod, shared_ptr<NBase>($3)); }
-					| TEXCLAIM expr_var                             { $$ = new NNot(LOC, shared_ptr<NBase>($2)); }
-					| expr_var
+expr_math			: expr_math TPLUS expr_math 					{ $$ = new NMath(LOC, shared_ptr<NVariableBase>($1), NMathOp::Add, shared_ptr<NVariableBase>($3)); }
+					| expr_math TMINUS expr_math 					{ $$ = new NMath(LOC, shared_ptr<NVariableBase>($1), NMathOp::Sub, shared_ptr<NVariableBase>($3)); }
+					| expr_math TMUL expr_math 						{ $$ = new NMath(LOC, shared_ptr<NVariableBase>($1), NMathOp::Mul, shared_ptr<NVariableBase>($3)); }
+					| expr_math TDIV expr_math 						{ $$ = new NMath(LOC, shared_ptr<NVariableBase>($1), NMathOp::Div, shared_ptr<NVariableBase>($3)); }
+					| expr_math TMOD expr_math 						{ $$ = new NMath(LOC, shared_ptr<NVariableBase>($1), NMathOp::Mod, shared_ptr<NVariableBase>($3)); }
+					| TEXCLAIM expr_var                             { $$ = new NNot(LOC, shared_ptr<NVariableBase>($2)); }
+					| expr_var TAS arg_type 						{ $$ = new NCast(LOC, shared_ptr<CTypeName>($3), shared_ptr<NVariableBase>($1)); }
+					| expr_var										{ $$ = $1; }
 					;
 
-expr_var 			: TLPAREN expr TRPAREN 							{ $$ = $2; }
+expr_var 			: TLPAREN expr_and TRPAREN 						{ $$ = $2; }
 					| var 											{ $$ = $1; }
-					| array
-					| const
+					| const											{ $$ = $1; }
 					;
 
 for_expr			: TFOR TIDENTIFIER TCOLON expr TTO expr block   { $$ = new NFor(LOC, $2->c_str(), shared_ptr<NBase>($4), shared_ptr<NBase>($6), shared_ptr<NBase>($7)); delete $2; }
@@ -252,7 +253,6 @@ const 				: TMINUS TINTEGER 								{ $2->insert(0, "-"); $$ = new NInteger(LOC,
 					| TDOUBLE 										{ $$ = new NDouble(LOC, $1->c_str()); delete $1; }
 					| TTRUE											{ $$ = new NBool(LOC, true); }
 					| TFALSE										{ $$ = new NBool(LOC, false); }
-					| TVOID											{ $$ = new NVoid(LOC); }
 					| TSTRING										{ $$ = new NString(LOC, $1->c_str()); delete $1; }
 					| TCHAR											{ $$ = new NChar(LOC, $1->c_str()); delete $1; }
 					;

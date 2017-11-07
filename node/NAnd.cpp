@@ -6,10 +6,10 @@ void NAnd::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunct
     right->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NAnd::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CVar> NAnd::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
     assert(compiler->state == CompilerState::FixVar);
-    left->getVar(compiler, result, thisFunction, thisVar);
-    right->getVar(compiler, result, thisFunction, thisVar);
+    left->getVar(compiler, result, thisFunction, thisVar, nullptr);
+    right->getVar(compiler, result, thisFunction, thisVar, nullptr);
     return nullptr;
 }
 
@@ -18,9 +18,9 @@ shared_ptr<CType> NAnd::getTypeImpl(Compiler* compiler, CResult& result, shared_
     return compiler->typeBool;
 }
 
-int NAnd::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
-    auto count = left->setHeapVar(compiler, result, thisFunction, thisVar, false);
-    count += right->setHeapVar(compiler, result, thisFunction, thisVar, false);
+int NAnd::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar) {
+    auto count = left->setHeapVar(compiler, result, thisFunction, thisVar, nullptr, false);
+    count += right->setHeapVar(compiler, result, thisFunction, thisVar, nullptr, false);
     return count;
 }
 

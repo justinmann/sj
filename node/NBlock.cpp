@@ -7,7 +7,7 @@ void NBlock::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFun
     }
 }
 
-shared_ptr<CVar> NBlock::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CVar> NBlock::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
     assert(compiler->state == CompilerState::FixVar);
     shared_ptr<CVar> lastVar = nullptr;
     for (auto it : statements) {
@@ -24,7 +24,7 @@ shared_ptr<CType> NBlock::getTypeImpl(Compiler* compiler, CResult& result, share
     return statements.back()->getType(compiler, result, thisFunction, thisVar);
 }
 
-int NBlock::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
+int NBlock::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar) {
     auto count = 0;
     for (auto it : statements) {
         auto isLast = it == statements.back();

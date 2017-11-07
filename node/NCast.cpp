@@ -5,9 +5,9 @@ void NCast::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunc
     node->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
     assert(compiler->state == CompilerState::FixVar);
-    node->getVar(compiler, result, thisFunction, thisVar);
+    node->getVar(compiler, result, thisFunction, thisVar, nullptr);
     
     auto toType = thisFunction->getVarType(compiler, result, typeName);
     if (toType != nullptr && toType->category == CTC_Interface) {
@@ -28,9 +28,9 @@ shared_ptr<CType> NCast::getTypeImpl(Compiler* compiler, CResult& result, shared
     return t;
 }
 
-int NCast::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar_) {
+int NCast::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar_) {
     isHeapVar = isHeapVar_;
-    return node->setHeapVar(compiler, result, thisFunction, thisVar, false);
+    return node->setHeapVar(compiler, result, thisFunction, thisVar, nullptr, false);
 }
 
 shared_ptr<ReturnValue> NCast::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {

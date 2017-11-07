@@ -6,10 +6,10 @@ void NMath::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunc
     rightSide->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NMath::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CVar> NMath::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
     assert(compiler->state == CompilerState::FixVar);
-    leftSide->getVar(compiler, result, thisFunction, thisVar);
-    rightSide->getVar(compiler, result, thisFunction, thisVar);
+    leftSide->getVar(compiler, result, thisFunction, thisVar, nullptr);
+    rightSide->getVar(compiler, result, thisFunction, thisVar, nullptr);
     return nullptr;
 }
 
@@ -18,9 +18,9 @@ shared_ptr<CType> NMath::getTypeImpl(Compiler* compiler, CResult& result, shared
     return leftSide->getType(compiler, result, thisFunction, thisVar);
 }
 
-int NMath::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
-    auto count = leftSide->setHeapVar(compiler, result, thisFunction, thisVar, false);
-    count += rightSide->setHeapVar(compiler, result, thisFunction, thisVar, false);
+int NMath::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar) {
+    auto count = leftSide->setHeapVar(compiler, result, thisFunction, thisVar, nullptr, false);
+    count += rightSide->setHeapVar(compiler, result, thisFunction, thisVar, nullptr, false);
     return count;
 }
 

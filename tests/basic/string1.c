@@ -19,7 +19,8 @@ struct td_sjs_array_char {
 sjs_array_char* sjf_array_char(sjs_array_char* _this);
 void sjf_array_char_destroy(sjs_array_char* _this);
 char sjf_array_char_getAt(sjs_array_char* _parent, int32_t index);
-char sjf_global();
+bool sjf_array_char_isEqual(sjs_array_char* _parent, sjs_array_char* test);
+bool sjf_global();
 
 sjs_array_char* sjf_array_char(sjs_array_char* _this) {
     
@@ -66,7 +67,19 @@ char sjf_array_char_getAt(sjs_array_char* _parent, int32_t index) {
 	;
 }
 
-char sjf_global() {
+bool sjf_array_char_isEqual(sjs_array_char* _parent, sjs_array_char* test) {
+    
+		
+
+		if (_parent->size != test->size) {
+			return false;
+		}
+
+		return memcmp((void*)_parent->data, (void*)test->data, _parent->size * sizeof(char)) == 0;		
+	;
+}
+
+bool sjf_global() {
     sjs_array_char* a;
     sjs_array_char* b;
     char c;
@@ -74,10 +87,14 @@ char sjf_global() {
     char e;
     sjs_array_char* f;
     char h;
+    bool i;
+    bool j;
     sjs_array_char* result2;
     sjs_array_char* result3;
     sjs_array_char* result4;
     char result5;
+    bool result6;
+    bool result7;
     sjs_array_char sjd_temp1;
     sjs_array_char sjd_temp2;
     sjs_array_char sjd_temp3;
@@ -114,6 +131,10 @@ char sjf_global() {
     f->_refCount++;
     result5 = sjf_array_char_getAt(a, 0);
     h = result5;
+    result6 = h == 'h';
+    i = result6;
+    result7 = sjf_array_char_isEqual(f, a);
+    j = result7;
 
     sjf_array_char_destroy(a);
     sjf_array_char_destroy(b);
@@ -137,11 +158,11 @@ char sjf_global() {
     sjf_array_char_destroy(sjv_temp2);
     sjf_array_char_destroy(sjv_temp3);
 
-    return result5;
+    return result7;
 }
 
 int main() {
-    char result1;
+    bool result1;
 
     result1 = sjf_global();
 

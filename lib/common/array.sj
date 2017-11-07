@@ -67,6 +67,16 @@ array!t (
 
 		return _parent;
 	}c 
+
+	isEqual(test :' array!t)'bool c{
+		#forceParent()
+
+		if (_parent->size != test->size) {
+			return false;
+		}
+
+		return memcmp((void*)_parent->data, (void*)test->data, _parent->size * sizeof(#type(t))) == 0;		
+	}c
 )'array!t c{
 	#forceThis()
 

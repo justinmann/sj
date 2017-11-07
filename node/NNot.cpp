@@ -5,7 +5,7 @@ void NNot::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunct
     node->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NNot::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CVar> NNot::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
     assert(compiler->state == CompilerState::FixVar);
     node->getVar(compiler, result, thisFunction, thisVar);
     return nullptr;
@@ -16,7 +16,7 @@ shared_ptr<CType> NNot::getTypeImpl(Compiler* compiler, CResult& result, shared_
     return compiler->typeBool;
 }
 
-int NNot::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
+int NNot::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar) {
     return node->setHeapVar(compiler, result, thisFunction, thisVar, false);
 }
 

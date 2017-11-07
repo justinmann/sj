@@ -1,14 +1,14 @@
 -- features --
-* string
 * operators
+* console
 * interface
 * tuple
 * lambda
 
 -- tasks --
 * retain class values
-* fix tests:
-	string1
+* == only works for isEqual or basic type
+* === and !== for pointer comparison
 
 -- string --
 * console.print(s : 'list!char) {
@@ -33,6 +33,7 @@
 	a <= b 		-> a.isLessOrEqual(b)
 	a > b 		-> a.isGreater(b)
 	a >= b 		-> a.isGreaterOrEqual(b)
+	a != b 		-> a.isEqual(b)
 	a == b 		-> a.isEqual(b)
 	a as type	-> a.asType()'t
 

@@ -45,9 +45,9 @@ void NGlobalPtrVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFu
 NString::NString(CLoc loc, const string& str_) : NBlock(loc), str(str_) {
 }
 
-shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
     initStatements(compiler, result, thisFunction, thisVar);
-    return NBlock::getVarImpl(compiler, result, thisFunction, thisVar);
+    return NBlock::getVarImpl(compiler, result, thisFunction, thisVar, dotVar);
 }
 
 shared_ptr<CType> NString::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {

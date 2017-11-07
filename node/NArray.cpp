@@ -34,9 +34,9 @@ void NArray::initStatements(Compiler* compiler, CResult& result, shared_ptr<CBas
     }
 }
 
-shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
     initStatements(compiler, result, thisFunction, thisVar);
-    return NBlock::getVarImpl(compiler, result, thisFunction, thisVar);
+    return NBlock::getVarImpl(compiler, result, thisFunction, thisVar, dotVar);
 }
 
 shared_ptr<CType> NArray::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
