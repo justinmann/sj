@@ -55,7 +55,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID TSTRING TCHAR TCCODE
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY TMOD THASH TAT
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY TMOD THASH TAT TCPEQ TCPNE
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch destroy expr
@@ -205,6 +205,8 @@ expr_and			: expr_comp TAND expr_and 						{ $$ = new NAnd(LOC, shared_ptr<NVari
 
 expr_comp 			: expr_math TCEQ expr_math 						{ $$ = new NCompare(LOC, shared_ptr<NVariableBase>($1), NCompareOp::EQ, shared_ptr<NVariableBase>($3)); }
 					| expr_math TCNE expr_math 						{ $$ = new NCompare(LOC, shared_ptr<NVariableBase>($1), NCompareOp::NE, shared_ptr<NVariableBase>($3)); }
+					| expr_math TCPEQ expr_math 					{ $$ = new NCompare(LOC, shared_ptr<NVariableBase>($1), NCompareOp::PEQ, shared_ptr<NVariableBase>($3)); }
+					| expr_math TCPNE expr_math 					{ $$ = new NCompare(LOC, shared_ptr<NVariableBase>($1), NCompareOp::PNE, shared_ptr<NVariableBase>($3)); }
 					| expr_math TCLT expr_math 						{ $$ = new NCompare(LOC, shared_ptr<NVariableBase>($1), NCompareOp::LT, shared_ptr<NVariableBase>($3)); }
 					| expr_math TCLE expr_math 						{ $$ = new NCompare(LOC, shared_ptr<NVariableBase>($1), NCompareOp::LE, shared_ptr<NVariableBase>($3)); }
 					| expr_math TCGT expr_math 						{ $$ = new NCompare(LOC, shared_ptr<NVariableBase>($1), NCompareOp::GT, shared_ptr<NVariableBase>($3)); }

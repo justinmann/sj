@@ -98,7 +98,9 @@ extern int yydebug;
     TDESTROY = 308,
     TMOD = 309,
     THASH = 310,
-    TAT = 311
+    TAT = 311,
+    TCPEQ = 312,
+    TCPNE = 313
   };
 #endif
 

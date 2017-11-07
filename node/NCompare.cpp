@@ -49,6 +49,9 @@ shared_ptr<CVar> NCompare::getVarImpl(Compiler* compiler, CResult& result, share
                 comparisonNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "isGreaterOrEqual", nullptr, make_shared<NodeList>(rightSide)));
                 return comparisonNode->getVar(compiler, result, thisFunction, thisVar);
                 break;
+            case NCompareOp::PEQ:
+            case NCompareOp::PNE:
+                return nullptr; // These operator cannot be overriden, this is reserved for pointer comparison
         }
     }
     
@@ -99,9 +102,11 @@ shared_ptr<ReturnValue> NCompare::transpile(Compiler* compiler, CResult& result,
         line << resultValue->name << " = " << leftValue->name;
         switch (op) {
         case NCompareOp::EQ:
+        case NCompareOp::PEQ:
             line << " == ";
             break;
         case NCompareOp::NE:
+        case NCompareOp::PNE:
             line << " != ";
             break;
         case NCompareOp::LT:

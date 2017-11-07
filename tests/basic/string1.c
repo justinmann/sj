@@ -99,6 +99,7 @@ bool sjf_global() {
     bool i;
     bool j;
     bool k;
+    bool l;
     sjs_array_char* result2;
     sjs_array_char* result3;
     sjs_array_char* result4;
@@ -106,6 +107,7 @@ bool sjf_global() {
     bool result6;
     bool result7;
     bool result8;
+    bool result9;
     sjs_array_char sjd_temp1;
     sjs_array_char sjd_temp2;
     sjs_array_char sjd_temp3;
@@ -148,6 +150,8 @@ bool sjf_global() {
     j = result7;
     result8 = sjf_array_char_isLessOrEqual(f, a);
     k = result8;
+    result9 = f == a;
+    l = result9;
 
     sjf_array_char_destroy(a);
     sjf_array_char_destroy(b);
@@ -171,7 +175,7 @@ bool sjf_global() {
     sjf_array_char_destroy(sjv_temp2);
     sjf_array_char_destroy(sjv_temp3);
 
-    return result8;
+    return result9;
 }
 
 int main() {

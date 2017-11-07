@@ -12,6 +12,8 @@
 enum NCompareOp {
     EQ,
     NE,
+    PEQ,
+    PNE,
     GT,
     GE,
     LT,
