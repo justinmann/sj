@@ -1,0 +1,15 @@
+class() {
+  [heap]m'i32 : 1
+  [heap]class_inner([stack]this : class_inner(
+    parent: [stack]this
+  ))
+}
+
+class_inner() {
+  .parentthis.m
+}
+
+global {
+  [heap]class([stack]this : class())
+}
+

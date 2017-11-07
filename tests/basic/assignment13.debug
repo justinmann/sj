@@ -1,0 +1,5 @@
+global {
+  [stack]a'i32 = 0
+  a += 1
+}
+

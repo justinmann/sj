@@ -186,7 +186,7 @@ class Compiler
 public:
     Compiler();
 
-	bool transpile(const string& fileName, ostream& stream, ostream& errorStream);
+	bool transpile(const string& fileName, ostream& stream, ostream& errorStream, ostream* debugStream);
 	shared_ptr<CResult> run(const string& code);
     shared_ptr<CResult> compile(const string& fileName);
     

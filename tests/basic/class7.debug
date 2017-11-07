@@ -1,0 +1,11 @@
+class([heap]x'i32:) {
+  this
+}
+
+global {
+  [stack]c'class : [stack]class([stack]this : class(
+    [heap]x'i32 : 1
+  ))
+  this.x
+}
+

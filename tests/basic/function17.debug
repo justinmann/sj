@@ -1,0 +1,10 @@
+func([heap]x'f32:) {
+  this.x
+}
+
+global {
+  [heap]func([stack]this : func(
+    [heap]x'f32 : 1
+  ))
+}
+

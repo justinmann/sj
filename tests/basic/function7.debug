@@ -1,0 +1,10 @@
+func([heap]x'i32:) {
+  this.x
+}
+
+global {
+  [heap]func([stack]this : func(
+    [heap]x'i32 : 3
+  ))
+}
+

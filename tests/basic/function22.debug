@@ -1,0 +1,8 @@
+foo() {
+  void
+}
+
+global {
+  foo([stack]this : foo())
+}
+

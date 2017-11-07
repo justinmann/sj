@@ -97,6 +97,7 @@ void runTest(fs::path path, bool updateResult) {
         TrBlock::resetVarNames();
 
         auto codeFileName = fs::change_extension(path, ".c");
+        auto debugFileName = fs::change_extension(path, ".debug");
         auto errorFileName = fs::change_extension(path, ".errors");
 
 		if (updateResult) {
@@ -104,18 +105,21 @@ void runTest(fs::path path, bool updateResult) {
 			code.open(codeFileName.c_str());
 			ofstream error;
 			error.open(errorFileName.c_str());
+            ofstream debug;
+            debug.open(debugFileName.c_str());
 
 			Compiler compiler;
-			compiler.transpile(path.string(), code, error);
+			compiler.transpile(path.string(), code, error, &debug);
 
 			code.close();
 			error.close();
+            debug.close();
 		} else {
 			stringstream codeA;
 			stringstream errorA;
 
 			Compiler compiler;
-			compiler.transpile(path.string(), codeA, errorA);
+			compiler.transpile(path.string(), codeA, errorA, nullptr);
 
 			codeA.seekg(0, codeA.beg);
 			errorA.seekg(0, errorA.beg);

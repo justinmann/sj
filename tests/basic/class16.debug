@@ -1,0 +1,28 @@
+a([heap]x'i32:, [stack]b'aa:) {
+  this
+}
+
+a_aa() {
+  this
+}
+
+a_aa_c() {
+  .parent.parentthis.x
+}
+
+global {
+  [stack]a'a : [stack]a([stack]this : a(
+    [heap]x'i32 : 1,
+    [stack]b'aa : [stack]a_aa([stack]this : a_aa(
+      parent: [stack]this
+    ))
+  ))
+  [heap]a_aa_c([stack]this : a_aa_c(
+    parent: [stack]this.b
+  ))
+  [stack]d'aa : this.b
+  [heap]a_aa_c([stack]this : a_aa_c(
+    parent: [stack]d
+  ))
+}
+

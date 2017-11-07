@@ -1,0 +1,14 @@
+class([heap]x'i32:) {
+  this
+}
+
+func() {
+  [heap]class([heap]this : class(
+    [heap]x'i32 : 1
+  ))
+}
+
+global {
+  this.x
+}
+

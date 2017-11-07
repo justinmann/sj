@@ -1,0 +1,17 @@
+class([heap]x'i32:) {
+  this
+}
+
+class_func() {
+  .parentthis.x
+}
+
+global {
+  [stack]c'class : [stack]class([stack]this : class(
+    [heap]x'i32 : 1
+  ))
+  [heap]class_func([stack]this : class_func(
+    parent: [stack]c
+  ))
+}
+

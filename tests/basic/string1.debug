@@ -1,0 +1,118 @@
+anon3() {
+  this
+}
+
+anon2() {
+  this
+}
+
+anon1([stack]_fd'ptr=) {
+  {
+ 
+		_this->_fd = (uintptr_t)stdout;
+	
+}
+  this
+}
+
+string([stack]count'i32=, [heap]data'array_char=) {
+  this
+}
+
+array!char([heap]size'i32=, [heap]data'ptr=, [heap]_isGlobal'bool=) {
+
+	#forceThis()
+
+	if (_this->size < 0) {
+		exit(-1);
+	}
+
+	if (_this->data) {
+		_this->_isGlobal = true;
+	} else {
+		_this->data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
+	}
+
+	#retain(array!t, _this);
+	return _this;
+
+}
+
+string_getAt([heap]index'i32:) {
+  array_getAt([stack]this : array_getAt(
+    parent: [heap].parentthis.data,
+    [heap]index'i32 : this.index
+  ))
+}
+
+array_getAt([heap]index'i32:) {
+
+		#forceParent()
+
+		if (index >= _parent->size || index < 0) {
+			exit(-1);
+		}
+
+		#type(t)* p = (#type(t)*)_parent->data;
+		#type(t) val = p[index];
+		if (!#isValue(t)) {
+			if (val == 0) {
+				exit(-1);
+			}
+		}
+		return val;		
+	
+}
+
+global {
+  [stack]random'anon3 : [stack]anon3([stack]this : anon3())
+  [stack]parse'anon2 : [stack]anon2([stack]this : anon2())
+  [stack]console'anon1 : [stack]anon1([stack]this : anon1(
+    [stack]_fd'ptr = 0 as ptr
+  ))
+  [stack]a'string : {
+    [stack]string([stack]this : string(
+      parent: [stack]this,
+      [stack]count'i32 = ,
+      [heap]data'array_char = array!char([stack]this : array!char(
+        [heap]size'i32 = ,
+        [heap]data'ptr = ,
+        [heap]_isGlobal'bool = false
+      ))
+    ))
+  }
+  [stack]b'string : {
+    [stack]string([stack]this : string(
+      parent: [stack]this,
+      [stack]count'i32 = ,
+      [heap]data'array_char = array!char([stack]this : array!char(
+        [heap]size'i32 = ,
+        [heap]data'ptr = ,
+        [heap]_isGlobal'bool = false
+      ))
+    ))
+  }
+  [stack]c'char : 'a'
+  [stack]d'char : '\''
+  [stack]e'char : '\n'
+  [stack]f'string : {
+    [stack]string([stack]this : string(
+      parent: [stack]this,
+      [stack]count'i32 = ,
+      [heap]data'array_char = array!char([stack]this : array!char(
+        [heap]size'i32 = ,
+        [heap]data'ptr = ,
+        [heap]_isGlobal'bool = false
+      ))
+    ))
+  }
+  [heap]h'char : [heap]string_getAt([stack]this : string_getAt(
+    parent: [stack]a,
+    [heap]index'i32 : 0
+  ))
+  [stack]i'bool : h == 'h'
+  [heap]j'bool : f == a
+  [heap]k'bool : f <= a
+  [stack]l'bool : fa
+}
+

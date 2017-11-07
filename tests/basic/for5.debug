@@ -1,0 +1,8 @@
+global {
+  [heap]y'i32 = 0
+  for x : 2 to 4 {
+    [heap]y'i32 = y + x
+  }
+  y
+}
+

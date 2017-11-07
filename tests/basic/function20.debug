@@ -1,0 +1,12 @@
+func() {
+  bar([stack]this : bar())
+}
+
+bar() {
+  9
+}
+
+global {
+  [heap]func([stack]this : func())
+}
+

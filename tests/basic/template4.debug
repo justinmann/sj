@@ -1,0 +1,8 @@
+class!func() {
+  1
+}
+
+global {
+  [heap]d'i32 : class!func([stack]this : class!func())
+}
+

@@ -1,0 +1,13 @@
+class() {
+  this
+}
+
+class_func() {
+  1
+}
+
+global {
+  [stack]c'class : [stack]class([stack]this : class())
+  class_func([stack]this : class_func())
+}
+

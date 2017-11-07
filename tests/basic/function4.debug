@@ -1,0 +1,8 @@
+func() {
+  -3.0
+}
+
+global {
+  func([stack]this : func()) < 4.0
+}
+

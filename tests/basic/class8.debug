@@ -1,0 +1,12 @@
+class([stack]x'i32:, [stack]y'i32:) {
+  this
+}
+
+global {
+  [stack]c'class : [stack]class([stack]this : class(
+    [stack]x'i32 : 1,
+    [stack]y'i32 : 2
+  ))
+  this.x + this.y
+}
+

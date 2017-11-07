@@ -1,0 +1,13 @@
+func() {
+  [heap]a'class = [heap]class([heap]this : class())
+  [heap]a'class = [heap]class([heap]this : class())
+}
+
+class() {
+  this
+}
+
+global {
+  [heap]func([stack]this : func())
+}
+

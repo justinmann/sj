@@ -1,0 +1,10 @@
+class([heap]x'i32=) {
+  this
+}
+
+global {
+  [heap]c'class : [heap]class([heap]this : class(
+    [heap]x'i32 = 1
+  ))
+}
+

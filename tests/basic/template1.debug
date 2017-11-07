@@ -1,0 +1,18 @@
+class!i32() {
+  1
+}
+
+class!f32() {
+  1
+}
+
+class!bool() {
+  1
+}
+
+global {
+  [stack]a'i32 : class!i32([stack]this : class!i32())
+  [stack]b'i32 : class!f32([stack]this : class!f32())
+  [heap]c'i32 : class!bool([stack]this : class!bool())
+}
+

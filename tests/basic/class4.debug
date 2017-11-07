@@ -1,0 +1,11 @@
+class([stack]b'i32=) {
+  this
+}
+
+global {
+  [stack]a'class : [stack]class([stack]this : class(
+    [stack]b'i32 = 0
+  ))
+  [stack]b'i32 = 1
+}
+

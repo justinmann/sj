@@ -1,0 +1,4 @@
+global {
+  [stack]x'i64 = 1 as i64
+}
+

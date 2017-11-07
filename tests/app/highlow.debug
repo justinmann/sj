@@ -1,0 +1,178 @@
+anon3() {
+  this
+}
+
+anon2() {
+  this
+}
+
+anon1([stack]_fd'ptr=) {
+  {
+ 
+		_this->_fd = (uintptr_t)stdout;
+	
+}
+  this
+}
+
+anon1_write([heap]data'string:) {
+
+		#forceParent()
+			
+		fwrite(data->data->data, sizeof(char), data->count, (FILE*)_parent->_fd);
+	
+}
+
+string([heap]count'i32=, [heap]data'array_char=) {
+  this
+}
+
+array!char([heap]size'i32=, [heap]data'ptr=, [heap]_isGlobal'bool=) {
+
+	#forceThis()
+
+	if (_this->size < 0) {
+		exit(-1);
+	}
+
+	if (_this->data) {
+		_this->_isGlobal = true;
+	} else {
+		_this->data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
+	}
+
+	#retain(array!t, _this);
+	return _this;
+
+}
+
+anon3_nextInt() {
+
+		return rand();
+	
+}
+
+anon1_readLine() {
+  [heap]data'ptr = 0 as ptr
+  [heap]size'i32 = 1024
+  {
+
+		    char* str = (char*)malloc(size);
+		    int index = 0;
+		    char ch = ' ';
+		    do {
+		        ch = getchar();
+		        if (ch != '\n') {
+		            str[index] = ch;
+		            index++;
+		            if (index >= size) {
+		                size *= 2;
+		                str = (char*)realloc(str, size);
+		            }
+		        }
+		    } while (ch != '\n');
+
+			str[index] = 0;
+		    index++;
+		    data = (uintptr_t)str;
+		    size = index;
+		
+}
+  [heap]string([heap]this : string(
+    [heap]count'i32 = size - 1,
+    [heap]data'array_char = array!char([stack]this : array!char(
+      [heap]size'i32 = size,
+      [heap]data'ptr = data,
+      [heap]_isGlobal'bool = false
+    ))
+  ))
+}
+
+anon2_toInt([stack]text'string:) {
+
+		char* e;
+	    int v = strtol((char*)text->data->data, &e, 10);
+	    
+	    if (*e != '\0') {
+	        return 0;
+	    }
+	    
+	    return v;
+    
+}
+
+global {
+  [stack]random'anon3 : [stack]anon3([stack]this : anon3())
+  [stack]parse'anon2 : [stack]anon2([stack]this : anon2())
+  [stack]console'anon1 : [stack]anon1([stack]this : anon1(
+    [stack]_fd'ptr = 0 as ptr
+  ))
+  anon1_write([stack]this : anon1_write(
+    parent: [stack]console,
+    [heap]data'string : {
+      [heap]string([heap]this : string(
+        [heap]count'i32 = ,
+        [heap]data'array_char = array!char([stack]this : array!char(
+          [heap]size'i32 = ,
+          [heap]data'ptr = ,
+          [heap]_isGlobal'bool = false
+        ))
+      ))
+    }
+  ))
+  [stack]num'i32 : anon3_nextInt([stack]this : anon3_nextInt()) %% 10 + 1
+  [stack]isCorrect'bool = false
+  while !isCorrect{
+    [heap]str'string : [heap]anon1_readLine([stack]this : anon1_readLine())
+    [stack]guess'i32 : anon2_toInt([stack]this : anon2_toInt(
+      [stack]text'string : str
+    ))
+    [stack]isCorrect'bool = if guess < num {
+      anon1_write([stack]this : anon1_write(
+        parent: [stack]console,
+        [heap]data'string : {
+          [heap]string([heap]this : string(
+            [heap]count'i32 = ,
+            [heap]data'array_char = array!char([stack]this : array!char(
+              [heap]size'i32 = ,
+              [heap]data'ptr = ,
+              [heap]_isGlobal'bool = false
+            ))
+          ))
+        }
+      ))
+      false
+    } else if guess > num {
+      anon1_write([stack]this : anon1_write(
+        parent: [stack]console,
+        [heap]data'string : {
+          [heap]string([heap]this : string(
+            [heap]count'i32 = ,
+            [heap]data'array_char = array!char([stack]this : array!char(
+              [heap]size'i32 = ,
+              [heap]data'ptr = ,
+              [heap]_isGlobal'bool = false
+            ))
+          ))
+        }
+      ))
+      false
+    } else {
+      true
+    }
+  }
+  anon1_write([stack]this : anon1_write(
+    parent: [stack]console,
+    [heap]data'string : {
+      [heap]string([heap]this : string(
+        [heap]count'i32 = ,
+        [heap]data'array_char = array!char([stack]this : array!char(
+          [heap]size'i32 = ,
+          [heap]data'ptr = ,
+          [heap]_isGlobal'bool = false
+        ))
+      ))
+    }
+  ))
+}
+

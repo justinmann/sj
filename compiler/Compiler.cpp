@@ -404,7 +404,7 @@ void CError::writeToStream(ostream& stream) {
         << msg;
 }
 
-bool Compiler::transpile(const string& fileName, ostream& stream, ostream& errorStream) {
+bool Compiler::transpile(const string& fileName, ostream& stream, ostream& errorStream, ostream* debugStream) {
 	TrOutput output;
 	shared_ptr<CVar> currentVar;
 	shared_ptr<CVar> globalVar;
@@ -444,15 +444,15 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 #endif
 
 				if (result->errors.size() == 0) {
-#ifdef NODE_OUTPUT
-					map<shared_ptr<CBaseFunction>, string> functionDumps;
-					stringstream ss;
-					compilerResult->block->dump(this, *compilerResult, globalFunction, globalVar, functionDumps, ss, 0);
-					for (auto it : functionDumps) {
-						printf("%s\n\n", it.second.c_str());
-					}
-					printf("global %s\n\n", ss.str().c_str());
-#endif
+                    if (debugStream) {
+                        map<shared_ptr<CBaseFunction>, string> functionDumps;
+                        stringstream ss;
+                        result->block->dump(this, *result, globalFunction, globalVar, functionDumps, ss, 0);
+                        for (auto it : functionDumps) {
+                            *debugStream << it.second << "\n\n";
+                        }
+                        *debugStream << "global " << ss.str() << "\n\n";
+                    }
 
 					state = CompilerState::Compile;                    
                     vector<shared_ptr<NBase>> parameters;

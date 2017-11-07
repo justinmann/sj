@@ -1,0 +1,27 @@
+class() {
+  this
+}
+
+class_foo([heap]x'i32:) {
+  if this.x > 0 {
+    [heap]class_bar([stack]this : class_bar(
+      [heap]x'i32 : this.x - 1
+    ))
+  } else {
+    0
+  }
+}
+
+class_bar([heap]x'i32:) {
+  [heap]class_foo([stack]this : class_foo(
+    [heap]x'i32 : this.x
+  ))
+}
+
+global {
+  [stack]c'class : [stack]class([stack]this : class())
+  [heap]class_foo([stack]this : class_foo(
+    [heap]x'i32 : 4
+  ))
+}
+

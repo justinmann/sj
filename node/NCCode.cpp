@@ -157,6 +157,6 @@ shared_ptr<ReturnValue> NCCode::transpile(Compiler* compiler, CResult& result, s
 }
 
 void NCCode::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-    ss << code;
+    ss << "c{\n" << code << "\n}c";
 }
 

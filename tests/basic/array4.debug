@@ -1,0 +1,79 @@
+class([heap]x'i32:) {
+  this
+}
+
+array!class([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=) {
+
+	#forceThis()
+
+	if (_this->size < 0) {
+		exit(-1);
+	}
+
+	if (_this->data) {
+		_this->_isGlobal = true;
+	} else {
+		_this->data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
+	}
+
+	#retain(array!t, _this);
+	return _this;
+
+}
+
+array_setAt([stack]index'i32:, [heap]item'class:) {
+
+		#forceParent()
+		#forceHeap(item)
+
+		if (index >= _parent->size || index < 0) {
+			exit(-1);
+		}
+
+		#type(t)* p = (#type(t)*)_parent->data;
+		#release(t, p[index]);
+		#retain(t, item);
+		p[index] = item;
+	
+}
+
+array_getAt([stack]index'i32:) {
+
+		#forceParent()
+
+		if (index >= _parent->size || index < 0) {
+			exit(-1);
+		}
+
+		#type(t)* p = (#type(t)*)_parent->data;
+		#type(t) val = p[index];
+		if (!#isValue(t)) {
+			if (val == 0) {
+				exit(-1);
+			}
+		}
+		return val;		
+	
+}
+
+global {
+  [stack]a'array_class : array!class([stack]this : array!class(
+    [stack]size'i32 = 1,
+    [stack]data'ptr = 0 as ptr,
+    [stack]_isGlobal'bool = false
+  ))
+  array_setAt([stack]this : array_setAt(
+    parent: [stack]a,
+    [stack]index'i32 : 0,
+    [heap]item'class : [heap]class([heap]this : class(
+      [heap]x'i32 : 1
+    ))
+  ))
+  [stack]b'class : array_getAt([stack]this : array_getAt(
+    parent: [stack]a,
+    [stack]index'i32 : 0
+  ))
+  [heap]c'i32 : this.x
+  c
+}
+
