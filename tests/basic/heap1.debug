@@ -8,6 +8,7 @@ func() {
 }
 
 global {
-  [heap]func([stack]this : func())
+  [heap]b'class : [heap]func([stack]this : func())
+  void
 }
 

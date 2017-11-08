@@ -13,7 +13,7 @@ struct td_sjs_class {
 void sjf_class(sjs_class* _this, sjs_class** _return);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_func(sjs_class** _return);
-void sjf_global(sjs_class** _return);
+void sjf_global();
 
 void sjf_class(sjs_class* _this, sjs_class** _return) {
     _this->_refCount++;
@@ -26,36 +26,36 @@ void sjf_class_destroy(sjs_class* _this) {
 
 void sjf_func(sjs_class** _return) {
     sjs_class* a;
+    sjs_class* result2;
     sjs_class* result3;
-    sjs_class* result4;
     sjs_class* sjv_temp1;
     sjs_class* sjv_temp2;
 
     sjv_temp1 = (sjs_class*)malloc(sizeof(sjs_class));
     sjv_temp1->_refCount = 1;
-    sjf_class(sjv_temp1, &result3);
-    a = result3;
+    sjf_class(sjv_temp1, &result2);
+    a = result2;
     a->_refCount++;
     sjv_temp2 = (sjs_class*)malloc(sizeof(sjs_class));
     sjv_temp2->_refCount = 1;
-    sjf_class(sjv_temp2, &result4);
+    sjf_class(sjv_temp2, &result3);
     a->_refCount--;
     if (a->_refCount == 0) {
         sjf_class_destroy(a);
         free(a);
     }
 
-    a = result4;
+    a = result3;
 
     a->_refCount--;
     if (a->_refCount == 0) {
         sjf_class_destroy(a);
         free(a);
     }
-    result3->_refCount--;
-    if (result3->_refCount == 0) {
-        sjf_class_destroy(result3);
-        free(result3);
+    result2->_refCount--;
+    if (result2->_refCount == 0) {
+        sjf_class_destroy(result2);
+        free(result2);
     }
     sjv_temp1->_refCount--;
     if (sjv_temp1->_refCount == 0) {
@@ -68,21 +68,31 @@ void sjf_func(sjs_class** _return) {
         free(sjv_temp2);
     }
 
-    *_return = result4;
+    *_return = result3;
 }
 
-void sjf_global(sjs_class** _return) {
-    sjs_class* result2;
+void sjf_global() {
+    sjs_class* b;
+    sjs_class* result1;
 
-    sjf_func(&result2);
+    sjf_func(&result1);
+    b = result1;
+    b->_refCount++;
 
-    *_return = result2;
+    b->_refCount--;
+    if (b->_refCount == 0) {
+        sjf_class_destroy(b);
+        free(b);
+    }
+    result1->_refCount--;
+    if (result1->_refCount == 0) {
+        sjf_class_destroy(result1);
+        free(result1);
+    }
 }
 
 int main() {
-    sjs_class* result1;
-
-    sjf_global(&result1);
+    sjf_global();
 
     return 0;
 }
