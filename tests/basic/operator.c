@@ -15,6 +15,7 @@ sjs_fancyMath* sjf_fancyMath(sjs_fancyMath* _this);
 sjs_fancyMath* sjf_fancyMath_add(sjs_fancyMath* _parent, sjs_fancyMath* num);
 void sjf_fancyMath_destroy(sjs_fancyMath* _this);
 sjs_fancyMath* sjf_fancyMath_divide(sjs_fancyMath* _parent, sjs_fancyMath* num);
+sjs_fancyMath* sjf_fancyMath_increment(sjs_fancyMath* _parent);
 sjs_fancyMath* sjf_fancyMath_modulus(sjs_fancyMath* _parent, sjs_fancyMath* num);
 sjs_fancyMath* sjf_fancyMath_multiply(sjs_fancyMath* _parent, sjs_fancyMath* num);
 sjs_fancyMath* sjf_fancyMath_subtract(sjs_fancyMath* _parent, sjs_fancyMath* num);
@@ -79,6 +80,28 @@ sjs_fancyMath* sjf_fancyMath_divide(sjs_fancyMath* _parent, sjs_fancyMath* num) 
     }
 
     return result17;
+}
+
+sjs_fancyMath* sjf_fancyMath_increment(sjs_fancyMath* _parent) {
+    sjs_fancyMath* result29;
+    int32_t result30;
+    sjs_fancyMath* sjv_temp8;
+    int32_t temp11;
+
+    temp11 = _parent->x;
+    result30 = temp11 + 1;
+    sjv_temp8 = (sjs_fancyMath*)malloc(sizeof(sjs_fancyMath));
+    sjv_temp8->_refCount = 1;
+    sjv_temp8->x = result30;
+    result29 = sjf_fancyMath(sjv_temp8);
+
+    sjv_temp8->_refCount--;
+    if (sjv_temp8->_refCount == 0) {
+        sjf_fancyMath_destroy(sjv_temp8);
+        free(sjv_temp8);
+    }
+
+    return result29;
 }
 
 sjs_fancyMath* sjf_fancyMath_modulus(sjs_fancyMath* _parent, sjs_fancyMath* num) {
@@ -171,7 +194,13 @@ sjs_fancyMath* sjf_global() {
     sjs_fancyMath* result16;
     sjs_fancyMath* result2;
     sjs_fancyMath* result20;
+    sjs_fancyMath* result24;
+    sjs_fancyMath* result25;
+    sjs_fancyMath* result26;
+    sjs_fancyMath* result27;
+    sjs_fancyMath* result28;
     sjs_fancyMath* result3;
+    sjs_fancyMath* result31;
     sjs_fancyMath* result4;
     sjs_fancyMath* result8;
     sjs_fancyMath* sjv_temp1;
@@ -203,6 +232,80 @@ sjs_fancyMath* sjf_global() {
     f->_refCount++;
     result20 = sjf_fancyMath_modulus(a, b);
     g = result20;
+    g->_refCount++;
+    result24 = sjf_fancyMath_add(c, c);
+    c->_refCount--;
+    if (c->_refCount == 0) {
+        sjf_fancyMath_destroy(c);
+        free(c);
+    }
+
+    c = result24;
+
+    c->_refCount++;
+
+    result25 = sjf_fancyMath_subtract(d, d);
+
+    d->_refCount--;
+
+    if (d->_refCount == 0) {
+        sjf_fancyMath_destroy(d);
+        free(d);
+    }
+
+    d = result25;
+
+    d->_refCount++;
+
+    result26 = sjf_fancyMath_multiply(d, d);
+
+    d->_refCount--;
+
+    if (d->_refCount == 0) {
+        sjf_fancyMath_destroy(d);
+        free(d);
+    }
+
+    d = result26;
+
+    d->_refCount++;
+
+    result27 = sjf_fancyMath_divide(d, d);
+
+    d->_refCount--;
+
+    if (d->_refCount == 0) {
+        sjf_fancyMath_destroy(d);
+        free(d);
+    }
+
+    d = result27;
+
+    d->_refCount++;
+
+    result28 = sjf_fancyMath_increment(e);
+
+    e->_refCount--;
+
+    if (e->_refCount == 0) {
+        sjf_fancyMath_destroy(e);
+        free(e);
+    }
+
+    e = result28;
+
+    e->_refCount++;
+
+    result31 = sjf_fancyMath_increment(f);
+
+    f->_refCount--;
+
+    if (f->_refCount == 0) {
+        sjf_fancyMath_destroy(f);
+        free(f);
+    }
+
+    f = result31;
 
     a->_refCount--;
     if (a->_refCount == 0) {
@@ -254,6 +357,36 @@ sjs_fancyMath* sjf_global() {
         sjf_fancyMath_destroy(result2);
         free(result2);
     }
+    result20->_refCount--;
+    if (result20->_refCount == 0) {
+        sjf_fancyMath_destroy(result20);
+        free(result20);
+    }
+    result24->_refCount--;
+    if (result24->_refCount == 0) {
+        sjf_fancyMath_destroy(result24);
+        free(result24);
+    }
+    result25->_refCount--;
+    if (result25->_refCount == 0) {
+        sjf_fancyMath_destroy(result25);
+        free(result25);
+    }
+    result26->_refCount--;
+    if (result26->_refCount == 0) {
+        sjf_fancyMath_destroy(result26);
+        free(result26);
+    }
+    result27->_refCount--;
+    if (result27->_refCount == 0) {
+        sjf_fancyMath_destroy(result27);
+        free(result27);
+    }
+    result28->_refCount--;
+    if (result28->_refCount == 0) {
+        sjf_fancyMath_destroy(result28);
+        free(result28);
+    }
     result3->_refCount--;
     if (result3->_refCount == 0) {
         sjf_fancyMath_destroy(result3);
@@ -280,7 +413,7 @@ sjs_fancyMath* sjf_global() {
         free(sjv_temp2);
     }
 
-    return result20;
+    return result31;
 }
 
 int main() {

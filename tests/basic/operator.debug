@@ -14,6 +14,12 @@ fancyMath_divide([stack]num'fancyMath:) {
   ))
 }
 
+fancyMath_increment() {
+  [heap]fancyMath([heap]this : fancyMath(
+    [heap]x'i32 : .parentthis.x + 1
+  ))
+}
+
 fancyMath_modulus([stack]num'fancyMath:) {
   [heap]fancyMath([heap]this : fancyMath(
     [heap]x'i32 : .parentthis.x %% this.x + 1
@@ -39,25 +45,47 @@ global {
   [heap]b'fancyMath : [heap]fancyMath([heap]this : fancyMath(
     [heap]x'i32 : 2
   ))
-  [heap]c'fancyMath : [heap]fancyMath_add([stack]this : fancyMath_add(
+  [heap]c'fancyMath = [heap]fancyMath_add([stack]this : fancyMath_add(
     parent: [heap]a,
     [stack]num'fancyMath : b
   ))
-  [heap]d'fancyMath : [heap]fancyMath_subtract([stack]this : fancyMath_subtract(
+  [heap]d'fancyMath = [heap]fancyMath_subtract([stack]this : fancyMath_subtract(
     parent: [heap]a,
     [stack]num'fancyMath : b
   ))
-  [heap]e'fancyMath : [heap]fancyMath_multiply([stack]this : fancyMath_multiply(
+  [heap]e'fancyMath = [heap]fancyMath_multiply([stack]this : fancyMath_multiply(
     parent: [heap]a,
     [stack]num'fancyMath : b
   ))
-  [heap]f'fancyMath : [heap]fancyMath_divide([stack]this : fancyMath_divide(
+  [heap]f'fancyMath = [heap]fancyMath_divide([stack]this : fancyMath_divide(
     parent: [heap]a,
     [stack]num'fancyMath : b
   ))
-  [heap]g'fancyMath : [heap]fancyMath_modulus([stack]this : fancyMath_modulus(
+  [heap]g'fancyMath = [heap]fancyMath_modulus([stack]this : fancyMath_modulus(
     parent: [heap]a,
     [stack]num'fancyMath : b
+  ))
+  c = [heap]fancyMath_add([stack]this : fancyMath_add(
+    parent: [heap]c,
+    [stack]num'fancyMath : c
+  ))
+  d = [heap]fancyMath_subtract([stack]this : fancyMath_subtract(
+    parent: [heap]d,
+    [stack]num'fancyMath : d
+  ))
+  d = [heap]fancyMath_multiply([stack]this : fancyMath_multiply(
+    parent: [heap]d,
+    [stack]num'fancyMath : d
+  ))
+  d = [heap]fancyMath_divide([stack]this : fancyMath_divide(
+    parent: [heap]d,
+    [stack]num'fancyMath : d
+  ))
+  e = [heap]fancyMath_increment([stack]this : fancyMath_increment(
+    parent: [heap]e
+  ))
+  f = [heap]fancyMath_increment([stack]this : fancyMath_increment(
+    parent: [heap]f
   ))
 }
 

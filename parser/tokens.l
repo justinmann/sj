@@ -84,6 +84,8 @@ void updateLocation(YYLOCATION& loc, const char* s, const int len) {
 "--"					TOKEN_VAL(TMINUSMINUS);
 "+="					TOKEN_VAL(TPLUSEQUAL);
 "-="					TOKEN_VAL(TMINUSEQUAL);
+"*="					TOKEN_VAL(TMULEQUAL);
+"/="					TOKEN_VAL(TDIVEQUAL);
 "="						TOKEN_VAL(TEQUAL);
 "==="					TOKEN_VAL(TCPEQ);
 "!=="					TOKEN_VAL(TCPNE);

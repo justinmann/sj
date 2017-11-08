@@ -100,7 +100,9 @@ extern int yydebug;
     THASH = 310,
     TAT = 311,
     TCPEQ = 312,
-    TCPNE = 313
+    TCPNE = 313,
+    TMULEQUAL = 314,
+    TDIVEQUAL = 315
   };
 #endif
 

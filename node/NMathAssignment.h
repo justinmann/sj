@@ -13,18 +13,20 @@ enum NMathAssignmentOp {
     NMAO_Inc,
     NMAO_Dec,
     NMAO_Add,
-    NMAO_Sub
+    NMAO_Sub,
+    NMAO_Mul,
+    NMAO_Div
 };
 
 class NMathAssignment : public NBase {
 public:
-    NMathAssignment(CLoc loc, shared_ptr<NVariableBase> var, NMathAssignmentOp op, shared_ptr<NBase> rightSide);
+    NMathAssignment(CLoc loc, shared_ptr<NVariableBase> leftSide, NMathAssignmentOp op, shared_ptr<NVariableBase> rightSide);
 	virtual shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue);
 	virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
     
-    shared_ptr<NVariableBase> var;
     NMathAssignmentOp op;
-    shared_ptr<NBase> rightSide;
+    shared_ptr<NVariableBase> leftSide;
+    shared_ptr<NVariableBase> rightSide;
 
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);
@@ -35,6 +37,8 @@ protected:
 
 private:
     shared_ptr<NAssignment> shared_from_this() { return static_pointer_cast<NAssignment>(NBase::shared_from_this()); }
+
+    shared_ptr<NBase> operatorOverloadNode;
 };
 
 #endif /* NAssignment_h */

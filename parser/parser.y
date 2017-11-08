@@ -55,7 +55,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID TSTRING TCHAR TCCODE
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY TMOD THASH TAT TCPEQ TCPNE
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY TMOD THASH TAT TCPEQ TCPNE TMULEQUAL TDIVEQUAL
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch destroy expr
@@ -105,8 +105,10 @@ block 				: TLBRACE stmts TRBRACE 						{ $$ = $2; }
 var_decl 			: assign
 					| var TPLUSPLUS                         		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Inc, nullptr); }
 					| var TMINUSMINUS                       		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Dec, nullptr); }
-					| var TPLUSEQUAL stmt                   		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Add, shared_ptr<NBase>($3)); }
-					| var TMINUSEQUAL stmt                  		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Sub, shared_ptr<NBase>($3)); }
+					| var TPLUSEQUAL expr_and                  		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Add, shared_ptr<NVariableBase>($3)); }
+					| var TMINUSEQUAL expr_and                		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Sub, shared_ptr<NVariableBase>($3)); }
+					| var TMULEQUAL expr_and                		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Mul, shared_ptr<NVariableBase>($3)); }
+					| var TDIVEQUAL expr_and                		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Div, shared_ptr<NVariableBase>($3)); }
 					| var TLBRACKET expr TRBRACKET					{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NCall>(LOC, "getAt", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3)))); }
 					| var TLBRACKET expr TRBRACKET TEQUAL stmt		{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NCall>(LOC, "setAt", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3), shared_ptr<NBase>($6)))); }
 					;
