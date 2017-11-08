@@ -38,7 +38,7 @@ protected:
     //virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType);
     
 private:
-    shared_ptr<NBase> comparisonNode;
+    shared_ptr<NBase> operatorOverloadNode;
 };
 
 #endif /* NCompare_h */

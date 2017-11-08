@@ -1,0 +1,63 @@
+fancyMath([heap]x'i32:) {
+  this
+}
+
+fancyMath_add([stack]num'fancyMath:) {
+  [heap]fancyMath([heap]this : fancyMath(
+    [heap]x'i32 : .parentthis.x + this.x + 1
+  ))
+}
+
+fancyMath_divide([stack]num'fancyMath:) {
+  [heap]fancyMath([heap]this : fancyMath(
+    [heap]x'i32 : .parentthis.x / this.x + 1
+  ))
+}
+
+fancyMath_modulus([stack]num'fancyMath:) {
+  [heap]fancyMath([heap]this : fancyMath(
+    [heap]x'i32 : .parentthis.x %% this.x + 1
+  ))
+}
+
+fancyMath_multiply([stack]num'fancyMath:) {
+  [heap]fancyMath([heap]this : fancyMath(
+    [heap]x'i32 : .parentthis.x * this.x + 1
+  ))
+}
+
+fancyMath_subtract([stack]num'fancyMath:) {
+  [heap]fancyMath([heap]this : fancyMath(
+    [heap]x'i32 : .parentthis.x - this.x + 1
+  ))
+}
+
+global {
+  [heap]a'fancyMath : [heap]fancyMath([heap]this : fancyMath(
+    [heap]x'i32 : 1
+  ))
+  [heap]b'fancyMath : [heap]fancyMath([heap]this : fancyMath(
+    [heap]x'i32 : 2
+  ))
+  [heap]c'fancyMath : [heap]fancyMath_add([stack]this : fancyMath_add(
+    parent: [heap]a,
+    [stack]num'fancyMath : b
+  ))
+  [heap]d'fancyMath : [heap]fancyMath_subtract([stack]this : fancyMath_subtract(
+    parent: [heap]a,
+    [stack]num'fancyMath : b
+  ))
+  [heap]e'fancyMath : [heap]fancyMath_multiply([stack]this : fancyMath_multiply(
+    parent: [heap]a,
+    [stack]num'fancyMath : b
+  ))
+  [heap]f'fancyMath : [heap]fancyMath_divide([stack]this : fancyMath_divide(
+    parent: [heap]a,
+    [stack]num'fancyMath : b
+  ))
+  [heap]g'fancyMath : [heap]fancyMath_modulus([stack]this : fancyMath_modulus(
+    parent: [heap]a,
+    [stack]num'fancyMath : b
+  ))
+}
+

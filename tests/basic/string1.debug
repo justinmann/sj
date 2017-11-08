@@ -51,6 +51,26 @@ array_getAt([heap]index'i32:) c{
 	
 }c
 
+array_isEqual([heap]test'array_char:) c{
+
+		#forceParent()
+
+		if (_parent->size != test->size) {
+			return false;
+		}
+
+		return memcmp((void*)_parent->data, (void*)test->data, _parent->size * sizeof(#type(t))) == 0;		
+	
+}c
+
+array_isLessOrEqual([heap]test'array_char:) c{
+
+		#forceParent()
+
+		return memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) <= 0;		
+	
+}c
+
 string([stack]count'i32=, [heap]data'array_char=) {
   this
 }
@@ -59,6 +79,20 @@ string_getAt([heap]index'i32:) {
   array_getAt([stack]this : array_getAt(
     parent: [heap].parentthis.data,
     [heap]index'i32 : this.index
+  ))
+}
+
+string_isEqual([stack]test'string:) {
+  array_isEqual([stack]this : array_isEqual(
+    parent: [heap].parentthis.data,
+    [heap]test'array_char : this.data
+  ))
+}
+
+string_isLessOrEqual([stack]test'string:) {
+  array_isLessOrEqual([stack]this : array_isLessOrEqual(
+    parent: [heap].parentthis.data,
+    [heap]test'array_char : this.data
   ))
 }
 
@@ -109,8 +143,14 @@ global {
     [heap]index'i32 : 0
   ))
   [stack]i'bool : h == 'h'
-  [heap]j'bool : f == a
-  [heap]k'bool : f <= a
+  [heap]j'bool : [heap]string_isEqual([stack]this : string_isEqual(
+    parent: [stack]f,
+    [stack]test'string : a
+  ))
+  [heap]k'bool : [heap]string_isLessOrEqual([stack]this : string_isLessOrEqual(
+    parent: [stack]f,
+    [stack]test'string : a
+  ))
   [stack]l'bool : fa
 }
 

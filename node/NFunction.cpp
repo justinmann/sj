@@ -390,6 +390,11 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
             return nullptr;
         }
 
+        if (argType == nullptr) {
+            result.addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' type is undefined", argVar->name.c_str());
+            return nullptr;
+        }
+
         if (argReturnValue->type != argType) {
             result.addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' type '%s' does not match '%s'", argVar->name.c_str(), argReturnValue->type->name.c_str(), argType->name.c_str());
             return nullptr;
@@ -1190,7 +1195,8 @@ void CFunction::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CVar> t
             }
             ss << alloc_mode(compiler, result, thisVar, it);
             ss << it->name;
-            ss << "'" << it->getType(compiler, result)->name;
+            auto ctype = it->getType(compiler, result);
+            ss << "'" << (ctype != nullptr ? ctype->name : "ERROR");
             ss << (it->isMutable ? "=" : ":");
         }
     }

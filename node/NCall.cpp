@@ -242,7 +242,8 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctio
                 auto paramVar = callee->argVars[paramIndex];
                 ss << alloc_mode(compiler, result, thisVar, paramVar);
                 ss << paramVar->name.c_str();
-                ss << "'" << paramVar->getType(compiler, result)->name.c_str();
+                auto ctype = paramVar->getType(compiler, result);
+                ss << "'" << (ctype != nullptr ? ctype->name : "ERROR");
                 ss << (paramVar->isMutable ? " = " : " : ");
                 it->dump(compiler, result, thisFunction, thisVar, functions, ss, level + 1);
                 if (paramIndex != parameters.size() - 1) {
