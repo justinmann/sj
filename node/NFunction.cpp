@@ -430,9 +430,7 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
             if (bodyReturnValue && bodyReturnValue->type != compiler->typeVoid) {
                 assert(bodyReturnValue->type == returnType);
                 if (bodyReturnValue->release == RVR_MustRetain && !bodyReturnValue->type->parent.expired()) {
-                    stringstream retainReturn;
-                    retainReturn << bodyReturnValue->name << "->_refCount++";
-                    trFunctionBlock->statements.push_back(retainReturn.str());
+                    ReturnValue::addRetainToStatements(trFunctionBlock.get(), bodyReturnValue->name, bodyReturnValue->type);
                 }
                 trFunctionBlock->returnLine = bodyReturnValue->name;
             }
@@ -518,9 +516,7 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
             if (bodyReturnValue && bodyReturnValue->type && bodyReturnValue->type != compiler->typeVoid) {
                 assert(bodyReturnValue->type == returnType);
                 if (bodyReturnValue->release == RVR_MustRetain && !bodyReturnValue->type->parent.expired()) {
-                    stringstream retainReturn;
-                    retainReturn << bodyReturnValue->name << "->_refCount++";
-                    trFunctionBlock->statements.push_back(retainReturn.str());
+                    ReturnValue::addRetainToStatements(trFunctionBlock.get(), bodyReturnValue->name, bodyReturnValue->type);
                 }
 
                 trFunctionBlock->returnLine = bodyReturnValue->name;
@@ -548,22 +544,7 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
                 auto argFunction = argVar->getCFunctionForValue(compiler, result);
                 if (argFunction) {
                     if (argHeapVar) {
-                        stringstream releaseStream;
-                        releaseStream << "_this->" << argVar->name << "->_refCount--";
-                        trDestroyBlock->statements.push_back(releaseStream.str());
-
-                        shared_ptr<TrBlock> trDestroyVarBlock = make_shared<TrBlock>();
-                        stringstream ifArgFreeStream;
-                        ifArgFreeStream << "if (_this->" << argVar->name << "->_refCount <= 0)";
-                        trDestroyBlock->statements.push_back(TrStatement(ifArgFreeStream.str(), trDestroyVarBlock));
-
-                        stringstream destroyStream;
-                        destroyStream << argFunction->getCDestroyFunctionName() << "(" << "_this->" << argVar->name << ")";
-                        trDestroyVarBlock->statements.push_back(destroyStream.str());
-
-                        stringstream freeStream;
-                        freeStream << "free(" << "_this->" << argVar->name << ")";
-                        trDestroyVarBlock->statements.push_back(freeStream.str());
+                        ReturnValue::addReleaseToStatements(trDestroyBlock.get(), "_this->" + argVar->name, argVar->getType(compiler, result));
                     }
                     else {
                         stringstream destroyStream;
@@ -588,9 +569,7 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
             trBlock->statements.push_back(TrStatement(initLine.str()));
         }
         
-        stringstream argRefCountLine;
-        argRefCountLine << objectRef->name << "->_refCount = 1";
-        trBlock->statements.push_back(TrStatement(argRefCountLine.str()));
+        ReturnValue::addInitToStatements(trBlock, objectRef->name, thisType);
 
         for (auto argValue : argValues) {
             stringstream argAssignLine;
@@ -598,9 +577,7 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
             trBlock->statements.push_back(TrStatement(argAssignLine.str()));
 
             if (argValue.value->release == RVR_MustRetain && !argValue.value->type->parent.expired()) {
-                stringstream argRetainLine;
-                argRetainLine << objectRef->name << "->" << argValue.var->name << "->_refCount++";
-                trBlock->statements.push_back(TrStatement(argRetainLine.str()));
+                ReturnValue::addRetainToStatements(trBlock, objectRef->name + "->" + argValue.var->name, argValue.value->type);
             }
         }
 

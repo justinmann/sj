@@ -1,4 +1,4 @@
-c([heap]b'b:) {
+a() {
   this
 }
 
@@ -6,7 +6,7 @@ b([heap]a'a:) {
   this
 }
 
-a() {
+c([heap]b'b:) {
   this
 }
 

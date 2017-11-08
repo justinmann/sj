@@ -112,7 +112,7 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
         auto ctype = thisFunction->getVarType(compiler, result, ctypeName);
         if (ctype) {
             stringstream releaseStream;
-            ReturnValue(ctype, true, RVR_MustRetain, varName).writeReleaseToStream(releaseStream, 0);
+            ReturnValue(ctype, true, RVR_MustRetain, varName).writeReleaseToStream(nullptr, releaseStream, 0);
             return releaseStream.str();
         }
         else {

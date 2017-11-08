@@ -41,7 +41,7 @@ void sjf_class_anon1_destroy(sjs_anon1* _this) {
 
 void sjf_class_destroy(sjs_class* _this) {
     _this->data->_refCount--;
-    if (_this->data->_refCount <= 0) {
+    if (_this->data->_refCount == 0) {
         sjf_class_anon1_destroy(_this->data);
         free(_this->data);
     }

@@ -1,7 +1,3 @@
-class([heap]x'i32:) {
-  this
-}
-
 array!class([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=) {
   c{
 
@@ -18,22 +14,6 @@ array!class([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=) {
 }c
   this
 }
-
-array_setAt([stack]index'i32:, [heap]item'class:) c{
-
-		#forceParent()
-		#forceHeap(item)
-
-		if (index >= _parent->size || index < 0) {
-			exit(-1);
-		}
-
-		#type(t)* p = (#type(t)*)_parent->data;
-		#release(t, p[index]);
-		#retain(t, item);
-		p[index] = item;
-	
-}c
 
 array_getAt([stack]index'i32:) c{
 
@@ -53,6 +33,26 @@ array_getAt([stack]index'i32:) c{
 		return val;		
 	
 }c
+
+array_setAt([stack]index'i32:, [heap]item'class:) c{
+
+		#forceParent()
+		#forceHeap(item)
+
+		if (index >= _parent->size || index < 0) {
+			exit(-1);
+		}
+
+		#type(t)* p = (#type(t)*)_parent->data;
+		#release(t, p[index]);
+		#retain(t, item);
+		p[index] = item;
+	
+}c
+
+class([heap]x'i32:) {
+  this
+}
 
 global {
   [stack]a'array_class : {

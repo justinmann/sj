@@ -5,8 +5,6 @@
 * lambda
 
 -- tasks --
-* retain class values
-* if function is heap and has this value then all arguments must be heap
 
 -- operators --
 	a.x 		-> getX()

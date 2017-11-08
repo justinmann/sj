@@ -1,11 +1,3 @@
-anon3() {
-  this
-}
-
-anon2() {
-  this
-}
-
 anon1([stack]_fd'ptr=) {
   c{
  
@@ -15,7 +7,11 @@ anon1([stack]_fd'ptr=) {
   this
 }
 
-string([stack]count'i32=, [heap]data'array_char=) {
+anon2() {
+  this
+}
+
+anon3() {
   this
 }
 
@@ -36,13 +32,6 @@ array!char([heap]size'i32=, [heap]data'ptr=, [heap]_isGlobal'bool=) {
   this
 }
 
-string_getAt([heap]index'i32:) {
-  array_getAt([stack]this : array_getAt(
-    parent: [heap].parentthis.data,
-    [heap]index'i32 : this.index
-  ))
-}
-
 array_getAt([heap]index'i32:) c{
 
 		#forceParent()
@@ -61,6 +50,17 @@ array_getAt([heap]index'i32:) c{
 		return val;		
 	
 }c
+
+string([stack]count'i32=, [heap]data'array_char=) {
+  this
+}
+
+string_getAt([heap]index'i32:) {
+  array_getAt([stack]this : array_getAt(
+    parent: [heap].parentthis.data,
+    [heap]index'i32 : this.index
+  ))
+}
 
 global {
   [stack]random'anon3 : [stack]anon3([stack]this : anon3())

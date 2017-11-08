@@ -2,8 +2,11 @@ class([stack]m'math:) {
   this
 }
 
-math() {
-  this
+class_bar([heap]x'i32:) {
+  [heap]class_foo([stack]this : class_foo(
+    parent: [stack]this,
+    [heap]x'i32 : this.x
+  ))
 }
 
 class_foo([heap]x'i32:) {
@@ -20,11 +23,8 @@ class_foo([heap]x'i32:) {
   }
 }
 
-class_bar([heap]x'i32:) {
-  [heap]class_foo([stack]this : class_foo(
-    parent: [stack]this,
-    [heap]x'i32 : this.x
-  ))
+math() {
+  this
 }
 
 math_sub([heap]x'i32:, [heap]y'i32:) {

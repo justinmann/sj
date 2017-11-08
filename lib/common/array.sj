@@ -115,5 +115,7 @@ array!t (
 	}c
 	this
 } destroy c{
-	free((#type(t)*)_this->data);	
+	if (!_this->_isGlobal) {
+		free((#type(t)*)_this->data);	
+	}
 }c

@@ -1,9 +1,9 @@
-func() {
-  bar([stack]this : bar())
-}
-
 bar() {
   9
+}
+
+func() {
+  bar([stack]this : bar())
 }
 
 global {

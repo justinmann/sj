@@ -81,25 +81,6 @@ extern "C" void recordRelease(void* v, const char* str) {
 }
 #endif
 
-#ifdef DEBUG_ALLOC
-extern "C" void* debugMalloc(int64_t size) {
-    auto p = malloc(size);
-    printf("alloc: %llx (%lld)\n", (int64_t)p, size);
-    return p;
-}
-
-extern "C" void* debugRealloc(void* oldp, int64_t size) {
-    auto newp = realloc(oldp, size);
-    printf("realloc: %llx to %llx (%lld)\n", (int64_t)oldp, (int64_t)newp, size);
-    return newp;
-}
-
-extern "C" void debugFree(void* p) {
-    free(p);
-    printf("free: %llx\n", (int64_t)p);
-}
-#endif
-
 extern "C" void debugFunction(const char* str, void* v, int64_t t) {
     printf("ERROR: %s %llx %lld\n", str, (uint64_t)v, t);
 #ifdef DEBUG_CALLSTACK
@@ -448,7 +429,18 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                         map<shared_ptr<CBaseFunction>, string> functionDumps;
                         stringstream ss;
                         result->block->dump(this, *result, globalFunction, globalVar, functionDumps, ss, 0);
+                        
+                        vector<pair<string, string>> functionNames;
                         for (auto it : functionDumps) {
+                            string s1 = it.first->fullName(true);
+                            string s2 = it.second;
+                            auto pair = make_pair(s1, s2);
+                            functionNames.push_back(pair);
+                        }
+
+                        std::sort(functionNames.begin(), functionNames.end());
+
+                        for (auto it : functionNames) {
                             *debugStream << it.second << "\n\n";
                         }
                         *debugStream << "global " << ss.str() << "\n\n";

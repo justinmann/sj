@@ -211,9 +211,7 @@ void CNormalVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CB
     trBlock->statements.push_back(lineStream.str());
 
     if (returnValue->release == RVR_MustRetain && !returnType->parent.expired() && returnType->parent.lock()->hasRefCount) {
-        stringstream refStream;
-        refStream << varName << "->_refCount++";
-        trBlock->statements.push_back(refStream.str());
+        ReturnValue::addRetainToStatements(trBlock, varName, returnType);
     }
 }
 

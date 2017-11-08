@@ -1,7 +1,3 @@
-class([heap]bob'i32:) {
-  this
-}
-
 array!class([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=) {
   c{
 
@@ -34,6 +30,10 @@ array_setAt([heap]index'i32:, [heap]item'class:) c{
 		p[index] = item;
 	
 }c
+
+class([heap]bob'i32:) {
+  this
+}
 
 global {
   [stack]a'array_class : [stack]array!class([stack]this : array!class(

@@ -15,22 +15,6 @@ array!i32([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=) {
   this
 }
 
-array_setAt([stack]index'i32:, [heap]item'i32:) c{
-
-		#forceParent()
-		#forceHeap(item)
-
-		if (index >= _parent->size || index < 0) {
-			exit(-1);
-		}
-
-		#type(t)* p = (#type(t)*)_parent->data;
-		#release(t, p[index]);
-		#retain(t, item);
-		p[index] = item;
-	
-}c
-
 array_getAt([heap]index'i32:) c{
 
 		#forceParent()
@@ -47,6 +31,22 @@ array_getAt([heap]index'i32:) c{
 			}
 		}
 		return val;		
+	
+}c
+
+array_setAt([stack]index'i32:, [heap]item'i32:) c{
+
+		#forceParent()
+		#forceHeap(item)
+
+		if (index >= _parent->size || index < 0) {
+			exit(-1);
+		}
+
+		#type(t)* p = (#type(t)*)_parent->data;
+		#release(t, p[index]);
+		#retain(t, item);
+		p[index] = item;
 	
 }c
 

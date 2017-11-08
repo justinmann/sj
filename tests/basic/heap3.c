@@ -32,7 +32,7 @@ sjs_bar* sjf_bar(sjs_bar* _this) {
 
 void sjf_bar_destroy(sjs_bar* _this) {
     _this->f->_refCount--;
-    if (_this->f->_refCount <= 0) {
+    if (_this->f->_refCount == 0) {
         sjf_foo_destroy(_this->f);
         free(_this->f);
     }

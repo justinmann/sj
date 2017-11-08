@@ -38,7 +38,9 @@ sjs_array_i32* sjf_array_i32(sjs_array_i32* _this) {
 
 void sjf_array_i32_destroy(sjs_array_i32* _this) {
     
-	free((int32_t*)_this->data);	
+	if (!_this->_isGlobal) {
+		free((int32_t*)_this->data);	
+	}
 ;
 }
 

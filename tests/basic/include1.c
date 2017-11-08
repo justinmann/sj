@@ -45,7 +45,9 @@ sjs_array_class* sjf_array_class(sjs_array_class* _this) {
 
 void sjf_array_class_destroy(sjs_array_class* _this) {
     
-	free((sjs_class**)_this->data);	
+	if (!_this->_isGlobal) {
+		free((sjs_class**)_this->data);	
+	}
 ;
 }
 

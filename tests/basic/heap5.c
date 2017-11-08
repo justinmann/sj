@@ -33,7 +33,7 @@ sjs_a* sjf_a(sjs_a* _this) {
 
 void sjf_a_destroy(sjs_a* _this) {
     _this->data->_refCount--;
-    if (_this->data->_refCount <= 0) {
+    if (_this->data->_refCount == 0) {
         sjf_array_char_destroy(_this->data);
         free(_this->data);
     }
@@ -58,7 +58,9 @@ sjs_array_char* sjf_array_char(sjs_array_char* _this) {
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
     
-	free((char*)_this->data);	
+	if (!_this->_isGlobal) {
+		free((char*)_this->data);	
+	}
 ;
 }
 

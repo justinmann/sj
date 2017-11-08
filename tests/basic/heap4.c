@@ -47,7 +47,7 @@ sjs_b* sjf_b(sjs_b* _this) {
 
 void sjf_b_destroy(sjs_b* _this) {
     _this->a->_refCount--;
-    if (_this->a->_refCount <= 0) {
+    if (_this->a->_refCount == 0) {
         sjf_a_destroy(_this->a);
         free(_this->a);
     }
@@ -61,7 +61,7 @@ sjs_c* sjf_c(sjs_c* _this) {
 
 void sjf_c_destroy(sjs_c* _this) {
     _this->b->_refCount--;
-    if (_this->b->_refCount <= 0) {
+    if (_this->b->_refCount == 0) {
         sjf_b_destroy(_this->b);
         free(_this->b);
     }

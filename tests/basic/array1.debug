@@ -1,18 +1,19 @@
-array_setAt([stack]index'i32:, [heap]item'i32:) c{
+array!i32([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=) {
+  c{
 
-		#forceParent()
-		#forceHeap(item)
-
-		if (index >= _parent->size || index < 0) {
+		if (_this->size < 0) {
 			exit(-1);
 		}
 
-		#type(t)* p = (#type(t)*)_parent->data;
-		#release(t, p[index]);
-		#retain(t, item);
-		p[index] = item;
+		if (_this->data) {
+			_this->_isGlobal = true;
+		} else {
+			_this->data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
+		}
 	
 }c
+  this
+}
 
 array_getAt([stack]index'i32:) c{
 
@@ -33,22 +34,21 @@ array_getAt([stack]index'i32:) c{
 	
 }c
 
-array!i32([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=) {
-  c{
+array_setAt([stack]index'i32:, [heap]item'i32:) c{
 
-		if (_this->size < 0) {
+		#forceParent()
+		#forceHeap(item)
+
+		if (index >= _parent->size || index < 0) {
 			exit(-1);
 		}
 
-		if (_this->data) {
-			_this->_isGlobal = true;
-		} else {
-			_this->data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
-		}
+		#type(t)* p = (#type(t)*)_parent->data;
+		#release(t, p[index]);
+		#retain(t, item);
+		p[index] = item;
 	
 }c
-  this
-}
 
 global {
   [stack]a'array_i32 : [stack]array!i32([stack]this : array!i32(

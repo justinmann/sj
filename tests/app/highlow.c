@@ -200,7 +200,9 @@ sjs_array_char* sjf_array_char(sjs_array_char* _this) {
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
     
-	free((char*)_this->data);	
+	if (!_this->_isGlobal) {
+		free((char*)_this->data);	
+	}
 ;
 }
 
@@ -213,7 +215,6 @@ void sjf_global() {
     sjs_anon3* result1;
     bool result10;
     sjs_anon2* result2;
-    bool result23;
     sjs_string* result24;
     sjs_array_char* result25;
     sjs_anon1* result3;
@@ -272,13 +273,13 @@ void sjf_global() {
     isCorrect = false;
     result10 = !isCorrect;
     whileValue1 = result10;
-    result23 = !isCorrect;
     while (whileValue1) {
         int32_t guess;
         bool ifResult1;
         sjs_string* result11;
         int32_t result16;
         bool result17;
+        bool result23;
         sjs_string* str;
 
         result11 = sjf_anon1_readLine();
@@ -382,6 +383,8 @@ void sjf_global() {
         }
 
         isCorrect = ifResult1;
+
+        result23 = !isCorrect;
 
         whileValue1 = result23;
 
@@ -494,7 +497,7 @@ sjs_string* sjf_string(sjs_string* _this) {
 
 void sjf_string_destroy(sjs_string* _this) {
     _this->data->_refCount--;
-    if (_this->data->_refCount <= 0) {
+    if (_this->data->_refCount == 0) {
         sjf_array_char_destroy(_this->data);
         free(_this->data);
     }

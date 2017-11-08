@@ -1,11 +1,3 @@
-class([heap]x'i32:) {
-  this
-}
-
-list!class([stack]count'i32=, [stack]data'array_class=) {
-  this
-}
-
 array!class([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=) {
   c{
 
@@ -23,28 +15,24 @@ array!class([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=) {
   this
 }
 
-list_add([heap]item'class:) {
-  if .parentthis.count > this.size {
-    [heap]list_setSize([stack]this : list_setSize(
-      parent: [stack]this,
-      [heap]size'i32 : this.size * 2
-    ))
-    void
-  }
-  array_setAt([stack]this : array_setAt(
-    parent: [stack].parentthis.data,
-    [stack]index'i32 : .parentthis.count,
-    [heap]item'class : this.item
-  ))
-  .parentthis.count++
-}
+array_getAt([heap]index'i32:) c{
 
-list_setSize([heap]size'i32:) {
-  array_grow([stack]this : array_grow(
-    parent: [stack].parentthis.data,
-    [heap]newSize'i32 : this.size
-  ))
-}
+		#forceParent()
+
+		if (index >= _parent->size || index < 0) {
+			exit(-1);
+		}
+
+		#type(t)* p = (#type(t)*)_parent->data;
+		#type(t) val = p[index];
+		if (!#isValue(t)) {
+			if (val == 0) {
+				exit(-1);
+			}
+		}
+		return val;		
+	
+}c
 
 array_grow([heap]newSize'i32:) c{
 
@@ -86,6 +74,30 @@ array_setAt([stack]index'i32:, [heap]item'class:) c{
 	
 }c
 
+class([heap]x'i32:) {
+  this
+}
+
+list!class([stack]count'i32=, [stack]data'array_class=) {
+  this
+}
+
+list_add([heap]item'class:) {
+  if .parentthis.count > this.size {
+    [heap]list_setSize([stack]this : list_setSize(
+      parent: [stack]this,
+      [heap]size'i32 : this.size * 2
+    ))
+    void
+  }
+  array_setAt([stack]this : array_setAt(
+    parent: [stack].parentthis.data,
+    [stack]index'i32 : .parentthis.count,
+    [heap]item'class : this.item
+  ))
+  .parentthis.count++
+}
+
 list_getAt([heap]index'i32:) {
   array_getAt([stack]this : array_getAt(
     parent: [stack].parentthis.data,
@@ -93,24 +105,12 @@ list_getAt([heap]index'i32:) {
   ))
 }
 
-array_getAt([heap]index'i32:) c{
-
-		#forceParent()
-
-		if (index >= _parent->size || index < 0) {
-			exit(-1);
-		}
-
-		#type(t)* p = (#type(t)*)_parent->data;
-		#type(t) val = p[index];
-		if (!#isValue(t)) {
-			if (val == 0) {
-				exit(-1);
-			}
-		}
-		return val;		
-	
-}c
+list_setSize([heap]size'i32:) {
+  array_grow([stack]this : array_grow(
+    parent: [stack].parentthis.data,
+    [heap]newSize'i32 : this.size
+  ))
+}
 
 global {
   [stack]a'list_class : [stack]list!class([stack]this : list!class(

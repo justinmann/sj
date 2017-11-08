@@ -1,11 +1,11 @@
+class([heap]x'i32:) {
+  this
+}
+
 func() {
   [heap]class([heap]this : class(
     [heap]x'i32 : 1
   ))
-}
-
-class([heap]x'i32:) {
-  this
 }
 
 global {

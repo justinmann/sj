@@ -44,7 +44,7 @@ shared_ptr<ReturnValue> NWhile::transpile(Compiler* compiler, CResult& result, s
     trWhileBlock->hasThis = trBlock->hasThis;
     body->transpile(compiler, result, thisFunction, thisVar, trOutput, trWhileBlock.get(), false);
 
-    auto innerCondReturnValue = cond->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
+    auto innerCondReturnValue = cond->transpile(compiler, result, thisFunction, thisVar, trOutput, trWhileBlock.get(), false);
     if (innerCondReturnValue->type != compiler->typeBool) {
         result.addError(loc, CErrorCode::TypeMismatch, "condition for while must be a bool");
         return nullptr;

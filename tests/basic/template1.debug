@@ -1,4 +1,4 @@
-class!i32() {
+class!bool() {
   1
 }
 
@@ -6,7 +6,7 @@ class!f32() {
   1
 }
 
-class!bool() {
+class!i32() {
   1
 }
 
