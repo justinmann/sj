@@ -119,6 +119,15 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler *compiler, CResult &result, shar
         cfunction = dotVar->getCFunctionForValue(compiler, result);
     }
     
+    if (dotVar && cfunction) {
+        string nameWithUpper = name;
+        nameWithUpper[0] = (char)toupper(nameWithUpper[0]);
+        auto getPropertyFunction = cfunction->getCFunction(compiler, result, "get" + nameWithUpper, nullptr, nullptr);
+        if (getPropertyFunction != nullptr) {
+            return CCallVar::create(compiler, result, loc, name, make_shared<NodeList>(), thisFunction, dotVar, getPropertyFunction);
+        }
+    }
+
     if (cfunction) {
         return cfunction->getCVar(compiler, result, name);
     }

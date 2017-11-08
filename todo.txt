@@ -7,12 +7,7 @@
 -- tasks --
 
 -- operators --
-	a.x 		-> getX()
 	a.x = y 	-> setX(y)
-	a *= b 		-> a = a.add(b)
-	a /= b 		-> a = a.divide(b)
-	a += b 		-> a = a.add(b)
-	a -= b 		-> a = a.subtract(b)
 	a as type	-> a.asType()'t
 
 -- tuple --

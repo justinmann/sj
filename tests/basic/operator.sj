@@ -28,6 +28,10 @@ fancyMath(
 	decrement() {
 		fancyMath(x - 1)
 	}
+
+	getX() {
+		x
+	}
 ) { this }
 
 a : fancyMath(1)
@@ -43,3 +47,4 @@ d *= d
 d /= d
 e ++
 f ++
+i = f.x
