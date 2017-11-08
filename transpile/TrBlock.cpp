@@ -55,7 +55,7 @@ void TrBlock::writeBodyToStream(ostream& stream, int level) {
     if (returnLine.size() > 0) {
         stream << "\n";
         addSpacing(stream, level);
-        stream << "return " << returnLine << ";\n";
+        stream << "*_return = " << returnLine << ";\n";
     }
 }
 

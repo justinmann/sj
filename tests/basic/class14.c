@@ -11,49 +11,49 @@ struct td_sjs_class {
     int32_t m;
 };
 
-int32_t sjf_class(sjs_class* _this);
+void sjf_class(sjs_class* _this, int32_t* _return);
 void sjf_class_destroy(sjs_class* _this);
-int32_t sjf_class_inner(sjs_class* _parent);
-int32_t sjf_global();
+void sjf_class_inner(sjs_class* _parent, int32_t* _return);
+void sjf_global(int32_t* _return);
 
-int32_t sjf_class(sjs_class* _this) {
+void sjf_class(sjs_class* _this, int32_t* _return) {
     int32_t result3;
 
     _this->m = 1;
-    result3 = sjf_class_inner(_this);
+    sjf_class_inner(_this, &result3);
 
-    return result3;
+    *_return = result3;
 }
 
 void sjf_class_destroy(sjs_class* _this) {
 }
 
-int32_t sjf_class_inner(sjs_class* _parent) {
+void sjf_class_inner(sjs_class* _parent, int32_t* _return) {
     int32_t temp1;
 
     temp1 = _parent->m;
 
-    return temp1;
+    *_return = temp1;
 }
 
-int32_t sjf_global() {
+void sjf_global(int32_t* _return) {
     int32_t result2;
     sjs_class sjd_temp1;
     sjs_class* sjv_temp1;
 
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
-    result2 = sjf_class(sjv_temp1);
+    sjf_class(sjv_temp1, &result2);
 
     sjf_class_destroy(sjv_temp1);
 
-    return result2;
+    *_return = result2;
 }
 
 int main() {
     int32_t result1;
 
-    result1 = sjf_global();
+    sjf_global(&result1);
 
     return 0;
 }

@@ -4,17 +4,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-bool sjf_global();
+void sjf_global(bool* _return);
 
-bool sjf_global() {
+void sjf_global(bool* _return) {
 
-    return true;
+    *_return = true;
 }
 
 int main() {
     bool result1;
 
-    result1 = sjf_global();
+    sjf_global(&result1);
 
     return 0;
 }

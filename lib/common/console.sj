@@ -4,7 +4,7 @@ console : ^(
 	write(data : 'string)'void c{
 		#forceParent()
 			
-		fwrite(data->data->data, sizeof(char), data->count, (FILE*)_parent->_fd);
+		fwrite((void*)data->data->data, sizeof(char), data->count, (FILE*)_parent->_fd);
 	}c
 
 	readLine()'string { 

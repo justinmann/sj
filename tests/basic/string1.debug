@@ -47,7 +47,7 @@ array_getAt([heap]index'i32:) c{
 				exit(-1);
 			}
 		}
-		return val;		
+		*_return = val;		
 	
 }c
 
@@ -56,10 +56,10 @@ array_isEqual([heap]test'array_char:) c{
 		#forceParent()
 
 		if (_parent->size != test->size) {
-			return false;
+			*_return = false;
 		}
 
-		return memcmp((void*)_parent->data, (void*)test->data, _parent->size * sizeof(#type(t))) == 0;		
+		*_return = memcmp((void*)_parent->data, (void*)test->data, _parent->size * sizeof(#type(t))) == 0;		
 	
 }c
 
@@ -67,7 +67,7 @@ array_isLessOrEqual([heap]test'array_char:) c{
 
 		#forceParent()
 
-		return memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) <= 0;		
+		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) <= 0;		
 	
 }c
 

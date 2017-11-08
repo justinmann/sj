@@ -19,16 +19,16 @@ struct td_sjs_array_char {
     bool _isGlobal;
 };
 
-sjs_a* sjf_a(sjs_a* _this);
+void sjf_a(sjs_a* _this, sjs_a** _return);
 void sjf_a_destroy(sjs_a* _this);
-sjs_array_char* sjf_array_char(sjs_array_char* _this);
+void sjf_array_char(sjs_array_char* _this, sjs_array_char** _return);
 void sjf_array_char_destroy(sjs_array_char* _this);
-sjs_a* sjf_global();
+void sjf_global(sjs_a** _return);
 
-sjs_a* sjf_a(sjs_a* _this) {
+void sjf_a(sjs_a* _this, sjs_a** _return) {
     _this->_refCount++;
 
-    return _this;
+    *_return = _this;
 }
 
 void sjf_a_destroy(sjs_a* _this) {
@@ -39,7 +39,7 @@ void sjf_a_destroy(sjs_a* _this) {
     }
 }
 
-sjs_array_char* sjf_array_char(sjs_array_char* _this) {
+void sjf_array_char(sjs_array_char* _this, sjs_array_char** _return) {
     
 		if (_this->size < 0) {
 			exit(-1);
@@ -53,7 +53,7 @@ sjs_array_char* sjf_array_char(sjs_array_char* _this) {
 	;
     _this->_refCount++;
 
-    return _this;
+    *_return = _this;
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
@@ -64,7 +64,7 @@ void sjf_array_char_destroy(sjs_array_char* _this) {
 ;
 }
 
-sjs_a* sjf_global() {
+void sjf_global(sjs_a** _return) {
     sjs_a* result2;
     sjs_array_char* result3;
     uintptr_t result4;
@@ -77,12 +77,12 @@ sjs_a* sjf_global() {
     sjv_temp1->size = 0;
     sjv_temp1->data = result4;
     sjv_temp1->_isGlobal = false;
-    result3 = sjf_array_char(sjv_temp1);
+    sjf_array_char(sjv_temp1, &result3);
     sjv_temp2 = (sjs_a*)malloc(sizeof(sjs_a));
     sjv_temp2->_refCount = 1;
     sjv_temp2->data = result3;
     sjv_temp2->data->_refCount++;
-    result2 = sjf_a(sjv_temp2);
+    sjf_a(sjv_temp2, &result2);
 
     result3->_refCount--;
     if (result3->_refCount == 0) {
@@ -100,13 +100,13 @@ sjs_a* sjf_global() {
         free(sjv_temp2);
     }
 
-    return result2;
+    *_return = result2;
 }
 
 int main() {
     sjs_a* result1;
 
-    result1 = sjf_global();
+    sjf_global(&result1);
 
     return 0;
 }

@@ -4,9 +4,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-double sjf_global();
+void sjf_global(double* _return);
 
-double sjf_global() {
+void sjf_global(double* _return) {
     double ifResult1;
 
     if (false) {
@@ -15,13 +15,13 @@ double sjf_global() {
         ifResult1 = 1.0;
     }
 
-    return ifResult1;
+    *_return = ifResult1;
 }
 
 int main() {
     double result1;
 
-    result1 = sjf_global();
+    sjf_global(&result1);
 
     return 0;
 }

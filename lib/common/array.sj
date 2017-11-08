@@ -17,7 +17,7 @@ array!t (
 				exit(-1);
 			}
 		}
-		return val;		
+		*_return = val;		
 	}c
 
 	setAt(index : 'i32, item : 't)'void c{
@@ -40,10 +40,10 @@ array!t (
 		#type(t)* p = (#type(t)*)_parent->data;
 		for (int index = 0; index < _parent->size; i++) {
 			if (p[index] == item) {
-				return index;
+				*_return = index;
 			}
 		}
-		return -1;
+		*_return =  -1;
 	}c
 
 	grow(newSize :' i32)'array!t c{
@@ -65,41 +65,41 @@ array!t (
 			_parent->size = newSize;
 		}
 
-		return _parent;
+		*_return = _parent;
 	}c 
 
 	isEqual(test :' array!t)'bool c{
 		#forceParent()
 
 		if (_parent->size != test->size) {
-			return false;
+			*_return = false;
 		}
 
-		return memcmp((void*)_parent->data, (void*)test->data, _parent->size * sizeof(#type(t))) == 0;		
+		*_return = memcmp((void*)_parent->data, (void*)test->data, _parent->size * sizeof(#type(t))) == 0;		
 	}c
 
 	isGreater(test :' array!t)'bool c{
 		#forceParent()
 
-		return memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) > 0;		
+		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) > 0;		
 	}c
 
 	isGreaterOrEqual(test :' array!t)'bool c{
 		#forceParent()
 
-		return memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) >= 0;		
+		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) >= 0;		
 	}c
 
 	isLess(test :' array!t)'bool c{
 		#forceParent()
 
-		return memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) < 0;		
+		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) < 0;		
 	}c
 
 	isLessOrEqual(test :' array!t)'bool c{
 		#forceParent()
 
-		return memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) <= 0;		
+		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) <= 0;		
 	}c
 )'array!t {
 	c{

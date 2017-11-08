@@ -4,9 +4,9 @@ parse: ^(
 	    int v = strtol((char*)text->data->data, &e, 10);
 	    
 	    if (*e != '\0') {
-	        return 0;
+	        *_return = 0;
 	    }
 	    
-	    return v;
+	    *_return = v;
     }c
 ) { this }

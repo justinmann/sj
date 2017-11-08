@@ -17,17 +17,17 @@ struct td_sjs_foo {
     int32_t x;
 };
 
-sjs_bar* sjf_bar(sjs_bar* _this);
+void sjf_bar(sjs_bar* _this, sjs_bar** _return);
 void sjf_bar_destroy(sjs_bar* _this);
-sjs_foo* sjf_foo(sjs_foo* _this);
+void sjf_foo(sjs_foo* _this, sjs_foo** _return);
 void sjf_foo_destroy(sjs_foo* _this);
-sjs_foo* sjf_func(sjs_bar* b);
-int32_t sjf_global();
+void sjf_func(sjs_bar* b, sjs_foo** _return);
+void sjf_global(int32_t* _return);
 
-sjs_bar* sjf_bar(sjs_bar* _this) {
+void sjf_bar(sjs_bar* _this, sjs_bar** _return) {
     _this->_refCount++;
 
-    return _this;
+    *_return = _this;
 }
 
 void sjf_bar_destroy(sjs_bar* _this) {
@@ -38,23 +38,23 @@ void sjf_bar_destroy(sjs_bar* _this) {
     }
 }
 
-sjs_foo* sjf_foo(sjs_foo* _this) {
+void sjf_foo(sjs_foo* _this, sjs_foo** _return) {
     _this->_refCount++;
 
-    return _this;
+    *_return = _this;
 }
 
 void sjf_foo_destroy(sjs_foo* _this) {
 }
 
-sjs_foo* sjf_func(sjs_bar* b) {
+void sjf_func(sjs_bar* b, sjs_foo** _return) {
     sjs_foo* result5;
     sjs_foo* sjv_temp3;
 
     sjv_temp3 = (sjs_foo*)malloc(sizeof(sjs_foo));
     sjv_temp3->_refCount = 1;
     sjv_temp3->x = 2;
-    result5 = sjf_foo(sjv_temp3);
+    sjf_foo(sjv_temp3, &result5);
     b->f->_refCount--;
     if (b->f->_refCount == 0) {
         sjf_foo_destroy(b->f);
@@ -69,10 +69,10 @@ sjs_foo* sjf_func(sjs_bar* b) {
         free(sjv_temp3);
     }
 
-    return result5;
+    *_return = result5;
 }
 
-int32_t sjf_global() {
+void sjf_global(int32_t* _return) {
     sjs_bar* b;
     sjs_bar* result2;
     sjs_foo* result3;
@@ -85,15 +85,15 @@ int32_t sjf_global() {
     sjv_temp1 = (sjs_foo*)malloc(sizeof(sjs_foo));
     sjv_temp1->_refCount = 1;
     sjv_temp1->x = 1;
-    result3 = sjf_foo(sjv_temp1);
+    sjf_foo(sjv_temp1, &result3);
     sjv_temp2 = &sjd_temp1;
     sjv_temp2->_refCount = 1;
     sjv_temp2->f = result3;
     sjv_temp2->f->_refCount++;
-    result2 = sjf_bar(sjv_temp2);
+    sjf_bar(sjv_temp2, &result2);
     b = result2;
     b->_refCount++;
-    result4 = sjf_func(b);
+    sjf_func(b, &result4);
     temp1 = result4->x;
 
     sjf_bar_destroy(b);
@@ -119,13 +119,13 @@ int32_t sjf_global() {
     }
     sjf_bar_destroy(sjv_temp2);
 
-    return temp1;
+    *_return = temp1;
 }
 
 int main() {
     int32_t result1;
 
-    result1 = sjf_global();
+    sjf_global(&result1);
 
     return 0;
 }

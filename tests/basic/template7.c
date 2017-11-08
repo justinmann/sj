@@ -10,20 +10,20 @@ struct td_sjs_class_i32 {
     int _refCount;
 };
 
-sjs_class_i32* sjf_class_i32(sjs_class_i32* _this);
+void sjf_class_i32(sjs_class_i32* _this, sjs_class_i32** _return);
 void sjf_class_i32_destroy(sjs_class_i32* _this);
-int32_t sjf_global();
+void sjf_global(int32_t* _return);
 
-sjs_class_i32* sjf_class_i32(sjs_class_i32* _this) {
+void sjf_class_i32(sjs_class_i32* _this, sjs_class_i32** _return) {
     _this->_refCount++;
 
-    return _this;
+    *_return = _this;
 }
 
 void sjf_class_i32_destroy(sjs_class_i32* _this) {
 }
 
-int32_t sjf_global() {
+void sjf_global(int32_t* _return) {
     sjs_class_i32* c;
     sjs_class_i32* result2;
     sjs_class_i32 sjd_temp1;
@@ -31,7 +31,7 @@ int32_t sjf_global() {
 
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
-    result2 = sjf_class_i32(sjv_temp1);
+    sjf_class_i32(sjv_temp1, &result2);
     c = result2;
     c->_refCount++;
 
@@ -43,13 +43,13 @@ int32_t sjf_global() {
     }
     sjf_class_i32_destroy(sjv_temp1);
 
-    return 1;
+    *_return = 1;
 }
 
 int main() {
     int32_t result1;
 
-    result1 = sjf_global();
+    sjf_global(&result1);
 
     return 0;
 }

@@ -4,20 +4,20 @@
 #include <stdlib.h>
 #include <string.h>
 
-float sjf_global();
+void sjf_global(float* _return);
 
-float sjf_global() {
+void sjf_global(float* _return) {
     float result2;
 
     result2 = (float)5;
 
-    return result2;
+    *_return = result2;
 }
 
 int main() {
     float result1;
 
-    result1 = sjf_global();
+    sjf_global(&result1);
 
     return 0;
 }

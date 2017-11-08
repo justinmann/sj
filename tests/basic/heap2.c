@@ -17,23 +17,23 @@ struct td_sjs_class {
     sjs_anon1* data;
 };
 
-sjs_class* sjf_class(sjs_class* _this);
-sjs_anon1* sjf_class_anon1(sjs_anon1* _this);
+void sjf_class(sjs_class* _this, sjs_class** _return);
+void sjf_class_anon1(sjs_anon1* _this, sjs_anon1** _return);
 void sjf_class_anon1_destroy(sjs_anon1* _this);
 void sjf_class_destroy(sjs_class* _this);
-sjs_anon1* sjf_class_get(sjs_class* _parent);
-sjs_anon1* sjf_global();
+void sjf_class_get(sjs_class* _parent, sjs_anon1** _return);
+void sjf_global(sjs_anon1** _return);
 
-sjs_class* sjf_class(sjs_class* _this) {
+void sjf_class(sjs_class* _this, sjs_class** _return) {
     _this->_refCount++;
 
-    return _this;
+    *_return = _this;
 }
 
-sjs_anon1* sjf_class_anon1(sjs_anon1* _this) {
+void sjf_class_anon1(sjs_anon1* _this, sjs_anon1** _return) {
     _this->_refCount++;
 
-    return _this;
+    *_return = _this;
 }
 
 void sjf_class_anon1_destroy(sjs_anon1* _this) {
@@ -47,7 +47,7 @@ void sjf_class_destroy(sjs_class* _this) {
     }
 }
 
-sjs_anon1* sjf_class_get(sjs_class* _parent) {
+void sjf_class_get(sjs_class* _parent, sjs_anon1** _return) {
     sjs_anon1* temp1;
 
     temp1 = _parent->data;
@@ -59,10 +59,10 @@ sjs_anon1* sjf_class_get(sjs_class* _parent) {
         free(temp1);
     }
 
-    return temp1;
+    *_return = temp1;
 }
 
-sjs_anon1* sjf_global() {
+void sjf_global(sjs_anon1** _return) {
     sjs_class* c;
     sjs_anon1* d;
     sjs_class* result2;
@@ -75,15 +75,15 @@ sjs_anon1* sjf_global() {
     sjv_temp1 = (sjs_anon1*)malloc(sizeof(sjs_anon1));
     sjv_temp1->_refCount = 1;
     sjv_temp1->x = 0;
-    result3 = sjf_class_anon1(sjv_temp1);
+    sjf_class_anon1(sjv_temp1, &result3);
     sjv_temp2 = &sjd_temp1;
     sjv_temp2->_refCount = 1;
     sjv_temp2->data = result3;
     sjv_temp2->data->_refCount++;
-    result2 = sjf_class(sjv_temp2);
+    sjf_class(sjv_temp2, &result2);
     c = result2;
     c->_refCount++;
-    result4 = sjf_class_get(c);
+    sjf_class_get(c, &result4);
     d = result4;
 
     sjf_class_destroy(c);
@@ -109,13 +109,13 @@ sjs_anon1* sjf_global() {
     }
     sjf_class_destroy(sjv_temp2);
 
-    return result4;
+    *_return = result4;
 }
 
 int main() {
     sjs_anon1* result1;
 
-    result1 = sjf_global();
+    sjf_global(&result1);
 
     return 0;
 }

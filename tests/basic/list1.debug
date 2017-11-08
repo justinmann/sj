@@ -30,7 +30,7 @@ array_getAt([heap]index'i32:) c{
 				exit(-1);
 			}
 		}
-		return val;		
+		*_return = val;		
 	
 }c
 
@@ -54,7 +54,7 @@ array_grow([heap]newSize'i32:) c{
 			_parent->size = newSize;
 		}
 
-		return _parent;
+		*_return = _parent;
 	
 }c
 

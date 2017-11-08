@@ -47,7 +47,7 @@ anon1_write([heap]data'string:) c{
 
 		#forceParent()
 			
-		fwrite(data->data->data, sizeof(char), data->count, (FILE*)_parent->_fd);
+		fwrite((void*)data->data->data, sizeof(char), data->count, (FILE*)_parent->_fd);
 	
 }c
 
@@ -61,10 +61,10 @@ anon2_toInt([stack]text'string:) c{
 	    int v = strtol((char*)text->data->data, &e, 10);
 	    
 	    if (*e != '\0') {
-	        return 0;
+	        *_return = 0;
 	    }
 	    
-	    return v;
+	    *_return = v;
     
 }c
 
@@ -74,7 +74,7 @@ anon3() {
 
 anon3_nextInt() c{
 
-		return rand();
+		*_return = rand();
 	
 }c
 

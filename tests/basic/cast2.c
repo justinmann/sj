@@ -4,20 +4,20 @@
 #include <stdlib.h>
 #include <string.h>
 
-int64_t sjf_global();
+void sjf_global(int64_t* _return);
 
-int64_t sjf_global() {
+void sjf_global(int64_t* _return) {
     int64_t result2;
 
     result2 = (int64_t)5.0;
 
-    return result2;
+    *_return = result2;
 }
 
 int main() {
     int64_t result1;
 
-    result1 = sjf_global();
+    sjf_global(&result1);
 
     return 0;
 }

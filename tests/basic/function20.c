@@ -4,35 +4,35 @@
 #include <stdlib.h>
 #include <string.h>
 
-int32_t sjf_bar();
-int32_t sjf_func();
-int32_t sjf_global();
+void sjf_bar(int32_t* _return);
+void sjf_func(int32_t* _return);
+void sjf_global(int32_t* _return);
 
-int32_t sjf_bar() {
+void sjf_bar(int32_t* _return) {
 
-    return 9;
+    *_return = 9;
 }
 
-int32_t sjf_func() {
+void sjf_func(int32_t* _return) {
     int32_t result3;
 
-    result3 = sjf_bar();
+    sjf_bar(&result3);
 
-    return result3;
+    *_return = result3;
 }
 
-int32_t sjf_global() {
+void sjf_global(int32_t* _return) {
     int32_t result2;
 
-    result2 = sjf_func();
+    sjf_func(&result2);
 
-    return result2;
+    *_return = result2;
 }
 
 int main() {
     int32_t result1;
 
-    result1 = sjf_global();
+    sjf_global(&result1);
 
     return 0;
 }

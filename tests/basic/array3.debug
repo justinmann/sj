@@ -30,7 +30,7 @@ array_getAt([stack]index'i32:) c{
 				exit(-1);
 			}
 		}
-		return val;		
+		*_return = val;		
 	
 }c
 

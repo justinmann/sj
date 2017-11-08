@@ -10,21 +10,21 @@ struct td_sjs_class {
     int _refCount;
 };
 
-sjs_class* sjf_class(sjs_class* _this);
+void sjf_class(sjs_class* _this, sjs_class** _return);
 void sjf_class_destroy(sjs_class* _this);
-sjs_class* sjf_func();
-sjs_class* sjf_global();
+void sjf_func(sjs_class** _return);
+void sjf_global(sjs_class** _return);
 
-sjs_class* sjf_class(sjs_class* _this) {
+void sjf_class(sjs_class* _this, sjs_class** _return) {
     _this->_refCount++;
 
-    return _this;
+    *_return = _this;
 }
 
 void sjf_class_destroy(sjs_class* _this) {
 }
 
-sjs_class* sjf_func() {
+void sjf_func(sjs_class** _return) {
     sjs_class* a;
     sjs_class* result3;
     sjs_class* result4;
@@ -33,12 +33,12 @@ sjs_class* sjf_func() {
 
     sjv_temp1 = (sjs_class*)malloc(sizeof(sjs_class));
     sjv_temp1->_refCount = 1;
-    result3 = sjf_class(sjv_temp1);
+    sjf_class(sjv_temp1, &result3);
     a = result3;
     a->_refCount++;
     sjv_temp2 = (sjs_class*)malloc(sizeof(sjs_class));
     sjv_temp2->_refCount = 1;
-    result4 = sjf_class(sjv_temp2);
+    sjf_class(sjv_temp2, &result4);
     a->_refCount--;
     if (a->_refCount == 0) {
         sjf_class_destroy(a);
@@ -68,21 +68,21 @@ sjs_class* sjf_func() {
         free(sjv_temp2);
     }
 
-    return result4;
+    *_return = result4;
 }
 
-sjs_class* sjf_global() {
+void sjf_global(sjs_class** _return) {
     sjs_class* result2;
 
-    result2 = sjf_func();
+    sjf_func(&result2);
 
-    return result2;
+    *_return = result2;
 }
 
 int main() {
     sjs_class* result1;
 
-    result1 = sjf_global();
+    sjf_global(&result1);
 
     return 0;
 }

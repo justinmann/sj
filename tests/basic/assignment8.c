@@ -4,22 +4,22 @@
 #include <stdlib.h>
 #include <string.h>
 
-int32_t sjf_global();
+void sjf_global(int32_t* _return);
 
-int32_t sjf_global() {
+void sjf_global(int32_t* _return) {
     int32_t x;
     int32_t y;
 
     y = 2;
     x = 2;
 
-    return 2;
+    *_return = 2;
 }
 
 int main() {
     int32_t result1;
 
-    result1 = sjf_global();
+    sjf_global(&result1);
 
     return 0;
 }

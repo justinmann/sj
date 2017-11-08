@@ -12,20 +12,20 @@ struct td_sjs_class {
     int32_t y;
 };
 
-sjs_class* sjf_class(sjs_class* _this);
+void sjf_class(sjs_class* _this, sjs_class** _return);
 void sjf_class_destroy(sjs_class* _this);
-int32_t sjf_global();
+void sjf_global(int32_t* _return);
 
-sjs_class* sjf_class(sjs_class* _this) {
+void sjf_class(sjs_class* _this, sjs_class** _return) {
     _this->_refCount++;
 
-    return _this;
+    *_return = _this;
 }
 
 void sjf_class_destroy(sjs_class* _this) {
 }
 
-int32_t sjf_global() {
+void sjf_global(int32_t* _return) {
     sjs_class* c;
     sjs_class* result2;
     int32_t result3;
@@ -38,7 +38,7 @@ int32_t sjf_global() {
     sjv_temp1->_refCount = 1;
     sjv_temp1->x = 1;
     sjv_temp1->y = 2;
-    result2 = sjf_class(sjv_temp1);
+    sjf_class(sjv_temp1, &result2);
     c = result2;
     c->_refCount++;
     temp1 = c->x;
@@ -53,13 +53,13 @@ int32_t sjf_global() {
     }
     sjf_class_destroy(sjv_temp1);
 
-    return result3;
+    *_return = result3;
 }
 
 int main() {
     int32_t result1;
 
-    result1 = sjf_global();
+    sjf_global(&result1);
 
     return 0;
 }

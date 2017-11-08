@@ -417,19 +417,27 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
 			trFunctionBlock->hasThis = false;
             trOutput->functions[functionName] = trFunctionBlock;
             
-            stringstream definition;
-            definition << returnType->nameRef << " " << functionName << "(";
+            stringstream functionDefinition;
+            functionDefinition << "void " << functionName << "(";
             auto isFirstArg = true;
             for (auto argType : *argTypes) {
                 if (isFirstArg) {
                     isFirstArg = false;
                 } else {
-                    definition << ", ";
+                    functionDefinition << ", ";
                 }
-                definition << argType.second->nameRef << " " << argType.first;
+                functionDefinition << argType.second->nameRef << " " << argType.first;
             }
-            definition << ")";
-            trFunctionBlock->definition = definition.str();
+            if (returnType != compiler->typeVoid) {
+                if (isFirstArg) {
+                    isFirstArg = false;
+                } else {
+                    functionDefinition << ", ";
+                }
+                functionDefinition << returnType->nameRef << "* _return";
+            }
+            functionDefinition << ")";
+            trFunctionBlock->definition = functionDefinition.str();
             
             auto bodyReturnValue = block->transpile(compiler, result, shared_from_this(), nullptr, trOutput, trFunctionBlock.get(), true);
             if (bodyReturnValue && bodyReturnValue->type != compiler->typeVoid) {
@@ -451,32 +459,10 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
             else {
                 argValues.insert(argValues.begin(), ArgData(nullptr, calleeValue));
             }
-            
-            //            Value* parentValue = thisValue;
-            //            if (dotVar) {
-            //                dotshared_ptr<ReturnValue> = dotVar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB, RRT_Auto);
-            //                parentValue = dotReturnValue->value;
-            //            } else {
-            //                // if recursively calling ourselves then re-use parent
-            //                if (shared_from_this() == thisFunction) {
-            //                    parentValue = getParentValue(compiler, result, builder, true, parentValue);
-            //                } else {
-            //                    auto temp = static_pointer_cast<CBaseFunction>(thisFunction);
-            //                    while (temp && temp != parent.lock()) {
-            //                        parentValue = temp->getParentValue(compiler, result, builder, true, parentValue);
-            //                        temp = temp->parent.lock();
-            //                    }
-            //                }
-            //            }
-            //
-            //            argValues.push_back(parentValue);
         }
 
         // Call function
         stringstream line;
-        if (returnValue) {
-            line << returnValue->name << " = ";
-        }
         line << functionName << "(";
         bool isFirstParameter = true;
         for (auto argValue : argValues) {
@@ -487,6 +473,14 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
             }
             
             line << argValue.name;
+        }
+        if (returnValue) {
+            if (isFirstParameter) {
+                isFirstParameter = false;
+            } else {
+                line << ", ";
+            }
+            line << "&" << returnValue->name;
         }
         line << ")";
         trBlock->statements.push_back(line.str());
@@ -514,7 +508,11 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
             trOutput->functions[functionName] = trFunctionBlock;
 
 			stringstream functionDefinition;
-			functionDefinition << returnType->nameRef << " " << functionName << "(" << structName << "* _this)";
+			functionDefinition << "void " << functionName << "(" << structName << "* _this";
+            if (returnType != compiler->typeVoid) {
+                functionDefinition << ", " << returnType->nameRef << "* _return";
+            }
+            functionDefinition << ")";
 			trFunctionBlock->definition = functionDefinition.str();
 
             auto bodyReturnValue = block->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trFunctionBlock.get(), true);
@@ -588,10 +586,11 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
 
         // Call function
         stringstream line;
+        line << functionName << "(" << objectRef->name;
         if (returnValue) {
-            line << returnValue->name << " = ";
+            line << ", &" << returnValue->name;
         }
-        line << functionName << "(" << objectRef->name << ")";
+        line << ")";
         trBlock->statements.push_back(line.str());
     }    
 

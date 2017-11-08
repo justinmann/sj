@@ -22,27 +22,27 @@ struct td_sjs_c {
     sjs_b* b;
 };
 
-sjs_a* sjf_a(sjs_a* _this);
+void sjf_a(sjs_a* _this, sjs_a** _return);
 void sjf_a_destroy(sjs_a* _this);
-sjs_b* sjf_b(sjs_b* _this);
+void sjf_b(sjs_b* _this, sjs_b** _return);
 void sjf_b_destroy(sjs_b* _this);
-sjs_c* sjf_c(sjs_c* _this);
+void sjf_c(sjs_c* _this, sjs_c** _return);
 void sjf_c_destroy(sjs_c* _this);
-sjs_c* sjf_global();
+void sjf_global(sjs_c** _return);
 
-sjs_a* sjf_a(sjs_a* _this) {
+void sjf_a(sjs_a* _this, sjs_a** _return) {
     _this->_refCount++;
 
-    return _this;
+    *_return = _this;
 }
 
 void sjf_a_destroy(sjs_a* _this) {
 }
 
-sjs_b* sjf_b(sjs_b* _this) {
+void sjf_b(sjs_b* _this, sjs_b** _return) {
     _this->_refCount++;
 
-    return _this;
+    *_return = _this;
 }
 
 void sjf_b_destroy(sjs_b* _this) {
@@ -53,10 +53,10 @@ void sjf_b_destroy(sjs_b* _this) {
     }
 }
 
-sjs_c* sjf_c(sjs_c* _this) {
+void sjf_c(sjs_c* _this, sjs_c** _return) {
     _this->_refCount++;
 
-    return _this;
+    *_return = _this;
 }
 
 void sjf_c_destroy(sjs_c* _this) {
@@ -67,7 +67,7 @@ void sjf_c_destroy(sjs_c* _this) {
     }
 }
 
-sjs_c* sjf_global() {
+void sjf_global(sjs_c** _return) {
     sjs_c* result2;
     sjs_b* result3;
     sjs_a* result4;
@@ -77,17 +77,17 @@ sjs_c* sjf_global() {
 
     sjv_temp1 = (sjs_a*)malloc(sizeof(sjs_a));
     sjv_temp1->_refCount = 1;
-    result4 = sjf_a(sjv_temp1);
+    sjf_a(sjv_temp1, &result4);
     sjv_temp2 = (sjs_b*)malloc(sizeof(sjs_b));
     sjv_temp2->_refCount = 1;
     sjv_temp2->a = result4;
     sjv_temp2->a->_refCount++;
-    result3 = sjf_b(sjv_temp2);
+    sjf_b(sjv_temp2, &result3);
     sjv_temp3 = (sjs_c*)malloc(sizeof(sjs_c));
     sjv_temp3->_refCount = 1;
     sjv_temp3->b = result3;
     sjv_temp3->b->_refCount++;
-    result2 = sjf_c(sjv_temp3);
+    sjf_c(sjv_temp3, &result2);
 
     result3->_refCount--;
     if (result3->_refCount == 0) {
@@ -115,13 +115,13 @@ sjs_c* sjf_global() {
         free(sjv_temp3);
     }
 
-    return result2;
+    *_return = result2;
 }
 
 int main() {
     sjs_c* result1;
 
-    result1 = sjf_global();
+    sjf_global(&result1);
 
     return 0;
 }

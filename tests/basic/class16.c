@@ -18,26 +18,26 @@ struct td_sjs_aa {
     sjs_a* _parent;
 };
 
-sjs_a* sjf_a(sjs_a* _this);
-sjs_aa* sjf_a_aa(sjs_aa* _this);
-int32_t sjf_a_aa_c(sjs_aa* _parent);
+void sjf_a(sjs_a* _this, sjs_a** _return);
+void sjf_a_aa(sjs_aa* _this, sjs_aa** _return);
+void sjf_a_aa_c(sjs_aa* _parent, int32_t* _return);
 void sjf_a_aa_destroy(sjs_aa* _this);
 void sjf_a_destroy(sjs_a* _this);
-int32_t sjf_global();
+void sjf_global(int32_t* _return);
 
-sjs_a* sjf_a(sjs_a* _this) {
+void sjf_a(sjs_a* _this, sjs_a** _return) {
     _this->_refCount++;
 
-    return _this;
+    *_return = _this;
 }
 
-sjs_aa* sjf_a_aa(sjs_aa* _this) {
+void sjf_a_aa(sjs_aa* _this, sjs_aa** _return) {
     _this->_refCount++;
 
-    return _this;
+    *_return = _this;
 }
 
-int32_t sjf_a_aa_c(sjs_aa* _parent) {
+void sjf_a_aa_c(sjs_aa* _parent, int32_t* _return) {
     sjs_a* temp2;
     int32_t temp3;
 
@@ -46,7 +46,7 @@ int32_t sjf_a_aa_c(sjs_aa* _parent) {
 
     sjf_a_destroy(temp2);
 
-    return temp3;
+    *_return = temp3;
 }
 
 void sjf_a_aa_destroy(sjs_aa* _this) {
@@ -56,7 +56,7 @@ void sjf_a_destroy(sjs_a* _this) {
     sjf_a_aa_destroy(_this->b);
 }
 
-int32_t sjf_global() {
+void sjf_global(int32_t* _return) {
     sjs_a* a;
     sjs_aa* d;
     sjs_a* result2;
@@ -72,21 +72,21 @@ int32_t sjf_global() {
 
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
-    result3 = sjf_a_aa(sjv_temp1);
+    sjf_a_aa(sjv_temp1, &result3);
     sjv_temp2 = &sjd_temp2;
     sjv_temp2->_refCount = 1;
     sjv_temp2->x = 1;
     sjv_temp2->b = result3;
     sjv_temp2->b->_refCount++;
-    result2 = sjf_a(sjv_temp2);
+    sjf_a(sjv_temp2, &result2);
     a = result2;
     a->_refCount++;
     temp1 = a->b;
-    result4 = sjf_a_aa_c(temp1);
+    sjf_a_aa_c(temp1, &result4);
     temp4 = a->b;
     d = temp4;
     d->_refCount++;
-    result5 = sjf_a_aa_c(d);
+    sjf_a_aa_c(d, &result5);
 
     sjf_a_destroy(a);
     sjf_a_aa_destroy(d);
@@ -105,13 +105,13 @@ int32_t sjf_global() {
     sjf_a_aa_destroy(temp1);
     sjf_a_aa_destroy(temp4);
 
-    return result5;
+    *_return = result5;
 }
 
 int main() {
     int32_t result1;
 
-    result1 = sjf_global();
+    sjf_global(&result1);
 
     return 0;
 }
