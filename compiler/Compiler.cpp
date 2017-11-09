@@ -410,6 +410,8 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 				block->define(this, *result, globalFunctionDefinition);
 				result->block->statements.insert(result->block->statements.begin(), block->statements.begin(), block->statements.end());
 			}
+            // Force global function to have void return
+            result->block->statements.push_back(make_shared<NVoid>(CLoc::undefined));
 
 			if (result->errors.size() == 0) {
 				state = CompilerState::FixVar;
@@ -443,7 +445,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                         for (auto it : functionNames) {
                             *debugStream << it.second << "\n\n";
                         }
-                        *debugStream << "global " << ss.str() << "\n\n";
+                        *debugStream << "global()'void " << ss.str() << "\n\n";
                     }
 
 					state = CompilerState::Compile;                    

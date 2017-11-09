@@ -5,6 +5,7 @@
 * lambda
 
 -- tasks --
+* if return value is created in function, then pass in class
 
 -- operators --
 	a.x = y 	-> setX(y)

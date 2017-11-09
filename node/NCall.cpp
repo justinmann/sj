@@ -53,6 +53,11 @@ shared_ptr<CType> CCallVar::getType(Compiler* compiler, CResult& result) {
 }
 
 bool CCallVar::getParameters(Compiler* compiler, CResult& result, vector<shared_ptr<NBase>>& parameters) {
+    if (parameters.size() < arguments->size()) {
+        result.addError(loc, CErrorCode::TooManyParameters, "too many parameters");
+        return false;
+    }
+    
     auto argIndex = (size_t)0;
     auto hasSetByName = false;
     for (auto it : *arguments) {

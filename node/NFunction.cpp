@@ -323,15 +323,15 @@ int CFunction::setHeapVarBody(Compiler *compiler, CResult& result, shared_ptr<CV
         }
         
         if (block) {
-            count += block->setHeapVar(compiler, result, shared_from_this(), thisVar, true);
+            count += block->setHeapVar(compiler, result, shared_from_this(), thisVar, false);
         }
         
         if (catchBlock) {
-            count += catchBlock->setHeapVar(compiler, result, shared_from_this(), thisVar, true);
+            count += catchBlock->setHeapVar(compiler, result, shared_from_this(), thisVar, false);
         }
         
         if (destroyBlock) {
-            count += destroyBlock->setHeapVar(compiler, result, shared_from_this(), thisVar, true);
+            count += destroyBlock->setHeapVar(compiler, result, shared_from_this(), thisVar, false);
         }
     } while (count > 0);
     return 0;
@@ -354,7 +354,10 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
         return nullptr;
     }
 
-    auto returnValue = returnType != compiler->typeVoid ? trBlock->createTempVariable("result", returnType, true, RVR_MustRelease) : nullptr;
+    shared_ptr<ReturnValue> returnValue;
+    if (returnType != compiler->typeVoid) {
+        returnValue = trBlock->createTempVariable("result", returnType, true, isReturnValue ? RVR_Ignore : RVR_MustRelease);
+    }
 
     auto argTypes = getCTypeList(compiler, result);
 
@@ -380,7 +383,7 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
             auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), thisVar);
             if (paramVar) {
                 auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
-                assert(!argHeapVar || paramHeapVar == argHeapVar);
+                // TODO: assert(!argHeapVar || paramHeapVar == argHeapVar);
             }
             argReturnValue = parameters[argIndex]->transpile(compiler, result, shared_from_this(), thisVar, trOutput, trBlock, false);
         }
@@ -404,6 +407,12 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
         
         argValues.push_back(ArgData(argVar, argReturnValue));
         argIndex++;
+    }
+    
+    if (returnValue) {
+        if (isReturnValue) {
+            
+        }
     }
     
     auto functionName = getCInitFunctionName();
@@ -566,9 +575,13 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
             initLine << objectRef->name << " = (" << structName << "*)malloc(sizeof(" << structName << "))";
             trBlock->statements.push_back(TrStatement(initLine.str()));
         } else {
-            auto objectVal = trBlock->createTempVariable("sjd_temp", thisType->nameValue);
             stringstream initLine;
-            initLine << objectRef->name << " = &" << objectVal->name;
+            if (isReturnValue) {
+                initLine << objectRef->name << " = *_return";
+            } else {
+                auto objectVal = trBlock->createTempVariable("sjd_temp", thisType->nameValue);
+                initLine << objectRef->name << " = &" << objectVal->name;
+            }
             trBlock->statements.push_back(TrStatement(initLine.str()));
         }
         
@@ -1201,7 +1214,9 @@ void CFunction::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CVar> t
     }
     
     ss << ")";
-    
+    auto returnType = getReturnType(compiler, result, thisVar);
+    ss << "'" << (returnType ? returnType->name : "void");
+
     if (block) {
         ss << " ";
         block->dump(compiler, result, shared_from_this(), thisVar, functions, ss, level);
