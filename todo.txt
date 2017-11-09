@@ -7,6 +7,38 @@
 
 -- tasks --
 
+-- interface --
+int sji_foo_id = 1;
+struct td_sji_foo {
+	int _refCount;
+	sjs_object* _parent;
+	sjs_object* (*asInterface)(sjs_object* _parent, int sji_foo_id);
+	int (*test)(sjs_object* _parent);
+}
+
+sji_foo_destroy(ji_foo* _this) {
+	_this->_parent->_refCount--;
+}
+
+void* foo_asInterface(sjs_object* _parent, int sji_foo_id) {
+	switch (sji_foo_id) {
+	case sji_foo_id:
+		return foo_asFoo(_parent);
+	}
+	return nullptr;
+}
+
+sji_foo* foo_asFoo(sjs_foo* _parent) {
+	i = new sji_foo;
+	i->_parent = _parent;
+	i->_parent->_refCount++;
+	i->test = foo_test;
+}
+
+a = nullptr;
+foo_asFoo(b, &a);
+a->test(a->_parent);
+
 -- operators --
 	a.x = y 	-> setX(y)
 	a as type	-> a.asType()'t

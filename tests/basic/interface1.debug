@@ -1,0 +1,12 @@
+class ##foo ()'class {
+  this
+}
+
+global()'void {
+  #foo(
+  )
+  [stack]a' : [stack]class([stack]this : class()) as #foo
+  void
+  void
+}
+

@@ -38,7 +38,7 @@ void NInterface::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBas
 }
 
 shared_ptr<ReturnValue> NInterface::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
-	assert(false);
+    // TODO: assert(false);
 	return nullptr;
 }
 
