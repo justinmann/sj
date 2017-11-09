@@ -9,7 +9,7 @@
 #include "../node/Node.h"
 
 string CVar::fullName() {
-    return strprintf("%s.%s", parent.lock()->fullName(false).c_str(), name.c_str());
+    return strprintf("%s.%s", (parent.expired() ? "" : parent.lock()->fullName(false).c_str()), name.c_str());
 }
 
 shared_ptr<CBaseFunction> CVar::getCFunctionForValue(Compiler* compiler, CResult& result) {

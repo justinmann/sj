@@ -6,7 +6,7 @@ string (
 
 	add(item :'char) {
 		if count > data.size {
-			setSize(data.size * 2)
+			data.grow(data.size * 2)
 			void
 		}
 

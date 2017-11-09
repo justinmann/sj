@@ -1,0 +1,136 @@
+anon1([stack]_fd'ptr=)'anon1 {
+  c{
+ 
+		_this->_fd = (uintptr_t)stdout;
+	
+}c
+  this
+}
+
+anon2()'anon2 {
+  this
+}
+
+anon3()'anon3 {
+  this
+}
+
+array!char([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=)'array_char {
+  c{
+
+		if (_this->size < 0) {
+			exit(-1);
+		}
+
+		if (_this->data) {
+			_this->_isGlobal = true;
+		} else {
+			_this->data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
+		}
+	
+}c
+  this
+}
+
+array!element([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=)'array_element {
+  c{
+
+		if (_this->size < 0) {
+			exit(-1);
+		}
+
+		if (_this->data) {
+			_this->_isGlobal = true;
+		} else {
+			_this->data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
+		}
+	
+}c
+  this
+}
+
+array_getAt([stack]index'i32:)'element c{
+
+		#forceParent()
+
+		if (index >= _parent->size || index < 0) {
+			exit(-1);
+		}
+
+		#type(t)* p = (#type(t)*)_parent->data;
+		#type(t) val = p[index];
+		if (!#isValue(t)) {
+			if (val == 0) {
+				exit(-1);
+			}
+		}
+		*_return = val;		
+	
+}c
+
+element([stack]id'string:, [stack]children'array_element:)'element {
+  this
+}
+
+element_update()'void {
+  [stack]html'string : {
+    [stack]string([stack]this : string(
+      [stack]count'i32 = ,
+      [stack]data'array_char = [stack]array!char([stack]this : array!char(
+        [stack]size'i32 = ,
+        [stack]data'ptr = ,
+        [stack]_isGlobal'bool = false
+      ))
+    ))
+  }
+  for i : 0 to this.size {
+    [stack]child'element : [stack]array_getAt([stack]this : array_getAt(
+      parent: [stack].parentthis.children,
+      [stack]index'i32 : i
+    ))
+  }
+  c{
+
+			include(<emscripten.h>)
+
+			EM_ASM_({
+				document.getElementById(UTF8ToString($0)).innerHTML = UTF8ToString($1);
+			}, _parent->id->data, html->data);
+		
+}c
+}
+
+string([stack]count'i32=, [stack]data'array_char=)'string {
+  this
+}
+
+global()'void {
+  [stack]random'anon3 : [stack]anon3([stack]this : anon3())
+  [stack]parse'anon2 : [stack]anon2([stack]this : anon2())
+  [stack]console'anon1 : [stack]anon1([stack]this : anon1(
+    [stack]_fd'ptr = 0 as ptr
+  ))
+  [stack]rootElement'element : [stack]element([stack]this : element(
+    parent: [stack]this,
+    [stack]id'string : {
+      [stack]string([stack]this : string(
+        [stack]count'i32 = ,
+        [stack]data'array_char = [stack]array!char([stack]this : array!char(
+          [stack]size'i32 = ,
+          [stack]data'ptr = ,
+          [stack]_isGlobal'bool = false
+        ))
+      ))
+    },
+    [stack]children'array_element : [stack]array!element([stack]this : array!element(
+      [stack]size'i32 = 0,
+      [stack]data'ptr = 0 as ptr,
+      [stack]_isGlobal'bool = false
+    ))
+  ))
+  [stack]element_update([stack]this : element_update(
+    parent: [stack]rootElement
+  ))
+  void
+}
+

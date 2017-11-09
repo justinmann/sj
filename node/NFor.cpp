@@ -112,7 +112,7 @@ shared_ptr<ReturnValue> NFor::transpile(Compiler* compiler, CResult& result, sha
     trBlock->statements.push_back(loopCounterLine.str());
     
     auto loopEndReturnValue = end->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
-    if (loopEndReturnValue->type != compiler->typeI32) {
+    if (!loopEndReturnValue || loopEndReturnValue->type != compiler->typeI32) {
         result.addError(loc, CErrorCode::TypeMismatch, "end value must be a int");
         return nullptr;
     }

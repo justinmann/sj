@@ -1,12 +1,11 @@
 -- features --
-* operators
+* include for ccode
 * interface
+* operators
 * tuple
 * lambda
 
 -- tasks --
-* highlow in browser
-* create html
 
 -- operators --
 	a.x = y 	-> setX(y)
