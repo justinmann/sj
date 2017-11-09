@@ -23,7 +23,7 @@ void sjf_a(sjs_a* _this, sjs_a** _return);
 void sjf_a_destroy(sjs_a* _this);
 void sjf_array_char(sjs_array_char* _this, sjs_array_char** _return);
 void sjf_array_char_destroy(sjs_array_char* _this);
-void sjf_global();
+void sjf_global(void);
 
 void sjf_a(sjs_a* _this, sjs_a** _return) {
     _this->_refCount++;
@@ -60,7 +60,7 @@ void sjf_array_char_destroy(sjs_array_char* _this) {
 ;
 }
 
-void sjf_global() {
+void sjf_global(void) {
     sjs_array_char sjd_temp1;
     sjs_a sjd_temp2;
     uintptr_t result1;

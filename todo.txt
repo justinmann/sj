@@ -5,8 +5,8 @@
 * lambda
 
 -- tasks --
-* if return value is created in function, then pass in class
-
+* highlow in browser
+* create html
 
 -- operators --
 	a.x = y 	-> setX(y)

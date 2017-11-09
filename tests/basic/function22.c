@@ -4,13 +4,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-void sjf_foo();
-void sjf_global();
+void sjf_foo(void);
+void sjf_global(void);
 
-void sjf_foo() {
+void sjf_foo(void) {
 }
 
-void sjf_global() {
+void sjf_global(void) {
     sjf_foo();
 }
 

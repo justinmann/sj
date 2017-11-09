@@ -4,9 +4,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-void sjf_global();
+void sjf_global(void);
 
-void sjf_global() {
+void sjf_global(void) {
     bool result1;
 
     result1 = -3 > 4;

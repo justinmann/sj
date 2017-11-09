@@ -6,7 +6,7 @@
 
 void sjf_class_bool_f32(int32_t* _return);
 void sjf_class_i32_bool(int32_t* _return);
-void sjf_global();
+void sjf_global(void);
 
 void sjf_class_bool_f32(int32_t* _return) {
 
@@ -18,7 +18,7 @@ void sjf_class_i32_bool(int32_t* _return) {
     *_return = 1;
 }
 
-void sjf_global() {
+void sjf_global(void) {
     int32_t a;
     int32_t c;
     int32_t result1;

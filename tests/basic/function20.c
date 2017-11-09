@@ -6,7 +6,7 @@
 
 void sjf_bar(int32_t* _return);
 void sjf_func(int32_t* _return);
-void sjf_global();
+void sjf_global(void);
 
 void sjf_bar(int32_t* _return) {
 
@@ -22,7 +22,7 @@ void sjf_func(int32_t* _return) {
     *_return = result2;
 }
 
-void sjf_global() {
+void sjf_global(void) {
     int32_t result1;
 
     result1 = 0;

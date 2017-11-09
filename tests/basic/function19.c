@@ -5,7 +5,7 @@
 #include <string.h>
 
 void sjf_func(int32_t x, int32_t* _return);
-void sjf_global();
+void sjf_global(void);
 
 void sjf_func(int32_t x, int32_t* _return) {
     int32_t ifResult1;
@@ -27,7 +27,7 @@ void sjf_func(int32_t x, int32_t* _return) {
     *_return = ifResult1;
 }
 
-void sjf_global() {
+void sjf_global(void) {
     int32_t result1;
 
     result1 = 0;

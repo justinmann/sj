@@ -53,7 +53,7 @@ void sjf_anon3_destroy(sjs_anon3* _this);
 void sjf_anon3_nextInt(int32_t* _return);
 void sjf_array_char(sjs_array_char* _this, sjs_array_char** _return);
 void sjf_array_char_destroy(sjs_array_char* _this);
-void sjf_global();
+void sjf_global(void);
 void sjf_string(sjs_string* _this, sjs_string** _return);
 void sjf_string_destroy(sjs_string* _this);
 
@@ -153,7 +153,7 @@ void sjf_anon2_toInt(sjs_string* text, int32_t* _return) {
     x = 0;
     
 			char* e;
-		    int v = strtol((char*)text->data->data, &e, 10);
+		    int v = (int)strtol((char*)text->data->data, &e, 10);
 		    
 		    if (*e != '\0') {
 		        x = 0;
@@ -207,7 +207,7 @@ void sjf_array_char_destroy(sjs_array_char* _this) {
 ;
 }
 
-void sjf_global() {
+void sjf_global(void) {
     sjs_anon3 sjd_temp1;
     sjs_anon2 sjd_temp2;
     sjs_anon1 sjd_temp3;

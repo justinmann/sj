@@ -466,6 +466,10 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
                 }
                 functionDefinition << returnType->nameRef << "* _return";
             }
+            
+            if (isFirstArg) {
+                functionDefinition << "void";
+            }
             functionDefinition << ")";
             trFunctionBlock->definition = functionDefinition.str();
             

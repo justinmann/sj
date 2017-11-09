@@ -17,7 +17,7 @@ void sjf_array_i32(sjs_array_i32* _this, sjs_array_i32** _return);
 void sjf_array_i32_destroy(sjs_array_i32* _this);
 void sjf_array_i32_getAt(sjs_array_i32* _parent, int32_t index, int32_t* _return);
 void sjf_array_i32_setAt(sjs_array_i32* _parent, int32_t index, int32_t item);
-void sjf_global();
+void sjf_global(void);
 
 void sjf_array_i32(sjs_array_i32* _this, sjs_array_i32** _return) {
     
@@ -79,7 +79,7 @@ void sjf_array_i32_setAt(sjs_array_i32* _parent, int32_t index, int32_t item) {
 	;
 }
 
-void sjf_global() {
+void sjf_global(void) {
     sjs_array_i32 sjd_temp1;
     sjs_array_i32* a;
     uintptr_t result1;

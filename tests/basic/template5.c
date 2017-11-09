@@ -6,7 +6,7 @@
 
 void sjf_class_f32_func(int32_t* _return);
 void sjf_class_func_i32(int32_t* _return);
-void sjf_global();
+void sjf_global(void);
 
 void sjf_class_f32_func(int32_t* _return) {
 
@@ -18,7 +18,7 @@ void sjf_class_func_i32(int32_t* _return) {
     *_return = 1;
 }
 
-void sjf_global() {
+void sjf_global(void) {
     int32_t b;
     int32_t d;
     int32_t result1;

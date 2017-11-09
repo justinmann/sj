@@ -14,7 +14,7 @@ struct td_sjs_class {
 void sjf_class(sjs_class* _this, sjs_class** _return);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_func(sjs_class** _return);
-void sjf_global();
+void sjf_global(void);
 
 void sjf_class(sjs_class* _this, sjs_class** _return) {
     _this->_refCount++;
@@ -43,7 +43,7 @@ void sjf_func(sjs_class** _return) {
     *_return = sjv_temp1;
 }
 
-void sjf_global() {
+void sjf_global(void) {
     sjs_class* result1;
     int32_t temp1;
 

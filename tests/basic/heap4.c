@@ -28,7 +28,7 @@ void sjf_b(sjs_b* _this, sjs_b** _return);
 void sjf_b_destroy(sjs_b* _this);
 void sjf_c(sjs_c* _this, sjs_c** _return);
 void sjf_c_destroy(sjs_c* _this);
-void sjf_global();
+void sjf_global(void);
 
 void sjf_a(sjs_a* _this, sjs_a** _return) {
     _this->_refCount++;
@@ -59,7 +59,7 @@ void sjf_c_destroy(sjs_c* _this) {
     sjf_b_destroy(_this->b);
 }
 
-void sjf_global() {
+void sjf_global(void) {
     sjs_a sjd_temp1;
     sjs_b sjd_temp2;
     sjs_c sjd_temp3;

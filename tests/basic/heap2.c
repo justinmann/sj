@@ -22,7 +22,7 @@ void sjf_class_anon1(sjs_anon1* _this, sjs_anon1** _return);
 void sjf_class_anon1_destroy(sjs_anon1* _this);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_get(sjs_class* _parent, sjs_anon1** _return);
-void sjf_global();
+void sjf_global(void);
 
 void sjf_class(sjs_class* _this, sjs_class** _return) {
     _this->_refCount++;
@@ -62,7 +62,7 @@ void sjf_class_get(sjs_class* _parent, sjs_anon1** _return) {
     *_return = temp1;
 }
 
-void sjf_global() {
+void sjf_global(void) {
     sjs_class sjd_temp1;
     sjs_class* c;
     sjs_anon1* d;

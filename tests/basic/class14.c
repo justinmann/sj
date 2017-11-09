@@ -14,7 +14,7 @@ struct td_sjs_class {
 void sjf_class(sjs_class* _this, int32_t* _return);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_inner(sjs_class* _parent, int32_t* _return);
-void sjf_global();
+void sjf_global(void);
 
 void sjf_class(sjs_class* _this, int32_t* _return) {
     int32_t result2;
@@ -37,7 +37,7 @@ void sjf_class_inner(sjs_class* _parent, int32_t* _return) {
     *_return = temp1;
 }
 
-void sjf_global() {
+void sjf_global(void) {
     sjs_class sjd_temp1;
     int32_t result1;
     sjs_class* sjv_temp1;

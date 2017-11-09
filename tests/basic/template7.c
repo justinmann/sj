@@ -12,7 +12,7 @@ struct td_sjs_class_i32 {
 
 void sjf_class_i32(sjs_class_i32* _this, sjs_class_i32** _return);
 void sjf_class_i32_destroy(sjs_class_i32* _this);
-void sjf_global();
+void sjf_global(void);
 
 void sjf_class_i32(sjs_class_i32* _this, sjs_class_i32** _return) {
     _this->_refCount++;
@@ -23,7 +23,7 @@ void sjf_class_i32(sjs_class_i32* _this, sjs_class_i32** _return) {
 void sjf_class_i32_destroy(sjs_class_i32* _this) {
 }
 
-void sjf_global() {
+void sjf_global(void) {
     sjs_class_i32 sjd_temp1;
     sjs_class_i32* c;
     sjs_class_i32* sjv_temp1;

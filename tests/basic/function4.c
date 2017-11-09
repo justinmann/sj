@@ -5,14 +5,14 @@
 #include <string.h>
 
 void sjf_func(double* _return);
-void sjf_global();
+void sjf_global(void);
 
 void sjf_func(double* _return) {
 
     *_return = -3.0;
 }
 
-void sjf_global() {
+void sjf_global(void) {
     double result1;
     bool result2;
 
