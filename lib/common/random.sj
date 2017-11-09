@@ -1,5 +1,6 @@
 random: ^(
 	nextInt()'i32 c{
-		*_return = rand();
+		int x = rand();
+		return x;
 	}c
 ) { this }

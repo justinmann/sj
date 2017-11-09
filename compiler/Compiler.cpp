@@ -410,6 +410,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 				block->define(this, *result, globalFunctionDefinition);
 				result->block->statements.insert(result->block->statements.begin(), block->statements.begin(), block->statements.end());
 			}
+            result->block->statements.push_back(make_shared<NVoid>(CLoc::undefined));
 
 			if (result->errors.size() == 0) {
 				state = CompilerState::FixVar;

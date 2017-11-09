@@ -1,8 +1,8 @@
-a([heap]data'array_char=) {
+a([stack]data'array_char=) {
   this
 }
 
-array!char([heap]size'i32=, [heap]data'ptr=, [heap]_isGlobal'bool=) {
+array!char([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=) {
   c{
 
 		if (_this->size < 0) {
@@ -20,12 +20,13 @@ array!char([heap]size'i32=, [heap]data'ptr=, [heap]_isGlobal'bool=) {
 }
 
 global {
-  [heap]a([heap]this : a(
-    [heap]data'array_char = [heap]array!char([heap]this : array!char(
-      [heap]size'i32 = 0,
-      [heap]data'ptr = 0 as ptr,
-      [heap]_isGlobal'bool = false
+  [stack]a([stack]this : a(
+    [stack]data'array_char = [stack]array!char([stack]this : array!char(
+      [stack]size'i32 = 0,
+      [stack]data'ptr = 0 as ptr,
+      [stack]_isGlobal'bool = false
     ))
   ))
+  void
 }
 

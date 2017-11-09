@@ -23,5 +23,6 @@ global {
   [heap]class_foo([stack]this : class_foo(
     [heap]x'i32 : 4
   ))
+  void
 }
 

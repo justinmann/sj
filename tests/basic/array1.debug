@@ -56,15 +56,16 @@ global {
     [stack]data'ptr = 0 as ptr,
     [stack]_isGlobal'bool = false
   ))
-  array_setAt([stack]this : array_setAt(
+  [stack]array_setAt([stack]this : array_setAt(
     parent: [stack]a,
     [stack]index'i32 : 0,
     [heap]item'i32 : 1
   ))
-  [heap]c'i32 : array_getAt([stack]this : array_getAt(
+  [stack]c'i32 : [stack]array_getAt([stack]this : array_getAt(
     parent: [stack]a,
     [stack]index'i32 : 0
   ))
   c
+  void
 }
 

@@ -1,4 +1,5 @@
 global {
   5.0 as i64
+  void
 }
 

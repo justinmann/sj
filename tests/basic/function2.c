@@ -5,25 +5,22 @@
 #include <string.h>
 
 void sjf_func(int32_t* _return);
-void sjf_global(int32_t* _return);
+void sjf_global();
 
 void sjf_func(int32_t* _return) {
 
     *_return = 1;
 }
 
-void sjf_global(int32_t* _return) {
-    int32_t result2;
+void sjf_global() {
+    int32_t result1;
 
-    sjf_func(&result2);
-
-    *_return = result2;
+    result1 = 0;
+    sjf_func(&result1);
 }
 
 int main() {
-    int32_t result1;
-
-    sjf_global(&result1);
+    sjf_global();
 
     return 0;
 }

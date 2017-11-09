@@ -43,30 +43,37 @@ anon1_readLine() {
   ))
 }
 
-anon1_write([heap]data'string:) c{
+anon1_write([stack]data'string:) {
+  c{
 
-		#forceParent()
-			
-		fwrite((void*)data->data->data, sizeof(char), data->count, (FILE*)_parent->_fd);
-	
+			#forceParent()
+				
+			fwrite((void*)data->data->data, sizeof(char), data->count, (FILE*)_parent->_fd);
+		
 }c
+}
 
 anon2() {
   this
 }
 
-anon2_toInt([stack]text'string:) c{
+anon2_toInt([stack]text'string:) {
+  [heap]x'i32 = 0
+  c{
 
-		char* e;
-	    int v = strtol((char*)text->data->data, &e, 10);
+			char* e;
+		    int v = strtol((char*)text->data->data, &e, 10);
+		    
+		    if (*e != '\0') {
+		        x = 0;
+		    }
+		    else {
+		    	x = v;
+			}
 	    
-	    if (*e != '\0') {
-	        *_return = 0;
-	    }
-	    
-	    *_return = v;
-    
 }c
+  x
+}
 
 anon3() {
   this
@@ -74,7 +81,8 @@ anon3() {
 
 anon3_nextInt() c{
 
-		*_return = rand();
+		int x = rand();
+		return x;
 	
 }c
 
@@ -105,9 +113,9 @@ global {
   [stack]console'anon1 : [stack]anon1([stack]this : anon1(
     [stack]_fd'ptr = 0 as ptr
   ))
-  anon1_write([stack]this : anon1_write(
+  [stack]anon1_write([stack]this : anon1_write(
     parent: [stack]console,
-    [heap]data'string : {
+    [stack]data'string : {
       [heap]string([heap]this : string(
         [heap]count'i32 = ,
         [heap]data'array_char = [heap]array!char([heap]this : array!char(
@@ -118,17 +126,17 @@ global {
       ))
     }
   ))
-  [stack]num'i32 : anon3_nextInt([stack]this : anon3_nextInt()) %% 10 + 1
+  [stack]num'i32 : [stack]anon3_nextInt([stack]this : anon3_nextInt()) %% 10 + 1
   [stack]isCorrect'bool = false
   while !isCorrect{
     [heap]str'string : [heap]anon1_readLine([stack]this : anon1_readLine())
-    [stack]guess'i32 : anon2_toInt([stack]this : anon2_toInt(
+    [heap]guess'i32 : [heap]anon2_toInt([stack]this : anon2_toInt(
       [stack]text'string : str
     ))
     [stack]isCorrect'bool = if guess < num {
-      anon1_write([stack]this : anon1_write(
+      [stack]anon1_write([stack]this : anon1_write(
         parent: [stack]console,
-        [heap]data'string : {
+        [stack]data'string : {
           [heap]string([heap]this : string(
             [heap]count'i32 = ,
             [heap]data'array_char = [heap]array!char([heap]this : array!char(
@@ -141,9 +149,9 @@ global {
       ))
       false
     } else if guess > num {
-      anon1_write([stack]this : anon1_write(
+      [stack]anon1_write([stack]this : anon1_write(
         parent: [stack]console,
-        [heap]data'string : {
+        [stack]data'string : {
           [heap]string([heap]this : string(
             [heap]count'i32 = ,
             [heap]data'array_char = [heap]array!char([heap]this : array!char(
@@ -159,9 +167,9 @@ global {
       true
     }
   }
-  anon1_write([stack]this : anon1_write(
+  [stack]anon1_write([stack]this : anon1_write(
     parent: [stack]console,
-    [heap]data'string : {
+    [stack]data'string : {
       [heap]string([heap]this : string(
         [heap]count'i32 = ,
         [heap]data'array_char = [heap]array!char([heap]this : array!char(
@@ -172,5 +180,6 @@ global {
       ))
     }
   ))
+  void
 }
 

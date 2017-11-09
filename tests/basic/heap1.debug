@@ -10,5 +10,6 @@ func() {
 global {
   [heap]b'class : [heap]func([stack]this : func())
   void
+  void
 }
 

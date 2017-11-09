@@ -39,5 +39,6 @@ global {
     parent: [stack]c,
     [heap]x'i32 : 4
   ))
+  void
 }
 

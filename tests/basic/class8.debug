@@ -8,5 +8,6 @@ global {
     [stack]y'i32 : 2
   ))
   this.x + this.y
+  void
 }
 

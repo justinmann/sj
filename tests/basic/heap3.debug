@@ -19,5 +19,6 @@ global {
     ))
   ))
   this.x
+  void
 }
 

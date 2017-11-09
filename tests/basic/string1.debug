@@ -76,21 +76,21 @@ string([stack]count'i32=, [heap]data'array_char=) {
 }
 
 string_getAt([heap]index'i32:) {
-  array_getAt([stack]this : array_getAt(
+  [heap]array_getAt([stack]this : array_getAt(
     parent: [heap].parentthis.data,
     [heap]index'i32 : this.index
   ))
 }
 
 string_isEqual([stack]test'string:) {
-  array_isEqual([stack]this : array_isEqual(
+  [heap]array_isEqual([stack]this : array_isEqual(
     parent: [heap].parentthis.data,
     [heap]test'array_char : this.data
   ))
 }
 
 string_isLessOrEqual([stack]test'string:) {
-  array_isLessOrEqual([stack]this : array_isLessOrEqual(
+  [heap]array_isLessOrEqual([stack]this : array_isLessOrEqual(
     parent: [heap].parentthis.data,
     [heap]test'array_char : this.data
   ))
@@ -152,5 +152,6 @@ global {
     [stack]test'string : a
   ))
   [stack]l'bool : fa
+  void
 }
 

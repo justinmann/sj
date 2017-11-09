@@ -1,4 +1,5 @@
 global {
   5 as f32
+  void
 }
 

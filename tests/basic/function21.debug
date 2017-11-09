@@ -8,5 +8,6 @@ func_bar() {
 
 global {
   [heap]func([stack]this : func())
+  void
 }
 

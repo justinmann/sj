@@ -1,4 +1,5 @@
 global {
   [stack]x'i32 : [stack]y'i32 : 2
+  void
 }
 

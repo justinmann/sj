@@ -104,5 +104,6 @@ global {
   [heap]i'i32 = [heap]fancyMath_getX([stack]this : fancyMath_getX(
     parent: [heap]f
   ))
+  void
 }
 

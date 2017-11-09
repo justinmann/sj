@@ -12,5 +12,6 @@ global {
   [heap]func([stack]this : func(
     [heap]x'i32 : 4
   ))
+  void
 }
 

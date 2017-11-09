@@ -4,5 +4,6 @@ func() {
 
 global {
   func([stack]this : func())
+  void
 }
 

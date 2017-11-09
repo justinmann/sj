@@ -16,5 +16,6 @@ global {
   } else {
     3
   }
+  void
 }
 

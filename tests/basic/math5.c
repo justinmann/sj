@@ -4,20 +4,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-void sjf_global(double* _return);
+void sjf_global();
 
-void sjf_global(double* _return) {
-    double result2;
+void sjf_global() {
+    double result1;
 
-    result2 = 4.0 + 5.0;
-
-    *_return = result2;
+    result1 = 4.0 + 5.0;
 }
 
 int main() {
-    double result1;
-
-    sjf_global(&result1);
+    sjf_global();
 
     return 0;
 }

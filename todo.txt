@@ -6,6 +6,8 @@
 
 -- tasks --
 
+
+
 -- operators --
 	a.x = y 	-> setX(y)
 	a as type	-> a.asType()'t
@@ -18,6 +20,8 @@
 	t: tuple![i32, i32](1, 2)
 	a = t.getAt(0)
 	b = t.getAt(1)
+
+
 
 -- library --
 * directory structure for pure sj library

@@ -24,5 +24,6 @@ global {
   [heap]a_aa_c([stack]this : a_aa_c(
     parent: [stack]d
   ))
+  void
 }
 

@@ -8,5 +8,6 @@ func() {
 
 global {
   [heap]func([stack]this : func())
+  void
 }
 

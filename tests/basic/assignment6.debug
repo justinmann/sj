@@ -1,5 +1,6 @@
 global {
   [stack]x'i32 : 1
   x + 1
+  void
 }
 

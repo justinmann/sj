@@ -19,5 +19,6 @@ global {
   [heap]d'anon1 : [heap]class_get([stack]this : class_get(
     parent: [stack]c
   ))
+  void
 }
 

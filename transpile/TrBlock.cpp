@@ -1,10 +1,16 @@
 #include "../node/Node.h"
 
 ReturnValue::ReturnValue(shared_ptr<CType> type_, bool isHeap_, ReturnValueRelease release_, string name_) : type(type_), typeName(type_->nameRef), isHeap(isHeap_), release(release_), name(name_) {}
-ReturnValue::ReturnValue(string typeName_, string name_) : type(nullptr), typeName(typeName_), isHeap(false), release(RVR_Ignore), name(name_) {}
+//ReturnValue::ReturnValue(string typeName_, string name_) : type(nullptr), typeName(typeName_), isHeap(false), release(RVR_Ignore), name(name_) {}
 
 void TrBlock::writeBodyToStream(ostream& stream, int level) {
-	for (auto variable : variables)
+    for (auto stackValue : stackValues)
+    {
+        addSpacing(stream, level);
+        stream << stackValue.second->nameValue << " " << stackValue.first << ";\n";
+    }
+    
+    for (auto variable : variables)
 	{
         addSpacing(stream, level);
         stream << variable.second->typeName << " " << variable.first << ";\n";
@@ -52,6 +58,14 @@ void TrBlock::writeBodyToStream(ostream& stream, int level) {
         stream << "\n" << varString;
     }
 
+    for (auto stackValue : stackValues)
+    {
+        if (!stackValue.second->parent.expired()) {
+            addSpacing(stream, level);
+            stream << stackValue.second->parent.lock()->getCDestroyFunctionName() << "(&" << stackValue.first << ");\n";
+        }
+    }
+
     if (returnLine.size() > 0) {
         stream << "\n";
         addSpacing(stream, level);
@@ -84,11 +98,10 @@ shared_ptr<ReturnValue> TrBlock::createTempVariable(string prefix, shared_ptr<CT
     return var;
 }
 
-shared_ptr<ReturnValue> TrBlock::createTempVariable(string prefix, string typeName) {
+string TrBlock::createStackValue(string prefix, shared_ptr<CType> type) {
     auto varStr = nextVarName(prefix);
-    auto var = make_shared<ReturnValue>(typeName, varStr);
-    variables[varStr] = var;
-    return var;
+    stackValues[varStr] = type;
+    return varStr;
 }
 
 string TrBlock::nextVarName(string prefix) {
@@ -126,11 +139,7 @@ bool ReturnValue::writeReleaseToStream(TrBlock* block, ostream& stream, int leve
     if (!type || type->parent.expired())
         return false;
 
-    if (!isHeap) {
-        TrBlock::addSpacing(stream, level);
-        stream << type->parent.lock()->getCDestroyFunctionName() << "(" << name << ");\n";
-    }
-    else if (release == RVR_MustRetain) {
+    if (isHeap && release == RVR_MustRetain) {
         TrBlock::addSpacing(stream, level);
         stream << name << "->_refCount--;\n";
 
@@ -140,7 +149,7 @@ bool ReturnValue::writeReleaseToStream(TrBlock* block, ostream& stream, int leve
 #endif
 
         TrBlock::addSpacing(stream, level);
-        stream << "if (" << name << "->_refCount == 0) {\n";
+        stream << "if (" << name << "->_refCount <= 0) {\n";
         if (!type->parent.expired()) {
             TrBlock::addSpacing(stream, level + 1);
             stream << type->parent.lock()->getCDestroyFunctionName() << "(" << name << ");\n";
@@ -169,7 +178,7 @@ void ReturnValue::addReleaseToStatements(TrBlock* block, string name, shared_ptr
 
     auto ifBlock = make_shared<TrBlock>();
     stringstream ifStream;
-    ifStream << "if (" << name << "->_refCount == 0)";
+    ifStream << "if (" << name << "->_refCount <= 0)";
     block->statements.push_back(TrStatement(ifStream.str(), ifBlock));
 
     stringstream destroyStream;

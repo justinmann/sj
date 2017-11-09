@@ -4,5 +4,6 @@ global {
 	printf("hi");
 
 }c
+  void
 }
 

@@ -10,5 +10,6 @@ func() {
 
 global {
   this.x
+  void
 }
 

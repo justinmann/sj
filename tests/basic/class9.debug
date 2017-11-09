@@ -9,5 +9,6 @@ class_func() {
 global {
   [stack]c'class : [stack]class([stack]this : class())
   class_func([stack]this : class_func())
+  void
 }
 

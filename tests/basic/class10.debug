@@ -13,5 +13,6 @@ global {
   [heap]class_func([stack]this : class_func(
     parent: [stack]c
   ))
+  void
 }
 

@@ -11,5 +11,6 @@ class_inner() {
 
 global {
   [heap]class([stack]this : class())
+  void
 }
 

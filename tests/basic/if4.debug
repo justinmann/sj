@@ -4,5 +4,6 @@ global {
   } else if true {
     2
   }
+  void
 }
 

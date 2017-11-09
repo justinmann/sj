@@ -3,6 +3,7 @@ class!func_i32() {
 }
 
 global {
-  [heap]d'i32 : class!func_i32([stack]this : class!func_i32())
+  [stack]d'i32 : class!func_i32([stack]this : class!func_i32())
+  void
 }
 

@@ -61,21 +61,21 @@ global {
       [stack]data'ptr = 0 as ptr,
       [stack]_isGlobal'bool = false
     ))
-    array_setAt([stack]this : array_setAt(
+    [stack]array_setAt([stack]this : array_setAt(
       parent: [stack]sjv_array1,
       [stack]index'i32 : ,
       [heap]item'class : [heap]class([heap]this : class(
         [heap]x'i32 : 1
       ))
     ))
-    array_setAt([stack]this : array_setAt(
+    [stack]array_setAt([stack]this : array_setAt(
       parent: [stack]sjv_array1,
       [stack]index'i32 : ,
       [heap]item'class : [heap]class([heap]this : class(
         [heap]x'i32 : 2
       ))
     ))
-    array_setAt([stack]this : array_setAt(
+    [stack]array_setAt([stack]this : array_setAt(
       parent: [stack]sjv_array1,
       [stack]index'i32 : ,
       [heap]item'class : [heap]class([heap]this : class(
@@ -84,10 +84,11 @@ global {
     ))
     sjv_array1
   }
-  [stack]c'class : array_getAt([stack]this : array_getAt(
+  [stack]c'class : [stack]array_getAt([stack]this : array_getAt(
     parent: [stack]a,
     [stack]index'i32 : 0
   ))
   this.x
+  void
 }
 

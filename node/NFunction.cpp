@@ -331,7 +331,7 @@ int CFunction::setHeapVarBody(Compiler *compiler, CResult& result, shared_ptr<CV
         }
         
         if (destroyBlock) {
-            count += destroyBlock->setHeapVar(compiler, result, shared_from_this(), thisVar, true);
+            count += destroyBlock->setHeapVar(compiler, result, shared_from_this(), thisVar, false);
         }
     } while (count > 0);
     return 0;
@@ -354,7 +354,31 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
         return nullptr;
     }
 
-    auto returnValue = returnType != compiler->typeVoid ? trBlock->createTempVariable("result", returnType, true, RVR_MustRelease) : nullptr;
+    bool isReturnValueThis = false;
+    shared_ptr<ReturnValue> returnValue;
+    if (returnType != compiler->typeVoid) {
+        auto returnVar = block->getVar(compiler, result, shared_from_this(), calleeVar);
+        if (returnVar == calleeVar) {
+            isReturnValueThis = true;
+        } else {
+            if (returnVar == nullptr || returnVar->getHeapVar(compiler, result, calleeVar)) {
+                returnValue = trBlock->createTempVariable("result", returnType, true, RVR_MustRelease);
+                stringstream initReturnStream;
+                initReturnStream << returnValue->name << " = 0";
+                trBlock->statements.push_back(initReturnStream.str());
+            }
+            else if (!returnType->parent.expired()) {
+                returnValue = trBlock->createTempVariable("result", returnType, false, RVR_MustRelease);
+                auto returnTempVal = trBlock->createStackValue("sjd_temp", returnType);
+                stringstream initLine;
+                initLine << returnValue->name << " = &" << returnTempVal;
+                trBlock->statements.push_back(TrStatement(initLine.str()));
+            }
+            else {
+                returnValue = trBlock->createTempVariable("result", returnType, true, RVR_MustRelease);
+            }
+        }
+    }
 
     auto argTypes = getCTypeList(compiler, result);
 
@@ -560,16 +584,30 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
 
         // Initialize "this"
         auto objectHeapVar = calleeVar->getHeapVar(compiler, result, thisVar);
-        auto objectRef = trBlock->createTempVariable("sjv_temp", thisType, objectHeapVar, RVR_MustRetain);
+        shared_ptr<ReturnValue> objectRef;
         if (objectHeapVar) {
+            objectRef = trBlock->createTempVariable("sjv_temp", thisType, true, RVR_MustRetain);
             stringstream initLine;
             initLine << objectRef->name << " = (" << structName << "*)malloc(sizeof(" << structName << "))";
             trBlock->statements.push_back(TrStatement(initLine.str()));
         } else {
-            auto objectVal = trBlock->createTempVariable("sjd_temp", thisType->nameValue);
-            stringstream initLine;
-            initLine << objectRef->name << " = &" << objectVal->name;
-            trBlock->statements.push_back(TrStatement(initLine.str()));
+            if (isReturnValue) {
+                objectRef = trBlock->createTempVariable("sjv_temp", thisType, true, RVR_MustRetain);
+                stringstream initLine;
+                initLine << objectRef->name << " = (*_return != 0) ? *_return : (" << structName << "*)malloc(sizeof(" << structName << "))";
+                trBlock->statements.push_back(TrStatement(initLine.str()));
+            }
+            else {
+                objectRef = trBlock->createTempVariable("sjv_temp", thisType, false, RVR_MustRetain);
+                auto objectVal = trBlock->createStackValue("sjd_temp", thisType);
+                stringstream initLine;
+                initLine << objectRef->name << " = &" << objectVal;
+                trBlock->statements.push_back(TrStatement(initLine.str()));
+            }
+        }
+
+        if (isReturnValueThis) {
+            returnValue = objectRef;
         }
         
         ReturnValue::addInitToStatements(trBlock, objectRef->name, thisType);

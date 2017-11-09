@@ -1,4 +1,5 @@
 global {
   -3 <= 4
+  void
 }
 
