@@ -4,33 +4,29 @@
 #include <stdlib.h>
 #include <string.h>
 
-void sjf_global(int32_t* _return);
+void sjf_global();
 
-void sjf_global(int32_t* _return) {
-    bool result2;
+void sjf_global() {
+    bool result1;
     bool whileValue1;
     int32_t x;
 
     x = 10;
-    result2 = x > 0;
-    whileValue1 = result2;
+    result1 = x > 0;
+    whileValue1 = result1;
     while (whileValue1) {
-        int32_t result3;
-        bool result4;
+        int32_t result2;
+        bool result3;
 
-        result3 = x - 1;
-        x = result3;
-        result4 = x > 0;
-        whileValue1 = result4;
+        result2 = x - 1;
+        x = result2;
+        result3 = x > 0;
+        whileValue1 = result3;
     }
-
-    *_return = x;
 }
 
 int main() {
-    int32_t result1;
-
-    sjf_global(&result1);
+    sjf_global();
 
     return 0;
 }

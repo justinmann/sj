@@ -1,4 +1,4 @@
-global {
+global()'void {
   if false {
     1
   } else if false {
@@ -16,5 +16,6 @@ global {
   } else {
     3
   }
+  void
 }
 

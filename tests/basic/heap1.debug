@@ -1,14 +1,15 @@
-class() {
+class()'class {
   this
 }
 
-func() {
+func()'class {
   [heap]a'class = [heap]class([heap]this : class())
   [heap]a'class = [heap]class([heap]this : class())
 }
 
-global {
+global()'void {
   [heap]b'class : [heap]func([stack]this : func())
+  void
   void
 }
 

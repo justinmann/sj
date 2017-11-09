@@ -1,8 +1,9 @@
-func() {
+func()'f64 {
   -3.0
 }
 
-global {
+global()'void {
   func([stack]this : func()) < 4.0
+  void
 }
 

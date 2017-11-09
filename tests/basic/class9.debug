@@ -1,13 +1,14 @@
-class() {
+class()'class {
   this
 }
 
-class_func() {
+class_func()'i32 {
   1
 }
 
-global {
+global()'void {
   [stack]c'class : [stack]class([stack]this : class())
   class_func([stack]this : class_func())
+  void
 }
 

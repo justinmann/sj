@@ -4,20 +4,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-void sjf_global(bool* _return);
+void sjf_global();
 
-void sjf_global(bool* _return) {
-    bool result2;
+void sjf_global() {
+    bool result1;
 
-    result2 = -3 < 4;
-
-    *_return = result2;
+    result1 = -3 < 4;
 }
 
 int main() {
-    bool result1;
-
-    sjf_global(&result1);
+    sjf_global();
 
     return 0;
 }

@@ -70,7 +70,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "class4"
+            argument = "heap3"
             isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>

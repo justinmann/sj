@@ -1,8 +1,9 @@
-class!func() {
+class!func()'i32 {
   1
 }
 
-global {
-  [heap]d'i32 : class!func([stack]this : class!func())
+global()'void {
+  [stack]d'i32 : class!func([stack]this : class!func())
+  void
 }
 

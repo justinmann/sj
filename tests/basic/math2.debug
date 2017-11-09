@@ -1,4 +1,5 @@
-global {
+global()'void {
   2147483648
+  void
 }
 

@@ -1,8 +1,9 @@
-global {
-  [heap]y'i32 = 0
+global()'void {
+  [stack]y'i32 = 0
   for x : 2 to 1 {
-    [heap]y'i32 = y + x
+    [stack]y'i32 = y + x
   }
   y
+  void
 }
 

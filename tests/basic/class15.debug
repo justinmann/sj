@@ -1,23 +1,23 @@
-anon1([heap]test'i32:) {
+anon1([heap]test'i32:)'anon1 {
   this
 }
 
-anon1_sub([heap]x'i32:, [heap]y'i32:) {
+anon1_sub([heap]x'i32:, [heap]y'i32:)'i32 {
   this.x - this.y - .parentthis.test
 }
 
-class() {
+class()'class {
   this
 }
 
-class_bar([heap]x'i32:) {
+class_bar([heap]x'i32:)'i32 {
   [heap]class_foo([stack]this : class_foo(
     parent: [stack]this,
     [heap]x'i32 : this.x
   ))
 }
 
-class_foo([heap]x'i32:) {
+class_foo([heap]x'i32:)'i32 {
   if this.x > 0 {
     [heap]class_bar([stack]this : class_bar(
       parent: [stack]this,
@@ -32,7 +32,7 @@ class_foo([heap]x'i32:) {
   }
 }
 
-global {
+global()'void {
   [heap]math'anon1 : [heap]anon1([heap]this : anon1(
     [heap]test'i32 : 1
   ))
@@ -43,5 +43,6 @@ global {
     parent: [stack]c,
     [heap]x'i32 : 4
   ))
+  void
 }
 

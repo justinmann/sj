@@ -1,8 +1,9 @@
-func() {
+func()'i32 {
   1
 }
 
-global {
+global()'void {
   func([stack]this : func())
+  void
 }
 

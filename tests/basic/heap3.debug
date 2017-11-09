@@ -1,23 +1,24 @@
-bar([heap]f'foo=) {
+bar([heap]f'foo=)'bar {
   this
 }
 
-foo([heap]x'i32:) {
+foo([heap]x'i32:)'foo {
   this
 }
 
-func([stack]b'bar:) {
+func([stack]b'bar:)'foo {
   [heap]f'foo = [heap]foo([heap]this : foo(
     [heap]x'i32 : 2
   ))
 }
 
-global {
+global()'void {
   [stack]b'bar : [stack]bar([stack]this : bar(
     [heap]f'foo = [heap]foo([heap]this : foo(
       [heap]x'i32 : 1
     ))
   ))
   this.x
+  void
 }
 

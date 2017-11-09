@@ -1,15 +1,16 @@
-class() {
+class()'i32 {
   [heap]m'i32 : 1
   [heap]class_inner([stack]this : class_inner(
     parent: [stack]this
   ))
 }
 
-class_inner() {
+class_inner()'i32 {
   .parentthis.m
 }
 
-global {
+global()'void {
   [heap]class([stack]this : class())
+  void
 }
 

@@ -22,7 +22,7 @@ void sjf_bar_destroy(sjs_bar* _this);
 void sjf_foo(sjs_foo* _this, sjs_foo** _return);
 void sjf_foo_destroy(sjs_foo* _this);
 void sjf_func(sjs_bar* b, sjs_foo** _return);
-void sjf_global(int32_t* _return);
+void sjf_global();
 
 void sjf_bar(sjs_bar* _this, sjs_bar** _return) {
     _this->_refCount++;
@@ -32,7 +32,7 @@ void sjf_bar(sjs_bar* _this, sjs_bar** _return) {
 
 void sjf_bar_destroy(sjs_bar* _this) {
     _this->f->_refCount--;
-    if (_this->f->_refCount == 0) {
+    if (_this->f->_refCount <= 0) {
         sjf_foo_destroy(_this->f);
         free(_this->f);
     }
@@ -48,36 +48,37 @@ void sjf_foo_destroy(sjs_foo* _this) {
 }
 
 void sjf_func(sjs_bar* b, sjs_foo** _return) {
-    sjs_foo* result5;
     sjs_foo* sjv_temp3;
 
     sjv_temp3 = (sjs_foo*)malloc(sizeof(sjs_foo));
     sjv_temp3->_refCount = 1;
     sjv_temp3->x = 2;
-    sjf_foo(sjv_temp3, &result5);
+    sjf_foo(sjv_temp3, &sjv_temp3);
     b->f->_refCount--;
-    if (b->f->_refCount == 0) {
+    if (b->f->_refCount <= 0) {
         sjf_foo_destroy(b->f);
         free(b->f);
     }
 
-    b->f = result5;
+    b->f = sjv_temp3;
+
+    b->f->_refCount++;
+
+    sjv_temp3->_refCount++;
 
     sjv_temp3->_refCount--;
-    if (sjv_temp3->_refCount == 0) {
+    if (sjv_temp3->_refCount <= 0) {
         sjf_foo_destroy(sjv_temp3);
         free(sjv_temp3);
     }
 
-    *_return = result5;
+    *_return = sjv_temp3;
 }
 
-void sjf_global(int32_t* _return) {
-    sjs_bar* b;
-    sjs_bar* result2;
-    sjs_foo* result3;
-    sjs_foo* result4;
+void sjf_global() {
     sjs_bar sjd_temp1;
+    sjs_bar* b;
+    sjs_foo* result1;
     sjs_foo* sjv_temp1;
     sjs_bar* sjv_temp2;
     int32_t temp1;
@@ -85,47 +86,33 @@ void sjf_global(int32_t* _return) {
     sjv_temp1 = (sjs_foo*)malloc(sizeof(sjs_foo));
     sjv_temp1->_refCount = 1;
     sjv_temp1->x = 1;
-    sjf_foo(sjv_temp1, &result3);
+    sjf_foo(sjv_temp1, &sjv_temp1);
     sjv_temp2 = &sjd_temp1;
     sjv_temp2->_refCount = 1;
-    sjv_temp2->f = result3;
+    sjv_temp2->f = sjv_temp1;
     sjv_temp2->f->_refCount++;
-    sjf_bar(sjv_temp2, &result2);
-    b = result2;
+    sjf_bar(sjv_temp2, &sjv_temp2);
+    b = sjv_temp2;
     b->_refCount++;
-    sjf_func(b, &result4);
-    temp1 = result4->x;
+    result1 = 0;
+    sjf_func(b, &result1);
+    temp1 = result1->x;
 
-    sjf_bar_destroy(b);
-    result2->_refCount--;
-    if (result2->_refCount == 0) {
-        sjf_bar_destroy(result2);
-        free(result2);
-    }
-    result3->_refCount--;
-    if (result3->_refCount == 0) {
-        sjf_foo_destroy(result3);
-        free(result3);
-    }
-    result4->_refCount--;
-    if (result4->_refCount == 0) {
-        sjf_foo_destroy(result4);
-        free(result4);
+    result1->_refCount--;
+    if (result1->_refCount <= 0) {
+        sjf_foo_destroy(result1);
+        free(result1);
     }
     sjv_temp1->_refCount--;
-    if (sjv_temp1->_refCount == 0) {
+    if (sjv_temp1->_refCount <= 0) {
         sjf_foo_destroy(sjv_temp1);
         free(sjv_temp1);
     }
-    sjf_bar_destroy(sjv_temp2);
-
-    *_return = temp1;
+    sjf_bar_destroy(&sjd_temp1);
 }
 
 int main() {
-    int32_t result1;
-
-    sjf_global(&result1);
+    sjf_global();
 
     return 0;
 }

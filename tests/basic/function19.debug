@@ -1,4 +1,4 @@
-func([heap]x'i32:) {
+func([heap]x'i32:)'i32 {
   if this.x > 0 {
     [heap]func([stack]this : func(
       [heap]x'i32 : this.x - 1
@@ -8,9 +8,10 @@ func([heap]x'i32:) {
   }
 }
 
-global {
+global()'void {
   [heap]func([stack]this : func(
     [heap]x'i32 : 4
   ))
+  void
 }
 

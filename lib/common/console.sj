@@ -1,11 +1,13 @@
 console : ^(
 	_fd = 0 as ptr
 
-	write(data : 'string)'void c{
-		#forceParent()
-			
-		fwrite((void*)data->data->data, sizeof(char), data->count, (FILE*)_parent->_fd);
-	}c
+	write(data : 'string)'void {
+		c{
+			#forceParent()
+				
+			fwrite((void*)data->data->data, sizeof(char), data->count, (FILE*)_parent->_fd);
+		}c
+	}
 
 	readLine()'string { 
 		data = 0 as ptr

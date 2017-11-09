@@ -1,12 +1,13 @@
-bar() {
+bar()'i32 {
   9
 }
 
-func() {
+func()'i32 {
   bar([stack]this : bar())
 }
 
-global {
+global()'void {
   [heap]func([stack]this : func())
+  void
 }
 

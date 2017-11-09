@@ -1,8 +1,9 @@
-foo() {
+foo()'void {
   void
 }
 
-global {
+global()'void {
   foo([stack]this : foo())
+  void
 }
 

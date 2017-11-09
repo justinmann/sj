@@ -1,4 +1,4 @@
-array!class([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=) {
+array!class([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=)'array_class {
   c{
 
 		if (_this->size < 0) {
@@ -15,7 +15,7 @@ array!class([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=) {
   this
 }
 
-array_getAt([stack]index'i32:) c{
+array_getAt([stack]index'i32:)'class c{
 
 		#forceParent()
 
@@ -34,7 +34,7 @@ array_getAt([stack]index'i32:) c{
 	
 }c
 
-array_setAt([stack]index'i32:, [heap]item'class:) c{
+array_setAt([stack]index'i32:, [heap]item'class:)'void c{
 
 		#forceParent()
 		#forceHeap(item)
@@ -50,28 +50,29 @@ array_setAt([stack]index'i32:, [heap]item'class:) c{
 	
 }c
 
-class([heap]x'i32:) {
+class([heap]x'i32:)'class {
   this
 }
 
-global {
+global()'void {
   [stack]a'array_class : [stack]array!class([stack]this : array!class(
     [stack]size'i32 = 1,
     [stack]data'ptr = 0 as ptr,
     [stack]_isGlobal'bool = false
   ))
-  array_setAt([stack]this : array_setAt(
+  [stack]array_setAt([stack]this : array_setAt(
     parent: [stack]a,
     [stack]index'i32 : 0,
     [heap]item'class : [heap]class([heap]this : class(
       [heap]x'i32 : 1
     ))
   ))
-  [stack]b'class : array_getAt([stack]this : array_getAt(
+  [stack]b'class : [stack]array_getAt([stack]this : array_getAt(
     parent: [stack]a,
     [stack]index'i32 : 0
   ))
   [heap]c'i32 : this.x
   c
+  void
 }
 

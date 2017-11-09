@@ -1,6 +1,7 @@
-global {
+global()'void {
   if false {
     void
   }
+  void
 }
 

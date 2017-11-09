@@ -1,11 +1,12 @@
-class([heap]x'i32:) {
+class([stack]x'i32:)'class {
   this
 }
 
-global {
+global()'void {
   [stack]c'class : [stack]class([stack]this : class(
-    [heap]x'i32 : 0
+    [stack]x'i32 : 0
   ))
   this.x
+  void
 }
 

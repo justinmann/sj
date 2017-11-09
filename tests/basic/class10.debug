@@ -1,17 +1,18 @@
-class([heap]x'i32:) {
+class([heap]x'i32:)'class {
   this
 }
 
-class_func() {
+class_func()'i32 {
   .parentthis.x
 }
 
-global {
+global()'void {
   [stack]c'class : [stack]class([stack]this : class(
     [heap]x'i32 : 1
   ))
   [heap]class_func([stack]this : class_func(
     parent: [stack]c
   ))
+  void
 }
 

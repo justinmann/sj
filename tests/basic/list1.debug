@@ -1,4 +1,4 @@
-array!class([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=) {
+array!class([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=)'array_class {
   c{
 
 		if (_this->size < 0) {
@@ -15,7 +15,7 @@ array!class([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=) {
   this
 }
 
-array_getAt([heap]index'i32:) c{
+array_getAt([heap]index'i32:)'class c{
 
 		#forceParent()
 
@@ -34,7 +34,7 @@ array_getAt([heap]index'i32:) c{
 	
 }c
 
-array_grow([heap]newSize'i32:) c{
+array_grow([heap]newSize'i32:)'array_class c{
 
 		#forceParent()
 
@@ -58,7 +58,7 @@ array_grow([heap]newSize'i32:) c{
 	
 }c
 
-array_setAt([stack]index'i32:, [heap]item'class:) c{
+array_setAt([stack]index'i32:, [heap]item'class:)'void c{
 
 		#forceParent()
 		#forceHeap(item)
@@ -74,15 +74,15 @@ array_setAt([stack]index'i32:, [heap]item'class:) c{
 	
 }c
 
-class([heap]x'i32:) {
+class([heap]x'i32:)'class {
   this
 }
 
-list!class([stack]count'i32=, [stack]data'array_class=) {
+list!class([stack]count'i32=, [stack]data'array_class=)'list_class {
   this
 }
 
-list_add([heap]item'class:) {
+list_add([heap]item'class:)'i32 {
   if .parentthis.count > this.size {
     [heap]list_setSize([stack]this : list_setSize(
       parent: [stack]this,
@@ -90,7 +90,7 @@ list_add([heap]item'class:) {
     ))
     void
   }
-  array_setAt([stack]this : array_setAt(
+  [stack]array_setAt([stack]this : array_setAt(
     parent: [stack].parentthis.data,
     [stack]index'i32 : .parentthis.count,
     [heap]item'class : this.item
@@ -98,21 +98,21 @@ list_add([heap]item'class:) {
   .parentthis.count++
 }
 
-list_getAt([heap]index'i32:) {
-  array_getAt([stack]this : array_getAt(
+list_getAt([heap]index'i32:)'class {
+  [heap]array_getAt([stack]this : array_getAt(
     parent: [stack].parentthis.data,
     [heap]index'i32 : this.index
   ))
 }
 
-list_setSize([heap]size'i32:) {
-  array_grow([stack]this : array_grow(
+list_setSize([heap]size'i32:)'array_class {
+  [heap]array_grow([stack]this : array_grow(
     parent: [stack].parentthis.data,
     [heap]newSize'i32 : this.size
   ))
 }
 
-global {
+global()'void {
   [stack]a'list_class : [stack]list!class([stack]this : list!class(
     parent: [stack]this,
     [stack]count'i32 = 0,
@@ -135,5 +135,6 @@ global {
     [heap]index'i32 : 0
   ))
   this.x
+  void
 }
 

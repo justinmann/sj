@@ -1,5 +1,43 @@
 #include "Node.h"
 
+class CCodeReturnVar : public CVar {
+public:
+    CCodeReturnVar() : _isHeapVar(false) {}
+    
+    shared_ptr<CType> getType(Compiler* compiler, CResult& result) {
+        assert(false);
+        return nullptr;
+    }
+
+    bool getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
+        return _isHeapVar;
+    }
+
+    int setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
+        if (!_isHeapVar) {
+            _isHeapVar = true;
+            return 1;
+        }
+        return 0;
+    }
+
+    shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue) {
+        assert(false);
+        return nullptr;
+    }
+
+    void transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue) {
+        assert(false);
+    }
+
+    void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+        assert(false);
+    }
+
+private:
+    bool _isHeapVar;
+};
+
 shared_ptr<CType> NCCode::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     return compiler->typeVoid;
 }
@@ -41,7 +79,8 @@ shared_ptr<CVar> NCCode::getVarImpl(Compiler* compiler, CResult& result, shared_
         }
     }
     _final = finalCode.str();
-    return nullptr;
+
+    return make_shared<CCodeReturnVar>();
 }
 
 string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, string macro) {

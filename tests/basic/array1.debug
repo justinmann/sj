@@ -1,4 +1,4 @@
-array!i32([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=) {
+array!i32([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=)'array_i32 {
   c{
 
 		if (_this->size < 0) {
@@ -15,7 +15,7 @@ array!i32([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=) {
   this
 }
 
-array_getAt([stack]index'i32:) c{
+array_getAt([stack]index'i32:)'i32 c{
 
 		#forceParent()
 
@@ -34,7 +34,7 @@ array_getAt([stack]index'i32:) c{
 	
 }c
 
-array_setAt([stack]index'i32:, [heap]item'i32:) c{
+array_setAt([stack]index'i32:, [heap]item'i32:)'void c{
 
 		#forceParent()
 		#forceHeap(item)
@@ -50,21 +50,22 @@ array_setAt([stack]index'i32:, [heap]item'i32:) c{
 	
 }c
 
-global {
+global()'void {
   [stack]a'array_i32 : [stack]array!i32([stack]this : array!i32(
     [stack]size'i32 = 1,
     [stack]data'ptr = 0 as ptr,
     [stack]_isGlobal'bool = false
   ))
-  array_setAt([stack]this : array_setAt(
+  [stack]array_setAt([stack]this : array_setAt(
     parent: [stack]a,
     [stack]index'i32 : 0,
     [heap]item'i32 : 1
   ))
-  [heap]c'i32 : array_getAt([stack]this : array_getAt(
+  [stack]c'i32 : [stack]array_getAt([stack]this : array_getAt(
     parent: [stack]a,
     [stack]index'i32 : 0
   ))
   c
+  void
 }
 

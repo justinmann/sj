@@ -1,5 +1,6 @@
-global {
+global()'void {
   while false{
   }
+  void
 }
 

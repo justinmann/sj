@@ -1,9 +1,10 @@
-class!i32() {
+class!i32()'class_i32 {
   this
 }
 
-global {
+global()'void {
   [stack]c'class_i32 : [stack]class!i32([stack]this : class!i32())
   1
+  void
 }
 

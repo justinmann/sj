@@ -1,4 +1,4 @@
-anon1([stack]_fd'ptr=) {
+anon1([stack]_fd'ptr=)'anon1 {
   c{
  
 		_this->_fd = (uintptr_t)stdout;
@@ -7,15 +7,15 @@ anon1([stack]_fd'ptr=) {
   this
 }
 
-anon2() {
+anon2()'anon2 {
   this
 }
 
-anon3() {
+anon3()'anon3 {
   this
 }
 
-array!char([heap]size'i32=, [heap]data'ptr=, [heap]_isGlobal'bool=) {
+array!char([heap]size'i32=, [heap]data'ptr=, [heap]_isGlobal'bool=)'array_char {
   c{
 
 		if (_this->size < 0) {
@@ -32,7 +32,7 @@ array!char([heap]size'i32=, [heap]data'ptr=, [heap]_isGlobal'bool=) {
   this
 }
 
-array_getAt([heap]index'i32:) c{
+array_getAt([heap]index'i32:)'char c{
 
 		#forceParent()
 
@@ -51,7 +51,7 @@ array_getAt([heap]index'i32:) c{
 	
 }c
 
-array_isEqual([heap]test'array_char:) c{
+array_isEqual([heap]test'array_char:)'bool c{
 
 		#forceParent()
 
@@ -63,7 +63,7 @@ array_isEqual([heap]test'array_char:) c{
 	
 }c
 
-array_isLessOrEqual([heap]test'array_char:) c{
+array_isLessOrEqual([heap]test'array_char:)'bool c{
 
 		#forceParent()
 
@@ -71,32 +71,32 @@ array_isLessOrEqual([heap]test'array_char:) c{
 	
 }c
 
-string([stack]count'i32=, [heap]data'array_char=) {
+string([stack]count'i32=, [heap]data'array_char=)'string {
   this
 }
 
-string_getAt([heap]index'i32:) {
-  array_getAt([stack]this : array_getAt(
+string_getAt([heap]index'i32:)'char {
+  [heap]array_getAt([stack]this : array_getAt(
     parent: [heap].parentthis.data,
     [heap]index'i32 : this.index
   ))
 }
 
-string_isEqual([stack]test'string:) {
-  array_isEqual([stack]this : array_isEqual(
+string_isEqual([stack]test'string:)'bool {
+  [heap]array_isEqual([stack]this : array_isEqual(
     parent: [heap].parentthis.data,
     [heap]test'array_char : this.data
   ))
 }
 
-string_isLessOrEqual([stack]test'string:) {
-  array_isLessOrEqual([stack]this : array_isLessOrEqual(
+string_isLessOrEqual([stack]test'string:)'bool {
+  [heap]array_isLessOrEqual([stack]this : array_isLessOrEqual(
     parent: [heap].parentthis.data,
     [heap]test'array_char : this.data
   ))
 }
 
-global {
+global()'void {
   [stack]random'anon3 : [stack]anon3([stack]this : anon3())
   [stack]parse'anon2 : [stack]anon2([stack]this : anon2())
   [stack]console'anon1 : [stack]anon1([stack]this : anon1(
@@ -152,5 +152,6 @@ global {
     [stack]test'string : a
   ))
   [stack]l'bool : fa
+  void
 }
 

@@ -1,10 +1,11 @@
-func([heap]x'f32:) {
+func([heap]x'f32:)'f32 {
   this.x
 }
 
-global {
+global()'void {
   [heap]func([stack]this : func(
     [heap]x'f32 : 1
   ))
+  void
 }
 

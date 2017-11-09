@@ -1,16 +1,16 @@
-a([heap]x'i32:, [stack]b'aa:) {
+a([heap]x'i32:, [stack]b'aa:)'a {
   this
 }
 
-a_aa() {
+a_aa()'aa {
   this
 }
 
-a_aa_c() {
+a_aa_c()'i32 {
   .parent.parentthis.x
 }
 
-global {
+global()'void {
   [stack]a'a : [stack]a([stack]this : a(
     [heap]x'i32 : 1,
     [stack]b'aa : [stack]a_aa([stack]this : a_aa(
@@ -24,5 +24,6 @@ global {
   [heap]a_aa_c([stack]this : a_aa_c(
     parent: [stack]d
   ))
+  void
 }
 

@@ -1,14 +1,15 @@
-class([heap]x'i32:) {
+class([heap]x'i32:)'class {
   this
 }
 
-func() {
+func()'class {
   [heap]class([heap]this : class(
     [heap]x'i32 : 1
   ))
 }
 
-global {
+global()'void {
   this.x
+  void
 }
 

@@ -1,5 +1,6 @@
-global {
+global()'void {
   [stack]x'i32 : [stack]y'i32 : 2
   x + y
+  void
 }
 
