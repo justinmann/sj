@@ -102,6 +102,9 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
         }
         return "";
     }
+    else if (functionName.compare("include") == 0) {
+        _includes.push_back(param);
+    }
     else if (functionName.compare("type") == 0) {
         auto ctypeName = CTypeName::parse(param);
         if (!ctypeName) {
@@ -188,6 +191,10 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
 
 shared_ptr<ReturnValue> NCCode::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
     trBlock->statements.push_back(_final);
+    
+    for (auto include : _includes) {
+        trOutput->includes[include] = true;
+    }
     return nullptr;
 }
 

@@ -1,8 +1,6 @@
 #include <stdbool.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 typedef struct td_sji_foo sji_foo;
 typedef struct td_sjs_class_i32 sjs_class_i32;

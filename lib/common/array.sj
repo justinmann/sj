@@ -48,6 +48,7 @@ array!t (
 
 	grow(newSize :' i32)'array!t c{
 		#forceParent()
+		#include(<string.h>)
 
 		if (_parent->size != newSize) {
 			if (newSize < _parent->size) {
@@ -70,6 +71,7 @@ array!t (
 
 	isEqual(test :' array!t)'bool c{
 		#forceParent()
+		#include(<string.h>)
 
 		if (_parent->size != test->size) {
 			*_return = false;
@@ -80,24 +82,28 @@ array!t (
 
 	isGreater(test :' array!t)'bool c{
 		#forceParent()
+		#include(<string.h>)
 
 		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) > 0;		
 	}c
 
 	isGreaterOrEqual(test :' array!t)'bool c{
 		#forceParent()
+		#include(<string.h>)
 
 		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) >= 0;		
 	}c
 
 	isLess(test :' array!t)'bool c{
 		#forceParent()
+		#include(<string.h>)
 
 		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) < 0;		
 	}c
 
 	isLessOrEqual(test :' array!t)'bool c{
 		#forceParent()
+		#include(<string.h>)
 
 		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) <= 0;		
 	}c

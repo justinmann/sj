@@ -1,8 +1,8 @@
+#include <emscripten.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 const char* sjg_string1 = "root";
 const char* sjg_string2 = "";
@@ -96,6 +96,7 @@ void sjf_string_destroy(sjs_string* _this);
 
 void sjf_anon1(sjs_anon1* _this, sjs_anon1** _return) {
      
+		
 		_this->_fd = (uintptr_t)stdout;
 	;
     _this->_refCount++;
@@ -223,7 +224,7 @@ void sjf_element_update(sjs_element* _parent) {
     sjf_array_char(sjv_temp8, &sjv_temp8);
     sjv_temp9 = &sjd_temp10;
     sjv_temp9->_refCount = 1;
-    sjv_temp9->count = 4294967295;
+    sjv_temp9->count = -1;
     sjv_temp9->data = sjv_temp8;
     sjv_temp9->data->_refCount++;
     sjf_string(sjv_temp9, &sjv_temp9);
@@ -249,7 +250,7 @@ void sjf_element_update(sjs_element* _parent) {
     }
 
     
-			include(<emscripten.h>)
+			
 
 			EM_ASM_({
 				document.getElementById(UTF8ToString($0)).innerHTML = UTF8ToString($1);

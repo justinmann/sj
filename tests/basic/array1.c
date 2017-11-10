@@ -1,8 +1,6 @@
 #include <stdbool.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 typedef struct td_sjs_array_i32 sjs_array_i32;
 typedef struct td_sjs_object sjs_object;

@@ -37,6 +37,7 @@ array_getAt([heap]index'i32:)'class c{
 array_grow([heap]newSize'i32:)'array_class c{
 
 		#forceParent()
+		#include(<string.h>)
 
 		if (_parent->size != newSize) {
 			if (newSize < _parent->size) {

@@ -1,8 +1,6 @@
 #include <stdbool.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 typedef struct td_sji_foo sji_foo;
 typedef struct td_sjs_class sjs_class;
@@ -45,7 +43,7 @@ sji_foo* sjf_class_asFoo(sjs_class* _this) {
     _interface->_refCount = 1;
     _interface->_parent = (sjs_object*)_this;
     _interface->_parent->_refCount++;
-    _interface->test = (void (*test)(sjs_object* _parent, int32_t* _return))sjf_class_test;
+    _interface->test = sjf_class_test;
     return _interface;
 }
 

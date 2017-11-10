@@ -1,6 +1,7 @@
 anon1([stack]_fd'ptr=)'anon1 {
   c{
  
+		#include(<stdio.h>)
 		_this->_fd = (uintptr_t)stdout;
 	
 }c
@@ -54,6 +55,7 @@ array_getAt([heap]index'i32:)'char c{
 array_isEqual([heap]test'array_char:)'bool c{
 
 		#forceParent()
+		#include(<string.h>)
 
 		if (_parent->size != test->size) {
 			*_return = false;
@@ -66,6 +68,7 @@ array_isEqual([heap]test'array_char:)'bool c{
 array_isLessOrEqual([heap]test'array_char:)'bool c{
 
 		#forceParent()
+		#include(<string.h>)
 
 		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) <= 0;		
 	

@@ -2,23 +2,24 @@ TARGET = test
 LIBS = -lm
 CC = gcc
 CFLAGS = -g -Wall -Wno-unused-but-set-variable -Wno-unknown-warning-option -std=c11
-OBJECTS = $(patsubst %.c, %.o, $(wildcard basic/*.c)) $(patsubst %.c, %.o, $(wildcard app/*.c))
+BASIC_OBJECTS = $(patsubst %.c, %.o, $(wildcard basic/*.c))
+APP_OBJECTS = $(patsubst %.c, %.o, $(wildcard app/*.c))
 HEADERS = $(wildcard *.h)
 
 .PHONY: default all clean
-.PRECIOUS: $(TARGET) $(OBJECTS)
+.PRECIOUS: $(APP_OBJECTS) $(BASIC_OBJECTS)
 
 all: default
 
-default: $(TARGET)
+default: app basic
+
+app: $(APP_OBJECTS)
+
+basic: $(BASIC_OBJECTS)
 
 clean:
 	-rm -f app/*.o
 	-rm -f basic/*.o
-	-rm -f $(TARGET)
 
 %.o: %.cpp $(HEADERS)
 	$(CC) $(CFLAGS) -c $< -o $@
-
-$(TARGET): $(OBJECTS)
-	$(CC) $< -Wall $(LIBS) -o $@

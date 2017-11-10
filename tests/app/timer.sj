@@ -12,7 +12,7 @@ element(
 		}
 
 		c{
-			include(<emscripten.h>)
+			#include(<emscripten.h>)
 
 			EM_ASM_({
 				document.getElementById(UTF8ToString($0)).innerHTML = UTF8ToString($1);

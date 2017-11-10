@@ -1,6 +1,5 @@
 #include <stdbool.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -104,6 +103,7 @@ void sjf_array_class_getAt(sjs_array_class* _parent, int32_t index, sjs_class** 
 
 void sjf_array_class_grow(sjs_array_class* _parent, int32_t newSize, sjs_array_class** _return) {
     
+		
 		
 
 		if (_parent->size != newSize) {

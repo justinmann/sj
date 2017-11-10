@@ -38,6 +38,7 @@ console : ^(
 	}
 ) { 
 	c{ 
+		#include(<stdio.h>)
 		_this->_fd = (uintptr_t)stdout;
 	}c
 	this

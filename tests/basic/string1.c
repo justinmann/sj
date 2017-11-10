@@ -80,6 +80,7 @@ void sjf_string_isLessOrEqual(sjs_string* _parent, sjs_string* test, bool* _retu
 
 void sjf_anon1(sjs_anon1* _this, sjs_anon1** _return) {
      
+		
 		_this->_fd = (uintptr_t)stdout;
 	;
     _this->_refCount++;
@@ -155,6 +156,7 @@ void sjf_array_char_getAt(sjs_array_char* _parent, int32_t index, char* _return)
 void sjf_array_char_isEqual(sjs_array_char* _parent, sjs_array_char* test, bool* _return) {
     
 		
+		
 
 		if (_parent->size != test->size) {
 			*_return = false;
@@ -166,6 +168,7 @@ void sjf_array_char_isEqual(sjs_array_char* _parent, sjs_array_char* test, bool*
 
 void sjf_array_char_isLessOrEqual(sjs_array_char* _parent, sjs_array_char* test, bool* _return) {
     
+		
 		
 
 		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(char)) <= 0;		

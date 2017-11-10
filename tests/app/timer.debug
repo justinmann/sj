@@ -1,6 +1,7 @@
 anon1([stack]_fd'ptr=)'anon1 {
   c{
  
+		#include(<stdio.h>)
 		_this->_fd = (uintptr_t)stdout;
 	
 }c
@@ -91,7 +92,7 @@ element_update()'void {
   }
   c{
 
-			include(<emscripten.h>)
+			#include(<emscripten.h>)
 
 			EM_ASM_({
 				document.getElementById(UTF8ToString($0)).innerHTML = UTF8ToString($1);

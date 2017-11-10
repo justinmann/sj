@@ -26,6 +26,7 @@ protected:
 private:
     string expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, string macro);
     string _final;
+    vector<string> _includes;
 };
 
 #endif /* NCCode_h */

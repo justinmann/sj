@@ -1,11 +1,15 @@
 #include "../compiler/Compiler.h"
 
+TrOutput::TrOutput() {
+    includes["<stdbool.h>"] = true;
+    includes["<stdint.h>"] = true;
+    includes["<stdlib.h>"] = true;
+}
+
 void TrOutput::writeToStream(ostream& stream) {
-    stream << "#include <stdbool.h>\n";
-    stream << "#include <stdint.h>\n";
-    stream << "#include <stdio.h>\n";
-    stream << "#include <stdlib.h>\n";
-    stream << "#include <string.h>\n";
+    for (auto include : includes) {
+        stream << "#include " << include.first << "\n";
+    }
     stream << "\n";
     
     if (strings.size() > 0) {

@@ -2,7 +2,6 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 const char* sjg_string1 = "5";
 
@@ -84,6 +83,7 @@ void sji_foo_destroy(sji_foo* _this);
 
 void sjf_anon1(sjs_anon1* _this, sjs_anon1** _return) {
      
+		
 		_this->_fd = (uintptr_t)stdout;
 	;
     _this->_refCount++;
