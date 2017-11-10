@@ -8,5 +8,5 @@ class!item #foo!item (
     }
 ) { this }
 
-a: class!int() as #foo!int
+a: class!i32() as #foo!i32
 a.test()

@@ -448,7 +448,14 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                         *debugStream << "global()'void " << ss.str() << "\n\n";
                     }
 
-					state = CompilerState::Compile;                    
+					state = CompilerState::Compile;  
+
+                    // Create the default object struct, all other object structs must have these variables
+                    string structName = "sjs_object";
+                    if (output.structs.find(structName) == output.structs.end()) {
+                        output.structs[structName].push_back("int _refCount");
+                    }
+
                     vector<shared_ptr<NBase>> parameters;
                     globalFunction->transpile(this, *result, nullptr, nullptr, &output, &output.mainFunction, false, nullptr, globalVar, CLoc::undefined, parameters);
 

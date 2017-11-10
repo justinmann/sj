@@ -1,0 +1,21 @@
+class!i32 ##foo!item ()'class_i32 {
+  this
+}
+
+class_test()'i32 {
+  5
+}
+
+test()
+
+global()'void {
+  #foo!item(
+    test()'item
+  )
+  [stack]a'foo : [stack]class!i32([stack]this : class!i32()) as #foo!i32
+  [heap]test(
+    parent: [stack]a
+  )
+  void
+}
+

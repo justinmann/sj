@@ -6,6 +6,11 @@
 
 typedef struct td_sjs_a sjs_a;
 typedef struct td_sjs_array_char sjs_array_char;
+typedef struct td_sjs_object sjs_object;
+
+int sjs_a_typeId = 1;
+int sjs_array_char_typeId = 2;
+int sjs_object_typeId = 3;
 
 struct td_sjs_a {
     int _refCount;
@@ -17,6 +22,10 @@ struct td_sjs_array_char {
     int32_t size;
     uintptr_t data;
     bool _isGlobal;
+};
+
+struct td_sjs_object {
+    int _refCount;
 };
 
 void sjf_a(sjs_a* _this, sjs_a** _return);

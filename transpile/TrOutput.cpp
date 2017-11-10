@@ -21,6 +21,12 @@ void TrOutput::writeToStream(ostream& stream) {
         }
         stream << "\n";
 
+        int typeId = 1;
+        for (auto t : structs) {
+            stream << "int " << t.first << "_typeId = " << typeId++ << ";\n";
+        }
+        stream << "\n";
+
         for (auto t : structs) {
 			stream << "struct td_" << t.first << " {\n";
 			for (auto line : t.second) {

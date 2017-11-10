@@ -1,6 +1,0 @@
-ERROR:27 unknown[0:0] cannot find template type: 'int'
-ERROR:11 basic/interface4.sj[11:4] function 'class' does not exist
-ERROR:27 unknown[0:0] cannot find template type: 'int'
-ERROR:27 unknown[0:0] cannot find template type: 'int'
-ERROR:4 basic/interface4.sj[11:4] type does not exist
-ERROR:7 basic/interface4.sj[12:3] parent is not a function: 'global.a'

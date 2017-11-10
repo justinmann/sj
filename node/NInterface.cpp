@@ -264,7 +264,39 @@ string CInterface::getCDestroyFunctionName() {
 }
 
 shared_ptr<ReturnValue> CInterface::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<shared_ptr<NBase>>& parameters) {
-    assert(false);
+    // Create struct
+    string structName = "sji_" + name;
+    if (trOutput->structs.find(structName) == trOutput->structs.end()) {
+        trOutput->structs[structName].push_back("int _refCount");
+        trOutput->structs[structName].push_back("sjs_object* _parent");
+        trOutput->structs[structName].push_back("void (*destroy)(sjs_object* _this)");
+        for (auto method : methods) {
+            stringstream ss;
+            ss << "void (*" << method->name << ")(";
+            auto isFirstArg = true;
+            for (auto argVar : method->argVars) {
+                if (isFirstArg) {
+                    isFirstArg = false;
+                }
+                else {
+                    ss << ", ";
+                }
+                ss << argVar->getType(compiler, result)->nameRef << " " << argVar->name;
+            }
+            if (method->returnType != nullptr && method->returnType != compiler->typeVoid) {
+                if (isFirstArg) {
+                    isFirstArg = false;
+                }
+                else {
+                    ss << ", ";
+                }
+                ss << method->returnType->nameRef << " _return";
+            }
+            ss << ")";
+            trOutput->structs[structName].push_back(ss.str());
+        }
+    }
+
     return nullptr;
 }
 
@@ -341,7 +373,8 @@ bool CInterface::getReturnMustRelease(Compiler* compiler, CResult& result) {
 //    return make_shared<ReturnValue>(shared_from_this(), RVR_MustRelease, RVT_HEAP, false, value);
 //}
 
-CInterfaceDefinition::CInterfaceDefinition(string& name) {
+CInterfaceDefinition::CInterfaceDefinition(string& name_) {
+    name = name_;
 }
 
 string CInterfaceDefinition::fullName() {

@@ -6,6 +6,11 @@
 
 typedef struct td_sjs_anon1 sjs_anon1;
 typedef struct td_sjs_class sjs_class;
+typedef struct td_sjs_object sjs_object;
+
+int sjs_anon1_typeId = 1;
+int sjs_class_typeId = 2;
+int sjs_object_typeId = 3;
 
 struct td_sjs_anon1 {
     int _refCount;
@@ -15,6 +20,10 @@ struct td_sjs_anon1 {
 struct td_sjs_class {
     int _refCount;
     sjs_anon1* data;
+};
+
+struct td_sjs_object {
+    int _refCount;
 };
 
 void sjf_class(sjs_class* _this, sjs_class** _return);

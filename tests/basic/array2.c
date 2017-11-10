@@ -5,12 +5,20 @@
 #include <string.h>
 
 typedef struct td_sjs_array_i32 sjs_array_i32;
+typedef struct td_sjs_object sjs_object;
+
+int sjs_array_i32_typeId = 1;
+int sjs_object_typeId = 2;
 
 struct td_sjs_array_i32 {
     int _refCount;
     int32_t size;
     uintptr_t data;
     bool _isGlobal;
+};
+
+struct td_sjs_object {
+    int _refCount;
 };
 
 void sjf_array_i32(sjs_array_i32* _this, sjs_array_i32** _return);

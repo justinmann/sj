@@ -4,6 +4,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+typedef struct td_sjs_object sjs_object;
+
+int sjs_object_typeId = 1;
+
+struct td_sjs_object {
+    int _refCount;
+};
+
 void sjf_func(int32_t* _return);
 void sjf_global(void);
 

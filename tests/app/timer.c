@@ -14,7 +14,18 @@ typedef struct td_sjs_array_char sjs_array_char;
 typedef struct td_sjs_array_element sjs_array_element;
 typedef struct td_sjs_element sjs_element;
 typedef struct td_sjs_global sjs_global;
+typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_string sjs_string;
+
+int sjs_anon1_typeId = 1;
+int sjs_anon2_typeId = 2;
+int sjs_anon3_typeId = 3;
+int sjs_array_char_typeId = 4;
+int sjs_array_element_typeId = 5;
+int sjs_element_typeId = 6;
+int sjs_global_typeId = 7;
+int sjs_object_typeId = 8;
+int sjs_string_typeId = 9;
 
 struct td_sjs_anon1 {
     int _refCount;
@@ -51,6 +62,10 @@ struct td_sjs_element {
 };
 
 struct td_sjs_global {
+    int _refCount;
+};
+
+struct td_sjs_object {
     int _refCount;
 };
 
@@ -208,7 +223,7 @@ void sjf_element_update(sjs_element* _parent) {
     sjf_array_char(sjv_temp8, &sjv_temp8);
     sjv_temp9 = &sjd_temp10;
     sjv_temp9->_refCount = 1;
-    sjv_temp9->count = -1;
+    sjv_temp9->count = 4294967295;
     sjv_temp9->data = sjv_temp8;
     sjv_temp9->data->_refCount++;
     sjf_string(sjv_temp9, &sjv_temp9);

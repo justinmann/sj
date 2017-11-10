@@ -5,10 +5,18 @@
 #include <string.h>
 
 typedef struct td_sjs_fancyMath sjs_fancyMath;
+typedef struct td_sjs_object sjs_object;
+
+int sjs_fancyMath_typeId = 1;
+int sjs_object_typeId = 2;
 
 struct td_sjs_fancyMath {
     int _refCount;
     int32_t x;
+};
+
+struct td_sjs_object {
+    int _refCount;
 };
 
 void sjf_fancyMath(sjs_fancyMath* _this, sjs_fancyMath** _return);

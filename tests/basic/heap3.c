@@ -6,6 +6,11 @@
 
 typedef struct td_sjs_bar sjs_bar;
 typedef struct td_sjs_foo sjs_foo;
+typedef struct td_sjs_object sjs_object;
+
+int sjs_bar_typeId = 1;
+int sjs_foo_typeId = 2;
+int sjs_object_typeId = 3;
 
 struct td_sjs_bar {
     int _refCount;
@@ -15,6 +20,10 @@ struct td_sjs_bar {
 struct td_sjs_foo {
     int _refCount;
     int32_t x;
+};
+
+struct td_sjs_object {
+    int _refCount;
 };
 
 void sjf_bar(sjs_bar* _this, sjs_bar** _return);

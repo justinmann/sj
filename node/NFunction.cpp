@@ -430,12 +430,6 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
         argIndex++;
     }
     
-    if (returnValue) {
-        if (isReturnValue) {
-            
-        }
-    }
-    
     auto functionName = getCInitFunctionName();
     
     if (!getHasThis()) {
@@ -589,6 +583,14 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
                         trDestroyBlock->statements.push_back(destroyStream.str());
                     }
                 }
+            }
+        }
+
+        // Create interfaces
+        if (interfaces != nullptr) {
+            for (auto interfaceVal : *interfaces) {
+                vector<shared_ptr<NBase>> empty;
+                interfaceVal->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false, nullptr, nullptr, CLoc::undefined, empty);
             }
         }
 

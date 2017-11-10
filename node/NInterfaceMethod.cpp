@@ -265,7 +265,7 @@ string CInterfaceMethod::getCDestroyFunctionName() {
 }
 
 shared_ptr<ReturnValue> CInterfaceMethod::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<shared_ptr<NBase>>& parameters) {
-    assert(false);
+// TODO:    assert(false);
     return nullptr;
 }
 

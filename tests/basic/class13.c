@@ -6,6 +6,11 @@
 
 typedef struct td_sjs_class sjs_class;
 typedef struct td_sjs_math sjs_math;
+typedef struct td_sjs_object sjs_object;
+
+int sjs_class_typeId = 1;
+int sjs_math_typeId = 2;
+int sjs_object_typeId = 3;
 
 struct td_sjs_class {
     int _refCount;
@@ -13,6 +18,10 @@ struct td_sjs_class {
 };
 
 struct td_sjs_math {
+    int _refCount;
+};
+
+struct td_sjs_object {
     int _refCount;
 };
 

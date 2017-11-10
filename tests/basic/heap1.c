@@ -5,8 +5,16 @@
 #include <string.h>
 
 typedef struct td_sjs_class sjs_class;
+typedef struct td_sjs_object sjs_object;
+
+int sjs_class_typeId = 1;
+int sjs_object_typeId = 2;
 
 struct td_sjs_class {
+    int _refCount;
+};
+
+struct td_sjs_object {
     int _refCount;
 };
 

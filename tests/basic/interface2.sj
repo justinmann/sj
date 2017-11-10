@@ -1,5 +1,5 @@
 #foo(
-    test()'int
+    test()'i32
 )
 
 class #foo (

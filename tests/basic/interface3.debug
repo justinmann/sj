@@ -1,0 +1,73 @@
+anon1([stack]_fd'ptr=)'anon1 {
+  c{
+ 
+		_this->_fd = (uintptr_t)stdout;
+	
+}c
+  this
+}
+
+anon2()'anon2 {
+  this
+}
+
+anon3()'anon3 {
+  this
+}
+
+array!char([heap]size'i32=, [heap]data'ptr=, [heap]_isGlobal'bool=)'array_char {
+  c{
+
+		if (_this->size < 0) {
+			exit(-1);
+		}
+
+		if (_this->data) {
+			_this->_isGlobal = true;
+		} else {
+			_this->data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
+		}
+	
+}c
+  this
+}
+
+class ##foo ()'class {
+  this
+}
+
+class_test()'string {
+  {
+    [heap]string([heap]this : string(
+      [heap]count'i32 = ,
+      [heap]data'array_char = [heap]array!char([heap]this : array!char(
+        [heap]size'i32 = ,
+        [heap]data'ptr = ,
+        [heap]_isGlobal'bool = false
+      ))
+    ))
+  }
+}
+
+string([heap]count'i32=, [heap]data'array_char=)'string {
+  this
+}
+
+test()
+
+global()'void {
+  [stack]random'anon3 : [stack]anon3([stack]this : anon3())
+  [stack]parse'anon2 : [stack]anon2([stack]this : anon2())
+  [stack]console'anon1 : [stack]anon1([stack]this : anon1(
+    [stack]_fd'ptr = 0 as ptr
+  ))
+  #foo(
+    test()'string
+  )
+  [stack]a'foo : [stack]class([stack]this : class()) as #foo
+  [heap]test(
+    parent: [stack]a
+  )
+  void
+}
+

@@ -5,8 +5,7 @@ class ##foo ()'class {
 global()'void {
   #foo(
   )
-  [stack]a' : [stack]class([stack]this : class()) as #foo
-  void
+  [stack]a'foo : [stack]class([stack]this : class()) as #foo
   void
 }
 

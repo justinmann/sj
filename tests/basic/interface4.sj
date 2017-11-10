@@ -2,11 +2,11 @@
     test()'item
 )
 
-class #foo!int (
+class #foo!i32 (
     test() {
         5
     }
 ) { this }
 
-a: class() as #foo!int
+a: class() as #foo!i32
 a.test()

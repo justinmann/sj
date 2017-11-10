@@ -7,6 +7,12 @@
 typedef struct td_sjs_a sjs_a;
 typedef struct td_sjs_b sjs_b;
 typedef struct td_sjs_c sjs_c;
+typedef struct td_sjs_object sjs_object;
+
+int sjs_a_typeId = 1;
+int sjs_b_typeId = 2;
+int sjs_c_typeId = 3;
+int sjs_object_typeId = 4;
 
 struct td_sjs_a {
     int _refCount;
@@ -20,6 +26,10 @@ struct td_sjs_b {
 struct td_sjs_c {
     int _refCount;
     sjs_b* b;
+};
+
+struct td_sjs_object {
+    int _refCount;
 };
 
 void sjf_a(sjs_a* _this, sjs_a** _return);

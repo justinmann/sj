@@ -12,6 +12,7 @@ int sji_foo_id = 1;
 struct td_sji_foo {
 	int _refCount;
 	sjs_object* _parent;
+    void (*destroy)(sjs_object* _this);
 	sjs_object* (*asInterface)(sjs_object* _parent, int sji_foo_id);
 	int (*test)(sjs_object* _parent);
 }

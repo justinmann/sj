@@ -1,7 +1,7 @@
-include "common.sj"
+include "../../lib/common/common.sj"
 
 #foo(
-    test()'list!char
+    test()'string
 )
 
 class #foo (

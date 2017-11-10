@@ -13,7 +13,16 @@ typedef struct td_sjs_anon2 sjs_anon2;
 typedef struct td_sjs_anon3 sjs_anon3;
 typedef struct td_sjs_array_char sjs_array_char;
 typedef struct td_sjs_global sjs_global;
+typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_string sjs_string;
+
+int sjs_anon1_typeId = 1;
+int sjs_anon2_typeId = 2;
+int sjs_anon3_typeId = 3;
+int sjs_array_char_typeId = 4;
+int sjs_global_typeId = 5;
+int sjs_object_typeId = 6;
+int sjs_string_typeId = 7;
 
 struct td_sjs_anon1 {
     int _refCount;
@@ -36,6 +45,10 @@ struct td_sjs_array_char {
 };
 
 struct td_sjs_global {
+    int _refCount;
+};
+
+struct td_sjs_object {
     int _refCount;
 };
 

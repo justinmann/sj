@@ -1,5 +1,0 @@
-ERROR:4 basic/interface2.sj[2:5] type 'int' is not defined
-ERROR:28 unknown[0:0] cannot find interface ''
-ERROR:11 basic/interface2.sj[11:4] function 'class' does not exist
-ERROR:4 basic/interface2.sj[11:4] type does not exist
-ERROR:7 basic/interface2.sj[12:3] parent is not a function: 'global.a'

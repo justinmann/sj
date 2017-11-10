@@ -7,6 +7,12 @@
 typedef struct td_sjs_anon1 sjs_anon1;
 typedef struct td_sjs_class sjs_class;
 typedef struct td_sjs_global sjs_global;
+typedef struct td_sjs_object sjs_object;
+
+int sjs_anon1_typeId = 1;
+int sjs_class_typeId = 2;
+int sjs_global_typeId = 3;
+int sjs_object_typeId = 4;
 
 struct td_sjs_anon1 {
     int _refCount;
@@ -21,6 +27,10 @@ struct td_sjs_class {
 struct td_sjs_global {
     int _refCount;
     sjs_anon1* math;
+};
+
+struct td_sjs_object {
+    int _refCount;
 };
 
 void sjf_anon1(sjs_anon1* _this, sjs_anon1** _return);
