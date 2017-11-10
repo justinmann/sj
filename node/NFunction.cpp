@@ -347,6 +347,150 @@ public:
     shared_ptr<ReturnValue> value;
 };
 
+void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutput* trOutput) {
+    auto functionName = getCInitFunctionName();
+    if (!getHasThis()) {
+        // Create function body
+        auto functionBody = trOutput->functions.find(functionName);
+        if (functionBody == trOutput->functions.end()) {
+            auto trFunctionBlock = make_shared<TrBlock>();
+            trFunctionBlock->parent = nullptr;
+            trFunctionBlock->hasThis = false;
+            trOutput->functions[functionName] = trFunctionBlock;
+
+            stringstream functionDefinition;
+            functionDefinition << "void " << functionName << "(";
+            auto isFirstArg = true;
+            auto argTypes = getCTypeList(compiler, result);
+            for (auto argType : *argTypes) {
+                if (isFirstArg) {
+                    isFirstArg = false;
+                }
+                else {
+                    functionDefinition << ", ";
+                }
+                functionDefinition << argType.second->nameRef << " " << argType.first;
+            }
+            if (returnType != compiler->typeVoid) {
+                if (isFirstArg) {
+                    isFirstArg = false;
+                }
+                else {
+                    functionDefinition << ", ";
+                }
+                functionDefinition << returnType->nameRef << "* _return";
+            }
+
+            if (isFirstArg) {
+                functionDefinition << "void";
+            }
+            functionDefinition << ")";
+            trFunctionBlock->definition = functionDefinition.str();
+
+            auto bodyReturnValue = block->transpile(compiler, result, shared_from_this(), nullptr, trOutput, trFunctionBlock.get(), true);
+            if (bodyReturnValue && bodyReturnValue->type != compiler->typeVoid) {
+                assert(bodyReturnValue->type == returnType);
+                if (bodyReturnValue->release == RVR_MustRetain && !bodyReturnValue->type->parent.expired()) {
+                    ReturnValue::addRetainToStatements(trFunctionBlock.get(), bodyReturnValue->name, bodyReturnValue->type);
+                }
+                trFunctionBlock->returnLine = bodyReturnValue->name;
+            }
+        }
+    }
+    else {
+        // Create struct
+        string structName = "sjs_" + name;
+        if (trOutput->structs.find(structName) == trOutput->structs.end()) {
+            trOutput->structs[structName].push_back("int _refCount");
+
+            auto argTypes = getCTypeList(compiler, result);
+            for (auto argType : *argTypes) {
+                if (argType.first.compare("_this") == 0)
+                    continue;
+
+                stringstream ss;
+                ss << argType.second->nameRef << " " << argType.first;
+                trOutput->structs[structName].push_back(ss.str());
+            }
+        }
+
+        // Create init function body
+        auto functionBody = trOutput->functions.find(functionName);
+        if (functionBody == trOutput->functions.end()) {
+            auto trFunctionBlock = make_shared<TrBlock>();
+            trFunctionBlock->parent = nullptr;
+            trFunctionBlock->hasThis = true;
+            trOutput->functions[functionName] = trFunctionBlock;
+
+            stringstream functionDefinition;
+            functionDefinition << "void " << functionName << "(" << structName << "* _this";
+            if (returnType != compiler->typeVoid) {
+                functionDefinition << ", " << returnType->nameRef << "* _return";
+            }
+            functionDefinition << ")";
+            trFunctionBlock->definition = functionDefinition.str();
+
+            auto thisVar = getThisVar(compiler, result);
+            auto bodyReturnValue = block->transpile(compiler, result, shared_from_this(), thisVar, trOutput, trFunctionBlock.get(), true);
+            if (bodyReturnValue && bodyReturnValue->type && bodyReturnValue->type != compiler->typeVoid) {
+                assert(bodyReturnValue->type == returnType);
+                if (bodyReturnValue->release == RVR_MustRetain && !bodyReturnValue->type->parent.expired()) {
+                    ReturnValue::addRetainToStatements(trFunctionBlock.get(), bodyReturnValue->name, bodyReturnValue->type);
+                }
+
+                trFunctionBlock->returnLine = bodyReturnValue->name;
+            }
+        }
+
+        // Create destroy function body
+        string functionDestroyName = getCDestroyFunctionName();
+        if (trOutput->functions.find(functionDestroyName) == trOutput->functions.end()) {
+            auto trDestroyBlock = make_shared<TrBlock>();
+            trDestroyBlock->parent = nullptr;
+            trDestroyBlock->hasThis = true;
+            trOutput->functions[functionDestroyName] = trDestroyBlock;
+
+            stringstream functionDefinition;
+            functionDefinition << "void " << functionDestroyName << "(" << structName << "* _this)";
+            trDestroyBlock->definition = functionDefinition.str();
+
+            if (destroyBlock) {
+                auto thisVar = getThisVar(compiler, result);
+                destroyBlock->transpile(compiler, result, shared_from_this(), thisVar, trOutput, trDestroyBlock.get(), false);
+            }
+
+            for (auto argVar : argVars) {
+                auto argHeapVar = argVar->getHeapVar(compiler, result, thisVar);
+                auto argFunction = argVar->getCFunctionForValue(compiler, result);
+                if (argFunction) {
+                    if (argHeapVar) {
+                        ReturnValue::addReleaseToStatements(trDestroyBlock.get(), "_this->" + argVar->name, argVar->getType(compiler, result));
+                    }
+                    else {
+                        stringstream destroyStream;
+                        destroyStream << argFunction->getCDestroyFunctionName() << "(" << "_this->" << argVar->name << ")";
+                        trDestroyBlock->statements.push_back(destroyStream.str());
+                    }
+                }
+            }
+        }
+
+        // Create interfaces
+        if (interfaces != nullptr) {
+            for (auto interfaceVal : *interfaces) {
+                interfaceVal->transpileDefinition(compiler, result, trOutput);
+
+                for (auto interfaceMethod : interfaceVal->methods) {
+                    auto function = getCFunction(compiler, result, interfaceMethod->name, nullptr, nullptr);
+                    if (function) {
+                        function->transpileDefinition(compiler, result, trOutput);
+                    }
+                }
+            }
+        }
+    }
+}
+
 shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<shared_ptr<NBase>>& parameters) {
     assert(compiler->state == CompilerState::Compile);
     auto returnType = getReturnType(compiler, result, thisVar);
@@ -431,52 +575,9 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
     }
     
     auto functionName = getCInitFunctionName();
+    transpileDefinition(compiler, result, trOutput);
     
-    if (!getHasThis()) {
-        // Create function body
-        auto functionBody = trOutput->functions.find(functionName);
-        if (functionBody == trOutput->functions.end()) {
-            auto trFunctionBlock = make_shared<TrBlock>();
-            trFunctionBlock->parent = nullptr;
-			trFunctionBlock->hasThis = false;
-            trOutput->functions[functionName] = trFunctionBlock;
-            
-            stringstream functionDefinition;
-            functionDefinition << "void " << functionName << "(";
-            auto isFirstArg = true;
-            for (auto argType : *argTypes) {
-                if (isFirstArg) {
-                    isFirstArg = false;
-                } else {
-                    functionDefinition << ", ";
-                }
-                functionDefinition << argType.second->nameRef << " " << argType.first;
-            }
-            if (returnType != compiler->typeVoid) {
-                if (isFirstArg) {
-                    isFirstArg = false;
-                } else {
-                    functionDefinition << ", ";
-                }
-                functionDefinition << returnType->nameRef << "* _return";
-            }
-            
-            if (isFirstArg) {
-                functionDefinition << "void";
-            }
-            functionDefinition << ")";
-            trFunctionBlock->definition = functionDefinition.str();
-            
-            auto bodyReturnValue = block->transpile(compiler, result, shared_from_this(), nullptr, trOutput, trFunctionBlock.get(), true);
-            if (bodyReturnValue && bodyReturnValue->type != compiler->typeVoid) {
-                assert(bodyReturnValue->type == returnType);
-                if (bodyReturnValue->release == RVR_MustRetain && !bodyReturnValue->type->parent.expired()) {
-                    ReturnValue::addRetainToStatements(trFunctionBlock.get(), bodyReturnValue->name, bodyReturnValue->type);
-                }
-                trFunctionBlock->returnLine = bodyReturnValue->name;
-            }
-        } 
-        
+    if (!getHasThis()) {       
         // Add "parent" to "this"
         auto hasParent = getHasParent(compiler, result);
         shared_ptr<ReturnValue> dotReturnValue;
@@ -513,86 +614,7 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
         line << ")";
         trBlock->statements.push_back(line.str());
     } else {
-        // Create struct
-		string structName = "sjs_" + name;
-		if (trOutput->structs.find(structName) == trOutput->structs.end()) {
-            trOutput->structs[structName].push_back("int _refCount");
-            for (auto argType : *argTypes) {
-                if (argType.first.compare("_this") == 0)
-                    continue;
-                
-				stringstream ss;
-				ss << argType.second->nameRef << " " << argType.first;
-				trOutput->structs[structName].push_back(ss.str());
-			}
-		}
-
-        // Create init function body
-        auto functionBody = trOutput->functions.find(functionName);
-		if (functionBody == trOutput->functions.end()) {
-			auto trFunctionBlock = make_shared<TrBlock>();
-            trFunctionBlock->parent = nullptr;
-			trFunctionBlock->hasThis = true;
-            trOutput->functions[functionName] = trFunctionBlock;
-
-			stringstream functionDefinition;
-			functionDefinition << "void " << functionName << "(" << structName << "* _this";
-            if (returnType != compiler->typeVoid) {
-                functionDefinition << ", " << returnType->nameRef << "* _return";
-            }
-            functionDefinition << ")";
-			trFunctionBlock->definition = functionDefinition.str();
-
-            auto bodyReturnValue = block->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trFunctionBlock.get(), true);
-            if (bodyReturnValue && bodyReturnValue->type && bodyReturnValue->type != compiler->typeVoid) {
-                assert(bodyReturnValue->type == returnType);
-                if (bodyReturnValue->release == RVR_MustRetain && !bodyReturnValue->type->parent.expired()) {
-                    ReturnValue::addRetainToStatements(trFunctionBlock.get(), bodyReturnValue->name, bodyReturnValue->type);
-                }
-
-                trFunctionBlock->returnLine = bodyReturnValue->name;
-			}
-		} 
-        
-        // Create destroy function body
-        string functionDestroyName = getCDestroyFunctionName();
-        if (trOutput->functions.find(functionDestroyName) == trOutput->functions.end()) {
-            auto trDestroyBlock = make_shared<TrBlock>();
-            trDestroyBlock->parent = nullptr;
-            trDestroyBlock->hasThis = true;
-            trOutput->functions[functionDestroyName] = trDestroyBlock;
-            
-            stringstream functionDefinition;
-            functionDefinition << "void " << functionDestroyName << "(" << structName << "* _this)";
-            trDestroyBlock->definition = functionDefinition.str();
-            
-            if (destroyBlock) {
-                destroyBlock->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trDestroyBlock.get(), false);
-            }
-            
-            for (auto argVar : argVars) {
-                auto argHeapVar = argVar->getHeapVar(compiler, result, thisVar);
-                auto argFunction = argVar->getCFunctionForValue(compiler, result);
-                if (argFunction) {
-                    if (argHeapVar) {
-                        ReturnValue::addReleaseToStatements(trDestroyBlock.get(), "_this->" + argVar->name, argVar->getType(compiler, result));
-                    }
-                    else {
-                        stringstream destroyStream;
-                        destroyStream << argFunction->getCDestroyFunctionName() << "(" << "_this->" << argVar->name << ")";
-                        trDestroyBlock->statements.push_back(destroyStream.str());
-                    }
-                }
-            }
-        }
-
-        // Create interfaces
-        if (interfaces != nullptr) {
-            for (auto interfaceVal : *interfaces) {
-                vector<shared_ptr<NBase>> empty;
-                interfaceVal->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false, nullptr, nullptr, CLoc::undefined, empty);
-            }
-        }
+        string structName = "sjs_" + name;
 
         // Initialize "this"
         auto objectHeapVar = calleeVar->getHeapVar(compiler, result, thisVar);
@@ -1307,7 +1329,7 @@ void CFunction::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CVar> t
 
 
 
-void CFunction::createThisVar(Compiler* compiler, CResult& result, shared_ptr<CVar>& thisVar) {
+shared_ptr<CVar> CFunction::getThisVar(Compiler* compiler, CResult& result) {
     if (!_thisVar) {
         _thisVar = CNormalVar::createThisVar(loc, shared_from_this(), getThisType(compiler, result));
         getVarBody(compiler, result, _thisVar);
@@ -1316,11 +1338,32 @@ void CFunction::createThisVar(Compiler* compiler, CResult& result, shared_ptr<CV
         if (interfaces) {
             // Make all functions used by an interface are defined
             for (auto interface : *interfaces) {
-                for (auto it : interface->methods) {
-                    auto cfunc = static_pointer_cast<CFunction>(getCFunction(compiler, result, it->name, nullptr, nullptr));
+                for (auto interfaceMethod : interface->methods) {
+                    auto cfunc = static_pointer_cast<CFunction>(getCFunction(compiler, result, interfaceMethod->name, nullptr, nullptr));
                     if (!cfunc) {
-                        result.addError(loc, CErrorCode::InterfaceMethodDoesNotExist, "cannot find interface method: '%s'", it->name.c_str());
-                        return;
+                        result.addError(loc, CErrorCode::InterfaceMethodDoesNotExist, "cannot find interface method: '%s'", interfaceMethod->name.c_str());
+                        return nullptr;
+                    }
+
+                    auto functionReturnType = cfunc->getReturnType(compiler, result, cfunc->getThisVar(compiler, result));
+                    auto interfaceMethodReturnType = interfaceMethod->getReturnType(compiler, result, nullptr);
+                    if (functionReturnType != interfaceMethodReturnType) {
+                        result.addError(loc, CErrorCode::TypeMismatch, "function return type '%s' does not match interface method return type '%s'", functionReturnType->name.c_str(), interfaceMethodReturnType->name.c_str());
+                    }
+
+                    auto functionArgVars = cfunc->argVars;
+                    auto interfaceMethodArgVars = interfaceMethod->argVars;
+                    if (functionArgVars.size() != interfaceMethodArgVars.size()) {
+                        result.addError(loc, CErrorCode::InterfaceMethodTypeMismatch, "function has %d arguments does not match interface method arguments %d", functionArgVars.size(), interfaceMethodArgVars.size());
+                    }
+                    else {
+                        for (auto i = (size_t)0; i < functionArgVars.size(); i++) {
+                            auto aType = functionArgVars[i]->getType(compiler, result);
+                            auto bType = interfaceMethodArgVars[i]->getType(compiler, result);
+                            if (aType != bType) {
+                                result.addError(loc, CErrorCode::TypeMismatch, "function parameter %d type '%s' does not match interface method parameter type '%s'", i + 1, aType->name.c_str(), bType->name.c_str());
+                            }
+                        }
                     }
 
                     assert(!cfunc->getHasThis());
@@ -1331,7 +1374,7 @@ void CFunction::createThisVar(Compiler* compiler, CResult& result, shared_ptr<CV
             }
         }
     }
-    thisVar = _thisVar;
+    return _thisVar;
 }
 
 shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {

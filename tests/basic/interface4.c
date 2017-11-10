@@ -29,7 +29,9 @@ struct td_sjs_object {
 
 void sjf_class(sjs_class* _this, sjs_class** _return);
 void sjf_class_destroy(sjs_class* _this);
+void sjf_class_test(sjs_class* _parent, int32_t* _return);
 void sjf_global(void);
+void sji_foo_destroy(sji_foo* _this);
 
 void sjf_class(sjs_class* _this, sjs_class** _return) {
     _this->_refCount++;
@@ -38,6 +40,11 @@ void sjf_class(sjs_class* _this, sjs_class** _return) {
 }
 
 void sjf_class_destroy(sjs_class* _this) {
+}
+
+void sjf_class_test(sjs_class* _parent, int32_t* _return) {
+
+    *_return = 5;
 }
 
 void sjf_global(void) {
@@ -53,6 +60,14 @@ void sjf_global(void) {
     a = result1;
     a->_refCount++;
     sjf_class_destroy(&sjd_temp1);
+}
+
+void sji_foo_destroy(sji_foo* _this) {
+    _this->_parent->_refCount--;
+    if (_this->_parent->_refCount <= 0) {
+        _this->destroy(_this->_parent);
+        free(_this->_parent);
+    }
 }
 
 int main() {

@@ -69,13 +69,13 @@ public:
     vector<shared_ptr<CBaseFunction>> implementations;
     
     CInterfaceMethod(string& name, weak_ptr<CInterface> parent, int methodIndex);
-    shared_ptr<CInterfaceMethod> init(Compiler* compiler, CResult& result, shared_ptr<NInterfaceMethod> method);
+    shared_ptr<CInterfaceMethod> init(Compiler* compiler, CResult& result, shared_ptr<NInterfaceMethod> method, shared_ptr<CBaseFunction> thisFunction);
     string fullName(bool includeTemplateTypes);
     
     bool getHasThis();
     shared_ptr<CType> getThisType(Compiler* compiler, CResult& result);
     int getThisIndex(const string& name) const;
-    void createThisVar(Compiler* compiler, CResult& result, shared_ptr<CVar>& thisVar);
+    shared_ptr<CVar> getThisVar(Compiler* compiler, CResult& result);
     //Type* getStructType(Compiler* compiler, CResult& result);
     //Value* getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
     
@@ -90,6 +90,7 @@ public:
     virtual string getCDestroyFunctionName();
 
     //shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType);
+    void transpileDefinition(Compiler* compiler, CResult& result, TrOutput* trOutput);
     shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<shared_ptr<NBase>>& parameters);
     void dumpBody(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
     bool getReturnMustRelease(Compiler* compiler, CResult& result);

@@ -387,8 +387,6 @@ void CError::writeToStream(ostream& stream) {
 
 bool Compiler::transpile(const string& fileName, ostream& stream, ostream& errorStream, ostream* debugStream) {
 	TrOutput output;
-	shared_ptr<CVar> currentVar;
-	shared_ptr<CVar> globalVar;
 	shared_ptr<CFunctionDefinition> globalFunctionDefinition;
 	shared_ptr<NFunction> anonFunction;
 	shared_ptr<CFunctionDefinition> currentFunctionDefintion;
@@ -417,10 +415,10 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 				state = CompilerState::FixVar;
 				currentFunction = make_shared<CFunction>(currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr);
 				currentFunction->init(this, *result, nullptr, nullptr);
-				currentFunction->createThisVar(this, *result, currentVar);
+				auto currentVar = currentFunction->getThisVar(this, *result);
 				anonFunction->getVar(this, *result, currentFunction, currentVar);
 				globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, *result, "global", nullptr, nullptr));
-				globalFunction->createThisVar(this, *result, globalVar);
+				auto globalVar = globalFunction->getThisVar(this, *result);
 
 #ifdef VAR_OUTPUT
 				currentFunction->dump(this, *compilerResult, 0);

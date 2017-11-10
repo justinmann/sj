@@ -85,7 +85,7 @@ public:
     CFunction(weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces);
     shared_ptr<CFunction> init(Compiler* compiler, CResult& result, shared_ptr<NFunction> node, shared_ptr<CInterfaceMethod> interfaceMethod);
     
-    void createThisVar(Compiler* compiler, CResult& result, shared_ptr<CVar>& thisVar);
+    shared_ptr<CVar> getThisVar(Compiler* compiler, CResult& result);
     shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames);
     shared_ptr<CInterface> getCInterface(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames);
     shared_ptr<CVar> getCVar(Compiler* compiler, CResult& result, const string& name);
@@ -116,6 +116,7 @@ public:
     //virtual shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType);
     virtual void getVarBody(Compiler *compiler, CResult& result, shared_ptr<CVar> thisVar);
     virtual int setHeapVarBody(Compiler *compiler, CResult& result, shared_ptr<CVar> thisVar);
+    void transpileDefinition(Compiler* compiler, CResult& result, TrOutput* trOutput);
     shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<shared_ptr<NBase>>& parameters);
     //Function* compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
     //virtual bool compileBody(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Function* function);

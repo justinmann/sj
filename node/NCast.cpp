@@ -12,7 +12,7 @@ shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, CResult& result, shared_p
     auto toType = thisFunction->getVarType(compiler, result, typeName);
     if (toType != nullptr && toType->category == CTC_Interface) {
         auto interface = static_pointer_cast<CInterface>(toType->parent.lock());
-        interface->createThisVar(compiler, result, interfaceVar);
+        interfaceVar = interface->getThisVar(compiler, result);
         return interfaceVar;
     }
 

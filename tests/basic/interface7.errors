@@ -1,0 +1,1 @@
+ERROR:2 basic/interface7.sj[5:1] function return type 'f64' does not match interface method return type 'i32'

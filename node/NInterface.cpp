@@ -139,7 +139,7 @@ shared_ptr<CInterface> CInterface::init(Compiler* compiler, CResult& result, sha
     auto argIndex = 0;
     for (auto it : node->methodList) {
         auto method = make_shared<CInterfaceMethod>(it->name, shared_from_this(), argIndex);
-        method = method->init(compiler, result, it);
+        method = method->init(compiler, result, it, shared_from_this());
         if (!method) {
             return nullptr;
         }
@@ -173,8 +173,8 @@ int CInterface::getThisIndex(const string& name) const {
     return -1;
 }
 
-void CInterface::createThisVar(Compiler* compiler, CResult& result, shared_ptr<CVar>& thisVar) {
-    thisVar = make_shared<CInterfaceVar>(shared_from_this());
+shared_ptr<CVar> CInterface::getThisVar(Compiler* compiler, CResult& result) {
+    return make_shared<CInterfaceVar>(shared_from_this());
 }
 
 //Type* CInterface::getStructType(Compiler* compiler, CResult& result) {
@@ -263,7 +263,7 @@ string CInterface::getCDestroyFunctionName() {
     return "";
 }
 
-shared_ptr<ReturnValue> CInterface::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<shared_ptr<NBase>>& parameters) {
+void CInterface::transpileDefinition(Compiler* compiler, CResult& result, TrOutput* trOutput) {
     // Create struct
     string structName = "sji_" + name;
     if (trOutput->structs.find(structName) == trOutput->structs.end()) {
@@ -297,9 +297,44 @@ shared_ptr<ReturnValue> CInterface::transpile(Compiler* compiler, CResult& resul
         }
     }
 
-    return nullptr;
+    string destroyInterfaceName = "void " + structName + "_destroy(" + structName + "* _this)";
+    if (trOutput->functions.find(destroyInterfaceName) == trOutput->functions.end()) {
+        auto destroyBlock = make_shared<TrBlock>();
+        destroyBlock->definition = destroyInterfaceName;
+
+        string name = "_this->_parent";
+
+        stringstream lineStream;
+        lineStream << name << "->_refCount--";
+        destroyBlock->statements.push_back(lineStream.str());
+
+#ifdef DEBUG_ALLOC
+        stringstream logStream;
+        logStream << "printf(\"RELEASE\\t" << type->nameRef << "\\t%0x\\t" << block->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
+        block->statements.push_back(logStream.str());
+#endif
+
+        auto ifBlock = make_shared<TrBlock>();
+        stringstream ifStream;
+        ifStream << "if (" << name << "->_refCount <= 0)";
+        destroyBlock->statements.push_back(TrStatement(ifStream.str(), ifBlock));
+
+        stringstream destroyStream;
+        destroyStream << "_this->destroy(" << name << ")";
+        ifBlock->statements.push_back(destroyStream.str());
+
+        stringstream freeStream;
+        freeStream << "free(" << name << ")";
+        ifBlock->statements.push_back(freeStream.str());
+
+        trOutput->functions[destroyInterfaceName] = destroyBlock;
+    }
 }
 
+shared_ptr<ReturnValue> CInterface::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<shared_ptr<NBase>>& parameters) {
+    assert(false);
+    return nullptr;
+}
 //shared_ptr<ReturnValue> CInterface::call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType) {
 //    assert(false);
 //}

@@ -154,7 +154,7 @@ CInterfaceMethod::CInterfaceMethod(string& name, weak_ptr<CInterface> parent, in
     
 }
 
-shared_ptr<CInterfaceMethod> CInterfaceMethod::init(Compiler* compiler, CResult& result, shared_ptr<NInterfaceMethod> method) {
+shared_ptr<CInterfaceMethod> CInterfaceMethod::init(Compiler* compiler, CResult& result, shared_ptr<NInterfaceMethod> method, shared_ptr<CBaseFunction> thisFunction) {
     hasParent = true;
     loc = method->loc;
     returnType = getVarType(compiler, result, method->returnTypeName);
@@ -171,7 +171,7 @@ shared_ptr<CInterfaceMethod> CInterfaceMethod::init(Compiler* compiler, CResult&
         }
         
         // int index = (int)argVars.size();
-        auto argType = it->getType(compiler, result, nullptr, nullptr);
+        auto argType = it->getType(compiler, result, thisFunction, nullptr);
         auto argVar = make_shared<CInterfaceMethodArgVar>(argType);
         argVars.push_back(argVar);
         argDefaultValues.push_back(it->rightSide);
@@ -206,7 +206,8 @@ int CInterfaceMethod::getThisIndex(const string& name) const {
     return -1;
 }
 
-void CInterfaceMethod::createThisVar(Compiler* compiler, CResult& result, shared_ptr<CVar>& thisVar) {
+shared_ptr<CVar> CInterfaceMethod::getThisVar(Compiler* compiler, CResult& result) {
+    return nullptr;
 }
 
 //Type* CInterfaceMethod::getStructType(Compiler* compiler, CResult& result) {
@@ -262,6 +263,10 @@ string CInterfaceMethod::getCInitFunctionName() {
 string CInterfaceMethod::getCDestroyFunctionName() {
     assert(false);
     return "";
+}
+
+void CInterfaceMethod::transpileDefinition(Compiler* compiler, CResult& result, TrOutput* trOutput) {
+
 }
 
 shared_ptr<ReturnValue> CInterfaceMethod::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<shared_ptr<NBase>>& parameters) {
