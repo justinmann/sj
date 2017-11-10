@@ -43,10 +43,18 @@ shared_ptr<ReturnValue> NCast::transpile(Compiler* compiler, CResult& result, sh
     }
 
     auto resultValue = trBlock->createTempVariable("result", type, false, RVR_MustRetain);
-    stringstream line;
-    line << resultValue->name << " = " << "(" << type->nameRef << ")" << returnValue->name;
-    trBlock->statements.push_back(line.str());
-
+    if (type != nullptr && type->category == CTC_Interface) {
+        auto interface = static_pointer_cast<CInterface>(type->parent.lock());
+        interfaceVar = interface->getThisVar(compiler, result);
+        stringstream line;
+        line << resultValue->name << " = " << interface->getCastFunctionName(returnValue->type->parent.lock()) << "(" << returnValue->name << ")";
+        trBlock->statements.push_back(line.str());
+    }
+    else {
+        stringstream line;
+        line << resultValue->name << " = " << "(" << type->nameRef << ")" << returnValue->name;
+        trBlock->statements.push_back(line.str());
+    }
 	return resultValue;
 }
 

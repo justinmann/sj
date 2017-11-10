@@ -263,6 +263,14 @@ string CInterface::getCDestroyFunctionName() {
     return "";
 }
 
+string CInterface::getCastFunctionName(shared_ptr<CBaseFunction> fromFunction) {
+    string temp = name;
+    temp[0] = toupper(temp[0]);
+    stringstream line;
+    line << fromFunction->getCInitFunctionName() << "_as" << temp;
+    return line.str();
+}
+
 void CInterface::transpileDefinition(Compiler* compiler, CResult& result, TrOutput* trOutput) {
     // Create struct
     string structName = "sji_" + name;
@@ -272,25 +280,14 @@ void CInterface::transpileDefinition(Compiler* compiler, CResult& result, TrOutp
         trOutput->structs[structName].push_back("void (*destroy)(sjs_object* _this)");
         for (auto method : methods) {
             stringstream ss;
-            ss << "void (*" << method->name << ")(";
-            auto isFirstArg = true;
+            ss << "void (*" << method->name << ")(sjs_object* _parent";
             for (auto argVar : method->argVars) {
-                if (isFirstArg) {
-                    isFirstArg = false;
-                }
-                else {
-                    ss << ", ";
-                }
+                ss << ", ";
                 ss << argVar->getType(compiler, result)->nameRef << " " << argVar->name;
             }
             if (method->returnType != nullptr && method->returnType != compiler->typeVoid) {
-                if (isFirstArg) {
-                    isFirstArg = false;
-                }
-                else {
-                    ss << ", ";
-                }
-                ss << method->returnType->nameRef << " _return";
+                ss << ", ";
+                ss << method->returnType->nameRef << "* _return";
             }
             ss << ")";
             trOutput->structs[structName].push_back(ss.str());

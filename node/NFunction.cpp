@@ -486,6 +486,40 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
                         function->transpileDefinition(compiler, result, trOutput);
                     }
                 }
+
+                // Create explict cast
+                auto castFunctionName = interfaceVal->getCastFunctionName(shared_from_this());
+                auto functionBody = trOutput->functions.find(castFunctionName);
+                if (functionBody == trOutput->functions.end()) {
+                    auto trFunctionBlock = make_shared<TrBlock>();
+                    trFunctionBlock->parent = nullptr;
+                    trFunctionBlock->hasThis = true;
+                    trOutput->functions[castFunctionName] = trFunctionBlock;
+
+                    auto interfaceType = interfaceVal->getThisType(compiler, result);
+                    stringstream functionDefinition;
+                    functionDefinition << interfaceType->nameRef << " " << castFunctionName << "(" << structName << "* _this" << ")";
+                    trFunctionBlock->definition = functionDefinition.str();
+
+                    stringstream allocStream;
+                    allocStream << interfaceType->nameRef << " _interface = (" << interfaceType->nameRef << ")malloc(sizeof(" << interfaceType->nameValue << "))";
+                    trFunctionBlock->statements.push_back(allocStream.str());
+
+                    trFunctionBlock->statements.push_back(string("_interface->_refCount = 1"));
+                    trFunctionBlock->statements.push_back(string("_interface->_parent = (sjs_object*)_this"));
+                    trFunctionBlock->statements.push_back(string("_interface->_parent->_refCount++"));
+
+                    for (auto interfaceMethod : interfaceVal->methods) {
+                        auto function = getCFunction(compiler, result, interfaceMethod->name, nullptr, nullptr);
+                        if (function) {
+                            stringstream initStream;
+                            initStream << "_interface->" << interfaceMethod->name << " = " << function->getCInitFunctionName();
+                            trFunctionBlock->statements.push_back(initStream.str());
+                        }
+                    }
+
+                    trFunctionBlock->statements.push_back(string("return _interface"));
+                }
             }
         }
     }

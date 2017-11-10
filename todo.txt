@@ -8,6 +8,9 @@
 -- tasks --
 
 -- interface --
+* cast from interface to another interface
+* call interace method
+
 void* foo_asInterface(sjs_object* _parent, int sji_foo_id) {
 	switch (sji_foo_id) {
 	case sji_foo_id:
@@ -15,17 +18,6 @@ void* foo_asInterface(sjs_object* _parent, int sji_foo_id) {
 	}
 	return nullptr;
 }
-
-sji_foo* foo_asFoo(sjs_foo* _parent) {
-	i = new sji_foo;
-	i->_parent = _parent;
-	i->_parent->_refCount++;
-	i->test = foo_test;
-}
-
-a = nullptr;
-foo_asFoo(b, &a);
-a->test(a->_parent);
 
 -- operators --
 	a.x = y 	-> setX(y)

@@ -28,7 +28,7 @@ struct td_sji_foo {
     int _refCount;
     sjs_object* _parent;
     void (*destroy)(sjs_object* _this);
-    void (*test)(sjs_string* _return);
+    void (*test)(sjs_object* _parent, sjs_string** _return);
 };
 
 struct td_sjs_anon1 {
@@ -74,6 +74,7 @@ void sjf_anon3_destroy(sjs_anon3* _this);
 void sjf_array_char(sjs_array_char* _this, sjs_array_char** _return);
 void sjf_array_char_destroy(sjs_array_char* _this);
 void sjf_class(sjs_class* _this, sjs_class** _return);
+sji_foo* sjf_class_asFoo(sjs_class* _this);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_test(sjs_class* _parent, sjs_string** _return);
 void sjf_global(void);
@@ -140,6 +141,15 @@ void sjf_class(sjs_class* _this, sjs_class** _return) {
     _this->_refCount++;
 
     *_return = _this;
+}
+
+sji_foo* sjf_class_asFoo(sjs_class* _this) {
+    sji_foo* _interface = (sji_foo*)malloc(sizeof(sji_foo));
+    _interface->_refCount = 1;
+    _interface->_parent = (sjs_object*)_this;
+    _interface->_parent->_refCount++;
+    _interface->test = sjf_class_test;
+    return _interface;
 }
 
 void sjf_class_destroy(sjs_class* _this) {
@@ -213,7 +223,7 @@ void sjf_global(void) {
     sjv_temp6 = &sjd_temp4;
     sjv_temp6->_refCount = 1;
     sjf_class(sjv_temp6, &sjv_temp6);
-    result2 = (sji_foo*)sjv_temp6;
+    result2 = sjf_class_asFoo(sjv_temp6);
     a = result2;
     a->_refCount++;
     sjf_anon3_destroy(&sjd_temp1);
