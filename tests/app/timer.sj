@@ -1,6 +1,10 @@
 include "../../lib/common/common.sj"
 
-element(
+#element(
+	toHTML()'string
+)
+
+element # element(
 	id : 'string
 	children : array!element()
 
@@ -19,13 +23,18 @@ element(
 			}, _parent->id->data, html->data);
 		}c
 	}
+
+	toHTML() {
+		"hi"
+	}
 ) { this }
 
-timerElement(
+timerElement # element(
 	count = 0
 
 	toHTML() {
 		counter.toString()
+		"foo"
 	}
 
 	onTick() {
@@ -38,7 +47,7 @@ timerElement(
 
 rootElement : element(
 	id : "root"
-//	children : [ timerElement() ]
+	children : [ timerElement() as element ]
 )
 
 rootElement.update()

@@ -1,11 +1,8 @@
 -- features --
 * interface
-* include for ccode
 * operators
-* tuple
+* array assignment
 * lambda
-
--- tasks --
 
 -- interface --
 * cast from interface to another interface
@@ -23,13 +20,11 @@ void* foo_asInterface(sjs_object* _parent, int sji_foo_id) {
 	a.x = y 	-> setX(y)
 	a as type	-> a.asType()'t
 
--- tuple --
-* create interface for all array classes
-* create special class for 1, 2, 3 element arrays
+-- array assignment --
 * special array assign operation
-	[a, b] = [1, 2]
-	t: tuple![i32, i32](1, 2)
-	a = t.getAt(0)
+	func() { [1, 2] }
+	[a:, b=] func()
+	a : t.getAt(0)
 	b = t.getAt(1)
 
 -- library --
