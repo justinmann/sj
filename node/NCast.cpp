@@ -23,7 +23,7 @@ shared_ptr<CType> NCast::getTypeImpl(Compiler* compiler, CResult& result, shared
     assert(compiler->state >= CompilerState::FixVar);
     auto t = thisFunction->getVarType(compiler, result, typeName);
     if (!t) {
-        result.addError(loc, CErrorCode::InvalidType, "type does not exist");
+        result.addError(loc, CErrorCode::InvalidType, "type '%s' does not exist", typeName->getName().c_str());
     }
     return t;
 }
@@ -35,6 +35,9 @@ int NCast::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseF
 
 shared_ptr<ReturnValue> NCast::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
     auto type = getType(compiler, result, thisFunction, thisVar);
+    if (type == nullptr) {
+        return nullptr;
+    }
 
     auto returnValue = node->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
     if (!returnValue) {

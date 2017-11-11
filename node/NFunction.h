@@ -14,17 +14,16 @@
 
 enum CFunctionType {
     FT_Private,
-    FT_Public,
-    FT_Extern
+    FT_Public
 };
 
 class CFunctionDefinition;
 class CInterfaceMethod;
+class NInterface;
 
 class NFunction : public NBaseFunction {
 public:
     CFunctionType type;
-    const string externName;
     shared_ptr<CTypeName> returnTypeName;
     string name;
     shared_ptr<CTypeNameList> templateTypeNames;
@@ -32,15 +31,12 @@ public:
     NodeList invalid;
     vector<shared_ptr<NAssignment>> assignments;
     vector<shared_ptr<NFunction>> functions;
+    vector<shared_ptr<NInterface>> interfaces;
     const shared_ptr<NBase> block;
     const shared_ptr<NBase> catchBlock;
     const shared_ptr<NBase> destroyBlock;
     
-    // For normal
     NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> destroyBlock);
-
-    // For extern
-    NFunction(CLoc loc, CFunctionType type, const char* externName, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<NodeList> arguments);
     shared_ptr<CFunctionDefinition> getFunctionDefinition(Compiler *compiler, CResult& result, shared_ptr<CFunctionDefinition> parentFunction);
 	virtual shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue);
 	virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) { }
@@ -160,7 +156,6 @@ private:
     shared_ptr<NBase> catchBlock;
     shared_ptr<NBase> destroyBlock;
     shared_ptr<CTypeName> returnTypeName;
-    string externName;
     shared_ptr<CTypeNameList> interfaceTypeNames;
     vector<shared_ptr<CVar>> thisVars;
     map<string, pair<int, shared_ptr<CVar>>> thisVarsByName;
@@ -183,9 +178,12 @@ public:
     void addChildFunction(string& name, shared_ptr<CBaseFunctionDefinition> childFunction);
     void dump(Compiler* compiler, CResult& result, int level);
     shared_ptr<CFunction> getFunction(Compiler* compiler, CResult& result, CLoc& loc, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent);
-    
+    shared_ptr<CInterfaceDefinition> getDefinedInterfaceDefinition(string& name);
+    shared_ptr<CInterfaceDefinition> createDefinedInterfaceDefinition(string& name);
+
 private:
     map<CFunction*, map<vector<shared_ptr<CType>>, shared_ptr<CFunction>>> cfunctions;
+    map<string, shared_ptr<CInterfaceDefinition>> definedInterfaceDefinitions;
 };
 
 #endif /* NFunction_h */

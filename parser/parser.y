@@ -55,7 +55,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID TSTRING TCHAR TCCODE
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TEXTERN TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY TMOD THASH TAT TCPEQ TCPNE TMULEQUAL TDIVEQUAL
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY TMOD THASH TAT TCPEQ TCPNE TMULEQUAL TDIVEQUAL
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch destroy expr
@@ -66,6 +66,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %type <isMutable> assign_type
 %type <typeName> arg_type_quote arg_type return_type_quote return_type func_type func_arg_type func_type_name implement_arg
 %type <templateTypeNames> temp_args temp_block temp_block_optional func_arg_type_list implement implement_args
+%type <string> arg_type_interface
 
 /* Operator precedence */
 %left TAND TOR
@@ -134,10 +135,6 @@ func_decl 			: func_type_name func_block block catch destroy			{
 							shared_ptr<CTypeNameList>($2), shared_ptr<NodeList>($3), 
 							shared_ptr<NBase>($5), shared_ptr<NBase>($6), shared_ptr<NBase>($7)); 
 					}
-					| TEXTERN TLPAREN TSTRING TRPAREN TIDENTIFIER func_block return_type_quote { 
-						$$ = new NFunction(LOC, FT_Extern, $3->c_str(), shared_ptr<CTypeName>($7), $5->c_str(), shared_ptr<NodeList>($6)); 
-						delete $3; 
-					}
 					;
 
 func_type_name		: TIDENTIFIER									{ $$ = new CTypeName(CTC_Value, $1->c_str()); delete $1; }
@@ -161,6 +158,7 @@ func_args  			: func_arg										{ $$ = new NodeList(); if ($1) { $$->push_back
 					;
 
 func_arg			: /* Blank! */									{ $$ = nullptr; }
+					| interface_decl
 					| assign 										
 					| func_decl 										
 					| expr 											{ $$ = $1; }
@@ -173,7 +171,7 @@ implement_args 		: implement_arg									{ $$ = new CTypeNameList(); $$->push_ba
 					| implement_args implement_arg 					{ $$ = $1; $$->push_back(shared_ptr<CTypeName>($2)); }
 					;
 
-implement_arg 		: THASH TIDENTIFIER temp_block_optional			{ $$ = new CTypeName(CTC_Interface, (string("#") + *$2).c_str(), shared_ptr<CTypeNameList>($3)); delete $2; }							
+implement_arg 		: THASH arg_type_interface temp_block_optional	{ $$ = new CTypeName(CTC_Interface, (string("#") + *$2).c_str(), shared_ptr<CTypeNameList>($3)); delete $2; }							
 					;
 
 interface_decl		: THASH TIDENTIFIER temp_block_optional interface_block { $$ = new NInterface(LOC, (string("#") + *$2).c_str(), shared_ptr<CTypeNameList>($3), shared_ptr<NodeList>($4)); delete $2; }
@@ -287,8 +285,12 @@ arg_type_quote		: TQUOTE arg_type								{ $$ = $2; }
 					;
 
 arg_type			: TIDENTIFIER temp_block_optional				{ $$ = new CTypeName(CTC_Value, *$1, shared_ptr<CTypeNameList>($2)); delete $1; }
-					| THASH TIDENTIFIER temp_block_optional			{ $$ = new CTypeName(CTC_Interface, string("#") + *$2, shared_ptr<CTypeNameList>($3)); delete $2; }
+					| THASH arg_type_interface temp_block_optional	{ $$ = new CTypeName(CTC_Interface, string("#") + *$2, shared_ptr<CTypeNameList>($3)); delete $2; }
 					| func_type										{ $$ = $1; }
+					;
+
+arg_type_interface	: TIDENTIFIER									{ $$ = $1; }
+					| TIDENTIFIER TDOT arg_type_interface			{ $$ = new string(*$1 + "." + *$3); }
 					;
 
 return_type			: arg_type										{ $$ = $1; }
@@ -311,15 +313,12 @@ temp_block_optional : /* Blank! */									{ $$ = nullptr; }
 					| temp_block									{ $$ = $1; }
 					;
 
-temp_block			: TEXCLAIM TIDENTIFIER							{ $$ = new CTypeNameList(); $$->push_back(make_shared<CTypeName>(CTC_Value, *$2)); delete $2; }
-					| TEXCLAIM THASH TIDENTIFIER					{ $$ = new CTypeNameList(); $$->push_back(make_shared<CTypeName>(CTC_Interface, string("#") + *$3)); delete $3; }
+temp_block			: TEXCLAIM arg_type								{ $$ = new CTypeNameList(); $$->push_back(shared_ptr<CTypeName>($2)); }
 					| TEXCLAIM TLBRACKET temp_args TRBRACKET		{ $$ = $3; }					
 					;
 
-temp_args			: TIDENTIFIER temp_block_optional				{ $$ = new CTypeNameList(); $$->push_back(make_shared<CTypeName>(CTC_Value, *$1, shared_ptr<CTypeNameList>($2))); delete $1; }
-					| THASH TIDENTIFIER temp_block_optional			{ $$ = new CTypeNameList(); $$->push_back(make_shared<CTypeName>(CTC_Interface, string("#") + *$2, shared_ptr<CTypeNameList>($3))); delete $2; }
-					| temp_args TCOMMA TIDENTIFIER					{ $1->push_back(make_shared<CTypeName>(CTC_Value, *$3)); delete $3; }
-					| temp_args TCOMMA THASH TIDENTIFIER			{ $1->push_back(make_shared<CTypeName>(CTC_Interface, string("#") + *$4)); delete $4; }
+temp_args			: arg_type										{ $$ = new CTypeNameList(); $$->push_back(shared_ptr<CTypeName>($1)); }
+					| temp_args TCOMMA arg_type						{ $1->push_back(shared_ptr<CTypeName>($3)); }
 					;
 
 %%

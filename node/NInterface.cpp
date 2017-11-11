@@ -21,11 +21,13 @@ shared_ptr<CType> NInterface::getTypeImpl(Compiler* compiler, CResult& result, s
 //}
 
 void NInterface::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
-    auto def = compiler->getInterfaceDefinition(name);
-    if (def->ninterface) {
+    auto parentFunction = static_pointer_cast<CFunctionDefinition>(thisFunction);
+    auto def = parentFunction->getDefinedInterfaceDefinition(name);
+    if (def != nullptr) {
         result.addError(loc, CErrorCode::InvalidType, "interface can only be defined once: '%s'", name.c_str());
         return;
     }
+    def = parentFunction->createDefinedInterfaceDefinition(name);
     def->typeName = make_shared<CTypeName>(CTC_Interface, name, templateTypeNames);
     def->ninterface = shared_from_this();
 
@@ -33,9 +35,8 @@ void NInterface::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBas
         it->define(compiler, result, thisFunction);
     }
     
-    auto fun = static_pointer_cast<CFunctionDefinition>(thisFunction);
     assert(name[0] == '#');
-    fun->interfacesByName[name] = def;
+    parentFunction->interfacesByName[name] = def;
 }
 
 shared_ptr<ReturnValue> NInterface::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
@@ -250,9 +251,21 @@ string CInterface::getCInitFunctionName() {
     return "";
 }
 
+string CInterface::getBaseName() {
+    auto functionName = name.substr(1, name.size() - 1);
+    if (!parent.expired()) {
+        auto tempType = parent.lock();
+        while (tempType != nullptr && tempType->name.compare("global") != 0 && tempType->name.size() > 0) {
+            functionName.insert(0, "_");
+            functionName.insert(0, dynamic_pointer_cast<CFunction>(tempType)->getCFullName(true));
+            tempType = tempType->parent.lock();
+        }
+    }
+    return functionName;
+}
+
 string CInterface::getStructName() {
-    auto t = name.substr(1, name.size() - 1);
-    return "sji_" + t;
+    return "sji_" + getBaseName();
 }
 
 string CInterface::getCDestroyFunctionName() {

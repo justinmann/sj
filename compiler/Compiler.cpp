@@ -1001,14 +1001,4 @@ void Compiler::includeFile(CResult& result, const string& fileName) {
 //#endif
 //}
 
-shared_ptr<CInterfaceDefinition> Compiler::getInterfaceDefinition(string& name) {
-    auto it = interfaceDefinitions.find(name);
-    if (it == interfaceDefinitions.end()) {
-        auto result = make_shared<CInterfaceDefinition>(name);
-        interfaceDefinitions[name] = result;
-        return result;
-    } else {
-        return it->second;
-    }
-}
 

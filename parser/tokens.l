@@ -60,7 +60,6 @@ void updateLocation(YYLOCATION& loc, const char* s, const int len) {
 "while"					TOKEN_VAL(TWHILE);
 [ \t]+					SAVE_LOC; 
 "^"						TOKEN_STR(TIDENTIFIER, 0, 0);
-"extern"				TOKEN_VAL(TEXTERN);
 "this"					TOKEN_VAL(TTHIS);
 "include"				TOKEN_VAL(TINCLUDE);
 "#"						TOKEN_VAL(THASH);

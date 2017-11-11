@@ -77,6 +77,7 @@ public:
     string getCInitFunctionName();
     string getCDestroyFunctionName();
     string getCastFunctionName(shared_ptr<CBaseFunction> fromFunction);
+    string getBaseName();
     string getStructName();
     string getTypeIdName();
     string transpileCast(shared_ptr<CBaseFunction> fromFunction, string varName);
