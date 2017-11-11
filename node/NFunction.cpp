@@ -538,7 +538,7 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
     }
 }
 
-shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<shared_ptr<NBase>>& parameters) {
+shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters) {
     assert(compiler->state == CompilerState::Compile);
     auto returnType = getReturnType(compiler, result, thisVar);
     if (!returnType) {
@@ -580,25 +580,17 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
         auto argVar = argVars[argIndex];
         auto argHeapVar = argVar->getHeapVar(compiler, result, thisVar);
         auto argType = argVar->getType(compiler, result);
-        auto isDefaultAssignment = parameters[argIndex] == defaultAssignment;
+        auto isDefaultAssignment = parameters[argIndex].second == defaultAssignment;
+        assert(isDefaultAssignment == parameters[argIndex].first);
         shared_ptr<ReturnValue> argReturnValue;
         
         stringstream argStream;
-        if (isDefaultAssignment) {
-            auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), calleeVar);
-            if (paramVar) {
-                auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
-                assert(!argHeapVar || paramHeapVar == argHeapVar);
-            }
-            argReturnValue = parameters[argIndex]->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trBlock, false);
-        } else {
-            auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), thisVar);
-            if (paramVar) {
-                auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
-                // TODO: assert(!argHeapVar || paramHeapVar == argHeapVar);
-            }
-            argReturnValue = parameters[argIndex]->transpile(compiler, result, shared_from_this(), thisVar, trOutput, trBlock, false);
+        auto paramVar = parameters[argIndex].second->getVar(compiler, result, isDefaultAssignment ? shared_from_this() : thisFunction, isDefaultAssignment ? calleeVar : thisVar);
+        if (paramVar) {
+            auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
+            assert(!argHeapVar || paramHeapVar == argHeapVar);
         }
+        argReturnValue = parameters[argIndex].second->transpile(compiler, result, isDefaultAssignment ? shared_from_this() : thisFunction, isDefaultAssignment ? calleeVar : thisVar, trOutput, trBlock, false);
         
         if (argReturnValue == nullptr) {
             result.addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' has no value", argVar->name.c_str());
@@ -717,12 +709,12 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
 }
 
 string CFunction::getCInitFunctionName() {
-    string functionName = name;
+    string functionName = getCFullName(true);
     if (!parent.expired()) {
         auto tempType = parent.lock();
         while (tempType != nullptr && tempType->name.compare("global") != 0 && tempType->name.size() > 0) {
             functionName.insert(0, "_");
-            functionName.insert(0, tempType->name);
+            functionName.insert(0, dynamic_pointer_cast<CFunction>(tempType)->getCFullName(true));
             tempType = tempType->parent.lock();
         }
     }
@@ -1796,6 +1788,25 @@ string CFunction::fullName(bool includeTemplateTypes) {
     return ss.str();
 }
 
+string CFunction::getCFullName(bool includeTemplateTypes) {
+    stringstream ss;
+    ss << definition.lock()->name;
+    if (includeTemplateTypes) {
+        if (templateTypes.size() > 0) {
+            ss << "_";
+        }
+
+        for (auto it : templateTypes) {
+            if (it != templateTypes.front()) {
+                ss << "_";
+            }
+
+            ss << it->name;
+        }
+    }
+    return ss.str();
+}
+
 int CFunction::getArgStart(Compiler* compiler, CResult& result) {
     getThisType(compiler, result);
     return (int)indexVars;
@@ -1968,9 +1979,11 @@ void CFunctionDefinition::addChildFunction(string& name, shared_ptr<CBaseFunctio
 
 shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CResult& result, CLoc& loc, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent) {
     shared_ptr<CFunction> func;
-    auto it = cfunctions.find(templateTypes);
-    if (it != cfunctions.end()) {
+    auto funcParentPtr = funcParent.lock().get();
+    auto it = cfunctions[funcParentPtr].find(templateTypes);
+    if (it != cfunctions[funcParentPtr].end()) {
         func = it->second;
+        assert(func->parent.lock() == funcParent.lock());
     } else {
         assert(funcParent.expired() || funcParent.lock()->definition.lock() == parent.lock());
         
@@ -2020,7 +2033,7 @@ shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CResu
             }
         }
         
-        cfunctions[templateTypes] = func;
+        cfunctions[funcParentPtr][templateTypes] = func;
     }
     return func;
 }

@@ -1,11 +1,10 @@
 #include "Node.h"
 
 shared_ptr<CVar> NVariableBase::getVar(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
-    if (!_hasGetVar) {
-        _var = getVarImpl(compiler, result, thisFunction, thisVar, dotVar);
-        _hasGetVar = true;
+    if (_var.find(thisFunction.get()) == _var.end()) {
+        _var[thisFunction.get()] = getVarImpl(compiler, result, thisFunction, thisVar, dotVar);
     }
-    return _var;
+    return _var[thisFunction.get()];
 }
 
 int NVariableBase::setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar) {
@@ -124,7 +123,7 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler *compiler, CResult &result, shar
         nameWithUpper[0] = (char)toupper(nameWithUpper[0]);
         auto getPropertyFunction = cfunction->getCFunction(compiler, result, "get" + nameWithUpper, nullptr, nullptr);
         if (getPropertyFunction != nullptr) {
-            return CCallVar::create(compiler, result, loc, name, make_shared<NodeList>(), thisFunction, dotVar, getPropertyFunction);
+            return CCallVar::create(compiler, result, loc, name, make_shared<NodeList>(), thisFunction, thisVar, dotVar, getPropertyFunction);
         }
     }
 

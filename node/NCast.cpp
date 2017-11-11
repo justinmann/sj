@@ -52,6 +52,11 @@ shared_ptr<ReturnValue> NCast::transpile(Compiler* compiler, CResult& result, sh
         return resultValue;
     }
     else {
+        if (!type->parent.expired()) {
+            result.addError(loc, CErrorCode::InvalidCast, "cannot cast to type '%s'", type->name.c_str());
+            return nullptr;
+        }
+
         auto resultValue = trBlock->createTempVariable("result", type, false, RVR_MustRetain);
         stringstream line;
         line << resultValue->name << " = " << "(" << type->nameRef << ")" << returnValue->name;

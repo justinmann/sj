@@ -50,21 +50,19 @@ void NBase::define(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction
 }
 
 shared_ptr<CVar> NBase::getVar(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    if (!_hasGetVar) {
+    if (_var.find(thisFunction.get()) == _var.end()) {
         assert(compiler->state == CompilerState::FixVar);
-        _var = getVarImpl(compiler, result, thisFunction, thisVar);
-        _hasGetVar = true;
+        _var[thisFunction.get()] = getVarImpl(compiler, result, thisFunction, thisVar);
     }
-    return _var;
+    return _var[thisFunction.get()];
 }
 
 shared_ptr<CType> NBase::getType(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
-    if (!_hasGetType) {
-        _type = getTypeImpl(compiler, result, thisFunction, thisVar);
-        _hasGetType = true;
+    if (_type.find(thisFunction.get()) == _type.end()) {
+        _type[thisFunction.get()] = getTypeImpl(compiler, result, thisFunction, thisVar);
     }
-    return _type;
+    return _type[thisFunction.get()];
 }
 
 int NBase::setHeapVar(Compiler *compiler, CResult &result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {

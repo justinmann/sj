@@ -4,14 +4,18 @@ string (
 	count = 0
 	data = array!char()
 
-	add(item :'char) {
-		if count > data.size {
-			data.grow(data.size * 2)
+	add(item :'string) {
+		if count + item.count > data.size {
+			data.grow(data.size + item.count)
 			void
 		}
 
-		data.setAt(count, item)
-		count++
+		for i : 0 to item.count - 1 {
+			data.setAt(count, item.getAt(i))
+			count++		
+		}
+
+		data.setAt(count, 0 as char)
 	}
 
 	getAt(index : 'i32)'char {

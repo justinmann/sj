@@ -25,7 +25,7 @@ public:
     const NodeType nodeType;
     const CLoc loc;
     
-    NBase(const NodeType nodeType, const CLoc loc) : nodeType(nodeType), loc(loc), _hasDefined(false), _hasGetVar(false), _hasGetType(false) { }
+    NBase(const NodeType nodeType, const CLoc loc) : nodeType(nodeType), loc(loc), _hasDefined(false) { }
     void define(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVar(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar);
     shared_ptr<CType> getType(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar);
@@ -43,10 +43,8 @@ protected:
     
 private:
     bool _hasDefined;
-    bool _hasGetVar;
-    bool _hasGetType;
-    shared_ptr<CVar> _var;
-    shared_ptr<CType> _type;
+    map<CBaseFunction*, shared_ptr<CVar>> _var;
+    map<CBaseFunction*, shared_ptr<CType>> _type;
     
     friend class NVariableBase;
 };

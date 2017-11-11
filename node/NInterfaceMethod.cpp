@@ -269,7 +269,7 @@ void CInterfaceMethod::transpileDefinition(Compiler* compiler, CResult& result, 
 
 }
 
-shared_ptr<ReturnValue> CInterfaceMethod::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<shared_ptr<NBase>>& parameters) {
+shared_ptr<ReturnValue> CInterfaceMethod::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters) {
     assert(compiler->state == CompilerState::Compile);
     assert(calleeValue != nullptr);
 
@@ -299,26 +299,17 @@ shared_ptr<ReturnValue> CInterfaceMethod::transpile(Compiler* compiler, CResult&
         auto argVar = argVars[argIndex];
         auto argHeapVar = argVar->getHeapVar(compiler, result, thisVar);
         auto argType = argVar->getType(compiler, result);
-        auto isDefaultAssignment = parameters[argIndex] == defaultAssignment;
+        auto isDefaultAssignment = parameters[argIndex].second == defaultAssignment;
+        assert(isDefaultAssignment == parameters[argIndex].first);
         shared_ptr<ReturnValue> argReturnValue;
 
         stringstream argStream;
-        if (isDefaultAssignment) {
-            auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), calleeVar);
-            if (paramVar) {
-                auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
-                assert(!argHeapVar || paramHeapVar == argHeapVar);
-            }
-            argReturnValue = parameters[argIndex]->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trBlock, false);
+        auto paramVar = parameters[argIndex].second->getVar(compiler, result, shared_from_this(), isDefaultAssignment ? calleeVar : thisVar);
+        if (paramVar) {
+            auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
+            assert(!argHeapVar || paramHeapVar == argHeapVar);
         }
-        else {
-            auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), thisVar);
-            if (paramVar) {
-                auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
-                // TODO: assert(!argHeapVar || paramHeapVar == argHeapVar);
-            }
-            argReturnValue = parameters[argIndex]->transpile(compiler, result, shared_from_this(), thisVar, trOutput, trBlock, false);
-        }
+        argReturnValue = parameters[argIndex].second->transpile(compiler, result, shared_from_this(), isDefaultAssignment ? calleeVar : thisVar, trOutput, trBlock, false);
 
         if (argReturnValue == nullptr) {
             result.addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' has no value", argVar->name.c_str());

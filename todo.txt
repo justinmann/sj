@@ -1,4 +1,6 @@
 -- features --
+* interface as template type
+* interface inside function -- verify no name collision with interface outside of function
 * operators
 * array assignment
 * lambda

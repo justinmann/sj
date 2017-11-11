@@ -82,7 +82,7 @@ void runAllTests(fs::path path, bool updateResult, const char* wildcard) {
         if (fs::is_directory(child.path())) {
             runAllTests(child.path(), updateResult, wildcard);
         }
-        else if (fs::is_regular_file(child.path())) {
+        else if (fs::is_regular_file(child.path()) && (wildcard == nullptr || child.path().generic_string().find(wildcard) != string::npos)) {
             runTest(child.path(), updateResult);
         }
     }

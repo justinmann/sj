@@ -50,6 +50,25 @@ array!element([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=)'array_
   this
 }
 
+array_getAt([heap]index'i32:)'char c{
+
+		#forceParent()
+
+		if (index >= _parent->size || index < 0) {
+			exit(-1);
+		}
+
+		#type(t)* p = (#type(t)*)_parent->data;
+		#type(t) val = p[index];
+		if (!#isValue(t)) {
+			if (val == 0) {
+				exit(-1);
+			}
+		}
+		*_return = val;		
+	
+}c
+
 array_getAt([stack]index'i32:)'element c{
 
 		#forceParent()
@@ -66,6 +85,47 @@ array_getAt([stack]index'i32:)'element c{
 			}
 		}
 		*_return = val;		
+	
+}c
+
+array_grow([stack]newSize'i32:)'array_char c{
+
+		#forceParent()
+		#include(<string.h>)
+
+		if (_parent->size != newSize) {
+			if (newSize < _parent->size) {
+				exit(-1);
+			}
+			
+			if (_parent->_isGlobal) {
+				_parent->_isGlobal = false;
+				#type(t)* p = (#type(t)*)_parent->data;
+				_parent->data = (uintptr_t)malloc(newSize * sizeof(#type(t)));
+				memcpy((void*)_parent->data, p, _parent->size * sizeof(#type(t)));
+			} else {
+				_parent->data = (uintptr_t)realloc((void*)_parent->data, newSize * sizeof(#type(t)));
+			}
+			_parent->size = newSize;
+		}
+
+		*_return = _parent;
+	
+}c
+
+array_setAt([heap]index'i32:, [heap]item'char:)'void c{
+
+		#forceParent()
+		#forceHeap(item)
+
+		if (index >= _parent->size || index < 0) {
+			exit(-1);
+		}
+
+		#type(t)* p = (#type(t)*)_parent->data;
+		#release(t, p[index]);
+		#retain(t, item);
+		p[index] = item;
 	
 }c
 
@@ -89,9 +149,24 @@ element ##element ([stack]id'string:, [stack]children'array_element:)'element {
   this
 }
 
+element_toHTML()'string {
+  {
+    [heap]string([heap]this : string(
+      parent: [stack]this,
+      [heap]count'i32 = ,
+      [heap]data'array_char = [heap]array!char([heap]this : array!char(
+        [heap]size'i32 = ,
+        [heap]data'ptr = ,
+        [heap]_isGlobal'bool = false
+      ))
+    ))
+  }
+}
+
 element_update()'void {
   [heap]html'string : {
     [heap]string([heap]this : string(
+      parent: [stack]this,
       [heap]count'i32 = ,
       [heap]data'array_char = [heap]array!char([heap]this : array!char(
         [heap]size'i32 = ,
@@ -104,6 +179,12 @@ element_update()'void {
     [stack]child'element : [stack]array_getAt([stack]this : array_getAt(
       parent: [stack].parentthis.children,
       [stack]index'i32 : i
+    ))
+    [heap]string_add([stack]this : string_add(
+      parent: [heap]html,
+      [stack]item'string : [heap]element_toHTML([stack]this : element_toHTML(
+        parent: [stack]child
+      ))
     ))
   }
   c{
@@ -119,6 +200,39 @@ element_update()'void {
 
 string([heap]count'i32=, [heap]data'array_char=)'string {
   this
+}
+
+string_add([stack]item'string:)'void {
+  if .parentthis.count + this.count > this.size {
+    [stack]array_grow([stack]this : array_grow(
+      parent: [heap].parentthis.data,
+      [stack]newSize'i32 : this.size + this.count
+    ))
+    void
+  }
+  for i : 0 to this.count - 1 {
+    [heap]array_setAt([stack]this : array_setAt(
+      parent: [heap].parentthis.data,
+      [heap]index'i32 : .parentthis.count,
+      [heap]item'char : [heap]string_getAt([stack]this : string_getAt(
+        parent: [stack]this.item,
+        [heap]index'i32 : i
+      ))
+    ))
+    .parentthis.count++
+  }
+  [heap]array_setAt([stack]this : array_setAt(
+    parent: [heap].parentthis.data,
+    [heap]index'i32 : .parentthis.count,
+    [heap]item'char : 0 as char
+  ))
+}
+
+string_getAt([heap]index'i32:)'char {
+  [heap]array_getAt([stack]this : array_getAt(
+    parent: [heap].parentthis.data,
+    [heap]index'i32 : this.index
+  ))
 }
 
 timerElement ##element ([stack]count'i32=)'timerElement {
@@ -138,6 +252,7 @@ global()'void {
     parent: [stack]this,
     [stack]id'string : {
       [heap]string([heap]this : string(
+        parent: [stack]this,
         [heap]count'i32 = ,
         [heap]data'array_char = [heap]array!char([heap]this : array!char(
           [heap]size'i32 = ,
@@ -147,15 +262,16 @@ global()'void {
       ))
     },
     [stack]children'array_element : {
-      [heap]sjv_array1'array_element : [heap]array!element([stack]this : array!element(
+      [stack]sjv_array1'array_element : [stack]array!element([stack]this : array!element(
         [stack]size'i32 = ,
         [stack]data'ptr = 0 as ptr,
         [stack]_isGlobal'bool = false
       ))
       [stack]array_setAt([stack]this : array_setAt(
-        parent: [heap]sjv_array1,
+        parent: [stack]sjv_array1,
         [stack]index'i32 : ,
         [heap]item'element : [stack]timerElement([stack]this : timerElement(
+          parent: [stack]this,
           [stack]count'i32 = 0
         )) as element
       ))

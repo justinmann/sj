@@ -108,6 +108,7 @@ public:
     //Value* getParentPointer(Compiler* compiler, CResult& result, IRBuilder<>* builder, bool thisInEntry, Value* thisValue);
     //Value* getParentValue(Compiler* compiler, CResult& result, IRBuilder<>* builder, bool thisInEntry, Value* thisValue);
     string fullName(bool includeTemplateTypes);
+    string getCFullName(bool includeTemplateTypes);
     pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(string name);
     shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, string name);
     shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName);
@@ -117,7 +118,7 @@ public:
     virtual void getVarBody(Compiler *compiler, CResult& result, shared_ptr<CVar> thisVar);
     virtual int setHeapVarBody(Compiler *compiler, CResult& result, shared_ptr<CVar> thisVar);
     void transpileDefinition(Compiler* compiler, CResult& result, TrOutput* trOutput);
-    shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<shared_ptr<NBase>>& parameters);
+    shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters);
     //Function* compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
     //virtual bool compileBody(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Function* function);
     //virtual Function* compileDestructorDefinition(Compiler* compiler, CResult& result);
@@ -182,7 +183,7 @@ public:
     shared_ptr<CFunction> getFunction(Compiler* compiler, CResult& result, CLoc& loc, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent);
     
 private:
-    map<vector<shared_ptr<CType>>, shared_ptr<CFunction>> cfunctions;
+    map<CFunction*, map<vector<shared_ptr<CType>>, shared_ptr<CFunction>>> cfunctions;
 };
 
 #endif /* NFunction_h */

@@ -15,10 +15,10 @@ class NCall;
 
 class CCallVar : public CVar {
 public:
-    static shared_ptr<CCallVar> create(Compiler* compiler, CResult& result, CLoc loc_, const string& name_, shared_ptr<NodeList> arguments_, shared_ptr<CBaseFunction> thisFunction_, weak_ptr<CVar> dotVar_, shared_ptr<CBaseFunction> callee_);
+    static shared_ptr<CCallVar> create(Compiler* compiler, CResult& result, CLoc loc_, const string& name_, shared_ptr<NodeList> arguments_, shared_ptr<CBaseFunction> thisFunction_, shared_ptr<CVar> thisVar, weak_ptr<CVar> dotVar_, shared_ptr<CBaseFunction> callee_);
     shared_ptr<CVar> getThisVar(Compiler* compiler, CResult& result);
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    bool getParameters(Compiler* compiler, CResult& result, vector<shared_ptr<NBase>>& parameters);
+    bool getParameters(Compiler* compiler, CResult& result, vector<pair<bool, shared_ptr<NBase>>>& parameters);
     //virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType);
     //virtual Value* getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
     string fullName();

@@ -1,6 +1,6 @@
 #include "Node.h"
 
-shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CResult& result, CLoc loc_, const string& name_, shared_ptr<NodeList> arguments_, shared_ptr<CBaseFunction> thisFunction_, weak_ptr<CVar> dotVar_, shared_ptr<CBaseFunction> callee_) {
+shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CResult& result, CLoc loc_, const string& name_, shared_ptr<NodeList> arguments_, shared_ptr<CBaseFunction> thisFunction_, shared_ptr<CVar> thisVar, weak_ptr<CVar> dotVar_, shared_ptr<CBaseFunction> callee_) {
     assert(callee_);
 
     auto c = make_shared<CCallVar>();
@@ -37,7 +37,7 @@ shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CResult& result, CLoc 
     } else {
         callee_->onHasParent(onHasParent);
     }
-    
+
     return c;
 }
 
@@ -52,7 +52,7 @@ shared_ptr<CType> CCallVar::getType(Compiler* compiler, CResult& result) {
     return callee->getReturnType(compiler, result, getThisVar(compiler, result));
 }
 
-bool CCallVar::getParameters(Compiler* compiler, CResult& result, vector<shared_ptr<NBase>>& parameters) {
+bool CCallVar::getParameters(Compiler* compiler, CResult& result, vector<pair<bool, shared_ptr<NBase>>>& parameters) {
     if (parameters.size() < arguments->size()) {
         result.addError(loc, CErrorCode::TooManyParameters, "too many parameters");
         return false;
@@ -70,12 +70,12 @@ bool CCallVar::getParameters(Compiler* compiler, CResult& result, vector<shared_
                 return false;
             }
             
-            if (parameters[index] != nullptr) {
+            if (parameters[index].second != nullptr) {
                 result.addError(loc, CErrorCode::ParameterRedefined, "defined parameter '%s' twice", parameterAssignment->name.c_str());
                 return false;
             }
             
-            parameters[index] = parameterAssignment->rightSide;
+            parameters[index] = make_pair(false, parameterAssignment->rightSide);
             hasSetByName = true;
         } else {
             if (hasSetByName) {
@@ -83,24 +83,25 @@ bool CCallVar::getParameters(Compiler* compiler, CResult& result, vector<shared_
                 return false;
             }
             
-            if (parameters[argIndex] != nullptr) {
+            if (parameters[argIndex].second != nullptr) {
                 result.addError(loc, CErrorCode::Internal, "re-defining the same parameters which should be impossible for un-named parameters");
                 return false;
             }
             
-            parameters[argIndex] = it;
+            parameters[argIndex] = make_pair(false, it);
         }
         argIndex++;
     }
     
     argIndex = 0;
     for (auto it : callee->argDefaultValues) {
-        if (argIndex < parameters.size() && parameters[argIndex] == nullptr) {
+        if (argIndex < parameters.size() && parameters[argIndex].second == nullptr) {
             if (it == nullptr) {
                 result.addError(loc, CErrorCode::ParameterRequired, "parameter %d is required", argIndex);
                 return false;
             }
-            parameters[argIndex] = it;
+            assert(it->nodeType != NodeType_Assignment);
+            parameters[argIndex] = make_pair(true, it);
         }
         argIndex++;
     }
@@ -177,7 +178,7 @@ shared_ptr<ReturnValue> CCallVar::transpileGet(Compiler* compiler, CResult& resu
     }
 
     // Fill in parameters
-    vector<shared_ptr<NBase>> parameters(callee->argDefaultValues.size());
+    vector<pair<bool, shared_ptr<NBase>>> parameters(callee->argDefaultValues.size());
     if (!getParameters(compiler, result, parameters)) {
         return nullptr;
     }
@@ -210,7 +211,7 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctio
     }
     ss << callee->fullName(true) << "(";
 
-    vector<shared_ptr<NBase>> parameters(callee->argDefaultValues.size());
+    vector<pair<bool, shared_ptr<NBase>>> parameters(callee->argDefaultValues.size());
     if (!getParameters(compiler, result, parameters)) {
         return;
     }
@@ -250,7 +251,7 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctio
                 auto ctype = paramVar->getType(compiler, result);
                 ss << "'" << (ctype != nullptr ? ctype->name : "ERROR");
                 ss << (paramVar->isMutable ? " = " : " : ");
-                it->dump(compiler, result, thisFunction, thisVar, functions, ss, level + 1);
+                it.second->dump(compiler, result, it.first ? callee : thisFunction, thisVar, functions, ss, level + 1);
                 if (paramIndex != parameters.size() - 1) {
                     ss << ",\n";
                     dumpf(ss, level + 1);
@@ -290,7 +291,7 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctio
                 ss << paramVar->name.c_str();
                 ss << "'" << paramVar->getType(compiler, result)->name.c_str();
                 ss << (paramVar->isMutable ? " = " : " : ");
-                it->dump(compiler, result, thisFunction, thisVar, functions, ss, level + 1);
+                it.second->dump(compiler, result, thisFunction, thisVar, functions, ss, level + 1);
                 if (paramIndex != parameters.size() - 1) {
                     ss << ",\n";
                     dumpf(ss, level + 1);
@@ -385,7 +386,7 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler *compiler, CResult &result, shared_p
     }
     
     if (!_callVar) {
-        _callVar = CCallVar::create(compiler, result, loc, name, arguments, thisFunction, dotVar, callee);
+        _callVar = CCallVar::create(compiler, result, loc, name, arguments, thisFunction, thisVar, dotVar, callee);
         _callVar->getThisVar(compiler, result);
     }
     return _callVar;
@@ -406,7 +407,7 @@ int NCall::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseF
         return 0;
     }
     
-    vector<shared_ptr<NBase>> parameters(callee->argVars.size());
+    vector<pair<bool, shared_ptr<NBase>>> parameters(callee->argVars.size());
     if (_callVar && !_callVar->getParameters(compiler, result, parameters)) {
         return 0;
     }
@@ -426,10 +427,10 @@ int NCall::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseF
             parameterType->parent.lock()->setHasRefCount();
         }
         
-        auto isDefaultAssignment = argVar == callee->argDefaultValues[index];
+        auto isDefaultAssignment = argVar.first;
         auto parameterHeapVar = parameterVar->getHeapVar(compiler, result, thisVar);
-        if (argVar->nodeType == NodeType_Assignment) {
-            auto parameterAssignment = static_pointer_cast<NAssignment>(argVar);
+        if (argVar.second->nodeType == NodeType_Assignment) {
+            auto parameterAssignment = static_pointer_cast<NAssignment>(argVar.second);
             assert(parameterAssignment->inFunctionDeclaration);
             if (isDefaultAssignment) {
                 count += parameterAssignment->setHeapVar(compiler, result, callee, calleeVar, parameterHeapVar);
@@ -438,9 +439,9 @@ int NCall::setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseF
             }
         } else {
             if (isDefaultAssignment) {
-                count += argVar->setHeapVar(compiler, result, callee, calleeVar, parameterHeapVar);
+                count += argVar.second->setHeapVar(compiler, result, callee, calleeVar, parameterHeapVar);
             } else {
-                count += argVar->setHeapVar(compiler, result, thisFunction, thisVar, parameterHeapVar);
+                count += argVar.second->setHeapVar(compiler, result, thisFunction, thisVar, parameterHeapVar);
             }
         }
         index++;

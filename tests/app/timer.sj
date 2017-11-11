@@ -4,7 +4,7 @@ include "../../lib/common/common.sj"
 	toHTML()'string
 )
 
-element # element(
+element #element(
 	id : 'string
 	children : array!element()
 
@@ -12,7 +12,7 @@ element # element(
 		html : ""
 		for i : 0 to children.size {
 			child : children[i]
-			// html.add(child.toHTML())
+			html.add(child.toHTML())
 		}
 
 		c{

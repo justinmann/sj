@@ -300,7 +300,7 @@ protected:
         auto type = getType(compiler, result, thisFunction, thisVar);
         if (type && !_callVar && !type->parent.expired()) {
             _callee = type->parent.lock();
-            _callVar = CCallVar::create(compiler, result, CLoc::undefined, "??", make_shared<NodeList>(), thisFunction, weak_ptr<CVar>(), _callee);
+            _callVar = CCallVar::create(compiler, result, CLoc::undefined, "??", make_shared<NodeList>(), thisFunction, thisVar, weak_ptr<CVar>(), _callee);
             _callVar->getThisVar(compiler, result);
         }
         return nullptr;
@@ -308,7 +308,7 @@ protected:
     
     virtual int setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
         if (_callVar) {
-            vector<shared_ptr<NBase>> parameters(_callee->argDefaultValues.size());
+            vector<pair<bool, shared_ptr<NBase>>> parameters(_callee->argDefaultValues.size());
             if (!_callVar->getParameters(compiler, result, parameters)) {
                 return 0;
             }
@@ -323,10 +323,10 @@ protected:
                     parameterVar->setHeapVar(compiler, result, thisVar);
                 }
                 
-                auto isDefaultAssignment = argVar == _callee->argDefaultValues[index];
+                auto isDefaultAssignment = argVar.first;
                 auto parameterHeapVar = parameterVar->getHeapVar(compiler, result, thisVar);
-                if (argVar->nodeType == NodeType_Assignment) {
-                    auto parameterAssignment = static_pointer_cast<NAssignment>(argVar);
+                if (argVar.second->nodeType == NodeType_Assignment) {
+                    auto parameterAssignment = static_pointer_cast<NAssignment>(argVar.second);
                     assert(parameterAssignment->inFunctionDeclaration);
                     if (isDefaultAssignment) {
                         count += parameterAssignment->setHeapVar(compiler, result, _callee, calleeVar, parameterHeapVar);
@@ -335,9 +335,9 @@ protected:
                     }
                 } else {
                     if (isDefaultAssignment) {
-                        count += argVar->setHeapVar(compiler, result, _callee, calleeVar, parameterHeapVar);
+                        count += argVar.second->setHeapVar(compiler, result, _callee, calleeVar, parameterHeapVar);
                     } else {
-                        count += argVar->setHeapVar(compiler, result, thisFunction, thisVar, parameterHeapVar);
+                        count += argVar.second->setHeapVar(compiler, result, thisFunction, thisVar, parameterHeapVar);
                     }
                 }
                 index++;
@@ -454,7 +454,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                         output.structs[structName].push_back("int _refCount");
                     }
 
-                    vector<shared_ptr<NBase>> parameters;
+                    vector<pair<bool, shared_ptr<NBase>>> parameters;
                     globalFunction->transpile(this, *result, nullptr, nullptr, &output, &output.mainFunction, false, nullptr, globalVar, CLoc::undefined, parameters);
 
                     if (result->errors.size() == 0) {
