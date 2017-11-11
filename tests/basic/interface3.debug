@@ -65,7 +65,7 @@ global()'void {
   #foo(
     test()'string
   )
-  [heap]a'foo : [stack]class([stack]this : class()) as #foo
+  [heap]a'#foo : [stack]class([stack]this : class()) as #foo
   [heap]test(
     parent: [heap]a
   )

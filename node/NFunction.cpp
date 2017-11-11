@@ -389,7 +389,7 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
     }
     else {
         // Create struct
-        string structName = "sjs_" + name;
+        string structName = getStructName();
         if (trOutput->structs.find(structName) == trOutput->structs.end()) {
             trOutput->structs[structName].push_back("int _refCount");
 
@@ -653,7 +653,7 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
         line << ")";
         trBlock->statements.push_back(line.str());
     } else {
-        string structName = "sjs_" + name;
+        string structName = getStructName();
 
         // Initialize "this"
         auto objectHeapVar = calleeVar->getHeapVar(compiler, result, thisVar);
@@ -708,7 +708,7 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
     return returnValue;
 }
 
-string CFunction::getCInitFunctionName() {
+string CFunction::getBaseName() {
     string functionName = getCFullName(true);
     if (!parent.expired()) {
         auto tempType = parent.lock();
@@ -718,8 +718,15 @@ string CFunction::getCInitFunctionName() {
             tempType = tempType->parent.lock();
         }
     }
-    functionName.insert(0, "sjf_");
     return functionName;
+}
+
+string CFunction::getStructName() {
+    return string("sjs_") + getBaseName();
+}
+
+string CFunction::getCInitFunctionName() {
+    return string("sjf_") + getBaseName();
 }
 
 string CFunction::getCDestroyFunctionName() {
@@ -1689,6 +1696,7 @@ shared_ptr<CBaseFunction> CFunction::getCFunction(Compiler* compiler, CResult& r
 }
 
 shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames) {
+    assert(name[0] == '#');
     auto def = static_pointer_cast<CFunctionDefinition>(definition.lock());
     auto t = def->interfacesByName.find(name);
     if (t != def->interfacesByName.end()) {

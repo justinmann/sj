@@ -37,9 +37,9 @@ struct td_sjs_object {
 };
 
 void sjf_class_i32(sjs_class_i32* _this, sjs_class_i32** _return);
-sji_bar* sjf_class_i32_asBar(sjs_class_i32* _this);
-sji_foo* sjf_class_i32_asFoo(sjs_class_i32* _this);
 sjs_object* sjf_class_i32_asInterface(sjs_class_i32* _this, int typeId);
+sji_bar* sjf_class_i32_as_sji_bar(sjs_class_i32* _this);
+sji_foo* sjf_class_i32_as_sji_foo(sjs_class_i32* _this);
 void sjf_class_i32_destroy(sjs_class_i32* _this);
 void sjf_class_i32_test1(sjs_class_i32* _parent, int32_t* _return);
 void sjf_class_i32_test2(sjs_class_i32* _parent, int32_t* _return);
@@ -53,7 +53,16 @@ void sjf_class_i32(sjs_class_i32* _this, sjs_class_i32** _return) {
     *_return = _this;
 }
 
-sji_bar* sjf_class_i32_asBar(sjs_class_i32* _this) {
+sjs_object* sjf_class_i32_asInterface(sjs_class_i32* _this, int typeId) {
+    switch (typeId) {
+        case sji_bar_typeId: return sjf_class_i32_as_sji_bar(_this);
+        case sji_foo_typeId: return sjf_class_i32_as_sji_foo(_this);
+    }
+
+    return 0;
+}
+
+sji_bar* sjf_class_i32_as_sji_bar(sjs_class_i32* _this) {
     sji_bar* _interface = (sji_bar*)malloc(sizeof(sji_bar));
     _interface->_refCount = 1;
     _interface->_parent = (sjs_object*)_this;
@@ -64,7 +73,7 @@ sji_bar* sjf_class_i32_asBar(sjs_class_i32* _this) {
     return _interface;
 }
 
-sji_foo* sjf_class_i32_asFoo(sjs_class_i32* _this) {
+sji_foo* sjf_class_i32_as_sji_foo(sjs_class_i32* _this) {
     sji_foo* _interface = (sji_foo*)malloc(sizeof(sji_foo));
     _interface->_refCount = 1;
     _interface->_parent = (sjs_object*)_this;
@@ -73,15 +82,6 @@ sji_foo* sjf_class_i32_asFoo(sjs_class_i32* _this) {
     _interface->asInterface = sjf_class_i32_asInterface;
     _interface->test1 = sjf_class_i32_test1;
     return _interface;
-}
-
-sjs_object* sjf_class_i32_asInterface(sjs_class_i32* _this, int typeId) {
-    switch (typeId) {
-        case sji_bar_typeId: return sjf_class_i32_asBar(_this);
-        case sji_foo_typeId: return sjf_class_i32_asFoo(_this);
-    }
-
-    return 0;
 }
 
 void sjf_class_i32_destroy(sjs_class_i32* _this) {
@@ -110,7 +110,7 @@ void sjf_global(void) {
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
     sjf_class_i32(sjv_temp1, &sjv_temp1);
-    result1 = sjf_class_i32_asFoo(sjv_temp1);
+    result1 = sjf_class_i32_as_sji_foo(sjv_temp1);
     a = result1;
     a->_refCount++;
     result1->_refCount--;

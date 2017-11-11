@@ -3,20 +3,20 @@
 #include <stdlib.h>
 
 #define sjs_a_typeId 1
-#define sjs_aa_typeId 2
+#define sjs_a_aa_typeId 2
 #define sjs_object_typeId 3
 
 typedef struct td_sjs_a sjs_a;
-typedef struct td_sjs_aa sjs_aa;
+typedef struct td_sjs_a_aa sjs_a_aa;
 typedef struct td_sjs_object sjs_object;
 
 struct td_sjs_a {
     int _refCount;
     int32_t x;
-    sjs_aa* b;
+    sjs_a_aa* b;
 };
 
-struct td_sjs_aa {
+struct td_sjs_a_aa {
     int _refCount;
     sjs_a* _parent;
 };
@@ -26,9 +26,9 @@ struct td_sjs_object {
 };
 
 void sjf_a(sjs_a* _this, sjs_a** _return);
-void sjf_a_aa(sjs_aa* _this, sjs_aa** _return);
-void sjf_a_aa_c(sjs_aa* _parent, int32_t* _return);
-void sjf_a_aa_destroy(sjs_aa* _this);
+void sjf_a_aa(sjs_a_aa* _this, sjs_a_aa** _return);
+void sjf_a_aa_c(sjs_a_aa* _parent, int32_t* _return);
+void sjf_a_aa_destroy(sjs_a_aa* _this);
 void sjf_a_destroy(sjs_a* _this);
 void sjf_global(void);
 
@@ -38,13 +38,13 @@ void sjf_a(sjs_a* _this, sjs_a** _return) {
     *_return = _this;
 }
 
-void sjf_a_aa(sjs_aa* _this, sjs_aa** _return) {
+void sjf_a_aa(sjs_a_aa* _this, sjs_a_aa** _return) {
     _this->_refCount++;
 
     *_return = _this;
 }
 
-void sjf_a_aa_c(sjs_aa* _parent, int32_t* _return) {
+void sjf_a_aa_c(sjs_a_aa* _parent, int32_t* _return) {
     sjs_a* temp2;
     int32_t temp3;
 
@@ -54,7 +54,7 @@ void sjf_a_aa_c(sjs_aa* _parent, int32_t* _return) {
     *_return = temp3;
 }
 
-void sjf_a_aa_destroy(sjs_aa* _this) {
+void sjf_a_aa_destroy(sjs_a_aa* _this) {
 }
 
 void sjf_a_destroy(sjs_a* _this) {
@@ -62,16 +62,16 @@ void sjf_a_destroy(sjs_a* _this) {
 }
 
 void sjf_global(void) {
-    sjs_aa sjd_temp1;
+    sjs_a_aa sjd_temp1;
     sjs_a sjd_temp2;
     sjs_a* a;
-    sjs_aa* d;
+    sjs_a_aa* d;
     int32_t result1;
     int32_t result2;
-    sjs_aa* sjv_temp1;
+    sjs_a_aa* sjv_temp1;
     sjs_a* sjv_temp2;
-    sjs_aa* temp1;
-    sjs_aa* temp4;
+    sjs_a_aa* temp1;
+    sjs_a_aa* temp4;
 
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;

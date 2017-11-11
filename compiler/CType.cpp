@@ -11,10 +11,11 @@
 CType::CType(const char* name, const char* cname, const char* defaultValue) : category(CTC_Value), name(name), nameValue(cname), nameRef(cname), _defaultValue(defaultValue) {
 }
 
-CType::CType(const char* name, weak_ptr<CFunction> parent) : category(CTC_Function), name(name), nameValue(string("sjs_") + name), nameRef(string("sjs_") + name + "*"), parent(parent) {
+CType::CType(const char* name, weak_ptr<CFunction> parent) : category(CTC_Value), name(name), nameValue(parent.lock()->getStructName()), nameRef(parent.lock()->getStructName() + "*"), parent(parent) {
 }
 
-CType::CType(const char* name, weak_ptr<CInterface> parent) : category(CTC_Interface), name(name), nameValue(string("sji_") + name), nameRef(string("sji_") + name + "*"), parent(parent) {
+CType::CType(const char* name, weak_ptr<CInterface> parent) : category(CTC_Interface), name(name), nameValue(parent.lock()->getStructName()), nameRef(parent.lock()->getStructName() + "*"), parent(parent) {
+    assert(name[0] == '#');
 }
 
 shared_ptr<ReturnValue> CType::transpileDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {

@@ -2,22 +2,22 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#define sjs_anon1_typeId 1
-#define sjs_class_typeId 2
+#define sjs_class_typeId 1
+#define sjs_class_anon1_typeId 2
 #define sjs_object_typeId 3
 
-typedef struct td_sjs_anon1 sjs_anon1;
 typedef struct td_sjs_class sjs_class;
+typedef struct td_sjs_class_anon1 sjs_class_anon1;
 typedef struct td_sjs_object sjs_object;
-
-struct td_sjs_anon1 {
-    int _refCount;
-    int32_t x;
-};
 
 struct td_sjs_class {
     int _refCount;
-    sjs_anon1* data;
+    sjs_class_anon1* data;
+};
+
+struct td_sjs_class_anon1 {
+    int _refCount;
+    int32_t x;
 };
 
 struct td_sjs_object {
@@ -25,10 +25,10 @@ struct td_sjs_object {
 };
 
 void sjf_class(sjs_class* _this, sjs_class** _return);
-void sjf_class_anon1(sjs_anon1* _this, sjs_anon1** _return);
-void sjf_class_anon1_destroy(sjs_anon1* _this);
+void sjf_class_anon1(sjs_class_anon1* _this, sjs_class_anon1** _return);
+void sjf_class_anon1_destroy(sjs_class_anon1* _this);
 void sjf_class_destroy(sjs_class* _this);
-void sjf_class_get(sjs_class* _parent, sjs_anon1** _return);
+void sjf_class_get(sjs_class* _parent, sjs_class_anon1** _return);
 void sjf_global(void);
 
 void sjf_class(sjs_class* _this, sjs_class** _return) {
@@ -37,13 +37,13 @@ void sjf_class(sjs_class* _this, sjs_class** _return) {
     *_return = _this;
 }
 
-void sjf_class_anon1(sjs_anon1* _this, sjs_anon1** _return) {
+void sjf_class_anon1(sjs_class_anon1* _this, sjs_class_anon1** _return) {
     _this->_refCount++;
 
     *_return = _this;
 }
 
-void sjf_class_anon1_destroy(sjs_anon1* _this) {
+void sjf_class_anon1_destroy(sjs_class_anon1* _this) {
 }
 
 void sjf_class_destroy(sjs_class* _this) {
@@ -54,8 +54,8 @@ void sjf_class_destroy(sjs_class* _this) {
     }
 }
 
-void sjf_class_get(sjs_class* _parent, sjs_anon1** _return) {
-    sjs_anon1* temp1;
+void sjf_class_get(sjs_class* _parent, sjs_class_anon1** _return) {
+    sjs_class_anon1* temp1;
 
     temp1 = _parent->data;
     temp1->_refCount++;
@@ -72,12 +72,12 @@ void sjf_class_get(sjs_class* _parent, sjs_anon1** _return) {
 void sjf_global(void) {
     sjs_class sjd_temp1;
     sjs_class* c;
-    sjs_anon1* d;
-    sjs_anon1* result1;
-    sjs_anon1* sjv_temp1;
+    sjs_class_anon1* d;
+    sjs_class_anon1* result1;
+    sjs_class_anon1* sjv_temp1;
     sjs_class* sjv_temp2;
 
-    sjv_temp1 = (sjs_anon1*)malloc(sizeof(sjs_anon1));
+    sjv_temp1 = (sjs_class_anon1*)malloc(sizeof(sjs_class_anon1));
     sjv_temp1->_refCount = 1;
     sjv_temp1->x = 0;
     sjf_class_anon1(sjv_temp1, &sjv_temp1);

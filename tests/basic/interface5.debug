@@ -21,11 +21,11 @@ global()'void {
   #bar(
     test2()'i32
   )
-  [heap]a'foo : [stack]class!i32([stack]this : class!i32()) as #foo!i32
+  [heap]a'#foo : [stack]class!i32([stack]this : class!i32()) as #foo!i32
   [heap]test1(
     parent: [heap]a
   )
-  [heap]b'bar : a as #bar
+  [heap]b'#bar : a as #bar
   [heap]test2(
     parent: [heap]b
   )

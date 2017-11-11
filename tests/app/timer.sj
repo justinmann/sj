@@ -4,9 +4,9 @@ include "../../lib/common/common.sj"
 	toHTML()'string
 )
 
-element #element(
+element #element (
 	id : 'string
-	children : array!element()
+	children : array!#element()
 
 	update() {
 		html : ""
@@ -29,7 +29,7 @@ element #element(
 	}
 ) { this }
 
-timerElement # element(
+timerElement #element (
 	count = 0
 
 	toHTML() {
@@ -47,7 +47,7 @@ timerElement # element(
 
 rootElement : element(
 	id : "root"
-	children : [ timerElement() as element ]
+	children : [ timerElement() as #element ]
 )
 
 rootElement.update()

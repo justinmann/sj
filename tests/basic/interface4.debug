@@ -12,7 +12,7 @@ global()'void {
   #foo!item(
     test()'item
   )
-  [heap]a'foo : [stack]class([stack]this : class()) as #foo!i32
+  [heap]a'#foo : [stack]class([stack]this : class()) as #foo!i32
   [heap]test(
     parent: [heap]a
   )

@@ -34,6 +34,7 @@ void NInterface::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBas
     }
     
     auto fun = static_pointer_cast<CFunctionDefinition>(thisFunction);
+    assert(name[0] == '#');
     fun->interfacesByName[name] = def;
 }
 
@@ -43,7 +44,7 @@ shared_ptr<ReturnValue> NInterface::transpile(Compiler* compiler, CResult& resul
 }
 
 void NInterface::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-    ss << "#" << name;
+    ss << name;
     if (templateTypeNames) {
         if (templateTypeNames->size() == 1) {
             ss << "!" << (*templateTypeNames)[0]->getName();
@@ -148,7 +149,7 @@ string CInterface::fullName(bool includeTemplateTypes) {
 }
 
 bool CInterface::getHasThis() {
-    assert(false);
+//    assert(false);
     return false;
 }
 
@@ -249,12 +250,13 @@ string CInterface::getCInitFunctionName() {
     return "";
 }
 
-string CInterface::getCDestroyFunctionName() {
-    return "sji_" + name + "_destroy";
+string CInterface::getStructName() {
+    auto t = name.substr(1, name.size() - 1);
+    return "sji_" + t;
 }
 
-string CInterface::getStructName() {
-    return "sji_" + name;
+string CInterface::getCDestroyFunctionName() {
+    return getStructName() + "_destroy";
 }
 
 string CInterface::getTypeIdName() {
@@ -262,10 +264,8 @@ string CInterface::getTypeIdName() {
 }
 
 string CInterface::getCastFunctionName(shared_ptr<CBaseFunction> fromFunction) {
-    string temp = name;
-    temp[0] = toupper(temp[0]);
     stringstream line;
-    line << fromFunction->getCInitFunctionName() << "_as" << temp;
+    line << fromFunction->getCInitFunctionName() << "_as_" << getStructName();
     return line.str();
 }
 
@@ -273,7 +273,7 @@ string CInterface::transpileCast(shared_ptr<CBaseFunction> fromFunction, string 
     auto fromInterface = dynamic_pointer_cast<CInterface>(fromFunction);
     if (fromInterface) {
         stringstream line;
-        line << varName << "->asInterface(" << varName << "->_parent, " << "sji_" << name << "_typeId)";
+        line << varName << "->asInterface(" << varName << "->_parent, " << getTypeIdName() << ")";
         return line.str();
     }
     else {

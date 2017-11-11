@@ -30,9 +30,21 @@ public:
     shared_ptr<CTypeNameList> argTypeNames;
     shared_ptr<CTypeName> returnTypeName;
 
-    CTypeName(CTypeCategory category, const string& name) : category(category), mutability(CTM_Undefined), name(name) { }
-    CTypeName(CTypeCategory category, const string& name, shared_ptr<CTypeNameList> templateTypeNames) : category(category), mutability(CTM_Undefined), name(name), templateTypeNames(templateTypeNames) { }
-    CTypeName(shared_ptr<CTypeNameList> argTypeNames, shared_ptr<CTypeName> returnTypeName) : category(CTC_Function), mutability(CTM_Undefined), argTypeNames(argTypeNames), returnTypeName(returnTypeName) { }
+    CTypeName(CTypeCategory category, const string& name) : category(category), mutability(CTM_Undefined), name(name) { 
+        assert((category == CTC_Interface) == (name[0] == '#')); 
+        assert(name[1] != '#'); 
+        assert(category != CTC_Function);
+    }
+
+    CTypeName(CTypeCategory category, const string& name, shared_ptr<CTypeNameList> templateTypeNames) : category(category), mutability(CTM_Undefined), name(name), templateTypeNames(templateTypeNames) { 
+        assert((category == CTC_Interface) == (name[0] == '#')); 
+        assert(name[1] != '#'); 
+        assert(category != CTC_Function);
+    }
+
+    CTypeName(shared_ptr<CTypeNameList> argTypeNames, shared_ptr<CTypeName> returnTypeName) : category(CTC_Function), mutability(CTM_Undefined), argTypeNames(argTypeNames), returnTypeName(returnTypeName) { 
+        assert(false);
+    }
     
     static shared_ptr<CTypeName> parse(string name);
     

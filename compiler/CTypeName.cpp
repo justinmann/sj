@@ -75,9 +75,6 @@ string CTypeName::getName() {
         return str;
     } else {
         string str = "";
-        if (category == CTC_Interface) {
-            str += "#";
-        }
         str += name;
         if (templateTypeNames) {
             if (templateTypeNames->size() == 1) {
