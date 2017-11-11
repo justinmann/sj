@@ -42,20 +42,22 @@ shared_ptr<ReturnValue> NCast::transpile(Compiler* compiler, CResult& result, sh
         return nullptr;
     }
 
-    auto resultValue = trBlock->createTempVariable("result", type, false, RVR_MustRetain);
     if (type != nullptr && type->category == CTC_Interface) {
+        auto resultValue = trBlock->createTempVariable("result", type, true, RVR_MustRelease);
         auto interface = static_pointer_cast<CInterface>(type->parent.lock());
         interfaceVar = interface->getThisVar(compiler, result);
         stringstream line;
         line << resultValue->name << " = " << interface->getCastFunctionName(returnValue->type->parent.lock()) << "(" << returnValue->name << ")";
         trBlock->statements.push_back(line.str());
+        return resultValue;
     }
     else {
+        auto resultValue = trBlock->createTempVariable("result", type, false, RVR_MustRetain);
         stringstream line;
         line << resultValue->name << " = " << "(" << type->nameRef << ")" << returnValue->name;
         trBlock->statements.push_back(line.str());
+        return resultValue;
     }
-	return resultValue;
 }
 
 //shared_ptr<ReturnValue> NCast::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {

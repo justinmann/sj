@@ -311,7 +311,7 @@ void sjf_element_update(sjs_element* _parent) {
     sjf_array_char(sjv_temp13, &sjv_temp13);
     sjv_temp14 = (sjs_string*)malloc(sizeof(sjs_string));
     sjv_temp14->_refCount = 1;
-    sjv_temp14->count = -1;
+    sjv_temp14->count = 4294967295;
     sjv_temp14->data = sjv_temp13;
     sjv_temp14->data->_refCount++;
     sjf_string(sjv_temp14, &sjv_temp14);

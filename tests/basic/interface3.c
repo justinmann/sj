@@ -198,6 +198,7 @@ void sjf_global(void) {
     sjs_anon3* random;
     uintptr_t result1;
     sji_foo* result2;
+    sjs_string* result3;
     sjs_anon3* sjv_temp1;
     sjs_anon2* sjv_temp2;
     sjs_anon1* sjv_temp3;
@@ -226,6 +227,26 @@ void sjf_global(void) {
     result2 = sjf_class_asFoo(sjv_temp6);
     a = result2;
     a->_refCount++;
+    result2->_refCount--;
+    if (result2->_refCount <= 0) {
+        sji_foo_destroy(result2);
+        free(result2);
+    }
+
+    result3 = 0;
+
+    a->test(a->_parent, &result3);
+
+    a->_refCount--;
+    if (a->_refCount <= 0) {
+        sji_foo_destroy(a);
+        free(a);
+    }
+    result3->_refCount--;
+    if (result3->_refCount <= 0) {
+        sjf_string_destroy(result3);
+        free(result3);
+    }
     sjf_anon3_destroy(&sjd_temp1);
     sjf_anon2_destroy(&sjd_temp2);
     sjf_anon1_destroy(&sjd_temp3);

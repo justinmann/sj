@@ -298,6 +298,11 @@ void sjf_list_class_getAt(sjs_list_class* _parent, int32_t index, sjs_class** _r
     temp10 = _parent->data;
     result9 = 0;
     sjf_array_class_getAt(temp10, index, &result9);
+    result9->_refCount--;
+    if (result9->_refCount <= 0) {
+        sjf_class_destroy(result9);
+        free(result9);
+    }
 
     *_return = result9;
 }
@@ -309,6 +314,11 @@ void sjf_list_class_setSize(sjs_list_class* _parent, int32_t size, sjs_array_cla
     temp6 = _parent->data;
     result6 = 0;
     sjf_array_class_grow(temp6, size, &result6);
+    result6->_refCount--;
+    if (result6->_refCount <= 0) {
+        sjf_array_class_destroy(result6);
+        free(result6);
+    }
 
     *_return = result6;
 }

@@ -59,6 +59,17 @@ void sjf_global(void) {
     result1 = sjf_class_asFoo(sjv_temp1);
     a = result1;
     a->_refCount++;
+    result1->_refCount--;
+    if (result1->_refCount <= 0) {
+        sji_foo_destroy(result1);
+        free(result1);
+    }
+
+    a->_refCount--;
+    if (a->_refCount <= 0) {
+        sji_foo_destroy(a);
+        free(a);
+    }
     sjf_class_destroy(&sjd_temp1);
 }
 

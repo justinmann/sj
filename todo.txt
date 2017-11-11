@@ -6,7 +6,6 @@
 
 -- interface --
 * cast from interface to another interface
-* call interace method
 
 void* foo_asInterface(sjs_object* _parent, int sji_foo_id) {
 	switch (sji_foo_id) {

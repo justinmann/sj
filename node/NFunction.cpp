@@ -337,16 +337,6 @@ int CFunction::setHeapVarBody(Compiler *compiler, CResult& result, shared_ptr<CV
     return 0;
 }
 
-class ArgData {
-public:
-    ArgData(shared_ptr<CVar> var_, shared_ptr<ReturnValue> value_) : var(var_), name(value_->name), value(value_) { }
-    ArgData(shared_ptr<CVar> var_, string name_) : var(var_), name(name_), value(nullptr) { }
-
-    shared_ptr<CVar> var;
-    string name;
-    shared_ptr<ReturnValue> value;
-};
-
 void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutput* trOutput) {
     auto functionName = getCInitFunctionName();
     if (!getHasThis()) {

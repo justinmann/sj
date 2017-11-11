@@ -59,6 +59,7 @@ void sjf_global(void) {
     sjs_class sjd_temp1;
     sji_foo* a;
     sji_foo* result1;
+    int32_t result2;
     sjs_class* sjv_temp1;
 
     sjv_temp1 = &sjd_temp1;
@@ -67,6 +68,19 @@ void sjf_global(void) {
     result1 = sjf_class_asFoo(sjv_temp1);
     a = result1;
     a->_refCount++;
+    result1->_refCount--;
+    if (result1->_refCount <= 0) {
+        sji_foo_destroy(result1);
+        free(result1);
+    }
+
+    a->test(a->_parent, &result2);
+
+    a->_refCount--;
+    if (a->_refCount <= 0) {
+        sji_foo_destroy(a);
+        free(a);
+    }
     sjf_class_destroy(&sjd_temp1);
 }
 

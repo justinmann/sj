@@ -270,8 +270,92 @@ void CInterfaceMethod::transpileDefinition(Compiler* compiler, CResult& result, 
 }
 
 shared_ptr<ReturnValue> CInterfaceMethod::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<shared_ptr<NBase>>& parameters) {
-// TODO:    assert(false);
-    return nullptr;
+    assert(compiler->state == CompilerState::Compile);
+    assert(calleeValue != nullptr);
+
+    auto returnType = getReturnType(compiler, result, thisVar);
+    if (!returnType) {
+        return nullptr;
+    }
+
+    bool isReturnValueThis = false;
+    shared_ptr<ReturnValue> returnValue;
+    if (returnType != compiler->typeVoid) {
+        if (!returnType->parent.expired()) {
+            returnValue = trBlock->createTempVariable("result", returnType, true, RVR_MustRelease);
+            stringstream initReturnStream;
+            initReturnStream << returnValue->name << " = 0";
+            trBlock->statements.push_back(initReturnStream.str());
+        }
+        else {
+            returnValue = trBlock->createTempVariable("result", returnType, true, RVR_MustRelease);
+        }
+    }
+
+    vector<ArgData> argValues;
+    auto argIndex = 0;
+    // Fill in "this" with normal arguments
+    for (auto defaultAssignment : argDefaultValues) {
+        auto argVar = argVars[argIndex];
+        auto argHeapVar = argVar->getHeapVar(compiler, result, thisVar);
+        auto argType = argVar->getType(compiler, result);
+        auto isDefaultAssignment = parameters[argIndex] == defaultAssignment;
+        shared_ptr<ReturnValue> argReturnValue;
+
+        stringstream argStream;
+        if (isDefaultAssignment) {
+            auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), calleeVar);
+            if (paramVar) {
+                auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
+                assert(!argHeapVar || paramHeapVar == argHeapVar);
+            }
+            argReturnValue = parameters[argIndex]->transpile(compiler, result, shared_from_this(), calleeVar, trOutput, trBlock, false);
+        }
+        else {
+            auto paramVar = parameters[argIndex]->getVar(compiler, result, shared_from_this(), thisVar);
+            if (paramVar) {
+                auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
+                // TODO: assert(!argHeapVar || paramHeapVar == argHeapVar);
+            }
+            argReturnValue = parameters[argIndex]->transpile(compiler, result, shared_from_this(), thisVar, trOutput, trBlock, false);
+        }
+
+        if (argReturnValue == nullptr) {
+            result.addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' has no value", argVar->name.c_str());
+            return nullptr;
+        }
+
+        if (argType == nullptr) {
+            result.addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' type is undefined", argVar->name.c_str());
+            return nullptr;
+        }
+
+        if (argReturnValue->type != argType) {
+            result.addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' type '%s' does not match '%s'", argVar->name.c_str(), argReturnValue->type->name.c_str(), argType->name.c_str());
+            return nullptr;
+        }
+
+        // TODO: assert(argReturnValue == nullptr || argReturnValue->release == RVR_MustRetain);
+
+        argValues.push_back(ArgData(argVar, argReturnValue));
+        argIndex++;
+    }
+
+    // Call function
+    stringstream line;
+    line << calleeValue->name << "->" << name << "(";
+    line << calleeValue->name << "->_parent";
+    for (auto argValue : argValues) {
+        line << ", ";
+        line << argValue.name;
+    }
+    if (returnValue) {
+        line << ", ";
+        line << "&" << returnValue->name;
+    }
+    line << ")";
+    trBlock->statements.push_back(line.str());
+    return returnValue;
 }
 
 //shared_ptr<ReturnValue> CInterfaceMethod::call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType) {

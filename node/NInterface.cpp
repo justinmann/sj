@@ -88,20 +88,10 @@ shared_ptr<CType> CInterfaceVar::getType(Compiler* compiler, CResult& result) {
 //}
 
 bool CInterfaceVar::getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
-    return isHeapVar;
+    return true;
 }
 
 int CInterfaceVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
-    if (!isHeapVar) {
-        isHeapVar = true;
-        
-        auto t = getType(compiler, result);
-        if (!t->parent.expired()) {
-            t->parent.lock()->setHasRefCount();
-        }
-        
-        return 1;
-    }
     return 0;
 }
 
@@ -119,6 +109,7 @@ void CInterfaceVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFu
 }
 
 CInterface::CInterface(weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent) : /*_structType(nullptr),*/ CBaseFunction(definition.lock()->name, parent, definition) {
+    setHasRefCount();
 }
 
 shared_ptr<CInterface> CInterface::init(Compiler* compiler, CResult& result, shared_ptr<NInterface> node, vector<shared_ptr<CType>>& templateTypes) {
@@ -259,8 +250,7 @@ string CInterface::getCInitFunctionName() {
 }
 
 string CInterface::getCDestroyFunctionName() {
-    assert(false);
-    return "";
+    return "sji_" + name + "_destroy";
 }
 
 string CInterface::getCastFunctionName(shared_ptr<CBaseFunction> fromFunction) {
@@ -294,7 +284,7 @@ void CInterface::transpileDefinition(Compiler* compiler, CResult& result, TrOutp
         }
     }
 
-    string destroyInterfaceName = "void " + structName + "_destroy(" + structName + "* _this)";
+    string destroyInterfaceName = "void " + getCDestroyFunctionName() + "(" + structName + "* _this)";
     if (trOutput->functions.find(destroyInterfaceName) == trOutput->functions.end()) {
         auto destroyBlock = make_shared<TrBlock>();
         destroyBlock->definition = destroyInterfaceName;
