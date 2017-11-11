@@ -27,6 +27,51 @@ void* foo_asInterface(sjs_object* _parent, int sji_foo_id) {
 	a : t.getAt(0)
 	b = t.getAt(1)
 
+-- lambda --
+array!item(
+	each(lambda : '(item)void) {
+		for i : 0 to size {
+			lambda(getAt(i))
+		}
+	}
+)
+
+arr : [1, 2, 3]
+total = 0
+arr.each((i:'i32) {
+	total += i
+	void
+})
+
+// definition
+struct sjl_anon1 {
+	int _refCount
+	sjs_object* _parent;
+	void (*lambda)(sjs_object*, int32_t)
+}
+
+void sjl_anon1_destroy(sjl_anon1 *_this) {
+	_this->_parent->_refCount--;
+}
+
+// invoke
+void array_each() {
+	item = array_getAt();
+	lambda->lambda(lambda->_parent, item);
+}
+
+// create
+void sjf_anon2(sjs_func* _parent, int32_t i) {
+	_parent->total += i;
+}
+
+x = new sjl_anon1
+x->_refCount = 1;
+x->_parent = _this;
+x->_parent->_refCount++;
+x->lambda = sjf_anon2;
+array_each(arr, x);
+
 -- library --
 * directory structure for pure sj library
 lib/common/common.sj
