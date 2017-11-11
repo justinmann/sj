@@ -9,6 +9,18 @@ const char* sjg_string2 = "foo";
 const char* sjg_string3 = "hi";
 const char* sjg_string4 = "";
 
+#define sji_element_typeId 1
+#define sjs_anon1_typeId 2
+#define sjs_anon2_typeId 3
+#define sjs_anon3_typeId 4
+#define sjs_array_char_typeId 5
+#define sjs_array_element_typeId 6
+#define sjs_element_typeId 7
+#define sjs_global_typeId 8
+#define sjs_object_typeId 9
+#define sjs_string_typeId 10
+#define sjs_timerElement_typeId 11
+
 typedef struct td_sji_element sji_element;
 typedef struct td_sjs_anon1 sjs_anon1;
 typedef struct td_sjs_anon2 sjs_anon2;
@@ -21,22 +33,11 @@ typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_string sjs_string;
 typedef struct td_sjs_timerElement sjs_timerElement;
 
-int sji_element_typeId = 1;
-int sjs_anon1_typeId = 2;
-int sjs_anon2_typeId = 3;
-int sjs_anon3_typeId = 4;
-int sjs_array_char_typeId = 5;
-int sjs_array_element_typeId = 6;
-int sjs_element_typeId = 7;
-int sjs_global_typeId = 8;
-int sjs_object_typeId = 9;
-int sjs_string_typeId = 10;
-int sjs_timerElement_typeId = 11;
-
 struct td_sji_element {
     int _refCount;
     sjs_object* _parent;
     void (*destroy)(sjs_object* _this);
+    sjs_object* (*asInterface)(sjs_object* _this, int typeId);
     void (*toHTML)(sjs_object* _parent, sjs_string** _return);
 };
 
@@ -107,6 +108,7 @@ void sjf_array_element_getAt(sjs_array_element* _parent, int32_t index, sjs_elem
 void sjf_array_element_setAt(sjs_array_element* _parent, int32_t index, sjs_element* item);
 void sjf_element(sjs_element* _this, sjs_element** _return);
 sji_element* sjf_element_asElement(sjs_element* _this);
+sjs_object* sjf_element_asInterface(sjs_element* _this, int typeId);
 void sjf_element_destroy(sjs_element* _this);
 void sjf_element_toHTML(sjs_element* _parent, sjs_string** _return);
 void sjf_element_update(sjs_element* _parent);
@@ -116,6 +118,7 @@ void sjf_string(sjs_string* _this, sjs_string** _return);
 void sjf_string_destroy(sjs_string* _this);
 void sjf_timerElement(sjs_timerElement* _this, sjs_timerElement** _return);
 sji_element* sjf_timerElement_asElement(sjs_timerElement* _this);
+sjs_object* sjf_timerElement_asInterface(sjs_timerElement* _this, int typeId);
 void sjf_timerElement_destroy(sjs_timerElement* _this);
 void sjf_timerElement_toHTML(sjs_timerElement* _parent, sjs_string** _return);
 void sji_element_destroy(sji_element* _this);
@@ -253,8 +256,18 @@ sji_element* sjf_element_asElement(sjs_element* _this) {
     _interface->_refCount = 1;
     _interface->_parent = (sjs_object*)_this;
     _interface->_parent->_refCount++;
+    _interface->destroy = sjf_element_destroy;
+    _interface->asInterface = sjf_element_asInterface;
     _interface->toHTML = sjf_element_toHTML;
     return _interface;
+}
+
+sjs_object* sjf_element_asInterface(sjs_element* _this, int typeId) {
+    switch (typeId) {
+        case sji_element_typeId: return sjf_element_asElement(_this);
+    }
+
+    return 0;
 }
 
 void sjf_element_destroy(sjs_element* _this) {
@@ -498,8 +511,18 @@ sji_element* sjf_timerElement_asElement(sjs_timerElement* _this) {
     _interface->_refCount = 1;
     _interface->_parent = (sjs_object*)_this;
     _interface->_parent->_refCount++;
+    _interface->destroy = sjf_timerElement_destroy;
+    _interface->asInterface = sjf_timerElement_asInterface;
     _interface->toHTML = sjf_timerElement_toHTML;
     return _interface;
+}
+
+sjs_object* sjf_timerElement_asInterface(sjs_timerElement* _this, int typeId) {
+    switch (typeId) {
+        case sji_element_typeId: return sjf_timerElement_asElement(_this);
+    }
+
+    return 0;
 }
 
 void sjf_timerElement_destroy(sjs_timerElement* _this) {

@@ -47,7 +47,7 @@ shared_ptr<ReturnValue> NCast::transpile(Compiler* compiler, CResult& result, sh
         auto interface = static_pointer_cast<CInterface>(type->parent.lock());
         interfaceVar = interface->getThisVar(compiler, result);
         stringstream line;
-        line << resultValue->name << " = " << interface->getCastFunctionName(returnValue->type->parent.lock()) << "(" << returnValue->name << ")";
+        line << resultValue->name << " = " << interface->transpileCast(returnValue->type->parent.lock(), returnValue->name);
         trBlock->statements.push_back(line.str());
         return resultValue;
     }

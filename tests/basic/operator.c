@@ -2,11 +2,11 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#define sjs_fancyMath_typeId 1
+#define sjs_object_typeId 2
+
 typedef struct td_sjs_fancyMath sjs_fancyMath;
 typedef struct td_sjs_object sjs_object;
-
-int sjs_fancyMath_typeId = 1;
-int sjs_object_typeId = 2;
 
 struct td_sjs_fancyMath {
     int _refCount;

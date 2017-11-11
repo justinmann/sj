@@ -8,6 +8,14 @@ const char* sjg_string1 = "he\"llo";
 const char* sjg_string2 = "he\nllo";
 const char* sjg_string3 = "hello";
 
+#define sjs_anon1_typeId 1
+#define sjs_anon2_typeId 2
+#define sjs_anon3_typeId 3
+#define sjs_array_char_typeId 4
+#define sjs_global_typeId 5
+#define sjs_object_typeId 6
+#define sjs_string_typeId 7
+
 typedef struct td_sjs_anon1 sjs_anon1;
 typedef struct td_sjs_anon2 sjs_anon2;
 typedef struct td_sjs_anon3 sjs_anon3;
@@ -15,14 +23,6 @@ typedef struct td_sjs_array_char sjs_array_char;
 typedef struct td_sjs_global sjs_global;
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_string sjs_string;
-
-int sjs_anon1_typeId = 1;
-int sjs_anon2_typeId = 2;
-int sjs_anon3_typeId = 3;
-int sjs_array_char_typeId = 4;
-int sjs_global_typeId = 5;
-int sjs_object_typeId = 6;
-int sjs_string_typeId = 7;
 
 struct td_sjs_anon1 {
     int _refCount;

@@ -2,19 +2,30 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#define sji_bar_typeId 1
+#define sji_foo_typeId 2
+#define sjs_class_i32_typeId 3
+#define sjs_object_typeId 4
+
+typedef struct td_sji_bar sji_bar;
 typedef struct td_sji_foo sji_foo;
 typedef struct td_sjs_class_i32 sjs_class_i32;
 typedef struct td_sjs_object sjs_object;
 
-int sji_foo_typeId = 1;
-int sjs_class_i32_typeId = 2;
-int sjs_object_typeId = 3;
+struct td_sji_bar {
+    int _refCount;
+    sjs_object* _parent;
+    void (*destroy)(sjs_object* _this);
+    sjs_object* (*asInterface)(sjs_object* _this, int typeId);
+    void (*test2)(sjs_object* _parent, int32_t* _return);
+};
 
 struct td_sji_foo {
     int _refCount;
     sjs_object* _parent;
     void (*destroy)(sjs_object* _this);
-    void (*test)(sjs_object* _parent, int32_t* _return);
+    sjs_object* (*asInterface)(sjs_object* _this, int typeId);
+    void (*test1)(sjs_object* _parent, int32_t* _return);
 };
 
 struct td_sjs_class_i32 {
@@ -26,10 +37,14 @@ struct td_sjs_object {
 };
 
 void sjf_class_i32(sjs_class_i32* _this, sjs_class_i32** _return);
+sji_bar* sjf_class_i32_asBar(sjs_class_i32* _this);
 sji_foo* sjf_class_i32_asFoo(sjs_class_i32* _this);
+sjs_object* sjf_class_i32_asInterface(sjs_class_i32* _this, int typeId);
 void sjf_class_i32_destroy(sjs_class_i32* _this);
-void sjf_class_i32_test(sjs_class_i32* _parent, int32_t* _return);
+void sjf_class_i32_test1(sjs_class_i32* _parent, int32_t* _return);
+void sjf_class_i32_test2(sjs_class_i32* _parent, int32_t* _return);
 void sjf_global(void);
+void sji_bar_destroy(sji_bar* _this);
 void sji_foo_destroy(sji_foo* _this);
 
 void sjf_class_i32(sjs_class_i32* _this, sjs_class_i32** _return) {
@@ -38,28 +53,58 @@ void sjf_class_i32(sjs_class_i32* _this, sjs_class_i32** _return) {
     *_return = _this;
 }
 
+sji_bar* sjf_class_i32_asBar(sjs_class_i32* _this) {
+    sji_bar* _interface = (sji_bar*)malloc(sizeof(sji_bar));
+    _interface->_refCount = 1;
+    _interface->_parent = (sjs_object*)_this;
+    _interface->_parent->_refCount++;
+    _interface->destroy = sjf_class_i32_destroy;
+    _interface->asInterface = sjf_class_i32_asInterface;
+    _interface->test2 = sjf_class_i32_test2;
+    return _interface;
+}
+
 sji_foo* sjf_class_i32_asFoo(sjs_class_i32* _this) {
     sji_foo* _interface = (sji_foo*)malloc(sizeof(sji_foo));
     _interface->_refCount = 1;
     _interface->_parent = (sjs_object*)_this;
     _interface->_parent->_refCount++;
-    _interface->test = sjf_class_i32_test;
+    _interface->destroy = sjf_class_i32_destroy;
+    _interface->asInterface = sjf_class_i32_asInterface;
+    _interface->test1 = sjf_class_i32_test1;
     return _interface;
+}
+
+sjs_object* sjf_class_i32_asInterface(sjs_class_i32* _this, int typeId) {
+    switch (typeId) {
+        case sji_bar_typeId: return sjf_class_i32_asBar(_this);
+        case sji_foo_typeId: return sjf_class_i32_asFoo(_this);
+    }
+
+    return 0;
 }
 
 void sjf_class_i32_destroy(sjs_class_i32* _this) {
 }
 
-void sjf_class_i32_test(sjs_class_i32* _parent, int32_t* _return) {
+void sjf_class_i32_test1(sjs_class_i32* _parent, int32_t* _return) {
 
-    *_return = 5;
+    *_return = 1;
+}
+
+void sjf_class_i32_test2(sjs_class_i32* _parent, int32_t* _return) {
+
+    *_return = 2;
 }
 
 void sjf_global(void) {
     sjs_class_i32 sjd_temp1;
     sji_foo* a;
+    sji_bar* b;
     sji_foo* result1;
     int32_t result2;
+    sji_bar* result3;
+    int32_t result4;
     sjs_class_i32* sjv_temp1;
 
     sjv_temp1 = &sjd_temp1;
@@ -74,14 +119,42 @@ void sjf_global(void) {
         free(result1);
     }
 
-    a->test(a->_parent, &result2);
+    a->test1(a->_parent, &result2);
+
+    result3 = a->asInterface(a->_parent, sji_bar_typeId);
+
+    b = result3;
+
+    b->_refCount++;
+
+    result3->_refCount--;
+
+    if (result3->_refCount <= 0) {
+        sji_bar_destroy(result3);
+        free(result3);
+    }
+
+    b->test2(b->_parent, &result4);
 
     a->_refCount--;
     if (a->_refCount <= 0) {
         sji_foo_destroy(a);
         free(a);
     }
+    b->_refCount--;
+    if (b->_refCount <= 0) {
+        sji_bar_destroy(b);
+        free(b);
+    }
     sjf_class_i32_destroy(&sjd_temp1);
+}
+
+void sji_bar_destroy(sji_bar* _this) {
+    _this->_parent->_refCount--;
+    if (_this->_parent->_refCount <= 0) {
+        _this->destroy(_this->_parent);
+        free(_this->_parent);
+    }
 }
 
 void sji_foo_destroy(sji_foo* _this) {

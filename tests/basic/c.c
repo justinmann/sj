@@ -3,9 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct td_sjs_object sjs_object;
+#define sjs_object_typeId 1
 
-int sjs_object_typeId = 1;
+typedef struct td_sjs_object sjs_object;
 
 struct td_sjs_object {
     int _refCount;

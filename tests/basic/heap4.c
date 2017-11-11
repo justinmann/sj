@@ -2,15 +2,15 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#define sjs_a_typeId 1
+#define sjs_b_typeId 2
+#define sjs_c_typeId 3
+#define sjs_object_typeId 4
+
 typedef struct td_sjs_a sjs_a;
 typedef struct td_sjs_b sjs_b;
 typedef struct td_sjs_c sjs_c;
 typedef struct td_sjs_object sjs_object;
-
-int sjs_a_typeId = 1;
-int sjs_b_typeId = 2;
-int sjs_c_typeId = 3;
-int sjs_object_typeId = 4;
 
 struct td_sjs_a {
     int _refCount;

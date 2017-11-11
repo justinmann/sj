@@ -2,18 +2,19 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#define sji_foo_typeId 1
+#define sjs_class_typeId 2
+#define sjs_object_typeId 3
+
 typedef struct td_sji_foo sji_foo;
 typedef struct td_sjs_class sjs_class;
 typedef struct td_sjs_object sjs_object;
-
-int sji_foo_typeId = 1;
-int sjs_class_typeId = 2;
-int sjs_object_typeId = 3;
 
 struct td_sji_foo {
     int _refCount;
     sjs_object* _parent;
     void (*destroy)(sjs_object* _this);
+    sjs_object* (*asInterface)(sjs_object* _this, int typeId);
     void (*test)(sjs_object* _parent, int32_t* _return);
 };
 
@@ -27,6 +28,7 @@ struct td_sjs_object {
 
 void sjf_class(sjs_class* _this, sjs_class** _return);
 sji_foo* sjf_class_asFoo(sjs_class* _this);
+sjs_object* sjf_class_asInterface(sjs_class* _this, int typeId);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_test(sjs_class* _parent, int32_t* _return);
 void sjf_global(void);
@@ -43,8 +45,18 @@ sji_foo* sjf_class_asFoo(sjs_class* _this) {
     _interface->_refCount = 1;
     _interface->_parent = (sjs_object*)_this;
     _interface->_parent->_refCount++;
+    _interface->destroy = sjf_class_destroy;
+    _interface->asInterface = sjf_class_asInterface;
     _interface->test = sjf_class_test;
     return _interface;
+}
+
+sjs_object* sjf_class_asInterface(sjs_class* _this, int typeId) {
+    switch (typeId) {
+        case sji_foo_typeId: return sjf_class_asFoo(_this);
+    }
+
+    return 0;
 }
 
 void sjf_class_destroy(sjs_class* _this) {

@@ -77,6 +77,9 @@ public:
     string getCInitFunctionName();
     string getCDestroyFunctionName();
     string getCastFunctionName(shared_ptr<CBaseFunction> fromFunction);
+    string getStructName();
+    string getTypeIdName();
+    string transpileCast(shared_ptr<CBaseFunction> fromFunction, string varName);
 
     //shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType);
     void transpileDefinition(Compiler* compiler, CResult& result, TrOutput* trOutput);

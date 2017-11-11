@@ -2,15 +2,15 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#define sjs_anon1_typeId 1
+#define sjs_class_typeId 2
+#define sjs_global_typeId 3
+#define sjs_object_typeId 4
+
 typedef struct td_sjs_anon1 sjs_anon1;
 typedef struct td_sjs_class sjs_class;
 typedef struct td_sjs_global sjs_global;
 typedef struct td_sjs_object sjs_object;
-
-int sjs_anon1_typeId = 1;
-int sjs_class_typeId = 2;
-int sjs_global_typeId = 3;
-int sjs_object_typeId = 4;
 
 struct td_sjs_anon1 {
     int _refCount;

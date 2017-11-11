@@ -5,6 +5,15 @@
 
 const char* sjg_string1 = "5";
 
+#define sji_foo_typeId 1
+#define sjs_anon1_typeId 2
+#define sjs_anon2_typeId 3
+#define sjs_anon3_typeId 4
+#define sjs_array_char_typeId 5
+#define sjs_class_typeId 6
+#define sjs_object_typeId 7
+#define sjs_string_typeId 8
+
 typedef struct td_sji_foo sji_foo;
 typedef struct td_sjs_anon1 sjs_anon1;
 typedef struct td_sjs_anon2 sjs_anon2;
@@ -14,19 +23,11 @@ typedef struct td_sjs_class sjs_class;
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_string sjs_string;
 
-int sji_foo_typeId = 1;
-int sjs_anon1_typeId = 2;
-int sjs_anon2_typeId = 3;
-int sjs_anon3_typeId = 4;
-int sjs_array_char_typeId = 5;
-int sjs_class_typeId = 6;
-int sjs_object_typeId = 7;
-int sjs_string_typeId = 8;
-
 struct td_sji_foo {
     int _refCount;
     sjs_object* _parent;
     void (*destroy)(sjs_object* _this);
+    sjs_object* (*asInterface)(sjs_object* _this, int typeId);
     void (*test)(sjs_object* _parent, sjs_string** _return);
 };
 
@@ -74,6 +75,7 @@ void sjf_array_char(sjs_array_char* _this, sjs_array_char** _return);
 void sjf_array_char_destroy(sjs_array_char* _this);
 void sjf_class(sjs_class* _this, sjs_class** _return);
 sji_foo* sjf_class_asFoo(sjs_class* _this);
+sjs_object* sjf_class_asInterface(sjs_class* _this, int typeId);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_test(sjs_class* _parent, sjs_string** _return);
 void sjf_global(void);
@@ -148,8 +150,18 @@ sji_foo* sjf_class_asFoo(sjs_class* _this) {
     _interface->_refCount = 1;
     _interface->_parent = (sjs_object*)_this;
     _interface->_parent->_refCount++;
+    _interface->destroy = sjf_class_destroy;
+    _interface->asInterface = sjf_class_asInterface;
     _interface->test = sjf_class_test;
     return _interface;
+}
+
+sjs_object* sjf_class_asInterface(sjs_class* _this, int typeId) {
+    switch (typeId) {
+        case sji_foo_typeId: return sjf_class_asFoo(_this);
+    }
+
+    return 0;
 }
 
 void sjf_class_destroy(sjs_class* _this) {

@@ -2,11 +2,11 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#define sjs_class_i32_typeId 1
+#define sjs_object_typeId 2
+
 typedef struct td_sjs_class_i32 sjs_class_i32;
 typedef struct td_sjs_object sjs_object;
-
-int sjs_class_i32_typeId = 1;
-int sjs_object_typeId = 2;
 
 struct td_sjs_class_i32 {
     int _refCount;

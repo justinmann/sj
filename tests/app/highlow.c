@@ -8,19 +8,19 @@ const char* sjg_string2 = "Too high\n";
 const char* sjg_string3 = "Too Low\n";
 const char* sjg_string4 = "Correct\n";
 
+#define sjs_anon1_typeId 1
+#define sjs_anon2_typeId 2
+#define sjs_anon3_typeId 3
+#define sjs_array_char_typeId 4
+#define sjs_object_typeId 5
+#define sjs_string_typeId 6
+
 typedef struct td_sjs_anon1 sjs_anon1;
 typedef struct td_sjs_anon2 sjs_anon2;
 typedef struct td_sjs_anon3 sjs_anon3;
 typedef struct td_sjs_array_char sjs_array_char;
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_string sjs_string;
-
-int sjs_anon1_typeId = 1;
-int sjs_anon2_typeId = 2;
-int sjs_anon3_typeId = 3;
-int sjs_array_char_typeId = 4;
-int sjs_object_typeId = 5;
-int sjs_string_typeId = 6;
 
 struct td_sjs_anon1 {
     int _refCount;

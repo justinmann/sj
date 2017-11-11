@@ -170,7 +170,7 @@ implement 			: implement_args								{ $$ = $1; }
 					;
 
 implement_args 		: implement_arg									{ $$ = new CTypeNameList(); $$->push_back(shared_ptr<CTypeName>($1)); }							
-					| implement_args TCOMMA implement_arg 			{ $$ = $1; $$->push_back(shared_ptr<CTypeName>($3)); }
+					| implement_args implement_arg 					{ $$ = $1; $$->push_back(shared_ptr<CTypeName>($2)); }
 					;
 
 implement_arg 		: THASH TIDENTIFIER temp_block_optional			{ $$ = new CTypeName(CTC_Interface, $2->c_str(), shared_ptr<CTypeNameList>($3)); delete $2; }							

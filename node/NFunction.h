@@ -126,6 +126,7 @@ public:
     //shared_ptr<ReturnValue> cast(Compiler* compiler, CResult& result, IRBuilder<>* builder, shared_ptr<ReturnValue> fromValue, bool isHeap, shared_ptr<CInterface> interface);
     virtual string getCInitFunctionName();
     virtual string getCDestroyFunctionName();
+    string getCAsInterfaceFunctionName();
 
     CLoc loc;
     CFunctionType type;

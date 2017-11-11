@@ -1,19 +1,7 @@
 -- features --
-* interface
 * operators
 * array assignment
 * lambda
-
--- interface --
-* cast from interface to another interface
-
-void* foo_asInterface(sjs_object* _parent, int sji_foo_id) {
-	switch (sji_foo_id) {
-	case sji_foo_id:
-		return foo_asFoo(_parent);
-	}
-	return nullptr;
-}
 
 -- operators --
 	a.x = y 	-> setX(y)

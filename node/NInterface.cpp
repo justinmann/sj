@@ -253,6 +253,14 @@ string CInterface::getCDestroyFunctionName() {
     return "sji_" + name + "_destroy";
 }
 
+string CInterface::getStructName() {
+    return "sji_" + name;
+}
+
+string CInterface::getTypeIdName() {
+    return getStructName() + "_typeId";
+}
+
 string CInterface::getCastFunctionName(shared_ptr<CBaseFunction> fromFunction) {
     string temp = name;
     temp[0] = toupper(temp[0]);
@@ -261,13 +269,28 @@ string CInterface::getCastFunctionName(shared_ptr<CBaseFunction> fromFunction) {
     return line.str();
 }
 
+string CInterface::transpileCast(shared_ptr<CBaseFunction> fromFunction, string varName) {
+    auto fromInterface = dynamic_pointer_cast<CInterface>(fromFunction);
+    if (fromInterface) {
+        stringstream line;
+        line << varName << "->asInterface(" << varName << "->_parent, " << "sji_" << name << "_typeId)";
+        return line.str();
+    }
+    else {
+        stringstream line;
+        line << getCastFunctionName(fromFunction) << "(" << varName << ")";
+        return line.str();
+    }
+}
+
 void CInterface::transpileDefinition(Compiler* compiler, CResult& result, TrOutput* trOutput) {
     // Create struct
-    string structName = "sji_" + name;
+    string structName = getStructName();
     if (trOutput->structs.find(structName) == trOutput->structs.end()) {
         trOutput->structs[structName].push_back("int _refCount");
         trOutput->structs[structName].push_back("sjs_object* _parent");
         trOutput->structs[structName].push_back("void (*destroy)(sjs_object* _this)");
+        trOutput->structs[structName].push_back("sjs_object* (*asInterface)(sjs_object* _this, int typeId)");
         for (auto method : methods) {
             stringstream ss;
             ss << "void (*" << method->name << ")(sjs_object* _parent";

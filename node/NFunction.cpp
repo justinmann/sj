@@ -498,6 +498,8 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
                     trFunctionBlock->statements.push_back(string("_interface->_refCount = 1"));
                     trFunctionBlock->statements.push_back(string("_interface->_parent = (sjs_object*)_this"));
                     trFunctionBlock->statements.push_back(string("_interface->_parent->_refCount++"));
+                    trFunctionBlock->statements.push_back(string("_interface->destroy = " + getCDestroyFunctionName()));
+                    trFunctionBlock->statements.push_back(string("_interface->asInterface = " + getCAsInterfaceFunctionName()));
 
                     for (auto interfaceMethod : interfaceVal->methods) {
                         auto function = getCFunction(compiler, result, interfaceMethod->name, nullptr, nullptr);
@@ -510,6 +512,27 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
 
                     trFunctionBlock->statements.push_back(string("return _interface"));
                 }
+            }
+
+            string asInterfaceFunctionName = getCAsInterfaceFunctionName();
+            auto asInterfaceFunctionBody = trOutput->functions.find(asInterfaceFunctionName);
+            if (asInterfaceFunctionBody == trOutput->functions.end()) {
+                auto trFunctionBlock = make_shared<TrBlock>();
+                trFunctionBlock->parent = nullptr;
+                trFunctionBlock->hasThis = true;
+                trOutput->functions[asInterfaceFunctionName] = trFunctionBlock;
+
+                stringstream functionDefinition;
+                functionDefinition << "sjs_object* " << asInterfaceFunctionName << "(" << structName << "* _this, int typeId)";
+                trFunctionBlock->definition = functionDefinition.str();
+
+                auto switchBlock = make_shared<TrBlock>();
+                trFunctionBlock->statements.push_back(TrStatement("switch (typeId)", switchBlock));
+                for (auto interfaceVal : *interfaces) {
+                    switchBlock->statements.push_back(string("case ") + interfaceVal->getTypeIdName() + ": return " + interfaceVal->getCastFunctionName(shared_from_this()) +"(_this)");
+                }
+
+                trFunctionBlock->statements.push_back(string("return 0"));
             }
         }
     }
@@ -709,6 +732,10 @@ string CFunction::getCInitFunctionName() {
 
 string CFunction::getCDestroyFunctionName() {
     return getCInitFunctionName() + "_destroy";
+}
+
+string CFunction::getCAsInterfaceFunctionName() {
+    return getCInitFunctionName() + "_asInterface";
 }
 
 //Function* CFunction::compileDefinition(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {

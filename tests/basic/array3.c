@@ -2,13 +2,13 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#define sjs_array_class_typeId 1
+#define sjs_class_typeId 2
+#define sjs_object_typeId 3
+
 typedef struct td_sjs_array_class sjs_array_class;
 typedef struct td_sjs_class sjs_class;
 typedef struct td_sjs_object sjs_object;
-
-int sjs_array_class_typeId = 1;
-int sjs_class_typeId = 2;
-int sjs_object_typeId = 3;
 
 struct td_sjs_array_class {
     int _refCount;

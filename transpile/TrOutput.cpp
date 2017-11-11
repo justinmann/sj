@@ -20,14 +20,14 @@ void TrOutput::writeToStream(ostream& stream) {
     }
     
 	if (structs.size() > 0) {
+        int typeId = 1;
         for (auto t : structs) {
-            stream << "typedef struct td_" << t.first << " " << t.first << ";\n";
+            stream << "#define " << t.first << "_typeId " << typeId++ << "\n";
         }
         stream << "\n";
 
-        int typeId = 1;
         for (auto t : structs) {
-            stream << "int " << t.first << "_typeId = " << typeId++ << ";\n";
+            stream << "typedef struct td_" << t.first << " " << t.first << ";\n";
         }
         stream << "\n";
 

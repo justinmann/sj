@@ -1,12 +1,23 @@
 #foo!item(
-    test()'item
+    test1()'item
 )
 
-class!item #foo!item (
-    test() {
-        5
+
+#bar(
+	test2()'i32
+)
+
+class!item #bar #foo!item (
+    test1() {
+        1
+    }
+
+    test2() {
+    	2
     }
 ) { this }
 
 a: class!i32() as #foo!i32
-a.test()
+a.test1()
+b: a as #bar
+b.test2()
