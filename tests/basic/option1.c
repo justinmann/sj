@@ -69,9 +69,23 @@ struct td_sjs_object {
 void sjf_global(void);
 
 void sjf_global(void) {
-    bool result1;
+    int32_option a;
+    int64_option b;
+    uint32_option c;
+    uint64_option d;
+    float_option e;
+    double_option f;
+    char_option g;
+    uintptr_option h;
 
-    result1 = -3 >= 4;
+    a = int32_empty;
+    b = int64_empty;
+    c = uint32_empty;
+    d = uint64_empty;
+    e = float_empty;
+    f = double_empty;
+    g = char_empty;
+    h = uintptr_empty;
 }
 
 int main() {

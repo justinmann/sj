@@ -2,15 +2,14 @@
 * optional
 * override interfaces
     a as type   -> a.asType()'t
+* as? operator
 * lambda
 
 -- optional --
-* empty'type
 * isNull operator
 * getValue operator
-* as? operator
 * ?. operator
-* add ? to ctype
+* ?: getOrElse operator
 * struct for int32_t_option
 
 #bob(
@@ -22,7 +21,7 @@ class(
 ) { this }
 
 c'class? = empty'class
-a : c?.x // if !isEmpty(c) { getValue(c).x } else { null'i32 }
+a : c?.x // if !isEmpty(c) { getValue(c).x } else { empty'i32 }
 b : a ?: -1 // if !isEmpty(a) { getValue(a) } else { -1 } 
 d : c as? #bob
 

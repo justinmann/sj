@@ -1,0 +1,12 @@
+global()'void {
+  [stack]a'i32? : empty'i32?
+  [stack]b'i64? : empty'i64?
+  [stack]c'u32? : empty'u32?
+  [stack]d'u64? : empty'u64?
+  [stack]e'f32? : empty'f32?
+  [stack]f'f64? : empty'f64?
+  [stack]g'char? : empty'char?
+  [stack]h'ptr? : empty'ptr?
+  void
+}
+

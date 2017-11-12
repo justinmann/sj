@@ -54,6 +54,7 @@ enum NodeType {
     NodeType_Compare,
     NodeType_Dot,
     NodeType_Double,
+    NodeType_Empty,
     NodeType_For,
     NodeType_Function,
     NodeType_If,

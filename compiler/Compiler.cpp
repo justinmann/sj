@@ -167,15 +167,15 @@ Compiler::Compiler() {
 	typeChar = make_shared<CType>("char", "char", "'\0'", false);
 	typeVoid = make_shared<CType>("void", "void", "", false);
 
-    typeI32Option = make_shared<CType>("i32?", "int32_option", "(int32_t)0", true);
-    typeI64Option = make_shared<CType>("i64?", "int64_option", "(int64_t)0", true);
-    typeU32Option = make_shared<CType>("u32?", "uint32_option", "(uint32_t)0", true);
-    typeU64Option = make_shared<CType>("u64?", "uint64_option", "(uint64_t)0", true);
-    typePtrOption = make_shared<CType>("ptr?", "uintptr_option", "(uintptr_t)0", true);
-    typeF32Option = make_shared<CType>("f32?", "float_option", "0.0f", true);
-    typeF64Option = make_shared<CType>("f64?", "double_option", "0.0", true);
-    typeBoolOption = make_shared<CType>("bool?", "bool_option", "false", true);
-    typeCharOption = make_shared<CType>("char?", "char_option", "'\0'", true);
+    typeI32Option = make_shared<CType>("i32?", "int32_option", "int32_empty", true);
+    typeI64Option = make_shared<CType>("i64?", "int64_option", "int64_empty", true);
+    typeU32Option = make_shared<CType>("u32?", "uint32_option", "uint32_empty", true);
+    typeU64Option = make_shared<CType>("u64?", "uint64_option", "uint64_empty", true);
+    typePtrOption = make_shared<CType>("ptr?", "uintptr_option", "uintptr_empty", true);
+    typeF32Option = make_shared<CType>("f32?", "float_option", "float_empty", true);
+    typeF64Option = make_shared<CType>("f64?", "double_option", "double_empty", true);
+    typeBoolOption = make_shared<CType>("bool?", "bool_option", "bool_empty", true);
+    typeCharOption = make_shared<CType>("char?", "char_option", "char_empty", true);
 }
 
 void Compiler::reset() {
@@ -760,25 +760,62 @@ shared_ptr<CResult> Compiler::run(const string& code) {
 shared_ptr<CType> Compiler::getType(const string& name) const {
     if (name == "i32") {
         return typeI32;
-    } else if (name == "i64") {
+    }
+    else if (name == "i64") {
         return typeI64;
-    } else if (name == "u32") {
+    }
+    else if (name == "u32") {
         return typeU32;
-    } else if (name == "u64") {
+    }
+    else if (name == "u64") {
         return typeU64;
-    } else if (name == "f32") {
+    }
+    else if (name == "f32") {
         return typeF32;
-    } else if (name == "f64") {
+    }
+    else if (name == "f64") {
         return typeF64;
-    } else if (name == "ptr") {
+    }
+    else if (name == "ptr") {
         return typePtr;
-    } else if (name == "bool") {
+    }
+    else if (name == "bool") {
         return typeBool;
-    } else if (name == "char") {
+    }
+    else if (name == "char") {
         return typeChar;
-    } else if (name == "void") {
+    }
+    else if (name == "void") {
         return typeVoid;
-    } else {
+    }
+    else if (name == "i32?") {
+        return typeI32Option;
+    }
+    else if (name == "i64?") {
+        return typeI64Option;
+    }
+    else if (name == "u32?") {
+        return typeU32Option;
+    }
+    else if (name == "u64?") {
+        return typeU64Option;
+    }
+    else if (name == "f32?") {
+        return typeF32Option;
+    }
+    else if (name == "f64?") {
+        return typeF64Option;
+    }
+    else if (name == "ptr?") {
+        return typePtrOption;
+    }
+    else if (name == "bool?") {
+        return typeBoolOption;
+    }
+    else if (name == "char?") {
+        return typeCharOption;
+    }
+    else {
         return nullptr;
     }
 }

@@ -11,7 +11,72 @@ void TrOutput::writeToStream(ostream& stream) {
         stream << "#include " << include.first << "\n";
     }
     stream << "\n";
+
     
+    stream << "typedef struct td_int32_option int32_option;\n";
+    stream << "struct td_int32_option {\n";
+    stream << "    bool isEmpty;\n";
+    stream << "    int32_t value;\n";
+    stream << "};\n";
+    stream << "const int32_option int32_empty = { true };\n";
+    stream << "\n";
+
+    stream << "typedef struct td_uint32_option uint32_option;\n";
+    stream << "struct td_uint32_option {\n";
+    stream << "    bool isEmpty;\n";
+    stream << "    uint32_t value;\n";
+    stream << "};\n";
+    stream << "const uint32_option uint32_empty = { true };\n";
+    stream << "\n";
+
+    stream << "typedef struct td_int64_option int64_option;\n";
+    stream << "struct td_int64_option {\n";
+    stream << "    bool isEmpty;\n";
+    stream << "    int64_t value;\n";
+    stream << "};\n";
+    stream << "const int64_option int64_empty = { true };\n";
+    stream << "\n";
+
+    stream << "typedef struct td_uint64_option uint64_option;\n";
+    stream << "struct td_uint64_option {\n";
+    stream << "    bool isEmpty;\n";
+    stream << "    uint64_t value;\n";
+    stream << "};\n";
+    stream << "const uint64_option uint64_empty = { true };\n";
+    stream << "\n";
+
+    stream << "typedef struct td_uintptr_option uintptr_option;\n";
+    stream << "struct td_uintptr_option {\n";
+    stream << "    bool isEmpty;\n";
+    stream << "    uintptr_t value;\n";
+    stream << "};\n";
+    stream << "const uintptr_option uintptr_empty = { true };\n";
+    stream << "\n";
+
+    stream << "typedef struct td_char_option char_option;\n";
+    stream << "struct td_char_option {\n";
+    stream << "    bool isEmpty;\n";
+    stream << "    char value;\n";
+    stream << "};\n";
+    stream << "const char_option char_empty = { true };\n";
+    stream << "\n";
+
+    stream << "typedef struct td_float_option float_option;\n";
+    stream << "struct td_float_option {\n";
+    stream << "    bool isEmpty;\n";
+    stream << "    float value;\n";
+    stream << "};\n";
+    stream << "const float_option float_empty = { true };\n";
+    stream << "\n";
+
+    stream << "typedef struct td_double_option double_option;\n";
+    stream << "struct td_double_option {\n";
+    stream << "    bool isEmpty;\n";
+    stream << "    double value;\n";
+    stream << "};\n";
+    stream << "const double_option double_empty = { true };\n";
+    stream << "\n";
+
     if (strings.size() > 0) {
         for (auto t : strings) {
             stream << "const char* " << t.first << " = \"" << t.second << "\";\n";
