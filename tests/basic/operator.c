@@ -25,6 +25,7 @@ void sjf_fancyMath_getX(sjs_fancyMath* _parent, int32_t* _return);
 void sjf_fancyMath_increment(sjs_fancyMath* _parent, sjs_fancyMath** _return);
 void sjf_fancyMath_modulus(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return);
 void sjf_fancyMath_multiply(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return);
+void sjf_fancyMath_setBob(sjs_fancyMath* _parent, int32_t i, int32_t* _return);
 void sjf_fancyMath_subtract(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return);
 void sjf_global(void);
 
@@ -175,6 +176,12 @@ void sjf_fancyMath_multiply(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fanc
     *_return = sjv_temp5;
 }
 
+void sjf_fancyMath_setBob(sjs_fancyMath* _parent, int32_t i, int32_t* _return) {
+    _parent->x = i;
+
+    *_return = i;
+}
+
 void sjf_fancyMath_subtract(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return) {
     int32_t result6;
     int32_t result7;
@@ -211,6 +218,7 @@ void sjf_global(void) {
     sjs_fancyMath* f;
     sjs_fancyMath* g;
     int32_t i;
+    int32_t j;
     sjs_fancyMath* result1;
     sjs_fancyMath* result13;
     sjs_fancyMath* result17;
@@ -221,6 +229,7 @@ void sjf_global(void) {
     sjs_fancyMath* result25;
     sjs_fancyMath* result27;
     int32_t result28;
+    int32_t result29;
     sjs_fancyMath* result5;
     sjs_fancyMath* result9;
     sjs_fancyMath* sjv_temp1;
@@ -350,6 +359,12 @@ void sjf_global(void) {
     sjf_fancyMath_getX(f, &result28);
 
     i = result28;
+
+    result29 = 0;
+
+    sjf_fancyMath_setBob(a, 12, &result29);
+
+    j = result29;
 
     a->_refCount--;
     if (a->_refCount <= 0) {

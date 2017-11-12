@@ -1,11 +1,8 @@
 -- features --
-* operators
 * array assignment
+* override interfaces
+    a as type   -> a.asType()'t
 * lambda
-
--- operators --
-	a.x = y 	-> setX(y)
-	a as type	-> a.asType()'t
 
 -- array assignment --
 * special array assign operation

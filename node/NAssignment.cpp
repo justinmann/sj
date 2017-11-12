@@ -37,6 +37,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
             if (!parentVar) {
                 return nullptr;
             }
+
             cfunction = static_pointer_cast<CFunction>(parentVar->getCFunctionForValue(compiler, result));
             if (!cfunction) {
                 result.addError(loc, CErrorCode::InvalidVariable, "var must be a function: '%s'", parentVar->fullName().c_str());
@@ -44,32 +45,46 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
             }
         }
         
-        _assignVar = cfunction->getCVar(compiler, result, name);
-        if (_assignVar) {
-            if (!isMutable) {
-                result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var");
-                return nullptr;
-            } else if (!_assignVar->isMutable) {
-                result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var");
-                return nullptr;
-            }
-        } else {
-            if (!var) {
-                auto fun = static_pointer_cast<CFunction>(cfunction);
-            
-                auto iter = fun->localVarsByName.find(name);
-                if (iter != fun->localVarsByName.end()) {
-                    result.addError(loc, CErrorCode::Internal, "the previous search on NVariable should find a local value with same name");
+        // Check for operator overload first
+        string temp = name;
+        temp[0] = toupper(temp[0]);
+        string setFunctionName = "set" + temp;
+        auto setFunction = cfunction->getCFunction(compiler, result, setFunctionName, thisFunction, nullptr);
+        if (setFunction) {
+            auto arguments = make_shared<NodeList>();
+            arguments->push_back(rightSide);
+            _callVar = CCallVar::create(compiler, result, loc, setFunctionName, arguments, thisFunction, thisVar, parentVar, setFunction);
+        }
+        else {
+            _assignVar = cfunction->getCVar(compiler, result, name);
+            if (_assignVar) {
+                if (!isMutable) {
+                    result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var");
                     return nullptr;
                 }
-                _assignVar = CNormalVar::createLocalVar(loc, name, thisFunction, shared_from_this());
-                fun->localVarsByName[name] = _assignVar;
-                _isFirstAssignment = true;
+                else if (!_assignVar->isMutable) {
+                    result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var");
+                    return nullptr;
+                }
             }
-        }
-        
-        if (var) {
-            _assignVar = CDotVar::create(parentVar, _assignVar);
+            else {
+                if (!var) {
+                    auto fun = static_pointer_cast<CFunction>(cfunction);
+
+                    auto iter = fun->localVarsByName.find(name);
+                    if (iter != fun->localVarsByName.end()) {
+                        result.addError(loc, CErrorCode::Internal, "the previous search on NVariable should find a local value with same name");
+                        return nullptr;
+                    }
+                    _assignVar = CNormalVar::createLocalVar(loc, name, thisFunction, shared_from_this());
+                    fun->localVarsByName[name] = _assignVar;
+                    _isFirstAssignment = true;
+                }
+            }
+
+            if (var) {
+                _assignVar = CDotVar::create(parentVar, _assignVar);
+            }
         }
     }
     
@@ -86,6 +101,10 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
 
 shared_ptr<CType> NAssignment::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
+
+    if (_callVar) {
+        return _callVar->getType(compiler, result);
+    }
 
     if (typeName) {
         auto valueType = thisFunction->getVarType(compiler, result, typeName);
@@ -136,6 +155,20 @@ int NAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<
 
 shared_ptr<ReturnValue> NAssignment::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
 	assert(compiler->state == CompilerState::Compile);
+
+    if (_callVar) {
+        auto parentVar = var->getVar(compiler, result, thisFunction, thisVar, nullptr);
+        if (!parentVar) {
+            return nullptr;
+        }
+
+        auto dotValue = parentVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, false, nullptr);
+        if (!dotValue) {
+            return nullptr;
+        }
+
+        return _callVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue, dotValue);
+    }
 	    
 	if (!rightSide) {
 	    result.addError(loc, CErrorCode::Internal, "only required assignment should not have a right side, and they should not be compiled");

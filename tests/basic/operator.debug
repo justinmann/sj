@@ -1,10 +1,10 @@
-fancyMath([heap]x'i32:)'fancyMath {
+fancyMath([heap]x'i32=)'fancyMath {
   this
 }
 
 fancyMath_add([stack]num'fancyMath:)'fancyMath {
   [heap]fancyMath([heap]this : fancyMath(
-    [heap]x'i32 : .parentthis.x + [heap]fancyMath_getX([stack]this : fancyMath_getX(
+    [heap]x'i32 = .parentthis.x + [heap]fancyMath_getX([stack]this : fancyMath_getX(
       parent: [stack]this.num
     )) + 1
   ))
@@ -12,7 +12,7 @@ fancyMath_add([stack]num'fancyMath:)'fancyMath {
 
 fancyMath_divide([stack]num'fancyMath:)'fancyMath {
   [heap]fancyMath([heap]this : fancyMath(
-    [heap]x'i32 : .parentthis.x / [heap]fancyMath_getX([stack]this : fancyMath_getX(
+    [heap]x'i32 = .parentthis.x / [heap]fancyMath_getX([stack]this : fancyMath_getX(
       parent: [stack]this.num
     )) + 1
   ))
@@ -24,13 +24,13 @@ fancyMath_getX()'i32 {
 
 fancyMath_increment()'fancyMath {
   [heap]fancyMath([heap]this : fancyMath(
-    [heap]x'i32 : .parentthis.x + 1
+    [heap]x'i32 = .parentthis.x + 1
   ))
 }
 
 fancyMath_modulus([stack]num'fancyMath:)'fancyMath {
   [heap]fancyMath([heap]this : fancyMath(
-    [heap]x'i32 : .parentthis.x %% [heap]fancyMath_getX([stack]this : fancyMath_getX(
+    [heap]x'i32 = .parentthis.x %% [heap]fancyMath_getX([stack]this : fancyMath_getX(
       parent: [stack]this.num
     )) + 1
   ))
@@ -38,7 +38,7 @@ fancyMath_modulus([stack]num'fancyMath:)'fancyMath {
 
 fancyMath_multiply([stack]num'fancyMath:)'fancyMath {
   [heap]fancyMath([heap]this : fancyMath(
-    [heap]x'i32 : .parentthis.x * [heap]fancyMath_getX([stack]this : fancyMath_getX(
+    [heap]x'i32 = .parentthis.x * [heap]fancyMath_getX([stack]this : fancyMath_getX(
       parent: [stack]this.num
     )) + 1
   ))
@@ -46,7 +46,7 @@ fancyMath_multiply([stack]num'fancyMath:)'fancyMath {
 
 fancyMath_subtract([stack]num'fancyMath:)'fancyMath {
   [heap]fancyMath([heap]this : fancyMath(
-    [heap]x'i32 : .parentthis.x - [heap]fancyMath_getX([stack]this : fancyMath_getX(
+    [heap]x'i32 = .parentthis.x - [heap]fancyMath_getX([stack]this : fancyMath_getX(
       parent: [stack]this.num
     )) + 1
   ))
@@ -54,10 +54,10 @@ fancyMath_subtract([stack]num'fancyMath:)'fancyMath {
 
 global()'void {
   [heap]a'fancyMath : [heap]fancyMath([heap]this : fancyMath(
-    [heap]x'i32 : 1
+    [heap]x'i32 = 1
   ))
   [heap]b'fancyMath : [heap]fancyMath([heap]this : fancyMath(
-    [heap]x'i32 : 2
+    [heap]x'i32 = 2
   ))
   [heap]c'fancyMath = [heap]fancyMath_add([stack]this : fancyMath_add(
     parent: [heap]a,
@@ -104,6 +104,7 @@ global()'void {
   [heap]i'i32 = [heap]fancyMath_getX([stack]this : fancyMath_getX(
     parent: [heap]f
   ))
+  [stack]j'i32 = bob'i32 = 12
   void
 }
 

@@ -12,6 +12,8 @@
 #include "NBase.h"
 #include "NVariable.h"
 
+class CCallVar;
+
 class NAssignment : public NBase {
 public:
     NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTypeName> typeName, const char* name, shared_ptr<NBase> rightSide, bool isMutable);
@@ -37,6 +39,7 @@ private:
     bool _isFirstAssignment;
     shared_ptr<CVar> _assignVar;
     shared_ptr<NAssignment> shared_from_this();
+    shared_ptr<CCallVar> _callVar;
 };
 
 #endif /* NAssignment_h */
