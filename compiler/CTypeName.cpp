@@ -8,17 +8,17 @@
 
 #include "../node/Node.h"
 
-CTypeNameList::CTypeNameList(CTypeCategory category, const string& name) {
-    push_back(make_shared<CTypeName>(category, name));
+CTypeNameList::CTypeNameList(CTypeCategory category, const string& name, bool isOption) {
+    push_back(make_shared<CTypeName>(category, name, isOption));
 }
 
 shared_ptr<CTypeName> CTypeName::parse(string name) {
     if (name.front() == '(') {
         assert(false);
-        return make_shared<CTypeName>(CTC_Function, name);
+        return make_shared<CTypeName>(CTC_Function, name, name.back() == '?');
     } else if (name.front() == '#') {
         assert(false);
-        return make_shared<CTypeName>(CTC_Interface, name);
+        return make_shared<CTypeName>(CTC_Interface, name, name.back() == '?');
     } else {
         auto bang = name.find('!');
         if (bang != string::npos) {
@@ -49,9 +49,9 @@ shared_ptr<CTypeName> CTypeName::parse(string name) {
                 typeNameList->push_back(templateType);
             }
             
-            return make_shared<CTypeName>(CTC_Value, typeName, typeNameList);
+            return make_shared<CTypeName>(CTC_Value, typeName, typeNameList, typeName.back() == '?');
         } else {
-            return make_shared<CTypeName>(CTC_Value, name);
+            return make_shared<CTypeName>(CTC_Value, name, name.back() == '?');
         }
     }
     return nullptr;
@@ -60,6 +60,7 @@ shared_ptr<CTypeName> CTypeName::parse(string name) {
 CTypeName::CTypeName(shared_ptr<CType> ctype) {
     category = ctype->category;
     name = ctype->name;
+    isOption = ctype->isOption;
 }
 
 string CTypeName::getName() {

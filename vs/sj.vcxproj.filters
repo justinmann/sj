@@ -126,9 +126,6 @@
     <ClInclude Include="..\node\NWhile.h">
       <Filter>Node</Filter>
     </ClInclude>
-    <ClInclude Include="..\compiler\CArrayType.h">
-      <Filter>Compiler</Filter>
-    </ClInclude>
     <ClInclude Include="..\compiler\Compiler.h">
       <Filter>Compiler</Filter>
     </ClInclude>
@@ -166,6 +163,21 @@
       <Filter>Node</Filter>
     </ClInclude>
     <ClInclude Include="..\node\NTuple.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NEmpty.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NOptionDot.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NOptionCast.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NIsEmpty.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NGetValue.h">
       <Filter>Node</Filter>
     </ClInclude>
   </ItemGroup>
@@ -260,9 +272,6 @@
     <ClCompile Include="..\node\NWhile.cpp">
       <Filter>Node</Filter>
     </ClCompile>
-    <ClCompile Include="..\compiler\CArrayType.cpp">
-      <Filter>Compiler</Filter>
-    </ClCompile>
     <ClCompile Include="..\compiler\Compiler.cpp">
       <Filter>Compiler</Filter>
     </ClCompile>
@@ -306,6 +315,21 @@
       <Filter>Node</Filter>
     </ClCompile>
     <ClCompile Include="..\node\NTuple.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NEmpty.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NOptionDot.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NOptionCast.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NIsEmpty.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NGetValue.cpp">
       <Filter>Node</Filter>
     </ClCompile>
   </ItemGroup>

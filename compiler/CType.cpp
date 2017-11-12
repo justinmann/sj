@@ -8,14 +8,23 @@
 
 #include "../node/Node.h"
 
-CType::CType(const char* name, const char* cname, const char* defaultValue) : category(CTC_Value), name(name), nameValue(cname), nameRef(cname), _defaultValue(defaultValue) {
+CType::CType(const char* name_, const char* cname, const char* defaultValue, bool isOption) : category(CTC_Value), name(name_), nameValue(cname), nameRef(cname), _defaultValue(defaultValue), isOption(isOption) {
+    if (isOption) {
+        assert(name.back() == '?');
+    }
 }
 
-CType::CType(const char* name, weak_ptr<CFunction> parent) : category(CTC_Value), name(name), nameValue(parent.lock()->getStructName()), nameRef(parent.lock()->getStructName() + "*"), parent(parent) {
+CType::CType(const char* name_, weak_ptr<CFunction> parent, bool isOption) : category(CTC_Value), name(name_), nameValue(parent.lock()->getStructName()), nameRef(parent.lock()->getStructName() + "*"), parent(parent), isOption(isOption) {
+    if (isOption) {
+        assert(name.back() == '?');
+    }
 }
 
-CType::CType(const char* name, weak_ptr<CInterface> parent) : category(CTC_Interface), name(name), nameValue(parent.lock()->getStructName()), nameRef(parent.lock()->getStructName() + "*"), parent(parent) {
+CType::CType(const char* name_, weak_ptr<CInterface> parent, bool isOption) : category(CTC_Interface), name(name_), nameValue(parent.lock()->getStructName()), nameRef(parent.lock()->getStructName() + "*"), parent(parent), isOption(isOption) {
     assert(name[0] == '#');
+    if (isOption) {
+        assert(name.back() == '?');
+    }
 }
 
 shared_ptr<ReturnValue> CType::transpileDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {

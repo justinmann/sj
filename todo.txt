@@ -1,7 +1,30 @@
 -- features --
+* optional
 * override interfaces
     a as type   -> a.asType()'t
 * lambda
+
+-- optional --
+* empty'type
+* isNull operator
+* getValue operator
+* as? operator
+* ?. operator
+* add ? to ctype
+* struct for int32_t_option
+
+#bob(
+    method1()
+)
+
+class(
+    x : 0
+) { this }
+
+c'class? = empty'class
+a : c?.x // if !isEmpty(c) { getValue(c).x } else { null'i32 }
+b : a ?: -1 // if !isEmpty(a) { getValue(a) } else { -1 } 
+d : c as? #bob
 
 -- lambda --
 array!item(

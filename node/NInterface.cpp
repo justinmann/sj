@@ -28,7 +28,7 @@ void NInterface::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBas
         return;
     }
     def = parentFunction->createDefinedInterfaceDefinition(name);
-    def->typeName = make_shared<CTypeName>(CTC_Interface, name, templateTypeNames);
+    def->typeName = make_shared<CTypeName>(CTC_Interface, name, templateTypeNames, false);
     def->ninterface = shared_from_this();
 
     for (auto it : methodList) {
@@ -156,7 +156,7 @@ bool CInterface::getHasThis() {
 
 shared_ptr<CType> CInterface::getThisType(Compiler* compiler, CResult& result) {
     if (!thisType) {
-        thisType = make_shared<CType>(name.c_str(), shared_from_this());
+        thisType = make_shared<CType>(name.c_str(), shared_from_this(), false);
     }
     return thisType;
 }

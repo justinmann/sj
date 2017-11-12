@@ -1446,7 +1446,7 @@ bool CFunction::getHasThis() {
 
 shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result) {
     if (!thisType) {
-        thisType = make_shared<CType>(name.c_str(), shared_from_this());
+        thisType = make_shared<CType>(name.c_str(), shared_from_this(), false);
     }
     
     return thisType;

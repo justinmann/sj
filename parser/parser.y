@@ -5,6 +5,13 @@
 %lex-param {void *scanner}
 %parse-param {void *scanner} {CResult* result}
 
+%code requires {
+struct OPTIONANDTYPELIST {
+	bool isOption;
+	CTypeNameList* templateTypeNames;	
+};
+}
+
 %{
 
 #include <stdio.h>
@@ -51,13 +58,14 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 	CTypeNameList* templateTypeNames;
 	int token;
 	bool isMutable;
+	OPTIONANDTYPELIST optionAndTypeList;
 	NTupleAssignmentArgList* tupleAssignmentArgList;
 	NTupleAssignmentArg* tupleAssignmentArg;
 }
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID TSTRING TCHAR TCCODE
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY TMOD THASH TAT TCPEQ TCPNE TMULEQUAL TDIVEQUAL
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY TMOD THASH TAT TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TASOPTION TQUESTION TEMPTY
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch destroy expr
@@ -71,6 +79,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %type <string> arg_type_interface
 %type <tupleAssignmentArg> assign_tuple_arg
 %type <tupleAssignmentArgList> assign_tuple
+%type <optionAndTypeList> temp_option_optional
 
 /* Operator precedence */
 %left TAND TOR
@@ -141,8 +150,8 @@ func_decl 			: func_type_name func_block block catch destroy			{
 					}
 					;
 
-func_type_name		: TIDENTIFIER									{ $$ = new CTypeName(CTC_Value, $1->c_str()); delete $1; }
-					| TIDENTIFIER temp_block 						{ $$ = new CTypeName(CTC_Value, $1->c_str(), shared_ptr<CTypeNameList>($2)); delete $1; }
+func_type_name		: TIDENTIFIER									{ $$ = new CTypeName(CTC_Value, $1->c_str(), false); delete $1; }
+					| TIDENTIFIER temp_block 						{ $$ = new CTypeName(CTC_Value, $1->c_str(), shared_ptr<CTypeNameList>($2), false); delete $1; }
 					;
 
 catch				: /* Blank! */									{ $$ = nullptr; }
@@ -175,7 +184,7 @@ implement_args 		: implement_arg									{ $$ = new CTypeNameList(); $$->push_ba
 					| implement_args implement_arg 					{ $$ = $1; $$->push_back(shared_ptr<CTypeName>($2)); }
 					;
 
-implement_arg 		: THASH arg_type_interface temp_block_optional	{ $$ = new CTypeName(CTC_Interface, (string("#") + *$2).c_str(), shared_ptr<CTypeNameList>($3)); delete $2; }							
+implement_arg 		: THASH arg_type_interface temp_block_optional	{ $$ = new CTypeName(CTC_Interface, (string("#") + *$2).c_str(), shared_ptr<CTypeNameList>($3), false); delete $2; }							
 					;
 
 interface_decl		: THASH TIDENTIFIER temp_block_optional interface_block { $$ = new NInterface(LOC, (string("#") + *$2).c_str(), shared_ptr<CTypeNameList>($3), shared_ptr<NodeList>($4)); delete $2; }
@@ -231,6 +240,7 @@ expr_math			: expr_math TPLUS expr_math 					{ $$ = new NMath(LOC, shared_ptr<NV
 					| expr_math TMOD expr_math 						{ $$ = new NMath(LOC, shared_ptr<NVariableBase>($1), NMathOp::Mod, shared_ptr<NVariableBase>($3)); }
 					| TEXCLAIM expr_var                             { $$ = new NNot(LOC, shared_ptr<NVariableBase>($2)); }
 					| expr_var TAS arg_type 						{ $$ = new NCast(LOC, shared_ptr<CTypeName>($3), shared_ptr<NVariableBase>($1)); }
+					| expr_var TAS TQUESTION arg_type 				{ $$ = new NOptionCast(LOC, shared_ptr<CTypeName>($4), shared_ptr<NVariableBase>($1)); }
 					| expr_var										{ $$ = $1; }
 					;
 
@@ -251,10 +261,13 @@ if_expr		 		: TIF expr block								{ $$ = new NIf(LOC, shared_ptr<NBase>($2), s
 					;
 
 var					: var TDOT var_right							{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($3)); }
+					| var TDOT TQUESTION var_right					{ $$ = new NOptionDot(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($4)); }
 					| var_right										
 					;
 
 var_right			: func_type_name func_block						{ $$ = new NCall(LOC, $1->name.c_str(), $1->templateTypeNames, shared_ptr<NodeList>($2)); delete $1; }
+					| TISEMPTY TLPAREN expr TRPAREN					{ $$ = new NIsEmpty(LOC, shared_ptr<NBase>($3)); }
+					| TGETVALUE TLPAREN expr TRPAREN				{ $$ = new NGetValue(LOC, shared_ptr<NBase>($3)); }
 	 				| TIDENTIFIER									{ $$ = new NVariable(LOC, $1->c_str()); delete $1; }
 	 				| TTHIS											{ $$ = new NThis(LOC); }
 	 				;
@@ -267,6 +280,7 @@ const 				: TMINUS TINTEGER 								{ $2->insert(0, "-"); $$ = new NInteger(LOC,
 					| TFALSE										{ $$ = new NBool(LOC, false); }
 					| TSTRING										{ $$ = new NString(LOC, $1->c_str()); delete $1; }
 					| TCHAR											{ $$ = new NChar(LOC, $1->c_str()); delete $1; }
+					| TEMPTY arg_type_quote							{ $$ = new NEmpty(LOC, shared_ptr<CTypeName>($2)); }
 					;
 										
 assign				: TIDENTIFIER assign_type stmt						{ $$ = new NAssignment(LOC, nullptr, nullptr, $1->c_str(), shared_ptr<NBase>($3), $2); }
@@ -311,9 +325,9 @@ return_type_quote	: TQUOTE return_type							{ $$ = $2; }
 arg_type_quote		: TQUOTE arg_type								{ $$ = $2; }
 					;
 
-arg_type			: TIDENTIFIER temp_block_optional				{ $$ = new CTypeName(CTC_Value, *$1, shared_ptr<CTypeNameList>($2)); delete $1; }
-					| THASH arg_type_interface temp_block_optional	{ $$ = new CTypeName(CTC_Interface, string("#") + *$2, shared_ptr<CTypeNameList>($3)); delete $2; }
-					| func_type										{ $$ = $1; }
+arg_type			: TIDENTIFIER temp_option_optional 					{ $$ = new CTypeName(CTC_Value, *$1, shared_ptr<CTypeNameList>($2.templateTypeNames), $2.isOption); delete $1; }
+					| THASH arg_type_interface temp_option_optional 	{ $$ = new CTypeName(CTC_Interface, string("#") + *$2, shared_ptr<CTypeNameList>($3.templateTypeNames), $3.isOption); delete $2; }
+					| func_type											{ $$ = $1; }
 					;
 
 arg_type_interface	: TIDENTIFIER									{ $$ = $1; }
@@ -321,7 +335,7 @@ arg_type_interface	: TIDENTIFIER									{ $$ = $1; }
 					;
 
 return_type			: arg_type										{ $$ = $1; }
-					| TVOID											{ $$ = new CTypeName(CTC_Value, "void"); }
+					| TVOID											{ $$ = new CTypeName(CTC_Value, "void", false); }
 					;
 
 func_type			: TLPAREN func_arg_type_list TRPAREN return_type { $$ = new CTypeName(shared_ptr<CTypeNameList>($2), shared_ptr<CTypeName>($4)); }
@@ -338,6 +352,12 @@ func_arg_type_list	: /* Blank! */									{ $$ = new CTypeNameList(); }
 
 temp_block_optional : /* Blank! */									{ $$ = nullptr; }
 					| temp_block									{ $$ = $1; }
+					;
+
+temp_option_optional: /* Blank! */									{ $$.isOption = false;  $$.templateTypeNames = nullptr; }
+					| TQUESTION 									{ $$.isOption = true;   $$.templateTypeNames = nullptr; }
+					| temp_block									{ $$.isOption = false;  $$.templateTypeNames = $1; }
+					| TQUESTION temp_block 							{ $$.isOption = true;   $$.templateTypeNames = $2; }
 					;
 
 temp_block			: TEXCLAIM arg_type								{ $$ = new CTypeNameList(); $$->push_back(shared_ptr<CTypeName>($2)); }

@@ -143,7 +143,7 @@ int NAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<
             
             if (rightVar) {
                 auto t = rightVar->getType(compiler, result);
-                if (!t->parent.expired()) {
+                if (t && !t->parent.expired()) {
                     t->parent.lock()->setHasRefCount();
                 }
             }

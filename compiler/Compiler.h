@@ -41,7 +41,6 @@ public:
 #include "CType.h"
 #include "CTypeName.h"
 #include "CVar.h"
-#include "CArrayType.h"
 #include "Exception.h"
 
 #define STACK_REF_COUNT         1000000000000
@@ -225,7 +224,16 @@ public:
     shared_ptr<CType> typeBool;
     shared_ptr<CType> typeChar;
     shared_ptr<CType> typeVoid;
-    
+    shared_ptr<CType> typeI32Option;
+    shared_ptr<CType> typeI64Option;
+    shared_ptr<CType> typeU32Option;
+    shared_ptr<CType> typeU64Option;
+    shared_ptr<CType> typePtrOption;
+    shared_ptr<CType> typeF32Option;
+    shared_ptr<CType> typeF64Option;
+    shared_ptr<CType> typeBoolOption;
+    shared_ptr<CType> typeCharOption;
+
 private:
     void reset();
     shared_ptr<CResult> genNodeFile(const string& fileName);

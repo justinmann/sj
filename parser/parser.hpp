@@ -39,6 +39,15 @@
 #if YYDEBUG
 extern int yydebug;
 #endif
+/* "%code requires" blocks.  */
+
+
+struct OPTIONANDTYPELIST {
+	bool isOption;
+	CTypeNameList* templateTypeNames;	
+};
+
+
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -101,7 +110,12 @@ extern int yydebug;
     TCPEQ = 311,
     TCPNE = 312,
     TMULEQUAL = 313,
-    TDIVEQUAL = 314
+    TDIVEQUAL = 314,
+    TISEMPTY = 315,
+    TGETVALUE = 316,
+    TASOPTION = 317,
+    TQUESTION = 318,
+    TEMPTY = 319
   };
 #endif
 
@@ -122,6 +136,7 @@ union YYSTYPE
 	CTypeNameList* templateTypeNames;
 	int token;
 	bool isMutable;
+	OPTIONANDTYPELIST optionAndTypeList;
 	NTupleAssignmentArgList* tupleAssignmentArgList;
 	NTupleAssignmentArg* tupleAssignmentArg;
 

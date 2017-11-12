@@ -158,7 +158,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\compiler\CArrayType.h" />
     <ClInclude Include="..\compiler\Compiler.h" />
     <ClInclude Include="..\compiler\CType.h" />
     <ClInclude Include="..\compiler\CTypeName.h" />
@@ -166,6 +165,11 @@
     <ClInclude Include="..\compiler\Exception.h" />
     <ClInclude Include="..\node\NAnd.h" />
     <ClInclude Include="..\node\NArray.h" />
+    <ClInclude Include="..\node\NEmpty.h" />
+    <ClInclude Include="..\node\NGetValue.h" />
+    <ClInclude Include="..\node\NIsEmpty.h" />
+    <ClInclude Include="..\node\NOptionCast.h" />
+    <ClInclude Include="..\node\NOptionDot.h" />
     <ClInclude Include="..\node\NTuple.h" />
     <ClInclude Include="..\node\NTupleAssignment.h" />
     <ClInclude Include="..\node\NAssignment.h" />
@@ -206,7 +210,6 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\compiler\CArrayType.cpp" />
     <ClCompile Include="..\compiler\Compiler.cpp" />
     <ClCompile Include="..\compiler\CType.cpp" />
     <ClCompile Include="..\compiler\CTypeName.cpp" />
@@ -215,6 +218,11 @@
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\node\NAnd.cpp" />
     <ClCompile Include="..\node\NArray.cpp" />
+    <ClCompile Include="..\node\NEmpty.cpp" />
+    <ClCompile Include="..\node\NGetValue.cpp" />
+    <ClCompile Include="..\node\NIsEmpty.cpp" />
+    <ClCompile Include="..\node\NOptionCast.cpp" />
+    <ClCompile Include="..\node\NOptionDot.cpp" />
     <ClCompile Include="..\node\NTuple.cpp" />
     <ClCompile Include="..\node\NTupleAssignment.cpp" />
     <ClCompile Include="..\node\NAssignment.cpp" />

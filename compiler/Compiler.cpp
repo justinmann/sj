@@ -156,16 +156,26 @@ Compiler::Compiler() {
     //InitializeNativeTargetAsmPrinter();
     //InitializeNativeTargetAsmParser();
 
-	typeI32 = make_shared<CType>("i32", "int32_t", "(int32_t)0");
-    typeI64 = make_shared<CType>("i64", "int64_t", "(int64_t)0");
-    typeU32 = make_shared<CType>("u32", "uint32_t", "(uint32_t)0");
-    typeU64 = make_shared<CType>("u64", "uint64_t", "(uint64_t)0");
-    typePtr = make_shared<CType>("ptr", "uintptr_t", "(uintptr_t)0");
-    typeF32 = make_shared<CType>("f32", "float", "0.0f");
-    typeF64 = make_shared<CType>("f64", "double", "0.0");
-	typeBool = make_shared<CType>("bool", "bool", "false");
-	typeChar = make_shared<CType>("char", "char", "'\0'");
-	typeVoid = make_shared<CType>("void", "void", "");
+	typeI32 = make_shared<CType>("i32", "int32_t", "(int32_t)0", false);
+    typeI64 = make_shared<CType>("i64", "int64_t", "(int64_t)0", false);
+    typeU32 = make_shared<CType>("u32", "uint32_t", "(uint32_t)0", false);
+    typeU64 = make_shared<CType>("u64", "uint64_t", "(uint64_t)0", false);
+    typePtr = make_shared<CType>("ptr", "uintptr_t", "(uintptr_t)0", false);
+    typeF32 = make_shared<CType>("f32", "float", "0.0f", false);
+    typeF64 = make_shared<CType>("f64", "double", "0.0", false);
+	typeBool = make_shared<CType>("bool", "bool", "false", false);
+	typeChar = make_shared<CType>("char", "char", "'\0'", false);
+	typeVoid = make_shared<CType>("void", "void", "", false);
+
+    typeI32Option = make_shared<CType>("i32?", "int32_option", "(int32_t)0", true);
+    typeI64Option = make_shared<CType>("i64?", "int64_option", "(int64_t)0", true);
+    typeU32Option = make_shared<CType>("u32?", "uint32_option", "(uint32_t)0", true);
+    typeU64Option = make_shared<CType>("u64?", "uint64_option", "(uint64_t)0", true);
+    typePtrOption = make_shared<CType>("ptr?", "uintptr_option", "(uintptr_t)0", true);
+    typeF32Option = make_shared<CType>("f32?", "float_option", "0.0f", true);
+    typeF64Option = make_shared<CType>("f64?", "double_option", "0.0", true);
+    typeBoolOption = make_shared<CType>("bool?", "bool_option", "false", true);
+    typeCharOption = make_shared<CType>("char?", "char_option", "'\0'", true);
 }
 
 void Compiler::reset() {

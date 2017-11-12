@@ -31,15 +31,16 @@ enum CTypeCategory {
 
 class CType : public enable_shared_from_this<CType> {
 public:
-    CType(const char* name, const char* cname, const char* defaultValue);
-    CType(const char* name, weak_ptr<CFunction> parent);
-    CType(const char* name, weak_ptr<CInterface> parent);
+    CType(const char* name, const char* cname, const char* defaultValue, bool isOption);
+    CType(const char* name, weak_ptr<CFunction> parent, bool isOption);
+    CType(const char* name, weak_ptr<CInterface> parent, bool isOption);
 
     CTypeCategory category;
     string name;
     string nameValue;
 	string nameRef;
     weak_ptr<CBaseFunction> parent;
+    bool isOption;
     shared_ptr<ReturnValue> transpileDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar);
 
 private:

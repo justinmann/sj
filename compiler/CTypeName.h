@@ -18,7 +18,7 @@ class CTypeName;
 class CTypeNameList : public vector<shared_ptr<CTypeName>> {
 public:
     CTypeNameList() { }
-    CTypeNameList(CTypeCategory category, const string& name);
+    CTypeNameList(CTypeCategory category, const string& name, bool isOption);
 };
 
 class CTypeName {
@@ -29,20 +29,21 @@ public:
     shared_ptr<CTypeNameList> templateTypeNames;
     shared_ptr<CTypeNameList> argTypeNames;
     shared_ptr<CTypeName> returnTypeName;
+    bool isOption;
 
-    CTypeName(CTypeCategory category, const string& name) : category(category), mutability(CTM_Undefined), name(name) { 
+    CTypeName(CTypeCategory category, const string& name, bool isOption) : category(category), mutability(CTM_Undefined), name(name), isOption(isOption) {
         assert((category == CTC_Interface) == (name[0] == '#')); 
         assert(name[1] != '#'); 
         assert(category != CTC_Function);
     }
 
-    CTypeName(CTypeCategory category, const string& name, shared_ptr<CTypeNameList> templateTypeNames) : category(category), mutability(CTM_Undefined), name(name), templateTypeNames(templateTypeNames) { 
+    CTypeName(CTypeCategory category, const string& name, shared_ptr<CTypeNameList> templateTypeNames, bool isOption) : category(category), mutability(CTM_Undefined), name(name), templateTypeNames(templateTypeNames), isOption(isOption) {
         assert((category == CTC_Interface) == (name[0] == '#')); 
         assert(name[1] != '#'); 
         assert(category != CTC_Function);
     }
 
-    CTypeName(shared_ptr<CTypeNameList> argTypeNames, shared_ptr<CTypeName> returnTypeName) : category(CTC_Function), mutability(CTM_Undefined), argTypeNames(argTypeNames), returnTypeName(returnTypeName) { 
+    CTypeName(shared_ptr<CTypeNameList> argTypeNames, shared_ptr<CTypeName> returnTypeName) : category(CTC_Function), mutability(CTM_Undefined), argTypeNames(argTypeNames), returnTypeName(returnTypeName), isOption(false) {
         assert(false);
     }
 
