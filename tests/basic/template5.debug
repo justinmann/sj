@@ -1,9 +1,9 @@
 class![f32, func]()'i32 {
-  1
+  1i
 }
 
 class![func, i32]()'i32 {
-  1
+  1i
 }
 
 global()'void {

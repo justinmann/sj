@@ -57,36 +57,36 @@ class([heap]x'i32:)'class {
 global()'void {
   [stack]a'array_class : {
     [stack]sjv_array1'array_class : [stack]array!class([stack]this : array!class(
-      [stack]size'i32 = ,
-      [stack]data'ptr = 0 as ptr,
+      [stack]size'i32 = i,
+      [stack]data'ptr = 0i as ptr,
       [stack]_isGlobal'bool = false
     ))
     [stack]array_setAt([stack]this : array_setAt(
       parent: [stack]sjv_array1,
-      [stack]index'i32 : ,
+      [stack]index'i32 : i,
       [heap]item'class : [heap]class([heap]this : class(
-        [heap]x'i32 : 1
+        [heap]x'i32 : 1i
       ))
     ))
     [stack]array_setAt([stack]this : array_setAt(
       parent: [stack]sjv_array1,
-      [stack]index'i32 : ,
+      [stack]index'i32 : i,
       [heap]item'class : [heap]class([heap]this : class(
-        [heap]x'i32 : 2
+        [heap]x'i32 : 2i
       ))
     ))
     [stack]array_setAt([stack]this : array_setAt(
       parent: [stack]sjv_array1,
-      [stack]index'i32 : ,
+      [stack]index'i32 : i,
       [heap]item'class : [heap]class([heap]this : class(
-        [heap]x'i32 : 3
+        [heap]x'i32 : 3i
       ))
     ))
     sjv_array1
   }
   [stack]c'class : [stack]array_getAt([stack]this : array_getAt(
     parent: [stack]a,
-    [stack]index'i32 : 0
+    [stack]index'i32 : 0i
   ))
   this.x
   void

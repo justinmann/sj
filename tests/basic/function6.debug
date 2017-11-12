@@ -4,7 +4,7 @@ func([heap]x'i32:)'i32 {
 
 global()'void {
   [heap]func([stack]this : func(
-    [heap]x'i32 : 2
+    [heap]x'i32 : 2i
   ))
   void
 }

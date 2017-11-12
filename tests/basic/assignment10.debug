@@ -1,5 +1,5 @@
 global()'void {
-  [stack]a'i32 = 0
+  [stack]a'i32 = 0i
   a++
   void
 }

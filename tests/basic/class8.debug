@@ -4,8 +4,8 @@ class([stack]x'i32:, [stack]y'i32:)'class {
 
 global()'void {
   [stack]c'class : [stack]class([stack]this : class(
-    [stack]x'i32 : 1,
-    [stack]y'i32 : 2
+    [stack]x'i32 : 1i,
+    [stack]y'i32 : 2i
   ))
   this.x + this.y
   void

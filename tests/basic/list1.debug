@@ -87,7 +87,7 @@ list_add([heap]item'class:)'i32 {
   if .parentthis.count > this.size {
     [heap]list_setSize([stack]this : list_setSize(
       parent: [stack]this,
-      [heap]size'i32 : this.size * 2
+      [heap]size'i32 : this.size * 2i
     ))
     void
   }
@@ -116,14 +116,14 @@ list_setSize([heap]size'i32:)'array_class {
 global()'void {
   [stack]a'list_class : [stack]list!class([stack]this : list!class(
     parent: [stack]this,
-    [stack]count'i32 = 0,
+    [stack]count'i32 = 0i,
     [stack]data'array_class = [stack]array!class([stack]this : array!class(
-      [stack]size'i32 = 0,
-      [stack]data'ptr = 0 as ptr,
+      [stack]size'i32 = 0i,
+      [stack]data'ptr = 0i as ptr,
       [stack]_isGlobal'bool = false
     ))
   ))
-  for x : 1 to 100000 {
+  for x : 1i to 100000i {
     list_add([stack]this : list_add(
       parent: [stack]a,
       [heap]item'class : [heap]class([heap]this : class(
@@ -133,7 +133,7 @@ global()'void {
   }
   [heap]c'class : [heap]list_getAt([stack]this : list_getAt(
     parent: [stack]a,
-    [heap]index'i32 : 0
+    [heap]index'i32 : 0i
   ))
   this.x
   void

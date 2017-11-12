@@ -1,5 +1,5 @@
 global()'void {
-  [stack]x'i32 : [stack]y'i32 : 2
+  [stack]x'i32 : [stack]y'i32 : 2i
   void
 }
 

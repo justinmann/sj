@@ -1,20 +1,20 @@
 global()'void {
   if false {
-    1
+    1i
   } else if false {
-    2
+    2i
   } else if false {
-    2
+    2i
   } else if false {
-    2
+    2i
   } else if false {
-    2
+    2i
   } else if false {
-    2
+    2i
   } else if false {
-    2
+    2i
   } else {
-    3
+    3i
   }
   void
 }

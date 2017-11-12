@@ -1,5 +1,5 @@
 class()'i32 {
-  [heap]m'i32 : 1
+  [heap]m'i32 : 1i
   [heap]class_inner([stack]this : class_inner(
     parent: [stack]this
   ))

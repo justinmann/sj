@@ -1,9 +1,9 @@
 class![bool, f32]()'i32 {
-  1
+  1i
 }
 
 class![i32, bool]()'i32 {
-  1
+  1i
 }
 
 global()'void {

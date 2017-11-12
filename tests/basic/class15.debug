@@ -18,30 +18,30 @@ class_bar([heap]x'i32:)'i32 {
 }
 
 class_foo([heap]x'i32:)'i32 {
-  if this.x > 0 {
+  if this.x > 0i {
     [heap]class_bar([stack]this : class_bar(
       parent: [stack]this,
       [heap]x'i32 : anon1_sub([stack]this : anon1_sub(
         parent: [heap].parent.parentthis.math,
         [heap]x'i32 : this.x,
-        [heap]y'i32 : 1
+        [heap]y'i32 : 1i
       ))
     ))
   } else {
-    0
+    0i
   }
 }
 
 global()'void {
   [heap]math'anon1 : [heap]anon1([heap]this : anon1(
-    [heap]test'i32 : 1
+    [heap]test'i32 : 1i
   ))
   [stack]c'class : [stack]class([stack]this : class(
     parent: [stack]this
   ))
   [heap]class_foo([stack]this : class_foo(
     parent: [stack]c,
-    [heap]x'i32 : 4
+    [heap]x'i32 : 4i
   ))
   void
 }

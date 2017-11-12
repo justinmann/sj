@@ -4,9 +4,9 @@ class([stack]b'i32=)'class {
 
 global()'void {
   [stack]a'class : [stack]class([stack]this : class(
-    [stack]b'i32 = 0
+    [stack]b'i32 = 0i
   ))
-  [stack]b'i32 = 1
+  [stack]b'i32 = 1i
   void
 }
 

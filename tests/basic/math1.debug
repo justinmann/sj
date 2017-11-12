@@ -1,5 +1,10 @@
 global()'void {
-  4 + 5
+  [stack]a'i32 : 4i + 5i
+  [stack]b'u32 : 4u + 5u
+  [stack]c'u64 : 4v + 5v
+  [stack]d'i64 : 4l + 5l
+  [stack]e'f32 : 4.0f + 5.0f
+  [stack]f'f64 : 4.0d + 5.0d
   void
 }
 

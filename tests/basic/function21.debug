@@ -3,7 +3,7 @@ func()'i32 {
 }
 
 func_bar()'i32 {
-  9
+  9i
 }
 
 global()'void {

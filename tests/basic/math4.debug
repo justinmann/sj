@@ -1,5 +1,5 @@
 global()'void {
-  4 + 5
+  4i + 5i
   void
 }
 

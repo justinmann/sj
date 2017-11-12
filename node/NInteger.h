@@ -9,14 +9,22 @@
 #ifndef NInteger_h
 #define NInteger_h
 
+enum NIT {
+    NIT_I32,
+    NIT_I64,
+    NIT_U32,
+    NIT_U64,
+};
+
 class NInteger : public NVariableBase {
 public:
+    NIT type;
     string strValue;
-    int64_t value;
+    int32_t value;
     bool hasValue;
     
-    NInteger(CLoc loc, const char* value) : NVariableBase(NodeType_Integer, loc), strValue(value), hasValue(false) { }
-    NInteger(CLoc loc, const int64_t value) : NVariableBase(NodeType_Integer, loc), value(value), hasValue(true) { }
+    NInteger(CLoc loc, const char* value);
+    NInteger(CLoc loc, const int32_t value) : NVariableBase(NodeType_Integer, loc), value(value), hasValue(true), type(NIT_I32) { }
 	virtual shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue);
 	virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
 

@@ -66,8 +66,8 @@ void updateLocation(YYLOCATION& loc, const char* s, const int len) {
 "@"						TOKEN_VAL(TAT);
 "."						TOKEN_VAL(TDOT);
 [a-zA-Z_][a-zA-Z0-9_]*	TOKEN_STR(TIDENTIFIER, 0, 0);
-[0-9]+\.[0-9]*			TOKEN_STR(TDOUBLE, 0, 0);
-[0-9]+					TOKEN_STR(TINTEGER, 0, 0);
+[0-9]+\.[0-9]*(f|d)*		TOKEN_STR(TDOUBLE, 0, 0);
+[0-9]+(i|u|v|l)*		TOKEN_STR(TINTEGER, 0, 0);
 \n						TOKEN_VAL(TEND);
 ;						TOKEN_VAL(TEND);
 "'\\''"					TOKEN_STR(TCHAR, 1, 1);

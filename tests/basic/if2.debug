@@ -1,8 +1,8 @@
 global()'void {
   if false {
-    1
+    1i
   } else {
-    2
+    2i
   }
   void
 }

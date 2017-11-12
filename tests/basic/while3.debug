@@ -1,7 +1,7 @@
 global()'void {
-  [stack]x'i32 = 10
-  while x > 0{
-    [stack]x'i32 = x - 1
+  [stack]x'i32 = 10i
+  while x > 0i{
+    [stack]x'i32 = x - 1i
   }
   x
   void

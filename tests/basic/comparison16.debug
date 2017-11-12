@@ -1,5 +1,5 @@
 global()'void {
-  4.0 >= 4.0
+  4.0d >= 4.0d
   void
 }
 

@@ -153,9 +153,9 @@ element_toHTML()'string {
   {
     [heap]string([heap]this : string(
       parent: this,
-      [heap]count'i32 = ,
+      [heap]count'i32 = i,
       [heap]data'array_char = [heap]array!char([heap]this : array!char(
-        [heap]size'i32 = ,
+        [heap]size'i32 = i,
         [heap]data'ptr = ,
         [heap]_isGlobal'bool = false
       ))
@@ -167,15 +167,15 @@ element_update()'void {
   [heap]html'string : {
     [heap]string([heap]this : string(
       parent: [stack]this,
-      [heap]count'i32 = ,
+      [heap]count'i32 = i,
       [heap]data'array_char = [heap]array!char([heap]this : array!char(
-        [heap]size'i32 = ,
+        [heap]size'i32 = i,
         [heap]data'ptr = ,
         [heap]_isGlobal'bool = false
       ))
     ))
   }
-  for i : 0 to this.size {
+  for i : 0i to this.size {
     [stack]child'#element : [stack]array_getAt([stack]this : array_getAt(
       parent: [stack].parentthis.children,
       [stack]index'i32 : i
@@ -210,7 +210,7 @@ string_add([stack]item'string:)'void {
     ))
     void
   }
-  for i : 0 to this.count - 1 {
+  for i : 0i to this.count - 1i {
     [heap]array_setAt([stack]this : array_setAt(
       parent: [heap].parentthis.data,
       [heap]index'i32 : .parentthis.count,
@@ -224,7 +224,7 @@ string_add([stack]item'string:)'void {
   [heap]array_setAt([stack]this : array_setAt(
     parent: [heap].parentthis.data,
     [heap]index'i32 : .parentthis.count,
-    [heap]item'char : 0 as char
+    [heap]item'char : 0i as char
   ))
 }
 
@@ -243,9 +243,9 @@ timerElement_toHTML()'string {
   {
     [heap]string([heap]this : string(
       parent: this,
-      [heap]count'i32 = ,
+      [heap]count'i32 = i,
       [heap]data'array_char = [heap]array!char([heap]this : array!char(
-        [heap]size'i32 = ,
+        [heap]size'i32 = i,
         [heap]data'ptr = ,
         [heap]_isGlobal'bool = false
       ))
@@ -259,7 +259,7 @@ global()'void {
   [stack]random'anon3 : [stack]anon3([stack]this : anon3())
   [stack]parse'anon2 : [stack]anon2([stack]this : anon2())
   [stack]console'anon1 : [stack]anon1([stack]this : anon1(
-    [stack]_fd'ptr = 0 as ptr
+    [stack]_fd'ptr = 0i as ptr
   ))
   #element(
     toHTML()'string
@@ -269,9 +269,9 @@ global()'void {
     [stack]id'string : {
       [heap]string([heap]this : string(
         parent: [stack]this,
-        [heap]count'i32 = ,
+        [heap]count'i32 = i,
         [heap]data'array_char = [heap]array!char([heap]this : array!char(
-          [heap]size'i32 = ,
+          [heap]size'i32 = i,
           [heap]data'ptr = ,
           [heap]_isGlobal'bool = false
         ))
@@ -279,16 +279,16 @@ global()'void {
     },
     [stack]children'array_#element : {
       [stack]sjv_array1'array_#element : [stack]array!#element([stack]this : array!#element(
-        [stack]size'i32 = ,
-        [stack]data'ptr = 0 as ptr,
+        [stack]size'i32 = i,
+        [stack]data'ptr = 0i as ptr,
         [stack]_isGlobal'bool = false
       ))
       [stack]array_setAt([stack]this : array_setAt(
         parent: [stack]sjv_array1,
-        [stack]index'i32 : ,
+        [stack]index'i32 : i,
         [heap]item'#element : [stack]timerElement([stack]this : timerElement(
           parent: [stack]this,
-          [stack]count'i32 = 0
+          [stack]count'i32 = 0i
         )) as #element
       ))
       sjv_array1

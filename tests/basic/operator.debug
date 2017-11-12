@@ -6,7 +6,7 @@ fancyMath_add([stack]num'fancyMath:)'fancyMath {
   [heap]fancyMath([heap]this : fancyMath(
     [heap]x'i32 = .parentthis.x + [heap]fancyMath_getX([stack]this : fancyMath_getX(
       parent: [stack]this.num
-    )) + 1
+    )) + 1i
   ))
 }
 
@@ -14,7 +14,7 @@ fancyMath_divide([stack]num'fancyMath:)'fancyMath {
   [heap]fancyMath([heap]this : fancyMath(
     [heap]x'i32 = .parentthis.x / [heap]fancyMath_getX([stack]this : fancyMath_getX(
       parent: [stack]this.num
-    )) + 1
+    )) + 1i
   ))
 }
 
@@ -24,7 +24,7 @@ fancyMath_getX()'i32 {
 
 fancyMath_increment()'fancyMath {
   [heap]fancyMath([heap]this : fancyMath(
-    [heap]x'i32 = .parentthis.x + 1
+    [heap]x'i32 = .parentthis.x + 1i
   ))
 }
 
@@ -32,7 +32,7 @@ fancyMath_modulus([stack]num'fancyMath:)'fancyMath {
   [heap]fancyMath([heap]this : fancyMath(
     [heap]x'i32 = .parentthis.x %% [heap]fancyMath_getX([stack]this : fancyMath_getX(
       parent: [stack]this.num
-    )) + 1
+    )) + 1i
   ))
 }
 
@@ -40,7 +40,7 @@ fancyMath_multiply([stack]num'fancyMath:)'fancyMath {
   [heap]fancyMath([heap]this : fancyMath(
     [heap]x'i32 = .parentthis.x * [heap]fancyMath_getX([stack]this : fancyMath_getX(
       parent: [stack]this.num
-    )) + 1
+    )) + 1i
   ))
 }
 
@@ -48,16 +48,16 @@ fancyMath_subtract([stack]num'fancyMath:)'fancyMath {
   [heap]fancyMath([heap]this : fancyMath(
     [heap]x'i32 = .parentthis.x - [heap]fancyMath_getX([stack]this : fancyMath_getX(
       parent: [stack]this.num
-    )) + 1
+    )) + 1i
   ))
 }
 
 global()'void {
   [heap]a'fancyMath : [heap]fancyMath([heap]this : fancyMath(
-    [heap]x'i32 = 1
+    [heap]x'i32 = 1i
   ))
   [heap]b'fancyMath : [heap]fancyMath([heap]this : fancyMath(
-    [heap]x'i32 = 2
+    [heap]x'i32 = 2i
   ))
   [heap]c'fancyMath = [heap]fancyMath_add([stack]this : fancyMath_add(
     parent: [heap]a,
@@ -104,7 +104,7 @@ global()'void {
   [heap]i'i32 = [heap]fancyMath_getX([stack]this : fancyMath_getX(
     parent: [heap]f
   ))
-  [stack]j'i32 = bob'i32 = 12
+  [stack]j'i32 = bob'i32 = 12i
   void
 }
 

@@ -1,9 +1,9 @@
 func()'f64 {
-  -3.0
+  -3.0d
 }
 
 global()'void {
-  func([stack]this : func()) < 4.0
+  func([stack]this : func()) < 4.0d
   void
 }
 

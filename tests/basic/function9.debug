@@ -4,8 +4,8 @@ func([stack]x'i32:, [stack]y'i32:)'i32 {
 
 global()'void {
   func([stack]this : func(
-    [stack]x'i32 : 2,
-    [stack]y'i32 : 1
+    [stack]x'i32 : 2i,
+    [stack]y'i32 : 1i
   ))
   void
 }

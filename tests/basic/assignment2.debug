@@ -1,5 +1,5 @@
 global()'void {
-  [stack]x'i64 = 1 as i64
+  [stack]x'i64 = 1i as i64
   void
 }
 

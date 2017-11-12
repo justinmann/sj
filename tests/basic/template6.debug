@@ -1,5 +1,5 @@
 class!func_i32()'i32 {
-  1
+  1i
 }
 
 global()'void {

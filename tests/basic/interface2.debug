@@ -3,7 +3,7 @@ class ##foo ()'class {
 }
 
 class_test()'i32 {
-  5
+  5i
 }
 
 test()

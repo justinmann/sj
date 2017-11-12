@@ -1,0 +1,6 @@
+ERROR:19 basic/math3.sj[1:1] i32 '-2147483649' is out range
+ERROR:19 basic/math3.sj[2:1] i32 '2147483648' is out range
+ERROR:19 basic/math3.sj[4:1] i64 '-9223372036854775809' is out range
+ERROR:19 basic/math3.sj[5:1] i64 '9223372036854775808' is out range
+ERROR:19 basic/math3.sj[7:1] u32 '4294967296' is out range
+ERROR:19 basic/math3.sj[9:1] u64 '18446744073709551616' is out range

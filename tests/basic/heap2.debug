@@ -13,7 +13,7 @@ class_get()'anon1 {
 global()'void {
   [stack]c'class : [stack]class([stack]this : class(
     [heap]data'anon1 : [heap]class_anon1([heap]this : class_anon1(
-      [heap]x'i32 : 0
+      [heap]x'i32 : 0i
     ))
   ))
   [heap]d'anon1 : [heap]class_get([stack]this : class_get(

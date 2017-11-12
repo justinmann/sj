@@ -36,12 +36,12 @@ array!char([heap]size'i32=, [heap]data'ptr=, [heap]_isGlobal'bool=)'array_char {
 func()'tuple2_i32_string {
   {
     [heap]tuple2![i32, string]([heap]this : tuple2![i32, string](
-      [heap]item1'i32 : 1,
+      [heap]item1'i32 : 1i,
       [heap]item2'string : {
         [heap]string([heap]this : string(
-          [heap]count'i32 = ,
+          [heap]count'i32 = i,
           [heap]data'array_char = [heap]array!char([heap]this : array!char(
-            [heap]size'i32 = ,
+            [heap]size'i32 = i,
             [heap]data'ptr = ,
             [heap]_isGlobal'bool = false
           ))
@@ -67,7 +67,7 @@ global()'void {
   [stack]random'anon3 : [stack]anon3([stack]this : anon3())
   [stack]parse'anon2 : [stack]anon2([stack]this : anon2())
   [stack]console'anon1 : [stack]anon1([stack]this : anon1(
-    [stack]_fd'ptr = 0 as ptr
+    [stack]_fd'ptr = 0i as ptr
   ))
   [heap]t'tuple2_i32_string : [heap]func([stack]this : func())
   [heap]a'i32 = this.item1
@@ -87,16 +87,16 @@ global()'void {
       [stack]tuple3![string, f64, i32]([stack]this : tuple3![string, f64, i32](
         [stack]item1'string : {
           [heap]string([heap]this : string(
-            [heap]count'i32 = ,
+            [heap]count'i32 = i,
             [heap]data'array_char = [heap]array!char([heap]this : array!char(
-              [heap]size'i32 = ,
+              [heap]size'i32 = i,
               [heap]data'ptr = ,
               [heap]_isGlobal'bool = false
             ))
           ))
         },
-        [stack]item2'f64 : 1.0,
-        [stack]item3'i32 : 4
+        [stack]item2'f64 : 1.0d,
+        [stack]item3'i32 : 4i
       ))
     }
     [stack]e'string : this.item1

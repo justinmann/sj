@@ -1,5 +1,5 @@
 global()'void {
-  4 >= 4
+  4i >= 4i
   void
 }
 

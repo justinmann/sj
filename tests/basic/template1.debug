@@ -1,13 +1,13 @@
 class!bool()'i32 {
-  1
+  1i
 }
 
 class!f32()'i32 {
-  1
+  1i
 }
 
 class!i32()'i32 {
-  1
+  1i
 }
 
 global()'void {

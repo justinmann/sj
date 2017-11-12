@@ -1,5 +1,5 @@
 global()'void {
-  -3 == 4
+  -3i == 4i
   void
 }
 

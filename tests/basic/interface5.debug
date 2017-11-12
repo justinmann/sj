@@ -3,11 +3,11 @@ class!i32 ##bar, ##foo!item ()'class_i32 {
 }
 
 class_test1()'i32 {
-  1
+  1i
 }
 
 class_test2()'i32 {
-  2
+  2i
 }
 
 test1()

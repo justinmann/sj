@@ -1,16 +1,16 @@
 func([heap]x'i32:)'i32 {
-  if this.x > 0 {
+  if this.x > 0i {
     [heap]func([stack]this : func(
-      [heap]x'i32 : this.x - 1
+      [heap]x'i32 : this.x - 1i
     ))
   } else {
-    0
+    0i
   }
 }
 
 global()'void {
   [heap]func([stack]this : func(
-    [heap]x'i32 : 4
+    [heap]x'i32 : 4i
   ))
   void
 }

@@ -9,19 +9,19 @@ class_bar([heap]x'i32:)'i32 {
 }
 
 class_foo([heap]x'i32:)'i32 {
-  if this.x > 0 {
+  if this.x > 0i {
     [heap]class_bar([stack]this : class_bar(
-      [heap]x'i32 : this.x - 1
+      [heap]x'i32 : this.x - 1i
     ))
   } else {
-    0
+    0i
   }
 }
 
 global()'void {
   [stack]c'class : [stack]class([stack]this : class())
   [heap]class_foo([stack]this : class_foo(
-    [heap]x'i32 : 4
+    [heap]x'i32 : 4i
   ))
   void
 }

@@ -4,7 +4,7 @@ class([heap]x'i32:)'class {
 
 func()'class {
   [heap]class([heap]this : class(
-    [heap]x'i32 : 1
+    [heap]x'i32 : 1i
   ))
 }
 

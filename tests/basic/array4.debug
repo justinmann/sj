@@ -56,20 +56,20 @@ class([heap]x'i32:)'class {
 
 global()'void {
   [stack]a'array_class : [stack]array!class([stack]this : array!class(
-    [stack]size'i32 = 1,
-    [stack]data'ptr = 0 as ptr,
+    [stack]size'i32 = 1i,
+    [stack]data'ptr = 0i as ptr,
     [stack]_isGlobal'bool = false
   ))
   [stack]array_setAt([stack]this : array_setAt(
     parent: [stack]a,
-    [stack]index'i32 : 0,
+    [stack]index'i32 : 0i,
     [heap]item'class : [heap]class([heap]this : class(
-      [heap]x'i32 : 1
+      [heap]x'i32 : 1i
     ))
   ))
   [stack]b'class : [stack]array_getAt([stack]this : array_getAt(
     parent: [stack]a,
-    [stack]index'i32 : 0
+    [stack]index'i32 : 0i
   ))
   [heap]c'i32 : this.x
   c

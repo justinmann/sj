@@ -9,8 +9,8 @@ anon1([stack]_fd'ptr=)'anon1 {
 }
 
 anon1_readLine()'string {
-  [heap]data'ptr = 0 as ptr
-  [heap]size'i32 = 1024
+  [heap]data'ptr = 0i as ptr
+  [heap]size'i32 = 1024i
   c{
 
 		    char* str = (char*)malloc(size);
@@ -35,7 +35,7 @@ anon1_readLine()'string {
 		
 }c
   [heap]string([heap]this : string(
-    [heap]count'i32 = size - 1,
+    [heap]count'i32 = size - 1i,
     [heap]data'array_char = [heap]array!char([heap]this : array!char(
       [heap]size'i32 = size,
       [heap]data'ptr = data,
@@ -59,7 +59,7 @@ anon2()'anon2 {
 }
 
 anon2_toInt([stack]text'string:)'i32 {
-  [heap]x'i32 = 0
+  [heap]x'i32 = 0i
   c{
 
 			char* e;
@@ -112,22 +112,22 @@ global()'void {
   [stack]random'anon3 : [stack]anon3([stack]this : anon3())
   [stack]parse'anon2 : [stack]anon2([stack]this : anon2())
   [stack]console'anon1 : [stack]anon1([stack]this : anon1(
-    [stack]_fd'ptr = 0 as ptr
+    [stack]_fd'ptr = 0i as ptr
   ))
   [stack]anon1_write([stack]this : anon1_write(
     parent: [stack]console,
     [stack]data'string : {
       [heap]string([heap]this : string(
-        [heap]count'i32 = ,
+        [heap]count'i32 = i,
         [heap]data'array_char = [heap]array!char([heap]this : array!char(
-          [heap]size'i32 = ,
+          [heap]size'i32 = i,
           [heap]data'ptr = ,
           [heap]_isGlobal'bool = false
         ))
       ))
     }
   ))
-  [stack]num'i32 : [stack]anon3_nextInt([stack]this : anon3_nextInt()) %% 10 + 1
+  [stack]num'i32 : [stack]anon3_nextInt([stack]this : anon3_nextInt()) %% 10i + 1i
   [stack]isCorrect'bool = false
   while !isCorrect{
     [heap]str'string : [heap]anon1_readLine([stack]this : anon1_readLine())
@@ -139,9 +139,9 @@ global()'void {
         parent: [stack]console,
         [stack]data'string : {
           [heap]string([heap]this : string(
-            [heap]count'i32 = ,
+            [heap]count'i32 = i,
             [heap]data'array_char = [heap]array!char([heap]this : array!char(
-              [heap]size'i32 = ,
+              [heap]size'i32 = i,
               [heap]data'ptr = ,
               [heap]_isGlobal'bool = false
             ))
@@ -154,9 +154,9 @@ global()'void {
         parent: [stack]console,
         [stack]data'string : {
           [heap]string([heap]this : string(
-            [heap]count'i32 = ,
+            [heap]count'i32 = i,
             [heap]data'array_char = [heap]array!char([heap]this : array!char(
-              [heap]size'i32 = ,
+              [heap]size'i32 = i,
               [heap]data'ptr = ,
               [heap]_isGlobal'bool = false
             ))
@@ -172,9 +172,9 @@ global()'void {
     parent: [stack]console,
     [stack]data'string : {
       [heap]string([heap]this : string(
-        [heap]count'i32 = ,
+        [heap]count'i32 = i,
         [heap]data'array_char = [heap]array!char([heap]this : array!char(
-          [heap]size'i32 = ,
+          [heap]size'i32 = i,
           [heap]data'ptr = ,
           [heap]_isGlobal'bool = false
         ))

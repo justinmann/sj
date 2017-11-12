@@ -1,6 +1,6 @@
 global()'void {
-  [stack]y'i32 = 0
-  for x : 2 to 4 {
+  [stack]y'i32 = 0i
+  for x : 2i to 4i {
     [stack]y'i32 = y + x
   }
   y

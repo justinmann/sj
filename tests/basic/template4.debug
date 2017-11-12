@@ -1,5 +1,5 @@
 class!func()'i32 {
-  1
+  1i
 }
 
 global()'void {

@@ -22,8 +22,8 @@ array!char([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=)'array_cha
 global()'void {
   [stack]a([stack]this : a(
     [stack]data'array_char = [stack]array!char([stack]this : array!char(
-      [stack]size'i32 = 0,
-      [stack]data'ptr = 0 as ptr,
+      [stack]size'i32 = 0i,
+      [stack]data'ptr = 0i as ptr,
       [stack]_isGlobal'bool = false
     ))
   ))
