@@ -77,6 +77,11 @@ void sjf_global(void) {
     double_option f;
     char_option g;
     uintptr_option h;
+    sjs_class* i;
+    bool j;
+    bool k;
+    sji_interface* l;
+    bool m;
 
     a = int32_empty;
     b = int64_empty;
@@ -86,6 +91,15 @@ void sjf_global(void) {
     f = double_empty;
     g = char_empty;
     h = uintptr_empty;
+    i = 0;
+    j = a.isEmpty;
+    k = (i == 0);
+    l = 0;
+    if (l != 0) {
+        l->_refCount++;
+    }
+
+    m = (l == 0);
 }
 
 int main() {

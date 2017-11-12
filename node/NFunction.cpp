@@ -451,7 +451,7 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
                     trFunctionBlock->hasThis = true;
                     trOutput->functions[castFunctionName] = trFunctionBlock;
 
-                    auto interfaceType = interfaceVal->getThisType(compiler, result);
+                    auto interfaceType = interfaceVal->getThisType(compiler, result, false);
                     stringstream functionDefinition;
                     functionDefinition << interfaceType->nameRef << " " << castFunctionName << "(" << structName << "* _this" << ")";
                     trFunctionBlock->definition = functionDefinition.str();
@@ -1346,7 +1346,7 @@ void CFunction::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CVar> t
 
 shared_ptr<CVar> CFunction::getThisVar(Compiler* compiler, CResult& result) {
     if (!_thisVar) {
-        _thisVar = CNormalVar::createThisVar(loc, shared_from_this(), getThisType(compiler, result));
+        _thisVar = CNormalVar::createThisVar(loc, shared_from_this(), getThisType(compiler, result, false));
         getVarBody(compiler, result, _thisVar);
         setHeapVarBody(compiler, result, _thisVar);
 
@@ -1444,12 +1444,20 @@ bool CFunction::getHasThis() {
     return true;
 }
 
-shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result) {
-    if (!thisType) {
-        thisType = make_shared<CType>(name.c_str(), shared_from_this(), false);
+shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result, bool isOption) {
+    if (isOption) {
+        if (!thisOptionType) {
+            thisOptionType = make_shared<CType>((name + "?").c_str(), shared_from_this(), isOption);
+        }
+        return thisOptionType;
     }
-    
-    return thisType;
+    else {
+        if (!thisType) {
+            thisType = make_shared<CType>(name.c_str(), shared_from_this(), false);
+        }
+
+        return thisType;
+    }
 }
 
 shared_ptr<vector<pair<string, shared_ptr<CType>>>> CFunction::getCTypeList(Compiler* compiler, CResult& result) {
@@ -1463,7 +1471,7 @@ shared_ptr<vector<pair<string, shared_ptr<CType>>>> CFunction::getCTypeList(Comp
 
         if (hasParent) {
             indexParent = ctypeList->size();
-            auto parentType = parent.lock()->getThisType(compiler, result);
+            auto parentType = parent.lock()->getThisType(compiler, result, false);
             ctypeList->push_back(make_pair("_parent", parentType));
         }
 
@@ -1802,7 +1810,7 @@ string CFunction::getCFullName(bool includeTemplateTypes) {
 }
 
 int CFunction::getArgStart(Compiler* compiler, CResult& result) {
-    getThisType(compiler, result);
+    getThisType(compiler, result, false);
     return (int)indexVars;
 }
 
@@ -1835,9 +1843,10 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, str
 
 shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName) {
     if (typeName->category == CTC_Interface) {
-        auto interface = getCInterface(compiler, result, typeName->name, nullptr, typeName->templateTypeNames);
+        auto nameWithoutQuestion = typeName->isOption ? typeName->name.substr(0, typeName->name.size() - 1) : typeName->name;
+        auto interface = getCInterface(compiler, result, nameWithoutQuestion, nullptr, typeName->templateTypeNames);
         if (interface) {
-            return interface->getThisType(compiler, result);
+            return interface->getThisType(compiler, result, typeName->isOption);
         }
     } else {
         assert(typeName->category == CTC_Value);
@@ -1848,7 +1857,8 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, sha
             }
         }
         
-        auto baseFunctionDefinition = getFunctionDefinition(typeName->name);
+        auto nameWithoutQuestion = typeName->isOption ? typeName->name.substr(0, typeName->name.size() - 1) : typeName->name;
+        auto baseFunctionDefinition = getFunctionDefinition(nameWithoutQuestion);
         if (baseFunctionDefinition.second != nullptr) {
             auto templateTypes = vector<shared_ptr<CType>>();
             if (typeName->templateTypeNames) {
@@ -1863,7 +1873,7 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, sha
             
             auto functionDefinition = static_pointer_cast<CFunctionDefinition>(baseFunctionDefinition.second);
             auto cfunc = functionDefinition->getFunction(compiler, result, loc, templateTypes, baseFunctionDefinition.first);
-            return cfunc->getThisType(compiler, result);
+            return cfunc->getThisType(compiler, result, typeName->isOption);
         }
     }
     return nullptr;

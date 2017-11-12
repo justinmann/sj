@@ -76,7 +76,7 @@ CInterfaceVar::CInterfaceVar(shared_ptr<CInterface> interface) : isHeapVar(false
 }
 
 shared_ptr<CType> CInterfaceVar::getType(Compiler* compiler, CResult& result) {
-    return parent.lock()->getThisType(compiler, result);
+    return parent.lock()->getThisType(compiler, result, false);
 }
 
 //shared_ptr<ReturnValue> CInterfaceVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
@@ -154,11 +154,19 @@ bool CInterface::getHasThis() {
     return false;
 }
 
-shared_ptr<CType> CInterface::getThisType(Compiler* compiler, CResult& result) {
-    if (!thisType) {
-        thisType = make_shared<CType>(name.c_str(), shared_from_this(), false);
+shared_ptr<CType> CInterface::getThisType(Compiler* compiler, CResult& result, bool isOption) {
+    if (isOption) {
+        if (!thisOptionType) {
+            thisOptionType = make_shared<CType>((name + "?").c_str(), shared_from_this(), true);
+        }
+        return thisOptionType;
     }
-    return thisType;
+    else {
+        if (!thisType) {
+            thisType = make_shared<CType>(name.c_str(), shared_from_this(), false);
+        }
+        return thisType;
+    }
 }
 
 int CInterface::getThisIndex(const string& name) const {

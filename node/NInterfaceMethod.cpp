@@ -197,7 +197,7 @@ bool CInterfaceMethod::getHasThis() {
     return false;
 }
 
-shared_ptr<CType> CInterfaceMethod::getThisType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CInterfaceMethod::getThisType(Compiler* compiler, CResult& result, bool isOption) {
     return nullptr;
 }
 

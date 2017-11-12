@@ -73,7 +73,7 @@ public:
     string fullName(bool includeTemplateTypes);
     
     bool getHasThis();
-    shared_ptr<CType> getThisType(Compiler* compiler, CResult& result);
+    shared_ptr<CType> getThisType(Compiler* compiler, CResult& result, bool isOption);
     int getThisIndex(const string& name) const;
     shared_ptr<CVar> getThisVar(Compiler* compiler, CResult& result);
     //Type* getStructType(Compiler* compiler, CResult& result);

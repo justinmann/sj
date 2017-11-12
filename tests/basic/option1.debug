@@ -1,4 +1,6 @@
 global()'void {
+  #interface(
+  )
   [stack]a'i32? : empty'i32?
   [stack]b'i64? : empty'i64?
   [stack]c'u32? : empty'u32?
@@ -7,6 +9,11 @@ global()'void {
   [stack]f'f64? : empty'f64?
   [stack]g'char? : empty'char?
   [stack]h'ptr? : empty'ptr?
+  [stack]i'class? : empty'class?
+  [stack]j'bool : isEmpty(a)
+  [stack]k'bool : isEmpty(i)
+  [stack]l'#interface? : empty'#interface?
+  [stack]m'bool : isEmpty(l)
   void
 }
 

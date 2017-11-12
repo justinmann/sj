@@ -40,7 +40,7 @@ public:
     virtual string fullName(bool includeTemplateTypes) = 0;
     
     virtual bool getHasThis() = 0;
-    virtual shared_ptr<CType> getThisType(Compiler* compiler, CResult& result) = 0;
+    virtual shared_ptr<CType> getThisType(Compiler* compiler, CResult& result, bool isOption) = 0;
     virtual int getThisIndex(const string& name) const = 0;
     virtual shared_ptr<CVar> getThisVar(Compiler* compiler, CResult& result) = 0;
     //virtual Type* getStructType(Compiler* compiler, CResult& result) = 0;

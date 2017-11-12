@@ -140,6 +140,12 @@ bool ReturnValue::writeReleaseToStream(TrBlock* block, ostream& stream, int leve
         return false;
 
     if (isHeap && release == RVR_MustRetain) {
+        if (type->isOption) {
+            TrBlock::addSpacing(stream, level);
+            stream << "if (" << name << " != 0) {";
+            level++;
+        }
+
         TrBlock::addSpacing(stream, level);
         stream << name << "->_refCount--;\n";
 
@@ -158,6 +164,12 @@ bool ReturnValue::writeReleaseToStream(TrBlock* block, ostream& stream, int leve
         stream << "free(" << name << ");\n";
         TrBlock::addSpacing(stream, level);
         stream << "}\n";
+
+        if (type->isOption) {
+            level--;
+            TrBlock::addSpacing(stream, level);
+            stream << "}";
+        }
     }
 
     return true;
@@ -166,20 +178,31 @@ bool ReturnValue::writeReleaseToStream(TrBlock* block, ostream& stream, int leve
 void ReturnValue::addReleaseToStatements(TrBlock* block, string name, shared_ptr<CType> type) {
     assert(!type->parent.expired());
 
+    shared_ptr<TrBlock> ifNullBlock;
+    auto innerBlock = block;
+    if (type->isOption) {
+        ifNullBlock = make_shared<TrBlock>();
+        stringstream ifStream;
+        ifStream << "if (" << name << " != 0)";
+        block->statements.push_back(TrStatement(ifStream.str(), ifNullBlock));
+
+        innerBlock = ifNullBlock.get();
+    }
+
     stringstream lineStream;
     lineStream << name << "->_refCount--";
-    block->statements.push_back(lineStream.str());
+    innerBlock->statements.push_back(lineStream.str());
 
 #ifdef DEBUG_ALLOC
     stringstream logStream;
     logStream << "printf(\"RELEASE\\t" << type->nameRef << "\\t%0x\\t" << block->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
-    block->statements.push_back(logStream.str());
+    innerBlock->statements.push_back(logStream.str());
 #endif
 
     auto ifBlock = make_shared<TrBlock>();
     stringstream ifStream;
     ifStream << "if (" << name << "->_refCount <= 0)";
-    block->statements.push_back(TrStatement(ifStream.str(), ifBlock));
+    innerBlock->statements.push_back(TrStatement(ifStream.str(), ifBlock));
 
     stringstream destroyStream;
     destroyStream << type->parent.lock()->getCDestroyFunctionName() << "(" << name << ")";
@@ -193,19 +216,31 @@ void ReturnValue::addReleaseToStatements(TrBlock* block, string name, shared_ptr
 void ReturnValue::addRetainToStatements(TrBlock* block, string name, shared_ptr<CType> type) {
     assert(!type->parent.expired());
 
+    shared_ptr<TrBlock> ifNullBlock;
+    auto innerBlock = block;
+    if (type->isOption) {
+        ifNullBlock = make_shared<TrBlock>();
+        stringstream ifStream;
+        ifStream << "if (" << name << " != 0)";
+        block->statements.push_back(TrStatement(ifStream.str(), ifNullBlock));
+
+        innerBlock = ifNullBlock.get();
+    }
+
     stringstream lineStream;
     lineStream << name << "->_refCount++";
-    block->statements.push_back(lineStream.str());
+    innerBlock->statements.push_back(lineStream.str());
 
 #ifdef DEBUG_ALLOC
     stringstream logStream;
     logStream << "printf(\"RETAIN\\t" << type->nameRef << "\\t%0x\\t" << block->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
-    block->statements.push_back(logStream.str());
+    innerBlock->statements.push_back(logStream.str());
 #endif
 }
 
 void ReturnValue::addInitToStatements(TrBlock* block, string name, shared_ptr<CType> type) {
     assert(!type->parent.expired());
+    assert(!type->isOption);
 
     stringstream lineStream;
     lineStream << name << "->_refCount = 1";

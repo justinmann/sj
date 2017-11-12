@@ -30,7 +30,11 @@ CType::CType(const char* name_, weak_ptr<CInterface> parent, bool isOption) : ca
 shared_ptr<ReturnValue> CType::transpileDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
     if (parent.expired()) {
         return make_shared<ReturnValue>(shared_from_this(), false, RVR_MustRetain, _defaultValue);
-    } else {
+    }
+    else if (isOption) {
+        return make_shared<ReturnValue>(shared_from_this(), false, RVR_MustRetain, "0");
+    }
+    else {
         assert(false);
         return nullptr;
     }

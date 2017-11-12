@@ -5,7 +5,7 @@ void CBaseFunction::setHasRefCount() {
 }
 
 bool CBaseFunction::getHasParent(Compiler* compiler, CResult& result) {
-    getThisType(compiler, result);
+    getThisType(compiler, result, false);
     return hasParent;
 }
 
@@ -14,7 +14,7 @@ void CBaseFunction::setHasParent(Compiler* compiler, CResult& result) {
         return;
     }
     
-    if (parent.lock()->getThisType(compiler, result) == nullptr) {
+    if (parent.lock()->getThisType(compiler, result, false) == nullptr) {
         return;
     }
     
@@ -22,7 +22,7 @@ void CBaseFunction::setHasParent(Compiler* compiler, CResult& result) {
     parent.lock()->setHasRefCount();
     
     if (!hasParent) {
-        getThisType(compiler, result);
+        getThisType(compiler, result, false);
         hasParent = true;
         
         for (auto it : delegateHasParent) {
