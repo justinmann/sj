@@ -162,6 +162,12 @@
     <ClInclude Include="..\node\NCCode.h">
       <Filter>Node</Filter>
     </ClInclude>
+    <ClInclude Include="..\node\NTupleAssignment.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NTuple.h">
+      <Filter>Node</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\node\NAnd.cpp">
@@ -294,6 +300,12 @@
       <Filter>Transpile</Filter>
     </ClCompile>
     <ClCompile Include="..\node\NCCode.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NTupleAssignment.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NTuple.cpp">
       <Filter>Node</Filter>
     </ClCompile>
   </ItemGroup>

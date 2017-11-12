@@ -10,7 +10,7 @@ string (
 			void
 		}
 
-		for i : 0 to item.count - 1 {
+		for i (0 to item.count - 1) {
 			data.setAt(count, item.getAt(i))
 			count++		
 		}

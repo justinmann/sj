@@ -57,6 +57,11 @@ shared_ptr<CTypeName> CTypeName::parse(string name) {
     return nullptr;
 }
 
+CTypeName::CTypeName(shared_ptr<CType> ctype) {
+    category = ctype->category;
+    name = ctype->name;
+}
+
 string CTypeName::getName() {
     if (category == CTC_Function) {
         string str = "(";

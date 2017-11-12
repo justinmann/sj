@@ -59,11 +59,11 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
             _assignVar = cfunction->getCVar(compiler, result, name);
             if (_assignVar) {
                 if (!isMutable) {
-                    result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var");
+                    result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var '%s'", _assignVar->name.c_str());
                     return nullptr;
                 }
                 else if (!_assignVar->isMutable) {
-                    result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var");
+                    result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var '%s'", _assignVar->name.c_str());
                     return nullptr;
                 }
             }

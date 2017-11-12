@@ -1,0 +1,5 @@
+global()'void {
+  [stack]x'i32 = 1.0
+  void
+}
+

@@ -166,6 +166,8 @@
     <ClInclude Include="..\compiler\Exception.h" />
     <ClInclude Include="..\node\NAnd.h" />
     <ClInclude Include="..\node\NArray.h" />
+    <ClInclude Include="..\node\NTuple.h" />
+    <ClInclude Include="..\node\NTupleAssignment.h" />
     <ClInclude Include="..\node\NAssignment.h" />
     <ClInclude Include="..\node\NBase.h" />
     <ClInclude Include="..\node\NBaseFunction.h" />
@@ -213,6 +215,8 @@
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\node\NAnd.cpp" />
     <ClCompile Include="..\node\NArray.cpp" />
+    <ClCompile Include="..\node\NTuple.cpp" />
+    <ClCompile Include="..\node\NTupleAssignment.cpp" />
     <ClCompile Include="..\node\NAssignment.cpp" />
     <ClCompile Include="..\node\NBase.cpp" />
     <ClCompile Include="..\node\NBaseFunction.cpp" />

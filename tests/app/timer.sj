@@ -10,7 +10,7 @@ element #element (
 
 	update() {
 		html : ""
-		for i : 0 to children.size {
+		for i (0 to children.size) {
 			child : children[i]
 			html.add(child.toHTML())
 		}

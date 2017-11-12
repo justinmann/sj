@@ -51,6 +51,8 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 	CTypeNameList* templateTypeNames;
 	int token;
 	bool isMutable;
+	NTupleAssignmentArgList* tupleAssignmentArgList;
+	NTupleAssignmentArg* tupleAssignmentArg;
 }
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
@@ -59,14 +61,16 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch destroy expr
-%type <var> var var_right expr_math expr_var const expr_and expr_comp
+%type <var> var var_right expr_math expr_var const expr_and expr_comp tuple expr_and_inner
 %type <block> stmts
 %type <nif> if_expr
-%type <exprvec> func_args func_block array_args interface_args interface_block
+%type <exprvec> func_args func_block array_args tuple_args interface_args interface_block
 %type <isMutable> assign_type
 %type <typeName> arg_type_quote arg_type return_type_quote return_type func_type func_arg_type func_type_name implement_arg
 %type <templateTypeNames> temp_args temp_block temp_block_optional func_arg_type_list implement implement_args
 %type <string> arg_type_interface
+%type <tupleAssignmentArg> assign_tuple_arg
+%type <tupleAssignmentArgList> assign_tuple
 
 /* Operator precedence */
 %left TAND TOR
@@ -203,6 +207,12 @@ expr_and			: expr_comp TAND expr_and 						{ $$ = new NAnd(LOC, shared_ptr<NVari
 					| expr_comp
 					;					
 
+expr_and_inner		: expr_comp TAND expr_and 						{ $$ = new NAnd(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($3)); }
+					| expr_comp TOR expr_and 						{ $$ = new NOr(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($3)); }
+					| tuple 										{ $$ = $1; }
+					| expr_comp
+					;					
+
 expr_comp 			: expr_math TCEQ expr_math 						{ $$ = new NCompare(LOC, shared_ptr<NVariableBase>($1), NCompareOp::EQ, shared_ptr<NVariableBase>($3)); }
 					| expr_math TCNE expr_math 						{ $$ = new NCompare(LOC, shared_ptr<NVariableBase>($1), NCompareOp::NE, shared_ptr<NVariableBase>($3)); }
 					| expr_math TCPEQ expr_math 					{ $$ = new NCompare(LOC, shared_ptr<NVariableBase>($1), NCompareOp::PEQ, shared_ptr<NVariableBase>($3)); }
@@ -224,12 +234,12 @@ expr_math			: expr_math TPLUS expr_math 					{ $$ = new NMath(LOC, shared_ptr<NV
 					| expr_var										{ $$ = $1; }
 					;
 
-expr_var 			: TLPAREN expr_and TRPAREN 						{ $$ = $2; }
+expr_var 			: TLPAREN expr_and_inner TRPAREN				{ $$ = $2; }
 					| var 											{ $$ = $1; }
 					| const											{ $$ = $1; }
 					;
 
-for_expr			: TFOR TIDENTIFIER TCOLON expr TTO expr block   { $$ = new NFor(LOC, $2->c_str(), shared_ptr<NBase>($4), shared_ptr<NBase>($6), shared_ptr<NBase>($7)); delete $2; }
+for_expr			: TFOR TIDENTIFIER TLPAREN expr TTO expr TRPAREN block   { $$ = new NFor(LOC, $2->c_str(), shared_ptr<NBase>($4), shared_ptr<NBase>($6), shared_ptr<NBase>($8)); delete $2; }
 					;
 
 while_expr			: TWHILE expr block 							{ $$ = new NWhile(LOC, shared_ptr<NBase>($2), shared_ptr<NBase>($3)); }
@@ -265,10 +275,27 @@ assign				: TIDENTIFIER assign_type stmt						{ $$ = new NAssignment(LOC, nullpt
 					| var TDOT TIDENTIFIER assign_type stmt				{ $$ = new NAssignment(LOC, shared_ptr<NVariableBase>($1), nullptr, $3->c_str(), shared_ptr<NBase>($5), $4); }
 					| var TDOT TIDENTIFIER assign_type arg_type_quote	{ $$ = new NAssignment(LOC, shared_ptr<NVariableBase>($1), shared_ptr<CTypeName>($5), $3->c_str(), nullptr, $4); }								
 					| var TDOT TIDENTIFIER arg_type_quote assign_type stmt	{ $$ = new NAssignment(LOC, shared_ptr<NVariableBase>($1), shared_ptr<CTypeName>($4), $3->c_str(), shared_ptr<NBase>($6), $5); }
+					| TLPAREN assign_tuple TRPAREN expr_and				{ $$ = new NTupleAssignment(LOC, shared_ptr<NTupleAssignmentArgList>($2), shared_ptr<NVariableBase>($4)); }
+					;
+
+assign_tuple 		: assign_tuple_arg								{ $$ = new NTupleAssignmentArgList(); $$->push_back(shared_ptr<NTupleAssignmentArg>($1)); }
+					| assign_tuple TCOMMA assign_tuple_arg 			{ $1->push_back(shared_ptr<NTupleAssignmentArg>($3)); }
+					;
+
+assign_tuple_arg	: TIDENTIFIER assign_type						{ $$ = new NTupleAssignmentArg(LOC, nullptr, nullptr, $1->c_str(), $2); }
+					| TIDENTIFIER assign_type arg_type_quote		{ $$ = new NTupleAssignmentArg(LOC, nullptr, shared_ptr<CTypeName>($3), $1->c_str(), $2); }
+					| var TDOT TIDENTIFIER assign_type				{ $$ = new NTupleAssignmentArg(LOC, shared_ptr<NVariableBase>($1), nullptr, $3->c_str(), $4); }
 					;
 
 assign_type 		: TEQUAL										{ $$ = true; }
 					| TCOLON										{ $$ = false; }
+					;
+
+tuple				: tuple_args TCOMMA expr_comp					{ $1->push_back(shared_ptr<NBase>($3)); $$ = new NTuple(LOC, shared_ptr<NodeList>($1)); }
+					;
+
+tuple_args 			: expr_comp										{ $$ = new NodeList(); $$->push_back(shared_ptr<NBase>($1)); }
+					| tuple_args TCOMMA expr_comp 					{ $1->push_back(shared_ptr<NBase>($3)); }
 					;
 
 array				: TLBRACKET array_args TRBRACKET				{ $$ = new NArray(LOC, shared_ptr<NodeList>($2)); }

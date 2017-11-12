@@ -1,0 +1,107 @@
+anon1([stack]_fd'ptr=)'anon1 {
+  c{
+ 
+		#include(<stdio.h>)
+		_this->_fd = (uintptr_t)stdout;
+	
+}c
+  this
+}
+
+anon2()'anon2 {
+  this
+}
+
+anon3()'anon3 {
+  this
+}
+
+array!char([heap]size'i32=, [heap]data'ptr=, [heap]_isGlobal'bool=)'array_char {
+  c{
+
+		if (_this->size < 0) {
+			exit(-1);
+		}
+
+		if (_this->data) {
+			_this->_isGlobal = true;
+		} else {
+			_this->data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
+		}
+	
+}c
+  this
+}
+
+func()'tuple2_i32_string {
+  {
+    [heap]tuple2![i32, string]([heap]this : tuple2![i32, string](
+      [heap]item1'i32 : 1,
+      [heap]item2'string : {
+        [heap]string([heap]this : string(
+          [heap]count'i32 = ,
+          [heap]data'array_char = [heap]array!char([heap]this : array!char(
+            [heap]size'i32 = ,
+            [heap]data'ptr = ,
+            [heap]_isGlobal'bool = false
+          ))
+        ))
+      }
+    ))
+  }
+}
+
+string([heap]count'i32=, [heap]data'array_char=)'string {
+  this
+}
+
+tuple2![i32, string]([heap]item1'i32:, [heap]item2'string:)'tuple2_i32_string {
+  this
+}
+
+tuple3![string, f64, i32]([stack]item1'string:, [stack]item2'f64:, [stack]item3'i32:)'tuple3_string_f64_i32 {
+  this
+}
+
+global()'void {
+  [stack]random'anon3 : [stack]anon3([stack]this : anon3())
+  [stack]parse'anon2 : [stack]anon2([stack]this : anon2())
+  [stack]console'anon1 : [stack]anon1([stack]this : anon1(
+    [stack]_fd'ptr = 0 as ptr
+  ))
+  [heap]t'tuple2_i32_string : [heap]func([stack]this : func())
+  [heap]a'i32 = this.item1
+  [heap]b'string = this.item2
+  {
+    [heap]tupleResult1'tuple2_i32_string : [heap]func([stack]this : func())
+    [heap]a'i32 = this.item1
+    [heap]b'string = this.item2
+  }
+  {
+    [heap]tupleResult2'tuple2_i32_string : [heap]func([stack]this : func())
+    [heap]c'i32 : this.item1
+    [heap]d'string : this.item2
+  }
+  {
+    [stack]tupleResult3'tuple3_string_f64_i32 : {
+      [stack]tuple3![string, f64, i32]([stack]this : tuple3![string, f64, i32](
+        [stack]item1'string : {
+          [heap]string([heap]this : string(
+            [heap]count'i32 = ,
+            [heap]data'array_char = [heap]array!char([heap]this : array!char(
+              [heap]size'i32 = ,
+              [heap]data'ptr = ,
+              [heap]_isGlobal'bool = false
+            ))
+          ))
+        },
+        [stack]item2'f64 : 1.0,
+        [stack]item3'i32 : 4
+      ))
+    }
+    [stack]e'string : this.item1
+    [stack]f'f64 : this.item2
+  }
+  void
+}
+

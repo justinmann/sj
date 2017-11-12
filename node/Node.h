@@ -70,6 +70,8 @@ enum NodeType {
     NodeType_StringArray,
     NodeType_This,
     NodeType_Throw,
+    NodeType_Tuple,
+    NodeType_TupleAssignment,
     NodeType_Variable,
     NodeType_Void,
     NodeType_While
@@ -103,6 +105,8 @@ enum NodeType {
 #include "NString.h"
 #include "NThis.h"
 #include "NThrow.h"
+#include "NTuple.h"
+#include "NTupleAssignment.h"
 #include "NVariable.h"
 #include "NVoid.h"
 #include "NWhile.h"

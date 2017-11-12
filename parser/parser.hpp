@@ -122,6 +122,8 @@ union YYSTYPE
 	CTypeNameList* templateTypeNames;
 	int token;
 	bool isMutable;
+	NTupleAssignmentArgList* tupleAssignmentArgList;
+	NTupleAssignmentArg* tupleAssignmentArg;
 
 
 };

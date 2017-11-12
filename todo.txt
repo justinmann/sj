@@ -1,15 +1,7 @@
 -- features --
-* array assignment
 * override interfaces
     a as type   -> a.asType()'t
 * lambda
-
--- array assignment --
-* special array assign operation
-	func() { [1, 2] }
-	[a:, b=] func()
-	a : t.getAt(0)
-	b = t.getAt(1)
 
 -- lambda --
 array!item(

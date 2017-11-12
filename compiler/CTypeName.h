@@ -45,6 +45,8 @@ public:
     CTypeName(shared_ptr<CTypeNameList> argTypeNames, shared_ptr<CTypeName> returnTypeName) : category(CTC_Function), mutability(CTM_Undefined), argTypeNames(argTypeNames), returnTypeName(returnTypeName) { 
         assert(false);
     }
+
+    CTypeName(shared_ptr<CType> ctype);
     
     static shared_ptr<CTypeName> parse(string name);
     
