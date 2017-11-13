@@ -20,3 +20,4 @@ m : isEmpty(l)
 n : value(class())
 o : getValue(n)
 p : n?.bob
+q : a?:-1

@@ -128,6 +128,7 @@ void sjf_global(void) {
     uintptr_option h;
     sjs_class* i;
     int32_option ifResult1;
+    int32_t ifResult2;
     bool j;
     bool k;
     sji_interface* l;
@@ -135,6 +136,7 @@ void sjf_global(void) {
     sjs_class* n;
     sjs_class* o;
     int32_option p;
+    int32_t q;
     sjs_class* sjv_temp1;
 
     a = int32_empty;
@@ -195,6 +197,14 @@ void sjf_global(void) {
     }
 
     p = ifResult1;
+
+    if (a.isEmpty) {
+        ifResult2 = -1;
+    } else {
+        ifResult2 = a.value;
+    }
+
+    q = ifResult2;
     sjf_class_destroy(&sjd_temp1);
 }
 

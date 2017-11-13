@@ -67,6 +67,7 @@ void updateLocation(YYLOCATION& loc, const char* s, const int len) {
 "value"					TOKEN_VAL(TVALUE);
 "empty"					TOKEN_VAL(TEMPTY);
 "#"						TOKEN_VAL(THASH);
+"?:"					TOKEN_VAL(TQUESTIONCOLON);
 "?"						TOKEN_VAL(TQUESTION);
 "."						TOKEN_VAL(TDOT);
 [a-zA-Z_][a-zA-Z0-9_]*	TOKEN_STR(TIDENTIFIER, 0, 0);

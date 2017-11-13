@@ -166,6 +166,7 @@
     <ClInclude Include="..\node\NAnd.h" />
     <ClInclude Include="..\node\NArray.h" />
     <ClInclude Include="..\node\NEmpty.h" />
+    <ClInclude Include="..\node\NGetOrElse.h" />
     <ClInclude Include="..\node\NGetValue.h" />
     <ClInclude Include="..\node\NIsEmpty.h" />
     <ClInclude Include="..\node\NOptionCast.h" />
@@ -220,6 +221,7 @@
     <ClCompile Include="..\node\NAnd.cpp" />
     <ClCompile Include="..\node\NArray.cpp" />
     <ClCompile Include="..\node\NEmpty.cpp" />
+    <ClCompile Include="..\node\NGetOrElse.cpp" />
     <ClCompile Include="..\node\NGetValue.cpp" />
     <ClCompile Include="..\node\NIsEmpty.cpp" />
     <ClCompile Include="..\node\NOptionCast.cpp" />

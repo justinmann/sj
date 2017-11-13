@@ -55,7 +55,7 @@ public:
             line << leftValue->name;
         }
 
-        return make_shared<ReturnValue>(leftValue->type->getNotOptionType(), true, RVR_Ignore, line.str());
+        return make_shared<ReturnValue>(leftValue->type->getNotOptionType(), leftVar->getHeapVar(compiler, result, thisVar), RVR_MustRetain, line.str());
     }
 
     void transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue) {
@@ -63,7 +63,7 @@ public:
     }
 
     void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
-        ss << "isEmpty(";
+        ss << "getValue(";
         leftVar->dump(compiler, result, thisFunction, thisVar, dotVar, functions, ss, dotSS, level);
         ss << ")";
     }

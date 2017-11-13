@@ -1,25 +1,8 @@
 -- features --
-* optional
+* as? operator
 * override interfaces
     a as type   -> a.asType()'t
-* as? operator
 * lambda
-
--- optional --
-* ?: getOrElse operator
-
-#bob(
-    method1()
-)
-
-class(
-    x : 0
-) { this }
-
-c'class? = empty'class
-a : c?.x // if !isEmpty(c) { getValue(c).x } else { empty'i32 }
-b : a ?: -1 // if !isEmpty(a) { getValue(a) } else { -1 } 
-d : c as? #bob
 
 -- lambda --
 array!item(

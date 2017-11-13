@@ -21,8 +21,9 @@ global()'void {
   [stack]n'class? : value([stack]class([stack]this : class(
     [stack]bob'i32 : 0i
   )))
-  [stack]o'class : isEmpty(n)
+  [stack]o'class : getValue(n)
   [stack]p'i32? : if isEmpty(n) empty'i32? else value(this.bob)
+  [stack]q'i32 : if isEmpty(a) -1i else getValue(a)
   void
 }
 
