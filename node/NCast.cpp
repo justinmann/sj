@@ -61,6 +61,7 @@ shared_ptr<ReturnValue> NCast::transpile(Compiler* compiler, CResult& result, sh
     if (type != nullptr && type->category == CTC_Interface) {
         auto resultValue = trBlock->createTempVariable("result", type, true, RVR_MustRelease);
         auto interface = static_pointer_cast<CInterface>(type->parent.lock());
+        interface->transpileDefinition(compiler, result, trOutput);
         interfaceVar = interface->getThisVar(compiler, result);
 
         shared_ptr<TrBlock> ifNullBlock;
@@ -69,7 +70,15 @@ shared_ptr<ReturnValue> NCast::transpile(Compiler* compiler, CResult& result, sh
             ifNullBlock = make_shared<TrBlock>();
             stringstream ifStream;
             ifStream << "if (" << returnValue->name << " != 0)";
-            trBlock->statements.push_back(TrStatement(ifStream.str(), ifNullBlock));
+            
+            auto elseBlock = make_shared<TrBlock>();
+            stringstream line;
+            line << resultValue->name << " = 0";
+            elseBlock->statements.push_back(line.str());
+            
+            auto statement = TrStatement(ifStream.str(), ifNullBlock);
+            statement.elseBlock = elseBlock;
+            trBlock->statements.push_back(statement);
 
             innerBlock = ifNullBlock.get();
         }
