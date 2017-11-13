@@ -23,9 +23,9 @@ pair<shared_ptr<CType>, shared_ptr<CType>> CType::create(string name_, string cn
     ctypeOption->isOption = true;
     ctypeOption->category = CTC_Value;
     ctypeOption->name = name_ + "?";
-    ctypeOption->nameValue = cname;
-    ctypeOption->nameRef = cname;
-    ctypeOption->_defaultValue = defaultValue;
+    ctypeOption->nameValue = cnameOption;
+    ctypeOption->nameRef = cnameOption;
+    ctypeOption->_defaultValue = defaultValueOption;
     ctypeOption->_otherType = ctypeNotOption;
 
     return make_pair(ctypeNotOption, ctypeOption);

@@ -1,4 +1,4 @@
-class ##interface ()'class {
+class ##interface ([stack]bob'i32:)'class {
   this
 }
 
@@ -18,8 +18,11 @@ global()'void {
   [stack]k'bool : isEmpty(i)
   [stack]l'#interface? : empty'#interface?
   [stack]m'bool : isEmpty(l)
-  [stack]n'class? : value([stack]class([stack]this : class()))
+  [stack]n'class? : value([stack]class([stack]this : class(
+    [stack]bob'i32 : 0i
+  )))
   [stack]o'class : isEmpty(n)
+  [stack]p'i32? : if isEmpty(n) empty'i32? else value(this.bob)
   void
 }
 

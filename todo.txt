@@ -6,8 +6,6 @@
 * lambda
 
 -- optional --
-* getValue operator
-* ?. operator
 * ?: getOrElse operator
 
 #bob(

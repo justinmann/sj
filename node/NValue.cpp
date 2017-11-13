@@ -56,7 +56,7 @@ shared_ptr<ReturnValue> NValue::transpile(Compiler* compiler, CResult& result, s
     }
 
     if (leftValue->type->parent.expired()) {
-        auto returnValue = trBlock->createTempVariable("value", leftValue->type->getOptionType(), false, RVR_Ignore);
+        auto returnValue = trBlock->createTempVariable("value", leftValue->type->getOptionType(), false, RVR_MustRetain);
         stringstream line1;
         line1 << returnValue->name << ".isEmpty = false";
         trBlock->statements.push_back(line1.str());
@@ -64,9 +64,11 @@ shared_ptr<ReturnValue> NValue::transpile(Compiler* compiler, CResult& result, s
         stringstream line2;
         line2 << returnValue->name << ".value = " << leftValue->name;
         trBlock->statements.push_back(line2.str());
+
+        return returnValue;
     }
     else {
-        return make_shared<ReturnValue>(leftValue->type->getOptionType(), true, RVR_Ignore, leftValue->name);
+        return make_shared<ReturnValue>(leftValue->type->getOptionType(), true, RVR_MustRetain, leftValue->name);
     }
 }
 

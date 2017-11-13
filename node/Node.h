@@ -68,6 +68,7 @@ enum NodeType {
     NodeType_Math,
     NodeType_MathAssignment,
     NodeType_Not,
+    NodeType_OptionDot,
     NodeType_Or,
     NodeType_String,
     NodeType_StringArray,

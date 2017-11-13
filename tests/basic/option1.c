@@ -75,6 +75,7 @@ struct td_sji_interface {
 
 struct td_sjs_class {
     int _refCount;
+    int32_t bob;
 };
 
 struct td_sjs_object {
@@ -117,31 +118,33 @@ void sjf_class_destroy(sjs_class* _this) {
 
 void sjf_global(void) {
     sjs_class sjd_temp1;
-    int32_t a;
-    int64_t b;
-    uint32_t c;
-    uint64_t d;
-    float e;
-    double f;
-    char g;
-    uintptr_t h;
+    int32_option a;
+    int64_option b;
+    uint32_option c;
+    uint64_option d;
+    float_option e;
+    double_option f;
+    char_option g;
+    uintptr_option h;
     sjs_class* i;
+    int32_option ifResult1;
     bool j;
     bool k;
     sji_interface* l;
     bool m;
     sjs_class* n;
     sjs_class* o;
+    int32_option p;
     sjs_class* sjv_temp1;
 
-    a = (int32_t)0;
-    b = (int64_t)0;
-    c = (uint32_t)0;
-    d = (uint64_t)0;
-    e = 0.0f;
-    f = 0.0;
-    g = ';
-    h = (uintptr_t)0;
+    a = int32_empty;
+    b = int64_empty;
+    c = uint32_empty;
+    d = uint64_empty;
+    e = float_empty;
+    f = double_empty;
+    g = char_empty;
+    h = uintptr_empty;
     i = 0;
     if (i != 0) {
         i->_refCount++;
@@ -163,6 +166,8 @@ void sjf_global(void) {
 
     sjv_temp1->_refCount = 1;
 
+    sjv_temp1->bob = 0;
+
     sjf_class(sjv_temp1, &sjv_temp1);
 
     n = sjv_temp1;
@@ -176,6 +181,20 @@ void sjf_global(void) {
     o = n;
 
     o->_refCount++;
+
+    if ((n == 0)) {
+        ifResult1 = int32_empty;
+    } else {
+        int32_t temp1;
+        int32_option value1;
+
+        temp1 = n->bob;
+        value1.isEmpty = false;
+        value1.value = temp1;
+        ifResult1 = value1;
+    }
+
+    p = ifResult1;
     sjf_class_destroy(&sjd_temp1);
 }
 

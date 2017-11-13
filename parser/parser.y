@@ -261,7 +261,7 @@ if_expr		 		: TIF expr block								{ $$ = new NIf(LOC, shared_ptr<NBase>($2), s
 					;
 
 var					: var TDOT var_right							{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($3)); }
-					| var TDOT TQUESTION var_right					{ $$ = new NOptionDot(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($4)); }
+					| var TQUESTION TDOT var_right					{ $$ = new NOptionDot(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($4)); }
 					| var_right										
 					;
 
