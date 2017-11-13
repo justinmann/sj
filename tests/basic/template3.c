@@ -66,16 +66,16 @@ struct td_sjs_object {
     int _refCount;
 };
 
-void sjf_class_bool_f32(int32_t* _return);
-void sjf_class_i32_bool(int32_t* _return);
+void sjf_class_bool_float(int32_t* _return);
+void sjf_class_int32_t_bool(int32_t* _return);
 void sjf_global(void);
 
-void sjf_class_bool_f32(int32_t* _return) {
+void sjf_class_bool_float(int32_t* _return) {
 
     *_return = 1;
 }
 
-void sjf_class_i32_bool(int32_t* _return) {
+void sjf_class_int32_t_bool(int32_t* _return) {
 
     *_return = 1;
 }
@@ -87,10 +87,10 @@ void sjf_global(void) {
     int32_t result2;
 
     result1 = 0;
-    sjf_class_i32_bool(&result1);
+    sjf_class_int32_t_bool(&result1);
     a = result1;
     result2 = 0;
-    sjf_class_bool_f32(&result2);
+    sjf_class_bool_float(&result2);
     c = result2;
 }
 

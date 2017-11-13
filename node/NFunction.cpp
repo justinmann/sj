@@ -1797,7 +1797,7 @@ string CFunction::getCFullName(bool includeTemplateTypes) {
                 ss << "_";
             }
 
-            ss << it->name;
+            ss << it->nameValue;
         }
     }
     return ss.str();

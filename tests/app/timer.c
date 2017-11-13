@@ -70,8 +70,8 @@ const char* sjg_string4 = "";
 #define sjs_anon1_typeId 2
 #define sjs_anon2_typeId 3
 #define sjs_anon3_typeId 4
-#define sjs_array_#element_typeId 5
-#define sjs_array_char_typeId 6
+#define sjs_array_char_typeId 5
+#define sjs_array_sji_element_typeId 6
 #define sjs_element_typeId 7
 #define sjs_global_typeId 8
 #define sjs_object_typeId 9
@@ -82,8 +82,8 @@ typedef struct td_sji_element sji_element;
 typedef struct td_sjs_anon1 sjs_anon1;
 typedef struct td_sjs_anon2 sjs_anon2;
 typedef struct td_sjs_anon3 sjs_anon3;
-typedef struct td_sjs_array_#element sjs_array_#element;
 typedef struct td_sjs_array_char sjs_array_char;
+typedef struct td_sjs_array_sji_element sjs_array_sji_element;
 typedef struct td_sjs_element sjs_element;
 typedef struct td_sjs_global sjs_global;
 typedef struct td_sjs_object sjs_object;
@@ -111,14 +111,14 @@ struct td_sjs_anon3 {
     int _refCount;
 };
 
-struct td_sjs_array_#element {
+struct td_sjs_array_char {
     int _refCount;
     int32_t size;
     uintptr_t data;
     bool _isGlobal;
 };
 
-struct td_sjs_array_char {
+struct td_sjs_array_sji_element {
     int _refCount;
     int32_t size;
     uintptr_t data;
@@ -129,7 +129,7 @@ struct td_sjs_element {
     int _refCount;
     sjs_global* _parent;
     sjs_string* id;
-    sjs_array_#element* children;
+    sjs_array_sji_element* children;
 };
 
 struct td_sjs_global {
@@ -159,15 +159,15 @@ void sjf_anon2(sjs_anon2* _this, sjs_anon2** _return);
 void sjf_anon2_destroy(sjs_anon2* _this);
 void sjf_anon3(sjs_anon3* _this, sjs_anon3** _return);
 void sjf_anon3_destroy(sjs_anon3* _this);
-void sjf_array_#element(sjs_array_#element* _this, sjs_array_#element** _return);
-void sjf_array_#element_destroy(sjs_array_#element* _this);
-void sjf_array_#element_getAt(sjs_array_#element* _parent, int32_t index, sji_element** _return);
-void sjf_array_#element_setAt(sjs_array_#element* _parent, int32_t index, sji_element* item);
 void sjf_array_char(sjs_array_char* _this, sjs_array_char** _return);
 void sjf_array_char_destroy(sjs_array_char* _this);
 void sjf_array_char_getAt(sjs_array_char* _parent, int32_t index, char* _return);
 void sjf_array_char_grow(sjs_array_char* _parent, int32_t newSize, sjs_array_char** _return);
 void sjf_array_char_setAt(sjs_array_char* _parent, int32_t index, char item);
+void sjf_array_sji_element(sjs_array_sji_element* _this, sjs_array_sji_element** _return);
+void sjf_array_sji_element_destroy(sjs_array_sji_element* _this);
+void sjf_array_sji_element_getAt(sjs_array_sji_element* _parent, int32_t index, sji_element** _return);
+void sjf_array_sji_element_setAt(sjs_array_sji_element* _parent, int32_t index, sji_element* item);
 void sjf_element(sjs_element* _this, sjs_element** _return);
 sjs_object* sjf_element_asInterface(sjs_element* _this, int typeId);
 sji_element* sjf_element_as_sji_element(sjs_element* _this);
@@ -216,66 +216,6 @@ void sjf_anon3(sjs_anon3* _this, sjs_anon3** _return) {
 }
 
 void sjf_anon3_destroy(sjs_anon3* _this) {
-}
-
-void sjf_array_#element(sjs_array_#element* _this, sjs_array_#element** _return) {
-    
-		if (_this->size < 0) {
-			exit(-1);
-		}
-
-		if (_this->data) {
-			_this->_isGlobal = true;
-		} else {
-			_this->data = (uintptr_t)malloc(_this->size * sizeof(sji_element*));
-		}
-	;
-    _this->_refCount++;
-
-    *_return = _this;
-}
-
-void sjf_array_#element_destroy(sjs_array_#element* _this) {
-    
-	if (!_this->_isGlobal) {
-		free((sji_element**)_this->data);	
-	}
-;
-}
-
-void sjf_array_#element_getAt(sjs_array_#element* _parent, int32_t index, sji_element** _return) {
-    
-		
-
-		if (index >= _parent->size || index < 0) {
-			exit(-1);
-		}
-
-		char* p = (char*)_parent->data;
-		char val = p[index];
-		if (!true) {
-			if (val == 0) {
-				exit(-1);
-			}
-		}
-		*_return = val;		
-	;
-}
-
-void sjf_array_#element_setAt(sjs_array_#element* _parent, int32_t index, sji_element* item) {
-    
-		
-		
-
-		if (index >= _parent->size || index < 0) {
-			exit(-1);
-		}
-
-		char* p = (char*)_parent->data;
-		;
-		;
-		p[index] = item;
-	;
 }
 
 void sjf_array_char(sjs_array_char* _this, sjs_array_char** _return) {
@@ -363,6 +303,66 @@ void sjf_array_char_setAt(sjs_array_char* _parent, int32_t index, char item) {
 	;
 }
 
+void sjf_array_sji_element(sjs_array_sji_element* _this, sjs_array_sji_element** _return) {
+    
+		if (_this->size < 0) {
+			exit(-1);
+		}
+
+		if (_this->data) {
+			_this->_isGlobal = true;
+		} else {
+			_this->data = (uintptr_t)malloc(_this->size * sizeof(sji_element*));
+		}
+	;
+    _this->_refCount++;
+
+    *_return = _this;
+}
+
+void sjf_array_sji_element_destroy(sjs_array_sji_element* _this) {
+    
+	if (!_this->_isGlobal) {
+		free((sji_element**)_this->data);	
+	}
+;
+}
+
+void sjf_array_sji_element_getAt(sjs_array_sji_element* _parent, int32_t index, sji_element** _return) {
+    
+		
+
+		if (index >= _parent->size || index < 0) {
+			exit(-1);
+		}
+
+		char* p = (char*)_parent->data;
+		char val = p[index];
+		if (!true) {
+			if (val == 0) {
+				exit(-1);
+			}
+		}
+		*_return = val;		
+	;
+}
+
+void sjf_array_sji_element_setAt(sjs_array_sji_element* _parent, int32_t index, sji_element* item) {
+    
+		
+		
+
+		if (index >= _parent->size || index < 0) {
+			exit(-1);
+		}
+
+		char* p = (char*)_parent->data;
+		;
+		;
+		p[index] = item;
+	;
+}
+
 void sjf_element(sjs_element* _this, sjs_element** _return) {
     _this->_refCount++;
 
@@ -390,7 +390,7 @@ sji_element* sjf_element_as_sji_element(sjs_element* _this) {
 
 void sjf_element_destroy(sjs_element* _this) {
     sjf_string_destroy(_this->id);
-    sjf_array_#element_destroy(_this->children);
+    sjf_array_sji_element_destroy(_this->children);
 }
 
 void sjf_element_toHTML(sjs_element* _parent, sjs_string** _return) {
@@ -431,7 +431,7 @@ void sjf_element_update(sjs_element* _parent) {
     int32_t loopEnd1;
     sjs_array_char* sjv_temp13;
     sjs_string* sjv_temp14;
-    sjs_array_#element* temp1;
+    sjs_array_sji_element* temp1;
     int32_t temp2;
 
     sjv_temp13 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
@@ -457,11 +457,11 @@ void sjf_element_update(sjs_element* _parent) {
         sji_element* child;
         sji_element* result4;
         sjs_string* result5;
-        sjs_array_#element* temp3;
+        sjs_array_sji_element* temp3;
 
         temp3 = _parent->children;
         result4 = &sjd_temp7;
-        sjf_array_#element_getAt(temp3, i, &result4);
+        sjf_array_sji_element_getAt(temp3, i, &result4);
         child = result4;
         child->_refCount++;
         result5 = 0;
@@ -506,7 +506,7 @@ void sjf_global(sjs_global* _this) {
     sjs_anon3 sjd_temp1;
     sjs_anon2 sjd_temp2;
     sjs_anon1 sjd_temp3;
-    sjs_array_#element sjd_temp4;
+    sjs_array_sji_element sjd_temp4;
     sjs_timerElement sjd_temp5;
     sjs_element sjd_temp6;
     sjs_anon1* console;
@@ -516,14 +516,14 @@ void sjf_global(sjs_global* _this) {
     uintptr_t result2;
     sji_element* result3;
     sjs_element* rootElement;
-    sjs_array_#element* sjv_array1;
+    sjs_array_sji_element* sjv_array1;
     sjs_anon3* sjv_temp1;
     sjs_element* sjv_temp12;
     sjs_anon2* sjv_temp2;
     sjs_anon1* sjv_temp3;
     sjs_array_char* sjv_temp4;
     sjs_string* sjv_temp5;
-    sjs_array_#element* sjv_temp6;
+    sjs_array_sji_element* sjv_temp6;
     sjs_timerElement* sjv_temp9;
 
     sjv_temp1 = &sjd_temp1;
@@ -561,7 +561,7 @@ void sjf_global(sjs_global* _this) {
     sjv_temp6->size = 1;
     sjv_temp6->data = result2;
     sjv_temp6->_isGlobal = false;
-    sjf_array_#element(sjv_temp6, &sjv_temp6);
+    sjf_array_sji_element(sjv_temp6, &sjv_temp6);
     sjv_array1 = sjv_temp6;
     sjv_array1->_refCount++;
     sjv_temp9 = &sjd_temp5;
@@ -569,7 +569,7 @@ void sjf_global(sjs_global* _this) {
     sjv_temp9->count = 0;
     sjf_timerElement(sjv_temp9, &sjv_temp9);
     result3 = sjf_timerElement_as_sji_element(sjv_temp9);
-    sjf_array_#element_setAt(sjv_array1, 0, result3);
+    sjf_array_sji_element_setAt(sjv_array1, 0, result3);
     sjv_temp12 = &sjd_temp6;
     sjv_temp12->_refCount = 1;
     sjv_temp12->id = sjv_temp5;
@@ -594,7 +594,7 @@ void sjf_global(sjs_global* _this) {
     sjf_anon3_destroy(&sjd_temp1);
     sjf_anon2_destroy(&sjd_temp2);
     sjf_anon1_destroy(&sjd_temp3);
-    sjf_array_#element_destroy(&sjd_temp4);
+    sjf_array_sji_element_destroy(&sjd_temp4);
     sjf_timerElement_destroy(&sjd_temp5);
     sjf_element_destroy(&sjd_temp6);
 }

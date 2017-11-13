@@ -41,7 +41,7 @@ timerElement #element (
 		counter++
 	}
 ) { 
-	timer.setTimer(100, onTick)
+	// timer.setTimer(100, onTick)
 	this 
 }
 
