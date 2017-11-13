@@ -18,6 +18,9 @@ NInteger::NInteger(CLoc loc, const char* value_) : NVariableBase(NodeType_Intege
         type = NIT_I64;
         strValue = strValue.substr(0, strValue.size() - 1);
     }
+    else {
+        type = NIT_I32;
+    }
 }
 
 shared_ptr<CType> NInteger::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
@@ -68,7 +71,7 @@ shared_ptr<ReturnValue> NInteger::transpile(Compiler* compiler, CResult& result,
             char* e;
             errno = 0;
             auto v = strtol(strValue.c_str(), &e, 10);
-            if (ERANGE == errno) {
+            if (ERANGE == errno || v < INT32_MIN || v > INT32_MAX) {
                 result.addError(loc, CErrorCode::InvalidNumber, "i32 '%s' is out range", strValue.c_str());
                 return nullptr;
             }
@@ -86,7 +89,7 @@ shared_ptr<ReturnValue> NInteger::transpile(Compiler* compiler, CResult& result,
             char* e;
             errno = 0;
             auto v = strtoul(strValue.c_str(), &e, 10);
-            if (ERANGE == errno) {
+            if (ERANGE == errno || v > UINT32_MAX) {
                 result.addError(loc, CErrorCode::InvalidNumber, "u32 '%s' is out range", strValue.c_str());
                 return nullptr;
             }
