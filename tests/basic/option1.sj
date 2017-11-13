@@ -14,3 +14,6 @@ j : isEmpty(a)
 k : isEmpty(i)
 l : empty'#interface
 m : isEmpty(l)
+
+n : value(class())
+o : getValue(n)

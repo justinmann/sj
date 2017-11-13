@@ -1,17 +1,17 @@
 //
-//  NIsEmpty.h
+//  NValue.h
 //  sj
 //
 //  Created by Mann, Justin on 12/25/16.
 //  Copyright © 2016 Mann, Justin. All rights reserved.
 //
 
-#ifndef NIsEmpty_h
-#define NIsEmpty_h
+#ifndef NValue_h
+#define NValue_h
 
-class NIsEmpty : public NVariableBase {
+class NValue : public NVariableBase {
 public:
-    NIsEmpty(CLoc loc, shared_ptr<NBase> node) : NVariableBase(NodeType_IsEmpty, loc), node(node) {}
+    NValue(CLoc loc, shared_ptr<NBase> node) : NVariableBase(NodeType_GetValue, loc), node(node) {}
 
     virtual shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue);
     virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
@@ -26,4 +26,4 @@ private:
     shared_ptr<NBase> node;
 };
 
-#endif /* NIsEmpty_h */
+#endif /* NValue_h */

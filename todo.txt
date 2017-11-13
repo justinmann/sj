@@ -6,11 +6,9 @@
 * lambda
 
 -- optional --
-* isNull operator
 * getValue operator
 * ?. operator
 * ?: getOrElse operator
-* struct for int32_t_option
 
 #bob(
     method1()

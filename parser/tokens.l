@@ -64,6 +64,7 @@ void updateLocation(YYLOCATION& loc, const char* s, const int len) {
 "include"				TOKEN_VAL(TINCLUDE);
 "isEmpty"				TOKEN_VAL(TISEMPTY);
 "getValue"				TOKEN_VAL(TGETVALUE);
+"value"					TOKEN_VAL(TVALUE);
 "empty"					TOKEN_VAL(TEMPTY);
 "#"						TOKEN_VAL(THASH);
 "?"						TOKEN_VAL(TQUESTION);

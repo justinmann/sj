@@ -180,6 +180,9 @@
     <ClInclude Include="..\node\NGetValue.h">
       <Filter>Node</Filter>
     </ClInclude>
+    <ClInclude Include="..\node\NValue.h">
+      <Filter>Node</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\node\NAnd.cpp">
@@ -330,6 +333,9 @@
       <Filter>Node</Filter>
     </ClCompile>
     <ClCompile Include="..\node\NGetValue.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NValue.cpp">
       <Filter>Node</Filter>
     </ClCompile>
   </ItemGroup>

@@ -156,26 +156,44 @@ Compiler::Compiler() {
     //InitializeNativeTargetAsmPrinter();
     //InitializeNativeTargetAsmParser();
 
-	typeI32 = make_shared<CType>("i32", "int32_t", "(int32_t)0", false);
-    typeI64 = make_shared<CType>("i64", "int64_t", "(int64_t)0", false);
-    typeU32 = make_shared<CType>("u32", "uint32_t", "(uint32_t)0", false);
-    typeU64 = make_shared<CType>("u64", "uint64_t", "(uint64_t)0", false);
-    typePtr = make_shared<CType>("ptr", "uintptr_t", "(uintptr_t)0", false);
-    typeF32 = make_shared<CType>("f32", "float", "0.0f", false);
-    typeF64 = make_shared<CType>("f64", "double", "0.0", false);
-	typeBool = make_shared<CType>("bool", "bool", "false", false);
-	typeChar = make_shared<CType>("char", "char", "'\0'", false);
-	typeVoid = make_shared<CType>("void", "void", "", false);
+    auto pair = CType::create("i32", "int32_t", "(int32_t)0", "int32_option", "int32_empty");
+    typeI32 = pair.first;
+    typeI32Option = pair.second;
 
-    typeI32Option = make_shared<CType>("i32?", "int32_option", "int32_empty", true);
-    typeI64Option = make_shared<CType>("i64?", "int64_option", "int64_empty", true);
-    typeU32Option = make_shared<CType>("u32?", "uint32_option", "uint32_empty", true);
-    typeU64Option = make_shared<CType>("u64?", "uint64_option", "uint64_empty", true);
-    typePtrOption = make_shared<CType>("ptr?", "uintptr_option", "uintptr_empty", true);
-    typeF32Option = make_shared<CType>("f32?", "float_option", "float_empty", true);
-    typeF64Option = make_shared<CType>("f64?", "double_option", "double_empty", true);
-    typeBoolOption = make_shared<CType>("bool?", "bool_option", "bool_empty", true);
-    typeCharOption = make_shared<CType>("char?", "char_option", "char_empty", true);
+    pair = CType::create("i64", "int64_t", "(int64_t)0", "int64_option", "int64_empty");
+    typeI64 = pair.first;
+    typeI64Option = pair.second;
+
+    pair = CType::create("u32", "uint32_t", "(uint32_t)0", "uint32_option", "uint32_empty");
+    typeU32 = pair.first;
+    typeU32Option = pair.second;
+
+    pair = CType::create("u64", "uint64_t", "(uint64_t)0", "uint64_option", "uint64_empty");
+    typeU64 = pair.first;
+    typeU64Option = pair.second;
+
+    pair = CType::create("ptr", "uintptr_t", "(uintptr_t)0", "uintptr_option", "uintptr_empty");
+    typePtr = pair.first;
+    typePtrOption = pair.second;
+
+    pair = CType::create("f32", "float", "0.0f", "float_option", "float_empty");
+    typeF32 = pair.first;
+    typeF32Option = pair.second;
+
+    pair = CType::create("f64", "double", "0.0", "double_option", "double_empty");
+    typeF64 = pair.first;
+    typeF64Option = pair.second;
+
+    pair = CType::create("bool", "bool", "false", "bool_option", "bool_empty");
+    typeBool = pair.first;
+    typeBoolOption = pair.second;
+
+    pair = CType::create("char", "char", "'\0'", "char_option", "char_empty");
+    typeChar = pair.first;
+    typeCharOption = pair.second;
+
+    pair = CType::create("void", "void", "", "", "");
+    typeVoid = pair.first;
 }
 
 void Compiler::reset() {

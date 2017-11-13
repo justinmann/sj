@@ -115,7 +115,8 @@ struct OPTIONANDTYPELIST {
     TGETVALUE = 316,
     TASOPTION = 317,
     TQUESTION = 318,
-    TEMPTY = 319
+    TEMPTY = 319,
+    TVALUE = 320
   };
 #endif
 

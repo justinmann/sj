@@ -31,9 +31,9 @@ enum CTypeCategory {
 
 class CType : public enable_shared_from_this<CType> {
 public:
-    CType(const char* name, const char* cname, const char* defaultValue, bool isOption);
-    CType(const char* name, weak_ptr<CFunction> parent, bool isOption);
-    CType(const char* name, weak_ptr<CInterface> parent, bool isOption);
+    static pair<shared_ptr<CType>, shared_ptr<CType>> create(string name, string cname, string defaultValue, string cnameOption, string defaultValueOption);
+    static pair<shared_ptr<CType>, shared_ptr<CType>> create(string name, weak_ptr<CFunction> parent);
+    static pair<shared_ptr<CType>, shared_ptr<CType>> create(string name, weak_ptr<CInterface> parent);
 
     CTypeCategory category;
     string name;
@@ -41,10 +41,14 @@ public:
 	string nameRef;
     weak_ptr<CBaseFunction> parent;
     bool isOption;
+
     shared_ptr<ReturnValue> transpileDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar);
+    shared_ptr<CType> getOptionType();
+    shared_ptr<CType> getNotOptionType();
 
 private:
     string _defaultValue;
+    weak_ptr<CType> _otherType;
 };
 
 #endif /* CType_h */

@@ -1,3 +1,7 @@
+class ##interface ()'class {
+  this
+}
+
 global()'void {
   #interface(
   )
@@ -14,6 +18,8 @@ global()'void {
   [stack]k'bool : isEmpty(i)
   [stack]l'#interface? : empty'#interface?
   [stack]m'bool : isEmpty(l)
+  [stack]n'class? : value([stack]class([stack]this : class()))
+  [stack]o'class : isEmpty(n)
   void
 }
 

@@ -1445,19 +1445,13 @@ bool CFunction::getHasThis() {
 }
 
 shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result, bool isOption) {
-    if (isOption) {
-        if (!thisOptionType) {
-            thisOptionType = make_shared<CType>((name + "?").c_str(), shared_from_this(), isOption);
-        }
-        return thisOptionType;
+    if (!thisType) {
+        auto pair = CType::create(name.c_str(), shared_from_this());
+        thisType = pair.first;
+        thisOptionType = pair.second;
     }
-    else {
-        if (!thisType) {
-            thisType = make_shared<CType>(name.c_str(), shared_from_this(), false);
-        }
 
-        return thisType;
-    }
+    return isOption ? thisOptionType : thisType;
 }
 
 shared_ptr<vector<pair<string, shared_ptr<CType>>>> CFunction::getCTypeList(Compiler* compiler, CResult& result) {

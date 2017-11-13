@@ -57,11 +57,13 @@ enum NodeType {
     NodeType_Empty,
     NodeType_For,
     NodeType_Function,
+    NodeType_GetValue,
     NodeType_If,
     NodeType_Include,
     NodeType_Integer,
     NodeType_Interface,
     NodeType_InterfaceMethod,
+    NodeType_IsEmpty,
     NodeType_List,
     NodeType_Math,
     NodeType_MathAssignment,
@@ -73,6 +75,7 @@ enum NodeType {
     NodeType_Throw,
     NodeType_Tuple,
     NodeType_TupleAssignment,
+    NodeType_Value,
     NodeType_Variable,
     NodeType_Void,
     NodeType_While
@@ -113,6 +116,7 @@ enum NodeType {
 #include "NThrow.h"
 #include "NTuple.h"
 #include "NTupleAssignment.h"
+#include "NValue.h"
 #include "NVariable.h"
 #include "NVoid.h"
 #include "NWhile.h"
