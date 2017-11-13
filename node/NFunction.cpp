@@ -156,7 +156,7 @@ void CFunctionReturnVar::dump(Compiler* compiler, CResult& result, shared_ptr<CB
 }
 
 CFunction::CFunction(weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) :
-CBaseFunction(definition.lock()->name, parent, definition),
+CBaseFunction(CFT_Function, definition.lock()->name, parent, definition),
 //_structType(nullptr),
 //function(nullptr),
 loc(CLoc::undefined),
@@ -679,7 +679,8 @@ string CFunction::getBaseName() {
         auto tempType = parent.lock();
         while (tempType != nullptr && tempType->name.compare("global") != 0 && tempType->name.size() > 0) {
             functionName.insert(0, "_");
-            functionName.insert(0, dynamic_pointer_cast<CFunction>(tempType)->getCFullName(true));
+            assert(tempType->classType == CFT_Function);
+            functionName.insert(0, static_pointer_cast<CFunction>(tempType)->getCFullName(true));
             tempType = tempType->parent.lock();
         }
     }
@@ -1678,7 +1679,8 @@ shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, CResult& res
                 if (!ctype || ctype->parent.expired()) {
                     return nullptr;
                 }
-                cfunc = dynamic_pointer_cast<CFunction>(ctype->parent.lock());
+                assert(ctype->parent.expired() || ctype->parent.lock()->classType == CFT_Function);
+                cfunc = static_pointer_cast<CFunction>(ctype->parent.lock());
             }
         }
         return nullptr;

@@ -110,7 +110,7 @@ void CInterfaceVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFu
     assert(false);
 }
 
-CInterface::CInterface(weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent) : /*_structType(nullptr),*/ CBaseFunction(definition.lock()->name, parent, definition) {
+CInterface::CInterface(weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent) : /*_structType(nullptr),*/ CBaseFunction(CFT_Interface, definition.lock()->name, parent, definition) {
     setHasRefCount();
 }
 
@@ -260,7 +260,8 @@ string CInterface::getBaseName() {
         auto tempType = parent.lock();
         while (tempType != nullptr && tempType->name.compare("global") != 0 && tempType->name.size() > 0) {
             functionName.insert(0, "_");
-            functionName.insert(0, dynamic_pointer_cast<CFunction>(tempType)->getCFullName(true));
+            assert(tempType->classType == CFT_Function);
+            functionName.insert(0, static_pointer_cast<CFunction>(tempType)->getCFullName(true));
             tempType = tempType->parent.lock();
         }
     }
@@ -286,8 +287,8 @@ string CInterface::getCastFunctionName(shared_ptr<CBaseFunction> fromFunction) {
 }
 
 string CInterface::transpileCast(shared_ptr<CBaseFunction> fromFunction, string varName) {
-    auto fromInterface = dynamic_pointer_cast<CInterface>(fromFunction);
-    if (fromInterface) {
+    if (fromFunction->classType == CFT_Interface) {
+        auto fromInterface = static_pointer_cast<CInterface>(fromFunction);
         stringstream line;
         line << varName << "->asInterface(" << varName << "->_parent, " << getTypeIdName() << ")";
         return line.str();

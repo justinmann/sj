@@ -24,10 +24,17 @@ public:
     shared_ptr<CVar> var;
     string name;
     shared_ptr<ReturnValue> value;
-}; 
+};
+
+enum CClassFunctionType {
+    CFT_Function,
+    CFT_Interface,
+    CFT_InterfaceMethod
+};
 
 class CBaseFunction {
 public:
+    CClassFunctionType classType;
     string name;
     bool hasParent;
     bool hasRefCount;
@@ -36,7 +43,7 @@ public:
     vector<shared_ptr<CVar>> argVars;
     vector<shared_ptr<NBase>> argDefaultValues;
     
-    CBaseFunction(string& name, weak_ptr<CBaseFunction> parent, weak_ptr<CBaseFunctionDefinition> definition) : name(name), hasParent(false), hasRefCount(false), parent(parent), definition(definition) { }
+    CBaseFunction(CClassFunctionType classType, string& name, weak_ptr<CBaseFunction> parent, weak_ptr<CBaseFunctionDefinition> definition) : classType(classType), name(name), hasParent(false), hasRefCount(false), parent(parent), definition(definition) { }
     virtual string fullName(bool includeTemplateTypes) = 0;
     
     virtual bool getHasThis() = 0;
