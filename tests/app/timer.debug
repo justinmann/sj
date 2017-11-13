@@ -16,6 +16,36 @@ anon3()'anon3 {
   this
 }
 
+anon4()'anon4 {
+  this
+}
+
+anon4_i32toString([stack]val'i32:)'string {
+  [heap]count'i32 = 0i
+  [heap]data'ptr = 0i as ptr
+  c{
+
+			char buf[32] = { 0 };
+			int i = 30;	
+			for(; val && i ; --i, val /= 10)	
+				buf[i] = "0123456789"[val % 10];	
+
+			count = 30 - i;
+			data = (uintptr_t)malloc(sizeof(char) * (count + 1));
+			memcpy(&buf[i+1], (void*)data, count + 1);
+		
+}c
+  [heap]string([heap]this : string(
+    parent: [stack]this,
+    [heap]count'i32 = count,
+    [heap]data'array_char = [heap]array!char([heap]this : array!char(
+      [heap]size'i32 = count + 1i,
+      [heap]data'ptr = data,
+      [heap]_isGlobal'bool = false
+    ))
+  ))
+}
+
 array!#element([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=)'array_#element {
   c{
 
@@ -113,7 +143,7 @@ array_grow([stack]newSize'i32:)'array_char c{
 	
 }c
 
-array_setAt([heap]index'i32:, [heap]item'char:)'void c{
+array_setAt([stack]index'i32:, [heap]item'#element:)'void c{
 
 		#forceParent()
 		#forceHeap(item)
@@ -129,7 +159,7 @@ array_setAt([heap]index'i32:, [heap]item'char:)'void c{
 	
 }c
 
-array_setAt([stack]index'i32:, [heap]item'#element:)'void c{
+array_setAt([stack]index'i32:, [heap]item'char:)'void c{
 
 		#forceParent()
 		#forceHeap(item)
@@ -202,7 +232,7 @@ string([heap]count'i32=, [heap]data'array_char=)'string {
   this
 }
 
-string_add([stack]item'string:)'void {
+string_add([stack]item'string:)'string {
   if .parentthis.count + this.count > this.size {
     [stack]array_grow([stack]this : array_grow(
       parent: [heap].parentthis.data,
@@ -211,9 +241,9 @@ string_add([stack]item'string:)'void {
     void
   }
   for i : 0i to this.count - 1i {
-    [heap]array_setAt([stack]this : array_setAt(
+    [stack]array_setAt([stack]this : array_setAt(
       parent: [heap].parentthis.data,
-      [heap]index'i32 : .parentthis.count,
+      [stack]index'i32 : .parentthis.count,
       [heap]item'char : [heap]string_getAt([stack]this : string_getAt(
         parent: [stack]this.item,
         [heap]index'i32 : i
@@ -221,11 +251,12 @@ string_add([stack]item'string:)'void {
     ))
     .parentthis.count++
   }
-  [heap]array_setAt([stack]this : array_setAt(
+  [stack]array_setAt([stack]this : array_setAt(
     parent: [heap].parentthis.data,
-    [heap]index'i32 : .parentthis.count,
+    [stack]index'i32 : .parentthis.count,
     [heap]item'char : 0i as char
   ))
+  this
 }
 
 string_getAt([heap]index'i32:)'char {
@@ -235,27 +266,36 @@ string_getAt([heap]index'i32:)'char {
   ))
 }
 
-timerElement ##element ([stack]count'i32=)'timerElement {
+timerElement ##element ([stack]counter'i32=)'timerElement {
   this
 }
 
 timerElement_toHTML()'string {
-  {
-    [heap]string([heap]this : string(
-      parent: this,
-      [heap]count'i32 = i,
-      [heap]data'array_char = [heap]array!char([heap]this : array!char(
-        [heap]size'i32 = i,
-        [heap]data'ptr = ,
-        [heap]_isGlobal'bool = false
+  [heap]string_add([stack]this : string_add(
+    parent: [heap][heap]anon4_i32toString([stack]this : anon4_i32toString(
+    parent: [heap].parent.parentthis.convert,
+    [stack]val'i32 : .parentthis.counter
+  )),
+    [stack]item'string : {
+      [heap]string([heap]this : string(
+        parent: this,
+        [heap]count'i32 = i,
+        [heap]data'array_char = [heap]array!char([heap]this : array!char(
+          [heap]size'i32 = i,
+          [heap]data'ptr = ,
+          [heap]_isGlobal'bool = false
+        ))
       ))
-    ))
-  }
+    }
+  ))
 }
 
 toHTML()
 
 global()'void {
+  [heap]convert'anon4 : [heap]anon4([heap]this : anon4(
+    parent: [stack]this
+  ))
   [stack]random'anon3 : [stack]anon3([stack]this : anon3())
   [stack]parse'anon2 : [stack]anon2([stack]this : anon2())
   [stack]console'anon1 : [stack]anon1([stack]this : anon1(
@@ -288,7 +328,7 @@ global()'void {
         [stack]index'i32 : i,
         [heap]item'#element : [stack]timerElement([stack]this : timerElement(
           parent: [stack]this,
-          [stack]count'i32 = 0i
+          [stack]counter'i32 = 0i
         )) as #element
       ))
       sjv_array1

@@ -78,7 +78,7 @@ shared_ptr<CVar> NCCode::getVarImpl(Compiler* compiler, CResult& result, shared_
             finalCode << ch;
         }
     }
-    _final = finalCode.str();
+    _final[thisFunction.get()] = finalCode.str();
 
     return make_shared<CCodeReturnVar>();
 }
@@ -190,7 +190,7 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
 }
 
 shared_ptr<ReturnValue> NCCode::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
-    trBlock->statements.push_back(_final);
+    trBlock->statements.push_back(_final[thisFunction.get()]);
     
     for (auto include : _includes) {
         trOutput->includes[include] = true;

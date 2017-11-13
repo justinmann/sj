@@ -4,7 +4,7 @@ string (
 	count = 0
 	data = array!char()
 
-	add(item :'string) {
+	add(item :'string)'string {
 		if count + item.count > data.size {
 			data.grow(data.size + item.count)
 			void
@@ -16,6 +16,7 @@ string (
 		}
 
 		data.setAt(count, 0 as char)
+		parent
 	}
 
 	getAt(index : 'i32)'char {

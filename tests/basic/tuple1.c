@@ -65,15 +65,17 @@ const char* sjg_string2 = "foo";
 #define sjs_anon1_typeId 1
 #define sjs_anon2_typeId 2
 #define sjs_anon3_typeId 3
-#define sjs_array_char_typeId 4
-#define sjs_object_typeId 5
-#define sjs_string_typeId 6
-#define sjs_tuple2_int32_t_sjs_string_typeId 7
-#define sjs_tuple3_sjs_string_double_int32_t_typeId 8
+#define sjs_anon4_typeId 4
+#define sjs_array_char_typeId 5
+#define sjs_object_typeId 6
+#define sjs_string_typeId 7
+#define sjs_tuple2_int32_t_sjs_string_typeId 8
+#define sjs_tuple3_sjs_string_double_int32_t_typeId 9
 
 typedef struct td_sjs_anon1 sjs_anon1;
 typedef struct td_sjs_anon2 sjs_anon2;
 typedef struct td_sjs_anon3 sjs_anon3;
+typedef struct td_sjs_anon4 sjs_anon4;
 typedef struct td_sjs_array_char sjs_array_char;
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_string sjs_string;
@@ -90,6 +92,10 @@ struct td_sjs_anon2 {
 };
 
 struct td_sjs_anon3 {
+    int _refCount;
+};
+
+struct td_sjs_anon4 {
     int _refCount;
 };
 
@@ -129,6 +135,8 @@ void sjf_anon2(sjs_anon2* _this, sjs_anon2** _return);
 void sjf_anon2_destroy(sjs_anon2* _this);
 void sjf_anon3(sjs_anon3* _this, sjs_anon3** _return);
 void sjf_anon3_destroy(sjs_anon3* _this);
+void sjf_anon4(sjs_anon4* _this, sjs_anon4** _return);
+void sjf_anon4_destroy(sjs_anon4* _this);
 void sjf_array_char(sjs_array_char* _this, sjs_array_char** _return);
 void sjf_array_char_destroy(sjs_array_char* _this);
 void sjf_func(sjs_tuple2_int32_t_sjs_string** _return);
@@ -171,6 +179,15 @@ void sjf_anon3(sjs_anon3* _this, sjs_anon3** _return) {
 void sjf_anon3_destroy(sjs_anon3* _this) {
 }
 
+void sjf_anon4(sjs_anon4* _this, sjs_anon4** _return) {
+    _this->_refCount++;
+
+    *_return = _this;
+}
+
+void sjf_anon4_destroy(sjs_anon4* _this) {
+}
+
 void sjf_array_char(sjs_array_char* _this, sjs_array_char** _return) {
     
 		if (_this->size < 0) {
@@ -197,58 +214,60 @@ void sjf_array_char_destroy(sjs_array_char* _this) {
 }
 
 void sjf_func(sjs_tuple2_int32_t_sjs_string** _return) {
-    sjs_array_char* sjv_temp4;
-    sjs_string* sjv_temp5;
-    sjs_tuple2_int32_t_sjs_string* sjv_temp6;
+    sjs_array_char* sjv_temp5;
+    sjs_string* sjv_temp6;
+    sjs_tuple2_int32_t_sjs_string* sjv_temp7;
 
-    sjv_temp4 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
-    sjv_temp4->_refCount = 1;
-    sjv_temp4->size = 3;
-    sjv_temp4->data = (uintptr_t)sjg_string1;
-    sjv_temp4->_isGlobal = false;
-    sjf_array_char(sjv_temp4, &sjv_temp4);
-    sjv_temp5 = (sjs_string*)malloc(sizeof(sjs_string));
+    sjv_temp5 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     sjv_temp5->_refCount = 1;
-    sjv_temp5->count = 2;
-    sjv_temp5->data = sjv_temp4;
-    sjv_temp5->data->_refCount++;
-    sjf_string(sjv_temp5, &sjv_temp5);
-    sjv_temp6 = (sjs_tuple2_int32_t_sjs_string*)malloc(sizeof(sjs_tuple2_int32_t_sjs_string));
+    sjv_temp5->size = 3;
+    sjv_temp5->data = (uintptr_t)sjg_string1;
+    sjv_temp5->_isGlobal = false;
+    sjf_array_char(sjv_temp5, &sjv_temp5);
+    sjv_temp6 = (sjs_string*)malloc(sizeof(sjs_string));
     sjv_temp6->_refCount = 1;
-    sjv_temp6->item1 = 1;
-    sjv_temp6->item2 = sjv_temp5;
-    sjv_temp6->item2->_refCount++;
-    sjf_tuple2_int32_t_sjs_string(sjv_temp6, &sjv_temp6);
-    sjv_temp6->_refCount++;
+    sjv_temp6->count = 2;
+    sjv_temp6->data = sjv_temp5;
+    sjv_temp6->data->_refCount++;
+    sjf_string(sjv_temp6, &sjv_temp6);
+    sjv_temp7 = (sjs_tuple2_int32_t_sjs_string*)malloc(sizeof(sjs_tuple2_int32_t_sjs_string));
+    sjv_temp7->_refCount = 1;
+    sjv_temp7->item1 = 1;
+    sjv_temp7->item2 = sjv_temp6;
+    sjv_temp7->item2->_refCount++;
+    sjf_tuple2_int32_t_sjs_string(sjv_temp7, &sjv_temp7);
+    sjv_temp7->_refCount++;
 
-    sjv_temp4->_refCount--;
-    if (sjv_temp4->_refCount <= 0) {
-        sjf_array_char_destroy(sjv_temp4);
-        free(sjv_temp4);
-    }
     sjv_temp5->_refCount--;
     if (sjv_temp5->_refCount <= 0) {
-        sjf_string_destroy(sjv_temp5);
+        sjf_array_char_destroy(sjv_temp5);
         free(sjv_temp5);
     }
     sjv_temp6->_refCount--;
     if (sjv_temp6->_refCount <= 0) {
-        sjf_tuple2_int32_t_sjs_string_destroy(sjv_temp6);
+        sjf_string_destroy(sjv_temp6);
         free(sjv_temp6);
     }
+    sjv_temp7->_refCount--;
+    if (sjv_temp7->_refCount <= 0) {
+        sjf_tuple2_int32_t_sjs_string_destroy(sjv_temp7);
+        free(sjv_temp7);
+    }
 
-    *_return = sjv_temp6;
+    *_return = sjv_temp7;
 }
 
 void sjf_global(void) {
-    sjs_anon3 sjd_temp1;
-    sjs_anon2 sjd_temp2;
-    sjs_anon1 sjd_temp3;
-    sjs_tuple3_sjs_string_double_int32_t sjd_temp4;
+    sjs_anon4 sjd_temp1;
+    sjs_anon3 sjd_temp2;
+    sjs_anon2 sjd_temp3;
+    sjs_anon1 sjd_temp4;
+    sjs_tuple3_sjs_string_double_int32_t sjd_temp5;
     int32_t a;
     sjs_string* b;
     int32_t c;
     sjs_anon1* console;
+    sjs_anon4* convert;
     sjs_string* d;
     sjs_string* e;
     double f;
@@ -258,12 +277,13 @@ void sjf_global(void) {
     sjs_tuple2_int32_t_sjs_string* result2;
     sjs_tuple2_int32_t_sjs_string* result3;
     sjs_tuple2_int32_t_sjs_string* result4;
-    sjs_anon3* sjv_temp1;
-    sjs_anon2* sjv_temp2;
-    sjs_anon1* sjv_temp3;
-    sjs_array_char* sjv_temp7;
-    sjs_string* sjv_temp8;
-    sjs_tuple3_sjs_string_double_int32_t* sjv_temp9;
+    sjs_anon4* sjv_temp1;
+    sjs_tuple3_sjs_string_double_int32_t* sjv_temp10;
+    sjs_anon3* sjv_temp2;
+    sjs_anon2* sjv_temp3;
+    sjs_anon1* sjv_temp4;
+    sjs_array_char* sjv_temp8;
+    sjs_string* sjv_temp9;
     sjs_tuple2_int32_t_sjs_string* t;
     int32_t temp1;
     sjs_string* temp2;
@@ -279,20 +299,25 @@ void sjf_global(void) {
 
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
-    sjf_anon3(sjv_temp1, &sjv_temp1);
-    random = sjv_temp1;
-    random->_refCount++;
+    sjf_anon4(sjv_temp1, &sjv_temp1);
+    convert = sjv_temp1;
+    convert->_refCount++;
     sjv_temp2 = &sjd_temp2;
     sjv_temp2->_refCount = 1;
-    sjf_anon2(sjv_temp2, &sjv_temp2);
-    parse = sjv_temp2;
-    parse->_refCount++;
-    result1 = (uintptr_t)0;
+    sjf_anon3(sjv_temp2, &sjv_temp2);
+    random = sjv_temp2;
+    random->_refCount++;
     sjv_temp3 = &sjd_temp3;
     sjv_temp3->_refCount = 1;
-    sjv_temp3->_fd = result1;
-    sjf_anon1(sjv_temp3, &sjv_temp3);
-    console = sjv_temp3;
+    sjf_anon2(sjv_temp3, &sjv_temp3);
+    parse = sjv_temp3;
+    parse->_refCount++;
+    result1 = (uintptr_t)0;
+    sjv_temp4 = &sjd_temp4;
+    sjv_temp4->_refCount = 1;
+    sjv_temp4->_fd = result1;
+    sjf_anon1(sjv_temp4, &sjv_temp4);
+    console = sjv_temp4;
     console->_refCount++;
     result2 = 0;
     sjf_func(&result2);
@@ -338,45 +363,45 @@ void sjf_global(void) {
 
     d->_refCount++;
 
-    sjv_temp7 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
-
-    sjv_temp7->_refCount = 1;
-
-    sjv_temp7->size = 3;
-
-    sjv_temp7->data = (uintptr_t)sjg_string2;
-
-    sjv_temp7->_isGlobal = false;
-
-    sjf_array_char(sjv_temp7, &sjv_temp7);
-
-    sjv_temp8 = (sjs_string*)malloc(sizeof(sjs_string));
+    sjv_temp8 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
 
     sjv_temp8->_refCount = 1;
 
-    sjv_temp8->count = 2;
+    sjv_temp8->size = 3;
 
-    sjv_temp8->data = sjv_temp7;
+    sjv_temp8->data = (uintptr_t)sjg_string2;
 
-    sjv_temp8->data->_refCount++;
+    sjv_temp8->_isGlobal = false;
 
-    sjf_string(sjv_temp8, &sjv_temp8);
+    sjf_array_char(sjv_temp8, &sjv_temp8);
 
-    sjv_temp9 = &sjd_temp4;
+    sjv_temp9 = (sjs_string*)malloc(sizeof(sjs_string));
 
     sjv_temp9->_refCount = 1;
 
-    sjv_temp9->item1 = sjv_temp8;
+    sjv_temp9->count = 2;
 
-    sjv_temp9->item1->_refCount++;
+    sjv_temp9->data = sjv_temp8;
 
-    sjv_temp9->item2 = 1.0;
+    sjv_temp9->data->_refCount++;
 
-    sjv_temp9->item3 = 4;
+    sjf_string(sjv_temp9, &sjv_temp9);
 
-    sjf_tuple3_sjs_string_double_int32_t(sjv_temp9, &sjv_temp9);
+    sjv_temp10 = &sjd_temp5;
 
-    tupleResult3 = sjv_temp9;
+    sjv_temp10->_refCount = 1;
+
+    sjv_temp10->item1 = sjv_temp9;
+
+    sjv_temp10->item1->_refCount++;
+
+    sjv_temp10->item2 = 1.0;
+
+    sjv_temp10->item3 = 4;
+
+    sjf_tuple3_sjs_string_double_int32_t(sjv_temp10, &sjv_temp10);
+
+    tupleResult3 = sjv_temp10;
 
     tupleResult3->_refCount++;
 
@@ -415,15 +440,15 @@ void sjf_global(void) {
         sjf_tuple2_int32_t_sjs_string_destroy(result4);
         free(result4);
     }
-    sjv_temp7->_refCount--;
-    if (sjv_temp7->_refCount <= 0) {
-        sjf_array_char_destroy(sjv_temp7);
-        free(sjv_temp7);
-    }
     sjv_temp8->_refCount--;
     if (sjv_temp8->_refCount <= 0) {
-        sjf_string_destroy(sjv_temp8);
+        sjf_array_char_destroy(sjv_temp8);
         free(sjv_temp8);
+    }
+    sjv_temp9->_refCount--;
+    if (sjv_temp9->_refCount <= 0) {
+        sjf_string_destroy(sjv_temp9);
+        free(sjv_temp9);
     }
     t->_refCount--;
     if (t->_refCount <= 0) {
@@ -455,10 +480,11 @@ void sjf_global(void) {
         sjf_tuple2_int32_t_sjs_string_destroy(tupleResult2);
         free(tupleResult2);
     }
-    sjf_anon3_destroy(&sjd_temp1);
-    sjf_anon2_destroy(&sjd_temp2);
-    sjf_anon1_destroy(&sjd_temp3);
-    sjf_tuple3_sjs_string_double_int32_t_destroy(&sjd_temp4);
+    sjf_anon4_destroy(&sjd_temp1);
+    sjf_anon3_destroy(&sjd_temp2);
+    sjf_anon2_destroy(&sjd_temp3);
+    sjf_anon1_destroy(&sjd_temp4);
+    sjf_tuple3_sjs_string_double_int32_t_destroy(&sjd_temp5);
 }
 
 void sjf_string(sjs_string* _this, sjs_string** _return) {

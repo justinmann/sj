@@ -75,11 +75,13 @@ void NDot::defineImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseFunct
 shared_ptr<CVar> NDot::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
     auto leftVar = left->getVar(compiler, result, thisFunction, thisVar, dotVar);
     if (!leftVar) {
+        result.addError(loc, CErrorCode::InvalidDot, "left side of dot has no value");
         return nullptr;
     }
 
     auto rightVar = right->getVar(compiler, result, thisFunction, thisVar, leftVar);
     if (!rightVar) {
+        result.addError(loc, CErrorCode::InvalidDot, "right side of dot has no value");
         return nullptr;
     }
 

@@ -71,6 +71,7 @@ enum NodeType {
     NodeType_Not,
     NodeType_OptionDot,
     NodeType_Or,
+    NodeType_Parent,
     NodeType_String,
     NodeType_StringArray,
     NodeType_This,
@@ -108,6 +109,7 @@ enum NodeType {
 #include "NInterface.h"
 #include "NInterfaceMethod.h"
 #include "NIsEmpty.h"
+#include "NParent.h"
 #include "NMath.h"
 #include "NMathAssignment.h"
 #include "NNot.h"

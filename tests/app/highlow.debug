@@ -87,6 +87,10 @@ anon3_nextInt()'i32 c{
 	
 }c
 
+anon4()'anon4 {
+  this
+}
+
 array!char([heap]size'i32=, [heap]data'ptr=, [heap]_isGlobal'bool=)'array_char {
   c{
 
@@ -109,6 +113,7 @@ string([heap]count'i32=, [heap]data'array_char=)'string {
 }
 
 global()'void {
+  [stack]convert'anon4 : [stack]anon4([stack]this : anon4())
   [stack]random'anon3 : [stack]anon3([stack]this : anon3())
   [stack]parse'anon2 : [stack]anon2([stack]this : anon2())
   [stack]console'anon1 : [stack]anon1([stack]this : anon1(

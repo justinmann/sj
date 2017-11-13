@@ -128,7 +128,12 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler *compiler, CResult &result, shar
     }
 
     if (cfunction) {
-        return cfunction->getCVar(compiler, result, name);
+        auto cvar = cfunction->getCVar(compiler, result, name);
+        if (!cvar) {
+            result.addError(loc, CErrorCode::InvalidVariable, "cannot find variable '%s'", name.c_str());
+            return nullptr;
+        }
+        return cvar;
     }
     return nullptr;
 }

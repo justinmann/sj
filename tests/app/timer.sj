@@ -30,11 +30,10 @@ element #element (
 ) { this }
 
 timerElement #element (
-	count = 0
+	counter = 0
 
 	toHTML() {
-		counter.toString()
-		"foo"
+		convert.i32toString(counter) + "foo"
 	}
 
 	onTick() {

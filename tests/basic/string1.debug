@@ -16,6 +16,10 @@ anon3()'anon3 {
   this
 }
 
+anon4()'anon4 {
+  this
+}
+
 array!char([heap]size'i32=, [heap]data'ptr=, [heap]_isGlobal'bool=)'array_char {
   c{
 
@@ -100,6 +104,7 @@ string_isLessOrEqual([stack]test'string:)'bool {
 }
 
 global()'void {
+  [stack]convert'anon4 : [stack]anon4([stack]this : anon4())
   [stack]random'anon3 : [stack]anon3([stack]this : anon3())
   [stack]parse'anon2 : [stack]anon2([stack]this : anon2())
   [stack]console'anon1 : [stack]anon1([stack]this : anon1(

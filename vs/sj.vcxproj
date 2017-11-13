@@ -170,6 +170,7 @@
     <ClInclude Include="..\node\NGetValue.h" />
     <ClInclude Include="..\node\NIsEmpty.h" />
     <ClInclude Include="..\node\NOptionDot.h" />
+    <ClInclude Include="..\node\NParent.h" />
     <ClInclude Include="..\node\NTuple.h" />
     <ClInclude Include="..\node\NTupleAssignment.h" />
     <ClInclude Include="..\node\NAssignment.h" />
@@ -224,6 +225,7 @@
     <ClCompile Include="..\node\NGetValue.cpp" />
     <ClCompile Include="..\node\NIsEmpty.cpp" />
     <ClCompile Include="..\node\NOptionDot.cpp" />
+    <ClCompile Include="..\node\NParent.cpp" />
     <ClCompile Include="..\node\NTuple.cpp" />
     <ClCompile Include="..\node\NTupleAssignment.cpp" />
     <ClCompile Include="..\node\NAssignment.cpp" />

@@ -61,6 +61,7 @@ void updateLocation(YYLOCATION& loc, const char* s, const int len) {
 [ \t]+					SAVE_LOC; 
 "^"						TOKEN_STR(TIDENTIFIER, 0, 0);
 "this"					TOKEN_VAL(TTHIS);
+"parent"				TOKEN_VAL(TPARENT);
 "include"				TOKEN_VAL(TINCLUDE);
 "isEmpty"				TOKEN_VAL(TISEMPTY);
 "getValue"				TOKEN_VAL(TGETVALUE);
