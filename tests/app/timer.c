@@ -447,7 +447,7 @@ void sjf_element(sjs_element* _this, sjs_element** _return) {
 
 sjs_object* sjf_element_asInterface(sjs_element* _this, int typeId) {
     switch (typeId) {
-        case sji_element_typeId: return sjf_element_as_sji_element(_this);
+        case sji_element_typeId: return (sjs_object*)sjf_element_as_sji_element(_this);
     }
 
     return 0;
@@ -458,9 +458,9 @@ sji_element* sjf_element_as_sji_element(sjs_element* _this) {
     _interface->_refCount = 1;
     _interface->_parent = (sjs_object*)_this;
     _interface->_parent->_refCount++;
-    _interface->destroy = sjf_element_destroy;
-    _interface->asInterface = sjf_element_asInterface;
-    _interface->toHTML = sjf_element_toHTML;
+    _interface->destroy = (void(*)(sjs_object*))sjf_element_destroy;
+    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_element_asInterface;
+    _interface->toHTML = (void(*)(sjs_object*, sjs_string**))sjf_element_toHTML;
     return _interface;
 }
 
@@ -842,7 +842,7 @@ void sjf_timerElement(sjs_timerElement* _this, sjs_timerElement** _return) {
 
 sjs_object* sjf_timerElement_asInterface(sjs_timerElement* _this, int typeId) {
     switch (typeId) {
-        case sji_element_typeId: return sjf_timerElement_as_sji_element(_this);
+        case sji_element_typeId: return (sjs_object*)sjf_timerElement_as_sji_element(_this);
     }
 
     return 0;
@@ -853,9 +853,9 @@ sji_element* sjf_timerElement_as_sji_element(sjs_timerElement* _this) {
     _interface->_refCount = 1;
     _interface->_parent = (sjs_object*)_this;
     _interface->_parent->_refCount++;
-    _interface->destroy = sjf_timerElement_destroy;
-    _interface->asInterface = sjf_timerElement_asInterface;
-    _interface->toHTML = sjf_timerElement_toHTML;
+    _interface->destroy = (void(*)(sjs_object*))sjf_timerElement_destroy;
+    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_timerElement_asInterface;
+    _interface->toHTML = (void(*)(sjs_object*, sjs_string**))sjf_timerElement_toHTML;
     return _interface;
 }
 

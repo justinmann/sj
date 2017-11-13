@@ -230,6 +230,41 @@ shared_ptr<CBaseFunction> CInterfaceMethod::getCFunction(Compiler* compiler, CRe
     return nullptr;
 }
 
+string CInterfaceMethod::getCTypeName(Compiler* compiler, CResult& result, bool includeNames) {
+    stringstream ss;
+    ss << "void";
+    if (includeNames) {
+        ss << " ";
+    }
+    ss << "(*";
+    if (includeNames) {
+        ss << name;
+    }
+    ss << ")(sjs_object*";
+    if (includeNames) {
+        ss << " _parent";
+    }
+    for (auto argVar : argVars) {
+        ss << ",";
+        if (includeNames) {
+            ss << " ";
+        }
+        ss << argVar->getType(compiler, result)->nameRef;
+        if (includeNames) {
+            ss << " " << argVar->name;
+        }
+    }
+    if (returnType != nullptr && returnType != compiler->typeVoid) {
+        ss << ", ";
+        ss << returnType->nameRef << "*";
+        if (includeNames) {
+            ss << " _return";
+        }
+    }
+    ss << ")";
+    return ss.str();
+}
+
 //Value* CInterfaceMethod::getParentValue(Compiler* compiler, CResult& result, IRBuilder<>* builder, bool thisInEntry, Value* thisValue) {
 //    assert(false);
 //    return nullptr;

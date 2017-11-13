@@ -98,7 +98,7 @@ void sjf_class(sjs_class* _this, sjs_class** _return) {
 
 sjs_object* sjf_class_asInterface(sjs_class* _this, int typeId) {
     switch (typeId) {
-        case sji_foo_typeId: return sjf_class_as_sji_foo(_this);
+        case sji_foo_typeId: return (sjs_object*)sjf_class_as_sji_foo(_this);
     }
 
     return 0;
@@ -109,9 +109,9 @@ sji_foo* sjf_class_as_sji_foo(sjs_class* _this) {
     _interface->_refCount = 1;
     _interface->_parent = (sjs_object*)_this;
     _interface->_parent->_refCount++;
-    _interface->destroy = sjf_class_destroy;
-    _interface->asInterface = sjf_class_asInterface;
-    _interface->test = sjf_class_test;
+    _interface->destroy = (void(*)(sjs_object*))sjf_class_destroy;
+    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_class_asInterface;
+    _interface->test = (void(*)(sjs_object*, int32_t*))sjf_class_test;
     return _interface;
 }
 

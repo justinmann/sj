@@ -290,7 +290,7 @@ string CInterface::transpileCast(shared_ptr<CBaseFunction> fromFunction, string 
     if (fromFunction->classType == CFT_Interface) {
         auto fromInterface = static_pointer_cast<CInterface>(fromFunction);
         stringstream line;
-        line << varName << "->asInterface(" << varName << "->_parent, " << getTypeIdName() << ")";
+        line << "(" << getStructName() << "*)" << varName << "->asInterface(" << varName << "->_parent, " << getTypeIdName() << ")";
         return line.str();
     }
     else {
@@ -309,18 +309,7 @@ void CInterface::transpileDefinition(Compiler* compiler, CResult& result, TrOutp
         trOutput->structs[structName].push_back("void (*destroy)(sjs_object* _this)");
         trOutput->structs[structName].push_back("sjs_object* (*asInterface)(sjs_object* _this, int typeId)");
         for (auto method : methods) {
-            stringstream ss;
-            ss << "void (*" << method->name << ")(sjs_object* _parent";
-            for (auto argVar : method->argVars) {
-                ss << ", ";
-                ss << argVar->getType(compiler, result)->nameRef << " " << argVar->name;
-            }
-            if (method->returnType != nullptr && method->returnType != compiler->typeVoid) {
-                ss << ", ";
-                ss << method->returnType->nameRef << "* _return";
-            }
-            ss << ")";
-            trOutput->structs[structName].push_back(ss.str());
+            trOutput->structs[structName].push_back(method->getCTypeName(compiler, result, true));
         }
     }
 

@@ -142,7 +142,7 @@ void sjf_anon1_class(sjs_anon1_class* _this, sjs_anon1_class** _return) {
 
 sjs_object* sjf_anon1_class_asInterface(sjs_anon1_class* _this, int typeId) {
     switch (typeId) {
-        case sji_anon1_foo_typeId: return sjf_anon1_class_as_sji_anon1_foo(_this);
+        case sji_anon1_foo_typeId: return (sjs_object*)sjf_anon1_class_as_sji_anon1_foo(_this);
     }
 
     return 0;
@@ -153,9 +153,9 @@ sji_anon1_foo* sjf_anon1_class_as_sji_anon1_foo(sjs_anon1_class* _this) {
     _interface->_refCount = 1;
     _interface->_parent = (sjs_object*)_this;
     _interface->_parent->_refCount++;
-    _interface->destroy = sjf_anon1_class_destroy;
-    _interface->asInterface = sjf_anon1_class_asInterface;
-    _interface->test1 = sjf_anon1_class_test1;
+    _interface->destroy = (void(*)(sjs_object*))sjf_anon1_class_destroy;
+    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_anon1_class_asInterface;
+    _interface->test1 = (void(*)(sjs_object*, int32_t*))sjf_anon1_class_test1;
     return _interface;
 }
 
@@ -184,7 +184,7 @@ void sjf_anon2_class(sjs_anon2_class* _this, sjs_anon2_class** _return) {
 
 sjs_object* sjf_anon2_class_asInterface(sjs_anon2_class* _this, int typeId) {
     switch (typeId) {
-        case sji_anon2_foo_typeId: return sjf_anon2_class_as_sji_anon2_foo(_this);
+        case sji_anon2_foo_typeId: return (sjs_object*)sjf_anon2_class_as_sji_anon2_foo(_this);
     }
 
     return 0;
@@ -195,9 +195,9 @@ sji_anon2_foo* sjf_anon2_class_as_sji_anon2_foo(sjs_anon2_class* _this) {
     _interface->_refCount = 1;
     _interface->_parent = (sjs_object*)_this;
     _interface->_parent->_refCount++;
-    _interface->destroy = sjf_anon2_class_destroy;
-    _interface->asInterface = sjf_anon2_class_asInterface;
-    _interface->test2 = sjf_anon2_class_test2;
+    _interface->destroy = (void(*)(sjs_object*))sjf_anon2_class_destroy;
+    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_anon2_class_asInterface;
+    _interface->test2 = (void(*)(sjs_object*, int32_t*))sjf_anon2_class_test2;
     return _interface;
 }
 

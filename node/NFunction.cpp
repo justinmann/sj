@@ -463,14 +463,14 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
                     trFunctionBlock->statements.push_back(string("_interface->_refCount = 1"));
                     trFunctionBlock->statements.push_back(string("_interface->_parent = (sjs_object*)_this"));
                     trFunctionBlock->statements.push_back(string("_interface->_parent->_refCount++"));
-                    trFunctionBlock->statements.push_back(string("_interface->destroy = " + getCDestroyFunctionName()));
-                    trFunctionBlock->statements.push_back(string("_interface->asInterface = " + getCAsInterfaceFunctionName()));
+                    trFunctionBlock->statements.push_back(string("_interface->destroy = (void(*)(sjs_object*))" + getCDestroyFunctionName()));
+                    trFunctionBlock->statements.push_back(string("_interface->asInterface = (sjs_object*(*)(sjs_object*,int))" + getCAsInterfaceFunctionName()));
 
                     for (auto interfaceMethod : interfaceVal->methods) {
                         auto function = getCFunction(compiler, result, interfaceMethod->name, nullptr, nullptr);
                         if (function) {
                             stringstream initStream;
-                            initStream << "_interface->" << interfaceMethod->name << " = " << function->getCInitFunctionName();
+                            initStream << "_interface->" << interfaceMethod->name << " = (" << interfaceMethod->getCTypeName(compiler, result, false) << ")" << function->getCInitFunctionName();
                             trFunctionBlock->statements.push_back(initStream.str());
                         }
                     }
@@ -494,7 +494,7 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
                 auto switchBlock = make_shared<TrBlock>();
                 trFunctionBlock->statements.push_back(TrStatement("switch (typeId)", switchBlock));
                 for (auto interfaceVal : *interfaces) {
-                    switchBlock->statements.push_back(string("case ") + interfaceVal->getTypeIdName() + ": return " + interfaceVal->getCastFunctionName(shared_from_this()) +"(_this)");
+                    switchBlock->statements.push_back(string("case ") + interfaceVal->getTypeIdName() + ": return (sjs_object*)" + interfaceVal->getCastFunctionName(shared_from_this()) +"(_this)");
                 }
 
                 trFunctionBlock->statements.push_back(string("return 0"));

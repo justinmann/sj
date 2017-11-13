@@ -111,8 +111,8 @@ void sjf_class_int32_t(sjs_class_int32_t* _this, sjs_class_int32_t** _return) {
 
 sjs_object* sjf_class_int32_t_asInterface(sjs_class_int32_t* _this, int typeId) {
     switch (typeId) {
-        case sji_bar_typeId: return sjf_class_int32_t_as_sji_bar(_this);
-        case sji_foo_typeId: return sjf_class_int32_t_as_sji_foo(_this);
+        case sji_bar_typeId: return (sjs_object*)sjf_class_int32_t_as_sji_bar(_this);
+        case sji_foo_typeId: return (sjs_object*)sjf_class_int32_t_as_sji_foo(_this);
     }
 
     return 0;
@@ -123,9 +123,9 @@ sji_bar* sjf_class_int32_t_as_sji_bar(sjs_class_int32_t* _this) {
     _interface->_refCount = 1;
     _interface->_parent = (sjs_object*)_this;
     _interface->_parent->_refCount++;
-    _interface->destroy = sjf_class_int32_t_destroy;
-    _interface->asInterface = sjf_class_int32_t_asInterface;
-    _interface->test2 = sjf_class_int32_t_test2;
+    _interface->destroy = (void(*)(sjs_object*))sjf_class_int32_t_destroy;
+    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_class_int32_t_asInterface;
+    _interface->test2 = (void(*)(sjs_object*, int32_t*))sjf_class_int32_t_test2;
     return _interface;
 }
 
@@ -134,9 +134,9 @@ sji_foo* sjf_class_int32_t_as_sji_foo(sjs_class_int32_t* _this) {
     _interface->_refCount = 1;
     _interface->_parent = (sjs_object*)_this;
     _interface->_parent->_refCount++;
-    _interface->destroy = sjf_class_int32_t_destroy;
-    _interface->asInterface = sjf_class_int32_t_asInterface;
-    _interface->test1 = sjf_class_int32_t_test1;
+    _interface->destroy = (void(*)(sjs_object*))sjf_class_int32_t_destroy;
+    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_class_int32_t_asInterface;
+    _interface->test1 = (void(*)(sjs_object*, int32_t*))sjf_class_int32_t_test1;
     return _interface;
 }
 
@@ -177,7 +177,7 @@ void sjf_global(void) {
 
     a->test1(a->_parent, &result2);
 
-    result3 = a->asInterface(a->_parent, sji_bar_typeId);
+    result3 = (sji_bar*)a->asInterface(a->_parent, sji_bar_typeId);
 
     b = result3;
 
@@ -193,7 +193,7 @@ void sjf_global(void) {
         }
     }
 
-    if ((b == 0)) {
+    if (b == 0) {
         ifResult1 = int32_empty;
     } else {
         int32_t result4;
