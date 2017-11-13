@@ -137,7 +137,12 @@ shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& re
     }
 
     stringstream ifLine;
-    ifLine << "if (" << conditionReturnValue->name << ")";
+    if (conditionReturnValue->name.front() == '(' && conditionReturnValue->name.back() == ')') {
+        ifLine << "if " << conditionReturnValue->name;
+    }
+    else {
+        ifLine << "if (" << conditionReturnValue->name << ")";
+    }
     auto trIfBlock = make_shared<TrBlock>();
     trIfBlock->hasThis = trBlock->hasThis;
     trIfBlock->parent = trBlock;
