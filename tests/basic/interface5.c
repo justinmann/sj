@@ -157,10 +157,10 @@ void sjf_global(void) {
     sjs_class_i32 sjd_temp1;
     sji_foo* a;
     sji_bar* b;
+    int32_option ifResult1;
     sji_foo* result1;
     int32_t result2;
     sji_bar* result3;
-    int32_t result4;
     sjs_class_i32* sjv_temp1;
 
     sjv_temp1 = &sjd_temp1;
@@ -181,26 +181,41 @@ void sjf_global(void) {
 
     b = result3;
 
-    b->_refCount++;
-
-    result3->_refCount--;
-
-    if (result3->_refCount <= 0) {
-        sji_bar_destroy(result3);
-        free(result3);
+    if (b != 0) {
+        b->_refCount++;
     }
 
-    b->test2(b->_parent, &result4);
+    if (result3 != 0) {
+        result3->_refCount--;
+        if (result3->_refCount <= 0) {
+            sji_bar_destroy(result3);
+            free(result3);
+        }
+    }
+
+    if ((b == 0)) {
+        ifResult1 = int32_empty;
+    } else {
+        int32_t result4;
+        int32_option value1;
+
+        b->test2(b->_parent, &result4);
+        value1.isEmpty = false;
+        value1.value = result4;
+        ifResult1 = value1;
+    }
 
     a->_refCount--;
     if (a->_refCount <= 0) {
         sji_foo_destroy(a);
         free(a);
     }
-    b->_refCount--;
-    if (b->_refCount <= 0) {
-        sji_bar_destroy(b);
-        free(b);
+    if (b != 0) {
+        b->_refCount--;
+        if (b->_refCount <= 0) {
+            sji_bar_destroy(b);
+            free(b);
+        }
     }
     sjf_class_i32_destroy(&sjd_temp1);
 }

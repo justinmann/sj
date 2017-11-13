@@ -1,4 +1,5 @@
 #interface()
+#interface2()
 class #interface (
 	bob : 0
 ) { this }
@@ -21,3 +22,5 @@ n : value(class())
 o : getValue(n)
 p : n?.bob
 q : a?:-1
+r : n as #interface?
+s : r as #interface2?

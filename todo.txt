@@ -1,5 +1,4 @@
 -- features --
-* as? operator
 * override interfaces
     a as type   -> a.asType()'t
 * lambda

@@ -171,9 +171,6 @@
     <ClInclude Include="..\node\NOptionDot.h">
       <Filter>Node</Filter>
     </ClInclude>
-    <ClInclude Include="..\node\NOptionCast.h">
-      <Filter>Node</Filter>
-    </ClInclude>
     <ClInclude Include="..\node\NIsEmpty.h">
       <Filter>Node</Filter>
     </ClInclude>
@@ -327,9 +324,6 @@
       <Filter>Node</Filter>
     </ClCompile>
     <ClCompile Include="..\node\NOptionDot.cpp">
-      <Filter>Node</Filter>
-    </ClCompile>
-    <ClCompile Include="..\node\NOptionCast.cpp">
       <Filter>Node</Filter>
     </ClCompile>
     <ClCompile Include="..\node\NIsEmpty.cpp">

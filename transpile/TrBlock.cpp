@@ -142,7 +142,7 @@ bool ReturnValue::writeReleaseToStream(TrBlock* block, ostream& stream, int leve
     if (isHeap && release == RVR_MustRetain) {
         if (type->isOption) {
             TrBlock::addSpacing(stream, level);
-            stream << "if (" << name << " != 0) {";
+            stream << "if (" << name << " != 0) {\n";
             level++;
         }
 
@@ -168,7 +168,7 @@ bool ReturnValue::writeReleaseToStream(TrBlock* block, ostream& stream, int leve
         if (type->isOption) {
             level--;
             TrBlock::addSpacing(stream, level);
-            stream << "}";
+            stream << "}\n";
         }
     }
 

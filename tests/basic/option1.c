@@ -137,6 +137,10 @@ void sjf_global(void) {
     sjs_class* o;
     int32_option p;
     int32_t q;
+    sji_interface* r;
+    sji_interface* result1;
+    sji_interface2* result2;
+    sji_interface2* s;
     sjs_class* sjv_temp1;
 
     a = int32_empty;
@@ -205,6 +209,57 @@ void sjf_global(void) {
     }
 
     q = ifResult2;
+
+    if (n != 0) {
+        result1 = sjf_class_as_sji_interface(n);
+    }
+
+    r = result1;
+
+    if (r != 0) {
+        r->_refCount++;
+    }
+
+    if (result1 != 0) {
+        result1->_refCount--;
+        if (result1->_refCount <= 0) {
+            sji_interface_destroy(result1);
+            free(result1);
+        }
+    }
+
+    if (r != 0) {
+        result2 = r->asInterface(r->_parent, sji_interface2_typeId);
+    }
+
+    s = result2;
+
+    if (s != 0) {
+        s->_refCount++;
+    }
+
+    if (result2 != 0) {
+        result2->_refCount--;
+        if (result2->_refCount <= 0) {
+            sji_interface2_destroy(result2);
+            free(result2);
+        }
+    }
+
+    if (r != 0) {
+        r->_refCount--;
+        if (r->_refCount <= 0) {
+            sji_interface_destroy(r);
+            free(r);
+        }
+    }
+    if (s != 0) {
+        s->_refCount--;
+        if (s->_refCount <= 0) {
+            sji_interface2_destroy(s);
+            free(s);
+        }
+    }
     sjf_class_destroy(&sjd_temp1);
 }
 

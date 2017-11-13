@@ -24,6 +24,7 @@ shared_ptr<CType> NCast::getTypeImpl(Compiler* compiler, CResult& result, shared
     auto t = thisFunction->getVarType(compiler, result, typeName);
     if (!t) {
         result.addError(loc, CErrorCode::InvalidType, "type '%s' does not exist", typeName->getName().c_str());
+        return nullptr;
     }
     return t;
 }
@@ -45,13 +46,37 @@ shared_ptr<ReturnValue> NCast::transpile(Compiler* compiler, CResult& result, sh
         return nullptr;
     }
 
+    if (!type->isOption) {
+        if (returnValue->type->isOption) {
+            result.addError(loc, CErrorCode::InvalidCast, "cannot cast an option type '%s' to non-option type '%s'", returnValue->type->name.c_str(), type->name.c_str());
+            return nullptr;
+        }
+
+        if (type->category == CTC_Interface && returnValue->type->category == CTC_Interface) {
+            result.addError(loc, CErrorCode::InvalidCast, "cannot cast an interface '%s' to non-option interface '%s'", returnValue->type->name.c_str(), type->name.c_str());
+            return nullptr;
+        }
+    }
+
     if (type != nullptr && type->category == CTC_Interface) {
         auto resultValue = trBlock->createTempVariable("result", type, true, RVR_MustRelease);
         auto interface = static_pointer_cast<CInterface>(type->parent.lock());
         interfaceVar = interface->getThisVar(compiler, result);
+
+        shared_ptr<TrBlock> ifNullBlock;
+        auto innerBlock = trBlock;
+        if (returnValue->type->isOption) {
+            ifNullBlock = make_shared<TrBlock>();
+            stringstream ifStream;
+            ifStream << "if (" << returnValue->name << " != 0)";
+            trBlock->statements.push_back(TrStatement(ifStream.str(), ifNullBlock));
+
+            innerBlock = ifNullBlock.get();
+        }
+
         stringstream line;
         line << resultValue->name << " = " << interface->transpileCast(returnValue->type->parent.lock(), returnValue->name);
-        trBlock->statements.push_back(line.str());
+        innerBlock->statements.push_back(line.str());
         return resultValue;
     }
     else {

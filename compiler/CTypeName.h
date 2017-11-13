@@ -35,12 +35,14 @@ public:
         assert((category == CTC_Interface) == (name[0] == '#')); 
         assert(name[1] != '#'); 
         assert(category != CTC_Function);
+        assert(!isOption || name.back() == '?');
     }
 
     CTypeName(CTypeCategory category, const string& name, shared_ptr<CTypeNameList> templateTypeNames, bool isOption) : category(category), mutability(CTM_Undefined), name(name), templateTypeNames(templateTypeNames), isOption(isOption) {
         assert((category == CTC_Interface) == (name[0] == '#')); 
         assert(name[1] != '#'); 
         assert(category != CTC_Function);
+        assert(!isOption || name.back() == '?');
     }
 
     CTypeName(shared_ptr<CTypeNameList> argTypeNames, shared_ptr<CTypeName> returnTypeName) : category(CTC_Function), mutability(CTM_Undefined), argTypeNames(argTypeNames), returnTypeName(returnTypeName), isOption(false) {

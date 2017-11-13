@@ -65,7 +65,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID TSTRING TCHAR TCCODE
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY TMOD THASH TAT TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TASOPTION TQUESTION TEMPTY TVALUE TQUESTIONCOLON
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY TMOD THASH TAT TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TASOPTION TQUESTION TEMPTY TVALUE TQUESTIONCOLON TQUESTIONDOT
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch destroy expr
@@ -242,7 +242,6 @@ expr_math			: expr_math TPLUS expr_math 					{ $$ = new NMath(LOC, shared_ptr<NV
 					| expr_math TQUESTIONCOLON expr_math			{ $$ = new NGetOrElse(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($3)); }
 					| TEXCLAIM expr_var                             { $$ = new NNot(LOC, shared_ptr<NVariableBase>($2)); }
 					| expr_var TAS arg_type 						{ $$ = new NCast(LOC, shared_ptr<CTypeName>($3), shared_ptr<NVariableBase>($1)); }
-					| expr_var TAS TQUESTION arg_type 				{ $$ = new NOptionCast(LOC, shared_ptr<CTypeName>($4), shared_ptr<NVariableBase>($1)); }
 					| expr_var										{ $$ = $1; }
 					;
 
@@ -263,7 +262,7 @@ if_expr		 		: TIF expr block								{ $$ = new NIf(LOC, shared_ptr<NBase>($2), s
 					;
 
 var					: var TDOT var_right							{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($3)); }
-					| var TQUESTION TDOT var_right					{ $$ = new NOptionDot(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($4)); }
+					| var TQUESTIONDOT var_right					{ $$ = new NOptionDot(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($3)); }
 					| var_right										
 					;
 
@@ -328,8 +327,8 @@ return_type_quote	: TQUOTE return_type							{ $$ = $2; }
 arg_type_quote		: TQUOTE arg_type								{ $$ = $2; }
 					;
 
-arg_type			: TIDENTIFIER temp_option_optional 					{ $$ = new CTypeName(CTC_Value, *$1, shared_ptr<CTypeNameList>($2.templateTypeNames), $2.isOption); delete $1; }
-					| THASH arg_type_interface temp_option_optional 	{ $$ = new CTypeName(CTC_Interface, string("#") + *$2, shared_ptr<CTypeNameList>($3.templateTypeNames), $3.isOption); delete $2; }
+arg_type			: TIDENTIFIER temp_option_optional 					{ $$ = new CTypeName(CTC_Value, *$1 + ($2.isOption ? "?" : ""), shared_ptr<CTypeNameList>($2.templateTypeNames), $2.isOption); delete $1; }
+					| THASH arg_type_interface temp_option_optional 	{ $$ = new CTypeName(CTC_Interface, string("#") + *$2 + ($3.isOption ? "?" : ""), shared_ptr<CTypeNameList>($3.templateTypeNames), $3.isOption); delete $2; }
 					| func_type											{ $$ = $1; }
 					;
 

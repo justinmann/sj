@@ -112,7 +112,6 @@ enum NodeType {
 #include "NMathAssignment.h"
 #include "NNot.h"
 #include "NOptionDot.h"
-#include "NOptionCast.h"
 #include "NOr.h"
 #include "NString.h"
 #include "NThis.h"

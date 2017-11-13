@@ -19,5 +19,5 @@ class!item #bar #foo!item (
 
 a: class!i32() as #foo!i32
 a.test1()
-b: a as #bar
-b.test2()
+b: a as #bar?
+b?.test2()

@@ -25,10 +25,10 @@ global()'void {
   [heap]test1(
     parent: [heap]a
   )
-  [heap]b'#bar : a as #bar
-  [heap]test2(
-    parent: [heap]b
-  )
+  [heap]b'#bar? : a as #bar?
+  if isEmpty(b) empty'i32? else value([heap]test2(
+    parent: [heap]getValue(b)
+  ))
   void
 }
 

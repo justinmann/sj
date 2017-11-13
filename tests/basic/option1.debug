@@ -5,6 +5,8 @@ class ##interface ([stack]bob'i32:)'class {
 global()'void {
   #interface(
   )
+  #interface2(
+  )
   [stack]a'i32? : empty'i32?
   [stack]b'i64? : empty'i64?
   [stack]c'u32? : empty'u32?
@@ -24,6 +26,8 @@ global()'void {
   [stack]o'class : getValue(n)
   [stack]p'i32? : if isEmpty(n) empty'i32? else value(this.bob)
   [stack]q'i32 : if isEmpty(a) -1i else getValue(a)
+  [heap]r'#interface? : n as #interface?
+  [heap]s'#interface2? : r as #interface2?
   void
 }
 
