@@ -2,7 +2,7 @@ anon1()'anon1 {
   this
 }
 
-anon1_write([heap]data'string:)'void {
+anon1_write([stack]data'string:)'void {
   c{
 
 			#include(<stdio.h>)
@@ -255,10 +255,19 @@ element_update()'void {
       )
     ))
   }
-  [heap]anon1_write([stack]this : anon1_write(
+  [stack]anon1_write([stack]this : anon1_write(
     parent: [heap].parent.parentthis.console,
-    [heap]data'string : html
+    [stack]data'string : html
   ))
+  c{
+
+			#include(<emscripten.h>)
+
+			EM_ASM_({
+				document.body.innerHTML = UTF8ToString($1);
+			}, _parent->id->data->data, html->data->data);
+		
+}c
 }
 
 string([heap]count'i32=, [heap]data'array_char=)'string {
@@ -370,7 +379,7 @@ global()'void {
       sjv_array1
     }
   ))
-  [heap]element_update([stack]this : element_update(
+  [stack]element_update([stack]this : element_update(
     parent: [stack]rootElement
   ))
   void

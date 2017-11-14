@@ -1,9 +1,9 @@
-* return from getAt should not be stack
+* timer
+* fix string add
 * make string immutable
+* string not depend on array
 * stringBuilder.append
 * stringBuilder.toString
-* document option
-* timer
 * two buttons for +/-
 
 -- features --

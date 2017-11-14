@@ -1,3 +1,4 @@
+#include <emscripten.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -610,6 +611,14 @@ void sjf_element_update(sjs_element* _parent) {
     dotTemp21 = tempParent2->console;
 
     sjf_anon1_write(dotTemp21, html);
+
+    
+			
+
+			EM_ASM_({
+				document.body.innerHTML = UTF8ToString($1);
+			}, _parent->id->data->data, html->data->data);
+		;
 
     html->_refCount--;
     if (html->_refCount <= 0) {

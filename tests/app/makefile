@@ -1,7 +1,7 @@
-TARGET = test
+TARGET = all
 LIBS = -lm
-CC = gcc
-CFLAGS = -g -Wall -std=c99
+CC = emcc
+CFLAGS = -g -Wall -s CYBERDWARF=1 -s SAFE_HEAP=1
 SJ_OBJECTS = $(patsubst %.sj, %.c, $(wildcard *.sj))
 
 .PHONY: default all clean
@@ -26,7 +26,7 @@ clean:
 	../../sjc $<
 
 timer: timer.c
-    emcc -g timer.c -o timer.html -s CYBERDWARF=1 -s SAFE_HEAP=1
+    ./emcc -g timer.c -o timer.html -s CYBERDWARF=1 -s SAFE_HEAP=1
     
-highlow: highlow.c
-    emcc -g highlow.c -o highlow.html -s CYBERDWARF=1 -s SAFE_HEAP=1
+bob: highlow.c
+    ./emcc -g highlow.c -o highlow.html -s CYBERDWARF=1 -s SAFE_HEAP=1

@@ -16,13 +16,13 @@ element #element (
 		}
 
 		console.write(html)
-		/* c{
+		c{
 			#include(<emscripten.h>)
 
 			EM_ASM_({
-				document.getElementById(UTF8ToString($0)).innerHTML = UTF8ToString($1);
-			}, _parent->id->data, html->data);
-		}c */
+				document.body.innerHTML = UTF8ToString($1);
+			}, _parent->id->data->data, html->data->data);
+		}c
 	}
 
 	toHTML() {

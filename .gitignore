@@ -31,3 +31,17 @@ sjc
 vs/sj.vcxproj.user
 
 tests/test
+
+tests/app/timer.html
+
+tests/app/timer.js
+
+tests/app/timer.wasm
+
+tests/app/timer.wasm.map
+
+tests/app/timer.wast
+
+tests/app/timer
+
+tests/app/highlow
