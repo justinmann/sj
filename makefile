@@ -29,7 +29,7 @@ parser/tokens.cpp: parser/tokens.l
 	flex -L -o $@ $^
 
 %.o: %.cpp $(HEADERS)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@ -I../boost/include
 
 $(TARGET): $(OBJECTS)
-	$(CC) $(OBJECTS) -Wall $(LIBS) -o $@
+	$(CC) $(OBJECTS) -Wall $(LIBS) -o $@ -L../boost/lib -lboost_system -lboost_filesystem
