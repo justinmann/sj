@@ -1,4 +1,3 @@
-* timer
 * fix string add
 * make string immutable
 * string not depend on array
