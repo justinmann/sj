@@ -15,7 +15,7 @@ element #element (
 			html.add(child.toHTML())
 		}
 
-		console.write(html)
+		// console.write(html)
 		c{
 			#include(<emscripten.h>)
 
@@ -54,8 +54,29 @@ rootElement : element(
 	children : [ timerElement as #element ]
 )
 
+cdefine{
+	#include(<emscripten/html5.h>)
+
+	EM_BOOL em_onClick(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData);
+}cdefine
+
+cfunction{
+	EM_BOOL em_onClick(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData) {
+		#function(onClick)(&global, mouseEvent->timestamp, mouseEvent->targetX, mouseEvent->targetY);
+		return true;
+	}
+}cfunction
+
+c{
+	emscripten_set_click_callback(0, &global, false, em_onClick);
+}c
+
+onClick(timestemp: 'f64, x: 'i32, y: 'i32) {
+	console.write("click")
+}
+
 mainLoop() {
-	console.write("foo")
+	// console.write("foo")
 	timerElement.onTick()
 	rootElement.update()
 	void

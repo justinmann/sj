@@ -95,7 +95,7 @@ global()'void {
   ))
   [stack]random'anon3 : [stack]anon3([stack]this : anon3())
   [stack]parse'anon2 : [stack]anon2([stack]this : anon2())
-  [stack]console'anon1 : [stack]anon1([stack]this : anon1())
+  [heap]console'anon1 : [heap]anon1([heap]this : anon1())
   #element(
     toHTML()'string
   )
@@ -130,6 +130,26 @@ global()'void {
       sjv_array1
     }
   ))
+  cdefine{
+
+	#include(<emscripten/html5.h>)
+
+	EM_BOOL em_onClick(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData);
+
+}cdefine
+  cfunction{
+
+	EM_BOOL em_onClick(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData) {
+		#function(onClick)(&global, mouseEvent->timestamp, mouseEvent->targetX, mouseEvent->targetY);
+		return true;
+	}
+
+}cfunction
+  c{
+
+	emscripten_set_click_callback(0, &global, false, em_onClick);
+
+}c
   void
 }
 
