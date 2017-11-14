@@ -15,7 +15,6 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
         stream << "#include " << include.first << "\n";
     }
     stream << "\n";
-
     
     stream << "typedef struct td_int32_option int32_option;\n";
     stream << "struct td_int32_option {\n";
@@ -110,6 +109,10 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
 		}
 	}
     
+    for (auto ccodeDefine : ccodeDefines) {
+        stream << ccodeDefine << "\n";
+    }
+    
     auto hasGlobalStruct = structs.find("sjs_global") != structs.end();
     shared_ptr<TrBlock> mainFunction = functions["sjf_global"];
     
@@ -129,6 +132,10 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
     }
     mainFunction->writeStackValuesToStream(stream, 0);
     stream << "\n";
+    
+    for (auto ccodeFunction : ccodeFunctions) {
+        stream << ccodeFunction << "\n";
+    }
 
     for (auto function : functions) {
         if (function.second == mainFunction) {
@@ -155,7 +162,7 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
         }
     }
     else {
-        stream << "    emscripten_set_main_loop_arg(sjf_mainLoop, &global, 0, 0);\n";
+        stream << "    emscripten_set_main_loop_arg((em_arg_callback_func)sjf_mainLoop, &global, 0, 0);\n";
     }
     stream << "    return 0;\n";
     stream << "}\n";

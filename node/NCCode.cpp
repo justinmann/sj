@@ -119,6 +119,22 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
             result.addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", param.c_str());
         }
     }
+    else if (functionName.compare("function") == 0) {
+        auto ctypeName = CTypeName::parse(param);
+        if (!ctypeName) {
+            result.addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", param.c_str());
+        }
+        
+        auto cfunction = thisFunction->getCFunction(compiler, result, ctypeName->name, thisFunction, ctypeName->argTypeNames);
+        if (cfunction) {
+            cfunction->getReturnVar(compiler, result, thisVar);
+            _functions[thisFunction.get()].push_back(cfunction);
+            return cfunction->getCInitFunctionName();
+        }
+        else {
+            result.addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", param.c_str());
+        }
+    }
     else if (functionName.compare("retain") == 0) {
         auto comma = param.find(',');
         auto typeName = param.substr(0, comma);
@@ -190,7 +206,21 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
 }
 
 shared_ptr<ReturnValue> NCCode::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
-    trBlock->statements.push_back(_final[thisFunction.get()]);
+    for (auto cfunction : _functions[thisFunction.get()]) {
+        cfunction->transpileDefinition(compiler, result, trOutput);
+    }
+
+    switch (codeType) {
+        case NCC_BLOCK:
+            trBlock->statements.push_back(_final[thisFunction.get()]);
+            break;
+        case NCC_DEFINE:
+            trOutput->ccodeDefines.push_back(_final[thisFunction.get()]);
+            break;
+        case NCC_FUNCTION:
+            trOutput->ccodeFunctions.push_back(_final[thisFunction.get()]);
+            break;
+    }
     
     for (auto include : _includes) {
         trOutput->includes[include] = true;
@@ -199,6 +229,28 @@ shared_ptr<ReturnValue> NCCode::transpile(Compiler* compiler, CResult& result, s
 }
 
 void NCCode::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-    ss << "c{\n" << code << "\n}c";
+    switch (codeType) {
+        case NCC_BLOCK:
+            ss << "c{\n";
+            break;
+        case NCC_DEFINE:
+            ss << "cdefine{\n";
+            break;
+        case NCC_FUNCTION:
+            ss << "cfunction{\n";
+            break;
+    }
+    ss << code;
+    switch (codeType) {
+        case NCC_BLOCK:
+            ss << "\n}c";
+            break;
+        case NCC_DEFINE:
+            ss << "\n}cdefine";
+            break;
+        case NCC_FUNCTION:
+            ss << "\n}cfunction";
+            break;
+    }
 }
 

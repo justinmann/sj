@@ -9,11 +9,18 @@
 #ifndef NCCode_h
 #define NCCode_h
 
+enum NCCodeType {
+    NCC_BLOCK,
+    NCC_DEFINE,
+    NCC_FUNCTION
+};
+
 class NCCode : public NBase {
 public:
+    NCCodeType codeType;
     string code;
     
-    NCCode(CLoc loc, const char* code_) : NBase(NodeType_Integer, loc), code(code_) { }
+    NCCode(CLoc loc, NCCodeType codeType, const char* code_) : NBase(NodeType_Integer, loc), codeType(codeType), code(code_) { }
     virtual shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue);
     virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
     
@@ -26,6 +33,7 @@ protected:
 private:
     string expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, string macro);
     map<CBaseFunction*, string> _final;
+    map<CBaseFunction*, vector<shared_ptr<CBaseFunction>>> _functions;
     vector<string> _includes;
 };
 

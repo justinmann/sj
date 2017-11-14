@@ -64,7 +64,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 }
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
-%token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID TSTRING TCHAR TCCODE
+%token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID TSTRING TCHAR TCBLOCK TCFUNCTION TCDEFINE
 %token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY TMOD THASH TAT TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TASOPTION TQUESTION TEMPTY TVALUE TQUESTIONCOLON TQUESTIONDOT TPARENT
 
 /* Non Terminal symbols. Types refer to union decl above */
@@ -108,13 +108,17 @@ stmt 				: /* Blank! */									{ $$ = nullptr; }
 					| func_decl 
 					| interface_decl
 					| expr 											{ $$ = $1; }
-					| TCCODE										{ $$ = new NCCode(LOC, $1->c_str()); delete $1; }
+					| TCBLOCK										{ $$ = new NCCode(LOC, NCC_BLOCK, $1->c_str()); delete $1; }
+					| TCDEFINE										{ $$ = new NCCode(LOC, NCC_DEFINE, $1->c_str()); delete $1; }
+					| TCFUNCTION									{ $$ = new NCCode(LOC, NCC_FUNCTION, $1->c_str()); delete $1; }
 					| TINCLUDE TSTRING								{ $$ = new NInclude(LOC, $2->c_str()); delete $2; }
 					| error	 										{ $$ = nullptr; /* yyclearin; */ result->addError(LLOC, CErrorCode::InvalidCharacter, "Something failed to parse"); }
 					;
 
 block 				: TLBRACE stmts TRBRACE 						{ $$ = $2; }
-					| TCCODE										{ $$ = new NCCode(LOC, $1->c_str()); delete $1; }
+					| TCBLOCK										{ $$ = new NCCode(LOC, NCC_BLOCK, $1->c_str()); delete $1; }
+					| TCDEFINE										{ $$ = new NCCode(LOC, NCC_DEFINE, $1->c_str()); delete $1; }
+					| TCFUNCTION									{ $$ = new NCCode(LOC, NCC_FUNCTION, $1->c_str()); delete $1; }
 					;
 
 var_decl 			: assign
