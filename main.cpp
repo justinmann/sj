@@ -102,21 +102,13 @@ int main(int argc, char **argv) {
 	} else if (strcmp(argv[1], "-testUpdate") == 0) {
 		runAllTests(".", true, argv[2]);
     } else {
-        result = compiler.compile(argv[1]);
-        for (auto error : result->errors) {
-            printf("ERROR: %s %d:%d %d %s\n", error.fileName->c_str(), error.line, error.col, error.code, error.msg.c_str());
-        }
+        auto path = fs::path(argv[1]);
+        auto codeFileName = fs::change_extension(path, ".c");
+        ofstream code;
+        code.open(codeFileName.c_str());
 
-        for (auto warning : result->warnings) {
-            printf("WARNING: %s %d:%d %d %s\n", warning.fileName->c_str(), warning.line, warning.col, warning.code, warning.msg.c_str());
-        }
-        
-        if (result->errors.size() == 0) {
-            printf("SUCCESS\n");
-            return 0;
-        } else {
-            return -1;
-        }
+        Compiler compiler;
+        compiler.transpile(path.string(), code, cerr, nullptr);
     }
 
     return 0;
