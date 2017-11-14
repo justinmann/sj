@@ -83,7 +83,7 @@ void sjf_fancyMath_modulus(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancy
 void sjf_fancyMath_multiply(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return);
 void sjf_fancyMath_setBob(sjs_fancyMath* _parent, int32_t i, int32_t* _return);
 void sjf_fancyMath_subtract(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return);
-void sjf_global(void);
+
 
 void sjf_fancyMath(sjs_fancyMath* _this, sjs_fancyMath** _return) {
     _this->_refCount++;
@@ -265,7 +265,7 @@ void sjf_fancyMath_subtract(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fanc
     *_return = sjv_temp4;
 }
 
-void sjf_global(void) {
+int main() {
     sjs_fancyMath* a;
     sjs_fancyMath* b;
     sjs_fancyMath* c;
@@ -522,10 +522,5 @@ void sjf_global(void) {
         sjf_fancyMath_destroy(sjv_temp2);
         free(sjv_temp2);
     }
-}
-
-int main() {
-    sjf_global();
-
     return 0;
 }

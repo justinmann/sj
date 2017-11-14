@@ -66,9 +66,9 @@ struct td_sjs_object {
     int _refCount;
 };
 
-void sjf_global(void);
 
-void sjf_global(void) {
+
+int main() {
     double ifResult1;
 
     if (false) {
@@ -76,10 +76,5 @@ void sjf_global(void) {
     } else {
         ifResult1 = 1.0;
     }
-}
-
-int main() {
-    sjf_global();
-
     return 0;
 }

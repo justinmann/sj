@@ -94,8 +94,10 @@ void sjf_class(sjs_class* _this, sjs_class** _return);
 void sjf_class_bar(sjs_class* _parent, int32_t x, int32_t* _return);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return);
-void sjf_global(sjs_global* _this);
 void sjf_global_destroy(sjs_global* _this);
+
+sjs_global global;
+sjs_class sjd_temp1;
 
 void sjf_anon1(sjs_anon1* _this, sjs_anon1** _return) {
     _this->_refCount++;
@@ -161,8 +163,12 @@ void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return) {
     *_return = ifResult1;
 }
 
-void sjf_global(sjs_global* _this) {
-    sjs_class sjd_temp1;
+void sjf_global_destroy(sjs_global* _this) {
+}
+
+int main() {
+    global._refCount = 1;
+    sjs_global* _this = &global;
     sjs_class* c;
     int32_t result1;
     sjs_anon1* sjv_temp1;
@@ -188,19 +194,6 @@ void sjf_global(sjs_global* _this) {
         free(sjv_temp1);
     }
     sjf_class_destroy(&sjd_temp1);
-}
-
-void sjf_global_destroy(sjs_global* _this) {
-}
-
-int main() {
-    sjs_global sjd_temp2;
-    sjs_global* sjv_temp3;
-
-    sjv_temp3 = &sjd_temp2;
-    sjv_temp3->_refCount = 1;
-    sjf_global(sjv_temp3);
-    sjf_global_destroy(&sjd_temp2);
-
+    sjf_global_destroy(&global);
     return 0;
 }

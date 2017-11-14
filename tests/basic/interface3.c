@@ -140,10 +140,15 @@ sjs_object* sjf_class_asInterface(sjs_class* _this, int typeId);
 sji_foo* sjf_class_as_sji_foo(sjs_class* _this);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_test(sjs_class* _parent, sjs_string** _return);
-void sjf_global(void);
 void sjf_string(sjs_string* _this, sjs_string** _return);
 void sjf_string_destroy(sjs_string* _this);
 void sji_foo_destroy(sji_foo* _this);
+
+sjs_anon4 sjd_temp1;
+sjs_anon3 sjd_temp2;
+sjs_anon2 sjd_temp3;
+sjs_anon1 sjd_temp4;
+sjs_class sjd_temp5;
 
 void sjf_anon1(sjs_anon1* _this, sjs_anon1** _return) {
     _this->_refCount++;
@@ -271,12 +276,29 @@ void sjf_class_test(sjs_class* _parent, sjs_string** _return) {
     *_return = sjv_temp6;
 }
 
-void sjf_global(void) {
-    sjs_anon4 sjd_temp1;
-    sjs_anon3 sjd_temp2;
-    sjs_anon2 sjd_temp3;
-    sjs_anon1 sjd_temp4;
-    sjs_class sjd_temp5;
+void sjf_string(sjs_string* _this, sjs_string** _return) {
+    _this->_refCount++;
+
+    *_return = _this;
+}
+
+void sjf_string_destroy(sjs_string* _this) {
+    _this->data->_refCount--;
+    if (_this->data->_refCount <= 0) {
+        sjf_array_char_destroy(_this->data);
+        free(_this->data);
+    }
+}
+
+void sji_foo_destroy(sji_foo* _this) {
+    _this->_parent->_refCount--;
+    if (_this->_parent->_refCount <= 0) {
+        _this->destroy(_this->_parent);
+        free(_this->_parent);
+    }
+}
+
+int main() {
     sji_foo* a;
     sjs_anon1* console;
     sjs_anon4* convert;
@@ -341,32 +363,5 @@ void sjf_global(void) {
     sjf_anon2_destroy(&sjd_temp3);
     sjf_anon1_destroy(&sjd_temp4);
     sjf_class_destroy(&sjd_temp5);
-}
-
-void sjf_string(sjs_string* _this, sjs_string** _return) {
-    _this->_refCount++;
-
-    *_return = _this;
-}
-
-void sjf_string_destroy(sjs_string* _this) {
-    _this->data->_refCount--;
-    if (_this->data->_refCount <= 0) {
-        sjf_array_char_destroy(_this->data);
-        free(_this->data);
-    }
-}
-
-void sji_foo_destroy(sji_foo* _this) {
-    _this->_parent->_refCount--;
-    if (_this->_parent->_refCount <= 0) {
-        _this->destroy(_this->_parent);
-        free(_this->_parent);
-    }
-}
-
-int main() {
-    sjf_global();
-
     return 0;
 }

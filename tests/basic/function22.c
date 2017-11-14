@@ -67,17 +67,12 @@ struct td_sjs_object {
 };
 
 void sjf_foo(void);
-void sjf_global(void);
+
 
 void sjf_foo(void) {
 }
 
-void sjf_global(void) {
-    sjf_foo();
-}
-
 int main() {
-    sjf_global();
-
+    sjf_foo();
     return 0;
 }

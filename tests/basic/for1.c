@@ -66,9 +66,9 @@ struct td_sjs_object {
     int _refCount;
 };
 
-void sjf_global(void);
 
-void sjf_global(void) {
+
+int main() {
     int32_t loopEnd1;
     int32_t x;
 
@@ -77,10 +77,5 @@ void sjf_global(void) {
     while (x < loopEnd1) {
         x++;
     }
-}
-
-int main() {
-    sjf_global();
-
     return 0;
 }

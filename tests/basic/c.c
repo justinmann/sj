@@ -67,17 +67,12 @@ struct td_sjs_object {
     int _refCount;
 };
 
-void sjf_global(void);
 
-void sjf_global(void) {
+
+int main() {
     
 	
 	printf("hi");
 ;
-}
-
-int main() {
-    sjf_global();
-
     return 0;
 }

@@ -132,13 +132,21 @@ void sjf_array_char_destroy(sjs_array_char* _this);
 void sjf_array_char_getAt(sjs_array_char* _parent, int32_t index, char* _return);
 void sjf_array_char_isEqual(sjs_array_char* _parent, sjs_array_char* test, bool* _return);
 void sjf_array_char_isLessOrEqual(sjs_array_char* _parent, sjs_array_char* test, bool* _return);
-void sjf_global(sjs_global* _this);
 void sjf_global_destroy(sjs_global* _this);
 void sjf_string(sjs_string* _this, sjs_string** _return);
 void sjf_string_destroy(sjs_string* _this);
 void sjf_string_getAt(sjs_string* _parent, int32_t index, char* _return);
 void sjf_string_isEqual(sjs_string* _parent, sjs_string* test, bool* _return);
 void sjf_string_isLessOrEqual(sjs_string* _parent, sjs_string* test, bool* _return);
+
+sjs_global global;
+sjs_anon4 sjd_temp1;
+sjs_anon3 sjd_temp2;
+sjs_anon2 sjd_temp3;
+sjs_anon1 sjd_temp4;
+sjs_string sjd_temp5;
+sjs_string sjd_temp6;
+sjs_string sjd_temp7;
 
 void sjf_anon1(sjs_anon1* _this, sjs_anon1** _return) {
     _this->_refCount++;
@@ -249,14 +257,63 @@ void sjf_array_char_isLessOrEqual(sjs_array_char* _parent, sjs_array_char* test,
 	;
 }
 
-void sjf_global(sjs_global* _this) {
-    sjs_anon4 sjd_temp1;
-    sjs_anon3 sjd_temp2;
-    sjs_anon2 sjd_temp3;
-    sjs_anon1 sjd_temp4;
-    sjs_string sjd_temp5;
-    sjs_string sjd_temp6;
-    sjs_string sjd_temp7;
+void sjf_global_destroy(sjs_global* _this) {
+}
+
+void sjf_string(sjs_string* _this, sjs_string** _return) {
+    _this->_refCount++;
+
+    *_return = _this;
+}
+
+void sjf_string_destroy(sjs_string* _this) {
+    _this->data->_refCount--;
+    if (_this->data->_refCount <= 0) {
+        sjf_array_char_destroy(_this->data);
+        free(_this->data);
+    }
+}
+
+void sjf_string_getAt(sjs_string* _parent, int32_t index, char* _return) {
+    sjs_array_char* dotTemp1;
+    char result2;
+
+    dotTemp1 = _parent->data;
+    result2 = 0;
+    sjf_array_char_getAt(dotTemp1, index, &result2);
+
+    *_return = result2;
+}
+
+void sjf_string_isEqual(sjs_string* _parent, sjs_string* test, bool* _return) {
+    sjs_array_char* dotTemp2;
+    sjs_array_char* dotTemp3;
+    bool result5;
+
+    dotTemp2 = _parent->data;
+    result5 = 0;
+    dotTemp3 = test->data;
+    sjf_array_char_isEqual(dotTemp2, dotTemp3, &result5);
+
+    *_return = result5;
+}
+
+void sjf_string_isLessOrEqual(sjs_string* _parent, sjs_string* test, bool* _return) {
+    sjs_array_char* dotTemp4;
+    sjs_array_char* dotTemp5;
+    bool result7;
+
+    dotTemp4 = _parent->data;
+    result7 = 0;
+    dotTemp5 = test->data;
+    sjf_array_char_isLessOrEqual(dotTemp4, dotTemp5, &result7);
+
+    *_return = result7;
+}
+
+int main() {
+    global._refCount = 1;
+    sjs_global* _this = &global;
     sjs_string* a;
     sjs_string* b;
     char c;
@@ -389,70 +446,6 @@ void sjf_global(sjs_global* _this) {
     sjf_string_destroy(&sjd_temp5);
     sjf_string_destroy(&sjd_temp6);
     sjf_string_destroy(&sjd_temp7);
-}
-
-void sjf_global_destroy(sjs_global* _this) {
-}
-
-void sjf_string(sjs_string* _this, sjs_string** _return) {
-    _this->_refCount++;
-
-    *_return = _this;
-}
-
-void sjf_string_destroy(sjs_string* _this) {
-    _this->data->_refCount--;
-    if (_this->data->_refCount <= 0) {
-        sjf_array_char_destroy(_this->data);
-        free(_this->data);
-    }
-}
-
-void sjf_string_getAt(sjs_string* _parent, int32_t index, char* _return) {
-    sjs_array_char* dotTemp1;
-    char result2;
-
-    dotTemp1 = _parent->data;
-    result2 = 0;
-    sjf_array_char_getAt(dotTemp1, index, &result2);
-
-    *_return = result2;
-}
-
-void sjf_string_isEqual(sjs_string* _parent, sjs_string* test, bool* _return) {
-    sjs_array_char* dotTemp2;
-    sjs_array_char* dotTemp3;
-    bool result5;
-
-    dotTemp2 = _parent->data;
-    result5 = 0;
-    dotTemp3 = test->data;
-    sjf_array_char_isEqual(dotTemp2, dotTemp3, &result5);
-
-    *_return = result5;
-}
-
-void sjf_string_isLessOrEqual(sjs_string* _parent, sjs_string* test, bool* _return) {
-    sjs_array_char* dotTemp4;
-    sjs_array_char* dotTemp5;
-    bool result7;
-
-    dotTemp4 = _parent->data;
-    result7 = 0;
-    dotTemp5 = test->data;
-    sjf_array_char_isLessOrEqual(dotTemp4, dotTemp5, &result7);
-
-    *_return = result7;
-}
-
-int main() {
-    sjs_global sjd_temp8;
-    sjs_global* sjv_temp11;
-
-    sjv_temp11 = &sjd_temp8;
-    sjv_temp11->_refCount = 1;
-    sjf_global(sjv_temp11);
-    sjf_global_destroy(&sjd_temp8);
-
+    sjf_global_destroy(&global);
     return 0;
 }

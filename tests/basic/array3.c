@@ -88,7 +88,8 @@ void sjf_array_sjs_class_getAt(sjs_array_sjs_class* _parent, int32_t index, sjs_
 void sjf_array_sjs_class_setAt(sjs_array_sjs_class* _parent, int32_t index, sjs_class* item);
 void sjf_class(sjs_class* _this, sjs_class** _return);
 void sjf_class_destroy(sjs_class* _this);
-void sjf_global(void);
+
+sjs_array_sjs_class sjd_temp1;
 
 void sjf_array_sjs_class(sjs_array_sjs_class* _this, sjs_array_sjs_class** _return) {
     
@@ -177,8 +178,7 @@ void sjf_class(sjs_class* _this, sjs_class** _return) {
 void sjf_class_destroy(sjs_class* _this) {
 }
 
-void sjf_global(void) {
-    sjs_array_sjs_class sjd_temp1;
+int main() {
     sjs_array_sjs_class* a;
     sjs_class* c;
     int32_t dotTemp1;
@@ -243,10 +243,5 @@ void sjf_global(void) {
         free(sjv_temp4);
     }
     sjf_array_sjs_class_destroy(&sjd_temp1);
-}
-
-int main() {
-    sjf_global();
-
     return 0;
 }

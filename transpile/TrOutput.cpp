@@ -6,7 +6,11 @@ TrOutput::TrOutput() {
     includes["<stdlib.h>"] = true;
 }
 
-void TrOutput::writeToStream(ostream& stream) {
+void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
+    if (hasMainLoop) {
+        includes["<emscripten.h>"] = true;
+    }
+
     for (auto include : includes) {
         stream << "#include " << include.first << "\n";
     }
@@ -106,27 +110,63 @@ void TrOutput::writeToStream(ostream& stream) {
 		}
 	}
     
-	if (functions.size() > 0) {
+    auto hasGlobalStruct = structs.find("sjs_global") != structs.end();
+    shared_ptr<TrBlock> mainFunction = functions["sjf_global"];
+    
+    if (functions.size() > 0) {
 		for (auto function : functions) {
-			stream << function.second->definition << ";\n";
+            if (function.second == mainFunction) {
+                continue;
+            }
+            stream << function.second->definition << ";\n";
 		}
 
 		stream << "\n";
 	}
         
+    if (hasGlobalStruct) {
+        stream << "sjs_global global;\n";
+    }
+    mainFunction->writeStackValuesToStream(stream, 0);
+    stream << "\n";
+
     for (auto function : functions) {
+        if (function.second == mainFunction) {
+            continue;
+        }
         stream << function.second->definition << " {\n";
-        function.second->writeBodyToStream(stream, 1);
+        function.second->writeToStream(stream, 1);
         stream << "}\n";
         stream << "\n";
     }
 
     stream << "int main() {\n";
+    if (hasGlobalStruct) {
+        stream << "    global._refCount = 1;\n";
+        stream << "    sjs_global* _this = &global;\n";
+    }
+    mainFunction->writeVariablesToStream(stream, 1);
+    mainFunction->writeBodyToStream(stream, 1);
+    mainFunction->writeVariablesReleaseToStream(stream, 1);
+    if (!hasMainLoop) {
+        mainFunction->writeStackValuesReleaseToStream(stream, 1);
+        if (hasGlobalStruct) {
+            stream << "    sjf_global_destroy(&global);\n";
+        }
+    }
+    else {
+        stream << "    emscripten_set_main_loop_arg(sjf_mainLoop, &global, 0, 0);\n";
+    }
+    stream << "    return 0;\n";
+    stream << "}\n";
 
-	mainFunction.writeBodyToStream(stream, 1);
-
-    stream << "\n";
-	stream << "    return 0;\n";
-	stream << "}\n";
+    if (hasMainLoop) {
+        stream << "void main_destroy() {\n";
+        mainFunction->writeStackValuesReleaseToStream(stream, 1);
+        if (hasGlobalStruct) {
+            stream << "    sjf_global_destroy(&global);\n";
+        }
+        stream << "}\n";
+    }
 }
 

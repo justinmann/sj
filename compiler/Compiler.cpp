@@ -446,7 +446,12 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 				auto currentVar = currentFunction->getThisVar(this, *result);
 				anonFunction->getVar(this, *result, currentFunction, currentVar);
 				globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, *result, "global", nullptr, nullptr));
-				auto globalVar = globalFunction->getThisVar(this, *result);
+                auto globalVar = globalFunction->getThisVar(this, *result);
+
+                auto mainLoop = globalFunction->getCFunction(this, *result, "mainLoop", globalFunction, nullptr);
+                if (mainLoop) {
+                    mainLoop->getThisVar(this, *result);
+                }
 
 #ifdef VAR_OUTPUT
 				currentFunction->dump(this, *compilerResult, 0);
@@ -485,8 +490,14 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                     vector<pair<bool, shared_ptr<NBase>>> parameters;
                     globalFunction->transpile(this, *result, nullptr, nullptr, &output, &output.mainFunction, false, nullptr, globalVar, CLoc::undefined, parameters);
 
+                    auto hasMainLoop = false;
+                    if (mainLoop) {
+                        mainLoop->transpileDefinition(this, *result, &output);
+                        hasMainLoop = true;
+                    }
+
                     if (result->errors.size() == 0) {
-                        output.writeToStream(stream);
+                        output.writeToStream(stream, hasMainLoop);
                     }
 				}
 			}

@@ -76,7 +76,8 @@ struct td_sjs_object {
 void sjf_class(sjs_class* _this, int32_t* _return);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_inner(sjs_class* _parent, int32_t* _return);
-void sjf_global(void);
+
+sjs_class sjd_temp1;
 
 void sjf_class(sjs_class* _this, int32_t* _return) {
     int32_t result2;
@@ -99,8 +100,7 @@ void sjf_class_inner(sjs_class* _parent, int32_t* _return) {
     *_return = dotTemp1;
 }
 
-void sjf_global(void) {
-    sjs_class sjd_temp1;
+int main() {
     int32_t result1;
     sjs_class* sjv_temp1;
 
@@ -109,10 +109,5 @@ void sjf_global(void) {
     sjv_temp1->_refCount = 1;
     sjf_class(sjv_temp1, &result1);
     sjf_class_destroy(&sjd_temp1);
-}
-
-int main() {
-    sjf_global();
-
     return 0;
 }

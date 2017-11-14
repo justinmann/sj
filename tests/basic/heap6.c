@@ -75,7 +75,7 @@ struct td_sjs_object {
 void sjf_bar(sjs_foo** _return);
 void sjf_foo(sjs_foo* _this, sjs_foo** _return);
 void sjf_foo_destroy(sjs_foo* _this);
-void sjf_global(void);
+
 
 void sjf_bar(sjs_foo** _return) {
     sjs_foo* sjv_temp1;
@@ -103,7 +103,7 @@ void sjf_foo(sjs_foo* _this, sjs_foo** _return) {
 void sjf_foo_destroy(sjs_foo* _this) {
 }
 
-void sjf_global(void) {
+int main() {
     sjs_foo* a;
     sjs_foo* result1;
 
@@ -122,10 +122,5 @@ void sjf_global(void) {
         sjf_foo_destroy(result1);
         free(result1);
     }
-}
-
-int main() {
-    sjf_global();
-
     return 0;
 }

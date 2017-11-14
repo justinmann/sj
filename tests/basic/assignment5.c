@@ -66,9 +66,9 @@ struct td_sjs_object {
     int _refCount;
 };
 
-void sjf_global(void);
 
-void sjf_global(void) {
+
+int main() {
     int32_t result1;
     int32_t x;
     int32_t y;
@@ -76,10 +76,5 @@ void sjf_global(void) {
     y = 1;
     x = 2;
     result1 = x + y;
-}
-
-int main() {
-    sjf_global();
-
     return 0;
 }

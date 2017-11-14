@@ -3,26 +3,39 @@
 ReturnValue::ReturnValue(shared_ptr<CType> type_, bool isHeap_, ReturnValueRelease release_, string name_) : type(type_), typeName(type_->nameRef), isHeap(isHeap_), release(release_), name(name_) {}
 //ReturnValue::ReturnValue(string typeName_, string name_) : type(nullptr), typeName(typeName_), isHeap(false), release(RVR_Ignore), name(name_) {}
 
-void TrBlock::writeBodyToStream(ostream& stream, int level) {
+void TrBlock::writeToStream(ostream& stream, int level) {
+    writeStackValuesToStream(stream, level);
+    writeVariablesToStream(stream,level);
+    writeBodyToStream(stream, level);
+    writeVariablesReleaseToStream(stream, level);
+    writeStackValuesReleaseToStream(stream, level);
+    writeReturnToStream(stream, level);
+}
+
+void TrBlock::writeStackValuesToStream(ostream& stream, int level) {
     for (auto stackValue : stackValues)
     {
         addSpacing(stream, level);
         stream << stackValue.second->nameValue << " " << stackValue.first << ";\n";
     }
-    
+}
+
+void TrBlock::writeVariablesToStream(ostream& stream, int level) {
     for (auto variable : variables)
-	{
+    {
         addSpacing(stream, level);
         stream << variable.second->typeName << " " << variable.first << ";\n";
-	}
+    }
 
     if (variables.size() > 0) {
         stream << "\n";
     }
+}
 
+void TrBlock::writeBodyToStream(ostream& stream, int level) {
     bool previousLineBlock = false;
-	for (auto statement : statements)
-	{
+    for (auto statement : statements)
+    {
         if (previousLineBlock) {
             stream << "\n";
         }
@@ -30,24 +43,27 @@ void TrBlock::writeBodyToStream(ostream& stream, int level) {
         if (statement.block != nullptr) {
             addSpacing(stream, level);
             stream << statement.line << " {\n";
-            
-            statement.block->writeBodyToStream(stream, level + 1);
+
+            statement.block->writeToStream(stream, level + 1);
 
             if (statement.elseBlock != nullptr) {
                 addSpacing(stream, level);
                 stream << "} else {\n";
-                statement.elseBlock->writeBodyToStream(stream, level + 1);
+                statement.elseBlock->writeToStream(stream, level + 1);
             }
 
             addSpacing(stream, level);
             stream << "}\n";
             previousLineBlock = true;
-        } else if (statement.line.size() > 0) {
+        }
+        else if (statement.line.size() > 0) {
             addSpacing(stream, level);
             stream << statement.line << ";\n";
         }
-	}
+    }
+}
 
+void TrBlock::writeVariablesReleaseToStream(ostream& stream, int level) {
     stringstream varStream;
     for (auto variable : variables)
     {
@@ -57,7 +73,9 @@ void TrBlock::writeBodyToStream(ostream& stream, int level) {
     if (varString.size() > 0) {
         stream << "\n" << varString;
     }
+}
 
+void TrBlock::writeStackValuesReleaseToStream(ostream& stream, int level) {
     for (auto stackValue : stackValues)
     {
         if (!stackValue.second->parent.expired()) {
@@ -65,7 +83,9 @@ void TrBlock::writeBodyToStream(ostream& stream, int level) {
             stream << stackValue.second->parent.lock()->getCDestroyFunctionName() << "(&" << stackValue.first << ");\n";
         }
     }
+}
 
+void TrBlock::writeReturnToStream(ostream& stream, int level) {
     if (returnLine.size() > 0) {
         stream << "\n";
         addSpacing(stream, level);

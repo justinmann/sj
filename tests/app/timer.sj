@@ -47,9 +47,16 @@ timerElement #element (
 	this 
 }
 
+timerElement : timerElement()
+
 rootElement : element(
 	id : "root"
-	children : [ timerElement() as #element ]
+	children : [ timerElement as #element ]
 )
 
-rootElement.update()
+mainLoop() {
+	console.write("foo")
+	timerElement.onTick()
+	rootElement.update()
+	void
+}

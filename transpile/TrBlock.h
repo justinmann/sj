@@ -39,7 +39,13 @@ public:
 	vector<TrStatement> statements;
     string returnLine;
 
-	void writeBodyToStream(ostream& stream, int level);
+    void writeToStream(ostream& stream, int level);
+    void writeStackValuesToStream(ostream& stream, int level);
+    void writeVariablesToStream(ostream& stream, int level);
+    void writeBodyToStream(ostream& stream, int level);
+    void writeVariablesReleaseToStream(ostream& stream, int level);
+    void writeStackValuesReleaseToStream(ostream& stream, int level);
+    void writeReturnToStream(ostream& stream, int level);
     shared_ptr<ReturnValue> getVariable(string name);
     shared_ptr<ReturnValue> createVariable(string name, shared_ptr<CType> type, bool isHeap, ReturnValueRelease release);
     shared_ptr<ReturnValue> createTempVariable(string prefix, shared_ptr<CType> type, bool isHeap, ReturnValueRelease release);

@@ -11,5 +11,5 @@ public:
 	TrBlock mainFunction;
 
     TrOutput();
-	void writeToStream(ostream& stream);
+	void writeToStream(ostream& stream, bool hasMainLoop);
 };

@@ -99,9 +99,10 @@ sji_foo* sjf_class_int32_t_as_sji_foo(sjs_class_int32_t* _this);
 void sjf_class_int32_t_destroy(sjs_class_int32_t* _this);
 void sjf_class_int32_t_test1(sjs_class_int32_t* _parent, int32_t* _return);
 void sjf_class_int32_t_test2(sjs_class_int32_t* _parent, int32_t* _return);
-void sjf_global(void);
 void sji_bar_destroy(sji_bar* _this);
 void sji_foo_destroy(sji_foo* _this);
+
+sjs_class_int32_t sjd_temp1;
 
 void sjf_class_int32_t(sjs_class_int32_t* _this, sjs_class_int32_t** _return) {
     _this->_refCount++;
@@ -153,8 +154,23 @@ void sjf_class_int32_t_test2(sjs_class_int32_t* _parent, int32_t* _return) {
     *_return = 2;
 }
 
-void sjf_global(void) {
-    sjs_class_int32_t sjd_temp1;
+void sji_bar_destroy(sji_bar* _this) {
+    _this->_parent->_refCount--;
+    if (_this->_parent->_refCount <= 0) {
+        _this->destroy(_this->_parent);
+        free(_this->_parent);
+    }
+}
+
+void sji_foo_destroy(sji_foo* _this) {
+    _this->_parent->_refCount--;
+    if (_this->_parent->_refCount <= 0) {
+        _this->destroy(_this->_parent);
+        free(_this->_parent);
+    }
+}
+
+int main() {
     sji_foo* a;
     sji_bar* b;
     int32_option ifResult1;
@@ -218,26 +234,5 @@ void sjf_global(void) {
         }
     }
     sjf_class_int32_t_destroy(&sjd_temp1);
-}
-
-void sji_bar_destroy(sji_bar* _this) {
-    _this->_parent->_refCount--;
-    if (_this->_parent->_refCount <= 0) {
-        _this->destroy(_this->_parent);
-        free(_this->_parent);
-    }
-}
-
-void sji_foo_destroy(sji_foo* _this) {
-    _this->_parent->_refCount--;
-    if (_this->_parent->_refCount <= 0) {
-        _this->destroy(_this->_parent);
-        free(_this->_parent);
-    }
-}
-
-int main() {
-    sjf_global();
-
     return 0;
 }

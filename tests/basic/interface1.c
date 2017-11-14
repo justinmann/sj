@@ -124,9 +124,13 @@ sji_anon2_foo* sjf_anon2_class_as_sji_anon2_foo(sjs_anon2_class* _this);
 void sjf_anon2_class_destroy(sjs_anon2_class* _this);
 void sjf_anon2_class_test2(sjs_anon2_class* _parent, int32_t* _return);
 void sjf_anon2_destroy(sjs_anon2* _this);
-void sjf_global(void);
 void sji_anon1_foo_destroy(sji_anon1_foo* _this);
 void sji_anon2_foo_destroy(sji_anon2_foo* _this);
+
+sjs_anon1 sjd_temp1;
+sjs_anon2 sjd_temp2;
+sjs_anon1_class sjd_temp3;
+sjs_anon2_class sjd_temp4;
 
 void sjf_anon1(sjs_anon1* _this, sjs_anon1** _return) {
     _this->_refCount++;
@@ -212,11 +216,23 @@ void sjf_anon2_class_test2(sjs_anon2_class* _parent, int32_t* _return) {
 void sjf_anon2_destroy(sjs_anon2* _this) {
 }
 
-void sjf_global(void) {
-    sjs_anon1 sjd_temp1;
-    sjs_anon2 sjd_temp2;
-    sjs_anon1_class sjd_temp3;
-    sjs_anon2_class sjd_temp4;
+void sji_anon1_foo_destroy(sji_anon1_foo* _this) {
+    _this->_parent->_refCount--;
+    if (_this->_parent->_refCount <= 0) {
+        _this->destroy(_this->_parent);
+        free(_this->_parent);
+    }
+}
+
+void sji_anon2_foo_destroy(sji_anon2_foo* _this) {
+    _this->_parent->_refCount--;
+    if (_this->_parent->_refCount <= 0) {
+        _this->destroy(_this->_parent);
+        free(_this->_parent);
+    }
+}
+
+int main() {
     sji_anon1_foo* a;
     sji_anon2_foo* b;
     sjs_anon1* namespace1;
@@ -283,26 +299,5 @@ void sjf_global(void) {
     sjf_anon2_destroy(&sjd_temp2);
     sjf_anon1_class_destroy(&sjd_temp3);
     sjf_anon2_class_destroy(&sjd_temp4);
-}
-
-void sji_anon1_foo_destroy(sji_anon1_foo* _this) {
-    _this->_parent->_refCount--;
-    if (_this->_parent->_refCount <= 0) {
-        _this->destroy(_this->_parent);
-        free(_this->_parent);
-    }
-}
-
-void sji_anon2_foo_destroy(sji_anon2_foo* _this) {
-    _this->_parent->_refCount--;
-    if (_this->_parent->_refCount <= 0) {
-        _this->destroy(_this->_parent);
-        free(_this->_parent);
-    }
-}
-
-int main() {
-    sjf_global();
-
     return 0;
 }

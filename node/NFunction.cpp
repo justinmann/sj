@@ -325,6 +325,8 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
                 }
                 functionDefinition << argType.second->nameRef << " " << argType.first;
             }
+
+            auto returnType = getReturnType(compiler, result, thisVar);
             if (returnType != compiler->typeVoid) {
                 if (isFirstArg) {
                     isFirstArg = false;

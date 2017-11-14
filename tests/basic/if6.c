@@ -66,15 +66,10 @@ struct td_sjs_object {
     int _refCount;
 };
 
-void sjf_global(void);
 
-void sjf_global(void) {
-    if (false) {
-    }
-}
 
 int main() {
-    sjf_global();
-
+    if (false) {
+    }
     return 0;
 }

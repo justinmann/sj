@@ -95,9 +95,10 @@ void sjf_class(sjs_class* _this, sjs_class** _return);
 sjs_object* sjf_class_asInterface(sjs_class* _this, int typeId);
 sji_interface* sjf_class_as_sji_interface(sjs_class* _this);
 void sjf_class_destroy(sjs_class* _this);
-void sjf_global(void);
 void sji_interface2_destroy(sji_interface2* _this);
 void sji_interface_destroy(sji_interface* _this);
+
+sjs_class sjd_temp1;
 
 void sjf_class(sjs_class* _this, sjs_class** _return) {
     _this->_refCount++;
@@ -126,8 +127,23 @@ sji_interface* sjf_class_as_sji_interface(sjs_class* _this) {
 void sjf_class_destroy(sjs_class* _this) {
 }
 
-void sjf_global(void) {
-    sjs_class sjd_temp1;
+void sji_interface2_destroy(sji_interface2* _this) {
+    _this->_parent->_refCount--;
+    if (_this->_parent->_refCount <= 0) {
+        _this->destroy(_this->_parent);
+        free(_this->_parent);
+    }
+}
+
+void sji_interface_destroy(sji_interface* _this) {
+    _this->_parent->_refCount--;
+    if (_this->_parent->_refCount <= 0) {
+        _this->destroy(_this->_parent);
+        free(_this->_parent);
+    }
+}
+
+int main() {
     int32_option a;
     int64_option b;
     uint32_option c;
@@ -275,26 +291,5 @@ void sjf_global(void) {
         }
     }
     sjf_class_destroy(&sjd_temp1);
-}
-
-void sji_interface2_destroy(sji_interface2* _this) {
-    _this->_parent->_refCount--;
-    if (_this->_parent->_refCount <= 0) {
-        _this->destroy(_this->_parent);
-        free(_this->_parent);
-    }
-}
-
-void sji_interface_destroy(sji_interface* _this) {
-    _this->_parent->_refCount--;
-    if (_this->_parent->_refCount <= 0) {
-        _this->destroy(_this->_parent);
-        free(_this->_parent);
-    }
-}
-
-int main() {
-    sjf_global();
-
     return 0;
 }

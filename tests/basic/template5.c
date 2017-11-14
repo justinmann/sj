@@ -68,7 +68,7 @@ struct td_sjs_object {
 
 void sjf_class_float_sjs_func(int32_t* _return);
 void sjf_class_sjs_func_int32_t(int32_t* _return);
-void sjf_global(void);
+
 
 void sjf_class_float_sjs_func(int32_t* _return) {
 
@@ -80,7 +80,7 @@ void sjf_class_sjs_func_int32_t(int32_t* _return) {
     *_return = 1;
 }
 
-void sjf_global(void) {
+int main() {
     int32_t b;
     int32_t d;
     int32_t result1;
@@ -92,10 +92,5 @@ void sjf_global(void) {
     result2 = 0;
     sjf_class_sjs_func_int32_t(&result2);
     d = result2;
-}
-
-int main() {
-    sjf_global();
-
     return 0;
 }

@@ -85,7 +85,8 @@ void sjf_bar_destroy(sjs_bar* _this);
 void sjf_foo(sjs_foo* _this, sjs_foo** _return);
 void sjf_foo_destroy(sjs_foo* _this);
 void sjf_func(sjs_bar* b, sjs_foo** _return);
-void sjf_global(void);
+
+sjs_bar sjd_temp1;
 
 void sjf_bar(sjs_bar* _this, sjs_bar** _return) {
     _this->_refCount++;
@@ -138,8 +139,7 @@ void sjf_func(sjs_bar* b, sjs_foo** _return) {
     *_return = sjv_temp3;
 }
 
-void sjf_global(void) {
-    sjs_bar sjd_temp1;
+int main() {
     sjs_bar* b;
     int32_t dotTemp1;
     sjs_foo* result1;
@@ -172,10 +172,5 @@ void sjf_global(void) {
         free(sjv_temp1);
     }
     sjf_bar_destroy(&sjd_temp1);
-}
-
-int main() {
-    sjf_global();
-
     return 0;
 }

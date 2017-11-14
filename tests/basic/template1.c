@@ -69,7 +69,7 @@ struct td_sjs_object {
 void sjf_class_bool(int32_t* _return);
 void sjf_class_float(int32_t* _return);
 void sjf_class_int32_t(int32_t* _return);
-void sjf_global(void);
+
 
 void sjf_class_bool(int32_t* _return) {
 
@@ -86,7 +86,7 @@ void sjf_class_int32_t(int32_t* _return) {
     *_return = 1;
 }
 
-void sjf_global(void) {
+int main() {
     int32_t a;
     int32_t b;
     int32_t c;
@@ -103,10 +103,5 @@ void sjf_global(void) {
     result3 = 0;
     sjf_class_bool(&result3);
     c = result3;
-}
-
-int main() {
-    sjf_global();
-
     return 0;
 }
