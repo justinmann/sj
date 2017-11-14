@@ -1,10 +1,4 @@
-anon1([stack]_fd'ptr=)'anon1 {
-  c{
- 
-		#include(<stdio.h>)
-		_this->_fd = (uintptr_t)stdout;
-	
-}c
+anon1()'anon1 {
   this
 }
 
@@ -30,7 +24,11 @@ array!char([heap]size'i32=, [heap]data'ptr=, [heap]_isGlobal'bool=)'array_char {
 		if (_this->data) {
 			_this->_isGlobal = true;
 		} else {
-			_this->data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
+			_this->data = (uintptr_t)calloc(_this->size * sizeof(#type(t)), 1);
+			if (!_this->data) {
+				printf("grow: out of memory\n");
+				exit(-1);				
+			}
 		}
 	
 }c
@@ -42,16 +40,18 @@ array_getAt([heap]index'i32:)'char c{
 		#forceParent()
 
 		if (index >= _parent->size || index < 0) {
+			printf("getAt: out of bounds\n");
 			exit(-1);
 		}
 
 		#type(t)* p = (#type(t)*)_parent->data;
 		#type(t) val = p[index];
-		if (!#isValue(t)) {
-			if (val == 0) {
-				exit(-1);
-			}
+##if !#isValue(t)
+		if (val == 0) {
+			printf("getAt: value is not defined at %d\n", index);
+			exit(-1);
 		}
+##endif
 		*_return = val;		
 	
 }c
@@ -107,9 +107,7 @@ global()'void {
   [stack]convert'anon4 : [stack]anon4([stack]this : anon4())
   [stack]random'anon3 : [stack]anon3([stack]this : anon3())
   [stack]parse'anon2 : [stack]anon2([stack]this : anon2())
-  [stack]console'anon1 : [stack]anon1([stack]this : anon1(
-    [stack]_fd'ptr = 0i as ptr
-  ))
+  [stack]console'anon1 : [stack]anon1([stack]this : anon1())
   [stack]a'string : {
     [stack]string([stack]this : string(
       parent: [stack]this,

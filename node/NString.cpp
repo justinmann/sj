@@ -59,6 +59,7 @@ void NString::initStatements(Compiler* compiler, CResult& result, shared_ptr<CBa
     if (statements.size() > 0)
         return;
     
+    assert(varName.size() == 0);
     varName = TrBlock::nextVarName("sjg_string");
     
     auto createArray = make_shared<NCall>(
@@ -66,7 +67,7 @@ void NString::initStatements(Compiler* compiler, CResult& result, shared_ptr<CBa
         "array",
         make_shared<CTypeNameList>(CTC_Value, compiler->typeChar->name, false),
         make_shared<NodeList>(
-            make_shared<NInteger>(loc, str.size()),
+            make_shared<NInteger>(loc, str.size() + 1),
             make_shared<NGlobalPtrVar>(loc, varName)));
 
     auto createString = make_shared<NCall>(
@@ -74,7 +75,7 @@ void NString::initStatements(Compiler* compiler, CResult& result, shared_ptr<CBa
         "string",
         nullptr,
         make_shared<NodeList>(
-            make_shared<NInteger>(loc, str.size() - 1),
+            make_shared<NInteger>(loc, str.size()),
             createArray));
 
     statements.push_back(createString);

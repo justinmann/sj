@@ -74,7 +74,7 @@ void sjf_global(void) {
 
     x = 1;
     loopEnd1 = 10;
-    while (x <= loopEnd1) {
+    while (x < loopEnd1) {
         x++;
     }
 }

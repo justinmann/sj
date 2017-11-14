@@ -1,3 +1,11 @@
+* return from getAt should not be stack
+* make string immutable
+* stringBuilder.append
+* stringBuilder.toString
+* document option
+* timer
+* two buttons for +/-
+
 -- features --
 * override interfaces
     a as type   -> a.asType()'t
@@ -47,17 +55,3 @@ x->_parent = _this;
 x->_parent->_refCount++;
 x->lambda = sjf_anon2;
 array_each(arr, x);
-
--- library --
-* directory structure for pure sj library
-lib/common/common.sj
-lib/common/array.sj
-lib/common/string.sj
-lib/common/tuple.sj
-
-* directory structure for linked library
-* link command: link "freetype.lib"
-lib/freetype/freetype.sj
-lib/freetype/freetype.h
-lib/freetype/freetype.lib
-lib/freetype/source/*

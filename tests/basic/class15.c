@@ -107,13 +107,13 @@ void sjf_anon1_destroy(sjs_anon1* _this) {
 }
 
 void sjf_anon1_sub(sjs_anon1* _parent, int32_t x, int32_t y, int32_t* _return) {
+    int32_t dotTemp2;
     int32_t result5;
     int32_t result6;
-    int32_t temp3;
 
     result5 = x - y;
-    temp3 = _parent->test;
-    result6 = result5 - temp3;
+    dotTemp2 = _parent->test;
+    result6 = result5 - dotTemp2;
 
     *_return = result6;
 }
@@ -142,24 +142,18 @@ void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return) {
 
     result2 = x > 0;
     if (result2) {
+        sjs_anon1* dotTemp1;
         int32_t result3;
         int32_t result4;
-        sjs_global* temp1;
-        sjs_anon1* temp2;
+        sjs_global* tempParent1;
 
         result3 = 0;
-        temp1 = _parent->_parent;
-        temp2 = temp1->math;
+        tempParent1 = _parent->_parent;
+        dotTemp1 = tempParent1->math;
         result4 = 0;
-        sjf_anon1_sub(temp2, x, 1, &result4);
+        sjf_anon1_sub(dotTemp1, x, 1, &result4);
         sjf_class_bar(_parent, result4, &result3);
         ifResult1 = result3;
-
-        temp2->_refCount--;
-        if (temp2->_refCount <= 0) {
-            sjf_anon1_destroy(temp2);
-            free(temp2);
-        }
     } else {
         ifResult1 = 0;
     }

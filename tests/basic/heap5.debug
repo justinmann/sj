@@ -12,7 +12,11 @@ array!char([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=)'array_cha
 		if (_this->data) {
 			_this->_isGlobal = true;
 		} else {
-			_this->data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
+			_this->data = (uintptr_t)calloc(_this->size * sizeof(#type(t)), 1);
+			if (!_this->data) {
+				printf("grow: out of memory\n");
+				exit(-1);				
+			}
 		}
 	
 }c

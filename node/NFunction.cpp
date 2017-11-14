@@ -524,11 +524,16 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
                 trBlock->statements.push_back(initReturnStream.str());
             }
             else if (!returnType->parent.expired()) {
-                returnValue = trBlock->createTempVariable("result", returnType, false, RVR_MustRelease);
-                auto returnTempVal = trBlock->createStackValue("sjd_temp", returnType);
-                stringstream initLine;
-                initLine << returnValue->name << " = &" << returnTempVal;
-                trBlock->statements.push_back(TrStatement(initLine.str()));
+                returnValue = trBlock->createTempVariable("result", returnType, true, RVR_MustRelease);
+                stringstream initReturnStream;
+                initReturnStream << returnValue->name << " = 0";
+                trBlock->statements.push_back(initReturnStream.str());
+// TODO: Figure out why return is detected wrong
+//                returnValue = trBlock->createTempVariable("result", returnType, false, RVR_MustRelease);
+//                auto returnTempVal = trBlock->createStackValue("sjd_temp", returnType);
+//                stringstream initLine;
+//                initLine << returnValue->name << " = &" << returnTempVal;
+//                trBlock->statements.push_back(TrStatement(initLine.str()));
             }
             else {
                 returnValue = trBlock->createTempVariable("result", returnType, true, RVR_MustRelease);

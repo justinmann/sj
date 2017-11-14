@@ -99,7 +99,11 @@ void sjf_array_sjs_class(sjs_array_sjs_class* _this, sjs_array_sjs_class** _retu
 		if (_this->data) {
 			_this->_isGlobal = true;
 		} else {
-			_this->data = (uintptr_t)malloc(_this->size * sizeof(sjs_class*));
+			_this->data = (uintptr_t)calloc(_this->size * sizeof(sjs_class*), 1);
+			if (!_this->data) {
+				printf("grow: out of memory\n");
+				exit(-1);				
+			}
 		}
 	;
     _this->_refCount++;
@@ -109,8 +113,9 @@ void sjf_array_sjs_class(sjs_array_sjs_class* _this, sjs_array_sjs_class** _retu
 
 void sjf_array_sjs_class_destroy(sjs_array_sjs_class* _this) {
     
-	if (!_this->_isGlobal) {
-		free((sjs_class**)_this->data);	
+	if (!_this->_isGlobal && _this->data) {
+		free((sjs_class**)_this->data);
+		_this->data = 0;	
 	}
 ;
 }
@@ -120,16 +125,18 @@ void sjf_array_sjs_class_getAt(sjs_array_sjs_class* _parent, int32_t index, sjs_
 		
 
 		if (index >= _parent->size || index < 0) {
+			printf("getAt: out of bounds\n");
 			exit(-1);
 		}
 
 		sjs_class** p = (sjs_class**)_parent->data;
 		sjs_class* val = p[index];
-		if (!false) {
-			if (val == 0) {
-				exit(-1);
-			}
+#if !false
+		if (val == 0) {
+			printf("getAt: value is not defined at %d\n", index);
+			exit(-1);
 		}
+#endif
 		*_return = val;		
 	;
 }
@@ -140,16 +147,21 @@ void sjf_array_sjs_class_setAt(sjs_array_sjs_class* _parent, int32_t index, sjs_
 		
 
 		if (index >= _parent->size || index < 0) {
+			printf("setAt: out of bounds %d:%d\n", index, _parent->size);
 			exit(-1);
 		}
 
 		sjs_class** p = (sjs_class**)_parent->data;
-		 p[index]->_refCount--;
+#if !false
+		if (p[index] != 0) {
+			 p[index]->_refCount--;
 if ( p[index]->_refCount <= 0) {
     sjf_class_destroy( p[index]);
     free( p[index]);
 }
 ;
+		}
+#endif
 		 item->_refCount++;
 ;
 		p[index] = item;
@@ -167,15 +179,14 @@ void sjf_class_destroy(sjs_class* _this) {
 
 void sjf_global(void) {
     sjs_array_sjs_class sjd_temp1;
-    sjs_class sjd_temp2;
     sjs_array_sjs_class* a;
     sjs_class* b;
     int32_t c;
+    int32_t dotTemp1;
     uintptr_t result1;
     sjs_class* result2;
     sjs_array_sjs_class* sjv_temp1;
     sjs_class* sjv_temp2;
-    int32_t temp1;
 
     result1 = (uintptr_t)0;
     sjv_temp1 = &sjd_temp1;
@@ -191,20 +202,24 @@ void sjf_global(void) {
     sjv_temp2->x = 1;
     sjf_class(sjv_temp2, &sjv_temp2);
     sjf_array_sjs_class_setAt(a, 0, sjv_temp2);
-    result2 = &sjd_temp2;
+    result2 = 0;
     sjf_array_sjs_class_getAt(a, 0, &result2);
     b = result2;
     b->_refCount++;
-    temp1 = b->x;
-    c = temp1;
+    dotTemp1 = b->x;
+    c = dotTemp1;
 
+    result2->_refCount--;
+    if (result2->_refCount <= 0) {
+        sjf_class_destroy(result2);
+        free(result2);
+    }
     sjv_temp2->_refCount--;
     if (sjv_temp2->_refCount <= 0) {
         sjf_class_destroy(sjv_temp2);
         free(sjv_temp2);
     }
     sjf_array_sjs_class_destroy(&sjd_temp1);
-    sjf_class_destroy(&sjd_temp2);
 }
 
 int main() {

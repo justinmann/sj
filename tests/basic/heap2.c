@@ -111,18 +111,11 @@ void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_get(sjs_class* _parent, sjs_class_anon1** _return) {
-    sjs_class_anon1* temp1;
+    sjs_class_anon1* dotTemp1;
 
-    temp1 = _parent->data;
-    temp1->_refCount++;
+    dotTemp1 = _parent->data;
 
-    temp1->_refCount--;
-    if (temp1->_refCount <= 0) {
-        sjf_class_anon1_destroy(temp1);
-        free(temp1);
-    }
-
-    *_return = temp1;
+    *_return = dotTemp1;
 }
 
 void sjf_global(void) {

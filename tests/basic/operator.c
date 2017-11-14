@@ -92,16 +92,16 @@ void sjf_fancyMath(sjs_fancyMath* _this, sjs_fancyMath** _return) {
 }
 
 void sjf_fancyMath_add(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return) {
+    int32_t dotTemp1;
     int32_t result2;
     int32_t result3;
     int32_t result4;
     sjs_fancyMath* sjv_temp3;
-    int32_t temp1;
 
-    temp1 = _parent->x;
+    dotTemp1 = _parent->x;
     result2 = 0;
     sjf_fancyMath_getX(num, &result2);
-    result3 = temp1 + result2;
+    result3 = dotTemp1 + result2;
     result4 = result3 + 1;
     sjv_temp3 = (sjs_fancyMath*)malloc(sizeof(sjs_fancyMath));
     sjv_temp3->_refCount = 1;
@@ -122,16 +122,16 @@ void sjf_fancyMath_destroy(sjs_fancyMath* _this) {
 }
 
 void sjf_fancyMath_divide(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return) {
+    int32_t dotTemp5;
     int32_t result14;
     int32_t result15;
     int32_t result16;
     sjs_fancyMath* sjv_temp6;
-    int32_t temp5;
 
-    temp5 = _parent->x;
+    dotTemp5 = _parent->x;
     result14 = 0;
     sjf_fancyMath_getX(num, &result14);
-    result15 = temp5 / result14;
+    result15 = dotTemp5 / result14;
     result16 = result15 + 1;
     sjv_temp6 = (sjs_fancyMath*)malloc(sizeof(sjs_fancyMath));
     sjv_temp6->_refCount = 1;
@@ -149,20 +149,20 @@ void sjf_fancyMath_divide(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyM
 }
 
 void sjf_fancyMath_getX(sjs_fancyMath* _parent, int32_t* _return) {
-    int32_t temp2;
+    int32_t dotTemp2;
 
-    temp2 = _parent->x;
+    dotTemp2 = _parent->x;
 
-    *_return = temp2;
+    *_return = dotTemp2;
 }
 
 void sjf_fancyMath_increment(sjs_fancyMath* _parent, sjs_fancyMath** _return) {
+    int32_t dotTemp7;
     int32_t result26;
     sjs_fancyMath* sjv_temp8;
-    int32_t temp7;
 
-    temp7 = _parent->x;
-    result26 = temp7 + 1;
+    dotTemp7 = _parent->x;
+    result26 = dotTemp7 + 1;
     sjv_temp8 = (sjs_fancyMath*)malloc(sizeof(sjs_fancyMath));
     sjv_temp8->_refCount = 1;
     sjv_temp8->x = result26;
@@ -179,16 +179,16 @@ void sjf_fancyMath_increment(sjs_fancyMath* _parent, sjs_fancyMath** _return) {
 }
 
 void sjf_fancyMath_modulus(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return) {
+    int32_t dotTemp6;
     int32_t result18;
     int32_t result19;
     int32_t result20;
     sjs_fancyMath* sjv_temp7;
-    int32_t temp6;
 
-    temp6 = _parent->x;
+    dotTemp6 = _parent->x;
     result18 = 0;
     sjf_fancyMath_getX(num, &result18);
-    result19 = temp6 % result18;
+    result19 = dotTemp6 % result18;
     result20 = result19 + 1;
     sjv_temp7 = (sjs_fancyMath*)malloc(sizeof(sjs_fancyMath));
     sjv_temp7->_refCount = 1;
@@ -206,16 +206,16 @@ void sjf_fancyMath_modulus(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancy
 }
 
 void sjf_fancyMath_multiply(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return) {
+    int32_t dotTemp4;
     int32_t result10;
     int32_t result11;
     int32_t result12;
     sjs_fancyMath* sjv_temp5;
-    int32_t temp4;
 
-    temp4 = _parent->x;
+    dotTemp4 = _parent->x;
     result10 = 0;
     sjf_fancyMath_getX(num, &result10);
-    result11 = temp4 * result10;
+    result11 = dotTemp4 * result10;
     result12 = result11 + 1;
     sjv_temp5 = (sjs_fancyMath*)malloc(sizeof(sjs_fancyMath));
     sjv_temp5->_refCount = 1;
@@ -239,16 +239,16 @@ void sjf_fancyMath_setBob(sjs_fancyMath* _parent, int32_t i, int32_t* _return) {
 }
 
 void sjf_fancyMath_subtract(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return) {
+    int32_t dotTemp3;
     int32_t result6;
     int32_t result7;
     int32_t result8;
     sjs_fancyMath* sjv_temp4;
-    int32_t temp3;
 
-    temp3 = _parent->x;
+    dotTemp3 = _parent->x;
     result6 = 0;
     sjf_fancyMath_getX(num, &result6);
-    result7 = temp3 - result6;
+    result7 = dotTemp3 - result6;
     result8 = result7 + 1;
     sjv_temp4 = (sjs_fancyMath*)malloc(sizeof(sjs_fancyMath));
     sjv_temp4->_refCount = 1;

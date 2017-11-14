@@ -201,12 +201,12 @@ void sjf_global(void) {
     if (n == 0) {
         ifResult1 = int32_empty;
     } else {
-        int32_t temp1;
+        int32_t dotTemp1;
         int32_option value1;
 
-        temp1 = n->bob;
+        dotTemp1 = n->bob;
         value1.isEmpty = false;
-        value1.value = temp1;
+        value1.value = dotTemp1;
         ifResult1 = value1;
     }
 

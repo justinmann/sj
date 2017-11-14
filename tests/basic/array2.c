@@ -90,7 +90,11 @@ void sjf_array_int32_t(sjs_array_int32_t* _this, sjs_array_int32_t** _return) {
 		if (_this->data) {
 			_this->_isGlobal = true;
 		} else {
-			_this->data = (uintptr_t)malloc(_this->size * sizeof(int32_t));
+			_this->data = (uintptr_t)calloc(_this->size * sizeof(int32_t), 1);
+			if (!_this->data) {
+				printf("grow: out of memory\n");
+				exit(-1);				
+			}
 		}
 	;
     _this->_refCount++;
@@ -100,8 +104,9 @@ void sjf_array_int32_t(sjs_array_int32_t* _this, sjs_array_int32_t** _return) {
 
 void sjf_array_int32_t_destroy(sjs_array_int32_t* _this) {
     
-	if (!_this->_isGlobal) {
-		free((int32_t*)_this->data);	
+	if (!_this->_isGlobal && _this->data) {
+		free((int32_t*)_this->data);
+		_this->data = 0;	
 	}
 ;
 }
@@ -111,16 +116,18 @@ void sjf_array_int32_t_getAt(sjs_array_int32_t* _parent, int32_t index, int32_t*
 		
 
 		if (index >= _parent->size || index < 0) {
+			printf("getAt: out of bounds\n");
 			exit(-1);
 		}
 
 		int32_t* p = (int32_t*)_parent->data;
 		int32_t val = p[index];
-		if (!true) {
-			if (val == 0) {
-				exit(-1);
-			}
+#if !true
+		if (val == 0) {
+			printf("getAt: value is not defined at %d\n", index);
+			exit(-1);
 		}
+#endif
 		*_return = val;		
 	;
 }
@@ -131,11 +138,16 @@ void sjf_array_int32_t_setAt(sjs_array_int32_t* _parent, int32_t index, int32_t 
 		
 
 		if (index >= _parent->size || index < 0) {
+			printf("setAt: out of bounds %d:%d\n", index, _parent->size);
 			exit(-1);
 		}
 
 		int32_t* p = (int32_t*)_parent->data;
-		;
+#if !true
+		if (p[index] != 0) {
+			;
+		}
+#endif
 		;
 		p[index] = item;
 	;

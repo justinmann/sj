@@ -92,11 +92,11 @@ void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_inner(sjs_class* _parent, int32_t* _return) {
-    int32_t temp1;
+    int32_t dotTemp1;
 
-    temp1 = _parent->m;
+    dotTemp1 = _parent->m;
 
-    *_return = temp1;
+    *_return = dotTemp1;
 }
 
 void sjf_global(void) {

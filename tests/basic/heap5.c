@@ -107,7 +107,11 @@ void sjf_array_char(sjs_array_char* _this, sjs_array_char** _return) {
 		if (_this->data) {
 			_this->_isGlobal = true;
 		} else {
-			_this->data = (uintptr_t)malloc(_this->size * sizeof(char));
+			_this->data = (uintptr_t)calloc(_this->size * sizeof(char), 1);
+			if (!_this->data) {
+				printf("grow: out of memory\n");
+				exit(-1);				
+			}
 		}
 	;
     _this->_refCount++;
@@ -117,8 +121,9 @@ void sjf_array_char(sjs_array_char* _this, sjs_array_char** _return) {
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
     
-	if (!_this->_isGlobal) {
-		free((char*)_this->data);	
+	if (!_this->_isGlobal && _this->data) {
+		free((char*)_this->data);
+		_this->data = 0;	
 	}
 ;
 }

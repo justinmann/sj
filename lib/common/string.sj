@@ -5,17 +5,20 @@ string (
 	data = array!char()
 
 	add(item :'string)'string {
-		if count + item.count > data.size {
-			data.grow(data.size + item.count)
+		if item.count > 0 {
+			if count + item.count + 1 > data.size {
+				data.grow(count + item.count + 1)
+				void
+			}
+
+			for i (0 to item.count) {
+				data.setAt(count, item.getAt(i))
+				count++		
+			}
+
+			data.setAt(count, 0 as char)
 			void
 		}
-
-		for i (0 to item.count - 1) {
-			data.setAt(count, item.getAt(i))
-			count++		
-		}
-
-		data.setAt(count, 0 as char)
 		parent
 	}
 

@@ -106,12 +106,12 @@ void sjf_func(sjs_class** _return) {
 }
 
 void sjf_global(void) {
+    int32_t dotTemp1;
     sjs_class* result1;
-    int32_t temp1;
 
     result1 = 0;
     sjf_func(&result1);
-    temp1 = result1->x;
+    dotTemp1 = result1->x;
 
     result1->_refCount--;
     if (result1->_refCount <= 0) {

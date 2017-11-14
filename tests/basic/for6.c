@@ -76,7 +76,7 @@ void sjf_global(void) {
     y = 0;
     x = 2;
     loopEnd1 = 1;
-    while (x <= loopEnd1) {
+    while (x < loopEnd1) {
         int32_t result1;
 
         result1 = y + x;

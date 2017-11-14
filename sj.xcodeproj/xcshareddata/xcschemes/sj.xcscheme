@@ -70,7 +70,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "heap3"
+            argument = "timer"
             isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>

@@ -15,13 +15,14 @@ element #element (
 			html.add(child.toHTML())
 		}
 
-		c{
+		console.write(html)
+		/* c{
 			#include(<emscripten.h>)
 
 			EM_ASM_({
 				document.getElementById(UTF8ToString($0)).innerHTML = UTF8ToString($1);
 			}, _parent->id->data, html->data);
-		}c
+		}c */
 	}
 
 	toHTML() {
@@ -33,7 +34,9 @@ timerElement #element (
 	counter = 0
 
 	toHTML() {
-		convert.i32toString(counter) + "foo"
+		a : convert.i32toString(counter)
+		b : "foo"
+		b + a
 	}
 
 	onTick() {

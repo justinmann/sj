@@ -1,11 +1,9 @@
 console : ^(
-	_fd = 0 as ptr
-
 	write(data : 'string)'void {
 		c{
+			#include(<stdio.h>)
 			#forceParent()
-				
-			fwrite((void*)data->data->data, sizeof(char), data->count, (FILE*)_parent->_fd);
+			printf("%s\n", (char*)data->data->data);
 		}c
 	}
 
@@ -13,6 +11,7 @@ console : ^(
 		data = 0 as ptr
 		size = 1024
 		c{
+			#include(<stdio.h>)
 		    char* str = (char*)malloc(size);
 		    int index = 0;
 		    char ch = ' ';
@@ -36,10 +35,4 @@ console : ^(
 
 		string(count = size - 1, data = array!char(size = size, data = data))
 	}
-) { 
-	c{ 
-		#include(<stdio.h>)
-		_this->_fd = (uintptr_t)stdout;
-	}c
-	this
-}
+) { this }

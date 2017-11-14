@@ -125,7 +125,7 @@ shared_ptr<ReturnValue> NFor::transpile(Compiler* compiler, CResult& result, sha
     trForBlock->parent = trBlock;
 	trForBlock->hasThis = trBlock->hasThis;
     stringstream whileLine;
-    whileLine << "while (" << varName << " <= " << trLoopEndVar->name << ")";
+    whileLine << "while (" << varName << " < " << trLoopEndVar->name << ")";
     trBlock->statements.push_back(TrStatement(whileLine.str(), trForBlock));
 
     body->transpile(compiler, result, thisFunction, thisVar, trOutput, trForBlock.get(), false);

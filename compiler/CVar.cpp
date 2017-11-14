@@ -150,13 +150,13 @@ shared_ptr<ReturnValue> CNormalVar::transpileGet(Compiler* compiler, CResult& re
 
     auto returnIsHeap = getHeapVar(compiler, result, thisVar);
     if (dotValue) {
-        auto returnValue = trBlock->createTempVariable("temp", returnType, returnIsHeap, RVR_MustRetain);
+        auto returnValue = trBlock->createTempVariable("dotTemp", returnType, returnIsHeap, RVR_Ignore);
         stringstream lineStream;
         lineStream << returnValue->name << " = " << dotValue->name << "->" << name;
         trBlock->statements.push_back(lineStream.str());
         return returnValue;
     } else if (trBlock->hasThis && (mode == Var_Public || mode == Var_Private)) {
-        auto returnValue = trBlock->createTempVariable("temp", returnType, returnIsHeap, RVR_MustRetain);
+        auto returnValue = trBlock->createTempVariable("dotTemp", returnType, returnIsHeap, RVR_Ignore);
         stringstream lineStream;
         lineStream << returnValue->name << " = " << "_this->" << name;
         trBlock->statements.push_back(lineStream.str());

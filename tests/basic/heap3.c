@@ -141,10 +141,10 @@ void sjf_func(sjs_bar* b, sjs_foo** _return) {
 void sjf_global(void) {
     sjs_bar sjd_temp1;
     sjs_bar* b;
+    int32_t dotTemp1;
     sjs_foo* result1;
     sjs_foo* sjv_temp1;
     sjs_bar* sjv_temp2;
-    int32_t temp1;
 
     sjv_temp1 = (sjs_foo*)malloc(sizeof(sjs_foo));
     sjv_temp1->_refCount = 1;
@@ -159,7 +159,7 @@ void sjf_global(void) {
     b->_refCount++;
     result1 = 0;
     sjf_func(b, &result1);
-    temp1 = result1->x;
+    dotTemp1 = result1->x;
 
     result1->_refCount--;
     if (result1->_refCount <= 0) {

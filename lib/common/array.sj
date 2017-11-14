@@ -7,16 +7,18 @@ array!t (
 		#forceParent()
 
 		if (index >= _parent->size || index < 0) {
+			printf("getAt: out of bounds\n");
 			exit(-1);
 		}
 
 		#type(t)* p = (#type(t)*)_parent->data;
 		#type(t) val = p[index];
-		if (!#isValue(t)) {
-			if (val == 0) {
-				exit(-1);
-			}
+##if !#isValue(t)
+		if (val == 0) {
+			printf("getAt: value is not defined at %d\n", index);
+			exit(-1);
 		}
+##endif
 		*_return = val;		
 	}c
 
@@ -25,11 +27,16 @@ array!t (
 		#forceHeap(item)
 
 		if (index >= _parent->size || index < 0) {
+			printf("setAt: out of bounds %d:%d\n", index, _parent->size);
 			exit(-1);
 		}
 
 		#type(t)* p = (#type(t)*)_parent->data;
-		#release(t, p[index]);
+##if !#isValue(t)
+		if (p[index] != 0) {
+			#release(t, p[index]);
+		}
+##endif
 		#retain(t, item);
 		p[index] = item;
 	}c
@@ -52,16 +59,26 @@ array!t (
 
 		if (_parent->size != newSize) {
 			if (newSize < _parent->size) {
+				printf("grow: new size smaller than old size %d:%d\n", newSize, _parent->size);
 				exit(-1);
 			}
 			
 			if (_parent->_isGlobal) {
 				_parent->_isGlobal = false;
 				#type(t)* p = (#type(t)*)_parent->data;
-				_parent->data = (uintptr_t)malloc(newSize * sizeof(#type(t)));
+				_parent->data = (uintptr_t)calloc(newSize * sizeof(#type(t)), 1);
+				if (!_parent->data) {
+					printf("grow: out of memory\n");
+					exit(-1);				
+				}
 				memcpy((void*)_parent->data, p, _parent->size * sizeof(#type(t)));
 			} else {
 				_parent->data = (uintptr_t)realloc((void*)_parent->data, newSize * sizeof(#type(t)));
+				if (!_parent->data) {
+					printf("grow: out of memory\n");
+					exit(-1);				
+				}
+				memset((void*)_parent->data + _parent->size, 0, newSize - _parent->size);
 			}
 			_parent->size = newSize;
 		}
@@ -116,12 +133,17 @@ array!t (
 		if (_this->data) {
 			_this->_isGlobal = true;
 		} else {
-			_this->data = (uintptr_t)malloc(_this->size * sizeof(#type(t)));
+			_this->data = (uintptr_t)calloc(_this->size * sizeof(#type(t)), 1);
+			if (!_this->data) {
+				printf("grow: out of memory\n");
+				exit(-1);				
+			}
 		}
 	}c
 	this
 } destroy c{
-	if (!_this->_isGlobal) {
-		free((#type(t)*)_this->data);	
+	if (!_this->_isGlobal && _this->data) {
+		free((#type(t)*)_this->data);
+		_this->data = 0;	
 	}
 }c

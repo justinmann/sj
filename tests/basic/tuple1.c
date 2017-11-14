@@ -1,6 +1,5 @@
 #include <stdbool.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct td_int32_option int32_option;
@@ -84,7 +83,6 @@ typedef struct td_sjs_tuple3_sjs_string_double_int32_t sjs_tuple3_sjs_string_dou
 
 struct td_sjs_anon1 {
     int _refCount;
-    uintptr_t _fd;
 };
 
 struct td_sjs_anon2 {
@@ -149,10 +147,6 @@ void sjf_tuple3_sjs_string_double_int32_t(sjs_tuple3_sjs_string_double_int32_t* 
 void sjf_tuple3_sjs_string_double_int32_t_destroy(sjs_tuple3_sjs_string_double_int32_t* _this);
 
 void sjf_anon1(sjs_anon1* _this, sjs_anon1** _return) {
-     
-		
-		_this->_fd = (uintptr_t)stdout;
-	;
     _this->_refCount++;
 
     *_return = _this;
@@ -197,7 +191,11 @@ void sjf_array_char(sjs_array_char* _this, sjs_array_char** _return) {
 		if (_this->data) {
 			_this->_isGlobal = true;
 		} else {
-			_this->data = (uintptr_t)malloc(_this->size * sizeof(char));
+			_this->data = (uintptr_t)calloc(_this->size * sizeof(char), 1);
+			if (!_this->data) {
+				printf("grow: out of memory\n");
+				exit(-1);				
+			}
 		}
 	;
     _this->_refCount++;
@@ -207,8 +205,9 @@ void sjf_array_char(sjs_array_char* _this, sjs_array_char** _return) {
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
     
-	if (!_this->_isGlobal) {
-		free((char*)_this->data);	
+	if (!_this->_isGlobal && _this->data) {
+		free((char*)_this->data);
+		_this->data = 0;	
 	}
 ;
 }
@@ -220,13 +219,13 @@ void sjf_func(sjs_tuple2_int32_t_sjs_string** _return) {
 
     sjv_temp5 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     sjv_temp5->_refCount = 1;
-    sjv_temp5->size = 3;
+    sjv_temp5->size = 4;
     sjv_temp5->data = (uintptr_t)sjg_string1;
     sjv_temp5->_isGlobal = false;
     sjf_array_char(sjv_temp5, &sjv_temp5);
     sjv_temp6 = (sjs_string*)malloc(sizeof(sjs_string));
     sjv_temp6->_refCount = 1;
-    sjv_temp6->count = 2;
+    sjv_temp6->count = 3;
     sjv_temp6->data = sjv_temp5;
     sjv_temp6->data->_refCount++;
     sjf_string(sjv_temp6, &sjv_temp6);
@@ -269,14 +268,21 @@ void sjf_global(void) {
     sjs_anon1* console;
     sjs_anon4* convert;
     sjs_string* d;
+    int32_t dotTemp1;
+    sjs_string* dotTemp2;
+    int32_t dotTemp3;
+    sjs_string* dotTemp4;
+    int32_t dotTemp5;
+    sjs_string* dotTemp6;
+    sjs_string* dotTemp7;
+    double dotTemp8;
     sjs_string* e;
     double f;
     sjs_anon2* parse;
     sjs_anon3* random;
-    uintptr_t result1;
+    sjs_tuple2_int32_t_sjs_string* result1;
     sjs_tuple2_int32_t_sjs_string* result2;
     sjs_tuple2_int32_t_sjs_string* result3;
-    sjs_tuple2_int32_t_sjs_string* result4;
     sjs_anon4* sjv_temp1;
     sjs_tuple3_sjs_string_double_int32_t* sjv_temp10;
     sjs_anon3* sjv_temp2;
@@ -285,14 +291,6 @@ void sjf_global(void) {
     sjs_array_char* sjv_temp8;
     sjs_string* sjv_temp9;
     sjs_tuple2_int32_t_sjs_string* t;
-    int32_t temp1;
-    sjs_string* temp2;
-    int32_t temp3;
-    sjs_string* temp4;
-    int32_t temp5;
-    sjs_string* temp6;
-    sjs_string* temp7;
-    double temp8;
     sjs_tuple2_int32_t_sjs_string* tupleResult1;
     sjs_tuple2_int32_t_sjs_string* tupleResult2;
     sjs_tuple3_sjs_string_double_int32_t* tupleResult3;
@@ -312,54 +310,52 @@ void sjf_global(void) {
     sjf_anon2(sjv_temp3, &sjv_temp3);
     parse = sjv_temp3;
     parse->_refCount++;
-    result1 = (uintptr_t)0;
     sjv_temp4 = &sjd_temp4;
     sjv_temp4->_refCount = 1;
-    sjv_temp4->_fd = result1;
     sjf_anon1(sjv_temp4, &sjv_temp4);
     console = sjv_temp4;
     console->_refCount++;
+    result1 = 0;
+    sjf_func(&result1);
+    t = result1;
+    t->_refCount++;
+    dotTemp1 = t->item1;
+    a = dotTemp1;
+    dotTemp2 = t->item2;
+    b = dotTemp2;
+    b->_refCount++;
     result2 = 0;
     sjf_func(&result2);
-    t = result2;
-    t->_refCount++;
-    temp1 = t->item1;
-    a = temp1;
-    temp2 = t->item2;
-    b = temp2;
-    b->_refCount++;
-    result3 = 0;
-    sjf_func(&result3);
-    tupleResult1 = result3;
+    tupleResult1 = result2;
     tupleResult1->_refCount++;
-    temp3 = tupleResult1->item1;
-    a = temp3;
-    temp4 = tupleResult1->item2;
+    dotTemp3 = tupleResult1->item1;
+    a = dotTemp3;
+    dotTemp4 = tupleResult1->item2;
     b->_refCount--;
     if (b->_refCount <= 0) {
         sjf_string_destroy(b);
         free(b);
     }
 
-    b = temp4;
+    b = dotTemp4;
 
     b->_refCount++;
 
-    result4 = 0;
+    result3 = 0;
 
-    sjf_func(&result4);
+    sjf_func(&result3);
 
-    tupleResult2 = result4;
+    tupleResult2 = result3;
 
     tupleResult2->_refCount++;
 
-    temp5 = tupleResult2->item1;
+    dotTemp5 = tupleResult2->item1;
 
-    c = temp5;
+    c = dotTemp5;
 
-    temp6 = tupleResult2->item2;
+    dotTemp6 = tupleResult2->item2;
 
-    d = temp6;
+    d = dotTemp6;
 
     d->_refCount++;
 
@@ -367,7 +363,7 @@ void sjf_global(void) {
 
     sjv_temp8->_refCount = 1;
 
-    sjv_temp8->size = 3;
+    sjv_temp8->size = 4;
 
     sjv_temp8->data = (uintptr_t)sjg_string2;
 
@@ -379,7 +375,7 @@ void sjf_global(void) {
 
     sjv_temp9->_refCount = 1;
 
-    sjv_temp9->count = 2;
+    sjv_temp9->count = 3;
 
     sjv_temp9->data = sjv_temp8;
 
@@ -405,15 +401,15 @@ void sjf_global(void) {
 
     tupleResult3->_refCount++;
 
-    temp7 = tupleResult3->item1;
+    dotTemp7 = tupleResult3->item1;
 
-    e = temp7;
+    e = dotTemp7;
 
     e->_refCount++;
 
-    temp8 = tupleResult3->item2;
+    dotTemp8 = tupleResult3->item2;
 
-    f = temp8;
+    f = dotTemp8;
 
     b->_refCount--;
     if (b->_refCount <= 0) {
@@ -425,6 +421,11 @@ void sjf_global(void) {
         sjf_string_destroy(d);
         free(d);
     }
+    result1->_refCount--;
+    if (result1->_refCount <= 0) {
+        sjf_tuple2_int32_t_sjs_string_destroy(result1);
+        free(result1);
+    }
     result2->_refCount--;
     if (result2->_refCount <= 0) {
         sjf_tuple2_int32_t_sjs_string_destroy(result2);
@@ -434,11 +435,6 @@ void sjf_global(void) {
     if (result3->_refCount <= 0) {
         sjf_tuple2_int32_t_sjs_string_destroy(result3);
         free(result3);
-    }
-    result4->_refCount--;
-    if (result4->_refCount <= 0) {
-        sjf_tuple2_int32_t_sjs_string_destroy(result4);
-        free(result4);
     }
     sjv_temp8->_refCount--;
     if (sjv_temp8->_refCount <= 0) {
@@ -454,21 +450,6 @@ void sjf_global(void) {
     if (t->_refCount <= 0) {
         sjf_tuple2_int32_t_sjs_string_destroy(t);
         free(t);
-    }
-    temp2->_refCount--;
-    if (temp2->_refCount <= 0) {
-        sjf_string_destroy(temp2);
-        free(temp2);
-    }
-    temp4->_refCount--;
-    if (temp4->_refCount <= 0) {
-        sjf_string_destroy(temp4);
-        free(temp4);
-    }
-    temp6->_refCount--;
-    if (temp6->_refCount <= 0) {
-        sjf_string_destroy(temp6);
-        free(temp6);
     }
     tupleResult1->_refCount--;
     if (tupleResult1->_refCount <= 0) {

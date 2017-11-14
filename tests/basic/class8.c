@@ -90,10 +90,10 @@ void sjf_class_destroy(sjs_class* _this) {
 void sjf_global(void) {
     sjs_class sjd_temp1;
     sjs_class* c;
+    int32_t dotTemp1;
+    int32_t dotTemp2;
     int32_t result1;
     sjs_class* sjv_temp1;
-    int32_t temp1;
-    int32_t temp2;
 
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
@@ -102,9 +102,9 @@ void sjf_global(void) {
     sjf_class(sjv_temp1, &sjv_temp1);
     c = sjv_temp1;
     c->_refCount++;
-    temp1 = c->x;
-    temp2 = c->y;
-    result1 = temp1 + temp2;
+    dotTemp1 = c->x;
+    dotTemp2 = c->y;
+    result1 = dotTemp1 + dotTemp2;
     sjf_class_destroy(&sjd_temp1);
 }
 

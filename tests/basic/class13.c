@@ -113,12 +113,12 @@ void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return) {
 
     result2 = x > 0;
     if (result2) {
+        sjs_math* dotTemp1;
         int32_t result3;
         int32_t result4;
-        sjs_math* temp1;
 
         result3 = 0;
-        temp1 = _parent->m;
+        dotTemp1 = _parent->m;
         result4 = 0;
         sjf_math_sub(x, 1, &result4);
         sjf_class_bar(_parent, result4, &result3);

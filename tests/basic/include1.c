@@ -98,7 +98,11 @@ void sjf_array_sjs_class(sjs_array_sjs_class* _this, sjs_array_sjs_class** _retu
 		if (_this->data) {
 			_this->_isGlobal = true;
 		} else {
-			_this->data = (uintptr_t)malloc(_this->size * sizeof(sjs_class*));
+			_this->data = (uintptr_t)calloc(_this->size * sizeof(sjs_class*), 1);
+			if (!_this->data) {
+				printf("grow: out of memory\n");
+				exit(-1);				
+			}
 		}
 	;
     _this->_refCount++;
@@ -108,8 +112,9 @@ void sjf_array_sjs_class(sjs_array_sjs_class* _this, sjs_array_sjs_class** _retu
 
 void sjf_array_sjs_class_destroy(sjs_array_sjs_class* _this) {
     
-	if (!_this->_isGlobal) {
-		free((sjs_class**)_this->data);	
+	if (!_this->_isGlobal && _this->data) {
+		free((sjs_class**)_this->data);
+		_this->data = 0;	
 	}
 ;
 }
@@ -120,16 +125,21 @@ void sjf_array_sjs_class_setAt(sjs_array_sjs_class* _parent, int32_t index, sjs_
 		
 
 		if (index >= _parent->size || index < 0) {
+			printf("setAt: out of bounds %d:%d\n", index, _parent->size);
 			exit(-1);
 		}
 
 		sjs_class** p = (sjs_class**)_parent->data;
-		 p[index]->_refCount--;
+#if !false
+		if (p[index] != 0) {
+			 p[index]->_refCount--;
 if ( p[index]->_refCount <= 0) {
     sjf_class_destroy( p[index]);
     free( p[index]);
 }
 ;
+		}
+#endif
 		 item->_refCount++;
 ;
 		p[index] = item;
