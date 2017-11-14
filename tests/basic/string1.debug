@@ -157,7 +157,7 @@ global()'void {
     parent: [stack]f,
     [stack]test'string : a
   ))
-  [stack]l'bool : fa
+  [stack]l'bool : f === a
   void
 }
 

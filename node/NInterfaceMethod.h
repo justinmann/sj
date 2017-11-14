@@ -101,7 +101,7 @@ public:
 private:
     shared_ptr<CInterfaceMethodReturnVar> returnVar;
     //Type* functionType;
-    int methodIndex;
+    // int methodIndex;
     CLoc loc;
 };
 

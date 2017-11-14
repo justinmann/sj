@@ -24,7 +24,7 @@ public:
     bool hasValue;
     
     NInteger(CLoc loc, const char* value);
-    NInteger(CLoc loc, const int32_t value) : NVariableBase(NodeType_Integer, loc), value(value), hasValue(true), type(NIT_I32) { }
+    NInteger(CLoc loc, const int32_t value) : NVariableBase(NodeType_Integer, loc), type(NIT_I32), value(value), hasValue(true) { }
 	virtual shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue);
 	virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
 

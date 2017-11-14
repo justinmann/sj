@@ -1,6 +1,6 @@
 #include "Node.h"
 
-NMathAssignment::NMathAssignment(CLoc loc, shared_ptr<NVariableBase> leftSide, NMathAssignmentOp op, shared_ptr<NVariableBase> rightSide) : NBase(NodeType_MathAssignment, loc), leftSide(leftSide), op(op), rightSide(rightSide) {
+NMathAssignment::NMathAssignment(CLoc loc, shared_ptr<NVariableBase> leftSide, NMathAssignmentOp op, shared_ptr<NVariableBase> rightSide) : NBase(NodeType_MathAssignment, loc), op(op), leftSide(leftSide), rightSide(rightSide) {
 }
 
 void NMathAssignment::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {

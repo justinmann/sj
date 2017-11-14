@@ -150,7 +150,7 @@ void CInterfaceMethodArgVar::dump(Compiler* compiler, CResult& result, shared_pt
     assert(false);
 }
 
-CInterfaceMethod::CInterfaceMethod(string& name, weak_ptr<CInterface> parent, int methodIndex) : CBaseFunction(CFT_InterfaceMethod, name, parent, weak_ptr<CBaseFunctionDefinition>()), /*functionType(nullptr),*/ methodIndex(methodIndex) {
+CInterfaceMethod::CInterfaceMethod(string& name, weak_ptr<CInterface> parent, int methodIndex) : CBaseFunction(CFT_InterfaceMethod, name, parent, weak_ptr<CBaseFunctionDefinition>()) /*functionType(nullptr),*/ {
     
 }
 
@@ -313,7 +313,6 @@ shared_ptr<ReturnValue> CInterfaceMethod::transpile(Compiler* compiler, CResult&
         return nullptr;
     }
 
-    bool isReturnValueThis = false;
     shared_ptr<ReturnValue> returnValue;
     if (returnType != compiler->typeVoid) {
         if (!returnType->parent.expired()) {

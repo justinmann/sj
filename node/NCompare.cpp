@@ -142,8 +142,14 @@ void NCompare::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctio
         case NCompareOp::EQ:
             ss << " == ";
             break;
+        case NCompareOp::PEQ:
+            ss << " === ";
+            break;
         case NCompareOp::NE:
             ss << " != ";
+            break;
+        case NCompareOp::PNE:
+            ss << " !== ";
             break;
         case NCompareOp::LT:
             ss << " < ";

@@ -51,8 +51,6 @@ protected:
     shared_ptr<NFunction> shared_from_this() { return static_pointer_cast<NFunction>(NBase::shared_from_this()); };
     
 private:    
-    bool isInGetType;
-    
     friend class CFunctionDefinition;
 };
 
@@ -139,7 +137,6 @@ private:
     size_t indexParent;
     size_t indexVars;
     bool isInGetType;
-    bool isInGetFunction;
     bool returnMustRelease;
     //Function* function;
     //Function* destructorFunction;
