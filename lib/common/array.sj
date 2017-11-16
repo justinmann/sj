@@ -78,7 +78,7 @@ array!t (
 					printf("grow: out of memory\n");
 					exit(-1);				
 				}
-				memset((void*)_parent->data + _parent->size, 0, newSize - _parent->size);
+				memset((#type(t)*)_parent->data + _parent->size, 0, (newSize - _parent->size) * sizeof(#type(t)));
 			}
 			_parent->size = newSize;
 		}
