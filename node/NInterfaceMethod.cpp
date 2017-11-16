@@ -20,7 +20,7 @@ shared_ptr<CType> NInterfaceMethod::getTypeImpl(Compiler* compiler, CResult& res
 //    return nullptr;
 //}
 
-shared_ptr<ReturnValue> NInterfaceMethod::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
+shared_ptr<ReturnValue> NInterfaceMethod::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName) {
 	assert(false);
 	return nullptr;
 }
@@ -87,12 +87,12 @@ int CInterfaceMethodReturnVar::setHeapVar(Compiler* compiler, CResult& result, s
     return 0;
 }
 
-shared_ptr<ReturnValue> CInterfaceMethodReturnVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue) {
+shared_ptr<ReturnValue> CInterfaceMethodReturnVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     assert(false);
 	return nullptr;
 }
 
-void CInterfaceMethodReturnVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue) {
+void CInterfaceMethodReturnVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     assert(false);
 }
 
@@ -137,12 +137,12 @@ int CInterfaceMethodArgVar::setHeapVar(Compiler* compiler, CResult& result, shar
     return 0;
 }
 
-shared_ptr<ReturnValue> CInterfaceMethodArgVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue) {
+shared_ptr<ReturnValue> CInterfaceMethodArgVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     assert(false);
 	return nullptr;
 }
 
-void CInterfaceMethodArgVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue) {
+void CInterfaceMethodArgVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     assert(false);
 }
 
@@ -304,7 +304,7 @@ void CInterfaceMethod::transpileDefinition(Compiler* compiler, CResult& result, 
 
 }
 
-shared_ptr<ReturnValue> CInterfaceMethod::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters) {
+shared_ptr<ReturnValue> CInterfaceMethod::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, const char* thisName) {
     assert(compiler->state == CompilerState::Compile);
     assert(calleeValue != nullptr);
 
@@ -338,12 +338,12 @@ shared_ptr<ReturnValue> CInterfaceMethod::transpile(Compiler* compiler, CResult&
         shared_ptr<ReturnValue> argReturnValue;
 
         stringstream argStream;
-        auto paramVar = parameters[argIndex].second->getVar(compiler, result, shared_from_this(), isDefaultAssignment ? calleeVar : thisVar);
+        auto paramVar = parameters[argIndex].second->getVar(compiler, result, isDefaultAssignment ? shared_from_this() : thisFunction, isDefaultAssignment ? calleeVar : thisVar);
         if (paramVar) {
             auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
             assert(!argHeapVar || paramHeapVar == argHeapVar);
         }
-        argReturnValue = parameters[argIndex].second->transpile(compiler, result, shared_from_this(), isDefaultAssignment ? calleeVar : thisVar, trOutput, trBlock, false);
+        argReturnValue = parameters[argIndex].second->transpile(compiler, result, isDefaultAssignment ? shared_from_this() : thisFunction, isDefaultAssignment ? calleeVar : thisVar, trOutput, trBlock, false, thisName);
 
         if (argReturnValue == nullptr) {
             result.addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' has no value", argVar->name.c_str());

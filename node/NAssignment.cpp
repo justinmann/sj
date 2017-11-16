@@ -107,6 +107,9 @@ shared_ptr<CType> NAssignment::getTypeImpl(Compiler* compiler, CResult& result, 
     }
 
     if (typeName) {
+        if (typeName->name == "#surface") {
+            int i = 0;
+        }
         auto valueType = thisFunction->getVarType(compiler, result, typeName);
         if (!valueType) {
             result.addError(loc, CErrorCode::InvalidType, "explicit type '%s' does not exist", typeName->name.c_str());
@@ -153,7 +156,7 @@ int NAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<
     return count;
 }
 
-shared_ptr<ReturnValue> NAssignment::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
+shared_ptr<ReturnValue> NAssignment::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName) {
 	assert(compiler->state == CompilerState::Compile);
 
     if (_callVar) {
@@ -162,12 +165,12 @@ shared_ptr<ReturnValue> NAssignment::transpile(Compiler* compiler, CResult& resu
             return nullptr;
         }
 
-        auto dotValue = parentVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, false, nullptr);
+        auto dotValue = parentVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, false, nullptr, thisName);
         if (!dotValue) {
             return nullptr;
         }
 
-        return _callVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue, dotValue);
+        return _callVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue, dotValue, thisName);
     }
 	    
 	if (!rightSide) {
@@ -175,7 +178,7 @@ shared_ptr<ReturnValue> NAssignment::transpile(Compiler* compiler, CResult& resu
 		return nullptr;
 	}
 		    
-	auto rightReturn = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue);
+	auto rightReturn = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue, thisName);
     if (!rightReturn) {
         result.addError(loc, CErrorCode::TypeMismatch, "no return value");
         return nullptr;
@@ -187,7 +190,7 @@ shared_ptr<ReturnValue> NAssignment::transpile(Compiler* compiler, CResult& resu
         return nullptr;
     }
 
-    _assignVar->transpileSet(compiler, result, thisFunction, thisVar, trOutput, trBlock, nullptr, rightReturn);
+    _assignVar->transpileSet(compiler, result, thisFunction, thisVar, trOutput, trBlock, nullptr, rightReturn, thisName);
     
     return rightReturn;
 }

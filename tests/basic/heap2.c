@@ -123,19 +123,19 @@ int main() {
     sjs_class* c;
     sjs_class_anon1* d;
     sjs_class_anon1* result1;
-    sjs_class_anon1* sjv_temp1;
-    sjs_class* sjv_temp2;
+    sjs_class* sjv_temp1;
+    sjs_class_anon1* sjv_temp2;
 
-    sjv_temp1 = (sjs_class_anon1*)malloc(sizeof(sjs_class_anon1));
+    sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
-    sjv_temp1->x = 0;
-    sjf_class_anon1(sjv_temp1, &sjv_temp1);
-    sjv_temp2 = &sjd_temp1;
+    sjv_temp2 = (sjs_class_anon1*)malloc(sizeof(sjs_class_anon1));
     sjv_temp2->_refCount = 1;
-    sjv_temp2->data = sjv_temp1;
-    sjv_temp2->data->_refCount++;
-    sjf_class(sjv_temp2, &sjv_temp2);
-    c = sjv_temp2;
+    sjv_temp2->x = 0;
+    sjf_class_anon1(sjv_temp2, &sjv_temp2);
+    sjv_temp1->data = sjv_temp2;
+    sjv_temp1->data->_refCount++;
+    sjf_class(sjv_temp1, &sjv_temp1);
+    c = sjv_temp1;
     c->_refCount++;
     result1 = 0;
     sjf_class_get(c, &result1);
@@ -152,10 +152,10 @@ int main() {
         sjf_class_anon1_destroy(result1);
         free(result1);
     }
-    sjv_temp1->_refCount--;
-    if (sjv_temp1->_refCount <= 0) {
-        sjf_class_anon1_destroy(sjv_temp1);
-        free(sjv_temp1);
+    sjv_temp2->_refCount--;
+    if (sjv_temp2->_refCount <= 0) {
+        sjf_class_anon1_destroy(sjv_temp2);
+        free(sjv_temp2);
     }
     sjf_class_destroy(&sjd_temp1);
     return 0;

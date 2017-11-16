@@ -87,8 +87,8 @@ void sjf_a_destroy(sjs_a* _this);
 void sjf_array_char(sjs_array_char* _this, sjs_array_char** _return);
 void sjf_array_char_destroy(sjs_array_char* _this);
 
-sjs_array_char sjd_temp1;
-sjs_a sjd_temp2;
+sjs_a sjd_temp1;
+sjs_array_char sjd_temp2;
 
 void sjf_a(sjs_a* _this, sjs_a** _return) {
     _this->_refCount++;
@@ -132,22 +132,22 @@ void sjf_array_char_destroy(sjs_array_char* _this) {
 
 int main() {
     uintptr_t result1;
-    sjs_array_char* sjv_temp1;
-    sjs_a* sjv_temp2;
+    sjs_a* sjv_temp1;
+    sjs_array_char* sjv_temp2;
 
-    result1 = (uintptr_t)0;
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
-    sjv_temp1->size = 0;
-    sjv_temp1->data = result1;
-    sjv_temp1->_isGlobal = false;
-    sjf_array_char(sjv_temp1, &sjv_temp1);
     sjv_temp2 = &sjd_temp2;
     sjv_temp2->_refCount = 1;
-    sjv_temp2->data = sjv_temp1;
-    sjv_temp2->data->_refCount++;
-    sjf_a(sjv_temp2, &sjv_temp2);
-    sjf_array_char_destroy(&sjd_temp1);
-    sjf_a_destroy(&sjd_temp2);
+    result1 = (uintptr_t)0;
+    sjv_temp2->size = 0;
+    sjv_temp2->data = result1;
+    sjv_temp2->_isGlobal = false;
+    sjf_array_char(sjv_temp2, &sjv_temp2);
+    sjv_temp1->data = sjv_temp2;
+    sjv_temp1->data->_refCount++;
+    sjf_a(sjv_temp1, &sjv_temp1);
+    sjf_a_destroy(&sjd_temp1);
+    sjf_array_char_destroy(&sjd_temp2);
     return 0;
 }

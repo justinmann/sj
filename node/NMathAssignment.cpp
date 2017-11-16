@@ -102,10 +102,10 @@ int NMathAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_
     }
 }
 
-shared_ptr<ReturnValue> NMathAssignment::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
+shared_ptr<ReturnValue> NMathAssignment::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName) {
     shared_ptr<ReturnValue> mathReturnValue;
     if (operatorOverloadNode) {
-        mathReturnValue = operatorOverloadNode->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue);
+        mathReturnValue = operatorOverloadNode->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue, thisName);
     }
     else {
         auto cvar = leftSide->getVar(compiler, result, thisFunction, thisVar, nullptr);
@@ -118,10 +118,10 @@ shared_ptr<ReturnValue> NMathAssignment::transpile(Compiler* compiler, CResult& 
             return nullptr;
         }
 
-        shared_ptr<ReturnValue> leftReturn = leftSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
+        shared_ptr<ReturnValue> leftReturn = leftSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false, thisName);
         shared_ptr<ReturnValue> rightReturn;
         if (rightSide) {
-            rightReturn = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
+            rightReturn = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false, thisName);
             if (leftReturn->type != rightReturn->type) {
                 result.addError(loc, CErrorCode::TypeMismatch, "left and right values are not the same type");
                 return nullptr;
@@ -154,7 +154,7 @@ shared_ptr<ReturnValue> NMathAssignment::transpile(Compiler* compiler, CResult& 
         trBlock->statements.push_back(lineStream.str());
     }
 
-    leftSide->transpileSet(compiler, result, thisFunction, thisVar, trOutput, trBlock, mathReturnValue);
+    leftSide->transpileSet(compiler, result, thisFunction, thisVar, trOutput, trBlock, mathReturnValue, thisName);
 
     return mathReturnValue;
 }

@@ -34,12 +34,9 @@ void NInterface::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBas
     for (auto it : methodList) {
         it->define(compiler, result, thisFunction);
     }
-    
-    assert(name[0] == '#');
-    parentFunction->interfacesByName[name] = def;
 }
 
-shared_ptr<ReturnValue> NInterface::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
+shared_ptr<ReturnValue> NInterface::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName) {
     // TODO: assert(false);
 	return nullptr;
 }
@@ -97,12 +94,12 @@ int CInterfaceVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CV
     return 0;
 }
 
-shared_ptr<ReturnValue> CInterfaceVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue) {
+shared_ptr<ReturnValue> CInterfaceVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     assert(false);
 	return nullptr;
 }
 
-void CInterfaceVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue) {
+void CInterfaceVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     assert(false);
 }
 
@@ -347,7 +344,7 @@ void CInterface::transpileDefinition(Compiler* compiler, CResult& result, TrOutp
     }
 }
 
-shared_ptr<ReturnValue> CInterface::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters) {
+shared_ptr<ReturnValue> CInterface::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, const char* thisName) {
     assert(false);
     return nullptr;
 }
@@ -424,7 +421,7 @@ bool CInterface::getReturnMustRelease(Compiler* compiler, CResult& result) {
 //    return make_shared<ReturnValue>(shared_from_this(), RVR_MustRelease, RVT_HEAP, false, value);
 //}
 
-CInterfaceDefinition::CInterfaceDefinition(string& name_) {
+CInterfaceDefinition::CInterfaceDefinition(string& name_) : CBaseFunctionDefinition(CFT_Interface){
     name = name_;
 }
 

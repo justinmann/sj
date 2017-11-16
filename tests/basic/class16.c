@@ -87,8 +87,8 @@ void sjf_a_aa_c(sjs_a_aa* _parent, int32_t* _return);
 void sjf_a_aa_destroy(sjs_a_aa* _this);
 void sjf_a_destroy(sjs_a* _this);
 
-sjs_a_aa sjd_temp1;
-sjs_a sjd_temp2;
+sjs_a sjd_temp1;
+sjs_a_aa sjd_temp2;
 
 void sjf_a(sjs_a* _this, sjs_a** _return) {
     _this->_refCount++;
@@ -126,19 +126,20 @@ int main() {
     sjs_a_aa* dotTemp3;
     int32_t result1;
     int32_t result2;
-    sjs_a_aa* sjv_temp1;
-    sjs_a* sjv_temp2;
+    sjs_a* sjv_temp1;
+    sjs_a_aa* sjv_temp2;
 
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
-    sjf_a_aa(sjv_temp1, &sjv_temp1);
     sjv_temp2 = &sjd_temp2;
+    sjv_temp2->_parent = sjv_temp1;
     sjv_temp2->_refCount = 1;
-    sjv_temp2->x = 1;
-    sjv_temp2->b = sjv_temp1;
-    sjv_temp2->b->_refCount++;
-    sjf_a(sjv_temp2, &sjv_temp2);
-    a = sjv_temp2;
+    sjf_a_aa(sjv_temp2, &sjv_temp2);
+    sjv_temp1->x = 1;
+    sjv_temp1->b = sjv_temp2;
+    sjv_temp1->b->_refCount++;
+    sjf_a(sjv_temp1, &sjv_temp1);
+    a = sjv_temp1;
     a->_refCount++;
     dotTemp1 = a->b;
     result1 = 0;
@@ -148,7 +149,7 @@ int main() {
     d->_refCount++;
     result2 = 0;
     sjf_a_aa_c(d, &result2);
-    sjf_a_aa_destroy(&sjd_temp1);
-    sjf_a_destroy(&sjd_temp2);
+    sjf_a_destroy(&sjd_temp1);
+    sjf_a_aa_destroy(&sjd_temp2);
     return 0;
 }

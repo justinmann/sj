@@ -143,7 +143,7 @@ int CNormalVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar>
     return count;
 }
 
-shared_ptr<ReturnValue> CNormalVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue) {
+shared_ptr<ReturnValue> CNormalVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     auto returnType = getType(compiler, result);
     if (!returnType)
         return nullptr;
@@ -166,7 +166,7 @@ shared_ptr<ReturnValue> CNormalVar::transpileGet(Compiler* compiler, CResult& re
     }    
 }
 
-void CNormalVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue) {
+void CNormalVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     stringstream lineStream;
 
     if (!returnValue)
@@ -186,6 +186,7 @@ void CNormalVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CB
     }
     else if (trBlock->hasThis && (mode == Var_Public || mode == Var_Private)) {
         if (!isMutable) {
+            // TODO: this may not be the first assignment
             isFirstAssignment = true;
         }
         varName = "_this->" + name;

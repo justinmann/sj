@@ -106,9 +106,7 @@ void sjf_func(sjs_class** _return) {
     }
 
     a = sjv_temp2;
-
     a->_refCount++;
-
     sjv_temp2->_refCount++;
 
     a->_refCount--;

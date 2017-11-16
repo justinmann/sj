@@ -2,7 +2,7 @@
 
 NParent::NParent(CLoc loc) : NVariableBase(NodeType_Parent, loc) { }
 
-shared_ptr<ReturnValue> NParent::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
+shared_ptr<ReturnValue> NParent::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName) {
     auto parentFunction = thisFunction->parent.lock();
     
     return make_shared<ReturnValue>(

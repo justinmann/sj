@@ -87,8 +87,8 @@ void sjf_math(sjs_math* _this, sjs_math** _return);
 void sjf_math_destroy(sjs_math* _this);
 void sjf_math_sub(int32_t x, int32_t y, int32_t* _return);
 
-sjs_math sjd_temp1;
-sjs_class sjd_temp2;
+sjs_class sjd_temp1;
+sjs_math sjd_temp2;
 
 void sjf_class(sjs_class* _this, sjs_class** _return) {
     _this->_refCount++;
@@ -97,12 +97,12 @@ void sjf_class(sjs_class* _this, sjs_class** _return) {
 }
 
 void sjf_class_bar(sjs_class* _parent, int32_t x, int32_t* _return) {
-    int32_t result6;
+    int32_t result4;
 
-    result6 = 0;
-    sjf_class_foo(_parent, x, &result6);
+    result4 = 0;
+    sjf_class_foo(_parent, x, &result4);
 
-    *_return = result6;
+    *_return = result4;
 }
 
 void sjf_class_destroy(sjs_class* _this) {
@@ -117,13 +117,13 @@ void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return) {
     if (result2) {
         sjs_math* dotTemp1;
         int32_t result3;
-        int32_t result4;
+        int32_t result5;
 
         result3 = 0;
         dotTemp1 = _parent->m;
-        result4 = 0;
-        sjf_math_sub(x, 1, &result4);
-        sjf_class_bar(_parent, result4, &result3);
+        result5 = 0;
+        sjf_math_sub(x, 1, &result5);
+        sjf_class_bar(_parent, result5, &result3);
         ifResult1 = result3;
     } else {
         ifResult1 = 0;
@@ -142,32 +142,32 @@ void sjf_math_destroy(sjs_math* _this) {
 }
 
 void sjf_math_sub(int32_t x, int32_t y, int32_t* _return) {
-    int32_t result5;
+    int32_t result6;
 
-    result5 = x - y;
+    result6 = x - y;
 
-    *_return = result5;
+    *_return = result6;
 }
 
 int main() {
     sjs_class* c;
     int32_t result1;
-    sjs_math* sjv_temp1;
-    sjs_class* sjv_temp2;
+    sjs_class* sjv_temp1;
+    sjs_math* sjv_temp2;
 
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
-    sjf_math(sjv_temp1, &sjv_temp1);
     sjv_temp2 = &sjd_temp2;
     sjv_temp2->_refCount = 1;
-    sjv_temp2->m = sjv_temp1;
-    sjv_temp2->m->_refCount++;
-    sjf_class(sjv_temp2, &sjv_temp2);
-    c = sjv_temp2;
+    sjf_math(sjv_temp2, &sjv_temp2);
+    sjv_temp1->m = sjv_temp2;
+    sjv_temp1->m->_refCount++;
+    sjf_class(sjv_temp1, &sjv_temp1);
+    c = sjv_temp1;
     c->_refCount++;
     result1 = 0;
     sjf_class_foo(c, 4, &result1);
-    sjf_math_destroy(&sjd_temp1);
-    sjf_class_destroy(&sjd_temp2);
+    sjf_class_destroy(&sjd_temp1);
+    sjf_math_destroy(&sjd_temp2);
     return 0;
 }

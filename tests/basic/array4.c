@@ -188,9 +188,9 @@ int main() {
     sjs_array_sjs_class* sjv_temp1;
     sjs_class* sjv_temp2;
 
-    result1 = (uintptr_t)0;
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
+    result1 = (uintptr_t)0;
     sjv_temp1->size = 1;
     sjv_temp1->data = result1;
     sjv_temp1->_isGlobal = false;

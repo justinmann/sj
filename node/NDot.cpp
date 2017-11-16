@@ -50,14 +50,14 @@ int CDotVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> th
     return rightVar->setHeapVar(compiler, result, leftVar);
 }
 
-shared_ptr<ReturnValue> CDotVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue) {
-	auto leftValue = leftVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, false, dotValue);
-	return rightVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue, leftValue);
+shared_ptr<ReturnValue> CDotVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+	auto leftValue = leftVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, false, dotValue, thisName);
+	return rightVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue, leftValue, thisName);
 }
 
-void CDotVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue) {
-    auto leftValue = leftVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, false, dotValue);
-    rightVar->transpileSet(compiler, result, thisFunction, thisVar, trOutput, trBlock, leftValue, returnValue);
+void CDotVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+    auto leftValue = leftVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, false, dotValue, thisName);
+    rightVar->transpileSet(compiler, result, thisFunction, thisVar, trOutput, trBlock, leftValue, returnValue, thisName);
 }
 
 

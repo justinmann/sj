@@ -2,21 +2,22 @@
 
 class NGlobalPtrVar : public NBase {
 public:
-    NGlobalPtrVar(CLoc loc, const string& str);
+    NGlobalPtrVar(CLoc loc, const string& varName, const string& str);
     
 protected:
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);
     virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar);
     virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar);
     virtual int setHeapVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar);
-    virtual shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue);
+    virtual shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName);
     virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
     
 private:
+    string varName;
     string str;
 };
 
-NGlobalPtrVar::NGlobalPtrVar(CLoc loc, const string& str_) : NBase(NodeType_Integer, loc), str(str_) {
+NGlobalPtrVar::NGlobalPtrVar(CLoc loc, const string& varName, const string& str_) : NBase(NodeType_Integer, loc), varName(varName), str(str_) {
 }
 
 void NGlobalPtrVar::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
@@ -34,8 +35,9 @@ shared_ptr<CType> NGlobalPtrVar::getTypeImpl(Compiler* compiler, CResult& result
     return compiler->typePtr;
 }
 
-shared_ptr<ReturnValue> NGlobalPtrVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
-    return make_shared<ReturnValue>(compiler->typePtr, false, RVR_MustRetain, "(uintptr_t)" + str);
+shared_ptr<ReturnValue> NGlobalPtrVar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName) {
+    trOutput->strings[varName] = str;
+    return make_shared<ReturnValue>(compiler->typePtr, false, RVR_MustRetain, "(uintptr_t)" + varName);
 }
 
 void NGlobalPtrVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level)  {
@@ -68,7 +70,7 @@ void NString::initStatements(Compiler* compiler, CResult& result, shared_ptr<CBa
         make_shared<CTypeNameList>(CTC_Value, compiler->typeChar->name, false),
         make_shared<NodeList>(
             make_shared<NInteger>(loc, str.size() + 1),
-            make_shared<NGlobalPtrVar>(loc, varName)));
+            make_shared<NGlobalPtrVar>(loc, varName, str)));
 
     auto createString = make_shared<NCall>(
         loc,
@@ -80,9 +82,3 @@ void NString::initStatements(Compiler* compiler, CResult& result, shared_ptr<CBa
 
     statements.push_back(createString);
 }
-
-shared_ptr<ReturnValue> NString::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
-    trOutput->strings[varName] = str;
-    return NBlock::transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue);
-}
-

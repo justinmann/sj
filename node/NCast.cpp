@@ -34,13 +34,13 @@ int NCast::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseF
     return node->setHeapVar(compiler, result, thisFunction, thisVar, nullptr, false);
 }
 
-shared_ptr<ReturnValue> NCast::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
+shared_ptr<ReturnValue> NCast::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName) {
     auto type = getType(compiler, result, thisFunction, thisVar);
     if (type == nullptr) {
         return nullptr;
     }
 
-    auto returnValue = node->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
+    auto returnValue = node->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false, thisName);
     if (!returnValue) {
         assert(false);
         return nullptr;

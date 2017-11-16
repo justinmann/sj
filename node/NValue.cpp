@@ -44,8 +44,8 @@ int NValue::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBase
     return node->setHeapVar(compiler, result, thisFunction, thisVar, isHeapVar);
 }
 
-shared_ptr<ReturnValue> NValue::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
-    auto leftValue = node->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
+shared_ptr<ReturnValue> NValue::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName) {
+    auto leftValue = node->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false, thisName);
     if (!leftValue) {
         return nullptr;
     }

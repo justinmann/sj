@@ -37,6 +37,7 @@ void TrBlock::writeBodyToStream(ostream& stream, int level) {
     for (auto statement : statements)
     {
         if (previousLineBlock) {
+            previousLineBlock = false;
             stream << "\n";
         }
 

@@ -192,11 +192,8 @@ int main() {
     }
 
     a->test1(a->_parent, &result2);
-
     result3 = (sji_bar*)a->asInterface(a->_parent, sji_bar_typeId);
-
     b = result3;
-
     if (b != 0) {
         b->_refCount++;
     }

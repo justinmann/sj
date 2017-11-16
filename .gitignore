@@ -45,3 +45,13 @@ tests/app/timer.wast
 tests/app/timer
 
 tests/app/highlow
+
+tests/app/highlow.wasm
+
+tests/app/highlow.wasm.map
+
+tests/app/highlow.js
+
+tests/app/highlow.wast
+
+tests/app/highlow.html

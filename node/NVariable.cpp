@@ -59,7 +59,7 @@ string CParentVar::fullName() {
     return childVar->fullName();
 }
 
-shared_ptr<ReturnValue> CParentVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue) {
+shared_ptr<ReturnValue> CParentVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     shared_ptr<ReturnValue> parentValue;
     if (dotValue) {
         parentValue = trBlock->createTempVariable(
@@ -77,12 +77,12 @@ shared_ptr<ReturnValue> CParentVar::transpileGet(Compiler* compiler, CResult& re
             parentFunction->parent.lock()->getThisType(compiler, result, false),
             false,
             RVR_MustRetain,
-            "_parent");
+            thisFunction->getHasThis() ? string(thisName) + "->_parent" : "_parent");
     }
-    return childVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue, parentValue);
+    return childVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue, parentValue, thisName);
 }
 
-void CParentVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue) {
+void CParentVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     shared_ptr<ReturnValue> parentValue;
     if (dotValue) {
         parentValue = trBlock->createTempVariable(
@@ -100,9 +100,9 @@ void CParentVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CB
             parentFunction->parent.lock()->getThisType(compiler, result, false),
             false,
             RVR_MustRetain,
-            "_parent");
+            thisFunction->getHasThis() ? string(thisName) + "->_parent" : "_parent");
     }
-    childVar->transpileSet(compiler, result, thisFunction, thisVar, trOutput, trBlock, parentValue, returnValue);
+    childVar->transpileSet(compiler, result, thisFunction, thisVar, trOutput, trBlock, parentValue, returnValue, thisName);
 }
 
 void CParentVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

@@ -38,6 +38,17 @@ shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CResult& result, CLoc 
         callee_->onHasParent(onHasParent);
     }
 
+    // Fill in parameters
+    vector<pair<bool, shared_ptr<NBase>>> parameters(callee_->argDefaultValues.size());
+    if (!c->getParameters(compiler, result, parameters)) {
+        return nullptr;
+    }
+    
+    auto calleeVar = c->getThisVar(compiler, result);
+    for (auto parameter : parameters) {
+        parameter.second->getVar(compiler, result, parameter.first ? callee_ : thisFunction_, parameter.first ? calleeVar : thisVar);
+    }
+    
     return c;
 }
 
@@ -169,7 +180,7 @@ int CCallVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> t
     return 0;
 }
 
-shared_ptr<ReturnValue> CCallVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue) {
+shared_ptr<ReturnValue> CCallVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     assert(compiler->state == CompilerState::Compile);
 
     if (arguments->size() > callee->argDefaultValues.size()) {
@@ -183,7 +194,7 @@ shared_ptr<ReturnValue> CCallVar::transpileGet(Compiler* compiler, CResult& resu
         return nullptr;
     }
 
-    auto returnValue = callee->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue, dotValue, calleeVar, loc, parameters);
+    auto returnValue = callee->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue, dotValue, calleeVar, loc, parameters, thisName);
 
     // If this is a must release result and we are going to use this as a result value then we need to change the release type
     if (!isReturnValue && returnValue && returnValue->release == RVR_MustRelease) {
@@ -192,7 +203,7 @@ shared_ptr<ReturnValue> CCallVar::transpileGet(Compiler* compiler, CResult& resu
     return returnValue;
 }
 
-void CCallVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue) {
+void CCallVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     assert(false);
 }
 
@@ -387,6 +398,9 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler *compiler, CResult &result, shared_p
     
     if (!_callVar) {
         _callVar = CCallVar::create(compiler, result, loc, name, arguments, thisFunction, thisVar, dotVar, callee);
+        if (!_callVar) {
+            return nullptr;
+        }
         _callVar->getThisVar(compiler, result);
     }
     return _callVar;

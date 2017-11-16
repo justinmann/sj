@@ -16,7 +16,7 @@ shared_ptr<CType> NEmpty::getTypeImpl(Compiler* compiler, CResult& result, share
     return ctype;
 }
 
-shared_ptr<ReturnValue> NEmpty::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
+shared_ptr<ReturnValue> NEmpty::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName) {
     auto ctype = getType(compiler, result, thisFunction, thisVar);
     if (!ctype) {
         result.addError(loc, CErrorCode::InvalidType, "cannot find type '%s'", typeName->getName().c_str());

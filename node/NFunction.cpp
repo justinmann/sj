@@ -59,20 +59,7 @@ void NFunction::defineImpl(Compiler *compiler, CResult& result, shared_ptr<CBase
 }
 
 shared_ptr<CFunctionDefinition> NFunction::getFunctionDefinition(Compiler *compiler, CResult& result, shared_ptr<CFunctionDefinition> parentFunction) {
-    shared_ptr<vector<pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameList>>>> interfaces;
-    if (interfaceTypeNames) {
-        interfaces = make_shared<vector<pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameList>>>>();
-        for (auto it : *interfaceTypeNames) {
-            auto interface = parentFunction->getDefinedInterfaceDefinition(it->name);
-            if (interface == nullptr) {
-                result.addError(loc, CErrorCode::InterfaceDoesNotExist, "cannot find interface '%s'", it->name.c_str());
-                return nullptr;
-            }
-            interfaces->push_back(pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameList>>(interface, it->templateTypeNames));
-        }
-    }
-    
-    return CFunctionDefinition::create(compiler, result, parentFunction, type, name, interfaces, shared_from_this());
+    return CFunctionDefinition::create(compiler, result, parentFunction, type, name, interfaceTypeNames, shared_from_this());
 }
 
 shared_ptr<CVar> NFunction::getVarImpl(Compiler *compiler, CResult& result, shared_ptr<CBaseFunction> parentFunction, shared_ptr<CVar> parentVar) {
@@ -89,7 +76,7 @@ shared_ptr<CType> NFunction::getTypeImpl(Compiler* compiler, CResult& result, sh
     return compiler->typeVoid;
 }
 
-shared_ptr<ReturnValue> NFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
+shared_ptr<ReturnValue> NFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName) {
 	return nullptr;
 }
 
@@ -142,12 +129,12 @@ int CFunctionReturnVar::setHeapVar(Compiler* compiler, CResult& result, shared_p
     return count;
 }
 
-shared_ptr<ReturnValue> CFunctionReturnVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue) {
+shared_ptr<ReturnValue> CFunctionReturnVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     assert(false);
 	return nullptr;
 }
 
-void CFunctionReturnVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue) {
+void CFunctionReturnVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     assert(false);
 }
 
@@ -343,7 +330,7 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
             functionDefinition << ")";
             trFunctionBlock->definition = functionDefinition.str();
 
-            auto bodyReturnValue = block->transpile(compiler, result, shared_from_this(), nullptr, trOutput, trFunctionBlock.get(), true);
+            auto bodyReturnValue = block->transpile(compiler, result, shared_from_this(), nullptr, trOutput, trFunctionBlock.get(), true, nullptr);
             if (bodyReturnValue && bodyReturnValue->type != compiler->typeVoid) {
                 assert(bodyReturnValue->type == returnType);
                 if (bodyReturnValue->release == RVR_MustRetain && !bodyReturnValue->type->parent.expired()) {
@@ -387,7 +374,7 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
             trFunctionBlock->definition = functionDefinition.str();
 
             auto thisVar = getThisVar(compiler, result);
-            auto bodyReturnValue = block->transpile(compiler, result, shared_from_this(), thisVar, trOutput, trFunctionBlock.get(), true);
+            auto bodyReturnValue = block->transpile(compiler, result, shared_from_this(), thisVar, trOutput, trFunctionBlock.get(), true, "_this");
             if (bodyReturnValue && bodyReturnValue->type && bodyReturnValue->type != compiler->typeVoid) {
                 assert(bodyReturnValue->type == returnType);
                 if (bodyReturnValue->release == RVR_MustRetain && !bodyReturnValue->type->parent.expired()) {
@@ -412,7 +399,7 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
 
             if (destroyBlock) {
                 auto thisVar = getThisVar(compiler, result);
-                destroyBlock->transpile(compiler, result, shared_from_this(), thisVar, trOutput, trDestroyBlock.get(), false);
+                destroyBlock->transpile(compiler, result, shared_from_this(), thisVar, trOutput, trDestroyBlock.get(), false, "_this");
             }
 
             for (auto argVar : argVars) {
@@ -504,7 +491,7 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
     }
 }
 
-shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters) {
+shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, const char* thisName) {
     assert(compiler->state == CompilerState::Compile);
     auto returnType = getReturnType(compiler, result, thisVar);
     if (!returnType) {
@@ -542,9 +529,90 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
         }
     }
 
-    auto argTypes = getCTypeList(compiler, result);
-
+    auto functionName = getCInitFunctionName();
+    string calleeThisName = "INVALID";
+    transpileDefinition(compiler, result, trOutput);
     vector<ArgData> argValues;
+
+    if (!getHasThis()) {
+        // Add "parent" to "this"
+        auto hasParent = getHasParent(compiler, result);
+        shared_ptr<ReturnValue> dotReturnValue;
+        if (hasParent) {
+            if (!calleeValue) {
+                argValues.insert(argValues.begin(), ArgData(nullptr, trBlock->hasThis ? "_this" : "_parent"));
+            }
+            else {
+                argValues.insert(argValues.begin(), ArgData(nullptr, calleeValue));
+            }
+        }
+    } else {
+        string structName = getStructName();
+        
+        // Initialize "this"
+        auto objectHeapVar = calleeVar->getHeapVar(compiler, result, thisVar);
+        shared_ptr<ReturnValue> objectRef;
+        if (objectHeapVar) {
+            objectRef = trBlock->createTempVariable("sjv_temp", thisType, true, RVR_MustRetain);
+            stringstream initLine;
+            initLine << objectRef->name << " = (" << structName << "*)malloc(sizeof(" << structName << "))";
+            trBlock->statements.push_back(TrStatement(initLine.str()));
+        } else {
+            if (isReturnValue) {
+                objectRef = trBlock->createTempVariable("sjv_temp", thisType, true, RVR_MustRetain);
+                stringstream initLine;
+                initLine << objectRef->name << " = (*_return != 0) ? *_return : (" << structName << "*)malloc(sizeof(" << structName << "))";
+                trBlock->statements.push_back(TrStatement(initLine.str()));
+            }
+            else {
+                objectRef = trBlock->createTempVariable("sjv_temp", thisType, false, RVR_MustRetain);
+                auto objectVal = trBlock->createStackValue("sjd_temp", thisType);
+                stringstream initLine;
+                initLine << objectRef->name << " = &" << objectVal;
+                trBlock->statements.push_back(TrStatement(initLine.str()));
+            }
+        }
+        
+        calleeThisName = objectRef->name;
+        
+        if (hasParent) {
+            stringstream parentLine;
+            if (!calleeValue) {
+                if (parent.lock() == thisFunction) {
+                    parentLine << calleeThisName << "->_parent = " << thisName;
+                }
+                else if (parent.lock() == thisFunction->parent.lock()) {
+                    parentLine << calleeThisName << "->_parent = ";
+                    if (thisFunction->getHasThis()) {
+                        parentLine << thisName << "->";
+                    }
+                    parentLine << "_parent";
+                }
+                else if (parent.lock() == thisFunction->parent.lock()->parent.lock()) {
+                    parentLine << calleeThisName << "->_parent = ";
+                    if (thisFunction->getHasThis()) {
+                        parentLine << thisName << "->";
+                    }
+                    parentLine << "_parent->_parent";
+                }
+                else {
+                    assert(false);
+                }
+            }
+            else {
+                parentLine << calleeThisName << "->_parent = " << calleeValue->name;
+            }
+            trBlock->statements.push_back(parentLine.str());
+        }
+
+        if (isReturnValueThis) {
+            returnValue = objectRef;
+        }
+        
+        ReturnValue::addInitToStatements(trBlock, objectRef->name, thisType);
+    }
+
+    auto argTypes = getCTypeList(compiler, result);
     auto argIndex = 0;
     // Fill in "this" with normal arguments
     for (auto defaultAssignment : argDefaultValues) {
@@ -561,45 +629,30 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
             auto paramHeapVar = paramVar->getHeapVar(compiler, result, thisVar);
             assert(!argHeapVar || paramHeapVar == argHeapVar);
         }
-        argReturnValue = parameters[argIndex].second->transpile(compiler, result, isDefaultAssignment ? shared_from_this() : thisFunction, isDefaultAssignment ? calleeVar : thisVar, trOutput, trBlock, false);
+        argReturnValue = parameters[argIndex].second->transpile(compiler, result, isDefaultAssignment ? shared_from_this() : thisFunction, isDefaultAssignment ? calleeVar : thisVar, trOutput, trBlock, false, isDefaultAssignment ? calleeThisName.c_str() : thisName);
         
         if (argReturnValue == nullptr) {
             result.addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' has no value", argVar->name.c_str());
             return nullptr;
         }
-
+        
         if (argType == nullptr) {
             result.addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' type is undefined", argVar->name.c_str());
             return nullptr;
         }
-
+        
         if (argReturnValue->type != argType) {
             result.addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' type '%s' does not match '%s'", argVar->name.c_str(), argReturnValue->type->name.c_str(), argType->name.c_str());
             return nullptr;
         }
-
+        
         // TODO: assert(argReturnValue == nullptr || argReturnValue->release == RVR_MustRetain);
         
         argValues.push_back(ArgData(argVar, argReturnValue));
         argIndex++;
     }
     
-    auto functionName = getCInitFunctionName();
-    transpileDefinition(compiler, result, trOutput);
-    
-    if (!getHasThis()) {       
-        // Add "parent" to "this"
-        auto hasParent = getHasParent(compiler, result);
-        shared_ptr<ReturnValue> dotReturnValue;
-        if (hasParent) {
-            if (!calleeValue) {
-                argValues.insert(argValues.begin(), ArgData(nullptr, trBlock->hasThis ? "_this" : "_parent"));
-            }
-            else {
-                argValues.insert(argValues.begin(), ArgData(nullptr, calleeValue));
-            }
-        }
-
+    if (!getHasThis()) {
         // Call function
         stringstream line;
         line << functionName << "(";
@@ -624,51 +677,19 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
         line << ")";
         trBlock->statements.push_back(line.str());
     } else {
-        string structName = getStructName();
-
-        // Initialize "this"
-        auto objectHeapVar = calleeVar->getHeapVar(compiler, result, thisVar);
-        shared_ptr<ReturnValue> objectRef;
-        if (objectHeapVar) {
-            objectRef = trBlock->createTempVariable("sjv_temp", thisType, true, RVR_MustRetain);
-            stringstream initLine;
-            initLine << objectRef->name << " = (" << structName << "*)malloc(sizeof(" << structName << "))";
-            trBlock->statements.push_back(TrStatement(initLine.str()));
-        } else {
-            if (isReturnValue) {
-                objectRef = trBlock->createTempVariable("sjv_temp", thisType, true, RVR_MustRetain);
-                stringstream initLine;
-                initLine << objectRef->name << " = (*_return != 0) ? *_return : (" << structName << "*)malloc(sizeof(" << structName << "))";
-                trBlock->statements.push_back(TrStatement(initLine.str()));
-            }
-            else {
-                objectRef = trBlock->createTempVariable("sjv_temp", thisType, false, RVR_MustRetain);
-                auto objectVal = trBlock->createStackValue("sjd_temp", thisType);
-                stringstream initLine;
-                initLine << objectRef->name << " = &" << objectVal;
-                trBlock->statements.push_back(TrStatement(initLine.str()));
-            }
-        }
-
-        if (isReturnValueThis) {
-            returnValue = objectRef;
-        }
-        
-        ReturnValue::addInitToStatements(trBlock, objectRef->name, thisType);
-
         for (auto argValue : argValues) {
             stringstream argAssignLine;
-            argAssignLine << objectRef->name << "->" << argValue.var->name << " = " << argValue.name;
+            argAssignLine << calleeThisName << "->" << argValue.var->name << " = " << argValue.name;
             trBlock->statements.push_back(TrStatement(argAssignLine.str()));
 
             if (argValue.value->release == RVR_MustRetain && !argValue.value->type->parent.expired()) {
-                ReturnValue::addRetainToStatements(trBlock, objectRef->name + "->" + argValue.var->name, argValue.value->type);
+                ReturnValue::addRetainToStatements(trBlock, calleeThisName + "->" + argValue.var->name, argValue.value->type);
             }
         }
 
         // Call function
         stringstream line;
-        line << functionName << "(" << objectRef->name;
+        line << functionName << "(" << calleeThisName;
         if (returnValue) {
             line << ", &" << returnValue->name;
         }
@@ -1383,7 +1404,7 @@ shared_ptr<CVar> CFunction::getThisVar(Compiler* compiler, CResult& result) {
                             auto aType = functionArgVars[i]->getType(compiler, result);
                             auto bType = interfaceMethodArgVars[i]->getType(compiler, result);
                             if (aType != bType) {
-                                result.addError(loc, CErrorCode::TypeMismatch, "function parameter %d type '%s' does not match interface method parameter type '%s'", i + 1, aType->name.c_str(), bType->name.c_str());
+                                result.addError(loc, CErrorCode::TypeMismatch, "function parameter %d type '%s' does not match interface method parameter type '%s'", i + 1, aType ? aType->name.c_str() : "Unknown", bType ? bType->name.c_str() : "Unknown");
                             }
                         }
                     }
@@ -1693,17 +1714,19 @@ shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, CResult& res
     }
     else {
         auto def = static_pointer_cast<CFunctionDefinition>(definition.lock());
-        auto t = def->interfacesByName.find(name);
-        if (t != def->interfacesByName.end()) {
-            auto interfaceDef = t->second;
-
-            vector<shared_ptr<CType>> templateTypes;
-            if (!getTemplateTypes(compiler, result, loc, shared_from_this(), callerFunction, templateTypeNames, interfaceDef->ninterface->templateTypeNames, templateTypes)) {
-                return nullptr;
-            }
-
-            return interfaceDef->getInterface(compiler, result, templateTypes, shared_from_this());
+        auto interfaceDef = def->getDefinedInterfaceDefinition(name);
+        if (!interfaceDef) {
+            assert(false);
+            return nullptr;
         }
+        
+        vector<shared_ptr<CType>> templateTypes;
+        if (!getTemplateTypes(compiler, result, loc, shared_from_this(), callerFunction, templateTypeNames, interfaceDef->ninterface->templateTypeNames, templateTypes)) {
+            return nullptr;
+        }
+        
+        return interfaceDef->getInterface(compiler, result, templateTypes, shared_from_this());
+
         return nullptr;
     }
 }
@@ -1945,12 +1968,12 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, sha
 //    return nullptr;
 //}
 
-shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parent, CFunctionType type, const string& name, shared_ptr<vector<pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameList>>>> interfaceDefinitions, shared_ptr<NFunction> node) {
+shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, CResult& result, shared_ptr<CFunctionDefinition> parent, CFunctionType type, const string& name, shared_ptr<CTypeNameList> implementedInterfaceTypeNames, shared_ptr<NFunction> node) {
     auto c = make_shared<CFunctionDefinition>();
     c->parent = parent;
     c->type = type;
     c->name = name;
-    c->interfaceDefinitions = interfaceDefinitions;
+    c->implementedInterfaceTypeNames = implementedInterfaceTypeNames;
     c->node = node;
     
     if (node) {
@@ -1989,15 +2012,15 @@ void CFunctionDefinition::addChildFunction(string& name, shared_ptr<CBaseFunctio
 shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CResult& result, CLoc& loc, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent) {
     shared_ptr<CFunction> func;
     auto funcParentPtr = funcParent.lock().get();
-    auto it = cfunctions[funcParentPtr].find(templateTypes);
-    if (it != cfunctions[funcParentPtr].end()) {
+    auto it = _cfunctions[funcParentPtr].find(templateTypes);
+    if (it != _cfunctions[funcParentPtr].end()) {
         func = it->second;
         assert(func->parent.lock() == funcParent.lock());
     } else {
         assert(funcParent.expired() || funcParent.lock()->definition.lock() == parent.lock());
         
         shared_ptr<vector<shared_ptr<CInterface>>> interfaces;
-        if (interfaceDefinitions) {
+        if (getImplementedInterfaceDefintions(compiler, result)) {
             interfaces = make_shared<vector<shared_ptr<CInterface>>>();
         }
         
@@ -2019,8 +2042,8 @@ shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CResu
         
         func = node->createCFunction(compiler, result, shared_from_this(), templateTypes, funcParent, type, name, interfaces, interfaceMethod);
 
-        if (interfaceDefinitions) {
-            for (auto it : *interfaceDefinitions) {
+        if (getImplementedInterfaceDefintions(compiler, result)) {
+            for (auto it : *getImplementedInterfaceDefintions(compiler, result)) {
                 vector<shared_ptr<CType>> interfaceTemplateTypes;
                 if (!it.first->ninterface) {
                     result.addError(loc, CErrorCode::InterfaceDoesNotExist, "cannot find interface '%s'", it.first->name.c_str());
@@ -2042,14 +2065,14 @@ shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CResu
             }
         }
         
-        cfunctions[funcParentPtr][templateTypes] = func;
+        _cfunctions[funcParentPtr][templateTypes] = func;
     }
     return func;
 }
 
-shared_ptr<CInterfaceDefinition> CFunctionDefinition::getDefinedInterfaceDefinition(string& name) {
-    auto it = definedInterfaceDefinitions.find(name);
-    if (it == definedInterfaceDefinitions.end()) {
+shared_ptr<CInterfaceDefinition> CFunctionDefinition::getDefinedInterfaceDefinition(const string& name) {
+    auto it = _definedInterfaceDefinitions.find(name);
+    if (it == _definedInterfaceDefinitions.end()) {
         if (!parent.expired()) {
             auto t = static_pointer_cast<CFunctionDefinition>(parent.lock());
             return t->getDefinedInterfaceDefinition(name);
@@ -2065,8 +2088,25 @@ shared_ptr<CInterfaceDefinition> CFunctionDefinition::getDefinedInterfaceDefinit
 
 shared_ptr<CInterfaceDefinition> CFunctionDefinition::createDefinedInterfaceDefinition(string& name) {
     auto result = make_shared<CInterfaceDefinition>(name);
-    definedInterfaceDefinitions[name] = result;
+    _definedInterfaceDefinitions[name] = result;
     return result;
+}
+
+shared_ptr<vector<pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameList>>>> CFunctionDefinition::getImplementedInterfaceDefintions(Compiler* compiler, CResult& result) {
+    if (!_implementedInterfaceDefinitions) {
+        if (implementedInterfaceTypeNames) {
+            _implementedInterfaceDefinitions = make_shared<vector<pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameList>>>>();
+            for (auto it : *implementedInterfaceTypeNames) {
+                auto interface = getDefinedInterfaceDefinition(it->name);
+                if (interface == nullptr) {
+                    result.addError(loc, CErrorCode::InterfaceDoesNotExist, "cannot find interface '%s'", it->name.c_str());
+                    return nullptr;
+                }
+                _implementedInterfaceDefinitions->push_back(pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameList>>(interface, it->templateTypeNames));
+            }
+        }
+    }
+    return _implementedInterfaceDefinitions;
 }
 
 void CFunctionDefinition::dump(Compiler* compiler, CResult& result, int level) {

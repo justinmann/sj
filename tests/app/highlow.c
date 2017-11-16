@@ -149,8 +149,8 @@ void sjf_anon1_readLine(sjs_string** _return) {
     uintptr_t result6;
     int32_t result7;
     int32_t size;
-    sjs_array_char* sjv_temp7;
-    sjs_string* sjv_temp8;
+    sjs_string* sjv_temp7;
+    sjs_array_char* sjv_temp8;
 
     result6 = (uintptr_t)0;
     data = result6;
@@ -177,33 +177,33 @@ void sjf_anon1_readLine(sjs_string** _return) {
 		    data = (uintptr_t)str;
 		    size = index;
 		;
-    result7 = size - 1;
-    sjv_temp7 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
+    sjv_temp7 = (sjs_string*)malloc(sizeof(sjs_string));
     sjv_temp7->_refCount = 1;
-    sjv_temp7->size = size;
-    sjv_temp7->data = data;
-    sjv_temp7->_isGlobal = false;
-    sjf_array_char(sjv_temp7, &sjv_temp7);
-    sjv_temp8 = (sjs_string*)malloc(sizeof(sjs_string));
+    result7 = size - 1;
+    sjv_temp8 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     sjv_temp8->_refCount = 1;
-    sjv_temp8->count = result7;
-    sjv_temp8->data = sjv_temp7;
-    sjv_temp8->data->_refCount++;
-    sjf_string(sjv_temp8, &sjv_temp8);
-    sjv_temp8->_refCount++;
+    sjv_temp8->size = size;
+    sjv_temp8->data = data;
+    sjv_temp8->_isGlobal = false;
+    sjf_array_char(sjv_temp8, &sjv_temp8);
+    sjv_temp7->count = result7;
+    sjv_temp7->data = sjv_temp8;
+    sjv_temp7->data->_refCount++;
+    sjf_string(sjv_temp7, &sjv_temp7);
+    sjv_temp7->_refCount++;
 
     sjv_temp7->_refCount--;
     if (sjv_temp7->_refCount <= 0) {
-        sjf_array_char_destroy(sjv_temp7);
+        sjf_string_destroy(sjv_temp7);
         free(sjv_temp7);
     }
     sjv_temp8->_refCount--;
     if (sjv_temp8->_refCount <= 0) {
-        sjf_string_destroy(sjv_temp8);
+        sjf_array_char_destroy(sjv_temp8);
         free(sjv_temp8);
     }
 
-    *_return = sjv_temp8;
+    *_return = sjv_temp7;
 }
 
 void sjf_anon1_write(sjs_anon1* _parent, sjs_string* data) {
@@ -323,13 +323,13 @@ int main() {
     int32_t result3;
     bool result4;
     sjs_anon4* sjv_temp1;
-    sjs_array_char* sjv_temp13;
-    sjs_string* sjv_temp14;
+    sjs_string* sjv_temp13;
+    sjs_array_char* sjv_temp14;
     sjs_anon3* sjv_temp2;
     sjs_anon2* sjv_temp3;
     sjs_anon1* sjv_temp4;
-    sjs_array_char* sjv_temp5;
-    sjs_string* sjv_temp6;
+    sjs_string* sjv_temp5;
+    sjs_array_char* sjv_temp6;
     bool whileValue1;
 
     sjv_temp1 = &sjd_temp1;
@@ -352,19 +352,19 @@ int main() {
     sjf_anon1(sjv_temp4, &sjv_temp4);
     console = sjv_temp4;
     console->_refCount++;
-    sjv_temp5 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
+    sjv_temp5 = (sjs_string*)malloc(sizeof(sjs_string));
     sjv_temp5->_refCount = 1;
-    sjv_temp5->size = 16;
-    sjv_temp5->data = (uintptr_t)sjg_string1;
-    sjv_temp5->_isGlobal = false;
-    sjf_array_char(sjv_temp5, &sjv_temp5);
-    sjv_temp6 = (sjs_string*)malloc(sizeof(sjs_string));
+    sjv_temp6 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     sjv_temp6->_refCount = 1;
-    sjv_temp6->count = 15;
-    sjv_temp6->data = sjv_temp5;
-    sjv_temp6->data->_refCount++;
-    sjf_string(sjv_temp6, &sjv_temp6);
-    sjf_anon1_write(console, sjv_temp6);
+    sjv_temp6->size = 16;
+    sjv_temp6->data = (uintptr_t)sjg_string1;
+    sjv_temp6->_isGlobal = false;
+    sjf_array_char(sjv_temp6, &sjv_temp6);
+    sjv_temp5->count = 15;
+    sjv_temp5->data = sjv_temp6;
+    sjv_temp5->data->_refCount++;
+    sjf_string(sjv_temp5, &sjv_temp5);
+    sjf_anon1_write(console, sjv_temp5);
     sjf_anon3_nextInt(&result1);
     result2 = result1 % 10;
     result3 = result2 + 1;
@@ -390,32 +390,32 @@ int main() {
         guess = result8;
         result9 = guess < num;
         if (result9) {
-            sjs_string* sjv_temp10;
-            sjs_array_char* sjv_temp9;
+            sjs_array_char* sjv_temp10;
+            sjs_string* sjv_temp9;
 
-            sjv_temp9 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
+            sjv_temp9 = (sjs_string*)malloc(sizeof(sjs_string));
             sjv_temp9->_refCount = 1;
-            sjv_temp9->size = 10;
-            sjv_temp9->data = (uintptr_t)sjg_string3;
-            sjv_temp9->_isGlobal = false;
-            sjf_array_char(sjv_temp9, &sjv_temp9);
-            sjv_temp10 = (sjs_string*)malloc(sizeof(sjs_string));
+            sjv_temp10 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
             sjv_temp10->_refCount = 1;
-            sjv_temp10->count = 9;
-            sjv_temp10->data = sjv_temp9;
-            sjv_temp10->data->_refCount++;
-            sjf_string(sjv_temp10, &sjv_temp10);
-            sjf_anon1_write(console, sjv_temp10);
+            sjv_temp10->size = 10;
+            sjv_temp10->data = (uintptr_t)sjg_string3;
+            sjv_temp10->_isGlobal = false;
+            sjf_array_char(sjv_temp10, &sjv_temp10);
+            sjv_temp9->count = 9;
+            sjv_temp9->data = sjv_temp10;
+            sjv_temp9->data->_refCount++;
+            sjf_string(sjv_temp9, &sjv_temp9);
+            sjf_anon1_write(console, sjv_temp9);
             ifResult1 = false;
 
             sjv_temp10->_refCount--;
             if (sjv_temp10->_refCount <= 0) {
-                sjf_string_destroy(sjv_temp10);
+                sjf_array_char_destroy(sjv_temp10);
                 free(sjv_temp10);
             }
             sjv_temp9->_refCount--;
             if (sjv_temp9->_refCount <= 0) {
-                sjf_array_char_destroy(sjv_temp9);
+                sjf_string_destroy(sjv_temp9);
                 free(sjv_temp9);
             }
         } else {
@@ -424,32 +424,32 @@ int main() {
 
             result10 = guess > num;
             if (result10) {
-                sjs_array_char* sjv_temp11;
-                sjs_string* sjv_temp12;
+                sjs_string* sjv_temp11;
+                sjs_array_char* sjv_temp12;
 
-                sjv_temp11 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
+                sjv_temp11 = (sjs_string*)malloc(sizeof(sjs_string));
                 sjv_temp11->_refCount = 1;
-                sjv_temp11->size = 11;
-                sjv_temp11->data = (uintptr_t)sjg_string2;
-                sjv_temp11->_isGlobal = false;
-                sjf_array_char(sjv_temp11, &sjv_temp11);
-                sjv_temp12 = (sjs_string*)malloc(sizeof(sjs_string));
+                sjv_temp12 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
                 sjv_temp12->_refCount = 1;
-                sjv_temp12->count = 10;
-                sjv_temp12->data = sjv_temp11;
-                sjv_temp12->data->_refCount++;
-                sjf_string(sjv_temp12, &sjv_temp12);
-                sjf_anon1_write(console, sjv_temp12);
+                sjv_temp12->size = 11;
+                sjv_temp12->data = (uintptr_t)sjg_string2;
+                sjv_temp12->_isGlobal = false;
+                sjf_array_char(sjv_temp12, &sjv_temp12);
+                sjv_temp11->count = 10;
+                sjv_temp11->data = sjv_temp12;
+                sjv_temp11->data->_refCount++;
+                sjf_string(sjv_temp11, &sjv_temp11);
+                sjf_anon1_write(console, sjv_temp11);
                 ifResult2 = false;
 
                 sjv_temp11->_refCount--;
                 if (sjv_temp11->_refCount <= 0) {
-                    sjf_array_char_destroy(sjv_temp11);
+                    sjf_string_destroy(sjv_temp11);
                     free(sjv_temp11);
                 }
                 sjv_temp12->_refCount--;
                 if (sjv_temp12->_refCount <= 0) {
-                    sjf_string_destroy(sjv_temp12);
+                    sjf_array_char_destroy(sjv_temp12);
                     free(sjv_temp12);
                 }
             } else {
@@ -460,9 +460,7 @@ int main() {
         }
 
         isCorrect = ifResult1;
-
         result11 = !isCorrect;
-
         whileValue1 = result11;
 
         result5->_refCount--;
@@ -477,50 +475,38 @@ int main() {
         }
     }
 
-    sjv_temp13 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
-
+    sjv_temp13 = (sjs_string*)malloc(sizeof(sjs_string));
     sjv_temp13->_refCount = 1;
-
-    sjv_temp13->size = 10;
-
-    sjv_temp13->data = (uintptr_t)sjg_string4;
-
-    sjv_temp13->_isGlobal = false;
-
-    sjf_array_char(sjv_temp13, &sjv_temp13);
-
-    sjv_temp14 = (sjs_string*)malloc(sizeof(sjs_string));
-
+    sjv_temp14 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     sjv_temp14->_refCount = 1;
-
-    sjv_temp14->count = 9;
-
-    sjv_temp14->data = sjv_temp13;
-
-    sjv_temp14->data->_refCount++;
-
-    sjf_string(sjv_temp14, &sjv_temp14);
-
-    sjf_anon1_write(console, sjv_temp14);
+    sjv_temp14->size = 10;
+    sjv_temp14->data = (uintptr_t)sjg_string4;
+    sjv_temp14->_isGlobal = false;
+    sjf_array_char(sjv_temp14, &sjv_temp14);
+    sjv_temp13->count = 9;
+    sjv_temp13->data = sjv_temp14;
+    sjv_temp13->data->_refCount++;
+    sjf_string(sjv_temp13, &sjv_temp13);
+    sjf_anon1_write(console, sjv_temp13);
 
     sjv_temp13->_refCount--;
     if (sjv_temp13->_refCount <= 0) {
-        sjf_array_char_destroy(sjv_temp13);
+        sjf_string_destroy(sjv_temp13);
         free(sjv_temp13);
     }
     sjv_temp14->_refCount--;
     if (sjv_temp14->_refCount <= 0) {
-        sjf_string_destroy(sjv_temp14);
+        sjf_array_char_destroy(sjv_temp14);
         free(sjv_temp14);
     }
     sjv_temp5->_refCount--;
     if (sjv_temp5->_refCount <= 0) {
-        sjf_array_char_destroy(sjv_temp5);
+        sjf_string_destroy(sjv_temp5);
         free(sjv_temp5);
     }
     sjv_temp6->_refCount--;
     if (sjv_temp6->_refCount <= 0) {
-        sjf_string_destroy(sjv_temp6);
+        sjf_array_char_destroy(sjv_temp6);
         free(sjv_temp6);
     }
     sjf_anon4_destroy(&sjd_temp1);

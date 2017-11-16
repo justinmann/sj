@@ -3,7 +3,7 @@
 //  sj
 //
 //  Created by Mann, Justin on 12/25/16.
-//  Copyright © 2016 Mann, Justin. All rights reserved.
+//  Copyright ï¿½ 2016 Mann, Justin. All rights reserved.
 //
 
 #ifndef NIsEmpty_h
@@ -13,7 +13,7 @@ class NIsEmpty : public NVariableBase {
 public:
     NIsEmpty(CLoc loc, shared_ptr<NBase> node) : NVariableBase(NodeType_IsEmpty, loc), node(node) {}
 
-    virtual shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue);
+    virtual shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName);
     virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
 
 protected:

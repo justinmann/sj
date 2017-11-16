@@ -84,12 +84,12 @@ int NCompare::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBa
     }
 }
 
-shared_ptr<ReturnValue> NCompare::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
+shared_ptr<ReturnValue> NCompare::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName) {
     if (operatorOverloadNode) {
-        return operatorOverloadNode->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue);
+        return operatorOverloadNode->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue, thisName);
     } else {
-        auto leftValue = leftSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
-        auto rightValue = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
+        auto leftValue = leftSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false, thisName);
+        auto rightValue = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false, thisName);
 
         if (!leftValue || !rightValue) {
             return nullptr;

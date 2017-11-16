@@ -122,7 +122,7 @@ int CIfElseVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar>
     return nif->setHeapVar(compiler, result, thisFunction, thisVar, nullptr, true);
 }
 
-shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue) {
+shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     auto type = getType(compiler, result);
     shared_ptr<ReturnValue> trResultVar;
     if (type != compiler->typeVoid) {
@@ -131,7 +131,7 @@ shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& re
         trResultVar = trBlock->createTempVariable("ifResult", type, resultHeapVar, RVR_MustRetain);
     }
 
-    auto conditionReturnValue = condition->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false);
+    auto conditionReturnValue = condition->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false, thisName);
     if (!conditionReturnValue) {
         return nullptr;
     }
@@ -148,7 +148,7 @@ shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& re
     trIfBlock->parent = trBlock;
     auto trStatement = TrStatement(ifLine.str(), trIfBlock);
 
-    auto ifReturnValue = ifBlock->transpile(compiler, result, thisFunction, thisVar, trOutput, trIfBlock.get(), false);
+    auto ifReturnValue = ifBlock->transpile(compiler, result, thisFunction, thisVar, trOutput, trIfBlock.get(), false, thisName);
     assert(ifReturnValue == nullptr || ifReturnValue->release == RVR_MustRetain);
 
     if (type != compiler->typeVoid) {
@@ -168,7 +168,7 @@ shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& re
         trStatement.elseBlock = trElseBlock;
 
         if (elseBlock) {
-            elseReturnValue = elseBlock->transpile(compiler, result, thisFunction, thisVar, trOutput, trElseBlock.get(), false);
+            elseReturnValue = elseBlock->transpile(compiler, result, thisFunction, thisVar, trOutput, trElseBlock.get(), false, thisName);
             assert(elseReturnValue == nullptr || elseReturnValue->release == RVR_MustRetain);
         }
         else {
@@ -190,7 +190,7 @@ shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& re
     return trResultVar;
 }
 
-void CIfElseVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue) {
+void CIfElseVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     assert(false);
 }
 

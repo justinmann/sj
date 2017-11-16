@@ -125,9 +125,7 @@ void sjf_func(sjs_bar* b, sjs_foo** _return) {
     }
 
     b->f = sjv_temp3;
-
     b->f->_refCount++;
-
     sjv_temp3->_refCount++;
 
     sjv_temp3->_refCount--;
@@ -143,19 +141,19 @@ int main() {
     sjs_bar* b;
     int32_t dotTemp1;
     sjs_foo* result1;
-    sjs_foo* sjv_temp1;
-    sjs_bar* sjv_temp2;
+    sjs_bar* sjv_temp1;
+    sjs_foo* sjv_temp2;
 
-    sjv_temp1 = (sjs_foo*)malloc(sizeof(sjs_foo));
+    sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
-    sjv_temp1->x = 1;
-    sjf_foo(sjv_temp1, &sjv_temp1);
-    sjv_temp2 = &sjd_temp1;
+    sjv_temp2 = (sjs_foo*)malloc(sizeof(sjs_foo));
     sjv_temp2->_refCount = 1;
-    sjv_temp2->f = sjv_temp1;
-    sjv_temp2->f->_refCount++;
-    sjf_bar(sjv_temp2, &sjv_temp2);
-    b = sjv_temp2;
+    sjv_temp2->x = 1;
+    sjf_foo(sjv_temp2, &sjv_temp2);
+    sjv_temp1->f = sjv_temp2;
+    sjv_temp1->f->_refCount++;
+    sjf_bar(sjv_temp1, &sjv_temp1);
+    b = sjv_temp1;
     b->_refCount++;
     result1 = 0;
     sjf_func(b, &result1);
@@ -166,10 +164,10 @@ int main() {
         sjf_foo_destroy(result1);
         free(result1);
     }
-    sjv_temp1->_refCount--;
-    if (sjv_temp1->_refCount <= 0) {
-        sjf_foo_destroy(sjv_temp1);
-        free(sjv_temp1);
+    sjv_temp2->_refCount--;
+    if (sjv_temp2->_refCount <= 0) {
+        sjf_foo_destroy(sjv_temp2);
+        free(sjv_temp2);
     }
     sjf_bar_destroy(&sjd_temp1);
     return 0;

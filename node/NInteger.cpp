@@ -64,7 +64,7 @@ shared_ptr<CType> NInteger::getTypeImpl(Compiler* compiler, CResult& result, sha
 //    }
 //}
 
-shared_ptr<ReturnValue> NInteger::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue) {
+shared_ptr<ReturnValue> NInteger::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName) {
 
     if (strValue.size() > 0) {
         if (type == NIT_I32) {

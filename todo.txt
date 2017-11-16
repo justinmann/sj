@@ -1,9 +1,11 @@
+* buttonElement
+* textElement
+* two buttons for +/-
 * fix string add
 * make string immutable
 * string not depend on array
 * stringBuilder.append
 * stringBuilder.toString
-* two buttons for +/-
 
 -- features --
 * override interfaces
@@ -54,3 +56,7 @@ x->_parent = _this;
 x->_parent->_refCount++;
 x->lambda = sjf_anon2;
 array_each(arr, x);
+
+
+    
+

@@ -267,19 +267,12 @@ int main() {
     }
 
     sjv_temp4 = &sjd_temp4;
-
     sjv_temp4->_refCount = 1;
-
     sjf_anon2_class(sjv_temp4, &sjv_temp4);
-
     result2 = sjf_anon2_class_as_sji_anon2_foo(sjv_temp4);
-
     b = result2;
-
     b->_refCount++;
-
     result2->_refCount--;
-
     if (result2->_refCount <= 0) {
         sji_anon2_foo_destroy(result2);
         free(result2);

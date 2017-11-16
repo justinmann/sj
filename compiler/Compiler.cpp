@@ -488,7 +488,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                     }
 
                     vector<pair<bool, shared_ptr<NBase>>> parameters;
-                    globalFunction->transpile(this, *result, nullptr, nullptr, &output, &output.mainFunction, false, nullptr, globalVar, CLoc::undefined, parameters);
+                    globalFunction->transpile(this, *result, nullptr, nullptr, &output, &output.mainFunction, false, nullptr, globalVar, CLoc::undefined, parameters, nullptr);
 
                     auto hasMainLoop = false;
                     if (mainLoop) {

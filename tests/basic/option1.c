@@ -183,37 +183,25 @@ int main() {
     }
 
     j = a.isEmpty;
-
     k = (i == 0);
-
     l = 0;
-
     if (l != 0) {
         l->_refCount++;
     }
 
     m = (l == 0);
-
     sjv_temp1 = &sjd_temp1;
-
     sjv_temp1->_refCount = 1;
-
     sjv_temp1->bob = 0;
-
     sjf_class(sjv_temp1, &sjv_temp1);
-
     n = sjv_temp1;
-
     if (n != 0) {
         n->_refCount++;
     }
 
     if (n == 0) { exit(-1); };
-
     o = n;
-
     o->_refCount++;
-
     if (n == 0) {
         ifResult1 = int32_empty;
     } else {
@@ -227,7 +215,6 @@ int main() {
     }
 
     p = ifResult1;
-
     if (a.isEmpty) {
         ifResult2 = -1;
     } else {
@@ -235,7 +222,6 @@ int main() {
     }
 
     q = ifResult2;
-
     if (n != 0) {
         result1 = sjf_class_as_sji_interface(n);
     } else {
@@ -243,7 +229,6 @@ int main() {
     }
 
     r = result1;
-
     if (r != 0) {
         r->_refCount++;
     }
@@ -263,7 +248,6 @@ int main() {
     }
 
     s = result2;
-
     if (s != 0) {
         s->_refCount++;
     }
