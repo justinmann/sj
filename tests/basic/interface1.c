@@ -1,5 +1,7 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct td_int32_option int32_option;
@@ -134,12 +136,14 @@ sjs_anon2_class sjd_temp4;
 
 void sjf_anon1(sjs_anon1* _this, sjs_anon1** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_anon1*\t%0x\tvoid sjf_anon1(sjs_anon1* _this, sjs_anon1** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
 
 void sjf_anon1_class(sjs_anon1_class* _this, sjs_anon1_class** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_anon1_class*\t%0x\tvoid sjf_anon1_class(sjs_anon1_class* _this, sjs_anon1_class** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -176,12 +180,14 @@ void sjf_anon1_destroy(sjs_anon1* _this) {
 
 void sjf_anon2(sjs_anon2* _this, sjs_anon2** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_anon2*\t%0x\tvoid sjf_anon2(sjs_anon2* _this, sjs_anon2** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
 
 void sjf_anon2_class(sjs_anon2_class* _this, sjs_anon2_class** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_anon2_class*\t%0x\tvoid sjf_anon2_class(sjs_anon2_class* _this, sjs_anon2_class** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -218,6 +224,7 @@ void sjf_anon2_destroy(sjs_anon2* _this) {
 
 void sji_anon1_foo_destroy(sji_anon1_foo* _this) {
     _this->_parent->_refCount--;
+    printf("RELEASE\tvoid sji_anon1_foo_destroy(sji_anon1_foo* _this)\t%0x\tvoid sji_anon1_foo_destroy(sji_anon1_foo* _this)\t%d\n", (uintptr_t)_this->_parent, _this->_parent->_refCount);;
     if (_this->_parent->_refCount <= 0) {
         _this->destroy(_this->_parent);
         free(_this->_parent);
@@ -226,6 +233,7 @@ void sji_anon1_foo_destroy(sji_anon1_foo* _this) {
 
 void sji_anon2_foo_destroy(sji_anon2_foo* _this) {
     _this->_parent->_refCount--;
+    printf("RELEASE\tvoid sji_anon2_foo_destroy(sji_anon2_foo* _this)\t%0x\tvoid sji_anon2_foo_destroy(sji_anon2_foo* _this)\t%d\n", (uintptr_t)_this->_parent, _this->_parent->_refCount);;
     if (_this->_parent->_refCount <= 0) {
         _this->destroy(_this->_parent);
         free(_this->_parent);
@@ -246,21 +254,28 @@ int main() {
 
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
+    printf("RETAIN\tsjs_anon1*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
     sjf_anon1(sjv_temp1, &sjv_temp1);
     namespace1 = sjv_temp1;
     namespace1->_refCount++;
+    printf("RETAIN\tsjs_anon1*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)namespace1, namespace1->_refCount);;
     sjv_temp2 = &sjd_temp2;
     sjv_temp2->_refCount = 1;
+    printf("RETAIN\tsjs_anon2*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp2, sjv_temp2->_refCount);;
     sjf_anon2(sjv_temp2, &sjv_temp2);
     namespace2 = sjv_temp2;
     namespace2->_refCount++;
+    printf("RETAIN\tsjs_anon2*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)namespace2, namespace2->_refCount);;
     sjv_temp3 = &sjd_temp3;
     sjv_temp3->_refCount = 1;
+    printf("RETAIN\tsjs_anon1_class*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp3, sjv_temp3->_refCount);;
     sjf_anon1_class(sjv_temp3, &sjv_temp3);
     result1 = sjf_anon1_class_as_sji_anon1_foo(sjv_temp3);
     a = result1;
     a->_refCount++;
+    printf("RETAIN\tsji_anon1_foo*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)a, a->_refCount);;
     result1->_refCount--;
+    printf("RELEASE\tsji_anon1_foo*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result1, result1->_refCount);;
     if (result1->_refCount <= 0) {
         sji_anon1_foo_destroy(result1);
         free(result1);
@@ -268,29 +283,34 @@ int main() {
 
     sjv_temp4 = &sjd_temp4;
     sjv_temp4->_refCount = 1;
+    printf("RETAIN\tsjs_anon2_class*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp4, sjv_temp4->_refCount);;
     sjf_anon2_class(sjv_temp4, &sjv_temp4);
     result2 = sjf_anon2_class_as_sji_anon2_foo(sjv_temp4);
     b = result2;
     b->_refCount++;
+    printf("RETAIN\tsji_anon2_foo*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)b, b->_refCount);;
     result2->_refCount--;
+    printf("RELEASE\tsji_anon2_foo*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result2, result2->_refCount);;
     if (result2->_refCount <= 0) {
         sji_anon2_foo_destroy(result2);
         free(result2);
     }
 
     a->_refCount--;
+    printf("RELEASE\tsji_anon1_foo*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)a, a->_refCount);
     if (a->_refCount <= 0) {
         sji_anon1_foo_destroy(a);
         free(a);
     }
     b->_refCount--;
+    printf("RELEASE\tsji_anon2_foo*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)b, b->_refCount);
     if (b->_refCount <= 0) {
         sji_anon2_foo_destroy(b);
         free(b);
     }
-    sjf_anon1_destroy(&sjd_temp1);
-    sjf_anon2_destroy(&sjd_temp2);
-    sjf_anon1_class_destroy(&sjd_temp3);
-    sjf_anon2_class_destroy(&sjd_temp4);
+    assert(sjd_temp1._refCount == 0);
+    assert(sjd_temp2._refCount == 0);
+    assert(sjd_temp3._refCount == 0);
+    assert(sjd_temp4._refCount == 0);
     return 0;
 }

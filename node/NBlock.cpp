@@ -40,7 +40,7 @@ shared_ptr<ReturnValue> NBlock::transpile(Compiler* compiler, CResult& result, s
         auto isLastStatement = it == statements.back();
         returnValue = it->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, isLastStatement && isReturnValue, thisName);
         if (!isLastStatement && returnValue && returnValue->release == RVR_MustRelease && !returnValue->type->parent.expired()) {
-            ReturnValue::addReleaseToStatements(trBlock, returnValue->name, returnValue->type);
+            ReturnValue::addReleaseToStatements(trBlock, returnValue->name, returnValue->type, true);
         }
 	}
     

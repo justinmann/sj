@@ -21,7 +21,7 @@
 // #define SYMBOL_OUTPUT
 // #define EXCEPTION_OUTPUT
 // #define DEBUG_CALLSTACK
-// #define DEBUG_ALLOC
+#define DEBUG_ALLOC
 #define YY_NO_UNISTD_H
 
 using namespace std;

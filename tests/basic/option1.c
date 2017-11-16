@@ -1,5 +1,7 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct td_int32_option int32_option;
@@ -102,6 +104,7 @@ sjs_class sjd_temp1;
 
 void sjf_class(sjs_class* _this, sjs_class** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_class(sjs_class* _this, sjs_class** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -129,6 +132,7 @@ void sjf_class_destroy(sjs_class* _this) {
 
 void sji_interface2_destroy(sji_interface2* _this) {
     _this->_parent->_refCount--;
+    printf("RELEASE\tvoid sji_interface2_destroy(sji_interface2* _this)\t%0x\tvoid sji_interface2_destroy(sji_interface2* _this)\t%d\n", (uintptr_t)_this->_parent, _this->_parent->_refCount);;
     if (_this->_parent->_refCount <= 0) {
         _this->destroy(_this->_parent);
         free(_this->_parent);
@@ -137,6 +141,7 @@ void sji_interface2_destroy(sji_interface2* _this) {
 
 void sji_interface_destroy(sji_interface* _this) {
     _this->_parent->_refCount--;
+    printf("RELEASE\tvoid sji_interface_destroy(sji_interface* _this)\t%0x\tvoid sji_interface_destroy(sji_interface* _this)\t%d\n", (uintptr_t)_this->_parent, _this->_parent->_refCount);;
     if (_this->_parent->_refCount <= 0) {
         _this->destroy(_this->_parent);
         free(_this->_parent);
@@ -180,6 +185,7 @@ int main() {
     i = 0;
     if (i != 0) {
         i->_refCount++;
+        printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)i, i->_refCount);;
     }
 
     j = a.isEmpty;
@@ -187,21 +193,25 @@ int main() {
     l = 0;
     if (l != 0) {
         l->_refCount++;
+        printf("RETAIN\tsji_interface*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)l, l->_refCount);;
     }
 
     m = (l == 0);
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
     sjv_temp1->bob = 0;
     sjf_class(sjv_temp1, &sjv_temp1);
     n = sjv_temp1;
     if (n != 0) {
         n->_refCount++;
+        printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)n, n->_refCount);;
     }
 
     if (n == 0) { exit(-1); };
     o = n;
     o->_refCount++;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)o, o->_refCount);;
     if (n == 0) {
         ifResult1 = int32_empty;
     } else {
@@ -231,10 +241,12 @@ int main() {
     r = result1;
     if (r != 0) {
         r->_refCount++;
+        printf("RETAIN\tsji_interface*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)r, r->_refCount);;
     }
 
     if (result1 != 0) {
         result1->_refCount--;
+        printf("RELEASE\tsji_interface*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result1, result1->_refCount);;
         if (result1->_refCount <= 0) {
             sji_interface_destroy(result1);
             free(result1);
@@ -250,10 +262,12 @@ int main() {
     s = result2;
     if (s != 0) {
         s->_refCount++;
+        printf("RETAIN\tsji_interface2*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)s, s->_refCount);;
     }
 
     if (result2 != 0) {
         result2->_refCount--;
+        printf("RELEASE\tsji_interface2*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result2, result2->_refCount);;
         if (result2->_refCount <= 0) {
             sji_interface2_destroy(result2);
             free(result2);
@@ -262,6 +276,7 @@ int main() {
 
     if (r != 0) {
         r->_refCount--;
+        printf("RELEASE\tsji_interface*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)r, r->_refCount);
         if (r->_refCount <= 0) {
             sji_interface_destroy(r);
             free(r);
@@ -269,11 +284,12 @@ int main() {
     }
     if (s != 0) {
         s->_refCount--;
+        printf("RELEASE\tsji_interface2*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)s, s->_refCount);
         if (s->_refCount <= 0) {
             sji_interface2_destroy(s);
             free(s);
         }
     }
-    sjf_class_destroy(&sjd_temp1);
+    assert(sjd_temp1._refCount == 0);
     return 0;
 }

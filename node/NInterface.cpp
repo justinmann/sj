@@ -28,7 +28,7 @@ void NInterface::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBas
         return;
     }
     def = parentFunction->createDefinedInterfaceDefinition(name);
-    def->typeName = make_shared<CTypeName>(CTC_Interface, name, templateTypeNames, false);
+    def->typeName = make_shared<CTypeName>(CTC_Interface, CTM_Stack, name, templateTypeNames, false);
     def->ninterface = shared_from_this();
 
     for (auto it : methodList) {
@@ -151,14 +151,11 @@ bool CInterface::getHasThis() {
     return false;
 }
 
-shared_ptr<CType> CInterface::getThisType(Compiler* compiler, CResult& result, bool isOption) {
-    if (!thisType) {
-        auto pair = CType::create(name.c_str(), shared_from_this());
-        thisType = pair.first;
-        thisOptionType = pair.second;
+shared_ptr<CTypes> CInterface::getThisTypes(Compiler* compiler, CResult& result) {
+    if (!thisTypes) {
+        thisTypes = CType::create(name.c_str(), shared_from_this());
     }
-
-    return isOption ? thisOptionType : thisType;
+    return thisTypes;
 }
 
 int CInterface::getThisIndex(const string& name) const {
@@ -323,8 +320,8 @@ void CInterface::transpileDefinition(Compiler* compiler, CResult& result, TrOutp
 
 #ifdef DEBUG_ALLOC
         stringstream logStream;
-        logStream << "printf(\"RELEASE\\t" << type->nameRef << "\\t%0x\\t" << block->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
-        block->statements.push_back(logStream.str());
+        logStream << "printf(\"RELEASE\\t" << destroyInterfaceName << "\\t%0x\\t" << destroyBlock->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
+        destroyBlock->statements.push_back(logStream.str());
 #endif
 
         auto ifBlock = make_shared<TrBlock>();

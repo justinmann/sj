@@ -1,5 +1,7 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct td_int32_option int32_option;
@@ -101,6 +103,7 @@ sjs_class sjd_temp1;
 
 void sjf_anon1(sjs_anon1* _this, sjs_anon1** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_anon1*\t%0x\tvoid sjf_anon1(sjs_anon1* _this, sjs_anon1** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -122,6 +125,7 @@ void sjf_anon1_sub(sjs_anon1* _parent, int32_t x, int32_t y, int32_t* _return) {
 
 void sjf_class(sjs_class* _this, sjs_class** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_class(sjs_class* _this, sjs_class** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -176,25 +180,30 @@ int main() {
 
     sjv_temp1 = (sjs_anon1*)malloc(sizeof(sjs_anon1));
     sjv_temp1->_refCount = 1;
+    printf("RETAIN\tsjs_anon1*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
     sjv_temp1->test = 1;
     sjf_anon1(sjv_temp1, &sjv_temp1);
     _this->math = sjv_temp1;
     _this->math->_refCount++;
+    printf("RETAIN\tsjs_anon1*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)_this->math, _this->math->_refCount);;
     sjv_temp2 = &sjd_temp1;
     sjv_temp2->_parent = _this;
     sjv_temp2->_refCount = 1;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp2, sjv_temp2->_refCount);;
     sjf_class(sjv_temp2, &sjv_temp2);
     c = sjv_temp2;
     c->_refCount++;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)c, c->_refCount);;
     result1 = 0;
     sjf_class_foo(c, 4, &result1);
 
     sjv_temp1->_refCount--;
+    printf("RELEASE\tsjs_anon1*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);
     if (sjv_temp1->_refCount <= 0) {
         sjf_anon1_destroy(sjv_temp1);
         free(sjv_temp1);
     }
-    sjf_class_destroy(&sjd_temp1);
+    assert(sjd_temp1._refCount == 0);
     sjf_global_destroy(&global);
     return 0;
 }

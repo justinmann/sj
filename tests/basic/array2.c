@@ -1,5 +1,7 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct td_int32_option int32_option;
@@ -99,6 +101,7 @@ void sjf_array_int32_t(sjs_array_int32_t* _this, sjs_array_int32_t** _return) {
 		}
 	;
     _this->_refCount++;
+    printf("RETAIN\tsjs_array_int32_t*\t%0x\tvoid sjf_array_int32_t(sjs_array_int32_t* _this, sjs_array_int32_t** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -163,6 +166,7 @@ int main() {
 
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
+    printf("RETAIN\tsjs_array_int32_t*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
     result1 = (uintptr_t)0;
     sjv_temp1->size = 3;
     sjv_temp1->data = result1;
@@ -170,12 +174,14 @@ int main() {
     sjf_array_int32_t(sjv_temp1, &sjv_temp1);
     sjv_array1 = sjv_temp1;
     sjv_array1->_refCount++;
+    printf("RETAIN\tsjs_array_int32_t*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_array1, sjv_array1->_refCount);;
     sjf_array_int32_t_setAt(sjv_array1, 0, 1);
     sjf_array_int32_t_setAt(sjv_array1, 1, 2);
     sjf_array_int32_t_setAt(sjv_array1, 2, 3);
     a = sjv_array1;
     a->_refCount++;
+    printf("RETAIN\tsjs_array_int32_t*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)a, a->_refCount);;
     sjf_array_int32_t_getAt(a, 0, &result2);
-    sjf_array_int32_t_destroy(&sjd_temp1);
+    assert(sjd_temp1._refCount == 0);
     return 0;
 }

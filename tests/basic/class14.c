@@ -1,5 +1,7 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct td_int32_option int32_option;
@@ -107,7 +109,8 @@ int main() {
     result1 = 0;
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
     sjf_class(sjv_temp1, &result1);
-    sjf_class_destroy(&sjd_temp1);
+    assert(sjd_temp1._refCount == 0);
     return 0;
 }

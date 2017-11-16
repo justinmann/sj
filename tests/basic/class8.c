@@ -1,5 +1,7 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct td_int32_option int32_option;
@@ -81,6 +83,7 @@ sjs_class sjd_temp1;
 
 void sjf_class(sjs_class* _this, sjs_class** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_class(sjs_class* _this, sjs_class** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -97,14 +100,16 @@ int main() {
 
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
     sjv_temp1->x = 1;
     sjv_temp1->y = 2;
     sjf_class(sjv_temp1, &sjv_temp1);
     c = sjv_temp1;
     c->_refCount++;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)c, c->_refCount);;
     dotTemp1 = c->x;
     dotTemp2 = c->y;
     result1 = dotTemp1 + dotTemp2;
-    sjf_class_destroy(&sjd_temp1);
+    assert(sjd_temp1._refCount == 0);
     return 0;
 }

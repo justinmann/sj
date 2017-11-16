@@ -121,7 +121,10 @@ struct OPTIONANDTYPELIST {
     TVALUE = 322,
     TQUESTIONCOLON = 323,
     TQUESTIONDOT = 324,
-    TPARENT = 325
+    TPARENT = 325,
+    TSTACK = 326,
+    THEAP = 327,
+    TMATCHRETURN = 328
   };
 #endif
 
@@ -145,6 +148,7 @@ union YYSTYPE
 	OPTIONANDTYPELIST optionAndTypeList;
 	NTupleAssignmentArgList* tupleAssignmentArgList;
 	NTupleAssignmentArg* tupleAssignmentArg;
+	CTypeMode typeMode;
 
 
 };

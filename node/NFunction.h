@@ -88,7 +88,7 @@ public:
     shared_ptr<vector<shared_ptr<CVar>>> getArgVars(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
     bool getHasThis();
     int getThisIndex(const string& name) const;
-    shared_ptr<CType> getThisType(Compiler* compiler, CResult& result, bool isOption);
+    shared_ptr<CTypes> getThisTypes(Compiler* compiler, CResult& result);
     shared_ptr<vector<pair<string, shared_ptr<CType>>>> getCTypeList(Compiler* compiler, CResult& result);
     //shared_ptr<vector<Type*>> getTypeList(Compiler* compiler, CResult& result);
     //Type* getStructType(Compiler* compiler, CResult& result);
@@ -142,8 +142,7 @@ private:
     //Function* destructorFunction;
     //llvm::StructType* _structType;
     shared_ptr<CType> returnType;
-    shared_ptr<CType> thisType;
-    shared_ptr<CType> thisOptionType;
+    shared_ptr<CTypes> thisTypes;
     shared_ptr<CVar> thisVar;
     //shared_ptr<vector<Type*>> typeList;
     //map<Function*, Value*> parentPointers;

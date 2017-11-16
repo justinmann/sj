@@ -4,6 +4,10 @@ TrOutput::TrOutput() {
     includes["<stdbool.h>"] = true;
     includes["<stdint.h>"] = true;
     includes["<stdlib.h>"] = true;
+    includes["<stdio.h>"] = true;
+#ifdef DEBUG_ALLOC
+    includes["<assert.h>"] = true;
+#endif
 }
 
 void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {

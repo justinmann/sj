@@ -205,7 +205,7 @@ void CNormalVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CB
     }
 
     if (!isFirstAssignment && !returnType->parent.expired() && returnType->parent.lock()->hasRefCount) {
-        ReturnValue::addReleaseToStatements(trBlock, varName, returnType);
+        ReturnValue::addReleaseToStatements(trBlock, varName, returnType, true);
     }
 
     lineStream << varName << " = " << returnValue->name;

@@ -156,44 +156,44 @@ Compiler::Compiler() {
     //InitializeNativeTargetAsmPrinter();
     //InitializeNativeTargetAsmParser();
 
-    auto pair = CType::create("i32", "int32_t", "(int32_t)0", "int32_option", "int32_empty");
-    typeI32 = pair.first;
-    typeI32Option = pair.second;
+    auto ctypes = CType::create("i32", "int32_t", "(int32_t)0", "int32_option", "int32_empty");
+    typeI32 = ctypes->stackValueType;
+    typeI32Option = ctypes->stackOptionType;
 
-    pair = CType::create("i64", "int64_t", "(int64_t)0", "int64_option", "int64_empty");
-    typeI64 = pair.first;
-    typeI64Option = pair.second;
+    ctypes = CType::create("i64", "int64_t", "(int64_t)0", "int64_option", "int64_empty");
+    typeI64 = ctypes->stackValueType;
+    typeI64Option = ctypes->stackOptionType;
 
-    pair = CType::create("u32", "uint32_t", "(uint32_t)0", "uint32_option", "uint32_empty");
-    typeU32 = pair.first;
-    typeU32Option = pair.second;
+    ctypes = CType::create("u32", "uint32_t", "(uint32_t)0", "uint32_option", "uint32_empty");
+    typeU32 = ctypes->stackValueType;
+    typeU32Option = ctypes->stackOptionType;
 
-    pair = CType::create("u64", "uint64_t", "(uint64_t)0", "uint64_option", "uint64_empty");
-    typeU64 = pair.first;
-    typeU64Option = pair.second;
+    ctypes = CType::create("u64", "uint64_t", "(uint64_t)0", "uint64_option", "uint64_empty");
+    typeU64 = ctypes->stackValueType;
+    typeU64Option = ctypes->stackOptionType;
 
-    pair = CType::create("ptr", "uintptr_t", "(uintptr_t)0", "uintptr_option", "uintptr_empty");
-    typePtr = pair.first;
-    typePtrOption = pair.second;
+    ctypes = CType::create("ptr", "uintptr_t", "(uintptr_t)0", "uintptr_option", "uintptr_empty");
+    typePtr = ctypes->stackValueType;
+    typePtrOption = ctypes->stackOptionType;
 
-    pair = CType::create("f32", "float", "0.0f", "float_option", "float_empty");
-    typeF32 = pair.first;
-    typeF32Option = pair.second;
+    ctypes = CType::create("f32", "float", "0.0f", "float_option", "float_empty");
+    typeF32 = ctypes->stackValueType;
+    typeF32Option = ctypes->stackOptionType;
 
-    pair = CType::create("f64", "double", "0.0", "double_option", "double_empty");
-    typeF64 = pair.first;
-    typeF64Option = pair.second;
+    ctypes = CType::create("f64", "double", "0.0", "double_option", "double_empty");
+    typeF64 = ctypes->stackValueType;
+    typeF64Option = ctypes->stackOptionType;
 
-    pair = CType::create("bool", "bool", "false", "bool_option", "bool_empty");
-    typeBool = pair.first;
-    typeBoolOption = pair.second;
+    ctypes = CType::create("bool", "bool", "false", "bool_option", "bool_empty");
+    typeBool = ctypes->stackValueType;
+    typeBoolOption = ctypes->stackOptionType;
 
-    pair = CType::create("char", "char", "'\0'", "char_option", "char_empty");
-    typeChar = pair.first;
-    typeCharOption = pair.second;
+    ctypes = CType::create("char", "char", "'\0'", "char_option", "char_empty");
+    typeChar = ctypes->stackValueType;
+    typeCharOption = ctypes->stackOptionType;
 
-    pair = CType::create("void", "void", "", "", "");
-    typeVoid = pair.first;
+    ctypes = CType::create("void", "void", "", "", "");
+    typeVoid = ctypes->stackValueType;
 }
 
 void Compiler::reset() {

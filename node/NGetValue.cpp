@@ -15,7 +15,7 @@ public:
             return nullptr;
         }
 
-        return leftType->getNotOptionType();
+        return leftType->getValueType();
     }
 
     bool getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
@@ -55,7 +55,7 @@ public:
             line << leftValue->name;
         }
 
-        return make_shared<ReturnValue>(leftValue->type->getNotOptionType(), leftVar->getHeapVar(compiler, result, thisVar), RVR_MustRetain, line.str());
+        return make_shared<ReturnValue>(leftValue->type->getValueType(), leftVar->getHeapVar(compiler, result, thisVar), RVR_MustRetain, line.str());
     }
 
     void transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {

@@ -1,5 +1,7 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct td_int32_option int32_option;
@@ -92,6 +94,7 @@ sjs_math sjd_temp2;
 
 void sjf_class(sjs_class* _this, sjs_class** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_class(sjs_class* _this, sjs_class** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -134,6 +137,7 @@ void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return) {
 
 void sjf_math(sjs_math* _this, sjs_math** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_math*\t%0x\tvoid sjf_math(sjs_math* _this, sjs_math** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -157,17 +161,21 @@ int main() {
 
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
     sjv_temp2 = &sjd_temp2;
     sjv_temp2->_refCount = 1;
+    printf("RETAIN\tsjs_math*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp2, sjv_temp2->_refCount);;
     sjf_math(sjv_temp2, &sjv_temp2);
     sjv_temp1->m = sjv_temp2;
     sjv_temp1->m->_refCount++;
+    printf("RETAIN\tsjs_math*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1->m, sjv_temp1->m->_refCount);;
     sjf_class(sjv_temp1, &sjv_temp1);
     c = sjv_temp1;
     c->_refCount++;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)c, c->_refCount);;
     result1 = 0;
     sjf_class_foo(c, 4, &result1);
-    sjf_class_destroy(&sjd_temp1);
-    sjf_math_destroy(&sjd_temp2);
+    assert(sjd_temp1._refCount == 0);
+    assert(sjd_temp2._refCount == 0);
     return 0;
 }

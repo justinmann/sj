@@ -1,4 +1,20 @@
-array!class([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=)'array_class {
+anon1()'anon1 {
+  this
+}
+
+anon2()'anon2 {
+  this
+}
+
+anon3()'anon3 {
+  this
+}
+
+anon4()'anon4 {
+  this
+}
+
+array!char([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=)'array_char {
   c{
 
 		if (_this->size < 0) {
@@ -19,7 +35,7 @@ array!class([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=)'array_cl
   this
 }
 
-array_getAt([heap]index'i32:)'class c{
+array_getAt([heap]index'i32:)'char c{
 
 		#forceParent()
 
@@ -40,7 +56,7 @@ array_getAt([heap]index'i32:)'class c{
 	
 }c
 
-array_grow([heap]newSize'i32:)'array_class c{
+array_grow([stack]newSize'i32:)'array_char c{
 
 		#forceParent()
 		#include(<string.h>)
@@ -75,7 +91,7 @@ array_grow([heap]newSize'i32:)'array_class c{
 	
 }c
 
-array_setAt([stack]index'i32:, [heap]item'class:)'void c{
+array_setAt([stack]index'i32:, [heap]item'char:)'void c{
 
 		#forceParent()
 		#forceHeap(item)
@@ -96,67 +112,74 @@ array_setAt([stack]index'i32:, [heap]item'class:)'void c{
 	
 }c
 
-class([heap]x'i32:)'class {
+string([stack]count'i32=, [stack]data'array_char=)'string {
   this
 }
 
-list!class([stack]count'i32=, [stack]data'array_class=)'list_class {
-  this
-}
-
-list_add([heap]item'class:)'i32 {
-  if .parentthis.count > this.size {
-    [heap]list_setSize([stack]this : list_setSize(
-      parent: [stack]this,
-      [heap]size'i32 : this.size * 2i
+string_add([stack]item'string:)'string {
+  if this.count > 0i {
+    if .parentthis.count + this.count + 1i > this.size {
+      [stack]array_grow([stack]this : array_grow(
+        parent: [stack].parentthis.data,
+        [stack]newSize'i32 : .parentthis.count + this.count + 1i
+      ))
+      void
+    }
+    for i : 0i to this.count {
+      [stack]array_setAt([stack]this : array_setAt(
+        parent: [stack].parentthis.data,
+        [stack]index'i32 : .parentthis.count,
+        [heap]item'char : [heap]string_getAt([stack]this : string_getAt(
+          parent: [stack]this.item,
+          [heap]index'i32 : i
+        ))
+      ))
+      .parentthis.count++
+    }
+    [stack]array_setAt([stack]this : array_setAt(
+      parent: [stack].parentthis.data,
+      [stack]index'i32 : .parentthis.count,
+      [heap]item'char : 0i as char
     ))
     void
   }
-  [stack]array_setAt([stack]this : array_setAt(
-    parent: [stack].parentthis.data,
-    [stack]index'i32 : .parentthis.count,
-    [heap]item'class : this.item
-  ))
-  .parentthis.count++
+  this
 }
 
-list_getAt([heap]index'i32:)'class {
+string_getAt([heap]index'i32:)'char {
   [heap]array_getAt([stack]this : array_getAt(
     parent: [stack].parentthis.data,
     [heap]index'i32 : this.index
   ))
 }
 
-list_setSize([heap]size'i32:)'array_class {
-  [heap]array_grow([stack]this : array_grow(
-    parent: [stack].parentthis.data,
-    [heap]newSize'i32 : this.size
-  ))
-}
-
 global()'void {
-  [stack]a'list_class : [stack]list!class([stack]this : list!class(
+  [stack]convert'anon4 : [stack]anon4([stack]this : anon4())
+  [stack]random'anon3 : [stack]anon3([stack]this : anon3())
+  [stack]parse'anon2 : [stack]anon2([stack]this : anon2())
+  [stack]console'anon1 : [stack]anon1([stack]this : anon1())
+  [stack]a'string : [stack]string_add([stack]this : string_add(
+    parent: [stack][stack]string([stack]this : string(
     parent: [stack]this,
-    [stack]count'i32 = 0i,
-    [stack]data'array_class = [stack]array!class([stack]this : array!class(
-      [stack]size'i32 = 0i,
-      [stack]data'ptr = 0i as ptr,
+    [stack]count'i32 = i,
+    [stack]data'array_char = [stack]array!char([stack]this : array!char(
+      [stack]size'i32 = i,
+      [stack]data'ptr = ,
       [stack]_isGlobal'bool = false
     ))
-  ))
-  for x : 1i to 100000i {
-    list_add([stack]this : list_add(
-      parent: [stack]a,
-      [heap]item'class : [heap]class([heap]this : class(
-        [heap]x'i32 : x
+  )),
+    [stack]item'string : {
+      [stack]string([stack]this : string(
+        parent: [stack]this,
+        [stack]count'i32 = i,
+        [stack]data'array_char = [stack]array!char([stack]this : array!char(
+          [stack]size'i32 = i,
+          [stack]data'ptr = ,
+          [stack]_isGlobal'bool = false
+        ))
       ))
-    ))
-  }
-  [heap]c'class : [heap]list_getAt([stack]this : list_getAt(
-    parent: [stack]a,
-    [heap]index'i32 : 0i
+    }
   ))
-  this.x
   void
 }
 

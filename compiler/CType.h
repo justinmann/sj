@@ -29,13 +29,29 @@ enum CTypeCategory {
     CTC_Function
 };
 
+enum CTypeMode {
+    CTM_Stack,
+    CTM_Heap,
+    CTM_MatchReturn
+};
+
+class CTypes {
+public:
+    CTypes(shared_ptr<CType> stackValueType, shared_ptr<CType> stackOptionType, shared_ptr<CType> heapValueType, shared_ptr<CType> heapOptionType) : stackValueType(stackValueType), stackOptionType(stackOptionType), heapValueType(heapValueType), heapOptionType(heapOptionType) {}
+    shared_ptr<CType> stackValueType;
+    shared_ptr<CType> stackOptionType;
+    shared_ptr<CType> heapValueType;
+    shared_ptr<CType> heapOptionType;
+};
+
 class CType : public enable_shared_from_this<CType> {
 public:
-    static pair<shared_ptr<CType>, shared_ptr<CType>> create(string name, string cname, string defaultValue, string cnameOption, string defaultValueOption);
-    static pair<shared_ptr<CType>, shared_ptr<CType>> create(string name, weak_ptr<CFunction> parent);
-    static pair<shared_ptr<CType>, shared_ptr<CType>> create(string name, weak_ptr<CInterface> parent);
+    static shared_ptr<CTypes> create(string name, string cname, string defaultValue, string cnameOption, string defaultValueOption);
+    static shared_ptr<CTypes> create(string name, weak_ptr<CFunction> parent);
+    static shared_ptr<CTypes> create(string name, weak_ptr<CInterface> parent);
 
     CTypeCategory category;
+    CTypeMode typeMode;
     string name;
     string nameValue;
 	string nameRef;
@@ -43,12 +59,20 @@ public:
     bool isOption;
 
     shared_ptr<ReturnValue> transpileDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar);
+    shared_ptr<CType> getValueType();
     shared_ptr<CType> getOptionType();
-    shared_ptr<CType> getNotOptionType();
+    shared_ptr<CType> getHeapValueType();
+    shared_ptr<CType> getHeapOptionType();
+    shared_ptr<CType> getStackValueType();
+    shared_ptr<CType> getStackOptionType();
 
 private:
     string _defaultValue;
-    weak_ptr<CType> _otherType;
+    weak_ptr<CType> stackValueType;
+    weak_ptr<CType> stackOptionType;
+    weak_ptr<CType> heapValueType;
+    weak_ptr<CType> heapOptionType;
+
 };
 
 #endif /* CType_h */

@@ -1,5 +1,7 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct td_int32_option int32_option;
@@ -99,6 +101,7 @@ sjs_a sjd_temp3;
 
 void sjf_a(sjs_a* _this, sjs_a** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_a*\t%0x\tvoid sjf_a(sjs_a* _this, sjs_a** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -108,6 +111,7 @@ void sjf_a_destroy(sjs_a* _this) {
 
 void sjf_b(sjs_b* _this, sjs_b** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_b*\t%0x\tvoid sjf_b(sjs_b* _this, sjs_b** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -118,6 +122,7 @@ void sjf_b_destroy(sjs_b* _this) {
 
 void sjf_c(sjs_c* _this, sjs_c** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_c*\t%0x\tvoid sjf_c(sjs_c* _this, sjs_c** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -133,19 +138,24 @@ int main() {
 
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
+    printf("RETAIN\tsjs_c*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
     sjv_temp2 = &sjd_temp2;
     sjv_temp2->_refCount = 1;
+    printf("RETAIN\tsjs_b*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp2, sjv_temp2->_refCount);;
     sjv_temp3 = &sjd_temp3;
     sjv_temp3->_refCount = 1;
+    printf("RETAIN\tsjs_a*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp3, sjv_temp3->_refCount);;
     sjf_a(sjv_temp3, &sjv_temp3);
     sjv_temp2->a = sjv_temp3;
     sjv_temp2->a->_refCount++;
+    printf("RETAIN\tsjs_a*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp2->a, sjv_temp2->a->_refCount);;
     sjf_b(sjv_temp2, &sjv_temp2);
     sjv_temp1->b = sjv_temp2;
     sjv_temp1->b->_refCount++;
+    printf("RETAIN\tsjs_b*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1->b, sjv_temp1->b->_refCount);;
     sjf_c(sjv_temp1, &sjv_temp1);
-    sjf_c_destroy(&sjd_temp1);
-    sjf_b_destroy(&sjd_temp2);
-    sjf_a_destroy(&sjd_temp3);
+    assert(sjd_temp1._refCount == 0);
+    assert(sjd_temp2._refCount == 0);
+    assert(sjd_temp3._refCount == 0);
     return 0;
 }

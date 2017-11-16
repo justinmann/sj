@@ -1,5 +1,7 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct td_int32_option int32_option;
@@ -93,6 +95,7 @@ sjs_class sjd_temp1;
 
 void sjf_class(sjs_class* _this, sjs_class** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_class(sjs_class* _this, sjs_class** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -126,6 +129,7 @@ void sjf_class_test(sjs_class* _parent, int32_t* _return) {
 
 void sji_foo_destroy(sji_foo* _this) {
     _this->_parent->_refCount--;
+    printf("RELEASE\tvoid sji_foo_destroy(sji_foo* _this)\t%0x\tvoid sji_foo_destroy(sji_foo* _this)\t%d\n", (uintptr_t)_this->_parent, _this->_parent->_refCount);;
     if (_this->_parent->_refCount <= 0) {
         _this->destroy(_this->_parent);
         free(_this->_parent);
@@ -140,11 +144,14 @@ int main() {
 
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
     sjf_class(sjv_temp1, &sjv_temp1);
     result1 = sjf_class_as_sji_foo(sjv_temp1);
     a = result1;
     a->_refCount++;
+    printf("RETAIN\tsji_foo*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)a, a->_refCount);;
     result1->_refCount--;
+    printf("RELEASE\tsji_foo*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result1, result1->_refCount);;
     if (result1->_refCount <= 0) {
         sji_foo_destroy(result1);
         free(result1);
@@ -153,10 +160,11 @@ int main() {
     a->test(a->_parent, &result2);
 
     a->_refCount--;
+    printf("RELEASE\tsji_foo*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)a, a->_refCount);
     if (a->_refCount <= 0) {
         sji_foo_destroy(a);
         free(a);
     }
-    sjf_class_destroy(&sjd_temp1);
+    assert(sjd_temp1._refCount == 0);
     return 0;
 }

@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -137,6 +138,7 @@ sjs_anon1 sjd_temp4;
 
 void sjf_anon1(sjs_anon1* _this, sjs_anon1** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_anon1*\t%0x\tvoid sjf_anon1(sjs_anon1* _this, sjs_anon1** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -179,9 +181,11 @@ void sjf_anon1_readLine(sjs_string** _return) {
 		;
     sjv_temp7 = (sjs_string*)malloc(sizeof(sjs_string));
     sjv_temp7->_refCount = 1;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_anon1_readLine(sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp7, sjv_temp7->_refCount);;
     result7 = size - 1;
     sjv_temp8 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     sjv_temp8->_refCount = 1;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_anon1_readLine(sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp8, sjv_temp8->_refCount);;
     sjv_temp8->size = size;
     sjv_temp8->data = data;
     sjv_temp8->_isGlobal = false;
@@ -189,15 +193,19 @@ void sjf_anon1_readLine(sjs_string** _return) {
     sjv_temp7->count = result7;
     sjv_temp7->data = sjv_temp8;
     sjv_temp7->data->_refCount++;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_anon1_readLine(sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp7->data, sjv_temp7->data->_refCount);;
     sjf_string(sjv_temp7, &sjv_temp7);
     sjv_temp7->_refCount++;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_anon1_readLine(sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp7, sjv_temp7->_refCount);;
 
     sjv_temp7->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_anon1_readLine(sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp7, sjv_temp7->_refCount);
     if (sjv_temp7->_refCount <= 0) {
         sjf_string_destroy(sjv_temp7);
         free(sjv_temp7);
     }
     sjv_temp8->_refCount--;
+    printf("RELEASE\tsjs_array_char*\t%0x\tvoid sjf_anon1_readLine(sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp8, sjv_temp8->_refCount);
     if (sjv_temp8->_refCount <= 0) {
         sjf_array_char_destroy(sjv_temp8);
         free(sjv_temp8);
@@ -216,6 +224,7 @@ void sjf_anon1_write(sjs_anon1* _parent, sjs_string* data) {
 
 void sjf_anon2(sjs_anon2* _this, sjs_anon2** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_anon2*\t%0x\tvoid sjf_anon2(sjs_anon2* _this, sjs_anon2** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -244,6 +253,7 @@ void sjf_anon2_toInt(sjs_string* text, int32_t* _return) {
 
 void sjf_anon3(sjs_anon3* _this, sjs_anon3** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_anon3*\t%0x\tvoid sjf_anon3(sjs_anon3* _this, sjs_anon3** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -260,6 +270,7 @@ void sjf_anon3_nextInt(int32_t* _return) {
 
 void sjf_anon4(sjs_anon4* _this, sjs_anon4** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_anon4*\t%0x\tvoid sjf_anon4(sjs_anon4* _this, sjs_anon4** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -284,6 +295,7 @@ void sjf_array_char(sjs_array_char* _this, sjs_array_char** _return) {
 		}
 	;
     _this->_refCount++;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_array_char(sjs_array_char* _this, sjs_array_char** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -299,12 +311,14 @@ void sjf_array_char_destroy(sjs_array_char* _this) {
 
 void sjf_string(sjs_string* _this, sjs_string** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_string(sjs_string* _this, sjs_string** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
 
 void sjf_string_destroy(sjs_string* _this) {
     _this->data->_refCount--;
+    printf("RELEASE\tsjs_array_char*\t%0x\tvoid sjf_string_destroy(sjs_string* _this)\t%d\n", (uintptr_t)_this->data, _this->data->_refCount);;
     if (_this->data->_refCount <= 0) {
         sjf_array_char_destroy(_this->data);
         free(_this->data);
@@ -334,28 +348,38 @@ int main() {
 
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
+    printf("RETAIN\tsjs_anon4*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
     sjf_anon4(sjv_temp1, &sjv_temp1);
     convert = sjv_temp1;
     convert->_refCount++;
+    printf("RETAIN\tsjs_anon4*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)convert, convert->_refCount);;
     sjv_temp2 = &sjd_temp2;
     sjv_temp2->_refCount = 1;
+    printf("RETAIN\tsjs_anon3*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp2, sjv_temp2->_refCount);;
     sjf_anon3(sjv_temp2, &sjv_temp2);
     random = sjv_temp2;
     random->_refCount++;
+    printf("RETAIN\tsjs_anon3*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)random, random->_refCount);;
     sjv_temp3 = &sjd_temp3;
     sjv_temp3->_refCount = 1;
+    printf("RETAIN\tsjs_anon2*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp3, sjv_temp3->_refCount);;
     sjf_anon2(sjv_temp3, &sjv_temp3);
     parse = sjv_temp3;
     parse->_refCount++;
+    printf("RETAIN\tsjs_anon2*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)parse, parse->_refCount);;
     sjv_temp4 = &sjd_temp4;
     sjv_temp4->_refCount = 1;
+    printf("RETAIN\tsjs_anon1*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp4, sjv_temp4->_refCount);;
     sjf_anon1(sjv_temp4, &sjv_temp4);
     console = sjv_temp4;
     console->_refCount++;
+    printf("RETAIN\tsjs_anon1*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)console, console->_refCount);;
     sjv_temp5 = (sjs_string*)malloc(sizeof(sjs_string));
     sjv_temp5->_refCount = 1;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp5, sjv_temp5->_refCount);;
     sjv_temp6 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     sjv_temp6->_refCount = 1;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp6, sjv_temp6->_refCount);;
     sjv_temp6->size = 16;
     sjv_temp6->data = (uintptr_t)sjg_string1;
     sjv_temp6->_isGlobal = false;
@@ -363,6 +387,7 @@ int main() {
     sjv_temp5->count = 15;
     sjv_temp5->data = sjv_temp6;
     sjv_temp5->data->_refCount++;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp5->data, sjv_temp5->data->_refCount);;
     sjf_string(sjv_temp5, &sjv_temp5);
     sjf_anon1_write(console, sjv_temp5);
     sjf_anon3_nextInt(&result1);
@@ -385,6 +410,7 @@ int main() {
         sjf_anon1_readLine(&result5);
         str = result5;
         str->_refCount++;
+        printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)str, str->_refCount);;
         result8 = 0;
         sjf_anon2_toInt(str, &result8);
         guess = result8;
@@ -395,8 +421,10 @@ int main() {
 
             sjv_temp9 = (sjs_string*)malloc(sizeof(sjs_string));
             sjv_temp9->_refCount = 1;
+            printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp9, sjv_temp9->_refCount);;
             sjv_temp10 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
             sjv_temp10->_refCount = 1;
+            printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp10, sjv_temp10->_refCount);;
             sjv_temp10->size = 10;
             sjv_temp10->data = (uintptr_t)sjg_string3;
             sjv_temp10->_isGlobal = false;
@@ -404,16 +432,19 @@ int main() {
             sjv_temp9->count = 9;
             sjv_temp9->data = sjv_temp10;
             sjv_temp9->data->_refCount++;
+            printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp9->data, sjv_temp9->data->_refCount);;
             sjf_string(sjv_temp9, &sjv_temp9);
             sjf_anon1_write(console, sjv_temp9);
             ifResult1 = false;
 
             sjv_temp10->_refCount--;
+            printf("RELEASE\tsjs_array_char*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp10, sjv_temp10->_refCount);
             if (sjv_temp10->_refCount <= 0) {
                 sjf_array_char_destroy(sjv_temp10);
                 free(sjv_temp10);
             }
             sjv_temp9->_refCount--;
+            printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp9, sjv_temp9->_refCount);
             if (sjv_temp9->_refCount <= 0) {
                 sjf_string_destroy(sjv_temp9);
                 free(sjv_temp9);
@@ -429,8 +460,10 @@ int main() {
 
                 sjv_temp11 = (sjs_string*)malloc(sizeof(sjs_string));
                 sjv_temp11->_refCount = 1;
+                printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp11, sjv_temp11->_refCount);;
                 sjv_temp12 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
                 sjv_temp12->_refCount = 1;
+                printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp12, sjv_temp12->_refCount);;
                 sjv_temp12->size = 11;
                 sjv_temp12->data = (uintptr_t)sjg_string2;
                 sjv_temp12->_isGlobal = false;
@@ -438,16 +471,19 @@ int main() {
                 sjv_temp11->count = 10;
                 sjv_temp11->data = sjv_temp12;
                 sjv_temp11->data->_refCount++;
+                printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp11->data, sjv_temp11->data->_refCount);;
                 sjf_string(sjv_temp11, &sjv_temp11);
                 sjf_anon1_write(console, sjv_temp11);
                 ifResult2 = false;
 
                 sjv_temp11->_refCount--;
+                printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp11, sjv_temp11->_refCount);
                 if (sjv_temp11->_refCount <= 0) {
                     sjf_string_destroy(sjv_temp11);
                     free(sjv_temp11);
                 }
                 sjv_temp12->_refCount--;
+                printf("RELEASE\tsjs_array_char*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp12, sjv_temp12->_refCount);
                 if (sjv_temp12->_refCount <= 0) {
                     sjf_array_char_destroy(sjv_temp12);
                     free(sjv_temp12);
@@ -464,11 +500,13 @@ int main() {
         whileValue1 = result11;
 
         result5->_refCount--;
+        printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result5, result5->_refCount);
         if (result5->_refCount <= 0) {
             sjf_string_destroy(result5);
             free(result5);
         }
         str->_refCount--;
+        printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)str, str->_refCount);
         if (str->_refCount <= 0) {
             sjf_string_destroy(str);
             free(str);
@@ -477,8 +515,10 @@ int main() {
 
     sjv_temp13 = (sjs_string*)malloc(sizeof(sjs_string));
     sjv_temp13->_refCount = 1;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp13, sjv_temp13->_refCount);;
     sjv_temp14 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     sjv_temp14->_refCount = 1;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp14, sjv_temp14->_refCount);;
     sjv_temp14->size = 10;
     sjv_temp14->data = (uintptr_t)sjg_string4;
     sjv_temp14->_isGlobal = false;
@@ -486,32 +526,37 @@ int main() {
     sjv_temp13->count = 9;
     sjv_temp13->data = sjv_temp14;
     sjv_temp13->data->_refCount++;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp13->data, sjv_temp13->data->_refCount);;
     sjf_string(sjv_temp13, &sjv_temp13);
     sjf_anon1_write(console, sjv_temp13);
 
     sjv_temp13->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp13, sjv_temp13->_refCount);
     if (sjv_temp13->_refCount <= 0) {
         sjf_string_destroy(sjv_temp13);
         free(sjv_temp13);
     }
     sjv_temp14->_refCount--;
+    printf("RELEASE\tsjs_array_char*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp14, sjv_temp14->_refCount);
     if (sjv_temp14->_refCount <= 0) {
         sjf_array_char_destroy(sjv_temp14);
         free(sjv_temp14);
     }
     sjv_temp5->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp5, sjv_temp5->_refCount);
     if (sjv_temp5->_refCount <= 0) {
         sjf_string_destroy(sjv_temp5);
         free(sjv_temp5);
     }
     sjv_temp6->_refCount--;
+    printf("RELEASE\tsjs_array_char*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp6, sjv_temp6->_refCount);
     if (sjv_temp6->_refCount <= 0) {
         sjf_array_char_destroy(sjv_temp6);
         free(sjv_temp6);
     }
-    sjf_anon4_destroy(&sjd_temp1);
-    sjf_anon3_destroy(&sjd_temp2);
-    sjf_anon2_destroy(&sjd_temp3);
-    sjf_anon1_destroy(&sjd_temp4);
+    assert(sjd_temp1._refCount == 0);
+    assert(sjd_temp2._refCount == 0);
+    assert(sjd_temp3._refCount == 0);
+    assert(sjd_temp4._refCount == 0);
     return 0;
 }

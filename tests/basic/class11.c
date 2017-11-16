@@ -1,5 +1,7 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct td_int32_option int32_option;
@@ -80,6 +82,7 @@ void sjf_func(sjs_class** _return);
 
 void sjf_class(sjs_class* _this, sjs_class** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_class(sjs_class* _this, sjs_class** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -92,11 +95,14 @@ void sjf_func(sjs_class** _return) {
 
     sjv_temp1 = (sjs_class*)malloc(sizeof(sjs_class));
     sjv_temp1->_refCount = 1;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_func(sjs_class** _return)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
     sjv_temp1->x = 1;
     sjf_class(sjv_temp1, &sjv_temp1);
     sjv_temp1->_refCount++;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_func(sjs_class** _return)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
 
     sjv_temp1->_refCount--;
+    printf("RELEASE\tsjs_class*\t%0x\tvoid sjf_func(sjs_class** _return)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);
     if (sjv_temp1->_refCount <= 0) {
         sjf_class_destroy(sjv_temp1);
         free(sjv_temp1);
@@ -114,6 +120,7 @@ int main() {
     dotTemp1 = result1->x;
 
     result1->_refCount--;
+    printf("RELEASE\tsjs_class*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result1, result1->_refCount);
     if (result1->_refCount <= 0) {
         sjf_class_destroy(result1);
         free(result1);

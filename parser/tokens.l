@@ -55,6 +55,9 @@ void updateLocation(YYLOCATION& loc, const char* s, const int len) {
 "true"					TOKEN_VAL(TTRUE);
 "false"					TOKEN_VAL(TFALSE);
 "void"					TOKEN_VAL(TVOID);
+"stack"					TOKEN_VAL(TSTACK);
+"heap"					TOKEN_VAL(THEAP);
+"matchReturn"			TOKEN_VAL(TMATCHRETURN);
 "if"					TOKEN_VAL(TIF);
 "else"					TOKEN_VAL(TELSE);
 "for" 					TOKEN_VAL(TFOR);

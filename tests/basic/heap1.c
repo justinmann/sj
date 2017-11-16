@@ -1,5 +1,7 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct td_int32_option int32_option;
@@ -79,6 +81,7 @@ void sjf_func(sjs_class** _return);
 
 void sjf_class(sjs_class* _this, sjs_class** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_class(sjs_class* _this, sjs_class** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -93,13 +96,17 @@ void sjf_func(sjs_class** _return) {
 
     sjv_temp1 = (sjs_class*)malloc(sizeof(sjs_class));
     sjv_temp1->_refCount = 1;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_func(sjs_class** _return)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
     sjf_class(sjv_temp1, &sjv_temp1);
     a = sjv_temp1;
     a->_refCount++;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_func(sjs_class** _return)\t%d\n", (uintptr_t)a, a->_refCount);;
     sjv_temp2 = (sjs_class*)malloc(sizeof(sjs_class));
     sjv_temp2->_refCount = 1;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_func(sjs_class** _return)\t%d\n", (uintptr_t)sjv_temp2, sjv_temp2->_refCount);;
     sjf_class(sjv_temp2, &sjv_temp2);
     a->_refCount--;
+    printf("RELEASE\tsjs_class*\t%0x\tvoid sjf_func(sjs_class** _return)\t%d\n", (uintptr_t)a, a->_refCount);;
     if (a->_refCount <= 0) {
         sjf_class_destroy(a);
         free(a);
@@ -107,19 +114,24 @@ void sjf_func(sjs_class** _return) {
 
     a = sjv_temp2;
     a->_refCount++;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_func(sjs_class** _return)\t%d\n", (uintptr_t)a, a->_refCount);;
     sjv_temp2->_refCount++;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_func(sjs_class** _return)\t%d\n", (uintptr_t)sjv_temp2, sjv_temp2->_refCount);;
 
     a->_refCount--;
+    printf("RELEASE\tsjs_class*\t%0x\tvoid sjf_func(sjs_class** _return)\t%d\n", (uintptr_t)a, a->_refCount);
     if (a->_refCount <= 0) {
         sjf_class_destroy(a);
         free(a);
     }
     sjv_temp1->_refCount--;
+    printf("RELEASE\tsjs_class*\t%0x\tvoid sjf_func(sjs_class** _return)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);
     if (sjv_temp1->_refCount <= 0) {
         sjf_class_destroy(sjv_temp1);
         free(sjv_temp1);
     }
     sjv_temp2->_refCount--;
+    printf("RELEASE\tsjs_class*\t%0x\tvoid sjf_func(sjs_class** _return)\t%d\n", (uintptr_t)sjv_temp2, sjv_temp2->_refCount);
     if (sjv_temp2->_refCount <= 0) {
         sjf_class_destroy(sjv_temp2);
         free(sjv_temp2);
@@ -136,13 +148,16 @@ int main() {
     sjf_func(&result1);
     b = result1;
     b->_refCount++;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)b, b->_refCount);;
 
     b->_refCount--;
+    printf("RELEASE\tsjs_class*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)b, b->_refCount);
     if (b->_refCount <= 0) {
         sjf_class_destroy(b);
         free(b);
     }
     result1->_refCount--;
+    printf("RELEASE\tsjs_class*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result1, result1->_refCount);
     if (result1->_refCount <= 0) {
         sjf_class_destroy(result1);
         free(result1);

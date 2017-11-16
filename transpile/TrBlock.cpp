@@ -80,8 +80,13 @@ void TrBlock::writeStackValuesReleaseToStream(ostream& stream, int level) {
     for (auto stackValue : stackValues)
     {
         if (!stackValue.second->parent.expired()) {
+#ifdef DEBUG_ALLOC
+            addSpacing(stream, level);
+            stream << "assert(" << stackValue.first << "._refCount == 0);\n";
+#else
             addSpacing(stream, level);
             stream << stackValue.second->parent.lock()->getCDestroyFunctionName() << "(&" << stackValue.first << ");\n";
+#endif
         }
     }
 }
@@ -160,7 +165,11 @@ bool ReturnValue::writeReleaseToStream(TrBlock* block, ostream& stream, int leve
     if (!type || type->parent.expired())
         return false;
 
+#ifdef DEBUG_ALLOC
+    if (release == RVR_MustRetain) {
+#else
     if (isHeap && release == RVR_MustRetain) {
+#endif
         if (type->isOption) {
             TrBlock::addSpacing(stream, level);
             stream << "if (" << name << " != 0) {\n";
@@ -177,12 +186,14 @@ bool ReturnValue::writeReleaseToStream(TrBlock* block, ostream& stream, int leve
 
         TrBlock::addSpacing(stream, level);
         stream << "if (" << name << "->_refCount <= 0) {\n";
-        if (!type->parent.expired()) {
-            TrBlock::addSpacing(stream, level + 1);
-            stream << type->parent.lock()->getCDestroyFunctionName() << "(" << name << ");\n";
-        }
         TrBlock::addSpacing(stream, level + 1);
-        stream << "free(" << name << ");\n";
+        stream << type->parent.lock()->getCDestroyFunctionName() << "(" << name << ");\n";
+
+        if (isHeap) {
+            TrBlock::addSpacing(stream, level + 1);
+            stream << "free(" << name << ");\n";
+        }
+
         TrBlock::addSpacing(stream, level);
         stream << "}\n";
 
@@ -196,7 +207,7 @@ bool ReturnValue::writeReleaseToStream(TrBlock* block, ostream& stream, int leve
     return true;
 }
 
-void ReturnValue::addReleaseToStatements(TrBlock* block, string name, shared_ptr<CType> type) {
+void ReturnValue::addReleaseToStatements(TrBlock* block, string name, shared_ptr<CType> type, bool isHeap) {
     assert(!type->parent.expired());
 
     shared_ptr<TrBlock> ifNullBlock;
@@ -229,9 +240,11 @@ void ReturnValue::addReleaseToStatements(TrBlock* block, string name, shared_ptr
     destroyStream << type->parent.lock()->getCDestroyFunctionName() << "(" << name << ")";
     ifBlock->statements.push_back(destroyStream.str());
 
-    stringstream freeStream;
-    freeStream << "free(" << name << ")";
-    ifBlock->statements.push_back(freeStream.str());
+    if (isHeap) {
+        stringstream freeStream;
+        freeStream << "free(" << name << ")";
+        ifBlock->statements.push_back(freeStream.str());
+    }
 }
 
 void ReturnValue::addRetainToStatements(TrBlock* block, string name, shared_ptr<CType> type) {

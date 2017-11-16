@@ -1,11 +1,17 @@
-* buttonElement
-* textElement
-* two buttons for +/-
+* create stack & heap structs
+
+
 * fix string add
 * make string immutable
 * string not depend on array
 * stringBuilder.append
 * stringBuilder.toString
+
+* draw box using sdl on windows
+
+* buttonElement
+* textElement
+* two buttons for +/-
 
 -- features --
 * override interfaces
@@ -58,5 +64,43 @@ x->lambda = sjf_anon2;
 array_each(arr, x);
 
 
-    
+heap x : heap y     // x = y; x->_refCount++
+heap x : stack y    // fail
+heap x : copy(y'stack) // copy y
 
+stack x : stack y   // x = y
+stack x : heap y    // fail
+stack x : copy(y'heap) // copy y
+
+x'stack : func()'stack    // illegal, cannot return stack
+x'stack : func()'heap     // fail
+x'stack : func()'matchReturn     // okay
+x'stack : func()'auto     // okay
+
+func()'auto {
+    _this // okay
+}
+
+func()'auto {
+    class() // okay
+}
+
+func()'auto {
+    value(class()) // fail, auto is not compatible with option
+}
+
+func()'auto {
+    a.getAt(0) // fail
+}
+
+func(
+    c: class()
+)'auto {
+    c // fail only heap allowed
+}
+
+func(
+    c'stack : class()
+) {
+    c // fail cannot return stack class var
+}

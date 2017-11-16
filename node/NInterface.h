@@ -60,7 +60,7 @@ public:
     string fullName(bool includeTemplateTypes);
     
     bool getHasThis();
-    shared_ptr<CType> getThisType(Compiler* compiler, CResult& result, bool isOption);
+    shared_ptr<CTypes> getThisTypes(Compiler* compiler, CResult& result);
     int getThisIndex(const string& name) const;
     shared_ptr<CVar> getThisVar(Compiler* compiler, CResult& result);
     //Type* getStructType(Compiler* compiler, CResult& result);
@@ -91,9 +91,7 @@ public:
     //shared_ptr<ReturnValue> cast(Compiler* compiler, CResult& result, IRBuilder<>* builder, shared_ptr<ReturnValue> fromValue, bool isHeap, vector<Function*>& interfaceMethodValues);
 
 private:
-    shared_ptr<CType> thisType;
-    shared_ptr<CType> thisOptionType;
-    //StructType* _structType;
+    shared_ptr<CTypes> thisTypes;
 };
 
 class CInterfaceDefinition : public CBaseFunctionDefinition, public enable_shared_from_this<CInterfaceDefinition> {

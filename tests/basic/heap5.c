@@ -1,5 +1,7 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct td_int32_option int32_option;
@@ -92,6 +94,7 @@ sjs_array_char sjd_temp2;
 
 void sjf_a(sjs_a* _this, sjs_a** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_a*\t%0x\tvoid sjf_a(sjs_a* _this, sjs_a** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -117,6 +120,7 @@ void sjf_array_char(sjs_array_char* _this, sjs_array_char** _return) {
 		}
 	;
     _this->_refCount++;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_array_char(sjs_array_char* _this, sjs_array_char** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -137,8 +141,10 @@ int main() {
 
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_refCount = 1;
+    printf("RETAIN\tsjs_a*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
     sjv_temp2 = &sjd_temp2;
     sjv_temp2->_refCount = 1;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp2, sjv_temp2->_refCount);;
     result1 = (uintptr_t)0;
     sjv_temp2->size = 0;
     sjv_temp2->data = result1;
@@ -146,8 +152,9 @@ int main() {
     sjf_array_char(sjv_temp2, &sjv_temp2);
     sjv_temp1->data = sjv_temp2;
     sjv_temp1->data->_refCount++;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1->data, sjv_temp1->data->_refCount);;
     sjf_a(sjv_temp1, &sjv_temp1);
-    sjf_a_destroy(&sjd_temp1);
-    sjf_array_char_destroy(&sjd_temp2);
+    assert(sjd_temp1._refCount == 0);
+    assert(sjd_temp2._refCount == 0);
     return 0;
 }

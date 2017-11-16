@@ -1,5 +1,7 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct td_int32_option int32_option;
@@ -82,10 +84,13 @@ void sjf_bar(sjs_foo** _return) {
 
     sjv_temp1 = (sjs_foo*)malloc(sizeof(sjs_foo));
     sjv_temp1->_refCount = 1;
+    printf("RETAIN\tsjs_foo*\t%0x\tvoid sjf_bar(sjs_foo** _return)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
     sjf_foo(sjv_temp1, &sjv_temp1);
     sjv_temp1->_refCount++;
+    printf("RETAIN\tsjs_foo*\t%0x\tvoid sjf_bar(sjs_foo** _return)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
 
     sjv_temp1->_refCount--;
+    printf("RELEASE\tsjs_foo*\t%0x\tvoid sjf_bar(sjs_foo** _return)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);
     if (sjv_temp1->_refCount <= 0) {
         sjf_foo_destroy(sjv_temp1);
         free(sjv_temp1);
@@ -96,6 +101,7 @@ void sjf_bar(sjs_foo** _return) {
 
 void sjf_foo(sjs_foo* _this, sjs_foo** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_foo*\t%0x\tvoid sjf_foo(sjs_foo* _this, sjs_foo** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -111,13 +117,16 @@ int main() {
     sjf_bar(&result1);
     a = result1;
     a->_refCount++;
+    printf("RETAIN\tsjs_foo*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)a, a->_refCount);;
 
     a->_refCount--;
+    printf("RELEASE\tsjs_foo*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)a, a->_refCount);
     if (a->_refCount <= 0) {
         sjf_foo_destroy(a);
         free(a);
     }
     result1->_refCount--;
+    printf("RELEASE\tsjs_foo*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result1, result1->_refCount);
     if (result1->_refCount <= 0) {
         sjf_foo_destroy(result1);
         free(result1);

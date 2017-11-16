@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <emscripten.h>
 #include <emscripten/html5.h>
 #include <stdbool.h>
@@ -297,6 +298,7 @@ sjs_button sjd_temp7;
 
 void sjf_anon1(sjs_anon1* _this, sjs_anon1** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_anon1*\t%0x\tvoid sjf_anon1(sjs_anon1* _this, sjs_anon1** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -314,6 +316,7 @@ void sjf_anon1_write(sjs_anon1* _parent, sjs_string* data) {
 
 void sjf_anon2(sjs_anon2* _this, sjs_anon2** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_anon2*\t%0x\tvoid sjf_anon2(sjs_anon2* _this, sjs_anon2** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -323,6 +326,7 @@ void sjf_anon2_destroy(sjs_anon2* _this) {
 
 void sjf_anon3(sjs_anon3* _this, sjs_anon3** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_anon3*\t%0x\tvoid sjf_anon3(sjs_anon3* _this, sjs_anon3** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -332,6 +336,7 @@ void sjf_anon3_destroy(sjs_anon3* _this) {
 
 void sjf_anon4(sjs_anon4* _this, sjs_anon4** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_anon4*\t%0x\tvoid sjf_anon4(sjs_anon4* _this, sjs_anon4** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -380,8 +385,10 @@ void sjf_anon4_i32toString(sjs_anon4* _parent, int32_t val, int32_t base, int32_
     sjv_temp10 = (sjs_string*)malloc(sizeof(sjs_string));
     sjv_temp10->_parent = _parent->_parent;
     sjv_temp10->_refCount = 1;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_anon4_i32toString(sjs_anon4* _parent, int32_t val, int32_t base, int32_t minLength, sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp10, sjv_temp10->_refCount);;
     sjv_temp11 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     sjv_temp11->_refCount = 1;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_anon4_i32toString(sjs_anon4* _parent, int32_t val, int32_t base, int32_t minLength, sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp11, sjv_temp11->_refCount);;
     result16 = count + 1;
     sjv_temp11->size = result16;
     sjv_temp11->data = data;
@@ -390,15 +397,19 @@ void sjf_anon4_i32toString(sjs_anon4* _parent, int32_t val, int32_t base, int32_
     sjv_temp10->count = count;
     sjv_temp10->data = sjv_temp11;
     sjv_temp10->data->_refCount++;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_anon4_i32toString(sjs_anon4* _parent, int32_t val, int32_t base, int32_t minLength, sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp10->data, sjv_temp10->data->_refCount);;
     sjf_string(sjv_temp10, &sjv_temp10);
     sjv_temp10->_refCount++;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_anon4_i32toString(sjs_anon4* _parent, int32_t val, int32_t base, int32_t minLength, sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp10, sjv_temp10->_refCount);;
 
     sjv_temp10->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_anon4_i32toString(sjs_anon4* _parent, int32_t val, int32_t base, int32_t minLength, sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp10, sjv_temp10->_refCount);
     if (sjv_temp10->_refCount <= 0) {
         sjf_string_destroy(sjv_temp10);
         free(sjv_temp10);
     }
     sjv_temp11->_refCount--;
+    printf("RELEASE\tsjs_array_char*\t%0x\tvoid sjf_anon4_i32toString(sjs_anon4* _parent, int32_t val, int32_t base, int32_t minLength, sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp11, sjv_temp11->_refCount);
     if (sjv_temp11->_refCount <= 0) {
         sjf_array_char_destroy(sjv_temp11);
         free(sjv_temp11);
@@ -409,6 +420,7 @@ void sjf_anon4_i32toString(sjs_anon4* _parent, int32_t val, int32_t base, int32_
 
 void sjf_anon5(sjs_anon5* _this, sjs_anon5** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_anon5*\t%0x\tvoid sjf_anon5(sjs_anon5* _this, sjs_anon5** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -423,8 +435,10 @@ void sjf_anon5_getFont(sjs_anon5* _parent, int32_t typeId, sjs_string** _return)
     sjv_temp23 = (sjs_string*)malloc(sizeof(sjs_string));
     sjv_temp23->_parent = _parent->_parent;
     sjv_temp23->_refCount = 1;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_anon5_getFont(sjs_anon5* _parent, int32_t typeId, sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp23, sjv_temp23->_refCount);;
     sjv_temp24 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     sjv_temp24->_refCount = 1;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_anon5_getFont(sjs_anon5* _parent, int32_t typeId, sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp24, sjv_temp24->_refCount);;
     sjv_temp24->size = 11;
     sjv_temp24->data = (uintptr_t)sjg_string6;
     sjv_temp24->_isGlobal = false;
@@ -432,15 +446,19 @@ void sjf_anon5_getFont(sjs_anon5* _parent, int32_t typeId, sjs_string** _return)
     sjv_temp23->count = 10;
     sjv_temp23->data = sjv_temp24;
     sjv_temp23->data->_refCount++;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_anon5_getFont(sjs_anon5* _parent, int32_t typeId, sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp23->data, sjv_temp23->data->_refCount);;
     sjf_string(sjv_temp23, &sjv_temp23);
     sjv_temp23->_refCount++;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_anon5_getFont(sjs_anon5* _parent, int32_t typeId, sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp23, sjv_temp23->_refCount);;
 
     sjv_temp23->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_anon5_getFont(sjs_anon5* _parent, int32_t typeId, sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp23, sjv_temp23->_refCount);
     if (sjv_temp23->_refCount <= 0) {
         sjf_string_destroy(sjv_temp23);
         free(sjv_temp23);
     }
     sjv_temp24->_refCount--;
+    printf("RELEASE\tsjs_array_char*\t%0x\tvoid sjf_anon5_getFont(sjs_anon5* _parent, int32_t typeId, sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp24, sjv_temp24->_refCount);
     if (sjv_temp24->_refCount <= 0) {
         sjf_array_char_destroy(sjv_temp24);
         free(sjv_temp24);
@@ -466,6 +484,7 @@ void sjf_array_char(sjs_array_char* _this, sjs_array_char** _return) {
 		}
 	;
     _this->_refCount++;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_array_char(sjs_array_char* _this, sjs_array_char** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -526,7 +545,7 @@ void sjf_array_char_grow(sjs_array_char* _parent, int32_t newSize, sjs_array_cha
 					printf("grow: out of memory\n");
 					exit(-1);				
 				}
-				memset((void*)_parent->data + _parent->size, 0, newSize - _parent->size);
+				memset((char*)_parent->data + _parent->size, 0, (newSize - _parent->size) * sizeof(char));
 			}
 			_parent->size = newSize;
 		}
@@ -573,6 +592,7 @@ void sjf_array_sji_element(sjs_array_sji_element* _this, sjs_array_sji_element**
 		}
 	;
     _this->_refCount++;
+    printf("RETAIN\tsjs_array_sji_element*\t%0x\tvoid sjf_array_sji_element(sjs_array_sji_element* _this, sjs_array_sji_element** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -621,6 +641,7 @@ void sjf_array_sji_element_setAt(sjs_array_sji_element* _parent, int32_t index, 
 #if !false
 		if (p[index] != 0) {
 			 p[index]->_refCount--;
+printf("RELEASE\tsji_element*\t%0x\t\t%d\n", (uintptr_t) p[index],  p[index]->_refCount);
 if ( p[index]->_refCount <= 0) {
     sji_element_destroy( p[index]);
     free( p[index]);
@@ -642,8 +663,10 @@ void sjf_button(sjs_button* _this, sjs_button** _return) {
     result27 = 0;
     sjf_anon5_getFont(dotTemp35, 1, &result27);
     _this->_refCount++;
+    printf("RETAIN\tsjs_button*\t%0x\tvoid sjf_button(sjs_button* _this, sjs_button** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     result27->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_button(sjs_button* _this, sjs_button** _return)\t%d\n", (uintptr_t)result27, result27->_refCount);
     if (result27->_refCount <= 0) {
         sjf_string_destroy(result27);
         free(result27);
@@ -676,6 +699,7 @@ void sjf_button_destroy(sjs_button* _this) {
     sjf_string_destroy(_this->text);
     sjf_string_destroy(_this->font);
     _this->rect->_refCount--;
+    printf("RELEASE\tsjs_rect*\t%0x\tvoid sjf_button_destroy(sjs_button* _this)\t%d\n", (uintptr_t)_this->rect, _this->rect->_refCount);;
     if (_this->rect->_refCount <= 0) {
         sjf_rect_destroy(_this->rect);
         free(_this->rect);
@@ -700,8 +724,10 @@ void sjf_button_render(sjs_button* _parent, sji_surface* surface) {
     sjv_temp25 = (sjs_string*)malloc(sizeof(sjs_string));
     sjv_temp25->_parent = _parent->_parent;
     sjv_temp25->_refCount = 1;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_button_render(sjs_button* _parent, sji_surface* surface)\t%d\n", (uintptr_t)sjv_temp25, sjv_temp25->_refCount);;
     sjv_temp26 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     sjv_temp26->_refCount = 1;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_button_render(sjs_button* _parent, sji_surface* surface)\t%d\n", (uintptr_t)sjv_temp26, sjv_temp26->_refCount);;
     sjv_temp26->size = 20;
     sjv_temp26->data = (uintptr_t)sjg_string7;
     sjv_temp26->_isGlobal = false;
@@ -709,12 +735,14 @@ void sjf_button_render(sjs_button* _parent, sji_surface* surface) {
     sjv_temp25->count = 19;
     sjv_temp25->data = sjv_temp26;
     sjv_temp25->data->_refCount++;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_button_render(sjs_button* _parent, sji_surface* surface)\t%d\n", (uintptr_t)sjv_temp25->data, sjv_temp25->data->_refCount);;
     sjf_string(sjv_temp25, &sjv_temp25);
     sjf_anon1_write(dotTemp36, sjv_temp25);
     dotTemp37 = _parent->rect;
     sjv_temp27 = &sjd_temp6;
     sjv_temp27->_parent = _parent->_parent;
     sjv_temp27->_refCount = 1;
+    printf("RETAIN\tsjs_color*\t%0x\tvoid sjf_button_render(sjs_button* _parent, sji_surface* surface)\t%d\n", (uintptr_t)sjv_temp27, sjv_temp27->_refCount);;
     sjv_temp27->r = 255;
     sjv_temp27->g = 0;
     sjv_temp27->b = 0;
@@ -726,8 +754,10 @@ void sjf_button_render(sjs_button* _parent, sji_surface* surface) {
     sjv_temp28 = (sjs_string*)malloc(sizeof(sjs_string));
     sjv_temp28->_parent = _parent->_parent;
     sjv_temp28->_refCount = 1;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_button_render(sjs_button* _parent, sji_surface* surface)\t%d\n", (uintptr_t)sjv_temp28, sjv_temp28->_refCount);;
     sjv_temp29 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     sjv_temp29->_refCount = 1;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_button_render(sjs_button* _parent, sji_surface* surface)\t%d\n", (uintptr_t)sjv_temp29, sjv_temp29->_refCount);;
     sjv_temp29->size = 20;
     sjv_temp29->data = (uintptr_t)sjg_string8;
     sjv_temp29->_isGlobal = false;
@@ -735,34 +765,40 @@ void sjf_button_render(sjs_button* _parent, sji_surface* surface) {
     sjv_temp28->count = 19;
     sjv_temp28->data = sjv_temp29;
     sjv_temp28->data->_refCount++;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_button_render(sjs_button* _parent, sji_surface* surface)\t%d\n", (uintptr_t)sjv_temp28->data, sjv_temp28->data->_refCount);;
     sjf_string(sjv_temp28, &sjv_temp28);
     sjf_anon1_write(dotTemp38, sjv_temp28);
 
     sjv_temp25->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_button_render(sjs_button* _parent, sji_surface* surface)\t%d\n", (uintptr_t)sjv_temp25, sjv_temp25->_refCount);
     if (sjv_temp25->_refCount <= 0) {
         sjf_string_destroy(sjv_temp25);
         free(sjv_temp25);
     }
     sjv_temp26->_refCount--;
+    printf("RELEASE\tsjs_array_char*\t%0x\tvoid sjf_button_render(sjs_button* _parent, sji_surface* surface)\t%d\n", (uintptr_t)sjv_temp26, sjv_temp26->_refCount);
     if (sjv_temp26->_refCount <= 0) {
         sjf_array_char_destroy(sjv_temp26);
         free(sjv_temp26);
     }
     sjv_temp28->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_button_render(sjs_button* _parent, sji_surface* surface)\t%d\n", (uintptr_t)sjv_temp28, sjv_temp28->_refCount);
     if (sjv_temp28->_refCount <= 0) {
         sjf_string_destroy(sjv_temp28);
         free(sjv_temp28);
     }
     sjv_temp29->_refCount--;
+    printf("RELEASE\tsjs_array_char*\t%0x\tvoid sjf_button_render(sjs_button* _parent, sji_surface* surface)\t%d\n", (uintptr_t)sjv_temp29, sjv_temp29->_refCount);
     if (sjv_temp29->_refCount <= 0) {
         sjf_array_char_destroy(sjv_temp29);
         free(sjv_temp29);
     }
-    sjf_color_destroy(&sjd_temp6);
+    assert(sjd_temp6._refCount == 0);
 }
 
 void sjf_button_setRect(sjs_button* _parent, sjs_rect* rect_) {
     _parent->rect->_refCount--;
+    printf("RELEASE\tsjs_rect*\t%0x\tvoid sjf_button_setRect(sjs_button* _parent, sjs_rect* rect_)\t%d\n", (uintptr_t)_parent->rect, _parent->rect->_refCount);;
     if (_parent->rect->_refCount <= 0) {
         sjf_rect_destroy(_parent->rect);
         free(_parent->rect);
@@ -770,10 +806,12 @@ void sjf_button_setRect(sjs_button* _parent, sjs_rect* rect_) {
 
     _parent->rect = rect_;
     _parent->rect->_refCount++;
+    printf("RETAIN\tsjs_rect*\t%0x\tvoid sjf_button_setRect(sjs_button* _parent, sjs_rect* rect_)\t%d\n", (uintptr_t)_parent->rect, _parent->rect->_refCount);;
 }
 
 void sjf_color(sjs_color* _this, sjs_color** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_color*\t%0x\tvoid sjf_color(sjs_color* _this, sjs_color** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -805,8 +843,10 @@ void sjf_color_asString(sjs_color* _parent, sjs_string** _return) {
     sjv_temp8 = (sjs_string*)malloc(sizeof(sjs_string));
     sjv_temp8->_parent = _parent->_parent;
     sjv_temp8->_refCount = 1;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_color_asString(sjs_color* _parent, sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp8, sjv_temp8->_refCount);;
     sjv_temp9 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     sjv_temp9->_refCount = 1;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_color_asString(sjs_color* _parent, sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp9, sjv_temp9->_refCount);;
     sjv_temp9->size = 2;
     sjv_temp9->data = (uintptr_t)sjg_string3;
     sjv_temp9->_isGlobal = false;
@@ -814,6 +854,7 @@ void sjf_color_asString(sjs_color* _parent, sjs_string** _return) {
     sjv_temp8->count = 1;
     sjv_temp8->data = sjv_temp9;
     sjv_temp8->data->_refCount++;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_color_asString(sjs_color* _parent, sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp8->data, sjv_temp8->data->_refCount);;
     sjf_string(sjv_temp8, &sjv_temp8);
     result2 = 0;
     tempParent2 = _parent->_parent;
@@ -845,46 +886,55 @@ void sjf_color_asString(sjs_color* _parent, sjs_string** _return) {
     sjf_string_add(result19, result22, &result21);
 
     result14->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_color_asString(sjs_color* _parent, sjs_string** _return)\t%d\n", (uintptr_t)result14, result14->_refCount);
     if (result14->_refCount <= 0) {
         sjf_string_destroy(result14);
         free(result14);
     }
     result17->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_color_asString(sjs_color* _parent, sjs_string** _return)\t%d\n", (uintptr_t)result17, result17->_refCount);
     if (result17->_refCount <= 0) {
         sjf_string_destroy(result17);
         free(result17);
     }
     result18->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_color_asString(sjs_color* _parent, sjs_string** _return)\t%d\n", (uintptr_t)result18, result18->_refCount);
     if (result18->_refCount <= 0) {
         sjf_string_destroy(result18);
         free(result18);
     }
     result19->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_color_asString(sjs_color* _parent, sjs_string** _return)\t%d\n", (uintptr_t)result19, result19->_refCount);
     if (result19->_refCount <= 0) {
         sjf_string_destroy(result19);
         free(result19);
     }
     result2->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_color_asString(sjs_color* _parent, sjs_string** _return)\t%d\n", (uintptr_t)result2, result2->_refCount);
     if (result2->_refCount <= 0) {
         sjf_string_destroy(result2);
         free(result2);
     }
     result20->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_color_asString(sjs_color* _parent, sjs_string** _return)\t%d\n", (uintptr_t)result20, result20->_refCount);
     if (result20->_refCount <= 0) {
         sjf_string_destroy(result20);
         free(result20);
     }
     result22->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_color_asString(sjs_color* _parent, sjs_string** _return)\t%d\n", (uintptr_t)result22, result22->_refCount);
     if (result22->_refCount <= 0) {
         sjf_string_destroy(result22);
         free(result22);
     }
     sjv_temp8->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_color_asString(sjs_color* _parent, sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp8, sjv_temp8->_refCount);
     if (sjv_temp8->_refCount <= 0) {
         sjf_string_destroy(sjv_temp8);
         free(sjv_temp8);
     }
     sjv_temp9->_refCount--;
+    printf("RELEASE\tsjs_array_char*\t%0x\tvoid sjf_color_asString(sjs_color* _parent, sjs_string** _return)\t%d\n", (uintptr_t)sjv_temp9, sjv_temp9->_refCount);
     if (sjv_temp9->_refCount <= 0) {
         sjf_array_char_destroy(sjv_temp9);
         free(sjv_temp9);
@@ -898,6 +948,7 @@ void sjf_color_destroy(sjs_color* _this) {
 
 void sjf_element(sjs_element* _this, sjs_element** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_element*\t%0x\tvoid sjf_element(sjs_element* _this, sjs_element** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -925,6 +976,7 @@ sji_element* sjf_element_as_sji_element(sjs_element* _this) {
 void sjf_element_destroy(sjs_element* _this) {
     sjf_array_sji_element_destroy(_this->children);
     _this->rect->_refCount--;
+    printf("RELEASE\tsjs_rect*\t%0x\tvoid sjf_element_destroy(sjs_element* _this)\t%d\n", (uintptr_t)_this->rect, _this->rect->_refCount);;
     if (_this->rect->_refCount <= 0) {
         sjf_rect_destroy(_this->rect);
         free(_this->rect);
@@ -946,8 +998,10 @@ void sjf_element_render(sjs_element* _parent, sji_surface* surface) {
     sjv_temp19 = (sjs_string*)malloc(sizeof(sjs_string));
     sjv_temp19->_parent = _parent->_parent;
     sjv_temp19->_refCount = 1;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_element_render(sjs_element* _parent, sji_surface* surface)\t%d\n", (uintptr_t)sjv_temp19, sjv_temp19->_refCount);;
     sjv_temp20 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     sjv_temp20->_refCount = 1;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_element_render(sjs_element* _parent, sji_surface* surface)\t%d\n", (uintptr_t)sjv_temp20, sjv_temp20->_refCount);;
     sjv_temp20->size = 11;
     sjv_temp20->data = (uintptr_t)sjg_string10;
     sjv_temp20->_isGlobal = false;
@@ -955,6 +1009,7 @@ void sjf_element_render(sjs_element* _parent, sji_surface* surface) {
     sjv_temp19->count = 10;
     sjv_temp19->data = sjv_temp20;
     sjv_temp19->data->_refCount++;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_element_render(sjs_element* _parent, sji_surface* surface)\t%d\n", (uintptr_t)sjv_temp19->data, sjv_temp19->data->_refCount);;
     sjf_string(sjv_temp19, &sjv_temp19);
     sjf_anon1_write(dotTemp31, sjv_temp19);
     i = 0;
@@ -971,10 +1026,12 @@ void sjf_element_render(sjs_element* _parent, sji_surface* surface) {
         sjf_array_sji_element_getAt(dotTemp34, i, &result25);
         child = result25;
         child->_refCount++;
+        printf("RETAIN\tsji_element*\t%0x\tvoid sjf_element_render(sjs_element* _parent, sji_surface* surface)\t%d\n", (uintptr_t)child, child->_refCount);;
         child->render(child->_parent, surface);
         i++;
 
         result25->_refCount--;
+        printf("RELEASE\tsji_element*\t%0x\tvoid sjf_element_render(sjs_element* _parent, sji_surface* surface)\t%d\n", (uintptr_t)result25, result25->_refCount);
         if (result25->_refCount <= 0) {
             sji_element_destroy(result25);
             free(result25);
@@ -982,11 +1039,13 @@ void sjf_element_render(sjs_element* _parent, sji_surface* surface) {
     }
 
     sjv_temp19->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_element_render(sjs_element* _parent, sji_surface* surface)\t%d\n", (uintptr_t)sjv_temp19, sjv_temp19->_refCount);
     if (sjv_temp19->_refCount <= 0) {
         sjf_string_destroy(sjv_temp19);
         free(sjv_temp19);
     }
     sjv_temp20->_refCount--;
+    printf("RELEASE\tsjs_array_char*\t%0x\tvoid sjf_element_render(sjs_element* _parent, sji_surface* surface)\t%d\n", (uintptr_t)sjv_temp20, sjv_temp20->_refCount);
     if (sjv_temp20->_refCount <= 0) {
         sjf_array_char_destroy(sjv_temp20);
         free(sjv_temp20);
@@ -1008,8 +1067,10 @@ void sjf_element_setRect(sjs_element* _parent, sjs_rect* rect_) {
     sjv_temp17 = (sjs_string*)malloc(sizeof(sjs_string));
     sjv_temp17->_parent = _parent->_parent;
     sjv_temp17->_refCount = 1;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_element_setRect(sjs_element* _parent, sjs_rect* rect_)\t%d\n", (uintptr_t)sjv_temp17, sjv_temp17->_refCount);;
     sjv_temp18 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     sjv_temp18->_refCount = 1;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_element_setRect(sjs_element* _parent, sjs_rect* rect_)\t%d\n", (uintptr_t)sjv_temp18, sjv_temp18->_refCount);;
     sjv_temp18->size = 12;
     sjv_temp18->data = (uintptr_t)sjg_string9;
     sjv_temp18->_isGlobal = false;
@@ -1017,9 +1078,11 @@ void sjf_element_setRect(sjs_element* _parent, sjs_rect* rect_) {
     sjv_temp17->count = 11;
     sjv_temp17->data = sjv_temp18;
     sjv_temp17->data->_refCount++;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_element_setRect(sjs_element* _parent, sjs_rect* rect_)\t%d\n", (uintptr_t)sjv_temp17->data, sjv_temp17->data->_refCount);;
     sjf_string(sjv_temp17, &sjv_temp17);
     sjf_anon1_write(dotTemp26, sjv_temp17);
     _parent->rect->_refCount--;
+    printf("RELEASE\tsjs_rect*\t%0x\tvoid sjf_element_setRect(sjs_element* _parent, sjs_rect* rect_)\t%d\n", (uintptr_t)_parent->rect, _parent->rect->_refCount);;
     if (_parent->rect->_refCount <= 0) {
         sjf_rect_destroy(_parent->rect);
         free(_parent->rect);
@@ -1027,6 +1090,7 @@ void sjf_element_setRect(sjs_element* _parent, sjs_rect* rect_) {
 
     _parent->rect = rect_;
     _parent->rect->_refCount++;
+    printf("RETAIN\tsjs_rect*\t%0x\tvoid sjf_element_setRect(sjs_element* _parent, sjs_rect* rect_)\t%d\n", (uintptr_t)_parent->rect, _parent->rect->_refCount);;
     i = 0;
     dotTemp27 = _parent->children;
     dotTemp28 = dotTemp27->size;
@@ -1042,11 +1106,13 @@ void sjf_element_setRect(sjs_element* _parent, sjs_rect* rect_) {
         sjf_array_sji_element_getAt(dotTemp29, i, &result24);
         child = result24;
         child->_refCount++;
+        printf("RETAIN\tsji_element*\t%0x\tvoid sjf_element_setRect(sjs_element* _parent, sjs_rect* rect_)\t%d\n", (uintptr_t)child, child->_refCount);;
         dotTemp30 = _parent->rect;
         child->setRect(child->_parent, dotTemp30);
         i++;
 
         result24->_refCount--;
+        printf("RELEASE\tsji_element*\t%0x\tvoid sjf_element_setRect(sjs_element* _parent, sjs_rect* rect_)\t%d\n", (uintptr_t)result24, result24->_refCount);
         if (result24->_refCount <= 0) {
             sji_element_destroy(result24);
             free(result24);
@@ -1054,11 +1120,13 @@ void sjf_element_setRect(sjs_element* _parent, sjs_rect* rect_) {
     }
 
     sjv_temp17->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_element_setRect(sjs_element* _parent, sjs_rect* rect_)\t%d\n", (uintptr_t)sjv_temp17, sjv_temp17->_refCount);
     if (sjv_temp17->_refCount <= 0) {
         sjf_string_destroy(sjv_temp17);
         free(sjv_temp17);
     }
     sjv_temp18->_refCount--;
+    printf("RELEASE\tsjs_array_char*\t%0x\tvoid sjf_element_setRect(sjs_element* _parent, sjs_rect* rect_)\t%d\n", (uintptr_t)sjv_temp18, sjv_temp18->_refCount);
     if (sjv_temp18->_refCount <= 0) {
         sjf_array_char_destroy(sjv_temp18);
         free(sjv_temp18);
@@ -1077,6 +1145,7 @@ void sjf_htmlCanvas2d(sjs_htmlCanvas2d* _this, sjs_htmlCanvas2d** _return) {
 		}, _this->ctxVarName->data);
 	;
     _this->_refCount++;
+    printf("RETAIN\tsjs_htmlCanvas2d*\t%0x\tvoid sjf_htmlCanvas2d(sjs_htmlCanvas2d* _this, sjs_htmlCanvas2d** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -1117,8 +1186,10 @@ void sjf_htmlCanvas2d_fillRect(sjs_htmlCanvas2d* _parent, sjs_rect* rect, sjs_co
     sjv_temp6 = (sjs_string*)malloc(sizeof(sjs_string));
     sjv_temp6->_parent = _parent->_parent;
     sjv_temp6->_refCount = 1;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_htmlCanvas2d_fillRect(sjs_htmlCanvas2d* _parent, sjs_rect* rect, sjs_color* color)\t%d\n", (uintptr_t)sjv_temp6, sjv_temp6->_refCount);;
     sjv_temp7 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     sjv_temp7->_refCount = 1;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_htmlCanvas2d_fillRect(sjs_htmlCanvas2d* _parent, sjs_rect* rect, sjs_color* color)\t%d\n", (uintptr_t)sjv_temp7, sjv_temp7->_refCount);;
     sjv_temp7->size = 9;
     sjv_temp7->data = (uintptr_t)sjg_string2;
     sjv_temp7->_isGlobal = false;
@@ -1126,12 +1197,14 @@ void sjf_htmlCanvas2d_fillRect(sjs_htmlCanvas2d* _parent, sjs_rect* rect, sjs_co
     sjv_temp6->count = 8;
     sjv_temp6->data = sjv_temp7;
     sjv_temp6->data->_refCount++;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_htmlCanvas2d_fillRect(sjs_htmlCanvas2d* _parent, sjs_rect* rect, sjs_color* color)\t%d\n", (uintptr_t)sjv_temp6->data, sjv_temp6->data->_refCount);;
     sjf_string(sjv_temp6, &sjv_temp6);
     sjf_anon1_write(dotTemp1, sjv_temp6);
     result1 = 0;
     sjf_color_asString(color, &result1);
     colorText = result1;
     colorText->_refCount++;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_htmlCanvas2d_fillRect(sjs_htmlCanvas2d* _parent, sjs_rect* rect, sjs_color* color)\t%d\n", (uintptr_t)colorText, colorText->_refCount);;
     
 			EM_ASM_({
 			debugger;
@@ -1142,21 +1215,25 @@ void sjf_htmlCanvas2d_fillRect(sjs_htmlCanvas2d* _parent, sjs_rect* rect, sjs_co
 		;
 
     colorText->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_htmlCanvas2d_fillRect(sjs_htmlCanvas2d* _parent, sjs_rect* rect, sjs_color* color)\t%d\n", (uintptr_t)colorText, colorText->_refCount);
     if (colorText->_refCount <= 0) {
         sjf_string_destroy(colorText);
         free(colorText);
     }
     result1->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_htmlCanvas2d_fillRect(sjs_htmlCanvas2d* _parent, sjs_rect* rect, sjs_color* color)\t%d\n", (uintptr_t)result1, result1->_refCount);
     if (result1->_refCount <= 0) {
         sjf_string_destroy(result1);
         free(result1);
     }
     sjv_temp6->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_htmlCanvas2d_fillRect(sjs_htmlCanvas2d* _parent, sjs_rect* rect, sjs_color* color)\t%d\n", (uintptr_t)sjv_temp6, sjv_temp6->_refCount);
     if (sjv_temp6->_refCount <= 0) {
         sjf_string_destroy(sjv_temp6);
         free(sjv_temp6);
     }
     sjv_temp7->_refCount--;
+    printf("RELEASE\tsjs_array_char*\t%0x\tvoid sjf_htmlCanvas2d_fillRect(sjs_htmlCanvas2d* _parent, sjs_rect* rect, sjs_color* color)\t%d\n", (uintptr_t)sjv_temp7, sjv_temp7->_refCount);
     if (sjv_temp7->_refCount <= 0) {
         sjf_array_char_destroy(sjv_temp7);
         free(sjv_temp7);
@@ -1176,8 +1253,10 @@ void sjf_mainLoop(sjs_global* _parent) {
     sjv_temp36 = (sjs_string*)malloc(sizeof(sjs_string));
     sjv_temp36->_parent = _parent;
     sjv_temp36->_refCount = 1;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_mainLoop(sjs_global* _parent)\t%d\n", (uintptr_t)sjv_temp36, sjv_temp36->_refCount);;
     sjv_temp37 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     sjv_temp37->_refCount = 1;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_mainLoop(sjs_global* _parent)\t%d\n", (uintptr_t)sjv_temp37, sjv_temp37->_refCount);;
     sjv_temp37->size = 13;
     sjv_temp37->data = (uintptr_t)sjg_string11;
     sjv_temp37->_isGlobal = false;
@@ -1185,6 +1264,7 @@ void sjf_mainLoop(sjs_global* _parent) {
     sjv_temp36->count = 12;
     sjv_temp36->data = sjv_temp37;
     sjv_temp36->data->_refCount++;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_mainLoop(sjs_global* _parent)\t%d\n", (uintptr_t)sjv_temp36->data, sjv_temp36->data->_refCount);;
     sjf_string(sjv_temp36, &sjv_temp36);
     sjf_anon1_write(dotTemp40, sjv_temp36);
     dotTemp41 = _parent->root;
@@ -1196,6 +1276,7 @@ void sjf_mainLoop(sjs_global* _parent) {
         dotTemp42 = _parent->root;
         sjv_temp38 = (sjs_rect*)malloc(sizeof(sjs_rect));
         sjv_temp38->_refCount = 1;
+        printf("RETAIN\tsjs_rect*\t%0x\tvoid sjf_mainLoop(sjs_global* _parent)\t%d\n", (uintptr_t)sjv_temp38, sjv_temp38->_refCount);;
         sjv_temp38->x = 0;
         sjv_temp38->y = 0;
         sjv_temp38->w = 100;
@@ -1204,6 +1285,7 @@ void sjf_mainLoop(sjs_global* _parent) {
         dotTemp42->setRect(dotTemp42->_parent, sjv_temp38);
 
         sjv_temp38->_refCount--;
+        printf("RELEASE\tsjs_rect*\t%0x\tvoid sjf_mainLoop(sjs_global* _parent)\t%d\n", (uintptr_t)sjv_temp38, sjv_temp38->_refCount);
         if (sjv_temp38->_refCount <= 0) {
             sjf_rect_destroy(sjv_temp38);
             free(sjv_temp38);
@@ -1222,11 +1304,13 @@ void sjf_mainLoop(sjs_global* _parent) {
     }
 
     sjv_temp36->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_mainLoop(sjs_global* _parent)\t%d\n", (uintptr_t)sjv_temp36, sjv_temp36->_refCount);
     if (sjv_temp36->_refCount <= 0) {
         sjf_string_destroy(sjv_temp36);
         free(sjv_temp36);
     }
     sjv_temp37->_refCount--;
+    printf("RELEASE\tsjs_array_char*\t%0x\tvoid sjf_mainLoop(sjs_global* _parent)\t%d\n", (uintptr_t)sjv_temp37, sjv_temp37->_refCount);
     if (sjv_temp37->_refCount <= 0) {
         sjf_array_char_destroy(sjv_temp37);
         free(sjv_temp37);
@@ -1242,8 +1326,10 @@ void sjf_onClick(sjs_global* _parent, double timestemp, int32_t x, int32_t y) {
     sjv_temp15 = (sjs_string*)malloc(sizeof(sjs_string));
     sjv_temp15->_parent = _parent;
     sjv_temp15->_refCount = 1;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_onClick(sjs_global* _parent, double timestemp, int32_t x, int32_t y)\t%d\n", (uintptr_t)sjv_temp15, sjv_temp15->_refCount);;
     sjv_temp16 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     sjv_temp16->_refCount = 1;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_onClick(sjs_global* _parent, double timestemp, int32_t x, int32_t y)\t%d\n", (uintptr_t)sjv_temp16, sjv_temp16->_refCount);;
     sjv_temp16->size = 6;
     sjv_temp16->data = (uintptr_t)sjg_string4;
     sjv_temp16->_isGlobal = false;
@@ -1251,15 +1337,18 @@ void sjf_onClick(sjs_global* _parent, double timestemp, int32_t x, int32_t y) {
     sjv_temp15->count = 5;
     sjv_temp15->data = sjv_temp16;
     sjv_temp15->data->_refCount++;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_onClick(sjs_global* _parent, double timestemp, int32_t x, int32_t y)\t%d\n", (uintptr_t)sjv_temp15->data, sjv_temp15->data->_refCount);;
     sjf_string(sjv_temp15, &sjv_temp15);
     sjf_anon1_write(dotTemp25, sjv_temp15);
 
     sjv_temp15->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_onClick(sjs_global* _parent, double timestemp, int32_t x, int32_t y)\t%d\n", (uintptr_t)sjv_temp15, sjv_temp15->_refCount);
     if (sjv_temp15->_refCount <= 0) {
         sjf_string_destroy(sjv_temp15);
         free(sjv_temp15);
     }
     sjv_temp16->_refCount--;
+    printf("RELEASE\tsjs_array_char*\t%0x\tvoid sjf_onClick(sjs_global* _parent, double timestemp, int32_t x, int32_t y)\t%d\n", (uintptr_t)sjv_temp16, sjv_temp16->_refCount);
     if (sjv_temp16->_refCount <= 0) {
         sjf_array_char_destroy(sjv_temp16);
         free(sjv_temp16);
@@ -1268,6 +1357,7 @@ void sjf_onClick(sjs_global* _parent, double timestemp, int32_t x, int32_t y) {
 
 void sjf_rect(sjs_rect* _this, sjs_rect** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_rect*\t%0x\tvoid sjf_rect(sjs_rect* _this, sjs_rect** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -1277,6 +1367,7 @@ void sjf_rect_destroy(sjs_rect* _this) {
 
 void sjf_string(sjs_string* _this, sjs_string** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_string(sjs_string* _this, sjs_string** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -1326,6 +1417,7 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string** _return)
             sjf_array_char_grow(dotTemp7, result9, &result7);
 
             result7->_refCount--;
+            printf("RELEASE\tsjs_array_char*\t%0x\tvoid sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string** _return)\t%d\n", (uintptr_t)result7, result7->_refCount);
             if (result7->_refCount <= 0) {
                 sjf_array_char_destroy(result7);
                 free(result7);
@@ -1360,12 +1452,14 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string** _return)
     }
 
     _parent->_refCount++;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string** _return)\t%d\n", (uintptr_t)_parent, _parent->_refCount);;
 
     *_return = _parent;
 }
 
 void sjf_string_destroy(sjs_string* _this) {
     _this->data->_refCount--;
+    printf("RELEASE\tsjs_array_char*\t%0x\tvoid sjf_string_destroy(sjs_string* _this)\t%d\n", (uintptr_t)_this->data, _this->data->_refCount);;
     if (_this->data->_refCount <= 0) {
         sjf_array_char_destroy(_this->data);
         free(_this->data);
@@ -1385,6 +1479,7 @@ void sjf_string_getAt(sjs_string* _parent, int32_t index, char* _return) {
 
 void sji_element_destroy(sji_element* _this) {
     _this->_parent->_refCount--;
+    printf("RELEASE\tvoid sji_element_destroy(sji_element* _this)\t%0x\tvoid sji_element_destroy(sji_element* _this)\t%d\n", (uintptr_t)_this->_parent, _this->_parent->_refCount);;
     if (_this->_parent->_refCount <= 0) {
         _this->destroy(_this->_parent);
         free(_this->_parent);
@@ -1393,6 +1488,7 @@ void sji_element_destroy(sji_element* _this) {
 
 void sji_surface_destroy(sji_surface* _this) {
     _this->_parent->_refCount--;
+    printf("RELEASE\tvoid sji_surface_destroy(sji_surface* _this)\t%0x\tvoid sji_surface_destroy(sji_surface* _this)\t%d\n", (uintptr_t)_this->_parent, _this->_parent->_refCount);;
     if (_this->_parent->_refCount <= 0) {
         _this->destroy(_this->_parent);
         free(_this->_parent);
@@ -1430,32 +1526,43 @@ int main() {
     sjv_temp1 = (sjs_anon5*)malloc(sizeof(sjs_anon5));
     sjv_temp1->_parent = _this;
     sjv_temp1->_refCount = 1;
+    printf("RETAIN\tsjs_anon5*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
     sjf_anon5(sjv_temp1, &sjv_temp1);
     _this->style = sjv_temp1;
     _this->style->_refCount++;
+    printf("RETAIN\tsjs_anon5*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)_this->style, _this->style->_refCount);;
     sjv_temp2 = (sjs_anon4*)malloc(sizeof(sjs_anon4));
     sjv_temp2->_parent = _this;
     sjv_temp2->_refCount = 1;
+    printf("RETAIN\tsjs_anon4*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp2, sjv_temp2->_refCount);;
     sjf_anon4(sjv_temp2, &sjv_temp2);
     _this->convert = sjv_temp2;
     _this->convert->_refCount++;
+    printf("RETAIN\tsjs_anon4*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)_this->convert, _this->convert->_refCount);;
     sjv_temp3 = &sjd_temp1;
     sjv_temp3->_refCount = 1;
+    printf("RETAIN\tsjs_anon3*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp3, sjv_temp3->_refCount);;
     sjf_anon3(sjv_temp3, &sjv_temp3);
     random = sjv_temp3;
     random->_refCount++;
+    printf("RETAIN\tsjs_anon3*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)random, random->_refCount);;
     sjv_temp4 = &sjd_temp2;
     sjv_temp4->_refCount = 1;
+    printf("RETAIN\tsjs_anon2*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp4, sjv_temp4->_refCount);;
     sjf_anon2(sjv_temp4, &sjv_temp4);
     parse = sjv_temp4;
     parse->_refCount++;
+    printf("RETAIN\tsjs_anon2*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)parse, parse->_refCount);;
     sjv_temp5 = (sjs_anon1*)malloc(sizeof(sjs_anon1));
     sjv_temp5->_refCount = 1;
+    printf("RETAIN\tsjs_anon1*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp5, sjv_temp5->_refCount);;
     sjf_anon1(sjv_temp5, &sjv_temp5);
     _this->console = sjv_temp5;
     _this->console->_refCount++;
+    printf("RETAIN\tsjs_anon1*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)_this->console, _this->console->_refCount);;
     if (_this->root != 0) {
         _this->root->_refCount--;
+        printf("RELEASE\tsji_element*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)_this->root, _this->root->_refCount);;
         if (_this->root->_refCount <= 0) {
             sji_element_destroy(_this->root);
             free(_this->root);
@@ -1465,16 +1572,20 @@ int main() {
     _this->root = 0;
     if (_this->root != 0) {
         _this->root->_refCount++;
+        printf("RETAIN\tsji_element*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)_this->root, _this->root->_refCount);;
     }
 
     sjv_temp12 = &sjd_temp3;
     sjv_temp12->_parent = _this;
     sjv_temp12->_refCount = 1;
+    printf("RETAIN\tsjs_htmlCanvas2d*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp12, sjv_temp12->_refCount);;
     sjv_temp13 = (sjs_string*)malloc(sizeof(sjs_string));
     sjv_temp13->_parent = sjv_temp12->_parent;
     sjv_temp13->_refCount = 1;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp13, sjv_temp13->_refCount);;
     sjv_temp14 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     sjv_temp14->_refCount = 1;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp14, sjv_temp14->_refCount);;
     sjv_temp14->size = 6;
     sjv_temp14->data = (uintptr_t)sjg_string1;
     sjv_temp14->_isGlobal = false;
@@ -1482,14 +1593,18 @@ int main() {
     sjv_temp13->count = 5;
     sjv_temp13->data = sjv_temp14;
     sjv_temp13->data->_refCount++;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp13->data, sjv_temp13->data->_refCount);;
     sjf_string(sjv_temp13, &sjv_temp13);
     sjv_temp12->ctxVarName = sjv_temp13;
     sjv_temp12->ctxVarName->_refCount++;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp12->ctxVarName, sjv_temp12->ctxVarName->_refCount);;
     sjf_htmlCanvas2d(sjv_temp12, &sjv_temp12);
     result23 = sjf_htmlCanvas2d_as_sji_surface(sjv_temp12);
     _this->rootCanvas = result23;
     _this->rootCanvas->_refCount++;
+    printf("RETAIN\tsji_surface*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)_this->rootCanvas, _this->rootCanvas->_refCount);;
     result23->_refCount--;
+    printf("RELEASE\tsji_surface*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)result23, result23->_refCount);;
     if (result23->_refCount <= 0) {
         sji_surface_destroy(result23);
         free(result23);
@@ -1501,8 +1616,10 @@ int main() {
     sjv_temp21 = &sjd_temp4;
     sjv_temp21->_parent = _this;
     sjv_temp21->_refCount = 1;
+    printf("RETAIN\tsjs_element*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp21, sjv_temp21->_refCount);;
     sjv_temp22 = &sjd_temp5;
     sjv_temp22->_refCount = 1;
+    printf("RETAIN\tsjs_array_sji_element*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp22, sjv_temp22->_refCount);;
     result26 = (uintptr_t)0;
     sjv_temp22->size = 1;
     sjv_temp22->data = result26;
@@ -1510,14 +1627,18 @@ int main() {
     sjf_array_sji_element(sjv_temp22, &sjv_temp22);
     sjv_array1 = sjv_temp22;
     sjv_array1->_refCount++;
+    printf("RETAIN\tsjs_array_sji_element*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_array1, sjv_array1->_refCount);;
     sjv_temp30 = &sjd_temp7;
     sjv_temp30->_parent = _this;
     sjv_temp30->_refCount = 1;
+    printf("RETAIN\tsjs_button*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp30, sjv_temp30->_refCount);;
     sjv_temp31 = (sjs_string*)malloc(sizeof(sjs_string));
     sjv_temp31->_parent = sjv_temp30->_parent;
     sjv_temp31->_refCount = 1;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp31, sjv_temp31->_refCount);;
     sjv_temp32 = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     sjv_temp32->_refCount = 1;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp32, sjv_temp32->_refCount);;
     sjv_temp32->size = 1;
     sjv_temp32->data = (uintptr_t)sjg_string5;
     sjv_temp32->_isGlobal = false;
@@ -1525,12 +1646,14 @@ int main() {
     sjv_temp31->count = 0;
     sjv_temp31->data = sjv_temp32;
     sjv_temp31->data->_refCount++;
+    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp31->data, sjv_temp31->data->_refCount);;
     sjf_string(sjv_temp31, &sjv_temp31);
     dotTemp39 = sjv_temp30->_parent->style;
     result28 = 0;
     sjf_anon5_getFont(dotTemp39, 0, &result28);
     sjv_temp33 = (sjs_rect*)malloc(sizeof(sjs_rect));
     sjv_temp33->_refCount = 1;
+    printf("RETAIN\tsjs_rect*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp33, sjv_temp33->_refCount);;
     sjv_temp33->x = 0;
     sjv_temp33->y = 0;
     sjv_temp33->w = 0;
@@ -1538,15 +1661,19 @@ int main() {
     sjf_rect(sjv_temp33, &sjv_temp33);
     sjv_temp30->text = sjv_temp31;
     sjv_temp30->text->_refCount++;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp30->text, sjv_temp30->text->_refCount);;
     sjv_temp30->font = result28;
     sjv_temp30->font->_refCount++;
+    printf("RETAIN\tsjs_string*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp30->font, sjv_temp30->font->_refCount);;
     sjv_temp30->rect = sjv_temp33;
     sjv_temp30->rect->_refCount++;
+    printf("RETAIN\tsjs_rect*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp30->rect, sjv_temp30->rect->_refCount);;
     sjf_button(sjv_temp30, &sjv_temp30);
     result29 = sjf_button_as_sji_element(sjv_temp30);
     sjf_array_sji_element_setAt(sjv_array1, 0, result29);
     sjv_temp34 = (sjs_rect*)malloc(sizeof(sjs_rect));
     sjv_temp34->_refCount = 1;
+    printf("RETAIN\tsjs_rect*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp34, sjv_temp34->_refCount);;
     sjv_temp34->x = 0;
     sjv_temp34->y = 0;
     sjv_temp34->w = 0;
@@ -1554,12 +1681,15 @@ int main() {
     sjf_rect(sjv_temp34, &sjv_temp34);
     sjv_temp21->children = sjv_array1;
     sjv_temp21->children->_refCount++;
+    printf("RETAIN\tsjs_array_sji_element*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp21->children, sjv_temp21->children->_refCount);;
     sjv_temp21->rect = sjv_temp34;
     sjv_temp21->rect->_refCount++;
+    printf("RETAIN\tsjs_rect*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp21->rect, sjv_temp21->rect->_refCount);;
     sjf_element(sjv_temp21, &sjv_temp21);
     result30 = sjf_element_as_sji_element(sjv_temp21);
     if (_this->root != 0) {
         _this->root->_refCount--;
+        printf("RELEASE\tsji_element*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)_this->root, _this->root->_refCount);;
         if (_this->root->_refCount <= 0) {
             sji_element_destroy(_this->root);
             free(_this->root);
@@ -1569,54 +1699,65 @@ int main() {
     _this->root = result30;
     if (_this->root != 0) {
         _this->root->_refCount++;
+        printf("RETAIN\tsji_element*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)_this->root, _this->root->_refCount);;
     }
 
     result28->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)result28, result28->_refCount);
     if (result28->_refCount <= 0) {
         sjf_string_destroy(result28);
         free(result28);
     }
     sjv_temp1->_refCount--;
+    printf("RELEASE\tsjs_anon5*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);
     if (sjv_temp1->_refCount <= 0) {
         sjf_anon5_destroy(sjv_temp1);
         free(sjv_temp1);
     }
     sjv_temp13->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp13, sjv_temp13->_refCount);
     if (sjv_temp13->_refCount <= 0) {
         sjf_string_destroy(sjv_temp13);
         free(sjv_temp13);
     }
     sjv_temp14->_refCount--;
+    printf("RELEASE\tsjs_array_char*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp14, sjv_temp14->_refCount);
     if (sjv_temp14->_refCount <= 0) {
         sjf_array_char_destroy(sjv_temp14);
         free(sjv_temp14);
     }
     sjv_temp2->_refCount--;
+    printf("RELEASE\tsjs_anon4*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp2, sjv_temp2->_refCount);
     if (sjv_temp2->_refCount <= 0) {
         sjf_anon4_destroy(sjv_temp2);
         free(sjv_temp2);
     }
     sjv_temp31->_refCount--;
+    printf("RELEASE\tsjs_string*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp31, sjv_temp31->_refCount);
     if (sjv_temp31->_refCount <= 0) {
         sjf_string_destroy(sjv_temp31);
         free(sjv_temp31);
     }
     sjv_temp32->_refCount--;
+    printf("RELEASE\tsjs_array_char*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp32, sjv_temp32->_refCount);
     if (sjv_temp32->_refCount <= 0) {
         sjf_array_char_destroy(sjv_temp32);
         free(sjv_temp32);
     }
     sjv_temp33->_refCount--;
+    printf("RELEASE\tsjs_rect*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp33, sjv_temp33->_refCount);
     if (sjv_temp33->_refCount <= 0) {
         sjf_rect_destroy(sjv_temp33);
         free(sjv_temp33);
     }
     sjv_temp34->_refCount--;
+    printf("RELEASE\tsjs_rect*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp34, sjv_temp34->_refCount);
     if (sjv_temp34->_refCount <= 0) {
         sjf_rect_destroy(sjv_temp34);
         free(sjv_temp34);
     }
     sjv_temp5->_refCount--;
+    printf("RELEASE\tsjs_anon1*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp5, sjv_temp5->_refCount);
     if (sjv_temp5->_refCount <= 0) {
         sjf_anon1_destroy(sjv_temp5);
         free(sjv_temp5);
@@ -1625,11 +1766,11 @@ int main() {
     return 0;
 }
 void main_destroy() {
-    sjf_anon3_destroy(&sjd_temp1);
-    sjf_anon2_destroy(&sjd_temp2);
-    sjf_htmlCanvas2d_destroy(&sjd_temp3);
-    sjf_element_destroy(&sjd_temp4);
-    sjf_array_sji_element_destroy(&sjd_temp5);
-    sjf_button_destroy(&sjd_temp7);
+    assert(sjd_temp1._refCount == 0);
+    assert(sjd_temp2._refCount == 0);
+    assert(sjd_temp3._refCount == 0);
+    assert(sjd_temp4._refCount == 0);
+    assert(sjd_temp5._refCount == 0);
+    assert(sjd_temp7._refCount == 0);
     sjf_global_destroy(&global);
 }

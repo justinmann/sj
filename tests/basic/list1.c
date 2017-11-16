@@ -1,5 +1,7 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -133,6 +135,7 @@ void sjf_array_sjs_class(sjs_array_sjs_class* _this, sjs_array_sjs_class** _retu
 		}
 	;
     _this->_refCount++;
+    printf("RETAIN\tsjs_array_sjs_class*\t%0x\tvoid sjf_array_sjs_class(sjs_array_sjs_class* _this, sjs_array_sjs_class** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -193,7 +196,7 @@ void sjf_array_sjs_class_grow(sjs_array_sjs_class* _parent, int32_t newSize, sjs
 					printf("grow: out of memory\n");
 					exit(-1);				
 				}
-				memset((void*)_parent->data + _parent->size, 0, newSize - _parent->size);
+				memset((sjs_class**)_parent->data + _parent->size, 0, (newSize - _parent->size) * sizeof(sjs_class*));
 			}
 			_parent->size = newSize;
 		}
@@ -216,6 +219,7 @@ void sjf_array_sjs_class_setAt(sjs_array_sjs_class* _parent, int32_t index, sjs_
 #if !false
 		if (p[index] != 0) {
 			 p[index]->_refCount--;
+printf("RELEASE\tsjs_class*\t%0x\t\t%d\n", (uintptr_t) p[index],  p[index]->_refCount);
 if ( p[index]->_refCount <= 0) {
     sjf_class_destroy( p[index]);
     free( p[index]);
@@ -231,6 +235,7 @@ if ( p[index]->_refCount <= 0) {
 
 void sjf_class(sjs_class* _this, sjs_class** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_class(sjs_class* _this, sjs_class** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -243,6 +248,7 @@ void sjf_global_destroy(sjs_global* _this) {
 
 void sjf_list_sjs_class(sjs_list_sjs_class* _this, sjs_list_sjs_class** _return) {
     _this->_refCount++;
+    printf("RETAIN\tsjs_list_sjs_class*\t%0x\tvoid sjf_list_sjs_class(sjs_list_sjs_class* _this, sjs_list_sjs_class** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
 }
@@ -274,6 +280,7 @@ void sjf_list_sjs_class_add(sjs_list_sjs_class* _parent, sjs_class* item, int32_
         sjf_list_sjs_class_setSize(_parent, result6, &result4);
 
         result4->_refCount--;
+        printf("RELEASE\tsjs_array_sjs_class*\t%0x\tvoid sjf_list_sjs_class_add(sjs_list_sjs_class* _parent, sjs_class* item, int32_t* _return)\t%d\n", (uintptr_t)result4, result4->_refCount);
         if (result4->_refCount <= 0) {
             sjf_array_sjs_class_destroy(result4);
             free(result4);
@@ -332,8 +339,10 @@ int main() {
     sjv_temp1 = &sjd_temp1;
     sjv_temp1->_parent = _this;
     sjv_temp1->_refCount = 1;
+    printf("RETAIN\tsjs_list_sjs_class*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
     sjv_temp2 = &sjd_temp2;
     sjv_temp2->_refCount = 1;
+    printf("RETAIN\tsjs_array_sjs_class*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp2, sjv_temp2->_refCount);;
     result1 = (uintptr_t)0;
     sjv_temp2->size = 0;
     sjv_temp2->data = result1;
@@ -342,9 +351,11 @@ int main() {
     sjv_temp1->count = 0;
     sjv_temp1->data = sjv_temp2;
     sjv_temp1->data->_refCount++;
+    printf("RETAIN\tsjs_array_sjs_class*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp1->data, sjv_temp1->data->_refCount);;
     sjf_list_sjs_class(sjv_temp1, &sjv_temp1);
     a = sjv_temp1;
     a->_refCount++;
+    printf("RETAIN\tsjs_list_sjs_class*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)a, a->_refCount);;
     x = 1;
     loopEnd1 = 100000;
     while (x < loopEnd1) {
@@ -354,12 +365,14 @@ int main() {
         result2 = 0;
         sjv_temp3 = (sjs_class*)malloc(sizeof(sjs_class));
         sjv_temp3->_refCount = 1;
+        printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp3, sjv_temp3->_refCount);;
         sjv_temp3->x = x;
         sjf_class(sjv_temp3, &sjv_temp3);
         sjf_list_sjs_class_add(a, sjv_temp3, &result2);
         x++;
 
         sjv_temp3->_refCount--;
+        printf("RELEASE\tsjs_class*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)sjv_temp3, sjv_temp3->_refCount);
         if (sjv_temp3->_refCount <= 0) {
             sjf_class_destroy(sjv_temp3);
             free(sjv_temp3);
@@ -370,20 +383,23 @@ int main() {
     sjf_list_sjs_class_getAt(a, 0, &result8);
     c = result8;
     c->_refCount++;
+    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)c, c->_refCount);;
     dotTemp11 = c->x;
 
     c->_refCount--;
+    printf("RELEASE\tsjs_class*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)c, c->_refCount);
     if (c->_refCount <= 0) {
         sjf_class_destroy(c);
         free(c);
     }
     result8->_refCount--;
+    printf("RELEASE\tsjs_class*\t%0x\tvoid sjf_global(sjs_global* _this)\t%d\n", (uintptr_t)result8, result8->_refCount);
     if (result8->_refCount <= 0) {
         sjf_class_destroy(result8);
         free(result8);
     }
-    sjf_list_sjs_class_destroy(&sjd_temp1);
-    sjf_array_sjs_class_destroy(&sjd_temp2);
+    assert(sjd_temp1._refCount == 0);
+    assert(sjd_temp2._refCount == 0);
     sjf_global_destroy(&global);
     return 0;
 }

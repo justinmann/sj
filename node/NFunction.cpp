@@ -333,9 +333,9 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
             auto bodyReturnValue = block->transpile(compiler, result, shared_from_this(), nullptr, trOutput, trFunctionBlock.get(), true, nullptr);
             if (bodyReturnValue && bodyReturnValue->type != compiler->typeVoid) {
                 assert(bodyReturnValue->type == returnType);
-                if (bodyReturnValue->release == RVR_MustRetain && !bodyReturnValue->type->parent.expired()) {
+                /* TODO: if (bodyReturnValue->release == RVR_MustRetain && !bodyReturnValue->type->parent.expired()) {
                     ReturnValue::addRetainToStatements(trFunctionBlock.get(), bodyReturnValue->name, bodyReturnValue->type);
-                }
+                }*/
                 trFunctionBlock->returnLine = bodyReturnValue->name;
             }
         }
@@ -377,9 +377,9 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
             auto bodyReturnValue = block->transpile(compiler, result, shared_from_this(), thisVar, trOutput, trFunctionBlock.get(), true, "_this");
             if (bodyReturnValue && bodyReturnValue->type && bodyReturnValue->type != compiler->typeVoid) {
                 assert(bodyReturnValue->type == returnType);
-                if (bodyReturnValue->release == RVR_MustRetain && !bodyReturnValue->type->parent.expired()) {
+                /* TODO: if (bodyReturnValue->release == RVR_MustRetain && !bodyReturnValue->type->parent.expired()) {
                     ReturnValue::addRetainToStatements(trFunctionBlock.get(), bodyReturnValue->name, bodyReturnValue->type);
-                }
+                }*/
 
                 trFunctionBlock->returnLine = bodyReturnValue->name;
             }
@@ -406,6 +406,9 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
                 auto argHeapVar = argVar->getHeapVar(compiler, result, thisVar);
                 auto argFunction = argVar->getCFunctionForValue(compiler, result);
                 if (argFunction) {
+#ifdef DEBUG_ALLOC
+                    ReturnValue::addReleaseToStatements(trDestroyBlock.get(), "_this->" + argVar->name, argVar->getType(compiler, result), argHeapVar);
+#else
                     if (argHeapVar) {
                         ReturnValue::addReleaseToStatements(trDestroyBlock.get(), "_this->" + argVar->name, argVar->getType(compiler, result));
                     }
@@ -414,6 +417,7 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
                         destroyStream << argFunction->getCDestroyFunctionName() << "(" << "_this->" << argVar->name << ")";
                         trDestroyBlock->statements.push_back(destroyStream.str());
                     }
+#endif
                 }
             }
         }
@@ -1472,14 +1476,11 @@ bool CFunction::getHasThis() {
     return true;
 }
 
-shared_ptr<CType> CFunction::getThisType(Compiler* compiler, CResult& result, bool isOption) {
-    if (!thisType) {
-        auto pair = CType::create(name.c_str(), shared_from_this());
-        thisType = pair.first;
-        thisOptionType = pair.second;
+shared_ptr<CTypes> CInterface::getThisTypes(Compiler* compiler, CResult& result) {
+    if (!thisTypes) {
+        thisTypes = CType::create(name.c_str(), shared_from_this());
     }
-
-    return isOption ? thisOptionType : thisType;
+    return thisTypes;
 }
 
 shared_ptr<vector<pair<string, shared_ptr<CType>>>> CFunction::getCTypeList(Compiler* compiler, CResult& result) {

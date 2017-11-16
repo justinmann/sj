@@ -18,7 +18,7 @@ public:
     bool writeReleaseToStream(TrBlock* block, ostream& stream, int level);
     static void addInitToStatements(TrBlock* block, string name, shared_ptr<CType> type);
     static void addRetainToStatements(TrBlock* block, string name, shared_ptr<CType> type);
-    static void addReleaseToStatements(TrBlock* block, string name, shared_ptr<CType> type);
+    static void addReleaseToStatements(TrBlock* block, string name, shared_ptr<CType> type, bool isHeap);
 
     shared_ptr<CType> type;
     string typeName;

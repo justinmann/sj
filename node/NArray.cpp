@@ -8,10 +8,13 @@ void NArray::initStatements(Compiler* compiler, CResult& result, shared_ptr<CBas
         auto firstElement = elements->front();
         if (firstElement != nullptr) {
             auto arrayName = TrBlock::nextVarName("sjv_array");
-            
+
             // create and store array value
             auto elementType = firstElement->getType(compiler, result, thisFunction, thisVar);
-            auto createArray = make_shared<NCall>(loc, "array", make_shared<CTypeNameList>(elementType->category, elementType->name, elementType->isOption), make_shared<NodeList>(make_shared<NInteger>(loc, elements->size())));
+            if (elementType->typeMode != CTM_Heap) {
+                result.addError(loc, CErrorCode::TypeMismatch, "arrays only support heap types");
+            }
+            auto createArray = make_shared<NCall>(loc, "array", make_shared<CTypeNameList>(elementType->category, elementType->typeMode, elementType->name, elementType->isOption), make_shared<NodeList>(make_shared<NInteger>(loc, elements->size())));
             auto storeArray = make_shared<NAssignment>(loc, nullptr, nullptr, arrayName.c_str(), createArray, false);
             statements.push_back(storeArray);
             

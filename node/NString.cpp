@@ -67,7 +67,7 @@ void NString::initStatements(Compiler* compiler, CResult& result, shared_ptr<CBa
     auto createArray = make_shared<NCall>(
         loc,
         "array",
-        make_shared<CTypeNameList>(CTC_Value, compiler->typeChar->name, false),
+        make_shared<CTypeNameList>(CTC_Value, CTM_Stack, compiler->typeChar->name, false),
         make_shared<NodeList>(
             make_shared<NInteger>(loc, str.size() + 1),
             make_shared<NGlobalPtrVar>(loc, varName, str)));

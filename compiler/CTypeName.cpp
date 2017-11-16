@@ -8,17 +8,36 @@
 
 #include "../node/Node.h"
 
-CTypeNameList::CTypeNameList(CTypeCategory category, const string& name, bool isOption) {
-    push_back(make_shared<CTypeName>(category, name, isOption));
+CTypeNameList::CTypeNameList(CTypeCategory category, CTypeMode typeMode, const string& name, bool isOption) {
+    push_back(make_shared<CTypeName>(category, typeMode, name, isOption));
 }
 
 shared_ptr<CTypeName> CTypeName::parse(string name) {
+    CTypeMode typeMode;
+
+    if (name.find("stack ") == 0) {
+        typeMode = CTM_Stack;
+        name = name.substr(6, name.size() - 6);
+    }
+    else if (name.find("heap ") == 0) {
+        typeMode = CTM_Heap;
+        name = name.substr(5, name.size() - 5);
+    }
+    else if (name.find("matchReturn ") == 0) {
+        typeMode = CTM_MatchReturn;
+        name = name.substr(12, name.size() - 12);
+    }
+    else {
+        assert(false);
+        return nullptr;
+    }
+
     if (name.front() == '(') {
         assert(false);
-        return make_shared<CTypeName>(CTC_Function, name, name.back() == '?');
+        return make_shared<CTypeName>(CTC_Function, typeMode, name, name.back() == '?');
     } else if (name.front() == '#') {
         assert(false);
-        return make_shared<CTypeName>(CTC_Interface, name, name.back() == '?');
+        return make_shared<CTypeName>(CTC_Interface, typeMode, name, name.back() == '?');
     } else {
         auto bang = name.find('!');
         if (bang != string::npos) {
@@ -49,9 +68,9 @@ shared_ptr<CTypeName> CTypeName::parse(string name) {
                 typeNameList->push_back(templateType);
             }
             
-            return make_shared<CTypeName>(CTC_Value, typeName, typeNameList, typeName.back() == '?');
+            return make_shared<CTypeName>(CTC_Value, typeMode, typeName, typeNameList, typeName.back() == '?');
         } else {
-            return make_shared<CTypeName>(CTC_Value, name, name.back() == '?');
+            return make_shared<CTypeName>(CTC_Value, typeMode, name, name.back() == '?');
         }
     }
     return nullptr;
