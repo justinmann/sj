@@ -23,10 +23,10 @@ class NBase : public enable_shared_from_this<NBase> {
 public:
     NBase(const NodeType nodeType, const CLoc loc) : nodeType(nodeType), loc(loc), _hasDefined(false) { }
     void define(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);
-    shared_ptr<CVar> getVar(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode);
+    shared_ptr<CVar> getVar(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar);
 
     virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) = 0;
-    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode) = 0;
+    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar) = 0;
     
     const NodeType nodeType;
     const CLoc loc;

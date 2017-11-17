@@ -1,19 +1,35 @@
 #include "Node.h"
 
-NThis::NThis(CLoc loc) : NVariableBase(NodeType_This, loc) { }
+shared_ptr<CType> CThisVar::getType(Compiler* compiler, CResult& result) {
+    assert(false);
+    return nullptr;
+}
 
-shared_ptr<ReturnValue> NThis::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, const char* thisName) {
-	return make_shared<ReturnValue>(
-        thisVar->getType(compiler, result), 
+shared_ptr<ReturnValue> CThisVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+    return make_shared<ReturnValue>(
+        thisVar->getType(compiler, result),
         "_this");
 }
 
-shared_ptr<CVar> NThis::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, CTypeReturnMode returnMode) {
+void CThisVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+    assert(false);
+}
+
+void CThisVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+    ss << "this";
+}
+
+void CThisVar::setHasRefCount() {
+    auto function = type->parent.lock();
+    function->setHasRefCount();
+}
+
+shared_ptr<CVar> NThis::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
     if (dotVar) {
         result.addError(loc, CErrorCode::InvalidVariable, "this must be the first var in a dot chain");
         return nullptr;
     }
     
-    thisVar->parent.lock()->setHasRefCount();    
+    thisVar->setHasRefCount();    
     return thisVar;
 }

@@ -1,10 +1,10 @@
 #include "Node.h"
 
-shared_ptr<CType> CCompareVar::getType(Compiler* compiler, CResult& result, CTypeReturnMode returnMode) {
+shared_ptr<CType> CCompareVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeBool;
 }
 
-shared_ptr<ReturnValue> CCompareVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CCompareVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     auto leftValue = leftVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, CTRM_NoPref, nullptr, thisName);
     auto rightValue = rightVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, CTRM_NoPref, nullptr, thisName);
     
@@ -48,11 +48,11 @@ shared_ptr<ReturnValue> CCompareVar::transpileGet(Compiler* compiler, CResult& r
     return resultValue;
 }
 
-void CCompareVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CCompareVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     assert(false);
 }
 
-void CCompareVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CCompareVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     leftVar->dump(compiler, result, thisFunction, thisVar, CTRM_NoPref, nullptr, functions, ss, dotSS, level);
     switch (op) {
         case NCompareOp::EQ:
@@ -89,17 +89,17 @@ void NCompare::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseF
     rightSide->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NCompare::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, CTypeReturnMode returnMode) {
+shared_ptr<CVar> NCompare::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
     assert(compiler->state == CompilerState::FixVar);
-    auto leftVar = leftSide->getVar(compiler, result, thisFunction, thisVar, nullptr, CTRM_NoPref);
-    auto rightVar = rightSide->getVar(compiler, result, thisFunction, thisVar, nullptr, CTRM_NoPref);
+    auto leftVar = leftSide->getVar(compiler, result, thisFunction, thisVar, nullptr);
+    auto rightVar = rightSide->getVar(compiler, result, thisFunction, thisVar, nullptr);
     
     if (!leftVar || !rightVar) {
         return nullptr;
     }
     
-    auto leftType = leftVar->getType(compiler, result, CTRM_NoPref);
-    auto rightType = rightVar->getType(compiler, result, CTRM_NoPref);
+    auto leftType = leftVar->getType(compiler, result);
+    auto rightType = rightVar->getType(compiler, result);
     if (!leftType || !rightType) {
         return nullptr;
     }
@@ -114,27 +114,27 @@ shared_ptr<CVar> NCompare::getVarImpl(Compiler* compiler, CResult& result, share
         switch (op) {
             case NCompareOp::EQ:
                 operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "isEqual", nullptr, make_shared<NodeList>(rightSide)));
-                return operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, CTRM_NoPref);
+                return operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar);
                 break;
             case NCompareOp::NE:
                 operatorOverloadNode =  make_shared<NNot>(loc, make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "isEqual", nullptr, make_shared<NodeList>(rightSide))));
-                return operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, CTRM_NoPref);
+                return operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar);
                 break;
             case NCompareOp::LT:
                 operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "isLess", nullptr, make_shared<NodeList>(rightSide)));
-                return operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, CTRM_NoPref);
+                return operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar);
                 break;
             case NCompareOp::LE:
                 operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "isLessOrEqual", nullptr, make_shared<NodeList>(rightSide)));
-                return operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, CTRM_NoPref);
+                return operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar);
                 break;
             case NCompareOp::GT:
                 operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "isGreater", nullptr, make_shared<NodeList>(rightSide)));
-                return operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, CTRM_NoPref);
+                return operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar);
                 break;
             case NCompareOp::GE:
                 operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "isGreaterOrEqual", nullptr, make_shared<NodeList>(rightSide)));
-                return operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, CTRM_NoPref);
+                return operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar);
                 break;
             case NCompareOp::PEQ:
             case NCompareOp::PNE:

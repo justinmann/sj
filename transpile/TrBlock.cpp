@@ -179,7 +179,7 @@ bool ReturnValue::writeReleaseToStream(TrBlock* block, ostream& stream, int leve
         TrBlock::addSpacing(stream, level);
         stream << "if (" << name << "->_refCount <= 0) {\n";
         TrBlock::addSpacing(stream, level + 1);
-        stream << type->parent.lock()->getCDestroyFunctionName() << "(" << name << ");\n";
+        stream << type->parent.lock()->getCDestroyFunctionName(type->typeMode) << "(" << name << ");\n";
 
         TrBlock::addSpacing(stream, level + 1);
         stream << "free(" << name << ");\n";
@@ -227,7 +227,7 @@ void ReturnValue::addReleaseToStatements(TrBlock* block) {
         innerBlock->statements.push_back(TrStatement(ifStream.str(), ifBlock));
 
         stringstream destroyStream;
-        destroyStream << type->parent.lock()->getCDestroyFunctionName() << "(" << name << ")";
+        destroyStream << type->parent.lock()->getCDestroyFunctionName(type->typeMode) << "(" << name << ")";
         ifBlock->statements.push_back(destroyStream.str());
 
         stringstream freeStream;

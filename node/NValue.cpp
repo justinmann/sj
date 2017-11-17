@@ -1,33 +1,8 @@
 #include "Node.h"
 
-void NValue::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
-    assert(compiler->state == CompilerState::Define);
-    node->define(compiler, result, thisFunction);
-}
-
-shared_ptr<CVar> NValue::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, CTypeReturnMode returnMode) {
-    assert(compiler->state == CompilerState::FixVar);
-    auto leftVar = node->getVar(compiler, result, thisFunction, thisVar);
-    if (!leftVar) {
-        return nullptr;
-    }
-
-    auto leftType = leftVar->getType(compiler, result);
-    if (!leftType) {
-        return nullptr;
-    }
-
-    if (leftType->isOption) {
-        result.addError(loc, CErrorCode::TypeMismatch, "value cannot take an option type");
-        return nullptr;
-    }
-
-    return nullptr;
-}
-
-shared_ptr<CType> NValue::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode) {
+shared_ptr<CType> CValueVar::getType(Compiler* compiler, CResult& result) {
     assert(compiler->state >= CompilerState::FixVar);
-    auto leftType = node->getType(compiler, result, thisFunction, thisVar);
+    auto leftType = var->getType(compiler, result);
     if (!leftType) {
         return nullptr;
     }
@@ -40,8 +15,8 @@ shared_ptr<CType> NValue::getTypeImpl(Compiler* compiler, CResult& result, share
     return leftType->getOptionType();
 }
 
-shared_ptr<ReturnValue> NValue::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, const char* thisName) {
-    auto leftValue = node->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false, thisName);
+shared_ptr<ReturnValue> CValueVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+    auto leftValue = var->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, returnMode, nullptr, thisName);
     if (!leftValue) {
         return nullptr;
     }
@@ -68,8 +43,38 @@ shared_ptr<ReturnValue> NValue::transpile(Compiler* compiler, CResult& result, s
     }
 }
 
-void NValue::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+void CValueVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+    assert(false);
+}
+
+void CValueVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     ss << "value(";
-    node->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+    var->dump(compiler, result, thisFunction, thisVar, returnMode, nullptr, functions, ss, dotSS, level);
     ss << ")";
+
+}
+
+void NValue::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+    assert(compiler->state == CompilerState::Define);
+    node->define(compiler, result, thisFunction);
+}
+
+shared_ptr<CVar> NValue::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
+    assert(compiler->state == CompilerState::FixVar);
+    auto leftVar = node->getVar(compiler, result, thisFunction, thisVar);
+    if (!leftVar) {
+        return nullptr;
+    }
+
+    auto leftType = leftVar->getType(compiler, result);
+    if (!leftType) {
+        return nullptr;
+    }
+
+    if (leftType->isOption) {
+        result.addError(loc, CErrorCode::TypeMismatch, "value cannot take an option type");
+        return nullptr;
+    }
+
+    return make_shared<CValueVar>(loc, leftVar);
 }

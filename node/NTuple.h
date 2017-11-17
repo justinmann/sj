@@ -11,11 +11,11 @@
 
 #include "NBlock.h"
 
-class NTuple : public NBlock {
+class NTuple : public NVariableBase {
 public:
-    NTuple(CLoc loc, shared_ptr<NodeList> elements);
-
-    shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, CTypeReturnMode returnMode);
+    NTuple(CLoc loc, shared_ptr<NodeList> elements) : NVariableBase(NodeType_Tuple, loc), elements(elements) { }
+    void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar);
 
 private:
     shared_ptr<NodeList> elements;

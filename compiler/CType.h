@@ -16,6 +16,7 @@ class CInterface;
 class CResult;
 class ReturnValue;
 class CVar;
+class CThisVar;
 
 enum CTypeImmutability {
     CTI_Undefined,
@@ -68,7 +69,7 @@ public:
     weak_ptr<CBaseFunction> parent;
     bool isOption;
 
-    shared_ptr<ReturnValue> transpileDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar);
+    shared_ptr<ReturnValue> transpileDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar);
     shared_ptr<CType> getValueType();
     shared_ptr<CType> getOptionType();
     shared_ptr<CType> getHeapValueType();

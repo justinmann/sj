@@ -362,16 +362,11 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 				state = CompilerState::FixVar;
 				currentFunction = make_shared<CFunction>(currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr);
 				currentFunction->init(this, *result, nullptr, nullptr);
-				auto currentVar = currentFunction->getThisVar(this, *result, CTRM_Stack);
+				auto currentVar = currentFunction->getThisVar(this, *result, CTM_Stack);
 				anonFunction->getVar(this, *result, currentFunction, currentVar);
 				globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, *result, "global", nullptr, nullptr));
-                auto globalVar = globalFunction->getThisVar(this, *result, CTRM_Stack);
-
+                auto globalVar = globalFunction->getThisVar(this, *result, CTM_Stack);
                 auto mainLoop = globalFunction->getCFunction(this, *result, "mainLoop", globalFunction, nullptr);
-                if (mainLoop) {
-                    mainLoop->getThisVar(this, *result);
-                }
-
 #ifdef VAR_OUTPUT
 				currentFunction->dump(this, *compilerResult, 0);
 #endif
@@ -380,7 +375,8 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                     if (debugStream) {
                         map<shared_ptr<CBaseFunction>, string> functionDumps;
                         stringstream ss;
-                        result->block->dump(this, *result, globalFunction, globalVar, functionDumps, ss, 0);
+                        stringstream dotSS;
+                        globalVar->dump(this, *result, nullptr, nullptr, CTRM_Stack, nullptr, functionDumps, ss, dotSS, 0);
                         
                         vector<pair<string, string>> functionNames;
                         for (auto it : functionDumps) {
@@ -407,11 +403,11 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                     }
 
                     vector<pair<bool, shared_ptr<NBase>>> parameters;
-                    globalFunction->transpile(this, *result, nullptr, nullptr, &output, &output.mainFunction, false, nullptr, globalVar, CLoc::undefined, parameters, nullptr);
+                    globalFunction->transpile(this, *result, nullptr, nullptr, &output, &output.mainFunction, nullptr, CLoc::undefined, parameters, nullptr, CTM_Stack);
 
                     auto hasMainLoop = false;
                     if (mainLoop) {
-                        mainLoop->transpileDefinition(this, *result, &output, CTRM_Stack);
+                        mainLoop->transpileDefinition(this, *result, &output, CTM_Stack);
                         hasMainLoop = true;
                     }
 

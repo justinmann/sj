@@ -1,10 +1,10 @@
 #include "Node.h"
 
-shared_ptr<CType> CWhileVar::getType(Compiler* compiler, CResult& result, CTypeReturnMode returnMode) {
+shared_ptr<CType> CWhileVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeVoid;
 }
 
-shared_ptr<ReturnValue> CWhileVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CWhileVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     auto whileValue = trBlock->createTempVariable(compiler->typeBool, "whileValue");
     
     auto condReturnValue = condVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, CTRM_NoPref, nullptr, thisName);
@@ -39,10 +39,10 @@ shared_ptr<ReturnValue> CWhileVar::transpileGet(Compiler* compiler, CResult& res
     return nullptr;
 }
 
-void CWhileVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CWhileVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     assert(false);
 }
-void CWhileVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CWhileVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     ss << "while ";
     condVar->dump(compiler, result, thisFunction, thisVar, CTRM_NoPref, nullptr, functions, ss, dotSS, level);
     bodyVar->dump(compiler, result, thisFunction, thisVar, CTRM_NoPref, nullptr, functions, ss, dotSS, level);
@@ -54,14 +54,14 @@ void NWhile::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFun
     body->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NWhile::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode) {
+shared_ptr<CVar> NWhile::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar) {
     assert(compiler->state == CompilerState::FixVar);
-    auto condVar = cond->getVar(compiler, result, thisFunction, thisVar, CTRM_NoPref);
+    auto condVar = cond->getVar(compiler, result, thisFunction, thisVar);
     if (!condVar) {
         return nullptr;
     }
     
-    auto bodyVar = body->getVar(compiler, result, thisFunction, thisVar, CTRM_NoPref);
+    auto bodyVar = body->getVar(compiler, result, thisFunction, thisVar);
     if (!bodyVar) {
         return nullptr;
     }

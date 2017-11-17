@@ -75,9 +75,6 @@
     <ClInclude Include="..\node\NFor.h">
       <Filter>Node</Filter>
     </ClInclude>
-    <ClInclude Include="..\node\NFunction.h">
-      <Filter>Node</Filter>
-    </ClInclude>
     <ClInclude Include="..\node\NIf.h">
       <Filter>Node</Filter>
     </ClInclude>
@@ -184,6 +181,9 @@
       <Filter>Node</Filter>
     </ClInclude>
     <ClInclude Include="..\node\NParent.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NFunction.h">
       <Filter>Node</Filter>
     </ClInclude>
   </ItemGroup>

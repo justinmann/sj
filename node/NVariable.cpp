@@ -1,18 +1,18 @@
 #include "Node.h"
 
-shared_ptr<CVar> NVariableBase::getVar(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
+shared_ptr<CVar> NVariableBase::getVar(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
     if (_var.find(thisFunction.get()) == _var.end()) {
         _var[thisFunction.get()] = getVarImpl(compiler, result, thisFunction, thisVar, dotVar);
     }
     return _var[thisFunction.get()];
 }
 
-shared_ptr<CParentVar> CParentVar::create(Compiler *compiler, CResult &result, shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_) {
-    auto c = make_shared<CParentVar>();
-    c->name = "";
-    c->mode = childVar_->mode;
-    c->isMutable = childVar_->isMutable;
-    c->nassignment = nullptr;
+shared_ptr<CParentDotVar> CParentDotVar::create(Compiler *compiler, CResult &result, shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_) {
+    auto c = make_shared<CParentDotVar>();
+    //c->name = "";
+    //c->mode = childVar_->mode;
+    //c->isMutable = childVar_->isMutable;
+    //c->nassignment = nullptr;
     c->parentFunction = parentFunction_;
     c->childVar = childVar_;
 
@@ -21,15 +21,15 @@ shared_ptr<CParentVar> CParentVar::create(Compiler *compiler, CResult &result, s
     return c;
 }
 
-shared_ptr<CType> CParentVar::getType(Compiler* compiler, CResult& result, CTypeReturnMode returnMode) {
+shared_ptr<CType> CParentDotVar::getType(Compiler* compiler, CResult& result) {
     return childVar->getType(compiler, result);
 }
 
-string CParentVar::fullName() {
-    return childVar->fullName();
-}
+//string CParentVar::fullName() {
+//    return childVar->fullName();
+//}
 
-shared_ptr<ReturnValue> CParentVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CParentDotVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     shared_ptr<ReturnValue> parentValue;
     if (dotValue) {
         auto parentThisTypes = parentFunction->parent.lock()->getThisTypes(compiler, result);
@@ -52,10 +52,10 @@ shared_ptr<ReturnValue> CParentVar::transpileGet(Compiler* compiler, CResult& re
 
         parentValue = make_shared<ReturnValue>(parentThisTypes->localValueType, thisFunction->getHasThis() ? string(thisName) + "->_parent" : "_parent");
     }
-    return childVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue, parentValue, thisName);
+    return childVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, returnMode, parentValue, thisName);
 }
 
-void CParentVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CParentDotVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     shared_ptr<ReturnValue> parentValue;
     if (dotValue) {
         auto parentThisTypes = parentFunction->parent.lock()->getThisTypes(compiler, result);
@@ -81,17 +81,18 @@ void CParentVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CB
     childVar->transpileSet(compiler, result, thisFunction, thisVar, trOutput, trBlock, parentValue, returnValue, thisName);
 }
 
-void CParentVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CParentDotVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     ss << ".parent";
-    childVar->dump(compiler, result, thisFunction, thisVar, dotVar, functions, ss, dotSS, level);
+    childVar->dump(compiler, result, thisFunction, thisVar, returnMode, dotVar, functions, ss, dotSS, level);
 }
 
 NVariable::NVariable(CLoc loc, const char* name) : NVariableBase(NodeType_Variable, loc), name(name) { }
 
-shared_ptr<CVar> NVariable::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, CTypeReturnMode returnMode) {
-    auto cfunction = static_pointer_cast<CBaseFunction>(thisFunction);
+shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
+    auto cfunction = thisFunction;
     if (dotVar) {
-        cfunction = dotVar->getCFunctionForValue(compiler, result);
+        auto dotType = dotVar->getType(compiler, result);
+        cfunction = static_pointer_cast<CFunction>(dotType->parent.lock());
     }
     
     if (dotVar && cfunction) {

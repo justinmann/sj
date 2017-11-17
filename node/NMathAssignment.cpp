@@ -13,15 +13,15 @@ void NMathAssignment::defineImpl(Compiler* compiler, CResult& result, shared_ptr
     }
 }
 
-shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode) {
+shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar) {
     assert(compiler->state == CompilerState::FixVar);
-    auto leftVar = leftSide->getVar(compiler, result, thisFunction, thisVar, nullptr, CTRM_NoPref);
+    auto leftVar = leftSide->getVar(compiler, result, thisFunction, thisVar, nullptr);
 
     if (!leftVar) {
         return nullptr;
     }
 
-    auto leftType = leftVar->getType(compiler, result, CTRM_NoPref);
+    auto leftType = leftVar->getType(compiler, result);
     if (!leftType) {
         return nullptr;
     }
@@ -33,27 +33,27 @@ shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result
         switch (op) {
         case NMathAssignmentOp::NMAO_Inc:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "increment", nullptr, nullptr));
-            rightVar = operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, nullptr, returnMode);
+            rightVar = operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, nullptr);
             break;
         case NMathAssignmentOp::NMAO_Dec:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "decrement", nullptr, nullptr));
-            rightVar = operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, nullptr, returnMode);
+            rightVar = operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, nullptr);
             break;
         case NMathAssignmentOp::NMAO_Add:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "add", nullptr, make_shared<NodeList>(numberSide)));
-            rightVar = operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, nullptr, returnMode);
+            rightVar = operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, nullptr);
             break;
         case NMathAssignmentOp::NMAO_Sub:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "subtract", nullptr, make_shared<NodeList>(numberSide)));
-            rightVar = operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, nullptr, returnMode);
+            rightVar = operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, nullptr);
             break;
         case NMathAssignmentOp::NMAO_Mul:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "multiply", nullptr, make_shared<NodeList>(numberSide)));
-            rightVar = operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, nullptr, returnMode);
+            rightVar = operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, nullptr);
             break;
         case NMathAssignmentOp::NMAO_Div:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "divide", nullptr, make_shared<NodeList>(numberSide)));
-            rightVar = operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, nullptr, returnMode);
+            rightVar = operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, nullptr);
             break;
         default:
             assert(false);
@@ -63,12 +63,12 @@ shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result
     else {
         shared_ptr<CVar> numberVar;
         if (numberSide) {
-            auto numberVar = numberSide->getVar(compiler, result, thisFunction, thisVar, nullptr, CTRM_NoPref);
+            auto numberVar = numberSide->getVar(compiler, result, thisFunction, thisVar, nullptr);
             if (!numberVar) {
                 return nullptr;
             }
             
-            auto numberType = rightVar->getType(compiler, result, CTRM_NoPref);
+            auto numberType = rightVar->getType(compiler, result);
             if (!numberType) {
                 return nullptr;
             }
@@ -108,5 +108,5 @@ shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result
         
         rightVar = make_shared<CMathVar>(loc, mathOp, leftVar, numberVar);
     }
-    return make_shared<CAssignVar>(loc, leftVar, rightVar);
+    return make_shared<CAssignVar>(loc, true, false, leftVar, rightVar);
 }

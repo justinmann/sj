@@ -1,26 +1,26 @@
 #include "Node.h"
 
-shared_ptr<CType> CForIndexVar::getType(Compiler* compiler, CResult& result, CTypeReturnMode returnMode) {
+shared_ptr<CType> CForIndexVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeI32;
 }
 
-shared_ptr<ReturnValue> CForIndexVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
-    return make_shared<ReturnValue>(getType(compiler, result, returnMode), name);
+shared_ptr<ReturnValue> CForIndexVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+    return make_shared<ReturnValue>(getType(compiler, result), name);
 }
 
-void CForIndexVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CForIndexVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     assert(false);
 }
 
-void CForIndexVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CForIndexVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     ss << name;
 }
 
-shared_ptr<CType> CForLoopVar::getType(Compiler* compiler, CResult& result, CTypeReturnMode returnMode) {
+shared_ptr<CType> CForLoopVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeVoid;
 }
 
-shared_ptr<ReturnValue> CForLoopVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CForLoopVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     
     trBlock->createVariable(compiler->typeI32, indexVar->name);
     auto trLoopEndVar = trBlock->createTempVariable(compiler->typeI32, "loopEnd");
@@ -61,11 +61,11 @@ shared_ptr<ReturnValue> CForLoopVar::transpileGet(Compiler* compiler, CResult& r
     return nullptr;
 }
 
-void CForLoopVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CForLoopVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     assert(false);
 }
 
-void CForLoopVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CForLoopVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     ss << "for " << indexVar->name << " : ";
     startVar->dump(compiler, result, thisFunction, thisVar, CTRM_NoPref, nullptr, functions, ss, dotSS, level + 1);
     ss << " to ";
@@ -82,10 +82,10 @@ void NFor::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunct
     body->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NFor::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode) {
+shared_ptr<CVar> NFor::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar) {
     assert(compiler->state == CompilerState::FixVar);
-    auto startVar = start->getVar(compiler, result, thisFunction, thisVar, CTRM_NoPref);
-    auto endVar = end->getVar(compiler, result, thisFunction, thisVar, CTRM_NoPref);
+    auto startVar = start->getVar(compiler, result, thisFunction, thisVar);
+    auto endVar = end->getVar(compiler, result, thisFunction, thisVar);
     
     auto thisFun = static_pointer_cast<CFunction>(thisFunction);
     if (thisFun->localVarsByName.find(varName) != thisFun->localVarsByName.end()) {
@@ -97,7 +97,7 @@ shared_ptr<CVar> NFor::getVarImpl(Compiler* compiler, CResult& result, shared_pt
     
     thisFun->localVarsByName[varName] = indexVar;
 
-    auto bodyVar = body->getVar(compiler, result, thisFunction, thisVar, CTRM_NoPref);
+    auto bodyVar = body->getVar(compiler, result, thisFunction, thisVar);
 
     thisFun->localVarsByName.erase(varName);
     

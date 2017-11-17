@@ -227,7 +227,7 @@ shared_ptr<CTypes> CType::create(string name_, weak_ptr<CInterface> parent) {
     return make_shared<CTypes>(stackValueType, stackOptionType, heapValueType, heapOptionType, localValueType, localOptionType);
 }
 
-shared_ptr<ReturnValue> CType::transpileDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<ReturnValue> CType::transpileDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar) {
     if (parent.expired()) {
         return make_shared<ReturnValue>(shared_from_this(), _defaultValue);
     }

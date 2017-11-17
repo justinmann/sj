@@ -5,9 +5,9 @@ void NCast::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunc
     node->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, CTypeReturnMode returnMode) {
+shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
     assert(compiler->state == CompilerState::FixVar);
-    node->getVar(compiler, result, thisFunction, thisVar, nullptr, returnMode);
+    node->getVar(compiler, result, thisFunction, thisVar, nullptr);
     
     auto toType = thisFunction->getVarType(compiler, result, typeName);
     if (toType != nullptr && toType->category == CTC_Interface) {
@@ -19,7 +19,7 @@ shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, CResult& result, shared_p
     return nullptr;
 }
 
-shared_ptr<CType> NCast::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode) {
+shared_ptr<CType> NCast::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode) {
     assert(compiler->state >= CompilerState::FixVar);
     auto t = thisFunction->getVarType(compiler, result, typeName);
     if (!t) {
@@ -29,13 +29,13 @@ shared_ptr<CType> NCast::getTypeImpl(Compiler* compiler, CResult& result, shared
     return t;
 }
 
-shared_ptr<ReturnValue> NCast::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, const char* thisName) {
-    auto type = getType(compiler, result, thisFunction, thisVar, returnMode);
+shared_ptr<ReturnValue> NCast::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, const char* thisName) {
+    auto type = getType(compiler, result, thisFunction, thisVar);
     if (type == nullptr) {
         return nullptr;
     }
 
-    auto returnValue = node->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, returnMode, thisName);
+    auto returnValue = node->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, thisName);
     if (!returnValue) {
         assert(false);
         return nullptr;
@@ -96,7 +96,7 @@ shared_ptr<ReturnValue> NCast::transpile(Compiler* compiler, CResult& result, sh
     }
 }
 
-void NCast::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+void NCast::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     node->dump(compiler, result, thisFunction, thisVar, returnMode, functions, ss, level);
     ss << " as " << typeName->getName();
 }

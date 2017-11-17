@@ -1,10 +1,10 @@
 #include "Node.h"
 
-shared_ptr<CType> CMathVar::getType(Compiler* compiler, CResult& result, CTypeReturnMode returnMode) {
-    return leftVar->getType(compiler, result, returnMode);
+shared_ptr<CType> CMathVar::getType(Compiler* compiler, CResult& result) {
+    return leftVar->getType(compiler, result);
 }
 
-shared_ptr<ReturnValue> CMathVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CMathVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     auto leftValue = leftVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, returnMode, nullptr, thisName);
     auto rightValue = rightVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, returnMode, nullptr, thisName);
     
@@ -44,11 +44,11 @@ shared_ptr<ReturnValue> CMathVar::transpileGet(Compiler* compiler, CResult& resu
     return resultValue;
 }
 
-void CMathVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CMathVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     assert(false);
 }
 
-void CMathVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CMathVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     leftVar->dump(compiler, result, thisFunction, thisVar, returnMode, nullptr, functions, ss, dotSS, level);
     
     switch (op) {
@@ -78,17 +78,17 @@ void NMath::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunc
     rightSide->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NMath::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, CTypeReturnMode returnMode) {
+shared_ptr<CVar> NMath::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
     assert(compiler->state == CompilerState::FixVar);
-    auto leftVar = leftSide->getVar(compiler, result, thisFunction, thisVar, nullptr, returnMode);
-    auto rightVar = rightSide->getVar(compiler, result, thisFunction, thisVar, nullptr, returnMode);
+    auto leftVar = leftSide->getVar(compiler, result, thisFunction, thisVar, nullptr);
+    auto rightVar = rightSide->getVar(compiler, result, thisFunction, thisVar, nullptr);
 
     if (!leftVar || !rightVar) {
         return nullptr;
     }
 
-    auto leftType = leftVar->getType(compiler, result, returnMode);
-    auto rightType = rightVar->getType(compiler, result, returnMode);
+    auto leftType = leftVar->getType(compiler, result);
+    auto rightType = rightVar->getType(compiler, result);
     if (!leftType || !rightType) {
         return nullptr;
     }
@@ -103,23 +103,23 @@ shared_ptr<CVar> NMath::getVarImpl(Compiler* compiler, CResult& result, shared_p
         switch (op) {
         case NMathOp::Add:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "add", nullptr, make_shared<NodeList>(rightSide)));
-            return operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, returnMode);
+            return operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar);
             break;
         case NMathOp::Sub:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "subtract", nullptr, make_shared<NodeList>(rightSide)));
-            return operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, returnMode);
+            return operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar);
             break;
         case NMathOp::Div:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "divide", nullptr, make_shared<NodeList>(rightSide)));
-            return operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, returnMode);
+            return operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar);
             break;
         case NMathOp::Mul:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "multiply", nullptr, make_shared<NodeList>(rightSide)));
-            return operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, returnMode);
+            return operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar);
             break;
         case NMathOp::Mod:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "modulus", nullptr, make_shared<NodeList>(rightSide)));
-            return operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, returnMode);
+            return operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar);
             break;
         default:
             assert(false);

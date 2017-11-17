@@ -166,6 +166,7 @@
     <ClInclude Include="..\node\NAnd.h" />
     <ClInclude Include="..\node\NArray.h" />
     <ClInclude Include="..\node\NEmpty.h" />
+    <ClInclude Include="..\node\NFunction.h" />
     <ClInclude Include="..\node\NGetOrElse.h" />
     <ClInclude Include="..\node\NGetValue.h" />
     <ClInclude Include="..\node\NIsEmpty.h" />
@@ -186,7 +187,6 @@
     <ClInclude Include="..\node\NDot.h" />
     <ClInclude Include="..\node\NDouble.h" />
     <ClInclude Include="..\node\NFor.h" />
-    <ClInclude Include="..\node\NFunction.h" />
     <ClInclude Include="..\node\NIf.h" />
     <ClInclude Include="..\node\NInclude.h" />
     <ClInclude Include="..\node\NInteger.h" />

@@ -1,64 +1,45 @@
 #include "Node.h"
 
-shared_ptr<CType> CAssignVar::getType(Compiler* compiler, CResult& result, CTypeReturnMode returnMode) {
-    return rightVar->getType(compiler, result, returnMode);
+shared_ptr<CType> CAssignVar::getType(Compiler* compiler, CResult& result) {
+    return rightVar->getType(compiler, result);
 }
 
-shared_ptr<ReturnValue> CAssignVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CAssignVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     assert(compiler->state == CompilerState::Compile);
-    
-    if (_callVar) {
-        auto parentVar = var->getVar(compiler, result, thisFunction, thisVar, nullptr);
-        if (!parentVar) {
-            return nullptr;
-        }
-        
-        auto dotValue = parentVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, false, nullptr, thisName);
-        if (!dotValue) {
-            return nullptr;
-        }
-        
-        return _callVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue, dotValue, thisName);
-    }
-    
-    if (!rightSide) {
-        result.addError(loc, CErrorCode::Internal, "only required assignment should not have a right side, and they should not be compiled");
-        return nullptr;
-    }
-    
-    auto rightReturn = rightSide->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, isReturnValue, thisName);
+   
+    auto leftType = leftVar->getType(compiler, result);
+    auto rightReturn = rightVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, leftType->typeMode == CTM_Heap ? CTRM_Heap : CTRM_Stack, nullptr, thisName);
     if (!rightReturn) {
         result.addError(loc, CErrorCode::TypeMismatch, "no return value");
         return nullptr;
     }
     
-    auto leftType = _assignVar->getType(compiler, result);
     if (leftType != rightReturn->type) {
         result.addError(loc, CErrorCode::TypeMismatch, "returned type '%s' does not match explicit type '%s'", rightReturn->type->name.c_str(), leftType->name.c_str());
         return nullptr;
     }
-    
-    _assignVar->transpileSet(compiler, result, thisFunction, thisVar, trOutput, trBlock, nullptr, rightReturn, thisName);
+
+    leftVar->transpileSet(compiler, result, thisFunction, thisVar, trOutput, trBlock, nullptr, rightReturn, thisName);
     
     return rightReturn;
 }
 
-void CAssignVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CAssignVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     assert(false);
 }
 
-void CAssignVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
-    auto type = getType(compiler, result, thisFunction, thisVar);
-    ss << name;
-    ss << "'" << (type ? type->name.c_str() : "unknown");
+void CAssignVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+    auto type = getType(compiler, result);
+    leftVar->dump(compiler, result, thisFunction, thisVar, returnMode, dotVar, functions, ss, dotSS, level);
+    auto leftType = leftVar->getType(compiler, result);
+    ss << "'" << (leftType ? leftType->name.c_str() : "unknown");
     ss << (isMutable ? " = " : " : ");
-    if (rightSide) {
-        rightSide->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+    if (rightVar) {
+        rightVar->dump(compiler, result, thisFunction, thisVar, returnMode, nullptr, functions, ss, dotSS, level);
     } else {
         ss << "undefined";
     }
 }
-
 
 NAssignment::NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTypeName> typeName, const char* name, shared_ptr<NBase> rightSide_, bool isMutable) : NBase(NodeType_Assignment, loc), var(var), typeName(typeName), name(name), inFunctionDeclaration(false), rightSide(rightSide_), isMutable(isMutable), _isFirstAssignment(false) {
     // If we are assigning a function to a var then we will call the function to get its value
@@ -84,7 +65,7 @@ void NAssignment::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBa
     }
 }
 
-shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode) {
+shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar) {
     assert(compiler->state == CompilerState::FixVar);
 
     // function vars are not created here, this is only for local vars
@@ -101,9 +82,10 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
             return nullptr;
         }
 
-        cfunction = static_pointer_cast<CFunction>(parentVar->getCFunctionForValue(compiler, result));
+        auto parentType = parentVar->getType(compiler, result);
+        cfunction = static_pointer_cast<CFunction>(parentType->parent.lock());
         if (!cfunction) {
-            result.addError(loc, CErrorCode::InvalidVariable, "var must be a function: '%s'", parentVar->fullName().c_str());
+            result.addError(loc, CErrorCode::InvalidVariable, "var must be a function");
             return nullptr;
         }
     }
@@ -123,16 +105,18 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
             assert(false);
         }
         
+        auto isFirstAssignment = false;
         auto leftVar = cfunction->getCVar(compiler, result, name);
         if (leftVar) {
             if (!isMutable) {
-                result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var '%s'", _assignVar->name.c_str());
+                result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var '%s'", name.c_str());
                 return nullptr;
             }
-            else if (!_assignVar->isMutable) {
-                result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var '%s'", _assignVar->name.c_str());
+            else if (!isMutable) {
+                result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var '%s'", name.c_str());
                 return nullptr;
             }
+            isFirstAssignment = false;
         }
         else {
             if (!var) {
@@ -157,13 +141,13 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
         if (!rightVar) {
             assert(false);
         }
-        return make_shared<CAssignVar>(loc, leftVar, rightVar);
+        return make_shared<CAssignVar>(loc, isMutable, leftVar, rightVar);
     }
 
     return nullptr;
 }
 
-shared_ptr<CType> NAssignment::getType(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode) {
+shared_ptr<CType> NAssignment::getType(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode) {
     assert(compiler->state >= CompilerState::FixVar);
 
     if (typeName) {
@@ -186,7 +170,7 @@ shared_ptr<CType> NAssignment::getType(Compiler* compiler, CResult& result, shar
         return nullptr;
     }
     
-    return rightVar->getType(compler, result, returnMode);
+    return rightVar->getType(compiler, result);
 }
 
 shared_ptr<NAssignment> NAssignment::shared_from_this() {

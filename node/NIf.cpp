@@ -1,19 +1,19 @@
 #include "Node.h"
 
-shared_ptr<CType> CIfElseVar::getType(Compiler* compiler, CResult& result, CTypeReturnMode returnMode) {
+shared_ptr<CType> CIfElseVar::getType(Compiler* compiler, CResult& result) {
     if (elseVar) {
-        return elseVar->getType(compiler, result, returnMode);
+        return elseVar->getType(compiler, result);
     }
     
     if (ifVar) {
-        return ifVar->getType(compiler, result, returnMode);
+        return ifVar->getType(compiler, result);
     }
     
     return nullptr;
 }
 
-shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
-    auto type = getType(compiler, result, returnMode);
+shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+    auto type = getType(compiler, result);
     shared_ptr<ReturnValue> trResultVar;
     if (type != compiler->typeVoid) {
         trResultVar = trBlock->createTempVariable(type, "ifResult");
@@ -75,11 +75,11 @@ shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& re
     return trResultVar;
 }
 
-void CIfElseVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CIfElseVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     assert(false);
 }
 
-void CIfElseVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CIfElseVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     ss << "if ";
     condVar->dump(compiler, result, thisFunction, thisVar, CTRM_NoPref, nullptr, functions, ss, dotSS, level);
 
@@ -107,18 +107,18 @@ void NIf::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFuncti
     }
 }
 
-shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, CTypeReturnMode returnMode) {
+shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
     assert(compiler->state == CompilerState::FixVar);
-    auto condVar = condition->getVar(compiler, result, thisFunction, thisVar, CTRM_NoPref);
+    auto condVar = condition->getVar(compiler, result, thisFunction, thisVar);
     
     shared_ptr<CVar> elseVar;
     if (elseBlock) {
-        elseVar = elseBlock->getVar(compiler, result, thisFunction, thisVar, returnMode);
+        elseVar = elseBlock->getVar(compiler, result, thisFunction, thisVar);
     }
     
     shared_ptr<CVar> ifVar;
     if (ifBlock) {
-        ifVar = ifBlock->getVar(compiler, result, thisFunction, thisVar, returnMode);
+        ifVar = ifBlock->getVar(compiler, result, thisFunction, thisVar);
     }
     
     return make_shared<CIfElseVar>(loc, condVar, ifVar, elseVar);
