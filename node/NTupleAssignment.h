@@ -3,7 +3,7 @@
 //  sj
 //
 //  Created by Mann, Justin on 12/25/16.
-//  Copyright © 2016 Mann, Justin. All rights reserved.
+//  Copyright ï¿½ 2016 Mann, Justin. All rights reserved.
 //
 
 #ifndef NTupleAssignment_h
@@ -25,19 +25,15 @@ public:
 
 typedef vector<shared_ptr<NTupleAssignmentArg>> NTupleAssignmentArgList;
 
-class NTupleAssignment : public NBlock {
+class NTupleAssignment : public NVariableBase {
 public:
-    NTupleAssignment(CLoc loc, shared_ptr<NTupleAssignmentArgList> args, shared_ptr<NVariableBase> rightSide) : NBlock(loc), args(args), rightSide(rightSide) {}
+    NTupleAssignment(CLoc loc, shared_ptr<NTupleAssignmentArgList> args, shared_ptr<NVariableBase> rightSide) : NVariableBase(NodeType_TupleAssignment, loc), args(args), rightSide(rightSide) {}
 
-protected:
-    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar);
-    virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar);
+    shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, CTypeReturnMode returnMode);
 
 private:
     shared_ptr<NTupleAssignmentArgList> args;
     shared_ptr<NVariableBase> rightSide;
-
-    void initStatements(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar);
 };
 
 #endif /* NAssignment_h */

@@ -31,12 +31,12 @@ void NTupleAssignment::initStatements(Compiler* compiler, CResult& result, share
     }
 }
 
-shared_ptr<CVar> NTupleAssignment::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
+shared_ptr<CVar> NTupleAssignment::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, CTypeReturnMode returnMode) {
     initStatements(compiler, result, thisFunction, thisVar);
     return NBlock::getVarImpl(compiler, result, thisFunction, thisVar, dotVar);
 }
 
-shared_ptr<CType> NTupleAssignment::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CType> NTupleAssignment::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode) {
     initStatements(compiler, result, thisFunction, thisVar);
     return NBlock::getTypeImpl(compiler, result, thisFunction, thisVar);
 }

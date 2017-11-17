@@ -1,6 +1,35 @@
 #include "Node.h"
 #include <climits>
 
+shared_ptr<CType> CConstantVar::getType(Compiler* compiler, CResult& result, CTypeReturnMode returnMode) {
+    return type;
+}
+
+shared_ptr<ReturnValue> CConstantVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+    return make_shared<ReturnValue>(type, value);
+}
+
+void CConstantVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+    assert(false);
+}
+
+void CConstantVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+    ss << value;
+    if (type == compiler->typeI32) {
+        ss << "i";
+    }
+    else if (type == compiler->typeU32) {
+        ss << "u";
+    }
+    else if (type == compiler->typeI64) {
+        ss << "l";
+    }
+    else if (type == compiler->typeU64) {
+        ss << "v";
+    }
+}
+
+
 NInteger::NInteger(CLoc loc, const char* value_) : NVariableBase(NodeType_Integer, loc), strValue(value_), hasValue(false) {
     if (strValue.back() == 'i') {
         type = NIT_I32;
@@ -23,49 +52,7 @@ NInteger::NInteger(CLoc loc, const char* value_) : NVariableBase(NodeType_Intege
     }
 }
 
-shared_ptr<CType> NInteger::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    assert(compiler->state >= CompilerState::FixVar);
-    switch (type) {
-    case NIT_I32:
-        return compiler->typeI32;
-    case NIT_U32:
-        return compiler->typeU32;
-    case NIT_I64:
-        return compiler->typeI64;
-    case NIT_U64:
-        return compiler->typeU64;
-    default:
-        assert(false);
-        return nullptr;
-    }
-}
-
-//shared_ptr<ReturnValue> NInteger::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-//    assert(compiler->state == CompilerState::Compile);
-//    compiler->emitLocation(builder, &this->loc);
-//    
-//    if (strValue.size() > 0) {
-//        char* e;
-//        errno = 0;
-//        auto v = strtoll(strValue.c_str(), &e, 10);
-//        
-//        if (ERANGE == errno) {
-//            result.addError(loc, CErrorCode::InvalidNumber, "not a valid int '%s'", strValue.c_str());
-//            return nullptr;
-//        }
-//
-//        if (*e != '\0') {
-//            result.addError(loc, CErrorCode::InvalidNumber, "not a valid int '%s'", strValue.c_str());
-//            return nullptr;
-//        }
-//        return make_shared<ReturnValue>(false, ConstantInt::get(compiler->context, APInt(64, v)));
-//    } else {
-//        return make_shared<ReturnValue>(false, ConstantInt::get(compiler->context, APInt(64, value)));
-//    }
-//}
-
-shared_ptr<ReturnValue> NInteger::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName) {
-
+shared_ptr<CVar> NInteger::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, CTypeReturnMode returnMode) {
     if (strValue.size() > 0) {
         if (type == NIT_I32) {
             char* e;
@@ -83,7 +70,7 @@ shared_ptr<ReturnValue> NInteger::transpile(Compiler* compiler, CResult& result,
 
             stringstream line;
             line << v;
-            return make_shared<ReturnValue>(compiler->typeI32, false, RVR_MustRetain, line.str());
+            return make_shared<CConstantVar>(loc, compiler->typeI32, line.str());
         }
         else if (type == NIT_U32) {
             char* e;
@@ -101,7 +88,7 @@ shared_ptr<ReturnValue> NInteger::transpile(Compiler* compiler, CResult& result,
 
             stringstream line;
             line << v << "u";
-            return make_shared<ReturnValue>(compiler->typeU32, false, RVR_MustRetain, "(uint32_t)" + line.str());
+            return make_shared<CConstantVar>(loc, compiler->typeU32, "(uint32_t)" + line.str());
         }
         else if (type == NIT_I64) {
             char* e;
@@ -124,7 +111,7 @@ shared_ptr<ReturnValue> NInteger::transpile(Compiler* compiler, CResult& result,
             else {
                 line << v << "ll";
             }
-            return make_shared<ReturnValue>(compiler->typeI64, false, RVR_MustRetain, line.str());
+            return make_shared<CConstantVar>(loc, compiler->typeI64, line.str());
         }
         else if (type == NIT_U64) {
             char* e;
@@ -142,7 +129,7 @@ shared_ptr<ReturnValue> NInteger::transpile(Compiler* compiler, CResult& result,
 
             stringstream line;
             line << v << "ull";
-            return make_shared<ReturnValue>(compiler->typeU64, false, RVR_MustRetain, line.str());
+            return make_shared<CConstantVar>(loc, compiler->typeU64, line.str());
         }
         else {
             assert(false);
@@ -151,25 +138,8 @@ shared_ptr<ReturnValue> NInteger::transpile(Compiler* compiler, CResult& result,
     } else if (hasValue) {
         stringstream line;
         line << value;
-        return make_shared<ReturnValue>(compiler->typeI32, false, RVR_MustRetain, line.str());
+        return make_shared<CConstantVar>(loc, compiler->typeI32, line.str());
     }
     return nullptr;
 }
 
-void NInteger::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-    ss << strValue;
-    switch (type) {
-    case NIT_I32:
-        ss << "i";
-        break;
-    case NIT_U32:
-        ss << "u";
-        break;
-    case NIT_I64:
-        ss << "l";
-        break;
-    case NIT_U64:
-        ss << "v";
-        break;
-    }
-}

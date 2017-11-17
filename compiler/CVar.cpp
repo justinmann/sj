@@ -52,7 +52,6 @@ shared_ptr<CNormalVar> CNormalVar::createFunctionVar(const CLoc& loc, const stri
     c->nassignment = nassignment;
     c->parent = parent;
     c->type = type;
-    c->isHeapVar = false;
     c->interfaceMethodArgVar = interfaceMethodArgVar_;
     
     if (interfaceMethodArgVar_) {
@@ -71,7 +70,7 @@ void CNormalVar::makeFunctionVar(int index) {
     this->index = index;
 }
 
-shared_ptr<CType> CNormalVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CNormalVar::getType(Compiler* compiler, CResult& result, CTypeReturnMode returnMode) {
     if (isInGetType) {
         result.addError(CLoc::undefined, CErrorCode::TypeLoop, "while trying to determine type a cycle was detected");
         return nullptr;
@@ -85,84 +84,25 @@ shared_ptr<CType> CNormalVar::getType(Compiler* compiler, CResult& result) {
     return type;
 }
 
-//shared_ptr<ReturnValue> CNormalVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-//    if (mode == Var_This) {
-//        return make_shared<ReturnValue>(parent.lock(), RVR_MustRetain, RVT_HEAP, true, thisValue);
-//    } else {
-//        // TODO: Can be smarter about whether or not return value is in entry
-//        auto value = getStoreValue(compiler, result, thisVar, thisValue, dotInEntry, dotValue, builder, catchBB);
-//        return make_shared<ReturnValue>(type->parent.lock(), RVR_MustRetain, RVT_HEAP, false, builder->CreateLoad(value));
-//    }
-//}
-//
-//Value* CNormalVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-//    if (mode == Var_This) {
-//        assert(false);
-//    } else if (mode == Var_Local) {
-//        if (!value) {
-//            auto entryBuilder = compiler->getEntryBuilder(getFunctionFromBuilder(builder));
-//            auto valueType = getType(compiler, result)->llvmRefType(compiler, result);
-//            if (valueType->isVoidTy()) {
-//                result.addError(loc, CErrorCode::StoringVoid, "cannot save a void value");
-//                return nullptr;
-//            }
-//            value = entryBuilder->CreateAlloca(valueType, 0, name.c_str());
-//        }
-//        return value;
-//    } else {
-//        auto fun = static_pointer_cast<CFunction>(parent.lock());
-//        return fun->getArgumentPointer(compiler, result, dotInEntry, dotValue, index, builder);
-//    }
-//}
-
-bool CNormalVar::getHeapVar(Compiler *compiler, CResult &result, shared_ptr<CVar> thisVar) {
-    if (interfaceMethodArgVar) {
-        return interfaceMethodArgVar->getHeapVar(compiler, result, thisVar);
-    }
-    return isHeapVar;
-}
-
-int CNormalVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
-    auto count = 0;
-
-    if (interfaceMethodArgVar) {
-        count += interfaceMethodArgVar->setHeapVar(compiler, result, thisVar);
-    }
-    
-    if (!isHeapVar) {
-        isHeapVar = true;
-        
-        auto t = getType(compiler, result);
-        if (t != nullptr && !t->parent.expired()) {
-            t->parent.lock()->setHasRefCount();
-        }
-        
-        count += 1;
-    }
-    
-    return count;
-}
-
-shared_ptr<ReturnValue> CNormalVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CNormalVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     auto returnType = getType(compiler, result);
     if (!returnType)
         return nullptr;
 
-    auto returnIsHeap = getHeapVar(compiler, result, thisVar);
     if (dotValue) {
-        auto returnValue = trBlock->createTempVariable("dotTemp", returnType, returnIsHeap, RVR_Ignore);
+        auto returnValue = trBlock->createTempVariable(returnType, "dotTemp");
         stringstream lineStream;
         lineStream << returnValue->name << " = " << dotValue->name << "->" << name;
         trBlock->statements.push_back(lineStream.str());
         return returnValue;
     } else if (trBlock->hasThis && (mode == Var_Public || mode == Var_Private)) {
-        auto returnValue = trBlock->createTempVariable("dotTemp", returnType, returnIsHeap, RVR_Ignore);
+        auto returnValue = trBlock->createTempVariable(returnType, "dotTemp");
         stringstream lineStream;
         lineStream << returnValue->name << " = " << "_this->" << name;
         trBlock->statements.push_back(lineStream.str());
         return returnValue;
     } else {
-        return make_shared<ReturnValue>(returnType, returnIsHeap, RVR_MustRetain, name);
+        return make_shared<ReturnValue>(returnType, name);
     }    
 }
 
@@ -194,7 +134,7 @@ void CNormalVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CB
     else {
         if (!trBlock->getVariable(name)) {
             isFirstAssignment = true;
-            trBlock->createVariable(name, returnType, getHeapVar(compiler, result, thisVar), RVR_MustRetain);
+            trBlock->createVariable(returnType, name);
         }
         else if (!isMutable) {
             // Check is mutable or first assignment
@@ -203,20 +143,12 @@ void CNormalVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CB
         }
         varName = name;
     }
-
-    if (!isFirstAssignment && !returnType->parent.expired() && returnType->parent.lock()->hasRefCount) {
-        ReturnValue::addReleaseToStatements(trBlock, varName, returnType, true);
-    }
-
-    lineStream << varName << " = " << returnValue->name;
-    trBlock->statements.push_back(lineStream.str());
-
-    if (!returnType->parent.expired() && returnType->parent.lock()->hasRefCount) {
-        ReturnValue::addRetainToStatements(trBlock, varName, returnType);
-    }
+    
+    auto varValue = make_shared<ReturnValue>(returnType, varName);
+    varValue->addAssignToStatements(trBlock, returnValue->name, isFirstAssignment);
 }
 
-void CNormalVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CNormalVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     if (dotSS.gcount()) {
         ss << dotSS.str() << ".";
     }

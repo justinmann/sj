@@ -5,25 +5,17 @@
 
 class CType;
 
-enum ReturnValueRelease {
-    RVR_MustRelease,
-    RVR_MustRetain,
-    RVR_Ignore
-};
-
 class ReturnValue {
 public:
-    ReturnValue(shared_ptr<CType> type_, bool isHeap_, ReturnValueRelease release_, string name_);
-//    ReturnValue(string typeName_, string name_);
+    ReturnValue(shared_ptr<CType> type, string name);
     bool writeReleaseToStream(TrBlock* block, ostream& stream, int level);
-    static void addInitToStatements(TrBlock* block, string name, shared_ptr<CType> type);
-    static void addRetainToStatements(TrBlock* block, string name, shared_ptr<CType> type);
-    static void addReleaseToStatements(TrBlock* block, string name, shared_ptr<CType> type, bool isHeap);
+    void addInitToStatements(TrBlock* block);
+    void addAssignToStatements(TrBlock* block, string rightName, bool isFirstAssignment);
+    void addRetainToStatements(TrBlock* block);
+    void addReleaseToStatements(TrBlock* block);
 
     shared_ptr<CType> type;
     string typeName;
-    bool isHeap;
-    ReturnValueRelease release;
     string name;
 }; 
 
@@ -47,8 +39,8 @@ public:
     void writeStackValuesReleaseToStream(ostream& stream, int level);
     void writeReturnToStream(ostream& stream, int level);
     shared_ptr<ReturnValue> getVariable(string name);
-    shared_ptr<ReturnValue> createVariable(string name, shared_ptr<CType> type, bool isHeap, ReturnValueRelease release);
-    shared_ptr<ReturnValue> createTempVariable(string prefix, shared_ptr<CType> type, bool isHeap, ReturnValueRelease release);
+    shared_ptr<ReturnValue> createVariable(shared_ptr<CType> type, string name);
+    shared_ptr<ReturnValue> createTempVariable(shared_ptr<CType> type, string prefix);
     string createStackValue(string prefix, shared_ptr<CType> type);
     string getFunctionName();
 

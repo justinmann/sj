@@ -2,26 +2,14 @@
 
 class CCodeReturnVar : public CVar {
 public:
-    CCodeReturnVar() : _isHeapVar(false) {}
+    CCodeReturnVar() {}
     
-    shared_ptr<CType> getType(Compiler* compiler, CResult& result) {
+    shared_ptr<CType> getType(Compiler* compiler, CResult& result, CTypeReturnMode returnMode) {
         assert(false);
         return nullptr;
     }
 
-    bool getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
-        return _isHeapVar;
-    }
-
-    int setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
-        if (!_isHeapVar) {
-            _isHeapVar = true;
-            return 1;
-        }
-        return 0;
-    }
-
-    shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+    shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
         assert(false);
         return nullptr;
     }
@@ -30,19 +18,16 @@ public:
         assert(false);
     }
 
-    void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+    void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
         assert(false);
     }
-
-private:
-    bool _isHeapVar;
 };
 
-shared_ptr<CType> NCCode::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CType> NCCode::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode) {
     return compiler->typeVoid;
 }
 
-shared_ptr<CVar> NCCode::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CVar> NCCode::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode) {
     stringstream finalCode;
     stringstream macro;
     bool isInMacro = false;
@@ -92,16 +77,6 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
         thisFunction->setHasParent(compiler, result);
         return "";
     }
-    else if (functionName.compare("forceHeap") == 0) {
-        auto cvar = thisFunction->getCVar(compiler, result, param);
-        if (cvar) {
-            cvar->setHeapVar(compiler, result, thisVar);
-        }
-        else {
-            result.addError(loc, CErrorCode::InvalidMacro, "cannot find variable '%s'", param.c_str());
-        }
-        return "";
-    }
     else if (functionName.compare("include") == 0) {
         _includes.push_back(param);
     }
@@ -120,6 +95,7 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
         }
     }
     else if (functionName.compare("function") == 0) {
+        assert(false); // This only supports the function that returns heap
         auto ctypeName = CTypeName::parse(param);
         if (!ctypeName) {
             result.addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", param.c_str());
@@ -127,9 +103,8 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
         
         auto cfunction = thisFunction->getCFunction(compiler, result, ctypeName->name, thisFunction, ctypeName->argTypeNames);
         if (cfunction) {
-            cfunction->getReturnVar(compiler, result, thisVar);
             _functions[thisFunction.get()].push_back(cfunction);
-            return cfunction->getCInitFunctionName();
+            return cfunction->getCInitFunctionName(CTM_Heap);
         }
         else {
             result.addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", param.c_str());
@@ -170,7 +145,7 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
         auto ctype = thisFunction->getVarType(compiler, result, ctypeName);
         if (ctype) {
             stringstream releaseStream;
-            ReturnValue(ctype, true, RVR_MustRetain, varName).writeReleaseToStream(nullptr, releaseStream, 0);
+            ReturnValue(ctype, varName).writeReleaseToStream(nullptr, releaseStream, 0);
             return releaseStream.str();
         }
         else {
@@ -205,7 +180,7 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
     //    * #isValue(i32)# -> true
 }
 
-shared_ptr<ReturnValue> NCCode::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName) {
+shared_ptr<ReturnValue> NCCode::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, const char* thisName) {
     for (auto cfunction : _functions[thisFunction.get()]) {
         cfunction->transpileDefinition(compiler, result, trOutput);
     }
@@ -228,7 +203,7 @@ shared_ptr<ReturnValue> NCCode::transpile(Compiler* compiler, CResult& result, s
     return nullptr;
 }
 
-void NCCode::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+void NCCode::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     switch (codeType) {
         case NCC_BLOCK:
             ss << "c{\n";

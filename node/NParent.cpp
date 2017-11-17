@@ -2,24 +2,28 @@
 
 NParent::NParent(CLoc loc) : NVariableBase(NodeType_Parent, loc) { }
 
-shared_ptr<ReturnValue> NParent::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName) {
+shared_ptr<ReturnValue> NParent::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, const char* thisName) {
     auto parentFunction = thisFunction->parent.lock();
-    
+    if (!parentFunction) {
+        return nullptr;
+    }
+    auto parentTypes = parentFunction->getThisTypes(compiler, result);
+    if (!parentTypes) {
+        return nullptr;
+    }
+
     return make_shared<ReturnValue>(
-        parentFunction->getThisType(compiler, result, false),
-        parentFunction->getThisVar(compiler, result)->getHeapVar(compiler, result, thisVar),
-        RVR_MustRetain, 
+        parentTypes->localValueType,
         "_parent");
 }
 
-shared_ptr<CVar> NParent::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
+shared_ptr<CVar> NParent::getVarImpl(Compiler *compiler, CResult &result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, CTypeReturnMode returnMode) {
     if (dotVar) {
         result.addError(loc, CErrorCode::InvalidVariable, "this must be the first var in a dot chain");
         return nullptr;
     }
     
     auto parentFunction = thisFunction->parent.lock();
-    auto parentVar = parentFunction->getThisVar(compiler, result);
-    parentVar->parent.lock()->setHasRefCount();
-    return parentVar;
+    parentFunction->setHasRefCount();
+    return parentFunction->getThisVar(compiler, result, returnMode);
 }

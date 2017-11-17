@@ -1,6 +1,6 @@
 #include "Node.h"
 
-shared_ptr<CType> NChar::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CType> NChar::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode) {
     assert(compiler->state >= CompilerState::FixVar);
     return compiler->typeChar;
 }
@@ -11,10 +11,10 @@ shared_ptr<CType> NChar::getTypeImpl(Compiler* compiler, CResult& result, shared
 //    return make_shared<ReturnValue>(false, ConstantInt::get(compiler->context, APInt(8, value)));
 //}
 
-shared_ptr<ReturnValue> NChar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName) {
-    return make_shared<ReturnValue>(compiler->typeChar, false, RVR_MustRetain, "'" + value + "'");
+shared_ptr<ReturnValue> NChar::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, const char* thisName) {
+    return make_shared<ReturnValue>(compiler->typeChar, "'" + value + "'");
 }
 
-void NChar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+void NChar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << "'" << value << "'";
 }

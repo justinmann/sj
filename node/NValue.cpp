@@ -5,7 +5,7 @@ void NValue::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFun
     node->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NValue::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
+shared_ptr<CVar> NValue::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, CTypeReturnMode returnMode) {
     assert(compiler->state == CompilerState::FixVar);
     auto leftVar = node->getVar(compiler, result, thisFunction, thisVar);
     if (!leftVar) {
@@ -25,7 +25,7 @@ shared_ptr<CVar> NValue::getVarImpl(Compiler* compiler, CResult& result, shared_
     return nullptr;
 }
 
-shared_ptr<CType> NValue::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CType> NValue::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode) {
     assert(compiler->state >= CompilerState::FixVar);
     auto leftType = node->getType(compiler, result, thisFunction, thisVar);
     if (!leftType) {
@@ -40,11 +40,7 @@ shared_ptr<CType> NValue::getTypeImpl(Compiler* compiler, CResult& result, share
     return leftType->getOptionType();
 }
 
-int NValue::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar) {
-    return node->setHeapVar(compiler, result, thisFunction, thisVar, isHeapVar);
-}
-
-shared_ptr<ReturnValue> NValue::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName) {
+shared_ptr<ReturnValue> NValue::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, const char* thisName) {
     auto leftValue = node->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false, thisName);
     if (!leftValue) {
         return nullptr;
@@ -56,7 +52,7 @@ shared_ptr<ReturnValue> NValue::transpile(Compiler* compiler, CResult& result, s
     }
 
     if (leftValue->type->parent.expired()) {
-        auto returnValue = trBlock->createTempVariable("value", leftValue->type->getOptionType(), false, RVR_MustRetain);
+        auto returnValue = trBlock->createTempVariable(leftValue->type->getOptionType(), "value");
         stringstream line1;
         line1 << returnValue->name << ".isEmpty = false";
         trBlock->statements.push_back(line1.str());
@@ -68,11 +64,11 @@ shared_ptr<ReturnValue> NValue::transpile(Compiler* compiler, CResult& result, s
         return returnValue;
     }
     else {
-        return make_shared<ReturnValue>(leftValue->type->getOptionType(), true, RVR_MustRetain, leftValue->name);
+        return make_shared<ReturnValue>(leftValue->type->getOptionType(), leftValue->name);
     }
 }
 
-void NValue::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+void NValue::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << "value(";
     node->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
     ss << ")";

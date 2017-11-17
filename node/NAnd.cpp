@@ -6,61 +6,25 @@ void NAnd::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunct
     right->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NAnd::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
+shared_ptr<CVar> NAnd::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, CTypeReturnMode returnMode) {
     assert(compiler->state == CompilerState::FixVar);
-    left->getVar(compiler, result, thisFunction, thisVar, nullptr);
-    right->getVar(compiler, result, thisFunction, thisVar, nullptr);
+    left->getVar(compiler, result, thisFunction, thisVar, nullptr, returnMode);
+    right->getVar(compiler, result, thisFunction, thisVar, nullptr, returnMode);
     return nullptr;
 }
 
-shared_ptr<CType> NAnd::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CType> NAnd::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode) {
     assert(compiler->state >= CompilerState::FixVar);
     return compiler->typeBool;
 }
 
-int NAnd::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar) {
-    auto count = left->setHeapVar(compiler, result, thisFunction, thisVar, nullptr, false);
-    count += right->setHeapVar(compiler, result, thisFunction, thisVar, nullptr, false);
-    return count;
-}
-
-shared_ptr<ReturnValue> NAnd::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName) {
+shared_ptr<ReturnValue> NAnd::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, const char* thisName) {
 	assert(false);
 	return nullptr;
 }
-//shared_ptr<ReturnValue> NAnd::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-//    assert(compiler->state == CompilerState::Compile);
-//    compiler->emitLocation(builder, &this->loc);
-//    
-//    auto l = left->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
-//    if (!l) {
-//        return nullptr;
-//    }
-//    
-//    assert(l->type == RVT_SIMPLE);
-//
-//    if (!l->value->getType()->isIntegerTy(1)) {
-//        result.addError(loc, CErrorCode::TypeMismatch, "must be bool");
-//        return nullptr;
-//    }
-//    
-//    auto r = right->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
-//    if (!r) {
-//        return nullptr;
-//    }
-//    
-//    assert(r->type == RVT_SIMPLE);
-//    
-//    if (!r->value->getType()->isIntegerTy(1)) {
-//        result.addError(loc, CErrorCode::TypeMismatch, "must be bool");
-//        return nullptr;
-//    }
-//    
-//    return make_shared<ReturnValue>(false, builder->CreateAnd(l->value, r->value));
-//}
 
-void NAnd::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-    left->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+void NAnd::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+    left->dump(compiler, result, thisFunction, thisVar, returnMode, functions, ss, level);
     ss << " && ";
-    right->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+    right->dump(compiler, result, thisFunction, thisVar, returnMode, functions, ss, level);
 }

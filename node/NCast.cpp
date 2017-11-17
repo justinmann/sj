@@ -5,21 +5,21 @@ void NCast::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunc
     node->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
+shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, CTypeReturnMode returnMode) {
     assert(compiler->state == CompilerState::FixVar);
-    node->getVar(compiler, result, thisFunction, thisVar, nullptr);
+    node->getVar(compiler, result, thisFunction, thisVar, nullptr, returnMode);
     
     auto toType = thisFunction->getVarType(compiler, result, typeName);
     if (toType != nullptr && toType->category == CTC_Interface) {
         auto interface = static_pointer_cast<CInterface>(toType->parent.lock());
-        interfaceVar = interface->getThisVar(compiler, result);
+        interfaceVar = interface->getThisVar(compiler, result, returnMode);
         return interfaceVar;
     }
 
     return nullptr;
 }
 
-shared_ptr<CType> NCast::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CType> NCast::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode) {
     assert(compiler->state >= CompilerState::FixVar);
     auto t = thisFunction->getVarType(compiler, result, typeName);
     if (!t) {
@@ -29,18 +29,13 @@ shared_ptr<CType> NCast::getTypeImpl(Compiler* compiler, CResult& result, shared
     return t;
 }
 
-int NCast::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar_) {
-    isHeapVar = isHeapVar_;
-    return node->setHeapVar(compiler, result, thisFunction, thisVar, nullptr, false);
-}
-
-shared_ptr<ReturnValue> NCast::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName) {
-    auto type = getType(compiler, result, thisFunction, thisVar);
+shared_ptr<ReturnValue> NCast::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, const char* thisName) {
+    auto type = getType(compiler, result, thisFunction, thisVar, returnMode);
     if (type == nullptr) {
         return nullptr;
     }
 
-    auto returnValue = node->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false, thisName);
+    auto returnValue = node->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, returnMode, thisName);
     if (!returnValue) {
         assert(false);
         return nullptr;
@@ -59,10 +54,10 @@ shared_ptr<ReturnValue> NCast::transpile(Compiler* compiler, CResult& result, sh
     }
 
     if (type != nullptr && type->category == CTC_Interface) {
-        auto resultValue = trBlock->createTempVariable("result", type, true, RVR_MustRelease);
+        auto resultValue = trBlock->createTempVariable(type, "result");
         auto interface = static_pointer_cast<CInterface>(type->parent.lock());
-        interface->transpileDefinition(compiler, result, trOutput);
-        interfaceVar = interface->getThisVar(compiler, result);
+        interface->transpileDefinition(compiler, result, trOutput, returnValue->type->typeMode);
+        interfaceVar = interface->getThisVar(compiler, result, returnMode);
 
         shared_ptr<TrBlock> ifNullBlock;
         auto innerBlock = trBlock;
@@ -82,10 +77,9 @@ shared_ptr<ReturnValue> NCast::transpile(Compiler* compiler, CResult& result, sh
 
             innerBlock = ifNullBlock.get();
         }
-
-        stringstream line;
-        line << resultValue->name << " = " << interface->transpileCast(returnValue->type->parent.lock(), returnValue->name);
-        innerBlock->statements.push_back(line.str());
+        
+        auto rightName = interface->transpileCast(returnValue->type->typeMode, returnValue->type->parent.lock(), returnValue->name, returnValue->type->typeMode);
+        resultValue->addAssignToStatements(innerBlock, rightName, true);
         return resultValue;
     }
     else {
@@ -94,7 +88,7 @@ shared_ptr<ReturnValue> NCast::transpile(Compiler* compiler, CResult& result, sh
             return nullptr;
         }
 
-        auto resultValue = trBlock->createTempVariable("result", type, false, RVR_MustRetain);
+        auto resultValue = trBlock->createTempVariable(type, "result");
         stringstream line;
         line << resultValue->name << " = " << "(" << type->nameRef << ")" << returnValue->name;
         trBlock->statements.push_back(line.str());
@@ -102,47 +96,7 @@ shared_ptr<ReturnValue> NCast::transpile(Compiler* compiler, CResult& result, sh
     }
 }
 
-//shared_ptr<ReturnValue> NCast::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-//    assert(compiler->state == CompilerState::Compile);
-//    compiler->emitLocation(builder, &this->loc);
-//    
-//    auto v = node->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
-//    if (!v)
-//        return nullptr;
-//    
-//    auto fromType = node->getType(compiler, result, thisFunction, thisVar);
-//    auto toType = thisFunction->getVarType(compiler, result, typeName);
-//    
-//    if (!toType) {
-//        result.addError(loc, CErrorCode::InvalidType, "type does not exist");
-//    }
-//
-//    if (fromType == toType) {
-//        return v;
-//    }
-//    
-//    if (fromType == compiler->typeInt && toType == compiler->typeFloat) {
-//        assert(v->type == RVT_SIMPLE);
-//        return make_shared<ReturnValue>(false, builder->CreateSIToFP(v->value, toType->llvmRefType(compiler, result)));
-//    }
-//
-//    if (fromType == compiler->typeFloat && toType == compiler->typeInt) {
-//        assert(v->type == RVT_SIMPLE);
-//        return make_shared<ReturnValue>(false, builder->CreateFPToSI(v->value, toType->llvmRefType(compiler, result)));
-//    }
-//    
-//    if (toType->category == CTC_Interface) {
-//        auto interface = static_pointer_cast<CInterface>(toType->parent.lock());
-//        auto function = static_pointer_cast<CFunction>(v->valueFunction);
-//        return function->cast(compiler, result, builder, v, isHeapVar, interface);
-//    }
-//    
-//    result.addError(loc, CErrorCode::InvalidCast, "cannot cast");
-//    
-//    return NULL;
-//}
-
-void NCast::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-    node->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+void NCast::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+    node->dump(compiler, result, thisFunction, thisVar, returnMode, functions, ss, level);
     ss << " as " << typeName->getName();
 }

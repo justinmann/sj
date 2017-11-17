@@ -3,7 +3,7 @@
 NTuple::NTuple(CLoc loc, shared_ptr<NodeList> elements_) : NBlock(loc), elements(elements_) {
 }
 
-void NTuple::initStatements(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
+void NTuple::initStatements(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode) {
     if (statements.size() == 0) {
         if (elements->size() == 0) {
             result.addError(loc, CErrorCode::TypeMismatch, "tuple must have at least 1 value");
@@ -17,7 +17,7 @@ void NTuple::initStatements(Compiler* compiler, CResult& result, shared_ptr<CBas
 
         auto typeNameList = make_shared<CTypeNameList>();
         for (auto element : *elements) {
-            auto ctype = element->getType(compiler, result, thisFunction, thisVar);
+            auto ctype = element->getType(compiler, result, thisFunction, thisVar, returnMode);
             typeNameList->push_back(make_shared<CTypeName>(ctype));
         }
 
@@ -27,13 +27,13 @@ void NTuple::initStatements(Compiler* compiler, CResult& result, shared_ptr<CBas
     }
 }
 
-shared_ptr<CVar> NTuple::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
-    initStatements(compiler, result, thisFunction, thisVar);
-    return NBlock::getVarImpl(compiler, result, thisFunction, thisVar, dotVar);
+shared_ptr<CVar> NTuple::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, CTypeReturnMode returnMode) {
+    initStatements(compiler, result, thisFunction, thisVar, returnMode);
+    return NBlock::getVarImpl(compiler, result, thisFunction, thisVar, dotVar, returnMode);
 }
 
-shared_ptr<CType> NTuple::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    initStatements(compiler, result, thisFunction, thisVar);
-    return NBlock::getTypeImpl(compiler, result, thisFunction, thisVar);
+shared_ptr<CType> NTuple::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode) {
+    initStatements(compiler, result, thisFunction, thisVar, returnMode);
+    return NBlock::getTypeImpl(compiler, result, thisFunction, thisVar, returnMode);
 }
 

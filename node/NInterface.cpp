@@ -9,16 +9,10 @@ NInterface::NInterface(CLoc loc, const char* name, shared_ptr<CTypeNameList> tem
     }
 }
 
-shared_ptr<CType> NInterface::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
+shared_ptr<CType> NInterface::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode) {
     assert(compiler->state >= CompilerState::FixVar);
     return compiler->typeVoid;
 }
-
-//shared_ptr<ReturnValue> NInterface::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-//    assert(compiler->state == CompilerState::Compile);
-//    compiler->emitLocation(builder, &this->loc);
-//    return nullptr;
-//}
 
 void NInterface::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     auto parentFunction = static_pointer_cast<CFunctionDefinition>(thisFunction);
@@ -36,12 +30,12 @@ void NInterface::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBas
     }
 }
 
-shared_ptr<ReturnValue> NInterface::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName) {
+shared_ptr<ReturnValue> NInterface::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, const char* thisName) {
     // TODO: assert(false);
 	return nullptr;
 }
 
-void NInterface::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+void NInterface::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << name;
     if (templateTypeNames) {
         if (templateTypeNames->size() == 1) {
@@ -57,7 +51,7 @@ void NInterface::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunct
     ss << "(\n";
     for (auto it : methodList) {
         dumpf(ss, level + 1);
-        it->dump(compiler, result, thisFunction, thisVar, functions, ss, level + 1);
+        it->dump(compiler, result, thisFunction, thisVar, CTRM_NoPref, functions, ss, level + 1);
         ss << "\n";
     }
     dumpf(ss, level);
@@ -68,33 +62,16 @@ shared_ptr<NInterface> NInterface::shared_from_this() {
     return static_pointer_cast<NInterface>(NBase::shared_from_this());
 }
 
-CInterfaceVar::CInterfaceVar(shared_ptr<CInterface> interface) : isHeapVar(false) {
+CInterfaceVar::CInterfaceVar(shared_ptr<CInterface> interface) {
     parent = interface;
 }
 
-shared_ptr<CType> CInterfaceVar::getType(Compiler* compiler, CResult& result) {
-    return parent.lock()->getThisType(compiler, result, false);
+shared_ptr<CType> CInterfaceVar::getType(Compiler* compiler, CResult& result, CTypeReturnMode returnMode) {
+    assert(false);
+    return nullptr; // parent.lock()->getThisTypes(compiler, result);
 }
 
-//shared_ptr<ReturnValue> CInterfaceVar::getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-//    assert(false);
-//    return nullptr;
-//}
-//
-//Value* CInterfaceVar::getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) {
-//    assert(false);
-//    return nullptr;
-//}
-
-bool CInterfaceVar::getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
-    return true;
-}
-
-int CInterfaceVar::setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
-    return 0;
-}
-
-shared_ptr<ReturnValue> CInterfaceVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CInterfaceVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     assert(false);
 	return nullptr;
 }
@@ -103,7 +80,7 @@ void CInterfaceVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr
     assert(false);
 }
 
-void CInterfaceVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CInterfaceVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     assert(false);
 }
 
@@ -163,33 +140,9 @@ int CInterface::getThisIndex(const string& name) const {
     return -1;
 }
 
-shared_ptr<CVar> CInterface::getThisVar(Compiler* compiler, CResult& result) {
+shared_ptr<CVar> CInterface::getThisVar(Compiler* compiler, CResult& result, CTypeReturnMode returnMode) {
     return make_shared<CInterfaceVar>(shared_from_this());
 }
-
-//Type* CInterface::getStructType(Compiler* compiler, CResult& result) {
-//    if (!_structType) {
-//        _structType = StructType::create(compiler->context, name + "_interface");
-//        
-//        auto typeList = vector<Type*>();
-//        typeList.push_back(Type::getInt8PtrTy(compiler->context));
-//        
-//        if (hasRefCount) {
-//            typeList.push_back(Type::getInt64Ty(compiler->context));
-//        }
-//        
-//        for (auto it : methods) {
-//            typeList.push_back(it->getFunctionType(compiler, result)->getPointerTo());
-//        }
-//        
-//        _structType->setBody(ArrayRef<Type *>(typeList));
-//    }
-//    return _structType;
-//}
-//
-//Value* CInterface::getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue) {
-//    return builder->CreateStructGEP(_structType, thisValue, 1);
-//}
 
 int CInterface::getArgStart() {
     if (hasRefCount) {
@@ -233,22 +186,17 @@ shared_ptr<CType> CInterface::getVarType(Compiler* compiler, CResult& result, sh
     return compiler->getType(typeName->name);
 }
 
-shared_ptr<CType> CInterface::getReturnType(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
+shared_ptr<CType> CInterface::getReturnType(Compiler* compiler, CResult& result, CTypeReturnMode returnMode) {
     assert(false);
     return nullptr;
 }
 
-shared_ptr<CVar> CInterface::getReturnVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) {
-    assert(false);
-    return nullptr;
-}
-
-string CInterface::getCInitFunctionName() {
+string CInterface::getCInitFunctionName(CTypeMode typeMode) {
     assert(false);
     return "";
 }
 
-string CInterface::getBaseName() {
+string CInterface::getBaseName(CTypeMode typeMode) {
     auto functionName = name.substr(1, name.size() - 1);
     if (!parent.expired()) {
         auto tempType = parent.lock();
@@ -262,41 +210,41 @@ string CInterface::getBaseName() {
     return functionName;
 }
 
-string CInterface::getStructName() {
-    return "sji_" + getBaseName();
+string CInterface::getStructName(CTypeMode typeMode) {
+    return "sji_" + getBaseName(typeMode);
 }
 
-string CInterface::getCDestroyFunctionName() {
-    return getStructName() + "_destroy";
+string CInterface::getCDestroyFunctionName(CTypeMode typeMode) {
+    return getStructName(typeMode) + "_destroy";
 }
 
-string CInterface::getTypeIdName() {
-    return getStructName() + "_typeId";
+string CInterface::getTypeIdName(CTypeMode typeMode) {
+    return getStructName(typeMode) + "_typeId";
 }
 
-string CInterface::getCastFunctionName(shared_ptr<CBaseFunction> fromFunction) {
+string CInterface::getCastFunctionName(CTypeMode toTypeMode, shared_ptr<CBaseFunction> fromFunction, CTypeMode fromTypeMode) {
     stringstream line;
-    line << fromFunction->getCInitFunctionName() << "_as_" << getStructName();
+    line << fromFunction->getCInitFunctionName(fromTypeMode) << "_as_" << getStructName(toTypeMode);
     return line.str();
 }
 
-string CInterface::transpileCast(shared_ptr<CBaseFunction> fromFunction, string varName) {
+string CInterface::transpileCast(CTypeMode toTypeMode, shared_ptr<CBaseFunction> fromFunction, CTypeMode fromTypeMode, string varName) {
     if (fromFunction->classType == CFT_Interface) {
         auto fromInterface = static_pointer_cast<CInterface>(fromFunction);
         stringstream line;
-        line << "(" << getStructName() << "*)" << varName << "->asInterface(" << varName << "->_parent, " << getTypeIdName() << ")";
+        line << "(" << getStructName(toTypeMode) << "*)" << varName << "->asInterface(" << varName << "->_parent, " << getTypeIdName(fromTypeMode) << ")";
         return line.str();
     }
     else {
         stringstream line;
-        line << getCastFunctionName(fromFunction) << "(" << varName << ")";
+        line << getCastFunctionName(toTypeMode, fromFunction, fromTypeMode) << "(" << varName << ")";
         return line.str();
     }
 }
 
-void CInterface::transpileDefinition(Compiler* compiler, CResult& result, TrOutput* trOutput) {
+void CInterface::transpileDefinition(Compiler* compiler, CResult& result, TrOutput* trOutput, CTypeMode typeMode) {
     // Create struct
-    string structName = getStructName();
+    string structName = getStructName(typeMode);
     if (trOutput->structs.find(structName) == trOutput->structs.end()) {
         trOutput->structs[structName].push_back("int _refCount");
         trOutput->structs[structName].push_back("sjs_object* _parent");
@@ -307,7 +255,7 @@ void CInterface::transpileDefinition(Compiler* compiler, CResult& result, TrOutp
         }
     }
 
-    string destroyInterfaceName = "void " + getCDestroyFunctionName() + "(" + structName + "* _this)";
+    string destroyInterfaceName = "void " + getCDestroyFunctionName(typeMode) + "(" + structName + "* _this)";
     if (trOutput->functions.find(destroyInterfaceName) == trOutput->functions.end()) {
         auto destroyBlock = make_shared<TrBlock>();
         destroyBlock->definition = destroyInterfaceName;
@@ -341,7 +289,7 @@ void CInterface::transpileDefinition(Compiler* compiler, CResult& result, TrOutp
     }
 }
 
-shared_ptr<ReturnValue> CInterface::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, shared_ptr<ReturnValue> calleeValue, shared_ptr<CVar> calleeVar, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, const char* thisName) {
+shared_ptr<ReturnValue> CInterface::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> calleeValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, const char* thisName) {
     assert(false);
     return nullptr;
 }

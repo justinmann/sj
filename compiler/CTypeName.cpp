@@ -89,7 +89,7 @@ string CTypeName::getName() {
             if (it != argTypeNames->front()) {
                 str += ", ";
             }
-            if (it->mutability == CTM_Mutable) {
+            if (it->mutability == CTI_Mutable) {
                 str += "=";
             } else {
                 str += ":";

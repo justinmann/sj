@@ -1,4 +1,4 @@
-include "../../lib/common/common.sj"
+// include "../../lib/common/common.sj"
 
 /*
 func() {
@@ -9,4 +9,6 @@ a : func()
 
 */
 
-a : "hello" + "bob"
+// a : "hello" + "bob"
+
+1

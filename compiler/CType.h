@@ -18,9 +18,9 @@ class ReturnValue;
 class CVar;
 
 enum CTypeImmutability {
-    CTM_Undefined,
-    CTM_Mutable,
-    CTM_Immutable,
+    CTI_Undefined,
+    CTI_Mutable,
+    CTI_Immutable,
 };
 
 enum CTypeCategory {
@@ -32,16 +32,26 @@ enum CTypeCategory {
 enum CTypeMode {
     CTM_Stack,
     CTM_Heap,
-    CTM_MatchReturn
+    CTM_MatchReturn,
+    CTM_Local,
+    CTM_Value
+};
+
+enum CTypeReturnMode {
+    CTRM_NoPref,
+    CTRM_Stack,
+    CTRM_Heap,
 };
 
 class CTypes {
 public:
-    CTypes(shared_ptr<CType> stackValueType, shared_ptr<CType> stackOptionType, shared_ptr<CType> heapValueType, shared_ptr<CType> heapOptionType) : stackValueType(stackValueType), stackOptionType(stackOptionType), heapValueType(heapValueType), heapOptionType(heapOptionType) {}
+    CTypes(shared_ptr<CType> stackValueType, shared_ptr<CType> stackOptionType, shared_ptr<CType> heapValueType, shared_ptr<CType> heapOptionType, shared_ptr<CType> localValueType, shared_ptr<CType> localOptionType) : stackValueType(stackValueType), stackOptionType(stackOptionType), heapValueType(heapValueType), heapOptionType(heapOptionType), localValueType(localValueType), localOptionType(localOptionType) {}
     shared_ptr<CType> stackValueType;
     shared_ptr<CType> stackOptionType;
     shared_ptr<CType> heapValueType;
     shared_ptr<CType> heapOptionType;
+    shared_ptr<CType> localValueType;
+    shared_ptr<CType> localOptionType;
 };
 
 class CType : public enable_shared_from_this<CType> {
@@ -65,6 +75,8 @@ public:
     shared_ptr<CType> getHeapOptionType();
     shared_ptr<CType> getStackValueType();
     shared_ptr<CType> getStackOptionType();
+    shared_ptr<CType> getLocalValueType();
+    shared_ptr<CType> getLocalOptionType();
 
 private:
     string _defaultValue;
@@ -72,7 +84,8 @@ private:
     weak_ptr<CType> stackOptionType;
     weak_ptr<CType> heapValueType;
     weak_ptr<CType> heapOptionType;
-
+    weak_ptr<CType> localValueType;
+    weak_ptr<CType> localOptionType;
 };
 
 #endif /* CType_h */

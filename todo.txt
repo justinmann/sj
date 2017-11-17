@@ -1,5 +1,5 @@
-* create stack & heap structs
-
+call getReturnType
+see value set in thisvar
 
 * fix string add
 * make string immutable
@@ -67,10 +67,16 @@ array_each(arr, x);
 heap x : heap y     // x = y; x->_refCount++
 heap x : stack y    // fail
 heap x : copy(y'stack) // copy y
+heap x : local x // fail
 
-stack x : stack y   // x = y
+stack x : stack y   // x = y or x = copy(y) if y is lower scope than x
 stack x : heap y    // fail
 stack x : copy(y'heap) // copy y
+stack x : local x   // fail
+
+local x : heap y // okay
+local x : stack y // okay
+local x : local y // okay
 
 x'stack : func()'stack    // illegal, cannot return stack
 x'stack : func()'heap     // fail
@@ -104,3 +110,11 @@ func(
 ) {
     c // fail cannot return stack class var
 }
+
+a : func()	// return stack
+func()		// return stack
+
+class(
+	a : func()	// return stack if class is stack, help if class is heap
+	a = func()	// return heap always
+)

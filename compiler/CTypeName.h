@@ -32,21 +32,21 @@ public:
     shared_ptr<CTypeName> returnTypeName;
     bool isOption;
 
-    CTypeName(CTypeCategory category, CTypeMode typeMode, const string& name, bool isOption) : category(category), mutability(CTM_Undefined), typeMode(typeMode), name(name), isOption(isOption) {
+    CTypeName(CTypeCategory category, CTypeMode typeMode, const string& name, bool isOption) : category(category), mutability(CTI_Undefined), typeMode(typeMode), name(name), isOption(isOption) {
         assert((category == CTC_Interface) == (name[0] == '#')); 
         assert(name[1] != '#'); 
         assert(category != CTC_Function);
         assert(!isOption || name.back() == '?');
     }
 
-    CTypeName(CTypeCategory category, CTypeMode typeMode, const string& name, shared_ptr<CTypeNameList> templateTypeNames, bool isOption) : category(category), mutability(CTM_Undefined), typeMode(typeMode), name(name), templateTypeNames(templateTypeNames), isOption(isOption) {
+    CTypeName(CTypeCategory category, CTypeMode typeMode, const string& name, shared_ptr<CTypeNameList> templateTypeNames, bool isOption) : category(category), mutability(CTI_Undefined), typeMode(typeMode), name(name), templateTypeNames(templateTypeNames), isOption(isOption) {
         assert((category == CTC_Interface) == (name[0] == '#')); 
         assert(name[1] != '#'); 
         assert(category != CTC_Function);
         assert(!isOption || name.back() == '?');
     }
 
-    CTypeName(CTypeMode typeMode, shared_ptr<CTypeNameList> argTypeNames, shared_ptr<CTypeName> returnTypeName) : category(CTC_Function), mutability(CTM_Undefined), typeMode(typeMode), argTypeNames(argTypeNames), returnTypeName(returnTypeName), isOption(false) {
+    CTypeName(CTypeMode typeMode, shared_ptr<CTypeNameList> argTypeNames, shared_ptr<CTypeName> returnTypeName) : category(CTC_Function), mutability(CTI_Undefined), typeMode(typeMode), argTypeNames(argTypeNames), returnTypeName(returnTypeName), isOption(false) {
         assert(false);
     }
 

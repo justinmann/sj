@@ -1,53 +1,38 @@
 #include "Node.h"
 
-void NNot::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
-    assert(compiler->state == CompilerState::Define);
-    node->define(compiler, result, thisFunction);
-}
-
-shared_ptr<CVar> NNot::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar) {
-    assert(compiler->state == CompilerState::FixVar);
-    node->getVar(compiler, result, thisFunction, thisVar);
-    return nullptr;
-}
-
-shared_ptr<CType> NNot::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    assert(compiler->state >= CompilerState::FixVar);
+shared_ptr<CType> CNotVar::getType(Compiler* compiler, CResult& result, CTypeReturnMode returnMode) {
     return compiler->typeBool;
 }
 
-int NNot::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, bool isHeapVar) {
-    return node->setHeapVar(compiler, result, thisFunction, thisVar, false);
-}
-
-shared_ptr<ReturnValue> NNot::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, bool isReturnValue, const char* thisName) {    
-    auto value = node->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, false, thisName);
-    auto resultValue = trBlock->createTempVariable("result", compiler->typeBool, false, RVR_MustRetain);
+shared_ptr<ReturnValue> CNotVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+    auto value = var->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, CTRM_NoPref, nullptr, thisName);
+    auto resultValue = trBlock->createTempVariable(compiler->typeBool, "result");
     stringstream line;
     line << resultValue->name << " = !" << value->name;
     trBlock->statements.push_back(line.str());
     return resultValue;
 }
 
-//shared_ptr<ReturnValue> NNot::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-//    assert(compiler->state == CompilerState::Compile);
-//    compiler->emitLocation(builder, &this->loc);
-//    
-//    auto v = node->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
-//    if (!v)
-//        return nullptr;
-//    
-//    assert(v->type == RVT_SIMPLE);
-//    
-//    if (!v->value->getType()->isIntegerTy(1)) {
-//        result.addError(loc, CErrorCode::TypeMismatch, "must be bool");
-//        return nullptr;
-//    }
-//    
-//    return make_shared<ReturnValue>(false, builder->CreateNot(v->value));
-//}
-
-void NNot::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-    ss << "!";
-    node->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+void CNotVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+    assert(false);
 }
+
+void CNotVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+    ss << "!";
+    var->dump(compiler, result, thisFunction, thisVar, CTRM_NoPref, nullptr, functions, ss, dotSS, level);
+}
+
+void NNot::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+    assert(compiler->state == CompilerState::Define);
+    node->define(compiler, result, thisFunction);
+}
+
+shared_ptr<CVar> NNot::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, CTypeReturnMode returnMode) {
+    assert(compiler->state == CompilerState::FixVar);
+    auto var = node->getVar(compiler, result, thisFunction, thisVar, returnMode);
+    if (!var) {
+        return nullptr;
+    }
+    return make_shared<CNotVar>(loc, var);
+}
+

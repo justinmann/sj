@@ -360,8 +360,8 @@ return_arg_mode		: THEAP 										{ $$ = CTM_Heap; }
 func_type			: arg_mode TLPAREN func_arg_type_list TRPAREN return_type { $$ = new CTypeName($1, shared_ptr<CTypeNameList>($3), shared_ptr<CTypeName>($5)); }
 					;
 
-func_arg_type 		: TEQUAL arg_type 								{ $$ = $2; $$->mutability = CTM_Mutable; }
-					| TCOLON arg_type 								{ $$ = $2; $$->mutability = CTM_Immutable; }
+func_arg_type 		: TEQUAL arg_type 								{ $$ = $2; $$->mutability = CTI_Mutable; }
+					| TCOLON arg_type 								{ $$ = $2; $$->mutability = CTI_Immutable; }
 					;
 
 func_arg_type_list	: /* Blank! */									{ $$ = new CTypeNameList(); }
