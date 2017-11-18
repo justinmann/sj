@@ -79,7 +79,6 @@ void NMath::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunc
 }
 
 shared_ptr<CVar> NMath::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
-    assert(compiler->state == CompilerState::FixVar);
     auto leftVar = leftSide->getVar(compiler, result, thisFunction, thisVar, nullptr);
     auto rightVar = rightSide->getVar(compiler, result, thisFunction, thisVar, nullptr);
 

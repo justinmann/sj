@@ -66,7 +66,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID TSTRING TCHAR TCBLOCK TCFUNCTION TCDEFINE
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY TMOD THASH TAT TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TASOPTION TQUESTION TEMPTY TVALUE TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TMATCHRETURN
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TDESTROY TMOD THASH TAT TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TASOPTION TQUESTION TEMPTY TVALUE TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TMATCHRETURN TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch destroy expr
@@ -75,7 +75,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %type <nif> if_expr
 %type <exprvec> func_args func_block array_args tuple_args interface_args interface_block
 %type <isMutable> assign_type
-%type <typeName> arg_type_quote arg_type return_type_quote return_type func_type func_arg_type func_type_name implement_arg
+%type <typeName> arg_type_quote arg_type return_type_quote return_type func_type func_arg_type func_type_name implement_arg value_type temp_type
 %type <templateTypeNames> temp_args temp_block temp_block_optional func_arg_type_list implement implement_args
 %type <string> arg_type_interface
 %type <tupleAssignmentArg> assign_tuple_arg
@@ -334,7 +334,9 @@ return_type_quote	: TQUOTE return_type							{ $$ = $2; }
 arg_type_quote		: TQUOTE arg_type								{ $$ = $2; }
 					;
 
-arg_type			: arg_mode TIDENTIFIER temp_option_optional 				{ $$ = new CTypeName(CTC_Value, $1, *$2 + ($3.isOption ? "?" : ""), shared_ptr<CTypeNameList>($3.templateTypeNames), $3.isOption); delete $2; }
+arg_type			: value_type												{ $$ = $1; }
+					| temp_type 												{ $$ = $1; }
+					| arg_mode TIDENTIFIER temp_option_optional 				{ $$ = new CTypeName(CTC_Value, $1, *$2 + ($3.isOption ? "?" : ""), shared_ptr<CTypeNameList>($3.templateTypeNames), $3.isOption); delete $2; }
 					| arg_mode THASH arg_type_interface temp_option_optional 	{ $$ = new CTypeName(CTC_Interface, $1, string("#") + *$3 + ($4.isOption ? "?" : ""), shared_ptr<CTypeNameList>($4.templateTypeNames), $4.isOption); delete $3; }
 					| func_type													{ $$ = $1; }
 					;
@@ -347,14 +349,28 @@ arg_type_interface	: TIDENTIFIER									{ $$ = $1; }
 					| TIDENTIFIER TDOT arg_type_interface			{ $$ = new string(*$1 + "." + *$3); }
 					;
 
-return_type			: return_arg_mode TIDENTIFIER temp_option_optional 				{ $$ = new CTypeName(CTC_Value, $1, *$2 + ($3.isOption ? "?" : ""), shared_ptr<CTypeNameList>($3.templateTypeNames), $3.isOption); delete $2; }
+return_type			: value_type													{ $$ = $1; }
+					| temp_type 													{ $$ = $1; }
+					| return_arg_mode TIDENTIFIER temp_option_optional 				{ $$ = new CTypeName(CTC_Value, $1, *$2 + ($3.isOption ? "?" : ""), shared_ptr<CTypeNameList>($3.templateTypeNames), $3.isOption); delete $2; }
 					| return_arg_mode THASH arg_type_interface temp_option_optional { $$ = new CTypeName(CTC_Interface, $1, string("#") + *$3 + ($4.isOption ? "?" : ""), shared_ptr<CTypeNameList>($4.templateTypeNames), $4.isOption); delete $3; }
 					| func_type														{ $$ = $1; }
 					| TVOID															{ $$ = new CTypeName(CTC_Value, CTM_Stack, "void", false); }
 					;
 
-return_arg_mode		: THEAP 										{ $$ = CTM_Heap; }
+return_arg_mode		: TSTACK 										{ $$ = CTM_Stack; }
+					| THEAP 										{ $$ = CTM_Heap; }
 					| TMATCHRETURN 									{ $$ = CTM_MatchReturn; }
+					;
+
+value_type			: TTYPEI32											{ $$ = new CTypeName(CTC_Value, CTM_Value, "i32", false, nullptr); }
+					| TTYPEU32											{ $$ = new CTypeName(CTC_Value, CTM_Value, "u32", false, nullptr); }
+					| TTYPEF32											{ $$ = new CTypeName(CTC_Value, CTM_Value, "f32", false, nullptr); }
+					| TTYPEI64											{ $$ = new CTypeName(CTC_Value, CTM_Value, "i64", false, nullptr); }
+					| TTYPEU64											{ $$ = new CTypeName(CTC_Value, CTM_Value, "u64", false, nullptr); }
+					| TTYPEF64											{ $$ = new CTypeName(CTC_Value, CTM_Value, "f64", false, nullptr); }
+					| TTYPECHAR											{ $$ = new CTypeName(CTC_Value, CTM_Value, "char", false, nullptr); }
+					| TTYPEBOOL											{ $$ = new CTypeName(CTC_Value, CTM_Value, "bool", false, nullptr); }
+					| TTYPEPTR											{ $$ = new CTypeName(CTC_Value, CTM_Value, "ptr", false, nullptr); }
 					;
 
 func_type			: arg_mode TLPAREN func_arg_type_list TRPAREN return_type { $$ = new CTypeName($1, shared_ptr<CTypeNameList>($3), shared_ptr<CTypeName>($5)); }
@@ -385,6 +401,10 @@ temp_block			: TEXCLAIM arg_type								{ $$ = new CTypeNameList(); $$->push_bac
 
 temp_args			: arg_type										{ $$ = new CTypeNameList(); $$->push_back(shared_ptr<CTypeName>($1)); }
 					| temp_args TCOMMA arg_type						{ $1->push_back(shared_ptr<CTypeName>($3)); }
+					;
+
+temp_type 			: TIDENTIFIER 									{ $$ = new CTypeName(CTC_Value, CTM_Undefined, *$1, nullptr, false); delete $1; }
+					| TIDENTIFIER temp_block						{ $$ = new CTypeName(CTC_Value, CTM_Undefined, *$1, shared_ptr<CTypeNameList>($2), false); delete $1; }
 					;
 
 %%

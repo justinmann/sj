@@ -13,6 +13,5 @@ void NInclude::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseF
 }
 
 shared_ptr<CVar> NInclude::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar) {
-    assert(compiler->state == CompilerState::FixVar);
     return nullptr;
 }

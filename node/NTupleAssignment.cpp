@@ -3,6 +3,10 @@
 void NTupleAssignment::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     rightSide->define(compiler, result, thisFunction);
     for (auto arg : *args) {
+        if (arg->var == nullptr) {
+            result.addError(loc, CErrorCode::InvalidVariable, "left side of tuple assignment is missing a variable");
+            return;
+        }
         arg->var->define(compiler, result, thisFunction);
     }
 }

@@ -52,8 +52,18 @@ shared_ptr<ReturnValue> CForLoopVar::transpileGet(Compiler* compiler, CResult& r
     whileLine << "while (" << indexVar->name << " < " << trLoopEndVar->name << ")";
     trBlock->statements.push_back(TrStatement(whileLine.str(), trForBlock));
     
+    auto thisFun = static_pointer_cast<CFunction>(thisFunction);
+    if (thisFun->localVarsByName.find(indexVar->name) != thisFun->localVarsByName.end()) {
+        result.addError(loc, CErrorCode::InvalidVariable, "var '%s' already exists within function, must have a unique name", indexVar->name.c_str());
+        return nullptr;
+    }
+
+    thisFun->localVarsByName[indexVar->name] = indexVar;
+
     bodyVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trForBlock.get(), CTM_Undefined, nullptr, thisName);
     
+    thisFun->localVarsByName.erase(indexVar->name);
+
     stringstream loopCounterIncLine;
     loopCounterIncLine << indexVar->name << "++";
     trForBlock->statements.push_back(loopCounterIncLine.str());
@@ -83,23 +93,21 @@ void NFor::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunct
 }
 
 shared_ptr<CVar> NFor::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar) {
-    assert(compiler->state == CompilerState::FixVar);
     auto startVar = start->getVar(compiler, result, thisFunction, thisVar);
     auto endVar = end->getVar(compiler, result, thisFunction, thisVar);
-    
+    auto indexVar = make_shared<CForIndexVar>(loc, varName);
+
     auto thisFun = static_pointer_cast<CFunction>(thisFunction);
-    if (thisFun->localVarsByName.find(varName) != thisFun->localVarsByName.end()) {
-        result.addError(loc, CErrorCode::InvalidVariable, "var '%s' already exists within function, must have a unique name", varName.c_str());
+    if (thisFun->localVarsByName.find(indexVar->name) != thisFun->localVarsByName.end()) {
+        result.addError(loc, CErrorCode::InvalidVariable, "var '%s' already exists within function, must have a unique name", indexVar->name.c_str());
         return nullptr;
     }
     
-    auto indexVar = make_shared<CForIndexVar>(loc, varName);
-    
-    thisFun->localVarsByName[varName] = indexVar;
+    thisFun->localVarsByName[indexVar->name] = indexVar;
 
     auto bodyVar = body->getVar(compiler, result, thisFunction, thisVar);
 
-    thisFun->localVarsByName.erase(varName);
+    thisFun->localVarsByName.erase(indexVar->name);
     
     return make_shared<CForLoopVar>(loc, indexVar, startVar, endVar, bodyVar);
 }

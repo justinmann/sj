@@ -150,7 +150,6 @@ shared_ptr<CFunction> CFunction::init(Compiler* compiler, CResult& result, share
 }
 
 void CFunction::getVarBody(Compiler *compiler, CResult& result, shared_ptr<CThisVar> thisVar, CTypeMode returnMode) {
-    assert(compiler->state == CompilerState::FixVar);   
     for (auto it : _functions) {
         it->getVar(compiler, result, shared_from_this(), thisVar);
     }
@@ -221,10 +220,9 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
             auto blockVar = _block->getVar(compiler, result, shared_from_this(), nullptr);
             auto bodyReturnValue = blockVar->transpileGet(compiler, result, shared_from_this(), nullptr, trOutput, trFunctionBlock.get(), returnTypeMode, nullptr, nullptr);
             if (bodyReturnValue && bodyReturnValue->type != compiler->typeVoid) {
-                assert(bodyReturnValue->type == returnType);
-                /* TODO: if (bodyReturnValue->release == RVR_MustRetain && !bodyReturnValue->type->parent.expired()) {
-                    ReturnValue::addRetainToStatements(trFunctionBlock.get(), bodyReturnValue->name, bodyReturnValue->type);
-                }*/
+                if (bodyReturnValue->type != returnType) {
+                    result.addError(loc, CErrorCode::TypeMismatch, "computed return type '%s' does not match return type '%s'", bodyReturnValue->type->name.c_str(), returnType->name.c_str());
+                }
                 trFunctionBlock->returnLine = bodyReturnValue->name;
             }
         }
@@ -384,12 +382,12 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
     assert(compiler->state == CompilerState::Compile);
     assert(typeMode != CTM_MatchReturn);
 
-    transpileDefinition(compiler, result, trOutput, typeMode);
-
     auto returnType = getReturnType(compiler, result, typeMode);
     if (!returnType) {
         return nullptr;
     }
+
+    transpileDefinition(compiler, result, trOutput, returnType->typeMode);
     
     vector<ArgData> argValues;
     shared_ptr<ReturnValue> returnValue;
@@ -431,7 +429,7 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
             stringstream parentLine;
             if (!calleeValue) {
                 if (parent.lock() == thisFunction) {
-                    parentLine << calleeThisName << "->_parent = " << thisName;
+                    parentLine << calleeThisName << "->_parent = " << (thisName != nullptr ? thisName : "INVALID");
                 }
                 else if (parent.lock() == thisFunction->parent.lock()) {
                     parentLine << calleeThisName << "->_parent = ";
@@ -474,6 +472,10 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
         
         stringstream argStream;
         auto parameterVar = parameters[argIndex].second->getVar(compiler, result, isDefaultAssignment ? shared_from_this() : thisFunction, isDefaultAssignment ? calleeVar : thisVar);
+        if (!parameterVar) {
+            assert(result.errors.size() > 0);
+            return nullptr;
+        }
         argReturnValue = parameterVar->transpileGet(compiler, result, isDefaultAssignment ? shared_from_this() : thisFunction, isDefaultAssignment ? calleeVar : thisVar, trOutput, trBlock, CTM_Undefined, nullptr, isDefaultAssignment ? calleeThisName.c_str() : thisName);
         
         if (argReturnValue == nullptr) {
@@ -521,13 +523,7 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
         trBlock->statements.push_back(line.str());
     } else {
         for (auto argValue : argValues) {
-            stringstream argAssignLine;
-            argAssignLine << calleeThisName << "->" << argValue.var->name << " = " << argValue.name;
-            trBlock->statements.push_back(TrStatement(argAssignLine.str()));
-            assert(false);
-//            if (argValue.value->release == RVR_MustRetain && !argValue.value->type->parent.expired()) {
-//                ReturnValue::addRetainToStatements(trBlock, calleeThisName + "->" + argValue.var->name, argValue.value->type);
-//            }
+            ReturnValue(argValue.value->type, calleeThisName + "->" + argValue.var->name).addAssignToStatements(trBlock, argValue.name, true);
         }
 
         // Call function
@@ -692,11 +688,13 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CResult& result, 
             _returnType = valueType;
         }
         
-        if (_returnType == nullptr && _block) {
+        if (_block) {
             auto thisVar = getThisVar(compiler, result, CTM_MatchReturn);
             auto blockVar = _block->getVar(compiler, result, shared_from_this(), thisVar);
             auto type = blockVar->getType(compiler, result);
-            _returnType = type;
+            if (!_returnType) {
+                _returnType = type;
+            }
         }
         
         if (_returnType == nullptr) {
@@ -1040,6 +1038,9 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, sha
             
             auto functionDefinition = static_pointer_cast<CFunctionDefinition>(baseFunctionDefinition.second);
             auto cfunc = functionDefinition->getFunction(compiler, result, loc, templateTypes, baseFunctionDefinition.first);
+            if (!cfunc) {
+                return nullptr;
+            }
             auto thisTypes = cfunc->getThisTypes(compiler, result);
             switch (typeName->typeMode) {
                 case CTM_Heap:
@@ -1049,7 +1050,7 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, sha
                 case CTM_Local:
                     return typeName->isOption ? thisTypes->localOptionType : thisTypes->localValueType;
                 default:
-                    assert(false);
+                    result.addError(loc, CErrorCode::TypeMismatch, "invalid type '%s' for all function types make sure to include stack, heap, or matchReturn", typeName->name.c_str());
                     return nullptr;
             }
         }

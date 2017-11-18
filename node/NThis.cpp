@@ -51,6 +51,11 @@ shared_ptr<CVar> NThis::getVarImpl(Compiler* compiler, CResult& result, shared_p
         result.addError(loc, CErrorCode::InvalidVariable, "this must be the first var in a dot chain");
         return nullptr;
     }
+
+    if (!thisVar) {
+        result.addError(loc, CErrorCode::InvalidVariable, "function does not have a this value");
+        return nullptr;
+    }
     
     thisVar->setHasRefCount();    
     return thisVar;

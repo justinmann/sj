@@ -1,10 +1,10 @@
 include "array.sj"
 
-string (
+string(
 	count = 0
 	data = array!char()
 
-	add(item :'string)'string {
+	add(item :'stack string)'void {
 		if item.count > 0 {
 			if count + item.count + 1 > data.size {
 				data.grow(count + item.count + 1)
@@ -19,7 +19,6 @@ string (
 			data.setAt(count, 0 as char)
 			void
 		}
-		parent
 	}
 
 	getAt(index : 'i32)'char {
@@ -30,23 +29,23 @@ string (
 		data.setAt(index, item)
 	}
 
-	isEqual(test :' string) {
+	isEqual(test : 'stack string) {
 		data.isEqual(test.data)
 	}
 
-	isGreater(test :' string)'bool {
+	isGreater(test : 'stack string)'bool {
 		data.isGreater(test.data)
 	}
 
-	isGreaterOrEqual(test :' string)'bool {
+	isGreaterOrEqual(test : 'stack string)'bool {
 		data.isGreaterOrEqual(test.data)
 	}
 
-	isLess(test :'string)'bool {
+	isLess(test : 'stack string)'bool {
 		data.isLess(test.data)
 	}
 
-	isLessOrEqual(test :' string)'bool {
+	isLessOrEqual(test : 'stack string)'bool {
 		data.isLessOrEqual(test.data)
 	}
 ) { this }

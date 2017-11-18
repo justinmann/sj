@@ -60,7 +60,6 @@ void NValue::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFun
 }
 
 shared_ptr<CVar> NValue::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
-    assert(compiler->state == CompilerState::FixVar);
     auto leftVar = node->getVar(compiler, result, thisFunction, thisVar);
     if (!leftVar) {
         return nullptr;

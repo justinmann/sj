@@ -108,7 +108,6 @@ void NIf::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFuncti
 }
 
 shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
-    assert(compiler->state == CompilerState::FixVar);
     auto condVar = condition->getVar(compiler, result, thisFunction, thisVar);
     
     shared_ptr<CVar> elseVar;

@@ -71,7 +71,6 @@ void NGetValue::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBase
 }
 
 shared_ptr<CVar> NGetValue::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
-    assert(compiler->state == CompilerState::FixVar);
     auto leftVar = node->getVar(compiler, result, thisFunction, thisVar);
     if (!leftVar) {
         return nullptr;

@@ -169,7 +169,7 @@ shared_ptr<CType> NAssignment::getType(Compiler* compiler, CResult& result, shar
     
     auto rightVar = rightSide->getVar(compiler, result, thisFunction, thisVar);
     if (!rightVar) {
-        assert(false);
+        assert(result.errors.size() > 0);
         return nullptr;
     }
     

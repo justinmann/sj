@@ -42,7 +42,6 @@ void NIsEmpty::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseF
 }
 
 shared_ptr<CVar> NIsEmpty::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
-    assert(compiler->state == CompilerState::FixVar);
     auto leftVar = node->getVar(compiler, result, thisFunction, thisVar);
     if (!leftVar) {
         return nullptr;

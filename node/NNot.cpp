@@ -28,7 +28,6 @@ void NNot::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunct
 }
 
 shared_ptr<CVar> NNot::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
-    assert(compiler->state == CompilerState::FixVar);
     auto var = node->getVar(compiler, result, thisFunction, thisVar);
     if (!var) {
         return nullptr;

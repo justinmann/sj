@@ -32,7 +32,6 @@ void NOr::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFuncti
 }
 
 shared_ptr<CVar> NOr::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
-    assert(compiler->state == CompilerState::FixVar);
     auto leftVar = left->getVar(compiler, result, thisFunction, thisVar, nullptr);
     if (!leftVar) {
         return nullptr;

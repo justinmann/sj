@@ -14,7 +14,6 @@ void NMathAssignment::defineImpl(Compiler* compiler, CResult& result, shared_ptr
 }
 
 shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar) {
-    assert(compiler->state == CompilerState::FixVar);
     auto leftVar = leftSide->getVar(compiler, result, thisFunction, thisVar, nullptr);
 
     if (!leftVar) {

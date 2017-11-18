@@ -28,8 +28,7 @@ shared_ptr<CTypeName> CTypeName::parse(string name) {
         name = name.substr(12, name.size() - 12);
     }
     else {
-        assert(false);
-        return nullptr;
+        typeMode = CTM_Undefined;
     }
 
     if (name.front() == '(') {

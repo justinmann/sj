@@ -24,7 +24,6 @@ array!t (
 
 	setAt(index : 'i32, item : 't)'void c{
 		#forceParent()
-		#forceHeap(item)
 
 		if (index >= _parent->size || index < 0) {
 			printf("setAt: out of bounds %d:%d\n", index, _parent->size);
@@ -53,7 +52,7 @@ array!t (
 		*_return =  -1;
 	}c
 
-	grow(newSize :' i32)'array!t c{
+	grow(newSize :' i32)'void c{
 		#forceParent()
 		#include(<string.h>)
 
@@ -82,8 +81,6 @@ array!t (
 			}
 			_parent->size = newSize;
 		}
-
-		*_return = _parent;
 	}c 
 
 	isEqual(test :' array!t)'bool c{
@@ -124,7 +121,7 @@ array!t (
 
 		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) <= 0;		
 	}c
-)'array!t {
+) {
 	c{
 		if (_this->size < 0) {
 			exit(-1);

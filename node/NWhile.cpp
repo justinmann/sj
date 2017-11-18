@@ -55,7 +55,6 @@ void NWhile::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFun
 }
 
 shared_ptr<CVar> NWhile::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar) {
-    assert(compiler->state == CompilerState::FixVar);
     auto condVar = cond->getVar(compiler, result, thisFunction, thisVar);
     if (!condVar) {
         return nullptr;
