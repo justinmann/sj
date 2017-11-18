@@ -1,5 +1,11 @@
 #include "Node.h"
 
+void NArray::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+    for (auto element : *elements) {
+        element->define(compiler, result, thisFunction);
+    }
+}
+
 shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
     vector<shared_ptr<CVar>> statementVars;
     auto firstElement = elements->front();

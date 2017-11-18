@@ -108,5 +108,5 @@ shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result
         
         rightVar = make_shared<CMathVar>(loc, mathOp, leftVar, numberVar);
     }
-    return make_shared<CAssignVar>(loc, true, false, leftVar, rightVar);
+    return make_shared<CAssignVar>(loc, true, leftVar, rightVar);
 }

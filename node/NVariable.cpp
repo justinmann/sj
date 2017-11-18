@@ -7,8 +7,8 @@ shared_ptr<CVar> NVariableBase::getVar(Compiler* compiler, CResult& result, shar
     return _var[thisFunction.get()];
 }
 
-shared_ptr<CParentDotVar> CParentDotVar::create(Compiler *compiler, CResult &result, shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_) {
-    auto c = make_shared<CParentDotVar>();
+shared_ptr<CParentDotVar> CParentDotVar::create(CLoc loc, Compiler *compiler, CResult &result, shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_) {
+    auto c = make_shared<CParentDotVar>(loc);
     //c->name = "";
     //c->mode = childVar_->mode;
     //c->isMutable = childVar_->isMutable;
@@ -29,7 +29,7 @@ shared_ptr<CType> CParentDotVar::getType(Compiler* compiler, CResult& result) {
 //    return childVar->fullName();
 //}
 
-shared_ptr<ReturnValue> CParentDotVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CParentDotVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     shared_ptr<ReturnValue> parentValue;
     if (dotValue) {
         auto parentThisTypes = parentFunction->parent.lock()->getThisTypes(compiler, result);
@@ -81,7 +81,7 @@ void CParentDotVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr
     childVar->transpileSet(compiler, result, thisFunction, thisVar, trOutput, trBlock, parentValue, returnValue, thisName);
 }
 
-void CParentDotVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CParentDotVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     ss << ".parent";
     childVar->dump(compiler, result, thisFunction, thisVar, returnMode, dotVar, functions, ss, dotSS, level);
 }

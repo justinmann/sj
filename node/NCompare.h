@@ -22,14 +22,13 @@ enum NCompareOp {
 
 class CCompareVar : public CVar {
 public:
-    CCompareVar(CLoc loc, NCompareOp op, shared_ptr<CVar> leftVar, shared_ptr<CVar> rightVar) : loc(loc), op(op), leftVar(leftVar), rightVar(rightVar) { }
+    CCompareVar(CLoc loc, NCompareOp op, shared_ptr<CVar> leftVar, shared_ptr<CVar> rightVar) : CVar(loc, "", false), op(op), leftVar(leftVar), rightVar(rightVar) { }
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName);
+    shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName);
     void transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName);
-    void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
+    void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
     
 private:
-    CLoc loc;
     NCompareOp op;
     shared_ptr<CVar> leftVar;
     shared_ptr<CVar> rightVar;
@@ -38,20 +37,14 @@ private:
 
 class NCompare : public NVariableBase {
 public:
+    NCompare(CLoc loc, shared_ptr<NVariableBase> leftSide, NCompareOp op, shared_ptr<NVariableBase> rightSide) : NVariableBase(NodeType_Compare, loc), op(op), leftSide(leftSide), rightSide(rightSide) { }
+    void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar);
+    
+private:
     NCompareOp op;
     const shared_ptr<NVariableBase> leftSide;
     const shared_ptr<NVariableBase> rightSide;
-    
-    NCompare(CLoc loc, shared_ptr<NVariableBase> leftSide, NCompareOp op, shared_ptr<NVariableBase> rightSide) : NVariableBase(NodeType_Compare, loc), op(op), leftSide(leftSide), rightSide(rightSide) { }
-	virtual shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, const char* thisName);
-	virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
-
-protected:
-    virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);
-    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar);
-    virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode);
-    
-private:
     shared_ptr<NBase> operatorOverloadNode;
 };
 

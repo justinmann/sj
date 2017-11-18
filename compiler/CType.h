@@ -31,17 +31,12 @@ enum CTypeCategory {
 };
 
 enum CTypeMode {
+    CTM_Undefined,
     CTM_Stack,
     CTM_Heap,
     CTM_MatchReturn,
     CTM_Local,
     CTM_Value
-};
-
-enum CTypeReturnMode {
-    CTRM_NoPref,
-    CTRM_Stack,
-    CTRM_Heap,
 };
 
 class CTypes {

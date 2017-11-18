@@ -32,22 +32,16 @@
 //}
 
 shared_ptr<CNormalVar> CNormalVar::createLocalVar(const CLoc& loc, const string& name, shared_ptr<CBaseFunction> parent, shared_ptr<NAssignment> nassignment) {
-    auto c = make_shared<CNormalVar>();
-    c->loc = loc;
+    auto c = make_shared<CNormalVar>(loc, name, nassignment != nullptr ? nassignment->isMutable : false);
     c->mode = CVarType::Var_Local;
-    c->name = name;
-    c->isMutable = nassignment != nullptr ? nassignment->isMutable : false;
     c->nassignment = nassignment;
     c->parent = parent;
     return c;
 }
 
 shared_ptr<CNormalVar> CNormalVar::createFunctionVar(const CLoc& loc, const string& name, shared_ptr<CBaseFunction> parent, int index, shared_ptr<NAssignment> nassignment, shared_ptr<CType> type, shared_ptr<CVar> interfaceMethodArgVar_) {
-    auto c = make_shared<CNormalVar>();
-    c->loc = loc;
+    auto c = make_shared<CNormalVar>(loc, name, nassignment != nullptr ? nassignment->isMutable : false);
     c->mode = CVarType::Var_Public;
-    c->name = name;
-    c->isMutable = nassignment != nullptr ? nassignment->isMutable : false;
     c->index = index;
     c->nassignment = nassignment;
     c->parent = parent;
@@ -85,7 +79,7 @@ shared_ptr<CType> CNormalVar::getType(Compiler* compiler, CResult& result) {
     return type;
 }
 
-shared_ptr<ReturnValue> CNormalVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CNormalVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     auto returnType = getType(compiler, result);
     if (!returnType)
         return nullptr;
@@ -149,7 +143,7 @@ void CNormalVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CB
     varValue->addAssignToStatements(trBlock, returnValue->name, isFirstAssignment);
 }
 
-void CNormalVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CNormalVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     if (dotSS.gcount()) {
         ss << dotSS.str() << ".";
     }

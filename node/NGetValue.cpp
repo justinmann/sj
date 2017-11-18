@@ -2,7 +2,7 @@
 
 class CGetValueVar : public CVar {
 public:
-    CGetValueVar(CLoc loc, shared_ptr<CVar> leftVar, bool isProtectedWithEmptyCheck) : loc(loc), leftVar(leftVar), isProtectedWithEmptyCheck(isProtectedWithEmptyCheck) { }
+    CGetValueVar(CLoc loc, shared_ptr<CVar> leftVar, bool isProtectedWithEmptyCheck) : CVar(loc, "", false), leftVar(leftVar), isProtectedWithEmptyCheck(isProtectedWithEmptyCheck) { }
 
     shared_ptr<CType> getType(Compiler* compiler, CResult& result) {
         auto leftType = leftVar->getType(compiler, result);
@@ -18,7 +18,7 @@ public:
         return leftType->getValueType();
     }
 
-    shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+    shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
         auto leftValue = leftVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, returnMode, dotValue, thisName);
         if (!leftValue) {
             return nullptr;
@@ -54,13 +54,13 @@ public:
 
     }
 
-    void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+    void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
         ss << "getValue(";
         leftVar->dump(compiler, result, thisFunction, thisVar, returnMode, dotVar, functions, ss, dotSS, level);
         ss << ")";
     }
 
-    CLoc loc;
+private:
     shared_ptr<CVar> leftVar;
     bool isProtectedWithEmptyCheck;
 };

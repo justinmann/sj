@@ -366,7 +366,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 				anonFunction->getVar(this, *result, currentFunction, currentVar);
 				globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, *result, "global", nullptr, nullptr));
                 auto globalVar = globalFunction->getThisVar(this, *result, CTM_Stack);
-                auto mainLoop = globalFunction->getCFunction(this, *result, "mainLoop", globalFunction, nullptr);
+                auto mainLoop = static_pointer_cast<CFunction>(globalFunction->getCFunction(this, *result, "mainLoop", globalFunction, nullptr));
 #ifdef VAR_OUTPUT
 				currentFunction->dump(this, *compilerResult, 0);
 #endif
@@ -376,7 +376,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                         map<shared_ptr<CBaseFunction>, string> functionDumps;
                         stringstream ss;
                         stringstream dotSS;
-                        globalVar->dump(this, *result, nullptr, nullptr, CTRM_Stack, nullptr, functionDumps, ss, dotSS, 0);
+                        globalVar->dump(this, *result, nullptr, nullptr, CTM_Stack, nullptr, functionDumps, ss, dotSS, 0);
                         
                         vector<pair<string, string>> functionNames;
                         for (auto it : functionDumps) {

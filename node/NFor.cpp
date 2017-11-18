@@ -4,7 +4,7 @@ shared_ptr<CType> CForIndexVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeI32;
 }
 
-shared_ptr<ReturnValue> CForIndexVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CForIndexVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     return make_shared<ReturnValue>(getType(compiler, result), name);
 }
 
@@ -12,7 +12,7 @@ void CForIndexVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<
     assert(false);
 }
 
-void CForIndexVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CForIndexVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     ss << name;
 }
 
@@ -20,12 +20,12 @@ shared_ptr<CType> CForLoopVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeVoid;
 }
 
-shared_ptr<ReturnValue> CForLoopVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CForLoopVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     
     trBlock->createVariable(compiler->typeI32, indexVar->name);
     auto trLoopEndVar = trBlock->createTempVariable(compiler->typeI32, "loopEnd");
     
-    auto loopCounterReturnValue = startVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, CTRM_NoPref, nullptr, thisName);
+    auto loopCounterReturnValue = startVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, CTM_Undefined, nullptr, thisName);
     if (loopCounterReturnValue->type != compiler->typeI32) {
         result.addError(loc, CErrorCode::TypeMismatch, "start value must be a int");
         return nullptr;
@@ -35,7 +35,7 @@ shared_ptr<ReturnValue> CForLoopVar::transpileGet(Compiler* compiler, CResult& r
     loopCounterLine << indexVar->name << " = " << loopCounterReturnValue->name;
     trBlock->statements.push_back(loopCounterLine.str());
     
-    auto loopEndReturnValue = endVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, CTRM_NoPref, nullptr, thisName);
+    auto loopEndReturnValue = endVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, CTM_Undefined, nullptr, thisName);
     if (!loopEndReturnValue || loopEndReturnValue->type != compiler->typeI32) {
         result.addError(loc, CErrorCode::TypeMismatch, "end value must be a int");
         return nullptr;
@@ -52,7 +52,7 @@ shared_ptr<ReturnValue> CForLoopVar::transpileGet(Compiler* compiler, CResult& r
     whileLine << "while (" << indexVar->name << " < " << trLoopEndVar->name << ")";
     trBlock->statements.push_back(TrStatement(whileLine.str(), trForBlock));
     
-    bodyVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trForBlock.get(), CTRM_NoPref, nullptr, thisName);
+    bodyVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trForBlock.get(), CTM_Undefined, nullptr, thisName);
     
     stringstream loopCounterIncLine;
     loopCounterIncLine << indexVar->name << "++";
@@ -65,13 +65,13 @@ void CForLoopVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<C
     assert(false);
 }
 
-void CForLoopVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CForLoopVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     ss << "for " << indexVar->name << " : ";
-    startVar->dump(compiler, result, thisFunction, thisVar, CTRM_NoPref, nullptr, functions, ss, dotSS, level + 1);
+    startVar->dump(compiler, result, thisFunction, thisVar, CTM_Undefined, nullptr, functions, ss, dotSS, level + 1);
     ss << " to ";
-    endVar->dump(compiler, result, thisFunction, thisVar, CTRM_NoPref, nullptr, functions, ss, dotSS, level + 1);
+    endVar->dump(compiler, result, thisFunction, thisVar, CTM_Undefined, nullptr, functions, ss, dotSS, level + 1);
     ss << " ";
-    bodyVar->dump(compiler, result, thisFunction, thisVar, CTRM_NoPref, nullptr, functions, ss, dotSS, level);
+    bodyVar->dump(compiler, result, thisFunction, thisVar, CTM_Undefined, nullptr, functions, ss, dotSS, level);
 }
 
 

@@ -3,12 +3,11 @@
 shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CResult& result, CLoc loc_, const string& name_, shared_ptr<NodeList> arguments_, shared_ptr<CBaseFunction> thisFunction_, shared_ptr<CThisVar> thisVar, weak_ptr<CVar> dotVar_, shared_ptr<CBaseFunction> callee_) {
     assert(callee_);
 
-    auto c = make_shared<CCallVar>();
+    auto c = make_shared<CCallVar>(loc_);
 //    c->name = name_;
 //    c->mode = Var_Local;
 //    c->isMutable = true;
 //    c->nassignment = nullptr;
-    c->loc = loc_;
     c->arguments = arguments_;
     c->thisFunction = thisFunction_;
     c->dotVar = dotVar_;
@@ -40,8 +39,7 @@ shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CResult& result, CLoc 
 }
 
 shared_ptr<CType> CCallVar::getType(Compiler* compiler, CResult& result) {
-    auto pair = callee->getReturnVars(compiler, result);
-    return pair.first->getType(compiler, result);
+    return callee->getReturnType(compiler, result, CTM_MatchReturn);
 }
 
 bool CCallVar::getParameters(Compiler* compiler, CResult& result, vector<pair<bool, shared_ptr<NBase>>>& parameters) {
@@ -105,7 +103,7 @@ bool CCallVar::getParameters(Compiler* compiler, CResult& result, vector<pair<bo
 //    return name + "()";
 //}
 
-shared_ptr<ReturnValue> CCallVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CCallVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     assert(compiler->state == CompilerState::Compile);
 
     if (arguments->size() > callee->argDefaultValues.size()) {
@@ -119,7 +117,7 @@ shared_ptr<ReturnValue> CCallVar::transpileGet(Compiler* compiler, CResult& resu
         return nullptr;
     }
 
-    auto returnValue = callee->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, returnMode, dotValue, loc, parameters, thisName);
+    auto returnValue = callee->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, dotValue, loc, parameters, thisName, returnMode);
     return returnValue;
 }
 
@@ -128,7 +126,7 @@ void CCallVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBas
 }
 
 
-void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
 //    if (functions.find(callee) == functions.end()) {
 //        functions[callee] = "";
 //        stringstream temp;
@@ -173,7 +171,7 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctio
 //                auto ctype = paramVar->getType(compiler, result);
 //                ss << "'" << (ctype != nullptr ? ctype->name : "ERROR");
 //                ss << (paramVar->isMutable ? " = " : " : ");
-//                it.second->dump(compiler, result, it.first ? callee : thisFunction, thisVar, CTRM_NoPref, functions, ss, level + 1);
+//                it.second->dump(compiler, result, it.first ? callee : thisFunction, thisVar, CTM_Undefined, functions, ss, level + 1);
 //                if (paramIndex != parameters.size() - 1) {
 //                    ss << ",\n";
 //                    dumpf(ss, level + 1);
@@ -210,7 +208,7 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctio
 //                ss << paramVar->name.c_str();
 //                ss << "'" << paramVar->getType(compiler, result)->name.c_str();
 //                ss << (paramVar->isMutable ? " = " : " : ");
-//                it.second->dump(compiler, result, thisFunction, thisVar, CTRM_NoPref, functions, ss, level + 1);
+//                it.second->dump(compiler, result, thisFunction, thisVar, CTM_Undefined, functions, ss, level + 1);
 //                if (paramIndex != parameters.size() - 1) {
 //                    ss << ",\n";
 //                    dumpf(ss, level + 1);

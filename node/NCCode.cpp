@@ -4,7 +4,7 @@ shared_ptr<CType> CCCodeVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeVoid;
 }
 
-shared_ptr<ReturnValue> CCCodeVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CCCodeVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     for (auto cfunction : functions) {
         cfunction->transpileDefinition(compiler, result, trOutput, CTM_Heap);
     }
@@ -31,7 +31,7 @@ void CCCodeVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBa
     assert(false);
 }
 
-void CCCodeVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CCCodeVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     switch (codeType) {
     case NCC_BLOCK:
         ss << "c{\n";
@@ -93,7 +93,7 @@ shared_ptr<CVar> NCCode::getVarImpl(Compiler* compiler, CResult& result, shared_
             finalCode << ch;
         }
     }
-    return make_shared<CCCodeVar>(loc, finalCode.str(), _functions[thisFunction.get()]);
+    return make_shared<CCCodeVar>(loc, codeType, finalCode.str(), _functions[thisFunction.get()], _includes);
 }
 
 string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, string macro) {

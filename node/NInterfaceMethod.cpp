@@ -9,49 +9,39 @@ NInterfaceMethod::NInterfaceMethod(CLoc loc, const char* name, shared_ptr<CTypeN
     }
 }
 
-shared_ptr<CType> NInterfaceMethod::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode) {
-    assert(compiler->state >= CompilerState::FixVar);
-    return compiler->typeVoid;
-}
-
-shared_ptr<ReturnValue> NInterfaceMethod::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, const char* thisName) {
-	assert(false);
-	return nullptr;
-}
-
-void NInterfaceMethod::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-    ss << name;
-    if (templateTypeNames) {
-        if (templateTypeNames->size() == 1) {
-            ss << "!" << (*templateTypeNames)[0]->getName();
-        } else {
-            ss << "![";
-            for (auto it : *templateTypeNames) {
-                ss << it->getName();
-            }
-            ss << "]";
-        }
-    }
-
-    ss << "(";
-    
-    for (auto it : assignments) {
-        if (it != assignments.front()) {
-            ss << ", ";
-        }
-        auto var = it->getVar(compiler, result, thisFunction, thisVar);
-        stringstream dotSS;
-        var->dump(compiler, result, thisFunction, thisVar, returnMode, nullptr, functions, ss, dotSS, level);
-    }
-    
-    ss << ")'" << returnTypeName->getName();
-}
+//void NInterfaceMethod::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+//    ss << name;
+//    if (templateTypeNames) {
+//        if (templateTypeNames->size() == 1) {
+//            ss << "!" << (*templateTypeNames)[0]->getName();
+//        } else {
+//            ss << "![";
+//            for (auto it : *templateTypeNames) {
+//                ss << it->getName();
+//            }
+//            ss << "]";
+//        }
+//    }
+//
+//    ss << "(";
+//
+//    for (auto it : assignments) {
+//        if (it != assignments.front()) {
+//            ss << ", ";
+//        }
+//        auto var = it->getVar(compiler, result, thisFunction, thisVar);
+//        stringstream dotSS;
+//        var->dump(compiler, result, thisFunction, thisVar, returnMode, nullptr, functions, ss, dotSS, level);
+//    }
+//
+//    ss << ")'" << returnTypeName->getName();
+//}
 
 shared_ptr<CType> CInterfaceMethodReturnVar::getType(Compiler* compiler, CResult& result) {
     return returnType;
 }
 
-shared_ptr<ReturnValue> CInterfaceMethodReturnVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CInterfaceMethodReturnVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     assert(false);
 	return nullptr;
 }
@@ -60,7 +50,7 @@ void CInterfaceMethodReturnVar::transpileSet(Compiler* compiler, CResult& result
     assert(false);
 }
 
-void CInterfaceMethodReturnVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CInterfaceMethodReturnVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     assert(false);
 }
 
@@ -69,7 +59,7 @@ shared_ptr<CType> CInterfaceMethodArgVar::getType(Compiler* compiler, CResult& r
     return returnType;
 }
 
-shared_ptr<ReturnValue> CInterfaceMethodArgVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CInterfaceMethodArgVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     assert(false);
 	return nullptr;
 }
@@ -78,7 +68,7 @@ void CInterfaceMethodArgVar::transpileSet(Compiler* compiler, CResult& result, s
     assert(false);
 }
 
-void CInterfaceMethodArgVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CInterfaceMethodArgVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     assert(false);
 }
 
@@ -105,14 +95,14 @@ shared_ptr<CInterfaceMethod> CInterfaceMethod::init(Compiler* compiler, CResult&
         }
         
         // int index = (int)argVars.size();
-        auto argType = it->getType(compiler, result, thisFunction, nullptr, CTRM_Heap);
-        auto argVar = make_shared<CInterfaceMethodArgVar>(argType);
+        auto argType = it->getType(compiler, result, thisFunction, nullptr, CTM_Heap);
+        auto argVar = make_shared<CInterfaceMethodArgVar>(loc, argType);
         argVars.push_back(argVar);
         argDefaultValues.push_back(it->rightSide);
     }
     
     for (auto it : method->assignments) {
-        auto argType = it->getType(compiler, result, parent.lock(), nullptr, CTRM_Heap);
+        auto argType = it->getType(compiler, result, parent.lock(), nullptr, CTM_Heap);
         if (!argType) {
             return nullptr;
         }
@@ -140,9 +130,9 @@ int CInterfaceMethod::getThisIndex(const string& name) const {
     return -1;
 }
 
-shared_ptr<CVar> CInterfaceMethod::getThisVar(Compiler* compiler, CResult& result) {
-    return nullptr;
-}
+//shared_ptr<CVar> CInterfaceMethod::getThisVar(Compiler* compiler, CResult& result) {
+//    return nullptr;
+//}
 
 //Type* CInterfaceMethod::getStructType(Compiler* compiler, CResult& result) {
 //    assert(false);
@@ -212,7 +202,7 @@ shared_ptr<CType> CInterfaceMethod::getVarType(Compiler* compiler, CResult& resu
     return compiler->getType(typeName->name);
 }
 
-shared_ptr<CType> CInterfaceMethod::getReturnType(Compiler* compiler, CResult& result, CTypeReturnMode returnMode) {
+shared_ptr<CType> CInterfaceMethod::getReturnType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
     return returnType;
 }
 
@@ -230,7 +220,7 @@ void CInterfaceMethod::transpileDefinition(Compiler* compiler, CResult& result, 
 
 }
 
-shared_ptr<ReturnValue> CInterfaceMethod::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> calleeValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, const char* thisName) {
+shared_ptr<ReturnValue> CInterfaceMethod::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> calleeValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, const char* thisName, CTypeMode returnMode) {
     assert(compiler->state == CompilerState::Compile);
     assert(calleeValue != nullptr);
     assert(false);
@@ -259,14 +249,14 @@ shared_ptr<ReturnValue> CInterfaceMethod::transpile(Compiler* compiler, CResult&
     // Fill in "this" with normal arguments
     for (auto defaultAssignment : argDefaultValues) {
         auto argVar = argVars[argIndex];
-        auto argType = argVar->getType(compiler, result, CTRM_NoPref); // TODO: this seems wrong
+        auto argType = argVar->getType(compiler, result); // TODO: this seems wrong
         auto isDefaultAssignment = parameters[argIndex].second == defaultAssignment;
         assert(isDefaultAssignment == parameters[argIndex].first);
         shared_ptr<ReturnValue> argReturnValue;
 
         stringstream argStream;
         auto paramVar = parameters[argIndex].second->getVar(compiler, result, isDefaultAssignment ? nullptr : thisFunction, isDefaultAssignment ? calleeVar : thisVar);
-        argReturnValue = paramVar->transpileGet(compiler, result, isDefaultAssignment ? nullptr : thisFunction, isDefaultAssignment ? calleeVar : thisVar, trOutput, trBlock, false, thisName);
+        argReturnValue = paramVar->transpileGet(compiler, result, isDefaultAssignment ? nullptr : thisFunction, isDefaultAssignment ? calleeVar : thisVar, trOutput, trBlock, CTM_Undefined, nullptr, thisName);
 
         if (argReturnValue == nullptr) {
             result.addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' has no value", argVar->name.c_str());

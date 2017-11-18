@@ -11,14 +11,13 @@
 
 class CIfElseVar : public CVar {
 public:
-    CIfElseVar(CLoc loc, shared_ptr<CVar> condVar, shared_ptr<CVar> ifVar, shared_ptr<CVar> elseVar) : loc(loc), condVar(condVar), ifVar(ifVar), elseVar(elseVar) {}
+    CIfElseVar(CLoc loc, shared_ptr<CVar> condVar, shared_ptr<CVar> ifVar, shared_ptr<CVar> elseVar) : CVar(loc, "", false), condVar(condVar), ifVar(ifVar), elseVar(elseVar) {}
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeReturnMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName);
+    shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName);
     void transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName);
-    void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeReturnMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
+    void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
 
 private:
-    CLoc loc;
     shared_ptr<CVar> condVar;
     shared_ptr<CVar> ifVar;
     shared_ptr<CVar> elseVar;
