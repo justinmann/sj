@@ -58,9 +58,11 @@ public:
     virtual shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName) = 0;
     virtual string getCInitFunctionName(CTypeMode typeMode) = 0;
     virtual string getCDestroyFunctionName(CTypeMode typeMode) = 0;
+    virtual string getCStructName(CTypeMode typeMode) = 0;
     virtual pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(string name) = 0;
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, CTypeMode returnMode) = 0;
     virtual shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> calleeValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, const char* thisName, CTypeMode typeMode) = 0;
+    virtual void dumpBody(Compiler* compiler, CResult& result, CTypeMode returnTypeMode, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) = 0;
 
 private:
     vector<std::function<void(Compiler*, CResult&)>> delegateHasParent;

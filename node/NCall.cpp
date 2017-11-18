@@ -99,10 +99,6 @@ bool CCallVar::getParameters(Compiler* compiler, CResult& result, vector<pair<bo
     return true;
 }
 
-//string CCallVar::fullName() {
-//    return name + "()";
-//}
-
 shared_ptr<ReturnValue> CCallVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     assert(compiler->state == CompilerState::Compile);
 
@@ -127,99 +123,99 @@ void CCallVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBas
 
 
 void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
-//    if (functions.find(callee) == functions.end()) {
-//        functions[callee] = "";
-//        stringstream temp;
-//        callee->dumpBody(compiler, result, calleeVar, functions, temp, 0);
-//        functions[callee] = temp.str();
-//    }
-//
-//    ss << callee->fullName(true) << "(";
-//
-//    vector<pair<bool, shared_ptr<NBase>>> parameters(callee->argDefaultValues.size());
-//    if (!getParameters(compiler, result, parameters)) {
-//        return;
-//    }
-//
-//    if (calleeVar) {
-//        ss << "this" << (calleeVar->isMutable ? " = " : " : ");
-//        ss << callee->fullName(true) << "(";
-//
-//        if (parameters.size() > 0 || callee->getHasParent(compiler, result)) {
-//            ss << "\n";
-//            dumpf(ss, level + 1);
-//
-//            if (callee->getHasParent(compiler, result)) {
-//                ss << "parent: ";
-//                auto t = dotSS.str();
-//                if (t.size() > 0) {
-//                    ss << t;
-//                } else {
-//                    ss << "this";
-//                }
-//
-//                if (parameters.size() > 0) {
-//                    ss << ",\n";
-//                    dumpf(ss, level + 1);
-//                }
-//            }
-//
-//            auto paramIndex = (size_t)0;
-//            for (auto it : parameters) {
-//                auto paramVar = callee->argVars[paramIndex];
-//                ss << paramVar->name.c_str();
-//                auto ctype = paramVar->getType(compiler, result);
-//                ss << "'" << (ctype != nullptr ? ctype->name : "ERROR");
-//                ss << (paramVar->isMutable ? " = " : " : ");
-//                it.second->dump(compiler, result, it.first ? callee : thisFunction, thisVar, CTM_Undefined, functions, ss, level + 1);
-//                if (paramIndex != parameters.size() - 1) {
-//                    ss << ",\n";
-//                    dumpf(ss, level + 1);
-//                }
-//                paramIndex++;
-//            }
-//            ss << "\n";
-//            dumpf(ss, level);
-//        }
-//        ss << "))";
-//    } else {
-//        if (parameters.size() > 0 || callee->getHasParent(compiler, result)) {
-//            ss << "\n";
-//            dumpf(ss, level + 1);
-//
-//            if (callee->getHasParent(compiler, result)) {
-//                ss << "parent: ";
-//                auto t = dotSS.str();
-//                if (t.size() > 0) {
-//                    ss << t;
-//                } else {
-//                    ss << "this";
-//                }
-//
-//                if (parameters.size() > 0) {
-//                    ss << ",\n";
-//                    dumpf(ss, level + 1);
-//                }
-//            }
-//
-//            auto paramIndex = (size_t)0;
-//            for (auto it : parameters) {
-//                auto paramVar = callee->argVars[paramIndex];
-//                ss << paramVar->name.c_str();
-//                ss << "'" << paramVar->getType(compiler, result)->name.c_str();
-//                ss << (paramVar->isMutable ? " = " : " : ");
-//                it.second->dump(compiler, result, thisFunction, thisVar, CTM_Undefined, functions, ss, level + 1);
-//                if (paramIndex != parameters.size() - 1) {
-//                    ss << ",\n";
-//                    dumpf(ss, level + 1);
-//                }
-//                paramIndex++;
-//            }
-//            ss << "\n";
-//            dumpf(ss, level);
-//        }
-//        ss << ")";
-//    }
+    if (functions.find(callee) == functions.end()) {
+        functions[callee] = "";
+        stringstream temp;
+        callee->dumpBody(compiler, result, returnMode, functions, temp, 0);
+        functions[callee] = temp.str();
+    }
+
+    ss << callee->fullName(true) << "(";
+
+    vector<pair<bool, shared_ptr<NBase>>> parameters(callee->argDefaultValues.size());
+    if (!getParameters(compiler, result, parameters)) {
+        return;
+    }
+
+    if (callee->getHasThis()) {
+        ss << "this" << " = ";
+        ss << callee->fullName(true) << "(";
+
+        if (parameters.size() > 0 || callee->getHasParent(compiler, result)) {
+            ss << "\n";
+            dumpf(ss, level + 1);
+
+            if (callee->getHasParent(compiler, result)) {
+                ss << "parent: ";
+                auto t = dotSS.str();
+                if (t.size() > 0) {
+                    ss << t;
+                } else {
+                    ss << "this";
+                }
+
+                if (parameters.size() > 0) {
+                    ss << ",\n";
+                    dumpf(ss, level + 1);
+                }
+            }
+
+            auto paramIndex = (size_t)0;
+            for (auto it : parameters) {
+                auto paramVar = callee->argVars[paramIndex];
+                ss << paramVar->name.c_str();
+                auto ctype = paramVar->getType(compiler, result);
+                ss << "'" << (ctype != nullptr ? ctype->name : "ERROR");
+                ss << (paramVar->isMutable ? " = " : " : ");
+                // TODO: it.second->dump(compiler, result, it.first ? callee : thisFunction, thisVar, CTM_Undefined, functions, ss, level + 1);
+                if (paramIndex != parameters.size() - 1) {
+                    ss << ",\n";
+                    dumpf(ss, level + 1);
+                }
+                paramIndex++;
+            }
+            ss << "\n";
+            dumpf(ss, level);
+        }
+        ss << "))";
+    } else {
+        if (parameters.size() > 0 || callee->getHasParent(compiler, result)) {
+            ss << "\n";
+            dumpf(ss, level + 1);
+
+            if (callee->getHasParent(compiler, result)) {
+                ss << "parent: ";
+                auto t = dotSS.str();
+                if (t.size() > 0) {
+                    ss << t;
+                } else {
+                    ss << "this";
+                }
+
+                if (parameters.size() > 0) {
+                    ss << ",\n";
+                    dumpf(ss, level + 1);
+                }
+            }
+
+            auto paramIndex = (size_t)0;
+            for (auto it : parameters) {
+                auto paramVar = callee->argVars[paramIndex];
+                ss << paramVar->name.c_str();
+                ss << "'" << paramVar->getType(compiler, result)->name.c_str();
+                ss << (paramVar->isMutable ? " = " : " : ");
+                // TODO: it.second->dump(compiler, result, thisFunction, thisVar, CTM_Undefined, functions, ss, level + 1);
+                if (paramIndex != parameters.size() - 1) {
+                    ss << ",\n";
+                    dumpf(ss, level + 1);
+                }
+                paramIndex++;
+            }
+            ss << "\n";
+            dumpf(ss, level);
+        }
+        ss << ")";
+    }
 }
 
 

@@ -59,15 +59,15 @@ public:
     shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, CTypeMode returnMode);
     string getCInitFunctionName(CTypeMode typeMode);
     string getCDestroyFunctionName(CTypeMode typeMode);
-    string getCastFunctionName(CTypeMode toTypeMode, shared_ptr<CBaseFunction> fromFunction, CTypeMode fromTypeMode);
-    string getBaseName(CTypeMode typeMode);
-    string getStructName(CTypeMode typeMode);
-    string getTypeIdName(CTypeMode typeMode);
+    string getCCastFunctionName(CTypeMode toTypeMode, shared_ptr<CBaseFunction> fromFunction, CTypeMode fromTypeMode);
+    string getCBaseName(CTypeMode typeMode);
+    string getCStructName(CTypeMode typeMode);
+    string getCTypeIdName(CTypeMode typeMode);
     string transpileCast(CTypeMode toTypeMode, shared_ptr<CBaseFunction> fromFunction, CTypeMode fromTypeMode, string varName);
 
     void transpileDefinition(Compiler* compiler, CResult& result, TrOutput* trOutput, CTypeMode typeMode);
     shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> calleeValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, const char* thisName, CTypeMode typeMode);
-    void dumpBody(Compiler* compiler, CResult& result, shared_ptr<CThisVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
+    void dumpBody(Compiler* compiler, CResult& result, CTypeMode returnTypeMode, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
     bool getReturnMustRelease(Compiler* compiler, CResult& result);
 
 private:

@@ -186,7 +186,7 @@ string CInterface::getCInitFunctionName(CTypeMode typeMode) {
     return "";
 }
 
-string CInterface::getBaseName(CTypeMode typeMode) {
+string CInterface::getCBaseName(CTypeMode typeMode) {
     auto functionName = name.substr(1, name.size() - 1);
     if (!parent.expired()) {
         auto tempType = parent.lock();
@@ -200,21 +200,21 @@ string CInterface::getBaseName(CTypeMode typeMode) {
     return functionName;
 }
 
-string CInterface::getStructName(CTypeMode typeMode) {
-    return "sji_" + getBaseName(typeMode);
+string CInterface::getCStructName(CTypeMode typeMode) {
+    return "sji_" + getCBaseName(typeMode);
 }
 
 string CInterface::getCDestroyFunctionName(CTypeMode typeMode) {
-    return getStructName(typeMode) + "_destroy";
+    return getCStructName(typeMode) + "_destroy";
 }
 
-string CInterface::getTypeIdName(CTypeMode typeMode) {
-    return getStructName(typeMode) + "_typeId";
+string CInterface::getCTypeIdName(CTypeMode typeMode) {
+    return getCStructName(typeMode) + "_typeId";
 }
 
-string CInterface::getCastFunctionName(CTypeMode toTypeMode, shared_ptr<CBaseFunction> fromFunction, CTypeMode fromTypeMode) {
+string CInterface::getCCastFunctionName(CTypeMode toTypeMode, shared_ptr<CBaseFunction> fromFunction, CTypeMode fromTypeMode) {
     stringstream line;
-    line << fromFunction->getCInitFunctionName(fromTypeMode) << "_as_" << getStructName(toTypeMode);
+    line << fromFunction->getCInitFunctionName(fromTypeMode) << "_as_" << getCStructName(toTypeMode);
     return line.str();
 }
 
@@ -222,19 +222,19 @@ string CInterface::transpileCast(CTypeMode toTypeMode, shared_ptr<CBaseFunction>
     if (fromFunction->classType == CFT_Interface) {
         auto fromInterface = static_pointer_cast<CInterface>(fromFunction);
         stringstream line;
-        line << "(" << getStructName(toTypeMode) << "*)" << varName << "->asInterface(" << varName << "->_parent, " << getTypeIdName(fromTypeMode) << ")";
+        line << "(" << getCStructName(toTypeMode) << "*)" << varName << "->asInterface(" << varName << "->_parent, " << getCTypeIdName(fromTypeMode) << ")";
         return line.str();
     }
     else {
         stringstream line;
-        line << getCastFunctionName(toTypeMode, fromFunction, fromTypeMode) << "(" << varName << ")";
+        line << getCCastFunctionName(toTypeMode, fromFunction, fromTypeMode) << "(" << varName << ")";
         return line.str();
     }
 }
 
 void CInterface::transpileDefinition(Compiler* compiler, CResult& result, TrOutput* trOutput, CTypeMode typeMode) {
     // Create struct
-    string structName = getStructName(typeMode);
+    string structName = getCStructName(typeMode);
     if (trOutput->structs.find(structName) == trOutput->structs.end()) {
         trOutput->structs[structName].push_back("int _refCount");
         trOutput->structs[structName].push_back("sjs_object* _parent");
@@ -284,7 +284,7 @@ shared_ptr<ReturnValue> CInterface::transpile(Compiler* compiler, CResult& resul
     return nullptr;
 }
 
-void CInterface::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CThisVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+void CInterface::dumpBody(Compiler* compiler, CResult& result, CTypeMode returnTypeMode, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     assert(false);
 }
 

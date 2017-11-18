@@ -134,6 +134,7 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
     if (hasGlobalStruct) {
         stream << "sjs_global global;\n";
     }
+    assert(mainFunction != nullptr);
     mainFunction->writeStackValuesToStream(stream, 0);
     stream << "\n";
     

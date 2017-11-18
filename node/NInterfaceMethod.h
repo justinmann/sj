@@ -66,12 +66,13 @@ public:
     shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName);
     shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, CTypeMode returnMode);
     string getCTypeName(Compiler* compiler, CResult& result, bool includeNames);
-    virtual string getCInitFunctionName(CTypeMode typeMode);
-    virtual string getCDestroyFunctionName(CTypeMode typeMode);
+    string getCStructName(CTypeMode typeMode) { assert(false); return ""; }
+    string getCInitFunctionName(CTypeMode typeMode);
+    string getCDestroyFunctionName(CTypeMode typeMode);
 
     void transpileDefinition(Compiler* compiler, CResult& result, TrOutput* trOutput);
     shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> calleeValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, const char* thisName, CTypeMode typeMode);
-    void dumpBody(Compiler* compiler, CResult& result, shared_ptr<CThisVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
+    void dumpBody(Compiler* compiler, CResult& result, CTypeMode returnTypeMode, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
     bool getReturnMustRelease(Compiler* compiler, CResult& result);
     
 private:

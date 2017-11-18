@@ -297,7 +297,7 @@ shared_ptr<ReturnValue> CInterfaceMethod::transpile(Compiler* compiler, CResult&
     return returnValue;
 }
 
-void CInterfaceMethod::dumpBody(Compiler* compiler, CResult& result, shared_ptr<CThisVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+void CInterfaceMethod::dumpBody(Compiler* compiler, CResult& result, CTypeMode returnTypeMode, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     //for (auto it : implementations) {
     //    if (functions.find(it) == functions.end()) {
     //        functions[it] = "";

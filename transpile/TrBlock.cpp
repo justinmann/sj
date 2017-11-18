@@ -264,11 +264,17 @@ void ReturnValue::addRetainToStatements(TrBlock* block) {
 }
     
 void ReturnValue::addInitToStatements(TrBlock* block) {
-    assert(false); // add malloc / stack alloc
-    if (type->typeMode == CTM_Heap) {
+    if (type->typeMode == CTM_Value) {
+        return;
+    }
+    else if (type->typeMode == CTM_Heap) {
         assert(!type->parent.expired());
         assert(!type->isOption);
-        assert(type->typeMode != CTM_Local);
+
+        string structName = type->parent.lock()->getCStructName(type->typeMode);
+        stringstream initLine;
+        initLine << name << " = (" << structName << "*)malloc(sizeof(" << structName << "))";
+        block->statements.push_back(TrStatement(initLine.str()));
 
         stringstream lineStream;
         lineStream << name << "->_refCount = 1";
@@ -279,6 +285,18 @@ void ReturnValue::addInitToStatements(TrBlock* block) {
         logStream << "printf(\"RETAIN\\t" << type->nameRef << "\\t%0x\\t" << block->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
         block->statements.push_back(logStream.str());
 #endif
+    }
+    else if (type->typeMode == CTM_Stack) {
+        assert(!type->parent.expired());
+        assert(!type->isOption);
+
+        auto objectVal = block->createStackValue("sjd_temp", type);
+        stringstream initLine;
+        initLine << name << " = &" << objectVal;
+        block->statements.push_back(TrStatement(initLine.str()));
+    }
+    else {
+        assert(false);
     }
 }
 
