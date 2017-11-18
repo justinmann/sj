@@ -18,7 +18,6 @@ class TrOutput;
 class TrBlock;
 
 enum CVarType {
-    Var_This,
     Var_Local,
     Var_Private,
     Var_Public
@@ -47,29 +46,17 @@ class NFunction;
 
 class CNormalVar : public CVar {
 public:
-    CNormalVar(CLoc loc, string name, bool isMutable) : CVar(loc, name, isMutable) {}
-    static shared_ptr<CNormalVar> createLocalVar(const CLoc& loc, const string& name, shared_ptr<CBaseFunction> parent, shared_ptr<NAssignment> nassignment);
-    static shared_ptr<CNormalVar> createFunctionVar(const CLoc& loc, const string& name, shared_ptr<CBaseFunction> parent, int index, shared_ptr<NAssignment> nassignment, shared_ptr<CType> type, shared_ptr<CVar> interfaceMethodArgVar_);
-    
-    //string fullName();
-    //shared_ptr<CBaseFunction> getCFunctionForValue(Compiler* compiler, CResult& result);
-    void makeFunctionVar(int index);
-
+    CNormalVar(CLoc loc, shared_ptr<CType> type, string name, bool isMutable, CVarType mode) : CVar(loc, name, isMutable), mode(mode), type(type) {}
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName);
     void transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName);
     void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
-    
+    void makeFunctionVar();
+
     CVarType mode;
 
 private:
-    CLoc loc;
-    bool isInGetType;
-    int index;
     shared_ptr<CType> type;
-    shared_ptr<CVar> interfaceMethodArgVar;
-    weak_ptr<CBaseFunction> parent;
-    shared_ptr<NAssignment> nassignment;
 };
 
 #endif /* CVar_h */

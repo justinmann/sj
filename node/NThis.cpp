@@ -20,7 +20,7 @@ void CThisVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctio
 }
 
 void CThisVar::setHasRefCount() {
-    auto function = type->parent.lock();
+    auto function = types->stackValueType->parent.lock();
     function->setHasRefCount();
 }
 

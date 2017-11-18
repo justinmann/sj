@@ -11,7 +11,7 @@
 
 class CThisVar : public CVar {
 public:
-    CThisVar(CLoc loc, shared_ptr<CType> type) : CVar(loc, "", false), type(type), typeMode(CTM_MatchReturn) { }
+    CThisVar(CLoc loc, shared_ptr<CTypes> types, CTypeMode typeMode) : CVar(loc, "", false), types(types), typeMode(typeMode) { }
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName);
     void transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName);
@@ -21,7 +21,7 @@ public:
     CTypeMode typeMode;
 
 private:
-    shared_ptr<CType> type;
+    shared_ptr<CTypes> types;
 }; 
 
 class NThis : public NVariableBase {

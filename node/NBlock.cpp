@@ -47,7 +47,6 @@ void NBlock::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFun
 }
 
 shared_ptr<CVar> NBlock::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
-    assert(compiler->state == CompilerState::FixVar);
     vector<shared_ptr<CVar>> statementVars;
     for (auto it : statements) {
         auto resultVar = it->getVar(compiler, result, thisFunction, thisVar);

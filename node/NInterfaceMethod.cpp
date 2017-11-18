@@ -95,14 +95,14 @@ shared_ptr<CInterfaceMethod> CInterfaceMethod::init(Compiler* compiler, CResult&
         }
         
         // int index = (int)argVars.size();
-        auto argType = it->getType(compiler, result, thisFunction, nullptr, CTM_Heap);
+        auto argType = it->getType(compiler, result, thisFunction, nullptr);
         auto argVar = make_shared<CInterfaceMethodArgVar>(loc, argType);
         argVars.push_back(argVar);
         argDefaultValues.push_back(it->rightSide);
     }
     
     for (auto it : method->assignments) {
-        auto argType = it->getType(compiler, result, parent.lock(), nullptr, CTM_Heap);
+        auto argType = it->getType(compiler, result, parent.lock(), nullptr);
         if (!argType) {
             return nullptr;
         }
@@ -243,7 +243,8 @@ shared_ptr<ReturnValue> CInterfaceMethod::transpile(Compiler* compiler, CResult&
         }
     }
 
-    auto calleeVar = make_shared<CThisVar>(loc, nullptr);
+    auto thisTypes = getThisTypes(compiler, result);
+    auto calleeVar = make_shared<CThisVar>(loc, thisTypes, CTM_Heap);
     vector<ArgData> argValues;
     auto argIndex = 0;
     // Fill in "this" with normal arguments

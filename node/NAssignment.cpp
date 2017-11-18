@@ -66,8 +66,6 @@ void NAssignment::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBa
 }
 
 shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar) {
-    assert(compiler->state == CompilerState::FixVar);
-
     // function vars are not created here, this is only for local vars
     if (inFunctionDeclaration) {
         return nullptr;
@@ -127,7 +125,12 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
                     result.addError(loc, CErrorCode::Internal, "the previous search on NVariable should find a local value with same name");
                     return nullptr;
                 }
-                leftVar = CNormalVar::createLocalVar(loc, name, thisFunction, shared_from_this());
+
+                auto leftType = getType(compiler, result, thisFunction, thisVar);
+                if (!leftType) {
+                    return nullptr;
+                }
+                leftVar = make_shared<CNormalVar>(loc, leftType, name, isMutable, CVarType::Var_Local);
                 fun->localVarsByName[name] = _assignVar;
                 isFirstAssignment = true;
             }
@@ -147,7 +150,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
     return nullptr;
 }
 
-shared_ptr<CType> NAssignment::getType(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode) {
+shared_ptr<CType> NAssignment::getType(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar) {
     assert(compiler->state >= CompilerState::FixVar);
 
     if (typeName) {

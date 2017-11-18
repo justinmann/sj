@@ -133,7 +133,12 @@ shared_ptr<CFunction> CFunction::init(Compiler* compiler, CResult& result, share
             
             int index = (int)argVars.size();
             auto interfaceMethodArgVar = interfaceMethod ? interfaceMethod->argVars[index] : nullptr;
-            auto thisVar = CNormalVar::createFunctionVar(node->loc, it->name, shared_from_this(), index, it, nullptr, interfaceMethodArgVar);
+            auto calleeVar = getThisVar(compiler, result, CTM_MatchReturn);            
+            auto argType = it->getType(compiler, result, shared_from_this(), calleeVar);
+            if (!argType) {
+                return nullptr;
+            }
+            auto thisVar = make_shared<CNormalVar>(node->loc, argType, it->name, it->isMutable, CVarType::Var_Public);
             thisVarsByName[it->name] = pair<int, shared_ptr<CVar>>(index, thisVar);
             thisVars.push_back(thisVar);
             argVars.push_back(thisVar);
@@ -671,26 +676,8 @@ shared_ptr<CThisVar> CFunction::getThisVar(Compiler* compiler, CResult& result, 
     }
 
     if (!_thisVar[typeMode]) {
-        assert(false); // TODO: get either stack or heap thisvar
         auto thisTypes = getThisTypes(compiler, result);
-        shared_ptr<CType> thisType;
-        switch (typeMode) {
-        case CTM_Heap:
-            thisType = thisTypes->heapValueType;
-            break;
-        case CTM_Stack:
-            thisType = thisTypes->stackValueType;
-            break;
-        case CTM_MatchReturn:
-            thisType = thisTypes->stackValueType;
-            break;
-        default:
-            assert(false);
-            break;
-        }
-        _thisVar[typeMode] = make_shared<CThisVar>(loc, thisType);
-        getVarBody(compiler, result, _thisVar[typeMode], CTM_Undefined);
-
+        _thisVar[typeMode] = make_shared<CThisVar>(loc, thisTypes, typeMode);
     }
     return _thisVar[typeMode];
 }
@@ -935,7 +922,7 @@ void CFunction::localVarToThisVar(Compiler* compiler, shared_ptr<CNormalVar> loc
         return;
     }
     
-    localVar->makeFunctionVar((int)thisVars.size());
+    localVar->makeFunctionVar();
     int index = (int)thisVars.size();
     thisVars.push_back(localVar);
     thisVarsByName[pos->first] = pair<int, shared_ptr<CNormalVar>>(index, localVar);

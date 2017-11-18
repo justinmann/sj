@@ -8,96 +8,30 @@
 
 #include "../node/Node.h"
 
-//string CVar::fullName() {
-//    return strprintf("%s.%s", (parent.expired() ? "" : parent.lock()->fullName(false).c_str()), name.c_str());
-//}
-//
-//shared_ptr<CBaseFunction> CVar::getCFunctionForValue(Compiler* compiler, CResult& result) {
-//    auto ctype = getType(compiler, result);
-//    if (ctype && !ctype->parent.expired()) {
-//        return ctype->parent.lock();
-//    }
-//    return nullptr;
-//}
-
-//shared_ptr<CNormalVar> CNormalVar::createThisVar(const CLoc& loc, shared_ptr<CBaseFunction> parent, shared_ptr<CType> type) {
-//    auto c = make_shared<CNormalVar>();
-//    c->loc = loc;
-//    c->mode = CVarType::Var_This;
-//    c->name = "this";
-//    c->isMutable = false;
-//    c->type = type;
-//    c->parent = parent;
-//    return c;
-//}
-
-shared_ptr<CNormalVar> CNormalVar::createLocalVar(const CLoc& loc, const string& name, shared_ptr<CBaseFunction> parent, shared_ptr<NAssignment> nassignment) {
-    auto c = make_shared<CNormalVar>(loc, name, nassignment != nullptr ? nassignment->isMutable : false);
-    c->mode = CVarType::Var_Local;
-    c->nassignment = nassignment;
-    c->parent = parent;
-    return c;
-}
-
-shared_ptr<CNormalVar> CNormalVar::createFunctionVar(const CLoc& loc, const string& name, shared_ptr<CBaseFunction> parent, int index, shared_ptr<NAssignment> nassignment, shared_ptr<CType> type, shared_ptr<CVar> interfaceMethodArgVar_) {
-    auto c = make_shared<CNormalVar>(loc, name, nassignment != nullptr ? nassignment->isMutable : false);
-    c->mode = CVarType::Var_Public;
-    c->index = index;
-    c->nassignment = nassignment;
-    c->parent = parent;
-    c->type = type;
-    c->interfaceMethodArgVar = interfaceMethodArgVar_;
-    
-    if (interfaceMethodArgVar_) {
-        auto t = static_pointer_cast<CInterfaceMethodArgVar>(interfaceMethodArgVar_);
-        t->functionVars.push_back(c);
-    }
-    
-    assert(type != nullptr || nassignment != nullptr);
-    
-    return c;
-}
-
-void CNormalVar::makeFunctionVar(int index) {
+void CNormalVar::makeFunctionVar() {
     assert(mode == CVarType::Var_Local);
     mode = CVarType::Var_Public;
-    this->index = index;
 }
 
 shared_ptr<CType> CNormalVar::getType(Compiler* compiler, CResult& result) {
-    if (isInGetType) {
-        result.addError(CLoc::undefined, CErrorCode::TypeLoop, "while trying to determine type a cycle was detected");
-        return nullptr;
-    }
-    
-    isInGetType = true;
-    if (!type) {
-        assert(false);
-        // type = nassignment->getType(compiler, result, parent.lock(), nullptr); // TODO:
-    }
-    isInGetType = false;
     return type;
 }
 
 shared_ptr<ReturnValue> CNormalVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
-    auto returnType = getType(compiler, result);
-    if (!returnType)
-        return nullptr;
-
     if (dotValue) {
-        auto returnValue = trBlock->createTempVariable(returnType, "dotTemp");
+        auto returnValue = trBlock->createTempVariable(type, "dotTemp");
         stringstream lineStream;
         lineStream << returnValue->name << " = " << dotValue->name << "->" << name;
         trBlock->statements.push_back(lineStream.str());
         return returnValue;
     } else if (trBlock->hasThis && (mode == Var_Public || mode == Var_Private)) {
-        auto returnValue = trBlock->createTempVariable(returnType, "dotTemp");
+        auto returnValue = trBlock->createTempVariable(type, "dotTemp");
         stringstream lineStream;
         lineStream << returnValue->name << " = " << "_this->" << name;
         trBlock->statements.push_back(lineStream.str());
         return returnValue;
     } else {
-        return make_shared<ReturnValue>(returnType, name);
+        return make_shared<ReturnValue>(type, name);
     }    
 }
 
