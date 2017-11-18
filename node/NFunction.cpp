@@ -87,7 +87,8 @@ _catchBlock(nullptr),
 _destroyBlock(nullptr),
 _returnTypeName(nullptr),
 _interfaceTypeNames(nullptr),
-_hasInitializedInterfaces(false)
+_hasInitializedInterfaces(false),
+_isReturnThis(false)
  {}
 
 
@@ -230,26 +231,6 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
     }
     else {
         auto thisVar = getThisVar(compiler, result, CTM_MatchReturn);
-        auto thisTypeMode = thisVar->typeMode;
-        if (thisTypeMode == CTM_MatchReturn) {
-            thisTypeMode = CTM_Stack;
-        }
-
-        // Create struct
-        string structName = getCStructName(thisTypeMode);
-        if (trOutput->structs.find(structName) == trOutput->structs.end()) {
-            trOutput->structs[structName].push_back("int _refCount");
-
-            auto argTypes = getCTypeList(compiler, result);
-            for (auto argType : *argTypes) {
-                if (argType.first.compare("_this") == 0)
-                    continue;
-
-                stringstream ss;
-                ss << argType.second->nameRef << " " << argType.first;
-                trOutput->structs[structName].push_back(ss.str());
-            }
-        }
 
         // Create init function body
         auto functionName = getCInitFunctionName(returnTypeMode);
@@ -261,23 +242,43 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
             trFunctionBlock->hasThis = true;
             trOutput->functions[functionName] = trFunctionBlock;
 
-            stringstream functionDefinition;
-            functionDefinition << "void " << functionName << "(" << structName << "* _this";
-            if (returnType != compiler->typeVoid) {
-                functionDefinition << ", " << returnType->nameRef << "* _return";
-            }
-            functionDefinition << ")";
-            trFunctionBlock->definition = functionDefinition.str();
-
             auto blockVar = _block->getVar(compiler, result, shared_from_this(), thisVar);
             auto bodyReturnValue = blockVar->transpileGet(compiler, result, shared_from_this(), thisVar, trOutput, trFunctionBlock.get(), returnTypeMode, nullptr, "_this");
             if (bodyReturnValue && bodyReturnValue->type && bodyReturnValue->type != compiler->typeVoid) {
                 assert(bodyReturnValue->type == returnType);
-                /* TODO: if (bodyReturnValue->release == RVR_MustRetain && !bodyReturnValue->type->parent.expired()) {
-                    ReturnValue::addRetainToStatements(trFunctionBlock.get(), bodyReturnValue->name, bodyReturnValue->type);
-                }*/
+                if (bodyReturnValue->name == "_this") {
+                    _isReturnThis = true;
+                }
+                else {
+                    trFunctionBlock->returnLine = bodyReturnValue->name;
+                }
+            }
 
-                trFunctionBlock->returnLine = bodyReturnValue->name;
+            string structName = getCStructName(thisVar->getTypeMode());
+            stringstream functionDefinition;
+            functionDefinition << "void " << functionName << "(" << structName << "* _this";
+            if (returnType != compiler->typeVoid && !_isReturnThis) {
+                functionDefinition << ", " << returnType->nameRef << "* _return";
+            }
+            functionDefinition << ")";
+            trFunctionBlock->definition = functionDefinition.str();
+        }
+
+        // Create struct
+        string structName = getCStructName(thisVar->getTypeMode());
+        if (trOutput->structs.find(structName) == trOutput->structs.end()) {
+            if (thisVar->getTypeMode() == CTM_Heap) {
+                trOutput->structs[structName].push_back("int _refCount");
+            }
+
+            auto argTypes = getCTypeList(compiler, result);
+            for (auto argType : *argTypes) {
+                if (argType.first.compare("_this") == 0)
+                    continue;
+
+                stringstream ss;
+                ss << argType.second->nameRef << " " << argType.first;
+                trOutput->structs[structName].push_back(ss.str());
             }
         }
 
@@ -293,25 +294,15 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
             functionDefinition << "void " << functionDestroyName << "(" << structName << "* _this)";
             trDestroyBlock->definition = functionDefinition.str();
 
-            auto destroyBlockVar = _destroyBlock->getVar(compiler, result, shared_from_this(), thisVar);
-            if (destroyBlockVar) {
-                auto thisVar = getThisVar(compiler, result, thisTypeMode);
-                destroyBlockVar->transpileGet(compiler, result, shared_from_this(), thisVar, trOutput, trDestroyBlock.get(), CTM_Undefined, nullptr, "_this");
+            if (_destroyBlock) {
+                auto destroyBlockVar = _destroyBlock->getVar(compiler, result, shared_from_this(), thisVar);
+                if (destroyBlockVar) {
+                    destroyBlockVar->transpileGet(compiler, result, shared_from_this(), thisVar, trOutput, trDestroyBlock.get(), CTM_Undefined, nullptr, "_this");
+                }
             }
 
             for (auto argVar : argVars) {
-                auto argFunction = argVar->getType(compiler, result)->parent.lock();
-                if (argFunction) {
-                    assert(false);
-//                    ReturnValue::addReleaseToStatements(trDestroyBlock.get(), "_this->" + argVar->name, argVar->getType(compiler, result));
-//                    if (argHeapVar) {
-//                    }
-//                    else {
-//                        stringstream destroyStream;
-//                        destroyStream << argFunction->getCDestroyFunctionName() << "(" << "_this->" << argVar->name << ")";
-//                        trDestroyBlock->statements.push_back(destroyStream.str());
-//                    }
-                }
+                ReturnValue(argVar->getType(compiler, result), "_this->" + argVar->name).addReleaseToStatements(trDestroyBlock.get());
             }
         }
 
@@ -319,7 +310,7 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
         // Create interfaces
         if (interfaces != nullptr) {
             for (auto interfaceVal : *interfaces) {
-                interfaceVal->transpileDefinition(compiler, result, trOutput, thisTypeMode);
+                interfaceVal->transpileDefinition(compiler, result, trOutput, thisVar->getTypeMode());
 
                 for (auto interfaceMethod : interfaceVal->methods) {
                     auto function = static_pointer_cast<CFunction>(getCFunction(compiler, result, interfaceMethod->name, nullptr, nullptr));
@@ -424,26 +415,11 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
         }
     } else {
         calleeVar = getThisVar(compiler, result, CTM_MatchReturn);
-        auto calleeTypeMode = calleeVar->typeMode;
+        functionName = getCInitFunctionName(calleeVar->getTypeMode());
 
-        // If nothing forced the "this" var to be heap then default to stack
-        if (calleeTypeMode == CTM_MatchReturn) {
-            calleeTypeMode = CTM_Stack;
-        }
-
-        functionName = getCInitFunctionName(calleeTypeMode);
-        transpileDefinition(compiler, result, trOutput, calleeTypeMode);
-
-        auto isReturnValueThis = false;
-        if (returnType != compiler->typeVoid) {
-            auto returnVar = _block->getVar(compiler, result, shared_from_this(), calleeVar);
-            if (returnVar == calleeVar) {
-                isReturnValueThis = true;
-            }
-            else {
-                returnValue = trBlock->createTempVariable(returnType, "result");
-                returnValue->addInitToStatements(trBlock);
-            }
+        if (returnType != compiler->typeVoid && !_isReturnThis) {
+            returnValue = trBlock->createTempVariable(returnType, "result");
+            returnValue->addInitToStatements(trBlock);
         }
 
         // Initialize "this"
@@ -481,11 +457,9 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
             trBlock->statements.push_back(parentLine.str());
         }
 
-        if (isReturnValueThis) {
+        if (_isReturnThis) {
             returnValue = objectRef;
         }
-        
-        objectRef->addInitToStatements(trBlock);
     }
 
     auto argTypes = getCTypeList(compiler, result);
@@ -559,7 +533,7 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
         // Call function
         stringstream line;
         line << functionName << "(" << calleeThisName;
-        if (returnValue) {
+        if (returnValue && !_isReturnThis) {
             line << ", &" << returnValue->name;
         }
         line << ")";

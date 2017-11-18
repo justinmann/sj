@@ -1,14 +1,29 @@
 #include "Node.h"
 
 shared_ptr<CType> CThisVar::getType(Compiler* compiler, CResult& result) {
-    assert(false);
-    return nullptr;
+    switch (typeMode) {
+    case CTM_Stack:
+        return types->stackValueType;
+    case CTM_Heap:
+        return types->heapValueType;
+    case CTM_MatchReturn:
+        return types->stackValueType;
+    default:
+        assert(false);
+        return nullptr;
+    }
 }
 
 shared_ptr<ReturnValue> CThisVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
-    return make_shared<ReturnValue>(
-        thisVar->getType(compiler, result),
-        "_this");
+    if (returnMode != CTM_Undefined) {
+        assert(returnMode != CTM_Value);
+        if (typeMode == CTM_MatchReturn) {
+            typeMode = returnMode;
+        }
+        assert(returnMode == typeMode);
+    }
+
+    return make_shared<ReturnValue>(thisVar->getType(compiler, result), "_this");
 }
 
 void CThisVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
@@ -22,6 +37,13 @@ void CThisVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctio
 void CThisVar::setHasRefCount() {
     auto function = types->stackValueType->parent.lock();
     function->setHasRefCount();
+}
+
+CTypeMode CThisVar::getTypeMode() {
+    if (typeMode == CTM_MatchReturn) {
+        return CTM_Stack;
+    }
+    return typeMode;
 }
 
 shared_ptr<CVar> NThis::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {

@@ -79,13 +79,8 @@ void TrBlock::writeStackValuesReleaseToStream(ostream& stream, int level) {
     for (auto stackValue : stackValues)
     {
         if (!stackValue.second->parent.expired()) {
-#ifdef DEBUG_ALLOC
             addSpacing(stream, level);
-            stream << "assert(" << stackValue.first << "._refCount == 0);\n";
-#else
-            addSpacing(stream, level);
-            stream << stackValue.second->parent.lock()->getCDestroyFunctionName() << "(&" << stackValue.first << ");\n";
-#endif
+            stream << stackValue.second->parent.lock()->getCDestroyFunctionName(stackValue.second->typeMode) << "(&" << stackValue.first << ");\n";
         }
     }
 }

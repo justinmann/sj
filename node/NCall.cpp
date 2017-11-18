@@ -4,10 +4,6 @@ shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CResult& result, CLoc 
     assert(callee_);
 
     auto c = make_shared<CCallVar>(loc_);
-//    c->name = name_;
-//    c->mode = Var_Local;
-//    c->isMutable = true;
-//    c->nassignment = nullptr;
     c->arguments = arguments_;
     c->thisFunction = thisFunction_;
     c->dotVar = dotVar_;
@@ -114,6 +110,7 @@ shared_ptr<ReturnValue> CCallVar::transpileGet(Compiler* compiler, CResult& resu
     }
 
     auto returnValue = callee->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, dotValue, loc, parameters, thisName, returnMode);
+    assert(returnValue != nullptr);
     return returnValue;
 }
 

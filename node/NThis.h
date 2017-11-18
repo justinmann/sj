@@ -17,12 +17,12 @@ public:
     void transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName);
     void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
     void setHasRefCount();
-
-    CTypeMode typeMode;
+    CTypeMode getTypeMode();
 
 private:
     shared_ptr<CTypes> types;
-}; 
+    CTypeMode typeMode;
+};
 
 class NThis : public NVariableBase {
 public:

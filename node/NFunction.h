@@ -112,6 +112,7 @@ private:
     shared_ptr<vector<pair<string, shared_ptr<CType>>>> _ctypeList;
     bool _hasInitializedInterfaces;
     map<CTypeMode, shared_ptr<CThisVar>> _thisVar;
+    bool _isReturnThis;
 };
 
 class CFunctionDefinition : public CBaseFunctionDefinition, public enable_shared_from_this<CFunctionDefinition> {
