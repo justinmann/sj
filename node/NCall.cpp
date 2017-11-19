@@ -34,8 +34,8 @@ shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CResult& result, CLoc 
     return c;
 }
 
-shared_ptr<CType> CCallVar::getType(Compiler* compiler, CResult& result) {
-    return callee->getReturnType(compiler, result, CTM_MatchReturn);
+shared_ptr<CType> CCallVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
+    return callee->getReturnType(compiler, result, returnMode);
 }
 
 bool CCallVar::getParameters(Compiler* compiler, CResult& result, vector<pair<bool, shared_ptr<NBase>>>& parameters) {
@@ -162,7 +162,7 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctio
             for (auto it : parameters) {
                 auto paramVar = callee->argVars[paramIndex];
                 ss << paramVar->name.c_str();
-                auto ctype = paramVar->getType(compiler, result);
+                auto ctype = paramVar->getType(compiler, result, CTM_Undefined);
                 ss << "'" << (ctype != nullptr ? ctype->name : "ERROR");
                 ss << (paramVar->isMutable ? " = " : " : ");
                 // TODO: it.second->dump(compiler, result, it.first ? callee : thisFunction, thisVar, CTM_Undefined, functions, ss, level + 1);
@@ -200,7 +200,7 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctio
             for (auto it : parameters) {
                 auto paramVar = callee->argVars[paramIndex];
                 ss << paramVar->name.c_str();
-                ss << "'" << paramVar->getType(compiler, result)->name.c_str();
+                ss << "'" << paramVar->getType(compiler, result, CTM_Undefined)->name.c_str();
                 ss << (paramVar->isMutable ? " = " : " : ");
                 // TODO: it.second->dump(compiler, result, thisFunction, thisVar, CTM_Undefined, functions, ss, level + 1);
                 if (paramIndex != parameters.size() - 1) {
@@ -249,7 +249,7 @@ shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, CResult& resul
     auto cfunction = static_pointer_cast<CBaseFunction>(thisFunction);
     
     if (dotVar) {
-        cfunction = dotVar->getType(compiler, result)->parent.lock();
+        cfunction = dotVar->getType(compiler, result, CTM_Undefined)->parent.lock();
         if (!cfunction) {
             result.addError(loc, CErrorCode::InvalidVariable, "parent is not a function");
             return nullptr;

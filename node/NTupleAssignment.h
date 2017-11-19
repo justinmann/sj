@@ -14,13 +14,13 @@
 
 class NTupleAssignmentArg {
 public:
-    NTupleAssignmentArg(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTypeName> typeName, const char* name, bool isMutable) : loc(loc), var(var), typeName(typeName), name(name), isMutable(isMutable) {}
+    NTupleAssignmentArg(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTypeName> typeName, const char* name, bool isMutable) : loc(loc), var(var), typeName(typeName), name(name), assignOp(assignOp) {}
 
     CLoc loc;
     shared_ptr<NVariableBase> var;
     shared_ptr<CTypeName> typeName;
     string name;
-    bool isMutable;
+    AssignOp assignOp;
 };
 
 typedef vector<shared_ptr<NTupleAssignmentArg>> NTupleAssignmentArgList;

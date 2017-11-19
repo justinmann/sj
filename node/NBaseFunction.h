@@ -55,9 +55,10 @@ public:
     virtual int getThisIndex(const string& name) const = 0;
     virtual shared_ptr<CVar> getCVar(Compiler* compiler, CResult& result, const string& name) = 0;
     virtual shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames) = 0;
-    virtual shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName) = 0;
-    virtual string getCInitFunctionName(CTypeMode typeMode) = 0;
-    virtual string getCDestroyFunctionName(CTypeMode typeMode) = 0;
+    virtual shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName, CTypeMode returnMode) = 0;
+    virtual string getCInitFunctionName(CTypeMode returnMode) = 0;
+    virtual string getCCopyFunctionName() = 0;
+    virtual string getCDestroyFunctionName() = 0;
     virtual string getCStructName(CTypeMode typeMode) = 0;
     virtual pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(string name) = 0;
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, CTypeMode returnMode) = 0;

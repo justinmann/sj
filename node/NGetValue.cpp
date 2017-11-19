@@ -4,8 +4,8 @@ class CGetValueVar : public CVar {
 public:
     CGetValueVar(CLoc loc, shared_ptr<CVar> leftVar, bool isProtectedWithEmptyCheck) : CVar(loc, "", false), leftVar(leftVar), isProtectedWithEmptyCheck(isProtectedWithEmptyCheck) { }
 
-    shared_ptr<CType> getType(Compiler* compiler, CResult& result) {
-        auto leftType = leftVar->getType(compiler, result);
+    shared_ptr<CType> getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
+        auto leftType = leftVar->getType(compiler, result, CTM_Undefined);
         if (!leftType) {
             return nullptr;
         }
@@ -76,7 +76,7 @@ shared_ptr<CVar> NGetValue::getVarImpl(Compiler* compiler, CResult& result, shar
         return nullptr;
     }
 
-    auto leftType = leftVar->getType(compiler, result);
+    auto leftType = leftVar->getType(compiler, result, CTM_Undefined);
     if (!leftType) {
         return nullptr;
     }

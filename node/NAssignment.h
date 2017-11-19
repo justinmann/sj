@@ -12,12 +12,19 @@
 #include "NBase.h"
 #include "NVariable.h"
 
+enum AssignOp {
+    ASSIGN_Mutable,
+    ASSIGN_Immutable,
+    ASSIGN_MutableCopy,
+    ASSIGN_ImmutableCopy,
+};
+
 class CCallVar;
 
 class CAssignVar : public CVar {
 public:
     CAssignVar(CLoc loc, bool isMutable, shared_ptr<CVar> leftVar, shared_ptr<CVar> rightVar) : CVar(loc, "", isMutable), leftVar(leftVar), rightVar(rightVar) { }
-    shared_ptr<CType> getType(Compiler* compiler, CResult& result);
+    shared_ptr<CType> getType(Compiler* compiler, CResult& result, CTypeMode returnMode);
     shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName);
     void transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName);
     void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
@@ -29,7 +36,7 @@ private:
 
 class NAssignment : public NBase {
 public:
-    NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTypeName> typeName, const char* name, shared_ptr<NBase> rightSide, bool isMutable);
+    NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTypeName> typeName, const char* name, shared_ptr<NBase> rightSide, AssignOp op);
     void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar);
     shared_ptr<CType> getType(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar);

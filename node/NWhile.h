@@ -12,7 +12,7 @@
 class CWhileVar : public CVar {
 public:
     CWhileVar(CLoc loc, shared_ptr<CVar> condVar, shared_ptr<CVar> bodyVar) : CVar(loc, "", false), condVar(condVar), bodyVar(bodyVar) { }
-    shared_ptr<CType> getType(Compiler* compiler, CResult& result);
+    shared_ptr<CType> getType(Compiler* compiler, CResult& result, CTypeMode returnMode);
     shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName);
     void transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName);
     void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);

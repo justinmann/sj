@@ -1,6 +1,6 @@
 #include "Node.h"
 
-shared_ptr<CType> CCompareVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CCompareVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
     return compiler->typeBool;
 }
 
@@ -97,8 +97,8 @@ shared_ptr<CVar> NCompare::getVarImpl(Compiler* compiler, CResult& result, share
         return nullptr;
     }
     
-    auto leftType = leftVar->getType(compiler, result);
-    auto rightType = rightVar->getType(compiler, result);
+    auto leftType = leftVar->getType(compiler, result, CTM_Undefined);
+    auto rightType = rightVar->getType(compiler, result, CTM_Undefined);
     if (!leftType || !rightType) {
         return nullptr;
     }

@@ -105,35 +105,38 @@ struct OPTIONANDTYPELIST {
     TINCLUDE = 306,
     TAND = 307,
     TOR = 308,
-    TDESTROY = 309,
-    TMOD = 310,
-    THASH = 311,
-    TAT = 312,
-    TCPEQ = 313,
-    TCPNE = 314,
-    TMULEQUAL = 315,
-    TDIVEQUAL = 316,
-    TISEMPTY = 317,
-    TGETVALUE = 318,
-    TASOPTION = 319,
-    TQUESTION = 320,
-    TEMPTY = 321,
-    TVALUE = 322,
-    TQUESTIONCOLON = 323,
-    TQUESTIONDOT = 324,
-    TPARENT = 325,
-    TSTACK = 326,
-    THEAP = 327,
-    TMATCHRETURN = 328,
-    TTYPEI32 = 329,
-    TTYPEU32 = 330,
-    TTYPEF32 = 331,
-    TTYPEI64 = 332,
-    TTYPEU64 = 333,
-    TTYPEF64 = 334,
-    TTYPECHAR = 335,
-    TTYPEBOOL = 336,
-    TTYPEPTR = 337
+    TCOPY = 309,
+    TDESTROY = 310,
+    TMOD = 311,
+    THASH = 312,
+    TAT = 313,
+    TCPEQ = 314,
+    TCPNE = 315,
+    TMULEQUAL = 316,
+    TDIVEQUAL = 317,
+    TISEMPTY = 318,
+    TGETVALUE = 319,
+    TASOPTION = 320,
+    TQUESTION = 321,
+    TEMPTY = 322,
+    TVALUE = 323,
+    TQUESTIONCOLON = 324,
+    TQUESTIONDOT = 325,
+    TPARENT = 326,
+    TSTACK = 327,
+    THEAP = 328,
+    TLOCAL = 329,
+    TCOLONCOPY = 330,
+    TEQUALCOPY = 331,
+    TTYPEI32 = 332,
+    TTYPEU32 = 333,
+    TTYPEF32 = 334,
+    TTYPEI64 = 335,
+    TTYPEU64 = 336,
+    TTYPEF64 = 337,
+    TTYPECHAR = 338,
+    TTYPEBOOL = 339,
+    TTYPEPTR = 340
   };
 #endif
 
@@ -153,7 +156,7 @@ union YYSTYPE
 	CTypeName* typeName;
 	CTypeNameList* templateTypeNames;
 	int token;
-	bool isMutable;
+	AssignOp assignOp;
 	OPTIONANDTYPELIST optionAndTypeList;
 	NTupleAssignmentArgList* tupleAssignmentArgList;
 	NTupleAssignmentArg* tupleAssignmentArg;

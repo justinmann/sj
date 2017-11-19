@@ -31,7 +31,7 @@ class CParentDotVar : public CVar {
 public:
     CParentDotVar(CLoc loc) : CVar(loc, "", false) {}
     static shared_ptr<CParentDotVar> create(CLoc loc, Compiler *compiler, CResult &result, shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_);
-    virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
+    virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result, CTypeMode returnMode);
     string fullName();
     virtual shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName);
     virtual void transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName);

@@ -1,13 +1,23 @@
 #include "Node.h"
 
-shared_ptr<CType> CThisVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CThisVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
     switch (typeMode) {
     case CTM_Stack:
         return types->stackValueType;
     case CTM_Heap:
         return types->heapValueType;
-    case CTM_MatchReturn:
-        return types->stackValueType;
+    case CTM_Undefined:
+        switch (returnMode) {
+        case CTM_Stack:
+            return types->stackValueType;
+        case CTM_Heap:
+            return types->heapValueType;
+        case CTM_Undefined:
+            return types->stackValueType;
+        default:
+            assert(false);
+            return nullptr;
+        }
     default:
         assert(false);
         return nullptr;
@@ -15,15 +25,13 @@ shared_ptr<CType> CThisVar::getType(Compiler* compiler, CResult& result) {
 }
 
 shared_ptr<ReturnValue> CThisVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
-    if (returnMode != CTM_Undefined) {
-        assert(returnMode != CTM_Value);
-        if (typeMode == CTM_MatchReturn) {
-            typeMode = returnMode;
-        }
-        assert(returnMode == typeMode);
+    assert(returnMode != CTM_Value);
+    if (typeMode == CTM_Undefined) {
+        typeMode = returnMode;
     }
+    assert(returnMode == typeMode);
 
-    return make_shared<ReturnValue>(thisVar->getType(compiler, result), "_this");
+    return make_shared<ReturnValue>(thisVar->getType(compiler, result, CTM_Undefined), "_this");
 }
 
 void CThisVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
@@ -40,7 +48,7 @@ void CThisVar::setHasRefCount() {
 }
 
 CTypeMode CThisVar::getTypeMode() {
-    if (typeMode == CTM_MatchReturn) {
+    if (typeMode == CTM_Undefined) {
         return CTM_Stack;
     }
     return typeMode;

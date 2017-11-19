@@ -13,7 +13,7 @@ void CNormalVar::makeFunctionVar() {
     mode = CVarType::Var_Public;
 }
 
-shared_ptr<CType> CNormalVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CNormalVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
     return type;
 }
 
@@ -41,7 +41,7 @@ void CNormalVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CB
     if (!returnValue)
         return;
 
-    auto returnType = getType(compiler, result);
+    auto returnType = getType(compiler, result, CTM_Undefined);
     if (returnType != returnValue->type) {
         result.addError(loc, CErrorCode::TypeMismatch, "returned type '%s' does not match explicit type '%s'", returnType->name.c_str(), returnValue->type->name.c_str());
         return;

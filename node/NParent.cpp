@@ -1,6 +1,6 @@
 #include "Node.h"
 
-shared_ptr<CType> CParentVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CParentVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
     auto parentTypes = function->getThisTypes(compiler, result);
     if (!parentTypes) {
         return nullptr;

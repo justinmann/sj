@@ -1,10 +1,10 @@
 #include "Node.h"
 
-shared_ptr<CType> CBlockVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CBlockVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
     if (statements.size() == 0) {
         return compiler->typeVoid;
     }
-    return statements.back()->getType(compiler, result);
+    return statements.back()->getType(compiler, result, returnMode);
 }
 
 shared_ptr<ReturnValue> CBlockVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {

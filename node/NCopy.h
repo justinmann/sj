@@ -1,35 +1,34 @@
 //
-//  NOr.h
+//  NCopy.h
 //  sj
 //
 //  Created by Mann, Justin on 12/25/16.
-//  Copyright © 2016 Mann, Justin. All rights reserved.
+//  Copyright � 2016 Mann, Justin. All rights reserved.
 //
 
-#ifndef NOr_h
-#define NOr_h
+#ifndef NCopy_h
+#define NCopy_h
 
-class COrVar : public CVar {
+class CCopyVar : public CVar {
 public:
-    COrVar(CLoc loc, shared_ptr<CVar> leftVar, shared_ptr<CVar> rightVar) : CVar(loc, "", false), leftVar(leftVar), rightVar(rightVar) { }
+    CCopyVar(CLoc loc, shared_ptr<CVar> var) : CVar(loc, "", false), var(var) { }
     shared_ptr<CType> getType(Compiler* compiler, CResult& result, CTypeMode returnMode);
     shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName);
     void transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName);
     void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
 
 private:
-    shared_ptr<CVar> leftVar;
-    shared_ptr<CVar> rightVar;
+    shared_ptr<CVar> var;
 }; 
 
-class NOr : public NVariableBase {
+class NCopy : public NVariableBase {
 public:
-    const shared_ptr<NVariableBase> left;
-    const shared_ptr<NVariableBase> right;
-    
-    NOr(CLoc loc, shared_ptr<NVariableBase> left, shared_ptr<NVariableBase> right) : NVariableBase(NodeType_Or, loc), left(left), right(right) { }
+    NCopy(CLoc loc, shared_ptr<NBase> node) : NVariableBase(NodeType_Copy, loc), node(node) {}
     void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar);
+
+private:
+    shared_ptr<NBase> node;
 };
 
-#endif /* NOr_h */
+#endif /* NCopy_h */

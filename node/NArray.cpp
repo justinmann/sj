@@ -14,14 +14,14 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, CResult& result, shared_
         
         // create and store array value
         auto elementVar = firstElement->getVar(compiler, result, thisFunction, thisVar);
-        auto elementType = elementVar->getType(compiler, result);
+        auto elementType = elementVar->getType(compiler, result, CTM_Undefined);
         if (elementType->typeMode != CTM_Heap) {
             result.addError(loc, CErrorCode::TypeMismatch, "arrays only support heap types");
             return nullptr;
         }
         
         auto createArray = make_shared<NCall>(loc, "array", make_shared<CTypeNameList>(elementType->category, elementType->typeMode, elementType->name, elementType->isOption), make_shared<NodeList>(make_shared<NInteger>(loc, elements->size())));
-        auto storeArray = make_shared<NAssignment>(loc, nullptr, nullptr, arrayName.c_str(), createArray, false);
+        auto storeArray = make_shared<NAssignment>(loc, nullptr, nullptr, arrayName.c_str(), createArray, ASSIGN_Immutable);
         statementVars.push_back(storeArray->getVar(compiler, result, thisFunction, thisVar));
         
         auto index = 0;

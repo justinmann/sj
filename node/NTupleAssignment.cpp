@@ -17,7 +17,7 @@ shared_ptr<CVar> NTupleAssignment::getVarImpl(Compiler* compiler, CResult& resul
         return nullptr;
     }
 
-    auto rightType = rightVar->getType(compiler, result);
+    auto rightType = rightVar->getType(compiler, result, CTM_Undefined);
     if (!rightType) {
         return nullptr;
     }
@@ -35,13 +35,13 @@ shared_ptr<CVar> NTupleAssignment::getVarImpl(Compiler* compiler, CResult& resul
 
     auto tempVarName = TrBlock::nextVarName("tupleResult");
     vector<shared_ptr<CVar>> statements;
-    statements.push_back(NAssignment(loc, nullptr, nullptr, tempVarName.c_str(), rightSide, false).getVar(compiler, result, thisFunction, thisVar));
+    statements.push_back(NAssignment(loc, nullptr, nullptr, tempVarName.c_str(), rightSide, ASSIGN_Immutable).getVar(compiler, result, thisFunction, thisVar));
 
     auto argIndex = 0;
     for (auto arg : *args) {
         auto rightArg = rightFunction->argVars[argIndex];
         auto getValue = make_shared<NDot>(loc, make_shared<NVariable>(loc, tempVarName.c_str()), make_shared<NVariable>(loc, rightArg->name.c_str()));
-        statements.push_back(NAssignment(loc, arg->var, arg->typeName, arg->name.c_str(), getValue, arg->isMutable).getVar(compiler, result, thisFunction, thisVar));
+        statements.push_back(NAssignment(loc, arg->var, arg->typeName, arg->name.c_str(), getValue, arg->assignOp).getVar(compiler, result, thisFunction, thisVar));
         argIndex++;
     }
 

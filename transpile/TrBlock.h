@@ -11,6 +11,7 @@ public:
     bool writeReleaseToStream(TrBlock* block, ostream& stream, int level);
     void addInitToStatements(TrBlock* block);
     void addAssignToStatements(TrBlock* block, string rightName, bool isFirstAssignment);
+    void addCopyToStatements(TrBlock* block, string rightName);
     void addRetainToStatements(TrBlock* block);
     void addReleaseToStatements(TrBlock* block);
 

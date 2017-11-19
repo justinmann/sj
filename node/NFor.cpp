@@ -1,11 +1,11 @@
 #include "Node.h"
 
-shared_ptr<CType> CForIndexVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CForIndexVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
     return compiler->typeI32;
 }
 
 shared_ptr<ReturnValue> CForIndexVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
-    return make_shared<ReturnValue>(getType(compiler, result), name);
+    return make_shared<ReturnValue>(getType(compiler, result, CTM_Undefined), name);
 }
 
 void CForIndexVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
@@ -16,7 +16,7 @@ void CForIndexVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFun
     ss << name;
 }
 
-shared_ptr<CType> CForLoopVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CForLoopVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
     return compiler->typeVoid;
 }
 

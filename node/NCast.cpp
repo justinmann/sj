@@ -1,13 +1,12 @@
 #include "Node.h"
 
-shared_ptr<CType> CCastVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CCastVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
     return typeTo;
 }
 
 shared_ptr<ReturnValue> CCastVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     auto returnValue = var->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, CTM_Undefined, nullptr, thisName);
     if (!returnValue) {
-        assert(false);
         return nullptr;
     }
     
@@ -81,14 +80,19 @@ void NCast::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunc
 }
 
 shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
-    auto type = thisFunction->getVarType(compiler, result, typeName);
-    if (!type) {
-        result.addError(loc, CErrorCode::InvalidType, "type '%s' does not exist", typeName->getName().c_str());
-        return nullptr;
-    }
-    
     auto var = node->getVar(compiler, result, thisFunction, thisVar, nullptr);
     if (!var) {
+        return nullptr;
+    }
+    auto fromType = var->getType(compiler, result, CTM_Undefined);
+
+    if (typeName->typeMode == CTM_Undefined) {
+        typeName->typeMode = fromType->typeMode;
+    }
+
+    auto type = thisFunction->getVarType(compiler, result, typeName, CTM_Undefined);
+    if (!type) {
+        result.addError(loc, CErrorCode::InvalidType, "type '%s' does not exist", typeName->getName().c_str());
         return nullptr;
     }
     

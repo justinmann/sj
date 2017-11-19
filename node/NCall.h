@@ -17,7 +17,7 @@ class CCallVar : public CVar {
 public:
     CCallVar(CLoc loc) : CVar(loc, "", false) {}
     static shared_ptr<CCallVar> create(Compiler* compiler, CResult& result, CLoc loc_, const string& name_, shared_ptr<NodeList> arguments_, shared_ptr<CBaseFunction> thisFunction_, shared_ptr<CThisVar> thisVar, weak_ptr<CVar> dotVar_, shared_ptr<CBaseFunction> callee_);
-    virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
+    virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result, CTypeMode returnMode);
     bool getParameters(Compiler* compiler, CResult& result, vector<pair<bool, shared_ptr<NBase>>>& parameters);
     string fullName();
     virtual shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName);

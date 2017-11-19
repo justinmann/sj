@@ -165,6 +165,7 @@
     <ClInclude Include="..\compiler\Exception.h" />
     <ClInclude Include="..\node\NAnd.h" />
     <ClInclude Include="..\node\NArray.h" />
+    <ClInclude Include="..\node\NCopy.h" />
     <ClInclude Include="..\node\NEmpty.h" />
     <ClInclude Include="..\node\NFunction.h" />
     <ClInclude Include="..\node\NGetOrElse.h" />
@@ -220,6 +221,7 @@
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\node\NAnd.cpp" />
     <ClCompile Include="..\node\NArray.cpp" />
+    <ClCompile Include="..\node\NCopy.cpp" />
     <ClCompile Include="..\node\NEmpty.cpp" />
     <ClCompile Include="..\node\NGetOrElse.cpp" />
     <ClCompile Include="..\node\NGetValue.cpp" />

@@ -1,7 +1,7 @@
 #include "Node.h"
 
-shared_ptr<CType> CMathVar::getType(Compiler* compiler, CResult& result) {
-    return leftVar->getType(compiler, result);
+shared_ptr<CType> CMathVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
+    return leftVar->getType(compiler, result, CTM_Undefined);
 }
 
 shared_ptr<ReturnValue> CMathVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
@@ -86,8 +86,8 @@ shared_ptr<CVar> NMath::getVarImpl(Compiler* compiler, CResult& result, shared_p
         return nullptr;
     }
 
-    auto leftType = leftVar->getType(compiler, result);
-    auto rightType = rightVar->getType(compiler, result);
+    auto leftType = leftVar->getType(compiler, result, CTM_Undefined);
+    auto rightType = rightVar->getType(compiler, result, CTM_Undefined);
     if (!leftType || !rightType) {
         return nullptr;
     }

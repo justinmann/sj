@@ -56,7 +56,7 @@ CInterfaceVar::CInterfaceVar(CLoc loc, shared_ptr<CInterface> interface) : CVar(
 //    parent = interface;
 }
 
-shared_ptr<CType> CInterfaceVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CInterfaceVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
     assert(false);
     return nullptr; // parent.lock()->getThisTypes(compiler, result);
 }
@@ -161,7 +161,7 @@ shared_ptr<CBaseFunction> CInterface::getCFunction(Compiler* compiler, CResult& 
 //    return nullptr;
 //}
 
-shared_ptr<CType> CInterface::getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName) {
+shared_ptr<CType> CInterface::getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName, CTypeMode returnMode) {
     if (typeName->templateTypeNames == nullptr) {
         auto t = templateTypesByName.find(typeName->name);
         if (t != templateTypesByName.end()) {
@@ -170,7 +170,7 @@ shared_ptr<CType> CInterface::getVarType(Compiler* compiler, CResult& result, sh
     }
     
     if (!parent.expired()) {
-        return parent.lock()->getVarType(compiler, result, typeName);
+        return parent.lock()->getVarType(compiler, result, typeName, returnMode);
     }
     
     return compiler->getType(typeName->name);
@@ -204,8 +204,12 @@ string CInterface::getCStructName(CTypeMode typeMode) {
     return "sji_" + getCBaseName(typeMode);
 }
 
-string CInterface::getCDestroyFunctionName(CTypeMode typeMode) {
-    return getCStructName(typeMode) + "_destroy";
+string CInterface::getCCopyFunctionName() {
+    return getCStructName(CTM_Stack) + "_copy";
+}
+
+string CInterface::getCDestroyFunctionName() {
+    return getCStructName(CTM_Stack) + "_destroy";
 }
 
 string CInterface::getCTypeIdName(CTypeMode typeMode) {
@@ -233,19 +237,26 @@ string CInterface::transpileCast(CTypeMode toTypeMode, shared_ptr<CBaseFunction>
 }
 
 void CInterface::transpileDefinition(Compiler* compiler, CResult& result, TrOutput* trOutput, CTypeMode typeMode) {
-    // Create struct
-    string structName = getCStructName(typeMode);
-    if (trOutput->structs.find(structName) == trOutput->structs.end()) {
-        trOutput->structs[structName].push_back("int _refCount");
-        trOutput->structs[structName].push_back("sjs_object* _parent");
-        trOutput->structs[structName].push_back("void (*destroy)(sjs_object* _this)");
-        trOutput->structs[structName].push_back("sjs_object* (*asInterface)(sjs_object* _this, int typeId)");
+    // Create stack struct
+    string stackStructName = getCStructName(CTM_Stack);
+    if (trOutput->structs.find(stackStructName) == trOutput->structs.end()) {
+        trOutput->structs[stackStructName].push_back("sjs_object* _parent");
+        trOutput->structs[stackStructName].push_back("void (*destroy)(sjs_object* _this)");
+        trOutput->structs[stackStructName].push_back("sjs_object* (*asInterface)(sjs_object* _this, int typeId)");
         for (auto method : methods) {
-            trOutput->structs[structName].push_back(method->getCTypeName(compiler, result, true));
+            trOutput->structs[stackStructName].push_back(method->getCTypeName(compiler, result, true));
         }
     }
 
-    string destroyInterfaceName = "void " + getCDestroyFunctionName(typeMode) + "(" + structName + "* _this)";
+    if (typeMode == CTM_Heap) {
+        string heapStructName = getCStructName(CTM_Heap);
+        if (trOutput->structs.find(heapStructName) == trOutput->structs.end()) {
+            trOutput->structs[heapStructName].push_back("int _refCount");
+            trOutput->structs[heapStructName].push_back(stackStructName + " _data");
+        }
+    }
+
+    string destroyInterfaceName = "void " + getCDestroyFunctionName() + "(" + stackStructName + "* _this)";
     if (trOutput->functions.find(destroyInterfaceName) == trOutput->functions.end()) {
         auto destroyBlock = make_shared<TrBlock>();
         destroyBlock->definition = destroyInterfaceName;

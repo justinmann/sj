@@ -1,8 +1,8 @@
 #include "Node.h"
 
-shared_ptr<CType> CValueVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CValueVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
     assert(compiler->state >= CompilerState::FixVar);
-    auto leftType = var->getType(compiler, result);
+    auto leftType = var->getType(compiler, result, returnMode);
     if (!leftType) {
         return nullptr;
     }
@@ -65,7 +65,7 @@ shared_ptr<CVar> NValue::getVarImpl(Compiler* compiler, CResult& result, shared_
         return nullptr;
     }
 
-    auto leftType = leftVar->getType(compiler, result);
+    auto leftType = leftVar->getType(compiler, result, CTM_Undefined);
     if (!leftType) {
         return nullptr;
     }

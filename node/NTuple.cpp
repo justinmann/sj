@@ -21,7 +21,7 @@ shared_ptr<CVar> NTuple::getVarImpl(Compiler* compiler, CResult& result, shared_
     auto typeNameList = make_shared<CTypeNameList>();
     for (auto element : *elements) {
         auto elementVar = element->getVar(compiler, result, thisFunction, thisVar);
-        auto ctype = elementVar->getType(compiler, result);
+        auto ctype = elementVar->getType(compiler, result, CTM_Undefined);
         typeNameList->push_back(make_shared<CTypeName>(ctype));
     }
 

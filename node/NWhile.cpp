@@ -1,6 +1,6 @@
 #include "Node.h"
 
-shared_ptr<CType> CWhileVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CWhileVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
     return compiler->typeVoid;
 }
 

@@ -50,6 +50,7 @@ void updateLocation(YYLOCATION& loc, const char* s, const int len) {
 "//".*					TOKEN_VAL(TEND);
 "as"					TOKEN_VAL(TAS);
 "throw"					TOKEN_VAL(TTHROW);
+"copy"					TOKEN_VAL(TCOPY);
 "catch"					TOKEN_VAL(TCATCH);
 "destroy"				TOKEN_VAL(TDESTROY);
 "true"					TOKEN_VAL(TTRUE);
@@ -57,7 +58,9 @@ void updateLocation(YYLOCATION& loc, const char* s, const int len) {
 "void"					TOKEN_VAL(TVOID);
 "stack"					TOKEN_VAL(TSTACK);
 "heap"					TOKEN_VAL(THEAP);
-"matchReturn"			TOKEN_VAL(TMATCHRETURN);
+"local"					TOKEN_VAL(TLOCAL);
+":copy"					TOKEN_VAL(TCOLONCOPY);
+"=copy"					TOKEN_VAL(TEQUALCOPY);
 "i32"					TOKEN_VAL(TTYPEI32);
 "u32"					TOKEN_VAL(TTYPEU32);
 "f32"					TOKEN_VAL(TTYPEF32);

@@ -21,8 +21,8 @@ shared_ptr<CParentDotVar> CParentDotVar::create(CLoc loc, Compiler *compiler, CR
     return c;
 }
 
-shared_ptr<CType> CParentDotVar::getType(Compiler* compiler, CResult& result) {
-    return childVar->getType(compiler, result);
+shared_ptr<CType> CParentDotVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
+    return childVar->getType(compiler, result, returnMode);
 }
 
 //string CParentVar::fullName() {
@@ -91,7 +91,7 @@ NVariable::NVariable(CLoc loc, const char* name) : NVariableBase(NodeType_Variab
 shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
     auto cfunction = thisFunction;
     if (dotVar) {
-        auto dotType = dotVar->getType(compiler, result);
+        auto dotType = dotVar->getType(compiler, result, CTM_Undefined);
         cfunction = static_pointer_cast<CFunction>(dotType->parent.lock());
     }
     

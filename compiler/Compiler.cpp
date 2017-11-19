@@ -343,7 +343,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 
 	auto result = genNodeFile(fileName);
 	if (result->errors.size() == 0) {
-		anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, nullptr, "global", nullptr, nullptr, nullptr, result->block, nullptr, nullptr);
+		anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, nullptr, "global", nullptr, nullptr, nullptr, result->block, nullptr, nullptr, nullptr);
 		currentFunctionDefintion = CFunctionDefinition::create(this, *result, nullptr, FT_Public, "", nullptr, nullptr);
 		state = CompilerState::Define;
         anonFunction->define(this, *result, currentFunctionDefintion);
@@ -376,7 +376,8 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                         map<shared_ptr<CBaseFunction>, string> functionDumps;
                         stringstream ss;
                         stringstream dotSS;
-                        globalVar->dump(this, *result, nullptr, nullptr, CTM_Stack, nullptr, functionDumps, ss, dotSS, 0);
+                        globalFunction->dumpBody(this, *result, CTM_Stack, functionDumps, ss, 0);
+                        // globalVar->dump(this, *result, nullptr, nullptr, CTM_Stack, nullptr, functionDumps, ss, dotSS, 0);
                         
                         vector<pair<string, string>> functionNames;
                         for (auto it : functionDumps) {
@@ -391,7 +392,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                         for (auto it : functionNames) {
                             *debugStream << it.second << "\n\n";
                         }
-                        *debugStream << "global()'void " << ss.str() << "\n\n";
+                        *debugStream << ss.str() << "\n\n";
                     }
 
 					state = CompilerState::Compile;  

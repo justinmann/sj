@@ -12,8 +12,8 @@ shared_ptr<CDotVar> CDotVar::create(CLoc loc, shared_ptr<CVar> leftVar_, shared_
     return c;
 }
 
-shared_ptr<CType> CDotVar::getType(Compiler* compiler, CResult& result) {
-    return rightVar->getType(compiler, result);
+shared_ptr<CType> CDotVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
+    return rightVar->getType(compiler, result, CTM_Undefined);
 }
 
 //string CDotVar::fullName() {

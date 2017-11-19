@@ -9,7 +9,10 @@ shared_ptr<CVar> NOptionDot::getVarImpl(Compiler* compiler, CResult& result, sha
     auto getValueNode = make_shared<NGetValue>(loc, left, true);
     auto localDotNode = make_shared<NDot>(loc, getValueNode, right);
     auto localDotVar = localDotNode->getVar(compiler, result, thisFunction, thisVar, dotVar);
-    auto ctype = localDotVar->getType(compiler, result);
+    if (!localDotVar) {
+        return nullptr;
+    }
+    auto ctype = localDotVar->getType(compiler, result, CTM_Undefined);
     if (ctype == compiler->typeVoid) {
         auto ifNode = make_shared<NIf>(loc, make_shared<NNot>(loc, make_shared<NIsEmpty>(loc, left)), localDotNode, nullptr);
         return ifNode->getVar(compiler, result, thisFunction, thisVar, dotVar);

@@ -1,19 +1,19 @@
 #include "Node.h"
 
-shared_ptr<CType> CIfElseVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CIfElseVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
     if (elseVar) {
-        return elseVar->getType(compiler, result);
+        return elseVar->getType(compiler, result, returnMode);
     }
     
     if (ifVar) {
-        return ifVar->getType(compiler, result);
+        return ifVar->getType(compiler, result, returnMode);
     }
     
     return nullptr;
 }
 
 shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
-    auto type = getType(compiler, result);
+    auto type = getType(compiler, result, CTM_Undefined);
     shared_ptr<ReturnValue> trResultVar;
     if (type != compiler->typeVoid) {
         trResultVar = trBlock->createTempVariable(type, "ifResult");
@@ -109,6 +109,9 @@ void NIf::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFuncti
 
 shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
     auto condVar = condition->getVar(compiler, result, thisFunction, thisVar);
+    if (condVar == nullptr) {
+        return nullptr;
+    }
     
     shared_ptr<CVar> elseVar;
     if (elseBlock) {
@@ -116,8 +119,9 @@ shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, CResult& result, shared_ptr
     }
     
     shared_ptr<CVar> ifVar;
-    if (ifBlock) {
-        ifVar = ifBlock->getVar(compiler, result, thisFunction, thisVar);
+    ifVar = ifBlock->getVar(compiler, result, thisFunction, thisVar);
+    if (condVar == nullptr) {
+        return nullptr;
     }
     
     return make_shared<CIfElseVar>(loc, condVar, ifVar, elseVar);

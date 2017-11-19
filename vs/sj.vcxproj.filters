@@ -186,6 +186,9 @@
     <ClInclude Include="..\node\NFunction.h">
       <Filter>Node</Filter>
     </ClInclude>
+    <ClInclude Include="..\node\NCopy.h">
+      <Filter>Node</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\node\NAnd.cpp">
@@ -342,6 +345,9 @@
       <Filter>Node</Filter>
     </ClCompile>
     <ClCompile Include="..\node\NParent.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NCopy.cpp">
       <Filter>Node</Filter>
     </ClCompile>
   </ItemGroup>

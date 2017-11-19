@@ -1,7 +1,7 @@
 #include "Node.h"
 #include <climits>
 
-shared_ptr<CType> CConstantVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CConstantVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
     return type;
 }
 
@@ -26,6 +26,12 @@ void CConstantVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFun
     }
     else if (type == compiler->typeU64) {
         ss << "v";
+    }
+    else if (type == compiler->typeF32) {
+        ss << "f";
+    }
+    else if (type == compiler->typeF64) {
+        ss << "d";
     }
 }
 

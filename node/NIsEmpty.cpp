@@ -1,6 +1,6 @@
 #include "Node.h"
 
-shared_ptr<CType> CIsEmptyVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CIsEmptyVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
     return compiler->typeBool;
 }
 
@@ -47,7 +47,7 @@ shared_ptr<CVar> NIsEmpty::getVarImpl(Compiler* compiler, CResult& result, share
         return nullptr;
     }
 
-    auto leftType = leftVar->getType(compiler, result);
+    auto leftType = leftVar->getType(compiler, result, CTM_Undefined);
     if (!leftType) {
         return nullptr;
     }

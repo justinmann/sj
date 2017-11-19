@@ -15,13 +15,14 @@ void NMathAssignment::defineImpl(Compiler* compiler, CResult& result, shared_ptr
 
 shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar) {
     auto leftVar = leftSide->getVar(compiler, result, thisFunction, thisVar, nullptr);
-
     if (!leftVar) {
+        result.addError(loc, CErrorCode::InvalidVariable, "left side is empty");
         return nullptr;
     }
 
-    auto leftType = leftVar->getType(compiler, result);
+    auto leftType = leftVar->getType(compiler, result, CTM_Undefined);
     if (!leftType) {
+        result.addError(loc, CErrorCode::InvalidType, "left type is empty");
         return nullptr;
     }
 
@@ -62,12 +63,12 @@ shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result
     else {
         shared_ptr<CVar> numberVar;
         if (numberSide) {
-            auto numberVar = numberSide->getVar(compiler, result, thisFunction, thisVar, nullptr);
+            numberVar = numberSide->getVar(compiler, result, thisFunction, thisVar, nullptr);
             if (!numberVar) {
                 return nullptr;
             }
             
-            auto numberType = rightVar->getType(compiler, result);
+            auto numberType = numberVar->getType(compiler, result, CTM_Undefined);
             if (!numberType) {
                 return nullptr;
             }

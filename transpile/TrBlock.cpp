@@ -80,7 +80,7 @@ void TrBlock::writeStackValuesReleaseToStream(ostream& stream, int level) {
     {
         if (!stackValue.second->parent.expired()) {
             addSpacing(stream, level);
-            stream << stackValue.second->parent.lock()->getCDestroyFunctionName(stackValue.second->typeMode) << "(&" << stackValue.first << ");\n";
+            stream << stackValue.second->parent.lock()->getCDestroyFunctionName() << "(&" << stackValue.first << ");\n";
         }
     }
 }
@@ -174,7 +174,7 @@ bool ReturnValue::writeReleaseToStream(TrBlock* block, ostream& stream, int leve
         TrBlock::addSpacing(stream, level);
         stream << "if (" << name << "->_refCount <= 0) {\n";
         TrBlock::addSpacing(stream, level + 1);
-        stream << type->parent.lock()->getCDestroyFunctionName(type->typeMode) << "(" << name << ");\n";
+        stream << type->parent.lock()->getCDestroyFunctionName() << "(&" << name << "->data);\n";
 
         TrBlock::addSpacing(stream, level + 1);
         stream << "free(" << name << ");\n";
@@ -222,7 +222,7 @@ void ReturnValue::addReleaseToStatements(TrBlock* block) {
         innerBlock->statements.push_back(TrStatement(ifStream.str(), ifBlock));
 
         stringstream destroyStream;
-        destroyStream << type->parent.lock()->getCDestroyFunctionName(type->typeMode) << "(" << name << ")";
+        destroyStream << type->parent.lock()->getCDestroyFunctionName() << "(&" << name << "->data)";
         ifBlock->statements.push_back(destroyStream.str());
 
         stringstream freeStream;
@@ -305,4 +305,11 @@ void ReturnValue::addAssignToStatements(TrBlock* block, string rightName, bool i
     block->statements.push_back(lineStream.str());
     
     addRetainToStatements(block);
+}
+
+void ReturnValue::addCopyToStatements(TrBlock* block, string rightName) {
+    if (type->typeMode == CTM_Stack) {
+
+    }
+
 }

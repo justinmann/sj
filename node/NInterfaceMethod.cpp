@@ -37,7 +37,7 @@ NInterfaceMethod::NInterfaceMethod(CLoc loc, const char* name, shared_ptr<CTypeN
 //    ss << ")'" << returnTypeName->getName();
 //}
 
-shared_ptr<CType> CInterfaceMethodReturnVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CInterfaceMethodReturnVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
     return returnType;
 }
 
@@ -55,7 +55,7 @@ void CInterfaceMethodReturnVar::dump(Compiler* compiler, CResult& result, shared
 }
 
 
-shared_ptr<CType> CInterfaceMethodArgVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CInterfaceMethodArgVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
     return returnType;
 }
 
@@ -79,14 +79,14 @@ CInterfaceMethod::CInterfaceMethod(string& name, weak_ptr<CInterface> parent, in
 shared_ptr<CInterfaceMethod> CInterfaceMethod::init(Compiler* compiler, CResult& result, shared_ptr<NInterfaceMethod> method, shared_ptr<CBaseFunction> thisFunction) {
     hasParent = true;
     loc = method->loc;
-    returnType = getVarType(compiler, result, method->returnTypeName);
+    returnType = getVarType(compiler, result, method->returnTypeName, CTM_Undefined);
     if (!returnType) {
         result.addError(method->loc, CErrorCode::InvalidType, "type '%s' is not defined", method->returnTypeName->name.c_str());
         return nullptr;
     }
     
     
-    assert(false); // might need to pass in returntype to the init method
+    // TODO: assert(false); // might need to pass in returntype to the init method
 
     for (auto it : method->assignments) {
         if (it->var) {
@@ -117,7 +117,6 @@ string CInterfaceMethod::fullName(bool includeTemplateTypes) {
 }
 
 bool CInterfaceMethod::getHasThis() {
-    assert(false);
     return false;
 }
 
@@ -173,7 +172,7 @@ string CInterfaceMethod::getCTypeName(Compiler* compiler, CResult& result, bool 
         if (includeNames) {
             ss << " ";
         }
-        ss << argVar->getType(compiler, result)->nameRef;
+        ss << argVar->getType(compiler, result, CTM_Undefined)->nameRef;
         if (includeNames) {
             ss << " " << argVar->name;
         }
@@ -194,9 +193,9 @@ string CInterfaceMethod::getCTypeName(Compiler* compiler, CResult& result, bool 
 //    return nullptr;
 //}
 
-shared_ptr<CType> CInterfaceMethod::getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName) {
+shared_ptr<CType> CInterfaceMethod::getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName, CTypeMode returnMode) {
     if (!parent.expired()) {
-        return parent.lock()->getVarType(compiler, result, typeName);
+        return parent.lock()->getVarType(compiler, result, typeName, returnMode);
     }
     
     return compiler->getType(typeName->name);
@@ -211,7 +210,12 @@ string CInterfaceMethod::getCInitFunctionName(CTypeMode typeMode) {
     return "";
 }
 
-string CInterfaceMethod::getCDestroyFunctionName(CTypeMode typeMode) {
+string CInterfaceMethod::getCCopyFunctionName() {
+    assert(false);
+    return "";
+}
+
+string CInterfaceMethod::getCDestroyFunctionName() {
     assert(false);
     return "";
 }
@@ -223,7 +227,6 @@ void CInterfaceMethod::transpileDefinition(Compiler* compiler, CResult& result, 
 shared_ptr<ReturnValue> CInterfaceMethod::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> calleeValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, const char* thisName, CTypeMode returnMode) {
     assert(compiler->state == CompilerState::Compile);
     assert(calleeValue != nullptr);
-    assert(false);
 
     auto returnType = getReturnType(compiler, result, returnMode);
     if (!returnType) {
@@ -250,7 +253,7 @@ shared_ptr<ReturnValue> CInterfaceMethod::transpile(Compiler* compiler, CResult&
     // Fill in "this" with normal arguments
     for (auto defaultAssignment : argDefaultValues) {
         auto argVar = argVars[argIndex];
-        auto argType = argVar->getType(compiler, result); // TODO: this seems wrong
+        auto argType = argVar->getType(compiler, result, CTM_Undefined); // TODO: this seems wrong
         auto isDefaultAssignment = parameters[argIndex].second == defaultAssignment;
         assert(isDefaultAssignment == parameters[argIndex].first);
         shared_ptr<ReturnValue> argReturnValue;

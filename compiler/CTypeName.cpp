@@ -23,10 +23,6 @@ shared_ptr<CTypeName> CTypeName::parse(string name) {
         typeMode = CTM_Heap;
         name = name.substr(5, name.size() - 5);
     }
-    else if (name.find("matchReturn ") == 0) {
-        typeMode = CTM_MatchReturn;
-        name = name.substr(12, name.size() - 12);
-    }
     else {
         typeMode = CTM_Undefined;
     }

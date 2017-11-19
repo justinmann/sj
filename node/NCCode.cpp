@@ -1,6 +1,6 @@
 #include "Node.h"
 
-shared_ptr<CType> CCCodeVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CCCodeVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
     return compiler->typeVoid;
 }
 
@@ -114,7 +114,7 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
             result.addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", param.c_str());
         }
 
-        auto ctype = thisFunction->getVarType(compiler, result, ctypeName);
+        auto ctype = thisFunction->getVarType(compiler, result, ctypeName, CTM_Undefined);
         if (ctype) {
             return ctype->nameRef;
         }
@@ -123,7 +123,6 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
         }
     }
     else if (functionName.compare("function") == 0) {
-        assert(false); // This only supports the function that returns heap
         auto ctypeName = CTypeName::parse(param);
         if (!ctypeName) {
             result.addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", param.c_str());
@@ -132,8 +131,8 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
         auto cfunction = static_pointer_cast<CFunction>(thisFunction->getCFunction(compiler, result, ctypeName->name, thisFunction, ctypeName->argTypeNames));
         if (cfunction) {
             _functions[thisFunction.get()].push_back(cfunction);
-            assert(false); // Do they want the stack or heap version
-            // TODO: return cfunction->getCInitFunctionName(CTM_Heap);
+            // Do they want the stack or heap version
+            return cfunction->getCInitFunctionName(CTM_Heap);
         }
         else {
             result.addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", param.c_str());
@@ -149,7 +148,7 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
             result.addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", typeName.c_str());
         }
 
-        auto ctype = thisFunction->getVarType(compiler, result, ctypeName);
+        auto ctype = thisFunction->getVarType(compiler, result, ctypeName, CTM_Undefined);
         if (ctype) {
             stringstream retainStream;
             if (!ctype->parent.expired()) {
@@ -171,7 +170,7 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
             result.addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", typeName.c_str());
         }
 
-        auto ctype = thisFunction->getVarType(compiler, result, ctypeName);
+        auto ctype = thisFunction->getVarType(compiler, result, ctypeName, CTM_Undefined);
         if (ctype) {
             stringstream releaseStream;
             ReturnValue(ctype, varName).writeReleaseToStream(nullptr, releaseStream, 0);
@@ -187,7 +186,7 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
             result.addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", param.c_str());
         }
 
-        auto ctype = thisFunction->getVarType(compiler, result, ctypeName);
+        auto ctype = thisFunction->getVarType(compiler, result, ctypeName, CTM_Undefined);
         if (ctype) {
             return ctype->parent.expired() ? "true" : "false";
         }
