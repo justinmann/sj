@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -79,7 +78,6 @@ void sjf_func(int32_t x, int32_t* _return) {
 int main() {
     int32_t result1;
 
-    result1 = 0;
     sjf_func(1, &result1);
     return 0;
 }

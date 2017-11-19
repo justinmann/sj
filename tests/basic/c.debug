@@ -1,7 +1,7 @@
 global()'void {
   c{
 
-	#include(<stdio.h>)
+	
 	printf("hi");
 
 }c

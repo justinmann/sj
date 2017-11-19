@@ -1,6 +1,6 @@
 global()'void {
-  [stack]a'i32 : 0i
-  a++
+  a'i32 : 0i
+  a'i32 = a + 1i
   void
 }
 

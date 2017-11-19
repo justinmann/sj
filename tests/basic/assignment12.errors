@@ -1,1 +1,1 @@
-ERROR:2 basic/assignment12.sj[1:8] left and right values are not the same type
+ERROR:2 basic/assignment12.sj[1:8] left type 'i32' does not match right type 'f64'
