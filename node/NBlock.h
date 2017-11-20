@@ -13,7 +13,7 @@
 
 class CBlockVar : public CVar {
 public:
-    CBlockVar(CLoc loc, shared_ptr<CBaseFunction> scope, vector<shared_ptr<CVar>> statements) : CVar(loc, scope, "", false), statements(statements) { }
+    CBlockVar(CLoc& loc, shared_ptr<CBaseFunction> scope, vector<shared_ptr<CVar>> statements) : CVar(loc, scope, "", false), statements(statements) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -25,8 +25,8 @@ private:
 
 class NBlock : public NVariableBase {
 public:
-    NBlock(CLoc loc) : NVariableBase(NodeType_Block, loc) { }
-    NBlock(CLoc loc, NodeList statements) : NVariableBase(NodeType_Block, loc), statements(statements) { }
+    NBlock(CLoc& loc) : NVariableBase(NodeType_Block, loc) { }
+    NBlock(CLoc& loc, NodeList statements) : NVariableBase(NodeType_Block, loc), statements(statements) { }
     void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode);
     

@@ -20,7 +20,7 @@ void CAssignVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutp
         return;
     }
     
-    storeValue->setValue(compiler, result, loc, trBlock, leftStoreValue->getValue());
+    storeValue->setValue(compiler, result, trBlock, leftStoreValue->getValue());
 }
 
 void CAssignVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
@@ -36,7 +36,7 @@ void CAssignVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotV
     }
 }
 
-NAssignment::NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTypeName> typeName, const char* name, shared_ptr<NBase> rightSide_, AssignOp op) : NBase(NodeType_Assignment, loc), var(var), typeName(typeName), name(name), inFunctionDeclaration(false), rightSide(rightSide_), op(op), _isFirstAssignment(false) {
+NAssignment::NAssignment(CLoc& loc, shared_ptr<NVariableBase> var, shared_ptr<CTypeName> typeName, const char* name, shared_ptr<NBase> rightSide_, AssignOp op) : NBase(NodeType_Assignment, loc), var(var), typeName(typeName), name(name), inFunctionDeclaration(false), rightSide(rightSide_), op(op), _isFirstAssignment(false) {
     // If we are assigning a function to a var then we will call the function to get its value
     if (rightSide && rightSide->nodeType == NodeType_Function) {
         nfunction = static_pointer_cast<NFunction>(rightSide);
@@ -156,7 +156,7 @@ shared_ptr<CType> NAssignment::getType(Compiler* compiler, CResult& result, shar
     assert(compiler->state >= CompilerState::FixVar);
 
     if (typeName) {
-        auto valueType = thisFunction->getVarType(compiler, result, typeName);
+        auto valueType = thisFunction->getVarType(loc, compiler, result, typeName, returnMode);
         if (!valueType) {
             result.addError(loc, CErrorCode::InvalidType, "explicit type '%s' does not exist", typeName->name.c_str());
             return nullptr;

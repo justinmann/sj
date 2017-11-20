@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -60,131 +59,78 @@ struct td_double_option {
 };
 const double_option double_empty = { true };
 
-#define sjs_bar_typeId 1
+#define sjs_object_typeId 1
 #define sjs_foo_typeId 2
-#define sjs_object_typeId 3
+#define sjs_bar_typeId 3
 
-typedef struct td_sjs_bar sjs_bar;
-typedef struct td_sjs_foo sjs_foo;
 typedef struct td_sjs_object sjs_object;
-
-struct td_sjs_bar {
-    int _refCount;
-    sjs_foo* f;
-};
-
-struct td_sjs_foo {
-    int _refCount;
-    int32_t x;
-};
+typedef struct td_sjs_foo sjs_foo;
+typedef struct td_sjs_bar sjs_bar;
 
 struct td_sjs_object {
     int _refCount;
 };
 
-void sjf_bar(sjs_bar* _this, sjs_bar** _return);
+struct td_sjs_foo {
+    int32_t x;
+};
+
+struct td_sjs_bar {
+    sjs_foo f;
+};
+
+void sjf_bar(sjs_bar* _this);
+void sjf_bar_copy(sjs_bar* _this, sjs_bar* to);
 void sjf_bar_destroy(sjs_bar* _this);
-void sjf_foo(sjs_foo* _this, sjs_foo** _return);
+void sjf_foo(sjs_foo* _this);
+void sjf_foo_copy(sjs_foo* _this, sjs_foo* to);
 void sjf_foo_destroy(sjs_foo* _this);
-void sjf_func(sjs_bar* b, sjs_foo** _return);
+void sjf_func(sjs_bar b, sjs_foo* _return);
 
-sjs_bar sjd_temp1;
 
-void sjf_bar(sjs_bar* _this, sjs_bar** _return) {
-    _this->_refCount++;
-    printf("RETAIN\tsjs_bar*\t%0x\tvoid sjf_bar(sjs_bar* _this, sjs_bar** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
+void sjf_bar(sjs_bar* _this) {
+}
 
-    *_return = _this;
+void sjf_bar_copy(sjs_bar* _this, sjs_bar* to) {
+    sjf_foo_copy(&_this->f, &to->f);
 }
 
 void sjf_bar_destroy(sjs_bar* _this) {
-    _this->f->_refCount--;
-    printf("RELEASE\tsjs_foo*\t%0x\tvoid sjf_bar_destroy(sjs_bar* _this)\t%d\n", (uintptr_t)_this->f, _this->f->_refCount);;
-    if (_this->f->_refCount <= 0) {
-        sjf_foo_destroy(_this->f);
-        free(_this->f);
-    }
 }
 
-void sjf_foo(sjs_foo* _this, sjs_foo** _return) {
-    _this->_refCount++;
-    printf("RETAIN\tsjs_foo*\t%0x\tvoid sjf_foo(sjs_foo* _this, sjs_foo** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
+void sjf_foo(sjs_foo* _this) {
+}
 
-    *_return = _this;
+void sjf_foo_copy(sjs_foo* _this, sjs_foo* to) {
+    _this->x = to->x;
 }
 
 void sjf_foo_destroy(sjs_foo* _this) {
 }
 
-void sjf_func(sjs_bar* b, sjs_foo** _return) {
-    sjs_foo* sjv_temp3;
+void sjf_func(sjs_bar b, sjs_foo* _return) {
+    sjs_bar* dot2;
 
-    sjv_temp3 = (sjs_foo*)malloc(sizeof(sjs_foo));
-    sjv_temp3->_refCount = 1;
-    printf("RETAIN\tsjs_foo*\t%0x\tvoid sjf_func(sjs_bar* b, sjs_foo** _return)\t%d\n", (uintptr_t)sjv_temp3, sjv_temp3->_refCount);;
-    sjv_temp3->x = 2;
-    sjf_foo(sjv_temp3, &sjv_temp3);
-    b->f->_refCount--;
-    printf("RELEASE\tsjs_foo*\t%0x\tvoid sjf_func(sjs_bar* b, sjs_foo** _return)\t%d\n", (uintptr_t)b->f, b->f->_refCount);;
-    if (b->f->_refCount <= 0) {
-        sjf_foo_destroy(b->f);
-        free(b->f);
-    }
+    dot2 = &b;
+    dot2->f.x = 2;
+    sjf_foo(&dot2->f);
 
-    b->f = sjv_temp3;
-    b->f->_refCount++;
-    printf("RETAIN\tsjs_foo*\t%0x\tvoid sjf_func(sjs_bar* b, sjs_foo** _return)\t%d\n", (uintptr_t)b->f, b->f->_refCount);;
-    sjv_temp3->_refCount++;
-    printf("RETAIN\tsjs_foo*\t%0x\tvoid sjf_func(sjs_bar* b, sjs_foo** _return)\t%d\n", (uintptr_t)sjv_temp3, sjv_temp3->_refCount);;
-
-    sjv_temp3->_refCount--;
-    printf("RELEASE\tsjs_foo*\t%0x\tvoid sjf_func(sjs_bar* b, sjs_foo** _return)\t%d\n", (uintptr_t)sjv_temp3, sjv_temp3->_refCount);
-    if (sjv_temp3->_refCount <= 0) {
-        sjf_foo_destroy(sjv_temp3);
-        free(sjv_temp3);
-    }
-
-    *_return = sjv_temp3;
+    *_return = dot2->f;
 }
 
 int main() {
-    sjs_bar* b;
+    sjs_bar b;
+    sjs_foo* dot1;
     int32_t dotTemp1;
-    sjs_foo* result1;
-    sjs_bar* sjv_temp1;
-    sjs_foo* sjv_temp2;
+    sjs_bar* param1;
 
-    sjv_temp1 = &sjd_temp1;
-    sjv_temp1->_refCount = 1;
-    printf("RETAIN\tsjs_bar*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
-    sjv_temp2 = (sjs_foo*)malloc(sizeof(sjs_foo));
-    sjv_temp2->_refCount = 1;
-    printf("RETAIN\tsjs_foo*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp2, sjv_temp2->_refCount);;
-    sjv_temp2->x = 1;
-    sjf_foo(sjv_temp2, &sjv_temp2);
-    sjv_temp1->f = sjv_temp2;
-    sjv_temp1->f->_refCount++;
-    printf("RETAIN\tsjs_foo*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1->f, sjv_temp1->f->_refCount);;
-    sjf_bar(sjv_temp1, &sjv_temp1);
-    b = sjv_temp1;
-    b->_refCount++;
-    printf("RETAIN\tsjs_bar*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)b, b->_refCount);;
-    result1 = 0;
-    sjf_func(b, &result1);
-    dotTemp1 = result1->x;
+    b.f.x = 1;
+    sjf_foo(&b.f);
+    sjf_bar(&b);
+    param1 = &b;
+    sjf_func(param1, &dot1);
+    dotTemp1 = dot1->x;
 
-    result1->_refCount--;
-    printf("RELEASE\tsjs_foo*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result1, result1->_refCount);
-    if (result1->_refCount <= 0) {
-        sjf_foo_destroy(result1);
-        free(result1);
-    }
-    sjv_temp2->_refCount--;
-    printf("RELEASE\tsjs_foo*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp2, sjv_temp2->_refCount);
-    if (sjv_temp2->_refCount <= 0) {
-        sjf_foo_destroy(sjv_temp2);
-        free(sjv_temp2);
-    }
-    assert(sjd_temp1._refCount == 0);
+    sjf_bar_destroy(&b);
     return 0;
 }

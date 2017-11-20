@@ -71,7 +71,6 @@ public:
     shared_ptr<CType> getHeapValueType();
     shared_ptr<CType> getHeapOptionType();
     shared_ptr<CType> getStackValueType();
-    shared_ptr<CType> getStackOptionType();
     shared_ptr<CType> getLocalType();
     shared_ptr<CType> getLocalValueType();
     shared_ptr<CType> getLocalOptionType();

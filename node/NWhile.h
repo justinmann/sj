@@ -11,7 +11,7 @@
 
 class CWhileVar : public CVar {
 public:
-    CWhileVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CVar> condVar, shared_ptr<CVar> bodyVar) : CVar(loc, scope, "", false), condVar(condVar), bodyVar(bodyVar) { }
+    CWhileVar(CLoc& loc, shared_ptr<CBaseFunction> scope, shared_ptr<CVar> condVar, shared_ptr<CVar> bodyVar) : CVar(loc, scope, "", false), condVar(condVar), bodyVar(bodyVar) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -27,7 +27,7 @@ public:
     shared_ptr<NBase> cond;
     shared_ptr<NBase> body;
     
-    NWhile(CLoc loc, shared_ptr<NBase> cond, shared_ptr<NBase> body) : NBase(NodeType_While, loc), cond(cond), body(body) { }
+    NWhile(CLoc& loc, shared_ptr<NBase> cond, shared_ptr<NBase> body) : NBase(NodeType_While, loc), cond(cond), body(body) { }
     void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode);
 };

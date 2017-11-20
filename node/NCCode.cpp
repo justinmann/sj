@@ -113,7 +113,7 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
             result.addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", param.c_str());
         }
 
-        auto ctype = thisFunction->getVarType(compiler, result, ctypeName);
+        auto ctype = thisFunction->getVarType(loc, compiler, result, ctypeName, CTM_Undefined);
         if (ctype) {
             return ctype->cname;
         }
@@ -163,7 +163,7 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
             result.addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", typeName.c_str());
         }
 
-        auto ctype = thisFunction->getVarType(compiler, result, ctypeName);
+        auto ctype = thisFunction->getVarType(loc, compiler, result, ctypeName, CTM_Undefined);
         if (ctype) {
             stringstream retainStream;
             if (!ctype->parent.expired()) {
@@ -185,10 +185,10 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
             result.addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", typeName.c_str());
         }
 
-        auto ctype = thisFunction->getVarType(compiler, result, ctypeName);
+        auto ctype = thisFunction->getVarType(loc, compiler, result, ctypeName, CTM_Undefined);
         if (ctype) {
             stringstream releaseStream;
-            TrValue(ctype, varName).writeReleaseToStream(nullptr, releaseStream, 0);
+            TrValue(thisFunction, ctype, varName).writeReleaseToStream(nullptr, releaseStream, 0);
             return releaseStream.str();
         }
         else {
@@ -201,7 +201,7 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
             result.addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", param.c_str());
         }
 
-        auto ctype = thisFunction->getVarType(compiler, result, ctypeName);
+        auto ctype = thisFunction->getVarType(loc, compiler, result, ctypeName, CTM_Undefined);
         if (ctype) {
             return ctype->parent.expired() ? "true" : "false";
         }

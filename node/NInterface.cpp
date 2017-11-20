@@ -1,6 +1,6 @@
 #include "Node.h"
 
-NInterface::NInterface(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> methodList_) : NBaseFunction(NodeType_Interface, loc), name(name), templateTypeNames(templateTypeNames) {
+NInterface::NInterface(CLoc& loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> methodList_) : NBaseFunction(NodeType_Interface, loc), name(name), templateTypeNames(templateTypeNames) {
     if (methodList_) {
         for (auto it : *methodList_) {
             assert(it->nodeType == NodeType_InterfaceMethod);
@@ -52,7 +52,7 @@ shared_ptr<NInterface> NInterface::shared_from_this() {
     return static_pointer_cast<NInterface>(NBase::shared_from_this());
 }
 
-CInterfaceVar::CInterfaceVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CInterface> interface) : CVar(loc, scope, "", false) {
+CInterfaceVar::CInterfaceVar(CLoc& loc, shared_ptr<CBaseFunction> scope, shared_ptr<CInterface> interface) : CVar(loc, scope, "", false) {
 //    parent = interface;
 }
 
@@ -73,7 +73,7 @@ void CInterfaceVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> d
     assert(false);
 }
 
-CInterface::CInterface(CLoc loc, weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent, CTypeMode returnMode) : CBaseFunction(CFT_Interface, definition.lock()->name, parent, definition), loc(loc), _returnMode(returnMode) {
+CInterface::CInterface(CLoc& loc, weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent, CTypeMode returnMode) : CBaseFunction(CFT_Interface, definition.lock()->name, parent, definition), loc(loc), _returnMode(returnMode) {
     setHasThis();
 }
 
@@ -151,7 +151,7 @@ shared_ptr<CBaseFunction> CInterface::getCFunction(Compiler* compiler, CResult& 
     return nullptr;
 }
 
-shared_ptr<CType> CInterface::getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName) {
+shared_ptr<CType> CInterface::getVarType(CLoc& loc, Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
     if (typeName->templateTypeNames == nullptr) {
         auto t = templateTypesByName.find(typeName->name);
         if (t != templateTypesByName.end()) {
@@ -160,7 +160,7 @@ shared_ptr<CType> CInterface::getVarType(Compiler* compiler, CResult& result, sh
     }
     
     if (!parent.expired()) {
-        return parent.lock()->getVarType(compiler, result, typeName);
+        return parent.lock()->getVarType(loc, compiler, result, typeName, defaultMode);
     }
     
     return compiler->getType(typeName->name);
@@ -229,12 +229,12 @@ void CInterface::transpileCast(Compiler* compiler, CResult& result, TrOutput* tr
         auto fromInterface = static_pointer_cast<CInterface>(fromValue->type->parent.lock());
         stringstream line;
         line << "(" << getCStructName(toValue->type->typeMode) << "*)" << fromValue->name << "->asInterface(" << fromValue->name << "->_parent, " << getCTypeIdName() << ")";
-        toValue->setValue(compiler, result, loc, trBlock, make_shared<TrValue>(toValue->type, line.str()));
+        toValue->setValue(compiler, result, trBlock, make_shared<TrValue>(nullptr, toValue->type, line.str()));
     }
     else {
         stringstream line;
         line << getCCastFunctionName(toValue->type->typeMode, fromValue->type->parent.lock()) << "(" << fromValue->name << ")";
-        toValue->setValue(compiler, result, loc, trBlock, make_shared<TrValue>(toValue->type, line.str()));
+        toValue->setValue(compiler, result, trBlock, make_shared<TrValue>(nullptr, toValue->type, line.str()));
     }
 }
 
@@ -368,7 +368,7 @@ bool CInterface::getReturnMustRelease(Compiler* compiler, CResult& result) {
 //    return make_shared<TrValue>(shared_from_this(), RVR_MustRelease, RVT_HEAP, false, value);
 //}
 
-CInterfaceDefinition::CInterfaceDefinition(CLoc loc, string& name_) : CBaseFunctionDefinition(CFT_Interface), loc(loc) {
+CInterfaceDefinition::CInterfaceDefinition(CLoc& loc, string& name_) : CBaseFunctionDefinition(CFT_Interface), loc(loc) {
     name = name_;
 }
 

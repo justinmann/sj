@@ -20,7 +20,7 @@ shared_ptr<CType> CValueVar::getType(Compiler* compiler, CResult& result) {
 }
 
 void CValueVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    auto leftValue = trBlock->createTempStoreVariable(var->getType(compiler, result), "temp");
+    auto leftValue = trBlock->createTempStoreVariable(loc, scope.lock(), var->getType(compiler, result), "temp");
     var->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, leftValue);
     if (!leftValue->hasSetValue) {
         return;
@@ -32,7 +32,7 @@ void CValueVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutpu
     }
 
     if (leftValue->type->parent.expired()) {
-        auto returnValue = trBlock->createTempVariable(leftValue->type->getOptionType(), "value");
+        auto returnValue = trBlock->createTempVariable(scope.lock(), leftValue->type->getOptionType(), "value");
         stringstream line1;
         line1 << returnValue->name << ".isEmpty = false";
         trBlock->statements.push_back(line1.str());
@@ -41,10 +41,10 @@ void CValueVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutpu
         line2 << returnValue->name << ".value = " << leftValue->name;
         trBlock->statements.push_back(line2.str());
 
-        storeValue->setValue(compiler, result, loc, trBlock, returnValue);
+        storeValue->setValue(compiler, result, trBlock, returnValue);
     }
     else {
-        storeValue->setValue(compiler, result, loc, trBlock, make_shared<TrValue>(leftValue->type->getOptionType(), leftValue->name));
+        storeValue->setValue(compiler, result, trBlock, make_shared<TrValue>(leftValue->scope, leftValue->type->getOptionType(), leftValue->name));
     }
 }
 

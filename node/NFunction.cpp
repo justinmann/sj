@@ -1,8 +1,12 @@
 #include "Node.h"
 
-NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> copyBlock, shared_ptr<NBase> destroyBlock) : NBaseFunction(NodeType_Function, loc), type(type), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), interfaceTypeNames(interfaceTypeNames), block(block), catchBlock(catchBlock), copyBlock(copyBlock), destroyBlock(destroyBlock) {
+NFunction::NFunction(CLoc& loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> copyBlock, shared_ptr<NBase> destroyBlock) : NBaseFunction(NodeType_Function, loc), type(type), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), interfaceTypeNames(interfaceTypeNames), block(block), catchBlock(catchBlock), copyBlock(copyBlock), destroyBlock(destroyBlock) {
     if (this->name == "^") {
         this->name = TrBlock::nextVarName("anon");
+        isAnonymous = true;
+    }
+    else {
+        isAnonymous = false;
     }
     
     if (arguments) {
@@ -67,6 +71,7 @@ shared_ptr<CVar> NFunction::getVarImpl(Compiler* compiler, CResult& result, shar
         result.addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
         return nullptr;
     }
+
     return nullptr;
 }
 
@@ -193,7 +198,7 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
             trFunctionBlock->definition = functionDefinition.str();
 
             auto blockVar = _block->getVar(compiler, result, shared_from_this(), getThisVar(compiler, result), _returnMode);
-            auto bodyReturnValue = (returnType == compiler->typeVoid) ? trFunctionBlock->createVoidStoreVariable() : trFunctionBlock->createReturnStoreVariable(returnType);
+            auto bodyReturnValue = (returnType == compiler->typeVoid) ? trFunctionBlock->createVoidStoreVariable(loc) : trFunctionBlock->createReturnStoreVariable(loc, shared_from_this(), returnType);
             blockVar->transpile(compiler, result, trOutput, trFunctionBlock.get(), nullptr, nullptr, bodyReturnValue);
         }
     }
@@ -212,8 +217,8 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
 
             auto blockVar = _block->getVar(compiler, result, shared_from_this(), thisVar, returnType->typeMode);
             _isReturnThis = blockVar->getReturnThis();
-            auto bodyReturnValue = (returnType != compiler->typeVoid && !_isReturnThis) ? trFunctionBlock->createReturnStoreVariable(returnType) : trFunctionBlock->createVoidStoreVariable();
-            blockVar->transpile(compiler, result, trOutput, trFunctionBlock.get(), nullptr, make_shared<TrValue>(thisVar->getType(compiler, result), "_this"), bodyReturnValue);            
+            auto bodyReturnValue = (returnType != compiler->typeVoid && !_isReturnThis) ? trFunctionBlock->createReturnStoreVariable(loc, shared_from_this(), returnType) : trFunctionBlock->createVoidStoreVariable(loc);
+            blockVar->transpile(compiler, result, trOutput, trFunctionBlock.get(), nullptr, make_shared<TrValue>(nullptr, thisVar->getType(compiler, result), "_this"), bodyReturnValue);
 
             string structName = getCStructName(thisVar->getTypeMode());
             stringstream functionDefinition;
@@ -236,17 +241,10 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
 
                 hasValues = true;
                 stringstream ss;
+                ss << argType.second->cname;
                 if (argType.second->typeMode == CTM_Stack) {
-                    ss << argType.second->cname;
-
                     // C requires that inline structs be defined before use
                     argType.second->parent.lock()->transpileDefinition(compiler, result, trOutput);
-                }
-                else if (argType.second->typeMode == CTM_Heap || argType.second->typeMode == CTM_Value) {
-                    ss << argType.second->cname;
-                }
-                else {
-                    assert(false);
                 }
                 ss << " " << argType.first;
                 trOutput->structs[stackStructName].push_back(ss.str());
@@ -304,13 +302,13 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
 
             for (auto argVar : argVars) {
                 auto argType = argVar->getType(compiler, result);
-                TrStoreValue(argType, "_this->" + argVar->name, ASSIGN_ImmutableCopy, true).setValue(compiler, result, loc, trCopyBlock.get(), make_shared<TrValue>(argType, "to->" + argVar->name));
+                TrStoreValue(argVar->loc, shared_from_this(), argType, "_this->" + argVar->name, ASSIGN_ImmutableCopy, true).setValue(compiler, result, trCopyBlock.get(), make_shared<TrValue>(shared_from_this(), argType, "to->" + argVar->name));
             }
 
             if (_copyBlock) {
                 auto copyBlockVar = _copyBlock->getVar(compiler, result, shared_from_this(), thisVar, CTM_Undefined);
                 if (copyBlockVar) {
-                    copyBlockVar->transpile(compiler, result, trOutput, trCopyBlock.get(), nullptr, make_shared<TrValue>(thisVar->getType(compiler, result), "_this"), trCopyBlock->createVoidStoreVariable());
+                    copyBlockVar->transpile(compiler, result, trOutput, trCopyBlock.get(), nullptr, make_shared<TrValue>(nullptr, thisVar->getType(compiler, result), "_this"), trCopyBlock->createVoidStoreVariable(loc));
                 }
             }
         }
@@ -330,12 +328,12 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
             if (_destroyBlock) {
                 auto destroyBlockVar = _destroyBlock->getVar(compiler, result, shared_from_this(), thisVar, CTM_Undefined);
                 if (destroyBlockVar) {
-                    destroyBlockVar->transpile(compiler, result, trOutput, trDestroyBlock.get(), nullptr, make_shared<TrValue>(thisVar->getType(compiler, result), "_this"), trDestroyBlock->createVoidStoreVariable());
+                    destroyBlockVar->transpile(compiler, result, trOutput, trDestroyBlock.get(), nullptr, make_shared<TrValue>(nullptr, thisVar->getType(compiler, result), "_this"), trDestroyBlock->createVoidStoreVariable(loc));
                 }
             }
 
             for (auto argVar : argVars) {
-                TrValue(argVar->getType(compiler, result), "_this->" + argVar->name).addReleaseToStatements(trDestroyBlock.get());
+                TrValue(shared_from_this(), argVar->getType(compiler, result), "_this->" + argVar->name).addReleaseToStatements(trDestroyBlock.get());
             }
         }
 
@@ -477,7 +475,7 @@ void CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseF
                 assert(result.errors.size() > 0);
                 return;
             }
-            auto argStoreValue = trBlock->createTempStoreVariable(argType, "param");
+            auto argStoreValue = trBlock->createTempStoreVariable(loc, thisFunction, argType->typeMode == CTM_Heap ? argType : argType->getLocalValueType(), "param");
             parameterVar->transpile(compiler, result, trOutput, trBlock, nullptr, isDefaultAssignment ? nullptr : thisValue, argStoreValue);
 
             if (!argStoreValue->hasSetValue) {
@@ -514,13 +512,13 @@ void CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseF
 
         // Initialize "this"
         shared_ptr<TrValue> calleeThisValue;
-        if (_isReturnThis) {
+        if (_isReturnThis && storeValue->type != nullptr) {
             // TODO: need to figure how to handle the various types of assignment
-            calleeThisValue = make_shared<TrValue>(storeValue->type, storeValue->name);
+            calleeThisValue = make_shared<TrValue>(storeValue->scope, storeValue->type, storeValue->name);
             calleeThisValue->addInitToStatements(trBlock);
         }
         else {
-            calleeThisValue = trBlock->createTempVariable(calleeVar->getType(compiler, result), "object");
+            calleeThisValue = trBlock->createTempVariable(thisFunction, calleeVar->getType(compiler, result), "object");
             calleeThisValue->addInitToStatements(trBlock);
         }
 
@@ -528,7 +526,7 @@ void CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseF
             stringstream parentLine;
             if (!parentValue) {
                 if (parent.lock() == thisFunction) {
-                    parentLine << calleeThisValue->getDotName("_parent") << " = " << parentValue->getPointerName();
+                    parentLine << calleeThisValue->getDotName("_parent") << " = " << thisValue->getDotName("_parent");
                 }
                 else if (parent.lock() == thisFunction->parent.lock()) {
                     parentLine << calleeThisValue->getDotName("_parent") << " = ";
@@ -574,7 +572,7 @@ void CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseF
                 return;
             }
 
-            auto argStoreValue = make_shared<TrStoreValue>(argType, calleeThisValue->getDotName(argVar->name), ASSIGN_Immutable, true);
+            auto argStoreValue = make_shared<TrStoreValue>(loc, shared_from_this(), argType, calleeThisValue->getDotName(argVar->name), ASSIGN_Immutable, true);
             parameterVar->transpile(compiler, result, trOutput, trBlock, nullptr, isDefaultAssignment ? calleeThisValue : thisValue, argStoreValue);
 
             if (!argStoreValue->hasSetValue) {
@@ -726,7 +724,7 @@ shared_ptr<CThisVar> CFunction::getThisVar(Compiler* compiler, CResult& result) 
     if (!_thisVar) {
         auto defaultTypeMode = CTM_Undefined;
         if (_returnTypeName) {
-            shared_ptr<CType> valueType = getVarType(compiler, result, _returnTypeName);
+            shared_ptr<CType> valueType = getVarType(loc, compiler, result, _returnTypeName, CTM_Undefined);
             if (!valueType) {
                 result.addError(loc, CErrorCode::InvalidType, "explicit type '%s' does not exist", _returnTypeName->name.c_str());
                 return nullptr;
@@ -749,7 +747,7 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CResult& result) 
     _isInGetType = true;    
     if (!_returnType) {
         if (_returnTypeName) {
-            shared_ptr<CType> valueType = getVarType(compiler, result, _returnTypeName);
+            shared_ptr<CType> valueType = getVarType(loc, compiler, result, _returnTypeName, CTM_Undefined);
             if (!valueType) {
                 result.addError(loc, CErrorCode::InvalidType, "explicit type '%s' does not exist", _returnTypeName->name.c_str());
                 _returnType = nullptr;
@@ -831,11 +829,11 @@ bool getTemplateTypes(Compiler* compiler, CResult& result, CLoc& loc, shared_ptr
         for (auto templateTypeName : *calleeTemplateTypeNames) {
             shared_ptr<CType> ctype = nullptr;
             if (callerFunction) {
-                ctype = callerFunction->getVarType(compiler, result, templateTypeName);
+                ctype = callerFunction->getVarType(loc, compiler, result, templateTypeName, CTM_Undefined);
             }
             
             if (!ctype) {
-                ctype = thisFunction->getVarType(compiler, result, templateTypeName);
+                ctype = thisFunction->getVarType(loc, compiler, result, templateTypeName, CTM_Undefined);
                 if (!ctype) {
                     result.addError(loc, CErrorCode::TemplateUnspecified, "cannot find template type: '%s'", templateTypeName->name.c_str());
                     return false;
@@ -1020,22 +1018,32 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, str
     return compiler->getType(name);
 }
 
-shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName) {
+shared_ptr<CType> CFunction::getVarType(CLoc& loc, Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
+    auto typeMode = defaultMode;
+    if (typeName->typeMode != CTM_Undefined) {
+        typeMode = typeName->typeMode;
+    }
+
     if (typeName->category == CTC_Interface) {
         auto nameWithoutQuestion = typeName->isOption ? typeName->name.substr(0, typeName->name.size() - 1) : typeName->name;
         auto interface = getCInterface(compiler, result, nameWithoutQuestion, nullptr, typeName->templateTypeNames, typeName->typeMode);
         if (interface) {
             auto thisTypes = interface->getThisTypes(compiler, result);
-            switch (typeName->typeMode) {
+            switch (typeMode) {
                 case CTM_Heap:
                     return typeName->isOption ? thisTypes->heapOptionType : thisTypes->heapValueType;
                 case CTM_Stack:
-                    return typeName->isOption ? thisTypes->stackOptionType : thisTypes->stackValueType;
+                    if (typeName->isOption) {
+                        result.addError(loc, CErrorCode::InvalidType, "option type cannot be stack, stack x? is invalid use heap x?");
+                        return nullptr;
+                    }
+                    else {
+                        return thisTypes->stackValueType;
+                    }
                 case CTM_Local:
                     return typeName->isOption ? thisTypes->localOptionType : thisTypes->localValueType;
                 default:
-                    assert(false);
-                    return nullptr;
+                    return typeName->isOption ? thisTypes->heapOptionType : thisTypes->stackValueType;
             }
         }
     } else {
@@ -1053,7 +1061,7 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, sha
             auto templateTypes = vector<shared_ptr<CType>>();
             if (typeName->templateTypeNames) {
                 for (auto it : *typeName->templateTypeNames) {
-                    auto t = getVarType(compiler, result, it);
+                    auto t = getVarType(loc, compiler, result, it, CTM_Undefined);
                     if (!t) {
                         return nullptr;
                     }
@@ -1067,16 +1075,21 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, sha
                 return nullptr;
             }
             auto thisTypes = cfunc->getThisTypes(compiler, result);
-            switch (typeName->typeMode) {
+            switch (typeMode) {
                 case CTM_Heap:
                     return typeName->isOption ? thisTypes->heapOptionType : thisTypes->heapValueType;
                 case CTM_Stack:
-                    return typeName->isOption ? thisTypes->stackOptionType : thisTypes->stackValueType;
+                    if (typeName->isOption) {
+                        result.addError(loc, CErrorCode::InvalidType, "option type cannot be stack, stack x? is invalid use heap x?");
+                        return nullptr;
+                    }
+                    else {
+                        return thisTypes->stackValueType;
+                    }
                 case CTM_Local:
                     return typeName->isOption ? thisTypes->localOptionType : thisTypes->localValueType;
                 default:
-                    result.addError(loc, CErrorCode::TypeMismatch, "invalid type '%s' for all function types make sure to include stack, heap, or matchReturn", typeName->name.c_str());
-                    return nullptr;
+                    return typeName->isOption ? thisTypes->heapOptionType : thisTypes->stackValueType;
             }
         }
     }
@@ -1209,7 +1222,7 @@ shared_ptr<CInterfaceDefinition> CFunctionDefinition::getDefinedInterfaceDefinit
     }
 }
 
-shared_ptr<CInterfaceDefinition> CFunctionDefinition::createDefinedInterfaceDefinition(CLoc loc, string& name) {
+shared_ptr<CInterfaceDefinition> CFunctionDefinition::createDefinedInterfaceDefinition(CLoc& loc, string& name) {
     auto result = make_shared<CInterfaceDefinition>(loc, name);
     _definedInterfaceDefinitions[name] = result;
     return result;

@@ -1,20 +1,10 @@
-a()'a {
-  this
-}
-
-b([stack]a'a:)'b {
-  this
-}
-
-c([stack]b'b:)'c {
+c(b'stack b:)'stack c {
   this
 }
 
 global()'void {
-  [stack]c([stack]this : c(
-    [stack]b'b : [stack]b([stack]this : b(
-      [stack]a'a : [stack]a([stack]this : a())
-    ))
+  c(this = c(
+    b'stack b : this.b
   ))
   void
 }

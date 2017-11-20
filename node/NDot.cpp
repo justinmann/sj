@@ -1,7 +1,7 @@
 #include "Node.h"
 #include <sstream>
 
-shared_ptr<CDotVar> CDotVar::create(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CVar> leftVar_, shared_ptr<CVar> rightVar_) {
+shared_ptr<CDotVar> CDotVar::create(CLoc& loc, shared_ptr<CBaseFunction> scope, shared_ptr<CVar> leftVar_, shared_ptr<CVar> rightVar_) {
     auto c = make_shared<CDotVar>(loc, scope);
     c->leftVar = leftVar_;
     c->rightVar = rightVar_;
@@ -17,13 +17,13 @@ shared_ptr<CType> CDotVar::getType(Compiler* compiler, CResult& result) {
 }
 
 void CDotVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    auto leftValue = trBlock->createTempStoreVariable(leftVar->getType(compiler, result), "dot");
+    auto leftValue = trBlock->createTempStoreVariable(loc, nullptr, leftVar->getType(compiler, result)->getLocalType(), "dot");
     leftVar->transpile(compiler, result, trOutput, trBlock, dotValue, thisValue, leftValue);
 	return rightVar->transpile(compiler, result, trOutput, trBlock, leftValue->getValue(), thisValue, storeValue);
 }
 
 shared_ptr<TrStoreValue> CDotVar::getStoreValue(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op, bool isFirstAssignment) {
-    auto leftValue = trBlock->createTempStoreVariable(leftVar->getType(compiler, result), "dot");
+    auto leftValue = trBlock->createTempStoreVariable(loc, nullptr, leftVar->getType(compiler, result)->getLocalType(), "dot");
     leftVar->transpile(compiler, result, trOutput, trBlock, dotValue, thisValue, leftValue);
     auto rightStoreVar = dynamic_pointer_cast<CStoreVar>(rightVar);
     return rightStoreVar->getStoreValue(compiler, result, trOutput, trBlock, leftValue->getValue(), thisValue, op, isFirstAssignment);

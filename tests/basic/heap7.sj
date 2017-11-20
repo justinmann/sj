@@ -8,7 +8,7 @@ heap_x1'heap foo : heap_y					// x = y; x->_refCount++
 heap_x2'heap foo :copy stack_y				// copy y
 heap_x3'heap foo :copy local_y				// copy y
 
-stack_x1'stack foo : stack_y   				// x = y or x = copy(y) if y is lower scope than x
+stack_x1'stack foo :copy stack_y   				// x = y or x = copy(y) if y is lower scope than x
 stack_x2'stack foo :copy heap_y 			// copy y
 stack_x3'stack foo :copy local_y 			// copy y
 

@@ -9,7 +9,7 @@ shared_ptr<CType> CCastVar::getType(Compiler* compiler, CResult& result) {
 }
 
 void CCastVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    auto rightStoreValue = trBlock->createTempStoreVariable(var->getType(compiler, result), "cast");
+    auto rightStoreValue = trBlock->createTempStoreVariable(loc, scope.lock(), var->getType(compiler, result), "cast");
     var->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, rightStoreValue);
     auto rightValue = rightStoreValue->getValue();
     if (!rightValue) {
@@ -29,7 +29,7 @@ void CCastVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput
     }
     
     if (typeTo != nullptr && typeTo->category == CTC_Interface) {
-        auto resultValue = trBlock->createTempVariable(typeTo, "result");
+        auto resultValue = trBlock->createTempVariable(scope.lock(), typeTo, "result");
         auto interface = static_pointer_cast<CInterface>(typeTo->parent.lock());
         interface->transpileDefinition(compiler, result, trOutput);
         
@@ -60,8 +60,8 @@ void CCastVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput
             return;
         }
         
-        auto tempValue = make_shared<TrValue>(typeTo, "(" + typeTo->cname + ")" + rightValue->name);
-        storeValue->setValue(compiler, result, loc, trBlock, tempValue);
+        auto tempValue = make_shared<TrValue>(nullptr, typeTo, "(" + typeTo->cname + ")" + rightValue->name);
+        storeValue->setValue(compiler, result, trBlock, tempValue);
     }
 }
 
@@ -87,7 +87,7 @@ shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, CResult& result, shared_p
         typeName->typeMode = fromType->typeMode;
     }
 
-    auto type = thisFunction->getVarType(compiler, result, typeName);
+    auto type = thisFunction->getVarType(loc, compiler, result, typeName, returnMode);
     if (!type) {
         result.addError(loc, CErrorCode::InvalidType, "type '%s' does not exist", typeName->getName().c_str());
         return nullptr;

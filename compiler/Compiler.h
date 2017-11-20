@@ -128,8 +128,8 @@ public:
     const unsigned col;
     const string msg;
     
-    CError(const CLoc& loc, const CErrorCode code): code(code), fileName(loc.fileName), line(loc.line), col(loc.col) { }
-    CError(const CLoc& loc, const CErrorCode code, const string& msg): code(code), fileName(loc.fileName), line(loc.line), col(loc.col), msg(msg) { }
+    CError(CLoc& loc, const CErrorCode code): code(code), fileName(loc.fileName), line(loc.line), col(loc.col) { }
+    CError(CLoc& loc, const CErrorCode code, const string& msg): code(code), fileName(loc.fileName), line(loc.line), col(loc.col), msg(msg) { }
 	void writeToStream(ostream& stream);
 };
 
@@ -151,7 +151,7 @@ public:
     shared_ptr<CType> returnType;
     
     template< typename... Args >
-    void addError(const CLoc& loc, const CErrorCode code, const char* format, Args... args) {
+    void addError(CLoc& loc, const CErrorCode code, const char* format, Args... args) {
         string str = strprintf(format, args...);
 #ifdef ERROR_OUTPUT
         printf("ERROR: %d:%d %s\n", loc.line, loc.col, str.c_str());
@@ -163,7 +163,7 @@ public:
     }
 
     template< typename... Args >
-    void addWarning(const CLoc& loc, const CErrorCode code, const char* format, Args... args) {
+    void addWarning(CLoc& loc, const CErrorCode code, const char* format, Args... args) {
         string str = strprintf(format, args...);
         warnings.push_back(CError(loc, code, str));
 #ifdef ERROR_OUTPUT

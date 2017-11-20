@@ -11,7 +11,7 @@
 
 class CParentVar : public CVar {
 public:
-    CParentVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CFunction> function) : CVar(loc, scope, "", false), function(function) { }
+    CParentVar(CLoc& loc, shared_ptr<CBaseFunction> scope, shared_ptr<CFunction> function) : CVar(loc, scope, "", false), function(function) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -23,7 +23,7 @@ private:
 
 class NParent : public NVariableBase {
 public:
-    NParent(CLoc loc) : NVariableBase(NodeType_Parent, loc) { }
+    NParent(CLoc& loc) : NVariableBase(NodeType_Parent, loc) { }
     void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) { }
     shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 };

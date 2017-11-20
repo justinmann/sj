@@ -14,7 +14,7 @@ shared_ptr<CType> CBlockVar::getType(Compiler* compiler, CResult& result) {
 void CBlockVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     for (auto it : statements) {
         auto isLastStatement = it == statements.back();
-        it->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, isLastStatement ? storeValue : trBlock->createVoidStoreVariable());
+        it->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, isLastStatement ? storeValue : trBlock->createVoidStoreVariable(loc));
     }
 }
 

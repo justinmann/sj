@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -60,50 +59,47 @@ struct td_double_option {
 };
 const double_option double_empty = { true };
 
-#define sjs_a_typeId 1
-#define sjs_array_char_typeId 2
-#define sjs_object_typeId 3
+#define sjs_object_typeId 1
+#define sjs_a_typeId 2
+#define sjs_array_char_typeId 3
 
+typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_a sjs_a;
 typedef struct td_sjs_array_char sjs_array_char;
-typedef struct td_sjs_object sjs_object;
-
-struct td_sjs_a {
-    int _refCount;
-    sjs_array_char* data;
-};
-
-struct td_sjs_array_char {
-    int _refCount;
-    int32_t size;
-    uintptr_t data;
-    bool _isGlobal;
-};
 
 struct td_sjs_object {
     int _refCount;
 };
 
-void sjf_a(sjs_a* _this, sjs_a** _return);
+struct td_sjs_a {
+    sjs_array_char data;
+};
+
+struct td_sjs_array_char {
+    int32_t size;
+    uintptr_t data;
+    bool _isGlobal;
+};
+
+void sjf_a(sjs_a* _this);
+void sjf_a_copy(sjs_a* _this, sjs_a* to);
 void sjf_a_destroy(sjs_a* _this);
-void sjf_array_char(sjs_array_char* _this, sjs_array_char** _return);
+void sjf_array_char(uintptr_t _this, int32_t size, uintptr_t data, bool _isGlobal, sjs_array_char* _return);
+void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* to);
 void sjf_array_char_destroy(sjs_array_char* _this);
 
-sjs_a sjd_temp1;
-sjs_array_char sjd_temp2;
 
-void sjf_a(sjs_a* _this, sjs_a** _return) {
-    _this->_refCount++;
-    printf("RETAIN\tsjs_a*\t%0x\tvoid sjf_a(sjs_a* _this, sjs_a** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
+void sjf_a(sjs_a* _this) {
+}
 
-    *_return = _this;
+void sjf_a_copy(sjs_a* _this, sjs_a* to) {
+    sjf_array_char_copy(&_this->data, &to->data);
 }
 
 void sjf_a_destroy(sjs_a* _this) {
-    sjf_array_char_destroy(_this->data);
 }
 
-void sjf_array_char(sjs_array_char* _this, sjs_array_char** _return) {
+void sjf_array_char(uintptr_t _this, int32_t size, uintptr_t data, bool _isGlobal, sjs_array_char* _return) {
     
 		if (_this->size < 0) {
 			exit(-1);
@@ -119,10 +115,14 @@ void sjf_array_char(sjs_array_char* _this, sjs_array_char** _return) {
 			}
 		}
 	;
-    _this->_refCount++;
-    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_array_char(sjs_array_char* _this, sjs_array_char** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
 
     *_return = _this;
+}
+
+void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* to) {
+    _this->size = to->size;
+    _this->data = to->data;
+    _this->_isGlobal = to->_isGlobal;
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
@@ -135,26 +135,18 @@ void sjf_array_char_destroy(sjs_array_char* _this) {
 }
 
 int main() {
-    uintptr_t result1;
-    sjs_a* sjv_temp1;
-    sjs_array_char* sjv_temp2;
+    int32_t cast1;
+    sjs_a object1;
+    sjs_array_char object2;
 
-    sjv_temp1 = &sjd_temp1;
-    sjv_temp1->_refCount = 1;
-    printf("RETAIN\tsjs_a*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
-    sjv_temp2 = &sjd_temp2;
-    sjv_temp2->_refCount = 1;
-    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp2, sjv_temp2->_refCount);;
-    result1 = (uintptr_t)0;
-    sjv_temp2->size = 0;
-    sjv_temp2->data = result1;
-    sjv_temp2->_isGlobal = false;
-    sjf_array_char(sjv_temp2, &sjv_temp2);
-    sjv_temp1->data = sjv_temp2;
-    sjv_temp1->data->_refCount++;
-    printf("RETAIN\tsjs_array_char*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1->data, sjv_temp1->data->_refCount);;
-    sjf_a(sjv_temp1, &sjv_temp1);
-    assert(sjd_temp1._refCount == 0);
-    assert(sjd_temp2._refCount == 0);
+    object2.size = 0;
+    cast1 = 0;
+    object2.data = (uintptr_t)cast1;
+    object2._isGlobal = false;
+    sjf_array_char(&object2, &object1.data);
+    sjf_a(&object1);
+
+    sjf_a_destroy(&object1);
+    sjf_array_char_destroy(&object2);
     return 0;
 }

@@ -18,7 +18,7 @@ enum ValueType {
 
 class NVariableBase : public NBase {
 public:
-    NVariableBase(NodeType nodeType, CLoc loc) : NBase(nodeType, loc) { }
+    NVariableBase(NodeType nodeType, CLoc& loc) : NBase(nodeType, loc) { }
     shared_ptr<CVar> getVar(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode) {
         return getVarImpl(compiler, result, thisFunction, thisVar, nullptr, returnMode);
@@ -29,8 +29,8 @@ public:
 
 class CParentDotVar : public CStoreVar {
 public:
-    CParentDotVar(CLoc loc, shared_ptr<CBaseFunction> scope) : CStoreVar(loc, scope, "", false) {}
-    static shared_ptr<CParentDotVar> create(CLoc loc, Compiler *compiler, CResult &result, shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_);
+    CParentDotVar(CLoc& loc, shared_ptr<CBaseFunction> scope) : CStoreVar(loc, scope, "", false) {}
+    static shared_ptr<CParentDotVar> create(CLoc& loc, Compiler *compiler, CResult &result, shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_);
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -43,7 +43,7 @@ public:
 
 class NVariable : public NVariableBase {
 public:
-    NVariable(CLoc loc, const char* name);
+    NVariable(CLoc& loc, const char* name);
     void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) { }
     shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 

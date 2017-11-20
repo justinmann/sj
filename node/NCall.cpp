@@ -1,6 +1,6 @@
 #include "Node.h"
 
-shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CResult& result, CLoc loc_, const string& name_, shared_ptr<NodeList> arguments_, shared_ptr<CBaseFunction> thisFunction_, shared_ptr<CThisVar> thisVar, weak_ptr<CVar> dotVar_, shared_ptr<CBaseFunction> callee_) {
+shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CResult& result, CLoc& loc_, const string& name_, shared_ptr<NodeList> arguments_, shared_ptr<CBaseFunction> thisFunction_, shared_ptr<CThisVar> thisVar, weak_ptr<CVar> dotVar_, shared_ptr<CBaseFunction> callee_) {
     assert(callee_);
 
     auto c = make_shared<CCallVar>(loc_, thisFunction_);
@@ -162,7 +162,8 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar
                 auto ctype = paramVar->getType(compiler, result);
                 ss << "'" << (ctype != nullptr ? ctype->name : "ERROR");
                 ss << (paramVar->isMutable ? " = " : " : ");
-                // TODO: it.second->dump(compiler, result, it.first ? callee : thisFunction, thisVar, CTM_Undefined, functions, ss, level + 1);
+                stringstream dotSS;
+                paramVar->dump(compiler, result, nullptr, functions, ss, dotSS, level + 1);
                 if (paramIndex != parameters.size() - 1) {
                     ss << ",\n";
                     dumpf(ss, level + 1);
@@ -199,7 +200,8 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar
                 ss << paramVar->name.c_str();
                 ss << "'" << paramVar->getType(compiler, result)->name.c_str();
                 ss << (paramVar->isMutable ? " = " : " : ");
-                // TODO: it.second->dump(compiler, result, thisFunction, thisVar, CTM_Undefined, functions, ss, level + 1);
+                stringstream dotSS;
+                paramVar->dump(compiler, result, nullptr, functions, ss, dotSS, level + 1);
                 if (paramIndex != parameters.size() - 1) {
                     ss << ",\n";
                     dumpf(ss, level + 1);
@@ -214,7 +216,7 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar
 }
 
 
-NCall::NCall(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments) : NVariableBase(NodeType_Call, loc), name(name), templateTypeNames(templateTypeNames), arguments(arguments) {
+NCall::NCall(CLoc& loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments) : NVariableBase(NodeType_Call, loc), name(name), templateTypeNames(templateTypeNames), arguments(arguments) {
     if (!this->arguments) {
         this->arguments = make_shared<NodeList>();
     } else {

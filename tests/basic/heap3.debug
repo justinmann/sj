@@ -1,22 +1,20 @@
-bar([heap]f'foo=)'bar {
+bar(f'stack foo=)'stack bar {
   this
 }
 
-foo([heap]x'i32:)'foo {
+foo(x'i32:)'stack foo {
   this
 }
 
-func([stack]b'bar:)'foo {
-  [heap]f'foo = [heap]foo([heap]this : foo(
-    [heap]x'i32 : 2i
+func(b'stack bar:)'stack foo {
+  this.f'stack foo = foo(this = foo(
+    x'i32 : this.x
   ))
 }
 
 global()'void {
-  [stack]b'bar : [stack]bar([stack]this : bar(
-    [heap]f'foo = [heap]foo([heap]this : foo(
-      [heap]x'i32 : 1i
-    ))
+  b'stack bar : bar(this = bar(
+    f'stack foo = this.f
   ))
   this.x
   void

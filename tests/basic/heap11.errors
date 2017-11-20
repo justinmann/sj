@@ -1,0 +1,4 @@
+ERROR:4 basic/heap11.sj[11:1] option type cannot be stack, stack x? is invalid use heap x?
+ERROR:4 basic/heap11.sj[11:1] explicit type 'class?' does not exist
+ERROR:4 basic/heap11.sj[12:1] option type cannot be stack, stack x? is invalid use heap x?
+ERROR:4 basic/heap11.sj[12:1] explicit type 'class2?' does not exist

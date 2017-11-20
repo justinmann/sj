@@ -1,35 +1,10 @@
-a([stack]data'array_char=)'a {
-  this
-}
-
-array!char([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=)'array_char {
-  c{
-
-		if (_this->size < 0) {
-			exit(-1);
-		}
-
-		if (_this->data) {
-			_this->_isGlobal = true;
-		} else {
-			_this->data = (uintptr_t)calloc(_this->size * sizeof(#type(t)), 1);
-			if (!_this->data) {
-				printf("grow: out of memory\n");
-				exit(-1);				
-			}
-		}
-	
-}c
+a(data'stack array_char=)'stack a {
   this
 }
 
 global()'void {
-  [stack]a([stack]this : a(
-    [stack]data'array_char = [stack]array!char([stack]this : array!char(
-      [stack]size'i32 = 0i,
-      [stack]data'ptr = 0i as ptr,
-      [stack]_isGlobal'bool = false
-    ))
+  a(this = a(
+    data'stack array_char = this.data
   ))
   void
 }

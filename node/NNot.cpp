@@ -9,13 +9,13 @@ shared_ptr<CType> CNotVar::getType(Compiler* compiler, CResult& result) {
 }
 
 void CNotVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    auto value = trBlock->createTempStoreVariable(var->getType(compiler, result), "temp");
+    auto value = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "temp");
     var->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, value);
-    auto resultValue = trBlock->createTempVariable(compiler->typeBool, "result");
+    auto resultValue = trBlock->createTempVariable(nullptr, compiler->typeBool, "result");
     stringstream line;
     line << resultValue->name << " = !" << value->name;
     trBlock->statements.push_back(line.str());
-    storeValue->setValue(compiler, result, loc, trBlock, resultValue);
+    storeValue->setValue(compiler, result, trBlock, resultValue);
 }
 
 void CNotVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

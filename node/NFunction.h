@@ -25,7 +25,7 @@ class CThisVar;
 
 class NFunction : public NBaseFunction {
 public:
-    NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> copyBlock, shared_ptr<NBase> destroyBlock);
+    NFunction(CLoc& loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> copyBlock, shared_ptr<NBase> destroyBlock);
     shared_ptr<CFunctionDefinition> getFunctionDefinition(Compiler *compiler, CResult& result, shared_ptr<CFunctionDefinition> parentFunction);
     void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> parentFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode);
@@ -47,6 +47,7 @@ private:
     shared_ptr<NBase> copyBlock;
     shared_ptr<NBase> catchBlock;
     shared_ptr<NBase> destroyBlock;
+    bool isAnonymous;
 
     friend class CFunctionDefinition;
     friend class CFunction;
@@ -73,7 +74,7 @@ public:
     string getCFullName(bool includeTemplateTypes);
     pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(string name);
     shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, string name);
-    shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName);
+    shared_ptr<CType> getVarType(CLoc& loc, Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
     void transpileDefinition(Compiler* compiler, CResult& result, TrOutput* trOutput);
     void transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
     void dumpBody(Compiler* compiler, CResult& result, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
@@ -130,7 +131,7 @@ public:
     void dump(Compiler* compiler, CResult& result, int level);
     shared_ptr<CFunction> getFunction(Compiler* compiler, CResult& result, CLoc& loc, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent, CTypeMode returnMode);
     shared_ptr<CInterfaceDefinition> getDefinedInterfaceDefinition(const string& name);
-    shared_ptr<CInterfaceDefinition> createDefinedInterfaceDefinition(CLoc loc, string& name);
+    shared_ptr<CInterfaceDefinition> createDefinedInterfaceDefinition(CLoc& loc, string& name);
     shared_ptr<vector<pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameList>>>> getImplementedInterfaceDefintions(Compiler* compiler, CResult& result);
     
 private:

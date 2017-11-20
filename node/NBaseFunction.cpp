@@ -1,6 +1,7 @@
 #include "Node.h"
 
 void CBaseFunction::setHasThis() {
+    assert(name != "global");
     hasThis = true;
 }
 
@@ -10,6 +11,7 @@ bool CBaseFunction::getHasParent(Compiler* compiler, CResult& result) {
 }
 
 void CBaseFunction::setHasParent(Compiler* compiler, CResult& result) {
+    assert(name != "global");
     if (parent.expired()) {
         return;
     }

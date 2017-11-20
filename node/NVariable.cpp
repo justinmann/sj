@@ -12,7 +12,7 @@ shared_ptr<CVar> NVariableBase::getVar(Compiler* compiler, CResult& result, shar
     return _var[key1][key2];
 }
 
-shared_ptr<CParentDotVar> CParentDotVar::create(CLoc loc, Compiler *compiler, CResult &result, shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_) {
+shared_ptr<CParentDotVar> CParentDotVar::create(CLoc& loc, Compiler *compiler, CResult &result, shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_) {
     auto c = make_shared<CParentDotVar>(loc, nullptr);
     c->parentFunction = parentFunction_;
     c->childVar = childVar_;
@@ -39,7 +39,7 @@ void CParentDotVar::transpile(Compiler* compiler, CResult& result, TrOutput* trO
             return;
         }
         
-        parentValue = trBlock->createTempVariable(parentThisTypes->localValueType, "tempParent");
+        parentValue = trBlock->createTempVariable(nullptr, parentThisTypes->localValueType, "tempParent");
         stringstream line;
         line << parentValue->name << " = " << dotValue->name << "->_parent";
         trBlock->statements.push_back(line.str());
@@ -51,7 +51,7 @@ void CParentDotVar::transpile(Compiler* compiler, CResult& result, TrOutput* trO
             return;
         }
 
-        parentValue = make_shared<TrValue>(parentThisTypes->localValueType, parentFunction->hasThis ? thisValue->getDotName("_parent") : "_parent");
+        parentValue = make_shared<TrValue>(nullptr, parentThisTypes->localValueType, parentFunction->hasThis ? thisValue->getDotName("_parent") : "_parent");
     }
     childVar->transpile(compiler, result, trOutput, trBlock, parentValue, thisValue, storeValue);
 }
@@ -65,7 +65,7 @@ shared_ptr<TrStoreValue> CParentDotVar::getStoreValue(Compiler* compiler, CResul
             return nullptr;
         }
         
-        parentValue = trBlock->createTempVariable(parentThisTypes->localValueType, "tempParent");
+        parentValue = trBlock->createTempVariable(nullptr, parentThisTypes->localValueType, "tempParent");
         stringstream line;
         line << parentValue->name << " = " << dotValue->name << "->_parent";
         trBlock->statements.push_back(line.str());
@@ -77,7 +77,7 @@ shared_ptr<TrStoreValue> CParentDotVar::getStoreValue(Compiler* compiler, CResul
             return nullptr;
         }
         
-        parentValue = make_shared<TrValue>(parentThisTypes->localValueType, parentFunction->hasThis ? thisValue->getDotName("_parent") : "_parent");
+        parentValue = make_shared<TrValue>(nullptr, parentThisTypes->localValueType, parentFunction->hasThis ? thisValue->getDotName("_parent") : "_parent");
     }
 
     auto childStoreVar = dynamic_pointer_cast<CStoreVar>(childVar);
@@ -89,7 +89,7 @@ void CParentDotVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> d
     childVar->dump(compiler, result, dotVar, functions, ss, dotSS, level);
 }
 
-NVariable::NVariable(CLoc loc, const char* name) : NVariableBase(NodeType_Variable, loc), name(name) { }
+NVariable::NVariable(CLoc& loc, const char* name) : NVariableBase(NodeType_Variable, loc), name(name) { }
 
 shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
     auto cfunction = thisFunction;
@@ -109,6 +109,23 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, CResult& result, shar
 
     if (cfunction) {
         auto cvar = cfunction->getCVar(compiler, result, name);
+
+        if (cvar == nullptr && dotVar == nullptr) {
+            vector<shared_ptr<CFunction>> parents;
+            parents.push_back(static_pointer_cast<CFunction>(cfunction));
+            cfunction = cfunction->parent.lock();
+            while (cvar == nullptr && cfunction != nullptr) {
+                cvar = cfunction->getCVar(compiler, result, name);
+                parents.push_back(static_pointer_cast<CFunction>(cfunction));
+            }
+
+            if (cvar) {
+                for (auto i = ++parents.rbegin(); i != parents.rend(); ++i) {
+                    cvar = CParentDotVar::create(loc, compiler, result, *i, cvar);
+                }
+            }
+        }
+
         if (!cvar) {
             result.addError(loc, CErrorCode::InvalidVariable, "cannot find variable '%s'", name.c_str());
             return nullptr;

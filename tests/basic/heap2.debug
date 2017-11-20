@@ -1,24 +1,18 @@
-class([heap]data'anon1:)'class {
+class(data'stack anon1:)'stack class {
   this
 }
 
-class_anon1([heap]x'i32:)'anon1 {
-  this
-}
-
-class_get()'anon1 {
+class_get()'stack anon1 {
   .parentthis.data
 }
 
 global()'void {
-  [stack]c'class : [stack]class([stack]this : class(
-    [heap]data'anon1 : [heap]class_anon1([heap]this : class_anon1(
-      [heap]x'i32 : 0i
-    ))
+  c'stack class : class(this = class(
+    data'stack anon1 : this.data
   ))
-  [heap]d'anon1 : [heap]class_get([stack]this : class_get(
-    parent: [stack]c
-  ))
+  d'stack anon1 : class_get(
+    parent: c
+  )
   void
 }
 

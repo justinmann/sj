@@ -1,0 +1,38 @@
+class(inner'stack inner:)'heap class {
+  this
+}
+
+class(inner'stack inner:)'stack class {
+  this
+}
+
+class2(inner'heap inner?:)'heap class2 {
+  this
+}
+
+class2(inner'heap inner?:)'stack class2 {
+  this
+}
+
+global()'void {
+  x1'stack class : class(this = class(
+    inner'stack inner : this.inner
+  ))
+  x2'heap class : class(this = class(
+    inner'stack inner : this.inner
+  ))
+  x4'heap class? : value(class(this = class(
+    inner'stack inner : this.inner
+  )))
+  x5'stack class2 : class2(this = class2(
+    inner'heap inner? : this.inner
+  ))
+  x6'heap class2 : class2(this = class2(
+    inner'heap inner? : this.inner
+  ))
+  x8'heap class2? : value(class2(this = class2(
+    inner'heap inner? : this.inner
+  )))
+  void
+}
+

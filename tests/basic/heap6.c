@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -60,76 +59,44 @@ struct td_double_option {
 };
 const double_option double_empty = { true };
 
-#define sjs_foo_typeId 1
-#define sjs_object_typeId 2
+#define sjs_object_typeId 1
+#define sjs_foo_typeId 2
 
-typedef struct td_sjs_foo sjs_foo;
 typedef struct td_sjs_object sjs_object;
-
-struct td_sjs_foo {
-    int _refCount;
-};
+typedef struct td_sjs_foo sjs_foo;
 
 struct td_sjs_object {
     int _refCount;
 };
 
-void sjf_bar(sjs_foo** _return);
-void sjf_foo(sjs_foo* _this, sjs_foo** _return);
+struct td_sjs_foo {
+    int structsNeedAValue;
+};
+
+void sjf_bar(sjs_foo* _return);
+void sjf_foo(sjs_foo* _this);
+void sjf_foo_copy(sjs_foo* _this, sjs_foo* to);
 void sjf_foo_destroy(sjs_foo* _this);
 
 
-void sjf_bar(sjs_foo** _return) {
-    sjs_foo* sjv_temp1;
-
-    sjv_temp1 = (sjs_foo*)malloc(sizeof(sjs_foo));
-    sjv_temp1->_refCount = 1;
-    printf("RETAIN\tsjs_foo*\t%0x\tvoid sjf_bar(sjs_foo** _return)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
-    sjf_foo(sjv_temp1, &sjv_temp1);
-    sjv_temp1->_refCount++;
-    printf("RETAIN\tsjs_foo*\t%0x\tvoid sjf_bar(sjs_foo** _return)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
-
-    sjv_temp1->_refCount--;
-    printf("RELEASE\tsjs_foo*\t%0x\tvoid sjf_bar(sjs_foo** _return)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);
-    if (sjv_temp1->_refCount <= 0) {
-        sjf_foo_destroy(sjv_temp1);
-        free(sjv_temp1);
-    }
-
-    *_return = sjv_temp1;
+void sjf_bar(sjs_foo* _return) {
+    sjf_foo((*_return));
 }
 
-void sjf_foo(sjs_foo* _this, sjs_foo** _return) {
-    _this->_refCount++;
-    printf("RETAIN\tsjs_foo*\t%0x\tvoid sjf_foo(sjs_foo* _this, sjs_foo** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
+void sjf_foo(sjs_foo* _this) {
+}
 
-    *_return = _this;
+void sjf_foo_copy(sjs_foo* _this, sjs_foo* to) {
 }
 
 void sjf_foo_destroy(sjs_foo* _this) {
 }
 
 int main() {
-    sjs_foo* a;
-    sjs_foo* result1;
+    sjs_foo a;
 
-    result1 = 0;
-    sjf_bar(&result1);
-    a = result1;
-    a->_refCount++;
-    printf("RETAIN\tsjs_foo*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)a, a->_refCount);;
+    sjf_bar(&a);
 
-    a->_refCount--;
-    printf("RELEASE\tsjs_foo*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)a, a->_refCount);
-    if (a->_refCount <= 0) {
-        sjf_foo_destroy(a);
-        free(a);
-    }
-    result1->_refCount--;
-    printf("RELEASE\tsjs_foo*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result1, result1->_refCount);
-    if (result1->_refCount <= 0) {
-        sjf_foo_destroy(result1);
-        free(result1);
-    }
+    sjf_foo_destroy(&a);
     return 0;
 }

@@ -1,6 +1,6 @@
 #include "Node.h"
 
-NInterfaceMethod::NInterfaceMethod(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments_, shared_ptr<CTypeName> returnTypeName) : NBaseFunction(NodeType_InterfaceMethod, loc), name(name), templateTypeNames(templateTypeNames), returnTypeName(returnTypeName) {
+NInterfaceMethod::NInterfaceMethod(CLoc& loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments_, shared_ptr<CTypeName> returnTypeName) : NBaseFunction(NodeType_InterfaceMethod, loc), name(name), templateTypeNames(templateTypeNames), returnTypeName(returnTypeName) {
     if (arguments_) {
         for (auto it : *arguments_) {
             assert(it->nodeType == NodeType_Assignment);
@@ -76,14 +76,11 @@ CInterfaceMethod::CInterfaceMethod(string& name, weak_ptr<CInterface> parent, in
 shared_ptr<CInterfaceMethod> CInterfaceMethod::init(Compiler* compiler, CResult& result, shared_ptr<NInterfaceMethod> method, shared_ptr<CBaseFunction> thisFunction) {
     hasParent = true;
     loc = method->loc;
-    returnType = getVarType(compiler, result, method->returnTypeName);
+    returnType = getVarType(loc, compiler, result, method->returnTypeName, CTM_Undefined);
     if (!returnType) {
         result.addError(method->loc, CErrorCode::InvalidType, "type '%s' is not defined", method->returnTypeName->name.c_str());
         return nullptr;
     }
-    
-    
-    // TODO: assert(false); // might need to pass in returntype to the init method
 
     for (auto it : method->assignments) {
         if (it->var) {
@@ -176,9 +173,9 @@ string CInterfaceMethod::getCTypeName(Compiler* compiler, CResult& result, bool 
 //    return nullptr;
 //}
 
-shared_ptr<CType> CInterfaceMethod::getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName) {
+shared_ptr<CType> CInterfaceMethod::getVarType(CLoc& loc, Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
     if (!parent.expired()) {
-        return parent.lock()->getVarType(compiler, result, typeName);
+        return parent.lock()->getVarType(loc, compiler, result, typeName, CTM_Undefined);
     }
     
     return compiler->getType(typeName->name);
@@ -219,13 +216,13 @@ void CInterfaceMethod::transpile(Compiler* compiler, CResult& result, shared_ptr
     shared_ptr<TrValue> returnValue;
     if (returnType != compiler->typeVoid) {
         if (!returnType->parent.expired()) {
-            returnValue = trBlock->createTempVariable(returnType, "result");
+            returnValue = trBlock->createTempVariable(thisFunction, returnType, "result");
             stringstream initReturnStream;
             initReturnStream << returnValue->name << " = 0";
             trBlock->statements.push_back(initReturnStream.str());
         }
         else {
-            returnValue = trBlock->createTempVariable(returnType, "result");
+            returnValue = trBlock->createTempVariable(thisFunction, returnType, "result");
         }
     }
 
@@ -239,7 +236,7 @@ void CInterfaceMethod::transpile(Compiler* compiler, CResult& result, shared_ptr
         auto argType = argVar->getType(compiler, result);
         auto isDefaultAssignment = parameters[argIndex].second == defaultAssignment;
         assert(isDefaultAssignment == parameters[argIndex].first);
-        auto argStoreValue = trBlock->createTempStoreVariable(argType, "param");
+        auto argStoreValue = trBlock->createTempStoreVariable(loc, thisFunction, argType, "param");
 
         stringstream argStream;
         auto paramVar = parameters[argIndex].second->getVar(compiler, result, isDefaultAssignment ? nullptr : thisFunction, isDefaultAssignment ? calleeVar : thisVar, CTM_Undefined);
@@ -269,8 +266,8 @@ void CInterfaceMethod::transpile(Compiler* compiler, CResult& result, shared_ptr
     line << ")";
     trBlock->statements.push_back(line.str());
 
-    auto rightValue = make_shared<TrValue>(returnType, line.str());
-    storeValue->setValue(compiler, result, loc, trBlock, rightValue);
+    auto rightValue = make_shared<TrValue>(thisFunction, returnType, line.str());
+    storeValue->setValue(compiler, result, trBlock, rightValue);
 }
 
 void CInterfaceMethod::dumpBody(Compiler* compiler, CResult& result, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {

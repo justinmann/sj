@@ -2,7 +2,7 @@
 
 class CGetValueVar : public CVar {
 public:
-    CGetValueVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CVar> leftVar, bool isProtectedWithEmptyCheck) : CVar(loc, scope, "", false), leftVar(leftVar), isProtectedWithEmptyCheck(isProtectedWithEmptyCheck) { }
+    CGetValueVar(CLoc& loc, shared_ptr<CBaseFunction> scope, shared_ptr<CVar> leftVar, bool isProtectedWithEmptyCheck) : CVar(loc, scope, "", false), leftVar(leftVar), isProtectedWithEmptyCheck(isProtectedWithEmptyCheck) { }
 
     bool getReturnThis() {
         return false;
@@ -23,7 +23,7 @@ public:
     }
 
     void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-        auto leftValue = trBlock->createTempStoreVariable(leftVar->getType(compiler, result), "temp");
+        auto leftValue = trBlock->createTempStoreVariable(loc, leftVar->scope.lock(), leftVar->getType(compiler, result), "temp");
         leftVar->transpile(compiler, result, trOutput, trBlock, dotValue, thisValue, leftValue);
         if (!leftValue) {
             return;
@@ -52,7 +52,7 @@ public:
             line << leftValue->name;
         }
 
-        storeValue->setValue(compiler, result, loc, trBlock, make_shared<TrValue>(leftValue->type->getValueType(), line.str()));
+        storeValue->setValue(compiler, result, trBlock, make_shared<TrValue>(scope.lock(), leftValue->type->getValueType(), line.str()));
     }
 
     void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

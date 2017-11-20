@@ -1,6 +1,6 @@
 #include "Node.h"
 
-NDouble::NDouble(CLoc loc, const char* value_) : NVariableBase(NodeType_Double, loc), isF64(true), value(value_) {
+NDouble::NDouble(CLoc& loc, const char* value_) : NVariableBase(NodeType_Double, loc), isF64(true), value(value_) {
     if (value.back() == 'f') {
         isF64 = false;
         value = value.substr(0, value.size() - 1);

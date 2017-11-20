@@ -14,7 +14,7 @@ public:
     bool isF64;
     string value;
     
-    NDouble(CLoc loc, const char* value);
+    NDouble(CLoc& loc, const char* value);
     void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) { }
     shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 };

@@ -9,7 +9,7 @@ shared_ptr<CType> CForIndexVar::getType(Compiler* compiler, CResult& result) {
 }
 
 void CForIndexVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    storeValue->setValue(compiler, result, loc, trBlock, make_shared<TrValue>(getType(compiler, result), name));
+    storeValue->setValue(compiler, result, trBlock, make_shared<TrValue>(nullptr, getType(compiler, result), name));
 }
 
 void CForIndexVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
@@ -26,16 +26,16 @@ shared_ptr<CType> CForLoopVar::getType(Compiler* compiler, CResult& result) {
 
 void CForLoopVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     
-    trBlock->createVariable(compiler->typeI32, indexVar->name);
+    trBlock->createVariable(nullptr, compiler->typeI32, indexVar->name);
 
-    auto loopStartTrValue = trBlock->createTempStoreVariable(compiler->typeI32, "loopStart");
+    auto loopStartTrValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeI32, "loopStart");
     startVar->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, loopStartTrValue);
     
     stringstream loopCounterLine;
     loopCounterLine << indexVar->name << " = " << loopStartTrValue->name;
     trBlock->statements.push_back(loopCounterLine.str());
     
-    auto loopEndTrValue = trBlock->createTempStoreVariable(compiler->typeI32, "loopEnd");
+    auto loopEndTrValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeI32, "loopEnd");
     endVar->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, loopEndTrValue);
         
     auto trForBlock = make_shared<TrBlock>();
@@ -51,7 +51,7 @@ void CForLoopVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOut
 
     thisFunction->localVarsByName[indexVar->name] = indexVar;
 
-    bodyVar->transpile(compiler, result, trOutput, trForBlock.get(), nullptr, thisValue, trBlock->createVoidStoreVariable());
+    bodyVar->transpile(compiler, result, trOutput, trForBlock.get(), nullptr, thisValue, trBlock->createVoidStoreVariable(loc));
     
     thisFunction->localVarsByName.erase(indexVar->name);
 

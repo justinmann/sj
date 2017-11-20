@@ -1,13 +1,13 @@
-bar()'foo {
-  [heap]foo([heap]this : foo())
+bar()'stack foo {
+  foo(this = foo())
 }
 
-foo()'foo {
+foo()'stack foo {
   this
 }
 
 global()'void {
-  [heap]a'foo : [heap]bar([stack]this : bar())
+  a'stack foo : bar()
   void
 }
 

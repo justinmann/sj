@@ -10,7 +10,7 @@ shared_ptr<CType> CConstantVar::getType(Compiler* compiler, CResult& result) {
 }
 
 void CConstantVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    storeValue->setValue(compiler, result, loc, trBlock, make_shared<TrValue>(type, value));
+    storeValue->setValue(compiler, result, trBlock, make_shared<TrValue>(nullptr, type, value));
 }
 
 void CConstantVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
@@ -36,7 +36,7 @@ void CConstantVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> do
 }
 
 
-NInteger::NInteger(CLoc loc, const char* value_) : NVariableBase(NodeType_Integer, loc), strValue(value_), hasValue(false) {
+NInteger::NInteger(CLoc& loc, const char* value_) : NVariableBase(NodeType_Integer, loc), strValue(value_), hasValue(false) {
     if (strValue.back() == 'i') {
         type = NIT_I32;
         strValue = strValue.substr(0, strValue.size() - 1);

@@ -14,7 +14,7 @@
 
 class NTupleAssignmentArg {
 public:
-    NTupleAssignmentArg(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTypeName> typeName, const char* name, bool isMutable) : loc(loc), var(var), typeName(typeName), name(name), assignOp(assignOp) {}
+    NTupleAssignmentArg(CLoc& loc, shared_ptr<NVariableBase> var, shared_ptr<CTypeName> typeName, const char* name, bool isMutable) : loc(loc), var(var), typeName(typeName), name(name), assignOp(assignOp) {}
 
     CLoc loc;
     shared_ptr<NVariableBase> var;
@@ -27,7 +27,7 @@ typedef vector<shared_ptr<NTupleAssignmentArg>> NTupleAssignmentArgList;
 
 class NTupleAssignment : public NVariableBase {
 public:
-    NTupleAssignment(CLoc loc, shared_ptr<NTupleAssignmentArgList> args, shared_ptr<NVariableBase> rightSide) : NVariableBase(NodeType_TupleAssignment, loc), args(args), rightSide(rightSide) {}
+    NTupleAssignment(CLoc& loc, shared_ptr<NTupleAssignmentArgList> args, shared_ptr<NVariableBase> rightSide) : NVariableBase(NodeType_TupleAssignment, loc), args(args), rightSide(rightSide) {}
     void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 

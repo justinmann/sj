@@ -2,7 +2,7 @@
 
 class CGlobalPtrVar : public CVar {
 public:
-    CGlobalPtrVar(CLoc loc, shared_ptr<CBaseFunction> scope, string varName, string str) : CVar(loc, scope, "", false), varName(varName), str(str) { }
+    CGlobalPtrVar(CLoc& loc, shared_ptr<CBaseFunction> scope, string varName, string str) : CVar(loc, scope, "", false), varName(varName), str(str) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -23,8 +23,8 @@ shared_ptr<CType> CGlobalPtrVar::getType(Compiler* compiler, CResult& result) {
 
 void CGlobalPtrVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     trOutput->strings[varName] = str;
-    auto resultValue = make_shared<TrValue>(compiler->typePtr, "(uintptr_t)" + varName);
-    storeValue->setValue(compiler, result, loc, trBlock, resultValue);
+    auto resultValue = make_shared<TrValue>(nullptr, compiler->typePtr, "(uintptr_t)" + varName);
+    storeValue->setValue(compiler, result, trBlock, resultValue);
 }
 
 void CGlobalPtrVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
@@ -32,7 +32,7 @@ void CGlobalPtrVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> d
 
 class NGlobalPtrVar : public NBase {
 public:
-    NGlobalPtrVar(CLoc loc, const string& varName, const string& str) : NBase(NodeType_Integer, loc), varName(varName), str(str) {}
+    NGlobalPtrVar(CLoc& loc, const string& varName, const string& str) : NBase(NodeType_Integer, loc), varName(varName), str(str) {}
     void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {}
     shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode);
     
