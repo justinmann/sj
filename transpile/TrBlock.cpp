@@ -264,22 +264,28 @@ void ReturnValue::addInitToStatements(TrBlock* block) {
     }
     else if (type->typeMode == CTM_Heap) {
         assert(!type->parent.expired());
-        assert(!type->isOption);
 
-        string structName = type->parent.lock()->getCStructName(type->typeMode);
-        stringstream initLine;
-        initLine << name << " = (" << structName << "*)malloc(sizeof(" << structName << "))";
-        block->statements.push_back(TrStatement(initLine.str()));
+        if (type->isOption) {
+            stringstream initLine;
+            initLine << name << " = 0";
+            block->statements.push_back(TrStatement(initLine.str()));
+        }
+        else {
+            string structName = type->parent.lock()->getCStructName(type->typeMode);
+            stringstream initLine;
+            initLine << name << " = (" << structName << "*)malloc(sizeof(" << structName << "))";
+            block->statements.push_back(TrStatement(initLine.str()));
 
-        stringstream lineStream;
-        lineStream << name << "->_refCount = 1";
-        block->statements.push_back(lineStream.str());
+            stringstream lineStream;
+            lineStream << name << "->_refCount = 1";
+            block->statements.push_back(lineStream.str());
 
 #ifdef DEBUG_ALLOC
-        stringstream logStream;
-        logStream << "printf(\"RETAIN\\t" << type->nameRef << "\\t%0x\\t" << block->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
-        block->statements.push_back(logStream.str());
+            stringstream logStream;
+            logStream << "printf(\"RETAIN\\t" << type->nameRef << "\\t%0x\\t" << block->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
+            block->statements.push_back(logStream.str());
 #endif
+        }
     }
     else if (type->typeMode == CTM_Stack) {
         assert(!type->parent.expired());

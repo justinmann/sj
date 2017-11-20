@@ -1,0 +1,4 @@
+ERROR:2 basic/heap8.sj[7:1] returned type 'stack foo' cannot change mode to 'heap foo' without using a :copy or =copy assignment
+ERROR:2 basic/heap8.sj[8:1] returned type 'local foo' cannot change mode to 'heap foo' without using a :copy or =copy assignment
+ERROR:2 basic/heap8.sj[9:1] returned type 'heap foo' cannot change mode to 'stack foo' without using a :copy or =copy assignment
+ERROR:2 basic/heap8.sj[10:1] returned type 'local foo' cannot change mode to 'stack foo' without using a :copy or =copy assignment

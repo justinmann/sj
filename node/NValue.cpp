@@ -60,7 +60,7 @@ void NValue::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFun
 }
 
 shared_ptr<CVar> NValue::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto leftVar = node->getVar(compiler, result, thisFunction, thisVar, returnMode);
+    auto leftVar = node->getVar(compiler, result, thisFunction, thisVar, CTM_Heap);
     if (!leftVar) {
         return nullptr;
     }
@@ -72,6 +72,11 @@ shared_ptr<CVar> NValue::getVarImpl(Compiler* compiler, CResult& result, shared_
 
     if (leftType->isOption) {
         result.addError(loc, CErrorCode::TypeMismatch, "value cannot take an option type");
+        return nullptr;
+    }
+
+    if (leftType->typeMode != CTM_Heap && leftType->typeMode != CTM_Value) {
+        result.addError(loc, CErrorCode::TypeMismatch, "value can only work on heap or value objects");
         return nullptr;
     }
 

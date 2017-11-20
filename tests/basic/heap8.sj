@@ -1,4 +1,4 @@
-class foo() { this }
+foo() { this }
 
 heap_y'heap foo : foo()
 stack_y'stack foo : foo()

@@ -5,7 +5,7 @@ foo1() {
 }
 
 foo2() {
-    value(class()) // fail, auto is not compatible with option
+    value(class()) // value will force the class to be heap
 }
 
 x1 : foo1()
