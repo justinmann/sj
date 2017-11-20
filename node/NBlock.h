@@ -14,6 +14,7 @@
 class CBlockVar : public CVar {
 public:
     CBlockVar(CLoc loc, shared_ptr<CBaseFunction> scope, vector<shared_ptr<CVar>> statements) : CVar(loc, scope, "", false), statements(statements) { }
+    bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
     void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);

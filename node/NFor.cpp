@@ -1,5 +1,9 @@
 #include "Node.h"
 
+bool CForIndexVar::getReturnThis() {
+    return false;
+}
+
 shared_ptr<CType> CForIndexVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeI32;
 }
@@ -10,6 +14,10 @@ void CForIndexVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOu
 
 void CForIndexVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     ss << name;
+}
+
+bool CForLoopVar::getReturnThis() {
+    return false;
 }
 
 shared_ptr<CType> CForLoopVar::getType(Compiler* compiler, CResult& result) {

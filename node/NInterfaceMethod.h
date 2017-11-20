@@ -24,6 +24,7 @@ public:
 class CInterfaceMethodReturnVar : public CVar {
 public:
     CInterfaceMethodReturnVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CType> returnType) : CVar(loc, scope, "", false), returnType(returnType) { }
+    bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
     void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
@@ -35,6 +36,7 @@ public:
 class CInterfaceMethodArgVar : public CVar {
 public:
     CInterfaceMethodArgVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CType> returnType) : CVar(loc, scope, "", false), returnType(returnType) { }
+    bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     virtual void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
     void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);

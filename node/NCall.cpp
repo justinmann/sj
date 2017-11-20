@@ -35,6 +35,10 @@ shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CResult& result, CLoc 
     return c;
 }
 
+bool CCallVar::getReturnThis() {
+    return false;
+}
+
 shared_ptr<CType> CCallVar::getType(Compiler* compiler, CResult& result) {
     return callee->getReturnType(compiler, result);
 }

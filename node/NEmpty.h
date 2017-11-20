@@ -14,6 +14,7 @@
 class CEmptyVar : public CVar {
 public:
     CEmptyVar(CLoc loc, shared_ptr<CType> type, shared_ptr<CBaseFunction> thisFunction) : CVar(loc, thisFunction, "", false), type(type), thisFunction(thisFunction) { }
+    bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
     void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);

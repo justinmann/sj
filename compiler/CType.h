@@ -59,8 +59,8 @@ public:
     CTypeCategory category;
     CTypeMode typeMode;
     string name;
-    string nameValue;
-	string nameRef;
+    string cname;
+    string safeName;
     weak_ptr<CBaseFunction> parent;
     bool isOption;
 
@@ -72,6 +72,7 @@ public:
     shared_ptr<CType> getHeapOptionType();
     shared_ptr<CType> getStackValueType();
     shared_ptr<CType> getStackOptionType();
+    shared_ptr<CType> getLocalType();
     shared_ptr<CType> getLocalValueType();
     shared_ptr<CType> getLocalOptionType();
 

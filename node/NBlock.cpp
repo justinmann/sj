@@ -1,5 +1,9 @@
 #include "Node.h"
 
+bool CBlockVar::getReturnThis() {
+    return statements.back()->getReturnThis();
+}
+
 shared_ptr<CType> CBlockVar::getType(Compiler* compiler, CResult& result) {
     if (statements.size() == 0) {
         return compiler->typeVoid;

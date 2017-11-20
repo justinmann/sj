@@ -16,8 +16,8 @@ shared_ptr<CTypes> CType::create(string name_, string cname, string defaultValue
     stackValueType->typeMode = CTM_Value;
     stackValueType->category = CTC_Value;
     stackValueType->name = name_;
-    stackValueType->nameValue = cname;
-    stackValueType->nameRef = cname;
+    stackValueType->cname = cname;
+    stackValueType->safeName = name_;
     stackValueType->_defaultValue = defaultValue;
     stackValueType->stackValueType = stackValueType;
     stackValueType->stackOptionType = stackOptionType;
@@ -26,8 +26,8 @@ shared_ptr<CTypes> CType::create(string name_, string cname, string defaultValue
     stackOptionType->typeMode = CTM_Value;
     stackOptionType->category = CTC_Value;
     stackOptionType->name = name_ + "?";
-    stackOptionType->nameValue = cnameOption;
-    stackOptionType->nameRef = cnameOption;
+    stackOptionType->cname = cnameOption;
+    stackOptionType->safeName = name_ + "_option";
     stackOptionType->_defaultValue = defaultValueOption;
     stackOptionType->stackValueType = stackValueType;
     stackOptionType->stackOptionType = stackOptionType;
@@ -48,8 +48,8 @@ shared_ptr<CTypes> CType::create(string name_, weak_ptr<CFunction> parent) {
     stackValueType->category = CTC_Value;
     stackValueType->parent = parent;
     stackValueType->name = "stack " + name_;
-    stackValueType->nameValue = parent.lock()->getCStructName(CTM_Stack);
-    stackValueType->nameRef = parent.lock()->getCStructName(CTM_Stack) + "*";
+    stackValueType->cname = parent.lock()->getCStructName(CTM_Stack);
+    stackValueType->safeName = name_;
     stackValueType->heapValueType = heapValueType;
     stackValueType->heapOptionType = heapOptionType;
     stackValueType->stackValueType = stackValueType;
@@ -62,8 +62,8 @@ shared_ptr<CTypes> CType::create(string name_, weak_ptr<CFunction> parent) {
     stackOptionType->category = CTC_Value;
     stackOptionType->parent = parent;
     stackOptionType->name = "stack " + name_ + "?";
-    stackOptionType->nameValue = parent.lock()->getCStructName(CTM_Stack);
-    stackOptionType->nameRef = parent.lock()->getCStructName(CTM_Stack) + "*";
+    stackOptionType->cname = parent.lock()->getCStructName(CTM_Stack);
+    stackOptionType->safeName = name_ + "_option";
     stackOptionType->heapValueType = heapValueType;
     stackOptionType->heapOptionType = heapOptionType;
     stackOptionType->stackValueType = stackValueType;
@@ -76,8 +76,8 @@ shared_ptr<CTypes> CType::create(string name_, weak_ptr<CFunction> parent) {
     heapValueType->category = CTC_Value;
     heapValueType->parent = parent;
     heapValueType->name = "heap " + name_;
-    heapValueType->nameValue = parent.lock()->getCStructName(CTM_Heap);
-    heapValueType->nameRef = parent.lock()->getCStructName(CTM_Heap) + "*";
+    heapValueType->cname = parent.lock()->getCStructName(CTM_Heap) + "*";
+    heapValueType->safeName = "heap_" + name_;
     heapValueType->heapValueType = heapValueType;
     heapValueType->heapOptionType = heapOptionType;
     heapValueType->stackValueType = stackValueType;
@@ -90,8 +90,8 @@ shared_ptr<CTypes> CType::create(string name_, weak_ptr<CFunction> parent) {
     heapOptionType->category = CTC_Value;
     heapOptionType->parent = parent;
     heapOptionType->name = "heap " + name_ + "?";
-    heapOptionType->nameValue = parent.lock()->getCStructName(CTM_Heap);
-    heapOptionType->nameRef = parent.lock()->getCStructName(CTM_Heap) + "*";
+    heapOptionType->cname = parent.lock()->getCStructName(CTM_Heap) + "*";
+    heapOptionType->safeName = "heap_" + name_ + "_option";
     heapOptionType->heapValueType = heapValueType;
     heapOptionType->heapOptionType = heapOptionType;
     heapOptionType->stackValueType = stackValueType;
@@ -104,8 +104,8 @@ shared_ptr<CTypes> CType::create(string name_, weak_ptr<CFunction> parent) {
     localValueType->category = CTC_Value;
     localValueType->parent = parent;
     localValueType->name = "local " + name_;
-    localValueType->nameValue = parent.lock()->getCStructName(CTM_Stack);
-    localValueType->nameRef = parent.lock()->getCStructName(CTM_Stack) + "*";
+    localValueType->cname = parent.lock()->getCStructName(CTM_Stack) + "*";
+    localValueType->safeName = "local_" + name_;
     localValueType->heapValueType = heapValueType;
     localValueType->heapOptionType = heapOptionType;
     localValueType->localValueType = localValueType;
@@ -118,8 +118,8 @@ shared_ptr<CTypes> CType::create(string name_, weak_ptr<CFunction> parent) {
     localOptionType->category = CTC_Value;
     localOptionType->parent = parent;
     localOptionType->name = "local " + name_ + "?";
-    localOptionType->nameValue = parent.lock()->getCStructName(CTM_Stack);
-    localOptionType->nameRef = parent.lock()->getCStructName(CTM_Stack) + "*";
+    localOptionType->cname = parent.lock()->getCStructName(CTM_Stack) + "*";
+    localOptionType->safeName = "local_" + name_ + "_option";
     localOptionType->heapValueType = heapValueType;
     localOptionType->heapOptionType = heapOptionType;
     localOptionType->localValueType = localValueType;
@@ -145,8 +145,8 @@ shared_ptr<CTypes> CType::create(string name_, weak_ptr<CInterface> parent) {
     stackValueType->category = CTC_Interface;
     stackValueType->parent = parent;
     stackValueType->name = "stack " + name_;
-    stackValueType->nameValue = parent.lock()->getCStructName(CTM_Stack);
-    stackValueType->nameRef = parent.lock()->getCStructName(CTM_Stack) + "*";
+    stackValueType->cname = parent.lock()->getCStructName(CTM_Stack);
+    stackValueType->safeName = name_;
     stackValueType->heapValueType = heapValueType;
     stackValueType->heapOptionType = heapOptionType;
     stackValueType->stackValueType = stackValueType;
@@ -159,8 +159,8 @@ shared_ptr<CTypes> CType::create(string name_, weak_ptr<CInterface> parent) {
     stackOptionType->category = CTC_Interface;
     stackOptionType->parent = parent;
     stackOptionType->name = "stack " + name_ + "?";
-    stackOptionType->nameValue = parent.lock()->getCStructName(CTM_Stack);
-    stackOptionType->nameRef = parent.lock()->getCStructName(CTM_Stack) + "*";
+    stackOptionType->cname = parent.lock()->getCStructName(CTM_Stack);
+    stackOptionType->safeName = name_ + "_option";
     stackOptionType->heapValueType = heapValueType;
     stackOptionType->heapOptionType = heapOptionType;
     stackOptionType->stackValueType = stackValueType;
@@ -173,8 +173,8 @@ shared_ptr<CTypes> CType::create(string name_, weak_ptr<CInterface> parent) {
     heapValueType->category = CTC_Interface;
     heapValueType->parent = parent;
     heapValueType->name = "heap " + name_;
-    heapValueType->nameValue = parent.lock()->getCStructName(CTM_Heap);
-    heapValueType->nameRef = parent.lock()->getCStructName(CTM_Heap) + "*";
+    heapValueType->cname = parent.lock()->getCStructName(CTM_Heap) + "*";
+    heapValueType->safeName = "heap_" + name_;
     heapValueType->heapValueType = heapValueType;
     heapValueType->heapOptionType = heapOptionType;
     heapValueType->stackValueType = stackValueType;
@@ -187,8 +187,8 @@ shared_ptr<CTypes> CType::create(string name_, weak_ptr<CInterface> parent) {
     heapOptionType->category = CTC_Interface;
     heapOptionType->parent = parent;
     heapOptionType->name = "heap " + name_ + "?";
-    heapOptionType->nameValue = parent.lock()->getCStructName(CTM_Heap);
-    heapOptionType->nameRef = parent.lock()->getCStructName(CTM_Heap) + "*";
+    heapOptionType->cname = parent.lock()->getCStructName(CTM_Heap) + "*";
+    heapOptionType->safeName = "heap_" + name_ + "_option";
     heapOptionType->heapValueType = heapValueType;
     heapOptionType->heapOptionType = heapOptionType;
     heapOptionType->stackValueType = stackValueType;
@@ -201,8 +201,8 @@ shared_ptr<CTypes> CType::create(string name_, weak_ptr<CInterface> parent) {
     localValueType->category = CTC_Interface;
     localValueType->parent = parent;
     localValueType->name = "local " + name_;
-    localValueType->nameValue = parent.lock()->getCStructName(CTM_Stack);
-    localValueType->nameRef = parent.lock()->getCStructName(CTM_Stack) + "*";
+    localValueType->cname = parent.lock()->getCStructName(CTM_Stack) + "*";
+    localValueType->safeName = "local_" + name_;
     localValueType->heapValueType = heapValueType;
     localValueType->heapOptionType = heapOptionType;
     localValueType->stackValueType = stackValueType;
@@ -215,8 +215,8 @@ shared_ptr<CTypes> CType::create(string name_, weak_ptr<CInterface> parent) {
     localOptionType->category = CTC_Interface;
     localOptionType->parent = parent;
     localOptionType->name = "local " + name_ + "?";
-    localOptionType->nameValue = parent.lock()->getCStructName(CTM_Stack);
-    localOptionType->nameRef = parent.lock()->getCStructName(CTM_Stack) + "*";
+    localOptionType->cname = parent.lock()->getCStructName(CTM_Stack) + "*";
+    localOptionType->safeName = "local_" + name_ + "_option";
     localOptionType->heapValueType = heapValueType;
     localOptionType->heapOptionType = heapOptionType;
     localOptionType->stackValueType = stackValueType;
@@ -242,7 +242,7 @@ void CType::transpileDefaultValue(Compiler* compiler, CResult& result, CLoc& loc
 }
 
 bool CType::isSameExceptMode(shared_ptr<CType> l, shared_ptr<CType> r) {
-    return l->category == r->category && l->stackValueType.lock()->nameValue == r->stackValueType.lock()->nameValue && l->isOption == r->isOption;
+    return l->category == r->category && l->stackValueType.lock()->cname == r->stackValueType.lock()->cname && l->isOption == r->isOption;
 }
 
 
@@ -274,6 +274,10 @@ shared_ptr<CType> CType::getStackValueType() {
 shared_ptr<CType> CType::getStackOptionType() {
     assert(stackOptionType.lock().get() != this);
     return stackOptionType.lock();
+}
+
+shared_ptr<CType> CType::getLocalType() {
+    return isOption ? localOptionType.lock() : localValueType.lock();
 }
 
 shared_ptr<CType> CType::getLocalValueType() {

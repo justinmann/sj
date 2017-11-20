@@ -1,5 +1,9 @@
 #include "Node.h"
 
+bool CAndVar::getReturnThis() {
+    return false;
+}
+
 shared_ptr<CType> CAndVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeBool;
 }

@@ -1,5 +1,9 @@
 #include "Node.h"
 
+bool CCastVar::getReturnThis() {
+    return false;
+}
+
 shared_ptr<CType> CCastVar::getType(Compiler* compiler, CResult& result) {
     return typeTo;
 }
@@ -56,7 +60,7 @@ void CCastVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput
             return;
         }
         
-        auto tempValue = make_shared<TrValue>(typeTo, "(" + typeTo->nameRef + ")" + rightValue->name);
+        auto tempValue = make_shared<TrValue>(typeTo, "(" + typeTo->cname + ")" + rightValue->name);
         storeValue->setValue(compiler, result, loc, trBlock, tempValue);
     }
 }

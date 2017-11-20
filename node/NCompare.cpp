@@ -1,5 +1,9 @@
 #include "Node.h"
 
+bool CCompareVar::getReturnThis() {
+    return false;
+}
+
 shared_ptr<CType> CCompareVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeBool;
 }

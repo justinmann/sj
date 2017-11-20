@@ -1,5 +1,9 @@
 #include "Node.h"
 
+bool COrVar::getReturnThis() {
+    return false;
+}
+
 shared_ptr<CType> COrVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeBool;
 }

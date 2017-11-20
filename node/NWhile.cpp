@@ -1,5 +1,9 @@
 #include "Node.h"
 
+bool CWhileVar::getReturnThis() {
+    return false;
+}
+
 shared_ptr<CType> CWhileVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeVoid;
 }

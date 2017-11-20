@@ -20,6 +20,7 @@ enum NMathOp {
 class CMathVar : public CVar {
 public:
     CMathVar(CLoc loc, shared_ptr<CBaseFunction> scope, NMathOp op, shared_ptr<CVar> leftVar, shared_ptr<CVar> rightVar) : CVar(loc, scope, "", false), op(op), leftVar(leftVar), rightVar(rightVar) { assert(leftVar); assert(rightVar); }
+    bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
     void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);

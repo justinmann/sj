@@ -1,5 +1,9 @@
 #include "Node.h"
 
+bool CCCodeVar::getReturnThis() {
+    return false;
+}
+
 shared_ptr<CType> CCCodeVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeVoid;
 }
@@ -111,7 +115,7 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
 
         auto ctype = thisFunction->getVarType(compiler, result, ctypeName);
         if (ctype) {
-            return ctype->nameRef;
+            return ctype->cname;
         }
         else {
             result.addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", param.c_str());

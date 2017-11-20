@@ -37,6 +37,10 @@ NInterfaceMethod::NInterfaceMethod(CLoc loc, const char* name, shared_ptr<CTypeN
 //    ss << ")'" << returnTypeName->getName();
 //}
 
+bool CInterfaceMethodReturnVar::getReturnThis() {
+    return false;
+}
+
 shared_ptr<CType> CInterfaceMethodReturnVar::getType(Compiler* compiler, CResult& result) {
     return returnType;
 }
@@ -47,6 +51,10 @@ void CInterfaceMethodReturnVar::transpile(Compiler* compiler, CResult& result, T
 
 void CInterfaceMethodReturnVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     assert(false);
+}
+
+bool CInterfaceMethodArgVar::getReturnThis() {
+    return false;
 }
 
 shared_ptr<CType> CInterfaceMethodArgVar::getType(Compiler* compiler, CResult& result) {
@@ -147,14 +155,14 @@ string CInterfaceMethod::getCTypeName(Compiler* compiler, CResult& result, bool 
         if (includeNames) {
             ss << " ";
         }
-        ss << argVar->getType(compiler, result)->nameRef;
+        ss << argVar->getType(compiler, result)->cname;
         if (includeNames) {
             ss << " " << argVar->name;
         }
     }
     if (returnType != nullptr && returnType != compiler->typeVoid) {
         ss << ", ";
-        ss << returnType->nameRef << "*";
+        ss << returnType->cname << "*";
         if (includeNames) {
             ss << " _return";
         }

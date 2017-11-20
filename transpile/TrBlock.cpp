@@ -1,22 +1,14 @@
 #include "../node/Node.h"
 
-TrValue::TrValue(shared_ptr<CType> type_, string name_) : type(type_), typeName(type_->nameRef), name(name_) {}
+#define SKIP_FREE
+
+TrValue::TrValue(shared_ptr<CType> type_, string name_) : type(type_), typeName(type_->cname), name(name_) {}
 
 void TrBlock::writeToStream(ostream& stream, int level) {
-    writeStackValuesToStream(stream, level);
     writeVariablesToStream(stream,level);
     writeBodyToStream(stream, level);
     writeVariablesReleaseToStream(stream, level);
-    writeStackValuesReleaseToStream(stream, level);
     writeReturnToStream(stream, level);
-}
-
-void TrBlock::writeStackValuesToStream(ostream& stream, int level) {
-    for (auto stackValue : stackValues)
-    {
-        addSpacing(stream, level);
-        stream << stackValue.second->nameValue << " " << stackValue.first << ";\n";
-    }
 }
 
 void TrBlock::writeVariablesToStream(ostream& stream, int level) {
@@ -26,16 +18,16 @@ void TrBlock::writeVariablesToStream(ostream& stream, int level) {
         if (variable.second->type) {
             switch (variable.second->type->typeMode) {
             case CTM_Local:
-                stream << variable.second->type->nameRef;
+                stream << variable.second->type->cname;
                 break;
             case CTM_Stack:
-                stream << variable.second->type->nameValue;
+                stream << variable.second->type->cname;
                 break;
             case CTM_Heap:
-                stream << variable.second->type->nameRef;
+                stream << variable.second->type->cname;
                 break;
             case CTM_Value:
-                stream << variable.second->type->nameValue;
+                stream << variable.second->type->cname;
                 break;
             default:
                 assert(false);
@@ -91,19 +83,18 @@ void TrBlock::writeVariablesReleaseToStream(ostream& stream, int level) {
     {
         variable.second->writeReleaseToStream(this, varStream, level);
     }
+
+    for (auto variable : variables)
+    {
+        if (variable.second->type->typeMode == CTM_Stack) {
+            addSpacing(varStream, level);
+            varStream << variable.second->type->parent.lock()->getCDestroyFunctionName() << "(&" << variable.first << ");\n";
+        }
+    }
+
     auto varString = varStream.str();
     if (varString.size() > 0) {
         stream << "\n" << varString;
-    }
-}
-
-void TrBlock::writeStackValuesReleaseToStream(ostream& stream, int level) {
-    for (auto stackValue : stackValues)
-    {
-        if (!stackValue.second->parent.expired()) {
-            addSpacing(stream, level);
-            stream << stackValue.second->parent.lock()->getCDestroyFunctionName() << "(&" << stackValue.first << ");\n";
-        }
     }
 }
 
@@ -140,10 +131,21 @@ shared_ptr<TrValue> TrBlock::createTempVariable(shared_ptr<CType> type, string p
     return var;
 }
 
-string TrBlock::createStackValue(string prefix, shared_ptr<CType> type) {
+shared_ptr<TrStoreValue> TrBlock::createTempStoreVariable(shared_ptr<CType> type, string prefix) {
     auto varStr = nextVarName(prefix);
-    stackValues[varStr] = type;
-    return varStr;
+    auto var = make_shared<TrStoreValue>(type, varStr, ASSIGN_Immutable, true);
+    variables[varStr] = make_shared<TrValue>(type, varStr);
+    return var;
+}
+
+shared_ptr<TrStoreValue> TrBlock::createVoidStoreVariable() {
+    return make_shared<TrStoreValue>(nullptr, "", ASSIGN_Immutable, true);
+}
+
+shared_ptr<TrStoreValue> TrBlock::createReturnStoreVariable(shared_ptr<CType> type) {
+    auto returnStoreValue = make_shared<TrStoreValue>(type, "(*_return)", ASSIGN_Immutable, true);
+    returnStoreValue->isReturnValue = true;
+    return returnStoreValue;
 }
 
 string TrBlock::nextVarName(string prefix) {
@@ -198,9 +200,10 @@ bool TrValue::writeReleaseToStream(TrBlock* block, ostream& stream, int level) {
         TrBlock::addSpacing(stream, level + 1);
         stream << type->parent.lock()->getCDestroyFunctionName() << "(" << convertToLocalName(type, name) << ");\n";
 
+#ifndef SKIP_FREE
         TrBlock::addSpacing(stream, level + 1);
         stream << "free(" << name << ");\n";
-
+#endif
         TrBlock::addSpacing(stream, level);
         stream << "}\n";
 
@@ -247,9 +250,11 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
         destroyStream << type->parent.lock()->getCDestroyFunctionName() << "(" << convertToLocalName(type, name) << ")";
         ifBlock->statements.push_back(destroyStream.str());
 
+#ifndef SKIP_FREE
         stringstream freeStream;
         freeStream << "free(" << name << ")";
         ifBlock->statements.push_back(freeStream.str());
+#endif // !SKIP_FREE
     }
 }
 
@@ -313,6 +318,10 @@ void TrValue::addInitToStatements(TrBlock* block) {
         assert(!type->parent.expired());
         assert(!type->isOption);
     }
+    else if (type->typeMode == CTM_Local) {
+        assert(!type->parent.expired());
+        assert(!type->isOption);
+    }
     else {
         assert(false);
     }
@@ -350,27 +359,41 @@ string TrValue::convertToLocalName(shared_ptr<CType> from, string name) {
     }
 }
 
-
 void TrStoreValue::setValue(Compiler* compiler, CResult& result, CLoc& loc, TrBlock* block, shared_ptr<TrValue> rightValue) {
     assert(!hasSetValue);
     hasSetValue = true;
+
+    value = rightValue;
+
+    if (!type) {
+        // This is a void store value, so ignore all input
+        return;
+    }
+
     TrValue leftValue(type, name);
     if (op == ASSIGN_Immutable || op == ASSIGN_Mutable) {
         if (!isFirstAssignment) {
             leftValue.addReleaseToStatements(block);
         }
 
-        stringstream lineStream;
-        lineStream << name << " = ";
-        if (type->typeMode == CTM_Stack || type->typeMode == CTM_Local) {
-            lineStream << TrValue::convertToLocalName(rightValue->type, rightValue->name);
+        if (isReturnValue) {
+            assert(rightValue->type->typeMode == CTM_Heap || rightValue->type->typeMode == CTM_Value);
+            block->returnLine = rightValue->name;
+            rightValue->addRetainToStatements(block);
         }
         else {
-            lineStream << rightValue->name;
-        }
-        block->statements.push_back(lineStream.str());
+            stringstream lineStream;
+            lineStream << name << " = ";
+            if (type->typeMode == CTM_Stack || type->typeMode == CTM_Local) {
+                lineStream << TrValue::convertToLocalName(rightValue->type, rightValue->name);
+            }
+            else {
+                lineStream << rightValue->name;
+            }
 
-        leftValue.addRetainToStatements(block);
+            block->statements.push_back(lineStream.str());
+            leftValue.addRetainToStatements(block);
+        }
     }
     else {
         if (isFirstAssignment) {
@@ -384,4 +407,9 @@ void TrStoreValue::setValue(Compiler* compiler, CResult& result, CLoc& loc, TrBl
         lineStream << type->parent.lock()->getCCopyFunctionName() << "(" << TrValue::convertToLocalName(type, name) << ", " << TrValue::convertToLocalName(rightValue->type, rightValue->name) << ")";
         block->statements.push_back(lineStream.str());
     }
+}
+
+shared_ptr<TrValue> TrStoreValue::getValue() {
+    assert(hasSetValue);
+    return make_shared<TrValue>(type, name);
 }

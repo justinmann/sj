@@ -1,5 +1,9 @@
 #include "Node.h"
 
+bool CNotVar::getReturnThis() {
+    return false;
+}
+
 shared_ptr<CType> CNotVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeBool;
 }

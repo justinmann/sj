@@ -1,5 +1,9 @@
 #include "Node.h"
 
+bool CAssignVar::getReturnThis() {
+    return false;
+}
+
 shared_ptr<CType> CAssignVar::getType(Compiler* compiler, CResult& result) {
     return rightVar->getType(compiler, result);
 }

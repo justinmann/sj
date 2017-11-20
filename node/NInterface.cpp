@@ -56,6 +56,10 @@ CInterfaceVar::CInterfaceVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_p
 //    parent = interface;
 }
 
+bool CInterfaceVar::getReturnThis() {
+    return false;
+}
+
 shared_ptr<CType> CInterfaceVar::getType(Compiler* compiler, CResult& result) {
     assert(false);
     return nullptr; // parent.lock()->getThisTypes(compiler, result);

@@ -1,5 +1,9 @@
 #include "Node.h"
 
+bool CValueVar::getReturnThis() {
+    return false;
+}
+
 shared_ptr<CType> CValueVar::getType(Compiler* compiler, CResult& result) {
     assert(compiler->state >= CompilerState::FixVar);
     auto leftType = var->getType(compiler, result);

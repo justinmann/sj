@@ -135,7 +135,6 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
         stream << "sjs_global global;\n";
     }
     assert(mainFunction != nullptr);
-    mainFunction->writeStackValuesToStream(stream, 0);
     stream << "\n";
     
     for (auto ccodeFunction : ccodeFunctions) {
@@ -159,9 +158,8 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
     }
     mainFunction->writeVariablesToStream(stream, 1);
     mainFunction->writeBodyToStream(stream, 1);
-    mainFunction->writeVariablesReleaseToStream(stream, 1);
     if (!hasMainLoop) {
-        mainFunction->writeStackValuesReleaseToStream(stream, 1);
+        mainFunction->writeVariablesReleaseToStream(stream, 1);
         if (hasGlobalStruct) {
             stream << "    sjf_global_destroy(&global);\n";
         }
@@ -174,7 +172,7 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
 
     if (hasMainLoop) {
         stream << "void main_destroy() {\n";
-        mainFunction->writeStackValuesReleaseToStream(stream, 1);
+        mainFunction->writeVariablesReleaseToStream(stream, 1);
         if (hasGlobalStruct) {
             stream << "    sjf_global_destroy(&global);\n";
         }

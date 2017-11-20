@@ -1,5 +1,9 @@
 #include "Node.h"
 
+bool CThrowVar::getReturnThis() {
+    return false;
+}
+
 shared_ptr<CType> CThrowVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeVoid;
 }

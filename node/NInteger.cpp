@@ -1,6 +1,10 @@
 #include "Node.h"
 #include <climits>
 
+bool CConstantVar::getReturnThis() {
+    return false;
+}
+
 shared_ptr<CType> CConstantVar::getType(Compiler* compiler, CResult& result) {
     return type;
 }

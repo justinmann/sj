@@ -12,6 +12,10 @@ shared_ptr<CType> CNormalVar::getType(Compiler* compiler, CResult& result) {
     return type;
 }
 
+bool CNormalVar::getReturnThis() {
+    return false;
+}
+
 void CNormalVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     if (dotValue) {
         auto returnValue = trBlock->createTempVariable(type, "dotTemp");

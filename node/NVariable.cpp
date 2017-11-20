@@ -22,6 +22,10 @@ shared_ptr<CParentDotVar> CParentDotVar::create(CLoc loc, Compiler *compiler, CR
     return c;
 }
 
+bool CParentDotVar::getReturnThis() {
+    return childVar->getReturnThis();
+}
+
 shared_ptr<CType> CParentDotVar::getType(Compiler* compiler, CResult& result) {
     return childVar->getType(compiler, result);
 }

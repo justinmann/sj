@@ -1,5 +1,9 @@
 #include "Node.h"
 
+bool CEmptyVar::getReturnThis() {
+    return false;
+}
+
 shared_ptr<CType> CEmptyVar::getType(Compiler* compiler, CResult& result) {
     return type;
 }

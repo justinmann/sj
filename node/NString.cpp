@@ -3,6 +3,7 @@
 class CGlobalPtrVar : public CVar {
 public:
     CGlobalPtrVar(CLoc loc, shared_ptr<CBaseFunction> scope, string varName, string str) : CVar(loc, scope, "", false), varName(varName), str(str) { }
+    bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
     void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
@@ -11,6 +12,10 @@ private:
     string varName;
     string str;
 };
+
+bool CGlobalPtrVar::getReturnThis() {
+    return false;
+}
 
 shared_ptr<CType> CGlobalPtrVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typePtr;

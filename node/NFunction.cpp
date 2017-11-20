@@ -173,7 +173,7 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
                 else {
                     functionDefinition << ", ";
                 }
-                functionDefinition << argType.second->nameRef << " " << argType.first;
+                functionDefinition << argType.second->cname << " " << argType.first;
             }
 
             if (returnType != compiler->typeVoid) {
@@ -183,7 +183,7 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
                 else {
                     functionDefinition << ", ";
                 }
-                functionDefinition << returnType->nameRef << "* _return";
+                functionDefinition << returnType->cname << "* _return";
             }
 
             if (isFirstArg) {
@@ -210,15 +210,16 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
             trFunctionBlock->hasThis = true;
             trOutput->functions[functionName] = trFunctionBlock;
 
-            auto blockVar = _block->getVar(compiler, result, shared_from_this(), thisVar, _returnMode);
-            auto bodyReturnValue = (returnType == compiler->typeVoid && !_isReturnThis) ? trFunctionBlock->createVoidStoreVariable() : trFunctionBlock->createReturnStoreVariable(returnType);
-            blockVar->transpile(compiler, result, trOutput, trFunctionBlock.get(), nullptr, make_shared<TrValue>(thisVar->getType(compiler, result), "_this"), bodyReturnValue);
+            auto blockVar = _block->getVar(compiler, result, shared_from_this(), thisVar, returnType->typeMode);
+            _isReturnThis = blockVar->getReturnThis();
+            auto bodyReturnValue = (returnType != compiler->typeVoid && !_isReturnThis) ? trFunctionBlock->createReturnStoreVariable(returnType) : trFunctionBlock->createVoidStoreVariable();
+            blockVar->transpile(compiler, result, trOutput, trFunctionBlock.get(), nullptr, make_shared<TrValue>(thisVar->getType(compiler, result), "_this"), bodyReturnValue);            
 
             string structName = getCStructName(thisVar->getTypeMode());
             stringstream functionDefinition;
             functionDefinition << "void " << functionName << "(" << structName << "* _this";
             if (returnType != compiler->typeVoid && !_isReturnThis) {
-                functionDefinition << ", " << returnType->nameRef << "* _return";
+                functionDefinition << ", " << returnType->cname << "* _return";
             }
             functionDefinition << ")";
             trFunctionBlock->definition = functionDefinition.str();
@@ -236,13 +237,13 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
                 hasValues = true;
                 stringstream ss;
                 if (argType.second->typeMode == CTM_Stack) {
-                    ss << argType.second->nameValue;
+                    ss << argType.second->cname;
 
                     // C requires that inline structs be defined before use
                     argType.second->parent.lock()->transpileDefinition(compiler, result, trOutput);
                 }
                 else if (argType.second->typeMode == CTM_Heap || argType.second->typeMode == CTM_Value) {
-                    ss << argType.second->nameRef;
+                    ss << argType.second->cname;
                 }
                 else {
                     assert(false);
@@ -270,13 +271,13 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
 
                     stringstream ss;
                     if (argType.second->typeMode == CTM_Stack) {
-                        ss << argType.second->nameValue;
+                        ss << argType.second->cname;
 
                         // C requires that inline structs be defined before use
                         argType.second->parent.lock()->transpileDefinition(compiler, result, trOutput);
                     }
                     else if (argType.second->typeMode == CTM_Heap || argType.second->typeMode == CTM_Value) {
-                        ss << argType.second->nameRef;
+                        ss << argType.second->cname;
                     }
                     else {
                         assert(false);
@@ -368,11 +369,12 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
                     string structName = getCStructName(thisVar->getTypeMode());
                     auto interfaceType = interfaceVal->getThisTypes(compiler, result)->heapValueType;
                     stringstream functionDefinition;
-                    functionDefinition << interfaceType->nameRef << " " << castFunctionName << "(" << structName << "* _this" << ")";
+                    functionDefinition << interfaceType->cname << " " << castFunctionName << "(" << structName << "* _this" << ")";
                     trFunctionBlock->definition = functionDefinition.str();
 
                     stringstream allocStream;
-                    allocStream << interfaceType->nameRef << " _interface = (" << interfaceType->nameRef << ")malloc(sizeof(" << interfaceType->nameValue << "))";
+                    string interfaceStructName = interfaceType->parent.lock()->getCStructName(interfaceType->typeMode);
+                    allocStream << interfaceType->cname << " _interface = (" << interfaceType->cname << ")malloc(sizeof(" << interfaceStructName << "))";
                     trFunctionBlock->statements.push_back(allocStream.str());
 
                     trFunctionBlock->statements.push_back(string("_interface->_refCount = 1"));
@@ -513,8 +515,9 @@ void CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseF
         // Initialize "this"
         shared_ptr<TrValue> calleeThisValue;
         if (_isReturnThis) {
-            calleeThisValue = storeValue->getValue();
-            assert(false); // TODO: need to figure how to handle the various types of assignment
+            // TODO: need to figure how to handle the various types of assignment
+            calleeThisValue = make_shared<TrValue>(storeValue->type, storeValue->name);
+            calleeThisValue->addInitToStatements(trBlock);
         }
         else {
             calleeThisValue = trBlock->createTempVariable(calleeVar->getType(compiler, result), "object");
@@ -674,7 +677,7 @@ void CFunction::dumpBody(Compiler* compiler, CResult& result, map<shared_ptr<CBa
         
         stringstream dotSS;
         auto thisVar = getThisVar(compiler, result);
-        auto blockVar = _block->getVar(compiler, result, shared_from_this(), thisVar, _returnMode);
+        auto blockVar = _block->getVar(compiler, result, shared_from_this(), thisVar, returnType->typeMode);
         blockVar->dump(compiler, result, nullptr, functions, ss, dotSS, level);
     }
 }
@@ -756,7 +759,7 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CResult& result) 
         
         if (_block) {
             auto thisVar = getThisVar(compiler, result);
-            auto blockVar = _block->getVar(compiler, result, shared_from_this(), thisVar, _returnMode);
+            auto blockVar = _block->getVar(compiler, result, shared_from_this(), thisVar, _returnType ? _returnType->typeMode : _returnMode);
             auto type = blockVar->getType(compiler, result);
             if (!_returnType) {
                 _returnType = type;
@@ -979,7 +982,7 @@ string CFunction::getCFullName(bool includeTemplateTypes) {
                 ss << "_";
             }
 
-            ss << it->nameValue;
+            ss << it->safeName;
         }
     }
     return ss.str();

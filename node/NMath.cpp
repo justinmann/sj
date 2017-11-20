@@ -1,5 +1,9 @@
 #include "Node.h"
 
+bool CMathVar::getReturnThis() {
+    return false;
+}
+
 shared_ptr<CType> CMathVar::getType(Compiler* compiler, CResult& result) {
     return leftVar->getType(compiler, result);
 }

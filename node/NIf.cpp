@@ -1,5 +1,9 @@
 #include "Node.h"
 
+bool CIfElseVar::getReturnThis() {
+    return false;
+}
+
 shared_ptr<CType> CIfElseVar::getType(Compiler* compiler, CResult& result) {
     if (elseVar) {
         return elseVar->getType(compiler, result);

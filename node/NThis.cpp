@@ -1,5 +1,9 @@
 #include "Node.h"
 
+bool CThisVar::getReturnThis() {
+    return true;
+}
+
 shared_ptr<CType> CThisVar::getType(Compiler* compiler, CResult& result) {
     switch (typeMode) {
     case CTM_Stack:

@@ -1,5 +1,9 @@
 #include "Node.h"
 
+bool CVoidVar::getReturnThis() {
+    return false;
+}
+
 shared_ptr<CType> CVoidVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeVoid;
 }

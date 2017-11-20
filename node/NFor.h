@@ -12,6 +12,7 @@
 class CForIndexVar : public CVar {
 public:
     CForIndexVar(CLoc loc, shared_ptr<CBaseFunction> scope, string name) : CVar(loc, scope, "", false), name(name) { }
+    bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
     void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
@@ -22,6 +23,7 @@ public:
 class CForLoopVar : public CVar {
 public:
     CForLoopVar(CLoc loc, shared_ptr<CFunction> thisFunction, shared_ptr<CForIndexVar> indexVar, shared_ptr<CVar> startVar, shared_ptr<CVar> endVar, shared_ptr<CVar> bodyVar) : CVar(loc, static_pointer_cast<CBaseFunction>(thisFunction), "", false), thisFunction(thisFunction), indexVar(indexVar), startVar(startVar), endVar(endVar), bodyVar(bodyVar) { }
+    bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
     void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);

@@ -8,6 +8,10 @@ shared_ptr<CDotVar> CDotVar::create(CLoc loc, shared_ptr<CBaseFunction> scope, s
     return c;
 }
 
+bool CDotVar::getReturnThis() {
+    return false;
+}
+
 shared_ptr<CType> CDotVar::getType(Compiler* compiler, CResult& result) {
     return rightVar->getType(compiler, result);
 }

@@ -1,5 +1,9 @@
 #include "Node.h"
 
+bool CParentVar::getReturnThis() {
+    return false;
+}
+
 shared_ptr<CType> CParentVar::getType(Compiler* compiler, CResult& result) {
     auto parentTypes = function->getThisTypes(compiler, result);
     if (!parentTypes) {
