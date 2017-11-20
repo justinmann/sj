@@ -1,11 +1,11 @@
 #include "Node.h"
 
-shared_ptr<CType> CIsEmptyVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
+shared_ptr<CType> CIsEmptyVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeBool;
 }
 
-shared_ptr<ReturnValue> CIsEmptyVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
-    auto leftValue = var->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, returnMode, nullptr, thisName);
+shared_ptr<ReturnValue> CIsEmptyVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+    auto leftValue = var->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisName);
     if (!leftValue) {
         return nullptr;
     }
@@ -25,13 +25,13 @@ shared_ptr<ReturnValue> CIsEmptyVar::transpileGet(Compiler* compiler, CResult& r
     return make_shared<ReturnValue>(compiler->typeBool, line.str());
 }
 
-void CIsEmptyVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CIsEmptyVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     assert(false);
 }
 
-void CIsEmptyVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CIsEmptyVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     ss << "isEmpty(";
-    var->dump(compiler, result, thisFunction, thisVar, returnMode, nullptr, functions, ss, dotSS, level);
+    var->dump(compiler, result, nullptr, functions, ss, dotSS, level);
     ss << ")";
 }
 
@@ -41,13 +41,13 @@ void NIsEmpty::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseF
     node->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NIsEmpty::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
-    auto leftVar = node->getVar(compiler, result, thisFunction, thisVar);
+shared_ptr<CVar> NIsEmpty::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+    auto leftVar = node->getVar(compiler, result, thisFunction, thisVar, CTM_Undefined);
     if (!leftVar) {
         return nullptr;
     }
 
-    auto leftType = leftVar->getType(compiler, result, CTM_Undefined);
+    auto leftType = leftVar->getType(compiler, result);
     if (!leftType) {
         return nullptr;
     }

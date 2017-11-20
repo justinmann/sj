@@ -6,6 +6,7 @@ shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CResult& result, CLoc 
     auto c = make_shared<CCallVar>(loc_);
     c->arguments = arguments_;
     c->thisFunction = thisFunction_;
+    c->thisVar = thisVar;
     c->dotVar = dotVar_;
     c->callee = callee_;
     
@@ -34,8 +35,8 @@ shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CResult& result, CLoc 
     return c;
 }
 
-shared_ptr<CType> CCallVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
-    return callee->getReturnType(compiler, result, returnMode);
+shared_ptr<CType> CCallVar::getType(Compiler* compiler, CResult& result) {
+    return callee->getReturnType(compiler, result);
 }
 
 bool CCallVar::getParameters(Compiler* compiler, CResult& result, vector<pair<bool, shared_ptr<NBase>>>& parameters) {
@@ -95,7 +96,7 @@ bool CCallVar::getParameters(Compiler* compiler, CResult& result, vector<pair<bo
     return true;
 }
 
-shared_ptr<ReturnValue> CCallVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CCallVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     assert(compiler->state == CompilerState::Compile);
 
     if (arguments->size() > callee->argDefaultValues.size()) {
@@ -109,22 +110,22 @@ shared_ptr<ReturnValue> CCallVar::transpileGet(Compiler* compiler, CResult& resu
         return nullptr;
     }
 
-    auto returnValue = callee->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, dotValue, loc, parameters, thisName, returnMode);
+    auto returnValue = callee->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, dotValue, loc, parameters, thisName);
     if (returnValue == nullptr) {
         assert(result.errors.size() > 0);
     }
     return returnValue;
 }
 
-void CCallVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CCallVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     assert(false);
 }
 
-void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     if (functions.find(callee) == functions.end()) {
         functions[callee] = "";
         stringstream temp;
-        callee->dumpBody(compiler, result, returnMode, functions, temp, 0);
+        callee->dumpBody(compiler, result, functions, temp, 0);
         functions[callee] = temp.str();
     }
 
@@ -135,7 +136,7 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctio
         return;
     }
 
-    if (callee->getHasThis()) {
+    if (callee->hasThis) {
         ss << "this" << " = ";
         ss << callee->fullName(true) << "(";
 
@@ -162,7 +163,7 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctio
             for (auto it : parameters) {
                 auto paramVar = callee->argVars[paramIndex];
                 ss << paramVar->name.c_str();
-                auto ctype = paramVar->getType(compiler, result, CTM_Undefined);
+                auto ctype = paramVar->getType(compiler, result);
                 ss << "'" << (ctype != nullptr ? ctype->name : "ERROR");
                 ss << (paramVar->isMutable ? " = " : " : ");
                 // TODO: it.second->dump(compiler, result, it.first ? callee : thisFunction, thisVar, CTM_Undefined, functions, ss, level + 1);
@@ -200,7 +201,7 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctio
             for (auto it : parameters) {
                 auto paramVar = callee->argVars[paramIndex];
                 ss << paramVar->name.c_str();
-                ss << "'" << paramVar->getType(compiler, result, CTM_Undefined)->name.c_str();
+                ss << "'" << paramVar->getType(compiler, result)->name.c_str();
                 ss << (paramVar->isMutable ? " = " : " : ");
                 // TODO: it.second->dump(compiler, result, thisFunction, thisVar, CTM_Undefined, functions, ss, level + 1);
                 if (paramIndex != parameters.size() - 1) {
@@ -242,14 +243,14 @@ void NCall::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunc
     }
 }
 
-shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> dotVar) {
+shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
     assert(compiler->state >= CompilerState::FixVar);
     
     // parentFunction will be specified if the NCall is used as the default NAssignment for a NFunction
     auto cfunction = static_pointer_cast<CBaseFunction>(thisFunction);
     
     if (dotVar) {
-        cfunction = dotVar->getType(compiler, result, CTM_Undefined)->parent.lock();
+        cfunction = dotVar->getType(compiler, result)->parent.lock();
         if (!cfunction) {
             result.addError(loc, CErrorCode::InvalidVariable, "parent is not a function");
             return nullptr;
@@ -257,14 +258,14 @@ shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, CResult& resul
     }
     
     // Handle last name in list
-    auto callee = cfunction->getCFunction(compiler, result, name, thisFunction, templateTypeNames);
+    auto callee = cfunction->getCFunction(compiler, result, name, thisFunction, templateTypeNames, returnMode);
     if (!callee) {
         // If we are still using "this" then we can check to see if it is a function on parent
         if (cfunction == thisFunction) {
             while (cfunction && !cfunction->parent.expired() && !callee) {
                 cfunction = cfunction->parent.lock();
                 if (cfunction) {
-                    callee = cfunction->getCFunction(compiler, result, name, thisFunction, templateTypeNames);
+                    callee = cfunction->getCFunction(compiler, result, name, thisFunction, templateTypeNames, returnMode);
                 }
             }
         }
@@ -278,8 +279,8 @@ shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, CResult& resul
     return callee;
 }
 
-shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
-    auto callee = getCFunction(compiler, result, thisFunction, dotVar);
+shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+    auto callee = getCFunction(compiler, result, thisFunction, dotVar, returnMode);
     if (!callee) {
         return nullptr;
     }

@@ -4,8 +4,8 @@ class CGetValueVar : public CVar {
 public:
     CGetValueVar(CLoc loc, shared_ptr<CVar> leftVar, bool isProtectedWithEmptyCheck) : CVar(loc, "", false), leftVar(leftVar), isProtectedWithEmptyCheck(isProtectedWithEmptyCheck) { }
 
-    shared_ptr<CType> getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
-        auto leftType = leftVar->getType(compiler, result, CTM_Undefined);
+    shared_ptr<CType> getType(Compiler* compiler, CResult& result) {
+        auto leftType = leftVar->getType(compiler, result);
         if (!leftType) {
             return nullptr;
         }
@@ -18,8 +18,8 @@ public:
         return leftType->getValueType();
     }
 
-    shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
-        auto leftValue = leftVar->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, returnMode, dotValue, thisName);
+    shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+        auto leftValue = leftVar->transpileGet(compiler, result, trOutput, trBlock, dotValue, thisName);
         if (!leftValue) {
             return nullptr;
         }
@@ -50,13 +50,13 @@ public:
         return make_shared<ReturnValue>(leftValue->type->getValueType(), line.str());
     }
 
-    void transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+    void transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
 
     }
 
-    void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+    void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
         ss << "getValue(";
-        leftVar->dump(compiler, result, thisFunction, thisVar, returnMode, dotVar, functions, ss, dotSS, level);
+        leftVar->dump(compiler, result, dotVar, functions, ss, dotSS, level);
         ss << ")";
     }
 
@@ -70,13 +70,13 @@ void NGetValue::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBase
     node->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NGetValue::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
-    auto leftVar = node->getVar(compiler, result, thisFunction, thisVar);
+shared_ptr<CVar> NGetValue::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+    auto leftVar = node->getVar(compiler, result, thisFunction, thisVar, CTM_Undefined);
     if (!leftVar) {
         return nullptr;
     }
 
-    auto leftType = leftVar->getType(compiler, result, CTM_Undefined);
+    auto leftType = leftVar->getType(compiler, result);
     if (!leftType) {
         return nullptr;
     }

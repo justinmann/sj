@@ -13,11 +13,11 @@ void CNormalVar::makeFunctionVar() {
     mode = CVarType::Var_Public;
 }
 
-shared_ptr<CType> CNormalVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
+shared_ptr<CType> CNormalVar::getType(Compiler* compiler, CResult& result) {
     return type;
 }
 
-shared_ptr<ReturnValue> CNormalVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CNormalVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     if (dotValue) {
         auto returnValue = trBlock->createTempVariable(type, "dotTemp");
         stringstream lineStream;
@@ -35,13 +35,13 @@ shared_ptr<ReturnValue> CNormalVar::transpileGet(Compiler* compiler, CResult& re
     }    
 }
 
-void CNormalVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CNormalVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     stringstream lineStream;
 
     if (!returnValue)
         return;
 
-    auto returnType = getType(compiler, result, CTM_Undefined);
+    auto returnType = getType(compiler, result);
     if (returnType != returnValue->type) {
         result.addError(loc, CErrorCode::TypeMismatch, "returned type '%s' does not match explicit type '%s'", returnType->name.c_str(), returnValue->type->name.c_str());
         return;
@@ -77,7 +77,7 @@ void CNormalVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CB
     varValue->addAssignToStatements(trBlock, returnValue->name, isFirstAssignment);
 }
 
-void CNormalVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CNormalVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     if (dotSS.gcount()) {
         ss << dotSS.str() << ".";
     }

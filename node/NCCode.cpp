@@ -1,12 +1,12 @@
 #include "Node.h"
 
-shared_ptr<CType> CCCodeVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
+shared_ptr<CType> CCCodeVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeVoid;
 }
 
-shared_ptr<ReturnValue> CCCodeVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CCCodeVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     for (auto cfunction : functions) {
-        cfunction->transpileDefinition(compiler, result, trOutput, CTM_Heap);
+        cfunction->transpileDefinition(compiler, result, trOutput);
     }
 
     switch (codeType) {
@@ -27,11 +27,11 @@ shared_ptr<ReturnValue> CCCodeVar::transpileGet(Compiler* compiler, CResult& res
     return nullptr;
 }
 
-void CCCodeVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CCCodeVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     assert(false);
 }
 
-void CCCodeVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CCCodeVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     switch (codeType) {
     case NCC_BLOCK:
         ss << "c{\n";
@@ -57,7 +57,7 @@ void CCCodeVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFuncti
     }
 }
 
-shared_ptr<CVar> NCCode::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar) {
+shared_ptr<CVar> NCCode::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode) {
     stringstream finalCode;
     stringstream macro;
     bool isInMacro = false;
@@ -66,13 +66,13 @@ shared_ptr<CVar> NCCode::getVarImpl(Compiler* compiler, CResult& result, shared_
             if (ch == ')') {
                 macro << ch;
                 isInMacro = false;
-                finalCode << expandMacro(compiler, result, thisFunction, thisVar, macro.str());
+                finalCode << expandMacro(compiler, result, thisFunction, thisVar, returnMode, macro.str());
                 macro.str("");
                 macro.clear();
             }
             else if (ch == '\n') {
                 isInMacro = false;
-                finalCode << expandMacro(compiler, result, thisFunction, thisVar, macro.str()) << '\n';
+                finalCode << expandMacro(compiler, result, thisFunction, thisVar, returnMode, macro.str()) << '\n';
                 macro.str("");
                 macro.clear();
             }
@@ -96,7 +96,7 @@ shared_ptr<CVar> NCCode::getVarImpl(Compiler* compiler, CResult& result, shared_
     return make_shared<CCCodeVar>(loc, codeType, finalCode.str(), _functions[thisFunction.get()], _includes);
 }
 
-string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, string macro) {
+string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, string macro) {
     auto paramStart = macro.find('(');
     auto functionName = macro.substr(0, paramStart);
     auto param = macro.substr(paramStart + 1, macro.size() - paramStart - 2);
@@ -114,7 +114,7 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
             result.addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", param.c_str());
         }
 
-        auto ctype = thisFunction->getVarType(compiler, result, ctypeName, CTM_Undefined);
+        auto ctype = thisFunction->getVarType(compiler, result, ctypeName);
         if (ctype) {
             return ctype->nameRef;
         }
@@ -122,17 +122,33 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
             result.addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", param.c_str());
         }
     }
-    else if (functionName.compare("function") == 0) {
+    else if (functionName.compare("functionHeap") == 0) {
         auto ctypeName = CTypeName::parse(param);
         if (!ctypeName) {
             result.addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", param.c_str());
         }
         
-        auto cfunction = static_pointer_cast<CFunction>(thisFunction->getCFunction(compiler, result, ctypeName->name, thisFunction, ctypeName->argTypeNames));
+        auto cfunction = static_pointer_cast<CFunction>(thisFunction->getCFunction(compiler, result, ctypeName->name, thisFunction, ctypeName->argTypeNames, CTM_Heap));
         if (cfunction) {
             _functions[thisFunction.get()].push_back(cfunction);
             // Do they want the stack or heap version
-            return cfunction->getCInitFunctionName(CTM_Heap);
+            return cfunction->getCInitFunctionName();
+        }
+        else {
+            result.addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", param.c_str());
+        }
+    }
+    else if (functionName.compare("functionStack") == 0) {
+        auto ctypeName = CTypeName::parse(param);
+        if (!ctypeName) {
+            result.addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", param.c_str());
+        }
+
+        auto cfunction = static_pointer_cast<CFunction>(thisFunction->getCFunction(compiler, result, ctypeName->name, thisFunction, ctypeName->argTypeNames, CTM_Stack));
+        if (cfunction) {
+            _functions[thisFunction.get()].push_back(cfunction);
+            // Do they want the stack or heap version
+            return cfunction->getCInitFunctionName();
         }
         else {
             result.addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", param.c_str());
@@ -148,7 +164,7 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
             result.addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", typeName.c_str());
         }
 
-        auto ctype = thisFunction->getVarType(compiler, result, ctypeName, CTM_Undefined);
+        auto ctype = thisFunction->getVarType(compiler, result, ctypeName);
         if (ctype) {
             stringstream retainStream;
             if (!ctype->parent.expired()) {
@@ -170,7 +186,7 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
             result.addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", typeName.c_str());
         }
 
-        auto ctype = thisFunction->getVarType(compiler, result, ctypeName, CTM_Undefined);
+        auto ctype = thisFunction->getVarType(compiler, result, ctypeName);
         if (ctype) {
             stringstream releaseStream;
             ReturnValue(ctype, varName).writeReleaseToStream(nullptr, releaseStream, 0);
@@ -186,7 +202,7 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
             result.addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", param.c_str());
         }
 
-        auto ctype = thisFunction->getVarType(compiler, result, ctypeName, CTM_Undefined);
+        auto ctype = thisFunction->getVarType(compiler, result, ctypeName);
         if (ctype) {
             return ctype->parent.expired() ? "true" : "false";
         }

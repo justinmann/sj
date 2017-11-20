@@ -1,7 +1,7 @@
 #include "Node.h"
 
-void CBaseFunction::setHasRefCount() {
-    hasRefCount = true;
+void CBaseFunction::setHasThis() {
+    hasThis = true;
 }
 
 bool CBaseFunction::getHasParent(Compiler* compiler, CResult& result) {
@@ -19,7 +19,7 @@ void CBaseFunction::setHasParent(Compiler* compiler, CResult& result) {
     }
     
     // Force parent to have a "this" struct
-    parent.lock()->setHasRefCount();
+    parent.lock()->setHasThis();
     
     if (!hasParent) {
         getThisTypes(compiler, result);

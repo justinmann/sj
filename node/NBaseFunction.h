@@ -37,33 +37,32 @@ public:
     CClassFunctionType classType;
     string name;
     bool hasParent;
-    bool hasRefCount;
+    bool hasThis;
     weak_ptr<CBaseFunction> parent;
     weak_ptr<CBaseFunctionDefinition> definition;
     vector<shared_ptr<CVar>> argVars;
     vector<shared_ptr<NBase>> argDefaultValues;
     
-    CBaseFunction(CClassFunctionType classType, string& name, weak_ptr<CBaseFunction> parent, weak_ptr<CBaseFunctionDefinition> definition) : classType(classType), name(name), hasParent(false), hasRefCount(false), parent(parent), definition(definition) { }
-    virtual void setHasRefCount();
+    CBaseFunction(CClassFunctionType classType, string& name, weak_ptr<CBaseFunction> parent, weak_ptr<CBaseFunctionDefinition> definition) : classType(classType), name(name), hasParent(false), hasThis(false), parent(parent), definition(definition) { }
+    virtual void setHasThis();
     virtual bool getHasParent(Compiler* compiler, CResult& result);
     virtual void setHasParent(Compiler* compiler, CResult& result);
     virtual void onHasParent(std::function<void(Compiler*, CResult&)> notify);
 
     virtual string fullName(bool includeTemplateTypes) = 0;
-    virtual bool getHasThis() = 0;
     virtual shared_ptr<CTypes> getThisTypes(Compiler* compiler, CResult& result) = 0;
     virtual int getThisIndex(const string& name) const = 0;
     virtual shared_ptr<CVar> getCVar(Compiler* compiler, CResult& result, const string& name) = 0;
-    virtual shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames) = 0;
-    virtual shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName, CTypeMode returnMode) = 0;
-    virtual string getCInitFunctionName(CTypeMode returnMode) = 0;
+    virtual shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode) = 0;
+    virtual shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName) = 0;
+    virtual string getCInitFunctionName() = 0;
     virtual string getCCopyFunctionName() = 0;
     virtual string getCDestroyFunctionName() = 0;
     virtual string getCStructName(CTypeMode typeMode) = 0;
     virtual pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(string name) = 0;
-    virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, CTypeMode returnMode) = 0;
-    virtual shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> calleeValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, const char* thisName, CTypeMode typeMode) = 0;
-    virtual void dumpBody(Compiler* compiler, CResult& result, CTypeMode returnTypeMode, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) = 0;
+    virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result) = 0;
+    virtual shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> calleeValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, const char* thisName) = 0;
+    virtual void dumpBody(Compiler* compiler, CResult& result, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) = 0;
 
 private:
     vector<std::function<void(Compiler*, CResult&)>> delegateHasParent;

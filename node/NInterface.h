@@ -19,7 +19,7 @@ public:
 
     NInterface(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> methodList);
     void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);
-    shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar) { return nullptr; }
+    shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode) { return nullptr; }
 
 private:
     shared_ptr<NInterface> shared_from_this();
@@ -30,10 +30,10 @@ class CInterfaceMethod;
 class CInterfaceVar : public CVar {
 public:
     CInterfaceVar(CLoc loc, shared_ptr<CInterface> interface);
-    shared_ptr<CType> getType(Compiler* compiler, CResult& result, CTypeMode returnMode);
-    shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName);
-    void transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName);
-    void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
+    shared_ptr<CType> getType(Compiler* compiler, CResult& result);
+    shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName);
+    void transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName);
+    void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
 };
 
 class CInterface : public CBaseFunction, public enable_shared_from_this<CInterface> {
@@ -42,38 +42,38 @@ public:
     map<string, shared_ptr<CInterfaceMethod>> methodByName;
     map<string, shared_ptr<CType>> templateTypesByName;
     
-    CInterface(CLoc loc, weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent);
+    CInterface(CLoc loc, weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent, CTypeMode returnMode);
     shared_ptr<CInterface> init(Compiler* compiler, CResult& result, shared_ptr<NInterface> node, vector<shared_ptr<CType>>& templateTypes);
     string fullName(bool includeTemplateTypes);
     
-    bool getHasThis();
     shared_ptr<CTypes> getThisTypes(Compiler* compiler, CResult& result);
     int getThisIndex(const string& name) const;
-    shared_ptr<CVar> getThisVar(Compiler* compiler, CResult& result, CTypeMode typeMode);
+    shared_ptr<CVar> getThisVar(Compiler* compiler, CResult& result);
     int getArgStart();
 
     shared_ptr<CVar> getCVar(Compiler* compiler, CResult& result, const string& name);
-    shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames);
+    shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode);
     pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(string name) { assert(false); return make_pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>>(nullptr, nullptr); }
-    shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName, CTypeMode returnMode);
-    shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, CTypeMode returnMode);
-    string getCInitFunctionName(CTypeMode returnMode);
+    shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName);
+    shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result);
+    string getCInitFunctionName();
     string getCCopyFunctionName();
     string getCDestroyFunctionName();
-    string getCCastFunctionName(CTypeMode toTypeMode, shared_ptr<CBaseFunction> fromFunction, CTypeMode fromTypeMode);
+    string getCCastFunctionName(CTypeMode toTypeMode, shared_ptr<CBaseFunction> fromFunction);
     string getCBaseName(CTypeMode typeMode);
     string getCStructName(CTypeMode typeMode);
-    string getCTypeIdName(CTypeMode typeMode);
-    string transpileCast(CTypeMode toTypeMode, shared_ptr<CBaseFunction> fromFunction, CTypeMode fromTypeMode, string varName);
+    string getCTypeIdName();
+    string transpileCast(CTypeMode toTypeMode, shared_ptr<CBaseFunction> fromFunction, string varName);
 
-    void transpileDefinition(Compiler* compiler, CResult& result, TrOutput* trOutput, CTypeMode typeMode);
-    shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> calleeValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, const char* thisName, CTypeMode typeMode);
-    void dumpBody(Compiler* compiler, CResult& result, CTypeMode returnTypeMode, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
+    void transpileDefinition(Compiler* compiler, CResult& result, TrOutput* trOutput);
+    shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> calleeValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, const char* thisName);
+    void dumpBody(Compiler* compiler, CResult& result, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
     bool getReturnMustRelease(Compiler* compiler, CResult& result);
 
 private:
     CLoc loc;
     shared_ptr<CTypes> thisTypes;
+    CTypeMode _returnMode;
 };
 
 class CInterfaceDefinition : public CBaseFunctionDefinition, public enable_shared_from_this<CInterfaceDefinition> {
@@ -85,7 +85,7 @@ public:
     CInterfaceDefinition(CLoc loc, string& name);
     string fullName();
     void addChildFunction(string& name, shared_ptr<CBaseFunctionDefinition> childFunction);
-    shared_ptr<CInterface> getInterface(Compiler* compiler, CResult& result, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent);
+    shared_ptr<CInterface> getInterface(Compiler* compiler, CResult& result, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent, CTypeMode returnMode);
     
 private:
     map<vector<shared_ptr<CType>>, shared_ptr<CInterface>> cinterfaces;

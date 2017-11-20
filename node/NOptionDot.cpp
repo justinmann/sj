@@ -5,17 +5,17 @@ void NOptionDot::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBas
     right->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NOptionDot::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
+shared_ptr<CVar> NOptionDot::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
     auto getValueNode = make_shared<NGetValue>(loc, left, true);
     auto localDotNode = make_shared<NDot>(loc, getValueNode, right);
-    auto localDotVar = localDotNode->getVar(compiler, result, thisFunction, thisVar, dotVar);
+    auto localDotVar = localDotNode->getVar(compiler, result, thisFunction, thisVar, dotVar, CTM_Undefined);
     if (!localDotVar) {
         return nullptr;
     }
-    auto ctype = localDotVar->getType(compiler, result, CTM_Undefined);
+    auto ctype = localDotVar->getType(compiler, result);
     if (ctype == compiler->typeVoid) {
         auto ifNode = make_shared<NIf>(loc, make_shared<NNot>(loc, make_shared<NIsEmpty>(loc, left)), localDotNode, nullptr);
-        return ifNode->getVar(compiler, result, thisFunction, thisVar, dotVar);
+        return ifNode->getVar(compiler, result, thisFunction, thisVar, dotVar, returnMode);
     }
     else {
         shared_ptr<NBase> valueNode;
@@ -34,6 +34,6 @@ shared_ptr<CVar> NOptionDot::getVarImpl(Compiler* compiler, CResult& result, sha
         
         auto emptyNode = make_shared<NEmpty>(loc, make_shared<CTypeName>(ctype));
         auto ifNode = make_shared<NIf>(loc, make_shared<NIsEmpty>(loc, left), emptyNode, valueNode);
-        return ifNode->getVar(compiler, result, thisFunction, thisVar, dotVar);
+        return ifNode->getVar(compiler, result, thisFunction, thisVar, dotVar, returnMode);
     }
 }

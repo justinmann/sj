@@ -14,9 +14,17 @@ void NBase::define(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction
     }
 }
 
-shared_ptr<CVar> NBase::getVar(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar) {
-    if (_var.find(thisFunction.get()) == _var.end()) {
-        _var[thisFunction.get()] = getVarImpl(compiler, result, thisFunction, thisVar);
+shared_ptr<CVar> NBase::getVar(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode) {
+    assert(thisVar != nullptr);
+
+    auto key1 = thisFunction.get();
+    auto key2 = returnMode;
+    
+    if (_var[key1].find(key2) == _var[key1].end()) {
+        _var[key1][key2] = getVarImpl(compiler, result, thisFunction, thisVar, returnMode);
+        _thisVars[key1][key2] = thisVar.get();
     }
-    return _var[thisFunction.get()];
+
+    assert(_thisVars[key1][key2] == thisVar.get());
+    return _var[key1][key2];
 }

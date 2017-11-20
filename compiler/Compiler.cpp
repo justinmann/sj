@@ -360,13 +360,13 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 
 			if (result->errors.size() == 0) {
 				state = CompilerState::FixVar;
-				currentFunction = make_shared<CFunction>(currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr);
+				currentFunction = make_shared<CFunction>(currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr, CTM_Stack);
 				currentFunction->init(this, *result, nullptr, nullptr);
-				auto currentVar = currentFunction->getThisVar(this, *result, CTM_Stack);
-				anonFunction->getVar(this, *result, currentFunction, currentVar);
-				globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, *result, "global", nullptr, nullptr));
-                auto globalVar = globalFunction->getThisVar(this, *result, CTM_Stack);
-                auto mainLoop = static_pointer_cast<CFunction>(globalFunction->getCFunction(this, *result, "mainLoop", globalFunction, nullptr));
+				auto currentVar = currentFunction->getThisVar(this, *result);
+				anonFunction->getVar(this, *result, currentFunction, currentVar, CTM_Stack);
+				globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, *result, "global", nullptr, nullptr, CTM_Stack));
+                auto globalVar = globalFunction->getThisVar(this, *result);
+                auto mainLoop = static_pointer_cast<CFunction>(globalFunction->getCFunction(this, *result, "mainLoop", globalFunction, nullptr, CTM_Stack));
 #ifdef VAR_OUTPUT
 				currentFunction->dump(this, *compilerResult, 0);
 #endif
@@ -376,7 +376,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                         map<shared_ptr<CBaseFunction>, string> functionDumps;
                         stringstream ss;
                         stringstream dotSS;
-                        globalFunction->dumpBody(this, *result, CTM_Stack, functionDumps, ss, 0);
+                        globalFunction->dumpBody(this, *result, functionDumps, ss, 0);
                         // globalVar->dump(this, *result, nullptr, nullptr, CTM_Stack, nullptr, functionDumps, ss, dotSS, 0);
                         
                         vector<pair<string, string>> functionNames;
@@ -403,11 +403,11 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                         output.structs[structName].push_back("int _refCount");
                     }
 
-                    globalFunction->transpileDefinition(this, *result, &output, CTM_Stack);
+                    globalFunction->transpileDefinition(this, *result, &output);
 
                     auto hasMainLoop = false;
                     if (mainLoop) {
-                        mainLoop->transpileDefinition(this, *result, &output, CTM_Stack);
+                        mainLoop->transpileDefinition(this, *result, &output);
                         hasMainLoop = true;
                     }
 

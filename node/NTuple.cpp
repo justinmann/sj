@@ -7,7 +7,7 @@ void NTuple::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFun
 }
 
 
-shared_ptr<CVar> NTuple::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
+shared_ptr<CVar> NTuple::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
     if (elements->size() == 0) {
         result.addError(loc, CErrorCode::TypeMismatch, "tuple must have at least 1 value");
         return nullptr;
@@ -20,13 +20,13 @@ shared_ptr<CVar> NTuple::getVarImpl(Compiler* compiler, CResult& result, shared_
 
     auto typeNameList = make_shared<CTypeNameList>();
     for (auto element : *elements) {
-        auto elementVar = element->getVar(compiler, result, thisFunction, thisVar);
-        auto ctype = elementVar->getType(compiler, result, CTM_Undefined);
+        auto elementVar = element->getVar(compiler, result, thisFunction, thisVar, CTM_Undefined);
+        auto ctype = elementVar->getType(compiler, result);
         typeNameList->push_back(make_shared<CTypeName>(ctype));
     }
 
     // create and store Tuple value
     auto createTuple = make_shared<NCall>(loc, (string("tuple") + to_string(elements->size())).c_str(), typeNameList, elements);
-    return createTuple->getVar(compiler, result, thisFunction, thisVar, dotVar);
+    return createTuple->getVar(compiler, result, thisFunction, thisVar, dotVar, returnMode);
 }
 

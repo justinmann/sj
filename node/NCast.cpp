@@ -1,11 +1,11 @@
 #include "Node.h"
 
-shared_ptr<CType> CCastVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
+shared_ptr<CType> CCastVar::getType(Compiler* compiler, CResult& result) {
     return typeTo;
 }
 
-shared_ptr<ReturnValue> CCastVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
-    auto returnValue = var->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, CTM_Undefined, nullptr, thisName);
+shared_ptr<ReturnValue> CCastVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+    auto returnValue = var->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisName);
     if (!returnValue) {
         return nullptr;
     }
@@ -25,7 +25,7 @@ shared_ptr<ReturnValue> CCastVar::transpileGet(Compiler* compiler, CResult& resu
     if (typeTo != nullptr && typeTo->category == CTC_Interface) {
         auto resultValue = trBlock->createTempVariable(typeTo, "result");
         auto interface = static_pointer_cast<CInterface>(typeTo->parent.lock());
-        interface->transpileDefinition(compiler, result, trOutput, returnValue->type->typeMode);
+        interface->transpileDefinition(compiler, result, trOutput);
         
         shared_ptr<TrBlock> ifNullBlock;
         auto innerBlock = trBlock;
@@ -46,7 +46,7 @@ shared_ptr<ReturnValue> CCastVar::transpileGet(Compiler* compiler, CResult& resu
             innerBlock = ifNullBlock.get();
         }
         
-        auto rightName = interface->transpileCast(returnValue->type->typeMode, returnValue->type->parent.lock(), returnValue->type->typeMode, returnValue->name);
+        auto rightName = interface->transpileCast(returnValue->type->typeMode, returnValue->type->parent.lock(), returnValue->name);
         resultValue->addAssignToStatements(innerBlock, rightName, true);
         return resultValue;
     }
@@ -64,12 +64,12 @@ shared_ptr<ReturnValue> CCastVar::transpileGet(Compiler* compiler, CResult& resu
     }
 }
 
-void CCastVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CCastVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     assert(false);
 }
 
-void CCastVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
-    var->dump(compiler, result, thisFunction, thisVar, returnMode, nullptr, functions, ss, dotSS, level);
+void CCastVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+    var->dump(compiler, result, nullptr, functions, ss, dotSS, level);
     ss << " as " << typeTo->name;
 }
 
@@ -79,18 +79,18 @@ void NCast::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunc
     node->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
-    auto var = node->getVar(compiler, result, thisFunction, thisVar, nullptr);
+shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+    auto var = node->getVar(compiler, result, thisFunction, thisVar, nullptr, CTM_Undefined);
     if (!var) {
         return nullptr;
     }
-    auto fromType = var->getType(compiler, result, CTM_Undefined);
+    auto fromType = var->getType(compiler, result);
 
     if (typeName->typeMode == CTM_Undefined) {
         typeName->typeMode = fromType->typeMode;
     }
 
-    auto type = thisFunction->getVarType(compiler, result, typeName, CTM_Undefined);
+    auto type = thisFunction->getVarType(compiler, result, typeName);
     if (!type) {
         result.addError(loc, CErrorCode::InvalidType, "type '%s' does not exist", typeName->getName().c_str());
         return nullptr;

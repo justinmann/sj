@@ -63,7 +63,7 @@ public:
     weak_ptr<CBaseFunction> parent;
     bool isOption;
 
-    shared_ptr<ReturnValue> transpileDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar);
+    shared_ptr<ReturnValue> transpileDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction);
     shared_ptr<CType> getValueType();
     shared_ptr<CType> getOptionType();
     shared_ptr<CType> getHeapValueType();

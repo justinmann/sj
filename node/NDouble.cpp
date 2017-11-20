@@ -10,7 +10,7 @@ NDouble::NDouble(CLoc loc, const char* value_) : NVariableBase(NodeType_Double, 
     }
 }
 
-shared_ptr<CVar> NDouble::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
+shared_ptr<CVar> NDouble::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
     auto type = isF64 ? compiler->typeF64 : compiler->typeF32;
     return make_shared<CConstantVar>(loc, type, isF64 ? value : value + "f");
 }

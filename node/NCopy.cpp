@@ -1,7 +1,7 @@
 #include "Node.h"
 
-shared_ptr<CType> CCopyVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
-    auto type = var->getType(compiler, result, CTM_Undefined);
+shared_ptr<CType> CCopyVar::getType(Compiler* compiler, CResult& result) {
+    auto type = var->getType(compiler, result);
     if (!type) {
         return nullptr;
     }
@@ -14,8 +14,8 @@ shared_ptr<CType> CCopyVar::getType(Compiler* compiler, CResult& result, CTypeMo
     return type->getOptionType();
 }
 
-shared_ptr<ReturnValue> CCopyVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
-    auto rightValue = var->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, CTM_Undefined, nullptr, thisName);
+shared_ptr<ReturnValue> CCopyVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+    auto rightValue = var->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisName);
     
     // figure out type
     shared_ptr<CType> leftType;
@@ -45,13 +45,13 @@ shared_ptr<ReturnValue> CCopyVar::transpileGet(Compiler* compiler, CResult& resu
     return resultValue;
 }
 
-void CCopyVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CCopyVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     assert(false);
 }
 
-void CCopyVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CCopyVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     ss << "copy(";
-    var->dump(compiler, result, thisFunction, thisVar, returnMode, nullptr, functions, ss, dotSS, level);
+    var->dump(compiler, result, returnMode, nullptr, functions, ss, dotSS, level);
     ss << ")";
 
 }
@@ -61,7 +61,7 @@ void NCopy::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunc
     node->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NCopy::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
+shared_ptr<CVar> NCopy::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
     auto leftVar = node->getVar(compiler, result, thisFunction, thisVar);
     if (!leftVar) {
         return nullptr;

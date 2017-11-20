@@ -1,8 +1,8 @@
 #include "Node.h"
 
-shared_ptr<CType> CValueVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
+shared_ptr<CType> CValueVar::getType(Compiler* compiler, CResult& result) {
     assert(compiler->state >= CompilerState::FixVar);
-    auto leftType = var->getType(compiler, result, returnMode);
+    auto leftType = var->getType(compiler, result);
     if (!leftType) {
         return nullptr;
     }
@@ -15,8 +15,8 @@ shared_ptr<CType> CValueVar::getType(Compiler* compiler, CResult& result, CTypeM
     return leftType->getOptionType();
 }
 
-shared_ptr<ReturnValue> CValueVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
-    auto leftValue = var->transpileGet(compiler, result, thisFunction, thisVar, trOutput, trBlock, returnMode, nullptr, thisName);
+shared_ptr<ReturnValue> CValueVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+    auto leftValue = var->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisName);
     if (!leftValue) {
         return nullptr;
     }
@@ -43,13 +43,13 @@ shared_ptr<ReturnValue> CValueVar::transpileGet(Compiler* compiler, CResult& res
     }
 }
 
-void CValueVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CValueVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     assert(false);
 }
 
-void CValueVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CValueVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     ss << "value(";
-    var->dump(compiler, result, thisFunction, thisVar, returnMode, nullptr, functions, ss, dotSS, level);
+    var->dump(compiler, result, nullptr, functions, ss, dotSS, level);
     ss << ")";
 
 }
@@ -59,13 +59,13 @@ void NValue::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFun
     node->define(compiler, result, thisFunction);
 }
 
-shared_ptr<CVar> NValue::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
-    auto leftVar = node->getVar(compiler, result, thisFunction, thisVar);
+shared_ptr<CVar> NValue::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+    auto leftVar = node->getVar(compiler, result, thisFunction, thisVar, returnMode);
     if (!leftVar) {
         return nullptr;
     }
 
-    auto leftType = leftVar->getType(compiler, result, CTM_Undefined);
+    auto leftType = leftVar->getType(compiler, result);
     if (!leftType) {
         return nullptr;
     }

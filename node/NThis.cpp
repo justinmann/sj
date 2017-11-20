@@ -1,50 +1,34 @@
 #include "Node.h"
 
-shared_ptr<CType> CThisVar::getType(Compiler* compiler, CResult& result, CTypeMode returnMode) {
+shared_ptr<CType> CThisVar::getType(Compiler* compiler, CResult& result) {
     switch (typeMode) {
     case CTM_Stack:
         return types->stackValueType;
     case CTM_Heap:
         return types->heapValueType;
     case CTM_Undefined:
-        switch (returnMode) {
-        case CTM_Stack:
-            return types->stackValueType;
-        case CTM_Heap:
-            return types->heapValueType;
-        case CTM_Undefined:
-            return types->stackValueType;
-        default:
-            assert(false);
-            return nullptr;
-        }
+        return types->stackValueType;
     default:
         assert(false);
         return nullptr;
     }
 }
 
-shared_ptr<ReturnValue> CThisVar::transpileGet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, CTypeMode returnMode, shared_ptr<ReturnValue> dotValue, const char* thisName) {
-    assert(returnMode != CTM_Value);
-    if (typeMode == CTM_Undefined) {
-        typeMode = returnMode;
-    }
-    assert(returnMode == typeMode);
-
-    return make_shared<ReturnValue>(thisVar->getType(compiler, result, CTM_Undefined), "_this");
+shared_ptr<ReturnValue> CThisVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+    return make_shared<ReturnValue>(getType(compiler, result), "_this");
 }
 
-void CThisVar::transpileSet(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CThisVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
     assert(false);
 }
 
-void CThisVar::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CThisVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     ss << "this";
 }
 
-void CThisVar::setHasRefCount() {
+void CThisVar::setHasThis() {
     auto function = types->stackValueType->parent.lock();
-    function->setHasRefCount();
+    function->setHasThis();
 }
 
 CTypeMode CThisVar::getTypeMode() {
@@ -54,7 +38,7 @@ CTypeMode CThisVar::getTypeMode() {
     return typeMode;
 }
 
-shared_ptr<CVar> NThis::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar) {
+shared_ptr<CVar> NThis::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
     if (dotVar) {
         result.addError(loc, CErrorCode::InvalidVariable, "this must be the first var in a dot chain");
         return nullptr;
@@ -65,6 +49,17 @@ shared_ptr<CVar> NThis::getVarImpl(Compiler* compiler, CResult& result, shared_p
         return nullptr;
     }
     
-    thisVar->setHasRefCount();    
+    assert(returnMode != CTM_Value);
+    if (returnMode != CTM_Undefined) {
+        if (thisVar->typeMode == CTM_Undefined) {
+            thisVar->typeMode = returnMode;
+        }
+
+        if (returnMode != thisVar->typeMode) {
+            result.addError(loc, CErrorCode::TypeMismatch, "cannot change this from stack to heap in the same function");
+        }
+    }
+
+    thisVar->setHasThis();
     return thisVar;
 }

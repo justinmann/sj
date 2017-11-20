@@ -12,6 +12,6 @@ void NInclude::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseF
     compiler->includeFile(result, path.string());
 }
 
-shared_ptr<CVar> NInclude::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar) {
+shared_ptr<CVar> NInclude::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode) {
     return nullptr;
 }
