@@ -61,12 +61,7 @@ shared_ptr<CType> CInterfaceVar::getType(Compiler* compiler, CResult& result) {
     return nullptr; // parent.lock()->getThisTypes(compiler, result);
 }
 
-shared_ptr<ReturnValue> CInterfaceVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
-    assert(false);
-	return nullptr;
-}
-
-void CInterfaceVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
+void CInterfaceVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     assert(false);
 }
 
@@ -225,17 +220,17 @@ string CInterface::getCCastFunctionName(CTypeMode toTypeMode, shared_ptr<CBaseFu
     return line.str();
 }
 
-string CInterface::transpileCast(CTypeMode toTypeMode, shared_ptr<CBaseFunction> fromFunction, string varName) {
-    if (fromFunction->classType == CFT_Interface) {
-        auto fromInterface = static_pointer_cast<CInterface>(fromFunction);
+void CInterface::transpileCast(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> fromValue, shared_ptr<TrStoreValue> toValue) {
+    if (fromValue->type->parent.lock()->classType == CFT_Interface) {
+        auto fromInterface = static_pointer_cast<CInterface>(fromValue->type->parent.lock());
         stringstream line;
-        line << "(" << getCStructName(toTypeMode) << "*)" << varName << "->asInterface(" << varName << "->_parent, " << getCTypeIdName() << ")";
-        return line.str();
+        line << "(" << getCStructName(toValue->type->typeMode) << "*)" << fromValue->name << "->asInterface(" << fromValue->name << "->_parent, " << getCTypeIdName() << ")";
+        toValue->setValue(compiler, result, loc, trBlock, make_shared<TrValue>(toValue->type, line.str()));
     }
     else {
         stringstream line;
-        line << getCCastFunctionName(toTypeMode, fromFunction) << "(" << varName << ")";
-        return line.str();
+        line << getCCastFunctionName(toValue->type->typeMode, fromValue->type->parent.lock()) << "(" << fromValue->name << ")";
+        toValue->setValue(compiler, result, loc, trBlock, make_shared<TrValue>(toValue->type, line.str()));
     }
 }
 
@@ -295,9 +290,9 @@ void CInterface::transpileDefinition(Compiler* compiler, CResult& result, TrOutp
     }
 }
 
-shared_ptr<ReturnValue> CInterface::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> calleeValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, shared_ptr<ReturnValue> thisValue) {
+void CInterface::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     assert(false);
-    return nullptr;
+    return;
 }
 
 void CInterface::dumpBody(Compiler* compiler, CResult& result, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
@@ -313,7 +308,7 @@ bool CInterface::getReturnMustRelease(Compiler* compiler, CResult& result) {
 //    return nullptr;
 //}
 //
-//shared_ptr<ReturnValue> CInterface::cast(Compiler* compiler, CResult& result, IRBuilder<>* builder, shared_ptr<ReturnValue> fromValue, bool isHeap, vector<Function*>& interfaceMethodValues) {
+//shared_ptr<TrValue> CInterface::cast(Compiler* compiler, CResult& result, IRBuilder<>* builder, shared_ptr<TrValue> fromValue, bool isHeap, vector<Function*>& interfaceMethodValues) {
 //    auto interfaceType = getStructType(compiler, result);
 //    Value* value;
 //    // alloc instance of struct type
@@ -366,7 +361,7 @@ bool CInterface::getReturnMustRelease(Compiler* compiler, CResult& result) {
 //    }
 //    
 //    // create return value
-//    return make_shared<ReturnValue>(shared_from_this(), RVR_MustRelease, RVT_HEAP, false, value);
+//    return make_shared<TrValue>(shared_from_this(), RVR_MustRelease, RVT_HEAP, false, value);
 //}
 
 CInterfaceDefinition::CInterfaceDefinition(CLoc loc, string& name_) : CBaseFunctionDefinition(CFT_Interface), loc(loc) {

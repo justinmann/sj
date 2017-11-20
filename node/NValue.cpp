@@ -15,15 +15,16 @@ shared_ptr<CType> CValueVar::getType(Compiler* compiler, CResult& result) {
     return leftType->getOptionType();
 }
 
-shared_ptr<ReturnValue> CValueVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
-    auto leftValue = var->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisValue);
-    if (!leftValue) {
-        return nullptr;
+void CValueVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    auto leftValue = trBlock->createTempStoreVariable(var->getType(compiler, result), "temp");
+    var->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, leftValue);
+    if (!leftValue->hasSetValue) {
+        return;
     }
 
     if (leftValue->type->isOption) {
         result.addError(loc, CErrorCode::TypeMismatch, "value cannot take an option type");
-        return nullptr;
+        return;
     }
 
     if (leftValue->type->parent.expired()) {
@@ -36,15 +37,11 @@ shared_ptr<ReturnValue> CValueVar::transpileGet(Compiler* compiler, CResult& res
         line2 << returnValue->name << ".value = " << leftValue->name;
         trBlock->statements.push_back(line2.str());
 
-        return returnValue;
+        storeValue->setValue(compiler, result, loc, trBlock, returnValue);
     }
     else {
-        return make_shared<ReturnValue>(leftValue->type->getOptionType(), leftValue->name);
+        storeValue->setValue(compiler, result, loc, trBlock, make_shared<TrValue>(leftValue->type->getOptionType(), leftValue->name));
     }
-}
-
-void CValueVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
-    assert(false);
 }
 
 void CValueVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

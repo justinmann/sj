@@ -4,7 +4,7 @@ shared_ptr<CType> CCCodeVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeVoid;
 }
 
-shared_ptr<ReturnValue> CCCodeVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
+void CCCodeVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     for (auto cfunction : functions) {
         cfunction->transpileDefinition(compiler, result, trOutput);
     }
@@ -24,11 +24,6 @@ shared_ptr<ReturnValue> CCCodeVar::transpileGet(Compiler* compiler, CResult& res
     for (auto include : includes) {
         trOutput->includes[include] = true;
     }
-    return nullptr;
-}
-
-void CCCodeVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
-    assert(false);
 }
 
 void CCCodeVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
@@ -189,7 +184,7 @@ string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBase
         auto ctype = thisFunction->getVarType(compiler, result, ctypeName);
         if (ctype) {
             stringstream releaseStream;
-            ReturnValue(ctype, varName).writeReleaseToStream(nullptr, releaseStream, 0);
+            TrValue(ctype, varName).writeReleaseToStream(nullptr, releaseStream, 0);
             return releaseStream.str();
         }
         else {

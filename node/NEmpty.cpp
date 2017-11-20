@@ -4,13 +4,9 @@ shared_ptr<CType> CEmptyVar::getType(Compiler* compiler, CResult& result) {
     return type;
 }
 
-shared_ptr<ReturnValue> CEmptyVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
+void CEmptyVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     auto type = getType(compiler, result);
-    return type->transpileDefaultValue(compiler, result);
-}
-
-void CEmptyVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
-    assert(false);
+    type->transpileDefaultValue(compiler, result, loc, trBlock, storeValue);
 }
 
 void CEmptyVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

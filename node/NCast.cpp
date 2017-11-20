@@ -4,21 +4,23 @@ shared_ptr<CType> CCastVar::getType(Compiler* compiler, CResult& result) {
     return typeTo;
 }
 
-shared_ptr<ReturnValue> CCastVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
-    auto returnValue = var->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisValue);
-    if (!returnValue) {
-        return nullptr;
+void CCastVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    auto rightStoreValue = trBlock->createTempStoreVariable(var->getType(compiler, result), "cast");
+    var->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, rightStoreValue);
+    auto rightValue = rightStoreValue->getValue();
+    if (!rightValue) {
+        return;
     }
     
     if (!typeTo->isOption) {
-        if (returnValue->type->isOption) {
-            result.addError(loc, CErrorCode::InvalidCast, "cannot cast an option type '%s' to non-option type '%s'", returnValue->type->name.c_str(), typeTo->name.c_str());
-            return nullptr;
+        if (rightValue->type->isOption) {
+            result.addError(loc, CErrorCode::InvalidCast, "cannot cast an option type '%s' to non-option type '%s'", rightValue->type->name.c_str(), typeTo->name.c_str());
+            return;
         }
         
-        if (typeTo->category == CTC_Interface && returnValue->type->category == CTC_Interface) {
-            result.addError(loc, CErrorCode::InvalidCast, "cannot cast an interface '%s' to non-option interface '%s'", returnValue->type->name.c_str(), typeTo->name.c_str());
-            return nullptr;
+        if (typeTo->category == CTC_Interface && rightValue->type->category == CTC_Interface) {
+            result.addError(loc, CErrorCode::InvalidCast, "cannot cast an interface '%s' to non-option interface '%s'", rightValue->type->name.c_str(), typeTo->name.c_str());
+            return;
         }
     }
     
@@ -29,10 +31,10 @@ shared_ptr<ReturnValue> CCastVar::transpileGet(Compiler* compiler, CResult& resu
         
         shared_ptr<TrBlock> ifNullBlock;
         auto innerBlock = trBlock;
-        if (returnValue->type->isOption) {
+        if (rightValue->type->isOption) {
             ifNullBlock = make_shared<TrBlock>();
             stringstream ifStream;
-            ifStream << "if (" << returnValue->name << " != 0)";
+            ifStream << "if (" << rightValue->name << " != 0)";
             
             auto elseBlock = make_shared<TrBlock>();
             stringstream line;
@@ -46,26 +48,17 @@ shared_ptr<ReturnValue> CCastVar::transpileGet(Compiler* compiler, CResult& resu
             innerBlock = ifNullBlock.get();
         }
         
-        auto rightName = interface->transpileCast(returnValue->type->typeMode, returnValue->type->parent.lock(), returnValue->name);
-        resultValue->addAssignToStatements(innerBlock, returnValue->type, rightName, true);
-        return resultValue;
+        interface->transpileCast(compiler, result, trOutput, trBlock, rightValue, storeValue);
     }
     else {
         if (!typeTo->parent.expired()) {
             result.addError(loc, CErrorCode::InvalidCast, "cannot cast to type '%s'", typeTo->name.c_str());
-            return nullptr;
+            return;
         }
         
-        auto resultValue = trBlock->createTempVariable(typeTo, "result");
-        stringstream line;
-        line << resultValue->name << " = " << "(" << typeTo->nameRef << ")" << returnValue->name;
-        trBlock->statements.push_back(line.str());
-        return resultValue;
+        auto tempValue = make_shared<TrValue>(typeTo, "(" + typeTo->nameRef + ")" + rightValue->name);
+        storeValue->setValue(compiler, result, loc, trBlock, tempValue);
     }
-}
-
-void CCastVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
-    assert(false);
 }
 
 void CCastVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

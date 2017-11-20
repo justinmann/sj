@@ -227,16 +227,17 @@ shared_ptr<CTypes> CType::create(string name_, weak_ptr<CInterface> parent) {
     return make_shared<CTypes>(stackValueType, stackOptionType, heapValueType, heapOptionType, localValueType, localOptionType);
 }
 
-shared_ptr<ReturnValue> CType::transpileDefaultValue(Compiler* compiler, CResult& result) {
+void CType::transpileDefaultValue(Compiler* compiler, CResult& result, CLoc& loc, TrBlock* trBlock, shared_ptr<TrStoreValue> storeValue) {
     if (parent.expired()) {
-        return make_shared<ReturnValue>(shared_from_this(), _defaultValue);
+        auto temp = make_shared<TrValue>(shared_from_this(), _defaultValue);
+        storeValue->setValue(compiler, result, loc, trBlock, temp);
     }
     else if (isOption) {
-        return make_shared<ReturnValue>(shared_from_this(), "0");
+        auto temp = make_shared<TrValue>(shared_from_this(), "0");
+        storeValue->setValue(compiler, result, loc, trBlock, temp);
     }
     else {
         assert(false);
-        return nullptr;
     }
 }
 

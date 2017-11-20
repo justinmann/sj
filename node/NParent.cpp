@@ -8,19 +8,15 @@ shared_ptr<CType> CParentVar::getType(Compiler* compiler, CResult& result) {
     return parentTypes->localValueType;
 }
 
-shared_ptr<ReturnValue> CParentVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
+void CParentVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     auto parentTypes = function->getThisTypes(compiler, result);
     if (!parentTypes) {
-        return nullptr;
+        return;
     }
 
-    return make_shared<ReturnValue>(
+    storeValue->setValue(compiler, result, loc, trBlock, make_shared<TrValue>(
         parentTypes->localValueType,
-        "_parent");
-}
-
-void CParentVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
-    assert(false);
+        "_parent"));
 }
 
 void CParentVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

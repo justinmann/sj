@@ -193,13 +193,8 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
             trFunctionBlock->definition = functionDefinition.str();
 
             auto blockVar = _block->getVar(compiler, result, shared_from_this(), getThisVar(compiler, result), _returnMode);
-            auto bodyReturnValue = blockVar->transpileGet(compiler, result, trOutput, trFunctionBlock.get(), nullptr, nullptr);
-            if (bodyReturnValue && bodyReturnValue->type != compiler->typeVoid) {
-                if (bodyReturnValue->type != returnType) {
-                    result.addError(loc, CErrorCode::TypeMismatch, "computed return type '%s' does not match return type '%s'", bodyReturnValue->type->name.c_str(), returnType->name.c_str());
-                }
-                trFunctionBlock->returnLine = bodyReturnValue->name;
-            }
+            auto bodyReturnValue = (returnType == compiler->typeVoid) ? trFunctionBlock->createVoidStoreVariable() : trFunctionBlock->createReturnStoreVariable(returnType);
+            blockVar->transpile(compiler, result, trOutput, trFunctionBlock.get(), nullptr, nullptr, bodyReturnValue);
         }
     }
     else {
@@ -216,16 +211,8 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
             trOutput->functions[functionName] = trFunctionBlock;
 
             auto blockVar = _block->getVar(compiler, result, shared_from_this(), thisVar, _returnMode);
-            auto bodyReturnValue = blockVar->transpileGet(compiler, result, trOutput, trFunctionBlock.get(), nullptr, make_shared<ReturnValue>(thisVar->getType(compiler, result), "_this"));
-            if (bodyReturnValue && bodyReturnValue->type && bodyReturnValue->type != compiler->typeVoid) {
-                assert(bodyReturnValue->type == returnType);
-                if (bodyReturnValue->name == "_this") {
-                    _isReturnThis = true;
-                }
-                else {
-                    trFunctionBlock->returnLine = bodyReturnValue->name;
-                }
-            }
+            auto bodyReturnValue = (returnType == compiler->typeVoid && !_isReturnThis) ? trFunctionBlock->createVoidStoreVariable() : trFunctionBlock->createReturnStoreVariable(returnType);
+            blockVar->transpile(compiler, result, trOutput, trFunctionBlock.get(), nullptr, make_shared<TrValue>(thisVar->getType(compiler, result), "_this"), bodyReturnValue);
 
             string structName = getCStructName(thisVar->getTypeMode());
             stringstream functionDefinition;
@@ -305,24 +292,24 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
         // Create copy function body
         string functionCopyName = getCCopyFunctionName();
         if (trOutput->functions.find(functionCopyName) == trOutput->functions.end()) {
-            auto trDestroyBlock = make_shared<TrBlock>();
-            trDestroyBlock->parent = nullptr;
-            trDestroyBlock->hasThis = true;
-            trOutput->functions[functionCopyName] = trDestroyBlock;
+            auto trCopyBlock = make_shared<TrBlock>();
+            trCopyBlock->parent = nullptr;
+            trCopyBlock->hasThis = true;
+            trOutput->functions[functionCopyName] = trCopyBlock;
 
             stringstream functionDefinition;
             functionDefinition << "void " << functionCopyName << "(" << stackStructName << "* _this, " << stackStructName << "* to)";
-            trDestroyBlock->definition = functionDefinition.str();
+            trCopyBlock->definition = functionDefinition.str();
 
             for (auto argVar : argVars) {
                 auto argType = argVar->getType(compiler, result);
-                ReturnValue(argType, "_this->" + argVar->name).addCopyToStatements(trDestroyBlock.get(), argType, "to->" + argVar->name, true);
+                TrStoreValue(argType, "_this->" + argVar->name, ASSIGN_ImmutableCopy, true).setValue(compiler, result, loc, trCopyBlock.get(), make_shared<TrValue>(argType, "to->" + argVar->name));
             }
 
             if (_copyBlock) {
                 auto copyBlockVar = _copyBlock->getVar(compiler, result, shared_from_this(), thisVar, CTM_Undefined);
                 if (copyBlockVar) {
-                    copyBlockVar->transpileGet(compiler, result, trOutput, trDestroyBlock.get(), nullptr, make_shared<ReturnValue>(thisVar->getType(compiler, result), "_this"));
+                    copyBlockVar->transpile(compiler, result, trOutput, trCopyBlock.get(), nullptr, make_shared<TrValue>(thisVar->getType(compiler, result), "_this"), trCopyBlock->createVoidStoreVariable());
                 }
             }
         }
@@ -342,12 +329,12 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
             if (_destroyBlock) {
                 auto destroyBlockVar = _destroyBlock->getVar(compiler, result, shared_from_this(), thisVar, CTM_Undefined);
                 if (destroyBlockVar) {
-                    destroyBlockVar->transpileGet(compiler, result, trOutput, trDestroyBlock.get(), nullptr, make_shared<ReturnValue>(thisVar->getType(compiler, result), "_this"));
+                    destroyBlockVar->transpile(compiler, result, trOutput, trDestroyBlock.get(), nullptr, make_shared<TrValue>(thisVar->getType(compiler, result), "_this"), trDestroyBlock->createVoidStoreVariable());
                 }
             }
 
             for (auto argVar : argVars) {
-                ReturnValue(argVar->getType(compiler, result), "_this->" + argVar->name).addReleaseToStatements(trDestroyBlock.get());
+                TrValue(argVar->getType(compiler, result), "_this->" + argVar->name).addReleaseToStatements(trDestroyBlock.get());
             }
         }
 
@@ -439,56 +426,106 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
     }
 }
 
-shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> parentValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, shared_ptr<ReturnValue> thisValue) {
+void CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     assert(compiler->state == CompilerState::Compile);
 
     auto returnType = getReturnType(compiler, result);
     if (!returnType) {
-        return nullptr;
+        return;
     }
 
     transpileDefinition(compiler, result, trOutput);
     
-    vector<ArgData> argValues;
-    shared_ptr<ReturnValue> returnValue;
-    string functionName;
-    shared_ptr<CThisVar> calleeVar;
-    shared_ptr<ReturnValue> calleeThisValue;
-
     if (!hasThis) {
-        functionName = getCInitFunctionName();
-        returnValue = trBlock->createTempVariable(returnType, "result");
-        returnValue->addInitToStatements(trBlock);
+        auto functionName = getCInitFunctionName();
+        stringstream line;
+        line << functionName << "(";
+        bool isFirstParameter = true;
 
         // Add "parent" to "this"
         auto hasParent = getHasParent(compiler, result);
-        shared_ptr<ReturnValue> dotReturnValue;
+        shared_ptr<TrValue> dotTrValue;
         if (hasParent) {
-            if (!parentValue) {
-                argValues.insert(argValues.begin(), ArgData(nullptr, trBlock->hasThis ? "_this" : "_parent"));
+            if (isFirstParameter) {
+                isFirstParameter = false;
             }
             else {
-                argValues.insert(argValues.begin(), ArgData(nullptr, parentValue));
+                line << ", ";
+            }
+            if (!parentValue) {
+                line << trBlock->hasThis ? "_this" : "_parent";
+            }
+            else {
+                line << parentValue->name;
             }
         }
-    } else {
-        calleeVar = getThisVar(compiler, result);
-        functionName = getCInitFunctionName();
 
-        if (returnType != compiler->typeVoid && !_isReturnThis) {
-            returnValue = trBlock->createTempVariable(returnType, "result");
-            returnValue->addInitToStatements(trBlock);
+        auto argTypes = getCTypeList(compiler, result);
+        auto argIndex = 0;
+        // Fill in "this" with normal arguments
+        for (auto defaultAssignment : argDefaultValues) {
+            auto argVar = argVars[argIndex];
+            auto argType = argVar->getType(compiler, result);
+            auto isDefaultAssignment = parameters[argIndex].second == defaultAssignment;
+            assert(isDefaultAssignment == parameters[argIndex].first);
+
+            stringstream argStream;
+            auto parameterVar = parameters[argIndex].second->getVar(compiler, result, isDefaultAssignment ? shared_from_this() : thisFunction, isDefaultAssignment ? nullptr : thisVar, CTM_Undefined);
+            if (!parameterVar) {
+                assert(result.errors.size() > 0);
+                return;
+            }
+            auto argStoreValue = trBlock->createTempStoreVariable(argType, "param");
+            parameterVar->transpile(compiler, result, trOutput, trBlock, nullptr, isDefaultAssignment ? nullptr : thisValue, argStoreValue);
+
+            if (!argStoreValue->hasSetValue) {
+                result.addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' has no value", argVar->name.c_str());
+                return;
+            }
+
+            if (isFirstParameter) {
+                isFirstParameter = false;
+            }
+            else {
+                line << ", ";
+            }
+            line << argStoreValue->name;
+            argIndex++;
         }
 
+        // Call function
+        if (returnType != compiler->typeVoid) {
+            if (isFirstParameter) {
+                isFirstParameter = false;
+            }
+            else {
+                line << ", ";
+            }
+            line << "&" << storeValue->name;
+            storeValue->hasSetValue = true;
+        }
+        line << ")";
+        trBlock->statements.push_back(line.str());
+    } else {
+        auto calleeVar = getThisVar(compiler, result);
+        auto functionName = getCInitFunctionName();
+
         // Initialize "this"
-        calleeThisValue = trBlock->createTempVariable(calleeVar->getType(compiler, result), "sjv_temp");
-        calleeThisValue->addInitToStatements(trBlock);
-        
+        shared_ptr<TrValue> calleeThisValue;
+        if (_isReturnThis) {
+            calleeThisValue = storeValue->getValue();
+            assert(false); // TODO: need to figure how to handle the various types of assignment
+        }
+        else {
+            calleeThisValue = trBlock->createTempVariable(calleeVar->getType(compiler, result), "object");
+            calleeThisValue->addInitToStatements(trBlock);
+        }
+
         if (hasParent) {
             stringstream parentLine;
             if (!parentValue) {
                 if (parent.lock() == thisFunction) {
-                    parentLine << calleeThisValue->getDotName("_parent") << " = " << calleeThisValue->getPointerName();
+                    parentLine << calleeThisValue->getDotName("_parent") << " = " << parentValue->getPointerName();
                 }
                 else if (parent.lock() == thisFunction->parent.lock()) {
                     parentLine << calleeThisValue->getDotName("_parent") << " = ";
@@ -518,88 +555,42 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
             trBlock->statements.push_back(parentLine.str());
         }
 
-        if (_isReturnThis) {
-            returnValue = calleeThisValue;
-        }
-    }
+        auto argTypes = getCTypeList(compiler, result);
+        auto argIndex = 0;
+        // Fill in "this" with normal arguments
+        for (auto defaultAssignment : argDefaultValues) {
+            auto argVar = argVars[argIndex];
+            auto argType = argVar->getType(compiler, result);
+            auto isDefaultAssignment = parameters[argIndex].second == defaultAssignment;
+            assert(isDefaultAssignment == parameters[argIndex].first);
 
-    auto argTypes = getCTypeList(compiler, result);
-    auto argIndex = 0;
-    // Fill in "this" with normal arguments
-    for (auto defaultAssignment : argDefaultValues) {
-        auto argVar = argVars[argIndex];
-        auto argType = argVar->getType(compiler, result);
-        auto isDefaultAssignment = parameters[argIndex].second == defaultAssignment;
-        assert(isDefaultAssignment == parameters[argIndex].first);
-        shared_ptr<ReturnValue> argReturnValue;
-        
-        stringstream argStream;
-        auto parameterVar = parameters[argIndex].second->getVar(compiler, result, isDefaultAssignment ? shared_from_this() : thisFunction, isDefaultAssignment ? calleeVar : thisVar, CTM_Undefined);
-        if (!parameterVar) {
-            assert(result.errors.size() > 0);
-            return nullptr;
-        }
-        argReturnValue = parameterVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, isDefaultAssignment ? calleeThisValue : thisValue);
-        
-        if (argReturnValue == nullptr) {
-            result.addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' has no value", argVar->name.c_str());
-            return nullptr;
-        }
-        
-        if (argType == nullptr) {
-            result.addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' type is undefined", argVar->name.c_str());
-            return nullptr;
-        }
-        
-        if (argReturnValue->type != argType) {
-            result.addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' type '%s' does not match '%s'", argVar->name.c_str(), argReturnValue->type->name.c_str(), argType->name.c_str());
-            return nullptr;
-        }
-        
-        argValues.push_back(ArgData(argVar, argReturnValue));
-        argIndex++;
-    }
-    
-    if (!hasThis) {
-        // Call function
-        stringstream line;
-        line << functionName << "(";
-        bool isFirstParameter = true;
-        for (auto argValue : argValues) {
-            if (isFirstParameter) {
-                isFirstParameter = false;
-            } else {
-                line << ", ";
+            stringstream argStream;
+            auto parameterVar = parameters[argIndex].second->getVar(compiler, result, isDefaultAssignment ? shared_from_this() : thisFunction, isDefaultAssignment ? calleeVar : thisVar, CTM_Undefined);
+            if (!parameterVar) {
+                assert(result.errors.size() > 0);
+                return;
             }
-            
-            line << argValue.name;
-        }
-        if (returnValue) {
-            if (isFirstParameter) {
-                isFirstParameter = false;
-            } else {
-                line << ", ";
+
+            auto argStoreValue = make_shared<TrStoreValue>(argType, calleeThisValue->getDotName(argVar->name), ASSIGN_Immutable, true);
+            parameterVar->transpile(compiler, result, trOutput, trBlock, nullptr, isDefaultAssignment ? calleeThisValue : thisValue, argStoreValue);
+
+            if (!argStoreValue->hasSetValue) {
+                result.addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' has no value", argVar->name.c_str());
+                return;
             }
-            line << "&" << returnValue->name;
-        }
-        line << ")";
-        trBlock->statements.push_back(line.str());
-    } else {
-        for (auto argValue : argValues) {
-            ReturnValue(argValue.value->type, calleeThisValue->getDotName(argValue.var->name)).addAssignToStatements(trBlock, argValue.value->type, argValue.name, true);
+            argIndex++;
         }
 
         // Call function
         stringstream line;
         line << functionName << "(" << calleeThisValue->getPointerName();
-        if (returnValue && !_isReturnThis) {
-            line << ", &" << returnValue->name;
+        if (returnType != compiler->typeVoid && !_isReturnThis) {
+            line << ", &" << storeValue->name;
         }
         line << ")";
         trBlock->statements.push_back(line.str());
+        storeValue->hasSetValue = true;
     }
-
-    return returnValue;
 }
 
 string CFunction::getCBaseName(CTypeMode typeMode) {

@@ -18,15 +18,16 @@ public:
         return leftType->getValueType();
     }
 
-    shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
-        auto leftValue = leftVar->transpileGet(compiler, result, trOutput, trBlock, dotValue, thisValue);
+    void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+        auto leftValue = trBlock->createTempStoreVariable(leftVar->getType(compiler, result), "temp");
+        leftVar->transpile(compiler, result, trOutput, trBlock, dotValue, thisValue, leftValue);
         if (!leftValue) {
-            return nullptr;
+            return;
         }
 
         if (!leftValue->type->isOption) {
             result.addError(loc, CErrorCode::TypeMismatch, "getValue requires an option type");
-            return nullptr;
+            return;
         }
 
         stringstream line;
@@ -47,11 +48,7 @@ public:
             line << leftValue->name;
         }
 
-        return make_shared<ReturnValue>(leftValue->type->getValueType(), line.str());
-    }
-
-    void transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
-
+        storeValue->setValue(compiler, result, loc, trBlock, make_shared<TrValue>(leftValue->type->getValueType(), line.str()));
     }
 
     void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

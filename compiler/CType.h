@@ -14,7 +14,7 @@ class CBaseFunction;
 class CFunction;
 class CInterface;
 class CResult;
-class ReturnValue;
+class TrValue;
 class CVar;
 class CThisVar;
 class CBaseFunctionDefinition;
@@ -64,7 +64,7 @@ public:
     weak_ptr<CBaseFunction> parent;
     bool isOption;
 
-    shared_ptr<ReturnValue> transpileDefaultValue(Compiler* compiler, CResult& result);
+    void transpileDefaultValue(Compiler* compiler, CResult& result, CLoc& loc, TrBlock* trBlock, shared_ptr<TrStoreValue> storeValue);
     static bool isSameExceptMode(shared_ptr<CType> l, shared_ptr<CType> r);
     shared_ptr<CType> getValueType();
     shared_ptr<CType> getOptionType();

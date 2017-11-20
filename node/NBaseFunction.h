@@ -18,12 +18,12 @@ class CBaseFunctionDefinition;
 
 class ArgData {
 public:
-    ArgData(shared_ptr<CVar> var_, shared_ptr<ReturnValue> value_) : var(var_), name(value_->name), value(value_) { }
+    ArgData(shared_ptr<CVar> var_, shared_ptr<TrStoreValue> value_) : var(var_), name(value_->name), value(value_) { }
     ArgData(shared_ptr<CVar> var_, string name_) : var(var_), name(name_), value(nullptr) { }
 
     shared_ptr<CVar> var;
     string name;
-    shared_ptr<ReturnValue> value;
+    shared_ptr<TrStoreValue> value;
 };
 
 enum CClassFunctionType {
@@ -62,7 +62,7 @@ public:
     virtual pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(string name) = 0;
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result) = 0;
     virtual void transpileDefinition(Compiler* compiler, CResult& result, TrOutput* trOutput) = 0;
-    virtual shared_ptr<ReturnValue> transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> calleeValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, shared_ptr<ReturnValue> thisValue) = 0;
+    virtual void transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) = 0;
     virtual void dumpBody(Compiler* compiler, CResult& result, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) = 0;
 
 private:

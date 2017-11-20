@@ -4,48 +4,36 @@ shared_ptr<CType> CMathVar::getType(Compiler* compiler, CResult& result) {
     return leftVar->getType(compiler, result);
 }
 
-shared_ptr<ReturnValue> CMathVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
-    auto leftValue = leftVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisValue);
-    auto rightValue = rightVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisValue);
-    
-    if (!leftValue || !rightValue) {
-        return nullptr;
-    }
-    
-    if (leftValue->type != rightValue->type) {
-        result.addError(loc, CErrorCode::TypeMismatch, "left and right values are not the same type");
-        return nullptr;
-    }
-    
-    assert(leftValue->type->typeMode == CTM_Value);
-    auto resultValue = trBlock->createTempVariable(leftValue->type, "result");
+void CMathVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    auto leftValue = trBlock->createTempStoreVariable(leftVar->getType(compiler, result), "left");
+    auto rightValue = trBlock->createTempStoreVariable(leftVar->getType(compiler, result), "right");
+    leftVar->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, leftValue);
+    rightVar->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, rightValue);
+
     stringstream line;
-    line << resultValue->name << " = " << leftValue->name;
+    line << leftValue->name;
     switch (op) {
-        case NMathOp::Add:
-            line << " + ";
-            break;
-        case NMathOp::Sub:
-            line << " - ";
-            break;
-        case NMathOp::Mul:
-            line << " * ";
-            break;
-        case NMathOp::Div:
-            line << " / ";
-            break;
-        case NMathOp::Mod:
-            line << " % ";
-            break;
+    case NMathOp::Add:
+        line << " + ";
+        break;
+    case NMathOp::Sub:
+        line << " - ";
+        break;
+    case NMathOp::Mul:
+        line << " * ";
+        break;
+    case NMathOp::Div:
+        line << " / ";
+        break;
+    case NMathOp::Mod:
+        line << " % ";
+        break;
     }
     line << rightValue->name;
     trBlock->statements.push_back(line.str());
-    
-    return resultValue;
-}
 
-void CMathVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
-    assert(false);
+    auto resultValue = make_shared<TrValue>(compiler->typeBool, line.str());
+    storeValue->setValue(compiler, result, loc, trBlock, resultValue);
 }
 
 void CMathVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

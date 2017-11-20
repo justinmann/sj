@@ -4,12 +4,7 @@ shared_ptr<CType> CThrowVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeVoid;
 }
 
-shared_ptr<ReturnValue> CThrowVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
-    assert(false);
-    return nullptr;
-}
-
-void CThrowVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
+void CThrowVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     assert(false);
 }
 

@@ -4,19 +4,18 @@ shared_ptr<CType> CAndVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeBool;
 }
 
-shared_ptr<ReturnValue> CAndVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
-    auto leftValue = leftVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisValue);
-    auto rightValue = rightVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisValue);
+void CAndVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    auto leftValue = trBlock->createTempStoreVariable(compiler->typeBool, "left");
+    auto rightValue = trBlock->createTempStoreVariable(compiler->typeBool, "right");
+    leftVar->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, leftValue);
+    rightVar->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, rightValue);
 
-    auto resultValue = trBlock->createTempVariable(leftValue->type, "result");
     stringstream line;
-    line << resultValue->name << " = " << leftValue->name << " && " << rightValue->name;
+    line << leftValue->name << " && " << rightValue->name;
     trBlock->statements.push_back(line.str());
-    return resultValue;
-}
 
-void CAndVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
-    assert(false);
+    auto resultValue = make_shared<TrValue>(compiler->typeBool, line.str());
+    storeValue->setValue(compiler, result, loc, trBlock, resultValue);
 }
 
 void CAndVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

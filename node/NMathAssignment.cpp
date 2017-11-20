@@ -108,5 +108,10 @@ shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result
         
         rightVar = make_shared<CMathVar>(loc, thisFunction, mathOp, leftVar, numberVar);
     }
-    return make_shared<CAssignVar>(loc, leftVar->scope.lock(), ASSIGN_Mutable, false, leftVar, rightVar);
+
+    auto leftStoreVar = dynamic_pointer_cast<CStoreVar>(leftVar);
+    if (!leftStoreVar) {
+        assert(false);
+    }
+    return make_shared<CAssignVar>(loc, leftVar->scope.lock(), ASSIGN_Mutable, false, leftStoreVar, rightVar);
 }

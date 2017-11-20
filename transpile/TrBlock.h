@@ -3,15 +3,23 @@
 #include "TrVariable.h"
 #include "TrStatement.h"
 
+class Compiler;
+class CResult;
+
+enum AssignOp {
+    ASSIGN_Mutable,
+    ASSIGN_Immutable,
+    ASSIGN_MutableCopy,
+    ASSIGN_ImmutableCopy,
+}; 
+
 class CType;
 
-class ReturnValue {
+class TrValue {
 public:
-    ReturnValue(shared_ptr<CType> type, string name);
+    TrValue(shared_ptr<CType> type, string name);
     bool writeReleaseToStream(TrBlock* block, ostream& stream, int level);
     void addInitToStatements(TrBlock* block);
-    void addAssignToStatements(TrBlock* block, shared_ptr<CType> rightType, string rightName, bool isFirstAssignment);
-    void addCopyToStatements(TrBlock* block, shared_ptr<CType> rightType, string rightName, bool isFirstAssignment);
     void addRetainToStatements(TrBlock* block);
     void addReleaseToStatements(TrBlock* block);
     string getDotName(string rightName);
@@ -23,6 +31,21 @@ public:
     string name;
 }; 
 
+class TrStoreValue {
+public:
+    TrStoreValue(shared_ptr<CType> type, string name, AssignOp op, bool isFirstAssignment) : type(type), name(name), op(op), isFirstAssignment(isFirstAssignment), hasSetValue(false) {}
+    void setValue(Compiler* compiler, CResult& result, CLoc& loc, TrBlock* block, shared_ptr<TrValue> rightValue);
+    shared_ptr<TrValue> getValue();
+    string getDotName(string rightName);
+    string getPointerName();
+
+    shared_ptr<CType> type;
+    string name;
+    AssignOp op;
+    bool isFirstAssignment;
+    bool hasSetValue;
+};
+
 class TrBlock {
 public:
     TrBlock() : parent(nullptr) { }
@@ -30,7 +53,7 @@ public:
     TrBlock* parent;
 	bool hasThis;
     string definition;
-    map<string, shared_ptr<ReturnValue>> variables;
+    map<string, shared_ptr<TrValue>> variables;
     map<string, shared_ptr<CType>> stackValues;
 	vector<TrStatement> statements;
     string returnLine;
@@ -42,9 +65,12 @@ public:
     void writeVariablesReleaseToStream(ostream& stream, int level);
     void writeStackValuesReleaseToStream(ostream& stream, int level);
     void writeReturnToStream(ostream& stream, int level);
-    shared_ptr<ReturnValue> getVariable(string name);
-    shared_ptr<ReturnValue> createVariable(shared_ptr<CType> type, string name);
-    shared_ptr<ReturnValue> createTempVariable(shared_ptr<CType> type, string prefix);
+    shared_ptr<TrValue> getVariable(string name);
+    shared_ptr<TrValue> createVariable(shared_ptr<CType> type, string name);
+    shared_ptr<TrValue> createTempVariable(shared_ptr<CType> type, string prefix);
+    shared_ptr<TrStoreValue> createTempStoreVariable(shared_ptr<CType> type, string prefix);
+    shared_ptr<TrStoreValue> createVoidStoreVariable();
+    shared_ptr<TrStoreValue> createReturnStoreVariable(shared_ptr<CType> type);
     string createStackValue(string prefix, shared_ptr<CType> type);
     string getFunctionName();
 

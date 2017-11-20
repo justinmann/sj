@@ -96,29 +96,21 @@ bool CCallVar::getParameters(Compiler* compiler, CResult& result, vector<pair<bo
     return true;
 }
 
-shared_ptr<ReturnValue> CCallVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
+void CCallVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     assert(compiler->state == CompilerState::Compile);
 
     if (arguments->size() > callee->argDefaultValues.size()) {
         result.addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments->size(), callee->argDefaultValues.size());
-        return nullptr;
+        return;
     }
 
     // Fill in parameters
     vector<pair<bool, shared_ptr<NBase>>> parameters(callee->argDefaultValues.size());
     if (!getParameters(compiler, result, parameters)) {
-        return nullptr;
+        return;
     }
 
-    auto returnValue = callee->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, dotValue, loc, parameters, thisValue);
-    if (returnValue == nullptr) {
-        assert(result.errors.size() > 0);
-    }
-    return returnValue;
-}
-
-void CCallVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
-    assert(false);
+    callee->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, dotValue, loc, parameters, thisValue, storeValue);
 }
 
 void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

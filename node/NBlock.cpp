@@ -7,19 +7,11 @@ shared_ptr<CType> CBlockVar::getType(Compiler* compiler, CResult& result) {
     return statements.back()->getType(compiler, result);
 }
 
-shared_ptr<ReturnValue> CBlockVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
-    shared_ptr<ReturnValue> returnValue;
-    
+void CBlockVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     for (auto it : statements) {
         auto isLastStatement = it == statements.back();
-        returnValue = it->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisValue);
+        it->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, isLastStatement ? storeValue : trBlock->createVoidStoreVariable());
     }
-    
-    return returnValue;
-}
-
-void CBlockVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
-    assert(false);
 }
 
 void CBlockVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

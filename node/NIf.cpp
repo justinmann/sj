@@ -12,71 +12,42 @@ shared_ptr<CType> CIfElseVar::getType(Compiler* compiler, CResult& result) {
     return nullptr;
 }
 
-shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
+void CIfElseVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     auto type = getType(compiler, result);
-    shared_ptr<ReturnValue> trResultVar;
-    if (type != compiler->typeVoid) {
-        trResultVar = trBlock->createTempVariable(type, "ifResult");
-    }
-
-    auto conditionReturnValue = condVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisValue);
-    if (!conditionReturnValue) {
-        return nullptr;
+    auto conditionTrValue = trBlock->createTempStoreVariable(compiler->typeBool, "cond");
+    condVar->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, conditionTrValue);
+    if (!conditionTrValue->hasSetValue) {
+        return;
     }
 
     stringstream ifLine;
-    if (conditionReturnValue->name.front() == '(' && conditionReturnValue->name.back() == ')') {
-        ifLine << "if " << conditionReturnValue->name;
+    if (conditionTrValue->name.front() == '(' && conditionTrValue->name.back() == ')') {
+        ifLine << "if " << conditionTrValue->name;
     }
     else {
-        ifLine << "if (" << conditionReturnValue->name << ")";
+        ifLine << "if (" << conditionTrValue->name << ")";
     }
     auto trIfBlock = make_shared<TrBlock>();
     trIfBlock->hasThis = trBlock->hasThis;
     trIfBlock->parent = trBlock;
     auto trStatement = TrStatement(ifLine.str(), trIfBlock);
 
-    auto ifReturnValue = ifVar->transpileGet(compiler, result, trOutput, trIfBlock.get(), nullptr, thisValue);
-    if (type != compiler->typeVoid) {
-        stringstream resultLine;
-        if (type != compiler->typeVoid) {
-            resultLine << trResultVar->name + " = " << ifReturnValue->name;
-        }
-
-        trIfBlock->statements.push_back(resultLine.str());
-    }
-
+    ifVar->transpile(compiler, result, trOutput, trIfBlock.get(), nullptr, thisValue, storeValue);
     if (elseVar || type != compiler->typeVoid) {
-        shared_ptr<ReturnValue> elseReturnValue;
         auto trElseBlock = make_shared<TrBlock>();
         trElseBlock->parent = trBlock;
         trElseBlock->hasThis = trBlock->hasThis;
         trStatement.elseBlock = trElseBlock;
 
         if (elseVar) {
-            elseReturnValue = elseVar->transpileGet(compiler, result, trOutput, trElseBlock.get(), nullptr, thisValue);
+            elseVar->transpile(compiler, result, trOutput, trElseBlock.get(), nullptr, thisValue, storeValue);
         }
         else {
-            elseReturnValue = type->transpileDefaultValue(compiler, result);
-        }
-
-        if (type != compiler->typeVoid) {
-            stringstream resultLine;
-            if (type != compiler->typeVoid) {
-                resultLine << trResultVar->name + " = " << elseReturnValue->name;
-            }
-
-            trElseBlock->statements.push_back(resultLine.str());
+            type->transpileDefaultValue(compiler, result, loc, trBlock, storeValue);
         }
     }
 
     trBlock->statements.push_back(trStatement);
-
-    return trResultVar;
-}
-
-void CIfElseVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
-    assert(false);
 }
 
 void CIfElseVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

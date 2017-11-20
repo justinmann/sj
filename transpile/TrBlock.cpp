@@ -1,6 +1,6 @@
 #include "../node/Node.h"
 
-ReturnValue::ReturnValue(shared_ptr<CType> type_, string name_) : type(type_), typeName(type_->nameRef), name(name_) {}
+TrValue::TrValue(shared_ptr<CType> type_, string name_) : type(type_), typeName(type_->nameRef), name(name_) {}
 
 void TrBlock::writeToStream(ostream& stream, int level) {
     writeStackValuesToStream(stream, level);
@@ -115,7 +115,7 @@ void TrBlock::writeReturnToStream(ostream& stream, int level) {
     }
 }
 
-shared_ptr<ReturnValue> TrBlock::getVariable(string name) {
+shared_ptr<TrValue> TrBlock::getVariable(string name) {
     auto var = variables.find(name);
     if (var == variables.end()) {
         if (parent != nullptr) {
@@ -126,16 +126,16 @@ shared_ptr<ReturnValue> TrBlock::getVariable(string name) {
     return var->second;
 }
 
-shared_ptr<ReturnValue> TrBlock::createVariable(shared_ptr<CType> type, string name) {
+shared_ptr<TrValue> TrBlock::createVariable(shared_ptr<CType> type, string name) {
     assert(getVariable(name) == nullptr);
-    auto var = make_shared<ReturnValue>(type, name);
+    auto var = make_shared<TrValue>(type, name);
     variables[name] = var;
     return var;
 }
 
-shared_ptr<ReturnValue> TrBlock::createTempVariable(shared_ptr<CType> type, string prefix) {
+shared_ptr<TrValue> TrBlock::createTempVariable(shared_ptr<CType> type, string prefix) {
     auto varStr = nextVarName(prefix);
-    auto var = make_shared<ReturnValue>(type, varStr);
+    auto var = make_shared<TrValue>(type, varStr);
     variables[varStr] = var;
     return var;
 }
@@ -174,7 +174,7 @@ string TrBlock::getFunctionName() {
 
 map<string, int> TrBlock::varNames;
 
-bool ReturnValue::writeReleaseToStream(TrBlock* block, ostream& stream, int level) {
+bool TrValue::writeReleaseToStream(TrBlock* block, ostream& stream, int level) {
     if (!type || type->parent.expired())
         return false;
 
@@ -214,7 +214,7 @@ bool ReturnValue::writeReleaseToStream(TrBlock* block, ostream& stream, int leve
     return true;
 }
 
-void ReturnValue::addReleaseToStatements(TrBlock* block) {
+void TrValue::addReleaseToStatements(TrBlock* block) {
     if (type->typeMode == CTM_Heap) {
         assert(!type->parent.expired());
         shared_ptr<TrBlock> ifNullBlock;
@@ -253,7 +253,7 @@ void ReturnValue::addReleaseToStatements(TrBlock* block) {
     }
 }
 
-void ReturnValue::addRetainToStatements(TrBlock* block) {
+void TrValue::addRetainToStatements(TrBlock* block) {
     if (type->typeMode == CTM_Heap) {
         assert(!type->parent.expired());
 
@@ -280,7 +280,7 @@ void ReturnValue::addRetainToStatements(TrBlock* block) {
     }
 }
     
-void ReturnValue::addInitToStatements(TrBlock* block) {
+void TrValue::addInitToStatements(TrBlock* block) {
     if (type->typeMode == CTM_Value) {
         return;
     }
@@ -318,38 +318,7 @@ void ReturnValue::addInitToStatements(TrBlock* block) {
     }
 }
 
-void ReturnValue::addAssignToStatements(TrBlock* block, shared_ptr<CType> rightType, string rightName, bool isFirstAssignment) {
-    if (!isFirstAssignment) {
-        addReleaseToStatements(block);
-    }
-    
-    stringstream lineStream;
-    lineStream << name << " = ";
-    if (type->typeMode == CTM_Stack || type->typeMode == CTM_Local) {
-        lineStream << convertToLocalName(rightType, rightName);
-    }
-    else {
-        lineStream << rightName;
-    }
-    block->statements.push_back(lineStream.str());
-    
-    addRetainToStatements(block);
-}
-
-void ReturnValue::addCopyToStatements(TrBlock* block, shared_ptr<CType> rightType, string rightName, bool isFirstAssignment) {
-    if (isFirstAssignment) {
-        addInitToStatements(block);
-    }
-    else {
-        addReleaseToStatements(block);
-    }
-
-    stringstream lineStream;
-    lineStream << type->parent.lock()->getCCopyFunctionName() << "(" << convertToLocalName(type, name) << ", " << convertToLocalName(rightType, rightName) << ")";
-    block->statements.push_back(lineStream.str());
-}
-
-string ReturnValue::getDotName(string rightName) {
+string TrValue::getDotName(string rightName) {
     if (type->typeMode == CTM_Stack) {
         return name + "." + rightName;
     }
@@ -358,7 +327,7 @@ string ReturnValue::getDotName(string rightName) {
     }
 }
 
-string ReturnValue::getPointerName() {
+string TrValue::getPointerName() {
     if (type->typeMode == CTM_Stack) {
         return "&" + name;
     }
@@ -367,7 +336,7 @@ string ReturnValue::getPointerName() {
     }
 }
 
-string ReturnValue::convertToLocalName(shared_ptr<CType> from, string name) {
+string TrValue::convertToLocalName(shared_ptr<CType> from, string name) {
     switch (from->typeMode) {
     case CTM_Local:
         return name;
@@ -378,5 +347,41 @@ string ReturnValue::convertToLocalName(shared_ptr<CType> from, string name) {
     default:
         assert(false);
         return "";
+    }
+}
+
+
+void TrStoreValue::setValue(Compiler* compiler, CResult& result, CLoc& loc, TrBlock* block, shared_ptr<TrValue> rightValue) {
+    assert(!hasSetValue);
+    hasSetValue = true;
+    TrValue leftValue(type, name);
+    if (op == ASSIGN_Immutable || op == ASSIGN_Mutable) {
+        if (!isFirstAssignment) {
+            leftValue.addReleaseToStatements(block);
+        }
+
+        stringstream lineStream;
+        lineStream << name << " = ";
+        if (type->typeMode == CTM_Stack || type->typeMode == CTM_Local) {
+            lineStream << TrValue::convertToLocalName(rightValue->type, rightValue->name);
+        }
+        else {
+            lineStream << rightValue->name;
+        }
+        block->statements.push_back(lineStream.str());
+
+        leftValue.addRetainToStatements(block);
+    }
+    else {
+        if (isFirstAssignment) {
+            leftValue.addInitToStatements(block);
+        }
+        else {
+            leftValue.addReleaseToStatements(block);
+        }
+
+        stringstream lineStream;
+        lineStream << type->parent.lock()->getCCopyFunctionName() << "(" << TrValue::convertToLocalName(type, name) << ", " << TrValue::convertToLocalName(rightValue->type, rightValue->name) << ")";
+        block->statements.push_back(lineStream.str());
     }
 }

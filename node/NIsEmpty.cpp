@@ -4,15 +4,16 @@ shared_ptr<CType> CIsEmptyVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeBool;
 }
 
-shared_ptr<ReturnValue> CIsEmptyVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
-    auto leftValue = var->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisValue);
-    if (!leftValue) {
-        return nullptr;
+void CIsEmptyVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    auto leftValue = trBlock->createTempStoreVariable(var->getType(compiler, result), "temp");
+    var->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, leftValue);
+    if (!leftValue->hasSetValue) {
+        return;
     }
     
     if (!leftValue->type->isOption) {
         result.addError(loc, CErrorCode::TypeMismatch, "isEmpty requires an option type");
-        return nullptr;
+        return;
     }
     
     stringstream line;
@@ -22,11 +23,7 @@ shared_ptr<ReturnValue> CIsEmptyVar::transpileGet(Compiler* compiler, CResult& r
     else {
         line << "(" << leftValue->name << " == 0)";
     }
-    return make_shared<ReturnValue>(compiler->typeBool, line.str());
-}
-
-void CIsEmptyVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
-    assert(false);
+    storeValue->setValue(compiler, result, loc, trBlock, make_shared<TrValue>(compiler->typeBool, line.str()));
 }
 
 void CIsEmptyVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

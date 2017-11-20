@@ -4,38 +4,19 @@ shared_ptr<CType> CAssignVar::getType(Compiler* compiler, CResult& result) {
     return rightVar->getType(compiler, result);
 }
 
-shared_ptr<ReturnValue> CAssignVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
+void CAssignVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     assert(compiler->state == CompilerState::Compile);
    
     auto leftType = leftVar->getType(compiler, result);
-    auto rightReturn = rightVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisValue);
-    if (!rightReturn) {
+    auto leftStoreValue = leftVar->getStoreValue(compiler, result, trOutput, trBlock, nullptr, thisValue, op, isFirstAssignment);
+
+    rightVar->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, leftStoreValue);
+    if (!leftStoreValue->hasSetValue) {
         result.addError(loc, CErrorCode::TypeMismatch, "no return value");
-        return nullptr;
+        return;
     }
     
-    if (!CType::isSameExceptMode(leftType, rightReturn->type)) {
-        result.addError(loc, CErrorCode::TypeMismatch, "returned type '%s' does not match explicit type '%s'", rightReturn->type->name.c_str(), leftType->name.c_str());
-        return nullptr;
-    }
-
-    if (leftType->typeMode != CTM_Local && leftType->typeMode != rightReturn->type->typeMode && op != ASSIGN_MutableCopy && op != ASSIGN_ImmutableCopy) {
-        result.addError(loc, CErrorCode::TypeMismatch, "returned type '%s' cannot change mode to '%s' without using a :copy or =copy assignment", rightReturn->type->name.c_str(), leftType->name.c_str());
-        return nullptr;
-    }
-
-    if (leftVar->scope.lock() != rightVar->scope.lock() && leftType->typeMode == CTM_Stack && rightReturn->type->typeMode == CTM_Stack && op != ASSIGN_MutableCopy && op != ASSIGN_ImmutableCopy) {
-        result.addError(loc, CErrorCode::TypeMismatch, "must use a :copy or =copy assignment when changing scope of a stack variable", rightReturn->type->name.c_str(), leftType->name.c_str());
-        return nullptr;
-    }
-
-    leftVar->transpileSet(compiler, result, trOutput, trBlock, nullptr, rightReturn, thisValue, op, isFirstAssignment);
-    
-    return rightReturn;
-}
-
-void CAssignVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
-    assert(false);
+    storeValue->setValue(compiler, result, loc, trBlock, leftStoreValue->getValue());
 }
 
 void CAssignVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
@@ -156,7 +137,12 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
             assert(result.errors.size() > 0);
             return nullptr;
         }
-        return make_shared<CAssignVar>(loc, leftVar->scope.lock(), op, isFirstAssignment, leftVar, rightVar);
+
+        auto leftStoreVar = dynamic_pointer_cast<CStoreVar>(leftVar);
+        if (!leftStoreVar) {
+            assert(false);
+        }
+        return make_shared<CAssignVar>(loc, leftVar->scope.lock(), op, isFirstAssignment, leftStoreVar, rightVar);
     }
 
     return nullptr;

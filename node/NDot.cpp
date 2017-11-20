@@ -12,16 +12,18 @@ shared_ptr<CType> CDotVar::getType(Compiler* compiler, CResult& result) {
     return rightVar->getType(compiler, result);
 }
 
-shared_ptr<ReturnValue> CDotVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
-	auto leftValue = leftVar->transpileGet(compiler, result, trOutput, trBlock, dotValue, thisValue);
-	return rightVar->transpileGet(compiler, result, trOutput, trBlock, leftValue, thisValue);
+void CDotVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    auto leftValue = trBlock->createTempStoreVariable(leftVar->getType(compiler, result), "dot");
+    leftVar->transpile(compiler, result, trOutput, trBlock, dotValue, thisValue, leftValue);
+	return rightVar->transpile(compiler, result, trOutput, trBlock, leftValue->getValue(), thisValue, storeValue);
 }
 
-void CDotVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
-    auto leftValue = leftVar->transpileGet(compiler, result, trOutput, trBlock, dotValue, thisValue);
-    rightVar->transpileSet(compiler, result, trOutput, trBlock, leftValue, returnValue, thisValue, op, isFirstAssignment);
+shared_ptr<TrStoreValue> CDotVar::getStoreValue(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op, bool isFirstAssignment) {
+    auto leftValue = trBlock->createTempStoreVariable(leftVar->getType(compiler, result), "dot");
+    leftVar->transpile(compiler, result, trOutput, trBlock, dotValue, thisValue, leftValue);
+    auto rightStoreVar = dynamic_pointer_cast<CStoreVar>(rightVar);
+    return rightStoreVar->getStoreValue(compiler, result, trOutput, trBlock, leftValue->getValue(), thisValue, op, isFirstAssignment);
 }
-
 
 void CDotVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     stringstream temp;

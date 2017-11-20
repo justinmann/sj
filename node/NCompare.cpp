@@ -4,52 +4,41 @@ shared_ptr<CType> CCompareVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeBool;
 }
 
-shared_ptr<ReturnValue> CCompareVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
-    auto leftValue = leftVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisValue);
-    auto rightValue = rightVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisValue);
-    
-    if (!leftValue || !rightValue) {
-        return nullptr;
-    }
-    
-    if (leftValue->type != rightValue->type) {
-        result.addError(loc, CErrorCode::TypeMismatch, "left type '%s' does not match right type '%s'", leftValue->type->name.c_str(), rightValue->type->name.c_str());
-        return nullptr;
-    }
-    
-    auto resultValue = trBlock->createTempVariable(compiler->typeBool, "result");
+void CCompareVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    auto leftValue = trBlock->createTempStoreVariable(leftVar->getType(compiler, result), "left");
+    auto rightValue = trBlock->createTempStoreVariable(leftVar->getType(compiler, result), "right");
+    leftVar->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, leftValue);
+    rightVar->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, rightValue);
+
     stringstream line;
-    line << resultValue->name << " = " << leftValue->name;
+    line << leftValue->name;
     switch (op) {
-        case NCompareOp::EQ:
-        case NCompareOp::PEQ:
-            line << " == ";
-            break;
-        case NCompareOp::NE:
-        case NCompareOp::PNE:
-            line << " != ";
-            break;
-        case NCompareOp::LT:
-            line << " < ";
-            break;
-        case NCompareOp::LE:
-            line << " <= ";
-            break;
-        case NCompareOp::GT:
-            line << " > ";
-            break;
-        case NCompareOp::GE:
-            line << " >= ";
-            break;
+    case NCompareOp::EQ:
+    case NCompareOp::PEQ:
+        line << " == ";
+        break;
+    case NCompareOp::NE:
+    case NCompareOp::PNE:
+        line << " != ";
+        break;
+    case NCompareOp::LT:
+        line << " < ";
+        break;
+    case NCompareOp::LE:
+        line << " <= ";
+        break;
+    case NCompareOp::GT:
+        line << " > ";
+        break;
+    case NCompareOp::GE:
+        line << " >= ";
+        break;
     }
     line << rightValue->name;
     trBlock->statements.push_back(line.str());
-    
-    return resultValue;
-}
 
-void CCompareVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
-    assert(false);
+    auto resultValue = make_shared<TrValue>(compiler->typeBool, line.str());
+    storeValue->setValue(compiler, result, loc, trBlock, resultValue);
 }
 
 void CCompareVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

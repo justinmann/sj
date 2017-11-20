@@ -1,6 +1,26 @@
-call getReturnType
-see value set in thisvar
+    if (!returnValue)
+        return;
 
+    auto leftType = getType(compiler, result);
+    auto rightType = returnValue->type;
+    if (!CType::isSameExceptMode(leftType, rightType)) {
+        result.addError(loc, CErrorCode::TypeMismatch, "right type '%s' does not match left type '%s'", rightType->name.c_str(), leftType->name.c_str());
+        return;
+    }
+
+    if (leftType->typeMode != CTM_Local && leftType->typeMode != rightType->typeMode && op != ASSIGN_MutableCopy && op != ASSIGN_ImmutableCopy) {
+        result.addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot change mode to left type '%s' without using a :copy or =copy assignment", rightType->name.c_str(), leftType->name.c_str());
+        return;
+    }
+
+
+        if (leftVar->scope.lock() != rightVar->scope.lock() && leftType->typeMode == CTM_Stack && leftStoreValue->type->typeMode == CTM_Stack && op != ASSIGN_MutableCopy && op != ASSIGN_ImmutableCopy) {
+        result.addError(loc, CErrorCode::TypeMismatch, "must use a :copy or =copy assignment when changing scope of a stack variable", leftStoreValue->type->name.c_str(), leftType->name.c_str());
+        return;
+    }
+
+
+* heap10
 * fix string add
 * make string immutable
 * string not depend on array
@@ -14,8 +34,7 @@ see value set in thisvar
 * two buttons for +/-
 
 -- features --
-* override interfaces
-    a as type   -> a.asType()'t
+* override interfaces : a as type   -> a.asType()'t
 * lambda
 
 -- lambda --
@@ -64,24 +83,6 @@ x->lambda = sjf_anon2;
 array_each(arr, x);
 
 
-heap x : heap y     // x = y; x->_refCount++
-heap x : stack y    // fail
-heap x : copy(y'stack) // copy y
-heap x : local x // fail
-
-stack x : stack y   // x = y or x = copy(y) if y is lower scope than x
-stack x : heap y    // fail
-stack x : copy(y'heap) // copy y
-stack x : local x   // fail
-
-local x : heap y // okay
-local x : stack y // okay
-local x : local y // okay
-
-x'stack : func()'stack    // illegal, cannot return stack
-x'stack : func()'heap     // fail
-x'stack : func()'matchReturn     // okay
-x'stack : func()'auto     // okay
 
 func()'auto {
     _this // okay
