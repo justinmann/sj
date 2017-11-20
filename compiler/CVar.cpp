@@ -17,11 +17,18 @@ shared_ptr<CType> CNormalVar::getType(Compiler* compiler, CResult& result) {
     return type;
 }
 
-shared_ptr<ReturnValue> CNormalVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CNormalVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
     if (dotValue) {
         auto returnValue = trBlock->createTempVariable(type, "dotTemp");
         stringstream lineStream;
-        lineStream << returnValue->name << " = " << dotValue->name << "->" << name;
+        lineStream << returnValue->name << " = " << dotValue->name;
+        if (dotValue->type->typeMode == CTM_Stack) {
+            lineStream << ".";
+        }
+        else {
+            lineStream << "->";
+        }
+        lineStream << name;
         trBlock->statements.push_back(lineStream.str());
         return returnValue;
     } else if (trBlock->hasThis && (mode == Var_Public || mode == Var_Private)) {
@@ -35,7 +42,7 @@ shared_ptr<ReturnValue> CNormalVar::transpileGet(Compiler* compiler, CResult& re
     }    
 }
 
-void CNormalVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
+void CNormalVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
     stringstream lineStream;
 
     if (!returnValue)
@@ -55,7 +62,12 @@ void CNormalVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trO
 
     string varName;
     if (dotValue) {
-        varName = dotValue->name + "->" + name;
+        if (dotValue->type->typeMode == CTM_Stack) {
+            varName = dotValue->name + "." + name;
+        }
+        else {
+            varName = dotValue->name + "->" + name;
+        }
     }
     else if (trBlock->hasThis && (mode == Var_Public || mode == Var_Private)) {
         varName = "_this->" + name;

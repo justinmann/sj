@@ -23,7 +23,29 @@ void TrBlock::writeVariablesToStream(ostream& stream, int level) {
     for (auto variable : variables)
     {
         addSpacing(stream, level);
-        stream << variable.second->typeName << " " << variable.first << ";\n";
+        if (variable.second->type) {
+            switch (variable.second->type->typeMode) {
+            case CTM_Local:
+                stream << variable.second->type->nameRef;
+                break;
+            case CTM_Stack:
+                stream << variable.second->type->nameValue;
+                break;
+            case CTM_Heap:
+                stream << variable.second->type->nameRef;
+                break;
+            case CTM_Value:
+                stream << variable.second->type->nameValue;
+                break;
+            default:
+                assert(false);
+                break;
+            }
+        }
+        else {
+            stream << variable.second->typeName;
+        }
+        stream << " " << variable.first << ";\n";
     }
 
     if (variables.size() > 0) {
@@ -290,11 +312,6 @@ void ReturnValue::addInitToStatements(TrBlock* block) {
     else if (type->typeMode == CTM_Stack) {
         assert(!type->parent.expired());
         assert(!type->isOption);
-
-        auto objectVal = block->createStackValue("sjd_temp", type);
-        stringstream initLine;
-        initLine << name << " = &" << objectVal;
-        block->statements.push_back(TrStatement(initLine.str()));
     }
     else {
         assert(false);
@@ -332,11 +349,30 @@ void ReturnValue::addCopyToStatements(TrBlock* block, shared_ptr<CType> rightTyp
     block->statements.push_back(lineStream.str());
 }
 
+string ReturnValue::getDotName(string rightName) {
+    if (type->typeMode == CTM_Stack) {
+        return name + "." + rightName;
+    }
+    else {
+        return name + "->" + rightName;
+    }
+}
+
+string ReturnValue::getPointerName() {
+    if (type->typeMode == CTM_Stack) {
+        return "&" + name;
+    }
+    else {
+        return name;
+    }
+}
+
 string ReturnValue::convertToLocalName(shared_ptr<CType> from, string name) {
     switch (from->typeMode) {
-    case CTM_Stack:
     case CTM_Local:
         return name;
+    case CTM_Stack:
+        return "&" + name;
     case CTM_Heap:
         return "(" + from->parent.lock()->getCStructName(CTM_Stack) + "*)(((char*)" + name + ") + sizeof(int))";
     default:

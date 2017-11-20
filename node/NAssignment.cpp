@@ -4,11 +4,11 @@ shared_ptr<CType> CAssignVar::getType(Compiler* compiler, CResult& result) {
     return rightVar->getType(compiler, result);
 }
 
-shared_ptr<ReturnValue> CAssignVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CAssignVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
     assert(compiler->state == CompilerState::Compile);
    
     auto leftType = leftVar->getType(compiler, result);
-    auto rightReturn = rightVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisName);
+    auto rightReturn = rightVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisValue);
     if (!rightReturn) {
         result.addError(loc, CErrorCode::TypeMismatch, "no return value");
         return nullptr;
@@ -29,12 +29,12 @@ shared_ptr<ReturnValue> CAssignVar::transpileGet(Compiler* compiler, CResult& re
         return nullptr;
     }
 
-    leftVar->transpileSet(compiler, result, trOutput, trBlock, nullptr, rightReturn, thisName, op, isFirstAssignment);
+    leftVar->transpileSet(compiler, result, trOutput, trBlock, nullptr, rightReturn, thisValue, op, isFirstAssignment);
     
     return rightReturn;
 }
 
-void CAssignVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
+void CAssignVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 

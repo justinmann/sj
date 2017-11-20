@@ -26,7 +26,7 @@ shared_ptr<CType> CParentDotVar::getType(Compiler* compiler, CResult& result) {
     return childVar->getType(compiler, result);
 }
 
-shared_ptr<ReturnValue> CParentDotVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CParentDotVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
     shared_ptr<ReturnValue> parentValue;
     if (dotValue) {
         auto parentThisTypes = parentFunction->parent.lock()->getThisTypes(compiler, result);
@@ -47,12 +47,12 @@ shared_ptr<ReturnValue> CParentDotVar::transpileGet(Compiler* compiler, CResult&
             return nullptr;
         }
 
-        parentValue = make_shared<ReturnValue>(parentThisTypes->localValueType, parentFunction->hasThis ? string(thisName) + "->_parent" : "_parent");
+        parentValue = make_shared<ReturnValue>(parentThisTypes->localValueType, parentFunction->hasThis ? thisValue->getDotName("_parent") : "_parent");
     }
-    return childVar->transpileGet(compiler, result, trOutput, trBlock, parentValue, thisName);
+    return childVar->transpileGet(compiler, result, trOutput, trBlock, parentValue, thisValue);
 }
 
-void CParentDotVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
+void CParentDotVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
     shared_ptr<ReturnValue> parentValue;
     if (dotValue) {
         auto parentThisTypes = parentFunction->parent.lock()->getThisTypes(compiler, result);
@@ -73,9 +73,9 @@ void CParentDotVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* 
             return;
         }
         
-        parentValue = make_shared<ReturnValue>(parentThisTypes->localValueType, parentFunction->hasThis ? string(thisName) + "->_parent" : "_parent");
+        parentValue = make_shared<ReturnValue>(parentThisTypes->localValueType, parentFunction->hasThis ? thisValue->getDotName("_parent") : "_parent");
     }
-    childVar->transpileSet(compiler, result, trOutput, trBlock, parentValue, returnValue, thisName, op, isFirstAssignment);
+    childVar->transpileSet(compiler, result, trOutput, trBlock, parentValue, returnValue, thisValue, op, isFirstAssignment);
 }
 
 void CParentDotVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

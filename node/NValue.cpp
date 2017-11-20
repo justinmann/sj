@@ -15,8 +15,8 @@ shared_ptr<CType> CValueVar::getType(Compiler* compiler, CResult& result) {
     return leftType->getOptionType();
 }
 
-shared_ptr<ReturnValue> CValueVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
-    auto leftValue = var->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisName);
+shared_ptr<ReturnValue> CValueVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
+    auto leftValue = var->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisValue);
     if (!leftValue) {
         return nullptr;
     }
@@ -43,7 +43,7 @@ shared_ptr<ReturnValue> CValueVar::transpileGet(Compiler* compiler, CResult& res
     }
 }
 
-void CValueVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
+void CValueVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 

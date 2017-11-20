@@ -4,8 +4,8 @@ shared_ptr<CType> CNotVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeBool;
 }
 
-shared_ptr<ReturnValue> CNotVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
-    auto value = var->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisName);
+shared_ptr<ReturnValue> CNotVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
+    auto value = var->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisValue);
     auto resultValue = trBlock->createTempVariable(compiler->typeBool, "result");
     stringstream line;
     line << resultValue->name << " = !" << value->name;
@@ -13,7 +13,7 @@ shared_ptr<ReturnValue> CNotVar::transpileGet(Compiler* compiler, CResult& resul
     return resultValue;
 }
 
-void CNotVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
+void CNotVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 

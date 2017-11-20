@@ -4,11 +4,11 @@ shared_ptr<CType> CForIndexVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeI32;
 }
 
-shared_ptr<ReturnValue> CForIndexVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CForIndexVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
     return make_shared<ReturnValue>(getType(compiler, result), name);
 }
 
-void CForIndexVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
+void CForIndexVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -20,12 +20,12 @@ shared_ptr<CType> CForLoopVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeVoid;
 }
 
-shared_ptr<ReturnValue> CForLoopVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CForLoopVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
     
     trBlock->createVariable(compiler->typeI32, indexVar->name);
     auto trLoopEndVar = trBlock->createTempVariable(compiler->typeI32, "loopEnd");
     
-    auto loopCounterReturnValue = startVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisName);
+    auto loopCounterReturnValue = startVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisValue);
     if (loopCounterReturnValue->type != compiler->typeI32) {
         result.addError(loc, CErrorCode::TypeMismatch, "start value must be a int");
         return nullptr;
@@ -35,7 +35,7 @@ shared_ptr<ReturnValue> CForLoopVar::transpileGet(Compiler* compiler, CResult& r
     loopCounterLine << indexVar->name << " = " << loopCounterReturnValue->name;
     trBlock->statements.push_back(loopCounterLine.str());
     
-    auto loopEndReturnValue = endVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisName);
+    auto loopEndReturnValue = endVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisValue);
     if (!loopEndReturnValue || loopEndReturnValue->type != compiler->typeI32) {
         result.addError(loc, CErrorCode::TypeMismatch, "end value must be a int");
         return nullptr;
@@ -59,7 +59,7 @@ shared_ptr<ReturnValue> CForLoopVar::transpileGet(Compiler* compiler, CResult& r
 
     thisFunction->localVarsByName[indexVar->name] = indexVar;
 
-    bodyVar->transpileGet(compiler, result, trOutput, trForBlock.get(), nullptr, thisName);
+    bodyVar->transpileGet(compiler, result, trOutput, trForBlock.get(), nullptr, thisValue);
     
     thisFunction->localVarsByName.erase(indexVar->name);
 
@@ -70,7 +70,7 @@ shared_ptr<ReturnValue> CForLoopVar::transpileGet(Compiler* compiler, CResult& r
     return nullptr;
 }
 
-void CForLoopVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
+void CForLoopVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 

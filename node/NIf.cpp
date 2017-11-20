@@ -12,14 +12,14 @@ shared_ptr<CType> CIfElseVar::getType(Compiler* compiler, CResult& result) {
     return nullptr;
 }
 
-shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
     auto type = getType(compiler, result);
     shared_ptr<ReturnValue> trResultVar;
     if (type != compiler->typeVoid) {
         trResultVar = trBlock->createTempVariable(type, "ifResult");
     }
 
-    auto conditionReturnValue = condVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisName);
+    auto conditionReturnValue = condVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisValue);
     if (!conditionReturnValue) {
         return nullptr;
     }
@@ -36,7 +36,7 @@ shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& re
     trIfBlock->parent = trBlock;
     auto trStatement = TrStatement(ifLine.str(), trIfBlock);
 
-    auto ifReturnValue = ifVar->transpileGet(compiler, result, trOutput, trIfBlock.get(), nullptr, thisName);
+    auto ifReturnValue = ifVar->transpileGet(compiler, result, trOutput, trIfBlock.get(), nullptr, thisValue);
     if (type != compiler->typeVoid) {
         stringstream resultLine;
         if (type != compiler->typeVoid) {
@@ -54,7 +54,7 @@ shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& re
         trStatement.elseBlock = trElseBlock;
 
         if (elseVar) {
-            elseReturnValue = elseVar->transpileGet(compiler, result, trOutput, trElseBlock.get(), nullptr, thisName);
+            elseReturnValue = elseVar->transpileGet(compiler, result, trOutput, trElseBlock.get(), nullptr, thisValue);
         }
         else {
             elseReturnValue = type->transpileDefaultValue(compiler, result);
@@ -75,7 +75,7 @@ shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& re
     return trResultVar;
 }
 
-void CIfElseVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
+void CIfElseVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 

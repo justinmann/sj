@@ -18,8 +18,8 @@ public:
         return leftType->getValueType();
     }
 
-    shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
-        auto leftValue = leftVar->transpileGet(compiler, result, trOutput, trBlock, dotValue, thisName);
+    shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
+        auto leftValue = leftVar->transpileGet(compiler, result, trOutput, trBlock, dotValue, thisValue);
         if (!leftValue) {
             return nullptr;
         }
@@ -50,7 +50,7 @@ public:
         return make_shared<ReturnValue>(leftValue->type->getValueType(), line.str());
     }
 
-    void transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
+    void transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
 
     }
 

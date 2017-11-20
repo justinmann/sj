@@ -150,32 +150,6 @@ shared_ptr<CFunction> CFunction::init(Compiler* compiler, CResult& result, share
     return shared_from_this();
 }
 
-//void CFunction::getVarBody(Compiler *compiler, CResult& result, shared_ptr<CThisVar> thisVar, CTypeMode returnMode) {
-//    for (auto it : _functions) {
-//        it->getVar(compiler, result, shared_from_this(), thisVar);
-//    }
-//
-//    for (auto it : argDefaultValues) {
-//        if (it) {
-//            it->getVar(compiler, result, shared_from_this(), thisVar);
-//        }
-//    }
-//    
-//    if (_block) {
-//        _block->getVar(compiler, result, shared_from_this(), thisVar);
-//    }
-//    
-//    if (_catchBlock) {
-//        _catchBlock->getVar(compiler, result, shared_from_this(), thisVar);
-//    }
-//    
-//    if (_destroyBlock) {
-//        _destroyBlock->getVar(compiler, result, shared_from_this(), thisVar);
-//    }
-//    
-//    getReturnType(compiler, result, returnMode);
-//}
-
 void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutput* trOutput) {
     if (!hasThis) {
         // Create function body
@@ -242,7 +216,7 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
             trOutput->functions[functionName] = trFunctionBlock;
 
             auto blockVar = _block->getVar(compiler, result, shared_from_this(), thisVar, _returnMode);
-            auto bodyReturnValue = blockVar->transpileGet(compiler, result, trOutput, trFunctionBlock.get(), nullptr, "_this");
+            auto bodyReturnValue = blockVar->transpileGet(compiler, result, trOutput, trFunctionBlock.get(), nullptr, make_shared<ReturnValue>(thisVar->getType(compiler, result), "_this"));
             if (bodyReturnValue && bodyReturnValue->type && bodyReturnValue->type != compiler->typeVoid) {
                 assert(bodyReturnValue->type == returnType);
                 if (bodyReturnValue->name == "_this") {
@@ -274,13 +248,27 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
 
                 hasValues = true;
                 stringstream ss;
-                ss << argType.second->nameRef << " " << argType.first;
+                if (argType.second->typeMode == CTM_Stack) {
+                    ss << argType.second->nameValue;
+
+                    // C requires that inline structs be defined before use
+                    argType.second->parent.lock()->transpileDefinition(compiler, result, trOutput);
+                }
+                else if (argType.second->typeMode == CTM_Heap || argType.second->typeMode == CTM_Value) {
+                    ss << argType.second->nameRef;
+                }
+                else {
+                    assert(false);
+                }
+                ss << " " << argType.first;
                 trOutput->structs[stackStructName].push_back(ss.str());
             }
 
             if (!hasValues) {
                 trOutput->structs[stackStructName].push_back("int structsNeedAValue");
             }
+
+            trOutput->structOrder.push_back(stackStructName);
         }
 
         if (thisVar->getTypeMode() == CTM_Heap) {
@@ -294,9 +282,23 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
                         continue;
 
                     stringstream ss;
-                    ss << argType.second->nameRef << " " << argType.first;
+                    if (argType.second->typeMode == CTM_Stack) {
+                        ss << argType.second->nameValue;
+
+                        // C requires that inline structs be defined before use
+                        argType.second->parent.lock()->transpileDefinition(compiler, result, trOutput);
+                    }
+                    else if (argType.second->typeMode == CTM_Heap || argType.second->typeMode == CTM_Value) {
+                        ss << argType.second->nameRef;
+                    }
+                    else {
+                        assert(false);
+                    }
+                    ss << " " << argType.first;
                     trOutput->structs[heapStructName].push_back(ss.str());
                 }
+
+                trOutput->structOrder.push_back(heapStructName);
             }
         }
 
@@ -320,7 +322,7 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
             if (_copyBlock) {
                 auto copyBlockVar = _copyBlock->getVar(compiler, result, shared_from_this(), thisVar, CTM_Undefined);
                 if (copyBlockVar) {
-                    copyBlockVar->transpileGet(compiler, result, trOutput, trDestroyBlock.get(), nullptr, "_this");
+                    copyBlockVar->transpileGet(compiler, result, trOutput, trDestroyBlock.get(), nullptr, make_shared<ReturnValue>(thisVar->getType(compiler, result), "_this"));
                 }
             }
         }
@@ -340,7 +342,7 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
             if (_destroyBlock) {
                 auto destroyBlockVar = _destroyBlock->getVar(compiler, result, shared_from_this(), thisVar, CTM_Undefined);
                 if (destroyBlockVar) {
-                    destroyBlockVar->transpileGet(compiler, result, trOutput, trDestroyBlock.get(), nullptr, "_this");
+                    destroyBlockVar->transpileGet(compiler, result, trOutput, trDestroyBlock.get(), nullptr, make_shared<ReturnValue>(thisVar->getType(compiler, result), "_this"));
                 }
             }
 
@@ -437,7 +439,7 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
     }
 }
 
-shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> calleeValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, const char* thisName) {
+shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> parentValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, shared_ptr<ReturnValue> thisValue) {
     assert(compiler->state == CompilerState::Compile);
 
     auto returnType = getReturnType(compiler, result);
@@ -451,7 +453,7 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
     shared_ptr<ReturnValue> returnValue;
     string functionName;
     shared_ptr<CThisVar> calleeVar;
-    string calleeThisName = "INVALID";
+    shared_ptr<ReturnValue> calleeThisValue;
 
     if (!hasThis) {
         functionName = getCInitFunctionName();
@@ -462,11 +464,11 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
         auto hasParent = getHasParent(compiler, result);
         shared_ptr<ReturnValue> dotReturnValue;
         if (hasParent) {
-            if (!calleeValue) {
+            if (!parentValue) {
                 argValues.insert(argValues.begin(), ArgData(nullptr, trBlock->hasThis ? "_this" : "_parent"));
             }
             else {
-                argValues.insert(argValues.begin(), ArgData(nullptr, calleeValue));
+                argValues.insert(argValues.begin(), ArgData(nullptr, parentValue));
             }
         }
     } else {
@@ -479,42 +481,45 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
         }
 
         // Initialize "this"
-        shared_ptr<ReturnValue> objectRef = trBlock->createTempVariable(calleeVar->getType(compiler, result), "sjv_temp");
-        objectRef->addInitToStatements(trBlock);
-        calleeThisName = objectRef->name;
+        calleeThisValue = trBlock->createTempVariable(calleeVar->getType(compiler, result), "sjv_temp");
+        calleeThisValue->addInitToStatements(trBlock);
         
         if (hasParent) {
             stringstream parentLine;
-            if (!calleeValue) {
+            if (!parentValue) {
                 if (parent.lock() == thisFunction) {
-                    parentLine << calleeThisName << "->_parent = " << (thisName != nullptr ? thisName : "INVALID");
+                    parentLine << calleeThisValue->getDotName("_parent") << " = " << calleeThisValue->getPointerName();
                 }
                 else if (parent.lock() == thisFunction->parent.lock()) {
-                    parentLine << calleeThisName << "->_parent = ";
+                    parentLine << calleeThisValue->getDotName("_parent") << " = ";
                     if (thisFunction->hasThis) {
-                        parentLine << thisName << "->";
+                        parentLine << thisValue->getDotName("_parent") << "->";
                     }
-                    parentLine << "_parent";
+                    else {
+                        parentLine << "_parent";
+                    }
                 }
                 else if (parent.lock() == thisFunction->parent.lock()->parent.lock()) {
-                    parentLine << calleeThisName << "->_parent = ";
+                    parentLine << calleeThisValue->getDotName("_parent") << " = ";
                     if (thisFunction->hasThis) {
-                        parentLine << thisName << "->";
+                        parentLine << thisValue->getDotName("_parent->_parent");
                     }
-                    parentLine << "_parent->_parent";
+                    else {
+                        parentLine << "_parent->_parent";
+                    }
                 }
                 else {
                     assert(false);
                 }
             }
             else {
-                parentLine << calleeThisName << "->_parent = " << calleeValue->name;
+                parentLine << calleeThisValue->getDotName("_parent") << " = " << parentValue->name;
             }
             trBlock->statements.push_back(parentLine.str());
         }
 
         if (_isReturnThis) {
-            returnValue = objectRef;
+            returnValue = calleeThisValue;
         }
     }
 
@@ -534,7 +539,7 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
             assert(result.errors.size() > 0);
             return nullptr;
         }
-        argReturnValue = parameterVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, isDefaultAssignment ? calleeThisName.c_str() : thisName);
+        argReturnValue = parameterVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, isDefaultAssignment ? calleeThisValue : thisValue);
         
         if (argReturnValue == nullptr) {
             result.addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' has no value", argVar->name.c_str());
@@ -581,12 +586,12 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
         trBlock->statements.push_back(line.str());
     } else {
         for (auto argValue : argValues) {
-            ReturnValue(argValue.value->type, calleeThisName + "->" + argValue.var->name).addAssignToStatements(trBlock, argValue.value->type, argValue.name, true);
+            ReturnValue(argValue.value->type, calleeThisValue->getDotName(argValue.var->name)).addAssignToStatements(trBlock, argValue.value->type, argValue.name, true);
         }
 
         // Call function
         stringstream line;
-        line << functionName << "(" << calleeThisName;
+        line << functionName << "(" << calleeThisValue->getPointerName();
         if (returnValue && !_isReturnThis) {
             line << ", &" << returnValue->name;
         }

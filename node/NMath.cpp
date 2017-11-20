@@ -4,9 +4,9 @@ shared_ptr<CType> CMathVar::getType(Compiler* compiler, CResult& result) {
     return leftVar->getType(compiler, result);
 }
 
-shared_ptr<ReturnValue> CMathVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
-    auto leftValue = leftVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisName);
-    auto rightValue = rightVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisName);
+shared_ptr<ReturnValue> CMathVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
+    auto leftValue = leftVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisValue);
+    auto rightValue = rightVar->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisValue);
     
     if (!leftValue || !rightValue) {
         return nullptr;
@@ -44,7 +44,7 @@ shared_ptr<ReturnValue> CMathVar::transpileGet(Compiler* compiler, CResult& resu
     return resultValue;
 }
 
-void CMathVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
+void CMathVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 

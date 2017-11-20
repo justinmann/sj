@@ -14,6 +14,8 @@ public:
     void addCopyToStatements(TrBlock* block, shared_ptr<CType> rightType, string rightName, bool isFirstAssignment);
     void addRetainToStatements(TrBlock* block);
     void addReleaseToStatements(TrBlock* block);
+    string getDotName(string rightName);
+    string getPointerName();
     static string convertToLocalName(shared_ptr<CType> from, string name);
 
     shared_ptr<CType> type;

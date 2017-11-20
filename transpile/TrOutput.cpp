@@ -93,19 +93,19 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
     
 	if (structs.size() > 0) {
         int typeId = 1;
-        for (auto t : structs) {
-            stream << "#define " << t.first << "_typeId " << typeId++ << "\n";
+        for (auto t : structOrder) {
+            stream << "#define " << t << "_typeId " << typeId++ << "\n";
         }
         stream << "\n";
 
-        for (auto t : structs) {
-            stream << "typedef struct td_" << t.first << " " << t.first << ";\n";
+        for (auto t : structOrder) {
+            stream << "typedef struct td_" << t << " " << t << ";\n";
         }
         stream << "\n";
 
-        for (auto t : structs) {
-			stream << "struct td_" << t.first << " {\n";
-			for (auto line : t.second) {
+        for (auto t : structOrder) {
+			stream << "struct td_" << t << " {\n";
+			for (auto line : structs[t]) {
 				stream << "    " << line << ";\n";
 			}
             stream << "};\n";

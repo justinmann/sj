@@ -96,7 +96,7 @@ bool CCallVar::getParameters(Compiler* compiler, CResult& result, vector<pair<bo
     return true;
 }
 
-shared_ptr<ReturnValue> CCallVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CCallVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
     assert(compiler->state == CompilerState::Compile);
 
     if (arguments->size() > callee->argDefaultValues.size()) {
@@ -110,14 +110,14 @@ shared_ptr<ReturnValue> CCallVar::transpileGet(Compiler* compiler, CResult& resu
         return nullptr;
     }
 
-    auto returnValue = callee->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, dotValue, loc, parameters, thisName);
+    auto returnValue = callee->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, dotValue, loc, parameters, thisValue);
     if (returnValue == nullptr) {
         assert(result.errors.size() > 0);
     }
     return returnValue;
 }
 
-void CCallVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
+void CCallVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 

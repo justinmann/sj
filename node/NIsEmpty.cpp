@@ -4,8 +4,8 @@ shared_ptr<CType> CIsEmptyVar::getType(Compiler* compiler, CResult& result) {
     return compiler->typeBool;
 }
 
-shared_ptr<ReturnValue> CIsEmptyVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
-    auto leftValue = var->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisName);
+shared_ptr<ReturnValue> CIsEmptyVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
+    auto leftValue = var->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisValue);
     if (!leftValue) {
         return nullptr;
     }
@@ -25,7 +25,7 @@ shared_ptr<ReturnValue> CIsEmptyVar::transpileGet(Compiler* compiler, CResult& r
     return make_shared<ReturnValue>(compiler->typeBool, line.str());
 }
 
-void CIsEmptyVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
+void CIsEmptyVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 

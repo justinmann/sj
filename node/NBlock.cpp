@@ -7,18 +7,18 @@ shared_ptr<CType> CBlockVar::getType(Compiler* compiler, CResult& result) {
     return statements.back()->getType(compiler, result);
 }
 
-shared_ptr<ReturnValue> CBlockVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CBlockVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
     shared_ptr<ReturnValue> returnValue;
     
     for (auto it : statements) {
         auto isLastStatement = it == statements.back();
-        returnValue = it->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisName);
+        returnValue = it->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisValue);
     }
     
     return returnValue;
 }
 
-void CBlockVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
+void CBlockVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 

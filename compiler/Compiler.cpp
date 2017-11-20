@@ -402,6 +402,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                     if (output.structs.find(structName) == output.structs.end()) {
                         output.structs[structName].push_back("int _refCount");
                     }
+                    output.structOrder.push_back("sjs_object");
 
                     globalFunction->transpileDefinition(this, *result, &output);
 

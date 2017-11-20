@@ -12,14 +12,14 @@ shared_ptr<CType> CDotVar::getType(Compiler* compiler, CResult& result) {
     return rightVar->getType(compiler, result);
 }
 
-shared_ptr<ReturnValue> CDotVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
-	auto leftValue = leftVar->transpileGet(compiler, result, trOutput, trBlock, dotValue, thisName);
-	return rightVar->transpileGet(compiler, result, trOutput, trBlock, leftValue, thisName);
+shared_ptr<ReturnValue> CDotVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
+	auto leftValue = leftVar->transpileGet(compiler, result, trOutput, trBlock, dotValue, thisValue);
+	return rightVar->transpileGet(compiler, result, trOutput, trBlock, leftValue, thisValue);
 }
 
-void CDotVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
-    auto leftValue = leftVar->transpileGet(compiler, result, trOutput, trBlock, dotValue, thisName);
-    rightVar->transpileSet(compiler, result, trOutput, trBlock, leftValue, returnValue, thisName, op, isFirstAssignment);
+void CDotVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
+    auto leftValue = leftVar->transpileGet(compiler, result, trOutput, trBlock, dotValue, thisValue);
+    rightVar->transpileSet(compiler, result, trOutput, trBlock, leftValue, returnValue, thisValue, op, isFirstAssignment);
 }
 
 

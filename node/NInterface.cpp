@@ -61,12 +61,12 @@ shared_ptr<CType> CInterfaceVar::getType(Compiler* compiler, CResult& result) {
     return nullptr; // parent.lock()->getThisTypes(compiler, result);
 }
 
-shared_ptr<ReturnValue> CInterfaceVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
+shared_ptr<ReturnValue> CInterfaceVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> thisValue) {
     assert(false);
 	return nullptr;
 }
 
-void CInterfaceVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
+void CInterfaceVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, shared_ptr<ReturnValue> thisValue, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -249,6 +249,7 @@ void CInterface::transpileDefinition(Compiler* compiler, CResult& result, TrOutp
         for (auto method : methods) {
             trOutput->structs[stackStructName].push_back(method->getCTypeName(compiler, result, true));
         }
+        trOutput->structOrder.push_back(stackStructName);
     }
 
     if (_returnMode == CTM_Heap) {
@@ -256,6 +257,7 @@ void CInterface::transpileDefinition(Compiler* compiler, CResult& result, TrOutp
         if (trOutput->structs.find(heapStructName) == trOutput->structs.end()) {
             trOutput->structs[heapStructName].push_back("int _refCount");
             trOutput->structs[heapStructName].push_back(stackStructName + " _data");
+            trOutput->structOrder.push_back(heapStructName);
         }
     }
 
@@ -293,7 +295,7 @@ void CInterface::transpileDefinition(Compiler* compiler, CResult& result, TrOutp
     }
 }
 
-shared_ptr<ReturnValue> CInterface::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> calleeValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, const char* thisName) {
+shared_ptr<ReturnValue> CInterface::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> calleeValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, shared_ptr<ReturnValue> thisValue) {
     assert(false);
     return nullptr;
 }
