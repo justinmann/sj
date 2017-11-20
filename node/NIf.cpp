@@ -57,7 +57,7 @@ shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& re
             elseReturnValue = elseVar->transpileGet(compiler, result, trOutput, trElseBlock.get(), nullptr, thisName);
         }
         else {
-            elseReturnValue = type->transpileDefaultValue(compiler, result, type->parent.lock());
+            elseReturnValue = type->transpileDefaultValue(compiler, result);
         }
 
         if (type != compiler->typeVoid) {
@@ -75,7 +75,7 @@ shared_ptr<ReturnValue> CIfElseVar::transpileGet(Compiler* compiler, CResult& re
     return trResultVar;
 }
 
-void CIfElseVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CIfElseVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -123,7 +123,21 @@ shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, CResult& result, shared_ptr
     if (condVar == nullptr) {
         return nullptr;
     }
+
+    auto ifType = ifVar->getType(compiler, result);
+    if (elseVar) {
+        auto elseType = elseVar->getType(compiler, result);
+        if (ifType != elseType) {
+            result.addError(loc, CErrorCode::TypeMismatch, "if block return type '%s' does not match else block return type '%s'", ifType->name.c_str(), elseType->name.c_str());
+            return nullptr;
+        }
+
+        if (ifType->typeMode == CTM_Stack && elseVar->scope.lock() != ifVar->scope.lock()) {
+            result.addError(loc, CErrorCode::TypeMismatch, "if block return value scope does not match else block return value scope", ifType->name.c_str(), elseType->name.c_str());
+            return nullptr;
+        }
+    }
     
-    return make_shared<CIfElseVar>(loc, condVar, ifVar, elseVar);
+    return make_shared<CIfElseVar>(loc, ifVar->scope.lock(), condVar, ifVar, elseVar);
 }
 

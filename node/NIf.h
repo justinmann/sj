@@ -11,10 +11,10 @@
 
 class CIfElseVar : public CVar {
 public:
-    CIfElseVar(CLoc loc, shared_ptr<CVar> condVar, shared_ptr<CVar> ifVar, shared_ptr<CVar> elseVar) : CVar(loc, "", false), condVar(condVar), ifVar(ifVar), elseVar(elseVar) { assert(condVar); assert(ifVar); }
+    CIfElseVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CVar> condVar, shared_ptr<CVar> ifVar, shared_ptr<CVar> elseVar) : CVar(loc, scope, "", false), condVar(condVar), ifVar(ifVar), elseVar(elseVar) { assert(condVar); assert(ifVar); }
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName);
-    void transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName);
+    void transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment);
     void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
 
 private:

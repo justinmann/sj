@@ -11,7 +11,7 @@
 
 class CCopyVar : public CVar {
 public:
-    CCopyVar(CLoc loc, shared_ptr<CVar> var) : CVar(loc, "", false), var(var) { }
+    CCopyVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CVar> var) : CVar(loc, scope, "", false), var(var) { }
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName);
     void transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName);

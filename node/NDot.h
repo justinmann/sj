@@ -13,12 +13,12 @@
 
 class CDotVar : public CVar {
 public:
-    CDotVar(CLoc loc) : CVar(loc, "", false) {}
-    static shared_ptr<CDotVar> create(CLoc loc, shared_ptr<CVar> leftVar_, shared_ptr<CVar> rightVar_);
+    CDotVar(CLoc loc, shared_ptr<CBaseFunction> scope) : CVar(loc, scope, "", false) {}
+    static shared_ptr<CDotVar> create(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CVar> leftVar_, shared_ptr<CVar> rightVar_);
     virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     string fullName();
     virtual shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName);
-    virtual void transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName);
+    virtual void transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment);
     virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
 
 private:

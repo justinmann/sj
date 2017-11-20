@@ -13,7 +13,7 @@ shared_ptr<ReturnValue> CNotVar::transpileGet(Compiler* compiler, CResult& resul
     return resultValue;
 }
 
-void CNotVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CNotVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -32,6 +32,6 @@ shared_ptr<CVar> NNot::getVarImpl(Compiler* compiler, CResult& result, shared_pt
     if (!var) {
         return nullptr;
     }
-    return make_shared<CNotVar>(loc, var);
+    return make_shared<CNotVar>(loc, thisFunction, var);
 }
 

@@ -48,7 +48,7 @@ shared_ptr<ReturnValue> CCompareVar::transpileGet(Compiler* compiler, CResult& r
     return resultValue;
 }
 
-void CCompareVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CCompareVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -141,5 +141,5 @@ shared_ptr<CVar> NCompare::getVarImpl(Compiler* compiler, CResult& result, share
         }
     }
     
-    return make_shared<CCompareVar>(loc, op, leftVar, rightVar);
+    return make_shared<CCompareVar>(loc, thisFunction, op, leftVar, rightVar);
 }

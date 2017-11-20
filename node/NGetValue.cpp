@@ -2,7 +2,7 @@
 
 class CGetValueVar : public CVar {
 public:
-    CGetValueVar(CLoc loc, shared_ptr<CVar> leftVar, bool isProtectedWithEmptyCheck) : CVar(loc, "", false), leftVar(leftVar), isProtectedWithEmptyCheck(isProtectedWithEmptyCheck) { }
+    CGetValueVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CVar> leftVar, bool isProtectedWithEmptyCheck) : CVar(loc, scope, "", false), leftVar(leftVar), isProtectedWithEmptyCheck(isProtectedWithEmptyCheck) { }
 
     shared_ptr<CType> getType(Compiler* compiler, CResult& result) {
         auto leftType = leftVar->getType(compiler, result);
@@ -50,7 +50,7 @@ public:
         return make_shared<ReturnValue>(leftValue->type->getValueType(), line.str());
     }
 
-    void transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+    void transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
 
     }
 
@@ -86,5 +86,5 @@ shared_ptr<CVar> NGetValue::getVarImpl(Compiler* compiler, CResult& result, shar
         return nullptr;
     }
 
-    return make_shared<CGetValueVar>(loc, leftVar, isProtectedWithEmptyCheck);
+    return make_shared<CGetValueVar>(loc, leftVar->scope.lock(), leftVar, isProtectedWithEmptyCheck);
 }

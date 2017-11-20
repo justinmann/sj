@@ -11,10 +11,10 @@
 
 class CForIndexVar : public CVar {
 public:
-    CForIndexVar(CLoc loc, string name) : CVar(loc, "", false), name(name) { }
+    CForIndexVar(CLoc loc, shared_ptr<CBaseFunction> scope, string name) : CVar(loc, scope, "", false), name(name) { }
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName);
-    void transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName);
+    void transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment);
     void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
     
     string name;
@@ -22,10 +22,10 @@ public:
 
 class CForLoopVar : public CVar {
 public:
-    CForLoopVar(CLoc loc, shared_ptr<CFunction> thisFunction, shared_ptr<CForIndexVar> indexVar, shared_ptr<CVar> startVar, shared_ptr<CVar> endVar, shared_ptr<CVar> bodyVar) : CVar(loc, "", false), thisFunction(thisFunction), indexVar(indexVar), startVar(startVar), endVar(endVar), bodyVar(bodyVar) { }
+    CForLoopVar(CLoc loc, shared_ptr<CFunction> thisFunction, shared_ptr<CForIndexVar> indexVar, shared_ptr<CVar> startVar, shared_ptr<CVar> endVar, shared_ptr<CVar> bodyVar) : CVar(loc, static_pointer_cast<CBaseFunction>(thisFunction), "", false), thisFunction(thisFunction), indexVar(indexVar), startVar(startVar), endVar(endVar), bodyVar(bodyVar) { }
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName);
-    void transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName);
+    void transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment);
     void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
     
 private:

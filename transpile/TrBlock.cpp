@@ -174,7 +174,7 @@ bool ReturnValue::writeReleaseToStream(TrBlock* block, ostream& stream, int leve
         TrBlock::addSpacing(stream, level);
         stream << "if (" << name << "->_refCount <= 0) {\n";
         TrBlock::addSpacing(stream, level + 1);
-        stream << type->parent.lock()->getCDestroyFunctionName() << "(&" << name << "->data);\n";
+        stream << type->parent.lock()->getCDestroyFunctionName() << "(" << convertToLocalName(type, name) << ");\n";
 
         TrBlock::addSpacing(stream, level + 1);
         stream << "free(" << name << ");\n";
@@ -222,7 +222,7 @@ void ReturnValue::addReleaseToStatements(TrBlock* block) {
         innerBlock->statements.push_back(TrStatement(ifStream.str(), ifBlock));
 
         stringstream destroyStream;
-        destroyStream << type->parent.lock()->getCDestroyFunctionName() << "(&" << name << "->data)";
+        destroyStream << type->parent.lock()->getCDestroyFunctionName() << "(" << convertToLocalName(type, name) << ")";
         ifBlock->statements.push_back(destroyStream.str());
 
         stringstream freeStream;
@@ -295,21 +295,46 @@ void ReturnValue::addInitToStatements(TrBlock* block) {
     }
 }
 
-void ReturnValue::addAssignToStatements(TrBlock* block, string rightName, bool isFirstAssignment) {
+void ReturnValue::addAssignToStatements(TrBlock* block, shared_ptr<CType> rightType, string rightName, bool isFirstAssignment) {
     if (!isFirstAssignment) {
         addReleaseToStatements(block);
     }
     
     stringstream lineStream;
-    lineStream << name << " = " << rightName;
+    lineStream << name << " = ";
+    if (type->typeMode == CTM_Stack || type->typeMode == CTM_Local) {
+        lineStream << convertToLocalName(rightType, rightName);
+    }
+    else {
+        lineStream << rightName;
+    }
     block->statements.push_back(lineStream.str());
     
     addRetainToStatements(block);
 }
 
-void ReturnValue::addCopyToStatements(TrBlock* block, string rightName) {
-    if (type->typeMode == CTM_Stack) {
-
+void ReturnValue::addCopyToStatements(TrBlock* block, shared_ptr<CType> rightType, string rightName, bool isFirstAssignment) {
+    if (isFirstAssignment) {
+        addInitToStatements(block);
+    }
+    else {
+        addReleaseToStatements(block);
     }
 
+    stringstream lineStream;
+    lineStream << type->parent.lock()->getCCopyFunctionName() << "(" << convertToLocalName(type, name) << ", " << convertToLocalName(rightType, rightName) << ")";
+    block->statements.push_back(lineStream.str());
+}
+
+string ReturnValue::convertToLocalName(shared_ptr<CType> from, string name) {
+    switch (from->typeMode) {
+    case CTM_Stack:
+    case CTM_Local:
+        return name;
+    case CTM_Heap:
+        return "(" + from->parent.lock()->getCStructName(CTM_Stack) + "*)(((char*)" + name + ") + sizeof(int))";
+    default:
+        assert(false);
+        return "";
+    }
 }

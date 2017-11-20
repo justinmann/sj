@@ -13,7 +13,7 @@ shared_ptr<CVar> NVariableBase::getVar(Compiler* compiler, CResult& result, shar
 }
 
 shared_ptr<CParentDotVar> CParentDotVar::create(CLoc loc, Compiler *compiler, CResult &result, shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_) {
-    auto c = make_shared<CParentDotVar>(loc);
+    auto c = make_shared<CParentDotVar>(loc, nullptr);
     c->parentFunction = parentFunction_;
     c->childVar = childVar_;
 
@@ -52,7 +52,7 @@ shared_ptr<ReturnValue> CParentDotVar::transpileGet(Compiler* compiler, CResult&
     return childVar->transpileGet(compiler, result, trOutput, trBlock, parentValue, thisName);
 }
 
-void CParentDotVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CParentDotVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     shared_ptr<ReturnValue> parentValue;
     if (dotValue) {
         auto parentThisTypes = parentFunction->parent.lock()->getThisTypes(compiler, result);
@@ -75,7 +75,7 @@ void CParentDotVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* 
         
         parentValue = make_shared<ReturnValue>(parentThisTypes->localValueType, parentFunction->hasThis ? string(thisName) + "->_parent" : "_parent");
     }
-    childVar->transpileSet(compiler, result, trOutput, trBlock, parentValue, returnValue, thisName);
+    childVar->transpileSet(compiler, result, trOutput, trBlock, parentValue, returnValue, thisName, op, isFirstAssignment);
 }
 
 void CParentDotVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

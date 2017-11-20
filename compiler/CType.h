@@ -17,6 +17,7 @@ class CResult;
 class ReturnValue;
 class CVar;
 class CThisVar;
+class CBaseFunctionDefinition;
 
 enum CTypeImmutability {
     CTI_Undefined,
@@ -63,7 +64,8 @@ public:
     weak_ptr<CBaseFunction> parent;
     bool isOption;
 
-    shared_ptr<ReturnValue> transpileDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction);
+    shared_ptr<ReturnValue> transpileDefaultValue(Compiler* compiler, CResult& result);
+    static bool isSameExceptMode(shared_ptr<CType> l, shared_ptr<CType> r);
     shared_ptr<CType> getValueType();
     shared_ptr<CType> getOptionType();
     shared_ptr<CType> getHeapValueType();

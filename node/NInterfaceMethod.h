@@ -23,10 +23,10 @@ public:
 
 class CInterfaceMethodReturnVar : public CVar {
 public:
-    CInterfaceMethodReturnVar(CLoc loc, shared_ptr<CType> returnType) : CVar(loc, "", false), returnType(returnType) { }
+    CInterfaceMethodReturnVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CType> returnType) : CVar(loc, scope, "", false), returnType(returnType) { }
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     virtual shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName);
-    virtual void transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName);
+    virtual void transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment);
     void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
     
     shared_ptr<CType> returnType;
@@ -35,10 +35,10 @@ public:
 
 class CInterfaceMethodArgVar : public CVar {
 public:
-    CInterfaceMethodArgVar(CLoc loc, shared_ptr<CType> returnType) : CVar(loc, "", false), returnType(returnType) { }
+    CInterfaceMethodArgVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CType> returnType) : CVar(loc, scope, "", false), returnType(returnType) { }
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     virtual shared_ptr<ReturnValue> transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName);
-    virtual void transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName);
+    virtual void transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment);
     void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
     
     shared_ptr<CType> returnType;

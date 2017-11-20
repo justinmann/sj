@@ -40,5 +40,5 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, CResult& result, shared_
         auto arrayVar = make_shared<NVariable>(loc, arrayName.c_str());
         statementVars.push_back(arrayVar->getVar(compiler, result, thisFunction, thisVar, nullptr, returnMode));
     }
-    return make_shared<CBlockVar>(loc, statementVars);
+    return make_shared<CBlockVar>(loc, thisFunction, statementVars);
 }

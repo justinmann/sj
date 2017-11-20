@@ -35,46 +35,51 @@ shared_ptr<ReturnValue> CNormalVar::transpileGet(Compiler* compiler, CResult& re
     }    
 }
 
-void CNormalVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CNormalVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     stringstream lineStream;
 
     if (!returnValue)
         return;
 
-    auto returnType = getType(compiler, result);
-    if (returnType != returnValue->type) {
-        result.addError(loc, CErrorCode::TypeMismatch, "returned type '%s' does not match explicit type '%s'", returnType->name.c_str(), returnValue->type->name.c_str());
+    auto leftType = getType(compiler, result);
+    auto rightType = returnValue->type;
+    if (!CType::isSameExceptMode(leftType, rightType)) {
+        result.addError(loc, CErrorCode::TypeMismatch, "right type '%s' does not match left type '%s'", rightType->name.c_str(), leftType->name.c_str());
+        return;
+    }
+
+    if (leftType->typeMode != CTM_Local && leftType->typeMode != rightType->typeMode && op != ASSIGN_MutableCopy && op != ASSIGN_ImmutableCopy) {
+        result.addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot change mode to left type '%s' without using a :copy or =copy assignment", rightType->name.c_str(), leftType->name.c_str());
         return;
     }
 
     string varName;
-    bool isFirstAssignment = false;
-
     if (dotValue) {
         varName = dotValue->name + "->" + name;
     }
     else if (trBlock->hasThis && (mode == Var_Public || mode == Var_Private)) {
-        if (!isMutable) {
-            // TODO: this may not be the first assignment
-            isFirstAssignment = true;
-        }
         varName = "_this->" + name;
     }
     else {
         if (!trBlock->getVariable(name)) {
             isFirstAssignment = true;
-            trBlock->createVariable(returnType, name);
+            trBlock->createVariable(leftType, name);
         }
         else if (!isMutable) {
             // Check is mutable or first assignment
-            result.addError(loc, CErrorCode::TypeMismatch, "cannot assign to immutable variable", returnType->name.c_str(), returnValue->type->name.c_str());
+            result.addError(loc, CErrorCode::TypeMismatch, "cannot assign to immutable variable", leftType->name.c_str(), rightType->name.c_str());
             return;
         }
         varName = name;
     }
     
-    auto varValue = make_shared<ReturnValue>(returnType, varName);
-    varValue->addAssignToStatements(trBlock, returnValue->name, isFirstAssignment);
+    auto varValue = make_shared<ReturnValue>(leftType, varName);
+    if (op == ASSIGN_MutableCopy || op == ASSIGN_ImmutableCopy) {
+        varValue->addCopyToStatements(trBlock, returnValue->type, returnValue->name, isFirstAssignment);
+    }
+    else {
+        varValue->addAssignToStatements(trBlock, returnValue->type, returnValue->name, isFirstAssignment);
+    }
 }
 
 void CNormalVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

@@ -45,5 +45,5 @@ shared_ptr<CVar> NTupleAssignment::getVarImpl(Compiler* compiler, CResult& resul
         argIndex++;
     }
 
-    return make_shared<CBlockVar>(loc, statements);
+    return make_shared<CBlockVar>(loc, thisFunction, statements);
 }

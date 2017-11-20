@@ -9,7 +9,7 @@ shared_ptr<ReturnValue> CConstantVar::transpileGet(Compiler* compiler, CResult& 
     return make_shared<ReturnValue>(type, value);
 }
 
-void CConstantVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CConstantVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -76,7 +76,7 @@ shared_ptr<CVar> NInteger::getVarImpl(Compiler* compiler, CResult& result, share
 
             stringstream line;
             line << v;
-            return make_shared<CConstantVar>(loc, compiler->typeI32, line.str());
+            return make_shared<CConstantVar>(loc, thisFunction, compiler->typeI32, line.str());
         }
         else if (type == NIT_U32) {
             char* e;
@@ -94,7 +94,7 @@ shared_ptr<CVar> NInteger::getVarImpl(Compiler* compiler, CResult& result, share
 
             stringstream line;
             line << v << "u";
-            return make_shared<CConstantVar>(loc, compiler->typeU32, "(uint32_t)" + line.str());
+            return make_shared<CConstantVar>(loc, thisFunction, compiler->typeU32, "(uint32_t)" + line.str());
         }
         else if (type == NIT_I64) {
             char* e;
@@ -117,7 +117,7 @@ shared_ptr<CVar> NInteger::getVarImpl(Compiler* compiler, CResult& result, share
             else {
                 line << v << "ll";
             }
-            return make_shared<CConstantVar>(loc, compiler->typeI64, line.str());
+            return make_shared<CConstantVar>(loc, thisFunction, compiler->typeI64, line.str());
         }
         else if (type == NIT_U64) {
             char* e;
@@ -135,7 +135,7 @@ shared_ptr<CVar> NInteger::getVarImpl(Compiler* compiler, CResult& result, share
 
             stringstream line;
             line << v << "ull";
-            return make_shared<CConstantVar>(loc, compiler->typeU64, line.str());
+            return make_shared<CConstantVar>(loc, thisFunction, compiler->typeU64, line.str());
         }
         else {
             assert(false);
@@ -144,7 +144,7 @@ shared_ptr<CVar> NInteger::getVarImpl(Compiler* compiler, CResult& result, share
     } else if (hasValue) {
         stringstream line;
         line << value;
-        return make_shared<CConstantVar>(loc, compiler->typeI32, line.str());
+        return make_shared<CConstantVar>(loc, thisFunction, compiler->typeI32, line.str());
     }
     return nullptr;
 }

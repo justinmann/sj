@@ -10,10 +10,11 @@ public:
     ReturnValue(shared_ptr<CType> type, string name);
     bool writeReleaseToStream(TrBlock* block, ostream& stream, int level);
     void addInitToStatements(TrBlock* block);
-    void addAssignToStatements(TrBlock* block, string rightName, bool isFirstAssignment);
-    void addCopyToStatements(TrBlock* block, string rightName);
+    void addAssignToStatements(TrBlock* block, shared_ptr<CType> rightType, string rightName, bool isFirstAssignment);
+    void addCopyToStatements(TrBlock* block, shared_ptr<CType> rightType, string rightName, bool isFirstAssignment);
     void addRetainToStatements(TrBlock* block);
     void addReleaseToStatements(TrBlock* block);
+    static string convertToLocalName(shared_ptr<CType> from, string name);
 
     shared_ptr<CType> type;
     string typeName;

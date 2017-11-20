@@ -227,7 +227,7 @@ shared_ptr<CTypes> CType::create(string name_, weak_ptr<CInterface> parent) {
     return make_shared<CTypes>(stackValueType, stackOptionType, heapValueType, heapOptionType, localValueType, localOptionType);
 }
 
-shared_ptr<ReturnValue> CType::transpileDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction) {
+shared_ptr<ReturnValue> CType::transpileDefaultValue(Compiler* compiler, CResult& result) {
     if (parent.expired()) {
         return make_shared<ReturnValue>(shared_from_this(), _defaultValue);
     }
@@ -239,6 +239,11 @@ shared_ptr<ReturnValue> CType::transpileDefaultValue(Compiler* compiler, CResult
         return nullptr;
     }
 }
+
+bool CType::isSameExceptMode(shared_ptr<CType> l, shared_ptr<CType> r) {
+    return l->category == r->category && l->stackValueType.lock()->nameValue == r->stackValueType.lock()->nameValue && l->isOption == r->isOption;
+}
+
 
 shared_ptr<CType> CType::getValueType() {
     assert(isOption);

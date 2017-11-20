@@ -15,7 +15,7 @@ shared_ptr<ReturnValue> COrVar::transpileGet(Compiler* compiler, CResult& result
     return resultValue;
 }
 
-void COrVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void COrVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -40,5 +40,5 @@ shared_ptr<CVar> NOr::getVarImpl(Compiler* compiler, CResult& result, shared_ptr
     if (!rightVar) {
         return nullptr;
     }
-    return make_shared<COrVar>(loc, leftVar, rightVar);
+    return make_shared<COrVar>(loc, thisFunction, leftVar, rightVar);
 }

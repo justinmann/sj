@@ -78,7 +78,7 @@ shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result
                 return nullptr;
             }
         } else {
-            numberVar = make_shared<CConstantVar>(loc, leftType, "1");
+            numberVar = make_shared<CConstantVar>(loc, thisFunction, leftType, "1");
         }
         
         NMathOp mathOp;
@@ -106,7 +106,7 @@ shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result
                 break;
         }
         
-        rightVar = make_shared<CMathVar>(loc, mathOp, leftVar, numberVar);
+        rightVar = make_shared<CMathVar>(loc, thisFunction, mathOp, leftVar, numberVar);
     }
-    return make_shared<CAssignVar>(loc, true, leftVar, rightVar);
+    return make_shared<CAssignVar>(loc, leftVar->scope.lock(), ASSIGN_Mutable, false, leftVar, rightVar);
 }

@@ -52,7 +52,7 @@ shared_ptr<NInterface> NInterface::shared_from_this() {
     return static_pointer_cast<NInterface>(NBase::shared_from_this());
 }
 
-CInterfaceVar::CInterfaceVar(CLoc loc, shared_ptr<CInterface> interface) : CVar(loc, "", false) {
+CInterfaceVar::CInterfaceVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CInterface> interface) : CVar(loc, scope, "", false) {
 //    parent = interface;
 }
 
@@ -66,7 +66,7 @@ shared_ptr<ReturnValue> CInterfaceVar::transpileGet(Compiler* compiler, CResult&
 	return nullptr;
 }
 
-void CInterfaceVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CInterfaceVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -127,7 +127,7 @@ int CInterface::getThisIndex(const string& name) const {
 }
 
 shared_ptr<CVar> CInterface::getThisVar(Compiler* compiler, CResult& result) {
-    return make_shared<CInterfaceVar>(loc, shared_from_this());
+    return make_shared<CInterfaceVar>(loc, nullptr, shared_from_this());
 }
 
 int CInterface::getArgStart() {

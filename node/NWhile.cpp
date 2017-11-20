@@ -39,7 +39,7 @@ shared_ptr<ReturnValue> CWhileVar::transpileGet(Compiler* compiler, CResult& res
     return nullptr;
 }
 
-void CWhileVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CWhileVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 void CWhileVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
@@ -65,5 +65,5 @@ shared_ptr<CVar> NWhile::getVarImpl(Compiler* compiler, CResult& result, shared_
         return nullptr;
     }
     
-    return make_shared<CWhileVar>(loc, condVar, bodyVar);
+    return make_shared<CWhileVar>(loc, thisFunction, condVar, bodyVar);
 }

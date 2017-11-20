@@ -44,7 +44,7 @@ shared_ptr<ReturnValue> CMathVar::transpileGet(Compiler* compiler, CResult& resu
     return resultValue;
 }
 
-void CMathVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CMathVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -125,6 +125,6 @@ shared_ptr<CVar> NMath::getVarImpl(Compiler* compiler, CResult& result, shared_p
             return nullptr;
         }
     } else {
-        return make_shared<CMathVar>(loc, op, leftVar, rightVar);
+        return make_shared<CMathVar>(loc, thisFunction, op, leftVar, rightVar);
     }
 }

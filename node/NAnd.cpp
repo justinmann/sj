@@ -15,7 +15,7 @@ shared_ptr<ReturnValue> CAndVar::transpileGet(Compiler* compiler, CResult& resul
     return resultValue;
 }
 
-void CAndVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CAndVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -40,5 +40,5 @@ shared_ptr<CVar> NAnd::getVarImpl(Compiler* compiler, CResult& result, shared_pt
     if (!rightVar) {
         return nullptr;
     }
-    return make_shared<CAndVar>(loc, leftVar, rightVar);
+    return make_shared<CAndVar>(loc, thisFunction, leftVar, rightVar);
 }

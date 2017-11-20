@@ -46,7 +46,7 @@ shared_ptr<ReturnValue> CInterfaceMethodReturnVar::transpileGet(Compiler* compil
 	return nullptr;
 }
 
-void CInterfaceMethodReturnVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CInterfaceMethodReturnVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -64,7 +64,7 @@ shared_ptr<ReturnValue> CInterfaceMethodArgVar::transpileGet(Compiler* compiler,
 	return nullptr;
 }
 
-void CInterfaceMethodArgVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CInterfaceMethodArgVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -96,7 +96,7 @@ shared_ptr<CInterfaceMethod> CInterfaceMethod::init(Compiler* compiler, CResult&
         
         // int index = (int)argVars.size();
         auto argType = it->getType(compiler, result, thisFunction, nullptr, CTM_Undefined);
-        auto argVar = make_shared<CInterfaceMethodArgVar>(loc, argType);
+        auto argVar = make_shared<CInterfaceMethodArgVar>(loc, thisFunction, argType);
         argVars.push_back(argVar);
         argDefaultValues.push_back(it->rightSide);
     }
@@ -233,7 +233,7 @@ shared_ptr<ReturnValue> CInterfaceMethod::transpile(Compiler* compiler, CResult&
     }
 
     auto thisTypes = getThisTypes(compiler, result);
-    auto calleeVar = make_shared<CThisVar>(loc, thisTypes, CTM_Heap);
+    auto calleeVar = make_shared<CThisVar>(loc, nullptr, thisTypes, CTM_Heap);
     vector<ArgData> argValues;
     auto argIndex = 0;
     // Fill in "this" with normal arguments

@@ -8,7 +8,7 @@ shared_ptr<ReturnValue> CForIndexVar::transpileGet(Compiler* compiler, CResult& 
     return make_shared<ReturnValue>(getType(compiler, result), name);
 }
 
-void CForIndexVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CForIndexVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -70,7 +70,7 @@ shared_ptr<ReturnValue> CForLoopVar::transpileGet(Compiler* compiler, CResult& r
     return nullptr;
 }
 
-void CForLoopVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CForLoopVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -94,7 +94,7 @@ void NFor::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunct
 shared_ptr<CVar> NFor::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode) {
     auto startVar = start->getVar(compiler, result, thisFunction, thisVar, CTM_Undefined);
     auto endVar = end->getVar(compiler, result, thisFunction, thisVar, CTM_Undefined);
-    auto indexVar = make_shared<CForIndexVar>(loc, varName);
+    auto indexVar = make_shared<CForIndexVar>(loc, thisFunction, varName);
 
     auto thisFun = static_pointer_cast<CFunction>(thisFunction);
     if (thisFun->localVarsByName.find(indexVar->name) != thisFun->localVarsByName.end()) {

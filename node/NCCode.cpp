@@ -27,7 +27,7 @@ shared_ptr<ReturnValue> CCCodeVar::transpileGet(Compiler* compiler, CResult& res
     return nullptr;
 }
 
-void CCCodeVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CCCodeVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -93,7 +93,7 @@ shared_ptr<CVar> NCCode::getVarImpl(Compiler* compiler, CResult& result, shared_
             finalCode << ch;
         }
     }
-    return make_shared<CCCodeVar>(loc, codeType, finalCode.str(), _functions[thisFunction.get()], _includes);
+    return make_shared<CCCodeVar>(loc, thisFunction, codeType, finalCode.str(), _functions[thisFunction.get()], _includes);
 }
 
 string NCCode::expandMacro(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode, string macro) {

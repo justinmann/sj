@@ -6,10 +6,10 @@ shared_ptr<CType> CEmptyVar::getType(Compiler* compiler, CResult& result) {
 
 shared_ptr<ReturnValue> CEmptyVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
     auto type = getType(compiler, result);
-    return type->transpileDefaultValue(compiler, result, thisFunction);
+    return type->transpileDefaultValue(compiler, result);
 }
 
-void CEmptyVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CEmptyVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 

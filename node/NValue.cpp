@@ -43,7 +43,7 @@ shared_ptr<ReturnValue> CValueVar::transpileGet(Compiler* compiler, CResult& res
     }
 }
 
-void CValueVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CValueVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -75,5 +75,5 @@ shared_ptr<CVar> NValue::getVarImpl(Compiler* compiler, CResult& result, shared_
         return nullptr;
     }
 
-    return make_shared<CValueVar>(loc, leftVar);
+    return make_shared<CValueVar>(loc, leftVar->scope.lock(), leftVar);
 }

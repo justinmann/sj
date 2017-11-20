@@ -19,7 +19,7 @@ shared_ptr<ReturnValue> CParentVar::transpileGet(Compiler* compiler, CResult& re
         "_parent");
 }
 
-void CParentVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CParentVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -36,5 +36,5 @@ shared_ptr<CVar> NParent::getVarImpl(Compiler* compiler, CResult& result, shared
     
     auto parentFunction = static_pointer_cast<CFunction>(thisFunction->parent.lock());
     parentFunction->setHasThis();
-    return make_shared<CParentVar>(loc, parentFunction);
+    return make_shared<CParentVar>(loc, nullptr, parentFunction);
 }

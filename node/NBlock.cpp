@@ -18,7 +18,7 @@ shared_ptr<ReturnValue> CBlockVar::transpileGet(Compiler* compiler, CResult& res
     return returnValue;
 }
 
-void CBlockVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CBlockVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -55,5 +55,5 @@ shared_ptr<CVar> NBlock::getVarImpl(Compiler* compiler, CResult& result, shared_
             statementVars.push_back(resultVar);
         }
     }
-    return make_shared<CBlockVar>(loc, statementVars);
+    return make_shared<CBlockVar>(loc, thisFunction, statementVars);
 }

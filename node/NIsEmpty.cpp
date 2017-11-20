@@ -25,7 +25,7 @@ shared_ptr<ReturnValue> CIsEmptyVar::transpileGet(Compiler* compiler, CResult& r
     return make_shared<ReturnValue>(compiler->typeBool, line.str());
 }
 
-void CIsEmptyVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CIsEmptyVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -57,5 +57,5 @@ shared_ptr<CVar> NIsEmpty::getVarImpl(Compiler* compiler, CResult& result, share
         return nullptr;
     }
 
-    return make_shared<CIsEmptyVar>(loc, leftVar);
+    return make_shared<CIsEmptyVar>(loc, thisFunction, leftVar);
 }

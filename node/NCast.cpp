@@ -47,7 +47,7 @@ shared_ptr<ReturnValue> CCastVar::transpileGet(Compiler* compiler, CResult& resu
         }
         
         auto rightName = interface->transpileCast(returnValue->type->typeMode, returnValue->type->parent.lock(), returnValue->name);
-        resultValue->addAssignToStatements(innerBlock, rightName, true);
+        resultValue->addAssignToStatements(innerBlock, returnValue->type, rightName, true);
         return resultValue;
     }
     else {
@@ -64,7 +64,7 @@ shared_ptr<ReturnValue> CCastVar::transpileGet(Compiler* compiler, CResult& resu
     }
 }
 
-void CCastVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CCastVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -96,6 +96,6 @@ shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, CResult& result, shared_p
         return nullptr;
     }
     
-    return make_shared<CCastVar>(loc, type, var);
+    return make_shared<CCastVar>(loc, thisFunction, type, var);
 }
 

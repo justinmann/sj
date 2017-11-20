@@ -8,7 +8,7 @@ shared_ptr<ReturnValue> CVoidVar::transpileGet(Compiler* compiler, CResult& resu
     return nullptr;
 }
 
-void CVoidVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CVoidVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -17,6 +17,6 @@ void CVoidVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar
 }
 
 shared_ptr<CVar> NVoid::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode) {
-    return make_shared<CVoidVar>(loc);
+    return make_shared<CVoidVar>(loc, nullptr);
 }
 

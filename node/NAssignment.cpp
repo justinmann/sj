@@ -14,17 +14,27 @@ shared_ptr<ReturnValue> CAssignVar::transpileGet(Compiler* compiler, CResult& re
         return nullptr;
     }
     
-    if (leftType != rightReturn->type) {
+    if (!CType::isSameExceptMode(leftType, rightReturn->type)) {
         result.addError(loc, CErrorCode::TypeMismatch, "returned type '%s' does not match explicit type '%s'", rightReturn->type->name.c_str(), leftType->name.c_str());
         return nullptr;
     }
 
-    leftVar->transpileSet(compiler, result, trOutput, trBlock, nullptr, rightReturn, thisName);
+    if (leftType->typeMode != CTM_Local && leftType->typeMode != rightReturn->type->typeMode && op != ASSIGN_MutableCopy && op != ASSIGN_ImmutableCopy) {
+        result.addError(loc, CErrorCode::TypeMismatch, "returned type '%s' cannot change mode to '%s' without using a :copy or =copy assignment", rightReturn->type->name.c_str(), leftType->name.c_str());
+        return nullptr;
+    }
+
+    if (leftVar->scope.lock() != rightVar->scope.lock() && leftType->typeMode == CTM_Stack && rightReturn->type->typeMode == CTM_Stack && op != ASSIGN_MutableCopy && op != ASSIGN_ImmutableCopy) {
+        result.addError(loc, CErrorCode::TypeMismatch, "must use a :copy or =copy assignment when changing scope of a stack variable", rightReturn->type->name.c_str(), leftType->name.c_str());
+        return nullptr;
+    }
+
+    leftVar->transpileSet(compiler, result, trOutput, trBlock, nullptr, rightReturn, thisName, op, isFirstAssignment);
     
     return rightReturn;
 }
 
-void CAssignVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CAssignVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -41,7 +51,7 @@ void CAssignVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotV
     }
 }
 
-NAssignment::NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTypeName> typeName, const char* name, shared_ptr<NBase> rightSide_, AssignOp op) : NBase(NodeType_Assignment, loc), var(var), typeName(typeName), name(name), inFunctionDeclaration(false), rightSide(rightSide_), isMutable(op == ASSIGN_Mutable || op == ASSIGN_MutableCopy), _isFirstAssignment(false) {
+NAssignment::NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTypeName> typeName, const char* name, shared_ptr<NBase> rightSide_, AssignOp op) : NBase(NodeType_Assignment, loc), var(var), typeName(typeName), name(name), inFunctionDeclaration(false), rightSide(rightSide_), op(op), _isFirstAssignment(false) {
     // If we are assigning a function to a var then we will call the function to get its value
     if (rightSide && rightSide->nodeType == NodeType_Function) {
         nfunction = static_pointer_cast<NFunction>(rightSide);
@@ -81,7 +91,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
         }
 
         auto parentType = parentVar->getType(compiler, result);
-        cfunction = static_pointer_cast<CFunction>(parentType->parent.lock());
+        cfunction = dynamic_pointer_cast<CFunction>(parentType->parent.lock());
         if (!cfunction) {
             result.addError(loc, CErrorCode::InvalidVariable, "var must be a function");
             return nullptr;
@@ -106,7 +116,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
         auto isFirstAssignment = false;
         auto leftVar = cfunction->getCVar(compiler, result, name);
         if (leftVar) {
-            if (!isMutable) {
+            if (op == ASSIGN_Immutable || op == ASSIGN_ImmutableCopy) {
                 result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var '%s'", name.c_str());
                 return nullptr;
             }
@@ -130,14 +140,14 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
                 if (!leftType) {
                     return nullptr;
                 }
-                leftVar = make_shared<CNormalVar>(loc, leftType, name, isMutable, CVarType::Var_Local, shared_from_this());
+                leftVar = make_shared<CNormalVar>(loc, thisFunction, leftType, name, op == ASSIGN_Mutable || op == ASSIGN_MutableCopy, CVarType::Var_Local);
                 fun->localVarsByName[name] = leftVar;
                 isFirstAssignment = true;
             }
         }
 
         if (var) {
-            leftVar = CDotVar::create(loc, parentVar, leftVar);
+            leftVar = CDotVar::create(loc, leftVar->scope.lock(), parentVar, leftVar);
         }
 
         auto leftType = leftVar->getType(compiler, result);
@@ -146,7 +156,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, sh
             assert(result.errors.size() > 0);
             return nullptr;
         }
-        return make_shared<CAssignVar>(loc, isMutable, leftVar, rightVar);
+        return make_shared<CAssignVar>(loc, leftVar->scope.lock(), op, isFirstAssignment, leftVar, rightVar);
     }
 
     return nullptr;

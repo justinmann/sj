@@ -1,8 +1,8 @@
 #include "Node.h"
 #include <sstream>
 
-shared_ptr<CDotVar> CDotVar::create(CLoc loc, shared_ptr<CVar> leftVar_, shared_ptr<CVar> rightVar_) {
-    auto c = make_shared<CDotVar>(loc);
+shared_ptr<CDotVar> CDotVar::create(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CVar> leftVar_, shared_ptr<CVar> rightVar_) {
+    auto c = make_shared<CDotVar>(loc, scope);
     c->leftVar = leftVar_;
     c->rightVar = rightVar_;
     return c;
@@ -17,9 +17,9 @@ shared_ptr<ReturnValue> CDotVar::transpileGet(Compiler* compiler, CResult& resul
 	return rightVar->transpileGet(compiler, result, trOutput, trBlock, leftValue, thisName);
 }
 
-void CDotVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CDotVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     auto leftValue = leftVar->transpileGet(compiler, result, trOutput, trBlock, dotValue, thisName);
-    rightVar->transpileSet(compiler, result, trOutput, trBlock, leftValue, returnValue, thisName);
+    rightVar->transpileSet(compiler, result, trOutput, trBlock, leftValue, returnValue, thisName, op, isFirstAssignment);
 }
 
 
@@ -47,5 +47,5 @@ shared_ptr<CVar> NDot::getVarImpl(Compiler* compiler, CResult& result, shared_pt
         return nullptr;
     }
 
-    return CDotVar::create(loc, leftVar, rightVar);
+    return CDotVar::create(loc, rightVar->scope.lock(), leftVar, rightVar);
 }

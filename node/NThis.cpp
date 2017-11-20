@@ -18,7 +18,7 @@ shared_ptr<ReturnValue> CThisVar::transpileGet(Compiler* compiler, CResult& resu
     return make_shared<ReturnValue>(getType(compiler, result), "_this");
 }
 
-void CThisVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CThisVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 

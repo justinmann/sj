@@ -9,7 +9,7 @@ shared_ptr<ReturnValue> CThrowVar::transpileGet(Compiler* compiler, CResult& res
     return nullptr;
 }
 
-void CThrowVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
+void CThrowVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName, AssignOp op, bool isFirstAssignment) {
     assert(false);
 }
 
@@ -26,6 +26,6 @@ shared_ptr<CVar> NThrow::getVarImpl(Compiler* compiler, CResult& result, shared_
     if (!var) {
         return nullptr;
     }
-    return make_shared<CThrowVar>(loc, var);
+    return make_shared<CThrowVar>(loc, nullptr, var);
 }
 

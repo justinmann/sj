@@ -139,7 +139,7 @@ shared_ptr<CFunction> CFunction::init(Compiler* compiler, CResult& result, share
             if (!argType) {
                 return nullptr;
             }
-            auto thisArgVar = make_shared<CNormalVar>(node->loc, argType, it->name, it->isMutable, CVarType::Var_Public, nullptr);
+            auto thisArgVar = make_shared<CNormalVar>(node->loc, shared_from_this(), argType, it->name, it->op == ASSIGN_Mutable || it->op == ASSIGN_MutableCopy, CVarType::Var_Public);
             _thisArgVarsByName[it->name] = pair<int, shared_ptr<CVar>>(index, thisArgVar);
             _thisArgVars.push_back(thisArgVar);
             argVars.push_back(thisArgVar);
@@ -266,16 +266,20 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
         // Create struct
         string stackStructName = getCStructName(CTM_Stack);
         if (trOutput->structs.find(stackStructName) == trOutput->structs.end()) {
-            trOutput->structs[stackStructName];
-
+            bool hasValues = false;
             auto argTypes = getCTypeList(compiler, result);
             for (auto argType : *argTypes) {
                 if (argType.first.compare("_this") == 0)
                     continue;
 
+                hasValues = true;
                 stringstream ss;
                 ss << argType.second->nameRef << " " << argType.first;
                 trOutput->structs[stackStructName].push_back(ss.str());
+            }
+
+            if (!hasValues) {
+                trOutput->structs[stackStructName].push_back("int structsNeedAValue");
             }
         }
 
@@ -309,7 +313,8 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
             trDestroyBlock->definition = functionDefinition.str();
 
             for (auto argVar : argVars) {
-                ReturnValue(argVar->getType(compiler, result), "_this->" + argVar->name).addCopyToStatements(trDestroyBlock.get(), "to->" + argVar->name);
+                auto argType = argVar->getType(compiler, result);
+                ReturnValue(argType, "_this->" + argVar->name).addCopyToStatements(trDestroyBlock.get(), argType, "to->" + argVar->name, true);
             }
 
             if (_copyBlock) {
@@ -576,7 +581,7 @@ shared_ptr<ReturnValue> CFunction::transpile(Compiler* compiler, CResult& result
         trBlock->statements.push_back(line.str());
     } else {
         for (auto argValue : argValues) {
-            ReturnValue(argValue.value->type, calleeThisName + "->" + argValue.var->name).addAssignToStatements(trBlock, argValue.name, true);
+            ReturnValue(argValue.value->type, calleeThisName + "->" + argValue.var->name).addAssignToStatements(trBlock, argValue.value->type, argValue.name, true);
         }
 
         // Call function
@@ -627,11 +632,11 @@ string CFunction::getCInitFunctionName() {
 }
 
 string CFunction::getCCopyFunctionName() {
-    return getCInitFunctionName() + "_copy";
+    return string("sjf_") + getCBaseName(CTM_Stack) + "_copy";
 }
 
 string CFunction::getCDestroyFunctionName() {
-    return getCInitFunctionName() + "_destroy";
+    return string("sjf_") + getCBaseName(CTM_Stack) + "_destroy";
 }
 
 string CFunction::getCAsInterfaceFunctionName() {
@@ -731,7 +736,7 @@ shared_ptr<CThisVar> CFunction::getThisVar(Compiler* compiler, CResult& result) 
         }
 
         auto thisTypes = getThisTypes(compiler, result);
-        _thisVar = make_shared<CThisVar>(loc, thisTypes, defaultTypeMode);
+        _thisVar = make_shared<CThisVar>(loc, nullptr, thisTypes, defaultTypeMode);
     }
     return _thisVar;
 }
@@ -1121,6 +1126,9 @@ void CFunctionDefinition::addChildFunction(string& name, shared_ptr<CBaseFunctio
 }
 
 shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CResult& result, CLoc& loc, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent, CTypeMode returnMode) {
+    if (returnMode == CTM_Local || returnMode == CTM_Undefined) {
+        returnMode = CTM_Stack;
+    }
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
     shared_ptr<CFunction> func;
     auto funcParentPtr = funcParent.lock().get();
