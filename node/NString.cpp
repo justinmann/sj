@@ -2,7 +2,7 @@
 
 class CGlobalPtrVar : public CVar {
 public:
-    CGlobalPtrVar(CLoc& loc, shared_ptr<CBaseFunction> scope, string varName, string str) : CVar(loc, scope, "", false), varName(varName), str(str) { }
+    CGlobalPtrVar(CLoc loc, shared_ptr<CBaseFunction> scope, string varName, string str) : CVar(loc, scope, "", false), varName(varName), str(str) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -32,7 +32,7 @@ void CGlobalPtrVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> d
 
 class NGlobalPtrVar : public NBase {
 public:
-    NGlobalPtrVar(CLoc& loc, const string& varName, const string& str) : NBase(NodeType_Integer, loc), varName(varName), str(str) {}
+    NGlobalPtrVar(CLoc loc, const string& varName, const string& str) : NBase(NodeType_Integer, loc), varName(varName), str(str) {}
     void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {}
     shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode);
     

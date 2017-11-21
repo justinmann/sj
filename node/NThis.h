@@ -13,7 +13,7 @@ class NThis;
 
 class CThisVar : public CVar {
 public:
-    CThisVar(CLoc& loc, shared_ptr<CBaseFunction> scope, shared_ptr<CTypes> types, CTypeMode typeMode) : CVar(loc, scope, "", false), types(types), typeMode(typeMode) { }
+    CThisVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CTypes> types, CTypeMode typeMode) : CVar(loc, scope, "", false), types(types), typeMode(typeMode) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -30,7 +30,7 @@ private:
 
 class NThis : public NVariableBase {
 public:
-    NThis(CLoc& loc) : NVariableBase(NodeType_This, loc) {}
+    NThis(CLoc loc) : NVariableBase(NodeType_This, loc) {}
     void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) { }
     shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 };

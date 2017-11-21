@@ -17,7 +17,7 @@ enum NCCodeType {
 
 class CCCodeVar : public CVar {
 public:
-    CCCodeVar(CLoc& loc, shared_ptr<CBaseFunction> scope, NCCodeType codeType, string code, vector<shared_ptr<CFunction>> functions, vector<string> includes) : CVar(loc, scope, "", false), codeType(codeType), code(code), functions(functions), includes(includes) { }
+    CCCodeVar(CLoc loc, shared_ptr<CBaseFunction> scope, NCCodeType codeType, string code, vector<shared_ptr<CFunction>> functions, vector<string> includes) : CVar(loc, scope, "", false), codeType(codeType), code(code), functions(functions), includes(includes) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -32,7 +32,7 @@ private:
 
 class NCCode : public NBase {
 public:
-    NCCode(CLoc& loc, NCCodeType codeType, const char* code_) : NBase(NodeType_Integer, loc), codeType(codeType), code(code_) { }
+    NCCode(CLoc loc, NCCodeType codeType, const char* code_) : NBase(NodeType_Integer, loc), codeType(codeType), code(code_) { }
     void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) { }
     shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode);
 

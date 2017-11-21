@@ -2,7 +2,7 @@
 
 class CGetValueVar : public CVar {
 public:
-    CGetValueVar(CLoc& loc, shared_ptr<CBaseFunction> scope, shared_ptr<CVar> leftVar, bool isProtectedWithEmptyCheck) : CVar(loc, scope, "", false), leftVar(leftVar), isProtectedWithEmptyCheck(isProtectedWithEmptyCheck) { }
+    CGetValueVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CVar> leftVar, bool isProtectedWithEmptyCheck) : CVar(loc, scope, "", false), leftVar(leftVar), isProtectedWithEmptyCheck(isProtectedWithEmptyCheck) { }
 
     bool getReturnThis() {
         return false;

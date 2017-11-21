@@ -11,7 +11,7 @@
 
 class COrVar : public CVar {
 public:
-    COrVar(CLoc& loc, shared_ptr<CBaseFunction> scope, shared_ptr<CVar> leftVar, shared_ptr<CVar> rightVar) : CVar(loc, scope, "", false), leftVar(leftVar), rightVar(rightVar) { }
+    COrVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CVar> leftVar, shared_ptr<CVar> rightVar) : CVar(loc, scope, "", false), leftVar(leftVar), rightVar(rightVar) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -27,7 +27,7 @@ public:
     const shared_ptr<NVariableBase> left;
     const shared_ptr<NVariableBase> right;
     
-    NOr(CLoc& loc, shared_ptr<NVariableBase> left, shared_ptr<NVariableBase> right) : NVariableBase(NodeType_Or, loc), left(left), right(right) { }
+    NOr(CLoc loc, shared_ptr<NVariableBase> left, shared_ptr<NVariableBase> right) : NVariableBase(NodeType_Or, loc), left(left), right(right) { }
     void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 };

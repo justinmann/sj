@@ -16,14 +16,14 @@ public:
     vector<shared_ptr<NAssignment>> assignments;
     shared_ptr<CTypeName> returnTypeName;
 
-    NInterfaceMethod(CLoc& loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<CTypeName> returnTypeName);
+    NInterfaceMethod(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<CTypeName> returnTypeName);
     void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {}
     shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode) { return nullptr; }
 };
 
 class CInterfaceMethodReturnVar : public CVar {
 public:
-    CInterfaceMethodReturnVar(CLoc& loc, shared_ptr<CBaseFunction> scope, shared_ptr<CType> returnType) : CVar(loc, scope, "", false), returnType(returnType) { }
+    CInterfaceMethodReturnVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CType> returnType) : CVar(loc, scope, "", false), returnType(returnType) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -35,7 +35,7 @@ public:
 
 class CInterfaceMethodArgVar : public CVar {
 public:
-    CInterfaceMethodArgVar(CLoc& loc, shared_ptr<CBaseFunction> scope, shared_ptr<CType> returnType) : CVar(loc, scope, "", false), returnType(returnType) { }
+    CInterfaceMethodArgVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CType> returnType) : CVar(loc, scope, "", false), returnType(returnType) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     virtual void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -62,7 +62,7 @@ public:
     shared_ptr<CVar> getCVar(Compiler* compiler, CResult& result, const string& name);
     shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode);
     pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(string name) { assert(false); return make_pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>>(nullptr, nullptr); }
-    shared_ptr<CType> getVarType(CLoc& loc, Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
+    shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
     shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result);
     string getCTypeName(Compiler* compiler, CResult& result, bool includeNames);
     string getCStructName(CTypeMode typeMode) { assert(false); return ""; }

@@ -11,7 +11,7 @@
 
 class CIsEmptyVar : public CVar {
 public:
-    CIsEmptyVar(CLoc& loc, shared_ptr<CBaseFunction> scope, shared_ptr<CVar> var) : CVar(loc, scope, "", false), var(var) { }
+    CIsEmptyVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CVar> var) : CVar(loc, scope, "", false), var(var) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -23,7 +23,7 @@ private:
 
 class NIsEmpty : public NVariableBase {
 public:
-    NIsEmpty(CLoc& loc, shared_ptr<NBase> node) : NVariableBase(NodeType_IsEmpty, loc), node(node) {}
+    NIsEmpty(CLoc loc, shared_ptr<NBase> node) : NVariableBase(NodeType_IsEmpty, loc), node(node) {}
     bool getReturnThis();
     void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode);

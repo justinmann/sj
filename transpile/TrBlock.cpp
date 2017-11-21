@@ -128,18 +128,18 @@ shared_ptr<TrValue> TrBlock::createTempVariable(shared_ptr<CBaseFunction> scope,
     return var;
 }
 
-shared_ptr<TrStoreValue> TrBlock::createTempStoreVariable(CLoc& loc, shared_ptr<CBaseFunction> scope, shared_ptr<CType> type, string prefix) {
+shared_ptr<TrStoreValue> TrBlock::createTempStoreVariable(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CType> type, string prefix) {
     auto varStr = nextVarName("sjt_" + prefix);
     auto var = make_shared<TrStoreValue>(loc, scope, type, varStr, ASSIGN_Immutable, true);
     variables[varStr] = make_shared<TrValue>(scope, type, varStr);
     return var;
 }
 
-shared_ptr<TrStoreValue> TrBlock::createVoidStoreVariable(CLoc& loc) {
+shared_ptr<TrStoreValue> TrBlock::createVoidStoreVariable(CLoc loc) {
     return make_shared<TrStoreValue>(loc, nullptr, nullptr, "", ASSIGN_Immutable, true);
 }
 
-shared_ptr<TrStoreValue> TrBlock::createReturnStoreVariable(CLoc& loc, shared_ptr<CBaseFunction> scope, shared_ptr<CType> type) {
+shared_ptr<TrStoreValue> TrBlock::createReturnStoreVariable(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CType> type) {
     auto returnStoreValue = make_shared<TrStoreValue>(loc, scope, type->getLocalType(), type->typeMode == CTM_Stack ? "_return" : "(*_return)", ASSIGN_Immutable, true);
     returnStoreValue->isReturnValue = true;
     return returnStoreValue;

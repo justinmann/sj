@@ -363,15 +363,15 @@ return_type			: value_type													{ $$ = $1; }
 					| TVOID															{ $$ = new CTypeName(CTC_Value, CTM_Stack, "void", false); }
 					;
 
-value_type			: TTYPEI32											{ $$ = new CTypeName(CTC_Value, CTM_Value, "i32", false, nullptr); }
-					| TTYPEU32											{ $$ = new CTypeName(CTC_Value, CTM_Value, "u32", false, nullptr); }
-					| TTYPEF32											{ $$ = new CTypeName(CTC_Value, CTM_Value, "f32", false, nullptr); }
-					| TTYPEI64											{ $$ = new CTypeName(CTC_Value, CTM_Value, "i64", false, nullptr); }
-					| TTYPEU64											{ $$ = new CTypeName(CTC_Value, CTM_Value, "u64", false, nullptr); }
-					| TTYPEF64											{ $$ = new CTypeName(CTC_Value, CTM_Value, "f64", false, nullptr); }
-					| TTYPECHAR											{ $$ = new CTypeName(CTC_Value, CTM_Value, "char", false, nullptr); }
-					| TTYPEBOOL											{ $$ = new CTypeName(CTC_Value, CTM_Value, "bool", false, nullptr); }
-					| TTYPEPTR											{ $$ = new CTypeName(CTC_Value, CTM_Value, "ptr", false, nullptr); }
+value_type			: TTYPEI32											{ $$ = new CTypeName(CTC_Value, CTM_Value, "i32", false); }
+					| TTYPEU32											{ $$ = new CTypeName(CTC_Value, CTM_Value, "u32", false); }
+					| TTYPEF32											{ $$ = new CTypeName(CTC_Value, CTM_Value, "f32", false); }
+					| TTYPEI64											{ $$ = new CTypeName(CTC_Value, CTM_Value, "i64", false); }
+					| TTYPEU64											{ $$ = new CTypeName(CTC_Value, CTM_Value, "u64", false); }
+					| TTYPEF64											{ $$ = new CTypeName(CTC_Value, CTM_Value, "f64", false); }
+					| TTYPECHAR											{ $$ = new CTypeName(CTC_Value, CTM_Value, "char", false); }
+					| TTYPEBOOL											{ $$ = new CTypeName(CTC_Value, CTM_Value, "bool", false); }
+					| TTYPEPTR											{ $$ = new CTypeName(CTC_Value, CTM_Value, "ptr", false); }
 					;
 
 func_type			: arg_mode TLPAREN func_arg_type_list TRPAREN return_type { $$ = new CTypeName($1, shared_ptr<CTypeNameList>($3), shared_ptr<CTypeName>($5)); }

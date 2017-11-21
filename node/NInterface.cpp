@@ -1,6 +1,6 @@
 #include "Node.h"
 
-NInterface::NInterface(CLoc& loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> methodList_) : NBaseFunction(NodeType_Interface, loc), name(name), templateTypeNames(templateTypeNames) {
+NInterface::NInterface(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> methodList_) : NBaseFunction(NodeType_Interface, loc), name(name), templateTypeNames(templateTypeNames) {
     if (methodList_) {
         for (auto it : *methodList_) {
             assert(it->nodeType == NodeType_InterfaceMethod);
@@ -52,7 +52,7 @@ shared_ptr<NInterface> NInterface::shared_from_this() {
     return static_pointer_cast<NInterface>(NBase::shared_from_this());
 }
 
-CInterfaceVar::CInterfaceVar(CLoc& loc, shared_ptr<CBaseFunction> scope, shared_ptr<CInterface> interface) : CVar(loc, scope, "", false) {
+CInterfaceVar::CInterfaceVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CInterface> interface) : CVar(loc, scope, "", false) {
 //    parent = interface;
 }
 
@@ -73,7 +73,7 @@ void CInterfaceVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> d
     assert(false);
 }
 
-CInterface::CInterface(CLoc& loc, weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent) : CBaseFunction(CFT_Interface, definition.lock()->name, parent, definition), loc(loc) {
+CInterface::CInterface(CLoc loc, weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent) : CBaseFunction(CFT_Interface, definition.lock()->name, parent, definition), loc(loc) {
     setHasThis();
 }
 
@@ -181,7 +181,7 @@ shared_ptr<CBaseFunction> CInterface::getCFunction(Compiler* compiler, CResult& 
     return interfaceMethod;
 }
 
-shared_ptr<CType> CInterface::getVarType(CLoc& loc, Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
+shared_ptr<CType> CInterface::getVarType(CLoc loc, Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
     if (typeName->templateTypeNames == nullptr) {
         auto t = templateTypesByName.find(typeName->name);
         if (t != templateTypesByName.end()) {
@@ -379,7 +379,7 @@ bool CInterface::getReturnMustRelease(Compiler* compiler, CResult& result) {
 //    return make_shared<TrValue>(shared_from_this(), RVR_MustRelease, RVT_HEAP, false, value);
 //}
 
-CInterfaceDefinition::CInterfaceDefinition(CLoc& loc, string& name_) : CBaseFunctionDefinition(CFT_Interface), loc(loc) {
+CInterfaceDefinition::CInterfaceDefinition(CLoc loc, string& name_) : CBaseFunctionDefinition(CFT_Interface), loc(loc) {
     name = name_;
 }
 

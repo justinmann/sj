@@ -11,7 +11,7 @@
 
 class NBaseFunction : public NBase {
 public:
-    NBaseFunction(const NodeType nodeType, CLoc& loc) : NBase(nodeType, loc) { }
+    NBaseFunction(const NodeType nodeType, CLoc loc) : NBase(nodeType, loc) { }
 };
 
 class CBaseFunctionDefinition;
@@ -54,7 +54,7 @@ public:
     virtual int getThisIndex(const string& name) const = 0;
     virtual shared_ptr<CVar> getCVar(Compiler* compiler, CResult& result, const string& name) = 0;
     virtual shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode) = 0;
-    virtual shared_ptr<CType> getVarType(CLoc& loc, Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) = 0;
+    virtual shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) = 0;
     virtual string getCInitFunctionName() = 0;
     virtual string getCCopyFunctionName() = 0;
     virtual string getCDestroyFunctionName() = 0;

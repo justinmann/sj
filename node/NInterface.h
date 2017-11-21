@@ -17,7 +17,7 @@ public:
     shared_ptr<CTypeNameList> templateTypeNames;
     vector<shared_ptr<NInterfaceMethod>> methodList;
 
-    NInterface(CLoc& loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> methodList);
+    NInterface(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> methodList);
     void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode) { return nullptr; }
 
@@ -29,7 +29,7 @@ class CInterfaceMethod;
 
 class CInterfaceVar : public CVar {
 public:
-    CInterfaceVar(CLoc& loc, shared_ptr<CBaseFunction> scope, shared_ptr<CInterface> interface);
+    CInterfaceVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CInterface> interface);
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -42,7 +42,7 @@ public:
     map<string, map<CTypeMode, shared_ptr<CInterfaceMethod>>> methodByName;
     map<string, shared_ptr<CType>> templateTypesByName;
     
-    CInterface(CLoc& loc, weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent);
+    CInterface(CLoc loc, weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent);
     shared_ptr<CInterface> init(Compiler* compiler, CResult& result, shared_ptr<NInterface> node, vector<shared_ptr<CType>>& templateTypes);
     string fullName(bool includeTemplateTypes);
     
@@ -54,7 +54,7 @@ public:
     shared_ptr<CVar> getCVar(Compiler* compiler, CResult& result, const string& name);
     shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode);
     pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(string name) { assert(false); return make_pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>>(nullptr, nullptr); }
-    shared_ptr<CType> getVarType(CLoc& loc, Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
+    shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
     shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result);
     string getCInitFunctionName();
     string getCCopyFunctionName();
@@ -81,7 +81,7 @@ public:
     shared_ptr<CTypeName> typeName;
     shared_ptr<NInterface> ninterface;
 
-    CInterfaceDefinition(CLoc& loc, string& name);
+    CInterfaceDefinition(CLoc loc, string& name);
     string fullName();
     void addChildFunction(string& name, shared_ptr<CBaseFunctionDefinition> childFunction);
     shared_ptr<CInterface> getInterface(Compiler* compiler, CResult& result, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent, CTypeMode returnMode);

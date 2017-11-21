@@ -21,7 +21,6 @@ void CBlockVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutpu
 void CBlockVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     ss << "{\n";
     for (auto it : statements) {
-        auto isLastStatement = it == statements.back();
         stringstream line;
         it->dump(compiler, result, nullptr, functions, line, dotSS, level + 1);
         auto t = line.str();

@@ -207,7 +207,7 @@ shared_ptr<CTypes> CType::create(Compiler* compiler, string name_, weak_ptr<CInt
     return compiler->types[key];
 }
 
-void CType::transpileDefaultValue(Compiler* compiler, CResult& result, CLoc& loc, TrBlock* trBlock, shared_ptr<TrStoreValue> storeValue) {
+void CType::transpileDefaultValue(Compiler* compiler, CResult& result, CLoc loc, TrBlock* trBlock, shared_ptr<TrStoreValue> storeValue) {
     if (parent.expired()) {
         auto temp = make_shared<TrValue>(nullptr, shared_from_this(), _defaultValue);
         storeValue->retainValue(compiler, result, trBlock, temp);

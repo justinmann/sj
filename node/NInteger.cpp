@@ -36,7 +36,7 @@ void CConstantVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> do
 }
 
 
-NInteger::NInteger(CLoc& loc, const char* value_) : NVariableBase(NodeType_Integer, loc), strValue(value_), hasValue(false) {
+NInteger::NInteger(CLoc loc, const char* value_) : NVariableBase(NodeType_Integer, loc), strValue(value_), hasValue(false) {
     if (strValue.back() == 'i') {
         type = NIT_I32;
         strValue = strValue.substr(0, strValue.size() - 1);

@@ -1,6 +1,6 @@
 #include "Node.h"
 
-NFunction::NFunction(CLoc& loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> copyBlock, shared_ptr<NBase> destroyBlock) : NBaseFunction(NodeType_Function, loc), type(type), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), interfaceTypeNames(interfaceTypeNames), block(block), catchBlock(catchBlock), copyBlock(copyBlock), destroyBlock(destroyBlock) {
+NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> copyBlock, shared_ptr<NBase> destroyBlock) : NBaseFunction(NodeType_Function, loc), type(type), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), interfaceTypeNames(interfaceTypeNames), block(block), catchBlock(catchBlock), copyBlock(copyBlock), destroyBlock(destroyBlock) {
     if (this->name == "^") {
         this->name = TrBlock::nextVarName("anon");
         isAnonymous = true;
@@ -437,7 +437,7 @@ void CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseF
                 line << ", ";
             }
             if (!parentValue) {
-                line << trBlock->hasThis ? "_this" : "_parent";
+                line << (trBlock->hasThis ? "_this" : "_parent");
             }
             else {
                 line << parentValue->name;
@@ -802,7 +802,7 @@ shared_ptr<vector<pair<string, shared_ptr<CType>>>> CFunction::getCTypeList(Comp
     return _ctypeList;
 }
 
-bool getTemplateTypes(Compiler* compiler, CResult& result, CLoc& loc, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> calleeTemplateTypeNames, shared_ptr<CTypeNameList> funcTemplateTypeNames, vector<shared_ptr<CType>>& templateTypes) {
+bool getTemplateTypes(Compiler* compiler, CResult& result, CLoc loc, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> calleeTemplateTypeNames, shared_ptr<CTypeNameList> funcTemplateTypeNames, vector<shared_ptr<CType>>& templateTypes) {
     if (calleeTemplateTypeNames) {
         if (calleeTemplateTypeNames->size() != funcTemplateTypeNames->size()) {
             result.addError(loc, CErrorCode::InvalidTemplateArg, "size does not match");
@@ -1002,7 +1002,7 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, CResult& result, str
     return compiler->getType(name);
 }
 
-shared_ptr<CType> CFunction::getVarType(CLoc& loc, Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
+shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
     auto typeMode = defaultMode;
     if (typeName->typeMode != CTM_Undefined) {
         typeMode = typeName->typeMode;
@@ -1106,7 +1106,7 @@ void CFunctionDefinition::addChildFunction(string& name, shared_ptr<CBaseFunctio
     funcsByName[name] = static_pointer_cast<CFunctionDefinition>(childFunction);
 }
 
-shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CResult& result, CLoc& loc, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent, CTypeMode returnMode) {
+shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CResult& result, CLoc loc, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent, CTypeMode returnMode) {
     if (returnMode == CTM_Local || returnMode == CTM_Undefined) {
         returnMode = CTM_Stack;
     }
@@ -1207,7 +1207,7 @@ shared_ptr<CInterfaceDefinition> CFunctionDefinition::getDefinedInterfaceDefinit
     }
 }
 
-shared_ptr<CInterfaceDefinition> CFunctionDefinition::createDefinedInterfaceDefinition(CLoc& loc, string& name) {
+shared_ptr<CInterfaceDefinition> CFunctionDefinition::createDefinedInterfaceDefinition(CLoc loc, string& name) {
     auto result = make_shared<CInterfaceDefinition>(loc, name);
     _definedInterfaceDefinitions[name] = result;
     return result;

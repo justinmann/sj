@@ -21,7 +21,7 @@ class CFunction;
 
 class NBase : public enable_shared_from_this<NBase> {
 public:
-    NBase(const NodeType nodeType, CLoc& loc) : nodeType(nodeType), loc(loc), _hasDefined(false) { }
+    NBase(const NodeType nodeType, CLoc loc) : nodeType(nodeType), loc(loc), _hasDefined(false) { }
     void define(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVar(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode);
 

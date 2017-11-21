@@ -36,7 +36,7 @@ void CAssignVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotV
     }
 }
 
-NAssignment::NAssignment(CLoc& loc, shared_ptr<NVariableBase> var, shared_ptr<CTypeName> typeName, const char* name, shared_ptr<NBase> rightSide_, AssignOp op) : NBase(NodeType_Assignment, loc), var(var), typeName(typeName), name(name), inFunctionDeclaration(false), rightSide(rightSide_), op(op), _isFirstAssignment(false) {
+NAssignment::NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTypeName> typeName, const char* name, shared_ptr<NBase> rightSide_, AssignOp op) : NBase(NodeType_Assignment, loc), var(var), typeName(typeName), name(name), inFunctionDeclaration(false), rightSide(rightSide_), op(op), _isFirstAssignment(false) {
     // If we are assigning a function to a var then we will call the function to get its value
     if (rightSide && rightSide->nodeType == NodeType_Function) {
         nfunction = static_pointer_cast<NFunction>(rightSide);

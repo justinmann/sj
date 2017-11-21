@@ -11,7 +11,7 @@
 
 class CForIndexVar : public CVar {
 public:
-    CForIndexVar(CLoc& loc, shared_ptr<CBaseFunction> scope, string name) : CVar(loc, scope, "", false), name(name) { }
+    CForIndexVar(CLoc loc, shared_ptr<CBaseFunction> scope, string name) : CVar(loc, scope, "", false), name(name) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -22,7 +22,7 @@ public:
 
 class CForLoopVar : public CVar {
 public:
-    CForLoopVar(CLoc& loc, shared_ptr<CFunction> thisFunction, shared_ptr<CForIndexVar> indexVar, shared_ptr<CVar> startVar, shared_ptr<CVar> endVar, shared_ptr<CVar> bodyVar) : CVar(loc, static_pointer_cast<CBaseFunction>(thisFunction), "", false), thisFunction(thisFunction), indexVar(indexVar), startVar(startVar), endVar(endVar), bodyVar(bodyVar) { }
+    CForLoopVar(CLoc loc, shared_ptr<CFunction> thisFunction, shared_ptr<CForIndexVar> indexVar, shared_ptr<CVar> startVar, shared_ptr<CVar> endVar, shared_ptr<CVar> bodyVar) : CVar(loc, static_pointer_cast<CBaseFunction>(thisFunction), "", false), thisFunction(thisFunction), indexVar(indexVar), startVar(startVar), endVar(endVar), bodyVar(bodyVar) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler, CResult& result);
     void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -38,7 +38,7 @@ private:
 
 class NFor : public NBase {
 public:
-    NFor(CLoc& loc, const char* varName, shared_ptr<NBase> start, shared_ptr<NBase> end, shared_ptr<NBase> body) : NBase(NodeType_For, loc), varName(varName), start(start), end(end), body(body) { }
+    NFor(CLoc loc, const char* varName, shared_ptr<NBase> start, shared_ptr<NBase> end, shared_ptr<NBase> body) : NBase(NodeType_For, loc), varName(varName), start(start), end(end), body(body) { }
     void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode);
 

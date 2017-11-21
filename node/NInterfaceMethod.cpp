@@ -1,6 +1,6 @@
 #include "Node.h"
 
-NInterfaceMethod::NInterfaceMethod(CLoc& loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments_, shared_ptr<CTypeName> returnTypeName) : NBaseFunction(NodeType_InterfaceMethod, loc), name(name), templateTypeNames(templateTypeNames), returnTypeName(returnTypeName) {
+NInterfaceMethod::NInterfaceMethod(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments_, shared_ptr<CTypeName> returnTypeName) : NBaseFunction(NodeType_InterfaceMethod, loc), name(name), templateTypeNames(templateTypeNames), returnTypeName(returnTypeName) {
     if (arguments_) {
         for (auto it : *arguments_) {
             assert(it->nodeType == NodeType_Assignment);
@@ -176,7 +176,7 @@ string CInterfaceMethod::getCTypeName(Compiler* compiler, CResult& result, bool 
 //    return nullptr;
 //}
 
-shared_ptr<CType> CInterfaceMethod::getVarType(CLoc& loc, Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
+shared_ptr<CType> CInterfaceMethod::getVarType(CLoc loc, Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
     if (!parent.expired()) {
         return parent.lock()->getVarType(loc, compiler, result, typeName, defaultMode);
     }

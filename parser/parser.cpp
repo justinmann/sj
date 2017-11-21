@@ -2706,55 +2706,55 @@ yyreduce:
 
   case 158:
 
-    { (yyval.typeName) = new CTypeName(CTC_Value, CTM_Value, "i32", false, nullptr); }
+    { (yyval.typeName) = new CTypeName(CTC_Value, CTM_Value, "i32", false); }
 
     break;
 
   case 159:
 
-    { (yyval.typeName) = new CTypeName(CTC_Value, CTM_Value, "u32", false, nullptr); }
+    { (yyval.typeName) = new CTypeName(CTC_Value, CTM_Value, "u32", false); }
 
     break;
 
   case 160:
 
-    { (yyval.typeName) = new CTypeName(CTC_Value, CTM_Value, "f32", false, nullptr); }
+    { (yyval.typeName) = new CTypeName(CTC_Value, CTM_Value, "f32", false); }
 
     break;
 
   case 161:
 
-    { (yyval.typeName) = new CTypeName(CTC_Value, CTM_Value, "i64", false, nullptr); }
+    { (yyval.typeName) = new CTypeName(CTC_Value, CTM_Value, "i64", false); }
 
     break;
 
   case 162:
 
-    { (yyval.typeName) = new CTypeName(CTC_Value, CTM_Value, "u64", false, nullptr); }
+    { (yyval.typeName) = new CTypeName(CTC_Value, CTM_Value, "u64", false); }
 
     break;
 
   case 163:
 
-    { (yyval.typeName) = new CTypeName(CTC_Value, CTM_Value, "f64", false, nullptr); }
+    { (yyval.typeName) = new CTypeName(CTC_Value, CTM_Value, "f64", false); }
 
     break;
 
   case 164:
 
-    { (yyval.typeName) = new CTypeName(CTC_Value, CTM_Value, "char", false, nullptr); }
+    { (yyval.typeName) = new CTypeName(CTC_Value, CTM_Value, "char", false); }
 
     break;
 
   case 165:
 
-    { (yyval.typeName) = new CTypeName(CTC_Value, CTM_Value, "bool", false, nullptr); }
+    { (yyval.typeName) = new CTypeName(CTC_Value, CTM_Value, "bool", false); }
 
     break;
 
   case 166:
 
-    { (yyval.typeName) = new CTypeName(CTC_Value, CTM_Value, "ptr", false, nullptr); }
+    { (yyval.typeName) = new CTypeName(CTC_Value, CTM_Value, "ptr", false); }
 
     break;
 

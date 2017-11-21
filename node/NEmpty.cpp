@@ -19,7 +19,7 @@ void CEmptyVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVa
 }
 
 
-NEmpty::NEmpty(CLoc& loc, shared_ptr<CTypeName> typeName_) : NVariableBase(NodeType_Empty, loc), typeName(typeName_) {
+NEmpty::NEmpty(CLoc loc, shared_ptr<CTypeName> typeName_) : NVariableBase(NodeType_Empty, loc), typeName(typeName_) {
     if (!typeName->isOption) {
         typeName->isOption = true;
         typeName->name = typeName->name + "?";

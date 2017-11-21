@@ -12,7 +12,7 @@ shared_ptr<CVar> NVariableBase::getVar(Compiler* compiler, CResult& result, shar
     return _var[key1][key2];
 }
 
-shared_ptr<CParentDotVar> CParentDotVar::create(CLoc& loc, Compiler *compiler, CResult &result, shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_) {
+shared_ptr<CParentDotVar> CParentDotVar::create(CLoc loc, Compiler *compiler, CResult &result, shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_) {
     auto c = make_shared<CParentDotVar>(loc, nullptr);
     c->parentFunction = parentFunction_;
     c->childVar = childVar_;
@@ -89,7 +89,7 @@ void CParentDotVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> d
     childVar->dump(compiler, result, dotVar, functions, ss, dotSS, level);
 }
 
-NVariable::NVariable(CLoc& loc, const char* name) : NVariableBase(NodeType_Variable, loc), name(name) { }
+NVariable::NVariable(CLoc loc, const char* name) : NVariableBase(NodeType_Variable, loc), name(name) { }
 
 shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
     auto cfunction = thisFunction;

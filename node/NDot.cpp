@@ -1,7 +1,7 @@
 #include "Node.h"
 #include <sstream>
 
-shared_ptr<CDotVar> CDotVar::create(CLoc& loc, shared_ptr<CBaseFunction> scope, shared_ptr<CVar> leftVar_, shared_ptr<CVar> rightVar_) {
+shared_ptr<CDotVar> CDotVar::create(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CVar> leftVar_, shared_ptr<CVar> rightVar_) {
     auto c = make_shared<CDotVar>(loc, scope);
     c->leftVar = leftVar_;
     c->rightVar = rightVar_;
