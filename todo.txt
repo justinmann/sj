@@ -1,4 +1,6 @@
+* creating two function is causing major problems
 * get all tests to pass
+* interface8
 
 * fix string add
 * make string immutable
