@@ -18,7 +18,7 @@ shared_ptr<CType> CIfElseVar::getType(Compiler* compiler, CResult& result) {
 
 void CIfElseVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     auto type = getType(compiler, result);
-    auto conditionTrValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "cond");
+    auto conditionTrValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "ifElse");
     condVar->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, conditionTrValue);
     if (!conditionTrValue->hasSetValue) {
         return;

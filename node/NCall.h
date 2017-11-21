@@ -45,8 +45,6 @@ public:
 
 private:
     shared_ptr<NCall> shared_from_this() { return static_pointer_cast<NCall>(NBase::shared_from_this()); };
-    
-    shared_ptr<CCallVar> _callVar;
 };
 
 #endif /* NCall_h */

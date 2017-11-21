@@ -9,7 +9,7 @@ shared_ptr<CType> CForIndexVar::getType(Compiler* compiler, CResult& result) {
 }
 
 void CForIndexVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    storeValue->setValue(compiler, result, trBlock, make_shared<TrValue>(nullptr, getType(compiler, result), name));
+    storeValue->retainValue(compiler, result, trBlock, make_shared<TrValue>(nullptr, getType(compiler, result), name));
 }
 
 void CForIndexVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
@@ -28,14 +28,14 @@ void CForLoopVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOut
     
     trBlock->createVariable(nullptr, compiler->typeI32, indexVar->name);
 
-    auto loopStartTrValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeI32, "loopStart");
+    auto loopStartTrValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeI32, "forStart");
     startVar->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, loopStartTrValue);
     
     stringstream loopCounterLine;
     loopCounterLine << indexVar->name << " = " << loopStartTrValue->name;
     trBlock->statements.push_back(loopCounterLine.str());
     
-    auto loopEndTrValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeI32, "loopEnd");
+    auto loopEndTrValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeI32, "forEnd");
     endVar->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, loopEndTrValue);
         
     auto trForBlock = make_shared<TrBlock>();

@@ -24,7 +24,7 @@ shared_ptr<CType> CGlobalPtrVar::getType(Compiler* compiler, CResult& result) {
 void CGlobalPtrVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     trOutput->strings[varName] = str;
     auto resultValue = make_shared<TrValue>(nullptr, compiler->typePtr, "(uintptr_t)" + varName);
-    storeValue->setValue(compiler, result, trBlock, resultValue);
+    storeValue->retainValue(compiler, result, trBlock, resultValue);
 }
 
 void CGlobalPtrVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
@@ -46,8 +46,7 @@ shared_ptr<CVar> NGlobalPtrVar::getVarImpl(Compiler* compiler, CResult& result, 
 }
 
 shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    assert(varName.size() == 0);
-    varName = TrBlock::nextVarName("sjg_string");
+    auto varName = TrBlock::nextVarName("sjg_string");
 
     auto createArray = make_shared<NCall>(
         loc,

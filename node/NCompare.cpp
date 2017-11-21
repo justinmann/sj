@@ -9,8 +9,8 @@ shared_ptr<CType> CCompareVar::getType(Compiler* compiler, CResult& result) {
 }
 
 void CCompareVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    auto leftValue = trBlock->createTempStoreVariable(loc, nullptr, leftVar->getType(compiler, result), "left");
-    auto rightValue = trBlock->createTempStoreVariable(loc, nullptr, leftVar->getType(compiler, result), "right");
+    auto leftValue = trBlock->createTempStoreVariable(loc, nullptr, leftVar->getType(compiler, result), "compare");
+    auto rightValue = trBlock->createTempStoreVariable(loc, nullptr, leftVar->getType(compiler, result), "compare");
     leftVar->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, leftValue);
     rightVar->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, rightValue);
 
@@ -42,7 +42,7 @@ void CCompareVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOut
     trBlock->statements.push_back(line.str());
 
     auto resultValue = make_shared<TrValue>(nullptr, compiler->typeBool, line.str());
-    storeValue->setValue(compiler, result, trBlock, resultValue);
+    storeValue->retainValue(compiler, result, trBlock, resultValue);
 }
 
 void CCompareVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

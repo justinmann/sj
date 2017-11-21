@@ -116,7 +116,10 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, CResult& result, shar
             cfunction = cfunction->parent.lock();
             while (cvar == nullptr && cfunction != nullptr) {
                 cvar = cfunction->getCVar(compiler, result, name);
-                parents.push_back(static_pointer_cast<CFunction>(cfunction));
+                if (cvar == nullptr) {
+                    parents.push_back(static_pointer_cast<CFunction>(cfunction));
+                    cfunction = cfunction->parent.lock();
+                }
             }
 
             if (cvar) {

@@ -35,7 +35,8 @@ public:
 class TrStoreValue {
 public:
     TrStoreValue(CLoc& loc, shared_ptr<CBaseFunction> scope, shared_ptr<CType> type, string name, AssignOp op, bool isFirstAssignment) : loc(loc), scope(scope), type(type), name(name), op(op), isFirstAssignment(isFirstAssignment), isReturnValue(false), hasSetValue(false) {}
-    void setValue(Compiler* compiler, CResult& result, TrBlock* block, shared_ptr<TrValue> rightValue);
+    void retainValue(Compiler* compiler, CResult& result, TrBlock* block, shared_ptr<TrValue> rightValue);
+    void takeOverValue(Compiler* compiler, CResult& result, TrBlock* block, shared_ptr<TrValue> rightValue);
     shared_ptr<TrValue> getValue();
 
     CLoc loc;

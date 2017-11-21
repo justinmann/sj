@@ -10,7 +10,7 @@ shared_ptr<CType> CConstantVar::getType(Compiler* compiler, CResult& result) {
 }
 
 void CConstantVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    storeValue->setValue(compiler, result, trBlock, make_shared<TrValue>(nullptr, type, value));
+    storeValue->retainValue(compiler, result, trBlock, make_shared<TrValue>(nullptr, type, value));
 }
 
 void CConstantVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

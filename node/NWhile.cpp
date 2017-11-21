@@ -9,7 +9,7 @@ shared_ptr<CType> CWhileVar::getType(Compiler* compiler, CResult& result) {
 }
 
 void CWhileVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    auto whileValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "whileValue");
+    auto whileValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "while");
     
     condVar->transpile(compiler, result,trOutput, trBlock, nullptr, thisValue, whileValue);
     stringstream whileLine;

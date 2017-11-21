@@ -283,11 +283,5 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, CResult& result, shared_p
         return nullptr;
     }
     
-    if (!_callVar) {
-        _callVar = CCallVar::create(compiler, result, loc, name, arguments, thisFunction, thisVar, dotVar, callee);
-        if (!_callVar) {
-            return nullptr;
-        }
-    }
-    return _callVar;
+    return CCallVar::create(compiler, result, loc, name, arguments, thisFunction, thisVar, dotVar, callee);
 }

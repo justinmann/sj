@@ -184,36 +184,11 @@ class Compiler
 {
 public:
     Compiler();
-
 	bool transpile(const string& fileName, ostream& stream, ostream& errorStream, ostream* debugStream);
-	shared_ptr<CResult> run(const string& code);
-    shared_ptr<CResult> compile(const string& fileName);
-    
-//    void emitLocation(IRBuilder<>* builder, const CLoc *loc);
     shared_ptr<CType> getType(const string& name) const;
     void includeFile(CResult& result, const string& fileName);
-//    shared_ptr<IRBuilder<>> getEntryBuilder(Function* function);
-    //Function* getAllocFunction();
-    //Function* getReallocFunction();
-    //Function* getFreeFunction();
-    //void callPushFunction(IRBuilder<>* builder, const string& name);
-    //void callPopFunction(IRBuilder<>* builder);
-    //void callDebug(IRBuilder<>* builder, const string& name, Value* valuePtr, Value* valueInt);
-    //void recordRetain(IRBuilder<>* builder, Value* value, const string& name);
-    //void recordRelease(IRBuilder<>* builder, Value* value, const string& name);
 
-    // llvm vars
-    CompilerState state;
-    //LLVMContext context;
-    //unique_ptr<Module> module;
-    //unique_ptr<legacy::FunctionPassManager> TheFPM;
-    //unique_ptr<Exception> exception;
-//#ifdef DWARF_ENABLED
-//    DICompileUnit *TheCU;
-//    vector<DIScope *> LexicalBlocks;
-//    unique_ptr<DIBuilder> DBuilder;
-//#endif
-    
+    CompilerState state;    
     shared_ptr<CType> typeI32;
     shared_ptr<CType> typeI64;
     shared_ptr<CType> typeU32;
@@ -233,27 +208,14 @@ public:
     shared_ptr<CType> typeF64Option;
     shared_ptr<CType> typeBoolOption;
     shared_ptr<CType> typeCharOption;
+    map<string, shared_ptr<CTypes>> types;
 
 private:
     void reset();
     shared_ptr<CResult> genNodeFile(const string& fileName);
-    shared_ptr<CResult> genNode(const string& fileName, const string& code);
-    shared_ptr<CFunction> nodeToIL(CResult& result);
-    
+    shared_ptr<CResult> genNode(const string& fileName, const string& code);    
     map<string, bool> includedBlockFileNames;
     vector<pair<string, shared_ptr<NBlock>>> includedBlocks;
-    //map<string, GlobalValue*> functionNames;
-    //map<Function*, shared_ptr<IRBuilder<>>> entryBuilders;
-    //Function* allocFunction;
-    //Function* reallocFunction;
-    //Function* freeFunction;
-    //Function* debugFunction;
-#ifdef DEBUG_CALLSTACK
-    Function* pushFunction;
-    Function* popFunction;
-    Function* recordRetainFunction;
-    Function* recordReleaseFunction;
-#endif
 };
 
 #endif /* Compiler_h */

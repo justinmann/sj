@@ -1,0 +1,15 @@
+class ##foo ()'heap class {
+  this
+}
+
+
+
+global()'void {
+  a'heap #foo : class(this = class()) as heap #foo
+  c'heap bar : test(
+    parent: a,
+    'i32 : interfaceArg
+  )
+  void
+}
+

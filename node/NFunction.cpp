@@ -302,7 +302,7 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
 
             for (auto argVar : argVars) {
                 auto argType = argVar->getType(compiler, result);
-                TrStoreValue(argVar->loc, shared_from_this(), argType, "_this->" + argVar->name, ASSIGN_ImmutableCopy, true).setValue(compiler, result, trCopyBlock.get(), make_shared<TrValue>(shared_from_this(), argType, "to->" + argVar->name));
+                TrStoreValue(argVar->loc, shared_from_this(), argType, "_this->" + argVar->name, ASSIGN_ImmutableCopy, true).retainValue(compiler, result, trCopyBlock.get(), make_shared<TrValue>(shared_from_this(), argType, "to->" + argVar->name));
             }
 
             if (_copyBlock) {
@@ -337,26 +337,13 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
             }
         }
 
-        // TODO: all of the typemods are wrong for interfaces
         // Create interfaces
         if (interfaces != nullptr) {
             for (auto interfaceVal : *interfaces) {
                 interfaceVal->transpileDefinition(compiler, result, trOutput);
 
-                for (auto interfaceMethod : interfaceVal->methods) {
-                    auto functionStack = static_pointer_cast<CFunction>(getCFunction(compiler, result, interfaceMethod->name, nullptr, nullptr, CTM_Stack));
-                    if (functionStack) {
-                        functionStack->transpileDefinition(compiler, result, trOutput);
-                    }
-
-                    auto functionHeap = static_pointer_cast<CFunction>(getCFunction(compiler, result, interfaceMethod->name, nullptr, nullptr, CTM_Heap));
-                    if (functionHeap) {
-                        functionHeap->transpileDefinition(compiler, result, trOutput);
-                    }
-                }
-
                 // Create explict cast
-                auto castFunctionName = interfaceVal->getCCastFunctionName(_returnMode, shared_from_this());
+                auto castFunctionName = interfaceVal->getCCastFunctionName(shared_from_this());
                 auto functionBody = trOutput->functions.find(castFunctionName);
                 if (functionBody == trOutput->functions.end()) {
                     auto trFunctionBlock = make_shared<TrBlock>();
@@ -365,39 +352,34 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
                     trOutput->functions[castFunctionName] = trFunctionBlock;
 
                     string structName = getCStructName(thisVar->getTypeMode());
-                    auto interfaceType = interfaceVal->getThisTypes(compiler, result)->heapValueType;
+                    auto interfaceType = interfaceVal->getThisTypes(compiler, result)->localValueType;
                     stringstream functionDefinition;
-                    functionDefinition << interfaceType->cname << " " << castFunctionName << "(" << structName << "* _this" << ")";
+                    functionDefinition << interfaceType->cname << " " << castFunctionName << "(" << structName << "* _this)";
                     trFunctionBlock->definition = functionDefinition.str();
-
-                    stringstream allocStream;
-                    string interfaceStructName = interfaceType->parent.lock()->getCStructName(interfaceType->typeMode);
-                    allocStream << interfaceType->cname << " _interface = (" << interfaceType->cname << ")malloc(sizeof(" << interfaceStructName << "))";
-                    trFunctionBlock->statements.push_back(allocStream.str());
-
-                    trFunctionBlock->statements.push_back(string("_interface->_refCount = 1"));
+                    auto interfaceValue = make_shared<TrValue>(shared_from_this(), interfaceVal->getThisTypes(compiler, result)->heapValueType, "_interface");
+                    trFunctionBlock->statements.push_back(interfaceValue->type->cname + " _interface");
+                    interfaceValue->addInitToStatements(trFunctionBlock.get());
                     trFunctionBlock->statements.push_back(string("_interface->_parent = (sjs_object*)_this"));
                     trFunctionBlock->statements.push_back(string("_interface->_parent->_refCount++"));
                     trFunctionBlock->statements.push_back(string("_interface->destroy = (void(*)(void*))" + getCDestroyFunctionName()));
                     trFunctionBlock->statements.push_back(string("_interface->asInterface = (sjs_object*(*)(sjs_object*,int))" + getCAsInterfaceFunctionName()));
 
                     for (auto interfaceMethod : interfaceVal->methods) {
-                        auto functionStack = static_pointer_cast<CFunction>(getCFunction(compiler, result, interfaceMethod->name, nullptr, nullptr, CTM_Stack));
-                        if (functionStack) {
-                            stringstream initStream;
-                            initStream << "_interface->" << interfaceMethod->name << " = (" << interfaceMethod->getCTypeName(compiler, result, false) << ")" << functionStack->getCInitFunctionName();
-                            trFunctionBlock->statements.push_back(initStream.str());
-                        }
+                        auto implementation = static_pointer_cast<CFunction>(getCFunction(compiler, result, interfaceMethod->name, nullptr, nullptr, interfaceMethod->returnMode));
+                        if (implementation) {
+                            implementation->transpileDefinition(compiler, result, trOutput);
 
-                        auto functionHeap = static_pointer_cast<CFunction>(getCFunction(compiler, result, interfaceMethod->name, nullptr, nullptr, CTM_Stack));
-                        if (functionHeap) {
                             stringstream initStream;
-                            initStream << "_interface->" << interfaceMethod->name << " = (" << interfaceMethod->getCTypeName(compiler, result, false) << ")" << functionHeap->getCInitFunctionName();
+                            initStream << "_interface->" << interfaceMethod->name;
+                            if (interfaceMethod->returnMode == CTM_Heap) {
+                                initStream << "_heap";
+                            }
+                            initStream << " = (" << interfaceMethod->getCTypeName(compiler, result, false) << ")" << implementation->getCInitFunctionName();
                             trFunctionBlock->statements.push_back(initStream.str());
                         }
                     }
 
-                    trFunctionBlock->statements.push_back(string("return _interface"));
+                    trFunctionBlock->returnLine = "_interface";
                 }
             }
 
@@ -417,10 +399,12 @@ void CFunction::transpileDefinition(Compiler* compiler, CResult& result, TrOutpu
                 auto switchBlock = make_shared<TrBlock>();
                 trFunctionBlock->statements.push_back(TrStatement("switch (typeId)", switchBlock));
                 for (auto interfaceVal : *interfaces) {
-                    switchBlock->statements.push_back(string("case ") + interfaceVal->getCTypeIdName() + ": return (sjs_object*)" + interfaceVal->getCCastFunctionName(_returnMode, shared_from_this()) +"(_this)");
+                    auto caseBlock = make_shared<TrBlock>();
+                    caseBlock->statements.push_back(string("return (sjs_object*)") + interfaceVal->getCCastFunctionName(shared_from_this()) + "(_this)");
+                    switchBlock->statements.push_back(TrStatement(string("case ") + interfaceVal->getCTypeIdName() + ": ", caseBlock));
                 }
 
-                trFunctionBlock->statements.push_back(string("return 0"));
+                trFunctionBlock->returnLine = "0";
             }
         }
     }
@@ -475,7 +459,7 @@ void CFunction::transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseF
                 assert(result.errors.size() > 0);
                 return;
             }
-            auto argStoreValue = trBlock->createTempStoreVariable(loc, thisFunction, argType->typeMode == CTM_Heap ? argType : argType->getLocalValueType(), "param");
+            auto argStoreValue = trBlock->createTempStoreVariable(loc, thisFunction, argType->typeMode == CTM_Heap ? argType : argType->getLocalValueType(), "functionParam");
             parameterVar->transpile(compiler, result, trOutput, trBlock, nullptr, isDefaultAssignment ? nullptr : thisValue, argStoreValue);
 
             if (!argStoreValue->hasSetValue) {
@@ -681,7 +665,7 @@ void CFunction::dumpBody(Compiler* compiler, CResult& result, map<shared_ptr<CBa
 }
 
 shared_ptr<CThisVar> CFunction::getThisVar(Compiler* compiler, CResult& result) {
-    if (_hasInitializedInterfaces) {
+    if (!_hasInitializedInterfaces) {
         _hasInitializedInterfaces = true;
         if (interfaces) {
             // Make all functions used by an interface are defined
@@ -785,7 +769,7 @@ shared_ptr<vector<shared_ptr<CVar>>> CFunction::getArgVars(Compiler* compiler, C
 
 shared_ptr<CTypes> CFunction::getThisTypes(Compiler* compiler, CResult& result) {
     if (!_thisTypes) {
-        _thisTypes = CType::create(name.c_str(), shared_from_this());
+        _thisTypes = CType::create(compiler, name.c_str(), shared_from_this());
     }
     return _thisTypes;
 }
@@ -1029,22 +1013,7 @@ shared_ptr<CType> CFunction::getVarType(CLoc& loc, Compiler* compiler, CResult& 
         auto interface = getCInterface(compiler, result, nameWithoutQuestion, nullptr, typeName->templateTypeNames, typeName->typeMode);
         if (interface) {
             auto thisTypes = interface->getThisTypes(compiler, result);
-            switch (typeMode) {
-                case CTM_Heap:
-                    return typeName->isOption ? thisTypes->heapOptionType : thisTypes->heapValueType;
-                case CTM_Stack:
-                    if (typeName->isOption) {
-                        result.addError(loc, CErrorCode::InvalidType, "option type cannot be stack, stack x? is invalid use heap x?");
-                        return nullptr;
-                    }
-                    else {
-                        return thisTypes->stackValueType;
-                    }
-                case CTM_Local:
-                    return typeName->isOption ? thisTypes->localOptionType : thisTypes->localValueType;
-                default:
-                    return typeName->isOption ? thisTypes->heapOptionType : thisTypes->stackValueType;
-            }
+            return typeName->isOption ? thisTypes->heapOptionType : thisTypes->heapValueType;
         }
     } else {
         assert(typeName->category == CTC_Value);
@@ -1166,7 +1135,23 @@ shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CResu
                             result.addError(loc, CErrorCode::InterfaceMethodConflict, "two interfaces on this class want to use method: '%s'", name.c_str());
                             return nullptr;
                         }
-                        interfaceMethod = t->second;
+
+                        if (returnMode == CTM_Heap) {
+                            if (t->second[CTM_Heap] != nullptr) {
+                                interfaceMethod = t->second[CTM_Heap];
+                            }
+                            else {
+                                interfaceMethod = t->second[CTM_Stack];
+                            }
+                        }
+                        else {
+                            if (t->second[CTM_Stack] != nullptr) {
+                                interfaceMethod = t->second[CTM_Stack];
+                            }
+                            else {
+                                interfaceMethod = t->second[CTM_Heap];
+                            }
+                        }
                     }
                 }
             }

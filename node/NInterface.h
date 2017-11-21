@@ -39,10 +39,10 @@ public:
 class CInterface : public CBaseFunction, public enable_shared_from_this<CInterface> {
 public:
     vector<shared_ptr<CInterfaceMethod>> methods;
-    map<string, shared_ptr<CInterfaceMethod>> methodByName;
+    map<string, map<CTypeMode, shared_ptr<CInterfaceMethod>>> methodByName;
     map<string, shared_ptr<CType>> templateTypesByName;
     
-    CInterface(CLoc& loc, weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent, CTypeMode returnMode);
+    CInterface(CLoc& loc, weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent);
     shared_ptr<CInterface> init(Compiler* compiler, CResult& result, shared_ptr<NInterface> node, vector<shared_ptr<CType>>& templateTypes);
     string fullName(bool includeTemplateTypes);
     
@@ -59,7 +59,7 @@ public:
     string getCInitFunctionName();
     string getCCopyFunctionName();
     string getCDestroyFunctionName();
-    string getCCastFunctionName(CTypeMode toTypeMode, shared_ptr<CBaseFunction> fromFunction);
+    string getCCastFunctionName(shared_ptr<CBaseFunction> fromFunction);
     string getCBaseName(CTypeMode typeMode);
     string getCStructName(CTypeMode typeMode);
     string getCTypeIdName();
@@ -73,7 +73,6 @@ public:
 private:
     CLoc loc;
     shared_ptr<CTypes> thisTypes;
-    CTypeMode _returnMode;
 };
 
 class CInterfaceDefinition : public CBaseFunctionDefinition, public enable_shared_from_this<CInterfaceDefinition> {

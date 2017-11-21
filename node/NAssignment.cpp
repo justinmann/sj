@@ -20,7 +20,7 @@ void CAssignVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutp
         return;
     }
     
-    storeValue->setValue(compiler, result, trBlock, leftStoreValue->getValue());
+    storeValue->retainValue(compiler, result, trBlock, leftStoreValue->getValue());
 }
 
 void CAssignVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

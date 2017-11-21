@@ -19,7 +19,7 @@ shared_ptr<CType> CThisVar::getType(Compiler* compiler, CResult& result) {
 }
 
 void CThisVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    storeValue->setValue(compiler, result, trBlock, make_shared<TrValue>(nullptr, getType(compiler, result), "_this"));
+    storeValue->retainValue(compiler, result, trBlock, make_shared<TrValue>(nullptr, getType(compiler, result), "_this"));
 }
 
 void CThisVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

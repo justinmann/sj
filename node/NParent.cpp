@@ -18,7 +18,7 @@ void CParentVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutp
         return;
     }
 
-    storeValue->setValue(compiler, result, trBlock, make_shared<TrValue>(nullptr, parentTypes->localValueType, "_parent"));
+    storeValue->retainValue(compiler, result, trBlock, make_shared<TrValue>(nullptr, parentTypes->localValueType, "_parent"));
 }
 
 void CParentVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

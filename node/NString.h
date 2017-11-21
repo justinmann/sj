@@ -17,7 +17,6 @@ public:
 
 private:
     string str;
-    string varName;
 };
 
 #endif /* NString_h */
