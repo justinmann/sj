@@ -70,60 +70,47 @@ struct td_sjs_object {
 
 
 int main() {
-    int32_t ifResult1;
+    bool sjt_ifElse1;
 
-    if (false) {
-        ifResult1 = 1;
+    sjt_ifElse1 = false;
+    if (sjt_ifElse1) {
     } else {
-        int32_t ifResult2;
+        bool sjt_ifElse2;
 
-        if (false) {
-            ifResult2 = 2;
+        sjt_ifElse2 = false;
+        if (sjt_ifElse2) {
         } else {
-            int32_t ifResult3;
+            bool sjt_ifElse3;
 
-            if (false) {
-                ifResult3 = 2;
+            sjt_ifElse3 = false;
+            if (sjt_ifElse3) {
             } else {
-                int32_t ifResult4;
+                bool sjt_ifElse4;
 
-                if (false) {
-                    ifResult4 = 2;
+                sjt_ifElse4 = false;
+                if (sjt_ifElse4) {
                 } else {
-                    int32_t ifResult5;
+                    bool sjt_ifElse5;
 
-                    if (false) {
-                        ifResult5 = 2;
+                    sjt_ifElse5 = false;
+                    if (sjt_ifElse5) {
                     } else {
-                        int32_t ifResult6;
+                        bool sjt_ifElse6;
 
-                        if (false) {
-                            ifResult6 = 2;
+                        sjt_ifElse6 = false;
+                        if (sjt_ifElse6) {
                         } else {
-                            int32_t ifResult7;
+                            bool sjt_ifElse7;
 
-                            if (false) {
-                                ifResult7 = 2;
+                            sjt_ifElse7 = false;
+                            if (sjt_ifElse7) {
                             } else {
-                                ifResult7 = 3;
                             }
-
-                            ifResult6 = ifResult7;
                         }
-
-                        ifResult5 = ifResult6;
                     }
-
-                    ifResult4 = ifResult5;
                 }
-
-                ifResult3 = ifResult4;
             }
-
-            ifResult2 = ifResult3;
         }
-
-        ifResult1 = ifResult2;
     }
     return 0;
 }

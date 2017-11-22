@@ -70,12 +70,11 @@ struct td_sjs_object {
 
 
 int main() {
-    int32_t ifResult1;
+    bool sjt_ifElse1;
 
-    if (true) {
-        ifResult1 = 1;
+    sjt_ifElse1 = true;
+    if (sjt_ifElse1) {
     } else {
-        ifResult1 = 2;
     }
     return 0;
 }

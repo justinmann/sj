@@ -1,9 +1,4 @@
 global()'void {
-  if false {
-    1i
-  } else {
-    1.0d
-  }
   void
 }
 
