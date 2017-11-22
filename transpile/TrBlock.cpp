@@ -115,9 +115,13 @@ shared_ptr<TrValue> TrBlock::getVariable(string name) {
 }
 
 shared_ptr<TrValue> TrBlock::createVariable(shared_ptr<CScope> scope, shared_ptr<CType> type, string name) {
-    assert(getVariable(name) == nullptr);
-    auto var = make_shared<TrValue>(scope, type, name);
-    variables[name] = var;
+    auto var = getVariable(name);
+    if (var) {
+        assert(var->type == type);
+    } else {
+        var = make_shared<TrValue>(scope, type, name);
+        variables[name] = var;
+    }
     return var;
 }
 

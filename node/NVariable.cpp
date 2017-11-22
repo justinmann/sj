@@ -110,7 +110,7 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
             parents.push_back(static_pointer_cast<CFunction>(varScope->function));
             auto parent = varScope->function->parent.lock();
             while (cvar == nullptr && parent != nullptr) {
-                cvar = parent->getCVar(compiler, name, CTM_Heap);
+                cvar = parent->getCVar(compiler, name, CTM_Undefined);
                 if (cvar == nullptr) {
                     parents.push_back(varScope->function);
                     parent = parent->parent.lock();

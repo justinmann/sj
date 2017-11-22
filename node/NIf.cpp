@@ -100,8 +100,16 @@ shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, s
     }
 
     auto ifType = ifVar->getType(compiler);
+    if (!ifType) {
+        return nullptr;
+    }
+    
     if (elseVar) {
         auto elseType = elseVar->getType(compiler);
+        if (!elseType) {
+            return nullptr;
+        }
+
         if (ifType != elseType) {
             compiler->addError(loc, CErrorCode::TypeMismatch, "if block return type '%s' does not match else block return type '%s'", ifType->name.c_str(), elseType->name.c_str());
             return nullptr;

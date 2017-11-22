@@ -1,7 +1,7 @@
 #include "Node.h"
 
 void CBaseFunction::setHasThis() {
-    assert(name != "global");
+    // TODO: assert(name != "global");
     hasThis = true;
 }
 

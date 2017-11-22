@@ -33,15 +33,11 @@ public:
     bool isOption;
 
     CTypeName(CTypeCategory category, CTypeMode typeMode, const string& name, bool isOption) : category(category), mutability(CTI_Undefined), typeMode(typeMode), name(name), isOption(isOption) {
-        assert((category == CTC_Interface) == (name[0] == '#')); 
-        assert(name[1] != '#'); 
         assert(category != CTC_Function);
         assert(!isOption || name.back() == '?');
     }
 
     CTypeName(CTypeCategory category, CTypeMode typeMode, const string& name, shared_ptr<CTypeNameList> templateTypeNames, bool isOption) : category(category), mutability(CTI_Undefined), typeMode(typeMode), name(name), templateTypeNames(templateTypeNames), isOption(isOption) {
-        assert((category == CTC_Interface) == (name[0] == '#')); 
-        assert(name[1] != '#'); 
         assert(category != CTC_Function);
         assert(!isOption || name.back() == '?');
     }

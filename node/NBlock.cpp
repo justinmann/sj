@@ -1,5 +1,11 @@
 #include "Node.h"
 
+CBlockVar::CBlockVar(CLoc loc, shared_ptr<CScope> scope, vector<shared_ptr<CVar>> statements) : CVar(loc, scope, "", false), statements(statements) {
+    for (auto it : statements) {
+        assert(it != nullptr);
+    }
+}
+
 bool CBlockVar::getReturnThis() {
     return statements.back()->getReturnThis();
 }

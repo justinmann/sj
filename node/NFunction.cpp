@@ -295,7 +295,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                             ss << argType.second->cname;
                         }
                         else {
-                            assert(false);
+                            compiler->addError(loc, CErrorCode::InvalidType, "var '%s' is local which is not allowed", argType.first.c_str());
                         }
                         ss << " " << argType.first;
                         trOutput->structs[heapStructName].push_back(ss.str());
@@ -440,7 +440,11 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
 
     assert(compiler->state == CompilerState::Compile);
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
-    assert(!_data[returnMode].isInvalid);
+    
+    if (_data[returnMode].isInvalid) {
+        compiler->addError(loc, CErrorCode::TypeMismatch, "funnction '%s' cannot return '%s'", name.c_str(), returnMode == CTM_Heap ? "heap" : "stack");
+        return;
+    }
     
     auto returnType = getReturnType(compiler, returnMode);
     if (!returnType) {
@@ -539,7 +543,9 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
             stringstream parentLine;
             if (!parentValue) {
                 if (parent.lock() == callerScope->function) {
-                    parentLine << calleeThisValue->getDotName("_parent") << " = " << thisValue->getDotName("_parent");
+                    if (thisValue != nullptr) {
+                        parentLine << calleeThisValue->getDotName("_parent") << " = " << thisValue->getDotName("_parent");
+                    }
                 }
                 else if (parent.lock() == callerScope->function->parent.lock()) {
                     parentLine << calleeThisValue->getDotName("_parent") << " = ";
@@ -763,7 +769,6 @@ shared_ptr<CThisVar> CFunction::getThisVar(Compiler* compiler, CTypeMode returnM
 
 shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CTypeMode returnMode) {
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
-    assert(!_data[returnMode].isInvalid);
 
     if (_isInGetType) {
         compiler->addError(loc, CErrorCode::TypeLoop, "while trying to determine type a cycle was detected");
@@ -924,8 +929,6 @@ shared_ptr<CBaseFunction> CFunction::getCFunction(Compiler* compiler, const stri
 }
 
 shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames) {
-    assert(name[0] == '#');
-
     if (name.find('.') != string::npos) {
         vector<string> names;
         istringstream f(name.substr(1, name.size() - 1));
@@ -958,7 +961,6 @@ shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, const string
         auto def = static_pointer_cast<CFunctionDefinition>(definition.lock());
         auto interfaceDef = def->getDefinedInterfaceDefinition(name);
         if (!interfaceDef) {
-            assert(false);
             return nullptr;
         }
         
@@ -974,19 +976,35 @@ shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, const string
 }
 
 shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, const string& name, CTypeMode returnMode) {
-    assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
-    assert(!_data[returnMode].isInvalid);
+    if (returnMode == CTM_Undefined) {
+        if (!_data[CTM_Stack].isInvalid) {
+            auto result = getCVar(compiler, name, CTM_Stack);
+            if (result) {
+                return result;
+            }
+        }
 
-    auto t1 = _data[returnMode].localVarsByName.find(name);
-    if (t1 != _data[returnMode].localVarsByName.end()) {
-        return t1->second;
+        if (!_data[CTM_Heap].isInvalid) {
+            auto result = getCVar(compiler, name, CTM_Heap);
+            if (result) {
+                return result;
+            }
+        }
     }
-    
-    auto t2 = _data[returnMode].thisArgVarsByName.find(name);
-    if (t2 != _data[returnMode].thisArgVarsByName.end()) {
-        return t2->second.second;
+    else {
+        assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
+        assert(!_data[returnMode].isInvalid);
+
+        auto t1 = _data[returnMode].localVarsByName.find(name);
+        if (t1 != _data[returnMode].localVarsByName.end()) {
+            return t1->second;
+        }
+        
+        auto t2 = _data[returnMode].thisArgVarsByName.find(name);
+        if (t2 != _data[returnMode].thisArgVarsByName.end()) {
+            return t2->second.second;
+        }
     }
-    
     return nullptr;
 }
 

@@ -3,6 +3,10 @@
 shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CLoc loc_, const string& name_, shared_ptr<NodeList> arguments_, shared_ptr<CScope> scope, weak_ptr<CVar> dotVar_, shared_ptr<CBaseFunction> callee_, CTypeMode returnMode) {
     assert(callee_);
 
+    if (returnMode == CTM_Undefined || returnMode == CTM_Value || returnMode == CTM_Local) {
+        returnMode = CTM_Stack;
+    }
+    
     auto c = make_shared<CCallVar>(loc_, scope, returnMode);
     c->arguments = arguments_;
     c->scope = scope;
@@ -280,9 +284,5 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
         return nullptr;
     }
 
-    if (returnMode == CTM_Undefined) {
-        returnMode = CTM_Stack;
-    }
-    
     return CCallVar::create(compiler, loc, name, arguments, scope, dotVar, callee, returnMode);
 }

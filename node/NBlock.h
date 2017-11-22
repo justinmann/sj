@@ -13,7 +13,7 @@
 
 class CBlockVar : public CVar {
 public:
-    CBlockVar(CLoc loc, shared_ptr<CScope> scope, vector<shared_ptr<CVar>> statements) : CVar(loc, scope, "", false), statements(statements) { }
+    CBlockVar(CLoc loc, shared_ptr<CScope> scope, vector<shared_ptr<CVar>> statements);
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);

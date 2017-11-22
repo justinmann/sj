@@ -11,10 +11,11 @@ shared_ptr<CType> CCastVar::getType(Compiler* compiler) {
 void CCastVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     auto rightStoreValue = trBlock->createTempStoreVariable(loc, scope.lock(), var->getType(compiler), "cast");
     var->transpile(compiler, trOutput, trBlock, nullptr, thisValue, rightStoreValue);
-    auto rightValue = rightStoreValue->getValue();
-    if (!rightValue) {
+    if (!rightStoreValue->hasSetValue) {
         return;
     }
+
+    auto rightValue = rightStoreValue->getValue();
     
     if (!typeTo->isOption) {
         if (rightValue->type->isOption) {

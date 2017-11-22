@@ -59,7 +59,6 @@ shared_ptr<TrStoreValue> CNormalVar::getStoreValue(Compiler* compiler, TrOutput*
     }
     else {
         if (!trBlock->getVariable(name)) {
-            assert(isFirstAssignment == true);
             trBlock->createVariable(scope.lock(), type, name);
         }
         else if (!isMutable) {

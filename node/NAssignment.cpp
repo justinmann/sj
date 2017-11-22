@@ -13,6 +13,9 @@ void CAssignVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
    
     auto leftType = leftVar->getType(compiler);
     auto leftStoreValue = leftVar->getStoreValue(compiler, trOutput, trBlock, nullptr, thisValue, op, isFirstAssignment);
+    if (!leftStoreValue) {
+        return;
+    }
 
     rightVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, leftStoreValue);
     if (!leftStoreValue->hasSetValue) {
@@ -101,6 +104,10 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
         auto isFirstAssignment = false;
         shared_ptr<CVar> leftVar;
         if (var) {
+            leftVar = var->getVar(compiler, scope, nullptr, CTM_Undefined);
+            if (!leftVar) {
+                return nullptr;
+            }
             leftVar = CDotVar::create(loc, leftVar->scope.lock(), parentVar, leftVar);
         }
         else {
