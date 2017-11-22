@@ -11,4 +11,4 @@ class #foo (
 ) { this }
 
 a: class() as #foo
-a.test()
+bob'heap string : a.test()

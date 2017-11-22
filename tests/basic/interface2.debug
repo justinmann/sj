@@ -1,20 +1,13 @@
-class ##foo ()'class {
+class ##foo ()'heap class {
   this
 }
 
-class_test()'i32 {
-  5i
-}
 
-test()
 
 global()'void {
-  #foo(
-    test()'i32
-  )
-  [heap]a'#foo : [stack]class([stack]this : class()) as #foo
-  [heap]test(
-    parent: [heap]a
+  a'heap #foo : class(this = class()) as heap #foo
+  test(
+    parent: a
   )
   void
 }

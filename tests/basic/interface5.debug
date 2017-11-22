@@ -1,33 +1,19 @@
-class!i32 ##bar, ##foo!item ()'class_i32 {
+class!i32 ##bar, ##foo!item ()'heap class_i32 {
   this
 }
 
-class_test1()'i32 {
-  1i
-}
 
-class_test2()'i32 {
-  2i
-}
 
-test1()
 
-test2()
 
 global()'void {
-  #foo!item(
-    test1()'item
+  a'heap #foo : class!i32(this = class!i32()) as heap #foo
+  test1(
+    parent: a
   )
-  #bar(
-    test2()'i32
-  )
-  [heap]a'#foo : [stack]class!i32([stack]this : class!i32()) as #foo!i32
-  [heap]test1(
-    parent: [heap]a
-  )
-  [heap]b'#bar? : a as #bar?
-  if isEmpty(b) empty'i32? else value([heap]test2(
-    parent: [heap]getValue(b)
+  b'heap #bar? : a as heap #bar?
+  if isEmpty(b) empty'i32? else value(test2(
+    parent: getValue(b)
   ))
   void
 }

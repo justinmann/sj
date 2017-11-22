@@ -11,5 +11,5 @@ class #foo (
 ) { this }
 
 a: class() as #foo
-// b : a.test(1)
+b : a.test(1)
 c'heap bar : a.test(1)

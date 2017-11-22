@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -60,76 +59,112 @@ struct td_double_option {
 };
 const double_option double_empty = { true };
 
-#define sji_foo_typeId 1
+#define sjs_object_typeId 1
 #define sjs_class_typeId 2
-#define sjs_object_typeId 3
+#define sji_foo_typeId 3
+#define sjs_class_heap_typeId 4
 
-typedef struct td_sji_foo sji_foo;
-typedef struct td_sjs_class sjs_class;
 typedef struct td_sjs_object sjs_object;
-
-struct td_sji_foo {
-    int _refCount;
-    sjs_object* _parent;
-    void (*destroy)(sjs_object* _this);
-    sjs_object* (*asInterface)(sjs_object* _this, int typeId);
-    void (*test)(sjs_object* _parent, int32_t* _return);
-};
-
-struct td_sjs_class {
-    int _refCount;
-};
+typedef struct td_sjs_class sjs_class;
+typedef struct td_sji_foo sji_foo;
+typedef struct td_sjs_class_heap sjs_class_heap;
 
 struct td_sjs_object {
     int _refCount;
 };
 
-void sjf_class(sjs_class* _this, sjs_class** _return);
+struct td_sjs_class {
+    int structsNeedAValue;
+};
+
+struct td_sji_foo {
+    int _refCount;
+    sjs_object* _parent;
+    void (*destroy)(void* _this);
+    sjs_object* (*asInterface)(sjs_object* _this, int typeId);
+    void (*test)(void* _parent, int32_t* _return);
+};
+
+struct td_sjs_class_heap {
+    int _refCount;
+};
+
+void sjf_class(sjs_class* _this);
 sjs_object* sjf_class_asInterface(sjs_class* _this, int typeId);
 sji_foo* sjf_class_as_sji_foo(sjs_class* _this);
+void sjf_class_copy(sjs_class* _this, sjs_class* to);
 void sjf_class_destroy(sjs_class* _this);
+void sjf_class_heap(sjs_class_heap* _this);
+sjs_object* sjf_class_heap_asInterface(sjs_class_heap* _this, int typeId);
+sji_foo* sjf_class_heap_as_sji_foo(sjs_class_heap* _this);
 void sjf_class_test(sjs_class* _parent, int32_t* _return);
 void sji_foo_destroy(sji_foo* _this);
 
-sjs_class sjd_temp1;
 
-void sjf_class(sjs_class* _this, sjs_class** _return) {
-    _this->_refCount++;
-    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_class(sjs_class* _this, sjs_class** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
-
-    *_return = _this;
+void sjf_class(sjs_class* _this) {
 }
 
 sjs_object* sjf_class_asInterface(sjs_class* _this, int typeId) {
     switch (typeId) {
-        case sji_foo_typeId: return (sjs_object*)sjf_class_as_sji_foo(_this);
+        case sji_foo_typeId:  {
+            return (sjs_object*)sjf_class_as_sji_foo(_this);
+        }
     }
 
     return 0;
 }
 
 sji_foo* sjf_class_as_sji_foo(sjs_class* _this) {
-    sji_foo* _interface = (sji_foo*)malloc(sizeof(sji_foo));
+    sji_foo* _interface;
+    _interface = (sji_foo*)malloc(sizeof(sji_foo));
     _interface->_refCount = 1;
     _interface->_parent = (sjs_object*)_this;
     _interface->_parent->_refCount++;
-    _interface->destroy = (void(*)(sjs_object*))sjf_class_destroy;
+    _interface->destroy = (void(*)(void*))sjf_class_destroy;
     _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_class_asInterface;
-    _interface->test = (void(*)(sjs_object*, int32_t*))sjf_class_test;
+    _interface->test = (void(*)(void*, int32_t*))sjf_class_test;
+
     return _interface;
+}
+
+void sjf_class_copy(sjs_class* _this, sjs_class* to) {
 }
 
 void sjf_class_destroy(sjs_class* _this) {
 }
 
-void sjf_class_test(sjs_class* _parent, int32_t* _return) {
+void sjf_class_heap(sjs_class_heap* _this) {
+}
 
-    *_return = 5;
+sjs_object* sjf_class_heap_asInterface(sjs_class_heap* _this, int typeId) {
+    switch (typeId) {
+        case sji_foo_typeId:  {
+            return (sjs_object*)sjf_class_heap_as_sji_foo(_this);
+        }
+    }
+
+    return 0;
+}
+
+sji_foo* sjf_class_heap_as_sji_foo(sjs_class_heap* _this) {
+    sji_foo* _interface;
+    _interface = (sji_foo*)malloc(sizeof(sji_foo));
+    _interface->_refCount = 1;
+    _interface->_parent = (sjs_object*)_this;
+    _interface->_parent->_refCount++;
+    _interface->destroy = (void(*)(void*))sjf_class_destroy;
+    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_class_heap_asInterface;
+    _interface->test = (void(*)(void*, int32_t*))sjf_class_test;
+
+    return _interface;
+}
+
+void sjf_class_test(sjs_class* _parent, int32_t* _return) {
+    (*_return) = 5;
 }
 
 void sji_foo_destroy(sji_foo* _this) {
     _this->_parent->_refCount--;
-    printf("RELEASE\tvoid sji_foo_destroy(sji_foo* _this)\t%0x\tvoid sji_foo_destroy(sji_foo* _this)\t%d\n", (uintptr_t)_this->_parent, _this->_parent->_refCount);;
     if (_this->_parent->_refCount <= 0) {
         _this->destroy(_this->_parent);
         free(_this->_parent);
@@ -138,33 +173,24 @@ void sji_foo_destroy(sji_foo* _this) {
 
 int main() {
     sji_foo* a;
-    sji_foo* result1;
-    int32_t result2;
-    sjs_class* sjv_temp1;
+    sjs_class_heap* sjt_cast1;
+    sji_foo* sjt_dot1;
+    int32_t void1;
 
-    sjv_temp1 = &sjd_temp1;
-    sjv_temp1->_refCount = 1;
-    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
-    sjf_class(sjv_temp1, &sjv_temp1);
-    result1 = sjf_class_as_sji_foo(sjv_temp1);
-    a = result1;
-    a->_refCount++;
-    printf("RETAIN\tsji_foo*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)a, a->_refCount);;
-    result1->_refCount--;
-    printf("RELEASE\tsji_foo*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result1, result1->_refCount);;
-    if (result1->_refCount <= 0) {
-        sji_foo_destroy(result1);
-        free(result1);
-    }
-
-    a->test(a->_parent, &result2);
+    sjt_cast1 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
+    sjt_cast1->_refCount = 1;
+    sjf_class_heap(sjt_cast1);
+    a = (sji_foo*)sjf_class_heap_as_sji_foo(sjt_cast1);
+    sjt_dot1 = a;
+    sjt_dot1->test(sjt_dot1->_parent, &void1);
 
     a->_refCount--;
-    printf("RELEASE\tsji_foo*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)a, a->_refCount);
     if (a->_refCount <= 0) {
         sji_foo_destroy(a);
-        free(a);
     }
-    assert(sjd_temp1._refCount == 0);
+    sjt_cast1->_refCount--;
+    if (sjt_cast1->_refCount <= 0) {
+        sjf_class_destroy((sjs_class*)(((char*)sjt_cast1) + sizeof(int)));
+    }
     return 0;
 }

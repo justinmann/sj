@@ -1,24 +1,24 @@
-anon1()'anon1 {
+anon1()'stack anon1 {
   this
 }
 
-anon1_class ##foo ()'class {
+anon1_class ##foo ()'heap class {
   this
 }
 
-anon2()'anon2 {
+anon2()'stack anon2 {
   this
 }
 
-anon2_class ##foo ()'class {
+anon2_class ##foo ()'heap class {
   this
 }
 
 global()'void {
-  [stack]namespace1'anon1 : [stack]anon1([stack]this : anon1())
-  [stack]namespace2'anon2 : [stack]anon2([stack]this : anon2())
-  [heap]a'#foo : [stack]anon1_class([stack]this : anon1_class()) as #namespace1.foo
-  [heap]b'#foo : [stack]anon2_class([stack]this : anon2_class()) as #namespace2.foo
+  namespace1'stack anon1 : anon1(this = anon1())
+  namespace2'stack anon2 : anon2(this = anon2())
+  a'heap #foo : anon1_class(this = anon1_class()) as heap #foo
+  b'heap #foo : anon2_class(this = anon2_class()) as heap #foo
   void
 }
 

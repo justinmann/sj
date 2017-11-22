@@ -1,74 +1,33 @@
-anon1()'anon1 {
+anon1()'stack anon1 {
   this
 }
 
-anon2()'anon2 {
+anon2()'stack anon2 {
   this
 }
 
-anon3()'anon3 {
+anon3()'stack anon3 {
   this
 }
 
-anon4()'anon4 {
+anon4()'stack anon4 {
   this
 }
 
-array!char([heap]size'i32=, [heap]data'ptr=, [heap]_isGlobal'bool=)'array_char {
-  c{
-
-		if (_this->size < 0) {
-			exit(-1);
-		}
-
-		if (_this->data) {
-			_this->_isGlobal = true;
-		} else {
-			_this->data = (uintptr_t)calloc(_this->size * sizeof(#type(t)), 1);
-			if (!_this->data) {
-				printf("grow: out of memory\n");
-				exit(-1);				
-			}
-		}
-	
-}c
+class ##foo ()'heap class {
   this
 }
 
-class ##foo ()'class {
-  this
-}
 
-class_test()'string {
-  {
-    [heap]string([heap]this : string(
-      [heap]count'i32 = i,
-      [heap]data'array_char = [heap]array!char([heap]this : array!char(
-        [heap]size'i32 = i,
-        [heap]data'ptr = ,
-        [heap]_isGlobal'bool = false
-      ))
-    ))
-  }
-}
-
-string([heap]count'i32=, [heap]data'array_char=)'string {
-  this
-}
-
-test()
 
 global()'void {
-  [stack]convert'anon4 : [stack]anon4([stack]this : anon4())
-  [stack]random'anon3 : [stack]anon3([stack]this : anon3())
-  [stack]parse'anon2 : [stack]anon2([stack]this : anon2())
-  [stack]console'anon1 : [stack]anon1([stack]this : anon1())
-  #foo(
-    test()'string
-  )
-  [heap]a'#foo : [stack]class([stack]this : class()) as #foo
-  [heap]test(
-    parent: [heap]a
+  convert'stack anon4 : anon4(this = anon4())
+  random'stack anon3 : anon3(this = anon3())
+  parse'stack anon2 : anon2(this = anon2())
+  console'stack anon1 : anon1(this = anon1())
+  a'heap #foo : class(this = class()) as heap #foo
+  bob'heap string : test(
+    parent: a
   )
   void
 }
