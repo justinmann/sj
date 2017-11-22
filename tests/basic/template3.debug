@@ -7,8 +7,8 @@ class![i32, bool]()'i32 {
 }
 
 global()'void {
-  [stack]a'i32 : class![i32, bool]([stack]this : class![i32, bool]())
-  [stack]c'i32 : class![bool, f32]([stack]this : class![bool, f32]())
+  a'i32 : class![i32, bool]()
+  c'i32 : class![bool, f32]()
   void
 }
 

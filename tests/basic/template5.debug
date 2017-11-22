@@ -1,14 +1,14 @@
-class![f32, func]()'i32 {
+class![f32, stack func]()'i32 {
   1i
 }
 
-class![func, i32]()'i32 {
+class![stack func, i32]()'i32 {
   1i
 }
 
 global()'void {
-  [stack]b'i32 : class![f32, func]([stack]this : class![f32, func]())
-  [stack]d'i32 : class![func, i32]([stack]this : class![func, i32]())
+  b'i32 : class![f32, stack func]()
+  d'i32 : class![stack func, i32]()
   void
 }
 

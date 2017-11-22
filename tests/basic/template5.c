@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -68,31 +67,23 @@ struct td_sjs_object {
     int _refCount;
 };
 
-void sjf_class_float_sjs_func(int32_t* _return);
-void sjf_class_sjs_func_int32_t(int32_t* _return);
+void sjf_class_f32_func(int32_t* _return);
+void sjf_class_func_i32(int32_t* _return);
 
 
-void sjf_class_float_sjs_func(int32_t* _return) {
-
-    *_return = 1;
+void sjf_class_f32_func(int32_t* _return) {
+    (*_return) = 1;
 }
 
-void sjf_class_sjs_func_int32_t(int32_t* _return) {
-
-    *_return = 1;
+void sjf_class_func_i32(int32_t* _return) {
+    (*_return) = 1;
 }
 
 int main() {
     int32_t b;
     int32_t d;
-    int32_t result1;
-    int32_t result2;
 
-    result1 = 0;
-    sjf_class_float_sjs_func(&result1);
-    b = result1;
-    result2 = 0;
-    sjf_class_sjs_func_int32_t(&result2);
-    d = result2;
+    sjf_class_f32_func(&b);
+    sjf_class_func_i32(&d);
     return 0;
 }

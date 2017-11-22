@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -60,50 +59,56 @@ struct td_double_option {
 };
 const double_option double_empty = { true };
 
-#define sjs_class_int32_t_typeId 1
-#define sjs_object_typeId 2
+#define sjs_object_typeId 1
+#define sjs_class_i32_typeId 2
+#define sjs_class_i32_heap_typeId 3
 
-typedef struct td_sjs_class_int32_t sjs_class_int32_t;
 typedef struct td_sjs_object sjs_object;
-
-struct td_sjs_class_int32_t {
-    int _refCount;
-    int32_t x;
-};
+typedef struct td_sjs_class_i32 sjs_class_i32;
+typedef struct td_sjs_class_i32_heap sjs_class_i32_heap;
 
 struct td_sjs_object {
     int _refCount;
 };
 
-void sjf_class_int32_t(sjs_class_int32_t* _this, sjs_class_int32_t** _return);
-void sjf_class_int32_t_destroy(sjs_class_int32_t* _this);
+struct td_sjs_class_i32 {
+    int32_t x;
+};
 
-sjs_class_int32_t sjd_temp1;
+struct td_sjs_class_i32_heap {
+    int _refCount;
+    int32_t x;
+};
 
-void sjf_class_int32_t(sjs_class_int32_t* _this, sjs_class_int32_t** _return) {
-    _this->_refCount++;
-    printf("RETAIN\tsjs_class_int32_t*\t%0x\tvoid sjf_class_int32_t(sjs_class_int32_t* _this, sjs_class_int32_t** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
+void sjf_class_i32(sjs_class_i32* _this);
+void sjf_class_i32_copy(sjs_class_i32* _this, sjs_class_i32* to);
+void sjf_class_i32_destroy(sjs_class_i32* _this);
+void sjf_class_i32_heap(sjs_class_i32_heap* _this);
 
-    *_return = _this;
+
+void sjf_class_i32(sjs_class_i32* _this) {
 }
 
-void sjf_class_int32_t_destroy(sjs_class_int32_t* _this) {
+void sjf_class_i32_copy(sjs_class_i32* _this, sjs_class_i32* to) {
+    _this->x = to->x;
+}
+
+void sjf_class_i32_destroy(sjs_class_i32* _this) {
+}
+
+void sjf_class_i32_heap(sjs_class_i32_heap* _this) {
 }
 
 int main() {
-    sjs_class_int32_t* c;
+    sjs_class_i32 c;
     int32_t dotTemp1;
-    sjs_class_int32_t* sjv_temp1;
+    sjs_class_i32* sjt_dot1;
 
-    sjv_temp1 = &sjd_temp1;
-    sjv_temp1->_refCount = 1;
-    printf("RETAIN\tsjs_class_int32_t*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
-    sjv_temp1->x = 1;
-    sjf_class_int32_t(sjv_temp1, &sjv_temp1);
-    c = sjv_temp1;
-    c->_refCount++;
-    printf("RETAIN\tsjs_class_int32_t*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)c, c->_refCount);;
-    dotTemp1 = c->x;
-    assert(sjd_temp1._refCount == 0);
+    c.x = 1;
+    sjf_class_i32(&c);
+    sjt_dot1 = &c;
+    dotTemp1 = sjt_dot1->x;
+
+    sjf_class_i32_destroy(&c);
     return 0;
 }

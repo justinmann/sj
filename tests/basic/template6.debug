@@ -1,9 +1,9 @@
-class!func_i32()'i32 {
+class!stack func_i32()'i32 {
   1i
 }
 
 global()'void {
-  [stack]d'i32 : class!func_i32([stack]this : class!func_i32())
+  d'i32 : class!stack func_i32()
   void
 }
 
