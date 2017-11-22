@@ -121,7 +121,7 @@ shared_ptr<CVar> CInterfaceMethod::getArgVar(int index, CTypeMode returnMode) {
 }
 
 int CInterfaceMethod::getArgCount(CTypeMode returnMode) {
-    return argVars.size();
+    return (int)argVars.size();
 }
 
 shared_ptr<CVar> CInterfaceMethod::getThisVar(Compiler* compiler) {

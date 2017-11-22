@@ -811,7 +811,7 @@ shared_ptr<CVar> CFunction::getArgVar(int index, CTypeMode returnMode) {
 }
 
 int CFunction::getArgCount(CTypeMode returnMode) {
-    return _data[returnMode].thisArgVars.size();
+    return (int)_data[returnMode].thisArgVars.size();
 }
 
 shared_ptr<vector<pair<string, shared_ptr<CType>>>> CFunction::getCTypeList(Compiler* compiler, CTypeMode returnMode) {

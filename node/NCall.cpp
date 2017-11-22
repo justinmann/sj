@@ -154,7 +154,7 @@ void CCallVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<
                 }
             }
 
-            auto paramIndex = (size_t)0;
+            auto paramIndex = 0;
             for (auto it : parameters) {
                 auto paramVar = callee->getArgVar(paramIndex, returnMode);
                 ss << paramVar->name.c_str();
@@ -193,7 +193,7 @@ void CCallVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<
                 }
             }
 
-            auto paramIndex = (size_t)0;
+            auto paramIndex = 0;
             for (auto it : parameters) {
                 auto paramVar = callee->getArgVar(paramIndex, returnMode);
                 ss << paramVar->name.c_str();
