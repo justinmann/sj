@@ -272,7 +272,7 @@ void CInterface::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
     if (trOutput->structs.find(heapStructName) == trOutput->structs.end()) {
         trOutput->structs[heapStructName].push_back("int _refCount");
         trOutput->structs[heapStructName].push_back("sjs_object* _parent");
-        trOutput->structs[heapStructName].push_back("void (*destroy)(sjs_object* _this)");
+        trOutput->structs[heapStructName].push_back("void (*destroy)(void* _this)");
         trOutput->structs[heapStructName].push_back("sjs_object* (*asInterface)(sjs_object* _this, int typeId)");
         for (auto method : methods) {
             trOutput->structs[heapStructName].push_back(method->getCTypeName(compiler, true));

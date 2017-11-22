@@ -234,6 +234,8 @@ void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> scope, T
         argValues.push_back(ArgData(argVar, argStoreValue));
         argIndex++;
     }
+    
+    
 
     // Call function
     stringstream line;
@@ -248,6 +250,9 @@ void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> scope, T
         line << argValue.value->getName(trBlock);
     }
     if (returnType != compiler->typeVoid) {
+        
+        TrValue(storeValue->scope, storeValue->type, storeValue->getName(trBlock)).addInitToStatements(trBlock);
+        
         line << ", ";
         line << "&" << storeValue->getName(trBlock);
     }

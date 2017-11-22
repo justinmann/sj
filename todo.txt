@@ -1,4 +1,3 @@
-* interface3: handle return value to heap
 * do not create two functions if identical signature
 
 * fix string add
