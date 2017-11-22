@@ -49,17 +49,20 @@ class CInterfaceMethod : public CBaseFunction, public enable_shared_from_this<CI
 public:
     shared_ptr<CType> returnType;
     vector<shared_ptr<CType>> argTypes;
-    
+    vector<shared_ptr<CVar>> argVars;
+
     CInterfaceMethod(string& name, weak_ptr<CInterface> parent, int methodIndex, CTypeMode returnMode);
     shared_ptr<CInterfaceMethod> init(Compiler* compiler, shared_ptr<NInterfaceMethod> method, shared_ptr<CBaseFunction> thisFunction);
     string fullName(bool includeTemplateTypes);
     
     shared_ptr<CTypes> getThisTypes(Compiler* compiler);
-    int getThisIndex(const string& name, CTypeMode returnMode);
+    int getArgIndex(const string& name, CTypeMode returnMode);
+    int getArgCount(CTypeMode returnMode);
+    shared_ptr<CVar> getArgVar(int index, CTypeMode returnMode);
     shared_ptr<CVar> getThisVar(Compiler* compiler);
     
     shared_ptr<CVar> getCVar(Compiler* compiler, const string& name, CTypeMode returnMode);
-    shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames) { assert(false); return nullptr; }
+    shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode) { assert(false); return nullptr; }
     pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(string name) { assert(false); return make_pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>>(nullptr, nullptr); }
     shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
     shared_ptr<CType> getReturnType(Compiler* compiler, CTypeMode returnMode);

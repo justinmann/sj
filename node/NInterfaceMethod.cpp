@@ -111,9 +111,17 @@ shared_ptr<CTypes> CInterfaceMethod::getThisTypes(Compiler* compiler) {
     return nullptr;
 }
 
-int CInterfaceMethod::getThisIndex(const string& name, CTypeMode returnMode) {
+int CInterfaceMethod::getArgIndex(const string& name, CTypeMode returnMode) {
     assert(false);
     return -1;
+}
+
+shared_ptr<CVar> CInterfaceMethod::getArgVar(int index, CTypeMode returnMode) {
+    return argVars[index];
+}
+
+int CInterfaceMethod::getArgCount(CTypeMode returnMode) {
+    return argVars.size();
 }
 
 shared_ptr<CVar> CInterfaceMethod::getThisVar(Compiler* compiler) {

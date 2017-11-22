@@ -1,7 +1,5 @@
-* creating two function is causing major problems
-* get all tests to pass
-* interface8
-* only call getCVar from scope, find a way to set parentScope of dotVar
+* interface3: handle return value to heap
+* do not create two functions if identical signature
 
 * fix string add
 * make string immutable

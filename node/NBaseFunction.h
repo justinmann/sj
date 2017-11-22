@@ -38,7 +38,6 @@ public:
     bool hasThis;
     weak_ptr<CBaseFunction> parent;
     weak_ptr<CBaseFunctionDefinition> definition;
-    vector<shared_ptr<CVar>> argVars;
     vector<shared_ptr<NBase>> argDefaultValues;
     
     CBaseFunction(CClassFunctionType classType, string& name, weak_ptr<CBaseFunction> parent, weak_ptr<CBaseFunctionDefinition> definition) : classType(classType), name(name), hasParent(false), hasThis(false), parent(parent), definition(definition) { }
@@ -47,11 +46,13 @@ public:
     virtual void setHasParent(Compiler* compiler);
     virtual void onHasParent(std::function<void(Compiler*)> notify);
 
-    virtual int getThisIndex(const string& name, CTypeMode returnMode) = 0;
+    virtual int getArgIndex(const string& name, CTypeMode returnMode) = 0;
+    virtual int getArgCount(CTypeMode returnMode) = 0;
+    virtual shared_ptr<CVar> getArgVar(int index, CTypeMode returnMode) = 0;
     virtual string fullName(bool includeTemplateTypes) = 0;
     virtual shared_ptr<CTypes> getThisTypes(Compiler* compiler) = 0;
     virtual shared_ptr<CVar> getCVar(Compiler* compiler, const string& name, CTypeMode returnMode) = 0;
-    virtual shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames) = 0;
+    virtual shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode) = 0;
     virtual shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) = 0;
     virtual string getCInitFunctionName(CTypeMode returnMode) = 0;
     virtual string getCCopyFunctionName() = 0;

@@ -48,12 +48,14 @@ public:
     
     shared_ptr<CScope> getScope();
     shared_ptr<CTypes> getThisTypes(Compiler* compiler);
-    int getThisIndex(const string& name, CTypeMode returnMode);
+    int getArgIndex(const string& name, CTypeMode returnMode);
+    int getArgCount(CTypeMode returnMode);
+    shared_ptr<CVar> getArgVar(int index, CTypeMode returnMode);
     shared_ptr<CVar> getThisVar(Compiler* compiler);
     int getArgStart();
 
     shared_ptr<CVar> getCVar(Compiler* compiler, const string& name, CTypeMode returnMode);
-    shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, const string& name, shared_ptr<CScope> callerFunction, shared_ptr<CTypeNameList> templateTypeNames);
+    shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, const string& name, shared_ptr<CScope> callerFunction, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode);
     pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(string name) { assert(false); return make_pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>>(nullptr, nullptr); }
     shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
     shared_ptr<CType> getReturnType(Compiler* compiler, CTypeMode returnMode);
@@ -75,6 +77,7 @@ private:
     CLoc loc;
     shared_ptr<CTypes> thisTypes;
     shared_ptr<CScope> _scope;
+    vector<shared_ptr<CVar>> argVars;
 };
 
 class CInterfaceDefinition : public CBaseFunctionDefinition, public enable_shared_from_this<CInterfaceDefinition> {

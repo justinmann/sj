@@ -97,7 +97,7 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
     if (dotVar && varScope) {
         string nameWithUpper = name;
         nameWithUpper[0] = (char)toupper(nameWithUpper[0]);
-        auto getPropertyFunction = varScope->function->getCFunction(compiler, "get" + nameWithUpper, scope, nullptr);
+        auto getPropertyFunction = varScope->function->getCFunction(compiler, "get" + nameWithUpper, scope, nullptr, returnMode);
         if (getPropertyFunction != nullptr) {
             return CCallVar::create(compiler, loc, name, make_shared<NodeList>(), scope, dotVar, getPropertyFunction, returnMode);
         }

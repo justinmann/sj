@@ -54,7 +54,7 @@ bool CCallVar::getParameters(Compiler* compiler, vector<pair<bool, shared_ptr<NB
         if (it->nodeType == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
             assert(parameterAssignment->inFunctionDeclaration);
-            auto index = callee->getThisIndex(parameterAssignment->name, returnMode);
+            auto index = callee->getArgIndex(parameterAssignment->name, returnMode);
             if (index < 0) {
                 compiler->addError(loc, CErrorCode::ParameterDoesNotExist, "cannot find parameter '%s'", parameterAssignment->name.c_str());
                 return false;
@@ -156,7 +156,7 @@ void CCallVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<
 
             auto paramIndex = (size_t)0;
             for (auto it : parameters) {
-                auto paramVar = callee->argVars[paramIndex];
+                auto paramVar = callee->getArgVar(paramIndex, returnMode);
                 ss << paramVar->name.c_str();
                 auto ctype = paramVar->getType(compiler);
                 ss << "'" << (ctype != nullptr ? ctype->name : "ERROR");
@@ -195,7 +195,7 @@ void CCallVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<
 
             auto paramIndex = (size_t)0;
             for (auto it : parameters) {
-                auto paramVar = callee->argVars[paramIndex];
+                auto paramVar = callee->getArgVar(paramIndex, returnMode);
                 ss << paramVar->name.c_str();
                 ss << "'" << paramVar->getType(compiler)->name.c_str();
                 ss << (paramVar->isMutable ? " = " : " : ");
@@ -253,14 +253,14 @@ shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, shared_ptr<CSc
     }
     
     // Handle last name in list
-    auto callee = cfunction->getCFunction(compiler, name, scope, templateTypeNames);
+    auto callee = cfunction->getCFunction(compiler, name, scope, templateTypeNames, returnMode);
     if (!callee) {
         // If we are still using "this" then we can check to see if it is a function on parent
         if (cfunction == scope->function) {
             while (cfunction && !cfunction->parent.expired() && !callee) {
                 cfunction = cfunction->parent.lock();
                 if (cfunction) {
-                    callee = cfunction->getCFunction(compiler, name, scope, templateTypeNames);
+                    callee = cfunction->getCFunction(compiler, name, scope, templateTypeNames, returnMode);
                 }
             }
         }

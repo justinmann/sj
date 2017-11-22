@@ -94,7 +94,7 @@ shared_ptr<CInterface> CInterface::init(Compiler* compiler, shared_ptr<NInterfac
     
     auto argIndex = 0;
     for (auto it : node->methodList) {
-        // TODO: need to create a stack and heap version if return typename is not explicit
+        // need to create a stack and heap version if return typename is not explicit
 
         if (it->returnTypeName->typeMode == CTM_Stack || it->returnTypeName->typeMode == CTM_Undefined || it->returnTypeName->typeMode == CTM_Value) {
             auto method = make_shared<CInterfaceMethod>(it->name, shared_from_this(), argIndex, CTM_Stack);
@@ -141,9 +141,17 @@ shared_ptr<CScope> CInterface::getScope() {
     return _scope;
 }
 
-int CInterface::getThisIndex(const string& name, CTypeMode returnMode) {
+int CInterface::getArgIndex(const string& name, CTypeMode returnMode) {
     assert(false);
     return -1;
+}
+
+shared_ptr<CVar> CInterface::getArgVar(int index, CTypeMode returnMode) {
+    return argVars[index];
+}
+
+int CInterface::getArgCount(CTypeMode returnMode) {
+    return argVars.size();
 }
 
 shared_ptr<CVar> CInterface::getThisVar(Compiler* compiler) {
@@ -162,16 +170,21 @@ shared_ptr<CVar> CInterface::getCVar(Compiler* compiler, const string& name, CTy
     return nullptr;
 }
 
-shared_ptr<CBaseFunction> CInterface::getCFunction(Compiler* compiler, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames) {
+shared_ptr<CBaseFunction> CInterface::getCFunction(Compiler* compiler, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode) {
     shared_ptr<CBaseFunction> interfaceMethod;
     if (templateTypeNames == nullptr) {
         auto t = methodByName.find(name);
         if (t != methodByName.end()) {
-            // TODO: this does not hande auto switching betwen heap/stack returns
-            if (t->second[CTM_Heap]) {
+            if (returnMode == CTM_Undefined) {
+                if (t->second[CTM_Stack]) {
+                    return t->second[CTM_Stack];
+                }
                 return t->second[CTM_Heap];
             }
-            return t->second[CTM_Stack];
+            else if (returnMode == CTM_Value) {
+                return t->second[CTM_Stack];
+            }
+            return t->second[returnMode];
         }
     }
     return interfaceMethod;

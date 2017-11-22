@@ -28,8 +28,8 @@ shared_ptr<CVar> NTupleAssignment::getVarImpl(Compiler* compiler, shared_ptr<CSc
     }
 
     auto rightFunction = static_pointer_cast<CFunction>(rightType->parent.lock());
-    if (args->size() > rightFunction->argVars.size()) {
-        compiler->addError(loc, CErrorCode::TypeMismatch, "right side has '%d' variables, but left side requires '%d'", rightFunction->argVars.size(), args->size());
+    if ((int)args->size() > rightFunction->getArgCount(rightType->typeMode)) {
+        compiler->addError(loc, CErrorCode::TypeMismatch, "right side has '%d' variables, but left side requires '%d'", rightFunction->getArgCount(rightType->typeMode), args->size());
         return nullptr;
     }
 
@@ -39,7 +39,7 @@ shared_ptr<CVar> NTupleAssignment::getVarImpl(Compiler* compiler, shared_ptr<CSc
 
     auto argIndex = 0;
     for (auto arg : *args) {
-        auto rightArg = rightFunction->argVars[argIndex];
+        auto rightArg = rightFunction->getArgVar(argIndex, rightType->typeMode);
         auto getValue = make_shared<NDot>(loc, make_shared<NVariable>(loc, tempVarName.c_str()), make_shared<NVariable>(loc, rightArg->name.c_str()));
         statements.push_back(NAssignment(loc, arg->var, arg->typeName, arg->name.c_str(), getValue, arg->assignOp).getVar(compiler, scope, CTM_Undefined));
         argIndex++;

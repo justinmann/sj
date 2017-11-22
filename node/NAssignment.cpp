@@ -87,7 +87,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
     string temp = name;
     temp[0] = toupper(temp[0]);
     string setFunctionName = "set" + temp;
-    auto setFunction = cfunction->getCFunction(compiler, setFunctionName, scope, nullptr);
+    auto setFunction = cfunction->getCFunction(compiler, setFunctionName, scope, nullptr, returnMode);
     if (setFunction) {
         auto arguments = make_shared<NodeList>();
         arguments->push_back(rightSide);

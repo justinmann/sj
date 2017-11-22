@@ -142,10 +142,9 @@ shared_ptr<CFunction> CFunction::init(Compiler* compiler, shared_ptr<NFunction> 
                 auto thisArgVar = make_shared<CNormalVar>(node->loc, calleeScope, argType, it->name, it->op == ASSIGN_Mutable || it->op == ASSIGN_MutableCopy, CVarType::Var_Public);
                 _data[returnMode].thisArgVarsByName[it->name] = pair<int, shared_ptr<CVar>>(index, thisArgVar);
                 _data[returnMode].thisArgVars.push_back(thisArgVar);
-                argVars.push_back(thisArgVar);
-                argDefaultValues.push_back(it->rightSide);
             }
             
+            argDefaultValues.push_back(it->rightSide);
             index++;
         }
     }
@@ -300,7 +299,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                 functionDefinition << "void " << functionCopyName << "(" << stackStructName << "* _this, " << stackStructName << "* to)";
                 trCopyBlock->definition = functionDefinition.str();
 
-                for (auto argVar : argVars) {
+                for (auto argVar : _data[returnMode].thisArgVars) {
                     auto argType = argVar->getType(compiler);
                     TrStoreValue(argVar->loc, calleeScope, argType, "_this->" + argVar->name, ASSIGN_ImmutableCopy, true).retainValue(compiler, trCopyBlock.get(), make_shared<TrValue>(calleeScope, argType, "to->" + argVar->name));
                 }
@@ -334,7 +333,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                     }
                 }
 
-                for (auto argVar : argVars) {
+                for (auto argVar : _data[returnMode].thisArgVars) {
                     TrValue(calleeScope, argVar->getType(compiler), "_this->" + argVar->name).addReleaseToStatements(trDestroyBlock.get());
                 }
             }
@@ -367,7 +366,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                         trFunctionBlock->statements.push_back(string("_interface->asInterface = (sjs_object*(*)(sjs_object*,int))" + getCAsInterfaceFunctionName(returnMode)));
 
                         for (auto interfaceMethod : interfaceVal->methods) {
-                            auto implementation = static_pointer_cast<CFunction>(getCFunction(compiler, interfaceMethod->name, nullptr, nullptr));
+                            auto implementation = static_pointer_cast<CFunction>(getCFunction(compiler, interfaceMethod->name, nullptr, nullptr, CTM_Undefined));
                             if (implementation) {
                                 implementation->transpileDefinition(compiler, trOutput);
 
@@ -455,7 +454,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
         auto argIndex = 0;
         // Fill in "this" with normal arguments
         for (auto defaultAssignment : argDefaultValues) {
-            auto argVar = argVars[argIndex];
+            auto argVar = _data[returnMode].thisArgVars[argIndex];
             auto argType = argVar->getType(compiler);
             auto isDefaultAssignment = parameters[argIndex].second == defaultAssignment;
             assert(isDefaultAssignment == parameters[argIndex].first);
@@ -550,7 +549,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
         auto argIndex = 0;
         // Fill in "this" with normal arguments
         for (auto defaultAssignment : argDefaultValues) {
-            auto argVar = argVars[argIndex];
+            auto argVar = _data[returnMode].thisArgVars[argIndex];
             auto argType = argVar->getType(compiler);
             auto isDefaultAssignment = parameters[argIndex].second == defaultAssignment;
             assert(isDefaultAssignment == parameters[argIndex].first);
@@ -647,8 +646,8 @@ void CFunction::dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, stri
     ss << "(";
     
     if (argDefaultValues.size() > 0) {
-        for (auto it : argVars) {
-            if (it != argVars.front()) {
+        for (auto it : _data[returnMode].thisArgVars) {
+            if (it != _data[returnMode].thisArgVars.front()) {
                 ss << ", ";
             }
             ss << it->name;
@@ -682,26 +681,26 @@ shared_ptr<CThisVar> CFunction::getThisVar(Compiler* compiler, CTypeMode returnM
             // Make all functions used by an interface are defined
             for (auto interface : *interfaces) {
                 for (auto interfaceMethod : interface->methods) {
-                    auto cfunc = static_pointer_cast<CFunction>(getCFunction(compiler, interfaceMethod->name, nullptr, nullptr));
+                    auto cfunc = static_pointer_cast<CFunction>(getCFunction(compiler, interfaceMethod->name, nullptr, nullptr, CTM_Undefined));
                     if (!cfunc) {
                         compiler->addError(loc, CErrorCode::InterfaceMethodDoesNotExist, "cannot find interface method: '%s'", interfaceMethod->name.c_str());
                         return nullptr;
                     }
 
-                    auto functionReturnType = cfunc->getReturnType(compiler, returnMode);
+                    auto functionReturnType = cfunc->getReturnType(compiler, interfaceMethod->returnMode);
                     auto interfaceMethodReturnType = interfaceMethod->getReturnType(compiler, CTM_Undefined);
                     if (functionReturnType != interfaceMethodReturnType) {
                         compiler->addError(loc, CErrorCode::TypeMismatch, "function return type '%s' does not match interface method return type '%s'", functionReturnType->name.c_str(), interfaceMethodReturnType->name.c_str());
                     }
 
-                    auto functionArgVars = cfunc->argVars;
+                    auto functionArgVars = cfunc->getArgVars(compiler, interfaceMethod->returnMode);
                     auto interfaceMethodArgVars = interfaceMethod->argVars;
-                    if (functionArgVars.size() != interfaceMethodArgVars.size()) {
-                        compiler->addError(loc, CErrorCode::InterfaceMethodTypeMismatch, "function has %d arguments does not match interface method arguments %d", functionArgVars.size(), interfaceMethodArgVars.size());
+                    if (functionArgVars->size() != interfaceMethodArgVars.size()) {
+                        compiler->addError(loc, CErrorCode::InterfaceMethodTypeMismatch, "function has %d arguments does not match interface method arguments %d", functionArgVars->size(), interfaceMethodArgVars.size());
                     }
                     else {
-                        for (auto i = (size_t)0; i < functionArgVars.size(); i++) {
-                            auto aType = functionArgVars[i]->getType(compiler);
+                        for (auto i = (size_t)0; i < functionArgVars->size(); i++) {
+                            auto aType = (*functionArgVars)[i]->getType(compiler);
                             auto bType = interfaceMethodArgVars[i]->getType(compiler);
                             if (aType != bType) {
                                 compiler->addError(loc, CErrorCode::TypeMismatch, "function parameter %d type '%s' does not match interface method parameter type '%s'", i + 1, aType ? aType->name.c_str() : "Unknown", bType ? bType->name.c_str() : "Unknown");
@@ -800,11 +799,19 @@ shared_ptr<CScope> CFunction::getScope(Compiler* compiler, CTypeMode returnMode)
     return _data[returnMode].scope;
 }
 
-int CFunction::getThisIndex(const string& name, CTypeMode returnMode) {
+int CFunction::getArgIndex(const string& name, CTypeMode returnMode) {
     if (_data[returnMode].thisArgVarsByName.find(name) != _data[returnMode].thisArgVarsByName.end()) {
         return _data[returnMode].thisArgVarsByName[name].first;
     }
     return -1;
+}
+
+shared_ptr<CVar> CFunction::getArgVar(int index, CTypeMode returnMode) {
+    return _data[returnMode].thisArgVars[index];
+}
+
+int CFunction::getArgCount(CTypeMode returnMode) {
+    return _data[returnMode].thisArgVars.size();
 }
 
 shared_ptr<vector<pair<string, shared_ptr<CType>>>> CFunction::getCTypeList(Compiler* compiler, CTypeMode returnMode) {
@@ -868,7 +875,7 @@ bool getTemplateTypes(Compiler* compiler, CLoc loc, shared_ptr<CBaseFunction> th
 }
 
 
-shared_ptr<CBaseFunction> CFunction::getCFunction(Compiler* compiler, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames) {
+shared_ptr<CBaseFunction> CFunction::getCFunction(Compiler* compiler, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode) {
     auto def = static_pointer_cast<CFunctionDefinition>(definition.lock());
     auto t = def->funcsByName.find(name);
     if (t != def->funcsByName.end()) {

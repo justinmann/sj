@@ -159,9 +159,9 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 				currentFunction->init(this, nullptr);
                 auto currentScope = currentFunction->getScope(this, CTM_Stack);
 				anonFunction->getVar(this, currentScope, CTM_Stack);
-				globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, "global", nullptr, nullptr));
+				globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, "global", nullptr, nullptr, CTM_Stack));
                 auto globalScope = globalFunction->getScope(this, CTM_Stack);
-                auto mainLoop = static_pointer_cast<CFunction>(globalFunction->getCFunction(this, "mainLoop", globalScope, nullptr));
+                auto mainLoop = static_pointer_cast<CFunction>(globalFunction->getCFunction(this, "mainLoop", globalScope, nullptr, CTM_Stack));
 #ifdef VAR_OUTPUT
 				currentFunction->dump(this, 0);
 #endif
