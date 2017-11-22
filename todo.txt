@@ -1,6 +1,7 @@
 * creating two function is causing major problems
 * get all tests to pass
 * interface8
+* only call getCVar from scope, find a way to set parentScope of dotVar
 
 * fix string add
 * make string immutable

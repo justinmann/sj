@@ -13,11 +13,11 @@ class NThis;
 
 class CThisVar : public CVar {
 public:
-    CThisVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CTypes> types, CTypeMode typeMode) : CVar(loc, scope, "", false), types(types), typeMode(typeMode) { }
+    CThisVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CTypes> types, CTypeMode typeMode) : CVar(loc, scope, "", false), types(types), typeMode(typeMode) { }
     bool getReturnThis();
-    shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
-    void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
+    shared_ptr<CType> getType(Compiler* compiler);
+    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
+    void dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
     void setHasThis();
     CTypeMode getTypeMode();
 
@@ -31,8 +31,8 @@ private:
 class NThis : public NVariableBase {
 public:
     NThis(CLoc loc) : NVariableBase(NodeType_This, loc) {}
-    void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) { }
-    shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode);
+    void defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) { }
+    shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 };
 
 #endif /* NThis_h */

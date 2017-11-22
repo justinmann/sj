@@ -69,14 +69,14 @@
 #include "../node/Node.h"
 #include "parser.hpp"
 
-#define LOC CLoc(result->fileName, yyloc.first_line, yyloc.first_column)
-#define LLOC CLoc(result->fileName, yylloc.first_line, yylloc.first_column)
+#define LOC CLoc(parseFile->fileName, yyloc.first_line, yyloc.first_column)
+#define LLOC CLoc(parseFile->fileName, yylloc.first_line, yylloc.first_column)
 
-int yyerror(YYLTYPE *locp, void *scanner, CResult* result, const char *msg) {
+int yyerror(YYLTYPE *locp, void *scanner, Compiler* compiler, CParseFile* parseFile, const char *msg) {
   if (locp) {
-  	result->addWarning(CLoc(result->fileName, locp->first_line, locp->first_column), CErrorCode::Parser, msg);
+  	compiler->addWarning(CLoc(parseFile->fileName, locp->first_line, locp->first_column), CErrorCode::Parser, msg);
   } else {
-  	result->addWarning(CLoc::undefined, CErrorCode::Parser, msg);
+  	compiler->addWarning(CLoc::undefined, CErrorCode::Parser, msg);
   }
   return (0);
 }
@@ -271,7 +271,7 @@ struct YYLTYPE
 
 
 
-int yyparse (void *scanner, CResult* result);
+int yyparse (void *scanner, Compiler* compiler, CParseFile* parseFile);
 
 #endif /* !YY_YY_PARSER_PARSER_HPP_INCLUDED  */
 
@@ -1078,7 +1078,7 @@ do                                                              \
     }                                                           \
   else                                                          \
     {                                                           \
-      yyerror (&yylloc, scanner, result, YY_("syntax error: cannot back up")); \
+      yyerror (&yylloc, scanner, compiler, parseFile, YY_("syntax error: cannot back up")); \
       YYERROR;                                                  \
     }                                                           \
 while (0)
@@ -1180,7 +1180,7 @@ do {                                                                      \
     {                                                                     \
       YYFPRINTF (stderr, "%s ", Title);                                   \
       yy_symbol_print (stderr,                                            \
-                  Type, Value, Location, scanner, result); \
+                  Type, Value, Location, scanner, compiler, parseFile); \
       YYFPRINTF (stderr, "\n");                                           \
     }                                                                     \
 } while (0)
@@ -1191,13 +1191,14 @@ do {                                                                      \
 `----------------------------------------*/
 
 static void
-yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp, void *scanner, CResult* result)
+yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp, void *scanner, Compiler* compiler, CParseFile* parseFile)
 {
   FILE *yyo = yyoutput;
   YYUSE (yyo);
   YYUSE (yylocationp);
   YYUSE (scanner);
-  YYUSE (result);
+  YYUSE (compiler);
+  YYUSE (parseFile);
   if (!yyvaluep)
     return;
 # ifdef YYPRINT
@@ -1213,14 +1214,14 @@ yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvalue
 `--------------------------------*/
 
 static void
-yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp, void *scanner, CResult* result)
+yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp, void *scanner, Compiler* compiler, CParseFile* parseFile)
 {
   YYFPRINTF (yyoutput, "%s %s (",
              yytype < YYNTOKENS ? "token" : "nterm", yytname[yytype]);
 
   YY_LOCATION_PRINT (yyoutput, *yylocationp);
   YYFPRINTF (yyoutput, ": ");
-  yy_symbol_value_print (yyoutput, yytype, yyvaluep, yylocationp, scanner, result);
+  yy_symbol_value_print (yyoutput, yytype, yyvaluep, yylocationp, scanner, compiler, parseFile);
   YYFPRINTF (yyoutput, ")");
 }
 
@@ -1253,7 +1254,7 @@ do {                                                            \
 `------------------------------------------------*/
 
 static void
-yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, YYLTYPE *yylsp, int yyrule, void *scanner, CResult* result)
+yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, YYLTYPE *yylsp, int yyrule, void *scanner, Compiler* compiler, CParseFile* parseFile)
 {
   unsigned long int yylno = yyrline[yyrule];
   int yynrhs = yyr2[yyrule];
@@ -1267,7 +1268,7 @@ yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, YYLTYPE *yylsp, int yyrule
       yy_symbol_print (stderr,
                        yystos[yyssp[yyi + 1 - yynrhs]],
                        &(yyvsp[(yyi + 1) - (yynrhs)])
-                       , &(yylsp[(yyi + 1) - (yynrhs)])                       , scanner, result);
+                       , &(yylsp[(yyi + 1) - (yynrhs)])                       , scanner, compiler, parseFile);
       YYFPRINTF (stderr, "\n");
     }
 }
@@ -1275,7 +1276,7 @@ yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, YYLTYPE *yylsp, int yyrule
 # define YY_REDUCE_PRINT(Rule)          \
 do {                                    \
   if (yydebug)                          \
-    yy_reduce_print (yyssp, yyvsp, yylsp, Rule, scanner, result); \
+    yy_reduce_print (yyssp, yyvsp, yylsp, Rule, scanner, compiler, parseFile); \
 } while (0)
 
 /* Nonzero means print parse trace.  It is left uninitialized so that
@@ -1533,12 +1534,13 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
 `-----------------------------------------------*/
 
 static void
-yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, YYLTYPE *yylocationp, void *scanner, CResult* result)
+yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, YYLTYPE *yylocationp, void *scanner, Compiler* compiler, CParseFile* parseFile)
 {
   YYUSE (yyvaluep);
   YYUSE (yylocationp);
   YYUSE (scanner);
-  YYUSE (result);
+  YYUSE (compiler);
+  YYUSE (parseFile);
   if (!yymsg)
     yymsg = "Deleting";
   YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
@@ -1556,7 +1558,7 @@ yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, YYLTYPE *yylocatio
 `----------*/
 
 int
-yyparse (void *scanner, CResult* result)
+yyparse (void *scanner, Compiler* compiler, CParseFile* parseFile)
 {
 /* The lookahead symbol.  */
 int yychar;
@@ -1831,7 +1833,7 @@ yyreduce:
     {
         case 2:
 
-    { result->block = std::shared_ptr<NBlock>((yyvsp[0].block)); }
+    { parseFile->block = std::shared_ptr<NBlock>((yyvsp[0].block)); }
 
     break;
 
@@ -1885,7 +1887,7 @@ yyreduce:
 
   case 14:
 
-    { (yyval.node) = nullptr; /* yyclearin; */ result->addError(LLOC, CErrorCode::InvalidCharacter, "Something failed to parse"); }
+    { (yyval.node) = nullptr; /* yyclearin; */ compiler->addError(LLOC, CErrorCode::InvalidCharacter, "Something failed to parse"); }
 
     break;
 
@@ -2906,7 +2908,7 @@ yyerrlab:
     {
       ++yynerrs;
 #if ! YYERROR_VERBOSE
-      yyerror (&yylloc, scanner, result, YY_("syntax error"));
+      yyerror (&yylloc, scanner, compiler, parseFile, YY_("syntax error"));
 #else
 # define YYSYNTAX_ERROR yysyntax_error (&yymsg_alloc, &yymsg, \
                                         yyssp, yytoken)
@@ -2933,7 +2935,7 @@ yyerrlab:
                 yymsgp = yymsg;
               }
           }
-        yyerror (&yylloc, scanner, result, yymsgp);
+        yyerror (&yylloc, scanner, compiler, parseFile, yymsgp);
         if (yysyntax_error_status == 2)
           goto yyexhaustedlab;
       }
@@ -2957,7 +2959,7 @@ yyerrlab:
       else
         {
           yydestruct ("Error: discarding",
-                      yytoken, &yylval, &yylloc, scanner, result);
+                      yytoken, &yylval, &yylloc, scanner, compiler, parseFile);
           yychar = YYEMPTY;
         }
     }
@@ -3014,7 +3016,7 @@ yyerrlab1:
 
       yyerror_range[1] = *yylsp;
       yydestruct ("Error: popping",
-                  yystos[yystate], yyvsp, yylsp, scanner, result);
+                  yystos[yystate], yyvsp, yylsp, scanner, compiler, parseFile);
       YYPOPSTACK (1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
@@ -3056,7 +3058,7 @@ yyabortlab:
 | yyexhaustedlab -- memory exhaustion comes here.  |
 `-------------------------------------------------*/
 yyexhaustedlab:
-  yyerror (&yylloc, scanner, result, YY_("memory exhausted"));
+  yyerror (&yylloc, scanner, compiler, parseFile, YY_("memory exhausted"));
   yyresult = 2;
   /* Fall through.  */
 #endif
@@ -3068,7 +3070,7 @@ yyreturn:
          user semantic actions for why this is necessary.  */
       yytoken = YYTRANSLATE (yychar);
       yydestruct ("Cleanup: discarding lookahead",
-                  yytoken, &yylval, &yylloc, scanner, result);
+                  yytoken, &yylval, &yylloc, scanner, compiler, parseFile);
     }
   /* Do not reclaim the symbols of the rule whose action triggered
      this YYABORT or YYACCEPT.  */
@@ -3077,7 +3079,7 @@ yyreturn:
   while (yyssp != yyss)
     {
       yydestruct ("Cleanup: popping",
-                  yystos[*yyssp], yyvsp, yylsp, scanner, result);
+                  yystos[*yyssp], yyvsp, yylsp, scanner, compiler, parseFile);
       YYPOPSTACK (1);
     }
 #ifndef yyoverflow

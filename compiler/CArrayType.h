@@ -15,8 +15,8 @@ class CArrayType : public CType {
 public:
     CArrayType(const char* name, weak_ptr<CFunction> parent) : CType(name, parent) { }
     
-    //virtual Type* llvmAllocType(Compiler* compiler, CResult& result);
-    //virtual Type* llvmRefType(Compiler* compiler, CResult& result);
+    //virtual Type* llvmAllocType(Compiler* compiler);
+    //virtual Type* llvmRefType(Compiler* compiler);
 };
 
 #endif /* CArrayType_h */

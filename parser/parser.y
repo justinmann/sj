@@ -3,7 +3,7 @@
 %locations
 %token-table
 %lex-param {void *scanner}
-%parse-param {void *scanner} {CResult* result}
+%parse-param {void *scanner} {Compiler* compiler} {CParseFile* parseFile}
 
 %code requires {
 struct OPTIONANDTYPELIST {
@@ -18,14 +18,14 @@ struct OPTIONANDTYPELIST {
 #include "../node/Node.h"
 #include "parser.hpp"
 
-#define LOC CLoc(result->fileName, yyloc.first_line, yyloc.first_column)
-#define LLOC CLoc(result->fileName, yylloc.first_line, yylloc.first_column)
+#define LOC CLoc(parseFile->fileName, yyloc.first_line, yyloc.first_column)
+#define LLOC CLoc(parseFile->fileName, yylloc.first_line, yylloc.first_column)
 
-int yyerror(YYLTYPE *locp, void *scanner, CResult* result, const char *msg) {
+int yyerror(YYLTYPE *locp, void *scanner, Compiler* compiler, CParseFile* parseFile, const char *msg) {
   if (locp) {
-  	result->addWarning(CLoc(result->fileName, locp->first_line, locp->first_column), CErrorCode::Parser, msg);
+  	compiler->addWarning(CLoc(parseFile->fileName, locp->first_line, locp->first_column), CErrorCode::Parser, msg);
   } else {
-  	result->addWarning(CLoc::undefined, CErrorCode::Parser, msg);
+  	compiler->addWarning(CLoc::undefined, CErrorCode::Parser, msg);
   }
   return (0);
 }
@@ -98,7 +98,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 %%
 
-program 			: stmts 										{ result->block = std::shared_ptr<NBlock>($1); }
+program 			: stmts 										{ parseFile->block = std::shared_ptr<NBlock>($1); }
 					;
 
 stmts 				: stmt											{ $$ = new NBlock(LOC); if ($1) $$->statements.push_back(shared_ptr<NBase>($1)); }
@@ -114,7 +114,7 @@ stmt 				: /* Blank! */									{ $$ = nullptr; }
 					| TCDEFINE										{ $$ = new NCCode(LOC, NCC_DEFINE, $1->c_str()); delete $1; }
 					| TCFUNCTION									{ $$ = new NCCode(LOC, NCC_FUNCTION, $1->c_str()); delete $1; }
 					| TINCLUDE TSTRING								{ $$ = new NInclude(LOC, $2->c_str()); delete $2; }
-					| error	 										{ $$ = nullptr; /* yyclearin; */ result->addError(LLOC, CErrorCode::InvalidCharacter, "Something failed to parse"); }
+					| error	 										{ $$ = nullptr; /* yyclearin; */ compiler->addError(LLOC, CErrorCode::InvalidCharacter, "Something failed to parse"); }
 					;
 
 block 				: TLBRACE stmts TRBRACE 						{ $$ = $2; }

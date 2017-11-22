@@ -4,19 +4,19 @@ bool CIsEmptyVar::getReturnThis() {
     return false;
 }
 
-shared_ptr<CType> CIsEmptyVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CIsEmptyVar::getType(Compiler* compiler) {
     return compiler->typeBool;
 }
 
-void CIsEmptyVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    auto leftValue = trBlock->createTempStoreVariable(loc, scope.lock(), var->getType(compiler, result), "isEmpty");
-    var->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, leftValue);
+void CIsEmptyVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    auto leftValue = trBlock->createTempStoreVariable(loc, scope.lock(), var->getType(compiler), "isEmpty");
+    var->transpile(compiler, trOutput, trBlock, nullptr, thisValue, leftValue);
     if (!leftValue->hasSetValue) {
         return;
     }
     
     if (!leftValue->type->isOption) {
-        result.addError(loc, CErrorCode::TypeMismatch, "isEmpty requires an option type");
+        compiler->addError(loc, CErrorCode::TypeMismatch, "isEmpty requires an option type");
         return;
     }
     
@@ -27,36 +27,36 @@ void CIsEmptyVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOut
     else {
         line << "(" << leftValue->name << " == 0)";
     }
-    storeValue->retainValue(compiler, result, trBlock, make_shared<TrValue>(nullptr, compiler->typeBool, line.str()));
+    storeValue->retainValue(compiler, trBlock, make_shared<TrValue>(nullptr, compiler->typeBool, line.str()));
 }
 
-void CIsEmptyVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CIsEmptyVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     ss << "isEmpty(";
-    var->dump(compiler, result, nullptr, functions, ss, dotSS, level);
+    var->dump(compiler, nullptr, functions, ss, dotSS, level);
     ss << ")";
 }
 
 
-void NIsEmpty::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NIsEmpty::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
-    node->define(compiler, result, thisFunction);
+    node->define(compiler, thisFunction);
 }
 
-shared_ptr<CVar> NIsEmpty::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto leftVar = node->getVar(compiler, result, thisFunction, thisVar, CTM_Undefined);
+shared_ptr<CVar> NIsEmpty::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+    auto leftVar = node->getVar(compiler, scope, CTM_Undefined);
     if (!leftVar) {
         return nullptr;
     }
 
-    auto leftType = leftVar->getType(compiler, result);
+    auto leftType = leftVar->getType(compiler);
     if (!leftType) {
         return nullptr;
     }
 
     if (!leftType->isOption) {
-        result.addError(loc, CErrorCode::TypeMismatch, "isEmpty requires an option type");
+        compiler->addError(loc, CErrorCode::TypeMismatch, "isEmpty requires an option type");
         return nullptr;
     }
 
-    return make_shared<CIsEmptyVar>(loc, thisFunction, leftVar);
+    return make_shared<CIsEmptyVar>(loc, scope, leftVar);
 }

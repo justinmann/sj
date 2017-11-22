@@ -70,7 +70,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "string2"
+            argument = "interface"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

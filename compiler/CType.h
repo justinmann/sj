@@ -64,7 +64,7 @@ public:
     weak_ptr<CBaseFunction> parent;
     bool isOption;
 
-    void transpileDefaultValue(Compiler* compiler, CResult& result, CLoc loc, TrBlock* trBlock, shared_ptr<TrStoreValue> storeValue);
+    void transpileDefaultValue(Compiler* compiler, CLoc loc, TrBlock* trBlock, shared_ptr<TrStoreValue> storeValue);
     static bool isSameExceptMode(shared_ptr<CType> l, shared_ptr<CType> r);
     shared_ptr<CType> getValueType();
     shared_ptr<CType> getOptionType();

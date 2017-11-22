@@ -13,22 +13,21 @@
 
 class CEmptyVar : public CVar {
 public:
-    CEmptyVar(CLoc loc, shared_ptr<CType> type, shared_ptr<CBaseFunction> thisFunction) : CVar(loc, thisFunction, "", false), type(type), thisFunction(thisFunction) { }
+    CEmptyVar(CLoc loc, shared_ptr<CType> type, shared_ptr<CScope> scope) : CVar(loc, scope, "", false), type(type) { }
     bool getReturnThis();
-    shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
-    void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
+    shared_ptr<CType> getType(Compiler* compiler);
+    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
+    void dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
     
 private:
     shared_ptr<CType> type;
-    shared_ptr<CBaseFunction> thisFunction;
 };
 
 class NEmpty : public NVariableBase {
 public:
     NEmpty(CLoc loc, shared_ptr<CTypeName> typeName);
-    void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) { }
-    shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode);
+    void defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) { }
+    shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 
 private:
     shared_ptr<CTypeName> typeName;

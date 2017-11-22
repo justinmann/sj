@@ -186,6 +186,6 @@ struct YYLTYPE
 
 
 
-int yyparse (void *scanner, CResult* result);
+int yyparse (void *scanner, Compiler* compiler, CParseFile* parseFile);
 
 #endif /* !YY_YY_PARSER_PARSER_HPP_INCLUDED  */

@@ -17,17 +17,17 @@ public:
     shared_ptr<CTypeName> returnTypeName;
 
     NInterfaceMethod(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<CTypeName> returnTypeName);
-    void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {}
-    shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode) { return nullptr; }
+    void defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {}
+    shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) { return nullptr; }
 };
 
 class CInterfaceMethodReturnVar : public CVar {
 public:
-    CInterfaceMethodReturnVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CType> returnType) : CVar(loc, scope, "", false), returnType(returnType) { }
+    CInterfaceMethodReturnVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> returnType) : CVar(loc, scope, "", false), returnType(returnType) { }
     bool getReturnThis();
-    shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
-    void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
+    shared_ptr<CType> getType(Compiler* compiler);
+    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
+    void dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
     
     shared_ptr<CType> returnType;
     vector<shared_ptr<CVar>> returnVars;
@@ -35,11 +35,11 @@ public:
 
 class CInterfaceMethodArgVar : public CVar {
 public:
-    CInterfaceMethodArgVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CType> returnType) : CVar(loc, scope, "", false), returnType(returnType) { }
+    CInterfaceMethodArgVar(CLoc loc, shared_ptr<CInterfaceMethod> interfaceMethod, shared_ptr<CType> returnType) : CVar(loc, nullptr, "", false), returnType(returnType) { }
     bool getReturnThis();
-    shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    virtual void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
-    void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
+    shared_ptr<CType> getType(Compiler* compiler);
+    virtual void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
+    void dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
     
     shared_ptr<CType> returnType;
     vector<shared_ptr<CVar>> functionVars;
@@ -49,31 +49,30 @@ class CInterfaceMethod : public CBaseFunction, public enable_shared_from_this<CI
 public:
     shared_ptr<CType> returnType;
     vector<shared_ptr<CType>> argTypes;
-    vector<shared_ptr<CBaseFunction>> implementations;
     
     CInterfaceMethod(string& name, weak_ptr<CInterface> parent, int methodIndex, CTypeMode returnMode);
-    shared_ptr<CInterfaceMethod> init(Compiler* compiler, CResult& result, shared_ptr<NInterfaceMethod> method, shared_ptr<CBaseFunction> thisFunction);
+    shared_ptr<CInterfaceMethod> init(Compiler* compiler, shared_ptr<NInterfaceMethod> method, shared_ptr<CBaseFunction> thisFunction);
     string fullName(bool includeTemplateTypes);
     
-    shared_ptr<CTypes> getThisTypes(Compiler* compiler, CResult& result);
+    shared_ptr<CTypes> getThisTypes(Compiler* compiler);
     int getThisIndex(const string& name) const;
-    shared_ptr<CVar> getThisVar(Compiler* compiler, CResult& result);
+    shared_ptr<CVar> getThisVar(Compiler* compiler);
     
-    shared_ptr<CVar> getCVar(Compiler* compiler, CResult& result, const string& name);
-    shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode);
+    shared_ptr<CVar> getCVar(Compiler* compiler, const string& name, CTypeMode returnMode);
+    shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames) { assert(false); return nullptr; }
     pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(string name) { assert(false); return make_pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>>(nullptr, nullptr); }
-    shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
-    shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result);
-    string getCTypeName(Compiler* compiler, CResult& result, bool includeNames);
+    shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
+    shared_ptr<CType> getReturnType(Compiler* compiler, CTypeMode returnMode);
+    string getCTypeName(Compiler* compiler, bool includeNames);
     string getCStructName(CTypeMode typeMode) { assert(false); return ""; }
-    string getCInitFunctionName();
+    string getCInitFunctionName(CTypeMode returnMode);
     string getCCopyFunctionName();
     string getCDestroyFunctionName();
 
-    void transpileDefinition(Compiler* compiler, CResult& result, TrOutput* trOutput);
-    void transpile(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
-    void dumpBody(Compiler* compiler, CResult& result, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
-    bool getReturnMustRelease(Compiler* compiler, CResult& result);
+    void transpileDefinition(Compiler* compiler, TrOutput* trOutput);
+    void transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode returnMode);
+    void dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level, CTypeMode returnMode);
+    bool getReturnMustRelease(Compiler* compiler);
 
     CTypeMode returnMode;
     

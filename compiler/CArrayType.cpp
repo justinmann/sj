@@ -8,15 +8,15 @@
 
 #include "../node/Node.h"
 
-//Type* CArrayType::llvmAllocType(Compiler* compiler, CResult& result) {
+//Type* CArrayType::llvmAllocType(Compiler* compiler) {
 //    auto p = static_pointer_cast<CFunction>(parent.lock());
-//    auto itemType = p->templateTypes[0]->llvmRefType(compiler, result);
+//    auto itemType = p->templateTypes[0]->llvmRefType(compiler);
 //    return itemType->getPointerTo();
 //}
 //
-//Type* CArrayType::llvmRefType(Compiler* compiler, CResult& result) {
+//Type* CArrayType::llvmRefType(Compiler* compiler) {
 //    auto p = static_pointer_cast<CFunction>(parent.lock());
-//    auto itemType = p->templateTypes[0]->llvmRefType(compiler, result);
+//    auto itemType = p->templateTypes[0]->llvmRefType(compiler);
 //    return itemType->getPointerTo();
 //}
 

@@ -8,7 +8,7 @@
 
 #include "../node/Node.h"
 
-shared_ptr<CType> CNormalVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CNormalVar::getType(Compiler* compiler) {
     return type;
 }
 
@@ -16,7 +16,7 @@ bool CNormalVar::getReturnThis() {
     return false;
 }
 
-void CNormalVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void CNormalVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     if (dotValue) {
         auto returnValue = trBlock->createTempVariable(scope.lock(), type, "dotTemp");
         stringstream lineStream;
@@ -29,20 +29,20 @@ void CNormalVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutp
         }
         lineStream << name;
         trBlock->statements.push_back(lineStream.str());
-        storeValue->retainValue(compiler, result, trBlock, returnValue);
+        storeValue->retainValue(compiler, trBlock, returnValue);
     } else if (trBlock->hasThis && (mode == Var_Public || mode == Var_Private)) {
         auto returnValue = trBlock->createTempVariable(scope.lock(), type, "dotTemp");
         stringstream lineStream;
         lineStream << returnValue->name << " = " << "_this->" << name;
         trBlock->statements.push_back(lineStream.str());
-        storeValue->retainValue(compiler, result, trBlock, returnValue);
+        storeValue->retainValue(compiler, trBlock, returnValue);
     } else {
         auto returnValue = make_shared<TrValue>(scope.lock(), type, name);
-        storeValue->retainValue(compiler, result, trBlock, returnValue);
+        storeValue->retainValue(compiler, trBlock, returnValue);
     }
 }
 
-shared_ptr<TrStoreValue> CNormalVar::getStoreValue(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op, bool isFirstAssignment) {
+shared_ptr<TrStoreValue> CNormalVar::getStoreValue(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op, bool isFirstAssignment) {
     stringstream lineStream;
 
     string varName;
@@ -64,7 +64,7 @@ shared_ptr<TrStoreValue> CNormalVar::getStoreValue(Compiler* compiler, CResult& 
         }
         else if (!isMutable) {
             // Check is mutable or first assignment
-            result.addError(loc, CErrorCode::TypeMismatch, "cannot assign to immutable variable");
+            compiler->addError(loc, CErrorCode::TypeMismatch, "cannot assign to immutable variable");
             return nullptr;
         }
         varName = name;
@@ -73,7 +73,7 @@ shared_ptr<TrStoreValue> CNormalVar::getStoreValue(Compiler* compiler, CResult& 
     return make_shared<TrStoreValue>(loc, scope.lock(), type, varName, op, isFirstAssignment);
 }
 
-void CNormalVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CNormalVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     if (dotSS.gcount()) {
         ss << dotSS.str() << ".";
     }

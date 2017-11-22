@@ -63,26 +63,11 @@ std::string strprintf( const char* format, Args... args ) {
     return str;
 }
 
-// Function* getFunctionFromBuilder(IRBuilder<>* builder);
-
-// std::string Type_print(Type* type);
-
 class NFunction;
-class KaleidoscopeJIT;
 class NBlock;
 class NBase;
 class NAssignment;
 class CInterfaceDefinition;
-
-enum CResultType {
-    RESULT_ERROR,
-    RESULT_VOID,
-    RESULT_INT,
-    RESULT_BOOL,
-    RESULT_CHAR,
-    RESULT_FLOAT,
-    RESULT_STR
-};
 
 enum CErrorCode {
     Internal,
@@ -133,23 +118,28 @@ public:
 	void writeToStream(ostream& stream);
 };
 
-class CResult {
+enum CompilerState {
+    Define,
+    Compile
+};
+
+class CParseFile {
 public:
-    CResultType type;
-    union {
-        int64_t iResult;
-        bool bResult;
-        double fResult;
-        char cResult;
-    };
-    string strResult;
-    
-    vector<CError> errors;
-    vector<CError> warnings;
+    Compiler* compiler;
     shared_ptr<string> fileName;
     shared_ptr<NBlock> block;
-    shared_ptr<CType> returnType;
-    
+};
+
+class SJException : public exception { };
+
+class Compiler
+{
+public:
+    Compiler();
+	bool transpile(const string& fileName, ostream& stream, ostream& errorStream, ostream* debugStream);
+    shared_ptr<CType> getType(const string& name) const;
+    void includeFile(const string& fileName);
+
     template< typename... Args >
     void addError(CLoc loc, const CErrorCode code, const char* format, Args... args) {
         string str = strprintf(format, args...);
@@ -161,7 +151,7 @@ public:
         assert(false);
 #endif
     }
-
+    
     template< typename... Args >
     void addWarning(CLoc loc, const CErrorCode code, const char* format, Args... args) {
         string str = strprintf(format, args...);
@@ -170,25 +160,10 @@ public:
         printf("WARN: %d:%d %s\n", loc.line, loc.col, str.c_str());
 #endif
     }
-};
-
-enum CompilerState {
-    Define,
-    FixVar,
-    Compile
-};
-
-class SJException : public exception { };
-
-class Compiler
-{
-public:
-    Compiler();
-	bool transpile(const string& fileName, ostream& stream, ostream& errorStream, ostream* debugStream);
-    shared_ptr<CType> getType(const string& name) const;
-    void includeFile(CResult& result, const string& fileName);
-
-    CompilerState state;    
+    
+    CompilerState state;
+    vector<CError> errors;
+    vector<CError> warnings;
     shared_ptr<CType> typeI32;
     shared_ptr<CType> typeI64;
     shared_ptr<CType> typeU32;
@@ -211,11 +186,13 @@ public:
     map<string, shared_ptr<CTypes>> types;
 
 private:
-    void reset();
-    shared_ptr<CResult> genNodeFile(const string& fileName);
-    shared_ptr<CResult> genNode(const string& fileName, const string& code);    
+    shared_ptr<CParseFile> genNodeFile(const string& fileName);
+    shared_ptr<CParseFile> genNode(const string& fileName, const string& code);
+    
     map<string, bool> includedBlockFileNames;
     vector<pair<string, shared_ptr<NBlock>>> includedBlocks;
+
+    shared_ptr<NBlock> globalBlock;
 };
 
 #endif /* Compiler_h */

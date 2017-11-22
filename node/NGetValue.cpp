@@ -2,35 +2,35 @@
 
 class CGetValueVar : public CVar {
 public:
-    CGetValueVar(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CVar> leftVar, bool isProtectedWithEmptyCheck) : CVar(loc, scope, "", false), leftVar(leftVar), isProtectedWithEmptyCheck(isProtectedWithEmptyCheck) { }
+    CGetValueVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> leftVar, bool isProtectedWithEmptyCheck) : CVar(loc, scope, "", false), leftVar(leftVar), isProtectedWithEmptyCheck(isProtectedWithEmptyCheck) { }
 
     bool getReturnThis() {
         return false;
     }
     
-    shared_ptr<CType> getType(Compiler* compiler, CResult& result) {
-        auto leftType = leftVar->getType(compiler, result);
+    shared_ptr<CType> getType(Compiler* compiler) {
+        auto leftType = leftVar->getType(compiler);
         if (!leftType) {
             return nullptr;
         }
 
         if (!leftType->isOption) {
-            result.addError(loc, CErrorCode::TypeMismatch, "getValue requires an option type");
+            compiler->addError(loc, CErrorCode::TypeMismatch, "getValue requires an option type");
             return nullptr;
         }
 
         return leftType->getValueType();
     }
 
-    void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-        auto leftValue = trBlock->createTempStoreVariable(loc, leftVar->scope.lock(), leftVar->getType(compiler, result), "getValue");
-        leftVar->transpile(compiler, result, trOutput, trBlock, dotValue, thisValue, leftValue);
+    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+        auto leftValue = trBlock->createTempStoreVariable(loc, leftVar->scope.lock(), leftVar->getType(compiler), "getValue");
+        leftVar->transpile(compiler, trOutput, trBlock, dotValue, thisValue, leftValue);
         if (!leftValue) {
             return;
         }
 
         if (!leftValue->type->isOption) {
-            result.addError(loc, CErrorCode::TypeMismatch, "getValue requires an option type");
+            compiler->addError(loc, CErrorCode::TypeMismatch, "getValue requires an option type");
             return;
         }
 
@@ -52,12 +52,12 @@ public:
             line << leftValue->name;
         }
 
-        storeValue->retainValue(compiler, result, trBlock, make_shared<TrValue>(scope.lock(), leftValue->type->getValueType(), line.str()));
+        storeValue->retainValue(compiler, trBlock, make_shared<TrValue>(scope.lock(), leftValue->type->getValueType(), line.str()));
     }
 
-    void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+    void dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
         ss << "getValue(";
-        leftVar->dump(compiler, result, dotVar, functions, ss, dotSS, level);
+        leftVar->dump(compiler, dotVar, functions, ss, dotSS, level);
         ss << ")";
     }
 
@@ -66,24 +66,24 @@ private:
     bool isProtectedWithEmptyCheck;
 };
 
-void NGetValue::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NGetValue::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
-    node->define(compiler, result, thisFunction);
+    node->define(compiler, thisFunction);
 }
 
-shared_ptr<CVar> NGetValue::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto leftVar = node->getVar(compiler, result, thisFunction, thisVar, CTM_Undefined);
+shared_ptr<CVar> NGetValue::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+    auto leftVar = node->getVar(compiler, scope, CTM_Undefined);
     if (!leftVar) {
         return nullptr;
     }
 
-    auto leftType = leftVar->getType(compiler, result);
+    auto leftType = leftVar->getType(compiler);
     if (!leftType) {
         return nullptr;
     }
 
     if (!leftType->isOption) {
-        result.addError(loc, CErrorCode::TypeMismatch, "getValue requires an option type");
+        compiler->addError(loc, CErrorCode::TypeMismatch, "getValue requires an option type");
         return nullptr;
     }
 

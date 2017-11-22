@@ -3,26 +3,26 @@
 NMathAssignment::NMathAssignment(CLoc loc, shared_ptr<NVariableBase> leftSide, NMathAssignmentOp op, shared_ptr<NVariableBase> numberSide) : NBase(NodeType_MathAssignment, loc), op(op), leftSide(leftSide), numberSide(numberSide) {
 }
 
-void NMathAssignment::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NMathAssignment::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     if (leftSide) {
-        leftSide->define(compiler, result, thisFunction);
+        leftSide->define(compiler, thisFunction);
     }
     if (numberSide) {
-        numberSide->define(compiler, result, thisFunction);
+        numberSide->define(compiler, thisFunction);
     }
 }
 
-shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode) {
-    auto leftVar = leftSide->getVar(compiler, result, thisFunction, thisVar, nullptr, CTM_Undefined);
+shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    auto leftVar = leftSide->getVar(compiler, scope, nullptr, CTM_Undefined);
     if (!leftVar) {
-        result.addError(loc, CErrorCode::InvalidVariable, "left side is empty");
+        compiler->addError(loc, CErrorCode::InvalidVariable, "left side is empty");
         return nullptr;
     }
 
-    auto leftType = leftVar->getType(compiler, result);
+    auto leftType = leftVar->getType(compiler);
     if (!leftType) {
-        result.addError(loc, CErrorCode::InvalidType, "left type is empty");
+        compiler->addError(loc, CErrorCode::InvalidType, "left type is empty");
         return nullptr;
     }
 
@@ -33,27 +33,27 @@ shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result
         switch (op) {
         case NMathAssignmentOp::NMAO_Inc:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "increment", nullptr, nullptr));
-            rightVar = operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, nullptr, returnMode);
+            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
             break;
         case NMathAssignmentOp::NMAO_Dec:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "decrement", nullptr, nullptr));
-            rightVar = operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, nullptr, returnMode);
+            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
             break;
         case NMathAssignmentOp::NMAO_Add:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "add", nullptr, make_shared<NodeList>(numberSide)));
-            rightVar = operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, nullptr, returnMode);
+            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
             break;
         case NMathAssignmentOp::NMAO_Sub:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "subtract", nullptr, make_shared<NodeList>(numberSide)));
-            rightVar = operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, nullptr, returnMode);
+            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
             break;
         case NMathAssignmentOp::NMAO_Mul:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "multiply", nullptr, make_shared<NodeList>(numberSide)));
-            rightVar = operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, nullptr, returnMode);
+            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
             break;
         case NMathAssignmentOp::NMAO_Div:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "divide", nullptr, make_shared<NodeList>(numberSide)));
-            rightVar = operatorOverloadNode->getVar(compiler, result, thisFunction, thisVar, nullptr, returnMode);
+            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
             break;
         default:
             assert(false);
@@ -63,22 +63,22 @@ shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result
     else {
         shared_ptr<CVar> numberVar;
         if (numberSide) {
-            numberVar = numberSide->getVar(compiler, result, thisFunction, thisVar, nullptr, CTM_Undefined);
+            numberVar = numberSide->getVar(compiler, scope, nullptr, CTM_Undefined);
             if (!numberVar) {
                 return nullptr;
             }
             
-            auto numberType = numberVar->getType(compiler, result);
+            auto numberType = numberVar->getType(compiler);
             if (!numberType) {
                 return nullptr;
             }
             
             if (leftType != numberType) {
-                result.addError(loc, CErrorCode::TypeMismatch, "left type '%s' does not match right type '%s'", leftType->name.c_str(), numberType->name.c_str());
+                compiler->addError(loc, CErrorCode::TypeMismatch, "left type '%s' does not match right type '%s'", leftType->name.c_str(), numberType->name.c_str());
                 return nullptr;
             }
         } else {
-            numberVar = make_shared<CConstantVar>(loc, thisFunction, leftType, "1");
+            numberVar = make_shared<CConstantVar>(loc, scope, leftType, "1");
         }
         
         NMathOp mathOp;
@@ -106,7 +106,7 @@ shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result
                 break;
         }
         
-        rightVar = make_shared<CMathVar>(loc, thisFunction, mathOp, leftVar, numberVar);
+        rightVar = make_shared<CMathVar>(loc, scope, mathOp, leftVar, numberVar);
     }
 
     auto leftStoreVar = dynamic_pointer_cast<CStoreVar>(leftVar);

@@ -16,11 +16,11 @@ class CCallVar;
 
 class CAssignVar : public CVar {
 public:
-    CAssignVar(CLoc loc, shared_ptr<CBaseFunction> scope, AssignOp op, bool isFirstAssignment, shared_ptr<CStoreVar> leftVar, shared_ptr<CVar> rightVar) : CVar(loc, scope, "", op == ASSIGN_Mutable || op == ASSIGN_MutableCopy), op(op), isFirstAssignment(isFirstAssignment), leftVar(leftVar), rightVar(rightVar) { }
+    CAssignVar(CLoc loc, shared_ptr<CScope> scope, AssignOp op, bool isFirstAssignment, shared_ptr<CStoreVar> leftVar, shared_ptr<CVar> rightVar) : CVar(loc, scope, "", op == ASSIGN_Mutable || op == ASSIGN_MutableCopy), op(op), isFirstAssignment(isFirstAssignment), leftVar(leftVar), rightVar(rightVar) { }
     bool getReturnThis();
-    shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    void transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
-    void dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
+    shared_ptr<CType> getType(Compiler* compiler);
+    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
+    void dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
     
 private:
     AssignOp op;
@@ -32,9 +32,9 @@ private:
 class NAssignment : public NBase {
 public:
     NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTypeName> typeName, const char* name, shared_ptr<NBase> rightSide, AssignOp op);
-    void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);
-    shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode);
-    shared_ptr<CType> getType(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, CTypeMode returnMode);
+    void defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
+    shared_ptr<CType> getType(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
     
     shared_ptr<NVariableBase> var;
     shared_ptr<CTypeName> typeName;

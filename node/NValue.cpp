@@ -4,30 +4,29 @@ bool CValueVar::getReturnThis() {
     return false;
 }
 
-shared_ptr<CType> CValueVar::getType(Compiler* compiler, CResult& result) {
-    assert(compiler->state >= CompilerState::FixVar);
-    auto leftType = var->getType(compiler, result);
+shared_ptr<CType> CValueVar::getType(Compiler* compiler) {
+    auto leftType = var->getType(compiler);
     if (!leftType) {
         return nullptr;
     }
 
     if (leftType->isOption) {
-        result.addError(loc, CErrorCode::TypeMismatch, "value cannot take an option type");
+        compiler->addError(loc, CErrorCode::TypeMismatch, "value cannot take an option type");
         return nullptr;
     }
 
     return leftType->getOptionType();
 }
 
-void CValueVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    auto leftValue = trBlock->createTempStoreVariable(loc, scope.lock(), var->getType(compiler, result), "value");
-    var->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, leftValue);
+void CValueVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    auto leftValue = trBlock->createTempStoreVariable(loc, scope.lock(), var->getType(compiler), "value");
+    var->transpile(compiler, trOutput, trBlock, nullptr, thisValue, leftValue);
     if (!leftValue->hasSetValue) {
         return;
     }
 
     if (leftValue->type->isOption) {
-        result.addError(loc, CErrorCode::TypeMismatch, "value cannot take an option type");
+        compiler->addError(loc, CErrorCode::TypeMismatch, "value cannot take an option type");
         return;
     }
 
@@ -41,43 +40,43 @@ void CValueVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutpu
         line2 << returnValue->name << ".value = " << leftValue->name;
         trBlock->statements.push_back(line2.str());
 
-        storeValue->retainValue(compiler, result, trBlock, returnValue);
+        storeValue->retainValue(compiler, trBlock, returnValue);
     }
     else {
-        storeValue->retainValue(compiler, result, trBlock, make_shared<TrValue>(leftValue->scope, leftValue->type->getOptionType(), leftValue->name));
+        storeValue->retainValue(compiler, trBlock, make_shared<TrValue>(leftValue->scope, leftValue->type->getOptionType(), leftValue->name));
     }
 }
 
-void CValueVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CValueVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     ss << "value(";
-    var->dump(compiler, result, nullptr, functions, ss, dotSS, level);
+    var->dump(compiler, nullptr, functions, ss, dotSS, level);
     ss << ")";
 
 }
 
-void NValue::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NValue::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
-    node->define(compiler, result, thisFunction);
+    node->define(compiler, thisFunction);
 }
 
-shared_ptr<CVar> NValue::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto leftVar = node->getVar(compiler, result, thisFunction, thisVar, CTM_Heap);
+shared_ptr<CVar> NValue::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+    auto leftVar = node->getVar(compiler, scope, CTM_Heap);
     if (!leftVar) {
         return nullptr;
     }
 
-    auto leftType = leftVar->getType(compiler, result);
+    auto leftType = leftVar->getType(compiler);
     if (!leftType) {
         return nullptr;
     }
 
     if (leftType->isOption) {
-        result.addError(loc, CErrorCode::TypeMismatch, "value cannot take an option type");
+        compiler->addError(loc, CErrorCode::TypeMismatch, "value cannot take an option type");
         return nullptr;
     }
 
     if (leftType->typeMode != CTM_Heap && leftType->typeMode != CTM_Value) {
-        result.addError(loc, CErrorCode::TypeMismatch, "value can only work on heap or value objects");
+        compiler->addError(loc, CErrorCode::TypeMismatch, "value can only work on heap or value objects");
         return nullptr;
     }
 

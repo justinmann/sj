@@ -1,33 +1,32 @@
 #include "Node.h"
 
-shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CResult& result, CLoc loc_, const string& name_, shared_ptr<NodeList> arguments_, shared_ptr<CBaseFunction> thisFunction_, shared_ptr<CThisVar> thisVar, weak_ptr<CVar> dotVar_, shared_ptr<CBaseFunction> callee_) {
+shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CLoc loc_, const string& name_, shared_ptr<NodeList> arguments_, shared_ptr<CScope> scope, weak_ptr<CVar> dotVar_, shared_ptr<CBaseFunction> callee_, CTypeMode returnMode) {
     assert(callee_);
 
-    auto c = make_shared<CCallVar>(loc_, thisFunction_);
+    auto c = make_shared<CCallVar>(loc_, scope, returnMode);
     c->arguments = arguments_;
-    c->thisFunction = thisFunction_;
-    c->thisVar = thisVar;
+    c->scope = scope;
     c->dotVar = dotVar_;
     c->callee = callee_;
     
-    auto onHasParent = [callee_, thisFunction_](Compiler* compiler, CResult& result) {
-        if (callee_ == thisFunction_) {
-            callee_->setHasParent(compiler, result);
+    auto onHasParent = [callee_, scope](Compiler* compiler) {
+        if (callee_ == scope->function) {
+            callee_->setHasParent(compiler);
         } else {
-            auto temp = static_pointer_cast<CBaseFunction>(thisFunction_);
+            auto temp = static_pointer_cast<CBaseFunction>(scope->function);
             while (temp && temp != callee_->parent.lock()) {
                 auto nextParent = temp->parent.lock();
                 // If my parent does not have a parent then leave off the parent
                 if (nextParent != nullptr && !nextParent->parent.expired()) {
-                    temp->setHasParent(compiler, result);
+                    temp->setHasParent(compiler);
                 }
                 temp = nextParent;
             }
         }
     };
     
-    if (callee_->getHasParent(compiler, result)) {
-        onHasParent(compiler, result);
+    if (callee_->getHasParent(compiler)) {
+        onHasParent(compiler);
     } else {
         callee_->onHasParent(onHasParent);
     }
@@ -39,13 +38,13 @@ bool CCallVar::getReturnThis() {
     return false;
 }
 
-shared_ptr<CType> CCallVar::getType(Compiler* compiler, CResult& result) {
-    return callee->getReturnType(compiler, result);
+shared_ptr<CType> CCallVar::getType(Compiler* compiler) {
+    return callee->getReturnType(compiler, returnMode);
 }
 
-bool CCallVar::getParameters(Compiler* compiler, CResult& result, vector<pair<bool, shared_ptr<NBase>>>& parameters) {
+bool CCallVar::getParameters(Compiler* compiler, vector<pair<bool, shared_ptr<NBase>>>& parameters) {
     if (parameters.size() < arguments->size()) {
-        result.addError(loc, CErrorCode::TooManyParameters, "too many parameters");
+        compiler->addError(loc, CErrorCode::TooManyParameters, "too many parameters");
         return false;
     }
     
@@ -57,12 +56,12 @@ bool CCallVar::getParameters(Compiler* compiler, CResult& result, vector<pair<bo
             assert(parameterAssignment->inFunctionDeclaration);
             auto index = callee->getThisIndex(parameterAssignment->name);
             if (index < 0) {
-                result.addError(loc, CErrorCode::ParameterDoesNotExist, "cannot find parameter '%s'", parameterAssignment->name.c_str());
+                compiler->addError(loc, CErrorCode::ParameterDoesNotExist, "cannot find parameter '%s'", parameterAssignment->name.c_str());
                 return false;
             }
             
             if (parameters[index].second != nullptr) {
-                result.addError(loc, CErrorCode::ParameterRedefined, "defined parameter '%s' twice", parameterAssignment->name.c_str());
+                compiler->addError(loc, CErrorCode::ParameterRedefined, "defined parameter '%s' twice", parameterAssignment->name.c_str());
                 return false;
             }
             
@@ -70,12 +69,12 @@ bool CCallVar::getParameters(Compiler* compiler, CResult& result, vector<pair<bo
             hasSetByName = true;
         } else {
             if (hasSetByName) {
-                result.addError(loc, CErrorCode::ParameterByIndexAfterByName, "all named parameters must be after the un-named parameters");
+                compiler->addError(loc, CErrorCode::ParameterByIndexAfterByName, "all named parameters must be after the un-named parameters");
                 return false;
             }
             
             if (parameters[argIndex].second != nullptr) {
-                result.addError(loc, CErrorCode::Internal, "re-defining the same parameters which should be impossible for un-named parameters");
+                compiler->addError(loc, CErrorCode::Internal, "re-defining the same parameters which should be impossible for un-named parameters");
                 return false;
             }
             
@@ -88,7 +87,7 @@ bool CCallVar::getParameters(Compiler* compiler, CResult& result, vector<pair<bo
     for (auto it : callee->argDefaultValues) {
         if (argIndex < parameters.size() && parameters[argIndex].second == nullptr) {
             if (it == nullptr) {
-                result.addError(loc, CErrorCode::ParameterRequired, "parameter %d is required", argIndex);
+                compiler->addError(loc, CErrorCode::ParameterRequired, "parameter %d is required", argIndex);
                 return false;
             }
             assert(it->nodeType != NodeType_Assignment);
@@ -100,35 +99,35 @@ bool CCallVar::getParameters(Compiler* compiler, CResult& result, vector<pair<bo
     return true;
 }
 
-void CCallVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void CCallVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     assert(compiler->state == CompilerState::Compile);
 
     if (arguments->size() > callee->argDefaultValues.size()) {
-        result.addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments->size(), callee->argDefaultValues.size());
+        compiler->addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments->size(), callee->argDefaultValues.size());
         return;
     }
 
     // Fill in parameters
     vector<pair<bool, shared_ptr<NBase>>> parameters(callee->argDefaultValues.size());
-    if (!getParameters(compiler, result, parameters)) {
+    if (!getParameters(compiler, parameters)) {
         return;
     }
 
-    callee->transpile(compiler, result, thisFunction, thisVar, trOutput, trBlock, dotValue, loc, parameters, thisValue, storeValue);
+    callee->transpile(compiler, scope.lock(), trOutput, trBlock, dotValue, loc, parameters, thisValue, storeValue, returnMode);
 }
 
-void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CCallVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     if (functions.find(callee) == functions.end()) {
         functions[callee] = "";
         stringstream temp;
-        callee->dumpBody(compiler, result, functions, temp, 0);
+        callee->dumpBody(compiler, functions, temp, 0, returnMode);
         functions[callee] = temp.str();
     }
 
     ss << callee->fullName(true) << "(";
 
     vector<pair<bool, shared_ptr<NBase>>> parameters(callee->argDefaultValues.size());
-    if (!getParameters(compiler, result, parameters)) {
+    if (!getParameters(compiler, parameters)) {
         return;
     }
 
@@ -136,11 +135,11 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar
         ss << "this" << " = ";
         ss << callee->fullName(true) << "(";
 
-        if (parameters.size() > 0 || callee->getHasParent(compiler, result)) {
+        if (parameters.size() > 0 || callee->getHasParent(compiler)) {
             ss << "\n";
             dumpf(ss, level + 1);
 
-            if (callee->getHasParent(compiler, result)) {
+            if (callee->getHasParent(compiler)) {
                 ss << "parent: ";
                 auto t = dotSS.str();
                 if (t.size() > 0) {
@@ -159,11 +158,11 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar
             for (auto it : parameters) {
                 auto paramVar = callee->argVars[paramIndex];
                 ss << paramVar->name.c_str();
-                auto ctype = paramVar->getType(compiler, result);
+                auto ctype = paramVar->getType(compiler);
                 ss << "'" << (ctype != nullptr ? ctype->name : "ERROR");
                 ss << (paramVar->isMutable ? " = " : " : ");
                 stringstream dotSS;
-                paramVar->dump(compiler, result, nullptr, functions, ss, dotSS, level + 1);
+                paramVar->dump(compiler, nullptr, functions, ss, dotSS, level + 1);
                 if (paramIndex != parameters.size() - 1) {
                     ss << ",\n";
                     dumpf(ss, level + 1);
@@ -175,11 +174,11 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar
         }
         ss << "))";
     } else {
-        if (parameters.size() > 0 || callee->getHasParent(compiler, result)) {
+        if (parameters.size() > 0 || callee->getHasParent(compiler)) {
             ss << "\n";
             dumpf(ss, level + 1);
 
-            if (callee->getHasParent(compiler, result)) {
+            if (callee->getHasParent(compiler)) {
                 ss << "parent: ";
                 auto t = dotSS.str();
                 if (t.size() > 0) {
@@ -198,10 +197,10 @@ void CCallVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar
             for (auto it : parameters) {
                 auto paramVar = callee->argVars[paramIndex];
                 ss << paramVar->name.c_str();
-                ss << "'" << paramVar->getType(compiler, result)->name.c_str();
+                ss << "'" << paramVar->getType(compiler)->name.c_str();
                 ss << (paramVar->isMutable ? " = " : " : ");
                 stringstream dotSS;
-                paramVar->dump(compiler, result, nullptr, functions, ss, dotSS, level + 1);
+                paramVar->dump(compiler, nullptr, functions, ss, dotSS, level + 1);
                 if (paramIndex != parameters.size() - 1) {
                     ss << ",\n";
                     dumpf(ss, level + 1);
@@ -229,59 +228,57 @@ NCall::NCall(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeN
     }
 }
 
-void NCall::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NCall::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     for (auto it : *arguments) {
         if (it->nodeType == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
-            parameterAssignment->define(compiler, result, thisFunction);
+            parameterAssignment->define(compiler, thisFunction);
         } else {
-            it->define(compiler, result, thisFunction);
+            it->define(compiler, thisFunction);
         }
     }
 }
 
-shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    assert(compiler->state >= CompilerState::FixVar);
-    
+shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
     // parentFunction will be specified if the NCall is used as the default NAssignment for a NFunction
-    auto cfunction = static_pointer_cast<CBaseFunction>(thisFunction);
+    auto cfunction = static_pointer_cast<CBaseFunction>(scope->function);
     
     if (dotVar) {
-        cfunction = dotVar->getType(compiler, result)->parent.lock();
+        cfunction = dotVar->getType(compiler)->parent.lock();
         if (!cfunction) {
-            result.addError(loc, CErrorCode::InvalidVariable, "parent is not a function");
+            compiler->addError(loc, CErrorCode::InvalidVariable, "parent is not a function");
             return nullptr;
         }
     }
     
     // Handle last name in list
-    auto callee = cfunction->getCFunction(compiler, result, name, thisFunction, templateTypeNames, returnMode);
+    auto callee = cfunction->getCFunction(compiler, name, scope, templateTypeNames);
     if (!callee) {
         // If we are still using "this" then we can check to see if it is a function on parent
-        if (cfunction == thisFunction) {
+        if (cfunction == scope->function) {
             while (cfunction && !cfunction->parent.expired() && !callee) {
                 cfunction = cfunction->parent.lock();
                 if (cfunction) {
-                    callee = cfunction->getCFunction(compiler, result, name, thisFunction, templateTypeNames, returnMode);
+                    callee = cfunction->getCFunction(compiler, name, scope, templateTypeNames);
                 }
             }
         }
     }
     
     if (!callee) {
-        result.addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", name.c_str());
+        compiler->addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", name.c_str());
         return nullptr;
     }
     
     return callee;
 }
 
-shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto callee = getCFunction(compiler, result, thisFunction, dotVar, returnMode);
+shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+    auto callee = getCFunction(compiler, scope, dotVar, returnMode);
     if (!callee) {
         return nullptr;
     }
     
-    return CCallVar::create(compiler, result, loc, name, arguments, thisFunction, thisVar, dotVar, callee);
+    return CCallVar::create(compiler, loc, name, arguments, scope, dotVar, callee, returnMode);
 }

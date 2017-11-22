@@ -18,7 +18,7 @@ struct YYLOCATION {
     int l;
     int c;
 };
-extern int yyparse(void*, CResult*);
+extern int yyparse(void*, Compiler*, CParseFile*);
 extern int yylex_init_extra(YYLOCATION l, void**);
 extern int yylex_destroy(void*);
 extern YY_BUFFER_STATE yy_scan_string(const char*, void*);
@@ -26,136 +26,7 @@ extern void yy_delete_buffer(YY_BUFFER_STATE, void*);
 
 CLoc CLoc::undefined = CLoc();
 
-//std::string Type_print(Type* type) {
-//    std::string type_str;
-//    llvm::raw_string_ostream rso(type_str);
-//    type->print(rso);
-//    return rso.str();
-//}
-//
-//Function* getFunctionFromBuilder(IRBuilder<>* builder) {
-//    return builder->GetInsertBlock()->getParent();
-//}
-
-//IRBuilder<> getEntryBuilder(IRBuilder<>* builder) {
-//    Function *function = getFunctionFromBuilder(builder);
-//    return IRBuilder<>(&function->getEntryBlock(), function->getEntryBlock().end()--);
-//}
-
-#ifdef DEBUG_CALLSTACK
-const char* callstack[9999];
-int callstackIndex = 0;
-map<void*, vector<vector<const char*>>> retains;
-map<void*, vector<vector<const char*>>> releases;
-map<void*, const char*> objTypes;
-
-extern "C" void pushFunction(const char* str) {
-    printf("push: %s\n", str);
-    callstack[callstackIndex] = str;
-    callstackIndex++;
-}
-
-extern "C" void popFunction() {
-    callstackIndex--;
-    printf("pop: %s\n", callstack[callstackIndex]);
-}
-
-extern "C" void recordRetain(void* v, const char* str) {
-    printf("RETAIN: %llx %s\n", (int64_t)v, str);
-    vector<const char*> stack(callstackIndex);
-    for (int i = 0; i < callstackIndex; i++) {
-        stack.push_back(callstack[i]);
-    }
-    retains[v].push_back(stack);
-    objTypes[v] = str;
-}
-
-extern "C" void recordRelease(void* v, const char* str) {
-    printf("RELEASE: %llx %s\n", (int64_t)v, str);
-    vector<const char*> stack(callstackIndex);
-    for (int i = 0; i < callstackIndex; i++) {
-        stack.push_back(callstack[i]);
-    }
-    releases[v].push_back(stack);
-    objTypes[v] = str;
-}
-#endif
-
-extern "C" void debugFunction(const char* str, void* v, int64_t t) {
-    printf("ERROR: %s %llx %lld\n", str, (uint64_t)v, t);
-#ifdef DEBUG_CALLSTACK
-    for (int i = 0; i < callstackIndex; i++) {
-        printf("%s\n", callstack[i]);
-    }
-#endif
-}
-
-//class KaleidoscopeJIT {
-//private:
-//    shared_ptr<TargetMachine> TM;
-//    const DataLayout DL;
-//    ObjectLinkingLayer<> ObjectLayer;
-//    IRCompileLayer<decltype(ObjectLayer)> CompileLayer;
-//    
-//public:
-//    typedef decltype(CompileLayer)::ModuleSetHandleT ModuleHandle;
-//    
-//    KaleidoscopeJIT(shared_ptr<TargetMachine> tm) : TM(tm), DL(TM->createDataLayout()), CompileLayer(ObjectLayer, SimpleCompiler(*TM)) {
-//        llvm::sys::DynamicLibrary::LoadLibraryPermanently(nullptr);
-//    }
-//    
-//    TargetMachine &getTargetMachine() { return *TM; }
-//    
-//    ModuleHandle addModule(unique_ptr<Module> M) {
-//        // Build our symbol resolver:
-//        // Lambda 1: Look back into the JIT itself to find symbols that are part of
-//        //           the same "logical dylib".
-//        // Lambda 2: Search for external symbols in the host process.
-//        auto Resolver = createLambdaResolver(
-//                                             [&](const string &Name) {
-//#ifdef SYMBOL_OUTPUT
-//                                                 printf("Looking for %s\n", Name.c_str());
-//#endif
-//                                                 if (auto Sym = CompileLayer.findSymbol(Name, false))
-//                                                     return Sym.toRuntimeDyldSymbol();
-//                                                 return RuntimeDyld::SymbolInfo(nullptr);
-//                                             },
-//                                             [](const string &Name) {
-//                                                 if (auto SymAddr =
-//                                                     RTDyldMemoryManager::getSymbolAddressInProcess(Name))
-//                                                     return RuntimeDyld::SymbolInfo(SymAddr, JITSymbolFlags::Exported);
-//                                                 return RuntimeDyld::SymbolInfo(nullptr);
-//                                             });
-//        
-//        // Build a singlton module set to hold our module.
-//        vector<unique_ptr<Module>> Ms;
-//        Ms.push_back(move(M));
-//        
-//        // Add the set to the JIT with the resolver we created above and a newly
-//        // created SectionMemoryManager.
-//        return CompileLayer.addModuleSet(move(Ms),
-//                                         make_unique<SectionMemoryManager>(),
-//                                         move(Resolver));
-//    }
-//    
-//    JITSymbol findSymbol(const string Name) {
-//        string MangledName;
-//        raw_string_ostream MangledNameStream(MangledName);
-//        Mangler::getNameWithPrefix(MangledNameStream, Name, DL);
-//        return CompileLayer.findSymbol(MangledNameStream.str(), true);
-//    }
-//    
-//    void removeModule(ModuleHandle H) {
-//        CompileLayer.removeModuleSet(H);
-//    }
-//    
-//};
-
 Compiler::Compiler() {
-    //InitializeNativeTarget();
-    //InitializeNativeTargetAsmPrinter();
-    //InitializeNativeTargetAsmParser();
-
     auto ctypes = CType::create("i32", "int32_t", "(int32_t)0", "int32_option", "int32_empty");
     typeI32 = ctypes->stackValueType;
     typeI32Option = ctypes->stackOptionType;
@@ -196,83 +67,12 @@ Compiler::Compiler() {
     typeVoid = ctypes->stackValueType;
 }
 
-void Compiler::reset() {
-    includedBlockFileNames.clear();
-    includedBlocks.clear();
-    //functionNames.clear();
-    //entryBuilders.clear();
-    //interfaceDefinitions.clear();
-    //
-    //allocFunction = nullptr;
-    //reallocFunction = nullptr;
-    //freeFunction = nullptr;
-    //debugFunction = nullptr;
-#ifdef DEBUG_CALLSTACK
-    pushFunction = nullptr;
-    popFunction = nullptr;
-    recordRetainFunction = nullptr;
-    recordReleaseFunction = nullptr;
-    
-    callstackIndex = 0;
-    retains.clear();
-    releases.clear();
-#endif
-    
-    // Open a new module.
-    //module = llvm::make_unique<Module>("sj", context);
-    //
-    //exception = llvm::make_unique<Exception>(&context, module.get());
-
-    //// Create a new pass manager attached to it.
-    //TheFPM = llvm::make_unique<legacy::FunctionPassManager>(module.get());
-    /*
-    // Do simple "peephole" optimizations and bit-twiddling optzns.
-    TheFPM->add(createInstructionCombiningPass());
-    // Reassociate expressions.
-    TheFPM->add(createReassociatePass());
-    // Eliminate Common SubExpressions.
-    TheFPM->add(createGVNPass());
-    // Simplify the control flow graph (deleting unreachable blocks, etc).
-    TheFPM->add(createCFGSimplificationPass());
-    */
-//    TheFPM->doInitialization();
-//
-//#ifdef DWARF_ENABLED
-//    // Add the current debug info version into the module.
-//    module->addModuleFlag(Module::Warning, "Debug Info Version",
-//                          DEBUG_METADATA_VERSION);
-//    
-//    // Darwin only supports dwarf2.
-//    if (Triple(sys::getProcessTriple()).isOSDarwin())
-//        module->addModuleFlag(llvm::Module::Warning, "Dwarf Version", 2);
-//    
-//    // Construct the DIBuilder, we do this here because we need the module.
-//    DBuilder = llvm::make_unique<DIBuilder>(*module);
-//    
-//    // Initialize value types
-//    typeInt = make_shared<CType>("int", Type::getInt64Ty(context), DBuilder->createBasicType("int", 64, 64, dwarf::DW_ATE_signed), ConstantInt::get(context, APInt(64, 0)));
-//    typeBool = make_shared<CType>("bool", Type::getInt1Ty(context), DBuilder->createBasicType("bool", 1, 64, dwarf::DW_ATE_boolean), ConstantInt::get(context, APInt(1, 0)));
-//    typeFloat = make_shared<CType>("float", Type::getDoubleTy(context), DBuilder->createBasicType("double", 64, 64, dwarf::DW_ATE_float), ConstantFP::get(context, APFloat(0.0)));
-//    typeChar = make_shared<CType>("char", Type::getInt8Ty(context), DBuilder->createBasicType("char", 8, 64, dwarf::DW_ATE_UTF), ConstantInt::get(context, APInt(8, 0)));
-//    typeVoid = make_shared<CType>("void", Type::getVoidTy(context), nullptr, nullptr);
-//#else
-//    // Initialize value types
-//    typeInt = make_shared<CType>("int", Type::getInt64Ty(context), ConstantInt::get(context, APInt(64, 0)));
-//    typeBool = make_shared<CType>("bool", Type::getInt1Ty(context), ConstantInt::get(context, APInt(1, 0)));
-//    typeFloat = make_shared<CType>("float", Type::getDoubleTy(context), ConstantFP::get(context, APFloat(0.0)));
-//    typeChar = make_shared<CType>("char", Type::getInt8Ty(context), ConstantInt::get(context, APInt(8, 0)));
-//    typeVoid = make_shared<CType>("void", Type::getVoidTy(context), nullptr);
-//#endif
-}
-
-shared_ptr<CResult> Compiler::genNodeFile(const string& fileName) {
+shared_ptr<CParseFile> Compiler::genNodeFile(const string& fileName) {
     std::ifstream t(fileName);
     std::string str;
     
     if (t.fail()) {
-        auto result = make_shared<CResult>();
-        result->addError(CLoc(), CErrorCode::InvalidString, "file does not exist '%s'", fileName.c_str());
-        return result;
+        addError(CLoc(), CErrorCode::InvalidString, "file does not exist '%s'", fileName.c_str());
     }
     
     t.seekg(0, std::ios::end);
@@ -284,35 +84,29 @@ shared_ptr<CResult> Compiler::genNodeFile(const string& fileName) {
     
     return genNode(fileName, str);
 }
+
 #ifdef YYDEBUG
 extern int yydebug;
 #endif
 
-shared_ptr<CResult> Compiler::genNode(const string& fileName, const string& code) {
+shared_ptr<CParseFile> Compiler::genNode(const string& fileName, const string& code) {
 #ifdef YYDEBUG
     yydebug = 1; // use this to trigger the verbose debug output from bison
 #endif
 
-    auto compilerResult = make_shared<CResult>();
-    compilerResult->fileName = make_shared<string>(fileName);
+    auto parseFile = make_shared<CParseFile>();
+    parseFile->fileName = make_shared<string>(fileName);
+    parseFile->compiler = this;
     void* scanner;
     
     YYLOCATION loc = { 1, 1 };
     yylex_init_extra(loc, &scanner);
     auto yy_buf = yy_scan_string(code.c_str(), scanner);
-    yyparse(scanner, compilerResult.get());
+    yyparse(scanner, this, parseFile.get());
     yy_delete_buffer(yy_buf, scanner);
     yylex_destroy(scanner);
     
-    return compilerResult;
-}
-
-extern int yydebug;
-
-bool hasException = false;
-
-extern "C" void throwException() {
-    hasException = true;
+    return parseFile;
 }
 
 std::string ReplaceAll(std::string str, const std::string& from, const std::string& to) {
@@ -341,43 +135,45 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 	shared_ptr<CFunction> currentFunction;
 	shared_ptr<CFunction> globalFunction;
 
-	auto result = genNodeFile(fileName);
-	if (result->errors.size() == 0) {
-		anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, nullptr, "global", nullptr, nullptr, nullptr, result->block, nullptr, nullptr, nullptr);
-		currentFunctionDefintion = CFunctionDefinition::create(this, *result, nullptr, FT_Public, "", nullptr, nullptr);
+	auto globalFile = genNodeFile(fileName);
+	if (errors.size() == 0) {
+        auto globalBlock = globalFile->block;
+		anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, nullptr, "global", nullptr, nullptr, nullptr, globalBlock, nullptr, nullptr, nullptr);
+		currentFunctionDefintion = CFunctionDefinition::create(this, nullptr, FT_Public, "", nullptr, nullptr);
 		state = CompilerState::Define;
-        anonFunction->define(this, *result, currentFunctionDefintion);
+        anonFunction->define(this, currentFunctionDefintion);
 
-		if (result->errors.size() == 0) {
+		if (errors.size() == 0) {
 			globalFunctionDefinition = currentFunctionDefintion->funcsByName["global"];
 			for (auto index = (size_t)0; index < includedBlocks.size(); index++) {
-				auto block = includedBlocks[index].second;
-				block->define(this, *result, globalFunctionDefinition);
-				result->block->statements.insert(result->block->statements.begin(), block->statements.begin(), block->statements.end());
+				auto includedBlock = includedBlocks[index].second;
+				includedBlock->define(this, globalFunctionDefinition);
+				globalBlock->statements.insert(globalBlock->statements.begin(), includedBlock->statements.begin(), includedBlock->statements.end());
 			}
             // Force global function to have void return
-            result->block->statements.push_back(make_shared<NVoid>(CLoc::undefined));
+            globalBlock->statements.push_back(make_shared<NVoid>(CLoc::undefined));
 
-			if (result->errors.size() == 0) {
-				state = CompilerState::FixVar;
-				currentFunction = make_shared<CFunction>(currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr, CTM_Stack);
-				currentFunction->init(this, *result, nullptr, nullptr);
-				auto currentVar = currentFunction->getThisVar(this, *result);
-				anonFunction->getVar(this, *result, currentFunction, currentVar, CTM_Stack);
-				globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, *result, "global", nullptr, nullptr, CTM_Stack));
-                auto globalVar = globalFunction->getThisVar(this, *result);
-                auto mainLoop = static_pointer_cast<CFunction>(globalFunction->getCFunction(this, *result, "mainLoop", globalFunction, nullptr, CTM_Stack));
+			if (errors.size() == 0) {
+                state = CompilerState::Compile;
+				currentFunction = make_shared<CFunction>(currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr);
+				currentFunction->init(this, nullptr);
+				auto currentVar = currentFunction->getThisVar(this, CTM_Stack);
+                auto currentScope = make_shared<CScope>(currentFunction, currentVar, CTM_Stack);
+				anonFunction->getVar(this, currentScope, CTM_Stack);
+				globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, "global", nullptr, nullptr));
+                auto globalVar = globalFunction->getThisVar(this, CTM_Stack);
+                auto globalScope = make_shared<CScope>(globalFunction, globalVar, CTM_Stack);
+                auto mainLoop = static_pointer_cast<CFunction>(globalFunction->getCFunction(this, "mainLoop", globalScope, nullptr));
 #ifdef VAR_OUTPUT
-				currentFunction->dump(this, *compilerResult, 0);
+				currentFunction->dump(this, 0);
 #endif
 
-				if (result->errors.size() == 0) {
+				if (errors.size() == 0) {
                     if (debugStream) {
                         map<shared_ptr<CBaseFunction>, string> functionDumps;
                         stringstream ss;
                         stringstream dotSS;
-                        globalFunction->dumpBody(this, *result, functionDumps, ss, 0);
-                        // globalVar->dump(this, *result, nullptr, nullptr, CTM_Stack, nullptr, functionDumps, ss, dotSS, 0);
+                        globalFunction->dumpBody(this, functionDumps, ss, 0, CTM_Stack);
                         
                         vector<pair<string, string>> functionNames;
                         for (auto it : functionDumps) {
@@ -404,15 +200,15 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                     }
                     output.structOrder.push_back("sjs_object");
 
-                    globalFunction->transpileDefinition(this, *result, &output);
+                    globalFunction->transpileDefinition(this, &output);
 
                     auto hasMainLoop = false;
                     if (mainLoop) {
-                        mainLoop->transpileDefinition(this, *result, &output);
+                        mainLoop->transpileDefinition(this, &output);
                         hasMainLoop = true;
                     }
 
-                    if (result->errors.size() == 0) {
+                    if (errors.size() == 0) {
                         output.writeToStream(stream, hasMainLoop);
                     }
 				}
@@ -420,8 +216,8 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 		}
 	}
 
-	if (result->errors.size() > 0) {
-		for (auto error : result->errors)
+	if (errors.size() > 0) {
+		for (auto error : errors)
 		{
 			error.writeToStream(errorStream);
 			errorStream << "\n";
@@ -494,24 +290,13 @@ shared_ptr<CType> Compiler::getType(const string& name) const {
     }
 }
 
-void Compiler::includeFile(CResult& result, const string& fileName) {
+void Compiler::includeFile(const string& fileName) {
     assert(state == CompilerState::Define);
     
     if (includedBlockFileNames.find(fileName) == includedBlockFileNames.end()) {
-        auto r = genNodeFile(fileName);
-        for (auto it : r->warnings) {
-            result.warnings.push_back(it);
-        }
-
-        if (r->errors.size() > 0) {
-            for (auto it : r->errors) {
-                result.errors.push_back(it);
-            }
-            return ;
-        }
-        
-        assert(r->block);
+        auto parseFile = genNodeFile(fileName);
+        assert(parseFile->block);
         includedBlockFileNames[fileName] = true;
-        includedBlocks.push_back(pair<string, shared_ptr<NBlock>>(fileName, r->block));
+        includedBlocks.push_back(pair<string, shared_ptr<NBlock>>(fileName, parseFile->block));
     }
 }

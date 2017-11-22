@@ -4,8 +4,7 @@
 #include "TrStatement.h"
 
 class Compiler;
-class CResult;
-class CBaseFunction;
+class CScope;
 
 enum AssignOp {
     ASSIGN_Mutable,
@@ -18,7 +17,7 @@ class CType;
 
 class TrValue {
 public:
-    TrValue(shared_ptr<CBaseFunction> scope, shared_ptr<CType> type, string name) : scope(scope), type(type), name(name) { assert(type != nullptr);  }
+    TrValue(shared_ptr<CScope> scope, shared_ptr<CType> type, string name) : scope(scope), type(type), name(name) { assert(type != nullptr);  }
     bool writeReleaseToStream(TrBlock* block, ostream& stream, int level);
     void addInitToStatements(TrBlock* block);
     void addRetainToStatements(TrBlock* block);
@@ -27,20 +26,20 @@ public:
     string getPointerName();
     static string convertToLocalName(shared_ptr<CType> from, string name);
 
-    shared_ptr<CBaseFunction> scope;
+    shared_ptr<CScope> scope;
     shared_ptr<CType> type;
     string name;
 }; 
 
 class TrStoreValue {
 public:
-    TrStoreValue(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CType> type, string name, AssignOp op, bool isFirstAssignment) : loc(loc), scope(scope), type(type), name(name), op(op), isFirstAssignment(isFirstAssignment), isReturnValue(false), hasSetValue(false) {}
-    void retainValue(Compiler* compiler, CResult& result, TrBlock* block, shared_ptr<TrValue> rightValue);
-    void takeOverValue(Compiler* compiler, CResult& result, TrBlock* block, shared_ptr<TrValue> rightValue);
+    TrStoreValue(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, string name, AssignOp op, bool isFirstAssignment) : loc(loc), scope(scope), type(type), name(name), op(op), isFirstAssignment(isFirstAssignment), isReturnValue(false), hasSetValue(false) {}
+    void retainValue(Compiler* compiler, TrBlock* block, shared_ptr<TrValue> rightValue);
+    void takeOverValue(Compiler* compiler, TrBlock* block, shared_ptr<TrValue> rightValue);
     shared_ptr<TrValue> getValue();
 
     CLoc loc;
-    shared_ptr<CBaseFunction> scope;
+    shared_ptr<CScope> scope;
     shared_ptr<CType> type;
     string name;
     AssignOp op;
@@ -67,11 +66,11 @@ public:
     void writeVariablesReleaseToStream(ostream& stream, int level);
     void writeReturnToStream(ostream& stream, int level);
     shared_ptr<TrValue> getVariable(string name);
-    shared_ptr<TrValue> createVariable(shared_ptr<CBaseFunction> scope, shared_ptr<CType> type, string name);
-    shared_ptr<TrValue> createTempVariable(shared_ptr<CBaseFunction> scope, shared_ptr<CType> type, string prefix);
-    shared_ptr<TrStoreValue> createTempStoreVariable(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CType> type, string prefix);
+    shared_ptr<TrValue> createVariable(shared_ptr<CScope> scope, shared_ptr<CType> type, string name);
+    shared_ptr<TrValue> createTempVariable(shared_ptr<CScope> scope, shared_ptr<CType> type, string prefix);
+    shared_ptr<TrStoreValue> createTempStoreVariable(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, string prefix);
     shared_ptr<TrStoreValue> createVoidStoreVariable(CLoc loc);
-    shared_ptr<TrStoreValue> createReturnStoreVariable(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CType> type);
+    shared_ptr<TrStoreValue> createReturnStoreVariable(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type);
     string getFunctionName();
 
     static void addSpacing(ostream& stream, int level);

@@ -4,44 +4,44 @@ bool COrVar::getReturnThis() {
     return false;
 }
 
-shared_ptr<CType> COrVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> COrVar::getType(Compiler* compiler) {
     return compiler->typeBool;
 }
 
-void COrVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void COrVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     auto leftValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "or");
     auto rightValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "or");
-    leftVar->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, leftValue);
-    rightVar->transpile(compiler, result, trOutput, trBlock, nullptr, thisValue, rightValue);
+    leftVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, leftValue);
+    rightVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, rightValue);
 
     stringstream line;
     line << leftValue->name << " || " << rightValue->name;
     trBlock->statements.push_back(line.str());
 
     auto resultValue = make_shared<TrValue>(nullptr, compiler->typeBool, line.str());
-    storeValue->retainValue(compiler, result, trBlock, resultValue);
+    storeValue->retainValue(compiler, trBlock, resultValue);
 }
 
-void COrVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
-    leftVar->dump(compiler, result, nullptr, functions, ss, dotSS, level);
+void COrVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+    leftVar->dump(compiler, nullptr, functions, ss, dotSS, level);
     ss << " && ";
-    rightVar->dump(compiler, result, nullptr, functions, ss, dotSS, level);
+    rightVar->dump(compiler, nullptr, functions, ss, dotSS, level);
 }
 
-void NOr::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NOr::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
-    left->define(compiler, result, thisFunction);
-    right->define(compiler, result, thisFunction);
+    left->define(compiler, thisFunction);
+    right->define(compiler, thisFunction);
 }
 
-shared_ptr<CVar> NOr::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto leftVar = left->getVar(compiler, result, thisFunction, thisVar, nullptr, CTM_Undefined);
+shared_ptr<CVar> NOr::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+    auto leftVar = left->getVar(compiler, scope, nullptr, CTM_Undefined);
     if (!leftVar) {
         return nullptr;
     }
-    auto rightVar = right->getVar(compiler, result, thisFunction, thisVar, nullptr, CTM_Undefined);
+    auto rightVar = right->getVar(compiler, scope, nullptr, CTM_Undefined);
     if (!rightVar) {
         return nullptr;
     }
-    return make_shared<COrVar>(loc, thisFunction, leftVar, rightVar);
+    return make_shared<COrVar>(loc, scope, leftVar, rightVar);
 }

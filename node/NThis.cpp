@@ -4,7 +4,7 @@ bool CThisVar::getReturnThis() {
     return true;
 }
 
-shared_ptr<CType> CThisVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CThisVar::getType(Compiler* compiler) {
     switch (typeMode) {
     case CTM_Stack:
         return types->stackValueType;
@@ -18,11 +18,11 @@ shared_ptr<CType> CThisVar::getType(Compiler* compiler, CResult& result) {
     }
 }
 
-void CThisVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    storeValue->retainValue(compiler, result, trBlock, make_shared<TrValue>(nullptr, getType(compiler, result), "_this"));
+void CThisVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    storeValue->retainValue(compiler, trBlock, make_shared<TrValue>(nullptr, getType(compiler), "_this"));
 }
 
-void CThisVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CThisVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     ss << "this";
 }
 
@@ -38,28 +38,28 @@ CTypeMode CThisVar::getTypeMode() {
     return typeMode;
 }
 
-shared_ptr<CVar> NThis::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+shared_ptr<CVar> NThis::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
     if (dotVar) {
-        result.addError(loc, CErrorCode::InvalidVariable, "this must be the first var in a dot chain");
+        compiler->addError(loc, CErrorCode::InvalidVariable, "this must be the first var in a dot chain");
         return nullptr;
     }
 
-    if (!thisVar) {
-        result.addError(loc, CErrorCode::InvalidVariable, "function does not have a this value");
+    if (!scope->thisVar) {
+        compiler->addError(loc, CErrorCode::InvalidVariable, "function does not have a this value");
         return nullptr;
     }
     
     assert(returnMode != CTM_Value);
     if (returnMode != CTM_Undefined) {
-        if (thisVar->typeMode == CTM_Undefined) {
-            thisVar->typeMode = returnMode;
+        if (scope->thisVar->typeMode == CTM_Undefined) {
+            scope->thisVar->typeMode = returnMode;
         }
 
-        if (returnMode != thisVar->typeMode) {
-            result.addError(loc, CErrorCode::TypeMismatch, "cannot change this from stack to heap in the same function");
+        if (returnMode != scope->thisVar->typeMode) {
+            compiler->addError(loc, CErrorCode::TypeMismatch, "cannot change this from stack to heap in the same function");
         }
     }
 
-    thisVar->setHasThis();
-    return thisVar;
+    scope->thisVar->setHasThis();
+    return scope->thisVar;
 }

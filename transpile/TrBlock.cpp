@@ -114,21 +114,21 @@ shared_ptr<TrValue> TrBlock::getVariable(string name) {
     return var->second;
 }
 
-shared_ptr<TrValue> TrBlock::createVariable(shared_ptr<CBaseFunction> scope, shared_ptr<CType> type, string name) {
+shared_ptr<TrValue> TrBlock::createVariable(shared_ptr<CScope> scope, shared_ptr<CType> type, string name) {
     assert(getVariable(name) == nullptr);
     auto var = make_shared<TrValue>(scope, type, name);
     variables[name] = var;
     return var;
 }
 
-shared_ptr<TrValue> TrBlock::createTempVariable(shared_ptr<CBaseFunction> scope, shared_ptr<CType> type, string prefix) {
+shared_ptr<TrValue> TrBlock::createTempVariable(shared_ptr<CScope> scope, shared_ptr<CType> type, string prefix) {
     auto varStr = nextVarName(prefix);
     auto var = make_shared<TrValue>(scope, type, varStr);
     variables[varStr] = var;
     return var;
 }
 
-shared_ptr<TrStoreValue> TrBlock::createTempStoreVariable(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CType> type, string prefix) {
+shared_ptr<TrStoreValue> TrBlock::createTempStoreVariable(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, string prefix) {
     auto varStr = nextVarName("sjt_" + prefix);
     auto var = make_shared<TrStoreValue>(loc, scope, type, varStr, ASSIGN_Immutable, true);
     variables[varStr] = make_shared<TrValue>(scope, type, varStr);
@@ -139,7 +139,7 @@ shared_ptr<TrStoreValue> TrBlock::createVoidStoreVariable(CLoc loc) {
     return make_shared<TrStoreValue>(loc, nullptr, nullptr, "", ASSIGN_Immutable, true);
 }
 
-shared_ptr<TrStoreValue> TrBlock::createReturnStoreVariable(CLoc loc, shared_ptr<CBaseFunction> scope, shared_ptr<CType> type) {
+shared_ptr<TrStoreValue> TrBlock::createReturnStoreVariable(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type) {
     auto returnStoreValue = make_shared<TrStoreValue>(loc, scope, type->getLocalType(), type->typeMode == CTM_Stack ? "_return" : "(*_return)", ASSIGN_Immutable, true);
     returnStoreValue->isReturnValue = true;
     return returnStoreValue;
@@ -361,7 +361,7 @@ string TrValue::convertToLocalName(shared_ptr<CType> from, string name) {
     }
 }
 
-void TrStoreValue::retainValue(Compiler* compiler, CResult& result, TrBlock* block, shared_ptr<TrValue> rightValue) {
+void TrStoreValue::retainValue(Compiler* compiler, TrBlock* block, shared_ptr<TrValue> rightValue) {
     assert(!hasSetValue);
     hasSetValue = true;
 
@@ -373,18 +373,18 @@ void TrStoreValue::retainValue(Compiler* compiler, CResult& result, TrBlock* blo
     }
 
     if (!CType::isSameExceptMode(type, rightValue->type)) {
-        result.addError(loc, CErrorCode::TypeMismatch, "right type '%s' does not match left type '%s'", rightValue->type->name.c_str(), type->name.c_str());
+        compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' does not match left type '%s'", rightValue->type->name.c_str(), type->name.c_str());
         return;
     }
 
     if (type->typeMode != CTM_Local && type->typeMode != rightValue->type->typeMode && op != ASSIGN_MutableCopy && op != ASSIGN_ImmutableCopy) {
-        result.addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot change mode to left type '%s' without using a :copy or =copy assignment", rightValue->type->name.c_str(), type->name.c_str());
+        compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot change mode to left type '%s' without using a :copy or =copy assignment", rightValue->type->name.c_str(), type->name.c_str());
         return;
     }
 
 
     if (type->typeMode == CTM_Stack && rightValue->type->typeMode == CTM_Stack && op != ASSIGN_MutableCopy && op != ASSIGN_ImmutableCopy) {
-        result.addError(loc, CErrorCode::TypeMismatch, "must use a :copy or =copy assignment when assigning a stack variable to a stack variable");
+        compiler->addError(loc, CErrorCode::TypeMismatch, "must use a :copy or =copy assignment when assigning a stack variable to a stack variable");
         return;
     }
 
@@ -435,7 +435,7 @@ void TrStoreValue::retainValue(Compiler* compiler, CResult& result, TrBlock* blo
     }
 }
 
-void TrStoreValue::takeOverValue(Compiler* compiler, CResult& result, TrBlock* block, shared_ptr<TrValue> rightValue) {
+void TrStoreValue::takeOverValue(Compiler* compiler, TrBlock* block, shared_ptr<TrValue> rightValue) {
     assert(!hasSetValue);
     hasSetValue = true;
 
@@ -448,18 +448,18 @@ void TrStoreValue::takeOverValue(Compiler* compiler, CResult& result, TrBlock* b
     }
 
     if (!CType::isSameExceptMode(type, rightValue->type)) {
-        result.addError(loc, CErrorCode::TypeMismatch, "right type '%s' does not match left type '%s'", rightValue->type->name.c_str(), type->name.c_str());
+        compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' does not match left type '%s'", rightValue->type->name.c_str(), type->name.c_str());
         return;
     }
 
     if (type->typeMode != CTM_Local && type->typeMode != rightValue->type->typeMode && op != ASSIGN_MutableCopy && op != ASSIGN_ImmutableCopy) {
-        result.addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot change mode to left type '%s' without using a :copy or =copy assignment", rightValue->type->name.c_str(), type->name.c_str());
+        compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot change mode to left type '%s' without using a :copy or =copy assignment", rightValue->type->name.c_str(), type->name.c_str());
         return;
     }
 
 
     if (type->typeMode == CTM_Stack && rightValue->type->typeMode == CTM_Stack && op != ASSIGN_MutableCopy && op != ASSIGN_ImmutableCopy) {
-        result.addError(loc, CErrorCode::TypeMismatch, "must use a :copy or =copy assignment when assigning a stack variable to a stack variable");
+        compiler->addError(loc, CErrorCode::TypeMismatch, "must use a :copy or =copy assignment when assigning a stack variable to a stack variable");
         return;
     }
 

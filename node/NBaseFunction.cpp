@@ -5,18 +5,18 @@ void CBaseFunction::setHasThis() {
     hasThis = true;
 }
 
-bool CBaseFunction::getHasParent(Compiler* compiler, CResult& result) {
-    getThisTypes(compiler, result);
+bool CBaseFunction::getHasParent(Compiler* compiler) {
+    getThisTypes(compiler);
     return hasParent;
 }
 
-void CBaseFunction::setHasParent(Compiler* compiler, CResult& result) {
+void CBaseFunction::setHasParent(Compiler* compiler) {
     assert(name != "global");
     if (parent.expired()) {
         return;
     }
     
-    if (parent.lock()->getThisTypes(compiler, result) == nullptr) {
+    if (parent.lock()->getThisTypes(compiler) == nullptr) {
         return;
     }
     
@@ -24,15 +24,15 @@ void CBaseFunction::setHasParent(Compiler* compiler, CResult& result) {
     parent.lock()->setHasThis();
     
     if (!hasParent) {
-        getThisTypes(compiler, result);
+        getThisTypes(compiler);
         hasParent = true;
         
         for (auto it : delegateHasParent) {
-            it(compiler, result);
+            it(compiler);
         }
     }
 }
 
-void CBaseFunction::onHasParent(std::function<void(Compiler*, CResult&)> notify) {
+void CBaseFunction::onHasParent(std::function<void(Compiler*)> notify) {
     delegateHasParent.push_back(notify);
 }

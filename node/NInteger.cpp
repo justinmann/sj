@@ -5,15 +5,15 @@ bool CConstantVar::getReturnThis() {
     return false;
 }
 
-shared_ptr<CType> CConstantVar::getType(Compiler* compiler, CResult& result) {
+shared_ptr<CType> CConstantVar::getType(Compiler* compiler) {
     return type;
 }
 
-void CConstantVar::transpile(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    storeValue->retainValue(compiler, result, trBlock, make_shared<TrValue>(nullptr, type, value));
+void CConstantVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    storeValue->retainValue(compiler, trBlock, make_shared<TrValue>(nullptr, type, value));
 }
 
-void CConstantVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CConstantVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     ss << value;
     if (type == compiler->typeI32) {
         ss << "i";
@@ -58,55 +58,55 @@ NInteger::NInteger(CLoc loc, const char* value_) : NVariableBase(NodeType_Intege
     }
 }
 
-shared_ptr<CVar> NInteger::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+shared_ptr<CVar> NInteger::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
     if (strValue.size() > 0) {
         if (type == NIT_I32) {
             char* e;
             errno = 0;
             auto v = strtol(strValue.c_str(), &e, 10);
             if (ERANGE == errno || v < INT32_MIN || v > INT32_MAX) {
-                result.addError(loc, CErrorCode::InvalidNumber, "i32 '%s' is out range", strValue.c_str());
+                compiler->addError(loc, CErrorCode::InvalidNumber, "i32 '%s' is out range", strValue.c_str());
                 return nullptr;
             }
 
             if (*e != '\0') {
-                result.addError(loc, CErrorCode::InvalidNumber, "not a valid i32 '%s'", strValue.c_str());
+                compiler->addError(loc, CErrorCode::InvalidNumber, "not a valid i32 '%s'", strValue.c_str());
                 return nullptr;
             }
 
             stringstream line;
             line << v;
-            return make_shared<CConstantVar>(loc, thisFunction, compiler->typeI32, line.str());
+            return make_shared<CConstantVar>(loc, scope, compiler->typeI32, line.str());
         }
         else if (type == NIT_U32) {
             char* e;
             errno = 0;
             auto v = strtoul(strValue.c_str(), &e, 10);
             if (ERANGE == errno || v > UINT32_MAX) {
-                result.addError(loc, CErrorCode::InvalidNumber, "u32 '%s' is out range", strValue.c_str());
+                compiler->addError(loc, CErrorCode::InvalidNumber, "u32 '%s' is out range", strValue.c_str());
                 return nullptr;
             }
 
             if (*e != '\0') {
-                result.addError(loc, CErrorCode::InvalidNumber, "not a valid u32 '%s'", strValue.c_str());
+                compiler->addError(loc, CErrorCode::InvalidNumber, "not a valid u32 '%s'", strValue.c_str());
                 return nullptr;
             }
 
             stringstream line;
             line << v << "u";
-            return make_shared<CConstantVar>(loc, thisFunction, compiler->typeU32, "(uint32_t)" + line.str());
+            return make_shared<CConstantVar>(loc, scope, compiler->typeU32, "(uint32_t)" + line.str());
         }
         else if (type == NIT_I64) {
             char* e;
             errno = 0;
             auto v = strtoll(strValue.c_str(), &e, 10);
             if (ERANGE == errno) {
-                result.addError(loc, CErrorCode::InvalidNumber, "i64 '%s' is out range", strValue.c_str());
+                compiler->addError(loc, CErrorCode::InvalidNumber, "i64 '%s' is out range", strValue.c_str());
                 return nullptr;
             }
 
             if (*e != '\0') {
-                result.addError(loc, CErrorCode::InvalidNumber, "not a valid i64 '%s'", strValue.c_str());
+                compiler->addError(loc, CErrorCode::InvalidNumber, "not a valid i64 '%s'", strValue.c_str());
                 return nullptr;
             }
 
@@ -117,25 +117,25 @@ shared_ptr<CVar> NInteger::getVarImpl(Compiler* compiler, CResult& result, share
             else {
                 line << v << "ll";
             }
-            return make_shared<CConstantVar>(loc, thisFunction, compiler->typeI64, line.str());
+            return make_shared<CConstantVar>(loc, scope, compiler->typeI64, line.str());
         }
         else if (type == NIT_U64) {
             char* e;
             errno = 0;
             auto v = strtoull(strValue.c_str(), &e, 10);
             if (ERANGE == errno) {
-                result.addError(loc, CErrorCode::InvalidNumber, "u64 '%s' is out range", strValue.c_str());
+                compiler->addError(loc, CErrorCode::InvalidNumber, "u64 '%s' is out range", strValue.c_str());
                 return nullptr;
             }
 
             if (*e != '\0') {
-                result.addError(loc, CErrorCode::InvalidNumber, "not a valid u64 '%s'", strValue.c_str());
+                compiler->addError(loc, CErrorCode::InvalidNumber, "not a valid u64 '%s'", strValue.c_str());
                 return nullptr;
             }
 
             stringstream line;
             line << v << "ull";
-            return make_shared<CConstantVar>(loc, thisFunction, compiler->typeU64, line.str());
+            return make_shared<CConstantVar>(loc, scope, compiler->typeU64, line.str());
         }
         else {
             assert(false);
@@ -144,7 +144,7 @@ shared_ptr<CVar> NInteger::getVarImpl(Compiler* compiler, CResult& result, share
     } else if (hasValue) {
         stringstream line;
         line << value;
-        return make_shared<CConstantVar>(loc, thisFunction, compiler->typeI32, line.str());
+        return make_shared<CConstantVar>(loc, scope, compiler->typeI32, line.str());
     }
     return nullptr;
 }
