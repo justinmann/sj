@@ -146,7 +146,7 @@ string CInterfaceMethod::getCTypeName(Compiler* compiler, bool includeNames) {
             ss << "_heap";
         }
     }
-    ss << ")(sjs_object*";
+    ss << ")(void*";
     if (includeNames) {
         ss << " _parent";
     }

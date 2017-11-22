@@ -96,23 +96,27 @@ shared_ptr<CInterface> CInterface::init(Compiler* compiler, shared_ptr<NInterfac
     for (auto it : node->methodList) {
         // need to create a stack and heap version if return typename is not explicit
 
-        if (it->returnTypeName->typeMode == CTM_Stack || it->returnTypeName->typeMode == CTM_Undefined || it->returnTypeName->typeMode == CTM_Value) {
-            auto method = make_shared<CInterfaceMethod>(it->name, shared_from_this(), argIndex, CTM_Stack);
-            method = method->init(compiler, it, shared_from_this());
-            if (!method) {
-                return nullptr;
-            }
+        auto method = make_shared<CInterfaceMethod>(it->name, shared_from_this(), argIndex, CTM_Stack);
+        method = method->init(compiler, it, shared_from_this());
+        if (!method) {
+            return nullptr;
+        }
+        auto returnType = method->getReturnType(compiler, CTM_Stack);
+        assert(returnType->typeMode != CTM_Undefined);
+        if (returnType->typeMode == CTM_Stack || returnType->typeMode == CTM_Value) {
             methods.push_back(method);
             methodByName[method->name][CTM_Stack] = method;
             argIndex++;
         }
 
-        if (it->returnTypeName->typeMode == CTM_Heap || it->returnTypeName->typeMode == CTM_Undefined) {
-            auto method = make_shared<CInterfaceMethod>(it->name, shared_from_this(), argIndex, CTM_Heap);
-            method = method->init(compiler, it, shared_from_this());
-            if (!method) {
-                return nullptr;
-            }
+        method = make_shared<CInterfaceMethod>(it->name, shared_from_this(), argIndex, CTM_Heap);
+        method = method->init(compiler, it, shared_from_this());
+        if (!method) {
+            return nullptr;
+        }
+        returnType = method->getReturnType(compiler, CTM_Heap);
+        assert(returnType->typeMode != CTM_Undefined);
+        if (returnType->typeMode == CTM_Heap) {
             methods.push_back(method);
             methodByName[method->name][CTM_Heap] = method;
             argIndex++;

@@ -57,6 +57,9 @@ class CInterfaceMethod;
 
 class CFunctionData {
 public:
+    CFunctionData() : isInvalid(false) {}
+    
+    bool isInvalid;
     shared_ptr<CScope> scope;
     map<string, shared_ptr<CVar>> localVarsByName;
     CTypeMode returnMode;
@@ -135,6 +138,7 @@ private:
     shared_ptr<CTypeName> _returnTypeName;
     shared_ptr<CTypeNameList> _interfaceTypeNames;
     bool _hasInitializedInterfaces;
+    bool _hasTranspileDefinitions;
     bool _isReturnThis;
     shared_ptr<CTypes> _thisTypes;
     map<CTypeMode, CFunctionData> _data;

@@ -93,6 +93,7 @@ _destroyBlock(nullptr),
 _returnTypeName(nullptr),
 _interfaceTypeNames(nullptr),
 _hasInitializedInterfaces(false),
+_hasTranspileDefinitions(false),
 _isReturnThis(false)
  {}
 
@@ -153,16 +154,33 @@ shared_ptr<CFunction> CFunction::init(Compiler* compiler, shared_ptr<NFunction> 
 }
 
 void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
+    if (_hasTranspileDefinitions)
+        return;
+    
+    _hasTranspileDefinitions = true;
+    
     for (auto returnMode : functionReturnModes) {
         auto calleeVar = getThisVar(compiler, returnMode);
         auto calleeScope = getScope(compiler, returnMode);
+        auto returnType = getReturnType(compiler, returnMode);
+        
+        // If we attempt to return stack and can only generate a heap return then the stack return mode is invalid
+        if (returnMode == CTM_Stack && returnType->typeMode == CTM_Heap) {
+            _data[returnMode].isInvalid = true;
+            continue;
+        }
+
+        // If we attempt to return heap and cannot generate a heap return then the heap return mode is invalid, value types are handled by the stack return mode
+        if (returnMode == CTM_Heap && returnType->typeMode != CTM_Heap) {
+            _data[returnMode].isInvalid = true;
+            continue;
+        }
 
         if (!hasThis) {
             // Create function body
             auto functionName = getCInitFunctionName(returnMode);
             auto functionBody = trOutput->functions.find(functionName);
             if (functionBody == trOutput->functions.end()) {
-                auto returnType = getReturnType(compiler, returnMode);
                 auto trFunctionBlock = make_shared<TrBlock>();
                 trFunctionBlock->parent = nullptr;
                 trFunctionBlock->hasThis = false;
@@ -370,12 +388,17 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                             if (implementation) {
                                 implementation->transpileDefinition(compiler, trOutput);
 
+                                if (implementation->_data[interfaceMethod->returnMode].isInvalid) {
+                                    compiler->addError(loc, CErrorCode::InterfaceMethodDoesNotExist, "method '%s' does not support %s return mode", implementation->name.c_str(), interfaceMethod->returnMode == CTM_Heap ? "heap" : "stack");
+                                    continue;
+                                }
+                                
                                 stringstream initStream;
                                 initStream << "_interface->" << interfaceMethod->name;
                                 if (interfaceMethod->returnMode == CTM_Heap) {
                                     initStream << "_heap";
                                 }
-                                initStream << " = (" << interfaceMethod->getCTypeName(compiler, false) << ")" << implementation->getCInitFunctionName(returnMode);
+                                initStream << " = (" << interfaceMethod->getCTypeName(compiler, false) << ")" << implementation->getCInitFunctionName(interfaceMethod->returnMode);
                                 trFunctionBlock->statements.push_back(initStream.str());
                             }
                         }
@@ -413,15 +436,16 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 }
 
 void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode returnMode) {
+    transpileDefinition(compiler, trOutput);
+
     assert(compiler->state == CompilerState::Compile);
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
-
+    assert(!_data[returnMode].isInvalid);
+    
     auto returnType = getReturnType(compiler, returnMode);
     if (!returnType) {
         return;
     }
-
-    transpileDefinition(compiler, trOutput);
     
     auto calleeVar = getThisVar(compiler, returnMode);
     auto calleeScope = getScope(compiler, returnMode);
@@ -583,7 +607,10 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
     }
 }
 
-string CFunction::getCBaseName(CTypeMode typeMode) {
+string CFunction::getCBaseName(CTypeMode returnMode) {
+    assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
+    assert(!_data[returnMode].isInvalid);
+
     string functionName = getCFullName(true);
     if (!parent.expired()) {
         auto tempType = parent.lock();
@@ -595,7 +622,7 @@ string CFunction::getCBaseName(CTypeMode typeMode) {
         }
     }
     
-    switch (typeMode) {
+    switch (returnMode) {
     case CTM_Stack:
         break;
     case CTM_Heap:
@@ -631,6 +658,7 @@ string CFunction::getCAsInterfaceFunctionName(CTypeMode returnMode) {
 
 void CFunction::dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level, CTypeMode returnMode) {
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
+    assert(!_data[returnMode].isInvalid);
 
     ss << fullName(true);
     if (_interfaceTypeNames) {
@@ -674,6 +702,7 @@ void CFunction::dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, stri
 
 shared_ptr<CThisVar> CFunction::getThisVar(Compiler* compiler, CTypeMode returnMode) {
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
+    assert(!_data[returnMode].isInvalid);
 
     if (!_hasInitializedInterfaces) {
         _hasInitializedInterfaces = true;
@@ -734,6 +763,7 @@ shared_ptr<CThisVar> CFunction::getThisVar(Compiler* compiler, CTypeMode returnM
 
 shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CTypeMode returnMode) {
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
+    assert(!_data[returnMode].isInvalid);
 
     if (_isInGetType) {
         compiler->addError(loc, CErrorCode::TypeLoop, "while trying to determine type a cycle was detected");
@@ -772,6 +802,7 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CTypeMode returnM
 
 shared_ptr<vector<shared_ptr<CVar>>> CFunction::getArgVars(Compiler* compiler, CTypeMode returnMode) {
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
+    assert(!_data[returnMode].isInvalid);
 
     auto calleeVar = getThisVar(compiler, returnMode);
     auto calleeScope = getScope(compiler, returnMode);
@@ -816,6 +847,7 @@ int CFunction::getArgCount(CTypeMode returnMode) {
 
 shared_ptr<vector<pair<string, shared_ptr<CType>>>> CFunction::getCTypeList(Compiler* compiler, CTypeMode returnMode) {
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
+    assert(!_data[returnMode].isInvalid);
 
     if (!_data[returnMode].ctypeList) {
         _data[returnMode].ctypeList = make_shared<vector<pair<string, shared_ptr<CType>>>>();
@@ -943,6 +975,7 @@ shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, const string
 
 shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, const string& name, CTypeMode returnMode) {
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
+    assert(!_data[returnMode].isInvalid);
 
     auto t1 = _data[returnMode].localVarsByName.find(name);
     if (t1 != _data[returnMode].localVarsByName.end()) {
