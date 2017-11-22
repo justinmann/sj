@@ -55,7 +55,7 @@ public:
     string fullName(bool includeTemplateTypes);
     
     shared_ptr<CTypes> getThisTypes(Compiler* compiler);
-    int getThisIndex(const string& name) const;
+    int getThisIndex(const string& name, CTypeMode returnMode);
     shared_ptr<CVar> getThisVar(Compiler* compiler);
     
     shared_ptr<CVar> getCVar(Compiler* compiler, const string& name, CTypeMode returnMode);

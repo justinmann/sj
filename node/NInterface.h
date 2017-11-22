@@ -46,12 +46,12 @@ public:
     shared_ptr<CInterface> init(Compiler* compiler, shared_ptr<NInterface> node, vector<shared_ptr<CType>>& templateTypes);
     string fullName(bool includeTemplateTypes);
     
+    shared_ptr<CScope> getScope();
     shared_ptr<CTypes> getThisTypes(Compiler* compiler);
-    int getThisIndex(const string& name) const;
+    int getThisIndex(const string& name, CTypeMode returnMode);
     shared_ptr<CVar> getThisVar(Compiler* compiler);
     int getArgStart();
 
-    shared_ptr<CScope> getScope();
     shared_ptr<CVar> getCVar(Compiler* compiler, const string& name, CTypeMode returnMode);
     shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, const string& name, shared_ptr<CScope> callerFunction, shared_ptr<CTypeNameList> templateTypeNames);
     pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(string name) { assert(false); return make_pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>>(nullptr, nullptr); }
@@ -74,6 +74,7 @@ public:
 private:
     CLoc loc;
     shared_ptr<CTypes> thisTypes;
+    shared_ptr<CScope> _scope;
 };
 
 class CInterfaceDefinition : public CBaseFunctionDefinition, public enable_shared_from_this<CInterfaceDefinition> {

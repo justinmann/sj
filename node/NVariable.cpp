@@ -91,7 +91,7 @@ NVariable::NVariable(CLoc loc, const char* name) : NVariableBase(NodeType_Variab
 shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
     auto varScope = scope;
     if (dotVar) {
-        varScope = CScope::getScopeForType(dotVar->getType(compiler));
+        varScope = CScope::getScopeForType(compiler, dotVar->getType(compiler));
     }
     
     if (dotVar && varScope) {
@@ -108,12 +108,12 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
         if (cvar == nullptr && dotVar == nullptr) {
             vector<shared_ptr<CFunction>> parents;
             parents.push_back(static_pointer_cast<CFunction>(varScope->function));
-            varScope = varScope->getParentScope();
-            while (cvar == nullptr && varScope != nullptr) {
-                cvar = varScope->getCVar(compiler, name);
+            auto parent = varScope->function->parent.lock();
+            while (cvar == nullptr && parent != nullptr) {
+                cvar = parent->getCVar(compiler, name, CTM_Heap);
                 if (cvar == nullptr) {
                     parents.push_back(varScope->function);
-                    varScope = varScope->getParentScope();
+                    parent = parent->parent.lock();
                 }
             }
 

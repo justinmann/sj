@@ -57,6 +57,7 @@ class CInterfaceMethod;
 
 class CFunctionData {
 public:
+    shared_ptr<CScope> scope;
     map<string, shared_ptr<CVar>> localVarsByName;
     CTypeMode returnMode;
     shared_ptr<CType> returnType;
@@ -69,17 +70,18 @@ public:
 class CScope {
 public:
     CScope(shared_ptr<CFunction> function, shared_ptr<CThisVar> thisVar, CTypeMode returnMode) : function(function), thisVar(thisVar), returnMode(returnMode) {}
+    CScope(shared_ptr<CInterface> cinterface) : cinterface(cinterface) {}
     shared_ptr<CVar> findLocalVar(Compiler* compiler, string name);
     void addOrUpdateLocalVar(Compiler* compiler, string name, shared_ptr<CVar> var);
     void pushLocalVar(Compiler* compiler, CLoc loc, shared_ptr<CVar> var);
     void popLocalVar(Compiler* compiler, shared_ptr<CVar> var);
     shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
     shared_ptr<CVar> getCVar(Compiler* compiler, const string& name);
-    static shared_ptr<CScope> getScopeForType(shared_ptr<CType> type);
-    shared_ptr<CScope> getParentScope();
-    
+    static shared_ptr<CScope> getScopeForType(Compiler* compiler, shared_ptr<CType> type);
+
     shared_ptr<CThisVar> thisVar;
     shared_ptr<CFunction> function;
+    shared_ptr<CInterface> cinterface;
 
 private:
     CTypeMode returnMode;
@@ -90,10 +92,11 @@ public:
     CFunction(weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces);
     shared_ptr<CFunction> init(Compiler* compiler, shared_ptr<NFunction> node);
     
-    int getThisIndex(const string& name) const;
+    shared_ptr<CScope> getScope(Compiler* compiler, CTypeMode returnMode);
+    int getThisIndex(const string& name, CTypeMode returnMode);
     shared_ptr<CThisVar> getThisVar(Compiler* compiler, CTypeMode returnMode);
     shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames);
-    shared_ptr<CInterface> getCInterface(Compiler* compiler, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode);
+    shared_ptr<CInterface> getCInterface(Compiler* compiler, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames);
     shared_ptr<CVar> getCVar(Compiler* compiler, const string& name, CTypeMode returnMode);
     shared_ptr<CType> getReturnType(Compiler* compiler, CTypeMode returnMode);
     shared_ptr<vector<shared_ptr<CVar>>> getArgVars(Compiler* compiler, CTypeMode returnMode);

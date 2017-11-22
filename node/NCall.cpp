@@ -54,7 +54,7 @@ bool CCallVar::getParameters(Compiler* compiler, vector<pair<bool, shared_ptr<NB
         if (it->nodeType == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
             assert(parameterAssignment->inFunctionDeclaration);
-            auto index = callee->getThisIndex(parameterAssignment->name);
+            auto index = callee->getThisIndex(parameterAssignment->name, returnMode);
             if (index < 0) {
                 compiler->addError(loc, CErrorCode::ParameterDoesNotExist, "cannot find parameter '%s'", parameterAssignment->name.c_str());
                 return false;
@@ -278,6 +278,10 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
     auto callee = getCFunction(compiler, scope, dotVar, returnMode);
     if (!callee) {
         return nullptr;
+    }
+
+    if (returnMode == CTM_Undefined) {
+        returnMode = CTM_Stack;
     }
     
     return CCallVar::create(compiler, loc, name, arguments, scope, dotVar, callee, returnMode);

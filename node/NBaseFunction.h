@@ -49,7 +49,7 @@ public:
     virtual void setHasParent(Compiler* compiler);
     virtual void onHasParent(std::function<void(Compiler*)> notify);
 
-    virtual int getThisIndex(const string& name) const = 0;
+    virtual int getThisIndex(const string& name, CTypeMode returnMode) = 0;
     virtual string fullName(bool includeTemplateTypes) = 0;
     virtual shared_ptr<CTypes> getThisTypes(Compiler* compiler) = 0;
     virtual shared_ptr<CVar> getCVar(Compiler* compiler, const string& name, CTypeMode returnMode) = 0;

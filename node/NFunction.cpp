@@ -133,8 +133,7 @@ shared_ptr<CFunction> CFunction::init(Compiler* compiler, shared_ptr<NFunction> 
             }
             
             for (auto returnMode : functionReturnModes) {
-                auto calleeVar = getThisVar(compiler, returnMode);
-                auto calleeScope = make_shared<CScope>(shared_from_this(), calleeVar, returnMode);
+                auto calleeScope = getScope(compiler, returnMode);
                 auto argType = it->getType(compiler, calleeScope, CTM_Undefined);
                 if (!argType) {
                     return nullptr;
@@ -157,7 +156,7 @@ shared_ptr<CFunction> CFunction::init(Compiler* compiler, shared_ptr<NFunction> 
 void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
     for (auto returnMode : functionReturnModes) {
         auto calleeVar = getThisVar(compiler, returnMode);
-        auto calleeScope = make_shared<CScope>(shared_from_this(), calleeVar, returnMode);
+        auto calleeScope = getScope(compiler, returnMode);
 
         if (!hasThis) {
             // Create function body
@@ -424,7 +423,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
     transpileDefinition(compiler, trOutput);
     
     auto calleeVar = getThisVar(compiler, returnMode);
-    auto calleeScope = make_shared<CScope>(shared_from_this(), calleeVar, returnMode);
+    auto calleeScope = getScope(compiler, returnMode);
 
     if (!hasThis) {
         auto functionName = getCInitFunctionName(returnMode);
@@ -666,7 +665,7 @@ void CFunction::dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, stri
         
         stringstream dotSS;
         auto calleeVar = getThisVar(compiler, returnMode);
-        auto calleeScope = make_shared<CScope>(shared_from_this(), calleeVar, returnMode);
+        auto calleeScope = getScope(compiler, returnMode);
         auto blockVar = _block->getVar(compiler, calleeScope, returnMode);
         blockVar->dump(compiler, nullptr, functions, ss, dotSS, level);
     }
@@ -753,7 +752,7 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CTypeMode returnM
         
         if (_block) {
             auto calleeVar = getThisVar(compiler, returnMode);
-            auto calleeScope = make_shared<CScope>(shared_from_this(), calleeVar, returnMode);
+            auto calleeScope = getScope(compiler, returnMode);
             auto blockVar = _block->getVar(compiler, calleeScope, _data[returnMode].returnType ? _data[returnMode].returnType->typeMode : returnMode);
             auto type = blockVar->getType(compiler);
             if (!_data[returnMode].returnType) {
@@ -774,7 +773,7 @@ shared_ptr<vector<shared_ptr<CVar>>> CFunction::getArgVars(Compiler* compiler, C
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
 
     auto calleeVar = getThisVar(compiler, returnMode);
-    auto calleeScope = make_shared<CScope>(shared_from_this(), calleeVar, returnMode);
+    auto calleeScope = getScope(compiler, returnMode);
     auto args = make_shared<vector<shared_ptr<CVar>>>();
     for (auto it : argDefaultValues) {
         auto var = it->getVar(compiler, calleeScope, CTM_Undefined);
@@ -789,6 +788,21 @@ shared_ptr<CTypes> CFunction::getThisTypes(Compiler* compiler) {
         _thisTypes = CType::create(compiler, name.c_str(), shared_from_this());
     }
     return _thisTypes;
+}
+
+shared_ptr<CScope> CFunction::getScope(Compiler* compiler, CTypeMode returnMode) {
+    if (_data[returnMode].scope == nullptr) {
+        auto calleeVar = getThisVar(compiler, returnMode);
+        _data[returnMode].scope = make_shared<CScope>(shared_from_this(), calleeVar, returnMode);
+    }
+    return _data[returnMode].scope;
+}
+
+int CFunction::getThisIndex(const string& name, CTypeMode returnMode) {
+    if (_data[returnMode].thisArgVarsByName.find(name) != _data[returnMode].thisArgVarsByName.end()) {
+        return _data[returnMode].thisArgVarsByName[name].first;
+    }
+    return -1;
 }
 
 shared_ptr<vector<pair<string, shared_ptr<CType>>>> CFunction::getCTypeList(Compiler* compiler, CTypeMode returnMode) {
@@ -868,9 +882,8 @@ shared_ptr<CBaseFunction> CFunction::getCFunction(Compiler* compiler, const stri
     return nullptr;
 }
 
-shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode) {
+shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames) {
     assert(name[0] == '#');
-    assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
 
     if (name.find('.') != string::npos) {
         vector<string> names;
@@ -883,7 +896,7 @@ shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, const string
         auto cfunc = shared_from_this();
         for (auto name : names) {
             if (name == names.back()) {
-                return cfunc->getCInterface(compiler, "#" + name, callerScope, templateTypeNames, returnMode);
+                return cfunc->getCInterface(compiler, "#" + name, callerScope, templateTypeNames);
             }
             else {
                 auto var = cfunc->getCVar(compiler, name, CTM_Stack);
@@ -1016,7 +1029,7 @@ shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, shared_ptr
 
     if (typeName->category == CTC_Interface) {
         auto nameWithoutQuestion = typeName->isOption ? typeName->name.substr(0, typeName->name.size() - 1) : typeName->name;
-        auto interface = getCInterface(compiler, nameWithoutQuestion, nullptr, typeName->templateTypeNames, typeName->typeMode);
+        auto interface = getCInterface(compiler, nameWithoutQuestion, nullptr, typeName->templateTypeNames);
         if (interface) {
             auto thisTypes = interface->getThisTypes(compiler);
             return typeName->isOption ? thisTypes->heapOptionType : thisTypes->heapValueType;
@@ -1212,9 +1225,9 @@ void CFunctionDefinition::dump(Compiler* compiler, int level) {
 shared_ptr<CVar> CScope::findLocalVar(Compiler* compiler, string name) {
     auto iter = function->_data[returnMode].localVarsByName.find(name);
     if (iter != function->_data[returnMode].localVarsByName.end()) {
-        return nullptr;
+        return iter->second;
     }
-    return iter->second;
+    return nullptr;
 }
 
 void CScope::addOrUpdateLocalVar(Compiler* compiler, string name, shared_ptr<CVar> var) {
@@ -1231,4 +1244,47 @@ void CScope::pushLocalVar(Compiler* compiler, CLoc loc, shared_ptr<CVar> var) {
 
 void CScope::popLocalVar(Compiler* compiler, shared_ptr<CVar> var) {
     function->_data[returnMode].localVarsByName.erase(var->name);
+}
+
+shared_ptr<CType> CScope::getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
+    if (function) {
+        return function->getVarType(loc, compiler, typeName, defaultMode);
+    }
+    else if (cinterface) {
+        return cinterface->getVarType(loc, compiler, typeName, defaultMode);
+    }
+    else {
+        assert(false);
+        return nullptr;
+    }
+}
+
+shared_ptr<CVar> CScope::getCVar(Compiler* compiler, const string& name) {
+    if (function) {
+        return function->getCVar(compiler, name, returnMode);
+    }
+    else if (cinterface) {
+        return cinterface->getCVar(compiler, name, CTM_Heap);
+    }
+    else {
+        assert(false);
+        return nullptr;
+    }
+}
+
+shared_ptr<CScope> CScope::getScopeForType(Compiler* compiler, shared_ptr<CType> type) {
+    auto baseFunction = type->parent.lock();
+    if (baseFunction->classType == CFT_Function) {
+        auto function = static_pointer_cast<CFunction>(baseFunction);
+        auto returnMode = type->typeMode;
+        return function->getScope(compiler, returnMode);
+    }
+    else if (baseFunction->classType == CFT_Interface) {
+        auto cinterface = static_pointer_cast<CInterface>(baseFunction);
+        return cinterface->getScope();
+    }
+    else {
+        assert(false);
+        return nullptr;
+    }
 }

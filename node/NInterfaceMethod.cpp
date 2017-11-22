@@ -111,7 +111,7 @@ shared_ptr<CTypes> CInterfaceMethod::getThisTypes(Compiler* compiler) {
     return nullptr;
 }
 
-int CInterfaceMethod::getThisIndex(const string& name) const {
+int CInterfaceMethod::getThisIndex(const string& name, CTypeMode returnMode) {
     assert(false);
     return -1;
 }

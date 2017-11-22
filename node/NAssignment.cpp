@@ -119,12 +119,6 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
             else {
                 auto fun = static_pointer_cast<CFunction>(cfunction);
                 
-                auto localVar = scope->findLocalVar(compiler, name);
-                if (!localVar) {
-                    compiler->addError(loc, CErrorCode::Internal, "the previous search on NVariable should find a local value with same name");
-                    return nullptr;
-                }
-                
                 auto leftType = getType(compiler, scope, returnMode);
                 if (!leftType) {
                     return nullptr;

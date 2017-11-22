@@ -157,12 +157,10 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                 state = CompilerState::Compile;
 				currentFunction = make_shared<CFunction>(currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr);
 				currentFunction->init(this, nullptr);
-				auto currentVar = currentFunction->getThisVar(this, CTM_Stack);
-                auto currentScope = make_shared<CScope>(currentFunction, currentVar, CTM_Stack);
+                auto currentScope = currentFunction->getScope(this, CTM_Stack);
 				anonFunction->getVar(this, currentScope, CTM_Stack);
 				globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, "global", nullptr, nullptr));
-                auto globalVar = globalFunction->getThisVar(this, CTM_Stack);
-                auto globalScope = make_shared<CScope>(globalFunction, globalVar, CTM_Stack);
+                auto globalScope = globalFunction->getScope(this, CTM_Stack);
                 auto mainLoop = static_pointer_cast<CFunction>(globalFunction->getCFunction(this, "mainLoop", globalScope, nullptr));
 #ifdef VAR_OUTPUT
 				currentFunction->dump(this, 0);

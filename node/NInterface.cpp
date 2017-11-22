@@ -134,7 +134,14 @@ shared_ptr<CTypes> CInterface::getThisTypes(Compiler* compiler) {
     return thisTypes;
 }
 
-int CInterface::getThisIndex(const string& name) const {
+shared_ptr<CScope> CInterface::getScope() {
+    if (_scope == nullptr) {
+        _scope = make_shared<CScope>(shared_from_this());
+    }
+    return _scope;
+}
+
+int CInterface::getThisIndex(const string& name, CTypeMode returnMode) {
     assert(false);
     return -1;
 }
