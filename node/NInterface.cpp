@@ -96,7 +96,7 @@ shared_ptr<CInterface> CInterface::init(Compiler* compiler, shared_ptr<NInterfac
     for (auto it : node->methodList) {
         // TODO: need to create a stack and heap version if return typename is not explicit
 
-        if (it->returnTypeName->typeMode == CTM_Stack || it->returnTypeName->typeMode == CTM_Undefined) {
+        if (it->returnTypeName->typeMode == CTM_Stack || it->returnTypeName->typeMode == CTM_Undefined || it->returnTypeName->typeMode == CTM_Value) {
             auto method = make_shared<CInterfaceMethod>(it->name, shared_from_this(), argIndex, CTM_Stack);
             method = method->init(compiler, it, shared_from_this());
             if (!method) {

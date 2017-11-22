@@ -15,7 +15,7 @@ void CCompareVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
     rightVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, rightValue);
 
     stringstream line;
-    line << leftValue->name;
+    line << leftValue->getName(trBlock);
     switch (op) {
     case NCompareOp::EQ:
     case NCompareOp::PEQ:
@@ -38,7 +38,7 @@ void CCompareVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
         line << " >= ";
         break;
     }
-    line << rightValue->name;
+    line << rightValue->getName(trBlock);
     trBlock->statements.push_back(line.str());
 
     auto resultValue = make_shared<TrValue>(nullptr, compiler->typeBool, line.str());

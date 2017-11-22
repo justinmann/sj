@@ -18,11 +18,9 @@ class CBaseFunctionDefinition;
 
 class ArgData {
 public:
-    ArgData(shared_ptr<CVar> var_, shared_ptr<TrStoreValue> value_) : var(var_), name(value_->name), value(value_) { }
-    ArgData(shared_ptr<CVar> var_, string name_) : var(var_), name(name_), value(nullptr) { }
+    ArgData(shared_ptr<CVar> var_, shared_ptr<TrStoreValue> value_) : var(var_), value(value_) { }
 
     shared_ptr<CVar> var;
-    string name;
     shared_ptr<TrStoreValue> value;
 };
 

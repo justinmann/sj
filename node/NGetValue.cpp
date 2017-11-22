@@ -38,18 +38,18 @@ public:
         if (leftValue->type->parent.expired()) {
             if (!isProtectedWithEmptyCheck) {
                 stringstream emptyCheck;
-                emptyCheck << "if (" << leftValue->name << ".isEmpty) { exit(-1); }";
+                emptyCheck << "if (" << leftValue->getName(trBlock) << ".isEmpty) { exit(-1); }";
                 trBlock->statements.push_back(emptyCheck.str());
             }
-            line << leftValue->name << ".value";
+            line << leftValue->getName(trBlock) << ".value";
         }
         else {
             if (!isProtectedWithEmptyCheck) {
                 stringstream emptyCheck;
-                emptyCheck << "if (" << leftValue->name << " == 0) { exit(-1); }";
+                emptyCheck << "if (" << leftValue->getName(trBlock) << " == 0) { exit(-1); }";
                 trBlock->statements.push_back(emptyCheck.str());
             }
-            line << leftValue->name;
+            line << leftValue->getName(trBlock);
         }
 
         storeValue->retainValue(compiler, trBlock, make_shared<TrValue>(scope.lock(), leftValue->type->getValueType(), line.str()));

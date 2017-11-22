@@ -25,11 +25,11 @@ void CIfElseVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
     }
 
     stringstream ifLine;
-    if (conditionTrValue->name.front() == '(' && conditionTrValue->name.back() == ')') {
-        ifLine << "if " << conditionTrValue->name;
+    if (conditionTrValue->getName(trBlock).front() == '(' && conditionTrValue->getName(trBlock).back() == ')') {
+        ifLine << "if " << conditionTrValue->getName(trBlock);
     }
     else {
-        ifLine << "if (" << conditionTrValue->name << ")";
+        ifLine << "if (" << conditionTrValue->getName(trBlock) << ")";
     }
     auto trIfBlock = make_shared<TrBlock>();
     trIfBlock->hasThis = trBlock->hasThis;

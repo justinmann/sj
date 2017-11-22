@@ -237,11 +237,11 @@ void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> scope, T
     line << parentValue->name << "->_parent";
     for (auto argValue : argValues) {
         line << ", ";
-        line << argValue.name;
+        line << argValue.value->getName(trBlock);
     }
     if (returnType != compiler->typeVoid) {
         line << ", ";
-        line << "&" << storeValue->name;
+        line << "&" << storeValue->getName(trBlock);
     }
     line << ")";
     trBlock->statements.push_back(line.str()); 

@@ -13,11 +13,12 @@ void CWhileVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
     
     condVar->transpile(compiler,trOutput, trBlock, nullptr, thisValue, whileValue);
     stringstream whileLine;
-    whileLine << "while (" << whileValue->name << ")";
+    whileLine << "while (" << whileValue->getName(trBlock) << ")";
     auto trWhileBlock = make_shared<TrBlock>();
     trWhileBlock->parent = trBlock;
     trWhileBlock->hasThis = trBlock->hasThis;
-    bodyVar->transpile(compiler, trOutput, trWhileBlock.get(), nullptr, thisValue, trBlock->createVoidStoreVariable(loc));
+    auto bodyType = bodyVar->getType(compiler);
+    bodyVar->transpile(compiler, trOutput, trWhileBlock.get(), nullptr, thisValue, trBlock->createVoidStoreVariable(loc, bodyType));
     condVar->transpile(compiler, trOutput, trWhileBlock.get(), nullptr, thisValue, whileValue);    
     trBlock->statements.push_back(TrStatement(whileLine.str(), trWhileBlock));
 }

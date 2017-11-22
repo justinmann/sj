@@ -135,8 +135,8 @@ shared_ptr<TrStoreValue> TrBlock::createTempStoreVariable(CLoc loc, shared_ptr<C
     return var;
 }
 
-shared_ptr<TrStoreValue> TrBlock::createVoidStoreVariable(CLoc loc) {
-    return make_shared<TrStoreValue>(loc, nullptr, nullptr, "", ASSIGN_Immutable, true);
+shared_ptr<TrStoreValue> TrBlock::createVoidStoreVariable(CLoc loc, shared_ptr<CType> type) {
+    return make_shared<TrStoreValue>(loc, type, true);
 }
 
 shared_ptr<TrStoreValue> TrBlock::createReturnStoreVariable(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type) {
@@ -362,7 +362,6 @@ string TrValue::convertToLocalName(shared_ptr<CType> from, string name) {
 }
 
 void TrStoreValue::retainValue(Compiler* compiler, TrBlock* block, shared_ptr<TrValue> rightValue) {
-    assert(!hasSetValue);
     hasSetValue = true;
 
     value = rightValue;
@@ -382,6 +381,9 @@ void TrStoreValue::retainValue(Compiler* compiler, TrBlock* block, shared_ptr<Tr
         return;
     }
 
+    if (isVoid) {
+        return;
+    }
 
     if (type->typeMode == CTM_Stack && rightValue->type->typeMode == CTM_Stack && op != ASSIGN_MutableCopy && op != ASSIGN_ImmutableCopy) {
         compiler->addError(loc, CErrorCode::TypeMismatch, "must use a :copy or =copy assignment when assigning a stack variable to a stack variable");
@@ -394,24 +396,17 @@ void TrStoreValue::retainValue(Compiler* compiler, TrBlock* block, shared_ptr<Tr
             leftValue.addReleaseToStatements(block);
         }
 
-        if (isReturnValue) {
-            // TODO: assert(rightValue->type->typeMode == CTM_Heap || rightValue->type->typeMode == CTM_Value);
-            block->returnLine = rightValue->name;
-            rightValue->addRetainToStatements(block);
+        stringstream lineStream;
+        lineStream << name << " = ";
+        if (type->typeMode == CTM_Stack || type->typeMode == CTM_Local) {
+            lineStream << TrValue::convertToLocalName(rightValue->type, rightValue->name);
         }
         else {
-            stringstream lineStream;
-            lineStream << name << " = ";
-            if (type->typeMode == CTM_Stack || type->typeMode == CTM_Local) {
-                lineStream << TrValue::convertToLocalName(rightValue->type, rightValue->name);
-            }
-            else {
-                lineStream << rightValue->name;
-            }
-
-            block->statements.push_back(lineStream.str());
-            leftValue.addRetainToStatements(block);
+            lineStream << rightValue->name;
         }
+
+        block->statements.push_back(lineStream.str());
+        leftValue.addRetainToStatements(block);
     }
     else {
         if (type->typeMode == CTM_Value) {
@@ -436,7 +431,6 @@ void TrStoreValue::retainValue(Compiler* compiler, TrBlock* block, shared_ptr<Tr
 }
 
 void TrStoreValue::takeOverValue(Compiler* compiler, TrBlock* block, shared_ptr<TrValue> rightValue) {
-    assert(!hasSetValue);
     hasSetValue = true;
 
     value = rightValue;
@@ -457,6 +451,9 @@ void TrStoreValue::takeOverValue(Compiler* compiler, TrBlock* block, shared_ptr<
         return;
     }
 
+    if (isVoid) {
+        return;
+    }
 
     if (type->typeMode == CTM_Stack && rightValue->type->typeMode == CTM_Stack && op != ASSIGN_MutableCopy && op != ASSIGN_ImmutableCopy) {
         compiler->addError(loc, CErrorCode::TypeMismatch, "must use a :copy or =copy assignment when assigning a stack variable to a stack variable");
@@ -469,22 +466,16 @@ void TrStoreValue::takeOverValue(Compiler* compiler, TrBlock* block, shared_ptr<
             leftValue.addReleaseToStatements(block);
         }
 
-        if (isReturnValue) {
-            // TODO: assert(rightValue->type->typeMode == CTM_Heap || rightValue->type->typeMode == CTM_Value);
-            block->returnLine = rightValue->name;
+        stringstream lineStream;
+        lineStream << name << " = ";
+        if (type->typeMode == CTM_Stack || type->typeMode == CTM_Local) {
+            lineStream << TrValue::convertToLocalName(rightValue->type, rightValue->name);
         }
         else {
-            stringstream lineStream;
-            lineStream << name << " = ";
-            if (type->typeMode == CTM_Stack || type->typeMode == CTM_Local) {
-                lineStream << TrValue::convertToLocalName(rightValue->type, rightValue->name);
-            }
-            else {
-                lineStream << rightValue->name;
-            }
-
-            block->statements.push_back(lineStream.str());
+            lineStream << rightValue->name;
         }
+
+        block->statements.push_back(lineStream.str());
     }
     else {
         if (type->typeMode == CTM_Value) {
@@ -506,6 +497,13 @@ void TrStoreValue::takeOverValue(Compiler* compiler, TrBlock* block, shared_ptr<
             block->statements.push_back(lineStream.str());
         }
     }
+}
+
+string TrStoreValue::getName(TrBlock* block) {
+    if (name.size() == 0) {
+        name = block->createTempVariable(scope, type, "void")->name;
+    }
+    return name;
 }
 
 shared_ptr<TrValue> TrStoreValue::getValue() {

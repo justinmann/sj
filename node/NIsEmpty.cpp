@@ -22,10 +22,10 @@ void CIsEmptyVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
     
     stringstream line;
     if (leftValue->type->parent.expired()) {
-        line << leftValue->name << ".isEmpty";
+        line << leftValue->getName(trBlock) << ".isEmpty";
     }
     else {
-        line << "(" << leftValue->name << " == 0)";
+        line << "(" << leftValue->getName(trBlock) << " == 0)";
     }
     storeValue->retainValue(compiler, trBlock, make_shared<TrValue>(nullptr, compiler->typeBool, line.str()));
 }

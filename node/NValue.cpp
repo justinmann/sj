@@ -37,13 +37,13 @@ void CValueVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
         trBlock->statements.push_back(line1.str());
 
         stringstream line2;
-        line2 << returnValue->name << ".value = " << leftValue->name;
+        line2 << returnValue->name << ".value = " << leftValue->getName(trBlock);
         trBlock->statements.push_back(line2.str());
 
         storeValue->retainValue(compiler, trBlock, returnValue);
     }
     else {
-        storeValue->retainValue(compiler, trBlock, make_shared<TrValue>(leftValue->scope, leftValue->type->getOptionType(), leftValue->name));
+        storeValue->retainValue(compiler, trBlock, make_shared<TrValue>(leftValue->scope, leftValue->type->getOptionType(), leftValue->getName(trBlock)));
     }
 }
 

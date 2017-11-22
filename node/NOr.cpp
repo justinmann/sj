@@ -15,7 +15,7 @@ void COrVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock,
     rightVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, rightValue);
 
     stringstream line;
-    line << leftValue->name << " || " << rightValue->name;
+    line << leftValue->getName(trBlock) << " || " << rightValue->getName(trBlock);
     trBlock->statements.push_back(line.str());
 
     auto resultValue = make_shared<TrValue>(nullptr, compiler->typeBool, line.str());

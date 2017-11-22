@@ -32,7 +32,7 @@ void CForLoopVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
     startVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, loopStartTrValue);
     
     stringstream loopCounterLine;
-    loopCounterLine << indexVar->name << " = " << loopStartTrValue->name;
+    loopCounterLine << indexVar->name << " = " << loopStartTrValue->getName(trBlock);
     trBlock->statements.push_back(loopCounterLine.str());
     
     auto loopEndTrValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeI32, "forEnd");
@@ -42,11 +42,12 @@ void CForLoopVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
     trForBlock->parent = trBlock;
     trForBlock->hasThis = trBlock->hasThis;
     stringstream whileLine;
-    whileLine << "while (" << indexVar->name << " < " << loopEndTrValue->name << ")";
+    whileLine << "while (" << indexVar->name << " < " << loopEndTrValue->getName(trBlock) << ")";
     trBlock->statements.push_back(TrStatement(whileLine.str(), trForBlock));
     
     scope.lock()->pushLocalVar(compiler, loc, indexVar);
-    bodyVar->transpile(compiler, trOutput, trForBlock.get(), nullptr, thisValue, trBlock->createVoidStoreVariable(loc));
+    auto bodyType = bodyVar->getType(compiler);
+    bodyVar->transpile(compiler, trOutput, trForBlock.get(), nullptr, thisValue, trBlock->createVoidStoreVariable(loc, bodyType));
     scope.lock()->popLocalVar(compiler, indexVar);
 
     stringstream loopCounterIncLine;

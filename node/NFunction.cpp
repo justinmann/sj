@@ -200,7 +200,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                 trFunctionBlock->definition = functionDefinition.str();
 
                 auto blockVar = _block->getVar(compiler, calleeScope, returnMode);
-                auto bodyReturnValue = (returnType == compiler->typeVoid) ? trFunctionBlock->createVoidStoreVariable(loc) : trFunctionBlock->createReturnStoreVariable(loc, nullptr, returnType);
+                auto bodyReturnValue = (returnType == compiler->typeVoid) ? trFunctionBlock->createVoidStoreVariable(loc, returnType) : trFunctionBlock->createReturnStoreVariable(loc, nullptr, returnType);
                 blockVar->transpile(compiler, trOutput, trFunctionBlock.get(), nullptr, nullptr, bodyReturnValue);
             }
         }
@@ -217,7 +217,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 
                 auto blockVar = _block->getVar(compiler, calleeScope, returnType->typeMode);
                 _isReturnThis = blockVar->getReturnThis();
-                auto bodyReturnValue = (returnType != compiler->typeVoid && !_isReturnThis) ? trFunctionBlock->createReturnStoreVariable(loc, nullptr, returnType) : trFunctionBlock->createVoidStoreVariable(loc);
+                auto bodyReturnValue = (returnType != compiler->typeVoid && !_isReturnThis) ? trFunctionBlock->createReturnStoreVariable(loc, nullptr, returnType) : trFunctionBlock->createVoidStoreVariable(loc, returnType);
                 blockVar->transpile(compiler, trOutput, trFunctionBlock.get(), nullptr, make_shared<TrValue>(nullptr, calleeVar->getType(compiler), "_this"), bodyReturnValue);
 
                 string structName = getCStructName(calleeVar->getTypeMode());
@@ -308,7 +308,8 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                 if (_copyBlock) {
                     auto copyBlockVar = _copyBlock->getVar(compiler, calleeScope, CTM_Undefined);
                     if (copyBlockVar) {
-                        copyBlockVar->transpile(compiler, trOutput, trCopyBlock.get(), nullptr, make_shared<TrValue>(nullptr, calleeVar->getType(compiler), "_this"), trCopyBlock->createVoidStoreVariable(loc));
+                        auto copyType = copyBlockVar->getType(compiler);
+                        copyBlockVar->transpile(compiler, trOutput, trCopyBlock.get(), nullptr, make_shared<TrValue>(nullptr, calleeVar->getType(compiler), "_this"), trCopyBlock->createVoidStoreVariable(loc, copyType));
                     }
                 }
             }
@@ -328,7 +329,8 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                 if (_destroyBlock) {
                     auto destroyBlockVar = _destroyBlock->getVar(compiler, calleeScope, CTM_Undefined);
                     if (destroyBlockVar) {
-                        destroyBlockVar->transpile(compiler, trOutput, trDestroyBlock.get(), nullptr, make_shared<TrValue>(nullptr, calleeVar->getType(compiler), "_this"), trDestroyBlock->createVoidStoreVariable(loc));
+                        auto destroyType = destroyBlockVar->getType(compiler);
+                        destroyBlockVar->transpile(compiler, trOutput, trDestroyBlock.get(), nullptr, make_shared<TrValue>(nullptr, calleeVar->getType(compiler), "_this"), trDestroyBlock->createVoidStoreVariable(loc, destroyType));
                     }
                 }
 
@@ -478,7 +480,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
             else {
                 line << ", ";
             }
-            line << argStoreValue->name;
+            line << argStoreValue->getName(trBlock);
             argIndex++;
         }
 
@@ -490,7 +492,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
             else {
                 line << ", ";
             }
-            line << "&" << storeValue->name;
+            line << "&" << storeValue->getName(trBlock);
             storeValue->hasSetValue = true;
         }
         line << ")";
@@ -502,7 +504,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
         shared_ptr<TrValue> calleeThisValue;
         if (_isReturnThis && storeValue->type != nullptr) {
             // TODO: need to figure how to handle the various types of assignment
-            calleeThisValue = make_shared<TrValue>(storeValue->scope, storeValue->type, storeValue->name);
+            calleeThisValue = make_shared<TrValue>(storeValue->scope, storeValue->type, storeValue->getName(trBlock));
             calleeThisValue->addInitToStatements(trBlock);
         }
         else {
@@ -574,7 +576,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
         stringstream line;
         line << functionName << "(" << calleeThisValue->getPointerName();
         if (returnType != compiler->typeVoid && !_isReturnThis) {
-            line << ", &" << storeValue->name;
+            line << ", &" << storeValue->getName(trBlock);
         }
         line << ")";
         trBlock->statements.push_back(line.str());

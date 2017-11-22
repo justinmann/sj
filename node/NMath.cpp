@@ -15,7 +15,7 @@ void CMathVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
     rightVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, rightValue);
 
     stringstream line;
-    line << leftValue->name;
+    line << leftValue->getName(trBlock);
     switch (op) {
     case NMathOp::Add:
         line << " + ";
@@ -33,7 +33,7 @@ void CMathVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
         line << " % ";
         break;
     }
-    line << rightValue->name;
+    line << rightValue->getName(trBlock);
     trBlock->statements.push_back(line.str());
 
     auto resultValue = make_shared<TrValue>(nullptr, compiler->typeBool, line.str());
