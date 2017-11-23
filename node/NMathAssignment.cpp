@@ -113,5 +113,5 @@ shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, shared_ptr<CSco
     if (!leftStoreVar) {
         assert(false);
     }
-    return make_shared<CAssignVar>(loc, leftVar->scope.lock(), ASSIGN_Mutable, false, leftStoreVar, rightVar);
+    return make_shared<CAssignVar>(loc, leftVar->scope.lock(), AssignOp::mutableOp, false, leftStoreVar, rightVar);
 }

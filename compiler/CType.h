@@ -15,6 +15,8 @@ class CFunction;
 class CInterface;
 class CResult;
 class TrValue;
+class TrStoreValue;
+class TrBlock;
 class CVar;
 class CThisVar;
 class CBaseFunctionDefinition;
@@ -38,6 +40,19 @@ enum CTypeMode {
     CTM_Local,
     CTM_Value
 };
+
+class AssignOp {
+public:
+    bool isMutable;
+    bool isCopy;
+    CTypeMode typeMode;
+
+    static AssignOp create(bool isMutable, bool isCopy, CTypeMode typeMode);
+    static AssignOp immutableOp;
+    static AssignOp mutableOp;
+};
+
+class CType;
 
 class CTypes {
 public:

@@ -66,7 +66,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID TSTRING TCHAR TCBLOCK TCFUNCTION TCDEFINE
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TAT TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TASOPTION TQUESTION TEMPTY TVALUE TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TLOCAL TCOLONCOPY TEQUALCOPY TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TAT TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TASOPTION TQUESTION TEMPTY TVALUE TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TLOCAL TAUTO TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch copy destroy expr
@@ -74,7 +74,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %type <block> stmts
 %type <nif> if_expr
 %type <exprvec> func_args func_block array_args tuple_args interface_args interface_block
-%type <assignOp> assign_type
+%type <assignOp> assign_type assign_mode assign_copy
 %type <typeName> arg_type_quote arg_type return_type_quote return_type func_type func_arg_type func_type_name implement_arg value_type
 %type <templateTypeNames> temp_args temp_block temp_block_optional func_arg_type_list implement implement_args
 %type <string> arg_type_interface
@@ -314,10 +314,19 @@ assign_tuple_arg	: TIDENTIFIER assign_type						{ $$ = new NTupleAssignmentArg(L
 					| var TDOT TIDENTIFIER assign_type				{ $$ = new NTupleAssignmentArg(LOC, shared_ptr<NVariableBase>($1), nullptr, $3->c_str(), $4); }
 					;
 
-assign_type 		: TEQUAL										{ $$ = ASSIGN_Mutable; }
-					| TCOLON										{ $$ = ASSIGN_Immutable; }
-					| TEQUALCOPY									{ $$ = ASSIGN_MutableCopy; }
-					| TCOLONCOPY									{ $$ = ASSIGN_ImmutableCopy; }
+assign_type 		: TEQUAL assign_mode							{ $$ = $2; $$.isMutable = true; }
+					| TCOLON assign_mode							{ $$ = $2; $$.isMutable = false; }
+					;
+
+assign_mode			: assign_copy									{ $$ = $1; $$.typeMode = CTM_Undefined; }
+					| TAUTO assign_copy								{ $$ = $2; $$.typeMode = CTM_Undefined; }
+					| TLOCAL assign_copy							{ $$ = $2; $$.typeMode = CTM_Local; }
+					| TSTACK assign_copy							{ $$ = $2; $$.typeMode = CTM_Stack; }
+					| THEAP assign_copy								{ $$ = $2; $$.typeMode = CTM_Heap; }
+					;
+
+assign_copy			: /* Blank! */									{ $$.isCopy = false; }
+					| TCOPY 										{ $$.isCopy = true; }
 					;
 
 tuple				: tuple_args TCOMMA expr_comp					{ $1->push_back(shared_ptr<NBase>($3)); $$ = new NTuple(LOC, shared_ptr<NodeList>($1)); }

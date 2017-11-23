@@ -140,7 +140,7 @@ shared_ptr<CFunction> CFunction::init(Compiler* compiler, shared_ptr<NFunction> 
                     return nullptr;
                 }
 
-                auto thisArgVar = make_shared<CNormalVar>(node->loc, calleeScope, argType, it->name, it->op == ASSIGN_Mutable || it->op == ASSIGN_MutableCopy, CVarType::Var_Public);
+                auto thisArgVar = make_shared<CNormalVar>(node->loc, calleeScope, argType, it->name, it->op.isMutable, CVarType::Var_Public);
                 _data[returnMode].thisArgVarsByName[it->name] = pair<int, shared_ptr<CVar>>(index, thisArgVar);
                 _data[returnMode].thisArgVars.push_back(thisArgVar);
             }
@@ -319,7 +319,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 
                 for (auto argVar : _data[returnMode].thisArgVars) {
                     auto argType = argVar->getType(compiler);
-                    TrStoreValue(argVar->loc, calleeScope, argType, "_this->" + argVar->name, ASSIGN_ImmutableCopy, true).retainValue(compiler, trCopyBlock.get(), make_shared<TrValue>(calleeScope, argType, "to->" + argVar->name, false));
+                    TrStoreValue(argVar->loc, calleeScope, argType, "_this->" + argVar->name, AssignOp::create(true, true, CTM_Undefined), true).retainValue(compiler, trCopyBlock.get(), make_shared<TrValue>(calleeScope, argType, "to->" + argVar->name, false));
                 }
 
                 if (_copyBlock) {
@@ -592,7 +592,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
                 return;
             }
 
-            auto argStoreValue = make_shared<TrStoreValue>(loc, calleeScope, argType, calleeThisValue->getDotName(argVar->name), ASSIGN_Immutable, true);
+            auto argStoreValue = make_shared<TrStoreValue>(loc, calleeScope, argType, calleeThisValue->getDotName(argVar->name), AssignOp::immutableOp, true);
             parameterVar->transpile(compiler, trOutput, trBlock, nullptr, isDefaultAssignment ? calleeThisValue : thisValue, argStoreValue);
 
             if (!argStoreValue->hasSetValue) {

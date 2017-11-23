@@ -37,9 +37,9 @@ public:
     static CLoc undefined;
 };
 
-#include "../transpile/TrOutput.h"
 #include "CType.h"
 #include "CTypeName.h"
+#include "../transpile/TrOutput.h"
 #include "CVar.h"
 #include "Exception.h"
 

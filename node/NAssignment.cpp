@@ -113,7 +113,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
         else {
             leftVar = scope->getCVar(compiler, name);
             if (leftVar) {
-                if (op == ASSIGN_Immutable || op == ASSIGN_ImmutableCopy) {
+                if (!op.isMutable) {
                     compiler->addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var '%s'", name.c_str());
                     return nullptr;
                 }
@@ -126,11 +126,11 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
             else {
                 auto fun = static_pointer_cast<CFunction>(cfunction);
                 
-                auto leftType = getType(compiler, scope, CVarType::Var_Local, returnMode);
+                auto leftType = getType(compiler, scope, CVarType::Var_Local, op.typeMode);
                 if (!leftType) {
                     return nullptr;
                 }
-                leftVar = make_shared<CNormalVar>(loc, scope, leftType, name, op == ASSIGN_Mutable || op == ASSIGN_MutableCopy, CVarType::Var_Local);
+                leftVar = make_shared<CNormalVar>(loc, scope, leftType, name, op.isMutable, CVarType::Var_Local);
                 isFirstAssignment = true;
                 
                 scope->addOrUpdateLocalVar(compiler, name, leftVar);
@@ -138,6 +138,11 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
         }
 
         auto leftType = leftVar->getType(compiler);
+        if (op.typeMode != CTM_Undefined && leftType->typeMode != op.typeMode) {
+            compiler->addError(loc, CErrorCode::Internal, "var '%s' was already defined as '%s' cannot convert to %s", name.c_str(), leftType->fullName.c_str(), op.typeMode == CTM_Heap ? "heap" : op.typeMode == CTM_Stack ? "stack" : "local");
+            return nullptr;
+        }
+
         auto rightVar = rightSide->getVar(compiler, scope, leftType->typeMode);
         if (!rightVar) {
             assert(compiler->errors.size() > 0);
@@ -156,12 +161,6 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
 
 shared_ptr<CType> NAssignment::getType(Compiler* compiler, shared_ptr<CScope> scope, CVarType varType, CTypeMode returnMode) {
     if (typeName) {
-        if (varType == CVarType::Var_Local) {
-            if (returnMode == CTM_Undefined) {
-                returnMode = CTM_Local;
-            }
-        }
-        
         auto valueType = scope->getVarType(loc, compiler, typeName, returnMode);
         if (!valueType) {
             compiler->addError(loc, CErrorCode::InvalidType, "explicit type '%s' does not exist", typeName->getFullName().c_str());
@@ -182,13 +181,15 @@ shared_ptr<CType> NAssignment::getType(Compiler* compiler, shared_ptr<CScope> sc
     }
 
     auto rightType = rightVar->getType(compiler);
-
-    if (varType == CVarType::Var_Local) {
-        if (rightType->typeMode == CTM_Stack || rightType->typeMode == CTM_Heap) {
+    if (returnMode != CTM_Undefined && returnMode != rightType->typeMode) {
+        if (returnMode == CTM_Local) {
             return rightType->getLocalType();
         }
+        else {
+            compiler->addError(loc, CErrorCode::TypeMismatch, "cannot convert right side to %s", returnMode == CTM_Heap ? "heap" : "stack");
+            return nullptr;
+        }
     }
-
     return rightType;
 }
 

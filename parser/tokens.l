@@ -59,8 +59,7 @@ void updateLocation(YYLOCATION& loc, const char* s, const int len) {
 "stack"					TOKEN_VAL(TSTACK);
 "heap"					TOKEN_VAL(THEAP);
 "local"					TOKEN_VAL(TLOCAL);
-":copy"					TOKEN_VAL(TCOLONCOPY);
-"=copy"					TOKEN_VAL(TEQUALCOPY);
+"auto"					TOKEN_VAL(TAUTO);
 "i32"					TOKEN_VAL(TTYPEI32);
 "u32"					TOKEN_VAL(TTYPEU32);
 "f32"					TOKEN_VAL(TTYPEF32);
