@@ -220,7 +220,7 @@ string CInterface::getCInitFunctionName(CTypeMode returnMode) {
 }
 
 string CInterface::getCBaseName(CTypeMode typeMode) {
-    auto functionName = name.substr(1, name.size() - 1);
+    auto functionName = name;
     if (!parent.expired()) {
         auto tempType = parent.lock();
         while (tempType != nullptr && tempType->name.compare("global") != 0 && tempType->name.size() > 0) {
