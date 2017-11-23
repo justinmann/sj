@@ -9,8 +9,12 @@ shared_ptr<CType> CCompareVar::getType(Compiler* compiler) {
 }
 
 void CCompareVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    auto leftValue = trBlock->createTempStoreVariable(loc, nullptr, leftVar->getType(compiler), "compare");
-    auto rightValue = trBlock->createTempStoreVariable(loc, nullptr, leftVar->getType(compiler), "compare");
+    auto varType = leftVar->getType(compiler);
+    if (!varType->parent.expired() && (op == NCompareOp::PEQ || op == NCompareOp::PNE)) {
+        varType = varType->getLocalType();
+    }
+    auto leftValue = trBlock->createTempStoreVariable(loc, nullptr, varType, "compare");
+    auto rightValue = trBlock->createTempStoreVariable(loc, nullptr, varType, "compare");
     leftVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, leftValue);
     rightVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, rightValue);
 
@@ -101,7 +105,7 @@ shared_ptr<CVar> NCompare::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
     }
 
     // Check to see if we have operator overloading
-    if (!leftType->parent.expired()) {
+    if (!leftType->parent.expired() && op != NCompareOp::PEQ && op != NCompareOp::PNE) {
         switch (op) {
             case NCompareOp::EQ:
                 operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "isEqual", nullptr, make_shared<NodeList>(rightSide)));
@@ -127,8 +131,8 @@ shared_ptr<CVar> NCompare::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
                 operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "isGreaterOrEqual", nullptr, make_shared<NodeList>(rightSide)));
                 return operatorOverloadNode->getVar(compiler, scope, returnMode);
                 break;
-            case NCompareOp::PEQ:
-            case NCompareOp::PNE:
+            default:
+                assert(false);
                 return nullptr; // These operator cannot be overriden, this is reserved for pointer comparison
         }
     }
