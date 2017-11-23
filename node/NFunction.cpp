@@ -384,7 +384,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                         trFunctionBlock->statements.push_back(string("_interface->asInterface = (sjs_object*(*)(sjs_object*,int))" + getCAsInterfaceFunctionName(returnMode)));
 
                         for (auto interfaceMethod : interfaceVal->methods) {
-                            auto implementation = static_pointer_cast<CFunction>(getCFunction(compiler, interfaceMethod->name, nullptr, nullptr, CTM_Undefined));
+                            auto implementation = static_pointer_cast<CFunction>(getCFunction(compiler, loc, interfaceMethod->name, nullptr, nullptr, CTM_Undefined));
                             if (implementation) {
                                 implementation->transpileDefinition(compiler, trOutput);
 
@@ -716,7 +716,7 @@ shared_ptr<CThisVar> CFunction::getThisVar(Compiler* compiler, CTypeMode returnM
             // Make all functions used by an interface are defined
             for (auto interface : *interfaces) {
                 for (auto interfaceMethod : interface->methods) {
-                    auto cfunc = static_pointer_cast<CFunction>(getCFunction(compiler, interfaceMethod->name, nullptr, nullptr, CTM_Undefined));
+                    auto cfunc = static_pointer_cast<CFunction>(getCFunction(compiler, loc, interfaceMethod->name, nullptr, nullptr, CTM_Undefined));
                     if (!cfunc) {
                         compiler->addError(loc, CErrorCode::InterfaceMethodDoesNotExist, "cannot find interface method: '%s'", interfaceMethod->name.c_str());
                         return nullptr;
@@ -912,18 +912,18 @@ bool getTemplateTypes(Compiler* compiler, CLoc loc, shared_ptr<CBaseFunction> th
 }
 
 
-shared_ptr<CBaseFunction> CFunction::getCFunction(Compiler* compiler, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode) {
+shared_ptr<CBaseFunction> CFunction::getCFunction(Compiler* compiler, CLoc locCaller, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode) {
     auto def = static_pointer_cast<CFunctionDefinition>(definition.lock());
     auto t = def->funcsByName.find(name);
     if (t != def->funcsByName.end()) {
         auto funcDef = t->second;
         
         vector<shared_ptr<CType>> templateTypes;
-        if (!getTemplateTypes(compiler, loc, shared_from_this(), callerScope, templateTypeNames, funcDef->node->templateTypeNames, templateTypes)) {
+        if (!getTemplateTypes(compiler, locCaller, shared_from_this(), callerScope, templateTypeNames, funcDef->node->templateTypeNames, templateTypes)) {
             return nullptr;
         }
         
-        return funcDef->getFunction(compiler, loc, templateTypes, shared_from_this());
+        return funcDef->getFunction(compiler, locCaller, templateTypes, shared_from_this());
     }
     return nullptr;
 }
@@ -1334,6 +1334,10 @@ shared_ptr<CVar> CScope::getCVar(Compiler* compiler, const string& name) {
 
 shared_ptr<CScope> CScope::getScopeForType(Compiler* compiler, shared_ptr<CType> type) {
     auto baseFunction = type->parent.lock();
+    if (!baseFunction) {
+        return nullptr;
+    }
+    
     if (baseFunction->classType == CFT_Function) {
         auto function = static_pointer_cast<CFunction>(baseFunction);
         auto returnMode = type->typeMode;

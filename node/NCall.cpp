@@ -257,14 +257,14 @@ shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, shared_ptr<CSc
     }
     
     // Handle last name in list
-    auto callee = cfunction->getCFunction(compiler, name, scope, templateTypeNames, returnMode);
+    auto callee = cfunction->getCFunction(compiler, loc, name, scope, templateTypeNames, returnMode);
     if (!callee) {
         // If we are still using "this" then we can check to see if it is a function on parent
         if (cfunction == scope->function) {
             while (cfunction && !cfunction->parent.expired() && !callee) {
                 cfunction = cfunction->parent.lock();
                 if (cfunction) {
-                    callee = cfunction->getCFunction(compiler, name, scope, templateTypeNames, returnMode);
+                    callee = cfunction->getCFunction(compiler, loc, name, scope, templateTypeNames, returnMode);
                 }
             }
         }

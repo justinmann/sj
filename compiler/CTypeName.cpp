@@ -75,6 +75,7 @@ CTypeName::CTypeName(shared_ptr<CType> ctype) {
     category = ctype->category;
     name = ctype->name;
     isOption = ctype->isOption;
+    typeMode = ctype->typeMode;
 }
 
 string CTypeName::getName() {
