@@ -32,6 +32,10 @@ shared_ptr<CVar> NEmpty::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
         return nullptr;
     }
 
+    if (!type->isOption) {
+        type = type->getOptionType();
+    }
+
     return make_shared<CEmptyVar>(loc, type, scope);
 }
 
