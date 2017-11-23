@@ -61,15 +61,15 @@ const double_option double_empty = { true };
 
 #define sjs_object_typeId 1
 #define sjs_class_typeId 2
-#define sji_nterface_typeId 3
+#define sji_interface_typeId 3
 #define sjs_class_heap_typeId 4
-#define sji_nterface2_typeId 5
+#define sji_interface2_typeId 5
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_class sjs_class;
-typedef struct td_sji_nterface sji_nterface;
+typedef struct td_sji_interface sji_interface;
 typedef struct td_sjs_class_heap sjs_class_heap;
-typedef struct td_sji_nterface2 sji_nterface2;
+typedef struct td_sji_interface2 sji_interface2;
 
 struct td_sjs_object {
     int _refCount;
@@ -79,7 +79,7 @@ struct td_sjs_class {
     int32_t bob;
 };
 
-struct td_sji_nterface {
+struct td_sji_interface {
     int _refCount;
     sjs_object* _parent;
     void (*destroy)(void* _this);
@@ -91,7 +91,7 @@ struct td_sjs_class_heap {
     int32_t bob;
 };
 
-struct td_sji_nterface2 {
+struct td_sji_interface2 {
     int _refCount;
     sjs_object* _parent;
     void (*destroy)(void* _this);
@@ -100,14 +100,14 @@ struct td_sji_nterface2 {
 
 void sjf_class(sjs_class* _this);
 sjs_object* sjf_class_asInterface(sjs_class* _this, int typeId);
-sji_nterface* sjf_class_as_sji_nterface(sjs_class* _this);
+sji_interface* sjf_class_as_sji_interface(sjs_class* _this);
 void sjf_class_copy(sjs_class* _this, sjs_class* to);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_heap(sjs_class_heap* _this);
 sjs_object* sjf_class_heap_asInterface(sjs_class_heap* _this, int typeId);
-sji_nterface* sjf_class_heap_as_sji_nterface(sjs_class_heap* _this);
-void sji_nterface2_destroy(sji_nterface2* _this);
-void sji_nterface_destroy(sji_nterface* _this);
+sji_interface* sjf_class_heap_as_sji_interface(sjs_class_heap* _this);
+void sji_interface2_destroy(sji_interface2* _this);
+void sji_interface_destroy(sji_interface* _this);
 
 
 void sjf_class(sjs_class* _this) {
@@ -115,17 +115,17 @@ void sjf_class(sjs_class* _this) {
 
 sjs_object* sjf_class_asInterface(sjs_class* _this, int typeId) {
     switch (typeId) {
-        case sji_nterface_typeId:  {
-            return (sjs_object*)sjf_class_as_sji_nterface(_this);
+        case sji_interface_typeId:  {
+            return (sjs_object*)sjf_class_as_sji_interface(_this);
         }
     }
 
     return 0;
 }
 
-sji_nterface* sjf_class_as_sji_nterface(sjs_class* _this) {
-    sji_nterface* _interface;
-    _interface = (sji_nterface*)malloc(sizeof(sji_nterface));
+sji_interface* sjf_class_as_sji_interface(sjs_class* _this) {
+    sji_interface* _interface;
+    _interface = (sji_interface*)malloc(sizeof(sji_interface));
     _interface->_refCount = 1;
     _interface->_parent = (sjs_object*)_this;
     _interface->_parent->_refCount++;
@@ -147,17 +147,17 @@ void sjf_class_heap(sjs_class_heap* _this) {
 
 sjs_object* sjf_class_heap_asInterface(sjs_class_heap* _this, int typeId) {
     switch (typeId) {
-        case sji_nterface_typeId:  {
-            return (sjs_object*)sjf_class_heap_as_sji_nterface(_this);
+        case sji_interface_typeId:  {
+            return (sjs_object*)sjf_class_heap_as_sji_interface(_this);
         }
     }
 
     return 0;
 }
 
-sji_nterface* sjf_class_heap_as_sji_nterface(sjs_class_heap* _this) {
-    sji_nterface* _interface;
-    _interface = (sji_nterface*)malloc(sizeof(sji_nterface));
+sji_interface* sjf_class_heap_as_sji_interface(sjs_class_heap* _this) {
+    sji_interface* _interface;
+    _interface = (sji_interface*)malloc(sizeof(sji_interface));
     _interface->_refCount = 1;
     _interface->_parent = (sjs_object*)_this;
     _interface->_parent->_refCount++;
@@ -167,7 +167,7 @@ sji_nterface* sjf_class_heap_as_sji_nterface(sjs_class_heap* _this) {
     return _interface;
 }
 
-void sji_nterface2_destroy(sji_nterface2* _this) {
+void sji_interface2_destroy(sji_interface2* _this) {
     _this->_parent->_refCount--;
     if (_this->_parent->_refCount <= 0) {
         _this->destroy(_this->_parent);
@@ -175,7 +175,7 @@ void sji_nterface2_destroy(sji_nterface2* _this) {
     }
 }
 
-void sji_nterface_destroy(sji_nterface* _this) {
+void sji_interface_destroy(sji_interface* _this) {
     _this->_parent->_refCount--;
     if (_this->_parent->_refCount <= 0) {
         _this->destroy(_this->_parent);
@@ -195,22 +195,22 @@ int main() {
     sjs_class_heap* i;
     bool j;
     bool k;
-    sji_nterface* l;
+    sji_interface* l;
     bool m;
     sjs_class_heap* n;
     sjs_class_heap* o;
     int32_option p;
     int32_t q;
-    sji_nterface* r;
-    sji_nterface2* s;
+    sji_interface* r;
+    sji_interface2* s;
     sjs_class_heap* sjt_cast1;
-    sji_nterface* sjt_cast2;
+    sji_interface* sjt_cast2;
     sjs_class_heap* sjt_getValue1;
     bool sjt_ifElse1;
     bool sjt_ifElse2;
     int32_option sjt_isEmpty1;
     sjs_class_heap* sjt_isEmpty2;
-    sji_nterface* sjt_isEmpty3;
+    sji_interface* sjt_isEmpty3;
     sjs_class_heap* sjt_isEmpty4;
     int32_option sjt_isEmpty5;
     sjs_class_heap* sjt_value1;
@@ -316,7 +316,7 @@ int main() {
     }
 
     if (sjt_cast1 != 0) {
-        r = (sji_nterface*)sjf_class_heap_as_sji_nterface(sjt_cast1);
+        r = (sji_interface*)sjf_class_heap_as_sji_interface(sjt_cast1);
     } else {
         r = 0;
         if (r != 0) {
@@ -330,7 +330,7 @@ int main() {
     }
 
     if (sjt_cast2 != 0) {
-        s = (sji_nterface2*)sjt_cast2->asInterface(sjt_cast2->_parent, sji_nterface2_typeId);
+        s = (sji_interface2*)sjt_cast2->asInterface(sjt_cast2->_parent, sji_interface2_typeId);
     } else {
         s = 0;
         if (s != 0) {
@@ -347,7 +347,7 @@ int main() {
     if (l != 0) {
         l->_refCount--;
         if (l->_refCount <= 0) {
-            sji_nterface_destroy(l);
+            sji_interface_destroy(l);
         }
     }
     if (n != 0) {
@@ -363,13 +363,13 @@ int main() {
     if (r != 0) {
         r->_refCount--;
         if (r->_refCount <= 0) {
-            sji_nterface_destroy(r);
+            sji_interface_destroy(r);
         }
     }
     if (s != 0) {
         s->_refCount--;
         if (s->_refCount <= 0) {
-            sji_nterface2_destroy(s);
+            sji_interface2_destroy(s);
         }
     }
     if (sjt_cast1 != 0) {
@@ -381,7 +381,7 @@ int main() {
     if (sjt_cast2 != 0) {
         sjt_cast2->_refCount--;
         if (sjt_cast2->_refCount <= 0) {
-            sji_nterface_destroy(sjt_cast2);
+            sji_interface_destroy(sjt_cast2);
         }
     }
     if (sjt_getValue1 != 0) {
@@ -399,7 +399,7 @@ int main() {
     if (sjt_isEmpty3 != 0) {
         sjt_isEmpty3->_refCount--;
         if (sjt_isEmpty3->_refCount <= 0) {
-            sji_nterface_destroy(sjt_isEmpty3);
+            sji_interface_destroy(sjt_isEmpty3);
         }
     }
     if (sjt_isEmpty4 != 0) {
