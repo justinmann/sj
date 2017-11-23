@@ -118,7 +118,7 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
             }
 
             if (cvar) {
-                for (auto i = ++parents.rbegin(); i != parents.rend(); ++i) {
+                for (auto i = parents.rbegin(); i != parents.rend(); ++i) {
                     cvar = CParentDotVar::create(loc, compiler, *i, cvar);
                 }
             }
