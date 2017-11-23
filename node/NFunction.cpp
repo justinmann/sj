@@ -1,5 +1,32 @@
 #include "Node.h"
 
+class CFunctionParameterVar : public CVar {
+public:
+    CFunctionParameterVar(CLoc loc, shared_ptr<CScope> scope, string name, bool isMutable, shared_ptr<CType> type) : CVar(loc, scope, name, isMutable), type(type) { }
+
+    bool getReturnThis() { 
+        return false; 
+    }
+
+    shared_ptr<CType> getType(Compiler* compiler) { 
+        return type; 
+    }
+
+    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+        auto value = make_shared<TrValue>(scope.lock(), type, name, false);
+        storeValue->retainValue(compiler, trBlock, value);
+    }
+
+    void dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+        ss << name;
+    }
+
+private:
+    shared_ptr<CType> type;
+};
+
+
+
 NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> copyBlock, shared_ptr<NBase> destroyBlock) : NBaseFunction(NodeType_Function, loc), type(type), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), interfaceTypeNames(interfaceTypeNames), block(block), catchBlock(catchBlock), copyBlock(copyBlock), destroyBlock(destroyBlock) {
     if (this->name == "^") {
         this->name = TrBlock::nextVarName("anon");
@@ -190,6 +217,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                 functionDefinition << "void " << functionName << "(";
                 auto isFirstArg = true;
                 auto argTypes = getCTypeList(compiler, returnMode);
+
                 for (auto argType : *argTypes) {
                     if (isFirstArg) {
                         isFirstArg = false;
@@ -253,15 +281,15 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                 bool hasValues = false;
                 auto argTypes = getCTypeList(compiler, returnMode);
                 for (auto argType : *argTypes) {
-                    if (argType.first.compare("_this") == 0)
-                        continue;
-
                     hasValues = true;
                     stringstream ss;
                     ss << argType.second->cname;
                     if (argType.second->typeMode == CTM_Stack) {
                         // C requires that inline structs be defined before use
                         argType.second->parent.lock()->transpileDefinition(compiler, trOutput);
+                    }
+                    else if (argType.second->typeMode != CTM_Heap && argType.second->typeMode != CTM_Value && argType.first.compare("_parent") != 0) {
+                        compiler->addError(loc, CErrorCode::InvalidType, "var '%s' is local which is not allowed", argType.first.c_str());
                     }
                     ss << " " << argType.first;
                     trOutput->structs[stackStructName].push_back(ss.str());
@@ -281,20 +309,13 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 
                     auto argTypes = getCTypeList(compiler, returnMode);
                     for (auto argType : *argTypes) {
-                        if (argType.first.compare("_this") == 0)
-                            continue;
-
                         stringstream ss;
+                        ss << argType.second->cname;
                         if (argType.second->typeMode == CTM_Stack) {
-                            ss << argType.second->cname;
-
                             // C requires that inline structs be defined before use
                             argType.second->parent.lock()->transpileDefinition(compiler, trOutput);
                         }
-                        else if (argType.second->typeMode == CTM_Heap || argType.second->typeMode == CTM_Value) {
-                            ss << argType.second->cname;
-                        }
-                        else {
+                        else if (argType.second->typeMode != CTM_Heap && argType.second->typeMode != CTM_Value && argType.first.compare("_parent") != 0) {
                             compiler->addError(loc, CErrorCode::InvalidType, "var '%s' is local which is not allowed", argType.first.c_str());
                         }
                         ss << " " << argType.first;
@@ -858,10 +879,6 @@ shared_ptr<vector<pair<string, shared_ptr<CType>>>> CFunction::getCTypeList(Comp
     if (!_data[returnMode].ctypeList) {
         _data[returnMode].ctypeList = make_shared<vector<pair<string, shared_ptr<CType>>>>();
 
-        if (hasThis) {
-            _data[returnMode].ctypeList->push_back(make_pair("_this", compiler->typePtr));
-        }
-
         if (hasParent) {
             auto parentType = parent.lock()->getThisTypes(compiler);
             _data[returnMode].ctypeList->push_back(make_pair("_parent", parentType->localValueType));
@@ -873,6 +890,13 @@ shared_ptr<vector<pair<string, shared_ptr<CType>>>> CFunction::getCTypeList(Comp
                 compiler->addError(it->loc, CErrorCode::InvalidType, "cannot determine type for '%s'", it->name.c_str());
                 return nullptr;
             }
+
+            if (!hasThis) {
+                if (ctype->typeMode == CTM_Stack) {
+                    ctype = ctype->getLocalType();
+                }
+            }
+
             _data[returnMode].ctypeList->push_back(make_pair(it->name, ctype));
         }
     }
@@ -1003,7 +1027,17 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, const string& name, CTyp
         
         auto t2 = _data[returnMode].thisArgVarsByName.find(name);
         if (t2 != _data[returnMode].thisArgVarsByName.end()) {
-            return t2->second.second;
+            auto thisArgVar = t2->second.second;
+            if (!hasThis) {
+                auto argVarType = thisArgVar->getType(compiler);
+                if (!argVarType->parent.expired()) {
+                    argVarType = argVarType->getLocalType();
+                }
+                return make_shared<CFunctionParameterVar>(loc, thisArgVar->scope.lock(), thisArgVar->name, false, argVarType);
+            }
+            else {
+                return thisArgVar;
+            }
         }
     }
     return nullptr;
