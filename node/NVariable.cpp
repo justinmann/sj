@@ -118,8 +118,13 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
             }
 
             if (cvar) {
-                for (auto i = parents.rbegin(); i != parents.rend(); ++i) {
-                    cvar = CParentDotVar::create(loc, compiler, *i, cvar);
+                if (parent->name == "global") {
+                    // If we made it up the parent chain to the top then we do not need to parent.parent to get there, we can just reference global vars directly
+                }
+                else {
+                    for (auto i = parents.rbegin(); i != parents.rend(); ++i) {
+                        cvar = CParentDotVar::create(loc, compiler, *i, cvar);
+                    }
                 }
             }
         }
