@@ -1,33 +1,29 @@
-class ##interface ([stack]bob'i32:)'class {
+class interface (bob'i32:)'heap class {
   this
 }
 
 global()'void {
-  #interface(
-  )
-  #interface2(
-  )
-  [stack]a'i32? : empty'i32?
-  [stack]b'i64? : empty'i64?
-  [stack]c'u32? : empty'u32?
-  [stack]d'u64? : empty'u64?
-  [stack]e'f32? : empty'f32?
-  [stack]f'f64? : empty'f64?
-  [stack]g'char? : empty'char?
-  [stack]h'ptr? : empty'ptr?
-  [stack]i'class? : empty'class?
-  [stack]j'bool : isEmpty(a)
-  [stack]k'bool : isEmpty(i)
-  [stack]l'#interface? : empty'#interface?
-  [stack]m'bool : isEmpty(l)
-  [stack]n'class? : value([stack]class([stack]this : class(
-    [stack]bob'i32 : 0i
+  a'i32? : empty'i32?
+  b'i64? : empty'i64?
+  c'u32? : empty'u32?
+  d'u64? : empty'u64?
+  e'f32? : empty'f32?
+  f'f64? : empty'f64?
+  g'char? : empty'char?
+  h'ptr? : empty'ptr?
+  i'heap class? : empty'heap class?
+  j'bool : isEmpty(a)
+  k'bool : isEmpty(i)
+  l'heap #interface? : empty'heap #interface?
+  m'bool : isEmpty(l)
+  n'heap class? : value(class(this = class(
+    bob'i32 : this.bob
   )))
-  [stack]o'class : getValue(n)
-  [stack]p'i32? : if isEmpty(n) empty'i32? else value(this.bob)
-  [stack]q'i32 : if isEmpty(a) -1i else getValue(a)
-  [heap]r'#interface? : n as #interface?
-  [heap]s'#interface2? : r as #interface2?
+  o'heap class : getValue(n)
+  p'i32? : if isEmpty(n) empty'i32? else value(this.bob)
+  q'i32 : if isEmpty(a) -1i else getValue(a)
+  r'heap #interface? : n as heap #interface?
+  s'heap #interface2? : r as heap #interface2?
   void
 }
 

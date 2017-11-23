@@ -215,10 +215,14 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 	}
 
 	if (errors.size() > 0) {
-		for (auto error : errors)
+		for (auto it : errors)
 		{
-			error.writeToStream(errorStream);
-			errorStream << "\n";
+            for (auto it2 : it.second) {
+                for (auto it3 : it2.second) {
+                    it3.second.writeToStream(errorStream);
+                    errorStream << "\n";
+                }
+            }
 		}
 		return false;
 	}

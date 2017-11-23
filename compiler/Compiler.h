@@ -107,14 +107,12 @@ enum CErrorCode {
 
 class CError {
 public:
-    const CErrorCode code;
+    CErrorCode code;
     shared_ptr<string> fileName;
-    const unsigned line;
-    const unsigned col;
-    const string msg;
+    unsigned line;
+    unsigned col;
+    string msg;
     
-    CError(CLoc loc, const CErrorCode code): code(code), fileName(loc.fileName), line(loc.line), col(loc.col) { }
-    CError(CLoc loc, const CErrorCode code, const string& msg): code(code), fileName(loc.fileName), line(loc.line), col(loc.col), msg(msg) { }
 	void writeToStream(ostream& stream);
 };
 
@@ -146,7 +144,12 @@ public:
 #ifdef ERROR_OUTPUT
         printf("ERROR: %d:%d %s\n", loc.line, loc.col, str.c_str());
 #endif
-        errors.push_back(CError(loc, code, str));
+        errors[*loc.fileName][loc.line][str].code = code;
+        errors[*loc.fileName][loc.line][str].fileName = loc.fileName;
+        errors[*loc.fileName][loc.line][str].line = loc.line;
+        errors[*loc.fileName][loc.line][str].col = loc.col;
+        errors[*loc.fileName][loc.line][str].msg = str;
+        
 #ifdef ASSERT_ON_ERROR
         assert(false);
 #endif
@@ -155,15 +158,21 @@ public:
     template< typename... Args >
     void addWarning(CLoc loc, const CErrorCode code, const char* format, Args... args) {
         string str = strprintf(format, args...);
-        warnings.push_back(CError(loc, code, str));
+
+        warnings[*loc.fileName][loc.line][str].code = code;
+        warnings[*loc.fileName][loc.line][str].fileName = loc.fileName;
+        warnings[*loc.fileName][loc.line][str].line = loc.line;
+        warnings[*loc.fileName][loc.line][str].col = loc.col;
+        warnings[*loc.fileName][loc.line][str].msg = str;
+
 #ifdef ERROR_OUTPUT
         printf("WARN: %d:%d %s\n", loc.line, loc.col, str.c_str());
 #endif
     }
     
     CompilerState state;
-    vector<CError> errors;
-    vector<CError> warnings;
+    map<string, map<unsigned, map<string, CError>>> errors;
+    map<string, map<unsigned, map<string, CError>>> warnings;
     shared_ptr<CType> typeI32;
     shared_ptr<CType> typeI64;
     shared_ptr<CType> typeU32;

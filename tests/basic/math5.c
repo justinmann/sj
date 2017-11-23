@@ -70,8 +70,10 @@ struct td_sjs_object {
 
 
 int main() {
-    double result1;
+    double sjt_math1;
+    double sjt_math2;
 
-    result1 = 4.0 + 5.0;
+    sjt_math1 = 4.0;
+    sjt_math2 = 5.0;
     return 0;
 }

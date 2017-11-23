@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -60,497 +59,369 @@ struct td_double_option {
 };
 const double_option double_empty = { true };
 
-#define sjs_fancyMath_typeId 1
-#define sjs_object_typeId 2
+#define sjs_object_typeId 1
+#define sjs_fancyMath_typeId 2
+#define sjs_fancyMath_heap_typeId 3
 
-typedef struct td_sjs_fancyMath sjs_fancyMath;
 typedef struct td_sjs_object sjs_object;
-
-struct td_sjs_fancyMath {
-    int _refCount;
-    int32_t x;
-};
+typedef struct td_sjs_fancyMath sjs_fancyMath;
+typedef struct td_sjs_fancyMath_heap sjs_fancyMath_heap;
 
 struct td_sjs_object {
     int _refCount;
 };
 
-void sjf_fancyMath(sjs_fancyMath* _this, sjs_fancyMath** _return);
-void sjf_fancyMath_add(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return);
+struct td_sjs_fancyMath {
+    int32_t x;
+};
+
+struct td_sjs_fancyMath_heap {
+    int _refCount;
+    int32_t x;
+};
+
+void sjf_fancyMath(sjs_fancyMath* _this);
+void sjf_fancyMath_add(sjs_fancyMath* num, sjs_fancyMath* _return);
+void sjf_fancyMath_add_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath_heap** _return);
+void sjf_fancyMath_copy(sjs_fancyMath* _this, sjs_fancyMath* to);
 void sjf_fancyMath_destroy(sjs_fancyMath* _this);
-void sjf_fancyMath_divide(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return);
+void sjf_fancyMath_divide(sjs_fancyMath* num, sjs_fancyMath* _return);
+void sjf_fancyMath_divide_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath_heap** _return);
 void sjf_fancyMath_getX(sjs_fancyMath* _parent, int32_t* _return);
-void sjf_fancyMath_increment(sjs_fancyMath* _parent, sjs_fancyMath** _return);
-void sjf_fancyMath_modulus(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return);
-void sjf_fancyMath_multiply(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return);
-void sjf_fancyMath_setBob(sjs_fancyMath* _parent, int32_t i, int32_t* _return);
-void sjf_fancyMath_subtract(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return);
+void sjf_fancyMath_heap(sjs_fancyMath_heap* _this);
+void sjf_fancyMath_increment(sjs_fancyMath* _return);
+void sjf_fancyMath_increment_heap(sjs_fancyMath* _parent, sjs_fancyMath_heap** _return);
+void sjf_fancyMath_modulus(sjs_fancyMath* num, sjs_fancyMath* _return);
+void sjf_fancyMath_modulus_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath_heap** _return);
+void sjf_fancyMath_multiply(sjs_fancyMath* num, sjs_fancyMath* _return);
+void sjf_fancyMath_multiply_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath_heap** _return);
+void sjf_fancyMath_setBob(int32_t i, int32_t* _return);
+void sjf_fancyMath_subtract(sjs_fancyMath* num, sjs_fancyMath* _return);
+void sjf_fancyMath_subtract_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath_heap** _return);
 
 
-void sjf_fancyMath(sjs_fancyMath* _this, sjs_fancyMath** _return) {
-    _this->_refCount++;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_fancyMath(sjs_fancyMath* _this, sjs_fancyMath** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
-
-    *_return = _this;
+void sjf_fancyMath(sjs_fancyMath* _this) {
 }
 
-void sjf_fancyMath_add(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return) {
+void sjf_fancyMath_add(sjs_fancyMath* num, sjs_fancyMath* _return) {
     int32_t dotTemp1;
-    int32_t result2;
-    int32_t result3;
-    int32_t result4;
-    sjs_fancyMath* sjv_temp3;
+    sjs_fancyMath* sjt_dot2;
+    int32_t sjt_math1;
+    int32_t sjt_math2;
+    int32_t sjt_math3;
+    int32_t sjt_math4;
 
-    sjv_temp3 = (sjs_fancyMath*)malloc(sizeof(sjs_fancyMath));
-    sjv_temp3->_refCount = 1;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_fancyMath_add(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return)\t%d\n", (uintptr_t)sjv_temp3, sjv_temp3->_refCount);;
     dotTemp1 = _parent->x;
-    result2 = 0;
-    sjf_fancyMath_getX(num, &result2);
-    result3 = dotTemp1 + result2;
-    result4 = result3 + 1;
-    sjv_temp3->x = result4;
-    sjf_fancyMath(sjv_temp3, &sjv_temp3);
-    sjv_temp3->_refCount++;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_fancyMath_add(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return)\t%d\n", (uintptr_t)sjv_temp3, sjv_temp3->_refCount);;
+    sjt_math3 = dotTemp1;
+    sjt_dot2 = num;
+    sjf_fancyMath_getX(sjt_dot2, &sjt_math4);
+    sjt_math1 = sjt_math3 + sjt_math4;
+    sjt_math2 = 1;
+    _return->x = sjt_math1 + sjt_math2;
+    sjf_fancyMath(_return);
+}
 
-    sjv_temp3->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_fancyMath_add(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return)\t%d\n", (uintptr_t)sjv_temp3, sjv_temp3->_refCount);
-    if (sjv_temp3->_refCount <= 0) {
-        sjf_fancyMath_destroy(sjv_temp3);
-        free(sjv_temp3);
-    }
+void sjf_fancyMath_add_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath_heap** _return) {
+    int32_t dotTemp3;
+    sjs_fancyMath* sjt_dot3;
+    int32_t sjt_math5;
+    int32_t sjt_math6;
+    int32_t sjt_math7;
+    int32_t sjt_math8;
 
-    *_return = sjv_temp3;
+    (*_return) = (sjs_fancyMath_heap*)malloc(sizeof(sjs_fancyMath_heap));
+    (*_return)->_refCount = 1;
+    dotTemp3 = _parent->x;
+    sjt_math7 = dotTemp3;
+    sjt_dot3 = num;
+    sjf_fancyMath_getX(sjt_dot3, &sjt_math8);
+    sjt_math5 = sjt_math7 + sjt_math8;
+    sjt_math6 = 1;
+    (*_return)->x = sjt_math5 + sjt_math6;
+    sjf_fancyMath_heap((*_return));
+}
+
+void sjf_fancyMath_copy(sjs_fancyMath* _this, sjs_fancyMath* to) {
+    _this->x = to->x;
 }
 
 void sjf_fancyMath_destroy(sjs_fancyMath* _this) {
 }
 
-void sjf_fancyMath_divide(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return) {
-    int32_t dotTemp5;
-    int32_t result14;
-    int32_t result15;
-    int32_t result16;
-    sjs_fancyMath* sjv_temp6;
+void sjf_fancyMath_divide(sjs_fancyMath* num, sjs_fancyMath* _return) {
+    int32_t dotTemp8;
+    sjs_fancyMath* sjt_dot11;
+    int32_t sjt_math25;
+    int32_t sjt_math26;
+    int32_t sjt_math27;
+    int32_t sjt_math28;
 
-    sjv_temp6 = (sjs_fancyMath*)malloc(sizeof(sjs_fancyMath));
-    sjv_temp6->_refCount = 1;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_fancyMath_divide(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return)\t%d\n", (uintptr_t)sjv_temp6, sjv_temp6->_refCount);;
-    dotTemp5 = _parent->x;
-    result14 = 0;
-    sjf_fancyMath_getX(num, &result14);
-    result15 = dotTemp5 / result14;
-    result16 = result15 + 1;
-    sjv_temp6->x = result16;
-    sjf_fancyMath(sjv_temp6, &sjv_temp6);
-    sjv_temp6->_refCount++;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_fancyMath_divide(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return)\t%d\n", (uintptr_t)sjv_temp6, sjv_temp6->_refCount);;
+    dotTemp8 = _parent->x;
+    sjt_math27 = dotTemp8;
+    sjt_dot11 = num;
+    sjf_fancyMath_getX(sjt_dot11, &sjt_math28);
+    sjt_math25 = sjt_math27 / sjt_math28;
+    sjt_math26 = 1;
+    _return->x = sjt_math25 + sjt_math26;
+    sjf_fancyMath(_return);
+}
 
-    sjv_temp6->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_fancyMath_divide(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return)\t%d\n", (uintptr_t)sjv_temp6, sjv_temp6->_refCount);
-    if (sjv_temp6->_refCount <= 0) {
-        sjf_fancyMath_destroy(sjv_temp6);
-        free(sjv_temp6);
-    }
+void sjf_fancyMath_divide_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath_heap** _return) {
+    int32_t dotTemp9;
+    sjs_fancyMath* sjt_dot12;
+    int32_t sjt_math29;
+    int32_t sjt_math30;
+    int32_t sjt_math31;
+    int32_t sjt_math32;
 
-    *_return = sjv_temp6;
+    (*_return) = (sjs_fancyMath_heap*)malloc(sizeof(sjs_fancyMath_heap));
+    (*_return)->_refCount = 1;
+    dotTemp9 = _parent->x;
+    sjt_math31 = dotTemp9;
+    sjt_dot12 = num;
+    sjf_fancyMath_getX(sjt_dot12, &sjt_math32);
+    sjt_math29 = sjt_math31 / sjt_math32;
+    sjt_math30 = 1;
+    (*_return)->x = sjt_math29 + sjt_math30;
+    sjf_fancyMath_heap((*_return));
 }
 
 void sjf_fancyMath_getX(sjs_fancyMath* _parent, int32_t* _return) {
     int32_t dotTemp2;
 
     dotTemp2 = _parent->x;
-
-    *_return = dotTemp2;
+    (*_return) = dotTemp2;
 }
 
-void sjf_fancyMath_increment(sjs_fancyMath* _parent, sjs_fancyMath** _return) {
-    int32_t dotTemp7;
-    int32_t result26;
-    sjs_fancyMath* sjv_temp8;
-
-    sjv_temp8 = (sjs_fancyMath*)malloc(sizeof(sjs_fancyMath));
-    sjv_temp8->_refCount = 1;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_fancyMath_increment(sjs_fancyMath* _parent, sjs_fancyMath** _return)\t%d\n", (uintptr_t)sjv_temp8, sjv_temp8->_refCount);;
-    dotTemp7 = _parent->x;
-    result26 = dotTemp7 + 1;
-    sjv_temp8->x = result26;
-    sjf_fancyMath(sjv_temp8, &sjv_temp8);
-    sjv_temp8->_refCount++;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_fancyMath_increment(sjs_fancyMath* _parent, sjs_fancyMath** _return)\t%d\n", (uintptr_t)sjv_temp8, sjv_temp8->_refCount);;
-
-    sjv_temp8->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_fancyMath_increment(sjs_fancyMath* _parent, sjs_fancyMath** _return)\t%d\n", (uintptr_t)sjv_temp8, sjv_temp8->_refCount);
-    if (sjv_temp8->_refCount <= 0) {
-        sjf_fancyMath_destroy(sjv_temp8);
-        free(sjv_temp8);
-    }
-
-    *_return = sjv_temp8;
+void sjf_fancyMath_heap(sjs_fancyMath_heap* _this) {
 }
 
-void sjf_fancyMath_modulus(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return) {
+void sjf_fancyMath_increment(sjs_fancyMath* _return) {
+    int32_t dotTemp12;
+    int32_t sjt_math41;
+    int32_t sjt_math42;
+
+    dotTemp12 = _parent->x;
+    sjt_math41 = dotTemp12;
+    sjt_math42 = 1;
+    _return->x = sjt_math41 + sjt_math42;
+    sjf_fancyMath(_return);
+}
+
+void sjf_fancyMath_increment_heap(sjs_fancyMath* _parent, sjs_fancyMath_heap** _return) {
+    int32_t dotTemp13;
+    int32_t sjt_math43;
+    int32_t sjt_math44;
+
+    (*_return) = (sjs_fancyMath_heap*)malloc(sizeof(sjs_fancyMath_heap));
+    (*_return)->_refCount = 1;
+    dotTemp13 = _parent->x;
+    sjt_math43 = dotTemp13;
+    sjt_math44 = 1;
+    (*_return)->x = sjt_math43 + sjt_math44;
+    sjf_fancyMath_heap((*_return));
+}
+
+void sjf_fancyMath_modulus(sjs_fancyMath* num, sjs_fancyMath* _return) {
+    int32_t dotTemp10;
+    sjs_fancyMath* sjt_dot14;
+    int32_t sjt_math33;
+    int32_t sjt_math34;
+    int32_t sjt_math35;
+    int32_t sjt_math36;
+
+    dotTemp10 = _parent->x;
+    sjt_math35 = dotTemp10;
+    sjt_dot14 = num;
+    sjf_fancyMath_getX(sjt_dot14, &sjt_math36);
+    sjt_math33 = sjt_math35 % sjt_math36;
+    sjt_math34 = 1;
+    _return->x = sjt_math33 + sjt_math34;
+    sjf_fancyMath(_return);
+}
+
+void sjf_fancyMath_modulus_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath_heap** _return) {
+    int32_t dotTemp11;
+    sjs_fancyMath* sjt_dot15;
+    int32_t sjt_math37;
+    int32_t sjt_math38;
+    int32_t sjt_math39;
+    int32_t sjt_math40;
+
+    (*_return) = (sjs_fancyMath_heap*)malloc(sizeof(sjs_fancyMath_heap));
+    (*_return)->_refCount = 1;
+    dotTemp11 = _parent->x;
+    sjt_math39 = dotTemp11;
+    sjt_dot15 = num;
+    sjf_fancyMath_getX(sjt_dot15, &sjt_math40);
+    sjt_math37 = sjt_math39 % sjt_math40;
+    sjt_math38 = 1;
+    (*_return)->x = sjt_math37 + sjt_math38;
+    sjf_fancyMath_heap((*_return));
+}
+
+void sjf_fancyMath_multiply(sjs_fancyMath* num, sjs_fancyMath* _return) {
     int32_t dotTemp6;
-    int32_t result18;
-    int32_t result19;
-    int32_t result20;
-    sjs_fancyMath* sjv_temp7;
+    sjs_fancyMath* sjt_dot8;
+    int32_t sjt_math17;
+    int32_t sjt_math18;
+    int32_t sjt_math19;
+    int32_t sjt_math20;
 
-    sjv_temp7 = (sjs_fancyMath*)malloc(sizeof(sjs_fancyMath));
-    sjv_temp7->_refCount = 1;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_fancyMath_modulus(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return)\t%d\n", (uintptr_t)sjv_temp7, sjv_temp7->_refCount);;
     dotTemp6 = _parent->x;
-    result18 = 0;
-    sjf_fancyMath_getX(num, &result18);
-    result19 = dotTemp6 % result18;
-    result20 = result19 + 1;
-    sjv_temp7->x = result20;
-    sjf_fancyMath(sjv_temp7, &sjv_temp7);
-    sjv_temp7->_refCount++;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_fancyMath_modulus(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return)\t%d\n", (uintptr_t)sjv_temp7, sjv_temp7->_refCount);;
-
-    sjv_temp7->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_fancyMath_modulus(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return)\t%d\n", (uintptr_t)sjv_temp7, sjv_temp7->_refCount);
-    if (sjv_temp7->_refCount <= 0) {
-        sjf_fancyMath_destroy(sjv_temp7);
-        free(sjv_temp7);
-    }
-
-    *_return = sjv_temp7;
+    sjt_math19 = dotTemp6;
+    sjt_dot8 = num;
+    sjf_fancyMath_getX(sjt_dot8, &sjt_math20);
+    sjt_math17 = sjt_math19 * sjt_math20;
+    sjt_math18 = 1;
+    _return->x = sjt_math17 + sjt_math18;
+    sjf_fancyMath(_return);
 }
 
-void sjf_fancyMath_multiply(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return) {
+void sjf_fancyMath_multiply_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath_heap** _return) {
+    int32_t dotTemp7;
+    sjs_fancyMath* sjt_dot9;
+    int32_t sjt_math21;
+    int32_t sjt_math22;
+    int32_t sjt_math23;
+    int32_t sjt_math24;
+
+    (*_return) = (sjs_fancyMath_heap*)malloc(sizeof(sjs_fancyMath_heap));
+    (*_return)->_refCount = 1;
+    dotTemp7 = _parent->x;
+    sjt_math23 = dotTemp7;
+    sjt_dot9 = num;
+    sjf_fancyMath_getX(sjt_dot9, &sjt_math24);
+    sjt_math21 = sjt_math23 * sjt_math24;
+    sjt_math22 = 1;
+    (*_return)->x = sjt_math21 + sjt_math22;
+    sjf_fancyMath_heap((*_return));
+}
+
+void sjf_fancyMath_setBob(int32_t i, int32_t* _return) {
+    int32_t x;
+
+    x = i;
+    (*_return) = x;
+}
+
+void sjf_fancyMath_subtract(sjs_fancyMath* num, sjs_fancyMath* _return) {
     int32_t dotTemp4;
-    int32_t result10;
-    int32_t result11;
-    int32_t result12;
-    sjs_fancyMath* sjv_temp5;
+    sjs_fancyMath* sjt_dot5;
+    int32_t sjt_math10;
+    int32_t sjt_math11;
+    int32_t sjt_math12;
+    int32_t sjt_math9;
 
-    sjv_temp5 = (sjs_fancyMath*)malloc(sizeof(sjs_fancyMath));
-    sjv_temp5->_refCount = 1;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_fancyMath_multiply(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return)\t%d\n", (uintptr_t)sjv_temp5, sjv_temp5->_refCount);;
     dotTemp4 = _parent->x;
-    result10 = 0;
-    sjf_fancyMath_getX(num, &result10);
-    result11 = dotTemp4 * result10;
-    result12 = result11 + 1;
-    sjv_temp5->x = result12;
-    sjf_fancyMath(sjv_temp5, &sjv_temp5);
-    sjv_temp5->_refCount++;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_fancyMath_multiply(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return)\t%d\n", (uintptr_t)sjv_temp5, sjv_temp5->_refCount);;
-
-    sjv_temp5->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_fancyMath_multiply(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return)\t%d\n", (uintptr_t)sjv_temp5, sjv_temp5->_refCount);
-    if (sjv_temp5->_refCount <= 0) {
-        sjf_fancyMath_destroy(sjv_temp5);
-        free(sjv_temp5);
-    }
-
-    *_return = sjv_temp5;
+    sjt_math11 = dotTemp4;
+    sjt_dot5 = num;
+    sjf_fancyMath_getX(sjt_dot5, &sjt_math12);
+    sjt_math9 = sjt_math11 - sjt_math12;
+    sjt_math10 = 1;
+    _return->x = sjt_math9 + sjt_math10;
+    sjf_fancyMath(_return);
 }
 
-void sjf_fancyMath_setBob(sjs_fancyMath* _parent, int32_t i, int32_t* _return) {
-    _parent->x = i;
+void sjf_fancyMath_subtract_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath_heap** _return) {
+    int32_t dotTemp5;
+    sjs_fancyMath* sjt_dot6;
+    int32_t sjt_math13;
+    int32_t sjt_math14;
+    int32_t sjt_math15;
+    int32_t sjt_math16;
 
-    *_return = i;
-}
-
-void sjf_fancyMath_subtract(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return) {
-    int32_t dotTemp3;
-    int32_t result6;
-    int32_t result7;
-    int32_t result8;
-    sjs_fancyMath* sjv_temp4;
-
-    sjv_temp4 = (sjs_fancyMath*)malloc(sizeof(sjs_fancyMath));
-    sjv_temp4->_refCount = 1;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_fancyMath_subtract(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return)\t%d\n", (uintptr_t)sjv_temp4, sjv_temp4->_refCount);;
-    dotTemp3 = _parent->x;
-    result6 = 0;
-    sjf_fancyMath_getX(num, &result6);
-    result7 = dotTemp3 - result6;
-    result8 = result7 + 1;
-    sjv_temp4->x = result8;
-    sjf_fancyMath(sjv_temp4, &sjv_temp4);
-    sjv_temp4->_refCount++;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_fancyMath_subtract(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return)\t%d\n", (uintptr_t)sjv_temp4, sjv_temp4->_refCount);;
-
-    sjv_temp4->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_fancyMath_subtract(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath** _return)\t%d\n", (uintptr_t)sjv_temp4, sjv_temp4->_refCount);
-    if (sjv_temp4->_refCount <= 0) {
-        sjf_fancyMath_destroy(sjv_temp4);
-        free(sjv_temp4);
-    }
-
-    *_return = sjv_temp4;
+    (*_return) = (sjs_fancyMath_heap*)malloc(sizeof(sjs_fancyMath_heap));
+    (*_return)->_refCount = 1;
+    dotTemp5 = _parent->x;
+    sjt_math15 = dotTemp5;
+    sjt_dot6 = num;
+    sjf_fancyMath_getX(sjt_dot6, &sjt_math16);
+    sjt_math13 = sjt_math15 - sjt_math16;
+    sjt_math14 = 1;
+    (*_return)->x = sjt_math13 + sjt_math14;
+    sjf_fancyMath_heap((*_return));
 }
 
 int main() {
-    sjs_fancyMath* a;
-    sjs_fancyMath* b;
-    sjs_fancyMath* c;
-    sjs_fancyMath* d;
-    sjs_fancyMath* e;
-    sjs_fancyMath* f;
-    sjs_fancyMath* g;
+    sjs_fancyMath a;
+    sjs_fancyMath b;
+    sjs_fancyMath c;
+    sjs_fancyMath d;
+    sjs_fancyMath e;
+    sjs_fancyMath f;
+    sjs_fancyMath g;
     int32_t i;
     int32_t j;
-    sjs_fancyMath* result1;
-    sjs_fancyMath* result13;
-    sjs_fancyMath* result17;
-    sjs_fancyMath* result21;
-    sjs_fancyMath* result22;
-    sjs_fancyMath* result23;
-    sjs_fancyMath* result24;
-    sjs_fancyMath* result25;
-    sjs_fancyMath* result27;
-    int32_t result28;
-    int32_t result29;
-    sjs_fancyMath* result5;
-    sjs_fancyMath* result9;
-    sjs_fancyMath* sjv_temp1;
-    sjs_fancyMath* sjv_temp2;
+    sjs_fancyMath* sjt_dot1;
+    sjs_fancyMath* sjt_dot10;
+    sjs_fancyMath* sjt_dot13;
+    sjs_fancyMath* sjt_dot16;
+    sjs_fancyMath* sjt_dot17;
+    sjs_fancyMath* sjt_dot18;
+    sjs_fancyMath* sjt_dot19;
+    sjs_fancyMath* sjt_dot20;
+    sjs_fancyMath* sjt_dot21;
+    sjs_fancyMath* sjt_dot22;
+    sjs_fancyMath* sjt_dot4;
+    sjs_fancyMath* sjt_dot7;
+    sjs_fancyMath* sjt_functionParam1;
+    int32_t sjt_functionParam10;
+    sjs_fancyMath* sjt_functionParam2;
+    sjs_fancyMath* sjt_functionParam3;
+    sjs_fancyMath* sjt_functionParam4;
+    sjs_fancyMath* sjt_functionParam5;
+    sjs_fancyMath* sjt_functionParam6;
+    sjs_fancyMath* sjt_functionParam7;
+    sjs_fancyMath* sjt_functionParam8;
+    sjs_fancyMath* sjt_functionParam9;
 
-    sjv_temp1 = (sjs_fancyMath*)malloc(sizeof(sjs_fancyMath));
-    sjv_temp1->_refCount = 1;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
-    sjv_temp1->x = 1;
-    sjf_fancyMath(sjv_temp1, &sjv_temp1);
-    a = sjv_temp1;
-    a->_refCount++;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)a, a->_refCount);;
-    sjv_temp2 = (sjs_fancyMath*)malloc(sizeof(sjs_fancyMath));
-    sjv_temp2->_refCount = 1;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp2, sjv_temp2->_refCount);;
-    sjv_temp2->x = 2;
-    sjf_fancyMath(sjv_temp2, &sjv_temp2);
-    b = sjv_temp2;
-    b->_refCount++;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)b, b->_refCount);;
-    result1 = 0;
-    sjf_fancyMath_add(a, b, &result1);
-    c = result1;
-    c->_refCount++;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)c, c->_refCount);;
-    result5 = 0;
-    sjf_fancyMath_subtract(a, b, &result5);
-    d = result5;
-    d->_refCount++;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)d, d->_refCount);;
-    result9 = 0;
-    sjf_fancyMath_multiply(a, b, &result9);
-    e = result9;
-    e->_refCount++;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)e, e->_refCount);;
-    result13 = 0;
-    sjf_fancyMath_divide(a, b, &result13);
-    f = result13;
-    f->_refCount++;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)f, f->_refCount);;
-    result17 = 0;
-    sjf_fancyMath_modulus(a, b, &result17);
-    g = result17;
-    g->_refCount++;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)g, g->_refCount);;
-    result21 = 0;
-    sjf_fancyMath_add(c, c, &result21);
-    c->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)c, c->_refCount);;
-    if (c->_refCount <= 0) {
-        sjf_fancyMath_destroy(c);
-        free(c);
-    }
+    a.x = 1;
+    sjf_fancyMath(&a);
+    b.x = 2;
+    sjf_fancyMath(&b);
+    sjt_dot1 = &a;
+    sjt_functionParam1 = &b;
+    sjf_fancyMath_add(sjt_dot1, sjt_functionParam1, &c);
+    sjt_dot4 = &a;
+    sjt_functionParam2 = &b;
+    sjf_fancyMath_subtract(sjt_dot4, sjt_functionParam2, &d);
+    sjt_dot7 = &a;
+    sjt_functionParam3 = &b;
+    sjf_fancyMath_multiply(sjt_dot7, sjt_functionParam3, &e);
+    sjt_dot10 = &a;
+    sjt_functionParam4 = &b;
+    sjf_fancyMath_divide(sjt_dot10, sjt_functionParam4, &f);
+    sjt_dot13 = &a;
+    sjt_functionParam5 = &b;
+    sjf_fancyMath_modulus(sjt_dot13, sjt_functionParam5, &g);
+    sjt_dot16 = &c;
+    sjt_functionParam6 = &c;
+    sjf_fancyMath_add(sjt_dot16, sjt_functionParam6, &c);
+    sjt_dot17 = &d;
+    sjt_functionParam7 = &d;
+    sjf_fancyMath_subtract(sjt_dot17, sjt_functionParam7, &d);
+    sjt_dot18 = &d;
+    sjt_functionParam8 = &d;
+    sjf_fancyMath_multiply(sjt_dot18, sjt_functionParam8, &d);
+    sjt_dot19 = &d;
+    sjt_functionParam9 = &d;
+    sjf_fancyMath_divide(sjt_dot19, sjt_functionParam9, &d);
+    sjt_dot20 = &e;
+    sjf_fancyMath_increment(sjt_dot20, &e);
+    sjt_dot21 = &f;
+    sjf_fancyMath_increment(sjt_dot21, &f);
+    sjt_dot22 = &f;
+    sjf_fancyMath_getX(sjt_dot22, &i);
+    sjt_functionParam10 = 12;
+    sjf_fancyMath_setBob(sjt_functionParam10, &j);
 
-    c = result21;
-    c->_refCount++;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)c, c->_refCount);;
-    result22 = 0;
-    sjf_fancyMath_subtract(d, d, &result22);
-    d->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)d, d->_refCount);;
-    if (d->_refCount <= 0) {
-        sjf_fancyMath_destroy(d);
-        free(d);
-    }
-
-    d = result22;
-    d->_refCount++;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)d, d->_refCount);;
-    result23 = 0;
-    sjf_fancyMath_multiply(d, d, &result23);
-    d->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)d, d->_refCount);;
-    if (d->_refCount <= 0) {
-        sjf_fancyMath_destroy(d);
-        free(d);
-    }
-
-    d = result23;
-    d->_refCount++;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)d, d->_refCount);;
-    result24 = 0;
-    sjf_fancyMath_divide(d, d, &result24);
-    d->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)d, d->_refCount);;
-    if (d->_refCount <= 0) {
-        sjf_fancyMath_destroy(d);
-        free(d);
-    }
-
-    d = result24;
-    d->_refCount++;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)d, d->_refCount);;
-    result25 = 0;
-    sjf_fancyMath_increment(e, &result25);
-    e->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)e, e->_refCount);;
-    if (e->_refCount <= 0) {
-        sjf_fancyMath_destroy(e);
-        free(e);
-    }
-
-    e = result25;
-    e->_refCount++;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)e, e->_refCount);;
-    result27 = 0;
-    sjf_fancyMath_increment(f, &result27);
-    f->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)f, f->_refCount);;
-    if (f->_refCount <= 0) {
-        sjf_fancyMath_destroy(f);
-        free(f);
-    }
-
-    f = result27;
-    f->_refCount++;
-    printf("RETAIN\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)f, f->_refCount);;
-    result28 = 0;
-    sjf_fancyMath_getX(f, &result28);
-    i = result28;
-    result29 = 0;
-    sjf_fancyMath_setBob(a, 12, &result29);
-    j = result29;
-
-    a->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)a, a->_refCount);
-    if (a->_refCount <= 0) {
-        sjf_fancyMath_destroy(a);
-        free(a);
-    }
-    b->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)b, b->_refCount);
-    if (b->_refCount <= 0) {
-        sjf_fancyMath_destroy(b);
-        free(b);
-    }
-    c->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)c, c->_refCount);
-    if (c->_refCount <= 0) {
-        sjf_fancyMath_destroy(c);
-        free(c);
-    }
-    d->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)d, d->_refCount);
-    if (d->_refCount <= 0) {
-        sjf_fancyMath_destroy(d);
-        free(d);
-    }
-    e->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)e, e->_refCount);
-    if (e->_refCount <= 0) {
-        sjf_fancyMath_destroy(e);
-        free(e);
-    }
-    f->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)f, f->_refCount);
-    if (f->_refCount <= 0) {
-        sjf_fancyMath_destroy(f);
-        free(f);
-    }
-    g->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)g, g->_refCount);
-    if (g->_refCount <= 0) {
-        sjf_fancyMath_destroy(g);
-        free(g);
-    }
-    result1->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result1, result1->_refCount);
-    if (result1->_refCount <= 0) {
-        sjf_fancyMath_destroy(result1);
-        free(result1);
-    }
-    result13->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result13, result13->_refCount);
-    if (result13->_refCount <= 0) {
-        sjf_fancyMath_destroy(result13);
-        free(result13);
-    }
-    result17->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result17, result17->_refCount);
-    if (result17->_refCount <= 0) {
-        sjf_fancyMath_destroy(result17);
-        free(result17);
-    }
-    result21->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result21, result21->_refCount);
-    if (result21->_refCount <= 0) {
-        sjf_fancyMath_destroy(result21);
-        free(result21);
-    }
-    result22->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result22, result22->_refCount);
-    if (result22->_refCount <= 0) {
-        sjf_fancyMath_destroy(result22);
-        free(result22);
-    }
-    result23->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result23, result23->_refCount);
-    if (result23->_refCount <= 0) {
-        sjf_fancyMath_destroy(result23);
-        free(result23);
-    }
-    result24->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result24, result24->_refCount);
-    if (result24->_refCount <= 0) {
-        sjf_fancyMath_destroy(result24);
-        free(result24);
-    }
-    result25->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result25, result25->_refCount);
-    if (result25->_refCount <= 0) {
-        sjf_fancyMath_destroy(result25);
-        free(result25);
-    }
-    result27->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result27, result27->_refCount);
-    if (result27->_refCount <= 0) {
-        sjf_fancyMath_destroy(result27);
-        free(result27);
-    }
-    result5->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result5, result5->_refCount);
-    if (result5->_refCount <= 0) {
-        sjf_fancyMath_destroy(result5);
-        free(result5);
-    }
-    result9->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)result9, result9->_refCount);
-    if (result9->_refCount <= 0) {
-        sjf_fancyMath_destroy(result9);
-        free(result9);
-    }
-    sjv_temp1->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);
-    if (sjv_temp1->_refCount <= 0) {
-        sjf_fancyMath_destroy(sjv_temp1);
-        free(sjv_temp1);
-    }
-    sjv_temp2->_refCount--;
-    printf("RELEASE\tsjs_fancyMath*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp2, sjv_temp2->_refCount);
-    if (sjv_temp2->_refCount <= 0) {
-        sjf_fancyMath_destroy(sjv_temp2);
-        free(sjv_temp2);
-    }
+    sjf_fancyMath_destroy(&a);
+    sjf_fancyMath_destroy(&b);
+    sjf_fancyMath_destroy(&c);
+    sjf_fancyMath_destroy(&d);
+    sjf_fancyMath_destroy(&e);
+    sjf_fancyMath_destroy(&f);
+    sjf_fancyMath_destroy(&g);
     return 0;
 }
