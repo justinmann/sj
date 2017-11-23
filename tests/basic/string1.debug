@@ -1,163 +1,121 @@
-anon1()'anon1 {
+anon1()'stack anon1 {
   this
 }
 
-anon2()'anon2 {
+anon2()'stack anon2 {
   this
 }
 
-anon3()'anon3 {
+anon3()'stack anon3 {
   this
 }
 
-anon4()'anon4 {
+anon4()'stack anon4 {
   this
 }
 
-array!char([heap]size'i32=, [heap]data'ptr=, [heap]_isGlobal'bool=)'array_char {
-  c{
+array_getAt(index'i32:)'char c{
 
-		if (_this->size < 0) {
-			exit(-1);
-		}
-
-		if (_this->data) {
-			_this->_isGlobal = true;
-		} else {
-			_this->data = (uintptr_t)calloc(_this->size * sizeof(#type(t)), 1);
-			if (!_this->data) {
-				printf("grow: out of memory\n");
-				exit(-1);				
-			}
-		}
-	
-}c
-  this
-}
-
-array_getAt([heap]index'i32:)'char c{
-
-		#forceParent()
+		
 
 		if (index >= _parent->size || index < 0) {
 			printf("getAt: out of bounds\n");
 			exit(-1);
 		}
 
-		#type(t)* p = (#type(t)*)_parent->data;
-		#type(t) val = p[index];
-##if !#isValue(t)
+		char* p = (char*)_parent->data;
+		char val = p[index];
+#if !true
 		if (val == 0) {
 			printf("getAt: value is not defined at %d\n", index);
 			exit(-1);
 		}
-##endif
+#endif
 		*_return = val;		
 	
 }c
 
-array_isEqual([heap]test'array_char:)'bool c{
+array_isEqual(test'stack array_char:)'bool c{
 
-		#forceParent()
-		#include(<string.h>)
+		
+		
 
 		if (_parent->size != test->size) {
 			*_return = false;
 		}
 
-		*_return = memcmp((void*)_parent->data, (void*)test->data, _parent->size * sizeof(#type(t))) == 0;		
+		*_return = memcmp((void*)_parent->data, (void*)test->data, _parent->size * sizeof(char)) == 0;		
 	
 }c
 
-array_isLessOrEqual([heap]test'array_char:)'bool c{
+array_isLessOrEqual(test'stack array_char:)'bool c{
 
-		#forceParent()
-		#include(<string.h>)
+		
+		
 
-		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) <= 0;		
+		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(char)) <= 0;		
 	
 }c
 
-string([stack]count'i32=, [heap]data'array_char=)'string {
+string(count'i32=, data'stack array_char=)'stack string {
   this
 }
 
-string_getAt([heap]index'i32:)'char {
-  [heap]array_getAt([stack]this : array_getAt(
-    parent: [heap].parentthis.data,
-    [heap]index'i32 : this.index
-  ))
+string_getAt(index'i32:)'char {
+  array_getAt(
+    parent: .parentthis.data,
+    index'i32 : this.index
+  )
 }
 
-string_isEqual([stack]test'string:)'bool {
-  [heap]array_isEqual([stack]this : array_isEqual(
-    parent: [heap].parentthis.data,
-    [heap]test'array_char : this.data
-  ))
+string_isEqual(test'stack string:)'bool {
+  array_isEqual(
+    parent: .parentthis.data,
+    test'stack array_char : this.test
+  )
 }
 
-string_isLessOrEqual([stack]test'string:)'bool {
-  [heap]array_isLessOrEqual([stack]this : array_isLessOrEqual(
-    parent: [heap].parentthis.data,
-    [heap]test'array_char : this.data
-  ))
+string_isLessOrEqual(test'stack string:)'bool {
+  array_isLessOrEqual(
+    parent: .parentthis.data,
+    test'stack array_char : this.test
+  )
 }
 
 global()'void {
-  [stack]convert'anon4 : [stack]anon4([stack]this : anon4())
-  [stack]random'anon3 : [stack]anon3([stack]this : anon3())
-  [stack]parse'anon2 : [stack]anon2([stack]this : anon2())
-  [stack]console'anon1 : [stack]anon1([stack]this : anon1())
-  [stack]a'string : {
-    [stack]string([stack]this : string(
-      parent: [stack]this,
-      [stack]count'i32 = i,
-      [heap]data'array_char = [heap]array!char([heap]this : array!char(
-        [heap]size'i32 = i,
-        [heap]data'ptr = ,
-        [heap]_isGlobal'bool = false
-      ))
-    ))
-  }
-  [stack]b'string : {
-    [stack]string([stack]this : string(
-      parent: [stack]this,
-      [stack]count'i32 = i,
-      [heap]data'array_char = [heap]array!char([heap]this : array!char(
-        [heap]size'i32 = i,
-        [heap]data'ptr = ,
-        [heap]_isGlobal'bool = false
-      ))
-    ))
-  }
-  [stack]c'char : 'a'
-  [stack]d'char : '\''
-  [stack]e'char : '\n'
-  [stack]f'string : {
-    [stack]string([stack]this : string(
-      parent: [stack]this,
-      [stack]count'i32 = i,
-      [heap]data'array_char = [heap]array!char([heap]this : array!char(
-        [heap]size'i32 = i,
-        [heap]data'ptr = ,
-        [heap]_isGlobal'bool = false
-      ))
-    ))
-  }
-  [heap]h'char : [heap]string_getAt([stack]this : string_getAt(
-    parent: [stack]a,
-    [heap]index'i32 : 0i
+  convert'stack anon4 : anon4(this = anon4())
+  random'stack anon3 : anon3(this = anon3())
+  parse'stack anon2 : anon2(this = anon2())
+  console'stack anon1 : anon1(this = anon1())
+  a'stack string : string(this = string(
+    count'i32 = this.count,
+    data'stack array_char = this.data
   ))
-  [stack]i'bool : h == 'h'
-  [heap]j'bool : [heap]string_isEqual([stack]this : string_isEqual(
-    parent: [stack]f,
-    [stack]test'string : a
+  b'stack string : string(this = string(
+    count'i32 = this.count,
+    data'stack array_char = this.data
   ))
-  [heap]k'bool : [heap]string_isLessOrEqual([stack]this : string_isLessOrEqual(
-    parent: [stack]f,
-    [stack]test'string : a
+  c'char : 'a'
+  d'char : '\''
+  e'char : '\n'
+  f'stack string : string(this = string(
+    count'i32 = this.count,
+    data'stack array_char = this.data
   ))
-  [stack]l'bool : f === a
+  h'char : string_getAt(
+    parent: a,
+    index'i32 : this.index
+  )
+  i'bool : h == 'h'
+  j'bool : string_isEqual(
+    parent: f,
+    test'stack string : this.test
+  )
+  k'bool : string_isLessOrEqual(
+    parent: f,
+    test'stack string : this.test
+  )
+  l'bool : f === a
   void
 }
 

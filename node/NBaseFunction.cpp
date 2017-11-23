@@ -1,7 +1,7 @@
 #include "Node.h"
 
 void CBaseFunction::setHasThis() {
-    // TODO: assert(name != "global");
+    assert(name != "global");
     hasThis = true;
 }
 
@@ -16,23 +16,9 @@ void CBaseFunction::setHasParent(Compiler* compiler) {
         return;
     }
     
-    if (parent.lock()->getThisTypes(compiler) == nullptr) {
-        return;
-    }
-    
     // Force parent to have a "this" struct
-    parent.lock()->setHasThis();
-    
+    parent.lock()->setHasThis();    
     if (!hasParent) {
-        getThisTypes(compiler);
         hasParent = true;
-        
-        for (auto it : delegateHasParent) {
-            it(compiler);
-        }
     }
-}
-
-void CBaseFunction::onHasParent(std::function<void(Compiler*)> notify) {
-    delegateHasParent.push_back(notify);
 }

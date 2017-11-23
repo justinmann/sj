@@ -12,29 +12,6 @@ shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CLoc loc_, const strin
     c->scope = scope;
     c->dotVar = dotVar_;
     c->callee = callee_;
-    
-    auto onHasParent = [callee_, scope](Compiler* compiler) {
-        if (callee_ == scope->function) {
-            callee_->setHasParent(compiler);
-        } else {
-            auto temp = static_pointer_cast<CBaseFunction>(scope->function);
-            while (temp && temp != callee_->parent.lock()) {
-                auto nextParent = temp->parent.lock();
-                // If my parent does not have a parent then leave off the parent
-                if (nextParent != nullptr && !nextParent->parent.expired()) {
-                    temp->setHasParent(compiler);
-                }
-                temp = nextParent;
-            }
-        }
-    };
-    
-    if (callee_->getHasParent(compiler)) {
-        onHasParent(compiler);
-    } else {
-        callee_->onHasParent(onHasParent);
-    }
-
     return c;
 }
 

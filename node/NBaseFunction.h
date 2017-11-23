@@ -44,7 +44,6 @@ public:
     virtual void setHasThis();
     virtual bool getHasParent(Compiler* compiler);
     virtual void setHasParent(Compiler* compiler);
-    virtual void onHasParent(std::function<void(Compiler*)> notify);
 
     virtual int getArgIndex(const string& name, CTypeMode returnMode) = 0;
     virtual int getArgCount(CTypeMode returnMode) = 0;
@@ -63,9 +62,6 @@ public:
     virtual void transpileDefinition(Compiler* compiler, TrOutput* trOutput) = 0;
     virtual void transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode returnMode) = 0;
     virtual void dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level, CTypeMode returnMode) = 0;
-
-private:
-    vector<std::function<void(Compiler*)>> delegateHasParent;
 };
 
 class CBaseFunctionDefinition {
