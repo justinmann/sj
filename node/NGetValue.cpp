@@ -52,7 +52,7 @@ public:
             line << leftValue->getName(trBlock);
         }
 
-        storeValue->retainValue(compiler, trBlock, make_shared<TrValue>(scope.lock(), leftValue->type->getValueType(), line.str()));
+        storeValue->retainValue(compiler, trBlock, make_shared<TrValue>(scope.lock(), leftValue->type->getValueType(), line.str(), false));
     }
 
     void dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

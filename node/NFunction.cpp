@@ -135,7 +135,7 @@ shared_ptr<CFunction> CFunction::init(Compiler* compiler, shared_ptr<NFunction> 
             
             for (auto returnMode : functionReturnModes) {
                 auto calleeScope = getScope(compiler, returnMode);
-                auto argType = it->getType(compiler, calleeScope, CTM_Undefined);
+                auto argType = it->getType(compiler, calleeScope, CVarType::Var_Public, CTM_Undefined);
                 if (!argType) {
                     return nullptr;
                 }
@@ -235,7 +235,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                 auto blockVar = _block->getVar(compiler, calleeScope, returnType->typeMode);
                 _isReturnThis = blockVar->getReturnThis();
                 auto bodyReturnValue = (returnType != compiler->typeVoid && !_isReturnThis) ? trFunctionBlock->createReturnStoreVariable(loc, nullptr, returnType) : trFunctionBlock->createVoidStoreVariable(loc, returnType);
-                blockVar->transpile(compiler, trOutput, trFunctionBlock.get(), nullptr, make_shared<TrValue>(nullptr, calleeVar->getType(compiler), "_this"), bodyReturnValue);
+                blockVar->transpile(compiler, trOutput, trFunctionBlock.get(), nullptr, make_shared<TrValue>(nullptr, calleeVar->getType(compiler), "_this", false), bodyReturnValue);
 
                 string structName = getCStructName(calleeVar->getTypeMode());
                 stringstream functionDefinition;
@@ -319,14 +319,14 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 
                 for (auto argVar : _data[returnMode].thisArgVars) {
                     auto argType = argVar->getType(compiler);
-                    TrStoreValue(argVar->loc, calleeScope, argType, "_this->" + argVar->name, ASSIGN_ImmutableCopy, true).retainValue(compiler, trCopyBlock.get(), make_shared<TrValue>(calleeScope, argType, "to->" + argVar->name));
+                    TrStoreValue(argVar->loc, calleeScope, argType, "_this->" + argVar->name, ASSIGN_ImmutableCopy, true).retainValue(compiler, trCopyBlock.get(), make_shared<TrValue>(calleeScope, argType, "to->" + argVar->name, false));
                 }
 
                 if (_copyBlock) {
                     auto copyBlockVar = _copyBlock->getVar(compiler, calleeScope, CTM_Undefined);
                     if (copyBlockVar) {
                         auto copyType = copyBlockVar->getType(compiler);
-                        copyBlockVar->transpile(compiler, trOutput, trCopyBlock.get(), nullptr, make_shared<TrValue>(nullptr, calleeVar->getType(compiler), "_this"), trCopyBlock->createVoidStoreVariable(loc, copyType));
+                        copyBlockVar->transpile(compiler, trOutput, trCopyBlock.get(), nullptr, make_shared<TrValue>(nullptr, calleeVar->getType(compiler), "_this", false), trCopyBlock->createVoidStoreVariable(loc, copyType));
                     }
                 }
             }
@@ -347,12 +347,12 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                     auto destroyBlockVar = _destroyBlock->getVar(compiler, calleeScope, CTM_Undefined);
                     if (destroyBlockVar) {
                         auto destroyType = destroyBlockVar->getType(compiler);
-                        destroyBlockVar->transpile(compiler, trOutput, trDestroyBlock.get(), nullptr, make_shared<TrValue>(nullptr, calleeVar->getType(compiler), "_this"), trDestroyBlock->createVoidStoreVariable(loc, destroyType));
+                        destroyBlockVar->transpile(compiler, trOutput, trDestroyBlock.get(), nullptr, make_shared<TrValue>(nullptr, calleeVar->getType(compiler), "_this", false), trDestroyBlock->createVoidStoreVariable(loc, destroyType));
                     }
                 }
 
                 for (auto argVar : _data[returnMode].thisArgVars) {
-                    TrValue(calleeScope, argVar->getType(compiler), "_this->" + argVar->name).addReleaseToStatements(trDestroyBlock.get());
+                    TrValue(calleeScope, argVar->getType(compiler), "_this->" + argVar->name, false).addReleaseToStatements(trDestroyBlock.get());
                 }
             }
 
@@ -375,7 +375,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                         stringstream functionDefinition;
                         functionDefinition << interfaceType->cname << " " << castFunctionName << "(" << structName << "* _this)";
                         trFunctionBlock->definition = functionDefinition.str();
-                        auto interfaceValue = make_shared<TrValue>(calleeScope, interfaceVal->getThisTypes(compiler)->heapValueType, "_interface");
+                        auto interfaceValue = make_shared<TrValue>(calleeScope, interfaceVal->getThisTypes(compiler)->heapValueType, "_interface", false);
                         trFunctionBlock->statements.push_back(interfaceValue->type->cname + " _interface");
                         interfaceValue->addInitToStatements(trFunctionBlock.get());
                         trFunctionBlock->statements.push_back(string("_interface->_parent = (sjs_object*)_this"));
@@ -451,6 +451,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
         return;
     }
     
+    assert(returnType == storeValue->type);
     auto calleeVar = getThisVar(compiler, returnMode);
     auto calleeScope = getScope(compiler, returnMode);
 
@@ -531,7 +532,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
         shared_ptr<TrValue> calleeThisValue;
         if (_isReturnThis && storeValue->type != nullptr) {
             // TODO: need to figure how to handle the various types of assignment
-            calleeThisValue = make_shared<TrValue>(storeValue->scope, storeValue->type, storeValue->getName(trBlock));
+            calleeThisValue = make_shared<TrValue>(storeValue->scope, storeValue->type, storeValue->getName(trBlock), storeValue->isReturnValue);
             calleeThisValue->addInitToStatements(trBlock);
         }
         else {
@@ -1339,7 +1340,17 @@ shared_ptr<CScope> CScope::getScopeForType(Compiler* compiler, shared_ptr<CType>
     if (baseFunction->classType == CFT_Function) {
         auto function = static_pointer_cast<CFunction>(baseFunction);
         auto returnMode = type->typeMode;
-        return function->getScope(compiler, returnMode);
+        if (returnMode == CTM_Local) {
+            if (!function->_data[CTM_Stack].isInvalid) {
+                return function->getScope(compiler, CTM_Stack);
+            }
+            else {
+                return function->getScope(compiler, CTM_Heap);
+            }
+        }
+        else {
+            return function->getScope(compiler, returnMode);
+        }
     }
     else if (baseFunction->classType == CFT_Interface) {
         auto cinterface = static_pointer_cast<CInterface>(baseFunction);

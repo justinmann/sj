@@ -89,7 +89,7 @@ shared_ptr<CInterfaceMethod> CInterfaceMethod::init(Compiler* compiler, shared_p
             return nullptr;
         }
         
-        auto argType = it->getType(compiler, parentScope, CTM_Undefined);
+        auto argType = it->getType(compiler, parentScope, CVarType::Var_Public, CTM_Undefined);
         if (!argType) {
             return nullptr;
         }
@@ -251,7 +251,7 @@ void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> scope, T
     }
     if (returnType != compiler->typeVoid) {
         
-        TrValue(storeValue->scope, storeValue->type, storeValue->getName(trBlock)).addInitToStatements(trBlock);
+        TrValue(storeValue->scope, storeValue->type, storeValue->getName(trBlock), storeValue->isReturnValue).addInitToStatements(trBlock);
         
         line << ", ";
         line << "&" << storeValue->getName(trBlock);

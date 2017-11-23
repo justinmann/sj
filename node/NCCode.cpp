@@ -188,7 +188,7 @@ string NCCode::expandMacro(Compiler* compiler, shared_ptr<CScope> scope, CTypeMo
         auto ctype = scope->getVarType(loc, compiler, ctypeName, CTM_Undefined);
         if (ctype) {
             stringstream releaseStream;
-            TrValue(scope, ctype, varName).writeReleaseToStream(nullptr, releaseStream, 0);
+            TrValue(scope, ctype, varName, false).writeReleaseToStream(nullptr, releaseStream, 0);
             return releaseStream.str();
         }
         else {

@@ -119,7 +119,7 @@ shared_ptr<TrValue> TrBlock::createVariable(shared_ptr<CScope> scope, shared_ptr
     if (var) {
         assert(var->type == type);
     } else {
-        var = make_shared<TrValue>(scope, type, name);
+        var = make_shared<TrValue>(scope, type, name, false);
         variables[name] = var;
     }
     return var;
@@ -127,7 +127,7 @@ shared_ptr<TrValue> TrBlock::createVariable(shared_ptr<CScope> scope, shared_ptr
 
 shared_ptr<TrValue> TrBlock::createTempVariable(shared_ptr<CScope> scope, shared_ptr<CType> type, string prefix) {
     auto varStr = nextVarName(prefix);
-    auto var = make_shared<TrValue>(scope, type, varStr);
+    auto var = make_shared<TrValue>(scope, type, varStr, false);
     variables[varStr] = var;
     return var;
 }
@@ -135,7 +135,7 @@ shared_ptr<TrValue> TrBlock::createTempVariable(shared_ptr<CScope> scope, shared
 shared_ptr<TrStoreValue> TrBlock::createTempStoreVariable(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, string prefix) {
     auto varStr = nextVarName("sjt_" + prefix);
     auto var = make_shared<TrStoreValue>(loc, scope, type, varStr, ASSIGN_Immutable, true);
-    variables[varStr] = make_shared<TrValue>(scope, type, varStr);
+    variables[varStr] = make_shared<TrValue>(scope, type, varStr, false);
     return var;
 }
 
@@ -144,7 +144,7 @@ shared_ptr<TrStoreValue> TrBlock::createVoidStoreVariable(CLoc loc, shared_ptr<C
 }
 
 shared_ptr<TrStoreValue> TrBlock::createReturnStoreVariable(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type) {
-    auto returnStoreValue = make_shared<TrStoreValue>(loc, scope, type->getLocalType(), type->typeMode == CTM_Stack ? "_return" : "(*_return)", ASSIGN_Immutable, true);
+    auto returnStoreValue = make_shared<TrStoreValue>(loc, scope, type, type->typeMode == CTM_Stack ? "_return" : "(*_return)", ASSIGN_Immutable, true);
     returnStoreValue->isReturnValue = true;
     return returnStoreValue;
 }
@@ -329,7 +329,7 @@ void TrValue::addInitToStatements(TrBlock* block) {
 }
 
 string TrValue::getDotName(string rightName) {
-    if (type->typeMode == CTM_Stack) {
+    if (!isReturnValue && type->typeMode == CTM_Stack) {
         return name + "." + rightName;
     }
     else {
@@ -338,7 +338,7 @@ string TrValue::getDotName(string rightName) {
 }
 
 string TrValue::getPointerName() {
-    if (type->typeMode == CTM_Stack) {
+    if (!isReturnValue && type->typeMode == CTM_Stack) {
         return "&" + name;
     }
     else {
@@ -394,7 +394,7 @@ void TrStoreValue::retainValue(Compiler* compiler, TrBlock* block, shared_ptr<Tr
         return;
     }
 
-    TrValue leftValue(scope, type, name);
+    TrValue leftValue(scope, type, name, isReturnValue);
     if (op == ASSIGN_Immutable || op == ASSIGN_Mutable) {
         if (!isFirstAssignment) {
             leftValue.addReleaseToStatements(block);
@@ -464,7 +464,7 @@ void TrStoreValue::takeOverValue(Compiler* compiler, TrBlock* block, shared_ptr<
         return;
     }
 
-    TrValue leftValue(scope, type, name);
+    TrValue leftValue(scope, type, name, isReturnValue);
     if (op == ASSIGN_Immutable || op == ASSIGN_Mutable) {
         if (!isFirstAssignment) {
             leftValue.addReleaseToStatements(block);
@@ -512,5 +512,5 @@ string TrStoreValue::getName(TrBlock* block) {
 
 shared_ptr<TrValue> TrStoreValue::getValue() {
     assert(hasSetValue);
-    return make_shared<TrValue>(scope, type, name);
+    return make_shared<TrValue>(scope, type, name, isReturnValue);
 }

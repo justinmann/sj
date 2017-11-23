@@ -48,7 +48,7 @@ void CParentDotVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* t
             return;
         }
 
-        parentValue = make_shared<TrValue>(nullptr, parentThisTypes->localValueType, parentFunction->hasThis ? thisValue->getDotName("_parent") : "_parent");
+        parentValue = make_shared<TrValue>(nullptr, parentThisTypes->localValueType, parentFunction->hasThis ? thisValue->getDotName("_parent") : "_parent", false);
     }
     childVar->transpile(compiler, trOutput, trBlock, parentValue, thisValue, storeValue);
 }
@@ -74,7 +74,7 @@ shared_ptr<TrStoreValue> CParentDotVar::getStoreValue(Compiler* compiler, TrOutp
             return nullptr;
         }
         
-        parentValue = make_shared<TrValue>(nullptr, parentThisTypes->localValueType, parentFunction->hasThis ? thisValue->getDotName("_parent") : "_parent");
+        parentValue = make_shared<TrValue>(nullptr, parentThisTypes->localValueType, parentFunction->hasThis ? thisValue->getDotName("_parent") : "_parent", false);
     }
 
     auto childStoreVar = dynamic_pointer_cast<CStoreVar>(childVar);

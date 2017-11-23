@@ -40,7 +40,7 @@ void CCompareVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
     }
     line << rightValue->getName(trBlock);
 
-    auto resultValue = make_shared<TrValue>(nullptr, compiler->typeBool, line.str());
+    auto resultValue = make_shared<TrValue>(nullptr, compiler->typeBool, line.str(), false);
     storeValue->retainValue(compiler, trBlock, resultValue);
 }
 

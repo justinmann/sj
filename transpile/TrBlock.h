@@ -17,7 +17,7 @@ class CType;
 
 class TrValue {
 public:
-    TrValue(shared_ptr<CScope> scope, shared_ptr<CType> type, string name) : scope(scope), type(type), name(name) { assert(type != nullptr);  }
+    TrValue(shared_ptr<CScope> scope, shared_ptr<CType> type, string name, bool isReturnValue) : scope(scope), type(type), name(name), isReturnValue(isReturnValue) { assert(type != nullptr);  }
     bool writeReleaseToStream(TrBlock* block, ostream& stream, int level);
     void addInitToStatements(TrBlock* block);
     void addRetainToStatements(TrBlock* block);
@@ -29,6 +29,7 @@ public:
     shared_ptr<CScope> scope;
     shared_ptr<CType> type;
     string name;
+    bool isReturnValue;
 }; 
 
 class TrStoreValue {

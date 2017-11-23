@@ -35,7 +35,7 @@ void CMathVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
     }
     line << rightValue->getName(trBlock);
 
-    auto resultValue = make_shared<TrValue>(nullptr, leftVar->getType(compiler), line.str());
+    auto resultValue = make_shared<TrValue>(nullptr, leftVar->getType(compiler), line.str(), false);
     storeValue->retainValue(compiler, trBlock, resultValue);
 }
 

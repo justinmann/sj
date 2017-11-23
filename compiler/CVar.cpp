@@ -37,7 +37,7 @@ void CNormalVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
         trBlock->statements.push_back(lineStream.str());
         storeValue->retainValue(compiler, trBlock, returnValue);
     } else {
-        auto returnValue = make_shared<TrValue>(scope.lock(), type, name);
+        auto returnValue = make_shared<TrValue>(scope.lock(), type, name, false);
         storeValue->retainValue(compiler, trBlock, returnValue);
     }
 }

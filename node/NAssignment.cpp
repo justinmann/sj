@@ -5,7 +5,7 @@ bool CAssignVar::getReturnThis() {
 }
 
 shared_ptr<CType> CAssignVar::getType(Compiler* compiler) {
-    return rightVar->getType(compiler);
+    return leftVar->getType(compiler);
 }
 
 void CAssignVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
@@ -126,7 +126,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
             else {
                 auto fun = static_pointer_cast<CFunction>(cfunction);
                 
-                auto leftType = getType(compiler, scope, returnMode);
+                auto leftType = getType(compiler, scope, CVarType::Var_Local, returnMode);
                 if (!leftType) {
                     return nullptr;
                 }
@@ -154,8 +154,14 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
     return nullptr;
 }
 
-shared_ptr<CType> NAssignment::getType(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+shared_ptr<CType> NAssignment::getType(Compiler* compiler, shared_ptr<CScope> scope, CVarType varType, CTypeMode returnMode) {
     if (typeName) {
+        if (varType == CVarType::Var_Local) {
+            if (returnMode == CTM_Undefined) {
+                returnMode = CTM_Local;
+            }
+        }
+        
         auto valueType = scope->getVarType(loc, compiler, typeName, returnMode);
         if (!valueType) {
             compiler->addError(loc, CErrorCode::InvalidType, "explicit type '%s' does not exist", typeName->getFullName().c_str());
@@ -174,8 +180,16 @@ shared_ptr<CType> NAssignment::getType(Compiler* compiler, shared_ptr<CScope> sc
         compiler->addError(loc, CErrorCode::Internal, "no right side");
         return nullptr;
     }
-    
-    return rightVar->getType(compiler);
+
+    auto rightType = rightVar->getType(compiler);
+
+    if (varType == CVarType::Var_Local) {
+        if (rightType->typeMode == CTM_Stack || rightType->typeMode == CTM_Heap) {
+            return rightType->getLocalType();
+        }
+    }
+
+    return rightType;
 }
 
 shared_ptr<NAssignment> NAssignment::shared_from_this() {

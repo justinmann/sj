@@ -117,7 +117,20 @@ void CCallVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
         return;
     }
 
-    callee->transpile(compiler, scope.lock(), trOutput, trBlock, dotValue, loc, parameters, thisValue, storeValue, returnMode);
+    shared_ptr<TrStoreValue> calleeStoreValue;
+    auto calleeReturnType = callee->getReturnType(compiler, returnMode);
+    if (calleeReturnType == storeValue->type) {
+        calleeStoreValue = storeValue;
+    }
+    else {
+        calleeStoreValue = trBlock->createTempStoreVariable(loc, scope.lock(), calleeReturnType, "call");
+    }
+
+    callee->transpile(compiler, scope.lock(), trOutput, trBlock, dotValue, loc, parameters, thisValue, calleeStoreValue, returnMode);
+
+    if (calleeStoreValue != storeValue) {
+        storeValue->retainValue(compiler, trBlock, calleeStoreValue->getValue());
+    }
 }
 
 void CCallVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
