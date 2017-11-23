@@ -23,7 +23,7 @@ shared_ptr<CType> CCallVar::getType(Compiler* compiler) {
     return callee->getReturnType(compiler, returnMode);
 }
 
-bool CCallVar::getParameters(Compiler* compiler, vector<pair<bool, shared_ptr<NBase>>>& parameters) {
+bool CCallVar::getParameters(Compiler* compiler, vector<FunctionParameter>& parameters) {
     if (parameters.size() < arguments->size()) {
         compiler->addError(loc, CErrorCode::TooManyParameters, "too many parameters");
         return false;
@@ -41,12 +41,14 @@ bool CCallVar::getParameters(Compiler* compiler, vector<pair<bool, shared_ptr<NB
                 return false;
             }
             
-            if (parameters[index].second != nullptr) {
+            if (parameters[index].value != nullptr) {
                 compiler->addError(loc, CErrorCode::ParameterRedefined, "defined parameter '%s' twice", parameterAssignment->name.c_str());
                 return false;
             }
             
-            parameters[index] = make_pair(false, parameterAssignment->rightSide);
+            parameters[index].isDefaultValue = false;
+            parameters[index].op = parameterAssignment->op;
+            parameters[index].value = parameterAssignment->rightSide;
             hasSetByName = true;
         } else {
             if (hasSetByName) {
@@ -54,25 +56,29 @@ bool CCallVar::getParameters(Compiler* compiler, vector<pair<bool, shared_ptr<NB
                 return false;
             }
             
-            if (parameters[argIndex].second != nullptr) {
+            if (parameters[argIndex].value != nullptr) {
                 compiler->addError(loc, CErrorCode::Internal, "re-defining the same parameters which should be impossible for un-named parameters");
                 return false;
             }
             
-            parameters[argIndex] = make_pair(false, it);
+            parameters[argIndex].isDefaultValue = false;
+            parameters[argIndex].op = AssignOp::immutableOp;
+            parameters[argIndex].value = it;
         }
         argIndex++;
     }
     
     argIndex = 0;
     for (auto it : callee->argDefaultValues) {
-        if (argIndex < parameters.size() && parameters[argIndex].second == nullptr) {
-            if (it == nullptr) {
+        if (argIndex < parameters.size() && parameters[argIndex].value == nullptr) {
+            if (it.value == nullptr) {
                 compiler->addError(loc, CErrorCode::ParameterRequired, "parameter %d is required", argIndex);
                 return false;
             }
-            assert(it->nodeType != NodeType_Assignment);
-            parameters[argIndex] = make_pair(true, it);
+            assert(it.value->nodeType != NodeType_Assignment);
+            parameters[argIndex].isDefaultValue = true;
+            parameters[argIndex].op = it.op;
+            parameters[argIndex].value = it.value;
         }
         argIndex++;
     }
@@ -89,7 +95,7 @@ void CCallVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
     }
 
     // Fill in parameters
-    vector<pair<bool, shared_ptr<NBase>>> parameters(callee->argDefaultValues.size());
+    vector<FunctionParameter> parameters(callee->argDefaultValues.size());
     if (!getParameters(compiler, parameters)) {
         return;
     }
@@ -120,7 +126,7 @@ void CCallVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<
 
     ss << callee->fullName(true) << "(";
 
-    vector<pair<bool, shared_ptr<NBase>>> parameters(callee->argDefaultValues.size());
+    vector<FunctionParameter> parameters(callee->argDefaultValues.size());
     if (!getParameters(compiler, parameters)) {
         return;
     }

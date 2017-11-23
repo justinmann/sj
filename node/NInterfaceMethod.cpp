@@ -201,7 +201,7 @@ string CInterfaceMethod::getCDestroyFunctionName() {
 void CInterfaceMethod::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 }
 
-void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode /*returnMode*/) {
+void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, vector<FunctionParameter>& parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode /*returnMode*/) {
     assert(compiler->state == CompilerState::Compile);
     assert(parentValue != nullptr);
 

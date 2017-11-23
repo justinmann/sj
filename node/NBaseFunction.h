@@ -30,6 +30,19 @@ enum CClassFunctionType {
     CFT_InterfaceMethod
 };
 
+class FunctionParameter {
+public:
+    bool isDefaultValue;
+    AssignOp op;
+    shared_ptr<NBase> value;
+};
+
+class FunctionDefaultValue {
+public:
+    AssignOp op;
+    shared_ptr<NBase> value;
+};
+
 class CBaseFunction {
 public:
     CClassFunctionType classType;
@@ -38,7 +51,7 @@ public:
     bool hasThis;
     weak_ptr<CBaseFunction> parent;
     weak_ptr<CBaseFunctionDefinition> definition;
-    vector<shared_ptr<NBase>> argDefaultValues;
+    vector<FunctionDefaultValue> argDefaultValues;
     
     CBaseFunction(CClassFunctionType classType, string& name, weak_ptr<CBaseFunction> parent, weak_ptr<CBaseFunctionDefinition> definition) : classType(classType), name(name), hasParent(false), hasThis(false), parent(parent), definition(definition) { }
     virtual void setHasThis();
@@ -60,7 +73,7 @@ public:
     virtual pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(string name) = 0;
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CTypeMode returnMode) = 0;
     virtual void transpileDefinition(Compiler* compiler, TrOutput* trOutput) = 0;
-    virtual void transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode returnMode) = 0;
+    virtual void transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, vector<FunctionParameter>& parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode returnMode) = 0;
     virtual void dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level, CTypeMode returnMode) = 0;
 };
 

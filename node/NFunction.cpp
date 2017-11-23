@@ -456,7 +456,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
     }
 }
 
-void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, vector<pair<bool, shared_ptr<NBase>>>& parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode returnMode) {
+void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, vector<FunctionParameter>& parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode returnMode) {
     transpileDefinition(compiler, trOutput);
 
     assert(compiler->state == CompilerState::Compile);
@@ -1031,7 +1031,9 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, const string& name, CTyp
             if (!hasThis) {
                 auto argVarType = thisArgVar->getType(compiler);
                 if (!argVarType->parent.expired()) {
-                    argVarType = argVarType->getLocalType();
+                    if (argVarType->typeMode == CTM_Stack) {
+                        argVarType = argVarType->getLocalType();
+                    }
                 }
                 return make_shared<CFunctionParameterVar>(loc, thisArgVar->scope.lock(), thisArgVar->name, false, argVarType);
             }
