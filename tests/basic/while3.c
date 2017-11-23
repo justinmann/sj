@@ -70,21 +70,27 @@ struct td_sjs_object {
 
 
 int main() {
-    bool result1;
-    bool whileValue1;
+    int32_t sjt_compare1;
+    int32_t sjt_compare2;
+    bool sjt_while1;
     int32_t x;
 
     x = 10;
-    result1 = x > 0;
-    whileValue1 = result1;
-    while (whileValue1) {
-        int32_t result2;
-        bool result3;
+    sjt_compare1 = x;
+    sjt_compare2 = 0;
+    sjt_while1 = sjt_compare1 > sjt_compare2;
+    while (sjt_while1) {
+        int32_t sjt_compare3;
+        int32_t sjt_compare4;
+        int32_t sjt_math1;
+        int32_t sjt_math2;
 
-        result2 = x - 1;
-        x = result2;
-        result3 = x > 0;
-        whileValue1 = result3;
+        sjt_math1 = x;
+        sjt_math2 = 1;
+        x = sjt_math1 - sjt_math2;
+        sjt_compare3 = x;
+        sjt_compare4 = 0;
+        sjt_while1 = sjt_compare3 > sjt_compare4;
     }
     return 0;
 }

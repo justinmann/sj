@@ -70,11 +70,11 @@ struct td_sjs_object {
 
 
 int main() {
-    bool whileValue1;
+    bool sjt_while1;
 
-    whileValue1 = false;
-    while (whileValue1) {
-        whileValue1 = false;
+    sjt_while1 = false;
+    while (sjt_while1) {
+        sjt_while1 = false;
     }
     return 0;
 }

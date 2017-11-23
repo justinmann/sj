@@ -1,11 +1,10 @@
+* fix tests
 * fix string add
 * make string immutable
 * string not depend on array
 * stringBuilder.append
 * stringBuilder.toString
-
 * draw box using sdl on windows
-
 * buttonElement
 * textElement
 * two buttons for +/-
