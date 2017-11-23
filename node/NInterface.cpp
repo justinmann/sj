@@ -1,6 +1,6 @@
 #include "Node.h"
 
-NInterface::NInterface(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> methodList_) : NBaseFunction(NodeType_Interface, loc), name(name), templateTypeNames(templateTypeNames) {
+NInterface::NInterface(CLoc loc, const string& name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> methodList_) : NBaseFunction(NodeType_Interface, loc), name(name), templateTypeNames(templateTypeNames) {
     if (methodList_) {
         for (auto it : *methodList_) {
             assert(it->nodeType == NodeType_InterfaceMethod);
@@ -87,7 +87,7 @@ shared_ptr<CInterface> CInterface::init(Compiler* compiler, shared_ptr<NInterfac
                 return nullptr;
             }
             assert(templateTypes[index]);
-            templateTypesByName[templateTypeName->name] = templateTypes[index];
+            templateTypesByName[templateTypeName->valueName] = templateTypes[index];
             index++;
         }
     }
@@ -196,7 +196,7 @@ shared_ptr<CBaseFunction> CInterface::getCFunction(Compiler* compiler, CLoc locC
 
 shared_ptr<CType> CInterface::getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
     if (typeName->templateTypeNames == nullptr) {
-        auto t = templateTypesByName.find(typeName->name);
+        auto t = templateTypesByName.find(typeName->valueName);
         if (t != templateTypesByName.end()) {
             return t->second;
         }
@@ -206,7 +206,7 @@ shared_ptr<CType> CInterface::getVarType(CLoc loc, Compiler* compiler, shared_pt
         return parent.lock()->getVarType(loc, compiler, typeName, defaultMode);
     }
     
-    return compiler->getType(typeName->name);
+    return compiler->getType(typeName->valueName);
 }
 
 shared_ptr<CType> CInterface::getReturnType(Compiler* compiler, CTypeMode returnMode) {
@@ -397,7 +397,7 @@ CInterfaceDefinition::CInterfaceDefinition(CLoc loc, string& name_) : CBaseFunct
 }
 
 string CInterfaceDefinition::fullName() {
-    return typeName->getName();
+    return typeName->getFullName();
 }
 
 void CInterfaceDefinition::addChildFunction(string& name, shared_ptr<CBaseFunctionDefinition> childFunction) {

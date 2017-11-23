@@ -74,7 +74,7 @@ shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, shared_ptr<CSco
             }
             
             if (leftType != numberType) {
-                compiler->addError(loc, CErrorCode::TypeMismatch, "left type '%s' does not match right type '%s'", leftType->name.c_str(), numberType->name.c_str());
+                compiler->addError(loc, CErrorCode::TypeMismatch, "left type '%s' does not match right type '%s'", leftType->fullName.c_str(), numberType->fullName.c_str());
                 return nullptr;
             }
         } else {

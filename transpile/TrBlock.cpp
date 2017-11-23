@@ -376,12 +376,12 @@ void TrStoreValue::retainValue(Compiler* compiler, TrBlock* block, shared_ptr<Tr
     }
 
     if (!CType::isSameExceptMode(type, rightValue->type)) {
-        compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' does not match left type '%s'", rightValue->type->name.c_str(), type->name.c_str());
+        compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' does not match left type '%s'", rightValue->type->fullName.c_str(), type->fullName.c_str());
         return;
     }
 
     if (type->typeMode != CTM_Local && type->typeMode != rightValue->type->typeMode && op != ASSIGN_MutableCopy && op != ASSIGN_ImmutableCopy) {
-        compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot change mode to left type '%s' without using a :copy or =copy assignment", rightValue->type->name.c_str(), type->name.c_str());
+        compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot change mode to left type '%s' without using a :copy or =copy assignment", rightValue->type->fullName.c_str(), type->fullName.c_str());
         return;
     }
 
@@ -446,12 +446,12 @@ void TrStoreValue::takeOverValue(Compiler* compiler, TrBlock* block, shared_ptr<
     }
 
     if (!CType::isSameExceptMode(type, rightValue->type)) {
-        compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' does not match left type '%s'", rightValue->type->name.c_str(), type->name.c_str());
+        compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' does not match left type '%s'", rightValue->type->fullName.c_str(), type->fullName.c_str());
         return;
     }
 
     if (type->typeMode != CTM_Local && type->typeMode != rightValue->type->typeMode && op != ASSIGN_MutableCopy && op != ASSIGN_ImmutableCopy) {
-        compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot change mode to left type '%s' without using a :copy or =copy assignment", rightValue->type->name.c_str(), type->name.c_str());
+        compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot change mode to left type '%s' without using a :copy or =copy assignment", rightValue->type->fullName.c_str(), type->fullName.c_str());
         return;
     }
 

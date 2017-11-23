@@ -30,7 +30,7 @@ void CAssignVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_pt
     auto type = getType(compiler);
     leftVar->dump(compiler, dotVar, functions, ss, dotSS, level);
     auto leftType = leftVar->getType(compiler);
-    ss << "'" << (leftType ? leftType->name.c_str() : "unknown");
+    ss << "'" << (leftType ? leftType->fullName.c_str() : "unknown");
     ss << (isMutable ? " = " : " : ");
     if (rightVar) {
         rightVar->dump(compiler, nullptr, functions, ss, dotSS, level);
@@ -158,7 +158,7 @@ shared_ptr<CType> NAssignment::getType(Compiler* compiler, shared_ptr<CScope> sc
     if (typeName) {
         auto valueType = scope->getVarType(loc, compiler, typeName, returnMode);
         if (!valueType) {
-            compiler->addError(loc, CErrorCode::InvalidType, "explicit type '%s' does not exist", typeName->name.c_str());
+            compiler->addError(loc, CErrorCode::InvalidType, "explicit type '%s' does not exist", typeName->getFullName().c_str());
             return nullptr;
         }
         return valueType;

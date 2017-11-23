@@ -78,7 +78,7 @@ shared_ptr<CInterfaceMethod> CInterfaceMethod::init(Compiler* compiler, shared_p
     loc = method->loc;
     returnType = getVarType(loc, compiler, method->returnTypeName, returnMode);
     if (!returnType) {
-        compiler->addError(method->loc, CErrorCode::InvalidType, "type '%s' is not defined", method->returnTypeName->name.c_str());
+        compiler->addError(method->loc, CErrorCode::InvalidType, "type '%s' is not defined", method->returnTypeName->getFullName().c_str());
         return nullptr;
     }
 
@@ -176,7 +176,7 @@ shared_ptr<CType> CInterfaceMethod::getVarType(CLoc loc, Compiler* compiler, sha
         return parent.lock()->getVarType(loc, compiler, typeName, defaultMode);
     }
     
-    return compiler->getType(typeName->name);
+    return compiler->getType(typeName->valueName);
 }
 
 shared_ptr<CType> CInterfaceMethod::getReturnType(Compiler* compiler, CTypeMode returnMode) {

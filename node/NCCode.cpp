@@ -127,7 +127,7 @@ string NCCode::expandMacro(Compiler* compiler, shared_ptr<CScope> scope, CTypeMo
             compiler->addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", param.c_str());
         }
         
-        auto cfunction = static_pointer_cast<CFunction>(scope->function->getCFunction(compiler, loc, ctypeName->name, scope, ctypeName->argTypeNames, CTM_Heap));
+        auto cfunction = static_pointer_cast<CFunction>(scope->function->getCFunction(compiler, loc, ctypeName->valueName, scope, ctypeName->argTypeNames, CTM_Heap));
         if (cfunction) {
             _functions[scope.get()].push_back(cfunction);
             // Do they want the stack or heap version
@@ -143,7 +143,7 @@ string NCCode::expandMacro(Compiler* compiler, shared_ptr<CScope> scope, CTypeMo
             compiler->addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", param.c_str());
         }
 
-        auto cfunction = static_pointer_cast<CFunction>(scope->function->getCFunction(compiler, loc, ctypeName->name, scope, ctypeName->argTypeNames, CTM_Stack));
+        auto cfunction = static_pointer_cast<CFunction>(scope->function->getCFunction(compiler, loc, ctypeName->valueName, scope, ctypeName->argTypeNames, CTM_Stack));
         if (cfunction) {
             _functions[scope.get()].push_back(cfunction);
             // Do they want the stack or heap version

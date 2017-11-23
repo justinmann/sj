@@ -135,23 +135,23 @@ var_decl 			: assign
 					;
 
 func_decl 			: func_type_name func_block block catch copy destroy			{ 
-						$$ = new NFunction(LOC, FT_Private, nullptr, $1->name.c_str(), $1->templateTypeNames, 
+						$$ = new NFunction(LOC, FT_Private, nullptr, $1->valueName.c_str(), $1->templateTypeNames, 
 							nullptr, shared_ptr<NodeList>($2), 
 							shared_ptr<NBase>($3), shared_ptr<NBase>($4), shared_ptr<NBase>($5), shared_ptr<NBase>($6));
 						delete $1; 
 					}
 					| func_type_name implement func_block block catch copy destroy			{ 
-						$$ = new NFunction(LOC, FT_Private, nullptr, $1->name.c_str(), $1->templateTypeNames, 
+						$$ = new NFunction(LOC, FT_Private, nullptr, $1->valueName.c_str(), $1->templateTypeNames, 
 							shared_ptr<CTypeNameList>($2), shared_ptr<NodeList>($3), 
 							shared_ptr<NBase>($4), shared_ptr<NBase>($5), shared_ptr<NBase>($6), shared_ptr<NBase>($7)); 
 					}
 					| func_type_name func_block return_type_quote block catch copy destroy { 
-						$$ = new NFunction(LOC, FT_Private, shared_ptr<CTypeName>($3), $1->name.c_str(), $1->templateTypeNames, 
+						$$ = new NFunction(LOC, FT_Private, shared_ptr<CTypeName>($3), $1->valueName.c_str(), $1->templateTypeNames, 
 							nullptr, shared_ptr<NodeList>($2), 
 							shared_ptr<NBase>($4), shared_ptr<NBase>($5), shared_ptr<NBase>($6), shared_ptr<NBase>($7)); 
 					}
 					| func_type_name implement func_block return_type_quote block catch copy destroy { 
-						$$ = new NFunction(LOC, FT_Private, shared_ptr<CTypeName>($4), $1->name.c_str(), $1->templateTypeNames, 
+						$$ = new NFunction(LOC, FT_Private, shared_ptr<CTypeName>($4), $1->valueName.c_str(), $1->templateTypeNames, 
 							shared_ptr<CTypeNameList>($2), shared_ptr<NodeList>($3), 
 							shared_ptr<NBase>($5), shared_ptr<NBase>($6), shared_ptr<NBase>($7), shared_ptr<NBase>($8)); 
 					}
@@ -195,10 +195,10 @@ implement_args 		: implement_arg									{ $$ = new CTypeNameList(); $$->push_ba
 					| implement_args implement_arg 					{ $$ = $1; $$->push_back(shared_ptr<CTypeName>($2)); }
 					;
 
-implement_arg 		: THASH arg_type_interface temp_block_optional	{ $$ = new CTypeName(CTC_Interface, CTM_Stack, (string("#") + *$2).c_str(), shared_ptr<CTypeNameList>($3), false); delete $2; }							
+implement_arg 		: THASH arg_type_interface temp_block_optional	{ $$ = new CTypeName(CTC_Interface, CTM_Stack, *$2, shared_ptr<CTypeNameList>($3), false); delete $2; }							
 					;
 
-interface_decl		: THASH TIDENTIFIER temp_block_optional interface_block { $$ = new NInterface(LOC, (string("#") + *$2).c_str(), shared_ptr<CTypeNameList>($3), shared_ptr<NodeList>($4)); delete $2; }
+interface_decl		: THASH TIDENTIFIER temp_block_optional interface_block { $$ = new NInterface(LOC, *$2, shared_ptr<CTypeNameList>($3), shared_ptr<NodeList>($4)); delete $2; }
 					;
 
 interface_block		: TLPAREN interface_args TRPAREN 				{ $$ = $2; }
@@ -210,7 +210,7 @@ interface_args		: interface_arg									{ $$ = new NodeList(); if ($1) { $$->pus
 					;
 
 interface_arg 		: /* Blank! */									{ $$ = nullptr; }
-					| func_type_name func_block return_type_quote 	{ $$ = new NInterfaceMethod(LOC, $1->name.c_str(), $1->templateTypeNames, shared_ptr<NodeList>($2), shared_ptr<CTypeName>($3)); }
+					| func_type_name func_block return_type_quote 	{ $$ = new NInterfaceMethod(LOC, $1->valueName.c_str(), $1->templateTypeNames, shared_ptr<NodeList>($2), shared_ptr<CTypeName>($3)); }
 					;
 
 expr 				: if_expr										{ $$ = $1; }
@@ -276,7 +276,7 @@ var					: var TDOT var_right							{ $$ = new NDot(LOC, shared_ptr<NVariableBase
 					| var_right										
 					;
 
-var_right			: func_type_name func_block						{ $$ = new NCall(LOC, $1->name.c_str(), $1->templateTypeNames, shared_ptr<NodeList>($2)); delete $1; }
+var_right			: func_type_name func_block						{ $$ = new NCall(LOC, $1->valueName.c_str(), $1->templateTypeNames, shared_ptr<NodeList>($2)); delete $1; }
 					| TISEMPTY TLPAREN expr TRPAREN					{ $$ = new NIsEmpty(LOC, shared_ptr<NBase>($3)); }
 					| TGETVALUE TLPAREN expr TRPAREN				{ $$ = new NGetValue(LOC, shared_ptr<NBase>($3), false); }
 					| TVALUE TLPAREN expr TRPAREN					{ $$ = new NValue(LOC, shared_ptr<NBase>($3)); }
@@ -341,8 +341,8 @@ arg_type_quote		: TQUOTE arg_type								{ $$ = $2; }
 					;
 
 arg_type			: value_type												{ $$ = $1; }
-					| arg_mode TIDENTIFIER temp_option_optional 				{ $$ = new CTypeName(CTC_Value, $1, *$2 + ($3.isOption ? "?" : ""), shared_ptr<CTypeNameList>($3.templateTypeNames), $3.isOption); delete $2; }
-					| arg_mode THASH arg_type_interface temp_option_optional 	{ $$ = new CTypeName(CTC_Interface, $1, string("#") + *$3 + ($4.isOption ? "?" : ""), shared_ptr<CTypeNameList>($4.templateTypeNames), $4.isOption); delete $3; }
+					| arg_mode TIDENTIFIER temp_option_optional 				{ $$ = new CTypeName(CTC_Value, $1, *$2, shared_ptr<CTypeNameList>($3.templateTypeNames), $3.isOption); delete $2; }
+					| arg_mode THASH arg_type_interface temp_option_optional 	{ $$ = new CTypeName(CTC_Interface, $1, *$3, shared_ptr<CTypeNameList>($4.templateTypeNames), $4.isOption); delete $3; }
 					| func_type													{ $$ = $1; }
 					;
 
@@ -357,8 +357,8 @@ arg_type_interface	: TIDENTIFIER									{ $$ = $1; }
 					;
 
 return_type			: value_type													{ $$ = $1; }
-					| arg_mode TIDENTIFIER temp_option_optional 					{ $$ = new CTypeName(CTC_Value, $1, *$2 + ($3.isOption ? "?" : ""), shared_ptr<CTypeNameList>($3.templateTypeNames), $3.isOption); delete $2; }
-					| arg_mode THASH arg_type_interface temp_option_optional 		{ $$ = new CTypeName(CTC_Interface, $1, string("#") + *$3 + ($4.isOption ? "?" : ""), shared_ptr<CTypeNameList>($4.templateTypeNames), $4.isOption); delete $3; }
+					| arg_mode TIDENTIFIER temp_option_optional 					{ $$ = new CTypeName(CTC_Value, $1, *$2, shared_ptr<CTypeNameList>($3.templateTypeNames), $3.isOption); delete $2; }
+					| arg_mode THASH arg_type_interface temp_option_optional 		{ $$ = new CTypeName(CTC_Interface, $1, *$3, shared_ptr<CTypeNameList>($4.templateTypeNames), $4.isOption); delete $3; }
 					| func_type														{ $$ = $1; }
 					| TVOID															{ $$ = new CTypeName(CTC_Value, CTM_Stack, "void", false); }
 					;

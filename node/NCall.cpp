@@ -163,7 +163,7 @@ void CCallVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<
                 auto paramVar = callee->getArgVar(paramIndex, returnMode);
                 ss << paramVar->name.c_str();
                 auto ctype = paramVar->getType(compiler);
-                ss << "'" << (ctype != nullptr ? ctype->name : "ERROR");
+                ss << "'" << (ctype != nullptr ? ctype->fullName : "ERROR");
                 ss << (paramVar->isMutable ? " = " : " : ");
                 stringstream dotSS;
                 paramVar->dump(compiler, nullptr, functions, ss, dotSS, level + 1);
@@ -201,7 +201,7 @@ void CCallVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<
             for (auto it : parameters) {
                 auto paramVar = callee->getArgVar(paramIndex, returnMode);
                 ss << paramVar->name.c_str();
-                ss << "'" << paramVar->getType(compiler)->name.c_str();
+                ss << "'" << paramVar->getType(compiler)->fullName.c_str();
                 ss << (paramVar->isMutable ? " = " : " : ");
                 stringstream dotSS;
                 paramVar->dump(compiler, nullptr, functions, ss, dotSS, level + 1);

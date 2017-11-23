@@ -25,7 +25,7 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
             return nullptr;
         }
         
-        auto createArray = make_shared<NCall>(loc, "array", make_shared<CTypeNameList>(elementType->category, elementType->typeMode, elementType->name, elementType->isOption), make_shared<NodeList>(make_shared<NInteger>(loc, elements->size())));
+        auto createArray = make_shared<NCall>(loc, "array", make_shared<CTypeNameList>(elementType->category, elementType->typeMode, elementType->valueName, elementType->isOption), make_shared<NodeList>(make_shared<NInteger>(loc, elements->size())));
         auto storeArray = make_shared<NAssignment>(loc, nullptr, nullptr, arrayName.c_str(), createArray, ASSIGN_Immutable);
         auto createArrayVar = storeArray->getVar(compiler, scope, returnMode);
         if (!createArrayVar) {

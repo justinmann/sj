@@ -101,7 +101,7 @@ CTypeMode functionReturnModes[] = { CTM_Stack, CTM_Heap };
 
 shared_ptr<CFunction> CFunction::init(Compiler* compiler, shared_ptr<NFunction> node) {
     for (auto it : templateTypes) {
-        name = name + "_" + it->name;
+        name = name + "_" + it->safeName;
     }
     
     if (node) {
@@ -121,7 +121,7 @@ shared_ptr<CFunction> CFunction::init(Compiler* compiler, shared_ptr<NFunction> 
                     compiler->addError(loc, CErrorCode::InvalidType, "cannot use ! in template type name");
                     return nullptr;
                 }
-                templateTypesByName[templateTypeName->name] = templateTypes[index];
+                templateTypesByName[templateTypeName->valueName] = templateTypes[index];
                 index++;
             }
         }
@@ -673,7 +673,7 @@ void CFunction::dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, stri
             if (it != _interfaceTypeNames->front()) {
                 ss << ", ";
             }
-            ss << "#" << it->getName();
+            ss << it->getFullName();
         }
         ss << " ";
     }
@@ -686,14 +686,14 @@ void CFunction::dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, stri
             }
             ss << it->name;
             auto ctype = it->getType(compiler);
-            ss << "'" << (ctype != nullptr ? ctype->name : "ERROR");
+            ss << "'" << (ctype != nullptr ? ctype->fullName : "ERROR");
             ss << (it->isMutable ? "=" : ":");
         }
     }
     
     ss << ")";
     auto returnType = getReturnType(compiler, returnMode);
-    ss << "'" << (returnType ? returnType->name : "void");
+    ss << "'" << (returnType ? returnType->fullName : "void");
 
     if (_block) {
         ss << " ";
@@ -725,7 +725,7 @@ shared_ptr<CThisVar> CFunction::getThisVar(Compiler* compiler, CTypeMode returnM
                     auto functionReturnType = cfunc->getReturnType(compiler, interfaceMethod->returnMode);
                     auto interfaceMethodReturnType = interfaceMethod->getReturnType(compiler, CTM_Undefined);
                     if (functionReturnType != interfaceMethodReturnType) {
-                        compiler->addError(loc, CErrorCode::TypeMismatch, "function return type '%s' does not match interface method return type '%s'", functionReturnType->name.c_str(), interfaceMethodReturnType->name.c_str());
+                        compiler->addError(loc, CErrorCode::TypeMismatch, "function return type '%s' does not match interface method return type '%s'", functionReturnType->fullName.c_str(), interfaceMethodReturnType->fullName.c_str());
                     }
 
                     auto functionArgVars = cfunc->getArgVars(compiler, interfaceMethod->returnMode);
@@ -738,7 +738,7 @@ shared_ptr<CThisVar> CFunction::getThisVar(Compiler* compiler, CTypeMode returnM
                             auto aType = (*functionArgVars)[i]->getType(compiler);
                             auto bType = interfaceMethodArgVars[i]->getType(compiler);
                             if (aType != bType) {
-                                compiler->addError(loc, CErrorCode::TypeMismatch, "function parameter %d type '%s' does not match interface method parameter type '%s'", i + 1, aType ? aType->name.c_str() : "Unknown", bType ? bType->name.c_str() : "Unknown");
+                                compiler->addError(loc, CErrorCode::TypeMismatch, "function parameter %d type '%s' does not match interface method parameter type '%s'", i + 1, aType ? aType->fullName.c_str() : "Unknown", bType ? bType->fullName.c_str() : "Unknown");
                             }
                         }
                     }
@@ -755,7 +755,7 @@ shared_ptr<CThisVar> CFunction::getThisVar(Compiler* compiler, CTypeMode returnM
         if (_returnTypeName) {
             shared_ptr<CType> valueType = getVarType(loc, compiler, _returnTypeName, CTM_Undefined);
             if (!valueType) {
-                compiler->addError(loc, CErrorCode::InvalidType, "explicit type '%s' does not exist", _returnTypeName->name.c_str());
+                compiler->addError(loc, CErrorCode::InvalidType, "explicit type '%s' does not exist", _returnTypeName->getFullName().c_str());
                 return nullptr;
             }
             defaultTypeMode = valueType->typeMode;
@@ -780,7 +780,7 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CTypeMode returnM
         if (_returnTypeName) {
             shared_ptr<CType> valueType = getVarType(loc, compiler, _returnTypeName, CTM_Undefined);
             if (!valueType) {
-                compiler->addError(loc, CErrorCode::InvalidType, "explicit type '%s' does not exist", _returnTypeName->name.c_str());
+                compiler->addError(loc, CErrorCode::InvalidType, "explicit type '%s' does not exist", _returnTypeName->getFullName().c_str());
                 _data[returnMode].returnType = nullptr;
             }
             _data[returnMode].returnType = valueType;
@@ -895,7 +895,7 @@ bool getTemplateTypes(Compiler* compiler, CLoc loc, shared_ptr<CBaseFunction> th
             if (!ctype) {
                 ctype = thisFunction->getVarType(loc, compiler, templateTypeName, CTM_Undefined);
                 if (!ctype) {
-                    compiler->addError(loc, CErrorCode::TemplateUnspecified, "cannot find template type: '%s'", templateTypeName->name.c_str());
+                    compiler->addError(loc, CErrorCode::TemplateUnspecified, "cannot find template type: '%s'", templateTypeName->getFullName().c_str());
                     return false;
                 }
             }
@@ -1025,7 +1025,7 @@ string CFunction::fullName(bool includeTemplateTypes) {
                 ss << ", ";
             }
             
-            ss << it->name;
+            ss << it->fullName;
         }
         
         if (templateTypes.size() > 1) {
@@ -1088,8 +1088,7 @@ shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, shared_ptr
     }
 
     if (typeName->category == CTC_Interface) {
-        auto nameWithoutQuestion = typeName->isOption ? typeName->name.substr(0, typeName->name.size() - 1) : typeName->name;
-        auto interface = getCInterface(compiler, nameWithoutQuestion, nullptr, typeName->templateTypeNames);
+        auto interface = getCInterface(compiler, typeName->valueName, nullptr, typeName->templateTypeNames);
         if (interface) {
             auto thisTypes = interface->getThisTypes(compiler);
             return typeName->isOption ? thisTypes->heapOptionType : thisTypes->heapValueType;
@@ -1097,14 +1096,13 @@ shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, shared_ptr
     } else {
         assert(typeName->category == CTC_Value);
         if (typeName->templateTypeNames == nullptr) {
-            auto ctype = getVarType(compiler, typeName->name);
+            auto ctype = getVarType(compiler, typeName->valueName);
             if (ctype) {
                 return ctype;
             }
         }
         
-        auto nameWithoutQuestion = typeName->isOption ? typeName->name.substr(0, typeName->name.size() - 1) : typeName->name;
-        auto baseFunctionDefinition = getFunctionDefinition(nameWithoutQuestion);
+        auto baseFunctionDefinition = getFunctionDefinition(typeName->valueName);
         if (baseFunctionDefinition.second != nullptr) {
             auto templateTypes = vector<shared_ptr<CType>>();
             if (typeName->templateTypeNames) {
@@ -1261,9 +1259,9 @@ shared_ptr<vector<pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameLis
         if (implementedInterfaceTypeNames) {
             _implementedInterfaceDefinitions = make_shared<vector<pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameList>>>>();
             for (auto it : *implementedInterfaceTypeNames) {
-                auto interface = getDefinedInterfaceDefinition(it->name);
+                auto interface = getDefinedInterfaceDefinition(it->valueName);
                 if (interface == nullptr) {
-                    compiler->addError(loc, CErrorCode::InterfaceDoesNotExist, "cannot find interface '%s'", it->name.c_str());
+                    compiler->addError(loc, CErrorCode::InterfaceDoesNotExist, "cannot find interface '%s'", it->valueName.c_str());
                     return nullptr;
                 }
                 _implementedInterfaceDefinitions->push_back(pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameList>>(interface, it->templateTypeNames));

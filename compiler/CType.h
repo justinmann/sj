@@ -52,13 +52,14 @@ public:
 
 class CType : public enable_shared_from_this<CType> {
 public:
-    static shared_ptr<CTypes> create(string name, string cname, string defaultValue, string cnameOption, string defaultValueOption);
-    static shared_ptr<CTypes> create(Compiler* compiler, string name, weak_ptr<CFunction> parent);
-    static shared_ptr<CTypes> create(Compiler* compiler, string name, weak_ptr<CInterface> parent);
+    static shared_ptr<CTypes> create(string valueName, string cname, string defaultValue, string cnameOption, string defaultValueOption);
+    static shared_ptr<CTypes> create(Compiler* compiler, string valueName, weak_ptr<CFunction> parent);
+    static shared_ptr<CTypes> create(Compiler* compiler, string valueName, weak_ptr<CInterface> parent);
 
     CTypeCategory category;
     CTypeMode typeMode;
-    string name;
+    string fullName;
+    string valueName;
     string cname;
     string safeName;
     weak_ptr<CBaseFunction> parent;

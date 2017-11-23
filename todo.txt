@@ -13,6 +13,8 @@
 * override interfaces : a as type   -> a.asType()'t
 * lambda
 * improve debug out for interfaces
+* de-dup global strings
+* de-dup errors
 
 -- lambda --
 array!item(

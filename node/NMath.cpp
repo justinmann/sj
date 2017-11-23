@@ -84,7 +84,7 @@ shared_ptr<CVar> NMath::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
     }
 
     if (leftType != rightType) {
-        compiler->addError(loc, CErrorCode::TypeMismatch, "left type '%s' does not match right type '%s'", leftType->name.c_str(), rightType->name.c_str());
+        compiler->addError(loc, CErrorCode::TypeMismatch, "left type '%s' does not match right type '%s'", leftType->fullName.c_str(), rightType->fullName.c_str());
         return nullptr;
     }
 

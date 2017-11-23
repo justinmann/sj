@@ -8,8 +8,8 @@
 
 #include "../node/Node.h"
 
-CTypeNameList::CTypeNameList(CTypeCategory category, CTypeMode typeMode, const string& name, bool isOption) {
-    push_back(make_shared<CTypeName>(category, typeMode, name, isOption));
+CTypeNameList::CTypeNameList(CTypeCategory category, CTypeMode typeMode, const string& valueName, bool isOption) {
+    push_back(make_shared<CTypeName>(category, typeMode, valueName, isOption));
 }
 
 shared_ptr<CTypeName> CTypeName::parse(string name) {
@@ -73,12 +73,12 @@ shared_ptr<CTypeName> CTypeName::parse(string name) {
 
 CTypeName::CTypeName(shared_ptr<CType> ctype) {
     category = ctype->category;
-    name = ctype->name;
+    valueName = ctype->valueName;
     isOption = ctype->isOption;
     typeMode = ctype->typeMode;
 }
 
-string CTypeName::getName() {
+string CTypeName::getFullName() {
     if (category == CTC_Function) {
         string str = "(";
         for (auto it : *argTypeNames) {
@@ -90,23 +90,23 @@ string CTypeName::getName() {
             } else {
                 str += ":";
             }
-            str += it->getName();
+            str += it->getFullName();
         }
-        str += ")" + returnTypeName->getName();
+        str += ")" + returnTypeName->getFullName();
         return str;
     } else {
         string str = "";
-        str += name;
+        str += valueName;
         if (templateTypeNames) {
             if (templateTypeNames->size() == 1) {
-                str += "!" + (*templateTypeNames)[0]->getName();
+                str += "!" + (*templateTypeNames)[0]->getFullName();
             } else {
                 str += "![";
                 for (auto it : *templateTypeNames) {
                     if (it != templateTypeNames->front()) {
                         str += ", ";
                     }
-                    str += it->getName();
+                    str += it->getFullName();
                 }
                 str += "]";
             }

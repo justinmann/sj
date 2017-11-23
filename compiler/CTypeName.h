@@ -26,20 +26,28 @@ public:
     CTypeCategory category;
     CTypeImmutability mutability;
     CTypeMode typeMode;
-    string name;
+    string valueName;
     shared_ptr<CTypeNameList> templateTypeNames;
     shared_ptr<CTypeNameList> argTypeNames;
     shared_ptr<CTypeName> returnTypeName;
     bool isOption;
 
-    CTypeName(CTypeCategory category, CTypeMode typeMode, const string& name, bool isOption) : category(category), mutability(CTI_Undefined), typeMode(typeMode), name(name), isOption(isOption) {
+    CTypeName(CTypeCategory category, CTypeMode typeMode, const string& valueName, bool isOption) : category(category), mutability(CTI_Undefined), typeMode(typeMode), valueName(valueName), isOption(isOption) {
+        assert(valueName.find("stack ") != 0);
+        assert(valueName.find("heap ") != 0);
+        assert(valueName.find("local ") != 0);
+        assert(valueName.find("#") == string::npos);
+        assert(valueName.back() != '?');
         assert(category != CTC_Function);
-        assert(!isOption || name.back() == '?');
     }
 
-    CTypeName(CTypeCategory category, CTypeMode typeMode, const string& name, shared_ptr<CTypeNameList> templateTypeNames, bool isOption) : category(category), mutability(CTI_Undefined), typeMode(typeMode), name(name), templateTypeNames(templateTypeNames), isOption(isOption) {
+    CTypeName(CTypeCategory category, CTypeMode typeMode, const string& valueName, shared_ptr<CTypeNameList> templateTypeNames, bool isOption) : category(category), mutability(CTI_Undefined), typeMode(typeMode), valueName(valueName), templateTypeNames(templateTypeNames), isOption(isOption) {
+        assert(valueName.find("stack ") != 0);
+        assert(valueName.find("heap ") != 0);
+        assert(valueName.find("local ") != 0);
+        assert(valueName.find("#") == string::npos);
+        assert(valueName.back() != '?');
         assert(category != CTC_Function);
-        assert(!isOption || name.back() == '?');
     }
 
     CTypeName(CTypeMode typeMode, shared_ptr<CTypeNameList> argTypeNames, shared_ptr<CTypeName> returnTypeName) : category(CTC_Function), mutability(CTI_Undefined), typeMode(typeMode), argTypeNames(argTypeNames), returnTypeName(returnTypeName), isOption(false) {
@@ -48,9 +56,9 @@ public:
 
     CTypeName(shared_ptr<CType> ctype);
     
-    static shared_ptr<CTypeName> parse(string name);
+    static shared_ptr<CTypeName> parse(string fullName);
     
-    string getName();
+    string getFullName();
 };
 
 #endif /* CTypeName_h */
