@@ -61,9 +61,11 @@ const double_option double_empty = { true };
 
 #define sjs_object_typeId 1
 #define sjs_foo_typeId 2
+#define sjs_foo_heap_typeId 3
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_foo sjs_foo;
+typedef struct td_sjs_foo_heap sjs_foo_heap;
 
 struct td_sjs_object {
     int _refCount;
@@ -73,14 +75,26 @@ struct td_sjs_foo {
     int structsNeedAValue;
 };
 
+struct td_sjs_foo_heap {
+    int _refCount;
+};
+
 void sjf_bar(sjs_foo* _return);
+void sjf_bar_heap(sjs_foo_heap** _return);
 void sjf_foo(sjs_foo* _this);
 void sjf_foo_copy(sjs_foo* _this, sjs_foo* to);
 void sjf_foo_destroy(sjs_foo* _this);
+void sjf_foo_heap(sjs_foo_heap* _this);
 
 
 void sjf_bar(sjs_foo* _return) {
-    sjf_foo((*_return));
+    sjf_foo(_return);
+}
+
+void sjf_bar_heap(sjs_foo_heap** _return) {
+    (*_return) = (sjs_foo_heap*)malloc(sizeof(sjs_foo_heap));
+    (*_return)->_refCount = 1;
+    sjf_foo_heap((*_return));
 }
 
 void sjf_foo(sjs_foo* _this) {
@@ -90,6 +104,9 @@ void sjf_foo_copy(sjs_foo* _this, sjs_foo* to) {
 }
 
 void sjf_foo_destroy(sjs_foo* _this) {
+}
+
+void sjf_foo_heap(sjs_foo_heap* _this) {
 }
 
 int main() {

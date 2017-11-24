@@ -1,7 +1,3 @@
-class()'heap class {
-  this
-}
-
 class()'stack class {
   this
 }

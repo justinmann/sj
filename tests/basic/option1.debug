@@ -1,4 +1,4 @@
-class interface (bob'i32:)'heap class {
+class #interface (bob'i32:)'heap class {
   this
 }
 

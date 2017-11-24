@@ -1,4 +1,4 @@
-array!class([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=)'array_class {
+array!stack class(size'i32=, data'ptr=, _isGlobal'bool=)'stack array_class {
   c{
 
 		if (_this->size < 0) {
@@ -8,7 +8,7 @@ array!class([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=)'array_cl
 		if (_this->data) {
 			_this->_isGlobal = true;
 		} else {
-			_this->data = (uintptr_t)calloc(_this->size * sizeof(#type(t)), 1);
+			_this->data = (uintptr_t)calloc(_this->size * sizeof(sjs_class), 1);
 			if (!_this->data) {
 				printf("grow: out of memory\n");
 				exit(-1);				
@@ -19,44 +19,38 @@ array!class([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=)'array_cl
   this
 }
 
-array_setAt([stack]index'i32:, [heap]item'class:)'void c{
+array_setAt(index'i32:, item'stack class:)'void c{
 
-		#forceParent()
-		#forceHeap(item)
+		
 
 		if (index >= _parent->size || index < 0) {
 			printf("setAt: out of bounds %d:%d\n", index, _parent->size);
 			exit(-1);
 		}
 
-		#type(t)* p = (#type(t)*)_parent->data;
-##if !#isValue(t)
+		sjs_class* p = (sjs_class*)_parent->data;
+#if !false
 		if (p[index] != 0) {
-			#release(t, p[index]);
+			;
 		}
-##endif
-		#retain(t, item);
+#endif
+		 item->_refCount++;
+;
 		p[index] = item;
 	
 }c
 
-class([heap]bob'i32:)'class {
-  this
-}
-
 global()'void {
-  [stack]a'array_class : [stack]array!class([stack]this : array!class(
-    [stack]size'i32 = 2i,
-    [stack]data'ptr = 0i as ptr,
-    [stack]_isGlobal'bool = false
+  a'stack array_class : array!stack class(this = array!stack class(
+    size'i32 = this.size,
+    data'ptr = this.data,
+    _isGlobal'bool = this._isGlobal
   ))
-  [stack]array_setAt([stack]this : array_setAt(
-    parent: [stack]a,
-    [stack]index'i32 : 0i,
-    [heap]item'class : [heap]class([heap]this : class(
-      [heap]bob'i32 : 1i
-    ))
-  ))
+  array_setAt(
+    parent: a,
+    index'i32 : this.index,
+    item'stack class : this.item
+  )
   void
 }
 

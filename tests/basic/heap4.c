@@ -60,45 +60,66 @@ struct td_double_option {
 const double_option double_empty = { true };
 
 #define sjs_object_typeId 1
-#define sjs_c_typeId 2
-#define sjs_b_typeId 3
-#define sjs_a_typeId 4
+#define sjs_a_typeId 2
+#define sjs_a_heap_typeId 3
+#define sjs_b_typeId 4
+#define sjs_b_heap_typeId 5
+#define sjs_c_typeId 6
+#define sjs_c_heap_typeId 7
 
 typedef struct td_sjs_object sjs_object;
-typedef struct td_sjs_c sjs_c;
-typedef struct td_sjs_b sjs_b;
 typedef struct td_sjs_a sjs_a;
+typedef struct td_sjs_a_heap sjs_a_heap;
+typedef struct td_sjs_b sjs_b;
+typedef struct td_sjs_b_heap sjs_b_heap;
+typedef struct td_sjs_c sjs_c;
+typedef struct td_sjs_c_heap sjs_c_heap;
 
 struct td_sjs_object {
     int _refCount;
-};
-
-struct td_sjs_c {
-    sjs_b b;
-};
-
-struct td_sjs_b {
-    sjs_a a;
 };
 
 struct td_sjs_a {
     int structsNeedAValue;
 };
 
-void sjf_a(uintptr_t _this, sjs_a* _return);
+struct td_sjs_a_heap {
+    int _refCount;
+};
+
+struct td_sjs_b {
+    sjs_a a;
+};
+
+struct td_sjs_b_heap {
+    int _refCount;
+    sjs_a a;
+};
+
+struct td_sjs_c {
+    sjs_b b;
+};
+
+struct td_sjs_c_heap {
+    int _refCount;
+    sjs_b b;
+};
+
+void sjf_a(sjs_a* _this);
 void sjf_a_copy(sjs_a* _this, sjs_a* to);
 void sjf_a_destroy(sjs_a* _this);
-void sjf_b(uintptr_t _this, sjs_a a, sjs_b* _return);
+void sjf_a_heap(sjs_a_heap* _this);
+void sjf_b(sjs_b* _this);
 void sjf_b_copy(sjs_b* _this, sjs_b* to);
 void sjf_b_destroy(sjs_b* _this);
+void sjf_b_heap(sjs_b_heap* _this);
 void sjf_c(sjs_c* _this);
 void sjf_c_copy(sjs_c* _this, sjs_c* to);
 void sjf_c_destroy(sjs_c* _this);
+void sjf_c_heap(sjs_c_heap* _this);
 
 
-void sjf_a(uintptr_t _this, sjs_a* _return) {
-
-    *_return = _this;
+void sjf_a(sjs_a* _this) {
 }
 
 void sjf_a_copy(sjs_a* _this, sjs_a* to) {
@@ -107,9 +128,10 @@ void sjf_a_copy(sjs_a* _this, sjs_a* to) {
 void sjf_a_destroy(sjs_a* _this) {
 }
 
-void sjf_b(uintptr_t _this, sjs_a a, sjs_b* _return) {
+void sjf_a_heap(sjs_a_heap* _this) {
+}
 
-    *_return = _this;
+void sjf_b(sjs_b* _this) {
 }
 
 void sjf_b_copy(sjs_b* _this, sjs_b* to) {
@@ -117,6 +139,9 @@ void sjf_b_copy(sjs_b* _this, sjs_b* to) {
 }
 
 void sjf_b_destroy(sjs_b* _this) {
+}
+
+void sjf_b_heap(sjs_b_heap* _this) {
 }
 
 void sjf_c(sjs_c* _this) {
@@ -129,17 +154,16 @@ void sjf_c_copy(sjs_c* _this, sjs_c* to) {
 void sjf_c_destroy(sjs_c* _this) {
 }
 
+void sjf_c_heap(sjs_c_heap* _this) {
+}
+
 int main() {
-    sjs_c object1;
-    sjs_b object2;
-    sjs_a object3;
+    sjs_c void1;
 
-    sjf_a(&object3, &object2.a);
-    sjf_b(&object2, &object1.b);
-    sjf_c(&object1);
+    sjf_a(&void1.b.a);
+    sjf_b(&void1.b);
+    sjf_c(&void1);
 
-    sjf_c_destroy(&object1);
-    sjf_b_destroy(&object2);
-    sjf_a_destroy(&object3);
+    sjf_c_destroy(&void1);
     return 0;
 }

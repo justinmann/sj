@@ -2,10 +2,6 @@ foo()'heap foo {
   this
 }
 
-foo()'stack foo {
-  this
-}
-
 global()'void {
   heap_y'heap foo : foo(this = foo())
   stack_y'stack foo : foo(this = foo())

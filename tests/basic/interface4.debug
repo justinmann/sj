@@ -1,4 +1,4 @@
-class ##foo!i32 ()'heap class {
+class #foo!i32 ()'heap class {
   this
 }
 

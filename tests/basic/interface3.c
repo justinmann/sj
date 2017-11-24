@@ -379,6 +379,8 @@ void sjf_class_test(sjs_class* _parent, sjs_string* _return) {
 }
 
 void sjf_class_test_heap(sjs_class* _parent, sjs_string_heap** _return) {
+    (*_return) = (sjs_string_heap*)malloc(sizeof(sjs_string_heap));
+    (*_return)->_refCount = 1;
     (*_return)->count = 1;
     (*_return)->data.size = 2;
     (*_return)->data.data = (uintptr_t)sjg_string2;

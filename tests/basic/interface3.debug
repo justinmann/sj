@@ -14,7 +14,7 @@ anon4()'stack anon4 {
   this
 }
 
-class ##foo ()'heap class {
+class #foo ()'heap class {
   this
 }
 

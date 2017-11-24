@@ -196,6 +196,8 @@ void sjf_class_test(sjs_class* _parent, int32_t a, sjs_bar* _return) {
 }
 
 void sjf_class_test_heap(sjs_class* _parent, int32_t a, sjs_bar_heap** _return) {
+    (*_return) = (sjs_bar_heap*)malloc(sizeof(sjs_bar_heap));
+    (*_return)->_refCount = 1;
     sjf_bar_heap((*_return));
 }
 

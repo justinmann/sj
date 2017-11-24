@@ -106,6 +106,7 @@ int main() {
     sjs_foo* local_x2;
     sjs_foo* local_x3;
     sjs_foo* local_y;
+    sjs_foo sjt_call1;
     sjs_foo stack_x1;
     sjs_foo stack_x2;
     sjs_foo stack_x3;
@@ -115,7 +116,8 @@ int main() {
     heap_y->_refCount = 1;
     sjf_foo_heap(heap_y);
     sjf_foo(&stack_y);
-    sjf_foo(local_y);
+    sjf_foo(&sjt_call1);
+    local_y = &sjt_call1;
     heap_x1 = heap_y;
     heap_x1->_refCount++;
     heap_x2 = (sjs_foo_heap*)malloc(sizeof(sjs_foo_heap));
@@ -147,6 +149,7 @@ int main() {
     if (heap_y->_refCount <= 0) {
         sjf_foo_destroy((sjs_foo*)(((char*)heap_y) + sizeof(int)));
     }
+    sjf_foo_destroy(&sjt_call1);
     sjf_foo_destroy(&stack_x1);
     sjf_foo_destroy(&stack_x2);
     sjf_foo_destroy(&stack_x3);
