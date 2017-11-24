@@ -19,7 +19,7 @@ void CAndVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock
     trBlock->statements.push_back(line.str());
 
     auto resultValue = make_shared<TrValue>(nullptr, compiler->typeBool, line.str(), false);
-    storeValue->retainValue(compiler, trBlock, resultValue);
+    storeValue->retainValue(compiler, loc, trBlock, resultValue);
 }
 
 void CAndVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

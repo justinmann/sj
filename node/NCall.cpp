@@ -112,7 +112,7 @@ void CCallVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
     callee->transpile(compiler, scope.lock(), trOutput, trBlock, dotValue, loc, parameters, thisValue, calleeStoreValue, returnMode);
 
     if (calleeStoreValue != storeValue) {
-        storeValue->retainValue(compiler, trBlock, calleeStoreValue->getValue());
+        storeValue->retainValue(compiler, loc, trBlock, calleeStoreValue->getValue());
     }
 }
 

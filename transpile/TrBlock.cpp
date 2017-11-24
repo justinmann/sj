@@ -365,7 +365,7 @@ string TrValue::convertToLocalName(shared_ptr<CType> from, string name) {
     }
 }
 
-void TrStoreValue::retainValue(Compiler* compiler, TrBlock* block, shared_ptr<TrValue> rightValue) {
+void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, shared_ptr<TrValue> rightValue) {
     hasSetValue = true;
 
     value = rightValue;
@@ -434,7 +434,7 @@ void TrStoreValue::retainValue(Compiler* compiler, TrBlock* block, shared_ptr<Tr
     }
 }
 
-void TrStoreValue::takeOverValue(Compiler* compiler, TrBlock* block, shared_ptr<TrValue> rightValue) {
+void TrStoreValue::takeOverValue(Compiler* compiler, CLoc loc, TrBlock* block, shared_ptr<TrValue> rightValue) {
     hasSetValue = true;
 
     value = rightValue;

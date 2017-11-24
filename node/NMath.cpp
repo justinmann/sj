@@ -36,7 +36,7 @@ void CMathVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
     line << rightValue->getName(trBlock);
 
     auto resultValue = make_shared<TrValue>(nullptr, leftVar->getType(compiler), line.str(), false);
-    storeValue->retainValue(compiler, trBlock, resultValue);
+    storeValue->retainValue(compiler, loc, trBlock, resultValue);
 }
 
 void CMathVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

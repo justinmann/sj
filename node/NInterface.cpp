@@ -261,12 +261,12 @@ void CInterface::transpileCast(Compiler* compiler, TrOutput* trOutput, TrBlock* 
         auto fromInterface = static_pointer_cast<CInterface>(fromValue->type->parent.lock());
         stringstream line;
         line << "(" << getCStructName(CTM_Heap) << "*)" << fromValue->name << "->asInterface(" << fromValue->name << "->_parent, " << getCTypeIdName() << ")";
-        toValue->takeOverValue(compiler, trBlock, make_shared<TrValue>(nullptr, toValue->type, line.str(), false));
+        toValue->takeOverValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, toValue->type, line.str(), false));
     }
     else {
         stringstream line;
         line << "(" << getCStructName(CTM_Heap) << "*)" << getCCastFunctionName(fromValue->type->parent.lock(), fromValue->type->typeMode) << "(" << fromValue->name << ")";
-        toValue->takeOverValue(compiler, trBlock, make_shared<TrValue>(nullptr, toValue->type, line.str(), false));
+        toValue->takeOverValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, toValue->type, line.str(), false));
     }    
 }
 

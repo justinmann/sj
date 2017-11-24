@@ -42,7 +42,7 @@ void CCastVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
             auto elseBlock = make_shared<TrBlock>();
             stringstream line;
             auto nullValue = make_shared<TrValue>(scope.lock(), typeTo, "0", false);
-            storeValue->retainValue(compiler, elseBlock.get(), nullValue);
+            storeValue->retainValue(compiler, loc, elseBlock.get(), nullValue);
             
             auto statement = TrStatement(ifStream.str(), ifBlock);
             statement.elseBlock = elseBlock;
@@ -59,7 +59,7 @@ void CCastVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
         }
         
         auto tempValue = make_shared<TrValue>(nullptr, typeTo, "(" + typeTo->cname + ")" + rightValue->name, false);
-        storeValue->retainValue(compiler, trBlock, tempValue);
+        storeValue->retainValue(compiler, loc, trBlock, tempValue);
     }
 }
 

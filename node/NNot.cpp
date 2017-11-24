@@ -15,7 +15,7 @@ void CNotVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock
     stringstream line;
     line << resultValue->name << " = !" << value->getName(trBlock);
     trBlock->statements.push_back(line.str());
-    storeValue->retainValue(compiler, trBlock, resultValue);
+    storeValue->retainValue(compiler, loc, trBlock, resultValue);
 }
 
 void CNotVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

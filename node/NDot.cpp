@@ -19,7 +19,7 @@ shared_ptr<CType> CDotVar::getType(Compiler* compiler) {
 void CDotVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     auto leftValue = trBlock->createTempStoreVariable(loc, nullptr, leftVar->getType(compiler)->getLocalType(), "dot");
     leftVar->transpile(compiler, trOutput, trBlock, dotValue, thisValue, leftValue);
-	return rightVar->transpile(compiler, trOutput, trBlock, leftValue->getValue(), thisValue, storeValue);
+	rightVar->transpile(compiler, trOutput, trBlock, leftValue->getValue(), thisValue, storeValue);
 }
 
 shared_ptr<TrStoreValue> CDotVar::getStoreValue(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op, bool isFirstAssignment) {

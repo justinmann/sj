@@ -27,7 +27,7 @@ void CIsEmptyVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
     else {
         line << "(" << leftValue->getName(trBlock) << " == 0)";
     }
-    storeValue->retainValue(compiler, trBlock, make_shared<TrValue>(nullptr, compiler->typeBool, line.str(), false));
+    storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, compiler->typeBool, line.str(), false));
 }
 
 void CIsEmptyVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

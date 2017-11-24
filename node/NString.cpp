@@ -24,7 +24,7 @@ shared_ptr<CType> CGlobalPtrVar::getType(Compiler* compiler) {
 void CGlobalPtrVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     trOutput->strings[varName] = str;
     auto resultValue = make_shared<TrValue>(nullptr, compiler->typePtr, "(uintptr_t)" + varName, false);
-    storeValue->retainValue(compiler, trBlock, resultValue);
+    storeValue->retainValue(compiler, loc, trBlock, resultValue);
 }
 
 void CGlobalPtrVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

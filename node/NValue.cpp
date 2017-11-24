@@ -40,10 +40,10 @@ void CValueVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
         line2 << returnValue->name << ".value = " << leftValue->getName(trBlock);
         trBlock->statements.push_back(line2.str());
 
-        storeValue->retainValue(compiler, trBlock, returnValue);
+        storeValue->retainValue(compiler, loc, trBlock, returnValue);
     }
     else {
-        storeValue->retainValue(compiler, trBlock, make_shared<TrValue>(leftValue->scope, leftValue->type->getOptionType(), leftValue->getName(trBlock), leftValue->isReturnValue));
+        storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(leftValue->scope, leftValue->type->getOptionType(), leftValue->getName(trBlock), leftValue->isReturnValue));
     }
 }
 

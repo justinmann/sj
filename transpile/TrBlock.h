@@ -29,8 +29,8 @@ class TrStoreValue {
 public:
     TrStoreValue(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, string name, AssignOp op, bool isFirstAssignment) : loc(loc), scope(scope), type(type), name(name), op(op), isFirstAssignment(isFirstAssignment), isReturnValue(false), hasSetValue(false), isVoid(false) {}
     TrStoreValue(CLoc loc, shared_ptr<CType> type, bool isVoid) : loc(loc), scope(nullptr), type(type), name(""), op(AssignOp::immutableOp), isFirstAssignment(true), isReturnValue(false), hasSetValue(false), isVoid(isVoid) {}
-    void retainValue(Compiler* compiler, TrBlock* block, shared_ptr<TrValue> rightValue);
-    void takeOverValue(Compiler* compiler, TrBlock* block, shared_ptr<TrValue> rightValue);
+    void retainValue(Compiler* compiler, CLoc loc, TrBlock* block, shared_ptr<TrValue> rightValue);
+    void takeOverValue(Compiler* compiler, CLoc loc, TrBlock* block, shared_ptr<TrValue> rightValue);
     string getName(TrBlock* block);
     shared_ptr<TrValue> getValue();
 

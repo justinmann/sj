@@ -45,7 +45,7 @@ void CCompareVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
     line << rightValue->getName(trBlock);
 
     auto resultValue = make_shared<TrValue>(nullptr, compiler->typeBool, line.str(), false);
-    storeValue->retainValue(compiler, trBlock, resultValue);
+    storeValue->retainValue(compiler, loc, trBlock, resultValue);
 }
 
 void CCompareVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
