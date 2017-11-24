@@ -957,7 +957,7 @@ shared_ptr<CBaseFunction> CFunction::getCFunction(Compiler* compiler, CLoc locCa
 shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames) {
     if (name.find('.') != string::npos) {
         vector<string> names;
-        istringstream f(name.substr(1, name.size() - 1));
+        istringstream f(name);
         string s;
         while (getline(f, s, '.')) {
             names.push_back(s);
@@ -966,7 +966,7 @@ shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, const string
         auto cfunc = shared_from_this();
         for (auto name : names) {
             if (name == names.back()) {
-                return cfunc->getCInterface(compiler, "#" + name, callerScope, templateTypeNames);
+                return cfunc->getCInterface(compiler, name, callerScope, templateTypeNames);
             }
             else {
                 auto var = cfunc->getCVar(compiler, name, CTM_Stack);

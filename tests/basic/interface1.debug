@@ -2,7 +2,7 @@ anon1()'stack anon1 {
   this
 }
 
-anon1_class ##foo ()'heap class {
+anon1_class #foo ()'heap class {
   this
 }
 
@@ -10,7 +10,7 @@ anon2()'stack anon2 {
   this
 }
 
-anon2_class ##foo ()'heap class {
+anon2_class #foo ()'heap class {
   this
 }
 
