@@ -1,5 +1,7 @@
-* stack/heap/local node & var
+* stack array
 * array w/ stack var
+* stack optional
+* second assignment to return var does not free
 
 * fix tests
 * fix string add
