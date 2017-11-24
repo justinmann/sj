@@ -332,66 +332,6 @@ bool CInterface::getReturnMustRelease(Compiler* compiler) {
     return false;
 }
 
-//Function* CInterface::getDestructor(Compiler* compiler) {
-//    return nullptr;
-//}
-//
-//shared_ptr<TrValue> CInterface::cast(Compiler* compiler, IRBuilder<>* builder, shared_ptr<TrValue> fromValue, bool isHeap, vector<Function*>& interfaceMethodValues) {
-//    auto interfaceType = getStructType(compiler);
-//    Value* value;
-//    // alloc instance of struct type
-//    if (isHeap) {
-//        // heap alloc this
-//        auto allocFunc = compiler->getAllocFunction();
-//        
-//        // Compute the size of the struct by getting a pointer to the second element from null
-//        vector<Value*> v;
-//        v.push_back(ConstantInt::get(compiler->context, APInt(32, 1)));
-//        auto thisPointerType = interfaceType->getPointerTo();
-//        auto nullPtr = ConstantPointerNull::get(thisPointerType);
-//        auto sizePtr = builder->CreateGEP(nullPtr, ArrayRef<llvm::Value *>(v));
-//        auto sizeValue = builder->CreatePtrToInt(sizePtr, Type::getInt64Ty(compiler->context));
-//        
-//        // Allocate and mutate to correct type
-//        vector<Value*> allocArgs;
-//        allocArgs.push_back(sizeValue);
-//        auto valueAsVoidPtr = builder->CreateCall(allocFunc, allocArgs);
-//        value = builder->CreateBitCast(valueAsVoidPtr, thisPointerType);
-//        initHeap(compiler, builder, value);
-//    } else {
-//        value = builder->CreateAlloca(interfaceType);
-//        initStack(compiler, builder, value);
-//    }
-//
-//    // store "this"
-//    auto structIndex = 0;
-//    auto thisPtr = builder->CreateStructGEP(interfaceType, value, structIndex);
-//    auto fromVoidPtr = builder->CreateBitCast(fromValue->value, Type::getInt8PtrTy(compiler->context));
-//    builder->CreateStore(fromVoidPtr, thisPtr);
-//    structIndex++;
-//    
-//    if (hasRefCount) {
-//        structIndex++;
-//    }
-//
-//    // retain "this"
-//    fromValue->retainIfNeeded(compiler, builder);
-//    
-//    // store interfaceMethods
-//    auto methodIndex = 0;
-//    for (auto it : interfaceMethodValues) {
-//        auto functionPtr = builder->CreateStructGEP(interfaceType, value, structIndex);
-//        auto t = methods[methodIndex]->getFunctionType(compiler)->getPointerTo();
-//        auto functionWithVoidForParent = builder->CreateBitCast(it, t);
-//        builder->CreateStore(functionWithVoidForParent, functionPtr);
-//        methodIndex++;
-//        structIndex++;
-//    }
-//    
-//    // create return value
-//    return make_shared<TrValue>(shared_from_this(), RVR_MustRelease, RVT_HEAP, false, value);
-//}
-
 CInterfaceDefinition::CInterfaceDefinition(CLoc loc, string& name_) : CBaseFunctionDefinition(CFT_Interface), loc(loc) {
     name = name_;
 }

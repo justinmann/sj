@@ -79,8 +79,24 @@ CTypeName::CTypeName(shared_ptr<CType> ctype) {
 }
 
 string CTypeName::getFullName() {
+    string str = "";
+    
+    switch (typeMode) {
+        case CTM_Local:
+            str = "local ";
+            break;
+        case CTM_Stack:
+            // str = "stack ";
+            break;
+        case CTM_Heap:
+            str = "heap ";
+            break;
+        default:
+            break;
+    }
+    
     if (category == CTC_Function) {
-        string str = "(";
+        str += "(";
         for (auto it : *argTypeNames) {
             if (it != argTypeNames->front()) {
                 str += ", ";
@@ -93,10 +109,18 @@ string CTypeName::getFullName() {
             str += it->getFullName();
         }
         str += ")" + returnTypeName->getFullName();
+        if (isOption) {
+            str += '?';
+        }
         return str;
     } else {
-        string str = "";
+        if (category == CTC_Interface) {
+            str += '#';
+        }
         str += valueName;
+        if (isOption) {
+            str += '?';
+        }
         if (templateTypeNames) {
             if (templateTypeNames->size() == 1) {
                 str += "!" + (*templateTypeNames)[0]->getFullName();
