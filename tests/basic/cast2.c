@@ -70,8 +70,10 @@ struct td_sjs_object {
 
 
 int main() {
-    int64_t result1;
+    double sjt_cast1;
+    int64_t x;
 
-    result1 = (int64_t)5.0;
+    sjt_cast1 = 5.0;
+    x = (int64_t)sjt_cast1;
     return 0;
 }

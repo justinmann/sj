@@ -1,5 +1,5 @@
 global()'void {
-  5i as f32
+  x'f32 : 5i as f32
   void
 }
 
