@@ -23,7 +23,7 @@ void CAssignVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
         return;
     }
     
-    storeValue->retainValue(compiler, trBlock, leftStoreValue->getValue());
+    storeValue->retainValue(compiler, loc, trBlock, leftStoreValue->getValue());
 }
 
 void CAssignVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
@@ -104,11 +104,25 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
         auto isFirstAssignment = false;
         shared_ptr<CVar> leftVar;
         if (var) {
-            leftVar = var->getVar(compiler, scope, nullptr, CTM_Undefined);
-            if (!leftVar) {
+            auto dotVar = var->getVar(compiler, scope, nullptr, CTM_Undefined);
+            if (!dotVar) {
                 return nullptr;
             }
-            leftVar = CDotVar::create(loc, leftVar->scope.lock(), parentVar, leftVar);
+
+            auto dotScope = CScope::getScopeForType(compiler, dotVar->getType(compiler));
+            leftVar = dotScope->getCVar(compiler, name);
+            if (leftVar) {
+                if (!op.isMutable) {
+                    compiler->addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var '%s'", name.c_str());
+                    return nullptr;
+                }
+                else if (!leftVar->isMutable) {
+                    compiler->addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var '%s'", name.c_str());
+                    return nullptr;
+                }
+                isFirstAssignment = false;
+            }
+            leftVar = CDotVar::create(loc, dotScope, dotVar, leftVar);
         }
         else {
             leftVar = scope->getCVar(compiler, name);
