@@ -2,15 +2,15 @@ class(data'stack anon1:)'stack class {
   this
 }
 
-class_get()'stack anon1 {
-  .parentthis.data
+class_get()'local anon1 {
+  local .parentthis.data
 }
 
 global()'void {
   c'stack class : class(this = class(
     data'stack anon1 : this.data
   ))
-  d'stack anon1 : class_get(
+  d'local anon1 : class_get(
     parent: c
   )
   void

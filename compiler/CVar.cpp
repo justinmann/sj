@@ -29,16 +29,16 @@ void CNormalVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
         }
         lineStream << name;
         trBlock->statements.push_back(lineStream.str());
-        storeValue->retainValue(compiler, loc, trBlock, returnValue);
+        storeValue->retainValue(compiler, storeValue->loc, trBlock, returnValue);
     } else if (trBlock->hasThis && (mode == Var_Public || mode == Var_Private)) {
         auto returnValue = trBlock->createTempVariable(scope.lock(), type, "dotTemp");
         stringstream lineStream;
         lineStream << returnValue->name << " = " << "_this->" << name;
         trBlock->statements.push_back(lineStream.str());
-        storeValue->retainValue(compiler, loc, trBlock, returnValue);
+        storeValue->retainValue(compiler, storeValue->loc, trBlock, returnValue);
     } else {
         auto returnValue = make_shared<TrValue>(scope.lock(), type, name, false);
-        storeValue->retainValue(compiler, loc, trBlock, returnValue);
+        storeValue->retainValue(compiler, storeValue->loc, trBlock, returnValue);
     }
 }
 

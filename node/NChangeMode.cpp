@@ -5,7 +5,11 @@ bool CChangeModeVar::getReturnThis() {
 }
 
 shared_ptr<CType> CChangeModeVar::getType(Compiler* compiler) {
-    return var->getType(compiler);
+    auto type = var->getType(compiler);
+    if (typeMode == CTM_Local) {
+        type = type->getLocalType();
+    }
+    return type;
 }
 
 void CChangeModeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {

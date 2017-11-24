@@ -1,4 +1,4 @@
-ERROR:2 basic/heap8.sj[3:1] right type 'heap foo' cannot change mode to left type 'stack foo' without using a copy operator like 'a = copy b'
-ERROR:2 basic/heap8.sj[4:1] right type 'stack foo' cannot change mode to left type 'heap foo' without using a copy operator like 'a = copy b'
-ERROR:2 basic/heap8.sj[5:1] right type 'local foo' cannot change mode to left type 'heap foo' without using a copy operator like 'a = copy b'
-ERROR:2 basic/heap8.sj[5:1] right type 'local foo' cannot change mode to left type 'stack foo' without using a copy operator like 'a = copy b'
+ERROR:2 basic/heap8.sj[7:1] right type 'stack foo' cannot change mode to left type 'heap foo' without using a copy operator like 'a = copy b'
+ERROR:2 basic/heap8.sj[8:1] right type 'local foo' cannot change mode to left type 'heap foo' without using a copy operator like 'a = copy b'
+ERROR:2 basic/heap8.sj[9:1] right type 'heap foo' cannot change mode to left type 'stack foo' without using a copy operator like 'a = copy b'
+ERROR:2 basic/heap8.sj[10:1] right type 'local foo' cannot change mode to left type 'stack foo' without using a copy operator like 'a = copy b'

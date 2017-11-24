@@ -2,13 +2,13 @@ class()'stack class {
   this
 }
 
-func()'stack class {
+func()'local class {
   a'stack class = class(this = class())
   a'stack class = class(this = class())
 }
 
 global()'void {
-  b'stack class : func()
+  b'local class : func()
   void
   void
 }

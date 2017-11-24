@@ -61,9 +61,11 @@ const double_option double_empty = { true };
 
 #define sjs_object_typeId 1
 #define sjs_class_typeId 2
+#define sjs_class_heap_typeId 3
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_class sjs_class;
+typedef struct td_sjs_class_heap sjs_class_heap;
 
 struct td_sjs_object {
     int _refCount;
@@ -73,10 +75,15 @@ struct td_sjs_class {
     int structsNeedAValue;
 };
 
+struct td_sjs_class_heap {
+    int _refCount;
+};
+
 void sjf_class(sjs_class* _this);
 void sjf_class_copy(sjs_class* _this, sjs_class* to);
 void sjf_class_destroy(sjs_class* _this);
-void sjf_func(sjs_class* _return);
+void sjf_class_heap(sjs_class_heap* _this);
+void sjf_func(sjs_class** _return);
 
 
 void sjf_class(sjs_class* _this) {
@@ -88,22 +95,22 @@ void sjf_class_copy(sjs_class* _this, sjs_class* to) {
 void sjf_class_destroy(sjs_class* _this) {
 }
 
-void sjf_func(sjs_class* _return) {
+void sjf_class_heap(sjs_class_heap* _this) {
+}
+
+void sjf_func(sjs_class** _return) {
     sjs_class a;
 
     sjf_class(&a);
     sjf_class(&a);
+    (*_return) = &a;
 
     sjf_class_destroy(&a);
-
-    *_return = a;
 }
 
 int main() {
-    sjs_class b;
+    sjs_class* b;
 
     sjf_func(&b);
-
-    sjf_class_destroy(&b);
     return 0;
 }

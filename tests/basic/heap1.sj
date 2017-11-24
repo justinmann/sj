@@ -1,6 +1,6 @@
 class() { this }
 
-func() {
+func()'local class {
 	a = copy class()
 	a = copy class()
 }
