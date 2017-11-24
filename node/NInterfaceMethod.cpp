@@ -96,7 +96,10 @@ shared_ptr<CInterfaceMethod> CInterfaceMethod::init(Compiler* compiler, shared_p
 
         auto argVar = make_shared<CInterfaceMethodArgVar>(loc, shared_from_this(), argType);
         argVars.push_back(argVar);
-        argDefaultValues.push_back(it->rightSide);
+        FunctionDefaultValue defaultValue;
+        defaultValue.op = it->op;
+        defaultValue.value = it->rightSide;
+        argDefaultValues.push_back(defaultValue);
     }
     
     return shared_from_this();
@@ -218,12 +221,11 @@ void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> scope, T
     for (auto defaultAssignment : argDefaultValues) {
         auto argVar = argVars[argIndex];
         auto argType = argVar->getType(compiler);
-        auto isDefaultAssignment = parameters[argIndex].second == defaultAssignment;
-        assert(isDefaultAssignment == parameters[argIndex].first);
+        auto isDefaultAssignment = parameters[argIndex].isDefaultValue;
         auto argStoreValue = trBlock->createTempStoreVariable(loc, scope, argType, "interfaceParam");
 
         stringstream argStream;
-        auto paramVar = parameters[argIndex].second->getVar(compiler, isDefaultAssignment ? nullptr : scope, CTM_Undefined);
+        auto paramVar = parameters[argIndex].value->getVar(compiler, isDefaultAssignment ? nullptr : scope, parameters[argIndex].op.typeMode);
         paramVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, argStoreValue);
 
         if (!argStoreValue->hasSetValue) {

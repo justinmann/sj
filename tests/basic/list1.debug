@@ -1,49 +1,28 @@
-array!class([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=)'array_class {
-  c{
+array_getAt(index'i32:)'heap class c{
 
-		if (_this->size < 0) {
-			exit(-1);
-		}
-
-		if (_this->data) {
-			_this->_isGlobal = true;
-		} else {
-			_this->data = (uintptr_t)calloc(_this->size * sizeof(#type(t)), 1);
-			if (!_this->data) {
-				printf("grow: out of memory\n");
-				exit(-1);				
-			}
-		}
-	
-}c
-  this
-}
-
-array_getAt([heap]index'i32:)'class c{
-
-		#forceParent()
+		
 
 		if (index >= _parent->size || index < 0) {
 			printf("getAt: out of bounds\n");
 			exit(-1);
 		}
 
-		#type(t)* p = (#type(t)*)_parent->data;
-		#type(t) val = p[index];
-##if !#isValue(t)
+		sjs_class_heap** p = (sjs_class_heap**)_parent->data;
+		sjs_class_heap* val = p[index];
+#if !false
 		if (val == 0) {
 			printf("getAt: value is not defined at %d\n", index);
 			exit(-1);
 		}
-##endif
+#endif
 		*_return = val;		
 	
 }c
 
-array_grow([heap]newSize'i32:)'array_class c{
+array_grow(newSize'i32:)'void c{
 
-		#forceParent()
-		#include(<string.h>)
+		
+		
 
 		if (_parent->size != newSize) {
 			if (newSize < _parent->size) {
@@ -53,110 +32,101 @@ array_grow([heap]newSize'i32:)'array_class c{
 			
 			if (_parent->_isGlobal) {
 				_parent->_isGlobal = false;
-				#type(t)* p = (#type(t)*)_parent->data;
-				_parent->data = (uintptr_t)calloc(newSize * sizeof(#type(t)), 1);
+				sjs_class_heap** p = (sjs_class_heap**)_parent->data;
+				_parent->data = (uintptr_t)calloc(newSize * sizeof(sjs_class_heap*), 1);
 				if (!_parent->data) {
 					printf("grow: out of memory\n");
 					exit(-1);				
 				}
-				memcpy((void*)_parent->data, p, _parent->size * sizeof(#type(t)));
+				memcpy((void*)_parent->data, p, _parent->size * sizeof(sjs_class_heap*));
 			} else {
-				_parent->data = (uintptr_t)realloc((void*)_parent->data, newSize * sizeof(#type(t)));
+				_parent->data = (uintptr_t)realloc((void*)_parent->data, newSize * sizeof(sjs_class_heap*));
 				if (!_parent->data) {
 					printf("grow: out of memory\n");
 					exit(-1);				
 				}
-				memset((#type(t)*)_parent->data + _parent->size, 0, (newSize - _parent->size) * sizeof(#type(t)));
+				memset((sjs_class_heap**)_parent->data + _parent->size, 0, (newSize - _parent->size) * sizeof(sjs_class_heap*));
 			}
 			_parent->size = newSize;
 		}
-
-		*_return = _parent;
 	
 }c
 
-array_setAt([stack]index'i32:, [heap]item'class:)'void c{
+array_setAt(index'i32:, item'heap class:)'void c{
 
-		#forceParent()
-		#forceHeap(item)
+		
 
 		if (index >= _parent->size || index < 0) {
 			printf("setAt: out of bounds %d:%d\n", index, _parent->size);
 			exit(-1);
 		}
 
-		#type(t)* p = (#type(t)*)_parent->data;
-##if !#isValue(t)
+		sjs_class_heap** p = (sjs_class_heap**)_parent->data;
+#if !false
 		if (p[index] != 0) {
-			#release(t, p[index]);
+			 p[index]->_refCount--;
+if ( p[index]->_refCount <= 0) {
+    sjf_class_destroy((sjs_class*)(((char*) p[index]) + sizeof(int)));
+}
+;
 		}
-##endif
-		#retain(t, item);
+#endif
+		 item->_refCount++;
+;
 		p[index] = item;
 	
 }c
 
-class([heap]x'i32:)'class {
+list!heap class(count'i32=, data'stack array_heap_class=)'stack list_heap_class {
   this
 }
 
-list!class([stack]count'i32=, [stack]data'array_class=)'list_class {
-  this
-}
-
-list_add([heap]item'class:)'i32 {
+list_add(item'heap class:)'i32 {
   if .parentthis.count > this.size {
-    [heap]list_setSize([stack]this : list_setSize(
-      parent: [stack]this,
-      [heap]size'i32 : this.size * 2i
-    ))
+    list_setSize(
+      parent: this,
+      size'i32 : this.size
+    )
     void
   }
-  [stack]array_setAt([stack]this : array_setAt(
-    parent: [stack].parentthis.data,
-    [stack]index'i32 : .parentthis.count,
-    [heap]item'class : this.item
-  ))
-  .parentthis.count++
+  array_setAt(
+    parent: .parentthis.data,
+    index'i32 : this.index,
+    item'heap class : this.item
+  )
+  .parentthis.count'i32 = .parentthis.count + 1i
 }
 
-list_getAt([heap]index'i32:)'class {
-  [heap]array_getAt([stack]this : array_getAt(
-    parent: [stack].parentthis.data,
-    [heap]index'i32 : this.index
-  ))
+list_getAt(index'i32:)'heap class {
+  array_getAt(
+    parent: .parentthis.data,
+    index'i32 : this.index
+  )
 }
 
-list_setSize([heap]size'i32:)'array_class {
-  [heap]array_grow([stack]this : array_grow(
-    parent: [stack].parentthis.data,
-    [heap]newSize'i32 : this.size
-  ))
+list_setSize(size'i32:)'void {
+  array_grow(
+    parent: .parentthis.data,
+    newSize'i32 : this.newSize
+  )
 }
 
 global()'void {
-  [stack]a'list_class : [stack]list!class([stack]this : list!class(
-    parent: [stack]this,
-    [stack]count'i32 = 0i,
-    [stack]data'array_class = [stack]array!class([stack]this : array!class(
-      [stack]size'i32 = 0i,
-      [stack]data'ptr = 0i as ptr,
-      [stack]_isGlobal'bool = false
-    ))
+  a'stack list_heap_class : list!heap class(this = list!heap class(
+    count'i32 = this.count,
+    data'stack array_heap_class = this.data
   ))
   for x : 1i to 100000i {
-    list_add([stack]this : list_add(
-      parent: [stack]a,
-      [heap]item'class : [heap]class([heap]this : class(
-        [heap]x'i32 : x
-      ))
-    ))
+    list_add(
+      parent: a,
+      item'heap class : this.item
+    )
   }
-  [heap]c'class : [heap]list_getAt([stack]this : list_getAt(
-    parent: [stack]a,
-    [heap]index'i32 : 0i
-  ))
-  this.x
+  c'heap class : list_getAt(
+    parent: a,
+    index'i32 : this.index
+  )
+  x
   void
 }
 

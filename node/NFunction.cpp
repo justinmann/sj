@@ -172,7 +172,10 @@ shared_ptr<CFunction> CFunction::init(Compiler* compiler, shared_ptr<NFunction> 
                 _data[returnMode].thisArgVars.push_back(thisArgVar);
             }
             
-            argDefaultValues.push_back(it->rightSide);
+            FunctionDefaultValue defaultValue;
+            defaultValue.op = it->op;
+            defaultValue.value = it->rightSide;
+            argDefaultValues.push_back(defaultValue);
             index++;
         }
     }
@@ -506,11 +509,10 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
         for (auto defaultAssignment : argDefaultValues) {
             auto argVar = _data[returnMode].thisArgVars[argIndex];
             auto argType = argVar->getType(compiler);
-            auto isDefaultAssignment = parameters[argIndex].second == defaultAssignment;
-            assert(isDefaultAssignment == parameters[argIndex].first);
+            auto isDefaultAssignment = parameters[argIndex].isDefaultValue;
 
             stringstream argStream;
-            auto parameterVar = parameters[argIndex].second->getVar(compiler, isDefaultAssignment ? calleeScope : callerScope, CTM_Undefined);
+            auto parameterVar = parameters[argIndex].value->getVar(compiler, isDefaultAssignment ? calleeScope : callerScope, parameters[argIndex].op.typeMode);
             if (!parameterVar) {
                 assert(compiler->errors.size() > 0);
                 return;
@@ -603,11 +605,10 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
         for (auto defaultAssignment : argDefaultValues) {
             auto argVar = _data[returnMode].thisArgVars[argIndex];
             auto argType = argVar->getType(compiler);
-            auto isDefaultAssignment = parameters[argIndex].second == defaultAssignment;
-            assert(isDefaultAssignment == parameters[argIndex].first);
+            auto isDefaultAssignment = parameters[argIndex].isDefaultValue;
 
             stringstream argStream;
-            auto parameterVar = parameters[argIndex].second->getVar(compiler, isDefaultAssignment ? calleeScope : callerScope, CTM_Undefined);
+            auto parameterVar = parameters[argIndex].value->getVar(compiler, isDefaultAssignment ? calleeScope : callerScope, parameters[argIndex].op.typeMode);
             if (!parameterVar) {
                 assert(compiler->errors.size() > 0);
                 return;
@@ -835,7 +836,7 @@ shared_ptr<vector<shared_ptr<CVar>>> CFunction::getArgVars(Compiler* compiler, C
     auto calleeScope = getScope(compiler, returnMode);
     auto args = make_shared<vector<shared_ptr<CVar>>>();
     for (auto it : argDefaultValues) {
-        auto var = it->getVar(compiler, calleeScope, CTM_Undefined);
+        auto var = it.value->getVar(compiler, calleeScope, it.op.typeMode);
         assert(var);
         args->push_back(var);
     }
