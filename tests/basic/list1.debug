@@ -122,7 +122,7 @@ global()'void {
       item'heap class : this.item
     )
   }
-  c'heap class : list_getAt(
+  c'heap class : heap list_getAt(
     parent: a,
     index'i32 : this.index
   )

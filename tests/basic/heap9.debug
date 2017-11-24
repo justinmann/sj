@@ -7,12 +7,12 @@ foo1()'stack class {
 }
 
 foo2()'heap class? {
-  value(class(this = class()))
+  value(heap class(this = class()))
 }
 
 global()'void {
   x1'stack class : foo1()
-  x2'heap class? : foo2()
+  x2'heap class? : heap foo2()
   void
 }
 

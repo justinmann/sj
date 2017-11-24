@@ -5,8 +5,8 @@ foo1() {
 }
 
 foo2() {
-    value(class()) // value will force the class to be heap
+    value(heap class()) // value will force the class to be heap
 }
 
 x1 : foo1()
-x2 : foo2()
+x2 : heap foo2()

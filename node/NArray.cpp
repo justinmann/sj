@@ -20,8 +20,8 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
         }
         
         auto elementType = elementVar->getType(compiler);
-        if (elementType->typeMode != CTM_Heap) {
-            compiler->addError(loc, CErrorCode::TypeMismatch, "arrays only support heap types");
+        if (elementType->typeMode != CTM_Heap && elementType->typeMode != CTM_Value) {
+            compiler->addError(loc, CErrorCode::TypeMismatch, "arrays only support heap and value types");
             return nullptr;
         }
         

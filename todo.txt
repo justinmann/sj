@@ -1,3 +1,6 @@
+* stack/heap/local node & var
+* array w/ stack var
+
 * fix tests
 * fix string add
 * make string immutable

@@ -84,7 +84,8 @@ void sjf_class_copy(sjs_class* _this, sjs_class* to);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_heap(sjs_class_heap* _this);
 void sjf_foo1(sjs_class* _return);
-void sjf_foo2(sjs_class_heap** _return);
+void sjf_foo1_heap(sjs_class_heap** _return);
+void sjf_foo2_heap(sjs_class_heap** _return);
 
 
 void sjf_class(sjs_class* _this) {
@@ -100,25 +101,30 @@ void sjf_class_heap(sjs_class_heap* _this) {
 }
 
 void sjf_foo1(sjs_class* _return) {
-    sjf_class((*_return));
+    sjf_class(_return);
 }
 
-void sjf_foo2(sjs_class_heap** _return) {
-    sjs_class_heap* temp1;
+void sjf_foo1_heap(sjs_class_heap** _return) {
+    (*_return) = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
+    (*_return)->_refCount = 1;
+    sjf_class_heap((*_return));
+}
 
-    temp1 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
-    temp1->_refCount = 1;
-    sjf_class_heap(temp1);
-    if (temp1 != 0) {
-        temp1->_refCount++;
+void sjf_foo2_heap(sjs_class_heap** _return) {
+    sjs_class_heap* sjt_value1;
+
+    sjt_value1 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
+    sjt_value1->_refCount = 1;
+    sjf_class_heap(sjt_value1);
+    (*_return) = sjt_value1;
+    if ((*_return) != 0) {
+        (*_return)->_refCount++;
     }
 
-    temp1->_refCount--;
-    if (temp1->_refCount <= 0) {
-        sjf_class_destroy((sjs_class*)(((char*)temp1) + sizeof(int)));
+    sjt_value1->_refCount--;
+    if (sjt_value1->_refCount <= 0) {
+        sjf_class_destroy((sjs_class*)(((char*)sjt_value1) + sizeof(int)));
     }
-
-    *_return = temp1;
 }
 
 int main() {
@@ -126,7 +132,7 @@ int main() {
     sjs_class_heap* x2;
 
     sjf_foo1(&x1);
-    sjf_foo2(&x2);
+    sjf_foo2_heap(&x2);
 
     if (x2 != 0) {
         x2->_refCount--;

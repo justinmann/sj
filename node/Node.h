@@ -50,6 +50,7 @@ enum NodeType {
     NodeType_Bool,
     NodeType_Cast,
     NodeType_Call,
+    NodeType_ChangeMode,
     NodeType_Char,
     NodeType_Compare,
     NodeType_Dot,
@@ -94,6 +95,7 @@ enum NodeType {
 #include "NCast.h"
 #include "NCall.h"
 #include "NCCode.h"
+#include "NChangeMode.h"
 #include "NChar.h"
 #include "NCompare.h"
 #include "NDot.h"
