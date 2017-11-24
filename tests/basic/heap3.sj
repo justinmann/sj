@@ -1,7 +1,7 @@
 bar(f = foo(1)) { this }
 foo(x : 0) { this }
 
-func(b : 'bar) {
+func(b : 'bar)'local foo {
   b.f = foo(2) // callvar("foo") is heap because it is store in a non-local var
 }
 

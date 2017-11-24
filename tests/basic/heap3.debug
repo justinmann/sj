@@ -6,7 +6,7 @@ foo(x'i32:)'stack foo {
   this
 }
 
-func(b'stack bar:)'stack foo {
+func(b'stack bar:)'local foo {
   this.f'stack foo = foo(this = foo(
     x'i32 : this.x
   ))

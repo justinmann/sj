@@ -1,2 +1,0 @@
-ERROR:7 basic/heap3.sj[9:9] cannot find variable 'x'
-ERROR:8 basic/heap3.sj[9:1] right side of dot has no value
