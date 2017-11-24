@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -60,80 +59,86 @@ struct td_double_option {
 };
 const double_option double_empty = { true };
 
-#define sjs_class_typeId 1
-#define sjs_object_typeId 2
+#define sjs_object_typeId 1
+#define sjs_class_typeId 2
+#define sjs_class_heap_typeId 3
 
-typedef struct td_sjs_class sjs_class;
 typedef struct td_sjs_object sjs_object;
-
-struct td_sjs_class {
-    int _refCount;
-};
+typedef struct td_sjs_class sjs_class;
+typedef struct td_sjs_class_heap sjs_class_heap;
 
 struct td_sjs_object {
     int _refCount;
 };
 
-void sjf_class(sjs_class* _this, sjs_class** _return);
+struct td_sjs_class {
+    int structsNeedAValue;
+};
+
+struct td_sjs_class_heap {
+    int _refCount;
+};
+
+void sjf_class(sjs_class* _this);
 void sjf_class_bar(int32_t x, int32_t* _return);
+void sjf_class_copy(sjs_class* _this, sjs_class* to);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_foo(int32_t x, int32_t* _return);
+void sjf_class_heap(sjs_class_heap* _this);
 
-sjs_class sjd_temp1;
 
-void sjf_class(sjs_class* _this, sjs_class** _return) {
-    _this->_refCount++;
-    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_class(sjs_class* _this, sjs_class** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
-
-    *_return = _this;
+void sjf_class(sjs_class* _this) {
 }
 
 void sjf_class_bar(int32_t x, int32_t* _return) {
-    int32_t result4;
+    int32_t sjt_functionParam1;
 
-    result4 = 0;
-    sjf_class_foo(x, &result4);
+    sjt_functionParam1 = x;
+    sjf_class_foo(sjt_functionParam1, &(*_return));
+}
 
-    *_return = result4;
+void sjf_class_copy(sjs_class* _this, sjs_class* to) {
 }
 
 void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_foo(int32_t x, int32_t* _return) {
-    int32_t ifResult1;
-    bool result2;
+    int32_t sjt_compare1;
+    int32_t sjt_compare2;
+    bool sjt_ifElse1;
 
-    result2 = x > 0;
-    if (result2) {
-        int32_t result3;
-        int32_t result5;
+    sjt_compare1 = x;
+    sjt_compare2 = 0;
+    sjt_ifElse1 = sjt_compare1 > sjt_compare2;
+    if (sjt_ifElse1) {
+        int32_t sjt_functionParam2;
+        int32_t sjt_math1;
+        int32_t sjt_math2;
 
-        result3 = 0;
-        result5 = x - 1;
-        sjf_class_bar(result5, &result3);
-        ifResult1 = result3;
+        sjt_math1 = x;
+        sjt_math2 = 1;
+        sjt_functionParam2 = sjt_math1 - sjt_math2;
+        sjf_class_bar(sjt_functionParam2, &(*_return));
     } else {
-        ifResult1 = 0;
+        (*_return) = 0;
     }
+}
 
-    *_return = ifResult1;
+void sjf_class_heap(sjs_class_heap* _this) {
 }
 
 int main() {
-    sjs_class* c;
-    int32_t result1;
-    sjs_class* sjv_temp1;
+    sjs_class c;
+    sjs_class* sjt_dot1;
+    int32_t sjt_functionParam3;
+    int32_t void1;
 
-    sjv_temp1 = &sjd_temp1;
-    sjv_temp1->_refCount = 1;
-    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
-    sjf_class(sjv_temp1, &sjv_temp1);
-    c = sjv_temp1;
-    c->_refCount++;
-    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)c, c->_refCount);;
-    result1 = 0;
-    sjf_class_foo(4, &result1);
-    assert(sjd_temp1._refCount == 0);
+    sjf_class(&c);
+    sjt_dot1 = &c;
+    sjt_functionParam3 = 4;
+    sjf_class_foo(sjt_functionParam3, &void1);
+
+    sjf_class_destroy(&c);
     return 0;
 }

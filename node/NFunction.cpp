@@ -800,6 +800,7 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CTypeMode returnM
     
     _isInGetType = true;    
     if (!_data[returnMode].returnType) {
+        auto getReturnTypeFromBlock = true;
         if (_returnTypeName) {
             shared_ptr<CType> valueType = getVarType(loc, compiler, _returnTypeName, CTM_Undefined);
             if (!valueType) {
@@ -807,9 +808,11 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CTypeMode returnM
                 _data[returnMode].returnType = nullptr;
             }
             _data[returnMode].returnType = valueType;
+            
+            getReturnTypeFromBlock = _returnTypeName->typeMode == CTM_Undefined;
         }
         
-        if (_block) {
+        if (_block && getReturnTypeFromBlock) {
             auto calleeVar = getThisVar(compiler, returnMode);
             auto calleeScope = getScope(compiler, returnMode);
             auto blockVar = _block->getVar(compiler, calleeScope, _data[returnMode].returnType ? _data[returnMode].returnType->typeMode : returnMode);

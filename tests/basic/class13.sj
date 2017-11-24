@@ -5,7 +5,7 @@ math(
 ) { this }
 class(
 	m: math()
-	foo(x: 0) {
+	foo(x: 0)'i32 {
 		if x > 0 {
 			bar(m.sub(x, 1))
 		} else {

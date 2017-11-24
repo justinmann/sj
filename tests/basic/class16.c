@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -60,105 +59,115 @@ struct td_double_option {
 };
 const double_option double_empty = { true };
 
-#define sjs_a_typeId 1
+#define sjs_object_typeId 1
 #define sjs_a_aa_typeId 2
-#define sjs_object_typeId 3
+#define sjs_a_aa_heap_typeId 3
+#define sjs_a_typeId 4
+#define sjs_a_heap_typeId 5
 
-typedef struct td_sjs_a sjs_a;
-typedef struct td_sjs_a_aa sjs_a_aa;
 typedef struct td_sjs_object sjs_object;
-
-struct td_sjs_a {
-    int _refCount;
-    int32_t x;
-    sjs_a_aa* b;
-};
-
-struct td_sjs_a_aa {
-    int _refCount;
-    sjs_a* _parent;
-};
+typedef struct td_sjs_a_aa sjs_a_aa;
+typedef struct td_sjs_a_aa_heap sjs_a_aa_heap;
+typedef struct td_sjs_a sjs_a;
+typedef struct td_sjs_a_heap sjs_a_heap;
 
 struct td_sjs_object {
     int _refCount;
 };
 
-void sjf_a(sjs_a* _this, sjs_a** _return);
-void sjf_a_aa(sjs_a_aa* _this, sjs_a_aa** _return);
+struct td_sjs_a_aa {
+    int structsNeedAValue;
+};
+
+struct td_sjs_a_aa_heap {
+    int _refCount;
+};
+
+struct td_sjs_a {
+    int32_t x;
+    sjs_a_aa b;
+};
+
+struct td_sjs_a_heap {
+    int _refCount;
+    int32_t x;
+    sjs_a_aa b;
+};
+
+void sjf_a(sjs_a* _this);
+void sjf_a_aa(sjs_a_aa* _this);
 void sjf_a_aa_c(sjs_a_aa* _parent, int32_t* _return);
+void sjf_a_aa_copy(sjs_a_aa* _this, sjs_a_aa* to);
 void sjf_a_aa_destroy(sjs_a_aa* _this);
+void sjf_a_aa_heap(sjs_a_aa_heap* _this);
+void sjf_a_copy(sjs_a* _this, sjs_a* to);
 void sjf_a_destroy(sjs_a* _this);
+void sjf_a_heap(sjs_a_heap* _this);
 
-sjs_a sjd_temp1;
-sjs_a_aa sjd_temp2;
 
-void sjf_a(sjs_a* _this, sjs_a** _return) {
-    _this->_refCount++;
-    printf("RETAIN\tsjs_a*\t%0x\tvoid sjf_a(sjs_a* _this, sjs_a** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
-
-    *_return = _this;
+void sjf_a(sjs_a* _this) {
 }
 
-void sjf_a_aa(sjs_a_aa* _this, sjs_a_aa** _return) {
-    _this->_refCount++;
-    printf("RETAIN\tsjs_a_aa*\t%0x\tvoid sjf_a_aa(sjs_a_aa* _this, sjs_a_aa** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
-
-    *_return = _this;
+void sjf_a_aa(sjs_a_aa* _this) {
 }
 
 void sjf_a_aa_c(sjs_a_aa* _parent, int32_t* _return) {
     int32_t dotTemp2;
-    sjs_a* tempParent1;
+    sjs_a_aa* tempParent1;
 
     tempParent1 = _parent->_parent;
     dotTemp2 = tempParent1->x;
+    (*_return) = dotTemp2;
+}
 
-    *_return = dotTemp2;
+void sjf_a_aa_copy(sjs_a_aa* _this, sjs_a_aa* to) {
 }
 
 void sjf_a_aa_destroy(sjs_a_aa* _this) {
 }
 
+void sjf_a_aa_heap(sjs_a_aa_heap* _this) {
+}
+
+void sjf_a_copy(sjs_a* _this, sjs_a* to) {
+    _this->x = to->x;
+    sjf_a_aa_copy(&_this->b, &to->b);
+}
+
 void sjf_a_destroy(sjs_a* _this) {
-    sjf_a_aa_destroy(_this->b);
+}
+
+void sjf_a_heap(sjs_a_heap* _this) {
 }
 
 int main() {
-    sjs_a* a;
-    sjs_a_aa* d;
-    sjs_a_aa* dotTemp1;
-    sjs_a_aa* dotTemp3;
-    int32_t result1;
-    int32_t result2;
-    sjs_a* sjv_temp1;
-    sjs_a_aa* sjv_temp2;
+    sjs_a a;
+    sjs_a_aa d;
+    sjs_a_aa dotTemp1;
+    sjs_a_aa dotTemp3;
+    sjs_a_aa* sjt_dot1;
+    sjs_a* sjt_dot2;
+    sjs_a* sjt_dot3;
+    sjs_a_aa* sjt_dot4;
+    int32_t void1;
+    int32_t void2;
 
-    sjv_temp1 = &sjd_temp1;
-    sjv_temp1->_refCount = 1;
-    printf("RETAIN\tsjs_a*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
-    sjv_temp2 = &sjd_temp2;
-    sjv_temp2->_parent = sjv_temp1;
-    sjv_temp2->_refCount = 1;
-    printf("RETAIN\tsjs_a_aa*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp2, sjv_temp2->_refCount);;
-    sjf_a_aa(sjv_temp2, &sjv_temp2);
-    sjv_temp1->x = 1;
-    sjv_temp1->b = sjv_temp2;
-    sjv_temp1->b->_refCount++;
-    printf("RETAIN\tsjs_a_aa*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1->b, sjv_temp1->b->_refCount);;
-    sjf_a(sjv_temp1, &sjv_temp1);
-    a = sjv_temp1;
-    a->_refCount++;
-    printf("RETAIN\tsjs_a*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)a, a->_refCount);;
-    dotTemp1 = a->b;
-    result1 = 0;
-    sjf_a_aa_c(dotTemp1, &result1);
-    dotTemp3 = a->b;
-    d = dotTemp3;
-    d->_refCount++;
-    printf("RETAIN\tsjs_a_aa*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)d, d->_refCount);;
-    result2 = 0;
-    sjf_a_aa_c(d, &result2);
-    assert(sjd_temp1._refCount == 0);
-    assert(sjd_temp2._refCount == 0);
+    a.x = 1;
+    sjf_a_aa(&a.b);
+    sjf_a(&a);
+    sjt_dot2 = &a;
+    dotTemp1 = sjt_dot2->b;
+    sjt_dot1 = &dotTemp1;
+    sjf_a_aa_c(sjt_dot1, &void1);
+    sjt_dot3 = &a;
+    dotTemp3 = sjt_dot3->b;
+    sjf_a_aa_copy(&d, &dotTemp3);
+    sjt_dot4 = &d;
+    sjf_a_aa_c(sjt_dot4, &void2);
+
+    sjf_a_destroy(&a);
+    sjf_a_aa_destroy(&d);
+    sjf_a_aa_destroy(&dotTemp1);
+    sjf_a_aa_destroy(&dotTemp3);
     return 0;
 }

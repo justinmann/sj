@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -60,49 +59,55 @@ struct td_double_option {
 };
 const double_option double_empty = { true };
 
-#define sjs_class_typeId 1
-#define sjs_object_typeId 2
+#define sjs_object_typeId 1
+#define sjs_class_typeId 2
+#define sjs_class_heap_typeId 3
 
-typedef struct td_sjs_class sjs_class;
 typedef struct td_sjs_object sjs_object;
-
-struct td_sjs_class {
-    int _refCount;
-    int32_t b;
-};
+typedef struct td_sjs_class sjs_class;
+typedef struct td_sjs_class_heap sjs_class_heap;
 
 struct td_sjs_object {
     int _refCount;
 };
 
-void sjf_class(sjs_class* _this, sjs_class** _return);
+struct td_sjs_class {
+    int32_t b;
+};
+
+struct td_sjs_class_heap {
+    int _refCount;
+    int32_t b;
+};
+
+void sjf_class(sjs_class* _this);
+void sjf_class_copy(sjs_class* _this, sjs_class* to);
 void sjf_class_destroy(sjs_class* _this);
+void sjf_class_heap(sjs_class_heap* _this);
 
-sjs_class sjd_temp1;
 
-void sjf_class(sjs_class* _this, sjs_class** _return) {
-    _this->_refCount++;
-    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_class(sjs_class* _this, sjs_class** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
+void sjf_class(sjs_class* _this) {
+}
 
-    *_return = _this;
+void sjf_class_copy(sjs_class* _this, sjs_class* to) {
+    _this->b = to->b;
 }
 
 void sjf_class_destroy(sjs_class* _this) {
 }
 
-int main() {
-    sjs_class* a;
-    sjs_class* sjv_temp1;
+void sjf_class_heap(sjs_class_heap* _this) {
+}
 
-    sjv_temp1 = &sjd_temp1;
-    sjv_temp1->_refCount = 1;
-    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
-    sjv_temp1->b = 0;
-    sjf_class(sjv_temp1, &sjv_temp1);
-    a = sjv_temp1;
-    a->_refCount++;
-    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)a, a->_refCount);;
-    a->b = 1;
-    assert(sjd_temp1._refCount == 0);
+int main() {
+    sjs_class a;
+    sjs_class* sjt_dot1;
+
+    a.b = 0;
+    sjf_class(&a);
+    sjt_dot1 = &a;
+    sjt_dot1->b = 1;
+
+    sjf_class_destroy(&a);
     return 0;
 }

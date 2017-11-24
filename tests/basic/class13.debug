@@ -1,44 +1,30 @@
-class([stack]m'math:)'class {
+class(m'stack math:)'stack class {
   this
 }
 
-class_bar([heap]x'i32:)'i32 {
-  [heap]class_foo([stack]this : class_foo(
-    parent: [stack]this,
-    [heap]x'i32 : this.x
-  ))
+class_bar(x'i32:)'i32 {
+  class_foo(
+    x'i32 : this.x
+  )
 }
 
-class_foo([heap]x'i32:)'i32 {
-  if this.x > 0i {
-    [heap]class_bar([stack]this : class_bar(
-      parent: [stack]this,
-      [heap]x'i32 : math_sub([stack]this : math_sub(
-        [heap]x'i32 : this.x,
-        [heap]y'i32 : 1i
-      ))
-    ))
+class_foo(x'i32:)'i32 {
+  if x > 0i {
+    class_bar(
+      x'i32 : this.x
+    )
   } else {
     0i
   }
 }
 
-math()'math {
-  this
-}
-
-math_sub([heap]x'i32:, [heap]y'i32:)'i32 {
-  this.x - this.y
-}
-
 global()'void {
-  [stack]c'class : [stack]class([stack]this : class(
-    [stack]m'math : [stack]math([stack]this : math())
+  c'stack class : class(this = class(
+    m'stack math : this.m
   ))
-  [heap]class_foo([stack]this : class_foo(
-    parent: [stack]c,
-    [heap]x'i32 : 4i
-  ))
+  class_foo(
+    x'i32 : this.x
+  )
   void
 }
 

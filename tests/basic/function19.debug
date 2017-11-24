@@ -1,17 +1,17 @@
-func([heap]x'i32:)'i32 {
-  if this.x > 0i {
-    [heap]func([stack]this : func(
-      [heap]x'i32 : this.x - 1i
-    ))
+func(x'i32:)'i32 {
+  if x > 0i {
+    func(
+      x'i32 : this.x
+    )
   } else {
     0i
   }
 }
 
 global()'void {
-  [heap]func([stack]this : func(
-    [heap]x'i32 : 4i
-  ))
+  func(
+    x'i32 : this.x
+  )
   void
 }
 

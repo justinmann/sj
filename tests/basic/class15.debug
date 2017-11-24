@@ -1,48 +1,35 @@
-anon1([heap]test'i32:)'anon1 {
+anon1(test'i32:)'stack anon1 {
   this
 }
 
-anon1_sub([heap]x'i32:, [heap]y'i32:)'i32 {
-  this.x - this.y - .parentthis.test
-}
-
-class()'class {
+class()'stack class {
   this
 }
 
-class_bar([heap]x'i32:)'i32 {
-  [heap]class_foo([stack]this : class_foo(
-    parent: [stack]this,
-    [heap]x'i32 : this.x
-  ))
+class_bar(x'i32:)'i32 {
+  class_foo(
+    x'i32 : this.x
+  )
 }
 
-class_foo([heap]x'i32:)'i32 {
-  if this.x > 0i {
-    [heap]class_bar([stack]this : class_bar(
-      parent: [stack]this,
-      [heap]x'i32 : anon1_sub([stack]this : anon1_sub(
-        parent: [heap].parent.parentthis.math,
-        [heap]x'i32 : this.x,
-        [heap]y'i32 : 1i
-      ))
-    ))
+class_foo(x'i32:)'i32 {
+  if x > 0i {
+    class_bar(
+      x'i32 : this.x
+    )
   } else {
     0i
   }
 }
 
 global()'void {
-  [heap]math'anon1 : [heap]anon1([heap]this : anon1(
-    [heap]test'i32 : 1i
+  math'stack anon1 : anon1(this = anon1(
+    test'i32 : this.test
   ))
-  [stack]c'class : [stack]class([stack]this : class(
-    parent: [stack]this
-  ))
-  [heap]class_foo([stack]this : class_foo(
-    parent: [stack]c,
-    [heap]x'i32 : 4i
-  ))
+  c'stack class : class(this = class())
+  class_foo(
+    x'i32 : this.x
+  )
   void
 }
 
