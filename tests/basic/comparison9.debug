@@ -1,5 +1,5 @@
 global()'void {
-  -3i == 4i
+  x'bool : -3i == 4i
   void
 }
 

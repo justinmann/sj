@@ -71,9 +71,15 @@ struct td_sjs_object {
 
 int main() {
     bool result1;
-    bool result2;
+    double sjt_compare1;
+    double sjt_compare2;
+    bool sjt_not1;
+    bool x;
 
-    result1 = -3.0 != 4.0;
-    result2 = !result1;
+    sjt_compare1 = -3.0;
+    sjt_compare2 = 4.0;
+    sjt_not1 = sjt_compare1 != sjt_compare2;
+    result1 = !sjt_not1;
+    x = result1;
     return 0;
 }

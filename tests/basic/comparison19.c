@@ -71,7 +71,11 @@ struct td_sjs_object {
 
 int main() {
     bool result1;
+    bool sjt_not1;
+    bool x;
 
-    result1 = !true;
+    sjt_not1 = true;
+    result1 = !sjt_not1;
+    x = result1;
     return 0;
 }

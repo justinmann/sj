@@ -70,12 +70,14 @@ struct td_sjs_object {
 
 
 int main() {
-    int32_t result1;
+    int32_t sjt_math1;
+    int32_t sjt_math2;
     int32_t x;
     int32_t y;
 
     y = 2;
-    x = 2;
-    result1 = x + y;
+    x = y;
+    sjt_math1 = x;
+    sjt_math2 = y;
     return 0;
 }

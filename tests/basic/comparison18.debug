@@ -1,5 +1,5 @@
 global()'void {
-  -3.0d != 4.0d
+  x'bool : -3.0d != 4.0d
   void
 }
 

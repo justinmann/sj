@@ -74,6 +74,6 @@ int main() {
     int32_t y;
 
     y = 2;
-    x = 2;
+    x = y;
     return 0;
 }

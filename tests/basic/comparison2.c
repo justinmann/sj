@@ -70,5 +70,8 @@ struct td_sjs_object {
 
 
 int main() {
+    bool x;
+
+    x = false;
     return 0;
 }

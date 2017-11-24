@@ -70,8 +70,12 @@ struct td_sjs_object {
 
 
 int main() {
-    bool result1;
+    int32_t sjt_compare1;
+    int32_t sjt_compare2;
+    bool x;
 
-    result1 = -3 > 4;
+    sjt_compare1 = -3;
+    sjt_compare2 = 4;
+    x = sjt_compare1 > sjt_compare2;
     return 0;
 }

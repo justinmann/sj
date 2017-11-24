@@ -1,5 +1,5 @@
 global()'void {
-  false
+  x'bool : false
   void
 }
 
