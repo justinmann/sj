@@ -1,12 +1,4 @@
-class(inner'stack inner:)'heap class {
-  this
-}
-
 class(inner'stack inner:)'stack class {
-  this
-}
-
-class2(inner'heap inner?:)'heap class2 {
   this
 }
 

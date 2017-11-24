@@ -1,4 +1,4 @@
-array!i32([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=)'array_i32 {
+array!i32(size'i32=, data'ptr=, _isGlobal'bool=)'stack array_i32 {
   c{
 
 		if (_this->size < 0) {
@@ -8,7 +8,7 @@ array!i32([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=)'array_i32 
 		if (_this->data) {
 			_this->_isGlobal = true;
 		} else {
-			_this->data = (uintptr_t)calloc(_this->size * sizeof(#type(t)), 1);
+			_this->data = (uintptr_t)calloc(_this->size * sizeof(int32_t), 1);
 			if (!_this->data) {
 				printf("grow: out of memory\n");
 				exit(-1);				
@@ -19,63 +19,62 @@ array!i32([stack]size'i32=, [stack]data'ptr=, [stack]_isGlobal'bool=)'array_i32 
   this
 }
 
-array_getAt([stack]index'i32:)'i32 c{
+array_getAt(index'i32:)'i32 c{
 
-		#forceParent()
+		
 
 		if (index >= _parent->size || index < 0) {
 			printf("getAt: out of bounds\n");
 			exit(-1);
 		}
 
-		#type(t)* p = (#type(t)*)_parent->data;
-		#type(t) val = p[index];
-##if !#isValue(t)
+		int32_t* p = (int32_t*)_parent->data;
+		int32_t val = p[index];
+#if !true
 		if (val == 0) {
 			printf("getAt: value is not defined at %d\n", index);
 			exit(-1);
 		}
-##endif
+#endif
 		*_return = val;		
 	
 }c
 
-array_setAt([stack]index'i32:, [heap]item'i32:)'void c{
+array_setAt(index'i32:, item'i32:)'void c{
 
-		#forceParent()
-		#forceHeap(item)
+		
 
 		if (index >= _parent->size || index < 0) {
 			printf("setAt: out of bounds %d:%d\n", index, _parent->size);
 			exit(-1);
 		}
 
-		#type(t)* p = (#type(t)*)_parent->data;
-##if !#isValue(t)
+		int32_t* p = (int32_t*)_parent->data;
+#if !true
 		if (p[index] != 0) {
-			#release(t, p[index]);
+			;
 		}
-##endif
-		#retain(t, item);
+#endif
+		;
 		p[index] = item;
 	
 }c
 
 global()'void {
-  [stack]a'array_i32 : [stack]array!i32([stack]this : array!i32(
-    [stack]size'i32 = 1i,
-    [stack]data'ptr = 0i as ptr,
-    [stack]_isGlobal'bool = false
+  a'stack array_i32 : array!i32(this = array!i32(
+    size'i32 = this.size,
+    data'ptr = this.data,
+    _isGlobal'bool = this._isGlobal
   ))
-  [stack]array_setAt([stack]this : array_setAt(
-    parent: [stack]a,
-    [stack]index'i32 : 0i,
-    [heap]item'i32 : 1i
-  ))
-  [stack]c'i32 : [stack]array_getAt([stack]this : array_getAt(
-    parent: [stack]a,
-    [stack]index'i32 : 0i
-  ))
+  array_setAt(
+    parent: a,
+    index'i32 : this.index,
+    item'i32 : this.item
+  )
+  c'i32 : array_getAt(
+    parent: a,
+    index'i32 : this.index
+  )
   c
   void
 }

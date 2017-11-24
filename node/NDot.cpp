@@ -26,6 +26,10 @@ shared_ptr<TrStoreValue> CDotVar::getStoreValue(Compiler* compiler, TrOutput* tr
     auto leftValue = trBlock->createTempStoreVariable(loc, nullptr, leftVar->getType(compiler)->getLocalType(), "dot");
     leftVar->transpile(compiler, trOutput, trBlock, dotValue, thisValue, leftValue);
     auto rightStoreVar = dynamic_pointer_cast<CStoreVar>(rightVar);
+    if (!rightStoreVar) {
+        compiler->addError(loc, CErrorCode::InvalidType, "right side cannot set value");
+        return nullptr;
+    }
     return rightStoreVar->getStoreValue(compiler, trOutput, trBlock, leftValue->getValue(), thisValue, op, isFirstAssignment);
 }
 

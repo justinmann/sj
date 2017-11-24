@@ -74,7 +74,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %type <block> stmts
 %type <nif> if_expr
 %type <exprvec> func_args func_block array_args tuple_args interface_args interface_block
-%type <assignOp> assign_type assign_mode assign_copy
+%type <assignOp> assign_type assign_copy
 %type <typeName> arg_type_quote arg_type return_type_quote return_type func_type func_arg_type func_type_name implement_arg value_type
 %type <templateTypeNames> temp_args temp_block temp_block_optional func_arg_type_list implement implement_args
 %type <string> arg_type_interface
@@ -130,7 +130,6 @@ var_decl 			: assign
 					| var TMINUSEQUAL expr_and                		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Sub, shared_ptr<NVariableBase>($3)); }
 					| var TMULEQUAL expr_and                		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Mul, shared_ptr<NVariableBase>($3)); }
 					| var TDIVEQUAL expr_and                		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Div, shared_ptr<NVariableBase>($3)); }
-					| var TLBRACKET expr TRBRACKET					{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NCall>(LOC, "getAt", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3)))); }
 					| var TLBRACKET expr TRBRACKET TEQUAL stmt		{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NCall>(LOC, "setAt", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3), shared_ptr<NBase>($6)))); }
 					;
 
@@ -219,6 +218,10 @@ expr 				: if_expr										{ $$ = $1; }
 					| expr_and										{ $$ = $1; }
 					| array
 					| TTHROW TLPAREN expr TRPAREN					{ $$ = new NThrow(LOC, shared_ptr<NBase>($3)); }
+					| TSTACK expr                             		{ $$ = new NChangeMode(LOC, CTM_Stack, shared_ptr<NBase>($2)); }
+					| TLOCAL expr                             		{ $$ = new NChangeMode(LOC, CTM_Local, shared_ptr<NBase>($2)); }
+					| THEAP expr                             		{ $$ = new NChangeMode(LOC, CTM_Heap, shared_ptr<NBase>($2)); }
+					| var TLBRACKET expr TRBRACKET					{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NCall>(LOC, "getAt", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3)))); }
 					| TVOID											{ $$ = new NVoid(LOC); }
 					;
 
@@ -314,19 +317,12 @@ assign_tuple_arg	: TIDENTIFIER assign_type						{ $$ = new NTupleAssignmentArg(L
 					| var TDOT TIDENTIFIER assign_type				{ $$ = new NTupleAssignmentArg(LOC, shared_ptr<NVariableBase>($1), nullptr, $3->c_str(), $4); }
 					;
 
-assign_type 		: TEQUAL assign_mode							{ $$ = $2; $$.isMutable = true; }
-					| TCOLON assign_mode							{ $$ = $2; $$.isMutable = false; }
+assign_type 		: TEQUAL assign_copy							{ $$ = $2; $$.isMutable = true; }
+					| TCOLON assign_copy							{ $$ = $2; $$.isMutable = false; }
 					;
 
-assign_mode			: assign_copy									{ $$ = $1; $$.typeMode = CTM_Undefined; }
-					| TAUTO assign_copy								{ $$ = $2; $$.typeMode = CTM_Undefined; }
-					| TLOCAL assign_copy							{ $$ = $2; $$.typeMode = CTM_Local; }
-					| TSTACK assign_copy							{ $$ = $2; $$.typeMode = CTM_Stack; }
-					| THEAP assign_copy								{ $$ = $2; $$.typeMode = CTM_Heap; }
-					;
-
-assign_copy			: /* Blank! */									{ $$.isCopy = false; }
-					| TCOPY 										{ $$.isCopy = true; }
+assign_copy			: /* Blank! */									{ $$.isCopy = false; $$.typeMode = CTM_Undefined; }
+					| TCOPY 										{ $$.isCopy = true; $$.typeMode = CTM_Undefined;  }
 					;
 
 tuple				: tuple_args TCOMMA expr_comp					{ $1->push_back(shared_ptr<NBase>($3)); $$ = new NTuple(LOC, shared_ptr<NodeList>($1)); }

@@ -1,4 +1,4 @@
-class()'class {
+class()'stack class {
   this
 }
 
@@ -7,8 +7,8 @@ class_func()'i32 {
 }
 
 global()'void {
-  [stack]c'class : [stack]class([stack]this : class())
-  class_func([stack]this : class_func())
+  c'stack class : class(this = class())
+  class_func()
   void
 }
 

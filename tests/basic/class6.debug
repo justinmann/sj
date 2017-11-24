@@ -1,10 +1,10 @@
-class([stack]x'i32:)'class {
+class(x'i32:)'stack class {
   this
 }
 
 global()'void {
-  [stack]c'class : [stack]class([stack]this : class(
-    [stack]x'i32 : 1i
+  c'stack class : class(this = class(
+    x'i32 : this.x
   ))
   this.x
   void

@@ -1,10 +1,10 @@
-class([heap]x'i32:)'class {
+class(x'i32:)'stack class {
   this
 }
 
-func()'class {
-  [heap]class([heap]this : class(
-    [heap]x'i32 : 1i
+func()'stack class {
+  class(this = class(
+    x'i32 : this.x
   ))
 }
 

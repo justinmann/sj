@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -60,35 +59,34 @@ struct td_double_option {
 };
 const double_option double_empty = { true };
 
-#define sjs_class_typeId 1
-#define sjs_object_typeId 2
+#define sjs_object_typeId 1
+#define sjs_class_typeId 2
 
-typedef struct td_sjs_class sjs_class;
 typedef struct td_sjs_object sjs_object;
-
-struct td_sjs_class {
-    int _refCount;
-    int32_t m;
-};
+typedef struct td_sjs_class sjs_class;
 
 struct td_sjs_object {
     int _refCount;
 };
 
+struct td_sjs_class {
+    int structsNeedAValue;
+};
+
 void sjf_class(sjs_class* _this, int32_t* _return);
+void sjf_class_copy(sjs_class* _this, sjs_class* to);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_inner(sjs_class* _parent, int32_t* _return);
 
-sjs_class sjd_temp1;
 
 void sjf_class(sjs_class* _this, int32_t* _return) {
-    int32_t result2;
+    int32_t m;
 
-    _this->m = 1;
-    result2 = 0;
-    sjf_class_inner(_this, &result2);
+    m = 1;
+    sjf_class_inner(_this, &(*_return));
+}
 
-    *_return = result2;
+void sjf_class_copy(sjs_class* _this, sjs_class* to) {
 }
 
 void sjf_class_destroy(sjs_class* _this) {
@@ -98,19 +96,15 @@ void sjf_class_inner(sjs_class* _parent, int32_t* _return) {
     int32_t dotTemp1;
 
     dotTemp1 = _parent->m;
-
-    *_return = dotTemp1;
+    (*_return) = dotTemp1;
 }
 
 int main() {
-    int32_t result1;
-    sjs_class* sjv_temp1;
+    sjs_class object1;
+    int32_t void1;
 
-    result1 = 0;
-    sjv_temp1 = &sjd_temp1;
-    sjv_temp1->_refCount = 1;
-    printf("RETAIN\tsjs_class*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
-    sjf_class(sjv_temp1, &result1);
-    assert(sjd_temp1._refCount == 0);
+    sjf_class(&object1, &void1);
+
+    sjf_class_destroy(&object1);
     return 0;
 }
