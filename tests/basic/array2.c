@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -60,31 +59,40 @@ struct td_double_option {
 };
 const double_option double_empty = { true };
 
-#define sjs_array_int32_t_typeId 1
-#define sjs_object_typeId 2
+#define sjs_object_typeId 1
+#define sjs_array_i32_typeId 2
+#define sjs_array_i32_heap_typeId 3
 
-typedef struct td_sjs_array_int32_t sjs_array_int32_t;
 typedef struct td_sjs_object sjs_object;
+typedef struct td_sjs_array_i32 sjs_array_i32;
+typedef struct td_sjs_array_i32_heap sjs_array_i32_heap;
 
-struct td_sjs_array_int32_t {
+struct td_sjs_object {
+    int _refCount;
+};
+
+struct td_sjs_array_i32 {
+    int32_t size;
+    uintptr_t data;
+    bool _isGlobal;
+};
+
+struct td_sjs_array_i32_heap {
     int _refCount;
     int32_t size;
     uintptr_t data;
     bool _isGlobal;
 };
 
-struct td_sjs_object {
-    int _refCount;
-};
+void sjf_array_i32(sjs_array_i32* _this);
+void sjf_array_i32_copy(sjs_array_i32* _this, sjs_array_i32* to);
+void sjf_array_i32_destroy(sjs_array_i32* _this);
+void sjf_array_i32_getAt(sjs_array_i32* _parent, int32_t index, int32_t* _return);
+void sjf_array_i32_heap(sjs_array_i32_heap* _this);
+void sjf_array_i32_initAt(sjs_array_i32* _parent, int32_t index, int32_t item);
 
-void sjf_array_int32_t(sjs_array_int32_t* _this, sjs_array_int32_t** _return);
-void sjf_array_int32_t_destroy(sjs_array_int32_t* _this);
-void sjf_array_int32_t_getAt(sjs_array_int32_t* _parent, int32_t index, int32_t* _return);
-void sjf_array_int32_t_setAt(sjs_array_int32_t* _parent, int32_t index, int32_t item);
 
-sjs_array_int32_t sjd_temp1;
-
-void sjf_array_int32_t(sjs_array_int32_t* _this, sjs_array_int32_t** _return) {
+void sjf_array_i32(sjs_array_i32* _this) {
     
 		if (_this->size < 0) {
 			exit(-1);
@@ -100,13 +108,15 @@ void sjf_array_int32_t(sjs_array_int32_t* _this, sjs_array_int32_t** _return) {
 			}
 		}
 	;
-    _this->_refCount++;
-    printf("RETAIN\tsjs_array_int32_t*\t%0x\tvoid sjf_array_int32_t(sjs_array_int32_t* _this, sjs_array_int32_t** _return)\t%d\n", (uintptr_t)_this, _this->_refCount);;
-
-    *_return = _this;
 }
 
-void sjf_array_int32_t_destroy(sjs_array_int32_t* _this) {
+void sjf_array_i32_copy(sjs_array_i32* _this, sjs_array_i32* to) {
+    _this->size = to->size;
+    _this->data = to->data;
+    _this->_isGlobal = to->_isGlobal;
+}
+
+void sjf_array_i32_destroy(sjs_array_i32* _this) {
     
 	if (!_this->_isGlobal && _this->data) {
 		free((int32_t*)_this->data);
@@ -115,7 +125,7 @@ void sjf_array_int32_t_destroy(sjs_array_int32_t* _this) {
 ;
 }
 
-void sjf_array_int32_t_getAt(sjs_array_int32_t* _parent, int32_t index, int32_t* _return) {
+void sjf_array_i32_getAt(sjs_array_i32* _parent, int32_t index, int32_t* _return) {
     
 		
 
@@ -136,9 +146,26 @@ void sjf_array_int32_t_getAt(sjs_array_int32_t* _parent, int32_t index, int32_t*
 	;
 }
 
-void sjf_array_int32_t_setAt(sjs_array_int32_t* _parent, int32_t index, int32_t item) {
+void sjf_array_i32_heap(sjs_array_i32_heap* _this) {
     
-		
+		if (_this->size < 0) {
+			exit(-1);
+		}
+
+		if (_this->data) {
+			_this->_isGlobal = true;
+		} else {
+			_this->data = (uintptr_t)calloc(_this->size * sizeof(int32_t), 1);
+			if (!_this->data) {
+				printf("grow: out of memory\n");
+				exit(-1);				
+			}
+		}
+	;
+}
+
+void sjf_array_i32_initAt(sjs_array_i32* _parent, int32_t index, int32_t item) {
+    
 		
 
 		if (index >= _parent->size || index < 0) {
@@ -147,41 +174,60 @@ void sjf_array_int32_t_setAt(sjs_array_int32_t* _parent, int32_t index, int32_t 
 		}
 
 		int32_t* p = (int32_t*)_parent->data;
-#if !true
-		if (p[index] != 0) {
-			;
-		}
-#endif
 		;
 		p[index] = item;
 	;
 }
 
 int main() {
-    sjs_array_int32_t* a;
-    uintptr_t result1;
-    int32_t result2;
-    sjs_array_int32_t* sjv_array1;
-    sjs_array_int32_t* sjv_temp1;
+    sjs_array_i32_heap* a;
+    int32_t sjt_cast1;
+    sjs_array_i32* sjt_dot1;
+    sjs_array_i32* sjt_dot2;
+    sjs_array_i32* sjt_dot3;
+    sjs_array_i32* sjt_dot4;
+    int32_t sjt_functionParam1;
+    int32_t sjt_functionParam2;
+    int32_t sjt_functionParam3;
+    int32_t sjt_functionParam4;
+    int32_t sjt_functionParam5;
+    int32_t sjt_functionParam6;
+    int32_t sjt_functionParam7;
+    sjs_array_i32_heap* sjv_array1;
+    int32_t void1;
 
-    sjv_temp1 = &sjd_temp1;
-    sjv_temp1->_refCount = 1;
-    printf("RETAIN\tsjs_array_int32_t*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_temp1, sjv_temp1->_refCount);;
-    result1 = (uintptr_t)0;
-    sjv_temp1->size = 3;
-    sjv_temp1->data = result1;
-    sjv_temp1->_isGlobal = false;
-    sjf_array_int32_t(sjv_temp1, &sjv_temp1);
-    sjv_array1 = sjv_temp1;
-    sjv_array1->_refCount++;
-    printf("RETAIN\tsjs_array_int32_t*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)sjv_array1, sjv_array1->_refCount);;
-    sjf_array_int32_t_setAt(sjv_array1, 0, 1);
-    sjf_array_int32_t_setAt(sjv_array1, 1, 2);
-    sjf_array_int32_t_setAt(sjv_array1, 2, 3);
+    sjv_array1 = (sjs_array_i32_heap*)malloc(sizeof(sjs_array_i32_heap));
+    sjv_array1->_refCount = 1;
+    sjv_array1->size = 3;
+    sjt_cast1 = 0;
+    sjv_array1->data = (uintptr_t)sjt_cast1;
+    sjv_array1->_isGlobal = false;
+    sjf_array_i32_heap(sjv_array1);
+    sjt_dot1 = (sjs_array_i32*)(((char*)sjv_array1) + sizeof(int));
+    sjt_functionParam1 = 0;
+    sjt_functionParam2 = 1;
+    sjf_array_i32_initAt(sjt_dot1, sjt_functionParam1, sjt_functionParam2);
+    sjt_dot2 = (sjs_array_i32*)(((char*)sjv_array1) + sizeof(int));
+    sjt_functionParam3 = 1;
+    sjt_functionParam4 = 2;
+    sjf_array_i32_initAt(sjt_dot2, sjt_functionParam3, sjt_functionParam4);
+    sjt_dot3 = (sjs_array_i32*)(((char*)sjv_array1) + sizeof(int));
+    sjt_functionParam5 = 2;
+    sjt_functionParam6 = 3;
+    sjf_array_i32_initAt(sjt_dot3, sjt_functionParam5, sjt_functionParam6);
     a = sjv_array1;
     a->_refCount++;
-    printf("RETAIN\tsjs_array_int32_t*\t%0x\tvoid sjf_global(void)\t%d\n", (uintptr_t)a, a->_refCount);;
-    sjf_array_int32_t_getAt(a, 0, &result2);
-    assert(sjd_temp1._refCount == 0);
+    sjt_dot4 = (sjs_array_i32*)(((char*)a) + sizeof(int));
+    sjt_functionParam7 = 0;
+    sjf_array_i32_getAt(sjt_dot4, sjt_functionParam7, &void1);
+
+    a->_refCount--;
+    if (a->_refCount <= 0) {
+        sjf_array_i32_destroy((sjs_array_i32*)(((char*)a) + sizeof(int)));
+    }
+    sjv_array1->_refCount--;
+    if (sjv_array1->_refCount <= 0) {
+        sjf_array_i32_destroy((sjs_array_i32*)(((char*)sjv_array1) + sizeof(int)));
+    }
     return 0;
 }

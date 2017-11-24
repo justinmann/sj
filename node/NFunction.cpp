@@ -190,21 +190,13 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
     _hasTranspileDefinitions = true;
     
     for (auto returnMode : functionReturnModes) {
-        auto calleeVar = getThisVar(compiler, returnMode);
-        auto calleeScope = getScope(compiler, returnMode);
-        auto returnType = getReturnType(compiler, returnMode);
-        
-        // If we attempt to return stack and can only generate a heap return then the stack return mode is invalid
-        if (returnMode == CTM_Stack && returnType->typeMode == CTM_Heap) {
-            _data[returnMode].isInvalid = true;
+        auto returnType = getReturnType(compiler, returnMode);        
+        if (_data[returnMode].isInvalid) {
             continue;
         }
 
-        // If we attempt to return heap and cannot generate a heap return then the heap return mode is invalid, value types are handled by the stack return mode
-        if (returnMode == CTM_Heap && returnType->typeMode != CTM_Heap) {
-            _data[returnMode].isInvalid = true;
-            continue;
-        }
+        auto calleeVar = getThisVar(compiler, returnMode);
+        auto calleeScope = getScope(compiler, returnMode);
 
         if (!hasThis) {
             // Create function body
@@ -466,7 +458,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
     
     if (_data[returnMode].isInvalid) {
-        compiler->addError(loc, CErrorCode::TypeMismatch, "funnction '%s' cannot return '%s'", name.c_str(), returnMode == CTM_Heap ? "heap" : "stack");
+        compiler->addError(loc, CErrorCode::TypeMismatch, "function '%s' cannot return '%s'", name.c_str(), returnMode == CTM_Heap ? "heap" : "stack");
         return;
     }
     
@@ -537,10 +529,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
 
         // Call function
         if (returnType != compiler->typeVoid) {
-            if (isFirstParameter) {
-                isFirstParameter = false;
-            }
-            else {
+            if (!isFirstParameter) {
                 line << ", ";
             }
             line << "&" << storeValue->getName(trBlock);
@@ -790,6 +779,12 @@ shared_ptr<CThisVar> CFunction::getThisVar(Compiler* compiler, CTypeMode returnM
     return _data[returnMode].thisVar;
 }
 
+bool CFunction::getIsReturnModeValid(Compiler* compiler, CTypeMode returnMode) {
+    assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
+    getReturnType(compiler, returnMode);
+    return !_data[returnMode].isInvalid;
+}
+
 shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CTypeMode returnMode) {
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
 
@@ -824,6 +819,17 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CTypeMode returnM
         
         if (_data[returnMode].returnType == nullptr) {
             _data[returnMode].returnType = compiler->typeVoid;
+        }
+        
+        
+        // If we attempt to return stack and can only generate a heap return then the stack return mode is invalid
+        if (returnMode == CTM_Stack && _data[returnMode].returnType->typeMode == CTM_Heap) {
+            _data[returnMode].isInvalid = true;
+        }
+        
+        // If we attempt to return heap and cannot generate a heap return then the heap return mode is invalid, value types are handled by the stack return mode
+        if (returnMode == CTM_Heap && _data[returnMode].returnType->typeMode != CTM_Heap) {
+            _data[returnMode].isInvalid = true;
         }
     }
     

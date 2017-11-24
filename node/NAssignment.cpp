@@ -140,7 +140,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
             else {
                 auto fun = static_pointer_cast<CFunction>(cfunction);
                 
-                auto leftType = getType(compiler, scope, CVarType::Var_Local, op.typeMode);
+                auto leftType = getType(compiler, scope, CVarType::Var_Local, (op.typeMode == CTM_Undefined) ? returnMode : op.typeMode);
                 if (!leftType) {
                     return nullptr;
                 }
@@ -195,7 +195,7 @@ shared_ptr<CType> NAssignment::getType(Compiler* compiler, shared_ptr<CScope> sc
     }
 
     auto rightType = rightVar->getType(compiler);
-    if (returnMode != CTM_Undefined && returnMode != rightType->typeMode) {
+    if (returnMode != CTM_Undefined && returnMode != rightType->typeMode && rightType->typeMode != CTM_Value) {
         if (returnMode == CTM_Local) {
             return rightType->getLocalType();
         }

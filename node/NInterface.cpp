@@ -209,6 +209,10 @@ shared_ptr<CType> CInterface::getVarType(CLoc loc, Compiler* compiler, shared_pt
     return compiler->getType(typeName->valueName);
 }
 
+bool CInterface::getIsReturnModeValid(Compiler* compiler, CTypeMode returnMode) {
+    return returnMode == CTM_Heap;
+}
+
 shared_ptr<CType> CInterface::getReturnType(Compiler* compiler, CTypeMode returnMode) {
     assert(false);
     return nullptr;

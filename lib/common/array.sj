@@ -22,6 +22,19 @@ array!t (
 		*_return = val;		
 	}c
 
+	initAt(index : 'i32, item : 't)'void c{
+		#forceParent()
+
+		if (index >= _parent->size || index < 0) {
+			printf("setAt: out of bounds %d:%d\n", index, _parent->size);
+			exit(-1);
+		}
+
+		#type(t)* p = (#type(t)*)_parent->data;
+		#retain(t, item);
+		p[index] = item;
+	}c
+
 	setAt(index : 'i32, item : 't)'void c{
 		#forceParent()
 

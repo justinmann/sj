@@ -38,10 +38,10 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
             auto setAtItem = make_shared<NDot>(loc,
                                                make_shared<NVariable>(loc, arrayName.c_str()),
                                                make_shared<NCall>(loc,
-                                                                  "setAt",
+                                                                  "initAt",
                                                                   nullptr,
                                                                   make_shared<NodeList>(make_shared<NInteger>(loc, index), element)));
-            auto setElementVar = setAtItem->getVar(compiler, scope, nullptr, CTM_Heap);
+            auto setElementVar = setAtItem->getVar(compiler, scope, nullptr, CTM_Undefined);
             if (!setElementVar) {
                 return nullptr;
             }

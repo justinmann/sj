@@ -1,4 +1,4 @@
-array!heap class(size'i32=, data'ptr=, _isGlobal'bool=)'stack array_heap_class {
+array!heap class(size'i32=, data'ptr=, _isGlobal'bool=)'heap array_heap_class {
   c{
 
 		if (_this->size < 0) {
@@ -40,7 +40,7 @@ array_getAt(index'i32:)'heap class c{
 	
 }c
 
-array_setAt(index'i32:, item'heap class:)'void c{
+array_initAt(index'i32:, item'heap class:)'void c{
 
 		
 
@@ -50,15 +50,6 @@ array_setAt(index'i32:, item'heap class:)'void c{
 		}
 
 		sjs_class_heap** p = (sjs_class_heap**)_parent->data;
-#if !false
-		if (p[index] != 0) {
-			 p[index]->_refCount--;
-if ( p[index]->_refCount <= 0) {
-    sjf_class_destroy((sjs_class*)(((char*) p[index]) + sizeof(int)));
-}
-;
-		}
-#endif
 		 item->_refCount++;
 ;
 		p[index] = item;
@@ -66,23 +57,23 @@ if ( p[index]->_refCount <= 0) {
 }c
 
 global()'void {
-  a'stack array_heap_class : {
-    sjv_array1'stack array_heap_class : array!heap class(this = array!heap class(
+  a'heap array_heap_class : heap {
+    sjv_array1'heap array_heap_class : array!heap class(this = array!heap class(
       size'i32 = this.size,
       data'ptr = this.data,
       _isGlobal'bool = this._isGlobal
     ))
-    array_setAt(
+    array_initAt(
       parent: sjv_array1,
       index'i32 : this.index,
       item'heap class : this.item
     )
-    array_setAt(
+    array_initAt(
       parent: sjv_array1,
       index'i32 : this.index,
       item'heap class : this.item
     )
-    array_setAt(
+    array_initAt(
       parent: sjv_array1,
       index'i32 : this.index,
       item'heap class : this.item

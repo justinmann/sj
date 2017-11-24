@@ -71,6 +71,7 @@ public:
     virtual string getCDestroyFunctionName() = 0;
     virtual string getCStructName(CTypeMode typeMode) = 0;
     virtual pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(string name) = 0;
+    virtual bool getIsReturnModeValid(Compiler* compiler, CTypeMode returnMode) = 0;
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CTypeMode returnMode) = 0;
     virtual void transpileDefinition(Compiler* compiler, TrOutput* trOutput) = 0;
     virtual void transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, vector<FunctionParameter>& parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode returnMode) = 0;

@@ -1,13 +1,13 @@
-anon1()'anon1 {
+anon1()'stack anon1 {
   this
 }
 
-anon1_readLine()'string {
-  [heap]data'ptr = 0i as ptr
-  [heap]size'i32 = 1024i
+anon1_readLine()'stack string {
+  data'ptr = 0i as ptr
+  size'i32 = 1024i
   c{
 
-			#include(<stdio.h>)
+			
 		    char* str = (char*)malloc(size);
 		    int index = 0;
 		    char ch = ' ';
@@ -29,32 +29,28 @@ anon1_readLine()'string {
 		    size = index;
 		
 }c
-  [heap]string([heap]this : string(
-    [heap]count'i32 = size - 1i,
-    [heap]data'array_char = [heap]array!char([heap]this : array!char(
-      [heap]size'i32 = size,
-      [heap]data'ptr = data,
-      [heap]_isGlobal'bool = false
-    ))
+  string(this = string(
+    count'i32 = this.count,
+    data'stack array_char = this.data
   ))
 }
 
-anon1_write([stack]data'string:)'void {
+anon1_write(data'stack string:)'void {
   c{
 
-			#include(<stdio.h>)
-			#forceParent()
+			
+			
 			printf("%s\n", (char*)data->data->data);
 		
 }c
 }
 
-anon2()'anon2 {
+anon2()'stack anon2 {
   this
 }
 
-anon2_toInt([stack]text'string:)'i32 {
-  [heap]x'i32 = 0i
+anon2_toInt(text'stack string:)'i32 {
+  x'i32 = 0i
   c{
 
 			char* e;
@@ -71,7 +67,7 @@ anon2_toInt([stack]text'string:)'i32 {
   x
 }
 
-anon3()'anon3 {
+anon3()'stack anon3 {
   this
 }
 
@@ -82,107 +78,50 @@ anon3_nextInt()'i32 c{
 	
 }c
 
-anon4()'anon4 {
+anon4()'stack anon4 {
   this
 }
 
-array!char([heap]size'i32=, [heap]data'ptr=, [heap]_isGlobal'bool=)'array_char {
-  c{
-
-		if (_this->size < 0) {
-			exit(-1);
-		}
-
-		if (_this->data) {
-			_this->_isGlobal = true;
-		} else {
-			_this->data = (uintptr_t)calloc(_this->size * sizeof(#type(t)), 1);
-			if (!_this->data) {
-				printf("grow: out of memory\n");
-				exit(-1);				
-			}
-		}
-	
-}c
-  this
-}
-
-string([heap]count'i32=, [heap]data'array_char=)'string {
+string(count'i32=, data'stack array_char=)'stack string {
   this
 }
 
 global()'void {
-  [stack]convert'anon4 : [stack]anon4([stack]this : anon4())
-  [stack]random'anon3 : [stack]anon3([stack]this : anon3())
-  [stack]parse'anon2 : [stack]anon2([stack]this : anon2())
-  [stack]console'anon1 : [stack]anon1([stack]this : anon1())
-  [stack]anon1_write([stack]this : anon1_write(
-    parent: [stack]console,
-    [stack]data'string : {
-      [heap]string([heap]this : string(
-        [heap]count'i32 = i,
-        [heap]data'array_char = [heap]array!char([heap]this : array!char(
-          [heap]size'i32 = i,
-          [heap]data'ptr = ,
-          [heap]_isGlobal'bool = false
-        ))
-      ))
-    }
-  ))
-  [stack]num'i32 : [stack]anon3_nextInt([stack]this : anon3_nextInt()) %% 10i + 1i
-  [stack]isCorrect'bool = false
+  convert'stack anon4 : anon4(this = anon4())
+  random'stack anon3 : anon3(this = anon3())
+  parse'stack anon2 : anon2(this = anon2())
+  console'stack anon1 : anon1(this = anon1())
+  anon1_write(
+    parent: console,
+    data'stack string : this.data
+  )
+  num'i32 : anon3_nextInt() %% 10i + 1i
+  isCorrect'bool = false
   while !isCorrect{
-    [heap]str'string : [heap]anon1_readLine([stack]this : anon1_readLine())
-    [heap]guess'i32 : [heap]anon2_toInt([stack]this : anon2_toInt(
-      [stack]text'string : str
-    ))
-    [stack]isCorrect'bool = if guess < num {
-      [stack]anon1_write([stack]this : anon1_write(
-        parent: [stack]console,
-        [stack]data'string : {
-          [heap]string([heap]this : string(
-            [heap]count'i32 = i,
-            [heap]data'array_char = [heap]array!char([heap]this : array!char(
-              [heap]size'i32 = i,
-              [heap]data'ptr = ,
-              [heap]_isGlobal'bool = false
-            ))
-          ))
-        }
-      ))
+    str'stack string : anon1_readLine()
+    guess'i32 : anon2_toInt(
+      text'stack string : this.text
+    )
+    isCorrect'bool = if guess < num {
+      anon1_write(
+        parent: console,
+        data'stack string : this.data
+      )
       false
     } else if guess > num {
-      [stack]anon1_write([stack]this : anon1_write(
-        parent: [stack]console,
-        [stack]data'string : {
-          [heap]string([heap]this : string(
-            [heap]count'i32 = i,
-            [heap]data'array_char = [heap]array!char([heap]this : array!char(
-              [heap]size'i32 = i,
-              [heap]data'ptr = ,
-              [heap]_isGlobal'bool = false
-            ))
-          ))
-        }
-      ))
+      anon1_write(
+        parent: console,
+        data'stack string : this.data
+      )
       false
     } else {
       true
     }
   }
-  [stack]anon1_write([stack]this : anon1_write(
-    parent: [stack]console,
-    [stack]data'string : {
-      [heap]string([heap]this : string(
-        [heap]count'i32 = i,
-        [heap]data'array_char = [heap]array!char([heap]this : array!char(
-          [heap]size'i32 = i,
-          [heap]data'ptr = ,
-          [heap]_isGlobal'bool = false
-        ))
-      ))
-    }
-  ))
+  anon1_write(
+    parent: console,
+    data'stack string : this.data
+  )
   void
 }
 

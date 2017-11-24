@@ -3,9 +3,15 @@
 shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CLoc loc_, const string& name_, shared_ptr<NodeList> arguments_, shared_ptr<CScope> scope, weak_ptr<CVar> dotVar_, shared_ptr<CBaseFunction> callee_, CTypeMode returnMode) {
     assert(callee_);
 
-    if (returnMode == CTM_Undefined || returnMode == CTM_Value || returnMode == CTM_Local) {
-        returnMode = CTM_Stack;
+    if (returnMode != CTM_Heap) {
+        if (callee_->getIsReturnModeValid(compiler, CTM_Stack)) {
+            returnMode = CTM_Stack;
+        } else {
+            returnMode = CTM_Heap;
+        }
     }
+    
+    // TODO: assert(callee_->getIsReturnModeValid(compiler, returnMode));
     
     auto c = make_shared<CCallVar>(loc_, scope, returnMode);
     c->arguments = arguments_;
