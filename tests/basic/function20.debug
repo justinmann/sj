@@ -3,11 +3,11 @@ bar()'i32 {
 }
 
 func()'i32 {
-  bar([stack]this : bar())
+  bar()
 }
 
 global()'void {
-  [heap]func([stack]this : func())
+  func()
   void
 }
 

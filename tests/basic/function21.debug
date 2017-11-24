@@ -1,5 +1,5 @@
 func()'i32 {
-  func_bar([stack]this : func_bar())
+  func_bar()
 }
 
 func_bar()'i32 {
@@ -7,7 +7,7 @@ func_bar()'i32 {
 }
 
 global()'void {
-  [heap]func([stack]this : func())
+  func()
   void
 }
 

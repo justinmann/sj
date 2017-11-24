@@ -70,12 +70,14 @@ struct td_sjs_object {
 
 
 int main() {
-    int32_t loopEnd1;
+    int32_t sjt_forEnd1;
+    int32_t sjt_forStart1;
     int32_t x;
 
-    x = 1;
-    loopEnd1 = 10;
-    while (x < loopEnd1) {
+    sjt_forStart1 = 1;
+    x = sjt_forStart1;
+    sjt_forEnd1 = 10;
+    while (x < sjt_forEnd1) {
         x++;
     }
     return 0;

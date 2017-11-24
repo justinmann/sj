@@ -1,12 +1,12 @@
-func([stack]x'i32:, [stack]y'i32:)'i32 {
-  this.x + this.y
+func(x'i32:, y'i32:)'i32 {
+  x + y
 }
 
 global()'void {
-  func([stack]this : func(
-    [stack]x'i32 : 1.0d,
-    [stack]y'i32 : 2i
-  ))
+  func(
+    x'i32 : this.x,
+    y'i32 : this.y
+  )
   void
 }
 

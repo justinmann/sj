@@ -3,7 +3,7 @@ func()'f64 {
 }
 
 global()'void {
-  func([stack]this : func()) < 4.0d
+  func() < 4.0d
   void
 }
 

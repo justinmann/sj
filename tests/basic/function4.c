@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -72,16 +71,14 @@ void sjf_func(double* _return);
 
 
 void sjf_func(double* _return) {
-
-    *_return = -3.0;
+    (*_return) = -3.0;
 }
 
 int main() {
-    double result1;
-    bool result2;
+    double sjt_compare1;
+    double sjt_compare2;
 
-    result1 = 0;
-    sjf_func(&result1);
-    result2 = result1 < 4.0;
+    sjf_func(&sjt_compare1);
+    sjt_compare2 = 4.0;
     return 0;
 }

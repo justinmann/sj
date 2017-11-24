@@ -3,7 +3,7 @@ foo()'void {
 }
 
 global()'void {
-  foo([stack]this : foo())
+  foo()
   void
 }
 

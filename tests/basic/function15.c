@@ -71,13 +71,14 @@ void sjf_func(int32_t x, int32_t* _return);
 
 
 void sjf_func(int32_t x, int32_t* _return) {
-
-    *_return = x;
+    (*_return) = x;
 }
 
 int main() {
-    int32_t result1;
+    int32_t sjt_functionParam1;
+    int32_t void1;
 
-    sjf_func(1, &result1);
+    sjt_functionParam1 = 1;
+    sjf_func(sjt_functionParam1, &void1);
     return 0;
 }

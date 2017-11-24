@@ -1,5 +1,7 @@
 global()'void {
   x'i32 : 1i
+  for x : 1i to 10i {
+  }
   void
 }
 
