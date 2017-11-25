@@ -491,7 +491,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
                 line << (trBlock->hasThis ? "_this" : "_parent");
             }
             else {
-                line << parentValue->name;
+                line << parentValue->getPointerName();
             }
         }
 

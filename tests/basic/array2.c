@@ -180,12 +180,9 @@ void sjf_array_i32_initAt(sjs_array_i32* _parent, int32_t index, int32_t item) {
 }
 
 int main() {
-    sjs_array_i32_heap* a;
+    sjs_array_i32 a;
     int32_t sjt_cast1;
     sjs_array_i32* sjt_dot1;
-    sjs_array_i32* sjt_dot2;
-    sjs_array_i32* sjt_dot3;
-    sjs_array_i32* sjt_dot4;
     int32_t sjt_functionParam1;
     int32_t sjt_functionParam2;
     int32_t sjt_functionParam3;
@@ -193,41 +190,26 @@ int main() {
     int32_t sjt_functionParam5;
     int32_t sjt_functionParam6;
     int32_t sjt_functionParam7;
-    sjs_array_i32_heap* sjv_array1;
     int32_t void1;
 
-    sjv_array1 = (sjs_array_i32_heap*)malloc(sizeof(sjs_array_i32_heap));
-    sjv_array1->_refCount = 1;
-    sjv_array1->size = 3;
+    a.size = 3;
     sjt_cast1 = 0;
-    sjv_array1->data = (uintptr_t)sjt_cast1;
-    sjv_array1->_isGlobal = false;
-    sjf_array_i32_heap(sjv_array1);
-    sjt_dot1 = (sjs_array_i32*)(((char*)sjv_array1) + sizeof(int));
+    a.data = (uintptr_t)sjt_cast1;
+    a._isGlobal = false;
+    sjf_array_i32(&a);
     sjt_functionParam1 = 0;
     sjt_functionParam2 = 1;
-    sjf_array_i32_initAt(sjt_dot1, sjt_functionParam1, sjt_functionParam2);
-    sjt_dot2 = (sjs_array_i32*)(((char*)sjv_array1) + sizeof(int));
+    sjf_array_i32_initAt(&a, sjt_functionParam1, sjt_functionParam2);
     sjt_functionParam3 = 1;
     sjt_functionParam4 = 2;
-    sjf_array_i32_initAt(sjt_dot2, sjt_functionParam3, sjt_functionParam4);
-    sjt_dot3 = (sjs_array_i32*)(((char*)sjv_array1) + sizeof(int));
+    sjf_array_i32_initAt(&a, sjt_functionParam3, sjt_functionParam4);
     sjt_functionParam5 = 2;
     sjt_functionParam6 = 3;
-    sjf_array_i32_initAt(sjt_dot3, sjt_functionParam5, sjt_functionParam6);
-    a = sjv_array1;
-    a->_refCount++;
-    sjt_dot4 = (sjs_array_i32*)(((char*)a) + sizeof(int));
+    sjf_array_i32_initAt(&a, sjt_functionParam5, sjt_functionParam6);
+    sjt_dot1 = &a;
     sjt_functionParam7 = 0;
-    sjf_array_i32_getAt(sjt_dot4, sjt_functionParam7, &void1);
+    sjf_array_i32_getAt(sjt_dot1, sjt_functionParam7, &void1);
 
-    a->_refCount--;
-    if (a->_refCount <= 0) {
-        sjf_array_i32_destroy((sjs_array_i32*)(((char*)a) + sizeof(int)));
-    }
-    sjv_array1->_refCount--;
-    if (sjv_array1->_refCount <= 0) {
-        sjf_array_i32_destroy((sjs_array_i32*)(((char*)sjv_array1) + sizeof(int)));
-    }
+    sjf_array_i32_destroy(&a);
     return 0;
 }

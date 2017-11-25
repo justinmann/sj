@@ -1,5 +1,37 @@
 #include "Node.h"
 
+bool CArrayVar::getReturnThis() {
+    return false;
+}
+
+shared_ptr<CType> CArrayVar::getType(Compiler* compiler) {
+    return createArrayVar->getType(compiler);
+}
+
+void CArrayVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    createArrayVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, storeValue);
+    auto arrayValue = storeValue->getValue();
+    for (auto initAtVar : initAtVars) {
+        auto returnType = initAtVar->getType(compiler);
+        initAtVar->transpile(compiler, trOutput, trBlock, arrayValue, thisValue, trBlock->createVoidStoreVariable(loc, returnType));
+    }
+}
+
+
+void CArrayVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+    ss << "[";
+    auto isFirst = true;
+    for (auto initAtVar : initAtVars) {
+        if (isFirst) {
+            isFirst = false;
+        } else {
+            ss << ", ";
+        }
+        initAtVar->dump(compiler, dotVar, functions, ss, dotSS, level);
+    }
+    ss << "]";
+}
+
 void NArray::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     for (auto element : *elements) {
         element->define(compiler, thisFunction);
@@ -7,55 +39,50 @@ void NArray::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> 
 }
 
 shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    vector<shared_ptr<CVar>> statementVars;
     auto firstElement = elements->front();
-    if (firstElement != nullptr) {
-        auto arrayName = TrBlock::nextVarName("sjv_array");
-        
-        // create and store array value
-        auto elementVar = firstElement->getVar(compiler, scope, CTM_Heap);
-        if (!elementVar) {
-            compiler->addError(loc, CErrorCode::InvalidType, "cannot determine type of first element");
-            return nullptr;
-        }
-        
-        auto elementType = elementVar->getType(compiler);
-        if (elementType->typeMode != CTM_Heap && elementType->typeMode != CTM_Value) {
-            compiler->addError(loc, CErrorCode::TypeMismatch, "arrays only support heap and value types");
-            return nullptr;
-        }
-        
-        auto createArray = make_shared<NCall>(loc, "array", make_shared<CTypeNameList>(elementType->category, elementType->typeMode, elementType->valueName, elementType->isOption), make_shared<NodeList>(make_shared<NInteger>(loc, elements->size())));
-        auto storeArray = make_shared<NAssignment>(loc, nullptr, nullptr, arrayName.c_str(), createArray, AssignOp::immutableOp);
-        auto createArrayVar = storeArray->getVar(compiler, scope, returnMode);
-        if (!createArrayVar) {
-            return nullptr;
-        }
-        statementVars.push_back(createArrayVar);
-        
-        auto index = 0;
-        for (auto element : *elements) {
-            auto setAtItem = make_shared<NDot>(loc,
-                                               make_shared<NVariable>(loc, arrayName.c_str()),
-                                               make_shared<NCall>(loc,
-                                                                  "initAt",
-                                                                  nullptr,
-                                                                  make_shared<NodeList>(make_shared<NInteger>(loc, index), element)));
-            auto setElementVar = setAtItem->getVar(compiler, scope, nullptr, CTM_Undefined);
-            if (!setElementVar) {
-                return nullptr;
-            }
-            statementVars.push_back(setElementVar);
-            index++;
-        }
-        
-        // return return array value
-        auto arrayVar = make_shared<NVariable>(loc, arrayName.c_str());
-        auto getArrayVar = arrayVar->getVar(compiler, scope, nullptr, returnMode);
-        if (!getArrayVar) {
-            return nullptr;
-        }
-        statementVars.push_back(getArrayVar);
+    if (firstElement == nullptr) {
+        return nullptr;
     }
-    return make_shared<CBlockVar>(loc, scope, statementVars);
+
+    // create and store array value
+    auto elementVar = firstElement->getVar(compiler, scope, CTM_Heap);
+    if (!elementVar) {
+        compiler->addError(loc, CErrorCode::InvalidType, "cannot determine type of first element");
+        return nullptr;
+    }
+    
+    auto elementType = elementVar->getType(compiler);
+    if (elementType->typeMode != CTM_Heap && elementType->typeMode != CTM_Value) {
+        compiler->addError(loc, CErrorCode::TypeMismatch, "arrays only support heap and value types");
+        return nullptr;
+    }
+    
+    auto createArrayCallee = scope->function->getCFunction(compiler, loc, "array", scope, make_shared<CTypeNameList>(elementType->category, elementType->typeMode, elementType->valueName, elementType->isOption), returnMode);
+    if (!createArrayCallee) {
+        return nullptr;
+    }
+
+    auto createArrayVar = CCallVar::create(compiler, loc, "array", make_shared<NodeList>(make_shared<NInteger>(loc, elements->size())), scope, shared_ptr<CVar>(nullptr), createArrayCallee, returnMode);
+    if (!createArrayVar) {
+        return nullptr;
+    }
+    
+    auto initAtCallee = createArrayCallee->getCFunction(compiler, loc, "initAt", scope, nullptr, CTM_Undefined);
+    if (!initAtCallee) {
+        return nullptr;
+    }
+    
+    auto index = 0;
+    vector<shared_ptr<CVar>> initAtVars;
+    for (auto element : *elements) {
+        auto initAtVar = CCallVar::create(compiler, loc, "initAt", make_shared<NodeList>(make_shared<NInteger>(loc, index), element), scope, shared_ptr<CVar>(nullptr), initAtCallee, CTM_Undefined);
+        if (!initAtVar) {
+            return nullptr;
+        }
+
+        initAtVars.push_back(initAtVar);
+        index++;
+    }
+
+    return make_shared<CArrayVar>(loc, scope, createArrayVar, initAtVars);
 }

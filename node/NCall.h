@@ -18,10 +18,10 @@ public:
     CCallVar(CLoc loc, shared_ptr<CScope> scope, CTypeMode returnMode) : CVar(loc, scope, "", false), returnMode(returnMode) {}
     bool getReturnThis();
     static shared_ptr<CCallVar> create(Compiler* compiler, CLoc loc_, const string& name_, shared_ptr<NodeList> arguments_, shared_ptr<CScope> scope, weak_ptr<CVar> dotVar_, shared_ptr<CBaseFunction> callee_, CTypeMode returnMode);
-    virtual shared_ptr<CType> getType(Compiler* compiler);
+    shared_ptr<CType> getType(Compiler* compiler);
     bool getParameters(Compiler* compiler, vector<FunctionParameter>& parameters);
-    virtual void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
-    virtual void dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
+    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
+    void dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
 
     CTypeMode returnMode;
     shared_ptr<NodeList> arguments;

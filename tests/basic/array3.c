@@ -216,10 +216,7 @@ int main() {
     int32_t dotTemp1;
     int32_t sjt_cast1;
     sjs_array_heap_class* sjt_dot1;
-    sjs_array_heap_class* sjt_dot2;
-    sjs_array_heap_class* sjt_dot3;
-    sjs_array_heap_class* sjt_dot4;
-    sjs_class* sjt_dot5;
+    sjs_class* sjt_dot2;
     int32_t sjt_functionParam1;
     sjs_class_heap* sjt_functionParam2;
     int32_t sjt_functionParam3;
@@ -227,43 +224,37 @@ int main() {
     int32_t sjt_functionParam5;
     sjs_class_heap* sjt_functionParam6;
     int32_t sjt_functionParam7;
-    sjs_array_heap_class_heap* sjv_array1;
 
-    sjv_array1 = (sjs_array_heap_class_heap*)malloc(sizeof(sjs_array_heap_class_heap));
-    sjv_array1->_refCount = 1;
-    sjv_array1->size = 3;
+    a = (sjs_array_heap_class_heap*)malloc(sizeof(sjs_array_heap_class_heap));
+    a->_refCount = 1;
+    a->size = 3;
     sjt_cast1 = 0;
-    sjv_array1->data = (uintptr_t)sjt_cast1;
-    sjv_array1->_isGlobal = false;
-    sjf_array_heap_class_heap(sjv_array1);
-    sjt_dot1 = (sjs_array_heap_class*)(((char*)sjv_array1) + sizeof(int));
+    a->data = (uintptr_t)sjt_cast1;
+    a->_isGlobal = false;
+    sjf_array_heap_class_heap(a);
     sjt_functionParam1 = 0;
     sjt_functionParam2 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
     sjt_functionParam2->_refCount = 1;
     sjt_functionParam2->x = 1;
     sjf_class_heap(sjt_functionParam2);
-    sjf_array_heap_class_initAt(sjt_dot1, sjt_functionParam1, sjt_functionParam2);
-    sjt_dot2 = (sjs_array_heap_class*)(((char*)sjv_array1) + sizeof(int));
+    sjf_array_heap_class_initAt(a, sjt_functionParam1, sjt_functionParam2);
     sjt_functionParam3 = 1;
     sjt_functionParam4 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
     sjt_functionParam4->_refCount = 1;
     sjt_functionParam4->x = 2;
     sjf_class_heap(sjt_functionParam4);
-    sjf_array_heap_class_initAt(sjt_dot2, sjt_functionParam3, sjt_functionParam4);
-    sjt_dot3 = (sjs_array_heap_class*)(((char*)sjv_array1) + sizeof(int));
+    sjf_array_heap_class_initAt(a, sjt_functionParam3, sjt_functionParam4);
     sjt_functionParam5 = 2;
     sjt_functionParam6 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
     sjt_functionParam6->_refCount = 1;
     sjt_functionParam6->x = 3;
     sjf_class_heap(sjt_functionParam6);
-    sjf_array_heap_class_initAt(sjt_dot3, sjt_functionParam5, sjt_functionParam6);
-    a = sjv_array1;
-    a->_refCount++;
-    sjt_dot4 = (sjs_array_heap_class*)(((char*)a) + sizeof(int));
+    sjf_array_heap_class_initAt(a, sjt_functionParam5, sjt_functionParam6);
+    sjt_dot1 = (sjs_array_heap_class*)(((char*)a) + sizeof(int));
     sjt_functionParam7 = 0;
-    sjf_array_heap_class_getAt_heap(sjt_dot4, sjt_functionParam7, &c);
-    sjt_dot5 = (sjs_class*)(((char*)c) + sizeof(int));
-    dotTemp1 = sjt_dot5->x;
+    sjf_array_heap_class_getAt_heap(sjt_dot1, sjt_functionParam7, &c);
+    sjt_dot2 = (sjs_class*)(((char*)c) + sizeof(int));
+    dotTemp1 = sjt_dot2->x;
 
     a->_refCount--;
     if (a->_refCount <= 0) {
@@ -284,10 +275,6 @@ int main() {
     sjt_functionParam6->_refCount--;
     if (sjt_functionParam6->_refCount <= 0) {
         sjf_class_destroy((sjs_class*)(((char*)sjt_functionParam6) + sizeof(int)));
-    }
-    sjv_array1->_refCount--;
-    if (sjv_array1->_refCount <= 0) {
-        sjf_array_heap_class_destroy((sjs_array_heap_class*)(((char*)sjv_array1) + sizeof(int)));
     }
     return 0;
 }

@@ -1,24 +1,3 @@
-array!heap class(size'i32=, data'ptr=, _isGlobal'bool=)'heap array_heap_class {
-  c{
-
-		if (_this->size < 0) {
-			exit(-1);
-		}
-
-		if (_this->data) {
-			_this->_isGlobal = true;
-		} else {
-			_this->data = (uintptr_t)calloc(_this->size * sizeof(sjs_class_heap*), 1);
-			if (!_this->data) {
-				printf("grow: out of memory\n");
-				exit(-1);				
-			}
-		}
-	
-}c
-  this
-}
-
 array_getAt(index'i32:)'heap class c{
 
 		
@@ -57,29 +36,19 @@ array_initAt(index'i32:, item'heap class:)'void c{
 }c
 
 global()'void {
-  a'heap array_heap_class : heap {
-    sjv_array1'heap array_heap_class : array!heap class(this = array!heap class(
-      size'i32 = this.size,
-      data'ptr = this.data,
-      _isGlobal'bool = this._isGlobal
-    ))
-    array_initAt(
-      parent: sjv_array1,
-      index'i32 : this.index,
-      item'heap class : this.item
-    )
-    array_initAt(
-      parent: sjv_array1,
-      index'i32 : this.index,
-      item'heap class : this.item
-    )
-    array_initAt(
-      parent: sjv_array1,
-      index'i32 : this.index,
-      item'heap class : this.item
-    )
-    sjv_array1
-  }
+  a'heap array_heap_class : heap [array_initAt(
+    parent: this,
+    index'i32 : this.index,
+    item'heap class : this.item
+  ), array_initAt(
+    parent: this,
+    index'i32 : this.index,
+    item'heap class : this.item
+  ), array_initAt(
+    parent: this,
+    index'i32 : this.index,
+    item'heap class : this.item
+  )]
   c'heap class : array_getAt(
     parent: a,
     index'i32 : this.index
