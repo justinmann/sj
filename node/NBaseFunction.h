@@ -33,6 +33,7 @@ enum CClassFunctionType {
 enum VarScanMode {
     VSM_LocalOnly,
     VSM_ThisOnly,
+    VSM_FromChild,
     VSM_LocalThisParent
 };
 

@@ -208,6 +208,10 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                 trFunctionBlock->hasThis = false;
                 trOutput->functions[functionName] = trFunctionBlock;
 
+                auto blockVar = _block->getVar(compiler, calleeScope, returnMode);
+                auto bodyReturnValue = (returnType == compiler->typeVoid) ? trFunctionBlock->createVoidStoreVariable(loc, returnType) : trFunctionBlock->createReturnStoreVariable(loc, nullptr, returnType);
+                blockVar->transpile(compiler, trOutput, trFunctionBlock.get(), nullptr, nullptr, bodyReturnValue);
+
                 stringstream functionDefinition;
                 functionDefinition << "void " << functionName << "(";
                 auto isFirstArg = true;
@@ -238,10 +242,6 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                 }
                 functionDefinition << ")";
                 trFunctionBlock->definition = functionDefinition.str();
-
-                auto blockVar = _block->getVar(compiler, calleeScope, returnMode);
-                auto bodyReturnValue = (returnType == compiler->typeVoid) ? trFunctionBlock->createVoidStoreVariable(loc, returnType) : trFunctionBlock->createReturnStoreVariable(loc, nullptr, returnType);
-                blockVar->transpile(compiler, trOutput, trFunctionBlock.get(), nullptr, nullptr, bodyReturnValue);
             }
         }
         else {
@@ -1037,11 +1037,11 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, const string& name, VarS
             }
         }
         
-        if (scanMode == VSM_ThisOnly || scanMode == VSM_LocalThisParent) {
+        if (scanMode == VSM_ThisOnly || scanMode == VSM_LocalThisParent || scanMode == VSM_FromChild) {
             auto t2 = _data[returnMode].thisArgVarsByName.find(name);
             if (t2 != _data[returnMode].thisArgVarsByName.end()) {
                 auto thisArgVar = t2->second.second;
-                if (!hasThis) {
+                if (!hasThis && scanMode != VSM_FromChild) {
                     auto argVarType = thisArgVar->getType(compiler);
                     if (!argVarType->parent.expired()) {
                         if (argVarType->typeMode == CTM_Stack) {
@@ -1062,7 +1062,7 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, const string& name, VarS
             shared_ptr<CFunction> parentCheck = dynamic_pointer_cast<CFunction>(parent.lock());
             shared_ptr<CVar> cvar;
             while (cvar == nullptr && parentCheck != nullptr) {
-                cvar = parentCheck->getCVar(compiler, name, VSM_ThisOnly, CTM_Undefined);
+                cvar = parentCheck->getCVar(compiler, name, VSM_FromChild, CTM_Undefined);
                 if (cvar == nullptr) {
                     parents.push_back(parentCheck);
                     parentCheck = dynamic_pointer_cast<CFunction>(parentCheck->parent.lock());
