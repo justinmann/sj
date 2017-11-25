@@ -70,7 +70,7 @@ struct td_sjs_object {
 };
 
 struct td_sjs_class {
-    int structsNeedAValue;
+    int32_t m;
 };
 
 void sjf_class(sjs_class* _this, int32_t* _return);
@@ -80,29 +80,25 @@ void sjf_class_inner(sjs_class* _parent, int32_t* _return);
 
 
 void sjf_class(sjs_class* _this, int32_t* _return) {
-    int32_t m;
-
-    m = 1;
     sjf_class_inner(_this, &(*_return));
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* to) {
+    _this->m = to->m;
 }
 
 void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_inner(sjs_class* _parent, int32_t* _return) {
-    int32_t dotTemp1;
-
-    dotTemp1 = _parent->m;
-    (*_return) = dotTemp1;
+    (*_return) = m;
 }
 
 int main() {
     sjs_class object1;
     int32_t void1;
 
+    object1.m = 1;
     sjf_class(&object1, &void1);
 
     sjf_class_destroy(&object1);

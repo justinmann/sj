@@ -22,6 +22,14 @@ void CDotVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock
 	rightVar->transpile(compiler, trOutput, trBlock, leftValue->getValue(), thisValue, storeValue);
 }
 
+bool CDotVar::getCanStoreValue() {
+    auto rightStoreVar = dynamic_pointer_cast<CStoreVar>(rightVar);
+    if (rightStoreVar) {
+        return rightStoreVar->getCanStoreValue();
+    }
+    return false;
+}
+
 shared_ptr<TrStoreValue> CDotVar::getStoreValue(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op, bool isFirstAssignment) {
     auto leftValue = trBlock->createTempStoreVariable(loc, nullptr, leftVar->getType(compiler)->getLocalType(), "dot");
     leftVar->transpile(compiler, trOutput, trBlock, dotValue, thisValue, leftValue);

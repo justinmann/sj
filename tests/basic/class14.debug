@@ -1,5 +1,4 @@
-class()'i32 {
-  m'i32 : 1i
+class(m'i32:)'i32 {
   class_inner(
     parent: this
   )
@@ -10,7 +9,9 @@ class_inner()'i32 {
 }
 
 global()'void {
-  class(this = class())
+  class(this = class(
+    m'i32 : this.m
+  ))
   void
 }
 

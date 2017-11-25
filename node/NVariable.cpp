@@ -53,6 +53,14 @@ void CParentDotVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* t
     childVar->transpile(compiler, trOutput, trBlock, parentValue, thisValue, storeValue);
 }
 
+bool CParentDotVar::getCanStoreValue() {
+    auto rightStoreVar = dynamic_pointer_cast<CStoreVar>(childVar);
+    if (rightStoreVar) {
+        return rightStoreVar->getCanStoreValue();
+    }
+    return false;
+}
+
 shared_ptr<TrStoreValue> CParentDotVar::getStoreValue(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op, bool isFirstAssignment) {
     shared_ptr<TrValue> parentValue;
     if (dotValue) {

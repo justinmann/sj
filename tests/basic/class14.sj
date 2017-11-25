@@ -1,5 +1,4 @@
-class() {
-	m: 1
+class(m: 1) {
 	inner() {
 		m
 	}

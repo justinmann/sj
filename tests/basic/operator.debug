@@ -37,7 +37,7 @@ fancyMath_multiply(num'stack fancyMath:)'stack fancyMath {
 }
 
 fancyMath_setBob(i'i32:)'i32 {
-  x'i32 = i
+  .parentthis.x'i32 = i
 }
 
 fancyMath_subtract(num'stack fancyMath:)'stack fancyMath {
@@ -86,6 +86,7 @@ global()'void {
     parent: f
   )
   j'i32 = fancyMath_setBob(
+    parent: this,
     i'i32 : this.i
   )
   void

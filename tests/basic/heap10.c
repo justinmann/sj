@@ -60,165 +60,90 @@ struct td_double_option {
 const double_option double_empty = { true };
 
 #define sjs_object_typeId 1
-#define sjs_array_class_typeId 2
-#define sjs_array_class_heap_typeId 3
+#define sjs_inner_typeId 2
+#define sjs_inner_heap_typeId 3
 #define sjs_class_typeId 4
 #define sjs_class_heap_typeId 5
+#define sjs_class2_typeId 6
+#define sjs_class2_heap_typeId 7
 
 typedef struct td_sjs_object sjs_object;
-typedef struct td_sjs_array_class sjs_array_class;
-typedef struct td_sjs_array_class_heap sjs_array_class_heap;
+typedef struct td_sjs_inner sjs_inner;
+typedef struct td_sjs_inner_heap sjs_inner_heap;
 typedef struct td_sjs_class sjs_class;
 typedef struct td_sjs_class_heap sjs_class_heap;
+typedef struct td_sjs_class2 sjs_class2;
+typedef struct td_sjs_class2_heap sjs_class2_heap;
 
 struct td_sjs_object {
     int _refCount;
 };
 
-struct td_sjs_array_class {
-    int32_t size;
-    uintptr_t data;
-    bool _isGlobal;
+struct td_sjs_inner {
+    int structsNeedAValue;
 };
 
-struct td_sjs_array_class_heap {
+struct td_sjs_inner_heap {
     int _refCount;
-    int32_t size;
-    uintptr_t data;
-    bool _isGlobal;
 };
 
 struct td_sjs_class {
-    int32_t x;
+    sjs_inner inner;
 };
 
 struct td_sjs_class_heap {
     int _refCount;
-    int32_t x;
+    sjs_inner inner;
 };
 
-void sjf_array_class(sjs_array_class* _this);
-void sjf_array_class_copy(sjs_array_class* _this, sjs_array_class* to);
-void sjf_array_class_destroy(sjs_array_class* _this);
-void sjf_array_class_getAt(sjs_array_class* _parent, int32_t index, sjs_class* _return);
-void sjf_array_class_heap(sjs_array_class_heap* _this);
-void sjf_array_class_initAt(sjs_array_class* _parent, int32_t index, sjs_class* item);
+struct td_sjs_class2 {
+    sjs_inner_heap* inner;
+};
+
+struct td_sjs_class2_heap {
+    int _refCount;
+    sjs_inner_heap* inner;
+};
+
 void sjf_class(sjs_class* _this);
+void sjf_class2(sjs_class2* _this);
+void sjf_class2_copy(sjs_class2* _this, sjs_class2* to);
+void sjf_class2_destroy(sjs_class2* _this);
+void sjf_class2_heap(sjs_class2_heap* _this);
 void sjf_class_copy(sjs_class* _this, sjs_class* to);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_heap(sjs_class_heap* _this);
+void sjf_inner(sjs_inner* _this);
+void sjf_inner_copy(sjs_inner* _this, sjs_inner* to);
+void sjf_inner_destroy(sjs_inner* _this);
+void sjf_inner_heap(sjs_inner_heap* _this);
 
-
-void sjf_array_class(sjs_array_class* _this) {
-
-    if (_this->size < 0) {
-        exit(-1);
-    }
-
-    if (_this->data) {
-        _this->_isGlobal = true;
-    }
-    else {
-        _this->data = (uintptr_t)calloc(_this->size * sizeof(sjs_class), 1);
-        if (!_this->data) {
-            printf("grow: out of memory\n");
-            exit(-1);
-        }
-    }
-    ;
-}
-
-void sjf_array_class_copy(sjs_array_class* _this, sjs_array_class* to) {
-    _this->size = to->size;
-    _this->data = to->data;
-    _this->_isGlobal = to->_isGlobal;
-}
-
-void sjf_array_class_destroy(sjs_array_class* _this) {
-
-    if (!_this->_isGlobal && _this->data) {
-        free((sjs_class*)_this->data);
-        _this->data = 0;
-    }
-    ;
-}
-
-void sjf_array_class_getAt(sjs_array_class* _parent, int32_t index, sjs_class* _return) {
-
-    int32_t size;
-    int32_t dotTemp3;
-
-    dotTemp3 = _parent->size;
-    size = dotTemp3;
-    ;
-    uintptr_t data;
-    uintptr_t dotTemp4;
-
-    dotTemp4 = _parent->data;
-    data = dotTemp4;
-    ;
-
-    if (index >= size || index < 0) {
-        printf("getAt: out of bounds\n");
-        exit(-1);
-    }
-
-    sjs_class* p = (sjs_class*)data;
-    sjf_class_copy(_return, &p[index]);
-    ;
-    ;
-}
-
-void sjf_array_class_heap(sjs_array_class_heap* _this) {
-
-    if (_this->size < 0) {
-        exit(-1);
-    }
-
-    if (_this->data) {
-        _this->_isGlobal = true;
-    }
-    else {
-        _this->data = (uintptr_t)calloc(_this->size * sizeof(sjs_class), 1);
-        if (!_this->data) {
-            printf("grow: out of memory\n");
-            exit(-1);
-        }
-    }
-    ;
-}
-
-void sjf_array_class_initAt(sjs_array_class* _parent, int32_t index, sjs_class* item) {
-
-    int32_t size;
-    int32_t dotTemp1;
-
-    dotTemp1 = _parent->size;
-    size = dotTemp1;
-    ;
-    uintptr_t data;
-    uintptr_t dotTemp2;
-
-    dotTemp2 = _parent->data;
-    data = dotTemp2;
-    ;
-
-    if (index >= size || index < 0) {
-        printf("setAt: out of bounds %d:%d\n", index, size);
-        exit(-1);
-    }
-
-    sjs_class* p = (sjs_class*)data;
-    sjf_class_copy(&p[index], item);
-    ;
-    ;
-}
 
 void sjf_class(sjs_class* _this) {
 }
 
+void sjf_class2(sjs_class2* _this) {
+}
+
+void sjf_class2_copy(sjs_class2* _this, sjs_class2* to) {
+    _this->inner = 0;
+    sjf_inner_copy((sjs_inner*)(((char*)_this->inner) + sizeof(int)), (sjs_inner*)(((char*)to->inner) + sizeof(int)));
+}
+
+void sjf_class2_destroy(sjs_class2* _this) {
+    if (_this->inner != 0) {
+        _this->inner->_refCount--;
+        if (_this->inner->_refCount <= 0) {
+            sjf_inner_destroy((sjs_inner*)(((char*)_this->inner) + sizeof(int)));
+        }
+    }
+}
+
+void sjf_class2_heap(sjs_class2_heap* _this) {
+}
+
 void sjf_class_copy(sjs_class* _this, sjs_class* to) {
-    _this->x = to->x;
+    sjf_inner_copy(&_this->inner, &to->inner);
 }
 
 void sjf_class_destroy(sjs_class* _this) {
@@ -227,56 +152,123 @@ void sjf_class_destroy(sjs_class* _this) {
 void sjf_class_heap(sjs_class_heap* _this) {
 }
 
+void sjf_inner(sjs_inner* _this) {
+}
+
+void sjf_inner_copy(sjs_inner* _this, sjs_inner* to) {
+}
+
+void sjf_inner_destroy(sjs_inner* _this) {
+}
+
+void sjf_inner_heap(sjs_inner_heap* _this) {
+}
+
 int main() {
-    sjs_array_class a;
-    sjs_class* c;
-    int32_t dotTemp5;
-    sjs_class sjt_call1;
-    sjs_class sjt_call2;
-    sjs_class sjt_call3;
-    sjs_class sjt_call4;
-    int32_t sjt_cast1;
-    sjs_array_class* sjt_dot1;
-    sjs_class* sjt_dot2;
-    int32_t sjt_functionParam1;
-    sjs_class* sjt_functionParam2;
-    int32_t sjt_functionParam3;
-    sjs_class* sjt_functionParam4;
-    int32_t sjt_functionParam5;
-    sjs_class* sjt_functionParam6;
-    int32_t sjt_functionParam7;
+    sjs_class_heap* sjt_value1;
+    sjs_inner_heap* sjt_value2;
+    sjs_inner_heap* sjt_value3;
+    sjs_class2_heap* sjt_value4;
+    sjs_inner_heap* sjt_value5;
+    sjs_class x1;
+    sjs_class_heap* x2;
+    sjs_class_heap* x4;
+    sjs_class2 x5;
+    sjs_class2_heap* x6;
+    sjs_class2_heap* x8;
 
-    a.size = 3;
-    sjt_cast1 = 0;
-    a.data = (uintptr_t)sjt_cast1;
-    a._isGlobal = false;
-    sjf_array_class(&a);
-    sjt_functionParam1 = 0;
-    sjt_call1.x = 1;
-    sjf_class(&sjt_call1);
-    sjt_functionParam2 = &sjt_call1;
-    sjf_array_class_initAt(&a, sjt_functionParam1, sjt_functionParam2);
-    sjt_functionParam3 = 1;
-    sjt_call2.x = 2;
-    sjf_class(&sjt_call2);
-    sjt_functionParam4 = &sjt_call2;
-    sjf_array_class_initAt(&a, sjt_functionParam3, sjt_functionParam4);
-    sjt_functionParam5 = 2;
-    sjt_call3.x = 3;
-    sjf_class(&sjt_call3);
-    sjt_functionParam6 = &sjt_call3;
-    sjf_array_class_initAt(&a, sjt_functionParam5, sjt_functionParam6);
-    sjt_dot1 = &a;
-    sjt_functionParam7 = 0;
-    sjf_array_class_getAt(sjt_dot1, sjt_functionParam7, &sjt_call4);
-    c = &sjt_call4;
-    sjt_dot2 = c;
-    dotTemp5 = sjt_dot2->x;
+    sjf_inner(&x1.inner);
+    sjf_class(&x1);
+    x2 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
+    x2->_refCount = 1;
+    sjf_inner(&x2->inner);
+    sjf_class_heap(x2);
+    sjt_value1 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
+    sjt_value1->_refCount = 1;
+    sjf_inner(&sjt_value1->inner);
+    sjf_class_heap(sjt_value1);
+    x4 = sjt_value1;
+    if (x4 != 0) {
+        x4->_refCount++;
+    }
 
-    sjf_array_class_destroy(&a);
-    sjf_class_destroy(&sjt_call1);
-    sjf_class_destroy(&sjt_call2);
-    sjf_class_destroy(&sjt_call3);
-    sjf_class_destroy(&sjt_call4);
+    sjt_value2 = (sjs_inner_heap*)malloc(sizeof(sjs_inner_heap));
+    sjt_value2->_refCount = 1;
+    sjf_inner_heap(sjt_value2);
+    x5.inner = sjt_value2;
+    if (x5.inner != 0) {
+        x5.inner->_refCount++;
+    }
+
+    sjf_class2(&x5);
+    x6 = (sjs_class2_heap*)malloc(sizeof(sjs_class2_heap));
+    x6->_refCount = 1;
+    sjt_value3 = (sjs_inner_heap*)malloc(sizeof(sjs_inner_heap));
+    sjt_value3->_refCount = 1;
+    sjf_inner_heap(sjt_value3);
+    x6->inner = sjt_value3;
+    if (x6->inner != 0) {
+        x6->inner->_refCount++;
+    }
+
+    sjf_class2_heap(x6);
+    sjt_value4 = (sjs_class2_heap*)malloc(sizeof(sjs_class2_heap));
+    sjt_value4->_refCount = 1;
+    sjt_value5 = (sjs_inner_heap*)malloc(sizeof(sjs_inner_heap));
+    sjt_value5->_refCount = 1;
+    sjf_inner_heap(sjt_value5);
+    sjt_value4->inner = sjt_value5;
+    if (sjt_value4->inner != 0) {
+        sjt_value4->inner->_refCount++;
+    }
+
+    sjf_class2_heap(sjt_value4);
+    x8 = sjt_value4;
+    if (x8 != 0) {
+        x8->_refCount++;
+    }
+
+    sjt_value1->_refCount--;
+    if (sjt_value1->_refCount <= 0) {
+        sjf_class_destroy((sjs_class*)(((char*)sjt_value1) + sizeof(int)));
+    }
+    sjt_value2->_refCount--;
+    if (sjt_value2->_refCount <= 0) {
+        sjf_inner_destroy((sjs_inner*)(((char*)sjt_value2) + sizeof(int)));
+    }
+    sjt_value3->_refCount--;
+    if (sjt_value3->_refCount <= 0) {
+        sjf_inner_destroy((sjs_inner*)(((char*)sjt_value3) + sizeof(int)));
+    }
+    sjt_value4->_refCount--;
+    if (sjt_value4->_refCount <= 0) {
+        sjf_class2_destroy((sjs_class2*)(((char*)sjt_value4) + sizeof(int)));
+    }
+    sjt_value5->_refCount--;
+    if (sjt_value5->_refCount <= 0) {
+        sjf_inner_destroy((sjs_inner*)(((char*)sjt_value5) + sizeof(int)));
+    }
+    x2->_refCount--;
+    if (x2->_refCount <= 0) {
+        sjf_class_destroy((sjs_class*)(((char*)x2) + sizeof(int)));
+    }
+    if (x4 != 0) {
+        x4->_refCount--;
+        if (x4->_refCount <= 0) {
+            sjf_class_destroy((sjs_class*)(((char*)x4) + sizeof(int)));
+        }
+    }
+    x6->_refCount--;
+    if (x6->_refCount <= 0) {
+        sjf_class2_destroy((sjs_class2*)(((char*)x6) + sizeof(int)));
+    }
+    if (x8 != 0) {
+        x8->_refCount--;
+        if (x8->_refCount <= 0) {
+            sjf_class2_destroy((sjs_class2*)(((char*)x8) + sizeof(int)));
+        }
+    }
+    sjf_class_destroy(&x1);
+    sjf_class2_destroy(&x5);
     return 0;
 }

@@ -42,6 +42,7 @@ public:
 class CStoreVar : public CVar {
 public:
     CStoreVar(CLoc loc, shared_ptr<CScope> scope, string name, bool isMutable) : CVar(loc, scope, name, isMutable) { }
+    virtual bool getCanStoreValue() = 0;
     virtual shared_ptr<TrStoreValue> getStoreValue(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op, bool isFirstAssignment) = 0;
 };
 
@@ -53,6 +54,7 @@ public:
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
+    bool getCanStoreValue();
     shared_ptr<TrStoreValue> getStoreValue(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op, bool isFirstAssignment);
     void dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
 

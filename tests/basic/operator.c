@@ -95,7 +95,7 @@ void sjf_fancyMath_modulus(sjs_fancyMath* num, sjs_fancyMath* _return);
 void sjf_fancyMath_modulus_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath_heap** _return);
 void sjf_fancyMath_multiply(sjs_fancyMath* num, sjs_fancyMath* _return);
 void sjf_fancyMath_multiply_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath_heap** _return);
-void sjf_fancyMath_setBob(int32_t i, int32_t* _return);
+void sjf_fancyMath_setBob(sjs_fancyMath* _parent, int32_t i, int32_t* _return);
 void sjf_fancyMath_subtract(sjs_fancyMath* num, sjs_fancyMath* _return);
 void sjf_fancyMath_subtract_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath_heap** _return);
 
@@ -298,11 +298,9 @@ void sjf_fancyMath_multiply_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs
     sjf_fancyMath_heap((*_return));
 }
 
-void sjf_fancyMath_setBob(int32_t i, int32_t* _return) {
-    int32_t x;
-
-    x = i;
-    (*_return) = x;
+void sjf_fancyMath_setBob(sjs_fancyMath* _parent, int32_t i, int32_t* _return) {
+    _parent->x = i;
+    (*_return) = _parent->x;
 }
 
 void sjf_fancyMath_subtract(sjs_fancyMath* num, sjs_fancyMath* _return) {
@@ -414,7 +412,7 @@ int main() {
     sjt_dot22 = &f;
     sjf_fancyMath_getX(sjt_dot22, &i);
     sjt_functionParam10 = 12;
-    sjf_fancyMath_setBob(sjt_functionParam10, &j);
+    sjf_fancyMath_setBob(_parent, sjt_functionParam10, &j);
 
     sjf_fancyMath_destroy(&a);
     sjf_fancyMath_destroy(&b);

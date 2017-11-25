@@ -42,6 +42,10 @@ void CNormalVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
     }
 }
 
+bool CNormalVar::getCanStoreValue() {
+    return isMutable;
+}
+
 shared_ptr<TrStoreValue> CNormalVar::getStoreValue(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op, bool isFirstAssignment) {
     stringstream lineStream;
 
