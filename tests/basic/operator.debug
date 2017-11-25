@@ -54,34 +54,47 @@ global()'void {
     x'i32 = this.x
   ))
   c'stack fancyMath = fancyMath_add(
+    parent: a,
     num'stack fancyMath : this.num
   )
   d'stack fancyMath = fancyMath_subtract(
+    parent: a,
     num'stack fancyMath : this.num
   )
   e'stack fancyMath = fancyMath_multiply(
+    parent: a,
     num'stack fancyMath : this.num
   )
   f'stack fancyMath = fancyMath_divide(
+    parent: a,
     num'stack fancyMath : this.num
   )
   g'stack fancyMath = fancyMath_modulus(
+    parent: a,
     num'stack fancyMath : this.num
   )
   c'stack fancyMath = fancyMath_add(
+    parent: c,
     num'stack fancyMath : this.num
   )
   d'stack fancyMath = fancyMath_subtract(
+    parent: d,
     num'stack fancyMath : this.num
   )
   d'stack fancyMath = fancyMath_multiply(
+    parent: d,
     num'stack fancyMath : this.num
   )
   d'stack fancyMath = fancyMath_divide(
+    parent: d,
     num'stack fancyMath : this.num
   )
-  e'stack fancyMath = fancyMath_increment()
-  f'stack fancyMath = fancyMath_increment()
+  e'stack fancyMath = fancyMath_increment(
+    parent: e
+  )
+  f'stack fancyMath = fancyMath_increment(
+    parent: f
+  )
   i'i32 = fancyMath_getX(
     parent: f
   )

@@ -1,5 +1,0 @@
-global()'void {
-  a'i32 = 0i
-  void
-}
-

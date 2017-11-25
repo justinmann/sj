@@ -1,20 +1,80 @@
 #include "Node.h"
 
-shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CLoc loc_, const string& name_, shared_ptr<NodeList> arguments_, shared_ptr<CScope> scope, weak_ptr<CVar> dotVar_, shared_ptr<CBaseFunction> callee_, CTypeMode returnMode) {
-    assert(callee_);
+shared_ptr<vector<FunctionParameter>> CCallVar::getParameters(Compiler* compiler, CLoc loc, shared_ptr<CScope> callerScope, shared_ptr<CBaseFunction> callee, shared_ptr<NodeList> arguments, CTypeMode returnMode) {
+    auto parameters = make_shared<vector<FunctionParameter>>(callee->argDefaultValues.size());
 
-    if (returnMode != CTM_Heap) {
-        if (callee_->getIsReturnModeValid(compiler, CTM_Stack)) {
-            returnMode = CTM_Stack;
-        } else {
-            returnMode = CTM_Heap;
-        }
+    if (parameters->size() < arguments->size()) {
+        compiler->addError(loc, CErrorCode::TooManyParameters, "too many parameters");
+        return nullptr;
     }
-    
+
+    auto calleeFunction = dynamic_pointer_cast<CFunction>(callee);
+    auto calleeScope = calleeFunction ? calleeFunction->getScope(compiler, returnMode) : nullptr;
+    auto argIndex = (size_t)0;
+    auto hasSetByName = false;
+    for (auto it : *arguments) {
+        if (it->nodeType == NodeType_Assignment) {
+            auto parameterAssignment = static_pointer_cast<NAssignment>(it);
+            assert(parameterAssignment->inFunctionDeclaration);
+            auto index = callee->getArgIndex(parameterAssignment->name, returnMode);
+            if (index < 0) {
+                compiler->addError(loc, CErrorCode::ParameterDoesNotExist, "cannot find parameter '%s'", parameterAssignment->name.c_str());
+                return nullptr;
+            }
+
+            if ((*parameters)[index].var != nullptr) {
+                compiler->addError(loc, CErrorCode::ParameterRedefined, "defined parameter '%s' twice", parameterAssignment->name.c_str());
+                return nullptr;
+            }
+
+            (*parameters)[index].isDefaultValue = false;
+            (*parameters)[index].op = parameterAssignment->op;
+            (*parameters)[index].var = parameterAssignment->rightSide->getVar(compiler, callerScope, CTM_Undefined);
+            hasSetByName = true;
+        }
+        else {
+            if (hasSetByName) {
+                compiler->addError(loc, CErrorCode::ParameterByIndexAfterByName, "all named parameters must be after the un-named parameters");
+                return nullptr;
+            }
+
+            if ((*parameters)[argIndex].var != nullptr) {
+                compiler->addError(loc, CErrorCode::Internal, "re-defining the same parameters which should be impossible for un-named parameters");
+                return nullptr;
+            }
+
+            (*parameters)[argIndex].isDefaultValue = false;
+            (*parameters)[argIndex].op = AssignOp::immutableOp;
+            (*parameters)[argIndex].var = it->getVar(compiler, callerScope, CTM_Undefined);
+        }
+        argIndex++;
+    }
+
+    argIndex = 0;
+    for (auto it : callee->argDefaultValues) {
+        if (argIndex < parameters->size() && (*parameters)[argIndex].var == nullptr) {
+            if (it.value == nullptr) {
+                compiler->addError(loc, CErrorCode::ParameterRequired, "parameter %d is required", argIndex);
+                return nullptr;
+            }
+            assert(it.value->nodeType != NodeType_Assignment);
+            (*parameters)[argIndex].isDefaultValue = true;
+            (*parameters)[argIndex].op = it.op;
+            (*parameters)[argIndex].var = it.value->getVar(compiler, calleeScope, CTM_Undefined);
+        }
+        argIndex++;
+    }
+
+    return parameters;
+}
+
+shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CLoc loc_, const string& name_, shared_ptr<vector<FunctionParameter>> parameters_, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar_, shared_ptr<CBaseFunction> callee_, CTypeMode returnMode) {
+    assert(callee_);
+    assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
     // TODO: assert(callee_->getIsReturnModeValid(compiler, returnMode));
     
     auto c = make_shared<CCallVar>(loc_, scope, returnMode);
-    c->arguments = arguments_;
+    c->parameters = parameters_;
     c->scope = scope;
     c->dotVar = dotVar_;
     c->callee = callee_;
@@ -29,82 +89,8 @@ shared_ptr<CType> CCallVar::getType(Compiler* compiler) {
     return callee->getReturnType(compiler, returnMode);
 }
 
-bool CCallVar::getParameters(Compiler* compiler, vector<FunctionParameter>& parameters) {
-    if (parameters.size() < arguments->size()) {
-        compiler->addError(loc, CErrorCode::TooManyParameters, "too many parameters");
-        return false;
-    }
-    
-    auto argIndex = (size_t)0;
-    auto hasSetByName = false;
-    for (auto it : *arguments) {
-        if (it->nodeType == NodeType_Assignment) {
-            auto parameterAssignment = static_pointer_cast<NAssignment>(it);
-            assert(parameterAssignment->inFunctionDeclaration);
-            auto index = callee->getArgIndex(parameterAssignment->name, returnMode);
-            if (index < 0) {
-                compiler->addError(loc, CErrorCode::ParameterDoesNotExist, "cannot find parameter '%s'", parameterAssignment->name.c_str());
-                return false;
-            }
-            
-            if (parameters[index].value != nullptr) {
-                compiler->addError(loc, CErrorCode::ParameterRedefined, "defined parameter '%s' twice", parameterAssignment->name.c_str());
-                return false;
-            }
-            
-            parameters[index].isDefaultValue = false;
-            parameters[index].op = parameterAssignment->op;
-            parameters[index].value = parameterAssignment->rightSide;
-            hasSetByName = true;
-        } else {
-            if (hasSetByName) {
-                compiler->addError(loc, CErrorCode::ParameterByIndexAfterByName, "all named parameters must be after the un-named parameters");
-                return false;
-            }
-            
-            if (parameters[argIndex].value != nullptr) {
-                compiler->addError(loc, CErrorCode::Internal, "re-defining the same parameters which should be impossible for un-named parameters");
-                return false;
-            }
-            
-            parameters[argIndex].isDefaultValue = false;
-            parameters[argIndex].op = AssignOp::immutableOp;
-            parameters[argIndex].value = it;
-        }
-        argIndex++;
-    }
-    
-    argIndex = 0;
-    for (auto it : callee->argDefaultValues) {
-        if (argIndex < parameters.size() && parameters[argIndex].value == nullptr) {
-            if (it.value == nullptr) {
-                compiler->addError(loc, CErrorCode::ParameterRequired, "parameter %d is required", argIndex);
-                return false;
-            }
-            assert(it.value->nodeType != NodeType_Assignment);
-            parameters[argIndex].isDefaultValue = true;
-            parameters[argIndex].op = it.op;
-            parameters[argIndex].value = it.value;
-        }
-        argIndex++;
-    }
-    
-    return true;
-}
-
 void CCallVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     assert(compiler->state == CompilerState::Compile);
-
-    if (arguments->size() > callee->argDefaultValues.size()) {
-        compiler->addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments->size(), callee->argDefaultValues.size());
-        return;
-    }
-
-    // Fill in parameters
-    vector<FunctionParameter> parameters(callee->argDefaultValues.size());
-    if (!getParameters(compiler, parameters)) {
-        return;
-    }
 
     shared_ptr<TrStoreValue> calleeStoreValue;
     auto calleeReturnType = callee->getReturnType(compiler, returnMode);
@@ -132,16 +118,11 @@ void CCallVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<
 
     ss << callee->fullName(true) << "(";
 
-    vector<FunctionParameter> parameters(callee->argDefaultValues.size());
-    if (!getParameters(compiler, parameters)) {
-        return;
-    }
-
     if (callee->hasThis) {
         ss << "this" << " = ";
         ss << callee->fullName(true) << "(";
 
-        if (parameters.size() > 0 || callee->getHasParent(compiler)) {
+        if (parameters->size() > 0 || callee->getHasParent(compiler)) {
             ss << "\n";
             dumpf(ss, level + 1);
 
@@ -154,14 +135,14 @@ void CCallVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<
                     ss << "this";
                 }
 
-                if (parameters.size() > 0) {
+                if (parameters->size() > 0) {
                     ss << ",\n";
                     dumpf(ss, level + 1);
                 }
             }
 
             auto paramIndex = 0;
-            for (auto it : parameters) {
+            for (auto it : *parameters) {
                 auto paramVar = callee->getArgVar(paramIndex, returnMode);
                 ss << paramVar->name.c_str();
                 auto ctype = paramVar->getType(compiler);
@@ -169,7 +150,7 @@ void CCallVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<
                 ss << (paramVar->isMutable ? " = " : " : ");
                 stringstream dotSS;
                 paramVar->dump(compiler, nullptr, functions, ss, dotSS, level + 1);
-                if (paramIndex != parameters.size() - 1) {
+                if (paramIndex != parameters->size() - 1) {
                     ss << ",\n";
                     dumpf(ss, level + 1);
                 }
@@ -180,7 +161,7 @@ void CCallVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<
         }
         ss << "))";
     } else {
-        if (parameters.size() > 0 || callee->getHasParent(compiler)) {
+        if (parameters->size() > 0 || callee->getHasParent(compiler)) {
             ss << "\n";
             dumpf(ss, level + 1);
 
@@ -193,21 +174,21 @@ void CCallVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<
                     ss << "this";
                 }
 
-                if (parameters.size() > 0) {
+                if (parameters->size() > 0) {
                     ss << ",\n";
                     dumpf(ss, level + 1);
                 }
             }
 
             auto paramIndex = 0;
-            for (auto it : parameters) {
+            for (auto it : *parameters) {
                 auto paramVar = callee->getArgVar(paramIndex, returnMode);
                 ss << paramVar->name.c_str();
                 ss << "'" << paramVar->getType(compiler)->fullName.c_str();
                 ss << (paramVar->isMutable ? " = " : " : ");
                 stringstream dotSS;
                 paramVar->dump(compiler, nullptr, functions, ss, dotSS, level + 1);
-                if (paramIndex != parameters.size() - 1) {
+                if (paramIndex != parameters->size() - 1) {
                     ss << ",\n";
                     dumpf(ss, level + 1);
                 }
@@ -286,5 +267,25 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
         return nullptr;
     }
 
-    return CCallVar::create(compiler, loc, name, arguments, scope, dotVar, callee, returnMode);
+    if (arguments->size() > callee->argDefaultValues.size()) {
+        compiler->addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments->size(), callee->argDefaultValues.size());
+        return nullptr;
+    }
+
+    if (returnMode != CTM_Heap) {
+        if (callee->getIsReturnModeValid(compiler, CTM_Stack)) {
+            returnMode = CTM_Stack;
+        }
+        else {
+            returnMode = CTM_Heap;
+        }
+    }
+
+    // Fill in parameters
+    auto parameters = CCallVar::getParameters(compiler, loc, scope, callee, arguments, returnMode);
+    if (!parameters) {
+        return nullptr;
+    }
+
+    return CCallVar::create(compiler, loc, name, parameters, scope, dotVar, callee, returnMode);
 }

@@ -1,6 +1,0 @@
-global()'void {
-  x'i32 : 1i
-  x + 1i
-  void
-}
-

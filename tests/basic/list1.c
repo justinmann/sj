@@ -408,6 +408,7 @@ void sjf_list_heap_class_setSize(sjs_list_heap_class* _parent, int32_t size) {
 int main() {
     sjs_list_heap_class a;
     sjs_class_heap* c;
+    int32_t dotTemp17;
     int32_t sjt_cast1;
     sjs_list_heap_class* sjt_dot6;
     sjs_class* sjt_dot8;
@@ -449,6 +450,7 @@ int main() {
     sjt_functionParam7 = 0;
     sjf_list_heap_class_getAt_heap(sjt_dot6, sjt_functionParam7, &c);
     sjt_dot8 = (sjs_class*)(((char*)c) + sizeof(int));
+    dotTemp17 = sjt_dot8->x;
 
     c->_refCount--;
     if (c->_refCount <= 0) {

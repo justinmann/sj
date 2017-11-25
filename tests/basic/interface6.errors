@@ -1,1 +1,2 @@
 ERROR:29 basic/interface6.sj[5:1] cannot find interface method: 'test'
+ERROR:7 basic/interface6.sj[9:5] function does not have a this value

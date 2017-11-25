@@ -92,9 +92,12 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
     string setFunctionName = "set" + temp;
     auto setFunction = cfunction->getCFunction(compiler, loc, setFunctionName, scope, nullptr, returnMode);
     if (setFunction) {
-        auto arguments = make_shared<NodeList>();
-        arguments->push_back(rightSide);
-        return CCallVar::create(compiler, loc, setFunctionName, arguments, scope, parentVar, setFunction, returnMode);
+        if (returnMode != CTM_Heap) {
+            returnMode = CTM_Stack;
+        }
+
+        auto parameters = CCallVar::getParameters(compiler, loc, scope, setFunction, make_shared<NodeList>(rightSide), returnMode);
+        return CCallVar::create(compiler, loc, setFunctionName, parameters, scope, parentVar, setFunction, returnMode);
     }
     else {
         if (!rightSide) {

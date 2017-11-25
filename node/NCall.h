@@ -17,14 +17,14 @@ class CCallVar : public CVar {
 public:
     CCallVar(CLoc loc, shared_ptr<CScope> scope, CTypeMode returnMode) : CVar(loc, scope, "", false), returnMode(returnMode) {}
     bool getReturnThis();
-    static shared_ptr<CCallVar> create(Compiler* compiler, CLoc loc_, const string& name_, shared_ptr<NodeList> arguments_, shared_ptr<CScope> scope, weak_ptr<CVar> dotVar_, shared_ptr<CBaseFunction> callee_, CTypeMode returnMode);
+    static shared_ptr<CCallVar> create(Compiler* compiler, CLoc loc_, const string& name_, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar_, shared_ptr<CBaseFunction> callee_, CTypeMode returnMode);
     shared_ptr<CType> getType(Compiler* compiler);
-    bool getParameters(Compiler* compiler, vector<FunctionParameter>& parameters);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
     void dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
+    static shared_ptr<vector<FunctionParameter>> getParameters(Compiler* compiler, CLoc loc, shared_ptr<CScope> callerScope, shared_ptr<CBaseFunction> callee, shared_ptr<NodeList> arguments, CTypeMode returnMode);
 
     CTypeMode returnMode;
-    shared_ptr<NodeList> arguments;
+    shared_ptr<vector<FunctionParameter>> parameters;
     weak_ptr<CVar> dotVar;
     shared_ptr<CBaseFunction> callee;
 };

@@ -96,7 +96,7 @@ void sjf_class(sjs_class* _this);
 void sjf_class_bar(int32_t x, int32_t* _return);
 void sjf_class_copy(sjs_class* _this, sjs_class* to);
 void sjf_class_destroy(sjs_class* _this);
-void sjf_class_foo(int32_t x, int32_t* _return);
+void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return);
 void sjf_class_heap(sjs_class_heap* _this);
 void sjf_math(sjs_math* _this);
 void sjf_math_copy(sjs_math* _this, sjs_math* to);
@@ -112,7 +112,7 @@ void sjf_class_bar(int32_t x, int32_t* _return) {
     int32_t sjt_functionParam1;
 
     sjt_functionParam1 = x;
-    sjf_class_foo(sjt_functionParam1, &(*_return));
+    sjf_class_foo(_parent, sjt_functionParam1, &(*_return));
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* to) {
@@ -122,7 +122,7 @@ void sjf_class_copy(sjs_class* _this, sjs_class* to) {
 void sjf_class_destroy(sjs_class* _this) {
 }
 
-void sjf_class_foo(int32_t x, int32_t* _return) {
+void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return) {
     int32_t sjt_compare1;
     int32_t sjt_compare2;
     bool sjt_ifElse1;

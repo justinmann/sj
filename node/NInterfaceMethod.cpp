@@ -212,7 +212,7 @@ string CInterfaceMethod::getCDestroyFunctionName() {
 void CInterfaceMethod::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 }
 
-void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, vector<FunctionParameter>& parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode /*returnMode*/) {
+void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode /*returnMode*/) {
     assert(compiler->state == CompilerState::Compile);
     assert(parentValue != nullptr);
 
@@ -229,11 +229,10 @@ void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> scope, T
     for (auto defaultAssignment : argDefaultValues) {
         auto argVar = argVars[argIndex];
         auto argType = argVar->getType(compiler);
-        auto isDefaultAssignment = parameters[argIndex].isDefaultValue;
         auto argStoreValue = trBlock->createTempStoreVariable(loc, scope, argType, "interfaceParam");
 
         stringstream argStream;
-        auto paramVar = parameters[argIndex].value->getVar(compiler, isDefaultAssignment ? nullptr : scope, parameters[argIndex].op.typeMode);
+        auto paramVar = (*parameters)[argIndex].var;
         paramVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, argStoreValue);
 
         if (!argStoreValue->hasSetValue) {

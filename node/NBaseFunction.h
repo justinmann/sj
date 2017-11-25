@@ -39,9 +39,11 @@ enum VarScanMode {
 
 class FunctionParameter {
 public:
+    static FunctionParameter create(bool isDefaultValue, AssignOp op, shared_ptr<CVar> var);
+
     bool isDefaultValue;
     AssignOp op;
-    shared_ptr<NBase> value;
+    shared_ptr<CVar> var;
 };
 
 class FunctionDefaultValue {
@@ -81,7 +83,7 @@ public:
     virtual bool getIsReturnModeValid(Compiler* compiler, CTypeMode returnMode) = 0;
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CTypeMode returnMode) = 0;
     virtual void transpileDefinition(Compiler* compiler, TrOutput* trOutput) = 0;
-    virtual void transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, vector<FunctionParameter>& parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode returnMode) = 0;
+    virtual void transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode returnMode) = 0;
     virtual void dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level, CTypeMode returnMode) = 0;
 };
 

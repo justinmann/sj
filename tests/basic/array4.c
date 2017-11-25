@@ -230,6 +230,7 @@ int main() {
     sjs_array_class a;
     sjs_class b;
     int32_t c;
+    int32_t dotTemp5;
     sjs_class sjt_call1;
     int32_t sjt_cast1;
     sjs_array_class* sjt_dot1;
@@ -254,7 +255,8 @@ int main() {
     sjt_functionParam3 = 0;
     sjf_array_class_getAt(sjt_dot2, sjt_functionParam3, &b);
     sjt_dot3 = &b;
-    c = x;
+    dotTemp5 = sjt_dot3->x;
+    c = dotTemp5;
 
     sjf_array_class_destroy(&a);
     sjf_class_destroy(&b);

@@ -4,6 +4,7 @@ class(m'stack math:)'stack class {
 
 class_bar(x'i32:)'i32 {
   class_foo(
+    parent: this,
     x'i32 : this.x
   )
 }
@@ -23,6 +24,7 @@ global()'void {
     m'stack math : this.m
   ))
   class_foo(
+    parent: c,
     x'i32 : this.x
   )
   void

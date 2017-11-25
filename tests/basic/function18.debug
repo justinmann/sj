@@ -1,9 +1,0 @@
-func(x'i32:)'i32 {
-  x
-}
-
-global()'void {
-  func(
-  void
-}
-
