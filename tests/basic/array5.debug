@@ -1,4 +1,4 @@
-array_getAt(index'i32:)'i32 c{
+array_getAt(index'i32:)'stack class c{
 
 		int32_t size;
 		#retain(i32, size, size);
@@ -15,7 +15,7 @@ array_getAt(index'i32:)'i32 c{
 	
 }c
 
-array_initAt(index'i32:, item'i32:)'void c{
+array_initAt(index'i32:, item'stack class:)'void c{
 
 		int32_t size;
 		#retain(i32, size, size);
@@ -33,23 +33,24 @@ array_initAt(index'i32:, item'i32:)'void c{
 }c
 
 global()'void {
-  a'stack array_i32 : [array_initAt(
+  a'stack array_class : [array_initAt(
     parent: this,
     index'i32 : this.index,
-    item'i32 : this.item
+    item'stack class : this.item
   ), array_initAt(
     parent: this,
     index'i32 : this.index,
-    item'i32 : this.item
+    item'stack class : this.item
   ), array_initAt(
     parent: this,
     index'i32 : this.index,
-    item'i32 : this.item
+    item'stack class : this.item
   )]
-  array_getAt(
+  c'local class : local array_getAt(
     parent: a,
     index'i32 : this.index
   )
+  this.x
   void
 }
 

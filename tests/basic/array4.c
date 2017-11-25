@@ -144,22 +144,27 @@ void sjf_array_class_destroy(sjs_array_class* _this) {
 
 void sjf_array_class_getAt(sjs_array_class* _parent, int32_t index, sjs_class* _return) {
     
-		
+		int32_t size;
+		int32_t dotTemp3;
 
-		if (index >= _parent->size || index < 0) {
+dotTemp3 = _parent->size;
+size = dotTemp3;
+;
+		uintptr_t data;
+		uintptr_t dotTemp4;
+
+dotTemp4 = _parent->data;
+data = dotTemp4;
+;
+
+		if (index >= size || index < 0) {
 			printf("getAt: out of bounds\n");
 			exit(-1);
 		}
 
-		sjs_class* p = (sjs_class*)_parent->data;
-		sjs_class val = p[index];
-#if !false
-		if (val == 0) {
-			printf("getAt: value is not defined at %d\n", index);
-			exit(-1);
-		}
-#endif
-		*_return = val;		
+		sjs_class* p = (sjs_class*)data;
+		sjf_class_copy(_return, &p[index]);
+;		
 	;
 }
 
@@ -183,22 +188,28 @@ void sjf_array_class_heap(sjs_array_class_heap* _this) {
 
 void sjf_array_class_setAt(sjs_array_class* _parent, int32_t index, sjs_class* item) {
     
-		
+		int32_t size;
+		int32_t dotTemp1;
 
-		if (index >= _parent->size || index < 0) {
-			printf("setAt: out of bounds %d:%d\n", index, _parent->size);
+dotTemp1 = _parent->size;
+size = dotTemp1;
+;
+		uintptr_t data;
+		uintptr_t dotTemp2;
+
+dotTemp2 = _parent->data;
+data = dotTemp2;
+;
+
+		if (index >= size || index < 0) {
+			printf("setAt: out of bounds %d:%d\n", index, size);
 			exit(-1);
 		}
 
-		sjs_class* p = (sjs_class*)_parent->data;
-#if !false
-		if (p[index] != 0) {
-			;
-		}
-#endif
-		 item->_refCount++;
+		sjs_class* p = (sjs_class*)data;
+		;
+		sjf_class_copy(&p[index], item);
 ;
-		p[index] = item;
 	;
 }
 

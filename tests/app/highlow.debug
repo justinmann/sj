@@ -7,7 +7,7 @@ anon1_readLine()'stack string {
   size'i32 = 1024i
   c{
 
-			
+			#include(<stdio.h>)
 		    char* str = (char*)malloc(size);
 		    int index = 0;
 		    char ch = ' ';
@@ -38,8 +38,8 @@ anon1_readLine()'stack string {
 anon1_write(data'stack string:)'void {
   c{
 
-			
-			
+			#include(<stdio.h>)
+			#forceParent()
 			printf("%s\n", (char*)data->data->data);
 		
 }c
@@ -92,7 +92,6 @@ global()'void {
   parse'stack anon2 : anon2(this = anon2())
   console'stack anon1 : anon1(this = anon1())
   anon1_write(
-    parent: console,
     data'stack string : this.data
   )
   num'i32 : anon3_nextInt() %% 10i + 1i
@@ -104,13 +103,11 @@ global()'void {
     )
     isCorrect'bool = if guess < num {
       anon1_write(
-        parent: console,
         data'stack string : this.data
       )
       false
     } else if guess > num {
       anon1_write(
-        parent: console,
         data'stack string : this.data
       )
       false
@@ -119,7 +116,6 @@ global()'void {
     }
   }
   anon1_write(
-    parent: console,
     data'stack string : this.data
   )
   void

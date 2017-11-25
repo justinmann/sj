@@ -11,13 +11,13 @@ class AssignOp;
 class TrValue {
 public:
     TrValue(shared_ptr<CScope> scope, shared_ptr<CType> type, string name, bool isReturnValue) : scope(scope), type(type), name(name), isReturnValue(isReturnValue) { assert(type != nullptr);  }
-    bool writeReleaseToStream(TrBlock* block, ostream& stream, int level);
+    void writeReleaseToStream(ostream& stream, int level);
     void addInitToStatements(TrBlock* block);
     void addRetainToStatements(TrBlock* block);
     void addReleaseToStatements(TrBlock* block);
     string getDotName(string rightName);
     string getPointerName();
-    static string convertToLocalName(shared_ptr<CType> from, string name);
+    static string convertToLocalName(shared_ptr<CType> from, string name, bool isReturnValue);
 
     shared_ptr<CScope> scope;
     shared_ptr<CType> type;

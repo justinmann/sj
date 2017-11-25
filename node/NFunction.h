@@ -79,7 +79,7 @@ public:
     void pushLocalVar(Compiler* compiler, CLoc loc, shared_ptr<CVar> var);
     void popLocalVar(Compiler* compiler, shared_ptr<CVar> var);
     shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
-    shared_ptr<CVar> getCVar(Compiler* compiler, const string& name);
+    shared_ptr<CVar> getCVar(Compiler* compiler, const string& name, VarScanMode scanMode);
     static shared_ptr<CScope> getScopeForType(Compiler* compiler, shared_ptr<CType> type);
 
     shared_ptr<CThisVar> thisVar;
@@ -102,7 +102,7 @@ public:
     shared_ptr<CThisVar> getThisVar(Compiler* compiler, CTypeMode returnMode);
     shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CLoc locCaller, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode);
     shared_ptr<CInterface> getCInterface(Compiler* compiler, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames);
-    shared_ptr<CVar> getCVar(Compiler* compiler, const string& name, CTypeMode returnMode);
+    shared_ptr<CVar> getCVar(Compiler* compiler, const string& name, VarScanMode scanMode, CTypeMode returnMode);
     bool getIsReturnModeValid(Compiler* compiler, CTypeMode returnMode);
     shared_ptr<CType> getReturnType(Compiler* compiler, CTypeMode returnMode);
     shared_ptr<vector<shared_ptr<CVar>>> getArgVars(Compiler* compiler, CTypeMode returnMode);

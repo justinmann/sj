@@ -144,22 +144,28 @@ void sjf_array_heap_class_destroy(sjs_array_heap_class* _this) {
 
 void sjf_array_heap_class_getAt_heap(sjs_array_heap_class* _parent, int32_t index, sjs_class_heap** _return) {
     
-		
+		int32_t size;
+		int32_t dotTemp3;
 
-		if (index >= _parent->size || index < 0) {
+dotTemp3 = _parent->size;
+size = dotTemp3;
+;
+		uintptr_t data;
+		uintptr_t dotTemp4;
+
+dotTemp4 = _parent->data;
+data = dotTemp4;
+;
+
+		if (index >= size || index < 0) {
 			printf("getAt: out of bounds\n");
 			exit(-1);
 		}
 
-		sjs_class_heap** p = (sjs_class_heap**)_parent->data;
-		sjs_class_heap* val = p[index];
-#if !false
-		if (val == 0) {
-			printf("getAt: value is not defined at %d\n", index);
-			exit(-1);
-		}
-#endif
-		*_return = val;		
+		sjs_class_heap** p = (sjs_class_heap**)data;
+		(*_return) = p[index];
+(*_return)->_refCount++;
+;		
 	;
 }
 
@@ -183,17 +189,28 @@ void sjf_array_heap_class_heap(sjs_array_heap_class_heap* _this) {
 
 void sjf_array_heap_class_initAt(sjs_array_heap_class* _parent, int32_t index, sjs_class_heap* item) {
     
-		
+		int32_t size;
+		int32_t dotTemp1;
 
-		if (index >= _parent->size || index < 0) {
-			printf("setAt: out of bounds %d:%d\n", index, _parent->size);
+dotTemp1 = _parent->size;
+size = dotTemp1;
+;
+		uintptr_t data;
+		uintptr_t dotTemp2;
+
+dotTemp2 = _parent->data;
+data = dotTemp2;
+;
+
+		if (index >= size || index < 0) {
+			printf("setAt: out of bounds %d:%d\n", index, size);
 			exit(-1);
 		}
 
-		sjs_class_heap** p = (sjs_class_heap**)_parent->data;
-		 item->_refCount++;
-;
+		sjs_class_heap** p = (sjs_class_heap**)data;
 		p[index] = item;
+p[index]->_refCount++;
+;
 	;
 }
 
@@ -213,7 +230,7 @@ void sjf_class_heap(sjs_class_heap* _this) {
 int main() {
     sjs_array_heap_class_heap* a;
     sjs_class_heap* c;
-    int32_t dotTemp1;
+    int32_t dotTemp5;
     int32_t sjt_cast1;
     sjs_array_heap_class* sjt_dot1;
     sjs_class* sjt_dot2;
@@ -254,7 +271,7 @@ int main() {
     sjt_functionParam7 = 0;
     sjf_array_heap_class_getAt_heap(sjt_dot1, sjt_functionParam7, &c);
     sjt_dot2 = (sjs_class*)(((char*)c) + sizeof(int));
-    dotTemp1 = sjt_dot2->x;
+    dotTemp5 = sjt_dot2->x;
 
     a->_refCount--;
     if (a->_refCount <= 0) {

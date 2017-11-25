@@ -110,7 +110,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
             }
 
             auto dotScope = CScope::getScopeForType(compiler, dotVar->getType(compiler));
-            leftVar = dotScope->getCVar(compiler, name);
+            leftVar = dotScope->getCVar(compiler, name, VSM_ThisOnly);
             if (leftVar) {
                 if (!op.isMutable) {
                     compiler->addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var '%s'", name.c_str());
@@ -125,7 +125,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
             leftVar = CDotVar::create(loc, dotScope, dotVar, leftVar);
         }
         else {
-            leftVar = scope->getCVar(compiler, name);
+            leftVar = scope->getCVar(compiler, name, VSM_LocalThisParent);
             if (leftVar) {
                 if (!op.isMutable) {
                     compiler->addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var '%s'", name.c_str());

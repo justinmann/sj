@@ -76,11 +76,12 @@ struct td_sjs_object {
 };
 
 struct td_sjs_a_aa {
-    int structsNeedAValue;
+    sjs_a* _parent;
 };
 
 struct td_sjs_a_aa_heap {
     int _refCount;
+    sjs_a* _parent;
 };
 
 struct td_sjs_a {
@@ -113,7 +114,7 @@ void sjf_a_aa(sjs_a_aa* _this) {
 
 void sjf_a_aa_c(sjs_a_aa* _parent, int32_t* _return) {
     int32_t dotTemp2;
-    sjs_a_aa* tempParent1;
+    sjs_a* tempParent1;
 
     tempParent1 = _parent->_parent;
     dotTemp2 = tempParent1->x;
@@ -153,6 +154,7 @@ int main() {
     int32_t void2;
 
     a.x = 1;
+    a.b._parent = a._parent;
     sjf_a_aa(&a.b);
     sjf_a(&a);
     sjt_dot2 = &a;

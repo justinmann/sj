@@ -30,6 +30,12 @@ enum CClassFunctionType {
     CFT_InterfaceMethod
 };
 
+enum VarScanMode {
+    VSM_LocalOnly,
+    VSM_ThisOnly,
+    VSM_LocalThisParent
+};
+
 class FunctionParameter {
 public:
     bool isDefaultValue;
@@ -63,7 +69,7 @@ public:
     virtual shared_ptr<CVar> getArgVar(int index, CTypeMode returnMode) = 0;
     virtual string fullName(bool includeTemplateTypes) = 0;
     virtual shared_ptr<CTypes> getThisTypes(Compiler* compiler) = 0;
-    virtual shared_ptr<CVar> getCVar(Compiler* compiler, const string& name, CTypeMode returnMode) = 0;
+    virtual shared_ptr<CVar> getCVar(Compiler* compiler, const string& name, VarScanMode scanMode, CTypeMode returnMode) = 0;
     virtual shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CLoc locCaller, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode) = 0;
     virtual shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) = 0;
     virtual string getCInitFunctionName(CTypeMode returnMode) = 0;

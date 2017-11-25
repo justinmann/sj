@@ -16,44 +16,38 @@ anon4()'stack anon4 {
 
 array_getAt(index'i32:)'char c{
 
-		
+		int32_t size;
+		#retain(i32, size, size);
+		uintptr_t data;
+		#retain(ptr, data, data);
 
-		if (index >= _parent->size || index < 0) {
+		if (index >= size || index < 0) {
 			printf("getAt: out of bounds\n");
 			exit(-1);
 		}
 
-		char* p = (char*)_parent->data;
-		char val = p[index];
-#if !true
-		if (val == 0) {
-			printf("getAt: value is not defined at %d\n", index);
-			exit(-1);
-		}
-#endif
-		*_return = val;		
+		#type(t)* p = (#type(t)*)data;
+		#return(t, p[index]);		
 	
 }c
 
 array_isEqual(test'stack array_char:)'bool c{
 
-		
-		
+		#include(<string.h>)
 
-		if (_parent->size != test->size) {
+		if (size != test->size) {
 			*_return = false;
 		}
 
-		*_return = memcmp((void*)_parent->data, (void*)test->data, _parent->size * sizeof(char)) == 0;		
+		*_return = memcmp((void*)data, (void*)test->data, size * sizeof(#type(t))) == 0;		
 	
 }c
 
 array_isLessOrEqual(test'stack array_char:)'bool c{
 
-		
-		
+		#include(<string.h>)
 
-		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(char)) <= 0;		
+		*_return = memcmp((void*)data, (void*)test->data, (size < test->size ? size : test->size) * sizeof(#type(t))) <= 0;		
 	
 }c
 
@@ -70,14 +64,12 @@ string_getAt(index'i32:)'char {
 
 string_isEqual(test'stack string:)'bool {
   array_isEqual(
-    parent: .parentthis.data,
     test'stack array_char : this.test
   )
 }
 
 string_isLessOrEqual(test'stack string:)'bool {
   array_isLessOrEqual(
-    parent: .parentthis.data,
     test'stack array_char : this.test
   )
 }

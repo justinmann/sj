@@ -169,7 +169,7 @@ int CInterface::getArgStart() {
     return 1;
 }
 
-shared_ptr<CVar> CInterface::getCVar(Compiler* compiler, const string& name, CTypeMode returnMode) {
+shared_ptr<CVar> CInterface::getCVar(Compiler* compiler, const string& name, VarScanMode scanMode, CTypeMode returnMode) {
     assert(false);
     return nullptr;
 }

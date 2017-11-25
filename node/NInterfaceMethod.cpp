@@ -131,7 +131,7 @@ shared_ptr<CVar> CInterfaceMethod::getThisVar(Compiler* compiler) {
     return nullptr;
 }
 
-shared_ptr<CVar> CInterfaceMethod::getCVar(Compiler* compiler, const string& name, CTypeMode returnMode) {
+shared_ptr<CVar> CInterfaceMethod::getCVar(Compiler* compiler, const string& name, VarScanMode scanMode, CTypeMode returnMode) {
     assert(false);
     return nullptr;
 }

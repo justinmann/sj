@@ -45,18 +45,17 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
     }
 
     // create and store array value
-    auto elementVar = firstElement->getVar(compiler, scope, CTM_Heap);
+    auto elementVar = firstElement->getVar(compiler, scope, CTM_Undefined);
     if (!elementVar) {
         compiler->addError(loc, CErrorCode::InvalidType, "cannot determine type of first element");
         return nullptr;
     }
     
     auto elementType = elementVar->getType(compiler);
-    if (elementType->typeMode != CTM_Heap && elementType->typeMode != CTM_Value) {
-        compiler->addError(loc, CErrorCode::TypeMismatch, "arrays only support heap and value types");
+    if (!elementType) {
         return nullptr;
     }
-    
+
     auto createArrayCallee = scope->function->getCFunction(compiler, loc, "array", scope, make_shared<CTypeNameList>(elementType->category, elementType->typeMode, elementType->valueName, elementType->isOption), returnMode);
     if (!createArrayCallee) {
         return nullptr;

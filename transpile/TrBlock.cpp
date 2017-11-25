@@ -78,7 +78,7 @@ void TrBlock::writeVariablesReleaseToStream(ostream& stream, int level) {
     stringstream varStream;
     for (auto variable : variables)
     {
-        variable.second->writeReleaseToStream(this, varStream, level);
+        variable.second->writeReleaseToStream(varStream, level);
     }
 
     for (auto variable : variables)
@@ -177,45 +177,10 @@ string TrBlock::getFunctionName() {
 
 map<string, int> TrBlock::varNames;
 
-bool TrValue::writeReleaseToStream(TrBlock* block, ostream& stream, int level) {
-    if (!type || type->parent.expired())
-        return false;
-
-    if (type->typeMode == CTM_Heap) {
-        if (type->isOption) {
-            TrBlock::addSpacing(stream, level);
-            stream << "if (" << name << " != 0) {\n";
-            level++;
-        }
-
-        TrBlock::addSpacing(stream, level);
-        stream << name << "->_refCount--;\n";
-
-#ifdef DEBUG_ALLOC
-        TrBlock::addSpacing(stream, level);
-        stream << "printf(\"RELEASE\\t" << type->nameRef << "\\t%0x\\t" << (block ? block->getFunctionName() : "") << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);\n";
-#endif
-
-        TrBlock::addSpacing(stream, level);
-        stream << "if (" << name << "->_refCount <= 0) {\n";
-        TrBlock::addSpacing(stream, level + 1);
-        stream << type->parent.lock()->getCDestroyFunctionName() << "(" << convertToLocalName(type, name) << ");\n";
-
-#ifndef SKIP_FREE
-        TrBlock::addSpacing(stream, level + 1);
-        stream << "free(" << name << ");\n";
-#endif
-        TrBlock::addSpacing(stream, level);
-        stream << "}\n";
-
-        if (type->isOption) {
-            level--;
-            TrBlock::addSpacing(stream, level);
-            stream << "}\n";
-        }
-    }
-
-    return true;
+void TrValue::writeReleaseToStream(ostream& stream, int level) {
+    TrBlock block;
+    addReleaseToStatements(&block);
+    block.writeBodyToStream(stream, level);
 }
 
 void TrValue::addReleaseToStatements(TrBlock* block) {
@@ -248,7 +213,7 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
         innerBlock->statements.push_back(TrStatement(ifStream.str(), ifBlock));
 
         stringstream destroyStream;
-        destroyStream << type->parent.lock()->getCDestroyFunctionName() << "(" << convertToLocalName(type, name) << ")";
+        destroyStream << type->parent.lock()->getCDestroyFunctionName() << "(" << convertToLocalName(type, name, false) << ")";
         ifBlock->statements.push_back(destroyStream.str());
 
 #ifndef SKIP_FREE
@@ -346,12 +311,12 @@ string TrValue::getPointerName() {
     }
 }
 
-string TrValue::convertToLocalName(shared_ptr<CType> from, string name) {
+string TrValue::convertToLocalName(shared_ptr<CType> from, string name, bool isReturnValue) {
     switch (from->typeMode) {
     case CTM_Local:
         return name;
     case CTM_Stack:
-        return "&" + name;
+        return isReturnValue ? name : "&" + name;
     case CTM_Heap:
         if (from->category == CTC_Interface) {
             return name;
@@ -403,7 +368,7 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
         stringstream lineStream;
         lineStream << name << " = ";
         if (type->typeMode == CTM_Stack || type->typeMode == CTM_Local) {
-            lineStream << TrValue::convertToLocalName(rightValue->type, rightValue->name);
+            lineStream << TrValue::convertToLocalName(rightValue->type, rightValue->name, rightValue->isReturnValue);
         }
         else {
             lineStream << rightValue->name;
@@ -428,7 +393,7 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
             }
 
             stringstream lineStream;
-            lineStream << type->parent.lock()->getCCopyFunctionName() << "(" << TrValue::convertToLocalName(type, name) << ", " << TrValue::convertToLocalName(rightValue->type, rightValue->name) << ")";
+            lineStream << type->parent.lock()->getCCopyFunctionName() << "(" << TrValue::convertToLocalName(type, name, isReturnValue) << ", " << TrValue::convertToLocalName(rightValue->type, rightValue->name, rightValue->isReturnValue) << ")";
             block->statements.push_back(lineStream.str());
         }
     }
@@ -473,7 +438,7 @@ void TrStoreValue::takeOverValue(Compiler* compiler, CLoc loc, TrBlock* block, s
         stringstream lineStream;
         lineStream << name << " = ";
         if (type->typeMode == CTM_Stack || type->typeMode == CTM_Local) {
-            lineStream << TrValue::convertToLocalName(rightValue->type, rightValue->name);
+            lineStream << TrValue::convertToLocalName(rightValue->type, rightValue->name, rightValue->isReturnValue);
         }
         else {
             lineStream << rightValue->name;
@@ -497,7 +462,7 @@ void TrStoreValue::takeOverValue(Compiler* compiler, CLoc loc, TrBlock* block, s
             }
 
             stringstream lineStream;
-            lineStream << type->parent.lock()->getCCopyFunctionName() << "(" << TrValue::convertToLocalName(type, name) << ", " << TrValue::convertToLocalName(rightValue->type, rightValue->name) << ")";
+            lineStream << type->parent.lock()->getCCopyFunctionName() << "(" << TrValue::convertToLocalName(type, name, isReturnValue) << ", " << TrValue::convertToLocalName(rightValue->type, rightValue->name, rightValue->isReturnValue) << ")";
             block->statements.push_back(lineStream.str());
         }
     }

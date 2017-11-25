@@ -104,31 +104,7 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
     }
 
     if (varScope) {
-        auto cvar = varScope->getCVar(compiler, name);
-        if (cvar == nullptr && dotVar == nullptr) {
-            vector<shared_ptr<CFunction>> parents;
-            parents.push_back(static_pointer_cast<CFunction>(varScope->function));
-            auto parent = varScope->function->parent.lock();
-            while (cvar == nullptr && parent != nullptr) {
-                cvar = parent->getCVar(compiler, name, CTM_Undefined);
-                if (cvar == nullptr) {
-                    parents.push_back(varScope->function);
-                    parent = parent->parent.lock();
-                }
-            }
-
-            if (cvar) {
-                if (parent->name == "global") {
-                    // If we made it up the parent chain to the top then we do not need to parent.parent to get there, we can just reference global vars directly
-                }
-                else {
-                    for (auto i = parents.rbegin(); i != parents.rend(); ++i) {
-                        cvar = CParentDotVar::create(loc, compiler, *i, cvar);
-                    }
-                }
-            }
-        }
-
+        auto cvar = varScope->getCVar(compiler, name, dotVar ? VSM_ThisOnly : VSM_LocalThisParent);
         if (!cvar) {
             compiler->addError(loc, CErrorCode::InvalidVariable, "cannot find variable '%s'", name.c_str());
             return nullptr;

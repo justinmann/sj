@@ -91,6 +91,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\..\boost\include\boost-1_65_1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>sj.pch</PrecompiledHeaderFile>
+      <AdditionalOptions> -D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -162,6 +163,7 @@
     <ClInclude Include="..\compiler\Exception.h" />
     <ClInclude Include="..\node\NAnd.h" />
     <ClInclude Include="..\node\NArray.h" />
+    <ClInclude Include="..\node\NChangeMode.h" />
     <ClInclude Include="..\node\NEmpty.h" />
     <ClInclude Include="..\node\NFunction.h" />
     <ClInclude Include="..\node\NGetOrElse.h" />
@@ -217,6 +219,7 @@
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\node\NAnd.cpp" />
     <ClCompile Include="..\node\NArray.cpp" />
+    <ClCompile Include="..\node\NChangeMode.cpp" />
     <ClCompile Include="..\node\NEmpty.cpp" />
     <ClCompile Include="..\node\NGetOrElse.cpp" />
     <ClCompile Include="..\node\NGetValue.cpp" />

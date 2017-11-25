@@ -17,7 +17,7 @@ enum NCCodeType {
 
 class CCCodeVar : public CVar {
 public:
-    CCCodeVar(CLoc loc, shared_ptr<CScope> scope, NCCodeType codeType, string code, vector<shared_ptr<CFunction>> functions, vector<string> includes) : CVar(loc, scope, "", false), codeType(codeType), code(code), functions(functions), includes(includes) { }
+    CCCodeVar(CLoc loc, shared_ptr<CScope> scope, NCCodeType codeType, string code) : CVar(loc, scope, "", false), codeType(codeType), code(code) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -26,8 +26,6 @@ public:
 private:
     NCCodeType codeType;
     string code;
-    vector<shared_ptr<CFunction>> functions;
-    vector<string> includes;
 }; 
 
 class NCCode : public NBase {
@@ -37,11 +35,6 @@ public:
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
 
 private:
-    string expandMacro(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode, string macro);
-
-    map<CScope*, string> _final;
-    map<CScope*, vector<shared_ptr<CFunction>>> _functions;
-    vector<string> _includes;
     NCCodeType codeType;
     string code;
 };

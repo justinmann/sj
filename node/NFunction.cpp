@@ -978,7 +978,7 @@ shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, const string
                 return cfunc->getCInterface(compiler, name, callerScope, templateTypeNames);
             }
             else {
-                auto var = cfunc->getCVar(compiler, name, CTM_Stack);
+                auto var = cfunc->getCVar(compiler, name, VSM_LocalOnly, CTM_Stack);
                 if (!var) {
                     return nullptr;
                 }
@@ -1010,17 +1010,17 @@ shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, const string
     }
 }
 
-shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, const string& name, CTypeMode returnMode) {
+shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, const string& name, VarScanMode scanMode, CTypeMode returnMode) {
     if (returnMode == CTM_Undefined) {
         if (!_data[CTM_Stack].isInvalid) {
-            auto result = getCVar(compiler, name, CTM_Stack);
+            auto result = getCVar(compiler, name, scanMode, CTM_Stack);
             if (result) {
                 return result;
             }
         }
 
         if (!_data[CTM_Heap].isInvalid) {
-            auto result = getCVar(compiler, name, CTM_Heap);
+            auto result = getCVar(compiler, name, scanMode, CTM_Heap);
             if (result) {
                 return result;
             }
@@ -1030,25 +1030,65 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, const string& name, CTyp
         assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
         assert(!_data[returnMode].isInvalid);
 
-        auto t1 = _data[returnMode].localVarsByName.find(name);
-        if (t1 != _data[returnMode].localVarsByName.end()) {
-            return t1->second;
+        if (scanMode == VSM_LocalOnly || scanMode == VSM_LocalThisParent) {
+            auto t1 = _data[returnMode].localVarsByName.find(name);
+            if (t1 != _data[returnMode].localVarsByName.end()) {
+                return t1->second;
+            }
         }
         
-        auto t2 = _data[returnMode].thisArgVarsByName.find(name);
-        if (t2 != _data[returnMode].thisArgVarsByName.end()) {
-            auto thisArgVar = t2->second.second;
-            if (!hasThis) {
-                auto argVarType = thisArgVar->getType(compiler);
-                if (!argVarType->parent.expired()) {
-                    if (argVarType->typeMode == CTM_Stack) {
-                        argVarType = argVarType->getLocalType();
+        if (scanMode == VSM_ThisOnly || scanMode == VSM_LocalThisParent) {
+            auto t2 = _data[returnMode].thisArgVarsByName.find(name);
+            if (t2 != _data[returnMode].thisArgVarsByName.end()) {
+                auto thisArgVar = t2->second.second;
+                if (!hasThis) {
+                    auto argVarType = thisArgVar->getType(compiler);
+                    if (!argVarType->parent.expired()) {
+                        if (argVarType->typeMode == CTM_Stack) {
+                            argVarType = argVarType->getLocalType();
+                        }
+                    }
+                    return make_shared<CFunctionParameterVar>(loc, thisArgVar->scope.lock(), thisArgVar->name, false, argVarType);
+                }
+                else {
+                    return thisArgVar;
+                }
+            }
+        }
+
+        if (scanMode == VSM_LocalThisParent) {
+            vector<shared_ptr<CFunction>> parents;
+            parents.push_back(shared_from_this());
+            shared_ptr<CFunction> parentCheck = dynamic_pointer_cast<CFunction>(parent.lock());
+            shared_ptr<CVar> cvar;
+            while (cvar == nullptr && parentCheck != nullptr) {
+                cvar = parentCheck->getCVar(compiler, name, VSM_ThisOnly, CTM_Undefined);
+                if (cvar == nullptr) {
+                    parents.push_back(parentCheck);
+                    parentCheck = dynamic_pointer_cast<CFunction>(parentCheck->parent.lock());
+                }
+            }
+
+            if (cvar) {
+                if (parentCheck->name == "global") {
+                    // If we made it up the parent chain to the top then we do not need to parent.parent to get there, we can just reference global vars directly
+                }
+                else {
+                    for (auto i = parents.rbegin(); i != parents.rend(); ++i) {
+                        cvar = CParentDotVar::create(loc, compiler, *i, cvar);
                     }
                 }
-                return make_shared<CFunctionParameterVar>(loc, thisArgVar->scope.lock(), thisArgVar->name, false, argVarType);
+                return cvar;
             }
-            else {
-                return thisArgVar;
+
+            shared_ptr<CFunction> globalFunction = dynamic_pointer_cast<CFunction>(parent.lock());
+            while (globalFunction != nullptr && globalFunction->name != "global") {
+                globalFunction = dynamic_pointer_cast<CFunction>(globalFunction->parent.lock());
+            }
+
+            if (globalFunction) {
+                cvar = globalFunction->getCVar(compiler, name, VSM_LocalOnly, CTM_Undefined);
+                return cvar;
             }
         }
     }
@@ -1364,12 +1404,12 @@ shared_ptr<CType> CScope::getVarType(CLoc loc, Compiler* compiler, shared_ptr<CT
     }
 }
 
-shared_ptr<CVar> CScope::getCVar(Compiler* compiler, const string& name) {
+shared_ptr<CVar> CScope::getCVar(Compiler* compiler, const string& name, VarScanMode scanMode) {
     if (function) {
-        return function->getCVar(compiler, name, returnMode);
+        return function->getCVar(compiler, name, scanMode, returnMode);
     }
     else if (cinterface) {
-        return cinterface->getCVar(compiler, name, CTM_Heap);
+        return cinterface->getCVar(compiler, name, scanMode, CTM_Heap);
     }
     else {
         assert(false);
