@@ -3,7 +3,7 @@ class(data'stack anon1:)'stack class {
 }
 
 class_get()'local anon1 {
-  local .parentthis.data
+  local parent.data
 }
 
 global()'void {

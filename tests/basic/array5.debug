@@ -50,7 +50,7 @@ global()'void {
     parent: a,
     index'i32 : this.index
   )
-  this.x
+  c.x
   void
 }
 

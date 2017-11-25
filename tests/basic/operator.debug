@@ -15,7 +15,7 @@ fancyMath_divide(num'stack fancyMath:)'stack fancyMath {
 }
 
 fancyMath_getX()'i32 {
-  .parentthis.x
+  parent.x
 }
 
 fancyMath_increment()'stack fancyMath {
@@ -37,7 +37,7 @@ fancyMath_multiply(num'stack fancyMath:)'stack fancyMath {
 }
 
 fancyMath_setBob(i'i32:)'i32 {
-  .parentthis.x'i32 = i
+  parent.x'i32 = i
 }
 
 fancyMath_subtract(num'stack fancyMath:)'stack fancyMath {

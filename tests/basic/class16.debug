@@ -3,7 +3,7 @@ a(x'i32:, b'stack aa:)'stack a {
 }
 
 a_aa_c()'i32 {
-  .parent.parentthis.x
+  parent.parent.x
 }
 
 global()'void {
@@ -12,9 +12,9 @@ global()'void {
     b'stack aa : this.b
   ))
   a_aa_c(
-    parent: this.b
+    parent: a.b
   )
-  d'stack aa : this.b
+  d'stack aa : a.b
   a_aa_c(
     parent: d
   )

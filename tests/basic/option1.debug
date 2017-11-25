@@ -20,7 +20,7 @@ global()'void {
     bob'i32 : this.bob
   )))
   o'heap class : getValue(n)
-  p'i32? : if isEmpty(n) empty'i32? else value(this.bob)
+  p'i32? : if isEmpty(n) empty'i32? else value(getValue(n).bob)
   q'i32 : if isEmpty(a) -1i else getValue(a)
   r'heap #interface? : n as heap #interface?
   s'heap #interface2? : r as heap #interface2?

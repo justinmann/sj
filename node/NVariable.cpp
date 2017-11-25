@@ -90,7 +90,11 @@ shared_ptr<TrStoreValue> CParentDotVar::getStoreValue(Compiler* compiler, TrOutp
 }
 
 void CParentDotVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
-    ss << ".parent";
+    auto t = dotSS.str();
+    if (t.size() > 0) {
+        dotSS << ".";
+    }
+    dotSS << "parent";
     childVar->dump(compiler, dotVar, functions, ss, dotSS, level);
 }
 

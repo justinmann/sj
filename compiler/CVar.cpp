@@ -77,11 +77,11 @@ shared_ptr<TrStoreValue> CNormalVar::getStoreValue(Compiler* compiler, TrOutput*
 }
 
 void CNormalVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
-    if (dotSS.gcount()) {
-        ss << dotSS.str() << ".";
-    }
-    
-    if (mode == Var_Public || mode == Var_Private) {
+    auto t = dotSS.str();
+    if (t.size() > 0) {
+        ss << t << ".";
+    }    
+    else if (mode == Var_Public || mode == Var_Private) {
         ss << "this.";
     }
     

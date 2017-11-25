@@ -57,7 +57,7 @@ string(count'i32=, data'stack array_char=)'stack string {
 
 string_getAt(index'i32:)'char {
   array_getAt(
-    parent: .parentthis.data,
+    parent: parent.data,
     index'i32 : this.index
   )
 }

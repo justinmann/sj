@@ -7,7 +7,7 @@ foo(x'i32:)'stack foo {
 }
 
 func(b'stack bar:)'local foo {
-  this.f'stack foo = foo(this = foo(
+  b.f'stack foo = foo(this = foo(
     x'i32 : this.x
   ))
 }
@@ -16,7 +16,9 @@ global()'void {
   b'stack bar : bar(this = bar(
     f'stack foo = this.f
   ))
-  this.x
+  func(
+    b'stack bar : this.b
+  ).x
   void
 }
 

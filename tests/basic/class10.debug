@@ -3,7 +3,7 @@ class(x'i32:)'stack class {
 }
 
 class_func()'i32 {
-  .parentthis.x
+  parent.x
 }
 
 global()'void {

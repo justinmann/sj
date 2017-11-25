@@ -6,7 +6,7 @@ global()'void {
   c'stack class : class(this = class(
     x'i32 : this.x
   ))
-  this.x
+  c.x
   void
 }
 

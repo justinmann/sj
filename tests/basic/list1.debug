@@ -75,31 +75,31 @@ list!heap class(count'i32=, data'stack array_heap_class=)'stack list_heap_class 
 }
 
 list_add(item'heap class:)'i32 {
-  if .parentthis.count > this.size {
+  if parent.count > parent.parent.data.size {
     list_setSize(
-      parent: this,
+      parent: parent.parent,
       size'i32 : this.size
     )
     void
   }
   array_setAt(
-    parent: .parentthis.data,
+    parent: parent.parent.parent.data,
     index'i32 : this.index,
     item'heap class : this.item
   )
-  .parentthis.count'i32 = .parentthis.count + 1i
+  parent.parent.parent.parent.count'i32 = parent.parent.parent.parent.parent.count + 1i
 }
 
 list_getAt(index'i32:)'heap class {
   array_getAt(
-    parent: .parentthis.data,
+    parent: parent.data,
     index'i32 : this.index
   )
 }
 
 list_setSize(size'i32:)'void {
   array_grow(
-    parent: .parentthis.data,
+    parent: parent.data,
     newSize'i32 : this.newSize
   )
 }

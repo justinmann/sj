@@ -9,7 +9,7 @@ func()'stack class {
 }
 
 global()'void {
-  this.x
+  func().x
   void
 }
 

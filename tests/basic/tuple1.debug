@@ -35,17 +35,17 @@ global()'void {
   parse'stack anon2 : anon2(this = anon2())
   console'stack anon1 : anon1(this = anon1())
   t'stack tuple2_i32_string : func()
-  a'i32 = this.item1
-  b'stack string = this.item2
+  a'i32 = t.item1
+  b'stack string = t.item2
   {
     tupleResult1'stack tuple2_i32_string : func()
-    a'i32 = this.item1
-    b'stack string = this.item2
+    a'i32 = tupleResult1.item1
+    b'stack string = tupleResult1.item2
   }
   {
     tupleResult2'stack tuple2_i32_string : func()
-    c'i32 : this.item1
-    d'stack string : this.item2
+    c'i32 : tupleResult2.item1
+    d'stack string : tupleResult2.item2
   }
   {
     tupleResult3'stack tuple3_string_f64_i32 : tuple3![stack string, f64, i32](this = tuple3![stack string, f64, i32](
@@ -53,8 +53,8 @@ global()'void {
       item2'f64 : this.item2,
       item3'i32 : this.item3
     ))
-    e'stack string : this.item1
-    f'f64 : this.item2
+    e'stack string : tupleResult3.item1
+    f'f64 : tupleResult3.item2
   }
   void
 }

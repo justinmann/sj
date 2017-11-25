@@ -7,7 +7,7 @@ global()'void {
     x'i32 : this.x,
     y'i32 : this.y
   ))
-  this.x + this.y
+  c.x + c.y
   void
 }
 
