@@ -76,13 +76,11 @@ struct td_sjs_object {
 };
 
 struct td_sjs_class_anon1 {
-    sjs_class* _parent;
     int32_t x;
 };
 
 struct td_sjs_class_anon1_heap {
     int _refCount;
-    sjs_class* _parent;
     int32_t x;
 };
 
@@ -100,10 +98,10 @@ sjs_class_anon1* d;
 sjs_class* sjt_dot1;
 
 void sjf_class(sjs_class* _this);
-void sjf_class_anon1(sjs_class_anon1* _this);
+void sjf_class_anon1(sjs_class_anon1* _this, sjs_class* _parent);
 void sjf_class_anon1_copy(sjs_class_anon1* _this, sjs_class_anon1* to);
 void sjf_class_anon1_destroy(sjs_class_anon1* _this);
-void sjf_class_anon1_heap(sjs_class_anon1_heap* _this);
+void sjf_class_anon1_heap(sjs_class_anon1_heap* _this, sjs_class* _parent);
 void sjf_class_copy(sjs_class* _this, sjs_class* to);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_get(sjs_class* _parent, sjs_class_anon1** _return);
@@ -113,7 +111,7 @@ void main_destroy();
 void sjf_class(sjs_class* _this) {
 }
 
-void sjf_class_anon1(sjs_class_anon1* _this) {
+void sjf_class_anon1(sjs_class_anon1* _this, sjs_class* _parent) {
 }
 
 void sjf_class_anon1_copy(sjs_class_anon1* _this, sjs_class_anon1* to) {
@@ -123,7 +121,7 @@ void sjf_class_anon1_copy(sjs_class_anon1* _this, sjs_class_anon1* to) {
 void sjf_class_anon1_destroy(sjs_class_anon1* _this) {
 }
 
-void sjf_class_anon1_heap(sjs_class_anon1_heap* _this) {
+void sjf_class_anon1_heap(sjs_class_anon1_heap* _this, sjs_class* _parent) {
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* to) {
@@ -146,9 +144,8 @@ void sjf_class_heap(sjs_class_heap* _this) {
 }
 
 int main() {
-    c.data._parent = &c;
     c.data.x = 0;
-    sjf_class_anon1(&c.data);
+    sjf_class_anon1(&c.data, &c);
     sjf_class(&c);
     sjt_dot1 = &c;
     sjf_class_get(sjt_dot1, &d);

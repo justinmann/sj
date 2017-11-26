@@ -245,6 +245,11 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                 auto isFirstArg = true;
                 auto argTypes = getCTypeList(compiler, returnMode);
 
+                if (hasParent) {
+                    isFirstArg = false;
+                    functionDefinition << parent.lock()->getThisTypes(compiler)->localValueType->cname << " _parent";
+                }
+
                 for (auto argType : *argTypes) {
                     if (isFirstArg) {
                         isFirstArg = false;
@@ -290,6 +295,9 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                 string structName = getCStructName(calleeVar->getTypeMode());
                 stringstream functionDefinition;
                 functionDefinition << "void " << functionName << "(" << structName << "* _this";
+                if (hasParent) {
+                    functionDefinition << ", " << parent.lock()->getThisTypes(compiler)->localValueType->cname << " _parent";
+                }
                 if (returnType != compiler->typeVoid && !_isReturnThis) {
                     functionDefinition << ", " << returnType->cname << "* _return";
                 }
@@ -498,31 +506,21 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
         if (!parentValue) {
             if (parent.lock() == callerScope->function) {
                 if (thisValue != nullptr) {
-                    parentName = thisValue->getPointerName();
+                    parentName = TrValue::convertToLocalName(thisValue->type, thisValue->name, false);
+                }
+                else {
+                    assert(false);
                 }
             }
             else if (parent.lock() == callerScope->function->parent.lock()) {
-                if (callerScope->function->hasThis) {
-                    parentName = thisValue->getDotName("_parent");
-                }
-                else {
-                    parentName = "_parent";
-                }
-            }
-            else if (parent.lock() == callerScope->function->parent.lock()->parent.lock()) {
-                if (callerScope->function->hasThis) {
-                    parentName = thisValue->getDotName("_parent->_parent");
-                }
-                else {
-                    parentName = "_parent->_parent";
-                }
+                parentName = "_parent";
             }
             else {
                 assert(false);
             }
         }
         else {
-            parentName = parentValue->getPointerName();
+            parentName = TrValue::convertToLocalName(parentValue->type, parentValue->name, false);
         }
     }
     
@@ -602,12 +600,6 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
             calleeThisValue->addInitToStatements(trBlock);
         }
 
-        if (hasParent) {
-            stringstream parentLine;
-            parentLine << calleeThisValue->getDotName("_parent") << " = " << parentName;
-            trBlock->statements.push_back(parentLine.str());
-        }
-
         auto argTypes = getCTypeList(compiler, returnMode);
         auto argIndex = 0;
         // Fill in "this" with normal arguments
@@ -636,6 +628,9 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
         // Call function
         stringstream line;
         line << functionName << "(" << calleeThisValue->getPointerName();
+        if (hasParent) {
+            line << ", " << parentName;
+        }
         if (returnType != compiler->typeVoid && !_isReturnThis) {
             line << ", &" << storeValue->getName(trBlock);
         }
@@ -914,11 +909,6 @@ shared_ptr<vector<pair<string, shared_ptr<CType>>>> CFunction::getCTypeList(Comp
     if (!_data[returnMode].ctypeList) {
         _data[returnMode].ctypeList = make_shared<vector<pair<string, shared_ptr<CType>>>>();
 
-        if (hasParent) {
-            auto parentType = parent.lock()->getThisTypes(compiler);
-            _data[returnMode].ctypeList->push_back(make_pair("_parent", parentType->localValueType));
-        }
-
         for (auto it : _data[returnMode].thisArgVars) {
             auto ctype = it->getType(compiler);
             if (!ctype) {
@@ -1088,6 +1078,11 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, const string& name, VarS
             shared_ptr<CVar> cvar;
             while (cvar == nullptr && parentCheck != nullptr) {
                 cvar = parentCheck->getCVar(compiler, name, VSM_FromChild, CTM_Undefined);
+
+                // TODO: allow vars in parent of parent, etc.
+                // This is not currently supported because I have no safe way to maintain the _parent pointer, if it is stored in the struct then it can point nowhere if a class is created then re-assigned somewhere and the original parent is gc'ed
+                break;
+
                 if (cvar == nullptr) {
                     parents.push_back(parentCheck);
                     parentCheck = dynamic_pointer_cast<CFunction>(parentCheck->parent.lock());

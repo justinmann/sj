@@ -1,6 +1,4 @@
 * remove setHasParent
-* set hasparent if passing parent to function
-* move globals to be global
 * stack optional
 * second assignment to return var does not free
 * all tests compile
