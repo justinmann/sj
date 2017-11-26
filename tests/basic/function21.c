@@ -60,28 +60,45 @@ struct td_double_option {
 const double_option double_empty = { true };
 
 #define sjs_object_typeId 1
+#define sjs_func_typeId 2
 
 typedef struct td_sjs_object sjs_object;
+typedef struct td_sjs_func sjs_func;
 
 struct td_sjs_object {
     int _refCount;
 };
 
-void sjf_func(int32_t* _return);
-void sjf_func_bar(int32_t* _return);
+struct td_sjs_func {
+    int structsNeedAValue;
+};
+
+void sjf_func(sjs_func* _this, int32_t* _return);
+void sjf_func_bar(sjs_func* _parent, int32_t* _return);
+void sjf_func_copy(sjs_func* _this, sjs_func* to);
+void sjf_func_destroy(sjs_func* _this);
 
 
-void sjf_func(int32_t* _return) {
-    sjf_func_bar(&(*_return));
+void sjf_func(sjs_func* _this, int32_t* _return) {
+    sjf_func_bar(_this, &(*_return));
 }
 
-void sjf_func_bar(int32_t* _return) {
+void sjf_func_bar(sjs_func* _parent, int32_t* _return) {
     (*_return) = 9;
 }
 
+void sjf_func_copy(sjs_func* _this, sjs_func* to) {
+}
+
+void sjf_func_destroy(sjs_func* _this) {
+}
+
 int main() {
+    sjs_func object1;
     int32_t void1;
 
-    sjf_func(&void1);
+    sjf_func(&object1, &void1);
+
+    sjf_func_destroy(&object1);
     return 0;
 }

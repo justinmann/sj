@@ -76,11 +76,13 @@ struct td_sjs_object {
 };
 
 struct td_sjs_class_anon1 {
+    sjs_class* _parent;
     int32_t x;
 };
 
 struct td_sjs_class_anon1_heap {
     int _refCount;
+    sjs_class* _parent;
     int32_t x;
 };
 
@@ -144,6 +146,7 @@ int main() {
     sjs_class_anon1* d;
     sjs_class* sjt_dot1;
 
+    c.data._parent = c._parent;
     c.data.x = 0;
     sjf_class_anon1(&c.data);
     sjf_class(&c);

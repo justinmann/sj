@@ -8,7 +8,9 @@ class_func()'i32 {
 
 global()'void {
   c'stack class : class(this = class())
-  class_func()
+  class_func(
+    parent: c
+  )
   void
 }
 

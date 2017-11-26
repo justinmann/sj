@@ -173,8 +173,8 @@ void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* to);
 void sjf_array_char_destroy(sjs_array_char* _this);
 void sjf_array_char_getAt(sjs_array_char* _parent, int32_t index, char* _return);
 void sjf_array_char_heap(sjs_array_char_heap* _this);
-void sjf_array_char_isEqual(sjs_array_char* test, bool* _return);
-void sjf_array_char_isLessOrEqual(sjs_array_char* test, bool* _return);
+void sjf_array_char_isEqual(sjs_array_char* _parent, sjs_array_char* test, bool* _return);
+void sjf_array_char_isLessOrEqual(sjs_array_char* _parent, sjs_array_char* test, bool* _return);
 void sjf_string(sjs_string* _this);
 void sjf_string_copy(sjs_string* _this, sjs_string* to);
 void sjf_string_destroy(sjs_string* _this);
@@ -309,7 +309,7 @@ void sjf_array_char_heap(sjs_array_char_heap* _this) {
 	;
 }
 
-void sjf_array_char_isEqual(sjs_array_char* test, bool* _return) {
+void sjf_array_char_isEqual(sjs_array_char* _parent, sjs_array_char* test, bool* _return) {
     
 		
 
@@ -321,7 +321,7 @@ void sjf_array_char_isEqual(sjs_array_char* test, bool* _return) {
 	;
 }
 
-void sjf_array_char_isLessOrEqual(sjs_array_char* test, bool* _return) {
+void sjf_array_char_isLessOrEqual(sjs_array_char* _parent, sjs_array_char* test, bool* _return) {
     
 		
 
@@ -368,7 +368,7 @@ void sjf_string_isEqual(sjs_string* _parent, sjs_string* test, bool* _return) {
     sjt_dot5 = test;
     dotTemp5 = sjt_dot5->data;
     sjt_functionParam3 = &dotTemp5;
-    sjf_array_char_isEqual(sjt_functionParam3, &(*_return));
+    sjf_array_char_isEqual(sjt_dot4, sjt_functionParam3, &(*_return));
 
     sjf_array_char_destroy(&dotTemp4);
     sjf_array_char_destroy(&dotTemp5);
@@ -386,7 +386,7 @@ void sjf_string_isLessOrEqual(sjs_string* _parent, sjs_string* test, bool* _retu
     sjt_dot8 = test;
     dotTemp7 = sjt_dot8->data;
     sjt_functionParam5 = &dotTemp7;
-    sjf_array_char_isLessOrEqual(sjt_functionParam5, &(*_return));
+    sjf_array_char_isLessOrEqual(sjt_dot7, sjt_functionParam5, &(*_return));
 
     sjf_array_char_destroy(&dotTemp6);
     sjf_array_char_destroy(&dotTemp7);

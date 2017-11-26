@@ -104,7 +104,7 @@ struct td_sjs_anon2_heap {
 };
 
 struct td_sjs_anon1_class {
-    int structsNeedAValue;
+    sjs_anon1* _parent;
 };
 
 struct td_sji_anon1_foo {
@@ -117,10 +117,11 @@ struct td_sji_anon1_foo {
 
 struct td_sjs_anon1_class_heap {
     int _refCount;
+    sjs_anon1* _parent;
 };
 
 struct td_sjs_anon2_class {
-    int structsNeedAValue;
+    sjs_anon2* _parent;
 };
 
 struct td_sji_anon2_foo {
@@ -133,6 +134,7 @@ struct td_sji_anon2_foo {
 
 struct td_sjs_anon2_class_heap {
     int _refCount;
+    sjs_anon2* _parent;
 };
 
 void sjf_anon1(sjs_anon1* _this);
@@ -344,11 +346,13 @@ int main() {
     sjt_dot1 = &namespace1;
     sjt_cast1 = (sjs_anon1_class_heap*)malloc(sizeof(sjs_anon1_class_heap));
     sjt_cast1->_refCount = 1;
+    sjt_cast1->_parent = sjt_dot1;
     sjf_anon1_class_heap(sjt_cast1);
     a = (sji_anon1_foo*)sjf_anon1_class_heap_as_sji_anon1_foo(sjt_cast1);
     sjt_dot2 = &namespace2;
     sjt_cast2 = (sjs_anon2_class_heap*)malloc(sizeof(sjs_anon2_class_heap));
     sjt_cast2->_refCount = 1;
+    sjt_cast2->_parent = sjt_dot2;
     sjf_anon2_class_heap(sjt_cast2);
     b = (sji_anon2_foo*)sjf_anon2_class_heap_as_sji_anon2_foo(sjt_cast2);
 

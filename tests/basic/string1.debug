@@ -64,12 +64,14 @@ string_getAt(index'i32:)'char {
 
 string_isEqual(test'stack string:)'bool {
   array_isEqual(
+    parent: parent.data,
     test'stack array_char : this.test
   )
 }
 
 string_isLessOrEqual(test'stack string:)'bool {
   array_isLessOrEqual(
+    parent: parent.data,
     test'stack array_char : this.test
   )
 }

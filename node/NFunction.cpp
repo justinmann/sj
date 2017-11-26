@@ -119,6 +119,10 @@ _isReturnThis(false)
 CTypeMode functionReturnModes[] = { CTM_Stack, CTM_Heap };
 
 bool CFunction::init(Compiler* compiler, shared_ptr<NFunction> node) {
+    if (!parent.expired() && name != "global" && parent.lock()->name != "global") {
+        setHasParent(compiler);
+    }
+
     for (auto it : templateTypes) {
         name = name + "_" + it->safeName;
     }

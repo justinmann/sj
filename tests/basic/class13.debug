@@ -12,6 +12,7 @@ class_bar(x'i32:)'i32 {
 class_foo(x'i32:)'i32 {
   if x > 0i {
     class_bar(
+      parent: this,
       x'i32 : this.x
     )
   } else {

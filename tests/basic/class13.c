@@ -93,7 +93,7 @@ struct td_sjs_class_heap {
 };
 
 void sjf_class(sjs_class* _this);
-void sjf_class_bar(int32_t x, int32_t* _return);
+void sjf_class_bar(sjs_class* _parent, int32_t x, int32_t* _return);
 void sjf_class_copy(sjs_class* _this, sjs_class* to);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return);
@@ -102,13 +102,13 @@ void sjf_math(sjs_math* _this);
 void sjf_math_copy(sjs_math* _this, sjs_math* to);
 void sjf_math_destroy(sjs_math* _this);
 void sjf_math_heap(sjs_math_heap* _this);
-void sjf_math_sub(int32_t x, int32_t y, int32_t* _return);
+void sjf_math_sub(sjs_math* _parent, int32_t x, int32_t y, int32_t* _return);
 
 
 void sjf_class(sjs_class* _this) {
 }
 
-void sjf_class_bar(int32_t x, int32_t* _return) {
+void sjf_class_bar(sjs_class* _parent, int32_t x, int32_t* _return) {
     int32_t sjt_functionParam1;
 
     sjt_functionParam1 = x;
@@ -141,8 +141,8 @@ void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return) {
         sjt_dot2 = &dotTemp1;
         sjt_functionParam3 = x;
         sjt_functionParam4 = 1;
-        sjf_math_sub(sjt_functionParam3, sjt_functionParam4, &sjt_functionParam2);
-        sjf_class_bar(sjt_functionParam2, &(*_return));
+        sjf_math_sub(sjt_dot2, sjt_functionParam3, sjt_functionParam4, &sjt_functionParam2);
+        sjf_class_bar(_parent, sjt_functionParam2, &(*_return));
 
         sjf_math_destroy(&dotTemp1);
     } else {
@@ -165,7 +165,7 @@ void sjf_math_destroy(sjs_math* _this) {
 void sjf_math_heap(sjs_math_heap* _this) {
 }
 
-void sjf_math_sub(int32_t x, int32_t y, int32_t* _return) {
+void sjf_math_sub(sjs_math* _parent, int32_t x, int32_t y, int32_t* _return) {
     int32_t sjt_math1;
     int32_t sjt_math2;
 

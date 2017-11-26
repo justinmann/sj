@@ -1,5 +1,7 @@
 func()'i32 {
-  func_bar()
+  func_bar(
+    parent: this
+  )
 }
 
 func_bar()'i32 {
@@ -7,7 +9,7 @@ func_bar()'i32 {
 }
 
 global()'void {
-  func()
+  func(this = func())
   void
 }
 

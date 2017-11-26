@@ -98,10 +98,10 @@ void sjf_anon1_destroy(sjs_anon1* _this);
 void sjf_anon1_heap(sjs_anon1_heap* _this);
 void sjf_anon1_sub(sjs_anon1* _parent, int32_t x, int32_t y, int32_t* _return);
 void sjf_class(sjs_class* _this);
-void sjf_class_bar(int32_t x, int32_t* _return);
+void sjf_class_bar(sjs_class* _parent, int32_t x, int32_t* _return);
 void sjf_class_copy(sjs_class* _this, sjs_class* to);
 void sjf_class_destroy(sjs_class* _this);
-void sjf_class_foo(int32_t x, int32_t* _return);
+void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return);
 void sjf_class_heap(sjs_class_heap* _this);
 
 
@@ -136,11 +136,11 @@ void sjf_anon1_sub(sjs_anon1* _parent, int32_t x, int32_t y, int32_t* _return) {
 void sjf_class(sjs_class* _this) {
 }
 
-void sjf_class_bar(int32_t x, int32_t* _return) {
+void sjf_class_bar(sjs_class* _parent, int32_t x, int32_t* _return) {
     int32_t sjt_functionParam1;
 
     sjt_functionParam1 = x;
-    sjf_class_foo(sjt_functionParam1, &(*_return));
+    sjf_class_foo(_parent, sjt_functionParam1, &(*_return));
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* to) {
@@ -149,7 +149,7 @@ void sjf_class_copy(sjs_class* _this, sjs_class* to) {
 void sjf_class_destroy(sjs_class* _this) {
 }
 
-void sjf_class_foo(int32_t x, int32_t* _return) {
+void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return) {
     int32_t sjt_compare1;
     int32_t sjt_compare2;
     bool sjt_ifElse1;
@@ -167,7 +167,7 @@ void sjf_class_foo(int32_t x, int32_t* _return) {
         sjt_functionParam3 = x;
         sjt_functionParam4 = 1;
         sjf_anon1_sub(sjt_dot2, sjt_functionParam3, sjt_functionParam4, &sjt_functionParam2);
-        sjf_class_bar(sjt_functionParam2, &(*_return));
+        sjf_class_bar(_parent, sjt_functionParam2, &(*_return));
     } else {
         (*_return) = 0;
     }
@@ -188,7 +188,7 @@ int main() {
     sjf_class(&c);
     sjt_dot1 = &c;
     sjt_functionParam5 = 4;
-    sjf_class_foo(sjt_functionParam5, &void1);
+    sjf_class_foo(sjt_dot1, sjt_functionParam5, &void1);
 
     sjf_class_destroy(&c);
     sjf_anon1_destroy(&math);
