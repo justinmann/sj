@@ -16,38 +16,29 @@ anon4()'stack anon4 {
 
 array_getAt(index'i32:)'char c{
 
-		int32_t size;
-		#retain(i32, size, size);
-		uintptr_t data;
-		#retain(ptr, data, data);
-
-		if (index >= size || index < 0) {
+		if (index >= _parent->size || index < 0) {
 			printf("getAt: out of bounds\n");
 			exit(-1);
 		}
 
-		#type(t)* p = (#type(t)*)data;
+		#type(t)* p = (#type(t)*)_parent->data;
 		#return(t, p[index]);		
 	
 }c
 
 array_isEqual(test'stack array_char:)'bool c{
 
-		#include(<string.h>)
-
-		if (size != test->size) {
+		if (_parent->size != test->size) {
 			*_return = false;
 		}
 
-		*_return = memcmp((void*)data, (void*)test->data, size * sizeof(#type(t))) == 0;		
+		*_return = memcmp((void*)_parent->data, (void*)test->data, _parent->size * sizeof(#type(t))) == 0;		
 	
 }c
 
 array_isLessOrEqual(test'stack array_char:)'bool c{
 
-		#include(<string.h>)
-
-		*_return = memcmp((void*)data, (void*)test->data, (size < test->size ? size : test->size) * sizeof(#type(t))) <= 0;		
+		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) <= 0;		
 	
 }c
 

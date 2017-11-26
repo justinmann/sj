@@ -285,7 +285,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 
                 _isReturnThis = _data[returnMode].blockVar->getReturnThis();
                 auto bodyReturnValue = (returnType != compiler->typeVoid && !_isReturnThis) ? trFunctionBlock->createReturnStoreVariable(loc, nullptr, returnType) : trFunctionBlock->createVoidStoreVariable(loc, returnType);
-                _data[returnMode].blockVar->transpile(compiler, trOutput, trFunctionBlock.get(), nullptr, make_shared<TrValue>(nullptr, calleeVar->getType(compiler), "_this", false), bodyReturnValue);
+                _data[returnMode].blockVar->transpile(compiler, trOutput, trFunctionBlock.get(), nullptr, make_shared<TrValue>(nullptr, calleeVar->getType(compiler)->getLocalType(), "_this", false), bodyReturnValue);
 
                 string structName = getCStructName(calleeVar->getTypeMode());
                 stringstream functionDefinition;
@@ -492,6 +492,40 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
     auto calleeVar = getThisVar(compiler, returnMode);
     auto calleeScope = getScope(compiler, returnMode);
 
+    string parentName;
+    if (hasParent) {
+        stringstream parentLine;
+        if (!parentValue) {
+            if (parent.lock() == callerScope->function) {
+                if (thisValue != nullptr) {
+                    parentName = thisValue->getPointerName();
+                }
+            }
+            else if (parent.lock() == callerScope->function->parent.lock()) {
+                if (callerScope->function->hasThis) {
+                    parentName = thisValue->getDotName("_parent");
+                }
+                else {
+                    parentName = "_parent";
+                }
+            }
+            else if (parent.lock() == callerScope->function->parent.lock()->parent.lock()) {
+                if (callerScope->function->hasThis) {
+                    parentName = thisValue->getDotName("_parent->_parent");
+                }
+                else {
+                    parentName = "_parent->_parent";
+                }
+            }
+            else {
+                assert(false);
+            }
+        }
+        else {
+            parentName = parentValue->getPointerName();
+        }
+    }
+    
     if (!hasThis) {
         auto functionName = getCInitFunctionName(returnMode);
         stringstream line;
@@ -508,12 +542,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
             else {
                 line << ", ";
             }
-            if (!parentValue) {
-                line << (trBlock->hasThis ? "_this" : "_parent");
-            }
-            else {
-                line << parentValue->getPointerName();
-            }
+            line << parentName;
         }
 
         auto argTypes = getCTypeList(compiler, returnMode);
@@ -575,37 +604,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
 
         if (hasParent) {
             stringstream parentLine;
-            if (!parentValue) {
-                if (parent.lock() == callerScope->function) {
-                    if (thisValue != nullptr) {
-                        parentLine << calleeThisValue->getDotName("_parent") << " = " << thisValue->getDotName("_parent");
-                    }
-                }
-                else if (parent.lock() == callerScope->function->parent.lock()) {
-                    parentLine << calleeThisValue->getDotName("_parent") << " = ";
-                    if (callerScope->function->hasThis) {
-                        parentLine << thisValue->getDotName("_parent") << "->";
-                    }
-                    else {
-                        parentLine << "_parent";
-                    }
-                }
-                else if (parent.lock() == callerScope->function->parent.lock()->parent.lock()) {
-                    parentLine << calleeThisValue->getDotName("_parent") << " = ";
-                    if (callerScope->function->hasThis) {
-                        parentLine << thisValue->getDotName("_parent->_parent");
-                    }
-                    else {
-                        parentLine << "_parent->_parent";
-                    }
-                }
-                else {
-                    assert(false);
-                }
-            }
-            else {
-                parentLine << calleeThisValue->getDotName("_parent") << " = " << parentValue->name;
-            }
+            parentLine << calleeThisValue->getDotName("_parent") << " = " << parentName;
             trBlock->statements.push_back(parentLine.str());
         }
 

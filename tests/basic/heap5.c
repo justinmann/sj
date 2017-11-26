@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct td_int32_option int32_option;
 struct td_int32_option {
@@ -125,6 +126,8 @@ void sjf_a_heap(sjs_a_heap* _this) {
 
 void sjf_array_char(sjs_array_char* _this) {
     
+		
+
 		if (_this->size < 0) {
 			exit(-1);
 		}
@@ -158,6 +161,8 @@ void sjf_array_char_destroy(sjs_array_char* _this) {
 
 void sjf_array_char_heap(sjs_array_char_heap* _this) {
     
+		
+
 		if (_this->size < 0) {
 			exit(-1);
 		}

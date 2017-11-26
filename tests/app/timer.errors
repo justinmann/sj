@@ -1,0 +1,2 @@
+ERROR:32 ../lib/common/console.sj[3:3] macro 'forceParent' does not exist
+ERROR:32 ../lib/ui/ui.sj[30:1] macro 'function' does not exist

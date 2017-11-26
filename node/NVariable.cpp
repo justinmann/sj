@@ -116,7 +116,7 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
             }
 
             auto parameters = CCallVar::getParameters(compiler, loc, scope, getPropertyFunction, make_shared<NodeList>(), returnMode);
-            return CCallVar::create(compiler, loc, name, parameters, scope, dotVar, getPropertyFunction, returnMode);
+            return CCallVar::create(compiler, loc, name, parameters, scope, getPropertyFunction, returnMode);
         }
     }
 

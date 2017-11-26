@@ -97,7 +97,8 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
         }
 
         auto parameters = CCallVar::getParameters(compiler, loc, scope, setFunction, make_shared<NodeList>(rightSide), returnMode);
-        return CCallVar::create(compiler, loc, setFunctionName, parameters, scope, parentVar, setFunction, returnMode);
+        auto setVar = CCallVar::create(compiler, loc, setFunctionName, parameters, scope, setFunction, returnMode);
+        return CDotVar::create(loc, scope, parentVar, setVar);
     }
     else {
         if (!rightSide) {

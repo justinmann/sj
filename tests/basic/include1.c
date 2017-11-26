@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct td_int32_option int32_option;
 struct td_int32_option {
@@ -117,6 +118,8 @@ void main_destroy();
 
 void sjf_array_class(sjs_array_class* _this) {
     
+		
+
 		if (_this->size < 0) {
 			exit(-1);
 		}
@@ -150,6 +153,8 @@ void sjf_array_class_destroy(sjs_array_class* _this) {
 
 void sjf_array_class_heap(sjs_array_class_heap* _this) {
     
+		
+
 		if (_this->size < 0) {
 			exit(-1);
 		}
@@ -168,25 +173,12 @@ void sjf_array_class_heap(sjs_array_class_heap* _this) {
 
 void sjf_array_class_setAt(sjs_array_class* _parent, int32_t index, sjs_class* item) {
     
-		int32_t size;
-		int32_t dotTemp1;
-
-dotTemp1 = _parent->size;
-size = dotTemp1;
-;
-		uintptr_t data;
-		uintptr_t dotTemp2;
-
-dotTemp2 = _parent->data;
-data = dotTemp2;
-;
-
-		if (index >= size || index < 0) {
-			printf("setAt: out of bounds %d:%d\n", index, size);
+		if (index >= _parent->size || index < 0) {
+			printf("setAt: out of bounds %d:%d\n", index, _parent->size);
 			exit(-1);
 		}
 
-		sjs_class* p = (sjs_class*)data;
+		sjs_class* p = (sjs_class*)_parent->data;
 		;
 		sjf_class_copy(&p[index], item);
 ;

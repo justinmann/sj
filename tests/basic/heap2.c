@@ -146,7 +146,7 @@ void sjf_class_heap(sjs_class_heap* _this) {
 }
 
 int main() {
-    c.data._parent = c._parent;
+    c.data._parent = &c;
     c.data.x = 0;
     sjf_class_anon1(&c.data);
     sjf_class(&c);

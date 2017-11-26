@@ -99,6 +99,7 @@ sjs_fancyMath* sjt_dot19;
 sjs_fancyMath* sjt_dot20;
 sjs_fancyMath* sjt_dot21;
 sjs_fancyMath* sjt_dot22;
+sjs_fancyMath* sjt_dot23;
 sjs_fancyMath* sjt_dot4;
 sjs_fancyMath* sjt_dot7;
 sjs_fancyMath* sjt_functionParam1;
@@ -411,8 +412,9 @@ int main() {
     sjf_fancyMath_increment(sjt_dot21, &f);
     sjt_dot22 = &f;
     sjf_fancyMath_getX(sjt_dot22, &i);
+    sjt_dot23 = &a;
     sjt_functionParam10 = 12;
-    sjf_fancyMath_setBob(_parent, sjt_functionParam10, &j);
+    sjf_fancyMath_setBob(sjt_dot23, sjt_functionParam10, &j);
     main_destroy();
     return 0;
 }

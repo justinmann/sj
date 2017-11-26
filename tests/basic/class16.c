@@ -154,7 +154,7 @@ void sjf_a_heap(sjs_a_heap* _this) {
 
 int main() {
     a.x = 1;
-    a.b._parent = a._parent;
+    a.b._parent = &a;
     sjf_a_aa(&a.b);
     sjf_a(&a);
     sjt_dot2 = &a;

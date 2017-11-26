@@ -1,6 +1,8 @@
 array!i32(size'i32=, data'ptr=, _isGlobal'bool=)'stack array_i32 {
   c{
 
+		#include(<string.h>)
+
 		if (_this->size < 0) {
 			exit(-1);
 		}
@@ -21,34 +23,24 @@ array!i32(size'i32=, data'ptr=, _isGlobal'bool=)'stack array_i32 {
 
 array_getAt(index'i32:)'i32 c{
 
-		int32_t size;
-		#retain(i32, size, size);
-		uintptr_t data;
-		#retain(ptr, data, data);
-
-		if (index >= size || index < 0) {
+		if (index >= _parent->size || index < 0) {
 			printf("getAt: out of bounds\n");
 			exit(-1);
 		}
 
-		#type(t)* p = (#type(t)*)data;
+		#type(t)* p = (#type(t)*)_parent->data;
 		#return(t, p[index]);		
 	
 }c
 
 array_setAt(index'i32:, item'i32:)'void c{
 
-		int32_t size;
-		#retain(i32, size, size);
-		uintptr_t data;
-		#retain(ptr, data, data);
-
-		if (index >= size || index < 0) {
-			printf("setAt: out of bounds %d:%d\n", index, size);
+		if (index >= _parent->size || index < 0) {
+			printf("setAt: out of bounds %d:%d\n", index, _parent->size);
 			exit(-1);
 		}
 
-		#type(t)* p = (#type(t)*)data;
+		#type(t)* p = (#type(t)*)_parent->data;
 		#release(t, p[index]);
 		#retain(t, p[index], item);
 	

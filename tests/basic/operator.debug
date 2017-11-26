@@ -99,7 +99,7 @@ global()'void {
     parent: f
   )
   j'i32 = fancyMath_setBob(
-    parent: this,
+    parent: a,
     i'i32 : this.i
   )
   void
