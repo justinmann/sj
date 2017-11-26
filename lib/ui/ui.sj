@@ -29,7 +29,7 @@ cdefine{
 
 cfunction{
 	EM_BOOL em_onClick(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData) {
-		#function(onClick)(&global, mouseEvent->timestamp, mouseEvent->targetX, mouseEvent->targetY);
+		#functionStack(onClick)(&global, mouseEvent->timestamp, mouseEvent->targetX, mouseEvent->targetY);
 		return true;
 	}
 }cfunction

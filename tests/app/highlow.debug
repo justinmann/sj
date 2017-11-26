@@ -1,0 +1,131 @@
+anon1()'stack anon1 {
+  this
+}
+
+anon1_readLine()'stack string {
+  data'ptr = 0i as ptr
+  size'i32 = 1024i
+  c{
+
+			#include(<stdio.h>)
+		    char* str = (char*)malloc(size);
+		    int index = 0;
+		    char ch = ' ';
+		    do {
+		        ch = getchar();
+		        if (ch != '\n') {
+		            str[index] = ch;
+		            index++;
+		            if (index >= size) {
+		                size *= 2;
+		                str = (char*)realloc(str, size);
+		            }
+		        }
+		    } while (ch != '\n');
+
+			str[index] = 0;
+		    index++;
+		    data = (uintptr_t)str;
+		    size = index;
+		
+}c
+  string(this = string(
+    count'i32 = this.count,
+    data'stack array_char = this.data
+  ))
+}
+
+anon1_write(data'stack string:)'void {
+  c{
+
+			#include(<stdio.h>)
+			printf("%s\n", (char*)data->data.data);
+		
+}c
+}
+
+anon2()'stack anon2 {
+  this
+}
+
+anon2_toInt(text'stack string:)'i32 {
+  x'i32 = 0i
+  c{
+
+			char* e;
+		    int v = (int)strtol((char*)text->data.data, &e, 10);
+		    
+		    if (*e != '\0') {
+		        x = 0;
+		    }
+		    else {
+		    	x = v;
+			}
+	    
+}c
+  x
+}
+
+anon3()'stack anon3 {
+  this
+}
+
+anon3_nextInt()'i32 c{
+
+		int x = rand();
+		*_return = x;
+	
+}c
+
+anon4()'stack anon4 {
+  this
+}
+
+string(count'i32=, data'stack array_char=)'stack string {
+  this
+}
+
+global()'void {
+  convert'stack anon4 : anon4(this = anon4())
+  random'stack anon3 : anon3(this = anon3())
+  parse'stack anon2 : anon2(this = anon2())
+  console'stack anon1 : anon1(this = anon1())
+  anon1_write(
+    parent: console,
+    data'stack string : this.data
+  )
+  num'i32 : anon3_nextInt(
+    parent: random
+  ) %% 10i + 1i
+  isCorrect'bool = false
+  while !isCorrect{
+    str'stack string : anon1_readLine(
+      parent: console
+    )
+    guess'i32 : anon2_toInt(
+      parent: parse,
+      text'stack string : this.text
+    )
+    isCorrect'bool = if guess < num {
+      anon1_write(
+        parent: console,
+        data'stack string : this.data
+      )
+      false
+    } else if guess > num {
+      anon1_write(
+        parent: console,
+        data'stack string : this.data
+      )
+      false
+    } else {
+      true
+    }
+  }
+  anon1_write(
+    parent: console,
+    data'stack string : this.data
+  )
+  void
+}
+

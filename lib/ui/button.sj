@@ -4,7 +4,7 @@ button #element (
 	rect = rect(0, 0, 0, 0)
 
 	setRect(rect_ : 'rect) {
-		rect = rect_
+		rect = copy rect_
 		void
 	}
 

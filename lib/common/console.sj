@@ -2,8 +2,7 @@ console : ^(
 	write(data : 'string)'void {
 		c{
 			#include(<stdio.h>)
-			#forceParent()
-			printf("%s\n", (char*)data->data->data);
+			printf("%s\n", (char*)data->data.data);
 		}c
 	}
 
