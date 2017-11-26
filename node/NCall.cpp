@@ -121,11 +121,11 @@ void CCallVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<
         ss << "this" << " = ";
         ss << callee->fullName(true) << "(";
 
-        if (parameters->size() > 0 || callee->getHasParent(compiler)) {
+        if (parameters->size() > 0 || callee->hasParent) {
             ss << "\n";
             dumpf(ss, level + 1);
 
-            if (callee->getHasParent(compiler)) {
+            if (callee->hasParent) {
                 ss << "parent: ";
                 auto t = dotSS.str();
                 if (t.size() > 0) {
@@ -160,11 +160,11 @@ void CCallVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<
         }
         ss << "))";
     } else {
-        if (parameters->size() > 0 || callee->getHasParent(compiler)) {
+        if (parameters->size() > 0 || callee->hasParent) {
             ss << "\n";
             dumpf(ss, level + 1);
 
-            if (callee->getHasParent(compiler)) {
+            if (callee->hasParent) {
                 ss << "parent: ";
                 auto t = dotSS.str();
                 if (t.size() > 0) {

@@ -69,7 +69,7 @@ void CInterfaceMethodArgVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, m
     ss << "interfaceArg";
 }
 
-CInterfaceMethod::CInterfaceMethod(string& name, weak_ptr<CInterface> parent, int methodIndex, CTypeMode returnMode) : CBaseFunction(CFT_InterfaceMethod, name, parent, weak_ptr<CBaseFunctionDefinition>()), returnMode(returnMode) {
+CInterfaceMethod::CInterfaceMethod(string& name, weak_ptr<CInterface> parent, int methodIndex, CTypeMode returnMode) : CBaseFunction(CFT_InterfaceMethod, name, parent, weak_ptr<CBaseFunctionDefinition>(), true), returnMode(returnMode) {
     
 }
 

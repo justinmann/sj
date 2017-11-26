@@ -103,7 +103,7 @@ shared_ptr<CVar> NFunction::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
 }
 
 CFunction::CFunction(weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) :
-CBaseFunction(CFT_Function, definition.lock()->name, parent, definition),
+CBaseFunction(CFT_Function, definition.lock()->name, parent, definition, !parent.expired() && name != "global" && parent.lock()->name != "global"),
 loc(CLoc::undefined),
 type(type),
 templateTypes(templateTypes),
@@ -114,13 +114,13 @@ _interfaceTypeNames(nullptr),
 _hasInitializedInterfaces(false),
 _hasTranspileDefinitions(false),
 _isReturnThis(false)
- {}
+ { }
 
 CTypeMode functionReturnModes[] = { CTM_Stack, CTM_Heap };
 
 bool CFunction::init(Compiler* compiler, shared_ptr<NFunction> node) {
-    if (!parent.expired() && name != "global" && parent.lock()->name != "global") {
-        setHasParent(compiler);
+    if (hasParent) {
+        parent.lock()->setHasThis();
     }
 
     for (auto it : templateTypes) {
@@ -531,7 +531,6 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
         bool isFirstParameter = true;
 
         // Add "parent" to "this"
-        auto hasParent = getHasParent(compiler);
         shared_ptr<TrValue> dotTrValue;
         if (hasParent) {
             if (isFirstParameter) {
@@ -773,7 +772,7 @@ shared_ptr<CThisVar> CFunction::getThisVar(Compiler* compiler, CTypeMode returnM
                     }
 
                     assert(!cfunc->hasThis);
-                    cfunc->setHasParent(compiler); // All interface methods must take the parent has first pointer even if they don't need it
+                    assert(cfunc->hasParent);
                 }
             }
         }

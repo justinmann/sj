@@ -73,7 +73,7 @@ void CInterfaceVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared
     assert(false);
 }
 
-CInterface::CInterface(CLoc loc, weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent) : CBaseFunction(CFT_Interface, definition.lock()->name, parent, definition), loc(loc) {
+CInterface::CInterface(CLoc loc, weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent) : CBaseFunction(CFT_Interface, definition.lock()->name, parent, definition, false), loc(loc) {
     setHasThis();
 }
 

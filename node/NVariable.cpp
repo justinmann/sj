@@ -14,7 +14,7 @@ shared_ptr<CParentDotVar> CParentDotVar::create(CLoc loc, Compiler *compiler, sh
     c->parentFunction = parentFunction_;
     c->childVar = childVar_;
 
-    parentFunction_->setHasParent(compiler);
+    assert(parentFunction_->hasParent);
 
     return c;
 }
