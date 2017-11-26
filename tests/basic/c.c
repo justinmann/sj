@@ -67,12 +67,16 @@ struct td_sjs_object {
     int _refCount;
 };
 
-
+void main_destroy();
 
 int main() {
     
 	
 	printf("hi");
 ;
+    main_destroy();
     return 0;
+}
+
+void main_destroy() {
 }

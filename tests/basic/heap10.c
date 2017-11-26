@@ -105,6 +105,18 @@ struct td_sjs_class2_heap {
     sjs_inner_heap* inner;
 };
 
+sjs_class_heap* sjt_value1;
+sjs_inner_heap* sjt_value2;
+sjs_inner_heap* sjt_value3;
+sjs_class2_heap* sjt_value4;
+sjs_inner_heap* sjt_value5;
+sjs_class x1;
+sjs_class_heap* x2;
+sjs_class_heap* x4;
+sjs_class2 x5;
+sjs_class2_heap* x6;
+sjs_class2_heap* x8;
+
 void sjf_class(sjs_class* _this);
 void sjf_class2(sjs_class2* _this);
 void sjf_class2_copy(sjs_class2* _this, sjs_class2* to);
@@ -117,7 +129,7 @@ void sjf_inner(sjs_inner* _this);
 void sjf_inner_copy(sjs_inner* _this, sjs_inner* to);
 void sjf_inner_destroy(sjs_inner* _this);
 void sjf_inner_heap(sjs_inner_heap* _this);
-
+void main_destroy();
 
 void sjf_class(sjs_class* _this) {
 }
@@ -165,18 +177,6 @@ void sjf_inner_heap(sjs_inner_heap* _this) {
 }
 
 int main() {
-    sjs_class_heap* sjt_value1;
-    sjs_inner_heap* sjt_value2;
-    sjs_inner_heap* sjt_value3;
-    sjs_class2_heap* sjt_value4;
-    sjs_inner_heap* sjt_value5;
-    sjs_class x1;
-    sjs_class_heap* x2;
-    sjs_class_heap* x4;
-    sjs_class2 x5;
-    sjs_class2_heap* x6;
-    sjs_class2_heap* x8;
-
     sjf_inner(&x1.inner);
     sjf_class(&x1);
     x2 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
@@ -227,6 +227,11 @@ int main() {
     if (x8 != 0) {
         x8->_refCount++;
     }
+    main_destroy();
+    return 0;
+}
+
+void main_destroy() {
 
     sjt_value1->_refCount--;
     if (sjt_value1->_refCount <= 0) {
@@ -270,5 +275,4 @@ int main() {
     }
     sjf_class_destroy(&x1);
     sjf_class2_destroy(&x5);
-    return 0;
 }

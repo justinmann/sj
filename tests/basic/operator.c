@@ -80,6 +80,38 @@ struct td_sjs_fancyMath_heap {
     int32_t x;
 };
 
+sjs_fancyMath a;
+sjs_fancyMath b;
+sjs_fancyMath c;
+sjs_fancyMath d;
+sjs_fancyMath e;
+sjs_fancyMath f;
+sjs_fancyMath g;
+int32_t i;
+int32_t j;
+sjs_fancyMath* sjt_dot1;
+sjs_fancyMath* sjt_dot10;
+sjs_fancyMath* sjt_dot13;
+sjs_fancyMath* sjt_dot16;
+sjs_fancyMath* sjt_dot17;
+sjs_fancyMath* sjt_dot18;
+sjs_fancyMath* sjt_dot19;
+sjs_fancyMath* sjt_dot20;
+sjs_fancyMath* sjt_dot21;
+sjs_fancyMath* sjt_dot22;
+sjs_fancyMath* sjt_dot4;
+sjs_fancyMath* sjt_dot7;
+sjs_fancyMath* sjt_functionParam1;
+int32_t sjt_functionParam10;
+sjs_fancyMath* sjt_functionParam2;
+sjs_fancyMath* sjt_functionParam3;
+sjs_fancyMath* sjt_functionParam4;
+sjs_fancyMath* sjt_functionParam5;
+sjs_fancyMath* sjt_functionParam6;
+sjs_fancyMath* sjt_functionParam7;
+sjs_fancyMath* sjt_functionParam8;
+sjs_fancyMath* sjt_functionParam9;
+
 void sjf_fancyMath(sjs_fancyMath* _this);
 void sjf_fancyMath_add(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath* _return);
 void sjf_fancyMath_add_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath_heap** _return);
@@ -98,7 +130,7 @@ void sjf_fancyMath_multiply_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs
 void sjf_fancyMath_setBob(sjs_fancyMath* _parent, int32_t i, int32_t* _return);
 void sjf_fancyMath_subtract(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath* _return);
 void sjf_fancyMath_subtract_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath_heap** _return);
-
+void main_destroy();
 
 void sjf_fancyMath(sjs_fancyMath* _this) {
 }
@@ -342,38 +374,6 @@ void sjf_fancyMath_subtract_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs
 }
 
 int main() {
-    sjs_fancyMath a;
-    sjs_fancyMath b;
-    sjs_fancyMath c;
-    sjs_fancyMath d;
-    sjs_fancyMath e;
-    sjs_fancyMath f;
-    sjs_fancyMath g;
-    int32_t i;
-    int32_t j;
-    sjs_fancyMath* sjt_dot1;
-    sjs_fancyMath* sjt_dot10;
-    sjs_fancyMath* sjt_dot13;
-    sjs_fancyMath* sjt_dot16;
-    sjs_fancyMath* sjt_dot17;
-    sjs_fancyMath* sjt_dot18;
-    sjs_fancyMath* sjt_dot19;
-    sjs_fancyMath* sjt_dot20;
-    sjs_fancyMath* sjt_dot21;
-    sjs_fancyMath* sjt_dot22;
-    sjs_fancyMath* sjt_dot4;
-    sjs_fancyMath* sjt_dot7;
-    sjs_fancyMath* sjt_functionParam1;
-    int32_t sjt_functionParam10;
-    sjs_fancyMath* sjt_functionParam2;
-    sjs_fancyMath* sjt_functionParam3;
-    sjs_fancyMath* sjt_functionParam4;
-    sjs_fancyMath* sjt_functionParam5;
-    sjs_fancyMath* sjt_functionParam6;
-    sjs_fancyMath* sjt_functionParam7;
-    sjs_fancyMath* sjt_functionParam8;
-    sjs_fancyMath* sjt_functionParam9;
-
     a.x = 1;
     sjf_fancyMath(&a);
     b.x = 2;
@@ -413,6 +413,11 @@ int main() {
     sjf_fancyMath_getX(sjt_dot22, &i);
     sjt_functionParam10 = 12;
     sjf_fancyMath_setBob(_parent, sjt_functionParam10, &j);
+    main_destroy();
+    return 0;
+}
+
+void main_destroy() {
 
     sjf_fancyMath_destroy(&a);
     sjf_fancyMath_destroy(&b);
@@ -421,5 +426,4 @@ int main() {
     sjf_fancyMath_destroy(&e);
     sjf_fancyMath_destroy(&f);
     sjf_fancyMath_destroy(&g);
-    return 0;
 }

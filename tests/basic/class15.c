@@ -92,6 +92,12 @@ struct td_sjs_class_heap {
     int _refCount;
 };
 
+sjs_class c;
+sjs_anon1 math;
+sjs_class* sjt_dot1;
+int32_t sjt_functionParam5;
+int32_t void1;
+
 void sjf_anon1(sjs_anon1* _this);
 void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* to);
 void sjf_anon1_destroy(sjs_anon1* _this);
@@ -103,7 +109,7 @@ void sjf_class_copy(sjs_class* _this, sjs_class* to);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return);
 void sjf_class_heap(sjs_class_heap* _this);
-
+void main_destroy();
 
 void sjf_anon1(sjs_anon1* _this) {
 }
@@ -177,20 +183,18 @@ void sjf_class_heap(sjs_class_heap* _this) {
 }
 
 int main() {
-    sjs_class c;
-    sjs_anon1 math;
-    sjs_class* sjt_dot1;
-    int32_t sjt_functionParam5;
-    int32_t void1;
-
     math.test = 1;
     sjf_anon1(&math);
     sjf_class(&c);
     sjt_dot1 = &c;
     sjt_functionParam5 = 4;
     sjf_class_foo(sjt_dot1, sjt_functionParam5, &void1);
+    main_destroy();
+    return 0;
+}
+
+void main_destroy() {
 
     sjf_class_destroy(&c);
     sjf_anon1_destroy(&math);
-    return 0;
 }

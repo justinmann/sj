@@ -152,6 +152,32 @@ struct td_sjs_string_heap {
     sjs_array_char data;
 };
 
+sjs_string a;
+sjs_string b;
+char c;
+sjs_anon1 console;
+sjs_anon4 convert;
+char d;
+char e;
+sjs_string f;
+char h;
+bool i;
+bool j;
+bool k;
+bool l;
+sjs_anon2 parse;
+sjs_anon3 random;
+char sjt_compare1;
+char sjt_compare2;
+sjs_string* sjt_compare3;
+sjs_string* sjt_compare4;
+sjs_string* sjt_dot1;
+sjs_string* sjt_dot3;
+sjs_string* sjt_dot6;
+int32_t sjt_functionParam2;
+sjs_string* sjt_functionParam4;
+sjs_string* sjt_functionParam6;
+
 void sjf_anon1(sjs_anon1* _this);
 void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* to);
 void sjf_anon1_destroy(sjs_anon1* _this);
@@ -182,7 +208,7 @@ void sjf_string_getAt(sjs_string* _parent, int32_t index, char* _return);
 void sjf_string_heap(sjs_string_heap* _this);
 void sjf_string_isEqual(sjs_string* _parent, sjs_string* test, bool* _return);
 void sjf_string_isLessOrEqual(sjs_string* _parent, sjs_string* test, bool* _return);
-
+void main_destroy();
 
 void sjf_anon1(sjs_anon1* _this) {
 }
@@ -393,32 +419,6 @@ void sjf_string_isLessOrEqual(sjs_string* _parent, sjs_string* test, bool* _retu
 }
 
 int main() {
-    sjs_string a;
-    sjs_string b;
-    char c;
-    sjs_anon1 console;
-    sjs_anon4 convert;
-    char d;
-    char e;
-    sjs_string f;
-    char h;
-    bool i;
-    bool j;
-    bool k;
-    bool l;
-    sjs_anon2 parse;
-    sjs_anon3 random;
-    char sjt_compare1;
-    char sjt_compare2;
-    sjs_string* sjt_compare3;
-    sjs_string* sjt_compare4;
-    sjs_string* sjt_dot1;
-    sjs_string* sjt_dot3;
-    sjs_string* sjt_dot6;
-    int32_t sjt_functionParam2;
-    sjs_string* sjt_functionParam4;
-    sjs_string* sjt_functionParam6;
-
     sjf_anon4(&convert);
     sjf_anon3(&random);
     sjf_anon2(&parse);
@@ -459,6 +459,11 @@ int main() {
     sjt_compare3 = &f;
     sjt_compare4 = &a;
     l = sjt_compare3 == sjt_compare4;
+    main_destroy();
+    return 0;
+}
+
+void main_destroy() {
 
     sjf_string_destroy(&a);
     sjf_string_destroy(&b);
@@ -467,5 +472,4 @@ int main() {
     sjf_string_destroy(&f);
     sjf_anon2_destroy(&parse);
     sjf_anon3_destroy(&random);
-    return 0;
 }

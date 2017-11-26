@@ -97,6 +97,19 @@ struct td_sjs_class_heap {
     int32_t x;
 };
 
+sjs_array_class a;
+sjs_class b;
+int32_t c;
+int32_t dotTemp5;
+sjs_class sjt_call1;
+int32_t sjt_cast1;
+sjs_array_class* sjt_dot1;
+sjs_array_class* sjt_dot2;
+sjs_class* sjt_dot3;
+int32_t sjt_functionParam1;
+sjs_class* sjt_functionParam2;
+int32_t sjt_functionParam3;
+
 void sjf_array_class(sjs_array_class* _this);
 void sjf_array_class_copy(sjs_array_class* _this, sjs_array_class* to);
 void sjf_array_class_destroy(sjs_array_class* _this);
@@ -107,7 +120,7 @@ void sjf_class(sjs_class* _this);
 void sjf_class_copy(sjs_class* _this, sjs_class* to);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_heap(sjs_class_heap* _this);
-
+void main_destroy();
 
 void sjf_array_class(sjs_array_class* _this) {
     
@@ -227,19 +240,6 @@ void sjf_class_heap(sjs_class_heap* _this) {
 }
 
 int main() {
-    sjs_array_class a;
-    sjs_class b;
-    int32_t c;
-    int32_t dotTemp5;
-    sjs_class sjt_call1;
-    int32_t sjt_cast1;
-    sjs_array_class* sjt_dot1;
-    sjs_array_class* sjt_dot2;
-    sjs_class* sjt_dot3;
-    int32_t sjt_functionParam1;
-    sjs_class* sjt_functionParam2;
-    int32_t sjt_functionParam3;
-
     a.size = 1;
     sjt_cast1 = 0;
     a.data = (uintptr_t)sjt_cast1;
@@ -257,9 +257,13 @@ int main() {
     sjt_dot3 = &b;
     dotTemp5 = sjt_dot3->x;
     c = dotTemp5;
+    main_destroy();
+    return 0;
+}
+
+void main_destroy() {
 
     sjf_array_class_destroy(&a);
     sjf_class_destroy(&b);
     sjf_class_destroy(&sjt_call1);
-    return 0;
 }

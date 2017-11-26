@@ -67,13 +67,17 @@ struct td_sjs_object {
     int _refCount;
 };
 
+double sjt_cast1;
+int64_t x;
 
+void main_destroy();
 
 int main() {
-    double sjt_cast1;
-    int64_t x;
-
     sjt_cast1 = 5.0;
     x = (int64_t)sjt_cast1;
+    main_destroy();
     return 0;
+}
+
+void main_destroy() {
 }

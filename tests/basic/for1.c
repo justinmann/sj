@@ -67,18 +67,22 @@ struct td_sjs_object {
     int _refCount;
 };
 
+int32_t sjt_forEnd1;
+int32_t sjt_forStart1;
+int32_t x;
 
+void main_destroy();
 
 int main() {
-    int32_t sjt_forEnd1;
-    int32_t sjt_forStart1;
-    int32_t x;
-
     sjt_forStart1 = 1;
     x = sjt_forStart1;
     sjt_forEnd1 = 10;
     while (x < sjt_forEnd1) {
         x++;
     }
+    main_destroy();
     return 0;
+}
+
+void main_destroy() {
 }

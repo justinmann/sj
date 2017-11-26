@@ -79,11 +79,25 @@ struct td_sjs_foo_heap {
     int _refCount;
 };
 
+sjs_foo_heap* heap_x1;
+sjs_foo_heap* heap_x2;
+sjs_foo_heap* heap_x3;
+sjs_foo_heap* heap_y;
+sjs_foo* local_x1;
+sjs_foo* local_x2;
+sjs_foo* local_x3;
+sjs_foo* local_y;
+sjs_foo sjt_call1;
+sjs_foo stack_x1;
+sjs_foo stack_x2;
+sjs_foo stack_x3;
+sjs_foo stack_y;
+
 void sjf_foo(sjs_foo* _this);
 void sjf_foo_copy(sjs_foo* _this, sjs_foo* to);
 void sjf_foo_destroy(sjs_foo* _this);
 void sjf_foo_heap(sjs_foo_heap* _this);
-
+void main_destroy();
 
 void sjf_foo(sjs_foo* _this) {
 }
@@ -98,20 +112,6 @@ void sjf_foo_heap(sjs_foo_heap* _this) {
 }
 
 int main() {
-    sjs_foo_heap* heap_x1;
-    sjs_foo_heap* heap_x2;
-    sjs_foo_heap* heap_x3;
-    sjs_foo_heap* heap_y;
-    sjs_foo* local_x1;
-    sjs_foo* local_x2;
-    sjs_foo* local_x3;
-    sjs_foo* local_y;
-    sjs_foo sjt_call1;
-    sjs_foo stack_x1;
-    sjs_foo stack_x2;
-    sjs_foo stack_x3;
-    sjs_foo stack_y;
-
     heap_y = (sjs_foo_heap*)malloc(sizeof(sjs_foo_heap));
     heap_y->_refCount = 1;
     sjf_foo_heap(heap_y);
@@ -132,6 +132,11 @@ int main() {
     local_x1 = (sjs_foo*)(((char*)heap_y) + sizeof(int));
     local_x2 = &stack_y;
     local_x3 = local_y;
+    main_destroy();
+    return 0;
+}
+
+void main_destroy() {
 
     heap_x1->_refCount--;
     if (heap_x1->_refCount <= 0) {
@@ -154,5 +159,4 @@ int main() {
     sjf_foo_destroy(&stack_x2);
     sjf_foo_destroy(&stack_x3);
     sjf_foo_destroy(&stack_y);
-    return 0;
 }

@@ -98,6 +98,37 @@ struct td_sji_interface2 {
     sjs_object* (*asInterface)(sjs_object* _this, int typeId);
 };
 
+int32_option a;
+int64_option b;
+uint32_option c;
+uint64_option d;
+float_option e;
+double_option f;
+char_option g;
+uintptr_option h;
+sjs_class_heap* i;
+bool j;
+bool k;
+sji_interface* l;
+bool m;
+sjs_class_heap* n;
+sjs_class_heap* o;
+int32_option p;
+int32_t q;
+sji_interface* r;
+sji_interface2* s;
+sjs_class_heap* sjt_cast1;
+sji_interface* sjt_cast2;
+sjs_class_heap* sjt_getValue1;
+bool sjt_ifElse1;
+bool sjt_ifElse2;
+int32_option sjt_isEmpty1;
+sjs_class_heap* sjt_isEmpty2;
+sji_interface* sjt_isEmpty3;
+sjs_class_heap* sjt_isEmpty4;
+int32_option sjt_isEmpty5;
+sjs_class_heap* sjt_value1;
+
 void sjf_class(sjs_class* _this);
 sjs_object* sjf_class_asInterface(sjs_class* _this, int typeId);
 sji_interface* sjf_class_as_sji_interface(sjs_class* _this);
@@ -108,7 +139,7 @@ sjs_object* sjf_class_heap_asInterface(sjs_class_heap* _this, int typeId);
 sji_interface* sjf_class_heap_as_sji_interface(sjs_class_heap* _this);
 void sji_interface2_destroy(sji_interface2* _this);
 void sji_interface_destroy(sji_interface* _this);
-
+void main_destroy();
 
 void sjf_class(sjs_class* _this) {
 }
@@ -184,37 +215,6 @@ void sji_interface_destroy(sji_interface* _this) {
 }
 
 int main() {
-    int32_option a;
-    int64_option b;
-    uint32_option c;
-    uint64_option d;
-    float_option e;
-    double_option f;
-    char_option g;
-    uintptr_option h;
-    sjs_class_heap* i;
-    bool j;
-    bool k;
-    sji_interface* l;
-    bool m;
-    sjs_class_heap* n;
-    sjs_class_heap* o;
-    int32_option p;
-    int32_t q;
-    sji_interface* r;
-    sji_interface2* s;
-    sjs_class_heap* sjt_cast1;
-    sji_interface* sjt_cast2;
-    sjs_class_heap* sjt_getValue1;
-    bool sjt_ifElse1;
-    bool sjt_ifElse2;
-    int32_option sjt_isEmpty1;
-    sjs_class_heap* sjt_isEmpty2;
-    sji_interface* sjt_isEmpty3;
-    sjs_class_heap* sjt_isEmpty4;
-    int32_option sjt_isEmpty5;
-    sjs_class_heap* sjt_value1;
-
     a = int32_empty;
     b = int64_empty;
     c = uint32_empty;
@@ -337,6 +337,11 @@ int main() {
             s->_refCount++;
         }
     }
+    main_destroy();
+    return 0;
+}
+
+void main_destroy() {
 
     if (i != 0) {
         i->_refCount--;
@@ -412,5 +417,4 @@ int main() {
     if (sjt_value1->_refCount <= 0) {
         sjf_class_destroy((sjs_class*)(((char*)sjt_value1) + sizeof(int)));
     }
-    return 0;
 }

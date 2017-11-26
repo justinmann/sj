@@ -73,11 +73,14 @@ struct td_sjs_class {
     int32_t m;
 };
 
+sjs_class object1;
+int32_t void1;
+
 void sjf_class(sjs_class* _this, int32_t* _return);
 void sjf_class_copy(sjs_class* _this, sjs_class* to);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_inner(sjs_class* _parent, int32_t* _return);
-
+void main_destroy();
 
 void sjf_class(sjs_class* _this, int32_t* _return) {
     sjf_class_inner(_this, &(*_return));
@@ -98,12 +101,13 @@ void sjf_class_inner(sjs_class* _parent, int32_t* _return) {
 }
 
 int main() {
-    sjs_class object1;
-    int32_t void1;
-
     object1.m = 1;
     sjf_class(&object1, &void1);
+    main_destroy();
+    return 0;
+}
+
+void main_destroy() {
 
     sjf_class_destroy(&object1);
-    return 0;
 }

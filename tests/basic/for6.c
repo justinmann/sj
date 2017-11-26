@@ -67,14 +67,14 @@ struct td_sjs_object {
     int _refCount;
 };
 
+int32_t sjt_forEnd1;
+int32_t sjt_forStart1;
+int32_t x;
+int32_t y;
 
+void main_destroy();
 
 int main() {
-    int32_t sjt_forEnd1;
-    int32_t sjt_forStart1;
-    int32_t x;
-    int32_t y;
-
     y = 0;
     sjt_forStart1 = 2;
     x = sjt_forStart1;
@@ -88,5 +88,9 @@ int main() {
         y = sjt_math1 + sjt_math2;
         x++;
     }
+    main_destroy();
     return 0;
+}
+
+void main_destroy() {
 }

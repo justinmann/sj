@@ -97,6 +97,20 @@ struct td_sjs_class_heap {
     int32_t x;
 };
 
+sjs_array_heap_class_heap* a;
+sjs_class_heap* c;
+int32_t dotTemp5;
+int32_t sjt_cast1;
+sjs_array_heap_class* sjt_dot1;
+sjs_class* sjt_dot2;
+int32_t sjt_functionParam1;
+sjs_class_heap* sjt_functionParam2;
+int32_t sjt_functionParam3;
+sjs_class_heap* sjt_functionParam4;
+int32_t sjt_functionParam5;
+sjs_class_heap* sjt_functionParam6;
+int32_t sjt_functionParam7;
+
 void sjf_array_heap_class(sjs_array_heap_class* _this);
 void sjf_array_heap_class_copy(sjs_array_heap_class* _this, sjs_array_heap_class* to);
 void sjf_array_heap_class_destroy(sjs_array_heap_class* _this);
@@ -107,7 +121,7 @@ void sjf_class(sjs_class* _this);
 void sjf_class_copy(sjs_class* _this, sjs_class* to);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_heap(sjs_class_heap* _this);
-
+void main_destroy();
 
 void sjf_array_heap_class(sjs_array_heap_class* _this) {
     
@@ -228,20 +242,6 @@ void sjf_class_heap(sjs_class_heap* _this) {
 }
 
 int main() {
-    sjs_array_heap_class_heap* a;
-    sjs_class_heap* c;
-    int32_t dotTemp5;
-    int32_t sjt_cast1;
-    sjs_array_heap_class* sjt_dot1;
-    sjs_class* sjt_dot2;
-    int32_t sjt_functionParam1;
-    sjs_class_heap* sjt_functionParam2;
-    int32_t sjt_functionParam3;
-    sjs_class_heap* sjt_functionParam4;
-    int32_t sjt_functionParam5;
-    sjs_class_heap* sjt_functionParam6;
-    int32_t sjt_functionParam7;
-
     a = (sjs_array_heap_class_heap*)malloc(sizeof(sjs_array_heap_class_heap));
     a->_refCount = 1;
     a->size = 3;
@@ -272,6 +272,11 @@ int main() {
     sjf_array_heap_class_getAt_heap(sjt_dot1, sjt_functionParam7, &c);
     sjt_dot2 = (sjs_class*)(((char*)c) + sizeof(int));
     dotTemp5 = sjt_dot2->x;
+    main_destroy();
+    return 0;
+}
+
+void main_destroy() {
 
     a->_refCount--;
     if (a->_refCount <= 0) {
@@ -293,5 +298,4 @@ int main() {
     if (sjt_functionParam6->_refCount <= 0) {
         sjf_class_destroy((sjs_class*)(((char*)sjt_functionParam6) + sizeof(int)));
     }
-    return 0;
 }

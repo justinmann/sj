@@ -79,6 +79,9 @@ struct td_sjs_class_heap {
     int _refCount;
 };
 
+sjs_class x1;
+sjs_class_heap* x2;
+
 void sjf_class(sjs_class* _this);
 void sjf_class_copy(sjs_class* _this, sjs_class* to);
 void sjf_class_destroy(sjs_class* _this);
@@ -86,7 +89,7 @@ void sjf_class_heap(sjs_class_heap* _this);
 void sjf_foo1(sjs_class* _return);
 void sjf_foo1_heap(sjs_class_heap** _return);
 void sjf_foo2_heap(sjs_class_heap** _return);
-
+void main_destroy();
 
 void sjf_class(sjs_class* _this) {
 }
@@ -128,11 +131,13 @@ void sjf_foo2_heap(sjs_class_heap** _return) {
 }
 
 int main() {
-    sjs_class x1;
-    sjs_class_heap* x2;
-
     sjf_foo1(&x1);
     sjf_foo2_heap(&x2);
+    main_destroy();
+    return 0;
+}
+
+void main_destroy() {
 
     if (x2 != 0) {
         x2->_refCount--;
@@ -141,5 +146,4 @@ int main() {
         }
     }
     sjf_class_destroy(&x1);
-    return 0;
 }

@@ -73,11 +73,14 @@ struct td_sjs_func {
     int structsNeedAValue;
 };
 
+sjs_func object1;
+int32_t void1;
+
 void sjf_func(sjs_func* _this, int32_t* _return);
 void sjf_func_bar(sjs_func* _parent, int32_t* _return);
 void sjf_func_copy(sjs_func* _this, sjs_func* to);
 void sjf_func_destroy(sjs_func* _this);
-
+void main_destroy();
 
 void sjf_func(sjs_func* _this, int32_t* _return) {
     sjf_func_bar(_this, &(*_return));
@@ -94,11 +97,12 @@ void sjf_func_destroy(sjs_func* _this) {
 }
 
 int main() {
-    sjs_func object1;
-    int32_t void1;
-
     sjf_func(&object1, &void1);
+    main_destroy();
+    return 0;
+}
+
+void main_destroy() {
 
     sjf_func_destroy(&object1);
-    return 0;
 }

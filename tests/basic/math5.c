@@ -67,13 +67,17 @@ struct td_sjs_object {
     int _refCount;
 };
 
+double sjt_math1;
+double sjt_math2;
 
+void main_destroy();
 
 int main() {
-    double sjt_math1;
-    double sjt_math2;
-
     sjt_math1 = 4.0;
     sjt_math2 = 5.0;
+    main_destroy();
     return 0;
+}
+
+void main_destroy() {
 }

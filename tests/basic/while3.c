@@ -67,14 +67,14 @@ struct td_sjs_object {
     int _refCount;
 };
 
+int32_t sjt_compare1;
+int32_t sjt_compare2;
+bool sjt_while1;
+int32_t x;
 
+void main_destroy();
 
 int main() {
-    int32_t sjt_compare1;
-    int32_t sjt_compare2;
-    bool sjt_while1;
-    int32_t x;
-
     x = 10;
     sjt_compare1 = x;
     sjt_compare2 = 0;
@@ -92,5 +92,9 @@ int main() {
         sjt_compare4 = 0;
         sjt_while1 = sjt_compare3 > sjt_compare4;
     }
+    main_destroy();
     return 0;
+}
+
+void main_destroy() {
 }

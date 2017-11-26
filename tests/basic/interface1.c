@@ -137,6 +137,15 @@ struct td_sjs_anon2_class_heap {
     sjs_anon2* _parent;
 };
 
+sji_anon1_foo* a;
+sji_anon2_foo* b;
+sjs_anon1 namespace1;
+sjs_anon2 namespace2;
+sjs_anon1_class_heap* sjt_cast1;
+sjs_anon2_class_heap* sjt_cast2;
+sjs_anon1* sjt_dot1;
+sjs_anon2* sjt_dot2;
+
 void sjf_anon1(sjs_anon1* _this);
 void sjf_anon1_class(sjs_anon1_class* _this);
 sjs_object* sjf_anon1_class_asInterface(sjs_anon1_class* _this, int typeId);
@@ -165,7 +174,7 @@ void sjf_anon2_destroy(sjs_anon2* _this);
 void sjf_anon2_heap(sjs_anon2_heap* _this);
 void sji_anon1_foo_destroy(sji_anon1_foo* _this);
 void sji_anon2_foo_destroy(sji_anon2_foo* _this);
-
+void main_destroy();
 
 void sjf_anon1(sjs_anon1* _this) {
 }
@@ -332,15 +341,6 @@ void sji_anon2_foo_destroy(sji_anon2_foo* _this) {
 }
 
 int main() {
-    sji_anon1_foo* a;
-    sji_anon2_foo* b;
-    sjs_anon1 namespace1;
-    sjs_anon2 namespace2;
-    sjs_anon1_class_heap* sjt_cast1;
-    sjs_anon2_class_heap* sjt_cast2;
-    sjs_anon1* sjt_dot1;
-    sjs_anon2* sjt_dot2;
-
     sjf_anon1(&namespace1);
     sjf_anon2(&namespace2);
     sjt_dot1 = &namespace1;
@@ -355,6 +355,11 @@ int main() {
     sjt_cast2->_parent = sjt_dot2;
     sjf_anon2_class_heap(sjt_cast2);
     b = (sji_anon2_foo*)sjf_anon2_class_heap_as_sji_anon2_foo(sjt_cast2);
+    main_destroy();
+    return 0;
+}
+
+void main_destroy() {
 
     a->_refCount--;
     if (a->_refCount <= 0) {
@@ -374,5 +379,4 @@ int main() {
     }
     sjf_anon1_destroy(&namespace1);
     sjf_anon2_destroy(&namespace2);
-    return 0;
 }

@@ -95,6 +95,17 @@ struct td_sjs_a_heap {
     sjs_a_aa b;
 };
 
+sjs_a a;
+sjs_a_aa d;
+sjs_a_aa dotTemp1;
+sjs_a_aa dotTemp3;
+sjs_a_aa* sjt_dot1;
+sjs_a* sjt_dot2;
+sjs_a* sjt_dot3;
+sjs_a_aa* sjt_dot4;
+int32_t void1;
+int32_t void2;
+
 void sjf_a(sjs_a* _this);
 void sjf_a_aa(sjs_a_aa* _this);
 void sjf_a_aa_c(sjs_a_aa* _parent, int32_t* _return);
@@ -104,7 +115,7 @@ void sjf_a_aa_heap(sjs_a_aa_heap* _this);
 void sjf_a_copy(sjs_a* _this, sjs_a* to);
 void sjf_a_destroy(sjs_a* _this);
 void sjf_a_heap(sjs_a_heap* _this);
-
+void main_destroy();
 
 void sjf_a(sjs_a* _this) {
 }
@@ -142,17 +153,6 @@ void sjf_a_heap(sjs_a_heap* _this) {
 }
 
 int main() {
-    sjs_a a;
-    sjs_a_aa d;
-    sjs_a_aa dotTemp1;
-    sjs_a_aa dotTemp3;
-    sjs_a_aa* sjt_dot1;
-    sjs_a* sjt_dot2;
-    sjs_a* sjt_dot3;
-    sjs_a_aa* sjt_dot4;
-    int32_t void1;
-    int32_t void2;
-
     a.x = 1;
     a.b._parent = a._parent;
     sjf_a_aa(&a.b);
@@ -166,10 +166,14 @@ int main() {
     sjf_a_aa_copy(&d, &dotTemp3);
     sjt_dot4 = &d;
     sjf_a_aa_c(sjt_dot4, &void2);
+    main_destroy();
+    return 0;
+}
+
+void main_destroy() {
 
     sjf_a_destroy(&a);
     sjf_a_aa_destroy(&d);
     sjf_a_aa_destroy(&dotTemp1);
     sjf_a_aa_destroy(&dotTemp3);
-    return 0;
 }

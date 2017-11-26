@@ -67,11 +67,11 @@ struct td_sjs_object {
     int _refCount;
 };
 
+bool sjt_ifElse1;
 
+void main_destroy();
 
 int main() {
-    bool sjt_ifElse1;
-
     sjt_ifElse1 = false;
     if (sjt_ifElse1) {
     } else {
@@ -82,5 +82,9 @@ int main() {
         } else {
         }
     }
+    main_destroy();
     return 0;
+}
+
+void main_destroy() {
 }

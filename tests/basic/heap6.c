@@ -79,13 +79,15 @@ struct td_sjs_foo_heap {
     int _refCount;
 };
 
+sjs_foo a;
+
 void sjf_bar(sjs_foo* _return);
 void sjf_bar_heap(sjs_foo_heap** _return);
 void sjf_foo(sjs_foo* _this);
 void sjf_foo_copy(sjs_foo* _this, sjs_foo* to);
 void sjf_foo_destroy(sjs_foo* _this);
 void sjf_foo_heap(sjs_foo_heap* _this);
-
+void main_destroy();
 
 void sjf_bar(sjs_foo* _return) {
     sjf_foo(_return);
@@ -110,10 +112,12 @@ void sjf_foo_heap(sjs_foo_heap* _this) {
 }
 
 int main() {
-    sjs_foo a;
-
     sjf_bar(&a);
+    main_destroy();
+    return 0;
+}
+
+void main_destroy() {
 
     sjf_foo_destroy(&a);
-    return 0;
 }

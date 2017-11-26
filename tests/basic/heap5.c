@@ -97,6 +97,9 @@ struct td_sjs_a_heap {
     sjs_array_char data;
 };
 
+int32_t sjt_cast1;
+sjs_a void1;
+
 void sjf_a(sjs_a* _this);
 void sjf_a_copy(sjs_a* _this, sjs_a* to);
 void sjf_a_destroy(sjs_a* _this);
@@ -105,7 +108,7 @@ void sjf_array_char(sjs_array_char* _this);
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* to);
 void sjf_array_char_destroy(sjs_array_char* _this);
 void sjf_array_char_heap(sjs_array_char_heap* _this);
-
+void main_destroy();
 
 void sjf_a(sjs_a* _this) {
 }
@@ -172,16 +175,17 @@ void sjf_array_char_heap(sjs_array_char_heap* _this) {
 }
 
 int main() {
-    int32_t sjt_cast1;
-    sjs_a void1;
-
     void1.data.size = 0;
     sjt_cast1 = 0;
     void1.data.data = (uintptr_t)sjt_cast1;
     void1.data._isGlobal = false;
     sjf_array_char(&void1.data);
     sjf_a(&void1);
+    main_destroy();
+    return 0;
+}
+
+void main_destroy() {
 
     sjf_a_destroy(&void1);
-    return 0;
 }

@@ -67,18 +67,22 @@ struct td_sjs_object {
     int _refCount;
 };
 
-void sjf_func(double* _return);
+double sjt_compare1;
+double sjt_compare2;
 
+void sjf_func(double* _return);
+void main_destroy();
 
 void sjf_func(double* _return) {
     (*_return) = -3.0;
 }
 
 int main() {
-    double sjt_compare1;
-    double sjt_compare2;
-
     sjf_func(&sjt_compare1);
     sjt_compare2 = 4.0;
+    main_destroy();
     return 0;
+}
+
+void main_destroy() {
 }

@@ -67,19 +67,23 @@ struct td_sjs_object {
     int _refCount;
 };
 
+bool result1;
+double sjt_compare1;
+double sjt_compare2;
+bool sjt_not1;
+bool x;
 
+void main_destroy();
 
 int main() {
-    bool result1;
-    double sjt_compare1;
-    double sjt_compare2;
-    bool sjt_not1;
-    bool x;
-
     sjt_compare1 = -3.0;
     sjt_compare2 = 4.0;
     sjt_not1 = sjt_compare1 != sjt_compare2;
     result1 = !sjt_not1;
     x = result1;
+    main_destroy();
     return 0;
+}
+
+void main_destroy() {
 }

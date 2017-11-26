@@ -173,6 +173,15 @@ struct td_sjs_class_heap {
     int _refCount;
 };
 
+sji_foo* a;
+sjs_string_heap* bob;
+sjs_anon1 console;
+sjs_anon4 convert;
+sjs_anon2 parse;
+sjs_anon3 random;
+sjs_class_heap* sjt_cast1;
+sji_foo* sjt_dot1;
+
 void sjf_anon1(sjs_anon1* _this);
 void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* to);
 void sjf_anon1_destroy(sjs_anon1* _this);
@@ -208,7 +217,7 @@ void sjf_string_copy(sjs_string* _this, sjs_string* to);
 void sjf_string_destroy(sjs_string* _this);
 void sjf_string_heap(sjs_string_heap* _this);
 void sji_foo_destroy(sji_foo* _this);
-
+void main_destroy();
 
 void sjf_anon1(sjs_anon1* _this) {
 }
@@ -412,15 +421,6 @@ void sji_foo_destroy(sji_foo* _this) {
 }
 
 int main() {
-    sji_foo* a;
-    sjs_string_heap* bob;
-    sjs_anon1 console;
-    sjs_anon4 convert;
-    sjs_anon2 parse;
-    sjs_anon3 random;
-    sjs_class_heap* sjt_cast1;
-    sji_foo* sjt_dot1;
-
     sjf_anon4(&convert);
     sjf_anon3(&random);
     sjf_anon2(&parse);
@@ -433,6 +433,11 @@ int main() {
     bob = (sjs_string_heap*)malloc(sizeof(sjs_string_heap));
     bob->_refCount = 1;
     sjt_dot1->test_heap(sjt_dot1->_parent, &bob);
+    main_destroy();
+    return 0;
+}
+
+void main_destroy() {
 
     a->_refCount--;
     if (a->_refCount <= 0) {
@@ -450,5 +455,4 @@ int main() {
     sjf_anon4_destroy(&convert);
     sjf_anon2_destroy(&parse);
     sjf_anon3_destroy(&random);
-    return 0;
 }

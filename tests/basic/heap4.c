@@ -105,6 +105,8 @@ struct td_sjs_c_heap {
     sjs_b b;
 };
 
+sjs_c void1;
+
 void sjf_a(sjs_a* _this);
 void sjf_a_copy(sjs_a* _this, sjs_a* to);
 void sjf_a_destroy(sjs_a* _this);
@@ -117,7 +119,7 @@ void sjf_c(sjs_c* _this);
 void sjf_c_copy(sjs_c* _this, sjs_c* to);
 void sjf_c_destroy(sjs_c* _this);
 void sjf_c_heap(sjs_c_heap* _this);
-
+void main_destroy();
 
 void sjf_a(sjs_a* _this) {
 }
@@ -158,12 +160,14 @@ void sjf_c_heap(sjs_c_heap* _this) {
 }
 
 int main() {
-    sjs_c void1;
-
     sjf_a(&void1.b.a);
     sjf_b(&void1.b);
     sjf_c(&void1);
+    main_destroy();
+    return 0;
+}
+
+void main_destroy() {
 
     sjf_c_destroy(&void1);
-    return 0;
 }

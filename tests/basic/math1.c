@@ -67,28 +67,28 @@ struct td_sjs_object {
     int _refCount;
 };
 
+int32_t a;
+uint32_t b;
+uint64_t c;
+int64_t d;
+float e;
+double f;
+int32_t sjt_math1;
+float sjt_math10;
+double sjt_math11;
+double sjt_math12;
+int32_t sjt_math2;
+uint32_t sjt_math3;
+uint32_t sjt_math4;
+uint64_t sjt_math5;
+uint64_t sjt_math6;
+int64_t sjt_math7;
+int64_t sjt_math8;
+float sjt_math9;
 
+void main_destroy();
 
 int main() {
-    int32_t a;
-    uint32_t b;
-    uint64_t c;
-    int64_t d;
-    float e;
-    double f;
-    int32_t sjt_math1;
-    float sjt_math10;
-    double sjt_math11;
-    double sjt_math12;
-    int32_t sjt_math2;
-    uint32_t sjt_math3;
-    uint32_t sjt_math4;
-    uint64_t sjt_math5;
-    uint64_t sjt_math6;
-    int64_t sjt_math7;
-    int64_t sjt_math8;
-    float sjt_math9;
-
     sjt_math1 = 4;
     sjt_math2 = 5;
     a = sjt_math1 + sjt_math2;
@@ -107,5 +107,9 @@ int main() {
     sjt_math11 = 4.0;
     sjt_math12 = 5.0;
     f = sjt_math11 + sjt_math12;
+    main_destroy();
     return 0;
+}
+
+void main_destroy() {
 }

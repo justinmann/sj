@@ -92,6 +92,11 @@ struct td_sjs_class_heap {
     sjs_math m;
 };
 
+sjs_class c;
+sjs_class* sjt_dot1;
+int32_t sjt_functionParam5;
+int32_t void1;
+
 void sjf_class(sjs_class* _this);
 void sjf_class_bar(sjs_class* _parent, int32_t x, int32_t* _return);
 void sjf_class_copy(sjs_class* _this, sjs_class* to);
@@ -103,7 +108,7 @@ void sjf_math_copy(sjs_math* _this, sjs_math* to);
 void sjf_math_destroy(sjs_math* _this);
 void sjf_math_heap(sjs_math_heap* _this);
 void sjf_math_sub(sjs_math* _parent, int32_t x, int32_t y, int32_t* _return);
-
+void main_destroy();
 
 void sjf_class(sjs_class* _this) {
 }
@@ -175,17 +180,16 @@ void sjf_math_sub(sjs_math* _parent, int32_t x, int32_t y, int32_t* _return) {
 }
 
 int main() {
-    sjs_class c;
-    sjs_class* sjt_dot1;
-    int32_t sjt_functionParam5;
-    int32_t void1;
-
     sjf_math(&c.m);
     sjf_class(&c);
     sjt_dot1 = &c;
     sjt_functionParam5 = 4;
     sjf_class_foo(sjt_dot1, sjt_functionParam5, &void1);
+    main_destroy();
+    return 0;
+}
+
+void main_destroy() {
 
     sjf_class_destroy(&c);
-    return 0;
 }

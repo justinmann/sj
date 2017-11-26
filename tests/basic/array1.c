@@ -84,13 +84,22 @@ struct td_sjs_array_i32_heap {
     bool _isGlobal;
 };
 
+sjs_array_i32 a;
+int32_t c;
+int32_t sjt_cast1;
+sjs_array_i32* sjt_dot1;
+sjs_array_i32* sjt_dot2;
+int32_t sjt_functionParam1;
+int32_t sjt_functionParam2;
+int32_t sjt_functionParam3;
+
 void sjf_array_i32(sjs_array_i32* _this);
 void sjf_array_i32_copy(sjs_array_i32* _this, sjs_array_i32* to);
 void sjf_array_i32_destroy(sjs_array_i32* _this);
 void sjf_array_i32_getAt(sjs_array_i32* _parent, int32_t index, int32_t* _return);
 void sjf_array_i32_heap(sjs_array_i32_heap* _this);
 void sjf_array_i32_setAt(sjs_array_i32* _parent, int32_t index, int32_t item);
-
+void main_destroy();
 
 void sjf_array_i32(sjs_array_i32* _this) {
     
@@ -197,15 +206,6 @@ data = dotTemp2;
 }
 
 int main() {
-    sjs_array_i32 a;
-    int32_t c;
-    int32_t sjt_cast1;
-    sjs_array_i32* sjt_dot1;
-    sjs_array_i32* sjt_dot2;
-    int32_t sjt_functionParam1;
-    int32_t sjt_functionParam2;
-    int32_t sjt_functionParam3;
-
     a.size = 1;
     sjt_cast1 = 0;
     a.data = (uintptr_t)sjt_cast1;
@@ -218,7 +218,11 @@ int main() {
     sjt_dot2 = &a;
     sjt_functionParam3 = 0;
     sjf_array_i32_getAt(sjt_dot2, sjt_functionParam3, &c);
+    main_destroy();
+    return 0;
+}
+
+void main_destroy() {
 
     sjf_array_i32_destroy(&a);
-    return 0;
 }

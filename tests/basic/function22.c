@@ -68,12 +68,16 @@ struct td_sjs_object {
 };
 
 void sjf_foo(void);
-
+void main_destroy();
 
 void sjf_foo(void) {
 }
 
 int main() {
     sjf_foo();
+    main_destroy();
     return 0;
+}
+
+void main_destroy() {
 }

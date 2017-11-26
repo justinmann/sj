@@ -117,9 +117,10 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
         stream << ccodeDefine << "\n";
     }
     
-    auto hasGlobalStruct = structs.find("sjs_global") != structs.end();
     shared_ptr<TrBlock> mainFunction = functions["sjf_global"];
     
+    mainFunction->writeVariablesToStream(stream, 0);
+
     if (functions.size() > 0) {
 		for (auto function : functions) {
             if (function.second == mainFunction) {
@@ -127,16 +128,11 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
             }
             stream << function.second->definition << ";\n";
 		}
-
-		stream << "\n";
 	}
         
-    if (hasGlobalStruct) {
-        stream << "sjs_global global;\n";
-    }
-    assert(mainFunction != nullptr);
+    stream << "void main_destroy();\n";
     stream << "\n";
-    
+
     for (auto ccodeFunction : ccodeFunctions) {
         stream << ccodeFunction << "\n";
     }
@@ -152,31 +148,18 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
     }
 
     stream << "int main() {\n";
-    if (hasGlobalStruct) {
-        stream << "    global._refCount = 1;\n";
-        stream << "    sjs_global* _this = &global;\n";
-    }
-    mainFunction->writeVariablesToStream(stream, 1);
     mainFunction->writeBodyToStream(stream, 1);
     if (!hasMainLoop) {
-        mainFunction->writeVariablesReleaseToStream(stream, 1);
-        if (hasGlobalStruct) {
-            stream << "    sjf_global_destroy(&global);\n";
-        }
+        stream << "    main_destroy();\n";
     }
     else {
         stream << "    emscripten_set_main_loop_arg((em_arg_callback_func)sjf_mainLoop, &global, 0, 0);\n";
     }
     stream << "    return 0;\n";
     stream << "}\n";
-
-    if (hasMainLoop) {
-        stream << "void main_destroy() {\n";
-        mainFunction->writeVariablesReleaseToStream(stream, 1);
-        if (hasGlobalStruct) {
-            stream << "    sjf_global_destroy(&global);\n";
-        }
-        stream << "}\n";
-    }
+    stream << "\n";
+    stream << "void main_destroy() {\n";
+    mainFunction->writeVariablesReleaseToStream(stream, 1);
+    stream << "}\n";
 }
 
