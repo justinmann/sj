@@ -55,3 +55,10 @@ tests/app/highlow.js
 tests/app/highlow.wast
 
 tests/app/highlow.html
+tests/app/app.data
+tests/app/app.html
+tests/app/app.html.map
+tests/app/app.js
+tests/app/app.wasm
+tests/app/app.wasm.map
+tests/app/app.wast
