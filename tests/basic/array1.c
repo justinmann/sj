@@ -85,14 +85,14 @@ struct td_sjs_array_i32_heap {
     bool _isGlobal;
 };
 
-sjs_array_i32 a;
-int32_t c;
 int32_t sjt_cast1;
 sjs_array_i32* sjt_dot1;
 sjs_array_i32* sjt_dot2;
 int32_t sjt_functionParam1;
 int32_t sjt_functionParam2;
 int32_t sjt_functionParam3;
+sjs_array_i32 sjv_a;
+int32_t sjv_c;
 
 void sjf_array_i32(sjs_array_i32* _this);
 void sjf_array_i32_copy(sjs_array_i32* _this, sjs_array_i32* to);
@@ -100,7 +100,7 @@ void sjf_array_i32_destroy(sjs_array_i32* _this);
 void sjf_array_i32_getAt(sjs_array_i32* _parent, int32_t index, int32_t* _return);
 void sjf_array_i32_heap(sjs_array_i32_heap* _this);
 void sjf_array_i32_setAt(sjs_array_i32* _parent, int32_t index, int32_t item);
-void main_destroy();
+void main_destroy(void);
 
 void sjf_array_i32(sjs_array_i32* _this) {
     
@@ -185,23 +185,23 @@ void sjf_array_i32_setAt(sjs_array_i32* _parent, int32_t index, int32_t item) {
 }
 
 int main() {
-    a.size = 1;
+    sjv_a.size = 1;
     sjt_cast1 = 0;
-    a.data = (uintptr_t)sjt_cast1;
-    a._isGlobal = false;
-    sjf_array_i32(&a);
-    sjt_dot1 = &a;
+    sjv_a.data = (uintptr_t)sjt_cast1;
+    sjv_a._isGlobal = false;
+    sjf_array_i32(&sjv_a);
+    sjt_dot1 = &sjv_a;
     sjt_functionParam1 = 0;
     sjt_functionParam2 = 1;
     sjf_array_i32_setAt(sjt_dot1, sjt_functionParam1, sjt_functionParam2);
-    sjt_dot2 = &a;
+    sjt_dot2 = &sjv_a;
     sjt_functionParam3 = 0;
-    sjf_array_i32_getAt(sjt_dot2, sjt_functionParam3, &c);
+    sjf_array_i32_getAt(sjt_dot2, sjt_functionParam3, &sjv_c);
     main_destroy();
     return 0;
 }
 
 void main_destroy() {
 
-    sjf_array_i32_destroy(&a);
+    sjf_array_i32_destroy(&sjv_a);
 }

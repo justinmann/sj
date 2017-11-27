@@ -174,14 +174,14 @@ struct td_sjs_class_heap {
     int _refCount;
 };
 
-sji_foo* a;
-sjs_string_heap* bob;
-sjs_anon1 console;
-sjs_anon4 convert;
-sjs_anon2 parse;
-sjs_anon3 random;
 sjs_class_heap* sjt_cast1;
 sji_foo* sjt_dot1;
+sji_foo* sjv_a;
+sjs_string_heap* sjv_bob;
+sjs_anon1 sjv_console;
+sjs_anon4 sjv_convert;
+sjs_anon2 sjv_parse;
+sjs_anon3 sjv_random;
 
 void sjf_anon1(sjs_anon1* _this);
 void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* to);
@@ -218,7 +218,7 @@ void sjf_string_copy(sjs_string* _this, sjs_string* to);
 void sjf_string_destroy(sjs_string* _this);
 void sjf_string_heap(sjs_string_heap* _this);
 void sji_foo_destroy(sji_foo* _this);
-void main_destroy();
+void main_destroy(void);
 
 void sjf_anon1(sjs_anon1* _this) {
 }
@@ -426,38 +426,38 @@ void sji_foo_destroy(sji_foo* _this) {
 }
 
 int main() {
-    sjf_anon4(&convert);
-    sjf_anon3(&random);
-    sjf_anon2(&parse);
-    sjf_anon1(&console);
+    sjf_anon4(&sjv_convert);
+    sjf_anon3(&sjv_random);
+    sjf_anon2(&sjv_parse);
+    sjf_anon1(&sjv_console);
     sjt_cast1 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
     sjt_cast1->_refCount = 1;
     sjf_class_heap(sjt_cast1);
-    a = (sji_foo*)sjf_class_heap_as_sji_foo(sjt_cast1);
-    sjt_dot1 = a;
-    bob = (sjs_string_heap*)malloc(sizeof(sjs_string_heap));
-    bob->_refCount = 1;
-    sjt_dot1->test_heap(sjt_dot1->_parent, &bob);
+    sjv_a = (sji_foo*)sjf_class_heap_as_sji_foo(sjt_cast1);
+    sjt_dot1 = sjv_a;
+    sjv_bob = (sjs_string_heap*)malloc(sizeof(sjs_string_heap));
+    sjv_bob->_refCount = 1;
+    sjt_dot1->test_heap(sjt_dot1->_parent, &sjv_bob);
     main_destroy();
     return 0;
 }
 
 void main_destroy() {
 
-    a->_refCount--;
-    if (a->_refCount <= 0) {
-        sji_foo_destroy(a);
-    }
-    bob->_refCount--;
-    if (bob->_refCount <= 0) {
-        sjf_string_destroy((sjs_string*)(((char*)bob) + sizeof(int)));
-    }
     sjt_cast1->_refCount--;
     if (sjt_cast1->_refCount <= 0) {
         sjf_class_destroy((sjs_class*)(((char*)sjt_cast1) + sizeof(int)));
     }
-    sjf_anon1_destroy(&console);
-    sjf_anon4_destroy(&convert);
-    sjf_anon2_destroy(&parse);
-    sjf_anon3_destroy(&random);
+    sjv_a->_refCount--;
+    if (sjv_a->_refCount <= 0) {
+        sji_foo_destroy(sjv_a);
+    }
+    sjv_bob->_refCount--;
+    if (sjv_bob->_refCount <= 0) {
+        sjf_string_destroy((sjs_string*)(((char*)sjv_bob) + sizeof(int)));
+    }
+    sjf_anon1_destroy(&sjv_console);
+    sjf_anon4_destroy(&sjv_convert);
+    sjf_anon2_destroy(&sjv_parse);
+    sjf_anon3_destroy(&sjv_random);
 }

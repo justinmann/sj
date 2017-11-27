@@ -67,14 +67,14 @@ struct td_sjs_object {
     int _refCount;
 };
 
-int32_t a;
-int32_t b;
-int32_t c;
+int32_t sjv_a;
+int32_t sjv_b;
+int32_t sjv_c;
 
 void sjf_class_bool(int32_t* _return);
 void sjf_class_f32(int32_t* _return);
 void sjf_class_i32(int32_t* _return);
-void main_destroy();
+void main_destroy(void);
 
 void sjf_class_bool(int32_t* _return) {
     (*_return) = 1;
@@ -89,9 +89,9 @@ void sjf_class_i32(int32_t* _return) {
 }
 
 int main() {
-    sjf_class_i32(&a);
-    sjf_class_f32(&b);
-    sjf_class_bool(&c);
+    sjf_class_i32(&sjv_a);
+    sjf_class_f32(&sjv_b);
+    sjf_class_bool(&sjv_c);
     main_destroy();
     return 0;
 }

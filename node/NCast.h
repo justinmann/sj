@@ -11,7 +11,7 @@
 
 class CCastVar : public CVar {
 public:
-    CCastVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> typeTo, shared_ptr<CVar> var) : CVar(loc, scope, "", false), typeTo(typeTo), var(var) { }
+    CCastVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> typeTo, shared_ptr<CVar> var) : CVar(loc, scope), typeTo(typeTo), var(var) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);

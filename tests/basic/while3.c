@@ -70,13 +70,13 @@ struct td_sjs_object {
 int32_t sjt_compare1;
 int32_t sjt_compare2;
 bool sjt_while1;
-int32_t x;
+int32_t sjv_x;
 
-void main_destroy();
+void main_destroy(void);
 
 int main() {
-    x = 10;
-    sjt_compare1 = x;
+    sjv_x = 10;
+    sjt_compare1 = sjv_x;
     sjt_compare2 = 0;
     sjt_while1 = sjt_compare1 > sjt_compare2;
     while (sjt_while1) {
@@ -85,10 +85,10 @@ int main() {
         int32_t sjt_math1;
         int32_t sjt_math2;
 
-        sjt_math1 = x;
+        sjt_math1 = sjv_x;
         sjt_math2 = 1;
-        x = sjt_math1 - sjt_math2;
-        sjt_compare3 = x;
+        sjv_x = sjt_math1 - sjt_math2;
+        sjt_compare3 = sjv_x;
         sjt_compare4 = 0;
         sjt_while1 = sjt_compare3 > sjt_compare4;
     }

@@ -67,12 +67,12 @@ struct td_sjs_object {
     int _refCount;
 };
 
-bool x;
+bool sjv_x;
 
-void main_destroy();
+void main_destroy(void);
 
 int main() {
-    x = false;
+    sjv_x = false;
     main_destroy();
     return 0;
 }

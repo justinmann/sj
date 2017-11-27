@@ -27,17 +27,17 @@ void CNormalVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
         else {
             lineStream << "->";
         }
-        lineStream << name;
+        lineStream << cname;
         trBlock->statements.push_back(lineStream.str());
         storeValue->retainValue(compiler, storeValue->loc, trBlock, returnValue);
     } else if (trBlock->hasThis && (mode == Var_Public || mode == Var_Private)) {
         auto returnValue = trBlock->createTempVariable(scope.lock(), type, "dotTemp");
         stringstream lineStream;
-        lineStream << returnValue->name << " = " << "_this->" << name;
+        lineStream << returnValue->name << " = " << "_this->" << cname;
         trBlock->statements.push_back(lineStream.str());
         storeValue->retainValue(compiler, storeValue->loc, trBlock, returnValue);
     } else {
-        auto returnValue = make_shared<TrValue>(scope.lock(), type, name, false);
+        auto returnValue = make_shared<TrValue>(scope.lock(), type, cname, false);
         storeValue->retainValue(compiler, storeValue->loc, trBlock, returnValue);
     }
 }
@@ -52,25 +52,25 @@ shared_ptr<TrStoreValue> CNormalVar::getStoreValue(Compiler* compiler, TrOutput*
     string varName;
     if (dotValue) {
         if (dotValue->type->typeMode == CTM_Stack) {
-            varName = dotValue->name + "." + name;
+            varName = dotValue->name + "." + cname;
         }
         else {
-            varName = dotValue->name + "->" + name;
+            varName = dotValue->name + "->" + cname;
         }
     }
     else if (trBlock->hasThis && (mode == Var_Public || mode == Var_Private)) {
-        varName = "_this->" + name;
+        varName = "_this->" + cname;
     }
     else {
-        if (!trBlock->getVariable(name)) {
-            trBlock->createVariable(scope.lock(), type, name);
+        if (!trBlock->getVariable(cname)) {
+            trBlock->createVariable(scope.lock(), type, cname);
         }
         else if (!isMutable) {
             // Check is mutable or first assignment
             compiler->addError(loc, CErrorCode::TypeMismatch, "cannot assign to immutable variable");
             return nullptr;
         }
-        varName = name;
+        varName = cname;
     }
     
     return make_shared<TrStoreValue>(loc, scope.lock(), type, varName, op, isFirstAssignment);

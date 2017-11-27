@@ -71,7 +71,7 @@ int32_t sjt_functionParam2;
 int32_t void1;
 
 void sjf_func(int32_t x, int32_t* _return);
-void main_destroy();
+void main_destroy(void);
 
 void sjf_func(int32_t x, int32_t* _return) {
     int32_t sjt_compare1;

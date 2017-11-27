@@ -1,18 +1,14 @@
-* draw bitmap & text on mac
-
-* fix string add
-* make string immutable
-* stringBuilder.append
-* stringBuilder.toString
-* buttonElement
-* textElement
-* two buttons for +/-
+* show bitmap
+* show text
 * use #line pragma directive
 * de-dup global strings
 * stack optional
 * second assignment to return var does not free
 * improve debug out for interfaces
 * override interfaces : a as type   -> a.asType()'t
+* buttonElement
+* textElement
+* two buttons for +/-
 
 -- features --
 * map

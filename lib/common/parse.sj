@@ -6,10 +6,10 @@ parse: ^(
 		    int v = (int)strtol((char*)text->data.data, &e, 10);
 		    
 		    if (*e != '\0') {
-		        x = 0;
+		        sjv_x = 0;
 		    }
 		    else {
-		    	x = v;
+		    	sjv_x = v;
 			}
 	    }c
 	    x

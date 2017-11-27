@@ -71,7 +71,7 @@ double sjt_compare1;
 double sjt_compare2;
 
 void sjf_func(double* _return);
-void main_destroy();
+void main_destroy(void);
 
 void sjf_func(double* _return) {
     (*_return) = -3.0;

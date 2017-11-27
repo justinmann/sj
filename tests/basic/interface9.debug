@@ -10,11 +10,11 @@ global()'void {
   a'heap #foo : class(this = class()) as heap #foo
   b'stack bar : test(
     parent: a,
-    'i32 : interfaceArg
+    a'i32 : interfaceArg
   )
   c'heap bar : test(
     parent: a,
-    'i32 : interfaceArg
+    a'i32 : interfaceArg
   )
   void
 }

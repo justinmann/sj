@@ -11,7 +11,7 @@
 
 class CForIndexVar : public CVar {
 public:
-    CForIndexVar(CLoc loc, shared_ptr<CScope> scope, string name) : CVar(loc, scope, name, false) { }
+    CForIndexVar(CLoc loc, shared_ptr<CScope> scope, string name) : CVar(loc, scope, name, "sjt_" + name, false) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -20,7 +20,7 @@ public:
 
 class CForLoopVar : public CVar {
 public:
-    CForLoopVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CForIndexVar> indexVar, shared_ptr<CVar> startVar, shared_ptr<CVar> endVar, shared_ptr<CVar> bodyVar) : CVar(loc, scope, "", false), indexVar(indexVar), startVar(startVar), endVar(endVar), bodyVar(bodyVar) { }
+    CForLoopVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CForIndexVar> indexVar, shared_ptr<CVar> startVar, shared_ptr<CVar> endVar, shared_ptr<CVar> bodyVar) : CVar(loc, scope), indexVar(indexVar), startVar(startVar), endVar(endVar), bodyVar(bodyVar) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);

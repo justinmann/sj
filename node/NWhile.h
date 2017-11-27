@@ -11,7 +11,7 @@
 
 class CWhileVar : public CVar {
 public:
-    CWhileVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> condVar, shared_ptr<CVar> bodyVar) : CVar(loc, scope, "", false), condVar(condVar), bodyVar(bodyVar) { }
+    CWhileVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> condVar, shared_ptr<CVar> bodyVar) : CVar(loc, scope), condVar(condVar), bodyVar(bodyVar) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);

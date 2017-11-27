@@ -69,13 +69,13 @@ struct td_sjs_object {
 
 int32_t sjt_forEnd1;
 int32_t sjt_forStart1;
+int32_t sjv_y;
 int32_t x;
-int32_t y;
 
-void main_destroy();
+void main_destroy(void);
 
 int main() {
-    y = 0;
+    sjv_y = 0;
     sjt_forStart1 = 2;
     x = sjt_forStart1;
     sjt_forEnd1 = 1;
@@ -83,9 +83,9 @@ int main() {
         int32_t sjt_math1;
         int32_t sjt_math2;
 
-        sjt_math1 = y;
+        sjt_math1 = sjv_y;
         sjt_math2 = x;
-        y = sjt_math1 + sjt_math2;
+        sjv_y = sjt_math1 + sjt_math2;
         x++;
     }
     main_destroy();

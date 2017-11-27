@@ -68,13 +68,13 @@ struct td_sjs_object {
 };
 
 double sjt_cast1;
-int64_t x;
+int64_t sjv_x;
 
-void main_destroy();
+void main_destroy(void);
 
 int main() {
     sjt_cast1 = 5.0;
-    x = (int64_t)sjt_cast1;
+    sjv_x = (int64_t)sjt_cast1;
     main_destroy();
     return 0;
 }

@@ -67,17 +67,17 @@ struct td_sjs_object {
     int _refCount;
 };
 
-int32_t d;
+int32_t sjv_d;
 
 void sjf_class_func_i32(int32_t* _return);
-void main_destroy();
+void main_destroy(void);
 
 void sjf_class_func_i32(int32_t* _return) {
     (*_return) = 1;
 }
 
 int main() {
-    sjf_class_func_i32(&d);
+    sjf_class_func_i32(&sjv_d);
     main_destroy();
     return 0;
 }

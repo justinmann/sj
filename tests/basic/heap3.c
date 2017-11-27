@@ -93,10 +93,10 @@ struct td_sjs_bar_heap {
     sjs_foo f;
 };
 
-sjs_bar b;
 int32_t dotTemp1;
 sjs_foo* sjt_dot1;
 sjs_bar* sjt_functionParam1;
+sjs_bar sjv_b;
 
 void sjf_bar(sjs_bar* _this);
 void sjf_bar_copy(sjs_bar* _this, sjs_bar* to);
@@ -107,7 +107,7 @@ void sjf_foo_copy(sjs_foo* _this, sjs_foo* to);
 void sjf_foo_destroy(sjs_foo* _this);
 void sjf_foo_heap(sjs_foo_heap* _this);
 void sjf_func(sjs_bar* b, sjs_foo** _return);
-void main_destroy();
+void main_destroy(void);
 
 void sjf_bar(sjs_bar* _this) {
 }
@@ -145,10 +145,10 @@ void sjf_func(sjs_bar* b, sjs_foo** _return) {
 }
 
 int main() {
-    b.f.x = 1;
-    sjf_foo(&b.f);
-    sjf_bar(&b);
-    sjt_functionParam1 = &b;
+    sjv_b.f.x = 1;
+    sjf_foo(&sjv_b.f);
+    sjf_bar(&sjv_b);
+    sjt_functionParam1 = &sjv_b;
     sjf_func(sjt_functionParam1, &sjt_dot1);
     dotTemp1 = sjt_dot1->x;
     main_destroy();
@@ -157,5 +157,5 @@ int main() {
 
 void main_destroy() {
 
-    sjf_bar_destroy(&b);
+    sjf_bar_destroy(&sjv_b);
 }

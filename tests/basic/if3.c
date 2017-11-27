@@ -69,7 +69,7 @@ struct td_sjs_object {
 
 bool sjt_ifElse1;
 
-void main_destroy();
+void main_destroy(void);
 
 int main() {
     sjt_ifElse1 = false;

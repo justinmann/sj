@@ -17,6 +17,7 @@ void CAssignVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
         return;
     }
 
+    leftStoreValue->loc = loc;
     rightVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, leftStoreValue);
     if (!leftStoreValue->hasSetValue) {
         compiler->addError(loc, CErrorCode::TypeMismatch, "no return value");

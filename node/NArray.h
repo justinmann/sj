@@ -13,7 +13,7 @@
 
 class CArrayVar : public CVar {
 public:
-    CArrayVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> createArrayVar, vector<shared_ptr<CVar>> initAtVars) : CVar(loc, scope, "", false), createArrayVar(createArrayVar), initAtVars(initAtVars) {}
+    CArrayVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> createArrayVar, vector<shared_ptr<CVar>> initAtVars) : CVar(loc, scope), createArrayVar(createArrayVar), initAtVars(initAtVars) {}
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);

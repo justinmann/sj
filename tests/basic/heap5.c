@@ -109,7 +109,7 @@ void sjf_array_char(sjs_array_char* _this);
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* to);
 void sjf_array_char_destroy(sjs_array_char* _this);
 void sjf_array_char_heap(sjs_array_char_heap* _this);
-void main_destroy();
+void main_destroy(void);
 
 void sjf_a(sjs_a* _this) {
 }

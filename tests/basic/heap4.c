@@ -119,7 +119,7 @@ void sjf_c(sjs_c* _this);
 void sjf_c_copy(sjs_c* _this, sjs_c* to);
 void sjf_c_destroy(sjs_c* _this);
 void sjf_c_heap(sjs_c_heap* _this);
-void main_destroy();
+void main_destroy(void);
 
 void sjf_a(sjs_a* _this) {
 }

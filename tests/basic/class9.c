@@ -79,8 +79,8 @@ struct td_sjs_class_heap {
     int _refCount;
 };
 
-sjs_class c;
 sjs_class* sjt_dot1;
+sjs_class sjv_c;
 int32_t void1;
 
 void sjf_class(sjs_class* _this);
@@ -88,7 +88,7 @@ void sjf_class_copy(sjs_class* _this, sjs_class* to);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_func(sjs_class* _parent, int32_t* _return);
 void sjf_class_heap(sjs_class_heap* _this);
-void main_destroy();
+void main_destroy(void);
 
 void sjf_class(sjs_class* _this) {
 }
@@ -107,8 +107,8 @@ void sjf_class_heap(sjs_class_heap* _this) {
 }
 
 int main() {
-    sjf_class(&c);
-    sjt_dot1 = &c;
+    sjf_class(&sjv_c);
+    sjt_dot1 = &sjv_c;
     sjf_class_func(sjt_dot1, &void1);
     main_destroy();
     return 0;
@@ -116,5 +116,5 @@ int main() {
 
 void main_destroy() {
 
-    sjf_class_destroy(&c);
+    sjf_class_destroy(&sjv_c);
 }

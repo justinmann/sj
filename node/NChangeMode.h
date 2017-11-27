@@ -11,7 +11,7 @@
 
 class CChangeModeVar : public CVar {
 public:
-    CChangeModeVar(CLoc loc, shared_ptr<CScope> scope, CTypeMode typeMode, shared_ptr<CVar> var) : CVar(loc, scope, "", false), typeMode(typeMode), var(var) { }
+    CChangeModeVar(CLoc loc, shared_ptr<CScope> scope, CTypeMode typeMode, shared_ptr<CVar> var) : CVar(loc, scope), typeMode(typeMode), var(var) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);

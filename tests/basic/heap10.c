@@ -110,12 +110,12 @@ sjs_inner_heap* sjt_value2;
 sjs_inner_heap* sjt_value3;
 sjs_class2_heap* sjt_value4;
 sjs_inner_heap* sjt_value5;
-sjs_class x1;
-sjs_class_heap* x2;
-sjs_class_heap* x4;
-sjs_class2 x5;
-sjs_class2_heap* x6;
-sjs_class2_heap* x8;
+sjs_class sjv_x1;
+sjs_class_heap* sjv_x2;
+sjs_class_heap* sjv_x4;
+sjs_class2 sjv_x5;
+sjs_class2_heap* sjv_x6;
+sjs_class2_heap* sjv_x8;
 
 void sjf_class(sjs_class* _this);
 void sjf_class2(sjs_class2* _this);
@@ -129,7 +129,7 @@ void sjf_inner(sjs_inner* _this);
 void sjf_inner_copy(sjs_inner* _this, sjs_inner* to);
 void sjf_inner_destroy(sjs_inner* _this);
 void sjf_inner_heap(sjs_inner_heap* _this);
-void main_destroy();
+void main_destroy(void);
 
 void sjf_class(sjs_class* _this) {
 }
@@ -177,41 +177,41 @@ void sjf_inner_heap(sjs_inner_heap* _this) {
 }
 
 int main() {
-    sjf_inner(&x1.inner);
-    sjf_class(&x1);
-    x2 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
-    x2->_refCount = 1;
-    sjf_inner(&x2->inner);
-    sjf_class_heap(x2);
+    sjf_inner(&sjv_x1.inner);
+    sjf_class(&sjv_x1);
+    sjv_x2 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
+    sjv_x2->_refCount = 1;
+    sjf_inner(&sjv_x2->inner);
+    sjf_class_heap(sjv_x2);
     sjt_value1 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
     sjt_value1->_refCount = 1;
     sjf_inner(&sjt_value1->inner);
     sjf_class_heap(sjt_value1);
-    x4 = sjt_value1;
-    if (x4 != 0) {
-        x4->_refCount++;
+    sjv_x4 = sjt_value1;
+    if (sjv_x4 != 0) {
+        sjv_x4->_refCount++;
     }
 
     sjt_value2 = (sjs_inner_heap*)malloc(sizeof(sjs_inner_heap));
     sjt_value2->_refCount = 1;
     sjf_inner_heap(sjt_value2);
-    x5.inner = sjt_value2;
-    if (x5.inner != 0) {
-        x5.inner->_refCount++;
+    sjv_x5.inner = sjt_value2;
+    if (sjv_x5.inner != 0) {
+        sjv_x5.inner->_refCount++;
     }
 
-    sjf_class2(&x5);
-    x6 = (sjs_class2_heap*)malloc(sizeof(sjs_class2_heap));
-    x6->_refCount = 1;
+    sjf_class2(&sjv_x5);
+    sjv_x6 = (sjs_class2_heap*)malloc(sizeof(sjs_class2_heap));
+    sjv_x6->_refCount = 1;
     sjt_value3 = (sjs_inner_heap*)malloc(sizeof(sjs_inner_heap));
     sjt_value3->_refCount = 1;
     sjf_inner_heap(sjt_value3);
-    x6->inner = sjt_value3;
-    if (x6->inner != 0) {
-        x6->inner->_refCount++;
+    sjv_x6->inner = sjt_value3;
+    if (sjv_x6->inner != 0) {
+        sjv_x6->inner->_refCount++;
     }
 
-    sjf_class2_heap(x6);
+    sjf_class2_heap(sjv_x6);
     sjt_value4 = (sjs_class2_heap*)malloc(sizeof(sjs_class2_heap));
     sjt_value4->_refCount = 1;
     sjt_value5 = (sjs_inner_heap*)malloc(sizeof(sjs_inner_heap));
@@ -223,9 +223,9 @@ int main() {
     }
 
     sjf_class2_heap(sjt_value4);
-    x8 = sjt_value4;
-    if (x8 != 0) {
-        x8->_refCount++;
+    sjv_x8 = sjt_value4;
+    if (sjv_x8 != 0) {
+        sjv_x8->_refCount++;
     }
     main_destroy();
     return 0;
@@ -253,26 +253,26 @@ void main_destroy() {
     if (sjt_value5->_refCount <= 0) {
         sjf_inner_destroy((sjs_inner*)(((char*)sjt_value5) + sizeof(int)));
     }
-    x2->_refCount--;
-    if (x2->_refCount <= 0) {
-        sjf_class_destroy((sjs_class*)(((char*)x2) + sizeof(int)));
+    sjv_x2->_refCount--;
+    if (sjv_x2->_refCount <= 0) {
+        sjf_class_destroy((sjs_class*)(((char*)sjv_x2) + sizeof(int)));
     }
-    if (x4 != 0) {
-        x4->_refCount--;
-        if (x4->_refCount <= 0) {
-            sjf_class_destroy((sjs_class*)(((char*)x4) + sizeof(int)));
+    if (sjv_x4 != 0) {
+        sjv_x4->_refCount--;
+        if (sjv_x4->_refCount <= 0) {
+            sjf_class_destroy((sjs_class*)(((char*)sjv_x4) + sizeof(int)));
         }
     }
-    x6->_refCount--;
-    if (x6->_refCount <= 0) {
-        sjf_class2_destroy((sjs_class2*)(((char*)x6) + sizeof(int)));
+    sjv_x6->_refCount--;
+    if (sjv_x6->_refCount <= 0) {
+        sjf_class2_destroy((sjs_class2*)(((char*)sjv_x6) + sizeof(int)));
     }
-    if (x8 != 0) {
-        x8->_refCount--;
-        if (x8->_refCount <= 0) {
-            sjf_class2_destroy((sjs_class2*)(((char*)x8) + sizeof(int)));
+    if (sjv_x8 != 0) {
+        sjv_x8->_refCount--;
+        if (sjv_x8->_refCount <= 0) {
+            sjf_class2_destroy((sjs_class2*)(((char*)sjv_x8) + sizeof(int)));
         }
     }
-    sjf_class_destroy(&x1);
-    sjf_class2_destroy(&x5);
+    sjf_class_destroy(&sjv_x1);
+    sjf_class2_destroy(&sjv_x5);
 }

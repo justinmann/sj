@@ -17,7 +17,7 @@ enum NCCodeType {
 
 class CCCodeVar : public CVar {
 public:
-    CCCodeVar(CLoc loc, shared_ptr<CScope> scope, NCCodeType codeType, string code) : CVar(loc, scope, "", false), codeType(codeType), code(code) { }
+    CCCodeVar(CLoc loc, shared_ptr<CScope> scope, NCCodeType codeType, string code) : CVar(loc, scope), codeType(codeType), code(code) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);

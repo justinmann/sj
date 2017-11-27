@@ -15,7 +15,7 @@ class NCall;
 
 class CCallVar : public CVar {
 public:
-    CCallVar(CLoc loc, shared_ptr<CScope> scope, CTypeMode returnMode) : CVar(loc, scope, "", false), returnMode(returnMode) {}
+    CCallVar(CLoc loc, shared_ptr<CScope> scope, CTypeMode returnMode) : CVar(loc, scope), returnMode(returnMode) {}
     bool getReturnThis();
     static shared_ptr<CCallVar> create(Compiler* compiler, CLoc loc_, const string& name_, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<CScope> scope, shared_ptr<CBaseFunction> callee_, CTypeMode returnMode);
     shared_ptr<CType> getType(Compiler* compiler);

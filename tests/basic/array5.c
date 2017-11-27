@@ -98,8 +98,6 @@ struct td_sjs_class_heap {
     int32_t x;
 };
 
-sjs_array_class a;
-sjs_class* c;
 int32_t dotTemp1;
 sjs_class sjt_call1;
 sjs_class sjt_call2;
@@ -115,6 +113,8 @@ sjs_class* sjt_functionParam4;
 int32_t sjt_functionParam5;
 sjs_class* sjt_functionParam6;
 int32_t sjt_functionParam7;
+sjs_array_class sjv_a;
+sjs_class* sjv_c;
 
 void sjf_array_class(sjs_array_class* _this);
 void sjf_array_class_copy(sjs_array_class* _this, sjs_array_class* to);
@@ -126,7 +126,7 @@ void sjf_class(sjs_class* _this);
 void sjf_class_copy(sjs_class* _this, sjs_class* to);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_heap(sjs_class_heap* _this);
-void main_destroy();
+void main_destroy(void);
 
 void sjf_array_class(sjs_array_class* _this) {
     
@@ -223,31 +223,31 @@ void sjf_class_heap(sjs_class_heap* _this) {
 }
 
 int main() {
-    a.size = 3;
+    sjv_a.size = 3;
     sjt_cast1 = 0;
-    a.data = (uintptr_t)sjt_cast1;
-    a._isGlobal = false;
-    sjf_array_class(&a);
+    sjv_a.data = (uintptr_t)sjt_cast1;
+    sjv_a._isGlobal = false;
+    sjf_array_class(&sjv_a);
     sjt_functionParam1 = 0;
     sjt_call1.x = 1;
     sjf_class(&sjt_call1);
     sjt_functionParam2 = &sjt_call1;
-    sjf_array_class_initAt(&a, sjt_functionParam1, sjt_functionParam2);
+    sjf_array_class_initAt(&sjv_a, sjt_functionParam1, sjt_functionParam2);
     sjt_functionParam3 = 1;
     sjt_call2.x = 2;
     sjf_class(&sjt_call2);
     sjt_functionParam4 = &sjt_call2;
-    sjf_array_class_initAt(&a, sjt_functionParam3, sjt_functionParam4);
+    sjf_array_class_initAt(&sjv_a, sjt_functionParam3, sjt_functionParam4);
     sjt_functionParam5 = 2;
     sjt_call3.x = 3;
     sjf_class(&sjt_call3);
     sjt_functionParam6 = &sjt_call3;
-    sjf_array_class_initAt(&a, sjt_functionParam5, sjt_functionParam6);
-    sjt_dot1 = &a;
+    sjf_array_class_initAt(&sjv_a, sjt_functionParam5, sjt_functionParam6);
+    sjt_dot1 = &sjv_a;
     sjt_functionParam7 = 0;
     sjf_array_class_getAt(sjt_dot1, sjt_functionParam7, &sjt_call4);
-    c = &sjt_call4;
-    sjt_dot2 = c;
+    sjv_c = &sjt_call4;
+    sjt_dot2 = sjv_c;
     dotTemp1 = sjt_dot2->x;
     main_destroy();
     return 0;
@@ -255,9 +255,9 @@ int main() {
 
 void main_destroy() {
 
-    sjf_array_class_destroy(&a);
     sjf_class_destroy(&sjt_call1);
     sjf_class_destroy(&sjt_call2);
     sjf_class_destroy(&sjt_call3);
     sjf_class_destroy(&sjt_call4);
+    sjf_array_class_destroy(&sjv_a);
 }

@@ -29,7 +29,7 @@ public:
 
 class CParentDotVar : public CStoreVar {
 public:
-    CParentDotVar(CLoc loc, shared_ptr<CScope> scope) : CStoreVar(loc, scope, "", false) {}
+    CParentDotVar(CLoc loc, shared_ptr<CScope> scope) : CStoreVar(loc, scope, "INVALID", "INVALID", false) {}
     static shared_ptr<CParentDotVar> create(CLoc loc, Compiler *compiler, shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_);
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);

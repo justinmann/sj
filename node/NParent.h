@@ -11,7 +11,7 @@
 
 class CParentVar : public CVar {
 public:
-    CParentVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CFunction> function) : CVar(loc, scope, "", false), function(function) { }
+    CParentVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CFunction> function) : CVar(loc, scope), function(function) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);

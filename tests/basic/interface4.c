@@ -89,9 +89,9 @@ struct td_sjs_class_heap {
     int _refCount;
 };
 
-sji_foo* a;
 sjs_class_heap* sjt_cast1;
 sji_foo* sjt_dot1;
+sji_foo* sjv_a;
 int32_t void1;
 
 void sjf_class(sjs_class* _this);
@@ -104,7 +104,7 @@ sjs_object* sjf_class_heap_asInterface(sjs_class_heap* _this, int typeId);
 sji_foo* sjf_class_heap_as_sji_foo(sjs_class_heap* _this);
 void sjf_class_test(sjs_class* _parent, int32_t* _return);
 void sji_foo_destroy(sji_foo* _this);
-void main_destroy();
+void main_destroy(void);
 
 void sjf_class(sjs_class* _this) {
 }
@@ -180,8 +180,8 @@ int main() {
     sjt_cast1 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
     sjt_cast1->_refCount = 1;
     sjf_class_heap(sjt_cast1);
-    a = (sji_foo*)sjf_class_heap_as_sji_foo(sjt_cast1);
-    sjt_dot1 = a;
+    sjv_a = (sji_foo*)sjf_class_heap_as_sji_foo(sjt_cast1);
+    sjt_dot1 = sjv_a;
     sjt_dot1->test(sjt_dot1->_parent, &void1);
     main_destroy();
     return 0;
@@ -189,12 +189,12 @@ int main() {
 
 void main_destroy() {
 
-    a->_refCount--;
-    if (a->_refCount <= 0) {
-        sji_foo_destroy(a);
-    }
     sjt_cast1->_refCount--;
     if (sjt_cast1->_refCount <= 0) {
         sjf_class_destroy((sjs_class*)(((char*)sjt_cast1) + sizeof(int)));
+    }
+    sjv_a->_refCount--;
+    if (sjv_a->_refCount <= 0) {
+        sji_foo_destroy(sjv_a);
     }
 }

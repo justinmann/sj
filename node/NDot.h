@@ -13,7 +13,7 @@
 
 class CDotVar : public CStoreVar {
 public:
-    CDotVar(CLoc loc, shared_ptr<CScope> scope) : CStoreVar(loc, scope, "", false) {}
+    CDotVar(CLoc loc, shared_ptr<CScope> scope) : CStoreVar(loc, scope, "INVALID", "INVALID", false) {}
     static shared_ptr<CDotVar> create(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> leftVar_, shared_ptr<CVar> rightVar_);
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);

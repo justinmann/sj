@@ -69,7 +69,7 @@ struct td_sjs_object {
 
 bool sjt_while1;
 
-void main_destroy();
+void main_destroy(void);
 
 int main() {
     sjt_while1 = false;

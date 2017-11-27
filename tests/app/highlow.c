@@ -153,12 +153,6 @@ struct td_sjs_string_heap {
     sjs_array_char data;
 };
 
-sjs_anon1 console;
-sjs_anon4 convert;
-bool isCorrect;
-int32_t num;
-sjs_anon2 parse;
-sjs_anon3 random;
 bool result1;
 sjs_string sjt_call1;
 sjs_string sjt_call4;
@@ -173,6 +167,12 @@ int32_t sjt_math3;
 int32_t sjt_math4;
 bool sjt_not1;
 bool sjt_while1;
+sjs_anon1 sjv_console;
+sjs_anon4 sjv_convert;
+bool sjv_isCorrect;
+int32_t sjv_num;
+sjs_anon2 sjv_parse;
+sjs_anon3 sjv_random;
 
 void sjf_anon1(sjs_anon1* _this);
 void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* to);
@@ -202,7 +202,7 @@ void sjf_string(sjs_string* _this);
 void sjf_string_copy(sjs_string* _this, sjs_string* to);
 void sjf_string_destroy(sjs_string* _this);
 void sjf_string_heap(sjs_string_heap* _this);
-void main_destroy();
+void main_destroy(void);
 
 void sjf_anon1(sjs_anon1* _this) {
 }
@@ -217,15 +217,15 @@ void sjf_anon1_heap(sjs_anon1_heap* _this) {
 }
 
 void sjf_anon1_readLine(sjs_anon1* _parent, sjs_string* _return) {
-    uintptr_t data;
-    int32_t size;
     int32_t sjt_cast1;
     int32_t sjt_math5;
     int32_t sjt_math6;
+    uintptr_t sjv_data;
+    int32_t sjv_size;
 
     sjt_cast1 = 0;
-    data = (uintptr_t)sjt_cast1;
-    size = 1024;
+    sjv_data = (uintptr_t)sjt_cast1;
+    sjv_size = 1024;
     
 			
 		    char* str = (char*)malloc(size);
@@ -248,11 +248,11 @@ void sjf_anon1_readLine(sjs_anon1* _parent, sjs_string* _return) {
 		    data = (uintptr_t)str;
 		    size = index;
 		;
-    sjt_math5 = size;
+    sjt_math5 = sjv_size;
     sjt_math6 = 1;
     _return->count = sjt_math5 - sjt_math6;
-    _return->data.size = size;
-    _return->data.data = data;
+    _return->data.size = sjv_size;
+    _return->data.data = sjv_data;
     _return->data._isGlobal = false;
     sjf_array_char(&_return->data);
     sjf_string(_return);
@@ -278,21 +278,21 @@ void sjf_anon2_heap(sjs_anon2_heap* _this) {
 }
 
 void sjf_anon2_toInt(sjs_anon2* _parent, sjs_string* text, int32_t* _return) {
-    int32_t x;
+    int32_t sjv_x;
 
-    x = 0;
+    sjv_x = 0;
     
 			char* e;
 		    int v = (int)strtol((char*)text->data.data, &e, 10);
 		    
 		    if (*e != '\0') {
-		        x = 0;
+		        sjv_x = 0;
 		    }
 		    else {
-		    	x = v;
+		    	sjv_x = v;
 			}
 	    ;
-    (*_return) = x;
+    (*_return) = sjv_x;
 }
 
 void sjf_anon3(sjs_anon3* _this) {
@@ -396,11 +396,11 @@ void sjf_string_heap(sjs_string_heap* _this) {
 }
 
 int main() {
-    sjf_anon4(&convert);
-    sjf_anon3(&random);
-    sjf_anon2(&parse);
-    sjf_anon1(&console);
-    sjt_dot1 = &console;
+    sjf_anon4(&sjv_convert);
+    sjf_anon3(&sjv_random);
+    sjf_anon2(&sjv_parse);
+    sjf_anon1(&sjv_console);
+    sjt_dot1 = &sjv_console;
     sjt_call1.count = 15;
     sjt_call1.data.size = 16;
     sjt_call1.data.data = (uintptr_t)sjg_string1;
@@ -409,18 +409,17 @@ int main() {
     sjf_string(&sjt_call1);
     sjt_functionParam1 = &sjt_call1;
     sjf_anon1_write(sjt_dot1, sjt_functionParam1);
-    sjt_dot2 = &random;
+    sjt_dot2 = &sjv_random;
     sjf_anon3_nextInt(sjt_dot2, &sjt_math3);
     sjt_math4 = 10;
     sjt_math1 = sjt_math3 % sjt_math4;
     sjt_math2 = 1;
-    num = sjt_math1 + sjt_math2;
-    isCorrect = false;
-    sjt_not1 = isCorrect;
+    sjv_num = sjt_math1 + sjt_math2;
+    sjv_isCorrect = false;
+    sjt_not1 = sjv_isCorrect;
     result1 = !sjt_not1;
     sjt_while1 = result1;
     while (sjt_while1) {
-        int32_t guess;
         bool result2;
         int32_t sjt_compare1;
         int32_t sjt_compare2;
@@ -429,22 +428,23 @@ int main() {
         sjs_string* sjt_functionParam2;
         bool sjt_ifElse1;
         bool sjt_not2;
-        sjs_string str;
+        int32_t sjv_guess;
+        sjs_string sjv_str;
 
-        sjt_dot3 = &console;
-        sjf_anon1_readLine(sjt_dot3, &str);
-        sjt_dot4 = &parse;
-        sjt_functionParam2 = &str;
-        sjf_anon2_toInt(sjt_dot4, sjt_functionParam2, &guess);
-        sjt_compare1 = guess;
-        sjt_compare2 = num;
+        sjt_dot3 = &sjv_console;
+        sjf_anon1_readLine(sjt_dot3, &sjv_str);
+        sjt_dot4 = &sjv_parse;
+        sjt_functionParam2 = &sjv_str;
+        sjf_anon2_toInt(sjt_dot4, sjt_functionParam2, &sjv_guess);
+        sjt_compare1 = sjv_guess;
+        sjt_compare2 = sjv_num;
         sjt_ifElse1 = sjt_compare1 < sjt_compare2;
         if (sjt_ifElse1) {
             sjs_string sjt_call2;
             sjs_anon1* sjt_dot5;
             sjs_string* sjt_functionParam3;
 
-            sjt_dot5 = &console;
+            sjt_dot5 = &sjv_console;
             sjt_call2.count = 9;
             sjt_call2.data.size = 10;
             sjt_call2.data.data = (uintptr_t)sjg_string3;
@@ -453,7 +453,7 @@ int main() {
             sjf_string(&sjt_call2);
             sjt_functionParam3 = &sjt_call2;
             sjf_anon1_write(sjt_dot5, sjt_functionParam3);
-            isCorrect = false;
+            sjv_isCorrect = false;
 
             sjf_string_destroy(&sjt_call2);
         } else {
@@ -461,15 +461,15 @@ int main() {
             int32_t sjt_compare4;
             bool sjt_ifElse2;
 
-            sjt_compare3 = guess;
-            sjt_compare4 = num;
+            sjt_compare3 = sjv_guess;
+            sjt_compare4 = sjv_num;
             sjt_ifElse2 = sjt_compare3 > sjt_compare4;
             if (sjt_ifElse2) {
                 sjs_string sjt_call3;
                 sjs_anon1* sjt_dot6;
                 sjs_string* sjt_functionParam4;
 
-                sjt_dot6 = &console;
+                sjt_dot6 = &sjv_console;
                 sjt_call3.count = 10;
                 sjt_call3.data.size = 11;
                 sjt_call3.data.data = (uintptr_t)sjg_string2;
@@ -478,22 +478,22 @@ int main() {
                 sjf_string(&sjt_call3);
                 sjt_functionParam4 = &sjt_call3;
                 sjf_anon1_write(sjt_dot6, sjt_functionParam4);
-                isCorrect = false;
+                sjv_isCorrect = false;
 
                 sjf_string_destroy(&sjt_call3);
             } else {
-                isCorrect = true;
+                sjv_isCorrect = true;
             }
         }
 
-        sjt_not2 = isCorrect;
+        sjt_not2 = sjv_isCorrect;
         result2 = !sjt_not2;
         sjt_while1 = result2;
 
-        sjf_string_destroy(&str);
+        sjf_string_destroy(&sjv_str);
     }
 
-    sjt_dot7 = &console;
+    sjt_dot7 = &sjv_console;
     sjt_call4.count = 9;
     sjt_call4.data.size = 10;
     sjt_call4.data.data = (uintptr_t)sjg_string4;
@@ -508,10 +508,10 @@ int main() {
 
 void main_destroy() {
 
-    sjf_anon1_destroy(&console);
-    sjf_anon4_destroy(&convert);
-    sjf_anon2_destroy(&parse);
-    sjf_anon3_destroy(&random);
     sjf_string_destroy(&sjt_call1);
     sjf_string_destroy(&sjt_call4);
+    sjf_anon1_destroy(&sjv_console);
+    sjf_anon4_destroy(&sjv_convert);
+    sjf_anon2_destroy(&sjv_parse);
+    sjf_anon3_destroy(&sjv_random);
 }

@@ -25,3 +25,5 @@ timerElement : timerElement()
 root = value(element(
 	children : [ button() as #element ]
 ) as #element)
+
+runLoop()

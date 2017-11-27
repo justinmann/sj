@@ -70,7 +70,7 @@ struct td_sjs_object {
 int32_t void1;
 
 void sjf_func(int32_t* _return);
-void main_destroy();
+void main_destroy(void);
 
 void sjf_func(int32_t* _return) {
     (*_return) = 1;

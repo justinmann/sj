@@ -16,7 +16,7 @@ class CCallVar;
 
 class CAssignVar : public CVar {
 public:
-    CAssignVar(CLoc loc, shared_ptr<CScope> scope, AssignOp op, bool isFirstAssignment, shared_ptr<CStoreVar> leftVar, shared_ptr<CVar> rightVar) : CVar(loc, scope, "", op.isMutable), op(op), isFirstAssignment(isFirstAssignment), leftVar(leftVar), rightVar(rightVar) { }
+    CAssignVar(CLoc loc, shared_ptr<CScope> scope, AssignOp op, bool isFirstAssignment, shared_ptr<CStoreVar> leftVar, shared_ptr<CVar> rightVar) : CVar(loc, scope, "INVALID", "INVALID", op.isMutable), op(op), isFirstAssignment(isFirstAssignment), leftVar(leftVar), rightVar(rightVar) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);

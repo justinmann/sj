@@ -67,12 +67,6 @@ struct td_sjs_object {
     int _refCount;
 };
 
-int32_t a;
-uint32_t b;
-uint64_t c;
-int64_t d;
-float e;
-double f;
 int32_t sjt_math1;
 float sjt_math10;
 double sjt_math11;
@@ -85,28 +79,34 @@ uint64_t sjt_math6;
 int64_t sjt_math7;
 int64_t sjt_math8;
 float sjt_math9;
+int32_t sjv_a;
+uint32_t sjv_b;
+uint64_t sjv_c;
+int64_t sjv_d;
+float sjv_e;
+double sjv_f;
 
-void main_destroy();
+void main_destroy(void);
 
 int main() {
     sjt_math1 = 4;
     sjt_math2 = 5;
-    a = sjt_math1 + sjt_math2;
+    sjv_a = sjt_math1 + sjt_math2;
     sjt_math3 = (uint32_t)4u;
     sjt_math4 = (uint32_t)5u;
-    b = sjt_math3 + sjt_math4;
+    sjv_b = sjt_math3 + sjt_math4;
     sjt_math5 = 4ull;
     sjt_math6 = 5ull;
-    c = sjt_math5 + sjt_math6;
+    sjv_c = sjt_math5 + sjt_math6;
     sjt_math7 = 4ll;
     sjt_math8 = 5ll;
-    d = sjt_math7 + sjt_math8;
+    sjv_d = sjt_math7 + sjt_math8;
     sjt_math9 = 4.0f;
     sjt_math10 = 5.0f;
-    e = sjt_math9 + sjt_math10;
+    sjv_e = sjt_math9 + sjt_math10;
     sjt_math11 = 4.0;
     sjt_math12 = 5.0;
-    f = sjt_math11 + sjt_math12;
+    sjv_f = sjt_math11 + sjt_math12;
     main_destroy();
     return 0;
 }

@@ -13,7 +13,7 @@
 
 class CEmptyVar : public CVar {
 public:
-    CEmptyVar(CLoc loc, shared_ptr<CType> type, shared_ptr<CScope> scope) : CVar(loc, scope, "", false), type(type) { }
+    CEmptyVar(CLoc loc, shared_ptr<CType> type, shared_ptr<CScope> scope) : CVar(loc, scope), type(type) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);

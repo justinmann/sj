@@ -71,7 +71,7 @@ int32_t sjt_forEnd1;
 int32_t sjt_forStart1;
 int32_t x;
 
-void main_destroy();
+void main_destroy(void);
 
 int main() {
     sjt_forStart1 = 1;

@@ -67,24 +67,24 @@ struct td_sjs_object {
     int _refCount;
 };
 
-int64_t a;
-int64_t b;
-int64_t c;
-int32_t d;
-int32_t e;
-uint32_t f;
-uint64_t g;
+int64_t sjv_a;
+int64_t sjv_b;
+int64_t sjv_c;
+int32_t sjv_d;
+int32_t sjv_e;
+uint32_t sjv_f;
+uint64_t sjv_g;
 
-void main_destroy();
+void main_destroy(void);
 
 int main() {
-    a = (-9223372036854775807ll - 1ll);
-    b = -9223372036854775807ll;
-    c = 9223372036854775807ll;
-    d = -2147483648;
-    e = 2147483647;
-    f = (uint32_t)4294967295u;
-    g = 18446744073709551615ull;
+    sjv_a = (-9223372036854775807ll - 1ll);
+    sjv_b = -9223372036854775807ll;
+    sjv_c = 9223372036854775807ll;
+    sjv_d = -2147483648;
+    sjv_e = 2147483647;
+    sjv_f = (uint32_t)4294967295u;
+    sjv_g = 18446744073709551615ull;
     main_destroy();
     return 0;
 }

@@ -9,10 +9,10 @@ element #element (
 
 	setRect(rect_ : 'rect) {
 		console.write("setRect - 2")
-		rect = rect_
+		rect = copy rect_
 		for i (0 to children.size) {
 			child : children[i]
-			child.setRect(rect)
+			child.setRect(rect : rect)
 		}		
 	}
 

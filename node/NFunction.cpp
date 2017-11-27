@@ -2,7 +2,7 @@
 
 class CFunctionParameterVar : public CVar {
 public:
-    CFunctionParameterVar(CLoc loc, shared_ptr<CScope> scope, string name, bool isMutable, shared_ptr<CType> type) : CVar(loc, scope, name, isMutable), type(type) { }
+    CFunctionParameterVar(CLoc loc, shared_ptr<CScope> scope, string name, bool isMutable, shared_ptr<CType> type) : CVar(loc, scope, name, name, isMutable), type(type) { }
 
     bool getReturnThis() { 
         return false; 
@@ -494,6 +494,11 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
     
     auto returnType = getReturnType(compiler, returnMode);
     if (!returnType) {
+        return;
+    }
+    
+    if (storeValue->type != returnType) {
+        compiler->addError(loc, CErrorCode::TypeMismatch, "function '%s' cannot store return type '%s' in type '%s'", name.c_str(),  returnType->valueName.c_str(), storeValue->type->valueName.c_str());
         return;
     }
     

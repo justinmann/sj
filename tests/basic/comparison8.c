@@ -69,14 +69,14 @@ struct td_sjs_object {
 
 int32_t sjt_compare1;
 int32_t sjt_compare2;
-bool x;
+bool sjv_x;
 
-void main_destroy();
+void main_destroy(void);
 
 int main() {
     sjt_compare1 = 4;
     sjt_compare2 = 4;
-    x = sjt_compare1 >= sjt_compare2;
+    sjv_x = sjt_compare1 >= sjt_compare2;
     main_destroy();
     return 0;
 }

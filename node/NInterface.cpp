@@ -52,7 +52,7 @@ shared_ptr<NInterface> NInterface::shared_from_this() {
     return static_pointer_cast<NInterface>(NBase::shared_from_this());
 }
 
-CInterfaceVar::CInterfaceVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CInterface> interface) : CVar(loc, scope, "", false) {
+CInterfaceVar::CInterfaceVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CInterface> interface) : CVar(loc, scope) {
 //    parent = interface;
 }
 

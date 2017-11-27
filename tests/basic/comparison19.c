@@ -69,14 +69,14 @@ struct td_sjs_object {
 
 bool result1;
 bool sjt_not1;
-bool x;
+bool sjv_x;
 
-void main_destroy();
+void main_destroy(void);
 
 int main() {
     sjt_not1 = true;
     result1 = !sjt_not1;
-    x = result1;
+    sjv_x = result1;
     main_destroy();
     return 0;
 }

@@ -70,7 +70,7 @@ struct td_sjs_object {
 double sjt_math1;
 double sjt_math2;
 
-void main_destroy();
+void main_destroy(void);
 
 int main() {
     sjt_math1 = 4.0;

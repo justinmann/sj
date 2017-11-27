@@ -13,7 +13,7 @@ class NThis;
 
 class CThisVar : public CVar {
 public:
-    CThisVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CTypes> types, CTypeMode typeMode) : CVar(loc, scope, "", false), types(types), typeMode(typeMode) { }
+    CThisVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CTypes> types, CTypeMode typeMode) : CVar(loc, scope), types(types), typeMode(typeMode) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);

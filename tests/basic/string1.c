@@ -152,21 +152,6 @@ struct td_sjs_string_heap {
     sjs_array_char data;
 };
 
-sjs_string a;
-sjs_string b;
-char c;
-sjs_anon1 console;
-sjs_anon4 convert;
-char d;
-char e;
-sjs_string f;
-char h;
-bool i;
-bool j;
-bool k;
-bool l;
-sjs_anon2 parse;
-sjs_anon3 random;
 char sjt_compare1;
 char sjt_compare2;
 sjs_string* sjt_compare3;
@@ -177,6 +162,21 @@ sjs_string* sjt_dot6;
 int32_t sjt_functionParam2;
 sjs_string* sjt_functionParam4;
 sjs_string* sjt_functionParam6;
+sjs_string sjv_a;
+sjs_string sjv_b;
+char sjv_c;
+sjs_anon1 sjv_console;
+sjs_anon4 sjv_convert;
+char sjv_d;
+char sjv_e;
+sjs_string sjv_f;
+char sjv_h;
+bool sjv_i;
+bool sjv_j;
+bool sjv_k;
+bool sjv_l;
+sjs_anon2 sjv_parse;
+sjs_anon3 sjv_random;
 
 void sjf_anon1(sjs_anon1* _this);
 void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* to);
@@ -208,7 +208,7 @@ void sjf_string_getAt(sjs_string* _parent, int32_t index, char* _return);
 void sjf_string_heap(sjs_string_heap* _this);
 void sjf_string_isEqual(sjs_string* _parent, sjs_string* test, bool* _return);
 void sjf_string_isLessOrEqual(sjs_string* _parent, sjs_string* test, bool* _return);
-void main_destroy();
+void main_destroy(void);
 
 void sjf_anon1(sjs_anon1* _this) {
 }
@@ -406,57 +406,57 @@ void sjf_string_isLessOrEqual(sjs_string* _parent, sjs_string* test, bool* _retu
 }
 
 int main() {
-    sjf_anon4(&convert);
-    sjf_anon3(&random);
-    sjf_anon2(&parse);
-    sjf_anon1(&console);
-    a.count = 7;
-    a.data.size = 8;
-    a.data.data = (uintptr_t)sjg_string1;
-    a.data._isGlobal = false;
-    sjf_array_char(&a.data);
-    sjf_string(&a);
-    b.count = 7;
-    b.data.size = 8;
-    b.data.data = (uintptr_t)sjg_string2;
-    b.data._isGlobal = false;
-    sjf_array_char(&b.data);
-    sjf_string(&b);
-    c = 'a';
-    d = '\'';
-    e = '\n';
-    f.count = 5;
-    f.data.size = 6;
-    f.data.data = (uintptr_t)sjg_string3;
-    f.data._isGlobal = false;
-    sjf_array_char(&f.data);
-    sjf_string(&f);
-    sjt_dot1 = &a;
+    sjf_anon4(&sjv_convert);
+    sjf_anon3(&sjv_random);
+    sjf_anon2(&sjv_parse);
+    sjf_anon1(&sjv_console);
+    sjv_a.count = 7;
+    sjv_a.data.size = 8;
+    sjv_a.data.data = (uintptr_t)sjg_string1;
+    sjv_a.data._isGlobal = false;
+    sjf_array_char(&sjv_a.data);
+    sjf_string(&sjv_a);
+    sjv_b.count = 7;
+    sjv_b.data.size = 8;
+    sjv_b.data.data = (uintptr_t)sjg_string2;
+    sjv_b.data._isGlobal = false;
+    sjf_array_char(&sjv_b.data);
+    sjf_string(&sjv_b);
+    sjv_c = 'a';
+    sjv_d = '\'';
+    sjv_e = '\n';
+    sjv_f.count = 5;
+    sjv_f.data.size = 6;
+    sjv_f.data.data = (uintptr_t)sjg_string3;
+    sjv_f.data._isGlobal = false;
+    sjf_array_char(&sjv_f.data);
+    sjf_string(&sjv_f);
+    sjt_dot1 = &sjv_a;
     sjt_functionParam2 = 0;
-    sjf_string_getAt(sjt_dot1, sjt_functionParam2, &h);
-    sjt_compare1 = h;
+    sjf_string_getAt(sjt_dot1, sjt_functionParam2, &sjv_h);
+    sjt_compare1 = sjv_h;
     sjt_compare2 = 'h';
-    i = sjt_compare1 == sjt_compare2;
-    sjt_dot3 = &f;
-    sjt_functionParam4 = &a;
-    sjf_string_isEqual(sjt_dot3, sjt_functionParam4, &j);
-    sjt_dot6 = &f;
-    sjt_functionParam6 = &a;
-    sjf_string_isLessOrEqual(sjt_dot6, sjt_functionParam6, &k);
-    sjt_compare3 = &f;
-    sjt_compare4 = &a;
-    l = sjt_compare3 == sjt_compare4;
+    sjv_i = sjt_compare1 == sjt_compare2;
+    sjt_dot3 = &sjv_f;
+    sjt_functionParam4 = &sjv_a;
+    sjf_string_isEqual(sjt_dot3, sjt_functionParam4, &sjv_j);
+    sjt_dot6 = &sjv_f;
+    sjt_functionParam6 = &sjv_a;
+    sjf_string_isLessOrEqual(sjt_dot6, sjt_functionParam6, &sjv_k);
+    sjt_compare3 = &sjv_f;
+    sjt_compare4 = &sjv_a;
+    sjv_l = sjt_compare3 == sjt_compare4;
     main_destroy();
     return 0;
 }
 
 void main_destroy() {
 
-    sjf_string_destroy(&a);
-    sjf_string_destroy(&b);
-    sjf_anon1_destroy(&console);
-    sjf_anon4_destroy(&convert);
-    sjf_string_destroy(&f);
-    sjf_anon2_destroy(&parse);
-    sjf_anon3_destroy(&random);
+    sjf_string_destroy(&sjv_a);
+    sjf_string_destroy(&sjv_b);
+    sjf_anon1_destroy(&sjv_console);
+    sjf_anon4_destroy(&sjv_convert);
+    sjf_string_destroy(&sjv_f);
+    sjf_anon2_destroy(&sjv_parse);
+    sjf_anon3_destroy(&sjv_random);
 }

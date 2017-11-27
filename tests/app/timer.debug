@@ -1,0 +1,170 @@
+anon1()'stack anon1 {
+  this
+}
+
+anon2()'stack anon2 {
+  this
+}
+
+anon3()'stack anon3 {
+  this
+}
+
+anon4()'stack anon4 {
+  this
+}
+
+anon5()'stack anon5 {
+  this
+}
+
+element #element (children'stack array_heap_element:, rect'stack rect=)'heap element {
+  this
+}
+
+htmlCanvas2d #surface (ctxVarName'stack string:)'heap htmlCanvas2d {
+  this
+}
+
+runLoop()'void {
+  c{
+
+##ifdef EMSCRIPTEN
+	emscripten_set_main_loop_arg((em_arg_callback_func)sjf_mainLoop, &global, 0, 0);
+	exit(0);
+##else
+    while (true) {
+        sjf_mainLoop();
+    }
+##endif	
+	
+}c
+}
+
+global()'void {
+  style'stack anon5 : anon5(this = anon5())
+  convert'stack anon4 : anon4(this = anon4())
+  random'stack anon3 : anon3(this = anon3())
+  parse'stack anon2 : anon2(this = anon2())
+  console'stack anon1 : anon1(this = anon1())
+  root'heap #element? = empty'heap #element?
+  rootCanvas'heap #surface : htmlCanvas2d(this = htmlCanvas2d(
+    ctxVarName'stack string : this.ctxVarName
+  )) as heap #surface
+  cdefine{
+
+	#include(<emscripten.h>, EMSCRIPTEN)
+	#include(<emscripten/html5.h>, EMSCRIPTEN)
+	#include(<SDL.h>, EMSCRIPTEN)
+	#include(<SDL_ttf.h>, EMSCRIPTEN)
+	#include(<SDL.h>, __MSVC__)
+	#include(<SDL_ttf.h>, __MSVC__)
+	#include(<SDL2/SDL.h>, __APPLE__)
+	#include(<SDL2_ttf/SDL_ttf.h>, __APPLE__)
+
+##ifdef EMSCRIPTEN
+	EM_BOOL em_onClick(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData);
+##endif	
+	SDL_Texture* renderText(const char* message, const char* fontFile, SDL_Color color, int fontSize, SDL_Renderer *renderer);
+
+}cdefine
+  cfunction{
+
+##ifdef EMSCRIPTEN
+	EM_BOOL em_onClick(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData) {
+		#functionStack(onClick)(&global, mouseEvent->timestamp, mouseEvent->targetX, mouseEvent->targetY);
+		return true;
+	}
+##endif	
+
+SDL_Texture* renderText(const char* message, const char* fontFile, SDL_Color color, int fontSize, SDL_Renderer *renderer) {
+    //Open the font
+    TTF_Font *font = TTF_OpenFont(fontFile, fontSize);
+    if (font == 0) {
+        printf("TTF_OpenFont Error: %s\n", SDL_GetError());
+        return 0;
+    }
+    //We need to first render to a surface as that's what TTF_RenderText returns, then
+    //load that surface into a texture
+    SDL_Surface *surf = TTF_RenderText_Blended(font, message, color);
+    if (surf == 0) {
+        TTF_CloseFont(font);
+        printf("TTF_RenderText Error: %s\n", SDL_GetError());
+        return 0;
+    }
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surf);
+    if (texture == 0) {
+        printf("CreateTexture Error: %s\n", SDL_GetError());
+    }
+    //Clean up the surface and font
+    SDL_FreeSurface(surf);
+    TTF_CloseFont(font);
+    return texture;
+}
+
+
+}cfunction
+  c{
+
+	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        printf("SDL_Init Error: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    if (TTF_Init() != 0) {
+        printf("TTF_Init Error: %s\n", SDL_GetError());
+        SDL_Quit();
+        return 1;
+    }
+
+    SDL_Window* win = SDL_CreateWindow("Hello World!", 100, 100, 640, 480, SDL_WINDOW_SHOWN);
+    if (win == 0) {
+        printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
+        SDL_Quit();
+        return 1;
+    }
+
+    SDL_Renderer* ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (ren == 0) {
+        SDL_DestroyWindow(win);
+        printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
+        SDL_Quit();
+        return 1;
+    }
+
+    SDL_Surface* bmp = SDL_LoadBMP("assets/hello2.bmp");
+    if (bmp == 0) {
+        SDL_DestroyRenderer(ren);
+        SDL_DestroyWindow(win);
+        printf("SDL_LoadBMP Error: %s\n", SDL_GetError());
+        SDL_Quit();
+        return 1;
+    }
+
+    SDL_Texture* tex = SDL_CreateTextureFromSurface(ren, bmp);
+    SDL_FreeSurface(bmp);
+    if (tex == 0) {
+        SDL_DestroyRenderer(ren);
+        SDL_DestroyWindow(win);
+        printf("SDL_CreateTextureFromSurface Error: %s\n", SDL_GetError());
+        SDL_Quit();
+        return 1;
+    }
+
+    SDL_Color color = { 255, 255, 255, 255 };
+    SDL_Texture* image = renderText("Mallory & Madison is awesome!", "assets/sample.ttf", color, 32, ren);
+    if (image == 0) {
+        TTF_Quit();
+        SDL_Quit();
+        return 1;
+    }
+
+}c
+  root'heap #element? = value(element(this = element(
+    children'stack array_heap_element : this.children,
+    rect'stack rect = this.rect
+  )) as heap #element)
+  runLoop()
+  void
+}
+

@@ -11,7 +11,7 @@
 
 class COrVar : public CVar {
 public:
-    COrVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> leftVar, shared_ptr<CVar> rightVar) : CVar(loc, scope, "", false), leftVar(leftVar), rightVar(rightVar) { }
+    COrVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> leftVar, shared_ptr<CVar> rightVar) : CVar(loc, scope), leftVar(leftVar), rightVar(rightVar) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);

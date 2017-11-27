@@ -90,7 +90,7 @@ void sjf_class_destroy(sjs_class* _this);
 void sjf_class_heap(sjs_class_heap* _this);
 void sjf_func(sjs_class* _return);
 void sjf_func_heap(sjs_class_heap** _return);
-void main_destroy();
+void main_destroy(void);
 
 void sjf_class(sjs_class* _this) {
 }

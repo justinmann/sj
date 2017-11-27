@@ -71,7 +71,7 @@ int32_t void1;
 
 void sjf_bar(int32_t* _return);
 void sjf_func(int32_t* _return);
-void main_destroy();
+void main_destroy(void);
 
 void sjf_bar(int32_t* _return) {
     (*_return) = 9;

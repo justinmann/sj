@@ -20,14 +20,14 @@ convert: ^(
 				i--;
 				val /= base;
 			} while (val && i);
-			count = 30 - i;
+			sjv_count = 30 - i;
 
-			if (count < minLength) {				
+			if (sjv_count < minLength) {				
 			}
 
-			data = (uintptr_t)malloc(sizeof(char) * (count + 1));
-			memcpy((void*)data, &buf[i+1], count + 1);
-			printf("%s\n", (char*)data);
+			sjv_data = (uintptr_t)malloc(sizeof(char) * (sjv_count + 1));
+			memcpy((void*)sjv_data, &buf[i+1], sjv_count + 1);
+			printf("%s\n", (char*)sjv_data);
 		}c
 		string(count = count, data = array!char(size = count + 1, data = data))
 	}

@@ -135,14 +135,14 @@ struct td_sjs_anon2_class_heap {
     int _refCount;
 };
 
-sji_anon1_foo* a;
-sji_anon2_foo* b;
-sjs_anon1 namespace1;
-sjs_anon2 namespace2;
 sjs_anon1_class_heap* sjt_cast1;
 sjs_anon2_class_heap* sjt_cast2;
 sjs_anon1* sjt_dot1;
 sjs_anon2* sjt_dot2;
+sji_anon1_foo* sjv_a;
+sji_anon2_foo* sjv_b;
+sjs_anon1 sjv_namespace1;
+sjs_anon2 sjv_namespace2;
 
 void sjf_anon1(sjs_anon1* _this);
 void sjf_anon1_class(sjs_anon1_class* _this, sjs_anon1* _parent);
@@ -172,7 +172,7 @@ void sjf_anon2_destroy(sjs_anon2* _this);
 void sjf_anon2_heap(sjs_anon2_heap* _this);
 void sji_anon1_foo_destroy(sji_anon1_foo* _this);
 void sji_anon2_foo_destroy(sji_anon2_foo* _this);
-void main_destroy();
+void main_destroy(void);
 
 void sjf_anon1(sjs_anon1* _this) {
 }
@@ -339,32 +339,24 @@ void sji_anon2_foo_destroy(sji_anon2_foo* _this) {
 }
 
 int main() {
-    sjf_anon1(&namespace1);
-    sjf_anon2(&namespace2);
-    sjt_dot1 = &namespace1;
+    sjf_anon1(&sjv_namespace1);
+    sjf_anon2(&sjv_namespace2);
+    sjt_dot1 = &sjv_namespace1;
     sjt_cast1 = (sjs_anon1_class_heap*)malloc(sizeof(sjs_anon1_class_heap));
     sjt_cast1->_refCount = 1;
     sjf_anon1_class_heap(sjt_cast1, sjt_dot1);
-    a = (sji_anon1_foo*)sjf_anon1_class_heap_as_sji_anon1_foo(sjt_cast1);
-    sjt_dot2 = &namespace2;
+    sjv_a = (sji_anon1_foo*)sjf_anon1_class_heap_as_sji_anon1_foo(sjt_cast1);
+    sjt_dot2 = &sjv_namespace2;
     sjt_cast2 = (sjs_anon2_class_heap*)malloc(sizeof(sjs_anon2_class_heap));
     sjt_cast2->_refCount = 1;
     sjf_anon2_class_heap(sjt_cast2, sjt_dot2);
-    b = (sji_anon2_foo*)sjf_anon2_class_heap_as_sji_anon2_foo(sjt_cast2);
+    sjv_b = (sji_anon2_foo*)sjf_anon2_class_heap_as_sji_anon2_foo(sjt_cast2);
     main_destroy();
     return 0;
 }
 
 void main_destroy() {
 
-    a->_refCount--;
-    if (a->_refCount <= 0) {
-        sji_anon1_foo_destroy(a);
-    }
-    b->_refCount--;
-    if (b->_refCount <= 0) {
-        sji_anon2_foo_destroy(b);
-    }
     sjt_cast1->_refCount--;
     if (sjt_cast1->_refCount <= 0) {
         sjf_anon1_class_destroy((sjs_anon1_class*)(((char*)sjt_cast1) + sizeof(int)));
@@ -373,6 +365,14 @@ void main_destroy() {
     if (sjt_cast2->_refCount <= 0) {
         sjf_anon2_class_destroy((sjs_anon2_class*)(((char*)sjt_cast2) + sizeof(int)));
     }
-    sjf_anon1_destroy(&namespace1);
-    sjf_anon2_destroy(&namespace2);
+    sjv_a->_refCount--;
+    if (sjv_a->_refCount <= 0) {
+        sji_anon1_foo_destroy(sjv_a);
+    }
+    sjv_b->_refCount--;
+    if (sjv_b->_refCount <= 0) {
+        sji_anon2_foo_destroy(sjv_b);
+    }
+    sjf_anon1_destroy(&sjv_namespace1);
+    sjf_anon2_destroy(&sjv_namespace2);
 }
