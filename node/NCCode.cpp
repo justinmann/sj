@@ -1,7 +1,7 @@
 #include "Node.h"
 #include <boost/algorithm/string.hpp>
 
-string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOutput* trOutput, string macro, shared_ptr<TrStoreValue> returnValue, vector<shared_ptr<CFunction>>& functions, vector<string>& includes) {
+string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOutput* trOutput, string macro, shared_ptr<TrStoreValue> returnValue, vector<shared_ptr<CFunction>>& functions, map<string, string>& includes) {
     auto paramStart = macro.find('(');
     auto functionName = macro.substr(0, paramStart);
     auto t = macro.substr(paramStart + 1, macro.size() - paramStart - 2);
@@ -12,12 +12,12 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
     }
 
     if (functionName.compare("include") == 0) {
-        if (params.size() != 1) {
-            compiler->addError(loc, CErrorCode::InvalidMacro, "include requires 1 parameter");
+        if (params.size() != 1 && params.size() != 2) {
+            compiler->addError(loc, CErrorCode::InvalidMacro, "include requires 1 or 2 parameters");
             return "";
         }
 
-        includes.push_back(params[0]);
+        includes[params[0]] = (params.size() == 2) ? params[1] : "";
     }
     else if (functionName.compare("type") == 0) {
         if (params.size() != 1) {
@@ -201,7 +201,7 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
     return "";
 }
 
-string expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOutput* trOutput, string& code, shared_ptr<TrStoreValue> returnValue, vector<shared_ptr<CFunction>>& functions, vector<string>& includes) {
+string expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOutput* trOutput, string& code, shared_ptr<TrStoreValue> returnValue, vector<shared_ptr<CFunction>>& functions, map<string, string>& includes) {
     stringstream finalCode;
     stringstream macro;
     bool isInMacro = false;
@@ -250,7 +250,7 @@ shared_ptr<CType> CCCodeVar::getType(Compiler* compiler) {
 
 void CCCodeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     vector<shared_ptr<CFunction>> functions;
-    vector<string> includes;
+    map<string, string> includes;
     string finalCode = expandMacros(compiler, loc, scope.lock(), trOutput, code, storeValue, functions, includes);
 
     for (auto cfunction : functions) {
@@ -270,7 +270,7 @@ void CCCodeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
     }
 
     for (auto include : includes) {
-        trOutput->includes[include] = true;
+        trOutput->includes[include.first][include.second] = true;
     }
 }
 
@@ -302,7 +302,7 @@ void CCCodeVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr
 
 shared_ptr<CVar> NCCode::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
     vector<shared_ptr<CFunction>> functions;
-    vector<string> includes;
+    map<string, string> includes;
     string finalCode = expandMacros(compiler, loc, scope, nullptr, code, nullptr, functions, includes);
 
     return make_shared<CCCodeVar>(loc, scope, codeType, code);

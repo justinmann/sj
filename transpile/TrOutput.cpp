@@ -1,22 +1,26 @@
 #include "../compiler/Compiler.h"
 
 TrOutput::TrOutput() {
-    includes["<stdbool.h>"] = true;
-    includes["<stdint.h>"] = true;
-    includes["<stdlib.h>"] = true;
-    includes["<stdio.h>"] = true;
+    includes["<stdbool.h>"][""] = true;
+    includes["<stdint.h>"][""] = true;
+    includes["<stdlib.h>"][""] = true;
+    includes["<stdio.h>"][""] = true;
 #ifdef DEBUG_ALLOC
-    includes["<assert.h>"] = true;
+    includes["<assert.h>"][""] = true;
 #endif
 }
 
 void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
-    if (hasMainLoop) {
-        includes["<emscripten.h>"] = true;
-    }
-
     for (auto include : includes) {
-        stream << "#include " << include.first << "\n";
+        for (auto ifdef : include.second) {
+            if (ifdef.first.size() > 0) {
+                stream << "#ifdef " << ifdef.first << "\n";
+            }
+            stream << "#include " << include.first << "\n";
+            if (ifdef.first.size() > 0) {
+                stream << "#endif\n";
+            }
+        }
     }
     stream << "\n";
     
@@ -130,7 +134,7 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
 		}
 	}
         
-    stream << "void main_destroy();\n";
+    stream << "void main_destroy(void);\n";
     stream << "\n";
 
     for (auto ccodeFunction : ccodeFunctions) {
@@ -149,12 +153,7 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
 
     stream << "int main() {\n";
     mainFunction->writeBodyToStream(stream, 1);
-    if (!hasMainLoop) {
-        stream << "    main_destroy();\n";
-    }
-    else {
-        stream << "    emscripten_set_main_loop_arg((em_arg_callback_func)sjf_mainLoop, &global, 0, 0);\n";
-    }
+    stream << "    main_destroy();\n";
     stream << "    return 0;\n";
     stream << "}\n";
     stream << "\n";

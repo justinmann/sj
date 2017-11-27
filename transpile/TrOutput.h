@@ -8,7 +8,7 @@ public:
 	map<string, vector<string>> structs;
     vector<string> structOrder;
     map<string, string> strings;
-    map<string, bool> includes;
+    map<string, map<string, bool>> includes;
     vector<string> ccodeDefines;
     vector<string> ccodeFunctions;
 	TrBlock mainFunction;
