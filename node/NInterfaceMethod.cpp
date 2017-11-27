@@ -94,12 +94,14 @@ shared_ptr<CInterfaceMethod> CInterfaceMethod::init(Compiler* compiler, shared_p
             return nullptr;
         }
 
-        auto argVar = make_shared<CInterfaceMethodArgVar>(loc, shared_from_this(), argType);
+        auto argVar = make_shared<CInterfaceMethodArgVar>(loc, shared_from_this(), argType, it->name);
         argVars.push_back(argVar);
         FunctionDefaultValue defaultValue;
         defaultValue.op = it->op;
         defaultValue.value = it->rightSide;
         argDefaultValues.push_back(defaultValue);
+        
+        argIndex[it->name] = (int)argDefaultValues.size() - 1;
     }
     
     return shared_from_this();
@@ -115,7 +117,9 @@ shared_ptr<CTypes> CInterfaceMethod::getThisTypes(Compiler* compiler) {
 }
 
 int CInterfaceMethod::getArgIndex(const string& name, CTypeMode returnMode) {
-    assert(false);
+    if (argIndex.find(name) != argIndex.end()) {
+        return argIndex[name];
+    }
     return -1;
 }
 
@@ -158,7 +162,7 @@ string CInterfaceMethod::getCTypeName(Compiler* compiler, bool includeNames) {
         if (includeNames) {
             ss << " ";
         }
-        ss << argVar->getType(compiler)->cname;
+        ss << argVar->getType(compiler)->getLocalType()->cname;
         if (includeNames) {
             ss << " " << argVar->name;
         }
@@ -212,7 +216,7 @@ string CInterfaceMethod::getCDestroyFunctionName() {
 void CInterfaceMethod::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 }
 
-void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode /*returnMode*/) {
+void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode /*returnMode*/) {
     assert(compiler->state == CompilerState::Compile);
     assert(parentValue != nullptr);
 
@@ -221,31 +225,6 @@ void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> scope, T
         return;
     }
 
-    auto thisTypes = getThisTypes(compiler);
-    auto calleeVar = make_shared<CThisVar>(loc, nullptr, thisTypes, CTM_Heap);
-    vector<ArgData> argValues;
-    auto argIndex = 0;
-    // Fill in "this" with normal arguments
-    for (auto defaultAssignment : argDefaultValues) {
-        auto argVar = argVars[argIndex];
-        auto argType = argVar->getType(compiler);
-        auto argStoreValue = trBlock->createTempStoreVariable(loc, scope, argType, "interfaceParam");
-
-        stringstream argStream;
-        auto paramVar = (*parameters)[argIndex].var;
-        paramVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, argStoreValue);
-
-        if (!argStoreValue->hasSetValue) {
-            compiler->addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' has no value", argVar->name.c_str());
-            return;
-        }
-
-        argValues.push_back(ArgData(argVar, argStoreValue));
-        argIndex++;
-    }
-    
-    
-
     // Call function
     stringstream line;
     line << parentValue->name << "->" << name;
@@ -253,15 +232,36 @@ void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> scope, T
         line << "_heap";
     }
     line << "(";
-    line << parentValue->name << "->_parent";
-    for (auto argValue : argValues) {
+    line << "(void*)(((char*)" << parentValue->name << "->_parent) + sizeof(int))";
+
+    // Fill in "this" with normal arguments
+    auto argIndex = 0;
+    for (auto defaultAssignment : argDefaultValues) {
+        auto argVar = argVars[argIndex];
+        auto argType = argVar->getType(compiler);
+        auto isDefaultAssignment = (*parameters)[argIndex].isDefaultValue;
+        
+        stringstream argStream;
+        auto parameterVar = (*parameters)[argIndex].var;
+        if (!parameterVar) {
+            assert(compiler->errors.size() > 0);
+            return;
+        }
+        auto argStoreValue = trBlock->createTempStoreVariable(loc, callerScope, argType->typeMode == CTM_Heap ? argType : argType->getLocalValueType(), "interfaceParam");
+        parameterVar->transpile(compiler, trOutput, trBlock, nullptr, isDefaultAssignment ? nullptr : thisValue, argStoreValue);
+        
+        if (!argStoreValue->hasSetValue) {
+            compiler->addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' has no value", argVar->name.c_str());
+            return;
+        }
+        
         line << ", ";
-        line << argValue.value->getName(trBlock);
+        line << argStoreValue->getName(trBlock);
+        argIndex++;
     }
+    
     if (returnType != compiler->typeVoid) {
-        
         TrValue(storeValue->scope, storeValue->type, storeValue->getName(trBlock), storeValue->isReturnValue).addInitToStatements(trBlock);
-        
         line << ", ";
         line << "&" << storeValue->getName(trBlock);
     }
