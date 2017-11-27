@@ -103,7 +103,7 @@ shared_ptr<CVar> NFunction::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
 }
 
 CFunction::CFunction(weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) :
-CBaseFunction(CFT_Function, definition.lock()->name, parent, definition, !parent.expired() && name != "global" && parent.lock()->name != "global"),
+CBaseFunction(CFT_Function, definition.lock()->name, parent, definition, false),
 loc(CLoc::undefined),
 type(type),
 templateTypes(templateTypes),
@@ -119,14 +119,15 @@ _isReturnThis(false)
 CTypeMode functionReturnModes[] = { CTM_Stack, CTM_Heap };
 
 bool CFunction::init(Compiler* compiler, shared_ptr<NFunction> node) {
-    if (hasParent) {
-        parent.lock()->setHasThis();
-    }
-
     for (auto it : templateTypes) {
         name = name + "_" + it->safeName;
     }
-
+    
+    hasParent = !parent.expired() && name != "global" && parent.lock()->name != "global";
+    if (hasParent) {
+        parent.lock()->setHasThis();
+    }
+    
     if (node) {
         loc = node->loc;
         _functions = node->functions;
@@ -1077,15 +1078,13 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, const string& name, VarS
             shared_ptr<CVar> cvar;
             while (cvar == nullptr && parentCheck != nullptr) {
                 cvar = parentCheck->getCVar(compiler, name, VSM_FromChild, CTM_Undefined);
-
+                break;
                 // TODO: allow vars in parent of parent, etc.
                 // This is not currently supported because I have no safe way to maintain the _parent pointer, if it is stored in the struct then it can point nowhere if a class is created then re-assigned somewhere and the original parent is gc'ed
-                break;
-
-                if (cvar == nullptr) {
-                    parents.push_back(parentCheck);
-                    parentCheck = dynamic_pointer_cast<CFunction>(parentCheck->parent.lock());
-                }
+//                if (cvar == nullptr) {
+//                    parents.push_back(parentCheck);
+//                    parentCheck = dynamic_pointer_cast<CFunction>(parentCheck->parent.lock());
+//                }
             }
 
             if (cvar) {
