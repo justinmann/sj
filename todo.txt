@@ -2,21 +2,23 @@
 
 * fix string add
 * make string immutable
-* string not depend on array
 * stringBuilder.append
 * stringBuilder.toString
 * buttonElement
 * textElement
 * two buttons for +/-
-
--- features --
 * use #line pragma directive
 * de-dup global strings
 * stack optional
 * second assignment to return var does not free
 * improve debug out for interfaces
 * override interfaces : a as type   -> a.asType()'t
+
+-- features --
+* map
+* callback
 * lambda
+* weak pointer
 
 -- lambda --
 array!item(
