@@ -71,7 +71,7 @@ bool sjv_x;
 
 void main_destroy(void);
 
-int main() {
+int main(int argc, char** argv) {
     sjv_x = true;
     main_destroy();
     return 0;

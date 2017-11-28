@@ -73,7 +73,7 @@ bool sjv_x;
 
 void main_destroy(void);
 
-int main() {
+int main(int argc, char** argv) {
     sjt_not1 = true;
     result1 = !sjt_not1;
     sjv_x = result1;

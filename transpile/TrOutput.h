@@ -11,7 +11,6 @@ public:
     map<string, map<string, bool>> includes;
     vector<string> ccodeDefines;
     vector<string> ccodeFunctions;
-	TrBlock mainFunction;
 
     TrOutput();
 	void writeToStream(ostream& stream, bool hasMainLoop);

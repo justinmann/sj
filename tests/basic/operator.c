@@ -374,7 +374,7 @@ void sjf_fancyMath_subtract_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs
     sjf_fancyMath_heap((*_return));
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjv_a.x = 1;
     sjf_fancyMath(&sjv_a);
     sjv_b.x = 2;

@@ -88,7 +88,7 @@ void sjf_class_i32(int32_t* _return) {
     (*_return) = 1;
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjf_class_i32(&sjv_a);
     sjf_class_f32(&sjv_b);
     sjf_class_bool(&sjv_c);

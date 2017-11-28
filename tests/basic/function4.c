@@ -77,7 +77,7 @@ void sjf_func(double* _return) {
     (*_return) = -3.0;
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjf_func(&sjt_compare1);
     sjt_compare2 = 4.0;
     main_destroy();

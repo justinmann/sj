@@ -141,7 +141,7 @@ void sjf_class_get(sjs_class* _parent, sjs_class_anon1** _return) {
 void sjf_class_heap(sjs_class_heap* _this) {
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjv_c.data.x = 0;
     sjf_class_anon1(&sjv_c.data, &sjv_c);
     sjf_class(&sjv_c);

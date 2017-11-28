@@ -106,7 +106,7 @@ void sjf_class_func(sjs_class* _parent, int32_t* _return) {
 void sjf_class_heap(sjs_class_heap* _this) {
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjf_class(&sjv_c);
     sjt_dot1 = &sjv_c;
     sjf_class_func(sjt_dot1, &void1);

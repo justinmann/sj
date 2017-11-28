@@ -100,7 +100,7 @@ void sjf_class_inner(sjs_class* _parent, int32_t* _return) {
     (*_return) = dotTemp1;
 }
 
-int main() {
+int main(int argc, char** argv) {
     object1.m = 1;
     sjf_class(&object1, &void1);
     main_destroy();

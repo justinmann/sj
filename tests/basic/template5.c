@@ -82,7 +82,7 @@ void sjf_class_func_i32(int32_t* _return) {
     (*_return) = 1;
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjf_class_f32_func(&sjv_b);
     sjf_class_func_i32(&sjv_d);
     main_destroy();

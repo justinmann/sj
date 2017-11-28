@@ -338,7 +338,7 @@ void sji_anon2_foo_destroy(sji_anon2_foo* _this) {
     }
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjf_anon1(&sjv_namespace1);
     sjf_anon2(&sjv_namespace2);
     sjt_dot1 = &sjv_namespace1;

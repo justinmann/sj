@@ -144,7 +144,7 @@ void sjf_func(sjs_bar* b, sjs_foo** _return) {
     (*_return) = &sjt_dot2->f;
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjv_b.f.x = 1;
     sjf_foo(&sjv_b.f);
     sjf_bar(&sjv_b);

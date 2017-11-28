@@ -74,7 +74,7 @@ int32_t sjv_x;
 
 void main_destroy(void);
 
-int main() {
+int main(int argc, char** argv) {
     sjv_x = 10;
     sjt_compare1 = sjv_x;
     sjt_compare2 = 0;

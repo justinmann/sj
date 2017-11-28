@@ -71,7 +71,7 @@ int32_t sjv_x;
 
 void main_destroy(void);
 
-int main() {
+int main(int argc, char** argv) {
     sjv_x = 1;
     main_destroy();
     return 0;

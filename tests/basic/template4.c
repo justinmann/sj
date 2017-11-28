@@ -76,7 +76,7 @@ void sjf_class_func(int32_t* _return) {
     (*_return) = 1;
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjf_class_func(&sjv_d);
     main_destroy();
     return 0;

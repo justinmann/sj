@@ -72,7 +72,7 @@ float sjv_x;
 
 void main_destroy(void);
 
-int main() {
+int main(int argc, char** argv) {
     sjt_cast1 = 5;
     sjv_x = (float)sjt_cast1;
     main_destroy();

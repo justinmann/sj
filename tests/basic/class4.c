@@ -102,7 +102,7 @@ void sjf_class_destroy(sjs_class* _this) {
 void sjf_class_heap(sjs_class_heap* _this) {
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjv_a.b = 0;
     sjf_class(&sjv_a);
     sjt_dot1 = &sjv_a;

@@ -110,7 +110,7 @@ void sjf_func(sjs_class** _return) {
     sjf_class_destroy(&sjv_a);
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjf_func(&sjv_b);
     main_destroy();
     return 0;

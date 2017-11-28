@@ -99,7 +99,7 @@ void sjf_class_i32_destroy(sjs_class_i32* _this) {
 void sjf_class_i32_heap(sjs_class_i32_heap* _this) {
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjf_class_i32(&sjv_c);
     main_destroy();
     return 0;

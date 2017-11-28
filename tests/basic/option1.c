@@ -214,7 +214,7 @@ void sji_interface_destroy(sji_interface* _this) {
     }
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjv_a = int32_empty;
     sjv_b = int64_empty;
     sjv_c = uint32_empty;

@@ -220,7 +220,7 @@ void sjf_class_destroy(sjs_class* _this) {
 void sjf_class_heap(sjs_class_heap* _this) {
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjv_a = (sjs_array_heap_class_heap*)malloc(sizeof(sjs_array_heap_class_heap));
     sjv_a->_refCount = 1;
     sjv_a->size = 3;

@@ -151,7 +151,7 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
         stream << "\n";
     }
 
-    stream << "int main() {\n";
+    stream << "int main(int argc, char** argv) {\n";
     mainFunction->writeBodyToStream(stream, 1);
     stream << "    main_destroy();\n";
     stream << "    return 0;\n";

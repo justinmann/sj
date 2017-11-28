@@ -397,7 +397,7 @@ void sjf_string_isLessOrEqual(sjs_string* _parent, sjs_string* test, bool* _retu
     sjf_array_char_isLessOrEqual(sjt_dot7, sjt_functionParam5, &(*_return));
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjf_anon4(&sjv_convert);
     sjf_anon3(&sjv_random);
     sjf_anon2(&sjv_parse);

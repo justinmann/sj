@@ -130,7 +130,7 @@ void sjf_foo2_heap(sjs_class_heap** _return) {
     }
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjf_foo1(&sjv_x1);
     sjf_foo2_heap(&sjv_x2);
     main_destroy();

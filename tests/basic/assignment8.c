@@ -72,7 +72,7 @@ int32_t sjv_y;
 
 void main_destroy(void);
 
-int main() {
+int main(int argc, char** argv) {
     sjv_y = 2;
     sjv_x = sjv_y;
     main_destroy();

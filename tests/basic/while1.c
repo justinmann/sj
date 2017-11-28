@@ -71,7 +71,7 @@ bool sjt_while1;
 
 void main_destroy(void);
 
-int main() {
+int main(int argc, char** argv) {
     sjt_while1 = false;
     while (sjt_while1) {
         sjt_while1 = false;

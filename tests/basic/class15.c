@@ -182,7 +182,7 @@ void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return) {
 void sjf_class_heap(sjs_class_heap* _this) {
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjv_math.test = 1;
     sjf_anon1(&sjv_math);
     sjf_class(&sjv_c);

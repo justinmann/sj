@@ -88,7 +88,7 @@ double sjv_f;
 
 void main_destroy(void);
 
-int main() {
+int main(int argc, char** argv) {
     sjt_math1 = 4;
     sjt_math2 = 5;
     sjv_a = sjt_math1 + sjt_math2;

@@ -75,7 +75,7 @@ bool sjv_x;
 
 void main_destroy(void);
 
-int main() {
+int main(int argc, char** argv) {
     sjt_compare1 = -3.0;
     sjt_compare2 = 4.0;
     sjt_not1 = sjt_compare1 != sjt_compare2;

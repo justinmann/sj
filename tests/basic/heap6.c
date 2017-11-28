@@ -111,7 +111,7 @@ void sjf_foo_destroy(sjs_foo* _this) {
 void sjf_foo_heap(sjs_foo_heap* _this) {
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjf_bar(&sjv_a);
     main_destroy();
     return 0;

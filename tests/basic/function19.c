@@ -95,7 +95,7 @@ void sjf_func(int32_t x, int32_t* _return) {
     }
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjt_functionParam2 = 4;
     sjf_func(sjt_functionParam2, &void1);
     main_destroy();

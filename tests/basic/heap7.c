@@ -111,7 +111,7 @@ void sjf_foo_destroy(sjs_foo* _this) {
 void sjf_foo_heap(sjs_foo_heap* _this) {
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjv_heap_y = (sjs_foo_heap*)malloc(sizeof(sjs_foo_heap));
     sjv_heap_y->_refCount = 1;
     sjf_foo_heap(sjv_heap_y);

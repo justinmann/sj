@@ -218,7 +218,7 @@ void sjf_class_destroy(sjs_class* _this) {
 void sjf_class_heap(sjs_class_heap* _this) {
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjv_a.size = 1;
     sjt_cast1 = 0;
     sjv_a.data = (uintptr_t)sjt_cast1;

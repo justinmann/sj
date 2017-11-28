@@ -83,7 +83,7 @@ void sjf_func(int32_t x, int32_t y, int32_t* _return) {
     (*_return) = sjt_math1 + sjt_math2;
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjt_functionParam1 = 1;
     sjt_functionParam2 = 1;
     sjf_func(sjt_functionParam1, sjt_functionParam2, &void1);

@@ -73,7 +73,7 @@ int32_t sjv_x;
 
 void main_destroy(void);
 
-int main() {
+int main(int argc, char** argv) {
     sjv_x = 1;
     sjv_x = 2;
     sjt_math1 = sjv_x;

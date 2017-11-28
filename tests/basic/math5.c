@@ -72,7 +72,7 @@ double sjt_math2;
 
 void main_destroy(void);
 
-int main() {
+int main(int argc, char** argv) {
     sjt_math1 = 4.0;
     sjt_math2 = 5.0;
     main_destroy();

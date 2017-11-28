@@ -96,7 +96,7 @@ void sjf_func_copy(sjs_func* _this, sjs_func* to) {
 void sjf_func_destroy(sjs_func* _this) {
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjf_func(&object1, &void1);
     main_destroy();
     return 0;

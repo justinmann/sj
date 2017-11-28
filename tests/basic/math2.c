@@ -77,7 +77,7 @@ uint64_t sjv_g;
 
 void main_destroy(void);
 
-int main() {
+int main(int argc, char** argv) {
     sjv_a = (-9223372036854775807ll - 1ll);
     sjv_b = -9223372036854775807ll;
     sjv_c = 9223372036854775807ll;

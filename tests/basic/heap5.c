@@ -179,7 +179,7 @@ void sjf_array_char_heap(sjs_array_char_heap* _this) {
 	;
 }
 
-int main() {
+int main(int argc, char** argv) {
     void1.data.size = 0;
     sjt_cast1 = 0;
     void1.data.data = (uintptr_t)sjt_cast1;

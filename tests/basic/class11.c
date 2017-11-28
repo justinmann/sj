@@ -117,7 +117,7 @@ void sjf_func_heap(sjs_class_heap** _return) {
     sjf_class_heap((*_return));
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjf_func(&sjt_call1);
     sjt_dot1 = &sjt_call1;
     dotTemp1 = sjt_dot1->x;

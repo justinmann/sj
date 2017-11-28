@@ -176,7 +176,7 @@ void sjf_inner_destroy(sjs_inner* _this) {
 void sjf_inner_heap(sjs_inner_heap* _this) {
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjf_inner(&sjv_x1.inner);
     sjf_class(&sjv_x1);
     sjv_x2 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));

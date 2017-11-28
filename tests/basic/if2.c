@@ -71,7 +71,7 @@ bool sjt_ifElse1;
 
 void main_destroy(void);
 
-int main() {
+int main(int argc, char** argv) {
     sjt_ifElse1 = false;
     if (sjt_ifElse1) {
     } else {

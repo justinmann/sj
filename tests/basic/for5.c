@@ -74,7 +74,7 @@ int32_t x;
 
 void main_destroy(void);
 
-int main() {
+int main(int argc, char** argv) {
     sjv_y = 0;
     sjt_forStart1 = 2;
     x = sjt_forStart1;

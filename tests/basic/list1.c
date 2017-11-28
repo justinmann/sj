@@ -371,7 +371,7 @@ void sjf_list_heap_class_setSize(sjs_list_heap_class* _parent, int32_t size) {
     sjf_array_heap_class_grow(sjt_dot3, sjt_functionParam1);
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjv_a.count = 0;
     sjv_a.data.size = 0;
     sjt_cast1 = 0;

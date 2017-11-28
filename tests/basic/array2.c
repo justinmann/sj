@@ -186,7 +186,7 @@ void sjf_array_i32_initAt(sjs_array_i32* _parent, int32_t index, int32_t item) {
 	;
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjv_a.size = 3;
     sjt_cast1 = 0;
     sjv_a.data = (uintptr_t)sjt_cast1;

@@ -159,7 +159,7 @@ void sjf_c_destroy(sjs_c* _this) {
 void sjf_c_heap(sjs_c_heap* _this) {
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjf_a(&void1.b.a);
     sjf_b(&void1.b);
     sjf_c(&void1);

@@ -69,7 +69,7 @@ struct td_sjs_object {
 
 void main_destroy(void);
 
-int main() {
+int main(int argc, char** argv) {
     
 	
 	printf("hi");

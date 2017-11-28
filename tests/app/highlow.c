@@ -395,7 +395,7 @@ void sjf_string_destroy(sjs_string* _this) {
 void sjf_string_heap(sjs_string_heap* _this) {
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjf_anon4(&sjv_convert);
     sjf_anon3(&sjv_random);
     sjf_anon2(&sjv_parse);

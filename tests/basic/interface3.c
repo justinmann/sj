@@ -425,7 +425,7 @@ void sji_foo_destroy(sji_foo* _this) {
     }
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjf_anon4(&sjv_convert);
     sjf_anon3(&sjv_random);
     sjf_anon2(&sjv_parse);

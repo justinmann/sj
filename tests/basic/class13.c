@@ -177,7 +177,7 @@ void sjf_math_sub(sjs_math* _parent, int32_t x, int32_t y, int32_t* _return) {
     (*_return) = sjt_math1 - sjt_math2;
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjf_math(&sjv_c.m);
     sjf_class(&sjv_c);
     sjt_dot1 = &sjv_c;

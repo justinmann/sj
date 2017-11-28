@@ -73,7 +73,7 @@ int32_t x;
 
 void main_destroy(void);
 
-int main() {
+int main(int argc, char** argv) {
     sjt_forStart1 = 1;
     x = sjt_forStart1;
     sjt_forEnd1 = 10;

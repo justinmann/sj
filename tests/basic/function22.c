@@ -73,7 +73,7 @@ void main_destroy(void);
 void sjf_foo(void) {
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjf_foo();
     main_destroy();
     return 0;

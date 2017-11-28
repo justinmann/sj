@@ -218,7 +218,7 @@ void sji_foo_destroy(sji_foo* _this) {
     }
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjt_cast1 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
     sjt_cast1->_refCount = 1;
     sjf_class_heap(sjt_cast1);

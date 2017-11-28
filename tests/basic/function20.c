@@ -81,7 +81,7 @@ void sjf_func(int32_t* _return) {
     sjf_bar(&(*_return));
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjf_func(&void1);
     main_destroy();
     return 0;
