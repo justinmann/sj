@@ -32,7 +32,7 @@ public:
     unsigned line;
     unsigned col;
     
-    CLoc() : fileName(nullptr), line(0), col(0) {}
+    CLoc() : fileName(make_shared<string>()), line(0), col(0) {}
     CLoc(shared_ptr<string> fileName, const unsigned line, const unsigned col) : fileName(fileName), line(line), col(col) {}
     static CLoc undefined;
 };

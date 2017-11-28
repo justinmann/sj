@@ -73,6 +73,7 @@ shared_ptr<CParseFile> Compiler::genNodeFile(const string& fileName) {
     
     if (t.fail()) {
         addError(CLoc(), CErrorCode::InvalidString, "file does not exist '%s'", fileName.c_str());
+        return nullptr;
     }
     
     t.seekg(0, std::ios::end);
@@ -297,8 +298,10 @@ void Compiler::includeFile(const string& fileName) {
     
     if (includedBlockFileNames.find(fileName) == includedBlockFileNames.end()) {
         auto parseFile = genNodeFile(fileName);
-        assert(parseFile->block);
-        includedBlockFileNames[fileName] = true;
-        includedBlocks.push_back(pair<string, shared_ptr<NBlock>>(fileName, parseFile->block));
+        if (parseFile) {
+            assert(parseFile->block);
+            includedBlockFileNames[fileName] = true;
+            includedBlocks.push_back(pair<string, shared_ptr<NBlock>>(fileName, parseFile->block));
+        }
     }
 }
