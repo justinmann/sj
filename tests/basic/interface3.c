@@ -73,11 +73,11 @@ const char* sjg_string2 = "5";
 #define sjs_anon1_typeId 8
 #define sjs_anon1_heap_typeId 9
 #define sjs_class_typeId 10
-#define sji_foo_typeId 11
-#define sjs_array_char_typeId 12
-#define sjs_array_char_heap_typeId 13
-#define sjs_string_typeId 14
-#define sjs_string_heap_typeId 15
+#define sjs_array_char_typeId 11
+#define sjs_array_char_heap_typeId 12
+#define sjs_string_typeId 13
+#define sjs_string_heap_typeId 14
+#define sji_foo_typeId 15
 #define sjs_class_heap_typeId 16
 
 typedef struct td_sjs_object sjs_object;
@@ -90,15 +90,15 @@ typedef struct td_sjs_anon2_heap sjs_anon2_heap;
 typedef struct td_sjs_anon1 sjs_anon1;
 typedef struct td_sjs_anon1_heap sjs_anon1_heap;
 typedef struct td_sjs_class sjs_class;
-typedef struct td_sji_foo sji_foo;
 typedef struct td_sjs_array_char sjs_array_char;
 typedef struct td_sjs_array_char_heap sjs_array_char_heap;
 typedef struct td_sjs_string sjs_string;
 typedef struct td_sjs_string_heap sjs_string_heap;
+typedef struct td_sji_foo sji_foo;
 typedef struct td_sjs_class_heap sjs_class_heap;
 
 struct td_sjs_object {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_anon4 {
@@ -106,7 +106,7 @@ struct td_sjs_anon4 {
 };
 
 struct td_sjs_anon4_heap {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_anon3 {
@@ -114,7 +114,7 @@ struct td_sjs_anon3 {
 };
 
 struct td_sjs_anon3_heap {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_anon2 {
@@ -122,7 +122,7 @@ struct td_sjs_anon2 {
 };
 
 struct td_sjs_anon2_heap {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_anon1 {
@@ -130,20 +130,11 @@ struct td_sjs_anon1 {
 };
 
 struct td_sjs_anon1_heap {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_class {
     int structsNeedAValue;
-};
-
-struct td_sji_foo {
-    int _refCount;
-    sjs_object* _parent;
-    void (*destroy)(void* _this);
-    sjs_object* (*asInterface)(sjs_object* _this, int typeId);
-    void (*test)(void* _parent, sjs_string* _return);
-    void (*test_heap)(void* _parent, sjs_string_heap** _return);
 };
 
 struct td_sjs_array_char {
@@ -153,7 +144,7 @@ struct td_sjs_array_char {
 };
 
 struct td_sjs_array_char_heap {
-    int _refCount;
+    intptr_t _refCount;
     int32_t size;
     uintptr_t data;
     bool _isGlobal;
@@ -165,13 +156,22 @@ struct td_sjs_string {
 };
 
 struct td_sjs_string_heap {
-    int _refCount;
+    intptr_t _refCount;
     int32_t count;
     sjs_array_char data;
 };
 
+struct td_sji_foo {
+    intptr_t _refCount;
+    sjs_object* _parent;
+    void (*destroy)(void* _this);
+    sjs_object* (*asInterface)(sjs_object* _this, int typeId);
+    void (*test)(void* _parent, sjs_string* _return);
+    void (*test_heap)(void* _parent, sjs_string_heap** _return);
+};
+
 struct td_sjs_class_heap {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 sjs_class_heap* sjt_cast1;
@@ -437,7 +437,7 @@ int main() {
     sjt_dot1 = sjv_a;
     sjv_bob = (sjs_string_heap*)malloc(sizeof(sjs_string_heap));
     sjv_bob->_refCount = 1;
-    sjt_dot1->test_heap(sjt_dot1->_parent, &sjv_bob);
+    sjt_dot1->test_heap((void*)(((char*)sjt_dot1->_parent) + sizeof(intptr_t)), &sjv_bob);
     main_destroy();
     return 0;
 }
@@ -446,7 +446,7 @@ void main_destroy() {
 
     sjt_cast1->_refCount--;
     if (sjt_cast1->_refCount <= 0) {
-        sjf_class_destroy((sjs_class*)(((char*)sjt_cast1) + sizeof(int)));
+        sjf_class_destroy((sjs_class*)(((char*)sjt_cast1) + sizeof(intptr_t)));
     }
     sjv_a->_refCount--;
     if (sjv_a->_refCount <= 0) {
@@ -454,7 +454,7 @@ void main_destroy() {
     }
     sjv_bob->_refCount--;
     if (sjv_bob->_refCount <= 0) {
-        sjf_string_destroy((sjs_string*)(((char*)sjv_bob) + sizeof(int)));
+        sjf_string_destroy((sjs_string*)(((char*)sjv_bob) + sizeof(intptr_t)));
     }
     sjf_anon1_destroy(&sjv_console);
     sjf_anon4_destroy(&sjv_convert);

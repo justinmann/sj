@@ -73,7 +73,7 @@ typedef struct td_sjs_a sjs_a;
 typedef struct td_sjs_a_heap sjs_a_heap;
 
 struct td_sjs_object {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_array_char {
@@ -83,7 +83,7 @@ struct td_sjs_array_char {
 };
 
 struct td_sjs_array_char_heap {
-    int _refCount;
+    intptr_t _refCount;
     int32_t size;
     uintptr_t data;
     bool _isGlobal;
@@ -94,7 +94,7 @@ struct td_sjs_a {
 };
 
 struct td_sjs_a_heap {
-    int _refCount;
+    intptr_t _refCount;
     sjs_array_char data;
 };
 

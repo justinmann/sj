@@ -22,10 +22,6 @@ element #element (children'stack array_heap_element:, rect'stack rect=)'heap ele
   this
 }
 
-htmlCanvas2d #surface (ctxVarName'stack string:)'heap htmlCanvas2d {
-  this
-}
-
 runLoop()'void {
   c{
 
@@ -41,6 +37,35 @@ runLoop()'void {
 }c
 }
 
+sdlSurace #surface (size'stack size:, win'ptr=, ren'ptr=)'heap sdlSurace {
+  c{
+
+		if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+	        printf("SDL_Init Error: %s\n", SDL_GetError());
+	        exit(-1);
+	    }
+
+	    if (TTF_Init() != 0) {
+	        printf("TTF_Init Error: %s\n", SDL_GetError());
+	        exit(-1);
+	    }
+
+	    _this->win = (uintptr_t)SDL_CreateWindow("Hello World!", 100, 100, _this->size.w, _this->size.h, SDL_WINDOW_SHOWN);
+	    if (_this->win == 0) {
+	        printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
+	        exit(-1);
+	    }
+
+	    _this->ren = (uintptr_t)SDL_CreateRenderer((SDL_Window*)_this->win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	    if (_this->ren == 0) {
+	        printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
+	        exit(-1);
+	    }
+	
+}c
+  this
+}
+
 global()'void {
   style'stack anon5 : anon5(this = anon5())
   convert'stack anon4 : anon4(this = anon4())
@@ -48,9 +73,8 @@ global()'void {
   parse'stack anon2 : anon2(this = anon2())
   console'stack anon1 : anon1(this = anon1())
   root'heap #element? = empty'heap #element?
-  rootCanvas'heap #surface : htmlCanvas2d(this = htmlCanvas2d(
-    ctxVarName'stack string : this.ctxVarName
-  )) as heap #surface
+  rootSurface'heap #surface? = empty'heap #surface?
+  frame'i32 = 0i
   cdefine{
 
 	#include(<emscripten.h>, EMSCRIPTEN)
@@ -104,62 +128,11 @@ SDL_Texture* renderText(const char* message, const char* fontFile, SDL_Color col
 
 
 }cfunction
-  c{
-
-	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        printf("SDL_Init Error: %s\n", SDL_GetError());
-        return 1;
-    }
-
-    if (TTF_Init() != 0) {
-        printf("TTF_Init Error: %s\n", SDL_GetError());
-        SDL_Quit();
-        return 1;
-    }
-
-    SDL_Window* win = SDL_CreateWindow("Hello World!", 100, 100, 640, 480, SDL_WINDOW_SHOWN);
-    if (win == 0) {
-        printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
-        SDL_Quit();
-        return 1;
-    }
-
-    SDL_Renderer* ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (ren == 0) {
-        SDL_DestroyWindow(win);
-        printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
-        SDL_Quit();
-        return 1;
-    }
-
-    SDL_Surface* bmp = SDL_LoadBMP("assets/hello2.bmp");
-    if (bmp == 0) {
-        SDL_DestroyRenderer(ren);
-        SDL_DestroyWindow(win);
-        printf("SDL_LoadBMP Error: %s\n", SDL_GetError());
-        SDL_Quit();
-        return 1;
-    }
-
-    SDL_Texture* tex = SDL_CreateTextureFromSurface(ren, bmp);
-    SDL_FreeSurface(bmp);
-    if (tex == 0) {
-        SDL_DestroyRenderer(ren);
-        SDL_DestroyWindow(win);
-        printf("SDL_CreateTextureFromSurface Error: %s\n", SDL_GetError());
-        SDL_Quit();
-        return 1;
-    }
-
-    SDL_Color color = { 255, 255, 255, 255 };
-    SDL_Texture* image = renderText("Mallory & Madison is awesome!", "assets/sample.ttf", color, 32, ren);
-    if (image == 0) {
-        TTF_Quit();
-        SDL_Quit();
-        return 1;
-    }
-
-}c
+  rootSurface'heap #surface? = sdlSurace(this = sdlSurace(
+    size'stack size : this.size,
+    win'ptr = this.win,
+    ren'ptr = this.ren
+  )) as heap #surface
   root'heap #element? = value(element(this = element(
     children'stack array_heap_element : this.children,
     rect'stack rect = this.rect

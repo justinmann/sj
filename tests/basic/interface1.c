@@ -84,7 +84,7 @@ typedef struct td_sji_anon2_foo sji_anon2_foo;
 typedef struct td_sjs_anon2_class_heap sjs_anon2_class_heap;
 
 struct td_sjs_object {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_anon1 {
@@ -92,7 +92,7 @@ struct td_sjs_anon1 {
 };
 
 struct td_sjs_anon1_heap {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_anon2 {
@@ -100,7 +100,7 @@ struct td_sjs_anon2 {
 };
 
 struct td_sjs_anon2_heap {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_anon1_class {
@@ -108,7 +108,7 @@ struct td_sjs_anon1_class {
 };
 
 struct td_sji_anon1_foo {
-    int _refCount;
+    intptr_t _refCount;
     sjs_object* _parent;
     void (*destroy)(void* _this);
     sjs_object* (*asInterface)(sjs_object* _this, int typeId);
@@ -116,7 +116,7 @@ struct td_sji_anon1_foo {
 };
 
 struct td_sjs_anon1_class_heap {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_anon2_class {
@@ -124,7 +124,7 @@ struct td_sjs_anon2_class {
 };
 
 struct td_sji_anon2_foo {
-    int _refCount;
+    intptr_t _refCount;
     sjs_object* _parent;
     void (*destroy)(void* _this);
     sjs_object* (*asInterface)(sjs_object* _this, int typeId);
@@ -132,7 +132,7 @@ struct td_sji_anon2_foo {
 };
 
 struct td_sjs_anon2_class_heap {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 sjs_anon1_class_heap* sjt_cast1;
@@ -359,11 +359,11 @@ void main_destroy() {
 
     sjt_cast1->_refCount--;
     if (sjt_cast1->_refCount <= 0) {
-        sjf_anon1_class_destroy((sjs_anon1_class*)(((char*)sjt_cast1) + sizeof(int)));
+        sjf_anon1_class_destroy((sjs_anon1_class*)(((char*)sjt_cast1) + sizeof(intptr_t)));
     }
     sjt_cast2->_refCount--;
     if (sjt_cast2->_refCount <= 0) {
-        sjf_anon2_class_destroy((sjs_anon2_class*)(((char*)sjt_cast2) + sizeof(int)));
+        sjf_anon2_class_destroy((sjs_anon2_class*)(((char*)sjt_cast2) + sizeof(intptr_t)));
     }
     sjv_a->_refCount--;
     if (sjv_a->_refCount <= 0) {

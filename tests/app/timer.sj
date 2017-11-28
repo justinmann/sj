@@ -22,6 +22,7 @@ timerElement #element (
 timerElement : timerElement()
 */
 
+rootSurface = sdlSurace() as #surface
 root = value(element(
 	children : [ button() as #element ]
 ) as #element)

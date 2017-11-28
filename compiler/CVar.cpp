@@ -18,9 +18,9 @@ bool CNormalVar::getReturnThis() {
 
 void CNormalVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     if (dotValue) {
-        auto returnValue = trBlock->createTempVariable(scope.lock(), type, "dotTemp");
+        auto returnValue = trBlock->createTempVariable(scope.lock(), type->getLocalType(), "dotTemp");
         stringstream lineStream;
-        lineStream << returnValue->name << " = " << dotValue->name;
+        lineStream << returnValue->name << " = " << TrValue::convertToLocalName(type, dotValue->name, false);
         if (dotValue->type->typeMode == CTM_Stack) {
             lineStream << ".";
         }
@@ -31,9 +31,9 @@ void CNormalVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
         trBlock->statements.push_back(lineStream.str());
         storeValue->retainValue(compiler, storeValue->loc, trBlock, returnValue);
     } else if (trBlock->hasThis && (mode == Var_Public || mode == Var_Private)) {
-        auto returnValue = trBlock->createTempVariable(scope.lock(), type, "dotTemp");
+        auto returnValue = trBlock->createTempVariable(scope.lock(), type->getLocalType(), "dotTemp");
         stringstream lineStream;
-        lineStream << returnValue->name << " = " << "_this->" << cname;
+        lineStream << returnValue->name << " = " << TrValue::convertToLocalName(type, "_this->" + cname, false);
         trBlock->statements.push_back(lineStream.str());
         storeValue->retainValue(compiler, storeValue->loc, trBlock, returnValue);
     } else {

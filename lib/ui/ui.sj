@@ -4,19 +4,30 @@ include "element.sj"
 include "rect.sj"
 include "style.sj"
 include "surface.sj"
+include "size.sj"
 
 root = empty'#element
-rootCanvas : htmlCanvas2d() as #surface
+rootSurface = empty'#surface
 
 onClick(timestemp: 'f64, x: 'i32, y: 'i32) {
 	console.write("click")
 }
 
+frame = 0
+
 mainLoop() {
-	console.write("mainLoop - 1")
-	// timerElement.onTick()
-	root?.setRect(rect(0, 0, 100, 100))
-	root?.render(rootCanvas)
+	if !isEmpty(rootSurface) {
+		console.write("mainLoop - " + convert.i32toString(frame))
+
+		surf : getValue(rootSurface)
+		surf.clear()
+		size : surf.getSize()
+		rect : rect(0, 0, size.w, size.h)
+		root?.setRect(rect)
+		root?.render(surf)
+		surf.present()
+	}
+	frame++
 	void
 }
 
@@ -70,61 +81,6 @@ SDL_Texture* renderText(const char* message, const char* fontFile, SDL_Color col
 }
 
 }cfunction
-
-c{
-	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        printf("SDL_Init Error: %s\n", SDL_GetError());
-        return 1;
-    }
-
-    if (TTF_Init() != 0) {
-        printf("TTF_Init Error: %s\n", SDL_GetError());
-        SDL_Quit();
-        return 1;
-    }
-
-    SDL_Window* win = SDL_CreateWindow("Hello World!", 100, 100, 640, 480, SDL_WINDOW_SHOWN);
-    if (win == 0) {
-        printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
-        SDL_Quit();
-        return 1;
-    }
-
-    SDL_Renderer* ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (ren == 0) {
-        SDL_DestroyWindow(win);
-        printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
-        SDL_Quit();
-        return 1;
-    }
-
-    SDL_Surface* bmp = SDL_LoadBMP("assets/hello2.bmp");
-    if (bmp == 0) {
-        SDL_DestroyRenderer(ren);
-        SDL_DestroyWindow(win);
-        printf("SDL_LoadBMP Error: %s\n", SDL_GetError());
-        SDL_Quit();
-        return 1;
-    }
-
-    SDL_Texture* tex = SDL_CreateTextureFromSurface(ren, bmp);
-    SDL_FreeSurface(bmp);
-    if (tex == 0) {
-        SDL_DestroyRenderer(ren);
-        SDL_DestroyWindow(win);
-        printf("SDL_CreateTextureFromSurface Error: %s\n", SDL_GetError());
-        SDL_Quit();
-        return 1;
-    }
-
-    SDL_Color color = { 255, 255, 255, 255 };
-    SDL_Texture* image = renderText("Mallory & Madison is awesome!", "assets/sample.ttf", color, 32, ren);
-    if (image == 0) {
-        TTF_Quit();
-        SDL_Quit();
-        return 1;
-    }
-}c
 
 runLoop() {
 	c{

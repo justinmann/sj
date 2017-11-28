@@ -258,6 +258,11 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                     else {
                         functionDefinition << ", ";
                     }
+                    
+                    if (!argType.second->parent.expired()) {
+                        argType.second->parent.lock()->transpileDefinition(compiler, trOutput);
+                    }
+                    
                     functionDefinition << argType.second->cname << " " << argType.first;
                 }
 
@@ -315,9 +320,13 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                     hasValues = true;
                     stringstream ss;
                     ss << argType.second->cname;
-                    if (argType.second->typeMode == CTM_Stack) {
-                        // C requires that inline structs be defined before use
+
+                    // C requires that inline structs be defined before use
+                    if (!argType.second->parent.expired()) {
                         argType.second->parent.lock()->transpileDefinition(compiler, trOutput);
+                    }
+                    
+                    if (argType.second->typeMode == CTM_Stack) {
                     }
                     else if (argType.second->typeMode != CTM_Heap && argType.second->typeMode != CTM_Value && argType.first.compare("_parent") != 0) {
                         compiler->addError(loc, CErrorCode::InvalidType, "var '%s' is local which is not allowed", argType.first.c_str());
@@ -336,15 +345,19 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
             if (calleeVar->getTypeMode() == CTM_Heap) {
                 string heapStructName = getCStructName(CTM_Heap);
                 if (trOutput->structs.find(heapStructName) == trOutput->structs.end()) {
-                    trOutput->structs[heapStructName].push_back("int _refCount");
+                    trOutput->structs[heapStructName].push_back("intptr_t _refCount");
 
                     auto argTypes = getCTypeList(compiler, returnMode);
                     for (auto argType : *argTypes) {
                         stringstream ss;
                         ss << argType.second->cname;
-                        if (argType.second->typeMode == CTM_Stack) {
-                            // C requires that inline structs be defined before use
+
+                        // C requires that inline structs be defined before use
+                        if (!argType.second->parent.expired()) {
                             argType.second->parent.lock()->transpileDefinition(compiler, trOutput);
+                        }
+
+                        if (argType.second->typeMode == CTM_Stack) {
                         }
                         else if (argType.second->typeMode != CTM_Heap && argType.second->typeMode != CTM_Value && argType.first.compare("_parent") != 0) {
                             compiler->addError(loc, CErrorCode::InvalidType, "var '%s' is local which is not allowed", argType.first.c_str());
@@ -431,7 +444,10 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 
                         for (auto interfaceMethod : interfaceVal->methods) {
                             auto implementation = static_pointer_cast<CFunction>(getCFunction(compiler, loc, interfaceMethod->name, nullptr, nullptr, CTM_Undefined));
-                            if (implementation) {
+                            if (!implementation) {
+                                compiler->addError(loc, CErrorCode::InterfaceMethodDoesNotExist, "cannot find interface method '%s'", interfaceMethod->name.c_str());
+                            }
+                            else {
                                 implementation->transpileDefinition(compiler, trOutput);
 
                                 if (implementation->_data[interfaceMethod->returnMode].isInvalid) {
@@ -1046,7 +1062,7 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, const string& name, VarS
             }
         }
     }
-    else {
+    else {       
         assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
         assert(!_data[returnMode].isInvalid);
 

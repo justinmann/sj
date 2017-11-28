@@ -68,7 +68,7 @@ typedef struct td_sjs_fancyMath sjs_fancyMath;
 typedef struct td_sjs_fancyMath_heap sjs_fancyMath_heap;
 
 struct td_sjs_object {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_fancyMath {
@@ -76,7 +76,7 @@ struct td_sjs_fancyMath {
 };
 
 struct td_sjs_fancyMath_heap {
-    int _refCount;
+    intptr_t _refCount;
     int32_t x;
 };
 

@@ -68,7 +68,7 @@ typedef struct td_sjs_class_i32 sjs_class_i32;
 typedef struct td_sjs_class_i32_heap sjs_class_i32_heap;
 
 struct td_sjs_object {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_class_i32 {
@@ -76,7 +76,7 @@ struct td_sjs_class_i32 {
 };
 
 struct td_sjs_class_i32_heap {
-    int _refCount;
+    intptr_t _refCount;
     int32_t x;
 };
 

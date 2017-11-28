@@ -64,7 +64,7 @@ const double_option double_empty = { true };
 typedef struct td_sjs_object sjs_object;
 
 struct td_sjs_object {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 bool sjt_while1;

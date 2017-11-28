@@ -322,8 +322,10 @@ string TrValue::convertToLocalName(shared_ptr<CType> from, string name, bool isR
             return name;
         }
         else {
-            return "(" + from->parent.lock()->getCStructName(CTM_Stack) + "*)(((char*)" + name + ") + sizeof(int))";
+            return "(" + from->parent.lock()->getCStructName(CTM_Stack) + "*)(((char*)" + name + ") + sizeof(intptr_t))";
         }
+    case CTM_Value:
+        return name;
     default:
         assert(false);
         return "";

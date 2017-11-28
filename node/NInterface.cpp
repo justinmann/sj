@@ -103,7 +103,7 @@ shared_ptr<CInterface> CInterface::init(Compiler* compiler, shared_ptr<NInterfac
         }
         auto returnType = method->getReturnType(compiler, CTM_Stack);
         assert(returnType->typeMode != CTM_Undefined);
-        if (returnType->typeMode == CTM_Stack || returnType->typeMode == CTM_Value) {
+        if (returnType->typeMode == CTM_Stack || returnType->typeMode == CTM_Value || returnType->typeMode == CTM_Local) {
             methods.push_back(method);
             methodByName[method->name][CTM_Stack] = method;
             argIndex++;
@@ -278,11 +278,23 @@ void CInterface::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
     // Create stack struct
     string heapStructName = getCStructName(CTM_Heap);
     if (trOutput->structs.find(heapStructName) == trOutput->structs.end()) {
-        trOutput->structs[heapStructName].push_back("int _refCount");
+        trOutput->structs[heapStructName].push_back("intptr_t _refCount");
         trOutput->structs[heapStructName].push_back("sjs_object* _parent");
         trOutput->structs[heapStructName].push_back("void (*destroy)(void* _this)");
         trOutput->structs[heapStructName].push_back("sjs_object* (*asInterface)(sjs_object* _this, int typeId)");
         for (auto method : methods) {
+            for (auto argVar : method->argVars) {
+                auto argType = argVar->getType(compiler);
+                if (!argType->parent.expired()) {
+                    argType->parent.lock()->transpileDefinition(compiler, trOutput);
+                }
+            }
+
+            auto returnType = method->getReturnType(compiler, method->returnMode);
+            if (!returnType->parent.expired()) {
+                returnType->parent.lock()->transpileDefinition(compiler, trOutput);
+            }
+
             trOutput->structs[heapStructName].push_back(method->getCTypeName(compiler, true));
         }
         trOutput->structOrder.push_back(heapStructName);

@@ -66,7 +66,7 @@ typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_func sjs_func;
 
 struct td_sjs_object {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_func {

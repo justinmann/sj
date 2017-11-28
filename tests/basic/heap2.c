@@ -72,7 +72,7 @@ typedef struct td_sjs_class sjs_class;
 typedef struct td_sjs_class_heap sjs_class_heap;
 
 struct td_sjs_object {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_class_anon1 {
@@ -80,7 +80,7 @@ struct td_sjs_class_anon1 {
 };
 
 struct td_sjs_class_anon1_heap {
-    int _refCount;
+    intptr_t _refCount;
     int32_t x;
 };
 
@@ -89,7 +89,7 @@ struct td_sjs_class {
 };
 
 struct td_sjs_class_heap {
-    int _refCount;
+    intptr_t _refCount;
     sjs_class_anon1 data;
 };
 
@@ -132,12 +132,10 @@ void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_get(sjs_class* _parent, sjs_class_anon1** _return) {
-    sjs_class_anon1 dotTemp1;
+    sjs_class_anon1* dotTemp1;
 
-    dotTemp1 = _parent->data;
-    (*_return) = &dotTemp1;
-
-    sjf_class_anon1_destroy(&dotTemp1);
+    dotTemp1 = &_parent->data;
+    (*_return) = dotTemp1;
 }
 
 void sjf_class_heap(sjs_class_heap* _this) {

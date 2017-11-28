@@ -68,7 +68,7 @@ typedef struct td_sjs_class sjs_class;
 typedef struct td_sjs_class_heap sjs_class_heap;
 
 struct td_sjs_object {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_class {
@@ -76,7 +76,7 @@ struct td_sjs_class {
 };
 
 struct td_sjs_class_heap {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 sjs_class sjv_x1;
@@ -126,7 +126,7 @@ void sjf_foo2_heap(sjs_class_heap** _return) {
 
     sjt_value1->_refCount--;
     if (sjt_value1->_refCount <= 0) {
-        sjf_class_destroy((sjs_class*)(((char*)sjt_value1) + sizeof(int)));
+        sjf_class_destroy((sjs_class*)(((char*)sjt_value1) + sizeof(intptr_t)));
     }
 }
 
@@ -142,7 +142,7 @@ void main_destroy() {
     if (sjv_x2 != 0) {
         sjv_x2->_refCount--;
         if (sjv_x2->_refCount <= 0) {
-            sjf_class_destroy((sjs_class*)(((char*)sjv_x2) + sizeof(int)));
+            sjf_class_destroy((sjs_class*)(((char*)sjv_x2) + sizeof(intptr_t)));
         }
     }
     sjf_class_destroy(&sjv_x1);

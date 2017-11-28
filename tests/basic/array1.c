@@ -69,7 +69,7 @@ typedef struct td_sjs_array_i32 sjs_array_i32;
 typedef struct td_sjs_array_i32_heap sjs_array_i32_heap;
 
 struct td_sjs_object {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_array_i32 {
@@ -79,7 +79,7 @@ struct td_sjs_array_i32 {
 };
 
 struct td_sjs_array_i32_heap {
-    int _refCount;
+    intptr_t _refCount;
     int32_t size;
     uintptr_t data;
     bool _isGlobal;

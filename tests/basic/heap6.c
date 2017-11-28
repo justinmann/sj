@@ -68,7 +68,7 @@ typedef struct td_sjs_foo sjs_foo;
 typedef struct td_sjs_foo_heap sjs_foo_heap;
 
 struct td_sjs_object {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_foo {
@@ -76,7 +76,7 @@ struct td_sjs_foo {
 };
 
 struct td_sjs_foo_heap {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 sjs_foo sjv_a;

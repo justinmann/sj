@@ -94,7 +94,7 @@ typedef struct td_sjs_string sjs_string;
 typedef struct td_sjs_string_heap sjs_string_heap;
 
 struct td_sjs_object {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_anon4 {
@@ -102,7 +102,7 @@ struct td_sjs_anon4 {
 };
 
 struct td_sjs_anon4_heap {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_anon3 {
@@ -110,7 +110,7 @@ struct td_sjs_anon3 {
 };
 
 struct td_sjs_anon3_heap {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_anon2 {
@@ -118,7 +118,7 @@ struct td_sjs_anon2 {
 };
 
 struct td_sjs_anon2_heap {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_anon1 {
@@ -126,7 +126,7 @@ struct td_sjs_anon1 {
 };
 
 struct td_sjs_anon1_heap {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_array_char {
@@ -136,7 +136,7 @@ struct td_sjs_array_char {
 };
 
 struct td_sjs_array_char_heap {
-    int _refCount;
+    intptr_t _refCount;
     int32_t size;
     uintptr_t data;
     bool _isGlobal;
@@ -148,7 +148,7 @@ struct td_sjs_string {
 };
 
 struct td_sjs_string_heap {
-    int _refCount;
+    intptr_t _refCount;
     int32_t count;
     sjs_array_char data;
 };

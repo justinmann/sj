@@ -76,7 +76,7 @@ typedef struct td_sjs_c sjs_c;
 typedef struct td_sjs_c_heap sjs_c_heap;
 
 struct td_sjs_object {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_a {
@@ -84,7 +84,7 @@ struct td_sjs_a {
 };
 
 struct td_sjs_a_heap {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_b {
@@ -92,7 +92,7 @@ struct td_sjs_b {
 };
 
 struct td_sjs_b_heap {
-    int _refCount;
+    intptr_t _refCount;
     sjs_a a;
 };
 
@@ -101,7 +101,7 @@ struct td_sjs_c {
 };
 
 struct td_sjs_c_heap {
-    int _refCount;
+    intptr_t _refCount;
     sjs_b b;
 };
 

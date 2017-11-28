@@ -61,33 +61,24 @@ const double_option double_empty = { true };
 
 #define sjs_object_typeId 1
 #define sjs_class_typeId 2
-#define sji_foo_typeId 3
-#define sjs_bar_typeId 4
-#define sjs_bar_heap_typeId 5
+#define sjs_bar_typeId 3
+#define sjs_bar_heap_typeId 4
+#define sji_foo_typeId 5
 #define sjs_class_heap_typeId 6
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_class sjs_class;
-typedef struct td_sji_foo sji_foo;
 typedef struct td_sjs_bar sjs_bar;
 typedef struct td_sjs_bar_heap sjs_bar_heap;
+typedef struct td_sji_foo sji_foo;
 typedef struct td_sjs_class_heap sjs_class_heap;
 
 struct td_sjs_object {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 struct td_sjs_class {
     int structsNeedAValue;
-};
-
-struct td_sji_foo {
-    int _refCount;
-    sjs_object* _parent;
-    void (*destroy)(void* _this);
-    sjs_object* (*asInterface)(sjs_object* _this, int typeId);
-    void (*test)(void* _parent, int32_t a, sjs_bar* _return);
-    void (*test_heap)(void* _parent, int32_t a, sjs_bar_heap** _return);
 };
 
 struct td_sjs_bar {
@@ -95,11 +86,20 @@ struct td_sjs_bar {
 };
 
 struct td_sjs_bar_heap {
-    int _refCount;
+    intptr_t _refCount;
+};
+
+struct td_sji_foo {
+    intptr_t _refCount;
+    sjs_object* _parent;
+    void (*destroy)(void* _this);
+    sjs_object* (*asInterface)(sjs_object* _this, int typeId);
+    void (*test)(void* _parent, int32_t a, sjs_bar* _return);
+    void (*test_heap)(void* _parent, int32_t a, sjs_bar_heap** _return);
 };
 
 struct td_sjs_class_heap {
-    int _refCount;
+    intptr_t _refCount;
 };
 
 sjs_class_heap* sjt_cast1;
@@ -225,12 +225,12 @@ int main() {
     sjv_a = (sji_foo*)sjf_class_heap_as_sji_foo(sjt_cast1);
     sjt_dot1 = sjv_a;
     sjt_interfaceParam1 = 1;
-    sjt_dot1->test(sjt_dot1->_parent, sjt_interfaceParam1, &sjv_b);
+    sjt_dot1->test((void*)(((char*)sjt_dot1->_parent) + sizeof(intptr_t)), sjt_interfaceParam1, &sjv_b);
     sjt_dot2 = sjv_a;
     sjt_interfaceParam2 = 1;
     sjv_c = (sjs_bar_heap*)malloc(sizeof(sjs_bar_heap));
     sjv_c->_refCount = 1;
-    sjt_dot2->test_heap(sjt_dot2->_parent, sjt_interfaceParam2, &sjv_c);
+    sjt_dot2->test_heap((void*)(((char*)sjt_dot2->_parent) + sizeof(intptr_t)), sjt_interfaceParam2, &sjv_c);
     main_destroy();
     return 0;
 }
@@ -239,7 +239,7 @@ void main_destroy() {
 
     sjt_cast1->_refCount--;
     if (sjt_cast1->_refCount <= 0) {
-        sjf_class_destroy((sjs_class*)(((char*)sjt_cast1) + sizeof(int)));
+        sjf_class_destroy((sjs_class*)(((char*)sjt_cast1) + sizeof(intptr_t)));
     }
     sjv_a->_refCount--;
     if (sjv_a->_refCount <= 0) {
@@ -247,7 +247,7 @@ void main_destroy() {
     }
     sjv_c->_refCount--;
     if (sjv_c->_refCount <= 0) {
-        sjf_bar_destroy((sjs_bar*)(((char*)sjv_c) + sizeof(int)));
+        sjf_bar_destroy((sjs_bar*)(((char*)sjv_c) + sizeof(intptr_t)));
     }
     sjf_bar_destroy(&sjv_b);
 }
