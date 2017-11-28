@@ -35,7 +35,7 @@ sdlSurace #surface(
 
 	fillRect(rect: 'rect, color: 'color)'void c{
 		SDL_SetRenderDrawColor((SDL_Renderer*)_parent->ren, color->r, color->g, color->b, color->a);
-		SDL_RenderDrawRect((SDL_Renderer*)_parent->ren, rect);
+		SDL_RenderDrawRect((SDL_Renderer*)_parent->ren, (SDL_Rect*)rect);
 	}c
 ) {
 	c{

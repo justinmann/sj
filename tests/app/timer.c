@@ -1,4 +1,4 @@
-#ifdef __MSVC__
+#ifdef WIN32
 #include <SDL.h>
 #endif
 #ifdef __APPLE__
@@ -7,7 +7,7 @@
 #ifdef __APPLE__
 #include <SDL2_ttf/SDL_ttf.h>
 #endif
-#ifdef __MSVC__
+#ifdef WIN32
 #include <SDL_ttf.h>
 #endif
 #ifdef EMSCRIPTEN
@@ -1202,7 +1202,6 @@ void sjf_mainLoop(void) {
     int32_t sjt_math15;
     int32_t sjt_math16;
     bool sjt_not1;
-    int32_t sjv_frame;
 
     sjt_isEmpty1 = sjv_rootSurface;
     if (sjt_isEmpty1 != 0) {
@@ -1509,7 +1508,7 @@ void sjf_sdlSurace_destroy(sjs_sdlSurace* _this) {
 void sjf_sdlSurace_fillRect(sjs_sdlSurace* _parent, sjs_rect* rect, sjs_color* color) {
     
 		SDL_SetRenderDrawColor((SDL_Renderer*)_parent->ren, color->r, color->g, color->b, color->a);
-		SDL_RenderDrawRect((SDL_Renderer*)_parent->ren, rect);
+		SDL_RenderDrawRect((SDL_Renderer*)_parent->ren, (SDL_Rect*)rect);
 	;
 }
 
@@ -1753,7 +1752,7 @@ void sji_surface_destroy(sji_surface* _this) {
     }
 }
 
-int main() {
+int main(int argc, char** argv) {
     sjf_anon5(&sjv_style);
     sjf_anon4(&sjv_convert);
     sjf_anon3(&sjv_random);

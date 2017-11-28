@@ -46,7 +46,7 @@ bool CNormalVar::getCanStoreValue() {
     return isMutable;
 }
 
-shared_ptr<TrStoreValue> CNormalVar::getStoreValue(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op, bool isFirstAssignment) {
+shared_ptr<TrStoreValue> CNormalVar::getStoreValue(Compiler* compiler, shared_ptr<CScope> scope_, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op, bool isFirstAssignment) {
     stringstream lineStream;
 
     string varName;
@@ -63,7 +63,9 @@ shared_ptr<TrStoreValue> CNormalVar::getStoreValue(Compiler* compiler, TrOutput*
     }
     else {
         if (!trBlock->getVariable(cname)) {
-            trBlock->createVariable(scope.lock(), type, cname);
+            if (scope.lock()->function->name != "global" || scope.lock()->function == scope_->function) {
+                trBlock->createVariable(scope.lock(), type, cname);
+            }
         }
         else if (!isMutable) {
             // Check is mutable or first assignment

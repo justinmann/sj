@@ -61,7 +61,7 @@ bool CParentDotVar::getCanStoreValue() {
     return false;
 }
 
-shared_ptr<TrStoreValue> CParentDotVar::getStoreValue(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op, bool isFirstAssignment) {
+shared_ptr<TrStoreValue> CParentDotVar::getStoreValue(Compiler* compiler, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op, bool isFirstAssignment) {
     shared_ptr<TrValue> parentValue;
     if (dotValue) {
         auto parentThisTypes = parentFunction->parent.lock()->getThisTypes(compiler);
@@ -86,7 +86,7 @@ shared_ptr<TrStoreValue> CParentDotVar::getStoreValue(Compiler* compiler, TrOutp
     }
 
     auto childStoreVar = dynamic_pointer_cast<CStoreVar>(childVar);
-    return childStoreVar->getStoreValue(compiler, trOutput, trBlock, parentValue, thisValue, op, isFirstAssignment);
+    return childStoreVar->getStoreValue(compiler, scope, trOutput, trBlock, parentValue, thisValue, op, isFirstAssignment);
 }
 
 void CParentDotVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

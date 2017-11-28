@@ -36,8 +36,8 @@ cdefine{
 	#include(<emscripten/html5.h>, EMSCRIPTEN)
 	#include(<SDL.h>, EMSCRIPTEN)
 	#include(<SDL_ttf.h>, EMSCRIPTEN)
-	#include(<SDL.h>, __MSVC__)
-	#include(<SDL_ttf.h>, __MSVC__)
+	#include(<SDL.h>, WIN32)
+	#include(<SDL_ttf.h>, WIN32)
 	#include(<SDL2/SDL.h>, __APPLE__)
 	#include(<SDL2_ttf/SDL_ttf.h>, __APPLE__)
 

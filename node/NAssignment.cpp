@@ -12,7 +12,7 @@ void CAssignVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
     assert(compiler->state == CompilerState::Compile);
    
     auto leftType = leftVar->getType(compiler);
-    auto leftStoreValue = leftVar->getStoreValue(compiler, trOutput, trBlock, nullptr, thisValue, op, isFirstAssignment);
+    auto leftStoreValue = leftVar->getStoreValue(compiler, scope.lock(), trOutput, trBlock, nullptr, thisValue, op, isFirstAssignment);
     if (!leftStoreValue) {
         return;
     }
@@ -178,7 +178,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
             return nullptr;
         }
 
-        return make_shared<CAssignVar>(loc, leftStoreVar->scope.lock(), op, isFirstAssignment, leftStoreVar, rightVar);
+        return make_shared<CAssignVar>(loc, scope, op, isFirstAssignment, leftStoreVar, rightVar);
     }
 
     return nullptr;
