@@ -232,7 +232,7 @@ void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> callerSc
         line << "_heap";
     }
     line << "(";
-    line << "(void*)(((char*)" << parentValue->name << "->_parent) + sizeof(intptr_t))";
+    line << TrValue::convertToLocalName(CTM_Heap, parentValue->name + "->_parent", false);
 
     // Fill in "this" with normal arguments
     auto argIndex = 0;

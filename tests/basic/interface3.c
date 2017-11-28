@@ -420,7 +420,7 @@ void sjf_string_heap(sjs_string_heap* _this) {
 void sji_foo_destroy(sji_foo* _this) {
     _this->_parent->_refCount--;
     if (_this->_parent->_refCount <= 0) {
-        _this->destroy(_this->_parent);
+        _this->destroy((void*)(((char*)_this->_parent) + sizeof(intptr_t)));
         free(_this->_parent);
     }
 }

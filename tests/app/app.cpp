@@ -75,7 +75,7 @@ void main_loop() {
     SDL_Delay(100);
 }
 
-int main(int argc, char* argv[]) {
+int main2(int argc, char* argv[]) {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         std::cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
         return 1;
@@ -138,6 +138,15 @@ int main(int argc, char* argv[]) {
     //A sleepy rendering loop, wait for 3 seconds and render and present the screen each time
     while (true) {
         main_loop();
+
+        SDL_Event e;
+        while (SDL_PollEvent(&e) != 0) {
+            //User requests quit
+            //if( e.type == SDL_QUIT ) {
+            //    quit = true;
+            //}
+        }
+
     }
 
     main_destroy();

@@ -323,7 +323,7 @@ void CInterface::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
         destroyBlock->statements.push_back(TrStatement(ifStream.str(), ifBlock));
 
         stringstream destroyStream;
-        destroyStream << "_this->destroy(" << name << ")";
+        destroyStream << "_this->destroy(" << TrValue::convertToLocalName(CTM_Heap, name, false) << ")";
         ifBlock->statements.push_back(destroyStream.str());
 
         stringstream freeStream;

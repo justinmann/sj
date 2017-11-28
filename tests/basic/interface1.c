@@ -325,7 +325,7 @@ void sjf_anon2_heap(sjs_anon2_heap* _this) {
 void sji_anon1_foo_destroy(sji_anon1_foo* _this) {
     _this->_parent->_refCount--;
     if (_this->_parent->_refCount <= 0) {
-        _this->destroy(_this->_parent);
+        _this->destroy((void*)(((char*)_this->_parent) + sizeof(intptr_t)));
         free(_this->_parent);
     }
 }
@@ -333,7 +333,7 @@ void sji_anon1_foo_destroy(sji_anon1_foo* _this) {
 void sji_anon2_foo_destroy(sji_anon2_foo* _this) {
     _this->_parent->_refCount--;
     if (_this->_parent->_refCount <= 0) {
-        _this->destroy(_this->_parent);
+        _this->destroy((void*)(((char*)_this->_parent) + sizeof(intptr_t)));
         free(_this->_parent);
     }
 }

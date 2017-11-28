@@ -227,7 +227,7 @@ void sjf_class_i32_test2(sjs_class_i32* _parent, int32_t* _return) {
 void sji_bar_destroy(sji_bar* _this) {
     _this->_parent->_refCount--;
     if (_this->_parent->_refCount <= 0) {
-        _this->destroy(_this->_parent);
+        _this->destroy((void*)(((char*)_this->_parent) + sizeof(intptr_t)));
         free(_this->_parent);
     }
 }
@@ -235,7 +235,7 @@ void sji_bar_destroy(sji_bar* _this) {
 void sji_foo_destroy(sji_foo* _this) {
     _this->_parent->_refCount--;
     if (_this->_parent->_refCount <= 0) {
-        _this->destroy(_this->_parent);
+        _this->destroy((void*)(((char*)_this->_parent) + sizeof(intptr_t)));
         free(_this->_parent);
     }
 }

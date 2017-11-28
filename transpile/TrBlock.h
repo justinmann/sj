@@ -17,6 +17,7 @@ public:
     void addReleaseToStatements(TrBlock* block);
     string getDotName(string rightName);
     string getPointerName();
+    static string convertToLocalName(CTypeMode typeMode, string name, bool isReturnValue);
     static string convertToLocalName(shared_ptr<CType> from, string name, bool isReturnValue);
 
     shared_ptr<CScope> scope;

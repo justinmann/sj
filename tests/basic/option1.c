@@ -201,7 +201,7 @@ sji_interface* sjf_class_heap_as_sji_interface(sjs_class_heap* _this) {
 void sji_interface2_destroy(sji_interface2* _this) {
     _this->_parent->_refCount--;
     if (_this->_parent->_refCount <= 0) {
-        _this->destroy(_this->_parent);
+        _this->destroy((void*)(((char*)_this->_parent) + sizeof(intptr_t)));
         free(_this->_parent);
     }
 }
@@ -209,7 +209,7 @@ void sji_interface2_destroy(sji_interface2* _this) {
 void sji_interface_destroy(sji_interface* _this) {
     _this->_parent->_refCount--;
     if (_this->_parent->_refCount <= 0) {
-        _this->destroy(_this->_parent);
+        _this->destroy((void*)(((char*)_this->_parent) + sizeof(intptr_t)));
         free(_this->_parent);
     }
 }

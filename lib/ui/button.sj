@@ -2,6 +2,7 @@ button #element (
 	text = ""
 	font = style.getFont(0 /* TODO: typeId(button) */)
 	rect = rect(0, 0, 0, 0)
+	offset = 0
 
 	setRect(rect_ : 'rect) {
 		rect = copy rect_
@@ -9,12 +10,12 @@ button #element (
 	}
 
 	render(surface : '#surface) {
-		console.write("button - render - 1")
 		// TODO: change color based on state
 		// TODO: support nine-grid image background
-		surface.fillRect(rect, color(255, 0, 0))
+		surface.fillRect(rect(rect.x, rect.y + offset, rect.w, rect.h - 2 * offset), color(255, 0, 0))
 		// TODO: render text
-		console.write("button - render - 2")
+		offset++
+		void
 	}
 ) { 
 	style.getFont(1)

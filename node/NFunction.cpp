@@ -448,6 +448,12 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                                 compiler->addError(loc, CErrorCode::InterfaceMethodDoesNotExist, "cannot find interface method '%s'", interfaceMethod->name.c_str());
                             }
                             else {
+                                auto interfaceReturnType = interfaceMethod->getReturnType(compiler, interfaceMethod->returnMode);
+                                auto implementationReturnType = implementation->getReturnType(compiler, interfaceMethod->returnMode);
+                                if (interfaceReturnType != implementationReturnType) {
+                                    compiler->addError(loc, CErrorCode::InterfaceMethodTypeMismatch, "return type '%s' does not match '%s'", implementationReturnType->fullName.c_str(), interfaceReturnType->fullName.c_str());
+                                }
+
                                 implementation->transpileDefinition(compiler, trOutput);
 
                                 if (implementation->_data[interfaceMethod->returnMode].isInvalid) {

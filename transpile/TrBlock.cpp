@@ -311,6 +311,22 @@ string TrValue::getPointerName() {
     }
 }
 
+string TrValue::convertToLocalName(CTypeMode typeMode, string name, bool isReturnValue) {
+    switch (typeMode) {
+    case CTM_Local:
+        return name;
+    case CTM_Stack:
+        return isReturnValue ? name : "&" + name;
+    case CTM_Heap:
+        return "(void*)(((char*)" + name + ") + sizeof(intptr_t))";
+    case CTM_Value:
+        return name;
+    default:
+        assert(false);
+        return "";
+    }
+}
+
 string TrValue::convertToLocalName(shared_ptr<CType> from, string name, bool isReturnValue) {
     switch (from->typeMode) {
     case CTM_Local:
