@@ -1,19 +1,34 @@
 #include "Node.h"
 
-class CFunctionParameterVar : public CVar {
+class CFunctionParameterVar : public CStoreVar {
 public:
-    CFunctionParameterVar(CLoc loc, shared_ptr<CScope> scope, string name, bool isMutable, shared_ptr<CType> type) : CVar(loc, scope, name, name, isMutable), type(type) { }
+    CFunctionParameterVar(CLoc loc, shared_ptr<CScope> scope, bool isMutable, shared_ptr<CVar> argVar) : CStoreVar(loc, scope, argVar->name, argVar->name, isMutable), argVar(argVar) { }
 
     bool getReturnThis() { 
         return false; 
     }
 
     shared_ptr<CType> getType(Compiler* compiler) { 
-        return type; 
+        if (this->scope.lock()->function->hasThis) {
+            return argVar->getType(compiler);
+        }
+        else {
+            auto type = argVar->getType(compiler);
+            if (type->typeMode != CTM_Heap) {
+                type = type->getLocalType();
+            }
+            return type;
+        }
     }
 
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-        auto value = make_shared<TrValue>(scope.lock(), type, name, false);
+        shared_ptr<TrValue> value;
+        if (this->scope.lock()->function->hasThis) {
+            value = make_shared<TrValue>(scope.lock(), getType(compiler), "_this->" + name, false);
+        }
+        else {
+            value = make_shared<TrValue>(scope.lock(), getType(compiler), name, false);
+        }
         storeValue->retainValue(compiler, loc, trBlock, value);
     }
 
@@ -21,8 +36,24 @@ public:
         ss << name;
     }
 
+    bool getCanStoreValue() {
+        return isMutable;
+    }
+    
+    shared_ptr<TrStoreValue> getStoreValue(Compiler* compiler, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op, bool isFirstAssignment) {
+        if (isMutable) {
+            if (this->scope.lock()->function->hasThis) {
+                return make_shared<TrStoreValue>(loc, scope, getType(compiler), "_this->" + argVar->cname, AssignOp::mutableOp, false);
+            }
+            else {
+                return make_shared<TrStoreValue>(loc, scope, getType(compiler), argVar->cname, AssignOp::mutableOp, false);
+            }
+        }
+        return nullptr;
+    }
+
 private:
-    shared_ptr<CType> type;
+    shared_ptr<CVar> argVar;
 };
 
 
@@ -855,9 +886,7 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CTypeMode returnM
             auto calleeVar = getThisVar(compiler, returnMode);
             auto calleeScope = getScope(compiler, returnMode);
             auto type = _data[returnMode].blockVar->getType(compiler);
-            if (!_data[returnMode].returnType) {
-                _data[returnMode].returnType = type;
-            }
+            _data[returnMode].returnType = type;
         }
         
         if (_data[returnMode].returnType == nullptr) {
@@ -1090,7 +1119,7 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, const string& name, VarS
                             argVarType = argVarType->getLocalType();
                         }
                     }
-                    return make_shared<CFunctionParameterVar>(loc, thisArgVar->scope.lock(), thisArgVar->name, false, argVarType);
+                    return make_shared<CFunctionParameterVar>(loc, thisArgVar->scope.lock(), thisArgVar->isMutable, thisArgVar);
                 }
                 else {
                     return thisArgVar;
