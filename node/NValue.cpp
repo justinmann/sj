@@ -75,8 +75,8 @@ shared_ptr<CVar> NValue::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
         return nullptr;
     }
 
-    if (leftType->typeMode != CTM_Heap && leftType->typeMode != CTM_Value) {
-        compiler->addError(loc, CErrorCode::TypeMismatch, "value can only work on heap or value objects");
+    if (leftType->typeMode != CTM_Heap && leftType->typeMode != CTM_Value && leftType->typeMode != CTM_Local) {
+        compiler->addError(loc, CErrorCode::TypeMismatch, "value can only work on local, heap, or value objects");
         return nullptr;
     }
 
