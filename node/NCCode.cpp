@@ -1,7 +1,7 @@
 #include "Node.h"
 #include <boost/algorithm/string.hpp>
 
-string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOutput* trOutput, string macro, shared_ptr<TrStoreValue> returnValue, vector<shared_ptr<CFunction>>& functions, map<string, string>& includes) {
+string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOutput* trOutput, string macro, shared_ptr<TrStoreValue> returnValue, vector<shared_ptr<CFunction>>& functions, map<string, string>& includes , shared_ptr<CType>& returnType) {
     auto paramStart = macro.find('(');
     auto functionName = macro.substr(0, paramStart);
     auto t = macro.substr(paramStart + 1, macro.size() - paramStart - 2);
@@ -96,6 +96,7 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
 
         auto ctype = scope->getVarType(loc, compiler, ctypeName, CTM_Undefined);
         if (ctype) {
+            returnType = ctype;
             TrBlock block;
             stringstream retainStream;
 
@@ -201,7 +202,7 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
     return "";
 }
 
-string expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOutput* trOutput, string& code, shared_ptr<TrStoreValue> returnValue, vector<shared_ptr<CFunction>>& functions, map<string, string>& includes) {
+string expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOutput* trOutput, string& code, shared_ptr<TrStoreValue> returnValue, vector<shared_ptr<CFunction>>& functions, map<string, string>& includes, shared_ptr<CType>& returnType) {
     stringstream finalCode;
     stringstream macro;
     bool isInMacro = false;
@@ -210,13 +211,13 @@ string expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOu
             if (ch == ')') {
                 macro << ch;
                 isInMacro = false;
-                finalCode << expandMacro(compiler, loc, scope, trOutput, macro.str(), returnValue, functions, includes);
+                finalCode << expandMacro(compiler, loc, scope, trOutput, macro.str(), returnValue, functions, includes, returnType);
                 macro.str("");
                 macro.clear();
             }
             else if (ch == '\n') {
                 isInMacro = false;
-                finalCode << expandMacro(compiler, loc, scope, trOutput, macro.str(), returnValue, functions, includes) << '\n';
+                finalCode << expandMacro(compiler, loc, scope, trOutput, macro.str(), returnValue, functions, includes, returnType) << '\n';
                 macro.str("");
                 macro.clear();
             }
@@ -245,13 +246,14 @@ bool CCCodeVar::getReturnThis() {
 }
 
 shared_ptr<CType> CCCodeVar::getType(Compiler* compiler) {
-    return compiler->typeVoid;
+    return returnType;
 }
 
 void CCCodeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     vector<shared_ptr<CFunction>> functions;
     map<string, string> includes;
-    string finalCode = expandMacros(compiler, loc, scope.lock(), trOutput, code, storeValue, functions, includes);
+    shared_ptr<CType> returnType;
+    string finalCode = expandMacros(compiler, loc, scope.lock(), trOutput, code, storeValue, functions, includes, returnType);
 
     for (auto cfunction : functions) {
         cfunction->transpileDefinition(compiler, trOutput);
@@ -303,7 +305,8 @@ void CCCodeVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr
 shared_ptr<CVar> NCCode::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
     vector<shared_ptr<CFunction>> functions;
     map<string, string> includes;
-    string finalCode = expandMacros(compiler, loc, scope, nullptr, code, nullptr, functions, includes);
+    shared_ptr<CType> returnType = compiler->typeVoid;
+    string finalCode = expandMacros(compiler, loc, scope, nullptr, code, nullptr, functions, includes, returnType);
 
-    return make_shared<CCCodeVar>(loc, scope, codeType, code);
+    return make_shared<CCCodeVar>(loc, scope, codeType, code, returnType);
 }
