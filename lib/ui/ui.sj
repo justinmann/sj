@@ -1,6 +1,7 @@
 include "buttonElement.sj"
 include "fillElement.sj"
 include "imageElement.sj"
+include "textElement.sj"
 include "color.sj"
 include "element.sj"
 include "rect.sj"
@@ -9,6 +10,7 @@ include "surface.sj"
 include "size.sj"
 include "image.sj"
 include "texture.sj"
+include "font.sj"
 
 onClick(timestemp: 'f64, x: 'i32, y: 'i32) {
 	console.write("click")

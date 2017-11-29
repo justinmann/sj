@@ -28,6 +28,11 @@ root : value(fillElement(
 		buttonElement() as #element,
 		imageElement(
 			image : image(rootSurface.getTexture("assets/hello2.bmp"))
+		) as #element,
+		textElement(
+			font = font("assets/sample.ttf", 25)
+			text = "Bob"
+			color = color(255, 0, 0)
 		) as #element
 	]
 ) as #element)
