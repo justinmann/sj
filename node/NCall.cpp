@@ -54,7 +54,7 @@ shared_ptr<vector<FunctionParameter>> CCallVar::getParameters(Compiler* compiler
     for (auto it : callee->argDefaultValues) {
         if (argIndex < parameters->size() && (*parameters)[argIndex].var == nullptr) {
             if (it.value == nullptr) {
-                compiler->addError(loc, CErrorCode::ParameterRequired, "parameter %d is required", argIndex);
+                compiler->addError(loc, CErrorCode::ParameterRequired, "parameter %d is required for function '%s'", argIndex, callee->name.c_str());
                 return nullptr;
             }
             assert(it.value->nodeType != NodeType_Assignment);
