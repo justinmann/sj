@@ -286,7 +286,6 @@ void TrValue::addInitToStatements(TrBlock* block) {
     }
     else if (type->typeMode == CTM_Local) {
         assert(!type->parent.expired());
-        assert(!type->isOption);
     }
     else {
         assert(false);
