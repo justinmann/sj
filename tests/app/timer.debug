@@ -14,11 +14,15 @@ anon4()'stack anon4 {
   this
 }
 
-anon5()'stack anon5 {
+anon5(normal'i32:, hot'i32:, pressed'i32:)'stack anon5 {
   this
 }
 
 anon6()'stack anon6 {
+  this
+}
+
+anon7()'stack anon7 {
   this
 }
 
@@ -36,15 +40,6 @@ runLoop()'void {
 	bool quit = false;
     while (!quit) {
         sjf_mainLoop();
-
-        //Handle events on queue
-		SDL_Event e;
-        while(SDL_PollEvent( &e ) != 0) {
-            //User requests quit
-            if( e.type == SDL_QUIT ) {
-                quit = true;
-            }
-        }
     }
 ##endif	
 	
@@ -64,7 +59,7 @@ sdlSurface #surface (size'stack size:, win'ptr=, ren'ptr=)'heap sdlSurface {
 	        exit(-1);
 	    }
 
-	    _this->win = (uintptr_t)SDL_CreateWindow("Hello World!", 100, 100, _this->size.w, _this->size.h, SDL_WINDOW_SHOWN);
+	    _this->win = (uintptr_t)SDL_CreateWindow("Hello World!", 100, 100, _this->size.w, _this->size.h, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	    if (_this->win == 0) {
 	        printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
 	        exit(-1);
@@ -81,13 +76,17 @@ sdlSurface #surface (size'stack size:, win'ptr=, ren'ptr=)'heap sdlSurface {
 }
 
 global()'void {
-  style'stack anon6 : anon6(this = anon6())
-  colors'stack anon5 : anon5(this = anon5())
+  style'stack anon7 : anon7(this = anon7())
+  colors'stack anon6 : anon6(this = anon6())
+  buttonState'stack anon5 : anon5(this = anon5(
+    normal'i32 : this.normal,
+    hot'i32 : this.hot,
+    pressed'i32 : this.pressed
+  ))
   convert'stack anon4 : anon4(this = anon4())
   random'stack anon3 : anon3(this = anon3())
   parse'stack anon2 : anon2(this = anon2())
   console'stack anon1 : anon1(this = anon1())
-  frame'i32 = 0i
   cdefine{
 
 	#include(<emscripten.h>, EMSCRIPTEN)
@@ -141,15 +140,16 @@ SDL_Texture* renderText(const char* message, const char* fontFile, SDL_Color col
 
 
 }cfunction
+  frame'i32 = 0i
   rootSurface'heap #surface : sdlSurface(this = sdlSurface(
     size'stack size : this.size,
     win'ptr = this.win,
     ren'ptr = this.ren
   )) as heap #surface
-  root'heap #element? : value(fillElement(this = fillElement(
+  root'heap #element : fillElement(this = fillElement(
     children'stack array_heap_element : this.children,
     rect'stack rect = this.rect
-  )) as heap #element)
+  )) as heap #element
   runLoop()
   void
 }

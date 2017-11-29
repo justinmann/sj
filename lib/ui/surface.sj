@@ -1,7 +1,7 @@
 #surface(
 	clear()'void
 	present()'void
-	getSize()'local size
+	getSize()'size
 	fillRect(rect : 'rect, color: 'color)'void
 	drawImage(rect: 'rect, image: 'image)'void
 	drawText(rect: 'rect, font: 'font, text: 'string, color: 'color)'void
@@ -33,8 +33,13 @@ sdlSurface #surface(
 		SDL_RenderPresent((SDL_Renderer*)_parent->ren);
 	}c
 
-	getSize()'local size {
-		size
+	getSize()'size {
+		w = 0
+		h = 0
+		c{ 
+			SDL_GetRendererOutputSize((SDL_Renderer*)_parent->ren, &sjv_w, &sjv_h);
+		}c
+		size(w, h)
 	}
 
 	fillRect(rect: 'rect, color: 'color)'void c{
@@ -43,31 +48,35 @@ sdlSurface #surface(
 	}c
 
 	drawImage(rect: 'rect, image: 'image)'void c{
-		SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, (SDL_Rect*)&(image->rect), (SDL_Rect*)rect)
+		if (image->texture.tex) {
+			SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, (SDL_Rect*)&(image->rect), (SDL_Rect*)rect);
+		}
 	}c
 
 	drawText(rect: 'rect, font: 'font, text: 'string, color: 'color)'void c{
-		SDL_Color sdlColor;
-		sdlColor.r = color->r;
-		sdlColor.g = color->g;
-		sdlColor.b = color->b;
-		sdlColor.a = color->a;
-	    SDL_Surface *surf = TTF_RenderText_Blended((TTF_Font*)font->data, (char*)text->data.data, sdlColor);
-	    if (surf == 0) {
-	        printf("TTF_RenderText Error: %s\n", SDL_GetError());
+		if (((char*)text->data.data)[0] != 0) {
+			SDL_Color sdlColor;
+			sdlColor.r = color->r;
+			sdlColor.g = color->g;
+			sdlColor.b = color->b;
+			sdlColor.a = color->a;
+		    SDL_Surface *surf = TTF_RenderText_Blended((TTF_Font*)font->data, (char*)text->data.data, sdlColor);
+		    if (surf == 0) {
+		        printf("TTF_RenderText Error: %s\n", SDL_GetError());
+		    }
+
+		    SDL_Texture *texture = SDL_CreateTextureFromSurface((SDL_Renderer*)_parent->ren, surf);
+		    if (texture == 0) {
+		        printf("SDL_CreateTextureFromSurface Error: %s\n", SDL_GetError());
+		    }
+
+		    SDL_RenderCopy((SDL_Renderer*)_parent->ren, texture, NULL, (SDL_Rect*)rect);
+
+		    SDL_DestroyTexture(texture);
+
+		    //Clean up the surface and font
+		    SDL_FreeSurface(surf);
 	    }
-
-	    SDL_Texture *texture = SDL_CreateTextureFromSurface((SDL_Renderer*)_parent->ren, surf);
-	    if (texture == 0) {
-	        printf("SDL_CreateTextureFromSurface Error: %s\n", SDL_GetError());
-	    }
-
-	    SDL_RenderCopy((SDL_Renderer*)_parent->ren, texture, NULL, (SDL_Rect*)rect);
-
-	    SDL_DestroyTexture(texture);
-
-	    //Clean up the surface and font
-	    SDL_FreeSurface(surf);
 	}c
 
 	getTextSize(font: 'font, text: 'string)'size {
@@ -108,7 +117,7 @@ sdlSurface #surface(
 	        exit(-1);
 	    }
 
-	    _this->win = (uintptr_t)SDL_CreateWindow("Hello World!", 100, 100, _this->size.w, _this->size.h, SDL_WINDOW_SHOWN);
+	    _this->win = (uintptr_t)SDL_CreateWindow("Hello World!", 100, 100, _this->size.w, _this->size.h, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	    if (_this->win == 0) {
 	        printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
 	        exit(-1);

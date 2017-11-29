@@ -19,4 +19,8 @@ textElement #element (
 		)
 		surface.drawText(final, font, text, color)
 	}
+
+	getChildren()'local array?!#element {
+		empty'local array?!#element
+	}
 ) { this }

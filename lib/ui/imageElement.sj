@@ -10,4 +10,8 @@ imageElement #element (
 	render(surface : '#surface)'void {
 		surface.drawImage(rect, image)
 	}
+
+	getChildren()'local array?!#element {
+		empty'local array?!#element
+	}
 ) { this }

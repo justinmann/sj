@@ -11,25 +11,11 @@ include "size.sj"
 include "image.sj"
 include "texture.sj"
 include "font.sj"
+include "mouseHandler.sj"
+include "point.sj"
 
 onClick(timestemp: 'f64, x: 'i32, y: 'i32) {
 	console.write("click")
-}
-
-frame = 0
-
-mainLoop() {
-	console.write("mainLoop - " + convert.i32toString(frame))
-
-	rootSurface.clear()
-	size : rootSurface.getSize()
-	rect : rect(0, 0, size.w, size.h)
-	root.setRect(rect)
-	root.render(rootSurface)
-	rootSurface.present()
-
-	frame++
-	void
 }
 
 cdefine{
@@ -83,6 +69,63 @@ SDL_Texture* renderText(const char* message, const char* fontFile, SDL_Color col
 
 }cfunction
 
+fireMouseEvent(element :'#element, point: 'point) {
+    mouseHandler : element as #mouseHandler?
+    mouseHandler?.onMouseUp(point)
+    children : element.getChildren()
+    if !isEmpty(children) {
+        c : getValue(children)
+        for i (0 to c.size) {
+            fireMouseEvent(c[i], point)
+        }
+    }
+    void
+}
+
+frame = 0
+
+mainLoop() {
+//  console.write("mainLoop - " + convert.i32toString(frame))
+
+    rootSurface.clear()
+    size : rootSurface.getSize()
+    rect : rect(0, 0, size.w, size.h)
+    root.setRect(rect)
+    root.render(rootSurface)
+    rootSurface.present()
+
+    isMouseButton = false
+    x = 0
+    y = 0
+    c{
+        SDL_Event e;
+        while(SDL_PollEvent( &e ) != 0) {
+            switch (e.type) {
+                case SDL_QUIT:
+                    exit(0);
+                    break;
+                case SDL_MOUSEBUTTONDOWN:
+                    printf("SDL_MOUSEBUTTONDOWN\n");
+                    sjv_isMouseButton = true;
+                    sjv_x = e.button.x;
+                    sjv_y = e.button.x;
+                    break;
+                case SDL_MOUSEBUTTONUP:
+                    printf("SDL_MOUSEBUTTONUP\n");
+                    break;
+            }
+        }
+    
+    }c
+
+    if isMouseButton {
+        fireMouseEvent(root, point(x, y)) 
+    }
+
+    frame++
+    void
+}
+
 runLoop() {
 	c{
 ##ifdef EMSCRIPTEN
@@ -92,15 +135,6 @@ runLoop() {
 	bool quit = false;
     while (!quit) {
         sjf_mainLoop();
-
-        //Handle events on queue
-		SDL_Event e;
-        while(SDL_PollEvent( &e ) != 0) {
-            //User requests quit
-            if( e.type == SDL_QUIT ) {
-                quit = true;
-            }
-        }
     }
 ##endif	
 	}c

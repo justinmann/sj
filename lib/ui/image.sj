@@ -1,5 +1,5 @@
 image(
-	texture : 'texture
+	texture : texture()
 	rect = rect()
 ) { 
 	if rect.w == 0 && rect.h == 0 {
