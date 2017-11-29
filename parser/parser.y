@@ -66,10 +66,10 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID TSTRING TCHAR TCBLOCK TCFUNCTION TCDEFINE
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TAT TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TASOPTION TQUESTION TEMPTY TVALUE TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TLOCAL TAUTO TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TAT TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TASOPTION TQUESTION TEMPTY TVALUE TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TLOCAL TAUTO TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR 
 
 /* Non Terminal symbols. Types refer to union decl above */
-%type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch copy destroy expr
+%type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch copy destroy expr end_optional end_star
 %type <var> var var_right expr_math expr_var const expr_and expr_comp tuple expr_and_inner
 %type <block> stmts
 %type <nif> if_expr
@@ -172,16 +172,17 @@ destroy				: /* Blank! */									{ $$ = nullptr; }
 					| TDESTROY block								{ $$ = $2; }
 					;
 
-func_block			: TLPAREN func_args TRPAREN						{ $$ = $2; }
+func_block			: TLPAREN end_optional func_args end_optional TRPAREN	{ $$ = $3; }
+   					| TLPAREN TRPAREN										{ $$ = new NodeList(); }
 					;
 
 func_args  			: func_arg										{ $$ = new NodeList(); if ($1) { $$->push_back(shared_ptr<NBase>($1)); } }
-					| func_args TEND func_arg 						{ if ($3) { $1->push_back(shared_ptr<NBase>($3)); } }
+					| func_args end_star func_arg 						{ if ($3) { $1->push_back(shared_ptr<NBase>($3)); } }
+					| func_args TCOMMA end_star func_arg 				{ if ($3) { $1->push_back(shared_ptr<NBase>($4)); } }
 					| func_args TCOMMA func_arg 					{ if ($3) { $1->push_back(shared_ptr<NBase>($3)); } }
 					;
 
-func_arg			: /* Blank! */									{ $$ = nullptr; }
-					| interface_decl
+func_arg			: interface_decl
 					| assign 										
 					| func_decl 										
 					| expr 											{ $$ = $1; }
@@ -332,10 +333,20 @@ tuple_args 			: expr_comp										{ $$ = new NodeList(); $$->push_back(shared_p
 					| tuple_args TCOMMA expr_comp 					{ $1->push_back(shared_ptr<NBase>($3)); }
 					;
 
-array				: TLBRACKET array_args TRBRACKET				{ $$ = new NArray(LOC, shared_ptr<NodeList>($2)); }
+array				: TLBRACKET end_optional array_args end_optional TRBRACKET	{ $$ = new NArray(LOC, shared_ptr<NodeList>($3)); }
+					;
+
+end_optional		: /* Blank! */									{ $$ = nullptr; }			
+					| end_star									    { $$ = nullptr; }
+					;
+
+end_star			: TEND											{ $$ = nullptr; }			
+					| TEND end_star									{ $$ = nullptr; }
 					;
 
 array_args 			: expr											{ $$ = new NodeList(); $$->push_back(shared_ptr<NBase>($1)); }
+					| array_args TEND expr 							{ $1->push_back(shared_ptr<NBase>($3)); }
+					| array_args TCOMMA TEND expr 					{ $1->push_back(shared_ptr<NBase>($4)); }
 					| array_args TCOMMA expr 						{ $1->push_back(shared_ptr<NBase>($3)); }
 					;
 
