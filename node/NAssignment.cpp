@@ -139,7 +139,8 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
             if (leftVar) {
                 leftStoreVar = dynamic_pointer_cast<CStoreVar>(leftVar);
                 if (!leftStoreVar) {
-                    assert(false);
+                    compiler->addError(loc, CErrorCode::ImmutableAssignment, "cannot assign to var '%s'", name.c_str());
+                    return nullptr;
                 }
 
                 if (!op.isMutable) {
