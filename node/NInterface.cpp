@@ -379,8 +379,8 @@ shared_ptr<CInterface> CInterfaceDefinition::getInterface(Compiler* compiler, ve
         }
         
         interface = make_shared<CInterface>(loc, shared_from_this(), funcParent);
-        interface = interface->init(compiler, ninterface, templateTypes);
         cinterfaces[templateTypes] = interface;
+        interface = interface->init(compiler, ninterface, templateTypes);
     }
     return interface;
 }
