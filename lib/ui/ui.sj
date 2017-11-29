@@ -23,10 +23,13 @@ cdefine{
 	#include(<emscripten/html5.h>, EMSCRIPTEN)
 	#include(<SDL.h>, EMSCRIPTEN)
 	#include(<SDL_ttf.h>, EMSCRIPTEN)
+    #include(<SDL_image.h>, WIN32)
 	#include(<SDL.h>, WIN32)
 	#include(<SDL_ttf.h>, WIN32)
+    #include(<SDL_image.h>, WIN32)
 	#include(<SDL2/SDL.h>, __APPLE__)
 	#include(<SDL2_ttf/SDL_ttf.h>, __APPLE__)
+    #include(<SDL2_image/SDL_image.h>, __APPLE__)
 
 ##ifdef EMSCRIPTEN
 	EM_BOOL em_onClick(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData);
@@ -69,14 +72,27 @@ SDL_Texture* renderText(const char* message, const char* fontFile, SDL_Color col
 
 }cfunction
 
-fireMouseEvent(element :'#element, point: 'point) {
+fireMouseUp(element :'#element, point: 'point) {
     mouseHandler : element as #mouseHandler?
     mouseHandler?.onMouseUp(point)
     children : element.getChildren()
     if !isEmpty(children) {
         c : getValue(children)
         for i (0 to c.size) {
-            fireMouseEvent(c[i], point)
+            fireMouseUp(c[i], point)
+        }
+    }
+    void
+}
+
+fireMouseDown(element :'#element, point: 'point) {
+    mouseHandler : element as #mouseHandler?
+    mouseHandler?.onMouseDown(point)
+    children : element.getChildren()
+    if !isEmpty(children) {
+        c : getValue(children)
+        for i (0 to c.size) {
+            fireMouseDown(c[i], point)
         }
     }
     void
@@ -94,7 +110,8 @@ mainLoop() {
     root.render(rootSurface)
     rootSurface.present()
 
-    isMouseButton = false
+    isMouseUp = false
+    isMouseDown = false
     x = 0
     y = 0
     c{
@@ -106,20 +123,26 @@ mainLoop() {
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                     printf("SDL_MOUSEBUTTONDOWN\n");
-                    sjv_isMouseButton = true;
+                    sjv_isMouseDown = true;
                     sjv_x = e.button.x;
                     sjv_y = e.button.x;
                     break;
                 case SDL_MOUSEBUTTONUP:
                     printf("SDL_MOUSEBUTTONUP\n");
+                    sjv_isMouseUp = true;
+                    sjv_x = e.button.x;
+                    sjv_y = e.button.x;
                     break;
             }
         }
     
     }c
 
-    if isMouseButton {
-        fireMouseEvent(root, point(x, y)) 
+    if isMouseUp {
+        fireMouseUp(root, point(x, y)) 
+    }
+    if isMouseDown {
+        fireMouseDown(root, point(x, y)) 
     }
 
     frame++

@@ -6,12 +6,12 @@ buttonState: ^(
 
 buttonElement #element #mouseHandler (
 	text = ""
-	textColor = colors.green()
+	textColor = colors.black()
 	font = style.getFont(0 /* TODO: typeId(button) */)
 	rect = rect()
-	normalImage = image()
-	hotImage = image()
-	pressedImage = image()
+	normalImage = image(rootSurface.getTexture(src = "assets/buttonNormal.png"))
+	hotImage = image(rootSurface.getTexture(src = "assets/buttonHot.png"))
+	pressedImage = image(rootSurface.getTexture(src = "assets/buttonPressed.png"))
 	state = buttonState.normal
 
 	setRect(rect_ : 'rect) {
@@ -39,7 +39,6 @@ buttonElement #element #mouseHandler (
 
 		// TODO: change color based on state
 		// TODO: support nine-grid image background
-		// TODO: render text
 		void
 	}
 
@@ -49,14 +48,22 @@ buttonElement #element #mouseHandler (
 
 	onMouseUp(point : 'point)'void {
 		console.write("buttonElement onMouseUp " + convert.i32toString(point.x) + ", " + convert.i32toString(point.y))
+		state = buttonState.normal
+		void
 	}
 
 	onMouseDown(point : 'point)'void {
 		console.write("buttonElement onMouseDown")
+		state = buttonState.pressed
+		void
 	}
 
 	onMouseMove(point : 'point)'void {
 		console.write("buttonElement onMouseMove")
+		if state == buttonState.normal {
+			state = buttonState.hot
+		}
+		void
 	}
 
 ) { this }
