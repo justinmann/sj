@@ -93,7 +93,7 @@ sdlSurface #surface(
 		c{
 		    SDL_Surface* bmp = IMG_Load((char*)src->data.data);
 		    if (bmp == 0) {
-		        printf("IMG_Load Error: %s\n", SDL_GetError());
+		        printf("IMG_Load Error: %s for '%s'\n", SDL_GetError(), (char*)src->data.data);
 		    }
 
 		    sjv_tex = (uintptr_t)SDL_CreateTextureFromSurface((SDL_Renderer*)_parent->ren, bmp);

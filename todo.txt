@@ -1,6 +1,6 @@
-* button with text & image
-* button mousedown
-* button mouseup
+* fix mac build:
+brew install llvm && rm /usr/local/opt/emscripten/libexec/llvm/bin/llvm-ar && ln -s /usr/local/opt/llvm/bin/llvm-ar /usr/local/opt/emscripten/libexec/llvm/bin/llvm-ar
+
 * use #line pragma directive
 * de-dup global strings
 * stack optional
