@@ -18,7 +18,7 @@ anon5()'stack anon5 {
   this
 }
 
-element #element (children'stack array_heap_element:, rect'stack rect=)'heap element {
+fillElement #element (children'stack array_heap_element:, rect'stack rect=)'heap fillElement {
   this
 }
 
@@ -47,7 +47,7 @@ runLoop()'void {
 }c
 }
 
-sdlSurace #surface (size'stack size:, win'ptr=, ren'ptr=)'heap sdlSurace {
+sdlSurface #surface (size'stack size:, win'ptr=, ren'ptr=)'heap sdlSurface {
   c{
 
 		if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -82,8 +82,6 @@ global()'void {
   random'stack anon3 : anon3(this = anon3())
   parse'stack anon2 : anon2(this = anon2())
   console'stack anon1 : anon1(this = anon1())
-  root'heap #element? = empty'heap #element?
-  rootSurface'heap #surface? = empty'heap #surface?
   frame'i32 = 0i
   cdefine{
 
@@ -138,12 +136,12 @@ SDL_Texture* renderText(const char* message, const char* fontFile, SDL_Color col
 
 
 }cfunction
-  rootSurface'heap #surface? = sdlSurace(this = sdlSurace(
+  rootSurface'heap #surface : sdlSurface(this = sdlSurface(
     size'stack size : this.size,
     win'ptr = this.win,
     ren'ptr = this.ren
   )) as heap #surface
-  root'heap #element? = value(element(this = element(
+  root'heap #element? : value(fillElement(this = fillElement(
     children'stack array_heap_element : this.children,
     rect'stack rect = this.rect
   )) as heap #element)

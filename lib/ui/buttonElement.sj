@@ -1,4 +1,4 @@
-button #element (
+buttonElement #element (
 	text = ""
 	font = style.getFont(0 /* TODO: typeId(button) */)
 	rect = rect(0, 0, 0, 0)

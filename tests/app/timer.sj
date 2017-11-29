@@ -22,9 +22,14 @@ timerElement #element (
 timerElement : timerElement()
 */
 
-rootSurface = sdlSurace() as #surface
-root = value(element(
-	children : [ button() as #element ]
+rootSurface : sdlSurface() as #surface
+root : value(fillElement(
+	children : [ 
+		buttonElement() as #element,
+		imageElement(
+			image : image(rootSurface.getTexture("assets/hello2.bmp"))
+		) as #element
+	]
 ) as #element)
 
 runLoop()

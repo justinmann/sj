@@ -1,13 +1,13 @@
-* show bitmap
 * show text
+* button with text & image
+* button mousedown
+* button mouseup
 * use #line pragma directive
 * de-dup global strings
 * stack optional
-* second assignment to return var does not free
+* second assignment to this var does not free
 * improve debug out for interfaces
 * override interfaces : a as type   -> a.asType()'t
-* buttonElement
-* textElement
 * two buttons for +/-
 
 -- features --

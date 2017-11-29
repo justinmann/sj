@@ -1,13 +1,14 @@
-include "button.sj"
+include "buttonElement.sj"
+include "fillElement.sj"
+include "imageElement.sj"
 include "color.sj"
 include "element.sj"
 include "rect.sj"
 include "style.sj"
 include "surface.sj"
 include "size.sj"
-
-root = empty'#element
-rootSurface = empty'#surface
+include "image.sj"
+include "texture.sj"
 
 onClick(timestemp: 'f64, x: 'i32, y: 'i32) {
 	console.write("click")
@@ -16,17 +17,15 @@ onClick(timestemp: 'f64, x: 'i32, y: 'i32) {
 frame = 0
 
 mainLoop() {
-	if !isEmpty(rootSurface) {
-		console.write("mainLoop - " + convert.i32toString(frame))
+	console.write("mainLoop - " + convert.i32toString(frame))
 
-		surf : getValue(rootSurface)
-		surf.clear()
-		size : surf.getSize()
-		rect : rect(0, 0, size.w, size.h)
-		root?.setRect(rect)
-		root?.render(surf)
-		surf.present()
-	}
+	rootSurface.clear()
+	size : rootSurface.getSize()
+	rect : rect(0, 0, size.w, size.h)
+	root.setRect(rect)
+	root.render(rootSurface)
+	rootSurface.present()
+
 	frame++
 	void
 }

@@ -3,6 +3,8 @@
 	present()'void
 	getSize()'local size
 	fillRect(rect : 'rect, color: 'color)'void
+	drawImage(rect: 'rect, image: 'image)'void
+	getTexture(src: 'string)'texture
 )
 
 htmlCanvas2d #surface(
@@ -15,7 +17,7 @@ htmlCanvas2d #surface(
 	}
 ) { this }
 
-sdlSurace #surface(
+sdlSurface #surface(
 	size : size(640, 480)
 	win = 0 as ptr
 	ren = 0 as ptr
@@ -37,6 +39,28 @@ sdlSurace #surface(
 		SDL_SetRenderDrawColor((SDL_Renderer*)_parent->ren, color->r, color->g, color->b, color->a);
 		SDL_RenderDrawRect((SDL_Renderer*)_parent->ren, (SDL_Rect*)rect);
 	}c
+
+	drawImage(rect: 'rect, image: 'image)'void c{
+		SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, (SDL_Rect*)&(image->rect), (SDL_Rect*)rect)
+	}c
+
+	getTexture(src: 'string)'texture {
+		tex = 0 as ptr
+		c{
+		    SDL_Surface* bmp = SDL_LoadBMP((char*)src->data.data);
+		    if (bmp == 0) {
+		        printf("SDL_LoadBMP Error: %s\n", SDL_GetError());
+		    }
+
+		    sjv_tex = (uintptr_t)SDL_CreateTextureFromSurface((SDL_Renderer*)_parent->ren, bmp);
+		    SDL_FreeSurface(bmp);
+		    if (sjv_tex == 0) {
+		        printf("SDL_CreateTextureFromSurface Error: %s\n", SDL_GetError());
+		    }
+		}c
+
+		texture(tex : tex)
+	}
 ) {
 	c{
 		if (SDL_Init(SDL_INIT_VIDEO) != 0) {
