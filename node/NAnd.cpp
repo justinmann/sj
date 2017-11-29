@@ -16,7 +16,6 @@ void CAndVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock
 
     stringstream line;
     line << leftValue->getName(trBlock) << " && " << rightValue->getName(trBlock);
-    trBlock->statements.push_back(line.str());
 
     auto resultValue = make_shared<TrValue>(nullptr, compiler->typeBool, line.str(), false);
     storeValue->retainValue(compiler, loc, trBlock, resultValue);
