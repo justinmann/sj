@@ -179,16 +179,18 @@ shared_ptr<CBaseFunction> CInterface::getCFunction(Compiler* compiler, CLoc locC
     if (templateTypeNames == nullptr) {
         auto t = methodByName.find(name);
         if (t != methodByName.end()) {
-            if (returnMode == CTM_Undefined) {
+            if (returnMode == CTM_Undefined || returnMode == CTM_Stack || returnMode == CTM_Value) {
                 if (t->second[CTM_Stack]) {
                     return t->second[CTM_Stack];
                 }
                 return t->second[CTM_Heap];
             }
-            else if (returnMode == CTM_Value) {
+            else {
+                if (t->second[CTM_Heap]) {
+                    return t->second[CTM_Heap];
+                }
                 return t->second[CTM_Stack];
             }
-            return t->second[returnMode];
         }
     }
     return interfaceMethod;
