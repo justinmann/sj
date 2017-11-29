@@ -1,4 +1,3 @@
-* show text
 * button with text & image
 * button mousedown
 * button mouseup

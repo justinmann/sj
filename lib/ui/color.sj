@@ -1,3 +1,10 @@
+colors : ^(
+	red() { color(255, 0, 0) }
+	green() { color(0, 255, 0) }
+	blue() { color(0, 0, 255) }
+	white() { color(255, 255, 255) }
+) { this }
+
 color(
 	r : 'i32
 	g : 'i32

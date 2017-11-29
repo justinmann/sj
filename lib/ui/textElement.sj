@@ -1,7 +1,7 @@
 textElement #element (
 	font = 'font
 	text = 'string
-	color = color(255, 255, 255)
+	color = colors.white()
 	rect = rect()
 
 	setRect(rect_ : 'rect)'void {

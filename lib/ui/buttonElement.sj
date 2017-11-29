@@ -12,7 +12,7 @@ buttonElement #element (
 	render(surface : '#surface) {
 		// TODO: change color based on state
 		// TODO: support nine-grid image background
-		surface.fillRect(rect(rect.x, rect.y + offset, rect.w, rect.h - 2 * offset), color(255, 0, 0))
+		surface.fillRect(rect(rect.x, rect.y + offset, rect.w, rect.h - 2 * offset), colors.blue())
 		// TODO: render text
 		offset++
 		void

@@ -32,7 +32,7 @@ root : value(fillElement(
 		textElement(
 			font = font("assets/sample.ttf", 25)
 			text = "Bob"
-			color = color(255, 0, 0)
+			color = colors.red()
 		) as #element
 	]
 ) as #element)

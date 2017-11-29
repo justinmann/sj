@@ -18,6 +18,10 @@ anon5()'stack anon5 {
   this
 }
 
+anon6()'stack anon6 {
+  this
+}
+
 fillElement #element (children'stack array_heap_element:, rect'stack rect=)'heap fillElement {
   this
 }
@@ -77,7 +81,8 @@ sdlSurface #surface (size'stack size:, win'ptr=, ren'ptr=)'heap sdlSurface {
 }
 
 global()'void {
-  style'stack anon5 : anon5(this = anon5())
+  style'stack anon6 : anon6(this = anon6())
+  colors'stack anon5 : anon5(this = anon5())
   convert'stack anon4 : anon4(this = anon4())
   random'stack anon3 : anon3(this = anon3())
   parse'stack anon2 : anon2(this = anon2())
