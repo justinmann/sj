@@ -256,7 +256,7 @@ void CType::transpileDefaultValue(Compiler* compiler, CLoc loc, TrBlock* trBlock
         storeValue->retainValue(compiler, loc, trBlock, temp);
     }
     else {
-        assert(false);
+        compiler->addError(loc, CErrorCode::InvalidType, "no default value for type '%s'", valueName.c_str());
     }
 }
 
