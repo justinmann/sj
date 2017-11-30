@@ -180,8 +180,11 @@ sji_foo* sjv_a;
 sjs_string_heap* sjv_bob;
 sjs_anon1 sjv_console;
 sjs_anon4 sjv_convert;
+int32_t sjv_i32_max;
+int32_t sjv_i32_min;
 sjs_anon2 sjv_parse;
 sjs_anon3 sjv_random;
+uint32_t sjv_u32_max;
 
 void sjf_anon1(sjs_anon1* _this);
 void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* to);
@@ -441,6 +444,9 @@ int main(int argc, char** argv) {
     sjf_anon3(&sjv_random);
     sjf_anon2(&sjv_parse);
     sjf_anon1(&sjv_console);
+    sjv_i32_max = (-2147483647 - 1);
+    sjv_i32_min = 2147483647;
+    sjv_u32_max = (uint32_t)4294967295u;
     sjt_cast1 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
     sjt_cast1->_refCount = 1;
     sjf_class_heap(sjt_cast1);

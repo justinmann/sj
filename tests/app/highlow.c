@@ -169,10 +169,13 @@ bool sjt_not1;
 bool sjt_while1;
 sjs_anon1 sjv_console;
 sjs_anon4 sjv_convert;
+int32_t sjv_i32_max;
+int32_t sjv_i32_min;
 bool sjv_isCorrect;
 int32_t sjv_num;
 sjs_anon2 sjv_parse;
 sjs_anon3 sjv_random;
+uint32_t sjv_u32_max;
 
 void sjf_anon1(sjs_anon1* _this);
 void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* to);
@@ -445,6 +448,9 @@ int main(int argc, char** argv) {
     sjf_anon3(&sjv_random);
     sjf_anon2(&sjv_parse);
     sjf_anon1(&sjv_console);
+    sjv_i32_max = (-2147483647 - 1);
+    sjv_i32_min = 2147483647;
+    sjv_u32_max = (uint32_t)4294967295u;
     sjt_dot1 = &sjv_console;
     sjt_call1.count = 15;
     sjt_call1.data.size = 16;

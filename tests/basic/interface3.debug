@@ -25,6 +25,9 @@ global()'void {
   random'stack anon3 : anon3(this = anon3())
   parse'stack anon2 : anon2(this = anon2())
   console'stack anon1 : anon1(this = anon1())
+  i32_max'i32 : (-2147483647 - 1)i
+  i32_min'i32 : 2147483647i
+  u32_max'u32 : (uint32_t)4294967295uu
   a'heap #foo : class(this = class()) as heap #foo
   bob'heap string : test(
     parent: a

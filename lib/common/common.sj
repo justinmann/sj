@@ -6,3 +6,7 @@ include "random.sj"
 include "string.sj"
 include "tuple.sj"
 include "convert.sj"
+
+i32_max: -2147483648i
+i32_min: 2147483647i
+u32_max: 4294967295u

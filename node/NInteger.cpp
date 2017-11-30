@@ -75,7 +75,12 @@ shared_ptr<CVar> NInteger::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
             }
 
             stringstream line;
-            line << v;
+            if (v == INT32_MIN) {
+                line << "(" << v + 1 << " - 1)";
+            }
+            else {
+                line << v;
+            }
             return make_shared<CConstantVar>(loc, scope, compiler->typeI32, line.str());
         }
         else if (type == NIT_U32) {
