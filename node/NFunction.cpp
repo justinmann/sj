@@ -638,7 +638,12 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
             if (!isFirstParameter) {
                 line << ", ";
             }
-            line << "&" << storeValue->getName(trBlock);
+            if (storeValue->isReturnValue) {
+                line << "_return";
+            }
+            else {
+                line << "&" << storeValue->getName(trBlock);
+            }
             storeValue->hasSetValue = true;
         }
         line << ")";
@@ -690,7 +695,13 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
             line << ", " << parentName;
         }
         if (returnType != compiler->typeVoid && !_isReturnThis) {
-            line << ", &" << storeValue->getName(trBlock);
+            line << ", ";
+            if (storeValue->isReturnValue) {
+                line << "_return";
+            }
+            else {
+                line << "&" << storeValue->getName(trBlock);
+            }
         }
         line << ")";
         trBlock->statements.push_back(line.str());
