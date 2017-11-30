@@ -92,7 +92,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
     temp[0] = toupper(temp[0]);
     string setFunctionName = "set" + temp;
     auto setFunction = cfunction->getCFunction(compiler, loc, setFunctionName, scope, nullptr, returnMode);
-    if (setFunction) {
+    if (parentVar && setFunction) {
         if (returnMode != CTM_Heap) {
             returnMode = CTM_Stack;
         }

@@ -62,3 +62,5 @@ tests/app/app.js
 tests/app/app.wasm
 tests/app/app.wasm.map
 tests/app/app.wast
+
+tests/app/timer.data

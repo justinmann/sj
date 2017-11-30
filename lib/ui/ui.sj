@@ -13,6 +13,7 @@ include "texture.sj"
 include "font.sj"
 include "mouseHandler.sj"
 include "point.sj"
+include "borderLayout.sj"
 
 onClick(timestemp: 'f64, x: 'i32, y: 'i32) {
 	console.write("click")
