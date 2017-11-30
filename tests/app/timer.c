@@ -130,26 +130,26 @@ const char* sjg_string8 = "assets/buttonHot.png";
 #define sjs_color_heap_typeId 24
 #define sjs_texture_typeId 25
 #define sjs_texture_heap_typeId 26
-#define sjs_image_typeId 27
-#define sjs_image_heap_typeId 28
-#define sjs_array_char_typeId 29
-#define sjs_array_char_heap_typeId 30
-#define sjs_string_typeId 31
-#define sjs_string_heap_typeId 32
-#define sjs_font_typeId 33
-#define sjs_font_heap_typeId 34
-#define sji_surface_typeId 35
-#define sjs_sdlSurface_heap_typeId 36
-#define sjs_array_heap_element_typeId 37
-#define sjs_array_heap_element_heap_typeId 38
-#define sjs_borderLayout_typeId 39
-#define sji_element_typeId 40
-#define sji_borderChild_typeId 41
-#define sjs_borderLayout_heap_typeId 42
-#define sjs_borderChild_typeId 43
-#define sjs_borderChild_heap_typeId 44
-#define sjs_margin_typeId 45
-#define sjs_margin_heap_typeId 46
+#define sjs_margin_typeId 27
+#define sjs_margin_heap_typeId 28
+#define sjs_image_typeId 29
+#define sjs_image_heap_typeId 30
+#define sjs_array_char_typeId 31
+#define sjs_array_char_heap_typeId 32
+#define sjs_string_typeId 33
+#define sjs_string_heap_typeId 34
+#define sjs_font_typeId 35
+#define sjs_font_heap_typeId 36
+#define sji_surface_typeId 37
+#define sjs_sdlSurface_heap_typeId 38
+#define sjs_array_heap_element_typeId 39
+#define sjs_array_heap_element_heap_typeId 40
+#define sjs_borderLayout_typeId 41
+#define sji_element_typeId 42
+#define sji_borderChild_typeId 43
+#define sjs_borderLayout_heap_typeId 44
+#define sjs_borderChild_typeId 45
+#define sjs_borderChild_heap_typeId 46
 #define sjs_buttonElement_typeId 47
 #define sjs_point_typeId 48
 #define sjs_point_heap_typeId 49
@@ -184,6 +184,8 @@ typedef struct td_sjs_color sjs_color;
 typedef struct td_sjs_color_heap sjs_color_heap;
 typedef struct td_sjs_texture sjs_texture;
 typedef struct td_sjs_texture_heap sjs_texture_heap;
+typedef struct td_sjs_margin sjs_margin;
+typedef struct td_sjs_margin_heap sjs_margin_heap;
 typedef struct td_sjs_image sjs_image;
 typedef struct td_sjs_image_heap sjs_image_heap;
 typedef struct td_sjs_array_char sjs_array_char;
@@ -202,8 +204,6 @@ typedef struct td_sji_borderChild sji_borderChild;
 typedef struct td_sjs_borderLayout_heap sjs_borderLayout_heap;
 typedef struct td_sjs_borderChild sjs_borderChild;
 typedef struct td_sjs_borderChild_heap sjs_borderChild_heap;
-typedef struct td_sjs_margin sjs_margin;
-typedef struct td_sjs_margin_heap sjs_margin_heap;
 typedef struct td_sjs_buttonElement sjs_buttonElement;
 typedef struct td_sjs_point sjs_point;
 typedef struct td_sjs_point_heap sjs_point_heap;
@@ -350,15 +350,32 @@ struct td_sjs_texture_heap {
     uintptr_t tex;
 };
 
+struct td_sjs_margin {
+    int32_t l;
+    int32_t t;
+    int32_t r;
+    int32_t b;
+};
+
+struct td_sjs_margin_heap {
+    intptr_t _refCount;
+    int32_t l;
+    int32_t t;
+    int32_t r;
+    int32_t b;
+};
+
 struct td_sjs_image {
     sjs_texture texture;
     sjs_rect rect;
+    sjs_margin margin;
 };
 
 struct td_sjs_image_heap {
     intptr_t _refCount;
     sjs_texture texture;
     sjs_rect rect;
+    sjs_margin margin;
 };
 
 struct td_sjs_array_char {
@@ -481,21 +498,6 @@ struct td_sjs_borderChild_heap {
     sjs_rect rect;
     int32_t position;
     sjs_array_heap_element_heap* _children;
-};
-
-struct td_sjs_margin {
-    int32_t l;
-    int32_t t;
-    int32_t r;
-    int32_t b;
-};
-
-struct td_sjs_margin_heap {
-    intptr_t _refCount;
-    int32_t l;
-    int32_t t;
-    int32_t r;
-    int32_t b;
 };
 
 struct td_sjs_buttonElement {
@@ -3131,6 +3133,7 @@ void sjf_image(sjs_image* _this) {
 void sjf_image_copy(sjs_image* _this, sjs_image* to) {
     sjf_texture_copy(&_this->texture, &to->texture);
     sjf_rect_copy(&_this->rect, &to->rect);
+    sjf_margin_copy(&_this->margin, &to->margin);
 }
 
 void sjf_image_destroy(sjs_image* _this) {
@@ -3587,7 +3590,138 @@ void sjf_sdlSurface_destroy(sjs_sdlSurface* _this) {
 void sjf_sdlSurface_drawImage(sjs_sdlSurface* _parent, sjs_rect* rect, sjs_image* image) {
     
 		if (image->texture.tex) {
-			SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, (SDL_Rect*)&(image->rect), (SDL_Rect*)rect);
+			if (image->margin.l > 0) {
+				if (image->margin.t > 0) {
+					SDL_Rect leftTopSrcRect;
+					leftTopSrcRect.x = image->rect.x;
+					leftTopSrcRect.y = image->rect.y;
+					leftTopSrcRect.w = image->margin.l;
+					leftTopSrcRect.h = image->margin.t;
+
+					SDL_Rect leftTopDestRect;
+					leftTopDestRect.x = rect->x;
+					leftTopDestRect.y = rect->y;
+					leftTopDestRect.w = image->margin.l;
+					leftTopDestRect.h = image->margin.t;
+					SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, &leftTopSrcRect, &leftTopDestRect);
+				}
+
+				SDL_Rect leftSrcRect;
+				leftSrcRect.x = image->rect.x;
+				leftSrcRect.y = image->rect.y + image->margin.t;
+				leftSrcRect.w = image->margin.l;
+				leftSrcRect.h = image->rect.h - image->margin.t - image->margin.b;
+
+				SDL_Rect leftDestRect;
+				leftDestRect.x = rect->x;
+				leftDestRect.y = rect->y + image->margin.t;
+				leftDestRect.w = image->margin.l;
+				leftDestRect.h = rect->h - image->margin.t - image->margin.b;
+				SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, &leftSrcRect, &leftDestRect);
+
+				if (image->margin.b > 0) {
+					SDL_Rect leftBottomSrcRect;
+					leftBottomSrcRect.x = image->rect.x;
+					leftBottomSrcRect.y = image->rect.y + image->rect.h - image->margin.b;
+					leftBottomSrcRect.w = image->margin.l;
+					leftBottomSrcRect.h = image->margin.b;
+
+					SDL_Rect leftBottomDestRect;
+					leftBottomDestRect.x = rect->x;
+					leftBottomDestRect.y = rect->y + rect->h - image->margin.b;
+					leftBottomDestRect.w = image->margin.l;
+					leftBottomDestRect.h = image->margin.b;
+					SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, &leftBottomSrcRect, &leftBottomDestRect);
+				}
+			}
+
+			if (image->margin.r > 0) {
+				if (image->margin.t > 0) {
+					SDL_Rect rightTopSrcRect;
+					rightTopSrcRect.x = image->rect.x + image->rect.w - image->margin.r;
+					rightTopSrcRect.y = image->rect.y;
+					rightTopSrcRect.w = image->margin.r;
+					rightTopSrcRect.h = image->margin.t;
+
+					SDL_Rect rightTopDestRect;
+					rightTopDestRect.x = rect->x + rect->w - image->margin.r;
+					rightTopDestRect.y = rect->y;
+					rightTopDestRect.w = image->margin.r;
+					rightTopDestRect.h = image->margin.t;
+					SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, &rightTopSrcRect, &rightTopDestRect);
+				}
+
+				SDL_Rect rightSrcRect;
+				rightSrcRect.x = image->rect.x + image->rect.w - image->margin.r;
+				rightSrcRect.y = image->rect.y + image->margin.t;
+				rightSrcRect.w = image->margin.r;
+				rightSrcRect.h = image->rect.h - image->margin.t - image->margin.b;
+
+				SDL_Rect rightDestRect;
+				rightDestRect.x = rect->x + rect->w - image->margin.r;
+				rightDestRect.y = rect->y + image->margin.t;
+				rightDestRect.w = image->margin.r;
+				rightDestRect.h = rect->h - image->margin.t - image->margin.b;
+				SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, &rightSrcRect, &rightDestRect);
+
+				if (image->margin.b > 0) {
+					SDL_Rect rightBottomSrcRect;
+					rightBottomSrcRect.x = image->rect.x + image->rect.w - image->margin.r;
+					rightBottomSrcRect.y = image->rect.y + image->rect.h - image->margin.b;
+					rightBottomSrcRect.w = image->margin.r;
+					rightBottomSrcRect.h = image->margin.b;
+
+					SDL_Rect rightBottomDestRect;
+					rightBottomDestRect.x = rect->x + rect->w - image->margin.r;
+					rightBottomDestRect.y = rect->y + rect->h - image->margin.b;
+					rightBottomDestRect.w = image->margin.r;
+					rightBottomDestRect.h = image->margin.b;
+					SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, &rightBottomSrcRect, &rightBottomDestRect);
+				}
+			}
+
+			if (image->margin.t > 0) {
+				SDL_Rect middleTopSrcRect;
+				middleTopSrcRect.x = image->rect.x + image->margin.l;
+				middleTopSrcRect.y = image->rect.y;
+				middleTopSrcRect.w = image->rect.w - image->margin.l - image->margin.r;
+				middleTopSrcRect.h = image->margin.t;
+
+				SDL_Rect middleTopDestRect;
+				middleTopDestRect.x = rect->x + image->margin.l;
+				middleTopDestRect.y = rect->y;
+				middleTopDestRect.w = rect->w - image->margin.l - image->margin.r;
+				middleTopDestRect.h = image->margin.t;
+				SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, &middleTopSrcRect, &middleTopDestRect);
+			}
+
+			SDL_Rect middleSrcRect;
+			middleSrcRect.x = image->rect.x + image->margin.l;
+			middleSrcRect.y = image->rect.y + image->margin.t;
+			middleSrcRect.w = image->rect.w - image->margin.l - image->margin.r;
+			middleSrcRect.h = image->rect.h - image->margin.t - image->margin.b;
+
+			SDL_Rect middleDestRect;
+			middleDestRect.x = rect->x + image->margin.l;
+			middleDestRect.y = rect->y + image->margin.t;
+			middleDestRect.w = rect->w - image->margin.l - image->margin.r;
+			middleDestRect.h = rect->h - image->margin.t - image->margin.b;
+			SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, &middleSrcRect, &middleDestRect);
+
+			if (image->margin.b > 0) {
+				SDL_Rect middleBottomSrcRect;
+				middleBottomSrcRect.x = image->rect.x + image->margin.l;
+				middleBottomSrcRect.y = image->rect.y + image->rect.h - image->margin.b;
+				middleBottomSrcRect.w = image->rect.w - image->margin.l - image->margin.r;
+				middleBottomSrcRect.h = image->margin.b;
+
+				SDL_Rect middleBottomDestRect;
+				middleBottomDestRect.x = rect->x + image->margin.l;
+				middleBottomDestRect.y = rect->y + rect->h - image->margin.b;
+				middleBottomDestRect.w = rect->w - image->margin.l - image->margin.r;
+				middleBottomDestRect.h = image->margin.b;
+				SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, &middleBottomSrcRect, &middleBottomDestRect);
+			}
 		}
 	;
 }
@@ -4250,6 +4384,11 @@ int main(int argc, char** argv) {
     sjt_cast12->normalImage.rect.w = 0;
     sjt_cast12->normalImage.rect.h = 0;
     sjf_rect(&sjt_cast12->normalImage.rect);
+    sjt_cast12->normalImage.margin.l = 2;
+    sjt_cast12->normalImage.margin.t = 2;
+    sjt_cast12->normalImage.margin.r = 2;
+    sjt_cast12->normalImage.margin.b = 2;
+    sjf_margin(&sjt_cast12->normalImage.margin);
     sjf_image(&sjt_cast12->normalImage);
     sjt_dot162 = sjv_rootSurface;
     sjt_call15.count = 20;
@@ -4265,6 +4404,11 @@ int main(int argc, char** argv) {
     sjt_cast12->hotImage.rect.w = 0;
     sjt_cast12->hotImage.rect.h = 0;
     sjf_rect(&sjt_cast12->hotImage.rect);
+    sjt_cast12->hotImage.margin.l = 2;
+    sjt_cast12->hotImage.margin.t = 2;
+    sjt_cast12->hotImage.margin.r = 2;
+    sjt_cast12->hotImage.margin.b = 2;
+    sjf_margin(&sjt_cast12->hotImage.margin);
     sjf_image(&sjt_cast12->hotImage);
     sjt_dot163 = sjv_rootSurface;
     sjt_call16.count = 24;
@@ -4280,6 +4424,11 @@ int main(int argc, char** argv) {
     sjt_cast12->pressedImage.rect.w = 0;
     sjt_cast12->pressedImage.rect.h = 0;
     sjf_rect(&sjt_cast12->pressedImage.rect);
+    sjt_cast12->pressedImage.margin.l = 2;
+    sjt_cast12->pressedImage.margin.t = 2;
+    sjt_cast12->pressedImage.margin.r = 2;
+    sjt_cast12->pressedImage.margin.b = 2;
+    sjf_margin(&sjt_cast12->pressedImage.margin);
     sjf_image(&sjt_cast12->pressedImage);
     sjt_dot164 = &sjv_buttonState;
     sjt_cast12->state = (sjt_dot164)->normal;

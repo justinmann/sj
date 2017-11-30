@@ -9,9 +9,9 @@ buttonElement #element #mouseHandler (
 	textColor = colors.black()
 	font = style.getFont(0 /* TODO: typeId(button) */)
 	rect = rect()
-	normalImage = image(rootSurface.getTexture(src = "assets/buttonNormal.png"))
-	hotImage = image(rootSurface.getTexture(src = "assets/buttonHot.png"))
-	pressedImage = image(rootSurface.getTexture(src = "assets/buttonPressed.png"))
+	normalImage = image(rootSurface.getTexture(src = "assets/buttonNormal.png"), margin = margin(2, 2, 2, 2))
+	hotImage = image(rootSurface.getTexture(src = "assets/buttonHot.png"), margin = margin(2, 2, 2, 2))
+	pressedImage = image(rootSurface.getTexture(src = "assets/buttonPressed.png"), margin = margin(2, 2, 2, 2))
 	state = buttonState.normal
 	margin = margin(10, 10, 10, 10)
 

@@ -49,7 +49,138 @@ sdlSurface #surface(
 
 	drawImage(rect: 'rect, image: 'image)'void c{
 		if (image->texture.tex) {
-			SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, (SDL_Rect*)&(image->rect), (SDL_Rect*)rect);
+			if (image->margin.l > 0) {
+				if (image->margin.t > 0) {
+					SDL_Rect leftTopSrcRect;
+					leftTopSrcRect.x = image->rect.x;
+					leftTopSrcRect.y = image->rect.y;
+					leftTopSrcRect.w = image->margin.l;
+					leftTopSrcRect.h = image->margin.t;
+
+					SDL_Rect leftTopDestRect;
+					leftTopDestRect.x = rect->x;
+					leftTopDestRect.y = rect->y;
+					leftTopDestRect.w = image->margin.l;
+					leftTopDestRect.h = image->margin.t;
+					SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, &leftTopSrcRect, &leftTopDestRect);
+				}
+
+				SDL_Rect leftSrcRect;
+				leftSrcRect.x = image->rect.x;
+				leftSrcRect.y = image->rect.y + image->margin.t;
+				leftSrcRect.w = image->margin.l;
+				leftSrcRect.h = image->rect.h - image->margin.t - image->margin.b;
+
+				SDL_Rect leftDestRect;
+				leftDestRect.x = rect->x;
+				leftDestRect.y = rect->y + image->margin.t;
+				leftDestRect.w = image->margin.l;
+				leftDestRect.h = rect->h - image->margin.t - image->margin.b;
+				SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, &leftSrcRect, &leftDestRect);
+
+				if (image->margin.b > 0) {
+					SDL_Rect leftBottomSrcRect;
+					leftBottomSrcRect.x = image->rect.x;
+					leftBottomSrcRect.y = image->rect.y + image->rect.h - image->margin.b;
+					leftBottomSrcRect.w = image->margin.l;
+					leftBottomSrcRect.h = image->margin.b;
+
+					SDL_Rect leftBottomDestRect;
+					leftBottomDestRect.x = rect->x;
+					leftBottomDestRect.y = rect->y + rect->h - image->margin.b;
+					leftBottomDestRect.w = image->margin.l;
+					leftBottomDestRect.h = image->margin.b;
+					SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, &leftBottomSrcRect, &leftBottomDestRect);
+				}
+			}
+
+			if (image->margin.r > 0) {
+				if (image->margin.t > 0) {
+					SDL_Rect rightTopSrcRect;
+					rightTopSrcRect.x = image->rect.x + image->rect.w - image->margin.r;
+					rightTopSrcRect.y = image->rect.y;
+					rightTopSrcRect.w = image->margin.r;
+					rightTopSrcRect.h = image->margin.t;
+
+					SDL_Rect rightTopDestRect;
+					rightTopDestRect.x = rect->x + rect->w - image->margin.r;
+					rightTopDestRect.y = rect->y;
+					rightTopDestRect.w = image->margin.r;
+					rightTopDestRect.h = image->margin.t;
+					SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, &rightTopSrcRect, &rightTopDestRect);
+				}
+
+				SDL_Rect rightSrcRect;
+				rightSrcRect.x = image->rect.x + image->rect.w - image->margin.r;
+				rightSrcRect.y = image->rect.y + image->margin.t;
+				rightSrcRect.w = image->margin.r;
+				rightSrcRect.h = image->rect.h - image->margin.t - image->margin.b;
+
+				SDL_Rect rightDestRect;
+				rightDestRect.x = rect->x + rect->w - image->margin.r;
+				rightDestRect.y = rect->y + image->margin.t;
+				rightDestRect.w = image->margin.r;
+				rightDestRect.h = rect->h - image->margin.t - image->margin.b;
+				SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, &rightSrcRect, &rightDestRect);
+
+				if (image->margin.b > 0) {
+					SDL_Rect rightBottomSrcRect;
+					rightBottomSrcRect.x = image->rect.x + image->rect.w - image->margin.r;
+					rightBottomSrcRect.y = image->rect.y + image->rect.h - image->margin.b;
+					rightBottomSrcRect.w = image->margin.r;
+					rightBottomSrcRect.h = image->margin.b;
+
+					SDL_Rect rightBottomDestRect;
+					rightBottomDestRect.x = rect->x + rect->w - image->margin.r;
+					rightBottomDestRect.y = rect->y + rect->h - image->margin.b;
+					rightBottomDestRect.w = image->margin.r;
+					rightBottomDestRect.h = image->margin.b;
+					SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, &rightBottomSrcRect, &rightBottomDestRect);
+				}
+			}
+
+			if (image->margin.t > 0) {
+				SDL_Rect middleTopSrcRect;
+				middleTopSrcRect.x = image->rect.x + image->margin.l;
+				middleTopSrcRect.y = image->rect.y;
+				middleTopSrcRect.w = image->rect.w - image->margin.l - image->margin.r;
+				middleTopSrcRect.h = image->margin.t;
+
+				SDL_Rect middleTopDestRect;
+				middleTopDestRect.x = rect->x + image->margin.l;
+				middleTopDestRect.y = rect->y;
+				middleTopDestRect.w = rect->w - image->margin.l - image->margin.r;
+				middleTopDestRect.h = image->margin.t;
+				SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, &middleTopSrcRect, &middleTopDestRect);
+			}
+
+			SDL_Rect middleSrcRect;
+			middleSrcRect.x = image->rect.x + image->margin.l;
+			middleSrcRect.y = image->rect.y + image->margin.t;
+			middleSrcRect.w = image->rect.w - image->margin.l - image->margin.r;
+			middleSrcRect.h = image->rect.h - image->margin.t - image->margin.b;
+
+			SDL_Rect middleDestRect;
+			middleDestRect.x = rect->x + image->margin.l;
+			middleDestRect.y = rect->y + image->margin.t;
+			middleDestRect.w = rect->w - image->margin.l - image->margin.r;
+			middleDestRect.h = rect->h - image->margin.t - image->margin.b;
+			SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, &middleSrcRect, &middleDestRect);
+
+			if (image->margin.b > 0) {
+				SDL_Rect middleBottomSrcRect;
+				middleBottomSrcRect.x = image->rect.x + image->margin.l;
+				middleBottomSrcRect.y = image->rect.y + image->rect.h - image->margin.b;
+				middleBottomSrcRect.w = image->rect.w - image->margin.l - image->margin.r;
+				middleBottomSrcRect.h = image->margin.b;
+
+				SDL_Rect middleBottomDestRect;
+				middleBottomDestRect.x = rect->x + image->margin.l;
+				middleBottomDestRect.y = rect->y + rect->h - image->margin.b;
+				middleBottomDestRect.w = rect->w - image->margin.l - image->margin.r;
+				middleBottomDestRect.h = image->margin.b;
+				SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, &middleBottomSrcRect, &middleBottomDestRect);
+			}
 		}
 	}c
 

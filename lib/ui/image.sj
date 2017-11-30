@@ -1,6 +1,7 @@
 image(
 	texture : texture()
 	rect = rect()
+	margin : margin()
 ) { 
 	if rect.w == 0 && rect.h == 0 {
 		size : texture.getSize()
