@@ -217,6 +217,7 @@ void sjf_string(sjs_string* _this);
 void sjf_string_copy(sjs_string* _this, sjs_string* to);
 void sjf_string_destroy(sjs_string* _this);
 void sjf_string_heap(sjs_string_heap* _this);
+void sji_foo_copy(sji_foo* _this, sji_foo* _from);
 void sji_foo_destroy(sji_foo* _this);
 void main_destroy(void);
 
@@ -415,6 +416,16 @@ void sjf_string_destroy(sjs_string* _this) {
 }
 
 void sjf_string_heap(sjs_string_heap* _this) {
+}
+
+void sji_foo_copy(sji_foo* _this, sji_foo* _from) {
+    _this->_refCount = 1;
+    _this->_parent = _from->_parent;
+    _this->_parent->_refCount++;
+    _this->destroy = _from->destroy;
+    _this->asInterface = _from->asInterface;
+    _this->test = _from->test;
+    _this->test = _from->test;
 }
 
 void sji_foo_destroy(sji_foo* _this) {

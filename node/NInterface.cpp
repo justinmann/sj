@@ -302,6 +302,37 @@ void CInterface::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
         trOutput->structOrder.push_back(heapStructName);
     }
 
+    string copyInterfaceName = "void " + getCCopyFunctionName() + "(" + heapStructName + "* _this, " + heapStructName + "* _from)";
+    if (trOutput->functions.find(copyInterfaceName) == trOutput->functions.end()) {
+        auto copyBlock = make_shared<TrBlock>();
+        copyBlock->definition = copyInterfaceName;
+
+        copyBlock->statements.push_back(string("_this->_refCount = 1"));
+        copyBlock->statements.push_back(string("_this->_parent = _from->_parent"));
+
+        string name = "_this->_parent";
+
+        stringstream lineStream;
+        lineStream << name << "->_refCount++";
+        copyBlock->statements.push_back(lineStream.str());
+
+#ifdef DEBUG_ALLOC
+        stringstream logStream;
+        logStream << "printf(\"RELEASE\\t" << destroyInterfaceName << "\\t%0x\\t" << destroyBlock->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
+        destroyBlock->statements.push_back(logStream.str());
+#endif
+        copyBlock->statements.push_back(string("_this->destroy = _from->destroy"));
+        copyBlock->statements.push_back(string("_this->asInterface = _from->asInterface"));
+
+        for (auto method : methods) {
+            stringstream copyStream;
+            copyStream << "_this->" << method->name << " = _from->"<< method->name;
+            copyBlock->statements.push_back(copyStream.str());
+        }
+
+        trOutput->functions[copyInterfaceName] = copyBlock;
+    }
+
     string destroyInterfaceName = "void " + getCDestroyFunctionName() + "(" + heapStructName + "* _this)";
     if (trOutput->functions.find(destroyInterfaceName) == trOutput->functions.end()) {
         auto destroyBlock = make_shared<TrBlock>();

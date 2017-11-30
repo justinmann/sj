@@ -132,10 +132,7 @@ void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_get(sjs_class* _parent, sjs_class_anon1** _return) {
-    sjs_class_anon1* dotTemp1;
-
-    dotTemp1 = &_parent->data;
-    (*_return) = dotTemp1;
+    (*_return) = &(_parent)->data;
 }
 
 void sjf_class_heap(sjs_class_heap* _this) {

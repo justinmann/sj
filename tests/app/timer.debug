@@ -26,7 +26,11 @@ anon7()'stack anon7 {
   this
 }
 
-fillElement #element (children'stack array_heap_element:, rect'stack rect=)'heap fillElement {
+anon8(fill'i32:, left'i32:, right'i32:, top'i32:, bottom'i32:)'stack anon8 {
+  this
+}
+
+borderLayout #element (children'stack array_heap_element:, rect'stack rect=)'heap borderLayout {
   this
 }
 
@@ -76,6 +80,13 @@ sdlSurface #surface (size'stack size:, win'ptr=, ren'ptr=)'heap sdlSurface {
 }
 
 global()'void {
+  borderPosition'stack anon8 : anon8(this = anon8(
+    fill'i32 : this.fill,
+    left'i32 : this.left,
+    right'i32 : this.right,
+    top'i32 : this.top,
+    bottom'i32 : this.bottom
+  ))
   style'stack anon7 : anon7(this = anon7())
   colors'stack anon6 : anon6(this = anon6())
   buttonState'stack anon5 : anon5(this = anon5(
@@ -108,7 +119,7 @@ global()'void {
     win'ptr = this.win,
     ren'ptr = this.ren
   )) as heap #surface
-  root'heap #element : fillElement(this = fillElement(
+  root'heap #element : borderLayout(this = borderLayout(
     children'stack array_heap_element : this.children,
     rect'stack rect = this.rect
   )) as heap #element

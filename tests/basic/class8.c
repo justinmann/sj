@@ -82,8 +82,6 @@ struct td_sjs_class_heap {
     int32_t y;
 };
 
-int32_t dotTemp1;
-int32_t dotTemp2;
 sjs_class* sjt_dot1;
 sjs_class* sjt_dot2;
 int32_t sjt_math1;
@@ -115,11 +113,9 @@ int main(int argc, char** argv) {
     sjv_c.y = 2;
     sjf_class(&sjv_c);
     sjt_dot1 = &sjv_c;
-    dotTemp1 = sjt_dot1->x;
-    sjt_math1 = dotTemp1;
+    sjt_math1 = (sjt_dot1)->x;
     sjt_dot2 = &sjv_c;
-    dotTemp2 = sjt_dot2->y;
-    sjt_math2 = dotTemp2;
+    sjt_math2 = (sjt_dot2)->y;
     main_destroy();
     return 0;
 }

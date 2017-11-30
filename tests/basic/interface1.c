@@ -170,7 +170,9 @@ void sjf_anon2_class_test2(sjs_anon2_class* _parent, int32_t* _return);
 void sjf_anon2_copy(sjs_anon2* _this, sjs_anon2* to);
 void sjf_anon2_destroy(sjs_anon2* _this);
 void sjf_anon2_heap(sjs_anon2_heap* _this);
+void sji_anon1_foo_copy(sji_anon1_foo* _this, sji_anon1_foo* _from);
 void sji_anon1_foo_destroy(sji_anon1_foo* _this);
+void sji_anon2_foo_copy(sji_anon2_foo* _this, sji_anon2_foo* _from);
 void sji_anon2_foo_destroy(sji_anon2_foo* _this);
 void main_destroy(void);
 
@@ -322,12 +324,30 @@ void sjf_anon2_destroy(sjs_anon2* _this) {
 void sjf_anon2_heap(sjs_anon2_heap* _this) {
 }
 
+void sji_anon1_foo_copy(sji_anon1_foo* _this, sji_anon1_foo* _from) {
+    _this->_refCount = 1;
+    _this->_parent = _from->_parent;
+    _this->_parent->_refCount++;
+    _this->destroy = _from->destroy;
+    _this->asInterface = _from->asInterface;
+    _this->test1 = _from->test1;
+}
+
 void sji_anon1_foo_destroy(sji_anon1_foo* _this) {
     _this->_parent->_refCount--;
     if (_this->_parent->_refCount <= 0) {
         _this->destroy((void*)(((char*)_this->_parent) + sizeof(intptr_t)));
         free(_this->_parent);
     }
+}
+
+void sji_anon2_foo_copy(sji_anon2_foo* _this, sji_anon2_foo* _from) {
+    _this->_refCount = 1;
+    _this->_parent = _from->_parent;
+    _this->_parent->_refCount++;
+    _this->destroy = _from->destroy;
+    _this->asInterface = _from->asInterface;
+    _this->test2 = _from->test2;
 }
 
 void sji_anon2_foo_destroy(sji_anon2_foo* _this) {

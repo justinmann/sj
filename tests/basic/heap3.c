@@ -93,7 +93,6 @@ struct td_sjs_bar_heap {
     sjs_foo f;
 };
 
-int32_t dotTemp1;
 sjs_foo* sjt_dot1;
 sjs_bar* sjt_functionParam1;
 sjs_bar sjv_b;
@@ -150,7 +149,6 @@ int main(int argc, char** argv) {
     sjf_bar(&sjv_b);
     sjt_functionParam1 = &sjv_b;
     sjf_func(sjt_functionParam1, &sjt_dot1);
-    dotTemp1 = sjt_dot1->x;
     main_destroy();
     return 0;
 }

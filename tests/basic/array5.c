@@ -98,7 +98,6 @@ struct td_sjs_class_heap {
     int32_t x;
 };
 
-int32_t dotTemp1;
 sjs_class sjt_call1;
 sjs_class sjt_call2;
 sjs_class sjt_call3;
@@ -248,7 +247,6 @@ int main(int argc, char** argv) {
     sjf_array_class_getAt(sjt_dot1, sjt_functionParam7, &sjt_call4);
     sjv_c = &sjt_call4;
     sjt_dot2 = sjv_c;
-    dotTemp1 = sjt_dot2->x;
     main_destroy();
     return 0;
 }

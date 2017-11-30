@@ -103,6 +103,7 @@ void sjf_class_heap(sjs_class_heap* _this);
 sjs_object* sjf_class_heap_asInterface(sjs_class_heap* _this, int typeId);
 sji_foo* sjf_class_heap_as_sji_foo(sjs_class_heap* _this);
 void sjf_class_test(sjs_class* _parent, int32_t* _return);
+void sji_foo_copy(sji_foo* _this, sji_foo* _from);
 void sji_foo_destroy(sji_foo* _this);
 void main_destroy(void);
 
@@ -166,6 +167,15 @@ sji_foo* sjf_class_heap_as_sji_foo(sjs_class_heap* _this) {
 
 void sjf_class_test(sjs_class* _parent, int32_t* _return) {
     (*_return) = 5;
+}
+
+void sji_foo_copy(sji_foo* _this, sji_foo* _from) {
+    _this->_refCount = 1;
+    _this->_parent = _from->_parent;
+    _this->_parent->_refCount++;
+    _this->destroy = _from->destroy;
+    _this->asInterface = _from->asInterface;
+    _this->test = _from->test;
 }
 
 void sji_foo_destroy(sji_foo* _this) {

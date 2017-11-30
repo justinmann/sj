@@ -136,14 +136,12 @@ void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return) {
     sjt_compare2 = 0;
     sjt_ifElse1 = sjt_compare1 > sjt_compare2;
     if (sjt_ifElse1) {
-        sjs_math* dotTemp1;
         sjs_math* sjt_dot2;
         int32_t sjt_functionParam2;
         int32_t sjt_functionParam3;
         int32_t sjt_functionParam4;
 
-        dotTemp1 = &_parent->m;
-        sjt_dot2 = dotTemp1;
+        sjt_dot2 = &(_parent)->m;
         sjt_functionParam3 = x;
         sjt_functionParam4 = 1;
         sjf_math_sub(sjt_dot2, sjt_functionParam3, sjt_functionParam4, &sjt_functionParam2);

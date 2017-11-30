@@ -105,51 +105,58 @@ const char* sjg_string6 = "assets/buttonNormal.png";
 const char* sjg_string8 = "assets/buttonHot.png";
 
 #define sjs_object_typeId 1
-#define sjs_anon7_typeId 2
-#define sjs_anon7_heap_typeId 3
-#define sjs_anon6_typeId 4
-#define sjs_anon6_heap_typeId 5
-#define sjs_anon5_typeId 6
-#define sjs_anon5_heap_typeId 7
-#define sjs_anon4_typeId 8
-#define sjs_anon4_heap_typeId 9
-#define sjs_anon3_typeId 10
-#define sjs_anon3_heap_typeId 11
-#define sjs_anon2_typeId 12
-#define sjs_anon2_heap_typeId 13
-#define sjs_anon1_typeId 14
-#define sjs_anon1_heap_typeId 15
-#define sjs_size_typeId 16
-#define sjs_size_heap_typeId 17
-#define sjs_sdlSurface_typeId 18
-#define sjs_rect_typeId 19
-#define sjs_rect_heap_typeId 20
-#define sjs_color_typeId 21
-#define sjs_color_heap_typeId 22
-#define sjs_texture_typeId 23
-#define sjs_texture_heap_typeId 24
-#define sjs_image_typeId 25
-#define sjs_image_heap_typeId 26
-#define sjs_array_char_typeId 27
-#define sjs_array_char_heap_typeId 28
-#define sjs_string_typeId 29
-#define sjs_string_heap_typeId 30
-#define sjs_font_typeId 31
-#define sjs_font_heap_typeId 32
-#define sji_surface_typeId 33
-#define sjs_sdlSurface_heap_typeId 34
-#define sjs_array_heap_element_typeId 35
-#define sjs_array_heap_element_heap_typeId 36
-#define sjs_fillElement_typeId 37
-#define sji_element_typeId 38
-#define sjs_fillElement_heap_typeId 39
-#define sjs_buttonElement_typeId 40
-#define sjs_point_typeId 41
-#define sjs_point_heap_typeId 42
-#define sji_mouseHandler_typeId 43
-#define sjs_buttonElement_heap_typeId 44
+#define sjs_anon8_typeId 2
+#define sjs_anon8_heap_typeId 3
+#define sjs_anon7_typeId 4
+#define sjs_anon7_heap_typeId 5
+#define sjs_anon6_typeId 6
+#define sjs_anon6_heap_typeId 7
+#define sjs_anon5_typeId 8
+#define sjs_anon5_heap_typeId 9
+#define sjs_anon4_typeId 10
+#define sjs_anon4_heap_typeId 11
+#define sjs_anon3_typeId 12
+#define sjs_anon3_heap_typeId 13
+#define sjs_anon2_typeId 14
+#define sjs_anon2_heap_typeId 15
+#define sjs_anon1_typeId 16
+#define sjs_anon1_heap_typeId 17
+#define sjs_size_typeId 18
+#define sjs_size_heap_typeId 19
+#define sjs_sdlSurface_typeId 20
+#define sjs_rect_typeId 21
+#define sjs_rect_heap_typeId 22
+#define sjs_color_typeId 23
+#define sjs_color_heap_typeId 24
+#define sjs_texture_typeId 25
+#define sjs_texture_heap_typeId 26
+#define sjs_image_typeId 27
+#define sjs_image_heap_typeId 28
+#define sjs_array_char_typeId 29
+#define sjs_array_char_heap_typeId 30
+#define sjs_string_typeId 31
+#define sjs_string_heap_typeId 32
+#define sjs_font_typeId 33
+#define sjs_font_heap_typeId 34
+#define sji_surface_typeId 35
+#define sjs_sdlSurface_heap_typeId 36
+#define sjs_array_heap_element_typeId 37
+#define sjs_array_heap_element_heap_typeId 38
+#define sjs_borderLayout_typeId 39
+#define sji_element_typeId 40
+#define sjs_borderLayout_heap_typeId 41
+#define sjs_borderChild_typeId 42
+#define sji_borderChild_typeId 43
+#define sjs_borderChild_heap_typeId 44
+#define sjs_buttonElement_typeId 45
+#define sjs_point_typeId 46
+#define sjs_point_heap_typeId 47
+#define sji_mouseHandler_typeId 48
+#define sjs_buttonElement_heap_typeId 49
 
 typedef struct td_sjs_object sjs_object;
+typedef struct td_sjs_anon8 sjs_anon8;
+typedef struct td_sjs_anon8_heap sjs_anon8_heap;
 typedef struct td_sjs_anon7 sjs_anon7;
 typedef struct td_sjs_anon7_heap sjs_anon7_heap;
 typedef struct td_sjs_anon6 sjs_anon6;
@@ -185,9 +192,12 @@ typedef struct td_sji_surface sji_surface;
 typedef struct td_sjs_sdlSurface_heap sjs_sdlSurface_heap;
 typedef struct td_sjs_array_heap_element sjs_array_heap_element;
 typedef struct td_sjs_array_heap_element_heap sjs_array_heap_element_heap;
-typedef struct td_sjs_fillElement sjs_fillElement;
+typedef struct td_sjs_borderLayout sjs_borderLayout;
 typedef struct td_sji_element sji_element;
-typedef struct td_sjs_fillElement_heap sjs_fillElement_heap;
+typedef struct td_sjs_borderLayout_heap sjs_borderLayout_heap;
+typedef struct td_sjs_borderChild sjs_borderChild;
+typedef struct td_sji_borderChild sji_borderChild;
+typedef struct td_sjs_borderChild_heap sjs_borderChild_heap;
 typedef struct td_sjs_buttonElement sjs_buttonElement;
 typedef struct td_sjs_point sjs_point;
 typedef struct td_sjs_point_heap sjs_point_heap;
@@ -196,6 +206,23 @@ typedef struct td_sjs_buttonElement_heap sjs_buttonElement_heap;
 
 struct td_sjs_object {
     intptr_t _refCount;
+};
+
+struct td_sjs_anon8 {
+    int32_t fill;
+    int32_t left;
+    int32_t right;
+    int32_t top;
+    int32_t bottom;
+};
+
+struct td_sjs_anon8_heap {
+    intptr_t _refCount;
+    int32_t fill;
+    int32_t left;
+    int32_t right;
+    int32_t top;
+    int32_t bottom;
 };
 
 struct td_sjs_anon7 {
@@ -401,7 +428,7 @@ struct td_sjs_array_heap_element_heap {
     bool _isGlobal;
 };
 
-struct td_sjs_fillElement {
+struct td_sjs_borderLayout {
     sjs_array_heap_element children;
     sjs_rect rect;
 };
@@ -416,10 +443,33 @@ struct td_sji_element {
     void (*getChildren)(void* _parent, sjs_array_heap_element** _return);
 };
 
-struct td_sjs_fillElement_heap {
+struct td_sjs_borderLayout_heap {
     intptr_t _refCount;
     sjs_array_heap_element children;
     sjs_rect rect;
+};
+
+struct td_sjs_borderChild {
+    sji_element* child;
+    sjs_rect rect;
+    int32_t position;
+    sjs_array_heap_element_heap* _children;
+};
+
+struct td_sji_borderChild {
+    intptr_t _refCount;
+    sjs_object* _parent;
+    void (*destroy)(void* _this);
+    sjs_object* (*asInterface)(sjs_object* _this, int typeId);
+    void (*getPosition)(void* _parent, int32_t* _return);
+};
+
+struct td_sjs_borderChild_heap {
+    intptr_t _refCount;
+    sji_element* child;
+    sjs_rect rect;
+    int32_t position;
+    sjs_array_heap_element_heap* _children;
 };
 
 struct td_sjs_buttonElement {
@@ -479,28 +529,30 @@ struct td_sjs_buttonElement_heap {
 	
     
 
-int32_t dotTemp67;
 sjs_string sjt_call7;
 sjs_string sjt_call8;
 sjs_string sjt_call9;
 sjs_sdlSurface_heap* sjt_cast1;
+sjs_buttonElement_heap* sjt_cast10;
 int32_t sjt_cast4;
 int32_t sjt_cast5;
-sjs_fillElement_heap* sjt_cast6;
+sjs_borderLayout_heap* sjt_cast6;
 int32_t sjt_cast7;
-sjs_buttonElement_heap* sjt_cast8;
-sjs_anon6* sjt_dot55;
-sjs_anon7* sjt_dot56;
-sji_surface* sjt_dot57;
-sji_surface* sjt_dot58;
+sjs_borderChild_heap* sjt_cast8;
+sjs_anon6* sjt_dot57;
+sjs_anon7* sjt_dot58;
 sji_surface* sjt_dot59;
-sjs_anon5* sjt_dot60;
-int32_t sjt_functionParam24;
+sji_surface* sjt_dot60;
+sji_surface* sjt_dot61;
+sjs_anon5* sjt_dot62;
+sjs_anon8* sjt_dot63;
+int32_t sjt_functionParam26;
 int32_t sjt_functionParam3;
 sji_element* sjt_functionParam4;
-sjs_string* sjt_interfaceParam15;
-sjs_string* sjt_interfaceParam16;
 sjs_string* sjt_interfaceParam17;
+sjs_string* sjt_interfaceParam18;
+sjs_string* sjt_interfaceParam19;
+sjs_anon8 sjv_borderPosition;
 sjs_anon5 sjv_buttonState;
 sjs_anon6 sjv_colors;
 sjs_anon1 sjv_console;
@@ -547,6 +599,10 @@ void sjf_anon7_destroy(sjs_anon7* _this);
 void sjf_anon7_getFont(sjs_anon7* _parent, int32_t typeId, sjs_font* _return);
 void sjf_anon7_getFont_heap(sjs_anon7* _parent, int32_t typeId, sjs_font_heap** _return);
 void sjf_anon7_heap(sjs_anon7_heap* _this);
+void sjf_anon8(sjs_anon8* _this);
+void sjf_anon8_copy(sjs_anon8* _this, sjs_anon8* to);
+void sjf_anon8_destroy(sjs_anon8* _this);
+void sjf_anon8_heap(sjs_anon8_heap* _this);
 void sjf_array_char(sjs_array_char* _this);
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* to);
 void sjf_array_char_destroy(sjs_array_char* _this);
@@ -560,6 +616,31 @@ void sjf_array_heap_element_destroy(sjs_array_heap_element* _this);
 void sjf_array_heap_element_getAt_heap(sjs_array_heap_element* _parent, int32_t index, sji_element** _return);
 void sjf_array_heap_element_heap(sjs_array_heap_element_heap* _this);
 void sjf_array_heap_element_initAt(sjs_array_heap_element* _parent, int32_t index, sji_element* item);
+void sjf_borderChild(sjs_borderChild* _this);
+sjs_object* sjf_borderChild_asInterface(sjs_borderChild* _this, int typeId);
+sji_borderChild* sjf_borderChild_as_sji_borderChild(sjs_borderChild* _this);
+sji_element* sjf_borderChild_as_sji_element(sjs_borderChild* _this);
+void sjf_borderChild_copy(sjs_borderChild* _this, sjs_borderChild* to);
+void sjf_borderChild_destroy(sjs_borderChild* _this);
+void sjf_borderChild_getChildren(sjs_borderChild* _parent, sjs_array_heap_element** _return);
+void sjf_borderChild_getPosition(sjs_borderChild* _parent, int32_t* _return);
+void sjf_borderChild_heap(sjs_borderChild_heap* _this);
+sjs_object* sjf_borderChild_heap_asInterface(sjs_borderChild_heap* _this, int typeId);
+sji_borderChild* sjf_borderChild_heap_as_sji_borderChild(sjs_borderChild_heap* _this);
+sji_element* sjf_borderChild_heap_as_sji_element(sjs_borderChild_heap* _this);
+void sjf_borderChild_render(sjs_borderChild* _parent, sji_surface* surface);
+void sjf_borderChild_setRect(sjs_borderChild* _parent, sjs_rect* rect_);
+void sjf_borderLayout(sjs_borderLayout* _this);
+sjs_object* sjf_borderLayout_asInterface(sjs_borderLayout* _this, int typeId);
+sji_element* sjf_borderLayout_as_sji_element(sjs_borderLayout* _this);
+void sjf_borderLayout_copy(sjs_borderLayout* _this, sjs_borderLayout* to);
+void sjf_borderLayout_destroy(sjs_borderLayout* _this);
+void sjf_borderLayout_getChildren(sjs_borderLayout* _parent, sjs_array_heap_element** _return);
+void sjf_borderLayout_heap(sjs_borderLayout_heap* _this);
+sjs_object* sjf_borderLayout_heap_asInterface(sjs_borderLayout_heap* _this, int typeId);
+sji_element* sjf_borderLayout_heap_as_sji_element(sjs_borderLayout_heap* _this);
+void sjf_borderLayout_render(sjs_borderLayout* _parent, sji_surface* surface);
+void sjf_borderLayout_setRect(sjs_borderLayout* _parent, sjs_rect* rect_);
 void sjf_buttonElement(sjs_buttonElement* _this);
 sjs_object* sjf_buttonElement_asInterface(sjs_buttonElement* _this, int typeId);
 sji_element* sjf_buttonElement_as_sji_element(sjs_buttonElement* _this);
@@ -580,17 +661,6 @@ void sjf_color(sjs_color* _this);
 void sjf_color_copy(sjs_color* _this, sjs_color* to);
 void sjf_color_destroy(sjs_color* _this);
 void sjf_color_heap(sjs_color_heap* _this);
-void sjf_fillElement(sjs_fillElement* _this);
-sjs_object* sjf_fillElement_asInterface(sjs_fillElement* _this, int typeId);
-sji_element* sjf_fillElement_as_sji_element(sjs_fillElement* _this);
-void sjf_fillElement_copy(sjs_fillElement* _this, sjs_fillElement* to);
-void sjf_fillElement_destroy(sjs_fillElement* _this);
-void sjf_fillElement_getChildren(sjs_fillElement* _parent, sjs_array_heap_element** _return);
-void sjf_fillElement_heap(sjs_fillElement_heap* _this);
-sjs_object* sjf_fillElement_heap_asInterface(sjs_fillElement_heap* _this, int typeId);
-sji_element* sjf_fillElement_heap_as_sji_element(sjs_fillElement_heap* _this);
-void sjf_fillElement_render(sjs_fillElement* _parent, sji_surface* surface);
-void sjf_fillElement_setRect(sjs_fillElement* _parent, sjs_rect* rect_);
 void sjf_fireMouseDown(sji_element* element, sjs_point* point);
 void sjf_fireMouseUp(sji_element* element, sjs_point* point);
 void sjf_font(sjs_font* _this);
@@ -646,8 +716,13 @@ void sjf_texture_destroy(sjs_texture* _this);
 void sjf_texture_getSize(sjs_texture* _parent, sjs_size* _return);
 void sjf_texture_getSize_heap(sjs_texture* _parent, sjs_size_heap** _return);
 void sjf_texture_heap(sjs_texture_heap* _this);
+void sji_borderChild_copy(sji_borderChild* _this, sji_borderChild* _from);
+void sji_borderChild_destroy(sji_borderChild* _this);
+void sji_element_copy(sji_element* _this, sji_element* _from);
 void sji_element_destroy(sji_element* _this);
+void sji_mouseHandler_copy(sji_mouseHandler* _this, sji_mouseHandler* _from);
 void sji_mouseHandler_destroy(sji_mouseHandler* _this);
+void sji_surface_copy(sji_surface* _this, sji_surface* _from);
 void sji_surface_destroy(sji_surface* _this);
 void main_destroy(void);
 
@@ -707,15 +782,15 @@ void sjf_anon4_heap(sjs_anon4_heap* _this) {
 }
 
 void sjf_anon4_i32toString(sjs_anon4* _parent, int32_t val, int32_t base, int32_t minLength, sjs_string* _return) {
-    int32_t sjt_cast10;
+    int32_t sjt_cast12;
     int32_t sjt_math19;
     int32_t sjt_math20;
     int32_t sjv_count;
     uintptr_t sjv_data;
 
     sjv_count = 0;
-    sjt_cast10 = 0;
-    sjv_data = (uintptr_t)sjt_cast10;
+    sjt_cast12 = 0;
+    sjv_data = (uintptr_t)sjt_cast12;
     
 			if (base < 2) {
 				printf("base is too small");
@@ -754,15 +829,15 @@ void sjf_anon4_i32toString(sjs_anon4* _parent, int32_t val, int32_t base, int32_
 }
 
 void sjf_anon4_i32toString_heap(sjs_anon4* _parent, int32_t val, int32_t base, int32_t minLength, sjs_string_heap** _return) {
-    int32_t sjt_cast11;
+    int32_t sjt_cast13;
     int32_t sjt_math21;
     int32_t sjt_math22;
     int32_t sjv_count;
     uintptr_t sjv_data;
 
     sjv_count = 0;
-    sjt_cast11 = 0;
-    sjv_data = (uintptr_t)sjt_cast11;
+    sjt_cast13 = 0;
+    sjv_data = (uintptr_t)sjt_cast13;
     
 			if (base < 2) {
 				printf("base is too small");
@@ -857,7 +932,7 @@ void sjf_anon7_destroy(sjs_anon7* _this) {
 }
 
 void sjf_anon7_getFont(sjs_anon7* _parent, int32_t typeId, sjs_font* _return) {
-    int32_t sjt_cast12;
+    int32_t sjt_cast14;
 
     _return->src.count = 17;
     _return->src.data.size = 18;
@@ -866,13 +941,13 @@ void sjf_anon7_getFont(sjs_anon7* _parent, int32_t typeId, sjs_font* _return) {
     sjf_array_char(&_return->src.data);
     sjf_string(&_return->src);
     _return->size = 12;
-    sjt_cast12 = 0;
-    _return->data = (uintptr_t)sjt_cast12;
+    sjt_cast14 = 0;
+    _return->data = (uintptr_t)sjt_cast14;
     sjf_font(_return);
 }
 
 void sjf_anon7_getFont_heap(sjs_anon7* _parent, int32_t typeId, sjs_font_heap** _return) {
-    int32_t sjt_cast13;
+    int32_t sjt_cast15;
 
     (*_return) = (sjs_font_heap*)malloc(sizeof(sjs_font_heap));
     (*_return)->_refCount = 1;
@@ -883,12 +958,29 @@ void sjf_anon7_getFont_heap(sjs_anon7* _parent, int32_t typeId, sjs_font_heap** 
     sjf_array_char(&(*_return)->src.data);
     sjf_string(&(*_return)->src);
     (*_return)->size = 12;
-    sjt_cast13 = 0;
-    (*_return)->data = (uintptr_t)sjt_cast13;
+    sjt_cast15 = 0;
+    (*_return)->data = (uintptr_t)sjt_cast15;
     sjf_font_heap((*_return));
 }
 
 void sjf_anon7_heap(sjs_anon7_heap* _this) {
+}
+
+void sjf_anon8(sjs_anon8* _this) {
+}
+
+void sjf_anon8_copy(sjs_anon8* _this, sjs_anon8* to) {
+    _this->fill = to->fill;
+    _this->left = to->left;
+    _this->right = to->right;
+    _this->top = to->top;
+    _this->bottom = to->bottom;
+}
+
+void sjf_anon8_destroy(sjs_anon8* _this) {
+}
+
+void sjf_anon8_heap(sjs_anon8_heap* _this) {
 }
 
 void sjf_array_char(sjs_array_char* _this) {
@@ -1086,6 +1178,352 @@ p[index]->_refCount++;
 	;
 }
 
+void sjf_borderChild(sjs_borderChild* _this) {
+}
+
+sjs_object* sjf_borderChild_asInterface(sjs_borderChild* _this, int typeId) {
+    switch (typeId) {
+        case sji_element_typeId:  {
+            return (sjs_object*)sjf_borderChild_as_sji_element(_this);
+        }
+
+        case sji_borderChild_typeId:  {
+            return (sjs_object*)sjf_borderChild_as_sji_borderChild(_this);
+        }
+    }
+
+    return 0;
+}
+
+sji_borderChild* sjf_borderChild_as_sji_borderChild(sjs_borderChild* _this) {
+    sji_borderChild* _interface;
+    _interface = (sji_borderChild*)malloc(sizeof(sji_borderChild));
+    _interface->_refCount = 1;
+    _interface->_parent = (sjs_object*)_this;
+    _interface->_parent->_refCount++;
+    _interface->destroy = (void(*)(void*))sjf_borderChild_destroy;
+    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_borderChild_asInterface;
+    _interface->getPosition = (void(*)(void*, int32_t*))sjf_borderChild_getPosition;
+
+    return _interface;
+}
+
+sji_element* sjf_borderChild_as_sji_element(sjs_borderChild* _this) {
+    sji_element* _interface;
+    _interface = (sji_element*)malloc(sizeof(sji_element));
+    _interface->_refCount = 1;
+    _interface->_parent = (sjs_object*)_this;
+    _interface->_parent->_refCount++;
+    _interface->destroy = (void(*)(void*))sjf_borderChild_destroy;
+    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_borderChild_asInterface;
+    _interface->setRect = (void(*)(void*,sjs_rect*))sjf_borderChild_setRect;
+    _interface->render = (void(*)(void*,sji_surface*))sjf_borderChild_render;
+    _interface->getChildren = (void(*)(void*, sjs_array_heap_element**))sjf_borderChild_getChildren;
+
+    return _interface;
+}
+
+void sjf_borderChild_copy(sjs_borderChild* _this, sjs_borderChild* to) {
+    _this->child = (sji_element*)malloc(sizeof(sji_element));
+    _this->child->_refCount = 1;
+    sji_element_copy(_this->child, to->child);
+    sjf_rect_copy(&_this->rect, &to->rect);
+    _this->position = to->position;
+    _this->_children = 0;
+    sjf_array_heap_element_copy((sjs_array_heap_element*)(((char*)_this->_children) + sizeof(intptr_t)), (sjs_array_heap_element*)(((char*)to->_children) + sizeof(intptr_t)));
+}
+
+void sjf_borderChild_destroy(sjs_borderChild* _this) {
+    _this->child->_refCount--;
+    if (_this->child->_refCount <= 0) {
+        sji_element_destroy(_this->child);
+    }
+
+    if (_this->_children != 0) {
+        _this->_children->_refCount--;
+        if (_this->_children->_refCount <= 0) {
+            sjf_array_heap_element_destroy((sjs_array_heap_element*)(((char*)_this->_children) + sizeof(intptr_t)));
+        }
+    }
+}
+
+void sjf_borderChild_getChildren(sjs_borderChild* _parent, sjs_array_heap_element** _return) {
+    bool sjt_ifElse3;
+    sjs_array_heap_element_heap* sjt_isEmpty1;
+
+    sjt_isEmpty1 = (_parent)->_children;
+    if (sjt_isEmpty1 != 0) {
+        sjt_isEmpty1->_refCount++;
+    }
+
+    sjt_ifElse3 = (sjt_isEmpty1 == 0);
+    if (sjt_ifElse3) {
+        int32_t sjt_cast9;
+        int32_t sjt_functionParam5;
+        sji_element* sjt_functionParam6;
+        sjs_array_heap_element_heap* sjt_value2;
+
+        sjt_value2 = (sjs_array_heap_element_heap*)malloc(sizeof(sjs_array_heap_element_heap));
+        sjt_value2->_refCount = 1;
+        sjt_value2->size = 1;
+        sjt_cast9 = 0;
+        sjt_value2->data = (uintptr_t)sjt_cast9;
+        sjt_value2->_isGlobal = false;
+        sjf_array_heap_element_heap(sjt_value2);
+        sjt_functionParam5 = 0;
+        sjt_functionParam6 = (_parent)->child;
+        sjt_functionParam6->_refCount++;
+        sjf_array_heap_element_initAt((sjs_array_heap_element*)(((char*)sjt_value2) + sizeof(intptr_t)), sjt_functionParam5, sjt_functionParam6);
+        if (_parent->_children != 0) {
+            _parent->_children->_refCount--;
+            if (_parent->_children->_refCount <= 0) {
+                sjf_array_heap_element_destroy((sjs_array_heap_element*)(((char*)_parent->_children) + sizeof(intptr_t)));
+            }
+        }
+
+        _parent->_children = sjt_value2;
+        if (_parent->_children != 0) {
+            _parent->_children->_refCount++;
+        }
+
+        sjt_functionParam6->_refCount--;
+        if (sjt_functionParam6->_refCount <= 0) {
+            sji_element_destroy(sjt_functionParam6);
+        }
+        sjt_value2->_refCount--;
+        if (sjt_value2->_refCount <= 0) {
+            sjf_array_heap_element_destroy((sjs_array_heap_element*)(((char*)sjt_value2) + sizeof(intptr_t)));
+        }
+    } else {
+    }
+
+    (*_return) = (sjs_array_heap_element*)(((char*)(_parent)->_children) + sizeof(intptr_t));
+
+    if (sjt_isEmpty1 != 0) {
+        sjt_isEmpty1->_refCount--;
+        if (sjt_isEmpty1->_refCount <= 0) {
+            sjf_array_heap_element_destroy((sjs_array_heap_element*)(((char*)sjt_isEmpty1) + sizeof(intptr_t)));
+        }
+    }
+}
+
+void sjf_borderChild_getPosition(sjs_borderChild* _parent, int32_t* _return) {
+    (*_return) = (_parent)->position;
+}
+
+void sjf_borderChild_heap(sjs_borderChild_heap* _this) {
+}
+
+sjs_object* sjf_borderChild_heap_asInterface(sjs_borderChild_heap* _this, int typeId) {
+    switch (typeId) {
+        case sji_element_typeId:  {
+            return (sjs_object*)sjf_borderChild_heap_as_sji_element(_this);
+        }
+
+        case sji_borderChild_typeId:  {
+            return (sjs_object*)sjf_borderChild_heap_as_sji_borderChild(_this);
+        }
+    }
+
+    return 0;
+}
+
+sji_borderChild* sjf_borderChild_heap_as_sji_borderChild(sjs_borderChild_heap* _this) {
+    sji_borderChild* _interface;
+    _interface = (sji_borderChild*)malloc(sizeof(sji_borderChild));
+    _interface->_refCount = 1;
+    _interface->_parent = (sjs_object*)_this;
+    _interface->_parent->_refCount++;
+    _interface->destroy = (void(*)(void*))sjf_borderChild_destroy;
+    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_borderChild_heap_asInterface;
+    _interface->getPosition = (void(*)(void*, int32_t*))sjf_borderChild_getPosition;
+
+    return _interface;
+}
+
+sji_element* sjf_borderChild_heap_as_sji_element(sjs_borderChild_heap* _this) {
+    sji_element* _interface;
+    _interface = (sji_element*)malloc(sizeof(sji_element));
+    _interface->_refCount = 1;
+    _interface->_parent = (sjs_object*)_this;
+    _interface->_parent->_refCount++;
+    _interface->destroy = (void(*)(void*))sjf_borderChild_destroy;
+    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_borderChild_heap_asInterface;
+    _interface->setRect = (void(*)(void*,sjs_rect*))sjf_borderChild_setRect;
+    _interface->render = (void(*)(void*,sji_surface*))sjf_borderChild_render;
+    _interface->getChildren = (void(*)(void*, sjs_array_heap_element**))sjf_borderChild_getChildren;
+
+    return _interface;
+}
+
+void sjf_borderChild_render(sjs_borderChild* _parent, sji_surface* surface) {
+    sji_element* sjt_dot18;
+    sji_surface* sjt_interfaceParam4;
+
+    sjt_dot18 = (_parent)->child;
+    sjt_interfaceParam4 = surface;
+    sjt_interfaceParam4->_refCount++;
+    sjt_dot18->render((void*)(((char*)sjt_dot18->_parent) + sizeof(intptr_t)), sjt_interfaceParam4);
+
+    sjt_interfaceParam4->_refCount--;
+    if (sjt_interfaceParam4->_refCount <= 0) {
+        sji_surface_destroy(sjt_interfaceParam4);
+    }
+}
+
+void sjf_borderChild_setRect(sjs_borderChild* _parent, sjs_rect* rect_) {
+    sji_element* sjt_dot17;
+    sjs_rect* sjt_interfaceParam3;
+
+    sjf_rect_copy(&_parent->rect, rect_);
+    sjt_dot17 = (_parent)->child;
+    sjt_interfaceParam3 = &(_parent)->rect;
+    sjt_dot17->setRect((void*)(((char*)sjt_dot17->_parent) + sizeof(intptr_t)), sjt_interfaceParam3);
+}
+
+void sjf_borderLayout(sjs_borderLayout* _this) {
+}
+
+sjs_object* sjf_borderLayout_asInterface(sjs_borderLayout* _this, int typeId) {
+    switch (typeId) {
+        case sji_element_typeId:  {
+            return (sjs_object*)sjf_borderLayout_as_sji_element(_this);
+        }
+    }
+
+    return 0;
+}
+
+sji_element* sjf_borderLayout_as_sji_element(sjs_borderLayout* _this) {
+    sji_element* _interface;
+    _interface = (sji_element*)malloc(sizeof(sji_element));
+    _interface->_refCount = 1;
+    _interface->_parent = (sjs_object*)_this;
+    _interface->_parent->_refCount++;
+    _interface->destroy = (void(*)(void*))sjf_borderLayout_destroy;
+    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_borderLayout_asInterface;
+    _interface->setRect = (void(*)(void*,sjs_rect*))sjf_borderLayout_setRect;
+    _interface->render = (void(*)(void*,sji_surface*))sjf_borderLayout_render;
+    _interface->getChildren = (void(*)(void*, sjs_array_heap_element**))sjf_borderLayout_getChildren;
+
+    return _interface;
+}
+
+void sjf_borderLayout_copy(sjs_borderLayout* _this, sjs_borderLayout* to) {
+    sjf_array_heap_element_copy(&_this->children, &to->children);
+    sjf_rect_copy(&_this->rect, &to->rect);
+}
+
+void sjf_borderLayout_destroy(sjs_borderLayout* _this) {
+}
+
+void sjf_borderLayout_getChildren(sjs_borderLayout* _parent, sjs_array_heap_element** _return) {
+    sjs_array_heap_element* sjt_value1;
+    sjs_array_heap_element* sjv_a;
+
+    sjv_a = &(_parent)->children;
+    sjt_value1 = sjv_a;
+    (*_return) = sjt_value1;
+}
+
+void sjf_borderLayout_heap(sjs_borderLayout_heap* _this) {
+}
+
+sjs_object* sjf_borderLayout_heap_asInterface(sjs_borderLayout_heap* _this, int typeId) {
+    switch (typeId) {
+        case sji_element_typeId:  {
+            return (sjs_object*)sjf_borderLayout_heap_as_sji_element(_this);
+        }
+    }
+
+    return 0;
+}
+
+sji_element* sjf_borderLayout_heap_as_sji_element(sjs_borderLayout_heap* _this) {
+    sji_element* _interface;
+    _interface = (sji_element*)malloc(sizeof(sji_element));
+    _interface->_refCount = 1;
+    _interface->_parent = (sjs_object*)_this;
+    _interface->_parent->_refCount++;
+    _interface->destroy = (void(*)(void*))sjf_borderLayout_destroy;
+    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_borderLayout_heap_asInterface;
+    _interface->setRect = (void(*)(void*,sjs_rect*))sjf_borderLayout_setRect;
+    _interface->render = (void(*)(void*,sji_surface*))sjf_borderLayout_render;
+    _interface->getChildren = (void(*)(void*, sjs_array_heap_element**))sjf_borderLayout_getChildren;
+
+    return _interface;
+}
+
+void sjf_borderLayout_render(sjs_borderLayout* _parent, sji_surface* surface) {
+    int32_t i;
+    sjs_array_heap_element* sjt_dot14;
+    int32_t sjt_forEnd2;
+    int32_t sjt_forStart2;
+
+    sjt_forStart2 = 0;
+    i = sjt_forStart2;
+    sjt_dot14 = &(_parent)->children;
+    sjt_forEnd2 = (sjt_dot14)->size;
+    while (i < sjt_forEnd2) {
+        sjs_array_heap_element* sjt_dot15;
+        sji_element* sjt_dot16;
+        int32_t sjt_functionParam2;
+        sji_surface* sjt_interfaceParam2;
+        sji_element* sjv_child;
+
+        sjt_dot15 = &(_parent)->children;
+        sjt_functionParam2 = i;
+        sjf_array_heap_element_getAt_heap(sjt_dot15, sjt_functionParam2, &sjv_child);
+        sjt_dot16 = sjv_child;
+        sjt_interfaceParam2 = surface;
+        sjt_interfaceParam2->_refCount++;
+        sjt_dot16->render((void*)(((char*)sjt_dot16->_parent) + sizeof(intptr_t)), sjt_interfaceParam2);
+        i++;
+
+        sjt_interfaceParam2->_refCount--;
+        if (sjt_interfaceParam2->_refCount <= 0) {
+            sji_surface_destroy(sjt_interfaceParam2);
+        }
+        sjv_child->_refCount--;
+        if (sjv_child->_refCount <= 0) {
+            sji_element_destroy(sjv_child);
+        }
+    }
+}
+
+void sjf_borderLayout_setRect(sjs_borderLayout* _parent, sjs_rect* rect_) {
+    int32_t i;
+    sjs_array_heap_element* sjt_dot11;
+    int32_t sjt_forEnd1;
+    int32_t sjt_forStart1;
+
+    sjf_rect_copy(&_parent->rect, rect_);
+    sjt_forStart1 = 0;
+    i = sjt_forStart1;
+    sjt_dot11 = &(_parent)->children;
+    sjt_forEnd1 = (sjt_dot11)->size;
+    while (i < sjt_forEnd1) {
+        sjs_array_heap_element* sjt_dot12;
+        sji_element* sjt_dot13;
+        int32_t sjt_functionParam1;
+        sjs_rect* sjt_interfaceParam1;
+        sji_element* sjv_child;
+
+        sjt_dot12 = &(_parent)->children;
+        sjt_functionParam1 = i;
+        sjf_array_heap_element_getAt_heap(sjt_dot12, sjt_functionParam1, &sjv_child);
+        sjt_dot13 = sjv_child;
+        sjt_interfaceParam1 = &(_parent)->rect;
+        sjt_dot13->setRect((void*)(((char*)sjt_dot13->_parent) + sizeof(intptr_t)), sjt_interfaceParam1);
+        i++;
+
+        sjv_child->_refCount--;
+        if (sjv_child->_refCount <= 0) {
+            sji_element_destroy(sjv_child);
+        }
+    }
+}
+
 void sjf_buttonElement(sjs_buttonElement* _this) {
 }
 
@@ -1199,61 +1637,53 @@ sji_mouseHandler* sjf_buttonElement_heap_as_sji_mouseHandler(sjs_buttonElement_h
 }
 
 void sjf_buttonElement_onMouseDown(sjs_buttonElement* _parent, sjs_point* point) {
-    int32_t dotTemp63;
     sjs_string sjt_call5;
-    sjs_anon1* sjt_dot50;
-    sjs_anon5* sjt_dot51;
-    sjs_string* sjt_functionParam22;
+    sjs_anon1* sjt_dot52;
+    sjs_anon5* sjt_dot53;
+    sjs_string* sjt_functionParam24;
 
-    sjt_dot50 = &sjv_console;
+    sjt_dot52 = &sjv_console;
     sjt_call5.count = 25;
     sjt_call5.data.size = 26;
     sjt_call5.data.data = (uintptr_t)sjg_string17;
     sjt_call5.data._isGlobal = false;
     sjf_array_char(&sjt_call5.data);
     sjf_string(&sjt_call5);
-    sjt_functionParam22 = &sjt_call5;
-    sjf_anon1_write(sjt_dot50, sjt_functionParam22);
-    sjt_dot51 = &sjv_buttonState;
-    dotTemp63 = sjt_dot51->pressed;
-    _parent->state = dotTemp63;
+    sjt_functionParam24 = &sjt_call5;
+    sjf_anon1_write(sjt_dot52, sjt_functionParam24);
+    sjt_dot53 = &sjv_buttonState;
+    _parent->state = (sjt_dot53)->pressed;
 
     sjf_string_destroy(&sjt_call5);
 }
 
 void sjf_buttonElement_onMouseMove(sjs_buttonElement* _parent, sjs_point* point) {
-    int32_t dotTemp64;
-    int32_t dotTemp65;
     sjs_string sjt_call6;
     int32_t sjt_compare19;
     int32_t sjt_compare20;
-    sjs_anon1* sjt_dot52;
-    sjs_anon5* sjt_dot53;
-    sjs_string* sjt_functionParam23;
-    bool sjt_ifElse8;
+    sjs_anon1* sjt_dot54;
+    sjs_anon5* sjt_dot55;
+    sjs_string* sjt_functionParam25;
+    bool sjt_ifElse9;
 
-    sjt_dot52 = &sjv_console;
+    sjt_dot54 = &sjv_console;
     sjt_call6.count = 25;
     sjt_call6.data.size = 26;
     sjt_call6.data.data = (uintptr_t)sjg_string19;
     sjt_call6.data._isGlobal = false;
     sjf_array_char(&sjt_call6.data);
     sjf_string(&sjt_call6);
-    sjt_functionParam23 = &sjt_call6;
-    sjf_anon1_write(sjt_dot52, sjt_functionParam23);
-    dotTemp64 = _parent->state;
-    sjt_compare19 = dotTemp64;
-    sjt_dot53 = &sjv_buttonState;
-    dotTemp65 = sjt_dot53->normal;
-    sjt_compare20 = dotTemp65;
-    sjt_ifElse8 = sjt_compare19 == sjt_compare20;
-    if (sjt_ifElse8) {
-        int32_t dotTemp66;
-        sjs_anon5* sjt_dot54;
+    sjt_functionParam25 = &sjt_call6;
+    sjf_anon1_write(sjt_dot54, sjt_functionParam25);
+    sjt_compare19 = (_parent)->state;
+    sjt_dot55 = &sjv_buttonState;
+    sjt_compare20 = (sjt_dot55)->normal;
+    sjt_ifElse9 = sjt_compare19 == sjt_compare20;
+    if (sjt_ifElse9) {
+        sjs_anon5* sjt_dot56;
 
-        sjt_dot54 = &sjv_buttonState;
-        dotTemp66 = sjt_dot54->hot;
-        _parent->state = dotTemp66;
+        sjt_dot56 = &sjv_buttonState;
+        _parent->state = (sjt_dot56)->hot;
     } else {
     }
 
@@ -1261,71 +1691,65 @@ void sjf_buttonElement_onMouseMove(sjs_buttonElement* _parent, sjs_point* point)
 }
 
 void sjf_buttonElement_onMouseUp(sjs_buttonElement* _parent, sjs_point* point) {
-    int32_t dotTemp60;
-    int32_t dotTemp61;
-    int32_t dotTemp62;
     sjs_string sjt_call1;
     sjs_string sjt_call2;
     sjs_string sjt_call3;
     sjs_string sjt_call4;
-    sjs_anon1* sjt_dot31;
-    sjs_string* sjt_dot32;
-    sjs_string* sjt_dot33;
+    sjs_anon1* sjt_dot33;
     sjs_string* sjt_dot34;
-    sjs_anon4* sjt_dot45;
-    sjs_point* sjt_dot46;
+    sjs_string* sjt_dot35;
+    sjs_string* sjt_dot36;
     sjs_anon4* sjt_dot47;
     sjs_point* sjt_dot48;
-    sjs_anon5* sjt_dot49;
-    sjs_string* sjt_functionParam13;
-    int32_t sjt_functionParam14;
-    int32_t sjt_functionParam15;
+    sjs_anon4* sjt_dot49;
+    sjs_point* sjt_dot50;
+    sjs_anon5* sjt_dot51;
+    sjs_string* sjt_functionParam15;
     int32_t sjt_functionParam16;
-    sjs_string* sjt_functionParam17;
-    sjs_string* sjt_functionParam18;
-    int32_t sjt_functionParam19;
-    int32_t sjt_functionParam20;
+    int32_t sjt_functionParam17;
+    int32_t sjt_functionParam18;
+    sjs_string* sjt_functionParam19;
+    sjs_string* sjt_functionParam20;
     int32_t sjt_functionParam21;
-    sjs_string* sjt_functionParam5;
+    int32_t sjt_functionParam22;
+    int32_t sjt_functionParam23;
+    sjs_string* sjt_functionParam7;
 
-    sjt_dot31 = &sjv_console;
+    sjt_dot33 = &sjv_console;
     sjt_call1.count = 24;
     sjt_call1.data.size = 25;
     sjt_call1.data.data = (uintptr_t)sjg_string13;
     sjt_call1.data._isGlobal = false;
     sjf_array_char(&sjt_call1.data);
     sjf_string(&sjt_call1);
-    sjt_dot34 = &sjt_call1;
-    sjt_dot45 = &sjv_convert;
-    sjt_dot46 = point;
-    dotTemp60 = sjt_dot46->x;
-    sjt_functionParam14 = dotTemp60;
-    sjt_functionParam15 = 10;
-    sjt_functionParam16 = 0;
-    sjf_anon4_i32toString(sjt_dot45, sjt_functionParam14, sjt_functionParam15, sjt_functionParam16, &sjt_call2);
-    sjt_functionParam13 = &sjt_call2;
-    sjf_string_add(sjt_dot34, sjt_functionParam13, &sjt_dot33);
+    sjt_dot36 = &sjt_call1;
+    sjt_dot47 = &sjv_convert;
+    sjt_dot48 = point;
+    sjt_functionParam16 = (sjt_dot48)->x;
+    sjt_functionParam17 = 10;
+    sjt_functionParam18 = 0;
+    sjf_anon4_i32toString(sjt_dot47, sjt_functionParam16, sjt_functionParam17, sjt_functionParam18, &sjt_call2);
+    sjt_functionParam15 = &sjt_call2;
+    sjf_string_add(sjt_dot36, sjt_functionParam15, &sjt_dot35);
     sjt_call3.count = 2;
     sjt_call3.data.size = 3;
     sjt_call3.data.data = (uintptr_t)sjg_string14;
     sjt_call3.data._isGlobal = false;
     sjf_array_char(&sjt_call3.data);
     sjf_string(&sjt_call3);
-    sjt_functionParam17 = &sjt_call3;
-    sjf_string_add(sjt_dot33, sjt_functionParam17, &sjt_dot32);
-    sjt_dot47 = &sjv_convert;
-    sjt_dot48 = point;
-    dotTemp61 = sjt_dot48->y;
-    sjt_functionParam19 = dotTemp61;
-    sjt_functionParam20 = 10;
-    sjt_functionParam21 = 0;
-    sjf_anon4_i32toString(sjt_dot47, sjt_functionParam19, sjt_functionParam20, sjt_functionParam21, &sjt_call4);
-    sjt_functionParam18 = &sjt_call4;
-    sjf_string_add(sjt_dot32, sjt_functionParam18, &sjt_functionParam5);
-    sjf_anon1_write(sjt_dot31, sjt_functionParam5);
-    sjt_dot49 = &sjv_buttonState;
-    dotTemp62 = sjt_dot49->normal;
-    _parent->state = dotTemp62;
+    sjt_functionParam19 = &sjt_call3;
+    sjf_string_add(sjt_dot35, sjt_functionParam19, &sjt_dot34);
+    sjt_dot49 = &sjv_convert;
+    sjt_dot50 = point;
+    sjt_functionParam21 = (sjt_dot50)->y;
+    sjt_functionParam22 = 10;
+    sjt_functionParam23 = 0;
+    sjf_anon4_i32toString(sjt_dot49, sjt_functionParam21, sjt_functionParam22, sjt_functionParam23, &sjt_call4);
+    sjt_functionParam20 = &sjt_call4;
+    sjf_string_add(sjt_dot34, sjt_functionParam20, &sjt_functionParam7);
+    sjf_anon1_write(sjt_dot33, sjt_functionParam7);
+    sjt_dot51 = &sjv_buttonState;
+    _parent->state = (sjt_dot51)->normal;
 
     sjf_string_destroy(&sjt_call1);
     sjf_string_destroy(&sjt_call2);
@@ -1334,39 +1758,24 @@ void sjf_buttonElement_onMouseUp(sjs_buttonElement* _parent, sjs_point* point) {
 }
 
 void sjf_buttonElement_render(sjs_buttonElement* _parent, sji_surface* surface) {
-    int32_t dotTemp20;
-    int32_t dotTemp21;
-    sjs_font* dotTemp32;
-    sjs_string* dotTemp33;
-    sjs_rect* dotTemp34;
-    int32_t dotTemp35;
-    int32_t dotTemp36;
-    sjs_rect* dotTemp37;
-    int32_t dotTemp38;
-    int32_t dotTemp39;
-    int32_t dotTemp40;
-    int32_t dotTemp41;
-    sjs_font* dotTemp42;
-    sjs_string* dotTemp43;
-    sjs_color* dotTemp44;
     int32_t sjt_compare10;
     int32_t sjt_compare9;
-    sjs_anon5* sjt_dot17;
-    sji_surface* sjt_dot23;
-    sjs_rect* sjt_dot24;
-    sjs_size* sjt_dot25;
+    sjs_anon5* sjt_dot19;
+    sji_surface* sjt_dot25;
     sjs_rect* sjt_dot26;
     sjs_size* sjt_dot27;
-    sjs_size* sjt_dot28;
+    sjs_rect* sjt_dot28;
     sjs_size* sjt_dot29;
-    sji_surface* sjt_dot30;
-    bool sjt_ifElse3;
-    sjs_string* sjt_interfaceParam10;
-    sjs_rect* sjt_interfaceParam11;
-    sjs_font* sjt_interfaceParam12;
-    sjs_string* sjt_interfaceParam13;
-    sjs_color* sjt_interfaceParam14;
-    sjs_font* sjt_interfaceParam9;
+    sjs_size* sjt_dot30;
+    sjs_size* sjt_dot31;
+    sji_surface* sjt_dot32;
+    bool sjt_ifElse4;
+    sjs_font* sjt_interfaceParam11;
+    sjs_string* sjt_interfaceParam12;
+    sjs_rect* sjt_interfaceParam13;
+    sjs_font* sjt_interfaceParam14;
+    sjs_string* sjt_interfaceParam15;
+    sjs_color* sjt_interfaceParam16;
     int32_t sjt_math1;
     int32_t sjt_math2;
     int32_t sjt_math3;
@@ -1378,125 +1787,90 @@ void sjf_buttonElement_render(sjs_buttonElement* _parent, sji_surface* surface) 
     sjs_rect sjv_textRect;
     sjs_size sjv_textSize;
 
-    dotTemp20 = _parent->state;
-    sjt_compare9 = dotTemp20;
-    sjt_dot17 = &sjv_buttonState;
-    dotTemp21 = sjt_dot17->normal;
-    sjt_compare10 = dotTemp21;
-    sjt_ifElse3 = sjt_compare9 == sjt_compare10;
-    if (sjt_ifElse3) {
-        sjs_rect* dotTemp22;
-        sjs_image* dotTemp23;
-        sji_surface* sjt_dot18;
-        sjs_rect* sjt_interfaceParam3;
-        sjs_image* sjt_interfaceParam4;
+    sjt_compare9 = (_parent)->state;
+    sjt_dot19 = &sjv_buttonState;
+    sjt_compare10 = (sjt_dot19)->normal;
+    sjt_ifElse4 = sjt_compare9 == sjt_compare10;
+    if (sjt_ifElse4) {
+        sji_surface* sjt_dot20;
+        sjs_rect* sjt_interfaceParam5;
+        sjs_image* sjt_interfaceParam6;
 
-        sjt_dot18 = surface;
-        dotTemp22 = &_parent->rect;
-        sjt_interfaceParam3 = dotTemp22;
-        dotTemp23 = &_parent->normalImage;
-        sjt_interfaceParam4 = dotTemp23;
-        sjt_dot18->drawImage((void*)(((char*)sjt_dot18->_parent) + sizeof(intptr_t)), sjt_interfaceParam3, sjt_interfaceParam4);
+        sjt_dot20 = surface;
+        sjt_interfaceParam5 = &(_parent)->rect;
+        sjt_interfaceParam6 = &(_parent)->normalImage;
+        sjt_dot20->drawImage((void*)(((char*)sjt_dot20->_parent) + sizeof(intptr_t)), sjt_interfaceParam5, sjt_interfaceParam6);
     } else {
-        int32_t dotTemp24;
-        int32_t dotTemp25;
         int32_t sjt_compare11;
         int32_t sjt_compare12;
-        sjs_anon5* sjt_dot19;
-        bool sjt_ifElse4;
+        sjs_anon5* sjt_dot21;
+        bool sjt_ifElse5;
 
-        dotTemp24 = _parent->state;
-        sjt_compare11 = dotTemp24;
-        sjt_dot19 = &sjv_buttonState;
-        dotTemp25 = sjt_dot19->hot;
-        sjt_compare12 = dotTemp25;
-        sjt_ifElse4 = sjt_compare11 == sjt_compare12;
-        if (sjt_ifElse4) {
-            sjs_rect* dotTemp26;
-            sjs_image* dotTemp27;
-            sji_surface* sjt_dot20;
-            sjs_rect* sjt_interfaceParam5;
-            sjs_image* sjt_interfaceParam6;
+        sjt_compare11 = (_parent)->state;
+        sjt_dot21 = &sjv_buttonState;
+        sjt_compare12 = (sjt_dot21)->hot;
+        sjt_ifElse5 = sjt_compare11 == sjt_compare12;
+        if (sjt_ifElse5) {
+            sji_surface* sjt_dot22;
+            sjs_rect* sjt_interfaceParam7;
+            sjs_image* sjt_interfaceParam8;
 
-            sjt_dot20 = surface;
-            dotTemp26 = &_parent->rect;
-            sjt_interfaceParam5 = dotTemp26;
-            dotTemp27 = &_parent->hotImage;
-            sjt_interfaceParam6 = dotTemp27;
-            sjt_dot20->drawImage((void*)(((char*)sjt_dot20->_parent) + sizeof(intptr_t)), sjt_interfaceParam5, sjt_interfaceParam6);
+            sjt_dot22 = surface;
+            sjt_interfaceParam7 = &(_parent)->rect;
+            sjt_interfaceParam8 = &(_parent)->hotImage;
+            sjt_dot22->drawImage((void*)(((char*)sjt_dot22->_parent) + sizeof(intptr_t)), sjt_interfaceParam7, sjt_interfaceParam8);
         } else {
-            int32_t dotTemp28;
-            int32_t dotTemp29;
             int32_t sjt_compare13;
             int32_t sjt_compare14;
-            sjs_anon5* sjt_dot21;
-            bool sjt_ifElse5;
+            sjs_anon5* sjt_dot23;
+            bool sjt_ifElse6;
 
-            dotTemp28 = _parent->state;
-            sjt_compare13 = dotTemp28;
-            sjt_dot21 = &sjv_buttonState;
-            dotTemp29 = sjt_dot21->pressed;
-            sjt_compare14 = dotTemp29;
-            sjt_ifElse5 = sjt_compare13 == sjt_compare14;
-            if (sjt_ifElse5) {
-                sjs_rect* dotTemp30;
-                sjs_image* dotTemp31;
-                sji_surface* sjt_dot22;
-                sjs_rect* sjt_interfaceParam7;
-                sjs_image* sjt_interfaceParam8;
+            sjt_compare13 = (_parent)->state;
+            sjt_dot23 = &sjv_buttonState;
+            sjt_compare14 = (sjt_dot23)->pressed;
+            sjt_ifElse6 = sjt_compare13 == sjt_compare14;
+            if (sjt_ifElse6) {
+                sji_surface* sjt_dot24;
+                sjs_image* sjt_interfaceParam10;
+                sjs_rect* sjt_interfaceParam9;
 
-                sjt_dot22 = surface;
-                dotTemp30 = &_parent->rect;
-                sjt_interfaceParam7 = dotTemp30;
-                dotTemp31 = &_parent->pressedImage;
-                sjt_interfaceParam8 = dotTemp31;
-                sjt_dot22->drawImage((void*)(((char*)sjt_dot22->_parent) + sizeof(intptr_t)), sjt_interfaceParam7, sjt_interfaceParam8);
+                sjt_dot24 = surface;
+                sjt_interfaceParam9 = &(_parent)->rect;
+                sjt_interfaceParam10 = &(_parent)->pressedImage;
+                sjt_dot24->drawImage((void*)(((char*)sjt_dot24->_parent) + sizeof(intptr_t)), sjt_interfaceParam9, sjt_interfaceParam10);
             }
         }
     }
 
-    sjt_dot23 = surface;
-    dotTemp32 = &_parent->font;
-    sjt_interfaceParam9 = dotTemp32;
-    dotTemp33 = &_parent->text;
-    sjt_interfaceParam10 = dotTemp33;
-    sjt_dot23->getTextSize((void*)(((char*)sjt_dot23->_parent) + sizeof(intptr_t)), sjt_interfaceParam9, sjt_interfaceParam10, &sjv_textSize);
-    dotTemp34 = &_parent->rect;
-    sjt_dot24 = dotTemp34;
-    dotTemp35 = sjt_dot24->w;
-    sjt_math3 = dotTemp35;
-    sjt_dot25 = &sjv_textSize;
-    dotTemp36 = sjt_dot25->w;
-    sjt_math4 = dotTemp36;
+    sjt_dot25 = surface;
+    sjt_interfaceParam11 = &(_parent)->font;
+    sjt_interfaceParam12 = &(_parent)->text;
+    sjt_dot25->getTextSize((void*)(((char*)sjt_dot25->_parent) + sizeof(intptr_t)), sjt_interfaceParam11, sjt_interfaceParam12, &sjv_textSize);
+    sjt_dot26 = &(_parent)->rect;
+    sjt_math3 = (sjt_dot26)->w;
+    sjt_dot27 = &sjv_textSize;
+    sjt_math4 = (sjt_dot27)->w;
     sjt_math1 = sjt_math3 - sjt_math4;
     sjt_math2 = 2;
     sjv_textRect.x = sjt_math1 / sjt_math2;
-    dotTemp37 = &_parent->rect;
-    sjt_dot26 = dotTemp37;
-    dotTemp38 = sjt_dot26->h;
-    sjt_math7 = dotTemp38;
-    sjt_dot27 = &sjv_textSize;
-    dotTemp39 = sjt_dot27->h;
-    sjt_math8 = dotTemp39;
+    sjt_dot28 = &(_parent)->rect;
+    sjt_math7 = (sjt_dot28)->h;
+    sjt_dot29 = &sjv_textSize;
+    sjt_math8 = (sjt_dot29)->h;
     sjt_math5 = sjt_math7 - sjt_math8;
     sjt_math6 = 2;
     sjv_textRect.y = sjt_math5 / sjt_math6;
-    sjt_dot28 = &sjv_textSize;
-    dotTemp40 = sjt_dot28->w;
-    sjv_textRect.w = dotTemp40;
-    sjt_dot29 = &sjv_textSize;
-    dotTemp41 = sjt_dot29->h;
-    sjv_textRect.h = dotTemp41;
+    sjt_dot30 = &sjv_textSize;
+    sjv_textRect.w = (sjt_dot30)->w;
+    sjt_dot31 = &sjv_textSize;
+    sjv_textRect.h = (sjt_dot31)->h;
     sjf_rect(&sjv_textRect);
-    sjt_dot30 = surface;
-    sjt_interfaceParam11 = &sjv_textRect;
-    dotTemp42 = &_parent->font;
-    sjt_interfaceParam12 = dotTemp42;
-    dotTemp43 = &_parent->text;
-    sjt_interfaceParam13 = dotTemp43;
-    dotTemp44 = &_parent->textColor;
-    sjt_interfaceParam14 = dotTemp44;
-    sjt_dot30->drawText((void*)(((char*)sjt_dot30->_parent) + sizeof(intptr_t)), sjt_interfaceParam11, sjt_interfaceParam12, sjt_interfaceParam13, sjt_interfaceParam14);
+    sjt_dot32 = surface;
+    sjt_interfaceParam13 = &sjv_textRect;
+    sjt_interfaceParam14 = &(_parent)->font;
+    sjt_interfaceParam15 = &(_parent)->text;
+    sjt_interfaceParam16 = &(_parent)->textColor;
+    sjt_dot32->drawText((void*)(((char*)sjt_dot32->_parent) + sizeof(intptr_t)), sjt_interfaceParam13, sjt_interfaceParam14, sjt_interfaceParam15, sjt_interfaceParam16);
 
     sjf_rect_destroy(&sjv_textRect);
     sjf_size_destroy(&sjv_textSize);
@@ -1522,203 +1896,44 @@ void sjf_color_destroy(sjs_color* _this) {
 void sjf_color_heap(sjs_color_heap* _this) {
 }
 
-void sjf_fillElement(sjs_fillElement* _this) {
-}
-
-sjs_object* sjf_fillElement_asInterface(sjs_fillElement* _this, int typeId) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            return (sjs_object*)sjf_fillElement_as_sji_element(_this);
-        }
-    }
-
-    return 0;
-}
-
-sji_element* sjf_fillElement_as_sji_element(sjs_fillElement* _this) {
-    sji_element* _interface;
-    _interface = (sji_element*)malloc(sizeof(sji_element));
-    _interface->_refCount = 1;
-    _interface->_parent = (sjs_object*)_this;
-    _interface->_parent->_refCount++;
-    _interface->destroy = (void(*)(void*))sjf_fillElement_destroy;
-    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_fillElement_asInterface;
-    _interface->setRect = (void(*)(void*,sjs_rect*))sjf_fillElement_setRect;
-    _interface->render = (void(*)(void*,sji_surface*))sjf_fillElement_render;
-    _interface->getChildren = (void(*)(void*, sjs_array_heap_element**))sjf_fillElement_getChildren;
-
-    return _interface;
-}
-
-void sjf_fillElement_copy(sjs_fillElement* _this, sjs_fillElement* to) {
-    sjf_array_heap_element_copy(&_this->children, &to->children);
-    sjf_rect_copy(&_this->rect, &to->rect);
-}
-
-void sjf_fillElement_destroy(sjs_fillElement* _this) {
-}
-
-void sjf_fillElement_getChildren(sjs_fillElement* _parent, sjs_array_heap_element** _return) {
-    sjs_array_heap_element* dotTemp19;
-    sjs_array_heap_element* sjt_value1;
-    sjs_array_heap_element* sjv_a;
-
-    dotTemp19 = &_parent->children;
-    sjv_a = dotTemp19;
-    sjt_value1 = sjv_a;
-    (*_return) = sjt_value1;
-}
-
-void sjf_fillElement_heap(sjs_fillElement_heap* _this) {
-}
-
-sjs_object* sjf_fillElement_heap_asInterface(sjs_fillElement_heap* _this, int typeId) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            return (sjs_object*)sjf_fillElement_heap_as_sji_element(_this);
-        }
-    }
-
-    return 0;
-}
-
-sji_element* sjf_fillElement_heap_as_sji_element(sjs_fillElement_heap* _this) {
-    sji_element* _interface;
-    _interface = (sji_element*)malloc(sizeof(sji_element));
-    _interface->_refCount = 1;
-    _interface->_parent = (sjs_object*)_this;
-    _interface->_parent->_refCount++;
-    _interface->destroy = (void(*)(void*))sjf_fillElement_destroy;
-    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_fillElement_heap_asInterface;
-    _interface->setRect = (void(*)(void*,sjs_rect*))sjf_fillElement_setRect;
-    _interface->render = (void(*)(void*,sji_surface*))sjf_fillElement_render;
-    _interface->getChildren = (void(*)(void*, sjs_array_heap_element**))sjf_fillElement_getChildren;
-
-    return _interface;
-}
-
-void sjf_fillElement_render(sjs_fillElement* _parent, sji_surface* surface) {
-    sjs_array_heap_element* dotTemp16;
-    int32_t dotTemp17;
-    int32_t i;
-    sjs_array_heap_element* sjt_dot14;
-    int32_t sjt_forEnd2;
-    int32_t sjt_forStart2;
-
-    sjt_forStart2 = 0;
-    i = sjt_forStart2;
-    dotTemp16 = &_parent->children;
-    sjt_dot14 = dotTemp16;
-    dotTemp17 = sjt_dot14->size;
-    sjt_forEnd2 = dotTemp17;
-    while (i < sjt_forEnd2) {
-        sjs_array_heap_element* dotTemp18;
-        sjs_array_heap_element* sjt_dot15;
-        sji_element* sjt_dot16;
-        int32_t sjt_functionParam2;
-        sji_surface* sjt_interfaceParam2;
-        sji_element* sjv_child;
-
-        dotTemp18 = &_parent->children;
-        sjt_dot15 = dotTemp18;
-        sjt_functionParam2 = i;
-        sjf_array_heap_element_getAt_heap(sjt_dot15, sjt_functionParam2, &sjv_child);
-        sjt_dot16 = sjv_child;
-        sjt_interfaceParam2 = surface;
-        sjt_interfaceParam2->_refCount++;
-        sjt_dot16->render((void*)(((char*)sjt_dot16->_parent) + sizeof(intptr_t)), sjt_interfaceParam2);
-        i++;
-
-        sjt_interfaceParam2->_refCount--;
-        if (sjt_interfaceParam2->_refCount <= 0) {
-            sji_surface_destroy(sjt_interfaceParam2);
-        }
-        sjv_child->_refCount--;
-        if (sjv_child->_refCount <= 0) {
-            sji_element_destroy(sjv_child);
-        }
-    }
-}
-
-void sjf_fillElement_setRect(sjs_fillElement* _parent, sjs_rect* rect_) {
-    sjs_array_heap_element* dotTemp12;
-    int32_t dotTemp13;
-    int32_t i;
-    sjs_array_heap_element* sjt_dot11;
-    int32_t sjt_forEnd1;
-    int32_t sjt_forStart1;
-
-    sjf_rect_copy(&_parent->rect, rect_);
-    sjt_forStart1 = 0;
-    i = sjt_forStart1;
-    dotTemp12 = &_parent->children;
-    sjt_dot11 = dotTemp12;
-    dotTemp13 = sjt_dot11->size;
-    sjt_forEnd1 = dotTemp13;
-    while (i < sjt_forEnd1) {
-        sjs_array_heap_element* dotTemp14;
-        sjs_rect* dotTemp15;
-        sjs_array_heap_element* sjt_dot12;
-        sji_element* sjt_dot13;
-        int32_t sjt_functionParam1;
-        sjs_rect* sjt_interfaceParam1;
-        sji_element* sjv_child;
-
-        dotTemp14 = &_parent->children;
-        sjt_dot12 = dotTemp14;
-        sjt_functionParam1 = i;
-        sjf_array_heap_element_getAt_heap(sjt_dot12, sjt_functionParam1, &sjv_child);
-        sjt_dot13 = sjv_child;
-        dotTemp15 = &_parent->rect;
-        sjt_interfaceParam1 = dotTemp15;
-        sjt_dot13->setRect((void*)(((char*)sjt_dot13->_parent) + sizeof(intptr_t)), sjt_interfaceParam1);
-        i++;
-
-        sjv_child->_refCount--;
-        if (sjv_child->_refCount <= 0) {
-            sji_element_destroy(sjv_child);
-        }
-    }
-}
-
 void sjf_fireMouseDown(sji_element* element, sjs_point* point) {
     bool result3;
     bool result4;
-    sji_element* sjt_cast15;
-    sji_element* sjt_dot73;
-    bool sjt_ifElse13;
+    sji_element* sjt_cast17;
+    sji_element* sjt_dot76;
     bool sjt_ifElse14;
-    sji_mouseHandler* sjt_isEmpty3;
-    sjs_array_heap_element* sjt_isEmpty4;
+    bool sjt_ifElse15;
+    sji_mouseHandler* sjt_isEmpty4;
+    sjs_array_heap_element* sjt_isEmpty5;
     bool sjt_not3;
     bool sjt_not4;
     sjs_array_heap_element* sjv_children;
     sji_mouseHandler* sjv_mouseHandler;
 
-    sjt_cast15 = element;
-    sjt_cast15->_refCount++;
-    sjv_mouseHandler = (sji_mouseHandler*)sjt_cast15->asInterface(sjt_cast15->_parent, sji_mouseHandler_typeId);
-    sjt_isEmpty3 = sjv_mouseHandler;
-    if (sjt_isEmpty3 != 0) {
-        sjt_isEmpty3->_refCount++;
+    sjt_cast17 = element;
+    sjt_cast17->_refCount++;
+    sjv_mouseHandler = (sji_mouseHandler*)sjt_cast17->asInterface(sjt_cast17->_parent, sji_mouseHandler_typeId);
+    sjt_isEmpty4 = sjv_mouseHandler;
+    if (sjt_isEmpty4 != 0) {
+        sjt_isEmpty4->_refCount++;
     }
 
-    sjt_not3 = (sjt_isEmpty3 == 0);
+    sjt_not3 = (sjt_isEmpty4 == 0);
     result3 = !sjt_not3;
-    sjt_ifElse13 = result3;
-    if (sjt_ifElse13) {
-        sji_mouseHandler* sjt_dot72;
+    sjt_ifElse14 = result3;
+    if (sjt_ifElse14) {
+        sji_mouseHandler* sjt_dot75;
         sji_mouseHandler* sjt_getValue3;
-        sjs_point* sjt_interfaceParam21;
+        sjs_point* sjt_interfaceParam23;
 
         sjt_getValue3 = sjv_mouseHandler;
         if (sjt_getValue3 != 0) {
             sjt_getValue3->_refCount++;
         }
 
-        sjt_dot72 = sjt_getValue3;
-        sjt_interfaceParam21 = point;
-        sjt_dot72->onMouseDown((void*)(((char*)sjt_dot72->_parent) + sizeof(intptr_t)), sjt_interfaceParam21);
+        sjt_dot75 = sjt_getValue3;
+        sjt_interfaceParam23 = point;
+        sjt_dot75->onMouseDown((void*)(((char*)sjt_dot75->_parent) + sizeof(intptr_t)), sjt_interfaceParam23);
 
         if (sjt_getValue3 != 0) {
             sjt_getValue3->_refCount--;
@@ -1728,16 +1943,15 @@ void sjf_fireMouseDown(sji_element* element, sjs_point* point) {
         }
     }
 
-    sjt_dot73 = element;
-    sjt_dot73->getChildren((void*)(((char*)sjt_dot73->_parent) + sizeof(intptr_t)), &sjv_children);
-    sjt_isEmpty4 = sjv_children;
-    sjt_not4 = (sjt_isEmpty4 == 0);
+    sjt_dot76 = element;
+    sjt_dot76->getChildren((void*)(((char*)sjt_dot76->_parent) + sizeof(intptr_t)), &sjv_children);
+    sjt_isEmpty5 = sjv_children;
+    sjt_not4 = (sjt_isEmpty5 == 0);
     result4 = !sjt_not4;
-    sjt_ifElse14 = result4;
-    if (sjt_ifElse14) {
-        int32_t dotTemp71;
+    sjt_ifElse15 = result4;
+    if (sjt_ifElse15) {
         int32_t i;
-        sjs_array_heap_element* sjt_dot74;
+        sjs_array_heap_element* sjt_dot77;
         int32_t sjt_forEnd5;
         int32_t sjt_forStart5;
         sjs_array_heap_element* sjt_getValue4;
@@ -1748,37 +1962,36 @@ void sjf_fireMouseDown(sji_element* element, sjs_point* point) {
         sjv_c = sjt_getValue4;
         sjt_forStart5 = 0;
         i = sjt_forStart5;
-        sjt_dot74 = sjv_c;
-        dotTemp71 = sjt_dot74->size;
-        sjt_forEnd5 = dotTemp71;
+        sjt_dot77 = sjv_c;
+        sjt_forEnd5 = (sjt_dot77)->size;
         while (i < sjt_forEnd5) {
-            sjs_array_heap_element* sjt_dot75;
-            sji_element* sjt_functionParam30;
-            int32_t sjt_functionParam31;
-            sjs_point* sjt_functionParam32;
+            sjs_array_heap_element* sjt_dot78;
+            sji_element* sjt_functionParam32;
+            int32_t sjt_functionParam33;
+            sjs_point* sjt_functionParam34;
 
-            sjt_dot75 = sjv_c;
-            sjt_functionParam31 = i;
-            sjf_array_heap_element_getAt_heap(sjt_dot75, sjt_functionParam31, &sjt_functionParam30);
-            sjt_functionParam32 = point;
-            sjf_fireMouseDown(sjt_functionParam30, sjt_functionParam32);
+            sjt_dot78 = sjv_c;
+            sjt_functionParam33 = i;
+            sjf_array_heap_element_getAt_heap(sjt_dot78, sjt_functionParam33, &sjt_functionParam32);
+            sjt_functionParam34 = point;
+            sjf_fireMouseDown(sjt_functionParam32, sjt_functionParam34);
             i++;
 
-            sjt_functionParam30->_refCount--;
-            if (sjt_functionParam30->_refCount <= 0) {
-                sji_element_destroy(sjt_functionParam30);
+            sjt_functionParam32->_refCount--;
+            if (sjt_functionParam32->_refCount <= 0) {
+                sji_element_destroy(sjt_functionParam32);
             }
         }
     }
 
-    sjt_cast15->_refCount--;
-    if (sjt_cast15->_refCount <= 0) {
-        sji_element_destroy(sjt_cast15);
+    sjt_cast17->_refCount--;
+    if (sjt_cast17->_refCount <= 0) {
+        sji_element_destroy(sjt_cast17);
     }
-    if (sjt_isEmpty3 != 0) {
-        sjt_isEmpty3->_refCount--;
-        if (sjt_isEmpty3->_refCount <= 0) {
-            sji_mouseHandler_destroy(sjt_isEmpty3);
+    if (sjt_isEmpty4 != 0) {
+        sjt_isEmpty4->_refCount--;
+        if (sjt_isEmpty4->_refCount <= 0) {
+            sji_mouseHandler_destroy(sjt_isEmpty4);
         }
     }
     if (sjv_mouseHandler != 0) {
@@ -1792,41 +2005,41 @@ void sjf_fireMouseDown(sji_element* element, sjs_point* point) {
 void sjf_fireMouseUp(sji_element* element, sjs_point* point) {
     bool result1;
     bool result2;
-    sji_element* sjt_cast14;
-    sji_element* sjt_dot69;
-    bool sjt_ifElse10;
+    sji_element* sjt_cast16;
+    sji_element* sjt_dot72;
     bool sjt_ifElse11;
-    sji_mouseHandler* sjt_isEmpty1;
-    sjs_array_heap_element* sjt_isEmpty2;
+    bool sjt_ifElse12;
+    sji_mouseHandler* sjt_isEmpty2;
+    sjs_array_heap_element* sjt_isEmpty3;
     bool sjt_not1;
     bool sjt_not2;
     sjs_array_heap_element* sjv_children;
     sji_mouseHandler* sjv_mouseHandler;
 
-    sjt_cast14 = element;
-    sjt_cast14->_refCount++;
-    sjv_mouseHandler = (sji_mouseHandler*)sjt_cast14->asInterface(sjt_cast14->_parent, sji_mouseHandler_typeId);
-    sjt_isEmpty1 = sjv_mouseHandler;
-    if (sjt_isEmpty1 != 0) {
-        sjt_isEmpty1->_refCount++;
+    sjt_cast16 = element;
+    sjt_cast16->_refCount++;
+    sjv_mouseHandler = (sji_mouseHandler*)sjt_cast16->asInterface(sjt_cast16->_parent, sji_mouseHandler_typeId);
+    sjt_isEmpty2 = sjv_mouseHandler;
+    if (sjt_isEmpty2 != 0) {
+        sjt_isEmpty2->_refCount++;
     }
 
-    sjt_not1 = (sjt_isEmpty1 == 0);
+    sjt_not1 = (sjt_isEmpty2 == 0);
     result1 = !sjt_not1;
-    sjt_ifElse10 = result1;
-    if (sjt_ifElse10) {
-        sji_mouseHandler* sjt_dot68;
+    sjt_ifElse11 = result1;
+    if (sjt_ifElse11) {
+        sji_mouseHandler* sjt_dot71;
         sji_mouseHandler* sjt_getValue1;
-        sjs_point* sjt_interfaceParam20;
+        sjs_point* sjt_interfaceParam22;
 
         sjt_getValue1 = sjv_mouseHandler;
         if (sjt_getValue1 != 0) {
             sjt_getValue1->_refCount++;
         }
 
-        sjt_dot68 = sjt_getValue1;
-        sjt_interfaceParam20 = point;
-        sjt_dot68->onMouseUp((void*)(((char*)sjt_dot68->_parent) + sizeof(intptr_t)), sjt_interfaceParam20);
+        sjt_dot71 = sjt_getValue1;
+        sjt_interfaceParam22 = point;
+        sjt_dot71->onMouseUp((void*)(((char*)sjt_dot71->_parent) + sizeof(intptr_t)), sjt_interfaceParam22);
 
         if (sjt_getValue1 != 0) {
             sjt_getValue1->_refCount--;
@@ -1836,16 +2049,15 @@ void sjf_fireMouseUp(sji_element* element, sjs_point* point) {
         }
     }
 
-    sjt_dot69 = element;
-    sjt_dot69->getChildren((void*)(((char*)sjt_dot69->_parent) + sizeof(intptr_t)), &sjv_children);
-    sjt_isEmpty2 = sjv_children;
-    sjt_not2 = (sjt_isEmpty2 == 0);
+    sjt_dot72 = element;
+    sjt_dot72->getChildren((void*)(((char*)sjt_dot72->_parent) + sizeof(intptr_t)), &sjv_children);
+    sjt_isEmpty3 = sjv_children;
+    sjt_not2 = (sjt_isEmpty3 == 0);
     result2 = !sjt_not2;
-    sjt_ifElse11 = result2;
-    if (sjt_ifElse11) {
-        int32_t dotTemp70;
+    sjt_ifElse12 = result2;
+    if (sjt_ifElse12) {
         int32_t i;
-        sjs_array_heap_element* sjt_dot70;
+        sjs_array_heap_element* sjt_dot73;
         int32_t sjt_forEnd4;
         int32_t sjt_forStart4;
         sjs_array_heap_element* sjt_getValue2;
@@ -1856,37 +2068,36 @@ void sjf_fireMouseUp(sji_element* element, sjs_point* point) {
         sjv_c = sjt_getValue2;
         sjt_forStart4 = 0;
         i = sjt_forStart4;
-        sjt_dot70 = sjv_c;
-        dotTemp70 = sjt_dot70->size;
-        sjt_forEnd4 = dotTemp70;
+        sjt_dot73 = sjv_c;
+        sjt_forEnd4 = (sjt_dot73)->size;
         while (i < sjt_forEnd4) {
-            sjs_array_heap_element* sjt_dot71;
-            sji_element* sjt_functionParam25;
-            int32_t sjt_functionParam26;
-            sjs_point* sjt_functionParam27;
+            sjs_array_heap_element* sjt_dot74;
+            sji_element* sjt_functionParam27;
+            int32_t sjt_functionParam28;
+            sjs_point* sjt_functionParam29;
 
-            sjt_dot71 = sjv_c;
-            sjt_functionParam26 = i;
-            sjf_array_heap_element_getAt_heap(sjt_dot71, sjt_functionParam26, &sjt_functionParam25);
-            sjt_functionParam27 = point;
-            sjf_fireMouseUp(sjt_functionParam25, sjt_functionParam27);
+            sjt_dot74 = sjv_c;
+            sjt_functionParam28 = i;
+            sjf_array_heap_element_getAt_heap(sjt_dot74, sjt_functionParam28, &sjt_functionParam27);
+            sjt_functionParam29 = point;
+            sjf_fireMouseUp(sjt_functionParam27, sjt_functionParam29);
             i++;
 
-            sjt_functionParam25->_refCount--;
-            if (sjt_functionParam25->_refCount <= 0) {
-                sji_element_destroy(sjt_functionParam25);
+            sjt_functionParam27->_refCount--;
+            if (sjt_functionParam27->_refCount <= 0) {
+                sji_element_destroy(sjt_functionParam27);
             }
         }
     }
 
-    sjt_cast14->_refCount--;
-    if (sjt_cast14->_refCount <= 0) {
-        sji_element_destroy(sjt_cast14);
+    sjt_cast16->_refCount--;
+    if (sjt_cast16->_refCount <= 0) {
+        sji_element_destroy(sjt_cast16);
     }
-    if (sjt_isEmpty1 != 0) {
-        sjt_isEmpty1->_refCount--;
-        if (sjt_isEmpty1->_refCount <= 0) {
-            sji_mouseHandler_destroy(sjt_isEmpty1);
+    if (sjt_isEmpty2 != 0) {
+        sjt_isEmpty2->_refCount--;
+        if (sjt_isEmpty2->_refCount <= 0) {
+            sji_mouseHandler_destroy(sjt_isEmpty2);
         }
     }
     if (sjv_mouseHandler != 0) {
@@ -1928,8 +2139,6 @@ void sjf_font_heap(sjs_font_heap* _this) {
 }
 
 void sjf_image(sjs_image* _this) {
-    int32_t dotTemp1;
-    int32_t dotTemp2;
     bool sjt_and1;
     bool sjt_and2;
     int32_t sjt_compare1;
@@ -1941,19 +2150,15 @@ void sjf_image(sjs_image* _this) {
     bool sjt_ifElse1;
 
     sjt_dot1 = &_this->rect;
-    dotTemp1 = sjt_dot1->w;
-    sjt_compare1 = dotTemp1;
+    sjt_compare1 = (sjt_dot1)->w;
     sjt_compare2 = 0;
     sjt_and1 = sjt_compare1 == sjt_compare2;
     sjt_dot2 = &_this->rect;
-    dotTemp2 = sjt_dot2->h;
-    sjt_compare3 = dotTemp2;
+    sjt_compare3 = (sjt_dot2)->h;
     sjt_compare4 = 0;
     sjt_and2 = sjt_compare3 == sjt_compare4;
     sjt_ifElse1 = sjt_and1 && sjt_and2;
     if (sjt_ifElse1) {
-        int32_t dotTemp3;
-        int32_t dotTemp4;
         sjs_texture* sjt_dot3;
         sjs_size* sjt_dot4;
         sjs_size* sjt_dot5;
@@ -1964,11 +2169,9 @@ void sjf_image(sjs_image* _this) {
         _this->rect.x = 0;
         _this->rect.y = 0;
         sjt_dot4 = &sjv_size;
-        dotTemp3 = sjt_dot4->w;
-        _this->rect.w = dotTemp3;
+        _this->rect.w = (sjt_dot4)->w;
         sjt_dot5 = &sjv_size;
-        dotTemp4 = sjt_dot5->h;
-        _this->rect.h = dotTemp4;
+        _this->rect.h = (sjt_dot5)->h;
         sjf_rect(&_this->rect);
 
         sjf_size_destroy(&sjv_size);
@@ -1984,10 +2187,8 @@ void sjf_image_destroy(sjs_image* _this) {
 }
 
 void sjf_image_heap(sjs_image_heap* _this) {
-    sjs_rect* dotTemp5;
-    int32_t dotTemp6;
-    sjs_rect* dotTemp7;
-    int32_t dotTemp8;
+    sjs_rect* dotTemp1;
+    sjs_rect* dotTemp2;
     bool sjt_and3;
     bool sjt_and4;
     int32_t sjt_compare5;
@@ -1998,39 +2199,33 @@ void sjf_image_heap(sjs_image_heap* _this) {
     sjs_rect* sjt_dot7;
     bool sjt_ifElse2;
 
-    dotTemp5 = &_this->rect;
-    sjt_dot6 = dotTemp5;
-    dotTemp6 = sjt_dot6->w;
-    sjt_compare5 = dotTemp6;
+    dotTemp1 = &_this->rect;
+    sjt_dot6 = dotTemp1;
+    sjt_compare5 = (sjt_dot6)->w;
     sjt_compare6 = 0;
     sjt_and3 = sjt_compare5 == sjt_compare6;
-    dotTemp7 = &_this->rect;
-    sjt_dot7 = dotTemp7;
-    dotTemp8 = sjt_dot7->h;
-    sjt_compare7 = dotTemp8;
+    dotTemp2 = &_this->rect;
+    sjt_dot7 = dotTemp2;
+    sjt_compare7 = (sjt_dot7)->h;
     sjt_compare8 = 0;
     sjt_and4 = sjt_compare7 == sjt_compare8;
     sjt_ifElse2 = sjt_and3 && sjt_and4;
     if (sjt_ifElse2) {
-        int32_t dotTemp10;
-        int32_t dotTemp11;
-        sjs_texture* dotTemp9;
+        sjs_texture* dotTemp3;
         sjs_size* sjt_dot10;
         sjs_texture* sjt_dot8;
         sjs_size* sjt_dot9;
         sjs_size sjv_size;
 
-        dotTemp9 = &_this->texture;
-        sjt_dot8 = dotTemp9;
+        dotTemp3 = &_this->texture;
+        sjt_dot8 = dotTemp3;
         sjf_texture_getSize(sjt_dot8, &sjv_size);
         _this->rect.x = 0;
         _this->rect.y = 0;
         sjt_dot9 = &sjv_size;
-        dotTemp10 = sjt_dot9->w;
-        _this->rect.w = dotTemp10;
+        _this->rect.w = (sjt_dot9)->w;
         sjt_dot10 = &sjv_size;
-        dotTemp11 = sjt_dot10->h;
-        _this->rect.h = dotTemp11;
+        _this->rect.h = (sjt_dot10)->h;
         sjf_rect(&_this->rect);
 
         sjf_size_destroy(&sjv_size);
@@ -2038,19 +2233,17 @@ void sjf_image_heap(sjs_image_heap* _this) {
 }
 
 void sjf_mainLoop(void) {
-    int32_t dotTemp68;
-    int32_t dotTemp69;
-    sji_surface* sjt_dot61;
-    sji_surface* sjt_dot62;
-    sjs_size* sjt_dot63;
-    sjs_size* sjt_dot64;
-    sji_element* sjt_dot65;
-    sji_element* sjt_dot66;
-    sji_surface* sjt_dot67;
-    bool sjt_ifElse12;
-    bool sjt_ifElse9;
-    sjs_rect* sjt_interfaceParam18;
-    sji_surface* sjt_interfaceParam19;
+    sji_surface* sjt_dot64;
+    sji_surface* sjt_dot65;
+    sjs_size* sjt_dot66;
+    sjs_size* sjt_dot67;
+    sji_element* sjt_dot68;
+    sji_element* sjt_dot69;
+    sji_surface* sjt_dot70;
+    bool sjt_ifElse10;
+    bool sjt_ifElse13;
+    sjs_rect* sjt_interfaceParam20;
+    sji_surface* sjt_interfaceParam21;
     int32_t sjt_math23;
     int32_t sjt_math24;
     bool sjv_isMouseDown;
@@ -2060,28 +2253,26 @@ void sjf_mainLoop(void) {
     int32_t sjv_x;
     int32_t sjv_y;
 
-    sjt_dot61 = sjv_rootSurface;
-    sjt_dot61->clear((void*)(((char*)sjt_dot61->_parent) + sizeof(intptr_t)));
-    sjt_dot62 = sjv_rootSurface;
-    sjt_dot62->getSize((void*)(((char*)sjt_dot62->_parent) + sizeof(intptr_t)), &sjv_size);
+    sjt_dot64 = sjv_rootSurface;
+    sjt_dot64->clear((void*)(((char*)sjt_dot64->_parent) + sizeof(intptr_t)));
+    sjt_dot65 = sjv_rootSurface;
+    sjt_dot65->getSize((void*)(((char*)sjt_dot65->_parent) + sizeof(intptr_t)), &sjv_size);
     sjv_rect.x = 0;
     sjv_rect.y = 0;
-    sjt_dot63 = &sjv_size;
-    dotTemp68 = sjt_dot63->w;
-    sjv_rect.w = dotTemp68;
-    sjt_dot64 = &sjv_size;
-    dotTemp69 = sjt_dot64->h;
-    sjv_rect.h = dotTemp69;
+    sjt_dot66 = &sjv_size;
+    sjv_rect.w = (sjt_dot66)->w;
+    sjt_dot67 = &sjv_size;
+    sjv_rect.h = (sjt_dot67)->h;
     sjf_rect(&sjv_rect);
-    sjt_dot65 = sjv_root;
-    sjt_interfaceParam18 = &sjv_rect;
-    sjt_dot65->setRect((void*)(((char*)sjt_dot65->_parent) + sizeof(intptr_t)), sjt_interfaceParam18);
-    sjt_dot66 = sjv_root;
-    sjt_interfaceParam19 = sjv_rootSurface;
-    sjt_interfaceParam19->_refCount++;
-    sjt_dot66->render((void*)(((char*)sjt_dot66->_parent) + sizeof(intptr_t)), sjt_interfaceParam19);
-    sjt_dot67 = sjv_rootSurface;
-    sjt_dot67->present((void*)(((char*)sjt_dot67->_parent) + sizeof(intptr_t)));
+    sjt_dot68 = sjv_root;
+    sjt_interfaceParam20 = &sjv_rect;
+    sjt_dot68->setRect((void*)(((char*)sjt_dot68->_parent) + sizeof(intptr_t)), sjt_interfaceParam20);
+    sjt_dot69 = sjv_root;
+    sjt_interfaceParam21 = sjv_rootSurface;
+    sjt_interfaceParam21->_refCount++;
+    sjt_dot69->render((void*)(((char*)sjt_dot69->_parent) + sizeof(intptr_t)), sjt_interfaceParam21);
+    sjt_dot70 = sjv_rootSurface;
+    sjt_dot70->present((void*)(((char*)sjt_dot70->_parent) + sizeof(intptr_t)));
     sjv_isMouseUp = false;
     sjv_isMouseDown = false;
     sjv_x = 0;
@@ -2109,44 +2300,44 @@ void sjf_mainLoop(void) {
         }
     
     ;
-    sjt_ifElse9 = sjv_isMouseUp;
-    if (sjt_ifElse9) {
+    sjt_ifElse10 = sjv_isMouseUp;
+    if (sjt_ifElse10) {
         sjs_point sjt_call10;
-        sji_element* sjt_functionParam28;
-        sjs_point* sjt_functionParam29;
+        sji_element* sjt_functionParam30;
+        sjs_point* sjt_functionParam31;
 
-        sjt_functionParam28 = sjv_root;
-        sjt_functionParam28->_refCount++;
+        sjt_functionParam30 = sjv_root;
+        sjt_functionParam30->_refCount++;
         sjt_call10.x = sjv_x;
         sjt_call10.y = sjv_y;
         sjf_point(&sjt_call10);
-        sjt_functionParam29 = &sjt_call10;
-        sjf_fireMouseUp(sjt_functionParam28, sjt_functionParam29);
+        sjt_functionParam31 = &sjt_call10;
+        sjf_fireMouseUp(sjt_functionParam30, sjt_functionParam31);
 
-        sjt_functionParam28->_refCount--;
-        if (sjt_functionParam28->_refCount <= 0) {
-            sji_element_destroy(sjt_functionParam28);
+        sjt_functionParam30->_refCount--;
+        if (sjt_functionParam30->_refCount <= 0) {
+            sji_element_destroy(sjt_functionParam30);
         }
         sjf_point_destroy(&sjt_call10);
     }
 
-    sjt_ifElse12 = sjv_isMouseDown;
-    if (sjt_ifElse12) {
+    sjt_ifElse13 = sjv_isMouseDown;
+    if (sjt_ifElse13) {
         sjs_point sjt_call11;
-        sji_element* sjt_functionParam33;
-        sjs_point* sjt_functionParam34;
+        sji_element* sjt_functionParam35;
+        sjs_point* sjt_functionParam36;
 
-        sjt_functionParam33 = sjv_root;
-        sjt_functionParam33->_refCount++;
+        sjt_functionParam35 = sjv_root;
+        sjt_functionParam35->_refCount++;
         sjt_call11.x = sjv_x;
         sjt_call11.y = sjv_y;
         sjf_point(&sjt_call11);
-        sjt_functionParam34 = &sjt_call11;
-        sjf_fireMouseDown(sjt_functionParam33, sjt_functionParam34);
+        sjt_functionParam36 = &sjt_call11;
+        sjf_fireMouseDown(sjt_functionParam35, sjt_functionParam36);
 
-        sjt_functionParam33->_refCount--;
-        if (sjt_functionParam33->_refCount <= 0) {
-            sji_element_destroy(sjt_functionParam33);
+        sjt_functionParam35->_refCount--;
+        if (sjt_functionParam35->_refCount <= 0) {
+            sji_element_destroy(sjt_functionParam35);
         }
         sjf_point_destroy(&sjt_call11);
     }
@@ -2155,9 +2346,9 @@ void sjf_mainLoop(void) {
     sjt_math24 = 1;
     sjv_frame = sjt_math23 + sjt_math24;
 
-    sjt_interfaceParam19->_refCount--;
-    if (sjt_interfaceParam19->_refCount <= 0) {
-        sji_surface_destroy(sjt_interfaceParam19);
+    sjt_interfaceParam21->_refCount--;
+    if (sjt_interfaceParam21->_refCount <= 0) {
+        sji_surface_destroy(sjt_interfaceParam21);
     }
     sjf_rect_destroy(&sjv_rect);
     sjf_size_destroy(&sjv_size);
@@ -2518,120 +2709,92 @@ void sjf_string(sjs_string* _this) {
 }
 
 void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string** _return) {
-    int32_t dotTemp45;
     int32_t sjt_compare15;
     int32_t sjt_compare16;
-    sjs_string* sjt_dot35;
-    bool sjt_ifElse6;
+    sjs_string* sjt_dot37;
+    bool sjt_ifElse7;
 
-    sjt_dot35 = item;
-    dotTemp45 = sjt_dot35->count;
-    sjt_compare15 = dotTemp45;
+    sjt_dot37 = item;
+    sjt_compare15 = (sjt_dot37)->count;
     sjt_compare16 = 0;
-    sjt_ifElse6 = sjt_compare15 > sjt_compare16;
-    if (sjt_ifElse6) {
-        int32_t dotTemp46;
-        int32_t dotTemp47;
-        sjs_array_char* dotTemp48;
-        int32_t dotTemp49;
-        int32_t dotTemp53;
-        sjs_array_char* dotTemp58;
-        int32_t dotTemp59;
+    sjt_ifElse7 = sjt_compare15 > sjt_compare16;
+    if (sjt_ifElse7) {
         int32_t i;
-        int32_t sjt_cast9;
+        int32_t sjt_cast11;
         int32_t sjt_compare17;
         int32_t sjt_compare18;
-        sjs_string* sjt_dot36;
-        sjs_array_char* sjt_dot37;
-        sjs_string* sjt_dot40;
-        sjs_array_char* sjt_dot44;
+        sjs_string* sjt_dot38;
+        sjs_array_char* sjt_dot39;
+        sjs_string* sjt_dot42;
+        sjs_array_char* sjt_dot46;
         int32_t sjt_forEnd3;
         int32_t sjt_forStart3;
-        int32_t sjt_functionParam11;
-        char sjt_functionParam12;
-        bool sjt_ifElse7;
+        int32_t sjt_functionParam13;
+        char sjt_functionParam14;
+        bool sjt_ifElse8;
         int32_t sjt_math10;
         int32_t sjt_math11;
         int32_t sjt_math12;
         int32_t sjt_math9;
 
-        dotTemp46 = _parent->count;
-        sjt_math11 = dotTemp46;
-        sjt_dot36 = item;
-        dotTemp47 = sjt_dot36->count;
-        sjt_math12 = dotTemp47;
+        sjt_math11 = (_parent)->count;
+        sjt_dot38 = item;
+        sjt_math12 = (sjt_dot38)->count;
         sjt_math9 = sjt_math11 + sjt_math12;
         sjt_math10 = 1;
         sjt_compare17 = sjt_math9 + sjt_math10;
-        dotTemp48 = &_parent->data;
-        sjt_dot37 = dotTemp48;
-        dotTemp49 = sjt_dot37->size;
-        sjt_compare18 = dotTemp49;
-        sjt_ifElse7 = sjt_compare17 > sjt_compare18;
-        if (sjt_ifElse7) {
-            sjs_array_char* dotTemp50;
-            int32_t dotTemp51;
-            int32_t dotTemp52;
-            sjs_array_char* sjt_dot38;
-            sjs_string* sjt_dot39;
-            int32_t sjt_functionParam6;
+        sjt_dot39 = &(_parent)->data;
+        sjt_compare18 = (sjt_dot39)->size;
+        sjt_ifElse8 = sjt_compare17 > sjt_compare18;
+        if (sjt_ifElse8) {
+            sjs_array_char* sjt_dot40;
+            sjs_string* sjt_dot41;
+            int32_t sjt_functionParam8;
             int32_t sjt_math13;
             int32_t sjt_math14;
             int32_t sjt_math15;
             int32_t sjt_math16;
 
-            dotTemp50 = &_parent->data;
-            sjt_dot38 = dotTemp50;
-            dotTemp51 = _parent->count;
-            sjt_math15 = dotTemp51;
-            sjt_dot39 = item;
-            dotTemp52 = sjt_dot39->count;
-            sjt_math16 = dotTemp52;
+            sjt_dot40 = &(_parent)->data;
+            sjt_math15 = (_parent)->count;
+            sjt_dot41 = item;
+            sjt_math16 = (sjt_dot41)->count;
             sjt_math13 = sjt_math15 + sjt_math16;
             sjt_math14 = 1;
-            sjt_functionParam6 = sjt_math13 + sjt_math14;
-            sjf_array_char_grow(sjt_dot38, sjt_functionParam6);
+            sjt_functionParam8 = sjt_math13 + sjt_math14;
+            sjf_array_char_grow(sjt_dot40, sjt_functionParam8);
         }
 
         sjt_forStart3 = 0;
         i = sjt_forStart3;
-        sjt_dot40 = item;
-        dotTemp53 = sjt_dot40->count;
-        sjt_forEnd3 = dotTemp53;
+        sjt_dot42 = item;
+        sjt_forEnd3 = (sjt_dot42)->count;
         while (i < sjt_forEnd3) {
-            sjs_array_char* dotTemp54;
-            int32_t dotTemp55;
-            int32_t dotTemp57;
-            sjs_array_char* sjt_dot41;
-            sjs_string* sjt_dot42;
-            int32_t sjt_functionParam10;
-            int32_t sjt_functionParam7;
-            char sjt_functionParam8;
+            sjs_array_char* sjt_dot43;
+            sjs_string* sjt_dot44;
+            char sjt_functionParam10;
+            int32_t sjt_functionParam12;
+            int32_t sjt_functionParam9;
             int32_t sjt_math17;
             int32_t sjt_math18;
 
-            dotTemp54 = &_parent->data;
-            sjt_dot41 = dotTemp54;
-            dotTemp55 = _parent->count;
-            sjt_functionParam7 = dotTemp55;
-            sjt_dot42 = item;
-            sjt_functionParam10 = i;
-            sjf_string_getAt(sjt_dot42, sjt_functionParam10, &sjt_functionParam8);
-            sjf_array_char_setAt(sjt_dot41, sjt_functionParam7, sjt_functionParam8);
-            dotTemp57 = _parent->count;
-            sjt_math17 = dotTemp57;
+            sjt_dot43 = &(_parent)->data;
+            sjt_functionParam9 = (_parent)->count;
+            sjt_dot44 = item;
+            sjt_functionParam12 = i;
+            sjf_string_getAt(sjt_dot44, sjt_functionParam12, &sjt_functionParam10);
+            sjf_array_char_setAt(sjt_dot43, sjt_functionParam9, sjt_functionParam10);
+            sjt_math17 = (_parent)->count;
             sjt_math18 = 1;
             _parent->count = sjt_math17 + sjt_math18;
             i++;
         }
 
-        dotTemp58 = &_parent->data;
-        sjt_dot44 = dotTemp58;
-        dotTemp59 = _parent->count;
-        sjt_functionParam11 = dotTemp59;
-        sjt_cast9 = 0;
-        sjt_functionParam12 = (char)sjt_cast9;
-        sjf_array_char_setAt(sjt_dot44, sjt_functionParam11, sjt_functionParam12);
+        sjt_dot46 = &(_parent)->data;
+        sjt_functionParam13 = (_parent)->count;
+        sjt_cast11 = 0;
+        sjt_functionParam14 = (char)sjt_cast11;
+        sjf_array_char_setAt(sjt_dot46, sjt_functionParam13, sjt_functionParam14);
     }
 
     (*_return) = _parent;
@@ -2646,14 +2809,12 @@ void sjf_string_destroy(sjs_string* _this) {
 }
 
 void sjf_string_getAt(sjs_string* _parent, int32_t index, char* _return) {
-    sjs_array_char* dotTemp56;
-    sjs_array_char* sjt_dot43;
-    int32_t sjt_functionParam9;
+    sjs_array_char* sjt_dot45;
+    int32_t sjt_functionParam11;
 
-    dotTemp56 = &_parent->data;
-    sjt_dot43 = dotTemp56;
-    sjt_functionParam9 = index;
-    sjf_array_char_getAt(sjt_dot43, sjt_functionParam9, &(*_return));
+    sjt_dot45 = &(_parent)->data;
+    sjt_functionParam11 = index;
+    sjf_array_char_getAt(sjt_dot45, sjt_functionParam11, &(*_return));
 }
 
 void sjf_string_heap(sjs_string_heap* _this) {
@@ -2711,6 +2872,34 @@ void sjf_texture_getSize_heap(sjs_texture* _parent, sjs_size_heap** _return) {
 void sjf_texture_heap(sjs_texture_heap* _this) {
 }
 
+void sji_borderChild_copy(sji_borderChild* _this, sji_borderChild* _from) {
+    _this->_refCount = 1;
+    _this->_parent = _from->_parent;
+    _this->_parent->_refCount++;
+    _this->destroy = _from->destroy;
+    _this->asInterface = _from->asInterface;
+    _this->getPosition = _from->getPosition;
+}
+
+void sji_borderChild_destroy(sji_borderChild* _this) {
+    _this->_parent->_refCount--;
+    if (_this->_parent->_refCount <= 0) {
+        _this->destroy((void*)(((char*)_this->_parent) + sizeof(intptr_t)));
+        free(_this->_parent);
+    }
+}
+
+void sji_element_copy(sji_element* _this, sji_element* _from) {
+    _this->_refCount = 1;
+    _this->_parent = _from->_parent;
+    _this->_parent->_refCount++;
+    _this->destroy = _from->destroy;
+    _this->asInterface = _from->asInterface;
+    _this->setRect = _from->setRect;
+    _this->render = _from->render;
+    _this->getChildren = _from->getChildren;
+}
+
 void sji_element_destroy(sji_element* _this) {
     _this->_parent->_refCount--;
     if (_this->_parent->_refCount <= 0) {
@@ -2719,12 +2908,42 @@ void sji_element_destroy(sji_element* _this) {
     }
 }
 
+void sji_mouseHandler_copy(sji_mouseHandler* _this, sji_mouseHandler* _from) {
+    _this->_refCount = 1;
+    _this->_parent = _from->_parent;
+    _this->_parent->_refCount++;
+    _this->destroy = _from->destroy;
+    _this->asInterface = _from->asInterface;
+    _this->onMouseUp = _from->onMouseUp;
+    _this->onMouseDown = _from->onMouseDown;
+    _this->onMouseMove = _from->onMouseMove;
+}
+
 void sji_mouseHandler_destroy(sji_mouseHandler* _this) {
     _this->_parent->_refCount--;
     if (_this->_parent->_refCount <= 0) {
         _this->destroy((void*)(((char*)_this->_parent) + sizeof(intptr_t)));
         free(_this->_parent);
     }
+}
+
+void sji_surface_copy(sji_surface* _this, sji_surface* _from) {
+    _this->_refCount = 1;
+    _this->_parent = _from->_parent;
+    _this->_parent->_refCount++;
+    _this->destroy = _from->destroy;
+    _this->asInterface = _from->asInterface;
+    _this->clear = _from->clear;
+    _this->present = _from->present;
+    _this->getSize = _from->getSize;
+    _this->getSize = _from->getSize;
+    _this->fillRect = _from->fillRect;
+    _this->drawImage = _from->drawImage;
+    _this->drawText = _from->drawText;
+    _this->getTextSize = _from->getTextSize;
+    _this->getTextSize = _from->getTextSize;
+    _this->getTexture = _from->getTexture;
+    _this->getTexture = _from->getTexture;
 }
 
 void sji_surface_destroy(sji_surface* _this) {
@@ -2736,6 +2955,12 @@ void sji_surface_destroy(sji_surface* _this) {
 }
 
 int main(int argc, char** argv) {
+    sjv_borderPosition.fill = 0;
+    sjv_borderPosition.left = 1;
+    sjv_borderPosition.right = 2;
+    sjv_borderPosition.top = 3;
+    sjv_borderPosition.bottom = 4;
+    sjf_anon8(&sjv_borderPosition);
     sjf_anon7(&sjv_style);
     sjf_anon6(&sjv_colors);
     sjv_buttonState.normal = 0;
@@ -2758,7 +2983,7 @@ int main(int argc, char** argv) {
     sjt_cast1->ren = (uintptr_t)sjt_cast5;
     sjf_sdlSurface_heap(sjt_cast1);
     sjv_rootSurface = (sji_surface*)sjf_sdlSurface_heap_as_sji_surface(sjt_cast1);
-    sjt_cast6 = (sjs_fillElement_heap*)malloc(sizeof(sjs_fillElement_heap));
+    sjt_cast6 = (sjs_borderLayout_heap*)malloc(sizeof(sjs_borderLayout_heap));
     sjt_cast6->_refCount = 1;
     sjt_cast6->children.size = 1;
     sjt_cast7 = 0;
@@ -2766,82 +2991,97 @@ int main(int argc, char** argv) {
     sjt_cast6->children._isGlobal = false;
     sjf_array_heap_element(&sjt_cast6->children);
     sjt_functionParam3 = 0;
-    sjt_cast8 = (sjs_buttonElement_heap*)malloc(sizeof(sjs_buttonElement_heap));
+    sjt_cast8 = (sjs_borderChild_heap*)malloc(sizeof(sjs_borderChild_heap));
     sjt_cast8->_refCount = 1;
-    sjt_cast8->text.count = 11;
-    sjt_cast8->text.data.size = 12;
-    sjt_cast8->text.data.data = (uintptr_t)sjg_string11;
-    sjt_cast8->text.data._isGlobal = false;
-    sjf_array_char(&sjt_cast8->text.data);
-    sjf_string(&sjt_cast8->text);
-    sjt_dot55 = &sjv_colors;
-    sjf_anon6_black(sjt_dot55, &sjt_cast8->textColor);
-    sjt_dot56 = &sjv_style;
-    sjt_functionParam24 = 0;
-    sjf_anon7_getFont(sjt_dot56, sjt_functionParam24, &sjt_cast8->font);
-    sjt_cast8->rect.x = 0;
-    sjt_cast8->rect.y = 0;
-    sjt_cast8->rect.w = 0;
-    sjt_cast8->rect.h = 0;
-    sjf_rect(&sjt_cast8->rect);
-    sjt_dot57 = sjv_rootSurface;
+    sjt_cast10 = (sjs_buttonElement_heap*)malloc(sizeof(sjs_buttonElement_heap));
+    sjt_cast10->_refCount = 1;
+    sjt_cast10->text.count = 11;
+    sjt_cast10->text.data.size = 12;
+    sjt_cast10->text.data.data = (uintptr_t)sjg_string11;
+    sjt_cast10->text.data._isGlobal = false;
+    sjf_array_char(&sjt_cast10->text.data);
+    sjf_string(&sjt_cast10->text);
+    sjt_dot57 = &sjv_colors;
+    sjf_anon6_black(sjt_dot57, &sjt_cast10->textColor);
+    sjt_dot58 = &sjv_style;
+    sjt_functionParam26 = 0;
+    sjf_anon7_getFont(sjt_dot58, sjt_functionParam26, &sjt_cast10->font);
+    sjt_cast10->rect.x = 0;
+    sjt_cast10->rect.y = 0;
+    sjt_cast10->rect.w = 0;
+    sjt_cast10->rect.h = 0;
+    sjf_rect(&sjt_cast10->rect);
+    sjt_dot59 = sjv_rootSurface;
     sjt_call7.count = 23;
     sjt_call7.data.size = 24;
     sjt_call7.data.data = (uintptr_t)sjg_string6;
     sjt_call7.data._isGlobal = false;
     sjf_array_char(&sjt_call7.data);
     sjf_string(&sjt_call7);
-    sjt_interfaceParam15 = &sjt_call7;
-    sjt_dot57->getTexture((void*)(((char*)sjt_dot57->_parent) + sizeof(intptr_t)), sjt_interfaceParam15, &sjt_cast8->normalImage.texture);
-    sjt_cast8->normalImage.rect.x = 0;
-    sjt_cast8->normalImage.rect.y = 0;
-    sjt_cast8->normalImage.rect.w = 0;
-    sjt_cast8->normalImage.rect.h = 0;
-    sjf_rect(&sjt_cast8->normalImage.rect);
-    sjf_image(&sjt_cast8->normalImage);
-    sjt_dot58 = sjv_rootSurface;
+    sjt_interfaceParam17 = &sjt_call7;
+    sjt_dot59->getTexture((void*)(((char*)sjt_dot59->_parent) + sizeof(intptr_t)), sjt_interfaceParam17, &sjt_cast10->normalImage.texture);
+    sjt_cast10->normalImage.rect.x = 0;
+    sjt_cast10->normalImage.rect.y = 0;
+    sjt_cast10->normalImage.rect.w = 0;
+    sjt_cast10->normalImage.rect.h = 0;
+    sjf_rect(&sjt_cast10->normalImage.rect);
+    sjf_image(&sjt_cast10->normalImage);
+    sjt_dot60 = sjv_rootSurface;
     sjt_call8.count = 20;
     sjt_call8.data.size = 21;
     sjt_call8.data.data = (uintptr_t)sjg_string8;
     sjt_call8.data._isGlobal = false;
     sjf_array_char(&sjt_call8.data);
     sjf_string(&sjt_call8);
-    sjt_interfaceParam16 = &sjt_call8;
-    sjt_dot58->getTexture((void*)(((char*)sjt_dot58->_parent) + sizeof(intptr_t)), sjt_interfaceParam16, &sjt_cast8->hotImage.texture);
-    sjt_cast8->hotImage.rect.x = 0;
-    sjt_cast8->hotImage.rect.y = 0;
-    sjt_cast8->hotImage.rect.w = 0;
-    sjt_cast8->hotImage.rect.h = 0;
-    sjf_rect(&sjt_cast8->hotImage.rect);
-    sjf_image(&sjt_cast8->hotImage);
-    sjt_dot59 = sjv_rootSurface;
+    sjt_interfaceParam18 = &sjt_call8;
+    sjt_dot60->getTexture((void*)(((char*)sjt_dot60->_parent) + sizeof(intptr_t)), sjt_interfaceParam18, &sjt_cast10->hotImage.texture);
+    sjt_cast10->hotImage.rect.x = 0;
+    sjt_cast10->hotImage.rect.y = 0;
+    sjt_cast10->hotImage.rect.w = 0;
+    sjt_cast10->hotImage.rect.h = 0;
+    sjf_rect(&sjt_cast10->hotImage.rect);
+    sjf_image(&sjt_cast10->hotImage);
+    sjt_dot61 = sjv_rootSurface;
     sjt_call9.count = 24;
     sjt_call9.data.size = 25;
     sjt_call9.data.data = (uintptr_t)sjg_string10;
     sjt_call9.data._isGlobal = false;
     sjf_array_char(&sjt_call9.data);
     sjf_string(&sjt_call9);
-    sjt_interfaceParam17 = &sjt_call9;
-    sjt_dot59->getTexture((void*)(((char*)sjt_dot59->_parent) + sizeof(intptr_t)), sjt_interfaceParam17, &sjt_cast8->pressedImage.texture);
-    sjt_cast8->pressedImage.rect.x = 0;
-    sjt_cast8->pressedImage.rect.y = 0;
-    sjt_cast8->pressedImage.rect.w = 0;
-    sjt_cast8->pressedImage.rect.h = 0;
-    sjf_rect(&sjt_cast8->pressedImage.rect);
-    sjf_image(&sjt_cast8->pressedImage);
-    sjt_dot60 = &sjv_buttonState;
-    dotTemp67 = sjt_dot60->normal;
-    sjt_cast8->state = dotTemp67;
-    sjf_buttonElement_heap(sjt_cast8);
-    sjt_functionParam4 = (sji_element*)sjf_buttonElement_heap_as_sji_element(sjt_cast8);
+    sjt_interfaceParam19 = &sjt_call9;
+    sjt_dot61->getTexture((void*)(((char*)sjt_dot61->_parent) + sizeof(intptr_t)), sjt_interfaceParam19, &sjt_cast10->pressedImage.texture);
+    sjt_cast10->pressedImage.rect.x = 0;
+    sjt_cast10->pressedImage.rect.y = 0;
+    sjt_cast10->pressedImage.rect.w = 0;
+    sjt_cast10->pressedImage.rect.h = 0;
+    sjf_rect(&sjt_cast10->pressedImage.rect);
+    sjf_image(&sjt_cast10->pressedImage);
+    sjt_dot62 = &sjv_buttonState;
+    sjt_cast10->state = (sjt_dot62)->normal;
+    sjf_buttonElement_heap(sjt_cast10);
+    sjt_cast8->child = (sji_element*)sjf_buttonElement_heap_as_sji_element(sjt_cast10);
+    sjt_cast8->rect.x = 0;
+    sjt_cast8->rect.y = 0;
+    sjt_cast8->rect.w = 0;
+    sjt_cast8->rect.h = 0;
+    sjf_rect(&sjt_cast8->rect);
+    sjt_dot63 = &sjv_borderPosition;
+    sjt_cast8->position = (sjt_dot63)->left;
+    sjt_cast8->_children = 0;
+    if (sjt_cast8->_children != 0) {
+        sjt_cast8->_children->_refCount++;
+    }
+
+    sjf_borderChild_heap(sjt_cast8);
+    sjt_functionParam4 = (sji_element*)sjf_borderChild_heap_as_sji_element(sjt_cast8);
     sjf_array_heap_element_initAt(&sjt_cast6->children, sjt_functionParam3, sjt_functionParam4);
     sjt_cast6->rect.x = 0;
     sjt_cast6->rect.y = 0;
     sjt_cast6->rect.w = 0;
     sjt_cast6->rect.h = 0;
     sjf_rect(&sjt_cast6->rect);
-    sjf_fillElement_heap(sjt_cast6);
-    sjv_root = (sji_element*)sjf_fillElement_heap_as_sji_element(sjt_cast6);
+    sjf_borderLayout_heap(sjt_cast6);
+    sjv_root = (sji_element*)sjf_borderLayout_heap_as_sji_element(sjt_cast6);
     sjf_runLoop();
     main_destroy();
     return 0;
@@ -2853,13 +3093,17 @@ void main_destroy() {
     if (sjt_cast1->_refCount <= 0) {
         sjf_sdlSurface_destroy((sjs_sdlSurface*)(((char*)sjt_cast1) + sizeof(intptr_t)));
     }
+    sjt_cast10->_refCount--;
+    if (sjt_cast10->_refCount <= 0) {
+        sjf_buttonElement_destroy((sjs_buttonElement*)(((char*)sjt_cast10) + sizeof(intptr_t)));
+    }
     sjt_cast6->_refCount--;
     if (sjt_cast6->_refCount <= 0) {
-        sjf_fillElement_destroy((sjs_fillElement*)(((char*)sjt_cast6) + sizeof(intptr_t)));
+        sjf_borderLayout_destroy((sjs_borderLayout*)(((char*)sjt_cast6) + sizeof(intptr_t)));
     }
     sjt_cast8->_refCount--;
     if (sjt_cast8->_refCount <= 0) {
-        sjf_buttonElement_destroy((sjs_buttonElement*)(((char*)sjt_cast8) + sizeof(intptr_t)));
+        sjf_borderChild_destroy((sjs_borderChild*)(((char*)sjt_cast8) + sizeof(intptr_t)));
     }
     sjt_functionParam4->_refCount--;
     if (sjt_functionParam4->_refCount <= 0) {
@@ -2876,6 +3120,7 @@ void main_destroy() {
     sjf_string_destroy(&sjt_call7);
     sjf_string_destroy(&sjt_call8);
     sjf_string_destroy(&sjt_call9);
+    sjf_anon8_destroy(&sjv_borderPosition);
     sjf_anon5_destroy(&sjv_buttonState);
     sjf_anon6_destroy(&sjv_colors);
     sjf_anon1_destroy(&sjv_console);

@@ -80,7 +80,6 @@ struct td_sjs_class_heap {
     int32_t x;
 };
 
-int32_t dotTemp1;
 sjs_class sjt_call1;
 sjs_class* sjt_dot1;
 
@@ -120,7 +119,6 @@ void sjf_func_heap(sjs_class_heap** _return) {
 int main(int argc, char** argv) {
     sjf_func(&sjt_call1);
     sjt_dot1 = &sjt_call1;
-    dotTemp1 = sjt_dot1->x;
     main_destroy();
     return 0;
 }

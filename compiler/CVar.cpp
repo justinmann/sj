@@ -18,17 +18,7 @@ bool CNormalVar::getReturnThis() {
 
 void CNormalVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     if (dotValue) {
-        auto returnValue = trBlock->createTempVariable(scope.lock(), type->getLocalType(), "dotTemp");
-        stringstream lineStream;
-        lineStream << returnValue->name << " = " << TrValue::convertToLocalName(type, dotValue->name, false);
-        if (dotValue->type->typeMode == CTM_Stack) {
-            lineStream << ".";
-        }
-        else {
-            lineStream << "->";
-        }
-        lineStream << cname;
-        trBlock->statements.push_back(lineStream.str());
+        auto returnValue = make_shared<TrValue>(scope.lock(), type, "(" + TrValue::convertToLocalName(dotValue->type, dotValue->name, false) + ")->" + cname, false);
         storeValue->retainValue(compiler, storeValue->loc, trBlock, returnValue);
     } else if (trBlock->hasThis && (mode == Var_Public || mode == Var_Private)) {
         auto returnValue = trBlock->createTempVariable(scope.lock(), type->getLocalType(), "dotTemp");

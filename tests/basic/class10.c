@@ -102,10 +102,7 @@ void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_func(sjs_class* _parent, int32_t* _return) {
-    int32_t dotTemp1;
-
-    dotTemp1 = _parent->x;
-    (*_return) = dotTemp1;
+    (*_return) = (_parent)->x;
 }
 
 void sjf_class_heap(sjs_class_heap* _this) {

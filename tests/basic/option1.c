@@ -137,7 +137,9 @@ void sjf_class_destroy(sjs_class* _this);
 void sjf_class_heap(sjs_class_heap* _this);
 sjs_object* sjf_class_heap_asInterface(sjs_class_heap* _this, int typeId);
 sji_interface* sjf_class_heap_as_sji_interface(sjs_class_heap* _this);
+void sji_interface2_copy(sji_interface2* _this, sji_interface2* _from);
 void sji_interface2_destroy(sji_interface2* _this);
+void sji_interface_copy(sji_interface* _this, sji_interface* _from);
 void sji_interface_destroy(sji_interface* _this);
 void main_destroy(void);
 
@@ -198,12 +200,28 @@ sji_interface* sjf_class_heap_as_sji_interface(sjs_class_heap* _this) {
     return _interface;
 }
 
+void sji_interface2_copy(sji_interface2* _this, sji_interface2* _from) {
+    _this->_refCount = 1;
+    _this->_parent = _from->_parent;
+    _this->_parent->_refCount++;
+    _this->destroy = _from->destroy;
+    _this->asInterface = _from->asInterface;
+}
+
 void sji_interface2_destroy(sji_interface2* _this) {
     _this->_parent->_refCount--;
     if (_this->_parent->_refCount <= 0) {
         _this->destroy((void*)(((char*)_this->_parent) + sizeof(intptr_t)));
         free(_this->_parent);
     }
+}
+
+void sji_interface_copy(sji_interface* _this, sji_interface* _from) {
+    _this->_refCount = 1;
+    _this->_parent = _from->_parent;
+    _this->_parent->_refCount++;
+    _this->destroy = _from->destroy;
+    _this->asInterface = _from->asInterface;
 }
 
 void sji_interface_destroy(sji_interface* _this) {
@@ -273,7 +291,6 @@ int main(int argc, char** argv) {
     if (sjt_ifElse1) {
         sjv_p = int32_empty;
     } else {
-        int32_t dotTemp1;
         sjs_class* sjt_dot1;
         sjs_class_heap* sjt_getValue2;
         int32_t sjt_value2;
@@ -285,8 +302,7 @@ int main(int argc, char** argv) {
         }
 
         sjt_dot1 = (sjs_class*)(((char*)sjt_getValue2) + sizeof(intptr_t));
-        dotTemp1 = sjt_dot1->bob;
-        sjt_value2 = dotTemp1;
+        sjt_value2 = (sjt_dot1)->bob;
         value1.isEmpty = false;
         value1.value = sjt_value2;
         sjv_p = value1;
