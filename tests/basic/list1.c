@@ -335,7 +335,7 @@ void sjf_list_heap_class_getAt_heap(sjs_list_heap_class* _parent, int32_t index,
 
     sjt_dot7 = &(_parent)->data;
     sjt_functionParam6 = index;
-    sjf_array_heap_class_getAt_heap(sjt_dot7, sjt_functionParam6, &(*_return));
+    sjf_array_heap_class_getAt_heap(sjt_dot7, sjt_functionParam6, _return);
 }
 
 void sjf_list_heap_class_heap(sjs_list_heap_class_heap* _this) {

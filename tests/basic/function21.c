@@ -83,7 +83,7 @@ void sjf_func_destroy(sjs_func* _this);
 void main_destroy(void);
 
 void sjf_func(sjs_func* _this, int32_t* _return) {
-    sjf_func_bar(_this, &(*_return));
+    sjf_func_bar(_this, _return);
 }
 
 void sjf_func_bar(sjs_func* _parent, int32_t* _return) {

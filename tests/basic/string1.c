@@ -359,7 +359,7 @@ void sjf_string_getAt(sjs_string* _parent, int32_t index, char* _return) {
 
     sjt_dot2 = &(_parent)->data;
     sjt_functionParam1 = index;
-    sjf_array_char_getAt(sjt_dot2, sjt_functionParam1, &(*_return));
+    sjf_array_char_getAt(sjt_dot2, sjt_functionParam1, _return);
 }
 
 void sjf_string_heap(sjs_string_heap* _this) {
@@ -373,7 +373,7 @@ void sjf_string_isEqual(sjs_string* _parent, sjs_string* test, bool* _return) {
     sjt_dot4 = &(_parent)->data;
     sjt_dot5 = test;
     sjt_functionParam3 = &(sjt_dot5)->data;
-    sjf_array_char_isEqual(sjt_dot4, sjt_functionParam3, &(*_return));
+    sjf_array_char_isEqual(sjt_dot4, sjt_functionParam3, _return);
 }
 
 void sjf_string_isLessOrEqual(sjs_string* _parent, sjs_string* test, bool* _return) {
@@ -384,7 +384,7 @@ void sjf_string_isLessOrEqual(sjs_string* _parent, sjs_string* test, bool* _retu
     sjt_dot7 = &(_parent)->data;
     sjt_dot8 = test;
     sjt_functionParam5 = &(sjt_dot8)->data;
-    sjf_array_char_isLessOrEqual(sjt_dot7, sjt_functionParam5, &(*_return));
+    sjf_array_char_isLessOrEqual(sjt_dot7, sjt_functionParam5, _return);
 }
 
 int main(int argc, char** argv) {

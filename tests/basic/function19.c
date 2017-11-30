@@ -89,7 +89,7 @@ void sjf_func(int32_t x, int32_t* _return) {
         sjt_math1 = x;
         sjt_math2 = 1;
         sjt_functionParam1 = sjt_math1 - sjt_math2;
-        sjf_func(sjt_functionParam1, &(*_return));
+        sjf_func(sjt_functionParam1, _return);
     } else {
         (*_return) = 0;
     }

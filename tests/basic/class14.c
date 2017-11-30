@@ -83,7 +83,7 @@ void sjf_class_inner(sjs_class* _parent, int32_t* _return);
 void main_destroy(void);
 
 void sjf_class(sjs_class* _this, int32_t* _return) {
-    sjf_class_inner(_this, &(*_return));
+    sjf_class_inner(_this, _return);
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* to) {

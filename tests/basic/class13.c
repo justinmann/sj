@@ -117,7 +117,7 @@ void sjf_class_bar(sjs_class* _parent, int32_t x, int32_t* _return) {
     int32_t sjt_functionParam1;
 
     sjt_functionParam1 = x;
-    sjf_class_foo(_parent, sjt_functionParam1, &(*_return));
+    sjf_class_foo(_parent, sjt_functionParam1, _return);
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* to) {
@@ -145,7 +145,7 @@ void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return) {
         sjt_functionParam3 = x;
         sjt_functionParam4 = 1;
         sjf_math_sub(sjt_dot2, sjt_functionParam3, sjt_functionParam4, &sjt_functionParam2);
-        sjf_class_bar(_parent, sjt_functionParam2, &(*_return));
+        sjf_class_bar(_parent, sjt_functionParam2, _return);
     } else {
         (*_return) = 0;
     }
