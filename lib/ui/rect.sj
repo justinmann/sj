@@ -4,7 +4,11 @@ rect(
 	w : 0
 	h : 0
 
-	addMargin(l : 0, t : 0, r : 0, b : 0) {
-		rect(x + l, y + t, w - l - r, h - t - b)
+	subtractMargin(margin : 'margin) {
+		rect(x + margin.l, y + margin.t, w - margin.l - margin.r, h - margin.t - margin.b)
+	}
+
+	containsPoint(point : 'point) {
+		x <= point.x && y <= point.x && point.x < x + w && point.y < y + h
 	}
 ) { this }

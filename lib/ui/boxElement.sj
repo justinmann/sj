@@ -1,16 +1,21 @@
-imageElement #element (
-	image = 'image
+boxElement #element (
+	color = colors.white()
+	idealSize = size()
 	rect = rect()
+
+	getSize(maxSize : 'size) {
+		idealSize.cap(maxSize)
+	}
 
 	getRect()'local rect { rect }
 
 	setRect(rect_ : 'rect)'void {
-		rect = copy rect_.addMargin(10, 10, 10, 10)
+		rect = copy rect_
 		void
 	}
 
 	render(surface : '#surface)'void {
-		surface.drawImage(rect, image)
+		surface.drawRect(rect, color)
 	}
 
 	getChildren()'local array?!#element {

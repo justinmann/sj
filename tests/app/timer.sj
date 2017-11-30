@@ -9,6 +9,16 @@ root : borderLayout(
 			child : buttonElement(
 				text = "Button Text"
 			) as #element
+		) as #element,
+		borderChild(
+			position : borderPosition.right
+			child : boxElement(
+				color = colors.red()
+				idealSize = size(50, i32_max)
+			) as #element
+		) as #element,
+		boxElement(
+			color = colors.green()
 		) as #element
 	]
 ) as #element

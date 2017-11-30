@@ -2,7 +2,7 @@
 	clear()'void
 	present()'void
 	getSize()'size
-	fillRect(rect : 'rect, color: 'color)'void
+	drawRect(rect : 'rect, color: 'color)'void
 	drawImage(rect: 'rect, image: 'image)'void
 	drawText(rect: 'rect, font: 'font, text: 'string, color: 'color)'void
 	getTextSize(font: 'font, text: 'string)'size
@@ -42,9 +42,9 @@ sdlSurface #surface(
 		size(w, h)
 	}
 
-	fillRect(rect: 'rect, color: 'color)'void c{
+	drawRect(rect: 'rect, color: 'color)'void c{
 		SDL_SetRenderDrawColor((SDL_Renderer*)_parent->ren, color->r, color->g, color->b, color->a);
-		SDL_RenderDrawRect((SDL_Renderer*)_parent->ren, (SDL_Rect*)rect);
+		SDL_RenderFillRect((SDL_Renderer*)_parent->ren, (SDL_Rect*)rect);
 	}c
 
 	drawImage(rect: 'rect, image: 'image)'void c{

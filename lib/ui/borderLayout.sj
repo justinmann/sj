@@ -22,6 +22,8 @@ borderChild #element #borderChild (
 		child.getSize(maxSize)
 	}
 
+	getRect()'local rect { rect }
+
 	setRect(rect_ : 'rect) {
 		rect = copy rect_
 		child.setRect(rect : rect)
@@ -47,6 +49,8 @@ borderLayout #element (
 	getSize(maxSize : 'size) {
 		size(maxSize.w, maxSize.h)
 	}
+
+	getRect()'local rect { rect }
 
 	setRect(rect_ : 'rect) {
 		rect = copy rect_

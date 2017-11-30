@@ -13,11 +13,14 @@ buttonElement #element #mouseHandler (
 	hotImage = image(rootSurface.getTexture(src = "assets/buttonHot.png"))
 	pressedImage = image(rootSurface.getTexture(src = "assets/buttonPressed.png"))
 	state = buttonState.normal
+	margin = margin(10, 10, 10, 10)
 
 	getSize(maxSize : 'size) {
 		textSize : rootSurface.getTextSize(font, text)
-		textSize.cap(maxSize)	
+		textSize.addMargin(margin).cap(maxSize)	
 	}
+
+	getRect()'local rect { rect }
 
 	setRect(rect_ : 'rect) {
 		rect = copy rect_
@@ -34,9 +37,10 @@ buttonElement #element #mouseHandler (
 		}
 
 		textSize : surface.getTextSize(font, text)
+		innerRect : rect.subtractMargin(margin)
 		textRect : rect(
-			x : (rect.w - textSize.w) / 2
-			y : (rect.h - textSize.h) / 2
+			x : innerRect.x + (innerRect.w - textSize.w) / 2
+			y : innerRect.y + (innerRect.h - textSize.h) / 2
 			w : textSize.w
 			h : textSize.h
 		)

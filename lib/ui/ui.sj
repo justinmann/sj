@@ -14,6 +14,8 @@ include "font.sj"
 include "mouseHandler.sj"
 include "point.sj"
 include "borderLayout.sj"
+include "boxElement.sj"
+include "margin.sj"
 
 onClick(timestemp: 'f64, x: 'i32, y: 'i32) {
 	console.write("click")
@@ -35,7 +37,9 @@ cdefine{
 
 fireMouseUp(element :'#element, point: 'point) {
     mouseHandler : element as #mouseHandler?
-    mouseHandler?.onMouseUp(point)
+    if element.getRect().containsPoint(point) {
+        mouseHandler?.onMouseUp(point)
+    }
     children : element.getChildren()
     if !isEmpty(children) {
         c : getValue(children)
@@ -48,7 +52,9 @@ fireMouseUp(element :'#element, point: 'point) {
 
 fireMouseDown(element :'#element, point: 'point) {
     mouseHandler : element as #mouseHandler?
-    mouseHandler?.onMouseDown(point)
+    if element.getRect().containsPoint(point) {
+        mouseHandler?.onMouseDown(point)
+    }
     children : element.getChildren()
     if !isEmpty(children) {
         c : getValue(children)

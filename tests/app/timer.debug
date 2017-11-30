@@ -114,6 +114,9 @@ global()'void {
 
 }cdefine
   frame'i32 = 0i
+  i32_max'i32 : (-2147483647 - 1)i
+  i32_min'i32 : 2147483647i
+  u32_max'u32 : (uint32_t)4294967295uu
   rootSurface'heap #surface : sdlSurface(this = sdlSurface(
     size'stack size : this.size,
     win'ptr = this.win,

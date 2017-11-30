@@ -8,4 +8,8 @@ size(
 			if h < maxSize.h { h } else { maxSize.h }
 		)
 	}
+
+	addMargin(margin : 'margin) {
+		size(w + margin.l + margin.r, h + margin.t + margin.b)
+	}
 ) { this }
