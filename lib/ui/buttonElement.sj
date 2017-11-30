@@ -14,6 +14,11 @@ buttonElement #element #mouseHandler (
 	pressedImage = image(rootSurface.getTexture(src = "assets/buttonPressed.png"))
 	state = buttonState.normal
 
+	getSize(maxSize : 'size) {
+		textSize : rootSurface.getTextSize(font, text)
+		textSize.cap(maxSize)	
+	}
+
 	setRect(rect_ : 'rect) {
 		rect = copy rect_
 		void

@@ -4,6 +4,11 @@ textElement #element (
 	color = colors.white()
 	rect = rect()
 
+	getSize(maxSize : 'size) {
+		textSize : rootSurface.getTextSize(font, text)
+		textSize.cap(maxSize)	
+	}
+
 	setRect(rect_ : 'rect)'void {
 		rect = copy rect_.addMargin(10, 10, 10, 10)
 		void
