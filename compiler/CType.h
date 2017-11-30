@@ -84,8 +84,10 @@ public:
     static bool isSameExceptMode(shared_ptr<CType> l, shared_ptr<CType> r);
     shared_ptr<CType> getValueType();
     shared_ptr<CType> getOptionType();
+    shared_ptr<CType> getHeapType();
     shared_ptr<CType> getHeapValueType();
     shared_ptr<CType> getHeapOptionType();
+    shared_ptr<CType> getStackType();
     shared_ptr<CType> getStackValueType();
     shared_ptr<CType> getLocalType();
     shared_ptr<CType> getLocalValueType();

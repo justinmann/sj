@@ -207,6 +207,16 @@ shared_ptr<CType> NAssignment::getType(Compiler* compiler, shared_ptr<CScope> sc
     }
 
     auto rightType = rightVar->getType(compiler);
+
+    if (rightType->typeMode != CTM_Value && op.isCopy) {
+        if (returnMode == CTM_Heap) {
+            return rightType->getHeapType();
+        }
+        else {
+            return rightType->getStackType();
+        }
+    }
+
     if (returnMode != CTM_Undefined && returnMode != rightType->typeMode && rightType->typeMode != CTM_Value) {
         if (returnMode == CTM_Local) {
             return rightType->getLocalType();

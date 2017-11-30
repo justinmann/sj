@@ -275,6 +275,10 @@ shared_ptr<CType> CType::getOptionType() {
     return (heapValueType.lock().get() == this) ? heapOptionType.lock() : ((stackValueType.lock().get() == this) ? stackOptionType.lock() : localOptionType.lock());
 }
 
+shared_ptr<CType> CType::getHeapType() {
+    return isOption ? heapOptionType.lock() : heapValueType.lock();
+}
+
 shared_ptr<CType> CType::getHeapValueType() {
     assert(heapValueType.lock().get() != this);
     return heapValueType.lock();
@@ -283,6 +287,10 @@ shared_ptr<CType> CType::getHeapValueType() {
 shared_ptr<CType> CType::getHeapOptionType() {
     assert(heapOptionType.lock().get() != this);
     return heapOptionType.lock();
+}
+
+shared_ptr<CType> CType::getStackType() {
+    return isOption ? stackOptionType.lock() : stackValueType.lock();
 }
 
 shared_ptr<CType> CType::getStackValueType() {
