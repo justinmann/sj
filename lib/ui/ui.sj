@@ -35,14 +35,15 @@ cinclude{
 #include(<SDL2/SDL.h>, __APPLE__)
 #include(<OpenGL/gl.h>, __APPLE__)
 #include(<GLES3/gl3.h>, EMSCRIPTEN)
+#include(<float.h>)
 
 ##ifdef WIN32
+##define strdup _strdup
 ##define GLEW_STATIC
 ##include <windows.h>
 ##include <GL/glew.h>
 ##include <GL/gl.h>
 ##include <GL/glu.h>
-##include <float.h>
 ##endif
 }cinclude
 

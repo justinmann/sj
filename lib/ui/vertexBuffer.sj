@@ -338,7 +338,7 @@ vertex_buffer_new( const char *format )
         return NULL;
     }
 
-    self->format = _strdup( format );
+    self->format = strdup( format );
 
     for( i=0; i<MAX_VERTEX_ATTRIBUTE; ++i )
     {
@@ -355,7 +355,7 @@ vertex_buffer_new( const char *format )
 
         if (end == NULL)
         {
-            desc = _strdup( start );
+            desc = strdup( start );
         }
         else
         {
@@ -500,7 +500,7 @@ vertex_buffer_print( vertex_buffer_t * self )
 
     assert(self);
 
-    fprintf( stderr, "%ld vertices, %ld indices\n",
+    fprintf( stderr, "%zu vertices, %zu indices\n",
              vector_size( self->vertices ), vector_size( self->indices ) );
     while( self->attributes[i] )
     {

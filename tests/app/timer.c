@@ -7,13 +7,14 @@
 
 
 
+
 #ifdef WIN32
+#define strdup _strdup
 #define GLEW_STATIC
 #include <windows.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include <float.h>
 #endif
 
 #ifdef EMSCRIPTEN
@@ -38,6 +39,7 @@
 #ifdef EMSCRIPTEN
 #include <emscripten/html5.h>
 #endif
+#include <float.h>
 #include <ft2build.h>
 #include <limits.h>
 #include <math.h>
@@ -1018,6 +1020,10 @@ typedef struct vertex_buffer_t
     vertex_attribute_t *attributes[MAX_VERTEX_ATTRIBUTE];
 } vertex_buffer_t;
 
+#ifdef WIN32
+// strndup() is not available on Windows
+char *strndup( const char *s1, size_t n);
+#endif
 
 /**
  * Creates an empty vertex buffer.
@@ -3082,6 +3088,17 @@ utf8_to_utf32( const char * character )
 
 
 
+#ifdef WIN32
+// strndup() is not available on Windows
+char *strndup( const char *s1, size_t n)
+{
+    char *copy= (char*)malloc( n+1 );
+    memcpy( copy, s1, n );
+    copy[n] = 0;
+    return copy;
+};
+#endif
+
 /**
  * Buffer status
  */
@@ -3104,7 +3121,7 @@ vertex_buffer_new( const char *format )
         return NULL;
     }
 
-    self->format = _strdup( format );
+    self->format = strdup( format );
 
     for( i=0; i<MAX_VERTEX_ATTRIBUTE; ++i )
     {
@@ -3121,7 +3138,7 @@ vertex_buffer_new( const char *format )
 
         if (end == NULL)
         {
-            desc = _strdup( start );
+            desc = strdup( start );
         }
         else
         {
@@ -3266,7 +3283,7 @@ vertex_buffer_print( vertex_buffer_t * self )
 
     assert(self);
 
-    fprintf( stderr, "%ld vertices, %ld indices\n",
+    fprintf( stderr, "%zu vertices, %zu indices\n",
              vector_size( self->vertices ), vector_size( self->indices ) );
     while( self->attributes[i] )
     {
@@ -3741,7 +3758,7 @@ vertex_attribute_new( GLchar * name,
 
     assert( size > 0 );
 
-    attribute->name       = (GLchar *) _strdup( name );
+    attribute->name       = (GLchar *) strdup( name );
     attribute->index      = -1;
     attribute->size       = size;
     attribute->type       = type;
@@ -4416,9 +4433,9 @@ texture_font_init(texture_font_t *self)
     }
 
     metrics = face->size->metrics;
-    self->ascender = (metrics.ascender >> 6) / 100.0;
-    self->descender = (metrics.descender >> 6) / 100.0;
-    self->height = (metrics.height >> 6) / 100.0;
+    self->ascender = (metrics.ascender >> 6) / 100.0f;
+    self->descender = (metrics.descender >> 6) / 100.0f;
+    self->height = (metrics.height >> 6) / 100.0f;
     self->linegap = self->height - self->ascender + self->descender;
     FT_Done_Face( face );
     FT_Done_FreeType( library );
@@ -4449,7 +4466,7 @@ texture_font_new_from_file(texture_atlas_t *atlas, const float pt_size,
     self->size  = pt_size;
 
     self->location = TEXTURE_FONT_FILE;
-    self->filename = _strdup(filename);
+    self->filename = strdup(filename);
 
     if (texture_font_init(self)) {
         texture_font_delete(self);
@@ -4818,7 +4835,7 @@ size_t
 texture_font_load_glyphs( texture_font_t * self,
                           const char * codepoints )
 {
-    size_t i, c;
+    size_t i;
 
     /* Load each glyph */
     for( i = 0; i < strlen(codepoints); i += utf8_surrogate_len(codepoints + i) ) {
