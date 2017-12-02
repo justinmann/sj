@@ -17,6 +17,16 @@ include "borderLayout.sj"
 include "boxElement.sj"
 include "margin.sj"
 
+include "shader.sj"
+include "textureAtlas.sj"
+include "textureFont.sj"
+include "vector.sj"
+include "vectorAttribute.sj"
+include "vertexBuffer.sj"
+include "utf8.sj"
+include "distanceField.sj"
+include "edtaa3func.sj"
+
 onClick(timestemp: 'f64, x: 'i32, y: 'i32) {
 	console.write("click")
 }
@@ -25,14 +35,11 @@ cdefine{
 	#include(<emscripten.h>, EMSCRIPTEN)
 	#include(<emscripten/html5.h>, EMSCRIPTEN)
 	#include(<SDL.h>, EMSCRIPTEN)
-	#include(<SDL_ttf.h>, EMSCRIPTEN)
-    #include(<SDL_image.h>, EMSCRIPTEN)
 	#include(<SDL.h>, WIN32)
-	#include(<SDL_ttf.h>, WIN32)
-    #include(<SDL_image.h>, WIN32)
 	#include(<SDL2/SDL.h>, __APPLE__)
-	#include(<SDL2_ttf/SDL_ttf.h>, __APPLE__)
-    #include(<SDL2_image/SDL_image.h>, __APPLE__)
+    #include(<OpenGL/gl.h>, __APPLE__)
+    #include(<GL/glew.h>, WIN32)
+    #include(<GLES3/gl3.h>, EMSCRIPTEN)
 }cdefine
 
 fireMouseUp(element :'#element, point: 'point) {

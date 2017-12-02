@@ -95,7 +95,11 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
         stream << "\n";
     }
     
-	if (structs.size() > 0) {
+    for (auto ccodeStruct : ccodeStructs) {
+        stream << ccodeStruct << "\n";
+    }
+
+    if (structs.size() > 0) {
         int typeId = 1;
         for (auto t : structOrder) {
             stream << "#define " << t << "_typeId " << typeId++ << "\n";

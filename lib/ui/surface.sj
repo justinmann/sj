@@ -43,11 +43,14 @@ sdlSurface #surface(
 	}
 
 	drawRect(rect: 'rect, color: 'color)'void c{
+/*
 		SDL_SetRenderDrawColor((SDL_Renderer*)_parent->ren, color->r, color->g, color->b, color->a);
 		SDL_RenderFillRect((SDL_Renderer*)_parent->ren, (SDL_Rect*)rect);
+*/
 	}c
 
 	drawImage(rect: 'rect, image: 'image)'void c{
+/*
 		if (image->texture.tex) {
 			if (image->margin.l > 0) {
 				if (image->margin.t > 0) {
@@ -182,9 +185,11 @@ sdlSurface #surface(
 				SDL_RenderCopy((SDL_Renderer*)_parent->ren, (SDL_Texture*)image->texture.tex, &middleBottomSrcRect, &middleBottomDestRect);
 			}
 		}
+*/
 	}c
 
 	drawText(rect: 'rect, font: 'font, text: 'string, color: 'color)'void c{
+/*
 		if (((char*)text->data.data)[0] != 0) {
 			SDL_Color sdlColor;
 			sdlColor.r = color->r;
@@ -208,19 +213,22 @@ sdlSurface #surface(
 		    //Clean up the surface and font
 		    SDL_FreeSurface(surf);
 	    }
+*/	    
 	}c
 
 	getTextSize(font: 'font, text: 'string)'size {
 		w = 0
 		h = 0
-		c{
+/*		c{
 			TTF_SizeUTF8((TTF_Font*)font->data, (char*)text->data.data, &sjv_w, &sjv_h);
 		}c
+*/
 		size(w, h)
 	}
 
 	getTexture(src: 'string)'texture {
 		tex = 0 as ptr
+/*
 		c{
 		    SDL_Surface* bmp = IMG_Load((char*)src->data.data);
 		    if (bmp == 0) {
@@ -233,7 +241,7 @@ sdlSurface #surface(
 		        printf("SDL_CreateTextureFromSurface Error: %s\n", SDL_GetError());
 		    }
 		}c
-
+*/
 		texture(tex : tex)
 	}
 ) {
@@ -243,17 +251,24 @@ sdlSurface #surface(
 	        exit(-1);
 	    }
 
-	    if (TTF_Init() != 0) {
-	        printf("TTF_Init Error: %s\n", SDL_GetError());
-	        exit(-1);
-	    }
+##ifdef __APPLE__
+    	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+##else
+    	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+    	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+##endif
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
-	    _this->win = (uintptr_t)SDL_CreateWindow("Hello World!", 100, 100, _this->size.w, _this->size.h, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+	    _this->win = (uintptr_t)SDL_CreateWindow("Hello World!", 100, 100, _this->size.w, _this->size.h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	    if (_this->win == 0) {
 	        printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
 	        exit(-1);
 	    }
 
+	    SDL_GL_CreateContext((SDL_Window*)_this->win);
 	    _this->ren = (uintptr_t)SDL_CreateRenderer((SDL_Window*)_this->win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	    if (_this->ren == 0) {
 	        printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
