@@ -49,6 +49,10 @@ typedef struct vertex_buffer_t
     vertex_attribute_t *attributes[MAX_VERTEX_ATTRIBUTE];
 } vertex_buffer_t;
 
+##ifdef WIN32
+// strndup() is not available on Windows
+char *strndup( const char *s1, size_t n);
+##endif
 
 /**
  * Creates an empty vertex buffer.
@@ -300,6 +304,17 @@ cfunction{
 #include(<string.h>)
 #include(<stdlib.h>)
 #include(<stdio.h>)
+
+##ifdef WIN32
+// strndup() is not available on Windows
+char *strndup( const char *s1, size_t n)
+{
+    char *copy= (char*)malloc( n+1 );
+    memcpy( copy, s1, n );
+    copy[n] = 0;
+    return copy;
+};
+##endif
 
 /**
  * Buffer status
