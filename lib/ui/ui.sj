@@ -38,7 +38,7 @@ cinclude{
 #include(<float.h>)
 
 ##ifdef WIN32
-##define strdup _strdup
+##pragma warning(disable:4996)
 ##define GLEW_STATIC
 ##include <windows.h>
 ##include <GL/glew.h>
