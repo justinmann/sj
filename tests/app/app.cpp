@@ -1,6 +1,7 @@
 #ifdef __APPLE__
 #include <SDL2/SDL.h>
 #include <SDL2_ttf/SDL_ttf.h>
+#include <OpenGL/gl3.h>
 #else
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -55,7 +56,8 @@ void main_destroy();
 
 void main_loop() {
     //First clear the renderer
-    SDL_RenderClear(ren);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(1.0, 0.0, 0.0, 0.0);
 
     SDL_Rect dst;
     dst.x = rand() % 2;
@@ -70,12 +72,12 @@ void main_loop() {
     SDL_RenderCopy(ren, image, NULL, &dst);
 
     //Update the screen
-    SDL_RenderPresent(ren);
+    SDL_GL_SwapWindow(win);
     //Take a quick break after all that hard work
     SDL_Delay(100);
 }
 
-int main2(int argc, char* argv[]) {
+int main(int argc, char* argv[]) {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         std::cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
         return 1;
@@ -88,12 +90,25 @@ int main2(int argc, char* argv[]) {
         return 1;
     }
 
-    win = SDL_CreateWindow("Hello World!", 100, 100, 640, 480, SDL_WINDOW_SHOWN);
+#ifdef __APPLE__
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+#else
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#endif
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+
+    win = SDL_CreateWindow("Hello World!", 100, 100, 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
     if (win == nullptr) {
         std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
         SDL_Quit();
         return 1;
     }
+
+    SDL_GLContext context = SDL_GL_CreateContext(win);
 
     ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (ren == nullptr) {
