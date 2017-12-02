@@ -1,6 +1,21 @@
+
+
+
+
+
+
+
+
+
 #ifdef WIN32
+#define GLEW_STATIC
+#include <windows.h>
 #include <GL/glew.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <float.h>
 #endif
+
 #ifdef EMSCRIPTEN
 #include <GLES3/gl3.h>
 #endif
@@ -2117,16 +2132,6 @@ texture_glyph_new( void );
   shader_load( const char * vert_filename,
                const char * frag_filename );    
 
-
-	
-	
-	
-	
-	
-    
-    
-    
-
 sjs_string sjt_call14;
 sjs_string sjt_call15;
 sjs_string sjt_call16;
@@ -2385,8 +2390,8 @@ void main_destroy(void);
  */
 void computegradient(double *img, int w, int h, double *gx, double *gy)
 {
-    int i,j,k,p,q;
-    double glength, phi, phiscaled, ascaled, errsign, pfrac, qfrac, err0, err1, err;
+    int i,j,k;
+    double glength;
 #define SQRT2 1.4142136
     for(i = 1; i < h-1; i++) { // Avoid edges where the kernels would spill over
         for(j = 1; j < w-1; j++) {
@@ -3099,7 +3104,7 @@ vertex_buffer_new( const char *format )
         return NULL;
     }
 
-    self->format = strdup( format );
+    self->format = _strdup( format );
 
     for( i=0; i<MAX_VERTEX_ATTRIBUTE; ++i )
     {
@@ -3116,7 +3121,7 @@ vertex_buffer_new( const char *format )
 
         if (end == NULL)
         {
-            desc = strdup( start );
+            desc = _strdup( start );
         }
         else
         {
@@ -3736,7 +3741,7 @@ vertex_attribute_new( GLchar * name,
 
     assert( size > 0 );
 
-    attribute->name       = (GLchar *) strdup( name );
+    attribute->name       = (GLchar *) _strdup( name );
     attribute->index      = -1;
     attribute->size       = size;
     attribute->type       = type;
@@ -4444,7 +4449,7 @@ texture_font_new_from_file(texture_atlas_t *atlas, const float pt_size,
     self->size  = pt_size;
 
     self->location = TEXTURE_FONT_FILE;
-    self->filename = strdup(filename);
+    self->filename = _strdup(filename);
 
     if (texture_font_init(self)) {
         texture_font_delete(self);
@@ -5178,9 +5183,13 @@ shader_read( const char *filename )
     char * buffer;
 	size_t size;
 
+#ifdef WIN32
+    errno_t err;
+    if( (err  = fopen_s( &file, filename, "rb" )) !=0 ) {
+#else
     file = fopen( filename, "rb" );
-    if( !file )
-    {
+    if( !file ) {
+#endif
         fprintf( stderr, "Unable to open file \"%s\".\n", filename );
 		return 0;
     }

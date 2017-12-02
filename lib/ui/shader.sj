@@ -59,9 +59,13 @@ shader_read( const char *filename )
     char * buffer;
 	size_t size;
 
+##ifdef WIN32
+    errno_t err;
+    if( (err  = fopen_s( &file, filename, "rb" )) !=0 ) {
+##else
     file = fopen( filename, "rb" );
-    if( !file )
-    {
+    if( !file ) {
+##endif
         fprintf( stderr, "Unable to open file \"%s\".\n", filename );
 		return 0;
     }

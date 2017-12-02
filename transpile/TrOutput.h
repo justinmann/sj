@@ -9,6 +9,7 @@ public:
     vector<string> structOrder;
     map<string, string> strings;
     map<string, map<string, bool>> includes;
+    vector<string> ccodeIncludes;
     vector<string> ccodeStructs;
     vector<string> ccodeDefines;
     vector<string> ccodeFunctions;

@@ -152,7 +152,7 @@ vertex_attribute_new( GLchar * name,
 
     assert( size > 0 );
 
-    attribute->name       = (GLchar *) strdup( name );
+    attribute->name       = (GLchar *) _strdup( name );
     attribute->index      = -1;
     attribute->size       = size;
     attribute->type       = type;

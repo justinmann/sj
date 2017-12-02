@@ -13,6 +13,7 @@ enum NCCodeType {
     NCC_BLOCK,
     NCC_DEFINE,
     NCC_STRUCT,
+    NCC_INCLUDE,
     NCC_FUNCTION
 };
 

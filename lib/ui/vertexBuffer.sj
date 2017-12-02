@@ -323,7 +323,7 @@ vertex_buffer_new( const char *format )
         return NULL;
     }
 
-    self->format = strdup( format );
+    self->format = _strdup( format );
 
     for( i=0; i<MAX_VERTEX_ATTRIBUTE; ++i )
     {
@@ -340,7 +340,7 @@ vertex_buffer_new( const char *format )
 
         if (end == NULL)
         {
-            desc = strdup( start );
+            desc = _strdup( start );
         }
         else
         {

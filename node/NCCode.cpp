@@ -269,6 +269,9 @@ void CCCodeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
     case NCC_STRUCT:
         trOutput->ccodeStructs.push_back(finalCode);
         break;
+    case NCC_INCLUDE:
+        trOutput->ccodeIncludes.push_back(finalCode);
+        break;
     case NCC_FUNCTION:
         trOutput->ccodeFunctions.push_back(finalCode);
         break;
@@ -292,6 +295,9 @@ void CCCodeVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr
     case NCC_STRUCT:
         ss << "cstruct{\n";
         break;
+    case NCC_INCLUDE:
+        ss << "cinclude{\n";
+        break;
     case NCC_FUNCTION:
         ss << "cfunction{\n";
         break;
@@ -306,6 +312,9 @@ void CCCodeVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr
         break;
     case NCC_STRUCT:
         ss << "\n}cstruct";
+        break;
+    case NCC_INCLUDE:
+        ss << "cinclude{\n";
         break;
     case NCC_FUNCTION:
         ss << "\n}cfunction";

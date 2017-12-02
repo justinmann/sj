@@ -672,9 +672,9 @@ texture_font_init(texture_font_t *self)
     }
 
     metrics = face->size->metrics;
-    self->ascender = (metrics.ascender >> 6) / 100.0;
-    self->descender = (metrics.descender >> 6) / 100.0;
-    self->height = (metrics.height >> 6) / 100.0;
+    self->ascender = (metrics.ascender >> 6) / 100.0f;
+    self->descender = (metrics.descender >> 6) / 100.0f;
+    self->height = (metrics.height >> 6) / 100.0f;
     self->linegap = self->height - self->ascender + self->descender;
     FT_Done_Face( face );
     FT_Done_FreeType( library );
@@ -705,7 +705,7 @@ texture_font_new_from_file(texture_atlas_t *atlas, const float pt_size,
     self->size  = pt_size;
 
     self->location = TEXTURE_FONT_FILE;
-    self->filename = strdup(filename);
+    self->filename = _strdup(filename);
 
     if (texture_font_init(self)) {
         texture_font_delete(self);
@@ -1074,7 +1074,7 @@ size_t
 texture_font_load_glyphs( texture_font_t * self,
                           const char * codepoints )
 {
-    size_t i, c;
+    size_t i;
 
     /* Load each glyph */
     for( i = 0; i < strlen(codepoints); i += utf8_surrogate_len(codepoints + i) ) {

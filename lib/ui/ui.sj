@@ -27,20 +27,28 @@ include "utf8.sj"
 include "distanceField.sj"
 include "edtaa3func.sj"
 
+cinclude{
+#include(<emscripten.h>, EMSCRIPTEN)
+#include(<emscripten/html5.h>, EMSCRIPTEN)
+#include(<SDL.h>, EMSCRIPTEN)
+#include(<SDL.h>, WIN32)
+#include(<SDL2/SDL.h>, __APPLE__)
+#include(<OpenGL/gl.h>, __APPLE__)
+#include(<GLES3/gl3.h>, EMSCRIPTEN)
+
+##ifdef WIN32
+##define GLEW_STATIC
+##include <windows.h>
+##include <GL/glew.h>
+##include <GL/gl.h>
+##include <GL/glu.h>
+##include <float.h>
+##endif
+}cinclude
+
 onClick(timestemp: 'f64, x: 'i32, y: 'i32) {
 	console.write("click")
 }
-
-cdefine{
-	#include(<emscripten.h>, EMSCRIPTEN)
-	#include(<emscripten/html5.h>, EMSCRIPTEN)
-	#include(<SDL.h>, EMSCRIPTEN)
-	#include(<SDL.h>, WIN32)
-	#include(<SDL2/SDL.h>, __APPLE__)
-    #include(<OpenGL/gl.h>, __APPLE__)
-    #include(<GL/glew.h>, WIN32)
-    #include(<GLES3/gl3.h>, EMSCRIPTEN)
-}cdefine
 
 fireMouseUp(element :'#element, point: 'point) {
     mouseHandler : element as #mouseHandler?

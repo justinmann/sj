@@ -46,6 +46,7 @@ void updateLocation(YYLOCATION& loc, const char* s, const int len) {
 "c{"([^\}]|\}+[^\}c])*"}c" TOKEN_STR(TCBLOCK, 2, 2);
 "cstruct{"([^\}]|\}+[^\}c])*"}cstruct" TOKEN_STR(TCSTRUCT, 8, 8);
 "cdefine{"([^\}]|\}+[^\}c])*"}cdefine" TOKEN_STR(TCDEFINE, 8, 8);
+"cinclude{"([^\}]|\}+[^\}c])*"}cinclude" TOKEN_STR(TCINCLUDE, 9, 9);
 "cfunction{"([^\}]|\}+[^\}c])*"}cfunction" TOKEN_STR(TCFUNCTION, 10, 10);
 "/*"([^*]|\*+[^*/])*\*+"/"	TOKEN_VAL(TEND);
 "//".*					TOKEN_VAL(TEND);

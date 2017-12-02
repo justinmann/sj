@@ -11,6 +11,10 @@ TrOutput::TrOutput() {
 }
 
 void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
+    for (auto ccodeInclude : ccodeIncludes) {
+        stream << ccodeInclude << "\n";
+    }
+
     for (auto include : includes) {
         for (auto ifdef : include.second) {
             if (ifdef.first.size() > 0) {
