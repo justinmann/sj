@@ -282,6 +282,15 @@ sdlSurface #surface(
 	    }
 
 	    SDL_GL_CreateContext((SDL_Window*)_this->win);
+##ifdef WIN32
+		GLint GlewInitResult = glewInit();
+		if (GLEW_OK != GlewInitResult) 
+		{
+			printf("ERROR: %s\n", glewGetErrorString(GlewInitResult));
+			exit(EXIT_FAILURE);
+		}
+##endif
+
 	    _this->ren = SDL_CreateRenderer((SDL_Window*)_this->win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	    if (_this->ren == 0) {
 	        printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
