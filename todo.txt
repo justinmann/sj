@@ -3,7 +3,8 @@ brew install llvm && rm /usr/local/opt/emscripten/libexec/llvm/bin/llvm-ar && ln
 
 emcc benchmark.c ../texture-atlas.c ../vector.c ../vertex-buffer.c ../vertex-attribute.c ../texture-font.c ../utf8-utils.c ../distance-field.c shader.c mat4.c ../edtaa3func.c -I.. -L.. -s USE_SDL=2 -s USE_WEBGL2=1 -s USE_FREETYPE=1 -o benchmark.html -s ALLOW_MEMORY_GROWTH=1 --preload-file fonts --preload-file shaders -s WASM=1
 
-* show text
+
+* set y zero to top
 * libpng: https://github.com/DavidEGrayson/ahrs-visualizer/blob/master/png_texture.cpp
 
 * use #line pragma directive

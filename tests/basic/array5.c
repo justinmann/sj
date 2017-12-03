@@ -128,23 +128,18 @@ void sjf_class_heap(sjs_class_heap* _this);
 void main_destroy(void);
 
 void sjf_array_class(sjs_array_class* _this) {
-    
-		
-
-		if (_this->size < 0) {
-			exit(-1);
-		}
-
-		if (_this->data) {
-			_this->_isGlobal = true;
-		} else {
-			_this->data = (uintptr_t)calloc(_this->size * sizeof(sjs_class), 1);
-			if (!_this->data) {
-				printf("grow: out of memory\n");
-				exit(-1);				
-			}
-		}
-	;
+    if (_this->size < 0) {
+        exit(-1);
+    }
+    if (_this->data) {
+        _this->_isGlobal = true;
+    } else {
+        _this->data = (uintptr_t)calloc(_this->size * sizeof(sjs_class), 1);
+        if (!_this->data) {
+            printf("grow: out of memory\n");
+            exit(-1);
+        }
+    }
 }
 
 void sjf_array_class_copy(sjs_array_class* _this, sjs_array_class* to) {
@@ -154,58 +149,45 @@ void sjf_array_class_copy(sjs_array_class* _this, sjs_array_class* to) {
 }
 
 void sjf_array_class_destroy(sjs_array_class* _this) {
-    
-	if (!_this->_isGlobal && _this->data) {
-		free((sjs_class*)_this->data);
-		_this->data = 0;	
-	}
-;
+    if (!_this->_isGlobal && _this->data) {
+        free((sjs_class*)_this->data);
+        _this->data = 0;
+    }
 }
 
 void sjf_array_class_getAt(sjs_array_class* _parent, int32_t index, sjs_class* _return) {
-    
-		if (index >= _parent->size || index < 0) {
-			printf("getAt: out of bounds\n");
-			exit(-1);
-		}
-
-		sjs_class* p = (sjs_class*)_parent->data;
-		sjf_class_copy(_return, &p[index]);
-;		
-	;
+    if (index >= _parent->size || index < 0) {
+        printf("getAt: out of bounds\n");
+        exit(-1);
+    }
+    sjs_class* p = (sjs_class*)_parent->data;
+    sjf_class_copy(_return, &p[index]);
+    ;
 }
 
 void sjf_array_class_heap(sjs_array_class_heap* _this) {
-    
-		
-
-		if (_this->size < 0) {
-			exit(-1);
-		}
-
-		if (_this->data) {
-			_this->_isGlobal = true;
-		} else {
-			_this->data = (uintptr_t)calloc(_this->size * sizeof(sjs_class), 1);
-			if (!_this->data) {
-				printf("grow: out of memory\n");
-				exit(-1);				
-			}
-		}
-	;
+    if (_this->size < 0) {
+        exit(-1);
+    }
+    if (_this->data) {
+        _this->_isGlobal = true;
+    } else {
+        _this->data = (uintptr_t)calloc(_this->size * sizeof(sjs_class), 1);
+        if (!_this->data) {
+            printf("grow: out of memory\n");
+            exit(-1);
+        }
+    }
 }
 
 void sjf_array_class_initAt(sjs_array_class* _parent, int32_t index, sjs_class* item) {
-    
-		if (index >= _parent->size || index < 0) {
-			printf("setAt: out of bounds %d:%d\n", index, _parent->size);
-			exit(-1);
-		}
-
-		sjs_class* p = (sjs_class*)_parent->data;
-		sjf_class_copy(&p[index], item);
-;
-	;
+    if (index >= _parent->size || index < 0) {
+        printf("setAt: out of bounds %d:%d\n", index, _parent->size);
+        exit(-1);
+    }
+    sjs_class* p = (sjs_class*)_parent->data;
+    sjf_class_copy(&p[index], item);
+    ;
 }
 
 void sjf_class(sjs_class* _this) {

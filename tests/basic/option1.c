@@ -279,7 +279,7 @@ int main(int argc, char** argv) {
         sjt_getValue1->_refCount++;
     }
 
-    if (sjt_getValue1 == 0) { exit(-1); };
+    if (sjt_getValue1 == 0) { exit(-1); }
     sjv_o = sjt_getValue1;
     sjv_o->_refCount++;
     sjt_isEmpty4 = sjv_n;

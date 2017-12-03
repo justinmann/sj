@@ -95,14 +95,17 @@ void computegradient(double *img, int w, int h, double *gx, double *gy)
     int i,j,k;
     double glength;
 ##define SQRT2 1.4142136
-    for(i = 1; i < h-1; i++) { // Avoid edges where the kernels would spill over
+ // Avoid edges where the kernels would spill over
+    for(i = 1; i < h-1; i++) {
         for(j = 1; j < w-1; j++) {
             k = i*w + j;
-            if((img[k]>0.0) && (img[k]<1.0)) { // Compute gradient for edge pixels only
+             // Compute gradient for edge pixels only
+            if((img[k]>0.0) && (img[k]<1.0)) {
                 gx[k] = -img[k-w-1] - SQRT2*img[k-1] - img[k+w-1] + img[k-w+1] + SQRT2*img[k+1] + img[k+w+1];
                 gy[k] = -img[k-w-1] - SQRT2*img[k-w] - img[k-w+1] + img[k+w-1] + SQRT2*img[k+w] + img[k+w+1];
                 glength = gx[k]*gx[k] + gy[k]*gy[k];
-                if(glength > 0.0) { // Avoid division by zero
+                if(glength > 0.0) {
+                 // Avoid division by zero
                     glength = sqrt(glength);
                     gx[k]=gx[k]/glength;
                     gy[k]=gy[k]/glength;
@@ -128,8 +131,10 @@ double edgedf(double gx, double gy, double a)
 {
     double df, glength, temp, a1;
 
-    if ((gx == 0) || (gy == 0)) { // Either A) gu or gv are zero, or B) both
-        df = 0.5-a;  // Linear approximation is A) correct or B) a fair guess
+    // Either A) gu or gv are zero, or B) both
+    if ((gx == 0) || (gy == 0)) {
+        // Linear approximation is A) correct or B) a fair guess
+        df = 0.5-a;  
     } else {
         glength = sqrt(gx*gx + gy*gy);
         if(glength>0) {
@@ -148,11 +153,14 @@ double edgedf(double gx, double gy, double a)
             gy = temp;
         }
         a1 = 0.5*gy/gx;
-        if (a < a1) { // 0 <= a < a1
+        if (a < a1) {
+         // 0 <= a < a1
             df = 0.5*(gx + gy) - sqrt(2.0*gx*gy*a);
-        } else if (a < (1.0-a1)) { // a1 <= a <= 1-a1
+        } else if (a < (1.0-a1)) {
+           // a1 <= a <= 1-a1
             df = (0.5-a)*gx;
-        } else { // 1-a1 < a <= 1
+        } else {
+         // 1-a1 < a <= 1
             df = -0.5*(gx + gy) + sqrt(2.0*gx*gy*(1.0-a));
         }
     }
@@ -176,7 +184,8 @@ double distaa3(double *img, double *gximg, double *gyimg, int w, int c, int xc, 
   dx = (double)xi;
   dy = (double)yi;
   di = sqrt(dx*dx + dy*dy); // Length of integer vector, like a traditional EDT
-  if(di==0) { // Use local gradient only at edges
+  if(di==0) {
+   // Use local gradient only at edges
       // Estimate based on local gradient only
       df = edgedf(gx, gy, a);
   } else {

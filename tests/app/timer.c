@@ -1,13 +1,4 @@
 
-
-
-
-
-
-
-
-
-
 #ifdef WIN32
 #pragma warning(disable:4996)
 #define GLEW_STATIC
@@ -113,8 +104,8 @@ const char* sjg_string2 = "Bob";
 
 
 /**
- *
- */
+*
+*/
 typedef union
 {
     float data[16];    /**< All compoments at once     */
@@ -128,91 +119,78 @@ typedef union
 
 
 /**
- * Maximum number of attributes per vertex
- *
- * @private
- */
+* Maximum number of attributes per vertex
+*
+* @private
+*/
 #define MAX_VERTEX_ATTRIBUTE 16
-
-
 /**
- *  Generic vertex attribute.
- */
+*  Generic vertex attribute.
+*/
 typedef struct vertex_attribute_t
 {
     /**
-     *  atribute name
-     */
+    *  atribute name
+    */
     GLchar * name;
-
     /**
-     * index of the generic vertex attribute to be modified.
-     */
+    * index of the generic vertex attribute to be modified.
+    */
     GLuint index;
-
     /**
-     * Number of components per generic vertex attribute.
-     *
-     * Must be 1, 2, 3, or 4. The initial value is 4.
-     */
+    * Number of components per generic vertex attribute.
+    *
+    * Must be 1, 2, 3, or 4. The initial value is 4.
+    */
     GLint size;
-
     /**
-     *  data type of each component in the array.
-     *
-     *  Symbolic constants GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT,
-     *  GL_UNSIGNED_SHORT, GL_INT, GL_UNSIGNED_INT, GL_FLOAT, or GL_DOUBLE are
-     *  accepted. The initial value is GL_FLOAT.
-     */
+    *  data type of each component in the array.
+    *
+    *  Symbolic constants GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT,
+    *  GL_UNSIGNED_SHORT, GL_INT, GL_UNSIGNED_INT, GL_FLOAT, or GL_DOUBLE are
+    *  accepted. The initial value is GL_FLOAT.
+    */
     GLenum type;
-
     /**
-     *  whether fixed-point data values should be normalized (GL_TRUE) or
-     *  converted directly as fixed-point values (GL_FALSE) when they are
-     *  accessed.
-     */
+    *  whether fixed-point data values should be normalized (GL_TRUE) or
+    *  converted directly as fixed-point values (GL_FALSE) when they are
+    *  accessed.
+    */
     GLboolean normalized;
-
     /**
-     *  byte offset between consecutive generic vertex attributes.
-     *
-     *  If stride is 0, the generic vertex attributes are understood to be
-     *  tightly packed in the array. The initial value is 0.
-     */
+    *  byte offset between consecutive generic vertex attributes.
+    *
+    *  If stride is 0, the generic vertex attributes are understood to be
+    *  tightly packed in the array. The initial value is 0.
+    */
     GLsizei stride;
-
     /**
-     *  pointer to the first component of the first attribute element in the
-     *  array.
-     */
+    *  pointer to the first component of the first attribute element in the
+    *  array.
+    */
     GLvoid * pointer;
-
     /**
-     * pointer to the function that enable this attribute.
-     */
+    * pointer to the function that enable this attribute.
+    */
     void ( * enable )(void *);
-
 } vertex_attribute_t;
 
 
 /**
- *  Generic vector structure.
- *
- * @memberof vector
- */
+*  Generic vector structure.
+*
+* @memberof vector
+*/
 typedef struct vector_t
- {
-     /** Pointer to dynamically allocated items. */
-     void * items;
-
-     /** Number of items that can be held in currently allocated storage. */
-     size_t capacity;
-
-     /** Number of items. */
-     size_t size;
-
-     /** Size (in bytes) of a single item. */
-     size_t item_size;
+{
+    /** Pointer to dynamically allocated items. */
+    void * items;
+    /** Number of items that can be held in currently allocated storage. */
+    size_t capacity;
+    /** Number of items. */
+    size_t size;
+    /** Size (in bytes) of a single item. */
+    size_t item_size;
 } vector_t;
 
 
@@ -224,11 +202,10 @@ const struct {
     int          code;
     const char*  message;
 } FT_Errors[] =
-#include FT_ERRORS_H    
-
+#include FT_ERRORS_H
 /**
- * A list of possible ways to render a glyph.
- */
+* A list of possible ways to render a glyph.
+*/
 typedef enum rendermode_t
 {
     RENDER_NORMAL,
@@ -237,284 +214,243 @@ typedef enum rendermode_t
     RENDER_OUTLINE_NEGATIVE,
     RENDER_SIGNED_DISTANCE_FIELD
 } rendermode_t;
-
-
 /**
- * A structure that hold a kerning value relatively to a Unicode
- * codepoint.
- *
- * This structure cannot be used alone since the (necessary) right
- * Unicode codepoint is implicitely held by the owner of this structure.
- */
+* A structure that hold a kerning value relatively to a Unicode
+* codepoint.
+*
+* This structure cannot be used alone since the (necessary) right
+* Unicode codepoint is implicitely held by the owner of this structure.
+*/
 typedef struct kerning_t
 {
     /**
-     * Left Unicode codepoint in the kern pair in UTF-32 LE encoding.
-     */
+    * Left Unicode codepoint in the kern pair in UTF-32 LE encoding.
+    */
     uint32_t codepoint;
-
     /**
-     * Kerning value (in fractional pixels).
-     */
+    * Kerning value (in fractional pixels).
+    */
     float kerning;
-
 } kerning_t;
-
 /*
- * Glyph metrics:
- * --------------
- *
- *                       xmin                     xmax
- *                        |                         |
- *                        |<-------- width -------->|
- *                        |                         |
- *              |         +-------------------------+----------------- ymax
- *              |         |    ggggggggg   ggggg    |     ^        ^
- *              |         |   g:::::::::ggg::::g    |     |        |
- *              |         |  g:::::::::::::::::g    |     |        |
- *              |         | g::::::ggggg::::::gg    |     |        |
- *              |         | g:::::g     g:::::g     |     |        |
- *    offset_x -|-------->| g:::::g     g:::::g     |  offset_y    |
- *              |         | g:::::g     g:::::g     |     |        |
- *              |         | g::::::g    g:::::g     |     |        |
- *              |         | g:::::::ggggg:::::g     |     |        |
- *              |         |  g::::::::::::::::g     |     |      height
- *              |         |   gg::::::::::::::g     |     |        |
- *  baseline ---*---------|---- gggggggg::::::g-----*--------      |
- *            / |         |             g:::::g     |              |
- *     origin   |         | gggggg      g:::::g     |              |
- *              |         | g:::::gg   gg:::::g     |              |
- *              |         |  g::::::ggg:::::::g     |              |
- *              |         |   gg:::::::::::::g      |              |
- *              |         |     ggg::::::ggg        |              |
- *              |         |         gggggg          |              v
- *              |         +-------------------------+----------------- ymin
- *              |                                   |
- *              |------------- advance_x ---------->|
- */
-
+* Glyph metrics:
+* --------------
+*
+*                       xmin                     xmax
+*                        |                         |
+*                        |<-------- width -------->|
+*                        |                         |
+*              |         +-------------------------+----------------- ymax
+*              |         |    ggggggggg   ggggg    |     ^        ^
+*              |         |   g:::::::::ggg::::g    |     |        |
+*              |         |  g:::::::::::::::::g    |     |        |
+*              |         | g::::::ggggg::::::gg    |     |        |
+*              |         | g:::::g     g:::::g     |     |        |
+*    offset_x -|-------->| g:::::g     g:::::g     |  offset_y    |
+*              |         | g:::::g     g:::::g     |     |        |
+*              |         | g::::::g    g:::::g     |     |        |
+*              |         | g:::::::ggggg:::::g     |     |        |
+*              |         |  g::::::::::::::::g     |     |      height
+*              |         |   gg::::::::::::::g     |     |        |
+*  baseline ---*---------|---- gggggggg::::::g-----*--------      |
+*            / |         |             g:::::g     |              |
+*     origin   |         | gggggg      g:::::g     |              |
+*              |         | g:::::gg   gg:::::g     |              |
+*              |         |  g::::::ggg:::::::g     |              |
+*              |         |   gg:::::::::::::g      |              |
+*              |         |     ggg::::::ggg        |              |
+*              |         |         gggggg          |              v
+*              |         +-------------------------+----------------- ymin
+*              |                                   |
+*              |------------- advance_x ---------->|
+*/
 /**
- * A structure that describe a glyph.
- */
+* A structure that describe a glyph.
+*/
 typedef struct texture_glyph_t
 {
     /**
-     * Unicode codepoint this glyph represents in UTF-32 LE encoding.
-     */
+    * Unicode codepoint this glyph represents in UTF-32 LE encoding.
+    */
     uint32_t codepoint;
-
     /**
-     * Glyph's width in pixels.
-     */
+    * Glyph's width in pixels.
+    */
     size_t width;
-
     /**
-     * Glyph's height in pixels.
-     */
+    * Glyph's height in pixels.
+    */
     size_t height;
-
     /**
-     * Glyph's left bearing expressed in integer pixels.
-     */
+    * Glyph's left bearing expressed in integer pixels.
+    */
     int offset_x;
-
     /**
-     * Glyphs's top bearing expressed in integer pixels.
-     *
-     * Remember that this is the distance from the baseline to the top-most
-     * glyph scanline, upwards y coordinates being positive.
-     */
+    * Glyphs's top bearing expressed in integer pixels.
+    *
+    * Remember that this is the distance from the baseline to the top-most
+    * glyph scanline, upwards y coordinates being positive.
+    */
     int offset_y;
-
     /**
-     * For horizontal text layouts, this is the horizontal distance (in
-     * fractional pixels) used to increment the pen position when the glyph is
-     * drawn as part of a string of text.
-     */
+    * For horizontal text layouts, this is the horizontal distance (in
+    * fractional pixels) used to increment the pen position when the glyph is
+    * drawn as part of a string of text.
+    */
     float advance_x;
-
     /**
-     * For vertical text layouts, this is the vertical distance (in fractional
-     * pixels) used to increment the pen position when the glyph is drawn as
-     * part of a string of text.
-     */
+    * For vertical text layouts, this is the vertical distance (in fractional
+    * pixels) used to increment the pen position when the glyph is drawn as
+    * part of a string of text.
+    */
     float advance_y;
-
     /**
-     * First normalized texture coordinate (x) of top-left corner
-     */
+    * First normalized texture coordinate (x) of top-left corner
+    */
     float s0;
-
     /**
-     * Second normalized texture coordinate (y) of top-left corner
-     */
+    * Second normalized texture coordinate (y) of top-left corner
+    */
     float t0;
-
     /**
-     * First normalized texture coordinate (x) of bottom-right corner
-     */
+    * First normalized texture coordinate (x) of bottom-right corner
+    */
     float s1;
-
     /**
-     * Second normalized texture coordinate (y) of bottom-right corner
-     */
+    * Second normalized texture coordinate (y) of bottom-right corner
+    */
     float t1;
-
     /**
-     * A vector of kerning pairs relative to this glyph.
-     */
+    * A vector of kerning pairs relative to this glyph.
+    */
     vector_t * kerning;
-
     /**
-     * Mode this glyph was rendered
-     */
+    * Mode this glyph was rendered
+    */
     rendermode_t rendermode;
-
     /**
-     * Glyph outline thickness
-     */
+    * Glyph outline thickness
+    */
     float outline_thickness;
-
 } texture_glyph_t;
-
-
-typedef struct texture_atlas_t texture_atlas_td; 
+typedef struct texture_atlas_t texture_atlas_td;
 /**
- *  Texture font structure.
- */
+*  Texture font structure.
+*/
 typedef struct texture_font_t
 {
     /**
-     * Vector of glyphs contained in this font.
-     */
+    * Vector of glyphs contained in this font.
+    */
     vector_t * glyphs;
-
     /**
-     * Atlas structure to store glyphs data.
-     */
+    * Atlas structure to store glyphs data.
+    */
     texture_atlas_td * atlas;
-
     /**
-     * font location
-     */
+    * font location
+    */
     enum {
         TEXTURE_FONT_FILE = 0,
         TEXTURE_FONT_MEMORY,
     } location;
-
     union {
         /**
-         * Font filename, for when location == TEXTURE_FONT_FILE
-         */
+        * Font filename, for when location == TEXTURE_FONT_FILE
+        */
         char *filename;
-
         /**
-         * Font memory address, for when location == TEXTURE_FONT_MEMORY
-         */
+        * Font memory address, for when location == TEXTURE_FONT_MEMORY
+        */
         struct {
             const void *base;
             size_t size;
         } memory;
     };
-
     /**
-     * Font size
-     */
+    * Font size
+    */
     float size;
-
     /**
-     * Whether to use autohint when rendering font
-     */
+    * Whether to use autohint when rendering font
+    */
     int hinting;
-
     /**
-     * Mode the font is rendering its next glyph
-     */
+    * Mode the font is rendering its next glyph
+    */
     rendermode_t rendermode;
-
     /**
-     * Outline thickness
-     */
+    * Outline thickness
+    */
     float outline_thickness;
-
     /**
-     * Whether to use our own lcd filter.
-     */
+    * Whether to use our own lcd filter.
+    */
     int filtering;
-
     /**
-     * LCD filter weights
-     */
+    * LCD filter weights
+    */
     unsigned char lcd_weights[5];
-
     /**
-     * Whether to use kerning if available
-     */
+    * Whether to use kerning if available
+    */
     int kerning;
-
-
     /**
-     * This field is simply used to compute a default line spacing (i.e., the
-     * baseline-to-baseline distance) when writing text with this font. Note
-     * that it usually is larger than the sum of the ascender and descender
-     * taken as absolute values. There is also no guarantee that no glyphs
-     * extend above or below subsequent baselines when using this distance.
-     */
+    * This field is simply used to compute a default line spacing (i.e., the
+    * baseline-to-baseline distance) when writing text with this font. Note
+    * that it usually is larger than the sum of the ascender and descender
+    * taken as absolute values. There is also no guarantee that no glyphs
+    * extend above or below subsequent baselines when using this distance.
+    */
     float height;
-
     /**
-     * This field is the distance that must be placed between two lines of
-     * text. The baseline-to-baseline distance should be computed as:
-     * ascender - descender + linegap
-     */
+    * This field is the distance that must be placed between two lines of
+    * text. The baseline-to-baseline distance should be computed as:
+    * ascender - descender + linegap
+    */
     float linegap;
-
     /**
-     * The ascender is the vertical distance from the horizontal baseline to
-     * the highest 'character' coordinate in a font face. Unfortunately, font
-     * formats define the ascender differently. For some, it represents the
-     * ascent of all capital latin characters (without accents), for others it
-     * is the ascent of the highest accented character, and finally, other
-     * formats define it as being equal to bbox.yMax.
-     */
+    * The ascender is the vertical distance from the horizontal baseline to
+    * the highest 'character' coordinate in a font face. Unfortunately, font
+    * formats define the ascender differently. For some, it represents the
+    * ascent of all capital latin characters (without accents), for others it
+    * is the ascent of the highest accented character, and finally, other
+    * formats define it as being equal to bbox.yMax.
+    */
     float ascender;
-
     /**
-     * The descender is the vertical distance from the horizontal baseline to
-     * the lowest 'character' coordinate in a font face. Unfortunately, font
-     * formats define the descender differently. For some, it represents the
-     * descent of all capital latin characters (without accents), for others it
-     * is the ascent of the lowest accented character, and finally, other
-     * formats define it as being equal to bbox.yMin. This field is negative
-     * for values below the baseline.
-     */
+    * The descender is the vertical distance from the horizontal baseline to
+    * the lowest 'character' coordinate in a font face. Unfortunately, font
+    * formats define the descender differently. For some, it represents the
+    * descent of all capital latin characters (without accents), for others it
+    * is the ascent of the lowest accented character, and finally, other
+    * formats define it as being equal to bbox.yMin. This field is negative
+    * for values below the baseline.
+    */
     float descender;
-
     /**
-     * The position of the underline line for this face. It is the center of
-     * the underlining stem. Only relevant for scalable formats.
-     */
+    * The position of the underline line for this face. It is the center of
+    * the underlining stem. Only relevant for scalable formats.
+    */
     float underline_position;
-
     /**
-     * The thickness of the underline for this face. Only relevant for scalable
-     * formats.
-     */
+    * The thickness of the underline for this face. Only relevant for scalable
+    * formats.
+    */
     float underline_thickness;
-
 } texture_font_t;
 
 
 /**
- * Tuple of 4 ints.
- *
- * Each field can be addressed using several aliases:
- *  - First component:  <b>x</b>, <b>r</b>, <b>red</b> or <b>vstart</b>
- *  - Second component: <b>y</b>, <b>g</b>, <b>green</b> or <b>vcount</b>
- *  - Third component:  <b>z</b>, <b>b</b>, <b>blue</b>, <b>width</b> or <b>istart</b>
- *  - Fourth component: <b>w</b>, <b>a</b>, <b>alpha</b>, <b>height</b> or <b>icount</b>
- *
- */
+* Tuple of 4 ints.
+*
+* Each field can be addressed using several aliases:
+*  - First component:  <b>x</b>, <b>r</b>, <b>red</b> or <b>vstart</b>
+*  - Second component: <b>y</b>, <b>g</b>, <b>green</b> or <b>vcount</b>
+*  - Third component:  <b>z</b>, <b>b</b>, <b>blue</b>, <b>width</b> or <b>istart</b>
+*  - Fourth component: <b>w</b>, <b>a</b>, <b>alpha</b>, <b>height</b> or <b>icount</b>
+*
+*/
 typedef union
 {
     int data[4];    /**< All compoments at once     */
@@ -549,16 +485,15 @@ typedef union
         int icount; /**< Alias for fourth component */
     };
 } ivec4;
-
 /**
- * Tuple of 3 ints.
- *
- * Each field can be addressed using several aliases:
- *  - First component:  <b>x</b>, <b>r</b> or <b>red</b>
- *  - Second component: <b>y</b>, <b>g</b> or <b>green</b>
- *  - Third component:  <b>z</b>, <b>b</b> or <b>blue</b>
- *
- */
+* Tuple of 3 ints.
+*
+* Each field can be addressed using several aliases:
+*  - First component:  <b>x</b>, <b>r</b> or <b>red</b>
+*  - Second component: <b>y</b>, <b>g</b> or <b>green</b>
+*  - Third component:  <b>z</b>, <b>b</b> or <b>blue</b>
+*
+*/
 typedef union
 {
     int data[3];    /**< All compoments at once     */
@@ -578,16 +513,14 @@ typedef union
         int blue;   /**< Alias for third component  */
     };
 } ivec3;
-
-
 /**
- * Tuple of 2 ints.
- *
- * Each field can be addressed using several aliases:
- *  - First component: <b>x</b>, <b>s</b> or <b>start</b>
- *  - Second component: <b>y</b>, <b>t</b> or <b>end</b>
- *
- */
+* Tuple of 2 ints.
+*
+* Each field can be addressed using several aliases:
+*  - First component: <b>x</b>, <b>s</b> or <b>start</b>
+*  - Second component: <b>y</b>, <b>t</b> or <b>end</b>
+*
+*/
 typedef union
 {
     int data[2];    /**< All compoments at once     */
@@ -604,17 +537,15 @@ typedef union
         int end;    /**< Alias for second component */
     };
 } ivec2;
-
-
 /**
- * Tuple of 4 floats.
- *
- * Each field can be addressed using several aliases:
- *  - First component:  <b>x</b>, <b>left</b>, <b>r</b> or <b>red</b>
- *  - Second component: <b>y</b>, <b>top</b>, <b>g</b> or <b>green</b>
- *  - Third component:  <b>z</b>, <b>width</b>, <b>b</b> or <b>blue</b>
- *  - Fourth component: <b>w</b>, <b>height</b>, <b>a</b> or <b>alpha</b>
- */
+* Tuple of 4 floats.
+*
+* Each field can be addressed using several aliases:
+*  - First component:  <b>x</b>, <b>left</b>, <b>r</b> or <b>red</b>
+*  - Second component: <b>y</b>, <b>top</b>, <b>g</b> or <b>green</b>
+*  - Third component:  <b>z</b>, <b>width</b>, <b>b</b> or <b>blue</b>
+*  - Fourth component: <b>w</b>, <b>height</b>, <b>a</b> or <b>alpha</b>
+*/
 typedef union
 {
     float data[4];    /**< All compoments at once    */
@@ -643,16 +574,14 @@ typedef union
         float alpha;  /**< Alias for fourth component */
     };
 } vec4;
-
-
 /**
- * Tuple of 3 floats
- *
- * Each field can be addressed using several aliases:
- *  - First component:  <b>x</b>, <b>r</b> or <b>red</b>
- *  - Second component: <b>y</b>, <b>g</b> or <b>green</b>
- *  - Third component:  <b>z</b>, <b>b</b> or <b>blue</b>
- */
+* Tuple of 3 floats
+*
+* Each field can be addressed using several aliases:
+*  - First component:  <b>x</b>, <b>r</b> or <b>red</b>
+*  - Second component: <b>y</b>, <b>g</b> or <b>green</b>
+*  - Third component:  <b>z</b>, <b>b</b> or <b>blue</b>
+*/
 typedef union
 {
     float data[3];   /**< All compoments at once    */
@@ -672,15 +601,13 @@ typedef union
         float blue;  /**< Alias fo third component  */
     };
 } vec3;
-
-
 /**
- * Tuple of 2 floats
- *
- * Each field can be addressed using several aliases:
- *  - First component:  <b>x</b> or <b>s</b>
- *  - Second component: <b>y</b> or <b>t</b>
- */
+* Tuple of 2 floats
+*
+* Each field can be addressed using several aliases:
+*  - First component:  <b>x</b> or <b>s</b>
+*  - Second component: <b>y</b> or <b>t</b>
+*/
 typedef union
 {
     float data[2]; /**< All components at once     */
@@ -693,55 +620,47 @@ typedef union
         float t;   /**< Alias for second component */
     };
 } vec2;
-
 /**
- * A texture atlas is used to pack several small regions into a single texture.
- */
+* A texture atlas is used to pack several small regions into a single texture.
+*/
 typedef struct texture_atlas_t
 {
     /**
-     * Allocated nodes
-     */
+    * Allocated nodes
+    */
     vector_t * nodes;
-
     /**
-     *  Width (in pixels) of the underlying texture
-     */
+    *  Width (in pixels) of the underlying texture
+    */
     size_t width;
-
     /**
-     * Height (in pixels) of the underlying texture
-     */
+    * Height (in pixels) of the underlying texture
+    */
     size_t height;
-
     /**
-     * Depth (in bytes) of the underlying texture
-     */
+    * Depth (in bytes) of the underlying texture
+    */
     size_t depth;
-
     /**
-     * Allocated surface size
-     */
+    * Allocated surface size
+    */
     size_t used;
-
     /**
-     * Texture identity (OpenGL)
-     */
+    * Texture identity (OpenGL)
+    */
     unsigned int id;
-
     /**
-     * Atlas data
-     */
+    * Atlas data
+    */
     unsigned char * data;
-
-} texture_atlas_t;    
+} texture_atlas_t;
 
 
 typedef struct {
     float x, y, z;    // position
     float s, t;       // texture
     float r, g, b, a; // color
-} vertex_t;	
+} vertex_t;
 
 #define sjs_object_typeId 1
 #define sjs_anon8_typeId 2
@@ -932,13 +851,12 @@ struct td_sjs_size_heap {
 
 struct td_sjs_sdlSurface {
     sjs_size size;
-    		SDL_Window* win;
-		SDL_Renderer* ren;
-		GLuint textShader;
-		mat4 model;
-		mat4 view;
-		mat4 projection;
-;
+    SDL_Window* win;
+    SDL_Renderer* ren;
+    GLuint textShader;
+    mat4 model;
+    mat4 view;
+    mat4 projection;
 };
 
 struct td_sjs_rect {
@@ -1036,9 +954,8 @@ struct td_sjs_font {
     sjs_string src;
     int32_t size;
     uintptr_t data;
-    		texture_font_t* font;
-		texture_atlas_t* atlas;
-;
+    texture_font_t* font;
+    texture_atlas_t* atlas;
 };
 
 struct td_sjs_font_heap {
@@ -1046,9 +963,8 @@ struct td_sjs_font_heap {
     sjs_string src;
     int32_t size;
     uintptr_t data;
-    		texture_font_t* font;
-		texture_atlas_t* atlas;
-;
+    texture_font_t* font;
+    texture_atlas_t* atlas;
 };
 
 struct td_sji_surface {
@@ -1072,13 +988,12 @@ struct td_sji_surface {
 struct td_sjs_sdlSurface_heap {
     intptr_t _refCount;
     sjs_size size;
-    		SDL_Window* win;
-		SDL_Renderer* ren;
-		GLuint textShader;
-		mat4 model;
-		mat4 view;
-		mat4 projection;
-;
+    SDL_Window* win;
+    SDL_Renderer* ren;
+    GLuint textShader;
+    mat4 model;
+    mat4 view;
+    mat4 projection;
 };
 
 struct td_sjs_textElement {
@@ -1146,94 +1061,76 @@ struct td_sji_fireMouseUp_mouseHandler {
 
 mat4 *
 mat4_new( void );
-
 void
 mat4_set_identity( mat4 *self );
-
 void
 mat4_set_zero( mat4 *self );
-
 void
 mat4_multiply( mat4 *self, mat4 *other );
-
 void
 mat4_set_orthographic( mat4 *self,
-                       float left,   float right,
-                       float bottom, float top,
-                       float znear,  float zfar );
-
+float left,   float right,
+float bottom, float top,
+float znear,  float zfar );
 void
 mat4_set_perspective( mat4 *self,
-                      float fovy,  float aspect,
-                      float zNear, float zFar);
-
+float fovy,  float aspect,
+float zNear, float zFar);
 void
 mat4_set_frustum( mat4 *self,
-                  float left,   float right,
-                  float bottom, float top,
-                  float znear,  float zfar );
-
+float left,   float right,
+float bottom, float top,
+float znear,  float zfar );
 void
 mat4_set_rotation( mat4 *self,
-                   float angle,
-                   float x, float y, float z);
-
+float angle,
+float x, float y, float z);
 void
 mat4_set_translation( mat4 *self,
-                      float x, float y, float z);
-
+float x, float y, float z);
 void
 mat4_set_scaling( mat4 *self,
-                  float x, float y, float z);
-
+float x, float y, float z);
 void
 mat4_rotate( mat4 *self,
-             float angle,
-             float x, float y, float z);
-
+float angle,
+float x, float y, float z);
 void
 mat4_translate( mat4 *self,
-                float x, float y, float z);
-
+float x, float y, float z);
 void
 mat4_scale( mat4 *self,
-            float x, float y, float z);    
+float x, float y, float z);
 
 
 /*
- * Compute the local gradient at edge pixels using convolution filters.
- * The gradient is computed only at edge pixels. At other places in the
- * image, it is never used, and it's mostly zero anyway.
- */
+* Compute the local gradient at edge pixels using convolution filters.
+* The gradient is computed only at edge pixels. At other places in the
+* image, it is never used, and it's mostly zero anyway.
+*/
 void computegradient(double *img, int w, int h, double *gx, double *gy);
-
 /*
- * A somewhat tricky function to approximate the distance to an edge in a
- * certain pixel, with consideration to either the local gradient (gx,gy)
- * or the direction to the pixel (dx,dy) and the pixel greyscale value a.
- * The latter alternative, using (dx,dy), is the metric used by edtaa2().
- * Using a local estimate of the edge gradient (gx,gy) yields much better
- * accuracy at and near edges, and reduces the error even at distant pixels
- * provided that the gradient direction is accurately estimated.
- */
+* A somewhat tricky function to approximate the distance to an edge in a
+* certain pixel, with consideration to either the local gradient (gx,gy)
+* or the direction to the pixel (dx,dy) and the pixel greyscale value a.
+* The latter alternative, using (dx,dy), is the metric used by edtaa2().
+* Using a local estimate of the edge gradient (gx,gy) yields much better
+* accuracy at and near edges, and reduces the error even at distant pixels
+* provided that the gradient direction is accurately estimated.
+*/
 double edgedf(double gx, double gy, double a);
-
-
 double distaa3(double *img, double *gximg, double *gyimg, int w, int c, int xc, int yc, int xi, int yi);
-
 // Shorthand macro: add ubiquitous parameters dist, gx, gy, img and w and call distaa3()
 #define DISTAA(c,xc,yc,xi,yi) (distaa3(img, gx, gy, w, c, xc, yc, xi, yi))
-
-void edtaa3(double *img, double *gx, double *gy, int w, int h, short *distx, short *disty, double *dist);  
+void edtaa3(double *img, double *gx, double *gy, int w, int h, short *distx, short *disty, double *dist);
 
 
 double *
 make_distance_mapd( double *img,
-                    unsigned int width, unsigned int height );
-
+unsigned int width, unsigned int height );
 unsigned char *
 make_distance_mapb( unsigned char *img,
-                    unsigned int width, unsigned int height );    
+unsigned int width, unsigned int height );
 
 
 /**
@@ -1245,7 +1142,6 @@ make_distance_mapb( unsigned char *img,
 */
 size_t
 utf8_surrogate_len( const char* character );
-
 /**
 * Return the length of the given UTF-8 encoded and
 * NULL terminated string.
@@ -1256,7 +1152,6 @@ utf8_surrogate_len( const char* character );
 */
 size_t
 utf8_strlen( const char* string );
-
 /**
 * Converts a given UTF-8 encoded character to its UTF-32 LE equivalent
 *
@@ -1270,885 +1165,767 @@ utf8_to_utf32( const char * character );
 
 
 /**
- * Generic vertex buffer.
- */
+* Generic vertex buffer.
+*/
 typedef struct vertex_buffer_t
 {
     /** Format of the vertex buffer. */
     char * format;
-
     /** Vector of vertices. */
     vector_t * vertices;
-
-#ifdef FREETYPE_GL_USE_VAO
+    #ifdef FREETYPE_GL_USE_VAO
     /** GL identity of the Vertex Array Object */
     GLuint VAO_id;
-#endif
-
+    #endif
     /** GL identity of the vertices buffer. */
     GLuint vertices_id;
-
     /** Vector of indices. */
     vector_t * indices;
-
     /** GL identity of the indices buffer. */
     GLuint indices_id;
-
     /** Current size of the vertices buffer in GPU */
     size_t GPU_vsize;
-
     /** Current size of the indices buffer in GPU*/
     size_t GPU_isize;
-
     /** GL primitives to render. */
     GLenum mode;
-
     /** Whether the vertex buffer needs to be uploaded to GPU memory. */
     char state;
-
     /** Individual items */
     vector_t * items;
-
     /** Array of attributes. */
     vertex_attribute_t *attributes[MAX_VERTEX_ATTRIBUTE];
 } vertex_buffer_t;
-
 #ifdef WIN32
 // strndup() is not available on Windows
 char *strndup( const char *s1, size_t n);
 #endif
-
 /**
- * Creates an empty vertex buffer.
- *
- * @param  format a string describing vertex format.
- * @return        an empty vertex buffer.
- */
-  vertex_buffer_t *
-  vertex_buffer_new( const char *format );
-
-
+* Creates an empty vertex buffer.
+*
+* @param  format a string describing vertex format.
+* @return        an empty vertex buffer.
+*/
+vertex_buffer_t *
+vertex_buffer_new( const char *format );
 /**
- * Deletes vertex buffer and releases GPU memory.
- *
- * @param  self  a vertex buffer
- */
-  void
-  vertex_buffer_delete( vertex_buffer_t * self );
-
-
+* Deletes vertex buffer and releases GPU memory.
+*
+* @param  self  a vertex buffer
+*/
+void
+vertex_buffer_delete( vertex_buffer_t * self );
 /**
- *  Returns the number of items in the vertex buffer
- *
- *  @param  self  a vertex buffer
- *  @return       number of items
- */
-  size_t
-  vertex_buffer_size( const vertex_buffer_t *self );
-
-
+*  Returns the number of items in the vertex buffer
+*
+*  @param  self  a vertex buffer
+*  @return       number of items
+*/
+size_t
+vertex_buffer_size( const vertex_buffer_t *self );
 /**
- *  Returns vertex format
- *
- *  @param  self  a vertex buffer
- *  @return       vertex format
- */
-  const char *
-  vertex_buffer_format( const vertex_buffer_t *self );
-
-
+*  Returns vertex format
+*
+*  @param  self  a vertex buffer
+*  @return       vertex format
+*/
+const char *
+vertex_buffer_format( const vertex_buffer_t *self );
 /**
- * Print information about a vertex buffer
- *
- * @param  self  a vertex buffer
- */
-  void
-  vertex_buffer_print( vertex_buffer_t * self );
-
-
+* Print information about a vertex buffer
+*
+* @param  self  a vertex buffer
+*/
+void
+vertex_buffer_print( vertex_buffer_t * self );
 /**
- * Prepare vertex buffer for render.
- *
- * @param  self  a vertex buffer
- * @param  mode  render mode
- */
-  void
-  vertex_buffer_render_setup ( vertex_buffer_t *self,
-                               GLenum mode );
-
-
+* Prepare vertex buffer for render.
+*
+* @param  self  a vertex buffer
+* @param  mode  render mode
+*/
+void
+vertex_buffer_render_setup ( vertex_buffer_t *self,
+GLenum mode );
 /**
- * Finish rendering by setting back modified states
- *
- * @param  self  a vertex buffer
- */
-  void
-  vertex_buffer_render_finish ( vertex_buffer_t *self );
-
-
+* Finish rendering by setting back modified states
+*
+* @param  self  a vertex buffer
+*/
+void
+vertex_buffer_render_finish ( vertex_buffer_t *self );
 /**
- * Render vertex buffer.
- *
- * @param  self  a vertex buffer
- * @param  mode  render mode
- */
-  void
-  vertex_buffer_render ( vertex_buffer_t *self,
-                         GLenum mode );
-
-
+* Render vertex buffer.
+*
+* @param  self  a vertex buffer
+* @param  mode  render mode
+*/
+void
+vertex_buffer_render ( vertex_buffer_t *self,
+GLenum mode );
 /**
- * Render a specified item from the vertex buffer.
- *
- * @param  self   a vertex buffer
- * @param  index index of the item to be rendered
- */
-  void
-  vertex_buffer_render_item ( vertex_buffer_t *self,
-                              size_t index );
-
-
+* Render a specified item from the vertex buffer.
+*
+* @param  self   a vertex buffer
+* @param  index index of the item to be rendered
+*/
+void
+vertex_buffer_render_item ( vertex_buffer_t *self,
+size_t index );
 /**
- * Upload buffer to GPU memory.
- *
- * @param  self  a vertex buffer
- */
-  void
-  vertex_buffer_upload( vertex_buffer_t *self );
-
-
+* Upload buffer to GPU memory.
+*
+* @param  self  a vertex buffer
+*/
+void
+vertex_buffer_upload( vertex_buffer_t *self );
 /**
- * Clear all items.
- *
- * @param  self  a vertex buffer
- */
-  void
-  vertex_buffer_clear( vertex_buffer_t *self );
-
-
+* Clear all items.
+*
+* @param  self  a vertex buffer
+*/
+void
+vertex_buffer_clear( vertex_buffer_t *self );
 /**
- * Appends indices at the end of the buffer.
- *
- * @param  self     a vertex buffer
- * @param  indices  indices to be appended
- * @param  icount   number of indices to be appended
- *
- * @private
- */
-  void
-  vertex_buffer_push_back_indices ( vertex_buffer_t *self,
-                                    const GLuint * indices,
-                                    const size_t icount );
-
-
+* Appends indices at the end of the buffer.
+*
+* @param  self     a vertex buffer
+* @param  indices  indices to be appended
+* @param  icount   number of indices to be appended
+*
+* @private
+*/
+void
+vertex_buffer_push_back_indices ( vertex_buffer_t *self,
+const GLuint * indices,
+const size_t icount );
 /**
- * Appends vertices at the end of the buffer.
- *
- * @note Internal use
- *
- * @param  self     a vertex buffer
- * @param  vertices vertices to be appended
- * @param  vcount   number of vertices to be appended
- *
- * @private
- */
-  void
-  vertex_buffer_push_back_vertices ( vertex_buffer_t *self,
-                                     const void * vertices,
-                                     const size_t vcount );
-
-
+* Appends vertices at the end of the buffer.
+*
+* @note Internal use
+*
+* @param  self     a vertex buffer
+* @param  vertices vertices to be appended
+* @param  vcount   number of vertices to be appended
+*
+* @private
+*/
+void
+vertex_buffer_push_back_vertices ( vertex_buffer_t *self,
+const void * vertices,
+const size_t vcount );
 /**
- * Insert indices in the buffer.
- *
- * @param  self    a vertex buffer
- * @param  index   location before which to insert indices
- * @param  indices indices to be appended
- * @param  icount  number of indices to be appended
- *
- * @private
- */
-  void
-  vertex_buffer_insert_indices ( vertex_buffer_t *self,
-                                 const size_t index,
-                                 const GLuint *indices,
-                                 const size_t icount );
-
-
+* Insert indices in the buffer.
+*
+* @param  self    a vertex buffer
+* @param  index   location before which to insert indices
+* @param  indices indices to be appended
+* @param  icount  number of indices to be appended
+*
+* @private
+*/
+void
+vertex_buffer_insert_indices ( vertex_buffer_t *self,
+const size_t index,
+const GLuint *indices,
+const size_t icount );
 /**
- * Insert vertices in the buffer.
- *
- * @param  self     a vertex buffer
- * @param  index    location before which to insert vertices
- * @param  vertices vertices to be appended
- * @param  vcount   number of vertices to be appended
- *
- * @private
- */
-  void
-  vertex_buffer_insert_vertices ( vertex_buffer_t *self,
-                                  const size_t index,
-                                  const void *vertices,
-                                  const size_t vcount );
-
+* Insert vertices in the buffer.
+*
+* @param  self     a vertex buffer
+* @param  index    location before which to insert vertices
+* @param  vertices vertices to be appended
+* @param  vcount   number of vertices to be appended
+*
+* @private
+*/
+void
+vertex_buffer_insert_vertices ( vertex_buffer_t *self,
+const size_t index,
+const void *vertices,
+const size_t vcount );
 /**
- * Erase indices in the buffer.
- *
- * @param  self   a vertex buffer
- * @param  first  the index of the first index to be erased
- * @param  last   the index of the last index to be erased
- *
- * @private
- */
-  void
-  vertex_buffer_erase_indices ( vertex_buffer_t *self,
-                                const size_t first,
-                                const size_t last );
-
+* Erase indices in the buffer.
+*
+* @param  self   a vertex buffer
+* @param  first  the index of the first index to be erased
+* @param  last   the index of the last index to be erased
+*
+* @private
+*/
+void
+vertex_buffer_erase_indices ( vertex_buffer_t *self,
+const size_t first,
+const size_t last );
 /**
- * Erase vertices in the buffer.
- *
- * @param  self   a vertex buffer
- * @param  first  the index of the first vertex to be erased
- * @param  last   the index of the last vertex to be erased
- *
- * @private
- */
-  void
-  vertex_buffer_erase_vertices ( vertex_buffer_t *self,
-                                 const size_t first,
-                                 const size_t last );
-
-
+* Erase vertices in the buffer.
+*
+* @param  self   a vertex buffer
+* @param  first  the index of the first vertex to be erased
+* @param  last   the index of the last vertex to be erased
+*
+* @private
+*/
+void
+vertex_buffer_erase_vertices ( vertex_buffer_t *self,
+const size_t first,
+const size_t last );
 /**
- * Append a new item to the collection.
- *
- * @param  self   a vertex buffer
- * @param  vcount   number of vertices
- * @param  vertices raw vertices data
- * @param  icount   number of indices
- * @param  indices  raw indices data
- */
-  size_t
-  vertex_buffer_push_back( vertex_buffer_t * self,
-                           const void * vertices, const size_t vcount,
-                           const GLuint * indices, const size_t icount );
+* Append a new item to the collection.
+*
+* @param  self   a vertex buffer
+* @param  vcount   number of vertices
+* @param  vertices raw vertices data
+* @param  icount   number of indices
+* @param  indices  raw indices data
+*/
+size_t
+vertex_buffer_push_back( vertex_buffer_t * self,
+const void * vertices, const size_t vcount,
+const GLuint * indices, const size_t icount );
+/**
+* Insert a new item into the vertex buffer.
+*
+* @param  self      a vertex buffer
+* @param  index     location before which to insert item
+* @param  vertices  raw vertices data
+* @param  vcount    number of vertices
+* @param  indices   raw indices data
+* @param  icount    number of indices
+*/
+size_t
+vertex_buffer_insert( vertex_buffer_t * self,
+const size_t index,
+const void * vertices, const size_t vcount,
+const GLuint * indices, const size_t icount );
+/**
+* Erase an item from the vertex buffer.
+*
+* @param  self     a vertex buffer
+* @param  index    index of the item to be deleted
+*/
+void
+vertex_buffer_erase( vertex_buffer_t * self,
+const size_t index );
 
 
 /**
- * Insert a new item into the vertex buffer.
- *
- * @param  self      a vertex buffer
- * @param  index     location before which to insert item
- * @param  vertices  raw vertices data
- * @param  vcount    number of vertices
- * @param  indices   raw indices data
- * @param  icount    number of indices
- */
-  size_t
-  vertex_buffer_insert( vertex_buffer_t * self,
-                        const size_t index,
-                        const void * vertices, const size_t vcount,
-                        const GLuint * indices, const size_t icount );
-
-/**
- * Erase an item from the vertex buffer.
- *
- * @param  self     a vertex buffer
- * @param  index    index of the item to be deleted
- */
-  void
-  vertex_buffer_erase( vertex_buffer_t * self,
-                       const size_t index );    
-
-
-/**
- * Create an attribute from the given parameters.
- *
- * @param size       number of component
- * @param type       data type
- * @param normalized Whether fixed-point data values should be normalized
-                     (GL_TRUE) or converted directly as fixed-point values
-                     (GL_FALSE) when they are  accessed.
- * @param stride     byte offset between consecutive attributes.
- * @param pointer    pointer to the first component of the first attribute
- *                   element in the array.
- * @return           a new initialized vertex attribute.
- *
- * @private
- */
+* Create an attribute from the given parameters.
+*
+* @param size       number of component
+* @param type       data type
+* @param normalized Whether fixed-point data values should be normalized
+(GL_TRUE) or converted directly as fixed-point values
+(GL_FALSE) when they are  accessed.
+* @param stride     byte offset between consecutive attributes.
+* @param pointer    pointer to the first component of the first attribute
+*                   element in the array.
+* @return           a new initialized vertex attribute.
+*
+* @private
+*/
 vertex_attribute_t *
 vertex_attribute_new( GLchar * name,
-                      GLint size,
-                      GLenum type,
-                      GLboolean normalized,
-                      GLsizei stride,
-                      GLvoid *pointer );
-
-
-
+GLint size,
+GLenum type,
+GLboolean normalized,
+GLsizei stride,
+GLvoid *pointer );
 /**
- * Delete a vertex attribute.
- *
- * @param  self a vertex attribute
- *
- */
+* Delete a vertex attribute.
+*
+* @param  self a vertex attribute
+*
+*/
 void
 vertex_attribute_delete( vertex_attribute_t * self );
+/**
+* Create an attribute from the given description.
+*
+* @param  format Format string specifies the format of a vertex attribute.
+* @return        an initialized vertex attribute
+*
+* @private
+*/
+vertex_attribute_t *
+vertex_attribute_parse( char *format );
+/**
+* Enable a vertex attribute.
+*
+* @param attr  a vertex attribute
+*
+* @private
+*/
+void
+vertex_attribute_enable( vertex_attribute_t *attr );
 
 
 /**
- * Create an attribute from the given description.
- *
- * @param  format Format string specifies the format of a vertex attribute.
- * @return        an initialized vertex attribute
- *
- * @private
- */
-  vertex_attribute_t *
-  vertex_attribute_parse( char *format );
-
-/**
- * Enable a vertex attribute.
- *
- * @param attr  a vertex attribute
- *
- * @private
- */
-  void
-  vertex_attribute_enable( vertex_attribute_t *attr );    
-
-
-
-/**
- * @file   vector.h
- * @author Nicolas Rougier (Nicolas.Rougier@inria.fr)
- *
- * @defgroup vector Vector
- *
- * The vector structure and accompanying functions loosely mimic the STL C++
- * vector class. It is used by @ref texture-atlas (for storing nodes), @ref
- * texture-font (for storing glyphs) and @ref font-manager (for storing fonts).
- * More information at http://www.cppreference.com/wiki/container/vector/start
- *
- * <b>Example Usage</b>:
- * @code
- *
- * int main( int arrgc, char *argv[] )
- * {
- *   int i,j = 1;
- *   vector_t * vector = vector_new( sizeof(int) );
- *   vector_push_back( &i );
- *
- *   j = * (int *) vector_get( vector, 0 );
- *   vector_delete( vector);
- *
- *   return 0;
- * }
- * @endcode
- *
- * @{
- */
-
-/**
- * Creates a new empty vector.
- *
- * @param   item_size    item size in bytes
- * @return               a new empty vector
- *
- */
-  vector_t *
-  vector_new( size_t item_size );
-
-
-/**
- *  Deletes a vector.
- *
- *  @param self a vector structure
- *
- */
-  void
-  vector_delete( vector_t *self );
-
-
-/**
- *  Returns a pointer to the item located at specified index.
- *
- *  @param  self  a vector structure
- *  @param  index the index of the item to be returned
- *  @return       pointer on the specified item
- */
-  const void *
-  vector_get( const vector_t *self,
-              size_t index );
-
-
-/**
- *  Returns a pointer to the first item.
- *
- *  @param  self  a vector structure
- *  @return       pointer on the first item
- */
-  const void *
-  vector_front( const vector_t *self );
-
-
-/**
- *  Returns a pointer to the last item
- *
- *  @param  self  a vector structure
- *  @return pointer on the last item
- */
-  const void *
-  vector_back( const vector_t *self );
-
-
-/**
- *  Check if an item is contained within the vector.
- *
- *  @param  self  a vector structure
- *  @param  item  item to be searched in the vector
- *  @param  cmp   a pointer a comparison function
- *  @return       1 if item is contained within the vector, 0 otherwise
- */
-  int
-  vector_contains( const vector_t *self,
-                   const void *item,
-                   int (*cmp)(const void *, const void *) );
-
-
-/**
- *  Checks whether the vector is empty.
- *
- *  @param  self  a vector structure
- *  @return       1 if the vector is empty, 0 otherwise
- */
-  int
-  vector_empty( const vector_t *self );
-
-
-/**
- *  Returns the number of items
- *
- *  @param  self  a vector structure
- *  @return       number of items
- */
-  size_t
-  vector_size( const vector_t *self );
-
-
-/**
- *  Reserve storage such that it can hold at last size items.
- *
- *  @param  self  a vector structure
- *  @param  size  the new storage capacity
- */
-  void
-  vector_reserve( vector_t *self,
-                  const size_t size );
-
-
-/**
- *  Returns current storage capacity
- *
- *  @param  self  a vector structure
- *  @return       storage capacity
- */
-  size_t
-  vector_capacity( const vector_t *self );
-
-
-/**
- *  Decrease capacity to fit actual size.
- *
- *  @param  self  a vector structure
- */
-  void
-  vector_shrink( vector_t *self );
-
-
-/**
- *  Removes all items.
- *
- *  @param  self  a vector structure
- */
-  void
-  vector_clear( vector_t *self );
-
-
-/**
- *  Replace an item.
- *
- *  @param  self  a vector structure
- *  @param  index the index of the item to be replaced
- *  @param  item  the new item
- */
-  void
-  vector_set( vector_t *self,
-              const size_t index,
-              const void *item );
-
-
-/**
- *  Erase an item.
- *
- *  @param  self  a vector structure
- *  @param  index the index of the item to be erased
- */
-  void
-  vector_erase( vector_t *self,
-                const size_t index );
-
-
-/**
- *  Erase a range of items.
- *
- *  @param  self  a vector structure
- *  @param  first the index of the first item to be erased
- *  @param  last  the index of the last item to be erased
- */
-  void
-  vector_erase_range( vector_t *self,
-                      const size_t first,
-                      const size_t last );
-
-
-/**
- *  Appends given item to the end of the vector.
- *
- *  @param  self a vector structure
- *  @param  item the item to be inserted
- */
-  void
-  vector_push_back( vector_t *self,
-                    const void *item );
-
-
-/**
- *  Removes the last item of the vector.
- *
- *  @param  self a vector structure
- */
-  void
-  vector_pop_back( vector_t *self );
-
-
-/**
- *  Resizes the vector to contain size items
- *
- *  If the current size is less than size, additional items are appended and
- *  initialized with value. If the current size is greater than size, the
- *  vector is reduced to its first size elements.
- *
- *  @param  self a vector structure
- *  @param  size the new size
- */
-  void
-  vector_resize( vector_t *self,
-                 const size_t size );
-
-
-/**
- *  Insert a single item at specified index.
- *
- *  @param  self  a vector structure
- *  @param  index location before which to insert item
- *  @param  item  the item to be inserted
- */
-  void
-  vector_insert( vector_t *self,
-                 const size_t index,
-                 const void *item );
-
-
-/**
- *  Insert raw data at specified index.
- *
- *  @param  self  a vector structure
- *  @param  index location before which to insert item
- *  @param  data  a pointer to the items to be inserted
- *  @param  count the number of items to be inserted
- */
-  void
-  vector_insert_data( vector_t *self,
-                      const size_t index,
-                      const void * data,
-                      const size_t count );
-
-
-/**
- *  Append raw data to the end of the vector.
- *
- *  @param  self  a vector structure
- *  @param  data  a pointer to the items to be inserted
- *  @param  count the number of items to be inserted
- */
-  void
-  vector_push_back_data( vector_t *self,
-                         const void * data,
-                         const size_t count );
-
-
-/**
- *  Sort vector items according to cmp function.
- *
- *  @param  self  a vector structure
- *  @param  cmp   a pointer a comparison function
- */
-  void
-  vector_sort( vector_t *self,
-               int (*cmp)(const void *, const void *) );    
-
-
-/**
- * This function creates a new texture font from given filename and size.  The
- * texture atlas is used to store glyph on demand. Note the depth of the atlas
- * will determine if the font is rendered as alpha channel only (depth = 1) or
- * RGB (depth = 3) that correspond to subpixel rendering (if available on your
- * freetype implementation).
- *
- * @param atlas     A texture atlas
- * @param pt_size   Size of font to be created (in points)
- * @param filename  A font filename
- *
- * @return A new empty font (no glyph inside yet)
- *
- */
-  texture_font_t *
-  texture_font_new_from_file( texture_atlas_t * atlas,
-                              const float pt_size,
-                              const char * filename );
-
-
-/**
- * This function creates a new texture font from a memory location and size.
- * The texture atlas is used to store glyph on demand. Note the depth of the
- * atlas will determine if the font is rendered as alpha channel only
- * (depth = 1) or RGB (depth = 3) that correspond to subpixel rendering (if
- * available on your freetype implementation).
- *
- * @param atlas       A texture atlas
- * @param pt_size     Size of font to be created (in points)
- * @param memory_base Start of the font file in memory
- * @param memory_size Size of the font file memory region, in bytes
- *
- * @return A new empty font (no glyph inside yet)
- *
- */
-  texture_font_t *
-  texture_font_new_from_memory( texture_atlas_t *atlas,
-                                float pt_size,
-                                const void *memory_base,
-                                size_t memory_size );
-
-/**
- * Delete a texture font. Note that this does not delete the glyph from the
- * texture atlas.
- *
- * @param self a valid texture font
- */
-  void
-  texture_font_delete( texture_font_t * self );
-
-
-/**
- * Request a new glyph from the font. If it has not been created yet, it will
- * be.
- *
- * @param self      A valid texture font
- * @param codepoint Character codepoint to be loaded in UTF-8 encoding.
- *
- * @return A pointer on the new glyph or 0 if the texture atlas is not big
- *         enough
- *
- */
-  texture_glyph_t *
-  texture_font_get_glyph( texture_font_t * self,
-                          const char * codepoint );
-
-/** 
- * Request an already loaded glyph from the font. 
- * 
- * @param self      A valid texture font
- * @param codepoint Character codepoint to be found in UTF-8 encoding.
- *
- * @return A pointer on the glyph or 0 if the glyph is not loaded
- */
- texture_glyph_t *
- texture_font_find_glyph( texture_font_t * self,
-                          const char * codepoint );
-    
-/**
- * Request the loading of a given glyph.
- *
- * @param self       A valid texture font
- * @param codepoints Character codepoint to be loaded in UTF-8 encoding.
- *
- * @return One if the glyph could be loaded, zero if not.
- */
-  int
-  texture_font_load_glyph( texture_font_t * self,
-                           const char * codepoint );
-
-/**
- * Request the loading of several glyphs at once.
- *
- * @param self       A valid texture font
- * @param codepoints Character codepoints to be loaded in UTF-8 encoding. May
- *                   contain duplicates.
- *
- * @return Number of missed glyph if the texture is not big enough to hold
- *         every glyphs.
- */
-  size_t
-  texture_font_load_glyphs( texture_font_t * self,
-                            const char * codepoints );
-  /*
-   *Increases the size of a fonts texture atlas
-   *Invalidates all pointers to font->atlas->data
-   *Changes the UV Coordinates of existing glyphs in the font
-   *
-   *@param self A valid texture font
-   *@param width_new Width of the texture atlas after resizing (must be bigger or equal to current width)
-   *@param height_new Height of the texture atlas after resizing (must be bigger or equal to current height)
-   */
-  void
-  texture_font_enlarge_atlas( texture_font_t * self, size_t width_new,
-                              size_t height_new);
-/**
- * Get the kerning between two horizontal glyphs.
- *
- * @param self      A valid texture glyph
- * @param codepoint Character codepoint of the peceding character in UTF-8 encoding.
- *
- * @return x kerning value
- */
-float
-texture_glyph_get_kerning( const texture_glyph_t * self,
-                           const char * codepoint );
-
-
-/**
- * Creates a new empty glyph
- *
- * @return a new empty glyph (not valid)
- */
-texture_glyph_t *
-texture_glyph_new( void );    
-
-
-/**
- * Creates a new empty texture atlas.
- *
- * @param   width   width of the atlas
- * @param   height  height of the atlas
- * @param   depth   bit depth of the atlas
- * @return          a new empty texture atlas.
- *
- */
-  texture_atlas_t *
-  texture_atlas_new( const size_t width,
-                     const size_t height,
-                     const size_t depth );
-
-
-/**
- *  Deletes a texture atlas.
- *
- *  @param self a texture atlas structure
- *
- */
-  void
-  texture_atlas_delete( texture_atlas_t * self );
-
-
-/**
- *  Allocate a new region in the atlas.
- *
- *  @param self   a texture atlas structure
- *  @param width  width of the region to allocate
- *  @param height height of the region to allocate
- *  @return       Coordinates of the allocated region
- *
- */
-  ivec4
-  texture_atlas_get_region( texture_atlas_t * self,
-                            const size_t width,
-                            const size_t height );
-
-
-/**
- *  Upload data to the specified atlas region.
- *
- *  @param self   a texture atlas structure
- *  @param x      x coordinate the region
- *  @param y      y coordinate the region
- *  @param width  width of the region
- *  @param height height of the region
- *  @param data   data to be uploaded into the specified region
- *  @param stride stride of the data
- *
- */
-  void
-  texture_atlas_set_region( texture_atlas_t * self,
-                            const size_t x,
-                            const size_t y,
-                            const size_t width,
-                            const size_t height,
-                            const unsigned char *data,
-                            const size_t stride );
-
-/**
- *  Remove all allocated regions from the atlas.
- *
- *  @param self   a texture atlas structure
- */
-  void
-  texture_atlas_clear( texture_atlas_t * self );    
-
-
-/**
- * Read a fragment or vertex shader from a file
- *
- * @param filename file to read shader from
- * @return         a newly-allocated text buffer containing code. This buffer
- *                 must be freed after usage.
- *
- */
-  char *
-  shader_read( const char *filename );
-
-
-/**
- * Compile a shader from a text buffer.
- *
- * @param source code of the shader
- * @param type   type of the shader
- *
- * @return a handle on the compiled program
- *
- */
-  GLuint
-  shader_compile( const char* source,
-                  const GLenum type );
-
-
-/**
- * Load a vertex and fragment shader sources and build program
- *
- * @param  vert_filename vertex shader filename
- * @param  frag_filename fragment shader filename
- *
- * @return a handle on the built program
- *
- */
-  GLuint
-  shader_load( const char * vert_filename,
-               const char * frag_filename );    
-
-
-void add_text( vertex_buffer_t * buffer, texture_font_t * font,
-               char *text, vec4 * color, vec2 * pen );	
+* @file   vector.h
+* @author Nicolas Rougier (Nicolas.Rougier@inria.fr)
+*
+* @defgroup vector Vector
+*
+* The vector structure and accompanying functions loosely mimic the STL C++
+* vector class. It is used by @ref texture-atlas (for storing nodes), @ref
+* texture-font (for storing glyphs) and @ref font-manager (for storing fonts).
+* More information at http://www.cppreference.com/wiki/container/vector/start
+*
+* <b>Example Usage</b>:
+* @code
+*
+* int main( int arrgc, char *argv[] )
+* {
+    *   int i,j = 1;
+    *   vector_t * vector = vector_new( sizeof(int) );
+    *   vector_push_back( &i );
+    *
+    *   j = * (int *) vector_get( vector, 0 );
+    *   vector_delete( vector);
+    *
+    *   return 0;
+    * }
+    * @endcode
+    *
+    * @{
+        */
+        /**
+        * Creates a new empty vector.
+        *
+        * @param   item_size    item size in bytes
+        * @return               a new empty vector
+        *
+        */
+        vector_t *
+        vector_new( size_t item_size );
+        /**
+        *  Deletes a vector.
+        *
+        *  @param self a vector structure
+        *
+        */
+        void
+        vector_delete( vector_t *self );
+        /**
+        *  Returns a pointer to the item located at specified index.
+        *
+        *  @param  self  a vector structure
+        *  @param  index the index of the item to be returned
+        *  @return       pointer on the specified item
+        */
+        const void *
+        vector_get( const vector_t *self,
+        size_t index );
+        /**
+        *  Returns a pointer to the first item.
+        *
+        *  @param  self  a vector structure
+        *  @return       pointer on the first item
+        */
+        const void *
+        vector_front( const vector_t *self );
+        /**
+        *  Returns a pointer to the last item
+        *
+        *  @param  self  a vector structure
+        *  @return pointer on the last item
+        */
+        const void *
+        vector_back( const vector_t *self );
+        /**
+        *  Check if an item is contained within the vector.
+        *
+        *  @param  self  a vector structure
+        *  @param  item  item to be searched in the vector
+        *  @param  cmp   a pointer a comparison function
+        *  @return       1 if item is contained within the vector, 0 otherwise
+        */
+        int
+        vector_contains( const vector_t *self,
+        const void *item,
+        int (*cmp)(const void *, const void *) );
+        /**
+        *  Checks whether the vector is empty.
+        *
+        *  @param  self  a vector structure
+        *  @return       1 if the vector is empty, 0 otherwise
+        */
+        int
+        vector_empty( const vector_t *self );
+        /**
+        *  Returns the number of items
+        *
+        *  @param  self  a vector structure
+        *  @return       number of items
+        */
+        size_t
+        vector_size( const vector_t *self );
+        /**
+        *  Reserve storage such that it can hold at last size items.
+        *
+        *  @param  self  a vector structure
+        *  @param  size  the new storage capacity
+        */
+        void
+        vector_reserve( vector_t *self,
+        const size_t size );
+        /**
+        *  Returns current storage capacity
+        *
+        *  @param  self  a vector structure
+        *  @return       storage capacity
+        */
+        size_t
+        vector_capacity( const vector_t *self );
+        /**
+        *  Decrease capacity to fit actual size.
+        *
+        *  @param  self  a vector structure
+        */
+        void
+        vector_shrink( vector_t *self );
+        /**
+        *  Removes all items.
+        *
+        *  @param  self  a vector structure
+        */
+        void
+        vector_clear( vector_t *self );
+        /**
+        *  Replace an item.
+        *
+        *  @param  self  a vector structure
+        *  @param  index the index of the item to be replaced
+        *  @param  item  the new item
+        */
+        void
+        vector_set( vector_t *self,
+        const size_t index,
+        const void *item );
+        /**
+        *  Erase an item.
+        *
+        *  @param  self  a vector structure
+        *  @param  index the index of the item to be erased
+        */
+        void
+        vector_erase( vector_t *self,
+        const size_t index );
+        /**
+        *  Erase a range of items.
+        *
+        *  @param  self  a vector structure
+        *  @param  first the index of the first item to be erased
+        *  @param  last  the index of the last item to be erased
+        */
+        void
+        vector_erase_range( vector_t *self,
+        const size_t first,
+        const size_t last );
+        /**
+        *  Appends given item to the end of the vector.
+        *
+        *  @param  self a vector structure
+        *  @param  item the item to be inserted
+        */
+        void
+        vector_push_back( vector_t *self,
+        const void *item );
+        /**
+        *  Removes the last item of the vector.
+        *
+        *  @param  self a vector structure
+        */
+        void
+        vector_pop_back( vector_t *self );
+        /**
+        *  Resizes the vector to contain size items
+        *
+        *  If the current size is less than size, additional items are appended and
+        *  initialized with value. If the current size is greater than size, the
+        *  vector is reduced to its first size elements.
+        *
+        *  @param  self a vector structure
+        *  @param  size the new size
+        */
+        void
+        vector_resize( vector_t *self,
+        const size_t size );
+        /**
+        *  Insert a single item at specified index.
+        *
+        *  @param  self  a vector structure
+        *  @param  index location before which to insert item
+        *  @param  item  the item to be inserted
+        */
+        void
+        vector_insert( vector_t *self,
+        const size_t index,
+        const void *item );
+        /**
+        *  Insert raw data at specified index.
+        *
+        *  @param  self  a vector structure
+        *  @param  index location before which to insert item
+        *  @param  data  a pointer to the items to be inserted
+        *  @param  count the number of items to be inserted
+        */
+        void
+        vector_insert_data( vector_t *self,
+        const size_t index,
+        const void * data,
+        const size_t count );
+        /**
+        *  Append raw data to the end of the vector.
+        *
+        *  @param  self  a vector structure
+        *  @param  data  a pointer to the items to be inserted
+        *  @param  count the number of items to be inserted
+        */
+        void
+        vector_push_back_data( vector_t *self,
+        const void * data,
+        const size_t count );
+        /**
+        *  Sort vector items according to cmp function.
+        *
+        *  @param  self  a vector structure
+        *  @param  cmp   a pointer a comparison function
+        */
+        void
+        vector_sort( vector_t *self,
+        int (*cmp)(const void *, const void *) );
+
+
+        /**
+        * This function creates a new texture font from given filename and size.  The
+        * texture atlas is used to store glyph on demand. Note the depth of the atlas
+        * will determine if the font is rendered as alpha channel only (depth = 1) or
+        * RGB (depth = 3) that correspond to subpixel rendering (if available on your
+        * freetype implementation).
+        *
+        * @param atlas     A texture atlas
+        * @param pt_size   Size of font to be created (in points)
+        * @param filename  A font filename
+        *
+        * @return A new empty font (no glyph inside yet)
+        *
+        */
+        texture_font_t *
+        texture_font_new_from_file( texture_atlas_t * atlas,
+        const float pt_size,
+        const char * filename );
+        /**
+        * This function creates a new texture font from a memory location and size.
+        * The texture atlas is used to store glyph on demand. Note the depth of the
+        * atlas will determine if the font is rendered as alpha channel only
+        * (depth = 1) or RGB (depth = 3) that correspond to subpixel rendering (if
+        * available on your freetype implementation).
+        *
+        * @param atlas       A texture atlas
+        * @param pt_size     Size of font to be created (in points)
+        * @param memory_base Start of the font file in memory
+        * @param memory_size Size of the font file memory region, in bytes
+        *
+        * @return A new empty font (no glyph inside yet)
+        *
+        */
+        texture_font_t *
+        texture_font_new_from_memory( texture_atlas_t *atlas,
+        float pt_size,
+        const void *memory_base,
+        size_t memory_size );
+        /**
+        * Delete a texture font. Note that this does not delete the glyph from the
+        * texture atlas.
+        *
+        * @param self a valid texture font
+        */
+        void
+        texture_font_delete( texture_font_t * self );
+        /**
+        * Request a new glyph from the font. If it has not been created yet, it will
+        * be.
+        *
+        * @param self      A valid texture font
+        * @param codepoint Character codepoint to be loaded in UTF-8 encoding.
+        *
+        * @return A pointer on the new glyph or 0 if the texture atlas is not big
+        *         enough
+        *
+        */
+        texture_glyph_t *
+        texture_font_get_glyph( texture_font_t * self,
+        const char * codepoint );
+        /**
+        * Request an already loaded glyph from the font.
+        *
+        * @param self      A valid texture font
+        * @param codepoint Character codepoint to be found in UTF-8 encoding.
+        *
+        * @return A pointer on the glyph or 0 if the glyph is not loaded
+        */
+        texture_glyph_t *
+        texture_font_find_glyph( texture_font_t * self,
+        const char * codepoint );
+
+        /**
+        * Request the loading of a given glyph.
+        *
+        * @param self       A valid texture font
+        * @param codepoints Character codepoint to be loaded in UTF-8 encoding.
+        *
+        * @return One if the glyph could be loaded, zero if not.
+        */
+        int
+        texture_font_load_glyph( texture_font_t * self,
+        const char * codepoint );
+        /**
+        * Request the loading of several glyphs at once.
+        *
+        * @param self       A valid texture font
+        * @param codepoints Character codepoints to be loaded in UTF-8 encoding. May
+        *                   contain duplicates.
+        *
+        * @return Number of missed glyph if the texture is not big enough to hold
+        *         every glyphs.
+        */
+        size_t
+        texture_font_load_glyphs( texture_font_t * self,
+        const char * codepoints );
+        /*
+        *Increases the size of a fonts texture atlas
+        *Invalidates all pointers to font->atlas->data
+        *Changes the UV Coordinates of existing glyphs in the font
+        *
+        *@param self A valid texture font
+        *@param width_new Width of the texture atlas after resizing (must be bigger or equal to current width)
+        *@param height_new Height of the texture atlas after resizing (must be bigger or equal to current height)
+        */
+        void
+        texture_font_enlarge_atlas( texture_font_t * self, size_t width_new,
+        size_t height_new);
+        /**
+        * Get the kerning between two horizontal glyphs.
+        *
+        * @param self      A valid texture glyph
+        * @param codepoint Character codepoint of the peceding character in UTF-8 encoding.
+        *
+        * @return x kerning value
+        */
+        float
+        texture_glyph_get_kerning( const texture_glyph_t * self,
+        const char * codepoint );
+        /**
+        * Creates a new empty glyph
+        *
+        * @return a new empty glyph (not valid)
+        */
+        texture_glyph_t *
+        texture_glyph_new( void );
+
+
+        /**
+        * Creates a new empty texture atlas.
+        *
+        * @param   width   width of the atlas
+        * @param   height  height of the atlas
+        * @param   depth   bit depth of the atlas
+        * @return          a new empty texture atlas.
+        *
+        */
+        texture_atlas_t *
+        texture_atlas_new( const size_t width,
+        const size_t height,
+        const size_t depth );
+        /**
+        *  Deletes a texture atlas.
+        *
+        *  @param self a texture atlas structure
+        *
+        */
+        void
+        texture_atlas_delete( texture_atlas_t * self );
+        /**
+        *  Allocate a new region in the atlas.
+        *
+        *  @param self   a texture atlas structure
+        *  @param width  width of the region to allocate
+        *  @param height height of the region to allocate
+        *  @return       Coordinates of the allocated region
+        *
+        */
+        ivec4
+        texture_atlas_get_region( texture_atlas_t * self,
+        const size_t width,
+        const size_t height );
+        /**
+        *  Upload data to the specified atlas region.
+        *
+        *  @param self   a texture atlas structure
+        *  @param x      x coordinate the region
+        *  @param y      y coordinate the region
+        *  @param width  width of the region
+        *  @param height height of the region
+        *  @param data   data to be uploaded into the specified region
+        *  @param stride stride of the data
+        *
+        */
+        void
+        texture_atlas_set_region( texture_atlas_t * self,
+        const size_t x,
+        const size_t y,
+        const size_t width,
+        const size_t height,
+        const unsigned char *data,
+        const size_t stride );
+        /**
+        *  Remove all allocated regions from the atlas.
+        *
+        *  @param self   a texture atlas structure
+        */
+        void
+        texture_atlas_clear( texture_atlas_t * self );
+
+
+        /**
+        * Read a fragment or vertex shader from a file
+        *
+        * @param filename file to read shader from
+        * @return         a newly-allocated text buffer containing code. This buffer
+        *                 must be freed after usage.
+        *
+        */
+        char *
+        shader_read( const char *filename );
+        /**
+        * Compile a shader from a text buffer.
+        *
+        * @param source code of the shader
+        * @param type   type of the shader
+        *
+        * @return a handle on the compiled program
+        *
+        */
+        GLuint
+        shader_compile( const char* source,
+        const GLenum type );
+        /**
+        * Load a vertex and fragment shader sources and build program
+        *
+        * @param  vert_filename vertex shader filename
+        * @param  frag_filename fragment shader filename
+        *
+        * @return a handle on the built program
+        *
+        */
+        GLuint
+        shader_load( const char * vert_filename,
+        const char * frag_filename );
+
+
+        void add_text( vertex_buffer_t * buffer, texture_font_t * font,
+        char *text, vec4 * color, vec2 * pen );
 
 sjs_sdlSurface_heap* sjt_cast1;
 sjs_textElement_heap* sjt_cast4;
@@ -2304,85 +2081,68 @@ mat4_new( void )
 {
     mat4 *self = (mat4 *) malloc( sizeof(mat4) );
     return self;
-
 }
-
 void
 mat4_set_zero( mat4 *self )
 {
     if (!self)
-        return;
-
+    return;
     memset( self, 0, sizeof( mat4 ));
 }
-
 void
 mat4_set_identity( mat4 *self )
 {
     if (!self)
-        return;
-
+    return;
     memset( self, 0, sizeof( mat4 ));
     self->m00 = 1.0;
     self->m11 = 1.0;
     self->m22 = 1.0;
     self->m33 = 1.0;
 }
-
 void
 mat4_multiply( mat4 *self, mat4 *other )
 {
     mat4 m;
     size_t i;
-
     if (!self || !other)
-        return;
-
+    return;
     for( i=0; i<4; ++i )
     {
         m.data[i*4+0] =
-            (self->data[i*4+0] * other->data[0*4+0]) +
-            (self->data[i*4+1] * other->data[1*4+0]) +
-            (self->data[i*4+2] * other->data[2*4+0]) +
-            (self->data[i*4+3] * other->data[3*4+0]) ;
-
+        (self->data[i*4+0] * other->data[0*4+0]) +
+        (self->data[i*4+1] * other->data[1*4+0]) +
+        (self->data[i*4+2] * other->data[2*4+0]) +
+        (self->data[i*4+3] * other->data[3*4+0]) ;
         m.data[i*4+1] =
-            (self->data[i*4+0] * other->data[0*4+1]) +
-            (self->data[i*4+1] * other->data[1*4+1]) +
-            (self->data[i*4+2] * other->data[2*4+1]) +
-            (self->data[i*4+3] * other->data[3*4+1]) ;
-
+        (self->data[i*4+0] * other->data[0*4+1]) +
+        (self->data[i*4+1] * other->data[1*4+1]) +
+        (self->data[i*4+2] * other->data[2*4+1]) +
+        (self->data[i*4+3] * other->data[3*4+1]) ;
         m.data[i*4+2] =
-            (self->data[i*4+0] * other->data[0*4+2]) +
-            (self->data[i*4+1] * other->data[1*4+2]) +
-            (self->data[i*4+2] * other->data[2*4+2]) +
-            (self->data[i*4+3] * other->data[3*4+2]) ;
-
+        (self->data[i*4+0] * other->data[0*4+2]) +
+        (self->data[i*4+1] * other->data[1*4+2]) +
+        (self->data[i*4+2] * other->data[2*4+2]) +
+        (self->data[i*4+3] * other->data[3*4+2]) ;
         m.data[i*4+3] =
-            (self->data[i*4+0] * other->data[0*4+3]) +
-            (self->data[i*4+1] * other->data[1*4+3]) +
-            (self->data[i*4+2] * other->data[2*4+3]) +
-            (self->data[i*4+3] * other->data[3*4+3]) ;
+        (self->data[i*4+0] * other->data[0*4+3]) +
+        (self->data[i*4+1] * other->data[1*4+3]) +
+        (self->data[i*4+2] * other->data[2*4+3]) +
+        (self->data[i*4+3] * other->data[3*4+3]) ;
     }
     memcpy( self, &m, sizeof( mat4 ) );
-
 }
-
-
 void
 mat4_set_orthographic( mat4 *self,
-                       float left,   float right,
-                       float bottom, float top,
-                       float znear,  float zfar )
+float left,   float right,
+float bottom, float top,
+float znear,  float zfar )
 {
     if (!self)
-        return;
-
+    return;
     if (left == right || bottom == top || znear == zfar)
-        return;
-
+    return;
     mat4_set_zero( self );
-
     self->m00 = +2.0f/(right-left);
     self->m30 = -(right+left)/(right-left);
     self->m11 = +2.0f/(top-bottom);
@@ -2391,171 +2151,138 @@ mat4_set_orthographic( mat4 *self,
     self->m32 = -(zfar+znear)/(zfar-znear);
     self->m33 = 1.0f;
 }
-
 void
 mat4_set_perspective( mat4 *self,
-                      float fovy,  float aspect,
-                      float znear, float zfar)
+float fovy,  float aspect,
+float znear, float zfar)
 {
     float h, w;
-
     if (!self)
-        return;
-
+    return;
     if (znear == zfar)
-        return;
-
+    return;
     h = (float)tan(fovy / 360.0 * M_PI) * znear;
     w = h * aspect;
-
     mat4_set_frustum( self, -w, w, -h, h, znear, zfar );
 }
-
 void
 mat4_set_frustum( mat4 *self,
-                  float left,   float right,
-                  float bottom, float top,
-                  float znear,  float zfar )
+float left,   float right,
+float bottom, float top,
+float znear,  float zfar )
 {
-
     if (!self)
-        return;
-
+    return;
     if (left == right || bottom == top || znear == zfar)
-        return;
-
+    return;
     mat4_set_zero( self );
-
     self->m00 = (2.0f*znear)/(right-left);
     self->m20 = (right+left)/(right-left);
-
     self->m11 = (2.0f*znear)/(top-bottom);
     self->m21 = (top+bottom)/(top-bottom);
-
     self->m22 = -(zfar+znear)/(zfar-znear);
     self->m32 = -(2.0f*zfar*znear)/(zfar-znear);
-
     self->m23 = -1.0f;
 }
-
 void
 mat4_set_rotation( mat4 *self,
-                   float angle,
-                   float x, float y, float z)
+float angle,
+float x, float y, float z)
 {
     float c, s, norm;
-
     if (!self)
-        return;
-
+    return;
     c = (float)cos( M_PI*angle/180.0 );
     s = (float)sin( M_PI*angle/180.0 );
     norm = (float)sqrt(x*x+y*y+z*z);
-
     x /= norm; y /= norm; z /= norm;
-
     mat4_set_identity( self );
-
     self->m00 = x*x*(1-c)+c;
     self->m10 = y*x*(1-c)-z*s;
     self->m20 = z*x*(1-c)+y*s;
-
     self->m01 =  x*y*(1-c)+z*s;
     self->m11 =  y*y*(1-c)+c;
     self->m21 =  z*y*(1-c)-x*s;
-
     self->m02 = x*z*(1-c)-y*s;
     self->m12 = y*z*(1-c)+x*s;
     self->m22 = z*z*(1-c)+c;
 }
-
 void
 mat4_set_translation( mat4 *self,
-                      float x, float y, float z)
+float x, float y, float z)
 {
     if (!self)
-        return;
-
+    return;
     mat4_set_identity( self );
     self-> m30 = x;
     self-> m31 = y;
     self-> m32 = z;
 }
-
 void
 mat4_set_scaling( mat4 *self,
-                  float x, float y, float z)
+float x, float y, float z)
 {
     if (!self)
-        return;
-
+    return;
     mat4_set_identity( self );
     self-> m00 = x;
     self-> m11 = y;
     self-> m22 = z;
 }
-
 void
 mat4_rotate( mat4 *self,
-             float angle,
-             float x, float y, float z)
+float angle,
+float x, float y, float z)
 {
     mat4 m;
-
     if (!self)
-        return;
-
+    return;
     mat4_set_rotation( &m, angle, x, y, z);
     mat4_multiply( self, &m );
 }
-
 void
 mat4_translate( mat4 *self,
-                float x, float y, float z)
+float x, float y, float z)
 {
     mat4 m;
-
     if (!self)
-        return;
-
+    return;
     mat4_set_translation( &m, x, y, z);
     mat4_multiply( self, &m );
 }
-
 void
 mat4_scale( mat4 *self,
-            float x, float y, float z)
+float x, float y, float z)
 {
     mat4 m;
-
     if (!self)
-        return;
-
+    return;
     mat4_set_scaling( &m, x, y, z);
     mat4_multiply( self, &m );
 }
 
 
-
-
 /*
- * Compute the local gradient at edge pixels using convolution filters.
- * The gradient is computed only at edge pixels. At other places in the
- * image, it is never used, and it's mostly zero anyway.
- */
+* Compute the local gradient at edge pixels using convolution filters.
+* The gradient is computed only at edge pixels. At other places in the
+* image, it is never used, and it's mostly zero anyway.
+*/
 void computegradient(double *img, int w, int h, double *gx, double *gy)
 {
     int i,j,k;
     double glength;
-#define SQRT2 1.4142136
-    for(i = 1; i < h-1; i++) { // Avoid edges where the kernels would spill over
+    #define SQRT2 1.4142136
+    // Avoid edges where the kernels would spill over
+    for(i = 1; i < h-1; i++) {
         for(j = 1; j < w-1; j++) {
             k = i*w + j;
-            if((img[k]>0.0) && (img[k]<1.0)) { // Compute gradient for edge pixels only
+            // Compute gradient for edge pixels only
+            if((img[k]>0.0) && (img[k]<1.0)) {
                 gx[k] = -img[k-w-1] - SQRT2*img[k-1] - img[k+w-1] + img[k-w+1] + SQRT2*img[k+1] + img[k+w+1];
                 gy[k] = -img[k-w-1] - SQRT2*img[k-w] - img[k-w+1] + img[k+w-1] + SQRT2*img[k+w] + img[k+w+1];
                 glength = gx[k]*gx[k] + gy[k]*gy[k];
-                if(glength > 0.0) { // Avoid division by zero
+                if(glength > 0.0) {
+                    // Avoid division by zero
                     glength = sqrt(glength);
                     gx[k]=gx[k]/glength;
                     gy[k]=gy[k]/glength;
@@ -2565,24 +2292,24 @@ void computegradient(double *img, int w, int h, double *gx, double *gy)
     }
     // TODO: Compute reasonable values for gx, gy also around the image edges.
     // (These are zero now, which reduces the accuracy for a 1-pixel wide region
-	// around the image edge.) 2x2 kernels would be suitable for this.
+    // around the image edge.) 2x2 kernels would be suitable for this.
 }
-
 /*
- * A somewhat tricky function to approximate the distance to an edge in a
- * certain pixel, with consideration to either the local gradient (gx,gy)
- * or the direction to the pixel (dx,dy) and the pixel greyscale value a.
- * The latter alternative, using (dx,dy), is the metric used by edtaa2().
- * Using a local estimate of the edge gradient (gx,gy) yields much better
- * accuracy at and near edges, and reduces the error even at distant pixels
- * provided that the gradient direction is accurately estimated.
- */
+* A somewhat tricky function to approximate the distance to an edge in a
+* certain pixel, with consideration to either the local gradient (gx,gy)
+* or the direction to the pixel (dx,dy) and the pixel greyscale value a.
+* The latter alternative, using (dx,dy), is the metric used by edtaa2().
+* Using a local estimate of the edge gradient (gx,gy) yields much better
+* accuracy at and near edges, and reduces the error even at distant pixels
+* provided that the gradient direction is accurately estimated.
+*/
 double edgedf(double gx, double gy, double a)
 {
     double df, glength, temp, a1;
-
-    if ((gx == 0) || (gy == 0)) { // Either A) gu or gv are zero, or B) both
-        df = 0.5-a;  // Linear approximation is A) correct or B) a fair guess
+    // Either A) gu or gv are zero, or B) both
+    if ((gx == 0) || (gy == 0)) {
+        // Linear approximation is A) correct or B) a fair guess
+        df = 0.5-a;
     } else {
         glength = sqrt(gx*gx + gy*gy);
         if(glength>0) {
@@ -2590,9 +2317,9 @@ double edgedf(double gx, double gy, double a)
             gy = gy/glength;
         }
         /* Everything is symmetric wrt sign and transposition,
-         * so move to first octant (gx>=0, gy>=0, gx>=gy) to
-         * avoid handling all possible edge directions.
-         */
+        * so move to first octant (gx>=0, gy>=0, gx>=gy) to
+        * avoid handling all possible edge directions.
+        */
         gx = fabs(gx);
         gy = fabs(gy);
         if(gx<gy) {
@@ -2601,459 +2328,423 @@ double edgedf(double gx, double gy, double a)
             gy = temp;
         }
         a1 = 0.5*gy/gx;
-        if (a < a1) { // 0 <= a < a1
+        if (a < a1) {
+            // 0 <= a < a1
             df = 0.5*(gx + gy) - sqrt(2.0*gx*gy*a);
-        } else if (a < (1.0-a1)) { // a1 <= a <= 1-a1
+        } else if (a < (1.0-a1)) {
+            // a1 <= a <= 1-a1
             df = (0.5-a)*gx;
-        } else { // 1-a1 < a <= 1
+        } else {
+            // 1-a1 < a <= 1
             df = -0.5*(gx + gy) + sqrt(2.0*gx*gy*(1.0-a));
         }
     }
     return df;
 }
-
 double distaa3(double *img, double *gximg, double *gyimg, int w, int c, int xc, int yc, int xi, int yi)
 {
-  double di, df, dx, dy, gx, gy, a;
-  int closest;
-
-  closest = c-xc-yc*w; // Index to the edge pixel pointed to from c
-  a = img[closest];    // Grayscale value at the edge pixel
-  gx = gximg[closest]; // X gradient component at the edge pixel
-  gy = gyimg[closest]; // Y gradient component at the edge pixel
-
-  if(a > 1.0) a = 1.0;
-  if(a < 0.0) a = 0.0; // Clip grayscale values outside the range [0,1]
-  if(a == 0.0) return 1000000.0; // Not an object pixel, return "very far" ("don't know yet")
-
-  dx = (double)xi;
-  dy = (double)yi;
-  di = sqrt(dx*dx + dy*dy); // Length of integer vector, like a traditional EDT
-  if(di==0) { // Use local gradient only at edges
-      // Estimate based on local gradient only
-      df = edgedf(gx, gy, a);
-  } else {
-      // Estimate gradient based on direction to edge (accurate for large di)
-      df = edgedf(dx, dy, a);
-  }
-  return di + df; // Same metric as edtaa2, except at edges (where di=0)
+    double di, df, dx, dy, gx, gy, a;
+    int closest;
+    closest = c-xc-yc*w; // Index to the edge pixel pointed to from c
+    a = img[closest];    // Grayscale value at the edge pixel
+    gx = gximg[closest]; // X gradient component at the edge pixel
+    gy = gyimg[closest]; // Y gradient component at the edge pixel
+    if(a > 1.0) a = 1.0;
+    if(a < 0.0) a = 0.0; // Clip grayscale values outside the range [0,1]
+    if(a == 0.0) return 1000000.0; // Not an object pixel, return "very far" ("don't know yet")
+    dx = (double)xi;
+    dy = (double)yi;
+    di = sqrt(dx*dx + dy*dy); // Length of integer vector, like a traditional EDT
+    if(di==0) {
+        // Use local gradient only at edges
+        // Estimate based on local gradient only
+        df = edgedf(gx, gy, a);
+    } else {
+        // Estimate gradient based on direction to edge (accurate for large di)
+        df = edgedf(dx, dy, a);
+    }
+    return di + df; // Same metric as edtaa2, except at edges (where di=0)
 }
-
 // Shorthand macro: add ubiquitous parameters dist, gx, gy, img and w and call distaa3()
 #define DISTAA(c,xc,yc,xi,yi) (distaa3(img, gx, gy, w, c, xc, yc, xi, yi))
-
 void edtaa3(double *img, double *gx, double *gy, int w, int h, short *distx, short *disty, double *dist)
 {
-  int x, y, i, c;
-  int offset_u, offset_ur, offset_r, offset_rd,
-  offset_d, offset_dl, offset_l, offset_lu;
-  double olddist, newdist;
-  int cdistx, cdisty, newdistx, newdisty;
-  int changed;
-  double epsilon = 1e-3;
-
-  /* Initialize index offsets for the current image width */
-  offset_u = -w;
-  offset_ur = -w+1;
-  offset_r = 1;
-  offset_rd = w+1;
-  offset_d = w;
-  offset_dl = w-1;
-  offset_l = -1;
-  offset_lu = -w-1;
-
-  /* Initialize the distance images */
-  for(i=0; i<w*h; i++) {
-    distx[i] = 0; // At first, all pixels point to
-    disty[i] = 0; // themselves as the closest known.
-    if(img[i] <= 0.0)
-      {
-	dist[i]= 1000000.0; // Big value, means "not set yet"
-      }
-    else if (img[i]<1.0) {
-      dist[i] = edgedf(gx[i], gy[i], img[i]); // Gradient-assisted estimate
+    int x, y, i, c;
+    int offset_u, offset_ur, offset_r, offset_rd,
+    offset_d, offset_dl, offset_l, offset_lu;
+    double olddist, newdist;
+    int cdistx, cdisty, newdistx, newdisty;
+    int changed;
+    double epsilon = 1e-3;
+    /* Initialize index offsets for the current image width */
+    offset_u = -w;
+    offset_ur = -w+1;
+    offset_r = 1;
+    offset_rd = w+1;
+    offset_d = w;
+    offset_dl = w-1;
+    offset_l = -1;
+    offset_lu = -w-1;
+    /* Initialize the distance images */
+    for(i=0; i<w*h; i++) {
+        distx[i] = 0; // At first, all pixels point to
+        disty[i] = 0; // themselves as the closest known.
+        if(img[i] <= 0.0)
+        {
+            dist[i]= 1000000.0; // Big value, means "not set yet"
+        }
+        else if (img[i]<1.0) {
+            dist[i] = edgedf(gx[i], gy[i], img[i]); // Gradient-assisted estimate
+        }
+        else {
+            dist[i]= 0.0; // Inside the object
+        }
     }
-    else {
-      dist[i]= 0.0; // Inside the object
-    }
-  }
-
-  /* Perform the transformation */
-  do
+    /* Perform the transformation */
+    do
     {
-      changed = 0;
-
-      /* Scan rows, except first row */
-      for(y=1; y<h; y++)
+        changed = 0;
+        /* Scan rows, except first row */
+        for(y=1; y<h; y++)
         {
-
-          /* move index to leftmost pixel of current row */
-          i = y*w;
-
-          /* scan right, propagate distances from above & left */
-
-          /* Leftmost pixel is special, has no left neighbors */
-          olddist = dist[i];
-          if(olddist > 0) // If non-zero distance or not set yet
+            /* move index to leftmost pixel of current row */
+            i = y*w;
+            /* scan right, propagate distances from above & left */
+            /* Leftmost pixel is special, has no left neighbors */
+            olddist = dist[i];
+            if(olddist > 0) // If non-zero distance or not set yet
             {
-	      c = i + offset_u; // Index of candidate for testing
-	      cdistx = distx[c];
-	      cdisty = disty[c];
-              newdistx = cdistx;
-              newdisty = cdisty+1;
-              newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-              if(newdist < olddist-epsilon)
+                c = i + offset_u; // Index of candidate for testing
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx;
+                newdisty = cdisty+1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
                 {
-                  distx[i]=newdistx;
-                  disty[i]=newdisty;
-		  dist[i]=newdist;
-                  olddist=newdist;
-                  changed = 1;
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
                 }
-
-	      c = i+offset_ur;
-	      cdistx = distx[c];
-	      cdisty = disty[c];
-              newdistx = cdistx-1;
-              newdisty = cdisty+1;
-              newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-              if(newdist < olddist-epsilon)
+                c = i+offset_ur;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx-1;
+                newdisty = cdisty+1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
                 {
-                  distx[i]=newdistx;
-                  disty[i]=newdisty;
-		  dist[i]=newdist;
-                  changed = 1;
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    changed = 1;
                 }
             }
-          i++;
-
-          /* Middle pixels have all neighbors */
-          for(x=1; x<w-1; x++, i++)
+            i++;
+            /* Middle pixels have all neighbors */
+            for(x=1; x<w-1; x++, i++)
             {
-              olddist = dist[i];
-              if(olddist <= 0) continue; // No need to update further
-
-	      c = i+offset_l;
-	      cdistx = distx[c];
-	      cdisty = disty[c];
-              newdistx = cdistx+1;
-              newdisty = cdisty;
-              newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-              if(newdist < olddist-epsilon)
+                olddist = dist[i];
+                if(olddist <= 0) continue; // No need to update further
+                c = i+offset_l;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx+1;
+                newdisty = cdisty;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
                 {
-                  distx[i]=newdistx;
-                  disty[i]=newdisty;
-		  dist[i]=newdist;
-                  olddist=newdist;
-                  changed = 1;
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
                 }
-
-	      c = i+offset_lu;
-	      cdistx = distx[c];
-	      cdisty = disty[c];
-              newdistx = cdistx+1;
-              newdisty = cdisty+1;
-              newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-              if(newdist < olddist-epsilon)
+                c = i+offset_lu;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx+1;
+                newdisty = cdisty+1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
                 {
-                  distx[i]=newdistx;
-                  disty[i]=newdisty;
-		  dist[i]=newdist;
-                  olddist=newdist;
-                  changed = 1;
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
                 }
-
-	      c = i+offset_u;
-	      cdistx = distx[c];
-	      cdisty = disty[c];
-              newdistx = cdistx;
-              newdisty = cdisty+1;
-              newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-              if(newdist < olddist-epsilon)
+                c = i+offset_u;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx;
+                newdisty = cdisty+1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
                 {
-                  distx[i]=newdistx;
-                  disty[i]=newdisty;
-		  dist[i]=newdist;
-                  olddist=newdist;
-                  changed = 1;
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
                 }
-
-	      c = i+offset_ur;
-	      cdistx = distx[c];
-	      cdisty = disty[c];
-              newdistx = cdistx-1;
-              newdisty = cdisty+1;
-              newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-              if(newdist < olddist-epsilon)
+                c = i+offset_ur;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx-1;
+                newdisty = cdisty+1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
                 {
-                  distx[i]=newdistx;
-                  disty[i]=newdisty;
-		  dist[i]=newdist;
-                  changed = 1;
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    changed = 1;
                 }
             }
-
-          /* Rightmost pixel of row is special, has no right neighbors */
-          olddist = dist[i];
-          if(olddist > 0) // If not already zero distance
+            /* Rightmost pixel of row is special, has no right neighbors */
+            olddist = dist[i];
+            if(olddist > 0) // If not already zero distance
             {
-	      c = i+offset_l;
-	      cdistx = distx[c];
-	      cdisty = disty[c];
-              newdistx = cdistx+1;
-              newdisty = cdisty;
-              newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-              if(newdist < olddist-epsilon)
+                c = i+offset_l;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx+1;
+                newdisty = cdisty;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
                 {
-                  distx[i]=newdistx;
-                  disty[i]=newdisty;
-		  dist[i]=newdist;
-                  olddist=newdist;
-                  changed = 1;
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
                 }
-
-	      c = i+offset_lu;
-	      cdistx = distx[c];
-	      cdisty = disty[c];
-              newdistx = cdistx+1;
-              newdisty = cdisty+1;
-              newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-              if(newdist < olddist-epsilon)
+                c = i+offset_lu;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx+1;
+                newdisty = cdisty+1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
                 {
-                  distx[i]=newdistx;
-                  disty[i]=newdisty;
-		  dist[i]=newdist;
-                  olddist=newdist;
-                  changed = 1;
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
                 }
-
-	      c = i+offset_u;
-	      cdistx = distx[c];
-	      cdisty = disty[c];
-              newdistx = cdistx;
-              newdisty = cdisty+1;
-              newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-              if(newdist < olddist-epsilon)
+                c = i+offset_u;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx;
+                newdisty = cdisty+1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
                 {
-                  distx[i]=newdistx;
-                  disty[i]=newdisty;
-		  dist[i]=newdist;
-                  changed = 1;
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    changed = 1;
                 }
             }
-
-          /* Move index to second rightmost pixel of current row. */
-          /* Rightmost pixel is skipped, it has no right neighbor. */
-          i = y*w + w-2;
-
-          /* scan left, propagate distance from right */
-          for(x=w-2; x>=0; x--, i--)
+            /* Move index to second rightmost pixel of current row. */
+            /* Rightmost pixel is skipped, it has no right neighbor. */
+            i = y*w + w-2;
+            /* scan left, propagate distance from right */
+            for(x=w-2; x>=0; x--, i--)
             {
-              olddist = dist[i];
-              if(olddist <= 0) continue; // Already zero distance
-
-	      c = i+offset_r;
-	      cdistx = distx[c];
-	      cdisty = disty[c];
-              newdistx = cdistx-1;
-              newdisty = cdisty;
-              newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-              if(newdist < olddist-epsilon)
+                olddist = dist[i];
+                if(olddist <= 0) continue; // Already zero distance
+                c = i+offset_r;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx-1;
+                newdisty = cdisty;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
                 {
-                  distx[i]=newdistx;
-                  disty[i]=newdisty;
-		  dist[i]=newdist;
-                  changed = 1;
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    changed = 1;
                 }
             }
         }
-
-      /* Scan rows in reverse order, except last row */
-      for(y=h-2; y>=0; y--)
+        /* Scan rows in reverse order, except last row */
+        for(y=h-2; y>=0; y--)
         {
-          /* move index to rightmost pixel of current row */
-          i = y*w + w-1;
-
-          /* Scan left, propagate distances from below & right */
-
-          /* Rightmost pixel is special, has no right neighbors */
-          olddist = dist[i];
-          if(olddist > 0) // If not already zero distance
+            /* move index to rightmost pixel of current row */
+            i = y*w + w-1;
+            /* Scan left, propagate distances from below & right */
+            /* Rightmost pixel is special, has no right neighbors */
+            olddist = dist[i];
+            if(olddist > 0) // If not already zero distance
             {
-	      c = i+offset_d;
-	      cdistx = distx[c];
-	      cdisty = disty[c];
-              newdistx = cdistx;
-              newdisty = cdisty-1;
-              newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-              if(newdist < olddist-epsilon)
+                c = i+offset_d;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx;
+                newdisty = cdisty-1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
                 {
-                  distx[i]=newdistx;
-                  disty[i]=newdisty;
-		  dist[i]=newdist;
-                  olddist=newdist;
-                  changed = 1;
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
                 }
-
-	      c = i+offset_dl;
-	      cdistx = distx[c];
-	      cdisty = disty[c];
-              newdistx = cdistx+1;
-              newdisty = cdisty-1;
-              newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-              if(newdist < olddist-epsilon)
+                c = i+offset_dl;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx+1;
+                newdisty = cdisty-1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
                 {
-                  distx[i]=newdistx;
-                  disty[i]=newdisty;
-		  dist[i]=newdist;
-                  changed = 1;
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    changed = 1;
                 }
             }
-          i--;
-
-          /* Middle pixels have all neighbors */
-          for(x=w-2; x>0; x--, i--)
+            i--;
+            /* Middle pixels have all neighbors */
+            for(x=w-2; x>0; x--, i--)
             {
-              olddist = dist[i];
-              if(olddist <= 0) continue; // Already zero distance
-
-	      c = i+offset_r;
-	      cdistx = distx[c];
-	      cdisty = disty[c];
-              newdistx = cdistx-1;
-              newdisty = cdisty;
-              newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-              if(newdist < olddist-epsilon)
+                olddist = dist[i];
+                if(olddist <= 0) continue; // Already zero distance
+                c = i+offset_r;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx-1;
+                newdisty = cdisty;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
                 {
-                  distx[i]=newdistx;
-                  disty[i]=newdisty;
-		  dist[i]=newdist;
-                  olddist=newdist;
-                  changed = 1;
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
                 }
-
-	      c = i+offset_rd;
-	      cdistx = distx[c];
-	      cdisty = disty[c];
-              newdistx = cdistx-1;
-              newdisty = cdisty-1;
-              newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-              if(newdist < olddist-epsilon)
+                c = i+offset_rd;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx-1;
+                newdisty = cdisty-1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
                 {
-                  distx[i]=newdistx;
-                  disty[i]=newdisty;
-		  dist[i]=newdist;
-                  olddist=newdist;
-                  changed = 1;
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
                 }
-
-	      c = i+offset_d;
-	      cdistx = distx[c];
-	      cdisty = disty[c];
-              newdistx = cdistx;
-              newdisty = cdisty-1;
-              newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-              if(newdist < olddist-epsilon)
+                c = i+offset_d;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx;
+                newdisty = cdisty-1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
                 {
-                  distx[i]=newdistx;
-                  disty[i]=newdisty;
-                  dist[i]=newdist;
-                  olddist=newdist;
-                  changed = 1;
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
                 }
-
-	      c = i+offset_dl;
-	      cdistx = distx[c];
-	      cdisty = disty[c];
-              newdistx = cdistx+1;
-              newdisty = cdisty-1;
-              newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-              if(newdist < olddist-epsilon)
+                c = i+offset_dl;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx+1;
+                newdisty = cdisty-1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
                 {
-                  distx[i]=newdistx;
-                  disty[i]=newdisty;
-                  dist[i]=newdist;
-                  changed = 1;
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    changed = 1;
                 }
             }
-          /* Leftmost pixel is special, has no left neighbors */
-          olddist = dist[i];
-          if(olddist > 0) // If not already zero distance
+            /* Leftmost pixel is special, has no left neighbors */
+            olddist = dist[i];
+            if(olddist > 0) // If not already zero distance
             {
-	      c = i+offset_r;
-	      cdistx = distx[c];
-	      cdisty = disty[c];
-              newdistx = cdistx-1;
-              newdisty = cdisty;
-              newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-              if(newdist < olddist-epsilon)
+                c = i+offset_r;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx-1;
+                newdisty = cdisty;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
                 {
-                  distx[i]=newdistx;
-                  disty[i]=newdisty;
-                  dist[i]=newdist;
-                  olddist=newdist;
-                  changed = 1;
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
                 }
-
-	      c = i+offset_rd;
-	      cdistx = distx[c];
-	      cdisty = disty[c];
-              newdistx = cdistx-1;
-              newdisty = cdisty-1;
-              newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-              if(newdist < olddist-epsilon)
+                c = i+offset_rd;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx-1;
+                newdisty = cdisty-1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
                 {
-                  distx[i]=newdistx;
-                  disty[i]=newdisty;
-		  dist[i]=newdist;
-                  olddist=newdist;
-                  changed = 1;
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
                 }
-
-	      c = i+offset_d;
-	      cdistx = distx[c];
-	      cdisty = disty[c];
-              newdistx = cdistx;
-              newdisty = cdisty-1;
-              newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-              if(newdist < olddist-epsilon)
+                c = i+offset_d;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx;
+                newdisty = cdisty-1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
                 {
-                  distx[i]=newdistx;
-                  disty[i]=newdisty;
-                  dist[i]=newdist;
-                  changed = 1;
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    changed = 1;
                 }
             }
-
-          /* Move index to second leftmost pixel of current row. */
-          /* Leftmost pixel is skipped, it has no left neighbor. */
-          i = y*w + 1;
-          for(x=1; x<w; x++, i++)
+            /* Move index to second leftmost pixel of current row. */
+            /* Leftmost pixel is skipped, it has no left neighbor. */
+            i = y*w + 1;
+            for(x=1; x<w; x++, i++)
             {
-              /* scan right, propagate distance from left */
-              olddist = dist[i];
-              if(olddist <= 0) continue; // Already zero distance
-
-	      c = i+offset_l;
-	      cdistx = distx[c];
-	      cdisty = disty[c];
-              newdistx = cdistx+1;
-              newdisty = cdisty;
-              newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-              if(newdist < olddist-epsilon)
+                /* scan right, propagate distance from left */
+                olddist = dist[i];
+                if(olddist <= 0) continue; // Already zero distance
+                c = i+offset_l;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx+1;
+                newdisty = cdisty;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
                 {
-                  distx[i]=newdistx;
-                  disty[i]=newdisty;
-                  dist[i]=newdist;
-                  changed = 1;
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    changed = 1;
                 }
             }
         }
     }
-  while(changed); // Sweep until no more updates are made
-
-  /* The transformation is completed. */
-
+    while(changed); // Sweep until no more updates are made
+    /* The transformation is completed. */
 }
 
 
@@ -3068,35 +2759,30 @@ make_distance_mapd( double *data, unsigned int width, unsigned int height )
     double * inside  = (double *) calloc( width * height, sizeof(double) );
     double vmin = DBL_MAX;
     unsigned int i;
-
     // Compute outside = edtaa3(bitmap); % Transform background (0's)
     computegradient( data, width, height, gx, gy);
     edtaa3(data, gx, gy, width, height, xdist, ydist, outside);
     for( i=0; i<width*height; ++i)
-        if( outside[i] < 0.0 )
-            outside[i] = 0.0;
-
+    if( outside[i] < 0.0 )
+    outside[i] = 0.0;
     // Compute inside = edtaa3(1-bitmap); % Transform foreground (1's)
     memset( gx, 0, sizeof(double)*width*height );
     memset( gy, 0, sizeof(double)*width*height );
     for( i=0; i<width*height; ++i)
-        data[i] = 1 - data[i];
+    data[i] = 1 - data[i];
     computegradient( data, width, height, gx, gy );
     edtaa3( data, gx, gy, width, height, xdist, ydist, inside );
     for( i=0; i<width*height; ++i )
-        if( inside[i] < 0 )
-            inside[i] = 0.0;
-
+    if( inside[i] < 0 )
+    inside[i] = 0.0;
     // distmap = outside - inside; % Bipolar distance field
     for( i=0; i<width*height; ++i)
     {
         outside[i] -= inside[i];
         if( outside[i] < vmin )
-            vmin = outside[i];
+        vmin = outside[i];
     }
-
     vmin = fabs(vmin);
-
     for( i=0; i<width*height; ++i)
     {
         double v = outside[i];
@@ -3104,7 +2790,6 @@ make_distance_mapd( double *data, unsigned int width, unsigned int height )
         else if( v > +vmin) outside[i] = +vmin;
         data[i] = (outside[i]+vmin)/(2*vmin);
     }
-
     free( xdist );
     free( ydist );
     free( gx );
@@ -3113,41 +2798,33 @@ make_distance_mapd( double *data, unsigned int width, unsigned int height )
     free( inside );
     return data;
 }
-
 unsigned char *
 make_distance_mapb( unsigned char *img,
-                    unsigned int width, unsigned int height )
+unsigned int width, unsigned int height )
 {
     double * data    = (double *) calloc( width * height, sizeof(double) );
     unsigned char *out = (unsigned char *) malloc( width * height * sizeof(unsigned char) );
     unsigned int i;
-
     // find minimimum and maximum values
     double img_min = DBL_MAX;
     double img_max = DBL_MIN;
-
     for( i=0; i<width*height; ++i)
     {
         double v = img[i];
         data[i] = v;
         if (v > img_max)
-            img_max = v;
+        img_max = v;
         if (v < img_min)
-            img_min = v;
+        img_min = v;
     }
-
     // Map values from 0 - 255 to 0.0 - 1.0
     for( i=0; i<width*height; ++i)
-        data[i] = (img[i]-img_min)/img_max;
-
+    data[i] = (img[i]-img_min)/img_max;
     data = make_distance_mapd(data, width, height);
-
     // map values from 0.0 - 1.0 to 0 - 255
     for( i=0; i<width*height; ++i)
-        out[i] = (unsigned char)(255*(1-data[i]));
-
+    out[i] = (unsigned char)(255*(1-data[i]));
     free( data );
-
     return out;
 }
 
@@ -3158,83 +2835,61 @@ utf8_surrogate_len( const char* character )
 {
     size_t result = 0;
     char test_char;
-
     if (!character)
-        return 0;
-
+    return 0;
     test_char = character[0];
-
     if ((test_char & 0x80) == 0)
-        return 1;
-
+    return 1;
     while (test_char & 0x80)
     {
         test_char <<= 1;
         result++;
     }
-
     return result;
 }
-
 // ------------------------------------------------------------ utf8_strlen ---
 size_t
 utf8_strlen( const char* string )
 {
     const char* ptr = string;
     size_t result = 0;
-
     while (*ptr)
     {
         ptr += utf8_surrogate_len(ptr);
         result++;
     }
-
     return result;
 }
-
 uint32_t
 utf8_to_utf32( const char * character )
 {
     uint32_t result = -1;
-
     if( !character )
     {
         return result;
     }
-
     if( ( character[0] & 0x80 ) == 0x0 )
     {
         result = character[0];
     }
-
     if( ( character[0] & 0xC0 ) == 0xC0 )
     {
         result = ( ( character[0] & 0x3F ) << 6 ) | ( character[1] & 0x3F );
     }
-
     if( ( character[0] & 0xE0 ) == 0xE0 )
     {
         result = ( ( character[0] & 0x1F ) << ( 6 + 6 ) ) | ( ( character[1] & 0x3F ) << 6 ) | ( character[2] & 0x3F );
     }
-
     if( ( character[0] & 0xF0 ) == 0xF0 )
     {
         result = ( ( character[0] & 0x0F ) << ( 6 + 6 + 6 ) ) | ( ( character[1] & 0x3F ) << ( 6 + 6 ) ) | ( ( character[2] & 0x3F ) << 6 ) | ( character[3] & 0x3F );
     }
-
     if( ( character[0] & 0xF8 ) == 0xF8 )
     {
         result = ( ( character[0] & 0x07 ) << ( 6 + 6 + 6 + 6 ) ) | ( ( character[1] & 0x3F ) << ( 6 + 6 + 6 ) ) | ( ( character[2] & 0x3F ) << ( 6 + 6 ) ) | ( ( character[3] & 0x3F ) << 6 ) | ( character[4] & 0x3F );
     }
-
     return result;
 }
-
-
-
-
-
-
 
 
 #ifdef WIN32
@@ -3247,15 +2902,12 @@ char *strndup( const char *s1, size_t n)
     return copy;
 };
 #endif
-
 /**
- * Buffer status
- */
+* Buffer status
+*/
 #define CLEAN  (0)
 #define DIRTY  (1)
 #define FROZEN (2)
-
-
 // ----------------------------------------------------------------------------
 vertex_buffer_t *
 vertex_buffer_new( const char *format )
@@ -3263,20 +2915,16 @@ vertex_buffer_new( const char *format )
     size_t i, index = 0, stride = 0;
     const char *start = 0, *end = 0;
     GLchar *pointer = 0;
-
     vertex_buffer_t *self = (vertex_buffer_t *) malloc (sizeof(vertex_buffer_t));
     if( !self )
     {
         return NULL;
     }
-
     self->format = strdup( format );
-
     for( i=0; i<MAX_VERTEX_ATTRIBUTE; ++i )
     {
         self->attributes[i] = 0;
     }
-
     start = format;
     do
     {
@@ -3284,7 +2932,6 @@ vertex_buffer_new( const char *format )
         vertex_attribute_t *attribute;
         GLuint attribute_size = 0;
         end = (char *) (strchr(start+1, ','));
-
         if (end == NULL)
         {
             desc = strdup( start );
@@ -3297,58 +2944,47 @@ vertex_buffer_new( const char *format )
         start = end+1;
         free(desc);
         attribute->pointer = pointer;
-
         switch( attribute->type )
         {
-        case GL_BOOL:           attribute_size = sizeof(GLboolean); break;
-        case GL_BYTE:           attribute_size = sizeof(GLbyte); break;
-        case GL_UNSIGNED_BYTE:  attribute_size = sizeof(GLubyte); break;
-        case GL_SHORT:          attribute_size = sizeof(GLshort); break;
-        case GL_UNSIGNED_SHORT: attribute_size = sizeof(GLushort); break;
-        case GL_INT:            attribute_size = sizeof(GLint); break;
-        case GL_UNSIGNED_INT:   attribute_size = sizeof(GLuint); break;
-        case GL_FLOAT:          attribute_size = sizeof(GLfloat); break;
-        default:                attribute_size = 0;
+            case GL_BOOL:           attribute_size = sizeof(GLboolean); break;
+            case GL_BYTE:           attribute_size = sizeof(GLbyte); break;
+            case GL_UNSIGNED_BYTE:  attribute_size = sizeof(GLubyte); break;
+            case GL_SHORT:          attribute_size = sizeof(GLshort); break;
+            case GL_UNSIGNED_SHORT: attribute_size = sizeof(GLushort); break;
+            case GL_INT:            attribute_size = sizeof(GLint); break;
+            case GL_UNSIGNED_INT:   attribute_size = sizeof(GLuint); break;
+            case GL_FLOAT:          attribute_size = sizeof(GLfloat); break;
+            default:                attribute_size = 0;
         }
         stride  += attribute->size*attribute_size;
         pointer += attribute->size*attribute_size;
         self->attributes[index] = attribute;
         index++;
     } while ( end && (index < MAX_VERTEX_ATTRIBUTE) );
-
     for( i=0; i<index; ++i )
     {
         self->attributes[i]->stride = stride;
     }
-
-#ifdef FREETYPE_GL_USE_VAO
+    #ifdef FREETYPE_GL_USE_VAO
     self->VAO_id = 0;
-#endif
-
+    #endif
     self->vertices = vector_new( stride );
     self->vertices_id  = 0;
     self->GPU_vsize = 0;
-
     self->indices = vector_new( sizeof(GLuint) );
     self->indices_id  = 0;
     self->GPU_isize = 0;
-
     self->items = vector_new( sizeof(ivec4) );
     self->state = DIRTY;
     self->mode = GL_TRIANGLES;
     return self;
 }
-
-
-
 // ----------------------------------------------------------------------------
 void
 vertex_buffer_delete( vertex_buffer_t *self )
 {
     size_t i;
-
     assert( self );
-
     for( i=0; i<MAX_VERTEX_ATTRIBUTE; ++i )
     {
         if( self->attributes[i] )
@@ -3356,15 +2992,13 @@ vertex_buffer_delete( vertex_buffer_t *self )
             vertex_attribute_delete( self->attributes[i] );
         }
     }
-
-#ifdef FREETYPE_GL_USE_VAO
+    #ifdef FREETYPE_GL_USE_VAO
     if( self->VAO_id )
     {
         glDeleteVertexArrays( 1, &self->VAO_id );
     }
     self->VAO_id = 0;
-#endif
-
+    #endif
     vector_delete( self->vertices );
     self->vertices = 0;
     if( self->vertices_id )
@@ -3372,7 +3006,6 @@ vertex_buffer_delete( vertex_buffer_t *self )
         glDeleteBuffers( 1, &self->vertices_id );
     }
     self->vertices_id = 0;
-
     vector_delete( self->indices );
     self->indices = 0;
     if( self->indices_id )
@@ -3380,9 +3013,7 @@ vertex_buffer_delete( vertex_buffer_t *self )
         glDeleteBuffers( 1, &self->indices_id );
     }
     self->indices_id = 0;
-
     vector_delete( self->items );
-
     if( self->format )
     {
         free( self->format );
@@ -3391,28 +3022,20 @@ vertex_buffer_delete( vertex_buffer_t *self )
     self->state = 0;
     free( self );
 }
-
-
 // ----------------------------------------------------------------------------
 const char *
 vertex_buffer_format( const vertex_buffer_t *self )
 {
     assert( self );
-
     return self->format;
 }
-
-
 // ----------------------------------------------------------------------------
 size_t
 vertex_buffer_size( const vertex_buffer_t *self )
 {
     assert( self );
-
     return vector_size( self->items );
 }
-
-
 // ----------------------------------------------------------------------------
 void
 vertex_buffer_print( vertex_buffer_t * self )
@@ -3429,48 +3052,41 @@ vertex_buffer_print( vertex_buffer_t * self )
         "GL_FLOAT",
         "GL_VOID"
     };
-
     assert(self);
-
     fprintf( stderr, "%zu vertices, %zu indices\n",
-             vector_size( self->vertices ), vector_size( self->indices ) );
+    vector_size( self->vertices ), vector_size( self->indices ) );
     while( self->attributes[i] )
     {
         int j = 8;
         switch( self->attributes[i]->type )
         {
-        case GL_BOOL:           j=0; break;
-        case GL_BYTE:           j=1; break;
-        case GL_UNSIGNED_BYTE:  j=2; break;
-        case GL_SHORT:          j=3; break;
-        case GL_UNSIGNED_SHORT: j=4; break;
-        case GL_INT:            j=5; break;
-        case GL_UNSIGNED_INT:   j=6; break;
-        case GL_FLOAT:          j=7; break;
-        default:                j=8; break;
+            case GL_BOOL:           j=0; break;
+            case GL_BYTE:           j=1; break;
+            case GL_UNSIGNED_BYTE:  j=2; break;
+            case GL_SHORT:          j=3; break;
+            case GL_UNSIGNED_SHORT: j=4; break;
+            case GL_INT:            j=5; break;
+            case GL_UNSIGNED_INT:   j=6; break;
+            case GL_FLOAT:          j=7; break;
+            default:                j=8; break;
         }
         fprintf(stderr, "%s : %dx%s (+%p)\n",
-                self->attributes[i]->name,
-                self->attributes[i]->size,
-                gltypes[j],
-                self->attributes[i]->pointer);
-
+        self->attributes[i]->name,
+        self->attributes[i]->size,
+        gltypes[j],
+        self->attributes[i]->pointer);
         i += 1;
     }
 }
-
-
 // ----------------------------------------------------------------------------
 void
 vertex_buffer_upload ( vertex_buffer_t *self )
 {
     size_t vsize, isize;
-
     if( self->state == FROZEN )
     {
         return;
     }
-
     if( !self->vertices_id )
     {
         glGenBuffers( 1, &self->vertices_id );
@@ -3479,90 +3095,72 @@ vertex_buffer_upload ( vertex_buffer_t *self )
     {
         glGenBuffers( 1, &self->indices_id );
     }
-
     vsize = self->vertices->size*self->vertices->item_size;
     isize = self->indices->size*self->indices->item_size;
-
-
     // Always upload vertices first such that indices do not point to non
     // existing data (if we get interrupted in between for example).
-
     // Upload vertices
     glBindBuffer( GL_ARRAY_BUFFER, self->vertices_id );
     if( vsize != self->GPU_vsize )
     {
         glBufferData( GL_ARRAY_BUFFER,
-                      vsize, self->vertices->items, GL_DYNAMIC_DRAW );
+        vsize, self->vertices->items, GL_DYNAMIC_DRAW );
         self->GPU_vsize = vsize;
     }
     else
     {
         glBufferSubData( GL_ARRAY_BUFFER,
-                         0, vsize, self->vertices->items );
+        0, vsize, self->vertices->items );
     }
     glBindBuffer( GL_ARRAY_BUFFER, 0 );
-
     // Upload indices
     glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, self->indices_id );
     if( isize != self->GPU_isize )
     {
         glBufferData( GL_ELEMENT_ARRAY_BUFFER,
-                      isize, self->indices->items, GL_DYNAMIC_DRAW );
+        isize, self->indices->items, GL_DYNAMIC_DRAW );
         self->GPU_isize = isize;
     }
     else
     {
         glBufferSubData( GL_ELEMENT_ARRAY_BUFFER,
-                         0, isize, self->indices->items );
+        0, isize, self->indices->items );
     }
     glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 }
-
-
-
 // ----------------------------------------------------------------------------
 void
 vertex_buffer_clear( vertex_buffer_t *self )
 {
     assert( self );
-
     self->state = FROZEN;
     vector_clear( self->indices );
     vector_clear( self->vertices );
     vector_clear( self->items );
     self->state = DIRTY;
 }
-
-
-
 // ----------------------------------------------------------------------------
 void
 vertex_buffer_render_setup ( vertex_buffer_t *self, GLenum mode )
 {
     size_t i;
-
-#ifdef FREETYPE_GL_USE_VAO
+    #ifdef FREETYPE_GL_USE_VAO
     // Unbind so no existing VAO-state is overwritten,
     // (e.g. the GL_ELEMENT_ARRAY_BUFFER-binding).
     glBindVertexArray( 0 );
-#endif
-
+    #endif
     if( self->state != CLEAN )
     {
         vertex_buffer_upload( self );
         self->state = CLEAN;
     }
-
-#ifdef FREETYPE_GL_USE_VAO
+    #ifdef FREETYPE_GL_USE_VAO
     if( self->VAO_id == 0 )
     {
         // Generate and set up VAO
-
         glGenVertexArrays( 1, &self->VAO_id );
         glBindVertexArray( self->VAO_id );
-
         glBindBuffer( GL_ARRAY_BUFFER, self->vertices_id );
-
         for( i=0; i<MAX_VERTEX_ATTRIBUTE; ++i )
         {
             vertex_attribute_t *attribute = self->attributes[i];
@@ -3575,21 +3173,16 @@ vertex_buffer_render_setup ( vertex_buffer_t *self, GLenum mode )
                 vertex_attribute_enable( attribute );
             }
         }
-
         glBindBuffer( GL_ARRAY_BUFFER, 0 );
-
         if( self->indices->size )
         {
             glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, self->indices_id );
         }
     }
-
     // Bind VAO for drawing
     glBindVertexArray( self->VAO_id );
-#else
-
+    #else
     glBindBuffer( GL_ARRAY_BUFFER, self->vertices_id );
-
     for( i=0; i<MAX_VERTEX_ATTRIBUTE; ++i )
     {
         vertex_attribute_t *attribute = self->attributes[i];
@@ -3602,25 +3195,21 @@ vertex_buffer_render_setup ( vertex_buffer_t *self, GLenum mode )
             vertex_attribute_enable( attribute );
         }
     }
-
     if( self->indices->size )
     {
         glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, self->indices_id );
     }
-#endif
-
+    #endif
     self->mode = mode;
 }
-
 // ----------------------------------------------------------------------------
 void
 vertex_buffer_render_finish ( vertex_buffer_t *self )
 {
-#ifdef FREETYPE_GL_USE_VAO
+    #ifdef FREETYPE_GL_USE_VAO
     glBindVertexArray( 0 );
-#else
+    #else
     int i;
-
     for( i=0; i<MAX_VERTEX_ATTRIBUTE; ++i )
     {
         vertex_attribute_t *attribute = self->attributes[i];
@@ -3633,23 +3222,18 @@ vertex_buffer_render_finish ( vertex_buffer_t *self )
             glDisableVertexAttribArray( attribute->index );
         }
     }
-
     glBindBuffer( GL_ARRAY_BUFFER, 0 );
     glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
-#endif
+    #endif
 }
-
-
 // ----------------------------------------------------------------------------
 void
 vertex_buffer_render_item ( vertex_buffer_t *self,
-                            size_t index )
+size_t index )
 {
     ivec4 * item = (ivec4 *) vector_get( self->items, index );
     assert( self );
     assert( index < vector_size( self->items ) );
-
-
     if( self->indices->size )
     {
         size_t start = item->istart;
@@ -3663,15 +3247,12 @@ vertex_buffer_render_item ( vertex_buffer_t *self,
         glDrawArrays( self->mode, start*self->vertices->item_size, count);
     }
 }
-
-
 // ----------------------------------------------------------------------------
 void
 vertex_buffer_render ( vertex_buffer_t *self, GLenum mode )
 {
     size_t vcount = self->vertices->size;
     size_t icount = self->indices->size;
-
     vertex_buffer_render_setup( self, mode );
     if( icount )
     {
@@ -3683,103 +3264,78 @@ vertex_buffer_render ( vertex_buffer_t *self, GLenum mode )
     }
     vertex_buffer_render_finish( self );
 }
-
-
-
 // ----------------------------------------------------------------------------
 void
 vertex_buffer_push_back_indices ( vertex_buffer_t * self,
-                                  const GLuint * indices,
-                                  const size_t icount )
+const GLuint * indices,
+const size_t icount )
 {
     assert( self );
-
     self->state |= DIRTY;
     vector_push_back_data( self->indices, indices, icount );
 }
-
-
-
 // ----------------------------------------------------------------------------
 void
 vertex_buffer_push_back_vertices ( vertex_buffer_t * self,
-                                   const void * vertices,
-                                   const size_t vcount )
+const void * vertices,
+const size_t vcount )
 {
     assert( self );
-
     self->state |= DIRTY;
     vector_push_back_data( self->vertices, vertices, vcount );
 }
-
-
-
 // ----------------------------------------------------------------------------
 void
 vertex_buffer_insert_indices ( vertex_buffer_t *self,
-                               const size_t index,
-                               const GLuint *indices,
-                               const size_t count )
+const size_t index,
+const GLuint *indices,
+const size_t count )
 {
     assert( self );
     assert( self->indices );
     assert( index < self->indices->size+1 );
-
     self->state |= DIRTY;
     vector_insert_data( self->indices, index, indices, count );
 }
-
-
-
 // ----------------------------------------------------------------------------
 void
 vertex_buffer_insert_vertices( vertex_buffer_t *self,
-                               const size_t index,
-                               const void *vertices,
-                               const size_t vcount )
+const size_t index,
+const void *vertices,
+const size_t vcount )
 {
     size_t i;
     assert( self );
     assert( self->vertices );
     assert( index < self->vertices->size+1 );
-
     self->state |= DIRTY;
-
-     for( i=0; i<self->indices->size; ++i )
+    for( i=0; i<self->indices->size; ++i )
     {
         if( *(GLuint *)(vector_get( self->indices, i )) > index )
         {
             *(GLuint *)(vector_get( self->indices, i )) += index;
         }
     }
-
     vector_insert_data( self->vertices, index, vertices, vcount );
 }
-
-
-
 // ----------------------------------------------------------------------------
 void
 vertex_buffer_erase_indices( vertex_buffer_t *self,
-                             const size_t first,
-                             const size_t last )
+const size_t first,
+const size_t last )
 {
     assert( self );
     assert( self->indices );
     assert( first < self->indices->size );
     assert( (last) <= self->indices->size );
-
     self->state |= DIRTY;
     vector_erase_range( self->indices, first, last );
 }
-
-
-
 // ----------------------------------------------------------------------------
 void
 vertex_buffer_erase_vertices( vertex_buffer_t *self,
-                              const size_t first,
-                              const size_t last )
+const size_t first,
+const size_t last )
 {
     size_t i;
     assert( self );
@@ -3787,7 +3343,6 @@ vertex_buffer_erase_vertices( vertex_buffer_t *self,
     assert( first < self->vertices->size );
     assert( last <= self->vertices->size );
     assert( last > first );
-
     self->state |= DIRTY;
     for( i=0; i<self->indices->size; ++i )
     {
@@ -3798,76 +3353,62 @@ vertex_buffer_erase_vertices( vertex_buffer_t *self,
     }
     vector_erase_range( self->vertices, first, last );
 }
-
-
-
 // ----------------------------------------------------------------------------
 size_t
 vertex_buffer_push_back( vertex_buffer_t * self,
-                         const void * vertices, const size_t vcount,
-                         const GLuint * indices, const size_t icount )
+const void * vertices, const size_t vcount,
+const GLuint * indices, const size_t icount )
 {
     return vertex_buffer_insert( self, vector_size( self->items ),
-                                 vertices, vcount, indices, icount );
+    vertices, vcount, indices, icount );
 }
-
 // ----------------------------------------------------------------------------
 size_t
 vertex_buffer_insert( vertex_buffer_t * self, const size_t index,
-                      const void * vertices, const size_t vcount,
-                      const GLuint * indices, const size_t icount )
+const void * vertices, const size_t vcount,
+const GLuint * indices, const size_t icount )
 {
     size_t vstart, istart, i;
     ivec4 item;
     assert( self );
     assert( vertices );
     assert( indices );
-
     self->state = FROZEN;
-
     // Push back vertices
     vstart = vector_size( self->vertices );
     vertex_buffer_push_back_vertices( self, vertices, vcount );
-
     // Push back indices
     istart = vector_size( self->indices );
     vertex_buffer_push_back_indices( self, indices, icount );
-
     // Update indices within the vertex buffer
     for( i=0; i<icount; ++i )
     {
         *(GLuint *)(vector_get( self->indices, istart+i )) += vstart;
     }
-
     // Insert item
     item.x = vstart;
     item.y = vcount;
     item.z = istart;
     item.w = icount;
     vector_insert( self->items, index, &item );
-
     self->state = DIRTY;
     return index;
 }
-
 // ----------------------------------------------------------------------------
 void
 vertex_buffer_erase( vertex_buffer_t * self,
-                     const size_t index )
+const size_t index )
 {
     ivec4 * item;
     int vstart;
     size_t vcount, istart, icount, i;
-
     assert( self );
     assert( index < vector_size( self->items ) );
-
     item = (ivec4 *) vector_get( self->items, index );
     vstart = item->vstart;
     vcount = item->vcount;
     istart = item->istart;
     icount = item->icount;
-
     // Update items
     for( i=0; i<vector_size(self->items); ++i )
     {
@@ -3878,7 +3419,6 @@ vertex_buffer_erase( vertex_buffer_t * self,
             item->istart -= icount;
         }
     }
-
     self->state = FROZEN;
     vertex_buffer_erase_indices( self, istart, istart+icount );
     vertex_buffer_erase_vertices( self, vstart, vstart+vcount );
@@ -3887,26 +3427,18 @@ vertex_buffer_erase( vertex_buffer_t * self,
 }
 
 
-
-
-
-
-
-
 // ----------------------------------------------------------------------------
 vertex_attribute_t *
 vertex_attribute_new( GLchar * name,
-                      GLint size,
-                      GLenum type,
-                      GLboolean normalized,
-                      GLsizei stride,
-                      GLvoid *pointer )
+GLint size,
+GLenum type,
+GLboolean normalized,
+GLsizei stride,
+GLvoid *pointer )
 {
     vertex_attribute_t *attribute =
-        (vertex_attribute_t *) malloc (sizeof(vertex_attribute_t));
-
+    (vertex_attribute_t *) malloc (sizeof(vertex_attribute_t));
     assert( size > 0 );
-
     attribute->name       = (GLchar *) strdup( name );
     attribute->index      = -1;
     attribute->size       = size;
@@ -3916,21 +3448,14 @@ vertex_attribute_new( GLchar * name,
     attribute->pointer    = pointer;
     return attribute;
 }
-
-
-
 // ----------------------------------------------------------------------------
 void
 vertex_attribute_delete( vertex_attribute_t * self )
 {
     assert( self );
-
     free( self->name );
     free( self );
 }
-
-
-
 // ----------------------------------------------------------------------------
 vertex_attribute_t *
 vertex_attribute_parse( char *format )
@@ -3952,7 +3477,6 @@ vertex_attribute_parse( char *format )
             return 0;
         }
         size = *p - '0';
-
         if( *(++p) == '\0' )
         {
             fprintf( stderr, "No format specified for '%s' attribute\n", name );
@@ -3960,7 +3484,6 @@ vertex_attribute_parse( char *format )
             return 0;
         }
         ctype = *p;
-
         if( *(++p) != '\0' )
         {
             if( *p == 'n' )
@@ -3968,34 +3491,27 @@ vertex_attribute_parse( char *format )
                 normalized = 1;
             }
         }
-
     }
     else
     {
         fprintf(stderr, "Vertex attribute format not understood ('%s')\n", format );
         return 0;
     }
-
     switch( ctype )
     {
-    case 'b': type = GL_BYTE;           break;
-    case 'B': type = GL_UNSIGNED_BYTE;  break;
-    case 's': type = GL_SHORT;          break;
-    case 'S': type = GL_UNSIGNED_SHORT; break;
-    case 'i': type = GL_INT;            break;
-    case 'I': type = GL_UNSIGNED_INT;   break;
-    case 'f': type = GL_FLOAT;          break;
-    default:  type = 0;                 break;
+        case 'b': type = GL_BYTE;           break;
+        case 'B': type = GL_UNSIGNED_BYTE;  break;
+        case 's': type = GL_SHORT;          break;
+        case 'S': type = GL_UNSIGNED_SHORT; break;
+        case 'i': type = GL_INT;            break;
+        case 'I': type = GL_UNSIGNED_INT;   break;
+        case 'f': type = GL_FLOAT;          break;
+        default:  type = 0;                 break;
     }
-
-
     attr = vertex_attribute_new( name, size, type, normalized, 0, 0 );
     free( name );
     return attr;
 }
-
-
-
 // ----------------------------------------------------------------------------
 void
 vertex_attribute_enable( vertex_attribute_t *attr )
@@ -4016,14 +3532,8 @@ vertex_attribute_enable( vertex_attribute_t *attr )
     }
     glEnableVertexAttribArray( attr->index );
     glVertexAttribPointer( attr->index, attr->size, attr->type,
-                           attr->normalized, attr->stride, attr->pointer );
+    attr->normalized, attr->stride, attr->pointer );
 }
-
-
-
-
-
-
 
 
 // ------------------------------------------------------------- vector_new ---
@@ -4032,11 +3542,10 @@ vector_new( size_t item_size )
 {
     vector_t *self = (vector_t *) malloc( sizeof(vector_t) );
     assert( item_size );
-
     if( !self )
     {
         fprintf( stderr,
-                 "line %d: No more memory for allocating data\n", __LINE__ );
+        "line %d: No more memory for allocating data\n", __LINE__ );
         exit( EXIT_FAILURE );
     }
     self->item_size = item_size;
@@ -4045,66 +3554,48 @@ vector_new( size_t item_size )
     self->items     = malloc( self->item_size * self->capacity );
     return self;
 }
-
-
-
 // ---------------------------------------------------------- vector_delete ---
 void
 vector_delete( vector_t *self )
 {
     assert( self );
-
     free( self->items );
     free( self );
 }
-
-
-
 // ------------------------------------------------------------- vector_get ---
 const void *
 vector_get( const vector_t *self,
-            size_t index )
+size_t index )
 {
     assert( self );
     assert( self->size );
     assert( index  < self->size );
-
     return (char*)(self->items) + index * self->item_size;
 }
-
-
-
 // ----------------------------------------------------------- vector_front ---
 const void *
 vector_front( const vector_t *self )
 {
     assert( self );
     assert( self->size );
-
     return vector_get( self, 0 );
 }
-
-
 // ------------------------------------------------------------ vector_back ---
 const void *
 vector_back( const vector_t *self )
 {
     assert( self );
     assert( self->size );
-
     return vector_get( self, self->size-1 );
 }
-
-
 // -------------------------------------------------------- vector_contains ---
 int
 vector_contains( const vector_t *self,
-                 const void *item,
-                 int (*cmp)(const void *, const void *) )
+const void *item,
+int (*cmp)(const void *, const void *) )
 {
     size_t i;
     assert( self );
-
     for( i=0; i<self->size; ++i )
     {
         if( (*cmp)(item, vector_get(self,i) ) == 0 )
@@ -4112,103 +3603,79 @@ vector_contains( const vector_t *self,
             return 1;
         }
     }
-   return 0;
+    return 0;
 }
-
-
 // ----------------------------------------------------------- vector_empty ---
 int
 vector_empty( const vector_t *self )
 {
     assert( self );
-
     return self->size == 0;
 }
-
-
 // ------------------------------------------------------------ vector_size ---
 size_t
 vector_size( const vector_t *self )
 {
     assert( self );
-
     return self->size;
 }
-
-
 // --------------------------------------------------------- vector_reserve ---
 void
 vector_reserve( vector_t *self,
-                const size_t size )
+const size_t size )
 {
     assert( self );
-
     if( self->capacity < size)
     {
         self->items = realloc( self->items, size * self->item_size );
         self->capacity = size;
     }
 }
-
-
 // -------------------------------------------------------- vector_capacity ---
 size_t
 vector_capacity( const vector_t *self )
 {
     assert( self );
-
     return self->capacity;
 }
-
-
 // ---------------------------------------------------------- vector_shrink ---
 void
 vector_shrink( vector_t *self )
 {
     assert( self );
-
     if( self->capacity > self->size )
     {
         self->items = realloc( self->items, self->size * self->item_size );
     }
     self->capacity = self->size;
 }
-
-
 // ----------------------------------------------------------- vector_clear ---
 void
 vector_clear( vector_t *self )
 {
     assert( self );
-
     self->size = 0;
 }
-
-
 // ------------------------------------------------------------- vector_set ---
 void
 vector_set( vector_t *self,
-            const size_t index,
-            const void *item )
+const size_t index,
+const void *item )
 {
     assert( self );
     assert( self->size );
     assert( index  < self->size );
-
     memcpy( (char *)(self->items) + index * self->item_size,
-            item, self->item_size );
+    item, self->item_size );
 }
-
-
 // ---------------------------------------------------------- vector_insert ---
 void
 vector_insert( vector_t *self,
-               const size_t index,
-               const void *item )
+const size_t index,
+const void *item )
 {
     assert( self );
     assert( index <= self->size);
-
     if( self->capacity <= self->size )
     {
         vector_reserve(self, 2 * self->capacity );
@@ -4216,71 +3683,57 @@ vector_insert( vector_t *self,
     if( index < self->size )
     {
         memmove( (char *)(self->items) + (index + 1) * self->item_size,
-                 (char *)(self->items) + (index + 0) * self->item_size,
-                 (self->size - index)  * self->item_size);
+        (char *)(self->items) + (index + 0) * self->item_size,
+        (self->size - index)  * self->item_size);
     }
     self->size++;
     vector_set( self, index, item );
 }
-
-
 // ----------------------------------------------------- vector_erase_range ---
 void
 vector_erase_range( vector_t *self,
-                    const size_t first,
-                    const size_t last )
+const size_t first,
+const size_t last )
 {
     assert( self );
     assert( first < self->size );
     assert( last  < self->size+1 );
     assert( first < last );
-
     memmove( (char *)(self->items) + first * self->item_size,
-             (char *)(self->items) + last  * self->item_size,
-             (self->size - last)   * self->item_size);
+    (char *)(self->items) + last  * self->item_size,
+    (self->size - last)   * self->item_size);
     self->size -= (last-first);
 }
-
-
 // ----------------------------------------------------------- vector_erase ---
 void
 vector_erase( vector_t *self,
-              const size_t index )
+const size_t index )
 {
     assert( self );
     assert( index < self->size );
-
     vector_erase_range( self, index, index+1 );
 }
-
-
 // ------------------------------------------------------- vector_push_back ---
 void
 vector_push_back( vector_t *self,
-                  const void *item )
+const void *item )
 {
     vector_insert( self, self->size, item );
 }
-
-
 // -------------------------------------------------------- vector_pop_back ---
 void
 vector_pop_back( vector_t *self )
 {
     assert( self );
     assert( self->size );
-
     self->size--;
 }
-
-
 // ---------------------------------------------------------- vector_resize ---
 void
 vector_resize( vector_t *self,
-               const size_t size )
+const size_t size )
 {
     assert( self );
-
     if( size > self->capacity)
     {
         vector_reserve( self, size );
@@ -4291,151 +3744,118 @@ vector_resize( vector_t *self,
         self->size = size;
     }
 }
-
-
 // -------------------------------------------------- vector_push_back_data ---
 void
 vector_push_back_data( vector_t *self,
-                       const void * data,
-                       const size_t count )
+const void * data,
+const size_t count )
 {
     assert( self );
     assert( data );
     assert( count );
-
     if( self->capacity < (self->size+count) )
     {
         vector_reserve(self, self->size+count);
     }
     memmove( (char *)(self->items) + self->size * self->item_size, data,
-             count*self->item_size );
+    count*self->item_size );
     self->size += count;
 }
-
-
 // ----------------------------------------------------- vector_insert_data ---
 void
 vector_insert_data( vector_t *self,
-                    const size_t index,
-                    const void * data,
-                    const size_t count )
+const size_t index,
+const void * data,
+const size_t count )
 {
     assert( self );
     assert( index < self->size );
     assert( data );
     assert( count );
-
     if( self->capacity < (self->size+count) )
     {
         vector_reserve(self, self->size+count);
     }
     memmove( (char *)(self->items) + (index + count ) * self->item_size,
-             (char *)(self->items) + (index ) * self->item_size,
-             count*self->item_size );
+    (char *)(self->items) + (index ) * self->item_size,
+    count*self->item_size );
     memmove( (char *)(self->items) + index * self->item_size, data,
-             count*self->item_size );
+    count*self->item_size );
     self->size += count;
 }
-
-
 // ------------------------------------------------------------ vector_sort ---
 void
 vector_sort( vector_t *self,
-             int (*cmp)(const void *, const void *) )
+int (*cmp)(const void *, const void *) )
 {
     assert( self );
     assert( self->size );
-
     qsort(self->items, self->size, self->item_size, cmp);
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 #define HRES  64
 #define HRESf 64.f
 #define DPI   72
-
 // ------------------------------------------------- texture_font_load_face ---
 static int
 texture_font_load_face(texture_font_t *self, float size,
-        FT_Library *library, FT_Face *face)
+FT_Library *library, FT_Face *face)
 {
     FT_Error error;
-    FT_Matrix matrix = {
-        (int)((1.0/HRES) * 0x10000L),
-        (int)((0.0)      * 0x10000L),
-        (int)((0.0)      * 0x10000L),
-        (int)((1.0)      * 0x10000L)};
-
+    FT_Matrix matrix = { //
+    (int)((1.0/HRES) * 0x10000L),
+    (int)((0.0)      * 0x10000L),
+    (int)((0.0)      * 0x10000L),
+    (int)((1.0)      * 0x10000L)};
     assert(library);
     assert(size);
-
     /* Initialize library */
     error = FT_Init_FreeType(library);
     if(error) {
         fprintf(stderr, "FT_Error (0x%02x) : %s\n",
-                FT_Errors[error].code, FT_Errors[error].message);
+        FT_Errors[error].code, FT_Errors[error].message);
         goto cleanup;
     }
-
     /* Load face */
     switch (self->location) {
-    case TEXTURE_FONT_FILE:
+        case TEXTURE_FONT_FILE:
         error = FT_New_Face(*library, self->filename, 0, face);
         break;
-
-    case TEXTURE_FONT_MEMORY:
+        case TEXTURE_FONT_MEMORY:
         error = FT_New_Memory_Face(*library,
-            self->memory.base, self->memory.size, 0, face);
+        self->memory.base, self->memory.size, 0, face);
         break;
     }
-
     if(error) {
         fprintf(stderr, "FT_Error (line %d, code 0x%02x) : %s\n",
-                __LINE__, FT_Errors[error].code, FT_Errors[error].message);
+        __LINE__, FT_Errors[error].code, FT_Errors[error].message);
         goto cleanup_library;
     }
-
     /* Select charmap */
     error = FT_Select_Charmap(*face, FT_ENCODING_UNICODE);
     if(error) {
         fprintf(stderr, "FT_Error (line %d, code 0x%02x) : %s\n",
-                __LINE__, FT_Errors[error].code, FT_Errors[error].message);
+        __LINE__, FT_Errors[error].code, FT_Errors[error].message);
         goto cleanup_face;
     }
-
     /* Set char size */
     error = FT_Set_Char_Size(*face, (int)(size * HRES), 0, DPI * HRES, DPI);
-
     if(error) {
         fprintf(stderr, "FT_Error (line %d, code 0x%02x) : %s\n",
-                __LINE__, FT_Errors[error].code, FT_Errors[error].message);
+        __LINE__, FT_Errors[error].code, FT_Errors[error].message);
         goto cleanup_face;
     }
-
     /* Set transform matrix */
     FT_Set_Transform(*face, &matrix, NULL);
-
     return 1;
-
-cleanup_face:
+    cleanup_face:
     FT_Done_Face( *face );
-cleanup_library:
+    cleanup_library:
     FT_Done_FreeType( *library );
-cleanup:
+    cleanup:
     return 0;
 }
-
 // ------------------------------------------------------ texture_glyph_new ---
 texture_glyph_t *
 texture_glyph_new(void)
@@ -4443,10 +3863,9 @@ texture_glyph_new(void)
     texture_glyph_t *self = (texture_glyph_t *) malloc( sizeof(texture_glyph_t) );
     if(self == NULL) {
         fprintf( stderr,
-                "line %d: No more memory for allocating data\n", __LINE__);
+        "line %d: No more memory for allocating data\n", __LINE__);
         return NULL;
     }
-
     self->codepoint  = -1;
     self->width     = 0;
     self->height    = 0;
@@ -4463,8 +3882,6 @@ texture_glyph_new(void)
     self->kerning   = vector_new( sizeof(kerning_t) );
     return self;
 }
-
-
 // --------------------------------------------------- texture_glyph_delete ---
 void
 texture_glyph_delete( texture_glyph_t *self )
@@ -4473,15 +3890,13 @@ texture_glyph_delete( texture_glyph_t *self )
     vector_delete( self->kerning );
     free( self );
 }
-
 // ---------------------------------------------- texture_glyph_get_kerning ---
 float
 texture_glyph_get_kerning( const texture_glyph_t * self,
-                           const char * codepoint )
+const char * codepoint )
 {
     size_t i;
     uint32_t ucodepoint = utf8_to_utf32( codepoint );
-
     assert( self );
     for( i=0; i<vector_size(self->kerning); ++i )
     {
@@ -4493,20 +3908,16 @@ texture_glyph_get_kerning( const texture_glyph_t * self,
     }
     return 0;
 }
-
-
 // ------------------------------------------ texture_font_generate_kerning ---
 void
 texture_font_generate_kerning( texture_font_t *self,
-                               FT_Library *library, FT_Face *face )
+FT_Library *library, FT_Face *face )
 {
     size_t i, j;
     FT_UInt glyph_index, prev_index;
     texture_glyph_t *glyph, *prev_glyph;
     FT_Vector kerning;
-
     assert( self );
-
     /* For each glyph couple combination, check if kerning is necessary */
     /* Starts at index 1 since 0 is for the special backgroudn glyph */
     for( i=1; i<self->glyphs->size; ++i )
@@ -4514,7 +3925,6 @@ texture_font_generate_kerning( texture_font_t *self,
         glyph = *(texture_glyph_t **) vector_get( self->glyphs, i );
         glyph_index = FT_Get_Char_Index( *face, glyph->codepoint );
         vector_clear( glyph->kerning );
-
         for( j=1; j<self->glyphs->size; ++j )
         {
             prev_glyph = *(texture_glyph_t **) vector_get( self->glyphs, j );
@@ -4531,7 +3941,6 @@ texture_font_generate_kerning( texture_font_t *self,
         }
     }
 }
-
 // ------------------------------------------------------ texture_font_init ---
 static int
 texture_font_init(texture_font_t *self)
@@ -4539,13 +3948,11 @@ texture_font_init(texture_font_t *self)
     FT_Library library;
     FT_Face face;
     FT_Size_Metrics metrics;
-
     assert(self->atlas);
     assert(self->size > 0);
     assert((self->location == TEXTURE_FONT_FILE && self->filename)
-        || (self->location == TEXTURE_FONT_MEMORY
-            && self->memory.base && self->memory.size));
-
+    || (self->location == TEXTURE_FONT_MEMORY
+    && self->memory.base && self->memory.size));
     self->glyphs = vector_new(sizeof(texture_glyph_t *));
     self->height = 0;
     self->ascender = 0;
@@ -4555,7 +3962,6 @@ texture_font_init(texture_font_t *self)
     self->hinting = 1;
     self->kerning = 1;
     self->filtering = 1;
-
     // FT_LCD_FILTER_LIGHT   is (0x00, 0x55, 0x56, 0x55, 0x00)
     // FT_LCD_FILTER_DEFAULT is (0x10, 0x40, 0x70, 0x40, 0x10)
     self->lcd_weights[0] = 0x10;
@@ -4563,24 +3969,20 @@ texture_font_init(texture_font_t *self)
     self->lcd_weights[2] = 0x70;
     self->lcd_weights[3] = 0x40;
     self->lcd_weights[4] = 0x10;
-
     if (!texture_font_load_face(self, self->size * 100.f, &library, &face))
-        return -1;
-
+    return -1;
     self->underline_position = face->underline_position / (float)(HRESf*HRESf) * self->size;
     self->underline_position = roundf( self->underline_position );
     if( self->underline_position > -2 )
     {
         self->underline_position = -2.0;
     }
-
     self->underline_thickness = face->underline_thickness / (float)(HRESf*HRESf) * self->size;
     self->underline_thickness = roundf( self->underline_thickness );
     if( self->underline_thickness < 1 )
     {
         self->underline_thickness = 1.0;
     }
-
     metrics = face->size->metrics;
     self->ascender = (metrics.ascender >> 6) / 100.0f;
     self->descender = (metrics.descender >> 6) / 100.0f;
@@ -4588,165 +3990,133 @@ texture_font_init(texture_font_t *self)
     self->linegap = self->height - self->ascender + self->descender;
     FT_Done_Face( face );
     FT_Done_FreeType( library );
-
     /* NULL is a special glyph */
     texture_font_get_glyph( self, NULL );
-
     return 0;
 }
-
 // --------------------------------------------- texture_font_new_from_file ---
 texture_font_t *
 texture_font_new_from_file(texture_atlas_t *atlas, const float pt_size,
-        const char *filename)
+const char *filename)
 {
     texture_font_t *self;
-
     assert(filename);
-
     self = calloc(1, sizeof(*self));
     if (!self) {
         fprintf(stderr,
-                "line %d: No more memory for allocating data\n", __LINE__);
+        "line %d: No more memory for allocating data\n", __LINE__);
         return NULL;
     }
-
     self->atlas = atlas;
     self->size  = pt_size;
-
     self->location = TEXTURE_FONT_FILE;
     self->filename = strdup(filename);
-
     if (texture_font_init(self)) {
         texture_font_delete(self);
         return NULL;
     }
-
     return self;
 }
-
 // ------------------------------------------- texture_font_new_from_memory ---
 texture_font_t *
 texture_font_new_from_memory(texture_atlas_t *atlas, float pt_size,
-        const void *memory_base, size_t memory_size)
+const void *memory_base, size_t memory_size)
 {
     texture_font_t *self;
-
     assert(memory_base);
     assert(memory_size);
-
     self = calloc(1, sizeof(*self));
     if (!self) {
         fprintf(stderr,
-                "line %d: No more memory for allocating data\n", __LINE__);
+        "line %d: No more memory for allocating data\n", __LINE__);
         return NULL;
     }
-
     self->atlas = atlas;
     self->size  = pt_size;
-
     self->location = TEXTURE_FONT_MEMORY;
     self->memory.base = memory_base;
     self->memory.size = memory_size;
-
     if (texture_font_init(self)) {
         texture_font_delete(self);
         return NULL;
     }
-
     return self;
 }
-
 // ---------------------------------------------------- texture_font_delete ---
 void
 texture_font_delete( texture_font_t *self )
 {
     size_t i;
     texture_glyph_t *glyph;
-
     assert( self );
-
     if(self->location == TEXTURE_FONT_FILE && self->filename)
-        free( self->filename );
-
+    free( self->filename );
     for( i=0; i<vector_size( self->glyphs ); ++i)
     {
         glyph = *(texture_glyph_t **) vector_get( self->glyphs, i );
         texture_glyph_delete( glyph);
     }
-
     vector_delete( self->glyphs );
     free( self );
 }
-
 texture_glyph_t *
 texture_font_find_glyph( texture_font_t * self,
-                         const char * codepoint )
+const char * codepoint )
 {
     size_t i;
     texture_glyph_t *glyph;
     uint32_t ucodepoint = utf8_to_utf32( codepoint );
-
     for( i = 0; i < self->glyphs->size; ++i )
     {
         glyph = *(texture_glyph_t **) vector_get( self->glyphs, i );
         // If codepoint is -1, we don't care about outline type or thickness
         if( (glyph->codepoint == ucodepoint) &&
-            ((ucodepoint == -1) ||
-             ((glyph->rendermode == self->rendermode) &&
-              (glyph->outline_thickness == self->outline_thickness)) ))
+        ((ucodepoint == -1) ||
+        ((glyph->rendermode == self->rendermode) &&
+        (glyph->outline_thickness == self->outline_thickness)) ))
         {
             return glyph;
         }
     }
-
     return NULL;
 }
-
 // ------------------------------------------------ texture_font_load_glyph ---
 int
 texture_font_load_glyph( texture_font_t * self,
-                         const char * codepoint )
+const char * codepoint )
 {
     size_t i, x, y;
-
     FT_Library library;
     FT_Error error;
     FT_Face face;
     FT_Glyph ft_glyph = { 0 };
     FT_GlyphSlot slot;
     FT_Bitmap ft_bitmap;
-
     FT_UInt glyph_index;
     texture_glyph_t *glyph;
     FT_Int32 flags = 0;
     int ft_glyph_top = 0;
     int ft_glyph_left = 0;
-
     ivec4 region;
-
-
     if (!texture_font_load_face(self, self->size, &library, &face))
-        return 0;
-
+    return 0;
     /* Check if codepoint has been already loaded */
     if (texture_font_find_glyph(self, codepoint)) {
         FT_Done_Face(face);
         FT_Done_FreeType(library);
         return 1;
     }
-
     /* codepoint NULL is special : it is used for line drawing (overline,
-     * underline, strikethrough) and background.
-     */
+    * underline, strikethrough) and background.
+    */
     if( !codepoint )
     {
         ivec4 region = texture_atlas_get_region( self->atlas, 5, 5 );
         texture_glyph_t * glyph = texture_glyph_new( );
         static unsigned char data[4*4*3] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-                                            -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-                                            -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-                                            -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
         if ( region.x < 0 )
         {
             fprintf( stderr, "Texture atlas is full (line %d)\n",  __LINE__ );
@@ -4761,19 +4131,16 @@ texture_font_load_glyph( texture_font_t * self,
         glyph->s1 = (region.x+3)/(float)self->atlas->width;
         glyph->t1 = (region.y+3)/(float)self->atlas->height;
         vector_push_back( self->glyphs, &glyph );
-
         FT_Done_Face(face);
         FT_Done_FreeType(library);
         return 1;
     }
-
     flags = 0;
     ft_glyph_top = 0;
     ft_glyph_left = 0;
     glyph_index = FT_Get_Char_Index( face, (FT_ULong)utf8_to_utf32( codepoint ) );
     // WARNING: We use texture-atlas depth to guess if user wants
     //          LCD subpixel rendering
-
     if( self->rendermode != RENDER_NORMAL && self->rendermode != RENDER_SIGNED_DISTANCE_FIELD )
     {
         flags |= FT_LOAD_NO_BITMAP;
@@ -4782,7 +4149,6 @@ texture_font_load_glyph( texture_font_t * self,
     {
         flags |= FT_LOAD_RENDER;
     }
-
     if( !self->hinting )
     {
         flags |= FT_LOAD_NO_HINTING | FT_LOAD_NO_AUTOHINT;
@@ -4791,28 +4157,24 @@ texture_font_load_glyph( texture_font_t * self,
     {
         flags |= FT_LOAD_FORCE_AUTOHINT;
     }
-
     if( self->atlas->depth == 3 )
     {
         FT_Library_SetLcdFilter( library, FT_LCD_FILTER_LIGHT );
         flags |= FT_LOAD_TARGET_LCD;
-
         if( self->filtering )
         {
             FT_Library_SetLcdFilterWeights( library, self->lcd_weights );
         }
     }
-
     error = FT_Load_Glyph( face, glyph_index, flags );
     if( error )
     {
         fprintf( stderr, "FT_Error (line %d, code 0x%02x) : %s\n",
-                 __LINE__, FT_Errors[error].code, FT_Errors[error].message );
+        __LINE__, FT_Errors[error].code, FT_Errors[error].message );
         FT_Done_Face( face );
         FT_Done_FreeType( library );
         return 0;
     }
-
     if( self->rendermode == RENDER_NORMAL || self->rendermode == RENDER_SIGNED_DISTANCE_FIELD )
     {
         slot            = face->glyph;
@@ -4824,65 +4186,53 @@ texture_font_load_glyph( texture_font_t * self,
     {
         FT_Stroker stroker;
         FT_BitmapGlyph ft_bitmap_glyph;
-
         error = FT_Stroker_New( library, &stroker );
-
         if( error )
         {
             fprintf(stderr, "FT_Error (0x%02x) : %s\n",
-                    FT_Errors[error].code, FT_Errors[error].message);
+            FT_Errors[error].code, FT_Errors[error].message);
             goto cleanup_stroker;
         }
-
         FT_Stroker_Set(stroker,
-                        (int)(self->outline_thickness * HRES),
-                        FT_STROKER_LINECAP_ROUND,
-                        FT_STROKER_LINEJOIN_ROUND,
-                        0);
-
+        (int)(self->outline_thickness * HRES),
+        FT_STROKER_LINECAP_ROUND,
+        FT_STROKER_LINEJOIN_ROUND,
+        0);
         error = FT_Get_Glyph( face->glyph, &ft_glyph);
-
         if( error )
         {
             fprintf(stderr, "FT_Error (0x%02x) : %s\n",
-                    FT_Errors[error].code, FT_Errors[error].message);
+            FT_Errors[error].code, FT_Errors[error].message);
             goto cleanup_stroker;
         }
-
         if( self->rendermode == RENDER_OUTLINE_EDGE )
-            error = FT_Glyph_Stroke( &ft_glyph, stroker, 1 );
+        error = FT_Glyph_Stroke( &ft_glyph, stroker, 1 );
         else if ( self->rendermode == RENDER_OUTLINE_POSITIVE )
-            error = FT_Glyph_StrokeBorder( &ft_glyph, stroker, 0, 1 );
+        error = FT_Glyph_StrokeBorder( &ft_glyph, stroker, 0, 1 );
         else if ( self->rendermode == RENDER_OUTLINE_NEGATIVE )
-            error = FT_Glyph_StrokeBorder( &ft_glyph, stroker, 1, 1 );
-
+        error = FT_Glyph_StrokeBorder( &ft_glyph, stroker, 1, 1 );
         if( error )
         {
             fprintf(stderr, "FT_Error (0x%02x) : %s\n",
-                    FT_Errors[error].code, FT_Errors[error].message);
+            FT_Errors[error].code, FT_Errors[error].message);
             goto cleanup_stroker;
         }
-
         if( self->atlas->depth == 1 )
-            error = FT_Glyph_To_Bitmap( &ft_glyph, FT_RENDER_MODE_NORMAL, 0, 1);
+        error = FT_Glyph_To_Bitmap( &ft_glyph, FT_RENDER_MODE_NORMAL, 0, 1);
         else
-            error = FT_Glyph_To_Bitmap( &ft_glyph, FT_RENDER_MODE_LCD, 0, 1);
-
+        error = FT_Glyph_To_Bitmap( &ft_glyph, FT_RENDER_MODE_LCD, 0, 1);
         if( error )
         {
             fprintf(stderr, "FT_Error (0x%02x) : %s\n",
-                    FT_Errors[error].code, FT_Errors[error].message);
+            FT_Errors[error].code, FT_Errors[error].message);
             goto cleanup_stroker;
         }
-
         ft_bitmap_glyph = (FT_BitmapGlyph) ft_glyph;
         ft_bitmap       = ft_bitmap_glyph->bitmap;
         ft_glyph_top    = ft_bitmap_glyph->top;
         ft_glyph_left   = ft_bitmap_glyph->left;
-
-cleanup_stroker:
+        cleanup_stroker:
         FT_Stroker_Done( stroker );
-
         if( error )
         {
             FT_Done_Face( face );
@@ -4890,28 +4240,22 @@ cleanup_stroker:
             return 0;
         }
     }
-
     struct {
         int left;
         int top;
         int right;
         int bottom;
     } padding = { 0, 0, 1, 1 };
-
     if( self->rendermode == RENDER_SIGNED_DISTANCE_FIELD )
     {
         padding.top = 1;
         padding.left = 1;
     }
-
     size_t src_w = ft_bitmap.width/self->atlas->depth;
     size_t src_h = ft_bitmap.rows;
-
     size_t tgt_w = src_w + padding.left + padding.right;
     size_t tgt_h = src_h + padding.top + padding.bottom;
-
     region = texture_atlas_get_region( self->atlas, tgt_w, tgt_h );
-
     if ( region.x < 0 )
     {
         fprintf( stderr, "Texture atlas is full (line %d)\n",  __LINE__ );
@@ -4919,12 +4263,9 @@ cleanup_stroker:
         FT_Done_FreeType( library );
         return 0;
     }
-
     x = region.x;
     y = region.y;
-
     unsigned char *buffer = calloc( tgt_w * tgt_h * self->atlas->depth, sizeof(unsigned char) );
-
     unsigned char *dst_ptr = buffer + (padding.top * tgt_w + padding.left) * self->atlas->depth;
     unsigned char *src_ptr = ft_bitmap.buffer;
     for( i = 0; i < src_h; i++ )
@@ -4934,18 +4275,14 @@ cleanup_stroker:
         dst_ptr += tgt_w * self->atlas->depth;
         src_ptr += ft_bitmap.pitch;
     }
-
     if( self->rendermode == RENDER_SIGNED_DISTANCE_FIELD )
     {
         unsigned char *sdf = make_distance_mapb( buffer, (unsigned int)tgt_w, (unsigned int)tgt_h );
         free( buffer );
         buffer = sdf;
     }
-
     texture_atlas_set_region( self->atlas, x, y, tgt_w, tgt_h, buffer, tgt_w * self->atlas->depth);
-
     free( buffer );
-
     glyph = texture_glyph_new( );
     glyph->codepoint = utf8_to_utf32( codepoint );
     glyph->width    = tgt_w;
@@ -4958,69 +4295,53 @@ cleanup_stroker:
     glyph->t0       = y/(float)self->atlas->height;
     glyph->s1       = (x + glyph->width)/(float)self->atlas->width;
     glyph->t1       = (y + glyph->height)/(float)self->atlas->height;
-
     // Discard hinting to get advance
     FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_HINTING);
     slot = face->glyph;
     glyph->advance_x = slot->advance.x / HRESf;
     glyph->advance_y = slot->advance.y / HRESf;
-
     vector_push_back( self->glyphs, &glyph );
-
     if( self->rendermode != RENDER_NORMAL && self->rendermode != RENDER_SIGNED_DISTANCE_FIELD )
-        FT_Done_Glyph( ft_glyph );
-
+    FT_Done_Glyph( ft_glyph );
     texture_font_generate_kerning( self, &library, &face );
-
     FT_Done_Face( face );
     FT_Done_FreeType( library );
-
     return 1;
 }
-
 // ----------------------------------------------- texture_font_load_glyphs ---
 size_t
 texture_font_load_glyphs( texture_font_t * self,
-                          const char * codepoints )
+const char * codepoints )
 {
     size_t i;
-
     /* Load each glyph */
     for( i = 0; i < strlen(codepoints); i += utf8_surrogate_len(codepoints + i) ) {
         if( !texture_font_load_glyph( self, codepoints + i ) )
-            return utf8_strlen( codepoints + i );
+        return utf8_strlen( codepoints + i );
     }
-
     return 0;
 }
-
-
 // ------------------------------------------------- texture_font_get_glyph ---
 texture_glyph_t *
 texture_font_get_glyph( texture_font_t * self,
-                        const char * codepoint )
+const char * codepoint )
 {
     texture_glyph_t *glyph;
-
     assert( self );
     assert( self->filename );
     assert( self->atlas );
-
     /* Check if codepoint has been already loaded */
     if( (glyph = texture_font_find_glyph( self, codepoint )) )
-        return glyph;
-
+    return glyph;
     /* Glyph has not been already loaded */
     if( texture_font_load_glyph( self, codepoint ) )
-        return texture_font_find_glyph( self, codepoint );
-
+    return texture_font_find_glyph( self, codepoint );
     return NULL;
 }
-
 // ------------------------------------------------- texture_font_enlarge_atlas ---
 void
 texture_font_enlarge_atlas( texture_font_t * self, size_t width_new,
-			    size_t height_new)
+size_t height_new)
 {
     assert(self);
     assert(self->atlas);
@@ -5039,7 +4360,7 @@ texture_font_enlarge_atlas( texture_font_t * self, size_t width_new,
     ta->height = height_new;
     //add node reflecting the gained space on the right
     if(width_new>width_old){
-    	ivec3 node;
+        ivec3 node;
         node.x = width_old - 1;
         node.y = 1;
         node.z = width_new - width_old;
@@ -5055,39 +4376,30 @@ texture_font_enlarge_atlas( texture_font_t * self, size_t width_new,
     float mulh = (float)height_old / height_new;
     size_t i;
     for (i = 0; i < vector_size(self->glyphs); i++) {
-    	texture_glyph_t* g = *(texture_glyph_t**)vector_get(self->glyphs, i);
-    	g->s0 *= mulw;
-    	g->s1 *= mulw;
-    	g->t0 *= mulh;
-    	g->t1 *= mulh;
+        texture_glyph_t* g = *(texture_glyph_t**)vector_get(self->glyphs, i);
+        g->s0 *= mulw;
+        g->s1 *= mulw;
+        g->t0 *= mulh;
+        g->t1 *= mulh;
     }
 }
-
-
-
-
-
-
-
 
 
 // ------------------------------------------------------ texture_atlas_new ---
 texture_atlas_t *
 texture_atlas_new( const size_t width,
-                   const size_t height,
-                   const size_t depth )
+const size_t height,
+const size_t depth )
 {
     texture_atlas_t *self = (texture_atlas_t *) malloc( sizeof(texture_atlas_t) );
-
     // We want a one pixel border around the whole atlas to avoid any artefact when
     // sampling texture
     ivec3 node = {{1,1,width-2}};
-
     assert( (depth == 1) || (depth == 3) || (depth == 4) );
     if( self == NULL)
     {
         fprintf( stderr,
-                 "line %d: No more memory for allocating data\n", __LINE__ );
+        "line %d: No more memory for allocating data\n", __LINE__ );
         exit( EXIT_FAILURE );
     }
     self->nodes = vector_new( sizeof(ivec3) );
@@ -5096,22 +4408,17 @@ texture_atlas_new( const size_t width,
     self->height = height;
     self->depth = depth;
     self->id = 0;
-
     vector_push_back( self->nodes, &node );
     self->data = (unsigned char *)
-        calloc( width*height*depth, sizeof(unsigned char) );
-
+    calloc( width*height*depth, sizeof(unsigned char) );
     if( self->data == NULL)
     {
         fprintf( stderr,
-                 "line %d: No more memory for allocating data\n", __LINE__ );
+        "line %d: No more memory for allocating data\n", __LINE__ );
         exit( EXIT_FAILURE );
     }
-
     return self;
 }
-
-
 // --------------------------------------------------- texture_atlas_delete ---
 void
 texture_atlas_delete( texture_atlas_t *self )
@@ -5124,22 +4431,19 @@ texture_atlas_delete( texture_atlas_t *self )
     }
     free( self );
 }
-
-
 // ----------------------------------------------- texture_atlas_set_region ---
 void
 texture_atlas_set_region( texture_atlas_t * self,
-                          const size_t x,
-                          const size_t y,
-                          const size_t width,
-                          const size_t height,
-                          const unsigned char * data,
-                          const size_t stride )
+const size_t x,
+const size_t y,
+const size_t width,
+const size_t height,
+const unsigned char * data,
+const size_t stride )
 {
     size_t i;
     size_t depth;
     size_t charsize;
-
     assert( self );
     assert( x > 0);
     assert( y > 0);
@@ -5147,122 +4451,107 @@ texture_atlas_set_region( texture_atlas_t * self,
     assert( (x + width) <= (self->width-1));
     assert( y < (self->height-1));
     assert( (y + height) <= (self->height-1));
-	
-    //prevent copying data from undefined position 
+
+    //prevent copying data from undefined position
     //and prevent memcpy's undefined behavior when count is zero
     assert(height == 0 || (data != NULL && width > 0));
-
     depth = self->depth;
     charsize = sizeof(char);
     for( i=0; i<height; ++i )
     {
         memcpy( self->data+((y+i)*self->width + x ) * charsize * depth,
-                data + (i*stride) * charsize, width * charsize * depth  );
+        data + (i*stride) * charsize, width * charsize * depth  );
     }
 }
-
-
 // ------------------------------------------------------ texture_atlas_fit ---
 int
 texture_atlas_fit( texture_atlas_t * self,
-                   const size_t index,
-                   const size_t width,
-                   const size_t height )
+const size_t index,
+const size_t width,
+const size_t height )
 {
     ivec3 *node;
     int x, y, width_left;
-	size_t i;
-
+    size_t i;
     assert( self );
-
     node = (ivec3 *) (vector_get( self->nodes, index ));
     x = node->x;
-	y = node->y;
+    y = node->y;
     width_left = width;
-	i = index;
-
-	if ( (x + width) > (self->width-1) )
+    i = index;
+    if ( (x + width) > (self->width-1) )
     {
-		return -1;
+        return -1;
     }
-	y = node->y;
-	while( width_left > 0 )
-	{
+    y = node->y;
+    while( width_left > 0 )
+    {
         node = (ivec3 *) (vector_get( self->nodes, i ));
         if( node->y > y )
         {
             y = node->y;
         }
-		if( (y + height) > (self->height-1) )
+        if( (y + height) > (self->height-1) )
         {
-			return -1;
+            return -1;
         }
-		width_left -= node->z;
-		++i;
-	}
-	return y;
+        width_left -= node->z;
+        ++i;
+    }
+    return y;
 }
-
-
 // ---------------------------------------------------- texture_atlas_merge ---
 void
 texture_atlas_merge( texture_atlas_t * self )
 {
     ivec3 *node, *next;
     size_t i;
-
     assert( self );
-
-	for( i=0; i< self->nodes->size-1; ++i )
+    for( i=0; i< self->nodes->size-1; ++i )
     {
         node = (ivec3 *) (vector_get( self->nodes, i ));
         next = (ivec3 *) (vector_get( self->nodes, i+1 ));
-		if( node->y == next->y )
-		{
-			node->z += next->z;
+        if( node->y == next->y )
+        {
+            node->z += next->z;
             vector_erase( self->nodes, i+1 );
-			--i;
-		}
+            --i;
+        }
     }
 }
-
-
 // ----------------------------------------------- texture_atlas_get_region ---
 ivec4
 texture_atlas_get_region( texture_atlas_t * self,
-                          const size_t width,
-                          const size_t height )
+const size_t width,
+const size_t height )
 {
-	int y, best_index;
+    int y, best_index;
     size_t best_height, best_width;
     ivec3 *node, *prev;
     ivec4 region = {{0,0,width,height}};
     size_t i;
-
     assert( self );
-
     best_height = UINT_MAX;
     best_index  = -1;
     best_width = UINT_MAX;
-	for( i=0; i<self->nodes->size; ++i )
-	{
+    for( i=0; i<self->nodes->size; ++i )
+    {
         y = texture_atlas_fit( self, i, width, height );
-		if( y >= 0 )
-		{
+        if( y >= 0 )
+        {
             node = (ivec3 *) vector_get( self->nodes, i );
-			if( ( (y + height) < best_height ) ||
-                ( ((y + height) == best_height) && (node->z > 0 && (size_t)node->z < best_width)) )
-			{
-				best_height = y + height;
-				best_index = i;
-				best_width = node->z;
-				region.x = node->x;
-				region.y = y;
-			}
+            if( ( (y + height) < best_height ) ||
+            ( ((y + height) == best_height) && (node->z > 0 && (size_t)node->z < best_width)) )
+            {
+                best_height = y + height;
+                best_index = i;
+                best_width = node->z;
+                region.x = node->x;
+                region.y = y;
+            }
         }
     }
-
-	if( best_index == -1 )
+    if( best_index == -1 )
     {
         region.x = -1;
         region.y = -1;
@@ -5270,12 +4559,11 @@ texture_atlas_get_region( texture_atlas_t * self,
         region.height = 0;
         return region;
     }
-
     node = (ivec3 *) malloc( sizeof(ivec3) );
     if( node == NULL)
     {
         fprintf( stderr,
-                 "line %d: No more memory for allocating data\n", __LINE__ );
+        "line %d: No more memory for allocating data\n", __LINE__ );
         exit( EXIT_FAILURE );
     }
     node->x = region.x;
@@ -5283,12 +4571,10 @@ texture_atlas_get_region( texture_atlas_t * self,
     node->z = width;
     vector_insert( self->nodes, best_index, node );
     free( node );
-
     for(i = best_index+1; i < self->nodes->size; ++i)
     {
         node = (ivec3 *) vector_get( self->nodes, i );
         prev = (ivec3 *) vector_get( self->nodes, i-1 );
-
         if (node->x < (prev->x + prev->z) )
         {
             int shrink = prev->x + prev->z - node->x;
@@ -5313,62 +4599,45 @@ texture_atlas_get_region( texture_atlas_t * self,
     self->used += width * height;
     return region;
 }
-
-
 // ---------------------------------------------------- texture_atlas_clear ---
 void
 texture_atlas_clear( texture_atlas_t * self )
 {
     ivec3 node = {{1,1,1}};
-
     assert( self );
     assert( self->data );
-
     vector_clear( self->nodes );
     self->used = 0;
     // We want a one pixel border around the whole atlas to avoid any artefact when
     // sampling texture
     node.z = self->width-2;
-
     vector_push_back( self->nodes, &node );
     memset( self->data, 0, self->width*self->height*self->depth );
 }
 
 
-
-
-
-
-
-
-
 char *repl_str(const char *str, const char *from, const char *to) {
-
     /* Adjust each of the below values to suit your needs. */
-
     /* Increment positions cache size initially by this number. */
     size_t cache_sz_inc = 16;
     /* Thereafter, each time capacity needs to be increased,
-     * multiply the increment by this factor. */
+    * multiply the increment by this factor. */
     const size_t cache_sz_inc_factor = 3;
     /* But never increment capacity by more than this number. */
     const size_t cache_sz_inc_max = 1048576;
-
     char *pret, *ret = NULL;
     const char *pstr2, *pstr = str;
     size_t i, count = 0;
-#if (__STDC_VERSION__ >= 199901L)
+    #if (__STDC_VERSION__ >= 199901L)
     uintptr_t *pos_cache_tmp, *pos_cache = NULL;
-#else
+    #else
     ptrdiff_t *pos_cache_tmp, *pos_cache = NULL;
-#endif
+    #endif
     size_t cache_sz = 0;
     size_t cpylen, orglen, retlen, tolen, fromlen = strlen(from);
-
     /* Find all matches and cache their positions. */
     while ((pstr2 = strstr(pstr, from)) != NULL) {
         count++;
-
         /* Increase the cache size when necessary. */
         if (cache_sz < count) {
             cache_sz += cache_sz_inc;
@@ -5381,13 +4650,10 @@ char *repl_str(const char *str, const char *from, const char *to) {
                 cache_sz_inc = cache_sz_inc_max;
             }
         }
-
         pos_cache[count-1] = pstr2 - str;
         pstr = pstr2 + fromlen;
     }
-
     orglen = pstr - str + strlen(pstr);
-
     /* Allocate memory for the post-replacement string. */
     if (count > 0) {
         tolen = strlen(to);
@@ -5397,13 +4663,12 @@ char *repl_str(const char *str, const char *from, const char *to) {
     if (ret == NULL) {
         goto end_repl_str;
     }
-
     if (count == 0) {
         /* If no matches, then just duplicate the string. */
         strcpy(ret, str);
     } else {
         /* Otherwise, duplicate the string whilst performing
-         * the replacements using the position cache. */
+        * the replacements using the position cache. */
         pret = ret;
         memcpy(pret, str, pos_cache[0]);
         pret += pos_cache[0];
@@ -5417,150 +4682,135 @@ char *repl_str(const char *str, const char *from, const char *to) {
         }
         ret[retlen] = '\0';
     }
-
-end_repl_str:
+    end_repl_str:
     /* Free the cache and return the post-replacement string,
-     * which will be NULL in the event of an error. */
+    * which will be NULL in the event of an error. */
     free(pos_cache);
     return ret;
 }
-
 // ------------------------------------------------------------ shader_read ---
 char *
 shader_read( const char *filename )
 {
     FILE * file;
     char * buffer;
-	size_t size;
-
-#ifdef WIN32
+    size_t size;
+    #ifdef WIN32
     errno_t err;
     if( (err  = fopen_s( &file, filename, "rb" )) !=0 ) {
-#else
-    file = fopen( filename, "rb" );
-    if( !file ) {
-#endif
-        fprintf( stderr, "Unable to open file \"%s\".\n", filename );
-		return 0;
+        #else
+        file = fopen( filename, "rb" );
+        if( !file ) {
+            #endif
+            fprintf( stderr, "Unable to open file \"%s\".\n", filename );
+            return 0;
+        }
+        fseek( file, 0, SEEK_END );
+        size = ftell( file );
+        fseek(file, 0, SEEK_SET );
+        buffer = (char *) malloc( (size+1) * sizeof( char *) );
+        fread( buffer, sizeof(char), size, file );
+        buffer[size] = 0;
+        fclose( file );
+        #ifdef __APPLE__
+        char* prev = buffer;
+        buffer = repl_str(buffer, "mediump", "");
+        free(prev);
+        #endif
+        return buffer;
     }
-	fseek( file, 0, SEEK_END );
-	size = ftell( file );
-	fseek(file, 0, SEEK_SET );
-    buffer = (char *) malloc( (size+1) * sizeof( char *) );
-	fread( buffer, sizeof(char), size, file );
-    buffer[size] = 0;
-    fclose( file );
-
-#ifdef __APPLE__
-    char* prev = buffer;
-    buffer = repl_str(buffer, "mediump", "");
-    free(prev);
-#endif
-
-    return buffer;
-}
-
-
-
-// --------------------------------------------------------- shader_compile ---
-GLuint
-shader_compile( const char* source,
-                const GLenum type )
-{
-    GLint compile_status;
-    GLuint handle = glCreateShader( type );
-    glShaderSource( handle, 1, &source, 0 );
-    glCompileShader( handle );
-
-    glGetShaderiv( handle, GL_COMPILE_STATUS, &compile_status );
-    if( compile_status == GL_FALSE )
+    // --------------------------------------------------------- shader_compile ---
+    GLuint
+    shader_compile( const char* source,
+    const GLenum type )
     {
-        GLchar messages[256];
-        glGetShaderInfoLog( handle, sizeof(messages), 0, &messages[0] );
-        fprintf( stderr, "%s: %s\n", source, messages );
-        exit( EXIT_FAILURE );
-    }
-    return handle;
-}
-
-
-// ------------------------------------------------------------ shader_load ---
-GLuint
-shader_load( const char * vert_filename,
-              const char * frag_filename )
-{
-    GLuint handle = glCreateProgram( );
-    GLint link_status;
-
-    if( vert_filename && strlen( vert_filename ) )
-    {
-        char *vert_source = shader_read( vert_filename );
-        GLuint vert_shader = shader_compile( vert_source, GL_VERTEX_SHADER);
-        glAttachShader( handle, vert_shader);
-        glDeleteShader( vert_shader );
-        free( vert_source );
-    }
-    if( frag_filename && strlen( frag_filename ) )
-    {
-        char *frag_source = shader_read( frag_filename );
-        GLuint frag_shader = shader_compile( frag_source, GL_FRAGMENT_SHADER);
-        glAttachShader( handle, frag_shader);
-        glDeleteShader( frag_shader );
-        free( frag_source );
-    }
-
-    glLinkProgram( handle );
-
-    glGetProgramiv( handle, GL_LINK_STATUS, &link_status );
-    if (link_status == GL_FALSE)
-    {
-        GLchar messages[256];
-        glGetProgramInfoLog( handle, sizeof(messages), 0, &messages[0] );
-        fprintf( stderr, "%s\n", messages );
-        exit(1);
-    }
-    return handle;
-}
-
-
-
-void add_text( vertex_buffer_t * buffer, texture_font_t * font,
-               char *text, vec4 * color, vec2 * pen )
-{
-    size_t i;
-    float r = color->red, g = color->green, b = color->blue, a = color->alpha;
-    for( i = 0; i < strlen(text); ++i )
-    {
-        texture_glyph_t *glyph = texture_font_get_glyph( font, text + i );
-        if( glyph != NULL )
+        GLint compile_status;
+        GLuint handle = glCreateShader( type );
+        glShaderSource( handle, 1, &source, 0 );
+        glCompileShader( handle );
+        glGetShaderiv( handle, GL_COMPILE_STATUS, &compile_status );
+        if( compile_status == GL_FALSE )
         {
-            float kerning = 0.0f;
-            if( i > 0)
+            GLchar messages[256];
+            glGetShaderInfoLog( handle, sizeof(messages), 0, &messages[0] );
+            fprintf( stderr, "%s: %s\n", source, messages );
+            exit( EXIT_FAILURE );
+        }
+        return handle;
+    }
+    // ------------------------------------------------------------ shader_load ---
+    GLuint
+    shader_load( const char * vert_filename,
+    const char * frag_filename )
+    {
+        GLuint handle = glCreateProgram( );
+        GLint link_status;
+        if( vert_filename && strlen( vert_filename ) )
+        {
+            char *vert_source = shader_read( vert_filename );
+            GLuint vert_shader = shader_compile( vert_source, GL_VERTEX_SHADER);
+            glAttachShader( handle, vert_shader);
+            glDeleteShader( vert_shader );
+            free( vert_source );
+        }
+        if( frag_filename && strlen( frag_filename ) )
+        {
+            char *frag_source = shader_read( frag_filename );
+            GLuint frag_shader = shader_compile( frag_source, GL_FRAGMENT_SHADER);
+            glAttachShader( handle, frag_shader);
+            glDeleteShader( frag_shader );
+            free( frag_source );
+        }
+        glLinkProgram( handle );
+        glGetProgramiv( handle, GL_LINK_STATUS, &link_status );
+        if (link_status == GL_FALSE)
+        {
+            GLchar messages[256];
+            glGetProgramInfoLog( handle, sizeof(messages), 0, &messages[0] );
+            fprintf( stderr, "%s\n", messages );
+            exit(1);
+        }
+        return handle;
+    }
+
+
+    void add_text( vertex_buffer_t * buffer, texture_font_t * font,
+    char *text, vec4 * color, vec2 * pen )
+    {
+        size_t i;
+        float r = color->red, g = color->green, b = color->blue, a = color->alpha;
+        for( i = 0; i < strlen(text); ++i )
+        {
+            texture_glyph_t *glyph = texture_font_get_glyph( font, text + i );
+            if( glyph != NULL )
             {
-                kerning = texture_glyph_get_kerning( glyph, text + i - 1 );
+                float kerning = 0.0f;
+                if( i > 0)
+                {
+                    kerning = texture_glyph_get_kerning( glyph, text + i - 1 );
+                }
+                pen->x += kerning;
+                int x0  = (int)( pen->x + glyph->offset_x );
+                int y0  = (int)( pen->y + glyph->offset_y );
+                int x1  = (int)( x0 + glyph->width );
+                int y1  = (int)( y0 - glyph->height );
+                float s0 = glyph->s0;
+                float t0 = glyph->t0;
+                float s1 = glyph->s1;
+                float t1 = glyph->t1;
+                GLuint index = (GLuint)buffer->vertices->size;
+                GLuint indices[] = {index, index+1, index+2,
+                index, index+2, index+3};
+                vertex_t vertices[] = { { x0,y0,0,  s0,t0,  r,g,b,a },
+                { x0,y1,0,  s0,t1,  r,g,b,a },
+                { x1,y1,0,  s1,t1,  r,g,b,a },
+                { x1,y0,0,  s1,t0,  r,g,b,a } };
+                vertex_buffer_push_back_indices( buffer, indices, 6 );
+                vertex_buffer_push_back_vertices( buffer, vertices, 4 );
+                pen->x += glyph->advance_x;
             }
-            pen->x += kerning;
-            int x0  = (int)( pen->x + glyph->offset_x );
-            int y0  = (int)( pen->y + glyph->offset_y );
-            int x1  = (int)( x0 + glyph->width );
-            int y1  = (int)( y0 - glyph->height );
-            float s0 = glyph->s0;
-            float t0 = glyph->t0;
-            float s1 = glyph->s1;
-            float t1 = glyph->t1;
-            GLuint index = (GLuint)buffer->vertices->size;
-            GLuint indices[] = {index, index+1, index+2,
-                                index, index+2, index+3};
-            vertex_t vertices[] = { { x0,y0,0,  s0,t0,  r,g,b,a },
-                                    { x0,y1,0,  s0,t1,  r,g,b,a },
-                                    { x1,y1,0,  s1,t1,  r,g,b,a },
-                                    { x1,y0,0,  s1,t0,  r,g,b,a } };
-            vertex_buffer_push_back_indices( buffer, indices, 6 );
-            vertex_buffer_push_back_vertices( buffer, vertices, 4 );
-            pen->x += glyph->advance_x;
         }
     }
-}	
 
 void sjf_anon1(sjs_anon1* _this) {
 }
@@ -5685,23 +4935,18 @@ void sjf_anon8_heap(sjs_anon8_heap* _this) {
 }
 
 void sjf_array_char(sjs_array_char* _this) {
-    
-		
-
-		if (_this->size < 0) {
-			exit(-1);
-		}
-
-		if (_this->data) {
-			_this->_isGlobal = true;
-		} else {
-			_this->data = (uintptr_t)calloc(_this->size * sizeof(char), 1);
-			if (!_this->data) {
-				printf("grow: out of memory\n");
-				exit(-1);				
-			}
-		}
-	;
+    if (_this->size < 0) {
+        exit(-1);
+    }
+    if (_this->data) {
+        _this->_isGlobal = true;
+    } else {
+        _this->data = (uintptr_t)calloc(_this->size * sizeof(char), 1);
+        if (!_this->data) {
+            printf("grow: out of memory\n");
+            exit(-1);
+        }
+    }
 }
 
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* to) {
@@ -5711,52 +4956,40 @@ void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* to) {
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
-    
-	if (!_this->_isGlobal && _this->data) {
-		free((char*)_this->data);
-		_this->data = 0;	
-	}
-;
+    if (!_this->_isGlobal && _this->data) {
+        free((char*)_this->data);
+        _this->data = 0;
+    }
 }
 
 void sjf_array_char_heap(sjs_array_char_heap* _this) {
-    
-		
-
-		if (_this->size < 0) {
-			exit(-1);
-		}
-
-		if (_this->data) {
-			_this->_isGlobal = true;
-		} else {
-			_this->data = (uintptr_t)calloc(_this->size * sizeof(char), 1);
-			if (!_this->data) {
-				printf("grow: out of memory\n");
-				exit(-1);				
-			}
-		}
-	;
+    if (_this->size < 0) {
+        exit(-1);
+    }
+    if (_this->data) {
+        _this->_isGlobal = true;
+    } else {
+        _this->data = (uintptr_t)calloc(_this->size * sizeof(char), 1);
+        if (!_this->data) {
+            printf("grow: out of memory\n");
+            exit(-1);
+        }
+    }
 }
 
 void sjf_array_heap_element(sjs_array_heap_element* _this) {
-    
-		
-
-		if (_this->size < 0) {
-			exit(-1);
-		}
-
-		if (_this->data) {
-			_this->_isGlobal = true;
-		} else {
-			_this->data = (uintptr_t)calloc(_this->size * sizeof(sji_element*), 1);
-			if (!_this->data) {
-				printf("grow: out of memory\n");
-				exit(-1);				
-			}
-		}
-	;
+    if (_this->size < 0) {
+        exit(-1);
+    }
+    if (_this->data) {
+        _this->_isGlobal = true;
+    } else {
+        _this->data = (uintptr_t)calloc(_this->size * sizeof(sji_element*), 1);
+        if (!_this->data) {
+            printf("grow: out of memory\n");
+            exit(-1);
+        }
+    }
 }
 
 void sjf_array_heap_element_copy(sjs_array_heap_element* _this, sjs_array_heap_element* to) {
@@ -5766,46 +4999,36 @@ void sjf_array_heap_element_copy(sjs_array_heap_element* _this, sjs_array_heap_e
 }
 
 void sjf_array_heap_element_destroy(sjs_array_heap_element* _this) {
-    
-	if (!_this->_isGlobal && _this->data) {
-		free((sji_element**)_this->data);
-		_this->data = 0;	
-	}
-;
+    if (!_this->_isGlobal && _this->data) {
+        free((sji_element**)_this->data);
+        _this->data = 0;
+    }
 }
 
 void sjf_array_heap_element_getAt_heap(sjs_array_heap_element* _parent, int32_t index, sji_element** _return) {
-    
-		if (index >= _parent->size || index < 0) {
-			printf("getAt: out of bounds\n");
-			exit(-1);
-		}
-
-		sji_element** p = (sji_element**)_parent->data;
-		(*_return) = p[index];
-(*_return)->_refCount++;
-;		
-	;
+    if (index >= _parent->size || index < 0) {
+        printf("getAt: out of bounds\n");
+        exit(-1);
+    }
+    sji_element** p = (sji_element**)_parent->data;
+    (*_return) = p[index];
+    (*_return)->_refCount++;
+    ;
 }
 
 void sjf_array_heap_element_heap(sjs_array_heap_element_heap* _this) {
-    
-		
-
-		if (_this->size < 0) {
-			exit(-1);
-		}
-
-		if (_this->data) {
-			_this->_isGlobal = true;
-		} else {
-			_this->data = (uintptr_t)calloc(_this->size * sizeof(sji_element*), 1);
-			if (!_this->data) {
-				printf("grow: out of memory\n");
-				exit(-1);				
-			}
-		}
-	;
+    if (_this->size < 0) {
+        exit(-1);
+    }
+    if (_this->data) {
+        _this->_isGlobal = true;
+    } else {
+        _this->data = (uintptr_t)calloc(_this->size * sizeof(sji_element*), 1);
+        if (!_this->data) {
+            printf("grow: out of memory\n");
+            exit(-1);
+        }
+    }
 }
 
 void sjf_color(sjs_color* _this) {
@@ -5904,7 +5127,7 @@ void sjf_fireMouseDown(sji_element* element, sjs_point* point) {
         sjs_array_heap_element* sjv_c;
 
         sjt_getValue4 = sjv_children;
-        if (sjt_getValue4 == 0) { exit(-1); };
+        if (sjt_getValue4 == 0) { exit(-1); }
         sjv_c = sjt_getValue4;
         sjt_forStart2 = 0;
         i = sjt_forStart2;
@@ -6022,7 +5245,7 @@ void sjf_fireMouseUp(sji_element* element, sjs_point* point) {
         sjs_array_heap_element* sjv_c;
 
         sjt_getValue2 = sjv_children;
-        if (sjt_getValue2 == 0) { exit(-1); };
+        if (sjt_getValue2 == 0) { exit(-1); }
         sjv_c = sjt_getValue2;
         sjt_forStart1 = 0;
         i = sjt_forStart1;
@@ -6061,13 +5284,11 @@ void sjf_fireMouseUp(sji_element* element, sjs_point* point) {
 }
 
 void sjf_font(sjs_font* _this) {
-    
     _this->atlas = texture_atlas_new( 512, 512, 3 );
     _this->font = texture_font_new_from_file(_this->atlas, _this->size, (char*)_this->src.data.data);
     if (_this->font == 0) {
         printf("texture_font_new_from_file Error\n");
-    }	
-
+    }
     glGenTextures( 1, &_this->atlas->id );
     glBindTexture( GL_TEXTURE_2D, _this->atlas->id );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
@@ -6075,7 +5296,6 @@ void sjf_font(sjs_font* _this) {
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, (int)_this->atlas->width, (int)_this->atlas->height, 0, GL_RGB, GL_UNSIGNED_BYTE, _this->atlas->data );
-;
 }
 
 void sjf_font_copy(sjs_font* _this, sjs_font* to) {
@@ -6085,20 +5305,16 @@ void sjf_font_copy(sjs_font* _this, sjs_font* to) {
 }
 
 void sjf_font_destroy(sjs_font* _this) {
-    
-	texture_atlas_delete(_this->atlas);
-	texture_font_delete(_this->font);
-;
+    texture_atlas_delete(_this->atlas);
+    texture_font_delete(_this->font);
 }
 
 void sjf_font_heap(sjs_font_heap* _this) {
-    
     _this->atlas = texture_atlas_new( 512, 512, 3 );
     _this->font = texture_font_new_from_file(_this->atlas, _this->size, (char*)_this->src.data.data);
     if (_this->font == 0) {
         printf("texture_font_new_from_file Error\n");
-    }	
-
+    }
     glGenTextures( 1, &_this->atlas->id );
     glBindTexture( GL_TEXTURE_2D, _this->atlas->id );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
@@ -6106,7 +5322,6 @@ void sjf_font_heap(sjs_font_heap* _this) {
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, (int)_this->atlas->width, (int)_this->atlas->height, 0, GL_RGB, GL_UNSIGNED_BYTE, _this->atlas->data );
-;
 }
 
 void sjf_image(sjs_image* _this) {
@@ -6249,29 +5464,26 @@ void sjf_mainLoop(void) {
     sjv_isMouseDown = false;
     sjv_x = 0;
     sjv_y = 0;
-    
-        SDL_Event e;
-        while(SDL_PollEvent( &e ) != 0) {
-            switch (e.type) {
-                case SDL_QUIT:
-                    exit(0);
-                    break;
-                case SDL_MOUSEBUTTONDOWN:
-                    printf("SDL_MOUSEBUTTONDOWN\n");
-                    sjv_isMouseDown = true;
-                    sjv_x = e.button.x;
-                    sjv_y = e.button.x;
-                    break;
-                case SDL_MOUSEBUTTONUP:
-                    printf("SDL_MOUSEBUTTONUP\n");
-                    sjv_isMouseUp = true;
-                    sjv_x = e.button.x;
-                    sjv_y = e.button.x;
-                    break;
-            }
+    SDL_Event e;
+    while(SDL_PollEvent( &e ) != 0) {
+        switch (e.type) {
+            case SDL_QUIT:
+            exit(0);
+            break;
+            case SDL_MOUSEBUTTONDOWN:
+            printf("SDL_MOUSEBUTTONDOWN\n");
+            sjv_isMouseDown = true;
+            sjv_x = e.button.x;
+            sjv_y = e.button.x;
+            break;
+            case SDL_MOUSEBUTTONUP:
+            printf("SDL_MOUSEBUTTONUP\n");
+            sjv_isMouseUp = true;
+            sjv_x = e.button.x;
+            sjv_y = e.button.x;
+            break;
         }
-    
-    ;
+    }
     sjt_ifElse5 = sjv_isMouseUp;
     if (sjt_ifElse5) {
         sjs_point sjt_call1;
@@ -6422,56 +5634,55 @@ void sjf_rect_heap(sjs_rect_heap* _this) {
 }
 
 void sjf_runLoop(void) {
-    
-#ifdef EMSCRIPTEN
-	emscripten_set_main_loop((em_callback_func)sjf_mainLoop, 0, 0);
-	exit(0);
-#else
-	bool quit = false;
+    #ifdef EMSCRIPTEN
+    emscripten_set_main_loop((em_callback_func)sjf_mainLoop, 0, 0);
+    exit(0);
+    #else
+    bool quit = false;
     while (!quit) {
         sjf_mainLoop();
     }
-#endif	
-	;
+    #endif
 }
 
 void sjf_sdlSurface(sjs_sdlSurface* _this) {
-    
-		if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-	        printf("SDL_Init Error: %s\n", SDL_GetError());
-	        exit(-1);
-	    }
-
-#ifdef __APPLE__
-    	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-#else
-    	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-    	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-#endif
-		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-
-	    _this->win = SDL_CreateWindow("Hello World!", 100, 100, _this->size.w, _this->size.h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-	    if (_this->win == 0) {
-	        printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
-	        exit(-1);
-	    }
-
-	    SDL_GL_CreateContext((SDL_Window*)_this->win);
-	    _this->ren = SDL_CreateRenderer((SDL_Window*)_this->win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	    if (_this->ren == 0) {
-	        printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
-	        exit(-1);
-	    }
-
-        glClearColor( 1.0, 0.0, 1.0, 1.0 );
-	    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	    glEnable( GL_BLEND );
-
-	    _this->textShader = shader_load("shaders/v3f-t2f-c4f.vert", "shaders/v3f-t2f-c4f.frag");
-	;
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        printf("SDL_Init Error: %s\n", SDL_GetError());
+        exit(-1);
+    }
+    #ifdef __APPLE__
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    #else
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    #endif
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    _this->win = SDL_CreateWindow("Hello World!", 100, 100, _this->size.w, _this->size.h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    if (_this->win == 0) {
+        printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
+        exit(-1);
+    }
+    SDL_GL_CreateContext((SDL_Window*)_this->win);
+    #ifdef WIN32
+    GLint GlewInitResult = glewInit();
+    if (GLEW_OK != GlewInitResult)
+    {
+        printf("ERROR: %s\n", glewGetErrorString(GlewInitResult));
+        exit(EXIT_FAILURE);
+    }
+    #endif
+    _this->ren = SDL_CreateRenderer((SDL_Window*)_this->win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (_this->ren == 0) {
+        printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
+        exit(-1);
+    }
+    glClearColor( 1.0, 0.0, 1.0, 1.0 );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glEnable( GL_BLEND );
+    _this->textShader = shader_load("shaders/v3f-t2f-c4f.vert", "shaders/v3f-t2f-c4f.frag");
 }
 
 sjs_object* sjf_sdlSurface_asInterface(sjs_sdlSurface* _this, int typeId) {
@@ -6508,19 +5719,15 @@ sji_surface* sjf_sdlSurface_as_sji_surface(sjs_sdlSurface* _this) {
 }
 
 void sjf_sdlSurface_clear(sjs_sdlSurface* _parent) {
-    
-		int32_t w, h;
-		SDL_GetRendererOutputSize(_parent->ren, &w, &h);
-	    glViewport(0, 0, w, h);
-
-	    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-	    glEnable( GL_TEXTURE_2D );
-	    glDisable( GL_DEPTH_TEST );
-
-	    mat4_set_orthographic( &_parent->projection, 0, w, 0, h, -1, 1);
-	    mat4_set_identity( &_parent->model );
-	    mat4_set_identity( &_parent->view );
-	;
+    int32_t w, h;
+    SDL_GetRendererOutputSize(_parent->ren, &w, &h);
+    glViewport(0, 0, w, h);
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    glEnable( GL_TEXTURE_2D );
+    glDisable( GL_DEPTH_TEST );
+    mat4_set_orthographic( &_parent->projection, 0, w, 0, h, -1, 1);
+    mat4_set_identity( &_parent->model );
+    mat4_set_identity( &_parent->view );
 }
 
 void sjf_sdlSurface_copy(sjs_sdlSurface* _this, sjs_sdlSurface* to) {
@@ -6528,187 +5735,157 @@ void sjf_sdlSurface_copy(sjs_sdlSurface* _this, sjs_sdlSurface* to) {
 }
 
 void sjf_sdlSurface_destroy(sjs_sdlSurface* _this) {
-    
-	SDL_DestroyRenderer(_this->ren);
-	SDL_DestroyWindow((SDL_Window*)_this->win);
-;
+    SDL_DestroyRenderer(_this->ren);
+    SDL_DestroyWindow((SDL_Window*)_this->win);
 }
 
 void sjf_sdlSurface_drawImage(sjs_sdlSurface* _parent, sjs_rect* rect, sjs_image* image) {
-    
-/*
-		if (image->texture.tex) {
-			if (image->margin.l > 0) {
-				if (image->margin.t > 0) {
-					SDL_Rect leftTopSrcRect;
-					leftTopSrcRect.x = image->rect.x;
-					leftTopSrcRect.y = image->rect.y;
-					leftTopSrcRect.w = image->margin.l;
-					leftTopSrcRect.h = image->margin.t;
-
-					SDL_Rect leftTopDestRect;
-					leftTopDestRect.x = rect->x;
-					leftTopDestRect.y = rect->y;
-					leftTopDestRect.w = image->margin.l;
-					leftTopDestRect.h = image->margin.t;
-					SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &leftTopSrcRect, &leftTopDestRect);
-				}
-
-				SDL_Rect leftSrcRect;
-				leftSrcRect.x = image->rect.x;
-				leftSrcRect.y = image->rect.y + image->margin.t;
-				leftSrcRect.w = image->margin.l;
-				leftSrcRect.h = image->rect.h - image->margin.t - image->margin.b;
-
-				SDL_Rect leftDestRect;
-				leftDestRect.x = rect->x;
-				leftDestRect.y = rect->y + image->margin.t;
-				leftDestRect.w = image->margin.l;
-				leftDestRect.h = rect->h - image->margin.t - image->margin.b;
-				SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &leftSrcRect, &leftDestRect);
-
-				if (image->margin.b > 0) {
-					SDL_Rect leftBottomSrcRect;
-					leftBottomSrcRect.x = image->rect.x;
-					leftBottomSrcRect.y = image->rect.y + image->rect.h - image->margin.b;
-					leftBottomSrcRect.w = image->margin.l;
-					leftBottomSrcRect.h = image->margin.b;
-
-					SDL_Rect leftBottomDestRect;
-					leftBottomDestRect.x = rect->x;
-					leftBottomDestRect.y = rect->y + rect->h - image->margin.b;
-					leftBottomDestRect.w = image->margin.l;
-					leftBottomDestRect.h = image->margin.b;
-					SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &leftBottomSrcRect, &leftBottomDestRect);
-				}
-			}
-
-			if (image->margin.r > 0) {
-				if (image->margin.t > 0) {
-					SDL_Rect rightTopSrcRect;
-					rightTopSrcRect.x = image->rect.x + image->rect.w - image->margin.r;
-					rightTopSrcRect.y = image->rect.y;
-					rightTopSrcRect.w = image->margin.r;
-					rightTopSrcRect.h = image->margin.t;
-
-					SDL_Rect rightTopDestRect;
-					rightTopDestRect.x = rect->x + rect->w - image->margin.r;
-					rightTopDestRect.y = rect->y;
-					rightTopDestRect.w = image->margin.r;
-					rightTopDestRect.h = image->margin.t;
-					SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &rightTopSrcRect, &rightTopDestRect);
-				}
-
-				SDL_Rect rightSrcRect;
-				rightSrcRect.x = image->rect.x + image->rect.w - image->margin.r;
-				rightSrcRect.y = image->rect.y + image->margin.t;
-				rightSrcRect.w = image->margin.r;
-				rightSrcRect.h = image->rect.h - image->margin.t - image->margin.b;
-
-				SDL_Rect rightDestRect;
-				rightDestRect.x = rect->x + rect->w - image->margin.r;
-				rightDestRect.y = rect->y + image->margin.t;
-				rightDestRect.w = image->margin.r;
-				rightDestRect.h = rect->h - image->margin.t - image->margin.b;
-				SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &rightSrcRect, &rightDestRect);
-
-				if (image->margin.b > 0) {
-					SDL_Rect rightBottomSrcRect;
-					rightBottomSrcRect.x = image->rect.x + image->rect.w - image->margin.r;
-					rightBottomSrcRect.y = image->rect.y + image->rect.h - image->margin.b;
-					rightBottomSrcRect.w = image->margin.r;
-					rightBottomSrcRect.h = image->margin.b;
-
-					SDL_Rect rightBottomDestRect;
-					rightBottomDestRect.x = rect->x + rect->w - image->margin.r;
-					rightBottomDestRect.y = rect->y + rect->h - image->margin.b;
-					rightBottomDestRect.w = image->margin.r;
-					rightBottomDestRect.h = image->margin.b;
-					SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &rightBottomSrcRect, &rightBottomDestRect);
-				}
-			}
-
-			if (image->margin.t > 0) {
-				SDL_Rect middleTopSrcRect;
-				middleTopSrcRect.x = image->rect.x + image->margin.l;
-				middleTopSrcRect.y = image->rect.y;
-				middleTopSrcRect.w = image->rect.w - image->margin.l - image->margin.r;
-				middleTopSrcRect.h = image->margin.t;
-
-				SDL_Rect middleTopDestRect;
-				middleTopDestRect.x = rect->x + image->margin.l;
-				middleTopDestRect.y = rect->y;
-				middleTopDestRect.w = rect->w - image->margin.l - image->margin.r;
-				middleTopDestRect.h = image->margin.t;
-				SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &middleTopSrcRect, &middleTopDestRect);
-			}
-
-			SDL_Rect middleSrcRect;
-			middleSrcRect.x = image->rect.x + image->margin.l;
-			middleSrcRect.y = image->rect.y + image->margin.t;
-			middleSrcRect.w = image->rect.w - image->margin.l - image->margin.r;
-			middleSrcRect.h = image->rect.h - image->margin.t - image->margin.b;
-
-			SDL_Rect middleDestRect;
-			middleDestRect.x = rect->x + image->margin.l;
-			middleDestRect.y = rect->y + image->margin.t;
-			middleDestRect.w = rect->w - image->margin.l - image->margin.r;
-			middleDestRect.h = rect->h - image->margin.t - image->margin.b;
-			SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &middleSrcRect, &middleDestRect);
-
-			if (image->margin.b > 0) {
-				SDL_Rect middleBottomSrcRect;
-				middleBottomSrcRect.x = image->rect.x + image->margin.l;
-				middleBottomSrcRect.y = image->rect.y + image->rect.h - image->margin.b;
-				middleBottomSrcRect.w = image->rect.w - image->margin.l - image->margin.r;
-				middleBottomSrcRect.h = image->margin.b;
-
-				SDL_Rect middleBottomDestRect;
-				middleBottomDestRect.x = rect->x + image->margin.l;
-				middleBottomDestRect.y = rect->y + rect->h - image->margin.b;
-				middleBottomDestRect.w = rect->w - image->margin.l - image->margin.r;
-				middleBottomDestRect.h = image->margin.b;
-				SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &middleBottomSrcRect, &middleBottomDestRect);
-			}
-		}
-*/
-	;
+    /*
+    if (image->texture.tex) {
+        if (image->margin.l > 0) {
+            if (image->margin.t > 0) {
+                SDL_Rect leftTopSrcRect;
+                leftTopSrcRect.x = image->rect.x;
+                leftTopSrcRect.y = image->rect.y;
+                leftTopSrcRect.w = image->margin.l;
+                leftTopSrcRect.h = image->margin.t;
+                SDL_Rect leftTopDestRect;
+                leftTopDestRect.x = rect->x;
+                leftTopDestRect.y = rect->y;
+                leftTopDestRect.w = image->margin.l;
+                leftTopDestRect.h = image->margin.t;
+                SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &leftTopSrcRect, &leftTopDestRect);
+            }
+            SDL_Rect leftSrcRect;
+            leftSrcRect.x = image->rect.x;
+            leftSrcRect.y = image->rect.y + image->margin.t;
+            leftSrcRect.w = image->margin.l;
+            leftSrcRect.h = image->rect.h - image->margin.t - image->margin.b;
+            SDL_Rect leftDestRect;
+            leftDestRect.x = rect->x;
+            leftDestRect.y = rect->y + image->margin.t;
+            leftDestRect.w = image->margin.l;
+            leftDestRect.h = rect->h - image->margin.t - image->margin.b;
+            SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &leftSrcRect, &leftDestRect);
+            if (image->margin.b > 0) {
+                SDL_Rect leftBottomSrcRect;
+                leftBottomSrcRect.x = image->rect.x;
+                leftBottomSrcRect.y = image->rect.y + image->rect.h - image->margin.b;
+                leftBottomSrcRect.w = image->margin.l;
+                leftBottomSrcRect.h = image->margin.b;
+                SDL_Rect leftBottomDestRect;
+                leftBottomDestRect.x = rect->x;
+                leftBottomDestRect.y = rect->y + rect->h - image->margin.b;
+                leftBottomDestRect.w = image->margin.l;
+                leftBottomDestRect.h = image->margin.b;
+                SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &leftBottomSrcRect, &leftBottomDestRect);
+            }
+        }
+        if (image->margin.r > 0) {
+            if (image->margin.t > 0) {
+                SDL_Rect rightTopSrcRect;
+                rightTopSrcRect.x = image->rect.x + image->rect.w - image->margin.r;
+                rightTopSrcRect.y = image->rect.y;
+                rightTopSrcRect.w = image->margin.r;
+                rightTopSrcRect.h = image->margin.t;
+                SDL_Rect rightTopDestRect;
+                rightTopDestRect.x = rect->x + rect->w - image->margin.r;
+                rightTopDestRect.y = rect->y;
+                rightTopDestRect.w = image->margin.r;
+                rightTopDestRect.h = image->margin.t;
+                SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &rightTopSrcRect, &rightTopDestRect);
+            }
+            SDL_Rect rightSrcRect;
+            rightSrcRect.x = image->rect.x + image->rect.w - image->margin.r;
+            rightSrcRect.y = image->rect.y + image->margin.t;
+            rightSrcRect.w = image->margin.r;
+            rightSrcRect.h = image->rect.h - image->margin.t - image->margin.b;
+            SDL_Rect rightDestRect;
+            rightDestRect.x = rect->x + rect->w - image->margin.r;
+            rightDestRect.y = rect->y + image->margin.t;
+            rightDestRect.w = image->margin.r;
+            rightDestRect.h = rect->h - image->margin.t - image->margin.b;
+            SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &rightSrcRect, &rightDestRect);
+            if (image->margin.b > 0) {
+                SDL_Rect rightBottomSrcRect;
+                rightBottomSrcRect.x = image->rect.x + image->rect.w - image->margin.r;
+                rightBottomSrcRect.y = image->rect.y + image->rect.h - image->margin.b;
+                rightBottomSrcRect.w = image->margin.r;
+                rightBottomSrcRect.h = image->margin.b;
+                SDL_Rect rightBottomDestRect;
+                rightBottomDestRect.x = rect->x + rect->w - image->margin.r;
+                rightBottomDestRect.y = rect->y + rect->h - image->margin.b;
+                rightBottomDestRect.w = image->margin.r;
+                rightBottomDestRect.h = image->margin.b;
+                SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &rightBottomSrcRect, &rightBottomDestRect);
+            }
+        }
+        if (image->margin.t > 0) {
+            SDL_Rect middleTopSrcRect;
+            middleTopSrcRect.x = image->rect.x + image->margin.l;
+            middleTopSrcRect.y = image->rect.y;
+            middleTopSrcRect.w = image->rect.w - image->margin.l - image->margin.r;
+            middleTopSrcRect.h = image->margin.t;
+            SDL_Rect middleTopDestRect;
+            middleTopDestRect.x = rect->x + image->margin.l;
+            middleTopDestRect.y = rect->y;
+            middleTopDestRect.w = rect->w - image->margin.l - image->margin.r;
+            middleTopDestRect.h = image->margin.t;
+            SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &middleTopSrcRect, &middleTopDestRect);
+        }
+        SDL_Rect middleSrcRect;
+        middleSrcRect.x = image->rect.x + image->margin.l;
+        middleSrcRect.y = image->rect.y + image->margin.t;
+        middleSrcRect.w = image->rect.w - image->margin.l - image->margin.r;
+        middleSrcRect.h = image->rect.h - image->margin.t - image->margin.b;
+        SDL_Rect middleDestRect;
+        middleDestRect.x = rect->x + image->margin.l;
+        middleDestRect.y = rect->y + image->margin.t;
+        middleDestRect.w = rect->w - image->margin.l - image->margin.r;
+        middleDestRect.h = rect->h - image->margin.t - image->margin.b;
+        SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &middleSrcRect, &middleDestRect);
+        if (image->margin.b > 0) {
+            SDL_Rect middleBottomSrcRect;
+            middleBottomSrcRect.x = image->rect.x + image->margin.l;
+            middleBottomSrcRect.y = image->rect.y + image->rect.h - image->margin.b;
+            middleBottomSrcRect.w = image->rect.w - image->margin.l - image->margin.r;
+            middleBottomSrcRect.h = image->margin.b;
+            SDL_Rect middleBottomDestRect;
+            middleBottomDestRect.x = rect->x + image->margin.l;
+            middleBottomDestRect.y = rect->y + rect->h - image->margin.b;
+            middleBottomDestRect.w = rect->w - image->margin.l - image->margin.r;
+            middleBottomDestRect.h = image->margin.b;
+            SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &middleBottomSrcRect, &middleBottomDestRect);
+        }
+    }
+    */
 }
 
 void sjf_sdlSurface_drawRect(sjs_sdlSurface* _parent, sjs_rect* rect, sjs_color* color) {
-    
-/*
-		SDL_SetRenderDrawColor(_parent->ren, color->r, color->g, color->b, color->a);
-		SDL_RenderFillRect(_parent->ren, (SDL_Rect*)rect);
-*/
-	;
+    /*
+    SDL_SetRenderDrawColor(_parent->ren, color->r, color->g, color->b, color->a);
+    SDL_RenderFillRect(_parent->ren, (SDL_Rect*)rect);
+    */
 }
 
 void sjf_sdlSurface_drawText(sjs_sdlSurface* _parent, sjs_rect* rect, sjs_font* font, sjs_string* text, sjs_color* color) {
-    
-		if (((char*)text->data.data)[0] != 0) {
-			vec2 pen = {{ rect->x, rect->y }};
-    		vec4 color = {{ 0,0,0,1 }};
-
-		    vertex_buffer_t* buffer = vertex_buffer_new("vertex:3f,tex_coord:2f,color:4f");
-		    add_text(buffer, font->font, (char*)text->data.data, &color, &pen );
-
-		    glBindTexture(GL_TEXTURE_2D, font->atlas->id);
-
-    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, (int)font->atlas->width, (int)font->atlas->height, 0, GL_RGB, GL_UNSIGNED_BYTE, font->atlas->data );
-
-   		    glUseProgram(_parent->textShader);
-		    {
-		        glUniform1i(glGetUniformLocation(_parent->textShader, "texture" ), 0 );
-		        glUniformMatrix4fv(glGetUniformLocation(_parent->textShader, "model" ), 1, 0, _parent->model.data);
-		        glUniformMatrix4fv(glGetUniformLocation(_parent->textShader, "view" ), 1, 0, _parent->view.data);
-		        glUniformMatrix4fv(glGetUniformLocation(_parent->textShader, "projection" ), 1, 0, _parent->projection.data);
-		        vertex_buffer_render(buffer, GL_TRIANGLES);
-		    }
-
-		    vertex_buffer_delete(buffer);
-	    }
-	;
+    if (((char*)text->data.data)[0] != 0) {
+        vec2 pen = {{ rect->x, rect->y }};
+        vec4 color = {{ 0,0,0,1 }};
+        vertex_buffer_t* buffer = vertex_buffer_new("vertex:3f,tex_coord:2f,color:4f");
+        add_text(buffer, font->font, (char*)text->data.data, &color, &pen );
+        glBindTexture(GL_TEXTURE_2D, font->atlas->id);
+        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, (int)font->atlas->width, (int)font->atlas->height, 0, GL_RGB, GL_UNSIGNED_BYTE, font->atlas->data );
+        glUseProgram(_parent->textShader);
+        {
+            glUniform1i(glGetUniformLocation(_parent->textShader, "texture" ), 0 );
+            glUniformMatrix4fv(glGetUniformLocation(_parent->textShader, "model" ), 1, 0, _parent->model.data);
+            glUniformMatrix4fv(glGetUniformLocation(_parent->textShader, "view" ), 1, 0, _parent->view.data);
+            glUniformMatrix4fv(glGetUniformLocation(_parent->textShader, "projection" ), 1, 0, _parent->projection.data);
+            vertex_buffer_render(buffer, GL_TRIANGLES);
+        }
+        vertex_buffer_delete(buffer);
+    }
 }
 
 void sjf_sdlSurface_getSize(sjs_sdlSurface* _parent, sjs_size* _return) {
@@ -6717,9 +5894,7 @@ void sjf_sdlSurface_getSize(sjs_sdlSurface* _parent, sjs_size* _return) {
 
     sjv_w = 0;
     sjv_h = 0;
-     
-			SDL_GetRendererOutputSize(_parent->ren, &sjv_w, &sjv_h);
-		;
+    SDL_GetRendererOutputSize(_parent->ren, &sjv_w, &sjv_h);
     _return->w = sjv_w;
     _return->h = sjv_h;
     sjf_size(_return);
@@ -6731,9 +5906,7 @@ void sjf_sdlSurface_getSize_heap(sjs_sdlSurface* _parent, sjs_size_heap** _retur
 
     sjv_w = 0;
     sjv_h = 0;
-     
-			SDL_GetRendererOutputSize(_parent->ren, &sjv_w, &sjv_h);
-		;
+    SDL_GetRendererOutputSize(_parent->ren, &sjv_w, &sjv_h);
     (*_return) = (sjs_size_heap*)malloc(sizeof(sjs_size_heap));
     (*_return)->_refCount = 1;
     (*_return)->w = sjv_w;
@@ -6788,42 +5961,43 @@ void sjf_sdlSurface_getTexture_heap(sjs_sdlSurface* _parent, sjs_string* src, sj
 }
 
 void sjf_sdlSurface_heap(sjs_sdlSurface_heap* _this) {
-    
-		if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-	        printf("SDL_Init Error: %s\n", SDL_GetError());
-	        exit(-1);
-	    }
-
-#ifdef __APPLE__
-    	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-#else
-    	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-    	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-#endif
-		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-
-	    _this->win = SDL_CreateWindow("Hello World!", 100, 100, _this->size.w, _this->size.h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-	    if (_this->win == 0) {
-	        printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
-	        exit(-1);
-	    }
-
-	    SDL_GL_CreateContext((SDL_Window*)_this->win);
-	    _this->ren = SDL_CreateRenderer((SDL_Window*)_this->win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	    if (_this->ren == 0) {
-	        printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
-	        exit(-1);
-	    }
-
-        glClearColor( 1.0, 0.0, 1.0, 1.0 );
-	    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	    glEnable( GL_BLEND );
-
-	    _this->textShader = shader_load("shaders/v3f-t2f-c4f.vert", "shaders/v3f-t2f-c4f.frag");
-	;
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        printf("SDL_Init Error: %s\n", SDL_GetError());
+        exit(-1);
+    }
+    #ifdef __APPLE__
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    #else
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    #endif
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    _this->win = SDL_CreateWindow("Hello World!", 100, 100, _this->size.w, _this->size.h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    if (_this->win == 0) {
+        printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
+        exit(-1);
+    }
+    SDL_GL_CreateContext((SDL_Window*)_this->win);
+    #ifdef WIN32
+    GLint GlewInitResult = glewInit();
+    if (GLEW_OK != GlewInitResult)
+    {
+        printf("ERROR: %s\n", glewGetErrorString(GlewInitResult));
+        exit(EXIT_FAILURE);
+    }
+    #endif
+    _this->ren = SDL_CreateRenderer((SDL_Window*)_this->win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (_this->ren == 0) {
+        printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
+        exit(-1);
+    }
+    glClearColor( 1.0, 0.0, 1.0, 1.0 );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glEnable( GL_BLEND );
+    _this->textShader = shader_load("shaders/v3f-t2f-c4f.vert", "shaders/v3f-t2f-c4f.frag");
 }
 
 sjs_object* sjf_sdlSurface_heap_asInterface(sjs_sdlSurface_heap* _this, int typeId) {
@@ -6860,9 +6034,7 @@ sji_surface* sjf_sdlSurface_heap_as_sji_surface(sjs_sdlSurface_heap* _this) {
 }
 
 void sjf_sdlSurface_present(sjs_sdlSurface* _parent) {
-    
-		SDL_GL_SwapWindow((SDL_Window*)_parent->win);
-	;
+    SDL_GL_SwapWindow((SDL_Window*)_parent->win);
 }
 
 void sjf_size(sjs_size* _this) {
@@ -7111,11 +6283,9 @@ void sjf_texture_copy(sjs_texture* _this, sjs_texture* to) {
 }
 
 void sjf_texture_destroy(sjs_texture* _this) {
-    
-	if (_this->tex) {
-		SDL_DestroyTexture((SDL_Texture*)_this->tex);	
-	}
-;
+    if (_this->tex) {
+        SDL_DestroyTexture((SDL_Texture*)_this->tex);
+    }
 }
 
 void sjf_texture_getSize(sjs_texture* _parent, sjs_size* _return) {
@@ -7124,11 +6294,9 @@ void sjf_texture_getSize(sjs_texture* _parent, sjs_size* _return) {
 
     sjv_w = 0;
     sjv_h = 0;
-    
-			if (_parent->tex) {
-				SDL_QueryTexture((SDL_Texture*)_parent->tex, NULL, NULL, &sjv_w, &sjv_h);
-			}
-		;
+    if (_parent->tex) {
+        SDL_QueryTexture((SDL_Texture*)_parent->tex, NULL, NULL, &sjv_w, &sjv_h);
+    }
     _return->w = sjv_w;
     _return->h = sjv_h;
     sjf_size(_return);
@@ -7140,11 +6308,9 @@ void sjf_texture_getSize_heap(sjs_texture* _parent, sjs_size_heap** _return) {
 
     sjv_w = 0;
     sjv_h = 0;
-    
-			if (_parent->tex) {
-				SDL_QueryTexture((SDL_Texture*)_parent->tex, NULL, NULL, &sjv_w, &sjv_h);
-			}
-		;
+    if (_parent->tex) {
+        SDL_QueryTexture((SDL_Texture*)_parent->tex, NULL, NULL, &sjv_w, &sjv_h);
+    }
     (*_return) = (sjs_size_heap*)malloc(sizeof(sjs_size_heap));
     (*_return)->_refCount = 1;
     (*_return)->w = sjv_w;

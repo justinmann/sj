@@ -144,23 +144,18 @@ void sjf_list_heap_class_setSize(sjs_list_heap_class* _parent, int32_t size);
 void main_destroy(void);
 
 void sjf_array_heap_class(sjs_array_heap_class* _this) {
-    
-		
-
-		if (_this->size < 0) {
-			exit(-1);
-		}
-
-		if (_this->data) {
-			_this->_isGlobal = true;
-		} else {
-			_this->data = (uintptr_t)calloc(_this->size * sizeof(sjs_class_heap*), 1);
-			if (!_this->data) {
-				printf("grow: out of memory\n");
-				exit(-1);				
-			}
-		}
-	;
+    if (_this->size < 0) {
+        exit(-1);
+    }
+    if (_this->data) {
+        _this->_isGlobal = true;
+    } else {
+        _this->data = (uintptr_t)calloc(_this->size * sizeof(sjs_class_heap*), 1);
+        if (!_this->data) {
+            printf("grow: out of memory\n");
+            exit(-1);
+        }
+    }
 }
 
 void sjf_array_heap_class_copy(sjs_array_heap_class* _this, sjs_array_heap_class* to) {
@@ -170,95 +165,79 @@ void sjf_array_heap_class_copy(sjs_array_heap_class* _this, sjs_array_heap_class
 }
 
 void sjf_array_heap_class_destroy(sjs_array_heap_class* _this) {
-    
-	if (!_this->_isGlobal && _this->data) {
-		free((sjs_class_heap**)_this->data);
-		_this->data = 0;	
-	}
-;
+    if (!_this->_isGlobal && _this->data) {
+        free((sjs_class_heap**)_this->data);
+        _this->data = 0;
+    }
 }
 
 void sjf_array_heap_class_getAt_heap(sjs_array_heap_class* _parent, int32_t index, sjs_class_heap** _return) {
-    
-		if (index >= _parent->size || index < 0) {
-			printf("getAt: out of bounds\n");
-			exit(-1);
-		}
-
-		sjs_class_heap** p = (sjs_class_heap**)_parent->data;
-		(*_return) = p[index];
-(*_return)->_refCount++;
-;		
-	;
+    if (index >= _parent->size || index < 0) {
+        printf("getAt: out of bounds\n");
+        exit(-1);
+    }
+    sjs_class_heap** p = (sjs_class_heap**)_parent->data;
+    (*_return) = p[index];
+    (*_return)->_refCount++;
+    ;
 }
 
 void sjf_array_heap_class_grow(sjs_array_heap_class* _parent, int32_t new_size) {
-    
-		if (_parent->size != new_size) {
-			if (new_size < _parent->size) {
-				printf("grow: new _parent->size smaller than old _parent->size %d:%d\n", new_size, _parent->size);
-				exit(-1);
-			}
-			
-			if (_parent->_isGlobal) {
-				_parent->_isGlobal = false;
-				sjs_class_heap** p = (sjs_class_heap**)_parent->data;
-				_parent->data = (uintptr_t)calloc(new_size * sizeof(sjs_class_heap*), 1);
-				if (!_parent->data) {
-					printf("grow: out of memory\n");
-					exit(-1);				
-				}
-				memcpy((void*)_parent->data, p, _parent->size * sizeof(sjs_class_heap*));
-			} else {
-				_parent->data = (uintptr_t)realloc((void*)_parent->data, new_size * sizeof(sjs_class_heap*));
-				if (!_parent->data) {
-					printf("grow: out of memory\n");
-					exit(-1);				
-				}
-				memset((sjs_class_heap**)_parent->data + _parent->size, 0, (new_size - _parent->size) * sizeof(sjs_class_heap*));
-			}
-			_parent->size = new_size;
-		}
-	;
+    if (_parent->size != new_size) {
+        if (new_size < _parent->size) {
+            printf("grow: new _parent->size smaller than old _parent->size %d:%d\n", new_size, _parent->size);
+            exit(-1);
+        }
+        if (_parent->_isGlobal) {
+            _parent->_isGlobal = false;
+            sjs_class_heap** p = (sjs_class_heap**)_parent->data;
+            _parent->data = (uintptr_t)calloc(new_size * sizeof(sjs_class_heap*), 1);
+            if (!_parent->data) {
+                printf("grow: out of memory\n");
+                exit(-1);
+            }
+            memcpy((void*)_parent->data, p, _parent->size * sizeof(sjs_class_heap*));
+        } else {
+            _parent->data = (uintptr_t)realloc((void*)_parent->data, new_size * sizeof(sjs_class_heap*));
+            if (!_parent->data) {
+                printf("grow: out of memory\n");
+                exit(-1);
+            }
+            memset((sjs_class_heap**)_parent->data + _parent->size, 0, (new_size - _parent->size) * sizeof(sjs_class_heap*));
+        }
+        _parent->size = new_size;
+    }
 }
 
 void sjf_array_heap_class_heap(sjs_array_heap_class_heap* _this) {
-    
-		
-
-		if (_this->size < 0) {
-			exit(-1);
-		}
-
-		if (_this->data) {
-			_this->_isGlobal = true;
-		} else {
-			_this->data = (uintptr_t)calloc(_this->size * sizeof(sjs_class_heap*), 1);
-			if (!_this->data) {
-				printf("grow: out of memory\n");
-				exit(-1);				
-			}
-		}
-	;
+    if (_this->size < 0) {
+        exit(-1);
+    }
+    if (_this->data) {
+        _this->_isGlobal = true;
+    } else {
+        _this->data = (uintptr_t)calloc(_this->size * sizeof(sjs_class_heap*), 1);
+        if (!_this->data) {
+            printf("grow: out of memory\n");
+            exit(-1);
+        }
+    }
 }
 
 void sjf_array_heap_class_setAt(sjs_array_heap_class* _parent, int32_t index, sjs_class_heap* item) {
-    
-		if (index >= _parent->size || index < 0) {
-			printf("setAt: out of bounds %d:%d\n", index, _parent->size);
-			exit(-1);
-		}
-
-		sjs_class_heap** p = (sjs_class_heap**)_parent->data;
-		p[index]->_refCount--;
-if (p[index]->_refCount <= 0) {
-    sjf_class_destroy((sjs_class*)(((char*)p[index]) + sizeof(intptr_t)));
-}
-;
-		p[index] = item;
-p[index]->_refCount++;
-;
-	;
+    if (index >= _parent->size || index < 0) {
+        printf("setAt: out of bounds %d:%d\n", index, _parent->size);
+        exit(-1);
+    }
+    sjs_class_heap** p = (sjs_class_heap**)_parent->data;
+    p[index]->_refCount--;
+    if (p[index]->_refCount <= 0) {
+        sjf_class_destroy((sjs_class*)(((char*)p[index]) + sizeof(intptr_t)));
+    }
+    ;
+    p[index] = item;
+    p[index]->_refCount++;
+    ;
 }
 
 void sjf_class(sjs_class* _this) {

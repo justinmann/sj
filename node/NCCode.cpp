@@ -202,7 +202,7 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
     return "";
 }
 
-string expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOutput* trOutput, string& code, shared_ptr<TrStoreValue> returnValue, vector<shared_ptr<CFunction>>& functions, map<string, map<string, bool>>& includes, shared_ptr<CType>& returnType) {
+vector<string> expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOutput* trOutput, string& code, shared_ptr<TrStoreValue> returnValue, vector<shared_ptr<CFunction>>& functions, map<string, map<string, bool>>& includes, shared_ptr<CType>& returnType) {
     stringstream finalCode;
     stringstream macro;
     bool isInMacro = false;
@@ -238,7 +238,13 @@ string expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOu
             finalCode << ch;
         }
     }
-    return finalCode.str();
+
+    vector<string> lines;
+    boost::split(lines, finalCode.str(), boost::is_any_of("\n"), boost::token_compress_on);
+    for (auto i = 0; i < (int)lines.size(); i++) {
+        boost::trim_if(lines[i], boost::is_any_of(" \n\r\t"));
+    }
+    return lines;
 }
 
 bool CCCodeVar::getReturnThis() {
@@ -253,31 +259,33 @@ void CCCodeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
     vector<shared_ptr<CFunction>> functions;
     map<string, map<string, bool>> includes;
     shared_ptr<CType> returnType;
-    string finalCode = expandMacros(compiler, loc, scope.lock(), trOutput, code, storeValue, functions, includes, returnType);
+    auto finalCode = expandMacros(compiler, loc, scope.lock(), trOutput, code, storeValue, functions, includes, returnType);
 
     for (auto cfunction : functions) {
         cfunction->transpileDefinition(compiler, trOutput);
     }
 
-    switch (codeType) {
-    case NCC_VAR:
-        assert(false);
-        break;
-    case NCC_BLOCK:
-        trBlock->statements.push_back(finalCode);
-        break;
-    case NCC_DEFINE:
-        trOutput->ccodeDefines.push_back(finalCode);
-        break;
-    case NCC_STRUCT:
-        trOutput->ccodeStructs.push_back(finalCode);
-        break;
-    case NCC_INCLUDE:
-        trOutput->ccodeIncludes.push_back(finalCode);
-        break;
-    case NCC_FUNCTION:
-        trOutput->ccodeFunctions.push_back(finalCode);
-        break;
+    for (auto line : finalCode) {
+        switch (codeType) {
+        case NCC_VAR:
+            assert(false);
+            break;
+        case NCC_BLOCK:
+            trBlock->statements.push_back(TrStatement(line, true));
+            break;
+        case NCC_DEFINE:
+            trOutput->ccodeDefines.push_back(line);
+            break;
+        case NCC_STRUCT:
+            trOutput->ccodeStructs.push_back(line);
+            break;
+        case NCC_INCLUDE:
+            trOutput->ccodeIncludes.push_back(line);
+            break;
+        case NCC_FUNCTION:
+            trOutput->ccodeFunctions.push_back(line);
+            break;
+        }
     }
 
     for (auto include : includes) {
@@ -323,7 +331,7 @@ void CCCodeVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr
         ss << "\n}cstruct";
         break;
     case NCC_INCLUDE:
-        ss << "cinclude{\n";
+        ss << "\n}cinclude";
         break;
     case NCC_FUNCTION:
         ss << "\n}cfunction";
@@ -335,7 +343,7 @@ shared_ptr<CVar> NCCode::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
     vector<shared_ptr<CFunction>> functions;
     map<string, map<string, bool>> includes;
     shared_ptr<CType> returnType = compiler->typeVoid;
-    string finalCode = expandMacros(compiler, loc, scope, nullptr, code, nullptr, functions, includes, returnType);
+    expandMacros(compiler, loc, scope, nullptr, code, nullptr, functions, includes, returnType);
 
     return make_shared<CCCodeVar>(loc, scope, codeType, code, returnType);
 }
@@ -345,6 +353,9 @@ void NCCode::addToStruct(Compiler* compiler, shared_ptr<CScope> scope, vector<st
     vector<shared_ptr<CFunction>> functions;
     map<string, map<string, bool>> includes;
     shared_ptr<CType> returnType = compiler->typeVoid;
-    string finalCode = expandMacros(compiler, loc, scope, nullptr, code, nullptr, functions, includes, returnType);
-    lines.push_back(finalCode);
+    auto finalCode = expandMacros(compiler, loc, scope, nullptr, code, nullptr, functions, includes, returnType);
+
+    for (auto line : finalCode) {
+        lines.push_back(line);
+    }
 }

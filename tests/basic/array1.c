@@ -103,23 +103,18 @@ void sjf_array_i32_setAt(sjs_array_i32* _parent, int32_t index, int32_t item);
 void main_destroy(void);
 
 void sjf_array_i32(sjs_array_i32* _this) {
-    
-		
-
-		if (_this->size < 0) {
-			exit(-1);
-		}
-
-		if (_this->data) {
-			_this->_isGlobal = true;
-		} else {
-			_this->data = (uintptr_t)calloc(_this->size * sizeof(int32_t), 1);
-			if (!_this->data) {
-				printf("grow: out of memory\n");
-				exit(-1);				
-			}
-		}
-	;
+    if (_this->size < 0) {
+        exit(-1);
+    }
+    if (_this->data) {
+        _this->_isGlobal = true;
+    } else {
+        _this->data = (uintptr_t)calloc(_this->size * sizeof(int32_t), 1);
+        if (!_this->data) {
+            printf("grow: out of memory\n");
+            exit(-1);
+        }
+    }
 }
 
 void sjf_array_i32_copy(sjs_array_i32* _this, sjs_array_i32* to) {
@@ -129,59 +124,46 @@ void sjf_array_i32_copy(sjs_array_i32* _this, sjs_array_i32* to) {
 }
 
 void sjf_array_i32_destroy(sjs_array_i32* _this) {
-    
-	if (!_this->_isGlobal && _this->data) {
-		free((int32_t*)_this->data);
-		_this->data = 0;	
-	}
-;
+    if (!_this->_isGlobal && _this->data) {
+        free((int32_t*)_this->data);
+        _this->data = 0;
+    }
 }
 
 void sjf_array_i32_getAt(sjs_array_i32* _parent, int32_t index, int32_t* _return) {
-    
-		if (index >= _parent->size || index < 0) {
-			printf("getAt: out of bounds\n");
-			exit(-1);
-		}
-
-		int32_t* p = (int32_t*)_parent->data;
-		(*_return) = p[index];
-;		
-	;
+    if (index >= _parent->size || index < 0) {
+        printf("getAt: out of bounds\n");
+        exit(-1);
+    }
+    int32_t* p = (int32_t*)_parent->data;
+    (*_return) = p[index];
+    ;
 }
 
 void sjf_array_i32_heap(sjs_array_i32_heap* _this) {
-    
-		
-
-		if (_this->size < 0) {
-			exit(-1);
-		}
-
-		if (_this->data) {
-			_this->_isGlobal = true;
-		} else {
-			_this->data = (uintptr_t)calloc(_this->size * sizeof(int32_t), 1);
-			if (!_this->data) {
-				printf("grow: out of memory\n");
-				exit(-1);				
-			}
-		}
-	;
+    if (_this->size < 0) {
+        exit(-1);
+    }
+    if (_this->data) {
+        _this->_isGlobal = true;
+    } else {
+        _this->data = (uintptr_t)calloc(_this->size * sizeof(int32_t), 1);
+        if (!_this->data) {
+            printf("grow: out of memory\n");
+            exit(-1);
+        }
+    }
 }
 
 void sjf_array_i32_setAt(sjs_array_i32* _parent, int32_t index, int32_t item) {
-    
-		if (index >= _parent->size || index < 0) {
-			printf("setAt: out of bounds %d:%d\n", index, _parent->size);
-			exit(-1);
-		}
-
-		int32_t* p = (int32_t*)_parent->data;
-		;
-		p[index] = item;
-;
-	;
+    if (index >= _parent->size || index < 0) {
+        printf("setAt: out of bounds %d:%d\n", index, _parent->size);
+        exit(-1);
+    }
+    int32_t* p = (int32_t*)_parent->data;
+    ;
+    p[index] = item;
+    ;
 }
 
 int main(int argc, char** argv) {

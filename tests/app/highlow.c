@@ -230,28 +230,24 @@ void sjf_anon1_readLine(sjs_anon1* _parent, sjs_string* _return) {
     sjt_cast1 = 0;
     sjv_data = (uintptr_t)sjt_cast1;
     sjv_size = 1024;
-    
-			
-		    char* str = (char*)malloc(size);
-		    int index = 0;
-		    char ch = ' ';
-		    do {
-		        ch = getchar();
-		        if (ch != '\n') {
-		            str[index] = ch;
-		            index++;
-		            if (index >= size) {
-		                size *= 2;
-		                str = (char*)realloc(str, size);
-		            }
-		        }
-		    } while (ch != '\n');
-
-			str[index] = 0;
-		    index++;
-		    data = (uintptr_t)str;
-		    size = index;
-		;
+    char* str = (char*)malloc(size);
+    int index = 0;
+    char ch = ' ';
+    do {
+        ch = getchar();
+        if (ch != '\n') {
+            str[index] = ch;
+            index++;
+            if (index >= size) {
+                size *= 2;
+                str = (char*)realloc(str, size);
+            }
+        }
+    } while (ch != '\n');
+    str[index] = 0;
+    index++;
+    data = (uintptr_t)str;
+    size = index;
     sjt_math5 = sjv_size;
     sjt_math6 = 1;
     _return->count = sjt_math5 - sjt_math6;
@@ -272,28 +268,24 @@ void sjf_anon1_readLine_heap(sjs_anon1* _parent, sjs_string_heap** _return) {
     sjt_cast2 = 0;
     sjv_data = (uintptr_t)sjt_cast2;
     sjv_size = 1024;
-    
-			
-		    char* str = (char*)malloc(size);
-		    int index = 0;
-		    char ch = ' ';
-		    do {
-		        ch = getchar();
-		        if (ch != '\n') {
-		            str[index] = ch;
-		            index++;
-		            if (index >= size) {
-		                size *= 2;
-		                str = (char*)realloc(str, size);
-		            }
-		        }
-		    } while (ch != '\n');
-
-			str[index] = 0;
-		    index++;
-		    data = (uintptr_t)str;
-		    size = index;
-		;
+    char* str = (char*)malloc(size);
+    int index = 0;
+    char ch = ' ';
+    do {
+        ch = getchar();
+        if (ch != '\n') {
+            str[index] = ch;
+            index++;
+            if (index >= size) {
+                size *= 2;
+                str = (char*)realloc(str, size);
+            }
+        }
+    } while (ch != '\n');
+    str[index] = 0;
+    index++;
+    data = (uintptr_t)str;
+    size = index;
     (*_return) = (sjs_string_heap*)malloc(sizeof(sjs_string_heap));
     (*_return)->_refCount = 1;
     sjt_math7 = sjv_size;
@@ -307,10 +299,7 @@ void sjf_anon1_readLine_heap(sjs_anon1* _parent, sjs_string_heap** _return) {
 }
 
 void sjf_anon1_write(sjs_anon1* _parent, sjs_string* data) {
-    
-			
-			printf("%s\n", (char*)data->data.data);
-		;
+    printf("%s\n", (char*)data->data.data);
 }
 
 void sjf_anon2(sjs_anon2* _this) {
@@ -329,17 +318,14 @@ void sjf_anon2_toInt(sjs_anon2* _parent, sjs_string* text, int32_t* _return) {
     int32_t sjv_x;
 
     sjv_x = 0;
-    
-			char* e;
-		    int v = (int)strtol((char*)text->data.data, &e, 10);
-		    
-		    if (*e != '\0') {
-		        sjv_x = 0;
-		    }
-		    else {
-		    	sjv_x = v;
-			}
-	    ;
+    char* e;
+    int v = (int)strtol((char*)text->data.data, &e, 10);
+    if (*e != '\0') {
+        sjv_x = 0;
+    }
+    else {
+        sjv_x = v;
+    }
     (*_return) = sjv_x;
 }
 
@@ -356,10 +342,8 @@ void sjf_anon3_heap(sjs_anon3_heap* _this) {
 }
 
 void sjf_anon3_nextInt(sjs_anon3* _parent, int32_t* _return) {
-    
-		int x = rand();
-		*_return = x;
-	;
+    int x = rand();
+    *_return = x;
 }
 
 void sjf_anon4(sjs_anon4* _this) {
@@ -375,23 +359,18 @@ void sjf_anon4_heap(sjs_anon4_heap* _this) {
 }
 
 void sjf_array_char(sjs_array_char* _this) {
-    
-		
-
-		if (_this->size < 0) {
-			exit(-1);
-		}
-
-		if (_this->data) {
-			_this->_isGlobal = true;
-		} else {
-			_this->data = (uintptr_t)calloc(_this->size * sizeof(char), 1);
-			if (!_this->data) {
-				printf("grow: out of memory\n");
-				exit(-1);				
-			}
-		}
-	;
+    if (_this->size < 0) {
+        exit(-1);
+    }
+    if (_this->data) {
+        _this->_isGlobal = true;
+    } else {
+        _this->data = (uintptr_t)calloc(_this->size * sizeof(char), 1);
+        if (!_this->data) {
+            printf("grow: out of memory\n");
+            exit(-1);
+        }
+    }
 }
 
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* to) {
@@ -401,32 +380,25 @@ void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* to) {
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
-    
-	if (!_this->_isGlobal && _this->data) {
-		free((char*)_this->data);
-		_this->data = 0;	
-	}
-;
+    if (!_this->_isGlobal && _this->data) {
+        free((char*)_this->data);
+        _this->data = 0;
+    }
 }
 
 void sjf_array_char_heap(sjs_array_char_heap* _this) {
-    
-		
-
-		if (_this->size < 0) {
-			exit(-1);
-		}
-
-		if (_this->data) {
-			_this->_isGlobal = true;
-		} else {
-			_this->data = (uintptr_t)calloc(_this->size * sizeof(char), 1);
-			if (!_this->data) {
-				printf("grow: out of memory\n");
-				exit(-1);				
-			}
-		}
-	;
+    if (_this->size < 0) {
+        exit(-1);
+    }
+    if (_this->data) {
+        _this->_isGlobal = true;
+    } else {
+        _this->data = (uintptr_t)calloc(_this->size * sizeof(char), 1);
+        if (!_this->data) {
+            printf("grow: out of memory\n");
+            exit(-1);
+        }
+    }
 }
 
 void sjf_string(sjs_string* _this) {

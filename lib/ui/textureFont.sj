@@ -454,7 +454,7 @@ texture_font_load_face(texture_font_t *self, float size,
         FT_Library *library, FT_Face *face)
 {
     FT_Error error;
-    FT_Matrix matrix = {
+    FT_Matrix matrix = { //
         (int)((1.0/HRES) * 0x10000L),
         (int)((0.0)      * 0x10000L),
         (int)((0.0)      * 0x10000L),

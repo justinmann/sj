@@ -64,10 +64,18 @@ void TrBlock::writeBodyToStream(ostream& stream, int level) {
             previousLineBlock = true;
         }
         else if (statement.line.size() > 0) {
+            auto firstChar = statement.line.front();
+            auto lastChar = statement.line.back();
+            if (firstChar == '}') {
+                level--;
+            }
             addSpacing(stream, level);
             stream << statement.line;
-            if (statement.line.back() != ':') {
+            if (lastChar != ':' && lastChar != ';' && lastChar != '{' && lastChar != '}' && !statement.fromCCode) {
                 stream << ";";
+            }
+            if (lastChar == '{') {
+                level++;
             }
             stream << "\n";
         }

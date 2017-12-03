@@ -99,8 +99,21 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
         stream << "\n";
     }
     
-    for (auto ccodeStruct : ccodeStructs) {
-        stream << ccodeStruct << "\n";
+    auto level = 0;
+    for (auto line : ccodeStructs) {
+        if (line.size() > 0) {
+            auto firstChar = line.front();
+            auto lastChar = line.back();
+            if (firstChar == '}') {
+                level--;
+            }
+            TrBlock::addSpacing(stream, level);
+            stream << line;
+            if (firstChar != '#' && lastChar == '{') {
+                level++;
+            }
+        }
+        stream << "\n";
     }
 
     if (structs.size() > 0) {
@@ -118,15 +131,35 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
         for (auto t : structOrder) {
 			stream << "struct td_" << t << " {\n";
 			for (auto line : structs[t]) {
-				stream << "    " << line << ";\n";
+                if (line.size() == 0) {
+                    continue;
+                }
+                stream << "    " << line;
+                if (line.back() != ';') {
+                    stream << ";";
+                }
+                stream << "\n";
 			}
             stream << "};\n";
 			stream << "\n";
 		}
 	}
     
-    for (auto ccodeDefine : ccodeDefines) {
-        stream << ccodeDefine << "\n";
+    level = 0;
+    for (auto line : ccodeDefines) {
+        if (line.size() > 0) {
+            auto firstChar = line.front();
+            auto lastChar = line.back();
+            if (firstChar == '}') {
+                level--;
+            }
+            TrBlock::addSpacing(stream, level);
+            stream << line;
+            if (firstChar != '#' && lastChar == '{') {
+                level++;
+            }
+        }
+        stream << "\n";
     }
     
     shared_ptr<TrBlock> mainFunction = functions["sjf_global"];
@@ -145,8 +178,21 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
     stream << "void main_destroy(void);\n";
     stream << "\n";
 
-    for (auto ccodeFunction : ccodeFunctions) {
-        stream << ccodeFunction << "\n";
+    level = 0;
+    for (auto line : ccodeFunctions) {
+        if (line.size() > 0) {
+            auto firstChar = line.front();
+            auto lastChar = line.back();
+            if (firstChar == '}') {
+                level--;
+            }
+            TrBlock::addSpacing(stream, level);
+            stream << line;
+            if (firstChar != '#' && lastChar == '{') {
+                level++;
+            }
+        }
+        stream << "\n";
     }
 
     for (auto function : functions) {
