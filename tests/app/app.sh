@@ -1,1 +1,1 @@
-emcc -O2 -g timer.c -o timer.html -s USE_SDL=2 -s USE_FREETYPE=1 -s USE_WEBGL2=1 --preload-file assets -s WASM=1
+emcc -O2 -g timer.c -o timer.html -s USE_SDL=2 -s USE_FREETYPE=1 -s USE_WEBGL2=1 --preload-file assets --preload-file shaders -s WASM=1
