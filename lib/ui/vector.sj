@@ -38,24 +38,6 @@ cdefine{
  * vector class. It is used by @ref texture-atlas (for storing nodes), @ref
  * texture-font (for storing glyphs) and @ref font-manager (for storing fonts).
  * More information at http://www.cppreference.com/wiki/container/vector/start
- *
- * <b>Example Usage</b>:
- * @code
- *
- * int main( int arrgc, char *argv[] )
- * {
- *   int i,j = 1;
- *   vector_t * vector = vector_new( sizeof(int) );
- *   vector_push_back( &i );
- *
- *   j = * (int *) vector_get( vector, 0 );
- *   vector_delete( vector);
- *
- *   return 0;
- * }
- * @endcode
- *
- * @{
  */
 
 /**

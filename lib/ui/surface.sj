@@ -40,8 +40,9 @@ sdlSurface #surface(
 	    glEnable( GL_TEXTURE_2D );
 	    glDisable( GL_DEPTH_TEST );
 
-	    mat4_set_orthographic( &_parent->projection, 0, w, 0, h, -1, 1);
+	    mat4_set_orthographic( &_parent->projection, 0, w, -h, 0, -1, 1);
 	    mat4_set_identity( &_parent->model );
+	    mat4_scale(&_parent->model, 1, -1, 0);
 	    mat4_set_identity( &_parent->view );
 	}c
 
@@ -214,7 +215,7 @@ sdlSurface #surface(
 
 		    glBindTexture(GL_TEXTURE_2D, font->atlas->id);
 
-    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, (int)font->atlas->width, (int)font->atlas->height, 0, GL_RGB, GL_UNSIGNED_BYTE, font->atlas->data );
+		    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, (int)font->atlas->width, (int)font->atlas->height, 0, GL_RGB, GL_UNSIGNED_BYTE, font->atlas->data );
 
    		    glUseProgram(_parent->textShader);
 		    {
@@ -340,7 +341,7 @@ void add_text( vertex_buffer_t * buffer, texture_font_t * font,
             }
             pen->x += kerning;
             int x0  = (int)( pen->x + glyph->offset_x );
-            int y0  = (int)( pen->y + glyph->offset_y );
+            int y0  = (int)( pen->y + glyph->height - glyph->offset_y );
             int x1  = (int)( x0 + glyph->width );
             int y1  = (int)( y0 - glyph->height );
             float s0 = glyph->s0;
@@ -350,10 +351,10 @@ void add_text( vertex_buffer_t * buffer, texture_font_t * font,
             GLuint index = (GLuint)buffer->vertices->size;
             GLuint indices[] = {index, index+1, index+2,
                                 index, index+2, index+3};
-            vertex_t vertices[] = { { x0,y0,0,  s0,t0,  r,g,b,a },
-                                    { x0,y1,0,  s0,t1,  r,g,b,a },
-                                    { x1,y1,0,  s1,t1,  r,g,b,a },
-                                    { x1,y0,0,  s1,t0,  r,g,b,a } };
+            vertex_t vertices[] = { { x0,y1,0,  s0,t0,  r,g,b,a },
+                                    { x0,y0,0,  s0,t1,  r,g,b,a },
+                                    { x1,y0,0,  s1,t1,  r,g,b,a },
+                                    { x1,y1,0,  s1,t0,  r,g,b,a } };
             vertex_buffer_push_back_indices( buffer, indices, 6 );
             vertex_buffer_push_back_vertices( buffer, vertices, 4 );
             pen->x += glyph->advance_x;

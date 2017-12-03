@@ -1470,462 +1470,444 @@ vertex_attribute_enable( vertex_attribute_t *attr );
 * vector class. It is used by @ref texture-atlas (for storing nodes), @ref
 * texture-font (for storing glyphs) and @ref font-manager (for storing fonts).
 * More information at http://www.cppreference.com/wiki/container/vector/start
+*/
+/**
+* Creates a new empty vector.
 *
-* <b>Example Usage</b>:
-* @code
+* @param   item_size    item size in bytes
+* @return               a new empty vector
 *
-* int main( int arrgc, char *argv[] )
-* {
-    *   int i,j = 1;
-    *   vector_t * vector = vector_new( sizeof(int) );
-    *   vector_push_back( &i );
-    *
-    *   j = * (int *) vector_get( vector, 0 );
-    *   vector_delete( vector);
-    *
-    *   return 0;
-    * }
-    * @endcode
-    *
-    * @{
-        */
-        /**
-        * Creates a new empty vector.
-        *
-        * @param   item_size    item size in bytes
-        * @return               a new empty vector
-        *
-        */
-        vector_t *
-        vector_new( size_t item_size );
-        /**
-        *  Deletes a vector.
-        *
-        *  @param self a vector structure
-        *
-        */
-        void
-        vector_delete( vector_t *self );
-        /**
-        *  Returns a pointer to the item located at specified index.
-        *
-        *  @param  self  a vector structure
-        *  @param  index the index of the item to be returned
-        *  @return       pointer on the specified item
-        */
-        const void *
-        vector_get( const vector_t *self,
-        size_t index );
-        /**
-        *  Returns a pointer to the first item.
-        *
-        *  @param  self  a vector structure
-        *  @return       pointer on the first item
-        */
-        const void *
-        vector_front( const vector_t *self );
-        /**
-        *  Returns a pointer to the last item
-        *
-        *  @param  self  a vector structure
-        *  @return pointer on the last item
-        */
-        const void *
-        vector_back( const vector_t *self );
-        /**
-        *  Check if an item is contained within the vector.
-        *
-        *  @param  self  a vector structure
-        *  @param  item  item to be searched in the vector
-        *  @param  cmp   a pointer a comparison function
-        *  @return       1 if item is contained within the vector, 0 otherwise
-        */
-        int
-        vector_contains( const vector_t *self,
-        const void *item,
-        int (*cmp)(const void *, const void *) );
-        /**
-        *  Checks whether the vector is empty.
-        *
-        *  @param  self  a vector structure
-        *  @return       1 if the vector is empty, 0 otherwise
-        */
-        int
-        vector_empty( const vector_t *self );
-        /**
-        *  Returns the number of items
-        *
-        *  @param  self  a vector structure
-        *  @return       number of items
-        */
-        size_t
-        vector_size( const vector_t *self );
-        /**
-        *  Reserve storage such that it can hold at last size items.
-        *
-        *  @param  self  a vector structure
-        *  @param  size  the new storage capacity
-        */
-        void
-        vector_reserve( vector_t *self,
-        const size_t size );
-        /**
-        *  Returns current storage capacity
-        *
-        *  @param  self  a vector structure
-        *  @return       storage capacity
-        */
-        size_t
-        vector_capacity( const vector_t *self );
-        /**
-        *  Decrease capacity to fit actual size.
-        *
-        *  @param  self  a vector structure
-        */
-        void
-        vector_shrink( vector_t *self );
-        /**
-        *  Removes all items.
-        *
-        *  @param  self  a vector structure
-        */
-        void
-        vector_clear( vector_t *self );
-        /**
-        *  Replace an item.
-        *
-        *  @param  self  a vector structure
-        *  @param  index the index of the item to be replaced
-        *  @param  item  the new item
-        */
-        void
-        vector_set( vector_t *self,
-        const size_t index,
-        const void *item );
-        /**
-        *  Erase an item.
-        *
-        *  @param  self  a vector structure
-        *  @param  index the index of the item to be erased
-        */
-        void
-        vector_erase( vector_t *self,
-        const size_t index );
-        /**
-        *  Erase a range of items.
-        *
-        *  @param  self  a vector structure
-        *  @param  first the index of the first item to be erased
-        *  @param  last  the index of the last item to be erased
-        */
-        void
-        vector_erase_range( vector_t *self,
-        const size_t first,
-        const size_t last );
-        /**
-        *  Appends given item to the end of the vector.
-        *
-        *  @param  self a vector structure
-        *  @param  item the item to be inserted
-        */
-        void
-        vector_push_back( vector_t *self,
-        const void *item );
-        /**
-        *  Removes the last item of the vector.
-        *
-        *  @param  self a vector structure
-        */
-        void
-        vector_pop_back( vector_t *self );
-        /**
-        *  Resizes the vector to contain size items
-        *
-        *  If the current size is less than size, additional items are appended and
-        *  initialized with value. If the current size is greater than size, the
-        *  vector is reduced to its first size elements.
-        *
-        *  @param  self a vector structure
-        *  @param  size the new size
-        */
-        void
-        vector_resize( vector_t *self,
-        const size_t size );
-        /**
-        *  Insert a single item at specified index.
-        *
-        *  @param  self  a vector structure
-        *  @param  index location before which to insert item
-        *  @param  item  the item to be inserted
-        */
-        void
-        vector_insert( vector_t *self,
-        const size_t index,
-        const void *item );
-        /**
-        *  Insert raw data at specified index.
-        *
-        *  @param  self  a vector structure
-        *  @param  index location before which to insert item
-        *  @param  data  a pointer to the items to be inserted
-        *  @param  count the number of items to be inserted
-        */
-        void
-        vector_insert_data( vector_t *self,
-        const size_t index,
-        const void * data,
-        const size_t count );
-        /**
-        *  Append raw data to the end of the vector.
-        *
-        *  @param  self  a vector structure
-        *  @param  data  a pointer to the items to be inserted
-        *  @param  count the number of items to be inserted
-        */
-        void
-        vector_push_back_data( vector_t *self,
-        const void * data,
-        const size_t count );
-        /**
-        *  Sort vector items according to cmp function.
-        *
-        *  @param  self  a vector structure
-        *  @param  cmp   a pointer a comparison function
-        */
-        void
-        vector_sort( vector_t *self,
-        int (*cmp)(const void *, const void *) );
+*/
+vector_t *
+vector_new( size_t item_size );
+/**
+*  Deletes a vector.
+*
+*  @param self a vector structure
+*
+*/
+void
+vector_delete( vector_t *self );
+/**
+*  Returns a pointer to the item located at specified index.
+*
+*  @param  self  a vector structure
+*  @param  index the index of the item to be returned
+*  @return       pointer on the specified item
+*/
+const void *
+vector_get( const vector_t *self,
+size_t index );
+/**
+*  Returns a pointer to the first item.
+*
+*  @param  self  a vector structure
+*  @return       pointer on the first item
+*/
+const void *
+vector_front( const vector_t *self );
+/**
+*  Returns a pointer to the last item
+*
+*  @param  self  a vector structure
+*  @return pointer on the last item
+*/
+const void *
+vector_back( const vector_t *self );
+/**
+*  Check if an item is contained within the vector.
+*
+*  @param  self  a vector structure
+*  @param  item  item to be searched in the vector
+*  @param  cmp   a pointer a comparison function
+*  @return       1 if item is contained within the vector, 0 otherwise
+*/
+int
+vector_contains( const vector_t *self,
+const void *item,
+int (*cmp)(const void *, const void *) );
+/**
+*  Checks whether the vector is empty.
+*
+*  @param  self  a vector structure
+*  @return       1 if the vector is empty, 0 otherwise
+*/
+int
+vector_empty( const vector_t *self );
+/**
+*  Returns the number of items
+*
+*  @param  self  a vector structure
+*  @return       number of items
+*/
+size_t
+vector_size( const vector_t *self );
+/**
+*  Reserve storage such that it can hold at last size items.
+*
+*  @param  self  a vector structure
+*  @param  size  the new storage capacity
+*/
+void
+vector_reserve( vector_t *self,
+const size_t size );
+/**
+*  Returns current storage capacity
+*
+*  @param  self  a vector structure
+*  @return       storage capacity
+*/
+size_t
+vector_capacity( const vector_t *self );
+/**
+*  Decrease capacity to fit actual size.
+*
+*  @param  self  a vector structure
+*/
+void
+vector_shrink( vector_t *self );
+/**
+*  Removes all items.
+*
+*  @param  self  a vector structure
+*/
+void
+vector_clear( vector_t *self );
+/**
+*  Replace an item.
+*
+*  @param  self  a vector structure
+*  @param  index the index of the item to be replaced
+*  @param  item  the new item
+*/
+void
+vector_set( vector_t *self,
+const size_t index,
+const void *item );
+/**
+*  Erase an item.
+*
+*  @param  self  a vector structure
+*  @param  index the index of the item to be erased
+*/
+void
+vector_erase( vector_t *self,
+const size_t index );
+/**
+*  Erase a range of items.
+*
+*  @param  self  a vector structure
+*  @param  first the index of the first item to be erased
+*  @param  last  the index of the last item to be erased
+*/
+void
+vector_erase_range( vector_t *self,
+const size_t first,
+const size_t last );
+/**
+*  Appends given item to the end of the vector.
+*
+*  @param  self a vector structure
+*  @param  item the item to be inserted
+*/
+void
+vector_push_back( vector_t *self,
+const void *item );
+/**
+*  Removes the last item of the vector.
+*
+*  @param  self a vector structure
+*/
+void
+vector_pop_back( vector_t *self );
+/**
+*  Resizes the vector to contain size items
+*
+*  If the current size is less than size, additional items are appended and
+*  initialized with value. If the current size is greater than size, the
+*  vector is reduced to its first size elements.
+*
+*  @param  self a vector structure
+*  @param  size the new size
+*/
+void
+vector_resize( vector_t *self,
+const size_t size );
+/**
+*  Insert a single item at specified index.
+*
+*  @param  self  a vector structure
+*  @param  index location before which to insert item
+*  @param  item  the item to be inserted
+*/
+void
+vector_insert( vector_t *self,
+const size_t index,
+const void *item );
+/**
+*  Insert raw data at specified index.
+*
+*  @param  self  a vector structure
+*  @param  index location before which to insert item
+*  @param  data  a pointer to the items to be inserted
+*  @param  count the number of items to be inserted
+*/
+void
+vector_insert_data( vector_t *self,
+const size_t index,
+const void * data,
+const size_t count );
+/**
+*  Append raw data to the end of the vector.
+*
+*  @param  self  a vector structure
+*  @param  data  a pointer to the items to be inserted
+*  @param  count the number of items to be inserted
+*/
+void
+vector_push_back_data( vector_t *self,
+const void * data,
+const size_t count );
+/**
+*  Sort vector items according to cmp function.
+*
+*  @param  self  a vector structure
+*  @param  cmp   a pointer a comparison function
+*/
+void
+vector_sort( vector_t *self,
+int (*cmp)(const void *, const void *) );
 
 
-        /**
-        * This function creates a new texture font from given filename and size.  The
-        * texture atlas is used to store glyph on demand. Note the depth of the atlas
-        * will determine if the font is rendered as alpha channel only (depth = 1) or
-        * RGB (depth = 3) that correspond to subpixel rendering (if available on your
-        * freetype implementation).
-        *
-        * @param atlas     A texture atlas
-        * @param pt_size   Size of font to be created (in points)
-        * @param filename  A font filename
-        *
-        * @return A new empty font (no glyph inside yet)
-        *
-        */
-        texture_font_t *
-        texture_font_new_from_file( texture_atlas_t * atlas,
-        const float pt_size,
-        const char * filename );
-        /**
-        * This function creates a new texture font from a memory location and size.
-        * The texture atlas is used to store glyph on demand. Note the depth of the
-        * atlas will determine if the font is rendered as alpha channel only
-        * (depth = 1) or RGB (depth = 3) that correspond to subpixel rendering (if
-        * available on your freetype implementation).
-        *
-        * @param atlas       A texture atlas
-        * @param pt_size     Size of font to be created (in points)
-        * @param memory_base Start of the font file in memory
-        * @param memory_size Size of the font file memory region, in bytes
-        *
-        * @return A new empty font (no glyph inside yet)
-        *
-        */
-        texture_font_t *
-        texture_font_new_from_memory( texture_atlas_t *atlas,
-        float pt_size,
-        const void *memory_base,
-        size_t memory_size );
-        /**
-        * Delete a texture font. Note that this does not delete the glyph from the
-        * texture atlas.
-        *
-        * @param self a valid texture font
-        */
-        void
-        texture_font_delete( texture_font_t * self );
-        /**
-        * Request a new glyph from the font. If it has not been created yet, it will
-        * be.
-        *
-        * @param self      A valid texture font
-        * @param codepoint Character codepoint to be loaded in UTF-8 encoding.
-        *
-        * @return A pointer on the new glyph or 0 if the texture atlas is not big
-        *         enough
-        *
-        */
-        texture_glyph_t *
-        texture_font_get_glyph( texture_font_t * self,
-        const char * codepoint );
-        /**
-        * Request an already loaded glyph from the font.
-        *
-        * @param self      A valid texture font
-        * @param codepoint Character codepoint to be found in UTF-8 encoding.
-        *
-        * @return A pointer on the glyph or 0 if the glyph is not loaded
-        */
-        texture_glyph_t *
-        texture_font_find_glyph( texture_font_t * self,
-        const char * codepoint );
+/**
+* This function creates a new texture font from given filename and size.  The
+* texture atlas is used to store glyph on demand. Note the depth of the atlas
+* will determine if the font is rendered as alpha channel only (depth = 1) or
+* RGB (depth = 3) that correspond to subpixel rendering (if available on your
+* freetype implementation).
+*
+* @param atlas     A texture atlas
+* @param pt_size   Size of font to be created (in points)
+* @param filename  A font filename
+*
+* @return A new empty font (no glyph inside yet)
+*
+*/
+texture_font_t *
+texture_font_new_from_file( texture_atlas_t * atlas,
+const float pt_size,
+const char * filename );
+/**
+* This function creates a new texture font from a memory location and size.
+* The texture atlas is used to store glyph on demand. Note the depth of the
+* atlas will determine if the font is rendered as alpha channel only
+* (depth = 1) or RGB (depth = 3) that correspond to subpixel rendering (if
+* available on your freetype implementation).
+*
+* @param atlas       A texture atlas
+* @param pt_size     Size of font to be created (in points)
+* @param memory_base Start of the font file in memory
+* @param memory_size Size of the font file memory region, in bytes
+*
+* @return A new empty font (no glyph inside yet)
+*
+*/
+texture_font_t *
+texture_font_new_from_memory( texture_atlas_t *atlas,
+float pt_size,
+const void *memory_base,
+size_t memory_size );
+/**
+* Delete a texture font. Note that this does not delete the glyph from the
+* texture atlas.
+*
+* @param self a valid texture font
+*/
+void
+texture_font_delete( texture_font_t * self );
+/**
+* Request a new glyph from the font. If it has not been created yet, it will
+* be.
+*
+* @param self      A valid texture font
+* @param codepoint Character codepoint to be loaded in UTF-8 encoding.
+*
+* @return A pointer on the new glyph or 0 if the texture atlas is not big
+*         enough
+*
+*/
+texture_glyph_t *
+texture_font_get_glyph( texture_font_t * self,
+const char * codepoint );
+/**
+* Request an already loaded glyph from the font.
+*
+* @param self      A valid texture font
+* @param codepoint Character codepoint to be found in UTF-8 encoding.
+*
+* @return A pointer on the glyph or 0 if the glyph is not loaded
+*/
+texture_glyph_t *
+texture_font_find_glyph( texture_font_t * self,
+const char * codepoint );
 
-        /**
-        * Request the loading of a given glyph.
-        *
-        * @param self       A valid texture font
-        * @param codepoints Character codepoint to be loaded in UTF-8 encoding.
-        *
-        * @return One if the glyph could be loaded, zero if not.
-        */
-        int
-        texture_font_load_glyph( texture_font_t * self,
-        const char * codepoint );
-        /**
-        * Request the loading of several glyphs at once.
-        *
-        * @param self       A valid texture font
-        * @param codepoints Character codepoints to be loaded in UTF-8 encoding. May
-        *                   contain duplicates.
-        *
-        * @return Number of missed glyph if the texture is not big enough to hold
-        *         every glyphs.
-        */
-        size_t
-        texture_font_load_glyphs( texture_font_t * self,
-        const char * codepoints );
-        /*
-        *Increases the size of a fonts texture atlas
-        *Invalidates all pointers to font->atlas->data
-        *Changes the UV Coordinates of existing glyphs in the font
-        *
-        *@param self A valid texture font
-        *@param width_new Width of the texture atlas after resizing (must be bigger or equal to current width)
-        *@param height_new Height of the texture atlas after resizing (must be bigger or equal to current height)
-        */
-        void
-        texture_font_enlarge_atlas( texture_font_t * self, size_t width_new,
-        size_t height_new);
-        /**
-        * Get the kerning between two horizontal glyphs.
-        *
-        * @param self      A valid texture glyph
-        * @param codepoint Character codepoint of the peceding character in UTF-8 encoding.
-        *
-        * @return x kerning value
-        */
-        float
-        texture_glyph_get_kerning( const texture_glyph_t * self,
-        const char * codepoint );
-        /**
-        * Creates a new empty glyph
-        *
-        * @return a new empty glyph (not valid)
-        */
-        texture_glyph_t *
-        texture_glyph_new( void );
-
-
-        /**
-        * Creates a new empty texture atlas.
-        *
-        * @param   width   width of the atlas
-        * @param   height  height of the atlas
-        * @param   depth   bit depth of the atlas
-        * @return          a new empty texture atlas.
-        *
-        */
-        texture_atlas_t *
-        texture_atlas_new( const size_t width,
-        const size_t height,
-        const size_t depth );
-        /**
-        *  Deletes a texture atlas.
-        *
-        *  @param self a texture atlas structure
-        *
-        */
-        void
-        texture_atlas_delete( texture_atlas_t * self );
-        /**
-        *  Allocate a new region in the atlas.
-        *
-        *  @param self   a texture atlas structure
-        *  @param width  width of the region to allocate
-        *  @param height height of the region to allocate
-        *  @return       Coordinates of the allocated region
-        *
-        */
-        ivec4
-        texture_atlas_get_region( texture_atlas_t * self,
-        const size_t width,
-        const size_t height );
-        /**
-        *  Upload data to the specified atlas region.
-        *
-        *  @param self   a texture atlas structure
-        *  @param x      x coordinate the region
-        *  @param y      y coordinate the region
-        *  @param width  width of the region
-        *  @param height height of the region
-        *  @param data   data to be uploaded into the specified region
-        *  @param stride stride of the data
-        *
-        */
-        void
-        texture_atlas_set_region( texture_atlas_t * self,
-        const size_t x,
-        const size_t y,
-        const size_t width,
-        const size_t height,
-        const unsigned char *data,
-        const size_t stride );
-        /**
-        *  Remove all allocated regions from the atlas.
-        *
-        *  @param self   a texture atlas structure
-        */
-        void
-        texture_atlas_clear( texture_atlas_t * self );
+/**
+* Request the loading of a given glyph.
+*
+* @param self       A valid texture font
+* @param codepoints Character codepoint to be loaded in UTF-8 encoding.
+*
+* @return One if the glyph could be loaded, zero if not.
+*/
+int
+texture_font_load_glyph( texture_font_t * self,
+const char * codepoint );
+/**
+* Request the loading of several glyphs at once.
+*
+* @param self       A valid texture font
+* @param codepoints Character codepoints to be loaded in UTF-8 encoding. May
+*                   contain duplicates.
+*
+* @return Number of missed glyph if the texture is not big enough to hold
+*         every glyphs.
+*/
+size_t
+texture_font_load_glyphs( texture_font_t * self,
+const char * codepoints );
+/*
+*Increases the size of a fonts texture atlas
+*Invalidates all pointers to font->atlas->data
+*Changes the UV Coordinates of existing glyphs in the font
+*
+*@param self A valid texture font
+*@param width_new Width of the texture atlas after resizing (must be bigger or equal to current width)
+*@param height_new Height of the texture atlas after resizing (must be bigger or equal to current height)
+*/
+void
+texture_font_enlarge_atlas( texture_font_t * self, size_t width_new,
+size_t height_new);
+/**
+* Get the kerning between two horizontal glyphs.
+*
+* @param self      A valid texture glyph
+* @param codepoint Character codepoint of the peceding character in UTF-8 encoding.
+*
+* @return x kerning value
+*/
+float
+texture_glyph_get_kerning( const texture_glyph_t * self,
+const char * codepoint );
+/**
+* Creates a new empty glyph
+*
+* @return a new empty glyph (not valid)
+*/
+texture_glyph_t *
+texture_glyph_new( void );
 
 
-        /**
-        * Read a fragment or vertex shader from a file
-        *
-        * @param filename file to read shader from
-        * @return         a newly-allocated text buffer containing code. This buffer
-        *                 must be freed after usage.
-        *
-        */
-        char *
-        shader_read( const char *filename );
-        /**
-        * Compile a shader from a text buffer.
-        *
-        * @param source code of the shader
-        * @param type   type of the shader
-        *
-        * @return a handle on the compiled program
-        *
-        */
-        GLuint
-        shader_compile( const char* source,
-        const GLenum type );
-        /**
-        * Load a vertex and fragment shader sources and build program
-        *
-        * @param  vert_filename vertex shader filename
-        * @param  frag_filename fragment shader filename
-        *
-        * @return a handle on the built program
-        *
-        */
-        GLuint
-        shader_load( const char * vert_filename,
-        const char * frag_filename );
+/**
+* Creates a new empty texture atlas.
+*
+* @param   width   width of the atlas
+* @param   height  height of the atlas
+* @param   depth   bit depth of the atlas
+* @return          a new empty texture atlas.
+*
+*/
+texture_atlas_t *
+texture_atlas_new( const size_t width,
+const size_t height,
+const size_t depth );
+/**
+*  Deletes a texture atlas.
+*
+*  @param self a texture atlas structure
+*
+*/
+void
+texture_atlas_delete( texture_atlas_t * self );
+/**
+*  Allocate a new region in the atlas.
+*
+*  @param self   a texture atlas structure
+*  @param width  width of the region to allocate
+*  @param height height of the region to allocate
+*  @return       Coordinates of the allocated region
+*
+*/
+ivec4
+texture_atlas_get_region( texture_atlas_t * self,
+const size_t width,
+const size_t height );
+/**
+*  Upload data to the specified atlas region.
+*
+*  @param self   a texture atlas structure
+*  @param x      x coordinate the region
+*  @param y      y coordinate the region
+*  @param width  width of the region
+*  @param height height of the region
+*  @param data   data to be uploaded into the specified region
+*  @param stride stride of the data
+*
+*/
+void
+texture_atlas_set_region( texture_atlas_t * self,
+const size_t x,
+const size_t y,
+const size_t width,
+const size_t height,
+const unsigned char *data,
+const size_t stride );
+/**
+*  Remove all allocated regions from the atlas.
+*
+*  @param self   a texture atlas structure
+*/
+void
+texture_atlas_clear( texture_atlas_t * self );
 
 
-        void add_text( vertex_buffer_t * buffer, texture_font_t * font,
-        char *text, vec4 * color, vec2 * pen );
+/**
+* Read a fragment or vertex shader from a file
+*
+* @param filename file to read shader from
+* @return         a newly-allocated text buffer containing code. This buffer
+*                 must be freed after usage.
+*
+*/
+char *
+shader_read( const char *filename );
+/**
+* Compile a shader from a text buffer.
+*
+* @param source code of the shader
+* @param type   type of the shader
+*
+* @return a handle on the compiled program
+*
+*/
+GLuint
+shader_compile( const char* source,
+const GLenum type );
+/**
+* Load a vertex and fragment shader sources and build program
+*
+* @param  vert_filename vertex shader filename
+* @param  frag_filename fragment shader filename
+*
+* @return a handle on the built program
+*
+*/
+GLuint
+shader_load( const char * vert_filename,
+const char * frag_filename );
+
+
+void add_text( vertex_buffer_t * buffer, texture_font_t * font,
+char *text, vec4 * color, vec2 * pen );
 
 sjs_sdlSurface_heap* sjt_cast1;
 sjs_textElement_heap* sjt_cast4;
@@ -4791,7 +4773,7 @@ shader_read( const char *filename )
                 }
                 pen->x += kerning;
                 int x0  = (int)( pen->x + glyph->offset_x );
-                int y0  = (int)( pen->y + glyph->offset_y );
+                int y0  = (int)( pen->y + glyph->height - glyph->offset_y );
                 int x1  = (int)( x0 + glyph->width );
                 int y1  = (int)( y0 - glyph->height );
                 float s0 = glyph->s0;
@@ -4801,10 +4783,10 @@ shader_read( const char *filename )
                 GLuint index = (GLuint)buffer->vertices->size;
                 GLuint indices[] = {index, index+1, index+2,
                 index, index+2, index+3};
-                vertex_t vertices[] = { { x0,y0,0,  s0,t0,  r,g,b,a },
-                { x0,y1,0,  s0,t1,  r,g,b,a },
-                { x1,y1,0,  s1,t1,  r,g,b,a },
-                { x1,y0,0,  s1,t0,  r,g,b,a } };
+                vertex_t vertices[] = { { x0,y1,0,  s0,t0,  r,g,b,a },
+                { x0,y0,0,  s0,t1,  r,g,b,a },
+                { x1,y0,0,  s1,t1,  r,g,b,a },
+                { x1,y1,0,  s1,t0,  r,g,b,a } };
                 vertex_buffer_push_back_indices( buffer, indices, 6 );
                 vertex_buffer_push_back_vertices( buffer, vertices, 4 );
                 pen->x += glyph->advance_x;
@@ -5725,8 +5707,9 @@ void sjf_sdlSurface_clear(sjs_sdlSurface* _parent) {
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glEnable( GL_TEXTURE_2D );
     glDisable( GL_DEPTH_TEST );
-    mat4_set_orthographic( &_parent->projection, 0, w, 0, h, -1, 1);
+    mat4_set_orthographic( &_parent->projection, 0, w, -h, 0, -1, 1);
     mat4_set_identity( &_parent->model );
+    mat4_scale(&_parent->model, 1, -1, 0);
     mat4_set_identity( &_parent->view );
 }
 
@@ -5870,7 +5853,8 @@ void sjf_sdlSurface_drawRect(sjs_sdlSurface* _parent, sjs_rect* rect, sjs_color*
 
 void sjf_sdlSurface_drawText(sjs_sdlSurface* _parent, sjs_rect* rect, sjs_font* font, sjs_string* text, sjs_color* color) {
     if (((char*)text->data.data)[0] != 0) {
-        vec2 pen = {{ rect->x, rect->y }};
+        //			vec2 pen = {{ rect->x, rect->y }};
+        vec2 pen = {{ 0, 200 }};
         vec4 color = {{ 0,0,0,1 }};
         vertex_buffer_t* buffer = vertex_buffer_new("vertex:3f,tex_coord:2f,color:4f");
         add_text(buffer, font->font, (char*)text->data.data, &color, &pen );
