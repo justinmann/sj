@@ -4,7 +4,7 @@
  * file `LICENSE` for more details.
  */
 
-cdefine{
+--cdefine--
 double *
 make_distance_mapd( double *img,
                     unsigned int width, unsigned int height );
@@ -12,9 +12,9 @@ make_distance_mapd( double *img,
 unsigned char *
 make_distance_mapb( unsigned char *img,
                     unsigned int width, unsigned int height );    
-}cdefine
+--cdefine--
 
-cfunction{
+--cfunction--
 double *
 make_distance_mapd( double *data, unsigned int width, unsigned int height )
 {
@@ -108,4 +108,4 @@ make_distance_mapb( unsigned char *img,
 
     return out;
 }
-}cfunction
+--cfunction--

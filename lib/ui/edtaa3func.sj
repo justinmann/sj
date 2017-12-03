@@ -54,7 +54,7 @@
  THE SOFTWARE.
  */
 
-cdefine{
+--cdefine--
 /*
  * Compute the local gradient at edge pixels using convolution filters.
  * The gradient is computed only at edge pixels. At other places in the
@@ -80,9 +80,9 @@ double distaa3(double *img, double *gximg, double *gyimg, int w, int c, int xc, 
 ##define DISTAA(c,xc,yc,xi,yi) (distaa3(img, gx, gy, w, c, xc, yc, xi, yi))
 
 void edtaa3(double *img, double *gx, double *gy, int w, int h, short *distx, short *disty, double *dist);  
-}cdefine
+--cdefine--
 
-cfunction{
+--cfunction--
 #include(<math.h>)
 
 /*
@@ -611,4 +611,4 @@ void edtaa3(double *img, double *gx, double *gy, int w, int h, short *distx, sho
   /* The transformation is completed. */
 
 }
-}cfunction
+--cfunction--

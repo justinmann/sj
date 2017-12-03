@@ -14,6 +14,7 @@ enum NCCodeType {
     NCC_DEFINE,
     NCC_STRUCT,
     NCC_INCLUDE,
+    NCC_TYPEDEF,
     NCC_FUNCTION,
     NCC_VAR
 };

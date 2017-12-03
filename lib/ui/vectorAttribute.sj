@@ -4,19 +4,24 @@
  * file `LICENSE` for more details.
  */
 
-cstruct{
+--cinclude--
 /**
  * Maximum number of attributes per vertex
  *
  * @private
  */
-##define MAX_VERTEX_ATTRIBUTE 16
+##define MAX_VERTEX_ATTRIBUTE 16    
+--cinclude--
 
+--ctypedef--
+typedef struct vertex_attribute_td vertex_attribute_t;
+--ctypedef--
 
+--cstruct--
 /**
  *  Generic vertex attribute.
  */
-typedef struct vertex_attribute_t
+struct vertex_attribute_td
 {
     /**
      *  atribute name
@@ -70,10 +75,10 @@ typedef struct vertex_attribute_t
      */
     void ( * enable )(void *);
 
-} vertex_attribute_t;
-}cstruct
+};
+--cstruct--
 
-cdefine{
+--cdefine--
 /**
  * Create an attribute from the given parameters.
  *
@@ -129,9 +134,9 @@ vertex_attribute_delete( vertex_attribute_t * self );
  */
   void
   vertex_attribute_enable( vertex_attribute_t *attr );    
-}cdefine
+--cdefine--
 
-cfunction{
+--cfunction--
 
 #include(<assert.h>)
 #include(<string.h>)
@@ -263,4 +268,4 @@ vertex_attribute_enable( vertex_attribute_t *attr )
     glVertexAttribPointer( attr->index, attr->size, attr->type,
                            attr->normalized, attr->stride, attr->pointer );
 }
-}cfunction
+--cfunction--

@@ -1,4 +1,4 @@
-c{
+--c--
 	#include(<stdio.h>)
 	printf("hi");
-}c
+--c--

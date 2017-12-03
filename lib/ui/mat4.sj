@@ -4,7 +4,7 @@
  * file `LICENSE` for more details.
  */
 
-cstruct{
+--cstruct--
 /**
  *
  */
@@ -18,9 +18,9 @@ typedef union
         float m30, m31, m32, m33;
     };
 } mat4;
-}cstruct
+--cstruct--
 
-cdefine{
+--cdefine--
 mat4 *
 mat4_new( void );
 
@@ -75,9 +75,9 @@ mat4_translate( mat4 *self,
 void
 mat4_scale( mat4 *self,
             float x, float y, float z);    
-}cdefine
+--cdefine--
 
-cfunction{
+--cfunction--
 mat4 *
 mat4_new( void )
 {
@@ -313,4 +313,4 @@ mat4_scale( mat4 *self,
     mat4_set_scaling( &m, x, y, z);
     mat4_multiply( self, &m );
 }
-}cfunction
+--cfunction--

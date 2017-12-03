@@ -41,14 +41,43 @@ void updateLocation(YYLOCATION& loc, const char* s, const int len) {
 #define TOKEN_VAL(t) SAVE_LOC; yylval->token = t; return t
 %}
 
-%%
+%x CBLOCK
+%x CVAR
+%x CSTRUCT
+%x CDEFINE
+%x CINCLUDE
+%x CTYPEDEF
+%x CFUNCTION
 
-"c{"([^\}]|\}+[^\}c])*"}c" TOKEN_STR(TCBLOCK, 2, 2);
-"cvar{"([^\}]|\}+[^\}c])*"}cvar" TOKEN_STR(TCVAR, 6, 6);
-"cstruct{"([^\}]|\}+[^\}c])*"}cstruct" TOKEN_STR(TCSTRUCT, 8, 8);
-"cdefine{"([^\}]|\}+[^\}c])*"}cdefine" TOKEN_STR(TCDEFINE, 8, 8);
-"cinclude{"([^\}]|\}+[^\}c])*"}cinclude" TOKEN_STR(TCINCLUDE, 9, 9);
-"cfunction{"([^\}]|\}+[^\}c])*"}cfunction" TOKEN_STR(TCFUNCTION, 10, 10);
+%%
+"--c--"							{ BEGIN(CBLOCK); }
+<CBLOCK>.|\n 					{ yymore(); }
+<CBLOCK>"--c--"					{ BEGIN(INITIAL); TOKEN_STR(TCBLOCK, 0, 5); }
+
+"--cvar--"						{ BEGIN(CVAR); }
+<CVAR>.|\n 						{ yymore(); }
+<CVAR>"--cvar--"				{ BEGIN(INITIAL); TOKEN_STR(TCVAR, 0, 8); }
+
+"--cstruct--"					{ BEGIN(CSTRUCT); }
+<CSTRUCT>.|\n 					{ yymore(); }
+<CSTRUCT>"--cstruct--"			{ BEGIN(INITIAL); TOKEN_STR(TCSTRUCT, 0, 11); }
+
+"--cdefine--"					{ BEGIN(CDEFINE); }
+<CDEFINE>.|\n 					{ yymore(); }
+<CDEFINE>"--cdefine--"			{ BEGIN(INITIAL); TOKEN_STR(TCDEFINE, 0, 11); }
+
+"--cinclude--"					{ BEGIN(CINCLUDE); }
+<CINCLUDE>.|\n 					{ yymore(); }
+<CINCLUDE>"--cinclude--"		{ BEGIN(INITIAL); TOKEN_STR(TCINCLUDE, 0, 12); }
+
+"--ctypedef--"					{ BEGIN(CTYPEDEF); }
+<CTYPEDEF>.|\n 					{ yymore(); }
+<CTYPEDEF>"--ctypedef--"		{ BEGIN(INITIAL); TOKEN_STR(TCTYPEDEF, 0, 12); }
+
+"--cfunction--"					{ BEGIN(CFUNCTION); }
+<CFUNCTION>"--cfunction--"		{ BEGIN(INITIAL); TOKEN_STR(TCFUNCTION, 0, 13); }
+<CFUNCTION>.|\n 				{ yymore(); }
+
 "/*"([^*]|\*+[^*/])*\*+"/"	TOKEN_VAL(TEND);
 "//".*					TOKEN_VAL(TEND);
 "as"					TOKEN_VAL(TAS);

@@ -4,7 +4,7 @@
  * file `LICENSE` for more details.
  */
 
-cdefine{
+--cdefine--
 /**
 * Returns the size in bytes of a given UTF-8 encoded character surrogate
 *
@@ -36,9 +36,9 @@ utf8_strlen( const char* string );
 */
 uint32_t
 utf8_to_utf32( const char * character );
-}cdefine
+--cdefine--
 
-cfunction{
+--cfunction--
 // ----------------------------------------------------- utf8_surrogate_len ---
 size_t
 utf8_surrogate_len( const char* character )
@@ -116,4 +116,4 @@ utf8_to_utf32( const char * character )
 
     return result;
 }
-}cfunction
+--cfunction--

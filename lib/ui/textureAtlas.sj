@@ -4,7 +4,7 @@
  * file `LICENSE` for more details.
  */
 
-cstruct{
+--cstruct--
 /**
  * Tuple of 4 ints.
  *
@@ -235,9 +235,9 @@ typedef struct texture_atlas_t
     unsigned char * data;
 
 } texture_atlas_t;    
-}cstruct
+--cstruct--
 
-cdefine{
+--cdefine--
 /**
  * Creates a new empty texture atlas.
  *
@@ -306,9 +306,9 @@ cdefine{
  */
   void
   texture_atlas_clear( texture_atlas_t * self );    
-}cdefine
+--cdefine--
 
-cfunction{
+--cfunction--
 
 #include(<stdio.h>)
 #include(<stdlib.h>)
@@ -578,4 +578,4 @@ texture_atlas_clear( texture_atlas_t * self )
     vector_push_back( self->nodes, &node );
     memset( self->data, 0, self->width*self->height*self->depth );
 }
-}cfunction
+--cfunction--

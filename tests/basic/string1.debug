@@ -14,33 +14,31 @@ anon4()'stack anon4 {
   this
 }
 
-array_getAt(index'i32:)'char c{
+array_getAt(index'i32:)'char --c--
 
-		if (index >= _parent->size || index < 0) {
-			printf("getAt: out of bounds\n");
-			exit(-1);
-		}
+if (index >= _parent->size || index < 0) {
+printf("getAt: out of bounds\n");
+exit(-1);
+}
+char* p = (char*)_parent->data;
+;
 
-		#type(t)* p = (#type(t)*)_parent->data;
-		#return(t, p[index]);		
-	
-}c
+--c--
 
-array_isEqual(test'stack array_char:)'bool c{
+array_isEqual(test'stack array_char:)'bool --c--
 
-		if (_parent->size != test->size) {
-			*_return = false;
-		}
+if (_parent->size != test->size) {
+*_return = false;
+}
+*_return = memcmp((void*)_parent->data, (void*)test->data, _parent->size * sizeof(char)) == 0;
 
-		*_return = memcmp((void*)_parent->data, (void*)test->data, _parent->size * sizeof(#type(t))) == 0;		
-	
-}c
+--c--
 
-array_isLessOrEqual(test'stack array_char:)'bool c{
+array_isLessOrEqual(test'stack array_char:)'bool --c--
 
-		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) <= 0;		
-	
-}c
+*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(char)) <= 0;
+
+--c--
 
 string(count'i32=, data'stack array_char=)'stack string {
   this

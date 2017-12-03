@@ -12,6 +12,7 @@ public:
     vector<string> ccodeIncludes;
     vector<string> ccodeStructs;
     vector<string> ccodeDefines;
+    vector<string> ccodeTypedefs;
     vector<string> ccodeFunctions;
 
     TrOutput();

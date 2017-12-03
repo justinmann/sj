@@ -4,14 +4,18 @@
  * file `LICENSE` for more details.
  */
 
-cstruct{
+--ctypedef--
+typedef struct vector_td vector_t;
+--ctypedef--
+
+--cstruct--
 /**
  *  Generic vector structure.
  *
  * @memberof vector
  */
-typedef struct vector_t
- {
+struct vector_td
+{
      /** Pointer to dynamically allocated items. */
      void * items;
 
@@ -23,11 +27,10 @@ typedef struct vector_t
 
      /** Size (in bytes) of a single item. */
      size_t item_size;
-} vector_t;
-}cstruct
+};
+--cstruct--
 
-cdefine{
-
+--cdefine--
 /**
  * @file   vector.h
  * @author Nicolas Rougier (Nicolas.Rougier@inria.fr)
@@ -288,9 +291,9 @@ cdefine{
   void
   vector_sort( vector_t *self,
                int (*cmp)(const void *, const void *) );    
-}cdefine
+--cdefine--
 
-cfunction{
+--cfunction--
 
 #include(<assert.h>)
 #include(<stdlib.h>)
@@ -619,4 +622,4 @@ vector_sort( vector_t *self,
 
     qsort(self->items, self->size, self->item_size, cmp);
 }
-}cfunction
+--cfunction--

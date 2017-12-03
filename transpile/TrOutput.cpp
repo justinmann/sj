@@ -28,6 +28,23 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
     }
     stream << "\n";
     
+    auto level = 0;
+    for (auto line : ccodeTypedefs) {
+        if (line.size() > 0) {
+            auto firstChar = line.front();
+            auto lastChar = line.back();
+            if (firstChar == '}') {
+                level--;
+            }
+            TrBlock::addSpacing(stream, level);
+            stream << line;
+            if (firstChar != '#' && lastChar == '{') {
+                level++;
+            }
+        }
+        stream << "\n";
+    }
+
     stream << "typedef struct td_int32_option int32_option;\n";
     stream << "struct td_int32_option {\n";
     stream << "    bool isEmpty;\n";
@@ -99,7 +116,7 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
         stream << "\n";
     }
     
-    auto level = 0;
+    level = 0;
     for (auto line : ccodeStructs) {
         if (line.size() > 0) {
             auto firstChar = line.front();

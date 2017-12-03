@@ -282,6 +282,9 @@ void CCCodeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
         case NCC_INCLUDE:
             trOutput->ccodeIncludes.push_back(line);
             break;
+        case NCC_TYPEDEF:
+            trOutput->ccodeTypedefs.push_back(line);
+            break;
         case NCC_FUNCTION:
             trOutput->ccodeFunctions.push_back(line);
             break;
@@ -296,45 +299,63 @@ void CCCodeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
 }
 
 void CCCodeVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+    vector<shared_ptr<CFunction>> functions2;
+    map<string, map<string, bool>> includes;
+    shared_ptr<CType> returnType;
+    auto finalCode = expandMacros(compiler, loc, scope.lock(), nullptr, code, nullptr, functions2, includes, returnType);
+
     switch (codeType) {
     case NCC_VAR:
-        ss << "cvar{\n";
+        ss << "--cvar--\n";
         break;
     case NCC_BLOCK:
-        ss << "c{\n";
+        ss << "--c--\n";
         break;
     case NCC_DEFINE:
-        ss << "cdefine{\n";
+        ss << "--cdefine--\n";
         break;
     case NCC_STRUCT:
-        ss << "cstruct{\n";
+        ss << "--cstruct--\n";
         break;
     case NCC_INCLUDE:
-        ss << "cinclude{\n";
+        ss << "--cinclude--\n";
+        break;
+    case NCC_TYPEDEF:
+        ss << "--ctypedef--\n";
         break;
     case NCC_FUNCTION:
-        ss << "cfunction{\n";
+        ss << "--cfunction--\n";
         break;
     }
-    ss << code;
+
+    for (auto line : finalCode) {
+        dumpf(ss, level);
+        ss << line;
+        ss << "\n";
+    }
+
+    dumpf(ss, level);
     switch (codeType) {
     case NCC_VAR:
-        ss << "\n}cvar";
+        ss << "--cvar--";
         break;
     case NCC_BLOCK:
-        ss << "\n}c";
+        ss << "--c--";
         break;
     case NCC_DEFINE:
-        ss << "\n}cdefine";
+        ss << "--cdefine--";
         break;
     case NCC_STRUCT:
-        ss << "\n}cstruct";
+        ss << "--cstruct--";
         break;
     case NCC_INCLUDE:
-        ss << "\n}cinclude";
+        ss << "--cinclude--";
+        break;
+    case NCC_TYPEDEF:
+        ss << "--ctypedef--";
         break;
     case NCC_FUNCTION:
-        ss << "\n}cfunction";
+        ss << "--cfunction--";
         break;
     }
 }

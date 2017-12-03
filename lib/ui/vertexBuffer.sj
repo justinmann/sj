@@ -4,11 +4,40 @@
  * file `LICENSE` for more details.
  */
 
-cdefine{
+#vertexBuffer(
+    render()'void
+)
+
+vertexBuffer(
+    format : 'string
+    data : 0 as ptr
+    --cvar--
+    vertex_buffer_t* buffer;
+    --cvar--
+) { 
+    --c--
+    if (_this->data) {
+        _this->buffer = (vertex_buffer_t*)_this->data;
+    } else {
+        _this->buffer = vertex_buffer_new((char*)format->data.data);
+    }
+    --c--
+    this 
+} destroy {
+    --c--
+    vertex_buffer_delete(_this->buffer);  
+    --c--
+}
+
+--ctypedef--
+typedef struct vertex_buffer_td vertex_buffer_t;
+--ctypedef--
+
+--cstruct--
 /**
  * Generic vertex buffer.
  */
-typedef struct vertex_buffer_t
+struct vertex_buffer_td
 {
     /** Format of the vertex buffer. */
     char * format;
@@ -47,8 +76,10 @@ typedef struct vertex_buffer_t
 
     /** Array of attributes. */
     vertex_attribute_t *attributes[MAX_VERTEX_ATTRIBUTE];
-} vertex_buffer_t;
+};
+--cstruct--
 
+--cdefine--
 ##ifdef WIN32
 // strndup() is not available on Windows
 char *strndup( const char *s1, size_t n);
@@ -296,10 +327,9 @@ char *strndup( const char *s1, size_t n);
   void
   vertex_buffer_erase( vertex_buffer_t * self,
                        const size_t index );    
-}cdefine
+--cdefine--
 
-cfunction{
-
+--cfunction--
 #include(<assert.h>)
 #include(<string.h>)
 #include(<stdlib.h>)
@@ -953,4 +983,4 @@ vertex_buffer_erase( vertex_buffer_t * self,
     vector_erase( self->items, index );
     self->state = DIRTY;
 }
-}cfunction
+--cfunction--

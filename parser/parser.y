@@ -65,7 +65,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 }
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
-%token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID TSTRING TCHAR TCBLOCK TCFUNCTION TCDEFINE TCSTRUCT TCINCLUDE TCVAR
+%token <string> TIDENTIFIER TINTEGER TDOUBLE TINVALID TSTRING TCHAR TCBLOCK TCFUNCTION TCDEFINE TCSTRUCT TCINCLUDE TCVAR TCTYPEDEF
 %token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TAT TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TASOPTION TQUESTION TEMPTY TVALUE TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TLOCAL TAUTO TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR 
 
 /* Non Terminal symbols. Types refer to union decl above */
@@ -115,6 +115,7 @@ stmt 				: /* Blank! */									{ $$ = nullptr; }
 					| TCSTRUCT										{ $$ = new NCCode(LOC, NCC_STRUCT, $1->c_str()); delete $1; }
 					| TCFUNCTION									{ $$ = new NCCode(LOC, NCC_FUNCTION, $1->c_str()); delete $1; }
 					| TCINCLUDE										{ $$ = new NCCode(LOC, NCC_INCLUDE, $1->c_str()); delete $1; }
+					| TCTYPEDEF										{ $$ = new NCCode(LOC, NCC_TYPEDEF, $1->c_str()); delete $1; }
 					| TINCLUDE TSTRING								{ $$ = new NInclude(LOC, $2->c_str()); delete $2; }
 					| error	 										{ $$ = nullptr; /* yyclearin; */ compiler->addError(LLOC, CErrorCode::InvalidCharacter, "Something failed to parse"); }
 					;

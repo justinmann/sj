@@ -627,7 +627,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
                 assert(compiler->errors.size() > 0);
                 return;
             }
-            auto argStoreValue = trBlock->createTempStoreVariable(loc, callerScope, argType->typeMode == CTM_Heap ? argType : argType->getLocalValueType(), "functionParam");
+            auto argStoreValue = trBlock->createTempStoreVariable(calleeLoc, callerScope, argType->typeMode == CTM_Heap ? argType : argType->getLocalValueType(), "functionParam");
             parameterVar->transpile(compiler, trOutput, trBlock, nullptr, isDefaultAssignment ? nullptr : thisValue, argStoreValue);
 
             if (!argStoreValue->hasSetValue) {
@@ -690,7 +690,8 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
                 return;
             }
 
-            auto argStoreValue = make_shared<TrStoreValue>(loc, calleeScope, argType, calleeThisValue->getDotName(argVar->name), AssignOp::immutableOp, true);
+            auto parameterOp = (*parameters)[argIndex].op;
+            auto argStoreValue = make_shared<TrStoreValue>(isDefaultAssignment ? loc : calleeLoc, calleeScope, argType, calleeThisValue->getDotName(argVar->name), parameterOp, true);
             parameterVar->transpile(compiler, trOutput, trBlock, nullptr, isDefaultAssignment ? calleeThisValue : thisValue, argStoreValue);
 
             if (!argStoreValue->hasSetValue) {

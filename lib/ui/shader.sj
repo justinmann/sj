@@ -4,7 +4,7 @@
  * file `LICENSE` for more details.
  */
 
-cdefine{
+--cdefine--
 /**
  * Read a fragment or vertex shader from a file
  *
@@ -43,9 +43,9 @@ cdefine{
   GLuint
   shader_load( const char * vert_filename,
                const char * frag_filename );    
-}cdefine
+--cdefine--
 
-cfunction{
+--cfunction--
 
 #include(<stdio.h>)
 #include(<stdlib.h>)
@@ -233,4 +233,4 @@ shader_load( const char * vert_filename,
     return handle;
 }
 
-}cfunction
+--cfunction--

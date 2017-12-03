@@ -5,30 +5,29 @@ anon1()'stack anon1 {
 anon1_readLine()'stack string {
   data'ptr = 0i as ptr
   size'i32 = 1024i
-  c{
-
-			#include(<stdio.h>)
-		    char* str = (char*)malloc(size);
-		    int index = 0;
-		    char ch = ' ';
-		    do {
-		        ch = getchar();
-		        if (ch != '\n') {
-		            str[index] = ch;
-		            index++;
-		            if (index >= size) {
-		                size *= 2;
-		                str = (char*)realloc(str, size);
-		            }
-		        }
-		    } while (ch != '\n');
-
-			str[index] = 0;
-		    index++;
-		    data = (uintptr_t)str;
-		    size = index;
-		
-}c
+  --c--
+  
+  
+  char* str = (char*)malloc(size);
+  int index = 0;
+  char ch = ' ';
+  do {
+  ch = getchar();
+  if (ch != '\n') {
+  str[index] = ch;
+  index++;
+  if (index >= size) {
+  size *= 2;
+  str = (char*)realloc(str, size);
+  }
+  }
+  } while (ch != '\n');
+  str[index] = 0;
+  index++;
+  data = (uintptr_t)str;
+  size = index;
+  
+  --c--
   string(this = string(
     count'i32 = this.count,
     data'stack array_char = this.data
@@ -36,12 +35,12 @@ anon1_readLine()'stack string {
 }
 
 anon1_write(data'stack string:)'void {
-  c{
-
-			#include(<stdio.h>)
-			printf("%s\n", (char*)data->data.data);
-		
-}c
+  --c--
+  
+  
+  printf("%s\n", (char*)data->data.data);
+  
+  --c--
 }
 
 anon2()'stack anon2 {
@@ -50,19 +49,19 @@ anon2()'stack anon2 {
 
 anon2_toInt(text'stack string:)'i32 {
   x'i32 = 0i
-  c{
-
-			char* e;
-		    int v = (int)strtol((char*)text->data.data, &e, 10);
-		    
-		    if (*e != '\0') {
-		        sjv_x = 0;
-		    }
-		    else {
-		    	sjv_x = v;
-			}
-	    
-}c
+  --c--
+  
+  char* e;
+  int v = (int)strtol((char*)text->data.data, &e, 10);
+  
+  if (*e != '\0') {
+  sjv_x = 0;
+  }
+  else {
+  sjv_x = v;
+  }
+  
+  --c--
   x
 }
 
@@ -70,12 +69,12 @@ anon3()'stack anon3 {
   this
 }
 
-anon3_nextInt()'i32 c{
+anon3_nextInt()'i32 --c--
 
-		int x = rand();
-		*_return = x;
-	
-}c
+int x = rand();
+*_return = x;
+
+--c--
 
 anon4()'stack anon4 {
   this

@@ -4,7 +4,7 @@
  * file `LICENSE` for more details.
  */
 
-cstruct{
+--cstruct--
 ##undef __FTERRORS_H__
 ##define FT_ERRORDEF( e, v, s )  { e, s },
 ##define FT_ERROR_START_LIST     {
@@ -292,9 +292,9 @@ typedef struct texture_font_t
     float underline_thickness;
 
 } texture_font_t;
-}cstruct
+--cstruct--
 
-cdefine{
+--cdefine--
 /**
  * This function creates a new texture font from given filename and size.  The
  * texture atlas is used to store glyph on demand. Note the depth of the atlas
@@ -430,9 +430,9 @@ texture_glyph_get_kerning( const texture_glyph_t * self,
  */
 texture_glyph_t *
 texture_glyph_new( void );    
-}cdefine
+--cdefine--
 
-cfunction{
+--cfunction--
 
 #include(<ft2build.h>)
 #include(FT_FREETYPE_H)
@@ -1145,4 +1145,4 @@ texture_font_enlarge_atlas( texture_font_t * self, size_t width_new,
     	g->t1 *= mulh;
     }
 }
-}cfunction
+--cfunction--

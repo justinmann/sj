@@ -1,10 +1,10 @@
 global()'void {
-  c{
-
-	#include(<stdio.h>)
-	printf("hi");
-
-}c
+  --c--
+  
+  
+  printf("hi");
+  
+  --c--
   void
 }
 

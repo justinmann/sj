@@ -298,8 +298,7 @@ void Compiler::includeFile(const string& fileName) {
     
     if (includedBlockFileNames.find(fileName) == includedBlockFileNames.end()) {
         auto parseFile = genNodeFile(fileName);
-        if (parseFile) {
-            assert(parseFile->block);
+        if (parseFile && parseFile->block) {
             includedBlockFileNames[fileName] = true;
             includedBlocks.push_back(pair<string, shared_ptr<NBlock>>(fileName, parseFile->block));
         }

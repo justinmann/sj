@@ -27,8 +27,9 @@ include "utf8.sj"
 include "distanceField.sj"
 include "edtaa3func.sj"
 include "mat4.sj"
+include "textVertexBuffer.sj"
 
-cinclude{
+--cinclude--
 #include(<emscripten.h>, EMSCRIPTEN)
 #include(<emscripten/html5.h>, EMSCRIPTEN)
 #include(<SDL.h>, EMSCRIPTEN)
@@ -46,7 +47,7 @@ cinclude{
 ##include <GL/gl.h>
 ##include <GL/glu.h>
 ##endif
-}cinclude
+--cinclude--
 
 onClick(timestemp: 'f64, x: 'i32, y: 'i32) {
 	console.write("click")
@@ -98,29 +99,28 @@ mainLoop() {
     isMouseDown = false
     x = 0
     y = 0
-    c{
-        SDL_Event e;
-        while(SDL_PollEvent( &e ) != 0) {
-            switch (e.type) {
-                case SDL_QUIT:
-                    exit(0);
-                    break;
-                case SDL_MOUSEBUTTONDOWN:
-                    printf("SDL_MOUSEBUTTONDOWN\n");
-                    sjv_isMouseDown = true;
-                    sjv_x = e.button.x;
-                    sjv_y = e.button.x;
-                    break;
-                case SDL_MOUSEBUTTONUP:
-                    printf("SDL_MOUSEBUTTONUP\n");
-                    sjv_isMouseUp = true;
-                    sjv_x = e.button.x;
-                    sjv_y = e.button.x;
-                    break;
-            }
+    --c--
+    SDL_Event e;
+    while(SDL_PollEvent( &e ) != 0) {
+        switch (e.type) {
+            case SDL_QUIT:
+                exit(0);
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                printf("SDL_MOUSEBUTTONDOWN\n");
+                sjv_isMouseDown = true;
+                sjv_x = e.button.x;
+                sjv_y = e.button.x;
+                break;
+            case SDL_MOUSEBUTTONUP:
+                printf("SDL_MOUSEBUTTONUP\n");
+                sjv_isMouseUp = true;
+                sjv_x = e.button.x;
+                sjv_y = e.button.x;
+                break;
         }
-    
-    }c
+    }
+    --c--
 
     if isMouseUp {
         fireMouseUp(root, point(x, y)) 
@@ -134,7 +134,7 @@ mainLoop() {
 }
 
 runLoop() {
-	c{
+	--c--
 ##ifdef EMSCRIPTEN
 	emscripten_set_main_loop((em_callback_func)sjf_mainLoop, 0, 0);
 	exit(0);
@@ -144,5 +144,5 @@ runLoop() {
         sjf_mainLoop();
     }
 ##endif	
-	}c
+	--c--
 }
