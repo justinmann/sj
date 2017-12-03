@@ -156,7 +156,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 
 			if (errors.size() == 0) {
                 state = CompilerState::Compile;
-				currentFunction = make_shared<CFunction>(currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr);
+				currentFunction = make_shared<CFunction>(currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr, vector<shared_ptr<NCCode>>());
 				currentFunction->init(this, nullptr);
                 auto currentScope = currentFunction->getScope(this, CTM_Stack);
 				anonFunction->getVar(this, currentScope, CTM_Stack);

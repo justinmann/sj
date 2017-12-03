@@ -42,6 +42,7 @@ private:
     vector<shared_ptr<NAssignment>> assignments;
     vector<shared_ptr<NFunction>> functions;
     vector<shared_ptr<NInterface>> interfaces;
+    vector<shared_ptr<NCCode>> ccodes;
     shared_ptr<NBase> block;
     shared_ptr<NBase> copyBlock;
     shared_ptr<NBase> catchBlock;
@@ -95,7 +96,7 @@ private:
 
 class CFunction : public CBaseFunction, public enable_shared_from_this<CFunction> {
 public:
-    CFunction(weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces);
+    CFunction(weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, vector<shared_ptr<NCCode>> ccodes);
     bool init(Compiler* compiler, shared_ptr<NFunction> node);
     bool initBlocks(Compiler* compiler, shared_ptr<NFunction> node);
 
@@ -132,6 +133,7 @@ public:
     vector<shared_ptr<CType>> templateTypes;
     map<string, shared_ptr<CType>> templateTypesByName;
     shared_ptr<vector<shared_ptr<CInterface>>> interfaces;
+    vector<shared_ptr<NCCode>> ccodes;
 
 private:
     bool _isInGetType;
@@ -154,7 +156,8 @@ public:
     shared_ptr<NFunction> node;
     map<string, shared_ptr<CFunctionDefinition>> funcsByName;
     shared_ptr<CTypeNameList> implementedInterfaceTypeNames;
-    
+    vector<shared_ptr<NCCode>> ccodes;
+
     CFunctionDefinition() : CBaseFunctionDefinition(CFT_Function) {}
     static shared_ptr<CFunctionDefinition> create(Compiler* compiler, shared_ptr<CFunctionDefinition> parent, CFunctionType type, const string& name, shared_ptr<CTypeNameList> implementedInterfaceTypeNames, shared_ptr<NFunction> node);
     string fullName();

@@ -14,7 +14,8 @@ enum NCCodeType {
     NCC_DEFINE,
     NCC_STRUCT,
     NCC_INCLUDE,
-    NCC_FUNCTION
+    NCC_FUNCTION,
+    NCC_VAR
 };
 
 class CCCodeVar : public CVar {
@@ -33,9 +34,10 @@ private:
 
 class NCCode : public NBase {
 public:
-    NCCode(CLoc loc, NCCodeType codeType, const char* code_) : NBase(NodeType_Integer, loc), codeType(codeType), code(code_) { }
+    NCCode(CLoc loc, NCCodeType codeType, const char* code_) : NBase(NodeType_Code, loc), codeType(codeType), code(code_) { }
     void defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) { }
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
+    void addToStruct(Compiler* compiler, shared_ptr<CScope> scope, vector<string>& lines);
 
 private:
     NCCodeType codeType;

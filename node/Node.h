@@ -52,6 +52,7 @@ enum NodeType {
     NodeType_Call,
     NodeType_ChangeMode,
     NodeType_Char,
+    NodeType_Code,
     NodeType_Compare,
     NodeType_Dot,
     NodeType_Double,

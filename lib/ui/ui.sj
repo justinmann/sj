@@ -26,6 +26,7 @@ include "vertexBuffer.sj"
 include "utf8.sj"
 include "distanceField.sj"
 include "edtaa3func.sj"
+include "mat4.sj"
 
 cinclude{
 #include(<emscripten.h>, EMSCRIPTEN)

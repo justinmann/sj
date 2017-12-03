@@ -2,6 +2,14 @@ include "../../lib/common/common.sj"
 include "../../lib/ui/ui.sj"
 
 rootSurface : sdlSurface() as #surface
+
+root : textElement(
+			font = font("assets/sample.ttf", 25)
+			text = "Bob"
+			color = colors.red()
+		) as #element
+
+/*
 root : borderLayout(
 	children : [
 		borderChild(
@@ -22,6 +30,7 @@ root : borderLayout(
 		) as #element
 	]
 ) as #element
+*/
 
 /*
 fillElement(

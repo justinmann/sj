@@ -14,10 +14,6 @@ const struct {
     const char*  message;
 } FT_Errors[] =
 ##include FT_ERRORS_H    
-}cstruct
-
-cdefine{
-
 
 /**
  * A list of possible ways to render a glyph.
@@ -52,9 +48,6 @@ typedef struct kerning_t
     float kerning;
 
 } kerning_t;
-
-
-
 
 /*
  * Glyph metrics:
@@ -174,7 +167,7 @@ typedef struct texture_glyph_t
 } texture_glyph_t;
 
 
-
+typedef struct texture_atlas_t texture_atlas_td; 
 /**
  *  Texture font structure.
  */
@@ -188,7 +181,7 @@ typedef struct texture_font_t
     /**
      * Atlas structure to store glyphs data.
      */
-    texture_atlas_t * atlas;
+    texture_atlas_td * atlas;
 
     /**
      * font location
@@ -299,9 +292,9 @@ typedef struct texture_font_t
     float underline_thickness;
 
 } texture_font_t;
+}cstruct
 
-
-
+cdefine{
 /**
  * This function creates a new texture font from given filename and size.  The
  * texture atlas is used to store glyph on demand. Note the depth of the atlas
@@ -803,7 +796,7 @@ texture_font_load_glyph( texture_font_t * self,
     FT_Library library;
     FT_Error error;
     FT_Face face;
-    FT_Glyph ft_glyph;
+    FT_Glyph ft_glyph = { 0 };
     FT_GlyphSlot slot;
     FT_Bitmap ft_bitmap;
 
@@ -814,7 +807,6 @@ texture_font_load_glyph( texture_font_t * self,
     int ft_glyph_left = 0;
 
     ivec4 region;
-    size_t missed = 0;
 
 
     if (!texture_font_load_face(self, self->size, &library, &face))
@@ -1028,7 +1020,7 @@ cleanup_stroker:
 
     if( self->rendermode == RENDER_SIGNED_DISTANCE_FIELD )
     {
-        unsigned char *sdf = make_distance_mapb( buffer, tgt_w, tgt_h );
+        unsigned char *sdf = make_distance_mapb( buffer, (unsigned int)tgt_w, (unsigned int)tgt_h );
         free( buffer );
         buffer = sdf;
     }

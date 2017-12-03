@@ -30,10 +30,6 @@ anon8(fill'i32:, left'i32:, right'i32:, top'i32:, bottom'i32:)'stack anon8 {
   this
 }
 
-borderLayout #element (children'stack array_heap_element:, rect'stack rect=)'heap borderLayout {
-  this
-}
-
 runLoop()'void {
   c{
 
@@ -50,7 +46,7 @@ runLoop()'void {
 }c
 }
 
-sdlSurface #surface (size'stack size:, win'ptr=, ren'ptr=)'heap sdlSurface {
+sdlSurface #surface (size'stack size:)'heap sdlSurface {
   c{
 
 		if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -69,24 +65,348 @@ sdlSurface #surface (size'stack size:, win'ptr=, ren'ptr=)'heap sdlSurface {
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
-	    _this->win = (uintptr_t)SDL_CreateWindow("Hello World!", 100, 100, _this->size.w, _this->size.h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+	    _this->win = SDL_CreateWindow("Hello World!", 100, 100, _this->size.w, _this->size.h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	    if (_this->win == 0) {
 	        printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
 	        exit(-1);
 	    }
 
 	    SDL_GL_CreateContext((SDL_Window*)_this->win);
-	    _this->ren = (uintptr_t)SDL_CreateRenderer((SDL_Window*)_this->win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	    _this->ren = SDL_CreateRenderer((SDL_Window*)_this->win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	    if (_this->ren == 0) {
 	        printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
 	        exit(-1);
 	    }
+
+        glClearColor( 1.0, 0.0, 1.0, 1.0 );
+	    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	    glEnable( GL_BLEND );
+
+	    _this->textShader = shader_load("shaders/v3f-t2f-c4f.vert", "shaders/v3f-t2f-c4f.frag");
 	
 }c
   this
 }
 
+textElement #element (font'stack font=, text'stack string=, color'stack color=, rect'stack rect=)'heap textElement {
+  this
+}
+
 global()'void {
+  cstruct{
+
+/**
+ *
+ */
+typedef union
+{
+    float data[16];    /**< All compoments at once     */
+    struct {
+        float m00, m01, m02, m03;
+        float m10, m11, m12, m13;
+        float m20, m21, m22, m23;
+        float m30, m31, m32, m33;
+    };
+} mat4;
+
+}cstruct
+  cdefine{
+
+mat4 *
+mat4_new( void );
+
+void
+mat4_set_identity( mat4 *self );
+
+void
+mat4_set_zero( mat4 *self );
+
+void
+mat4_multiply( mat4 *self, mat4 *other );
+
+void
+mat4_set_orthographic( mat4 *self,
+                       float left,   float right,
+                       float bottom, float top,
+                       float znear,  float zfar );
+
+void
+mat4_set_perspective( mat4 *self,
+                      float fovy,  float aspect,
+                      float zNear, float zFar);
+
+void
+mat4_set_frustum( mat4 *self,
+                  float left,   float right,
+                  float bottom, float top,
+                  float znear,  float zfar );
+
+void
+mat4_set_rotation( mat4 *self,
+                   float angle,
+                   float x, float y, float z);
+
+void
+mat4_set_translation( mat4 *self,
+                      float x, float y, float z);
+
+void
+mat4_set_scaling( mat4 *self,
+                  float x, float y, float z);
+
+void
+mat4_rotate( mat4 *self,
+             float angle,
+             float x, float y, float z);
+
+void
+mat4_translate( mat4 *self,
+                float x, float y, float z);
+
+void
+mat4_scale( mat4 *self,
+            float x, float y, float z);    
+
+}cdefine
+  cfunction{
+
+mat4 *
+mat4_new( void )
+{
+    mat4 *self = (mat4 *) malloc( sizeof(mat4) );
+    return self;
+
+}
+
+void
+mat4_set_zero( mat4 *self )
+{
+    if (!self)
+        return;
+
+    memset( self, 0, sizeof( mat4 ));
+}
+
+void
+mat4_set_identity( mat4 *self )
+{
+    if (!self)
+        return;
+
+    memset( self, 0, sizeof( mat4 ));
+    self->m00 = 1.0;
+    self->m11 = 1.0;
+    self->m22 = 1.0;
+    self->m33 = 1.0;
+}
+
+void
+mat4_multiply( mat4 *self, mat4 *other )
+{
+    mat4 m;
+    size_t i;
+
+    if (!self || !other)
+        return;
+
+    for( i=0; i<4; ++i )
+    {
+        m.data[i*4+0] =
+            (self->data[i*4+0] * other->data[0*4+0]) +
+            (self->data[i*4+1] * other->data[1*4+0]) +
+            (self->data[i*4+2] * other->data[2*4+0]) +
+            (self->data[i*4+3] * other->data[3*4+0]) ;
+
+        m.data[i*4+1] =
+            (self->data[i*4+0] * other->data[0*4+1]) +
+            (self->data[i*4+1] * other->data[1*4+1]) +
+            (self->data[i*4+2] * other->data[2*4+1]) +
+            (self->data[i*4+3] * other->data[3*4+1]) ;
+
+        m.data[i*4+2] =
+            (self->data[i*4+0] * other->data[0*4+2]) +
+            (self->data[i*4+1] * other->data[1*4+2]) +
+            (self->data[i*4+2] * other->data[2*4+2]) +
+            (self->data[i*4+3] * other->data[3*4+2]) ;
+
+        m.data[i*4+3] =
+            (self->data[i*4+0] * other->data[0*4+3]) +
+            (self->data[i*4+1] * other->data[1*4+3]) +
+            (self->data[i*4+2] * other->data[2*4+3]) +
+            (self->data[i*4+3] * other->data[3*4+3]) ;
+    }
+    memcpy( self, &m, sizeof( mat4 ) );
+
+}
+
+
+void
+mat4_set_orthographic( mat4 *self,
+                       float left,   float right,
+                       float bottom, float top,
+                       float znear,  float zfar )
+{
+    if (!self)
+        return;
+
+    if (left == right || bottom == top || znear == zfar)
+        return;
+
+    mat4_set_zero( self );
+
+    self->m00 = +2.0f/(right-left);
+    self->m30 = -(right+left)/(right-left);
+    self->m11 = +2.0f/(top-bottom);
+    self->m31 = -(top+bottom)/(top-bottom);
+    self->m22 = -2.0f/(zfar-znear);
+    self->m32 = -(zfar+znear)/(zfar-znear);
+    self->m33 = 1.0f;
+}
+
+void
+mat4_set_perspective( mat4 *self,
+                      float fovy,  float aspect,
+                      float znear, float zfar)
+{
+    float h, w;
+
+    if (!self)
+        return;
+
+    if (znear == zfar)
+        return;
+
+    h = (float)tan(fovy / 360.0 * M_PI) * znear;
+    w = h * aspect;
+
+    mat4_set_frustum( self, -w, w, -h, h, znear, zfar );
+}
+
+void
+mat4_set_frustum( mat4 *self,
+                  float left,   float right,
+                  float bottom, float top,
+                  float znear,  float zfar )
+{
+
+    if (!self)
+        return;
+
+    if (left == right || bottom == top || znear == zfar)
+        return;
+
+    mat4_set_zero( self );
+
+    self->m00 = (2.0f*znear)/(right-left);
+    self->m20 = (right+left)/(right-left);
+
+    self->m11 = (2.0f*znear)/(top-bottom);
+    self->m21 = (top+bottom)/(top-bottom);
+
+    self->m22 = -(zfar+znear)/(zfar-znear);
+    self->m32 = -(2.0f*zfar*znear)/(zfar-znear);
+
+    self->m23 = -1.0f;
+}
+
+void
+mat4_set_rotation( mat4 *self,
+                   float angle,
+                   float x, float y, float z)
+{
+    float c, s, norm;
+
+    if (!self)
+        return;
+
+    c = (float)cos( M_PI*angle/180.0 );
+    s = (float)sin( M_PI*angle/180.0 );
+    norm = (float)sqrt(x*x+y*y+z*z);
+
+    x /= norm; y /= norm; z /= norm;
+
+    mat4_set_identity( self );
+
+    self->m00 = x*x*(1-c)+c;
+    self->m10 = y*x*(1-c)-z*s;
+    self->m20 = z*x*(1-c)+y*s;
+
+    self->m01 =  x*y*(1-c)+z*s;
+    self->m11 =  y*y*(1-c)+c;
+    self->m21 =  z*y*(1-c)-x*s;
+
+    self->m02 = x*z*(1-c)-y*s;
+    self->m12 = y*z*(1-c)+x*s;
+    self->m22 = z*z*(1-c)+c;
+}
+
+void
+mat4_set_translation( mat4 *self,
+                      float x, float y, float z)
+{
+    if (!self)
+        return;
+
+    mat4_set_identity( self );
+    self-> m30 = x;
+    self-> m31 = y;
+    self-> m32 = z;
+}
+
+void
+mat4_set_scaling( mat4 *self,
+                  float x, float y, float z)
+{
+    if (!self)
+        return;
+
+    mat4_set_identity( self );
+    self-> m00 = x;
+    self-> m11 = y;
+    self-> m22 = z;
+}
+
+void
+mat4_rotate( mat4 *self,
+             float angle,
+             float x, float y, float z)
+{
+    mat4 m;
+
+    if (!self)
+        return;
+
+    mat4_set_rotation( &m, angle, x, y, z);
+    mat4_multiply( self, &m );
+}
+
+void
+mat4_translate( mat4 *self,
+                float x, float y, float z)
+{
+    mat4 m;
+
+    if (!self)
+        return;
+
+    mat4_set_translation( &m, x, y, z);
+    mat4_multiply( self, &m );
+}
+
+void
+mat4_scale( mat4 *self,
+            float x, float y, float z)
+{
+    mat4 m;
+
+    if (!self)
+        return;
+
+    mat4_set_scaling( &m, x, y, z);
+    mat4_multiply( self, &m );
+}
+
+}cfunction
   cdefine{
 
 /*
@@ -2730,11 +3050,6 @@ const struct {
 } FT_Errors[] =
 ##include FT_ERRORS_H    
 
-}cstruct
-  cdefine{
-
-
-
 /**
  * A list of possible ways to render a glyph.
  */
@@ -2768,9 +3083,6 @@ typedef struct kerning_t
     float kerning;
 
 } kerning_t;
-
-
-
 
 /*
  * Glyph metrics:
@@ -2890,7 +3202,7 @@ typedef struct texture_glyph_t
 } texture_glyph_t;
 
 
-
+typedef struct texture_atlas_t texture_atlas_td; 
 /**
  *  Texture font structure.
  */
@@ -2904,7 +3216,7 @@ typedef struct texture_font_t
     /**
      * Atlas structure to store glyphs data.
      */
-    texture_atlas_t * atlas;
+    texture_atlas_td * atlas;
 
     /**
      * font location
@@ -3016,7 +3328,8 @@ typedef struct texture_font_t
 
 } texture_font_t;
 
-
+}cstruct
+  cdefine{
 
 /**
  * This function creates a new texture font from given filename and size.  The
@@ -3520,7 +3833,7 @@ texture_font_load_glyph( texture_font_t * self,
     FT_Library library;
     FT_Error error;
     FT_Face face;
-    FT_Glyph ft_glyph;
+    FT_Glyph ft_glyph = { 0 };
     FT_GlyphSlot slot;
     FT_Bitmap ft_bitmap;
 
@@ -3531,7 +3844,6 @@ texture_font_load_glyph( texture_font_t * self,
     int ft_glyph_left = 0;
 
     ivec4 region;
-    size_t missed = 0;
 
 
     if (!texture_font_load_face(self, self->size, &library, &face))
@@ -3745,7 +4057,7 @@ cleanup_stroker:
 
     if( self->rendermode == RENDER_SIGNED_DISTANCE_FIELD )
     {
-        unsigned char *sdf = make_distance_mapb( buffer, tgt_w, tgt_h );
+        unsigned char *sdf = make_distance_mapb( buffer, (unsigned int)tgt_w, (unsigned int)tgt_h );
         free( buffer );
         buffer = sdf;
     }
@@ -4500,6 +4812,91 @@ texture_atlas_clear( texture_atlas_t * self )
 #include(<stdlib.h>)
 #include(<string.h>)
 
+
+
+char *repl_str(const char *str, const char *from, const char *to) {
+
+    /* Adjust each of the below values to suit your needs. */
+
+    /* Increment positions cache size initially by this number. */
+    size_t cache_sz_inc = 16;
+    /* Thereafter, each time capacity needs to be increased,
+     * multiply the increment by this factor. */
+    const size_t cache_sz_inc_factor = 3;
+    /* But never increment capacity by more than this number. */
+    const size_t cache_sz_inc_max = 1048576;
+
+    char *pret, *ret = NULL;
+    const char *pstr2, *pstr = str;
+    size_t i, count = 0;
+##if (__STDC_VERSION__ >= 199901L)
+    uintptr_t *pos_cache_tmp, *pos_cache = NULL;
+##else
+    ptrdiff_t *pos_cache_tmp, *pos_cache = NULL;
+##endif
+    size_t cache_sz = 0;
+    size_t cpylen, orglen, retlen, tolen, fromlen = strlen(from);
+
+    /* Find all matches and cache their positions. */
+    while ((pstr2 = strstr(pstr, from)) != NULL) {
+        count++;
+
+        /* Increase the cache size when necessary. */
+        if (cache_sz < count) {
+            cache_sz += cache_sz_inc;
+            pos_cache_tmp = realloc(pos_cache, sizeof(*pos_cache) * cache_sz);
+            if (pos_cache_tmp == NULL) {
+                goto end_repl_str;
+            } else pos_cache = pos_cache_tmp;
+            cache_sz_inc *= cache_sz_inc_factor;
+            if (cache_sz_inc > cache_sz_inc_max) {
+                cache_sz_inc = cache_sz_inc_max;
+            }
+        }
+
+        pos_cache[count-1] = pstr2 - str;
+        pstr = pstr2 + fromlen;
+    }
+
+    orglen = pstr - str + strlen(pstr);
+
+    /* Allocate memory for the post-replacement string. */
+    if (count > 0) {
+        tolen = strlen(to);
+        retlen = orglen + (tolen - fromlen) * count;
+    } else  retlen = orglen;
+    ret = malloc(retlen + 1);
+    if (ret == NULL) {
+        goto end_repl_str;
+    }
+
+    if (count == 0) {
+        /* If no matches, then just duplicate the string. */
+        strcpy(ret, str);
+    } else {
+        /* Otherwise, duplicate the string whilst performing
+         * the replacements using the position cache. */
+        pret = ret;
+        memcpy(pret, str, pos_cache[0]);
+        pret += pos_cache[0];
+        for (i = 0; i < count; i++) {
+            memcpy(pret, to, tolen);
+            pret += tolen;
+            pstr = str + pos_cache[i] + fromlen;
+            cpylen = (i == count-1 ? orglen : pos_cache[i+1]) - pos_cache[i] - fromlen;
+            memcpy(pret, pstr, cpylen);
+            pret += cpylen;
+        }
+        ret[retlen] = '\0';
+    }
+
+end_repl_str:
+    /* Free the cache and return the post-replacement string,
+     * which will be NULL in the event of an error. */
+    free(pos_cache);
+    return ret;
+}
+
 // ------------------------------------------------------------ shader_read ---
 char *
 shader_read( const char *filename )
@@ -4525,6 +4922,13 @@ shader_read( const char *filename )
 	fread( buffer, sizeof(char), size, file );
     buffer[size] = 0;
     fclose( file );
+
+##ifdef __APPLE__
+    char* prev = buffer;
+    buffer = repl_str(buffer, "mediump", "");
+    free(prev);
+##endif
+
     return buffer;
 }
 
@@ -4599,6 +5003,62 @@ shader_load( const char * vert_filename,
     top'i32 : this.top,
     bottom'i32 : this.bottom
   ))
+  cstruct{
+
+typedef struct {
+    float x, y, z;    // position
+    float s, t;       // texture
+    float r, g, b, a; // color
+} vertex_t;	
+
+}cstruct
+  cdefine{
+
+void add_text( vertex_buffer_t * buffer, texture_font_t * font,
+               char *text, vec4 * color, vec2 * pen );	
+
+}cdefine
+  cfunction{
+
+void add_text( vertex_buffer_t * buffer, texture_font_t * font,
+               char *text, vec4 * color, vec2 * pen )
+{
+    size_t i;
+    float r = color->red, g = color->green, b = color->blue, a = color->alpha;
+    for( i = 0; i < strlen(text); ++i )
+    {
+        texture_glyph_t *glyph = texture_font_get_glyph( font, text + i );
+        if( glyph != NULL )
+        {
+            float kerning = 0.0f;
+            if( i > 0)
+            {
+                kerning = texture_glyph_get_kerning( glyph, text + i - 1 );
+            }
+            pen->x += kerning;
+            int x0  = (int)( pen->x + glyph->offset_x );
+            int y0  = (int)( pen->y + glyph->offset_y );
+            int x1  = (int)( x0 + glyph->width );
+            int y1  = (int)( y0 - glyph->height );
+            float s0 = glyph->s0;
+            float t0 = glyph->t0;
+            float s1 = glyph->s1;
+            float t1 = glyph->t1;
+            GLuint index = (GLuint)buffer->vertices->size;
+            GLuint indices[] = {index, index+1, index+2,
+                                index, index+2, index+3};
+            vertex_t vertices[] = { { x0,y0,0,  s0,t0,  r,g,b,a },
+                                    { x0,y1,0,  s0,t1,  r,g,b,a },
+                                    { x1,y1,0,  s1,t1,  r,g,b,a },
+                                    { x1,y0,0,  s1,t0,  r,g,b,a } };
+            vertex_buffer_push_back_indices( buffer, indices, 6 );
+            vertex_buffer_push_back_vertices( buffer, vertices, 4 );
+            pen->x += glyph->advance_x;
+        }
+    }
+}	
+
+}cfunction
   style'stack anon7 : anon7(this = anon7())
   colors'stack anon6 : anon6(this = anon6())
   buttonState'stack anon5 : anon5(this = anon5(
@@ -4636,12 +5096,12 @@ cinclude{
   i32_min'i32 : 2147483647i
   u32_max'u32 : (uint32_t)4294967295uu
   rootSurface'heap #surface : sdlSurface(this = sdlSurface(
-    size'stack size : this.size,
-    win'ptr = this.win,
-    ren'ptr = this.ren
+    size'stack size : this.size
   )) as heap #surface
-  root'heap #element : borderLayout(this = borderLayout(
-    children'stack array_heap_element : this.children,
+  root'heap #element : textElement(this = textElement(
+    font'stack font = this.font,
+    text'stack string = this.text,
+    color'stack color = this.color,
     rect'stack rect = this.rect
   )) as heap #element
   runLoop()

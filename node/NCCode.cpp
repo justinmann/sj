@@ -260,6 +260,9 @@ void CCCodeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
     }
 
     switch (codeType) {
+    case NCC_VAR:
+        assert(false);
+        break;
     case NCC_BLOCK:
         trBlock->statements.push_back(finalCode);
         break;
@@ -286,6 +289,9 @@ void CCCodeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
 
 void CCCodeVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
     switch (codeType) {
+    case NCC_VAR:
+        ss << "cvar{\n";
+        break;
     case NCC_BLOCK:
         ss << "c{\n";
         break;
@@ -304,6 +310,9 @@ void CCCodeVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr
     }
     ss << code;
     switch (codeType) {
+    case NCC_VAR:
+        ss << "\n}cvar";
+        break;
     case NCC_BLOCK:
         ss << "\n}c";
         break;
@@ -329,4 +338,13 @@ shared_ptr<CVar> NCCode::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
     string finalCode = expandMacros(compiler, loc, scope, nullptr, code, nullptr, functions, includes, returnType);
 
     return make_shared<CCCodeVar>(loc, scope, codeType, code, returnType);
+}
+
+
+void NCCode::addToStruct(Compiler* compiler, shared_ptr<CScope> scope, vector<string>& lines) {
+    vector<shared_ptr<CFunction>> functions;
+    map<string, map<string, bool>> includes;
+    shared_ptr<CType> returnType = compiler->typeVoid;
+    string finalCode = expandMacros(compiler, loc, scope, nullptr, code, nullptr, functions, includes, returnType);
+    lines.push_back(finalCode);
 }

@@ -82,6 +82,9 @@ NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnT
             }
             else if (it->nodeType == NodeType_Interface) {
                 interfaces.push_back(static_pointer_cast<NInterface>(it));
+            }
+            else if (it->nodeType == NodeType_Code) {
+                ccodes.push_back(static_pointer_cast<NCCode>(it));
             } else {
                 invalid.push_back(it);
             }
@@ -133,12 +136,13 @@ shared_ptr<CVar> NFunction::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
     return nullptr;
 }
 
-CFunction::CFunction(weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces) :
+CFunction::CFunction(weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, vector<shared_ptr<NCCode>> ccodes) :
 CBaseFunction(CFT_Function, definition.lock()->name, parent, definition, false),
 loc(CLoc::undefined),
 type(type),
 templateTypes(templateTypes),
 interfaces(interfaces),
+ccodes(ccodes),
 _isInGetType(false),
 _returnTypeName(nullptr),
 _interfaceTypeNames(nullptr),
@@ -366,6 +370,10 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                     trOutput->structs[stackStructName].push_back(ss.str());
                 }
 
+                for (auto ccode : ccodes) {
+                    ccode->addToStruct(compiler, calleeScope, trOutput->structs[stackStructName]);
+                }
+
                 if (!hasValues) {
                     trOutput->structs[stackStructName].push_back("int structsNeedAValue");
                 }
@@ -395,6 +403,10 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                         }
                         ss << " " << argType.first;
                         trOutput->structs[heapStructName].push_back(ss.str());
+                    }
+
+                    for (auto ccode : ccodes) {
+                        ccode->addToStruct(compiler, calleeScope, trOutput->structs[heapStructName]);
                     }
 
                     trOutput->structOrder.push_back(heapStructName);
@@ -1327,6 +1339,8 @@ shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, 
     c->node = node;
     
     if (node) {
+        c->ccodes = node->ccodes;
+
         for (auto it : node->interfaces) {
             it->define(compiler, c);
         }
@@ -1374,7 +1388,7 @@ shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CLoc 
             interfaces = make_shared<vector<shared_ptr<CInterface>>>();
         }
         
-        func = make_shared<CFunction>(shared_from_this(), type, templateTypes, funcParent, interfaces);
+        func = make_shared<CFunction>(shared_from_this(), type, templateTypes, funcParent, interfaces, ccodes);
         if (func == nullptr) {
             return nullptr;
         }
