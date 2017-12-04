@@ -199,7 +199,7 @@ surface2d(
 		    }
 		--c--
 */
-		texture(tex : tex)
+		texture()
 	}
 ) {
 	--c--

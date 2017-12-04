@@ -6,7 +6,7 @@ buttonState: ^(
 
 buttonElement #element #mouseHandler (
 	text = ""
-	textColor = colors.black()
+	textColor = colors.blue()
 	font = style.getFont(0 /* TODO: typeId(button) */)
 	rect = rect()
 	normalImage = image(rootSurface.getTexture(src = "assets/buttonNormal.png"), margin = margin(2, 2, 2, 2))
@@ -14,20 +14,24 @@ buttonElement #element #mouseHandler (
 	pressedImage = image(rootSurface.getTexture(src = "assets/buttonPressed.png"), margin = margin(2, 2, 2, 2))
 	state = buttonState.normal
 	margin = margin(10, 10, 10, 10)
+	textRenderer = empty'textRenderer
 
 	getSize(maxSize : 'size) {
-		textSize : rootSurface.getTextSize(font, text)
+		textSize : font.getTextSize(text)
 		textSize.addMargin(margin).cap(maxSize)	
 	}
 
 	getRect()'local rect { rect }
 
 	setRect(rect_ : 'rect) {
-		rect = copy rect_
+		if rect != rect_ {
+			rect = copy rect_
+			textRenderer = empty'textRenderer
+		}
 		void
 	}
 
-	render(surface : '#surface) {
+	render(surface : 'surface2d) {
 		if (state == buttonState.normal) {
 			surface.drawImage(rect, normalImage)
 		} else if (state == buttonState.hot) {
@@ -36,15 +40,21 @@ buttonElement #element #mouseHandler (
 			surface.drawImage(rect, pressedImage)
 		}
 
-		textSize : surface.getTextSize(font, text)
-		innerRect : rect.subtractMargin(margin)
-		textRect : rect(
-			x : innerRect.x + (innerRect.w - textSize.w) / 2
-			y : innerRect.y + (innerRect.h - textSize.h) / 2
-			w : textSize.w
-			h : textSize.h
-		)
-		surface.drawText(textRect, font, text, textColor)
+		if isEmpty(textRenderer) {
+			innerRect : rect.subtractMargin(margin)
+
+			textSize : font.getTextSize(text)
+
+			textRenderer = value(heap textRenderer(
+				text: copy text
+			    point: point(innerRect.x + (innerRect.w - textSize.w) / 2, innerRect.y + (innerRect.h - textSize.h) / 2)
+			    color: copy textColor
+			    font: copy font))
+
+			void
+		}
+
+		textRenderer?.render(surface)
 
 		// TODO: change color based on state
 		// TODO: support nine-grid image background

@@ -30,7 +30,7 @@ borderChild #element #borderChild (
 		void	
 	}
 
-	render(surface : '#surface) {
+	render(surface : 'surface2d) {
 		child.render(surface)
 	}
 
@@ -93,7 +93,7 @@ borderLayout #element (
 		void	
 	}
 
-	render(surface : '#surface) {
+	render(surface : 'surface2d) {
 		for i (0 to children.size) {
 			child : children[i]
 			child.render(surface)

@@ -30,7 +30,7 @@ anon8(fill'i32:, left'i32:, right'i32:, top'i32:, bottom'i32:)'stack anon8 {
   this
 }
 
-boxElement #element (color'stack color=, idealSize'stack size=, rect'stack rect=, boxRenderer'heap boxRenderer?=)'heap boxElement {
+borderLayout #element (children'stack array_heap_element:, rect'stack rect=)'heap borderLayout {
   this
 }
 
@@ -5586,11 +5586,9 @@ global()'void {
   } vertex3_color4_t;
   
   --cstruct--
-  root'heap #element : boxElement(this = boxElement(
-    color'stack color = this.color,
-    idealSize'stack size = this.idealSize,
-    rect'stack rect = this.rect,
-    boxRenderer'heap boxRenderer? = this.boxRenderer
+  root'heap #element : borderLayout(this = borderLayout(
+    children'stack array_heap_element : this.children,
+    rect'stack rect = this.rect
   )) as heap #element
   runLoop()
   void

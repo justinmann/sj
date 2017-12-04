@@ -13,7 +13,10 @@ textElement #element (
 	getRect()'local rect { rect }
 
 	setRect(rect_ : 'rect)'void {
-		rect = copy rect_
+		if rect != rect_ {
+			rect = copy rect_
+			textRenderer = empty'textRenderer
+		}
 		void
 	}
 

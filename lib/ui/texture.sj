@@ -1,6 +1,8 @@
 texture(
 	size : size()
-	id : 'u32
+	id = 0u
+
+	getSize() { size(size.w, size.h) }
 ) {
 	this
 }
