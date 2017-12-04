@@ -1,3 +1,4 @@
+include "surface.sj"
 include "buttonElement.sj"
 include "fillElement.sj"
 include "imageElement.sj"
@@ -6,7 +7,6 @@ include "color.sj"
 include "element.sj"
 include "rect.sj"
 include "style.sj"
-include "surface.sj"
 include "size.sj"
 include "image.sj"
 include "texture.sj"
@@ -27,7 +27,8 @@ include "utf8.sj"
 include "distanceField.sj"
 include "edtaa3func.sj"
 include "mat4.sj"
-include "textVertexBuffer.sj"
+include "textRenderer.sj"
+include "boxRenderer.sj"
 
 --cinclude--
 #include(<emscripten.h>, EMSCRIPTEN)

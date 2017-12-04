@@ -1,9 +1,10 @@
+rootSurface : surface2d()
+
 surface2d(
 	size : size(640, 480)
 	--cvar--
 	SDL_Window* win;
 	SDL_Renderer* ren;
-	GLuint textShader;
 	mat4 model;
 	mat4 view;
 	mat4 projection;
@@ -42,13 +43,6 @@ surface2d(
 		--c--
 		size(w, h)
 	}
-
-	drawRect(rect: 'rect, color: 'color)'void --c--
-/*
-		SDL_SetRenderDrawColor(_parent->ren, color->r, color->g, color->b, color->a);
-		SDL_RenderFillRect(_parent->ren, (SDL_Rect*)rect);
-*/
-	--c--
 
 	drawImage(rect: 'rect, image: 'image)'void --c--
 /*
@@ -189,18 +183,6 @@ surface2d(
 */
 	--c--
 
-	drawVertexBuffer(vertexBuffer: '#vertexBuffer, texture : 'texture)'void {
-		--c--
-	    glBindTexture(GL_TEXTURE_2D, texture->id);
-		glUseProgram(_parent->textShader);
-        glUniform1i(glGetUniformLocation(_parent->textShader, "texture" ), 0 );
-        glUniformMatrix4fv(glGetUniformLocation(_parent->textShader, "model" ), 1, 0, _parent->model.data);
-        glUniformMatrix4fv(glGetUniformLocation(_parent->textShader, "view" ), 1, 0, _parent->view.data);
-        glUniformMatrix4fv(glGetUniformLocation(_parent->textShader, "projection" ), 1, 0, _parent->projection.data);
-		--c--
-		vertexBuffer.render()
-	}
-
 	getTexture(src: 'string)'texture {
 		tex = 0 as ptr
 /*
@@ -262,8 +244,6 @@ surface2d(
     glClearColor( 0.0, 0.0, 0.0, 0.0 );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glEnable( GL_BLEND );
-
-    _this->textShader = shader_load("shaders/v3f-t2f-c4f.vert", "shaders/v3f-t2f-c4f.frag");
 	--c--
 	this
 } copy {
@@ -283,3 +263,49 @@ surface2d(
 	}
 	--c--
 }
+
+--cstruct--
+typedef struct GLid_td GLid_s;
+
+struct GLid_td {
+    GLuint id;
+    int refCount;
+    UT_hash_handle hh;
+};
+
+GLid_s* g_GLids = 0;
+--cstruct--
+
+--cdefine--
+void _retainGLid(GLuint id);
+bool _releaseGLid(GLuint id);
+--cdefine--
+
+--cfunction--
+void _retainGLid(GLuint id) {
+  GLid_s* p;
+  HASH_FIND_PTR(g_GLids, &id, p);
+  if (p) {
+    p->refCount++;
+  } else {
+    p = (GLid_s*)malloc(sizeof(GLid_s));
+    p->id = id;
+    p->refCount = 1;
+    HASH_ADD_PTR(g_GLids, id, p);    
+  }
+}
+
+bool _releaseGLid(GLuint id) {
+  GLid_s* p;
+  HASH_FIND_PTR(g_GLids, &id, p);
+  if (p) {
+    p->refCount--;
+    if (p->refCount == 0) {
+      HASH_DEL(g_GLids, p);
+      free(p);
+    }
+    return false;
+  }
+  return true;
+}
+--cfunction--

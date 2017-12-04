@@ -4,6 +4,30 @@
  * file `LICENSE` for more details.
  */
 
+shader(
+    vertex : 'string
+    pixel : 'string
+    --cvar--
+    GLuint id;
+    --cvar--
+) {
+    --c--
+    _this->id = shader_load((char*)_this->vertex.data.data, (char*)_this->pixel.data.data);
+    --c--
+    this
+} copy {
+    --c--
+    _this->id = _from->id;
+    _retainGLid(_this->id);
+    --c--
+} destroy {
+    --c--
+    if (_releaseGLid(_this->id)) {
+        glDeleteShader(_this->id);
+    }
+    --c--
+}
+
 --cdefine--
 /**
  * Read a fragment or vertex shader from a file

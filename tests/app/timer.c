@@ -1,12 +1,4 @@
 
-/**
-* Maximum number of attributes per vertex
-*
-* @private
-*/
-#define MAX_VERTEX_ATTRIBUTE 16
-
-
 #ifdef WIN32
 #pragma warning(disable:4996)
 #define GLEW_STATIC
@@ -15,6 +7,14 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #endif
+
+
+/**
+* Maximum number of attributes per vertex
+*
+* @private
+*/
+#define MAX_VERTEX_ATTRIBUTE 16
 
 #ifdef EMSCRIPTEN
 #include <GLES3/gl3.h>
@@ -51,15 +51,6 @@
 #include FT_FREETYPE_H
 #include FT_LCD_FILTER_H
 #include FT_STROKER_H
-
-
-typedef struct vertex_buffer_td vertex_buffer_t;
-
-
-typedef struct vertex_attribute_td vertex_attribute_t;
-
-
-typedef struct vector_td vector_t;
 
 
 /* memcmp, memset, strlen */
@@ -1155,6 +1146,15 @@ unsigned keylen;                  /* enclosing struct's key len     */
 unsigned hashv;                   /* result of hash-fcn(key)        */
 } UT_hash_handle;
 
+
+typedef struct vector_td vector_t;
+
+
+typedef struct vertex_attribute_td vertex_attribute_t;
+
+
+typedef struct vertex_buffer_td vertex_buffer_t;
+
 typedef struct td_int32_option int32_option;
 struct td_int32_option {
     bool isEmpty;
@@ -1211,134 +1211,243 @@ struct td_double_option {
 };
 const double_option double_empty = { true };
 
-const char* sjg_string1 = "assets/sample.ttf";
-const char* sjg_string2 = "Bob";
+const char* sjg_string1 = "shaders/v3f-t2f-c4f.vert";
+const char* sjg_string2 = "shaders/v3f-t2f-c4f.frag";
+const char* sjg_string3 = "shaders/v3f-c4f.vert";
+const char* sjg_string4 = "shaders/v3f-c4f.frag";
 
 
-typedef struct {
-    float x, y, z;    // position
-    float s, t;       // texture
-    float r, g, b, a; // color
-} vertex_t;
+typedef struct pointer_td pointer;
+struct pointer_td {
+    void* ptr;
+    int refCount;
+    UT_hash_handle hh;
+};
+pointer* g_pointers = 0;
+
+
+typedef struct GLid_td GLid_s;
+struct GLid_td {
+    GLuint id;
+    int refCount;
+    UT_hash_handle hh;
+};
+GLid_s* g_GLids = 0;
 
 
 /**
+* Tuple of 4 ints.
+*
+* Each field can be addressed using several aliases:
+*  - First component:  <b>x</b>, <b>r</b>, <b>red</b> or <b>vstart</b>
+*  - Second component: <b>y</b>, <b>g</b>, <b>green</b> or <b>vcount</b>
+*  - Third component:  <b>z</b>, <b>b</b>, <b>blue</b>, <b>width</b> or <b>istart</b>
+*  - Fourth component: <b>w</b>, <b>a</b>, <b>alpha</b>, <b>height</b> or <b>icount</b>
 *
 */
 typedef union
 {
-    float data[16];    /**< All compoments at once     */
+    int data[4];    /**< All compoments at once     */
     struct {
-        float m00, m01, m02, m03;
-        float m10, m11, m12, m13;
-        float m20, m21, m22, m23;
-        float m30, m31, m32, m33;
+        int x;      /**< Alias for first component  */
+        int y;      /**< Alias for second component */
+        int z;      /**< Alias for third component  */
+        int w;      /**< Alias for fourht component */
     };
-} mat4;
-
-
+    struct {
+        int x_;     /**< Alias for first component  */
+        int y_;     /**< Alias for second component */
+        int width;  /**< Alias for third component  */
+        int height; /**< Alias for fourth component */
+    };
+    struct {
+        int r;      /**< Alias for first component  */
+        int g;      /**< Alias for second component */
+        int b;      /**< Alias for third component  */
+        int a;      /**< Alias for fourth component */
+    };
+    struct {
+        int red;    /**< Alias for first component  */
+        int green;  /**< Alias for second component */
+        int blue;   /**< Alias for third component  */
+        int alpha;  /**< Alias for fourth component */
+    };
+    struct {
+        int vstart; /**< Alias for first component  */
+        int vcount; /**< Alias for second component */
+        int istart; /**< Alias for third component  */
+        int icount; /**< Alias for fourth component */
+    };
+} ivec4;
 /**
-* Generic vertex buffer.
-*/
-struct vertex_buffer_td
-{
-    /** Format of the vertex buffer. */
-    char * format;
-    /** Vector of vertices. */
-    vector_t * vertices;
-    #ifdef FREETYPE_GL_USE_VAO
-    /** GL identity of the Vertex Array Object */
-    GLuint VAO_id;
-    #endif
-    /** GL identity of the vertices buffer. */
-    GLuint vertices_id;
-    /** Vector of indices. */
-    vector_t * indices;
-    /** GL identity of the indices buffer. */
-    GLuint indices_id;
-    /** Current size of the vertices buffer in GPU */
-    size_t GPU_vsize;
-    /** Current size of the indices buffer in GPU*/
-    size_t GPU_isize;
-    /** GL primitives to render. */
-    GLenum mode;
-    /** Whether the vertex buffer needs to be uploaded to GPU memory. */
-    char state;
-    /** Individual items */
-    vector_t * items;
-    /** Array of attributes. */
-    vertex_attribute_t *attributes[MAX_VERTEX_ATTRIBUTE];
-};
-
-
-/**
-*  Generic vertex attribute.
-*/
-struct vertex_attribute_td
-{
-    /**
-    *  atribute name
-    */
-    GLchar * name;
-    /**
-    * index of the generic vertex attribute to be modified.
-    */
-    GLuint index;
-    /**
-    * Number of components per generic vertex attribute.
-    *
-    * Must be 1, 2, 3, or 4. The initial value is 4.
-    */
-    GLint size;
-    /**
-    *  data type of each component in the array.
-    *
-    *  Symbolic constants GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT,
-    *  GL_UNSIGNED_SHORT, GL_INT, GL_UNSIGNED_INT, GL_FLOAT, or GL_DOUBLE are
-    *  accepted. The initial value is GL_FLOAT.
-    */
-    GLenum type;
-    /**
-    *  whether fixed-point data values should be normalized (GL_TRUE) or
-    *  converted directly as fixed-point values (GL_FALSE) when they are
-    *  accessed.
-    */
-    GLboolean normalized;
-    /**
-    *  byte offset between consecutive generic vertex attributes.
-    *
-    *  If stride is 0, the generic vertex attributes are understood to be
-    *  tightly packed in the array. The initial value is 0.
-    */
-    GLsizei stride;
-    /**
-    *  pointer to the first component of the first attribute element in the
-    *  array.
-    */
-    GLvoid * pointer;
-    /**
-    * pointer to the function that enable this attribute.
-    */
-    void ( * enable )(void *);
-};
-
-
-/**
-*  Generic vector structure.
+* Tuple of 3 ints.
 *
-* @memberof vector
+* Each field can be addressed using several aliases:
+*  - First component:  <b>x</b>, <b>r</b> or <b>red</b>
+*  - Second component: <b>y</b>, <b>g</b> or <b>green</b>
+*  - Third component:  <b>z</b>, <b>b</b> or <b>blue</b>
+*
 */
-struct vector_td
+typedef union
 {
-    /** Pointer to dynamically allocated items. */
-    void * items;
-    /** Number of items that can be held in currently allocated storage. */
-    size_t capacity;
-    /** Number of items. */
-    size_t size;
-    /** Size (in bytes) of a single item. */
-    size_t item_size;
-};
+    int data[3];    /**< All compoments at once     */
+    struct {
+        int x;      /**< Alias for first component  */
+        int y;      /**< Alias for second component */
+        int z;      /**< Alias for third component  */
+    };
+    struct {
+        int r;      /**< Alias for first component  */
+        int g;      /**< Alias for second component */
+        int b;      /**< Alias for third component  */
+    };
+    struct {
+        int red;    /**< Alias for first component  */
+        int green;  /**< Alias for second component */
+        int blue;   /**< Alias for third component  */
+    };
+} ivec3;
+/**
+* Tuple of 2 ints.
+*
+* Each field can be addressed using several aliases:
+*  - First component: <b>x</b>, <b>s</b> or <b>start</b>
+*  - Second component: <b>y</b>, <b>t</b> or <b>end</b>
+*
+*/
+typedef union
+{
+    int data[2];    /**< All compoments at once     */
+    struct {
+        int x;      /**< Alias for first component  */
+        int y;      /**< Alias for second component */
+    };
+    struct {
+        int s;      /**< Alias for first component  */
+        int t;      /**< Alias for second component */
+    };
+    struct {
+        int start;  /**< Alias for first component  */
+        int end;    /**< Alias for second component */
+    };
+} ivec2;
+/**
+* Tuple of 4 floats.
+*
+* Each field can be addressed using several aliases:
+*  - First component:  <b>x</b>, <b>left</b>, <b>r</b> or <b>red</b>
+*  - Second component: <b>y</b>, <b>top</b>, <b>g</b> or <b>green</b>
+*  - Third component:  <b>z</b>, <b>width</b>, <b>b</b> or <b>blue</b>
+*  - Fourth component: <b>w</b>, <b>height</b>, <b>a</b> or <b>alpha</b>
+*/
+typedef union
+{
+    float data[4];    /**< All compoments at once    */
+    struct {
+        float x;      /**< Alias for first component */
+        float y;      /**< Alias for second component */
+        float z;      /**< Alias for third component  */
+        float w;      /**< Alias for fourth component */
+    };
+    struct {
+        float left;   /**< Alias for first component */
+        float top;    /**< Alias for second component */
+        float width;  /**< Alias for third component  */
+        float height; /**< Alias for fourth component */
+    };
+    struct {
+        float r;      /**< Alias for first component */
+        float g;      /**< Alias for second component */
+        float b;      /**< Alias for third component  */
+        float a;      /**< Alias for fourth component */
+    };
+    struct {
+        float red;    /**< Alias for first component */
+        float green;  /**< Alias for second component */
+        float blue;   /**< Alias for third component  */
+        float alpha;  /**< Alias for fourth component */
+    };
+} vec4;
+/**
+* Tuple of 3 floats
+*
+* Each field can be addressed using several aliases:
+*  - First component:  <b>x</b>, <b>r</b> or <b>red</b>
+*  - Second component: <b>y</b>, <b>g</b> or <b>green</b>
+*  - Third component:  <b>z</b>, <b>b</b> or <b>blue</b>
+*/
+typedef union
+{
+    float data[3];   /**< All compoments at once    */
+    struct {
+        float x;     /**< Alias for first component */
+        float y;     /**< Alias fo second component */
+        float z;     /**< Alias fo third component  */
+    };
+    struct {
+        float r;     /**< Alias for first component */
+        float g;     /**< Alias fo second component */
+        float b;     /**< Alias fo third component  */
+    };
+    struct {
+        float red;   /**< Alias for first component */
+        float green; /**< Alias fo second component */
+        float blue;  /**< Alias fo third component  */
+    };
+} vec3;
+/**
+* Tuple of 2 floats
+*
+* Each field can be addressed using several aliases:
+*  - First component:  <b>x</b> or <b>s</b>
+*  - Second component: <b>y</b> or <b>t</b>
+*/
+typedef union
+{
+    float data[2]; /**< All components at once     */
+    struct {
+        float x;   /**< Alias for first component  */
+        float y;   /**< Alias for second component */
+    };
+    struct {
+        float s;   /**< Alias for first component  */
+        float t;   /**< Alias for second component */
+    };
+} vec2;
+/**
+* A texture atlas is used to pack several small regions into a single texture.
+*/
+typedef struct texture_atlas_t
+{
+    /**
+    * Allocated nodes
+    */
+    vector_t * nodes;
+    /**
+    *  Width (in pixels) of the underlying texture
+    */
+    size_t width;
+    /**
+    * Height (in pixels) of the underlying texture
+    */
+    size_t height;
+    /**
+    * Depth (in bytes) of the underlying texture
+    */
+    size_t depth;
+    /**
+    * Allocated surface size
+    */
+    size_t used;
+    /**
+    * Texture identity (OpenGL)
+    */
+    unsigned int id;
+    /**
+    * Atlas data
+    */
+    unsigned char * data;
+} texture_atlas_t;
 
 
 #undef __FTERRORS_H__
@@ -1589,381 +1698,229 @@ typedef struct texture_font_t
 
 
 /**
-* Tuple of 4 ints.
+*  Generic vector structure.
 *
-* Each field can be addressed using several aliases:
-*  - First component:  <b>x</b>, <b>r</b>, <b>red</b> or <b>vstart</b>
-*  - Second component: <b>y</b>, <b>g</b>, <b>green</b> or <b>vcount</b>
-*  - Third component:  <b>z</b>, <b>b</b>, <b>blue</b>, <b>width</b> or <b>istart</b>
-*  - Fourth component: <b>w</b>, <b>a</b>, <b>alpha</b>, <b>height</b> or <b>icount</b>
-*
+* @memberof vector
 */
-typedef union
+struct vector_td
 {
-    int data[4];    /**< All compoments at once     */
-    struct {
-        int x;      /**< Alias for first component  */
-        int y;      /**< Alias for second component */
-        int z;      /**< Alias for third component  */
-        int w;      /**< Alias for fourht component */
-    };
-    struct {
-        int x_;     /**< Alias for first component  */
-        int y_;     /**< Alias for second component */
-        int width;  /**< Alias for third component  */
-        int height; /**< Alias for fourth component */
-    };
-    struct {
-        int r;      /**< Alias for first component  */
-        int g;      /**< Alias for second component */
-        int b;      /**< Alias for third component  */
-        int a;      /**< Alias for fourth component */
-    };
-    struct {
-        int red;    /**< Alias for first component  */
-        int green;  /**< Alias for second component */
-        int blue;   /**< Alias for third component  */
-        int alpha;  /**< Alias for fourth component */
-    };
-    struct {
-        int vstart; /**< Alias for first component  */
-        int vcount; /**< Alias for second component */
-        int istart; /**< Alias for third component  */
-        int icount; /**< Alias for fourth component */
-    };
-} ivec4;
-/**
-* Tuple of 3 ints.
-*
-* Each field can be addressed using several aliases:
-*  - First component:  <b>x</b>, <b>r</b> or <b>red</b>
-*  - Second component: <b>y</b>, <b>g</b> or <b>green</b>
-*  - Third component:  <b>z</b>, <b>b</b> or <b>blue</b>
-*
-*/
-typedef union
-{
-    int data[3];    /**< All compoments at once     */
-    struct {
-        int x;      /**< Alias for first component  */
-        int y;      /**< Alias for second component */
-        int z;      /**< Alias for third component  */
-    };
-    struct {
-        int r;      /**< Alias for first component  */
-        int g;      /**< Alias for second component */
-        int b;      /**< Alias for third component  */
-    };
-    struct {
-        int red;    /**< Alias for first component  */
-        int green;  /**< Alias for second component */
-        int blue;   /**< Alias for third component  */
-    };
-} ivec3;
-/**
-* Tuple of 2 ints.
-*
-* Each field can be addressed using several aliases:
-*  - First component: <b>x</b>, <b>s</b> or <b>start</b>
-*  - Second component: <b>y</b>, <b>t</b> or <b>end</b>
-*
-*/
-typedef union
-{
-    int data[2];    /**< All compoments at once     */
-    struct {
-        int x;      /**< Alias for first component  */
-        int y;      /**< Alias for second component */
-    };
-    struct {
-        int s;      /**< Alias for first component  */
-        int t;      /**< Alias for second component */
-    };
-    struct {
-        int start;  /**< Alias for first component  */
-        int end;    /**< Alias for second component */
-    };
-} ivec2;
-/**
-* Tuple of 4 floats.
-*
-* Each field can be addressed using several aliases:
-*  - First component:  <b>x</b>, <b>left</b>, <b>r</b> or <b>red</b>
-*  - Second component: <b>y</b>, <b>top</b>, <b>g</b> or <b>green</b>
-*  - Third component:  <b>z</b>, <b>width</b>, <b>b</b> or <b>blue</b>
-*  - Fourth component: <b>w</b>, <b>height</b>, <b>a</b> or <b>alpha</b>
-*/
-typedef union
-{
-    float data[4];    /**< All compoments at once    */
-    struct {
-        float x;      /**< Alias for first component */
-        float y;      /**< Alias for second component */
-        float z;      /**< Alias for third component  */
-        float w;      /**< Alias for fourth component */
-    };
-    struct {
-        float left;   /**< Alias for first component */
-        float top;    /**< Alias for second component */
-        float width;  /**< Alias for third component  */
-        float height; /**< Alias for fourth component */
-    };
-    struct {
-        float r;      /**< Alias for first component */
-        float g;      /**< Alias for second component */
-        float b;      /**< Alias for third component  */
-        float a;      /**< Alias for fourth component */
-    };
-    struct {
-        float red;    /**< Alias for first component */
-        float green;  /**< Alias for second component */
-        float blue;   /**< Alias for third component  */
-        float alpha;  /**< Alias for fourth component */
-    };
-} vec4;
-/**
-* Tuple of 3 floats
-*
-* Each field can be addressed using several aliases:
-*  - First component:  <b>x</b>, <b>r</b> or <b>red</b>
-*  - Second component: <b>y</b>, <b>g</b> or <b>green</b>
-*  - Third component:  <b>z</b>, <b>b</b> or <b>blue</b>
-*/
-typedef union
-{
-    float data[3];   /**< All compoments at once    */
-    struct {
-        float x;     /**< Alias for first component */
-        float y;     /**< Alias fo second component */
-        float z;     /**< Alias fo third component  */
-    };
-    struct {
-        float r;     /**< Alias for first component */
-        float g;     /**< Alias fo second component */
-        float b;     /**< Alias fo third component  */
-    };
-    struct {
-        float red;   /**< Alias for first component */
-        float green; /**< Alias fo second component */
-        float blue;  /**< Alias fo third component  */
-    };
-} vec3;
-/**
-* Tuple of 2 floats
-*
-* Each field can be addressed using several aliases:
-*  - First component:  <b>x</b> or <b>s</b>
-*  - Second component: <b>y</b> or <b>t</b>
-*/
-typedef union
-{
-    float data[2]; /**< All components at once     */
-    struct {
-        float x;   /**< Alias for first component  */
-        float y;   /**< Alias for second component */
-    };
-    struct {
-        float s;   /**< Alias for first component  */
-        float t;   /**< Alias for second component */
-    };
-} vec2;
-/**
-* A texture atlas is used to pack several small regions into a single texture.
-*/
-typedef struct texture_atlas_t
-{
-    /**
-    * Allocated nodes
-    */
-    vector_t * nodes;
-    /**
-    *  Width (in pixels) of the underlying texture
-    */
-    size_t width;
-    /**
-    * Height (in pixels) of the underlying texture
-    */
-    size_t height;
-    /**
-    * Depth (in bytes) of the underlying texture
-    */
-    size_t depth;
-    /**
-    * Allocated surface size
-    */
-    size_t used;
-    /**
-    * Texture identity (OpenGL)
-    */
-    unsigned int id;
-    /**
-    * Atlas data
-    */
-    unsigned char * data;
-} texture_atlas_t;
-
-
-typedef struct pointer_td pointer;
-struct pointer_td {
-    void* ptr;
-    int refCount;
-    UT_hash_handle hh;
+    /** Pointer to dynamically allocated items. */
+    void * items;
+    /** Number of items that can be held in currently allocated storage. */
+    size_t capacity;
+    /** Number of items. */
+    size_t size;
+    /** Size (in bytes) of a single item. */
+    size_t item_size;
 };
-pointer* g_pointers = 0;
+
+
+/**
+*  Generic vertex attribute.
+*/
+struct vertex_attribute_td
+{
+    /**
+    *  atribute name
+    */
+    GLchar * name;
+    /**
+    * index of the generic vertex attribute to be modified.
+    */
+    GLuint index;
+    /**
+    * Number of components per generic vertex attribute.
+    *
+    * Must be 1, 2, 3, or 4. The initial value is 4.
+    */
+    GLint size;
+    /**
+    *  data type of each component in the array.
+    *
+    *  Symbolic constants GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT,
+    *  GL_UNSIGNED_SHORT, GL_INT, GL_UNSIGNED_INT, GL_FLOAT, or GL_DOUBLE are
+    *  accepted. The initial value is GL_FLOAT.
+    */
+    GLenum type;
+    /**
+    *  whether fixed-point data values should be normalized (GL_TRUE) or
+    *  converted directly as fixed-point values (GL_FALSE) when they are
+    *  accessed.
+    */
+    GLboolean normalized;
+    /**
+    *  byte offset between consecutive generic vertex attributes.
+    *
+    *  If stride is 0, the generic vertex attributes are understood to be
+    *  tightly packed in the array. The initial value is 0.
+    */
+    GLsizei stride;
+    /**
+    *  pointer to the first component of the first attribute element in the
+    *  array.
+    */
+    GLvoid * pointer;
+    /**
+    * pointer to the function that enable this attribute.
+    */
+    void ( * enable )(void *);
+};
+
+
+/**
+* Generic vertex buffer.
+*/
+struct vertex_buffer_td
+{
+    /** Format of the vertex buffer. */
+    char * format;
+    /** Vector of vertices. */
+    vector_t * vertices;
+    #ifdef FREETYPE_GL_USE_VAO
+    /** GL identity of the Vertex Array Object */
+    GLuint VAO_id;
+    #endif
+    /** GL identity of the vertices buffer. */
+    GLuint vertices_id;
+    /** Vector of indices. */
+    vector_t * indices;
+    /** GL identity of the indices buffer. */
+    GLuint indices_id;
+    /** Current size of the vertices buffer in GPU */
+    size_t GPU_vsize;
+    /** Current size of the indices buffer in GPU*/
+    size_t GPU_isize;
+    /** GL primitives to render. */
+    GLenum mode;
+    /** Whether the vertex buffer needs to be uploaded to GPU memory. */
+    char state;
+    /** Individual items */
+    vector_t * items;
+    /** Array of attributes. */
+    vertex_attribute_t *attributes[MAX_VERTEX_ATTRIBUTE];
+};
+
+
+/**
+*
+*/
+typedef union
+{
+    float data[16];    /**< All compoments at once     */
+    struct {
+        float m00, m01, m02, m03;
+        float m10, m11, m12, m13;
+        float m20, m21, m22, m23;
+        float m30, m31, m32, m33;
+    };
+} mat4;
+
+
+typedef struct {
+    float x, y, z;    // position
+    float s, t;       // texture
+    float r, g, b, a; // color
+} vertex3_texture2_color3_t;
+
+
+typedef struct {
+    float x, y, z;    // position
+    float r, g, b, a; // color
+} vertex3_color4_t;
 
 #define sjs_object_typeId 1
-#define sjs_anon8_typeId 2
-#define sjs_anon8_heap_typeId 3
-#define sjs_anon7_typeId 4
-#define sjs_anon7_heap_typeId 5
-#define sjs_anon6_typeId 6
-#define sjs_anon6_heap_typeId 7
-#define sjs_anon5_typeId 8
-#define sjs_anon5_heap_typeId 9
-#define sjs_anon4_typeId 10
-#define sjs_anon4_heap_typeId 11
-#define sjs_anon3_typeId 12
-#define sjs_anon3_heap_typeId 13
-#define sjs_anon2_typeId 14
-#define sjs_anon2_heap_typeId 15
-#define sjs_anon1_typeId 16
-#define sjs_anon1_heap_typeId 17
-#define sjs_size_typeId 18
-#define sjs_size_heap_typeId 19
-#define sjs_surface2d_typeId 20
-#define sjs_surface2d_heap_typeId 21
+#define sjs_anon1_typeId 2
+#define sjs_anon1_heap_typeId 3
+#define sjs_anon2_typeId 4
+#define sjs_anon2_heap_typeId 5
+#define sjs_anon3_typeId 6
+#define sjs_anon3_heap_typeId 7
+#define sjs_anon4_typeId 8
+#define sjs_anon4_heap_typeId 9
+#define sjs_size_typeId 10
+#define sjs_size_heap_typeId 11
+#define sjs_surface2d_typeId 12
+#define sjs_surface2d_heap_typeId 13
+#define sjs_anon5_typeId 14
+#define sjs_anon5_heap_typeId 15
+#define sjs_anon6_typeId 16
+#define sjs_anon6_heap_typeId 17
+#define sjs_anon7_typeId 18
+#define sjs_anon7_heap_typeId 19
+#define sjs_anon8_typeId 20
+#define sjs_anon8_heap_typeId 21
 #define sjs_array_char_typeId 22
 #define sjs_array_char_heap_typeId 23
 #define sjs_string_typeId 24
 #define sjs_string_heap_typeId 25
-#define sjs_font_typeId 26
-#define sjs_font_heap_typeId 27
+#define sjs_shader_typeId 26
+#define sjs_shader_heap_typeId 27
 #define sjs_color_typeId 28
 #define sjs_color_heap_typeId 29
 #define sjs_rect_typeId 30
 #define sjs_rect_heap_typeId 31
-#define sjs_textElement_typeId 32
-#define sjs_array_heap_element_typeId 33
-#define sjs_array_heap_element_heap_typeId 34
-#define sji_element_typeId 35
-#define sjs_point_typeId 36
-#define sjs_point_heap_typeId 37
-#define sjs_textVertexBuffer_typeId 38
-#define sji_textElement_render_vertexBuffer_typeId 39
-#define sjs_textVertexBuffer_heap_typeId 40
-#define sjs_texture_typeId 41
-#define sjs_texture_heap_typeId 42
-#define sjs_textElement_heap_typeId 43
-#define sji_fireMouseUp_mouseHandler_typeId 44
+#define sjs_boxRenderer_typeId 32
+#define sjs_boxRenderer_heap_typeId 33
+#define sjs_boxElement_typeId 34
+#define sjs_array_heap_element_typeId 35
+#define sjs_array_heap_element_heap_typeId 36
+#define sji_element_typeId 37
+#define sjs_boxElement_heap_typeId 38
+#define sjs_point_typeId 39
+#define sjs_point_heap_typeId 40
+#define sji_fireMouseUp_mouseHandler_typeId 41
 
 typedef struct td_sjs_object sjs_object;
-typedef struct td_sjs_anon8 sjs_anon8;
-typedef struct td_sjs_anon8_heap sjs_anon8_heap;
-typedef struct td_sjs_anon7 sjs_anon7;
-typedef struct td_sjs_anon7_heap sjs_anon7_heap;
-typedef struct td_sjs_anon6 sjs_anon6;
-typedef struct td_sjs_anon6_heap sjs_anon6_heap;
-typedef struct td_sjs_anon5 sjs_anon5;
-typedef struct td_sjs_anon5_heap sjs_anon5_heap;
-typedef struct td_sjs_anon4 sjs_anon4;
-typedef struct td_sjs_anon4_heap sjs_anon4_heap;
-typedef struct td_sjs_anon3 sjs_anon3;
-typedef struct td_sjs_anon3_heap sjs_anon3_heap;
-typedef struct td_sjs_anon2 sjs_anon2;
-typedef struct td_sjs_anon2_heap sjs_anon2_heap;
 typedef struct td_sjs_anon1 sjs_anon1;
 typedef struct td_sjs_anon1_heap sjs_anon1_heap;
+typedef struct td_sjs_anon2 sjs_anon2;
+typedef struct td_sjs_anon2_heap sjs_anon2_heap;
+typedef struct td_sjs_anon3 sjs_anon3;
+typedef struct td_sjs_anon3_heap sjs_anon3_heap;
+typedef struct td_sjs_anon4 sjs_anon4;
+typedef struct td_sjs_anon4_heap sjs_anon4_heap;
 typedef struct td_sjs_size sjs_size;
 typedef struct td_sjs_size_heap sjs_size_heap;
 typedef struct td_sjs_surface2d sjs_surface2d;
 typedef struct td_sjs_surface2d_heap sjs_surface2d_heap;
+typedef struct td_sjs_anon5 sjs_anon5;
+typedef struct td_sjs_anon5_heap sjs_anon5_heap;
+typedef struct td_sjs_anon6 sjs_anon6;
+typedef struct td_sjs_anon6_heap sjs_anon6_heap;
+typedef struct td_sjs_anon7 sjs_anon7;
+typedef struct td_sjs_anon7_heap sjs_anon7_heap;
+typedef struct td_sjs_anon8 sjs_anon8;
+typedef struct td_sjs_anon8_heap sjs_anon8_heap;
 typedef struct td_sjs_array_char sjs_array_char;
 typedef struct td_sjs_array_char_heap sjs_array_char_heap;
 typedef struct td_sjs_string sjs_string;
 typedef struct td_sjs_string_heap sjs_string_heap;
-typedef struct td_sjs_font sjs_font;
-typedef struct td_sjs_font_heap sjs_font_heap;
+typedef struct td_sjs_shader sjs_shader;
+typedef struct td_sjs_shader_heap sjs_shader_heap;
 typedef struct td_sjs_color sjs_color;
 typedef struct td_sjs_color_heap sjs_color_heap;
 typedef struct td_sjs_rect sjs_rect;
 typedef struct td_sjs_rect_heap sjs_rect_heap;
-typedef struct td_sjs_textElement sjs_textElement;
+typedef struct td_sjs_boxRenderer sjs_boxRenderer;
+typedef struct td_sjs_boxRenderer_heap sjs_boxRenderer_heap;
+typedef struct td_sjs_boxElement sjs_boxElement;
 typedef struct td_sjs_array_heap_element sjs_array_heap_element;
 typedef struct td_sjs_array_heap_element_heap sjs_array_heap_element_heap;
 typedef struct td_sji_element sji_element;
+typedef struct td_sjs_boxElement_heap sjs_boxElement_heap;
 typedef struct td_sjs_point sjs_point;
 typedef struct td_sjs_point_heap sjs_point_heap;
-typedef struct td_sjs_textVertexBuffer sjs_textVertexBuffer;
-typedef struct td_sji_textElement_render_vertexBuffer sji_textElement_render_vertexBuffer;
-typedef struct td_sjs_textVertexBuffer_heap sjs_textVertexBuffer_heap;
-typedef struct td_sjs_texture sjs_texture;
-typedef struct td_sjs_texture_heap sjs_texture_heap;
-typedef struct td_sjs_textElement_heap sjs_textElement_heap;
 typedef struct td_sji_fireMouseUp_mouseHandler sji_fireMouseUp_mouseHandler;
 
 struct td_sjs_object {
     intptr_t _refCount;
 };
 
-struct td_sjs_anon8 {
-    int32_t fill;
-    int32_t left;
-    int32_t right;
-    int32_t top;
-    int32_t bottom;
-};
-
-struct td_sjs_anon8_heap {
-    intptr_t _refCount;
-    int32_t fill;
-    int32_t left;
-    int32_t right;
-    int32_t top;
-    int32_t bottom;
-};
-
-struct td_sjs_anon7 {
+struct td_sjs_anon1 {
     int structsNeedAValue;
 };
 
-struct td_sjs_anon7_heap {
-    intptr_t _refCount;
-};
-
-struct td_sjs_anon6 {
-    int structsNeedAValue;
-};
-
-struct td_sjs_anon6_heap {
-    intptr_t _refCount;
-};
-
-struct td_sjs_anon5 {
-    int32_t normal;
-    int32_t hot;
-    int32_t pressed;
-};
-
-struct td_sjs_anon5_heap {
-    intptr_t _refCount;
-    int32_t normal;
-    int32_t hot;
-    int32_t pressed;
-};
-
-struct td_sjs_anon4 {
-    int structsNeedAValue;
-};
-
-struct td_sjs_anon4_heap {
-    intptr_t _refCount;
-};
-
-struct td_sjs_anon3 {
-    int structsNeedAValue;
-};
-
-struct td_sjs_anon3_heap {
+struct td_sjs_anon1_heap {
     intptr_t _refCount;
 };
 
@@ -1975,11 +1932,19 @@ struct td_sjs_anon2_heap {
     intptr_t _refCount;
 };
 
-struct td_sjs_anon1 {
+struct td_sjs_anon3 {
     int structsNeedAValue;
 };
 
-struct td_sjs_anon1_heap {
+struct td_sjs_anon3_heap {
+    intptr_t _refCount;
+};
+
+struct td_sjs_anon4 {
+    int structsNeedAValue;
+};
+
+struct td_sjs_anon4_heap {
     intptr_t _refCount;
 };
 
@@ -1998,7 +1963,6 @@ struct td_sjs_surface2d {
     sjs_size size;
     SDL_Window* win;
     SDL_Renderer* ren;
-    GLuint textShader;
     mat4 model;
     mat4 view;
     mat4 projection;
@@ -2009,10 +1973,55 @@ struct td_sjs_surface2d_heap {
     sjs_size size;
     SDL_Window* win;
     SDL_Renderer* ren;
-    GLuint textShader;
     mat4 model;
     mat4 view;
     mat4 projection;
+};
+
+struct td_sjs_anon5 {
+    int32_t normal;
+    int32_t hot;
+    int32_t pressed;
+};
+
+struct td_sjs_anon5_heap {
+    intptr_t _refCount;
+    int32_t normal;
+    int32_t hot;
+    int32_t pressed;
+};
+
+struct td_sjs_anon6 {
+    int structsNeedAValue;
+};
+
+struct td_sjs_anon6_heap {
+    intptr_t _refCount;
+};
+
+struct td_sjs_anon7 {
+    int structsNeedAValue;
+};
+
+struct td_sjs_anon7_heap {
+    intptr_t _refCount;
+};
+
+struct td_sjs_anon8 {
+    int32_t fill;
+    int32_t left;
+    int32_t right;
+    int32_t top;
+    int32_t bottom;
+};
+
+struct td_sjs_anon8_heap {
+    intptr_t _refCount;
+    int32_t fill;
+    int32_t left;
+    int32_t right;
+    int32_t top;
+    int32_t bottom;
 };
 
 struct td_sjs_array_char {
@@ -2039,19 +2048,17 @@ struct td_sjs_string_heap {
     sjs_array_char data;
 };
 
-struct td_sjs_font {
-    sjs_string src;
-    float size;
-    texture_font_t* font;
-    texture_atlas_t* atlas;
+struct td_sjs_shader {
+    sjs_string vertex;
+    sjs_string pixel;
+    GLuint id;
 };
 
-struct td_sjs_font_heap {
+struct td_sjs_shader_heap {
     intptr_t _refCount;
-    sjs_string src;
-    float size;
-    texture_font_t* font;
-    texture_atlas_t* atlas;
+    sjs_string vertex;
+    sjs_string pixel;
+    GLuint id;
 };
 
 struct td_sjs_color {
@@ -2084,11 +2091,24 @@ struct td_sjs_rect_heap {
     int32_t h;
 };
 
-struct td_sjs_textElement {
-    sjs_font font;
-    sjs_string text;
-    sjs_color color;
+struct td_sjs_boxRenderer {
     sjs_rect rect;
+    sjs_color color;
+    vertex_buffer_t* buffer;
+};
+
+struct td_sjs_boxRenderer_heap {
+    intptr_t _refCount;
+    sjs_rect rect;
+    sjs_color color;
+    vertex_buffer_t* buffer;
+};
+
+struct td_sjs_boxElement {
+    sjs_color color;
+    sjs_size idealSize;
+    sjs_rect rect;
+    sjs_boxRenderer_heap* boxRenderer;
 };
 
 struct td_sjs_array_heap_element {
@@ -2117,6 +2137,14 @@ struct td_sji_element {
     void (*getChildren)(void* _parent, sjs_array_heap_element** _return);
 };
 
+struct td_sjs_boxElement_heap {
+    intptr_t _refCount;
+    sjs_color color;
+    sjs_size idealSize;
+    sjs_rect rect;
+    sjs_boxRenderer_heap* boxRenderer;
+};
+
 struct td_sjs_point {
     int32_t x;
     int32_t y;
@@ -2126,50 +2154,6 @@ struct td_sjs_point_heap {
     intptr_t _refCount;
     int32_t x;
     int32_t y;
-};
-
-struct td_sjs_textVertexBuffer {
-    sjs_string text;
-    sjs_point point;
-    sjs_color color;
-    sjs_font font;
-    vertex_buffer_t* buffer;
-};
-
-struct td_sji_textElement_render_vertexBuffer {
-    intptr_t _refCount;
-    sjs_object* _parent;
-    void (*destroy)(void* _this);
-    sjs_object* (*asInterface)(sjs_object* _this, int typeId);
-    void (*render)(void* _parent);
-};
-
-struct td_sjs_textVertexBuffer_heap {
-    intptr_t _refCount;
-    sjs_string text;
-    sjs_point point;
-    sjs_color color;
-    sjs_font font;
-    vertex_buffer_t* buffer;
-};
-
-struct td_sjs_texture {
-    sjs_size size;
-    uint32_t id;
-};
-
-struct td_sjs_texture_heap {
-    intptr_t _refCount;
-    sjs_size size;
-    uint32_t id;
-};
-
-struct td_sjs_textElement_heap {
-    intptr_t _refCount;
-    sjs_font font;
-    sjs_string text;
-    sjs_color color;
-    sjs_rect rect;
 };
 
 struct td_sji_fireMouseUp_mouseHandler {
@@ -2183,377 +2167,239 @@ struct td_sji_fireMouseUp_mouseHandler {
 };
 
 
-void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen);
-vec2 get_text_size(texture_font_t * font, char *text);
+void _retain(void* ptr);
+bool _release(void* ptr);
 
 
-mat4 *
-mat4_new( void );
-void
-mat4_set_identity( mat4 *self );
-void
-mat4_set_zero( mat4 *self );
-void
-mat4_multiply( mat4 *self, mat4 *other );
-void
-mat4_set_orthographic( mat4 *self,
-float left,   float right,
-float bottom, float top,
-float znear,  float zfar );
-void
-mat4_set_perspective( mat4 *self,
-float fovy,  float aspect,
-float zNear, float zFar);
-void
-mat4_set_frustum( mat4 *self,
-float left,   float right,
-float bottom, float top,
-float znear,  float zfar );
-void
-mat4_set_rotation( mat4 *self,
-float angle,
-float x, float y, float z);
-void
-mat4_set_translation( mat4 *self,
-float x, float y, float z);
-void
-mat4_set_scaling( mat4 *self,
-float x, float y, float z);
-void
-mat4_rotate( mat4 *self,
-float angle,
-float x, float y, float z);
-void
-mat4_translate( mat4 *self,
-float x, float y, float z);
-void
-mat4_scale( mat4 *self,
-float x, float y, float z);
+void _retainGLid(GLuint id);
+bool _releaseGLid(GLuint id);
 
 
+/**
+* Read a fragment or vertex shader from a file
+*
+* @param filename file to read shader from
+* @return         a newly-allocated text buffer containing code. This buffer
+*                 must be freed after usage.
+*
+*/
+char *
+shader_read( const char *filename );
+/**
+* Compile a shader from a text buffer.
+*
+* @param source code of the shader
+* @param type   type of the shader
+*
+* @return a handle on the compiled program
+*
+*/
+GLuint
+shader_compile( const char* source,
+const GLenum type );
+/**
+* Load a vertex and fragment shader sources and build program
+*
+* @param  vert_filename vertex shader filename
+* @param  frag_filename fragment shader filename
+*
+* @return a handle on the built program
+*
+*/
+GLuint
+shader_load( const char * vert_filename,
+const char * frag_filename );
+
+
+/**
+* Creates a new empty texture atlas.
+*
+* @param   width   width of the atlas
+* @param   height  height of the atlas
+* @param   depth   bit depth of the atlas
+* @return          a new empty texture atlas.
+*
+*/
+texture_atlas_t *
+texture_atlas_new( const size_t width,
+const size_t height,
+const size_t depth );
+/**
+*  Deletes a texture atlas.
+*
+*  @param self a texture atlas structure
+*
+*/
+void
+texture_atlas_delete( texture_atlas_t * self );
+/**
+*  Allocate a new region in the atlas.
+*
+*  @param self   a texture atlas structure
+*  @param width  width of the region to allocate
+*  @param height height of the region to allocate
+*  @return       Coordinates of the allocated region
+*
+*/
+ivec4
+texture_atlas_get_region( texture_atlas_t * self,
+const size_t width,
+const size_t height );
+/**
+*  Upload data to the specified atlas region.
+*
+*  @param self   a texture atlas structure
+*  @param x      x coordinate the region
+*  @param y      y coordinate the region
+*  @param width  width of the region
+*  @param height height of the region
+*  @param data   data to be uploaded into the specified region
+*  @param stride stride of the data
+*
+*/
+void
+texture_atlas_set_region( texture_atlas_t * self,
+const size_t x,
+const size_t y,
+const size_t width,
+const size_t height,
+const unsigned char *data,
+const size_t stride );
+/**
+*  Remove all allocated regions from the atlas.
+*
+*  @param self   a texture atlas structure
+*/
+void
+texture_atlas_clear( texture_atlas_t * self );
+
+
+/**
+* This function creates a new texture font from given filename and size.  The
+* texture atlas is used to store glyph on demand. Note the depth of the atlas
+* will determine if the font is rendered as alpha channel only (depth = 1) or
+* RGB (depth = 3) that correspond to subpixel rendering (if available on your
+* freetype implementation).
+*
+* @param atlas     A texture atlas
+* @param pt_size   Size of font to be created (in points)
+* @param filename  A font filename
+*
+* @return A new empty font (no glyph inside yet)
+*
+*/
+texture_font_t *
+texture_font_new_from_file( texture_atlas_t * atlas,
+const float pt_size,
+const char * filename );
+/**
+* This function creates a new texture font from a memory location and size.
+* The texture atlas is used to store glyph on demand. Note the depth of the
+* atlas will determine if the font is rendered as alpha channel only
+* (depth = 1) or RGB (depth = 3) that correspond to subpixel rendering (if
+* available on your freetype implementation).
+*
+* @param atlas       A texture atlas
+* @param pt_size     Size of font to be created (in points)
+* @param memory_base Start of the font file in memory
+* @param memory_size Size of the font file memory region, in bytes
+*
+* @return A new empty font (no glyph inside yet)
+*
+*/
+texture_font_t *
+texture_font_new_from_memory( texture_atlas_t *atlas,
+float pt_size,
+const void *memory_base,
+size_t memory_size );
+/**
+* Delete a texture font. Note that this does not delete the glyph from the
+* texture atlas.
+*
+* @param self a valid texture font
+*/
+void
+texture_font_delete( texture_font_t * self );
+/**
+* Request a new glyph from the font. If it has not been created yet, it will
+* be.
+*
+* @param self      A valid texture font
+* @param codepoint Character codepoint to be loaded in UTF-8 encoding.
+*
+* @return A pointer on the new glyph or 0 if the texture atlas is not big
+*         enough
+*
+*/
+texture_glyph_t *
+texture_font_get_glyph( texture_font_t * self,
+const char * codepoint );
+/**
+* Request an already loaded glyph from the font.
+*
+* @param self      A valid texture font
+* @param codepoint Character codepoint to be found in UTF-8 encoding.
+*
+* @return A pointer on the glyph or 0 if the glyph is not loaded
+*/
+texture_glyph_t *
+texture_font_find_glyph( texture_font_t * self,
+const char * codepoint );
+
+/**
+* Request the loading of a given glyph.
+*
+* @param self       A valid texture font
+* @param codepoints Character codepoint to be loaded in UTF-8 encoding.
+*
+* @return One if the glyph could be loaded, zero if not.
+*/
+int
+texture_font_load_glyph( texture_font_t * self,
+const char * codepoint );
+/**
+* Request the loading of several glyphs at once.
+*
+* @param self       A valid texture font
+* @param codepoints Character codepoints to be loaded in UTF-8 encoding. May
+*                   contain duplicates.
+*
+* @return Number of missed glyph if the texture is not big enough to hold
+*         every glyphs.
+*/
+size_t
+texture_font_load_glyphs( texture_font_t * self,
+const char * codepoints );
 /*
-* Compute the local gradient at edge pixels using convolution filters.
-* The gradient is computed only at edge pixels. At other places in the
-* image, it is never used, and it's mostly zero anyway.
-*/
-void computegradient(double *img, int w, int h, double *gx, double *gy);
-/*
-* A somewhat tricky function to approximate the distance to an edge in a
-* certain pixel, with consideration to either the local gradient (gx,gy)
-* or the direction to the pixel (dx,dy) and the pixel greyscale value a.
-* The latter alternative, using (dx,dy), is the metric used by edtaa2().
-* Using a local estimate of the edge gradient (gx,gy) yields much better
-* accuracy at and near edges, and reduces the error even at distant pixels
-* provided that the gradient direction is accurately estimated.
-*/
-double edgedf(double gx, double gy, double a);
-double distaa3(double *img, double *gximg, double *gyimg, int w, int c, int xc, int yc, int xi, int yi);
-// Shorthand macro: add ubiquitous parameters dist, gx, gy, img and w and call distaa3()
-#define DISTAA(c,xc,yc,xi,yi) (distaa3(img, gx, gy, w, c, xc, yc, xi, yi))
-void edtaa3(double *img, double *gx, double *gy, int w, int h, short *distx, short *disty, double *dist);
-
-
-double *
-make_distance_mapd( double *img,
-unsigned int width, unsigned int height );
-unsigned char *
-make_distance_mapb( unsigned char *img,
-unsigned int width, unsigned int height );
-
-
-/**
-* Returns the size in bytes of a given UTF-8 encoded character surrogate
+*Increases the size of a fonts texture atlas
+*Invalidates all pointers to font->atlas->data
+*Changes the UV Coordinates of existing glyphs in the font
 *
-* @param character  An UTF-8 encoded character
-*
-* @return  The length of the surrogate in bytes.
-*/
-size_t
-utf8_surrogate_len( const char* character );
-/**
-* Return the length of the given UTF-8 encoded and
-* NULL terminated string.
-*
-* @param string  An UTF-8 encoded string
-*
-* @return  The length of the string in characters.
-*/
-size_t
-utf8_strlen( const char* string );
-/**
-* Converts a given UTF-8 encoded character to its UTF-32 LE equivalent
-*
-* @param character  An UTF-8 encoded character
-*
-* @return  The equivalent of the given character in UTF-32 LE
-*          encoding.
-*/
-uint32_t
-utf8_to_utf32( const char * character );
-
-
-#ifdef WIN32
-// strndup() is not available on Windows
-char *strndup( const char *s1, size_t n);
-#endif
-/**
-* Creates an empty vertex buffer.
-*
-* @param  format a string describing vertex format.
-* @return        an empty vertex buffer.
-*/
-vertex_buffer_t *
-vertex_buffer_new( const char *format );
-/**
-* Deletes vertex buffer and releases GPU memory.
-*
-* @param  self  a vertex buffer
+*@param self A valid texture font
+*@param width_new Width of the texture atlas after resizing (must be bigger or equal to current width)
+*@param height_new Height of the texture atlas after resizing (must be bigger or equal to current height)
 */
 void
-vertex_buffer_delete( vertex_buffer_t * self );
+texture_font_enlarge_atlas( texture_font_t * self, size_t width_new,
+size_t height_new);
 /**
-*  Returns the number of items in the vertex buffer
+* Get the kerning between two horizontal glyphs.
 *
-*  @param  self  a vertex buffer
-*  @return       number of items
+* @param self      A valid texture glyph
+* @param codepoint Character codepoint of the peceding character in UTF-8 encoding.
+*
+* @return x kerning value
 */
-size_t
-vertex_buffer_size( const vertex_buffer_t *self );
+float
+texture_glyph_get_kerning( const texture_glyph_t * self,
+const char * codepoint );
 /**
-*  Returns vertex format
+* Creates a new empty glyph
 *
-*  @param  self  a vertex buffer
-*  @return       vertex format
+* @return a new empty glyph (not valid)
 */
-const char *
-vertex_buffer_format( const vertex_buffer_t *self );
-/**
-* Print information about a vertex buffer
-*
-* @param  self  a vertex buffer
-*/
-void
-vertex_buffer_print( vertex_buffer_t * self );
-/**
-* Prepare vertex buffer for render.
-*
-* @param  self  a vertex buffer
-* @param  mode  render mode
-*/
-void
-vertex_buffer_render_setup ( vertex_buffer_t *self,
-GLenum mode );
-/**
-* Finish rendering by setting back modified states
-*
-* @param  self  a vertex buffer
-*/
-void
-vertex_buffer_render_finish ( vertex_buffer_t *self );
-/**
-* Render vertex buffer.
-*
-* @param  self  a vertex buffer
-* @param  mode  render mode
-*/
-void
-vertex_buffer_render ( vertex_buffer_t *self,
-GLenum mode );
-/**
-* Render a specified item from the vertex buffer.
-*
-* @param  self   a vertex buffer
-* @param  index index of the item to be rendered
-*/
-void
-vertex_buffer_render_item ( vertex_buffer_t *self,
-size_t index );
-/**
-* Upload buffer to GPU memory.
-*
-* @param  self  a vertex buffer
-*/
-void
-vertex_buffer_upload( vertex_buffer_t *self );
-/**
-* Clear all items.
-*
-* @param  self  a vertex buffer
-*/
-void
-vertex_buffer_clear( vertex_buffer_t *self );
-/**
-* Appends indices at the end of the buffer.
-*
-* @param  self     a vertex buffer
-* @param  indices  indices to be appended
-* @param  icount   number of indices to be appended
-*
-* @private
-*/
-void
-vertex_buffer_push_back_indices ( vertex_buffer_t *self,
-const GLuint * indices,
-const size_t icount );
-/**
-* Appends vertices at the end of the buffer.
-*
-* @note Internal use
-*
-* @param  self     a vertex buffer
-* @param  vertices vertices to be appended
-* @param  vcount   number of vertices to be appended
-*
-* @private
-*/
-void
-vertex_buffer_push_back_vertices ( vertex_buffer_t *self,
-const void * vertices,
-const size_t vcount );
-/**
-* Insert indices in the buffer.
-*
-* @param  self    a vertex buffer
-* @param  index   location before which to insert indices
-* @param  indices indices to be appended
-* @param  icount  number of indices to be appended
-*
-* @private
-*/
-void
-vertex_buffer_insert_indices ( vertex_buffer_t *self,
-const size_t index,
-const GLuint *indices,
-const size_t icount );
-/**
-* Insert vertices in the buffer.
-*
-* @param  self     a vertex buffer
-* @param  index    location before which to insert vertices
-* @param  vertices vertices to be appended
-* @param  vcount   number of vertices to be appended
-*
-* @private
-*/
-void
-vertex_buffer_insert_vertices ( vertex_buffer_t *self,
-const size_t index,
-const void *vertices,
-const size_t vcount );
-/**
-* Erase indices in the buffer.
-*
-* @param  self   a vertex buffer
-* @param  first  the index of the first index to be erased
-* @param  last   the index of the last index to be erased
-*
-* @private
-*/
-void
-vertex_buffer_erase_indices ( vertex_buffer_t *self,
-const size_t first,
-const size_t last );
-/**
-* Erase vertices in the buffer.
-*
-* @param  self   a vertex buffer
-* @param  first  the index of the first vertex to be erased
-* @param  last   the index of the last vertex to be erased
-*
-* @private
-*/
-void
-vertex_buffer_erase_vertices ( vertex_buffer_t *self,
-const size_t first,
-const size_t last );
-/**
-* Append a new item to the collection.
-*
-* @param  self   a vertex buffer
-* @param  vcount   number of vertices
-* @param  vertices raw vertices data
-* @param  icount   number of indices
-* @param  indices  raw indices data
-*/
-size_t
-vertex_buffer_push_back( vertex_buffer_t * self,
-const void * vertices, const size_t vcount,
-const GLuint * indices, const size_t icount );
-/**
-* Insert a new item into the vertex buffer.
-*
-* @param  self      a vertex buffer
-* @param  index     location before which to insert item
-* @param  vertices  raw vertices data
-* @param  vcount    number of vertices
-* @param  indices   raw indices data
-* @param  icount    number of indices
-*/
-size_t
-vertex_buffer_insert( vertex_buffer_t * self,
-const size_t index,
-const void * vertices, const size_t vcount,
-const GLuint * indices, const size_t icount );
-/**
-* Erase an item from the vertex buffer.
-*
-* @param  self     a vertex buffer
-* @param  index    index of the item to be deleted
-*/
-void
-vertex_buffer_erase( vertex_buffer_t * self,
-const size_t index );
-
-
-/**
-* Create an attribute from the given parameters.
-*
-* @param size       number of component
-* @param type       data type
-* @param normalized Whether fixed-point data values should be normalized
-(GL_TRUE) or converted directly as fixed-point values
-(GL_FALSE) when they are  accessed.
-* @param stride     byte offset between consecutive attributes.
-* @param pointer    pointer to the first component of the first attribute
-*                   element in the array.
-* @return           a new initialized vertex attribute.
-*
-* @private
-*/
-vertex_attribute_t *
-vertex_attribute_new( GLchar * name,
-GLint size,
-GLenum type,
-GLboolean normalized,
-GLsizei stride,
-GLvoid *pointer );
-/**
-* Delete a vertex attribute.
-*
-* @param  self a vertex attribute
-*
-*/
-void
-vertex_attribute_delete( vertex_attribute_t * self );
-/**
-* Create an attribute from the given description.
-*
-* @param  format Format string specifies the format of a vertex attribute.
-* @return        an initialized vertex attribute
-*
-* @private
-*/
-vertex_attribute_t *
-vertex_attribute_parse( char *format );
-/**
-* Enable a vertex attribute.
-*
-* @param attr  a vertex attribute
-*
-* @private
-*/
-void
-vertex_attribute_enable( vertex_attribute_t *attr );
+texture_glyph_t *
+texture_glyph_new( void );
 
 
 /**
@@ -2776,238 +2622,381 @@ int (*cmp)(const void *, const void *) );
 
 
 /**
-* This function creates a new texture font from given filename and size.  The
-* texture atlas is used to store glyph on demand. Note the depth of the atlas
-* will determine if the font is rendered as alpha channel only (depth = 1) or
-* RGB (depth = 3) that correspond to subpixel rendering (if available on your
-* freetype implementation).
+* Create an attribute from the given parameters.
 *
-* @param atlas     A texture atlas
-* @param pt_size   Size of font to be created (in points)
-* @param filename  A font filename
+* @param size       number of component
+* @param type       data type
+* @param normalized Whether fixed-point data values should be normalized
+(GL_TRUE) or converted directly as fixed-point values
+(GL_FALSE) when they are  accessed.
+* @param stride     byte offset between consecutive attributes.
+* @param pointer    pointer to the first component of the first attribute
+*                   element in the array.
+* @return           a new initialized vertex attribute.
 *
-* @return A new empty font (no glyph inside yet)
-*
+* @private
 */
-texture_font_t *
-texture_font_new_from_file( texture_atlas_t * atlas,
-const float pt_size,
-const char * filename );
+vertex_attribute_t *
+vertex_attribute_new( GLchar * name,
+GLint size,
+GLenum type,
+GLboolean normalized,
+GLsizei stride,
+GLvoid *pointer );
 /**
-* This function creates a new texture font from a memory location and size.
-* The texture atlas is used to store glyph on demand. Note the depth of the
-* atlas will determine if the font is rendered as alpha channel only
-* (depth = 1) or RGB (depth = 3) that correspond to subpixel rendering (if
-* available on your freetype implementation).
+* Delete a vertex attribute.
 *
-* @param atlas       A texture atlas
-* @param pt_size     Size of font to be created (in points)
-* @param memory_base Start of the font file in memory
-* @param memory_size Size of the font file memory region, in bytes
+* @param  self a vertex attribute
 *
-* @return A new empty font (no glyph inside yet)
-*
-*/
-texture_font_t *
-texture_font_new_from_memory( texture_atlas_t *atlas,
-float pt_size,
-const void *memory_base,
-size_t memory_size );
-/**
-* Delete a texture font. Note that this does not delete the glyph from the
-* texture atlas.
-*
-* @param self a valid texture font
 */
 void
-texture_font_delete( texture_font_t * self );
+vertex_attribute_delete( vertex_attribute_t * self );
 /**
-* Request a new glyph from the font. If it has not been created yet, it will
-* be.
+* Create an attribute from the given description.
 *
-* @param self      A valid texture font
-* @param codepoint Character codepoint to be loaded in UTF-8 encoding.
+* @param  format Format string specifies the format of a vertex attribute.
+* @return        an initialized vertex attribute
 *
-* @return A pointer on the new glyph or 0 if the texture atlas is not big
-*         enough
-*
+* @private
 */
-texture_glyph_t *
-texture_font_get_glyph( texture_font_t * self,
-const char * codepoint );
+vertex_attribute_t *
+vertex_attribute_parse( char *format );
 /**
-* Request an already loaded glyph from the font.
+* Enable a vertex attribute.
 *
-* @param self      A valid texture font
-* @param codepoint Character codepoint to be found in UTF-8 encoding.
+* @param attr  a vertex attribute
 *
-* @return A pointer on the glyph or 0 if the glyph is not loaded
+* @private
 */
-texture_glyph_t *
-texture_font_find_glyph( texture_font_t * self,
-const char * codepoint );
+void
+vertex_attribute_enable( vertex_attribute_t *attr );
 
+
+#ifdef WIN32
+// strndup() is not available on Windows
+char *strndup( const char *s1, size_t n);
+#endif
 /**
-* Request the loading of a given glyph.
+* Creates an empty vertex buffer.
 *
-* @param self       A valid texture font
-* @param codepoints Character codepoint to be loaded in UTF-8 encoding.
-*
-* @return One if the glyph could be loaded, zero if not.
+* @param  format a string describing vertex format.
+* @return        an empty vertex buffer.
 */
-int
-texture_font_load_glyph( texture_font_t * self,
-const char * codepoint );
+vertex_buffer_t *
+vertex_buffer_new( const char *format );
 /**
-* Request the loading of several glyphs at once.
+* Deletes vertex buffer and releases GPU memory.
 *
-* @param self       A valid texture font
-* @param codepoints Character codepoints to be loaded in UTF-8 encoding. May
-*                   contain duplicates.
+* @param  self  a vertex buffer
+*/
+void
+vertex_buffer_delete( vertex_buffer_t * self );
+/**
+*  Returns the number of items in the vertex buffer
 *
-* @return Number of missed glyph if the texture is not big enough to hold
-*         every glyphs.
+*  @param  self  a vertex buffer
+*  @return       number of items
 */
 size_t
-texture_font_load_glyphs( texture_font_t * self,
-const char * codepoints );
+vertex_buffer_size( const vertex_buffer_t *self );
+/**
+*  Returns vertex format
+*
+*  @param  self  a vertex buffer
+*  @return       vertex format
+*/
+const char *
+vertex_buffer_format( const vertex_buffer_t *self );
+/**
+* Print information about a vertex buffer
+*
+* @param  self  a vertex buffer
+*/
+void
+vertex_buffer_print( vertex_buffer_t * self );
+/**
+* Prepare vertex buffer for render.
+*
+* @param  self  a vertex buffer
+* @param  mode  render mode
+*/
+void
+vertex_buffer_render_setup ( vertex_buffer_t *self,
+GLenum mode );
+/**
+* Finish rendering by setting back modified states
+*
+* @param  self  a vertex buffer
+*/
+void
+vertex_buffer_render_finish ( vertex_buffer_t *self );
+/**
+* Render vertex buffer.
+*
+* @param  self  a vertex buffer
+* @param  mode  render mode
+*/
+void
+vertex_buffer_render ( vertex_buffer_t *self,
+GLenum mode );
+/**
+* Render a specified item from the vertex buffer.
+*
+* @param  self   a vertex buffer
+* @param  index index of the item to be rendered
+*/
+void
+vertex_buffer_render_item ( vertex_buffer_t *self,
+size_t index );
+/**
+* Upload buffer to GPU memory.
+*
+* @param  self  a vertex buffer
+*/
+void
+vertex_buffer_upload( vertex_buffer_t *self );
+/**
+* Clear all items.
+*
+* @param  self  a vertex buffer
+*/
+void
+vertex_buffer_clear( vertex_buffer_t *self );
+/**
+* Appends indices at the end of the buffer.
+*
+* @param  self     a vertex buffer
+* @param  indices  indices to be appended
+* @param  icount   number of indices to be appended
+*
+* @private
+*/
+void
+vertex_buffer_push_back_indices ( vertex_buffer_t *self,
+const GLuint * indices,
+const size_t icount );
+/**
+* Appends vertices at the end of the buffer.
+*
+* @note Internal use
+*
+* @param  self     a vertex buffer
+* @param  vertices vertices to be appended
+* @param  vcount   number of vertices to be appended
+*
+* @private
+*/
+void
+vertex_buffer_push_back_vertices ( vertex_buffer_t *self,
+const void * vertices,
+const size_t vcount );
+/**
+* Insert indices in the buffer.
+*
+* @param  self    a vertex buffer
+* @param  index   location before which to insert indices
+* @param  indices indices to be appended
+* @param  icount  number of indices to be appended
+*
+* @private
+*/
+void
+vertex_buffer_insert_indices ( vertex_buffer_t *self,
+const size_t index,
+const GLuint *indices,
+const size_t icount );
+/**
+* Insert vertices in the buffer.
+*
+* @param  self     a vertex buffer
+* @param  index    location before which to insert vertices
+* @param  vertices vertices to be appended
+* @param  vcount   number of vertices to be appended
+*
+* @private
+*/
+void
+vertex_buffer_insert_vertices ( vertex_buffer_t *self,
+const size_t index,
+const void *vertices,
+const size_t vcount );
+/**
+* Erase indices in the buffer.
+*
+* @param  self   a vertex buffer
+* @param  first  the index of the first index to be erased
+* @param  last   the index of the last index to be erased
+*
+* @private
+*/
+void
+vertex_buffer_erase_indices ( vertex_buffer_t *self,
+const size_t first,
+const size_t last );
+/**
+* Erase vertices in the buffer.
+*
+* @param  self   a vertex buffer
+* @param  first  the index of the first vertex to be erased
+* @param  last   the index of the last vertex to be erased
+*
+* @private
+*/
+void
+vertex_buffer_erase_vertices ( vertex_buffer_t *self,
+const size_t first,
+const size_t last );
+/**
+* Append a new item to the collection.
+*
+* @param  self   a vertex buffer
+* @param  vcount   number of vertices
+* @param  vertices raw vertices data
+* @param  icount   number of indices
+* @param  indices  raw indices data
+*/
+size_t
+vertex_buffer_push_back( vertex_buffer_t * self,
+const void * vertices, const size_t vcount,
+const GLuint * indices, const size_t icount );
+/**
+* Insert a new item into the vertex buffer.
+*
+* @param  self      a vertex buffer
+* @param  index     location before which to insert item
+* @param  vertices  raw vertices data
+* @param  vcount    number of vertices
+* @param  indices   raw indices data
+* @param  icount    number of indices
+*/
+size_t
+vertex_buffer_insert( vertex_buffer_t * self,
+const size_t index,
+const void * vertices, const size_t vcount,
+const GLuint * indices, const size_t icount );
+/**
+* Erase an item from the vertex buffer.
+*
+* @param  self     a vertex buffer
+* @param  index    index of the item to be deleted
+*/
+void
+vertex_buffer_erase( vertex_buffer_t * self,
+const size_t index );
+
+
+/**
+* Returns the size in bytes of a given UTF-8 encoded character surrogate
+*
+* @param character  An UTF-8 encoded character
+*
+* @return  The length of the surrogate in bytes.
+*/
+size_t
+utf8_surrogate_len( const char* character );
+/**
+* Return the length of the given UTF-8 encoded and
+* NULL terminated string.
+*
+* @param string  An UTF-8 encoded string
+*
+* @return  The length of the string in characters.
+*/
+size_t
+utf8_strlen( const char* string );
+/**
+* Converts a given UTF-8 encoded character to its UTF-32 LE equivalent
+*
+* @param character  An UTF-8 encoded character
+*
+* @return  The equivalent of the given character in UTF-32 LE
+*          encoding.
+*/
+uint32_t
+utf8_to_utf32( const char * character );
+
+
+double *
+make_distance_mapd( double *img,
+unsigned int width, unsigned int height );
+unsigned char *
+make_distance_mapb( unsigned char *img,
+unsigned int width, unsigned int height );
+
+
 /*
-*Increases the size of a fonts texture atlas
-*Invalidates all pointers to font->atlas->data
-*Changes the UV Coordinates of existing glyphs in the font
-*
-*@param self A valid texture font
-*@param width_new Width of the texture atlas after resizing (must be bigger or equal to current width)
-*@param height_new Height of the texture atlas after resizing (must be bigger or equal to current height)
+* Compute the local gradient at edge pixels using convolution filters.
+* The gradient is computed only at edge pixels. At other places in the
+* image, it is never used, and it's mostly zero anyway.
 */
+void computegradient(double *img, int w, int h, double *gx, double *gy);
+/*
+* A somewhat tricky function to approximate the distance to an edge in a
+* certain pixel, with consideration to either the local gradient (gx,gy)
+* or the direction to the pixel (dx,dy) and the pixel greyscale value a.
+* The latter alternative, using (dx,dy), is the metric used by edtaa2().
+* Using a local estimate of the edge gradient (gx,gy) yields much better
+* accuracy at and near edges, and reduces the error even at distant pixels
+* provided that the gradient direction is accurately estimated.
+*/
+double edgedf(double gx, double gy, double a);
+double distaa3(double *img, double *gximg, double *gyimg, int w, int c, int xc, int yc, int xi, int yi);
+// Shorthand macro: add ubiquitous parameters dist, gx, gy, img and w and call distaa3()
+#define DISTAA(c,xc,yc,xi,yi) (distaa3(img, gx, gy, w, c, xc, yc, xi, yi))
+void edtaa3(double *img, double *gx, double *gy, int w, int h, short *distx, short *disty, double *dist);
+
+
+mat4 *
+mat4_new( void );
 void
-texture_font_enlarge_atlas( texture_font_t * self, size_t width_new,
-size_t height_new);
-/**
-* Get the kerning between two horizontal glyphs.
-*
-* @param self      A valid texture glyph
-* @param codepoint Character codepoint of the peceding character in UTF-8 encoding.
-*
-* @return x kerning value
-*/
-float
-texture_glyph_get_kerning( const texture_glyph_t * self,
-const char * codepoint );
-/**
-* Creates a new empty glyph
-*
-* @return a new empty glyph (not valid)
-*/
-texture_glyph_t *
-texture_glyph_new( void );
-
-
-/**
-* Creates a new empty texture atlas.
-*
-* @param   width   width of the atlas
-* @param   height  height of the atlas
-* @param   depth   bit depth of the atlas
-* @return          a new empty texture atlas.
-*
-*/
-texture_atlas_t *
-texture_atlas_new( const size_t width,
-const size_t height,
-const size_t depth );
-/**
-*  Deletes a texture atlas.
-*
-*  @param self a texture atlas structure
-*
-*/
+mat4_set_identity( mat4 *self );
 void
-texture_atlas_delete( texture_atlas_t * self );
-/**
-*  Allocate a new region in the atlas.
-*
-*  @param self   a texture atlas structure
-*  @param width  width of the region to allocate
-*  @param height height of the region to allocate
-*  @return       Coordinates of the allocated region
-*
-*/
-ivec4
-texture_atlas_get_region( texture_atlas_t * self,
-const size_t width,
-const size_t height );
-/**
-*  Upload data to the specified atlas region.
-*
-*  @param self   a texture atlas structure
-*  @param x      x coordinate the region
-*  @param y      y coordinate the region
-*  @param width  width of the region
-*  @param height height of the region
-*  @param data   data to be uploaded into the specified region
-*  @param stride stride of the data
-*
-*/
+mat4_set_zero( mat4 *self );
 void
-texture_atlas_set_region( texture_atlas_t * self,
-const size_t x,
-const size_t y,
-const size_t width,
-const size_t height,
-const unsigned char *data,
-const size_t stride );
-/**
-*  Remove all allocated regions from the atlas.
-*
-*  @param self   a texture atlas structure
-*/
+mat4_multiply( mat4 *self, mat4 *other );
 void
-texture_atlas_clear( texture_atlas_t * self );
+mat4_set_orthographic( mat4 *self,
+float left,   float right,
+float bottom, float top,
+float znear,  float zfar );
+void
+mat4_set_perspective( mat4 *self,
+float fovy,  float aspect,
+float zNear, float zFar);
+void
+mat4_set_frustum( mat4 *self,
+float left,   float right,
+float bottom, float top,
+float znear,  float zfar );
+void
+mat4_set_rotation( mat4 *self,
+float angle,
+float x, float y, float z);
+void
+mat4_set_translation( mat4 *self,
+float x, float y, float z);
+void
+mat4_set_scaling( mat4 *self,
+float x, float y, float z);
+void
+mat4_rotate( mat4 *self,
+float angle,
+float x, float y, float z);
+void
+mat4_translate( mat4 *self,
+float x, float y, float z);
+void
+mat4_scale( mat4 *self,
+float x, float y, float z);
 
 
-/**
-* Read a fragment or vertex shader from a file
-*
-* @param filename file to read shader from
-* @return         a newly-allocated text buffer containing code. This buffer
-*                 must be freed after usage.
-*
-*/
-char *
-shader_read( const char *filename );
-/**
-* Compile a shader from a text buffer.
-*
-* @param source code of the shader
-* @param type   type of the shader
-*
-* @return a handle on the compiled program
-*
-*/
-GLuint
-shader_compile( const char* source,
-const GLenum type );
-/**
-* Load a vertex and fragment shader sources and build program
-*
-* @param  vert_filename vertex shader filename
-* @param  frag_filename fragment shader filename
-*
-* @return a handle on the built program
-*
-*/
-GLuint
-shader_load( const char * vert_filename,
-const char * frag_filename );
+void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen);
+vec2 get_text_size(texture_font_t * font, char *text);
 
-
-void _retain(void* ptr);
-bool _release(void* ptr);
-
-sjs_textElement_heap* sjt_cast1;
-sjs_anon6* sjt_dot19;
+sjs_boxElement_heap* sjt_cast1;
+sjs_anon6* sjt_dot8;
 sjs_anon8 sjv_borderPosition;
+sjs_shader sjv_boxShader;
 sjs_anon5 sjv_buttonState;
 sjs_anon6 sjv_colors;
 sjs_anon1 sjv_console;
@@ -3020,6 +3009,7 @@ sjs_anon3 sjv_random;
 sji_element* sjv_root;
 sjs_surface2d sjv_rootSurface;
 sjs_anon7 sjv_style;
+sjs_shader sjv_textShader;
 uint32_t sjv_u32_max;
 
 void sjf_anon1(sjs_anon1* _this);
@@ -3065,20 +3055,31 @@ void sjf_array_heap_element_copy(sjs_array_heap_element* _this, sjs_array_heap_e
 void sjf_array_heap_element_destroy(sjs_array_heap_element* _this);
 void sjf_array_heap_element_getAt_heap(sjs_array_heap_element* _parent, int32_t index, sji_element** _return);
 void sjf_array_heap_element_heap(sjs_array_heap_element_heap* _this);
+void sjf_boxElement(sjs_boxElement* _this);
+sjs_object* sjf_boxElement_asInterface(sjs_boxElement* _this, int typeId);
+sji_element* sjf_boxElement_as_sji_element(sjs_boxElement* _this);
+void sjf_boxElement_copy(sjs_boxElement* _this, sjs_boxElement* _from);
+void sjf_boxElement_destroy(sjs_boxElement* _this);
+void sjf_boxElement_getChildren(sjs_boxElement* _parent, sjs_array_heap_element** _return);
+void sjf_boxElement_getRect(sjs_boxElement* _parent, sjs_rect** _return);
+void sjf_boxElement_getSize(sjs_boxElement* _parent, sjs_size* maxSize, sjs_size* _return);
+void sjf_boxElement_getSize_heap(sjs_boxElement* _parent, sjs_size* maxSize, sjs_size_heap** _return);
+void sjf_boxElement_heap(sjs_boxElement_heap* _this);
+sjs_object* sjf_boxElement_heap_asInterface(sjs_boxElement_heap* _this, int typeId);
+sji_element* sjf_boxElement_heap_as_sji_element(sjs_boxElement_heap* _this);
+void sjf_boxElement_render(sjs_boxElement* _parent, sjs_surface2d* surface);
+void sjf_boxElement_setRect(sjs_boxElement* _parent, sjs_rect* rect_);
+void sjf_boxRenderer(sjs_boxRenderer* _this);
+void sjf_boxRenderer_copy(sjs_boxRenderer* _this, sjs_boxRenderer* _from);
+void sjf_boxRenderer_destroy(sjs_boxRenderer* _this);
+void sjf_boxRenderer_heap(sjs_boxRenderer_heap* _this);
+void sjf_boxRenderer_render(sjs_boxRenderer* _parent, sjs_surface2d* surface);
 void sjf_color(sjs_color* _this);
 void sjf_color_copy(sjs_color* _this, sjs_color* _from);
 void sjf_color_destroy(sjs_color* _this);
 void sjf_color_heap(sjs_color_heap* _this);
 void sjf_fireMouseDown(sji_element* element, sjs_point* point);
 void sjf_fireMouseUp(sji_element* element, sjs_point* point);
-void sjf_font(sjs_font* _this);
-void sjf_font_copy(sjs_font* _this, sjs_font* _from);
-void sjf_font_destroy(sjs_font* _this);
-void sjf_font_getTextSize(sjs_font* _parent, sjs_string* str, sjs_size* _return);
-void sjf_font_getTextSize_heap(sjs_font* _parent, sjs_string* str, sjs_size_heap** _return);
-void sjf_font_getTexture(sjs_font* _parent, sjs_texture* _return);
-void sjf_font_getTexture_heap(sjs_font* _parent, sjs_texture_heap** _return);
-void sjf_font_heap(sjs_font_heap* _this);
 void sjf_mainLoop(void);
 void sjf_point(sjs_point* _this);
 void sjf_point_copy(sjs_point* _this, sjs_point* _from);
@@ -3090,6 +3091,10 @@ void sjf_rect_copy(sjs_rect* _this, sjs_rect* _from);
 void sjf_rect_destroy(sjs_rect* _this);
 void sjf_rect_heap(sjs_rect_heap* _this);
 void sjf_runLoop(void);
+void sjf_shader(sjs_shader* _this);
+void sjf_shader_copy(sjs_shader* _this, sjs_shader* _from);
+void sjf_shader_destroy(sjs_shader* _this);
+void sjf_shader_heap(sjs_shader_heap* _this);
 void sjf_size(sjs_size* _this);
 void sjf_size_cap(sjs_size* _parent, sjs_size* maxSize, sjs_size* _return);
 void sjf_size_cap_heap(sjs_size* _parent, sjs_size* maxSize, sjs_size_heap** _return);
@@ -3104,2635 +3109,68 @@ void sjf_surface2d(sjs_surface2d* _this);
 void sjf_surface2d_clear(sjs_surface2d* _parent);
 void sjf_surface2d_copy(sjs_surface2d* _this, sjs_surface2d* _from);
 void sjf_surface2d_destroy(sjs_surface2d* _this);
-void sjf_surface2d_drawVertexBuffer(sjs_surface2d* _parent, sji_textElement_render_vertexBuffer* vertexBuffer, sjs_texture* texture);
 void sjf_surface2d_getSize(sjs_surface2d* _parent, sjs_size* _return);
 void sjf_surface2d_getSize_heap(sjs_surface2d* _parent, sjs_size_heap** _return);
 void sjf_surface2d_heap(sjs_surface2d_heap* _this);
 void sjf_surface2d_present(sjs_surface2d* _parent);
-void sjf_textElement(sjs_textElement* _this);
-sjs_object* sjf_textElement_asInterface(sjs_textElement* _this, int typeId);
-sji_element* sjf_textElement_as_sji_element(sjs_textElement* _this);
-void sjf_textElement_copy(sjs_textElement* _this, sjs_textElement* _from);
-void sjf_textElement_destroy(sjs_textElement* _this);
-void sjf_textElement_getChildren(sjs_textElement* _parent, sjs_array_heap_element** _return);
-void sjf_textElement_getRect(sjs_textElement* _parent, sjs_rect** _return);
-void sjf_textElement_getSize(sjs_textElement* _parent, sjs_size* maxSize, sjs_size* _return);
-void sjf_textElement_getSize_heap(sjs_textElement* _parent, sjs_size* maxSize, sjs_size_heap** _return);
-void sjf_textElement_heap(sjs_textElement_heap* _this);
-sjs_object* sjf_textElement_heap_asInterface(sjs_textElement_heap* _this, int typeId);
-sji_element* sjf_textElement_heap_as_sji_element(sjs_textElement_heap* _this);
-void sjf_textElement_render(sjs_textElement* _parent, sjs_surface2d* surface);
-void sjf_textElement_setRect(sjs_textElement* _parent, sjs_rect* rect_);
-void sjf_textVertexBuffer(sjs_textVertexBuffer* _this);
-sjs_object* sjf_textVertexBuffer_asInterface(sjs_textVertexBuffer* _this, int typeId);
-sji_textElement_render_vertexBuffer* sjf_textVertexBuffer_as_sji_textElement_render_vertexBuffer(sjs_textVertexBuffer* _this);
-void sjf_textVertexBuffer_copy(sjs_textVertexBuffer* _this, sjs_textVertexBuffer* _from);
-void sjf_textVertexBuffer_destroy(sjs_textVertexBuffer* _this);
-void sjf_textVertexBuffer_heap(sjs_textVertexBuffer_heap* _this);
-sjs_object* sjf_textVertexBuffer_heap_asInterface(sjs_textVertexBuffer_heap* _this, int typeId);
-sji_textElement_render_vertexBuffer* sjf_textVertexBuffer_heap_as_sji_textElement_render_vertexBuffer(sjs_textVertexBuffer_heap* _this);
-void sjf_textVertexBuffer_render(sjs_textVertexBuffer* _parent);
-void sjf_texture(sjs_texture* _this);
-void sjf_texture_copy(sjs_texture* _this, sjs_texture* _from);
-void sjf_texture_destroy(sjs_texture* _this);
-void sjf_texture_heap(sjs_texture_heap* _this);
 void sji_element_copy(sji_element* _this, sji_element* _from);
 void sji_element_destroy(sji_element* _this);
 void sji_fireMouseUp_mouseHandler_copy(sji_fireMouseUp_mouseHandler* _this, sji_fireMouseUp_mouseHandler* _from);
 void sji_fireMouseUp_mouseHandler_destroy(sji_fireMouseUp_mouseHandler* _this);
-void sji_textElement_render_vertexBuffer_copy(sji_textElement_render_vertexBuffer* _this, sji_textElement_render_vertexBuffer* _from);
-void sji_textElement_render_vertexBuffer_destroy(sji_textElement_render_vertexBuffer* _this);
 void main_destroy(void);
 
 
-void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen) {
-    pen->y += (float)(int)font->ascender;
-    size_t i;
-    float r = color->red, g = color->green, b = color->blue, a = color->alpha;
-    for (i = 0; i < strlen(text); ++i) {
-        texture_glyph_t *glyph = texture_font_get_glyph( font, text + i );
-        if (glyph != NULL) {
-            float kerning = 0.0f;
-            if( i > 0) {
-                kerning = texture_glyph_get_kerning( glyph, text + i - 1 );
-            }
-            pen->x += kerning;
-            float x0 = (float)(int)( pen->x + glyph->offset_x );
-            float y0 = (float)(int)( pen->y + glyph->height - glyph->offset_y );
-            float x1 = (float)(int)( x0 + glyph->width );
-            float y1 = (float)(int)( y0 - glyph->height );
-            float s0 = glyph->s0;
-            float t0 = glyph->t0;
-            float s1 = glyph->s1;
-            float t1 = glyph->t1;
-            GLuint index = (GLuint)buffer->vertices->size;
-            GLuint indices[] = {index, index+1, index+2,
-            index, index+2, index+3};
-            vertex_t vertices[] = { { x0,y1,0,  s0,t0,  r,g,b,a },
-            { x0,y0,0,  s0,t1,  r,g,b,a },
-            { x1,y0,0,  s1,t1,  r,g,b,a },
-            { x1,y1,0,  s1,t0,  r,g,b,a } };
-            vertex_buffer_push_back_indices( buffer, indices, 6 );
-            vertex_buffer_push_back_vertices( buffer, vertices, 4 );
-            pen->x += glyph->advance_x;
-        }
-    }
-}
-vec2 get_text_size(texture_font_t * font, char *text) {
-    vec2 size = {{ 0, font->height }};
-    size_t i;
-    for( i = 0; i < strlen(text); ++i ) {
-        texture_glyph_t *glyph = texture_font_get_glyph(font, text + i);
-        if (glyph != NULL) {
-            float kerning = 0.0f;
-            if( i > 0) {
-                kerning = texture_glyph_get_kerning(glyph, text + i - 1);
-            }
-            size.x += kerning;
-            size.x += glyph->advance_x;
-        }
-    }
-    return size;
-}
-
-
-mat4 *
-mat4_new( void )
-{
-    mat4 *self = (mat4 *) malloc( sizeof(mat4) );
-    return self;
-}
-void
-mat4_set_zero( mat4 *self )
-{
-    if (!self)
-    return;
-    memset( self, 0, sizeof( mat4 ));
-}
-void
-mat4_set_identity( mat4 *self )
-{
-    if (!self)
-    return;
-    memset( self, 0, sizeof( mat4 ));
-    self->m00 = 1.0;
-    self->m11 = 1.0;
-    self->m22 = 1.0;
-    self->m33 = 1.0;
-}
-void
-mat4_multiply( mat4 *self, mat4 *other )
-{
-    mat4 m;
-    size_t i;
-    if (!self || !other)
-    return;
-    for( i=0; i<4; ++i )
-    {
-        m.data[i*4+0] =
-        (self->data[i*4+0] * other->data[0*4+0]) +
-        (self->data[i*4+1] * other->data[1*4+0]) +
-        (self->data[i*4+2] * other->data[2*4+0]) +
-        (self->data[i*4+3] * other->data[3*4+0]) ;
-        m.data[i*4+1] =
-        (self->data[i*4+0] * other->data[0*4+1]) +
-        (self->data[i*4+1] * other->data[1*4+1]) +
-        (self->data[i*4+2] * other->data[2*4+1]) +
-        (self->data[i*4+3] * other->data[3*4+1]) ;
-        m.data[i*4+2] =
-        (self->data[i*4+0] * other->data[0*4+2]) +
-        (self->data[i*4+1] * other->data[1*4+2]) +
-        (self->data[i*4+2] * other->data[2*4+2]) +
-        (self->data[i*4+3] * other->data[3*4+2]) ;
-        m.data[i*4+3] =
-        (self->data[i*4+0] * other->data[0*4+3]) +
-        (self->data[i*4+1] * other->data[1*4+3]) +
-        (self->data[i*4+2] * other->data[2*4+3]) +
-        (self->data[i*4+3] * other->data[3*4+3]) ;
-    }
-    memcpy( self, &m, sizeof( mat4 ) );
-}
-void
-mat4_set_orthographic( mat4 *self,
-float left,   float right,
-float bottom, float top,
-float znear,  float zfar )
-{
-    if (!self)
-    return;
-    if (left == right || bottom == top || znear == zfar)
-    return;
-    mat4_set_zero( self );
-    self->m00 = +2.0f/(right-left);
-    self->m30 = -(right+left)/(right-left);
-    self->m11 = +2.0f/(top-bottom);
-    self->m31 = -(top+bottom)/(top-bottom);
-    self->m22 = -2.0f/(zfar-znear);
-    self->m32 = -(zfar+znear)/(zfar-znear);
-    self->m33 = 1.0f;
-}
-void
-mat4_set_perspective( mat4 *self,
-float fovy,  float aspect,
-float znear, float zfar)
-{
-    float h, w;
-    if (!self)
-    return;
-    if (znear == zfar)
-    return;
-    h = (float)tan(fovy / 360.0 * M_PI) * znear;
-    w = h * aspect;
-    mat4_set_frustum( self, -w, w, -h, h, znear, zfar );
-}
-void
-mat4_set_frustum( mat4 *self,
-float left,   float right,
-float bottom, float top,
-float znear,  float zfar )
-{
-    if (!self)
-    return;
-    if (left == right || bottom == top || znear == zfar)
-    return;
-    mat4_set_zero( self );
-    self->m00 = (2.0f*znear)/(right-left);
-    self->m20 = (right+left)/(right-left);
-    self->m11 = (2.0f*znear)/(top-bottom);
-    self->m21 = (top+bottom)/(top-bottom);
-    self->m22 = -(zfar+znear)/(zfar-znear);
-    self->m32 = -(2.0f*zfar*znear)/(zfar-znear);
-    self->m23 = -1.0f;
-}
-void
-mat4_set_rotation( mat4 *self,
-float angle,
-float x, float y, float z)
-{
-    float c, s, norm;
-    if (!self)
-    return;
-    c = (float)cos( M_PI*angle/180.0 );
-    s = (float)sin( M_PI*angle/180.0 );
-    norm = (float)sqrt(x*x+y*y+z*z);
-    x /= norm; y /= norm; z /= norm;
-    mat4_set_identity( self );
-    self->m00 = x*x*(1-c)+c;
-    self->m10 = y*x*(1-c)-z*s;
-    self->m20 = z*x*(1-c)+y*s;
-    self->m01 =  x*y*(1-c)+z*s;
-    self->m11 =  y*y*(1-c)+c;
-    self->m21 =  z*y*(1-c)-x*s;
-    self->m02 = x*z*(1-c)-y*s;
-    self->m12 = y*z*(1-c)+x*s;
-    self->m22 = z*z*(1-c)+c;
-}
-void
-mat4_set_translation( mat4 *self,
-float x, float y, float z)
-{
-    if (!self)
-    return;
-    mat4_set_identity( self );
-    self-> m30 = x;
-    self-> m31 = y;
-    self-> m32 = z;
-}
-void
-mat4_set_scaling( mat4 *self,
-float x, float y, float z)
-{
-    if (!self)
-    return;
-    mat4_set_identity( self );
-    self-> m00 = x;
-    self-> m11 = y;
-    self-> m22 = z;
-}
-void
-mat4_rotate( mat4 *self,
-float angle,
-float x, float y, float z)
-{
-    mat4 m;
-    if (!self)
-    return;
-    mat4_set_rotation( &m, angle, x, y, z);
-    mat4_multiply( self, &m );
-}
-void
-mat4_translate( mat4 *self,
-float x, float y, float z)
-{
-    mat4 m;
-    if (!self)
-    return;
-    mat4_set_translation( &m, x, y, z);
-    mat4_multiply( self, &m );
-}
-void
-mat4_scale( mat4 *self,
-float x, float y, float z)
-{
-    mat4 m;
-    if (!self)
-    return;
-    mat4_set_scaling( &m, x, y, z);
-    mat4_multiply( self, &m );
-}
-
-
-/*
-* Compute the local gradient at edge pixels using convolution filters.
-* The gradient is computed only at edge pixels. At other places in the
-* image, it is never used, and it's mostly zero anyway.
-*/
-void computegradient(double *img, int w, int h, double *gx, double *gy)
-{
-    int i,j,k;
-    double glength;
-    #define SQRT2 1.4142136
-    // Avoid edges where the kernels would spill over
-    for(i = 1; i < h-1; i++) {
-        for(j = 1; j < w-1; j++) {
-            k = i*w + j;
-            // Compute gradient for edge pixels only
-            if((img[k]>0.0) && (img[k]<1.0)) {
-                gx[k] = -img[k-w-1] - SQRT2*img[k-1] - img[k+w-1] + img[k-w+1] + SQRT2*img[k+1] + img[k+w+1];
-                gy[k] = -img[k-w-1] - SQRT2*img[k-w] - img[k-w+1] + img[k+w-1] + SQRT2*img[k+w] + img[k+w+1];
-                glength = gx[k]*gx[k] + gy[k]*gy[k];
-                if(glength > 0.0) {
-                    // Avoid division by zero
-                    glength = sqrt(glength);
-                    gx[k]=gx[k]/glength;
-                    gy[k]=gy[k]/glength;
-                }
-            }
-        }
-    }
-    // TODO: Compute reasonable values for gx, gy also around the image edges.
-    // (These are zero now, which reduces the accuracy for a 1-pixel wide region
-    // around the image edge.) 2x2 kernels would be suitable for this.
-}
-/*
-* A somewhat tricky function to approximate the distance to an edge in a
-* certain pixel, with consideration to either the local gradient (gx,gy)
-* or the direction to the pixel (dx,dy) and the pixel greyscale value a.
-* The latter alternative, using (dx,dy), is the metric used by edtaa2().
-* Using a local estimate of the edge gradient (gx,gy) yields much better
-* accuracy at and near edges, and reduces the error even at distant pixels
-* provided that the gradient direction is accurately estimated.
-*/
-double edgedf(double gx, double gy, double a)
-{
-    double df, glength, temp, a1;
-    // Either A) gu or gv are zero, or B) both
-    if ((gx == 0) || (gy == 0)) {
-        // Linear approximation is A) correct or B) a fair guess
-        df = 0.5-a;
+void _retain(void* ptr) {
+    pointer* p;
+    HASH_FIND_PTR(g_pointers, &ptr, p);
+    if (p) {
+        p->refCount++;
     } else {
-        glength = sqrt(gx*gx + gy*gy);
-        if(glength>0) {
-            gx = gx/glength;
-            gy = gy/glength;
-        }
-        /* Everything is symmetric wrt sign and transposition,
-        * so move to first octant (gx>=0, gy>=0, gx>=gy) to
-        * avoid handling all possible edge directions.
-        */
-        gx = fabs(gx);
-        gy = fabs(gy);
-        if(gx<gy) {
-            temp = gx;
-            gx = gy;
-            gy = temp;
-        }
-        a1 = 0.5*gy/gx;
-        if (a < a1) {
-            // 0 <= a < a1
-            df = 0.5*(gx + gy) - sqrt(2.0*gx*gy*a);
-        } else if (a < (1.0-a1)) {
-            // a1 <= a <= 1-a1
-            df = (0.5-a)*gx;
-        } else {
-            // 1-a1 < a <= 1
-            df = -0.5*(gx + gy) + sqrt(2.0*gx*gy*(1.0-a));
-        }
+        p = (pointer*)malloc(sizeof(pointer));
+        p->ptr = ptr;
+        p->refCount = 1;
+        HASH_ADD_PTR(g_pointers, ptr, p);
     }
-    return df;
 }
-double distaa3(double *img, double *gximg, double *gyimg, int w, int c, int xc, int yc, int xi, int yi)
-{
-    double di, df, dx, dy, gx, gy, a;
-    int closest;
-    closest = c-xc-yc*w; // Index to the edge pixel pointed to from c
-    a = img[closest];    // Grayscale value at the edge pixel
-    gx = gximg[closest]; // X gradient component at the edge pixel
-    gy = gyimg[closest]; // Y gradient component at the edge pixel
-    if(a > 1.0) a = 1.0;
-    if(a < 0.0) a = 0.0; // Clip grayscale values outside the range [0,1]
-    if(a == 0.0) return 1000000.0; // Not an object pixel, return "very far" ("don't know yet")
-    dx = (double)xi;
-    dy = (double)yi;
-    di = sqrt(dx*dx + dy*dy); // Length of integer vector, like a traditional EDT
-    if(di==0) {
-        // Use local gradient only at edges
-        // Estimate based on local gradient only
-        df = edgedf(gx, gy, a);
+bool _release(void* ptr) {
+    pointer* p;
+    HASH_FIND_PTR(g_pointers, &ptr, p);
+    if (p) {
+        p->refCount--;
+        if (p->refCount == 0) {
+            HASH_DEL(g_pointers, p);
+            free(p);
+        }
+        return false;
+    }
+    return true;
+}
+
+
+void _retainGLid(GLuint id) {
+    GLid_s* p;
+    HASH_FIND_PTR(g_GLids, &id, p);
+    if (p) {
+        p->refCount++;
     } else {
-        // Estimate gradient based on direction to edge (accurate for large di)
-        df = edgedf(dx, dy, a);
+        p = (GLid_s*)malloc(sizeof(GLid_s));
+        p->id = id;
+        p->refCount = 1;
+        HASH_ADD_PTR(g_GLids, id, p);
     }
-    return di + df; // Same metric as edtaa2, except at edges (where di=0)
 }
-// Shorthand macro: add ubiquitous parameters dist, gx, gy, img and w and call distaa3()
-#define DISTAA(c,xc,yc,xi,yi) (distaa3(img, gx, gy, w, c, xc, yc, xi, yi))
-void edtaa3(double *img, double *gx, double *gy, int w, int h, short *distx, short *disty, double *dist)
-{
-    int x, y, i, c;
-    int offset_u, offset_ur, offset_r, offset_rd,
-    offset_d, offset_dl, offset_l, offset_lu;
-    double olddist, newdist;
-    int cdistx, cdisty, newdistx, newdisty;
-    int changed;
-    double epsilon = 1e-3;
-    /* Initialize index offsets for the current image width */
-    offset_u = -w;
-    offset_ur = -w+1;
-    offset_r = 1;
-    offset_rd = w+1;
-    offset_d = w;
-    offset_dl = w-1;
-    offset_l = -1;
-    offset_lu = -w-1;
-    /* Initialize the distance images */
-    for(i=0; i<w*h; i++) {
-        distx[i] = 0; // At first, all pixels point to
-        disty[i] = 0; // themselves as the closest known.
-        if(img[i] <= 0.0)
-        {
-            dist[i]= 1000000.0; // Big value, means "not set yet"
+bool _releaseGLid(GLuint id) {
+    GLid_s* p;
+    HASH_FIND_PTR(g_GLids, &id, p);
+    if (p) {
+        p->refCount--;
+        if (p->refCount == 0) {
+            HASH_DEL(g_GLids, p);
+            free(p);
         }
-        else if (img[i]<1.0) {
-            dist[i] = edgedf(gx[i], gy[i], img[i]); // Gradient-assisted estimate
-        }
-        else {
-            dist[i]= 0.0; // Inside the object
-        }
+        return false;
     }
-    /* Perform the transformation */
-    do
-    {
-        changed = 0;
-        /* Scan rows, except first row */
-        for(y=1; y<h; y++)
-        {
-            /* move index to leftmost pixel of current row */
-            i = y*w;
-            /* scan right, propagate distances from above & left */
-            /* Leftmost pixel is special, has no left neighbors */
-            olddist = dist[i];
-            if(olddist > 0) // If non-zero distance or not set yet
-            {
-                c = i + offset_u; // Index of candidate for testing
-                cdistx = distx[c];
-                cdisty = disty[c];
-                newdistx = cdistx;
-                newdisty = cdisty+1;
-                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                if(newdist < olddist-epsilon)
-                {
-                    distx[i]=newdistx;
-                    disty[i]=newdisty;
-                    dist[i]=newdist;
-                    olddist=newdist;
-                    changed = 1;
-                }
-                c = i+offset_ur;
-                cdistx = distx[c];
-                cdisty = disty[c];
-                newdistx = cdistx-1;
-                newdisty = cdisty+1;
-                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                if(newdist < olddist-epsilon)
-                {
-                    distx[i]=newdistx;
-                    disty[i]=newdisty;
-                    dist[i]=newdist;
-                    changed = 1;
-                }
-            }
-            i++;
-            /* Middle pixels have all neighbors */
-            for(x=1; x<w-1; x++, i++)
-            {
-                olddist = dist[i];
-                if(olddist <= 0) continue; // No need to update further
-                c = i+offset_l;
-                cdistx = distx[c];
-                cdisty = disty[c];
-                newdistx = cdistx+1;
-                newdisty = cdisty;
-                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                if(newdist < olddist-epsilon)
-                {
-                    distx[i]=newdistx;
-                    disty[i]=newdisty;
-                    dist[i]=newdist;
-                    olddist=newdist;
-                    changed = 1;
-                }
-                c = i+offset_lu;
-                cdistx = distx[c];
-                cdisty = disty[c];
-                newdistx = cdistx+1;
-                newdisty = cdisty+1;
-                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                if(newdist < olddist-epsilon)
-                {
-                    distx[i]=newdistx;
-                    disty[i]=newdisty;
-                    dist[i]=newdist;
-                    olddist=newdist;
-                    changed = 1;
-                }
-                c = i+offset_u;
-                cdistx = distx[c];
-                cdisty = disty[c];
-                newdistx = cdistx;
-                newdisty = cdisty+1;
-                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                if(newdist < olddist-epsilon)
-                {
-                    distx[i]=newdistx;
-                    disty[i]=newdisty;
-                    dist[i]=newdist;
-                    olddist=newdist;
-                    changed = 1;
-                }
-                c = i+offset_ur;
-                cdistx = distx[c];
-                cdisty = disty[c];
-                newdistx = cdistx-1;
-                newdisty = cdisty+1;
-                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                if(newdist < olddist-epsilon)
-                {
-                    distx[i]=newdistx;
-                    disty[i]=newdisty;
-                    dist[i]=newdist;
-                    changed = 1;
-                }
-            }
-            /* Rightmost pixel of row is special, has no right neighbors */
-            olddist = dist[i];
-            if(olddist > 0) // If not already zero distance
-            {
-                c = i+offset_l;
-                cdistx = distx[c];
-                cdisty = disty[c];
-                newdistx = cdistx+1;
-                newdisty = cdisty;
-                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                if(newdist < olddist-epsilon)
-                {
-                    distx[i]=newdistx;
-                    disty[i]=newdisty;
-                    dist[i]=newdist;
-                    olddist=newdist;
-                    changed = 1;
-                }
-                c = i+offset_lu;
-                cdistx = distx[c];
-                cdisty = disty[c];
-                newdistx = cdistx+1;
-                newdisty = cdisty+1;
-                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                if(newdist < olddist-epsilon)
-                {
-                    distx[i]=newdistx;
-                    disty[i]=newdisty;
-                    dist[i]=newdist;
-                    olddist=newdist;
-                    changed = 1;
-                }
-                c = i+offset_u;
-                cdistx = distx[c];
-                cdisty = disty[c];
-                newdistx = cdistx;
-                newdisty = cdisty+1;
-                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                if(newdist < olddist-epsilon)
-                {
-                    distx[i]=newdistx;
-                    disty[i]=newdisty;
-                    dist[i]=newdist;
-                    changed = 1;
-                }
-            }
-            /* Move index to second rightmost pixel of current row. */
-            /* Rightmost pixel is skipped, it has no right neighbor. */
-            i = y*w + w-2;
-            /* scan left, propagate distance from right */
-            for(x=w-2; x>=0; x--, i--)
-            {
-                olddist = dist[i];
-                if(olddist <= 0) continue; // Already zero distance
-                c = i+offset_r;
-                cdistx = distx[c];
-                cdisty = disty[c];
-                newdistx = cdistx-1;
-                newdisty = cdisty;
-                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                if(newdist < olddist-epsilon)
-                {
-                    distx[i]=newdistx;
-                    disty[i]=newdisty;
-                    dist[i]=newdist;
-                    changed = 1;
-                }
-            }
-        }
-        /* Scan rows in reverse order, except last row */
-        for(y=h-2; y>=0; y--)
-        {
-            /* move index to rightmost pixel of current row */
-            i = y*w + w-1;
-            /* Scan left, propagate distances from below & right */
-            /* Rightmost pixel is special, has no right neighbors */
-            olddist = dist[i];
-            if(olddist > 0) // If not already zero distance
-            {
-                c = i+offset_d;
-                cdistx = distx[c];
-                cdisty = disty[c];
-                newdistx = cdistx;
-                newdisty = cdisty-1;
-                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                if(newdist < olddist-epsilon)
-                {
-                    distx[i]=newdistx;
-                    disty[i]=newdisty;
-                    dist[i]=newdist;
-                    olddist=newdist;
-                    changed = 1;
-                }
-                c = i+offset_dl;
-                cdistx = distx[c];
-                cdisty = disty[c];
-                newdistx = cdistx+1;
-                newdisty = cdisty-1;
-                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                if(newdist < olddist-epsilon)
-                {
-                    distx[i]=newdistx;
-                    disty[i]=newdisty;
-                    dist[i]=newdist;
-                    changed = 1;
-                }
-            }
-            i--;
-            /* Middle pixels have all neighbors */
-            for(x=w-2; x>0; x--, i--)
-            {
-                olddist = dist[i];
-                if(olddist <= 0) continue; // Already zero distance
-                c = i+offset_r;
-                cdistx = distx[c];
-                cdisty = disty[c];
-                newdistx = cdistx-1;
-                newdisty = cdisty;
-                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                if(newdist < olddist-epsilon)
-                {
-                    distx[i]=newdistx;
-                    disty[i]=newdisty;
-                    dist[i]=newdist;
-                    olddist=newdist;
-                    changed = 1;
-                }
-                c = i+offset_rd;
-                cdistx = distx[c];
-                cdisty = disty[c];
-                newdistx = cdistx-1;
-                newdisty = cdisty-1;
-                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                if(newdist < olddist-epsilon)
-                {
-                    distx[i]=newdistx;
-                    disty[i]=newdisty;
-                    dist[i]=newdist;
-                    olddist=newdist;
-                    changed = 1;
-                }
-                c = i+offset_d;
-                cdistx = distx[c];
-                cdisty = disty[c];
-                newdistx = cdistx;
-                newdisty = cdisty-1;
-                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                if(newdist < olddist-epsilon)
-                {
-                    distx[i]=newdistx;
-                    disty[i]=newdisty;
-                    dist[i]=newdist;
-                    olddist=newdist;
-                    changed = 1;
-                }
-                c = i+offset_dl;
-                cdistx = distx[c];
-                cdisty = disty[c];
-                newdistx = cdistx+1;
-                newdisty = cdisty-1;
-                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                if(newdist < olddist-epsilon)
-                {
-                    distx[i]=newdistx;
-                    disty[i]=newdisty;
-                    dist[i]=newdist;
-                    changed = 1;
-                }
-            }
-            /* Leftmost pixel is special, has no left neighbors */
-            olddist = dist[i];
-            if(olddist > 0) // If not already zero distance
-            {
-                c = i+offset_r;
-                cdistx = distx[c];
-                cdisty = disty[c];
-                newdistx = cdistx-1;
-                newdisty = cdisty;
-                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                if(newdist < olddist-epsilon)
-                {
-                    distx[i]=newdistx;
-                    disty[i]=newdisty;
-                    dist[i]=newdist;
-                    olddist=newdist;
-                    changed = 1;
-                }
-                c = i+offset_rd;
-                cdistx = distx[c];
-                cdisty = disty[c];
-                newdistx = cdistx-1;
-                newdisty = cdisty-1;
-                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                if(newdist < olddist-epsilon)
-                {
-                    distx[i]=newdistx;
-                    disty[i]=newdisty;
-                    dist[i]=newdist;
-                    olddist=newdist;
-                    changed = 1;
-                }
-                c = i+offset_d;
-                cdistx = distx[c];
-                cdisty = disty[c];
-                newdistx = cdistx;
-                newdisty = cdisty-1;
-                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                if(newdist < olddist-epsilon)
-                {
-                    distx[i]=newdistx;
-                    disty[i]=newdisty;
-                    dist[i]=newdist;
-                    changed = 1;
-                }
-            }
-            /* Move index to second leftmost pixel of current row. */
-            /* Leftmost pixel is skipped, it has no left neighbor. */
-            i = y*w + 1;
-            for(x=1; x<w; x++, i++)
-            {
-                /* scan right, propagate distance from left */
-                olddist = dist[i];
-                if(olddist <= 0) continue; // Already zero distance
-                c = i+offset_l;
-                cdistx = distx[c];
-                cdisty = disty[c];
-                newdistx = cdistx+1;
-                newdisty = cdisty;
-                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                if(newdist < olddist-epsilon)
-                {
-                    distx[i]=newdistx;
-                    disty[i]=newdisty;
-                    dist[i]=newdist;
-                    changed = 1;
-                }
-            }
-        }
-    }
-    while(changed); // Sweep until no more updates are made
-    /* The transformation is completed. */
-}
-
-
-double *
-make_distance_mapd( double *data, unsigned int width, unsigned int height )
-{
-    short * xdist = (short *)  malloc( width * height * sizeof(short) );
-    short * ydist = (short *)  malloc( width * height * sizeof(short) );
-    double * gx   = (double *) calloc( width * height, sizeof(double) );
-    double * gy      = (double *) calloc( width * height, sizeof(double) );
-    double * outside = (double *) calloc( width * height, sizeof(double) );
-    double * inside  = (double *) calloc( width * height, sizeof(double) );
-    double vmin = DBL_MAX;
-    unsigned int i;
-    // Compute outside = edtaa3(bitmap); % Transform background (0's)
-    computegradient( data, width, height, gx, gy);
-    edtaa3(data, gx, gy, width, height, xdist, ydist, outside);
-    for( i=0; i<width*height; ++i)
-    if( outside[i] < 0.0 )
-    outside[i] = 0.0;
-    // Compute inside = edtaa3(1-bitmap); % Transform foreground (1's)
-    memset( gx, 0, sizeof(double)*width*height );
-    memset( gy, 0, sizeof(double)*width*height );
-    for( i=0; i<width*height; ++i)
-    data[i] = 1 - data[i];
-    computegradient( data, width, height, gx, gy );
-    edtaa3( data, gx, gy, width, height, xdist, ydist, inside );
-    for( i=0; i<width*height; ++i )
-    if( inside[i] < 0 )
-    inside[i] = 0.0;
-    // distmap = outside - inside; % Bipolar distance field
-    for( i=0; i<width*height; ++i)
-    {
-        outside[i] -= inside[i];
-        if( outside[i] < vmin )
-        vmin = outside[i];
-    }
-    vmin = fabs(vmin);
-    for( i=0; i<width*height; ++i)
-    {
-        double v = outside[i];
-        if     ( v < -vmin) outside[i] = -vmin;
-        else if( v > +vmin) outside[i] = +vmin;
-        data[i] = (outside[i]+vmin)/(2*vmin);
-    }
-    free( xdist );
-    free( ydist );
-    free( gx );
-    free( gy );
-    free( outside );
-    free( inside );
-    return data;
-}
-unsigned char *
-make_distance_mapb( unsigned char *img,
-unsigned int width, unsigned int height )
-{
-    double * data    = (double *) calloc( width * height, sizeof(double) );
-    unsigned char *out = (unsigned char *) malloc( width * height * sizeof(unsigned char) );
-    unsigned int i;
-    // find minimimum and maximum values
-    double img_min = DBL_MAX;
-    double img_max = DBL_MIN;
-    for( i=0; i<width*height; ++i)
-    {
-        double v = img[i];
-        data[i] = v;
-        if (v > img_max)
-        img_max = v;
-        if (v < img_min)
-        img_min = v;
-    }
-    // Map values from 0 - 255 to 0.0 - 1.0
-    for( i=0; i<width*height; ++i)
-    data[i] = (img[i]-img_min)/img_max;
-    data = make_distance_mapd(data, width, height);
-    // map values from 0.0 - 1.0 to 0 - 255
-    for( i=0; i<width*height; ++i)
-    out[i] = (unsigned char)(255*(1-data[i]));
-    free( data );
-    return out;
-}
-
-
-// ----------------------------------------------------- utf8_surrogate_len ---
-size_t
-utf8_surrogate_len( const char* character )
-{
-    size_t result = 0;
-    char test_char;
-    if (!character)
-    return 0;
-    test_char = character[0];
-    if ((test_char & 0x80) == 0)
-    return 1;
-    while (test_char & 0x80)
-    {
-        test_char <<= 1;
-        result++;
-    }
-    return result;
-}
-// ------------------------------------------------------------ utf8_strlen ---
-size_t
-utf8_strlen( const char* string )
-{
-    const char* ptr = string;
-    size_t result = 0;
-    while (*ptr)
-    {
-        ptr += utf8_surrogate_len(ptr);
-        result++;
-    }
-    return result;
-}
-uint32_t
-utf8_to_utf32( const char * character )
-{
-    uint32_t result = -1;
-    if( !character )
-    {
-        return result;
-    }
-    if( ( character[0] & 0x80 ) == 0x0 )
-    {
-        result = character[0];
-    }
-    if( ( character[0] & 0xC0 ) == 0xC0 )
-    {
-        result = ( ( character[0] & 0x3F ) << 6 ) | ( character[1] & 0x3F );
-    }
-    if( ( character[0] & 0xE0 ) == 0xE0 )
-    {
-        result = ( ( character[0] & 0x1F ) << ( 6 + 6 ) ) | ( ( character[1] & 0x3F ) << 6 ) | ( character[2] & 0x3F );
-    }
-    if( ( character[0] & 0xF0 ) == 0xF0 )
-    {
-        result = ( ( character[0] & 0x0F ) << ( 6 + 6 + 6 ) ) | ( ( character[1] & 0x3F ) << ( 6 + 6 ) ) | ( ( character[2] & 0x3F ) << 6 ) | ( character[3] & 0x3F );
-    }
-    if( ( character[0] & 0xF8 ) == 0xF8 )
-    {
-        result = ( ( character[0] & 0x07 ) << ( 6 + 6 + 6 + 6 ) ) | ( ( character[1] & 0x3F ) << ( 6 + 6 + 6 ) ) | ( ( character[2] & 0x3F ) << ( 6 + 6 ) ) | ( ( character[3] & 0x3F ) << 6 ) | ( character[4] & 0x3F );
-    }
-    return result;
-}
-
-
-#ifdef WIN32
-// strndup() is not available on Windows
-char *strndup( const char *s1, size_t n)
-{
-    char *copy= (char*)malloc( n+1 );
-    memcpy( copy, s1, n );
-    copy[n] = 0;
-    return copy;
-};
-#endif
-/**
-* Buffer status
-*/
-#define CLEAN  (0)
-#define DIRTY  (1)
-#define FROZEN (2)
-// ----------------------------------------------------------------------------
-vertex_buffer_t *
-vertex_buffer_new( const char *format )
-{
-    size_t i, index = 0, stride = 0;
-    const char *start = 0, *end = 0;
-    GLchar *pointer = 0;
-    vertex_buffer_t *self = (vertex_buffer_t *) malloc (sizeof(vertex_buffer_t));
-    if( !self )
-    {
-        return NULL;
-    }
-    self->format = strdup( format );
-    for( i=0; i<MAX_VERTEX_ATTRIBUTE; ++i )
-    {
-        self->attributes[i] = 0;
-    }
-    start = format;
-    do
-    {
-        char *desc = 0;
-        vertex_attribute_t *attribute;
-        GLuint attribute_size = 0;
-        end = (char *) (strchr(start+1, ','));
-        if (end == NULL)
-        {
-            desc = strdup( start );
-        }
-        else
-        {
-            desc = strndup( start, end-start );
-        }
-        attribute = vertex_attribute_parse( desc );
-        start = end+1;
-        free(desc);
-        attribute->pointer = pointer;
-        switch( attribute->type )
-        {
-            case GL_BOOL:           attribute_size = sizeof(GLboolean); break;
-            case GL_BYTE:           attribute_size = sizeof(GLbyte); break;
-            case GL_UNSIGNED_BYTE:  attribute_size = sizeof(GLubyte); break;
-            case GL_SHORT:          attribute_size = sizeof(GLshort); break;
-            case GL_UNSIGNED_SHORT: attribute_size = sizeof(GLushort); break;
-            case GL_INT:            attribute_size = sizeof(GLint); break;
-            case GL_UNSIGNED_INT:   attribute_size = sizeof(GLuint); break;
-            case GL_FLOAT:          attribute_size = sizeof(GLfloat); break;
-            default:                attribute_size = 0;
-        }
-        stride  += attribute->size*attribute_size;
-        pointer += attribute->size*attribute_size;
-        self->attributes[index] = attribute;
-        index++;
-    } while ( end && (index < MAX_VERTEX_ATTRIBUTE) );
-    for( i=0; i<index; ++i )
-    {
-        self->attributes[i]->stride = stride;
-    }
-    #ifdef FREETYPE_GL_USE_VAO
-    self->VAO_id = 0;
-    #endif
-    self->vertices = vector_new( stride );
-    self->vertices_id  = 0;
-    self->GPU_vsize = 0;
-    self->indices = vector_new( sizeof(GLuint) );
-    self->indices_id  = 0;
-    self->GPU_isize = 0;
-    self->items = vector_new( sizeof(ivec4) );
-    self->state = DIRTY;
-    self->mode = GL_TRIANGLES;
-    return self;
-}
-// ----------------------------------------------------------------------------
-void
-vertex_buffer_delete( vertex_buffer_t *self )
-{
-    size_t i;
-    assert( self );
-    for( i=0; i<MAX_VERTEX_ATTRIBUTE; ++i )
-    {
-        if( self->attributes[i] )
-        {
-            vertex_attribute_delete( self->attributes[i] );
-        }
-    }
-    #ifdef FREETYPE_GL_USE_VAO
-    if( self->VAO_id )
-    {
-        glDeleteVertexArrays( 1, &self->VAO_id );
-    }
-    self->VAO_id = 0;
-    #endif
-    vector_delete( self->vertices );
-    self->vertices = 0;
-    if( self->vertices_id )
-    {
-        glDeleteBuffers( 1, &self->vertices_id );
-    }
-    self->vertices_id = 0;
-    vector_delete( self->indices );
-    self->indices = 0;
-    if( self->indices_id )
-    {
-        glDeleteBuffers( 1, &self->indices_id );
-    }
-    self->indices_id = 0;
-    vector_delete( self->items );
-    if( self->format )
-    {
-        free( self->format );
-    }
-    self->format = 0;
-    self->state = 0;
-    free( self );
-}
-// ----------------------------------------------------------------------------
-const char *
-vertex_buffer_format( const vertex_buffer_t *self )
-{
-    assert( self );
-    return self->format;
-}
-// ----------------------------------------------------------------------------
-size_t
-vertex_buffer_size( const vertex_buffer_t *self )
-{
-    assert( self );
-    return vector_size( self->items );
-}
-// ----------------------------------------------------------------------------
-void
-vertex_buffer_print( vertex_buffer_t * self )
-{
-    int i = 0;
-    static char *gltypes[9] = {
-        "GL_BOOL",
-        "GL_BYTE",
-        "GL_UNSIGNED_BYTE",
-        "GL_SHORT",
-        "GL_UNSIGNED_SHORT",
-        "GL_INT",
-        "GL_UNSIGNED_INT",
-        "GL_FLOAT",
-        "GL_VOID"
-    };
-    assert(self);
-    fprintf( stderr, "%zu vertices, %zu indices\n",
-    vector_size( self->vertices ), vector_size( self->indices ) );
-    while( self->attributes[i] )
-    {
-        int j = 8;
-        switch( self->attributes[i]->type )
-        {
-            case GL_BOOL:           j=0; break;
-            case GL_BYTE:           j=1; break;
-            case GL_UNSIGNED_BYTE:  j=2; break;
-            case GL_SHORT:          j=3; break;
-            case GL_UNSIGNED_SHORT: j=4; break;
-            case GL_INT:            j=5; break;
-            case GL_UNSIGNED_INT:   j=6; break;
-            case GL_FLOAT:          j=7; break;
-            default:                j=8; break;
-        }
-        fprintf(stderr, "%s : %dx%s (+%p)\n",
-        self->attributes[i]->name,
-        self->attributes[i]->size,
-        gltypes[j],
-        self->attributes[i]->pointer);
-        i += 1;
-    }
-}
-// ----------------------------------------------------------------------------
-void
-vertex_buffer_upload ( vertex_buffer_t *self )
-{
-    size_t vsize, isize;
-    if( self->state == FROZEN )
-    {
-        return;
-    }
-    if( !self->vertices_id )
-    {
-        glGenBuffers( 1, &self->vertices_id );
-    }
-    if( !self->indices_id )
-    {
-        glGenBuffers( 1, &self->indices_id );
-    }
-    vsize = self->vertices->size*self->vertices->item_size;
-    isize = self->indices->size*self->indices->item_size;
-    // Always upload vertices first such that indices do not point to non
-    // existing data (if we get interrupted in between for example).
-    // Upload vertices
-    glBindBuffer( GL_ARRAY_BUFFER, self->vertices_id );
-    if( vsize != self->GPU_vsize )
-    {
-        glBufferData( GL_ARRAY_BUFFER,
-        vsize, self->vertices->items, GL_DYNAMIC_DRAW );
-        self->GPU_vsize = vsize;
-    }
-    else
-    {
-        glBufferSubData( GL_ARRAY_BUFFER,
-        0, vsize, self->vertices->items );
-    }
-    glBindBuffer( GL_ARRAY_BUFFER, 0 );
-    // Upload indices
-    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, self->indices_id );
-    if( isize != self->GPU_isize )
-    {
-        glBufferData( GL_ELEMENT_ARRAY_BUFFER,
-        isize, self->indices->items, GL_DYNAMIC_DRAW );
-        self->GPU_isize = isize;
-    }
-    else
-    {
-        glBufferSubData( GL_ELEMENT_ARRAY_BUFFER,
-        0, isize, self->indices->items );
-    }
-    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
-}
-// ----------------------------------------------------------------------------
-void
-vertex_buffer_clear( vertex_buffer_t *self )
-{
-    assert( self );
-    self->state = FROZEN;
-    vector_clear( self->indices );
-    vector_clear( self->vertices );
-    vector_clear( self->items );
-    self->state = DIRTY;
-}
-// ----------------------------------------------------------------------------
-void
-vertex_buffer_render_setup ( vertex_buffer_t *self, GLenum mode )
-{
-    size_t i;
-    #ifdef FREETYPE_GL_USE_VAO
-    // Unbind so no existing VAO-state is overwritten,
-    // (e.g. the GL_ELEMENT_ARRAY_BUFFER-binding).
-    glBindVertexArray( 0 );
-    #endif
-    if( self->state != CLEAN )
-    {
-        vertex_buffer_upload( self );
-        self->state = CLEAN;
-    }
-    #ifdef FREETYPE_GL_USE_VAO
-    if( self->VAO_id == 0 )
-    {
-        // Generate and set up VAO
-        glGenVertexArrays( 1, &self->VAO_id );
-        glBindVertexArray( self->VAO_id );
-        glBindBuffer( GL_ARRAY_BUFFER, self->vertices_id );
-        for( i=0; i<MAX_VERTEX_ATTRIBUTE; ++i )
-        {
-            vertex_attribute_t *attribute = self->attributes[i];
-            if( attribute == 0 )
-            {
-                continue;
-            }
-            else
-            {
-                vertex_attribute_enable( attribute );
-            }
-        }
-        glBindBuffer( GL_ARRAY_BUFFER, 0 );
-        if( self->indices->size )
-        {
-            glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, self->indices_id );
-        }
-    }
-    // Bind VAO for drawing
-    glBindVertexArray( self->VAO_id );
-    #else
-    glBindBuffer( GL_ARRAY_BUFFER, self->vertices_id );
-    for( i=0; i<MAX_VERTEX_ATTRIBUTE; ++i )
-    {
-        vertex_attribute_t *attribute = self->attributes[i];
-        if ( attribute == 0 )
-        {
-            continue;
-        }
-        else
-        {
-            vertex_attribute_enable( attribute );
-        }
-    }
-    if( self->indices->size )
-    {
-        glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, self->indices_id );
-    }
-    #endif
-    self->mode = mode;
-}
-// ----------------------------------------------------------------------------
-void
-vertex_buffer_render_finish ( vertex_buffer_t *self )
-{
-    #ifdef FREETYPE_GL_USE_VAO
-    glBindVertexArray( 0 );
-    #else
-    int i;
-    for( i=0; i<MAX_VERTEX_ATTRIBUTE; ++i )
-    {
-        vertex_attribute_t *attribute = self->attributes[i];
-        if( attribute == 0 )
-        {
-            continue;
-        }
-        else
-        {
-            glDisableVertexAttribArray( attribute->index );
-        }
-    }
-    glBindBuffer( GL_ARRAY_BUFFER, 0 );
-    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
-    #endif
-}
-// ----------------------------------------------------------------------------
-void
-vertex_buffer_render_item ( vertex_buffer_t *self,
-size_t index )
-{
-    ivec4 * item = (ivec4 *) vector_get( self->items, index );
-    assert( self );
-    assert( index < vector_size( self->items ) );
-    if( self->indices->size )
-    {
-        size_t start = item->istart;
-        size_t count = item->icount;
-        glDrawElements( self->mode, count, GL_UNSIGNED_INT, (void *)(start*sizeof(GLuint)) );
-    }
-    else if( self->vertices->size )
-    {
-        size_t start = item->vstart;
-        size_t count = item->vcount;
-        glDrawArrays( self->mode, start*self->vertices->item_size, count);
-    }
-}
-// ----------------------------------------------------------------------------
-void
-vertex_buffer_render ( vertex_buffer_t *self, GLenum mode )
-{
-    size_t vcount = self->vertices->size;
-    size_t icount = self->indices->size;
-    vertex_buffer_render_setup( self, mode );
-    if( icount )
-    {
-        glDrawElements( mode, icount, GL_UNSIGNED_INT, 0 );
-    }
-    else
-    {
-        glDrawArrays( mode, 0, vcount );
-    }
-    vertex_buffer_render_finish( self );
-}
-// ----------------------------------------------------------------------------
-void
-vertex_buffer_push_back_indices ( vertex_buffer_t * self,
-const GLuint * indices,
-const size_t icount )
-{
-    assert( self );
-    self->state |= DIRTY;
-    vector_push_back_data( self->indices, indices, icount );
-}
-// ----------------------------------------------------------------------------
-void
-vertex_buffer_push_back_vertices ( vertex_buffer_t * self,
-const void * vertices,
-const size_t vcount )
-{
-    assert( self );
-    self->state |= DIRTY;
-    vector_push_back_data( self->vertices, vertices, vcount );
-}
-// ----------------------------------------------------------------------------
-void
-vertex_buffer_insert_indices ( vertex_buffer_t *self,
-const size_t index,
-const GLuint *indices,
-const size_t count )
-{
-    assert( self );
-    assert( self->indices );
-    assert( index < self->indices->size+1 );
-    self->state |= DIRTY;
-    vector_insert_data( self->indices, index, indices, count );
-}
-// ----------------------------------------------------------------------------
-void
-vertex_buffer_insert_vertices( vertex_buffer_t *self,
-const size_t index,
-const void *vertices,
-const size_t vcount )
-{
-    size_t i;
-    assert( self );
-    assert( self->vertices );
-    assert( index < self->vertices->size+1 );
-    self->state |= DIRTY;
-    for( i=0; i<self->indices->size; ++i )
-    {
-        if( *(GLuint *)(vector_get( self->indices, i )) > index )
-        {
-            *(GLuint *)(vector_get( self->indices, i )) += index;
-        }
-    }
-    vector_insert_data( self->vertices, index, vertices, vcount );
-}
-// ----------------------------------------------------------------------------
-void
-vertex_buffer_erase_indices( vertex_buffer_t *self,
-const size_t first,
-const size_t last )
-{
-    assert( self );
-    assert( self->indices );
-    assert( first < self->indices->size );
-    assert( (last) <= self->indices->size );
-    self->state |= DIRTY;
-    vector_erase_range( self->indices, first, last );
-}
-// ----------------------------------------------------------------------------
-void
-vertex_buffer_erase_vertices( vertex_buffer_t *self,
-const size_t first,
-const size_t last )
-{
-    size_t i;
-    assert( self );
-    assert( self->vertices );
-    assert( first < self->vertices->size );
-    assert( last <= self->vertices->size );
-    assert( last > first );
-    self->state |= DIRTY;
-    for( i=0; i<self->indices->size; ++i )
-    {
-        if( *(GLuint *)(vector_get( self->indices, i )) > first )
-        {
-            *(GLuint *)(vector_get( self->indices, i )) -= (last-first);
-        }
-    }
-    vector_erase_range( self->vertices, first, last );
-}
-// ----------------------------------------------------------------------------
-size_t
-vertex_buffer_push_back( vertex_buffer_t * self,
-const void * vertices, const size_t vcount,
-const GLuint * indices, const size_t icount )
-{
-    return vertex_buffer_insert( self, vector_size( self->items ),
-    vertices, vcount, indices, icount );
-}
-// ----------------------------------------------------------------------------
-size_t
-vertex_buffer_insert( vertex_buffer_t * self, const size_t index,
-const void * vertices, const size_t vcount,
-const GLuint * indices, const size_t icount )
-{
-    size_t vstart, istart, i;
-    ivec4 item;
-    assert( self );
-    assert( vertices );
-    assert( indices );
-    self->state = FROZEN;
-    // Push back vertices
-    vstart = vector_size( self->vertices );
-    vertex_buffer_push_back_vertices( self, vertices, vcount );
-    // Push back indices
-    istart = vector_size( self->indices );
-    vertex_buffer_push_back_indices( self, indices, icount );
-    // Update indices within the vertex buffer
-    for( i=0; i<icount; ++i )
-    {
-        *(GLuint *)(vector_get( self->indices, istart+i )) += vstart;
-    }
-    // Insert item
-    item.x = vstart;
-    item.y = vcount;
-    item.z = istart;
-    item.w = icount;
-    vector_insert( self->items, index, &item );
-    self->state = DIRTY;
-    return index;
-}
-// ----------------------------------------------------------------------------
-void
-vertex_buffer_erase( vertex_buffer_t * self,
-const size_t index )
-{
-    ivec4 * item;
-    int vstart;
-    size_t vcount, istart, icount, i;
-    assert( self );
-    assert( index < vector_size( self->items ) );
-    item = (ivec4 *) vector_get( self->items, index );
-    vstart = item->vstart;
-    vcount = item->vcount;
-    istart = item->istart;
-    icount = item->icount;
-    // Update items
-    for( i=0; i<vector_size(self->items); ++i )
-    {
-        ivec4 * item = (ivec4 *) vector_get( self->items, i );
-        if( item->vstart > vstart)
-        {
-            item->vstart -= vcount;
-            item->istart -= icount;
-        }
-    }
-    self->state = FROZEN;
-    vertex_buffer_erase_indices( self, istart, istart+icount );
-    vertex_buffer_erase_vertices( self, vstart, vstart+vcount );
-    vector_erase( self->items, index );
-    self->state = DIRTY;
-}
-
-
-// ----------------------------------------------------------------------------
-vertex_attribute_t *
-vertex_attribute_new( GLchar * name,
-GLint size,
-GLenum type,
-GLboolean normalized,
-GLsizei stride,
-GLvoid *pointer )
-{
-    vertex_attribute_t *attribute =
-    (vertex_attribute_t *) malloc (sizeof(vertex_attribute_t));
-    assert( size > 0 );
-    attribute->name       = (GLchar *) strdup( name );
-    attribute->index      = -1;
-    attribute->size       = size;
-    attribute->type       = type;
-    attribute->normalized = normalized;
-    attribute->stride     = stride;
-    attribute->pointer    = pointer;
-    return attribute;
-}
-// ----------------------------------------------------------------------------
-void
-vertex_attribute_delete( vertex_attribute_t * self )
-{
-    assert( self );
-    free( self->name );
-    free( self );
-}
-// ----------------------------------------------------------------------------
-vertex_attribute_t *
-vertex_attribute_parse( char *format )
-{
-    GLenum type = 0;
-    int size;
-    int normalized = 0;
-    char ctype;
-    char *name;
-    vertex_attribute_t *attr;
-    char *p = strchr(format, ':');
-    if( p != NULL)
-    {
-        name = strndup(format, p-format);
-        if( *(++p) == '\0' )
-        {
-            fprintf( stderr, "No size specified for '%s' attribute\n", name );
-            free( name );
-            return 0;
-        }
-        size = *p - '0';
-        if( *(++p) == '\0' )
-        {
-            fprintf( stderr, "No format specified for '%s' attribute\n", name );
-            free( name );
-            return 0;
-        }
-        ctype = *p;
-        if( *(++p) != '\0' )
-        {
-            if( *p == 'n' )
-            {
-                normalized = 1;
-            }
-        }
-    }
-    else
-    {
-        fprintf(stderr, "Vertex attribute format not understood ('%s')\n", format );
-        return 0;
-    }
-    switch( ctype )
-    {
-        case 'b': type = GL_BYTE;           break;
-        case 'B': type = GL_UNSIGNED_BYTE;  break;
-        case 's': type = GL_SHORT;          break;
-        case 'S': type = GL_UNSIGNED_SHORT; break;
-        case 'i': type = GL_INT;            break;
-        case 'I': type = GL_UNSIGNED_INT;   break;
-        case 'f': type = GL_FLOAT;          break;
-        default:  type = 0;                 break;
-    }
-    attr = vertex_attribute_new( name, size, type, normalized, 0, 0 );
-    free( name );
-    return attr;
-}
-// ----------------------------------------------------------------------------
-void
-vertex_attribute_enable( vertex_attribute_t *attr )
-{
-    if( attr->index == -1 )
-    {
-        GLint program;
-        glGetIntegerv( GL_CURRENT_PROGRAM, &program );
-        if( program == 0)
-        {
-            return;
-        }
-        attr->index = glGetAttribLocation( program, attr->name );
-        if( attr->index == -1 )
-        {
-            return;
-        }
-    }
-    glEnableVertexAttribArray( attr->index );
-    glVertexAttribPointer( attr->index, attr->size, attr->type,
-    attr->normalized, attr->stride, attr->pointer );
-}
-
-
-// ------------------------------------------------------------- vector_new ---
-vector_t *
-vector_new( size_t item_size )
-{
-    vector_t *self = (vector_t *) malloc( sizeof(vector_t) );
-    assert( item_size );
-    if( !self )
-    {
-        fprintf( stderr,
-        "line %d: No more memory for allocating data\n", __LINE__ );
-        exit( EXIT_FAILURE );
-    }
-    self->item_size = item_size;
-    self->size      = 0;
-    self->capacity  = 1;
-    self->items     = malloc( self->item_size * self->capacity );
-    return self;
-}
-// ---------------------------------------------------------- vector_delete ---
-void
-vector_delete( vector_t *self )
-{
-    assert( self );
-    free( self->items );
-    free( self );
-}
-// ------------------------------------------------------------- vector_get ---
-const void *
-vector_get( const vector_t *self,
-size_t index )
-{
-    assert( self );
-    assert( self->size );
-    assert( index  < self->size );
-    return (char*)(self->items) + index * self->item_size;
-}
-// ----------------------------------------------------------- vector_front ---
-const void *
-vector_front( const vector_t *self )
-{
-    assert( self );
-    assert( self->size );
-    return vector_get( self, 0 );
-}
-// ------------------------------------------------------------ vector_back ---
-const void *
-vector_back( const vector_t *self )
-{
-    assert( self );
-    assert( self->size );
-    return vector_get( self, self->size-1 );
-}
-// -------------------------------------------------------- vector_contains ---
-int
-vector_contains( const vector_t *self,
-const void *item,
-int (*cmp)(const void *, const void *) )
-{
-    size_t i;
-    assert( self );
-    for( i=0; i<self->size; ++i )
-    {
-        if( (*cmp)(item, vector_get(self,i) ) == 0 )
-        {
-            return 1;
-        }
-    }
-    return 0;
-}
-// ----------------------------------------------------------- vector_empty ---
-int
-vector_empty( const vector_t *self )
-{
-    assert( self );
-    return self->size == 0;
-}
-// ------------------------------------------------------------ vector_size ---
-size_t
-vector_size( const vector_t *self )
-{
-    assert( self );
-    return self->size;
-}
-// --------------------------------------------------------- vector_reserve ---
-void
-vector_reserve( vector_t *self,
-const size_t size )
-{
-    assert( self );
-    if( self->capacity < size)
-    {
-        self->items = realloc( self->items, size * self->item_size );
-        self->capacity = size;
-    }
-}
-// -------------------------------------------------------- vector_capacity ---
-size_t
-vector_capacity( const vector_t *self )
-{
-    assert( self );
-    return self->capacity;
-}
-// ---------------------------------------------------------- vector_shrink ---
-void
-vector_shrink( vector_t *self )
-{
-    assert( self );
-    if( self->capacity > self->size )
-    {
-        self->items = realloc( self->items, self->size * self->item_size );
-    }
-    self->capacity = self->size;
-}
-// ----------------------------------------------------------- vector_clear ---
-void
-vector_clear( vector_t *self )
-{
-    assert( self );
-    self->size = 0;
-}
-// ------------------------------------------------------------- vector_set ---
-void
-vector_set( vector_t *self,
-const size_t index,
-const void *item )
-{
-    assert( self );
-    assert( self->size );
-    assert( index  < self->size );
-    memcpy( (char *)(self->items) + index * self->item_size,
-    item, self->item_size );
-}
-// ---------------------------------------------------------- vector_insert ---
-void
-vector_insert( vector_t *self,
-const size_t index,
-const void *item )
-{
-    assert( self );
-    assert( index <= self->size);
-    if( self->capacity <= self->size )
-    {
-        vector_reserve(self, 2 * self->capacity );
-    }
-    if( index < self->size )
-    {
-        memmove( (char *)(self->items) + (index + 1) * self->item_size,
-        (char *)(self->items) + (index + 0) * self->item_size,
-        (self->size - index)  * self->item_size);
-    }
-    self->size++;
-    vector_set( self, index, item );
-}
-// ----------------------------------------------------- vector_erase_range ---
-void
-vector_erase_range( vector_t *self,
-const size_t first,
-const size_t last )
-{
-    assert( self );
-    assert( first < self->size );
-    assert( last  < self->size+1 );
-    assert( first < last );
-    memmove( (char *)(self->items) + first * self->item_size,
-    (char *)(self->items) + last  * self->item_size,
-    (self->size - last)   * self->item_size);
-    self->size -= (last-first);
-}
-// ----------------------------------------------------------- vector_erase ---
-void
-vector_erase( vector_t *self,
-const size_t index )
-{
-    assert( self );
-    assert( index < self->size );
-    vector_erase_range( self, index, index+1 );
-}
-// ------------------------------------------------------- vector_push_back ---
-void
-vector_push_back( vector_t *self,
-const void *item )
-{
-    vector_insert( self, self->size, item );
-}
-// -------------------------------------------------------- vector_pop_back ---
-void
-vector_pop_back( vector_t *self )
-{
-    assert( self );
-    assert( self->size );
-    self->size--;
-}
-// ---------------------------------------------------------- vector_resize ---
-void
-vector_resize( vector_t *self,
-const size_t size )
-{
-    assert( self );
-    if( size > self->capacity)
-    {
-        vector_reserve( self, size );
-        self->size = self->capacity;
-    }
-    else
-    {
-        self->size = size;
-    }
-}
-// -------------------------------------------------- vector_push_back_data ---
-void
-vector_push_back_data( vector_t *self,
-const void * data,
-const size_t count )
-{
-    assert( self );
-    assert( data );
-    assert( count );
-    if( self->capacity < (self->size+count) )
-    {
-        vector_reserve(self, self->size+count);
-    }
-    memmove( (char *)(self->items) + self->size * self->item_size, data,
-    count*self->item_size );
-    self->size += count;
-}
-// ----------------------------------------------------- vector_insert_data ---
-void
-vector_insert_data( vector_t *self,
-const size_t index,
-const void * data,
-const size_t count )
-{
-    assert( self );
-    assert( index < self->size );
-    assert( data );
-    assert( count );
-    if( self->capacity < (self->size+count) )
-    {
-        vector_reserve(self, self->size+count);
-    }
-    memmove( (char *)(self->items) + (index + count ) * self->item_size,
-    (char *)(self->items) + (index ) * self->item_size,
-    count*self->item_size );
-    memmove( (char *)(self->items) + index * self->item_size, data,
-    count*self->item_size );
-    self->size += count;
-}
-// ------------------------------------------------------------ vector_sort ---
-void
-vector_sort( vector_t *self,
-int (*cmp)(const void *, const void *) )
-{
-    assert( self );
-    assert( self->size );
-    qsort(self->items, self->size, self->item_size, cmp);
-}
-
-
-#define HRES  64
-#define HRESf 64.f
-#define DPI   72
-// ------------------------------------------------- texture_font_load_face ---
-static int
-texture_font_load_face(texture_font_t *self, float size,
-FT_Library *library, FT_Face *face)
-{
-    FT_Error error;
-    FT_Matrix matrix = { //
-    (int)((1.0/HRES) * 0x10000L),
-    (int)((0.0)      * 0x10000L),
-    (int)((0.0)      * 0x10000L),
-    (int)((1.0)      * 0x10000L)};
-    assert(library);
-    assert(size);
-    /* Initialize library */
-    error = FT_Init_FreeType(library);
-    if(error) {
-        fprintf(stderr, "FT_Error (0x%02x) : %s\n",
-        FT_Errors[error].code, FT_Errors[error].message);
-        goto cleanup;
-    }
-    /* Load face */
-    switch (self->location) {
-        case TEXTURE_FONT_FILE:
-        error = FT_New_Face(*library, self->filename, 0, face);
-        break;
-        case TEXTURE_FONT_MEMORY:
-        error = FT_New_Memory_Face(*library,
-        self->memory.base, self->memory.size, 0, face);
-        break;
-    }
-    if(error) {
-        fprintf(stderr, "FT_Error (line %d, code 0x%02x) : %s\n",
-        __LINE__, FT_Errors[error].code, FT_Errors[error].message);
-        goto cleanup_library;
-    }
-    /* Select charmap */
-    error = FT_Select_Charmap(*face, FT_ENCODING_UNICODE);
-    if(error) {
-        fprintf(stderr, "FT_Error (line %d, code 0x%02x) : %s\n",
-        __LINE__, FT_Errors[error].code, FT_Errors[error].message);
-        goto cleanup_face;
-    }
-    /* Set char size */
-    error = FT_Set_Char_Size(*face, (int)(size * HRES), 0, DPI * HRES, DPI);
-    if(error) {
-        fprintf(stderr, "FT_Error (line %d, code 0x%02x) : %s\n",
-        __LINE__, FT_Errors[error].code, FT_Errors[error].message);
-        goto cleanup_face;
-    }
-    /* Set transform matrix */
-    FT_Set_Transform(*face, &matrix, NULL);
-    return 1;
-    cleanup_face:
-    FT_Done_Face( *face );
-    cleanup_library:
-    FT_Done_FreeType( *library );
-    cleanup:
-    return 0;
-}
-// ------------------------------------------------------ texture_glyph_new ---
-texture_glyph_t *
-texture_glyph_new(void)
-{
-    texture_glyph_t *self = (texture_glyph_t *) malloc( sizeof(texture_glyph_t) );
-    if(self == NULL) {
-        fprintf( stderr,
-        "line %d: No more memory for allocating data\n", __LINE__);
-        return NULL;
-    }
-    self->codepoint  = -1;
-    self->width     = 0;
-    self->height    = 0;
-    self->rendermode = RENDER_NORMAL;
-    self->outline_thickness = 0.0;
-    self->offset_x  = 0;
-    self->offset_y  = 0;
-    self->advance_x = 0.0;
-    self->advance_y = 0.0;
-    self->s0        = 0.0;
-    self->t0        = 0.0;
-    self->s1        = 0.0;
-    self->t1        = 0.0;
-    self->kerning   = vector_new( sizeof(kerning_t) );
-    return self;
-}
-// --------------------------------------------------- texture_glyph_delete ---
-void
-texture_glyph_delete( texture_glyph_t *self )
-{
-    assert( self );
-    vector_delete( self->kerning );
-    free( self );
-}
-// ---------------------------------------------- texture_glyph_get_kerning ---
-float
-texture_glyph_get_kerning( const texture_glyph_t * self,
-const char * codepoint )
-{
-    size_t i;
-    uint32_t ucodepoint = utf8_to_utf32( codepoint );
-    assert( self );
-    for( i=0; i<vector_size(self->kerning); ++i )
-    {
-        kerning_t * kerning = (kerning_t *) vector_get( self->kerning, i );
-        if( kerning->codepoint == ucodepoint )
-        {
-            return kerning->kerning;
-        }
-    }
-    return 0;
-}
-// ------------------------------------------ texture_font_generate_kerning ---
-void
-texture_font_generate_kerning( texture_font_t *self,
-FT_Library *library, FT_Face *face )
-{
-    size_t i, j;
-    FT_UInt glyph_index, prev_index;
-    texture_glyph_t *glyph, *prev_glyph;
-    FT_Vector kerning;
-    assert( self );
-    /* For each glyph couple combination, check if kerning is necessary */
-    /* Starts at index 1 since 0 is for the special backgroudn glyph */
-    for( i=1; i<self->glyphs->size; ++i )
-    {
-        glyph = *(texture_glyph_t **) vector_get( self->glyphs, i );
-        glyph_index = FT_Get_Char_Index( *face, glyph->codepoint );
-        vector_clear( glyph->kerning );
-        for( j=1; j<self->glyphs->size; ++j )
-        {
-            prev_glyph = *(texture_glyph_t **) vector_get( self->glyphs, j );
-            prev_index = FT_Get_Char_Index( *face, prev_glyph->codepoint );
-            FT_Get_Kerning( *face, prev_index, glyph_index, FT_KERNING_UNFITTED, &kerning );
-            // printf("%c(%d)-%c(%d): %ld\n",
-            //       prev_glyph->codepoint, prev_glyph->codepoint,
-            //       glyph_index, glyph_index, kerning.x);
-            if( kerning.x )
-            {
-                kerning_t k = {prev_glyph->codepoint, kerning.x / (float)(HRESf*HRESf)};
-                vector_push_back( glyph->kerning, &k );
-            }
-        }
-    }
-}
-// ------------------------------------------------------ texture_font_init ---
-static int
-texture_font_init(texture_font_t *self)
-{
-    FT_Library library;
-    FT_Face face;
-    FT_Size_Metrics metrics;
-    assert(self->atlas);
-    assert(self->size > 0);
-    assert((self->location == TEXTURE_FONT_FILE && self->filename)
-    || (self->location == TEXTURE_FONT_MEMORY
-    && self->memory.base && self->memory.size));
-    self->glyphs = vector_new(sizeof(texture_glyph_t *));
-    self->height = 0;
-    self->ascender = 0;
-    self->descender = 0;
-    self->rendermode = RENDER_NORMAL;
-    self->outline_thickness = 0.0;
-    self->hinting = 1;
-    self->kerning = 1;
-    self->filtering = 1;
-    // FT_LCD_FILTER_LIGHT   is (0x00, 0x55, 0x56, 0x55, 0x00)
-    // FT_LCD_FILTER_DEFAULT is (0x10, 0x40, 0x70, 0x40, 0x10)
-    self->lcd_weights[0] = 0x10;
-    self->lcd_weights[1] = 0x40;
-    self->lcd_weights[2] = 0x70;
-    self->lcd_weights[3] = 0x40;
-    self->lcd_weights[4] = 0x10;
-    if (!texture_font_load_face(self, self->size * 100.f, &library, &face))
-    return -1;
-    self->underline_position = face->underline_position / (float)(HRESf*HRESf) * self->size;
-    self->underline_position = roundf( self->underline_position );
-    if( self->underline_position > -2 )
-    {
-        self->underline_position = -2.0;
-    }
-    self->underline_thickness = face->underline_thickness / (float)(HRESf*HRESf) * self->size;
-    self->underline_thickness = roundf( self->underline_thickness );
-    if( self->underline_thickness < 1 )
-    {
-        self->underline_thickness = 1.0;
-    }
-    metrics = face->size->metrics;
-    self->ascender = (metrics.ascender >> 6) / 100.0f;
-    self->descender = (metrics.descender >> 6) / 100.0f;
-    self->height = (metrics.height >> 6) / 100.0f;
-    self->linegap = self->height - self->ascender + self->descender;
-    FT_Done_Face( face );
-    FT_Done_FreeType( library );
-    /* NULL is a special glyph */
-    texture_font_get_glyph( self, NULL );
-    return 0;
-}
-// --------------------------------------------- texture_font_new_from_file ---
-texture_font_t *
-texture_font_new_from_file(texture_atlas_t *atlas, const float pt_size,
-const char *filename)
-{
-    texture_font_t *self;
-    assert(filename);
-    self = calloc(1, sizeof(*self));
-    if (!self) {
-        fprintf(stderr,
-        "line %d: No more memory for allocating data\n", __LINE__);
-        return NULL;
-    }
-    self->atlas = atlas;
-    self->size  = pt_size;
-    self->location = TEXTURE_FONT_FILE;
-    self->filename = strdup(filename);
-    if (texture_font_init(self)) {
-        texture_font_delete(self);
-        return NULL;
-    }
-    return self;
-}
-// ------------------------------------------- texture_font_new_from_memory ---
-texture_font_t *
-texture_font_new_from_memory(texture_atlas_t *atlas, float pt_size,
-const void *memory_base, size_t memory_size)
-{
-    texture_font_t *self;
-    assert(memory_base);
-    assert(memory_size);
-    self = calloc(1, sizeof(*self));
-    if (!self) {
-        fprintf(stderr,
-        "line %d: No more memory for allocating data\n", __LINE__);
-        return NULL;
-    }
-    self->atlas = atlas;
-    self->size  = pt_size;
-    self->location = TEXTURE_FONT_MEMORY;
-    self->memory.base = memory_base;
-    self->memory.size = memory_size;
-    if (texture_font_init(self)) {
-        texture_font_delete(self);
-        return NULL;
-    }
-    return self;
-}
-// ---------------------------------------------------- texture_font_delete ---
-void
-texture_font_delete( texture_font_t *self )
-{
-    size_t i;
-    texture_glyph_t *glyph;
-    assert( self );
-    if(self->location == TEXTURE_FONT_FILE && self->filename)
-    free( self->filename );
-    for( i=0; i<vector_size( self->glyphs ); ++i)
-    {
-        glyph = *(texture_glyph_t **) vector_get( self->glyphs, i );
-        texture_glyph_delete( glyph);
-    }
-    vector_delete( self->glyphs );
-    free( self );
-}
-texture_glyph_t *
-texture_font_find_glyph( texture_font_t * self,
-const char * codepoint )
-{
-    size_t i;
-    texture_glyph_t *glyph;
-    uint32_t ucodepoint = utf8_to_utf32( codepoint );
-    for( i = 0; i < self->glyphs->size; ++i )
-    {
-        glyph = *(texture_glyph_t **) vector_get( self->glyphs, i );
-        // If codepoint is -1, we don't care about outline type or thickness
-        if( (glyph->codepoint == ucodepoint) &&
-        ((ucodepoint == -1) ||
-        ((glyph->rendermode == self->rendermode) &&
-        (glyph->outline_thickness == self->outline_thickness)) ))
-        {
-            return glyph;
-        }
-    }
-    return NULL;
-}
-// ------------------------------------------------ texture_font_load_glyph ---
-int
-texture_font_load_glyph( texture_font_t * self,
-const char * codepoint )
-{
-    size_t i, x, y;
-    FT_Library library;
-    FT_Error error;
-    FT_Face face;
-    FT_Glyph ft_glyph = { 0 };
-    FT_GlyphSlot slot;
-    FT_Bitmap ft_bitmap;
-    FT_UInt glyph_index;
-    texture_glyph_t *glyph;
-    FT_Int32 flags = 0;
-    int ft_glyph_top = 0;
-    int ft_glyph_left = 0;
-    ivec4 region;
-    if (!texture_font_load_face(self, self->size, &library, &face))
-    return 0;
-    /* Check if codepoint has been already loaded */
-    if (texture_font_find_glyph(self, codepoint)) {
-        FT_Done_Face(face);
-        FT_Done_FreeType(library);
-        return 1;
-    }
-    /* codepoint NULL is special : it is used for line drawing (overline,
-    * underline, strikethrough) and background.
-    */
-    if( !codepoint )
-    {
-        ivec4 region = texture_atlas_get_region( self->atlas, 5, 5 );
-        texture_glyph_t * glyph = texture_glyph_new( );
-        static unsigned char data[4*4*3] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
-        if ( region.x < 0 )
-        {
-            fprintf( stderr, "Texture atlas is full (line %d)\n",  __LINE__ );
-            FT_Done_Face( face );
-            FT_Done_FreeType( library );
-            return 0;
-        }
-        texture_atlas_set_region( self->atlas, region.x, region.y, 4, 4, data, 0 );
-        glyph->codepoint = -1;
-        glyph->s0 = (region.x+2)/(float)self->atlas->width;
-        glyph->t0 = (region.y+2)/(float)self->atlas->height;
-        glyph->s1 = (region.x+3)/(float)self->atlas->width;
-        glyph->t1 = (region.y+3)/(float)self->atlas->height;
-        vector_push_back( self->glyphs, &glyph );
-        FT_Done_Face(face);
-        FT_Done_FreeType(library);
-        return 1;
-    }
-    flags = 0;
-    ft_glyph_top = 0;
-    ft_glyph_left = 0;
-    glyph_index = FT_Get_Char_Index( face, (FT_ULong)utf8_to_utf32( codepoint ) );
-    // WARNING: We use texture-atlas depth to guess if user wants
-    //          LCD subpixel rendering
-    if( self->rendermode != RENDER_NORMAL && self->rendermode != RENDER_SIGNED_DISTANCE_FIELD )
-    {
-        flags |= FT_LOAD_NO_BITMAP;
-    }
-    else
-    {
-        flags |= FT_LOAD_RENDER;
-    }
-    if( !self->hinting )
-    {
-        flags |= FT_LOAD_NO_HINTING | FT_LOAD_NO_AUTOHINT;
-    }
-    else
-    {
-        flags |= FT_LOAD_FORCE_AUTOHINT;
-    }
-    if( self->atlas->depth == 3 )
-    {
-        FT_Library_SetLcdFilter( library, FT_LCD_FILTER_LIGHT );
-        flags |= FT_LOAD_TARGET_LCD;
-        if( self->filtering )
-        {
-            FT_Library_SetLcdFilterWeights( library, self->lcd_weights );
-        }
-    }
-    error = FT_Load_Glyph( face, glyph_index, flags );
-    if( error )
-    {
-        fprintf( stderr, "FT_Error (line %d, code 0x%02x) : %s\n",
-        __LINE__, FT_Errors[error].code, FT_Errors[error].message );
-        FT_Done_Face( face );
-        FT_Done_FreeType( library );
-        return 0;
-    }
-    if( self->rendermode == RENDER_NORMAL || self->rendermode == RENDER_SIGNED_DISTANCE_FIELD )
-    {
-        slot            = face->glyph;
-        ft_bitmap       = slot->bitmap;
-        ft_glyph_top    = slot->bitmap_top;
-        ft_glyph_left   = slot->bitmap_left;
-    }
-    else
-    {
-        FT_Stroker stroker;
-        FT_BitmapGlyph ft_bitmap_glyph;
-        error = FT_Stroker_New( library, &stroker );
-        if( error )
-        {
-            fprintf(stderr, "FT_Error (0x%02x) : %s\n",
-            FT_Errors[error].code, FT_Errors[error].message);
-            goto cleanup_stroker;
-        }
-        FT_Stroker_Set(stroker,
-        (int)(self->outline_thickness * HRES),
-        FT_STROKER_LINECAP_ROUND,
-        FT_STROKER_LINEJOIN_ROUND,
-        0);
-        error = FT_Get_Glyph( face->glyph, &ft_glyph);
-        if( error )
-        {
-            fprintf(stderr, "FT_Error (0x%02x) : %s\n",
-            FT_Errors[error].code, FT_Errors[error].message);
-            goto cleanup_stroker;
-        }
-        if( self->rendermode == RENDER_OUTLINE_EDGE )
-        error = FT_Glyph_Stroke( &ft_glyph, stroker, 1 );
-        else if ( self->rendermode == RENDER_OUTLINE_POSITIVE )
-        error = FT_Glyph_StrokeBorder( &ft_glyph, stroker, 0, 1 );
-        else if ( self->rendermode == RENDER_OUTLINE_NEGATIVE )
-        error = FT_Glyph_StrokeBorder( &ft_glyph, stroker, 1, 1 );
-        if( error )
-        {
-            fprintf(stderr, "FT_Error (0x%02x) : %s\n",
-            FT_Errors[error].code, FT_Errors[error].message);
-            goto cleanup_stroker;
-        }
-        if( self->atlas->depth == 1 )
-        error = FT_Glyph_To_Bitmap( &ft_glyph, FT_RENDER_MODE_NORMAL, 0, 1);
-        else
-        error = FT_Glyph_To_Bitmap( &ft_glyph, FT_RENDER_MODE_LCD, 0, 1);
-        if( error )
-        {
-            fprintf(stderr, "FT_Error (0x%02x) : %s\n",
-            FT_Errors[error].code, FT_Errors[error].message);
-            goto cleanup_stroker;
-        }
-        ft_bitmap_glyph = (FT_BitmapGlyph) ft_glyph;
-        ft_bitmap       = ft_bitmap_glyph->bitmap;
-        ft_glyph_top    = ft_bitmap_glyph->top;
-        ft_glyph_left   = ft_bitmap_glyph->left;
-        cleanup_stroker:
-        FT_Stroker_Done( stroker );
-        if( error )
-        {
-            FT_Done_Face( face );
-            FT_Done_FreeType( library );
-            return 0;
-        }
-    }
-    struct {
-        int left;
-        int top;
-        int right;
-        int bottom;
-    } padding = { 0, 0, 1, 1 };
-    if( self->rendermode == RENDER_SIGNED_DISTANCE_FIELD )
-    {
-        padding.top = 1;
-        padding.left = 1;
-    }
-    size_t src_w = ft_bitmap.width/self->atlas->depth;
-    size_t src_h = ft_bitmap.rows;
-    size_t tgt_w = src_w + padding.left + padding.right;
-    size_t tgt_h = src_h + padding.top + padding.bottom;
-    region = texture_atlas_get_region( self->atlas, tgt_w, tgt_h );
-    if ( region.x < 0 )
-    {
-        fprintf( stderr, "Texture atlas is full (line %d)\n",  __LINE__ );
-        FT_Done_Face( face );
-        FT_Done_FreeType( library );
-        return 0;
-    }
-    x = region.x;
-    y = region.y;
-    unsigned char *buffer = calloc( tgt_w * tgt_h * self->atlas->depth, sizeof(unsigned char) );
-    unsigned char *dst_ptr = buffer + (padding.top * tgt_w + padding.left) * self->atlas->depth;
-    unsigned char *src_ptr = ft_bitmap.buffer;
-    for( i = 0; i < src_h; i++ )
-    {
-        //difference between width and pitch: https://www.freetype.org/freetype2/docs/reference/ft2-basic_types.html
-        memcpy( dst_ptr, src_ptr, ft_bitmap.width);
-        dst_ptr += tgt_w * self->atlas->depth;
-        src_ptr += ft_bitmap.pitch;
-    }
-    if( self->rendermode == RENDER_SIGNED_DISTANCE_FIELD )
-    {
-        unsigned char *sdf = make_distance_mapb( buffer, (unsigned int)tgt_w, (unsigned int)tgt_h );
-        free( buffer );
-        buffer = sdf;
-    }
-    texture_atlas_set_region( self->atlas, x, y, tgt_w, tgt_h, buffer, tgt_w * self->atlas->depth);
-    free( buffer );
-    glyph = texture_glyph_new( );
-    glyph->codepoint = utf8_to_utf32( codepoint );
-    glyph->width    = tgt_w;
-    glyph->height   = tgt_h;
-    glyph->rendermode = self->rendermode;
-    glyph->outline_thickness = self->outline_thickness;
-    glyph->offset_x = ft_glyph_left;
-    glyph->offset_y = ft_glyph_top;
-    glyph->s0       = x/(float)self->atlas->width;
-    glyph->t0       = y/(float)self->atlas->height;
-    glyph->s1       = (x + glyph->width)/(float)self->atlas->width;
-    glyph->t1       = (y + glyph->height)/(float)self->atlas->height;
-    // Discard hinting to get advance
-    FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_HINTING);
-    slot = face->glyph;
-    glyph->advance_x = slot->advance.x / HRESf;
-    glyph->advance_y = slot->advance.y / HRESf;
-    vector_push_back( self->glyphs, &glyph );
-    if( self->rendermode != RENDER_NORMAL && self->rendermode != RENDER_SIGNED_DISTANCE_FIELD )
-    FT_Done_Glyph( ft_glyph );
-    texture_font_generate_kerning( self, &library, &face );
-    FT_Done_Face( face );
-    FT_Done_FreeType( library );
-    return 1;
-}
-// ----------------------------------------------- texture_font_load_glyphs ---
-size_t
-texture_font_load_glyphs( texture_font_t * self,
-const char * codepoints )
-{
-    size_t i;
-    /* Load each glyph */
-    for( i = 0; i < strlen(codepoints); i += utf8_surrogate_len(codepoints + i) ) {
-        if( !texture_font_load_glyph( self, codepoints + i ) )
-        return utf8_strlen( codepoints + i );
-    }
-    return 0;
-}
-// ------------------------------------------------- texture_font_get_glyph ---
-texture_glyph_t *
-texture_font_get_glyph( texture_font_t * self,
-const char * codepoint )
-{
-    texture_glyph_t *glyph;
-    assert( self );
-    assert( self->filename );
-    assert( self->atlas );
-    /* Check if codepoint has been already loaded */
-    if( (glyph = texture_font_find_glyph( self, codepoint )) )
-    return glyph;
-    /* Glyph has not been already loaded */
-    if( texture_font_load_glyph( self, codepoint ) )
-    return texture_font_find_glyph( self, codepoint );
-    return NULL;
-}
-// ------------------------------------------------- texture_font_enlarge_atlas ---
-void
-texture_font_enlarge_atlas( texture_font_t * self, size_t width_new,
-size_t height_new)
-{
-    assert(self);
-    assert(self->atlas);
-    //ensure size increased
-    assert(width_new >= self->atlas->width);
-    assert(height_new >= self->atlas->height);
-    assert(width_new + height_new > self->atlas->width + self->atlas->height);
-    texture_atlas_t* ta = self->atlas;
-    size_t width_old = ta->width;
-    size_t height_old = ta->height;
-    //allocate new buffer
-    unsigned char* data_old = ta->data;
-    ta->data = calloc(1,width_new*height_new * sizeof(char)*ta->depth);
-    //update atlas size
-    ta->width = width_new;
-    ta->height = height_new;
-    //add node reflecting the gained space on the right
-    if(width_new>width_old){
-        ivec3 node;
-        node.x = width_old - 1;
-        node.y = 1;
-        node.z = width_new - width_old;
-        vector_push_back(ta->nodes, &node);
-    }
-    //copy over data from the old buffer, skipping first row and column because of the margin
-    size_t pixel_size = sizeof(char) * ta->depth;
-    size_t old_row_size = width_old * pixel_size;
-    texture_atlas_set_region(ta, 1, 1, width_old - 2, height_old - 2, data_old + old_row_size + pixel_size, old_row_size);
-    free(data_old);
-    //change uv coordinates of existing glyphs to reflect size change
-    float mulw = (float)width_old / width_new;
-    float mulh = (float)height_old / height_new;
-    size_t i;
-    for (i = 0; i < vector_size(self->glyphs); i++) {
-        texture_glyph_t* g = *(texture_glyph_t**)vector_get(self->glyphs, i);
-        g->s0 *= mulw;
-        g->s1 *= mulw;
-        g->t0 *= mulh;
-        g->t1 *= mulh;
-    }
-}
-
-
-// ------------------------------------------------------ texture_atlas_new ---
-texture_atlas_t *
-texture_atlas_new( const size_t width,
-const size_t height,
-const size_t depth )
-{
-    texture_atlas_t *self = (texture_atlas_t *) malloc( sizeof(texture_atlas_t) );
-    // We want a one pixel border around the whole atlas to avoid any artefact when
-    // sampling texture
-    ivec3 node = {{1,1,width-2}};
-    assert( (depth == 1) || (depth == 3) || (depth == 4) );
-    if( self == NULL)
-    {
-        fprintf( stderr,
-        "line %d: No more memory for allocating data\n", __LINE__ );
-        exit( EXIT_FAILURE );
-    }
-    self->nodes = vector_new( sizeof(ivec3) );
-    self->used = 0;
-    self->width = width;
-    self->height = height;
-    self->depth = depth;
-    self->id = 0;
-    vector_push_back( self->nodes, &node );
-    self->data = (unsigned char *)
-    calloc( width*height*depth, sizeof(unsigned char) );
-    if( self->data == NULL)
-    {
-        fprintf( stderr,
-        "line %d: No more memory for allocating data\n", __LINE__ );
-        exit( EXIT_FAILURE );
-    }
-    return self;
-}
-// --------------------------------------------------- texture_atlas_delete ---
-void
-texture_atlas_delete( texture_atlas_t *self )
-{
-    assert( self );
-    vector_delete( self->nodes );
-    if( self->data )
-    {
-        free( self->data );
-    }
-    free( self );
-}
-// ----------------------------------------------- texture_atlas_set_region ---
-void
-texture_atlas_set_region( texture_atlas_t * self,
-const size_t x,
-const size_t y,
-const size_t width,
-const size_t height,
-const unsigned char * data,
-const size_t stride )
-{
-    size_t i;
-    size_t depth;
-    size_t charsize;
-    assert( self );
-    assert( x > 0);
-    assert( y > 0);
-    assert( x < (self->width-1));
-    assert( (x + width) <= (self->width-1));
-    assert( y < (self->height-1));
-    assert( (y + height) <= (self->height-1));
-
-    //prevent copying data from undefined position
-    //and prevent memcpy's undefined behavior when count is zero
-    assert(height == 0 || (data != NULL && width > 0));
-    depth = self->depth;
-    charsize = sizeof(char);
-    for( i=0; i<height; ++i )
-    {
-        memcpy( self->data+((y+i)*self->width + x ) * charsize * depth,
-        data + (i*stride) * charsize, width * charsize * depth  );
-    }
-}
-// ------------------------------------------------------ texture_atlas_fit ---
-int
-texture_atlas_fit( texture_atlas_t * self,
-const size_t index,
-const size_t width,
-const size_t height )
-{
-    ivec3 *node;
-    int x, y, width_left;
-    size_t i;
-    assert( self );
-    node = (ivec3 *) (vector_get( self->nodes, index ));
-    x = node->x;
-    y = node->y;
-    width_left = width;
-    i = index;
-    if ( (x + width) > (self->width-1) )
-    {
-        return -1;
-    }
-    y = node->y;
-    while( width_left > 0 )
-    {
-        node = (ivec3 *) (vector_get( self->nodes, i ));
-        if( node->y > y )
-        {
-            y = node->y;
-        }
-        if( (y + height) > (self->height-1) )
-        {
-            return -1;
-        }
-        width_left -= node->z;
-        ++i;
-    }
-    return y;
-}
-// ---------------------------------------------------- texture_atlas_merge ---
-void
-texture_atlas_merge( texture_atlas_t * self )
-{
-    ivec3 *node, *next;
-    size_t i;
-    assert( self );
-    for( i=0; i< self->nodes->size-1; ++i )
-    {
-        node = (ivec3 *) (vector_get( self->nodes, i ));
-        next = (ivec3 *) (vector_get( self->nodes, i+1 ));
-        if( node->y == next->y )
-        {
-            node->z += next->z;
-            vector_erase( self->nodes, i+1 );
-            --i;
-        }
-    }
-}
-// ----------------------------------------------- texture_atlas_get_region ---
-ivec4
-texture_atlas_get_region( texture_atlas_t * self,
-const size_t width,
-const size_t height )
-{
-    int y, best_index;
-    size_t best_height, best_width;
-    ivec3 *node, *prev;
-    ivec4 region = {{0,0,width,height}};
-    size_t i;
-    assert( self );
-    best_height = UINT_MAX;
-    best_index  = -1;
-    best_width = UINT_MAX;
-    for( i=0; i<self->nodes->size; ++i )
-    {
-        y = texture_atlas_fit( self, i, width, height );
-        if( y >= 0 )
-        {
-            node = (ivec3 *) vector_get( self->nodes, i );
-            if( ( (y + height) < best_height ) ||
-            ( ((y + height) == best_height) && (node->z > 0 && (size_t)node->z < best_width)) )
-            {
-                best_height = y + height;
-                best_index = i;
-                best_width = node->z;
-                region.x = node->x;
-                region.y = y;
-            }
-        }
-    }
-    if( best_index == -1 )
-    {
-        region.x = -1;
-        region.y = -1;
-        region.width = 0;
-        region.height = 0;
-        return region;
-    }
-    node = (ivec3 *) malloc( sizeof(ivec3) );
-    if( node == NULL)
-    {
-        fprintf( stderr,
-        "line %d: No more memory for allocating data\n", __LINE__ );
-        exit( EXIT_FAILURE );
-    }
-    node->x = region.x;
-    node->y = region.y + height;
-    node->z = width;
-    vector_insert( self->nodes, best_index, node );
-    free( node );
-    for(i = best_index+1; i < self->nodes->size; ++i)
-    {
-        node = (ivec3 *) vector_get( self->nodes, i );
-        prev = (ivec3 *) vector_get( self->nodes, i-1 );
-        if (node->x < (prev->x + prev->z) )
-        {
-            int shrink = prev->x + prev->z - node->x;
-            node->x += shrink;
-            node->z -= shrink;
-            if (node->z <= 0)
-            {
-                vector_erase( self->nodes, i );
-                --i;
-            }
-            else
-            {
-                break;
-            }
-        }
-        else
-        {
-            break;
-        }
-    }
-    texture_atlas_merge( self );
-    self->used += width * height;
-    return region;
-}
-// ---------------------------------------------------- texture_atlas_clear ---
-void
-texture_atlas_clear( texture_atlas_t * self )
-{
-    ivec3 node = {{1,1,1}};
-    assert( self );
-    assert( self->data );
-    vector_clear( self->nodes );
-    self->used = 0;
-    // We want a one pixel border around the whole atlas to avoid any artefact when
-    // sampling texture
-    node.z = self->width-2;
-    vector_push_back( self->nodes, &node );
-    memset( self->data, 0, self->width*self->height*self->depth );
+    return true;
 }
 
 
@@ -5894,30 +3332,2596 @@ shader_read( const char *filename )
     }
 
 
-    void _retain(void* ptr) {
-        pointer* p;
-        HASH_FIND_PTR(g_pointers, &ptr, p);
-        if (p) {
-            p->refCount++;
-        } else {
-            p = (pointer*)malloc(sizeof(pointer));
-            p->ptr = ptr;
-            p->refCount = 1;
-            HASH_ADD_PTR(g_pointers, ptr, p);
+    // ------------------------------------------------------ texture_atlas_new ---
+    texture_atlas_t *
+    texture_atlas_new( const size_t width,
+    const size_t height,
+    const size_t depth )
+    {
+        texture_atlas_t *self = (texture_atlas_t *) malloc( sizeof(texture_atlas_t) );
+        // We want a one pixel border around the whole atlas to avoid any artefact when
+        // sampling texture
+        ivec3 node = {{1,1,width-2}};
+        assert( (depth == 1) || (depth == 3) || (depth == 4) );
+        if( self == NULL)
+        {
+            fprintf( stderr,
+            "line %d: No more memory for allocating data\n", __LINE__ );
+            exit( EXIT_FAILURE );
+        }
+        self->nodes = vector_new( sizeof(ivec3) );
+        self->used = 0;
+        self->width = width;
+        self->height = height;
+        self->depth = depth;
+        self->id = 0;
+        vector_push_back( self->nodes, &node );
+        self->data = (unsigned char *)
+        calloc( width*height*depth, sizeof(unsigned char) );
+        if( self->data == NULL)
+        {
+            fprintf( stderr,
+            "line %d: No more memory for allocating data\n", __LINE__ );
+            exit( EXIT_FAILURE );
+        }
+        return self;
+    }
+    // --------------------------------------------------- texture_atlas_delete ---
+    void
+    texture_atlas_delete( texture_atlas_t *self )
+    {
+        assert( self );
+        vector_delete( self->nodes );
+        if( self->data )
+        {
+            free( self->data );
+        }
+        free( self );
+    }
+    // ----------------------------------------------- texture_atlas_set_region ---
+    void
+    texture_atlas_set_region( texture_atlas_t * self,
+    const size_t x,
+    const size_t y,
+    const size_t width,
+    const size_t height,
+    const unsigned char * data,
+    const size_t stride )
+    {
+        size_t i;
+        size_t depth;
+        size_t charsize;
+        assert( self );
+        assert( x > 0);
+        assert( y > 0);
+        assert( x < (self->width-1));
+        assert( (x + width) <= (self->width-1));
+        assert( y < (self->height-1));
+        assert( (y + height) <= (self->height-1));
+
+        //prevent copying data from undefined position
+        //and prevent memcpy's undefined behavior when count is zero
+        assert(height == 0 || (data != NULL && width > 0));
+        depth = self->depth;
+        charsize = sizeof(char);
+        for( i=0; i<height; ++i )
+        {
+            memcpy( self->data+((y+i)*self->width + x ) * charsize * depth,
+            data + (i*stride) * charsize, width * charsize * depth  );
         }
     }
-    bool _release(void* ptr) {
-        pointer* p;
-        HASH_FIND_PTR(g_pointers, &ptr, p);
-        if (p) {
-            p->refCount--;
-            if (p->refCount == 0) {
-                HASH_DEL(g_pointers, p);
-                free(p);
-            }
-            return false;
+    // ------------------------------------------------------ texture_atlas_fit ---
+    int
+    texture_atlas_fit( texture_atlas_t * self,
+    const size_t index,
+    const size_t width,
+    const size_t height )
+    {
+        ivec3 *node;
+        int x, y, width_left;
+        size_t i;
+        assert( self );
+        node = (ivec3 *) (vector_get( self->nodes, index ));
+        x = node->x;
+        y = node->y;
+        width_left = width;
+        i = index;
+        if ( (x + width) > (self->width-1) )
+        {
+            return -1;
         }
-        return true;
+        y = node->y;
+        while( width_left > 0 )
+        {
+            node = (ivec3 *) (vector_get( self->nodes, i ));
+            if( node->y > y )
+            {
+                y = node->y;
+            }
+            if( (y + height) > (self->height-1) )
+            {
+                return -1;
+            }
+            width_left -= node->z;
+            ++i;
+        }
+        return y;
+    }
+    // ---------------------------------------------------- texture_atlas_merge ---
+    void
+    texture_atlas_merge( texture_atlas_t * self )
+    {
+        ivec3 *node, *next;
+        size_t i;
+        assert( self );
+        for( i=0; i< self->nodes->size-1; ++i )
+        {
+            node = (ivec3 *) (vector_get( self->nodes, i ));
+            next = (ivec3 *) (vector_get( self->nodes, i+1 ));
+            if( node->y == next->y )
+            {
+                node->z += next->z;
+                vector_erase( self->nodes, i+1 );
+                --i;
+            }
+        }
+    }
+    // ----------------------------------------------- texture_atlas_get_region ---
+    ivec4
+    texture_atlas_get_region( texture_atlas_t * self,
+    const size_t width,
+    const size_t height )
+    {
+        int y, best_index;
+        size_t best_height, best_width;
+        ivec3 *node, *prev;
+        ivec4 region = {{0,0,width,height}};
+        size_t i;
+        assert( self );
+        best_height = UINT_MAX;
+        best_index  = -1;
+        best_width = UINT_MAX;
+        for( i=0; i<self->nodes->size; ++i )
+        {
+            y = texture_atlas_fit( self, i, width, height );
+            if( y >= 0 )
+            {
+                node = (ivec3 *) vector_get( self->nodes, i );
+                if( ( (y + height) < best_height ) ||
+                ( ((y + height) == best_height) && (node->z > 0 && (size_t)node->z < best_width)) )
+                {
+                    best_height = y + height;
+                    best_index = i;
+                    best_width = node->z;
+                    region.x = node->x;
+                    region.y = y;
+                }
+            }
+        }
+        if( best_index == -1 )
+        {
+            region.x = -1;
+            region.y = -1;
+            region.width = 0;
+            region.height = 0;
+            return region;
+        }
+        node = (ivec3 *) malloc( sizeof(ivec3) );
+        if( node == NULL)
+        {
+            fprintf( stderr,
+            "line %d: No more memory for allocating data\n", __LINE__ );
+            exit( EXIT_FAILURE );
+        }
+        node->x = region.x;
+        node->y = region.y + height;
+        node->z = width;
+        vector_insert( self->nodes, best_index, node );
+        free( node );
+        for(i = best_index+1; i < self->nodes->size; ++i)
+        {
+            node = (ivec3 *) vector_get( self->nodes, i );
+            prev = (ivec3 *) vector_get( self->nodes, i-1 );
+            if (node->x < (prev->x + prev->z) )
+            {
+                int shrink = prev->x + prev->z - node->x;
+                node->x += shrink;
+                node->z -= shrink;
+                if (node->z <= 0)
+                {
+                    vector_erase( self->nodes, i );
+                    --i;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+        texture_atlas_merge( self );
+        self->used += width * height;
+        return region;
+    }
+    // ---------------------------------------------------- texture_atlas_clear ---
+    void
+    texture_atlas_clear( texture_atlas_t * self )
+    {
+        ivec3 node = {{1,1,1}};
+        assert( self );
+        assert( self->data );
+        vector_clear( self->nodes );
+        self->used = 0;
+        // We want a one pixel border around the whole atlas to avoid any artefact when
+        // sampling texture
+        node.z = self->width-2;
+        vector_push_back( self->nodes, &node );
+        memset( self->data, 0, self->width*self->height*self->depth );
+    }
+
+
+    #define HRES  64
+    #define HRESf 64.f
+    #define DPI   72
+    // ------------------------------------------------- texture_font_load_face ---
+    static int
+    texture_font_load_face(texture_font_t *self, float size,
+    FT_Library *library, FT_Face *face)
+    {
+        FT_Error error;
+        FT_Matrix matrix = { //
+        (int)((1.0/HRES) * 0x10000L),
+        (int)((0.0)      * 0x10000L),
+        (int)((0.0)      * 0x10000L),
+        (int)((1.0)      * 0x10000L)};
+        assert(library);
+        assert(size);
+        /* Initialize library */
+        error = FT_Init_FreeType(library);
+        if(error) {
+            fprintf(stderr, "FT_Error (0x%02x) : %s\n",
+            FT_Errors[error].code, FT_Errors[error].message);
+            goto cleanup;
+        }
+        /* Load face */
+        switch (self->location) {
+            case TEXTURE_FONT_FILE:
+            error = FT_New_Face(*library, self->filename, 0, face);
+            break;
+            case TEXTURE_FONT_MEMORY:
+            error = FT_New_Memory_Face(*library,
+            self->memory.base, self->memory.size, 0, face);
+            break;
+        }
+        if(error) {
+            fprintf(stderr, "FT_Error (line %d, code 0x%02x) : %s\n",
+            __LINE__, FT_Errors[error].code, FT_Errors[error].message);
+            goto cleanup_library;
+        }
+        /* Select charmap */
+        error = FT_Select_Charmap(*face, FT_ENCODING_UNICODE);
+        if(error) {
+            fprintf(stderr, "FT_Error (line %d, code 0x%02x) : %s\n",
+            __LINE__, FT_Errors[error].code, FT_Errors[error].message);
+            goto cleanup_face;
+        }
+        /* Set char size */
+        error = FT_Set_Char_Size(*face, (int)(size * HRES), 0, DPI * HRES, DPI);
+        if(error) {
+            fprintf(stderr, "FT_Error (line %d, code 0x%02x) : %s\n",
+            __LINE__, FT_Errors[error].code, FT_Errors[error].message);
+            goto cleanup_face;
+        }
+        /* Set transform matrix */
+        FT_Set_Transform(*face, &matrix, NULL);
+        return 1;
+        cleanup_face:
+        FT_Done_Face( *face );
+        cleanup_library:
+        FT_Done_FreeType( *library );
+        cleanup:
+        return 0;
+    }
+    // ------------------------------------------------------ texture_glyph_new ---
+    texture_glyph_t *
+    texture_glyph_new(void)
+    {
+        texture_glyph_t *self = (texture_glyph_t *) malloc( sizeof(texture_glyph_t) );
+        if(self == NULL) {
+            fprintf( stderr,
+            "line %d: No more memory for allocating data\n", __LINE__);
+            return NULL;
+        }
+        self->codepoint  = -1;
+        self->width     = 0;
+        self->height    = 0;
+        self->rendermode = RENDER_NORMAL;
+        self->outline_thickness = 0.0;
+        self->offset_x  = 0;
+        self->offset_y  = 0;
+        self->advance_x = 0.0;
+        self->advance_y = 0.0;
+        self->s0        = 0.0;
+        self->t0        = 0.0;
+        self->s1        = 0.0;
+        self->t1        = 0.0;
+        self->kerning   = vector_new( sizeof(kerning_t) );
+        return self;
+    }
+    // --------------------------------------------------- texture_glyph_delete ---
+    void
+    texture_glyph_delete( texture_glyph_t *self )
+    {
+        assert( self );
+        vector_delete( self->kerning );
+        free( self );
+    }
+    // ---------------------------------------------- texture_glyph_get_kerning ---
+    float
+    texture_glyph_get_kerning( const texture_glyph_t * self,
+    const char * codepoint )
+    {
+        size_t i;
+        uint32_t ucodepoint = utf8_to_utf32( codepoint );
+        assert( self );
+        for( i=0; i<vector_size(self->kerning); ++i )
+        {
+            kerning_t * kerning = (kerning_t *) vector_get( self->kerning, i );
+            if( kerning->codepoint == ucodepoint )
+            {
+                return kerning->kerning;
+            }
+        }
+        return 0;
+    }
+    // ------------------------------------------ texture_font_generate_kerning ---
+    void
+    texture_font_generate_kerning( texture_font_t *self,
+    FT_Library *library, FT_Face *face )
+    {
+        size_t i, j;
+        FT_UInt glyph_index, prev_index;
+        texture_glyph_t *glyph, *prev_glyph;
+        FT_Vector kerning;
+        assert( self );
+        /* For each glyph couple combination, check if kerning is necessary */
+        /* Starts at index 1 since 0 is for the special backgroudn glyph */
+        for( i=1; i<self->glyphs->size; ++i )
+        {
+            glyph = *(texture_glyph_t **) vector_get( self->glyphs, i );
+            glyph_index = FT_Get_Char_Index( *face, glyph->codepoint );
+            vector_clear( glyph->kerning );
+            for( j=1; j<self->glyphs->size; ++j )
+            {
+                prev_glyph = *(texture_glyph_t **) vector_get( self->glyphs, j );
+                prev_index = FT_Get_Char_Index( *face, prev_glyph->codepoint );
+                FT_Get_Kerning( *face, prev_index, glyph_index, FT_KERNING_UNFITTED, &kerning );
+                // printf("%c(%d)-%c(%d): %ld\n",
+                //       prev_glyph->codepoint, prev_glyph->codepoint,
+                //       glyph_index, glyph_index, kerning.x);
+                if( kerning.x )
+                {
+                    kerning_t k = {prev_glyph->codepoint, kerning.x / (float)(HRESf*HRESf)};
+                    vector_push_back( glyph->kerning, &k );
+                }
+            }
+        }
+    }
+    // ------------------------------------------------------ texture_font_init ---
+    static int
+    texture_font_init(texture_font_t *self)
+    {
+        FT_Library library;
+        FT_Face face;
+        FT_Size_Metrics metrics;
+        assert(self->atlas);
+        assert(self->size > 0);
+        assert((self->location == TEXTURE_FONT_FILE && self->filename)
+        || (self->location == TEXTURE_FONT_MEMORY
+        && self->memory.base && self->memory.size));
+        self->glyphs = vector_new(sizeof(texture_glyph_t *));
+        self->height = 0;
+        self->ascender = 0;
+        self->descender = 0;
+        self->rendermode = RENDER_NORMAL;
+        self->outline_thickness = 0.0;
+        self->hinting = 1;
+        self->kerning = 1;
+        self->filtering = 1;
+        // FT_LCD_FILTER_LIGHT   is (0x00, 0x55, 0x56, 0x55, 0x00)
+        // FT_LCD_FILTER_DEFAULT is (0x10, 0x40, 0x70, 0x40, 0x10)
+        self->lcd_weights[0] = 0x10;
+        self->lcd_weights[1] = 0x40;
+        self->lcd_weights[2] = 0x70;
+        self->lcd_weights[3] = 0x40;
+        self->lcd_weights[4] = 0x10;
+        if (!texture_font_load_face(self, self->size * 100.f, &library, &face))
+        return -1;
+        self->underline_position = face->underline_position / (float)(HRESf*HRESf) * self->size;
+        self->underline_position = roundf( self->underline_position );
+        if( self->underline_position > -2 )
+        {
+            self->underline_position = -2.0;
+        }
+        self->underline_thickness = face->underline_thickness / (float)(HRESf*HRESf) * self->size;
+        self->underline_thickness = roundf( self->underline_thickness );
+        if( self->underline_thickness < 1 )
+        {
+            self->underline_thickness = 1.0;
+        }
+        metrics = face->size->metrics;
+        self->ascender = (metrics.ascender >> 6) / 100.0f;
+        self->descender = (metrics.descender >> 6) / 100.0f;
+        self->height = (metrics.height >> 6) / 100.0f;
+        self->linegap = self->height - self->ascender + self->descender;
+        FT_Done_Face( face );
+        FT_Done_FreeType( library );
+        /* NULL is a special glyph */
+        texture_font_get_glyph( self, NULL );
+        return 0;
+    }
+    // --------------------------------------------- texture_font_new_from_file ---
+    texture_font_t *
+    texture_font_new_from_file(texture_atlas_t *atlas, const float pt_size,
+    const char *filename)
+    {
+        texture_font_t *self;
+        assert(filename);
+        self = calloc(1, sizeof(*self));
+        if (!self) {
+            fprintf(stderr,
+            "line %d: No more memory for allocating data\n", __LINE__);
+            return NULL;
+        }
+        self->atlas = atlas;
+        self->size  = pt_size;
+        self->location = TEXTURE_FONT_FILE;
+        self->filename = strdup(filename);
+        if (texture_font_init(self)) {
+            texture_font_delete(self);
+            return NULL;
+        }
+        return self;
+    }
+    // ------------------------------------------- texture_font_new_from_memory ---
+    texture_font_t *
+    texture_font_new_from_memory(texture_atlas_t *atlas, float pt_size,
+    const void *memory_base, size_t memory_size)
+    {
+        texture_font_t *self;
+        assert(memory_base);
+        assert(memory_size);
+        self = calloc(1, sizeof(*self));
+        if (!self) {
+            fprintf(stderr,
+            "line %d: No more memory for allocating data\n", __LINE__);
+            return NULL;
+        }
+        self->atlas = atlas;
+        self->size  = pt_size;
+        self->location = TEXTURE_FONT_MEMORY;
+        self->memory.base = memory_base;
+        self->memory.size = memory_size;
+        if (texture_font_init(self)) {
+            texture_font_delete(self);
+            return NULL;
+        }
+        return self;
+    }
+    // ---------------------------------------------------- texture_font_delete ---
+    void
+    texture_font_delete( texture_font_t *self )
+    {
+        size_t i;
+        texture_glyph_t *glyph;
+        assert( self );
+        if(self->location == TEXTURE_FONT_FILE && self->filename)
+        free( self->filename );
+        for( i=0; i<vector_size( self->glyphs ); ++i)
+        {
+            glyph = *(texture_glyph_t **) vector_get( self->glyphs, i );
+            texture_glyph_delete( glyph);
+        }
+        vector_delete( self->glyphs );
+        free( self );
+    }
+    texture_glyph_t *
+    texture_font_find_glyph( texture_font_t * self,
+    const char * codepoint )
+    {
+        size_t i;
+        texture_glyph_t *glyph;
+        uint32_t ucodepoint = utf8_to_utf32( codepoint );
+        for( i = 0; i < self->glyphs->size; ++i )
+        {
+            glyph = *(texture_glyph_t **) vector_get( self->glyphs, i );
+            // If codepoint is -1, we don't care about outline type or thickness
+            if( (glyph->codepoint == ucodepoint) &&
+            ((ucodepoint == -1) ||
+            ((glyph->rendermode == self->rendermode) &&
+            (glyph->outline_thickness == self->outline_thickness)) ))
+            {
+                return glyph;
+            }
+        }
+        return NULL;
+    }
+    // ------------------------------------------------ texture_font_load_glyph ---
+    int
+    texture_font_load_glyph( texture_font_t * self,
+    const char * codepoint )
+    {
+        size_t i, x, y;
+        FT_Library library;
+        FT_Error error;
+        FT_Face face;
+        FT_Glyph ft_glyph = { 0 };
+        FT_GlyphSlot slot;
+        FT_Bitmap ft_bitmap;
+        FT_UInt glyph_index;
+        texture_glyph_t *glyph;
+        FT_Int32 flags = 0;
+        int ft_glyph_top = 0;
+        int ft_glyph_left = 0;
+        ivec4 region;
+        if (!texture_font_load_face(self, self->size, &library, &face))
+        return 0;
+        /* Check if codepoint has been already loaded */
+        if (texture_font_find_glyph(self, codepoint)) {
+            FT_Done_Face(face);
+            FT_Done_FreeType(library);
+            return 1;
+        }
+        /* codepoint NULL is special : it is used for line drawing (overline,
+        * underline, strikethrough) and background.
+        */
+        if( !codepoint )
+        {
+            ivec4 region = texture_atlas_get_region( self->atlas, 5, 5 );
+            texture_glyph_t * glyph = texture_glyph_new( );
+            static unsigned char data[4*4*3] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+            -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+            -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+            -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+            if ( region.x < 0 )
+            {
+                fprintf( stderr, "Texture atlas is full (line %d)\n",  __LINE__ );
+                FT_Done_Face( face );
+                FT_Done_FreeType( library );
+                return 0;
+            }
+            texture_atlas_set_region( self->atlas, region.x, region.y, 4, 4, data, 0 );
+            glyph->codepoint = -1;
+            glyph->s0 = (region.x+2)/(float)self->atlas->width;
+            glyph->t0 = (region.y+2)/(float)self->atlas->height;
+            glyph->s1 = (region.x+3)/(float)self->atlas->width;
+            glyph->t1 = (region.y+3)/(float)self->atlas->height;
+            vector_push_back( self->glyphs, &glyph );
+            FT_Done_Face(face);
+            FT_Done_FreeType(library);
+            return 1;
+        }
+        flags = 0;
+        ft_glyph_top = 0;
+        ft_glyph_left = 0;
+        glyph_index = FT_Get_Char_Index( face, (FT_ULong)utf8_to_utf32( codepoint ) );
+        // WARNING: We use texture-atlas depth to guess if user wants
+        //          LCD subpixel rendering
+        if( self->rendermode != RENDER_NORMAL && self->rendermode != RENDER_SIGNED_DISTANCE_FIELD )
+        {
+            flags |= FT_LOAD_NO_BITMAP;
+        }
+        else
+        {
+            flags |= FT_LOAD_RENDER;
+        }
+        if( !self->hinting )
+        {
+            flags |= FT_LOAD_NO_HINTING | FT_LOAD_NO_AUTOHINT;
+        }
+        else
+        {
+            flags |= FT_LOAD_FORCE_AUTOHINT;
+        }
+        if( self->atlas->depth == 3 )
+        {
+            FT_Library_SetLcdFilter( library, FT_LCD_FILTER_LIGHT );
+            flags |= FT_LOAD_TARGET_LCD;
+            if( self->filtering )
+            {
+                FT_Library_SetLcdFilterWeights( library, self->lcd_weights );
+            }
+        }
+        error = FT_Load_Glyph( face, glyph_index, flags );
+        if( error )
+        {
+            fprintf( stderr, "FT_Error (line %d, code 0x%02x) : %s\n",
+            __LINE__, FT_Errors[error].code, FT_Errors[error].message );
+            FT_Done_Face( face );
+            FT_Done_FreeType( library );
+            return 0;
+        }
+        if( self->rendermode == RENDER_NORMAL || self->rendermode == RENDER_SIGNED_DISTANCE_FIELD )
+        {
+            slot            = face->glyph;
+            ft_bitmap       = slot->bitmap;
+            ft_glyph_top    = slot->bitmap_top;
+            ft_glyph_left   = slot->bitmap_left;
+        }
+        else
+        {
+            FT_Stroker stroker;
+            FT_BitmapGlyph ft_bitmap_glyph;
+            error = FT_Stroker_New( library, &stroker );
+            if( error )
+            {
+                fprintf(stderr, "FT_Error (0x%02x) : %s\n",
+                FT_Errors[error].code, FT_Errors[error].message);
+                goto cleanup_stroker;
+            }
+            FT_Stroker_Set(stroker,
+            (int)(self->outline_thickness * HRES),
+            FT_STROKER_LINECAP_ROUND,
+            FT_STROKER_LINEJOIN_ROUND,
+            0);
+            error = FT_Get_Glyph( face->glyph, &ft_glyph);
+            if( error )
+            {
+                fprintf(stderr, "FT_Error (0x%02x) : %s\n",
+                FT_Errors[error].code, FT_Errors[error].message);
+                goto cleanup_stroker;
+            }
+            if( self->rendermode == RENDER_OUTLINE_EDGE )
+            error = FT_Glyph_Stroke( &ft_glyph, stroker, 1 );
+            else if ( self->rendermode == RENDER_OUTLINE_POSITIVE )
+            error = FT_Glyph_StrokeBorder( &ft_glyph, stroker, 0, 1 );
+            else if ( self->rendermode == RENDER_OUTLINE_NEGATIVE )
+            error = FT_Glyph_StrokeBorder( &ft_glyph, stroker, 1, 1 );
+            if( error )
+            {
+                fprintf(stderr, "FT_Error (0x%02x) : %s\n",
+                FT_Errors[error].code, FT_Errors[error].message);
+                goto cleanup_stroker;
+            }
+            if( self->atlas->depth == 1 )
+            error = FT_Glyph_To_Bitmap( &ft_glyph, FT_RENDER_MODE_NORMAL, 0, 1);
+            else
+            error = FT_Glyph_To_Bitmap( &ft_glyph, FT_RENDER_MODE_LCD, 0, 1);
+            if( error )
+            {
+                fprintf(stderr, "FT_Error (0x%02x) : %s\n",
+                FT_Errors[error].code, FT_Errors[error].message);
+                goto cleanup_stroker;
+            }
+            ft_bitmap_glyph = (FT_BitmapGlyph) ft_glyph;
+            ft_bitmap       = ft_bitmap_glyph->bitmap;
+            ft_glyph_top    = ft_bitmap_glyph->top;
+            ft_glyph_left   = ft_bitmap_glyph->left;
+            cleanup_stroker:
+            FT_Stroker_Done( stroker );
+            if( error )
+            {
+                FT_Done_Face( face );
+                FT_Done_FreeType( library );
+                return 0;
+            }
+        }
+        struct {
+            int left;
+            int top;
+            int right;
+            int bottom;
+        } padding = { 0, 0, 1, 1 };
+        if( self->rendermode == RENDER_SIGNED_DISTANCE_FIELD )
+        {
+            padding.top = 1;
+            padding.left = 1;
+        }
+        size_t src_w = ft_bitmap.width/self->atlas->depth;
+        size_t src_h = ft_bitmap.rows;
+        size_t tgt_w = src_w + padding.left + padding.right;
+        size_t tgt_h = src_h + padding.top + padding.bottom;
+        region = texture_atlas_get_region( self->atlas, tgt_w, tgt_h );
+        if ( region.x < 0 )
+        {
+            fprintf( stderr, "Texture atlas is full (line %d)\n",  __LINE__ );
+            FT_Done_Face( face );
+            FT_Done_FreeType( library );
+            return 0;
+        }
+        x = region.x;
+        y = region.y;
+        unsigned char *buffer = calloc( tgt_w * tgt_h * self->atlas->depth, sizeof(unsigned char) );
+        unsigned char *dst_ptr = buffer + (padding.top * tgt_w + padding.left) * self->atlas->depth;
+        unsigned char *src_ptr = ft_bitmap.buffer;
+        for( i = 0; i < src_h; i++ )
+        {
+            //difference between width and pitch: https://www.freetype.org/freetype2/docs/reference/ft2-basic_types.html
+            memcpy( dst_ptr, src_ptr, ft_bitmap.width);
+            dst_ptr += tgt_w * self->atlas->depth;
+            src_ptr += ft_bitmap.pitch;
+        }
+        if( self->rendermode == RENDER_SIGNED_DISTANCE_FIELD )
+        {
+            unsigned char *sdf = make_distance_mapb( buffer, (unsigned int)tgt_w, (unsigned int)tgt_h );
+            free( buffer );
+            buffer = sdf;
+        }
+        texture_atlas_set_region( self->atlas, x, y, tgt_w, tgt_h, buffer, tgt_w * self->atlas->depth);
+        free( buffer );
+        glyph = texture_glyph_new( );
+        glyph->codepoint = utf8_to_utf32( codepoint );
+        glyph->width    = tgt_w;
+        glyph->height   = tgt_h;
+        glyph->rendermode = self->rendermode;
+        glyph->outline_thickness = self->outline_thickness;
+        glyph->offset_x = ft_glyph_left;
+        glyph->offset_y = ft_glyph_top;
+        glyph->s0       = x/(float)self->atlas->width;
+        glyph->t0       = y/(float)self->atlas->height;
+        glyph->s1       = (x + glyph->width)/(float)self->atlas->width;
+        glyph->t1       = (y + glyph->height)/(float)self->atlas->height;
+        // Discard hinting to get advance
+        FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_HINTING);
+        slot = face->glyph;
+        glyph->advance_x = slot->advance.x / HRESf;
+        glyph->advance_y = slot->advance.y / HRESf;
+        vector_push_back( self->glyphs, &glyph );
+        if( self->rendermode != RENDER_NORMAL && self->rendermode != RENDER_SIGNED_DISTANCE_FIELD )
+        FT_Done_Glyph( ft_glyph );
+        texture_font_generate_kerning( self, &library, &face );
+        FT_Done_Face( face );
+        FT_Done_FreeType( library );
+        return 1;
+    }
+    // ----------------------------------------------- texture_font_load_glyphs ---
+    size_t
+    texture_font_load_glyphs( texture_font_t * self,
+    const char * codepoints )
+    {
+        size_t i;
+        /* Load each glyph */
+        for( i = 0; i < strlen(codepoints); i += utf8_surrogate_len(codepoints + i) ) {
+            if( !texture_font_load_glyph( self, codepoints + i ) )
+            return utf8_strlen( codepoints + i );
+        }
+        return 0;
+    }
+    // ------------------------------------------------- texture_font_get_glyph ---
+    texture_glyph_t *
+    texture_font_get_glyph( texture_font_t * self,
+    const char * codepoint )
+    {
+        texture_glyph_t *glyph;
+        assert( self );
+        assert( self->filename );
+        assert( self->atlas );
+        /* Check if codepoint has been already loaded */
+        if( (glyph = texture_font_find_glyph( self, codepoint )) )
+        return glyph;
+        /* Glyph has not been already loaded */
+        if( texture_font_load_glyph( self, codepoint ) )
+        return texture_font_find_glyph( self, codepoint );
+        return NULL;
+    }
+    // ------------------------------------------------- texture_font_enlarge_atlas ---
+    void
+    texture_font_enlarge_atlas( texture_font_t * self, size_t width_new,
+    size_t height_new)
+    {
+        assert(self);
+        assert(self->atlas);
+        //ensure size increased
+        assert(width_new >= self->atlas->width);
+        assert(height_new >= self->atlas->height);
+        assert(width_new + height_new > self->atlas->width + self->atlas->height);
+        texture_atlas_t* ta = self->atlas;
+        size_t width_old = ta->width;
+        size_t height_old = ta->height;
+        //allocate new buffer
+        unsigned char* data_old = ta->data;
+        ta->data = calloc(1,width_new*height_new * sizeof(char)*ta->depth);
+        //update atlas size
+        ta->width = width_new;
+        ta->height = height_new;
+        //add node reflecting the gained space on the right
+        if(width_new>width_old){
+            ivec3 node;
+            node.x = width_old - 1;
+            node.y = 1;
+            node.z = width_new - width_old;
+            vector_push_back(ta->nodes, &node);
+        }
+        //copy over data from the old buffer, skipping first row and column because of the margin
+        size_t pixel_size = sizeof(char) * ta->depth;
+        size_t old_row_size = width_old * pixel_size;
+        texture_atlas_set_region(ta, 1, 1, width_old - 2, height_old - 2, data_old + old_row_size + pixel_size, old_row_size);
+        free(data_old);
+        //change uv coordinates of existing glyphs to reflect size change
+        float mulw = (float)width_old / width_new;
+        float mulh = (float)height_old / height_new;
+        size_t i;
+        for (i = 0; i < vector_size(self->glyphs); i++) {
+            texture_glyph_t* g = *(texture_glyph_t**)vector_get(self->glyphs, i);
+            g->s0 *= mulw;
+            g->s1 *= mulw;
+            g->t0 *= mulh;
+            g->t1 *= mulh;
+        }
+    }
+
+
+    // ------------------------------------------------------------- vector_new ---
+    vector_t *
+    vector_new( size_t item_size )
+    {
+        vector_t *self = (vector_t *) malloc( sizeof(vector_t) );
+        assert( item_size );
+        if( !self )
+        {
+            fprintf( stderr,
+            "line %d: No more memory for allocating data\n", __LINE__ );
+            exit( EXIT_FAILURE );
+        }
+        self->item_size = item_size;
+        self->size      = 0;
+        self->capacity  = 1;
+        self->items     = malloc( self->item_size * self->capacity );
+        return self;
+    }
+    // ---------------------------------------------------------- vector_delete ---
+    void
+    vector_delete( vector_t *self )
+    {
+        assert( self );
+        free( self->items );
+        free( self );
+    }
+    // ------------------------------------------------------------- vector_get ---
+    const void *
+    vector_get( const vector_t *self,
+    size_t index )
+    {
+        assert( self );
+        assert( self->size );
+        assert( index  < self->size );
+        return (char*)(self->items) + index * self->item_size;
+    }
+    // ----------------------------------------------------------- vector_front ---
+    const void *
+    vector_front( const vector_t *self )
+    {
+        assert( self );
+        assert( self->size );
+        return vector_get( self, 0 );
+    }
+    // ------------------------------------------------------------ vector_back ---
+    const void *
+    vector_back( const vector_t *self )
+    {
+        assert( self );
+        assert( self->size );
+        return vector_get( self, self->size-1 );
+    }
+    // -------------------------------------------------------- vector_contains ---
+    int
+    vector_contains( const vector_t *self,
+    const void *item,
+    int (*cmp)(const void *, const void *) )
+    {
+        size_t i;
+        assert( self );
+        for( i=0; i<self->size; ++i )
+        {
+            if( (*cmp)(item, vector_get(self,i) ) == 0 )
+            {
+                return 1;
+            }
+        }
+        return 0;
+    }
+    // ----------------------------------------------------------- vector_empty ---
+    int
+    vector_empty( const vector_t *self )
+    {
+        assert( self );
+        return self->size == 0;
+    }
+    // ------------------------------------------------------------ vector_size ---
+    size_t
+    vector_size( const vector_t *self )
+    {
+        assert( self );
+        return self->size;
+    }
+    // --------------------------------------------------------- vector_reserve ---
+    void
+    vector_reserve( vector_t *self,
+    const size_t size )
+    {
+        assert( self );
+        if( self->capacity < size)
+        {
+            self->items = realloc( self->items, size * self->item_size );
+            self->capacity = size;
+        }
+    }
+    // -------------------------------------------------------- vector_capacity ---
+    size_t
+    vector_capacity( const vector_t *self )
+    {
+        assert( self );
+        return self->capacity;
+    }
+    // ---------------------------------------------------------- vector_shrink ---
+    void
+    vector_shrink( vector_t *self )
+    {
+        assert( self );
+        if( self->capacity > self->size )
+        {
+            self->items = realloc( self->items, self->size * self->item_size );
+        }
+        self->capacity = self->size;
+    }
+    // ----------------------------------------------------------- vector_clear ---
+    void
+    vector_clear( vector_t *self )
+    {
+        assert( self );
+        self->size = 0;
+    }
+    // ------------------------------------------------------------- vector_set ---
+    void
+    vector_set( vector_t *self,
+    const size_t index,
+    const void *item )
+    {
+        assert( self );
+        assert( self->size );
+        assert( index  < self->size );
+        memcpy( (char *)(self->items) + index * self->item_size,
+        item, self->item_size );
+    }
+    // ---------------------------------------------------------- vector_insert ---
+    void
+    vector_insert( vector_t *self,
+    const size_t index,
+    const void *item )
+    {
+        assert( self );
+        assert( index <= self->size);
+        if( self->capacity <= self->size )
+        {
+            vector_reserve(self, 2 * self->capacity );
+        }
+        if( index < self->size )
+        {
+            memmove( (char *)(self->items) + (index + 1) * self->item_size,
+            (char *)(self->items) + (index + 0) * self->item_size,
+            (self->size - index)  * self->item_size);
+        }
+        self->size++;
+        vector_set( self, index, item );
+    }
+    // ----------------------------------------------------- vector_erase_range ---
+    void
+    vector_erase_range( vector_t *self,
+    const size_t first,
+    const size_t last )
+    {
+        assert( self );
+        assert( first < self->size );
+        assert( last  < self->size+1 );
+        assert( first < last );
+        memmove( (char *)(self->items) + first * self->item_size,
+        (char *)(self->items) + last  * self->item_size,
+        (self->size - last)   * self->item_size);
+        self->size -= (last-first);
+    }
+    // ----------------------------------------------------------- vector_erase ---
+    void
+    vector_erase( vector_t *self,
+    const size_t index )
+    {
+        assert( self );
+        assert( index < self->size );
+        vector_erase_range( self, index, index+1 );
+    }
+    // ------------------------------------------------------- vector_push_back ---
+    void
+    vector_push_back( vector_t *self,
+    const void *item )
+    {
+        vector_insert( self, self->size, item );
+    }
+    // -------------------------------------------------------- vector_pop_back ---
+    void
+    vector_pop_back( vector_t *self )
+    {
+        assert( self );
+        assert( self->size );
+        self->size--;
+    }
+    // ---------------------------------------------------------- vector_resize ---
+    void
+    vector_resize( vector_t *self,
+    const size_t size )
+    {
+        assert( self );
+        if( size > self->capacity)
+        {
+            vector_reserve( self, size );
+            self->size = self->capacity;
+        }
+        else
+        {
+            self->size = size;
+        }
+    }
+    // -------------------------------------------------- vector_push_back_data ---
+    void
+    vector_push_back_data( vector_t *self,
+    const void * data,
+    const size_t count )
+    {
+        assert( self );
+        assert( data );
+        assert( count );
+        if( self->capacity < (self->size+count) )
+        {
+            vector_reserve(self, self->size+count);
+        }
+        memmove( (char *)(self->items) + self->size * self->item_size, data,
+        count*self->item_size );
+        self->size += count;
+    }
+    // ----------------------------------------------------- vector_insert_data ---
+    void
+    vector_insert_data( vector_t *self,
+    const size_t index,
+    const void * data,
+    const size_t count )
+    {
+        assert( self );
+        assert( index < self->size );
+        assert( data );
+        assert( count );
+        if( self->capacity < (self->size+count) )
+        {
+            vector_reserve(self, self->size+count);
+        }
+        memmove( (char *)(self->items) + (index + count ) * self->item_size,
+        (char *)(self->items) + (index ) * self->item_size,
+        count*self->item_size );
+        memmove( (char *)(self->items) + index * self->item_size, data,
+        count*self->item_size );
+        self->size += count;
+    }
+    // ------------------------------------------------------------ vector_sort ---
+    void
+    vector_sort( vector_t *self,
+    int (*cmp)(const void *, const void *) )
+    {
+        assert( self );
+        assert( self->size );
+        qsort(self->items, self->size, self->item_size, cmp);
+    }
+
+
+    // ----------------------------------------------------------------------------
+    vertex_attribute_t *
+    vertex_attribute_new( GLchar * name,
+    GLint size,
+    GLenum type,
+    GLboolean normalized,
+    GLsizei stride,
+    GLvoid *pointer )
+    {
+        vertex_attribute_t *attribute =
+        (vertex_attribute_t *) malloc (sizeof(vertex_attribute_t));
+        assert( size > 0 );
+        attribute->name       = (GLchar *) strdup( name );
+        attribute->index      = -1;
+        attribute->size       = size;
+        attribute->type       = type;
+        attribute->normalized = normalized;
+        attribute->stride     = stride;
+        attribute->pointer    = pointer;
+        return attribute;
+    }
+    // ----------------------------------------------------------------------------
+    void
+    vertex_attribute_delete( vertex_attribute_t * self )
+    {
+        assert( self );
+        free( self->name );
+        free( self );
+    }
+    // ----------------------------------------------------------------------------
+    vertex_attribute_t *
+    vertex_attribute_parse( char *format )
+    {
+        GLenum type = 0;
+        int size;
+        int normalized = 0;
+        char ctype;
+        char *name;
+        vertex_attribute_t *attr;
+        char *p = strchr(format, ':');
+        if( p != NULL)
+        {
+            name = strndup(format, p-format);
+            if( *(++p) == '\0' )
+            {
+                fprintf( stderr, "No size specified for '%s' attribute\n", name );
+                free( name );
+                return 0;
+            }
+            size = *p - '0';
+            if( *(++p) == '\0' )
+            {
+                fprintf( stderr, "No format specified for '%s' attribute\n", name );
+                free( name );
+                return 0;
+            }
+            ctype = *p;
+            if( *(++p) != '\0' )
+            {
+                if( *p == 'n' )
+                {
+                    normalized = 1;
+                }
+            }
+        }
+        else
+        {
+            fprintf(stderr, "Vertex attribute format not understood ('%s')\n", format );
+            return 0;
+        }
+        switch( ctype )
+        {
+            case 'b': type = GL_BYTE;           break;
+            case 'B': type = GL_UNSIGNED_BYTE;  break;
+            case 's': type = GL_SHORT;          break;
+            case 'S': type = GL_UNSIGNED_SHORT; break;
+            case 'i': type = GL_INT;            break;
+            case 'I': type = GL_UNSIGNED_INT;   break;
+            case 'f': type = GL_FLOAT;          break;
+            default:  type = 0;                 break;
+        }
+        attr = vertex_attribute_new( name, size, type, normalized, 0, 0 );
+        free( name );
+        return attr;
+    }
+    // ----------------------------------------------------------------------------
+    void
+    vertex_attribute_enable( vertex_attribute_t *attr )
+    {
+        if( attr->index == -1 )
+        {
+            GLint program;
+            glGetIntegerv( GL_CURRENT_PROGRAM, &program );
+            if( program == 0)
+            {
+                return;
+            }
+            attr->index = glGetAttribLocation( program, attr->name );
+            if( attr->index == -1 )
+            {
+                return;
+            }
+        }
+        glEnableVertexAttribArray( attr->index );
+        glVertexAttribPointer( attr->index, attr->size, attr->type,
+        attr->normalized, attr->stride, attr->pointer );
+    }
+
+
+    #ifdef WIN32
+    // strndup() is not available on Windows
+    char *strndup( const char *s1, size_t n)
+    {
+        char *copy= (char*)malloc( n+1 );
+        memcpy( copy, s1, n );
+        copy[n] = 0;
+        return copy;
+    };
+    #endif
+    /**
+    * Buffer status
+    */
+    #define CLEAN  (0)
+    #define DIRTY  (1)
+    #define FROZEN (2)
+    // ----------------------------------------------------------------------------
+    vertex_buffer_t *
+    vertex_buffer_new( const char *format )
+    {
+        size_t i, index = 0, stride = 0;
+        const char *start = 0, *end = 0;
+        GLchar *pointer = 0;
+        vertex_buffer_t *self = (vertex_buffer_t *) malloc (sizeof(vertex_buffer_t));
+        if( !self )
+        {
+            return NULL;
+        }
+        self->format = strdup( format );
+        for( i=0; i<MAX_VERTEX_ATTRIBUTE; ++i )
+        {
+            self->attributes[i] = 0;
+        }
+        start = format;
+        do
+        {
+            char *desc = 0;
+            vertex_attribute_t *attribute;
+            GLuint attribute_size = 0;
+            end = (char *) (strchr(start+1, ','));
+            if (end == NULL)
+            {
+                desc = strdup( start );
+            }
+            else
+            {
+                desc = strndup( start, end-start );
+            }
+            attribute = vertex_attribute_parse( desc );
+            start = end+1;
+            free(desc);
+            attribute->pointer = pointer;
+            switch( attribute->type )
+            {
+                case GL_BOOL:           attribute_size = sizeof(GLboolean); break;
+                case GL_BYTE:           attribute_size = sizeof(GLbyte); break;
+                case GL_UNSIGNED_BYTE:  attribute_size = sizeof(GLubyte); break;
+                case GL_SHORT:          attribute_size = sizeof(GLshort); break;
+                case GL_UNSIGNED_SHORT: attribute_size = sizeof(GLushort); break;
+                case GL_INT:            attribute_size = sizeof(GLint); break;
+                case GL_UNSIGNED_INT:   attribute_size = sizeof(GLuint); break;
+                case GL_FLOAT:          attribute_size = sizeof(GLfloat); break;
+                default:                attribute_size = 0;
+            }
+            stride  += attribute->size*attribute_size;
+            pointer += attribute->size*attribute_size;
+            self->attributes[index] = attribute;
+            index++;
+        } while ( end && (index < MAX_VERTEX_ATTRIBUTE) );
+        for( i=0; i<index; ++i )
+        {
+            self->attributes[i]->stride = stride;
+        }
+        #ifdef FREETYPE_GL_USE_VAO
+        self->VAO_id = 0;
+        #endif
+        self->vertices = vector_new( stride );
+        self->vertices_id  = 0;
+        self->GPU_vsize = 0;
+        self->indices = vector_new( sizeof(GLuint) );
+        self->indices_id  = 0;
+        self->GPU_isize = 0;
+        self->items = vector_new( sizeof(ivec4) );
+        self->state = DIRTY;
+        self->mode = GL_TRIANGLES;
+        return self;
+    }
+    // ----------------------------------------------------------------------------
+    void
+    vertex_buffer_delete( vertex_buffer_t *self )
+    {
+        size_t i;
+        assert( self );
+        for( i=0; i<MAX_VERTEX_ATTRIBUTE; ++i )
+        {
+            if( self->attributes[i] )
+            {
+                vertex_attribute_delete( self->attributes[i] );
+            }
+        }
+        #ifdef FREETYPE_GL_USE_VAO
+        if( self->VAO_id )
+        {
+            glDeleteVertexArrays( 1, &self->VAO_id );
+        }
+        self->VAO_id = 0;
+        #endif
+        vector_delete( self->vertices );
+        self->vertices = 0;
+        if( self->vertices_id )
+        {
+            glDeleteBuffers( 1, &self->vertices_id );
+        }
+        self->vertices_id = 0;
+        vector_delete( self->indices );
+        self->indices = 0;
+        if( self->indices_id )
+        {
+            glDeleteBuffers( 1, &self->indices_id );
+        }
+        self->indices_id = 0;
+        vector_delete( self->items );
+        if( self->format )
+        {
+            free( self->format );
+        }
+        self->format = 0;
+        self->state = 0;
+        free( self );
+    }
+    // ----------------------------------------------------------------------------
+    const char *
+    vertex_buffer_format( const vertex_buffer_t *self )
+    {
+        assert( self );
+        return self->format;
+    }
+    // ----------------------------------------------------------------------------
+    size_t
+    vertex_buffer_size( const vertex_buffer_t *self )
+    {
+        assert( self );
+        return vector_size( self->items );
+    }
+    // ----------------------------------------------------------------------------
+    void
+    vertex_buffer_print( vertex_buffer_t * self )
+    {
+        int i = 0;
+        static char *gltypes[9] = {
+            "GL_BOOL",
+            "GL_BYTE",
+            "GL_UNSIGNED_BYTE",
+            "GL_SHORT",
+            "GL_UNSIGNED_SHORT",
+            "GL_INT",
+            "GL_UNSIGNED_INT",
+            "GL_FLOAT",
+            "GL_VOID"
+        };
+        assert(self);
+        fprintf( stderr, "%zu vertices, %zu indices\n",
+        vector_size( self->vertices ), vector_size( self->indices ) );
+        while( self->attributes[i] )
+        {
+            int j = 8;
+            switch( self->attributes[i]->type )
+            {
+                case GL_BOOL:           j=0; break;
+                case GL_BYTE:           j=1; break;
+                case GL_UNSIGNED_BYTE:  j=2; break;
+                case GL_SHORT:          j=3; break;
+                case GL_UNSIGNED_SHORT: j=4; break;
+                case GL_INT:            j=5; break;
+                case GL_UNSIGNED_INT:   j=6; break;
+                case GL_FLOAT:          j=7; break;
+                default:                j=8; break;
+            }
+            fprintf(stderr, "%s : %dx%s (+%p)\n",
+            self->attributes[i]->name,
+            self->attributes[i]->size,
+            gltypes[j],
+            self->attributes[i]->pointer);
+            i += 1;
+        }
+    }
+    // ----------------------------------------------------------------------------
+    void
+    vertex_buffer_upload ( vertex_buffer_t *self )
+    {
+        size_t vsize, isize;
+        if( self->state == FROZEN )
+        {
+            return;
+        }
+        if( !self->vertices_id )
+        {
+            glGenBuffers( 1, &self->vertices_id );
+        }
+        if( !self->indices_id )
+        {
+            glGenBuffers( 1, &self->indices_id );
+        }
+        vsize = self->vertices->size*self->vertices->item_size;
+        isize = self->indices->size*self->indices->item_size;
+        // Always upload vertices first such that indices do not point to non
+        // existing data (if we get interrupted in between for example).
+        // Upload vertices
+        glBindBuffer( GL_ARRAY_BUFFER, self->vertices_id );
+        if( vsize != self->GPU_vsize )
+        {
+            glBufferData( GL_ARRAY_BUFFER,
+            vsize, self->vertices->items, GL_DYNAMIC_DRAW );
+            self->GPU_vsize = vsize;
+        }
+        else
+        {
+            glBufferSubData( GL_ARRAY_BUFFER,
+            0, vsize, self->vertices->items );
+        }
+        glBindBuffer( GL_ARRAY_BUFFER, 0 );
+        // Upload indices
+        glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, self->indices_id );
+        if( isize != self->GPU_isize )
+        {
+            glBufferData( GL_ELEMENT_ARRAY_BUFFER,
+            isize, self->indices->items, GL_DYNAMIC_DRAW );
+            self->GPU_isize = isize;
+        }
+        else
+        {
+            glBufferSubData( GL_ELEMENT_ARRAY_BUFFER,
+            0, isize, self->indices->items );
+        }
+        glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+    }
+    // ----------------------------------------------------------------------------
+    void
+    vertex_buffer_clear( vertex_buffer_t *self )
+    {
+        assert( self );
+        self->state = FROZEN;
+        vector_clear( self->indices );
+        vector_clear( self->vertices );
+        vector_clear( self->items );
+        self->state = DIRTY;
+    }
+    // ----------------------------------------------------------------------------
+    void
+    vertex_buffer_render_setup ( vertex_buffer_t *self, GLenum mode )
+    {
+        size_t i;
+        #ifdef FREETYPE_GL_USE_VAO
+        // Unbind so no existing VAO-state is overwritten,
+        // (e.g. the GL_ELEMENT_ARRAY_BUFFER-binding).
+        glBindVertexArray( 0 );
+        #endif
+        if( self->state != CLEAN )
+        {
+            vertex_buffer_upload( self );
+            self->state = CLEAN;
+        }
+        #ifdef FREETYPE_GL_USE_VAO
+        if( self->VAO_id == 0 )
+        {
+            // Generate and set up VAO
+            glGenVertexArrays( 1, &self->VAO_id );
+            glBindVertexArray( self->VAO_id );
+            glBindBuffer( GL_ARRAY_BUFFER, self->vertices_id );
+            for( i=0; i<MAX_VERTEX_ATTRIBUTE; ++i )
+            {
+                vertex_attribute_t *attribute = self->attributes[i];
+                if( attribute == 0 )
+                {
+                    continue;
+                }
+                else
+                {
+                    vertex_attribute_enable( attribute );
+                }
+            }
+            glBindBuffer( GL_ARRAY_BUFFER, 0 );
+            if( self->indices->size )
+            {
+                glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, self->indices_id );
+            }
+        }
+        // Bind VAO for drawing
+        glBindVertexArray( self->VAO_id );
+        #else
+        glBindBuffer( GL_ARRAY_BUFFER, self->vertices_id );
+        for( i=0; i<MAX_VERTEX_ATTRIBUTE; ++i )
+        {
+            vertex_attribute_t *attribute = self->attributes[i];
+            if ( attribute == 0 )
+            {
+                continue;
+            }
+            else
+            {
+                vertex_attribute_enable( attribute );
+            }
+        }
+        if( self->indices->size )
+        {
+            glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, self->indices_id );
+        }
+        #endif
+        self->mode = mode;
+    }
+    // ----------------------------------------------------------------------------
+    void
+    vertex_buffer_render_finish ( vertex_buffer_t *self )
+    {
+        #ifdef FREETYPE_GL_USE_VAO
+        glBindVertexArray( 0 );
+        #else
+        int i;
+        for( i=0; i<MAX_VERTEX_ATTRIBUTE; ++i )
+        {
+            vertex_attribute_t *attribute = self->attributes[i];
+            if( attribute == 0 )
+            {
+                continue;
+            }
+            else
+            {
+                glDisableVertexAttribArray( attribute->index );
+            }
+        }
+        glBindBuffer( GL_ARRAY_BUFFER, 0 );
+        glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+        #endif
+    }
+    // ----------------------------------------------------------------------------
+    void
+    vertex_buffer_render_item ( vertex_buffer_t *self,
+    size_t index )
+    {
+        ivec4 * item = (ivec4 *) vector_get( self->items, index );
+        assert( self );
+        assert( index < vector_size( self->items ) );
+        if( self->indices->size )
+        {
+            size_t start = item->istart;
+            size_t count = item->icount;
+            glDrawElements( self->mode, count, GL_UNSIGNED_INT, (void *)(start*sizeof(GLuint)) );
+        }
+        else if( self->vertices->size )
+        {
+            size_t start = item->vstart;
+            size_t count = item->vcount;
+            glDrawArrays( self->mode, start*self->vertices->item_size, count);
+        }
+    }
+    // ----------------------------------------------------------------------------
+    void
+    vertex_buffer_render ( vertex_buffer_t *self, GLenum mode )
+    {
+        size_t vcount = self->vertices->size;
+        size_t icount = self->indices->size;
+        vertex_buffer_render_setup( self, mode );
+        if( icount )
+        {
+            glDrawElements( mode, icount, GL_UNSIGNED_INT, 0 );
+        }
+        else
+        {
+            glDrawArrays( mode, 0, vcount );
+        }
+        vertex_buffer_render_finish( self );
+    }
+    // ----------------------------------------------------------------------------
+    void
+    vertex_buffer_push_back_indices ( vertex_buffer_t * self,
+    const GLuint * indices,
+    const size_t icount )
+    {
+        assert( self );
+        self->state |= DIRTY;
+        vector_push_back_data( self->indices, indices, icount );
+    }
+    // ----------------------------------------------------------------------------
+    void
+    vertex_buffer_push_back_vertices ( vertex_buffer_t * self,
+    const void * vertices,
+    const size_t vcount )
+    {
+        assert( self );
+        self->state |= DIRTY;
+        vector_push_back_data( self->vertices, vertices, vcount );
+    }
+    // ----------------------------------------------------------------------------
+    void
+    vertex_buffer_insert_indices ( vertex_buffer_t *self,
+    const size_t index,
+    const GLuint *indices,
+    const size_t count )
+    {
+        assert( self );
+        assert( self->indices );
+        assert( index < self->indices->size+1 );
+        self->state |= DIRTY;
+        vector_insert_data( self->indices, index, indices, count );
+    }
+    // ----------------------------------------------------------------------------
+    void
+    vertex_buffer_insert_vertices( vertex_buffer_t *self,
+    const size_t index,
+    const void *vertices,
+    const size_t vcount )
+    {
+        size_t i;
+        assert( self );
+        assert( self->vertices );
+        assert( index < self->vertices->size+1 );
+        self->state |= DIRTY;
+        for( i=0; i<self->indices->size; ++i )
+        {
+            if( *(GLuint *)(vector_get( self->indices, i )) > index )
+            {
+                *(GLuint *)(vector_get( self->indices, i )) += index;
+            }
+        }
+        vector_insert_data( self->vertices, index, vertices, vcount );
+    }
+    // ----------------------------------------------------------------------------
+    void
+    vertex_buffer_erase_indices( vertex_buffer_t *self,
+    const size_t first,
+    const size_t last )
+    {
+        assert( self );
+        assert( self->indices );
+        assert( first < self->indices->size );
+        assert( (last) <= self->indices->size );
+        self->state |= DIRTY;
+        vector_erase_range( self->indices, first, last );
+    }
+    // ----------------------------------------------------------------------------
+    void
+    vertex_buffer_erase_vertices( vertex_buffer_t *self,
+    const size_t first,
+    const size_t last )
+    {
+        size_t i;
+        assert( self );
+        assert( self->vertices );
+        assert( first < self->vertices->size );
+        assert( last <= self->vertices->size );
+        assert( last > first );
+        self->state |= DIRTY;
+        for( i=0; i<self->indices->size; ++i )
+        {
+            if( *(GLuint *)(vector_get( self->indices, i )) > first )
+            {
+                *(GLuint *)(vector_get( self->indices, i )) -= (last-first);
+            }
+        }
+        vector_erase_range( self->vertices, first, last );
+    }
+    // ----------------------------------------------------------------------------
+    size_t
+    vertex_buffer_push_back( vertex_buffer_t * self,
+    const void * vertices, const size_t vcount,
+    const GLuint * indices, const size_t icount )
+    {
+        return vertex_buffer_insert( self, vector_size( self->items ),
+        vertices, vcount, indices, icount );
+    }
+    // ----------------------------------------------------------------------------
+    size_t
+    vertex_buffer_insert( vertex_buffer_t * self, const size_t index,
+    const void * vertices, const size_t vcount,
+    const GLuint * indices, const size_t icount )
+    {
+        size_t vstart, istart, i;
+        ivec4 item;
+        assert( self );
+        assert( vertices );
+        assert( indices );
+        self->state = FROZEN;
+        // Push back vertices
+        vstart = vector_size( self->vertices );
+        vertex_buffer_push_back_vertices( self, vertices, vcount );
+        // Push back indices
+        istart = vector_size( self->indices );
+        vertex_buffer_push_back_indices( self, indices, icount );
+        // Update indices within the vertex buffer
+        for( i=0; i<icount; ++i )
+        {
+            *(GLuint *)(vector_get( self->indices, istart+i )) += vstart;
+        }
+        // Insert item
+        item.x = vstart;
+        item.y = vcount;
+        item.z = istart;
+        item.w = icount;
+        vector_insert( self->items, index, &item );
+        self->state = DIRTY;
+        return index;
+    }
+    // ----------------------------------------------------------------------------
+    void
+    vertex_buffer_erase( vertex_buffer_t * self,
+    const size_t index )
+    {
+        ivec4 * item;
+        int vstart;
+        size_t vcount, istart, icount, i;
+        assert( self );
+        assert( index < vector_size( self->items ) );
+        item = (ivec4 *) vector_get( self->items, index );
+        vstart = item->vstart;
+        vcount = item->vcount;
+        istart = item->istart;
+        icount = item->icount;
+        // Update items
+        for( i=0; i<vector_size(self->items); ++i )
+        {
+            ivec4 * item = (ivec4 *) vector_get( self->items, i );
+            if( item->vstart > vstart)
+            {
+                item->vstart -= vcount;
+                item->istart -= icount;
+            }
+        }
+        self->state = FROZEN;
+        vertex_buffer_erase_indices( self, istart, istart+icount );
+        vertex_buffer_erase_vertices( self, vstart, vstart+vcount );
+        vector_erase( self->items, index );
+        self->state = DIRTY;
+    }
+
+
+    // ----------------------------------------------------- utf8_surrogate_len ---
+    size_t
+    utf8_surrogate_len( const char* character )
+    {
+        size_t result = 0;
+        char test_char;
+        if (!character)
+        return 0;
+        test_char = character[0];
+        if ((test_char & 0x80) == 0)
+        return 1;
+        while (test_char & 0x80)
+        {
+            test_char <<= 1;
+            result++;
+        }
+        return result;
+    }
+    // ------------------------------------------------------------ utf8_strlen ---
+    size_t
+    utf8_strlen( const char* string )
+    {
+        const char* ptr = string;
+        size_t result = 0;
+        while (*ptr)
+        {
+            ptr += utf8_surrogate_len(ptr);
+            result++;
+        }
+        return result;
+    }
+    uint32_t
+    utf8_to_utf32( const char * character )
+    {
+        uint32_t result = -1;
+        if( !character )
+        {
+            return result;
+        }
+        if( ( character[0] & 0x80 ) == 0x0 )
+        {
+            result = character[0];
+        }
+        if( ( character[0] & 0xC0 ) == 0xC0 )
+        {
+            result = ( ( character[0] & 0x3F ) << 6 ) | ( character[1] & 0x3F );
+        }
+        if( ( character[0] & 0xE0 ) == 0xE0 )
+        {
+            result = ( ( character[0] & 0x1F ) << ( 6 + 6 ) ) | ( ( character[1] & 0x3F ) << 6 ) | ( character[2] & 0x3F );
+        }
+        if( ( character[0] & 0xF0 ) == 0xF0 )
+        {
+            result = ( ( character[0] & 0x0F ) << ( 6 + 6 + 6 ) ) | ( ( character[1] & 0x3F ) << ( 6 + 6 ) ) | ( ( character[2] & 0x3F ) << 6 ) | ( character[3] & 0x3F );
+        }
+        if( ( character[0] & 0xF8 ) == 0xF8 )
+        {
+            result = ( ( character[0] & 0x07 ) << ( 6 + 6 + 6 + 6 ) ) | ( ( character[1] & 0x3F ) << ( 6 + 6 + 6 ) ) | ( ( character[2] & 0x3F ) << ( 6 + 6 ) ) | ( ( character[3] & 0x3F ) << 6 ) | ( character[4] & 0x3F );
+        }
+        return result;
+    }
+
+
+    double *
+    make_distance_mapd( double *data, unsigned int width, unsigned int height )
+    {
+        short * xdist = (short *)  malloc( width * height * sizeof(short) );
+        short * ydist = (short *)  malloc( width * height * sizeof(short) );
+        double * gx   = (double *) calloc( width * height, sizeof(double) );
+        double * gy      = (double *) calloc( width * height, sizeof(double) );
+        double * outside = (double *) calloc( width * height, sizeof(double) );
+        double * inside  = (double *) calloc( width * height, sizeof(double) );
+        double vmin = DBL_MAX;
+        unsigned int i;
+        // Compute outside = edtaa3(bitmap); % Transform background (0's)
+        computegradient( data, width, height, gx, gy);
+        edtaa3(data, gx, gy, width, height, xdist, ydist, outside);
+        for( i=0; i<width*height; ++i)
+        if( outside[i] < 0.0 )
+        outside[i] = 0.0;
+        // Compute inside = edtaa3(1-bitmap); % Transform foreground (1's)
+        memset( gx, 0, sizeof(double)*width*height );
+        memset( gy, 0, sizeof(double)*width*height );
+        for( i=0; i<width*height; ++i)
+        data[i] = 1 - data[i];
+        computegradient( data, width, height, gx, gy );
+        edtaa3( data, gx, gy, width, height, xdist, ydist, inside );
+        for( i=0; i<width*height; ++i )
+        if( inside[i] < 0 )
+        inside[i] = 0.0;
+        // distmap = outside - inside; % Bipolar distance field
+        for( i=0; i<width*height; ++i)
+        {
+            outside[i] -= inside[i];
+            if( outside[i] < vmin )
+            vmin = outside[i];
+        }
+        vmin = fabs(vmin);
+        for( i=0; i<width*height; ++i)
+        {
+            double v = outside[i];
+            if     ( v < -vmin) outside[i] = -vmin;
+            else if( v > +vmin) outside[i] = +vmin;
+            data[i] = (outside[i]+vmin)/(2*vmin);
+        }
+        free( xdist );
+        free( ydist );
+        free( gx );
+        free( gy );
+        free( outside );
+        free( inside );
+        return data;
+    }
+    unsigned char *
+    make_distance_mapb( unsigned char *img,
+    unsigned int width, unsigned int height )
+    {
+        double * data    = (double *) calloc( width * height, sizeof(double) );
+        unsigned char *out = (unsigned char *) malloc( width * height * sizeof(unsigned char) );
+        unsigned int i;
+        // find minimimum and maximum values
+        double img_min = DBL_MAX;
+        double img_max = DBL_MIN;
+        for( i=0; i<width*height; ++i)
+        {
+            double v = img[i];
+            data[i] = v;
+            if (v > img_max)
+            img_max = v;
+            if (v < img_min)
+            img_min = v;
+        }
+        // Map values from 0 - 255 to 0.0 - 1.0
+        for( i=0; i<width*height; ++i)
+        data[i] = (img[i]-img_min)/img_max;
+        data = make_distance_mapd(data, width, height);
+        // map values from 0.0 - 1.0 to 0 - 255
+        for( i=0; i<width*height; ++i)
+        out[i] = (unsigned char)(255*(1-data[i]));
+        free( data );
+        return out;
+    }
+
+
+    /*
+    * Compute the local gradient at edge pixels using convolution filters.
+    * The gradient is computed only at edge pixels. At other places in the
+    * image, it is never used, and it's mostly zero anyway.
+    */
+    void computegradient(double *img, int w, int h, double *gx, double *gy)
+    {
+        int i,j,k;
+        double glength;
+        #define SQRT2 1.4142136
+        // Avoid edges where the kernels would spill over
+        for(i = 1; i < h-1; i++) {
+            for(j = 1; j < w-1; j++) {
+                k = i*w + j;
+                // Compute gradient for edge pixels only
+                if((img[k]>0.0) && (img[k]<1.0)) {
+                    gx[k] = -img[k-w-1] - SQRT2*img[k-1] - img[k+w-1] + img[k-w+1] + SQRT2*img[k+1] + img[k+w+1];
+                    gy[k] = -img[k-w-1] - SQRT2*img[k-w] - img[k-w+1] + img[k+w-1] + SQRT2*img[k+w] + img[k+w+1];
+                    glength = gx[k]*gx[k] + gy[k]*gy[k];
+                    if(glength > 0.0) {
+                        // Avoid division by zero
+                        glength = sqrt(glength);
+                        gx[k]=gx[k]/glength;
+                        gy[k]=gy[k]/glength;
+                    }
+                }
+            }
+        }
+        // TODO: Compute reasonable values for gx, gy also around the image edges.
+        // (These are zero now, which reduces the accuracy for a 1-pixel wide region
+        // around the image edge.) 2x2 kernels would be suitable for this.
+    }
+    /*
+    * A somewhat tricky function to approximate the distance to an edge in a
+    * certain pixel, with consideration to either the local gradient (gx,gy)
+    * or the direction to the pixel (dx,dy) and the pixel greyscale value a.
+    * The latter alternative, using (dx,dy), is the metric used by edtaa2().
+    * Using a local estimate of the edge gradient (gx,gy) yields much better
+    * accuracy at and near edges, and reduces the error even at distant pixels
+    * provided that the gradient direction is accurately estimated.
+    */
+    double edgedf(double gx, double gy, double a)
+    {
+        double df, glength, temp, a1;
+        // Either A) gu or gv are zero, or B) both
+        if ((gx == 0) || (gy == 0)) {
+            // Linear approximation is A) correct or B) a fair guess
+            df = 0.5-a;
+        } else {
+            glength = sqrt(gx*gx + gy*gy);
+            if(glength>0) {
+                gx = gx/glength;
+                gy = gy/glength;
+            }
+            /* Everything is symmetric wrt sign and transposition,
+            * so move to first octant (gx>=0, gy>=0, gx>=gy) to
+            * avoid handling all possible edge directions.
+            */
+            gx = fabs(gx);
+            gy = fabs(gy);
+            if(gx<gy) {
+                temp = gx;
+                gx = gy;
+                gy = temp;
+            }
+            a1 = 0.5*gy/gx;
+            if (a < a1) {
+                // 0 <= a < a1
+                df = 0.5*(gx + gy) - sqrt(2.0*gx*gy*a);
+            } else if (a < (1.0-a1)) {
+                // a1 <= a <= 1-a1
+                df = (0.5-a)*gx;
+            } else {
+                // 1-a1 < a <= 1
+                df = -0.5*(gx + gy) + sqrt(2.0*gx*gy*(1.0-a));
+            }
+        }
+        return df;
+    }
+    double distaa3(double *img, double *gximg, double *gyimg, int w, int c, int xc, int yc, int xi, int yi)
+    {
+        double di, df, dx, dy, gx, gy, a;
+        int closest;
+        closest = c-xc-yc*w; // Index to the edge pixel pointed to from c
+        a = img[closest];    // Grayscale value at the edge pixel
+        gx = gximg[closest]; // X gradient component at the edge pixel
+        gy = gyimg[closest]; // Y gradient component at the edge pixel
+        if(a > 1.0) a = 1.0;
+        if(a < 0.0) a = 0.0; // Clip grayscale values outside the range [0,1]
+        if(a == 0.0) return 1000000.0; // Not an object pixel, return "very far" ("don't know yet")
+        dx = (double)xi;
+        dy = (double)yi;
+        di = sqrt(dx*dx + dy*dy); // Length of integer vector, like a traditional EDT
+        if(di==0) {
+            // Use local gradient only at edges
+            // Estimate based on local gradient only
+            df = edgedf(gx, gy, a);
+        } else {
+            // Estimate gradient based on direction to edge (accurate for large di)
+            df = edgedf(dx, dy, a);
+        }
+        return di + df; // Same metric as edtaa2, except at edges (where di=0)
+    }
+    // Shorthand macro: add ubiquitous parameters dist, gx, gy, img and w and call distaa3()
+    #define DISTAA(c,xc,yc,xi,yi) (distaa3(img, gx, gy, w, c, xc, yc, xi, yi))
+    void edtaa3(double *img, double *gx, double *gy, int w, int h, short *distx, short *disty, double *dist)
+    {
+        int x, y, i, c;
+        int offset_u, offset_ur, offset_r, offset_rd,
+        offset_d, offset_dl, offset_l, offset_lu;
+        double olddist, newdist;
+        int cdistx, cdisty, newdistx, newdisty;
+        int changed;
+        double epsilon = 1e-3;
+        /* Initialize index offsets for the current image width */
+        offset_u = -w;
+        offset_ur = -w+1;
+        offset_r = 1;
+        offset_rd = w+1;
+        offset_d = w;
+        offset_dl = w-1;
+        offset_l = -1;
+        offset_lu = -w-1;
+        /* Initialize the distance images */
+        for(i=0; i<w*h; i++) {
+            distx[i] = 0; // At first, all pixels point to
+            disty[i] = 0; // themselves as the closest known.
+            if(img[i] <= 0.0)
+            {
+                dist[i]= 1000000.0; // Big value, means "not set yet"
+            }
+            else if (img[i]<1.0) {
+                dist[i] = edgedf(gx[i], gy[i], img[i]); // Gradient-assisted estimate
+            }
+            else {
+                dist[i]= 0.0; // Inside the object
+            }
+        }
+        /* Perform the transformation */
+        do
+        {
+            changed = 0;
+            /* Scan rows, except first row */
+            for(y=1; y<h; y++)
+            {
+                /* move index to leftmost pixel of current row */
+                i = y*w;
+                /* scan right, propagate distances from above & left */
+                /* Leftmost pixel is special, has no left neighbors */
+                olddist = dist[i];
+                if(olddist > 0) // If non-zero distance or not set yet
+                {
+                    c = i + offset_u; // Index of candidate for testing
+                    cdistx = distx[c];
+                    cdisty = disty[c];
+                    newdistx = cdistx;
+                    newdisty = cdisty+1;
+                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                    if(newdist < olddist-epsilon)
+                    {
+                        distx[i]=newdistx;
+                        disty[i]=newdisty;
+                        dist[i]=newdist;
+                        olddist=newdist;
+                        changed = 1;
+                    }
+                    c = i+offset_ur;
+                    cdistx = distx[c];
+                    cdisty = disty[c];
+                    newdistx = cdistx-1;
+                    newdisty = cdisty+1;
+                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                    if(newdist < olddist-epsilon)
+                    {
+                        distx[i]=newdistx;
+                        disty[i]=newdisty;
+                        dist[i]=newdist;
+                        changed = 1;
+                    }
+                }
+                i++;
+                /* Middle pixels have all neighbors */
+                for(x=1; x<w-1; x++, i++)
+                {
+                    olddist = dist[i];
+                    if(olddist <= 0) continue; // No need to update further
+                    c = i+offset_l;
+                    cdistx = distx[c];
+                    cdisty = disty[c];
+                    newdistx = cdistx+1;
+                    newdisty = cdisty;
+                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                    if(newdist < olddist-epsilon)
+                    {
+                        distx[i]=newdistx;
+                        disty[i]=newdisty;
+                        dist[i]=newdist;
+                        olddist=newdist;
+                        changed = 1;
+                    }
+                    c = i+offset_lu;
+                    cdistx = distx[c];
+                    cdisty = disty[c];
+                    newdistx = cdistx+1;
+                    newdisty = cdisty+1;
+                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                    if(newdist < olddist-epsilon)
+                    {
+                        distx[i]=newdistx;
+                        disty[i]=newdisty;
+                        dist[i]=newdist;
+                        olddist=newdist;
+                        changed = 1;
+                    }
+                    c = i+offset_u;
+                    cdistx = distx[c];
+                    cdisty = disty[c];
+                    newdistx = cdistx;
+                    newdisty = cdisty+1;
+                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                    if(newdist < olddist-epsilon)
+                    {
+                        distx[i]=newdistx;
+                        disty[i]=newdisty;
+                        dist[i]=newdist;
+                        olddist=newdist;
+                        changed = 1;
+                    }
+                    c = i+offset_ur;
+                    cdistx = distx[c];
+                    cdisty = disty[c];
+                    newdistx = cdistx-1;
+                    newdisty = cdisty+1;
+                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                    if(newdist < olddist-epsilon)
+                    {
+                        distx[i]=newdistx;
+                        disty[i]=newdisty;
+                        dist[i]=newdist;
+                        changed = 1;
+                    }
+                }
+                /* Rightmost pixel of row is special, has no right neighbors */
+                olddist = dist[i];
+                if(olddist > 0) // If not already zero distance
+                {
+                    c = i+offset_l;
+                    cdistx = distx[c];
+                    cdisty = disty[c];
+                    newdistx = cdistx+1;
+                    newdisty = cdisty;
+                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                    if(newdist < olddist-epsilon)
+                    {
+                        distx[i]=newdistx;
+                        disty[i]=newdisty;
+                        dist[i]=newdist;
+                        olddist=newdist;
+                        changed = 1;
+                    }
+                    c = i+offset_lu;
+                    cdistx = distx[c];
+                    cdisty = disty[c];
+                    newdistx = cdistx+1;
+                    newdisty = cdisty+1;
+                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                    if(newdist < olddist-epsilon)
+                    {
+                        distx[i]=newdistx;
+                        disty[i]=newdisty;
+                        dist[i]=newdist;
+                        olddist=newdist;
+                        changed = 1;
+                    }
+                    c = i+offset_u;
+                    cdistx = distx[c];
+                    cdisty = disty[c];
+                    newdistx = cdistx;
+                    newdisty = cdisty+1;
+                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                    if(newdist < olddist-epsilon)
+                    {
+                        distx[i]=newdistx;
+                        disty[i]=newdisty;
+                        dist[i]=newdist;
+                        changed = 1;
+                    }
+                }
+                /* Move index to second rightmost pixel of current row. */
+                /* Rightmost pixel is skipped, it has no right neighbor. */
+                i = y*w + w-2;
+                /* scan left, propagate distance from right */
+                for(x=w-2; x>=0; x--, i--)
+                {
+                    olddist = dist[i];
+                    if(olddist <= 0) continue; // Already zero distance
+                    c = i+offset_r;
+                    cdistx = distx[c];
+                    cdisty = disty[c];
+                    newdistx = cdistx-1;
+                    newdisty = cdisty;
+                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                    if(newdist < olddist-epsilon)
+                    {
+                        distx[i]=newdistx;
+                        disty[i]=newdisty;
+                        dist[i]=newdist;
+                        changed = 1;
+                    }
+                }
+            }
+            /* Scan rows in reverse order, except last row */
+            for(y=h-2; y>=0; y--)
+            {
+                /* move index to rightmost pixel of current row */
+                i = y*w + w-1;
+                /* Scan left, propagate distances from below & right */
+                /* Rightmost pixel is special, has no right neighbors */
+                olddist = dist[i];
+                if(olddist > 0) // If not already zero distance
+                {
+                    c = i+offset_d;
+                    cdistx = distx[c];
+                    cdisty = disty[c];
+                    newdistx = cdistx;
+                    newdisty = cdisty-1;
+                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                    if(newdist < olddist-epsilon)
+                    {
+                        distx[i]=newdistx;
+                        disty[i]=newdisty;
+                        dist[i]=newdist;
+                        olddist=newdist;
+                        changed = 1;
+                    }
+                    c = i+offset_dl;
+                    cdistx = distx[c];
+                    cdisty = disty[c];
+                    newdistx = cdistx+1;
+                    newdisty = cdisty-1;
+                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                    if(newdist < olddist-epsilon)
+                    {
+                        distx[i]=newdistx;
+                        disty[i]=newdisty;
+                        dist[i]=newdist;
+                        changed = 1;
+                    }
+                }
+                i--;
+                /* Middle pixels have all neighbors */
+                for(x=w-2; x>0; x--, i--)
+                {
+                    olddist = dist[i];
+                    if(olddist <= 0) continue; // Already zero distance
+                    c = i+offset_r;
+                    cdistx = distx[c];
+                    cdisty = disty[c];
+                    newdistx = cdistx-1;
+                    newdisty = cdisty;
+                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                    if(newdist < olddist-epsilon)
+                    {
+                        distx[i]=newdistx;
+                        disty[i]=newdisty;
+                        dist[i]=newdist;
+                        olddist=newdist;
+                        changed = 1;
+                    }
+                    c = i+offset_rd;
+                    cdistx = distx[c];
+                    cdisty = disty[c];
+                    newdistx = cdistx-1;
+                    newdisty = cdisty-1;
+                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                    if(newdist < olddist-epsilon)
+                    {
+                        distx[i]=newdistx;
+                        disty[i]=newdisty;
+                        dist[i]=newdist;
+                        olddist=newdist;
+                        changed = 1;
+                    }
+                    c = i+offset_d;
+                    cdistx = distx[c];
+                    cdisty = disty[c];
+                    newdistx = cdistx;
+                    newdisty = cdisty-1;
+                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                    if(newdist < olddist-epsilon)
+                    {
+                        distx[i]=newdistx;
+                        disty[i]=newdisty;
+                        dist[i]=newdist;
+                        olddist=newdist;
+                        changed = 1;
+                    }
+                    c = i+offset_dl;
+                    cdistx = distx[c];
+                    cdisty = disty[c];
+                    newdistx = cdistx+1;
+                    newdisty = cdisty-1;
+                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                    if(newdist < olddist-epsilon)
+                    {
+                        distx[i]=newdistx;
+                        disty[i]=newdisty;
+                        dist[i]=newdist;
+                        changed = 1;
+                    }
+                }
+                /* Leftmost pixel is special, has no left neighbors */
+                olddist = dist[i];
+                if(olddist > 0) // If not already zero distance
+                {
+                    c = i+offset_r;
+                    cdistx = distx[c];
+                    cdisty = disty[c];
+                    newdistx = cdistx-1;
+                    newdisty = cdisty;
+                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                    if(newdist < olddist-epsilon)
+                    {
+                        distx[i]=newdistx;
+                        disty[i]=newdisty;
+                        dist[i]=newdist;
+                        olddist=newdist;
+                        changed = 1;
+                    }
+                    c = i+offset_rd;
+                    cdistx = distx[c];
+                    cdisty = disty[c];
+                    newdistx = cdistx-1;
+                    newdisty = cdisty-1;
+                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                    if(newdist < olddist-epsilon)
+                    {
+                        distx[i]=newdistx;
+                        disty[i]=newdisty;
+                        dist[i]=newdist;
+                        olddist=newdist;
+                        changed = 1;
+                    }
+                    c = i+offset_d;
+                    cdistx = distx[c];
+                    cdisty = disty[c];
+                    newdistx = cdistx;
+                    newdisty = cdisty-1;
+                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                    if(newdist < olddist-epsilon)
+                    {
+                        distx[i]=newdistx;
+                        disty[i]=newdisty;
+                        dist[i]=newdist;
+                        changed = 1;
+                    }
+                }
+                /* Move index to second leftmost pixel of current row. */
+                /* Leftmost pixel is skipped, it has no left neighbor. */
+                i = y*w + 1;
+                for(x=1; x<w; x++, i++)
+                {
+                    /* scan right, propagate distance from left */
+                    olddist = dist[i];
+                    if(olddist <= 0) continue; // Already zero distance
+                    c = i+offset_l;
+                    cdistx = distx[c];
+                    cdisty = disty[c];
+                    newdistx = cdistx+1;
+                    newdisty = cdisty;
+                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                    if(newdist < olddist-epsilon)
+                    {
+                        distx[i]=newdistx;
+                        disty[i]=newdisty;
+                        dist[i]=newdist;
+                        changed = 1;
+                    }
+                }
+            }
+        }
+        while(changed); // Sweep until no more updates are made
+        /* The transformation is completed. */
+    }
+
+
+    mat4 *
+    mat4_new( void )
+    {
+        mat4 *self = (mat4 *) malloc( sizeof(mat4) );
+        return self;
+    }
+    void
+    mat4_set_zero( mat4 *self )
+    {
+        if (!self)
+        return;
+        memset( self, 0, sizeof( mat4 ));
+    }
+    void
+    mat4_set_identity( mat4 *self )
+    {
+        if (!self)
+        return;
+        memset( self, 0, sizeof( mat4 ));
+        self->m00 = 1.0;
+        self->m11 = 1.0;
+        self->m22 = 1.0;
+        self->m33 = 1.0;
+    }
+    void
+    mat4_multiply( mat4 *self, mat4 *other )
+    {
+        mat4 m;
+        size_t i;
+        if (!self || !other)
+        return;
+        for( i=0; i<4; ++i )
+        {
+            m.data[i*4+0] =
+            (self->data[i*4+0] * other->data[0*4+0]) +
+            (self->data[i*4+1] * other->data[1*4+0]) +
+            (self->data[i*4+2] * other->data[2*4+0]) +
+            (self->data[i*4+3] * other->data[3*4+0]) ;
+            m.data[i*4+1] =
+            (self->data[i*4+0] * other->data[0*4+1]) +
+            (self->data[i*4+1] * other->data[1*4+1]) +
+            (self->data[i*4+2] * other->data[2*4+1]) +
+            (self->data[i*4+3] * other->data[3*4+1]) ;
+            m.data[i*4+2] =
+            (self->data[i*4+0] * other->data[0*4+2]) +
+            (self->data[i*4+1] * other->data[1*4+2]) +
+            (self->data[i*4+2] * other->data[2*4+2]) +
+            (self->data[i*4+3] * other->data[3*4+2]) ;
+            m.data[i*4+3] =
+            (self->data[i*4+0] * other->data[0*4+3]) +
+            (self->data[i*4+1] * other->data[1*4+3]) +
+            (self->data[i*4+2] * other->data[2*4+3]) +
+            (self->data[i*4+3] * other->data[3*4+3]) ;
+        }
+        memcpy( self, &m, sizeof( mat4 ) );
+    }
+    void
+    mat4_set_orthographic( mat4 *self,
+    float left,   float right,
+    float bottom, float top,
+    float znear,  float zfar )
+    {
+        if (!self)
+        return;
+        if (left == right || bottom == top || znear == zfar)
+        return;
+        mat4_set_zero( self );
+        self->m00 = +2.0f/(right-left);
+        self->m30 = -(right+left)/(right-left);
+        self->m11 = +2.0f/(top-bottom);
+        self->m31 = -(top+bottom)/(top-bottom);
+        self->m22 = -2.0f/(zfar-znear);
+        self->m32 = -(zfar+znear)/(zfar-znear);
+        self->m33 = 1.0f;
+    }
+    void
+    mat4_set_perspective( mat4 *self,
+    float fovy,  float aspect,
+    float znear, float zfar)
+    {
+        float h, w;
+        if (!self)
+        return;
+        if (znear == zfar)
+        return;
+        h = (float)tan(fovy / 360.0 * M_PI) * znear;
+        w = h * aspect;
+        mat4_set_frustum( self, -w, w, -h, h, znear, zfar );
+    }
+    void
+    mat4_set_frustum( mat4 *self,
+    float left,   float right,
+    float bottom, float top,
+    float znear,  float zfar )
+    {
+        if (!self)
+        return;
+        if (left == right || bottom == top || znear == zfar)
+        return;
+        mat4_set_zero( self );
+        self->m00 = (2.0f*znear)/(right-left);
+        self->m20 = (right+left)/(right-left);
+        self->m11 = (2.0f*znear)/(top-bottom);
+        self->m21 = (top+bottom)/(top-bottom);
+        self->m22 = -(zfar+znear)/(zfar-znear);
+        self->m32 = -(2.0f*zfar*znear)/(zfar-znear);
+        self->m23 = -1.0f;
+    }
+    void
+    mat4_set_rotation( mat4 *self,
+    float angle,
+    float x, float y, float z)
+    {
+        float c, s, norm;
+        if (!self)
+        return;
+        c = (float)cos( M_PI*angle/180.0 );
+        s = (float)sin( M_PI*angle/180.0 );
+        norm = (float)sqrt(x*x+y*y+z*z);
+        x /= norm; y /= norm; z /= norm;
+        mat4_set_identity( self );
+        self->m00 = x*x*(1-c)+c;
+        self->m10 = y*x*(1-c)-z*s;
+        self->m20 = z*x*(1-c)+y*s;
+        self->m01 =  x*y*(1-c)+z*s;
+        self->m11 =  y*y*(1-c)+c;
+        self->m21 =  z*y*(1-c)-x*s;
+        self->m02 = x*z*(1-c)-y*s;
+        self->m12 = y*z*(1-c)+x*s;
+        self->m22 = z*z*(1-c)+c;
+    }
+    void
+    mat4_set_translation( mat4 *self,
+    float x, float y, float z)
+    {
+        if (!self)
+        return;
+        mat4_set_identity( self );
+        self-> m30 = x;
+        self-> m31 = y;
+        self-> m32 = z;
+    }
+    void
+    mat4_set_scaling( mat4 *self,
+    float x, float y, float z)
+    {
+        if (!self)
+        return;
+        mat4_set_identity( self );
+        self-> m00 = x;
+        self-> m11 = y;
+        self-> m22 = z;
+    }
+    void
+    mat4_rotate( mat4 *self,
+    float angle,
+    float x, float y, float z)
+    {
+        mat4 m;
+        if (!self)
+        return;
+        mat4_set_rotation( &m, angle, x, y, z);
+        mat4_multiply( self, &m );
+    }
+    void
+    mat4_translate( mat4 *self,
+    float x, float y, float z)
+    {
+        mat4 m;
+        if (!self)
+        return;
+        mat4_set_translation( &m, x, y, z);
+        mat4_multiply( self, &m );
+    }
+    void
+    mat4_scale( mat4 *self,
+    float x, float y, float z)
+    {
+        mat4 m;
+        if (!self)
+        return;
+        mat4_set_scaling( &m, x, y, z);
+        mat4_multiply( self, &m );
+    }
+
+
+    void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen) {
+        pen->y += (float)(int)font->ascender;
+        size_t i;
+        float r = color->red, g = color->green, b = color->blue, a = color->alpha;
+        for (i = 0; i < strlen(text); ++i) {
+            texture_glyph_t *glyph = texture_font_get_glyph( font, text + i );
+            if (glyph != NULL) {
+                float kerning = 0.0f;
+                if( i > 0) {
+                    kerning = texture_glyph_get_kerning( glyph, text + i - 1 );
+                }
+                pen->x += kerning;
+                float x0 = (float)(int)( pen->x + glyph->offset_x );
+                float y0 = (float)(int)( pen->y + glyph->height - glyph->offset_y );
+                float x1 = (float)(int)( x0 + glyph->width );
+                float y1 = (float)(int)( y0 - glyph->height );
+                float s0 = glyph->s0;
+                float t0 = glyph->t0;
+                float s1 = glyph->s1;
+                float t1 = glyph->t1;
+                GLuint index = (GLuint)buffer->vertices->size;
+                GLuint indices[] = { //
+                index, index+1, index+2,
+                index, index+2, index+3 };
+                vertex3_texture2_color3_t vertices[] = { //
+                { x0, y1, 0.0f,  s0,t0,  r,g,b,a },
+                { x0, y0, 0.0f,  s0,t1,  r,g,b,a },
+                { x1, y0, 0.0f,  s1,t1,  r,g,b,a },
+                { x1, y1, 0.0f,  s1,t0,  r,g,b,a } };
+                vertex_buffer_push_back_indices( buffer, indices, 6 );
+                vertex_buffer_push_back_vertices( buffer, vertices, 4 );
+                pen->x += glyph->advance_x;
+            }
+        }
+    }
+    vec2 get_text_size(texture_font_t * font, char *text) {
+        vec2 size = {{ 0, font->height }};
+        size_t i;
+        for( i = 0; i < strlen(text); ++i ) {
+            texture_glyph_t *glyph = texture_font_get_glyph(font, text + i);
+            if (glyph != NULL) {
+                float kerning = 0.0f;
+                if( i > 0) {
+                    kerning = texture_glyph_get_kerning(glyph, text + i - 1);
+                }
+                size.x += kerning;
+                size.x += glyph->advance_x;
+            }
+        }
+        return size;
     }
 
 void sjf_anon1(sjs_anon1* _this) {
@@ -6149,6 +6153,259 @@ void sjf_array_heap_element_heap(sjs_array_heap_element_heap* _this) {
     }
 }
 
+void sjf_boxElement(sjs_boxElement* _this) {
+}
+
+sjs_object* sjf_boxElement_asInterface(sjs_boxElement* _this, int typeId) {
+    switch (typeId) {
+        case sji_element_typeId:  {
+            return (sjs_object*)sjf_boxElement_as_sji_element(_this);
+        }
+    }
+
+    return 0;
+}
+
+sji_element* sjf_boxElement_as_sji_element(sjs_boxElement* _this) {
+    sji_element* _interface;
+    _interface = (sji_element*)malloc(sizeof(sji_element));
+    _interface->_refCount = 1;
+    _interface->_parent = (sjs_object*)_this;
+    _interface->_parent->_refCount++;
+    _interface->destroy = (void(*)(void*))sjf_boxElement_destroy;
+    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_boxElement_asInterface;
+    _interface->getSize = (void(*)(void*,sjs_size*, sjs_size*))sjf_boxElement_getSize;
+    _interface->getSize_heap = (void(*)(void*,sjs_size*, sjs_size_heap**))sjf_boxElement_getSize_heap;
+    _interface->getRect = (void(*)(void*, sjs_rect**))sjf_boxElement_getRect;
+    _interface->setRect = (void(*)(void*,sjs_rect*))sjf_boxElement_setRect;
+    _interface->render = (void(*)(void*,sjs_surface2d*))sjf_boxElement_render;
+    _interface->getChildren = (void(*)(void*, sjs_array_heap_element**))sjf_boxElement_getChildren;
+
+    return _interface;
+}
+
+void sjf_boxElement_copy(sjs_boxElement* _this, sjs_boxElement* _from) {
+    sjf_color_copy(&_this->color, &_from->color);
+    sjf_size_copy(&_this->idealSize, &_from->idealSize);
+    sjf_rect_copy(&_this->rect, &_from->rect);
+    _this->boxRenderer = 0;
+    sjf_boxRenderer_copy((sjs_boxRenderer*)(((char*)_this->boxRenderer) + sizeof(intptr_t)), (sjs_boxRenderer*)(((char*)_from->boxRenderer) + sizeof(intptr_t)));
+}
+
+void sjf_boxElement_destroy(sjs_boxElement* _this) {
+    if (_this->boxRenderer != 0) {
+        _this->boxRenderer->_refCount--;
+        if (_this->boxRenderer->_refCount <= 0) {
+            sjf_boxRenderer_destroy((sjs_boxRenderer*)(((char*)_this->boxRenderer) + sizeof(intptr_t)));
+        }
+    }
+}
+
+void sjf_boxElement_getChildren(sjs_boxElement* _parent, sjs_array_heap_element** _return) {
+    (*_return) = 0;
+}
+
+void sjf_boxElement_getRect(sjs_boxElement* _parent, sjs_rect** _return) {
+    (*_return) = &(_parent)->rect;
+}
+
+void sjf_boxElement_getSize(sjs_boxElement* _parent, sjs_size* maxSize, sjs_size* _return) {
+    sjs_size* sjt_dot1;
+    sjs_size* sjt_functionParam1;
+
+    sjt_dot1 = &(_parent)->idealSize;
+    sjt_functionParam1 = maxSize;
+    sjf_size_cap(sjt_dot1, sjt_functionParam1, _return);
+}
+
+void sjf_boxElement_getSize_heap(sjs_boxElement* _parent, sjs_size* maxSize, sjs_size_heap** _return) {
+    sjs_size* sjt_dot6;
+    sjs_size* sjt_functionParam2;
+
+    sjt_dot6 = &(_parent)->idealSize;
+    sjt_functionParam2 = maxSize;
+    sjf_size_cap_heap(sjt_dot6, sjt_functionParam2, _return);
+}
+
+void sjf_boxElement_heap(sjs_boxElement_heap* _this) {
+}
+
+sjs_object* sjf_boxElement_heap_asInterface(sjs_boxElement_heap* _this, int typeId) {
+    switch (typeId) {
+        case sji_element_typeId:  {
+            return (sjs_object*)sjf_boxElement_heap_as_sji_element(_this);
+        }
+    }
+
+    return 0;
+}
+
+sji_element* sjf_boxElement_heap_as_sji_element(sjs_boxElement_heap* _this) {
+    sji_element* _interface;
+    _interface = (sji_element*)malloc(sizeof(sji_element));
+    _interface->_refCount = 1;
+    _interface->_parent = (sjs_object*)_this;
+    _interface->_parent->_refCount++;
+    _interface->destroy = (void(*)(void*))sjf_boxElement_destroy;
+    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_boxElement_heap_asInterface;
+    _interface->getSize = (void(*)(void*,sjs_size*, sjs_size*))sjf_boxElement_getSize;
+    _interface->getSize_heap = (void(*)(void*,sjs_size*, sjs_size_heap**))sjf_boxElement_getSize_heap;
+    _interface->getRect = (void(*)(void*, sjs_rect**))sjf_boxElement_getRect;
+    _interface->setRect = (void(*)(void*,sjs_rect*))sjf_boxElement_setRect;
+    _interface->render = (void(*)(void*,sjs_surface2d*))sjf_boxElement_render;
+    _interface->getChildren = (void(*)(void*, sjs_array_heap_element**))sjf_boxElement_getChildren;
+
+    return _interface;
+}
+
+void sjf_boxElement_render(sjs_boxElement* _parent, sjs_surface2d* surface) {
+    bool result1;
+    bool sjt_ifElse3;
+    bool sjt_ifElse4;
+    sjs_boxRenderer_heap* sjt_isEmpty1;
+    sjs_boxRenderer_heap* sjt_isEmpty2;
+    bool sjt_not1;
+
+    sjt_isEmpty1 = (_parent)->boxRenderer;
+    if (sjt_isEmpty1 != 0) {
+        sjt_isEmpty1->_refCount++;
+    }
+
+    sjt_ifElse3 = (sjt_isEmpty1 == 0);
+    if (sjt_ifElse3) {
+        sjs_boxRenderer_heap* sjt_value1;
+
+        sjt_value1 = (sjs_boxRenderer_heap*)malloc(sizeof(sjs_boxRenderer_heap));
+        sjt_value1->_refCount = 1;
+        sjf_rect_copy(&sjt_value1->rect, &(_parent)->rect);
+        sjf_color_copy(&sjt_value1->color, &(_parent)->color);
+        sjf_boxRenderer_heap(sjt_value1);
+        if (_parent->boxRenderer != 0) {
+            _parent->boxRenderer->_refCount--;
+            if (_parent->boxRenderer->_refCount <= 0) {
+                sjf_boxRenderer_destroy((sjs_boxRenderer*)(((char*)_parent->boxRenderer) + sizeof(intptr_t)));
+            }
+        }
+
+        _parent->boxRenderer = sjt_value1;
+        if (_parent->boxRenderer != 0) {
+            _parent->boxRenderer->_refCount++;
+        }
+
+        sjt_value1->_refCount--;
+        if (sjt_value1->_refCount <= 0) {
+            sjf_boxRenderer_destroy((sjs_boxRenderer*)(((char*)sjt_value1) + sizeof(intptr_t)));
+        }
+    } else {
+    }
+
+    sjt_isEmpty2 = (_parent)->boxRenderer;
+    if (sjt_isEmpty2 != 0) {
+        sjt_isEmpty2->_refCount++;
+    }
+
+    sjt_not1 = (sjt_isEmpty2 == 0);
+    result1 = !sjt_not1;
+    sjt_ifElse4 = result1;
+    if (sjt_ifElse4) {
+        sjs_boxRenderer* sjt_dot7;
+        sjs_surface2d* sjt_functionParam3;
+        sjs_boxRenderer_heap* sjt_getValue1;
+
+        sjt_getValue1 = (_parent)->boxRenderer;
+        if (sjt_getValue1 != 0) {
+            sjt_getValue1->_refCount++;
+        }
+
+        sjt_dot7 = (sjs_boxRenderer*)(((char*)sjt_getValue1) + sizeof(intptr_t));
+        sjt_functionParam3 = surface;
+        sjf_boxRenderer_render(sjt_dot7, sjt_functionParam3);
+
+        if (sjt_getValue1 != 0) {
+            sjt_getValue1->_refCount--;
+            if (sjt_getValue1->_refCount <= 0) {
+                sjf_boxRenderer_destroy((sjs_boxRenderer*)(((char*)sjt_getValue1) + sizeof(intptr_t)));
+            }
+        }
+    }
+
+    if (sjt_isEmpty1 != 0) {
+        sjt_isEmpty1->_refCount--;
+        if (sjt_isEmpty1->_refCount <= 0) {
+            sjf_boxRenderer_destroy((sjs_boxRenderer*)(((char*)sjt_isEmpty1) + sizeof(intptr_t)));
+        }
+    }
+    if (sjt_isEmpty2 != 0) {
+        sjt_isEmpty2->_refCount--;
+        if (sjt_isEmpty2->_refCount <= 0) {
+            sjf_boxRenderer_destroy((sjs_boxRenderer*)(((char*)sjt_isEmpty2) + sizeof(intptr_t)));
+        }
+    }
+}
+
+void sjf_boxElement_setRect(sjs_boxElement* _parent, sjs_rect* rect_) {
+    sjf_rect_copy(&_parent->rect, rect_);
+}
+
+void sjf_boxRenderer(sjs_boxRenderer* _this) {
+    _this->buffer = vertex_buffer_new("vertex:3f,color:4f");
+    float x0 = (float)_this->rect.x;
+    float y0 = (float)(_this->rect.y + _this->rect.h);
+    float x1 = (float)(_this->rect.x + _this->rect.w);
+    float y1 = (float)_this->rect.y;
+    GLuint index = (GLuint)_this->buffer->vertices->size;
+    GLuint indices[] = { //
+    index, index+1, index+2,
+    index, index+2, index+3 };
+    vertex3_color4_t vertices[] = { //
+    { x0, y1, 0.0f,  _this->color.r, _this->color.g, _this->color.b, _this->color.a },
+    { x0, y0, 0.0f,  _this->color.r, _this->color.g, _this->color.b, _this->color.a },
+    { x1, y0, 0.0f,  _this->color.r, _this->color.g, _this->color.b, _this->color.a },
+    { x1, y1, 0.0f,  _this->color.r, _this->color.g, _this->color.b, _this->color.a } };
+    vertex_buffer_push_back_indices( _this->buffer, indices, 6 );
+    vertex_buffer_push_back_vertices( _this->buffer, vertices, 4 );
+}
+
+void sjf_boxRenderer_copy(sjs_boxRenderer* _this, sjs_boxRenderer* _from) {
+    sjf_rect_copy(&_this->rect, &_from->rect);
+    sjf_color_copy(&_this->color, &_from->color);
+    _this->buffer = _from->buffer;
+    _retain(_this->buffer);
+}
+
+void sjf_boxRenderer_destroy(sjs_boxRenderer* _this) {
+    if (_release(_this->buffer)) {
+        vertex_buffer_delete(_this->buffer);
+    }
+}
+
+void sjf_boxRenderer_heap(sjs_boxRenderer_heap* _this) {
+    _this->buffer = vertex_buffer_new("vertex:3f,color:4f");
+    float x0 = (float)_this->rect.x;
+    float y0 = (float)(_this->rect.y + _this->rect.h);
+    float x1 = (float)(_this->rect.x + _this->rect.w);
+    float y1 = (float)_this->rect.y;
+    GLuint index = (GLuint)_this->buffer->vertices->size;
+    GLuint indices[] = { //
+    index, index+1, index+2,
+    index, index+2, index+3 };
+    vertex3_color4_t vertices[] = { //
+    { x0, y1, 0.0f,  _this->color.r, _this->color.g, _this->color.b, _this->color.a },
+    { x0, y0, 0.0f,  _this->color.r, _this->color.g, _this->color.b, _this->color.a },
+    { x1, y0, 0.0f,  _this->color.r, _this->color.g, _this->color.b, _this->color.a },
+    { x1, y1, 0.0f,  _this->color.r, _this->color.g, _this->color.b, _this->color.a } };
+    vertex_buffer_push_back_indices( _this->buffer, indices, 6 );
+    vertex_buffer_push_back_vertices( _this->buffer, vertices, 4 );
+}
+
+void sjf_boxRenderer_render(sjs_boxRenderer* _parent, sjs_surface2d* surface) {
+    glUseProgram(sjv_boxShader.id);
+    glUniformMatrix4fv(glGetUniformLocation(sjv_boxShader.id, "model" ), 1, 0, surface->model.data);
+    glUniformMatrix4fv(glGetUniformLocation(sjv_boxShader.id, "view" ), 1, 0, surface->view.data);
+    glUniformMatrix4fv(glGetUniformLocation(sjv_boxShader.id, "projection" ), 1, 0, surface->projection.data);
+    vertex_buffer_render(_parent->buffer, GL_TRIANGLES);
+}
+
 void sjf_color(sjs_color* _this) {
 }
 
@@ -6166,225 +6423,107 @@ void sjf_color_heap(sjs_color_heap* _this) {
 }
 
 void sjf_fireMouseDown(sji_element* element, sjs_point* point) {
-    bool result4;
-    sji_element* sjt_cast4;
-    sjs_rect* sjt_dot37;
-    sji_element* sjt_dot38;
-    sji_element* sjt_dot40;
-    sjs_point* sjt_functionParam14;
-    bool sjt_ifElse10;
-    bool sjt_ifElse8;
-    sjs_array_heap_element* sjt_isEmpty4;
-    bool sjt_not4;
-    sjs_array_heap_element* sjv_children;
-    sji_fireMouseUp_mouseHandler* sjv_mouseHandler;
-
-    sjt_cast4 = element;
-    sjt_cast4->_refCount++;
-    sjv_mouseHandler = (sji_fireMouseUp_mouseHandler*)sjt_cast4->asInterface(sjt_cast4->_parent, sji_fireMouseUp_mouseHandler_typeId);
-    sjt_dot38 = element;
-    sjt_dot38->getRect((void*)(((char*)sjt_dot38->_parent) + sizeof(intptr_t)), &sjt_dot37);
-    sjt_functionParam14 = point;
-    sjf_rect_containsPoint(sjt_dot37, sjt_functionParam14, &sjt_ifElse8);
-    if (sjt_ifElse8) {
-        bool result3;
-        bool sjt_ifElse9;
-        sji_fireMouseUp_mouseHandler* sjt_isEmpty3;
-        bool sjt_not3;
-
-        sjt_isEmpty3 = sjv_mouseHandler;
-        if (sjt_isEmpty3 != 0) {
-            sjt_isEmpty3->_refCount++;
-        }
-
-        sjt_not3 = (sjt_isEmpty3 == 0);
-        result3 = !sjt_not3;
-        sjt_ifElse9 = result3;
-        if (sjt_ifElse9) {
-            sji_fireMouseUp_mouseHandler* sjt_dot39;
-            sji_fireMouseUp_mouseHandler* sjt_getValue3;
-            sjs_point* sjt_interfaceParam4;
-
-            sjt_getValue3 = sjv_mouseHandler;
-            if (sjt_getValue3 != 0) {
-                sjt_getValue3->_refCount++;
-            }
-
-            sjt_dot39 = sjt_getValue3;
-            sjt_interfaceParam4 = point;
-            sjt_dot39->onMouseDown((void*)(((char*)sjt_dot39->_parent) + sizeof(intptr_t)), sjt_interfaceParam4);
-
-            if (sjt_getValue3 != 0) {
-                sjt_getValue3->_refCount--;
-                if (sjt_getValue3->_refCount <= 0) {
-                    sji_fireMouseUp_mouseHandler_destroy(sjt_getValue3);
-                }
-            }
-        }
-
-        if (sjt_isEmpty3 != 0) {
-            sjt_isEmpty3->_refCount--;
-            if (sjt_isEmpty3->_refCount <= 0) {
-                sji_fireMouseUp_mouseHandler_destroy(sjt_isEmpty3);
-            }
-        }
-    }
-
-    sjt_dot40 = element;
-    sjt_dot40->getChildren((void*)(((char*)sjt_dot40->_parent) + sizeof(intptr_t)), &sjv_children);
-    sjt_isEmpty4 = sjv_children;
-    sjt_not4 = (sjt_isEmpty4 == 0);
-    result4 = !sjt_not4;
-    sjt_ifElse10 = result4;
-    if (sjt_ifElse10) {
-        int32_t i;
-        sjs_array_heap_element* sjt_dot41;
-        int32_t sjt_forEnd2;
-        int32_t sjt_forStart2;
-        sjs_array_heap_element* sjt_getValue4;
-        sjs_array_heap_element* sjv_c;
-
-        sjt_getValue4 = sjv_children;
-        if (sjt_getValue4 == 0) { exit(-1); }
-        sjv_c = sjt_getValue4;
-        sjt_forStart2 = 0;
-        i = sjt_forStart2;
-        sjt_dot41 = sjv_c;
-        sjt_forEnd2 = (sjt_dot41)->size;
-        while (i < sjt_forEnd2) {
-            sjs_array_heap_element* sjt_dot42;
-            sji_element* sjt_functionParam15;
-            int32_t sjt_functionParam16;
-            sjs_point* sjt_functionParam17;
-
-            sjt_dot42 = sjv_c;
-            sjt_functionParam16 = i;
-            sjf_array_heap_element_getAt_heap(sjt_dot42, sjt_functionParam16, &sjt_functionParam15);
-            sjt_functionParam17 = point;
-            sjf_fireMouseDown(sjt_functionParam15, sjt_functionParam17);
-            i++;
-
-            sjt_functionParam15->_refCount--;
-            if (sjt_functionParam15->_refCount <= 0) {
-                sji_element_destroy(sjt_functionParam15);
-            }
-        }
-    }
-
-    sjt_cast4->_refCount--;
-    if (sjt_cast4->_refCount <= 0) {
-        sji_element_destroy(sjt_cast4);
-    }
-    if (sjv_mouseHandler != 0) {
-        sjv_mouseHandler->_refCount--;
-        if (sjv_mouseHandler->_refCount <= 0) {
-            sji_fireMouseUp_mouseHandler_destroy(sjv_mouseHandler);
-        }
-    }
-}
-
-void sjf_fireMouseUp(sji_element* element, sjs_point* point) {
-    bool result2;
+    bool result5;
     sji_element* sjt_cast3;
-    sjs_rect* sjt_dot27;
-    sji_element* sjt_dot28;
-    sji_element* sjt_dot34;
-    sjs_point* sjt_functionParam8;
-    bool sjt_ifElse4;
-    bool sjt_ifElse6;
-    sjs_array_heap_element* sjt_isEmpty2;
-    bool sjt_not2;
+    sjs_rect* sjt_dot26;
+    sji_element* sjt_dot27;
+    sji_element* sjt_dot29;
+    sjs_point* sjt_functionParam10;
+    bool sjt_ifElse10;
+    bool sjt_ifElse12;
+    sjs_array_heap_element* sjt_isEmpty6;
+    bool sjt_not5;
     sjs_array_heap_element* sjv_children;
     sji_fireMouseUp_mouseHandler* sjv_mouseHandler;
 
     sjt_cast3 = element;
     sjt_cast3->_refCount++;
     sjv_mouseHandler = (sji_fireMouseUp_mouseHandler*)sjt_cast3->asInterface(sjt_cast3->_parent, sji_fireMouseUp_mouseHandler_typeId);
-    sjt_dot28 = element;
-    sjt_dot28->getRect((void*)(((char*)sjt_dot28->_parent) + sizeof(intptr_t)), &sjt_dot27);
-    sjt_functionParam8 = point;
-    sjf_rect_containsPoint(sjt_dot27, sjt_functionParam8, &sjt_ifElse4);
-    if (sjt_ifElse4) {
-        bool result1;
-        bool sjt_ifElse5;
-        sji_fireMouseUp_mouseHandler* sjt_isEmpty1;
-        bool sjt_not1;
+    sjt_dot27 = element;
+    sjt_dot27->getRect((void*)(((char*)sjt_dot27->_parent) + sizeof(intptr_t)), &sjt_dot26);
+    sjt_functionParam10 = point;
+    sjf_rect_containsPoint(sjt_dot26, sjt_functionParam10, &sjt_ifElse10);
+    if (sjt_ifElse10) {
+        bool result4;
+        bool sjt_ifElse11;
+        sji_fireMouseUp_mouseHandler* sjt_isEmpty5;
+        bool sjt_not4;
 
-        sjt_isEmpty1 = sjv_mouseHandler;
-        if (sjt_isEmpty1 != 0) {
-            sjt_isEmpty1->_refCount++;
+        sjt_isEmpty5 = sjv_mouseHandler;
+        if (sjt_isEmpty5 != 0) {
+            sjt_isEmpty5->_refCount++;
         }
 
-        sjt_not1 = (sjt_isEmpty1 == 0);
-        result1 = !sjt_not1;
-        sjt_ifElse5 = result1;
-        if (sjt_ifElse5) {
-            sji_fireMouseUp_mouseHandler* sjt_dot33;
-            sji_fireMouseUp_mouseHandler* sjt_getValue1;
-            sjs_point* sjt_interfaceParam3;
+        sjt_not4 = (sjt_isEmpty5 == 0);
+        result4 = !sjt_not4;
+        sjt_ifElse11 = result4;
+        if (sjt_ifElse11) {
+            sji_fireMouseUp_mouseHandler* sjt_dot28;
+            sji_fireMouseUp_mouseHandler* sjt_getValue4;
+            sjs_point* sjt_interfaceParam4;
 
-            sjt_getValue1 = sjv_mouseHandler;
-            if (sjt_getValue1 != 0) {
-                sjt_getValue1->_refCount++;
+            sjt_getValue4 = sjv_mouseHandler;
+            if (sjt_getValue4 != 0) {
+                sjt_getValue4->_refCount++;
             }
 
-            sjt_dot33 = sjt_getValue1;
-            sjt_interfaceParam3 = point;
-            sjt_dot33->onMouseUp((void*)(((char*)sjt_dot33->_parent) + sizeof(intptr_t)), sjt_interfaceParam3);
+            sjt_dot28 = sjt_getValue4;
+            sjt_interfaceParam4 = point;
+            sjt_dot28->onMouseDown((void*)(((char*)sjt_dot28->_parent) + sizeof(intptr_t)), sjt_interfaceParam4);
 
-            if (sjt_getValue1 != 0) {
-                sjt_getValue1->_refCount--;
-                if (sjt_getValue1->_refCount <= 0) {
-                    sji_fireMouseUp_mouseHandler_destroy(sjt_getValue1);
+            if (sjt_getValue4 != 0) {
+                sjt_getValue4->_refCount--;
+                if (sjt_getValue4->_refCount <= 0) {
+                    sji_fireMouseUp_mouseHandler_destroy(sjt_getValue4);
                 }
             }
         }
 
-        if (sjt_isEmpty1 != 0) {
-            sjt_isEmpty1->_refCount--;
-            if (sjt_isEmpty1->_refCount <= 0) {
-                sji_fireMouseUp_mouseHandler_destroy(sjt_isEmpty1);
+        if (sjt_isEmpty5 != 0) {
+            sjt_isEmpty5->_refCount--;
+            if (sjt_isEmpty5->_refCount <= 0) {
+                sji_fireMouseUp_mouseHandler_destroy(sjt_isEmpty5);
             }
         }
     }
 
-    sjt_dot34 = element;
-    sjt_dot34->getChildren((void*)(((char*)sjt_dot34->_parent) + sizeof(intptr_t)), &sjv_children);
-    sjt_isEmpty2 = sjv_children;
-    sjt_not2 = (sjt_isEmpty2 == 0);
-    result2 = !sjt_not2;
-    sjt_ifElse6 = result2;
-    if (sjt_ifElse6) {
+    sjt_dot29 = element;
+    sjt_dot29->getChildren((void*)(((char*)sjt_dot29->_parent) + sizeof(intptr_t)), &sjv_children);
+    sjt_isEmpty6 = sjv_children;
+    sjt_not5 = (sjt_isEmpty6 == 0);
+    result5 = !sjt_not5;
+    sjt_ifElse12 = result5;
+    if (sjt_ifElse12) {
         int32_t i;
-        sjs_array_heap_element* sjt_dot35;
-        int32_t sjt_forEnd1;
-        int32_t sjt_forStart1;
-        sjs_array_heap_element* sjt_getValue2;
+        sjs_array_heap_element* sjt_dot30;
+        int32_t sjt_forEnd2;
+        int32_t sjt_forStart2;
+        sjs_array_heap_element* sjt_getValue5;
         sjs_array_heap_element* sjv_c;
 
-        sjt_getValue2 = sjv_children;
-        if (sjt_getValue2 == 0) { exit(-1); }
-        sjv_c = sjt_getValue2;
-        sjt_forStart1 = 0;
-        i = sjt_forStart1;
-        sjt_dot35 = sjv_c;
-        sjt_forEnd1 = (sjt_dot35)->size;
-        while (i < sjt_forEnd1) {
-            sjs_array_heap_element* sjt_dot36;
-            int32_t sjt_functionParam10;
-            sjs_point* sjt_functionParam11;
-            sji_element* sjt_functionParam9;
+        sjt_getValue5 = sjv_children;
+        if (sjt_getValue5 == 0) { exit(-1); }
+        sjv_c = sjt_getValue5;
+        sjt_forStart2 = 0;
+        i = sjt_forStart2;
+        sjt_dot30 = sjv_c;
+        sjt_forEnd2 = (sjt_dot30)->size;
+        while (i < sjt_forEnd2) {
+            sjs_array_heap_element* sjt_dot31;
+            sji_element* sjt_functionParam11;
+            int32_t sjt_functionParam12;
+            sjs_point* sjt_functionParam13;
 
-            sjt_dot36 = sjv_c;
-            sjt_functionParam10 = i;
-            sjf_array_heap_element_getAt_heap(sjt_dot36, sjt_functionParam10, &sjt_functionParam9);
-            sjt_functionParam11 = point;
-            sjf_fireMouseUp(sjt_functionParam9, sjt_functionParam11);
+            sjt_dot31 = sjv_c;
+            sjt_functionParam12 = i;
+            sjf_array_heap_element_getAt_heap(sjt_dot31, sjt_functionParam12, &sjt_functionParam11);
+            sjt_functionParam13 = point;
+            sjf_fireMouseDown(sjt_functionParam11, sjt_functionParam13);
             i++;
 
-            sjt_functionParam9->_refCount--;
-            if (sjt_functionParam9->_refCount <= 0) {
-                sji_element_destroy(sjt_functionParam9);
+            sjt_functionParam11->_refCount--;
+            if (sjt_functionParam11->_refCount <= 0) {
+                sji_element_destroy(sjt_functionParam11);
             }
         }
     }
@@ -6401,132 +6540,134 @@ void sjf_fireMouseUp(sji_element* element, sjs_point* point) {
     }
 }
 
-void sjf_font(sjs_font* _this) {
-    _this->atlas = texture_atlas_new( 512, 512, 3 );
-    _this->font = texture_font_new_from_file(_this->atlas, _this->size, (char*)_this->src.data.data);
-    if (_this->font == 0) {
-        printf("texture_font_new_from_file Error\n");
+void sjf_fireMouseUp(sji_element* element, sjs_point* point) {
+    bool result3;
+    sji_element* sjt_cast2;
+    sjs_rect* sjt_dot16;
+    sji_element* sjt_dot17;
+    sji_element* sjt_dot23;
+    sjs_point* sjt_functionParam4;
+    bool sjt_ifElse6;
+    bool sjt_ifElse8;
+    sjs_array_heap_element* sjt_isEmpty4;
+    bool sjt_not3;
+    sjs_array_heap_element* sjv_children;
+    sji_fireMouseUp_mouseHandler* sjv_mouseHandler;
+
+    sjt_cast2 = element;
+    sjt_cast2->_refCount++;
+    sjv_mouseHandler = (sji_fireMouseUp_mouseHandler*)sjt_cast2->asInterface(sjt_cast2->_parent, sji_fireMouseUp_mouseHandler_typeId);
+    sjt_dot17 = element;
+    sjt_dot17->getRect((void*)(((char*)sjt_dot17->_parent) + sizeof(intptr_t)), &sjt_dot16);
+    sjt_functionParam4 = point;
+    sjf_rect_containsPoint(sjt_dot16, sjt_functionParam4, &sjt_ifElse6);
+    if (sjt_ifElse6) {
+        bool result2;
+        bool sjt_ifElse7;
+        sji_fireMouseUp_mouseHandler* sjt_isEmpty3;
+        bool sjt_not2;
+
+        sjt_isEmpty3 = sjv_mouseHandler;
+        if (sjt_isEmpty3 != 0) {
+            sjt_isEmpty3->_refCount++;
+        }
+
+        sjt_not2 = (sjt_isEmpty3 == 0);
+        result2 = !sjt_not2;
+        sjt_ifElse7 = result2;
+        if (sjt_ifElse7) {
+            sji_fireMouseUp_mouseHandler* sjt_dot22;
+            sji_fireMouseUp_mouseHandler* sjt_getValue2;
+            sjs_point* sjt_interfaceParam3;
+
+            sjt_getValue2 = sjv_mouseHandler;
+            if (sjt_getValue2 != 0) {
+                sjt_getValue2->_refCount++;
+            }
+
+            sjt_dot22 = sjt_getValue2;
+            sjt_interfaceParam3 = point;
+            sjt_dot22->onMouseUp((void*)(((char*)sjt_dot22->_parent) + sizeof(intptr_t)), sjt_interfaceParam3);
+
+            if (sjt_getValue2 != 0) {
+                sjt_getValue2->_refCount--;
+                if (sjt_getValue2->_refCount <= 0) {
+                    sji_fireMouseUp_mouseHandler_destroy(sjt_getValue2);
+                }
+            }
+        }
+
+        if (sjt_isEmpty3 != 0) {
+            sjt_isEmpty3->_refCount--;
+            if (sjt_isEmpty3->_refCount <= 0) {
+                sji_fireMouseUp_mouseHandler_destroy(sjt_isEmpty3);
+            }
+        }
     }
-    glGenTextures( 1, &_this->atlas->id );
-    glBindTexture( GL_TEXTURE_2D, _this->atlas->id );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, (int)_this->atlas->width, (int)_this->atlas->height, 0, GL_RGB, GL_UNSIGNED_BYTE, _this->atlas->data );
-}
 
-void sjf_font_copy(sjs_font* _this, sjs_font* _from) {
-    sjf_string_copy(&_this->src, &_from->src);
-    _this->size = _from->size;
-    _this->atlas = _from->atlas;
-    _retain(_this->atlas);
-    _this->font = _from->font;
-    _retain(_this->font);
-}
+    sjt_dot23 = element;
+    sjt_dot23->getChildren((void*)(((char*)sjt_dot23->_parent) + sizeof(intptr_t)), &sjv_children);
+    sjt_isEmpty4 = sjv_children;
+    sjt_not3 = (sjt_isEmpty4 == 0);
+    result3 = !sjt_not3;
+    sjt_ifElse8 = result3;
+    if (sjt_ifElse8) {
+        int32_t i;
+        sjs_array_heap_element* sjt_dot24;
+        int32_t sjt_forEnd1;
+        int32_t sjt_forStart1;
+        sjs_array_heap_element* sjt_getValue3;
+        sjs_array_heap_element* sjv_c;
 
-void sjf_font_destroy(sjs_font* _this) {
-    if (_release(_this->atlas)) {
-        texture_atlas_delete(_this->atlas);
+        sjt_getValue3 = sjv_children;
+        if (sjt_getValue3 == 0) { exit(-1); }
+        sjv_c = sjt_getValue3;
+        sjt_forStart1 = 0;
+        i = sjt_forStart1;
+        sjt_dot24 = sjv_c;
+        sjt_forEnd1 = (sjt_dot24)->size;
+        while (i < sjt_forEnd1) {
+            sjs_array_heap_element* sjt_dot25;
+            sji_element* sjt_functionParam5;
+            int32_t sjt_functionParam6;
+            sjs_point* sjt_functionParam7;
+
+            sjt_dot25 = sjv_c;
+            sjt_functionParam6 = i;
+            sjf_array_heap_element_getAt_heap(sjt_dot25, sjt_functionParam6, &sjt_functionParam5);
+            sjt_functionParam7 = point;
+            sjf_fireMouseUp(sjt_functionParam5, sjt_functionParam7);
+            i++;
+
+            sjt_functionParam5->_refCount--;
+            if (sjt_functionParam5->_refCount <= 0) {
+                sji_element_destroy(sjt_functionParam5);
+            }
+        }
     }
-    if (_release(_this->font)) {
-        texture_font_delete(_this->font);
+
+    sjt_cast2->_refCount--;
+    if (sjt_cast2->_refCount <= 0) {
+        sji_element_destroy(sjt_cast2);
     }
-}
-
-void sjf_font_getTextSize(sjs_font* _parent, sjs_string* str, sjs_size* _return) {
-    int32_t sjv_h;
-    int32_t sjv_w;
-
-    sjv_w = 0;
-    sjv_h = 0;
-    vec2 size = get_text_size(_parent->font, (char*)str->data.data);
-    sjv_w = (int)size.x;
-    sjv_h = (int)size.y;
-    _return->w = sjv_w;
-    _return->h = sjv_h;
-    sjf_size(_return);
-}
-
-void sjf_font_getTextSize_heap(sjs_font* _parent, sjs_string* str, sjs_size_heap** _return) {
-    int32_t sjv_h;
-    int32_t sjv_w;
-
-    sjv_w = 0;
-    sjv_h = 0;
-    vec2 size = get_text_size(_parent->font, (char*)str->data.data);
-    sjv_w = (int)size.x;
-    sjv_h = (int)size.y;
-    (*_return) = (sjs_size_heap*)malloc(sizeof(sjs_size_heap));
-    (*_return)->_refCount = 1;
-    (*_return)->w = sjv_w;
-    (*_return)->h = sjv_h;
-    sjf_size_heap((*_return));
-}
-
-void sjf_font_getTexture(sjs_font* _parent, sjs_texture* _return) {
-    int32_t sjv_h;
-    uint32_t sjv_id;
-    int32_t sjv_w;
-
-    sjv_w = 0;
-    sjv_h = 0;
-    sjv_id = (uint32_t)0u;
-    sjv_w = _parent->atlas->width;
-    sjv_h = _parent->atlas->height;
-    sjv_id = _parent->atlas->id;
-    _return->size.w = sjv_w;
-    _return->size.h = sjv_h;
-    sjf_size(&_return->size);
-    _return->id = sjv_id;
-    sjf_texture(_return);
-}
-
-void sjf_font_getTexture_heap(sjs_font* _parent, sjs_texture_heap** _return) {
-    int32_t sjv_h;
-    uint32_t sjv_id;
-    int32_t sjv_w;
-
-    sjv_w = 0;
-    sjv_h = 0;
-    sjv_id = (uint32_t)0u;
-    sjv_w = _parent->atlas->width;
-    sjv_h = _parent->atlas->height;
-    sjv_id = _parent->atlas->id;
-    (*_return) = (sjs_texture_heap*)malloc(sizeof(sjs_texture_heap));
-    (*_return)->_refCount = 1;
-    (*_return)->size.w = sjv_w;
-    (*_return)->size.h = sjv_h;
-    sjf_size(&(*_return)->size);
-    (*_return)->id = sjv_id;
-    sjf_texture_heap((*_return));
-}
-
-void sjf_font_heap(sjs_font_heap* _this) {
-    _this->atlas = texture_atlas_new( 512, 512, 3 );
-    _this->font = texture_font_new_from_file(_this->atlas, _this->size, (char*)_this->src.data.data);
-    if (_this->font == 0) {
-        printf("texture_font_new_from_file Error\n");
+    if (sjv_mouseHandler != 0) {
+        sjv_mouseHandler->_refCount--;
+        if (sjv_mouseHandler->_refCount <= 0) {
+            sji_fireMouseUp_mouseHandler_destroy(sjv_mouseHandler);
+        }
     }
-    glGenTextures( 1, &_this->atlas->id );
-    glBindTexture( GL_TEXTURE_2D, _this->atlas->id );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, (int)_this->atlas->width, (int)_this->atlas->height, 0, GL_RGB, GL_UNSIGNED_BYTE, _this->atlas->data );
 }
 
 void sjf_mainLoop(void) {
-    sjs_surface2d* sjt_dot20;
-    sjs_surface2d* sjt_dot21;
-    sjs_size* sjt_dot22;
-    sjs_size* sjt_dot23;
-    sji_element* sjt_dot24;
-    sji_element* sjt_dot25;
-    sjs_surface2d* sjt_dot26;
-    bool sjt_ifElse3;
-    bool sjt_ifElse7;
+    sjs_surface2d* sjt_dot10;
+    sjs_size* sjt_dot11;
+    sjs_size* sjt_dot12;
+    sji_element* sjt_dot13;
+    sji_element* sjt_dot14;
+    sjs_surface2d* sjt_dot15;
+    sjs_surface2d* sjt_dot9;
+    bool sjt_ifElse5;
+    bool sjt_ifElse9;
     sjs_rect* sjt_interfaceParam1;
     sjs_surface2d* sjt_interfaceParam2;
     int32_t sjt_math5;
@@ -6538,25 +6679,25 @@ void sjf_mainLoop(void) {
     int32_t sjv_x;
     int32_t sjv_y;
 
-    sjt_dot20 = &sjv_rootSurface;
-    sjf_surface2d_clear(sjt_dot20);
-    sjt_dot21 = &sjv_rootSurface;
-    sjf_surface2d_getSize(sjt_dot21, &sjv_size);
+    sjt_dot9 = &sjv_rootSurface;
+    sjf_surface2d_clear(sjt_dot9);
+    sjt_dot10 = &sjv_rootSurface;
+    sjf_surface2d_getSize(sjt_dot10, &sjv_size);
     sjv_rect.x = 0;
     sjv_rect.y = 0;
-    sjt_dot22 = &sjv_size;
-    sjv_rect.w = (sjt_dot22)->w;
-    sjt_dot23 = &sjv_size;
-    sjv_rect.h = (sjt_dot23)->h;
+    sjt_dot11 = &sjv_size;
+    sjv_rect.w = (sjt_dot11)->w;
+    sjt_dot12 = &sjv_size;
+    sjv_rect.h = (sjt_dot12)->h;
     sjf_rect(&sjv_rect);
-    sjt_dot24 = sjv_root;
+    sjt_dot13 = sjv_root;
     sjt_interfaceParam1 = &sjv_rect;
-    sjt_dot24->setRect((void*)(((char*)sjt_dot24->_parent) + sizeof(intptr_t)), sjt_interfaceParam1);
-    sjt_dot25 = sjv_root;
+    sjt_dot13->setRect((void*)(((char*)sjt_dot13->_parent) + sizeof(intptr_t)), sjt_interfaceParam1);
+    sjt_dot14 = sjv_root;
     sjt_interfaceParam2 = &sjv_rootSurface;
-    sjt_dot25->render((void*)(((char*)sjt_dot25->_parent) + sizeof(intptr_t)), sjt_interfaceParam2);
-    sjt_dot26 = &sjv_rootSurface;
-    sjf_surface2d_present(sjt_dot26);
+    sjt_dot14->render((void*)(((char*)sjt_dot14->_parent) + sizeof(intptr_t)), sjt_interfaceParam2);
+    sjt_dot15 = &sjv_rootSurface;
+    sjf_surface2d_present(sjt_dot15);
     sjv_isMouseUp = false;
     sjv_isMouseDown = false;
     sjv_x = 0;
@@ -6581,46 +6722,46 @@ void sjf_mainLoop(void) {
             break;
         }
     }
-    sjt_ifElse3 = sjv_isMouseUp;
-    if (sjt_ifElse3) {
-        sjs_point sjt_call2;
-        sji_element* sjt_functionParam12;
-        sjs_point* sjt_functionParam13;
+    sjt_ifElse5 = sjv_isMouseUp;
+    if (sjt_ifElse5) {
+        sjs_point sjt_call1;
+        sji_element* sjt_functionParam8;
+        sjs_point* sjt_functionParam9;
 
-        sjt_functionParam12 = sjv_root;
-        sjt_functionParam12->_refCount++;
+        sjt_functionParam8 = sjv_root;
+        sjt_functionParam8->_refCount++;
+        sjt_call1.x = sjv_x;
+        sjt_call1.y = sjv_y;
+        sjf_point(&sjt_call1);
+        sjt_functionParam9 = &sjt_call1;
+        sjf_fireMouseUp(sjt_functionParam8, sjt_functionParam9);
+
+        sjt_functionParam8->_refCount--;
+        if (sjt_functionParam8->_refCount <= 0) {
+            sji_element_destroy(sjt_functionParam8);
+        }
+        sjf_point_destroy(&sjt_call1);
+    }
+
+    sjt_ifElse9 = sjv_isMouseDown;
+    if (sjt_ifElse9) {
+        sjs_point sjt_call2;
+        sji_element* sjt_functionParam14;
+        sjs_point* sjt_functionParam15;
+
+        sjt_functionParam14 = sjv_root;
+        sjt_functionParam14->_refCount++;
         sjt_call2.x = sjv_x;
         sjt_call2.y = sjv_y;
         sjf_point(&sjt_call2);
-        sjt_functionParam13 = &sjt_call2;
-        sjf_fireMouseUp(sjt_functionParam12, sjt_functionParam13);
+        sjt_functionParam15 = &sjt_call2;
+        sjf_fireMouseDown(sjt_functionParam14, sjt_functionParam15);
 
-        sjt_functionParam12->_refCount--;
-        if (sjt_functionParam12->_refCount <= 0) {
-            sji_element_destroy(sjt_functionParam12);
+        sjt_functionParam14->_refCount--;
+        if (sjt_functionParam14->_refCount <= 0) {
+            sji_element_destroy(sjt_functionParam14);
         }
         sjf_point_destroy(&sjt_call2);
-    }
-
-    sjt_ifElse7 = sjv_isMouseDown;
-    if (sjt_ifElse7) {
-        sjs_point sjt_call3;
-        sji_element* sjt_functionParam18;
-        sjs_point* sjt_functionParam19;
-
-        sjt_functionParam18 = sjv_root;
-        sjt_functionParam18->_refCount++;
-        sjt_call3.x = sjv_x;
-        sjt_call3.y = sjv_y;
-        sjf_point(&sjt_call3);
-        sjt_functionParam19 = &sjt_call3;
-        sjf_fireMouseDown(sjt_functionParam18, sjt_functionParam19);
-
-        sjt_functionParam18->_refCount--;
-        if (sjt_functionParam18->_refCount <= 0) {
-            sji_element_destroy(sjt_functionParam18);
-        }
-        sjf_point_destroy(&sjt_call3);
     }
 
     sjt_math5 = sjv_frame;
@@ -6663,31 +6804,31 @@ void sjf_rect_containsPoint(sjs_rect* _parent, sjs_point* point, bool* _return) 
     int32_t sjt_compare7;
     int32_t sjt_compare8;
     int32_t sjt_compare9;
-    sjs_point* sjt_dot29;
-    sjs_point* sjt_dot30;
-    sjs_point* sjt_dot31;
-    sjs_point* sjt_dot32;
+    sjs_point* sjt_dot18;
+    sjs_point* sjt_dot19;
+    sjs_point* sjt_dot20;
+    sjs_point* sjt_dot21;
     int32_t sjt_math1;
     int32_t sjt_math2;
     int32_t sjt_math3;
     int32_t sjt_math4;
 
     sjt_compare5 = (_parent)->x;
-    sjt_dot29 = point;
-    sjt_compare6 = (sjt_dot29)->x;
+    sjt_dot18 = point;
+    sjt_compare6 = (sjt_dot18)->x;
     sjt_and1 = sjt_compare5 <= sjt_compare6;
     sjt_compare7 = (_parent)->y;
-    sjt_dot30 = point;
-    sjt_compare8 = (sjt_dot30)->x;
+    sjt_dot19 = point;
+    sjt_compare8 = (sjt_dot19)->x;
     sjt_and3 = sjt_compare7 <= sjt_compare8;
-    sjt_dot31 = point;
-    sjt_compare9 = (sjt_dot31)->x;
+    sjt_dot20 = point;
+    sjt_compare9 = (sjt_dot20)->x;
     sjt_math1 = (_parent)->x;
     sjt_math2 = (_parent)->w;
     sjt_compare10 = sjt_math1 + sjt_math2;
     sjt_and5 = sjt_compare9 < sjt_compare10;
-    sjt_dot32 = point;
-    sjt_compare11 = (sjt_dot32)->y;
+    sjt_dot21 = point;
+    sjt_compare11 = (sjt_dot21)->y;
     sjt_math3 = (_parent)->y;
     sjt_math4 = (_parent)->h;
     sjt_compare12 = sjt_math3 + sjt_math4;
@@ -6722,26 +6863,47 @@ void sjf_runLoop(void) {
     #endif
 }
 
+void sjf_shader(sjs_shader* _this) {
+    _this->id = shader_load((char*)_this->vertex.data.data, (char*)_this->pixel.data.data);
+}
+
+void sjf_shader_copy(sjs_shader* _this, sjs_shader* _from) {
+    sjf_string_copy(&_this->vertex, &_from->vertex);
+    sjf_string_copy(&_this->pixel, &_from->pixel);
+    _this->id = _from->id;
+    _retainGLid(_this->id);
+}
+
+void sjf_shader_destroy(sjs_shader* _this) {
+    if (_releaseGLid(_this->id)) {
+        glDeleteShader(_this->id);
+    }
+}
+
+void sjf_shader_heap(sjs_shader_heap* _this) {
+    _this->id = shader_load((char*)_this->vertex.data.data, (char*)_this->pixel.data.data);
+}
+
 void sjf_size(sjs_size* _this) {
 }
 
 void sjf_size_cap(sjs_size* _parent, sjs_size* maxSize, sjs_size* _return) {
     int32_t sjt_compare1;
     int32_t sjt_compare2;
-    sjs_size* sjt_dot3;
+    sjs_size* sjt_dot2;
     bool sjt_ifElse1;
 
     sjt_compare1 = (_parent)->w;
-    sjt_dot3 = maxSize;
-    sjt_compare2 = (sjt_dot3)->w;
+    sjt_dot2 = maxSize;
+    sjt_compare2 = (sjt_dot2)->w;
     sjt_ifElse1 = sjt_compare1 < sjt_compare2;
     if (sjt_ifElse1) {
         _return->w = (_parent)->w;
     } else {
-        sjs_size* sjt_dot4;
+        sjs_size* sjt_dot3;
 
-        sjt_dot4 = maxSize;
-        _return->w = (sjt_dot4)->w;
+        sjt_dot3 = maxSize;
+        _return->w = (sjt_dot3)->w;
     }
 
     _return->h = 0;
@@ -6751,22 +6913,22 @@ void sjf_size_cap(sjs_size* _parent, sjs_size* maxSize, sjs_size* _return) {
 void sjf_size_cap_heap(sjs_size* _parent, sjs_size* maxSize, sjs_size_heap** _return) {
     int32_t sjt_compare3;
     int32_t sjt_compare4;
-    sjs_size* sjt_dot5;
+    sjs_size* sjt_dot4;
     bool sjt_ifElse2;
 
     (*_return) = (sjs_size_heap*)malloc(sizeof(sjs_size_heap));
     (*_return)->_refCount = 1;
     sjt_compare3 = (_parent)->w;
-    sjt_dot5 = maxSize;
-    sjt_compare4 = (sjt_dot5)->w;
+    sjt_dot4 = maxSize;
+    sjt_compare4 = (sjt_dot4)->w;
     sjt_ifElse2 = sjt_compare3 < sjt_compare4;
     if (sjt_ifElse2) {
         (*_return)->w = (_parent)->w;
     } else {
-        sjs_size* sjt_dot6;
+        sjs_size* sjt_dot5;
 
-        sjt_dot6 = maxSize;
-        (*_return)->w = (sjt_dot6)->w;
+        sjt_dot5 = maxSize;
+        (*_return)->w = (sjt_dot5)->w;
     }
 
     (*_return)->h = 0;
@@ -6835,7 +6997,6 @@ void sjf_surface2d(sjs_surface2d* _this) {
     glClearColor( 0.0, 0.0, 0.0, 0.0 );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glEnable( GL_BLEND );
-    _this->textShader = shader_load("shaders/v3f-t2f-c4f.vert", "shaders/v3f-t2f-c4f.frag");
 }
 
 void sjf_surface2d_clear(sjs_surface2d* _parent) {
@@ -6866,19 +7027,6 @@ void sjf_surface2d_destroy(sjs_surface2d* _this) {
     if (_release(_this->win)) {
         SDL_DestroyWindow(_this->win);
     }
-}
-
-void sjf_surface2d_drawVertexBuffer(sjs_surface2d* _parent, sji_textElement_render_vertexBuffer* vertexBuffer, sjs_texture* texture) {
-    sji_textElement_render_vertexBuffer* sjt_dot17;
-
-    glBindTexture(GL_TEXTURE_2D, texture->id);
-    glUseProgram(_parent->textShader);
-    glUniform1i(glGetUniformLocation(_parent->textShader, "texture" ), 0 );
-    glUniformMatrix4fv(glGetUniformLocation(_parent->textShader, "model" ), 1, 0, _parent->model.data);
-    glUniformMatrix4fv(glGetUniformLocation(_parent->textShader, "view" ), 1, 0, _parent->view.data);
-    glUniformMatrix4fv(glGetUniformLocation(_parent->textShader, "projection" ), 1, 0, _parent->projection.data);
-    sjt_dot17 = vertexBuffer;
-    sjt_dot17->render((void*)(((char*)sjt_dot17->_parent) + sizeof(intptr_t)));
 }
 
 void sjf_surface2d_getSize(sjs_surface2d* _parent, sjs_size* _return) {
@@ -6944,294 +7092,10 @@ void sjf_surface2d_heap(sjs_surface2d_heap* _this) {
     glClearColor( 0.0, 0.0, 0.0, 0.0 );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glEnable( GL_BLEND );
-    _this->textShader = shader_load("shaders/v3f-t2f-c4f.vert", "shaders/v3f-t2f-c4f.frag");
 }
 
 void sjf_surface2d_present(sjs_surface2d* _parent) {
     SDL_GL_SwapWindow((SDL_Window*)_parent->win);
-}
-
-void sjf_textElement(sjs_textElement* _this) {
-}
-
-sjs_object* sjf_textElement_asInterface(sjs_textElement* _this, int typeId) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            return (sjs_object*)sjf_textElement_as_sji_element(_this);
-        }
-    }
-
-    return 0;
-}
-
-sji_element* sjf_textElement_as_sji_element(sjs_textElement* _this) {
-    sji_element* _interface;
-    _interface = (sji_element*)malloc(sizeof(sji_element));
-    _interface->_refCount = 1;
-    _interface->_parent = (sjs_object*)_this;
-    _interface->_parent->_refCount++;
-    _interface->destroy = (void(*)(void*))sjf_textElement_destroy;
-    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_textElement_asInterface;
-    _interface->getSize = (void(*)(void*,sjs_size*, sjs_size*))sjf_textElement_getSize;
-    _interface->getSize_heap = (void(*)(void*,sjs_size*, sjs_size_heap**))sjf_textElement_getSize_heap;
-    _interface->getRect = (void(*)(void*, sjs_rect**))sjf_textElement_getRect;
-    _interface->setRect = (void(*)(void*,sjs_rect*))sjf_textElement_setRect;
-    _interface->render = (void(*)(void*,sjs_surface2d*))sjf_textElement_render;
-    _interface->getChildren = (void(*)(void*, sjs_array_heap_element**))sjf_textElement_getChildren;
-
-    return _interface;
-}
-
-void sjf_textElement_copy(sjs_textElement* _this, sjs_textElement* _from) {
-    sjf_font_copy(&_this->font, &_from->font);
-    sjf_string_copy(&_this->text, &_from->text);
-    sjf_color_copy(&_this->color, &_from->color);
-    sjf_rect_copy(&_this->rect, &_from->rect);
-}
-
-void sjf_textElement_destroy(sjs_textElement* _this) {
-}
-
-void sjf_textElement_getChildren(sjs_textElement* _parent, sjs_array_heap_element** _return) {
-    (*_return) = 0;
-}
-
-void sjf_textElement_getRect(sjs_textElement* _parent, sjs_rect** _return) {
-    (*_return) = &(_parent)->rect;
-}
-
-void sjf_textElement_getSize(sjs_textElement* _parent, sjs_size* maxSize, sjs_size* _return) {
-    sjs_font* sjt_dot1;
-    sjs_size* sjt_dot2;
-    sjs_string* sjt_functionParam1;
-    sjs_size* sjt_functionParam2;
-    sjs_size sjv_textSize;
-
-    sjt_dot1 = &(_parent)->font;
-    sjt_functionParam1 = &(_parent)->text;
-    sjf_font_getTextSize(sjt_dot1, sjt_functionParam1, &sjv_textSize);
-    sjt_dot2 = &sjv_textSize;
-    sjt_functionParam2 = maxSize;
-    sjf_size_cap(sjt_dot2, sjt_functionParam2, _return);
-
-    sjf_size_destroy(&sjv_textSize);
-}
-
-void sjf_textElement_getSize_heap(sjs_textElement* _parent, sjs_size* maxSize, sjs_size_heap** _return) {
-    sjs_font* sjt_dot7;
-    sjs_size* sjt_dot8;
-    sjs_string* sjt_functionParam3;
-    sjs_size* sjt_functionParam4;
-    sjs_size sjv_textSize;
-
-    sjt_dot7 = &(_parent)->font;
-    sjt_functionParam3 = &(_parent)->text;
-    sjf_font_getTextSize(sjt_dot7, sjt_functionParam3, &sjv_textSize);
-    sjt_dot8 = &sjv_textSize;
-    sjt_functionParam4 = maxSize;
-    sjf_size_cap_heap(sjt_dot8, sjt_functionParam4, _return);
-
-    sjf_size_destroy(&sjv_textSize);
-}
-
-void sjf_textElement_heap(sjs_textElement_heap* _this) {
-}
-
-sjs_object* sjf_textElement_heap_asInterface(sjs_textElement_heap* _this, int typeId) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            return (sjs_object*)sjf_textElement_heap_as_sji_element(_this);
-        }
-    }
-
-    return 0;
-}
-
-sji_element* sjf_textElement_heap_as_sji_element(sjs_textElement_heap* _this) {
-    sji_element* _interface;
-    _interface = (sji_element*)malloc(sizeof(sji_element));
-    _interface->_refCount = 1;
-    _interface->_parent = (sjs_object*)_this;
-    _interface->_parent->_refCount++;
-    _interface->destroy = (void(*)(void*))sjf_textElement_destroy;
-    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_textElement_heap_asInterface;
-    _interface->getSize = (void(*)(void*,sjs_size*, sjs_size*))sjf_textElement_getSize;
-    _interface->getSize_heap = (void(*)(void*,sjs_size*, sjs_size_heap**))sjf_textElement_getSize_heap;
-    _interface->getRect = (void(*)(void*, sjs_rect**))sjf_textElement_getRect;
-    _interface->setRect = (void(*)(void*,sjs_rect*))sjf_textElement_setRect;
-    _interface->render = (void(*)(void*,sjs_surface2d*))sjf_textElement_render;
-    _interface->getChildren = (void(*)(void*, sjs_array_heap_element**))sjf_textElement_getChildren;
-
-    return _interface;
-}
-
-void sjf_textElement_render(sjs_textElement* _parent, sjs_surface2d* surface) {
-    sjs_texture sjt_call1;
-    sjs_textVertexBuffer_heap* sjt_cast2;
-    sjs_rect* sjt_dot10;
-    sjs_font* sjt_dot11;
-    sjs_rect* sjt_dot12;
-    sjs_rect* sjt_dot13;
-    sjs_size* sjt_dot14;
-    sjs_size* sjt_dot15;
-    sjs_surface2d* sjt_dot16;
-    sjs_font* sjt_dot18;
-    sjs_rect* sjt_dot9;
-    sjs_string* sjt_functionParam5;
-    sji_textElement_render_vertexBuffer* sjt_functionParam6;
-    sjs_texture* sjt_functionParam7;
-    sjs_rect sjv_final;
-    sjs_size sjv_textSize;
-    sji_textElement_render_vertexBuffer* sjv_textVertexBuffer;
-
-    sjt_cast2 = (sjs_textVertexBuffer_heap*)malloc(sizeof(sjs_textVertexBuffer_heap));
-    sjt_cast2->_refCount = 1;
-    sjf_string_copy(&sjt_cast2->text, &(_parent)->text);
-    sjt_dot9 = &(_parent)->rect;
-    sjt_cast2->point.x = (sjt_dot9)->x;
-    sjt_dot10 = &(_parent)->rect;
-    sjt_cast2->point.y = (sjt_dot10)->y;
-    sjf_point(&sjt_cast2->point);
-    sjf_color_copy(&sjt_cast2->color, &(_parent)->color);
-    sjf_font_copy(&sjt_cast2->font, &(_parent)->font);
-    sjf_textVertexBuffer_heap(sjt_cast2);
-    sjv_textVertexBuffer = (sji_textElement_render_vertexBuffer*)sjf_textVertexBuffer_heap_as_sji_textElement_render_vertexBuffer(sjt_cast2);
-    sjt_dot11 = &(_parent)->font;
-    sjt_functionParam5 = &(_parent)->text;
-    sjf_font_getTextSize(sjt_dot11, sjt_functionParam5, &sjv_textSize);
-    sjt_dot12 = &(_parent)->rect;
-    sjv_final.x = (sjt_dot12)->x;
-    sjt_dot13 = &(_parent)->rect;
-    sjv_final.y = (sjt_dot13)->y;
-    sjt_dot14 = &sjv_textSize;
-    sjv_final.w = (sjt_dot14)->w;
-    sjt_dot15 = &sjv_textSize;
-    sjv_final.h = (sjt_dot15)->h;
-    sjf_rect(&sjv_final);
-    sjt_dot16 = surface;
-    sjt_functionParam6 = sjv_textVertexBuffer;
-    sjt_functionParam6->_refCount++;
-    sjt_dot18 = &(_parent)->font;
-    sjf_font_getTexture(sjt_dot18, &sjt_call1);
-    sjt_functionParam7 = &sjt_call1;
-    sjf_surface2d_drawVertexBuffer(sjt_dot16, sjt_functionParam6, sjt_functionParam7);
-
-    sjt_cast2->_refCount--;
-    if (sjt_cast2->_refCount <= 0) {
-        sjf_textVertexBuffer_destroy((sjs_textVertexBuffer*)(((char*)sjt_cast2) + sizeof(intptr_t)));
-    }
-    sjt_functionParam6->_refCount--;
-    if (sjt_functionParam6->_refCount <= 0) {
-        sji_textElement_render_vertexBuffer_destroy(sjt_functionParam6);
-    }
-    sjv_textVertexBuffer->_refCount--;
-    if (sjv_textVertexBuffer->_refCount <= 0) {
-        sji_textElement_render_vertexBuffer_destroy(sjv_textVertexBuffer);
-    }
-    sjf_texture_destroy(&sjt_call1);
-    sjf_rect_destroy(&sjv_final);
-    sjf_size_destroy(&sjv_textSize);
-}
-
-void sjf_textElement_setRect(sjs_textElement* _parent, sjs_rect* rect_) {
-    sjf_rect_copy(&_parent->rect, rect_);
-}
-
-void sjf_textVertexBuffer(sjs_textVertexBuffer* _this) {
-    vec2 pen = {{ (float)_this->point.x, (float)_this->point.y }};
-    vec4 color = {{ _this->color.r, _this->color.g, _this->color.b, _this->color.a }};
-    _this->buffer = vertex_buffer_new("vertex:3f,tex_coord:2f,color:4f");
-    add_text(_this->buffer, _this->font.font, (char*)_this->text.data.data, &color, &pen);
-    glBindTexture(GL_TEXTURE_2D, _this->font.font->atlas->id);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (int)_this->font.font->atlas->width, (int)_this->font.font->atlas->height, 0, GL_RGB, GL_UNSIGNED_BYTE, _this->font.font->atlas->data );
-}
-
-sjs_object* sjf_textVertexBuffer_asInterface(sjs_textVertexBuffer* _this, int typeId) {
-    switch (typeId) {
-        case sji_textElement_render_vertexBuffer_typeId:  {
-            return (sjs_object*)sjf_textVertexBuffer_as_sji_textElement_render_vertexBuffer(_this);
-        }
-    }
-
-    return 0;
-}
-
-sji_textElement_render_vertexBuffer* sjf_textVertexBuffer_as_sji_textElement_render_vertexBuffer(sjs_textVertexBuffer* _this) {
-    sji_textElement_render_vertexBuffer* _interface;
-    _interface = (sji_textElement_render_vertexBuffer*)malloc(sizeof(sji_textElement_render_vertexBuffer));
-    _interface->_refCount = 1;
-    _interface->_parent = (sjs_object*)_this;
-    _interface->_parent->_refCount++;
-    _interface->destroy = (void(*)(void*))sjf_textVertexBuffer_destroy;
-    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_textVertexBuffer_asInterface;
-    _interface->render = (void(*)(void*))sjf_textVertexBuffer_render;
-
-    return _interface;
-}
-
-void sjf_textVertexBuffer_copy(sjs_textVertexBuffer* _this, sjs_textVertexBuffer* _from) {
-    sjf_string_copy(&_this->text, &_from->text);
-    sjf_point_copy(&_this->point, &_from->point);
-    sjf_color_copy(&_this->color, &_from->color);
-    sjf_font_copy(&_this->font, &_from->font);
-    _this->buffer = _from->buffer;
-    _retain(_this->buffer);
-}
-
-void sjf_textVertexBuffer_destroy(sjs_textVertexBuffer* _this) {
-    if (_release(_this->buffer)) {
-        vertex_buffer_delete(_this->buffer);
-    }
-}
-
-void sjf_textVertexBuffer_heap(sjs_textVertexBuffer_heap* _this) {
-    vec2 pen = {{ (float)_this->point.x, (float)_this->point.y }};
-    vec4 color = {{ _this->color.r, _this->color.g, _this->color.b, _this->color.a }};
-    _this->buffer = vertex_buffer_new("vertex:3f,tex_coord:2f,color:4f");
-    add_text(_this->buffer, _this->font.font, (char*)_this->text.data.data, &color, &pen);
-    glBindTexture(GL_TEXTURE_2D, _this->font.font->atlas->id);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (int)_this->font.font->atlas->width, (int)_this->font.font->atlas->height, 0, GL_RGB, GL_UNSIGNED_BYTE, _this->font.font->atlas->data );
-}
-
-sjs_object* sjf_textVertexBuffer_heap_asInterface(sjs_textVertexBuffer_heap* _this, int typeId) {
-    switch (typeId) {
-        case sji_textElement_render_vertexBuffer_typeId:  {
-            return (sjs_object*)sjf_textVertexBuffer_heap_as_sji_textElement_render_vertexBuffer(_this);
-        }
-    }
-
-    return 0;
-}
-
-sji_textElement_render_vertexBuffer* sjf_textVertexBuffer_heap_as_sji_textElement_render_vertexBuffer(sjs_textVertexBuffer_heap* _this) {
-    sji_textElement_render_vertexBuffer* _interface;
-    _interface = (sji_textElement_render_vertexBuffer*)malloc(sizeof(sji_textElement_render_vertexBuffer));
-    _interface->_refCount = 1;
-    _interface->_parent = (sjs_object*)_this;
-    _interface->_parent->_refCount++;
-    _interface->destroy = (void(*)(void*))sjf_textVertexBuffer_destroy;
-    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_textVertexBuffer_heap_asInterface;
-    _interface->render = (void(*)(void*))sjf_textVertexBuffer_render;
-
-    return _interface;
-}
-
-void sjf_textVertexBuffer_render(sjs_textVertexBuffer* _parent) {
-    vertex_buffer_render(_parent->buffer, GL_TRIANGLES);
-}
-
-void sjf_texture(sjs_texture* _this) {
-}
-
-void sjf_texture_copy(sjs_texture* _this, sjs_texture* _from) {
-    sjf_size_copy(&_this->size, &_from->size);
-    _this->id = _from->id;
-}
-
-void sjf_texture_destroy(sjs_texture* _this) {
-}
-
-void sjf_texture_heap(sjs_texture_heap* _this) {
 }
 
 void sji_element_copy(sji_element* _this, sji_element* _from) {
@@ -7275,73 +7139,76 @@ void sji_fireMouseUp_mouseHandler_destroy(sji_fireMouseUp_mouseHandler* _this) {
     }
 }
 
-void sji_textElement_render_vertexBuffer_copy(sji_textElement_render_vertexBuffer* _this, sji_textElement_render_vertexBuffer* _from) {
-    _this->_refCount = 1;
-    _this->_parent = _from->_parent;
-    _this->_parent->_refCount++;
-    _this->destroy = _from->destroy;
-    _this->asInterface = _from->asInterface;
-    _this->render = _from->render;
-}
-
-void sji_textElement_render_vertexBuffer_destroy(sji_textElement_render_vertexBuffer* _this) {
-    _this->_parent->_refCount--;
-    if (_this->_parent->_refCount <= 0) {
-        _this->destroy((void*)(((char*)_this->_parent) + sizeof(intptr_t)));
-        free(_this->_parent);
-    }
-}
-
 int main(int argc, char** argv) {
+    sjv_i32_max = (-2147483647 - 1);
+    sjv_i32_min = 2147483647;
+    sjv_u32_max = (uint32_t)4294967295u;
+    sjv_frame = 0;
+    sjf_anon1(&sjv_console);
+    sjf_anon2(&sjv_parse);
+    sjf_anon3(&sjv_random);
+    sjf_anon4(&sjv_convert);
+    sjv_rootSurface.size.w = 640;
+    sjv_rootSurface.size.h = 480;
+    sjf_size(&sjv_rootSurface.size);
+    sjf_surface2d(&sjv_rootSurface);
+    sjv_buttonState.normal = 0;
+    sjv_buttonState.hot = 1;
+    sjv_buttonState.pressed = 2;
+    sjf_anon5(&sjv_buttonState);
+    sjf_anon6(&sjv_colors);
+    sjf_anon7(&sjv_style);
     sjv_borderPosition.fill = 0;
     sjv_borderPosition.left = 1;
     sjv_borderPosition.right = 2;
     sjv_borderPosition.top = 3;
     sjv_borderPosition.bottom = 4;
     sjf_anon8(&sjv_borderPosition);
-    sjf_anon7(&sjv_style);
-    sjf_anon6(&sjv_colors);
-    sjv_buttonState.normal = 0;
-    sjv_buttonState.hot = 1;
-    sjv_buttonState.pressed = 2;
-    sjf_anon5(&sjv_buttonState);
-    sjf_anon4(&sjv_convert);
-    sjf_anon3(&sjv_random);
-    sjf_anon2(&sjv_parse);
-    sjf_anon1(&sjv_console);
-    sjv_frame = 0;
-    sjv_i32_max = (-2147483647 - 1);
-    sjv_i32_min = 2147483647;
-    sjv_u32_max = (uint32_t)4294967295u;
-    sjv_rootSurface.size.w = 640;
-    sjv_rootSurface.size.h = 480;
-    sjf_size(&sjv_rootSurface.size);
-    sjf_surface2d(&sjv_rootSurface);
-    sjt_cast1 = (sjs_textElement_heap*)malloc(sizeof(sjs_textElement_heap));
+    sjv_textShader.vertex.count = 24;
+    sjv_textShader.vertex.data.size = 25;
+    sjv_textShader.vertex.data.data = (uintptr_t)sjg_string1;
+    sjv_textShader.vertex.data._isGlobal = false;
+    sjf_array_char(&sjv_textShader.vertex.data);
+    sjf_string(&sjv_textShader.vertex);
+    sjv_textShader.pixel.count = 24;
+    sjv_textShader.pixel.data.size = 25;
+    sjv_textShader.pixel.data.data = (uintptr_t)sjg_string2;
+    sjv_textShader.pixel.data._isGlobal = false;
+    sjf_array_char(&sjv_textShader.pixel.data);
+    sjf_string(&sjv_textShader.pixel);
+    sjf_shader(&sjv_textShader);
+    sjv_boxShader.vertex.count = 20;
+    sjv_boxShader.vertex.data.size = 21;
+    sjv_boxShader.vertex.data.data = (uintptr_t)sjg_string3;
+    sjv_boxShader.vertex.data._isGlobal = false;
+    sjf_array_char(&sjv_boxShader.vertex.data);
+    sjf_string(&sjv_boxShader.vertex);
+    sjv_boxShader.pixel.count = 20;
+    sjv_boxShader.pixel.data.size = 21;
+    sjv_boxShader.pixel.data.data = (uintptr_t)sjg_string4;
+    sjv_boxShader.pixel.data._isGlobal = false;
+    sjf_array_char(&sjv_boxShader.pixel.data);
+    sjf_string(&sjv_boxShader.pixel);
+    sjf_shader(&sjv_boxShader);
+    sjt_cast1 = (sjs_boxElement_heap*)malloc(sizeof(sjs_boxElement_heap));
     sjt_cast1->_refCount = 1;
-    sjt_cast1->font.src.count = 17;
-    sjt_cast1->font.src.data.size = 18;
-    sjt_cast1->font.src.data.data = (uintptr_t)sjg_string1;
-    sjt_cast1->font.src.data._isGlobal = false;
-    sjf_array_char(&sjt_cast1->font.src.data);
-    sjf_string(&sjt_cast1->font.src);
-    sjt_cast1->font.size = 25.0f;
-    sjf_font(&sjt_cast1->font);
-    sjt_cast1->text.count = 3;
-    sjt_cast1->text.data.size = 4;
-    sjt_cast1->text.data.data = (uintptr_t)sjg_string2;
-    sjt_cast1->text.data._isGlobal = false;
-    sjf_array_char(&sjt_cast1->text.data);
-    sjf_string(&sjt_cast1->text);
-    sjt_dot19 = &sjv_colors;
-    sjf_anon6_red(sjt_dot19, &sjt_cast1->color);
+    sjt_dot8 = &sjv_colors;
+    sjf_anon6_red(sjt_dot8, &sjt_cast1->color);
+    sjt_cast1->idealSize.w = 0;
+    sjt_cast1->idealSize.h = 0;
+    sjf_size(&sjt_cast1->idealSize);
     sjt_cast1->rect.x = 0;
     sjt_cast1->rect.y = 0;
     sjt_cast1->rect.w = 0;
     sjt_cast1->rect.h = 0;
     sjf_rect(&sjt_cast1->rect);
-    sjf_textElement_heap(sjt_cast1);
-    sjv_root = (sji_element*)sjf_textElement_heap_as_sji_element(sjt_cast1);
+    sjt_cast1->boxRenderer = 0;
+    if (sjt_cast1->boxRenderer != 0) {
+        sjt_cast1->boxRenderer->_refCount++;
+    }
+
+    sjf_boxElement_heap(sjt_cast1);
+    sjv_root = (sji_element*)sjf_boxElement_heap_as_sji_element(sjt_cast1);
     sjf_runLoop();
     main_destroy();
     return 0;
@@ -7351,13 +7218,14 @@ void main_destroy() {
 
     sjt_cast1->_refCount--;
     if (sjt_cast1->_refCount <= 0) {
-        sjf_textElement_destroy((sjs_textElement*)(((char*)sjt_cast1) + sizeof(intptr_t)));
+        sjf_boxElement_destroy((sjs_boxElement*)(((char*)sjt_cast1) + sizeof(intptr_t)));
     }
     sjv_root->_refCount--;
     if (sjv_root->_refCount <= 0) {
         sji_element_destroy(sjv_root);
     }
     sjf_anon8_destroy(&sjv_borderPosition);
+    sjf_shader_destroy(&sjv_boxShader);
     sjf_anon5_destroy(&sjv_buttonState);
     sjf_anon6_destroy(&sjv_colors);
     sjf_anon1_destroy(&sjv_console);
@@ -7366,4 +7234,5 @@ void main_destroy() {
     sjf_anon3_destroy(&sjv_random);
     sjf_surface2d_destroy(&sjv_rootSurface);
     sjf_anon7_destroy(&sjv_style);
+    sjf_shader_destroy(&sjv_textShader);
 }

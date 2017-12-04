@@ -3,6 +3,7 @@ textElement #element (
 	text = 'string
 	color = colors.white()
 	rect = rect()
+	textRenderer = empty'textRenderer
 
 	getSize(maxSize : 'size) {
 		textSize : font.getTextSize(text)
@@ -17,12 +18,6 @@ textElement #element (
 	}
 
 	render(surface : 'surface2d)'void {
-		textVertexBuffer : textVertexBuffer(
-			text: copy text
-		    point: point(rect.x, rect.y)
-		    color: copy color
-		    font: copy font) as #vertexBuffer
-
 		textSize : font.getTextSize(text)
 		final : rect(
 			x : rect.x
@@ -30,7 +25,18 @@ textElement #element (
 			w : textSize.w
 			h : textSize.h
 		)
-		surface.drawVertexBuffer(textVertexBuffer, font.getTexture())
+
+		if isEmpty(textRenderer) {
+			textRenderer = value(heap textRenderer(
+				text: copy text
+			    point: point(rect.x, rect.y)
+			    color: copy color
+			    font: copy font))
+		}
+
+		textRenderer?.render(surface)
+
+		void
 	}
 
 	getChildren()'local array?!#element {

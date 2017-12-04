@@ -1,4 +1,6 @@
-textVertexBuffer #vertexBuffer(
+textShader : shader("shaders/v3f-t2f-c4f.vert", "shaders/v3f-t2f-c4f.frag")
+
+textRenderer(
     text: 'string
     point: 'point
     color: 'color
@@ -7,8 +9,14 @@ textVertexBuffer #vertexBuffer(
     vertex_buffer_t* buffer;
     --cvar--
 
-    render()'void {
+    render(surface : 'surface2d)'void {
         --c--
+        glBindTexture(GL_TEXTURE_2D, _parent->font.atlas->id);
+        glUseProgram(sjv_textShader.id);
+        glUniform1i(glGetUniformLocation(sjv_textShader.id, "texture" ), 0 );
+        glUniformMatrix4fv(glGetUniformLocation(sjv_textShader.id, "model" ), 1, 0, surface->model.data);
+        glUniformMatrix4fv(glGetUniformLocation(sjv_textShader.id, "view" ), 1, 0, surface->view.data);
+        glUniformMatrix4fv(glGetUniformLocation(sjv_textShader.id, "projection" ), 1, 0, surface->projection.data);
         vertex_buffer_render(_parent->buffer, GL_TRIANGLES);
         --c--
         void
@@ -43,7 +51,7 @@ typedef struct {
     float x, y, z;    // position
     float s, t;       // texture
     float r, g, b, a; // color
-} vertex_t;	
+} vertex3_texture2_color3_t;	
 --cstruct--
 
 --cdefine--
@@ -73,12 +81,14 @@ void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 
             float s1 = glyph->s1;
             float t1 = glyph->t1;
             GLuint index = (GLuint)buffer->vertices->size;
-            GLuint indices[] = {index, index+1, index+2,
-                                index, index+2, index+3};
-            vertex_t vertices[] = { { x0,y1,0,  s0,t0,  r,g,b,a },
-                                    { x0,y0,0,  s0,t1,  r,g,b,a },
-                                    { x1,y0,0,  s1,t1,  r,g,b,a },
-                                    { x1,y1,0,  s1,t0,  r,g,b,a } };
+            GLuint indices[] = { //
+                index, index+1, index+2,
+                index, index+2, index+3 };
+            vertex3_texture2_color3_t vertices[] = { //
+                { x0, y1, 0.0f,  s0,t0,  r,g,b,a },
+                { x0, y0, 0.0f,  s0,t1,  r,g,b,a },
+                { x1, y0, 0.0f,  s1,t1,  r,g,b,a },
+                { x1, y1, 0.0f,  s1,t0,  r,g,b,a } };
             vertex_buffer_push_back_indices( buffer, indices, 6 );
             vertex_buffer_push_back_vertices( buffer, vertices, 4 );
             pen->x += glyph->advance_x;

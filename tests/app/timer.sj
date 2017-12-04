@@ -1,11 +1,14 @@
 include "../../lib/common/common.sj"
 include "../../lib/ui/ui.sj"
 
-rootSurface : surface2d()
-
+/*
 root : textElement(
 			font = font("assets/sample.ttf", 25.0f)
 			text = "Bob"
+			color = colors.red()
+		) as #element
+*/
+root : boxElement(
 			color = colors.red()
 		) as #element
 
