@@ -32,18 +32,6 @@ texture(
 
 GLuint png_texture_load(const char * file_name, int * width, int * height)
 {
-    unsigned char* image_data = (unsigned char*)malloc(512 * 512 * 4);
-    for (int i = 0; i < 512 * 512 * 4; i++) {
-        image_data[i] = 127;
-    }
-
-    GLuint texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
-    return texture;
-/*
-
     // This function was originally written by David Grayson for
     // https://github.com/DavidEGrayson/ahrs-visualizer
 
@@ -183,23 +171,21 @@ GLuint png_texture_load(const char * file_name, int * width, int * height)
     // read the png into image_data through row_pointers
     png_read_image(png_ptr, row_pointers);
 
-    for (int i = 0; i < rowbytes * temp_height * sizeof(png_byte)+15; i++) {
-        image_data[i] = 255;
-    }
-
     // Generate the OpenGL texture object
     GLuint texture;
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexImage2D(GL_TEXTURE_2D, 0, format, temp_width, temp_height, 0, format, GL_UNSIGNED_BYTE, image_data);
-    // glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    // glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     // clean up
     png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
     free(image_data);
     free(row_pointers);
     fclose(fp);
-    return texture;*/
+    return texture;
 }
 --cfunction--

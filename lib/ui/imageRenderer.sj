@@ -21,7 +21,7 @@ imageRenderer(
     }
 ) { 
     --c--
-    _this->buffer = vertex_buffer_new("vertex:3f,texture:2f");
+    _this->buffer = vertex_buffer_new("vertex:3f,tex_coord:2f");
     float x0 = (float)_this->rect.x;
     float y0 = (float)(_this->rect.y + _this->rect.h);
     float x1 = (float)(_this->rect.x + _this->rect.w);
