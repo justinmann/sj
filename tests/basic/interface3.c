@@ -1168,14 +1168,14 @@ struct pointer_td {
 pointer* g_pointers = 0;
 
 #define sjs_object_typeId 1
-#define sjs_anon4_typeId 2
-#define sjs_anon4_heap_typeId 3
-#define sjs_anon3_typeId 4
-#define sjs_anon3_heap_typeId 5
-#define sjs_anon2_typeId 6
-#define sjs_anon2_heap_typeId 7
-#define sjs_anon1_typeId 8
-#define sjs_anon1_heap_typeId 9
+#define sjs_anon1_typeId 2
+#define sjs_anon1_heap_typeId 3
+#define sjs_anon2_typeId 4
+#define sjs_anon2_heap_typeId 5
+#define sjs_anon3_typeId 6
+#define sjs_anon3_heap_typeId 7
+#define sjs_anon4_typeId 8
+#define sjs_anon4_heap_typeId 9
 #define sjs_class_typeId 10
 #define sjs_array_char_typeId 11
 #define sjs_array_char_heap_typeId 12
@@ -1185,14 +1185,14 @@ pointer* g_pointers = 0;
 #define sjs_class_heap_typeId 16
 
 typedef struct td_sjs_object sjs_object;
-typedef struct td_sjs_anon4 sjs_anon4;
-typedef struct td_sjs_anon4_heap sjs_anon4_heap;
-typedef struct td_sjs_anon3 sjs_anon3;
-typedef struct td_sjs_anon3_heap sjs_anon3_heap;
-typedef struct td_sjs_anon2 sjs_anon2;
-typedef struct td_sjs_anon2_heap sjs_anon2_heap;
 typedef struct td_sjs_anon1 sjs_anon1;
 typedef struct td_sjs_anon1_heap sjs_anon1_heap;
+typedef struct td_sjs_anon2 sjs_anon2;
+typedef struct td_sjs_anon2_heap sjs_anon2_heap;
+typedef struct td_sjs_anon3 sjs_anon3;
+typedef struct td_sjs_anon3_heap sjs_anon3_heap;
+typedef struct td_sjs_anon4 sjs_anon4;
+typedef struct td_sjs_anon4_heap sjs_anon4_heap;
 typedef struct td_sjs_class sjs_class;
 typedef struct td_sjs_array_char sjs_array_char;
 typedef struct td_sjs_array_char_heap sjs_array_char_heap;
@@ -1205,19 +1205,11 @@ struct td_sjs_object {
     intptr_t _refCount;
 };
 
-struct td_sjs_anon4 {
+struct td_sjs_anon1 {
     int structsNeedAValue;
 };
 
-struct td_sjs_anon4_heap {
-    intptr_t _refCount;
-};
-
-struct td_sjs_anon3 {
-    int structsNeedAValue;
-};
-
-struct td_sjs_anon3_heap {
+struct td_sjs_anon1_heap {
     intptr_t _refCount;
 };
 
@@ -1229,11 +1221,19 @@ struct td_sjs_anon2_heap {
     intptr_t _refCount;
 };
 
-struct td_sjs_anon1 {
+struct td_sjs_anon3 {
     int structsNeedAValue;
 };
 
-struct td_sjs_anon1_heap {
+struct td_sjs_anon3_heap {
+    intptr_t _refCount;
+};
+
+struct td_sjs_anon4 {
+    int structsNeedAValue;
+};
+
+struct td_sjs_anon4_heap {
     intptr_t _refCount;
 };
 
@@ -1568,13 +1568,13 @@ void sji_foo_destroy(sji_foo* _this) {
 }
 
 int main(int argc, char** argv) {
-    sjf_anon4(&sjv_convert);
-    sjf_anon3(&sjv_random);
-    sjf_anon2(&sjv_parse);
-    sjf_anon1(&sjv_console);
     sjv_i32_max = (-2147483647 - 1);
     sjv_i32_min = 2147483647;
     sjv_u32_max = (uint32_t)4294967295u;
+    sjf_anon1(&sjv_console);
+    sjf_anon2(&sjv_parse);
+    sjf_anon3(&sjv_random);
+    sjf_anon4(&sjv_convert);
     sjt_cast1 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
     sjt_cast1->_refCount = 1;
     sjf_class_heap(sjt_cast1);

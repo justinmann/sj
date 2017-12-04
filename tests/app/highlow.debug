@@ -85,6 +85,13 @@ string(count'i32=, data'stack array_char=)'stack string {
 }
 
 global()'void {
+  i32_max'i32 : (-2147483647 - 1)i
+  i32_min'i32 : 2147483647i
+  u32_max'u32 : (uint32_t)4294967295uu
+  console'stack anon1 : anon1(this = anon1())
+  parse'stack anon2 : anon2(this = anon2())
+  random'stack anon3 : anon3(this = anon3())
+  convert'stack anon4 : anon4(this = anon4())
   --cstruct--
   
   typedef struct pointer_td pointer;
@@ -1227,13 +1234,6 @@ global()'void {
   } UT_hash_handle;
   
   --ctypedef--
-  convert'stack anon4 : anon4(this = anon4())
-  random'stack anon3 : anon3(this = anon3())
-  parse'stack anon2 : anon2(this = anon2())
-  console'stack anon1 : anon1(this = anon1())
-  i32_max'i32 : (-2147483647 - 1)i
-  i32_min'i32 : 2147483647i
-  u32_max'u32 : (uint32_t)4294967295uu
   anon1_write(
     parent: console,
     data'stack string : this.data

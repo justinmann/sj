@@ -146,11 +146,14 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 
 		if (errors.size() == 0) {
 			globalFunctionDefinition = currentFunctionDefintion->funcsByName["global"];
+            NodeList includeStatements;
 			for (auto index = (size_t)0; index < includedBlocks.size(); index++) {
 				auto includedBlock = includedBlocks[index].second;
 				includedBlock->define(this, globalFunctionDefinition);
-				globalBlock->statements.insert(globalBlock->statements.begin(), includedBlock->statements.begin(), includedBlock->statements.end());
+                includeStatements.insert(includeStatements.end(), includedBlock->statements.begin(), includedBlock->statements.end());
 			}
+            globalBlock->statements.insert(globalBlock->statements.begin(), includeStatements.begin(), includeStatements.end());
+
             // Force global function to have void return
             globalBlock->statements.push_back(make_shared<NVoid>(CLoc::undefined));
 
