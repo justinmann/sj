@@ -269,7 +269,7 @@ surface2d(
         exit(-1);
     }
 
-    glClearColor( 1.0, 0.0, 1.0, 1.0 );
+    glClearColor( 0.0, 0.0, 0.0, 0.0 );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glEnable( GL_BLEND );
 

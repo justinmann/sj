@@ -2055,18 +2055,18 @@ struct td_sjs_font_heap {
 };
 
 struct td_sjs_color {
-    int32_t r;
-    int32_t g;
-    int32_t b;
-    int32_t a;
+    float r;
+    float g;
+    float b;
+    float a;
 };
 
 struct td_sjs_color_heap {
     intptr_t _refCount;
-    int32_t r;
-    int32_t g;
-    int32_t b;
-    int32_t a;
+    float r;
+    float g;
+    float b;
+    float a;
 };
 
 struct td_sjs_rect {
@@ -5982,20 +5982,20 @@ void sjf_anon6_heap(sjs_anon6_heap* _this) {
 }
 
 void sjf_anon6_red(sjs_anon6* _parent, sjs_color* _return) {
-    _return->r = 255;
-    _return->g = 0;
-    _return->b = 0;
-    _return->a = 255;
+    _return->r = 1.0f;
+    _return->g = 0.0f;
+    _return->b = 0.0f;
+    _return->a = 1.0f;
     sjf_color(_return);
 }
 
 void sjf_anon6_red_heap(sjs_anon6* _parent, sjs_color_heap** _return) {
     (*_return) = (sjs_color_heap*)malloc(sizeof(sjs_color_heap));
     (*_return)->_refCount = 1;
-    (*_return)->r = 255;
-    (*_return)->g = 0;
-    (*_return)->b = 0;
-    (*_return)->a = 255;
+    (*_return)->r = 1.0f;
+    (*_return)->g = 0.0f;
+    (*_return)->b = 0.0f;
+    (*_return)->a = 1.0f;
     sjf_color_heap((*_return));
 }
 
@@ -6788,7 +6788,7 @@ void sjf_surface2d(sjs_surface2d* _this) {
         printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
         exit(-1);
     }
-    glClearColor( 1.0, 0.0, 1.0, 1.0 );
+    glClearColor( 0.0, 0.0, 0.0, 0.0 );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glEnable( GL_BLEND );
     _this->textShader = shader_load("shaders/v3f-t2f-c4f.vert", "shaders/v3f-t2f-c4f.frag");
@@ -6921,7 +6921,7 @@ void sjf_surface2d_heap(sjs_surface2d_heap* _this) {
         printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
         exit(-1);
     }
-    glClearColor( 1.0, 0.0, 1.0, 1.0 );
+    glClearColor( 0.0, 0.0, 0.0, 0.0 );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glEnable( GL_BLEND );
     _this->textShader = shader_load("shaders/v3f-t2f-c4f.vert", "shaders/v3f-t2f-c4f.frag");
@@ -7125,7 +7125,7 @@ void sjf_textElement_setRect(sjs_textElement* _parent, sjs_rect* rect_) {
 
 void sjf_textVertexBuffer(sjs_textVertexBuffer* _this) {
     vec2 pen = {{ (float)_this->point.x, (float)_this->point.y }};
-    vec4 color = {{ 0,0,0,1 }};
+    vec4 color = {{ _this->color.r, _this->color.g, _this->color.b, _this->color.a }};
     _this->buffer = vertex_buffer_new("vertex:3f,tex_coord:2f,color:4f");
     add_text(_this->buffer, _this->font.font, (char*)_this->text.data.data, &color, &pen);
     glBindTexture(GL_TEXTURE_2D, _this->font.font->atlas->id);
@@ -7172,7 +7172,7 @@ void sjf_textVertexBuffer_destroy(sjs_textVertexBuffer* _this) {
 
 void sjf_textVertexBuffer_heap(sjs_textVertexBuffer_heap* _this) {
     vec2 pen = {{ (float)_this->point.x, (float)_this->point.y }};
-    vec4 color = {{ 0,0,0,1 }};
+    vec4 color = {{ _this->color.r, _this->color.g, _this->color.b, _this->color.a }};
     _this->buffer = vertex_buffer_new("vertex:3f,tex_coord:2f,color:4f");
     add_text(_this->buffer, _this->font.font, (char*)_this->text.data.data, &color, &pen);
     glBindTexture(GL_TEXTURE_2D, _this->font.font->atlas->id);

@@ -16,7 +16,7 @@ textVertexBuffer #vertexBuffer(
 ) { 
     --c--
     vec2 pen = {{ (float)_this->point.x, (float)_this->point.y }};
-    vec4 color = {{ 0,0,0,1 }};
+    vec4 color = {{ _this->color.r, _this->color.g, _this->color.b, _this->color.a }};
 
     _this->buffer = vertex_buffer_new("vertex:3f,tex_coord:2f,color:4f");
     add_text(_this->buffer, _this->font.font, (char*)_this->text.data.data, &color, &pen);

@@ -1,18 +1,18 @@
 colors : ^(
-	red() { color(255, 0, 0) }
-	green() { color(0, 255, 0) }
-	blue() { color(0, 0, 255) }
-	black() { color(0, 0, 0) }
-	white() { color(255, 255, 255) }
+	red()   { color(1.0f, 0.0f, 0.0f) }
+	green() { color(0.0f, 1.0f, 0.0f) }
+	blue()  { color(0.0f, 0.0f, 1.0f) }
+	black() { color(0.0f, 0.0f, 0.0f) }
+	white() { color(1.0f, 1.0f, 1.0f) }
 ) { this }
 
 color(
-	r : 'i32
-	g : 'i32
-	b : 'i32
-	a : 255
+	r : 'f32
+	g : 'f32
+	b : 'f32
+	a : 1.0f
 
 	asString() {
-		"#" + convert.i32toString(a, 16, 2) + convert.i32toString(r, 16, 2) + convert.i32toString(g, 16, 2) + convert.i32toString(b, 16, 2)
+		"#" + convert.i32toString((a * 255.0f) as i32, 16, 2) + convert.i32toString((r * 255.0f) as i32, 16, 2) + convert.i32toString((g * 255.0f) as i32, 16, 2) + convert.i32toString((b * 255.0f) as i32, 16, 2)
 	}
 ) { this }
