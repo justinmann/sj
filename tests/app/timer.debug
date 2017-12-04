@@ -113,6 +113,7 @@ global()'void {
   --cfunction--
   
   void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen) {
+  pen->y += (float)(int)font->ascender;
   size_t i;
   float r = color->red, g = color->green, b = color->blue, a = color->alpha;
   for( i = 0; i < strlen(text); ++i )
