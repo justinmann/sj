@@ -99,10 +99,10 @@ sjs_class_anon1* sjv_d;
 
 void sjf_class(sjs_class* _this);
 void sjf_class_anon1(sjs_class_anon1* _this, sjs_class* _parent);
-void sjf_class_anon1_copy(sjs_class_anon1* _this, sjs_class_anon1* to);
+void sjf_class_anon1_copy(sjs_class_anon1* _this, sjs_class_anon1* _from);
 void sjf_class_anon1_destroy(sjs_class_anon1* _this);
 void sjf_class_anon1_heap(sjs_class_anon1_heap* _this, sjs_class* _parent);
-void sjf_class_copy(sjs_class* _this, sjs_class* to);
+void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_get(sjs_class* _parent, sjs_class_anon1** _return);
 void sjf_class_heap(sjs_class_heap* _this);
@@ -114,8 +114,8 @@ void sjf_class(sjs_class* _this) {
 void sjf_class_anon1(sjs_class_anon1* _this, sjs_class* _parent) {
 }
 
-void sjf_class_anon1_copy(sjs_class_anon1* _this, sjs_class_anon1* to) {
-    _this->x = to->x;
+void sjf_class_anon1_copy(sjs_class_anon1* _this, sjs_class_anon1* _from) {
+    _this->x = _from->x;
 }
 
 void sjf_class_anon1_destroy(sjs_class_anon1* _this) {
@@ -124,8 +124,8 @@ void sjf_class_anon1_destroy(sjs_class_anon1* _this) {
 void sjf_class_anon1_heap(sjs_class_anon1_heap* _this, sjs_class* _parent) {
 }
 
-void sjf_class_copy(sjs_class* _this, sjs_class* to) {
-    sjf_class_anon1_copy(&_this->data, &to->data);
+void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
+    sjf_class_anon1_copy(&_this->data, &_from->data);
 }
 
 void sjf_class_destroy(sjs_class* _this) {

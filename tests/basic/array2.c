@@ -98,7 +98,7 @@ sjs_array_i32 sjv_a;
 int32_t void1;
 
 void sjf_array_i32(sjs_array_i32* _this);
-void sjf_array_i32_copy(sjs_array_i32* _this, sjs_array_i32* to);
+void sjf_array_i32_copy(sjs_array_i32* _this, sjs_array_i32* _from);
 void sjf_array_i32_destroy(sjs_array_i32* _this);
 void sjf_array_i32_getAt(sjs_array_i32* _parent, int32_t index, int32_t* _return);
 void sjf_array_i32_heap(sjs_array_i32_heap* _this);
@@ -120,16 +120,21 @@ void sjf_array_i32(sjs_array_i32* _this) {
     }
 }
 
-void sjf_array_i32_copy(sjs_array_i32* _this, sjs_array_i32* to) {
-    _this->size = to->size;
-    _this->data = to->data;
-    _this->_isGlobal = to->_isGlobal;
+void sjf_array_i32_copy(sjs_array_i32* _this, sjs_array_i32* _from) {
+    _this->size = _from->size;
+    _this->data = _from->data;
+    _this->_isGlobal = _from->_isGlobal;
+    _this->data = _from->data;
+    if (!_this->_isGlobal && _this->data) {
+        _retain((void*)_this->data);
+    }
 }
 
 void sjf_array_i32_destroy(sjs_array_i32* _this) {
     if (!_this->_isGlobal && _this->data) {
-        free((int32_t*)_this->data);
-        _this->data = 0;
+        if (_release((void*)_this->data)) {
+            free((int32_t*)_this->data);
+        }
     }
 }
 

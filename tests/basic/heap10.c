@@ -119,14 +119,14 @@ sjs_class2_heap* sjv_x8;
 
 void sjf_class(sjs_class* _this);
 void sjf_class2(sjs_class2* _this);
-void sjf_class2_copy(sjs_class2* _this, sjs_class2* to);
+void sjf_class2_copy(sjs_class2* _this, sjs_class2* _from);
 void sjf_class2_destroy(sjs_class2* _this);
 void sjf_class2_heap(sjs_class2_heap* _this);
-void sjf_class_copy(sjs_class* _this, sjs_class* to);
+void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_heap(sjs_class_heap* _this);
 void sjf_inner(sjs_inner* _this);
-void sjf_inner_copy(sjs_inner* _this, sjs_inner* to);
+void sjf_inner_copy(sjs_inner* _this, sjs_inner* _from);
 void sjf_inner_destroy(sjs_inner* _this);
 void sjf_inner_heap(sjs_inner_heap* _this);
 void main_destroy(void);
@@ -137,9 +137,9 @@ void sjf_class(sjs_class* _this) {
 void sjf_class2(sjs_class2* _this) {
 }
 
-void sjf_class2_copy(sjs_class2* _this, sjs_class2* to) {
+void sjf_class2_copy(sjs_class2* _this, sjs_class2* _from) {
     _this->inner = 0;
-    sjf_inner_copy((sjs_inner*)(((char*)_this->inner) + sizeof(intptr_t)), (sjs_inner*)(((char*)to->inner) + sizeof(intptr_t)));
+    sjf_inner_copy((sjs_inner*)(((char*)_this->inner) + sizeof(intptr_t)), (sjs_inner*)(((char*)_from->inner) + sizeof(intptr_t)));
 }
 
 void sjf_class2_destroy(sjs_class2* _this) {
@@ -154,8 +154,8 @@ void sjf_class2_destroy(sjs_class2* _this) {
 void sjf_class2_heap(sjs_class2_heap* _this) {
 }
 
-void sjf_class_copy(sjs_class* _this, sjs_class* to) {
-    sjf_inner_copy(&_this->inner, &to->inner);
+void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
+    sjf_inner_copy(&_this->inner, &_from->inner);
 }
 
 void sjf_class_destroy(sjs_class* _this) {
@@ -167,7 +167,7 @@ void sjf_class_heap(sjs_class_heap* _this) {
 void sjf_inner(sjs_inner* _this) {
 }
 
-void sjf_inner_copy(sjs_inner* _this, sjs_inner* to) {
+void sjf_inner_copy(sjs_inner* _this, sjs_inner* _from) {
 }
 
 void sjf_inner_destroy(sjs_inner* _this) {

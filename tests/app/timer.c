@@ -1,4 +1,12 @@
 
+/**
+* Maximum number of attributes per vertex
+*
+* @private
+*/
+#define MAX_VERTEX_ATTRIBUTE 16
+
+
 #ifdef WIN32
 #pragma warning(disable:4996)
 #define GLEW_STATIC
@@ -35,6 +43,7 @@
 #include <limits.h>
 #include <math.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,6 +51,1109 @@
 #include FT_FREETYPE_H
 #include FT_LCD_FILTER_H
 #include FT_STROKER_H
+
+
+typedef struct vertex_buffer_td vertex_buffer_t;
+
+
+typedef struct vertex_attribute_td vertex_attribute_t;
+
+
+typedef struct vector_td vector_t;
+
+
+/* memcmp, memset, strlen */
+/* ptrdiff_t */
+/* exit */
+/* These macros use decltype or the earlier __typeof GNU extension.
+As decltype is only available in newer compilers (VS2010 or gcc 4.3+
+when compiling c++ source) this code uses whatever method is needed
+or, for VS2008 where neither is available, uses casting workarounds. */
+#if !defined(DECLTYPE) && !defined(NO_DECLTYPE)
+#if defined(_MSC_VER)   /* MS compiler */
+#if _MSC_VER >= 1600 && defined(__cplusplus)  /* VS2010 or newer in C++ mode */
+#define DECLTYPE(x) (decltype(x))
+#else                   /* VS2008 or older (or VS2010 in C mode) */
+#define NO_DECLTYPE
+#endif
+#elif defined(__BORLANDC__) || defined(__ICCARM__) || defined(__LCC__) || defined(__WATCOMC__)
+#define NO_DECLTYPE
+#else                   /* GNU, Sun and other compilers */
+#define DECLTYPE(x) (__typeof(x))
+#endif
+#endif
+#ifdef NO_DECLTYPE
+#define DECLTYPE(x)
+#define DECLTYPE_ASSIGN(dst,src)                                                 \
+do {                                                                             \
+char **_da_dst = (char**)(&(dst));                                             \
+*_da_dst = (char*)(src);                                                       \
+} while (0)
+#else
+#define DECLTYPE_ASSIGN(dst,src)                                                 \
+do {                                                                             \
+(dst) = DECLTYPE(dst)(src);                                                    \
+} while (0)
+#endif
+/* a number of the hash function use uint32_t which isn't defined on Pre VS2010 */
+#if defined(_WIN32)
+#if defined(_MSC_VER) && _MSC_VER >= 1600
+#include <stdint.h>
+#elif defined(__WATCOMC__) || defined(__MINGW32__) || defined(__CYGWIN__)
+#include <stdint.h>
+#else
+typedef unsigned int uint32_t;
+typedef unsigned char uint8_t;
+#endif
+#elif defined(__GNUC__) && !defined(__VXWORKS__)
+#include <stdint.h>
+#else
+typedef unsigned int uint32_t;
+typedef unsigned char uint8_t;
+#endif
+#ifndef uthash_malloc
+#define uthash_malloc(sz) malloc(sz)      /* malloc fcn                      */
+#endif
+#ifndef uthash_free
+#define uthash_free(ptr,sz) free(ptr)     /* free fcn                        */
+#endif
+#ifndef uthash_bzero
+#define uthash_bzero(a,n) memset(a,'\0',n)
+#endif
+#ifndef uthash_memcmp
+#define uthash_memcmp(a,b,n) memcmp(a,b,n)
+#endif
+#ifndef uthash_strlen
+#define uthash_strlen(s) strlen(s)
+#endif
+#ifndef uthash_noexpand_fyi
+#define uthash_noexpand_fyi(tbl)          /* can be defined to log noexpand  */
+#endif
+#ifndef uthash_expand_fyi
+#define uthash_expand_fyi(tbl)            /* can be defined to log expands   */
+#endif
+#ifndef HASH_NONFATAL_OOM
+#define HASH_NONFATAL_OOM 0
+#endif
+#if HASH_NONFATAL_OOM
+/* malloc failures can be recovered from */
+#ifndef uthash_nonfatal_oom
+#define uthash_nonfatal_oom(obj) do {} while (0)    /* non-fatal OOM error */
+#endif
+#define HASH_RECORD_OOM(oomed) do { (oomed) = 1; } while (0)
+#define IF_HASH_NONFATAL_OOM(x) x
+#else
+/* malloc failures result in lost memory, hash tables are unusable */
+#ifndef uthash_fatal
+#define uthash_fatal(msg) exit(-1)        /* fatal OOM error */
+#endif
+#define HASH_RECORD_OOM(oomed) uthash_fatal("out of memory")
+#define IF_HASH_NONFATAL_OOM(x)
+#endif
+/* initial number of buckets */
+#define HASH_INITIAL_NUM_BUCKETS 32U     /* initial number of buckets        */
+#define HASH_INITIAL_NUM_BUCKETS_LOG2 5U /* lg2 of initial number of buckets */
+#define HASH_BKT_CAPACITY_THRESH 10U     /* expand when bucket count reaches */
+/* calculate the element whose hash handle address is hhp */
+#define ELMT_FROM_HH(tbl,hhp) ((void*)(((char*)(hhp)) - ((tbl)->hho)))
+/* calculate the hash handle from element address elp */
+#define HH_FROM_ELMT(tbl,elp) ((UT_hash_handle *)(((char*)(elp)) + ((tbl)->hho)))
+#define HASH_ROLLBACK_BKT(hh, head, itemptrhh)                                   \
+do {                                                                             \
+struct UT_hash_handle *_hd_hh_item = (itemptrhh);                              \
+unsigned _hd_bkt;                                                              \
+HASH_TO_BKT(_hd_hh_item->hashv, (head)->hh.tbl->num_buckets, _hd_bkt);         \
+(head)->hh.tbl->buckets[_hd_bkt].count++;                                      \
+_hd_hh_item->hh_next = NULL;                                                   \
+_hd_hh_item->hh_prev = NULL;                                                   \
+} while (0)
+#define HASH_VALUE(keyptr,keylen,hashv)                                          \
+do {                                                                             \
+HASH_FCN(keyptr, keylen, hashv);                                               \
+} while (0)
+#define HASH_FIND_BYHASHVALUE(hh,head,keyptr,keylen,hashval,out)                 \
+do {                                                                             \
+(out) = NULL;                                                                  \
+if (head) {                                                                    \
+unsigned _hf_bkt;                                                            \
+HASH_TO_BKT(hashval, (head)->hh.tbl->num_buckets, _hf_bkt);                  \
+if (HASH_BLOOM_TEST((head)->hh.tbl, hashval) != 0) {                         \
+HASH_FIND_IN_BKT((head)->hh.tbl, hh, (head)->hh.tbl->buckets[ _hf_bkt ], keyptr, keylen, hashval, out); \
+}                                                                            \
+}                                                                              \
+} while (0)
+#define HASH_FIND(hh,head,keyptr,keylen,out)                                     \
+do {                                                                             \
+unsigned _hf_hashv;                                                            \
+HASH_VALUE(keyptr, keylen, _hf_hashv);                                         \
+HASH_FIND_BYHASHVALUE(hh, head, keyptr, keylen, _hf_hashv, out);               \
+} while (0)
+#ifdef HASH_BLOOM
+#define HASH_BLOOM_BITLEN (1UL << HASH_BLOOM)
+#define HASH_BLOOM_BYTELEN (HASH_BLOOM_BITLEN/8UL) + (((HASH_BLOOM_BITLEN%8UL)!=0UL) ? 1UL : 0UL)
+#define HASH_BLOOM_MAKE(tbl,oomed)                                               \
+do {                                                                             \
+(tbl)->bloom_nbits = HASH_BLOOM;                                               \
+(tbl)->bloom_bv = (uint8_t*)uthash_malloc(HASH_BLOOM_BYTELEN);                 \
+if (!(tbl)->bloom_bv) {                                                        \
+HASH_RECORD_OOM(oomed);                                                      \
+} else {                                                                       \
+uthash_bzero((tbl)->bloom_bv, HASH_BLOOM_BYTELEN);                           \
+(tbl)->bloom_sig = HASH_BLOOM_SIGNATURE;                                     \
+}                                                                              \
+} while (0)
+#define HASH_BLOOM_FREE(tbl)                                                     \
+do {                                                                             \
+uthash_free((tbl)->bloom_bv, HASH_BLOOM_BYTELEN);                              \
+} while (0)
+#define HASH_BLOOM_BITSET(bv,idx) (bv[(idx)/8U] |= (1U << ((idx)%8U)))
+#define HASH_BLOOM_BITTEST(bv,idx) (bv[(idx)/8U] & (1U << ((idx)%8U)))
+#define HASH_BLOOM_ADD(tbl,hashv)                                                \
+HASH_BLOOM_BITSET((tbl)->bloom_bv, ((hashv) & (uint32_t)((1UL << (tbl)->bloom_nbits) - 1U)))
+#define HASH_BLOOM_TEST(tbl,hashv)                                               \
+HASH_BLOOM_BITTEST((tbl)->bloom_bv, ((hashv) & (uint32_t)((1UL << (tbl)->bloom_nbits) - 1U)))
+#else
+#define HASH_BLOOM_MAKE(tbl,oomed)
+#define HASH_BLOOM_FREE(tbl)
+#define HASH_BLOOM_ADD(tbl,hashv)
+#define HASH_BLOOM_TEST(tbl,hashv) (1)
+#define HASH_BLOOM_BYTELEN 0U
+#endif
+#define HASH_MAKE_TABLE(hh,head,oomed)                                           \
+do {                                                                             \
+(head)->hh.tbl = (UT_hash_table*)uthash_malloc(sizeof(UT_hash_table));         \
+if (!(head)->hh.tbl) {                                                         \
+HASH_RECORD_OOM(oomed);                                                      \
+} else {                                                                       \
+uthash_bzero((head)->hh.tbl, sizeof(UT_hash_table));                         \
+(head)->hh.tbl->tail = &((head)->hh);                                        \
+(head)->hh.tbl->num_buckets = HASH_INITIAL_NUM_BUCKETS;                      \
+(head)->hh.tbl->log2_num_buckets = HASH_INITIAL_NUM_BUCKETS_LOG2;            \
+(head)->hh.tbl->hho = (char*)(&(head)->hh) - (char*)(head);                  \
+(head)->hh.tbl->buckets = (UT_hash_bucket*)uthash_malloc(                    \
+HASH_INITIAL_NUM_BUCKETS * sizeof(struct UT_hash_bucket));               \
+(head)->hh.tbl->signature = HASH_SIGNATURE;                                  \
+if (!(head)->hh.tbl->buckets) {                                              \
+HASH_RECORD_OOM(oomed);                                                    \
+uthash_free((head)->hh.tbl, sizeof(UT_hash_table));                        \
+} else {                                                                     \
+uthash_bzero((head)->hh.tbl->buckets,                                      \
+HASH_INITIAL_NUM_BUCKETS * sizeof(struct UT_hash_bucket));             \
+HASH_BLOOM_MAKE((head)->hh.tbl, oomed);                                    \
+IF_HASH_NONFATAL_OOM(                                                      \
+if (oomed) {                                                             \
+uthash_free((head)->hh.tbl->buckets,                                   \
+HASH_INITIAL_NUM_BUCKETS*sizeof(struct UT_hash_bucket));           \
+uthash_free((head)->hh.tbl, sizeof(UT_hash_table));                    \
+}                                                                        \
+)                                                                          \
+}                                                                            \
+}                                                                              \
+} while (0)
+#define HASH_REPLACE_BYHASHVALUE_INORDER(hh,head,fieldname,keylen_in,hashval,add,replaced,cmpfcn) \
+do {                                                                             \
+(replaced) = NULL;                                                             \
+HASH_FIND_BYHASHVALUE(hh, head, &((add)->fieldname), keylen_in, hashval, replaced); \
+if (replaced) {                                                                \
+HASH_DELETE(hh, head, replaced);                                             \
+}                                                                              \
+HASH_ADD_KEYPTR_BYHASHVALUE_INORDER(hh, head, &((add)->fieldname), keylen_in, hashval, add, cmpfcn); \
+} while (0)
+#define HASH_REPLACE_BYHASHVALUE(hh,head,fieldname,keylen_in,hashval,add,replaced) \
+do {                                                                             \
+(replaced) = NULL;                                                             \
+HASH_FIND_BYHASHVALUE(hh, head, &((add)->fieldname), keylen_in, hashval, replaced); \
+if (replaced) {                                                                \
+HASH_DELETE(hh, head, replaced);                                             \
+}                                                                              \
+HASH_ADD_KEYPTR_BYHASHVALUE(hh, head, &((add)->fieldname), keylen_in, hashval, add); \
+} while (0)
+#define HASH_REPLACE(hh,head,fieldname,keylen_in,add,replaced)                   \
+do {                                                                             \
+unsigned _hr_hashv;                                                            \
+HASH_VALUE(&((add)->fieldname), keylen_in, _hr_hashv);                         \
+HASH_REPLACE_BYHASHVALUE(hh, head, fieldname, keylen_in, _hr_hashv, add, replaced); \
+} while (0)
+#define HASH_REPLACE_INORDER(hh,head,fieldname,keylen_in,add,replaced,cmpfcn)    \
+do {                                                                             \
+unsigned _hr_hashv;                                                            \
+HASH_VALUE(&((add)->fieldname), keylen_in, _hr_hashv);                         \
+HASH_REPLACE_BYHASHVALUE_INORDER(hh, head, fieldname, keylen_in, _hr_hashv, add, replaced, cmpfcn); \
+} while (0)
+#define HASH_APPEND_LIST(hh, head, add)                                          \
+do {                                                                             \
+(add)->hh.next = NULL;                                                         \
+(add)->hh.prev = ELMT_FROM_HH((head)->hh.tbl, (head)->hh.tbl->tail);           \
+(head)->hh.tbl->tail->next = (add);                                            \
+(head)->hh.tbl->tail = &((add)->hh);                                           \
+} while (0)
+#define HASH_AKBI_INNER_LOOP(hh,head,add,cmpfcn)                                 \
+do {                                                                             \
+do {                                                                           \
+if (cmpfcn(DECLTYPE(head)(_hs_iter), add) > 0) {                             \
+break;                                                                     \
+}                                                                            \
+} while ((_hs_iter = HH_FROM_ELMT((head)->hh.tbl, _hs_iter)->next));           \
+} while (0)
+#ifdef NO_DECLTYPE
+#undef HASH_AKBI_INNER_LOOP
+#define HASH_AKBI_INNER_LOOP(hh,head,add,cmpfcn)                                 \
+do {                                                                             \
+char *_hs_saved_head = (char*)(head);                                          \
+do {                                                                           \
+DECLTYPE_ASSIGN(head, _hs_iter);                                             \
+if (cmpfcn(head, add) > 0) {                                                 \
+DECLTYPE_ASSIGN(head, _hs_saved_head);                                     \
+break;                                                                     \
+}                                                                            \
+DECLTYPE_ASSIGN(head, _hs_saved_head);                                       \
+} while ((_hs_iter = HH_FROM_ELMT((head)->hh.tbl, _hs_iter)->next));           \
+} while (0)
+#endif
+#if HASH_NONFATAL_OOM
+#define HASH_ADD_TO_TABLE(hh,head,keyptr,keylen_in,hashval,add,oomed)            \
+do {                                                                             \
+if (!(oomed)) {                                                                \
+unsigned _ha_bkt;                                                            \
+(head)->hh.tbl->num_items++;                                                 \
+HASH_TO_BKT(hashval, (head)->hh.tbl->num_buckets, _ha_bkt);                  \
+HASH_ADD_TO_BKT((head)->hh.tbl->buckets[_ha_bkt], hh, &(add)->hh, oomed);    \
+if (oomed) {                                                                 \
+HASH_ROLLBACK_BKT(hh, head, &(add)->hh);                                   \
+HASH_DELETE_HH(hh, head, &(add)->hh);                                      \
+(add)->hh.tbl = NULL;                                                      \
+uthash_nonfatal_oom(add);                                                  \
+} else {                                                                     \
+HASH_BLOOM_ADD((head)->hh.tbl, hashval);                                   \
+HASH_EMIT_KEY(hh, head, keyptr, keylen_in);                                \
+}                                                                            \
+} else {                                                                       \
+(add)->hh.tbl = NULL;                                                        \
+uthash_nonfatal_oom(add);                                                    \
+}                                                                              \
+} while (0)
+#else
+#define HASH_ADD_TO_TABLE(hh,head,keyptr,keylen_in,hashval,add,oomed)            \
+do {                                                                             \
+unsigned _ha_bkt;                                                              \
+(head)->hh.tbl->num_items++;                                                   \
+HASH_TO_BKT(hashval, (head)->hh.tbl->num_buckets, _ha_bkt);                    \
+HASH_ADD_TO_BKT((head)->hh.tbl->buckets[_ha_bkt], hh, &(add)->hh, oomed);      \
+HASH_BLOOM_ADD((head)->hh.tbl, hashval);                                       \
+HASH_EMIT_KEY(hh, head, keyptr, keylen_in);                                    \
+} while (0)
+#endif
+#define HASH_ADD_KEYPTR_BYHASHVALUE_INORDER(hh,head,keyptr,keylen_in,hashval,add,cmpfcn) \
+do {                                                                             \
+IF_HASH_NONFATAL_OOM( int _ha_oomed = 0; )                                     \
+(add)->hh.hashv = (hashval);                                                   \
+(add)->hh.key = (char*) (keyptr);                                              \
+(add)->hh.keylen = (unsigned) (keylen_in);                                     \
+if (!(head)) {                                                                 \
+(add)->hh.next = NULL;                                                       \
+(add)->hh.prev = NULL;                                                       \
+HASH_MAKE_TABLE(hh, add, _ha_oomed);                                         \
+IF_HASH_NONFATAL_OOM( if (!_ha_oomed) { )                                    \
+(head) = (add);                                                            \
+IF_HASH_NONFATAL_OOM( } )                                                    \
+} else {                                                                       \
+void *_hs_iter = (head);                                                     \
+(add)->hh.tbl = (head)->hh.tbl;                                              \
+HASH_AKBI_INNER_LOOP(hh, head, add, cmpfcn);                                 \
+if (_hs_iter) {                                                              \
+(add)->hh.next = _hs_iter;                                                 \
+if (((add)->hh.prev = HH_FROM_ELMT((head)->hh.tbl, _hs_iter)->prev)) {     \
+HH_FROM_ELMT((head)->hh.tbl, (add)->hh.prev)->next = (add);              \
+} else {                                                                   \
+(head) = (add);                                                          \
+}                                                                          \
+HH_FROM_ELMT((head)->hh.tbl, _hs_iter)->prev = (add);                      \
+} else {                                                                     \
+HASH_APPEND_LIST(hh, head, add);                                           \
+}                                                                            \
+}                                                                              \
+HASH_ADD_TO_TABLE(hh, head, keyptr, keylen_in, hashval, add, _ha_oomed);       \
+HASH_FSCK(hh, head, "HASH_ADD_KEYPTR_BYHASHVALUE_INORDER");                    \
+} while (0)
+#define HASH_ADD_KEYPTR_INORDER(hh,head,keyptr,keylen_in,add,cmpfcn)             \
+do {                                                                             \
+unsigned _hs_hashv;                                                            \
+HASH_VALUE(keyptr, keylen_in, _hs_hashv);                                      \
+HASH_ADD_KEYPTR_BYHASHVALUE_INORDER(hh, head, keyptr, keylen_in, _hs_hashv, add, cmpfcn); \
+} while (0)
+#define HASH_ADD_BYHASHVALUE_INORDER(hh,head,fieldname,keylen_in,hashval,add,cmpfcn) \
+HASH_ADD_KEYPTR_BYHASHVALUE_INORDER(hh, head, &((add)->fieldname), keylen_in, hashval, add, cmpfcn)
+#define HASH_ADD_INORDER(hh,head,fieldname,keylen_in,add,cmpfcn)                 \
+HASH_ADD_KEYPTR_INORDER(hh, head, &((add)->fieldname), keylen_in, add, cmpfcn)
+#define HASH_ADD_KEYPTR_BYHASHVALUE(hh,head,keyptr,keylen_in,hashval,add)        \
+do {                                                                             \
+IF_HASH_NONFATAL_OOM( int _ha_oomed = 0; )                                     \
+(add)->hh.hashv = (hashval);                                                   \
+(add)->hh.key = (char*) (keyptr);                                              \
+(add)->hh.keylen = (unsigned) (keylen_in);                                     \
+if (!(head)) {                                                                 \
+(add)->hh.next = NULL;                                                       \
+(add)->hh.prev = NULL;                                                       \
+HASH_MAKE_TABLE(hh, add, _ha_oomed);                                         \
+IF_HASH_NONFATAL_OOM( if (!_ha_oomed) { )                                    \
+(head) = (add);                                                            \
+IF_HASH_NONFATAL_OOM( } )                                                    \
+} else {                                                                       \
+(add)->hh.tbl = (head)->hh.tbl;                                              \
+HASH_APPEND_LIST(hh, head, add);                                             \
+}                                                                              \
+HASH_ADD_TO_TABLE(hh, head, keyptr, keylen_in, hashval, add, _ha_oomed);       \
+HASH_FSCK(hh, head, "HASH_ADD_KEYPTR_BYHASHVALUE");                            \
+} while (0)
+#define HASH_ADD_KEYPTR(hh,head,keyptr,keylen_in,add)                            \
+do {                                                                             \
+unsigned _ha_hashv;                                                            \
+HASH_VALUE(keyptr, keylen_in, _ha_hashv);                                      \
+HASH_ADD_KEYPTR_BYHASHVALUE(hh, head, keyptr, keylen_in, _ha_hashv, add);      \
+} while (0)
+#define HASH_ADD_BYHASHVALUE(hh,head,fieldname,keylen_in,hashval,add)            \
+HASH_ADD_KEYPTR_BYHASHVALUE(hh, head, &((add)->fieldname), keylen_in, hashval, add)
+#define HASH_ADD(hh,head,fieldname,keylen_in,add)                                \
+HASH_ADD_KEYPTR(hh, head, &((add)->fieldname), keylen_in, add)
+#define HASH_TO_BKT(hashv,num_bkts,bkt)                                          \
+do {                                                                             \
+bkt = ((hashv) & ((num_bkts) - 1U));                                           \
+} while (0)
+/* delete "delptr" from the hash table.
+* "the usual" patch-up process for the app-order doubly-linked-list.
+* The use of _hd_hh_del below deserves special explanation.
+* These used to be expressed using (delptr) but that led to a bug
+* if someone used the same symbol for the head and deletee, like
+*  HASH_DELETE(hh,users,users);
+* We want that to work, but by changing the head (users) below
+* we were forfeiting our ability to further refer to the deletee (users)
+* in the patch-up process. Solution: use scratch space to
+* copy the deletee pointer, then the latter references are via that
+* scratch pointer rather than through the repointed (users) symbol.
+*/
+#define HASH_DELETE(hh,head,delptr)                                              \
+HASH_DELETE_HH(hh, head, &(delptr)->hh)
+#define HASH_DELETE_HH(hh,head,delptrhh)                                         \
+do {                                                                             \
+struct UT_hash_handle *_hd_hh_del = (delptrhh);                                \
+if ((_hd_hh_del->prev == NULL) && (_hd_hh_del->next == NULL)) {                \
+HASH_BLOOM_FREE((head)->hh.tbl);                                             \
+uthash_free((head)->hh.tbl->buckets,                                         \
+(head)->hh.tbl->num_buckets * sizeof(struct UT_hash_bucket));    \
+uthash_free((head)->hh.tbl, sizeof(UT_hash_table));                          \
+(head) = NULL;                                                               \
+} else {                                                                       \
+unsigned _hd_bkt;                                                            \
+if (_hd_hh_del == (head)->hh.tbl->tail) {                                    \
+(head)->hh.tbl->tail = HH_FROM_ELMT((head)->hh.tbl, _hd_hh_del->prev);     \
+}                                                                            \
+if (_hd_hh_del->prev != NULL) {                                              \
+HH_FROM_ELMT((head)->hh.tbl, _hd_hh_del->prev)->next = _hd_hh_del->next;   \
+} else {                                                                     \
+DECLTYPE_ASSIGN(head, _hd_hh_del->next);                                   \
+}                                                                            \
+if (_hd_hh_del->next != NULL) {                                              \
+HH_FROM_ELMT((head)->hh.tbl, _hd_hh_del->next)->prev = _hd_hh_del->prev;   \
+}                                                                            \
+HASH_TO_BKT(_hd_hh_del->hashv, (head)->hh.tbl->num_buckets, _hd_bkt);        \
+HASH_DEL_IN_BKT((head)->hh.tbl->buckets[_hd_bkt], _hd_hh_del);               \
+(head)->hh.tbl->num_items--;                                                 \
+}                                                                              \
+HASH_FSCK(hh, head, "HASH_DELETE_HH");                                         \
+} while (0)
+/* convenience forms of HASH_FIND/HASH_ADD/HASH_DEL */
+#define HASH_FIND_STR(head,findstr,out)                                          \
+HASH_FIND(hh,head,findstr,(unsigned)uthash_strlen(findstr),out)
+#define HASH_ADD_STR(head,strfield,add)                                          \
+HASH_ADD(hh,head,strfield[0],(unsigned)uthash_strlen(add->strfield),add)
+#define HASH_REPLACE_STR(head,strfield,add,replaced)                             \
+HASH_REPLACE(hh,head,strfield[0],(unsigned)uthash_strlen(add->strfield),add,replaced)
+#define HASH_FIND_INT(head,findint,out)                                          \
+HASH_FIND(hh,head,findint,sizeof(int),out)
+#define HASH_ADD_INT(head,intfield,add)                                          \
+HASH_ADD(hh,head,intfield,sizeof(int),add)
+#define HASH_REPLACE_INT(head,intfield,add,replaced)                             \
+HASH_REPLACE(hh,head,intfield,sizeof(int),add,replaced)
+#define HASH_FIND_PTR(head,findptr,out)                                          \
+HASH_FIND(hh,head,findptr,sizeof(void *),out)
+#define HASH_ADD_PTR(head,ptrfield,add)                                          \
+HASH_ADD(hh,head,ptrfield,sizeof(void *),add)
+#define HASH_REPLACE_PTR(head,ptrfield,add,replaced)                             \
+HASH_REPLACE(hh,head,ptrfield,sizeof(void *),add,replaced)
+#define HASH_DEL(head,delptr)                                                    \
+HASH_DELETE(hh,head,delptr)
+/* HASH_FSCK checks hash integrity on every add/delete when HASH_DEBUG is defined.
+* This is for uthash developer only; it compiles away if HASH_DEBUG isn't defined.
+*/
+#ifdef HASH_DEBUG
+#define HASH_OOPS(...) do { fprintf(stderr,__VA_ARGS__); exit(-1); } while (0)
+#define HASH_FSCK(hh,head,where)                                                 \
+do {                                                                             \
+struct UT_hash_handle *_thh;                                                   \
+if (head) {                                                                    \
+unsigned _bkt_i;                                                             \
+unsigned _count = 0;                                                         \
+char *_prev;                                                                 \
+for (_bkt_i = 0; _bkt_i < (head)->hh.tbl->num_buckets; ++_bkt_i) {           \
+unsigned _bkt_count = 0;                                                   \
+_thh = (head)->hh.tbl->buckets[_bkt_i].hh_head;                            \
+_prev = NULL;                                                              \
+while (_thh) {                                                             \
+if (_prev != (char*)(_thh->hh_prev)) {                                   \
+HASH_OOPS("%s: invalid hh_prev %p, actual %p\n",                       \
+(where), (void*)_thh->hh_prev, (void*)_prev);                      \
+}                                                                        \
+_bkt_count++;                                                            \
+_prev = (char*)(_thh);                                                   \
+_thh = _thh->hh_next;                                                    \
+}                                                                          \
+_count += _bkt_count;                                                      \
+if ((head)->hh.tbl->buckets[_bkt_i].count !=  _bkt_count) {                \
+HASH_OOPS("%s: invalid bucket count %u, actual %u\n",                    \
+(where), (head)->hh.tbl->buckets[_bkt_i].count, _bkt_count);         \
+}                                                                          \
+}                                                                            \
+if (_count != (head)->hh.tbl->num_items) {                                   \
+HASH_OOPS("%s: invalid hh item count %u, actual %u\n",                     \
+(where), (head)->hh.tbl->num_items, _count);                           \
+}                                                                            \
+_count = 0;                                                                  \
+_prev = NULL;                                                                \
+_thh =  &(head)->hh;                                                         \
+while (_thh) {                                                               \
+_count++;                                                                  \
+if (_prev != (char*)_thh->prev) {                                          \
+HASH_OOPS("%s: invalid prev %p, actual %p\n",                            \
+(where), (void*)_thh->prev, (void*)_prev);                           \
+}                                                                          \
+_prev = (char*)ELMT_FROM_HH((head)->hh.tbl, _thh);                         \
+_thh = (_thh->next ? HH_FROM_ELMT((head)->hh.tbl, _thh->next) : NULL);     \
+}                                                                            \
+if (_count != (head)->hh.tbl->num_items) {                                   \
+HASH_OOPS("%s: invalid app item count %u, actual %u\n",                    \
+(where), (head)->hh.tbl->num_items, _count);                           \
+}                                                                            \
+}                                                                              \
+} while (0)
+#else
+#define HASH_FSCK(hh,head,where)
+#endif
+/* When compiled with -DHASH_EMIT_KEYS, length-prefixed keys are emitted to
+* the descriptor to which this macro is defined for tuning the hash function.
+* The app can #include <unistd.h> to get the prototype for write(2). */
+#ifdef HASH_EMIT_KEYS
+#define HASH_EMIT_KEY(hh,head,keyptr,fieldlen)                                   \
+do {                                                                             \
+unsigned _klen = fieldlen;                                                     \
+write(HASH_EMIT_KEYS, &_klen, sizeof(_klen));                                  \
+write(HASH_EMIT_KEYS, keyptr, (unsigned long)fieldlen);                        \
+} while (0)
+#else
+#define HASH_EMIT_KEY(hh,head,keyptr,fieldlen)
+#endif
+/* default to Jenkin's hash unless overridden e.g. DHASH_FUNCTION=HASH_SAX */
+#ifdef HASH_FUNCTION
+#define HASH_FCN HASH_FUNCTION
+#else
+#define HASH_FCN HASH_JEN
+#endif
+/* The Bernstein hash function, used in Perl prior to v5.6. Note (x<<5+x)=x*33. */
+#define HASH_BER(key,keylen,hashv)                                               \
+do {                                                                             \
+unsigned _hb_keylen = (unsigned)keylen;                                        \
+const unsigned char *_hb_key = (const unsigned char*)(key);                    \
+(hashv) = 0;                                                                   \
+while (_hb_keylen-- != 0U) {                                                   \
+(hashv) = (((hashv) << 5) + (hashv)) + *_hb_key++;                           \
+}                                                                              \
+} while (0)
+/* SAX/FNV/OAT/JEN hash functions are macro variants of those listed at
+* http://eternallyconfuzzled.com/tuts/algorithms/jsw_tut_hashing.aspx */
+#define HASH_SAX(key,keylen,hashv)                                               \
+do {                                                                             \
+unsigned _sx_i;                                                                \
+const unsigned char *_hs_key = (const unsigned char*)(key);                    \
+hashv = 0;                                                                     \
+for (_sx_i=0; _sx_i < keylen; _sx_i++) {                                       \
+hashv ^= (hashv << 5) + (hashv >> 2) + _hs_key[_sx_i];                       \
+}                                                                              \
+} while (0)
+/* FNV-1a variation */
+#define HASH_FNV(key,keylen,hashv)                                               \
+do {                                                                             \
+unsigned _fn_i;                                                                \
+const unsigned char *_hf_key = (const unsigned char*)(key);                    \
+(hashv) = 2166136261U;                                                         \
+for (_fn_i=0; _fn_i < keylen; _fn_i++) {                                       \
+hashv = hashv ^ _hf_key[_fn_i];                                              \
+hashv = hashv * 16777619U;                                                   \
+}                                                                              \
+} while (0)
+#define HASH_OAT(key,keylen,hashv)                                               \
+do {                                                                             \
+unsigned _ho_i;                                                                \
+const unsigned char *_ho_key=(const unsigned char*)(key);                      \
+hashv = 0;                                                                     \
+for(_ho_i=0; _ho_i < keylen; _ho_i++) {                                        \
+hashv += _ho_key[_ho_i];                                                   \
+hashv += (hashv << 10);                                                    \
+hashv ^= (hashv >> 6);                                                     \
+}                                                                              \
+hashv += (hashv << 3);                                                         \
+hashv ^= (hashv >> 11);                                                        \
+hashv += (hashv << 15);                                                        \
+} while (0)
+#define HASH_JEN_MIX(a,b,c)                                                      \
+do {                                                                             \
+a -= b; a -= c; a ^= ( c >> 13 );                                              \
+b -= c; b -= a; b ^= ( a << 8 );                                               \
+c -= a; c -= b; c ^= ( b >> 13 );                                              \
+a -= b; a -= c; a ^= ( c >> 12 );                                              \
+b -= c; b -= a; b ^= ( a << 16 );                                              \
+c -= a; c -= b; c ^= ( b >> 5 );                                               \
+a -= b; a -= c; a ^= ( c >> 3 );                                               \
+b -= c; b -= a; b ^= ( a << 10 );                                              \
+c -= a; c -= b; c ^= ( b >> 15 );                                              \
+} while (0)
+#define HASH_JEN(key,keylen,hashv)                                               \
+do {                                                                             \
+unsigned _hj_i,_hj_j,_hj_k;                                                    \
+unsigned const char *_hj_key=(unsigned const char*)(key);                      \
+hashv = 0xfeedbeefu;                                                           \
+_hj_i = _hj_j = 0x9e3779b9u;                                                   \
+_hj_k = (unsigned)(keylen);                                                    \
+while (_hj_k >= 12U) {                                                         \
+_hj_i +=    (_hj_key[0] + ( (unsigned)_hj_key[1] << 8 )                      \
++ ( (unsigned)_hj_key[2] << 16 )                                         \
++ ( (unsigned)_hj_key[3] << 24 ) );                                      \
+_hj_j +=    (_hj_key[4] + ( (unsigned)_hj_key[5] << 8 )                      \
++ ( (unsigned)_hj_key[6] << 16 )                                         \
++ ( (unsigned)_hj_key[7] << 24 ) );                                      \
+hashv += (_hj_key[8] + ( (unsigned)_hj_key[9] << 8 )                         \
++ ( (unsigned)_hj_key[10] << 16 )                                        \
++ ( (unsigned)_hj_key[11] << 24 ) );                                     \
+\
+HASH_JEN_MIX(_hj_i, _hj_j, hashv);                                          \
+\
+_hj_key += 12;                                                              \
+_hj_k -= 12U;                                                               \
+}                                                                              \
+hashv += (unsigned)(keylen);                                                   \
+switch ( _hj_k ) {                                                             \
+case 11: hashv += ( (unsigned)_hj_key[10] << 24 ); /* FALLTHROUGH */         \
+case 10: hashv += ( (unsigned)_hj_key[9] << 16 );  /* FALLTHROUGH */         \
+case 9:  hashv += ( (unsigned)_hj_key[8] << 8 );   /* FALLTHROUGH */         \
+case 8:  _hj_j += ( (unsigned)_hj_key[7] << 24 );  /* FALLTHROUGH */         \
+case 7:  _hj_j += ( (unsigned)_hj_key[6] << 16 );  /* FALLTHROUGH */         \
+case 6:  _hj_j += ( (unsigned)_hj_key[5] << 8 );   /* FALLTHROUGH */         \
+case 5:  _hj_j += _hj_key[4];                      /* FALLTHROUGH */         \
+case 4:  _hj_i += ( (unsigned)_hj_key[3] << 24 );  /* FALLTHROUGH */         \
+case 3:  _hj_i += ( (unsigned)_hj_key[2] << 16 );  /* FALLTHROUGH */         \
+case 2:  _hj_i += ( (unsigned)_hj_key[1] << 8 );   /* FALLTHROUGH */         \
+case 1:  _hj_i += _hj_key[0];                                                \
+}                                                                              \
+HASH_JEN_MIX(_hj_i, _hj_j, hashv);                                             \
+} while (0)
+/* The Paul Hsieh hash function */
+#undef get16bits
+#if (defined(__GNUC__) && defined(__i386__)) || defined(__WATCOMC__)             \
+|| defined(_MSC_VER) || defined (__BORLANDC__) || defined (__TURBOC__)
+#define get16bits(d) (*((const uint16_t *) (d)))
+#endif
+#if !defined (get16bits)
+#define get16bits(d) ((((uint32_t)(((const uint8_t *)(d))[1])) << 8)             \
++(uint32_t)(((const uint8_t *)(d))[0]) )
+#endif
+#define HASH_SFH(key,keylen,hashv)                                               \
+do {                                                                             \
+unsigned const char *_sfh_key=(unsigned const char*)(key);                     \
+uint32_t _sfh_tmp, _sfh_len = (uint32_t)keylen;                                \
+\
+unsigned _sfh_rem = _sfh_len & 3U;                                             \
+_sfh_len >>= 2;                                                                \
+hashv = 0xcafebabeu;                                                           \
+\
+/* Main loop */                                                                \
+for (;_sfh_len > 0U; _sfh_len--) {                                             \
+hashv    += get16bits (_sfh_key);                                            \
+_sfh_tmp  = ((uint32_t)(get16bits (_sfh_key+2)) << 11) ^ hashv;              \
+hashv     = (hashv << 16) ^ _sfh_tmp;                                        \
+_sfh_key += 2U*sizeof (uint16_t);                                            \
+hashv    += hashv >> 11;                                                     \
+}                                                                              \
+\
+/* Handle end cases */                                                         \
+switch (_sfh_rem) {                                                            \
+case 3: hashv += get16bits (_sfh_key);                                       \
+hashv ^= hashv << 16;                                                \
+hashv ^= (uint32_t)(_sfh_key[sizeof (uint16_t)]) << 18;              \
+hashv += hashv >> 11;                                                \
+break;                                                               \
+case 2: hashv += get16bits (_sfh_key);                                       \
+hashv ^= hashv << 11;                                                \
+hashv += hashv >> 17;                                                \
+break;                                                               \
+case 1: hashv += *_sfh_key;                                                  \
+hashv ^= hashv << 10;                                                \
+hashv += hashv >> 1;                                                 \
+}                                                                              \
+\
+/* Force "avalanching" of final 127 bits */                                    \
+hashv ^= hashv << 3;                                                           \
+hashv += hashv >> 5;                                                           \
+hashv ^= hashv << 4;                                                           \
+hashv += hashv >> 17;                                                          \
+hashv ^= hashv << 25;                                                          \
+hashv += hashv >> 6;                                                           \
+} while (0)
+#ifdef HASH_USING_NO_STRICT_ALIASING
+/* The MurmurHash exploits some CPU's (x86,x86_64) tolerance for unaligned reads.
+* For other types of CPU's (e.g. Sparc) an unaligned read causes a bus error.
+* MurmurHash uses the faster approach only on CPU's where we know it's safe.
+*
+* Note the preprocessor built-in defines can be emitted using:
+*
+*   gcc -m64 -dM -E - < /dev/null                  (on gcc)
+*   cc -## a.c (where a.c is a simple test file)   (Sun Studio)
+*/
+#if (defined(__i386__) || defined(__x86_64__)  || defined(_M_IX86))
+#define MUR_GETBLOCK(p,i) p[i]
+#else /* non intel */
+#define MUR_PLUS0_ALIGNED(p) (((unsigned long)p & 3UL) == 0UL)
+#define MUR_PLUS1_ALIGNED(p) (((unsigned long)p & 3UL) == 1UL)
+#define MUR_PLUS2_ALIGNED(p) (((unsigned long)p & 3UL) == 2UL)
+#define MUR_PLUS3_ALIGNED(p) (((unsigned long)p & 3UL) == 3UL)
+#define WP(p) ((uint32_t*)((unsigned long)(p) & ~3UL))
+#if (defined(__BIG_ENDIAN__) || defined(SPARC) || defined(__ppc__) || defined(__ppc64__))
+#define MUR_THREE_ONE(p) ((((*WP(p))&0x00ffffff) << 8) | (((*(WP(p)+1))&0xff000000) >> 24))
+#define MUR_TWO_TWO(p)   ((((*WP(p))&0x0000ffff) <<16) | (((*(WP(p)+1))&0xffff0000) >> 16))
+#define MUR_ONE_THREE(p) ((((*WP(p))&0x000000ff) <<24) | (((*(WP(p)+1))&0xffffff00) >>  8))
+#else /* assume little endian non-intel */
+#define MUR_THREE_ONE(p) ((((*WP(p))&0xffffff00) >> 8) | (((*(WP(p)+1))&0x000000ff) << 24))
+#define MUR_TWO_TWO(p)   ((((*WP(p))&0xffff0000) >>16) | (((*(WP(p)+1))&0x0000ffff) << 16))
+#define MUR_ONE_THREE(p) ((((*WP(p))&0xff000000) >>24) | (((*(WP(p)+1))&0x00ffffff) <<  8))
+#endif
+#define MUR_GETBLOCK(p,i) (MUR_PLUS0_ALIGNED(p) ? ((p)[i]) :           \
+(MUR_PLUS1_ALIGNED(p) ? MUR_THREE_ONE(p) : \
+(MUR_PLUS2_ALIGNED(p) ? MUR_TWO_TWO(p) :  \
+MUR_ONE_THREE(p))))
+#endif
+#define MUR_ROTL32(x,r) (((x) << (r)) | ((x) >> (32 - (r))))
+#define MUR_FMIX(_h) \
+do {                 \
+_h ^= _h >> 16;    \
+_h *= 0x85ebca6bu; \
+_h ^= _h >> 13;    \
+_h *= 0xc2b2ae35u; \
+_h ^= _h >> 16;    \
+} while (0)
+#define HASH_MUR(key,keylen,hashv)                                     \
+do {                                                                   \
+const uint8_t *_mur_data = (const uint8_t*)(key);                    \
+const int _mur_nblocks = (int)(keylen) / 4;                          \
+uint32_t _mur_h1 = 0xf88D5353u;                                      \
+uint32_t _mur_c1 = 0xcc9e2d51u;                                      \
+uint32_t _mur_c2 = 0x1b873593u;                                      \
+uint32_t _mur_k1 = 0;                                                \
+const uint8_t *_mur_tail;                                            \
+const uint32_t *_mur_blocks = (const uint32_t*)(_mur_data+(_mur_nblocks*4)); \
+int _mur_i;                                                          \
+for (_mur_i = -_mur_nblocks; _mur_i != 0; _mur_i++) {                \
+_mur_k1 = MUR_GETBLOCK(_mur_blocks,_mur_i);                        \
+_mur_k1 *= _mur_c1;                                                \
+_mur_k1 = MUR_ROTL32(_mur_k1,15);                                  \
+_mur_k1 *= _mur_c2;                                                \
+\
+_mur_h1 ^= _mur_k1;                                                \
+_mur_h1 = MUR_ROTL32(_mur_h1,13);                                  \
+_mur_h1 = (_mur_h1*5U) + 0xe6546b64u;                              \
+}                                                                    \
+_mur_tail = (const uint8_t*)(_mur_data + (_mur_nblocks*4));          \
+_mur_k1=0;                                                           \
+switch ((keylen) & 3U) {                                             \
+case 0: break;                                                     \
+case 3: _mur_k1 ^= (uint32_t)_mur_tail[2] << 16; /* FALLTHROUGH */ \
+case 2: _mur_k1 ^= (uint32_t)_mur_tail[1] << 8;  /* FALLTHROUGH */ \
+case 1: _mur_k1 ^= (uint32_t)_mur_tail[0];                         \
+_mur_k1 *= _mur_c1;                                                \
+_mur_k1 = MUR_ROTL32(_mur_k1,15);                                  \
+_mur_k1 *= _mur_c2;                                                \
+_mur_h1 ^= _mur_k1;                                                \
+}                                                                    \
+_mur_h1 ^= (uint32_t)(keylen);                                       \
+MUR_FMIX(_mur_h1);                                                   \
+hashv = _mur_h1;                                                     \
+} while (0)
+#endif  /* HASH_USING_NO_STRICT_ALIASING */
+/* iterate over items in a known bucket to find desired item */
+#define HASH_FIND_IN_BKT(tbl,hh,head,keyptr,keylen_in,hashval,out)               \
+do {                                                                             \
+if ((head).hh_head != NULL) {                                                  \
+DECLTYPE_ASSIGN(out, ELMT_FROM_HH(tbl, (head).hh_head));                     \
+} else {                                                                       \
+(out) = NULL;                                                                \
+}                                                                              \
+while ((out) != NULL) {                                                        \
+if ((out)->hh.hashv == (hashval) && (out)->hh.keylen == (keylen_in)) {       \
+if (uthash_memcmp((out)->hh.key, keyptr, keylen_in) == 0) {                \
+break;                                                                   \
+}                                                                          \
+}                                                                            \
+if ((out)->hh.hh_next != NULL) {                                             \
+DECLTYPE_ASSIGN(out, ELMT_FROM_HH(tbl, (out)->hh.hh_next));                \
+} else {                                                                     \
+(out) = NULL;                                                              \
+}                                                                            \
+}                                                                              \
+} while (0)
+/* add an item to a bucket  */
+#define HASH_ADD_TO_BKT(head,hh,addhh,oomed)                                     \
+do {                                                                             \
+UT_hash_bucket *_ha_head = &(head);                                            \
+_ha_head->count++;                                                             \
+(addhh)->hh_next = _ha_head->hh_head;                                          \
+(addhh)->hh_prev = NULL;                                                       \
+if (_ha_head->hh_head != NULL) {                                               \
+_ha_head->hh_head->hh_prev = (addhh);                                        \
+}                                                                              \
+_ha_head->hh_head = (addhh);                                                   \
+if ((_ha_head->count >= ((_ha_head->expand_mult + 1U) * HASH_BKT_CAPACITY_THRESH)) \
+&& !(addhh)->tbl->noexpand) {                                              \
+HASH_EXPAND_BUCKETS(addhh,(addhh)->tbl, oomed);                              \
+IF_HASH_NONFATAL_OOM(                                                        \
+if (oomed) {                                                               \
+HASH_DEL_IN_BKT(head,addhh);                                             \
+}                                                                          \
+)                                                                            \
+}                                                                              \
+} while (0)
+/* remove an item from a given bucket */
+#define HASH_DEL_IN_BKT(head,delhh)                                              \
+do {                                                                             \
+UT_hash_bucket *_hd_head = &(head);                                            \
+_hd_head->count--;                                                             \
+if (_hd_head->hh_head == (delhh)) {                                            \
+_hd_head->hh_head = (delhh)->hh_next;                                        \
+}                                                                              \
+if ((delhh)->hh_prev) {                                                        \
+(delhh)->hh_prev->hh_next = (delhh)->hh_next;                                \
+}                                                                              \
+if ((delhh)->hh_next) {                                                        \
+(delhh)->hh_next->hh_prev = (delhh)->hh_prev;                                \
+}                                                                              \
+} while (0)
+/* Bucket expansion has the effect of doubling the number of buckets
+* and redistributing the items into the new buckets. Ideally the
+* items will distribute more or less evenly into the new buckets
+* (the extent to which this is true is a measure of the quality of
+* the hash function as it applies to the key domain).
+*
+* With the items distributed into more buckets, the chain length
+* (item count) in each bucket is reduced. Thus by expanding buckets
+* the hash keeps a bound on the chain length. This bounded chain
+* length is the essence of how a hash provides constant time lookup.
+*
+* The calculation of tbl->ideal_chain_maxlen below deserves some
+* explanation. First, keep in mind that we're calculating the ideal
+* maximum chain length based on the *new* (doubled) bucket count.
+* In fractions this is just n/b (n=number of items,b=new num buckets).
+* Since the ideal chain length is an integer, we want to calculate
+* ceil(n/b). We don't depend on floating point arithmetic in this
+* hash, so to calculate ceil(n/b) with integers we could write
+*
+*      ceil(n/b) = (n/b) + ((n%b)?1:0)
+*
+* and in fact a previous version of this hash did just that.
+* But now we have improved things a bit by recognizing that b is
+* always a power of two. We keep its base 2 log handy (call it lb),
+* so now we can write this with a bit shift and logical AND:
+*
+*      ceil(n/b) = (n>>lb) + ( (n & (b-1)) ? 1:0)
+*
+*/
+#define HASH_EXPAND_BUCKETS(hh,tbl,oomed)                                        \
+do {                                                                             \
+unsigned _he_bkt;                                                              \
+unsigned _he_bkt_i;                                                            \
+struct UT_hash_handle *_he_thh, *_he_hh_nxt;                                   \
+UT_hash_bucket *_he_new_buckets, *_he_newbkt;                                  \
+_he_new_buckets = (UT_hash_bucket*)uthash_malloc(                              \
+2UL * (tbl)->num_buckets * sizeof(struct UT_hash_bucket));            \
+if (!_he_new_buckets) {                                                        \
+HASH_RECORD_OOM(oomed);                                                      \
+} else {                                                                       \
+uthash_bzero(_he_new_buckets,                                                \
+2UL * (tbl)->num_buckets * sizeof(struct UT_hash_bucket));               \
+(tbl)->ideal_chain_maxlen =                                                  \
+((tbl)->num_items >> ((tbl)->log2_num_buckets+1U)) +                      \
+((((tbl)->num_items & (((tbl)->num_buckets*2U)-1U)) != 0U) ? 1U : 0U);    \
+(tbl)->nonideal_items = 0;                                                   \
+for (_he_bkt_i = 0; _he_bkt_i < (tbl)->num_buckets; _he_bkt_i++) {           \
+_he_thh = (tbl)->buckets[ _he_bkt_i ].hh_head;                             \
+while (_he_thh != NULL) {                                                  \
+_he_hh_nxt = _he_thh->hh_next;                                           \
+HASH_TO_BKT(_he_thh->hashv, (tbl)->num_buckets * 2U, _he_bkt);           \
+_he_newbkt = &(_he_new_buckets[_he_bkt]);                                \
+if (++(_he_newbkt->count) > (tbl)->ideal_chain_maxlen) {                 \
+(tbl)->nonideal_items++;                                               \
+_he_newbkt->expand_mult = _he_newbkt->count / (tbl)->ideal_chain_maxlen; \
+}                                                                        \
+_he_thh->hh_prev = NULL;                                                 \
+_he_thh->hh_next = _he_newbkt->hh_head;                                  \
+if (_he_newbkt->hh_head != NULL) {                                       \
+_he_newbkt->hh_head->hh_prev = _he_thh;                                \
+}                                                                        \
+_he_newbkt->hh_head = _he_thh;                                           \
+_he_thh = _he_hh_nxt;                                                    \
+}                                                                          \
+}                                                                            \
+uthash_free((tbl)->buckets, (tbl)->num_buckets * sizeof(struct UT_hash_bucket)); \
+(tbl)->num_buckets *= 2U;                                                    \
+(tbl)->log2_num_buckets++;                                                   \
+(tbl)->buckets = _he_new_buckets;                                            \
+(tbl)->ineff_expands = ((tbl)->nonideal_items > ((tbl)->num_items >> 1)) ?   \
+((tbl)->ineff_expands+1U) : 0U;                                          \
+if ((tbl)->ineff_expands > 1U) {                                             \
+(tbl)->noexpand = 1;                                                       \
+uthash_noexpand_fyi(tbl);                                                  \
+}                                                                            \
+uthash_expand_fyi(tbl);                                                      \
+}                                                                              \
+} while (0)
+/* This is an adaptation of Simon Tatham's O(n log(n)) mergesort */
+/* Note that HASH_SORT assumes the hash handle name to be hh.
+* HASH_SRT was added to allow the hash handle name to be passed in. */
+#define HASH_SORT(head,cmpfcn) HASH_SRT(hh,head,cmpfcn)
+#define HASH_SRT(hh,head,cmpfcn)                                                 \
+do {                                                                             \
+unsigned _hs_i;                                                                \
+unsigned _hs_looping,_hs_nmerges,_hs_insize,_hs_psize,_hs_qsize;               \
+struct UT_hash_handle *_hs_p, *_hs_q, *_hs_e, *_hs_list, *_hs_tail;            \
+if (head != NULL) {                                                            \
+_hs_insize = 1;                                                              \
+_hs_looping = 1;                                                             \
+_hs_list = &((head)->hh);                                                    \
+while (_hs_looping != 0U) {                                                  \
+_hs_p = _hs_list;                                                          \
+_hs_list = NULL;                                                           \
+_hs_tail = NULL;                                                           \
+_hs_nmerges = 0;                                                           \
+while (_hs_p != NULL) {                                                    \
+_hs_nmerges++;                                                           \
+_hs_q = _hs_p;                                                           \
+_hs_psize = 0;                                                           \
+for (_hs_i = 0; _hs_i < _hs_insize; ++_hs_i) {                           \
+_hs_psize++;                                                           \
+_hs_q = ((_hs_q->next != NULL) ?                                       \
+HH_FROM_ELMT((head)->hh.tbl, _hs_q->next) : NULL);                   \
+if (_hs_q == NULL) {                                                   \
+break;                                                               \
+}                                                                      \
+}                                                                        \
+_hs_qsize = _hs_insize;                                                  \
+while ((_hs_psize != 0U) || ((_hs_qsize != 0U) && (_hs_q != NULL))) {    \
+if (_hs_psize == 0U) {                                                 \
+_hs_e = _hs_q;                                                       \
+_hs_q = ((_hs_q->next != NULL) ?                                     \
+HH_FROM_ELMT((head)->hh.tbl, _hs_q->next) : NULL);                 \
+_hs_qsize--;                                                         \
+} else if ((_hs_qsize == 0U) || (_hs_q == NULL)) {                     \
+_hs_e = _hs_p;                                                       \
+if (_hs_p != NULL) {                                                 \
+_hs_p = ((_hs_p->next != NULL) ?                                   \
+HH_FROM_ELMT((head)->hh.tbl, _hs_p->next) : NULL);               \
+}                                                                    \
+_hs_psize--;                                                         \
+} else if ((cmpfcn(                                                    \
+DECLTYPE(head)(ELMT_FROM_HH((head)->hh.tbl, _hs_p)),             \
+DECLTYPE(head)(ELMT_FROM_HH((head)->hh.tbl, _hs_q))              \
+)) <= 0) {                                                       \
+_hs_e = _hs_p;                                                       \
+if (_hs_p != NULL) {                                                 \
+_hs_p = ((_hs_p->next != NULL) ?                                   \
+HH_FROM_ELMT((head)->hh.tbl, _hs_p->next) : NULL);               \
+}                                                                    \
+_hs_psize--;                                                         \
+} else {                                                               \
+_hs_e = _hs_q;                                                       \
+_hs_q = ((_hs_q->next != NULL) ?                                     \
+HH_FROM_ELMT((head)->hh.tbl, _hs_q->next) : NULL);                 \
+_hs_qsize--;                                                         \
+}                                                                      \
+if ( _hs_tail != NULL ) {                                              \
+_hs_tail->next = ((_hs_e != NULL) ?                                  \
+ELMT_FROM_HH((head)->hh.tbl, _hs_e) : NULL);                       \
+} else {                                                               \
+_hs_list = _hs_e;                                                    \
+}                                                                      \
+if (_hs_e != NULL) {                                                   \
+_hs_e->prev = ((_hs_tail != NULL) ?                                  \
+ELMT_FROM_HH((head)->hh.tbl, _hs_tail) : NULL);                    \
+}                                                                      \
+_hs_tail = _hs_e;                                                      \
+}                                                                        \
+_hs_p = _hs_q;                                                           \
+}                                                                          \
+if (_hs_tail != NULL) {                                                    \
+_hs_tail->next = NULL;                                                   \
+}                                                                          \
+if (_hs_nmerges <= 1U) {                                                   \
+_hs_looping = 0;                                                         \
+(head)->hh.tbl->tail = _hs_tail;                                         \
+DECLTYPE_ASSIGN(head, ELMT_FROM_HH((head)->hh.tbl, _hs_list));           \
+}                                                                          \
+_hs_insize *= 2U;                                                          \
+}                                                                            \
+HASH_FSCK(hh, head, "HASH_SRT");                                             \
+}                                                                              \
+} while (0)
+/* This function selects items from one hash into another hash.
+* The end result is that the selected items have dual presence
+* in both hashes. There is no copy of the items made; rather
+* they are added into the new hash through a secondary hash
+* hash handle that must be present in the structure. */
+#define HASH_SELECT(hh_dst, dst, hh_src, src, cond)                              \
+do {                                                                             \
+unsigned _src_bkt, _dst_bkt;                                                   \
+void *_last_elt = NULL, *_elt;                                                 \
+UT_hash_handle *_src_hh, *_dst_hh, *_last_elt_hh=NULL;                         \
+ptrdiff_t _dst_hho = ((char*)(&(dst)->hh_dst) - (char*)(dst));                 \
+if ((src) != NULL) {                                                           \
+for (_src_bkt=0; _src_bkt < (src)->hh_src.tbl->num_buckets; _src_bkt++) {    \
+for (_src_hh = (src)->hh_src.tbl->buckets[_src_bkt].hh_head;               \
+_src_hh != NULL;                                                         \
+_src_hh = _src_hh->hh_next) {                                            \
+_elt = ELMT_FROM_HH((src)->hh_src.tbl, _src_hh);                         \
+if (cond(_elt)) {                                                        \
+IF_HASH_NONFATAL_OOM( int _hs_oomed = 0; )                             \
+_dst_hh = (UT_hash_handle*)(((char*)_elt) + _dst_hho);                 \
+_dst_hh->key = _src_hh->key;                                           \
+_dst_hh->keylen = _src_hh->keylen;                                     \
+_dst_hh->hashv = _src_hh->hashv;                                       \
+_dst_hh->prev = _last_elt;                                             \
+_dst_hh->next = NULL;                                                  \
+if (_last_elt_hh != NULL) {                                            \
+_last_elt_hh->next = _elt;                                           \
+}                                                                      \
+if ((dst) == NULL) {                                                   \
+DECLTYPE_ASSIGN(dst, _elt);                                          \
+HASH_MAKE_TABLE(hh_dst, dst, _hs_oomed);                             \
+IF_HASH_NONFATAL_OOM(                                                \
+if (_hs_oomed) {                                                   \
+uthash_nonfatal_oom(_elt);                                       \
+(dst) = NULL;                                                    \
+continue;                                                        \
+}                                                                  \
+)                                                                    \
+} else {                                                               \
+_dst_hh->tbl = (dst)->hh_dst.tbl;                                    \
+}                                                                      \
+HASH_TO_BKT(_dst_hh->hashv, _dst_hh->tbl->num_buckets, _dst_bkt);      \
+HASH_ADD_TO_BKT(_dst_hh->tbl->buckets[_dst_bkt], hh_dst, _dst_hh, _hs_oomed); \
+(dst)->hh_dst.tbl->num_items++;                                        \
+IF_HASH_NONFATAL_OOM(                                                  \
+if (_hs_oomed) {                                                     \
+HASH_ROLLBACK_BKT(hh_dst, dst, _dst_hh);                           \
+HASH_DELETE_HH(hh_dst, dst, _dst_hh);                              \
+_dst_hh->tbl = NULL;                                               \
+uthash_nonfatal_oom(_elt);                                         \
+continue;                                                          \
+}                                                                    \
+)                                                                      \
+HASH_BLOOM_ADD(_dst_hh->tbl, _dst_hh->hashv);                          \
+_last_elt = _elt;                                                      \
+_last_elt_hh = _dst_hh;                                                \
+}                                                                        \
+}                                                                          \
+}                                                                            \
+}                                                                              \
+HASH_FSCK(hh_dst, dst, "HASH_SELECT");                                         \
+} while (0)
+#define HASH_CLEAR(hh,head)                                                      \
+do {                                                                             \
+if ((head) != NULL) {                                                          \
+HASH_BLOOM_FREE((head)->hh.tbl);                                             \
+uthash_free((head)->hh.tbl->buckets,                                         \
+(head)->hh.tbl->num_buckets*sizeof(struct UT_hash_bucket));      \
+uthash_free((head)->hh.tbl, sizeof(UT_hash_table));                          \
+(head) = NULL;                                                               \
+}                                                                              \
+} while (0)
+#define HASH_OVERHEAD(hh,head)                                                   \
+(((head) != NULL) ? (                                                           \
+(size_t)(((head)->hh.tbl->num_items   * sizeof(UT_hash_handle))   +             \
+((head)->hh.tbl->num_buckets * sizeof(UT_hash_bucket))   +             \
+sizeof(UT_hash_table)                                   +             \
+(HASH_BLOOM_BYTELEN))) : 0U)
+#ifdef NO_DECLTYPE
+#define HASH_ITER(hh,head,el,tmp)                                                \
+for(((el)=(head)), ((*(char**)(&(tmp)))=(char*)((head!=NULL)?(head)->hh.next:NULL)); \
+(el) != NULL; ((el)=(tmp)), ((*(char**)(&(tmp)))=(char*)((tmp!=NULL)?(tmp)->hh.next:NULL)))
+#else
+#define HASH_ITER(hh,head,el,tmp)                                                \
+for(((el)=(head)), ((tmp)=DECLTYPE(el)((head!=NULL)?(head)->hh.next:NULL));      \
+(el) != NULL; ((el)=(tmp)), ((tmp)=DECLTYPE(el)((tmp!=NULL)?(tmp)->hh.next:NULL)))
+#endif
+/* obtain a count of items in the hash */
+#define HASH_COUNT(head) HASH_CNT(hh,head)
+#define HASH_CNT(hh,head) ((head != NULL)?((head)->hh.tbl->num_items):0U)
+typedef struct UT_hash_bucket {
+struct UT_hash_handle *hh_head;
+unsigned count;
+/* expand_mult is normally set to 0. In this situation, the max chain length
+* threshold is enforced at its default value, HASH_BKT_CAPACITY_THRESH. (If
+* the bucket's chain exceeds this length, bucket expansion is triggered).
+* However, setting expand_mult to a non-zero value delays bucket expansion
+* (that would be triggered by additions to this particular bucket)
+* until its chain length reaches a *multiple* of HASH_BKT_CAPACITY_THRESH.
+* (The multiplier is simply expand_mult+1). The whole idea of this
+* multiplier is to reduce bucket expansions, since they are expensive, in
+* situations where we know that a particular bucket tends to be overused.
+* It is better to let its chain length grow to a longer yet-still-bounded
+* value, than to do an O(n) bucket expansion too often.
+*/
+unsigned expand_mult;
+} UT_hash_bucket;
+/* random signature used only to find hash tables in external analysis */
+#define HASH_SIGNATURE 0xa0111fe1u
+#define HASH_BLOOM_SIGNATURE 0xb12220f2u
+typedef struct UT_hash_table {
+UT_hash_bucket *buckets;
+unsigned num_buckets, log2_num_buckets;
+unsigned num_items;
+struct UT_hash_handle *tail; /* tail hh in app order, for fast append    */
+ptrdiff_t hho; /* hash handle offset (byte pos of hash handle in element */
+/* in an ideal situation (all buckets used equally), no bucket would have
+* more than ceil(#items/#buckets) items. that's the ideal chain length. */
+unsigned ideal_chain_maxlen;
+/* nonideal_items is the number of items in the hash whose chain position
+* exceeds the ideal chain maxlen. these items pay the penalty for an uneven
+* hash distribution; reaching them in a chain traversal takes >ideal steps */
+unsigned nonideal_items;
+/* ineffective expands occur when a bucket doubling was performed, but
+* afterward, more than half the items in the hash had nonideal chain
+* positions. If this happens on two consecutive expansions we inhibit any
+* further expansion, as it's not helping; this happens when the hash
+* function isn't a good fit for the key domain. When expansion is inhibited
+* the hash will still work, albeit no longer in constant time. */
+unsigned ineff_expands, noexpand;
+uint32_t signature; /* used only to find hash tables in external analysis */
+#ifdef HASH_BLOOM
+uint32_t bloom_sig; /* used only to test bloom exists in external analysis */
+uint8_t *bloom_bv;
+uint8_t bloom_nbits;
+#endif
+} UT_hash_table;
+typedef struct UT_hash_handle {
+struct UT_hash_table *tbl;
+void *prev;                       /* prev element in app order      */
+void *next;                       /* next element in app order      */
+struct UT_hash_handle *hh_prev;   /* previous hh in bucket order    */
+struct UT_hash_handle *hh_next;   /* next hh in bucket order        */
+void *key;                        /* ptr to enclosing struct's key  */
+unsigned keylen;                  /* enclosing struct's key len     */
+unsigned hashv;                   /* result of hash-fcn(key)        */
+} UT_hash_handle;
 
 typedef struct td_int32_option int32_option;
 struct td_int32_option {
@@ -103,6 +1215,13 @@ const char* sjg_string1 = "assets/sample.ttf";
 const char* sjg_string2 = "Bob";
 
 
+typedef struct {
+    float x, y, z;    // position
+    float s, t;       // texture
+    float r, g, b, a; // color
+} vertex_t;
+
+
 /**
 *
 */
@@ -119,15 +1238,43 @@ typedef union
 
 
 /**
-* Maximum number of attributes per vertex
-*
-* @private
+* Generic vertex buffer.
 */
-#define MAX_VERTEX_ATTRIBUTE 16
+struct vertex_buffer_td
+{
+    /** Format of the vertex buffer. */
+    char * format;
+    /** Vector of vertices. */
+    vector_t * vertices;
+    #ifdef FREETYPE_GL_USE_VAO
+    /** GL identity of the Vertex Array Object */
+    GLuint VAO_id;
+    #endif
+    /** GL identity of the vertices buffer. */
+    GLuint vertices_id;
+    /** Vector of indices. */
+    vector_t * indices;
+    /** GL identity of the indices buffer. */
+    GLuint indices_id;
+    /** Current size of the vertices buffer in GPU */
+    size_t GPU_vsize;
+    /** Current size of the indices buffer in GPU*/
+    size_t GPU_isize;
+    /** GL primitives to render. */
+    GLenum mode;
+    /** Whether the vertex buffer needs to be uploaded to GPU memory. */
+    char state;
+    /** Individual items */
+    vector_t * items;
+    /** Array of attributes. */
+    vertex_attribute_t *attributes[MAX_VERTEX_ATTRIBUTE];
+};
+
+
 /**
 *  Generic vertex attribute.
 */
-typedef struct vertex_attribute_t
+struct vertex_attribute_td
 {
     /**
     *  atribute name
@@ -173,7 +1320,7 @@ typedef struct vertex_attribute_t
     * pointer to the function that enable this attribute.
     */
     void ( * enable )(void *);
-} vertex_attribute_t;
+};
 
 
 /**
@@ -181,7 +1328,7 @@ typedef struct vertex_attribute_t
 *
 * @memberof vector
 */
-typedef struct vector_t
+struct vector_td
 {
     /** Pointer to dynamically allocated items. */
     void * items;
@@ -191,7 +1338,7 @@ typedef struct vector_t
     size_t size;
     /** Size (in bytes) of a single item. */
     size_t item_size;
-} vector_t;
+};
 
 
 #undef __FTERRORS_H__
@@ -656,11 +1803,13 @@ typedef struct texture_atlas_t
 } texture_atlas_t;
 
 
-typedef struct {
-    float x, y, z;    // position
-    float s, t;       // texture
-    float r, g, b, a; // color
-} vertex_t;
+typedef struct pointer_td pointer;
+struct pointer_td {
+    void* ptr;
+    int refCount;
+    UT_hash_handle hh;
+};
+pointer* g_pointers = 0;
 
 #define sjs_object_typeId 1
 #define sjs_anon8_typeId 2
@@ -681,33 +1830,31 @@ typedef struct {
 #define sjs_anon1_heap_typeId 17
 #define sjs_size_typeId 18
 #define sjs_size_heap_typeId 19
-#define sjs_sdlSurface_typeId 20
-#define sjs_rect_typeId 21
-#define sjs_rect_heap_typeId 22
-#define sjs_color_typeId 23
-#define sjs_color_heap_typeId 24
-#define sjs_texture_typeId 25
-#define sjs_texture_heap_typeId 26
-#define sjs_margin_typeId 27
-#define sjs_margin_heap_typeId 28
-#define sjs_image_typeId 29
-#define sjs_image_heap_typeId 30
-#define sjs_array_char_typeId 31
-#define sjs_array_char_heap_typeId 32
-#define sjs_string_typeId 33
-#define sjs_string_heap_typeId 34
-#define sjs_font_typeId 35
-#define sjs_font_heap_typeId 36
-#define sji_surface_typeId 37
-#define sjs_sdlSurface_heap_typeId 38
-#define sjs_textElement_typeId 39
-#define sjs_array_heap_element_typeId 40
-#define sjs_array_heap_element_heap_typeId 41
-#define sji_element_typeId 42
+#define sjs_surface2d_typeId 20
+#define sjs_surface2d_heap_typeId 21
+#define sjs_array_char_typeId 22
+#define sjs_array_char_heap_typeId 23
+#define sjs_string_typeId 24
+#define sjs_string_heap_typeId 25
+#define sjs_font_typeId 26
+#define sjs_font_heap_typeId 27
+#define sjs_color_typeId 28
+#define sjs_color_heap_typeId 29
+#define sjs_rect_typeId 30
+#define sjs_rect_heap_typeId 31
+#define sjs_textElement_typeId 32
+#define sjs_array_heap_element_typeId 33
+#define sjs_array_heap_element_heap_typeId 34
+#define sji_element_typeId 35
+#define sjs_point_typeId 36
+#define sjs_point_heap_typeId 37
+#define sjs_textVertexBuffer_typeId 38
+#define sji_textElement_render_vertexBuffer_typeId 39
+#define sjs_textVertexBuffer_heap_typeId 40
+#define sjs_texture_typeId 41
+#define sjs_texture_heap_typeId 42
 #define sjs_textElement_heap_typeId 43
-#define sjs_point_typeId 44
-#define sjs_point_heap_typeId 45
-#define sji_fireMouseUp_mouseHandler_typeId 46
+#define sji_fireMouseUp_mouseHandler_typeId 44
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_anon8 sjs_anon8;
@@ -728,32 +1875,30 @@ typedef struct td_sjs_anon1 sjs_anon1;
 typedef struct td_sjs_anon1_heap sjs_anon1_heap;
 typedef struct td_sjs_size sjs_size;
 typedef struct td_sjs_size_heap sjs_size_heap;
-typedef struct td_sjs_sdlSurface sjs_sdlSurface;
-typedef struct td_sjs_rect sjs_rect;
-typedef struct td_sjs_rect_heap sjs_rect_heap;
-typedef struct td_sjs_color sjs_color;
-typedef struct td_sjs_color_heap sjs_color_heap;
-typedef struct td_sjs_texture sjs_texture;
-typedef struct td_sjs_texture_heap sjs_texture_heap;
-typedef struct td_sjs_margin sjs_margin;
-typedef struct td_sjs_margin_heap sjs_margin_heap;
-typedef struct td_sjs_image sjs_image;
-typedef struct td_sjs_image_heap sjs_image_heap;
+typedef struct td_sjs_surface2d sjs_surface2d;
+typedef struct td_sjs_surface2d_heap sjs_surface2d_heap;
 typedef struct td_sjs_array_char sjs_array_char;
 typedef struct td_sjs_array_char_heap sjs_array_char_heap;
 typedef struct td_sjs_string sjs_string;
 typedef struct td_sjs_string_heap sjs_string_heap;
 typedef struct td_sjs_font sjs_font;
 typedef struct td_sjs_font_heap sjs_font_heap;
-typedef struct td_sji_surface sji_surface;
-typedef struct td_sjs_sdlSurface_heap sjs_sdlSurface_heap;
+typedef struct td_sjs_color sjs_color;
+typedef struct td_sjs_color_heap sjs_color_heap;
+typedef struct td_sjs_rect sjs_rect;
+typedef struct td_sjs_rect_heap sjs_rect_heap;
 typedef struct td_sjs_textElement sjs_textElement;
 typedef struct td_sjs_array_heap_element sjs_array_heap_element;
 typedef struct td_sjs_array_heap_element_heap sjs_array_heap_element_heap;
 typedef struct td_sji_element sji_element;
-typedef struct td_sjs_textElement_heap sjs_textElement_heap;
 typedef struct td_sjs_point sjs_point;
 typedef struct td_sjs_point_heap sjs_point_heap;
+typedef struct td_sjs_textVertexBuffer sjs_textVertexBuffer;
+typedef struct td_sji_textElement_render_vertexBuffer sji_textElement_render_vertexBuffer;
+typedef struct td_sjs_textVertexBuffer_heap sjs_textVertexBuffer_heap;
+typedef struct td_sjs_texture sjs_texture;
+typedef struct td_sjs_texture_heap sjs_texture_heap;
+typedef struct td_sjs_textElement_heap sjs_textElement_heap;
 typedef struct td_sji_fireMouseUp_mouseHandler sji_fireMouseUp_mouseHandler;
 
 struct td_sjs_object {
@@ -849,7 +1994,7 @@ struct td_sjs_size_heap {
     int32_t h;
 };
 
-struct td_sjs_sdlSurface {
+struct td_sjs_surface2d {
     sjs_size size;
     SDL_Window* win;
     SDL_Renderer* ren;
@@ -859,71 +2004,15 @@ struct td_sjs_sdlSurface {
     mat4 projection;
 };
 
-struct td_sjs_rect {
-    int32_t x;
-    int32_t y;
-    int32_t w;
-    int32_t h;
-};
-
-struct td_sjs_rect_heap {
+struct td_sjs_surface2d_heap {
     intptr_t _refCount;
-    int32_t x;
-    int32_t y;
-    int32_t w;
-    int32_t h;
-};
-
-struct td_sjs_color {
-    int32_t r;
-    int32_t g;
-    int32_t b;
-    int32_t a;
-};
-
-struct td_sjs_color_heap {
-    intptr_t _refCount;
-    int32_t r;
-    int32_t g;
-    int32_t b;
-    int32_t a;
-};
-
-struct td_sjs_texture {
-    uintptr_t tex;
-};
-
-struct td_sjs_texture_heap {
-    intptr_t _refCount;
-    uintptr_t tex;
-};
-
-struct td_sjs_margin {
-    int32_t l;
-    int32_t t;
-    int32_t r;
-    int32_t b;
-};
-
-struct td_sjs_margin_heap {
-    intptr_t _refCount;
-    int32_t l;
-    int32_t t;
-    int32_t r;
-    int32_t b;
-};
-
-struct td_sjs_image {
-    sjs_texture texture;
-    sjs_rect rect;
-    sjs_margin margin;
-};
-
-struct td_sjs_image_heap {
-    intptr_t _refCount;
-    sjs_texture texture;
-    sjs_rect rect;
-    sjs_margin margin;
+    sjs_size size;
+    SDL_Window* win;
+    SDL_Renderer* ren;
+    GLuint textShader;
+    mat4 model;
+    mat4 view;
+    mat4 projection;
 };
 
 struct td_sjs_array_char {
@@ -952,8 +2041,7 @@ struct td_sjs_string_heap {
 
 struct td_sjs_font {
     sjs_string src;
-    int32_t size;
-    uintptr_t data;
+    float size;
     texture_font_t* font;
     texture_atlas_t* atlas;
 };
@@ -961,39 +2049,39 @@ struct td_sjs_font {
 struct td_sjs_font_heap {
     intptr_t _refCount;
     sjs_string src;
-    int32_t size;
-    uintptr_t data;
+    float size;
     texture_font_t* font;
     texture_atlas_t* atlas;
 };
 
-struct td_sji_surface {
-    intptr_t _refCount;
-    sjs_object* _parent;
-    void (*destroy)(void* _this);
-    sjs_object* (*asInterface)(sjs_object* _this, int typeId);
-    void (*clear)(void* _parent);
-    void (*present)(void* _parent);
-    void (*getSize)(void* _parent, sjs_size* _return);
-    void (*getSize_heap)(void* _parent, sjs_size_heap** _return);
-    void (*drawRect)(void* _parent, sjs_rect* rect, sjs_color* color);
-    void (*drawImage)(void* _parent, sjs_rect* rect, sjs_image* image);
-    void (*drawText)(void* _parent, sjs_rect* rect, sjs_font* font, sjs_string* text, sjs_color* color);
-    void (*getTextSize)(void* _parent, sjs_font* font, sjs_string* text, sjs_size* _return);
-    void (*getTextSize_heap)(void* _parent, sjs_font* font, sjs_string* text, sjs_size_heap** _return);
-    void (*getTexture)(void* _parent, sjs_string* src, sjs_texture* _return);
-    void (*getTexture_heap)(void* _parent, sjs_string* src, sjs_texture_heap** _return);
+struct td_sjs_color {
+    int32_t r;
+    int32_t g;
+    int32_t b;
+    int32_t a;
 };
 
-struct td_sjs_sdlSurface_heap {
+struct td_sjs_color_heap {
     intptr_t _refCount;
-    sjs_size size;
-    SDL_Window* win;
-    SDL_Renderer* ren;
-    GLuint textShader;
-    mat4 model;
-    mat4 view;
-    mat4 projection;
+    int32_t r;
+    int32_t g;
+    int32_t b;
+    int32_t a;
+};
+
+struct td_sjs_rect {
+    int32_t x;
+    int32_t y;
+    int32_t w;
+    int32_t h;
+};
+
+struct td_sjs_rect_heap {
+    intptr_t _refCount;
+    int32_t x;
+    int32_t y;
+    int32_t w;
+    int32_t h;
 };
 
 struct td_sjs_textElement {
@@ -1025,16 +2113,8 @@ struct td_sji_element {
     void (*getSize_heap)(void* _parent, sjs_size* maxSize, sjs_size_heap** _return);
     void (*getRect)(void* _parent, sjs_rect** _return);
     void (*setRect)(void* _parent, sjs_rect* rect);
-    void (*render)(void* _parent, sji_surface* surface);
+    void (*render)(void* _parent, sjs_surface2d* surface);
     void (*getChildren)(void* _parent, sjs_array_heap_element** _return);
-};
-
-struct td_sjs_textElement_heap {
-    intptr_t _refCount;
-    sjs_font font;
-    sjs_string text;
-    sjs_color color;
-    sjs_rect rect;
 };
 
 struct td_sjs_point {
@@ -1048,6 +2128,50 @@ struct td_sjs_point_heap {
     int32_t y;
 };
 
+struct td_sjs_textVertexBuffer {
+    sjs_string text;
+    sjs_point point;
+    sjs_color color;
+    sjs_font font;
+    vertex_buffer_t* buffer;
+};
+
+struct td_sji_textElement_render_vertexBuffer {
+    intptr_t _refCount;
+    sjs_object* _parent;
+    void (*destroy)(void* _this);
+    sjs_object* (*asInterface)(sjs_object* _this, int typeId);
+    void (*render)(void* _parent);
+};
+
+struct td_sjs_textVertexBuffer_heap {
+    intptr_t _refCount;
+    sjs_string text;
+    sjs_point point;
+    sjs_color color;
+    sjs_font font;
+    vertex_buffer_t* buffer;
+};
+
+struct td_sjs_texture {
+    sjs_size size;
+    uint32_t id;
+};
+
+struct td_sjs_texture_heap {
+    intptr_t _refCount;
+    sjs_size size;
+    uint32_t id;
+};
+
+struct td_sjs_textElement_heap {
+    intptr_t _refCount;
+    sjs_font font;
+    sjs_string text;
+    sjs_color color;
+    sjs_rect rect;
+};
+
 struct td_sji_fireMouseUp_mouseHandler {
     intptr_t _refCount;
     sjs_object* _parent;
@@ -1057,6 +2181,9 @@ struct td_sji_fireMouseUp_mouseHandler {
     void (*onMouseDown)(void* _parent, sjs_point* point);
     void (*onMouseMove)(void* _parent, sjs_point* point);
 };
+
+
+void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen);
 
 
 mat4 *
@@ -1164,38 +2291,6 @@ uint32_t
 utf8_to_utf32( const char * character );
 
 
-/**
-* Generic vertex buffer.
-*/
-typedef struct vertex_buffer_t
-{
-    /** Format of the vertex buffer. */
-    char * format;
-    /** Vector of vertices. */
-    vector_t * vertices;
-    #ifdef FREETYPE_GL_USE_VAO
-    /** GL identity of the Vertex Array Object */
-    GLuint VAO_id;
-    #endif
-    /** GL identity of the vertices buffer. */
-    GLuint vertices_id;
-    /** Vector of indices. */
-    vector_t * indices;
-    /** GL identity of the indices buffer. */
-    GLuint indices_id;
-    /** Current size of the vertices buffer in GPU */
-    size_t GPU_vsize;
-    /** Current size of the indices buffer in GPU*/
-    size_t GPU_isize;
-    /** GL primitives to render. */
-    GLenum mode;
-    /** Whether the vertex buffer needs to be uploaded to GPU memory. */
-    char state;
-    /** Individual items */
-    vector_t * items;
-    /** Array of attributes. */
-    vertex_attribute_t *attributes[MAX_VERTEX_ATTRIBUTE];
-} vertex_buffer_t;
 #ifdef WIN32
 // strndup() is not available on Windows
 char *strndup( const char *s1, size_t n);
@@ -1906,13 +3001,11 @@ shader_load( const char * vert_filename,
 const char * frag_filename );
 
 
-void add_text( vertex_buffer_t * buffer, texture_font_t * font,
-char *text, vec4 * color, vec2 * pen );
+void _retain(void* ptr);
+bool _release(void* ptr);
 
-sjs_sdlSurface_heap* sjt_cast1;
-sjs_textElement_heap* sjt_cast4;
-int32_t sjt_cast5;
-sjs_anon6* sjt_dot25;
+sjs_textElement_heap* sjt_cast1;
+sjs_anon6* sjt_dot19;
 sjs_anon8 sjv_borderPosition;
 sjs_anon5 sjv_buttonState;
 sjs_anon6 sjv_colors;
@@ -1924,115 +3017,101 @@ int32_t sjv_i32_min;
 sjs_anon2 sjv_parse;
 sjs_anon3 sjv_random;
 sji_element* sjv_root;
-sji_surface* sjv_rootSurface;
+sjs_surface2d sjv_rootSurface;
 sjs_anon7 sjv_style;
 uint32_t sjv_u32_max;
 
 void sjf_anon1(sjs_anon1* _this);
-void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* to);
+void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* _from);
 void sjf_anon1_destroy(sjs_anon1* _this);
 void sjf_anon1_heap(sjs_anon1_heap* _this);
 void sjf_anon2(sjs_anon2* _this);
-void sjf_anon2_copy(sjs_anon2* _this, sjs_anon2* to);
+void sjf_anon2_copy(sjs_anon2* _this, sjs_anon2* _from);
 void sjf_anon2_destroy(sjs_anon2* _this);
 void sjf_anon2_heap(sjs_anon2_heap* _this);
 void sjf_anon3(sjs_anon3* _this);
-void sjf_anon3_copy(sjs_anon3* _this, sjs_anon3* to);
+void sjf_anon3_copy(sjs_anon3* _this, sjs_anon3* _from);
 void sjf_anon3_destroy(sjs_anon3* _this);
 void sjf_anon3_heap(sjs_anon3_heap* _this);
 void sjf_anon4(sjs_anon4* _this);
-void sjf_anon4_copy(sjs_anon4* _this, sjs_anon4* to);
+void sjf_anon4_copy(sjs_anon4* _this, sjs_anon4* _from);
 void sjf_anon4_destroy(sjs_anon4* _this);
 void sjf_anon4_heap(sjs_anon4_heap* _this);
 void sjf_anon5(sjs_anon5* _this);
-void sjf_anon5_copy(sjs_anon5* _this, sjs_anon5* to);
+void sjf_anon5_copy(sjs_anon5* _this, sjs_anon5* _from);
 void sjf_anon5_destroy(sjs_anon5* _this);
 void sjf_anon5_heap(sjs_anon5_heap* _this);
 void sjf_anon6(sjs_anon6* _this);
-void sjf_anon6_copy(sjs_anon6* _this, sjs_anon6* to);
+void sjf_anon6_copy(sjs_anon6* _this, sjs_anon6* _from);
 void sjf_anon6_destroy(sjs_anon6* _this);
 void sjf_anon6_heap(sjs_anon6_heap* _this);
 void sjf_anon6_red(sjs_anon6* _parent, sjs_color* _return);
 void sjf_anon6_red_heap(sjs_anon6* _parent, sjs_color_heap** _return);
 void sjf_anon7(sjs_anon7* _this);
-void sjf_anon7_copy(sjs_anon7* _this, sjs_anon7* to);
+void sjf_anon7_copy(sjs_anon7* _this, sjs_anon7* _from);
 void sjf_anon7_destroy(sjs_anon7* _this);
 void sjf_anon7_heap(sjs_anon7_heap* _this);
 void sjf_anon8(sjs_anon8* _this);
-void sjf_anon8_copy(sjs_anon8* _this, sjs_anon8* to);
+void sjf_anon8_copy(sjs_anon8* _this, sjs_anon8* _from);
 void sjf_anon8_destroy(sjs_anon8* _this);
 void sjf_anon8_heap(sjs_anon8_heap* _this);
 void sjf_array_char(sjs_array_char* _this);
-void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* to);
+void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from);
 void sjf_array_char_destroy(sjs_array_char* _this);
 void sjf_array_char_heap(sjs_array_char_heap* _this);
 void sjf_array_heap_element(sjs_array_heap_element* _this);
-void sjf_array_heap_element_copy(sjs_array_heap_element* _this, sjs_array_heap_element* to);
+void sjf_array_heap_element_copy(sjs_array_heap_element* _this, sjs_array_heap_element* _from);
 void sjf_array_heap_element_destroy(sjs_array_heap_element* _this);
 void sjf_array_heap_element_getAt_heap(sjs_array_heap_element* _parent, int32_t index, sji_element** _return);
 void sjf_array_heap_element_heap(sjs_array_heap_element_heap* _this);
 void sjf_color(sjs_color* _this);
-void sjf_color_copy(sjs_color* _this, sjs_color* to);
+void sjf_color_copy(sjs_color* _this, sjs_color* _from);
 void sjf_color_destroy(sjs_color* _this);
 void sjf_color_heap(sjs_color_heap* _this);
 void sjf_fireMouseDown(sji_element* element, sjs_point* point);
 void sjf_fireMouseUp(sji_element* element, sjs_point* point);
 void sjf_font(sjs_font* _this);
-void sjf_font_copy(sjs_font* _this, sjs_font* to);
+void sjf_font_copy(sjs_font* _this, sjs_font* _from);
 void sjf_font_destroy(sjs_font* _this);
+void sjf_font_getTexture(sjs_font* _parent, sjs_texture* _return);
+void sjf_font_getTexture_heap(sjs_font* _parent, sjs_texture_heap** _return);
 void sjf_font_heap(sjs_font_heap* _this);
-void sjf_image(sjs_image* _this);
-void sjf_image_copy(sjs_image* _this, sjs_image* to);
-void sjf_image_destroy(sjs_image* _this);
-void sjf_image_heap(sjs_image_heap* _this);
 void sjf_mainLoop(void);
-void sjf_margin(sjs_margin* _this);
-void sjf_margin_copy(sjs_margin* _this, sjs_margin* to);
-void sjf_margin_destroy(sjs_margin* _this);
-void sjf_margin_heap(sjs_margin_heap* _this);
 void sjf_point(sjs_point* _this);
-void sjf_point_copy(sjs_point* _this, sjs_point* to);
+void sjf_point_copy(sjs_point* _this, sjs_point* _from);
 void sjf_point_destroy(sjs_point* _this);
 void sjf_point_heap(sjs_point_heap* _this);
 void sjf_rect(sjs_rect* _this);
 void sjf_rect_containsPoint(sjs_rect* _parent, sjs_point* point, bool* _return);
-void sjf_rect_copy(sjs_rect* _this, sjs_rect* to);
+void sjf_rect_copy(sjs_rect* _this, sjs_rect* _from);
 void sjf_rect_destroy(sjs_rect* _this);
 void sjf_rect_heap(sjs_rect_heap* _this);
 void sjf_runLoop(void);
-void sjf_sdlSurface(sjs_sdlSurface* _this);
-sjs_object* sjf_sdlSurface_asInterface(sjs_sdlSurface* _this, int typeId);
-sji_surface* sjf_sdlSurface_as_sji_surface(sjs_sdlSurface* _this);
-void sjf_sdlSurface_clear(sjs_sdlSurface* _parent);
-void sjf_sdlSurface_copy(sjs_sdlSurface* _this, sjs_sdlSurface* to);
-void sjf_sdlSurface_destroy(sjs_sdlSurface* _this);
-void sjf_sdlSurface_drawImage(sjs_sdlSurface* _parent, sjs_rect* rect, sjs_image* image);
-void sjf_sdlSurface_drawRect(sjs_sdlSurface* _parent, sjs_rect* rect, sjs_color* color);
-void sjf_sdlSurface_drawText(sjs_sdlSurface* _parent, sjs_rect* rect, sjs_font* font, sjs_string* text, sjs_color* color);
-void sjf_sdlSurface_getSize(sjs_sdlSurface* _parent, sjs_size* _return);
-void sjf_sdlSurface_getSize_heap(sjs_sdlSurface* _parent, sjs_size_heap** _return);
-void sjf_sdlSurface_getTextSize(sjs_sdlSurface* _parent, sjs_font* font, sjs_string* text, sjs_size* _return);
-void sjf_sdlSurface_getTextSize_heap(sjs_sdlSurface* _parent, sjs_font* font, sjs_string* text, sjs_size_heap** _return);
-void sjf_sdlSurface_getTexture(sjs_sdlSurface* _parent, sjs_string* src, sjs_texture* _return);
-void sjf_sdlSurface_getTexture_heap(sjs_sdlSurface* _parent, sjs_string* src, sjs_texture_heap** _return);
-void sjf_sdlSurface_heap(sjs_sdlSurface_heap* _this);
-sjs_object* sjf_sdlSurface_heap_asInterface(sjs_sdlSurface_heap* _this, int typeId);
-sji_surface* sjf_sdlSurface_heap_as_sji_surface(sjs_sdlSurface_heap* _this);
-void sjf_sdlSurface_present(sjs_sdlSurface* _parent);
 void sjf_size(sjs_size* _this);
 void sjf_size_cap(sjs_size* _parent, sjs_size* maxSize, sjs_size* _return);
 void sjf_size_cap_heap(sjs_size* _parent, sjs_size* maxSize, sjs_size_heap** _return);
-void sjf_size_copy(sjs_size* _this, sjs_size* to);
+void sjf_size_copy(sjs_size* _this, sjs_size* _from);
 void sjf_size_destroy(sjs_size* _this);
 void sjf_size_heap(sjs_size_heap* _this);
 void sjf_string(sjs_string* _this);
-void sjf_string_copy(sjs_string* _this, sjs_string* to);
+void sjf_string_copy(sjs_string* _this, sjs_string* _from);
 void sjf_string_destroy(sjs_string* _this);
 void sjf_string_heap(sjs_string_heap* _this);
+void sjf_surface2d(sjs_surface2d* _this);
+void sjf_surface2d_clear(sjs_surface2d* _parent);
+void sjf_surface2d_copy(sjs_surface2d* _this, sjs_surface2d* _from);
+void sjf_surface2d_destroy(sjs_surface2d* _this);
+void sjf_surface2d_drawVertexBuffer(sjs_surface2d* _parent, sji_textElement_render_vertexBuffer* vertexBuffer, sjs_texture* texture);
+void sjf_surface2d_getSize(sjs_surface2d* _parent, sjs_size* _return);
+void sjf_surface2d_getSize_heap(sjs_surface2d* _parent, sjs_size_heap** _return);
+void sjf_surface2d_getTextSize(sjs_surface2d* _parent, sjs_font* font, sjs_string* text, sjs_size* _return);
+void sjf_surface2d_getTextSize_heap(sjs_surface2d* _parent, sjs_font* font, sjs_string* text, sjs_size_heap** _return);
+void sjf_surface2d_heap(sjs_surface2d_heap* _this);
+void sjf_surface2d_present(sjs_surface2d* _parent);
 void sjf_textElement(sjs_textElement* _this);
 sjs_object* sjf_textElement_asInterface(sjs_textElement* _this, int typeId);
 sji_element* sjf_textElement_as_sji_element(sjs_textElement* _this);
-void sjf_textElement_copy(sjs_textElement* _this, sjs_textElement* to);
+void sjf_textElement_copy(sjs_textElement* _this, sjs_textElement* _from);
 void sjf_textElement_destroy(sjs_textElement* _this);
 void sjf_textElement_getChildren(sjs_textElement* _parent, sjs_array_heap_element** _return);
 void sjf_textElement_getRect(sjs_textElement* _parent, sjs_rect** _return);
@@ -2041,21 +3120,65 @@ void sjf_textElement_getSize_heap(sjs_textElement* _parent, sjs_size* maxSize, s
 void sjf_textElement_heap(sjs_textElement_heap* _this);
 sjs_object* sjf_textElement_heap_asInterface(sjs_textElement_heap* _this, int typeId);
 sji_element* sjf_textElement_heap_as_sji_element(sjs_textElement_heap* _this);
-void sjf_textElement_render(sjs_textElement* _parent, sji_surface* surface);
+void sjf_textElement_render(sjs_textElement* _parent, sjs_surface2d* surface);
 void sjf_textElement_setRect(sjs_textElement* _parent, sjs_rect* rect_);
+void sjf_textVertexBuffer(sjs_textVertexBuffer* _this);
+sjs_object* sjf_textVertexBuffer_asInterface(sjs_textVertexBuffer* _this, int typeId);
+sji_textElement_render_vertexBuffer* sjf_textVertexBuffer_as_sji_textElement_render_vertexBuffer(sjs_textVertexBuffer* _this);
+void sjf_textVertexBuffer_copy(sjs_textVertexBuffer* _this, sjs_textVertexBuffer* _from);
+void sjf_textVertexBuffer_destroy(sjs_textVertexBuffer* _this);
+void sjf_textVertexBuffer_heap(sjs_textVertexBuffer_heap* _this);
+sjs_object* sjf_textVertexBuffer_heap_asInterface(sjs_textVertexBuffer_heap* _this, int typeId);
+sji_textElement_render_vertexBuffer* sjf_textVertexBuffer_heap_as_sji_textElement_render_vertexBuffer(sjs_textVertexBuffer_heap* _this);
+void sjf_textVertexBuffer_render(sjs_textVertexBuffer* _parent);
 void sjf_texture(sjs_texture* _this);
-void sjf_texture_copy(sjs_texture* _this, sjs_texture* to);
+void sjf_texture_copy(sjs_texture* _this, sjs_texture* _from);
 void sjf_texture_destroy(sjs_texture* _this);
-void sjf_texture_getSize(sjs_texture* _parent, sjs_size* _return);
-void sjf_texture_getSize_heap(sjs_texture* _parent, sjs_size_heap** _return);
 void sjf_texture_heap(sjs_texture_heap* _this);
 void sji_element_copy(sji_element* _this, sji_element* _from);
 void sji_element_destroy(sji_element* _this);
 void sji_fireMouseUp_mouseHandler_copy(sji_fireMouseUp_mouseHandler* _this, sji_fireMouseUp_mouseHandler* _from);
 void sji_fireMouseUp_mouseHandler_destroy(sji_fireMouseUp_mouseHandler* _this);
-void sji_surface_copy(sji_surface* _this, sji_surface* _from);
-void sji_surface_destroy(sji_surface* _this);
+void sji_textElement_render_vertexBuffer_copy(sji_textElement_render_vertexBuffer* _this, sji_textElement_render_vertexBuffer* _from);
+void sji_textElement_render_vertexBuffer_destroy(sji_textElement_render_vertexBuffer* _this);
 void main_destroy(void);
+
+
+void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen) {
+    size_t i;
+    float r = color->red, g = color->green, b = color->blue, a = color->alpha;
+    for( i = 0; i < strlen(text); ++i )
+    {
+        texture_glyph_t *glyph = texture_font_get_glyph( font, text + i );
+        if( glyph != NULL )
+        {
+            float kerning = 0.0f;
+            if( i > 0)
+            {
+                kerning = texture_glyph_get_kerning( glyph, text + i - 1 );
+            }
+            pen->x += kerning;
+            float x0 = (float)(int)( pen->x + glyph->offset_x );
+            float y0 = (float)(int)( pen->y + glyph->height - glyph->offset_y );
+            float x1 = (float)(int)( x0 + glyph->width );
+            float y1 = (float)(int)( y0 - glyph->height );
+            float s0 = glyph->s0;
+            float t0 = glyph->t0;
+            float s1 = glyph->s1;
+            float t1 = glyph->t1;
+            GLuint index = (GLuint)buffer->vertices->size;
+            GLuint indices[] = {index, index+1, index+2,
+            index, index+2, index+3};
+            vertex_t vertices[] = { { x0,y1,0,  s0,t0,  r,g,b,a },
+            { x0,y0,0,  s0,t1,  r,g,b,a },
+            { x1,y0,0,  s1,t1,  r,g,b,a },
+            { x1,y1,0,  s1,t0,  r,g,b,a } };
+            vertex_buffer_push_back_indices( buffer, indices, 6 );
+            vertex_buffer_push_back_vertices( buffer, vertices, 4 );
+            pen->x += glyph->advance_x;
+        }
+    }
+}
 
 
 mat4 *
@@ -4756,48 +5879,36 @@ shader_read( const char *filename )
     }
 
 
-    void add_text( vertex_buffer_t * buffer, texture_font_t * font,
-    char *text, vec4 * color, vec2 * pen )
-    {
-        size_t i;
-        float r = color->red, g = color->green, b = color->blue, a = color->alpha;
-        for( i = 0; i < strlen(text); ++i )
-        {
-            texture_glyph_t *glyph = texture_font_get_glyph( font, text + i );
-            if( glyph != NULL )
-            {
-                float kerning = 0.0f;
-                if( i > 0)
-                {
-                    kerning = texture_glyph_get_kerning( glyph, text + i - 1 );
-                }
-                pen->x += kerning;
-                int x0  = (int)( pen->x + glyph->offset_x );
-                int y0  = (int)( pen->y + glyph->height - glyph->offset_y );
-                int x1  = (int)( x0 + glyph->width );
-                int y1  = (int)( y0 - glyph->height );
-                float s0 = glyph->s0;
-                float t0 = glyph->t0;
-                float s1 = glyph->s1;
-                float t1 = glyph->t1;
-                GLuint index = (GLuint)buffer->vertices->size;
-                GLuint indices[] = {index, index+1, index+2,
-                index, index+2, index+3};
-                vertex_t vertices[] = { { x0,y1,0,  s0,t0,  r,g,b,a },
-                { x0,y0,0,  s0,t1,  r,g,b,a },
-                { x1,y0,0,  s1,t1,  r,g,b,a },
-                { x1,y1,0,  s1,t0,  r,g,b,a } };
-                vertex_buffer_push_back_indices( buffer, indices, 6 );
-                vertex_buffer_push_back_vertices( buffer, vertices, 4 );
-                pen->x += glyph->advance_x;
-            }
+    void _retain(void* ptr) {
+        pointer* p;
+        HASH_FIND_PTR(g_pointers, &ptr, p);
+        if (p) {
+            p->refCount++;
+        } else {
+            p = (pointer*)malloc(sizeof(pointer));
+            p->ptr = ptr;
+            p->refCount = 1;
+            HASH_ADD_PTR(g_pointers, ptr, p);
         }
+    }
+    bool _release(void* ptr) {
+        pointer* p;
+        HASH_FIND_PTR(g_pointers, &ptr, p);
+        if (p) {
+            p->refCount--;
+            if (p->refCount == 0) {
+                HASH_DEL(g_pointers, p);
+                free(p);
+            }
+            return false;
+        }
+        return true;
     }
 
 void sjf_anon1(sjs_anon1* _this) {
 }
 
-void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* to) {
+void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* _from) {
 }
 
 void sjf_anon1_destroy(sjs_anon1* _this) {
@@ -4809,7 +5920,7 @@ void sjf_anon1_heap(sjs_anon1_heap* _this) {
 void sjf_anon2(sjs_anon2* _this) {
 }
 
-void sjf_anon2_copy(sjs_anon2* _this, sjs_anon2* to) {
+void sjf_anon2_copy(sjs_anon2* _this, sjs_anon2* _from) {
 }
 
 void sjf_anon2_destroy(sjs_anon2* _this) {
@@ -4821,7 +5932,7 @@ void sjf_anon2_heap(sjs_anon2_heap* _this) {
 void sjf_anon3(sjs_anon3* _this) {
 }
 
-void sjf_anon3_copy(sjs_anon3* _this, sjs_anon3* to) {
+void sjf_anon3_copy(sjs_anon3* _this, sjs_anon3* _from) {
 }
 
 void sjf_anon3_destroy(sjs_anon3* _this) {
@@ -4833,7 +5944,7 @@ void sjf_anon3_heap(sjs_anon3_heap* _this) {
 void sjf_anon4(sjs_anon4* _this) {
 }
 
-void sjf_anon4_copy(sjs_anon4* _this, sjs_anon4* to) {
+void sjf_anon4_copy(sjs_anon4* _this, sjs_anon4* _from) {
 }
 
 void sjf_anon4_destroy(sjs_anon4* _this) {
@@ -4845,10 +5956,10 @@ void sjf_anon4_heap(sjs_anon4_heap* _this) {
 void sjf_anon5(sjs_anon5* _this) {
 }
 
-void sjf_anon5_copy(sjs_anon5* _this, sjs_anon5* to) {
-    _this->normal = to->normal;
-    _this->hot = to->hot;
-    _this->pressed = to->pressed;
+void sjf_anon5_copy(sjs_anon5* _this, sjs_anon5* _from) {
+    _this->normal = _from->normal;
+    _this->hot = _from->hot;
+    _this->pressed = _from->pressed;
 }
 
 void sjf_anon5_destroy(sjs_anon5* _this) {
@@ -4860,7 +5971,7 @@ void sjf_anon5_heap(sjs_anon5_heap* _this) {
 void sjf_anon6(sjs_anon6* _this) {
 }
 
-void sjf_anon6_copy(sjs_anon6* _this, sjs_anon6* to) {
+void sjf_anon6_copy(sjs_anon6* _this, sjs_anon6* _from) {
 }
 
 void sjf_anon6_destroy(sjs_anon6* _this) {
@@ -4890,7 +6001,7 @@ void sjf_anon6_red_heap(sjs_anon6* _parent, sjs_color_heap** _return) {
 void sjf_anon7(sjs_anon7* _this) {
 }
 
-void sjf_anon7_copy(sjs_anon7* _this, sjs_anon7* to) {
+void sjf_anon7_copy(sjs_anon7* _this, sjs_anon7* _from) {
 }
 
 void sjf_anon7_destroy(sjs_anon7* _this) {
@@ -4902,12 +6013,12 @@ void sjf_anon7_heap(sjs_anon7_heap* _this) {
 void sjf_anon8(sjs_anon8* _this) {
 }
 
-void sjf_anon8_copy(sjs_anon8* _this, sjs_anon8* to) {
-    _this->fill = to->fill;
-    _this->left = to->left;
-    _this->right = to->right;
-    _this->top = to->top;
-    _this->bottom = to->bottom;
+void sjf_anon8_copy(sjs_anon8* _this, sjs_anon8* _from) {
+    _this->fill = _from->fill;
+    _this->left = _from->left;
+    _this->right = _from->right;
+    _this->top = _from->top;
+    _this->bottom = _from->bottom;
 }
 
 void sjf_anon8_destroy(sjs_anon8* _this) {
@@ -4931,16 +6042,21 @@ void sjf_array_char(sjs_array_char* _this) {
     }
 }
 
-void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* to) {
-    _this->size = to->size;
-    _this->data = to->data;
-    _this->_isGlobal = to->_isGlobal;
+void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
+    _this->size = _from->size;
+    _this->data = _from->data;
+    _this->_isGlobal = _from->_isGlobal;
+    _this->data = _from->data;
+    if (!_this->_isGlobal && _this->data) {
+        _retain((void*)_this->data);
+    }
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
     if (!_this->_isGlobal && _this->data) {
-        free((char*)_this->data);
-        _this->data = 0;
+        if (_release((void*)_this->data)) {
+            free((char*)_this->data);
+        }
     }
 }
 
@@ -4974,16 +6090,21 @@ void sjf_array_heap_element(sjs_array_heap_element* _this) {
     }
 }
 
-void sjf_array_heap_element_copy(sjs_array_heap_element* _this, sjs_array_heap_element* to) {
-    _this->size = to->size;
-    _this->data = to->data;
-    _this->_isGlobal = to->_isGlobal;
+void sjf_array_heap_element_copy(sjs_array_heap_element* _this, sjs_array_heap_element* _from) {
+    _this->size = _from->size;
+    _this->data = _from->data;
+    _this->_isGlobal = _from->_isGlobal;
+    _this->data = _from->data;
+    if (!_this->_isGlobal && _this->data) {
+        _retain((void*)_this->data);
+    }
 }
 
 void sjf_array_heap_element_destroy(sjs_array_heap_element* _this) {
     if (!_this->_isGlobal && _this->data) {
-        free((sji_element**)_this->data);
-        _this->data = 0;
+        if (_release((void*)_this->data)) {
+            free((sji_element**)_this->data);
+        }
     }
 }
 
@@ -5016,11 +6137,11 @@ void sjf_array_heap_element_heap(sjs_array_heap_element_heap* _this) {
 void sjf_color(sjs_color* _this) {
 }
 
-void sjf_color_copy(sjs_color* _this, sjs_color* to) {
-    _this->r = to->r;
-    _this->g = to->g;
-    _this->b = to->b;
-    _this->a = to->a;
+void sjf_color_copy(sjs_color* _this, sjs_color* _from) {
+    _this->r = _from->r;
+    _this->g = _from->g;
+    _this->b = _from->b;
+    _this->a = _from->a;
 }
 
 void sjf_color_destroy(sjs_color* _this) {
@@ -5031,28 +6152,28 @@ void sjf_color_heap(sjs_color_heap* _this) {
 
 void sjf_fireMouseDown(sji_element* element, sjs_point* point) {
     bool result4;
-    sji_element* sjt_cast7;
-    sjs_rect* sjt_dot43;
-    sji_element* sjt_dot44;
-    sji_element* sjt_dot46;
-    sjs_point* sjt_functionParam9;
+    sji_element* sjt_cast4;
+    sjs_rect* sjt_dot37;
+    sji_element* sjt_dot38;
+    sji_element* sjt_dot40;
+    sjs_point* sjt_functionParam17;
     bool sjt_ifElse10;
-    bool sjt_ifElse12;
+    bool sjt_ifElse8;
     sjs_array_heap_element* sjt_isEmpty4;
     bool sjt_not4;
     sjs_array_heap_element* sjv_children;
     sji_fireMouseUp_mouseHandler* sjv_mouseHandler;
 
-    sjt_cast7 = element;
-    sjt_cast7->_refCount++;
-    sjv_mouseHandler = (sji_fireMouseUp_mouseHandler*)sjt_cast7->asInterface(sjt_cast7->_parent, sji_fireMouseUp_mouseHandler_typeId);
-    sjt_dot44 = element;
-    sjt_dot44->getRect((void*)(((char*)sjt_dot44->_parent) + sizeof(intptr_t)), &sjt_dot43);
-    sjt_functionParam9 = point;
-    sjf_rect_containsPoint(sjt_dot43, sjt_functionParam9, &sjt_ifElse10);
-    if (sjt_ifElse10) {
+    sjt_cast4 = element;
+    sjt_cast4->_refCount++;
+    sjv_mouseHandler = (sji_fireMouseUp_mouseHandler*)sjt_cast4->asInterface(sjt_cast4->_parent, sji_fireMouseUp_mouseHandler_typeId);
+    sjt_dot38 = element;
+    sjt_dot38->getRect((void*)(((char*)sjt_dot38->_parent) + sizeof(intptr_t)), &sjt_dot37);
+    sjt_functionParam17 = point;
+    sjf_rect_containsPoint(sjt_dot37, sjt_functionParam17, &sjt_ifElse8);
+    if (sjt_ifElse8) {
         bool result3;
-        bool sjt_ifElse11;
+        bool sjt_ifElse9;
         sji_fireMouseUp_mouseHandler* sjt_isEmpty3;
         bool sjt_not3;
 
@@ -5063,20 +6184,20 @@ void sjf_fireMouseDown(sji_element* element, sjs_point* point) {
 
         sjt_not3 = (sjt_isEmpty3 == 0);
         result3 = !sjt_not3;
-        sjt_ifElse11 = result3;
-        if (sjt_ifElse11) {
-            sji_fireMouseUp_mouseHandler* sjt_dot45;
+        sjt_ifElse9 = result3;
+        if (sjt_ifElse9) {
+            sji_fireMouseUp_mouseHandler* sjt_dot39;
             sji_fireMouseUp_mouseHandler* sjt_getValue3;
-            sjs_point* sjt_interfaceParam14;
+            sjs_point* sjt_interfaceParam4;
 
             sjt_getValue3 = sjv_mouseHandler;
             if (sjt_getValue3 != 0) {
                 sjt_getValue3->_refCount++;
             }
 
-            sjt_dot45 = sjt_getValue3;
-            sjt_interfaceParam14 = point;
-            sjt_dot45->onMouseDown((void*)(((char*)sjt_dot45->_parent) + sizeof(intptr_t)), sjt_interfaceParam14);
+            sjt_dot39 = sjt_getValue3;
+            sjt_interfaceParam4 = point;
+            sjt_dot39->onMouseDown((void*)(((char*)sjt_dot39->_parent) + sizeof(intptr_t)), sjt_interfaceParam4);
 
             if (sjt_getValue3 != 0) {
                 sjt_getValue3->_refCount--;
@@ -5094,15 +6215,15 @@ void sjf_fireMouseDown(sji_element* element, sjs_point* point) {
         }
     }
 
-    sjt_dot46 = element;
-    sjt_dot46->getChildren((void*)(((char*)sjt_dot46->_parent) + sizeof(intptr_t)), &sjv_children);
+    sjt_dot40 = element;
+    sjt_dot40->getChildren((void*)(((char*)sjt_dot40->_parent) + sizeof(intptr_t)), &sjv_children);
     sjt_isEmpty4 = sjv_children;
     sjt_not4 = (sjt_isEmpty4 == 0);
     result4 = !sjt_not4;
-    sjt_ifElse12 = result4;
-    if (sjt_ifElse12) {
+    sjt_ifElse10 = result4;
+    if (sjt_ifElse10) {
         int32_t i;
-        sjs_array_heap_element* sjt_dot47;
+        sjs_array_heap_element* sjt_dot41;
         int32_t sjt_forEnd2;
         int32_t sjt_forStart2;
         sjs_array_heap_element* sjt_getValue4;
@@ -5113,31 +6234,31 @@ void sjf_fireMouseDown(sji_element* element, sjs_point* point) {
         sjv_c = sjt_getValue4;
         sjt_forStart2 = 0;
         i = sjt_forStart2;
-        sjt_dot47 = sjv_c;
-        sjt_forEnd2 = (sjt_dot47)->size;
+        sjt_dot41 = sjv_c;
+        sjt_forEnd2 = (sjt_dot41)->size;
         while (i < sjt_forEnd2) {
-            sjs_array_heap_element* sjt_dot48;
-            sji_element* sjt_functionParam10;
-            int32_t sjt_functionParam11;
-            sjs_point* sjt_functionParam12;
+            sjs_array_heap_element* sjt_dot42;
+            sji_element* sjt_functionParam18;
+            int32_t sjt_functionParam19;
+            sjs_point* sjt_functionParam20;
 
-            sjt_dot48 = sjv_c;
-            sjt_functionParam11 = i;
-            sjf_array_heap_element_getAt_heap(sjt_dot48, sjt_functionParam11, &sjt_functionParam10);
-            sjt_functionParam12 = point;
-            sjf_fireMouseDown(sjt_functionParam10, sjt_functionParam12);
+            sjt_dot42 = sjv_c;
+            sjt_functionParam19 = i;
+            sjf_array_heap_element_getAt_heap(sjt_dot42, sjt_functionParam19, &sjt_functionParam18);
+            sjt_functionParam20 = point;
+            sjf_fireMouseDown(sjt_functionParam18, sjt_functionParam20);
             i++;
 
-            sjt_functionParam10->_refCount--;
-            if (sjt_functionParam10->_refCount <= 0) {
-                sji_element_destroy(sjt_functionParam10);
+            sjt_functionParam18->_refCount--;
+            if (sjt_functionParam18->_refCount <= 0) {
+                sji_element_destroy(sjt_functionParam18);
             }
         }
     }
 
-    sjt_cast7->_refCount--;
-    if (sjt_cast7->_refCount <= 0) {
-        sji_element_destroy(sjt_cast7);
+    sjt_cast4->_refCount--;
+    if (sjt_cast4->_refCount <= 0) {
+        sji_element_destroy(sjt_cast4);
     }
     if (sjv_mouseHandler != 0) {
         sjv_mouseHandler->_refCount--;
@@ -5149,28 +6270,28 @@ void sjf_fireMouseDown(sji_element* element, sjs_point* point) {
 
 void sjf_fireMouseUp(sji_element* element, sjs_point* point) {
     bool result2;
-    sji_element* sjt_cast6;
-    sjs_rect* sjt_dot33;
+    sji_element* sjt_cast3;
+    sjs_rect* sjt_dot27;
+    sji_element* sjt_dot28;
     sji_element* sjt_dot34;
-    sji_element* sjt_dot40;
-    sjs_point* sjt_functionParam3;
+    sjs_point* sjt_functionParam11;
+    bool sjt_ifElse4;
     bool sjt_ifElse6;
-    bool sjt_ifElse8;
     sjs_array_heap_element* sjt_isEmpty2;
     bool sjt_not2;
     sjs_array_heap_element* sjv_children;
     sji_fireMouseUp_mouseHandler* sjv_mouseHandler;
 
-    sjt_cast6 = element;
-    sjt_cast6->_refCount++;
-    sjv_mouseHandler = (sji_fireMouseUp_mouseHandler*)sjt_cast6->asInterface(sjt_cast6->_parent, sji_fireMouseUp_mouseHandler_typeId);
-    sjt_dot34 = element;
-    sjt_dot34->getRect((void*)(((char*)sjt_dot34->_parent) + sizeof(intptr_t)), &sjt_dot33);
-    sjt_functionParam3 = point;
-    sjf_rect_containsPoint(sjt_dot33, sjt_functionParam3, &sjt_ifElse6);
-    if (sjt_ifElse6) {
+    sjt_cast3 = element;
+    sjt_cast3->_refCount++;
+    sjv_mouseHandler = (sji_fireMouseUp_mouseHandler*)sjt_cast3->asInterface(sjt_cast3->_parent, sji_fireMouseUp_mouseHandler_typeId);
+    sjt_dot28 = element;
+    sjt_dot28->getRect((void*)(((char*)sjt_dot28->_parent) + sizeof(intptr_t)), &sjt_dot27);
+    sjt_functionParam11 = point;
+    sjf_rect_containsPoint(sjt_dot27, sjt_functionParam11, &sjt_ifElse4);
+    if (sjt_ifElse4) {
         bool result1;
-        bool sjt_ifElse7;
+        bool sjt_ifElse5;
         sji_fireMouseUp_mouseHandler* sjt_isEmpty1;
         bool sjt_not1;
 
@@ -5181,20 +6302,20 @@ void sjf_fireMouseUp(sji_element* element, sjs_point* point) {
 
         sjt_not1 = (sjt_isEmpty1 == 0);
         result1 = !sjt_not1;
-        sjt_ifElse7 = result1;
-        if (sjt_ifElse7) {
-            sji_fireMouseUp_mouseHandler* sjt_dot39;
+        sjt_ifElse5 = result1;
+        if (sjt_ifElse5) {
+            sji_fireMouseUp_mouseHandler* sjt_dot33;
             sji_fireMouseUp_mouseHandler* sjt_getValue1;
-            sjs_point* sjt_interfaceParam13;
+            sjs_point* sjt_interfaceParam3;
 
             sjt_getValue1 = sjv_mouseHandler;
             if (sjt_getValue1 != 0) {
                 sjt_getValue1->_refCount++;
             }
 
-            sjt_dot39 = sjt_getValue1;
-            sjt_interfaceParam13 = point;
-            sjt_dot39->onMouseUp((void*)(((char*)sjt_dot39->_parent) + sizeof(intptr_t)), sjt_interfaceParam13);
+            sjt_dot33 = sjt_getValue1;
+            sjt_interfaceParam3 = point;
+            sjt_dot33->onMouseUp((void*)(((char*)sjt_dot33->_parent) + sizeof(intptr_t)), sjt_interfaceParam3);
 
             if (sjt_getValue1 != 0) {
                 sjt_getValue1->_refCount--;
@@ -5212,15 +6333,15 @@ void sjf_fireMouseUp(sji_element* element, sjs_point* point) {
         }
     }
 
-    sjt_dot40 = element;
-    sjt_dot40->getChildren((void*)(((char*)sjt_dot40->_parent) + sizeof(intptr_t)), &sjv_children);
+    sjt_dot34 = element;
+    sjt_dot34->getChildren((void*)(((char*)sjt_dot34->_parent) + sizeof(intptr_t)), &sjv_children);
     sjt_isEmpty2 = sjv_children;
     sjt_not2 = (sjt_isEmpty2 == 0);
     result2 = !sjt_not2;
-    sjt_ifElse8 = result2;
-    if (sjt_ifElse8) {
+    sjt_ifElse6 = result2;
+    if (sjt_ifElse6) {
         int32_t i;
-        sjs_array_heap_element* sjt_dot41;
+        sjs_array_heap_element* sjt_dot35;
         int32_t sjt_forEnd1;
         int32_t sjt_forStart1;
         sjs_array_heap_element* sjt_getValue2;
@@ -5231,31 +6352,31 @@ void sjf_fireMouseUp(sji_element* element, sjs_point* point) {
         sjv_c = sjt_getValue2;
         sjt_forStart1 = 0;
         i = sjt_forStart1;
-        sjt_dot41 = sjv_c;
-        sjt_forEnd1 = (sjt_dot41)->size;
+        sjt_dot35 = sjv_c;
+        sjt_forEnd1 = (sjt_dot35)->size;
         while (i < sjt_forEnd1) {
-            sjs_array_heap_element* sjt_dot42;
-            sji_element* sjt_functionParam4;
-            int32_t sjt_functionParam5;
-            sjs_point* sjt_functionParam6;
+            sjs_array_heap_element* sjt_dot36;
+            sji_element* sjt_functionParam12;
+            int32_t sjt_functionParam13;
+            sjs_point* sjt_functionParam14;
 
-            sjt_dot42 = sjv_c;
-            sjt_functionParam5 = i;
-            sjf_array_heap_element_getAt_heap(sjt_dot42, sjt_functionParam5, &sjt_functionParam4);
-            sjt_functionParam6 = point;
-            sjf_fireMouseUp(sjt_functionParam4, sjt_functionParam6);
+            sjt_dot36 = sjv_c;
+            sjt_functionParam13 = i;
+            sjf_array_heap_element_getAt_heap(sjt_dot36, sjt_functionParam13, &sjt_functionParam12);
+            sjt_functionParam14 = point;
+            sjf_fireMouseUp(sjt_functionParam12, sjt_functionParam14);
             i++;
 
-            sjt_functionParam4->_refCount--;
-            if (sjt_functionParam4->_refCount <= 0) {
-                sji_element_destroy(sjt_functionParam4);
+            sjt_functionParam12->_refCount--;
+            if (sjt_functionParam12->_refCount <= 0) {
+                sji_element_destroy(sjt_functionParam12);
             }
         }
     }
 
-    sjt_cast6->_refCount--;
-    if (sjt_cast6->_refCount <= 0) {
-        sji_element_destroy(sjt_cast6);
+    sjt_cast3->_refCount--;
+    if (sjt_cast3->_refCount <= 0) {
+        sji_element_destroy(sjt_cast3);
     }
     if (sjv_mouseHandler != 0) {
         sjv_mouseHandler->_refCount--;
@@ -5280,15 +6401,60 @@ void sjf_font(sjs_font* _this) {
     glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, (int)_this->atlas->width, (int)_this->atlas->height, 0, GL_RGB, GL_UNSIGNED_BYTE, _this->atlas->data );
 }
 
-void sjf_font_copy(sjs_font* _this, sjs_font* to) {
-    sjf_string_copy(&_this->src, &to->src);
-    _this->size = to->size;
-    _this->data = to->data;
+void sjf_font_copy(sjs_font* _this, sjs_font* _from) {
+    sjf_string_copy(&_this->src, &_from->src);
+    _this->size = _from->size;
+    _this->atlas = _from->atlas;
+    _retain(_this->atlas);
+    _this->font = _from->font;
+    _retain(_this->font);
 }
 
 void sjf_font_destroy(sjs_font* _this) {
-    texture_atlas_delete(_this->atlas);
-    texture_font_delete(_this->font);
+    if (_release(_this->atlas)) {
+        texture_atlas_delete(_this->atlas);
+    }
+    if (_release(_this->font)) {
+        texture_font_delete(_this->font);
+    }
+}
+
+void sjf_font_getTexture(sjs_font* _parent, sjs_texture* _return) {
+    int32_t sjv_h;
+    uint32_t sjv_id;
+    int32_t sjv_w;
+
+    sjv_w = 0;
+    sjv_h = 0;
+    sjv_id = (uint32_t)0u;
+    sjv_w = _parent->atlas->width;
+    sjv_h = _parent->atlas->height;
+    sjv_id = _parent->atlas->id;
+    _return->size.w = sjv_w;
+    _return->size.h = sjv_h;
+    sjf_size(&_return->size);
+    _return->id = sjv_id;
+    sjf_texture(_return);
+}
+
+void sjf_font_getTexture_heap(sjs_font* _parent, sjs_texture_heap** _return) {
+    int32_t sjv_h;
+    uint32_t sjv_id;
+    int32_t sjv_w;
+
+    sjv_w = 0;
+    sjv_h = 0;
+    sjv_id = (uint32_t)0u;
+    sjv_w = _parent->atlas->width;
+    sjv_h = _parent->atlas->height;
+    sjv_id = _parent->atlas->id;
+    (*_return) = (sjs_texture_heap*)malloc(sizeof(sjs_texture_heap));
+    (*_return)->_refCount = 1;
+    (*_return)->size.w = sjv_w;
+    (*_return)->size.h = sjv_h;
+    sjf_size(&(*_return)->size);
+    (*_return)->id = sjv_id;
+    sjf_texture_heap((*_return));
 }
 
 void sjf_font_heap(sjs_font_heap* _this) {
@@ -5306,113 +6472,18 @@ void sjf_font_heap(sjs_font_heap* _this) {
     glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, (int)_this->atlas->width, (int)_this->atlas->height, 0, GL_RGB, GL_UNSIGNED_BYTE, _this->atlas->data );
 }
 
-void sjf_image(sjs_image* _this) {
-    bool sjt_and1;
-    bool sjt_and2;
-    int32_t sjt_compare1;
-    int32_t sjt_compare2;
-    int32_t sjt_compare3;
-    int32_t sjt_compare4;
-    sjs_rect* sjt_dot1;
-    sjs_rect* sjt_dot2;
-    bool sjt_ifElse1;
-
-    sjt_dot1 = &_this->rect;
-    sjt_compare1 = (sjt_dot1)->w;
-    sjt_compare2 = 0;
-    sjt_and1 = sjt_compare1 == sjt_compare2;
-    sjt_dot2 = &_this->rect;
-    sjt_compare3 = (sjt_dot2)->h;
-    sjt_compare4 = 0;
-    sjt_and2 = sjt_compare3 == sjt_compare4;
-    sjt_ifElse1 = sjt_and1 && sjt_and2;
-    if (sjt_ifElse1) {
-        sjs_texture* sjt_dot3;
-        sjs_size* sjt_dot4;
-        sjs_size* sjt_dot5;
-        sjs_size sjv_size;
-
-        sjt_dot3 = &_this->texture;
-        sjf_texture_getSize(sjt_dot3, &sjv_size);
-        _this->rect.x = 0;
-        _this->rect.y = 0;
-        sjt_dot4 = &sjv_size;
-        _this->rect.w = (sjt_dot4)->w;
-        sjt_dot5 = &sjv_size;
-        _this->rect.h = (sjt_dot5)->h;
-        sjf_rect(&_this->rect);
-
-        sjf_size_destroy(&sjv_size);
-    }
-}
-
-void sjf_image_copy(sjs_image* _this, sjs_image* to) {
-    sjf_texture_copy(&_this->texture, &to->texture);
-    sjf_rect_copy(&_this->rect, &to->rect);
-    sjf_margin_copy(&_this->margin, &to->margin);
-}
-
-void sjf_image_destroy(sjs_image* _this) {
-}
-
-void sjf_image_heap(sjs_image_heap* _this) {
-    sjs_rect* dotTemp1;
-    sjs_rect* dotTemp2;
-    bool sjt_and3;
-    bool sjt_and4;
-    int32_t sjt_compare5;
-    int32_t sjt_compare6;
-    int32_t sjt_compare7;
-    int32_t sjt_compare8;
-    sjs_rect* sjt_dot6;
-    sjs_rect* sjt_dot7;
-    bool sjt_ifElse2;
-
-    dotTemp1 = &_this->rect;
-    sjt_dot6 = dotTemp1;
-    sjt_compare5 = (sjt_dot6)->w;
-    sjt_compare6 = 0;
-    sjt_and3 = sjt_compare5 == sjt_compare6;
-    dotTemp2 = &_this->rect;
-    sjt_dot7 = dotTemp2;
-    sjt_compare7 = (sjt_dot7)->h;
-    sjt_compare8 = 0;
-    sjt_and4 = sjt_compare7 == sjt_compare8;
-    sjt_ifElse2 = sjt_and3 && sjt_and4;
-    if (sjt_ifElse2) {
-        sjs_texture* dotTemp3;
-        sjs_size* sjt_dot10;
-        sjs_texture* sjt_dot8;
-        sjs_size* sjt_dot9;
-        sjs_size sjv_size;
-
-        dotTemp3 = &_this->texture;
-        sjt_dot8 = dotTemp3;
-        sjf_texture_getSize(sjt_dot8, &sjv_size);
-        _this->rect.x = 0;
-        _this->rect.y = 0;
-        sjt_dot9 = &sjv_size;
-        _this->rect.w = (sjt_dot9)->w;
-        sjt_dot10 = &sjv_size;
-        _this->rect.h = (sjt_dot10)->h;
-        sjf_rect(&_this->rect);
-
-        sjf_size_destroy(&sjv_size);
-    }
-}
-
 void sjf_mainLoop(void) {
-    sji_surface* sjt_dot26;
-    sji_surface* sjt_dot27;
-    sjs_size* sjt_dot28;
-    sjs_size* sjt_dot29;
-    sji_element* sjt_dot30;
-    sji_element* sjt_dot31;
-    sji_surface* sjt_dot32;
-    bool sjt_ifElse5;
-    bool sjt_ifElse9;
-    sjs_rect* sjt_interfaceParam11;
-    sji_surface* sjt_interfaceParam12;
+    sjs_surface2d* sjt_dot20;
+    sjs_surface2d* sjt_dot21;
+    sjs_size* sjt_dot22;
+    sjs_size* sjt_dot23;
+    sji_element* sjt_dot24;
+    sji_element* sjt_dot25;
+    sjs_surface2d* sjt_dot26;
+    bool sjt_ifElse3;
+    bool sjt_ifElse7;
+    sjs_rect* sjt_interfaceParam1;
+    sjs_surface2d* sjt_interfaceParam2;
     int32_t sjt_math5;
     int32_t sjt_math6;
     bool sjv_isMouseDown;
@@ -5422,26 +6493,25 @@ void sjf_mainLoop(void) {
     int32_t sjv_x;
     int32_t sjv_y;
 
-    sjt_dot26 = sjv_rootSurface;
-    sjt_dot26->clear((void*)(((char*)sjt_dot26->_parent) + sizeof(intptr_t)));
-    sjt_dot27 = sjv_rootSurface;
-    sjt_dot27->getSize((void*)(((char*)sjt_dot27->_parent) + sizeof(intptr_t)), &sjv_size);
+    sjt_dot20 = &sjv_rootSurface;
+    sjf_surface2d_clear(sjt_dot20);
+    sjt_dot21 = &sjv_rootSurface;
+    sjf_surface2d_getSize(sjt_dot21, &sjv_size);
     sjv_rect.x = 0;
     sjv_rect.y = 0;
-    sjt_dot28 = &sjv_size;
-    sjv_rect.w = (sjt_dot28)->w;
-    sjt_dot29 = &sjv_size;
-    sjv_rect.h = (sjt_dot29)->h;
+    sjt_dot22 = &sjv_size;
+    sjv_rect.w = (sjt_dot22)->w;
+    sjt_dot23 = &sjv_size;
+    sjv_rect.h = (sjt_dot23)->h;
     sjf_rect(&sjv_rect);
-    sjt_dot30 = sjv_root;
-    sjt_interfaceParam11 = &sjv_rect;
-    sjt_dot30->setRect((void*)(((char*)sjt_dot30->_parent) + sizeof(intptr_t)), sjt_interfaceParam11);
-    sjt_dot31 = sjv_root;
-    sjt_interfaceParam12 = sjv_rootSurface;
-    sjt_interfaceParam12->_refCount++;
-    sjt_dot31->render((void*)(((char*)sjt_dot31->_parent) + sizeof(intptr_t)), sjt_interfaceParam12);
-    sjt_dot32 = sjv_rootSurface;
-    sjt_dot32->present((void*)(((char*)sjt_dot32->_parent) + sizeof(intptr_t)));
+    sjt_dot24 = sjv_root;
+    sjt_interfaceParam1 = &sjv_rect;
+    sjt_dot24->setRect((void*)(((char*)sjt_dot24->_parent) + sizeof(intptr_t)), sjt_interfaceParam1);
+    sjt_dot25 = sjv_root;
+    sjt_interfaceParam2 = &sjv_rootSurface;
+    sjt_dot25->render((void*)(((char*)sjt_dot25->_parent) + sizeof(intptr_t)), sjt_interfaceParam2);
+    sjt_dot26 = &sjv_rootSurface;
+    sjf_surface2d_present(sjt_dot26);
     sjv_isMouseUp = false;
     sjv_isMouseDown = false;
     sjv_x = 0;
@@ -5466,82 +6536,62 @@ void sjf_mainLoop(void) {
             break;
         }
     }
-    sjt_ifElse5 = sjv_isMouseUp;
-    if (sjt_ifElse5) {
-        sjs_point sjt_call1;
-        sji_element* sjt_functionParam7;
-        sjs_point* sjt_functionParam8;
-
-        sjt_functionParam7 = sjv_root;
-        sjt_functionParam7->_refCount++;
-        sjt_call1.x = sjv_x;
-        sjt_call1.y = sjv_y;
-        sjf_point(&sjt_call1);
-        sjt_functionParam8 = &sjt_call1;
-        sjf_fireMouseUp(sjt_functionParam7, sjt_functionParam8);
-
-        sjt_functionParam7->_refCount--;
-        if (sjt_functionParam7->_refCount <= 0) {
-            sji_element_destroy(sjt_functionParam7);
-        }
-        sjf_point_destroy(&sjt_call1);
-    }
-
-    sjt_ifElse9 = sjv_isMouseDown;
-    if (sjt_ifElse9) {
+    sjt_ifElse3 = sjv_isMouseUp;
+    if (sjt_ifElse3) {
         sjs_point sjt_call2;
-        sji_element* sjt_functionParam13;
-        sjs_point* sjt_functionParam14;
+        sji_element* sjt_functionParam15;
+        sjs_point* sjt_functionParam16;
 
-        sjt_functionParam13 = sjv_root;
-        sjt_functionParam13->_refCount++;
+        sjt_functionParam15 = sjv_root;
+        sjt_functionParam15->_refCount++;
         sjt_call2.x = sjv_x;
         sjt_call2.y = sjv_y;
         sjf_point(&sjt_call2);
-        sjt_functionParam14 = &sjt_call2;
-        sjf_fireMouseDown(sjt_functionParam13, sjt_functionParam14);
+        sjt_functionParam16 = &sjt_call2;
+        sjf_fireMouseUp(sjt_functionParam15, sjt_functionParam16);
 
-        sjt_functionParam13->_refCount--;
-        if (sjt_functionParam13->_refCount <= 0) {
-            sji_element_destroy(sjt_functionParam13);
+        sjt_functionParam15->_refCount--;
+        if (sjt_functionParam15->_refCount <= 0) {
+            sji_element_destroy(sjt_functionParam15);
         }
         sjf_point_destroy(&sjt_call2);
+    }
+
+    sjt_ifElse7 = sjv_isMouseDown;
+    if (sjt_ifElse7) {
+        sjs_point sjt_call3;
+        sji_element* sjt_functionParam21;
+        sjs_point* sjt_functionParam22;
+
+        sjt_functionParam21 = sjv_root;
+        sjt_functionParam21->_refCount++;
+        sjt_call3.x = sjv_x;
+        sjt_call3.y = sjv_y;
+        sjf_point(&sjt_call3);
+        sjt_functionParam22 = &sjt_call3;
+        sjf_fireMouseDown(sjt_functionParam21, sjt_functionParam22);
+
+        sjt_functionParam21->_refCount--;
+        if (sjt_functionParam21->_refCount <= 0) {
+            sji_element_destroy(sjt_functionParam21);
+        }
+        sjf_point_destroy(&sjt_call3);
     }
 
     sjt_math5 = sjv_frame;
     sjt_math6 = 1;
     sjv_frame = sjt_math5 + sjt_math6;
 
-    sjt_interfaceParam12->_refCount--;
-    if (sjt_interfaceParam12->_refCount <= 0) {
-        sji_surface_destroy(sjt_interfaceParam12);
-    }
     sjf_rect_destroy(&sjv_rect);
     sjf_size_destroy(&sjv_size);
-}
-
-void sjf_margin(sjs_margin* _this) {
-}
-
-void sjf_margin_copy(sjs_margin* _this, sjs_margin* to) {
-    _this->l = to->l;
-    _this->t = to->t;
-    _this->r = to->r;
-    _this->b = to->b;
-}
-
-void sjf_margin_destroy(sjs_margin* _this) {
-}
-
-void sjf_margin_heap(sjs_margin_heap* _this) {
 }
 
 void sjf_point(sjs_point* _this) {
 }
 
-void sjf_point_copy(sjs_point* _this, sjs_point* to) {
-    _this->x = to->x;
-    _this->y = to->y;
+void sjf_point_copy(sjs_point* _this, sjs_point* _from) {
+    _this->x = _from->x;
+    _this->y = _from->y;
 }
 
 void sjf_point_destroy(sjs_point* _this) {
@@ -5554,59 +6604,59 @@ void sjf_rect(sjs_rect* _this) {
 }
 
 void sjf_rect_containsPoint(sjs_rect* _parent, sjs_point* point, bool* _return) {
-    bool sjt_and10;
+    bool sjt_and1;
+    bool sjt_and2;
+    bool sjt_and3;
+    bool sjt_and4;
     bool sjt_and5;
     bool sjt_and6;
-    bool sjt_and7;
-    bool sjt_and8;
-    bool sjt_and9;
-    int32_t sjt_compare13;
-    int32_t sjt_compare14;
-    int32_t sjt_compare15;
-    int32_t sjt_compare16;
-    int32_t sjt_compare17;
-    int32_t sjt_compare18;
-    int32_t sjt_compare19;
-    int32_t sjt_compare20;
-    sjs_point* sjt_dot35;
-    sjs_point* sjt_dot36;
-    sjs_point* sjt_dot37;
-    sjs_point* sjt_dot38;
+    int32_t sjt_compare10;
+    int32_t sjt_compare11;
+    int32_t sjt_compare12;
+    int32_t sjt_compare5;
+    int32_t sjt_compare6;
+    int32_t sjt_compare7;
+    int32_t sjt_compare8;
+    int32_t sjt_compare9;
+    sjs_point* sjt_dot29;
+    sjs_point* sjt_dot30;
+    sjs_point* sjt_dot31;
+    sjs_point* sjt_dot32;
     int32_t sjt_math1;
     int32_t sjt_math2;
     int32_t sjt_math3;
     int32_t sjt_math4;
 
-    sjt_compare13 = (_parent)->x;
-    sjt_dot35 = point;
-    sjt_compare14 = (sjt_dot35)->x;
-    sjt_and5 = sjt_compare13 <= sjt_compare14;
-    sjt_compare15 = (_parent)->y;
-    sjt_dot36 = point;
-    sjt_compare16 = (sjt_dot36)->x;
-    sjt_and7 = sjt_compare15 <= sjt_compare16;
-    sjt_dot37 = point;
-    sjt_compare17 = (sjt_dot37)->x;
+    sjt_compare5 = (_parent)->x;
+    sjt_dot29 = point;
+    sjt_compare6 = (sjt_dot29)->x;
+    sjt_and1 = sjt_compare5 <= sjt_compare6;
+    sjt_compare7 = (_parent)->y;
+    sjt_dot30 = point;
+    sjt_compare8 = (sjt_dot30)->x;
+    sjt_and3 = sjt_compare7 <= sjt_compare8;
+    sjt_dot31 = point;
+    sjt_compare9 = (sjt_dot31)->x;
     sjt_math1 = (_parent)->x;
     sjt_math2 = (_parent)->w;
-    sjt_compare18 = sjt_math1 + sjt_math2;
-    sjt_and9 = sjt_compare17 < sjt_compare18;
-    sjt_dot38 = point;
-    sjt_compare19 = (sjt_dot38)->y;
+    sjt_compare10 = sjt_math1 + sjt_math2;
+    sjt_and5 = sjt_compare9 < sjt_compare10;
+    sjt_dot32 = point;
+    sjt_compare11 = (sjt_dot32)->y;
     sjt_math3 = (_parent)->y;
     sjt_math4 = (_parent)->h;
-    sjt_compare20 = sjt_math3 + sjt_math4;
-    sjt_and10 = sjt_compare19 < sjt_compare20;
-    sjt_and8 = sjt_and9 && sjt_and10;
-    sjt_and6 = sjt_and7 && sjt_and8;
-    (*_return) = sjt_and5 && sjt_and6;
+    sjt_compare12 = sjt_math3 + sjt_math4;
+    sjt_and6 = sjt_compare11 < sjt_compare12;
+    sjt_and4 = sjt_and5 && sjt_and6;
+    sjt_and2 = sjt_and3 && sjt_and4;
+    (*_return) = sjt_and1 && sjt_and2;
 }
 
-void sjf_rect_copy(sjs_rect* _this, sjs_rect* to) {
-    _this->x = to->x;
-    _this->y = to->y;
-    _this->w = to->w;
-    _this->h = to->h;
+void sjf_rect_copy(sjs_rect* _this, sjs_rect* _from) {
+    _this->x = _from->x;
+    _this->y = _from->y;
+    _this->w = _from->w;
+    _this->h = _from->h;
 }
 
 void sjf_rect_destroy(sjs_rect* _this) {
@@ -5627,420 +6677,26 @@ void sjf_runLoop(void) {
     #endif
 }
 
-void sjf_sdlSurface(sjs_sdlSurface* _this) {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        printf("SDL_Init Error: %s\n", SDL_GetError());
-        exit(-1);
-    }
-    #ifdef __APPLE__
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-    #else
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-    #endif
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-    _this->win = SDL_CreateWindow("Hello World!", 100, 100, _this->size.w, _this->size.h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-    if (_this->win == 0) {
-        printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
-        exit(-1);
-    }
-    SDL_GL_CreateContext((SDL_Window*)_this->win);
-    #ifdef WIN32
-    GLint GlewInitResult = glewInit();
-    if (GLEW_OK != GlewInitResult)
-    {
-        printf("ERROR: %s\n", glewGetErrorString(GlewInitResult));
-        exit(EXIT_FAILURE);
-    }
-    #endif
-    _this->ren = SDL_CreateRenderer((SDL_Window*)_this->win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (_this->ren == 0) {
-        printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
-        exit(-1);
-    }
-    glClearColor( 1.0, 0.0, 1.0, 1.0 );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glEnable( GL_BLEND );
-    _this->textShader = shader_load("shaders/v3f-t2f-c4f.vert", "shaders/v3f-t2f-c4f.frag");
-}
-
-sjs_object* sjf_sdlSurface_asInterface(sjs_sdlSurface* _this, int typeId) {
-    switch (typeId) {
-        case sji_surface_typeId:  {
-            return (sjs_object*)sjf_sdlSurface_as_sji_surface(_this);
-        }
-    }
-
-    return 0;
-}
-
-sji_surface* sjf_sdlSurface_as_sji_surface(sjs_sdlSurface* _this) {
-    sji_surface* _interface;
-    _interface = (sji_surface*)malloc(sizeof(sji_surface));
-    _interface->_refCount = 1;
-    _interface->_parent = (sjs_object*)_this;
-    _interface->_parent->_refCount++;
-    _interface->destroy = (void(*)(void*))sjf_sdlSurface_destroy;
-    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_sdlSurface_asInterface;
-    _interface->clear = (void(*)(void*))sjf_sdlSurface_clear;
-    _interface->present = (void(*)(void*))sjf_sdlSurface_present;
-    _interface->getSize = (void(*)(void*, sjs_size*))sjf_sdlSurface_getSize;
-    _interface->getSize_heap = (void(*)(void*, sjs_size_heap**))sjf_sdlSurface_getSize_heap;
-    _interface->drawRect = (void(*)(void*,sjs_rect*,sjs_color*))sjf_sdlSurface_drawRect;
-    _interface->drawImage = (void(*)(void*,sjs_rect*,sjs_image*))sjf_sdlSurface_drawImage;
-    _interface->drawText = (void(*)(void*,sjs_rect*,sjs_font*,sjs_string*,sjs_color*))sjf_sdlSurface_drawText;
-    _interface->getTextSize = (void(*)(void*,sjs_font*,sjs_string*, sjs_size*))sjf_sdlSurface_getTextSize;
-    _interface->getTextSize_heap = (void(*)(void*,sjs_font*,sjs_string*, sjs_size_heap**))sjf_sdlSurface_getTextSize_heap;
-    _interface->getTexture = (void(*)(void*,sjs_string*, sjs_texture*))sjf_sdlSurface_getTexture;
-    _interface->getTexture_heap = (void(*)(void*,sjs_string*, sjs_texture_heap**))sjf_sdlSurface_getTexture_heap;
-
-    return _interface;
-}
-
-void sjf_sdlSurface_clear(sjs_sdlSurface* _parent) {
-    int32_t w, h;
-    SDL_GetRendererOutputSize(_parent->ren, &w, &h);
-    glViewport(0, 0, w, h);
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    glEnable( GL_TEXTURE_2D );
-    glDisable( GL_DEPTH_TEST );
-    mat4_set_orthographic( &_parent->projection, 0, w, -h, 0, -1, 1);
-    mat4_set_identity( &_parent->model );
-    mat4_scale(&_parent->model, 1, -1, 0);
-    mat4_set_identity( &_parent->view );
-}
-
-void sjf_sdlSurface_copy(sjs_sdlSurface* _this, sjs_sdlSurface* to) {
-    sjf_size_copy(&_this->size, &to->size);
-}
-
-void sjf_sdlSurface_destroy(sjs_sdlSurface* _this) {
-    SDL_DestroyRenderer(_this->ren);
-    SDL_DestroyWindow((SDL_Window*)_this->win);
-}
-
-void sjf_sdlSurface_drawImage(sjs_sdlSurface* _parent, sjs_rect* rect, sjs_image* image) {
-    /*
-    if (image->texture.tex) {
-        if (image->margin.l > 0) {
-            if (image->margin.t > 0) {
-                SDL_Rect leftTopSrcRect;
-                leftTopSrcRect.x = image->rect.x;
-                leftTopSrcRect.y = image->rect.y;
-                leftTopSrcRect.w = image->margin.l;
-                leftTopSrcRect.h = image->margin.t;
-                SDL_Rect leftTopDestRect;
-                leftTopDestRect.x = rect->x;
-                leftTopDestRect.y = rect->y;
-                leftTopDestRect.w = image->margin.l;
-                leftTopDestRect.h = image->margin.t;
-                SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &leftTopSrcRect, &leftTopDestRect);
-            }
-            SDL_Rect leftSrcRect;
-            leftSrcRect.x = image->rect.x;
-            leftSrcRect.y = image->rect.y + image->margin.t;
-            leftSrcRect.w = image->margin.l;
-            leftSrcRect.h = image->rect.h - image->margin.t - image->margin.b;
-            SDL_Rect leftDestRect;
-            leftDestRect.x = rect->x;
-            leftDestRect.y = rect->y + image->margin.t;
-            leftDestRect.w = image->margin.l;
-            leftDestRect.h = rect->h - image->margin.t - image->margin.b;
-            SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &leftSrcRect, &leftDestRect);
-            if (image->margin.b > 0) {
-                SDL_Rect leftBottomSrcRect;
-                leftBottomSrcRect.x = image->rect.x;
-                leftBottomSrcRect.y = image->rect.y + image->rect.h - image->margin.b;
-                leftBottomSrcRect.w = image->margin.l;
-                leftBottomSrcRect.h = image->margin.b;
-                SDL_Rect leftBottomDestRect;
-                leftBottomDestRect.x = rect->x;
-                leftBottomDestRect.y = rect->y + rect->h - image->margin.b;
-                leftBottomDestRect.w = image->margin.l;
-                leftBottomDestRect.h = image->margin.b;
-                SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &leftBottomSrcRect, &leftBottomDestRect);
-            }
-        }
-        if (image->margin.r > 0) {
-            if (image->margin.t > 0) {
-                SDL_Rect rightTopSrcRect;
-                rightTopSrcRect.x = image->rect.x + image->rect.w - image->margin.r;
-                rightTopSrcRect.y = image->rect.y;
-                rightTopSrcRect.w = image->margin.r;
-                rightTopSrcRect.h = image->margin.t;
-                SDL_Rect rightTopDestRect;
-                rightTopDestRect.x = rect->x + rect->w - image->margin.r;
-                rightTopDestRect.y = rect->y;
-                rightTopDestRect.w = image->margin.r;
-                rightTopDestRect.h = image->margin.t;
-                SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &rightTopSrcRect, &rightTopDestRect);
-            }
-            SDL_Rect rightSrcRect;
-            rightSrcRect.x = image->rect.x + image->rect.w - image->margin.r;
-            rightSrcRect.y = image->rect.y + image->margin.t;
-            rightSrcRect.w = image->margin.r;
-            rightSrcRect.h = image->rect.h - image->margin.t - image->margin.b;
-            SDL_Rect rightDestRect;
-            rightDestRect.x = rect->x + rect->w - image->margin.r;
-            rightDestRect.y = rect->y + image->margin.t;
-            rightDestRect.w = image->margin.r;
-            rightDestRect.h = rect->h - image->margin.t - image->margin.b;
-            SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &rightSrcRect, &rightDestRect);
-            if (image->margin.b > 0) {
-                SDL_Rect rightBottomSrcRect;
-                rightBottomSrcRect.x = image->rect.x + image->rect.w - image->margin.r;
-                rightBottomSrcRect.y = image->rect.y + image->rect.h - image->margin.b;
-                rightBottomSrcRect.w = image->margin.r;
-                rightBottomSrcRect.h = image->margin.b;
-                SDL_Rect rightBottomDestRect;
-                rightBottomDestRect.x = rect->x + rect->w - image->margin.r;
-                rightBottomDestRect.y = rect->y + rect->h - image->margin.b;
-                rightBottomDestRect.w = image->margin.r;
-                rightBottomDestRect.h = image->margin.b;
-                SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &rightBottomSrcRect, &rightBottomDestRect);
-            }
-        }
-        if (image->margin.t > 0) {
-            SDL_Rect middleTopSrcRect;
-            middleTopSrcRect.x = image->rect.x + image->margin.l;
-            middleTopSrcRect.y = image->rect.y;
-            middleTopSrcRect.w = image->rect.w - image->margin.l - image->margin.r;
-            middleTopSrcRect.h = image->margin.t;
-            SDL_Rect middleTopDestRect;
-            middleTopDestRect.x = rect->x + image->margin.l;
-            middleTopDestRect.y = rect->y;
-            middleTopDestRect.w = rect->w - image->margin.l - image->margin.r;
-            middleTopDestRect.h = image->margin.t;
-            SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &middleTopSrcRect, &middleTopDestRect);
-        }
-        SDL_Rect middleSrcRect;
-        middleSrcRect.x = image->rect.x + image->margin.l;
-        middleSrcRect.y = image->rect.y + image->margin.t;
-        middleSrcRect.w = image->rect.w - image->margin.l - image->margin.r;
-        middleSrcRect.h = image->rect.h - image->margin.t - image->margin.b;
-        SDL_Rect middleDestRect;
-        middleDestRect.x = rect->x + image->margin.l;
-        middleDestRect.y = rect->y + image->margin.t;
-        middleDestRect.w = rect->w - image->margin.l - image->margin.r;
-        middleDestRect.h = rect->h - image->margin.t - image->margin.b;
-        SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &middleSrcRect, &middleDestRect);
-        if (image->margin.b > 0) {
-            SDL_Rect middleBottomSrcRect;
-            middleBottomSrcRect.x = image->rect.x + image->margin.l;
-            middleBottomSrcRect.y = image->rect.y + image->rect.h - image->margin.b;
-            middleBottomSrcRect.w = image->rect.w - image->margin.l - image->margin.r;
-            middleBottomSrcRect.h = image->margin.b;
-            SDL_Rect middleBottomDestRect;
-            middleBottomDestRect.x = rect->x + image->margin.l;
-            middleBottomDestRect.y = rect->y + rect->h - image->margin.b;
-            middleBottomDestRect.w = rect->w - image->margin.l - image->margin.r;
-            middleBottomDestRect.h = image->margin.b;
-            SDL_RenderCopy(_parent->ren, (SDL_Texture*)image->texture.tex, &middleBottomSrcRect, &middleBottomDestRect);
-        }
-    }
-    */
-}
-
-void sjf_sdlSurface_drawRect(sjs_sdlSurface* _parent, sjs_rect* rect, sjs_color* color) {
-    /*
-    SDL_SetRenderDrawColor(_parent->ren, color->r, color->g, color->b, color->a);
-    SDL_RenderFillRect(_parent->ren, (SDL_Rect*)rect);
-    */
-}
-
-void sjf_sdlSurface_drawText(sjs_sdlSurface* _parent, sjs_rect* rect, sjs_font* font, sjs_string* text, sjs_color* color) {
-    if (((char*)text->data.data)[0] != 0) {
-        //			vec2 pen = {{ rect->x, rect->y }};
-        vec2 pen = {{ 0, 200 }};
-        vec4 color = {{ 0,0,0,1 }};
-        vertex_buffer_t* buffer = vertex_buffer_new("vertex:3f,tex_coord:2f,color:4f");
-        add_text(buffer, font->font, (char*)text->data.data, &color, &pen );
-        glBindTexture(GL_TEXTURE_2D, font->atlas->id);
-        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, (int)font->atlas->width, (int)font->atlas->height, 0, GL_RGB, GL_UNSIGNED_BYTE, font->atlas->data );
-        glUseProgram(_parent->textShader);
-        {
-            glUniform1i(glGetUniformLocation(_parent->textShader, "texture" ), 0 );
-            glUniformMatrix4fv(glGetUniformLocation(_parent->textShader, "model" ), 1, 0, _parent->model.data);
-            glUniformMatrix4fv(glGetUniformLocation(_parent->textShader, "view" ), 1, 0, _parent->view.data);
-            glUniformMatrix4fv(glGetUniformLocation(_parent->textShader, "projection" ), 1, 0, _parent->projection.data);
-            vertex_buffer_render(buffer, GL_TRIANGLES);
-        }
-        vertex_buffer_delete(buffer);
-    }
-}
-
-void sjf_sdlSurface_getSize(sjs_sdlSurface* _parent, sjs_size* _return) {
-    int32_t sjv_h;
-    int32_t sjv_w;
-
-    sjv_w = 0;
-    sjv_h = 0;
-    SDL_GetRendererOutputSize(_parent->ren, &sjv_w, &sjv_h);
-    _return->w = sjv_w;
-    _return->h = sjv_h;
-    sjf_size(_return);
-}
-
-void sjf_sdlSurface_getSize_heap(sjs_sdlSurface* _parent, sjs_size_heap** _return) {
-    int32_t sjv_h;
-    int32_t sjv_w;
-
-    sjv_w = 0;
-    sjv_h = 0;
-    SDL_GetRendererOutputSize(_parent->ren, &sjv_w, &sjv_h);
-    (*_return) = (sjs_size_heap*)malloc(sizeof(sjs_size_heap));
-    (*_return)->_refCount = 1;
-    (*_return)->w = sjv_w;
-    (*_return)->h = sjv_h;
-    sjf_size_heap((*_return));
-}
-
-void sjf_sdlSurface_getTextSize(sjs_sdlSurface* _parent, sjs_font* font, sjs_string* text, sjs_size* _return) {
-    int32_t sjv_h;
-    int32_t sjv_w;
-
-    sjv_w = 0;
-    sjv_h = 0;
-    _return->w = sjv_w;
-    _return->h = sjv_h;
-    sjf_size(_return);
-}
-
-void sjf_sdlSurface_getTextSize_heap(sjs_sdlSurface* _parent, sjs_font* font, sjs_string* text, sjs_size_heap** _return) {
-    int32_t sjv_h;
-    int32_t sjv_w;
-
-    sjv_w = 0;
-    sjv_h = 0;
-    (*_return) = (sjs_size_heap*)malloc(sizeof(sjs_size_heap));
-    (*_return)->_refCount = 1;
-    (*_return)->w = sjv_w;
-    (*_return)->h = sjv_h;
-    sjf_size_heap((*_return));
-}
-
-void sjf_sdlSurface_getTexture(sjs_sdlSurface* _parent, sjs_string* src, sjs_texture* _return) {
-    int32_t sjt_cast2;
-    uintptr_t sjv_tex;
-
-    sjt_cast2 = 0;
-    sjv_tex = (uintptr_t)sjt_cast2;
-    _return->tex = sjv_tex;
-    sjf_texture(_return);
-}
-
-void sjf_sdlSurface_getTexture_heap(sjs_sdlSurface* _parent, sjs_string* src, sjs_texture_heap** _return) {
-    int32_t sjt_cast3;
-    uintptr_t sjv_tex;
-
-    sjt_cast3 = 0;
-    sjv_tex = (uintptr_t)sjt_cast3;
-    (*_return) = (sjs_texture_heap*)malloc(sizeof(sjs_texture_heap));
-    (*_return)->_refCount = 1;
-    (*_return)->tex = sjv_tex;
-    sjf_texture_heap((*_return));
-}
-
-void sjf_sdlSurface_heap(sjs_sdlSurface_heap* _this) {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        printf("SDL_Init Error: %s\n", SDL_GetError());
-        exit(-1);
-    }
-    #ifdef __APPLE__
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-    #else
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-    #endif
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-    _this->win = SDL_CreateWindow("Hello World!", 100, 100, _this->size.w, _this->size.h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-    if (_this->win == 0) {
-        printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
-        exit(-1);
-    }
-    SDL_GL_CreateContext((SDL_Window*)_this->win);
-    #ifdef WIN32
-    GLint GlewInitResult = glewInit();
-    if (GLEW_OK != GlewInitResult)
-    {
-        printf("ERROR: %s\n", glewGetErrorString(GlewInitResult));
-        exit(EXIT_FAILURE);
-    }
-    #endif
-    _this->ren = SDL_CreateRenderer((SDL_Window*)_this->win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (_this->ren == 0) {
-        printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
-        exit(-1);
-    }
-    glClearColor( 1.0, 0.0, 1.0, 1.0 );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glEnable( GL_BLEND );
-    _this->textShader = shader_load("shaders/v3f-t2f-c4f.vert", "shaders/v3f-t2f-c4f.frag");
-}
-
-sjs_object* sjf_sdlSurface_heap_asInterface(sjs_sdlSurface_heap* _this, int typeId) {
-    switch (typeId) {
-        case sji_surface_typeId:  {
-            return (sjs_object*)sjf_sdlSurface_heap_as_sji_surface(_this);
-        }
-    }
-
-    return 0;
-}
-
-sji_surface* sjf_sdlSurface_heap_as_sji_surface(sjs_sdlSurface_heap* _this) {
-    sji_surface* _interface;
-    _interface = (sji_surface*)malloc(sizeof(sji_surface));
-    _interface->_refCount = 1;
-    _interface->_parent = (sjs_object*)_this;
-    _interface->_parent->_refCount++;
-    _interface->destroy = (void(*)(void*))sjf_sdlSurface_destroy;
-    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_sdlSurface_heap_asInterface;
-    _interface->clear = (void(*)(void*))sjf_sdlSurface_clear;
-    _interface->present = (void(*)(void*))sjf_sdlSurface_present;
-    _interface->getSize = (void(*)(void*, sjs_size*))sjf_sdlSurface_getSize;
-    _interface->getSize_heap = (void(*)(void*, sjs_size_heap**))sjf_sdlSurface_getSize_heap;
-    _interface->drawRect = (void(*)(void*,sjs_rect*,sjs_color*))sjf_sdlSurface_drawRect;
-    _interface->drawImage = (void(*)(void*,sjs_rect*,sjs_image*))sjf_sdlSurface_drawImage;
-    _interface->drawText = (void(*)(void*,sjs_rect*,sjs_font*,sjs_string*,sjs_color*))sjf_sdlSurface_drawText;
-    _interface->getTextSize = (void(*)(void*,sjs_font*,sjs_string*, sjs_size*))sjf_sdlSurface_getTextSize;
-    _interface->getTextSize_heap = (void(*)(void*,sjs_font*,sjs_string*, sjs_size_heap**))sjf_sdlSurface_getTextSize_heap;
-    _interface->getTexture = (void(*)(void*,sjs_string*, sjs_texture*))sjf_sdlSurface_getTexture;
-    _interface->getTexture_heap = (void(*)(void*,sjs_string*, sjs_texture_heap**))sjf_sdlSurface_getTexture_heap;
-
-    return _interface;
-}
-
-void sjf_sdlSurface_present(sjs_sdlSurface* _parent) {
-    SDL_GL_SwapWindow((SDL_Window*)_parent->win);
-}
-
 void sjf_size(sjs_size* _this) {
 }
 
 void sjf_size_cap(sjs_size* _parent, sjs_size* maxSize, sjs_size* _return) {
-    int32_t sjt_compare10;
-    int32_t sjt_compare9;
-    sjs_size* sjt_dot13;
-    bool sjt_ifElse3;
+    int32_t sjt_compare1;
+    int32_t sjt_compare2;
+    sjs_size* sjt_dot3;
+    bool sjt_ifElse1;
 
-    sjt_compare9 = (_parent)->w;
-    sjt_dot13 = maxSize;
-    sjt_compare10 = (sjt_dot13)->w;
-    sjt_ifElse3 = sjt_compare9 < sjt_compare10;
-    if (sjt_ifElse3) {
+    sjt_compare1 = (_parent)->w;
+    sjt_dot3 = maxSize;
+    sjt_compare2 = (sjt_dot3)->w;
+    sjt_ifElse1 = sjt_compare1 < sjt_compare2;
+    if (sjt_ifElse1) {
         _return->w = (_parent)->w;
     } else {
-        sjs_size* sjt_dot14;
+        sjs_size* sjt_dot4;
 
-        sjt_dot14 = maxSize;
-        _return->w = (sjt_dot14)->w;
+        sjt_dot4 = maxSize;
+        _return->w = (sjt_dot4)->w;
     }
 
     _return->h = 0;
@@ -6048,33 +6704,33 @@ void sjf_size_cap(sjs_size* _parent, sjs_size* maxSize, sjs_size* _return) {
 }
 
 void sjf_size_cap_heap(sjs_size* _parent, sjs_size* maxSize, sjs_size_heap** _return) {
-    int32_t sjt_compare11;
-    int32_t sjt_compare12;
-    sjs_size* sjt_dot15;
-    bool sjt_ifElse4;
+    int32_t sjt_compare3;
+    int32_t sjt_compare4;
+    sjs_size* sjt_dot5;
+    bool sjt_ifElse2;
 
     (*_return) = (sjs_size_heap*)malloc(sizeof(sjs_size_heap));
     (*_return)->_refCount = 1;
-    sjt_compare11 = (_parent)->w;
-    sjt_dot15 = maxSize;
-    sjt_compare12 = (sjt_dot15)->w;
-    sjt_ifElse4 = sjt_compare11 < sjt_compare12;
-    if (sjt_ifElse4) {
+    sjt_compare3 = (_parent)->w;
+    sjt_dot5 = maxSize;
+    sjt_compare4 = (sjt_dot5)->w;
+    sjt_ifElse2 = sjt_compare3 < sjt_compare4;
+    if (sjt_ifElse2) {
         (*_return)->w = (_parent)->w;
     } else {
-        sjs_size* sjt_dot16;
+        sjs_size* sjt_dot6;
 
-        sjt_dot16 = maxSize;
-        (*_return)->w = (sjt_dot16)->w;
+        sjt_dot6 = maxSize;
+        (*_return)->w = (sjt_dot6)->w;
     }
 
     (*_return)->h = 0;
     sjf_size_heap((*_return));
 }
 
-void sjf_size_copy(sjs_size* _this, sjs_size* to) {
-    _this->w = to->w;
-    _this->h = to->h;
+void sjf_size_copy(sjs_size* _this, sjs_size* _from) {
+    _this->w = _from->w;
+    _this->h = _from->h;
 }
 
 void sjf_size_destroy(sjs_size* _this) {
@@ -6086,15 +6742,192 @@ void sjf_size_heap(sjs_size_heap* _this) {
 void sjf_string(sjs_string* _this) {
 }
 
-void sjf_string_copy(sjs_string* _this, sjs_string* to) {
-    _this->count = to->count;
-    sjf_array_char_copy(&_this->data, &to->data);
+void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
+    _this->count = _from->count;
+    sjf_array_char_copy(&_this->data, &_from->data);
 }
 
 void sjf_string_destroy(sjs_string* _this) {
 }
 
 void sjf_string_heap(sjs_string_heap* _this) {
+}
+
+void sjf_surface2d(sjs_surface2d* _this) {
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        printf("SDL_Init Error: %s\n", SDL_GetError());
+        exit(-1);
+    }
+    #ifdef __APPLE__
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    #else
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    #endif
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    _this->win = SDL_CreateWindow("Hello World!", 100, 100, _this->size.w, _this->size.h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    if (_this->win == 0) {
+        printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
+        exit(-1);
+    }
+    SDL_GL_CreateContext((SDL_Window*)_this->win);
+    #ifdef WIN32
+    GLint GlewInitResult = glewInit();
+    if (GLEW_OK != GlewInitResult)
+    {
+        printf("ERROR: %s\n", glewGetErrorString(GlewInitResult));
+        exit(EXIT_FAILURE);
+    }
+    #endif
+    _this->ren = SDL_CreateRenderer((SDL_Window*)_this->win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (_this->ren == 0) {
+        printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
+        exit(-1);
+    }
+    glClearColor( 1.0, 0.0, 1.0, 1.0 );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glEnable( GL_BLEND );
+    _this->textShader = shader_load("shaders/v3f-t2f-c4f.vert", "shaders/v3f-t2f-c4f.frag");
+}
+
+void sjf_surface2d_clear(sjs_surface2d* _parent) {
+    int32_t w, h;
+    SDL_GetRendererOutputSize(_parent->ren, &w, &h);
+    glViewport(0, 0, w, h);
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    glEnable( GL_TEXTURE_2D );
+    glDisable( GL_DEPTH_TEST );
+    mat4_set_orthographic( &_parent->projection, 0.0f, (float)w, (float)-h, 0.0f, -1.0f, 1.0f);
+    mat4_set_identity( &_parent->model );
+    mat4_scale(&_parent->model, 1.0f, -1.0f, 1.0f);
+    mat4_set_identity( &_parent->view );
+}
+
+void sjf_surface2d_copy(sjs_surface2d* _this, sjs_surface2d* _from) {
+    sjf_size_copy(&_this->size, &_from->size);
+    _this->ren = _from->ren;
+    _retain(_this->ren);
+    _this->win = _from->win;
+    _retain(_this->win);
+}
+
+void sjf_surface2d_destroy(sjs_surface2d* _this) {
+    if (_release(_this->ren)) {
+        SDL_DestroyRenderer(_this->ren);
+    }
+    if (_release(_this->win)) {
+        SDL_DestroyWindow(_this->win);
+    }
+}
+
+void sjf_surface2d_drawVertexBuffer(sjs_surface2d* _parent, sji_textElement_render_vertexBuffer* vertexBuffer, sjs_texture* texture) {
+    sji_textElement_render_vertexBuffer* sjt_dot17;
+
+    glBindTexture(GL_TEXTURE_2D, texture->id);
+    glUseProgram(_parent->textShader);
+    glUniform1i(glGetUniformLocation(_parent->textShader, "texture" ), 0 );
+    glUniformMatrix4fv(glGetUniformLocation(_parent->textShader, "model" ), 1, 0, _parent->model.data);
+    glUniformMatrix4fv(glGetUniformLocation(_parent->textShader, "view" ), 1, 0, _parent->view.data);
+    glUniformMatrix4fv(glGetUniformLocation(_parent->textShader, "projection" ), 1, 0, _parent->projection.data);
+    sjt_dot17 = vertexBuffer;
+    sjt_dot17->render((void*)(((char*)sjt_dot17->_parent) + sizeof(intptr_t)));
+}
+
+void sjf_surface2d_getSize(sjs_surface2d* _parent, sjs_size* _return) {
+    int32_t sjv_h;
+    int32_t sjv_w;
+
+    sjv_w = 0;
+    sjv_h = 0;
+    SDL_GetRendererOutputSize(_parent->ren, &sjv_w, &sjv_h);
+    _return->w = sjv_w;
+    _return->h = sjv_h;
+    sjf_size(_return);
+}
+
+void sjf_surface2d_getSize_heap(sjs_surface2d* _parent, sjs_size_heap** _return) {
+    int32_t sjv_h;
+    int32_t sjv_w;
+
+    sjv_w = 0;
+    sjv_h = 0;
+    SDL_GetRendererOutputSize(_parent->ren, &sjv_w, &sjv_h);
+    (*_return) = (sjs_size_heap*)malloc(sizeof(sjs_size_heap));
+    (*_return)->_refCount = 1;
+    (*_return)->w = sjv_w;
+    (*_return)->h = sjv_h;
+    sjf_size_heap((*_return));
+}
+
+void sjf_surface2d_getTextSize(sjs_surface2d* _parent, sjs_font* font, sjs_string* text, sjs_size* _return) {
+    int32_t sjv_h;
+    int32_t sjv_w;
+
+    sjv_w = 0;
+    sjv_h = 0;
+    _return->w = sjv_w;
+    _return->h = sjv_h;
+    sjf_size(_return);
+}
+
+void sjf_surface2d_getTextSize_heap(sjs_surface2d* _parent, sjs_font* font, sjs_string* text, sjs_size_heap** _return) {
+    int32_t sjv_h;
+    int32_t sjv_w;
+
+    sjv_w = 0;
+    sjv_h = 0;
+    (*_return) = (sjs_size_heap*)malloc(sizeof(sjs_size_heap));
+    (*_return)->_refCount = 1;
+    (*_return)->w = sjv_w;
+    (*_return)->h = sjv_h;
+    sjf_size_heap((*_return));
+}
+
+void sjf_surface2d_heap(sjs_surface2d_heap* _this) {
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        printf("SDL_Init Error: %s\n", SDL_GetError());
+        exit(-1);
+    }
+    #ifdef __APPLE__
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    #else
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    #endif
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    _this->win = SDL_CreateWindow("Hello World!", 100, 100, _this->size.w, _this->size.h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    if (_this->win == 0) {
+        printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
+        exit(-1);
+    }
+    SDL_GL_CreateContext((SDL_Window*)_this->win);
+    #ifdef WIN32
+    GLint GlewInitResult = glewInit();
+    if (GLEW_OK != GlewInitResult)
+    {
+        printf("ERROR: %s\n", glewGetErrorString(GlewInitResult));
+        exit(EXIT_FAILURE);
+    }
+    #endif
+    _this->ren = SDL_CreateRenderer((SDL_Window*)_this->win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (_this->ren == 0) {
+        printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
+        exit(-1);
+    }
+    glClearColor( 1.0, 0.0, 1.0, 1.0 );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glEnable( GL_BLEND );
+    _this->textShader = shader_load("shaders/v3f-t2f-c4f.vert", "shaders/v3f-t2f-c4f.frag");
+}
+
+void sjf_surface2d_present(sjs_surface2d* _parent) {
+    SDL_GL_SwapWindow((SDL_Window*)_parent->win);
 }
 
 void sjf_textElement(sjs_textElement* _this) {
@@ -6122,17 +6955,17 @@ sji_element* sjf_textElement_as_sji_element(sjs_textElement* _this) {
     _interface->getSize_heap = (void(*)(void*,sjs_size*, sjs_size_heap**))sjf_textElement_getSize_heap;
     _interface->getRect = (void(*)(void*, sjs_rect**))sjf_textElement_getRect;
     _interface->setRect = (void(*)(void*,sjs_rect*))sjf_textElement_setRect;
-    _interface->render = (void(*)(void*,sji_surface*))sjf_textElement_render;
+    _interface->render = (void(*)(void*,sjs_surface2d*))sjf_textElement_render;
     _interface->getChildren = (void(*)(void*, sjs_array_heap_element**))sjf_textElement_getChildren;
 
     return _interface;
 }
 
-void sjf_textElement_copy(sjs_textElement* _this, sjs_textElement* to) {
-    sjf_font_copy(&_this->font, &to->font);
-    sjf_string_copy(&_this->text, &to->text);
-    sjf_color_copy(&_this->color, &to->color);
-    sjf_rect_copy(&_this->rect, &to->rect);
+void sjf_textElement_copy(sjs_textElement* _this, sjs_textElement* _from) {
+    sjf_font_copy(&_this->font, &_from->font);
+    sjf_string_copy(&_this->text, &_from->text);
+    sjf_color_copy(&_this->color, &_from->color);
+    sjf_rect_copy(&_this->rect, &_from->rect);
 }
 
 void sjf_textElement_destroy(sjs_textElement* _this) {
@@ -6147,39 +6980,39 @@ void sjf_textElement_getRect(sjs_textElement* _parent, sjs_rect** _return) {
 }
 
 void sjf_textElement_getSize(sjs_textElement* _parent, sjs_size* maxSize, sjs_size* _return) {
-    sji_surface* sjt_dot11;
-    sjs_size* sjt_dot12;
-    sjs_size* sjt_functionParam1;
-    sjs_font* sjt_interfaceParam1;
-    sjs_string* sjt_interfaceParam2;
+    sjs_surface2d* sjt_dot1;
+    sjs_size* sjt_dot2;
+    sjs_font* sjt_functionParam1;
+    sjs_string* sjt_functionParam2;
+    sjs_size* sjt_functionParam3;
     sjs_size sjv_textSize;
 
-    sjt_dot11 = sjv_rootSurface;
-    sjt_interfaceParam1 = &(_parent)->font;
-    sjt_interfaceParam2 = &(_parent)->text;
-    sjt_dot11->getTextSize((void*)(((char*)sjt_dot11->_parent) + sizeof(intptr_t)), sjt_interfaceParam1, sjt_interfaceParam2, &sjv_textSize);
-    sjt_dot12 = &sjv_textSize;
-    sjt_functionParam1 = maxSize;
-    sjf_size_cap(sjt_dot12, sjt_functionParam1, _return);
+    sjt_dot1 = &sjv_rootSurface;
+    sjt_functionParam1 = &(_parent)->font;
+    sjt_functionParam2 = &(_parent)->text;
+    sjf_surface2d_getTextSize(sjt_dot1, sjt_functionParam1, sjt_functionParam2, &sjv_textSize);
+    sjt_dot2 = &sjv_textSize;
+    sjt_functionParam3 = maxSize;
+    sjf_size_cap(sjt_dot2, sjt_functionParam3, _return);
 
     sjf_size_destroy(&sjv_textSize);
 }
 
 void sjf_textElement_getSize_heap(sjs_textElement* _parent, sjs_size* maxSize, sjs_size_heap** _return) {
-    sji_surface* sjt_dot17;
-    sjs_size* sjt_dot18;
-    sjs_size* sjt_functionParam2;
-    sjs_font* sjt_interfaceParam3;
-    sjs_string* sjt_interfaceParam4;
+    sjs_surface2d* sjt_dot7;
+    sjs_size* sjt_dot8;
+    sjs_font* sjt_functionParam4;
+    sjs_string* sjt_functionParam5;
+    sjs_size* sjt_functionParam6;
     sjs_size sjv_textSize;
 
-    sjt_dot17 = sjv_rootSurface;
-    sjt_interfaceParam3 = &(_parent)->font;
-    sjt_interfaceParam4 = &(_parent)->text;
-    sjt_dot17->getTextSize((void*)(((char*)sjt_dot17->_parent) + sizeof(intptr_t)), sjt_interfaceParam3, sjt_interfaceParam4, &sjv_textSize);
-    sjt_dot18 = &sjv_textSize;
-    sjt_functionParam2 = maxSize;
-    sjf_size_cap_heap(sjt_dot18, sjt_functionParam2, _return);
+    sjt_dot7 = &sjv_rootSurface;
+    sjt_functionParam4 = &(_parent)->font;
+    sjt_functionParam5 = &(_parent)->text;
+    sjf_surface2d_getTextSize(sjt_dot7, sjt_functionParam4, sjt_functionParam5, &sjv_textSize);
+    sjt_dot8 = &sjv_textSize;
+    sjt_functionParam6 = maxSize;
+    sjf_size_cap_heap(sjt_dot8, sjt_functionParam6, _return);
 
     sjf_size_destroy(&sjv_textSize);
 }
@@ -6209,48 +7042,78 @@ sji_element* sjf_textElement_heap_as_sji_element(sjs_textElement_heap* _this) {
     _interface->getSize_heap = (void(*)(void*,sjs_size*, sjs_size_heap**))sjf_textElement_getSize_heap;
     _interface->getRect = (void(*)(void*, sjs_rect**))sjf_textElement_getRect;
     _interface->setRect = (void(*)(void*,sjs_rect*))sjf_textElement_setRect;
-    _interface->render = (void(*)(void*,sji_surface*))sjf_textElement_render;
+    _interface->render = (void(*)(void*,sjs_surface2d*))sjf_textElement_render;
     _interface->getChildren = (void(*)(void*, sjs_array_heap_element**))sjf_textElement_getChildren;
 
     return _interface;
 }
 
-void sjf_textElement_render(sjs_textElement* _parent, sji_surface* surface) {
-    sji_surface* sjt_dot19;
-    sjs_rect* sjt_dot20;
-    sjs_rect* sjt_dot21;
-    sjs_size* sjt_dot22;
-    sjs_size* sjt_dot23;
-    sji_surface* sjt_dot24;
-    sjs_color* sjt_interfaceParam10;
-    sjs_font* sjt_interfaceParam5;
-    sjs_string* sjt_interfaceParam6;
-    sjs_rect* sjt_interfaceParam7;
-    sjs_font* sjt_interfaceParam8;
-    sjs_string* sjt_interfaceParam9;
+void sjf_textElement_render(sjs_textElement* _parent, sjs_surface2d* surface) {
+    sjs_texture sjt_call1;
+    sjs_textVertexBuffer_heap* sjt_cast2;
+    sjs_rect* sjt_dot10;
+    sjs_surface2d* sjt_dot11;
+    sjs_rect* sjt_dot12;
+    sjs_rect* sjt_dot13;
+    sjs_size* sjt_dot14;
+    sjs_size* sjt_dot15;
+    sjs_surface2d* sjt_dot16;
+    sjs_font* sjt_dot18;
+    sjs_rect* sjt_dot9;
+    sjs_texture* sjt_functionParam10;
+    sjs_font* sjt_functionParam7;
+    sjs_string* sjt_functionParam8;
+    sji_textElement_render_vertexBuffer* sjt_functionParam9;
     sjs_rect sjv_final;
     sjs_size sjv_textSize;
+    sji_textElement_render_vertexBuffer* sjv_textVertexBuffer;
 
-    sjt_dot19 = surface;
-    sjt_interfaceParam5 = &(_parent)->font;
-    sjt_interfaceParam6 = &(_parent)->text;
-    sjt_dot19->getTextSize((void*)(((char*)sjt_dot19->_parent) + sizeof(intptr_t)), sjt_interfaceParam5, sjt_interfaceParam6, &sjv_textSize);
-    sjt_dot20 = &(_parent)->rect;
-    sjv_final.x = (sjt_dot20)->x;
-    sjt_dot21 = &(_parent)->rect;
-    sjv_final.y = (sjt_dot21)->y;
-    sjt_dot22 = &sjv_textSize;
-    sjv_final.w = (sjt_dot22)->w;
-    sjt_dot23 = &sjv_textSize;
-    sjv_final.h = (sjt_dot23)->h;
+    sjt_cast2 = (sjs_textVertexBuffer_heap*)malloc(sizeof(sjs_textVertexBuffer_heap));
+    sjt_cast2->_refCount = 1;
+    sjf_string_copy(&sjt_cast2->text, &(_parent)->text);
+    sjt_dot9 = &(_parent)->rect;
+    sjt_cast2->point.x = (sjt_dot9)->x;
+    sjt_dot10 = &(_parent)->rect;
+    sjt_cast2->point.y = (sjt_dot10)->y;
+    sjf_point(&sjt_cast2->point);
+    sjf_color_copy(&sjt_cast2->color, &(_parent)->color);
+    sjf_font_copy(&sjt_cast2->font, &(_parent)->font);
+    sjf_textVertexBuffer_heap(sjt_cast2);
+    sjv_textVertexBuffer = (sji_textElement_render_vertexBuffer*)sjf_textVertexBuffer_heap_as_sji_textElement_render_vertexBuffer(sjt_cast2);
+    sjt_dot11 = surface;
+    sjt_functionParam7 = &(_parent)->font;
+    sjt_functionParam8 = &(_parent)->text;
+    sjf_surface2d_getTextSize(sjt_dot11, sjt_functionParam7, sjt_functionParam8, &sjv_textSize);
+    sjt_dot12 = &(_parent)->rect;
+    sjv_final.x = (sjt_dot12)->x;
+    sjt_dot13 = &(_parent)->rect;
+    sjv_final.y = (sjt_dot13)->y;
+    sjt_dot14 = &sjv_textSize;
+    sjv_final.w = (sjt_dot14)->w;
+    sjt_dot15 = &sjv_textSize;
+    sjv_final.h = (sjt_dot15)->h;
     sjf_rect(&sjv_final);
-    sjt_dot24 = surface;
-    sjt_interfaceParam7 = &sjv_final;
-    sjt_interfaceParam8 = &(_parent)->font;
-    sjt_interfaceParam9 = &(_parent)->text;
-    sjt_interfaceParam10 = &(_parent)->color;
-    sjt_dot24->drawText((void*)(((char*)sjt_dot24->_parent) + sizeof(intptr_t)), sjt_interfaceParam7, sjt_interfaceParam8, sjt_interfaceParam9, sjt_interfaceParam10);
+    sjt_dot16 = surface;
+    sjt_functionParam9 = sjv_textVertexBuffer;
+    sjt_functionParam9->_refCount++;
+    sjt_dot18 = &(_parent)->font;
+    sjf_font_getTexture(sjt_dot18, &sjt_call1);
+    sjt_functionParam10 = &sjt_call1;
+    sjf_surface2d_drawVertexBuffer(sjt_dot16, sjt_functionParam9, sjt_functionParam10);
 
+    sjt_cast2->_refCount--;
+    if (sjt_cast2->_refCount <= 0) {
+        sjf_textVertexBuffer_destroy((sjs_textVertexBuffer*)(((char*)sjt_cast2) + sizeof(intptr_t)));
+    }
+    sjt_functionParam9->_refCount--;
+    if (sjt_functionParam9->_refCount <= 0) {
+        sji_textElement_render_vertexBuffer_destroy(sjt_functionParam9);
+    }
+    sjv_textVertexBuffer->_refCount--;
+    if (sjv_textVertexBuffer->_refCount <= 0) {
+        sji_textElement_render_vertexBuffer_destroy(sjv_textVertexBuffer);
+    }
+    sjf_texture_destroy(&sjt_call1);
     sjf_rect_destroy(&sjv_final);
     sjf_size_destroy(&sjv_textSize);
 }
@@ -6259,47 +7122,98 @@ void sjf_textElement_setRect(sjs_textElement* _parent, sjs_rect* rect_) {
     sjf_rect_copy(&_parent->rect, rect_);
 }
 
+void sjf_textVertexBuffer(sjs_textVertexBuffer* _this) {
+    vec2 pen = {{ (float)_this->point.x, (float)_this->point.y }};
+    vec4 color = {{ 0,0,0,1 }};
+    _this->buffer = vertex_buffer_new("vertex:3f,tex_coord:2f,color:4f");
+    add_text(_this->buffer, _this->font.font, (char*)_this->text.data.data, &color, &pen);
+    glBindTexture(GL_TEXTURE_2D, _this->font.font->atlas->id);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (int)_this->font.font->atlas->width, (int)_this->font.font->atlas->height, 0, GL_RGB, GL_UNSIGNED_BYTE, _this->font.font->atlas->data );
+}
+
+sjs_object* sjf_textVertexBuffer_asInterface(sjs_textVertexBuffer* _this, int typeId) {
+    switch (typeId) {
+        case sji_textElement_render_vertexBuffer_typeId:  {
+            return (sjs_object*)sjf_textVertexBuffer_as_sji_textElement_render_vertexBuffer(_this);
+        }
+    }
+
+    return 0;
+}
+
+sji_textElement_render_vertexBuffer* sjf_textVertexBuffer_as_sji_textElement_render_vertexBuffer(sjs_textVertexBuffer* _this) {
+    sji_textElement_render_vertexBuffer* _interface;
+    _interface = (sji_textElement_render_vertexBuffer*)malloc(sizeof(sji_textElement_render_vertexBuffer));
+    _interface->_refCount = 1;
+    _interface->_parent = (sjs_object*)_this;
+    _interface->_parent->_refCount++;
+    _interface->destroy = (void(*)(void*))sjf_textVertexBuffer_destroy;
+    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_textVertexBuffer_asInterface;
+    _interface->render = (void(*)(void*))sjf_textVertexBuffer_render;
+
+    return _interface;
+}
+
+void sjf_textVertexBuffer_copy(sjs_textVertexBuffer* _this, sjs_textVertexBuffer* _from) {
+    sjf_string_copy(&_this->text, &_from->text);
+    sjf_point_copy(&_this->point, &_from->point);
+    sjf_color_copy(&_this->color, &_from->color);
+    sjf_font_copy(&_this->font, &_from->font);
+    _this->buffer = _from->buffer;
+    _retain(_this->buffer);
+}
+
+void sjf_textVertexBuffer_destroy(sjs_textVertexBuffer* _this) {
+    if (_release(_this->buffer)) {
+        vertex_buffer_delete(_this->buffer);
+    }
+}
+
+void sjf_textVertexBuffer_heap(sjs_textVertexBuffer_heap* _this) {
+    vec2 pen = {{ (float)_this->point.x, (float)_this->point.y }};
+    vec4 color = {{ 0,0,0,1 }};
+    _this->buffer = vertex_buffer_new("vertex:3f,tex_coord:2f,color:4f");
+    add_text(_this->buffer, _this->font.font, (char*)_this->text.data.data, &color, &pen);
+    glBindTexture(GL_TEXTURE_2D, _this->font.font->atlas->id);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (int)_this->font.font->atlas->width, (int)_this->font.font->atlas->height, 0, GL_RGB, GL_UNSIGNED_BYTE, _this->font.font->atlas->data );
+}
+
+sjs_object* sjf_textVertexBuffer_heap_asInterface(sjs_textVertexBuffer_heap* _this, int typeId) {
+    switch (typeId) {
+        case sji_textElement_render_vertexBuffer_typeId:  {
+            return (sjs_object*)sjf_textVertexBuffer_heap_as_sji_textElement_render_vertexBuffer(_this);
+        }
+    }
+
+    return 0;
+}
+
+sji_textElement_render_vertexBuffer* sjf_textVertexBuffer_heap_as_sji_textElement_render_vertexBuffer(sjs_textVertexBuffer_heap* _this) {
+    sji_textElement_render_vertexBuffer* _interface;
+    _interface = (sji_textElement_render_vertexBuffer*)malloc(sizeof(sji_textElement_render_vertexBuffer));
+    _interface->_refCount = 1;
+    _interface->_parent = (sjs_object*)_this;
+    _interface->_parent->_refCount++;
+    _interface->destroy = (void(*)(void*))sjf_textVertexBuffer_destroy;
+    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_textVertexBuffer_heap_asInterface;
+    _interface->render = (void(*)(void*))sjf_textVertexBuffer_render;
+
+    return _interface;
+}
+
+void sjf_textVertexBuffer_render(sjs_textVertexBuffer* _parent) {
+    vertex_buffer_render(_parent->buffer, GL_TRIANGLES);
+}
+
 void sjf_texture(sjs_texture* _this) {
 }
 
-void sjf_texture_copy(sjs_texture* _this, sjs_texture* to) {
-    _this->tex = to->tex;
+void sjf_texture_copy(sjs_texture* _this, sjs_texture* _from) {
+    sjf_size_copy(&_this->size, &_from->size);
+    _this->id = _from->id;
 }
 
 void sjf_texture_destroy(sjs_texture* _this) {
-    if (_this->tex) {
-        SDL_DestroyTexture((SDL_Texture*)_this->tex);
-    }
-}
-
-void sjf_texture_getSize(sjs_texture* _parent, sjs_size* _return) {
-    int32_t sjv_h;
-    int32_t sjv_w;
-
-    sjv_w = 0;
-    sjv_h = 0;
-    if (_parent->tex) {
-        SDL_QueryTexture((SDL_Texture*)_parent->tex, NULL, NULL, &sjv_w, &sjv_h);
-    }
-    _return->w = sjv_w;
-    _return->h = sjv_h;
-    sjf_size(_return);
-}
-
-void sjf_texture_getSize_heap(sjs_texture* _parent, sjs_size_heap** _return) {
-    int32_t sjv_h;
-    int32_t sjv_w;
-
-    sjv_w = 0;
-    sjv_h = 0;
-    if (_parent->tex) {
-        SDL_QueryTexture((SDL_Texture*)_parent->tex, NULL, NULL, &sjv_w, &sjv_h);
-    }
-    (*_return) = (sjs_size_heap*)malloc(sizeof(sjs_size_heap));
-    (*_return)->_refCount = 1;
-    (*_return)->w = sjv_w;
-    (*_return)->h = sjv_h;
-    sjf_size_heap((*_return));
 }
 
 void sjf_texture_heap(sjs_texture_heap* _this) {
@@ -6346,26 +7260,16 @@ void sji_fireMouseUp_mouseHandler_destroy(sji_fireMouseUp_mouseHandler* _this) {
     }
 }
 
-void sji_surface_copy(sji_surface* _this, sji_surface* _from) {
+void sji_textElement_render_vertexBuffer_copy(sji_textElement_render_vertexBuffer* _this, sji_textElement_render_vertexBuffer* _from) {
     _this->_refCount = 1;
     _this->_parent = _from->_parent;
     _this->_parent->_refCount++;
     _this->destroy = _from->destroy;
     _this->asInterface = _from->asInterface;
-    _this->clear = _from->clear;
-    _this->present = _from->present;
-    _this->getSize = _from->getSize;
-    _this->getSize = _from->getSize;
-    _this->drawRect = _from->drawRect;
-    _this->drawImage = _from->drawImage;
-    _this->drawText = _from->drawText;
-    _this->getTextSize = _from->getTextSize;
-    _this->getTextSize = _from->getTextSize;
-    _this->getTexture = _from->getTexture;
-    _this->getTexture = _from->getTexture;
+    _this->render = _from->render;
 }
 
-void sji_surface_destroy(sji_surface* _this) {
+void sji_textElement_render_vertexBuffer_destroy(sji_textElement_render_vertexBuffer* _this) {
     _this->_parent->_refCount--;
     if (_this->_parent->_refCount <= 0) {
         _this->destroy((void*)(((char*)_this->_parent) + sizeof(intptr_t)));
@@ -6394,40 +7298,35 @@ int main(int argc, char** argv) {
     sjv_i32_max = (-2147483647 - 1);
     sjv_i32_min = 2147483647;
     sjv_u32_max = (uint32_t)4294967295u;
-    sjt_cast1 = (sjs_sdlSurface_heap*)malloc(sizeof(sjs_sdlSurface_heap));
+    sjv_rootSurface.size.w = 640;
+    sjv_rootSurface.size.h = 480;
+    sjf_size(&sjv_rootSurface.size);
+    sjf_surface2d(&sjv_rootSurface);
+    sjt_cast1 = (sjs_textElement_heap*)malloc(sizeof(sjs_textElement_heap));
     sjt_cast1->_refCount = 1;
-    sjt_cast1->size.w = 640;
-    sjt_cast1->size.h = 480;
-    sjf_size(&sjt_cast1->size);
-    sjf_sdlSurface_heap(sjt_cast1);
-    sjv_rootSurface = (sji_surface*)sjf_sdlSurface_heap_as_sji_surface(sjt_cast1);
-    sjt_cast4 = (sjs_textElement_heap*)malloc(sizeof(sjs_textElement_heap));
-    sjt_cast4->_refCount = 1;
-    sjt_cast4->font.src.count = 17;
-    sjt_cast4->font.src.data.size = 18;
-    sjt_cast4->font.src.data.data = (uintptr_t)sjg_string1;
-    sjt_cast4->font.src.data._isGlobal = false;
-    sjf_array_char(&sjt_cast4->font.src.data);
-    sjf_string(&sjt_cast4->font.src);
-    sjt_cast4->font.size = 25;
-    sjt_cast5 = 0;
-    sjt_cast4->font.data = (uintptr_t)sjt_cast5;
-    sjf_font(&sjt_cast4->font);
-    sjt_cast4->text.count = 3;
-    sjt_cast4->text.data.size = 4;
-    sjt_cast4->text.data.data = (uintptr_t)sjg_string2;
-    sjt_cast4->text.data._isGlobal = false;
-    sjf_array_char(&sjt_cast4->text.data);
-    sjf_string(&sjt_cast4->text);
-    sjt_dot25 = &sjv_colors;
-    sjf_anon6_red(sjt_dot25, &sjt_cast4->color);
-    sjt_cast4->rect.x = 0;
-    sjt_cast4->rect.y = 0;
-    sjt_cast4->rect.w = 0;
-    sjt_cast4->rect.h = 0;
-    sjf_rect(&sjt_cast4->rect);
-    sjf_textElement_heap(sjt_cast4);
-    sjv_root = (sji_element*)sjf_textElement_heap_as_sji_element(sjt_cast4);
+    sjt_cast1->font.src.count = 17;
+    sjt_cast1->font.src.data.size = 18;
+    sjt_cast1->font.src.data.data = (uintptr_t)sjg_string1;
+    sjt_cast1->font.src.data._isGlobal = false;
+    sjf_array_char(&sjt_cast1->font.src.data);
+    sjf_string(&sjt_cast1->font.src);
+    sjt_cast1->font.size = 25.0f;
+    sjf_font(&sjt_cast1->font);
+    sjt_cast1->text.count = 3;
+    sjt_cast1->text.data.size = 4;
+    sjt_cast1->text.data.data = (uintptr_t)sjg_string2;
+    sjt_cast1->text.data._isGlobal = false;
+    sjf_array_char(&sjt_cast1->text.data);
+    sjf_string(&sjt_cast1->text);
+    sjt_dot19 = &sjv_colors;
+    sjf_anon6_red(sjt_dot19, &sjt_cast1->color);
+    sjt_cast1->rect.x = 0;
+    sjt_cast1->rect.y = 0;
+    sjt_cast1->rect.w = 0;
+    sjt_cast1->rect.h = 0;
+    sjf_rect(&sjt_cast1->rect);
+    sjf_textElement_heap(sjt_cast1);
+    sjv_root = (sji_element*)sjf_textElement_heap_as_sji_element(sjt_cast1);
     sjf_runLoop();
     main_destroy();
     return 0;
@@ -6437,19 +7336,11 @@ void main_destroy() {
 
     sjt_cast1->_refCount--;
     if (sjt_cast1->_refCount <= 0) {
-        sjf_sdlSurface_destroy((sjs_sdlSurface*)(((char*)sjt_cast1) + sizeof(intptr_t)));
-    }
-    sjt_cast4->_refCount--;
-    if (sjt_cast4->_refCount <= 0) {
-        sjf_textElement_destroy((sjs_textElement*)(((char*)sjt_cast4) + sizeof(intptr_t)));
+        sjf_textElement_destroy((sjs_textElement*)(((char*)sjt_cast1) + sizeof(intptr_t)));
     }
     sjv_root->_refCount--;
     if (sjv_root->_refCount <= 0) {
         sji_element_destroy(sjv_root);
-    }
-    sjv_rootSurface->_refCount--;
-    if (sjv_rootSurface->_refCount <= 0) {
-        sji_surface_destroy(sjv_rootSurface);
     }
     sjf_anon8_destroy(&sjv_borderPosition);
     sjf_anon5_destroy(&sjv_buttonState);
@@ -6458,5 +7349,6 @@ void main_destroy() {
     sjf_anon4_destroy(&sjv_convert);
     sjf_anon2_destroy(&sjv_parse);
     sjf_anon3_destroy(&sjv_random);
+    sjf_surface2d_destroy(&sjv_rootSurface);
     sjf_anon7_destroy(&sjv_style);
 }

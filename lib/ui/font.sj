@@ -1,14 +1,24 @@
 font(
 	src : 'string
-	size : 'i32
+	size : 'f32
+    --cvar--
+	texture_font_t* font;
+	texture_atlas_t* atlas;
+    --cvar--
 
-	cvar{
-		texture_font_t* font;
-		texture_atlas_t* atlas;
-	}cvar
-	data = 0 as ptr
+    getTexture()'texture {
+        w = 0
+        h = 0
+        id = 0u
+        --c--
+        sjv_w = _parent->atlas->width;
+        sjv_h = _parent->atlas->height;
+        sjv_id = _parent->atlas->id;
+        --c--
+        texture(size(w, h), id)
+    }
 ) {
-c{
+    --c--
     _this->atlas = texture_atlas_new( 512, 512, 3 );
     _this->font = texture_font_new_from_file(_this->atlas, _this->size, (char*)_this->src.data.data);
     if (_this->font == 0) {
@@ -22,9 +32,24 @@ c{
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, (int)_this->atlas->width, (int)_this->atlas->height, 0, GL_RGB, GL_UNSIGNED_BYTE, _this->atlas->data );
-}c
+    --c--
 	this
-} destroy c{
-	texture_atlas_delete(_this->atlas);
-	texture_font_delete(_this->font);
-}c
+} copy {
+    --c--
+    _this->atlas = _from->atlas;
+    _retain(_this->atlas);
+
+    _this->font = _from->font;
+    _retain(_this->font);
+    --c--
+} destroy {
+    --c--
+    if (_release(_this->atlas)) {
+	   texture_atlas_delete(_this->atlas);
+    }
+
+    if (_release(_this->font)) {
+	   texture_font_delete(_this->font);
+    }
+    --c--
+}

@@ -102,11 +102,11 @@ int32_t sjt_cast1;
 sjs_a void1;
 
 void sjf_a(sjs_a* _this);
-void sjf_a_copy(sjs_a* _this, sjs_a* to);
+void sjf_a_copy(sjs_a* _this, sjs_a* _from);
 void sjf_a_destroy(sjs_a* _this);
 void sjf_a_heap(sjs_a_heap* _this);
 void sjf_array_char(sjs_array_char* _this);
-void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* to);
+void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from);
 void sjf_array_char_destroy(sjs_array_char* _this);
 void sjf_array_char_heap(sjs_array_char_heap* _this);
 void main_destroy(void);
@@ -114,8 +114,8 @@ void main_destroy(void);
 void sjf_a(sjs_a* _this) {
 }
 
-void sjf_a_copy(sjs_a* _this, sjs_a* to) {
-    sjf_array_char_copy(&_this->data, &to->data);
+void sjf_a_copy(sjs_a* _this, sjs_a* _from) {
+    sjf_array_char_copy(&_this->data, &_from->data);
 }
 
 void sjf_a_destroy(sjs_a* _this) {
@@ -139,16 +139,21 @@ void sjf_array_char(sjs_array_char* _this) {
     }
 }
 
-void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* to) {
-    _this->size = to->size;
-    _this->data = to->data;
-    _this->_isGlobal = to->_isGlobal;
+void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
+    _this->size = _from->size;
+    _this->data = _from->data;
+    _this->_isGlobal = _from->_isGlobal;
+    _this->data = _from->data;
+    if (!_this->_isGlobal && _this->data) {
+        _retain((void*)_this->data);
+    }
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
     if (!_this->_isGlobal && _this->data) {
-        free((char*)_this->data);
-        _this->data = 0;
+        if (_release((void*)_this->data)) {
+            free((char*)_this->data);
+        }
     }
 }
 

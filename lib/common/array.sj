@@ -125,11 +125,19 @@ array!t (
 	}
 	--c--
 	this
+} copy {
+	--c--
+	_this->data = _from->data;
+	if (!_this->_isGlobal && _this->data) {
+		_retain((void*)_this->data);
+	}
+	--c--
 } destroy {
 	--c--
 	if (!_this->_isGlobal && _this->data) {
-		free((#type(t)*)_this->data);
-		_this->data = 0;	
+		if (_release((void*)_this->data)) {
+			free((#type(t)*)_this->data);
+		}
 	}
 	--c--
 }

@@ -121,6 +121,22 @@ void NFunction::defineImpl(Compiler *compiler, shared_ptr<CBaseFunctionDefinitio
     if (block) {
         block->define(compiler, thisFunction);
     }
+
+    if (copyBlock) {
+        copyBlock->define(compiler, thisFunction);
+    }
+
+    if (destroyBlock) {
+        destroyBlock->define(compiler, thisFunction);
+    }
+
+    if (catchBlock) {
+        catchBlock->define(compiler, thisFunction);
+    }
+
+    if ((copyBlock == nullptr) != (destroyBlock == nullptr)) {
+        compiler->addError(loc, CErrorCode::InvalidType, "function '%s' must define a copy and destroy block or neither", name.c_str());
+    }
 }
 
 shared_ptr<CFunctionDefinition> NFunction::getFunctionDefinition(Compiler *compiler, shared_ptr<CFunctionDefinition> parentFunction) {
@@ -422,12 +438,12 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                 trOutput->functions[functionCopyName] = trCopyBlock;
 
                 stringstream functionDefinition;
-                functionDefinition << "void " << functionCopyName << "(" << stackStructName << "* _this, " << stackStructName << "* to)";
+                functionDefinition << "void " << functionCopyName << "(" << stackStructName << "* _this, " << stackStructName << "* _from)";
                 trCopyBlock->definition = functionDefinition.str();
 
                 for (auto argVar : _data[returnMode].thisArgVars) {
                     auto argType = argVar->getType(compiler);
-                    TrStoreValue(argVar->loc, calleeScope, argType, "_this->" + argVar->name, AssignOp::create(true, true, CTM_Undefined), true).retainValue(compiler, argVar->loc, trCopyBlock.get(), make_shared<TrValue>(calleeScope, argType, "to->" + argVar->name, false));
+                    TrStoreValue(argVar->loc, calleeScope, argType, "_this->" + argVar->name, AssignOp::create(true, true, CTM_Undefined), true).retainValue(compiler, argVar->loc, trCopyBlock.get(), make_shared<TrValue>(calleeScope, argType, "_from->" + argVar->name, false));
                 }
 
                 if (_data[returnMode].copyVar) {

@@ -85,7 +85,7 @@ sjs_class sjv_c;
 int32_t void1;
 
 void sjf_class(sjs_class* _this);
-void sjf_class_copy(sjs_class* _this, sjs_class* to);
+void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_func(sjs_class* _parent, int32_t* _return);
 void sjf_class_heap(sjs_class_heap* _this);
@@ -94,8 +94,8 @@ void main_destroy(void);
 void sjf_class(sjs_class* _this) {
 }
 
-void sjf_class_copy(sjs_class* _this, sjs_class* to) {
-    _this->x = to->x;
+void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
+    _this->x = _from->x;
 }
 
 void sjf_class_destroy(sjs_class* _this) {

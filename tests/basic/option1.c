@@ -132,7 +132,7 @@ sji_interface2* sjv_s;
 void sjf_class(sjs_class* _this);
 sjs_object* sjf_class_asInterface(sjs_class* _this, int typeId);
 sji_interface* sjf_class_as_sji_interface(sjs_class* _this);
-void sjf_class_copy(sjs_class* _this, sjs_class* to);
+void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_heap(sjs_class_heap* _this);
 sjs_object* sjf_class_heap_asInterface(sjs_class_heap* _this, int typeId);
@@ -168,8 +168,8 @@ sji_interface* sjf_class_as_sji_interface(sjs_class* _this) {
     return _interface;
 }
 
-void sjf_class_copy(sjs_class* _this, sjs_class* to) {
-    _this->bob = to->bob;
+void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
+    _this->bob = _from->bob;
 }
 
 void sjf_class_destroy(sjs_class* _this) {

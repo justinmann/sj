@@ -94,7 +94,7 @@ sjs_foo sjv_stack_x3;
 sjs_foo sjv_stack_y;
 
 void sjf_foo(sjs_foo* _this);
-void sjf_foo_copy(sjs_foo* _this, sjs_foo* to);
+void sjf_foo_copy(sjs_foo* _this, sjs_foo* _from);
 void sjf_foo_destroy(sjs_foo* _this);
 void sjf_foo_heap(sjs_foo_heap* _this);
 void main_destroy(void);
@@ -102,7 +102,7 @@ void main_destroy(void);
 void sjf_foo(sjs_foo* _this) {
 }
 
-void sjf_foo_copy(sjs_foo* _this, sjs_foo* to) {
+void sjf_foo_copy(sjs_foo* _this, sjs_foo* _from) {
 }
 
 void sjf_foo_destroy(sjs_foo* _this) {

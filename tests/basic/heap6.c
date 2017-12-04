@@ -84,7 +84,7 @@ sjs_foo sjv_a;
 void sjf_bar(sjs_foo* _return);
 void sjf_bar_heap(sjs_foo_heap** _return);
 void sjf_foo(sjs_foo* _this);
-void sjf_foo_copy(sjs_foo* _this, sjs_foo* to);
+void sjf_foo_copy(sjs_foo* _this, sjs_foo* _from);
 void sjf_foo_destroy(sjs_foo* _this);
 void sjf_foo_heap(sjs_foo_heap* _this);
 void main_destroy(void);
@@ -102,7 +102,7 @@ void sjf_bar_heap(sjs_foo_heap** _return) {
 void sjf_foo(sjs_foo* _this) {
 }
 
-void sjf_foo_copy(sjs_foo* _this, sjs_foo* to) {
+void sjf_foo_copy(sjs_foo* _this, sjs_foo* _from) {
 }
 
 void sjf_foo_destroy(sjs_foo* _this) {

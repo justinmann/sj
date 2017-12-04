@@ -106,12 +106,12 @@ sjs_class* sjt_functionParam2;
 sjs_array_class sjv_a;
 
 void sjf_array_class(sjs_array_class* _this);
-void sjf_array_class_copy(sjs_array_class* _this, sjs_array_class* to);
+void sjf_array_class_copy(sjs_array_class* _this, sjs_array_class* _from);
 void sjf_array_class_destroy(sjs_array_class* _this);
 void sjf_array_class_heap(sjs_array_class_heap* _this);
 void sjf_array_class_setAt(sjs_array_class* _parent, int32_t index, sjs_class* item);
 void sjf_class(sjs_class* _this);
-void sjf_class_copy(sjs_class* _this, sjs_class* to);
+void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_heap(sjs_class_heap* _this);
 void main_destroy(void);
@@ -131,16 +131,21 @@ void sjf_array_class(sjs_array_class* _this) {
     }
 }
 
-void sjf_array_class_copy(sjs_array_class* _this, sjs_array_class* to) {
-    _this->size = to->size;
-    _this->data = to->data;
-    _this->_isGlobal = to->_isGlobal;
+void sjf_array_class_copy(sjs_array_class* _this, sjs_array_class* _from) {
+    _this->size = _from->size;
+    _this->data = _from->data;
+    _this->_isGlobal = _from->_isGlobal;
+    _this->data = _from->data;
+    if (!_this->_isGlobal && _this->data) {
+        _retain((void*)_this->data);
+    }
 }
 
 void sjf_array_class_destroy(sjs_array_class* _this) {
     if (!_this->_isGlobal && _this->data) {
-        free((sjs_class*)_this->data);
-        _this->data = 0;
+        if (_release((void*)_this->data)) {
+            free((sjs_class*)_this->data);
+        }
     }
 }
 
@@ -173,8 +178,8 @@ void sjf_array_class_setAt(sjs_array_class* _parent, int32_t index, sjs_class* i
 void sjf_class(sjs_class* _this) {
 }
 
-void sjf_class_copy(sjs_class* _this, sjs_class* to) {
-    _this->bob = to->bob;
+void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
+    _this->bob = _from->bob;
 }
 
 void sjf_class_destroy(sjs_class* _this) {

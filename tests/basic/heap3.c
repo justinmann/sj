@@ -98,11 +98,11 @@ sjs_bar* sjt_functionParam1;
 sjs_bar sjv_b;
 
 void sjf_bar(sjs_bar* _this);
-void sjf_bar_copy(sjs_bar* _this, sjs_bar* to);
+void sjf_bar_copy(sjs_bar* _this, sjs_bar* _from);
 void sjf_bar_destroy(sjs_bar* _this);
 void sjf_bar_heap(sjs_bar_heap* _this);
 void sjf_foo(sjs_foo* _this);
-void sjf_foo_copy(sjs_foo* _this, sjs_foo* to);
+void sjf_foo_copy(sjs_foo* _this, sjs_foo* _from);
 void sjf_foo_destroy(sjs_foo* _this);
 void sjf_foo_heap(sjs_foo_heap* _this);
 void sjf_func(sjs_bar* b, sjs_foo** _return);
@@ -111,8 +111,8 @@ void main_destroy(void);
 void sjf_bar(sjs_bar* _this) {
 }
 
-void sjf_bar_copy(sjs_bar* _this, sjs_bar* to) {
-    sjf_foo_copy(&_this->f, &to->f);
+void sjf_bar_copy(sjs_bar* _this, sjs_bar* _from) {
+    sjf_foo_copy(&_this->f, &_from->f);
 }
 
 void sjf_bar_destroy(sjs_bar* _this) {
@@ -124,8 +124,8 @@ void sjf_bar_heap(sjs_bar_heap* _this) {
 void sjf_foo(sjs_foo* _this) {
 }
 
-void sjf_foo_copy(sjs_foo* _this, sjs_foo* to) {
-    _this->x = to->x;
+void sjf_foo_copy(sjs_foo* _this, sjs_foo* _from) {
+    _this->x = _from->x;
 }
 
 void sjf_foo_destroy(sjs_foo* _this) {

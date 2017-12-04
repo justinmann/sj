@@ -108,15 +108,15 @@ struct td_sjs_c_heap {
 sjs_c void1;
 
 void sjf_a(sjs_a* _this);
-void sjf_a_copy(sjs_a* _this, sjs_a* to);
+void sjf_a_copy(sjs_a* _this, sjs_a* _from);
 void sjf_a_destroy(sjs_a* _this);
 void sjf_a_heap(sjs_a_heap* _this);
 void sjf_b(sjs_b* _this);
-void sjf_b_copy(sjs_b* _this, sjs_b* to);
+void sjf_b_copy(sjs_b* _this, sjs_b* _from);
 void sjf_b_destroy(sjs_b* _this);
 void sjf_b_heap(sjs_b_heap* _this);
 void sjf_c(sjs_c* _this);
-void sjf_c_copy(sjs_c* _this, sjs_c* to);
+void sjf_c_copy(sjs_c* _this, sjs_c* _from);
 void sjf_c_destroy(sjs_c* _this);
 void sjf_c_heap(sjs_c_heap* _this);
 void main_destroy(void);
@@ -124,7 +124,7 @@ void main_destroy(void);
 void sjf_a(sjs_a* _this) {
 }
 
-void sjf_a_copy(sjs_a* _this, sjs_a* to) {
+void sjf_a_copy(sjs_a* _this, sjs_a* _from) {
 }
 
 void sjf_a_destroy(sjs_a* _this) {
@@ -136,8 +136,8 @@ void sjf_a_heap(sjs_a_heap* _this) {
 void sjf_b(sjs_b* _this) {
 }
 
-void sjf_b_copy(sjs_b* _this, sjs_b* to) {
-    sjf_a_copy(&_this->a, &to->a);
+void sjf_b_copy(sjs_b* _this, sjs_b* _from) {
+    sjf_a_copy(&_this->a, &_from->a);
 }
 
 void sjf_b_destroy(sjs_b* _this) {
@@ -149,8 +149,8 @@ void sjf_b_heap(sjs_b_heap* _this) {
 void sjf_c(sjs_c* _this) {
 }
 
-void sjf_c_copy(sjs_c* _this, sjs_c* to) {
-    sjf_b_copy(&_this->b, &to->b);
+void sjf_c_copy(sjs_c* _this, sjs_c* _from) {
+    sjf_b_copy(&_this->b, &_from->b);
 }
 
 void sjf_c_destroy(sjs_c* _this) {

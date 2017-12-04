@@ -124,19 +124,19 @@ sjs_class_heap* sjv_c;
 int32_t x;
 
 void sjf_array_heap_class(sjs_array_heap_class* _this);
-void sjf_array_heap_class_copy(sjs_array_heap_class* _this, sjs_array_heap_class* to);
+void sjf_array_heap_class_copy(sjs_array_heap_class* _this, sjs_array_heap_class* _from);
 void sjf_array_heap_class_destroy(sjs_array_heap_class* _this);
 void sjf_array_heap_class_getAt_heap(sjs_array_heap_class* _parent, int32_t index, sjs_class_heap** _return);
 void sjf_array_heap_class_grow(sjs_array_heap_class* _parent, int32_t new_size);
 void sjf_array_heap_class_heap(sjs_array_heap_class_heap* _this);
 void sjf_array_heap_class_setAt(sjs_array_heap_class* _parent, int32_t index, sjs_class_heap* item);
 void sjf_class(sjs_class* _this);
-void sjf_class_copy(sjs_class* _this, sjs_class* to);
+void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_heap(sjs_class_heap* _this);
 void sjf_list_heap_class(sjs_list_heap_class* _this);
 void sjf_list_heap_class_add(sjs_list_heap_class* _parent, sjs_class_heap* item, int32_t* _return);
-void sjf_list_heap_class_copy(sjs_list_heap_class* _this, sjs_list_heap_class* to);
+void sjf_list_heap_class_copy(sjs_list_heap_class* _this, sjs_list_heap_class* _from);
 void sjf_list_heap_class_destroy(sjs_list_heap_class* _this);
 void sjf_list_heap_class_getAt_heap(sjs_list_heap_class* _parent, int32_t index, sjs_class_heap** _return);
 void sjf_list_heap_class_heap(sjs_list_heap_class_heap* _this);
@@ -158,16 +158,21 @@ void sjf_array_heap_class(sjs_array_heap_class* _this) {
     }
 }
 
-void sjf_array_heap_class_copy(sjs_array_heap_class* _this, sjs_array_heap_class* to) {
-    _this->size = to->size;
-    _this->data = to->data;
-    _this->_isGlobal = to->_isGlobal;
+void sjf_array_heap_class_copy(sjs_array_heap_class* _this, sjs_array_heap_class* _from) {
+    _this->size = _from->size;
+    _this->data = _from->data;
+    _this->_isGlobal = _from->_isGlobal;
+    _this->data = _from->data;
+    if (!_this->_isGlobal && _this->data) {
+        _retain((void*)_this->data);
+    }
 }
 
 void sjf_array_heap_class_destroy(sjs_array_heap_class* _this) {
     if (!_this->_isGlobal && _this->data) {
-        free((sjs_class_heap**)_this->data);
-        _this->data = 0;
+        if (_release((void*)_this->data)) {
+            free((sjs_class_heap**)_this->data);
+        }
     }
 }
 
@@ -243,8 +248,8 @@ void sjf_array_heap_class_setAt(sjs_array_heap_class* _parent, int32_t index, sj
 void sjf_class(sjs_class* _this) {
 }
 
-void sjf_class_copy(sjs_class* _this, sjs_class* to) {
-    _this->x = to->x;
+void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
+    _this->x = _from->x;
 }
 
 void sjf_class_destroy(sjs_class* _this) {
@@ -300,9 +305,9 @@ void sjf_list_heap_class_add(sjs_list_heap_class* _parent, sjs_class_heap* item,
     }
 }
 
-void sjf_list_heap_class_copy(sjs_list_heap_class* _this, sjs_list_heap_class* to) {
-    _this->count = to->count;
-    sjf_array_heap_class_copy(&_this->data, &to->data);
+void sjf_list_heap_class_copy(sjs_list_heap_class* _this, sjs_list_heap_class* _from) {
+    _this->count = _from->count;
+    sjf_array_heap_class_copy(&_this->data, &_from->data);
 }
 
 void sjf_list_heap_class_destroy(sjs_list_heap_class* _this) {

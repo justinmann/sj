@@ -16,7 +16,13 @@ textElement #element (
 		void
 	}
 
-	render(surface : '#surface)'void {
+	render(surface : 'surface2d)'void {
+		textVertexBuffer : textVertexBuffer(
+			text: copy text
+		    point: point(rect.x, rect.y)
+		    color: copy color
+		    font: copy font) as #vertexBuffer
+
 		textSize : surface.getTextSize(font, text)
 		final : rect(
 			x : rect.x
@@ -24,7 +30,7 @@ textElement #element (
 			w : textSize.w
 			h : textSize.h
 		)
-		surface.drawText(final, font, text, color)
+		surface.drawVertexBuffer(textVertexBuffer, font.getTexture())
 	}
 
 	getChildren()'local array?!#element {

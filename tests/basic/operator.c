@@ -116,7 +116,7 @@ int32_t sjv_j;
 void sjf_fancyMath(sjs_fancyMath* _this);
 void sjf_fancyMath_add(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath* _return);
 void sjf_fancyMath_add_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath_heap** _return);
-void sjf_fancyMath_copy(sjs_fancyMath* _this, sjs_fancyMath* to);
+void sjf_fancyMath_copy(sjs_fancyMath* _this, sjs_fancyMath* _from);
 void sjf_fancyMath_destroy(sjs_fancyMath* _this);
 void sjf_fancyMath_divide(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath* _return);
 void sjf_fancyMath_divide_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath_heap** _return);
@@ -170,8 +170,8 @@ void sjf_fancyMath_add_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fanc
     sjf_fancyMath_heap((*_return));
 }
 
-void sjf_fancyMath_copy(sjs_fancyMath* _this, sjs_fancyMath* to) {
-    _this->x = to->x;
+void sjf_fancyMath_copy(sjs_fancyMath* _this, sjs_fancyMath* _from) {
+    _this->x = _from->x;
 }
 
 void sjf_fancyMath_destroy(sjs_fancyMath* _this) {

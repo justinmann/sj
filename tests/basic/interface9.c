@@ -112,13 +112,13 @@ sjs_bar sjv_b;
 sjs_bar_heap* sjv_c;
 
 void sjf_bar(sjs_bar* _this);
-void sjf_bar_copy(sjs_bar* _this, sjs_bar* to);
+void sjf_bar_copy(sjs_bar* _this, sjs_bar* _from);
 void sjf_bar_destroy(sjs_bar* _this);
 void sjf_bar_heap(sjs_bar_heap* _this);
 void sjf_class(sjs_class* _this);
 sjs_object* sjf_class_asInterface(sjs_class* _this, int typeId);
 sji_foo* sjf_class_as_sji_foo(sjs_class* _this);
-void sjf_class_copy(sjs_class* _this, sjs_class* to);
+void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_heap(sjs_class_heap* _this);
 sjs_object* sjf_class_heap_asInterface(sjs_class_heap* _this, int typeId);
@@ -132,7 +132,7 @@ void main_destroy(void);
 void sjf_bar(sjs_bar* _this) {
 }
 
-void sjf_bar_copy(sjs_bar* _this, sjs_bar* to) {
+void sjf_bar_copy(sjs_bar* _this, sjs_bar* _from) {
 }
 
 void sjf_bar_destroy(sjs_bar* _this) {
@@ -168,7 +168,7 @@ sji_foo* sjf_class_as_sji_foo(sjs_class* _this) {
     return _interface;
 }
 
-void sjf_class_copy(sjs_class* _this, sjs_class* to) {
+void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
 }
 
 void sjf_class_destroy(sjs_class* _this) {

@@ -82,7 +82,7 @@ struct td_sjs_class_heap {
 sjs_class* sjv_b;
 
 void sjf_class(sjs_class* _this);
-void sjf_class_copy(sjs_class* _this, sjs_class* to);
+void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_heap(sjs_class_heap* _this);
 void sjf_func(sjs_class** _return);
@@ -91,7 +91,7 @@ void main_destroy(void);
 void sjf_class(sjs_class* _this) {
 }
 
-void sjf_class_copy(sjs_class* _this, sjs_class* to) {
+void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
 }
 
 void sjf_class_destroy(sjs_class* _this) {

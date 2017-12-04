@@ -78,7 +78,7 @@ int32_t void1;
 
 void sjf_func(sjs_func* _this, int32_t* _return);
 void sjf_func_bar(sjs_func* _parent, int32_t* _return);
-void sjf_func_copy(sjs_func* _this, sjs_func* to);
+void sjf_func_copy(sjs_func* _this, sjs_func* _from);
 void sjf_func_destroy(sjs_func* _this);
 void main_destroy(void);
 
@@ -90,7 +90,7 @@ void sjf_func_bar(sjs_func* _parent, int32_t* _return) {
     (*_return) = 9;
 }
 
-void sjf_func_copy(sjs_func* _this, sjs_func* to) {
+void sjf_func_copy(sjs_func* _this, sjs_func* _from) {
 }
 
 void sjf_func_destroy(sjs_func* _this) {
