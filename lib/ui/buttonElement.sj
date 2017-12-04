@@ -8,44 +8,66 @@ buttonElement #element #mouseHandler (
 	text = ""
 	textColor = colors.blue()
 	font = style.getFont(0 /* TODO: typeId(button) */)
-	rect = rect()
-	normalImage = image(rootSurface.getTexture(src = "assets/buttonNormal.png"), margin = margin(2, 2, 2, 2))
-	hotImage = image(rootSurface.getTexture(src = "assets/buttonHot.png"), margin = margin(2, 2, 2, 2))
-	pressedImage = image(rootSurface.getTexture(src = "assets/buttonPressed.png"), margin = margin(2, 2, 2, 2))
-	state = buttonState.normal
+	normalImage = image(textureFromPng("assets/buttonNormal.png"), margin = margin(2, 2, 2, 2))
+	hotImage = image(textureFromPng("assets/buttonHot.png"), margin = margin(2, 2, 2, 2))
+	pressedImage = image(textureFromPng("assets/buttonPressed.png"), margin = margin(2, 2, 2, 2))
 	margin = margin(10, 10, 10, 10)
-	textRenderer = empty'textRenderer
+	_rect = rect()
+	_state = buttonState.normal
+	_textRenderer = empty'textRenderer
+	_imageRenderer = empty'imageRenderer
 
 	getSize(maxSize : 'size) {
 		textSize : font.getTextSize(text)
 		textSize.addMargin(margin).cap(maxSize)	
 	}
 
-	getRect()'local rect { rect }
+	getRect()'local rect { _rect }
 
 	setRect(rect_ : 'rect) {
-		if rect != rect_ {
-			rect = copy rect_
-			textRenderer = empty'textRenderer
+		if _rect != rect_ {
+			_rect = copy rect_
+			_textRenderer = empty'textRenderer
+			_imageRenderer = empty'imageRenderer;
 		}
 		void
 	}
 
+	getState()'i32 {
+		_state
+	}
+
+	setState(state_ : 'i32) {
+		if _state != state_ {
+			_state = state_
+			_imageRenderer = empty'imageRenderer;
+		}
+	}
+
 	render(surface : 'surface2d) {
-		if (state == buttonState.normal) {
-			surface.drawImage(rect, normalImage)
-		} else if (state == buttonState.hot) {
-			surface.drawImage(rect, hotImage)
-		} else if (state == buttonState.pressed) {
-			surface.drawImage(rect, pressedImage)
+		if isEmpty(_imageRenderer) {
+			image : local if (_state == buttonState.hot) {
+					hotImage
+				} else if (_state == buttonState.pressed) {
+					pressedImage
+				} else {
+					normalImage
+				}
+
+			_imageRenderer = value(heap imageRenderer(
+				image : copy image
+				rect : copy _rect			
+			))
+
+			void
 		}
 
-		if isEmpty(textRenderer) {
-			innerRect : rect.subtractMargin(margin)
+		if isEmpty(_textRenderer) {
+			innerRect : _rect.subtractMargin(margin)
 
 			textSize : font.getTextSize(text)
 
-			textRenderer = value(heap textRenderer(
+			_textRenderer = value(heap textRenderer(
 				text: copy text
 			    point: point(innerRect.x + (innerRect.w - textSize.w) / 2, innerRect.y + (innerRect.h - textSize.h) / 2)
 			    color: copy textColor
@@ -54,10 +76,8 @@ buttonElement #element #mouseHandler (
 			void
 		}
 
-		textRenderer?.render(surface)
-
-		// TODO: change color based on state
-		// TODO: support nine-grid image background
+		_imageRenderer?.render(surface)
+		_textRenderer?.render(surface)
 		void
 	}
 
@@ -79,7 +99,7 @@ buttonElement #element #mouseHandler (
 
 	onMouseMove(point : 'point)'void {
 		console.write("buttonElement onMouseMove")
-		if state == buttonState.normal {
+		if _state == buttonState.normal {
 			state = buttonState.hot
 		}
 		void

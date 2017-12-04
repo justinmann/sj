@@ -1,16 +1,34 @@
 imageElement #element (
 	image = 'image
-	rect = rect()
+	_rect = rect()
+	_margin = margin(10, 10, 10, 10)
+	_imageRenderer = empty'imageRenderer
 
-	getRect()'local rect { rect }
+	getSize(maxSize : 'size) {
+		size(maxSize.w, maxSize.h)
+	}
+
+	getRect()'local rect { _rect }
 
 	setRect(rect_ : 'rect)'void {
-		rect = copy rect_.addMargin(10, 10, 10, 10)
+		if _rect != rect_ {
+			_rect = copy rect_
+			_imageRenderer = empty'imageRenderer
+		}
 		void
 	}
 
-	render(surface : '#surface)'void {
-		surface.drawImage(rect, image)
+	render(surface : 'surface2d)'void {
+		if isEmpty(_imageRenderer) {
+			_imageRenderer = value(heap imageRenderer(
+				image : copy image
+				rect : _rect.subtractMargin(_margin)
+			))
+
+			void
+		}
+
+		_imageRenderer?.render(surface)
 	}
 
 	getChildren()'local array?!#element {

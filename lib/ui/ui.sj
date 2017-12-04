@@ -29,6 +29,7 @@ include "edtaa3func.sj"
 include "mat4.sj"
 include "textRenderer.sj"
 include "boxRenderer.sj"
+include "imageRenderer.sj"
 
 --cinclude--
 #include(<emscripten.h>, EMSCRIPTEN)

@@ -1,6 +1,19 @@
 include "../../lib/common/common.sj"
 include "../../lib/ui/ui.sj"
 
+root : imageElement(
+	image : image(textureFromPng("assets/test.png"))
+) as #element
+
+/*
+root : textElement(
+	font = font("assets/sample.ttf", 25.0f)
+	text = "Bob"
+	color = colors.red()
+) as #element
+*/
+
+/*
 root : borderLayout(
 	children : [
 		borderChild(
@@ -21,7 +34,7 @@ root : borderLayout(
 		) as #element
 	]
 ) as #element
-
+*/
 /*
 fillElement(
 	children : [ 

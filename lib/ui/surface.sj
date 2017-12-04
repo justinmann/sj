@@ -1,7 +1,7 @@
 rootSurface : surface2d()
 
 surface2d(
-	size : size(640, 480)
+	_size = size()
 	--cvar--
 	SDL_Window* win;
 	SDL_Renderer* ren;
@@ -11,19 +11,26 @@ surface2d(
 	--cvar--
 
 	clear()'void {
+		w = 0
+		h = 0
 		--c--
-		int32_t w, h;
-		SDL_GetRendererOutputSize(_parent->ren, &w, &h);
-	    glViewport(0, 0, w, h);
+		SDL_GetRendererOutputSize(_parent->ren, &sjv_w, &sjv_h);
+		--c--
+		if w != _size.w || h != _size.h {
+			_size = size(w, h)
+			--c--
+		    glViewport(0, 0, _parent->_size.w, _parent->_size.h);
+		    mat4_set_orthographic( &_parent->projection, 0.0f, (float)_parent->_size.w, (float)-_parent->_size.h, 0.0f, -1.0f, 1.0f);
+		    mat4_set_identity( &_parent->model );
+		    mat4_scale(&_parent->model, 1.0f, -1.0f, 1.0f);
+		    mat4_set_identity( &_parent->view );
+		    --c--
+	    }
 
+	    --c--
 	    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	    glEnable( GL_TEXTURE_2D );
 	    glDisable( GL_DEPTH_TEST );
-
-	    mat4_set_orthographic( &_parent->projection, 0.0f, (float)w, (float)-h, 0.0f, -1.0f, 1.0f);
-	    mat4_set_identity( &_parent->model );
-	    mat4_scale(&_parent->model, 1.0f, -1.0f, 1.0f);
-	    mat4_set_identity( &_parent->view );
 		--c--
 		void
 	}
@@ -36,12 +43,7 @@ surface2d(
 	}
 
 	getSize()'size {
-		w = 0
-		h = 0
-		--c-- 
-		SDL_GetRendererOutputSize(_parent->ren, &sjv_w, &sjv_h);
-		--c--
-		size(w, h)
+		size(_size.w, _size.h)
 	}
 
 	drawImage(rect: 'rect, image: 'image)'void --c--
@@ -219,7 +221,7 @@ surface2d(
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
-    _this->win = SDL_CreateWindow("Hello World!", 100, 100, _this->size.w, _this->size.h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    _this->win = SDL_CreateWindow("Hello World!", 100, 100, 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     if (_this->win == 0) {
         printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
         exit(-1);
