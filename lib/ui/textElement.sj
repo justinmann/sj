@@ -5,7 +5,7 @@ textElement #element (
 	rect = rect()
 
 	getSize(maxSize : 'size) {
-		textSize : rootSurface.getTextSize(font, text)
+		textSize : font.getTextSize(text)
 		textSize.cap(maxSize)	
 	}
 
@@ -23,7 +23,7 @@ textElement #element (
 		    color: copy color
 		    font: copy font) as #vertexBuffer
 
-		textSize : surface.getTextSize(font, text)
+		textSize : font.getTextSize(text)
 		final : rect(
 			x : rect.x
 			y : rect.y

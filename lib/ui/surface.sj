@@ -201,16 +201,6 @@ surface2d(
 		vertexBuffer.render()
 	}
 
-	getTextSize(font: 'font, text: 'string)'size {
-		w = 0
-		h = 0
-/*		--c--
-			TTF_SizeUTF8((TTF_Font*)font->data, (char*)text->data.data, &sjv_w, &sjv_h);
-		--c--
-*/
-		size(w, h)
-	}
-
 	getTexture(src: 'string)'texture {
 		tex = 0 as ptr
 /*

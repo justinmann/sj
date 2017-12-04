@@ -17,6 +17,17 @@ font(
         --c--
         texture(size(w, h), id)
     }
+
+    getTextSize(str : 'string)'size {
+        w = 0
+        h = 0
+        --c--
+        vec2 size = get_text_size(_parent->font, (char*)str->data.data);
+        sjv_w = (int)size.x;
+        sjv_h = (int)size.y;
+        --c--
+        size(w, h)
+    }
 ) {
     --c--
     _this->atlas = texture_atlas_new( 512, 512, 3 );

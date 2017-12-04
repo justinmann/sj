@@ -2184,6 +2184,7 @@ struct td_sji_fireMouseUp_mouseHandler {
 
 
 void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen);
+vec2 get_text_size(texture_font_t * font, char *text);
 
 
 mat4 *
@@ -3073,6 +3074,8 @@ void sjf_fireMouseUp(sji_element* element, sjs_point* point);
 void sjf_font(sjs_font* _this);
 void sjf_font_copy(sjs_font* _this, sjs_font* _from);
 void sjf_font_destroy(sjs_font* _this);
+void sjf_font_getTextSize(sjs_font* _parent, sjs_string* str, sjs_size* _return);
+void sjf_font_getTextSize_heap(sjs_font* _parent, sjs_string* str, sjs_size_heap** _return);
 void sjf_font_getTexture(sjs_font* _parent, sjs_texture* _return);
 void sjf_font_getTexture_heap(sjs_font* _parent, sjs_texture_heap** _return);
 void sjf_font_heap(sjs_font_heap* _this);
@@ -3104,8 +3107,6 @@ void sjf_surface2d_destroy(sjs_surface2d* _this);
 void sjf_surface2d_drawVertexBuffer(sjs_surface2d* _parent, sji_textElement_render_vertexBuffer* vertexBuffer, sjs_texture* texture);
 void sjf_surface2d_getSize(sjs_surface2d* _parent, sjs_size* _return);
 void sjf_surface2d_getSize_heap(sjs_surface2d* _parent, sjs_size_heap** _return);
-void sjf_surface2d_getTextSize(sjs_surface2d* _parent, sjs_font* font, sjs_string* text, sjs_size* _return);
-void sjf_surface2d_getTextSize_heap(sjs_surface2d* _parent, sjs_font* font, sjs_string* text, sjs_size_heap** _return);
 void sjf_surface2d_heap(sjs_surface2d_heap* _this);
 void sjf_surface2d_present(sjs_surface2d* _parent);
 void sjf_textElement(sjs_textElement* _this);
@@ -3148,14 +3149,11 @@ void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 
     pen->y += (float)(int)font->ascender;
     size_t i;
     float r = color->red, g = color->green, b = color->blue, a = color->alpha;
-    for( i = 0; i < strlen(text); ++i )
-    {
+    for (i = 0; i < strlen(text); ++i) {
         texture_glyph_t *glyph = texture_font_get_glyph( font, text + i );
-        if( glyph != NULL )
-        {
+        if (glyph != NULL) {
             float kerning = 0.0f;
-            if( i > 0)
-            {
+            if( i > 0) {
                 kerning = texture_glyph_get_kerning( glyph, text + i - 1 );
             }
             pen->x += kerning;
@@ -3179,6 +3177,22 @@ void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 
             pen->x += glyph->advance_x;
         }
     }
+}
+vec2 get_text_size(texture_font_t * font, char *text) {
+    vec2 size = {{ 0, font->height }};
+    size_t i;
+    for( i = 0; i < strlen(text); ++i ) {
+        texture_glyph_t *glyph = texture_font_get_glyph(font, text + i);
+        if (glyph != NULL) {
+            float kerning = 0.0f;
+            if( i > 0) {
+                kerning = texture_glyph_get_kerning(glyph, text + i - 1);
+            }
+            size.x += kerning;
+            size.x += glyph->advance_x;
+        }
+    }
+    return size;
 }
 
 
@@ -6157,7 +6171,7 @@ void sjf_fireMouseDown(sji_element* element, sjs_point* point) {
     sjs_rect* sjt_dot37;
     sji_element* sjt_dot38;
     sji_element* sjt_dot40;
-    sjs_point* sjt_functionParam17;
+    sjs_point* sjt_functionParam14;
     bool sjt_ifElse10;
     bool sjt_ifElse8;
     sjs_array_heap_element* sjt_isEmpty4;
@@ -6170,8 +6184,8 @@ void sjf_fireMouseDown(sji_element* element, sjs_point* point) {
     sjv_mouseHandler = (sji_fireMouseUp_mouseHandler*)sjt_cast4->asInterface(sjt_cast4->_parent, sji_fireMouseUp_mouseHandler_typeId);
     sjt_dot38 = element;
     sjt_dot38->getRect((void*)(((char*)sjt_dot38->_parent) + sizeof(intptr_t)), &sjt_dot37);
-    sjt_functionParam17 = point;
-    sjf_rect_containsPoint(sjt_dot37, sjt_functionParam17, &sjt_ifElse8);
+    sjt_functionParam14 = point;
+    sjf_rect_containsPoint(sjt_dot37, sjt_functionParam14, &sjt_ifElse8);
     if (sjt_ifElse8) {
         bool result3;
         bool sjt_ifElse9;
@@ -6239,20 +6253,20 @@ void sjf_fireMouseDown(sji_element* element, sjs_point* point) {
         sjt_forEnd2 = (sjt_dot41)->size;
         while (i < sjt_forEnd2) {
             sjs_array_heap_element* sjt_dot42;
-            sji_element* sjt_functionParam18;
-            int32_t sjt_functionParam19;
-            sjs_point* sjt_functionParam20;
+            sji_element* sjt_functionParam15;
+            int32_t sjt_functionParam16;
+            sjs_point* sjt_functionParam17;
 
             sjt_dot42 = sjv_c;
-            sjt_functionParam19 = i;
-            sjf_array_heap_element_getAt_heap(sjt_dot42, sjt_functionParam19, &sjt_functionParam18);
-            sjt_functionParam20 = point;
-            sjf_fireMouseDown(sjt_functionParam18, sjt_functionParam20);
+            sjt_functionParam16 = i;
+            sjf_array_heap_element_getAt_heap(sjt_dot42, sjt_functionParam16, &sjt_functionParam15);
+            sjt_functionParam17 = point;
+            sjf_fireMouseDown(sjt_functionParam15, sjt_functionParam17);
             i++;
 
-            sjt_functionParam18->_refCount--;
-            if (sjt_functionParam18->_refCount <= 0) {
-                sji_element_destroy(sjt_functionParam18);
+            sjt_functionParam15->_refCount--;
+            if (sjt_functionParam15->_refCount <= 0) {
+                sji_element_destroy(sjt_functionParam15);
             }
         }
     }
@@ -6275,7 +6289,7 @@ void sjf_fireMouseUp(sji_element* element, sjs_point* point) {
     sjs_rect* sjt_dot27;
     sji_element* sjt_dot28;
     sji_element* sjt_dot34;
-    sjs_point* sjt_functionParam11;
+    sjs_point* sjt_functionParam8;
     bool sjt_ifElse4;
     bool sjt_ifElse6;
     sjs_array_heap_element* sjt_isEmpty2;
@@ -6288,8 +6302,8 @@ void sjf_fireMouseUp(sji_element* element, sjs_point* point) {
     sjv_mouseHandler = (sji_fireMouseUp_mouseHandler*)sjt_cast3->asInterface(sjt_cast3->_parent, sji_fireMouseUp_mouseHandler_typeId);
     sjt_dot28 = element;
     sjt_dot28->getRect((void*)(((char*)sjt_dot28->_parent) + sizeof(intptr_t)), &sjt_dot27);
-    sjt_functionParam11 = point;
-    sjf_rect_containsPoint(sjt_dot27, sjt_functionParam11, &sjt_ifElse4);
+    sjt_functionParam8 = point;
+    sjf_rect_containsPoint(sjt_dot27, sjt_functionParam8, &sjt_ifElse4);
     if (sjt_ifElse4) {
         bool result1;
         bool sjt_ifElse5;
@@ -6357,20 +6371,20 @@ void sjf_fireMouseUp(sji_element* element, sjs_point* point) {
         sjt_forEnd1 = (sjt_dot35)->size;
         while (i < sjt_forEnd1) {
             sjs_array_heap_element* sjt_dot36;
-            sji_element* sjt_functionParam12;
-            int32_t sjt_functionParam13;
-            sjs_point* sjt_functionParam14;
+            int32_t sjt_functionParam10;
+            sjs_point* sjt_functionParam11;
+            sji_element* sjt_functionParam9;
 
             sjt_dot36 = sjv_c;
-            sjt_functionParam13 = i;
-            sjf_array_heap_element_getAt_heap(sjt_dot36, sjt_functionParam13, &sjt_functionParam12);
-            sjt_functionParam14 = point;
-            sjf_fireMouseUp(sjt_functionParam12, sjt_functionParam14);
+            sjt_functionParam10 = i;
+            sjf_array_heap_element_getAt_heap(sjt_dot36, sjt_functionParam10, &sjt_functionParam9);
+            sjt_functionParam11 = point;
+            sjf_fireMouseUp(sjt_functionParam9, sjt_functionParam11);
             i++;
 
-            sjt_functionParam12->_refCount--;
-            if (sjt_functionParam12->_refCount <= 0) {
-                sji_element_destroy(sjt_functionParam12);
+            sjt_functionParam9->_refCount--;
+            if (sjt_functionParam9->_refCount <= 0) {
+                sji_element_destroy(sjt_functionParam9);
             }
         }
     }
@@ -6418,6 +6432,36 @@ void sjf_font_destroy(sjs_font* _this) {
     if (_release(_this->font)) {
         texture_font_delete(_this->font);
     }
+}
+
+void sjf_font_getTextSize(sjs_font* _parent, sjs_string* str, sjs_size* _return) {
+    int32_t sjv_h;
+    int32_t sjv_w;
+
+    sjv_w = 0;
+    sjv_h = 0;
+    vec2 size = get_text_size(_parent->font, (char*)str->data.data);
+    sjv_w = (int)size.x;
+    sjv_h = (int)size.y;
+    _return->w = sjv_w;
+    _return->h = sjv_h;
+    sjf_size(_return);
+}
+
+void sjf_font_getTextSize_heap(sjs_font* _parent, sjs_string* str, sjs_size_heap** _return) {
+    int32_t sjv_h;
+    int32_t sjv_w;
+
+    sjv_w = 0;
+    sjv_h = 0;
+    vec2 size = get_text_size(_parent->font, (char*)str->data.data);
+    sjv_w = (int)size.x;
+    sjv_h = (int)size.y;
+    (*_return) = (sjs_size_heap*)malloc(sizeof(sjs_size_heap));
+    (*_return)->_refCount = 1;
+    (*_return)->w = sjv_w;
+    (*_return)->h = sjv_h;
+    sjf_size_heap((*_return));
 }
 
 void sjf_font_getTexture(sjs_font* _parent, sjs_texture* _return) {
@@ -6540,20 +6584,20 @@ void sjf_mainLoop(void) {
     sjt_ifElse3 = sjv_isMouseUp;
     if (sjt_ifElse3) {
         sjs_point sjt_call2;
-        sji_element* sjt_functionParam15;
-        sjs_point* sjt_functionParam16;
+        sji_element* sjt_functionParam12;
+        sjs_point* sjt_functionParam13;
 
-        sjt_functionParam15 = sjv_root;
-        sjt_functionParam15->_refCount++;
+        sjt_functionParam12 = sjv_root;
+        sjt_functionParam12->_refCount++;
         sjt_call2.x = sjv_x;
         sjt_call2.y = sjv_y;
         sjf_point(&sjt_call2);
-        sjt_functionParam16 = &sjt_call2;
-        sjf_fireMouseUp(sjt_functionParam15, sjt_functionParam16);
+        sjt_functionParam13 = &sjt_call2;
+        sjf_fireMouseUp(sjt_functionParam12, sjt_functionParam13);
 
-        sjt_functionParam15->_refCount--;
-        if (sjt_functionParam15->_refCount <= 0) {
-            sji_element_destroy(sjt_functionParam15);
+        sjt_functionParam12->_refCount--;
+        if (sjt_functionParam12->_refCount <= 0) {
+            sji_element_destroy(sjt_functionParam12);
         }
         sjf_point_destroy(&sjt_call2);
     }
@@ -6561,20 +6605,20 @@ void sjf_mainLoop(void) {
     sjt_ifElse7 = sjv_isMouseDown;
     if (sjt_ifElse7) {
         sjs_point sjt_call3;
-        sji_element* sjt_functionParam21;
-        sjs_point* sjt_functionParam22;
+        sji_element* sjt_functionParam18;
+        sjs_point* sjt_functionParam19;
 
-        sjt_functionParam21 = sjv_root;
-        sjt_functionParam21->_refCount++;
+        sjt_functionParam18 = sjv_root;
+        sjt_functionParam18->_refCount++;
         sjt_call3.x = sjv_x;
         sjt_call3.y = sjv_y;
         sjf_point(&sjt_call3);
-        sjt_functionParam22 = &sjt_call3;
-        sjf_fireMouseDown(sjt_functionParam21, sjt_functionParam22);
+        sjt_functionParam19 = &sjt_call3;
+        sjf_fireMouseDown(sjt_functionParam18, sjt_functionParam19);
 
-        sjt_functionParam21->_refCount--;
-        if (sjt_functionParam21->_refCount <= 0) {
-            sji_element_destroy(sjt_functionParam21);
+        sjt_functionParam18->_refCount--;
+        if (sjt_functionParam18->_refCount <= 0) {
+            sji_element_destroy(sjt_functionParam18);
         }
         sjf_point_destroy(&sjt_call3);
     }
@@ -6863,30 +6907,6 @@ void sjf_surface2d_getSize_heap(sjs_surface2d* _parent, sjs_size_heap** _return)
     sjf_size_heap((*_return));
 }
 
-void sjf_surface2d_getTextSize(sjs_surface2d* _parent, sjs_font* font, sjs_string* text, sjs_size* _return) {
-    int32_t sjv_h;
-    int32_t sjv_w;
-
-    sjv_w = 0;
-    sjv_h = 0;
-    _return->w = sjv_w;
-    _return->h = sjv_h;
-    sjf_size(_return);
-}
-
-void sjf_surface2d_getTextSize_heap(sjs_surface2d* _parent, sjs_font* font, sjs_string* text, sjs_size_heap** _return) {
-    int32_t sjv_h;
-    int32_t sjv_w;
-
-    sjv_w = 0;
-    sjv_h = 0;
-    (*_return) = (sjs_size_heap*)malloc(sizeof(sjs_size_heap));
-    (*_return)->_refCount = 1;
-    (*_return)->w = sjv_w;
-    (*_return)->h = sjv_h;
-    sjf_size_heap((*_return));
-}
-
 void sjf_surface2d_heap(sjs_surface2d_heap* _this) {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         printf("SDL_Init Error: %s\n", SDL_GetError());
@@ -6981,39 +7001,35 @@ void sjf_textElement_getRect(sjs_textElement* _parent, sjs_rect** _return) {
 }
 
 void sjf_textElement_getSize(sjs_textElement* _parent, sjs_size* maxSize, sjs_size* _return) {
-    sjs_surface2d* sjt_dot1;
+    sjs_font* sjt_dot1;
     sjs_size* sjt_dot2;
-    sjs_font* sjt_functionParam1;
-    sjs_string* sjt_functionParam2;
-    sjs_size* sjt_functionParam3;
+    sjs_string* sjt_functionParam1;
+    sjs_size* sjt_functionParam2;
     sjs_size sjv_textSize;
 
-    sjt_dot1 = &sjv_rootSurface;
-    sjt_functionParam1 = &(_parent)->font;
-    sjt_functionParam2 = &(_parent)->text;
-    sjf_surface2d_getTextSize(sjt_dot1, sjt_functionParam1, sjt_functionParam2, &sjv_textSize);
+    sjt_dot1 = &(_parent)->font;
+    sjt_functionParam1 = &(_parent)->text;
+    sjf_font_getTextSize(sjt_dot1, sjt_functionParam1, &sjv_textSize);
     sjt_dot2 = &sjv_textSize;
-    sjt_functionParam3 = maxSize;
-    sjf_size_cap(sjt_dot2, sjt_functionParam3, _return);
+    sjt_functionParam2 = maxSize;
+    sjf_size_cap(sjt_dot2, sjt_functionParam2, _return);
 
     sjf_size_destroy(&sjv_textSize);
 }
 
 void sjf_textElement_getSize_heap(sjs_textElement* _parent, sjs_size* maxSize, sjs_size_heap** _return) {
-    sjs_surface2d* sjt_dot7;
+    sjs_font* sjt_dot7;
     sjs_size* sjt_dot8;
-    sjs_font* sjt_functionParam4;
-    sjs_string* sjt_functionParam5;
-    sjs_size* sjt_functionParam6;
+    sjs_string* sjt_functionParam3;
+    sjs_size* sjt_functionParam4;
     sjs_size sjv_textSize;
 
-    sjt_dot7 = &sjv_rootSurface;
-    sjt_functionParam4 = &(_parent)->font;
-    sjt_functionParam5 = &(_parent)->text;
-    sjf_surface2d_getTextSize(sjt_dot7, sjt_functionParam4, sjt_functionParam5, &sjv_textSize);
+    sjt_dot7 = &(_parent)->font;
+    sjt_functionParam3 = &(_parent)->text;
+    sjf_font_getTextSize(sjt_dot7, sjt_functionParam3, &sjv_textSize);
     sjt_dot8 = &sjv_textSize;
-    sjt_functionParam6 = maxSize;
-    sjf_size_cap_heap(sjt_dot8, sjt_functionParam6, _return);
+    sjt_functionParam4 = maxSize;
+    sjf_size_cap_heap(sjt_dot8, sjt_functionParam4, _return);
 
     sjf_size_destroy(&sjv_textSize);
 }
@@ -7053,7 +7069,7 @@ void sjf_textElement_render(sjs_textElement* _parent, sjs_surface2d* surface) {
     sjs_texture sjt_call1;
     sjs_textVertexBuffer_heap* sjt_cast2;
     sjs_rect* sjt_dot10;
-    sjs_surface2d* sjt_dot11;
+    sjs_font* sjt_dot11;
     sjs_rect* sjt_dot12;
     sjs_rect* sjt_dot13;
     sjs_size* sjt_dot14;
@@ -7061,10 +7077,9 @@ void sjf_textElement_render(sjs_textElement* _parent, sjs_surface2d* surface) {
     sjs_surface2d* sjt_dot16;
     sjs_font* sjt_dot18;
     sjs_rect* sjt_dot9;
-    sjs_texture* sjt_functionParam10;
-    sjs_font* sjt_functionParam7;
-    sjs_string* sjt_functionParam8;
-    sji_textElement_render_vertexBuffer* sjt_functionParam9;
+    sjs_string* sjt_functionParam5;
+    sji_textElement_render_vertexBuffer* sjt_functionParam6;
+    sjs_texture* sjt_functionParam7;
     sjs_rect sjv_final;
     sjs_size sjv_textSize;
     sji_textElement_render_vertexBuffer* sjv_textVertexBuffer;
@@ -7081,10 +7096,9 @@ void sjf_textElement_render(sjs_textElement* _parent, sjs_surface2d* surface) {
     sjf_font_copy(&sjt_cast2->font, &(_parent)->font);
     sjf_textVertexBuffer_heap(sjt_cast2);
     sjv_textVertexBuffer = (sji_textElement_render_vertexBuffer*)sjf_textVertexBuffer_heap_as_sji_textElement_render_vertexBuffer(sjt_cast2);
-    sjt_dot11 = surface;
-    sjt_functionParam7 = &(_parent)->font;
-    sjt_functionParam8 = &(_parent)->text;
-    sjf_surface2d_getTextSize(sjt_dot11, sjt_functionParam7, sjt_functionParam8, &sjv_textSize);
+    sjt_dot11 = &(_parent)->font;
+    sjt_functionParam5 = &(_parent)->text;
+    sjf_font_getTextSize(sjt_dot11, sjt_functionParam5, &sjv_textSize);
     sjt_dot12 = &(_parent)->rect;
     sjv_final.x = (sjt_dot12)->x;
     sjt_dot13 = &(_parent)->rect;
@@ -7095,20 +7109,20 @@ void sjf_textElement_render(sjs_textElement* _parent, sjs_surface2d* surface) {
     sjv_final.h = (sjt_dot15)->h;
     sjf_rect(&sjv_final);
     sjt_dot16 = surface;
-    sjt_functionParam9 = sjv_textVertexBuffer;
-    sjt_functionParam9->_refCount++;
+    sjt_functionParam6 = sjv_textVertexBuffer;
+    sjt_functionParam6->_refCount++;
     sjt_dot18 = &(_parent)->font;
     sjf_font_getTexture(sjt_dot18, &sjt_call1);
-    sjt_functionParam10 = &sjt_call1;
-    sjf_surface2d_drawVertexBuffer(sjt_dot16, sjt_functionParam9, sjt_functionParam10);
+    sjt_functionParam7 = &sjt_call1;
+    sjf_surface2d_drawVertexBuffer(sjt_dot16, sjt_functionParam6, sjt_functionParam7);
 
     sjt_cast2->_refCount--;
     if (sjt_cast2->_refCount <= 0) {
         sjf_textVertexBuffer_destroy((sjs_textVertexBuffer*)(((char*)sjt_cast2) + sizeof(intptr_t)));
     }
-    sjt_functionParam9->_refCount--;
-    if (sjt_functionParam9->_refCount <= 0) {
-        sji_textElement_render_vertexBuffer_destroy(sjt_functionParam9);
+    sjt_functionParam6->_refCount--;
+    if (sjt_functionParam6->_refCount <= 0) {
+        sji_textElement_render_vertexBuffer_destroy(sjt_functionParam6);
     }
     sjv_textVertexBuffer->_refCount--;
     if (sjv_textVertexBuffer->_refCount <= 0) {
