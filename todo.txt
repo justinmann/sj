@@ -1,23 +1,79 @@
-* fix mac build:
-brew install llvm && rm /usr/local/opt/emscripten/libexec/llvm/bin/llvm-ar && ln -s /usr/local/opt/llvm/bin/llvm-ar /usr/local/opt/emscripten/libexec/llvm/bin/llvm-ar
-
-emcc benchmark.c ../texture-atlas.c ../vector.c ../vertex-buffer.c ../vertex-attribute.c ../texture-font.c ../utf8-utils.c ../distance-field.c shader.c mat4.c ../edtaa3func.c -I.. -L.. -s USE_SDL=2 -s USE_WEBGL2=1 -s USE_FREETYPE=1 -o benchmark.html -s ALLOW_MEMORY_GROWTH=1 --preload-file fonts --preload-file shaders -s WASM=1
-
+-- ui --
+* ninegrid
+* render to texture: https://stackoverflow.com/questions/1024603/opengl-es-render-to-texture#1024634
 * center text
+* 3d scene
+* load obj file: http://kixor.net/dev/objloader/ https://code.google.com/archive/p/saitoobjloader/ http://people.sc.fsu.edu/%7Ejburkardt/data/obj/obj.html
+* animation
 
+-- language --
 * use #line pragma directive
-* de-dup global strings
-* stack optional
-* second assignment to this var does not free
-* improve debug out for interfaces
-* override interfaces : a as type   -> a.asType()'t
-* two buttons for +/-
-
--- features --
-* map
 * callback
+* second assignment to this var does not free
+* stack optional
+* stack interface
+* better design to enum
+* de-dup global strings
+* improve debug out for interfaces
+* map
 * lambda
 * weak pointer
+* override interfaces : a as type   -> a.asType()'t
+
+-- animation -- 
+x.animateTextColor(color(1, 0, 0))
+
+buttonElement(
+	setTextColor ...
+
+	animateTextColor(toColor : 'color, duration : 'i32) {
+		animator.animations.add(
+			animation!color(
+				start : animator.currentTime
+				end : animator.currentTime + duration as i64
+				startValue : _textColor
+				endValue : toColor
+				setValue : setTextColor
+			) as #animation)
+	}
+)
+
+#animation(
+	nextFrame()'bool
+)
+
+animation!t #animation (
+	start : 'i64
+	startValue : 't
+	end : 'i64
+	endValue : 't
+	setValue : '(:'t)void
+
+	nextFrame(time'i64)'bool {
+		percent = ((time - start) / (end - start)) as f32
+		if percent < 0.0f {
+			percent = 0.0f
+			void
+		} else if percent > 1.0f {
+			percent = 1.0f
+			void
+		}
+
+		// interoplate & set value
+		setValue(startValue.interpolate(endValue, percent))
+		// If after end return false
+		percent == 1.0f
+	}
+) { this }
+
+animator(
+	animations : array!#animation()
+	currentTime = 'i64
+
+	nextFrame(time : 'i64) {
+		// Iterate and remove all that return false
+	}
+) { this }
 
 -- lambda --
 array!item(
@@ -63,3 +119,6 @@ x->_parent = _this;
 x->_parent->_refCount++;
 x->lambda = sjf_anon2;
 array_each(arr, x);
+
+* fix mac build:
+brew install llvm && rm /usr/local/opt/emscripten/libexec/llvm/bin/llvm-ar && ln -s /usr/local/opt/llvm/bin/llvm-ar /usr/local/opt/emscripten/libexec/llvm/bin/llvm-ar
