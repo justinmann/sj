@@ -1,8 +1,12 @@
 include "../../lib/common/common.sj"
 include "../../lib/ui/ui.sj"
 
-root : imageElement(
-	image : image(textureFromPng("assets/test.png"), margin: margin(150, 50, 150, 150))
+root : blurElement(
+ 	children : [
+ 		imageElement(
+			image : image(textureFromPng("assets/test.png"), margin: margin(150, 50, 150, 150))
+		) as #element
+	]
 ) as #element
 
 /*

@@ -31,6 +31,9 @@ include "mat4.sj"
 include "textRenderer.sj"
 include "boxRenderer.sj"
 include "imageRenderer.sj"
+include "blurElement.sj"
+include "frameBuffer.sj"
+include "boxVertexBuffer.sj"
 
 --cinclude--
 #include(<emscripten.h>, EMSCRIPTEN)
