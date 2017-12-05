@@ -18,7 +18,7 @@ imageElement #element (
 		void
 	}
 
-	render(surface : 'surface2d)'void {
+	render(scene : 'scene2d)'void {
 		if isEmpty(_imageRenderer) {
 			_imageRenderer = value(heap imageRenderer(
 				image : copy image
@@ -28,7 +28,7 @@ imageElement #element (
 			void
 		}
 
-		_imageRenderer?.render(surface)
+		_imageRenderer?.render(scene)
 	}
 
 	getChildren()'local array?!#element {

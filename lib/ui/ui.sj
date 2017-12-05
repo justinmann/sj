@@ -1,4 +1,5 @@
-include "surface.sj"
+include "windowRenderer.sj"
+include "scene2d.sj"
 include "buttonElement.sj"
 include "fillElement.sj"
 include "imageElement.sj"
@@ -87,15 +88,19 @@ fireMouseDown(element :'#element, point: 'point) {
 
 frame = 0
 
+rootWindowRenderer : windowRenderer()
+rootScene : scene2d()
+
 mainLoop() {
 //  console.write("mainLoop - " + convert.i32toString(frame))
 
-    rootSurface.clear()
-    size : rootSurface.getSize()
+    size : rootWindowRenderer.getSize()
+    rootScene.setSize(size)
+    rootScene.clear()
     rect : rect(0, 0, size.w, size.h)
     root.setRect(rect)
-    root.render(rootSurface)
-    rootSurface.present()
+    root.render(rootScene)
+    rootWindowRenderer.present()
 
     isMouseUp = false
     isMouseDown = false

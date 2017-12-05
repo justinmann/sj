@@ -44,7 +44,7 @@ buttonElement #element #mouseHandler (
 		}
 	}
 
-	render(surface : 'surface2d) {
+	render(scene : 'scene2d) {
 		if isEmpty(_imageRenderer) {
 			image : local if (_state == buttonState.hot) {
 					hotImage
@@ -76,8 +76,8 @@ buttonElement #element #mouseHandler (
 			void
 		}
 
-		_imageRenderer?.render(surface)
-		_textRenderer?.render(surface)
+		_imageRenderer?.render(scene)
+		_textRenderer?.render(scene)
 		void
 	}
 

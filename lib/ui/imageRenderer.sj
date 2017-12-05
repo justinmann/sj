@@ -7,14 +7,14 @@ imageRenderer(
     vertex_buffer_t* buffer;
     --cvar--
 
-    render(surface : 'surface2d)'void {
+    render(scene : 'scene2d)'void {
         --c--
         glBindTexture(GL_TEXTURE_2D, _parent->image.texture.id);
         glUseProgram(sjv_imageShader.id);
         glUniform1i(glGetUniformLocation(sjv_imageShader.id, "texture" ), 0 );
-        glUniformMatrix4fv(glGetUniformLocation(sjv_imageShader.id, "model" ), 1, 0, surface->model.data);
-        glUniformMatrix4fv(glGetUniformLocation(sjv_imageShader.id, "view" ), 1, 0, surface->view.data);
-        glUniformMatrix4fv(glGetUniformLocation(sjv_imageShader.id, "projection" ), 1, 0, surface->projection.data);
+        glUniformMatrix4fv(glGetUniformLocation(sjv_imageShader.id, "model" ), 1, 0, scene->model.data);
+        glUniformMatrix4fv(glGetUniformLocation(sjv_imageShader.id, "view" ), 1, 0, scene->view.data);
+        glUniformMatrix4fv(glGetUniformLocation(sjv_imageShader.id, "projection" ), 1, 0, scene->projection.data);
         vertex_buffer_render(_parent->buffer, GL_TRIANGLES);
         --c--
         void

@@ -50,6 +50,10 @@ runLoop()'void {
   --c--
 }
 
+scene2d(_size'stack size=)'stack scene2d {
+  this
+}
+
 shader(vertex'stack string:, pixel'stack string:)'stack shader {
   --c--
   
@@ -59,7 +63,7 @@ shader(vertex'stack string:, pixel'stack string:)'stack shader {
   this
 }
 
-surface2d(_size'stack size=)'stack surface2d {
+windowRenderer()'stack windowRenderer {
   --c--
   
   if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -120,6 +124,10 @@ global()'void {
   
   --cinclude--
   frame'i32 = 0i
+  rootWindowRenderer'stack windowRenderer : windowRenderer(this = windowRenderer())
+  rootScene'stack scene2d : scene2d(this = scene2d(
+    _size'stack size = this._size
+  ))
   console'stack anon1 : anon1(this = anon1())
   parse'stack anon2 : anon2(this = anon2())
   random'stack anon3 : anon3(this = anon3())
@@ -1266,9 +1274,6 @@ global()'void {
   } UT_hash_handle;
   
   --ctypedef--
-  rootSurface'stack surface2d : surface2d(this = surface2d(
-    _size'stack size = this._size
-  ))
   --cstruct--
   
   typedef struct GLid_td GLid_s;

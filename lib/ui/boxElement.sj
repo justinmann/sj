@@ -18,14 +18,14 @@ boxElement #element (
 		void
 	}
 
-	render(surface : 'surface2d)'void {
+	render(scene : 'scene2d)'void {
 		if isEmpty(boxRenderer) {
 			boxRenderer = value(heap boxRenderer(
 			    rect: copy rect
 			    color: copy color))
 		}
 
-		boxRenderer?.render(surface)
+		boxRenderer?.render(scene)
 	}
 
 	getChildren()'local array?!#element {

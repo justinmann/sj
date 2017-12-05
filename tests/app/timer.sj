@@ -39,7 +39,7 @@ root : borderLayout(
 fillElement(
 	children : [ 
 		imageElement(
-			image : image(rootSurface.getTexture("assets/hello2.bmp"))
+			image : image(rootscene.getTexture("assets/hello2.bmp"))
 		) as #element,
 		textElement(
 			font = font("assets/sample.ttf", 25)

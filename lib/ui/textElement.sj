@@ -20,7 +20,7 @@ textElement #element (
 		void
 	}
 
-	render(surface : 'surface2d)'void {
+	render(scene : 'scene2d)'void {
 		textSize : font.getTextSize(text)
 		final : rect(
 			x : rect.x
@@ -37,7 +37,7 @@ textElement #element (
 			    font: copy font))
 		}
 
-		textRenderer?.render(surface)
+		textRenderer?.render(scene)
 
 		void
 	}

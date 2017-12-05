@@ -13,10 +13,10 @@ fillElement #element (
 		void	
 	}
 
-	render(surface : '#surface) {
+	render(scene : '#scene) {
 		for i (0 to children.size) {
 			child : children[i]
-			child.render(surface)
+			child.render(scene)
 		}
 	}
 

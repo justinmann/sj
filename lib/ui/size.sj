@@ -12,4 +12,8 @@ size(
 	addMargin(margin : 'margin) {
 		size(w + margin.l + margin.r, h + margin.t + margin.b)
 	}
+
+	isEqual(size: 'size) {
+		w == size.w && h == size.h
+	}
 ) { this }
