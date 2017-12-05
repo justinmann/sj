@@ -1,5 +1,4 @@
 -- ui --
-* ninegrid
 * render to texture: https://stackoverflow.com/questions/1024603/opengl-es-render-to-texture#1024634
 * center text
 * 3d scene
