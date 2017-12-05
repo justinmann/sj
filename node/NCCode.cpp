@@ -240,7 +240,8 @@ vector<string> expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> sco
     }
 
     vector<string> lines;
-    boost::split(lines, finalCode.str(), boost::is_any_of("\n"), boost::token_compress_on);
+    string str = finalCode.str();
+    boost::split(lines, str, boost::is_any_of("\n"), boost::token_compress_on);
     for (auto i = 0; i < (int)lines.size(); i++) {
         boost::trim_if(lines[i], boost::is_any_of(" \n\r\t"));
     }
