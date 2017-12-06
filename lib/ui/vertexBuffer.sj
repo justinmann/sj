@@ -43,7 +43,7 @@ vertexBuffer!vertex(
 ) { 
     --c--
     _this->buffer = vertex_buffer_new((char*)_this->format.data.data);
-    vertex_buffer_push_back_indices(_this->buffer, (int32_t*)_this->indices.data, _this->indices.size);
+    vertex_buffer_push_back_indices(_this->buffer, (GLuint*)_this->indices.data, _this->indices.size);
     vertex_buffer_push_back_vertices(_this->buffer, (#type(vertex)*)_this->vertices.data, _this->vertices.size);
     --c--
     this 
