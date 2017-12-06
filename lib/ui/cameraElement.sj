@@ -36,6 +36,7 @@ cameraElement #element (
 		viewModel = view * model
 		normalMat = viewModel.invert().transpose()
 		--c--
+	    glEnable( GL_DEPTH_TEST );
         glUseProgram(sjv_boringShader.id);
         // glUniformMatrix4fv(glGetUniformLocation(sjv_boringShader.id, "model" ), 1, 0, (GLfloat*)&_parent->world);
         glUniformMatrix4fv(glGetUniformLocation(sjv_boringShader.id, "viewModel" ), 1, 0, (GLfloat*)&_parent->viewModel);
@@ -43,6 +44,9 @@ cameraElement #element (
         glUniformMatrix4fv(glGetUniformLocation(sjv_boringShader.id, "projection" ), 1, 0, (GLfloat*)&_parent->projection);
 		--c--
 		_cube.render(scene)
+		--c--
+	    glDisable( GL_DEPTH_TEST );
+		--c--
 	}
 
 	getChildren()'local array?!#element {

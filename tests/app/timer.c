@@ -6488,6 +6488,7 @@ void sjf_cameraElement_render(sjs_cameraElement* _parent, sjs_scene2d* scene) {
     sjf_mat4_invert(sjt_dot202, &sjt_call7);
     sjt_dot201 = &sjt_call7;
     sjf_mat4_transpose(sjt_dot201, &_parent->normalMat);
+    glEnable( GL_DEPTH_TEST );
     glUseProgram(sjv_boringShader.id);
     // glUniformMatrix4fv(glGetUniformLocation(sjv_boringShader.id, "model" ), 1, 0, (GLfloat*)&_parent->world);
     glUniformMatrix4fv(glGetUniformLocation(sjv_boringShader.id, "viewModel" ), 1, 0, (GLfloat*)&_parent->viewModel);
@@ -6496,6 +6497,7 @@ void sjf_cameraElement_render(sjs_cameraElement* _parent, sjs_scene2d* scene) {
     sjt_dot203 = &(_parent)->_cube;
     sjt_functionParam43 = scene;
     sjf_vertexBuffer_vertex_location_texture_normal_render(sjt_dot203, sjt_functionParam43);
+    glDisable( GL_DEPTH_TEST );
 
     sjf_mat4_destroy(&sjt_call7);
 }

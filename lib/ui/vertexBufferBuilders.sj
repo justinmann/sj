@@ -30,7 +30,7 @@ cubeVertexBuffer() {
             12, 14, 15
             16, 17, 18 // bottom
             16, 18, 19
-            20, 21, 22
+            20, 21, 22 // top
             20, 22, 23
         ]
         vertices : [

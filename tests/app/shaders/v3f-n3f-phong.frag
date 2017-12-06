@@ -32,5 +32,5 @@ void main() {
     // specular *= 0.0;
   }
 
-  gl_FragColor = vec4(lambertian * diffuseColor + specular * specColor + vec3(0.2, 0.2, 0.2), 1.0);
+  gl_FragColor = vec4(max(lambertian * diffuseColor + specular * specColor, vec3(0.2, 0.2, 0.2)), 1.0);
 }
