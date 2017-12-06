@@ -1,6 +1,8 @@
 include "../../lib/common/common.sj"
 include "../../lib/ui/ui.sj"
 
+root : cameraElement() as #element
+/*
 root : blurElement(
  	children : [
  		imageElement(
@@ -8,7 +10,7 @@ root : blurElement(
 		) as #element
 	]
 ) as #element
-
+*/
 /*
 root : textElement(
 	font = font("assets/sample.ttf", 25.0f)

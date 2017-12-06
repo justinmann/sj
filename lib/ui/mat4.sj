@@ -75,9 +75,74 @@ mat4_translate( mat4 *self,
 void
 mat4_scale( mat4 *self,
             float x, float y, float z);    
+
+void mat4_set_lookAtLH(mat4* self, vec3* position, vec3* target, vec3* up);
 --cdefine--
 
 --cfunction--
+typedef struct vec3 {
+    float x, y, z;
+};
+
+void vec3_subtract(vec3* out, vec3* v0, vec3* v1) {
+    out->x = v0->x - v1->x;
+    out->y = v0->y - v1->y;
+    out->z = v0->z - v1->z;
+}
+
+void vec3_normalize(vec3* out, vec3* in) {
+    float t = sqrtf(in->x * in->x + in->y * in->y + in->z * in->z);
+    out->x = in->x / t;
+    out->y = in->y / t;
+    out->z = in->z / t;
+}
+
+void vec3_cross(vec3* out, vec3* v0, vec3* v1) {
+    out->x = v0->y * v1->z - v0->z * v1->y;
+    out->y = v0->z * v1->x - v0->x * v1->z;
+    out->z = v0->x * v1->y - v0->y * v1->x;
+}
+
+float vec3_dot(vec3* v0, vec3* v1) {
+    return v0->x * v1->x + v0->y * v1->y + v0->z * v1->z;
+}
+
+void mat4_set_lookAtLH(mat4* self, vec3* position, vec3* target, vec3* up) {
+    vec3 zaxis;
+    vec3 temp;
+    vec3_subtract(&temp, target, position);
+    vec3_normalize(&zaxis, &temp);
+
+    vec3 xaxis;
+    vec3 temp2;
+    vec3_cross(&temp2, up, &zaxis);
+    vec3_normalize(&xaxis, &temp2);
+
+    vec3 yaxis;
+    vec3_cross(&yaxis, &zaxis, &xaxis);
+
+    self->m00 = xaxis.x;
+    self->m01 = yaxis.x;
+    self->m02 = zaxis.x;
+    self->m03 = 0.0f;
+
+    self->m10 = xaxis.y;
+    self->m11 = yaxis.y;
+    self->m12 = zaxis.y;
+    self->m13 = 0.0f;
+
+    self->m20 = xaxis.z;
+    self->m21 = yaxis.z;
+    self->m22 = zaxis.z;
+    self->m23 = 0.0f;
+
+    self->m30 = -vec3_dot(&xaxis, position);
+    self->m31 = -vec3_dot(&yaxis, position);
+    self->m32 = -vec3_dot(&zaxis, position);
+    self->m33 = 1.0f;
+}
+
+
 mat4 *
 mat4_new( void )
 {
@@ -176,18 +241,14 @@ mat4_set_perspective( mat4 *self,
                       float fovy,  float aspect,
                       float znear, float zfar)
 {
-    float h, w;
-
-    if (!self)
-        return;
-
-    if (znear == zfar)
-        return;
-
-    h = (float)tan(fovy / 360.0 * M_PI) * znear;
-    w = h * aspect;
-
-    mat4_set_frustum( self, -w, w, -h, h, znear, zfar );
+    mat4_set_zero(self);
+    float yscale = 1.0f / tanf(fovy / 180.0f / 2.0f);
+    float xscale = yscale * aspect;
+    self->m00 = xscale;
+    self->m11 = yscale;
+    self->m22 = zfar/(zfar-znear);
+    self->m23 = 1.0f;
+    self->m32 = -znear*zfar/(zfar-znear);
 }
 
 void
