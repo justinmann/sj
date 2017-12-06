@@ -1277,6 +1277,7 @@ bool sjt_not1;
 bool sjt_while1;
 sjs_anon1 sjv_console;
 sjs_anon4 sjv_convert;
+float sjv_f32_pi;
 int32_t sjv_i32_max;
 int32_t sjv_i32_min;
 bool sjv_isCorrect;
@@ -1556,13 +1557,14 @@ void sjf_string_heap(sjs_string_heap* _this) {
 }
 
 int main(int argc, char** argv) {
-    sjv_i32_max = (-2147483647 - 1);
-    sjv_i32_min = 2147483647;
-    sjv_u32_max = (uint32_t)4294967295u;
     sjf_anon1(&sjv_console);
     sjf_anon2(&sjv_parse);
     sjf_anon3(&sjv_random);
     sjf_anon4(&sjv_convert);
+    sjv_f32_pi = 3.14159265358979323846f;
+    sjv_i32_max = (-2147483647 - 1);
+    sjv_i32_min = 2147483647;
+    sjv_u32_max = (uint32_t)4294967295u;
     sjt_dot1 = &sjv_console;
     sjt_call1.count = 15;
     sjt_call1.data.size = 16;

@@ -85,9 +85,6 @@ string(count'i32=, data'stack array_char=)'stack string {
 }
 
 global()'void {
-  i32_max'i32 : (-2147483647 - 1)i
-  i32_min'i32 : 2147483647i
-  u32_max'u32 : (uint32_t)4294967295uu
   console'stack anon1 : anon1(this = anon1())
   parse'stack anon2 : anon2(this = anon2())
   random'stack anon3 : anon3(this = anon3())
@@ -1234,6 +1231,10 @@ global()'void {
   } UT_hash_handle;
   
   --ctypedef--
+  f32_pi'f32 = 3.14159265358979323846ff
+  i32_max'i32 : (-2147483647 - 1)i
+  i32_min'i32 : 2147483647i
+  u32_max'u32 : (uint32_t)4294967295uu
   anon1_write(
     parent: console,
     data'stack string : this.data

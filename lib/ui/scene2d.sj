@@ -1,10 +1,8 @@
 scene2d(
 	_size = size()
-	--cvar--
-	mat4 model;
-	mat4 view;
-	mat4 projection;
-	--cvar--
+	model = mat4()
+	view = mat4()
+	projection = mat4()
 
 	clear()'void {
 	    --c--
@@ -29,12 +27,9 @@ scene2d(
 	setSize(size: 'size)'void {
 		if _size != size {
 			_size = copy size
-			--c--
-		    mat4_set_orthographic( &_parent->projection, 0.0f, (float)_parent->_size.w, (float)-_parent->_size.h, 0.0f, -1.0f, 1.0f);
-		    mat4_set_identity( &_parent->model );
-		    mat4_scale(&_parent->model, 1.0f, -1.0f, 1.0f);
-		    mat4_set_identity( &_parent->view );
-		    --c--
+			projection = mat4_orthographic(0.0f, _size.w as f32, _size.h as f32, 0.0f, -1.0f, 1.0f)
+			model = mat4_scale(1.0f, -1.0f, 1.0f)
+			view = mat4_identity()
 		    void
 	    }
 	}

@@ -30,7 +30,7 @@ anon8()'stack anon8 {
   this
 }
 
-cameraElement #element (color'stack color=, idealSize'stack size=, rect'stack rect=, _cube'stack vertexBuffer_vertex_location_texture:)'heap cameraElement {
+cameraElement #element (rect'stack rect=, _cube'stack vertexBuffer_vertex_location_texture:, projection'stack mat4=, view'stack mat4=, world'stack mat4=)'heap cameraElement {
   this
 }
 
@@ -50,7 +50,7 @@ runLoop()'void {
   --c--
 }
 
-scene2d(_size'stack size=)'stack scene2d {
+scene2d(_size'stack size=, model'stack mat4=, view'stack mat4=, projection'stack mat4=)'stack scene2d {
   this
 }
 
@@ -112,12 +112,12 @@ windowRenderer()'stack windowRenderer {
 }
 
 global()'void {
-  i32_max'i32 : (-2147483647 - 1)i
-  i32_min'i32 : 2147483647i
-  u32_max'u32 : (uint32_t)4294967295uu
   rootWindowRenderer'stack windowRenderer : windowRenderer(this = windowRenderer())
   rootScene'stack scene2d : scene2d(this = scene2d(
-    _size'stack size = this._size
+    _size'stack size = this._size,
+    model'stack mat4 = this.model,
+    view'stack mat4 = this.view,
+    projection'stack mat4 = this.projection
   ))
   --cinclude--
   
@@ -1277,6 +1277,10 @@ global()'void {
   } UT_hash_handle;
   
   --ctypedef--
+  f32_pi'f32 = 3.14159265358979323846ff
+  i32_max'i32 : (-2147483647 - 1)i
+  i32_min'i32 : 2147483647i
+  u32_max'u32 : (uint32_t)4294967295uu
   blurHorizontalShader'stack shader : shader(this = shader(
     vertex'stack string : this.vertex,
     pixel'stack string : this.pixel
@@ -1977,308 +1981,6 @@ global()'void {
   } vertex3_texture2_t;
   
   --cstruct--
-  --cstruct--
-  
-  /**
-  *
-  */
-  typedef union
-  {
-  float data[16];    /**< All compoments at once     */
-  struct {
-  float m00, m01, m02, m03;
-  float m10, m11, m12, m13;
-  float m20, m21, m22, m23;
-  float m30, m31, m32, m33;
-  };
-  } mat4;
-  
-  --cstruct--
-  --cdefine--
-  
-  mat4 *
-  mat4_new( void );
-  void
-  mat4_set_identity( mat4 *self );
-  void
-  mat4_set_zero( mat4 *self );
-  void
-  mat4_multiply( mat4 *self, mat4 *other );
-  void
-  mat4_set_orthographic( mat4 *self,
-  float left,   float right,
-  float bottom, float top,
-  float znear,  float zfar );
-  void
-  mat4_set_perspective( mat4 *self,
-  float fovy,  float aspect,
-  float zNear, float zFar);
-  void
-  mat4_set_frustum( mat4 *self,
-  float left,   float right,
-  float bottom, float top,
-  float znear,  float zfar );
-  void
-  mat4_set_rotation( mat4 *self,
-  float angle,
-  float x, float y, float z);
-  void
-  mat4_set_translation( mat4 *self,
-  float x, float y, float z);
-  void
-  mat4_set_scaling( mat4 *self,
-  float x, float y, float z);
-  void
-  mat4_rotate( mat4 *self,
-  float angle,
-  float x, float y, float z);
-  void
-  mat4_translate( mat4 *self,
-  float x, float y, float z);
-  void
-  mat4_scale( mat4 *self,
-  float x, float y, float z);
-  void mat4_set_lookAtLH(mat4* self, vec3* position, vec3* target, vec3* up);
-  
-  --cdefine--
-  --cfunction--
-  
-  typedef struct vec3 {
-  float x, y, z;
-  };
-  void vec3_subtract(vec3* out, vec3* v0, vec3* v1) {
-  out->x = v0->x - v1->x;
-  out->y = v0->y - v1->y;
-  out->z = v0->z - v1->z;
-  }
-  void vec3_normalize(vec3* out, vec3* in) {
-  float t = sqrtf(in->x * in->x + in->y * in->y + in->z * in->z);
-  out->x = in->x / t;
-  out->y = in->y / t;
-  out->z = in->z / t;
-  }
-  void vec3_cross(vec3* out, vec3* v0, vec3* v1) {
-  out->x = v0->y * v1->z - v0->z * v1->y;
-  out->y = v0->z * v1->x - v0->x * v1->z;
-  out->z = v0->x * v1->y - v0->y * v1->x;
-  }
-  float vec3_dot(vec3* v0, vec3* v1) {
-  return v0->x * v1->x + v0->y * v1->y + v0->z * v1->z;
-  }
-  void mat4_set_lookAtLH(mat4* self, vec3* position, vec3* target, vec3* up) {
-  vec3 zaxis;
-  vec3 temp;
-  vec3_subtract(&temp, target, position);
-  vec3_normalize(&zaxis, &temp);
-  vec3 xaxis;
-  vec3 temp2;
-  vec3_cross(&temp2, up, &zaxis);
-  vec3_normalize(&xaxis, &temp2);
-  vec3 yaxis;
-  vec3_cross(&yaxis, &zaxis, &xaxis);
-  self->m00 = xaxis.x;
-  self->m01 = yaxis.x;
-  self->m02 = zaxis.x;
-  self->m03 = 0.0f;
-  self->m10 = xaxis.y;
-  self->m11 = yaxis.y;
-  self->m12 = zaxis.y;
-  self->m13 = 0.0f;
-  self->m20 = xaxis.z;
-  self->m21 = yaxis.z;
-  self->m22 = zaxis.z;
-  self->m23 = 0.0f;
-  self->m30 = -vec3_dot(&xaxis, position);
-  self->m31 = -vec3_dot(&yaxis, position);
-  self->m32 = -vec3_dot(&zaxis, position);
-  self->m33 = 1.0f;
-  }
-  mat4 *
-  mat4_new( void )
-  {
-  mat4 *self = (mat4 *) malloc( sizeof(mat4) );
-  return self;
-  }
-  void
-  mat4_set_zero( mat4 *self )
-  {
-  if (!self)
-  return;
-  memset( self, 0, sizeof( mat4 ));
-  }
-  void
-  mat4_set_identity( mat4 *self )
-  {
-  if (!self)
-  return;
-  memset( self, 0, sizeof( mat4 ));
-  self->m00 = 1.0;
-  self->m11 = 1.0;
-  self->m22 = 1.0;
-  self->m33 = 1.0;
-  }
-  void
-  mat4_multiply( mat4 *self, mat4 *other )
-  {
-  mat4 m;
-  size_t i;
-  if (!self || !other)
-  return;
-  for( i=0; i<4; ++i )
-  {
-  m.data[i*4+0] =
-  (self->data[i*4+0] * other->data[0*4+0]) +
-  (self->data[i*4+1] * other->data[1*4+0]) +
-  (self->data[i*4+2] * other->data[2*4+0]) +
-  (self->data[i*4+3] * other->data[3*4+0]) ;
-  m.data[i*4+1] =
-  (self->data[i*4+0] * other->data[0*4+1]) +
-  (self->data[i*4+1] * other->data[1*4+1]) +
-  (self->data[i*4+2] * other->data[2*4+1]) +
-  (self->data[i*4+3] * other->data[3*4+1]) ;
-  m.data[i*4+2] =
-  (self->data[i*4+0] * other->data[0*4+2]) +
-  (self->data[i*4+1] * other->data[1*4+2]) +
-  (self->data[i*4+2] * other->data[2*4+2]) +
-  (self->data[i*4+3] * other->data[3*4+2]) ;
-  m.data[i*4+3] =
-  (self->data[i*4+0] * other->data[0*4+3]) +
-  (self->data[i*4+1] * other->data[1*4+3]) +
-  (self->data[i*4+2] * other->data[2*4+3]) +
-  (self->data[i*4+3] * other->data[3*4+3]) ;
-  }
-  memcpy( self, &m, sizeof( mat4 ) );
-  }
-  void
-  mat4_set_orthographic( mat4 *self,
-  float left,   float right,
-  float bottom, float top,
-  float znear,  float zfar )
-  {
-  if (!self)
-  return;
-  if (left == right || bottom == top || znear == zfar)
-  return;
-  mat4_set_zero( self );
-  self->m00 = +2.0f/(right-left);
-  self->m30 = -(right+left)/(right-left);
-  self->m11 = +2.0f/(top-bottom);
-  self->m31 = -(top+bottom)/(top-bottom);
-  self->m22 = -2.0f/(zfar-znear);
-  self->m32 = -(zfar+znear)/(zfar-znear);
-  self->m33 = 1.0f;
-  }
-  void
-  mat4_set_perspective( mat4 *self,
-  float fovy,  float aspect,
-  float znear, float zfar)
-  {
-  mat4_set_zero(self);
-  float yscale = 1.0f / tanf(fovy / 180.0f / 2.0f);
-  float xscale = yscale * aspect;
-  self->m00 = xscale;
-  self->m11 = yscale;
-  self->m22 = zfar/(zfar-znear);
-  self->m23 = 1.0f;
-  self->m32 = -znear*zfar/(zfar-znear);
-  }
-  void
-  mat4_set_frustum( mat4 *self,
-  float left,   float right,
-  float bottom, float top,
-  float znear,  float zfar )
-  {
-  if (!self)
-  return;
-  if (left == right || bottom == top || znear == zfar)
-  return;
-  mat4_set_zero( self );
-  self->m00 = (2.0f*znear)/(right-left);
-  self->m20 = (right+left)/(right-left);
-  self->m11 = (2.0f*znear)/(top-bottom);
-  self->m21 = (top+bottom)/(top-bottom);
-  self->m22 = -(zfar+znear)/(zfar-znear);
-  self->m32 = -(2.0f*zfar*znear)/(zfar-znear);
-  self->m23 = -1.0f;
-  }
-  void
-  mat4_set_rotation( mat4 *self,
-  float angle,
-  float x, float y, float z)
-  {
-  float c, s, norm;
-  if (!self)
-  return;
-  c = (float)cos( M_PI*angle/180.0 );
-  s = (float)sin( M_PI*angle/180.0 );
-  norm = (float)sqrt(x*x+y*y+z*z);
-  x /= norm; y /= norm; z /= norm;
-  mat4_set_identity( self );
-  self->m00 = x*x*(1-c)+c;
-  self->m10 = y*x*(1-c)-z*s;
-  self->m20 = z*x*(1-c)+y*s;
-  self->m01 =  x*y*(1-c)+z*s;
-  self->m11 =  y*y*(1-c)+c;
-  self->m21 =  z*y*(1-c)-x*s;
-  self->m02 = x*z*(1-c)-y*s;
-  self->m12 = y*z*(1-c)+x*s;
-  self->m22 = z*z*(1-c)+c;
-  }
-  void
-  mat4_set_translation( mat4 *self,
-  float x, float y, float z)
-  {
-  if (!self)
-  return;
-  mat4_set_identity( self );
-  self-> m30 = x;
-  self-> m31 = y;
-  self-> m32 = z;
-  }
-  void
-  mat4_set_scaling( mat4 *self,
-  float x, float y, float z)
-  {
-  if (!self)
-  return;
-  mat4_set_identity( self );
-  self-> m00 = x;
-  self-> m11 = y;
-  self-> m22 = z;
-  }
-  void
-  mat4_rotate( mat4 *self,
-  float angle,
-  float x, float y, float z)
-  {
-  mat4 m;
-  if (!self)
-  return;
-  mat4_set_rotation( &m, angle, x, y, z);
-  mat4_multiply( self, &m );
-  }
-  void
-  mat4_translate( mat4 *self,
-  float x, float y, float z)
-  {
-  mat4 m;
-  if (!self)
-  return;
-  mat4_set_translation( &m, x, y, z);
-  mat4_multiply( self, &m );
-  }
-  void
-  mat4_scale( mat4 *self,
-  float x, float y, float z)
-  {
-  mat4 m;
-  if (!self)
-  return;
-  mat4_set_scaling( &m, x, y, z);
-  mat4_multiply( self, &m );
-  }
-  
-  --cfunction--
   --cdefine--
   
   /**
@@ -5810,10 +5512,11 @@ global()'void {
     data'stack array_char = this.data
   ))
   root'heap #element : cameraElement(this = cameraElement(
-    color'stack color = this.color,
-    idealSize'stack size = this.idealSize,
     rect'stack rect = this.rect,
-    _cube'stack vertexBuffer_vertex_location_texture : this._cube
+    _cube'stack vertexBuffer_vertex_location_texture : this._cube,
+    projection'stack mat4 = this.projection,
+    view'stack mat4 = this.view,
+    world'stack mat4 = this.world
   )) as heap #element
   runLoop()
   void

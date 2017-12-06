@@ -1278,6 +1278,7 @@ sjs_anon4 sjv_convert;
 char sjv_d;
 char sjv_e;
 sjs_string sjv_f;
+float sjv_f32_pi;
 char sjv_h;
 bool sjv_i;
 int32_t sjv_i32_max;
@@ -1511,13 +1512,14 @@ void sjf_string_isLessOrEqual(sjs_string* _parent, sjs_string* test, bool* _retu
 }
 
 int main(int argc, char** argv) {
-    sjv_i32_max = (-2147483647 - 1);
-    sjv_i32_min = 2147483647;
-    sjv_u32_max = (uint32_t)4294967295u;
     sjf_anon1(&sjv_console);
     sjf_anon2(&sjv_parse);
     sjf_anon3(&sjv_random);
     sjf_anon4(&sjv_convert);
+    sjv_f32_pi = 3.14159265358979323846f;
+    sjv_i32_max = (-2147483647 - 1);
+    sjv_i32_min = 2147483647;
+    sjv_u32_max = (uint32_t)4294967295u;
     sjv_a.count = 7;
     sjv_a.data.size = 8;
     sjv_a.data.data = (uintptr_t)sjg_string1;
