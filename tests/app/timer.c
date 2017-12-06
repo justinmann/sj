@@ -1212,18 +1212,19 @@ struct td_double_option {
 };
 const double_option double_empty = { true };
 
-const char* sjg_string1 = "shaders/v3f-n3f.vert";
-const char* sjg_string10 = "shaders/blur-horizontal.frag";
+const char* sjg_string1 = "shaders/v3f-t2f-c4f.vert";
+const char* sjg_string10 = "shaders/v3f-t2f.frag";
 const char* sjg_string11 = "shaders/v3f-t2f-c4f.vert";
-const char* sjg_string12 = "shaders/blur-vertical.frag";
-const char* sjg_string2 = "shaders/v3f-n3f.frag";
+const char* sjg_string12 = "shaders/v3f-t2f-c4f.frag";
+const char* sjg_string13 = "vertex:3f,tex_coord:2f";
+const char* sjg_string2 = "shaders/blur-horizontal.frag";
 const char* sjg_string3 = "shaders/v3f-t2f-c4f.vert";
-const char* sjg_string4 = "shaders/v3f-t2f-c4f.frag";
+const char* sjg_string4 = "shaders/blur-vertical.frag";
 const char* sjg_string5 = "shaders/v3f-c4f.vert";
 const char* sjg_string6 = "shaders/v3f-c4f.frag";
-const char* sjg_string7 = "shaders/v3f-t2f.vert";
-const char* sjg_string8 = "shaders/v3f-t2f.frag";
-const char* sjg_string9 = "shaders/v3f-t2f-c4f.vert";
+const char* sjg_string7 = "shaders/v3f-n3f.vert";
+const char* sjg_string8 = "shaders/v3f-n3f.frag";
+const char* sjg_string9 = "shaders/v3f-t2f.vert";
 
 
 typedef struct pointer_td pointer;
@@ -1235,6 +1236,12 @@ struct pointer_td {
 pointer* g_pointers = 0;
 
 
+typedef struct {
+    float x, y, z;    // position
+    float r, g, b, a; // color
+} vertex3_color4_t;
+
+
 typedef struct GLid_td GLid_s;
 struct GLid_td {
     GLuint id;
@@ -1242,6 +1249,34 @@ struct GLid_td {
     UT_hash_handle hh;
 };
 GLid_s* g_GLids = 0;
+
+
+typedef struct {
+    float x, y, z;    // position
+    float s, t;       // texture
+} vertex3_texture2_t;
+
+
+/**
+*
+*/
+typedef union
+{
+    float data[16];    /**< All compoments at once     */
+    struct {
+        float m00, m01, m02, m03;
+        float m10, m11, m12, m13;
+        float m20, m21, m22, m23;
+        float m30, m31, m32, m33;
+    };
+} mat4;
+
+
+typedef struct {
+    float x, y, z;    // position
+    float s, t;       // texture
+    float r, g, b, a; // color
+} vertex3_texture2_color3_t;
 
 
 /**
@@ -1809,40 +1844,6 @@ struct vertex_buffer_td
     vertex_attribute_t *attributes[MAX_VERTEX_ATTRIBUTE];
 };
 
-
-/**
-*
-*/
-typedef union
-{
-    float data[16];    /**< All compoments at once     */
-    struct {
-        float m00, m01, m02, m03;
-        float m10, m11, m12, m13;
-        float m20, m21, m22, m23;
-        float m30, m31, m32, m33;
-    };
-} mat4;
-
-
-typedef struct {
-    float x, y, z;    // position
-    float s, t;       // texture
-    float r, g, b, a; // color
-} vertex3_texture2_color3_t;
-
-
-typedef struct {
-    float x, y, z;    // position
-    float r, g, b, a; // color
-} vertex3_color4_t;
-
-
-typedef struct {
-    float x, y, z;    // position
-    float s, t;       // texture
-} vertex3_texture2_t;
-
 #define sjs_object_typeId 1
 #define sjs_windowRenderer_typeId 2
 #define sjs_windowRenderer_heap_typeId 3
@@ -1858,34 +1859,44 @@ typedef struct {
 #define sjs_anon3_heap_typeId 13
 #define sjs_anon4_typeId 14
 #define sjs_anon4_heap_typeId 15
-#define sjs_anon5_typeId 16
-#define sjs_anon5_heap_typeId 17
-#define sjs_anon6_typeId 18
-#define sjs_anon6_heap_typeId 19
-#define sjs_anon7_typeId 20
-#define sjs_anon7_heap_typeId 21
-#define sjs_anon8_typeId 22
-#define sjs_anon8_heap_typeId 23
-#define sjs_array_char_typeId 24
-#define sjs_array_char_heap_typeId 25
-#define sjs_string_typeId 26
-#define sjs_string_heap_typeId 27
-#define sjs_shader_typeId 28
-#define sjs_shader_heap_typeId 29
+#define sjs_array_char_typeId 16
+#define sjs_array_char_heap_typeId 17
+#define sjs_string_typeId 18
+#define sjs_string_heap_typeId 19
+#define sjs_shader_typeId 20
+#define sjs_shader_heap_typeId 21
+#define sjs_anon5_typeId 22
+#define sjs_anon5_heap_typeId 23
+#define sjs_anon6_typeId 24
+#define sjs_anon6_heap_typeId 25
+#define sjs_anon7_typeId 26
+#define sjs_anon7_heap_typeId 27
+#define sjs_anon8_typeId 28
+#define sjs_anon8_heap_typeId 29
 #define sjs_color_typeId 30
 #define sjs_color_heap_typeId 31
 #define sjs_rect_typeId 32
 #define sjs_rect_heap_typeId 33
-#define sjs_cubeVertexBuffer_typeId 34
-#define sjs_cubeVertexBuffer_heap_typeId 35
-#define sjs_cameraElement_typeId 36
-#define sjs_array_heap_element_typeId 37
-#define sjs_array_heap_element_heap_typeId 38
-#define sji_element_typeId 39
-#define sjs_cameraElement_heap_typeId 40
-#define sjs_point_typeId 41
-#define sjs_point_heap_typeId 42
-#define sji_fireMouseUp_mouseHandler_typeId 43
+#define sjs_array_i32_typeId 34
+#define sjs_array_i32_heap_typeId 35
+#define sjs_array_vertex_location_texture_typeId 36
+#define sjs_array_vertex_location_texture_heap_typeId 37
+#define sjs_vertexBuffer_vertex_location_texture_typeId 38
+#define sjs_vertexBuffer_vertex_location_texture_heap_typeId 39
+#define sjs_cameraElement_typeId 40
+#define sjs_array_heap_element_typeId 41
+#define sjs_array_heap_element_heap_typeId 42
+#define sji_element_typeId 43
+#define sjs_cameraElement_heap_typeId 44
+#define sjs_vec3_typeId 45
+#define sjs_vec3_heap_typeId 46
+#define sjs_vec2_typeId 47
+#define sjs_vec2_heap_typeId 48
+#define sjs_vertex_location_texture_typeId 49
+#define sjs_vertex_location_texture_heap_typeId 50
+#define sjs_point_typeId 51
+#define sjs_point_heap_typeId 52
+#define sji_fireMouseUp_mouseHandler_typeId 53
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_windowRenderer sjs_windowRenderer;
@@ -1902,6 +1913,12 @@ typedef struct td_sjs_anon3 sjs_anon3;
 typedef struct td_sjs_anon3_heap sjs_anon3_heap;
 typedef struct td_sjs_anon4 sjs_anon4;
 typedef struct td_sjs_anon4_heap sjs_anon4_heap;
+typedef struct td_sjs_array_char sjs_array_char;
+typedef struct td_sjs_array_char_heap sjs_array_char_heap;
+typedef struct td_sjs_string sjs_string;
+typedef struct td_sjs_string_heap sjs_string_heap;
+typedef struct td_sjs_shader sjs_shader;
+typedef struct td_sjs_shader_heap sjs_shader_heap;
 typedef struct td_sjs_anon5 sjs_anon5;
 typedef struct td_sjs_anon5_heap sjs_anon5_heap;
 typedef struct td_sjs_anon6 sjs_anon6;
@@ -1910,23 +1927,27 @@ typedef struct td_sjs_anon7 sjs_anon7;
 typedef struct td_sjs_anon7_heap sjs_anon7_heap;
 typedef struct td_sjs_anon8 sjs_anon8;
 typedef struct td_sjs_anon8_heap sjs_anon8_heap;
-typedef struct td_sjs_array_char sjs_array_char;
-typedef struct td_sjs_array_char_heap sjs_array_char_heap;
-typedef struct td_sjs_string sjs_string;
-typedef struct td_sjs_string_heap sjs_string_heap;
-typedef struct td_sjs_shader sjs_shader;
-typedef struct td_sjs_shader_heap sjs_shader_heap;
 typedef struct td_sjs_color sjs_color;
 typedef struct td_sjs_color_heap sjs_color_heap;
 typedef struct td_sjs_rect sjs_rect;
 typedef struct td_sjs_rect_heap sjs_rect_heap;
-typedef struct td_sjs_cubeVertexBuffer sjs_cubeVertexBuffer;
-typedef struct td_sjs_cubeVertexBuffer_heap sjs_cubeVertexBuffer_heap;
+typedef struct td_sjs_array_i32 sjs_array_i32;
+typedef struct td_sjs_array_i32_heap sjs_array_i32_heap;
+typedef struct td_sjs_array_vertex_location_texture sjs_array_vertex_location_texture;
+typedef struct td_sjs_array_vertex_location_texture_heap sjs_array_vertex_location_texture_heap;
+typedef struct td_sjs_vertexBuffer_vertex_location_texture sjs_vertexBuffer_vertex_location_texture;
+typedef struct td_sjs_vertexBuffer_vertex_location_texture_heap sjs_vertexBuffer_vertex_location_texture_heap;
 typedef struct td_sjs_cameraElement sjs_cameraElement;
 typedef struct td_sjs_array_heap_element sjs_array_heap_element;
 typedef struct td_sjs_array_heap_element_heap sjs_array_heap_element_heap;
 typedef struct td_sji_element sji_element;
 typedef struct td_sjs_cameraElement_heap sjs_cameraElement_heap;
+typedef struct td_sjs_vec3 sjs_vec3;
+typedef struct td_sjs_vec3_heap sjs_vec3_heap;
+typedef struct td_sjs_vec2 sjs_vec2;
+typedef struct td_sjs_vec2_heap sjs_vec2_heap;
+typedef struct td_sjs_vertex_location_texture sjs_vertex_location_texture;
+typedef struct td_sjs_vertex_location_texture_heap sjs_vertex_location_texture_heap;
 typedef struct td_sjs_point sjs_point;
 typedef struct td_sjs_point_heap sjs_point_heap;
 typedef struct td_sji_fireMouseUp_mouseHandler sji_fireMouseUp_mouseHandler;
@@ -2005,52 +2026,6 @@ struct td_sjs_anon4_heap {
     intptr_t _refCount;
 };
 
-struct td_sjs_anon5 {
-    int32_t normal;
-    int32_t hot;
-    int32_t pressed;
-};
-
-struct td_sjs_anon5_heap {
-    intptr_t _refCount;
-    int32_t normal;
-    int32_t hot;
-    int32_t pressed;
-};
-
-struct td_sjs_anon6 {
-    int structsNeedAValue;
-};
-
-struct td_sjs_anon6_heap {
-    intptr_t _refCount;
-};
-
-struct td_sjs_anon7 {
-    int structsNeedAValue;
-};
-
-struct td_sjs_anon7_heap {
-    intptr_t _refCount;
-};
-
-struct td_sjs_anon8 {
-    int32_t fill;
-    int32_t left;
-    int32_t right;
-    int32_t top;
-    int32_t bottom;
-};
-
-struct td_sjs_anon8_heap {
-    intptr_t _refCount;
-    int32_t fill;
-    int32_t left;
-    int32_t right;
-    int32_t top;
-    int32_t bottom;
-};
-
 struct td_sjs_array_char {
     int32_t size;
     uintptr_t data;
@@ -2088,6 +2063,52 @@ struct td_sjs_shader_heap {
     GLuint id;
 };
 
+struct td_sjs_anon5 {
+    int32_t fill;
+    int32_t left;
+    int32_t right;
+    int32_t top;
+    int32_t bottom;
+};
+
+struct td_sjs_anon5_heap {
+    intptr_t _refCount;
+    int32_t fill;
+    int32_t left;
+    int32_t right;
+    int32_t top;
+    int32_t bottom;
+};
+
+struct td_sjs_anon6 {
+    int32_t normal;
+    int32_t hot;
+    int32_t pressed;
+};
+
+struct td_sjs_anon6_heap {
+    intptr_t _refCount;
+    int32_t normal;
+    int32_t hot;
+    int32_t pressed;
+};
+
+struct td_sjs_anon7 {
+    int structsNeedAValue;
+};
+
+struct td_sjs_anon7_heap {
+    intptr_t _refCount;
+};
+
+struct td_sjs_anon8 {
+    int structsNeedAValue;
+};
+
+struct td_sjs_anon8_heap {
+    intptr_t _refCount;
+};
+
 struct td_sjs_color {
     float r;
     float g;
@@ -2118,13 +2139,44 @@ struct td_sjs_rect_heap {
     int32_t h;
 };
 
-struct td_sjs_cubeVertexBuffer {
-    vertex_buffer_t* buffer;
-    int structsNeedAValue;
+struct td_sjs_array_i32 {
+    int32_t size;
+    uintptr_t data;
+    bool _isGlobal;
 };
 
-struct td_sjs_cubeVertexBuffer_heap {
+struct td_sjs_array_i32_heap {
     intptr_t _refCount;
+    int32_t size;
+    uintptr_t data;
+    bool _isGlobal;
+};
+
+struct td_sjs_array_vertex_location_texture {
+    int32_t size;
+    uintptr_t data;
+    bool _isGlobal;
+};
+
+struct td_sjs_array_vertex_location_texture_heap {
+    intptr_t _refCount;
+    int32_t size;
+    uintptr_t data;
+    bool _isGlobal;
+};
+
+struct td_sjs_vertexBuffer_vertex_location_texture {
+    sjs_string format;
+    sjs_array_i32 indices;
+    sjs_array_vertex_location_texture vertices;
+    vertex_buffer_t* buffer;
+};
+
+struct td_sjs_vertexBuffer_vertex_location_texture_heap {
+    intptr_t _refCount;
+    sjs_string format;
+    sjs_array_i32 indices;
+    sjs_array_vertex_location_texture vertices;
     vertex_buffer_t* buffer;
 };
 
@@ -2132,7 +2184,7 @@ struct td_sjs_cameraElement {
     sjs_color color;
     sjs_size idealSize;
     sjs_rect rect;
-    sjs_cubeVertexBuffer _cube;
+    sjs_vertexBuffer_vertex_location_texture _cube;
 };
 
 struct td_sjs_array_heap_element {
@@ -2166,7 +2218,42 @@ struct td_sjs_cameraElement_heap {
     sjs_color color;
     sjs_size idealSize;
     sjs_rect rect;
-    sjs_cubeVertexBuffer _cube;
+    sjs_vertexBuffer_vertex_location_texture _cube;
+};
+
+struct td_sjs_vec3 {
+    float x;
+    float y;
+    float z;
+};
+
+struct td_sjs_vec3_heap {
+    intptr_t _refCount;
+    float x;
+    float y;
+    float z;
+};
+
+struct td_sjs_vec2 {
+    float x;
+    float y;
+};
+
+struct td_sjs_vec2_heap {
+    intptr_t _refCount;
+    float x;
+    float y;
+};
+
+struct td_sjs_vertex_location_texture {
+    sjs_vec3 location;
+    sjs_vec2 texture;
+};
+
+struct td_sjs_vertex_location_texture_heap {
+    intptr_t _refCount;
+    sjs_vec3 location;
+    sjs_vec2 texture;
 };
 
 struct td_sjs_point {
@@ -2195,8 +2282,83 @@ void _retain(void* ptr);
 bool _release(void* ptr);
 
 
+double *
+make_distance_mapd( double *img,
+unsigned int width, unsigned int height );
+unsigned char *
+make_distance_mapb( unsigned char *img,
+unsigned int width, unsigned int height );
+
+
+/*
+* Compute the local gradient at edge pixels using convolution filters.
+* The gradient is computed only at edge pixels. At other places in the
+* image, it is never used, and it's mostly zero anyway.
+*/
+void computegradient(double *img, int w, int h, double *gx, double *gy);
+/*
+* A somewhat tricky function to approximate the distance to an edge in a
+* certain pixel, with consideration to either the local gradient (gx,gy)
+* or the direction to the pixel (dx,dy) and the pixel greyscale value a.
+* The latter alternative, using (dx,dy), is the metric used by edtaa2().
+* Using a local estimate of the edge gradient (gx,gy) yields much better
+* accuracy at and near edges, and reduces the error even at distant pixels
+* provided that the gradient direction is accurately estimated.
+*/
+double edgedf(double gx, double gy, double a);
+double distaa3(double *img, double *gximg, double *gyimg, int w, int c, int xc, int yc, int xi, int yi);
+// Shorthand macro: add ubiquitous parameters dist, gx, gy, img and w and call distaa3()
+#define DISTAA(c,xc,yc,xi,yi) (distaa3(img, gx, gy, w, c, xc, yc, xi, yi))
+void edtaa3(double *img, double *gx, double *gy, int w, int h, short *distx, short *disty, double *dist);
+
+
 void _retainGLid(GLuint id);
 bool _releaseGLid(GLuint id);
+
+
+mat4 *
+mat4_new( void );
+void
+mat4_set_identity( mat4 *self );
+void
+mat4_set_zero( mat4 *self );
+void
+mat4_multiply( mat4 *self, mat4 *other );
+void
+mat4_set_orthographic( mat4 *self,
+float left,   float right,
+float bottom, float top,
+float znear,  float zfar );
+void
+mat4_set_perspective( mat4 *self,
+float fovy,  float aspect,
+float zNear, float zFar);
+void
+mat4_set_frustum( mat4 *self,
+float left,   float right,
+float bottom, float top,
+float znear,  float zfar );
+void
+mat4_set_rotation( mat4 *self,
+float angle,
+float x, float y, float z);
+void
+mat4_set_translation( mat4 *self,
+float x, float y, float z);
+void
+mat4_set_scaling( mat4 *self,
+float x, float y, float z);
+void
+mat4_rotate( mat4 *self,
+float angle,
+float x, float y, float z);
+void
+mat4_translate( mat4 *self,
+float x, float y, float z);
+void
+mat4_scale( mat4 *self,
+float x, float y, float z);
+void mat4_set_lookAtLH(mat4* self, vec3* position, vec3* target, vec3* up);
 
 
 /**
@@ -2233,6 +2395,10 @@ const GLenum type );
 GLuint
 shader_load( const char * vert_filename,
 const char * frag_filename );
+
+
+void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen);
+vec2 get_text_size(texture_font_t * font, char *text);
 
 
 /**
@@ -2424,6 +2590,37 @@ const char * codepoint );
 */
 texture_glyph_t *
 texture_glyph_new( void );
+
+
+/**
+* Returns the size in bytes of a given UTF-8 encoded character surrogate
+*
+* @param character  An UTF-8 encoded character
+*
+* @return  The length of the surrogate in bytes.
+*/
+size_t
+utf8_surrogate_len( const char* character );
+/**
+* Return the length of the given UTF-8 encoded and
+* NULL terminated string.
+*
+* @param string  An UTF-8 encoded string
+*
+* @return  The length of the string in characters.
+*/
+size_t
+utf8_strlen( const char* string );
+/**
+* Converts a given UTF-8 encoded character to its UTF-32 LE equivalent
+*
+* @param character  An UTF-8 encoded character
+*
+* @return  The equivalent of the given character in UTF-32 LE
+*          encoding.
+*/
+uint32_t
+utf8_to_utf32( const char * character );
 
 
 /**
@@ -2908,128 +3105,17 @@ void
 vertex_buffer_erase( vertex_buffer_t * self,
 const size_t index );
 
-
-/**
-* Returns the size in bytes of a given UTF-8 encoded character surrogate
-*
-* @param character  An UTF-8 encoded character
-*
-* @return  The length of the surrogate in bytes.
-*/
-size_t
-utf8_surrogate_len( const char* character );
-/**
-* Return the length of the given UTF-8 encoded and
-* NULL terminated string.
-*
-* @param string  An UTF-8 encoded string
-*
-* @return  The length of the string in characters.
-*/
-size_t
-utf8_strlen( const char* string );
-/**
-* Converts a given UTF-8 encoded character to its UTF-32 LE equivalent
-*
-* @param character  An UTF-8 encoded character
-*
-* @return  The equivalent of the given character in UTF-32 LE
-*          encoding.
-*/
-uint32_t
-utf8_to_utf32( const char * character );
-
-
-double *
-make_distance_mapd( double *img,
-unsigned int width, unsigned int height );
-unsigned char *
-make_distance_mapb( unsigned char *img,
-unsigned int width, unsigned int height );
-
-
-/*
-* Compute the local gradient at edge pixels using convolution filters.
-* The gradient is computed only at edge pixels. At other places in the
-* image, it is never used, and it's mostly zero anyway.
-*/
-void computegradient(double *img, int w, int h, double *gx, double *gy);
-/*
-* A somewhat tricky function to approximate the distance to an edge in a
-* certain pixel, with consideration to either the local gradient (gx,gy)
-* or the direction to the pixel (dx,dy) and the pixel greyscale value a.
-* The latter alternative, using (dx,dy), is the metric used by edtaa2().
-* Using a local estimate of the edge gradient (gx,gy) yields much better
-* accuracy at and near edges, and reduces the error even at distant pixels
-* provided that the gradient direction is accurately estimated.
-*/
-double edgedf(double gx, double gy, double a);
-double distaa3(double *img, double *gximg, double *gyimg, int w, int c, int xc, int yc, int xi, int yi);
-// Shorthand macro: add ubiquitous parameters dist, gx, gy, img and w and call distaa3()
-#define DISTAA(c,xc,yc,xi,yi) (distaa3(img, gx, gy, w, c, xc, yc, xi, yi))
-void edtaa3(double *img, double *gx, double *gy, int w, int h, short *distx, short *disty, double *dist);
-
-
-mat4 *
-mat4_new( void );
-void
-mat4_set_identity( mat4 *self );
-void
-mat4_set_zero( mat4 *self );
-void
-mat4_multiply( mat4 *self, mat4 *other );
-void
-mat4_set_orthographic( mat4 *self,
-float left,   float right,
-float bottom, float top,
-float znear,  float zfar );
-void
-mat4_set_perspective( mat4 *self,
-float fovy,  float aspect,
-float zNear, float zFar);
-void
-mat4_set_frustum( mat4 *self,
-float left,   float right,
-float bottom, float top,
-float znear,  float zfar );
-void
-mat4_set_rotation( mat4 *self,
-float angle,
-float x, float y, float z);
-void
-mat4_set_translation( mat4 *self,
-float x, float y, float z);
-void
-mat4_set_scaling( mat4 *self,
-float x, float y, float z);
-void
-mat4_rotate( mat4 *self,
-float angle,
-float x, float y, float z);
-void
-mat4_translate( mat4 *self,
-float x, float y, float z);
-void
-mat4_scale( mat4 *self,
-float x, float y, float z);
-void mat4_set_lookAtLH(mat4* self, vec3* position, vec3* target, vec3* up);
-
-
-void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen);
-vec2 get_text_size(texture_font_t * font, char *text);
-
 sjs_cameraElement_heap* sjt_cast1;
-sjs_anon6* sjt_dot13;
+sjs_anon7* sjt_dot13;
 sjs_shader sjv_blurHorizontalShader;
 sjs_shader sjv_blurVerticalShader;
-sjs_anon8 sjv_borderPosition;
+sjs_anon5 sjv_borderPosition;
 sjs_shader sjv_boringShader;
 sjs_shader sjv_boxShader;
-sjs_anon5 sjv_buttonState;
-sjs_anon6 sjv_colors;
+sjs_anon6 sjv_buttonState;
+sjs_anon7 sjv_colors;
 sjs_anon1 sjv_console;
 sjs_anon4 sjv_convert;
-int32_t sjv_frame;
 int32_t sjv_i32_max;
 int32_t sjv_i32_min;
 sjs_shader sjv_imageShader;
@@ -3038,9 +3124,10 @@ sjs_anon3 sjv_random;
 sji_element* sjv_root;
 sjs_scene2d sjv_rootScene;
 sjs_windowRenderer sjv_rootWindowRenderer;
-sjs_anon7 sjv_style;
+sjs_anon8 sjv_style;
 sjs_shader sjv_textShader;
 uint32_t sjv_u32_max;
+sjs_string sjv_vertex_location_texture_format;
 
 void sjf_anon1(sjs_anon1* _this);
 void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* _from);
@@ -3066,12 +3153,12 @@ void sjf_anon6(sjs_anon6* _this);
 void sjf_anon6_copy(sjs_anon6* _this, sjs_anon6* _from);
 void sjf_anon6_destroy(sjs_anon6* _this);
 void sjf_anon6_heap(sjs_anon6_heap* _this);
-void sjf_anon6_white(sjs_anon6* _parent, sjs_color* _return);
-void sjf_anon6_white_heap(sjs_anon6* _parent, sjs_color_heap** _return);
 void sjf_anon7(sjs_anon7* _this);
 void sjf_anon7_copy(sjs_anon7* _this, sjs_anon7* _from);
 void sjf_anon7_destroy(sjs_anon7* _this);
 void sjf_anon7_heap(sjs_anon7_heap* _this);
+void sjf_anon7_white(sjs_anon7* _parent, sjs_color* _return);
+void sjf_anon7_white_heap(sjs_anon7* _parent, sjs_color_heap** _return);
 void sjf_anon8(sjs_anon8* _this);
 void sjf_anon8_copy(sjs_anon8* _this, sjs_anon8* _from);
 void sjf_anon8_destroy(sjs_anon8* _this);
@@ -3085,6 +3172,16 @@ void sjf_array_heap_element_copy(sjs_array_heap_element* _this, sjs_array_heap_e
 void sjf_array_heap_element_destroy(sjs_array_heap_element* _this);
 void sjf_array_heap_element_getAt_heap(sjs_array_heap_element* _parent, int32_t index, sji_element** _return);
 void sjf_array_heap_element_heap(sjs_array_heap_element_heap* _this);
+void sjf_array_i32(sjs_array_i32* _this);
+void sjf_array_i32_copy(sjs_array_i32* _this, sjs_array_i32* _from);
+void sjf_array_i32_destroy(sjs_array_i32* _this);
+void sjf_array_i32_heap(sjs_array_i32_heap* _this);
+void sjf_array_i32_initAt(sjs_array_i32* _parent, int32_t index, int32_t item);
+void sjf_array_vertex_location_texture(sjs_array_vertex_location_texture* _this);
+void sjf_array_vertex_location_texture_copy(sjs_array_vertex_location_texture* _this, sjs_array_vertex_location_texture* _from);
+void sjf_array_vertex_location_texture_destroy(sjs_array_vertex_location_texture* _this);
+void sjf_array_vertex_location_texture_heap(sjs_array_vertex_location_texture_heap* _this);
+void sjf_array_vertex_location_texture_initAt(sjs_array_vertex_location_texture* _parent, int32_t index, sjs_vertex_location_texture* item);
 void sjf_cameraElement(sjs_cameraElement* _this);
 sjs_object* sjf_cameraElement_asInterface(sjs_cameraElement* _this, int typeId);
 sji_element* sjf_cameraElement_as_sji_element(sjs_cameraElement* _this);
@@ -3103,11 +3200,8 @@ void sjf_color(sjs_color* _this);
 void sjf_color_copy(sjs_color* _this, sjs_color* _from);
 void sjf_color_destroy(sjs_color* _this);
 void sjf_color_heap(sjs_color_heap* _this);
-void sjf_cubeVertexBuffer(sjs_cubeVertexBuffer* _this);
-void sjf_cubeVertexBuffer_copy(sjs_cubeVertexBuffer* _this, sjs_cubeVertexBuffer* _from);
-void sjf_cubeVertexBuffer_destroy(sjs_cubeVertexBuffer* _this);
-void sjf_cubeVertexBuffer_heap(sjs_cubeVertexBuffer_heap* _this);
-void sjf_cubeVertexBuffer_render(sjs_cubeVertexBuffer* _parent, sjs_scene2d* scene);
+void sjf_cubeVertexBuffer(sjs_vertexBuffer_vertex_location_texture* _return);
+void sjf_cubeVertexBuffer_heap(sjs_vertexBuffer_vertex_location_texture_heap** _return);
 void sjf_fireMouseDown(sji_element* element, sjs_point* point);
 void sjf_fireMouseUp(sji_element* element, sjs_point* point);
 void sjf_mainLoop(void);
@@ -3144,6 +3238,23 @@ void sjf_string(sjs_string* _this);
 void sjf_string_copy(sjs_string* _this, sjs_string* _from);
 void sjf_string_destroy(sjs_string* _this);
 void sjf_string_heap(sjs_string_heap* _this);
+void sjf_vec2(sjs_vec2* _this);
+void sjf_vec2_copy(sjs_vec2* _this, sjs_vec2* _from);
+void sjf_vec2_destroy(sjs_vec2* _this);
+void sjf_vec2_heap(sjs_vec2_heap* _this);
+void sjf_vec3(sjs_vec3* _this);
+void sjf_vec3_copy(sjs_vec3* _this, sjs_vec3* _from);
+void sjf_vec3_destroy(sjs_vec3* _this);
+void sjf_vec3_heap(sjs_vec3_heap* _this);
+void sjf_vertexBuffer_vertex_location_texture(sjs_vertexBuffer_vertex_location_texture* _this);
+void sjf_vertexBuffer_vertex_location_texture_copy(sjs_vertexBuffer_vertex_location_texture* _this, sjs_vertexBuffer_vertex_location_texture* _from);
+void sjf_vertexBuffer_vertex_location_texture_destroy(sjs_vertexBuffer_vertex_location_texture* _this);
+void sjf_vertexBuffer_vertex_location_texture_heap(sjs_vertexBuffer_vertex_location_texture_heap* _this);
+void sjf_vertexBuffer_vertex_location_texture_render(sjs_vertexBuffer_vertex_location_texture* _parent, sjs_scene2d* scene);
+void sjf_vertex_location_texture(sjs_vertex_location_texture* _this);
+void sjf_vertex_location_texture_copy(sjs_vertex_location_texture* _this, sjs_vertex_location_texture* _from);
+void sjf_vertex_location_texture_destroy(sjs_vertex_location_texture* _this);
+void sjf_vertex_location_texture_heap(sjs_vertex_location_texture_heap* _this);
 void sjf_windowRenderer(sjs_windowRenderer* _this);
 void sjf_windowRenderer_copy(sjs_windowRenderer* _this, sjs_windowRenderer* _from);
 void sjf_windowRenderer_destroy(sjs_windowRenderer* _this);
@@ -3185,6 +3296,573 @@ bool _release(void* ptr) {
 }
 
 
+double *
+make_distance_mapd( double *data, unsigned int width, unsigned int height )
+{
+    short * xdist = (short *)  malloc( width * height * sizeof(short) );
+    short * ydist = (short *)  malloc( width * height * sizeof(short) );
+    double * gx   = (double *) calloc( width * height, sizeof(double) );
+    double * gy      = (double *) calloc( width * height, sizeof(double) );
+    double * outside = (double *) calloc( width * height, sizeof(double) );
+    double * inside  = (double *) calloc( width * height, sizeof(double) );
+    double vmin = DBL_MAX;
+    unsigned int i;
+    // Compute outside = edtaa3(bitmap); % Transform background (0's)
+    computegradient( data, width, height, gx, gy);
+    edtaa3(data, gx, gy, width, height, xdist, ydist, outside);
+    for( i=0; i<width*height; ++i)
+    if( outside[i] < 0.0 )
+    outside[i] = 0.0;
+    // Compute inside = edtaa3(1-bitmap); % Transform foreground (1's)
+    memset( gx, 0, sizeof(double)*width*height );
+    memset( gy, 0, sizeof(double)*width*height );
+    for( i=0; i<width*height; ++i)
+    data[i] = 1 - data[i];
+    computegradient( data, width, height, gx, gy );
+    edtaa3( data, gx, gy, width, height, xdist, ydist, inside );
+    for( i=0; i<width*height; ++i )
+    if( inside[i] < 0 )
+    inside[i] = 0.0;
+    // distmap = outside - inside; % Bipolar distance field
+    for( i=0; i<width*height; ++i)
+    {
+        outside[i] -= inside[i];
+        if( outside[i] < vmin )
+        vmin = outside[i];
+    }
+    vmin = fabs(vmin);
+    for( i=0; i<width*height; ++i)
+    {
+        double v = outside[i];
+        if     ( v < -vmin) outside[i] = -vmin;
+        else if( v > +vmin) outside[i] = +vmin;
+        data[i] = (outside[i]+vmin)/(2*vmin);
+    }
+    free( xdist );
+    free( ydist );
+    free( gx );
+    free( gy );
+    free( outside );
+    free( inside );
+    return data;
+}
+unsigned char *
+make_distance_mapb( unsigned char *img,
+unsigned int width, unsigned int height )
+{
+    double * data    = (double *) calloc( width * height, sizeof(double) );
+    unsigned char *out = (unsigned char *) malloc( width * height * sizeof(unsigned char) );
+    unsigned int i;
+    // find minimimum and maximum values
+    double img_min = DBL_MAX;
+    double img_max = DBL_MIN;
+    for( i=0; i<width*height; ++i)
+    {
+        double v = img[i];
+        data[i] = v;
+        if (v > img_max)
+        img_max = v;
+        if (v < img_min)
+        img_min = v;
+    }
+    // Map values from 0 - 255 to 0.0 - 1.0
+    for( i=0; i<width*height; ++i)
+    data[i] = (img[i]-img_min)/img_max;
+    data = make_distance_mapd(data, width, height);
+    // map values from 0.0 - 1.0 to 0 - 255
+    for( i=0; i<width*height; ++i)
+    out[i] = (unsigned char)(255*(1-data[i]));
+    free( data );
+    return out;
+}
+
+
+/*
+* Compute the local gradient at edge pixels using convolution filters.
+* The gradient is computed only at edge pixels. At other places in the
+* image, it is never used, and it's mostly zero anyway.
+*/
+void computegradient(double *img, int w, int h, double *gx, double *gy)
+{
+    int i,j,k;
+    double glength;
+    #define SQRT2 1.4142136
+    // Avoid edges where the kernels would spill over
+    for(i = 1; i < h-1; i++) {
+        for(j = 1; j < w-1; j++) {
+            k = i*w + j;
+            // Compute gradient for edge pixels only
+            if((img[k]>0.0) && (img[k]<1.0)) {
+                gx[k] = -img[k-w-1] - SQRT2*img[k-1] - img[k+w-1] + img[k-w+1] + SQRT2*img[k+1] + img[k+w+1];
+                gy[k] = -img[k-w-1] - SQRT2*img[k-w] - img[k-w+1] + img[k+w-1] + SQRT2*img[k+w] + img[k+w+1];
+                glength = gx[k]*gx[k] + gy[k]*gy[k];
+                if(glength > 0.0) {
+                    // Avoid division by zero
+                    glength = sqrt(glength);
+                    gx[k]=gx[k]/glength;
+                    gy[k]=gy[k]/glength;
+                }
+            }
+        }
+    }
+    // TODO: Compute reasonable values for gx, gy also around the image edges.
+    // (These are zero now, which reduces the accuracy for a 1-pixel wide region
+    // around the image edge.) 2x2 kernels would be suitable for this.
+}
+/*
+* A somewhat tricky function to approximate the distance to an edge in a
+* certain pixel, with consideration to either the local gradient (gx,gy)
+* or the direction to the pixel (dx,dy) and the pixel greyscale value a.
+* The latter alternative, using (dx,dy), is the metric used by edtaa2().
+* Using a local estimate of the edge gradient (gx,gy) yields much better
+* accuracy at and near edges, and reduces the error even at distant pixels
+* provided that the gradient direction is accurately estimated.
+*/
+double edgedf(double gx, double gy, double a)
+{
+    double df, glength, temp, a1;
+    // Either A) gu or gv are zero, or B) both
+    if ((gx == 0) || (gy == 0)) {
+        // Linear approximation is A) correct or B) a fair guess
+        df = 0.5-a;
+    } else {
+        glength = sqrt(gx*gx + gy*gy);
+        if(glength>0) {
+            gx = gx/glength;
+            gy = gy/glength;
+        }
+        /* Everything is symmetric wrt sign and transposition,
+        * so move to first octant (gx>=0, gy>=0, gx>=gy) to
+        * avoid handling all possible edge directions.
+        */
+        gx = fabs(gx);
+        gy = fabs(gy);
+        if(gx<gy) {
+            temp = gx;
+            gx = gy;
+            gy = temp;
+        }
+        a1 = 0.5*gy/gx;
+        if (a < a1) {
+            // 0 <= a < a1
+            df = 0.5*(gx + gy) - sqrt(2.0*gx*gy*a);
+        } else if (a < (1.0-a1)) {
+            // a1 <= a <= 1-a1
+            df = (0.5-a)*gx;
+        } else {
+            // 1-a1 < a <= 1
+            df = -0.5*(gx + gy) + sqrt(2.0*gx*gy*(1.0-a));
+        }
+    }
+    return df;
+}
+double distaa3(double *img, double *gximg, double *gyimg, int w, int c, int xc, int yc, int xi, int yi)
+{
+    double di, df, dx, dy, gx, gy, a;
+    int closest;
+    closest = c-xc-yc*w; // Index to the edge pixel pointed to from c
+    a = img[closest];    // Grayscale value at the edge pixel
+    gx = gximg[closest]; // X gradient component at the edge pixel
+    gy = gyimg[closest]; // Y gradient component at the edge pixel
+    if(a > 1.0) a = 1.0;
+    if(a < 0.0) a = 0.0; // Clip grayscale values outside the range [0,1]
+    if(a == 0.0) return 1000000.0; // Not an object pixel, return "very far" ("don't know yet")
+    dx = (double)xi;
+    dy = (double)yi;
+    di = sqrt(dx*dx + dy*dy); // Length of integer vector, like a traditional EDT
+    if(di==0) {
+        // Use local gradient only at edges
+        // Estimate based on local gradient only
+        df = edgedf(gx, gy, a);
+    } else {
+        // Estimate gradient based on direction to edge (accurate for large di)
+        df = edgedf(dx, dy, a);
+    }
+    return di + df; // Same metric as edtaa2, except at edges (where di=0)
+}
+// Shorthand macro: add ubiquitous parameters dist, gx, gy, img and w and call distaa3()
+#define DISTAA(c,xc,yc,xi,yi) (distaa3(img, gx, gy, w, c, xc, yc, xi, yi))
+void edtaa3(double *img, double *gx, double *gy, int w, int h, short *distx, short *disty, double *dist)
+{
+    int x, y, i, c;
+    int offset_u, offset_ur, offset_r, offset_rd,
+    offset_d, offset_dl, offset_l, offset_lu;
+    double olddist, newdist;
+    int cdistx, cdisty, newdistx, newdisty;
+    int changed;
+    double epsilon = 1e-3;
+    /* Initialize index offsets for the current image width */
+    offset_u = -w;
+    offset_ur = -w+1;
+    offset_r = 1;
+    offset_rd = w+1;
+    offset_d = w;
+    offset_dl = w-1;
+    offset_l = -1;
+    offset_lu = -w-1;
+    /* Initialize the distance images */
+    for(i=0; i<w*h; i++) {
+        distx[i] = 0; // At first, all pixels point to
+        disty[i] = 0; // themselves as the closest known.
+        if(img[i] <= 0.0)
+        {
+            dist[i]= 1000000.0; // Big value, means "not set yet"
+        }
+        else if (img[i]<1.0) {
+            dist[i] = edgedf(gx[i], gy[i], img[i]); // Gradient-assisted estimate
+        }
+        else {
+            dist[i]= 0.0; // Inside the object
+        }
+    }
+    /* Perform the transformation */
+    do
+    {
+        changed = 0;
+        /* Scan rows, except first row */
+        for(y=1; y<h; y++)
+        {
+            /* move index to leftmost pixel of current row */
+            i = y*w;
+            /* scan right, propagate distances from above & left */
+            /* Leftmost pixel is special, has no left neighbors */
+            olddist = dist[i];
+            if(olddist > 0) // If non-zero distance or not set yet
+            {
+                c = i + offset_u; // Index of candidate for testing
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx;
+                newdisty = cdisty+1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
+                {
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
+                }
+                c = i+offset_ur;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx-1;
+                newdisty = cdisty+1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
+                {
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    changed = 1;
+                }
+            }
+            i++;
+            /* Middle pixels have all neighbors */
+            for(x=1; x<w-1; x++, i++)
+            {
+                olddist = dist[i];
+                if(olddist <= 0) continue; // No need to update further
+                c = i+offset_l;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx+1;
+                newdisty = cdisty;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
+                {
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
+                }
+                c = i+offset_lu;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx+1;
+                newdisty = cdisty+1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
+                {
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
+                }
+                c = i+offset_u;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx;
+                newdisty = cdisty+1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
+                {
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
+                }
+                c = i+offset_ur;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx-1;
+                newdisty = cdisty+1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
+                {
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    changed = 1;
+                }
+            }
+            /* Rightmost pixel of row is special, has no right neighbors */
+            olddist = dist[i];
+            if(olddist > 0) // If not already zero distance
+            {
+                c = i+offset_l;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx+1;
+                newdisty = cdisty;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
+                {
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
+                }
+                c = i+offset_lu;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx+1;
+                newdisty = cdisty+1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
+                {
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
+                }
+                c = i+offset_u;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx;
+                newdisty = cdisty+1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
+                {
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    changed = 1;
+                }
+            }
+            /* Move index to second rightmost pixel of current row. */
+            /* Rightmost pixel is skipped, it has no right neighbor. */
+            i = y*w + w-2;
+            /* scan left, propagate distance from right */
+            for(x=w-2; x>=0; x--, i--)
+            {
+                olddist = dist[i];
+                if(olddist <= 0) continue; // Already zero distance
+                c = i+offset_r;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx-1;
+                newdisty = cdisty;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
+                {
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    changed = 1;
+                }
+            }
+        }
+        /* Scan rows in reverse order, except last row */
+        for(y=h-2; y>=0; y--)
+        {
+            /* move index to rightmost pixel of current row */
+            i = y*w + w-1;
+            /* Scan left, propagate distances from below & right */
+            /* Rightmost pixel is special, has no right neighbors */
+            olddist = dist[i];
+            if(olddist > 0) // If not already zero distance
+            {
+                c = i+offset_d;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx;
+                newdisty = cdisty-1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
+                {
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
+                }
+                c = i+offset_dl;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx+1;
+                newdisty = cdisty-1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
+                {
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    changed = 1;
+                }
+            }
+            i--;
+            /* Middle pixels have all neighbors */
+            for(x=w-2; x>0; x--, i--)
+            {
+                olddist = dist[i];
+                if(olddist <= 0) continue; // Already zero distance
+                c = i+offset_r;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx-1;
+                newdisty = cdisty;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
+                {
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
+                }
+                c = i+offset_rd;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx-1;
+                newdisty = cdisty-1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
+                {
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
+                }
+                c = i+offset_d;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx;
+                newdisty = cdisty-1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
+                {
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
+                }
+                c = i+offset_dl;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx+1;
+                newdisty = cdisty-1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
+                {
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    changed = 1;
+                }
+            }
+            /* Leftmost pixel is special, has no left neighbors */
+            olddist = dist[i];
+            if(olddist > 0) // If not already zero distance
+            {
+                c = i+offset_r;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx-1;
+                newdisty = cdisty;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
+                {
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
+                }
+                c = i+offset_rd;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx-1;
+                newdisty = cdisty-1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
+                {
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    olddist=newdist;
+                    changed = 1;
+                }
+                c = i+offset_d;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx;
+                newdisty = cdisty-1;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
+                {
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    changed = 1;
+                }
+            }
+            /* Move index to second leftmost pixel of current row. */
+            /* Leftmost pixel is skipped, it has no left neighbor. */
+            i = y*w + 1;
+            for(x=1; x<w; x++, i++)
+            {
+                /* scan right, propagate distance from left */
+                olddist = dist[i];
+                if(olddist <= 0) continue; // Already zero distance
+                c = i+offset_l;
+                cdistx = distx[c];
+                cdisty = disty[c];
+                newdistx = cdistx+1;
+                newdisty = cdisty;
+                newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
+                if(newdist < olddist-epsilon)
+                {
+                    distx[i]=newdistx;
+                    disty[i]=newdisty;
+                    dist[i]=newdist;
+                    changed = 1;
+                }
+            }
+        }
+    }
+    while(changed); // Sweep until no more updates are made
+    /* The transformation is completed. */
+}
+
+
 void _retainGLid(GLuint id) {
     GLid_s* p;
     HASH_FIND_PTR(g_GLids, &id, p);
@@ -3212,137 +3890,239 @@ bool _releaseGLid(GLuint id) {
 }
 
 
-GLuint png_texture_load(const char * file_name, int * width, int * height)
+typedef struct vec3 {
+    float x, y, z;
+};
+void vec3_subtract(vec3* out, vec3* v0, vec3* v1) {
+    out->x = v0->x - v1->x;
+    out->y = v0->y - v1->y;
+    out->z = v0->z - v1->z;
+}
+void vec3_normalize(vec3* out, vec3* in) {
+    float t = sqrtf(in->x * in->x + in->y * in->y + in->z * in->z);
+    out->x = in->x / t;
+    out->y = in->y / t;
+    out->z = in->z / t;
+}
+void vec3_cross(vec3* out, vec3* v0, vec3* v1) {
+    out->x = v0->y * v1->z - v0->z * v1->y;
+    out->y = v0->z * v1->x - v0->x * v1->z;
+    out->z = v0->x * v1->y - v0->y * v1->x;
+}
+float vec3_dot(vec3* v0, vec3* v1) {
+    return v0->x * v1->x + v0->y * v1->y + v0->z * v1->z;
+}
+void mat4_set_lookAtLH(mat4* self, vec3* position, vec3* target, vec3* up) {
+    vec3 zaxis;
+    vec3 temp;
+    vec3_subtract(&temp, target, position);
+    vec3_normalize(&zaxis, &temp);
+    vec3 xaxis;
+    vec3 temp2;
+    vec3_cross(&temp2, up, &zaxis);
+    vec3_normalize(&xaxis, &temp2);
+    vec3 yaxis;
+    vec3_cross(&yaxis, &zaxis, &xaxis);
+    self->m00 = xaxis.x;
+    self->m01 = yaxis.x;
+    self->m02 = zaxis.x;
+    self->m03 = 0.0f;
+    self->m10 = xaxis.y;
+    self->m11 = yaxis.y;
+    self->m12 = zaxis.y;
+    self->m13 = 0.0f;
+    self->m20 = xaxis.z;
+    self->m21 = yaxis.z;
+    self->m22 = zaxis.z;
+    self->m23 = 0.0f;
+    self->m30 = -vec3_dot(&xaxis, position);
+    self->m31 = -vec3_dot(&yaxis, position);
+    self->m32 = -vec3_dot(&zaxis, position);
+    self->m33 = 1.0f;
+}
+mat4 *
+mat4_new( void )
 {
-    // This function was originally written by David Grayson for
-    // https://github.com/DavidEGrayson/ahrs-visualizer
-    png_byte header[8];
-    FILE *fp = fopen(file_name, "rb");
-    if (fp == 0)
+    mat4 *self = (mat4 *) malloc( sizeof(mat4) );
+    return self;
+}
+void
+mat4_set_zero( mat4 *self )
+{
+    if (!self)
+    return;
+    memset( self, 0, sizeof( mat4 ));
+}
+void
+mat4_set_identity( mat4 *self )
+{
+    if (!self)
+    return;
+    memset( self, 0, sizeof( mat4 ));
+    self->m00 = 1.0;
+    self->m11 = 1.0;
+    self->m22 = 1.0;
+    self->m33 = 1.0;
+}
+void
+mat4_multiply( mat4 *self, mat4 *other )
+{
+    mat4 m;
+    size_t i;
+    if (!self || !other)
+    return;
+    for( i=0; i<4; ++i )
     {
-        perror(file_name);
-        return 0;
+        m.data[i*4+0] =
+        (self->data[i*4+0] * other->data[0*4+0]) +
+        (self->data[i*4+1] * other->data[1*4+0]) +
+        (self->data[i*4+2] * other->data[2*4+0]) +
+        (self->data[i*4+3] * other->data[3*4+0]) ;
+        m.data[i*4+1] =
+        (self->data[i*4+0] * other->data[0*4+1]) +
+        (self->data[i*4+1] * other->data[1*4+1]) +
+        (self->data[i*4+2] * other->data[2*4+1]) +
+        (self->data[i*4+3] * other->data[3*4+1]) ;
+        m.data[i*4+2] =
+        (self->data[i*4+0] * other->data[0*4+2]) +
+        (self->data[i*4+1] * other->data[1*4+2]) +
+        (self->data[i*4+2] * other->data[2*4+2]) +
+        (self->data[i*4+3] * other->data[3*4+2]) ;
+        m.data[i*4+3] =
+        (self->data[i*4+0] * other->data[0*4+3]) +
+        (self->data[i*4+1] * other->data[1*4+3]) +
+        (self->data[i*4+2] * other->data[2*4+3]) +
+        (self->data[i*4+3] * other->data[3*4+3]) ;
     }
-    // read the header
-    fread(header, 1, 8, fp);
-    if (png_sig_cmp(header, 0, 8))
-    {
-        fprintf(stderr, "error: %s is not a PNG.\n", file_name);
-        fclose(fp);
-        return 0;
-    }
-    png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-    if (!png_ptr)
-    {
-        fprintf(stderr, "error: png_create_read_struct returned 0.\n");
-        fclose(fp);
-        return 0;
-    }
-    // create png info struct
-    png_infop info_ptr = png_create_info_struct(png_ptr);
-    if (!info_ptr)
-    {
-        fprintf(stderr, "error: png_create_info_struct returned 0.\n");
-        png_destroy_read_struct(&png_ptr, (png_infopp)NULL, (png_infopp)NULL);
-        fclose(fp);
-        return 0;
-    }
-    // create png info struct
-    png_infop end_info = png_create_info_struct(png_ptr);
-    if (!end_info)
-    {
-        fprintf(stderr, "error: png_create_info_struct returned 0.\n");
-        png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) NULL);
-        fclose(fp);
-        return 0;
-    }
-    // the code in this if statement gets called if libpng encounters an error
-    if (setjmp(png_jmpbuf(png_ptr))) {
-        fprintf(stderr, "error from libpng\n");
-        png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
-        fclose(fp);
-        return 0;
-    }
-    // init png reading
-    png_init_io(png_ptr, fp);
-    // let libpng know you already read the first 8 bytes
-    png_set_sig_bytes(png_ptr, 8);
-    // read all the info up to the image data
-    png_read_info(png_ptr, info_ptr);
-    // variables to pass to get info
-    int bit_depth, color_type;
-    png_uint_32 temp_width, temp_height;
-    // get info about png
-    png_get_IHDR(png_ptr, info_ptr, &temp_width, &temp_height, &bit_depth, &color_type,
-    NULL, NULL, NULL);
-    if (width){ *width = temp_width; }
-    if (height){ *height = temp_height; }
-    //printf("%s: %lux%lu %d\n", file_name, temp_width, temp_height, color_type);
-    if (bit_depth != 8)
-    {
-        fprintf(stderr, "%s: Unsupported bit depth %d.  Must be 8.\n", file_name, bit_depth);
-        return 0;
-    }
-    GLint format;
-    switch(color_type)
-    {
-        case PNG_COLOR_TYPE_RGB:
-        format = GL_RGB;
-        break;
-        case PNG_COLOR_TYPE_RGB_ALPHA:
-        format = GL_RGBA;
-        break;
-        default:
-        fprintf(stderr, "%s: Unknown libpng color type %d.\n", file_name, color_type);
-        return 0;
-    }
-    // Update the png info struct.
-    png_read_update_info(png_ptr, info_ptr);
-    // Row size in bytes.
-    int rowbytes = png_get_rowbytes(png_ptr, info_ptr);
-    // glTexImage2d requires rows to be 4-byte aligned
-    rowbytes += 3 - ((rowbytes-1) % 4);
-    // Allocate the image_data as a big block, to be given to opengl
-    png_byte * image_data = (png_byte *)malloc(rowbytes * temp_height * sizeof(png_byte)+15);
-    if (image_data == NULL)
-    {
-        fprintf(stderr, "error: could not allocate memory for PNG image data\n");
-        png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
-        fclose(fp);
-        return 0;
-    }
-    // row_pointers is for pointing to image_data for reading the png with libpng
-    png_byte ** row_pointers = (png_byte **)malloc(temp_height * sizeof(png_byte *));
-    if (row_pointers == NULL)
-    {
-        fprintf(stderr, "error: could not allocate memory for PNG row pointers\n");
-        png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
-        free(image_data);
-        fclose(fp);
-        return 0;
-    }
-    // set the individual row_pointers to point at the correct offsets of image_data
-    for (unsigned int i = 0; i < temp_height; i++)
-    {
-        row_pointers[temp_height - 1 - i] = image_data + i * rowbytes;
-    }
-    // read the png into image_data through row_pointers
-    png_read_image(png_ptr, row_pointers);
-    // Generate the OpenGL texture object
-    GLuint texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-    glTexImage2D(GL_TEXTURE_2D, 0, format, temp_width, temp_height, 0, format, GL_UNSIGNED_BYTE, image_data);
-    // clean up
-    png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
-    free(image_data);
-    free(row_pointers);
-    fclose(fp);
-    return texture;
+    memcpy( self, &m, sizeof( mat4 ) );
+}
+void
+mat4_set_orthographic( mat4 *self,
+float left,   float right,
+float bottom, float top,
+float znear,  float zfar )
+{
+    if (!self)
+    return;
+    if (left == right || bottom == top || znear == zfar)
+    return;
+    mat4_set_zero( self );
+    self->m00 = +2.0f/(right-left);
+    self->m30 = -(right+left)/(right-left);
+    self->m11 = +2.0f/(top-bottom);
+    self->m31 = -(top+bottom)/(top-bottom);
+    self->m22 = -2.0f/(zfar-znear);
+    self->m32 = -(zfar+znear)/(zfar-znear);
+    self->m33 = 1.0f;
+}
+void
+mat4_set_perspective( mat4 *self,
+float fovy,  float aspect,
+float znear, float zfar)
+{
+    mat4_set_zero(self);
+    float yscale = 1.0f / tanf(fovy / 180.0f / 2.0f);
+    float xscale = yscale * aspect;
+    self->m00 = xscale;
+    self->m11 = yscale;
+    self->m22 = zfar/(zfar-znear);
+    self->m23 = 1.0f;
+    self->m32 = -znear*zfar/(zfar-znear);
+}
+void
+mat4_set_frustum( mat4 *self,
+float left,   float right,
+float bottom, float top,
+float znear,  float zfar )
+{
+    if (!self)
+    return;
+    if (left == right || bottom == top || znear == zfar)
+    return;
+    mat4_set_zero( self );
+    self->m00 = (2.0f*znear)/(right-left);
+    self->m20 = (right+left)/(right-left);
+    self->m11 = (2.0f*znear)/(top-bottom);
+    self->m21 = (top+bottom)/(top-bottom);
+    self->m22 = -(zfar+znear)/(zfar-znear);
+    self->m32 = -(2.0f*zfar*znear)/(zfar-znear);
+    self->m23 = -1.0f;
+}
+void
+mat4_set_rotation( mat4 *self,
+float angle,
+float x, float y, float z)
+{
+    float c, s, norm;
+    if (!self)
+    return;
+    c = (float)cos( M_PI*angle/180.0 );
+    s = (float)sin( M_PI*angle/180.0 );
+    norm = (float)sqrt(x*x+y*y+z*z);
+    x /= norm; y /= norm; z /= norm;
+    mat4_set_identity( self );
+    self->m00 = x*x*(1-c)+c;
+    self->m10 = y*x*(1-c)-z*s;
+    self->m20 = z*x*(1-c)+y*s;
+    self->m01 =  x*y*(1-c)+z*s;
+    self->m11 =  y*y*(1-c)+c;
+    self->m21 =  z*y*(1-c)-x*s;
+    self->m02 = x*z*(1-c)-y*s;
+    self->m12 = y*z*(1-c)+x*s;
+    self->m22 = z*z*(1-c)+c;
+}
+void
+mat4_set_translation( mat4 *self,
+float x, float y, float z)
+{
+    if (!self)
+    return;
+    mat4_set_identity( self );
+    self-> m30 = x;
+    self-> m31 = y;
+    self-> m32 = z;
+}
+void
+mat4_set_scaling( mat4 *self,
+float x, float y, float z)
+{
+    if (!self)
+    return;
+    mat4_set_identity( self );
+    self-> m00 = x;
+    self-> m11 = y;
+    self-> m22 = z;
+}
+void
+mat4_rotate( mat4 *self,
+float angle,
+float x, float y, float z)
+{
+    mat4 m;
+    if (!self)
+    return;
+    mat4_set_rotation( &m, angle, x, y, z);
+    mat4_multiply( self, &m );
+}
+void
+mat4_translate( mat4 *self,
+float x, float y, float z)
+{
+    mat4 m;
+    if (!self)
+    return;
+    mat4_set_translation( &m, x, y, z);
+    mat4_multiply( self, &m );
+}
+void
+mat4_scale( mat4 *self,
+float x, float y, float z)
+{
+    mat4 m;
+    if (!self)
+    return;
+    mat4_set_scaling( &m, x, y, z);
+    mat4_multiply( self, &m );
 }
 
 
@@ -3501,6 +4281,193 @@ shader_read( const char *filename )
             exit(1);
         }
         return handle;
+    }
+
+
+    void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen) {
+        pen->y += (float)(int)font->ascender;
+        size_t i;
+        float r = color->red, g = color->green, b = color->blue, a = color->alpha;
+        for (i = 0; i < strlen(text); ++i) {
+            texture_glyph_t *glyph = texture_font_get_glyph( font, text + i );
+            if (glyph != NULL) {
+                float kerning = 0.0f;
+                if( i > 0) {
+                    kerning = texture_glyph_get_kerning( glyph, text + i - 1 );
+                }
+                pen->x += kerning;
+                float x0 = (float)(int)( pen->x + glyph->offset_x );
+                float y0 = (float)(int)( pen->y + glyph->height - glyph->offset_y );
+                float x1 = (float)(int)( x0 + glyph->width );
+                float y1 = (float)(int)( y0 - glyph->height );
+                float s0 = glyph->s0;
+                float t0 = glyph->t0;
+                float s1 = glyph->s1;
+                float t1 = glyph->t1;
+                GLuint index = (GLuint)buffer->vertices->size;
+                GLuint indices[] = { //
+                index, index+1, index+2,
+                index, index+2, index+3 };
+                vertex3_texture2_color3_t vertices[] = { //
+                { x0, y1, 0.0f,  s0,t0,  r,g,b,a },
+                { x0, y0, 0.0f,  s0,t1,  r,g,b,a },
+                { x1, y0, 0.0f,  s1,t1,  r,g,b,a },
+                { x1, y1, 0.0f,  s1,t0,  r,g,b,a } };
+                vertex_buffer_push_back_indices( buffer, indices, 6 );
+                vertex_buffer_push_back_vertices( buffer, vertices, 4 );
+                pen->x += glyph->advance_x;
+            }
+        }
+    }
+    vec2 get_text_size(texture_font_t * font, char *text) {
+        vec2 size = {{ 0, font->height }};
+        size_t i;
+        for( i = 0; i < strlen(text); ++i ) {
+            texture_glyph_t *glyph = texture_font_get_glyph(font, text + i);
+            if (glyph != NULL) {
+                float kerning = 0.0f;
+                if( i > 0) {
+                    kerning = texture_glyph_get_kerning(glyph, text + i - 1);
+                }
+                size.x += kerning;
+                size.x += glyph->advance_x;
+            }
+        }
+        return size;
+    }
+
+
+    GLuint png_texture_load(const char * file_name, int * width, int * height)
+    {
+        // This function was originally written by David Grayson for
+        // https://github.com/DavidEGrayson/ahrs-visualizer
+        png_byte header[8];
+        FILE *fp = fopen(file_name, "rb");
+        if (fp == 0)
+        {
+            perror(file_name);
+            return 0;
+        }
+        // read the header
+        fread(header, 1, 8, fp);
+        if (png_sig_cmp(header, 0, 8))
+        {
+            fprintf(stderr, "error: %s is not a PNG.\n", file_name);
+            fclose(fp);
+            return 0;
+        }
+        png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+        if (!png_ptr)
+        {
+            fprintf(stderr, "error: png_create_read_struct returned 0.\n");
+            fclose(fp);
+            return 0;
+        }
+        // create png info struct
+        png_infop info_ptr = png_create_info_struct(png_ptr);
+        if (!info_ptr)
+        {
+            fprintf(stderr, "error: png_create_info_struct returned 0.\n");
+            png_destroy_read_struct(&png_ptr, (png_infopp)NULL, (png_infopp)NULL);
+            fclose(fp);
+            return 0;
+        }
+        // create png info struct
+        png_infop end_info = png_create_info_struct(png_ptr);
+        if (!end_info)
+        {
+            fprintf(stderr, "error: png_create_info_struct returned 0.\n");
+            png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) NULL);
+            fclose(fp);
+            return 0;
+        }
+        // the code in this if statement gets called if libpng encounters an error
+        if (setjmp(png_jmpbuf(png_ptr))) {
+            fprintf(stderr, "error from libpng\n");
+            png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
+            fclose(fp);
+            return 0;
+        }
+        // init png reading
+        png_init_io(png_ptr, fp);
+        // let libpng know you already read the first 8 bytes
+        png_set_sig_bytes(png_ptr, 8);
+        // read all the info up to the image data
+        png_read_info(png_ptr, info_ptr);
+        // variables to pass to get info
+        int bit_depth, color_type;
+        png_uint_32 temp_width, temp_height;
+        // get info about png
+        png_get_IHDR(png_ptr, info_ptr, &temp_width, &temp_height, &bit_depth, &color_type,
+        NULL, NULL, NULL);
+        if (width){ *width = temp_width; }
+        if (height){ *height = temp_height; }
+        //printf("%s: %lux%lu %d\n", file_name, temp_width, temp_height, color_type);
+        if (bit_depth != 8)
+        {
+            fprintf(stderr, "%s: Unsupported bit depth %d.  Must be 8.\n", file_name, bit_depth);
+            return 0;
+        }
+        GLint format;
+        switch(color_type)
+        {
+            case PNG_COLOR_TYPE_RGB:
+            format = GL_RGB;
+            break;
+            case PNG_COLOR_TYPE_RGB_ALPHA:
+            format = GL_RGBA;
+            break;
+            default:
+            fprintf(stderr, "%s: Unknown libpng color type %d.\n", file_name, color_type);
+            return 0;
+        }
+        // Update the png info struct.
+        png_read_update_info(png_ptr, info_ptr);
+        // Row size in bytes.
+        int rowbytes = png_get_rowbytes(png_ptr, info_ptr);
+        // glTexImage2d requires rows to be 4-byte aligned
+        rowbytes += 3 - ((rowbytes-1) % 4);
+        // Allocate the image_data as a big block, to be given to opengl
+        png_byte * image_data = (png_byte *)malloc(rowbytes * temp_height * sizeof(png_byte)+15);
+        if (image_data == NULL)
+        {
+            fprintf(stderr, "error: could not allocate memory for PNG image data\n");
+            png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
+            fclose(fp);
+            return 0;
+        }
+        // row_pointers is for pointing to image_data for reading the png with libpng
+        png_byte ** row_pointers = (png_byte **)malloc(temp_height * sizeof(png_byte *));
+        if (row_pointers == NULL)
+        {
+            fprintf(stderr, "error: could not allocate memory for PNG row pointers\n");
+            png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
+            free(image_data);
+            fclose(fp);
+            return 0;
+        }
+        // set the individual row_pointers to point at the correct offsets of image_data
+        for (unsigned int i = 0; i < temp_height; i++)
+        {
+            row_pointers[temp_height - 1 - i] = image_data + i * rowbytes;
+        }
+        // read the png into image_data through row_pointers
+        png_read_image(png_ptr, row_pointers);
+        // Generate the OpenGL texture object
+        GLuint texture;
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+        glTexImage2D(GL_TEXTURE_2D, 0, format, temp_width, temp_height, 0, format, GL_UNSIGNED_BYTE, image_data);
+        // clean up
+        png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
+        free(image_data);
+        free(row_pointers);
+        fclose(fp);
+        return texture;
     }
 
 
@@ -4323,6 +5290,69 @@ shader_read( const char *filename )
             g->t0 *= mulh;
             g->t1 *= mulh;
         }
+    }
+
+
+    // ----------------------------------------------------- utf8_surrogate_len ---
+    size_t
+    utf8_surrogate_len( const char* character )
+    {
+        size_t result = 0;
+        char test_char;
+        if (!character)
+        return 0;
+        test_char = character[0];
+        if ((test_char & 0x80) == 0)
+        return 1;
+        while (test_char & 0x80)
+        {
+            test_char <<= 1;
+            result++;
+        }
+        return result;
+    }
+    // ------------------------------------------------------------ utf8_strlen ---
+    size_t
+    utf8_strlen( const char* string )
+    {
+        const char* ptr = string;
+        size_t result = 0;
+        while (*ptr)
+        {
+            ptr += utf8_surrogate_len(ptr);
+            result++;
+        }
+        return result;
+    }
+    uint32_t
+    utf8_to_utf32( const char * character )
+    {
+        uint32_t result = -1;
+        if( !character )
+        {
+            return result;
+        }
+        if( ( character[0] & 0x80 ) == 0x0 )
+        {
+            result = character[0];
+        }
+        if( ( character[0] & 0xC0 ) == 0xC0 )
+        {
+            result = ( ( character[0] & 0x3F ) << 6 ) | ( character[1] & 0x3F );
+        }
+        if( ( character[0] & 0xE0 ) == 0xE0 )
+        {
+            result = ( ( character[0] & 0x1F ) << ( 6 + 6 ) ) | ( ( character[1] & 0x3F ) << 6 ) | ( character[2] & 0x3F );
+        }
+        if( ( character[0] & 0xF0 ) == 0xF0 )
+        {
+            result = ( ( character[0] & 0x0F ) << ( 6 + 6 + 6 ) ) | ( ( character[1] & 0x3F ) << ( 6 + 6 ) ) | ( ( character[2] & 0x3F ) << 6 ) | ( character[3] & 0x3F );
+        }
+        if( ( character[0] & 0xF8 ) == 0xF8 )
+        {
+            result = ( ( character[0] & 0x07 ) << ( 6 + 6 + 6 + 6 ) ) | ( ( character[1] & 0x3F ) << ( 6 + 6 + 6 ) ) | ( ( character[2] & 0x3F ) << ( 6 + 6 ) ) | ( ( character[3] & 0x3F ) << 6 ) | ( character[4] & 0x3F );
+        }
+        return result;
     }
 
 
@@ -5227,925 +6257,6 @@ shader_read( const char *filename )
         self->state = DIRTY;
     }
 
-
-    // ----------------------------------------------------- utf8_surrogate_len ---
-    size_t
-    utf8_surrogate_len( const char* character )
-    {
-        size_t result = 0;
-        char test_char;
-        if (!character)
-        return 0;
-        test_char = character[0];
-        if ((test_char & 0x80) == 0)
-        return 1;
-        while (test_char & 0x80)
-        {
-            test_char <<= 1;
-            result++;
-        }
-        return result;
-    }
-    // ------------------------------------------------------------ utf8_strlen ---
-    size_t
-    utf8_strlen( const char* string )
-    {
-        const char* ptr = string;
-        size_t result = 0;
-        while (*ptr)
-        {
-            ptr += utf8_surrogate_len(ptr);
-            result++;
-        }
-        return result;
-    }
-    uint32_t
-    utf8_to_utf32( const char * character )
-    {
-        uint32_t result = -1;
-        if( !character )
-        {
-            return result;
-        }
-        if( ( character[0] & 0x80 ) == 0x0 )
-        {
-            result = character[0];
-        }
-        if( ( character[0] & 0xC0 ) == 0xC0 )
-        {
-            result = ( ( character[0] & 0x3F ) << 6 ) | ( character[1] & 0x3F );
-        }
-        if( ( character[0] & 0xE0 ) == 0xE0 )
-        {
-            result = ( ( character[0] & 0x1F ) << ( 6 + 6 ) ) | ( ( character[1] & 0x3F ) << 6 ) | ( character[2] & 0x3F );
-        }
-        if( ( character[0] & 0xF0 ) == 0xF0 )
-        {
-            result = ( ( character[0] & 0x0F ) << ( 6 + 6 + 6 ) ) | ( ( character[1] & 0x3F ) << ( 6 + 6 ) ) | ( ( character[2] & 0x3F ) << 6 ) | ( character[3] & 0x3F );
-        }
-        if( ( character[0] & 0xF8 ) == 0xF8 )
-        {
-            result = ( ( character[0] & 0x07 ) << ( 6 + 6 + 6 + 6 ) ) | ( ( character[1] & 0x3F ) << ( 6 + 6 + 6 ) ) | ( ( character[2] & 0x3F ) << ( 6 + 6 ) ) | ( ( character[3] & 0x3F ) << 6 ) | ( character[4] & 0x3F );
-        }
-        return result;
-    }
-
-
-    double *
-    make_distance_mapd( double *data, unsigned int width, unsigned int height )
-    {
-        short * xdist = (short *)  malloc( width * height * sizeof(short) );
-        short * ydist = (short *)  malloc( width * height * sizeof(short) );
-        double * gx   = (double *) calloc( width * height, sizeof(double) );
-        double * gy      = (double *) calloc( width * height, sizeof(double) );
-        double * outside = (double *) calloc( width * height, sizeof(double) );
-        double * inside  = (double *) calloc( width * height, sizeof(double) );
-        double vmin = DBL_MAX;
-        unsigned int i;
-        // Compute outside = edtaa3(bitmap); % Transform background (0's)
-        computegradient( data, width, height, gx, gy);
-        edtaa3(data, gx, gy, width, height, xdist, ydist, outside);
-        for( i=0; i<width*height; ++i)
-        if( outside[i] < 0.0 )
-        outside[i] = 0.0;
-        // Compute inside = edtaa3(1-bitmap); % Transform foreground (1's)
-        memset( gx, 0, sizeof(double)*width*height );
-        memset( gy, 0, sizeof(double)*width*height );
-        for( i=0; i<width*height; ++i)
-        data[i] = 1 - data[i];
-        computegradient( data, width, height, gx, gy );
-        edtaa3( data, gx, gy, width, height, xdist, ydist, inside );
-        for( i=0; i<width*height; ++i )
-        if( inside[i] < 0 )
-        inside[i] = 0.0;
-        // distmap = outside - inside; % Bipolar distance field
-        for( i=0; i<width*height; ++i)
-        {
-            outside[i] -= inside[i];
-            if( outside[i] < vmin )
-            vmin = outside[i];
-        }
-        vmin = fabs(vmin);
-        for( i=0; i<width*height; ++i)
-        {
-            double v = outside[i];
-            if     ( v < -vmin) outside[i] = -vmin;
-            else if( v > +vmin) outside[i] = +vmin;
-            data[i] = (outside[i]+vmin)/(2*vmin);
-        }
-        free( xdist );
-        free( ydist );
-        free( gx );
-        free( gy );
-        free( outside );
-        free( inside );
-        return data;
-    }
-    unsigned char *
-    make_distance_mapb( unsigned char *img,
-    unsigned int width, unsigned int height )
-    {
-        double * data    = (double *) calloc( width * height, sizeof(double) );
-        unsigned char *out = (unsigned char *) malloc( width * height * sizeof(unsigned char) );
-        unsigned int i;
-        // find minimimum and maximum values
-        double img_min = DBL_MAX;
-        double img_max = DBL_MIN;
-        for( i=0; i<width*height; ++i)
-        {
-            double v = img[i];
-            data[i] = v;
-            if (v > img_max)
-            img_max = v;
-            if (v < img_min)
-            img_min = v;
-        }
-        // Map values from 0 - 255 to 0.0 - 1.0
-        for( i=0; i<width*height; ++i)
-        data[i] = (img[i]-img_min)/img_max;
-        data = make_distance_mapd(data, width, height);
-        // map values from 0.0 - 1.0 to 0 - 255
-        for( i=0; i<width*height; ++i)
-        out[i] = (unsigned char)(255*(1-data[i]));
-        free( data );
-        return out;
-    }
-
-
-    /*
-    * Compute the local gradient at edge pixels using convolution filters.
-    * The gradient is computed only at edge pixels. At other places in the
-    * image, it is never used, and it's mostly zero anyway.
-    */
-    void computegradient(double *img, int w, int h, double *gx, double *gy)
-    {
-        int i,j,k;
-        double glength;
-        #define SQRT2 1.4142136
-        // Avoid edges where the kernels would spill over
-        for(i = 1; i < h-1; i++) {
-            for(j = 1; j < w-1; j++) {
-                k = i*w + j;
-                // Compute gradient for edge pixels only
-                if((img[k]>0.0) && (img[k]<1.0)) {
-                    gx[k] = -img[k-w-1] - SQRT2*img[k-1] - img[k+w-1] + img[k-w+1] + SQRT2*img[k+1] + img[k+w+1];
-                    gy[k] = -img[k-w-1] - SQRT2*img[k-w] - img[k-w+1] + img[k+w-1] + SQRT2*img[k+w] + img[k+w+1];
-                    glength = gx[k]*gx[k] + gy[k]*gy[k];
-                    if(glength > 0.0) {
-                        // Avoid division by zero
-                        glength = sqrt(glength);
-                        gx[k]=gx[k]/glength;
-                        gy[k]=gy[k]/glength;
-                    }
-                }
-            }
-        }
-        // TODO: Compute reasonable values for gx, gy also around the image edges.
-        // (These are zero now, which reduces the accuracy for a 1-pixel wide region
-        // around the image edge.) 2x2 kernels would be suitable for this.
-    }
-    /*
-    * A somewhat tricky function to approximate the distance to an edge in a
-    * certain pixel, with consideration to either the local gradient (gx,gy)
-    * or the direction to the pixel (dx,dy) and the pixel greyscale value a.
-    * The latter alternative, using (dx,dy), is the metric used by edtaa2().
-    * Using a local estimate of the edge gradient (gx,gy) yields much better
-    * accuracy at and near edges, and reduces the error even at distant pixels
-    * provided that the gradient direction is accurately estimated.
-    */
-    double edgedf(double gx, double gy, double a)
-    {
-        double df, glength, temp, a1;
-        // Either A) gu or gv are zero, or B) both
-        if ((gx == 0) || (gy == 0)) {
-            // Linear approximation is A) correct or B) a fair guess
-            df = 0.5-a;
-        } else {
-            glength = sqrt(gx*gx + gy*gy);
-            if(glength>0) {
-                gx = gx/glength;
-                gy = gy/glength;
-            }
-            /* Everything is symmetric wrt sign and transposition,
-            * so move to first octant (gx>=0, gy>=0, gx>=gy) to
-            * avoid handling all possible edge directions.
-            */
-            gx = fabs(gx);
-            gy = fabs(gy);
-            if(gx<gy) {
-                temp = gx;
-                gx = gy;
-                gy = temp;
-            }
-            a1 = 0.5*gy/gx;
-            if (a < a1) {
-                // 0 <= a < a1
-                df = 0.5*(gx + gy) - sqrt(2.0*gx*gy*a);
-            } else if (a < (1.0-a1)) {
-                // a1 <= a <= 1-a1
-                df = (0.5-a)*gx;
-            } else {
-                // 1-a1 < a <= 1
-                df = -0.5*(gx + gy) + sqrt(2.0*gx*gy*(1.0-a));
-            }
-        }
-        return df;
-    }
-    double distaa3(double *img, double *gximg, double *gyimg, int w, int c, int xc, int yc, int xi, int yi)
-    {
-        double di, df, dx, dy, gx, gy, a;
-        int closest;
-        closest = c-xc-yc*w; // Index to the edge pixel pointed to from c
-        a = img[closest];    // Grayscale value at the edge pixel
-        gx = gximg[closest]; // X gradient component at the edge pixel
-        gy = gyimg[closest]; // Y gradient component at the edge pixel
-        if(a > 1.0) a = 1.0;
-        if(a < 0.0) a = 0.0; // Clip grayscale values outside the range [0,1]
-        if(a == 0.0) return 1000000.0; // Not an object pixel, return "very far" ("don't know yet")
-        dx = (double)xi;
-        dy = (double)yi;
-        di = sqrt(dx*dx + dy*dy); // Length of integer vector, like a traditional EDT
-        if(di==0) {
-            // Use local gradient only at edges
-            // Estimate based on local gradient only
-            df = edgedf(gx, gy, a);
-        } else {
-            // Estimate gradient based on direction to edge (accurate for large di)
-            df = edgedf(dx, dy, a);
-        }
-        return di + df; // Same metric as edtaa2, except at edges (where di=0)
-    }
-    // Shorthand macro: add ubiquitous parameters dist, gx, gy, img and w and call distaa3()
-    #define DISTAA(c,xc,yc,xi,yi) (distaa3(img, gx, gy, w, c, xc, yc, xi, yi))
-    void edtaa3(double *img, double *gx, double *gy, int w, int h, short *distx, short *disty, double *dist)
-    {
-        int x, y, i, c;
-        int offset_u, offset_ur, offset_r, offset_rd,
-        offset_d, offset_dl, offset_l, offset_lu;
-        double olddist, newdist;
-        int cdistx, cdisty, newdistx, newdisty;
-        int changed;
-        double epsilon = 1e-3;
-        /* Initialize index offsets for the current image width */
-        offset_u = -w;
-        offset_ur = -w+1;
-        offset_r = 1;
-        offset_rd = w+1;
-        offset_d = w;
-        offset_dl = w-1;
-        offset_l = -1;
-        offset_lu = -w-1;
-        /* Initialize the distance images */
-        for(i=0; i<w*h; i++) {
-            distx[i] = 0; // At first, all pixels point to
-            disty[i] = 0; // themselves as the closest known.
-            if(img[i] <= 0.0)
-            {
-                dist[i]= 1000000.0; // Big value, means "not set yet"
-            }
-            else if (img[i]<1.0) {
-                dist[i] = edgedf(gx[i], gy[i], img[i]); // Gradient-assisted estimate
-            }
-            else {
-                dist[i]= 0.0; // Inside the object
-            }
-        }
-        /* Perform the transformation */
-        do
-        {
-            changed = 0;
-            /* Scan rows, except first row */
-            for(y=1; y<h; y++)
-            {
-                /* move index to leftmost pixel of current row */
-                i = y*w;
-                /* scan right, propagate distances from above & left */
-                /* Leftmost pixel is special, has no left neighbors */
-                olddist = dist[i];
-                if(olddist > 0) // If non-zero distance or not set yet
-                {
-                    c = i + offset_u; // Index of candidate for testing
-                    cdistx = distx[c];
-                    cdisty = disty[c];
-                    newdistx = cdistx;
-                    newdisty = cdisty+1;
-                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                    if(newdist < olddist-epsilon)
-                    {
-                        distx[i]=newdistx;
-                        disty[i]=newdisty;
-                        dist[i]=newdist;
-                        olddist=newdist;
-                        changed = 1;
-                    }
-                    c = i+offset_ur;
-                    cdistx = distx[c];
-                    cdisty = disty[c];
-                    newdistx = cdistx-1;
-                    newdisty = cdisty+1;
-                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                    if(newdist < olddist-epsilon)
-                    {
-                        distx[i]=newdistx;
-                        disty[i]=newdisty;
-                        dist[i]=newdist;
-                        changed = 1;
-                    }
-                }
-                i++;
-                /* Middle pixels have all neighbors */
-                for(x=1; x<w-1; x++, i++)
-                {
-                    olddist = dist[i];
-                    if(olddist <= 0) continue; // No need to update further
-                    c = i+offset_l;
-                    cdistx = distx[c];
-                    cdisty = disty[c];
-                    newdistx = cdistx+1;
-                    newdisty = cdisty;
-                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                    if(newdist < olddist-epsilon)
-                    {
-                        distx[i]=newdistx;
-                        disty[i]=newdisty;
-                        dist[i]=newdist;
-                        olddist=newdist;
-                        changed = 1;
-                    }
-                    c = i+offset_lu;
-                    cdistx = distx[c];
-                    cdisty = disty[c];
-                    newdistx = cdistx+1;
-                    newdisty = cdisty+1;
-                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                    if(newdist < olddist-epsilon)
-                    {
-                        distx[i]=newdistx;
-                        disty[i]=newdisty;
-                        dist[i]=newdist;
-                        olddist=newdist;
-                        changed = 1;
-                    }
-                    c = i+offset_u;
-                    cdistx = distx[c];
-                    cdisty = disty[c];
-                    newdistx = cdistx;
-                    newdisty = cdisty+1;
-                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                    if(newdist < olddist-epsilon)
-                    {
-                        distx[i]=newdistx;
-                        disty[i]=newdisty;
-                        dist[i]=newdist;
-                        olddist=newdist;
-                        changed = 1;
-                    }
-                    c = i+offset_ur;
-                    cdistx = distx[c];
-                    cdisty = disty[c];
-                    newdistx = cdistx-1;
-                    newdisty = cdisty+1;
-                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                    if(newdist < olddist-epsilon)
-                    {
-                        distx[i]=newdistx;
-                        disty[i]=newdisty;
-                        dist[i]=newdist;
-                        changed = 1;
-                    }
-                }
-                /* Rightmost pixel of row is special, has no right neighbors */
-                olddist = dist[i];
-                if(olddist > 0) // If not already zero distance
-                {
-                    c = i+offset_l;
-                    cdistx = distx[c];
-                    cdisty = disty[c];
-                    newdistx = cdistx+1;
-                    newdisty = cdisty;
-                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                    if(newdist < olddist-epsilon)
-                    {
-                        distx[i]=newdistx;
-                        disty[i]=newdisty;
-                        dist[i]=newdist;
-                        olddist=newdist;
-                        changed = 1;
-                    }
-                    c = i+offset_lu;
-                    cdistx = distx[c];
-                    cdisty = disty[c];
-                    newdistx = cdistx+1;
-                    newdisty = cdisty+1;
-                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                    if(newdist < olddist-epsilon)
-                    {
-                        distx[i]=newdistx;
-                        disty[i]=newdisty;
-                        dist[i]=newdist;
-                        olddist=newdist;
-                        changed = 1;
-                    }
-                    c = i+offset_u;
-                    cdistx = distx[c];
-                    cdisty = disty[c];
-                    newdistx = cdistx;
-                    newdisty = cdisty+1;
-                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                    if(newdist < olddist-epsilon)
-                    {
-                        distx[i]=newdistx;
-                        disty[i]=newdisty;
-                        dist[i]=newdist;
-                        changed = 1;
-                    }
-                }
-                /* Move index to second rightmost pixel of current row. */
-                /* Rightmost pixel is skipped, it has no right neighbor. */
-                i = y*w + w-2;
-                /* scan left, propagate distance from right */
-                for(x=w-2; x>=0; x--, i--)
-                {
-                    olddist = dist[i];
-                    if(olddist <= 0) continue; // Already zero distance
-                    c = i+offset_r;
-                    cdistx = distx[c];
-                    cdisty = disty[c];
-                    newdistx = cdistx-1;
-                    newdisty = cdisty;
-                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                    if(newdist < olddist-epsilon)
-                    {
-                        distx[i]=newdistx;
-                        disty[i]=newdisty;
-                        dist[i]=newdist;
-                        changed = 1;
-                    }
-                }
-            }
-            /* Scan rows in reverse order, except last row */
-            for(y=h-2; y>=0; y--)
-            {
-                /* move index to rightmost pixel of current row */
-                i = y*w + w-1;
-                /* Scan left, propagate distances from below & right */
-                /* Rightmost pixel is special, has no right neighbors */
-                olddist = dist[i];
-                if(olddist > 0) // If not already zero distance
-                {
-                    c = i+offset_d;
-                    cdistx = distx[c];
-                    cdisty = disty[c];
-                    newdistx = cdistx;
-                    newdisty = cdisty-1;
-                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                    if(newdist < olddist-epsilon)
-                    {
-                        distx[i]=newdistx;
-                        disty[i]=newdisty;
-                        dist[i]=newdist;
-                        olddist=newdist;
-                        changed = 1;
-                    }
-                    c = i+offset_dl;
-                    cdistx = distx[c];
-                    cdisty = disty[c];
-                    newdistx = cdistx+1;
-                    newdisty = cdisty-1;
-                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                    if(newdist < olddist-epsilon)
-                    {
-                        distx[i]=newdistx;
-                        disty[i]=newdisty;
-                        dist[i]=newdist;
-                        changed = 1;
-                    }
-                }
-                i--;
-                /* Middle pixels have all neighbors */
-                for(x=w-2; x>0; x--, i--)
-                {
-                    olddist = dist[i];
-                    if(olddist <= 0) continue; // Already zero distance
-                    c = i+offset_r;
-                    cdistx = distx[c];
-                    cdisty = disty[c];
-                    newdistx = cdistx-1;
-                    newdisty = cdisty;
-                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                    if(newdist < olddist-epsilon)
-                    {
-                        distx[i]=newdistx;
-                        disty[i]=newdisty;
-                        dist[i]=newdist;
-                        olddist=newdist;
-                        changed = 1;
-                    }
-                    c = i+offset_rd;
-                    cdistx = distx[c];
-                    cdisty = disty[c];
-                    newdistx = cdistx-1;
-                    newdisty = cdisty-1;
-                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                    if(newdist < olddist-epsilon)
-                    {
-                        distx[i]=newdistx;
-                        disty[i]=newdisty;
-                        dist[i]=newdist;
-                        olddist=newdist;
-                        changed = 1;
-                    }
-                    c = i+offset_d;
-                    cdistx = distx[c];
-                    cdisty = disty[c];
-                    newdistx = cdistx;
-                    newdisty = cdisty-1;
-                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                    if(newdist < olddist-epsilon)
-                    {
-                        distx[i]=newdistx;
-                        disty[i]=newdisty;
-                        dist[i]=newdist;
-                        olddist=newdist;
-                        changed = 1;
-                    }
-                    c = i+offset_dl;
-                    cdistx = distx[c];
-                    cdisty = disty[c];
-                    newdistx = cdistx+1;
-                    newdisty = cdisty-1;
-                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                    if(newdist < olddist-epsilon)
-                    {
-                        distx[i]=newdistx;
-                        disty[i]=newdisty;
-                        dist[i]=newdist;
-                        changed = 1;
-                    }
-                }
-                /* Leftmost pixel is special, has no left neighbors */
-                olddist = dist[i];
-                if(olddist > 0) // If not already zero distance
-                {
-                    c = i+offset_r;
-                    cdistx = distx[c];
-                    cdisty = disty[c];
-                    newdistx = cdistx-1;
-                    newdisty = cdisty;
-                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                    if(newdist < olddist-epsilon)
-                    {
-                        distx[i]=newdistx;
-                        disty[i]=newdisty;
-                        dist[i]=newdist;
-                        olddist=newdist;
-                        changed = 1;
-                    }
-                    c = i+offset_rd;
-                    cdistx = distx[c];
-                    cdisty = disty[c];
-                    newdistx = cdistx-1;
-                    newdisty = cdisty-1;
-                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                    if(newdist < olddist-epsilon)
-                    {
-                        distx[i]=newdistx;
-                        disty[i]=newdisty;
-                        dist[i]=newdist;
-                        olddist=newdist;
-                        changed = 1;
-                    }
-                    c = i+offset_d;
-                    cdistx = distx[c];
-                    cdisty = disty[c];
-                    newdistx = cdistx;
-                    newdisty = cdisty-1;
-                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                    if(newdist < olddist-epsilon)
-                    {
-                        distx[i]=newdistx;
-                        disty[i]=newdisty;
-                        dist[i]=newdist;
-                        changed = 1;
-                    }
-                }
-                /* Move index to second leftmost pixel of current row. */
-                /* Leftmost pixel is skipped, it has no left neighbor. */
-                i = y*w + 1;
-                for(x=1; x<w; x++, i++)
-                {
-                    /* scan right, propagate distance from left */
-                    olddist = dist[i];
-                    if(olddist <= 0) continue; // Already zero distance
-                    c = i+offset_l;
-                    cdistx = distx[c];
-                    cdisty = disty[c];
-                    newdistx = cdistx+1;
-                    newdisty = cdisty;
-                    newdist = DISTAA(c, cdistx, cdisty, newdistx, newdisty);
-                    if(newdist < olddist-epsilon)
-                    {
-                        distx[i]=newdistx;
-                        disty[i]=newdisty;
-                        dist[i]=newdist;
-                        changed = 1;
-                    }
-                }
-            }
-        }
-        while(changed); // Sweep until no more updates are made
-        /* The transformation is completed. */
-    }
-
-
-    typedef struct vec3 {
-        float x, y, z;
-    };
-    void vec3_subtract(vec3* out, vec3* v0, vec3* v1) {
-        out->x = v0->x - v1->x;
-        out->y = v0->y - v1->y;
-        out->z = v0->z - v1->z;
-    }
-    void vec3_normalize(vec3* out, vec3* in) {
-        float t = sqrtf(in->x * in->x + in->y * in->y + in->z * in->z);
-        out->x = in->x / t;
-        out->y = in->y / t;
-        out->z = in->z / t;
-    }
-    void vec3_cross(vec3* out, vec3* v0, vec3* v1) {
-        out->x = v0->y * v1->z - v0->z * v1->y;
-        out->y = v0->z * v1->x - v0->x * v1->z;
-        out->z = v0->x * v1->y - v0->y * v1->x;
-    }
-    float vec3_dot(vec3* v0, vec3* v1) {
-        return v0->x * v1->x + v0->y * v1->y + v0->z * v1->z;
-    }
-    void mat4_set_lookAtLH(mat4* self, vec3* position, vec3* target, vec3* up) {
-        vec3 zaxis;
-        vec3 temp;
-        vec3_subtract(&temp, target, position);
-        vec3_normalize(&zaxis, &temp);
-        vec3 xaxis;
-        vec3 temp2;
-        vec3_cross(&temp2, up, &zaxis);
-        vec3_normalize(&xaxis, &temp2);
-        vec3 yaxis;
-        vec3_cross(&yaxis, &zaxis, &xaxis);
-        self->m00 = xaxis.x;
-        self->m01 = yaxis.x;
-        self->m02 = zaxis.x;
-        self->m03 = 0.0f;
-        self->m10 = xaxis.y;
-        self->m11 = yaxis.y;
-        self->m12 = zaxis.y;
-        self->m13 = 0.0f;
-        self->m20 = xaxis.z;
-        self->m21 = yaxis.z;
-        self->m22 = zaxis.z;
-        self->m23 = 0.0f;
-        self->m30 = -vec3_dot(&xaxis, position);
-        self->m31 = -vec3_dot(&yaxis, position);
-        self->m32 = -vec3_dot(&zaxis, position);
-        self->m33 = 1.0f;
-    }
-    mat4 *
-    mat4_new( void )
-    {
-        mat4 *self = (mat4 *) malloc( sizeof(mat4) );
-        return self;
-    }
-    void
-    mat4_set_zero( mat4 *self )
-    {
-        if (!self)
-        return;
-        memset( self, 0, sizeof( mat4 ));
-    }
-    void
-    mat4_set_identity( mat4 *self )
-    {
-        if (!self)
-        return;
-        memset( self, 0, sizeof( mat4 ));
-        self->m00 = 1.0;
-        self->m11 = 1.0;
-        self->m22 = 1.0;
-        self->m33 = 1.0;
-    }
-    void
-    mat4_multiply( mat4 *self, mat4 *other )
-    {
-        mat4 m;
-        size_t i;
-        if (!self || !other)
-        return;
-        for( i=0; i<4; ++i )
-        {
-            m.data[i*4+0] =
-            (self->data[i*4+0] * other->data[0*4+0]) +
-            (self->data[i*4+1] * other->data[1*4+0]) +
-            (self->data[i*4+2] * other->data[2*4+0]) +
-            (self->data[i*4+3] * other->data[3*4+0]) ;
-            m.data[i*4+1] =
-            (self->data[i*4+0] * other->data[0*4+1]) +
-            (self->data[i*4+1] * other->data[1*4+1]) +
-            (self->data[i*4+2] * other->data[2*4+1]) +
-            (self->data[i*4+3] * other->data[3*4+1]) ;
-            m.data[i*4+2] =
-            (self->data[i*4+0] * other->data[0*4+2]) +
-            (self->data[i*4+1] * other->data[1*4+2]) +
-            (self->data[i*4+2] * other->data[2*4+2]) +
-            (self->data[i*4+3] * other->data[3*4+2]) ;
-            m.data[i*4+3] =
-            (self->data[i*4+0] * other->data[0*4+3]) +
-            (self->data[i*4+1] * other->data[1*4+3]) +
-            (self->data[i*4+2] * other->data[2*4+3]) +
-            (self->data[i*4+3] * other->data[3*4+3]) ;
-        }
-        memcpy( self, &m, sizeof( mat4 ) );
-    }
-    void
-    mat4_set_orthographic( mat4 *self,
-    float left,   float right,
-    float bottom, float top,
-    float znear,  float zfar )
-    {
-        if (!self)
-        return;
-        if (left == right || bottom == top || znear == zfar)
-        return;
-        mat4_set_zero( self );
-        self->m00 = +2.0f/(right-left);
-        self->m30 = -(right+left)/(right-left);
-        self->m11 = +2.0f/(top-bottom);
-        self->m31 = -(top+bottom)/(top-bottom);
-        self->m22 = -2.0f/(zfar-znear);
-        self->m32 = -(zfar+znear)/(zfar-znear);
-        self->m33 = 1.0f;
-    }
-    void
-    mat4_set_perspective( mat4 *self,
-    float fovy,  float aspect,
-    float znear, float zfar)
-    {
-        mat4_set_zero(self);
-        float yscale = 1.0f / tanf(fovy / 180.0f / 2.0f);
-        float xscale = yscale * aspect;
-        self->m00 = xscale;
-        self->m11 = yscale;
-        self->m22 = zfar/(zfar-znear);
-        self->m23 = 1.0f;
-        self->m32 = -znear*zfar/(zfar-znear);
-    }
-    void
-    mat4_set_frustum( mat4 *self,
-    float left,   float right,
-    float bottom, float top,
-    float znear,  float zfar )
-    {
-        if (!self)
-        return;
-        if (left == right || bottom == top || znear == zfar)
-        return;
-        mat4_set_zero( self );
-        self->m00 = (2.0f*znear)/(right-left);
-        self->m20 = (right+left)/(right-left);
-        self->m11 = (2.0f*znear)/(top-bottom);
-        self->m21 = (top+bottom)/(top-bottom);
-        self->m22 = -(zfar+znear)/(zfar-znear);
-        self->m32 = -(2.0f*zfar*znear)/(zfar-znear);
-        self->m23 = -1.0f;
-    }
-    void
-    mat4_set_rotation( mat4 *self,
-    float angle,
-    float x, float y, float z)
-    {
-        float c, s, norm;
-        if (!self)
-        return;
-        c = (float)cos( M_PI*angle/180.0 );
-        s = (float)sin( M_PI*angle/180.0 );
-        norm = (float)sqrt(x*x+y*y+z*z);
-        x /= norm; y /= norm; z /= norm;
-        mat4_set_identity( self );
-        self->m00 = x*x*(1-c)+c;
-        self->m10 = y*x*(1-c)-z*s;
-        self->m20 = z*x*(1-c)+y*s;
-        self->m01 =  x*y*(1-c)+z*s;
-        self->m11 =  y*y*(1-c)+c;
-        self->m21 =  z*y*(1-c)-x*s;
-        self->m02 = x*z*(1-c)-y*s;
-        self->m12 = y*z*(1-c)+x*s;
-        self->m22 = z*z*(1-c)+c;
-    }
-    void
-    mat4_set_translation( mat4 *self,
-    float x, float y, float z)
-    {
-        if (!self)
-        return;
-        mat4_set_identity( self );
-        self-> m30 = x;
-        self-> m31 = y;
-        self-> m32 = z;
-    }
-    void
-    mat4_set_scaling( mat4 *self,
-    float x, float y, float z)
-    {
-        if (!self)
-        return;
-        mat4_set_identity( self );
-        self-> m00 = x;
-        self-> m11 = y;
-        self-> m22 = z;
-    }
-    void
-    mat4_rotate( mat4 *self,
-    float angle,
-    float x, float y, float z)
-    {
-        mat4 m;
-        if (!self)
-        return;
-        mat4_set_rotation( &m, angle, x, y, z);
-        mat4_multiply( self, &m );
-    }
-    void
-    mat4_translate( mat4 *self,
-    float x, float y, float z)
-    {
-        mat4 m;
-        if (!self)
-        return;
-        mat4_set_translation( &m, x, y, z);
-        mat4_multiply( self, &m );
-    }
-    void
-    mat4_scale( mat4 *self,
-    float x, float y, float z)
-    {
-        mat4 m;
-        if (!self)
-        return;
-        mat4_set_scaling( &m, x, y, z);
-        mat4_multiply( self, &m );
-    }
-
-
-    void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen) {
-        pen->y += (float)(int)font->ascender;
-        size_t i;
-        float r = color->red, g = color->green, b = color->blue, a = color->alpha;
-        for (i = 0; i < strlen(text); ++i) {
-            texture_glyph_t *glyph = texture_font_get_glyph( font, text + i );
-            if (glyph != NULL) {
-                float kerning = 0.0f;
-                if( i > 0) {
-                    kerning = texture_glyph_get_kerning( glyph, text + i - 1 );
-                }
-                pen->x += kerning;
-                float x0 = (float)(int)( pen->x + glyph->offset_x );
-                float y0 = (float)(int)( pen->y + glyph->height - glyph->offset_y );
-                float x1 = (float)(int)( x0 + glyph->width );
-                float y1 = (float)(int)( y0 - glyph->height );
-                float s0 = glyph->s0;
-                float t0 = glyph->t0;
-                float s1 = glyph->s1;
-                float t1 = glyph->t1;
-                GLuint index = (GLuint)buffer->vertices->size;
-                GLuint indices[] = { //
-                index, index+1, index+2,
-                index, index+2, index+3 };
-                vertex3_texture2_color3_t vertices[] = { //
-                { x0, y1, 0.0f,  s0,t0,  r,g,b,a },
-                { x0, y0, 0.0f,  s0,t1,  r,g,b,a },
-                { x1, y0, 0.0f,  s1,t1,  r,g,b,a },
-                { x1, y1, 0.0f,  s1,t0,  r,g,b,a } };
-                vertex_buffer_push_back_indices( buffer, indices, 6 );
-                vertex_buffer_push_back_vertices( buffer, vertices, 4 );
-                pen->x += glyph->advance_x;
-            }
-        }
-    }
-    vec2 get_text_size(texture_font_t * font, char *text) {
-        vec2 size = {{ 0, font->height }};
-        size_t i;
-        for( i = 0; i < strlen(text); ++i ) {
-            texture_glyph_t *glyph = texture_font_get_glyph(font, text + i);
-            if (glyph != NULL) {
-                float kerning = 0.0f;
-                if( i > 0) {
-                    kerning = texture_glyph_get_kerning(glyph, text + i - 1);
-                }
-                size.x += kerning;
-                size.x += glyph->advance_x;
-            }
-        }
-        return size;
-    }
-
 void sjf_anon1(sjs_anon1* _this) {
 }
 
@@ -6198,9 +6309,11 @@ void sjf_anon5(sjs_anon5* _this) {
 }
 
 void sjf_anon5_copy(sjs_anon5* _this, sjs_anon5* _from) {
-    _this->normal = _from->normal;
-    _this->hot = _from->hot;
-    _this->pressed = _from->pressed;
+    _this->fill = _from->fill;
+    _this->left = _from->left;
+    _this->right = _from->right;
+    _this->top = _from->top;
+    _this->bottom = _from->bottom;
 }
 
 void sjf_anon5_destroy(sjs_anon5* _this) {
@@ -6213,30 +6326,15 @@ void sjf_anon6(sjs_anon6* _this) {
 }
 
 void sjf_anon6_copy(sjs_anon6* _this, sjs_anon6* _from) {
+    _this->normal = _from->normal;
+    _this->hot = _from->hot;
+    _this->pressed = _from->pressed;
 }
 
 void sjf_anon6_destroy(sjs_anon6* _this) {
 }
 
 void sjf_anon6_heap(sjs_anon6_heap* _this) {
-}
-
-void sjf_anon6_white(sjs_anon6* _parent, sjs_color* _return) {
-    _return->r = 1.0f;
-    _return->g = 1.0f;
-    _return->b = 1.0f;
-    _return->a = 1.0f;
-    sjf_color(_return);
-}
-
-void sjf_anon6_white_heap(sjs_anon6* _parent, sjs_color_heap** _return) {
-    (*_return) = (sjs_color_heap*)malloc(sizeof(sjs_color_heap));
-    (*_return)->_refCount = 1;
-    (*_return)->r = 1.0f;
-    (*_return)->g = 1.0f;
-    (*_return)->b = 1.0f;
-    (*_return)->a = 1.0f;
-    sjf_color_heap((*_return));
 }
 
 void sjf_anon7(sjs_anon7* _this) {
@@ -6251,15 +6349,28 @@ void sjf_anon7_destroy(sjs_anon7* _this) {
 void sjf_anon7_heap(sjs_anon7_heap* _this) {
 }
 
+void sjf_anon7_white(sjs_anon7* _parent, sjs_color* _return) {
+    _return->r = 1.0f;
+    _return->g = 1.0f;
+    _return->b = 1.0f;
+    _return->a = 1.0f;
+    sjf_color(_return);
+}
+
+void sjf_anon7_white_heap(sjs_anon7* _parent, sjs_color_heap** _return) {
+    (*_return) = (sjs_color_heap*)malloc(sizeof(sjs_color_heap));
+    (*_return)->_refCount = 1;
+    (*_return)->r = 1.0f;
+    (*_return)->g = 1.0f;
+    (*_return)->b = 1.0f;
+    (*_return)->a = 1.0f;
+    sjf_color_heap((*_return));
+}
+
 void sjf_anon8(sjs_anon8* _this) {
 }
 
 void sjf_anon8_copy(sjs_anon8* _this, sjs_anon8* _from) {
-    _this->fill = _from->fill;
-    _this->left = _from->left;
-    _this->right = _from->right;
-    _this->top = _from->top;
-    _this->bottom = _from->bottom;
 }
 
 void sjf_anon8_destroy(sjs_anon8* _this) {
@@ -6375,6 +6486,122 @@ void sjf_array_heap_element_heap(sjs_array_heap_element_heap* _this) {
     }
 }
 
+void sjf_array_i32(sjs_array_i32* _this) {
+    if (_this->size < 0) {
+        exit(-1);
+    }
+    if (_this->data) {
+        _this->_isGlobal = true;
+    } else {
+        _this->data = (uintptr_t)calloc(_this->size * sizeof(int32_t), 1);
+        if (!_this->data) {
+            printf("grow: out of memory\n");
+            exit(-1);
+        }
+    }
+}
+
+void sjf_array_i32_copy(sjs_array_i32* _this, sjs_array_i32* _from) {
+    _this->size = _from->size;
+    _this->data = _from->data;
+    _this->_isGlobal = _from->_isGlobal;
+    _this->data = _from->data;
+    if (!_this->_isGlobal && _this->data) {
+        _retain((void*)_this->data);
+    }
+}
+
+void sjf_array_i32_destroy(sjs_array_i32* _this) {
+    if (!_this->_isGlobal && _this->data) {
+        if (_release((void*)_this->data)) {
+            free((int32_t*)_this->data);
+        }
+    }
+}
+
+void sjf_array_i32_heap(sjs_array_i32_heap* _this) {
+    if (_this->size < 0) {
+        exit(-1);
+    }
+    if (_this->data) {
+        _this->_isGlobal = true;
+    } else {
+        _this->data = (uintptr_t)calloc(_this->size * sizeof(int32_t), 1);
+        if (!_this->data) {
+            printf("grow: out of memory\n");
+            exit(-1);
+        }
+    }
+}
+
+void sjf_array_i32_initAt(sjs_array_i32* _parent, int32_t index, int32_t item) {
+    if (index >= _parent->size || index < 0) {
+        printf("setAt: out of bounds %d:%d\n", index, _parent->size);
+        exit(-1);
+    }
+    int32_t* p = (int32_t*)_parent->data;
+    p[index] = item;
+    ;
+}
+
+void sjf_array_vertex_location_texture(sjs_array_vertex_location_texture* _this) {
+    if (_this->size < 0) {
+        exit(-1);
+    }
+    if (_this->data) {
+        _this->_isGlobal = true;
+    } else {
+        _this->data = (uintptr_t)calloc(_this->size * sizeof(sjs_vertex_location_texture), 1);
+        if (!_this->data) {
+            printf("grow: out of memory\n");
+            exit(-1);
+        }
+    }
+}
+
+void sjf_array_vertex_location_texture_copy(sjs_array_vertex_location_texture* _this, sjs_array_vertex_location_texture* _from) {
+    _this->size = _from->size;
+    _this->data = _from->data;
+    _this->_isGlobal = _from->_isGlobal;
+    _this->data = _from->data;
+    if (!_this->_isGlobal && _this->data) {
+        _retain((void*)_this->data);
+    }
+}
+
+void sjf_array_vertex_location_texture_destroy(sjs_array_vertex_location_texture* _this) {
+    if (!_this->_isGlobal && _this->data) {
+        if (_release((void*)_this->data)) {
+            free((sjs_vertex_location_texture*)_this->data);
+        }
+    }
+}
+
+void sjf_array_vertex_location_texture_heap(sjs_array_vertex_location_texture_heap* _this) {
+    if (_this->size < 0) {
+        exit(-1);
+    }
+    if (_this->data) {
+        _this->_isGlobal = true;
+    } else {
+        _this->data = (uintptr_t)calloc(_this->size * sizeof(sjs_vertex_location_texture), 1);
+        if (!_this->data) {
+            printf("grow: out of memory\n");
+            exit(-1);
+        }
+    }
+}
+
+void sjf_array_vertex_location_texture_initAt(sjs_array_vertex_location_texture* _parent, int32_t index, sjs_vertex_location_texture* item) {
+    if (index >= _parent->size || index < 0) {
+        printf("setAt: out of bounds %d:%d\n", index, _parent->size);
+        exit(-1);
+    }
+    sjs_vertex_location_texture* p = (sjs_vertex_location_texture*)_parent->data;
+    sjf_vertex_location_texture_copy(&p[index], item);
+    ;
+}
+
 void sjf_cameraElement(sjs_cameraElement* _this) {
 }
 
@@ -6410,7 +6637,7 @@ void sjf_cameraElement_copy(sjs_cameraElement* _this, sjs_cameraElement* _from) 
     sjf_color_copy(&_this->color, &_from->color);
     sjf_size_copy(&_this->idealSize, &_from->idealSize);
     sjf_rect_copy(&_this->rect, &_from->rect);
-    sjf_cubeVertexBuffer_copy(&_this->_cube, &_from->_cube);
+    sjf_vertexBuffer_vertex_location_texture_copy(&_this->_cube, &_from->_cube);
 }
 
 void sjf_cameraElement_destroy(sjs_cameraElement* _this) {
@@ -6474,7 +6701,7 @@ sji_element* sjf_cameraElement_heap_as_sji_element(sjs_cameraElement_heap* _this
 }
 
 void sjf_cameraElement_render(sjs_cameraElement* _parent, sjs_scene2d* scene) {
-    sjs_cubeVertexBuffer* sjt_dot12;
+    sjs_vertexBuffer_vertex_location_texture* sjt_dot12;
     sjs_scene2d* sjt_functionParam4;
 
     mat4* projection = mat4_new();
@@ -6492,7 +6719,7 @@ void sjf_cameraElement_render(sjs_cameraElement* _parent, sjs_scene2d* scene) {
     glUniformMatrix4fv(glGetUniformLocation(sjv_boringShader.id, "projection" ), 1, 0, projection->data);
     sjt_dot12 = &(_parent)->_cube;
     sjt_functionParam4 = scene;
-    sjf_cubeVertexBuffer_render(sjt_dot12, sjt_functionParam4);
+    sjf_vertexBuffer_vertex_location_texture_render(sjt_dot12, sjt_functionParam4);
 }
 
 void sjf_cameraElement_setRect(sjs_cameraElement* _parent, sjs_rect* rect_) {
@@ -6528,108 +6755,693 @@ void sjf_color_destroy(sjs_color* _this) {
 void sjf_color_heap(sjs_color_heap* _this) {
 }
 
-void sjf_cubeVertexBuffer(sjs_cubeVertexBuffer* _this) {
-    _this->buffer = vertex_buffer_new("vertex:3f,tex_coord:2f");
-    float x0 = -1.0f;
-    float x1 = 1.0f;
-    float y0 = -1.0f;
-    float y1 = 1.0f;
-    float z0 = -1.0f;
-    float z1 = 1.0f;
-    float s0 = 0.0f;
-    float s1 = 1.0f;
-    float t0 = 0.0f;
-    float t1 = 1.0f;
-    GLuint index = (GLuint)_this->buffer->vertices->size;
-    GLuint indices[] = { //
-    index+0, index+1, index+2,
-    index+0, index+2, index+3,
-    index+4, index+5, index+6,
-    index+4, index+6, index+7,
-    index+0, index+1, index+5,
-    index+0, index+5, index+4,
-    index+3, index+2, index+6,
-    index+3, index+6, index+7,
-    index+1, index+5, index+6,
-    index+1, index+6, index+2,
-    index+0, index+4, index+7,
-    index+0, index+7, index+3,
-};
-vertex3_texture2_t vertices[] = { //
-{ x0, y0, z0,  s0, t0 },
-{ x0, y1, z0,  s0, t1 },
-{ x1, y1, z0,  s1, t1 },
-{ x1, y0, z0,  s1, t0 },
-{ x0, y0, z1,  s0, t0 },
-{ x0, y1, z1,  s0, t1 },
-{ x1, y1, z1,  s1, t1 },
-{ x1, y0, z1,  s1, t0 }};
-vertex_buffer_push_back_indices( _this->buffer, indices, 36 );
-vertex_buffer_push_back_vertices( _this->buffer, vertices, 8 );
+void sjf_cubeVertexBuffer(sjs_vertexBuffer_vertex_location_texture* _return) {
+    sjs_vertex_location_texture sjt_call1;
+    sjs_vertex_location_texture sjt_call2;
+    sjs_vertex_location_texture sjt_call3;
+    sjs_vertex_location_texture sjt_call4;
+    sjs_vertex_location_texture sjt_call5;
+    sjs_vertex_location_texture sjt_call6;
+    sjs_vertex_location_texture sjt_call7;
+    sjs_vertex_location_texture sjt_call8;
+    int32_t sjt_cast2;
+    int32_t sjt_cast3;
+    int32_t sjt_functionParam10;
+    int32_t sjt_functionParam11;
+    int32_t sjt_functionParam12;
+    int32_t sjt_functionParam13;
+    int32_t sjt_functionParam14;
+    int32_t sjt_functionParam15;
+    int32_t sjt_functionParam16;
+    int32_t sjt_functionParam17;
+    int32_t sjt_functionParam18;
+    int32_t sjt_functionParam19;
+    int32_t sjt_functionParam20;
+    int32_t sjt_functionParam21;
+    int32_t sjt_functionParam22;
+    int32_t sjt_functionParam23;
+    int32_t sjt_functionParam24;
+    int32_t sjt_functionParam25;
+    int32_t sjt_functionParam26;
+    int32_t sjt_functionParam27;
+    int32_t sjt_functionParam28;
+    int32_t sjt_functionParam29;
+    int32_t sjt_functionParam30;
+    int32_t sjt_functionParam31;
+    int32_t sjt_functionParam32;
+    int32_t sjt_functionParam33;
+    int32_t sjt_functionParam34;
+    int32_t sjt_functionParam35;
+    int32_t sjt_functionParam36;
+    int32_t sjt_functionParam37;
+    int32_t sjt_functionParam38;
+    int32_t sjt_functionParam39;
+    int32_t sjt_functionParam40;
+    int32_t sjt_functionParam41;
+    int32_t sjt_functionParam42;
+    int32_t sjt_functionParam43;
+    int32_t sjt_functionParam44;
+    int32_t sjt_functionParam45;
+    int32_t sjt_functionParam46;
+    int32_t sjt_functionParam47;
+    int32_t sjt_functionParam48;
+    int32_t sjt_functionParam49;
+    int32_t sjt_functionParam5;
+    int32_t sjt_functionParam50;
+    int32_t sjt_functionParam51;
+    int32_t sjt_functionParam52;
+    int32_t sjt_functionParam53;
+    int32_t sjt_functionParam54;
+    int32_t sjt_functionParam55;
+    int32_t sjt_functionParam56;
+    int32_t sjt_functionParam57;
+    int32_t sjt_functionParam58;
+    int32_t sjt_functionParam59;
+    int32_t sjt_functionParam6;
+    int32_t sjt_functionParam60;
+    int32_t sjt_functionParam61;
+    int32_t sjt_functionParam62;
+    int32_t sjt_functionParam63;
+    int32_t sjt_functionParam64;
+    int32_t sjt_functionParam65;
+    int32_t sjt_functionParam66;
+    int32_t sjt_functionParam67;
+    int32_t sjt_functionParam68;
+    int32_t sjt_functionParam69;
+    int32_t sjt_functionParam7;
+    int32_t sjt_functionParam70;
+    int32_t sjt_functionParam71;
+    int32_t sjt_functionParam72;
+    int32_t sjt_functionParam73;
+    int32_t sjt_functionParam74;
+    int32_t sjt_functionParam75;
+    int32_t sjt_functionParam76;
+    int32_t sjt_functionParam77;
+    sjs_vertex_location_texture* sjt_functionParam78;
+    int32_t sjt_functionParam79;
+    int32_t sjt_functionParam8;
+    sjs_vertex_location_texture* sjt_functionParam80;
+    int32_t sjt_functionParam81;
+    sjs_vertex_location_texture* sjt_functionParam82;
+    int32_t sjt_functionParam83;
+    sjs_vertex_location_texture* sjt_functionParam84;
+    int32_t sjt_functionParam85;
+    sjs_vertex_location_texture* sjt_functionParam86;
+    int32_t sjt_functionParam87;
+    sjs_vertex_location_texture* sjt_functionParam88;
+    int32_t sjt_functionParam89;
+    int32_t sjt_functionParam9;
+    sjs_vertex_location_texture* sjt_functionParam90;
+    int32_t sjt_functionParam91;
+    sjs_vertex_location_texture* sjt_functionParam92;
+    float sjv_s0;
+    float sjv_s1;
+    float sjv_t0;
+    float sjv_t1;
+    float sjv_x0;
+    float sjv_x1;
+    float sjv_y0;
+    float sjv_y1;
+    float sjv_z0;
+    float sjv_z1;
+
+    sjv_x0 = -1.0f;
+    sjv_x1 = 1.0f;
+    sjv_y0 = -1.0f;
+    sjv_y1 = 1.0f;
+    sjv_z0 = -1.0f;
+    sjv_z1 = 1.0f;
+    sjv_s0 = 0.0f;
+    sjv_s1 = 1.0f;
+    sjv_t0 = 0.0f;
+    sjv_t1 = 1.0f;
+    sjf_string_copy(&_return->format, &sjv_vertex_location_texture_format);
+    _return->indices.size = 36;
+    sjt_cast2 = 0;
+    _return->indices.data = (uintptr_t)sjt_cast2;
+    _return->indices._isGlobal = false;
+    sjf_array_i32(&_return->indices);
+    sjt_functionParam5 = 0;
+    sjt_functionParam6 = 0;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam5, sjt_functionParam6);
+    sjt_functionParam7 = 1;
+    sjt_functionParam8 = 1;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam7, sjt_functionParam8);
+    sjt_functionParam9 = 2;
+    sjt_functionParam10 = 2;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam9, sjt_functionParam10);
+    sjt_functionParam11 = 3;
+    sjt_functionParam12 = 0;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam11, sjt_functionParam12);
+    sjt_functionParam13 = 4;
+    sjt_functionParam14 = 2;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam13, sjt_functionParam14);
+    sjt_functionParam15 = 5;
+    sjt_functionParam16 = 3;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam15, sjt_functionParam16);
+    sjt_functionParam17 = 6;
+    sjt_functionParam18 = 4;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam17, sjt_functionParam18);
+    sjt_functionParam19 = 7;
+    sjt_functionParam20 = 5;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam19, sjt_functionParam20);
+    sjt_functionParam21 = 8;
+    sjt_functionParam22 = 6;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam21, sjt_functionParam22);
+    sjt_functionParam23 = 9;
+    sjt_functionParam24 = 4;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam23, sjt_functionParam24);
+    sjt_functionParam25 = 10;
+    sjt_functionParam26 = 6;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam25, sjt_functionParam26);
+    sjt_functionParam27 = 11;
+    sjt_functionParam28 = 7;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam27, sjt_functionParam28);
+    sjt_functionParam29 = 12;
+    sjt_functionParam30 = 0;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam29, sjt_functionParam30);
+    sjt_functionParam31 = 13;
+    sjt_functionParam32 = 1;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam31, sjt_functionParam32);
+    sjt_functionParam33 = 14;
+    sjt_functionParam34 = 5;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam33, sjt_functionParam34);
+    sjt_functionParam35 = 15;
+    sjt_functionParam36 = 0;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam35, sjt_functionParam36);
+    sjt_functionParam37 = 16;
+    sjt_functionParam38 = 5;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam37, sjt_functionParam38);
+    sjt_functionParam39 = 17;
+    sjt_functionParam40 = 4;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam39, sjt_functionParam40);
+    sjt_functionParam41 = 18;
+    sjt_functionParam42 = 3;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam41, sjt_functionParam42);
+    sjt_functionParam43 = 19;
+    sjt_functionParam44 = 2;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam43, sjt_functionParam44);
+    sjt_functionParam45 = 20;
+    sjt_functionParam46 = 6;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam45, sjt_functionParam46);
+    sjt_functionParam47 = 21;
+    sjt_functionParam48 = 3;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam47, sjt_functionParam48);
+    sjt_functionParam49 = 22;
+    sjt_functionParam50 = 6;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam49, sjt_functionParam50);
+    sjt_functionParam51 = 23;
+    sjt_functionParam52 = 7;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam51, sjt_functionParam52);
+    sjt_functionParam53 = 24;
+    sjt_functionParam54 = 1;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam53, sjt_functionParam54);
+    sjt_functionParam55 = 25;
+    sjt_functionParam56 = 5;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam55, sjt_functionParam56);
+    sjt_functionParam57 = 26;
+    sjt_functionParam58 = 6;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam57, sjt_functionParam58);
+    sjt_functionParam59 = 27;
+    sjt_functionParam60 = 1;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam59, sjt_functionParam60);
+    sjt_functionParam61 = 28;
+    sjt_functionParam62 = 6;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam61, sjt_functionParam62);
+    sjt_functionParam63 = 29;
+    sjt_functionParam64 = 2;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam63, sjt_functionParam64);
+    sjt_functionParam65 = 30;
+    sjt_functionParam66 = 0;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam65, sjt_functionParam66);
+    sjt_functionParam67 = 31;
+    sjt_functionParam68 = 4;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam67, sjt_functionParam68);
+    sjt_functionParam69 = 32;
+    sjt_functionParam70 = 7;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam69, sjt_functionParam70);
+    sjt_functionParam71 = 33;
+    sjt_functionParam72 = 0;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam71, sjt_functionParam72);
+    sjt_functionParam73 = 34;
+    sjt_functionParam74 = 7;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam73, sjt_functionParam74);
+    sjt_functionParam75 = 35;
+    sjt_functionParam76 = 3;
+    sjf_array_i32_initAt(&_return->indices, sjt_functionParam75, sjt_functionParam76);
+    _return->vertices.size = 8;
+    sjt_cast3 = 0;
+    _return->vertices.data = (uintptr_t)sjt_cast3;
+    _return->vertices._isGlobal = false;
+    sjf_array_vertex_location_texture(&_return->vertices);
+    sjt_functionParam77 = 0;
+    sjt_call1.location.x = sjv_x0;
+    sjt_call1.location.y = sjv_y0;
+    sjt_call1.location.z = sjv_z0;
+    sjf_vec3(&sjt_call1.location);
+    sjt_call1.texture.x = sjv_s0;
+    sjt_call1.texture.y = sjv_t0;
+    sjf_vec2(&sjt_call1.texture);
+    sjf_vertex_location_texture(&sjt_call1);
+    sjt_functionParam78 = &sjt_call1;
+    sjf_array_vertex_location_texture_initAt(&_return->vertices, sjt_functionParam77, sjt_functionParam78);
+    sjt_functionParam79 = 1;
+    sjt_call2.location.x = sjv_x0;
+    sjt_call2.location.y = sjv_y1;
+    sjt_call2.location.z = sjv_z0;
+    sjf_vec3(&sjt_call2.location);
+    sjt_call2.texture.x = sjv_s0;
+    sjt_call2.texture.y = sjv_t1;
+    sjf_vec2(&sjt_call2.texture);
+    sjf_vertex_location_texture(&sjt_call2);
+    sjt_functionParam80 = &sjt_call2;
+    sjf_array_vertex_location_texture_initAt(&_return->vertices, sjt_functionParam79, sjt_functionParam80);
+    sjt_functionParam81 = 2;
+    sjt_call3.location.x = sjv_x1;
+    sjt_call3.location.y = sjv_y1;
+    sjt_call3.location.z = sjv_z0;
+    sjf_vec3(&sjt_call3.location);
+    sjt_call3.texture.x = sjv_s1;
+    sjt_call3.texture.y = sjv_t1;
+    sjf_vec2(&sjt_call3.texture);
+    sjf_vertex_location_texture(&sjt_call3);
+    sjt_functionParam82 = &sjt_call3;
+    sjf_array_vertex_location_texture_initAt(&_return->vertices, sjt_functionParam81, sjt_functionParam82);
+    sjt_functionParam83 = 3;
+    sjt_call4.location.x = sjv_x1;
+    sjt_call4.location.y = sjv_y0;
+    sjt_call4.location.z = sjv_z0;
+    sjf_vec3(&sjt_call4.location);
+    sjt_call4.texture.x = sjv_s1;
+    sjt_call4.texture.y = sjv_t0;
+    sjf_vec2(&sjt_call4.texture);
+    sjf_vertex_location_texture(&sjt_call4);
+    sjt_functionParam84 = &sjt_call4;
+    sjf_array_vertex_location_texture_initAt(&_return->vertices, sjt_functionParam83, sjt_functionParam84);
+    sjt_functionParam85 = 4;
+    sjt_call5.location.x = sjv_x0;
+    sjt_call5.location.y = sjv_y0;
+    sjt_call5.location.z = sjv_z1;
+    sjf_vec3(&sjt_call5.location);
+    sjt_call5.texture.x = sjv_s0;
+    sjt_call5.texture.y = sjv_t0;
+    sjf_vec2(&sjt_call5.texture);
+    sjf_vertex_location_texture(&sjt_call5);
+    sjt_functionParam86 = &sjt_call5;
+    sjf_array_vertex_location_texture_initAt(&_return->vertices, sjt_functionParam85, sjt_functionParam86);
+    sjt_functionParam87 = 5;
+    sjt_call6.location.x = sjv_x0;
+    sjt_call6.location.y = sjv_y1;
+    sjt_call6.location.z = sjv_z1;
+    sjf_vec3(&sjt_call6.location);
+    sjt_call6.texture.x = sjv_s0;
+    sjt_call6.texture.y = sjv_t1;
+    sjf_vec2(&sjt_call6.texture);
+    sjf_vertex_location_texture(&sjt_call6);
+    sjt_functionParam88 = &sjt_call6;
+    sjf_array_vertex_location_texture_initAt(&_return->vertices, sjt_functionParam87, sjt_functionParam88);
+    sjt_functionParam89 = 6;
+    sjt_call7.location.x = sjv_x1;
+    sjt_call7.location.y = sjv_y1;
+    sjt_call7.location.z = sjv_z1;
+    sjf_vec3(&sjt_call7.location);
+    sjt_call7.texture.x = sjv_s1;
+    sjt_call7.texture.y = sjv_t1;
+    sjf_vec2(&sjt_call7.texture);
+    sjf_vertex_location_texture(&sjt_call7);
+    sjt_functionParam90 = &sjt_call7;
+    sjf_array_vertex_location_texture_initAt(&_return->vertices, sjt_functionParam89, sjt_functionParam90);
+    sjt_functionParam91 = 7;
+    sjt_call8.location.x = sjv_x1;
+    sjt_call8.location.y = sjv_y0;
+    sjt_call8.location.z = sjv_z1;
+    sjf_vec3(&sjt_call8.location);
+    sjt_call8.texture.x = sjv_s1;
+    sjt_call8.texture.y = sjv_t0;
+    sjf_vec2(&sjt_call8.texture);
+    sjf_vertex_location_texture(&sjt_call8);
+    sjt_functionParam92 = &sjt_call8;
+    sjf_array_vertex_location_texture_initAt(&_return->vertices, sjt_functionParam91, sjt_functionParam92);
+    sjf_vertexBuffer_vertex_location_texture(_return);
+
+    sjf_vertex_location_texture_destroy(&sjt_call1);
+    sjf_vertex_location_texture_destroy(&sjt_call2);
+    sjf_vertex_location_texture_destroy(&sjt_call3);
+    sjf_vertex_location_texture_destroy(&sjt_call4);
+    sjf_vertex_location_texture_destroy(&sjt_call5);
+    sjf_vertex_location_texture_destroy(&sjt_call6);
+    sjf_vertex_location_texture_destroy(&sjt_call7);
+    sjf_vertex_location_texture_destroy(&sjt_call8);
 }
 
-void sjf_cubeVertexBuffer_copy(sjs_cubeVertexBuffer* _this, sjs_cubeVertexBuffer* _from) {
-    _this->buffer = _from->buffer;
-    _retain(_this->buffer);
-}
+void sjf_cubeVertexBuffer_heap(sjs_vertexBuffer_vertex_location_texture_heap** _return) {
+    sjs_vertex_location_texture sjt_call10;
+    sjs_vertex_location_texture sjt_call11;
+    sjs_vertex_location_texture sjt_call12;
+    sjs_vertex_location_texture sjt_call13;
+    sjs_vertex_location_texture sjt_call14;
+    sjs_vertex_location_texture sjt_call15;
+    sjs_vertex_location_texture sjt_call16;
+    sjs_vertex_location_texture sjt_call9;
+    int32_t sjt_cast4;
+    int32_t sjt_cast5;
+    int32_t sjt_functionParam100;
+    int32_t sjt_functionParam101;
+    int32_t sjt_functionParam102;
+    int32_t sjt_functionParam103;
+    int32_t sjt_functionParam104;
+    int32_t sjt_functionParam105;
+    int32_t sjt_functionParam106;
+    int32_t sjt_functionParam107;
+    int32_t sjt_functionParam108;
+    int32_t sjt_functionParam109;
+    int32_t sjt_functionParam110;
+    int32_t sjt_functionParam111;
+    int32_t sjt_functionParam112;
+    int32_t sjt_functionParam113;
+    int32_t sjt_functionParam114;
+    int32_t sjt_functionParam115;
+    int32_t sjt_functionParam116;
+    int32_t sjt_functionParam117;
+    int32_t sjt_functionParam118;
+    int32_t sjt_functionParam119;
+    int32_t sjt_functionParam120;
+    int32_t sjt_functionParam121;
+    int32_t sjt_functionParam122;
+    int32_t sjt_functionParam123;
+    int32_t sjt_functionParam124;
+    int32_t sjt_functionParam125;
+    int32_t sjt_functionParam126;
+    int32_t sjt_functionParam127;
+    int32_t sjt_functionParam128;
+    int32_t sjt_functionParam129;
+    int32_t sjt_functionParam130;
+    int32_t sjt_functionParam131;
+    int32_t sjt_functionParam132;
+    int32_t sjt_functionParam133;
+    int32_t sjt_functionParam134;
+    int32_t sjt_functionParam135;
+    int32_t sjt_functionParam136;
+    int32_t sjt_functionParam137;
+    int32_t sjt_functionParam138;
+    int32_t sjt_functionParam139;
+    int32_t sjt_functionParam140;
+    int32_t sjt_functionParam141;
+    int32_t sjt_functionParam142;
+    int32_t sjt_functionParam143;
+    int32_t sjt_functionParam144;
+    int32_t sjt_functionParam145;
+    int32_t sjt_functionParam146;
+    int32_t sjt_functionParam147;
+    int32_t sjt_functionParam148;
+    int32_t sjt_functionParam149;
+    int32_t sjt_functionParam150;
+    int32_t sjt_functionParam151;
+    int32_t sjt_functionParam152;
+    int32_t sjt_functionParam153;
+    int32_t sjt_functionParam154;
+    int32_t sjt_functionParam155;
+    int32_t sjt_functionParam156;
+    int32_t sjt_functionParam157;
+    int32_t sjt_functionParam158;
+    int32_t sjt_functionParam159;
+    int32_t sjt_functionParam160;
+    int32_t sjt_functionParam161;
+    int32_t sjt_functionParam162;
+    int32_t sjt_functionParam163;
+    int32_t sjt_functionParam164;
+    int32_t sjt_functionParam165;
+    sjs_vertex_location_texture* sjt_functionParam166;
+    int32_t sjt_functionParam167;
+    sjs_vertex_location_texture* sjt_functionParam168;
+    int32_t sjt_functionParam169;
+    sjs_vertex_location_texture* sjt_functionParam170;
+    int32_t sjt_functionParam171;
+    sjs_vertex_location_texture* sjt_functionParam172;
+    int32_t sjt_functionParam173;
+    sjs_vertex_location_texture* sjt_functionParam174;
+    int32_t sjt_functionParam175;
+    sjs_vertex_location_texture* sjt_functionParam176;
+    int32_t sjt_functionParam177;
+    sjs_vertex_location_texture* sjt_functionParam178;
+    int32_t sjt_functionParam179;
+    sjs_vertex_location_texture* sjt_functionParam180;
+    int32_t sjt_functionParam93;
+    int32_t sjt_functionParam94;
+    int32_t sjt_functionParam95;
+    int32_t sjt_functionParam96;
+    int32_t sjt_functionParam97;
+    int32_t sjt_functionParam98;
+    int32_t sjt_functionParam99;
+    float sjv_s0;
+    float sjv_s1;
+    float sjv_t0;
+    float sjv_t1;
+    float sjv_x0;
+    float sjv_x1;
+    float sjv_y0;
+    float sjv_y1;
+    float sjv_z0;
+    float sjv_z1;
 
-void sjf_cubeVertexBuffer_destroy(sjs_cubeVertexBuffer* _this) {
-    if (_release(_this->buffer)) {
-        vertex_buffer_delete(_this->buffer);
-    }
-}
+    sjv_x0 = -1.0f;
+    sjv_x1 = 1.0f;
+    sjv_y0 = -1.0f;
+    sjv_y1 = 1.0f;
+    sjv_z0 = -1.0f;
+    sjv_z1 = 1.0f;
+    sjv_s0 = 0.0f;
+    sjv_s1 = 1.0f;
+    sjv_t0 = 0.0f;
+    sjv_t1 = 1.0f;
+    (*_return) = (sjs_vertexBuffer_vertex_location_texture_heap*)malloc(sizeof(sjs_vertexBuffer_vertex_location_texture_heap));
+    (*_return)->_refCount = 1;
+    sjf_string_copy(&(*_return)->format, &sjv_vertex_location_texture_format);
+    (*_return)->indices.size = 36;
+    sjt_cast4 = 0;
+    (*_return)->indices.data = (uintptr_t)sjt_cast4;
+    (*_return)->indices._isGlobal = false;
+    sjf_array_i32(&(*_return)->indices);
+    sjt_functionParam93 = 0;
+    sjt_functionParam94 = 0;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam93, sjt_functionParam94);
+    sjt_functionParam95 = 1;
+    sjt_functionParam96 = 1;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam95, sjt_functionParam96);
+    sjt_functionParam97 = 2;
+    sjt_functionParam98 = 2;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam97, sjt_functionParam98);
+    sjt_functionParam99 = 3;
+    sjt_functionParam100 = 0;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam99, sjt_functionParam100);
+    sjt_functionParam101 = 4;
+    sjt_functionParam102 = 2;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam101, sjt_functionParam102);
+    sjt_functionParam103 = 5;
+    sjt_functionParam104 = 3;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam103, sjt_functionParam104);
+    sjt_functionParam105 = 6;
+    sjt_functionParam106 = 4;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam105, sjt_functionParam106);
+    sjt_functionParam107 = 7;
+    sjt_functionParam108 = 5;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam107, sjt_functionParam108);
+    sjt_functionParam109 = 8;
+    sjt_functionParam110 = 6;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam109, sjt_functionParam110);
+    sjt_functionParam111 = 9;
+    sjt_functionParam112 = 4;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam111, sjt_functionParam112);
+    sjt_functionParam113 = 10;
+    sjt_functionParam114 = 6;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam113, sjt_functionParam114);
+    sjt_functionParam115 = 11;
+    sjt_functionParam116 = 7;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam115, sjt_functionParam116);
+    sjt_functionParam117 = 12;
+    sjt_functionParam118 = 0;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam117, sjt_functionParam118);
+    sjt_functionParam119 = 13;
+    sjt_functionParam120 = 1;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam119, sjt_functionParam120);
+    sjt_functionParam121 = 14;
+    sjt_functionParam122 = 5;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam121, sjt_functionParam122);
+    sjt_functionParam123 = 15;
+    sjt_functionParam124 = 0;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam123, sjt_functionParam124);
+    sjt_functionParam125 = 16;
+    sjt_functionParam126 = 5;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam125, sjt_functionParam126);
+    sjt_functionParam127 = 17;
+    sjt_functionParam128 = 4;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam127, sjt_functionParam128);
+    sjt_functionParam129 = 18;
+    sjt_functionParam130 = 3;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam129, sjt_functionParam130);
+    sjt_functionParam131 = 19;
+    sjt_functionParam132 = 2;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam131, sjt_functionParam132);
+    sjt_functionParam133 = 20;
+    sjt_functionParam134 = 6;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam133, sjt_functionParam134);
+    sjt_functionParam135 = 21;
+    sjt_functionParam136 = 3;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam135, sjt_functionParam136);
+    sjt_functionParam137 = 22;
+    sjt_functionParam138 = 6;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam137, sjt_functionParam138);
+    sjt_functionParam139 = 23;
+    sjt_functionParam140 = 7;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam139, sjt_functionParam140);
+    sjt_functionParam141 = 24;
+    sjt_functionParam142 = 1;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam141, sjt_functionParam142);
+    sjt_functionParam143 = 25;
+    sjt_functionParam144 = 5;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam143, sjt_functionParam144);
+    sjt_functionParam145 = 26;
+    sjt_functionParam146 = 6;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam145, sjt_functionParam146);
+    sjt_functionParam147 = 27;
+    sjt_functionParam148 = 1;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam147, sjt_functionParam148);
+    sjt_functionParam149 = 28;
+    sjt_functionParam150 = 6;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam149, sjt_functionParam150);
+    sjt_functionParam151 = 29;
+    sjt_functionParam152 = 2;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam151, sjt_functionParam152);
+    sjt_functionParam153 = 30;
+    sjt_functionParam154 = 0;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam153, sjt_functionParam154);
+    sjt_functionParam155 = 31;
+    sjt_functionParam156 = 4;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam155, sjt_functionParam156);
+    sjt_functionParam157 = 32;
+    sjt_functionParam158 = 7;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam157, sjt_functionParam158);
+    sjt_functionParam159 = 33;
+    sjt_functionParam160 = 0;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam159, sjt_functionParam160);
+    sjt_functionParam161 = 34;
+    sjt_functionParam162 = 7;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam161, sjt_functionParam162);
+    sjt_functionParam163 = 35;
+    sjt_functionParam164 = 3;
+    sjf_array_i32_initAt(&(*_return)->indices, sjt_functionParam163, sjt_functionParam164);
+    (*_return)->vertices.size = 8;
+    sjt_cast5 = 0;
+    (*_return)->vertices.data = (uintptr_t)sjt_cast5;
+    (*_return)->vertices._isGlobal = false;
+    sjf_array_vertex_location_texture(&(*_return)->vertices);
+    sjt_functionParam165 = 0;
+    sjt_call9.location.x = sjv_x0;
+    sjt_call9.location.y = sjv_y0;
+    sjt_call9.location.z = sjv_z0;
+    sjf_vec3(&sjt_call9.location);
+    sjt_call9.texture.x = sjv_s0;
+    sjt_call9.texture.y = sjv_t0;
+    sjf_vec2(&sjt_call9.texture);
+    sjf_vertex_location_texture(&sjt_call9);
+    sjt_functionParam166 = &sjt_call9;
+    sjf_array_vertex_location_texture_initAt(&(*_return)->vertices, sjt_functionParam165, sjt_functionParam166);
+    sjt_functionParam167 = 1;
+    sjt_call10.location.x = sjv_x0;
+    sjt_call10.location.y = sjv_y1;
+    sjt_call10.location.z = sjv_z0;
+    sjf_vec3(&sjt_call10.location);
+    sjt_call10.texture.x = sjv_s0;
+    sjt_call10.texture.y = sjv_t1;
+    sjf_vec2(&sjt_call10.texture);
+    sjf_vertex_location_texture(&sjt_call10);
+    sjt_functionParam168 = &sjt_call10;
+    sjf_array_vertex_location_texture_initAt(&(*_return)->vertices, sjt_functionParam167, sjt_functionParam168);
+    sjt_functionParam169 = 2;
+    sjt_call11.location.x = sjv_x1;
+    sjt_call11.location.y = sjv_y1;
+    sjt_call11.location.z = sjv_z0;
+    sjf_vec3(&sjt_call11.location);
+    sjt_call11.texture.x = sjv_s1;
+    sjt_call11.texture.y = sjv_t1;
+    sjf_vec2(&sjt_call11.texture);
+    sjf_vertex_location_texture(&sjt_call11);
+    sjt_functionParam170 = &sjt_call11;
+    sjf_array_vertex_location_texture_initAt(&(*_return)->vertices, sjt_functionParam169, sjt_functionParam170);
+    sjt_functionParam171 = 3;
+    sjt_call12.location.x = sjv_x1;
+    sjt_call12.location.y = sjv_y0;
+    sjt_call12.location.z = sjv_z0;
+    sjf_vec3(&sjt_call12.location);
+    sjt_call12.texture.x = sjv_s1;
+    sjt_call12.texture.y = sjv_t0;
+    sjf_vec2(&sjt_call12.texture);
+    sjf_vertex_location_texture(&sjt_call12);
+    sjt_functionParam172 = &sjt_call12;
+    sjf_array_vertex_location_texture_initAt(&(*_return)->vertices, sjt_functionParam171, sjt_functionParam172);
+    sjt_functionParam173 = 4;
+    sjt_call13.location.x = sjv_x0;
+    sjt_call13.location.y = sjv_y0;
+    sjt_call13.location.z = sjv_z1;
+    sjf_vec3(&sjt_call13.location);
+    sjt_call13.texture.x = sjv_s0;
+    sjt_call13.texture.y = sjv_t0;
+    sjf_vec2(&sjt_call13.texture);
+    sjf_vertex_location_texture(&sjt_call13);
+    sjt_functionParam174 = &sjt_call13;
+    sjf_array_vertex_location_texture_initAt(&(*_return)->vertices, sjt_functionParam173, sjt_functionParam174);
+    sjt_functionParam175 = 5;
+    sjt_call14.location.x = sjv_x0;
+    sjt_call14.location.y = sjv_y1;
+    sjt_call14.location.z = sjv_z1;
+    sjf_vec3(&sjt_call14.location);
+    sjt_call14.texture.x = sjv_s0;
+    sjt_call14.texture.y = sjv_t1;
+    sjf_vec2(&sjt_call14.texture);
+    sjf_vertex_location_texture(&sjt_call14);
+    sjt_functionParam176 = &sjt_call14;
+    sjf_array_vertex_location_texture_initAt(&(*_return)->vertices, sjt_functionParam175, sjt_functionParam176);
+    sjt_functionParam177 = 6;
+    sjt_call15.location.x = sjv_x1;
+    sjt_call15.location.y = sjv_y1;
+    sjt_call15.location.z = sjv_z1;
+    sjf_vec3(&sjt_call15.location);
+    sjt_call15.texture.x = sjv_s1;
+    sjt_call15.texture.y = sjv_t1;
+    sjf_vec2(&sjt_call15.texture);
+    sjf_vertex_location_texture(&sjt_call15);
+    sjt_functionParam178 = &sjt_call15;
+    sjf_array_vertex_location_texture_initAt(&(*_return)->vertices, sjt_functionParam177, sjt_functionParam178);
+    sjt_functionParam179 = 7;
+    sjt_call16.location.x = sjv_x1;
+    sjt_call16.location.y = sjv_y0;
+    sjt_call16.location.z = sjv_z1;
+    sjf_vec3(&sjt_call16.location);
+    sjt_call16.texture.x = sjv_s1;
+    sjt_call16.texture.y = sjv_t0;
+    sjf_vec2(&sjt_call16.texture);
+    sjf_vertex_location_texture(&sjt_call16);
+    sjt_functionParam180 = &sjt_call16;
+    sjf_array_vertex_location_texture_initAt(&(*_return)->vertices, sjt_functionParam179, sjt_functionParam180);
+    sjf_vertexBuffer_vertex_location_texture_heap((*_return));
 
-void sjf_cubeVertexBuffer_heap(sjs_cubeVertexBuffer_heap* _this) {
-    _this->buffer = vertex_buffer_new("vertex:3f,tex_coord:2f");
-    float x0 = -1.0f;
-    float x1 = 1.0f;
-    float y0 = -1.0f;
-    float y1 = 1.0f;
-    float z0 = -1.0f;
-    float z1 = 1.0f;
-    float s0 = 0.0f;
-    float s1 = 1.0f;
-    float t0 = 0.0f;
-    float t1 = 1.0f;
-    GLuint index = (GLuint)_this->buffer->vertices->size;
-    GLuint indices[] = { //
-    index+0, index+1, index+2,
-    index+0, index+2, index+3,
-    index+4, index+5, index+6,
-    index+4, index+6, index+7,
-    index+0, index+1, index+5,
-    index+0, index+5, index+4,
-    index+3, index+2, index+6,
-    index+3, index+6, index+7,
-    index+1, index+5, index+6,
-    index+1, index+6, index+2,
-    index+0, index+4, index+7,
-    index+0, index+7, index+3,
-};
-vertex3_texture2_t vertices[] = { //
-{ x0, y0, z0,  s0, t0 },
-{ x0, y1, z0,  s0, t1 },
-{ x1, y1, z0,  s1, t1 },
-{ x1, y0, z0,  s1, t0 },
-{ x0, y0, z1,  s0, t0 },
-{ x0, y1, z1,  s0, t1 },
-{ x1, y1, z1,  s1, t1 },
-{ x1, y0, z1,  s1, t0 }};
-vertex_buffer_push_back_indices( _this->buffer, indices, 36 );
-vertex_buffer_push_back_vertices( _this->buffer, vertices, 8 );
-}
-
-void sjf_cubeVertexBuffer_render(sjs_cubeVertexBuffer* _parent, sjs_scene2d* scene) {
-    vertex_buffer_render(_parent->buffer, GL_TRIANGLES);
+    sjf_vertex_location_texture_destroy(&sjt_call10);
+    sjf_vertex_location_texture_destroy(&sjt_call11);
+    sjf_vertex_location_texture_destroy(&sjt_call12);
+    sjf_vertex_location_texture_destroy(&sjt_call13);
+    sjf_vertex_location_texture_destroy(&sjt_call14);
+    sjf_vertex_location_texture_destroy(&sjt_call15);
+    sjf_vertex_location_texture_destroy(&sjt_call16);
+    sjf_vertex_location_texture_destroy(&sjt_call9);
 }
 
 void sjf_fireMouseDown(sji_element* element, sjs_point* point) {
     bool result6;
-    sji_element* sjt_cast3;
+    sji_element* sjt_cast7;
     sjs_rect* sjt_dot35;
     sji_element* sjt_dot36;
     sji_element* sjt_dot38;
-    sjs_point* sjt_functionParam13;
+    sjs_point* sjt_functionParam189;
     bool sjt_ifElse10;
     bool sjt_ifElse12;
     sjs_array_heap_element* sjt_isEmpty4;
@@ -6637,13 +7449,13 @@ void sjf_fireMouseDown(sji_element* element, sjs_point* point) {
     sjs_array_heap_element* sjv_children;
     sji_fireMouseUp_mouseHandler* sjv_mouseHandler;
 
-    sjt_cast3 = element;
-    sjt_cast3->_refCount++;
-    sjv_mouseHandler = (sji_fireMouseUp_mouseHandler*)sjt_cast3->asInterface(sjt_cast3->_parent, sji_fireMouseUp_mouseHandler_typeId);
+    sjt_cast7 = element;
+    sjt_cast7->_refCount++;
+    sjv_mouseHandler = (sji_fireMouseUp_mouseHandler*)sjt_cast7->asInterface(sjt_cast7->_parent, sji_fireMouseUp_mouseHandler_typeId);
     sjt_dot36 = element;
     sjt_dot36->getRect((void*)(((char*)sjt_dot36->_parent) + sizeof(intptr_t)), &sjt_dot35);
-    sjt_functionParam13 = point;
-    sjf_rect_containsPoint(sjt_dot35, sjt_functionParam13, &sjt_ifElse10);
+    sjt_functionParam189 = point;
+    sjf_rect_containsPoint(sjt_dot35, sjt_functionParam189, &sjt_ifElse10);
     if (sjt_ifElse10) {
         bool result5;
         bool sjt_ifElse11;
@@ -6711,27 +7523,27 @@ void sjf_fireMouseDown(sji_element* element, sjs_point* point) {
         sjt_forEnd2 = (sjt_dot39)->size;
         while (i < sjt_forEnd2) {
             sjs_array_heap_element* sjt_dot40;
-            sji_element* sjt_functionParam14;
-            int32_t sjt_functionParam15;
-            sjs_point* sjt_functionParam16;
+            sji_element* sjt_functionParam190;
+            int32_t sjt_functionParam191;
+            sjs_point* sjt_functionParam192;
 
             sjt_dot40 = sjv_c;
-            sjt_functionParam15 = i;
-            sjf_array_heap_element_getAt_heap(sjt_dot40, sjt_functionParam15, &sjt_functionParam14);
-            sjt_functionParam16 = point;
-            sjf_fireMouseDown(sjt_functionParam14, sjt_functionParam16);
+            sjt_functionParam191 = i;
+            sjf_array_heap_element_getAt_heap(sjt_dot40, sjt_functionParam191, &sjt_functionParam190);
+            sjt_functionParam192 = point;
+            sjf_fireMouseDown(sjt_functionParam190, sjt_functionParam192);
             i++;
 
-            sjt_functionParam14->_refCount--;
-            if (sjt_functionParam14->_refCount <= 0) {
-                sji_element_destroy(sjt_functionParam14);
+            sjt_functionParam190->_refCount--;
+            if (sjt_functionParam190->_refCount <= 0) {
+                sji_element_destroy(sjt_functionParam190);
             }
         }
     }
 
-    sjt_cast3->_refCount--;
-    if (sjt_cast3->_refCount <= 0) {
-        sji_element_destroy(sjt_cast3);
+    sjt_cast7->_refCount--;
+    if (sjt_cast7->_refCount <= 0) {
+        sji_element_destroy(sjt_cast7);
     }
     if (sjv_mouseHandler != 0) {
         sjv_mouseHandler->_refCount--;
@@ -6743,11 +7555,11 @@ void sjf_fireMouseDown(sji_element* element, sjs_point* point) {
 
 void sjf_fireMouseUp(sji_element* element, sjs_point* point) {
     bool result4;
-    sji_element* sjt_cast2;
+    sji_element* sjt_cast6;
     sjs_rect* sjt_dot25;
     sji_element* sjt_dot26;
     sji_element* sjt_dot32;
-    sjs_point* sjt_functionParam7;
+    sjs_point* sjt_functionParam183;
     bool sjt_ifElse6;
     bool sjt_ifElse8;
     sjs_array_heap_element* sjt_isEmpty2;
@@ -6755,13 +7567,13 @@ void sjf_fireMouseUp(sji_element* element, sjs_point* point) {
     sjs_array_heap_element* sjv_children;
     sji_fireMouseUp_mouseHandler* sjv_mouseHandler;
 
-    sjt_cast2 = element;
-    sjt_cast2->_refCount++;
-    sjv_mouseHandler = (sji_fireMouseUp_mouseHandler*)sjt_cast2->asInterface(sjt_cast2->_parent, sji_fireMouseUp_mouseHandler_typeId);
+    sjt_cast6 = element;
+    sjt_cast6->_refCount++;
+    sjv_mouseHandler = (sji_fireMouseUp_mouseHandler*)sjt_cast6->asInterface(sjt_cast6->_parent, sji_fireMouseUp_mouseHandler_typeId);
     sjt_dot26 = element;
     sjt_dot26->getRect((void*)(((char*)sjt_dot26->_parent) + sizeof(intptr_t)), &sjt_dot25);
-    sjt_functionParam7 = point;
-    sjf_rect_containsPoint(sjt_dot25, sjt_functionParam7, &sjt_ifElse6);
+    sjt_functionParam183 = point;
+    sjf_rect_containsPoint(sjt_dot25, sjt_functionParam183, &sjt_ifElse6);
     if (sjt_ifElse6) {
         bool result3;
         bool sjt_ifElse7;
@@ -6829,27 +7641,27 @@ void sjf_fireMouseUp(sji_element* element, sjs_point* point) {
         sjt_forEnd1 = (sjt_dot33)->size;
         while (i < sjt_forEnd1) {
             sjs_array_heap_element* sjt_dot34;
-            sjs_point* sjt_functionParam10;
-            sji_element* sjt_functionParam8;
-            int32_t sjt_functionParam9;
+            sji_element* sjt_functionParam184;
+            int32_t sjt_functionParam185;
+            sjs_point* sjt_functionParam186;
 
             sjt_dot34 = sjv_c;
-            sjt_functionParam9 = i;
-            sjf_array_heap_element_getAt_heap(sjt_dot34, sjt_functionParam9, &sjt_functionParam8);
-            sjt_functionParam10 = point;
-            sjf_fireMouseUp(sjt_functionParam8, sjt_functionParam10);
+            sjt_functionParam185 = i;
+            sjf_array_heap_element_getAt_heap(sjt_dot34, sjt_functionParam185, &sjt_functionParam184);
+            sjt_functionParam186 = point;
+            sjf_fireMouseUp(sjt_functionParam184, sjt_functionParam186);
             i++;
 
-            sjt_functionParam8->_refCount--;
-            if (sjt_functionParam8->_refCount <= 0) {
-                sji_element_destroy(sjt_functionParam8);
+            sjt_functionParam184->_refCount--;
+            if (sjt_functionParam184->_refCount <= 0) {
+                sji_element_destroy(sjt_functionParam184);
             }
         }
     }
 
-    sjt_cast2->_refCount--;
-    if (sjt_cast2->_refCount <= 0) {
-        sji_element_destroy(sjt_cast2);
+    sjt_cast6->_refCount--;
+    if (sjt_cast6->_refCount <= 0) {
+        sji_element_destroy(sjt_cast6);
     }
     if (sjv_mouseHandler != 0) {
         sjv_mouseHandler->_refCount--;
@@ -6868,13 +7680,11 @@ void sjf_mainLoop(void) {
     sji_element* sjt_dot22;
     sji_element* sjt_dot23;
     sjs_windowRenderer* sjt_dot24;
-    sjs_size* sjt_functionParam6;
+    sjs_size* sjt_functionParam182;
     bool sjt_ifElse5;
     bool sjt_ifElse9;
     sjs_rect* sjt_interfaceParam1;
     sjs_scene2d* sjt_interfaceParam2;
-    int32_t sjt_math5;
-    int32_t sjt_math6;
     bool sjv_isMouseDown;
     bool sjv_isMouseUp;
     sjs_rect sjv_rect;
@@ -6885,8 +7695,8 @@ void sjf_mainLoop(void) {
     sjt_dot14 = &sjv_rootWindowRenderer;
     sjf_windowRenderer_getSize(sjt_dot14, &sjv_size);
     sjt_dot15 = &sjv_rootScene;
-    sjt_functionParam6 = &sjv_size;
-    sjf_scene2d_setSize(sjt_dot15, sjt_functionParam6);
+    sjt_functionParam182 = &sjv_size;
+    sjf_scene2d_setSize(sjt_dot15, sjt_functionParam182);
     sjt_dot19 = &sjv_rootScene;
     sjf_scene2d_clear(sjt_dot19);
     sjv_rect.x = 0;
@@ -6930,49 +7740,45 @@ void sjf_mainLoop(void) {
     }
     sjt_ifElse5 = sjv_isMouseUp;
     if (sjt_ifElse5) {
-        sjs_point sjt_call1;
-        sji_element* sjt_functionParam11;
-        sjs_point* sjt_functionParam12;
+        sjs_point sjt_call17;
+        sji_element* sjt_functionParam187;
+        sjs_point* sjt_functionParam188;
 
-        sjt_functionParam11 = sjv_root;
-        sjt_functionParam11->_refCount++;
-        sjt_call1.x = sjv_x;
-        sjt_call1.y = sjv_y;
-        sjf_point(&sjt_call1);
-        sjt_functionParam12 = &sjt_call1;
-        sjf_fireMouseUp(sjt_functionParam11, sjt_functionParam12);
+        sjt_functionParam187 = sjv_root;
+        sjt_functionParam187->_refCount++;
+        sjt_call17.x = sjv_x;
+        sjt_call17.y = sjv_y;
+        sjf_point(&sjt_call17);
+        sjt_functionParam188 = &sjt_call17;
+        sjf_fireMouseUp(sjt_functionParam187, sjt_functionParam188);
 
-        sjt_functionParam11->_refCount--;
-        if (sjt_functionParam11->_refCount <= 0) {
-            sji_element_destroy(sjt_functionParam11);
+        sjt_functionParam187->_refCount--;
+        if (sjt_functionParam187->_refCount <= 0) {
+            sji_element_destroy(sjt_functionParam187);
         }
-        sjf_point_destroy(&sjt_call1);
+        sjf_point_destroy(&sjt_call17);
     }
 
     sjt_ifElse9 = sjv_isMouseDown;
     if (sjt_ifElse9) {
-        sjs_point sjt_call2;
-        sji_element* sjt_functionParam17;
-        sjs_point* sjt_functionParam18;
+        sjs_point sjt_call18;
+        sji_element* sjt_functionParam193;
+        sjs_point* sjt_functionParam194;
 
-        sjt_functionParam17 = sjv_root;
-        sjt_functionParam17->_refCount++;
-        sjt_call2.x = sjv_x;
-        sjt_call2.y = sjv_y;
-        sjf_point(&sjt_call2);
-        sjt_functionParam18 = &sjt_call2;
-        sjf_fireMouseDown(sjt_functionParam17, sjt_functionParam18);
+        sjt_functionParam193 = sjv_root;
+        sjt_functionParam193->_refCount++;
+        sjt_call18.x = sjv_x;
+        sjt_call18.y = sjv_y;
+        sjf_point(&sjt_call18);
+        sjt_functionParam194 = &sjt_call18;
+        sjf_fireMouseDown(sjt_functionParam193, sjt_functionParam194);
 
-        sjt_functionParam17->_refCount--;
-        if (sjt_functionParam17->_refCount <= 0) {
-            sji_element_destroy(sjt_functionParam17);
+        sjt_functionParam193->_refCount--;
+        if (sjt_functionParam193->_refCount <= 0) {
+            sji_element_destroy(sjt_functionParam193);
         }
-        sjf_point_destroy(&sjt_call2);
+        sjf_point_destroy(&sjt_call18);
     }
-
-    sjt_math5 = sjv_frame;
-    sjt_math6 = 1;
-    sjv_frame = sjt_math5 + sjt_math6;
 
     sjf_rect_destroy(&sjv_rect);
     sjf_size_destroy(&sjv_size);
@@ -7133,13 +7939,13 @@ void sjf_scene2d_heap(sjs_scene2d_heap* _this) {
 void sjf_scene2d_setSize(sjs_scene2d* _parent, sjs_size* size) {
     bool result2;
     sjs_size* sjt_dot16;
-    sjs_size* sjt_functionParam5;
+    sjs_size* sjt_functionParam181;
     bool sjt_ifElse4;
     bool sjt_not2;
 
     sjt_dot16 = &(_parent)->_size;
-    sjt_functionParam5 = size;
-    sjf_size_isEqual(sjt_dot16, sjt_functionParam5, &sjt_not2);
+    sjt_functionParam181 = size;
+    sjf_size_isEqual(sjt_dot16, sjt_functionParam181, &sjt_not2);
     result2 = !sjt_not2;
     sjt_ifElse4 = result2;
     if (sjt_ifElse4) {
@@ -7271,6 +8077,79 @@ void sjf_string_destroy(sjs_string* _this) {
 }
 
 void sjf_string_heap(sjs_string_heap* _this) {
+}
+
+void sjf_vec2(sjs_vec2* _this) {
+}
+
+void sjf_vec2_copy(sjs_vec2* _this, sjs_vec2* _from) {
+    _this->x = _from->x;
+    _this->y = _from->y;
+}
+
+void sjf_vec2_destroy(sjs_vec2* _this) {
+}
+
+void sjf_vec2_heap(sjs_vec2_heap* _this) {
+}
+
+void sjf_vec3(sjs_vec3* _this) {
+}
+
+void sjf_vec3_copy(sjs_vec3* _this, sjs_vec3* _from) {
+    _this->x = _from->x;
+    _this->y = _from->y;
+    _this->z = _from->z;
+}
+
+void sjf_vec3_destroy(sjs_vec3* _this) {
+}
+
+void sjf_vec3_heap(sjs_vec3_heap* _this) {
+}
+
+void sjf_vertexBuffer_vertex_location_texture(sjs_vertexBuffer_vertex_location_texture* _this) {
+    _this->buffer = vertex_buffer_new((char*)_this->format.data.data);
+    vertex_buffer_push_back_indices(_this->buffer, (int32_t*)_this->indices.data, _this->indices.size);
+    vertex_buffer_push_back_vertices(_this->buffer, (sjs_vertex_location_texture*)_this->vertices.data, _this->vertices.size);
+}
+
+void sjf_vertexBuffer_vertex_location_texture_copy(sjs_vertexBuffer_vertex_location_texture* _this, sjs_vertexBuffer_vertex_location_texture* _from) {
+    sjf_string_copy(&_this->format, &_from->format);
+    sjf_array_i32_copy(&_this->indices, &_from->indices);
+    sjf_array_vertex_location_texture_copy(&_this->vertices, &_from->vertices);
+    _this->buffer = _from->buffer;
+    _retain(_this->buffer);
+}
+
+void sjf_vertexBuffer_vertex_location_texture_destroy(sjs_vertexBuffer_vertex_location_texture* _this) {
+    if (_release(_this->buffer)) {
+        vertex_buffer_delete(_this->buffer);
+    }
+}
+
+void sjf_vertexBuffer_vertex_location_texture_heap(sjs_vertexBuffer_vertex_location_texture_heap* _this) {
+    _this->buffer = vertex_buffer_new((char*)_this->format.data.data);
+    vertex_buffer_push_back_indices(_this->buffer, (int32_t*)_this->indices.data, _this->indices.size);
+    vertex_buffer_push_back_vertices(_this->buffer, (sjs_vertex_location_texture*)_this->vertices.data, _this->vertices.size);
+}
+
+void sjf_vertexBuffer_vertex_location_texture_render(sjs_vertexBuffer_vertex_location_texture* _parent, sjs_scene2d* scene) {
+    vertex_buffer_render(_parent->buffer, GL_TRIANGLES);
+}
+
+void sjf_vertex_location_texture(sjs_vertex_location_texture* _this) {
+}
+
+void sjf_vertex_location_texture_copy(sjs_vertex_location_texture* _this, sjs_vertex_location_texture* _from) {
+    sjf_vec3_copy(&_this->location, &_from->location);
+    sjf_vec2_copy(&_this->texture, &_from->texture);
+}
+
+void sjf_vertex_location_texture_destroy(sjs_vertex_location_texture* _this) {
+}
+
+void sjf_vertex_location_texture_heap(sjs_vertex_location_texture_heap* _this) {
 }
 
 void sjf_windowRenderer(sjs_windowRenderer* _this) {
@@ -7442,7 +8321,6 @@ int main(int argc, char** argv) {
     sjv_i32_max = (-2147483647 - 1);
     sjv_i32_min = 2147483647;
     sjv_u32_max = (uint32_t)4294967295u;
-    sjv_frame = 0;
     sjf_windowRenderer(&sjv_rootWindowRenderer);
     sjv_rootScene._size.w = 0;
     sjv_rootScene._size.h = 0;
@@ -7452,44 +8330,38 @@ int main(int argc, char** argv) {
     sjf_anon2(&sjv_parse);
     sjf_anon3(&sjv_random);
     sjf_anon4(&sjv_convert);
-    sjv_buttonState.normal = 0;
-    sjv_buttonState.hot = 1;
-    sjv_buttonState.pressed = 2;
-    sjf_anon5(&sjv_buttonState);
-    sjf_anon6(&sjv_colors);
-    sjf_anon7(&sjv_style);
+    sjv_blurHorizontalShader.vertex.count = 24;
+    sjv_blurHorizontalShader.vertex.data.size = 25;
+    sjv_blurHorizontalShader.vertex.data.data = (uintptr_t)sjg_string1;
+    sjv_blurHorizontalShader.vertex.data._isGlobal = false;
+    sjf_array_char(&sjv_blurHorizontalShader.vertex.data);
+    sjf_string(&sjv_blurHorizontalShader.vertex);
+    sjv_blurHorizontalShader.pixel.count = 28;
+    sjv_blurHorizontalShader.pixel.data.size = 29;
+    sjv_blurHorizontalShader.pixel.data.data = (uintptr_t)sjg_string2;
+    sjv_blurHorizontalShader.pixel.data._isGlobal = false;
+    sjf_array_char(&sjv_blurHorizontalShader.pixel.data);
+    sjf_string(&sjv_blurHorizontalShader.pixel);
+    sjf_shader(&sjv_blurHorizontalShader);
+    sjv_blurVerticalShader.vertex.count = 24;
+    sjv_blurVerticalShader.vertex.data.size = 25;
+    sjv_blurVerticalShader.vertex.data.data = (uintptr_t)sjg_string3;
+    sjv_blurVerticalShader.vertex.data._isGlobal = false;
+    sjf_array_char(&sjv_blurVerticalShader.vertex.data);
+    sjf_string(&sjv_blurVerticalShader.vertex);
+    sjv_blurVerticalShader.pixel.count = 26;
+    sjv_blurVerticalShader.pixel.data.size = 27;
+    sjv_blurVerticalShader.pixel.data.data = (uintptr_t)sjg_string4;
+    sjv_blurVerticalShader.pixel.data._isGlobal = false;
+    sjf_array_char(&sjv_blurVerticalShader.pixel.data);
+    sjf_string(&sjv_blurVerticalShader.pixel);
+    sjf_shader(&sjv_blurVerticalShader);
     sjv_borderPosition.fill = 0;
     sjv_borderPosition.left = 1;
     sjv_borderPosition.right = 2;
     sjv_borderPosition.top = 3;
     sjv_borderPosition.bottom = 4;
-    sjf_anon8(&sjv_borderPosition);
-    sjv_boringShader.vertex.count = 20;
-    sjv_boringShader.vertex.data.size = 21;
-    sjv_boringShader.vertex.data.data = (uintptr_t)sjg_string1;
-    sjv_boringShader.vertex.data._isGlobal = false;
-    sjf_array_char(&sjv_boringShader.vertex.data);
-    sjf_string(&sjv_boringShader.vertex);
-    sjv_boringShader.pixel.count = 20;
-    sjv_boringShader.pixel.data.size = 21;
-    sjv_boringShader.pixel.data.data = (uintptr_t)sjg_string2;
-    sjv_boringShader.pixel.data._isGlobal = false;
-    sjf_array_char(&sjv_boringShader.pixel.data);
-    sjf_string(&sjv_boringShader.pixel);
-    sjf_shader(&sjv_boringShader);
-    sjv_textShader.vertex.count = 24;
-    sjv_textShader.vertex.data.size = 25;
-    sjv_textShader.vertex.data.data = (uintptr_t)sjg_string3;
-    sjv_textShader.vertex.data._isGlobal = false;
-    sjf_array_char(&sjv_textShader.vertex.data);
-    sjf_string(&sjv_textShader.vertex);
-    sjv_textShader.pixel.count = 24;
-    sjv_textShader.pixel.data.size = 25;
-    sjv_textShader.pixel.data.data = (uintptr_t)sjg_string4;
-    sjv_textShader.pixel.data._isGlobal = false;
-    sjf_array_char(&sjv_textShader.pixel.data);
-    sjf_string(&sjv_textShader.pixel);
-    sjf_shader(&sjv_textShader);
+    sjf_anon5(&sjv_borderPosition);
     sjv_boxShader.vertex.count = 20;
     sjv_boxShader.vertex.data.size = 21;
     sjv_boxShader.vertex.data.data = (uintptr_t)sjg_string5;
@@ -7503,49 +8375,61 @@ int main(int argc, char** argv) {
     sjf_array_char(&sjv_boxShader.pixel.data);
     sjf_string(&sjv_boxShader.pixel);
     sjf_shader(&sjv_boxShader);
+    sjv_buttonState.normal = 0;
+    sjv_buttonState.hot = 1;
+    sjv_buttonState.pressed = 2;
+    sjf_anon6(&sjv_buttonState);
+    sjv_boringShader.vertex.count = 20;
+    sjv_boringShader.vertex.data.size = 21;
+    sjv_boringShader.vertex.data.data = (uintptr_t)sjg_string7;
+    sjv_boringShader.vertex.data._isGlobal = false;
+    sjf_array_char(&sjv_boringShader.vertex.data);
+    sjf_string(&sjv_boringShader.vertex);
+    sjv_boringShader.pixel.count = 20;
+    sjv_boringShader.pixel.data.size = 21;
+    sjv_boringShader.pixel.data.data = (uintptr_t)sjg_string8;
+    sjv_boringShader.pixel.data._isGlobal = false;
+    sjf_array_char(&sjv_boringShader.pixel.data);
+    sjf_string(&sjv_boringShader.pixel);
+    sjf_shader(&sjv_boringShader);
+    sjf_anon7(&sjv_colors);
     sjv_imageShader.vertex.count = 20;
     sjv_imageShader.vertex.data.size = 21;
-    sjv_imageShader.vertex.data.data = (uintptr_t)sjg_string7;
+    sjv_imageShader.vertex.data.data = (uintptr_t)sjg_string9;
     sjv_imageShader.vertex.data._isGlobal = false;
     sjf_array_char(&sjv_imageShader.vertex.data);
     sjf_string(&sjv_imageShader.vertex);
     sjv_imageShader.pixel.count = 20;
     sjv_imageShader.pixel.data.size = 21;
-    sjv_imageShader.pixel.data.data = (uintptr_t)sjg_string8;
+    sjv_imageShader.pixel.data.data = (uintptr_t)sjg_string10;
     sjv_imageShader.pixel.data._isGlobal = false;
     sjf_array_char(&sjv_imageShader.pixel.data);
     sjf_string(&sjv_imageShader.pixel);
     sjf_shader(&sjv_imageShader);
-    sjv_blurHorizontalShader.vertex.count = 24;
-    sjv_blurHorizontalShader.vertex.data.size = 25;
-    sjv_blurHorizontalShader.vertex.data.data = (uintptr_t)sjg_string9;
-    sjv_blurHorizontalShader.vertex.data._isGlobal = false;
-    sjf_array_char(&sjv_blurHorizontalShader.vertex.data);
-    sjf_string(&sjv_blurHorizontalShader.vertex);
-    sjv_blurHorizontalShader.pixel.count = 28;
-    sjv_blurHorizontalShader.pixel.data.size = 29;
-    sjv_blurHorizontalShader.pixel.data.data = (uintptr_t)sjg_string10;
-    sjv_blurHorizontalShader.pixel.data._isGlobal = false;
-    sjf_array_char(&sjv_blurHorizontalShader.pixel.data);
-    sjf_string(&sjv_blurHorizontalShader.pixel);
-    sjf_shader(&sjv_blurHorizontalShader);
-    sjv_blurVerticalShader.vertex.count = 24;
-    sjv_blurVerticalShader.vertex.data.size = 25;
-    sjv_blurVerticalShader.vertex.data.data = (uintptr_t)sjg_string11;
-    sjv_blurVerticalShader.vertex.data._isGlobal = false;
-    sjf_array_char(&sjv_blurVerticalShader.vertex.data);
-    sjf_string(&sjv_blurVerticalShader.vertex);
-    sjv_blurVerticalShader.pixel.count = 26;
-    sjv_blurVerticalShader.pixel.data.size = 27;
-    sjv_blurVerticalShader.pixel.data.data = (uintptr_t)sjg_string12;
-    sjv_blurVerticalShader.pixel.data._isGlobal = false;
-    sjf_array_char(&sjv_blurVerticalShader.pixel.data);
-    sjf_string(&sjv_blurVerticalShader.pixel);
-    sjf_shader(&sjv_blurVerticalShader);
+    sjf_anon8(&sjv_style);
+    sjv_textShader.vertex.count = 24;
+    sjv_textShader.vertex.data.size = 25;
+    sjv_textShader.vertex.data.data = (uintptr_t)sjg_string11;
+    sjv_textShader.vertex.data._isGlobal = false;
+    sjf_array_char(&sjv_textShader.vertex.data);
+    sjf_string(&sjv_textShader.vertex);
+    sjv_textShader.pixel.count = 24;
+    sjv_textShader.pixel.data.size = 25;
+    sjv_textShader.pixel.data.data = (uintptr_t)sjg_string12;
+    sjv_textShader.pixel.data._isGlobal = false;
+    sjf_array_char(&sjv_textShader.pixel.data);
+    sjf_string(&sjv_textShader.pixel);
+    sjf_shader(&sjv_textShader);
+    sjv_vertex_location_texture_format.count = 22;
+    sjv_vertex_location_texture_format.data.size = 23;
+    sjv_vertex_location_texture_format.data.data = (uintptr_t)sjg_string13;
+    sjv_vertex_location_texture_format.data._isGlobal = false;
+    sjf_array_char(&sjv_vertex_location_texture_format.data);
+    sjf_string(&sjv_vertex_location_texture_format);
     sjt_cast1 = (sjs_cameraElement_heap*)malloc(sizeof(sjs_cameraElement_heap));
     sjt_cast1->_refCount = 1;
     sjt_dot13 = &sjv_colors;
-    sjf_anon6_white(sjt_dot13, &sjt_cast1->color);
+    sjf_anon7_white(sjt_dot13, &sjt_cast1->color);
     sjt_cast1->idealSize.w = 0;
     sjt_cast1->idealSize.h = 0;
     sjf_size(&sjt_cast1->idealSize);
@@ -7574,11 +8458,11 @@ void main_destroy() {
     }
     sjf_shader_destroy(&sjv_blurHorizontalShader);
     sjf_shader_destroy(&sjv_blurVerticalShader);
-    sjf_anon8_destroy(&sjv_borderPosition);
+    sjf_anon5_destroy(&sjv_borderPosition);
     sjf_shader_destroy(&sjv_boringShader);
     sjf_shader_destroy(&sjv_boxShader);
-    sjf_anon5_destroy(&sjv_buttonState);
-    sjf_anon6_destroy(&sjv_colors);
+    sjf_anon6_destroy(&sjv_buttonState);
+    sjf_anon7_destroy(&sjv_colors);
     sjf_anon1_destroy(&sjv_console);
     sjf_anon4_destroy(&sjv_convert);
     sjf_shader_destroy(&sjv_imageShader);
@@ -7586,6 +8470,7 @@ void main_destroy() {
     sjf_anon3_destroy(&sjv_random);
     sjf_scene2d_destroy(&sjv_rootScene);
     sjf_windowRenderer_destroy(&sjv_rootWindowRenderer);
-    sjf_anon7_destroy(&sjv_style);
+    sjf_anon8_destroy(&sjv_style);
     sjf_shader_destroy(&sjv_textShader);
+    sjf_string_destroy(&sjv_vertex_location_texture_format);
 }

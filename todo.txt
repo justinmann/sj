@@ -1,10 +1,30 @@
 -- ui --
 * add normals
 * fix aspect ratio
-* create vertexBuffer class
+* sphere
+* phong shader: http://www.ozone3d.net/tutorials/glsl_lighting_phong_p2.php
 * load obj file: http://kixor.net/dev/objloader/ https://code.google.com/archive/p/saitoobjloader/ http://people.sc.fsu.edu/%7Ejburkardt/data/obj/obj.html
 * center text
 * animation
+
+scene3dElement #element (
+	camera = ()
+	lookAt = ()
+
+	children : [
+		model(
+			vertexBuffer : ...
+			shader : ... 
+			texture : ...
+		)
+		scene2dModel #model (
+			vertexBuffer : ...
+			shader : ... 
+			size : ...
+			children : []
+		)
+	]
+)
 
 -- language --
 * use #line pragma directive

@@ -4,23 +4,47 @@
  * file `LICENSE` for more details.
  */
 
-#vertexBuffer(
-    render()'void
-)
-
-vertexBuffer(
+vertexBuffer!vertex(
     format : 'string
-    data : 0 as ptr
+    indices : array!i32()
+    vertices : array!vertex()
     --cvar--
     vertex_buffer_t* buffer;
     --cvar--
+
+    addIndex(index : 'i32) {
+        --c--
+        vertex_buffer_push_back_indices(_parent->buffer, &index, 1);
+        --c--
+        void
+    }
+
+    getVertexSize()'i32 {
+        size = 0
+        --c--
+        sjv_size = _this->buffer->vertices->size;
+        --c--
+        size
+    }
+
+    addVertex(vertex : 'vertex) {
+        --c--
+        vertex_buffer_push_back_vertices(_parent->buffer, vertex, 1);
+        --c--
+        void
+    }
+
+    render(scene : 'scene2d)'void {
+        --c--
+        vertex_buffer_render(_parent->buffer, GL_TRIANGLES);
+        --c--
+        void
+    }
 ) { 
     --c--
-    if (_this->data) {
-        _this->buffer = (vertex_buffer_t*)_this->data;
-    } else {
-        _this->buffer = vertex_buffer_new((char*)format->data.data);
-    }
+    _this->buffer = vertex_buffer_new((char*)_this->format.data.data);
+    vertex_buffer_push_back_indices(_this->buffer, (int32_t*)_this->indices.data, _this->indices.size);
+    vertex_buffer_push_back_vertices(_this->buffer, (#type(vertex)*)_this->vertices.data, _this->vertices.size);
     --c--
     this 
 } copy {
