@@ -30,7 +30,7 @@ anon8()'stack anon8 {
   this
 }
 
-cameraElement #element (rect'stack rect=, _cube'stack vertexBuffer_vertex_location_texture:, projection'stack mat4=, view'stack mat4=, model'stack mat4=, viewModel'stack mat4=)'heap cameraElement {
+cameraElement #element (rect'stack rect=, _cube'stack vertexBuffer_vertex_location_texture_normal:, projection'stack mat4=, view'stack mat4=, model'stack mat4=, viewModel'stack mat4=, normalMat'stack mat4=, angle'f32=)'heap cameraElement {
   this
 }
 
@@ -5507,17 +5507,19 @@ global()'void {
   }
   
   --cfunction--
-  vertex_location_texture_format'stack string : string(this = string(
+  vertex_location_texture_normal_format'stack string : string(this = string(
     count'i32 = this.count,
     data'stack array_char = this.data
   ))
   root'heap #element : cameraElement(this = cameraElement(
     rect'stack rect = this.rect,
-    _cube'stack vertexBuffer_vertex_location_texture : this._cube,
+    _cube'stack vertexBuffer_vertex_location_texture_normal : this._cube,
     projection'stack mat4 = this.projection,
     view'stack mat4 = this.view,
     model'stack mat4 = this.model,
-    viewModel'stack mat4 = this.viewModel
+    viewModel'stack mat4 = this.viewModel,
+    normalMat'stack mat4 = this.normalMat,
+    angle'f32 = this.angle
   )) as heap #element
   runLoop()
   void

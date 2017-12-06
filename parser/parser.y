@@ -349,8 +349,8 @@ end_star			: TEND											{ $$ = nullptr; }
 					;
 
 array_args 			: expr											{ $$ = new NodeList(); $$->push_back(shared_ptr<NBase>($1)); }
-					| array_args TEND expr 							{ $1->push_back(shared_ptr<NBase>($3)); }
-					| array_args TCOMMA TEND expr 					{ $1->push_back(shared_ptr<NBase>($4)); }
+					| array_args end_star expr 						{ $1->push_back(shared_ptr<NBase>($3)); }
+					| array_args TCOMMA end_star expr 				{ $1->push_back(shared_ptr<NBase>($4)); }
 					| array_args TCOMMA expr 						{ $1->push_back(shared_ptr<NBase>($3)); }
 					;
 

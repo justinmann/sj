@@ -1,4 +1,4 @@
-boringShader : shader("shaders/v3f-n3f.vert", "shaders/v3f-n3f.frag")
+boringShader : shader("shaders/v3f-n3f-phong.vert", "shaders/v3f-n3f-phong.frag")
 
 cameraElement #element (
 	rect = rect()
@@ -7,6 +7,8 @@ cameraElement #element (
 	view = mat4()
 	model = mat4()
 	viewModel = mat4()
+	normalMat = mat4()
+	angle = 0.0f
 
 	getSize(maxSize : 'size) {
 		size(maxSize.w, maxSize.h)
@@ -21,16 +23,23 @@ cameraElement #element (
 			view = mat4_lookAtLH(vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f))
 			model = mat4_rotation(30.0f, 0.0f, 1.0f, 0.0f)
 			viewModel = view * model
+			normalMat = viewModel.invert().transpose()
 			void
 		}
 		void
 	}
 
 	render(scene : 'scene2d)'void {
+		angle += 0.2f
+
+		model = mat4_rotation(angle, 0.0f, 1.0f, 0.0f)
+		viewModel = view * model
+		normalMat = viewModel.invert().transpose()
 		--c--
         glUseProgram(sjv_boringShader.id);
         // glUniformMatrix4fv(glGetUniformLocation(sjv_boringShader.id, "model" ), 1, 0, (GLfloat*)&_parent->world);
         glUniformMatrix4fv(glGetUniformLocation(sjv_boringShader.id, "viewModel" ), 1, 0, (GLfloat*)&_parent->viewModel);
+        glUniformMatrix4fv(glGetUniformLocation(sjv_boringShader.id, "normalMat" ), 1, 0, (GLfloat*)&_parent->normalMat);
         glUniformMatrix4fv(glGetUniformLocation(sjv_boringShader.id, "projection" ), 1, 0, (GLfloat*)&_parent->projection);
 		--c--
 		_cube.render(scene)

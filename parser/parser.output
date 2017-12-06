@@ -202,8 +202,8 @@ Grammar
   149         | TEND end_star
 
   150 array_args: expr
-  151           | array_args TEND expr
-  152           | array_args TCOMMA TEND expr
+  151           | array_args end_star expr
+  152           | array_args TCOMMA end_star expr
   153           | array_args TCOMMA expr
 
   154 return_type_quote: TQUOTE return_type
@@ -288,7 +288,7 @@ TCLE (274) 86
 TCGT (275) 87
 TCGE (276) 88
 TEQUAL (277) 28 138 181
-TEND (278) 3 59 148 149 151 152
+TEND (278) 3 59 148 149
 TLPAREN (279) 41 42 57 68 99 102 111 112 113 132 180
 TRPAREN (280) 41 42 57 68 99 102 111 112 113 132 180
 TLBRACE (281) 17
@@ -449,7 +449,7 @@ array (129)
 end_optional (130)
     on left: 146 147, on right: 41 145
 end_star (131)
-    on left: 148 149, on right: 44 45 147 149
+    on left: 148 149, on right: 44 45 147 149 151 152
 array_args (132)
     on left: 150 151 152 153, on right: 145 151 152 153
 return_type_quote (133)
@@ -3447,17 +3447,17 @@ State 172
 State 173
 
   145 array: TLBRACKET end_optional array_args . end_optional TRBRACKET
-  151 array_args: array_args . TEND expr
-  152           | array_args . TCOMMA TEND expr
+  151 array_args: array_args . end_star expr
+  152           | array_args . TCOMMA end_star expr
   153           | array_args . TCOMMA expr
 
-    TEND    shift, and go to state 233
-    TCOMMA  shift, and go to state 234
+    TEND    shift, and go to state 80
+    TCOMMA  shift, and go to state 233
 
     $default  reduce using rule 146 (end_optional)
 
-    end_optional  go to state 235
-    end_star      go to state 82
+    end_optional  go to state 234
+    end_star      go to state 235
 
 
 State 174
@@ -4182,9 +4182,8 @@ State 232
 
 State 233
 
-  148 end_star: TEND .
-  149         | TEND . end_star
-  151 array_args: array_args TEND . expr
+  152 array_args: array_args TCOMMA . end_star expr
+  153           | array_args TCOMMA . expr
 
     TIDENTIFIER  shift, and go to state 74
     TINTEGER     shift, and go to state 3
@@ -4213,8 +4212,6 @@ State 233
     THEAP        shift, and go to state 33
     TLOCAL       shift, and go to state 34
 
-    $default  reduce using rule 148 (end_star)
-
     func_type_name  go to state 64
     expr            go to state 280
     expr_and        go to state 43
@@ -4228,20 +4225,26 @@ State 233
     var_right       go to state 51
     const           go to state 52
     array           go to state 54
-    end_star        go to state 171
+    end_star        go to state 281
 
 
 State 234
 
-  152 array_args: array_args TCOMMA . TEND expr
-  153           | array_args TCOMMA . expr
+  145 array: TLBRACKET end_optional array_args end_optional . TRBRACKET
+
+    TRBRACKET  shift, and go to state 282
+
+
+State 235
+
+  147 end_optional: end_star .
+  151 array_args: array_args end_star . expr
 
     TIDENTIFIER  shift, and go to state 74
     TINTEGER     shift, and go to state 3
     TDOUBLE      shift, and go to state 4
     TSTRING      shift, and go to state 5
     TCHAR        shift, and go to state 6
-    TEND         shift, and go to state 281
     TLPAREN      shift, and go to state 63
     TMINUS       shift, and go to state 14
     TTRUE        shift, and go to state 15
@@ -4263,8 +4266,10 @@ State 234
     THEAP        shift, and go to state 33
     TLOCAL       shift, and go to state 34
 
+    $default  reduce using rule 147 (end_optional)
+
     func_type_name  go to state 64
-    expr            go to state 282
+    expr            go to state 283
     expr_and        go to state 43
     expr_comp       go to state 44
     expr_math       go to state 45
@@ -4276,13 +4281,6 @@ State 234
     var_right       go to state 51
     const           go to state 52
     array           go to state 54
-
-
-State 235
-
-  145 array: TLBRACKET end_optional array_args end_optional . TRBRACKET
-
-    TRBRACKET  shift, and go to state 283
 
 
 State 236
@@ -4820,14 +4818,14 @@ State 279
 
 State 280
 
-  151 array_args: array_args TEND expr .
+  153 array_args: array_args TCOMMA expr .
 
-    $default  reduce using rule 151 (array_args)
+    $default  reduce using rule 153 (array_args)
 
 
 State 281
 
-  152 array_args: array_args TCOMMA TEND . expr
+  152 array_args: array_args TCOMMA end_star . expr
 
     TIDENTIFIER  shift, and go to state 74
     TINTEGER     shift, and go to state 3
@@ -4872,16 +4870,16 @@ State 281
 
 State 282
 
-  153 array_args: array_args TCOMMA expr .
+  145 array: TLBRACKET end_optional array_args end_optional TRBRACKET .
 
-    $default  reduce using rule 153 (array_args)
+    $default  reduce using rule 145 (array)
 
 
 State 283
 
-  145 array: TLBRACKET end_optional array_args end_optional TRBRACKET .
+  151 array_args: array_args end_star expr .
 
-    $default  reduce using rule 145 (array)
+    $default  reduce using rule 151 (array_args)
 
 
 State 284
@@ -5354,7 +5352,7 @@ State 311
 
 State 312
 
-  152 array_args: array_args TCOMMA TEND expr .
+  152 array_args: array_args TCOMMA end_star expr .
 
     $default  reduce using rule 152 (array_args)
 
