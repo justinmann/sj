@@ -30,10 +30,6 @@ anon8()'stack anon8 {
   this
 }
 
-cameraElement #element (rect'stack rect=, _cube'stack vertexBuffer_vertex_location_texture_normal:, projection'stack mat4=, view'stack mat4=, model'stack mat4=, viewModel'stack mat4=, normalMat'stack mat4=, angle'f32=, lightPos'stack vec3=, diffuseColor'stack color=, specColor'stack color=)'heap cameraElement {
-  this
-}
-
 runLoop()'void {
   --c--
   
@@ -51,6 +47,10 @@ runLoop()'void {
 }
 
 scene2d(_size'stack size=, model'stack mat4=, view'stack mat4=, projection'stack mat4=)'stack scene2d {
+  this
+}
+
+scene3dElement #element (children'stack array_heap_model:, camera'stack vec3=, lookAt'stack vec3=, up'stack vec3=, fieldOfView'f32=, zNear'f32=, zFar'f32=, lightPos'stack vec3=, diffuseColor'stack color=, specColor'stack color=, projection'stack mat4=, view'stack mat4=, _rect'stack rect=, _angle'f32=, _cube'stack vertexBuffer_vertex_location_texture_normal:)'heap scene3dElement {
   this
 }
 
@@ -1281,24 +1281,12 @@ global()'void {
   i32_max'i32 : (-2147483647 - 1)i
   i32_min'i32 : 2147483647i
   u32_max'u32 : (uint32_t)4294967295uu
-  blurHorizontalShader'stack shader : shader(this = shader(
-    vertex'stack string : this.vertex,
-    pixel'stack string : this.pixel
-  ))
-  blurVerticalShader'stack shader : shader(this = shader(
-    vertex'stack string : this.vertex,
-    pixel'stack string : this.pixel
-  ))
   borderPosition'stack anon5 : anon5(this = anon5(
     fill'i32 : this.fill,
     left'i32 : this.left,
     right'i32 : this.right,
     top'i32 : this.top,
     bottom'i32 : this.bottom
-  ))
-  boxShader'stack shader : shader(this = shader(
-    vertex'stack string : this.vertex,
-    pixel'stack string : this.pixel
   ))
   --cstruct--
   
@@ -1312,10 +1300,6 @@ global()'void {
     normal'i32 : this.normal,
     hot'i32 : this.hot,
     pressed'i32 : this.pressed
-  ))
-  phongShader'stack shader : shader(this = shader(
-    vertex'stack string : this.vertex,
-    pixel'stack string : this.pixel
   ))
   colors'stack anon7 : anon7(this = anon7())
   --cdefine--
@@ -1969,10 +1953,6 @@ global()'void {
   }
   
   --cfunction--
-  imageShader'stack shader : shader(this = shader(
-    vertex'stack string : this.vertex,
-    pixel'stack string : this.pixel
-  ))
   --cstruct--
   
   typedef struct {
@@ -1981,8 +1961,37 @@ global()'void {
   } vertex3_texture2_t;
   
   --cstruct--
+  boxShader'stack shader : shader(this = shader(
+    vertex'stack string : this.vertex,
+    pixel'stack string : this.pixel
+  ))
+  blurHorizontalShader'stack shader : shader(this = shader(
+    vertex'stack string : this.vertex,
+    pixel'stack string : this.pixel
+  ))
+  blurVerticalShader'stack shader : shader(this = shader(
+    vertex'stack string : this.vertex,
+    pixel'stack string : this.pixel
+  ))
+  imageShader'stack shader : shader(this = shader(
+    vertex'stack string : this.vertex,
+    pixel'stack string : this.pixel
+  ))
+  phongShader'stack shader : shader(this = shader(
+    vertex'stack string : this.vertex,
+    pixel'stack string : this.pixel
+  ))
+  textShader'stack shader : shader(this = shader(
+    vertex'stack string : this.vertex,
+    pixel'stack string : this.pixel
+  ))
   --cdefine--
   
+  /* Freetype GL - A C OpenGL Freetype engine
+  *
+  * Distributed under the OSI-approved BSD 2-Clause License.  See accompanying
+  * file `LICENSE` for more details.
+  */
   /**
   * Read a fragment or vertex shader from a file
   *
@@ -2180,10 +2189,6 @@ global()'void {
   
   --cfunction--
   style'stack anon8 : anon8(this = anon8())
-  textShader'stack shader : shader(this = shader(
-    vertex'stack string : this.vertex,
-    pixel'stack string : this.pixel
-  ))
   --cstruct--
   
   typedef struct {
@@ -5511,18 +5516,22 @@ global()'void {
     count'i32 = this.count,
     data'stack array_char = this.data
   ))
-  root'heap #element : cameraElement(this = cameraElement(
-    rect'stack rect = this.rect,
-    _cube'stack vertexBuffer_vertex_location_texture_normal : this._cube,
-    projection'stack mat4 = this.projection,
-    view'stack mat4 = this.view,
-    model'stack mat4 = this.model,
-    viewModel'stack mat4 = this.viewModel,
-    normalMat'stack mat4 = this.normalMat,
-    angle'f32 = this.angle,
+  root'heap #element : scene3dElement(this = scene3dElement(
+    children'stack array_heap_model : this.children,
+    camera'stack vec3 = this.camera,
+    lookAt'stack vec3 = this.lookAt,
+    up'stack vec3 = this.up,
+    fieldOfView'f32 = this.fieldOfView,
+    zNear'f32 = this.zNear,
+    zFar'f32 = this.zFar,
     lightPos'stack vec3 = this.lightPos,
     diffuseColor'stack color = this.diffuseColor,
-    specColor'stack color = this.specColor
+    specColor'stack color = this.specColor,
+    projection'stack mat4 = this.projection,
+    view'stack mat4 = this.view,
+    _rect'stack rect = this._rect,
+    _angle'f32 = this._angle,
+    _cube'stack vertexBuffer_vertex_location_texture_normal : this._cube
   )) as heap #element
   runLoop()
   void

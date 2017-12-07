@@ -1,7 +1,14 @@
 include "../../lib/common/common.sj"
 include "../../lib/ui/ui.sj"
 
-root : cameraElement() as #element
+root : scene3dElement(
+	children: [
+		model(
+			vertexBuffer : cubeVertexBuffer()
+			shader : copy phongShader
+		) as #model
+	]
+) as #element
 /*
 root : blurElement(
  	children : [

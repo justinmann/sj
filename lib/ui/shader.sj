@@ -1,8 +1,9 @@
-/* Freetype GL - A C OpenGL Freetype engine
- *
- * Distributed under the OSI-approved BSD 2-Clause License.  See accompanying
- * file `LICENSE` for more details.
- */
+boxShader : shader("shaders/v3f-c4f.vert", "shaders/v3f-c4f.frag")
+blurHorizontalShader : shader("shaders/v3f-t2f-c4f.vert", "shaders/blur-horizontal.frag")
+blurVerticalShader : shader("shaders/v3f-t2f-c4f.vert", "shaders/blur-vertical.frag")
+imageShader : shader("shaders/v3f-t2f.vert", "shaders/v3f-t2f.frag")
+phongShader : shader("shaders/v3f-n3f-phong.vert", "shaders/v3f-n3f-phong.frag")
+textShader : shader("shaders/v3f-t2f-c4f.vert", "shaders/v3f-t2f-c4f.frag")
 
 shader(
     vertex : 'string
@@ -29,6 +30,12 @@ shader(
 }
 
 --cdefine--
+/* Freetype GL - A C OpenGL Freetype engine
+ *
+ * Distributed under the OSI-approved BSD 2-Clause License.  See accompanying
+ * file `LICENSE` for more details.
+ */
+
 /**
  * Read a fragment or vertex shader from a file
  *

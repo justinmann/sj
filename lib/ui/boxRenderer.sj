@@ -1,5 +1,3 @@
-boxShader : shader("shaders/v3f-c4f.vert", "shaders/v3f-c4f.frag")
-
 boxRenderer(
     rect: 'rect
     color: 'color

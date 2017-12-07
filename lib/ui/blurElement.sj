@@ -1,6 +1,3 @@
-blurHorizontalShader : shader("shaders/v3f-t2f-c4f.vert", "shaders/blur-horizontal.frag")
-blurVerticalShader : shader("shaders/v3f-t2f-c4f.vert", "shaders/blur-vertical.frag")
-
 blurElement #element (
 	children : array!#element()
 	radius = 0.0f

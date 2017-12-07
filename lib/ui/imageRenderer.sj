@@ -1,5 +1,3 @@
-imageShader : shader("shaders/v3f-t2f.vert", "shaders/v3f-t2f.frag")
-
 imageRenderer(
     rect: 'rect
     image: 'image

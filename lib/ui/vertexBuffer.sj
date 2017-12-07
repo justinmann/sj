@@ -34,7 +34,7 @@ vertexBuffer!vertex(
         void
     }
 
-    render(scene : 'scene2d)'void {
+    render()'void {
         --c--
         vertex_buffer_render(_parent->buffer, GL_TRIANGLES);
         --c--

@@ -1,5 +1,3 @@
-textShader : shader("shaders/v3f-t2f-c4f.vert", "shaders/v3f-t2f-c4f.frag")
-
 textRenderer(
     text: 'string
     point: 'point
