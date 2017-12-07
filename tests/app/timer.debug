@@ -30,7 +30,7 @@ anon8()'stack anon8 {
   this
 }
 
-cameraElement #element (rect'stack rect=, _cube'stack vertexBuffer_vertex_location_texture_normal:, projection'stack mat4=, view'stack mat4=, model'stack mat4=, viewModel'stack mat4=, normalMat'stack mat4=, angle'f32=)'heap cameraElement {
+cameraElement #element (rect'stack rect=, _cube'stack vertexBuffer_vertex_location_texture_normal:, projection'stack mat4=, view'stack mat4=, model'stack mat4=, viewModel'stack mat4=, normalMat'stack mat4=, angle'f32=, lightPos'stack vec3=, diffuseColor'stack color=, specColor'stack color=)'heap cameraElement {
   this
 }
 
@@ -1313,7 +1313,7 @@ global()'void {
     hot'i32 : this.hot,
     pressed'i32 : this.pressed
   ))
-  boringShader'stack shader : shader(this = shader(
+  phongShader'stack shader : shader(this = shader(
     vertex'stack string : this.vertex,
     pixel'stack string : this.pixel
   ))
@@ -5519,7 +5519,10 @@ global()'void {
     model'stack mat4 = this.model,
     viewModel'stack mat4 = this.viewModel,
     normalMat'stack mat4 = this.normalMat,
-    angle'f32 = this.angle
+    angle'f32 = this.angle,
+    lightPos'stack vec3 = this.lightPos,
+    diffuseColor'stack color = this.diffuseColor,
+    specColor'stack color = this.specColor
   )) as heap #element
   runLoop()
   void

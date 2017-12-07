@@ -1,9 +1,9 @@
+uniform vec3 lightPos;
+uniform vec3 diffuseColor;
+uniform vec3 specColor;
+
 varying mediump vec3 normalInterp;
 varying mediump vec3 vertPos;
-
-const mediump vec3 lightPos = vec3(1.0, 1.0, 1.0);
-const mediump vec3 diffuseColor = vec3(0.5, 0.0, 0.0);
-const mediump vec3 specColor = vec3(1.0, 1.0, 1.0);
 
 void main() {
 
@@ -32,5 +32,5 @@ void main() {
     // specular *= 0.0;
   }
 
-  gl_FragColor = vec4(max(lambertian * diffuseColor + specular * specColor, vec3(0.2, 0.2, 0.2)), 1.0);
+  gl_FragColor = vec4(lambertian * diffuseColor.rgb + specular * specColor.rgb, 1.0);
 }

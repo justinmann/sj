@@ -1,5 +1,4 @@
 attribute vec3 vertex;
-// attribute vec2 tex_coord;
 attribute vec3 normal;
 
 uniform mat4 projection;

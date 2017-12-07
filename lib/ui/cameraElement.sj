@@ -1,4 +1,4 @@
-boringShader : shader("shaders/v3f-n3f-phong.vert", "shaders/v3f-n3f-phong.frag")
+phongShader : shader("shaders/v3f-n3f-phong.vert", "shaders/v3f-n3f-phong.frag")
 
 cameraElement #element (
 	rect = rect()
@@ -9,6 +9,9 @@ cameraElement #element (
 	viewModel = mat4()
 	normalMat = mat4()
 	angle = 0.0f
+	lightPos = vec3(1.0f, 1.0f, 1.0f);
+	diffuseColor = color(0.5f, 0.5f, 0.0f, 1.0f);
+	specColor = color(1.0f, 1.0f, 1.0f, 1.0f);
 
 	getSize(maxSize : 'size) {
 		size(maxSize.w, maxSize.h)
@@ -37,11 +40,13 @@ cameraElement #element (
 		normalMat = viewModel.invert().transpose()
 		--c--
 	    glEnable( GL_DEPTH_TEST );
-        glUseProgram(sjv_boringShader.id);
-        // glUniformMatrix4fv(glGetUniformLocation(sjv_boringShader.id, "model" ), 1, 0, (GLfloat*)&_parent->world);
-        glUniformMatrix4fv(glGetUniformLocation(sjv_boringShader.id, "viewModel" ), 1, 0, (GLfloat*)&_parent->viewModel);
-        glUniformMatrix4fv(glGetUniformLocation(sjv_boringShader.id, "normalMat" ), 1, 0, (GLfloat*)&_parent->normalMat);
-        glUniformMatrix4fv(glGetUniformLocation(sjv_boringShader.id, "projection" ), 1, 0, (GLfloat*)&_parent->projection);
+        glUseProgram(sjv_phongShader.id);
+        glUniformMatrix4fv(glGetUniformLocation(sjv_phongShader.id, "viewModel" ), 1, 0, (GLfloat*)&_parent->viewModel);
+        glUniformMatrix4fv(glGetUniformLocation(sjv_phongShader.id, "normalMat" ), 1, 0, (GLfloat*)&_parent->normalMat);
+        glUniformMatrix4fv(glGetUniformLocation(sjv_phongShader.id, "projection" ), 1, 0, (GLfloat*)&_parent->projection);
+        glUniform3fv(glGetUniformLocation(sjv_phongShader.id, "lightPos" ), 1, (GLfloat*)&_parent->lightPos);
+        glUniform3fv(glGetUniformLocation(sjv_phongShader.id, "diffuseColor" ), 1, (GLfloat*)&_parent->diffuseColor);
+        glUniform3fv(glGetUniformLocation(sjv_phongShader.id, "specColor" ), 1, (GLfloat*)&_parent->specColor);
 		--c--
 		_cube.render(scene)
 		--c--

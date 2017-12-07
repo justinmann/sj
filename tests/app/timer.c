@@ -1868,20 +1868,22 @@ struct vertex_buffer_td
 #define sjs_array_vertex_location_texture_normal_heap_typeId 37
 #define sjs_vertexBuffer_vertex_location_texture_normal_typeId 38
 #define sjs_vertexBuffer_vertex_location_texture_normal_heap_typeId 39
-#define sjs_cameraElement_typeId 40
-#define sjs_array_heap_element_typeId 41
-#define sjs_array_heap_element_heap_typeId 42
-#define sji_element_typeId 43
-#define sjs_vec3_typeId 44
-#define sjs_vec3_heap_typeId 45
-#define sjs_cameraElement_heap_typeId 46
-#define sjs_vec2_typeId 47
-#define sjs_vec2_heap_typeId 48
-#define sjs_vertex_location_texture_normal_typeId 49
-#define sjs_vertex_location_texture_normal_heap_typeId 50
-#define sjs_point_typeId 51
-#define sjs_point_heap_typeId 52
-#define sji_fireMouseUp_mouseHandler_typeId 53
+#define sjs_vec3_typeId 40
+#define sjs_vec3_heap_typeId 41
+#define sjs_color_typeId 42
+#define sjs_color_heap_typeId 43
+#define sjs_cameraElement_typeId 44
+#define sjs_array_heap_element_typeId 45
+#define sjs_array_heap_element_heap_typeId 46
+#define sji_element_typeId 47
+#define sjs_cameraElement_heap_typeId 48
+#define sjs_vec2_typeId 49
+#define sjs_vec2_heap_typeId 50
+#define sjs_vertex_location_texture_normal_typeId 51
+#define sjs_vertex_location_texture_normal_heap_typeId 52
+#define sjs_point_typeId 53
+#define sjs_point_heap_typeId 54
+#define sji_fireMouseUp_mouseHandler_typeId 55
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_windowRenderer sjs_windowRenderer;
@@ -1922,12 +1924,14 @@ typedef struct td_sjs_array_vertex_location_texture_normal sjs_array_vertex_loca
 typedef struct td_sjs_array_vertex_location_texture_normal_heap sjs_array_vertex_location_texture_normal_heap;
 typedef struct td_sjs_vertexBuffer_vertex_location_texture_normal sjs_vertexBuffer_vertex_location_texture_normal;
 typedef struct td_sjs_vertexBuffer_vertex_location_texture_normal_heap sjs_vertexBuffer_vertex_location_texture_normal_heap;
+typedef struct td_sjs_vec3 sjs_vec3;
+typedef struct td_sjs_vec3_heap sjs_vec3_heap;
+typedef struct td_sjs_color sjs_color;
+typedef struct td_sjs_color_heap sjs_color_heap;
 typedef struct td_sjs_cameraElement sjs_cameraElement;
 typedef struct td_sjs_array_heap_element sjs_array_heap_element;
 typedef struct td_sjs_array_heap_element_heap sjs_array_heap_element_heap;
 typedef struct td_sji_element sji_element;
-typedef struct td_sjs_vec3 sjs_vec3;
-typedef struct td_sjs_vec3_heap sjs_vec3_heap;
 typedef struct td_sjs_cameraElement_heap sjs_cameraElement_heap;
 typedef struct td_sjs_vec2 sjs_vec2;
 typedef struct td_sjs_vec2_heap sjs_vec2_heap;
@@ -2189,6 +2193,34 @@ struct td_sjs_vertexBuffer_vertex_location_texture_normal_heap {
     vertex_buffer_t* buffer;
 };
 
+struct td_sjs_vec3 {
+    float x;
+    float y;
+    float z;
+};
+
+struct td_sjs_vec3_heap {
+    intptr_t _refCount;
+    float x;
+    float y;
+    float z;
+};
+
+struct td_sjs_color {
+    float r;
+    float g;
+    float b;
+    float a;
+};
+
+struct td_sjs_color_heap {
+    intptr_t _refCount;
+    float r;
+    float g;
+    float b;
+    float a;
+};
+
 struct td_sjs_cameraElement {
     sjs_rect rect;
     sjs_vertexBuffer_vertex_location_texture_normal _cube;
@@ -2198,6 +2230,9 @@ struct td_sjs_cameraElement {
     sjs_mat4 viewModel;
     sjs_mat4 normalMat;
     float angle;
+    sjs_vec3 lightPos;
+    sjs_color diffuseColor;
+    sjs_color specColor;
 };
 
 struct td_sjs_array_heap_element {
@@ -2226,19 +2261,6 @@ struct td_sji_element {
     void (*getChildren)(void* _parent, sjs_array_heap_element** _return);
 };
 
-struct td_sjs_vec3 {
-    float x;
-    float y;
-    float z;
-};
-
-struct td_sjs_vec3_heap {
-    intptr_t _refCount;
-    float x;
-    float y;
-    float z;
-};
-
 struct td_sjs_cameraElement_heap {
     intptr_t _refCount;
     sjs_rect rect;
@@ -2249,6 +2271,9 @@ struct td_sjs_cameraElement_heap {
     sjs_mat4 viewModel;
     sjs_mat4 normalMat;
     float angle;
+    sjs_vec3 lightPos;
+    sjs_color diffuseColor;
+    sjs_color specColor;
 };
 
 struct td_sjs_vec2 {
@@ -3083,7 +3108,6 @@ sjs_cameraElement_heap* sjt_cast1;
 sjs_shader sjv_blurHorizontalShader;
 sjs_shader sjv_blurVerticalShader;
 sjs_anon5 sjv_borderPosition;
-sjs_shader sjv_boringShader;
 sjs_shader sjv_boxShader;
 sjs_anon6 sjv_buttonState;
 sjs_anon7 sjv_colors;
@@ -3094,6 +3118,7 @@ int32_t sjv_i32_max;
 int32_t sjv_i32_min;
 sjs_shader sjv_imageShader;
 sjs_anon2 sjv_parse;
+sjs_shader sjv_phongShader;
 sjs_anon3 sjv_random;
 sji_element* sjv_root;
 sjs_scene2d sjv_rootScene;
@@ -3168,6 +3193,10 @@ sjs_object* sjf_cameraElement_heap_asInterface(sjs_cameraElement_heap* _this, in
 sji_element* sjf_cameraElement_heap_as_sji_element(sjs_cameraElement_heap* _this);
 void sjf_cameraElement_render(sjs_cameraElement* _parent, sjs_scene2d* scene);
 void sjf_cameraElement_setRect(sjs_cameraElement* _parent, sjs_rect* rect_);
+void sjf_color(sjs_color* _this);
+void sjf_color_copy(sjs_color* _this, sjs_color* _from);
+void sjf_color_destroy(sjs_color* _this);
+void sjf_color_heap(sjs_color_heap* _this);
 void sjf_cubeVertexBuffer(sjs_vertexBuffer_vertex_location_texture_normal* _return);
 void sjf_cubeVertexBuffer_heap(sjs_vertexBuffer_vertex_location_texture_normal_heap** _return);
 void sjf_f32_cos(float v, float* _return);
@@ -6390,6 +6419,9 @@ void sjf_cameraElement_copy(sjs_cameraElement* _this, sjs_cameraElement* _from) 
     sjf_mat4_copy(&_this->viewModel, &_from->viewModel);
     sjf_mat4_copy(&_this->normalMat, &_from->normalMat);
     _this->angle = _from->angle;
+    sjf_vec3_copy(&_this->lightPos, &_from->lightPos);
+    sjf_color_copy(&_this->diffuseColor, &_from->diffuseColor);
+    sjf_color_copy(&_this->specColor, &_from->specColor);
 }
 
 void sjf_cameraElement_destroy(sjs_cameraElement* _this) {
@@ -6489,11 +6521,13 @@ void sjf_cameraElement_render(sjs_cameraElement* _parent, sjs_scene2d* scene) {
     sjt_dot201 = &sjt_call7;
     sjf_mat4_transpose(sjt_dot201, &_parent->normalMat);
     glEnable( GL_DEPTH_TEST );
-    glUseProgram(sjv_boringShader.id);
-    // glUniformMatrix4fv(glGetUniformLocation(sjv_boringShader.id, "model" ), 1, 0, (GLfloat*)&_parent->world);
-    glUniformMatrix4fv(glGetUniformLocation(sjv_boringShader.id, "viewModel" ), 1, 0, (GLfloat*)&_parent->viewModel);
-    glUniformMatrix4fv(glGetUniformLocation(sjv_boringShader.id, "normalMat" ), 1, 0, (GLfloat*)&_parent->normalMat);
-    glUniformMatrix4fv(glGetUniformLocation(sjv_boringShader.id, "projection" ), 1, 0, (GLfloat*)&_parent->projection);
+    glUseProgram(sjv_phongShader.id);
+    glUniformMatrix4fv(glGetUniformLocation(sjv_phongShader.id, "viewModel" ), 1, 0, (GLfloat*)&_parent->viewModel);
+    glUniformMatrix4fv(glGetUniformLocation(sjv_phongShader.id, "normalMat" ), 1, 0, (GLfloat*)&_parent->normalMat);
+    glUniformMatrix4fv(glGetUniformLocation(sjv_phongShader.id, "projection" ), 1, 0, (GLfloat*)&_parent->projection);
+    glUniform3fv(glGetUniformLocation(sjv_phongShader.id, "lightPos" ), 1, (GLfloat*)&_parent->lightPos);
+    glUniform3fv(glGetUniformLocation(sjv_phongShader.id, "diffuseColor" ), 1, (GLfloat*)&_parent->diffuseColor);
+    glUniform3fv(glGetUniformLocation(sjv_phongShader.id, "specColor" ), 1, (GLfloat*)&_parent->specColor);
     sjt_dot203 = &(_parent)->_cube;
     sjt_functionParam43 = scene;
     sjf_vertexBuffer_vertex_location_texture_normal_render(sjt_dot203, sjt_functionParam43);
@@ -6587,6 +6621,22 @@ void sjf_cameraElement_setRect(sjs_cameraElement* _parent, sjs_rect* rect_) {
         sjf_vec3_destroy(&sjt_call5);
         sjf_mat4_destroy(&sjt_call6);
     }
+}
+
+void sjf_color(sjs_color* _this) {
+}
+
+void sjf_color_copy(sjs_color* _this, sjs_color* _from) {
+    _this->r = _from->r;
+    _this->g = _from->g;
+    _this->b = _from->b;
+    _this->a = _from->a;
+}
+
+void sjf_color_destroy(sjs_color* _this) {
+}
+
+void sjf_color_heap(sjs_color_heap* _this) {
 }
 
 void sjf_cubeVertexBuffer(sjs_vertexBuffer_vertex_location_texture_normal* _return) {
@@ -14417,19 +14467,19 @@ int main(int argc, char** argv) {
     sjv_buttonState.hot = 1;
     sjv_buttonState.pressed = 2;
     sjf_anon6(&sjv_buttonState);
-    sjv_boringShader.vertex.count = 26;
-    sjv_boringShader.vertex.data.size = 27;
-    sjv_boringShader.vertex.data.data = (uintptr_t)sjg_string7;
-    sjv_boringShader.vertex.data._isGlobal = false;
-    sjf_array_char(&sjv_boringShader.vertex.data);
-    sjf_string(&sjv_boringShader.vertex);
-    sjv_boringShader.pixel.count = 26;
-    sjv_boringShader.pixel.data.size = 27;
-    sjv_boringShader.pixel.data.data = (uintptr_t)sjg_string8;
-    sjv_boringShader.pixel.data._isGlobal = false;
-    sjf_array_char(&sjv_boringShader.pixel.data);
-    sjf_string(&sjv_boringShader.pixel);
-    sjf_shader(&sjv_boringShader);
+    sjv_phongShader.vertex.count = 26;
+    sjv_phongShader.vertex.data.size = 27;
+    sjv_phongShader.vertex.data.data = (uintptr_t)sjg_string7;
+    sjv_phongShader.vertex.data._isGlobal = false;
+    sjf_array_char(&sjv_phongShader.vertex.data);
+    sjf_string(&sjv_phongShader.vertex);
+    sjv_phongShader.pixel.count = 26;
+    sjv_phongShader.pixel.data.size = 27;
+    sjv_phongShader.pixel.data.data = (uintptr_t)sjg_string8;
+    sjv_phongShader.pixel.data._isGlobal = false;
+    sjf_array_char(&sjv_phongShader.pixel.data);
+    sjf_string(&sjv_phongShader.pixel);
+    sjf_shader(&sjv_phongShader);
     sjf_anon7(&sjv_colors);
     sjv_imageShader.vertex.count = 20;
     sjv_imageShader.vertex.data.size = 21;
@@ -14558,6 +14608,20 @@ int main(int argc, char** argv) {
     sjt_cast1->normalMat.m33 = 0.0f;
     sjf_mat4(&sjt_cast1->normalMat);
     sjt_cast1->angle = 0.0f;
+    sjt_cast1->lightPos.x = 1.0f;
+    sjt_cast1->lightPos.y = 1.0f;
+    sjt_cast1->lightPos.z = 1.0f;
+    sjf_vec3(&sjt_cast1->lightPos);
+    sjt_cast1->diffuseColor.r = 0.5f;
+    sjt_cast1->diffuseColor.g = 0.5f;
+    sjt_cast1->diffuseColor.b = 0.0f;
+    sjt_cast1->diffuseColor.a = 1.0f;
+    sjf_color(&sjt_cast1->diffuseColor);
+    sjt_cast1->specColor.r = 1.0f;
+    sjt_cast1->specColor.g = 1.0f;
+    sjt_cast1->specColor.b = 1.0f;
+    sjt_cast1->specColor.a = 1.0f;
+    sjf_color(&sjt_cast1->specColor);
     sjf_cameraElement_heap(sjt_cast1);
     sjv_root = (sji_element*)sjf_cameraElement_heap_as_sji_element(sjt_cast1);
     sjf_runLoop();
@@ -14578,7 +14642,6 @@ void main_destroy() {
     sjf_shader_destroy(&sjv_blurHorizontalShader);
     sjf_shader_destroy(&sjv_blurVerticalShader);
     sjf_anon5_destroy(&sjv_borderPosition);
-    sjf_shader_destroy(&sjv_boringShader);
     sjf_shader_destroy(&sjv_boxShader);
     sjf_anon6_destroy(&sjv_buttonState);
     sjf_anon7_destroy(&sjv_colors);
@@ -14586,6 +14649,7 @@ void main_destroy() {
     sjf_anon4_destroy(&sjv_convert);
     sjf_shader_destroy(&sjv_imageShader);
     sjf_anon2_destroy(&sjv_parse);
+    sjf_shader_destroy(&sjv_phongShader);
     sjf_anon3_destroy(&sjv_random);
     sjf_scene2d_destroy(&sjv_rootScene);
     sjf_windowRenderer_destroy(&sjv_rootWindowRenderer);
