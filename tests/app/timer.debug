@@ -30,7 +30,7 @@ anon8()'stack anon8 {
   this
 }
 
-blurElement #element (children'stack array_heap_element:, radius'f32=, up'bool=, _rect'stack rect=, _vertexBuffer'heap boxVertexBuffer?=, _frameBuffer1'heap frameBuffer?=, _frameBuffer2'heap frameBuffer?=, _innerScene'stack scene2d:)'heap blurElement {
+fillElement #element (children'stack array_heap_element:, _rect'stack rect=)'heap fillElement {
   this
 }
 
@@ -1980,7 +1980,11 @@ global()'void {
     vertex'stack string : this.vertex,
     pixel'stack string : this.pixel
   ))
-  phongShader'stack shader : shader(this = shader(
+  phongColorShader'stack shader : shader(this = shader(
+    vertex'stack string : this.vertex,
+    pixel'stack string : this.pixel
+  ))
+  phongTextureShader'stack shader : shader(this = shader(
     vertex'stack string : this.vertex,
     pixel'stack string : this.pixel
   ))
@@ -5519,15 +5523,9 @@ global()'void {
     count'i32 = this.count,
     data'stack array_char = this.data
   ))
-  root'heap #element : blurElement(this = blurElement(
+  root'heap #element : fillElement(this = fillElement(
     children'stack array_heap_element : this.children,
-    radius'f32 = this.radius,
-    up'bool = this.up,
-    _rect'stack rect = this._rect,
-    _vertexBuffer'heap boxVertexBuffer? = this._vertexBuffer,
-    _frameBuffer1'heap frameBuffer? = this._frameBuffer1,
-    _frameBuffer2'heap frameBuffer? = this._frameBuffer2,
-    _innerScene'stack scene2d : this._innerScene
+    _rect'stack rect = this._rect
   )) as heap #element
   runLoop()
   void

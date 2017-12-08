@@ -5,18 +5,18 @@ vertex_location_texture_normal(
     normal : vec3()
 ) { this }
 
-cubeVertexBuffer() { 
-    x0 = -1.0f
-    x1 = 1.0f
-    y0 = -1.0f
-    y1 = 1.0f
-    z0 = -1.0f
-    z1 = 1.0f
-    s0 = 0.0f
-    s1 = 1.0f
-    t0 = 0.0f
-    t1 = 1.0f
-
+cubeVertexBuffer(    
+    x0 : -1.0f
+    x1 : 1.0f
+    y0 : -1.0f
+    y1 : 1.0f
+    z0 : -1.0f
+    z1 : 1.0f
+    s0 : 0.0f
+    s1 : 1.0f
+    t0 : 0.0f
+    t1 : 1.0f
+) { 
     vertexBuffer!vertex_location_texture_normal(
         format : copy vertex_location_texture_normal_format
         indices : [
@@ -62,20 +62,21 @@ cubeVertexBuffer() {
     )
 }
 
-planeVertexBuffer() { 
-    x0 = -1.0f
-    x1 = 1.0f
-    y0 = -1.0f
-    y1 = 1.0f
-    s0 = 0.0f
-    s1 = 1.0f
-    t0 = 0.0f
-    t1 = 1.0f
-
+planeVertexBuffer(    
+    x0 : -1.0f
+    x1 : 1.0f
+    y0 : -1.0f
+    y1 : 1.0f
+    z0 : 0.0f
+    s0 : 0.0f
+    s1 : 1.0f
+    t0 : 0.0f
+    t1 : 1.0f
+) { 
     vertexBuffer!vertex_location_texture_normal(
         format : copy vertex_location_texture_normal_format
         indices : [
-            0, 1, 2,
+            0, 1, 2
             0, 2, 3
         ]
         vertices : [

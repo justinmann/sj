@@ -3,14 +3,16 @@ include "../../lib/ui/ui.sj"
 
 root : fillElement(
 	children : [
- 		imageElement(
-			image : image(textureFromPng("assets/test.png"), margin: margin(150, 50, 150, 150))
-		) as #element
 		scene3dElement(
 			children: [
-				model(
-					vertexBuffer : cubeVertexBuffer()
-					shader : copy phongShader
+				scene2dModel(
+					vertexBuffer : planeVertexBuffer()
+					shader : copy phongTextureShader
+					children : [
+				 		imageElement(
+							image : image(textureFromPng("assets/test.png"), margin: margin(150, 50, 150, 150))
+						) as #element
+					]
 				) as #model
 			]
 		) as #element

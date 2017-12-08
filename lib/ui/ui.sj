@@ -43,6 +43,7 @@ include "vectorAttribute.sj"
 include "vertexBuffer.sj"
 include "vertexBufferBuilders.sj"
 include "windowRenderer.sj"
+include "scene2dModel.sj"
 
 --cinclude--
 #include(<emscripten.h>, EMSCRIPTEN)

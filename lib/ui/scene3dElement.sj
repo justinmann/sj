@@ -1,11 +1,11 @@
 scene3dElement #element (
 	children : array!#model()
-	camera = vec3(0.0f, 0.0f, 10.0f)
+	camera = vec3(0.0f, 0.0f, -5.0f)
 	lookAt = vec3(0.0f, 0.0f, 0.0f)
 	up = vec3(0.0f, 1.0f, 0.0f)
 	fieldOfView = 90.0f
 	zNear = 1.0f
-	zFar = 10.0f
+	zFar = 20.0f
 	lightPos = vec3(1.0f, 1.0f, 1.0f)
 	diffuseColor = color(0.5f, 0.5f, 0.0f, 1.0f)
 	specColor = color(1.0f, 1.0f, 1.0f, 1.0f)
@@ -56,5 +56,11 @@ scene3dElement #element (
 
 	fireMouseEvent(point: 'point, eventId : 'i32)'void {
 		// TODO: convert to 3-d vector and hit test children
+	}
+
+	updateViewport()'void {
+		--c--
+	    glViewport(_parent->_rect.x, _parent->_rect.y, _parent->_rect.w, _parent->_rect.h);
+		--c--	
 	}
 ) { this }
