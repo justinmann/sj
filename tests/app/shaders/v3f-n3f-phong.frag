@@ -1,6 +1,6 @@
-uniform vec3 lightPos;
-uniform vec3 diffuseColor;
-uniform vec3 specColor;
+uniform mediump vec3 lightPos;
+uniform mediump vec3 diffuseColor;
+uniform mediump vec3 specColor;
 
 varying mediump vec3 normalInterp;
 varying mediump vec3 vertPos;

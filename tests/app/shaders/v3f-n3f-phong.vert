@@ -1,9 +1,9 @@
 attribute vec3 vertex;
 attribute vec3 normal;
 
-uniform mat4 projection;
-uniform mat4 viewModel;
-uniform mat4 normalMat;
+uniform mediump mat4 projection;
+uniform mediump mat4 viewModel;
+uniform mediump mat4 normalMat;
 
 varying mediump vec3 normalInterp;
 varying mediump vec3 vertPos;
