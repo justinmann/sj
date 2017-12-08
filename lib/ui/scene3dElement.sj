@@ -13,6 +13,7 @@ scene3dElement #element (
 	view = mat4()
 	_rect = rect()
 	_angle = 0.0f
+	_isUp = true
 
 	_cube : cubeVertexBuffer()
 
@@ -33,16 +34,30 @@ scene3dElement #element (
 	}
 
 	render(scene : 'scene2d)'void {
-		_angle += 0.2f
-		model : mat4_rotation(_angle, 0.0f, 1.0f, 0.0f)
+		if _isUp { 
+			_angle += 0.2f
+			if _angle >= 90.0f {
+				_isUp = false
+			}
+		} else {
+			_angle -= 0.2f
+			if _angle <= -90.0f {
+				_isUp = true
+			}
+		}
+		world : mat4_rotation(_angle, 0.0f, 1.0f, 0.0f)
+		for i (0 to children.size) {
+			child : children[i]
+			child.setWorld(world)
+		}
 
 		--c--
 	    glEnable( GL_DEPTH_TEST );
 		--c--
 
 		for i (0 to children.size) {
-			child : children[i]
-			child.render(parent, model)
+			child2 : children[i]
+			child2.render(parent)
 		}
 
 		--c--
@@ -55,7 +70,10 @@ scene3dElement #element (
 	}
 
 	fireMouseEvent(point: 'point, eventId : 'i32)'void {
-		// TODO: convert to 3-d vector and hit test children
+		for i (0 to children.size) {
+			child : children[i]
+			child.fireMouseEvent(parent, point, eventId)
+		}
 	}
 
 	updateViewport()'void {

@@ -95,7 +95,7 @@ shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, s
     
     shared_ptr<CVar> ifVar;
     ifVar = ifBlock->getVar(compiler, scope, returnMode);
-    if (condVar == nullptr) {
+    if (ifVar == nullptr) {
         return nullptr;
     }
 

@@ -4,8 +4,14 @@ scene2dModel #model (
 	frameBuffer : frameBuffer(size(512, 512))
 	children : array!#element()
 	_innerScene : scene2d()
+	_world = mat4()
 
-	render(scene3d : 'scene3dElement, model : 'mat4)'void {
+	setWorld(world : 'mat4) {
+		_world = copy world
+		void
+	}
+
+	render(scene3d : 'scene3dElement)'void {
 		--c--
 		glBindFramebuffer(GL_FRAMEBUFFER, _parent->frameBuffer.frameBufferId);
 		--c--
@@ -22,12 +28,12 @@ scene2dModel #model (
 		--c--
 
 		scene3d.updateViewport()
-		viewModel : scene3d.view * model
-		normalMat : viewModel.invert().transpose()
+		viewWorld : scene3d.view * _world
+		normalMat : viewWorld.invert().transpose()
 		--c--
         glUseProgram(_parent->shader.id);
         glBindTexture(GL_TEXTURE_2D, _parent->frameBuffer.textureId);
-        glUniformMatrix4fv(glGetUniformLocation(_parent->shader.id, "viewModel" ), 1, 0, (GLfloat*)&sjv_viewModel);
+        glUniformMatrix4fv(glGetUniformLocation(_parent->shader.id, "viewModel" ), 1, 0, (GLfloat*)&sjv_viewWorld);
         glUniformMatrix4fv(glGetUniformLocation(_parent->shader.id, "normalMat" ), 1, 0, (GLfloat*)&sjv_normalMat);
         glUniformMatrix4fv(glGetUniformLocation(_parent->shader.id, "projection" ), 1, 0, (GLfloat*)&scene3d->projection);
         glUniform3fv(glGetUniformLocation(_parent->shader.id, "lightPos" ), 1, (GLfloat*)&scene3d->lightPos);
@@ -35,6 +41,19 @@ scene2dModel #model (
         glUniform3fv(glGetUniformLocation(_parent->shader.id, "specColor" ), 1, (GLfloat*)&scene3d->specColor);	
         --c--
 		vertexBuffer.render()
+	}
+
+	fireMouseEvent(scene3d : 'scene3dElement, point: 'point, eventId : 'i32)'void {
+		texture : vertexBuffer.translateScreenToTexture(point, scene3d.rect, scene3d.projection, scene3d.view, _world)
+		if !isEmpty(texture) {
+			scenePoint : point(
+				(texture.x * frameBuffer.size.w as f32) as i32
+				(texture.y * frameBuffer.size.h as f32) as i32)
+			for i (0 to children.size) {
+				child : children[i]
+				child.fireMouseEvent(scenePoint, eventId)
+			}
+		}
 	}
 ) { 
 	rect : rect(0, 0, frameBuffer.size.w, frameBuffer.size.h)

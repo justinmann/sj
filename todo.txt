@@ -1,5 +1,4 @@
 -- ui --
-* crosshair on 3d object: Mesh.cpp TranslateScreenToTexture
 * sphere
 * load obj file: http://kixor.net/dev/objloader/ https://code.google.com/archive/p/saitoobjloader/ http://people.sc.fsu.edu/%7Ejburkardt/data/obj/obj.html
 * center text

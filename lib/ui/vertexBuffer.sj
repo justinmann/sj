@@ -34,6 +34,57 @@ vertexBuffer!vertex(
         void
     }
 
+    translateScreenToTexture(screen : 'point, viewport : 'rect, projection : 'mat4, view : 'mat4, world : 'mat4)'vec2? {
+        intersection = empty'vec3
+        texture = empty'vec2
+
+        // Compute the vector of the pick ray in screen space
+        start : vec2(
+            (screen.x - viewport.x) as f32 / viewport.w as f32 * 2.0f - 1.0f
+            (screen.y - viewport.y) as f32 / viewport.h as f32 * 2.0f - 1.0f)
+        v : vec3(start.x / projection.m00, start.y / projection.m11, 1.0f) 
+
+        // Get the inverse view matrix
+        worldView : view * world
+        m : worldView.invert()
+
+        // Transform the screen space pick ray into 3D space
+        vPickRayDir : vec3(
+            v.x*m.m00 + v.y*m.m10 + v.z*m.m20
+            v.x*m.m01 + v.y*m.m11 + v.z*m.m21
+            v.x*m.m02 + v.y*m.m12 + v.z*m.m22)
+        vPickRayOrig : vec3(m.m30, m.m31, m.m32)
+        
+        cTriangles = if indices.size > 0 { indices.size / 3 } else { vertices.size / 3 }
+        for i (0 to cTriangles) {
+            vertex0 : if indices.size > 0 { vertices[indices[i * 3 + 0]] } else { vertices[i * 3 + 0] }
+            vertex1 : if indices.size > 0 { vertices[indices[i * 3 + 1]] } else { vertices[i * 3 + 1] }
+            vertex2 : if indices.size > 0 { vertices[indices[i * 3 + 2]] } else { vertices[i * 3 + 2] }
+
+            // Check if the pick ray passes through this point
+            result : intersectTriangle(vPickRayOrig, vPickRayDir, vertex0.location, vertex1.location, vertex2.location)
+            if !isEmpty(result) {
+                if isEmpty(intersection) || result?.z?:0.0f > intersection?.z?:0.0f {
+                    intersection = result                    
+
+                    t : getValue(intersection)
+                    // If all you want is the vertices hit, then you are done.  In this sample, we
+                    // want to show how to infer texture coordinates as well, using the BaryCentric
+                    // coordinates supplied by D3DXIntersect
+                    dtu1 : vertex1.texture.x - vertex0.texture.x;
+                    dtu2 : vertex2.texture.x - vertex0.texture.x;
+                    dtv1 : vertex1.texture.y - vertex0.texture.y;
+                    dtv2 : vertex2.texture.y - vertex0.texture.y;
+                    texture = value(vec2(
+                        x: vertex0.texture.x + t.x * dtu1 + t.y * dtu2
+                        y: vertex0.texture.y + t.x * dtv1 + t.y * dtv2))
+                }
+            }
+        }
+
+        texture
+    }
+
     render()'void {
         --c--
         vertex_buffer_render(_parent->buffer, GL_TRIANGLES);
@@ -58,6 +109,43 @@ vertexBuffer!vertex(
         vertex_buffer_delete(_this->buffer);  
     }
     --c--
+}
+
+intersectTriangle(orig : 'vec3, dir : 'vec3, v0 : 'vec3, v1 : 'vec3, v2 : 'vec3)'vec3? {
+    // Find vectors for two edges sharing vert0
+    edge1 : v1 - v0
+    edge2 : v2 - v0
+    pvec : dir.cross(edge2)
+    det = edge1.dot(pvec)
+    tvec : if det > 0.0f {
+            orig - v0
+        } else {
+            det = 0.0f - det
+            v0 - orig
+        }
+
+    if det < 0.0001f {
+        console.write("det too small")
+        empty'vec3
+    } else {
+        u : tvec.dot(pvec)
+        if u < 0.0f || u > det {
+            console.write("u too small")
+            empty'vec3
+        } else {
+            qvec : tvec.cross(edge1)
+            v : dir.dot(qvec)
+            if v < 0.0f || u + v > det {
+                console.write("v too small")
+                empty'vec3
+            } else {
+                // Calculate t, scale parameters, ray intersects triangle
+                t : edge2.dot(qvec)
+                fInvDet : 1.0f / det;
+                value(vec3(u * fInvDet, v * fInvDet, t * fInvDet))
+            }
+        }
+    }
 }
 
 --ctypedef--
@@ -1014,4 +1102,6 @@ vertex_buffer_erase( vertex_buffer_t * self,
     vector_erase( self->items, index );
     self->state = DIRTY;
 }
+
+
 --cfunction--
