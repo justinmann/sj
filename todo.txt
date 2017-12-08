@@ -1,44 +1,25 @@
 -- ui --
-* map 2d scene to 3d object
 * crosshair on 3d object: Mesh.cpp TranslateScreenToTexture
 * sphere
 * load obj file: http://kixor.net/dev/objloader/ https://code.google.com/archive/p/saitoobjloader/ http://people.sc.fsu.edu/%7Ejburkardt/data/obj/obj.html
 * center text
 * animation
 
-scene3dElement #element (
-	camera = ()
-	lookAt = ()
-
-	children : [
-		model(
-			vertexBuffer : ...
-			shader : ... 
-			texture : ...
-		)
-		scene2dModel #model (
-			vertexBuffer : ...
-			shader : ... 
-			size : ...
-			children : []
-		)
-	]
-)
-
 -- language --
-* use #line pragma directive
 * callback
+* use #line pragma directive
+* better design to enum
+* better design for namespaces
+* := for first time mutable assignment
 * second assignment to this var does not free
 * stack optional
 * stack interface
-* better design to enum
 * de-dup global strings
 * improve debug out for interfaces
 * map
 * lambda
 * weak pointer
 * override interfaces : a as type   -> a.asType()'t
-* := for first time mutable assignment
 
 -- animation -- 
 x.animateTextColor(color(1, 0, 0))

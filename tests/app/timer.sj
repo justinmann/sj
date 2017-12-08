@@ -12,6 +12,9 @@ root : fillElement(
 				 		imageElement(
 							image : image(textureFromPng("assets/test.png"), margin: margin(150, 50, 150, 150))
 						) as #element
+						crossHairsElement(
+							color : colors.blue()
+						) as #element
 					]
 				) as #model
 			]
