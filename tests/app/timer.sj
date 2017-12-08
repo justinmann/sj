@@ -6,7 +6,7 @@ root : fillElement(
 		scene3dElement(
 			children: [
 				scene2dModel(
-					vertexBuffer : planeVertexBuffer()
+					vertexBuffer : sphereVertexBuffer()
 					shader : copy phongTextureShader
 					children : [
 				 		imageElement(

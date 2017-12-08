@@ -36,12 +36,12 @@ scene3dElement #element (
 	render(scene : 'scene2d)'void {
 		if _isUp { 
 			_angle += 0.2f
-			if _angle >= 90.0f {
+			if _angle >= 180.0f {
 				_isUp = false
 			}
 		} else {
 			_angle -= 0.2f
-			if _angle <= -90.0f {
+			if _angle <= -180.0f {
 				_isUp = true
 			}
 		}
@@ -79,6 +79,7 @@ scene3dElement #element (
 	updateViewport()'void {
 		--c--
 	    glViewport(_parent->_rect.x, _parent->_rect.y, _parent->_rect.w, _parent->_rect.h);
+	    glEnable( GL_DEPTH_TEST );
 		--c--	
 	}
 ) { this }

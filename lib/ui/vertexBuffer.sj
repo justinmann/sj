@@ -64,7 +64,7 @@ vertexBuffer!vertex(
             // Check if the pick ray passes through this point
             result : intersectTriangle(vPickRayOrig, vPickRayDir, vertex0.location, vertex1.location, vertex2.location)
             if !isEmpty(result) {
-                if isEmpty(intersection) || result?.z?:0.0f > intersection?.z?:0.0f {
+                if isEmpty(intersection) || result?.z?:0.0f < intersection?.z?:0.0f {
                     intersection = result                    
 
                     t : getValue(intersection)
@@ -125,18 +125,15 @@ intersectTriangle(orig : 'vec3, dir : 'vec3, v0 : 'vec3, v1 : 'vec3, v2 : 'vec3)
         }
 
     if det < 0.0001f {
-        console.write("det too small")
         empty'vec3
     } else {
         u : tvec.dot(pvec)
         if u < 0.0f || u > det {
-            console.write("u too small")
             empty'vec3
         } else {
             qvec : tvec.cross(edge1)
             v : dir.dot(qvec)
             if v < 0.0f || u + v > det {
-                console.write("v too small")
                 empty'vec3
             } else {
                 // Calculate t, scale parameters, ray intersects triangle

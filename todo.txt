@@ -1,5 +1,5 @@
 -- ui --
-* sphere
+* sphere - default to front of sphere being middle of texture
 * load obj file: http://kixor.net/dev/objloader/ https://code.google.com/archive/p/saitoobjloader/ http://people.sc.fsu.edu/%7Ejburkardt/data/obj/obj.html
 * center text
 * animation
