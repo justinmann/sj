@@ -4,7 +4,7 @@ buttonState: ^(
 	pressed : 2
 ) { this }
 
-buttonElement #element #mouseHandler (
+buttonElement #element (
 	text = ""
 	textColor = colors.blue()
 	font = style.getFont(0 /* TODO: typeId(button) */)
@@ -105,4 +105,15 @@ buttonElement #element #mouseHandler (
 		void
 	}
 
+	fireMouseEvent(point: 'point, eventId : 'i32)'void {
+		if _rect.containsPoint(point) {
+			if eventId == mouseEvent_up {
+				onMouseUp(point)
+			} else if eventId == mouseEvent_down {
+				onMouseDown(point)
+			} else if eventId == mouseEvent_move {
+				onMouseMove(point)
+			}
+		}
+	}
 ) { this }

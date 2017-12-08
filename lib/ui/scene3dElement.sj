@@ -53,4 +53,8 @@ scene3dElement #element (
 	getChildren()'local array?!#element {
 		empty'local array?!#element
 	}
+
+	fireMouseEvent(point: 'point, eventId : 'i32)'void {
+		// TODO: convert to 3-d vector and hit test children
+	}
 ) { this }

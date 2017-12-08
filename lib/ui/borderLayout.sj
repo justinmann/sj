@@ -104,4 +104,11 @@ borderLayout #element (
 		a : local children
 		value(a)
 	}
+
+	fireMouseEvent(point: 'point, eventId : 'i32)'void {
+		for i (0 to children.size) {
+			child : children[i]
+			child.fireMouseEvent(point, eventId)
+		}	
+	}
 ) { this }

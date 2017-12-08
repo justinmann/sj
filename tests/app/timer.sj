@@ -1,12 +1,22 @@
 include "../../lib/common/common.sj"
 include "../../lib/ui/ui.sj"
 
-root : scene3dElement(
-	children: [
-		model(
-			vertexBuffer : cubeVertexBuffer()
-			shader : copy phongShader
-		) as #model
+root : fillElement(
+	children : [
+ 		imageElement(
+			image : image(textureFromPng("assets/test.png"), margin: margin(150, 50, 150, 150))
+		) as #element
+		scene3dElement(
+			children: [
+				model(
+					vertexBuffer : cubeVertexBuffer()
+					shader : copy phongShader
+				) as #model
+			]
+		) as #element
+		crossHairsElement(
+			color : colors.red()
+		) as #element
 	]
 ) as #element
 /*

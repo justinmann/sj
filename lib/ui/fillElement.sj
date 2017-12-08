@@ -1,19 +1,23 @@
 fillElement #element (
 	children : array!#element()
-	rect = rect(0, 0, 0, 0)
+	_rect = rect()
 
-	getRect()'local rect { rect }
+	getSize(maxSize : 'size) {
+		size(maxSize.w, maxSize.h)
+	}
+
+	getRect()'local rect { _rect }
 
 	setRect(rect_ : 'rect) {
-		rect = copy rect_
+		_rect = copy rect_
 		for i (0 to children.size) {
 			child : children[i]
-			child.setRect(rect : rect)
+			child.setRect(_rect)
 		}	
 		void	
 	}
 
-	render(scene : '#scene) {
+	render(scene : 'scene2d) {
 		for i (0 to children.size) {
 			child : children[i]
 			child.render(scene)
@@ -23,5 +27,12 @@ fillElement #element (
 	getChildren()'local array?!#element {
 		a : local children
 		value(a)
+	}
+
+	fireMouseEvent(point: 'point, eventId : 'i32)'void {
+		for i (0 to children.size) {
+			child : children[i]
+			child.fireMouseEvent(point, eventId)
+		}	
 	}
 ) { this }

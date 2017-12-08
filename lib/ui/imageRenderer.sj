@@ -10,9 +10,9 @@ imageRenderer(
         glBindTexture(GL_TEXTURE_2D, _parent->image.texture.id);
         glUseProgram(sjv_imageShader.id);
         glUniform1i(glGetUniformLocation(sjv_imageShader.id, "texture" ), 0 );
-        glUniformMatrix4fv(glGetUniformLocation(sjv_imageShader.id, "model" ), 1, 0, scene->model.data);
-        glUniformMatrix4fv(glGetUniformLocation(sjv_imageShader.id, "view" ), 1, 0, scene->view.data);
-        glUniformMatrix4fv(glGetUniformLocation(sjv_imageShader.id, "projection" ), 1, 0, scene->projection.data);
+        glUniformMatrix4fv(glGetUniformLocation(sjv_imageShader.id, "model" ), 1, 0, (GLfloat*)&scene->model);
+        glUniformMatrix4fv(glGetUniformLocation(sjv_imageShader.id, "view" ), 1, 0, (GLfloat*)&scene->view);
+        glUniformMatrix4fv(glGetUniformLocation(sjv_imageShader.id, "projection" ), 1, 0, (GLfloat*)&scene->projection);
         vertex_buffer_render(_parent->buffer, GL_TRIANGLES);
         --c--
         void

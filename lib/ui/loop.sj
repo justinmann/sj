@@ -1,3 +1,7 @@
+mouseEvent_move : 0
+mouseEvent_up : 1
+mouseEvent_down : 2
+
 mainLoop() {
     size : rootWindowRenderer.getSize()
     rootScene.setSize(size)
@@ -7,8 +11,7 @@ mainLoop() {
     root.render(rootScene)
     rootWindowRenderer.present()
 
-    isMouseUp = false
-    isMouseDown = false
+    mouseEvent = -1
     x = 0
     y = 0
     --c--
@@ -20,25 +23,28 @@ mainLoop() {
                 break;
             case SDL_MOUSEBUTTONDOWN:
                 printf("SDL_MOUSEBUTTONDOWN\n");
-                sjv_isMouseDown = true;
+                sjv_mouseEvent = sjv_mouseEvent_down;
                 sjv_x = e.button.x;
-                sjv_y = e.button.x;
+                sjv_y = e.button.y;
                 break;
             case SDL_MOUSEBUTTONUP:
                 printf("SDL_MOUSEBUTTONUP\n");
-                sjv_isMouseUp = true;
+                sjv_mouseEvent = sjv_mouseEvent_up;
                 sjv_x = e.button.x;
-                sjv_y = e.button.x;
+                sjv_y = e.button.y;
+                break;
+            case SDL_MOUSEMOTION:
+                printf("SDL_MOUSEMOTION\n");
+                sjv_mouseEvent = sjv_mouseEvent_move;
+                sjv_x = e.motion.x;
+                sjv_y = e.motion.y;
                 break;
         }
     }
     --c--
 
-    if isMouseUp {
-        fireMouseUp(root, point(x, y)) 
-    }
-    if isMouseDown {
-        fireMouseDown(root, point(x, y)) 
+    if mouseEvent != -1 {
+        root.fireMouseEvent(point(x, y), mouseEvent) 
     }
     void
 }

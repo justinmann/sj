@@ -30,6 +30,10 @@ anon8()'stack anon8 {
   this
 }
 
+blurElement #element (children'stack array_heap_element:, radius'f32=, up'bool=, _rect'stack rect=, _vertexBuffer'heap boxVertexBuffer?=, _frameBuffer1'heap frameBuffer?=, _frameBuffer2'heap frameBuffer?=, _innerScene'stack scene2d:)'heap blurElement {
+  this
+}
+
 runLoop()'void {
   --c--
   
@@ -47,10 +51,6 @@ runLoop()'void {
 }
 
 scene2d(_size'stack size=, model'stack mat4=, view'stack mat4=, projection'stack mat4=)'stack scene2d {
-  this
-}
-
-scene3dElement #element (children'stack array_heap_model:, camera'stack vec3=, lookAt'stack vec3=, up'stack vec3=, fieldOfView'f32=, zNear'f32=, zFar'f32=, lightPos'stack vec3=, diffuseColor'stack color=, specColor'stack color=, projection'stack mat4=, view'stack mat4=, _rect'stack rect=, _angle'f32=, _cube'stack vertexBuffer_vertex_location_texture_normal:)'heap scene3dElement {
   this
 }
 
@@ -1961,6 +1961,9 @@ global()'void {
   } vertex3_texture2_t;
   
   --cstruct--
+  mouseEvent_move'i32 : 0i
+  mouseEvent_up'i32 : 1i
+  mouseEvent_down'i32 : 2i
   boxShader'stack shader : shader(this = shader(
     vertex'stack string : this.vertex,
     pixel'stack string : this.pixel
@@ -5516,22 +5519,15 @@ global()'void {
     count'i32 = this.count,
     data'stack array_char = this.data
   ))
-  root'heap #element : scene3dElement(this = scene3dElement(
-    children'stack array_heap_model : this.children,
-    camera'stack vec3 = this.camera,
-    lookAt'stack vec3 = this.lookAt,
-    up'stack vec3 = this.up,
-    fieldOfView'f32 = this.fieldOfView,
-    zNear'f32 = this.zNear,
-    zFar'f32 = this.zFar,
-    lightPos'stack vec3 = this.lightPos,
-    diffuseColor'stack color = this.diffuseColor,
-    specColor'stack color = this.specColor,
-    projection'stack mat4 = this.projection,
-    view'stack mat4 = this.view,
+  root'heap #element : blurElement(this = blurElement(
+    children'stack array_heap_element : this.children,
+    radius'f32 = this.radius,
+    up'bool = this.up,
     _rect'stack rect = this._rect,
-    _angle'f32 = this._angle,
-    _cube'stack vertexBuffer_vertex_location_texture_normal : this._cube
+    _vertexBuffer'heap boxVertexBuffer? = this._vertexBuffer,
+    _frameBuffer1'heap frameBuffer? = this._frameBuffer1,
+    _frameBuffer2'heap frameBuffer? = this._frameBuffer2,
+    _innerScene'stack scene2d : this._innerScene
   )) as heap #element
   runLoop()
   void

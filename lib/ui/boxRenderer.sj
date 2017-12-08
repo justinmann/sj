@@ -8,9 +8,9 @@ boxRenderer(
     render(scene : 'scene2d)'void {
         --c--
         glUseProgram(sjv_boxShader.id);
-        glUniformMatrix4fv(glGetUniformLocation(sjv_boxShader.id, "model" ), 1, 0, scene->model.data);
-        glUniformMatrix4fv(glGetUniformLocation(sjv_boxShader.id, "view" ), 1, 0, scene->view.data);
-        glUniformMatrix4fv(glGetUniformLocation(sjv_boxShader.id, "projection" ), 1, 0, scene->projection.data);
+        glUniformMatrix4fv(glGetUniformLocation(sjv_boxShader.id, "model" ), 1, 0, (GLfloat*)&scene->model);
+        glUniformMatrix4fv(glGetUniformLocation(sjv_boxShader.id, "view" ), 1, 0, (GLfloat*)&scene->view);
+        glUniformMatrix4fv(glGetUniformLocation(sjv_boxShader.id, "projection" ), 1, 0, (GLfloat*)&scene->projection);
         vertex_buffer_render(_parent->buffer, GL_TRIANGLES);
         --c--
         void

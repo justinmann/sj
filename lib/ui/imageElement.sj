@@ -34,4 +34,7 @@ imageElement #element (
 	getChildren()'local array?!#element {
 		empty'local array?!#element
 	}
+
+	fireMouseEvent(point: 'point, eventId : 'i32)'void {
+	}
 ) { this }
