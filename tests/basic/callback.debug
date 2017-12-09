@@ -1,5 +1,8 @@
+
+
 global()'void {
   f'local ()void : 
+  f()
   void
 }
 

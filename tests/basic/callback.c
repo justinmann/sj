@@ -89,6 +89,8 @@ void main_destroy(void);
 int main(int argc, char** argv) {
 #line 5 ".\basic\callback.sj"
     sjv_f = callback1;
+#line 0 ""
+    sjv_f._cb(sjv_f._parent);
     main_destroy();
     return 0;
 }

@@ -19,7 +19,7 @@ void CCallbackVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_
 
 }
 
-CCallbackFunction::CCallbackFunction() : CBaseFunction(CFT_Callback, string("INVALID"), weak_ptr<CBaseFunction>(), weak_ptr<CBaseFunctionDefinition>(), false) {
+CCallbackFunction::CCallbackFunction(shared_ptr<CCallback> callback, shared_ptr<CVar> callbackVar) : CBaseFunction(CFT_Callback, string("INVALID"), weak_ptr<CBaseFunction>(), weak_ptr<CBaseFunctionDefinition>(), false), callback(callback), callbackVar(callbackVar) {
 }
 
 int CCallbackFunction::getArgIndex(const string& name, CTypeMode returnMode) {
@@ -38,8 +38,7 @@ shared_ptr<CVar> CCallbackFunction::getArgVar(int index, CTypeMode returnMode) {
 }
 
 string CCallbackFunction::fullName(bool includeTemplateTypes) {
-    assert(false);
-    return "INVALID";
+    return callbackVar->name;
 }
 
 shared_ptr<CTypes> CCallbackFunction::getThisTypes(Compiler* compiler) {
@@ -88,13 +87,16 @@ pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> CCallbackFuncti
 }
 
 bool CCallbackFunction::getIsReturnModeValid(Compiler* compiler, CTypeMode returnMode) {
-    assert(false);
-    return false;
+    if (returnMode == CTM_Heap) {
+        return callback->returnType->typeMode == CTM_Heap;
+    }
+    else {
+        return callback->returnType->typeMode != CTM_Heap;
+    }
 }
 
 shared_ptr<CType> CCallbackFunction::getReturnType(Compiler* compiler, CTypeMode returnMode) {
-    assert(false);
-    return nullptr;
+    return callback->returnType;
 }
 
 void CCallbackFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
@@ -102,7 +104,50 @@ void CCallbackFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutp
 }
 
 void CCallbackFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode returnMode) {
-    assert(false);
+    stringstream line;
+    line << callbackVar->cname << "._cb(";
+    bool isFirstParameter = true;
+
+    // Add "parent" to "this"
+    line << callbackVar->cname << "._parent";
+
+    // Fill in "this" with normal arguments
+    for (auto parameter : *parameters) {
+        auto argType = parameter.var->getType(compiler);
+
+        stringstream argStream;
+        auto parameterVar = parameter.var;
+        if (!parameterVar) {
+            assert(compiler->errors.size() > 0);
+            return;
+        }
+        auto argStoreValue = trBlock->createTempStoreVariable(calleeLoc, callerScope, argType->typeMode == CTM_Heap ? argType : argType->getLocalValueType(), "functionParam");
+        parameterVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, argStoreValue);
+
+        if (!argStoreValue->hasSetValue) {
+            compiler->addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' has no value", parameterVar->name.c_str());
+            return;
+        }
+
+        line << ", ";
+        line << argStoreValue->getName(trBlock);
+    }
+
+    // Call function
+    if (callback->returnType != compiler->typeVoid) {
+        if (!isFirstParameter) {
+            line << ", ";
+        }
+        if (storeValue->isReturnValue) {
+            line << "_return";
+        }
+        else {
+            line << "&" << storeValue->getName(trBlock);
+        }
+        storeValue->hasSetValue = true;
+    }
+    line << ")";
+    trBlock->statements.push_back(TrStatement(CLoc::undefined, line.str()));
 }
 
 void CCallbackFunction::dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level, CTypeMode returnMode) {
@@ -113,6 +158,7 @@ CCallback::CCallback(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> retur
 }
 
 shared_ptr<CCallback> CCallback::getCallback(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> returnType) {
+    assert(returnType->typeMode != CTM_Undefined);
     vector<shared_ptr<CType>> allTypes = argTypes;
     allTypes.push_back(returnType);
 
@@ -156,8 +202,8 @@ shared_ptr<CVar> CCallback::getVar(Compiler* compiler, shared_ptr<CScope> scope,
     return make_shared<CCallbackVar>(loc, scope, isHeap ? cb->types->heapValueType : cb->types->localValueType, dotVar, function, cb);
 }
 
-shared_ptr<CBaseFunction> CCallback::getFunction(Compiler* compiler) {
-    return make_shared<CCallbackFunction>();
+shared_ptr<CBaseFunction> CCallback::getFunction(Compiler* compiler, shared_ptr<CVar> callbackVar) {
+    return make_shared<CCallbackFunction>(shared_from_this(), callbackVar);
 }
 
 void CCallback::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {

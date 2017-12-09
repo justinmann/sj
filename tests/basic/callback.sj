@@ -3,7 +3,7 @@ func()'void {
 }
 
 f : func
-// f()
+f()
 
 /*
 callback(f : '()void) {

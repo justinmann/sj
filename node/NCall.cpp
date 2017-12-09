@@ -258,7 +258,7 @@ shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, shared_ptr<CSc
         if (var) {
             auto type = var->getType(compiler);
             if (type && type->category == CTC_Function) {
-                callee = type->callback.lock()->getFunction(compiler);
+                callee = type->callback.lock()->getFunction(compiler, var);
             }
         }
     }
