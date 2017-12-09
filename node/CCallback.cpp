@@ -10,8 +10,22 @@ shared_ptr<CType> CCallbackVar::getType(Compiler* compiler) {
 
 void CCallbackVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     callback->transpileDefinition(compiler, trOutput);
+    function->transpileDefinition(compiler, trOutput);
 
     auto rightValue = trBlock->createTempVariable(scope.lock(), type, "callback");    
+
+    if (dotValue) {
+        assert(dotValue->type->typeMode == CTM_Local);
+        assert(type->typeMode == CTM_Local);
+        trBlock->statements.push_back(TrStatement(loc, rightValue->name + "._parent = (void*)" + dotValue->name));
+    }
+    else {
+        trBlock->statements.push_back(TrStatement(loc, rightValue->name + "._parent = (void*)0"));
+    }
+
+    string functionName = function->getCCallbackFunctionName(compiler, trOutput, returnMode);
+    trBlock->statements.push_back(TrStatement(loc, rightValue->name + "._cb = " + functionName));
+
     storeValue->retainValue(compiler, loc, trBlock, rightValue);
 }
 
@@ -61,7 +75,12 @@ shared_ptr<CType> CCallbackFunction::getVarType(CLoc loc, Compiler* compiler, sh
     return nullptr;
 }
 
-string CCallbackFunction::getCInitFunctionName(CTypeMode returnMode) {
+string CCallbackFunction::getCFunctionName(CTypeMode returnMode) {
+    assert(false);
+    return "INVALID";
+}
+
+string CCallbackFunction::getCCallbackFunctionName(Compiler* compiler, TrOutput* trOutput, CTypeMode returnMode) {
     assert(false);
     return "INVALID";
 }
@@ -199,7 +218,9 @@ shared_ptr<CVar> CCallback::getVar(Compiler* compiler, shared_ptr<CScope> scope,
         isHeap = dotVar->getType(compiler)->typeMode == CTM_Heap;
     }
 
-    return make_shared<CCallbackVar>(loc, scope, isHeap ? cb->types->heapValueType : cb->types->localValueType, dotVar, function, cb);
+    auto functionName = function->getCFunctionName(returnMode);
+
+    return make_shared<CCallbackVar>(loc, scope, isHeap ? cb->types->heapValueType : cb->types->localValueType, dotVar, cb, function, returnMode);
 }
 
 shared_ptr<CBaseFunction> CCallback::getFunction(Compiler* compiler, shared_ptr<CVar> callbackVar) {

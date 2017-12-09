@@ -1,5 +1,6 @@
 func()'void {
 	x : 0
+	void
 }
 
 f : func

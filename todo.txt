@@ -23,10 +23,8 @@
 * override interfaces : a as type   -> a.asType()'t
 
 -- callback --
-* set func & parent
 * update ref on retain/release
 * copy func ptr on assign
-* create stub function with function w/o parent
 
 -- animation -- 
 x.animateTextColor(color(1, 0, 0))

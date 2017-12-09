@@ -60,7 +60,8 @@ public:
     shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
     bool getIsReturnModeValid(Compiler* compiler, CTypeMode returnMode);
     shared_ptr<CType> getReturnType(Compiler* compiler, CTypeMode returnMode);
-    string getCInitFunctionName(CTypeMode returnMode);
+    string getCFunctionName(CTypeMode returnMode);
+    string getCCallbackFunctionName(Compiler* compiler, TrOutput* trOutput, CTypeMode returnMode);
     string getCCopyFunctionName();
     string getCDestroyFunctionName();
     string getCCastFunctionName(shared_ptr<CBaseFunction> fromFunction, CTypeMode returnMode);

@@ -220,7 +220,12 @@ shared_ptr<CType> CInterface::getReturnType(Compiler* compiler, CTypeMode return
     return nullptr;
 }
 
-string CInterface::getCInitFunctionName(CTypeMode returnMode) {
+string CInterface::getCFunctionName(CTypeMode returnMode) {
+    assert(false);
+    return "";
+}
+
+string CInterface::getCCallbackFunctionName(Compiler* compiler, TrOutput* trOutput, CTypeMode returnMode) {
     assert(false);
     return "";
 }
@@ -257,7 +262,7 @@ string CInterface::getCTypeIdName() {
 
 string CInterface::getCCastFunctionName(shared_ptr<CBaseFunction> fromFunction, CTypeMode returnMode) {
     stringstream line;
-    line << fromFunction->getCInitFunctionName(returnMode) << "_as_" << getCStructName(CTM_Stack);
+    line << fromFunction->getCFunctionName(returnMode) << "_as_" << getCStructName(CTM_Stack);
     return line.str();
 }
 

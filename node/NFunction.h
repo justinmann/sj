@@ -123,7 +123,8 @@ public:
     void dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level, CTypeMode returnMode);
     string getCBaseName(CTypeMode typeMode);
     string getCStructName(CTypeMode typeMode);
-    string getCInitFunctionName(CTypeMode returnMode);
+    string getCFunctionName(CTypeMode returnMode);
+    string getCCallbackFunctionName(Compiler* compiler, TrOutput* trOutput, CTypeMode returnMode);
     string getCCopyFunctionName();
     string getCDestroyFunctionName();
     string getCAsInterfaceFunctionName(CTypeMode returnMode);

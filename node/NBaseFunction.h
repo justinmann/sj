@@ -74,7 +74,8 @@ public:
     virtual shared_ptr<CVar> getCVar(Compiler* compiler, const string& name, VarScanMode scanMode, CTypeMode returnMode) = 0;
     virtual shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CLoc locCaller, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode) = 0;
     virtual shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) = 0;
-    virtual string getCInitFunctionName(CTypeMode returnMode) = 0;
+    virtual string getCFunctionName(CTypeMode returnMode) = 0;
+    virtual string getCCallbackFunctionName(Compiler* compiler, TrOutput* trOutput, CTypeMode returnMode) = 0;
     virtual string getCCopyFunctionName() = 0;
     virtual string getCDestroyFunctionName() = 0;
     virtual string getCStructName(CTypeMode typeMode) = 0;

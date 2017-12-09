@@ -4,7 +4,7 @@
 
 class CCallbackVar : public CVar {
 public:
-    CCallbackVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, shared_ptr<CVar> dotVar, shared_ptr<CBaseFunction> function, shared_ptr<CCallback> callback) : CVar(loc, scope), type(type), dotVar(dotVar), function(function), callback(callback) { }
+    CCallbackVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, shared_ptr<CVar> dotVar, shared_ptr<CCallback> callback, shared_ptr<CBaseFunction> function, CTypeMode returnMode) : CVar(loc, scope), type(type), dotVar(dotVar), callback(callback), function(function), returnMode(returnMode) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -13,8 +13,9 @@ public:
 private:
     shared_ptr<CType> type;
     shared_ptr<CVar> dotVar;
-    shared_ptr<CBaseFunction> function;
     shared_ptr<CCallback> callback;
+    shared_ptr<CBaseFunction> function;
+    CTypeMode returnMode;
 }; 
 
 class CCallbackFunction : public CBaseFunction {
@@ -28,7 +29,8 @@ public:
     shared_ptr<CVar> getCVar(Compiler* compiler, const string& name, VarScanMode scanMode, CTypeMode returnMode);
     shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CLoc locCaller, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode);
     shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
-    string getCInitFunctionName(CTypeMode returnMode);
+    string getCFunctionName(CTypeMode returnMode);
+    string getCCallbackFunctionName(Compiler* compiler, TrOutput* trOutput, CTypeMode returnMode);
     string getCCopyFunctionName();
     string getCDestroyFunctionName();
     string getCStructName(CTypeMode typeMode);

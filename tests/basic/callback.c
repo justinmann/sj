@@ -84,12 +84,24 @@ struct td_cb_void_heap {
 cb_void callback1;
 cb_void sjv_f;
 
+void sjf_func(void);
+void sjf_func_callback(void * _parent);
 void main_destroy(void);
 
+void sjf_func(void) {
+    int32_t sjv_x;
+
+    sjv_x = 0;
+}
+
+void sjf_func_callback(void * _parent) {
+    sjf_func();
+}
+
 int main(int argc, char** argv) {
-#line 5 ".\basic\callback.sj"
+    callback1._parent = (void*)0;
+    callback1._cb = sjf_func_callback;
     sjv_f = callback1;
-#line 0 ""
     sjv_f._cb(sjv_f._parent);
     main_destroy();
     return 0;

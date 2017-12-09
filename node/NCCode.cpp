@@ -53,7 +53,7 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
         if (cfunction) {
             functions.push_back(cfunction);
             // Do they want the stack or heap version
-            return cfunction->getCInitFunctionName(CTM_Heap);
+            return cfunction->getCFunctionName(CTM_Heap);
         }
         else {
             compiler->addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", params[0].c_str());
@@ -74,7 +74,7 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
         if (cfunction) {
             functions.push_back(cfunction);
             // Do they want the stack or heap version
-            return cfunction->getCInitFunctionName(CTM_Stack);
+            return cfunction->getCFunctionName(CTM_Stack);
         }
         else {
             compiler->addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", params[0].c_str());

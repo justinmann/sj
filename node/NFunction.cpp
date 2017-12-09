@@ -281,7 +281,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 
         if (!hasThis) {
             // Create function body
-            auto functionName = getCInitFunctionName(returnMode);
+            auto functionName = getCFunctionName(returnMode);
             auto functionBody = trOutput->functions.find(functionName);
             if (functionBody == trOutput->functions.end()) {
                 auto trFunctionBlock = make_shared<TrBlock>();
@@ -336,7 +336,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
         }
         else {
             // Create init function body
-            auto functionName = getCInitFunctionName(returnMode);
+            auto functionName = getCFunctionName(returnMode);
             auto functionBody = trOutput->functions.find(functionName);
             if (functionBody == trOutput->functions.end()) {
                 auto returnType = getReturnType(compiler, returnMode);
@@ -525,7 +525,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                                 if (interfaceMethod->returnMode == CTM_Heap) {
                                     initStream << "_heap";
                                 }
-                                initStream << " = (" << interfaceMethod->getCTypeName(compiler, false) << ")" << implementation->getCInitFunctionName(interfaceMethod->returnMode);
+                                initStream << " = (" << interfaceMethod->getCTypeName(compiler, false) << ")" << implementation->getCFunctionName(interfaceMethod->returnMode);
                                 trFunctionBlock->statements.push_back(TrStatement(CLoc::undefined, initStream.str()));
                             }
                         }
@@ -612,7 +612,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
     }
     
     if (!hasThis) {
-        auto functionName = getCInitFunctionName(returnMode);
+        auto functionName = getCFunctionName(returnMode);
         stringstream line;
         line << functionName << "(";
         bool isFirstParameter = true;
@@ -677,7 +677,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
         line << ")";
         trBlock->statements.push_back(TrStatement(CLoc::undefined, line.str()));
     } else {
-        auto functionName = getCInitFunctionName(returnMode);
+        auto functionName = getCFunctionName(returnMode);
 
         // Initialize "this"
         shared_ptr<TrValue> calleeThisValue;
@@ -771,8 +771,89 @@ string CFunction::getCStructName(CTypeMode returnMode) {
     return string("sjs_") + getCBaseName(returnMode);
 }
 
-string CFunction::getCInitFunctionName(CTypeMode returnMode) {
+string CFunction::getCFunctionName(CTypeMode returnMode) {
     return string("sjf_") + getCBaseName(returnMode);
+}
+
+string CFunction::getCCallbackFunctionName(Compiler* compiler, TrOutput* trOutput, CTypeMode returnMode) {
+    if (hasParent && !hasThis) {
+        return getCFunctionName(returnMode);
+    }
+    else {
+        string functionName = getCFunctionName(returnMode) + "_callback";
+
+        auto functionBody = trOutput->functions.find(functionName);
+        if (functionBody == trOutput->functions.end()) {
+            auto trFunctionBlock = make_shared<TrBlock>();
+            trFunctionBlock->parent = nullptr;
+            trFunctionBlock->hasThis = false;
+            trOutput->functions[functionName] = trFunctionBlock;
+
+            auto returnType = getReturnType(compiler, returnMode);
+            auto argTypes = getCTypeList(compiler, returnMode);
+
+            stringstream callStream;
+            callStream << getCFunctionName(returnMode) << "(";
+            bool isFirstArg = true;
+            if (hasParent) {
+                callStream << "_parent";
+                isFirstArg = false;
+            }
+
+            for (auto argType : *argTypes) {
+                if (isFirstArg) {
+                    isFirstArg = false;
+                }
+                else {
+                    callStream << ", ";
+                }
+
+                callStream << argType.first;
+            }
+
+            if (returnType != compiler->typeVoid) {
+                if (isFirstArg) {
+                    isFirstArg = false;
+                }
+                else {
+                    callStream << ", ";
+                }
+                callStream << returnType->cname << "* _return";
+            }
+            callStream << ")";
+            trFunctionBlock->statements.push_back(TrStatement(CLoc::undefined, callStream.str()));
+
+            stringstream functionDefinition;
+            functionDefinition << "void " << functionName << "(";
+
+            if (hasParent) {
+                functionDefinition << parent.lock()->getThisTypes(compiler)->localValueType->cname << " _parent";
+            }
+            else {
+                functionDefinition << "void * _parent";
+            }
+
+            for (auto argType : *argTypes) {
+                functionDefinition << ", ";
+
+                if (!argType.second->parent.expired()) {
+                    argType.second->parent.lock()->transpileDefinition(compiler, trOutput);
+                }
+
+                functionDefinition << argType.second->cname << " " << argType.first;
+            }
+
+            if (returnType != compiler->typeVoid) {
+                functionDefinition << ", ";
+                functionDefinition << returnType->cname << "* _return";
+            }
+
+            functionDefinition << ")";
+            trFunctionBlock->definition = functionDefinition.str();
+        }
+
+        return functionName;
+    }
 }
 
 string CFunction::getCCopyFunctionName() {
@@ -784,7 +865,7 @@ string CFunction::getCDestroyFunctionName() {
 }
 
 string CFunction::getCAsInterfaceFunctionName(CTypeMode returnMode) {
-    return getCInitFunctionName(returnMode) + "_asInterface";
+    return getCFunctionName(returnMode) + "_asInterface";
 }
 
 void CFunction::dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level, CTypeMode returnMode) {

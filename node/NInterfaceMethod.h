@@ -69,7 +69,8 @@ public:
     shared_ptr<CType> getReturnType(Compiler* compiler, CTypeMode returnMode);
     string getCTypeName(Compiler* compiler, bool includeNames);
     string getCStructName(CTypeMode typeMode) { assert(false); return ""; }
-    string getCInitFunctionName(CTypeMode returnMode);
+    string getCFunctionName(CTypeMode returnMode);
+    string getCCallbackFunctionName(Compiler* compiler, TrOutput* trOutput, CTypeMode returnMode);
     string getCCopyFunctionName();
     string getCDestroyFunctionName();
 

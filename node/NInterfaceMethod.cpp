@@ -198,7 +198,12 @@ shared_ptr<CType> CInterfaceMethod::getReturnType(Compiler* compiler, CTypeMode 
     return returnType;
 }
 
-string CInterfaceMethod::getCInitFunctionName(CTypeMode returnMode) {
+string CInterfaceMethod::getCFunctionName(CTypeMode returnMode) {
+    assert(false);
+    return "";
+}
+
+string CInterfaceMethod::getCCallbackFunctionName(Compiler* compiler, TrOutput* trOutput, CTypeMode returnMode) {
     assert(false);
     return "";
 }

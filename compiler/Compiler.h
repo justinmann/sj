@@ -23,6 +23,7 @@
 // #define DEBUG_CALLSTACK
 // #define DEBUG_ALLOC
 #define YY_NO_UNISTD_H
+// #define PRAGMA_LINE_OUTPUT
 
 using namespace std;
 
