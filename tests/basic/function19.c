@@ -78,25 +78,35 @@ void sjf_func(int32_t x, int32_t* _return) {
     int32_t sjt_compare2;
     bool sjt_ifElse1;
 
+#line 1 ".\basic\function19.sj"
     sjt_compare1 = x;
+#line 2
     sjt_compare2 = 0;
+#line 2
     sjt_ifElse1 = sjt_compare1 > sjt_compare2;
     if (sjt_ifElse1) {
         int32_t sjt_functionParam1;
         int32_t sjt_math1;
         int32_t sjt_math2;
 
+#line 1 ".\basic\function19.sj"
         sjt_math1 = x;
+#line 3
         sjt_math2 = 1;
+#line 3
         sjt_functionParam1 = sjt_math1 - sjt_math2;
+#line 0 ""
         sjf_func(sjt_functionParam1, _return);
     } else {
+#line 5 ".\basic\function19.sj"
         (*_return) = 0;
     }
 }
 
 int main(int argc, char** argv) {
+#line 8 ".\basic\function19.sj"
     sjt_functionParam2 = 4;
+#line 0 ""
     sjf_func(sjt_functionParam2, &void1);
     main_destroy();
     return 0;

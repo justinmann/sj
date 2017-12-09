@@ -115,6 +115,7 @@ void sjf_class_anon1(sjs_class_anon1* _this, sjs_class* _parent) {
 }
 
 void sjf_class_anon1_copy(sjs_class_anon1* _this, sjs_class_anon1* _from) {
+#line 2 ".\basic\heap2.sj"
     _this->x = _from->x;
 }
 
@@ -125,6 +126,7 @@ void sjf_class_anon1_heap(sjs_class_anon1_heap* _this, sjs_class* _parent) {
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
+#line 1 ".\basic\heap2.sj"
     sjf_class_anon1_copy(&_this->data, &_from->data);
 }
 
@@ -132,6 +134,7 @@ void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_get(sjs_class* _parent, sjs_class_anon1** _return) {
+#line 6 ".\basic\heap2.sj"
     (*_return) = &(_parent)->data;
 }
 
@@ -139,10 +142,14 @@ void sjf_class_heap(sjs_class_heap* _this) {
 }
 
 int main(int argc, char** argv) {
+#line 3 ".\basic\heap2.sj"
     sjv_c.data.x = 0;
+#line 0 ""
     sjf_class_anon1(&sjv_c.data, &sjv_c);
     sjf_class(&sjv_c);
+#line 10 ".\basic\heap2.sj"
     sjt_dot1 = &sjv_c;
+#line 0 ""
     sjf_class_get(sjt_dot1, &sjv_d);
     main_destroy();
     return 0;

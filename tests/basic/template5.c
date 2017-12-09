@@ -75,10 +75,12 @@ void sjf_class_func_i32(int32_t* _return);
 void main_destroy(void);
 
 void sjf_class_f32_func(int32_t* _return) {
+#line 1 ".\basic\template5.sj"
     (*_return) = 1;
 }
 
 void sjf_class_func_i32(int32_t* _return) {
+#line 1 ".\basic\template5.sj"
     (*_return) = 1;
 }
 

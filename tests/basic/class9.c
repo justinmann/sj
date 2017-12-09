@@ -100,6 +100,7 @@ void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_func(sjs_class* _parent, int32_t* _return) {
+#line 1 ".\basic\class9.sj"
     (*_return) = 1;
 }
 
@@ -108,7 +109,9 @@ void sjf_class_heap(sjs_class_heap* _this) {
 
 int main(int argc, char** argv) {
     sjf_class(&sjv_c);
+#line 3 ".\basic\class9.sj"
     sjt_dot1 = &sjv_c;
+#line 0 ""
     sjf_class_func(sjt_dot1, &void1);
     main_destroy();
     return 0;

@@ -74,6 +74,7 @@ void sjf_func(int32_t* _return);
 void main_destroy(void);
 
 void sjf_bar(int32_t* _return) {
+#line 1 ".\basic\function20.sj"
     (*_return) = 9;
 }
 

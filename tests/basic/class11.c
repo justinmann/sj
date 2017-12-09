@@ -95,6 +95,7 @@ void sjf_class(sjs_class* _this) {
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
+#line 1 ".\basic\class11.sj"
     _this->x = _from->x;
 }
 
@@ -105,19 +106,24 @@ void sjf_class_heap(sjs_class_heap* _this) {
 }
 
 void sjf_func(sjs_class* _return) {
+#line 2 ".\basic\class11.sj"
     _return->x = 1;
+#line 0 ""
     sjf_class(_return);
 }
 
 void sjf_func_heap(sjs_class_heap** _return) {
     (*_return) = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
     (*_return)->_refCount = 1;
+#line 2 ".\basic\class11.sj"
     (*_return)->x = 1;
+#line 0 ""
     sjf_class_heap((*_return));
 }
 
 int main(int argc, char** argv) {
     sjf_func(&sjt_call1);
+#line 3 ".\basic\class11.sj"
     sjt_dot1 = &sjt_call1;
     main_destroy();
     return 0;

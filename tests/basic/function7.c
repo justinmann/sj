@@ -74,11 +74,14 @@ void sjf_func(int32_t x, int32_t* _return);
 void main_destroy(void);
 
 void sjf_func(int32_t x, int32_t* _return) {
+#line 1 ".\basic\function7.sj"
     (*_return) = x;
 }
 
 int main(int argc, char** argv) {
+#line 1 ".\basic\function7.sj"
     sjt_functionParam1 = 3;
+#line 0 ""
     sjf_func(sjt_functionParam1, &void1);
     main_destroy();
     return 0;

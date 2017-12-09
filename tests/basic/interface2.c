@@ -166,6 +166,7 @@ sji_foo* sjf_class_heap_as_sji_foo(sjs_class_heap* _this) {
 }
 
 void sjf_class_test(sjs_class* _parent, int32_t* _return) {
+#line 7 ".\basic\interface2.sj"
     (*_return) = 5;
 }
 
@@ -190,8 +191,11 @@ int main(int argc, char** argv) {
     sjt_cast1 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
     sjt_cast1->_refCount = 1;
     sjf_class_heap(sjt_cast1);
+#line 1 ".\basic\interface2.sj"
     sjv_a = (sji_foo*)sjf_class_heap_as_sji_foo(sjt_cast1);
+#line 12
     sjt_dot1 = sjv_a;
+#line 12
     sjt_dot1->test((void*)(((char*)sjt_dot1->_parent) + sizeof(intptr_t)), &void1);
     main_destroy();
     return 0;

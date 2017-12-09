@@ -93,6 +93,7 @@ void sjf_class(sjs_class* _this) {
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
+#line 1 ".\basic\class4.sj"
     _this->b = _from->b;
 }
 
@@ -103,9 +104,13 @@ void sjf_class_heap(sjs_class_heap* _this) {
 }
 
 int main(int argc, char** argv) {
+#line 1 ".\basic\class4.sj"
     sjv_a.b = 0;
+#line 0 ""
     sjf_class(&sjv_a);
+#line 1 ".\basic\class4.sj"
     sjt_dot1 = &sjv_a;
+#line 1
     sjt_dot1->b = 1;
     main_destroy();
     return 0;

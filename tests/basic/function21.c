@@ -87,6 +87,7 @@ void sjf_func(sjs_func* _this, int32_t* _return) {
 }
 
 void sjf_func_bar(sjs_func* _parent, int32_t* _return) {
+#line 2 ".\basic\function21.sj"
     (*_return) = 9;
 }
 

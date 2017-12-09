@@ -115,6 +115,7 @@ void sjf_anon1(sjs_anon1* _this) {
 }
 
 void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* _from) {
+#line 1 ".\basic\class15.sj"
     _this->test = _from->test;
 }
 
@@ -130,10 +131,15 @@ void sjf_anon1_sub(sjs_anon1* _parent, int32_t x, int32_t y, int32_t* _return) {
     int32_t sjt_math3;
     int32_t sjt_math4;
 
+#line 3 ".\basic\class15.sj"
     sjt_math3 = x;
+#line 3
     sjt_math4 = y;
+#line 4
     sjt_math1 = sjt_math3 - sjt_math4;
+#line 4
     sjt_math2 = (_parent)->test;
+#line 4
     (*_return) = sjt_math1 - sjt_math2;
 }
 
@@ -143,7 +149,9 @@ void sjf_class(sjs_class* _this) {
 void sjf_class_bar(sjs_class* _parent, int32_t x, int32_t* _return) {
     int32_t sjt_functionParam1;
 
+#line 16 ".\basic\class15.sj"
     sjt_functionParam1 = x;
+#line 0 ""
     sjf_class_foo(_parent, sjt_functionParam1, _return);
 }
 
@@ -158,8 +166,11 @@ void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return) {
     int32_t sjt_compare2;
     bool sjt_ifElse1;
 
+#line 9 ".\basic\class15.sj"
     sjt_compare1 = x;
+#line 10
     sjt_compare2 = 0;
+#line 10
     sjt_ifElse1 = sjt_compare1 > sjt_compare2;
     if (sjt_ifElse1) {
         sjs_anon1* sjt_dot2;
@@ -167,12 +178,17 @@ void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return) {
         int32_t sjt_functionParam3;
         int32_t sjt_functionParam4;
 
+#line 11 ".\basic\class15.sj"
         sjt_dot2 = &sjv_math;
+#line 9
         sjt_functionParam3 = x;
+#line 11
         sjt_functionParam4 = 1;
+#line 0 ""
         sjf_anon1_sub(sjt_dot2, sjt_functionParam3, sjt_functionParam4, &sjt_functionParam2);
         sjf_class_bar(_parent, sjt_functionParam2, _return);
     } else {
+#line 13 ".\basic\class15.sj"
         (*_return) = 0;
     }
 }
@@ -181,11 +197,16 @@ void sjf_class_heap(sjs_class_heap* _this) {
 }
 
 int main(int argc, char** argv) {
+#line 2 ".\basic\class15.sj"
     sjv_math.test = 1;
+#line 0 ""
     sjf_anon1(&sjv_math);
     sjf_class(&sjv_c);
+#line 22 ".\basic\class15.sj"
     sjt_dot1 = &sjv_c;
+#line 22
     sjt_functionParam5 = 4;
+#line 0 ""
     sjf_class_foo(sjt_dot1, sjt_functionParam5, &void1);
     main_destroy();
     return 0;

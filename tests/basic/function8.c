@@ -78,14 +78,20 @@ void sjf_func(int32_t x, int32_t y, int32_t* _return) {
     int32_t sjt_math1;
     int32_t sjt_math2;
 
+#line 1 ".\basic\function8.sj"
     sjt_math1 = x;
+#line 1
     sjt_math2 = y;
+#line 1
     (*_return) = sjt_math1 + sjt_math2;
 }
 
 int main(int argc, char** argv) {
+#line 1 ".\basic\function8.sj"
     sjt_functionParam1 = 1;
+#line 1
     sjt_functionParam2 = 1;
+#line 0 ""
     sjf_func(sjt_functionParam1, sjt_functionParam2, &void1);
     main_destroy();
     return 0;

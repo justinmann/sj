@@ -74,8 +74,11 @@ bool sjv_x;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
+#line 1 ".\basic\comparison4.sj"
     sjt_compare1 = -3;
+#line 1
     sjt_compare2 = 4;
+#line 1
     sjv_x = sjt_compare1 > sjt_compare2;
     main_destroy();
     return 0;

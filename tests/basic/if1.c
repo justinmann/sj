@@ -72,6 +72,7 @@ bool sjt_ifElse1;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
+#line 1 ".\basic\if1.sj"
     sjt_ifElse1 = true;
     if (sjt_ifElse1) {
     } else {

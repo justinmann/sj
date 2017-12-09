@@ -74,11 +74,13 @@ void sjf_func(double* _return);
 void main_destroy(void);
 
 void sjf_func(double* _return) {
+#line 1 ".\basic\function4.sj"
     (*_return) = -3.0;
 }
 
 int main(int argc, char** argv) {
     sjf_func(&sjt_compare1);
+#line 1 ".\basic\function4.sj"
     sjt_compare2 = 4.0;
     main_destroy();
     return 0;

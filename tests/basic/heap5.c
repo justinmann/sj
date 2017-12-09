@@ -115,6 +115,7 @@ void sjf_a(sjs_a* _this) {
 }
 
 void sjf_a_copy(sjs_a* _this, sjs_a* _from) {
+#line 3 ".\basic\heap5.sj"
     sjf_array_char_copy(&_this->data, &_from->data);
 }
 
@@ -125,58 +126,99 @@ void sjf_a_heap(sjs_a_heap* _this) {
 }
 
 void sjf_array_char(sjs_array_char* _this) {
+#line 110 ".\..\lib\common\array.sj"
     if (_this->size < 0) {
+#line 110
         exit(-1);
+#line 110
     }
+#line 110
     if (_this->data) {
+#line 110
         _this->_isGlobal = true;
+#line 110
     } else {
+#line 110
         _this->data = (uintptr_t)calloc(_this->size * sizeof(char), 1);
+#line 110
         if (!_this->data) {
+#line 110
             printf("grow: out of memory\n");
+#line 110
             exit(-1);
+#line 110
         }
+#line 110
     }
 }
 
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
+#line 1 ".\..\lib\common\array.sj"
     _this->size = _from->size;
+#line 1
     _this->data = _from->data;
+#line 1
     _this->_isGlobal = _from->_isGlobal;
+#line 129
     _this->data = _from->data;
+#line 129
     if (!_this->_isGlobal && _this->data) {
+#line 129
         _retain((void*)_this->data);
+#line 129
     }
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
+#line 136 ".\..\lib\common\array.sj"
     if (!_this->_isGlobal && _this->data) {
+#line 136
         if (_release((void*)_this->data)) {
+#line 136
             free((char*)_this->data);
+#line 136
         }
+#line 136
     }
 }
 
 void sjf_array_char_heap(sjs_array_char_heap* _this) {
+#line 110 ".\..\lib\common\array.sj"
     if (_this->size < 0) {
+#line 110
         exit(-1);
+#line 110
     }
+#line 110
     if (_this->data) {
+#line 110
         _this->_isGlobal = true;
+#line 110
     } else {
+#line 110
         _this->data = (uintptr_t)calloc(_this->size * sizeof(char), 1);
+#line 110
         if (!_this->data) {
+#line 110
             printf("grow: out of memory\n");
+#line 110
             exit(-1);
+#line 110
         }
+#line 110
     }
 }
 
 int main(int argc, char** argv) {
+#line 4 ".\basic\heap5.sj"
     void1.data.size = 0;
+#line 4
     sjt_cast1 = 0;
+#line 4
     void1.data.data = (uintptr_t)sjt_cast1;
+#line 4 ".\..\lib\common\array.sj"
     void1.data._isGlobal = false;
+#line 0 ""
     sjf_array_char(&void1.data);
     sjf_a(&void1);
     main_destroy();

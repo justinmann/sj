@@ -139,6 +139,7 @@ void sjf_class2(sjs_class2* _this) {
 
 void sjf_class2_copy(sjs_class2* _this, sjs_class2* _from) {
     _this->inner = 0;
+#line 7 ".\basic\heap10.sj"
     sjf_inner_copy((sjs_inner*)(((char*)_this->inner) + sizeof(intptr_t)), (sjs_inner*)(((char*)_from->inner) + sizeof(intptr_t)));
 }
 
@@ -155,6 +156,7 @@ void sjf_class2_heap(sjs_class2_heap* _this) {
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
+#line 3 ".\basic\heap10.sj"
     sjf_inner_copy(&_this->inner, &_from->inner);
 }
 
@@ -187,42 +189,51 @@ int main(int argc, char** argv) {
     sjt_value1->_refCount = 1;
     sjf_inner(&sjt_value1->inner);
     sjf_class_heap(sjt_value1);
+#line 13 ".\basic\heap10.sj"
     sjv_x4 = sjt_value1;
     if (sjv_x4 != 0) {
         sjv_x4->_refCount++;
     }
 
+#line 0 ""
     sjt_value2 = (sjs_inner_heap*)malloc(sizeof(sjs_inner_heap));
     sjt_value2->_refCount = 1;
     sjf_inner_heap(sjt_value2);
+#line 8 ".\basic\heap10.sj"
     sjv_x5.inner = sjt_value2;
     if (sjv_x5.inner != 0) {
         sjv_x5.inner->_refCount++;
     }
 
+#line 0 ""
     sjf_class2(&sjv_x5);
     sjv_x6 = (sjs_class2_heap*)malloc(sizeof(sjs_class2_heap));
     sjv_x6->_refCount = 1;
     sjt_value3 = (sjs_inner_heap*)malloc(sizeof(sjs_inner_heap));
     sjt_value3->_refCount = 1;
     sjf_inner_heap(sjt_value3);
+#line 8 ".\basic\heap10.sj"
     sjv_x6->inner = sjt_value3;
     if (sjv_x6->inner != 0) {
         sjv_x6->inner->_refCount++;
     }
 
+#line 0 ""
     sjf_class2_heap(sjv_x6);
     sjt_value4 = (sjs_class2_heap*)malloc(sizeof(sjs_class2_heap));
     sjt_value4->_refCount = 1;
     sjt_value5 = (sjs_inner_heap*)malloc(sizeof(sjs_inner_heap));
     sjt_value5->_refCount = 1;
     sjf_inner_heap(sjt_value5);
+#line 8 ".\basic\heap10.sj"
     sjt_value4->inner = sjt_value5;
     if (sjt_value4->inner != 0) {
         sjt_value4->inner->_refCount++;
     }
 
+#line 0 ""
     sjf_class2_heap(sjt_value4);
+#line 16 ".\basic\heap10.sj"
     sjv_x8 = sjt_value4;
     if (sjv_x8 != 0) {
         sjv_x8->_refCount++;

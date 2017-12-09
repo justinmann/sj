@@ -73,7 +73,9 @@ int64_t sjv_x;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
+#line 1 ".\basic\cast2.sj"
     sjt_cast1 = 5.0;
+#line 1
     sjv_x = (int64_t)sjt_cast1;
     main_destroy();
     return 0;

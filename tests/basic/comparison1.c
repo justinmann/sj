@@ -72,6 +72,7 @@ bool sjv_x;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
+#line 1 ".\basic\comparison1.sj"
     sjv_x = true;
     main_destroy();
     return 0;

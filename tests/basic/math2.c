@@ -78,12 +78,19 @@ uint64_t sjv_g;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
+#line 1 ".\basic\math2.sj"
     sjv_a = (-9223372036854775807ll - 1ll);
+#line 2
     sjv_b = -9223372036854775807ll;
+#line 3
     sjv_c = 9223372036854775807ll;
+#line 4
     sjv_d = (-2147483647 - 1);
+#line 5
     sjv_e = 2147483647;
+#line 6
     sjv_f = (uint32_t)4294967295u;
+#line 7
     sjv_g = 18446744073709551615ull;
     main_destroy();
     return 0;

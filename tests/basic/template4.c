@@ -73,6 +73,7 @@ void sjf_class_func(int32_t* _return);
 void main_destroy(void);
 
 void sjf_class_func(int32_t* _return) {
+#line 1 ".\basic\template4.sj"
     (*_return) = 1;
 }
 

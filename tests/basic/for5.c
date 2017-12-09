@@ -75,17 +75,25 @@ int32_t x;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
+#line 1 ".\basic\for5.sj"
     sjv_y = 0;
+#line 2
     sjt_forStart1 = 2;
+#line 2
     x = sjt_forStart1;
+#line 2
     sjt_forEnd1 = 4;
     while (x < sjt_forEnd1) {
         int32_t sjt_math1;
         int32_t sjt_math2;
 
+#line 2 ".\basic\for5.sj"
         sjt_math1 = sjv_y;
+#line 2
         sjt_math2 = x;
+#line 2
         sjv_y = sjt_math1 + sjt_math2;
+#line 2
         x++;
     }
     main_destroy();
