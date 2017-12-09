@@ -67,19 +67,9 @@ struct td_sjs_object {
     intptr_t _refCount;
 };
 
-int32_t sjt_math1;
-int32_t sjt_math2;
-int32_t sjv_x;
-
 void main_destroy(void);
 
 int main(int argc, char** argv) {
-#line 1 ".\basic\assignment6.sj"
-    sjv_x = 1;
-#line 1
-    sjt_math1 = sjv_x;
-#line 1
-    sjt_math2 = 1;
     main_destroy();
     return 0;
 }

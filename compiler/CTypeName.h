@@ -51,7 +51,6 @@ public:
     }
 
     CTypeName(CTypeMode typeMode, shared_ptr<CTypeNameList> argTypeNames, shared_ptr<CTypeName> returnTypeName) : category(CTC_Function), mutability(CTI_Undefined), typeMode(typeMode), argTypeNames(argTypeNames), returnTypeName(returnTypeName), isOption(false) {
-        assert(false);
     }
 
     CTypeName(shared_ptr<CType> ctype);

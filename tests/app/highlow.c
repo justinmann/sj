@@ -1363,33 +1363,61 @@ void sjf_anon1_readLine(sjs_anon1* _parent, sjs_string* _return) {
     uintptr_t sjv_data;
     int32_t sjv_size;
 
+#line 10 ".\..\lib\common\console.sj"
     sjt_cast1 = 0;
+#line 10
     sjv_data = (uintptr_t)sjt_cast1;
+#line 11
     sjv_size = 1024;
+#line 12
     char* str = (char*)malloc(size);
+#line 12
     int index = 0;
+#line 12
     char ch = ' ';
+#line 12
     do {
+#line 12
         ch = getchar();
+#line 12
         if (ch != '\n') {
+#line 12
             str[index] = ch;
+#line 12
             index++;
+#line 12
             if (index >= size) {
+#line 12
                 size *= 2;
+#line 12
                 str = (char*)realloc(str, size);
+#line 12
             }
+#line 12
         }
+#line 12
     } while (ch != '\n');
+#line 12
     str[index] = 0;
+#line 12
     index++;
+#line 12
     data = (uintptr_t)str;
+#line 12
     size = index;
+#line 35
     sjt_math5 = sjv_size;
+#line 35
     sjt_math6 = 1;
+#line 35
     _return->count = sjt_math5 - sjt_math6;
+#line 35
     _return->data.size = sjv_size;
+#line 35
     _return->data.data = sjv_data;
+#line 4 ".\..\lib\common\array.sj"
     _return->data._isGlobal = false;
+#line 0 ""
     sjf_array_char(&_return->data);
     sjf_string(_return);
 }
@@ -1401,40 +1429,70 @@ void sjf_anon1_readLine_heap(sjs_anon1* _parent, sjs_string_heap** _return) {
     uintptr_t sjv_data;
     int32_t sjv_size;
 
+#line 10 ".\..\lib\common\console.sj"
     sjt_cast2 = 0;
+#line 10
     sjv_data = (uintptr_t)sjt_cast2;
+#line 11
     sjv_size = 1024;
+#line 12
     char* str = (char*)malloc(size);
+#line 12
     int index = 0;
+#line 12
     char ch = ' ';
+#line 12
     do {
+#line 12
         ch = getchar();
+#line 12
         if (ch != '\n') {
+#line 12
             str[index] = ch;
+#line 12
             index++;
+#line 12
             if (index >= size) {
+#line 12
                 size *= 2;
+#line 12
                 str = (char*)realloc(str, size);
+#line 12
             }
+#line 12
         }
+#line 12
     } while (ch != '\n');
+#line 12
     str[index] = 0;
+#line 12
     index++;
+#line 12
     data = (uintptr_t)str;
+#line 12
     size = index;
+#line 0 ""
     (*_return) = (sjs_string_heap*)malloc(sizeof(sjs_string_heap));
     (*_return)->_refCount = 1;
+#line 35 ".\..\lib\common\console.sj"
     sjt_math7 = sjv_size;
+#line 35
     sjt_math8 = 1;
+#line 35
     (*_return)->count = sjt_math7 - sjt_math8;
+#line 35
     (*_return)->data.size = sjv_size;
+#line 35
     (*_return)->data.data = sjv_data;
+#line 4 ".\..\lib\common\array.sj"
     (*_return)->data._isGlobal = false;
+#line 0 ""
     sjf_array_char(&(*_return)->data);
     sjf_string_heap((*_return));
 }
 
 void sjf_anon1_write(sjs_anon1* _parent, sjs_string* data) {
+#line 3 ".\..\lib\common\console.sj"
     printf("%s\n", (char*)data->data.data);
 }
 
@@ -1453,15 +1511,25 @@ void sjf_anon2_heap(sjs_anon2_heap* _this) {
 void sjf_anon2_toInt(sjs_anon2* _parent, sjs_string* text, int32_t* _return) {
     int32_t sjv_x;
 
+#line 3 ".\..\lib\common\parse.sj"
     sjv_x = 0;
+#line 4
     char* e;
+#line 4
     int v = (int)strtol((char*)text->data.data, &e, 10);
+#line 4
     if (*e != '\0') {
+#line 4
         sjv_x = 0;
+#line 4
     }
+#line 4
     else {
+#line 4
         sjv_x = v;
+#line 4
     }
+#line 2
     (*_return) = sjv_x;
 }
 
@@ -1478,7 +1546,9 @@ void sjf_anon3_heap(sjs_anon3_heap* _this) {
 }
 
 void sjf_anon3_nextInt(sjs_anon3* _parent, int32_t* _return) {
+#line 2 ".\..\lib\common\random.sj"
     int x = rand();
+#line 2
     *_return = x;
 }
 
@@ -1495,50 +1565,86 @@ void sjf_anon4_heap(sjs_anon4_heap* _this) {
 }
 
 void sjf_array_char(sjs_array_char* _this) {
+#line 110 ".\..\lib\common\array.sj"
     if (_this->size < 0) {
+#line 110
         exit(-1);
+#line 110
     }
+#line 110
     if (_this->data) {
+#line 110
         _this->_isGlobal = true;
+#line 110
     } else {
+#line 110
         _this->data = (uintptr_t)calloc(_this->size * sizeof(char), 1);
+#line 110
         if (!_this->data) {
+#line 110
             printf("grow: out of memory\n");
+#line 110
             exit(-1);
+#line 110
         }
+#line 110
     }
 }
 
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
+#line 1 ".\..\lib\common\array.sj"
     _this->size = _from->size;
+#line 1
     _this->data = _from->data;
+#line 1
     _this->_isGlobal = _from->_isGlobal;
+#line 129
     _this->data = _from->data;
+#line 129
     if (!_this->_isGlobal && _this->data) {
+#line 129
         _retain((void*)_this->data);
+#line 129
     }
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
+#line 136 ".\..\lib\common\array.sj"
     if (!_this->_isGlobal && _this->data) {
+#line 136
         if (_release((void*)_this->data)) {
+#line 136
             free((char*)_this->data);
+#line 136
         }
+#line 136
     }
 }
 
 void sjf_array_char_heap(sjs_array_char_heap* _this) {
+#line 110 ".\..\lib\common\array.sj"
     if (_this->size < 0) {
+#line 110
         exit(-1);
+#line 110
     }
+#line 110
     if (_this->data) {
+#line 110
         _this->_isGlobal = true;
+#line 110
     } else {
+#line 110
         _this->data = (uintptr_t)calloc(_this->size * sizeof(char), 1);
+#line 110
         if (!_this->data) {
+#line 110
             printf("grow: out of memory\n");
+#line 110
             exit(-1);
+#line 110
         }
+#line 110
     }
 }
 
@@ -1546,7 +1652,9 @@ void sjf_string(sjs_string* _this) {
 }
 
 void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
+#line 3 ".\..\lib\common\string.sj"
     _this->count = _from->count;
+#line 3
     sjf_array_char_copy(&_this->data, &_from->data);
 }
 
@@ -1561,28 +1669,50 @@ int main(int argc, char** argv) {
     sjf_anon2(&sjv_parse);
     sjf_anon3(&sjv_random);
     sjf_anon4(&sjv_convert);
+#line 33 ".\..\lib\common\math.sj"
     sjv_f32_pi = 3.14159265358979323846f;
+#line 35
     sjv_i32_max = (-2147483647 - 1);
+#line 36
     sjv_i32_min = 2147483647;
+#line 37
     sjv_u32_max = (uint32_t)4294967295u;
+#line 3 ".\app\highlow.sj"
     sjt_dot1 = &sjv_console;
+#line 3
     sjt_call1.count = 15;
+#line 3
     sjt_call1.data.size = 16;
+#line 3
     sjt_call1.data.data = (uintptr_t)sjg_string1;
+#line 4 ".\..\lib\common\array.sj"
     sjt_call1.data._isGlobal = false;
+#line 0 ""
     sjf_array_char(&sjt_call1.data);
     sjf_string(&sjt_call1);
+#line 3 ".\app\highlow.sj"
     sjt_functionParam1 = &sjt_call1;
+#line 0 ""
     sjf_anon1_write(sjt_dot1, sjt_functionParam1);
+#line 5 ".\app\highlow.sj"
     sjt_dot2 = &sjv_random;
+#line 0 ""
     sjf_anon3_nextInt(sjt_dot2, &sjt_math3);
+#line 5 ".\app\highlow.sj"
     sjt_math4 = 10;
+#line 5
     sjt_math1 = sjt_math3 % sjt_math4;
+#line 5
     sjt_math2 = 1;
+#line 5
     sjv_num = sjt_math1 + sjt_math2;
+#line 6
     sjv_isCorrect = false;
+#line 8
     sjt_not1 = sjv_isCorrect;
+#line 8
     result1 = !sjt_not1;
+#line 8
     sjt_while1 = result1;
     while (sjt_while1) {
         bool result2;
@@ -1596,28 +1726,45 @@ int main(int argc, char** argv) {
         int32_t sjv_guess;
         sjs_string sjv_str;
 
+#line 9 ".\app\highlow.sj"
         sjt_dot3 = &sjv_console;
+#line 0 ""
         sjf_anon1_readLine(sjt_dot3, &sjv_str);
+#line 10 ".\app\highlow.sj"
         sjt_dot4 = &sjv_parse;
+#line 10
         sjt_functionParam2 = &sjv_str;
+#line 0 ""
         sjf_anon2_toInt(sjt_dot4, sjt_functionParam2, &sjv_guess);
+#line 11 ".\app\highlow.sj"
         sjt_compare1 = sjv_guess;
+#line 11
         sjt_compare2 = sjv_num;
+#line 11
         sjt_ifElse1 = sjt_compare1 < sjt_compare2;
         if (sjt_ifElse1) {
             sjs_string sjt_call2;
             sjs_anon1* sjt_dot5;
             sjs_string* sjt_functionParam3;
 
+#line 12 ".\app\highlow.sj"
             sjt_dot5 = &sjv_console;
+#line 12
             sjt_call2.count = 9;
+#line 12
             sjt_call2.data.size = 10;
+#line 12
             sjt_call2.data.data = (uintptr_t)sjg_string3;
+#line 4 ".\..\lib\common\array.sj"
             sjt_call2.data._isGlobal = false;
+#line 0 ""
             sjf_array_char(&sjt_call2.data);
             sjf_string(&sjt_call2);
+#line 12 ".\app\highlow.sj"
             sjt_functionParam3 = &sjt_call2;
+#line 0 ""
             sjf_anon1_write(sjt_dot5, sjt_functionParam3);
+#line 13 ".\app\highlow.sj"
             sjv_isCorrect = false;
 
             sjf_string_destroy(&sjt_call2);
@@ -1626,46 +1773,70 @@ int main(int argc, char** argv) {
             int32_t sjt_compare4;
             bool sjt_ifElse2;
 
+#line 14 ".\app\highlow.sj"
             sjt_compare3 = sjv_guess;
+#line 14
             sjt_compare4 = sjv_num;
+#line 14
             sjt_ifElse2 = sjt_compare3 > sjt_compare4;
             if (sjt_ifElse2) {
                 sjs_string sjt_call3;
                 sjs_anon1* sjt_dot6;
                 sjs_string* sjt_functionParam4;
 
+#line 15 ".\app\highlow.sj"
                 sjt_dot6 = &sjv_console;
+#line 15
                 sjt_call3.count = 10;
+#line 15
                 sjt_call3.data.size = 11;
+#line 15
                 sjt_call3.data.data = (uintptr_t)sjg_string2;
+#line 4 ".\..\lib\common\array.sj"
                 sjt_call3.data._isGlobal = false;
+#line 0 ""
                 sjf_array_char(&sjt_call3.data);
                 sjf_string(&sjt_call3);
+#line 15 ".\app\highlow.sj"
                 sjt_functionParam4 = &sjt_call3;
+#line 0 ""
                 sjf_anon1_write(sjt_dot6, sjt_functionParam4);
+#line 16 ".\app\highlow.sj"
                 sjv_isCorrect = false;
 
                 sjf_string_destroy(&sjt_call3);
             } else {
+#line 18 ".\app\highlow.sj"
                 sjv_isCorrect = true;
             }
         }
 
+#line 8
         sjt_not2 = sjv_isCorrect;
+#line 8
         result2 = !sjt_not2;
+#line 8
         sjt_while1 = result2;
 
         sjf_string_destroy(&sjv_str);
     }
 
+#line 22
     sjt_dot7 = &sjv_console;
+#line 22
     sjt_call4.count = 9;
+#line 22
     sjt_call4.data.size = 10;
+#line 22
     sjt_call4.data.data = (uintptr_t)sjg_string4;
+#line 4 ".\..\lib\common\array.sj"
     sjt_call4.data._isGlobal = false;
+#line 0 ""
     sjf_array_char(&sjt_call4.data);
     sjf_string(&sjt_call4);
+#line 22 ".\app\highlow.sj"
     sjt_functionParam5 = &sjt_call4;
+#line 0 ""
     sjf_anon1_write(sjt_dot7, sjt_functionParam5);
     main_destroy();
     return 0;
