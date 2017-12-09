@@ -39,7 +39,7 @@ void CParentDotVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* t
         parentValue = trBlock->createTempVariable(nullptr, parentThisTypes->localValueType, "tempParent");
         stringstream line;
         line << parentValue->name << " = " << dotValue->name << "->_parent";
-        trBlock->statements.push_back(line.str());
+        trBlock->statements.push_back(TrStatement(loc, line.str()));
     }
     else {
         auto parentThisTypes = parentFunction->parent.lock()->getThisTypes(compiler);
@@ -73,7 +73,7 @@ shared_ptr<TrStoreValue> CParentDotVar::getStoreValue(Compiler* compiler, shared
         parentValue = trBlock->createTempVariable(nullptr, parentThisTypes->localValueType, "tempParent");
         stringstream line;
         line << parentValue->name << " = " << dotValue->name << "->_parent";
-        trBlock->statements.push_back(line.str());
+        trBlock->statements.push_back(TrStatement(loc, line.str()));
     }
     else {
         auto parentThisTypes = parentFunction->parent.lock()->getThisTypes(compiler);

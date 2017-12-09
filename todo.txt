@@ -19,6 +19,7 @@
 * lambda
 * weak pointer
 * override interfaces : a as type   -> a.asType()'t
+* if return is not computed if ignored
 
 -- animation -- 
 x.animateTextColor(color(1, 0, 0))
@@ -68,7 +69,7 @@ animation!t #animation (
 
 animator(
 	animations : array!#animation()
-	currentTime = 'i64
+	currentTime := 'i64
 
 	nextFrame(time : 'i64) {
 		// Iterate and remove all that return false

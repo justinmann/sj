@@ -20,7 +20,7 @@ void CWhileVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
     auto bodyType = bodyVar->getType(compiler);
     bodyVar->transpile(compiler, trOutput, trWhileBlock.get(), nullptr, thisValue, trBlock->createVoidStoreVariable(loc, bodyType));
     condVar->transpile(compiler, trOutput, trWhileBlock.get(), nullptr, thisValue, whileValue);    
-    trBlock->statements.push_back(TrStatement(whileLine.str(), trWhileBlock));
+    trBlock->statements.push_back(TrStatement(loc, whileLine.str(), trWhileBlock));
 }
 
 void CWhileVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

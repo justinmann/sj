@@ -271,7 +271,7 @@ void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> callerSc
         }
     }
     line << ")";
-    trBlock->statements.push_back(line.str()); 
+    trBlock->statements.push_back(TrStatement(calleeLoc, line.str())); 
     storeValue->hasSetValue = true;
 }
 

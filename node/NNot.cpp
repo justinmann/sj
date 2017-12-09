@@ -14,7 +14,7 @@ void CNotVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock
     auto resultValue = trBlock->createTempVariable(nullptr, compiler->typeBool, "result");
     stringstream line;
     line << resultValue->name << " = !" << value->getName(trBlock);
-    trBlock->statements.push_back(line.str());
+    trBlock->statements.push_back(TrStatement(loc, line.str()));
     storeValue->retainValue(compiler, loc, trBlock, resultValue);
 }
 

@@ -38,7 +38,26 @@ void TrBlock::writeVariablesToStream(ostream& stream, int level) {
     }
 }
 
+void getLineDirective(ostream& stream, CLoc& prevLoc, CLoc& loc) {
+    if (loc.fileName == nullptr) {
+        if (prevLoc.line != 0) {
+            stream << "#line " << prevLoc.line << "\n";
+        }
+    }
+    else if (prevLoc.fileName == loc.fileName) {
+        prevLoc = loc;
+        if (loc.line != 0) {
+            stream << "#line " << loc.line << "\n";
+        }
+    }
+    else {
+        prevLoc = loc;
+        stream << "#line " << loc.line << " \"" << *loc.fileName << "\"\n";
+    }
+}
+
 void TrBlock::writeBodyToStream(ostream& stream, int level) {
+    CLoc previousLoc = CLoc::undefined;
     bool previousLineBlock = false;
     for (auto statement : statements)
     {
@@ -69,6 +88,7 @@ void TrBlock::writeBodyToStream(ostream& stream, int level) {
             if (firstChar == '}') {
                 level--;
             }
+            getLineDirective(stream, previousLoc, statement.loc);
             addSpacing(stream, level);
             stream << statement.line;
             if (lastChar != ':' && lastChar != ';' && lastChar != '{' && lastChar != '}' && !statement.fromCCode) {
@@ -200,14 +220,14 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
             ifNullBlock = make_shared<TrBlock>();
             stringstream ifStream;
             ifStream << "if (" << name << " != 0)";
-            block->statements.push_back(TrStatement(ifStream.str(), ifNullBlock));
+            block->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifNullBlock));
 
             innerBlock = ifNullBlock.get();
         }
 
         stringstream lineStream;
         lineStream << name << "->_refCount--";
-        innerBlock->statements.push_back(lineStream.str());
+        innerBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
 
 #ifdef DEBUG_ALLOC
         stringstream logStream;
@@ -218,11 +238,11 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
         auto ifBlock = make_shared<TrBlock>();
         stringstream ifStream;
         ifStream << "if (" << name << "->_refCount <= 0)";
-        innerBlock->statements.push_back(TrStatement(ifStream.str(), ifBlock));
+        innerBlock->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifBlock));
 
         stringstream destroyStream;
         destroyStream << type->parent.lock()->getCDestroyFunctionName() << "(" << convertToLocalName(type, name, false) << ")";
-        ifBlock->statements.push_back(destroyStream.str());
+        ifBlock->statements.push_back(TrStatement(CLoc::undefined, destroyStream.str()));
 
 #ifndef SKIP_FREE
         stringstream freeStream;
@@ -242,14 +262,14 @@ void TrValue::addRetainToStatements(TrBlock* block) {
             ifNullBlock = make_shared<TrBlock>();
             stringstream ifStream;
             ifStream << "if (" << name << " != 0)";
-            block->statements.push_back(TrStatement(ifStream.str(), ifNullBlock));
+            block->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifNullBlock));
 
             innerBlock = ifNullBlock.get();
         }
 
         stringstream lineStream;
         lineStream << name << "->_refCount++";
-        innerBlock->statements.push_back(lineStream.str());
+        innerBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
 
 #ifdef DEBUG_ALLOC
         stringstream logStream;
@@ -269,17 +289,17 @@ void TrValue::addInitToStatements(TrBlock* block) {
         if (type->isOption) {
             stringstream initLine;
             initLine << name << " = 0";
-            block->statements.push_back(TrStatement(initLine.str()));
+            block->statements.push_back(TrStatement(CLoc::undefined, initLine.str()));
         }
         else {
             string structName = type->parent.lock()->getCStructName(type->typeMode);
             stringstream initLine;
             initLine << name << " = (" << structName << "*)malloc(sizeof(" << structName << "))";
-            block->statements.push_back(TrStatement(initLine.str()));
+            block->statements.push_back(TrStatement(CLoc::undefined, initLine.str()));
 
             stringstream lineStream;
             lineStream << name << "->_refCount = 1";
-            block->statements.push_back(lineStream.str());
+            block->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
 
 #ifdef DEBUG_ALLOC
             stringstream logStream;
@@ -399,7 +419,7 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
             lineStream << rightValue->name;
         }
 
-        block->statements.push_back(lineStream.str());
+        block->statements.push_back(TrStatement(loc, lineStream.str()));
         leftValue.addRetainToStatements(block);
     }
     else {
@@ -407,7 +427,7 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
             assert(rightValue->type->typeMode == CTM_Value);
             stringstream lineStream;
             lineStream << name << " = " << rightValue->name;
-            block->statements.push_back(lineStream.str());
+            block->statements.push_back(TrStatement(loc, lineStream.str()));
         }
         else {
             if (isFirstAssignment) {
@@ -419,7 +439,7 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
 
             stringstream lineStream;
             lineStream << type->parent.lock()->getCCopyFunctionName() << "(" << TrValue::convertToLocalName(type, name, isReturnValue) << ", " << TrValue::convertToLocalName(rightValue->type, rightValue->name, rightValue->isReturnValue) << ")";
-            block->statements.push_back(lineStream.str());
+            block->statements.push_back(TrStatement(loc, lineStream.str()));
         }
     }
 }
@@ -469,14 +489,14 @@ void TrStoreValue::takeOverValue(Compiler* compiler, CLoc loc, TrBlock* block, s
             lineStream << rightValue->name;
         }
 
-        block->statements.push_back(lineStream.str());
+        block->statements.push_back(TrStatement(loc, lineStream.str()));
     }
     else {
         if (type->typeMode == CTM_Value) {
             assert(rightValue->type->typeMode == CTM_Value);
             stringstream lineStream;
             lineStream << name << " = " << rightValue->name;
-            block->statements.push_back(lineStream.str());
+            block->statements.push_back(TrStatement(loc, lineStream.str()));
         }
         else {
             if (isFirstAssignment) {
@@ -488,7 +508,7 @@ void TrStoreValue::takeOverValue(Compiler* compiler, CLoc loc, TrBlock* block, s
 
             stringstream lineStream;
             lineStream << type->parent.lock()->getCCopyFunctionName() << "(" << TrValue::convertToLocalName(type, name, isReturnValue) << ", " << TrValue::convertToLocalName(rightValue->type, rightValue->name, rightValue->isReturnValue) << ")";
-            block->statements.push_back(lineStream.str());
+            block->statements.push_back(TrStatement(loc, lineStream.str()));
         }
     }
 }

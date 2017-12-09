@@ -44,7 +44,7 @@ void CCastVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
             auto nullValue = make_shared<TrValue>(scope.lock(), typeTo, "0", false);
             storeValue->retainValue(compiler, loc, elseBlock.get(), nullValue);
             
-            auto statement = TrStatement(ifStream.str(), ifBlock);
+            auto statement = TrStatement(loc, ifStream.str(), ifBlock);
             statement.elseBlock = elseBlock;
             trBlock->statements.push_back(statement);            
         }

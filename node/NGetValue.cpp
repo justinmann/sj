@@ -39,7 +39,7 @@ public:
             if (!isProtectedWithEmptyCheck) {
                 stringstream emptyCheck;
                 emptyCheck << "if (" << leftValue->getName(trBlock) << ".isEmpty) { exit(-1); }";
-                trBlock->statements.push_back(emptyCheck.str());
+                trBlock->statements.push_back(TrStatement(loc, emptyCheck.str()));
             }
             line << leftValue->getName(trBlock) << ".value";
         }
@@ -47,7 +47,7 @@ public:
             if (!isProtectedWithEmptyCheck) {
                 stringstream emptyCheck;
                 emptyCheck << "if (" << leftValue->getName(trBlock) << " == 0) { exit(-1); }";
-                trBlock->statements.push_back(emptyCheck.str());
+                trBlock->statements.push_back(TrStatement(loc, emptyCheck.str()));
             }
             line << leftValue->getName(trBlock);
         }

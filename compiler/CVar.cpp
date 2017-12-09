@@ -24,7 +24,7 @@ void CNormalVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
         auto returnValue = trBlock->createTempVariable(scope.lock(), type->getLocalType(), "dotTemp");
         stringstream lineStream;
         lineStream << returnValue->name << " = " << TrValue::convertToLocalName(type, "_this->" + cname, false);
-        trBlock->statements.push_back(lineStream.str());
+        trBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
         storeValue->retainValue(compiler, storeValue->loc, trBlock, returnValue);
     } else {
         auto returnValue = make_shared<TrValue>(scope.lock(), type, cname, false);

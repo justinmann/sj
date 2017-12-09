@@ -34,7 +34,7 @@ void CIfElseVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
     auto trIfBlock = make_shared<TrBlock>();
     trIfBlock->hasThis = trBlock->hasThis;
     trIfBlock->parent = trBlock;
-    auto trStatement = TrStatement(ifLine.str(), trIfBlock);
+    auto trStatement = TrStatement(loc, ifLine.str(), trIfBlock);
 
     ifVar->transpile(compiler, trOutput, trIfBlock.get(), nullptr, thisValue, storeValue);
     if (elseVar || type != compiler->typeVoid) {

@@ -307,27 +307,27 @@ void CInterface::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
         auto copyBlock = make_shared<TrBlock>();
         copyBlock->definition = copyInterfaceName;
 
-        copyBlock->statements.push_back(string("_this->_refCount = 1"));
-        copyBlock->statements.push_back(string("_this->_parent = _from->_parent"));
+        copyBlock->statements.push_back(TrStatement(CLoc::undefined, string("_this->_refCount = 1")));
+        copyBlock->statements.push_back(TrStatement(CLoc::undefined, string("_this->_parent = _from->_parent")));
 
         string name = "_this->_parent";
 
         stringstream lineStream;
         lineStream << name << "->_refCount++";
-        copyBlock->statements.push_back(lineStream.str());
+        copyBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
 
 #ifdef DEBUG_ALLOC
         stringstream logStream;
         logStream << "printf(\"RELEASE\\t" << destroyInterfaceName << "\\t%0x\\t" << destroyBlock->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
         destroyBlock->statements.push_back(logStream.str());
 #endif
-        copyBlock->statements.push_back(string("_this->destroy = _from->destroy"));
-        copyBlock->statements.push_back(string("_this->asInterface = _from->asInterface"));
+        copyBlock->statements.push_back(TrStatement(CLoc::undefined, string("_this->destroy = _from->destroy")));
+        copyBlock->statements.push_back(TrStatement(CLoc::undefined, string("_this->asInterface = _from->asInterface")));
 
         for (auto method : methods) {
             stringstream copyStream;
             copyStream << "_this->" << method->name << " = _from->"<< method->name;
-            copyBlock->statements.push_back(copyStream.str());
+            copyBlock->statements.push_back(TrStatement(CLoc::undefined, copyStream.str()));
         }
 
         trOutput->functions[copyInterfaceName] = copyBlock;
@@ -342,7 +342,7 @@ void CInterface::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 
         stringstream lineStream;
         lineStream << name << "->_refCount--";
-        destroyBlock->statements.push_back(lineStream.str());
+        destroyBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
 
 #ifdef DEBUG_ALLOC
         stringstream logStream;
@@ -353,15 +353,15 @@ void CInterface::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
         auto ifBlock = make_shared<TrBlock>();
         stringstream ifStream;
         ifStream << "if (" << name << "->_refCount <= 0)";
-        destroyBlock->statements.push_back(TrStatement(ifStream.str(), ifBlock));
+        destroyBlock->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifBlock));
 
         stringstream destroyStream;
         destroyStream << "_this->destroy(" << TrValue::convertToLocalName(CTM_Heap, name, false) << ")";
-        ifBlock->statements.push_back(destroyStream.str());
+        ifBlock->statements.push_back(TrStatement(CLoc::undefined, destroyStream.str()));
 
         stringstream freeStream;
         freeStream << "free(" << name << ")";
-        ifBlock->statements.push_back(freeStream.str());
+        ifBlock->statements.push_back(TrStatement(CLoc::undefined, freeStream.str()));
 
         trOutput->functions[destroyInterfaceName] = destroyBlock;
     }

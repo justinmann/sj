@@ -272,7 +272,7 @@ void CCCodeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
             assert(false);
             break;
         case NCC_BLOCK:
-            trBlock->statements.push_back(TrStatement(line, true));
+            trBlock->statements.push_back(TrStatement(loc, line, true));
             break;
         case NCC_DEFINE:
             trOutput->ccodeDefines.push_back(line);

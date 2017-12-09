@@ -34,11 +34,11 @@ void CValueVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
         auto returnValue = trBlock->createTempVariable(scope.lock(), leftValue->type->getOptionType(), "value");
         stringstream line1;
         line1 << returnValue->name << ".isEmpty = false";
-        trBlock->statements.push_back(line1.str());
+        trBlock->statements.push_back(TrStatement(loc, line1.str()));
 
         stringstream line2;
         line2 << returnValue->name << ".value = " << leftValue->getName(trBlock);
-        trBlock->statements.push_back(line2.str());
+        trBlock->statements.push_back(TrStatement(loc, line2.str()));
 
         storeValue->retainValue(compiler, loc, trBlock, returnValue);
     }

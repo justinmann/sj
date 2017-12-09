@@ -33,7 +33,7 @@ void CForLoopVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
     
     stringstream loopCounterLine;
     loopCounterLine << indexVar->name << " = " << loopStartTrValue->getName(trBlock);
-    trBlock->statements.push_back(loopCounterLine.str());
+    trBlock->statements.push_back(TrStatement(loc, loopCounterLine.str()));
     
     auto loopEndTrValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeI32, "forEnd");
     endVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, loopEndTrValue);
@@ -43,7 +43,7 @@ void CForLoopVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
     trForBlock->hasThis = trBlock->hasThis;
     stringstream whileLine;
     whileLine << "while (" << indexVar->name << " < " << loopEndTrValue->getName(trBlock) << ")";
-    trBlock->statements.push_back(TrStatement(whileLine.str(), trForBlock));
+    trBlock->statements.push_back(TrStatement(loc, whileLine.str(), trForBlock));
     
     scope.lock()->pushLocalVar(compiler, loc, indexVar);
     auto bodyType = bodyVar->getType(compiler);
@@ -52,7 +52,7 @@ void CForLoopVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
 
     stringstream loopCounterIncLine;
     loopCounterIncLine << indexVar->name << "++";
-    trForBlock->statements.push_back(loopCounterIncLine.str());
+    trForBlock->statements.push_back(TrStatement(loc, loopCounterIncLine.str()));
 }
 
 void CForLoopVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
