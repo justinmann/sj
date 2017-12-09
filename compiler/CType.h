@@ -20,6 +20,7 @@ class TrBlock;
 class CVar;
 class CThisVar;
 class CBaseFunctionDefinition;
+class CCallback;
 
 enum CTypeImmutability {
     CTI_Undefined,
@@ -70,6 +71,7 @@ public:
     static shared_ptr<CTypes> create(string valueName, string cname, string defaultValue, string cnameOption, string defaultValueOption);
     static shared_ptr<CTypes> create(Compiler* compiler, string valueName, weak_ptr<CFunction> parent);
     static shared_ptr<CTypes> create(Compiler* compiler, string valueName, weak_ptr<CInterface> parent);
+    static shared_ptr<CTypes> create(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> returnType, weak_ptr<CCallback> callback);
 
     CTypeCategory category;
     CTypeMode typeMode;
@@ -79,6 +81,9 @@ public:
     string safeName;
     weak_ptr<CBaseFunction> parent;
     bool isOption;
+    weak_ptr<CCallback> callback;
+    vector<shared_ptr<CType>> argTypes;
+    shared_ptr<CType> returnType;
 
     void transpileDefaultValue(Compiler* compiler, CLoc loc, TrBlock* trBlock, shared_ptr<TrStoreValue> storeValue);
     static bool isSameExceptMode(shared_ptr<CType> l, shared_ptr<CType> r);

@@ -161,6 +161,7 @@
     <ClInclude Include="..\compiler\CTypeName.h" />
     <ClInclude Include="..\compiler\CVar.h" />
     <ClInclude Include="..\compiler\Exception.h" />
+    <ClInclude Include="..\node\CCallback.h" />
     <ClInclude Include="..\node\NAnd.h" />
     <ClInclude Include="..\node\NArray.h" />
     <ClInclude Include="..\node\NChangeMode.h" />
@@ -217,6 +218,7 @@
     <ClCompile Include="..\compiler\CVar.cpp" />
     <ClCompile Include="..\compiler\Exception.cpp" />
     <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\node\CCallback.cpp" />
     <ClCompile Include="..\node\NAnd.cpp" />
     <ClCompile Include="..\node\NArray.cpp" />
     <ClCompile Include="..\node\NChangeMode.cpp" />

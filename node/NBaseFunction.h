@@ -27,7 +27,8 @@ public:
 enum CClassFunctionType {
     CFT_Function,
     CFT_Interface,
-    CFT_InterfaceMethod
+    CFT_InterfaceMethod,
+    CFT_Callback
 };
 
 enum VarScanMode {

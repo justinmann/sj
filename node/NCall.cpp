@@ -243,20 +243,31 @@ shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, shared_ptr<CSc
     if (!callee) {
         // If we are still using "this" then we can check to see if it is a function on parent
         if (cfunction == scope->function) {
-            while (cfunction && !cfunction->parent.expired() && !callee) {
-                cfunction = cfunction->parent.lock();
-                if (cfunction) {
-                    callee = cfunction->getCFunction(compiler, loc, name, scope, templateTypeNames, returnMode);
+            auto temp = cfunction;
+            while (temp && !temp->parent.expired() && !callee) {
+                temp = temp->parent.lock();
+                if (temp) {
+                    callee = temp->getCFunction(compiler, loc, name, scope, templateTypeNames, returnMode);
                 }
             }
         }
     }
     
     if (!callee) {
+        auto var = cfunction->getCVar(compiler, name, dotVar ? VSM_ThisOnly : VSM_LocalThisParent, returnMode);
+        if (var) {
+            auto type = var->getType(compiler);
+            if (type && type->category == CTC_Function) {
+                callee = type->callback.lock()->getFunction(compiler);
+            }
+        }
+    }
+
+    if (!callee) {
         compiler->addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", name.c_str());
         return nullptr;
     }
-    
+
     return callee;
 }
 

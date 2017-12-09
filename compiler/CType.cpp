@@ -246,6 +246,144 @@ shared_ptr<CTypes> CType::create(Compiler* compiler, string valueName, weak_ptr<
     return compiler->types[key];
 }
 
+shared_ptr<CTypes> CType::create(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> returnType, weak_ptr<CCallback> callback) {
+    auto stackValueType = make_shared<CType>();
+    auto stackOptionType = make_shared<CType>();
+    auto heapValueType = make_shared<CType>();
+    auto heapOptionType = make_shared<CType>();
+    auto localValueType = make_shared<CType>();
+    auto localOptionType = make_shared<CType>();
+
+    stringstream valueStream;
+    stringstream safeStream;
+
+    safeStream << "cb";
+    bool isFirst = true;
+    valueStream << "(";
+    for (auto argType : argTypes) {
+        if (isFirst) {
+            isFirst = false;
+        }
+        else {
+            valueStream << ",";
+            safeStream << "_";
+        }
+        valueStream << argType->valueName;
+        safeStream << argType->safeName;
+    }
+    valueStream << ")";
+    valueStream << returnType->valueName;
+    safeStream << "_";
+    safeStream << returnType->safeName;
+
+    auto valueName = valueStream.str();
+    auto safeName = safeStream.str();
+
+    stackValueType->isOption = false;
+    stackValueType->typeMode = CTM_Stack;
+    stackValueType->category = CTC_Function;
+    stackValueType->callback = callback;
+    stackValueType->argTypes = argTypes;
+    stackValueType->returnType = returnType;
+    stackValueType->valueName = valueName;
+    stackValueType->fullName = "stack " + valueName;
+    stackValueType->cname = callback.lock()->getCName(CTM_Stack, false);
+    stackValueType->safeName = "stack_" + safeName;
+    stackValueType->heapValueType = heapValueType;
+    stackValueType->heapOptionType = heapOptionType;
+    stackValueType->stackValueType = stackValueType;
+    stackValueType->stackOptionType = stackOptionType;
+    stackValueType->localValueType = localValueType;
+    stackValueType->localOptionType = localOptionType;
+
+    stackOptionType->isOption = true;
+    stackOptionType->typeMode = CTM_Stack;
+    stackOptionType->category = CTC_Function;
+    stackOptionType->callback = callback;
+    stackOptionType->argTypes = argTypes;
+    stackOptionType->returnType = returnType;
+    stackOptionType->valueName = valueName;
+    stackOptionType->fullName = "stack " + valueName + "?";
+    stackOptionType->cname = callback.lock()->getCName(CTM_Stack, true);
+    stackOptionType->safeName = "stack_" + safeName + "_option";
+    stackOptionType->heapValueType = heapValueType;
+    stackOptionType->heapOptionType = heapOptionType;
+    stackOptionType->stackValueType = stackValueType;
+    stackOptionType->stackOptionType = stackOptionType;
+    stackOptionType->localValueType = localValueType;
+    stackOptionType->localOptionType = localOptionType;
+
+    heapValueType->isOption = false;
+    heapValueType->typeMode = CTM_Heap;
+    heapValueType->category = CTC_Function;
+    heapValueType->callback = callback;
+    heapValueType->argTypes = argTypes;
+    heapValueType->returnType = returnType;
+    heapValueType->valueName = valueName;
+    heapValueType->fullName = "heap " + valueName;
+    heapValueType->cname = callback.lock()->getCName(CTM_Heap, false);
+    heapValueType->safeName = "heap_" + safeName;
+    heapValueType->heapValueType = heapValueType;
+    heapValueType->heapOptionType = heapOptionType;
+    heapValueType->stackValueType = stackValueType;
+    heapValueType->stackOptionType = stackOptionType;
+    heapValueType->localValueType = localValueType;
+    heapValueType->localOptionType = localOptionType;
+
+    heapOptionType->isOption = true;
+    heapOptionType->typeMode = CTM_Heap;
+    heapOptionType->category = CTC_Function;
+    heapOptionType->callback = callback;
+    heapOptionType->argTypes = argTypes;
+    heapOptionType->returnType = returnType;
+    heapOptionType->valueName = valueName;
+    heapOptionType->fullName = "heap " + valueName + "?";
+    heapOptionType->cname = callback.lock()->getCName(CTM_Heap, true);
+    heapOptionType->safeName = "heap_" + safeName + "_option";
+    heapOptionType->heapValueType = heapValueType;
+    heapOptionType->heapOptionType = heapOptionType;
+    heapOptionType->stackValueType = stackValueType;
+    heapOptionType->stackOptionType = stackOptionType;
+    heapOptionType->localValueType = localValueType;
+    heapOptionType->localOptionType = localOptionType;
+
+    localValueType->isOption = false;
+    localValueType->typeMode = CTM_Local;
+    localValueType->category = CTC_Function;
+    localValueType->callback = callback;
+    localValueType->argTypes = argTypes;
+    localValueType->returnType = returnType;
+    localValueType->valueName = valueName;
+    localValueType->fullName = "local " + valueName;
+    localValueType->cname = callback.lock()->getCName(CTM_Local, false);
+    localValueType->safeName = "local_" + safeName;
+    localValueType->heapValueType = heapValueType;
+    localValueType->heapOptionType = heapOptionType;
+    localValueType->stackValueType = stackValueType;
+    localValueType->stackOptionType = stackOptionType;
+    localValueType->localValueType = localValueType;
+    localValueType->localOptionType = localOptionType;
+
+    localOptionType->isOption = true;
+    localOptionType->typeMode = CTM_Local;
+    localOptionType->category = CTC_Function;
+    localOptionType->callback = callback;
+    localOptionType->argTypes = argTypes;
+    localOptionType->returnType = returnType;
+    localOptionType->valueName = valueName;
+    localOptionType->fullName = "local " + valueName + "?";
+    localOptionType->cname = callback.lock()->getCName(CTM_Local, true);
+    localOptionType->safeName = "local_" + safeName + "_option";
+    localOptionType->heapValueType = heapValueType;
+    localOptionType->heapOptionType = heapOptionType;
+    localOptionType->stackValueType = stackValueType;
+    localOptionType->stackOptionType = stackOptionType;
+    localOptionType->localValueType = localValueType;
+    localOptionType->localOptionType = localOptionType;
+
+    return make_shared<CTypes>(stackValueType, stackOptionType, heapValueType, heapOptionType, localValueType, localOptionType);
+}
+
 void CType::transpileDefaultValue(Compiler* compiler, CLoc loc, TrBlock* trBlock, shared_ptr<TrStoreValue> storeValue) {
     if (parent.expired()) {
         auto temp = make_shared<TrValue>(nullptr, shared_from_this(), _defaultValue, false);

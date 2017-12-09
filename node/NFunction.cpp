@@ -1298,6 +1298,24 @@ shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, shared_ptr
             auto thisTypes = interface->getThisTypes(compiler);
             return typeName->isOption ? thisTypes->heapOptionType : thisTypes->heapValueType;
         }
+    }
+    else if (typeName->category == CTC_Function) {
+        auto returnType = getVarType(loc, compiler, typeName->returnTypeName, CTM_Undefined);
+        if (returnType == nullptr) {
+            compiler->addError(loc, CErrorCode::InvalidType, "cannot find type '%s'", typeName->returnTypeName->valueName.c_str());
+        }
+
+        vector<shared_ptr<CType>> argTypes;
+        if (typeName->argTypeNames) {
+            for (auto argTypeName : *typeName->argTypeNames) {
+                auto argType = getVarType(loc, compiler, argTypeName, CTM_Undefined);
+                if (argType == nullptr) {
+                    compiler->addError(loc, CErrorCode::InvalidType, "cannot find type '%s'", argTypeName->valueName.c_str());
+                }
+                argTypes.push_back(argType);
+            }
+        }
+        return CCallback::getType(argTypes, returnType, defaultMode, typeName->isOption);
     } else {
         assert(typeName->category == CTC_Value);
         if (typeName->templateTypeNames == nullptr) {

@@ -127,6 +127,7 @@ enum NodeType {
 #include "NVariable.h"
 #include "NVoid.h"
 #include "NWhile.h"
+#include "CCallback.h"
 
 #endif /* Node_h */
 

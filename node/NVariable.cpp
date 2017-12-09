@@ -123,7 +123,22 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
     if (varScope) {
         auto cvar = varScope->getCVar(compiler, name, dotVar ? VSM_ThisOnly : VSM_LocalThisParent);
         if (!cvar) {
-            compiler->addError(loc, CErrorCode::InvalidVariable, "cannot find variable '%s'", name.c_str());
+            auto cfunction = varScope->function->getCFunction(compiler, loc, name, varScope, nullptr, returnMode);
+            if (cfunction) {
+                return CCallback::getVar(compiler, scope, loc, nullptr, cfunction, returnMode);
+            }
+            else if (dotVar) {
+                auto dotFunction = dynamic_pointer_cast<CFunction>(dotVar->getType(compiler)->parent.lock());
+                if (dotFunction) {
+                    cfunction = dotFunction->getCFunction(compiler, loc, name, varScope, nullptr, returnMode);
+                    if (cfunction) {
+                        return CCallback::getVar(compiler, scope, loc, dotVar, cfunction, returnMode);
+                    }
+                }
+            }
+            else {
+                compiler->addError(loc, CErrorCode::InvalidVariable, "cannot find variable '%s'", name.c_str());
+            }
             return nullptr;
         }
         return cvar;

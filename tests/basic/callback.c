@@ -60,16 +60,35 @@ struct td_double_option {
 const double_option double_empty = { true };
 
 #define sjs_object_typeId 1
+#define cb_void_typeId 2
+#define cb_void_heap_typeId 3
 
 typedef struct td_sjs_object sjs_object;
+typedef struct td_cb_void cb_void;
+typedef struct td_cb_void_heap cb_void_heap;
 
 struct td_sjs_object {
     intptr_t _refCount;
 };
 
+struct td_cb_void {
+    void* _parent;
+    void (*_cb)(void* _parent);
+};
+
+struct td_cb_void_heap {
+    sjs_object* _parent;
+    void (*_cb)(void* _parent);
+};
+
+cb_void callback1;
+cb_void sjv_f;
+
 void main_destroy(void);
 
 int main(int argc, char** argv) {
+#line 5 ".\basic\callback.sj"
+    sjv_f = callback1;
     main_destroy();
     return 0;
 }

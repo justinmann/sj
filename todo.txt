@@ -1,25 +1,32 @@
 -- ui --
-* sphere - default to front of sphere being middle of texture
-* load obj file: http://kixor.net/dev/objloader/ https://code.google.com/archive/p/saitoobjloader/ http://people.sc.fsu.edu/%7Ejburkardt/data/obj/obj.html
-* center text
 * animation
+* load obj file: http://kixor.net/dev/objloader/ https://code.google.com/archive/p/saitoobjloader/ http://people.sc.fsu.edu/%7Ejburkardt/data/obj/obj.html
+* sphere - default to front of sphere being middle of texture
+* center text
 
 -- language --
 * callback
-* use #line pragma directive
-* better design to enum
-* better design for namespaces
 * := for first time mutable assignment
 * second assignment to this var does not free
+* if return is not computed if ignored
+* store local values inside block to fix: if true { x : 1 } else { x : 1 }
+* de-dup global strings
+* enum
+* namespaces
+* ifValue a, b, c {} elseEmpty {}
 * stack optional
 * stack interface
-* de-dup global strings
 * improve debug out for interfaces
 * map
 * lambda
 * weak pointer
 * override interfaces : a as type   -> a.asType()'t
-* if return is not computed if ignored
+
+-- callback --
+* create struct for callback
+* update ref on retain/release
+* copy func ptr on assign
+* create stub function with function w/o parent
 
 -- animation -- 
 x.animateTextColor(color(1, 0, 0))
