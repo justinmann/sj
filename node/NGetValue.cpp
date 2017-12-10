@@ -35,7 +35,7 @@ public:
         }
 
         stringstream line;
-        if (leftValue->type->parent.expired()) {
+        if (leftValue->type->parent.expired() && leftValue->type->category != CTC_Function) {
             if (!isProtectedWithEmptyCheck) {
                 stringstream emptyCheck;
                 emptyCheck << "if (" << leftValue->getName(trBlock) << ".isEmpty) { exit(-1); }";
@@ -46,7 +46,14 @@ public:
         else {
             if (!isProtectedWithEmptyCheck) {
                 stringstream emptyCheck;
-                emptyCheck << "if (" << leftValue->getName(trBlock) << " == 0) { exit(-1); }";
+                emptyCheck << "if (";
+                if (leftValue->type->category == CTC_Function) {
+                    emptyCheck << leftValue->getName(trBlock) << "._parent";
+                }
+                else {
+                    emptyCheck << leftValue->getName(trBlock);
+                }
+                emptyCheck << " == 0) { exit(-1); }";
                 trBlock->statements.push_back(TrStatement(loc, emptyCheck.str()));
             }
             line << leftValue->getName(trBlock);

@@ -30,7 +30,7 @@ void CValueVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
         return;
     }
 
-    if (leftValue->type->parent.expired()) {
+    if (leftValue->type->parent.expired() && leftValue->type->category != CTC_Function) {
         auto returnValue = trBlock->createTempVariable(scope.lock(), leftValue->type->getOptionType(), "value");
         stringstream line1;
         line1 << returnValue->name << ".isEmpty = false";

@@ -402,13 +402,19 @@ shared_ptr<CTypes> CType::create(vector<shared_ptr<CType>> argTypes, shared_ptr<
 }
 
 void CType::transpileDefaultValue(Compiler* compiler, CLoc loc, TrBlock* trBlock, shared_ptr<TrStoreValue> storeValue) {
-    if (parent.expired()) {
+    if (category == CTC_Value && parent.expired()) {
         auto temp = make_shared<TrValue>(nullptr, shared_from_this(), _defaultValue, false);
         storeValue->retainValue(compiler, loc, trBlock, temp);
     }
     else if (isOption) {
-        auto temp = make_shared<TrValue>(nullptr, shared_from_this(), "0", false);
-        storeValue->retainValue(compiler, loc, trBlock, temp);
+        if (!parent.expired()) {
+            auto temp = make_shared<TrValue>(nullptr, shared_from_this(), "0", false);
+            storeValue->retainValue(compiler, loc, trBlock, temp);
+        }
+        else if (category == CTC_Function) {
+            trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._parent = 0"));
+            storeValue->hasSetValue = true;
+        }
     }
     else {
         compiler->addError(loc, CErrorCode::InvalidType, "no default value for type '%s'", valueName.c_str());

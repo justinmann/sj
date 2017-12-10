@@ -13,6 +13,17 @@ func(a : 'i32)'data {
 	data(a + 2)
 }
 
+func2![t](a : 'i32)'t {
+	t(a + 2)
+}
+
+class2![t](
+	b : 15
+	func(a : 'i32)'t { 
+		t(a + b)
+	}
+) { this }
+
 getCallback()'heap (:i32)data {
 	c : heap class()
 	c.func
@@ -22,7 +33,6 @@ callback(f : '(:i32)data)'i32 {
 	d : f(12)
 	d.x
 }
-
 
 a : func
 b : heap a(1)
@@ -39,19 +49,9 @@ e : f2(2)
 c_heap : heap class()
 f3 : c_heap.func
 g : f3(3)
-/*
-h : empty'(:i32)i32
+h : empty'(:i32)data
 i : value(func)
 j : getValue(i)
 k : j(12)
-*/
-
-// store as stack
-// store as local
-// store as heap option
-// store as stack option
-// store as local option
-// get callback from template function
-// f : foo!i32
-
-
+o : func2![data]
+p : l(1)

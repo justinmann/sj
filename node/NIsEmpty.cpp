@@ -21,11 +21,18 @@ void CIsEmptyVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
     }
     
     stringstream line;
-    if (leftValue->type->parent.expired()) {
+    if (leftValue->type->parent.expired() && leftValue->type->category != CTC_Function) {
         line << leftValue->getName(trBlock) << ".isEmpty";
     }
     else {
-        line << "(" << leftValue->getName(trBlock) << " == 0)";
+        line << "(";
+        if (leftValue->type->category == CTC_Function) {
+            line << leftValue->getName(trBlock) << "._parent";
+        }
+        else {
+            line << leftValue->getName(trBlock);
+        }
+        line << " == 0)";
     }
     storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, compiler->typeBool, line.str(), false));
 }

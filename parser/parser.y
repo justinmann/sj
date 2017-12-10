@@ -288,7 +288,7 @@ var_right			: func_type_name func_block						{ $$ = new NCall(LOC, $1->valueName
 					| TISEMPTY TLPAREN expr TRPAREN					{ $$ = new NIsEmpty(LOC, shared_ptr<NBase>($3)); }
 					| TGETVALUE TLPAREN expr TRPAREN				{ $$ = new NGetValue(LOC, shared_ptr<NBase>($3), false); }
 					| TVALUE TLPAREN expr TRPAREN					{ $$ = new NValue(LOC, shared_ptr<NBase>($3)); }
-	 				| TIDENTIFIER									{ $$ = new NVariable(LOC, $1->c_str()); delete $1; }
+	 				| func_type_name								{ $$ = new NVariable(LOC, $1->valueName.c_str(), $1->templateTypeNames); delete $1; }
 	 				| TPARENT										{ $$ = new NParent(LOC); }
 	 				| TTHIS											{ $$ = new NThis(LOC); }
 	 				;

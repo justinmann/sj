@@ -44,12 +44,13 @@ public:
 
 class NVariable : public NVariableBase {
 public:
-    NVariable(CLoc loc, const char* name);
+    NVariable(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames);
     void defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) { }
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 
 private:
     string name;
+    shared_ptr<CTypeNameList> templateTypeNames;
 };
 
 #endif /* NVariable_h */

@@ -218,7 +218,7 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
         if (type->category == CTC_Function) {
             auto ifNullBlock = make_shared<TrBlock>();
             stringstream ifStream;
-            ifStream << "if (" << name << "._parent != 0)";
+            ifStream << "if ((uintptr_t)" << name << "._parent > 1)";
             block->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifNullBlock));
 
             auto innerBlock = ifNullBlock.get();
@@ -294,7 +294,7 @@ void TrValue::addRetainToStatements(TrBlock* block) {
         if (type->category == CTC_Function) {
             auto ifNullBlock = make_shared<TrBlock>();
             stringstream ifStream;
-            ifStream << "if (" << name << "._parent != 0)";
+            ifStream << "if ((uintptr_t)" << name << "._parent > 1)";
             block->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifNullBlock));
 
             auto innerBlock = ifNullBlock.get();

@@ -29,6 +29,10 @@ getCallback()'heap (i32)data {
 
 
 
+
+
+
+
 global()'void {
   a'local (i32)data : 
   b'heap data : heap a(
@@ -63,6 +67,16 @@ global()'void {
   ))
   f3'heap (i32)data : 
   g'stack data : f3(
+    param'i32 : this.param
+  )
+  h'local (i32)data? : empty'local (i32)data?
+  i'local (i32)data? : value()
+  j'local (i32)data : getValue(i)
+  k'stack data : j(
+    param'i32 : this.param
+  )
+  o'local (i32)data : 
+  p'stack data : l(
     param'i32 : this.param
   )
   void

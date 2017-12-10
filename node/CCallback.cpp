@@ -28,7 +28,7 @@ void CCallbackVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* tr
             trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._destroy = " + dotValue->type->parent.lock()->getCDestroyFunctionName()));
         }
         else {
-            trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._parent = (sjs_object*)0"));
+            trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._parent = (sjs_object*)1"));
         }
     }
     else {
@@ -36,7 +36,7 @@ void CCallbackVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* tr
             trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._parent = (void*)" + TrValue::convertToLocalName(dotValue->type, dotValue->name, false)));
         }
         else {
-            trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._parent = (void*)0"));
+            trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._parent = (void*)1"));
         }
     }
 

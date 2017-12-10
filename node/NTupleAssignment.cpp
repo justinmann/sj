@@ -42,7 +42,7 @@ shared_ptr<CVar> NTupleAssignment::getVarImpl(Compiler* compiler, shared_ptr<CSc
     auto argIndex = 0;
     for (auto arg : *args) {
         auto rightArg = rightFunction->getArgVar(argIndex, rightType->typeMode);
-        auto getValue = make_shared<NDot>(loc, make_shared<NVariable>(loc, tempVarName.c_str()), make_shared<NVariable>(loc, rightArg->name.c_str()));
+        auto getValue = make_shared<NDot>(loc, make_shared<NVariable>(loc, tempVarName.c_str(), nullptr), make_shared<NVariable>(loc, rightArg->name.c_str(), nullptr));
         auto setValueVar = NAssignment(loc, arg->var, arg->typeName, arg->name.c_str(), getValue, arg->op).getVar(compiler, scope, CTM_Undefined);
         if (!setValueVar) {
             return nullptr;

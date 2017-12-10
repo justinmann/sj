@@ -98,7 +98,7 @@ void CParentDotVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared
     childVar->dump(compiler, dotVar, functions, ss, dotSS, level);
 }
 
-NVariable::NVariable(CLoc loc, const char* name) : NVariableBase(NodeType_Variable, loc), name(name) { }
+NVariable::NVariable(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames) : NVariableBase(NodeType_Variable, loc), name(name), templateTypeNames(templateTypeNames) { }
 
 shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
     auto varScope = scope;
@@ -106,7 +106,7 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
         varScope = CScope::getScopeForType(compiler, dotVar->getType(compiler));
     }
     
-    if (dotVar && varScope) {
+    if (dotVar && varScope && !templateTypeNames) {
         string nameWithUpper = name;
         nameWithUpper[0] = (char)toupper(nameWithUpper[0]);
         auto getPropertyFunction = varScope->function->getCFunction(compiler, loc, "get" + nameWithUpper, scope, nullptr, returnMode);
@@ -121,13 +121,17 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
     }
 
     if (varScope) {
-        auto cvar = varScope->getCVar(compiler, name, dotVar ? VSM_ThisOnly : VSM_LocalThisParent);
+        shared_ptr<CVar> cvar;
+        if (!templateTypeNames) {
+            cvar = varScope->getCVar(compiler, name, dotVar ? VSM_ThisOnly : VSM_LocalThisParent);
+        }
+
         if (!cvar) {
-            auto cfunction = varScope->function->getCFunction(compiler, loc, name, varScope, nullptr, returnMode);
+            auto cfunction = varScope->function->getCFunction(compiler, loc, name, varScope, templateTypeNames, returnMode);
             if (dotVar) {
                 auto dotFunction = dynamic_pointer_cast<CFunction>(dotVar->getType(compiler)->parent.lock());
                 if (dotFunction) {
-                    cfunction = dotFunction->getCFunction(compiler, loc, name, varScope, nullptr, returnMode);
+                    cfunction = dotFunction->getCFunction(compiler, loc, name, varScope, templateTypeNames, returnMode);
                     if (cfunction) {
                         return CCallback::getVar(compiler, scope, loc, dotVar, cfunction, returnMode);
                     }

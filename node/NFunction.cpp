@@ -1156,6 +1156,13 @@ shared_ptr<CBaseFunction> CFunction::getCFunction(Compiler* compiler, CLoc locCa
         
         return funcDef->getFunction(compiler, locCaller, templateTypes, shared_from_this());
     }
+
+    auto tt = templateTypesByName.find(name);
+    if (tt != templateTypesByName.end()) {
+        if (!tt->second->parent.expired()) {
+            return tt->second->parent.lock();
+        }
+    }
     
     if (!parent.expired()) {
         return parent.lock()->getCFunction(compiler, locCaller, name, callerScope, templateTypeNames, returnMode);
