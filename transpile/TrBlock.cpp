@@ -215,69 +215,116 @@ void TrValue::writeReleaseToStream(ostream& stream, int level) {
 
 void TrValue::addReleaseToStatements(TrBlock* block) {
     if (type->typeMode == CTM_Heap) {
-        assert(!type->parent.expired());
-        shared_ptr<TrBlock> ifNullBlock;
-        auto innerBlock = block;
-        if (type->isOption) {
-            ifNullBlock = make_shared<TrBlock>();
+        if (type->category == CTC_Function) {
+            auto ifNullBlock = make_shared<TrBlock>();
             stringstream ifStream;
-            ifStream << "if (" << name << " != 0)";
+            ifStream << "if (" << name << "._parent != 0)";
             block->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifNullBlock));
 
-            innerBlock = ifNullBlock.get();
-        }
+            auto innerBlock = ifNullBlock.get();
 
-        stringstream lineStream;
-        lineStream << name << "->_refCount--";
-        innerBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
+            stringstream lineStream;
+            lineStream << name << "._parent->_refCount--";
+            innerBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
 
 #ifdef DEBUG_ALLOC
-        stringstream logStream;
-        logStream << "printf(\"RELEASE\\t" << type->nameRef << "\\t%0x\\t" << block->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
-        innerBlock->statements.push_back(logStream.str());
+            stringstream logStream;
+            logStream << "printf(\"RELEASE\\t" << type->nameRef << "\\t%0x\\t" << block->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
+            innerBlock->statements.push_back(logStream.str());
 #endif
 
-        auto ifBlock = make_shared<TrBlock>();
-        stringstream ifStream;
-        ifStream << "if (" << name << "->_refCount <= 0)";
-        innerBlock->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifBlock));
+            auto ifBlock = make_shared<TrBlock>();
+            stringstream ifStream2;
+            ifStream2 << "if (" << name << "._parent->_refCount <= 0)";
+            innerBlock->statements.push_back(TrStatement(CLoc::undefined, ifStream2.str(), ifBlock));
 
-        stringstream destroyStream;
-        destroyStream << type->parent.lock()->getCDestroyFunctionName() << "(" << convertToLocalName(type, name, false) << ")";
-        ifBlock->statements.push_back(TrStatement(CLoc::undefined, destroyStream.str()));
+            stringstream destroyStream;
+            destroyStream << name << "._destroy(" << "(void*)(((char*)" + name + "._parent) + sizeof(intptr_t))" << ")";
+            ifBlock->statements.push_back(TrStatement(CLoc::undefined, destroyStream.str()));
 
 #ifndef SKIP_FREE
-        stringstream freeStream;
-        freeStream << "free(" << name << ")";
-        ifBlock->statements.push_back(freeStream.str());
+            stringstream freeStream;
+            freeStream << "free(" << name << "._parent)";
+            ifBlock->statements.push_back(freeStream.str());
 #endif // !SKIP_FREE
+        } 
+        else {
+            assert(!type->parent.expired());
+            shared_ptr<TrBlock> ifNullBlock;
+            auto innerBlock = block;
+            if (type->isOption) {
+                ifNullBlock = make_shared<TrBlock>();
+                stringstream ifStream;
+                ifStream << "if (" << name << " != 0)";
+                block->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifNullBlock));
+
+                innerBlock = ifNullBlock.get();
+            }
+
+            stringstream lineStream;
+            lineStream << name << "->_refCount--";
+            innerBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
+
+#ifdef DEBUG_ALLOC
+            stringstream logStream;
+            logStream << "printf(\"RELEASE\\t" << type->nameRef << "\\t%0x\\t" << block->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
+            innerBlock->statements.push_back(logStream.str());
+#endif
+
+            auto ifBlock = make_shared<TrBlock>();
+            stringstream ifStream;
+            ifStream << "if (" << name << "->_refCount <= 0)";
+            innerBlock->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifBlock));
+
+            stringstream destroyStream;
+            destroyStream << type->parent.lock()->getCDestroyFunctionName() << "(" << convertToLocalName(type, name, false) << ")";
+            ifBlock->statements.push_back(TrStatement(CLoc::undefined, destroyStream.str()));
+
+#ifndef SKIP_FREE
+            stringstream freeStream;
+            freeStream << "free(" << name << ")";
+            ifBlock->statements.push_back(freeStream.str());
+#endif // !SKIP_FREE
+        }
     }
 }
 
 void TrValue::addRetainToStatements(TrBlock* block) {
     if (type->typeMode == CTM_Heap) {
-        assert(!type->parent.expired());
-
-        shared_ptr<TrBlock> ifNullBlock;
-        auto innerBlock = block;
-        if (type->isOption) {
-            ifNullBlock = make_shared<TrBlock>();
+        if (type->category == CTC_Function) {
+            auto ifNullBlock = make_shared<TrBlock>();
             stringstream ifStream;
-            ifStream << "if (" << name << " != 0)";
+            ifStream << "if (" << name << "._parent != 0)";
             block->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifNullBlock));
 
-            innerBlock = ifNullBlock.get();
+            auto innerBlock = ifNullBlock.get();
+            stringstream lineStream;
+            lineStream << name << "._parent->_refCount++";
+            innerBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
         }
+        else {
+            assert(!type->parent.expired());
+            shared_ptr<TrBlock> ifNullBlock;
+            auto innerBlock = block;
+            if (type->isOption) {
+                ifNullBlock = make_shared<TrBlock>();
+                stringstream ifStream;
+                ifStream << "if (" << name << " != 0)";
+                block->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifNullBlock));
 
-        stringstream lineStream;
-        lineStream << name << "->_refCount++";
-        innerBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
+                innerBlock = ifNullBlock.get();
+            }
+
+            stringstream lineStream;
+            lineStream << name << "->_refCount++";
+            innerBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
 
 #ifdef DEBUG_ALLOC
-        stringstream logStream;
-        logStream << "printf(\"RETAIN\\t" << type->nameRef << "\\t%0x\\t" << block->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
-        innerBlock->statements.push_back(logStream.str());
+            stringstream logStream;
+            logStream << "printf(\"RETAIN\\t" << type->nameRef << "\\t%0x\\t" << block->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
+            innerBlock->statements.push_back(logStream.str());
 #endif
+        }
     }
 }
     

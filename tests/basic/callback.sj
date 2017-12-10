@@ -1,43 +1,51 @@
-func()'void {
+data(
 	x : 0
-	void
-}
-
-f : func
-f()
-
-/*
-callback(f : '()void) {
-	f()
-}
-
-callback(func)
-*/
-// verify arg types
-
-/* return heap
-foo() { this }
-
-callback(f : '()heap foo) {
-	foo : f()
-}
-*/
-
-/* store as heap
-foo() { class() }
-f : heap foo 	// 'heap ()heap foo
-f : stack foo  	// 'heap ()stack foo
-f : foo 		// 'heap ()stack foo
-
-class(
-	func() { 0 }
 ) { this }
 
+class(
+	b : 15
+	func(a : 'i32)'data { 
+		data(a + b)
+	}
+) { this }
+
+func(a : 'i32)'data {
+	data(a + 2)
+}
+
+getCallback()'heap (:i32)data {
+	c : heap class()
+	c.func
+}
+
+callback(f : '(:i32)data)'i32 {
+	d : f(12)
+	d.x
+}
+
+
+a : func
+b : heap a(1)
+l : getCallback()
+m : l(1)
+n : heap l(1)
 c : class()
-f : c.func 		// 'local ()i32
-d : heap class()
-f : d.func 		// 'heap ()i32
+a2 : callback(func)
+b2 : callback(c.func)
+f1 : func
+d : f1(1)
+f2 : c.func
+e : f2(2)
+c_heap : heap class()
+f3 : c_heap.func
+g : f3(3)
+/*
+h : empty'(:i32)i32
+i : value(func)
+j : getValue(i)
+k : j(12)
 */
+
 // store as stack
 // store as local
 // store as heap option
@@ -45,3 +53,5 @@ f : d.func 		// 'heap ()i32
 // store as local option
 // get callback from template function
 // f : foo!i32
+
+

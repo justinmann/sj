@@ -246,7 +246,7 @@ shared_ptr<CTypes> CType::create(Compiler* compiler, string valueName, weak_ptr<
     return compiler->types[key];
 }
 
-shared_ptr<CTypes> CType::create(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> returnType, weak_ptr<CCallback> callback) {
+shared_ptr<CTypes> CType::create(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> stackReturnType, shared_ptr<CType> heapReturnType, weak_ptr<CCallback> callback) {
     auto stackValueType = make_shared<CType>();
     auto stackOptionType = make_shared<CType>();
     auto heapValueType = make_shared<CType>();
@@ -272,9 +272,20 @@ shared_ptr<CTypes> CType::create(vector<shared_ptr<CType>> argTypes, shared_ptr<
         safeStream << argType->safeName;
     }
     valueStream << ")";
-    valueStream << returnType->valueName;
-    safeStream << "_";
-    safeStream << returnType->safeName;
+    if (stackReturnType) {
+        valueStream << stackReturnType->valueName;
+    }
+    else if (heapReturnType) {
+        valueStream << heapReturnType->valueName;
+    }
+    if (stackReturnType) {
+        safeStream << "_";
+        safeStream << stackReturnType->safeName;
+    }
+    if (heapReturnType) {
+        safeStream << "_";
+        safeStream << heapReturnType->safeName;
+    }
 
     auto valueName = valueStream.str();
     auto safeName = safeStream.str();
@@ -284,7 +295,8 @@ shared_ptr<CTypes> CType::create(vector<shared_ptr<CType>> argTypes, shared_ptr<
     stackValueType->category = CTC_Function;
     stackValueType->callback = callback;
     stackValueType->argTypes = argTypes;
-    stackValueType->returnType = returnType;
+    stackValueType->stackReturnType = stackReturnType;
+    stackValueType->heapReturnType = heapReturnType;
     stackValueType->valueName = valueName;
     stackValueType->fullName = "stack " + valueName;
     stackValueType->cname = callback.lock()->getCName(CTM_Stack, false);
@@ -301,7 +313,8 @@ shared_ptr<CTypes> CType::create(vector<shared_ptr<CType>> argTypes, shared_ptr<
     stackOptionType->category = CTC_Function;
     stackOptionType->callback = callback;
     stackOptionType->argTypes = argTypes;
-    stackOptionType->returnType = returnType;
+    stackOptionType->stackReturnType = stackReturnType;
+    stackOptionType->heapReturnType = heapReturnType;
     stackOptionType->valueName = valueName;
     stackOptionType->fullName = "stack " + valueName + "?";
     stackOptionType->cname = callback.lock()->getCName(CTM_Stack, true);
@@ -318,7 +331,8 @@ shared_ptr<CTypes> CType::create(vector<shared_ptr<CType>> argTypes, shared_ptr<
     heapValueType->category = CTC_Function;
     heapValueType->callback = callback;
     heapValueType->argTypes = argTypes;
-    heapValueType->returnType = returnType;
+    heapValueType->stackReturnType = stackReturnType;
+    heapValueType->heapReturnType = heapReturnType;
     heapValueType->valueName = valueName;
     heapValueType->fullName = "heap " + valueName;
     heapValueType->cname = callback.lock()->getCName(CTM_Heap, false);
@@ -335,7 +349,8 @@ shared_ptr<CTypes> CType::create(vector<shared_ptr<CType>> argTypes, shared_ptr<
     heapOptionType->category = CTC_Function;
     heapOptionType->callback = callback;
     heapOptionType->argTypes = argTypes;
-    heapOptionType->returnType = returnType;
+    heapOptionType->stackReturnType = stackReturnType;
+    heapOptionType->heapReturnType = heapReturnType;
     heapOptionType->valueName = valueName;
     heapOptionType->fullName = "heap " + valueName + "?";
     heapOptionType->cname = callback.lock()->getCName(CTM_Heap, true);
@@ -352,7 +367,8 @@ shared_ptr<CTypes> CType::create(vector<shared_ptr<CType>> argTypes, shared_ptr<
     localValueType->category = CTC_Function;
     localValueType->callback = callback;
     localValueType->argTypes = argTypes;
-    localValueType->returnType = returnType;
+    localValueType->stackReturnType = stackReturnType;
+    localValueType->heapReturnType = heapReturnType;
     localValueType->valueName = valueName;
     localValueType->fullName = "local " + valueName;
     localValueType->cname = callback.lock()->getCName(CTM_Local, false);
@@ -369,7 +385,8 @@ shared_ptr<CTypes> CType::create(vector<shared_ptr<CType>> argTypes, shared_ptr<
     localOptionType->category = CTC_Function;
     localOptionType->callback = callback;
     localOptionType->argTypes = argTypes;
-    localOptionType->returnType = returnType;
+    localOptionType->stackReturnType = stackReturnType;
+    localOptionType->heapReturnType = heapReturnType;
     localOptionType->valueName = valueName;
     localOptionType->fullName = "local " + valueName + "?";
     localOptionType->cname = callback.lock()->getCName(CTM_Local, true);

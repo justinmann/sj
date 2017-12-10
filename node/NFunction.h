@@ -89,8 +89,6 @@ public:
     shared_ptr<CThisVar> thisVar;
     shared_ptr<CFunction> function;
     shared_ptr<CInterface> cinterface;
-
-private:
     CTypeMode returnMode;
 };
 

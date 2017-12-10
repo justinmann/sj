@@ -71,7 +71,7 @@ public:
     static shared_ptr<CTypes> create(string valueName, string cname, string defaultValue, string cnameOption, string defaultValueOption);
     static shared_ptr<CTypes> create(Compiler* compiler, string valueName, weak_ptr<CFunction> parent);
     static shared_ptr<CTypes> create(Compiler* compiler, string valueName, weak_ptr<CInterface> parent);
-    static shared_ptr<CTypes> create(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> returnType, weak_ptr<CCallback> callback);
+    static shared_ptr<CTypes> create(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> stackReturnType, shared_ptr<CType> heapReturnType, weak_ptr<CCallback> callback);
 
     CTypeCategory category;
     CTypeMode typeMode;
@@ -83,7 +83,8 @@ public:
     bool isOption;
     weak_ptr<CCallback> callback;
     vector<shared_ptr<CType>> argTypes;
-    shared_ptr<CType> returnType;
+    shared_ptr<CType> stackReturnType;
+    shared_ptr<CType> heapReturnType;
 
     void transpileDefaultValue(Compiler* compiler, CLoc loc, TrBlock* trBlock, shared_ptr<TrStoreValue> storeValue);
     static bool isSameExceptMode(shared_ptr<CType> l, shared_ptr<CType> r);

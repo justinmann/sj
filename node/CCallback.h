@@ -4,7 +4,7 @@
 
 class CCallbackVar : public CVar {
 public:
-    CCallbackVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, shared_ptr<CVar> dotVar, shared_ptr<CCallback> callback, shared_ptr<CBaseFunction> function, CTypeMode returnMode) : CVar(loc, scope), type(type), dotVar(dotVar), callback(callback), function(function), returnMode(returnMode) { }
+    CCallbackVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, shared_ptr<CVar> dotVar, shared_ptr<CCallback> callback, shared_ptr<CBaseFunction> function, CTypeMode returnMode);
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -44,22 +44,24 @@ public:
 private:
     shared_ptr<CCallback> callback;
     shared_ptr<CVar> callbackVar;
+    vector<shared_ptr<CVar>> argVars;
 };
 
 class CCallback : public enable_shared_from_this<CCallback> {
 public:
-    CCallback(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> returnType);
-    static shared_ptr<CCallback> getCallback(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> returnType);
-    static shared_ptr<CType> getType(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> returnType, CTypeMode defaultMode, bool isOption);
+    CCallback(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> stackReturnType, shared_ptr<CType> heapReturnType);
+    static shared_ptr<CCallback> getCallback(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> stackReturnType, shared_ptr<CType> heapReturnType);
+    static shared_ptr<CType> getType(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> stackReturnType, shared_ptr<CType> heapReturnType, CTypeMode returnMode, bool isOption);
     static shared_ptr<CVar> getVar(Compiler* compiler, shared_ptr<CScope> scope, CLoc loc, shared_ptr<CVar> dotVar, shared_ptr<CBaseFunction> function, CTypeMode returnMode);
     shared_ptr<CBaseFunction> getFunction(Compiler* compiler, shared_ptr<CVar> callbackVar);
     void transpileDefinition(Compiler* compiler, TrOutput* trOutput);
-    string getCBName(Compiler* compiler, bool includeNames);
+    string getCBName(Compiler* compiler, bool includeNames, CTypeMode returnMode);
     string getCName(CTypeMode typeMode, bool isOption);
 
     shared_ptr<CTypes> types;
     vector<shared_ptr<CType>> argTypes;
-    shared_ptr<CType> returnType;
+    shared_ptr<CType> stackReturnType;
+    shared_ptr<CType> heapReturnType;
 
 private:
     static map<vector<shared_ptr<CType>>, shared_ptr<CCallback>> _callbacks;

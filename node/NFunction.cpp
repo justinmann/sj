@@ -818,7 +818,7 @@ string CFunction::getCCallbackFunctionName(Compiler* compiler, TrOutput* trOutpu
                 else {
                     callStream << ", ";
                 }
-                callStream << returnType->cname << "* _return";
+                callStream << "_return";
             }
             callStream << ")";
             trFunctionBlock->statements.push_back(TrStatement(CLoc::undefined, callStream.str()));
@@ -1056,6 +1056,7 @@ shared_ptr<CTypes> CFunction::getThisTypes(Compiler* compiler) {
 }
 
 shared_ptr<CScope> CFunction::getScope(Compiler* compiler, CTypeMode returnMode) {
+    assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
     if (_data[returnMode].scope == nullptr) {
         auto calleeVar = getThisVar(compiler, returnMode);
         _data[returnMode].scope = make_shared<CScope>(shared_from_this(), calleeVar, returnMode);
@@ -1064,6 +1065,7 @@ shared_ptr<CScope> CFunction::getScope(Compiler* compiler, CTypeMode returnMode)
 }
 
 int CFunction::getArgIndex(const string& name, CTypeMode returnMode) {
+    assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
     if (_data[returnMode].thisArgVarsByName.find(name) != _data[returnMode].thisArgVarsByName.end()) {
         return _data[returnMode].thisArgVarsByName[name].first;
     }
@@ -1071,10 +1073,12 @@ int CFunction::getArgIndex(const string& name, CTypeMode returnMode) {
 }
 
 shared_ptr<CVar> CFunction::getArgVar(int index, CTypeMode returnMode) {
+    assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
     return _data[returnMode].thisArgVars[index];
 }
 
 int CFunction::getArgCount(CTypeMode returnMode) {
+    assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
     return (int)_data[returnMode].thisArgVars.size();
 }
 
@@ -1381,9 +1385,17 @@ shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, shared_ptr
         }
     }
     else if (typeName->category == CTC_Function) {
-        auto returnType = getVarType(loc, compiler, typeName->returnTypeName, CTM_Undefined);
-        if (returnType == nullptr) {
+        auto stackReturnType = getVarType(loc, compiler, typeName->returnTypeName, CTM_Undefined);
+        if (stackReturnType == nullptr) {
             compiler->addError(loc, CErrorCode::InvalidType, "cannot find type '%s'", typeName->returnTypeName->valueName.c_str());
+        }
+        if (stackReturnType->typeMode == CTM_Heap) {
+            stackReturnType = nullptr;
+        }
+
+        auto heapReturnType = getVarType(loc, compiler, typeName->returnTypeName, CTM_Heap);
+        if (heapReturnType->typeMode != CTM_Heap) {
+            heapReturnType = nullptr;
         }
 
         vector<shared_ptr<CType>> argTypes;
@@ -1396,7 +1408,7 @@ shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, shared_ptr
                 argTypes.push_back(argType);
             }
         }
-        return CCallback::getType(argTypes, returnType, defaultMode, typeName->isOption);
+        return CCallback::getType(argTypes, stackReturnType, heapReturnType, typeMode, typeName->isOption);
     } else {
         assert(typeName->category == CTC_Value);
         if (typeName->templateTypeNames == nullptr) {

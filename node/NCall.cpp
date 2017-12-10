@@ -1,7 +1,7 @@
 #include "Node.h"
 
 shared_ptr<vector<FunctionParameter>> CCallVar::getParameters(Compiler* compiler, CLoc loc, shared_ptr<CScope> callerScope, shared_ptr<CBaseFunction> callee, shared_ptr<NodeList> arguments, CTypeMode returnMode) {
-    auto parameters = make_shared<vector<FunctionParameter>>(callee->argDefaultValues.size());
+    auto parameters = make_shared<vector<FunctionParameter>>(callee->getArgCount(returnMode));
 
     if (parameters->size() < arguments->size()) {
         compiler->addError(loc, CErrorCode::TooManyParameters, "too many parameters");
@@ -49,20 +49,29 @@ shared_ptr<vector<FunctionParameter>> CCallVar::getParameters(Compiler* compiler
         }
         argIndex++;
     }
-
-    argIndex = 0;
-    for (auto it : callee->argDefaultValues) {
-        if (argIndex < parameters->size() && (*parameters)[argIndex].var == nullptr) {
-            if (it.value == nullptr) {
-                compiler->addError(loc, CErrorCode::ParameterRequired, "parameter %d is required for function '%s'", argIndex, callee->name.c_str());
-                return nullptr;
+    
+    if (callee->argDefaultValues.size() > 0) {
+        argIndex = 0;
+        for (auto it : callee->argDefaultValues) {
+            if (argIndex < parameters->size() && (*parameters)[argIndex].var == nullptr) {
+                if (it.value == nullptr) {
+                    compiler->addError(loc, CErrorCode::ParameterRequired, "parameter %d is required for function '%s'", argIndex, callee->name.c_str());
+                    return nullptr;
+                }
+                assert(it.value->nodeType != NodeType_Assignment);
+                (*parameters)[argIndex].isDefaultValue = true;
+                (*parameters)[argIndex].op = it.op;
+                (*parameters)[argIndex].var = it.value->getVar(compiler, calleeScope, CTM_Undefined);
             }
-            assert(it.value->nodeType != NodeType_Assignment);
-            (*parameters)[argIndex].isDefaultValue = true;
-            (*parameters)[argIndex].op = it.op;
-            (*parameters)[argIndex].var = it.value->getVar(compiler, calleeScope, CTM_Undefined);
+            argIndex++;
         }
-        argIndex++;
+    }
+
+    if (argIndex != parameters->size()) {
+        for (auto i = argIndex; i < parameters->size(); i++) {
+            compiler->addError(loc, CErrorCode::ParameterRequired, "parameter %d is required for function '%s'", i, callee->name.c_str());
+        }
+        return nullptr;
     }
 
     return parameters;
@@ -229,9 +238,11 @@ void NCall::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> t
 shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
     // parentFunction will be specified if the NCall is used as the default NAssignment for a NFunction
     auto cfunction = static_pointer_cast<CBaseFunction>(scope->function);
+    auto cfunctionReturnMode = scope->returnMode;
     
     if (dotVar) {
         cfunction = dotVar->getType(compiler)->parent.lock();
+        cfunctionReturnMode = dotVar->getType(compiler)->typeMode == CTM_Heap ? CTM_Heap : CTM_Stack;
         if (!cfunction) {
             compiler->addError(loc, CErrorCode::InvalidVariable, "parent is not a function");
             return nullptr;
@@ -254,7 +265,7 @@ shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, shared_ptr<CSc
     }
     
     if (!callee) {
-        auto var = cfunction->getCVar(compiler, name, dotVar ? VSM_ThisOnly : VSM_LocalThisParent, returnMode);
+        auto var = cfunction->getCVar(compiler, name, dotVar ? VSM_ThisOnly : VSM_LocalThisParent, cfunctionReturnMode);
         if (var) {
             auto type = var->getType(compiler);
             if (type && type->category == CTC_Function) {
@@ -277,11 +288,6 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
         return nullptr;
     }
 
-    if (arguments->size() > callee->argDefaultValues.size()) {
-        compiler->addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments->size(), callee->argDefaultValues.size());
-        return nullptr;
-    }
-
     if (returnMode != CTM_Heap) {
         if (callee->getIsReturnModeValid(compiler, CTM_Stack)) {
             returnMode = CTM_Stack;
@@ -289,6 +295,11 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
         else {
             returnMode = CTM_Heap;
         }
+    }
+
+    if ((int)arguments->size() > callee->getArgCount(returnMode)) {
+        compiler->addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments->size(), callee->getArgCount(returnMode));
+        return nullptr;
     }
 
     // Fill in parameters
