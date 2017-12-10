@@ -169,11 +169,6 @@ int CInterface::getArgStart() {
     return 1;
 }
 
-shared_ptr<CVar> CInterface::getCVar(Compiler* compiler, const string& name, VarScanMode scanMode, CTypeMode returnMode) {
-    assert(false);
-    return nullptr;
-}
-
 shared_ptr<CBaseFunction> CInterface::getCFunction(Compiler* compiler, CLoc locCaller, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode) {
     shared_ptr<CBaseFunction> interfaceMethod;
     if (templateTypeNames == nullptr) {

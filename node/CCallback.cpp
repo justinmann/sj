@@ -87,7 +87,7 @@ shared_ptr<CTypes> CCallbackFunction::getThisTypes(Compiler* compiler) {
     return nullptr;
 }
 
-shared_ptr<CVar> CCallbackFunction::getCVar(Compiler* compiler, const string& name, VarScanMode scanMode, CTypeMode returnMode) {
+shared_ptr<CVar> CCallbackFunction::getCVar(Compiler* compiler, vector<shared_ptr<FunctionBlock>> functionBlocks, const string& name, VarScanMode scanMode, CTypeMode returnMode) {
     assert(false);
     return nullptr;
 }

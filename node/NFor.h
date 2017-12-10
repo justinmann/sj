@@ -20,7 +20,7 @@ public:
 
 class CForLoopVar : public CVar {
 public:
-    CForLoopVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CForIndexVar> indexVar, shared_ptr<CVar> startVar, shared_ptr<CVar> endVar, shared_ptr<CVar> bodyVar) : CVar(loc, scope), indexVar(indexVar), startVar(startVar), endVar(endVar), bodyVar(bodyVar) { 
+    CForLoopVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CForIndexVar> indexVar, shared_ptr<CVar> startVar, shared_ptr<CVar> endVar, shared_ptr<CVar> bodyVar, shared_ptr<FunctionBlock> forBlock) : CVar(loc, scope), indexVar(indexVar), startVar(startVar), endVar(endVar), bodyVar(bodyVar), forBlock(forBlock) {
         assert(indexVar);
         assert(startVar);
         assert(endVar);
@@ -36,6 +36,7 @@ private:
     shared_ptr<CVar> startVar;
     shared_ptr<CVar> endVar;
     shared_ptr<CVar> bodyVar;
+    shared_ptr<FunctionBlock> forBlock;
 };
 
 class NFor : public NBase {

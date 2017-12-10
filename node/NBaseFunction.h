@@ -53,6 +53,11 @@ public:
     shared_ptr<NBase> value;
 };
 
+class FunctionBlock {
+public:
+    FunctionBlock* parent;
+};
+
 class CBaseFunction {
 public:
     CClassFunctionType classType;
@@ -71,7 +76,6 @@ public:
     virtual shared_ptr<CVar> getArgVar(int index, CTypeMode returnMode) = 0;
     virtual string fullName(bool includeTemplateTypes) = 0;
     virtual shared_ptr<CTypes> getThisTypes(Compiler* compiler) = 0;
-    virtual shared_ptr<CVar> getCVar(Compiler* compiler, const string& name, VarScanMode scanMode, CTypeMode returnMode) = 0;
     virtual shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CLoc locCaller, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode) = 0;
     virtual shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) = 0;
     virtual string getCFunctionName(CTypeMode returnMode) = 0;

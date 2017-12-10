@@ -11,7 +11,7 @@
 
 class CIfElseVar : public CVar {
 public:
-    CIfElseVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> condVar, shared_ptr<CVar> ifVar, shared_ptr<CVar> elseVar) : CVar(loc, scope), condVar(condVar), ifVar(ifVar), elseVar(elseVar) { assert(condVar); assert(ifVar); }
+    CIfElseVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> condVar, shared_ptr<CVar> ifVar, shared_ptr<FunctionBlock> ifFunctionBlock, shared_ptr<CVar> elseVar, shared_ptr<FunctionBlock> elseFunctionBlock) : CVar(loc, scope), condVar(condVar), ifVar(ifVar), ifFunctionBlock(ifFunctionBlock), elseVar(elseVar), elseFunctionBlock(elseFunctionBlock) { assert(condVar); assert(ifVar); }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -20,7 +20,9 @@ public:
 private:
     shared_ptr<CVar> condVar;
     shared_ptr<CVar> ifVar;
+    shared_ptr<FunctionBlock> ifFunctionBlock;
     shared_ptr<CVar> elseVar;
+    shared_ptr<FunctionBlock> elseFunctionBlock;
 };
 
 class NIf : public NVariableBase {

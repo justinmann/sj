@@ -1188,7 +1188,7 @@ shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, const string
                 return cfunc->getCInterface(compiler, name, callerScope, templateTypeNames);
             }
             else {
-                auto var = cfunc->getCVar(compiler, name, VSM_LocalOnly, CTM_Stack);
+                auto var = cfunc->getCVar(compiler, vector<shared_ptr<FunctionBlock>>(), name, VSM_LocalOnly, CTM_Stack);
                 if (!var) {
                     return nullptr;
                 }
@@ -1220,17 +1220,17 @@ shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, const string
     }
 }
 
-shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, const string& name, VarScanMode scanMode, CTypeMode returnMode) {
+shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, vector<shared_ptr<FunctionBlock>> functionBlocks, const string& name, VarScanMode scanMode, CTypeMode returnMode) {
     if (returnMode == CTM_Undefined) {
         if (!_data[CTM_Stack].isInvalid) {
-            auto result = getCVar(compiler, name, scanMode, CTM_Stack);
+            auto result = getCVar(compiler, functionBlocks, name, scanMode, CTM_Stack);
             if (result) {
                 return result;
             }
         }
 
         if (!_data[CTM_Heap].isInvalid) {
-            auto result = getCVar(compiler, name, scanMode, CTM_Heap);
+            auto result = getCVar(compiler, functionBlocks, name, scanMode, CTM_Heap);
             if (result) {
                 return result;
             }
@@ -1241,8 +1241,15 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, const string& name, VarS
         assert(!_data[returnMode].isInvalid);
 
         if (scanMode == VSM_LocalOnly || scanMode == VSM_LocalThisParent) {
-            auto t1 = _data[returnMode].localVarsByName.find(name);
-            if (t1 != _data[returnMode].localVarsByName.end()) {
+            for (auto fb = functionBlocks.rbegin(); fb != functionBlocks.rend(); ++fb) {
+                auto t1 = _data[returnMode].localVarsByName[*fb].find(name);
+                if (t1 != _data[returnMode].localVarsByName[*fb].end()) {
+                    return t1->second;
+                }
+            }
+
+            auto t1 = _data[returnMode].localVarsByName[nullptr].find(name);
+            if (t1 != _data[returnMode].localVarsByName[nullptr].end()) {
                 return t1->second;
             }
         }
@@ -1272,7 +1279,7 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, const string& name, VarS
             shared_ptr<CFunction> parentCheck = dynamic_pointer_cast<CFunction>(parent.lock());
             shared_ptr<CVar> cvar;
             while (cvar == nullptr && parentCheck != nullptr) {
-                cvar = parentCheck->getCVar(compiler, name, VSM_FromChild, CTM_Undefined);
+                cvar = parentCheck->getCVar(compiler, vector<shared_ptr<FunctionBlock>>(), name, VSM_FromChild, CTM_Undefined);
                 break;
                 // TODO: allow vars in parent of parent, etc.
                 // This is not currently supported because I have no safe way to maintain the _parent pointer, if it is stored in the struct then it can point nowhere if a class is created then re-assigned somewhere and the original parent is gc'ed
@@ -1300,7 +1307,7 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, const string& name, VarS
             }
 
             if (globalFunction) {
-                cvar = globalFunction->getCVar(compiler, name, VSM_LocalOnly, CTM_Undefined);
+                cvar = globalFunction->getCVar(compiler, vector<shared_ptr<FunctionBlock>>(), name, VSM_LocalOnly, CTM_Undefined);
                 return cvar;
             }
         }
@@ -1618,27 +1625,35 @@ void CFunctionDefinition::dump(Compiler* compiler, int level) {
 }
 
 shared_ptr<CVar> CScope::findLocalVar(Compiler* compiler, string name) {
-    auto iter = function->_data[returnMode].localVarsByName.find(name);
-    if (iter != function->_data[returnMode].localVarsByName.end()) {
+    auto iter = function->_data[returnMode].localVarsByName[functionBlocks.back()].find(name);
+    if (iter != function->_data[returnMode].localVarsByName[functionBlocks.back()].end()) {
         return iter->second;
     }
     return nullptr;
 }
 
 void CScope::addOrUpdateLocalVar(Compiler* compiler, string name, shared_ptr<CVar> var) {
-    function->_data[returnMode].localVarsByName[name] = var;
+    auto currentBlock = functionBlocks.size() > 0 ? functionBlocks.back() : nullptr;
+    function->_data[returnMode].localVarsByName[currentBlock][name] = var;
 }
 
-void CScope::pushLocalVar(Compiler* compiler, CLoc loc, shared_ptr<CVar> var) {
-    if (function->_data[returnMode].localVarsByName.find(var->name) != function->_data[returnMode].localVarsByName.end()) {
+void CScope::pushFunctionBlock(shared_ptr<FunctionBlock> functionBlock) {
+    functionBlocks.push_back(functionBlock);
+}
+
+void CScope::popFunctionBlock(shared_ptr<FunctionBlock> functionBlock) {
+    assert(functionBlocks.back() == functionBlock);
+    functionBlocks.erase(functionBlocks.end() - 1);
+}
+
+void CScope::setLocalVar(Compiler* compiler, CLoc loc, shared_ptr<CVar> var) {
+    auto existingVar = function->getCVar(compiler, functionBlocks, var->name, VSM_LocalThisParent, returnMode);
+    if (existingVar) {
         compiler->addError(loc, CErrorCode::InvalidVariable, "var '%s' already exists within function, must have a unique name", var->name.c_str());
     }
     
-    function->_data[returnMode].localVarsByName[var->name] = var;
-}
-
-void CScope::popLocalVar(Compiler* compiler, shared_ptr<CVar> var) {
-    function->_data[returnMode].localVarsByName.erase(var->name);
+    auto currentBlock = functionBlocks.size() > 0 ? functionBlocks.back() : nullptr;
+    function->_data[returnMode].localVarsByName[currentBlock][var->name] = var;
 }
 
 shared_ptr<CType> CScope::getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
@@ -1656,10 +1671,7 @@ shared_ptr<CType> CScope::getVarType(CLoc loc, Compiler* compiler, shared_ptr<CT
 
 shared_ptr<CVar> CScope::getCVar(Compiler* compiler, const string& name, VarScanMode scanMode) {
     if (function) {
-        return function->getCVar(compiler, name, scanMode, returnMode);
-    }
-    else if (cinterface) {
-        return cinterface->getCVar(compiler, name, scanMode, CTM_Heap);
+        return function->getCVar(compiler, functionBlocks, name, scanMode, returnMode);
     }
     else {
         assert(false);

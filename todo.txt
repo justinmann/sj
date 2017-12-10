@@ -5,10 +5,8 @@
 * center text
 
 -- language --
-* second assignment to this var does not free
-* store local values inside block to fix: if true { x : 1 } else { x : 1 }
-
 * de-dup global strings
+
 * enum
 * namespaces
 * ifValue a, b, c {} elseEmpty {}

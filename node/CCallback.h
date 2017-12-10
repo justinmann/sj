@@ -26,7 +26,7 @@ public:
     shared_ptr<CVar> getArgVar(int index, CTypeMode returnMode);
     string fullName(bool includeTemplateTypes);
     shared_ptr<CTypes> getThisTypes(Compiler* compiler);
-    shared_ptr<CVar> getCVar(Compiler* compiler, const string& name, VarScanMode scanMode, CTypeMode returnMode);
+    shared_ptr<CVar> getCVar(Compiler* compiler, vector<shared_ptr<FunctionBlock>> functionBlocks, const string& name, VarScanMode scanMode, CTypeMode returnMode);
     shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CLoc locCaller, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode);
     shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
     string getCFunctionName(CTypeMode returnMode);

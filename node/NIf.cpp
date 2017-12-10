@@ -36,14 +36,19 @@ void CIfElseVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
     trIfBlock->parent = trBlock;
     auto trStatement = TrStatement(loc, ifLine.str(), trIfBlock);
 
+    scope.lock()->pushFunctionBlock(ifFunctionBlock);
     ifVar->transpile(compiler, trOutput, trIfBlock.get(), nullptr, thisValue, storeValue);
+    scope.lock()->popFunctionBlock(ifFunctionBlock);
+
     if (elseVar) {
         auto trElseBlock = make_shared<TrBlock>();
         trElseBlock->parent = trBlock;
         trElseBlock->hasThis = trBlock->hasThis;
         trStatement.elseBlock = trElseBlock;
 
+        scope.lock()->pushFunctionBlock(elseFunctionBlock);
         elseVar->transpile(compiler, trOutput, trElseBlock.get(), nullptr, thisValue, storeValue);
+        scope.lock()->popFunctionBlock(elseFunctionBlock);
     }
     else {
         if (!storeValue->isVoid) {
@@ -88,13 +93,21 @@ shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, s
         return nullptr;
     }
     
+    shared_ptr<FunctionBlock> elseFunctionBlock;
     shared_ptr<CVar> elseVar;
     if (elseBlock) {
+        elseFunctionBlock = make_shared<FunctionBlock>();
+        scope->pushFunctionBlock(elseFunctionBlock);
         elseVar = elseBlock->getVar(compiler, scope, returnMode);
+        scope->popFunctionBlock(elseFunctionBlock);
     }
     
+    shared_ptr<FunctionBlock> ifFunctionBlock;
     shared_ptr<CVar> ifVar;
+    ifFunctionBlock = make_shared<FunctionBlock>();
+    scope->pushFunctionBlock(ifFunctionBlock);
     ifVar = ifBlock->getVar(compiler, scope, returnMode);
+    scope->popFunctionBlock(ifFunctionBlock);
     if (ifVar == nullptr) {
         return nullptr;
     }
@@ -121,6 +134,6 @@ shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, s
         }
     }
     
-    return make_shared<CIfElseVar>(loc, ifVar->scope.lock(), condVar, ifVar, elseVar);
+    return make_shared<CIfElseVar>(loc, ifVar->scope.lock(), condVar, ifVar, ifFunctionBlock, elseVar, elseFunctionBlock);
 }
 

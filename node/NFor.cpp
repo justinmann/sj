@@ -45,10 +45,10 @@ void CForLoopVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
     whileLine << "while (" << indexVar->name << " < " << loopEndTrValue->getName(trBlock) << ")";
     trBlock->statements.push_back(TrStatement(loc, whileLine.str(), trForBlock));
     
-    scope.lock()->pushLocalVar(compiler, loc, indexVar);
+    scope.lock()->pushFunctionBlock(forBlock);
     auto bodyType = bodyVar->getType(compiler);
     bodyVar->transpile(compiler, trOutput, trForBlock.get(), nullptr, thisValue, trBlock->createVoidStoreVariable(loc, bodyType));
-    scope.lock()->popLocalVar(compiler, indexVar);
+    scope.lock()->popFunctionBlock(forBlock);
 
     stringstream loopCounterIncLine;
     loopCounterIncLine << indexVar->name << "++";
@@ -88,14 +88,16 @@ shared_ptr<CVar> NFor::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, 
         return nullptr;
     }
 
-    scope->pushLocalVar(compiler, loc, indexVar);
+    auto forBlock = make_shared<FunctionBlock>();
+    scope->pushFunctionBlock(forBlock);
+    scope->setLocalVar(compiler, loc, indexVar);
     auto bodyVar = body->getVar(compiler, scope, CTM_Undefined);
-    scope->popLocalVar(compiler, indexVar);
+    scope->popFunctionBlock(forBlock);
 
     if (!bodyVar) {
         return nullptr;
     }
 
-    return make_shared<CForLoopVar>(loc, scope, indexVar, startVar, endVar, bodyVar);
+    return make_shared<CForLoopVar>(loc, scope, indexVar, startVar, endVar, bodyVar, forBlock);
 }
 

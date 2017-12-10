@@ -135,11 +135,6 @@ shared_ptr<CVar> CInterfaceMethod::getThisVar(Compiler* compiler) {
     return nullptr;
 }
 
-shared_ptr<CVar> CInterfaceMethod::getCVar(Compiler* compiler, const string& name, VarScanMode scanMode, CTypeMode returnMode) {
-    assert(false);
-    return nullptr;
-}
-
 string CInterfaceMethod::getCTypeName(Compiler* compiler, bool includeNames) {
     stringstream ss;
     ss << "void";

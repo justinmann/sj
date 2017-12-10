@@ -1,5 +1,10 @@
 global()'void {
   x'i32 = 1i
+  if true {
+    y'i32 : 1i
+  } else {
+    y'i32 : 1i
+  }
   void
 }
 

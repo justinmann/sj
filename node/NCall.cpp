@@ -268,7 +268,15 @@ shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, shared_ptr<CSc
     }
     
     if (!callee) {
-        auto var = cfunction->getCVar(compiler, name, dotVar ? VSM_ThisOnly : VSM_LocalThisParent, cfunctionReturnMode);
+        shared_ptr<CVar> var;
+        if (dotVar) {
+            auto temp = dynamic_pointer_cast<CFunction>(cfunction);
+            var = temp->getCVar(compiler, vector<shared_ptr<FunctionBlock>>(), name, VSM_ThisOnly, cfunctionReturnMode);
+        }
+        else {
+            var = scope->getCVar(compiler, name, VSM_LocalThisParent);
+        }
+
         if (var) {
             auto type = var->getType(compiler);
             if (type && type->category == CTC_Function) {

@@ -67,6 +67,7 @@ struct td_sjs_object {
     intptr_t _refCount;
 };
 
+bool sjt_ifElse1;
 int32_t sjv_x;
 
 void main_destroy(void);
@@ -74,6 +75,19 @@ void main_destroy(void);
 int main(int argc, char** argv) {
 #line 1 ".\basic\assignment1.sj"
     sjv_x = 1;
+#line 3
+    sjt_ifElse1 = true;
+    if (sjt_ifElse1) {
+        int32_t sjv_y;
+
+#line 4 ".\basic\assignment1.sj"
+        sjv_y = 1;
+    } else {
+        int32_t sjv_y;
+
+#line 6 ".\basic\assignment1.sj"
+        sjv_y = 1;
+    }
     main_destroy();
     return 0;
 }
