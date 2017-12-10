@@ -3,6 +3,12 @@ mouseEvent_up : 1
 mouseEvent_down : 2
 
 mainLoop() {
+    ticks := 0
+    --c--
+    sjv_ticks = SDL_GetTicks();
+    --c--
+    animator.nextFrame(ticks)
+
     size : rootWindowRenderer.getSize()
     rootScene.setSize(size)
     rootScene.clear()

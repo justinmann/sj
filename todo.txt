@@ -5,10 +5,12 @@
 * center text
 
 -- language --
-* de-dup global strings
+* array each
+* array map
+* i32.interpolate
 
-* enum
 * namespaces
+* enum
 * ifValue a, b, c {} elseEmpty {}
 * stack optional
 * stack interface
@@ -37,42 +39,6 @@ buttonElement(
 	}
 )
 
-#animation(
-	nextFrame()'bool
-)
-
-animation!t #animation (
-	start : 'i64
-	startValue : 't
-	end : 'i64
-	endValue : 't
-	setValue : '(:'t)void
-
-	nextFrame(time'i64)'bool {
-		percent = ((time - start) / (end - start)) as f32
-		if percent < 0.0f {
-			percent = 0.0f
-			void
-		} else if percent > 1.0f {
-			percent = 1.0f
-			void
-		}
-
-		// interoplate & set value
-		setValue(startValue.interpolate(endValue, percent))
-		// If after end return false
-		percent == 1.0f
-	}
-) { this }
-
-animator(
-	animations : array!#animation()
-	currentTime := 'i64
-
-	nextFrame(time : 'i64) {
-		// Iterate and remove all that return false
-	}
-) { this }
 
 -- lambda --
 array!item(

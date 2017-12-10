@@ -14,19 +14,23 @@ anon4()'stack anon4 {
   this
 }
 
-anon5(fill'i32:, left'i32:, right'i32:, top'i32:, bottom'i32:)'stack anon5 {
+anon5(animations'stack list_heap_animation:, current'i32=)'stack anon5 {
   this
 }
 
-anon6(normal'i32:, hot'i32:, pressed'i32:)'stack anon6 {
+anon6(fill'i32:, left'i32:, right'i32:, top'i32:, bottom'i32:)'stack anon6 {
   this
 }
 
-anon7()'stack anon7 {
+anon7(normal'i32:, hot'i32:, pressed'i32:)'stack anon7 {
   this
 }
 
 anon8()'stack anon8 {
+  this
+}
+
+anon9()'stack anon9 {
   this
 }
 
@@ -1281,7 +1285,11 @@ global()'void {
   i32_max'i32 : (-2147483647 - 1)i
   i32_min'i32 : 2147483647i
   u32_max'u32 : (uint32_t)4294967295uu
-  borderPosition'stack anon5 : anon5(this = anon5(
+  animator'stack anon5 : anon5(this = anon5(
+    animations'stack list_heap_animation : this.animations,
+    current'i32 = this.current
+  ))
+  borderPosition'stack anon6 : anon6(this = anon6(
     fill'i32 : this.fill,
     left'i32 : this.left,
     right'i32 : this.right,
@@ -1296,12 +1304,12 @@ global()'void {
   } vertex3_color4_t;
   
   --cstruct--
-  buttonState'stack anon6 : anon6(this = anon6(
+  buttonState'stack anon7 : anon7(this = anon7(
     normal'i32 : this.normal,
     hot'i32 : this.hot,
     pressed'i32 : this.pressed
   ))
-  colors'stack anon7 : anon7(this = anon7())
+  colors'stack anon8 : anon8(this = anon8())
   --cdefine--
   
   double *
@@ -2195,7 +2203,7 @@ global()'void {
   }
   
   --cfunction--
-  style'stack anon8 : anon8(this = anon8())
+  style'stack anon9 : anon9(this = anon9())
   --cstruct--
   
   typedef struct {

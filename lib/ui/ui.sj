@@ -1,6 +1,7 @@
 rootWindowRenderer : windowRenderer()
 rootScene : scene2d()
 
+include "animation.sj"
 include "blurElement.sj"
 include "borderLayout.sj"
 include "boxElement.sj"
@@ -24,6 +25,7 @@ include "margin.sj"
 include "mat4.sj"
 include "model.sj"
 include "point.sj"
+include "property.sj"
 include "rect.sj"
 include "scene2d.sj"
 include "scene3dElement.sj"

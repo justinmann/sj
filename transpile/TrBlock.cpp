@@ -218,13 +218,13 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
         if (type->category == CTC_Function) {
             auto ifNullBlock = make_shared<TrBlock>();
             stringstream ifStream;
-            ifStream << "if ((uintptr_t)" << name << "._parent > 1)";
+            ifStream << "if ((uintptr_t)" << name << ".inner._parent > 1)";
             block->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifNullBlock));
 
             auto innerBlock = ifNullBlock.get();
 
             stringstream lineStream;
-            lineStream << name << "._parent->_refCount--";
+            lineStream << "((sjs_object*)((char*)" << name << ".inner._parent - sizeof(intptr_t)))->_refCount--";
             innerBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
 
 #ifdef DEBUG_ALLOC
@@ -235,11 +235,11 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
 
             auto ifBlock = make_shared<TrBlock>();
             stringstream ifStream2;
-            ifStream2 << "if (" << name << "._parent->_refCount <= 0)";
+            ifStream2 << "if (((sjs_object*)((char*)" << name << ".inner._parent - sizeof(intptr_t)))->_refCount <= 0)";
             innerBlock->statements.push_back(TrStatement(CLoc::undefined, ifStream2.str(), ifBlock));
 
             stringstream destroyStream;
-            destroyStream << name << "._destroy(" << "(void*)(((char*)" + name + "._parent) + sizeof(intptr_t))" << ")";
+            destroyStream << name << "._destroy(" << name + ".inner._parent" << ")";
             ifBlock->statements.push_back(TrStatement(CLoc::undefined, destroyStream.str()));
 
 #ifndef SKIP_FREE
@@ -294,12 +294,12 @@ void TrValue::addRetainToStatements(TrBlock* block) {
         if (type->category == CTC_Function) {
             auto ifNullBlock = make_shared<TrBlock>();
             stringstream ifStream;
-            ifStream << "if ((uintptr_t)" << name << "._parent > 1)";
+            ifStream << "if ((uintptr_t)" << name << ".inner._parent > 1)";
             block->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifNullBlock));
 
             auto innerBlock = ifNullBlock.get();
             stringstream lineStream;
-            lineStream << name << "._parent->_refCount++";
+            lineStream << "((sjs_object*)((char*)" << name << ".inner._parent - sizeof(intptr_t)))->_refCount++";
             innerBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
         }
         else {
@@ -333,28 +333,28 @@ void TrValue::addInitToStatements(TrBlock* block) {
         return;
     }
     else if (type->typeMode == CTM_Heap) {
-        assert(!type->parent.expired());
+        if (!type->parent.expired()) {
+            if (type->isOption) {
+                stringstream initLine;
+                initLine << name << " = 0";
+                block->statements.push_back(TrStatement(CLoc::undefined, initLine.str()));
+            }
+            else {
+                string structName = type->parent.lock()->getCStructName(type->typeMode);
+                stringstream initLine;
+                initLine << name << " = (" << structName << "*)malloc(sizeof(" << structName << "))";
+                block->statements.push_back(TrStatement(CLoc::undefined, initLine.str()));
 
-        if (type->isOption) {
-            stringstream initLine;
-            initLine << name << " = 0";
-            block->statements.push_back(TrStatement(CLoc::undefined, initLine.str()));
-        }
-        else {
-            string structName = type->parent.lock()->getCStructName(type->typeMode);
-            stringstream initLine;
-            initLine << name << " = (" << structName << "*)malloc(sizeof(" << structName << "))";
-            block->statements.push_back(TrStatement(CLoc::undefined, initLine.str()));
-
-            stringstream lineStream;
-            lineStream << name << "->_refCount = 1";
-            block->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
+                stringstream lineStream;
+                lineStream << name << "->_refCount = 1";
+                block->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
 
 #ifdef DEBUG_ALLOC
-            stringstream logStream;
-            logStream << "printf(\"RETAIN\\t" << type->nameRef << "\\t%0x\\t" << block->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
-            block->statements.push_back(logStream.str());
+                stringstream logStream;
+                logStream << "printf(\"RETAIN\\t" << type->nameRef << "\\t%0x\\t" << block->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
+                block->statements.push_back(logStream.str());
 #endif
+            }
         }
     }
     else if (type->typeMode == CTM_Stack) {
@@ -362,7 +362,6 @@ void TrValue::addInitToStatements(TrBlock* block) {
         assert(!type->isOption);
     }
     else if (type->typeMode == CTM_Local) {
-        assert(!type->parent.expired());
     }
     else {
         assert(false);
@@ -412,6 +411,9 @@ string TrValue::convertToLocalName(shared_ptr<CType> from, string name, bool isR
     case CTM_Heap:
         if (from->category == CTC_Interface) {
             return name;
+        }
+        else if (from->category == CTC_Function) {
+            return name + ".inner";
         }
         else {
             return "(" + from->parent.lock()->getCStructName(CTM_Stack) + "*)(((char*)" + name + ") + sizeof(intptr_t))";
@@ -486,9 +488,14 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
                 leftValue.addReleaseToStatements(block);
             }
 
-            stringstream lineStream;
-            lineStream << type->parent.lock()->getCCopyFunctionName() << "(" << TrValue::convertToLocalName(type, name, isReturnValue) << ", " << TrValue::convertToLocalName(rightValue->type, rightValue->name, rightValue->isReturnValue) << ")";
-            block->statements.push_back(TrStatement(loc, lineStream.str()));
+            if (!type->parent.expired()) {
+                stringstream lineStream;
+                lineStream << type->parent.lock()->getCCopyFunctionName() << "(" << TrValue::convertToLocalName(type, name, isReturnValue) << ", " << TrValue::convertToLocalName(rightValue->type, rightValue->name, rightValue->isReturnValue) << ")";
+                block->statements.push_back(TrStatement(loc, lineStream.str()));
+            }
+            else if (type->category == CTC_Function) {
+                type->callback.lock()->writeCopy(block, rightValue->name, name, type->typeMode == CTM_Heap);
+            }
         }
     }
 }

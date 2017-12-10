@@ -21,32 +21,29 @@ void CCallbackVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* tr
         return;
     }
 
-    if (type->typeMode == CTM_Heap) {
-        if (dotValue) {
-            trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._parent = (sjs_object*)((char*)" + dotValue->name + " - sizeof(intptr_t))"));
-            trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._parent->_refCount++"));
+    string name = storeValue->getName(trBlock);
+    if (storeValue->type->typeMode == CTM_Heap) {
+        name += ".inner";
+    }
+
+    if (dotValue) {
+        trBlock->statements.push_back(TrStatement(loc, name + "._parent = (void*)" + TrValue::convertToLocalName(dotValue->type, dotValue->name, false)));
+        if (storeValue->type->typeMode == CTM_Heap) {
+            trBlock->statements.push_back(TrStatement(loc, "(sjs_object*)((char*)" + storeValue->getName(trBlock) + "._parent - sizeof(intptr_t))->_refCount++"));
             trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._destroy = " + dotValue->type->parent.lock()->getCDestroyFunctionName()));
-        }
-        else {
-            trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._parent = (sjs_object*)1"));
         }
     }
     else {
-        if (dotValue) {
-            trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._parent = (void*)" + TrValue::convertToLocalName(dotValue->type, dotValue->name, false)));
-        }
-        else {
-            trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._parent = (void*)1"));
-        }
+        trBlock->statements.push_back(TrStatement(loc, name + "._parent = (void*)1"));
     }
 
     if (callback->stackReturnType) {
         string functionName = function->getCCallbackFunctionName(compiler, trOutput, CTM_Stack);
-        trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._cb = " + functionName));
+        trBlock->statements.push_back(TrStatement(loc, name + "._cb = " + functionName));
     }
     if (callback->heapReturnType) {
         string functionName = function->getCCallbackFunctionName(compiler, trOutput, CTM_Heap);
-        trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._cb_heap = " + functionName));
+        trBlock->statements.push_back(TrStatement(loc, name + "._cb_heap = " + functionName));
     }
 
     storeValue->hasSetValue = true;
@@ -165,9 +162,12 @@ void CCallbackFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerS
             compiler->addError(calleeLoc, CErrorCode::InvalidType, "no stack return available");
         }
     }
+
+    auto callbackValue = trBlock->createTempStoreVariable(calleeLoc, callerScope, callback->types->localValueType, "callback");
+    callbackVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, callbackValue);
     
     stringstream line;
-    line << callbackVar->cname << ".";
+    line << callbackValue->getName(trBlock) << ".";
     if (returnMode == CTM_Heap) {
         line << "_cb_heap";
     }
@@ -178,18 +178,18 @@ void CCallbackFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerS
     bool isFirstParameter = true;
 
     // Add "parent" to "this"
-    line << callbackVar->cname << "._parent";
+    line << callbackValue->getName(trBlock) << "._parent";
 
     // Fill in "this" with normal arguments
     for (auto parameter : *parameters) {
-        auto argType = parameter.var->getType(compiler);
-
         stringstream argStream;
         auto parameterVar = parameter.var;
         if (!parameterVar) {
             assert(compiler->errors.size() > 0);
             return;
         }
+
+        auto argType = parameter.var->getType(compiler);
         auto argStoreValue = trBlock->createTempStoreVariable(calleeLoc, callerScope, argType->typeMode == CTM_Heap ? argType : argType->getLocalValueType(), "functionParam");
         parameterVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, argStoreValue);
 
@@ -307,13 +307,7 @@ void CCallback::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 
     string heapStructName = getCName(CTM_Heap, false);
     if (trOutput->structs.find(heapStructName) == trOutput->structs.end()) {
-        trOutput->structs[heapStructName].push_back("sjs_object* _parent");
-        if (stackReturnType) {
-            trOutput->structs[heapStructName].push_back(getCBName(compiler, true, CTM_Stack));
-        }
-        if (heapReturnType) {
-            trOutput->structs[heapStructName].push_back(getCBName(compiler, true, CTM_Heap));
-        }
+        trOutput->structs[heapStructName].push_back(stackStructName + " inner");
         trOutput->structs[heapStructName].push_back("void (*_destroy)(void*)");
         trOutput->structOrder.push_back(heapStructName);
     }
@@ -373,5 +367,29 @@ string CCallback::getCName(CTypeMode typeMode, bool isOption) {
     }
     return safeStream.str();
 }
+
+void CCallback::writeCopy(TrBlock* trBlock, string from, string to, bool isHeap) {
+    if (isHeap) {
+        trBlock->statements.push_back(TrStatement(CLoc::undefined, to + ".inner._parent = " + from + ".inner._parent"));
+        trBlock->statements.push_back(TrStatement(CLoc::undefined, "((sjs_object*)((char*)" + to + ".inner._parent - sizeof(intptr_t)))->_refCount++"));
+        if (stackReturnType) {
+            trBlock->statements.push_back(TrStatement(CLoc::undefined, to + ".inner._cb = " + from + ".inner._cb"));
+        }
+        if (heapReturnType) {
+            trBlock->statements.push_back(TrStatement(CLoc::undefined, to + ".inner._cb_heap = " + from + ".inner._cb_heap"));
+        }
+        trBlock->statements.push_back(TrStatement(CLoc::undefined, to + "._destroy = " + from + "._destroy"));
+    }
+    else {
+        trBlock->statements.push_back(TrStatement(CLoc::undefined, to + "._parent = " + from + "._parent"));
+        if (stackReturnType) {
+            trBlock->statements.push_back(TrStatement(CLoc::undefined, to + "._cb = " + from + "._cb"));
+        }
+        if (heapReturnType) {
+            trBlock->statements.push_back(TrStatement(CLoc::undefined, to + "._cb_heap = " + from + "._cb_heap"));
+        }
+    }
+}
+
 
 map<vector<shared_ptr<CType>>, shared_ptr<CCallback>> CCallback::_callbacks;

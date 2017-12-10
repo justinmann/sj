@@ -272,6 +272,15 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
         return;
     
     _hasTranspileDefinitions = true;
+
+    for (auto t : templateTypes) {
+        if (!t->parent.expired()) {
+            t->parent.lock()->transpileDefinition(compiler, trOutput);
+        }
+        else if (!t->callback.expired()) {
+            t->callback.lock()->transpileDefinition(compiler, trOutput);
+        }
+    }
     
     for (auto returnMode : functionReturnModes) {
         auto returnType = getReturnType(compiler, returnMode);        
@@ -379,6 +388,9 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                     if (!argType.second->parent.expired()) {
                         argType.second->parent.lock()->transpileDefinition(compiler, trOutput);
                     }
+                    else if (!argType.second->callback.expired()) {
+                        argType.second->callback.lock()->transpileDefinition(compiler, trOutput);
+                    }
                     
                     if (argType.second->typeMode == CTM_Stack) {
                     }
@@ -413,6 +425,9 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                         // C requires that inline structs be defined before use
                         if (!argType.second->parent.expired()) {
                             argType.second->parent.lock()->transpileDefinition(compiler, trOutput);
+                        }
+                        else if (!argType.second->callback.expired()) {
+                            argType.second->callback.lock()->transpileDefinition(compiler, trOutput);
                         }
 
                         if (argType.second->typeMode == CTM_Stack) {

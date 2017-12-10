@@ -70,11 +70,15 @@ struct td_sjs_object {
 int32_t sjv_d;
 
 void sjf_class_func(int32_t* _return);
+void sjf_func(void);
 void main_destroy(void);
 
 void sjf_class_func(int32_t* _return) {
 #line 1 ".\basic\template4.sj"
     (*_return) = 1;
+}
+
+void sjf_func(void) {
 }
 
 int main(int argc, char** argv) {

@@ -1,6 +1,6 @@
 scene3dElement #element (
 	children : array!#model()
-	camera := vec3(0.0f, 0.0f, -5.0f)
+	camera : property!vec3(vec3(0.0f, 0.0f, -5.0f))
 	lookAt := vec3(0.0f, 0.0f, 0.0f)
 	up := vec3(0.0f, 1.0f, 0.0f)
 	fieldOfView := 90.0f
@@ -26,7 +26,7 @@ scene3dElement #element (
 		if _rect != rect_ {
 			_rect = copy rect_
 			projection = mat4_perspective(fieldOfView, _rect.h as f32 / _rect.w as f32, zNear, zFar)
-			view = mat4_lookAtLH(camera, lookAt, up)
+			view = mat4_lookAtLH(camera.get(), lookAt, up)
 			void
 		}
 		void
@@ -81,4 +81,7 @@ scene3dElement #element (
 	    glEnable( GL_DEPTH_TEST );
 		--c--	
 	}
-) { this }
+) { 
+	camera.animate(vec3(0.0f, 0.0f, -10.0f), 1000)
+	this 
+}
