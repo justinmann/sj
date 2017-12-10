@@ -1,9 +1,6 @@
 Terminals unused in grammar
 
    TINVALID
-   TAT
-   TASOPTION
-   TAUTO
 
 
 State 182 conflicts: 1 shift/reduce
@@ -274,214 +271,211 @@ TIDENTIFIER (258) 33 34 56 102 126 127 128 129 130 131 135 136 137
     157 164 165 167
 TINTEGER (259) 117 118
 TDOUBLE (260) 119 120
-TINVALID (261)
-TSTRING (262) 15 123
-TCHAR (263) 124
-TCBLOCK (264) 9 18
-TCFUNCTION (265) 12 20
-TCDEFINE (266) 10 19
-TCSTRUCT (267) 11
-TCINCLUDE (268) 13
-TCVAR (269) 50
-TCTYPEDEF (270) 14
-TCEQ (271) 81
-TCNE (272) 82
-TCLT (273) 85
-TCLE (274) 86
-TCGT (275) 87
-TCGE (276) 88
-TEQUAL (277) 28 138 181
-TEND (278) 3 59 148 149
-TLPAREN (279) 41 42 57 68 99 102 111 112 113 132 180
-TRPAREN (280) 41 42 57 68 99 102 111 112 113 132 180
-TLBRACE (281) 17
-TRBRACE (282) 17
-TCOMMA (283) 45 46 60 134 142 144 152 153 185 195
-TCOLON (284) 139 182
-TQUOTE (285) 154 155
-TPLUS (286) 90
-TMINUS (287) 91 117 119
-TMUL (288) 92
-TDIV (289) 93
-TTRUE (290) 121
-TFALSE (291) 122
-TAS (292) 97
-TVOID (293) 73 170
-TIF (294) 104 105 106
-TELSE (295) 105 106
-TTHROW (296) 68
-TCATCH (297) 38
-TFOR (298) 102
-TTO (299) 102
-TWHILE (300) 103
-TPLUSPLUS (301) 22
-TMINUSMINUS (302) 23
-TPLUSEQUAL (303) 24
-TMINUSEQUAL (304) 25
-TLBRACKET (305) 28 72 145 193
-TRBRACKET (306) 28 72 145 193
-TEXCLAIM (307) 96 192 193
-TDOT (308) 107 129 130 131 137 165
-TTHIS (309) 116
-TINCLUDE (310) 15
-TAND (311) 74 77
-TOR (312) 75 78
-TCOPY (313) 36 141
-TDESTROY (314) 40
-TMOD (315) 94
-THASH (316) 55 56 158 168
-TAT (317)
-TCPEQ (318) 83
-TCPNE (319) 84
-TMULEQUAL (320) 26
-TDIVEQUAL (321) 27
-TISEMPTY (322) 111
-TGETVALUE (323) 112
-TASOPTION (324)
-TQUESTION (325) 189 191
-TEMPTY (326) 125
-TVALUE (327) 113
-TQUESTIONCOLON (328) 95
-TQUESTIONDOT (329) 108
-TPARENT (330) 115
-TSTACK (331) 69 162
-THEAP (332) 71 163
-TLOCAL (333) 70 161
-TAUTO (334)
-TTYPEI32 (335) 171
-TTYPEU32 (336) 172
-TTYPEF32 (337) 173
-TTYPEI64 (338) 174
-TTYPEU64 (339) 175
-TTYPEF64 (340) 176
-TTYPECHAR (341) 177
-TTYPEBOOL (342) 178
-TTYPEPTR (343) 179
+TSTRING (261) 15 123
+TCHAR (262) 124
+TCBLOCK (263) 9 18
+TCFUNCTION (264) 12 20
+TCDEFINE (265) 10 19
+TCSTRUCT (266) 11
+TCINCLUDE (267) 13
+TCVAR (268) 50
+TCTYPEDEF (269) 14
+TCEQ (270) 81
+TCNE (271) 82
+TCLT (272) 85
+TCLE (273) 86
+TCGT (274) 87
+TCGE (275) 88
+TEQUAL (276) 28 138 181
+TEND (277) 3 59 148 149
+TLPAREN (278) 41 42 57 68 99 102 111 112 113 132 180
+TRPAREN (279) 41 42 57 68 99 102 111 112 113 132 180
+TLBRACE (280) 17
+TRBRACE (281) 17
+TCOMMA (282) 45 46 60 134 142 144 152 153 185 195
+TCOLON (283) 139 182
+TQUOTE (284) 154 155
+TPLUS (285) 90
+TMINUS (286) 91 117 119
+TMUL (287) 92
+TDIV (288) 93
+TTRUE (289) 121
+TFALSE (290) 122
+TAS (291) 97
+TVOID (292) 73 170
+TIF (293) 104 105 106
+TELSE (294) 105 106
+TTHROW (295) 68
+TCATCH (296) 38
+TFOR (297) 102
+TTO (298) 102
+TWHILE (299) 103
+TPLUSPLUS (300) 22
+TMINUSMINUS (301) 23
+TPLUSEQUAL (302) 24
+TMINUSEQUAL (303) 25
+TLBRACKET (304) 28 72 145 193
+TRBRACKET (305) 28 72 145 193
+TEXCLAIM (306) 96 192 193
+TDOT (307) 107 129 130 131 137 165
+TTHIS (308) 116
+TINCLUDE (309) 15
+TAND (310) 74 77
+TOR (311) 75 78
+TCOPY (312) 36 141
+TDESTROY (313) 40
+TMOD (314) 94
+THASH (315) 55 56 158 168
+TCPEQ (316) 83
+TCPNE (317) 84
+TMULEQUAL (318) 26
+TDIVEQUAL (319) 27
+TISEMPTY (320) 111
+TGETVALUE (321) 112
+TQUESTION (322) 189 191
+TEMPTY (323) 125
+TVALUE (324) 113
+TQUESTIONCOLON (325) 95
+TQUESTIONDOT (326) 108
+TPARENT (327) 115
+TSTACK (328) 69 162
+THEAP (329) 71 163
+TLOCAL (330) 70 161
+TTYPEI32 (331) 171
+TTYPEU32 (332) 172
+TTYPEF32 (333) 173
+TTYPEI64 (334) 174
+TTYPEU64 (335) 175
+TTYPEF64 (336) 176
+TTYPECHAR (337) 177
+TTYPEBOOL (338) 178
+TTYPEPTR (339) 179
+TINVALID (340)
 
 
 Nonterminals, with rules where they appear
 
-$accept (89)
+$accept (86)
     on left: 0
-program (90)
+program (87)
     on left: 1, on right: 0
-stmts (91)
+stmts (88)
     on left: 2 3, on right: 1 3 17
-stmt (92)
+stmt (89)
     on left: 4 5 6 7 8 9 10 11 12 13 14 15 16, on right: 2 3 28 126
     128 129 131
-block (93)
+block (90)
     on left: 17 18 19 20, on right: 29 30 31 32 36 38 40 102 103 104
     105 106
-var_decl (94)
+var_decl (91)
     on left: 21 22 23 24 25 26 27 28, on right: 5
-func_decl (95)
+func_decl (92)
     on left: 29 30 31 32, on right: 6 49
-func_type_name (96)
+func_type_name (93)
     on left: 33 34, on right: 29 30 31 32 62 110 114
-copy (97)
+copy (94)
     on left: 35 36, on right: 29 30 31 32
-catch (98)
+catch (95)
     on left: 37 38, on right: 29 30 31 32
-destroy (99)
+destroy (96)
     on left: 39 40, on right: 29 30 31 32
-func_block (100)
+func_block (97)
     on left: 41 42, on right: 29 30 31 32 62 110
-func_args (101)
+func_args (98)
     on left: 43 44 45 46, on right: 41 44 45 46
-func_arg (102)
+func_arg (99)
     on left: 47 48 49 50 51, on right: 43 44 45 46
-implement (103)
+implement (100)
     on left: 52, on right: 30 32
-implement_args (104)
+implement_args (101)
     on left: 53 54, on right: 52 54
-implement_arg (105)
+implement_arg (102)
     on left: 55, on right: 53 54
-interface_decl (106)
+interface_decl (103)
     on left: 56, on right: 7 47
-interface_block (107)
+interface_block (104)
     on left: 57, on right: 56
-interface_args (108)
+interface_args (105)
     on left: 58 59 60, on right: 57 59 60
-interface_arg (109)
+interface_arg (106)
     on left: 61 62, on right: 58 59 60
-expr (110)
+expr (107)
     on left: 63 64 65 66 67 68 69 70 71 72 73, on right: 8 28 51 68
     69 70 71 72 102 103 104 105 106 111 112 113 150 151 152 153
-expr_and (111)
+expr_and (108)
     on left: 74 75 76, on right: 24 25 26 27 66 74 75 77 78 132
-expr_and_inner (112)
+expr_and_inner (109)
     on left: 77 78 79 80, on right: 99
-expr_comp (113)
+expr_comp (110)
     on left: 81 82 83 84 85 86 87 88 89, on right: 74 75 76 77 78 80
     142 143 144
-expr_math (114)
+expr_math (111)
     on left: 90 91 92 93 94 95 96 97 98, on right: 81 82 83 84 85 86
     87 88 89 90 91 92 93 94 95
-expr_var (115)
+expr_var (112)
     on left: 99 100 101, on right: 96 97 98
-for_expr (116)
+for_expr (113)
     on left: 102, on right: 64
-while_expr (117)
+while_expr (114)
     on left: 103, on right: 65
-if_expr (118)
+if_expr (115)
     on left: 104 105 106, on right: 63 106
-var (119)
+var (116)
     on left: 107 108 109, on right: 22 23 24 25 26 27 28 72 100 107
     108 129 130 131 137
-var_right (120)
+var_right (117)
     on left: 110 111 112 113 114 115 116, on right: 107 108 109
-const (121)
+const (118)
     on left: 117 118 119 120 121 122 123 124 125, on right: 101
-assign (122)
+assign (119)
     on left: 126 127 128 129 130 131 132, on right: 21 48
-assign_tuple (123)
+assign_tuple (120)
     on left: 133 134, on right: 132 134
-assign_tuple_arg (124)
+assign_tuple_arg (121)
     on left: 135 136 137, on right: 133 134
-assign_type (125)
+assign_type (122)
     on left: 138 139, on right: 126 127 128 129 130 131 135 136 137
-assign_copy (126)
+assign_copy (123)
     on left: 140 141, on right: 138 139
-tuple (127)
+tuple (124)
     on left: 142, on right: 79
-tuple_args (128)
+tuple_args (125)
     on left: 143 144, on right: 142 144
-array (129)
+array (126)
     on left: 145, on right: 67
-end_optional (130)
+end_optional (127)
     on left: 146 147, on right: 41 145
-end_star (131)
+end_star (128)
     on left: 148 149, on right: 44 45 147 149 151 152
-array_args (132)
+array_args (129)
     on left: 150 151 152 153, on right: 145 151 152 153
-return_type_quote (133)
+return_type_quote (130)
     on left: 154, on right: 31 32 62
-arg_type_quote (134)
+arg_type_quote (131)
     on left: 155, on right: 125 127 128 130 131 136
-arg_type (135)
+arg_type (132)
     on left: 156 157 158 159, on right: 97 155 181 182 192 194 195
-arg_mode (136)
+arg_mode (133)
     on left: 160 161 162 163, on right: 157 158 167 168 180
-arg_type_interface (137)
+arg_type_interface (134)
     on left: 164 165, on right: 55 158 165 168
-return_type (138)
+return_type (135)
     on left: 166 167 168 169 170, on right: 154 180
-value_type (139)
+value_type (136)
     on left: 171 172 173 174 175 176 177 178 179, on right: 156 166
-func_type (140)
+func_type (137)
     on left: 180, on right: 159 169
-func_arg_type (141)
+func_arg_type (138)
     on left: 181 182, on right: 184 185
-func_arg_type_list (142)
+func_arg_type_list (139)
     on left: 183 184 185, on right: 180 185
-temp_block_optional (143)
+temp_block_optional (140)
     on left: 186 187, on right: 55 56
-temp_option_optional (144)
+temp_option_optional (141)
     on left: 188 189 190 191, on right: 157 158 167 168
-temp_block (145)
+temp_block (142)
     on left: 192 193, on right: 34 187 190 191
-temp_args (146)
+temp_args (143)
     on left: 194 195, on right: 193 195
 
 
