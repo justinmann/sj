@@ -8,9 +8,9 @@ shared_ptr<CType> CCastVar::getType(Compiler* compiler) {
     return typeTo;
 }
 
-void CCastVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void CCastVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     auto rightStoreValue = trBlock->createTempStoreVariable(loc, scope.lock(), var->getType(compiler), "cast");
-    var->transpile(compiler, trOutput, trBlock, nullptr, thisValue, rightStoreValue);
+    var->transpile(compiler, trOutput, trBlock, thisValue, rightStoreValue);
     if (!rightStoreValue->hasSetValue) {
         return;
     }
@@ -63,8 +63,8 @@ void CCastVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
     }
 }
 
-void CCastVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
-    var->dump(compiler, nullptr, functions, ss, dotSS, level);
+void CCastVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+    var->dump(compiler, functions, ss, level);
     ss << " as " << typeTo->fullName;
 }
 

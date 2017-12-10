@@ -77,12 +77,12 @@ shared_ptr<vector<FunctionParameter>> CCallVar::getParameters(Compiler* compiler
     return parameters;
 }
 
-shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CLoc loc_, const string& name_, shared_ptr<vector<FunctionParameter>> parameters_, shared_ptr<CScope> scope, shared_ptr<CBaseFunction> callee_, CTypeMode returnMode) {
+shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CLoc loc_, const string& name_, shared_ptr<CVar> dotVar, shared_ptr<vector<FunctionParameter>> parameters_, shared_ptr<CScope> scope, shared_ptr<CBaseFunction> callee_, CTypeMode returnMode) {
     assert(callee_);
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
     // TODO: assert(callee_->getIsReturnModeValid(compiler, returnMode));
     
-    auto c = make_shared<CCallVar>(loc_, scope, returnMode);
+    auto c = make_shared<CCallVar>(loc_, scope, dotVar, returnMode);
     c->parameters = parameters_;
     c->scope = scope;
     c->callee = callee_;
@@ -97,7 +97,7 @@ shared_ptr<CType> CCallVar::getType(Compiler* compiler) {
     return callee->getReturnType(compiler, returnMode);
 }
 
-void CCallVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void CCallVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     assert(compiler->state == CompilerState::Compile);
 
     shared_ptr<TrStoreValue> calleeStoreValue;
@@ -109,6 +109,13 @@ void CCallVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
         calleeStoreValue = trBlock->createTempStoreVariable(loc, scope.lock(), calleeReturnType, "call");
     }
 
+    shared_ptr<TrValue> dotValue;
+    if (dotVar) {
+        auto dotStoreValue = trBlock->createTempStoreVariable(loc, nullptr, dotVar->getType(compiler)->getLocalType(), "dot");
+        dotVar->transpile(compiler, trOutput, trBlock, thisValue, dotStoreValue);
+        dotValue = dotStoreValue->getValue();
+    }
+
     callee->transpile(compiler, scope.lock(), trOutput, trBlock, dotValue, loc, parameters, thisValue, calleeStoreValue, returnMode);
 
     if (calleeStoreValue != storeValue) {
@@ -116,7 +123,7 @@ void CCallVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
     }
 }
 
-void CCallVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CCallVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     if (functions.find(callee) == functions.end()) {
         functions[callee] = "";
         stringstream temp;
@@ -136,12 +143,7 @@ void CCallVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<
 
             if (callee->hasParent) {
                 ss << "parent: ";
-                auto t = dotSS.str();
-                if (t.size() > 0) {
-                    ss << t;
-                } else {
-                    ss << "this";
-                }
+                ss << "this";
 
                 if (parameters->size() > 0) {
                     ss << ",\n";
@@ -156,8 +158,7 @@ void CCallVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<
                 auto ctype = paramVar->getType(compiler);
                 ss << "'" << (ctype != nullptr ? ctype->fullName : "ERROR");
                 ss << (paramVar->isMutable ? " = " : " : ");
-                stringstream dotSS;
-                paramVar->dump(compiler, nullptr, functions, ss, dotSS, level + 1);
+                paramVar->dump(compiler, functions, ss, level + 1);
                 if (paramIndex != parameters->size() - 1) {
                     ss << ",\n";
                     dumpf(ss, level + 1);
@@ -175,12 +176,7 @@ void CCallVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<
 
             if (callee->hasParent) {
                 ss << "parent: ";
-                auto t = dotSS.str();
-                if (t.size() > 0) {
-                    ss << t;
-                } else {
-                    ss << "this";
-                }
+                ss << "this";
 
                 if (parameters->size() > 0) {
                     ss << ",\n";
@@ -194,8 +190,7 @@ void CCallVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<
                 ss << paramVar->name.c_str();
                 ss << "'" << paramVar->getType(compiler)->fullName.c_str();
                 ss << (paramVar->isMutable ? " = " : " : ");
-                stringstream dotSS;
-                paramVar->dump(compiler, nullptr, functions, ss, dotSS, level + 1);
+                paramVar->dump(compiler, functions, ss, level + 1);
                 if (paramIndex != parameters->size() - 1) {
                     ss << ",\n";
                     dumpf(ss, level + 1);
@@ -271,10 +266,10 @@ shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, shared_ptr<CSc
         shared_ptr<CVar> var;
         if (dotVar) {
             auto temp = dynamic_pointer_cast<CFunction>(cfunction);
-            var = temp->getCVar(compiler, vector<shared_ptr<FunctionBlock>>(), name, VSM_ThisOnly, cfunctionReturnMode);
+            var = temp->getCVar(compiler, scope, vector<shared_ptr<FunctionBlock>>(), dotVar, name, VSM_ThisOnly, cfunctionReturnMode);
         }
         else {
-            var = scope->getCVar(compiler, name, VSM_LocalThisParent);
+            var = scope->getCVar(compiler, nullptr, name, VSM_LocalThisParent);
         }
 
         if (var) {
@@ -319,5 +314,5 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
         return nullptr;
     }
 
-    return CCallVar::create(compiler, loc, name, parameters, scope, callee, returnMode);
+    return CCallVar::create(compiler, loc, name, dotVar, parameters, scope, callee, returnMode);
 }

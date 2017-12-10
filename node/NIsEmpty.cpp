@@ -8,9 +8,9 @@ shared_ptr<CType> CIsEmptyVar::getType(Compiler* compiler) {
     return compiler->typeBool;
 }
 
-void CIsEmptyVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void CIsEmptyVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     auto leftValue = trBlock->createTempStoreVariable(loc, scope.lock(), var->getType(compiler), "isEmpty");
-    var->transpile(compiler, trOutput, trBlock, nullptr, thisValue, leftValue);
+    var->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
     if (!leftValue->hasSetValue) {
         return;
     }
@@ -37,9 +37,9 @@ void CIsEmptyVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
     storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, compiler->typeBool, line.str(), false));
 }
 
-void CIsEmptyVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CIsEmptyVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << "isEmpty(";
-    var->dump(compiler, nullptr, functions, ss, dotSS, level);
+    var->dump(compiler, functions, ss, level);
     ss << ")";
 }
 

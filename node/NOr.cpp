@@ -8,11 +8,11 @@ shared_ptr<CType> COrVar::getType(Compiler* compiler) {
     return compiler->typeBool;
 }
 
-void COrVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void COrVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     auto leftValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "or");
     auto rightValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "or");
-    leftVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, leftValue);
-    rightVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, rightValue);
+    leftVar->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
+    rightVar->transpile(compiler, trOutput, trBlock, thisValue, rightValue);
 
     stringstream line;
     line << leftValue->getName(trBlock) << " || " << rightValue->getName(trBlock);
@@ -21,10 +21,10 @@ void COrVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock,
     storeValue->retainValue(compiler, loc, trBlock, resultValue);
 }
 
-void COrVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
-    leftVar->dump(compiler, nullptr, functions, ss, dotSS, level);
+void COrVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+    leftVar->dump(compiler, functions, ss, level);
     ss << " && ";
-    rightVar->dump(compiler, nullptr, functions, ss, dotSS, level);
+    rightVar->dump(compiler, functions, ss, level);
 }
 
 void NOr::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {

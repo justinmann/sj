@@ -12,11 +12,11 @@ shared_ptr<CType> CChangeModeVar::getType(Compiler* compiler) {
     return type;
 }
 
-void CChangeModeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    var->transpile(compiler, trOutput, trBlock, dotValue, thisValue, storeValue);
+void CChangeModeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    var->transpile(compiler, trOutput, trBlock, thisValue, storeValue);
 }
 
-void CChangeModeVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CChangeModeVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     switch (typeMode) {
         case CTM_Heap:
             ss << "heap ";
@@ -30,7 +30,7 @@ void CChangeModeVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<share
         default:
             break;
     }
-    var->dump(compiler, nullptr, functions, ss, dotSS, level);
+    var->dump(compiler, functions, ss, level);
 }
 
 

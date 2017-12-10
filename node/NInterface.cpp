@@ -65,11 +65,11 @@ shared_ptr<CType> CInterfaceVar::getType(Compiler* compiler) {
     return nullptr; // parent.lock()->getThisTypes(compiler);
 }
 
-void CInterfaceVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void CInterfaceVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     assert(false);
 }
 
-void CInterfaceVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CInterfaceVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     assert(false);
 }
 

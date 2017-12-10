@@ -17,19 +17,19 @@ shared_ptr<CType> CBlockVar::getType(Compiler* compiler) {
     return statements.back()->getType(compiler);
 }
 
-void CBlockVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void CBlockVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     for (auto it : statements) {
         auto isLastStatement = it == statements.back();
         auto type = it->getType(compiler);
-        it->transpile(compiler, trOutput, trBlock, nullptr, thisValue, isLastStatement ? storeValue : trBlock->createVoidStoreVariable(loc, type));
+        it->transpile(compiler, trOutput, trBlock, thisValue, isLastStatement ? storeValue : trBlock->createVoidStoreVariable(loc, type));
     }
 }
 
-void CBlockVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CBlockVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << "{\n";
     for (auto it : statements) {
         stringstream line;
-        it->dump(compiler, nullptr, functions, line, dotSS, level + 1);
+        it->dump(compiler, functions, line, level + 1);
         auto t = line.str();
         if (t.size() > 0) {
             dumpf(ss, level + 1);

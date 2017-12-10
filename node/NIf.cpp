@@ -16,10 +16,10 @@ shared_ptr<CType> CIfElseVar::getType(Compiler* compiler) {
     return nullptr;
 }
 
-void CIfElseVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void CIfElseVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     auto type = getType(compiler);
     auto conditionTrValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "ifElse");
-    condVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, conditionTrValue);
+    condVar->transpile(compiler, trOutput, trBlock, thisValue, conditionTrValue);
     if (!conditionTrValue->hasSetValue) {
         return;
     }
@@ -37,7 +37,7 @@ void CIfElseVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
     auto trStatement = TrStatement(loc, ifLine.str(), trIfBlock);
 
     scope.lock()->pushFunctionBlock(ifFunctionBlock);
-    ifVar->transpile(compiler, trOutput, trIfBlock.get(), nullptr, thisValue, storeValue);
+    ifVar->transpile(compiler, trOutput, trIfBlock.get(), thisValue, storeValue);
     scope.lock()->popFunctionBlock(ifFunctionBlock);
 
     if (elseVar) {
@@ -47,7 +47,7 @@ void CIfElseVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
         trStatement.elseBlock = trElseBlock;
 
         scope.lock()->pushFunctionBlock(elseFunctionBlock);
-        elseVar->transpile(compiler, trOutput, trElseBlock.get(), nullptr, thisValue, storeValue);
+        elseVar->transpile(compiler, trOutput, trElseBlock.get(), thisValue, storeValue);
         scope.lock()->popFunctionBlock(elseFunctionBlock);
     }
     else {
@@ -59,18 +59,18 @@ void CIfElseVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
     trBlock->statements.push_back(trStatement);
 }
 
-void CIfElseVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CIfElseVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << "if ";
-    condVar->dump(compiler, nullptr, functions, ss, dotSS, level);
+    condVar->dump(compiler, functions, ss, level);
 
     if (ifVar) {
         ss << " ";
-        ifVar->dump(compiler, nullptr, functions, ss, dotSS, level);
+        ifVar->dump(compiler, functions, ss, level);
     }
     
     if (elseVar) {
         ss << " else ";
-        elseVar->dump(compiler, nullptr, functions, ss, dotSS, level);
+        elseVar->dump(compiler, functions, ss, level);
     }
 }
 

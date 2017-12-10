@@ -21,7 +21,7 @@ public:
         }
     }
 
-    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
         shared_ptr<TrValue> value;
         if (this->scope.lock()->function->hasThis) {
             value = make_shared<TrValue>(scope.lock(), getType(compiler), "_this->" + name, false);
@@ -32,7 +32,7 @@ public:
         storeValue->retainValue(compiler, loc, trBlock, value);
     }
 
-    void dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+    void dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
         ss << name;
     }
 
@@ -40,7 +40,7 @@ public:
         return isMutable;
     }
     
-    shared_ptr<TrStoreValue> getStoreValue(Compiler* compiler, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op) {
+    shared_ptr<TrStoreValue> getStoreValue(Compiler* compiler, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, AssignOp op) {
         if (isMutable) {
             if (this->scope.lock()->function->hasThis) {
                 return make_shared<TrStoreValue>(loc, scope, getType(compiler), "_this->" + argVar->cname, AssignOp::mutableUpdate);
@@ -216,7 +216,7 @@ bool CFunction::init(Compiler* compiler, shared_ptr<NFunction> node) {
                 }
 
                 auto thisArgVar = make_shared<CNormalVar>(node->loc, calleeScope, argType, it->name, it->op.isMutable, CVarType::Var_Public);
-                _data[returnMode].thisArgVarsByName[it->name] = pair<int, shared_ptr<CVar>>(index, thisArgVar);
+                _data[returnMode].thisArgVarsByName[it->name] = pair<int, shared_ptr<CNormalVar>>(index, thisArgVar);
                 _data[returnMode].thisArgVars.push_back(thisArgVar);
             }
 
@@ -302,7 +302,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                 trOutput->functions[functionName] = trFunctionBlock;
 
                 auto bodyReturnValue = (returnType == compiler->typeVoid) ? trFunctionBlock->createVoidStoreVariable(loc, returnType) : trFunctionBlock->createReturnStoreVariable(loc, nullptr, returnType);
-                _data[returnMode].blockVar->transpile(compiler, trOutput, trFunctionBlock.get(), nullptr, nullptr, bodyReturnValue);
+                _data[returnMode].blockVar->transpile(compiler, trOutput, trFunctionBlock.get(), nullptr, bodyReturnValue);
 
                 stringstream functionDefinition;
                 functionDefinition << "void " << functionName << "(";
@@ -359,7 +359,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 
                 _isReturnThis = _data[returnMode].blockVar->getReturnThis();
                 auto bodyReturnValue = (returnType != compiler->typeVoid && !_isReturnThis) ? trFunctionBlock->createReturnStoreVariable(loc, nullptr, returnType) : trFunctionBlock->createVoidStoreVariable(loc, returnType);
-                _data[returnMode].blockVar->transpile(compiler, trOutput, trFunctionBlock.get(), nullptr, make_shared<TrValue>(nullptr, calleeVar->getType(compiler)->getLocalType(), "_this", false), bodyReturnValue);
+                _data[returnMode].blockVar->transpile(compiler, trOutput, trFunctionBlock.get(), make_shared<TrValue>(nullptr, calleeVar->getType(compiler)->getLocalType(), "_this", false), bodyReturnValue);
 
                 string structName = getCStructName(calleeVar->getTypeMode());
                 stringstream functionDefinition;
@@ -466,7 +466,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 
                 if (_data[returnMode].copyVar) {
                     auto copyType = _data[returnMode].copyVar->getType(compiler);
-                    _data[returnMode].copyVar->transpile(compiler, trOutput, trCopyBlock.get(), nullptr, make_shared<TrValue>(nullptr, calleeVar->getType(compiler), "_this", false), trCopyBlock->createVoidStoreVariable(loc, copyType));
+                    _data[returnMode].copyVar->transpile(compiler, trOutput, trCopyBlock.get(), make_shared<TrValue>(nullptr, calleeVar->getType(compiler), "_this", false), trCopyBlock->createVoidStoreVariable(loc, copyType));
                 }
             }
 
@@ -484,7 +484,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 
                 if (_data[returnMode].destroyVar) {
                     auto destroyType = _data[returnMode].destroyVar->getType(compiler);
-                    _data[returnMode].destroyVar->transpile(compiler, trOutput, trDestroyBlock.get(), nullptr, make_shared<TrValue>(nullptr, calleeVar->getType(compiler), "_this", false), trDestroyBlock->createVoidStoreVariable(loc, destroyType));
+                    _data[returnMode].destroyVar->transpile(compiler, trOutput, trDestroyBlock.get(), make_shared<TrValue>(nullptr, calleeVar->getType(compiler), "_this", false), trDestroyBlock->createVoidStoreVariable(loc, destroyType));
                 }
 
                 for (auto argVar : _data[returnMode].thisArgVars) {
@@ -662,7 +662,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
                 return;
             }
             auto argStoreValue = trBlock->createTempStoreVariable(calleeLoc, callerScope, argType->typeMode == CTM_Heap ? argType : argType->getLocalValueType(), "functionParam");
-            parameterVar->transpile(compiler, trOutput, trBlock, nullptr, isDefaultAssignment ? nullptr : thisValue, argStoreValue);
+            parameterVar->transpile(compiler, trOutput, trBlock, isDefaultAssignment ? nullptr : thisValue, argStoreValue);
 
             if (!argStoreValue->hasSetValue) {
                 compiler->addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' has no value", argVar->name.c_str());
@@ -726,7 +726,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
 
             auto parameterOp = (*parameters)[argIndex].op;
             auto argStoreValue = make_shared<TrStoreValue>(isDefaultAssignment ? loc : calleeLoc, calleeScope, argType, calleeThisValue->getDotName(argVar->name), parameterOp);
-            parameterVar->transpile(compiler, trOutput, trBlock, nullptr, isDefaultAssignment ? calleeThisValue : thisValue, argStoreValue);
+            parameterVar->transpile(compiler, trOutput, trBlock, isDefaultAssignment ? calleeThisValue : thisValue, argStoreValue);
 
             if (!argStoreValue->hasSetValue) {
                 compiler->addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' has no value", argVar->name.c_str());
@@ -920,12 +920,10 @@ void CFunction::dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, stri
     ss << "'" << (returnType ? returnType->fullName : "void");
 
     if (_data[returnMode].blockVar) {
-        ss << " ";
-        
-        stringstream dotSS;
+        ss << " ";        
         auto calleeVar = getThisVar(compiler, returnMode);
         auto calleeScope = getScope(compiler, returnMode);
-        _data[returnMode].blockVar->dump(compiler, nullptr, functions, ss, dotSS, level);
+        _data[returnMode].blockVar->dump(compiler, functions, ss, level);
     }
 }
 
@@ -1203,7 +1201,7 @@ shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, const string
                 return cfunc->getCInterface(compiler, name, callerScope, templateTypeNames);
             }
             else {
-                auto var = cfunc->getCVar(compiler, vector<shared_ptr<FunctionBlock>>(), name, VSM_LocalOnly, CTM_Stack);
+                auto var = cfunc->getCVar(compiler, callerScope, vector<shared_ptr<FunctionBlock>>(), nullptr, name, VSM_LocalOnly, CTM_Stack);
                 if (!var) {
                     return nullptr;
                 }
@@ -1235,17 +1233,17 @@ shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, const string
     }
 }
 
-shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, vector<shared_ptr<FunctionBlock>> functionBlocks, const string& name, VarScanMode scanMode, CTypeMode returnMode) {
+shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, shared_ptr<CScope> callerScope, vector<shared_ptr<FunctionBlock>> functionBlocks, shared_ptr<CVar> dotVar, const string& name, VarScanMode scanMode, CTypeMode returnMode) {
     if (returnMode == CTM_Undefined) {
         if (!_data[CTM_Stack].isInvalid) {
-            auto result = getCVar(compiler, functionBlocks, name, scanMode, CTM_Stack);
+            auto result = getCVar(compiler, callerScope, functionBlocks, dotVar, name, scanMode, CTM_Stack);
             if (result) {
                 return result;
             }
         }
 
         if (!_data[CTM_Heap].isInvalid) {
-            auto result = getCVar(compiler, functionBlocks, name, scanMode, CTM_Heap);
+            auto result = getCVar(compiler, callerScope, functionBlocks, dotVar, name, scanMode, CTM_Heap);
             if (result) {
                 return result;
             }
@@ -1283,36 +1281,20 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, vector<shared_ptr<Functi
                     return make_shared<CFunctionParameterVar>(loc, thisArgVar->scope.lock(), thisArgVar->isMutable, thisArgVar);
                 }
                 else {
-                    return thisArgVar;
+                    if (dotVar) {
+                        return thisArgVar->createForDot(dotVar);
+                    }
+                    else {
+                        return thisArgVar;
+                    }
                 }
             }
         }
 
         if (scanMode == VSM_LocalThisParent) {
-            vector<shared_ptr<CFunction>> parents;
-            parents.push_back(shared_from_this());
             shared_ptr<CFunction> parentCheck = dynamic_pointer_cast<CFunction>(parent.lock());
-            shared_ptr<CVar> cvar;
-            while (cvar == nullptr && parentCheck != nullptr) {
-                cvar = parentCheck->getCVar(compiler, vector<shared_ptr<FunctionBlock>>(), name, VSM_FromChild, CTM_Undefined);
-                break;
-                // TODO: allow vars in parent of parent, etc.
-                // This is not currently supported because I have no safe way to maintain the _parent pointer, if it is stored in the struct then it can point nowhere if a class is created then re-assigned somewhere and the original parent is gc'ed
-//                if (cvar == nullptr) {
-//                    parents.push_back(parentCheck);
-//                    parentCheck = dynamic_pointer_cast<CFunction>(parentCheck->parent.lock());
-//                }
-            }
-
+            auto cvar = parentCheck->getCVar(compiler, callerScope, vector<shared_ptr<FunctionBlock>>(), make_shared<CParentVar>(loc, callerScope, dotVar, parentCheck), name, VSM_FromChild, CTM_Undefined);
             if (cvar) {
-                if (parentCheck->name == "global") {
-                    // If we made it up the parent chain to the top then we do not need to parent.parent to get there, we can just reference global vars directly
-                }
-                else {
-                    for (auto i = parents.rbegin(); i != parents.rend(); ++i) {
-                        cvar = CParentDotVar::create(loc, compiler, *i, cvar);
-                    }
-                }
                 return cvar;
             }
 
@@ -1322,7 +1304,7 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, vector<shared_ptr<Functi
             }
 
             if (globalFunction) {
-                cvar = globalFunction->getCVar(compiler, vector<shared_ptr<FunctionBlock>>(), name, VSM_LocalOnly, CTM_Undefined);
+                cvar = globalFunction->getCVar(compiler, callerScope, vector<shared_ptr<FunctionBlock>>(), nullptr, name, VSM_LocalOnly, CTM_Undefined);
                 return cvar;
             }
         }
@@ -1662,7 +1644,7 @@ void CScope::popFunctionBlock(shared_ptr<FunctionBlock> functionBlock) {
 }
 
 void CScope::setLocalVar(Compiler* compiler, CLoc loc, shared_ptr<CVar> var) {
-    auto existingVar = function->getCVar(compiler, functionBlocks, var->name, VSM_LocalThisParent, returnMode);
+    auto existingVar = function->getCVar(compiler, shared_from_this(), functionBlocks, nullptr, var->name, VSM_LocalThisParent, returnMode);
     if (existingVar) {
         compiler->addError(loc, CErrorCode::InvalidVariable, "var '%s' already exists within function, must have a unique name", var->name.c_str());
     }
@@ -1684,9 +1666,9 @@ shared_ptr<CType> CScope::getVarType(CLoc loc, Compiler* compiler, shared_ptr<CT
     }
 }
 
-shared_ptr<CVar> CScope::getCVar(Compiler* compiler, const string& name, VarScanMode scanMode) {
+shared_ptr<CVar> CScope::getCVar(Compiler* compiler, shared_ptr<CVar> dotVar, const string& name, VarScanMode scanMode) {
     if (function) {
-        return function->getCVar(compiler, functionBlocks, name, scanMode, returnMode);
+        return function->getCVar(compiler, shared_from_this(), functionBlocks, dotVar, name, scanMode, returnMode);
     }
     else {
         assert(false);

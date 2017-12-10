@@ -8,25 +8,25 @@ shared_ptr<CType> CWhileVar::getType(Compiler* compiler) {
     return compiler->typeVoid;
 }
 
-void CWhileVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void CWhileVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     auto whileValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "while");
     
-    condVar->transpile(compiler,trOutput, trBlock, nullptr, thisValue, whileValue);
+    condVar->transpile(compiler,trOutput, trBlock, thisValue, whileValue);
     stringstream whileLine;
     whileLine << "while (" << whileValue->getName(trBlock) << ")";
     auto trWhileBlock = make_shared<TrBlock>();
     trWhileBlock->parent = trBlock;
     trWhileBlock->hasThis = trBlock->hasThis;
     auto bodyType = bodyVar->getType(compiler);
-    bodyVar->transpile(compiler, trOutput, trWhileBlock.get(), nullptr, thisValue, trBlock->createVoidStoreVariable(loc, bodyType));
-    condVar->transpile(compiler, trOutput, trWhileBlock.get(), nullptr, thisValue, whileValue);    
+    bodyVar->transpile(compiler, trOutput, trWhileBlock.get(), thisValue, trBlock->createVoidStoreVariable(loc, bodyType));
+    condVar->transpile(compiler, trOutput, trWhileBlock.get(), thisValue, whileValue);    
     trBlock->statements.push_back(TrStatement(loc, whileLine.str(), trWhileBlock));
 }
 
-void CWhileVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CWhileVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << "while ";
-    condVar->dump(compiler, nullptr, functions, ss, dotSS, level);
-    bodyVar->dump(compiler, nullptr, functions, ss, dotSS, level);
+    condVar->dump(compiler, functions, ss, level);
+    bodyVar->dump(compiler, functions, ss, level);
 }
 
 void NWhile::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {

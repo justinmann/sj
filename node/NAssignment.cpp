@@ -8,17 +8,17 @@ shared_ptr<CType> CAssignVar::getType(Compiler* compiler) {
     return leftVar->getType(compiler);
 }
 
-void CAssignVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void CAssignVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     assert(compiler->state == CompilerState::Compile);
    
     auto leftType = leftVar->getType(compiler);
-    auto leftStoreValue = leftVar->getStoreValue(compiler, scope.lock(), trOutput, trBlock, nullptr, thisValue, op);
+    auto leftStoreValue = leftVar->getStoreValue(compiler, scope.lock(), trOutput, trBlock, thisValue, op);
     if (!leftStoreValue) {
         return;
     }
 
     leftStoreValue->loc = loc;
-    rightVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, leftStoreValue);
+    rightVar->transpile(compiler, trOutput, trBlock, thisValue, leftStoreValue);
     if (!leftStoreValue->hasSetValue) {
         compiler->addError(loc, CErrorCode::TypeMismatch, "no return value");
         return;
@@ -27,14 +27,14 @@ void CAssignVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
     storeValue->retainValue(compiler, loc, trBlock, leftStoreValue->getValue());
 }
 
-void CAssignVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CAssignVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     auto type = getType(compiler);
-    leftVar->dump(compiler, dotVar, functions, ss, dotSS, level);
+    leftVar->dump(compiler, functions, ss, level);
     auto leftType = leftVar->getType(compiler);
     ss << "'" << (leftType ? leftType->fullName.c_str() : "unknown");
     ss << (isMutable ? " = " : " : ");
     if (rightVar) {
-        rightVar->dump(compiler, nullptr, functions, ss, dotSS, level);
+        rightVar->dump(compiler, functions, ss, level);
     } else {
         ss << "undefined";
     }
@@ -98,8 +98,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
         }
 
         auto parameters = CCallVar::getParameters(compiler, loc, scope, setFunction, make_shared<NodeList>(rightSide), returnMode);
-        auto setVar = CCallVar::create(compiler, loc, setFunctionName, parameters, scope, setFunction, returnMode);
-        return CDotVar::create(loc, scope, parentVar, setVar);
+        return CCallVar::create(compiler, loc, setFunctionName, parentVar, parameters, scope, setFunction, returnMode);
     }
     else {
         if (!rightSide) {
@@ -114,7 +113,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
             }
 
             auto dotScope = CScope::getScopeForType(compiler, dotVar->getType(compiler));
-            auto leftVar = dotScope->getCVar(compiler, name, VSM_ThisOnly);
+            auto leftVar = dotScope->getCVar(compiler, dotVar, name, VSM_ThisOnly);
             if (leftVar) {
                 if (!op.isMutable) {
                     compiler->addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var '%s'", name.c_str());
@@ -130,7 +129,6 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
                     return nullptr;
                 }
             }
-            leftVar = CDotVar::create(loc, dotScope, dotVar, leftVar);
 
             leftStoreVar = dynamic_pointer_cast<CStoreVar>(leftVar);
             if (!leftStoreVar) {
@@ -139,7 +137,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
         }
         else {
             if (op.isFirstAssignment) {
-                auto leftVar = scope->getCVar(compiler, name, VSM_LocalThisParent);
+                auto leftVar = scope->getCVar(compiler, nullptr, name, VSM_LocalThisParent);
                 if (leftVar) {
                     compiler->addError(loc, CErrorCode::ImmutableAssignment, "var '%s' already exists", name.c_str());
                     return nullptr;
@@ -156,7 +154,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
                 scope->addOrUpdateLocalVar(compiler, name, leftStoreVar);
             }
             else {
-                auto leftVar = scope->getCVar(compiler, name, VSM_LocalThisParent);
+                auto leftVar = scope->getCVar(compiler, nullptr, name, VSM_LocalThisParent);
                 if (!leftVar) {
                     compiler->addError(loc, CErrorCode::ImmutableAssignment, "var '%s' does not exist", name.c_str());
                     return nullptr;

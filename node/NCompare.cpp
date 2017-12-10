@@ -8,15 +8,15 @@ shared_ptr<CType> CCompareVar::getType(Compiler* compiler) {
     return compiler->typeBool;
 }
 
-void CCompareVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void CCompareVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     auto varType = leftVar->getType(compiler);
     if (!varType->parent.expired() && (op == NCompareOp::PEQ || op == NCompareOp::PNE)) {
         varType = varType->getLocalType();
     }
     auto leftValue = trBlock->createTempStoreVariable(loc, nullptr, varType, "compare");
     auto rightValue = trBlock->createTempStoreVariable(loc, nullptr, varType, "compare");
-    leftVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, leftValue);
-    rightVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, rightValue);
+    leftVar->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
+    rightVar->transpile(compiler, trOutput, trBlock, thisValue, rightValue);
 
     stringstream line;
     line << leftValue->getName(trBlock);
@@ -48,8 +48,8 @@ void CCompareVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
     storeValue->retainValue(compiler, loc, trBlock, resultValue);
 }
 
-void CCompareVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
-    leftVar->dump(compiler, nullptr, functions, ss, dotSS, level);
+void CCompareVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+    leftVar->dump(compiler, functions, ss, level);
     switch (op) {
         case NCompareOp::EQ:
             ss << " == ";
@@ -76,7 +76,7 @@ void CCompareVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_p
             ss << " >= ";
             break;
     }
-    rightVar->dump(compiler, nullptr, functions, ss, dotSS, level);
+    rightVar->dump(compiler, functions, ss, level);
 }
 
 void NCompare::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {

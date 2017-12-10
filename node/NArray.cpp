@@ -8,17 +8,21 @@ shared_ptr<CType> CArrayVar::getType(Compiler* compiler) {
     return createArrayVar->getType(compiler);
 }
 
-void CArrayVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    createArrayVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, storeValue);
-    auto arrayValue = storeValue->getValue();
+void CArrayVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    createArrayVar->transpile(compiler, trOutput, trBlock, thisValue, storeValue);
+
+    trBlock->statements.push_back(TrStatement(loc, storeValue->type->getLocalType()->cname + " " + name));
+    auto arrayTemp = make_shared<TrStoreValue>(loc, scope.lock(), storeValue->type->getLocalType(), name, AssignOp::immutableCreate);
+    arrayTemp->retainValue(compiler, loc, trBlock, storeValue->getValue());
+
     for (auto initAtVar : initAtVars) {
         auto returnType = initAtVar->getType(compiler);
-        initAtVar->transpile(compiler, trOutput, trBlock, arrayValue, thisValue, trBlock->createVoidStoreVariable(loc, returnType));
+        initAtVar->transpile(compiler, trOutput, trBlock, thisValue, trBlock->createVoidStoreVariable(loc, returnType));
     }
 }
 
 
-void CArrayVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CArrayVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << "[";
     auto isFirst = true;
     for (auto initAtVar : initAtVars) {
@@ -27,10 +31,27 @@ void CArrayVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr
         } else {
             ss << ", ";
         }
-        initAtVar->dump(compiler, dotVar, functions, ss, dotSS, level);
+        initAtVar->dump(compiler, functions, ss, level);
     }
     ss << "]";
 }
+
+bool CTempVar::getReturnThis() {
+    return false;
+}
+
+shared_ptr<CType> CTempVar::getType(Compiler* compiler) {
+    return type;
+}
+
+void CTempVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    auto value = make_shared<TrValue>(scope.lock(), type, name, false);
+    storeValue->retainValue(compiler, loc, trBlock, value);
+}
+
+void CTempVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+}
+
 
 void NArray::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     for (auto element : *elements) {
@@ -60,16 +81,20 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
         return nullptr;
     }
 
+    auto tempName = TrBlock::nextVarName("array");
+
     auto createArrayCallee = scope->function->getCFunction(compiler, loc, "array", scope, make_shared<CTypeNameList>(elementType->category, elementType->typeMode, elementType->valueName, elementType->isOption), returnMode);
     if (!createArrayCallee) {
         return nullptr;
     }
 
     auto createArrayParameters = CCallVar::getParameters(compiler, loc, scope, createArrayCallee, make_shared<NodeList>(make_shared<NInteger>(loc, elements->size())), returnMode);
-    auto createArrayVar = CCallVar::create(compiler, loc, "array", createArrayParameters, scope, createArrayCallee, returnMode);
+    auto createArrayVar = CCallVar::create(compiler, loc, "array", nullptr, createArrayParameters, scope, createArrayCallee, returnMode);
     if (!createArrayVar) {
         return nullptr;
     }
+
+    auto tempVar = make_shared<CTempVar>(loc, scope, createArrayCallee->getReturnType(compiler, returnMode)->getLocalType(), tempName);
     
     auto initAtCallee = createArrayCallee->getCFunction(compiler, loc, "initAt", scope, nullptr, CTM_Undefined);
     if (!initAtCallee) {
@@ -80,7 +105,7 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
     vector<shared_ptr<CVar>> initAtVars;
     for (auto element : *elements) {
         auto initAtParameters = CCallVar::getParameters(compiler, loc, scope, initAtCallee, make_shared<NodeList>(make_shared<NInteger>(loc, index), element), CTM_Stack);
-        auto initAtVar = CCallVar::create(compiler, loc, "initAt", initAtParameters, scope, initAtCallee, CTM_Stack);
+        auto initAtVar = CCallVar::create(compiler, loc, "initAt", tempVar, initAtParameters, scope, initAtCallee, CTM_Stack);
         if (!initAtVar) {
             return nullptr;
         }
@@ -89,5 +114,5 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
         index++;
     }
 
-    return make_shared<CArrayVar>(loc, scope, createArrayVar, initAtVars);
+    return make_shared<CArrayVar>(loc, scope, createArrayVar, initAtVars, tempName);
 }

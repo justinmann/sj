@@ -16,8 +16,8 @@ public:
     CThisVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CTypes> types, CTypeMode typeMode) : CVar(loc, scope), types(types), typeMode(typeMode) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
-    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
-    void dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
+    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
+    void dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
     void setHasThis();
     CTypeMode getTypeMode();
 

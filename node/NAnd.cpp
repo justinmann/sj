@@ -8,11 +8,11 @@ shared_ptr<CType> CAndVar::getType(Compiler* compiler) {
     return compiler->typeBool;
 }
 
-void CAndVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void CAndVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     auto leftValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "and");
     auto rightValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "and");
-    leftVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, leftValue);
-    rightVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, rightValue);
+    leftVar->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
+    rightVar->transpile(compiler, trOutput, trBlock, thisValue, rightValue);
 
     stringstream line;
     line << leftValue->getName(trBlock) << " && " << rightValue->getName(trBlock);
@@ -21,10 +21,10 @@ void CAndVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock
     storeValue->retainValue(compiler, loc, trBlock, resultValue);
 }
 
-void CAndVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
-    leftVar->dump(compiler, nullptr, functions, ss, dotSS, level);
+void CAndVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+    leftVar->dump(compiler, functions, ss, level);
     ss << " && ";
-    rightVar->dump(compiler, nullptr, functions, ss, dotSS, level);
+    rightVar->dump(compiler, functions, ss, level);
 }
 
 void NAnd::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {

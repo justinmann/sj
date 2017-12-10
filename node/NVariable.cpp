@@ -8,17 +8,7 @@ shared_ptr<CVar> NVariableBase::getVar(Compiler* compiler, shared_ptr<CScope> sc
     }
     return _var[key1];
 }
-
-shared_ptr<CParentDotVar> CParentDotVar::create(CLoc loc, Compiler *compiler, shared_ptr<CFunction> parentFunction_, shared_ptr<CVar> childVar_) {
-    auto c = make_shared<CParentDotVar>(loc, nullptr);
-    c->parentFunction = parentFunction_;
-    c->childVar = childVar_;
-
-    assert(parentFunction_->hasParent);
-
-    return c;
-}
-
+/*
 bool CParentDotVar::getReturnThis() {
     return childVar->getReturnThis();
 }
@@ -27,9 +17,9 @@ shared_ptr<CType> CParentDotVar::getType(Compiler* compiler) {
     return childVar->getType(compiler);
 }
 
-void CParentDotVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void CParentDotVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     shared_ptr<TrValue> parentValue;
-    if (dotValue) {
+    if (dotVar) {
         auto parentThisTypes = parentFunction->parent.lock()->getThisTypes(compiler);
         if (!parentThisTypes || !parentThisTypes->localValueType) {
             assert(false);
@@ -61,7 +51,7 @@ bool CParentDotVar::getCanStoreValue() {
     return false;
 }
 
-shared_ptr<TrStoreValue> CParentDotVar::getStoreValue(Compiler* compiler, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op) {
+shared_ptr<TrStoreValue> CParentDotVar::getStoreValue(Compiler* compiler, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, AssignOp op) {
     shared_ptr<TrValue> parentValue;
     if (dotValue) {
         auto parentThisTypes = parentFunction->parent.lock()->getThisTypes(compiler);
@@ -89,7 +79,7 @@ shared_ptr<TrStoreValue> CParentDotVar::getStoreValue(Compiler* compiler, shared
     return childStoreVar->getStoreValue(compiler, scope, trOutput, trBlock, parentValue, thisValue, op);
 }
 
-void CParentDotVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CParentDotVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     auto t = dotSS.str();
     if (t.size() > 0) {
         dotSS << ".";
@@ -97,7 +87,7 @@ void CParentDotVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared
     dotSS << "parent";
     childVar->dump(compiler, dotVar, functions, ss, dotSS, level);
 }
-
+*/
 NVariable::NVariable(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames) : NVariableBase(NodeType_Variable, loc), name(name), templateTypeNames(templateTypeNames) { }
 
 shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
@@ -116,14 +106,14 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
             }
 
             auto parameters = CCallVar::getParameters(compiler, loc, scope, getPropertyFunction, make_shared<NodeList>(), returnMode);
-            return CCallVar::create(compiler, loc, name, parameters, scope, getPropertyFunction, returnMode);
+            return CCallVar::create(compiler, loc, name, dotVar, parameters, scope, getPropertyFunction, returnMode);
         }
     }
 
     if (varScope) {
         shared_ptr<CVar> cvar;
         if (!templateTypeNames) {
-            cvar = varScope->getCVar(compiler, name, dotVar ? VSM_ThisOnly : VSM_LocalThisParent);
+            cvar = varScope->getCVar(compiler, dotVar, name, dotVar ? VSM_ThisOnly : VSM_LocalThisParent);
         }
 
         if (!cvar) {

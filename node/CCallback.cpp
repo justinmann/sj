@@ -12,7 +12,7 @@ shared_ptr<CType> CCallbackVar::getType(Compiler* compiler) {
     return type;
 }
 
-void CCallbackVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void CCallbackVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     callback->transpileDefinition(compiler, trOutput);
     function->transpileDefinition(compiler, trOutput);
     
@@ -26,11 +26,19 @@ void CCallbackVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* tr
         name += ".inner";
     }
 
-    if (dotValue) {
-        trBlock->statements.push_back(TrStatement(loc, name + "._parent = (void*)" + TrValue::convertToLocalName(dotValue->type, dotValue->name, false)));
+    if (dotVar) {
         if (storeValue->type->typeMode == CTM_Heap) {
-            trBlock->statements.push_back(TrStatement(loc, "(sjs_object*)((char*)" + storeValue->getName(trBlock) + "._parent - sizeof(intptr_t))->_refCount++"));
-            trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._destroy = " + dotValue->type->parent.lock()->getCDestroyFunctionName()));
+            auto tempName = TrBlock::nextVarName("callback");
+            auto dotType = dotVar->getType(compiler)->getHeapType();
+            trBlock->statements.push_back(TrStatement(loc, dotType->cname + " " + tempName));
+            auto parentValue = make_shared<TrStoreValue>(loc, scope.lock(), dotType, tempName, AssignOp::immutableCreate);
+            dotVar->transpile(compiler, trOutput, trBlock, thisValue, parentValue);
+            trBlock->statements.push_back(TrStatement(loc, name + "._parent = (void*)" + TrValue::convertToLocalName(dotType, tempName, false)));
+            trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._destroy = (void(*)(void*))" + dotType->parent.lock()->getCDestroyFunctionName()));
+        }
+        else {
+            auto parentValue = make_shared<TrStoreValue>(loc, scope.lock(), dotVar->getType(compiler)->getLocalType(), name + "._parent", AssignOp::immutableCreate);
+            dotVar->transpile(compiler, trOutput, trBlock, thisValue, parentValue);
         }
     }
     else {
@@ -39,17 +47,17 @@ void CCallbackVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* tr
 
     if (callback->stackReturnType) {
         string functionName = function->getCCallbackFunctionName(compiler, trOutput, CTM_Stack);
-        trBlock->statements.push_back(TrStatement(loc, name + "._cb = " + functionName));
+        trBlock->statements.push_back(TrStatement(loc, name + "._cb = (" + callback->getCBName(compiler, false, CTM_Stack) + ")" + functionName));
     }
     if (callback->heapReturnType) {
         string functionName = function->getCCallbackFunctionName(compiler, trOutput, CTM_Heap);
-        trBlock->statements.push_back(TrStatement(loc, name + "._cb_heap = " + functionName));
+        trBlock->statements.push_back(TrStatement(loc, name + "._cb_heap = (" + callback->getCBName(compiler, false, CTM_Heap) + ")" + functionName));
     }
 
     storeValue->hasSetValue = true;
 }
 
-void CCallbackVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CCallbackVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
 
 }
 
@@ -164,7 +172,7 @@ void CCallbackFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerS
     }
 
     auto callbackValue = trBlock->createTempStoreVariable(calleeLoc, callerScope, callback->types->localValueType, "callback");
-    callbackVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, callbackValue);
+    callbackVar->transpile(compiler, trOutput, trBlock, thisValue, callbackValue);
     
     stringstream line;
     line << callbackValue->getName(trBlock) << ".";
@@ -191,7 +199,7 @@ void CCallbackFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerS
 
         auto argType = parameter.var->getType(compiler);
         auto argStoreValue = trBlock->createTempStoreVariable(calleeLoc, callerScope, argType->typeMode == CTM_Heap ? argType : argType->getLocalValueType(), "functionParam");
-        parameterVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, argStoreValue);
+        parameterVar->transpile(compiler, trOutput, trBlock, thisValue, argStoreValue);
 
         if (!argStoreValue->hasSetValue) {
             compiler->addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' has no value", parameterVar->name.c_str());

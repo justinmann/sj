@@ -135,14 +135,14 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
             TrBlock block;
             stringstream retainStream;
             auto leftStoreValue = make_shared<TrStoreValue>(loc, scope, ctype, leftName, AssignOp::create(true, false, ctype->typeMode == CTM_Stack, ctype->typeMode));
-            auto rightVar = scope->getCVar(compiler, rightName, VSM_LocalThisParent);
+            auto rightVar = scope->getCVar(compiler, nullptr, rightName, VSM_LocalThisParent);
             if (!rightVar) {
                 compiler->addError(loc, CErrorCode::InvalidMacro, "cannot find var '%s'", rightName.c_str());
                 return "";
             }
 
             if (trOutput) {
-                rightVar->transpile(compiler, trOutput, &block, nullptr, nullptr, leftStoreValue);
+                rightVar->transpile(compiler, trOutput, &block, nullptr, leftStoreValue);
                 block.writeVariablesToStream(retainStream, 0);
                 block.writeBodyToStream(retainStream, 0);
             }
@@ -256,7 +256,7 @@ shared_ptr<CType> CCCodeVar::getType(Compiler* compiler) {
     return returnType;
 }
 
-void CCCodeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void CCCodeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     vector<shared_ptr<CFunction>> functions;
     map<string, map<string, bool>> includes;
     shared_ptr<CType> returnType;
@@ -299,7 +299,7 @@ void CCCodeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
     }
 }
 
-void CCCodeVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CCCodeVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     vector<shared_ptr<CFunction>> functions2;
     map<string, map<string, bool>> includes;
     shared_ptr<CType> returnType;

@@ -8,11 +8,11 @@ shared_ptr<CType> CMathVar::getType(Compiler* compiler) {
     return leftVar->getType(compiler);
 }
 
-void CMathVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void CMathVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     auto leftValue = trBlock->createTempStoreVariable(loc, nullptr, leftVar->getType(compiler), "math");
     auto rightValue = trBlock->createTempStoreVariable(loc, nullptr, leftVar->getType(compiler), "math");
-    leftVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, leftValue);
-    rightVar->transpile(compiler, trOutput, trBlock, nullptr, thisValue, rightValue);
+    leftVar->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
+    rightVar->transpile(compiler, trOutput, trBlock, thisValue, rightValue);
 
     stringstream line;
     line << leftValue->getName(trBlock);
@@ -39,8 +39,8 @@ void CMathVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
     storeValue->retainValue(compiler, loc, trBlock, resultValue);
 }
 
-void CMathVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
-    leftVar->dump(compiler, nullptr, functions, ss, dotSS, level);
+void CMathVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+    leftVar->dump(compiler, functions, ss, level);
     
     switch (op) {
         case NMathOp::Add:
@@ -60,7 +60,7 @@ void CMathVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<
             break;
     }
     
-    rightVar->dump(compiler, nullptr, functions, ss, dotSS, level);
+    rightVar->dump(compiler, functions, ss, level);
 }
 
 void NMath::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {

@@ -8,9 +8,9 @@ shared_ptr<CType> CNotVar::getType(Compiler* compiler) {
     return compiler->typeBool;
 }
 
-void CNotVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void CNotVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     auto value = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "not");
-    var->transpile(compiler, trOutput, trBlock, nullptr, thisValue, value);
+    var->transpile(compiler, trOutput, trBlock, thisValue, value);
     auto resultValue = trBlock->createTempVariable(nullptr, compiler->typeBool, "result");
     stringstream line;
     line << resultValue->name << " = !" << value->getName(trBlock);
@@ -18,9 +18,9 @@ void CNotVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock
     storeValue->retainValue(compiler, loc, trBlock, resultValue);
 }
 
-void CNotVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CNotVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << "!";
-    var->dump(compiler, nullptr, functions, ss, dotSS, level);
+    var->dump(compiler, functions, ss, level);
 }
 
 void NNot::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {

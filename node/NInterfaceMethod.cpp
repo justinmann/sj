@@ -45,11 +45,11 @@ shared_ptr<CType> CInterfaceMethodReturnVar::getType(Compiler* compiler) {
     return returnType;
 }
 
-void CInterfaceMethodReturnVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void CInterfaceMethodReturnVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     assert(false);
 }
 
-void CInterfaceMethodReturnVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CInterfaceMethodReturnVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     assert(false);
 }
 
@@ -61,11 +61,11 @@ shared_ptr<CType> CInterfaceMethodArgVar::getType(Compiler* compiler) {
     return returnType;
 }
 
-void CInterfaceMethodArgVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void CInterfaceMethodArgVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     assert(false);
 }
 
-void CInterfaceMethodArgVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CInterfaceMethodArgVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << "interfaceArg";
 }
 
@@ -248,7 +248,7 @@ void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> callerSc
             return;
         }
         auto argStoreValue = trBlock->createTempStoreVariable(loc, callerScope, argType->typeMode == CTM_Heap ? argType : argType->getLocalValueType(), "interfaceParam");
-        parameterVar->transpile(compiler, trOutput, trBlock, nullptr, isDefaultAssignment ? nullptr : thisValue, argStoreValue);
+        parameterVar->transpile(compiler, trOutput, trBlock, isDefaultAssignment ? nullptr : thisValue, argStoreValue);
         
         if (!argStoreValue->hasSetValue) {
             compiler->addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' has no value", argVar->name.c_str());

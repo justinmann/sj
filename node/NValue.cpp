@@ -18,9 +18,9 @@ shared_ptr<CType> CValueVar::getType(Compiler* compiler) {
     return leftType->getOptionType();
 }
 
-void CValueVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void CValueVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     auto leftValue = trBlock->createTempStoreVariable(loc, scope.lock(), var->getType(compiler), "value");
-    var->transpile(compiler, trOutput, trBlock, nullptr, thisValue, leftValue);
+    var->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
     if (!leftValue->hasSetValue) {
         return;
     }
@@ -47,9 +47,9 @@ void CValueVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
     }
 }
 
-void CValueVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+void CValueVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << "value(";
-    var->dump(compiler, nullptr, functions, ss, dotSS, level);
+    var->dump(compiler, functions, ss, level);
     ss << ")";
 
 }

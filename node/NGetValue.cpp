@@ -22,9 +22,9 @@ public:
         return leftType->getValueType();
     }
 
-    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
         auto leftValue = trBlock->createTempStoreVariable(loc, leftVar->scope.lock(), leftVar->getType(compiler), "getValue");
-        leftVar->transpile(compiler, trOutput, trBlock, dotValue, thisValue, leftValue);
+        leftVar->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
         if (!leftValue) {
             return;
         }
@@ -62,9 +62,9 @@ public:
         storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(scope.lock(), leftValue->type->getValueType(), line.str(), false));
     }
 
-    void dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
+    void dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
         ss << "getValue(";
-        leftVar->dump(compiler, dotVar, functions, ss, dotSS, level);
+        leftVar->dump(compiler, functions, ss, level);
         ss << ")";
     }
 

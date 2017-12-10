@@ -13,15 +13,29 @@
 
 class CArrayVar : public CVar {
 public:
-    CArrayVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> createArrayVar, vector<shared_ptr<CVar>> initAtVars) : CVar(loc, scope), createArrayVar(createArrayVar), initAtVars(initAtVars) {}
+    CArrayVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> createArrayVar, vector<shared_ptr<CVar>> initAtVars, string name) : CVar(loc, scope), createArrayVar(createArrayVar), initAtVars(initAtVars), name(name) {}
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
-    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
-    void dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
+    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
+    void dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
     
 private:
     shared_ptr<CVar> createArrayVar;
     vector<shared_ptr<CVar>> initAtVars;
+    string name;
+};
+
+class CTempVar : public CVar {
+public:
+    CTempVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, string name) : CVar(loc, scope), type(type), name(name) {}
+    bool getReturnThis();
+    shared_ptr<CType> getType(Compiler* compiler);
+    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
+    void dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
+
+private:
+    shared_ptr<CType> type;
+    string name;
 };
 
 class NArray : public NVariableBase {
