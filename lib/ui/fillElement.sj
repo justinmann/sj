@@ -1,6 +1,6 @@
 fillElement #element (
 	children : array!#element()
-	_rect = rect()
+	_rect := rect()
 
 	getSize(maxSize : 'size) {
 		size(maxSize.w, maxSize.h)

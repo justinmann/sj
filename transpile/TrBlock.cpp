@@ -164,7 +164,7 @@ shared_ptr<TrValue> TrBlock::createTempVariable(shared_ptr<CScope> scope, shared
 
 shared_ptr<TrStoreValue> TrBlock::createTempStoreVariable(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, string prefix) {
     auto varStr = nextVarName("sjt_" + prefix);
-    auto var = make_shared<TrStoreValue>(loc, scope, type, varStr, AssignOp::immutableOp, true);
+    auto var = make_shared<TrStoreValue>(loc, scope, type, varStr, AssignOp::immutableCreate);
     variables[varStr] = make_shared<TrValue>(scope, type, varStr, false);
     return var;
 }
@@ -174,7 +174,7 @@ shared_ptr<TrStoreValue> TrBlock::createVoidStoreVariable(CLoc loc, shared_ptr<C
 }
 
 shared_ptr<TrStoreValue> TrBlock::createReturnStoreVariable(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type) {
-    auto returnStoreValue = make_shared<TrStoreValue>(loc, scope, type, type->typeMode == CTM_Stack ? "_return" : "(*_return)", AssignOp::immutableOp, true);
+    auto returnStoreValue = make_shared<TrStoreValue>(loc, scope, type, type->typeMode == CTM_Stack ? "_return" : "(*_return)", AssignOp::immutableCreate);
     returnStoreValue->isReturnValue = true;
     return returnStoreValue;
 }
@@ -455,7 +455,7 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
 
     TrValue leftValue(scope, type, name, isReturnValue);
     if (!op.isCopy) {
-        if (!isFirstAssignment) {
+        if (!op.isFirstAssignment) {
             leftValue.addReleaseToStatements(block);
         }
 
@@ -479,7 +479,7 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
             block->statements.push_back(TrStatement(loc, lineStream.str()));
         }
         else {
-            if (isFirstAssignment) {
+            if (op.isFirstAssignment) {
                 leftValue.addInitToStatements(block);
             }
             else {
@@ -525,7 +525,7 @@ void TrStoreValue::takeOverValue(Compiler* compiler, CLoc loc, TrBlock* block, s
 
     TrValue leftValue(scope, type, name, isReturnValue);
     if (!op.isCopy) {
-        if (!isFirstAssignment) {
+        if (!op.isFirstAssignment) {
             leftValue.addReleaseToStatements(block);
         }
 
@@ -548,7 +548,7 @@ void TrStoreValue::takeOverValue(Compiler* compiler, CLoc loc, TrBlock* block, s
             block->statements.push_back(TrStatement(loc, lineStream.str()));
         }
         else {
-            if (isFirstAssignment) {
+            if (op.isFirstAssignment) {
                 leftValue.addInitToStatements(block);
             }
             else {

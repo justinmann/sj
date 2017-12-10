@@ -1,8 +1,8 @@
 textRenderer(
-    text: 'string
-    point: 'point
-    color: 'color
-    font: 'font
+    text : 'string
+    point : 'point
+    color : 'color
+    font : 'font
     --cvar--
     vertex_buffer_t* buffer;
     --cvar--

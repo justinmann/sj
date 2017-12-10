@@ -134,7 +134,7 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
         if (ctype) {
             TrBlock block;
             stringstream retainStream;
-            auto leftStoreValue = make_shared<TrStoreValue>(loc, scope, ctype, leftName, AssignOp::create(false, ctype->typeMode == CTM_Stack, ctype->typeMode), true);
+            auto leftStoreValue = make_shared<TrStoreValue>(loc, scope, ctype, leftName, AssignOp::create(true, false, ctype->typeMode == CTM_Stack, ctype->typeMode));
             auto rightVar = scope->getCVar(compiler, rightName, VSM_LocalThisParent);
             if (!rightVar) {
                 compiler->addError(loc, CErrorCode::InvalidMacro, "cannot find var '%s'", rightName.c_str());

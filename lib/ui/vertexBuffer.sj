@@ -20,7 +20,7 @@ vertexBuffer!vertex(
     }
 
     getVertexSize()'i32 {
-        size = 0
+        size := 0
         --c--
         sjv_size = _this->buffer->vertices->size;
         --c--
@@ -35,8 +35,8 @@ vertexBuffer!vertex(
     }
 
     translateScreenToTexture(screen : 'point, viewport : 'rect, projection : 'mat4, view : 'mat4, world : 'mat4)'vec2? {
-        intersection = empty'vec3
-        texture = empty'vec2
+        intersection := empty'vec3
+        texture := empty'vec2
 
         // Compute the vector of the pick ray in screen space
         start : vec2(
@@ -55,7 +55,7 @@ vertexBuffer!vertex(
             v.x*m.m02 + v.y*m.m12 + v.z*m.m22)
         vPickRayOrig : vec3(m.m30, m.m31, m.m32)
         
-        cTriangles = if indices.size > 0 { indices.size / 3 } else { vertices.size / 3 }
+        cTriangles : if indices.size > 0 { indices.size / 3 } else { vertices.size / 3 }
         for i (0 to cTriangles) {
             vertex0 : if indices.size > 0 { vertices[indices[i * 3 + 0]] } else { vertices[i * 3 + 0] }
             vertex1 : if indices.size > 0 { vertices[indices[i * 3 + 1]] } else { vertices[i * 3 + 1] }
@@ -116,7 +116,7 @@ intersectTriangle(orig : 'vec3, dir : 'vec3, v0 : 'vec3, v1 : 'vec3, v2 : 'vec3)
     edge1 : v1 - v0
     edge2 : v2 - v0
     pvec : dir.cross(edge2)
-    det = edge1.dot(pvec)
+    det := edge1.dot(pvec)
     tvec : if det > 0.0f {
             orig - v0
         } else {

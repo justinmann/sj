@@ -1,8 +1,8 @@
 boxElement #element (
-	color = colors.white()
-	idealSize = size()
-	rect = rect()
-	boxRenderer = empty'boxRenderer
+	color := colors.white()
+	idealSize := size()
+	rect := rect()
+	boxRenderer := empty'boxRenderer
 
 	getSize(maxSize : 'size) {
 		idealSize.cap(maxSize)

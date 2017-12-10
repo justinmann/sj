@@ -74,12 +74,27 @@ void NFor::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> th
 
 shared_ptr<CVar> NFor::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
     auto startVar = start->getVar(compiler, scope, CTM_Undefined);
+    if (!startVar) {
+        return nullptr;
+    }
+
     auto endVar = end->getVar(compiler, scope, CTM_Undefined);
+    if (!endVar) {
+        return nullptr;
+    }
+
     auto indexVar = make_shared<CForIndexVar>(loc, scope, varName);
+    if (!indexVar) {
+        return nullptr;
+    }
 
     scope->pushLocalVar(compiler, loc, indexVar);
     auto bodyVar = body->getVar(compiler, scope, CTM_Undefined);
     scope->popLocalVar(compiler, indexVar);
+
+    if (!bodyVar) {
+        return nullptr;
+    }
 
     return make_shared<CForLoopVar>(loc, scope, indexVar, startVar, endVar, bodyVar);
 }

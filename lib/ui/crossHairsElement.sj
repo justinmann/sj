@@ -1,9 +1,9 @@
 crossHairsElement #element (
-	color = colors.white()
-	_rect = rect()
-	_topDownRenderer = empty'boxRenderer
-	_leftRightRenderer = empty'boxRenderer
-	_point = point()
+	color := colors.white()
+	_rect := rect()
+	_topDownRenderer := empty'boxRenderer
+	_leftRightRenderer := empty'boxRenderer
+	_point := point()
 
 	getSize(maxSize : 'size) {
 		size(maxSize.w, maxSize.h)

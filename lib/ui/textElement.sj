@@ -1,9 +1,9 @@
 textElement #element (
-	font = 'font
-	text = 'string
-	color = colors.white()
-	rect = rect()
-	textRenderer = empty'textRenderer
+	font := 'font
+	text := 'string
+	color := colors.white()
+	rect := rect()
+	textRenderer := empty'textRenderer
 
 	getSize(maxSize : 'size) {
 		textSize : font.getTextSize(text)

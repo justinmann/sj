@@ -1,8 +1,8 @@
 include "array.sj"
 
 string(
-	count = 0
-	data = array!char()
+	count := 0
+	data := array!char()
 
 	add(item :'stack string) {
 		if item.count > 0 {

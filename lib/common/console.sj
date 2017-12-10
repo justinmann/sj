@@ -7,8 +7,8 @@ console : ^(
 	}
 
 	readLine()'string { 
-		data = 0 as ptr
-		size = 1024
+		data := 0 as ptr
+		size := 1024
 		--c--
 		#include(<stdio.h>)
 	    char* str = (char*)malloc(size);
@@ -32,6 +32,6 @@ console : ^(
 	    size = index;
 		--c--
 
-		string(count = size - 1, data = array!char(size = size, data = data))
+		string(count := size - 1, data := array!char(size := size, data := data))
 	}
 ) { this }

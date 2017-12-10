@@ -1,5 +1,5 @@
 class(
-	x = 1
+	x := 1
 ) {
 	this
 } copy {

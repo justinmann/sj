@@ -3,7 +3,7 @@ include "../../lib/common/common.sj"
 console.write("Shall we play\n")
 
 num : random.nextInt() % 10 + 1
-isCorrect = false
+isCorrect := false
 
 while !isCorrect {
     str : console.readLine()

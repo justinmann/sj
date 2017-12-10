@@ -66,7 +66,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TSTRING TCHAR TCBLOCK TCFUNCTION TCDEFINE TCSTRUCT TCINCLUDE TCVAR TCTYPEDEF
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TQUESTION TEMPTY TVALUE TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TLOCAL TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR TINVALID
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TQUESTION TEMPTY TVALUE TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TLOCAL TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR TINVALID TCOLONEQUAL
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch copy destroy expr end_optional end_star
@@ -322,8 +322,9 @@ assign_tuple_arg	: TIDENTIFIER assign_type						{ $$ = new NTupleAssignmentArg(L
 					| var TDOT TIDENTIFIER assign_type				{ $$ = new NTupleAssignmentArg(LOC, shared_ptr<NVariableBase>($1), nullptr, $3->c_str(), $4); }
 					;
 
-assign_type 		: TEQUAL assign_copy							{ $$ = $2; $$.isMutable = true; }
-					| TCOLON assign_copy							{ $$ = $2; $$.isMutable = false; }
+assign_type 		: TEQUAL assign_copy							{ $$ = $2; $$.isMutable = true; $$.isFirstAssignment = false; }
+					| TCOLONEQUAL assign_copy						{ $$ = $2; $$.isMutable = true; $$.isFirstAssignment = true; }
+					| TCOLON assign_copy							{ $$ = $2; $$.isMutable = false; $$.isFirstAssignment = true; }
 					;
 
 assign_copy			: /* Blank! */									{ $$.isCopy = false; $$.typeMode = CTM_Undefined; }
@@ -397,7 +398,7 @@ value_type			: TTYPEI32											{ $$ = new CTypeName(CTC_Value, CTM_Value, "i3
 func_type			: arg_mode TLPAREN func_arg_type_list TRPAREN return_type { $$ = new CTypeName($1, shared_ptr<CTypeNameList>($3), shared_ptr<CTypeName>($5)); }
 					;
 
-func_arg_type 		: TEQUAL arg_type 								{ $$ = $2; $$->mutability = CTI_Mutable; }
+func_arg_type 		: TCOLONEQUAL arg_type 							{ $$ = $2; $$->mutability = CTI_Mutable; }
 					| TCOLON arg_type 								{ $$ = $2; $$->mutability = CTI_Immutable; }
 					;
 

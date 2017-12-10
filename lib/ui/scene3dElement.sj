@@ -1,20 +1,19 @@
 scene3dElement #element (
 	children : array!#model()
-	camera = vec3(0.0f, 0.0f, -5.0f)
-	lookAt = vec3(0.0f, 0.0f, 0.0f)
-	up = vec3(0.0f, 1.0f, 0.0f)
-	fieldOfView = 90.0f
-	zNear = 1.0f
-	zFar = 20.0f
-	lightPos = vec3(1.0f, 1.0f, 1.0f)
-	diffuseColor = color(0.5f, 0.5f, 0.0f, 1.0f)
-	specColor = color(1.0f, 1.0f, 1.0f, 1.0f)
-	projection = mat4()
-	view = mat4()
-	_rect = rect()
-	_angle = 0.0f
-	_isUp = true
-
+	camera := vec3(0.0f, 0.0f, -5.0f)
+	lookAt := vec3(0.0f, 0.0f, 0.0f)
+	up := vec3(0.0f, 1.0f, 0.0f)
+	fieldOfView := 90.0f
+	zNear := 1.0f
+	zFar := 20.0f
+	lightPos := vec3(1.0f, 1.0f, 1.0f)
+	diffuseColor := color(0.5f, 0.5f, 0.0f, 1.0f)
+	specColor := color(1.0f, 1.0f, 1.0f, 1.0f)
+	projection := mat4()
+	view := mat4()
+	_rect := rect()
+	_angle := 0.0f
+	_isUp := true
 	_cube : cubeVertexBuffer()
 
 	getSize(maxSize : 'size) {

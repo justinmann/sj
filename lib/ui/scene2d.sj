@@ -1,8 +1,8 @@
 scene2d(
-	_size = size()
-	model = mat4()
-	view = mat4()
-	projection = mat4()
+	_size := size()
+	model := mat4()
+	view := mat4()
+	projection := mat4()
 
 	clear()'void {
 	    --c--

@@ -44,7 +44,7 @@ shared_ptr<vector<FunctionParameter>> CCallVar::getParameters(Compiler* compiler
             }
 
             (*parameters)[argIndex].isDefaultValue = false;
-            (*parameters)[argIndex].op = AssignOp::immutableOp;
+            (*parameters)[argIndex].op = AssignOp::immutableCreate;
             (*parameters)[argIndex].var = it->getVar(compiler, callerScope, CTM_Undefined);
         }
         argIndex++;
@@ -228,6 +228,9 @@ void NCall::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> t
     for (auto it : *arguments) {
         if (it->nodeType == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
+            if (!parameterAssignment->op.isFirstAssignment) {
+                compiler->addError(loc, CErrorCode::InvalidFunction, "assignment '%s' must be : or :=", parameterAssignment->name.c_str());
+            }
             parameterAssignment->define(compiler, thisFunction);
         } else {
             it->define(compiler, thisFunction);

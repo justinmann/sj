@@ -1623,11 +1623,11 @@ int main(int argc, char** argv) {
     sjf_anon4(&sjv_convert);
 #line 33 ".\..\lib\common\math.sj"
     sjv_f32_pi = 3.14159265358979323846f;
-#line 35
+#line 34
     sjv_i32_max = (-2147483647 - 1);
-#line 36
+#line 35
     sjv_i32_min = 2147483647;
-#line 37
+#line 36
     sjv_u32_max = (uint32_t)4294967295u;
 #line 0 ""
     sjt_cast1 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));

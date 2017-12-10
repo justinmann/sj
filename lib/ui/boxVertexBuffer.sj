@@ -1,5 +1,5 @@
 boxVertexBuffer(
-    rect: 'rect
+    rect : 'rect
     --cvar--
     vertex_buffer_t* buffer;
     --cvar--

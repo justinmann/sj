@@ -1,8 +1,8 @@
 include "array.sj"
 
 list!t (
-	count = 0
-	data = array!t(0)
+	count := 0
+	data := array!t(0)
 
 	add(item :'t) {
 		if count > data.size {

@@ -12,9 +12,9 @@ borderPosition:^(
 
 borderChild #element #borderChild (
 	child : 'heap #element
-	rect = rect(0, 0, 0, 0)
-	position = borderPosition.fill
-	_children = empty'heap array!#element
+	rect := rect(0, 0, 0, 0)
+	position := borderPosition.fill
+	_children := empty'heap array!#element
 
 	getPosition() { position }
 
@@ -44,7 +44,7 @@ borderChild #element #borderChild (
 
 borderLayout #element (
 	children : array!#element()
-	rect = rect()
+	rect := rect()
 
 	getSize(maxSize : 'size) {
 		size(maxSize.w, maxSize.h)

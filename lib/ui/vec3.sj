@@ -12,7 +12,7 @@ vec3(
 	}
 
 	normalize() {
-		t = f32_sqrt(x * x + y * y + z * z)
+		t := f32_sqrt(x * x + y * y + z * z)
 		vec3(
 			x / t
 			y / t

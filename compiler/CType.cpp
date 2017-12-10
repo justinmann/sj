@@ -8,16 +8,18 @@
 
 #include "../node/Node.h"
 
-AssignOp AssignOp::create(bool isMutable, bool isCopy, CTypeMode typeMode) {
+AssignOp AssignOp::create(bool isFirstAssignment, bool isMutable, bool isCopy, CTypeMode typeMode) {
     AssignOp op;
+    op.isFirstAssignment = isFirstAssignment;
     op.isMutable = isMutable;
     op.isCopy = isCopy;
     op.typeMode = typeMode;
     return op;
 }
 
-AssignOp AssignOp::immutableOp = AssignOp::create(false, false, CTM_Undefined);
-AssignOp AssignOp::mutableOp = AssignOp::create(true, false, CTM_Undefined);
+AssignOp AssignOp::immutableCreate = AssignOp::create(true, false, false, CTM_Undefined);
+AssignOp AssignOp::mutableCreate = AssignOp::create(true, true, false, CTM_Undefined);
+AssignOp AssignOp::mutableUpdate = AssignOp::create(false, true, false, CTM_Undefined);
 
 shared_ptr<CTypes> CType::create(string valueName, string cname, string defaultValue, string cnameOption, string defaultValueOption) {
     assert(valueName.find("stack ") != 0);

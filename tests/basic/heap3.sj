@@ -1,4 +1,4 @@
-bar(f = foo(1)) { this }
+bar(f := foo(1)) { this }
 foo(x : 0) { this }
 
 func(b : 'bar)'local foo {

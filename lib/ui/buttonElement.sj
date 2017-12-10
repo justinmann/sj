@@ -5,17 +5,17 @@ buttonState: ^(
 ) { this }
 
 buttonElement #element (
-	text = ""
-	textColor = colors.blue()
-	font = style.getFont(0 /* TODO: typeId(button) */)
-	normalImage = image(textureFromPng("assets/buttonNormal.png"), margin = margin(2, 2, 2, 2))
-	hotImage = image(textureFromPng("assets/buttonHot.png"), margin = margin(2, 2, 2, 2))
-	pressedImage = image(textureFromPng("assets/buttonPressed.png"), margin = margin(2, 2, 2, 2))
-	margin = margin(10, 10, 10, 10)
-	_rect = rect()
-	_state = buttonState.normal
-	_textRenderer = empty'textRenderer
-	_imageRenderer = empty'imageRenderer
+	text := ""
+	textColor := colors.blue()
+	font := style.getFont(0 /* TODO: typeId(button) */)
+	normalImage := image(textureFromPng("assets/buttonNormal.png"), margin := margin(2, 2, 2, 2))
+	hotImage := image(textureFromPng("assets/buttonHot.png"), margin := margin(2, 2, 2, 2))
+	pressedImage := image(textureFromPng("assets/buttonPressed.png"), margin := margin(2, 2, 2, 2))
+	margin := margin(10, 10, 10, 10)
+	_rect := rect()
+	_state := buttonState.normal
+	_textRenderer := empty'textRenderer
+	_imageRenderer := empty'imageRenderer
 
 	getSize(maxSize : 'size) {
 		textSize : font.getTextSize(text)

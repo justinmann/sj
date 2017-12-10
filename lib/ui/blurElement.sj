@@ -1,11 +1,11 @@
 blurElement #element (
 	children : array!#element()
-	radius = 0.0f
-	up = true
-	_rect = rect()
-	_vertexBuffer = empty'boxVertexBuffer
-	_frameBuffer1 = empty'frameBuffer
-	_frameBuffer2 = empty'frameBuffer
+	radius := 0.0f
+	up := true
+	_rect := rect()
+	_vertexBuffer := empty'boxVertexBuffer
+	_frameBuffer1 := empty'frameBuffer
+	_frameBuffer2 := empty'frameBuffer
 	_innerScene : scene2d()
 
 	getSize(maxSize : 'size) {

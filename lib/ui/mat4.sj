@@ -170,9 +170,9 @@ mat4_rotation(angle : 'f32, x : 'f32, y : 'f32, z : 'f32) {
     s : f32_sin(f32_pi * angle / 180.0f)
     norm : f32_sqrt(x * x + y * y + z * z)
 
-    xnorm = x / norm
-    ynorm = y / norm
-    znorm = z / norm;
+    xnorm : x / norm
+    ynorm : y / norm
+    znorm : z / norm;
 
     mat4(
         m00 : xnorm * xnorm * (1.0f - c) + c

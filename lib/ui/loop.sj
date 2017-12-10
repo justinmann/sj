@@ -11,9 +11,9 @@ mainLoop() {
     root.render(rootScene)
     rootWindowRenderer.present()
 
-    mouseEvent = -1
-    x = 0
-    y = 0
+    mouseEvent := -1
+    x := 0
+    y := 0
     --c--
     SDL_Event e;
     while(SDL_PollEvent( &e ) != 0) {

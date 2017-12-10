@@ -7,9 +7,9 @@ font(
     --cvar--
 
     getTexture()'texture {
-        w = 0
-        h = 0
-        id = 0u
+        w := 0
+        h := 0
+        id := 0u
         --c--
         sjv_w = _parent->atlas->width;
         sjv_h = _parent->atlas->height;
@@ -19,8 +19,8 @@ font(
     }
 
     getTextSize(str : 'string)'size {
-        w = 0
-        h = 0
+        w := 0
+        h := 0
         --c--
         vec2 size = get_text_size(_parent->font, (char*)str->data.data);
         sjv_w = (int)size.x;

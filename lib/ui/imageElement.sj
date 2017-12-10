@@ -1,8 +1,8 @@
 imageElement #element (
-	image = 'image
-	_rect = rect()
-	_margin = margin(10, 10, 10, 10)
-	_imageRenderer = empty'imageRenderer
+	image := 'image
+	_rect := rect()
+	_margin := margin(10, 10, 10, 10)
+	_imageRenderer := empty'imageRenderer
 
 	getSize(maxSize : 'size) {
 		size(maxSize.w, maxSize.h)

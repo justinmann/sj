@@ -136,7 +136,8 @@ struct OPTIONANDTYPELIST {
     TTYPECHAR = 337,
     TTYPEBOOL = 338,
     TTYPEPTR = 339,
-    TINVALID = 340
+    TINVALID = 340,
+    TCOLONEQUAL = 341
   };
 #endif
 

@@ -1,6 +1,6 @@
 imageRenderer(
-    rect: 'rect
-    image: 'image
+    rect : 'rect
+    image : 'image
     --cvar--
     vertex_buffer_t* buffer;
     --cvar--

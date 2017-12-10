@@ -33,7 +33,7 @@ shared_ptr<CVar> NTupleAssignment::getVarImpl(Compiler* compiler, shared_ptr<CSc
 
     auto tempVarName = TrBlock::nextVarName("tupleResult");
     vector<shared_ptr<CVar>> statements;
-    auto getTupleVar = NAssignment(loc, nullptr, nullptr, tempVarName.c_str(), rightSide, AssignOp::immutableOp).getVar(compiler, scope, CTM_Undefined);
+    auto getTupleVar = NAssignment(loc, nullptr, nullptr, tempVarName.c_str(), rightSide, AssignOp::immutableCreate).getVar(compiler, scope, CTM_Undefined);
     if (!getTupleVar) {
         return nullptr;
     }

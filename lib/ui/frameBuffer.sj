@@ -1,5 +1,5 @@
 frameBuffer(
-	size: 'size
+	size : 'size
 	--cvar--
 	GLuint frameBufferId;
 	GLuint textureId;

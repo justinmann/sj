@@ -154,6 +154,7 @@ void updateLocation(YYLOCATION& loc, const char* s, const int len) {
 "}"						TOKEN_VAL(TRBRACE);
 ","						TOKEN_VAL(TCOMMA);
 ":"						TOKEN_VAL(TCOLON);
+":="					TOKEN_VAL(TCOLONEQUAL);
 "\'"					TOKEN_VAL(TQUOTE);
 "+"						TOKEN_VAL(TPLUS);
 "-"						TOKEN_VAL(TMINUS);

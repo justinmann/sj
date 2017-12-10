@@ -81,7 +81,6 @@ int main(int argc, char** argv) {
 #line 1 ".\basic\if4.sj"
         sjt_ifElse2 = true;
         if (sjt_ifElse2) {
-        } else {
         }
     }
     main_destroy();

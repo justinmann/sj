@@ -1,7 +1,7 @@
 textureFromPng(fileName : 'string) {
-	id = 0u
-	w = 0
-	h = 0
+	id := 0u
+	w := 0
+	h := 0
 	--c--
 	sjv_id = png_texture_load((char*)fileName->data.data, &sjv_w, &sjv_h);
 	--c--

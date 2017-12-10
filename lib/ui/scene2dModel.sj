@@ -4,7 +4,7 @@ scene2dModel #model (
 	frameBuffer : frameBuffer(size(512, 512))
 	children : array!#element()
 	_innerScene : scene2d()
-	_world = mat4()
+	_world := mat4()
 
 	setWorld(world : 'mat4) {
 		_world = copy world

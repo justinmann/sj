@@ -1,6 +1,6 @@
 boxRenderer(
-    rect: 'rect
-    color: 'color
+    rect : 'rect
+    color : 'color
     --cvar--
     vertex_buffer_t* buffer;
     --cvar--

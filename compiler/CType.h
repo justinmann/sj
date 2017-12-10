@@ -44,13 +44,15 @@ enum CTypeMode {
 
 class AssignOp {
 public:
+    bool isFirstAssignment;
     bool isMutable;
     bool isCopy;
     CTypeMode typeMode;
 
-    static AssignOp create(bool isMutable, bool isCopy, CTypeMode typeMode);
-    static AssignOp immutableOp;
-    static AssignOp mutableOp;
+    static AssignOp create(bool isFirstAssignment, bool isMutable, bool isCopy, CTypeMode typeMode);
+    static AssignOp immutableCreate;
+    static AssignOp mutableCreate;
+    static AssignOp mutableUpdate;
 };
 
 class CType;

@@ -1,1 +1,1 @@
-class(b = 0) { this }; a : class(); a.b = 1
+class(b := 0) { this }; a : class(); a.b = 1

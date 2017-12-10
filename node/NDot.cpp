@@ -32,7 +32,7 @@ bool CDotVar::getCanStoreValue() {
     return false;
 }
 
-shared_ptr<TrStoreValue> CDotVar::getStoreValue(Compiler* compiler, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op, bool isFirstAssignment) {
+shared_ptr<TrStoreValue> CDotVar::getStoreValue(Compiler* compiler, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op) {
     auto leftValue = trBlock->createTempStoreVariable(loc, nullptr, leftVar->getType(compiler)->getLocalType(), "dot");
     leftVar->transpile(compiler, trOutput, trBlock, dotValue, thisValue, leftValue);
     auto rightStoreVar = dynamic_pointer_cast<CStoreVar>(rightVar);
@@ -40,7 +40,7 @@ shared_ptr<TrStoreValue> CDotVar::getStoreValue(Compiler* compiler, shared_ptr<C
         compiler->addError(loc, CErrorCode::InvalidType, "right side cannot set value");
         return nullptr;
     }
-    return rightStoreVar->getStoreValue(compiler, scope, trOutput, trBlock, leftValue->getValue(), thisValue, op, isFirstAssignment);
+    return rightStoreVar->getStoreValue(compiler, scope, trOutput, trBlock, leftValue->getValue(), thisValue, op);
 }
 
 void CDotVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

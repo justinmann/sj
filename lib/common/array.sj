@@ -1,7 +1,7 @@
 array!t (
-	size = 0
-	data = 0 as ptr
-	_isGlobal = false
+	size := 0
+	data := 0 as ptr
+	_isGlobal := false
 
 	getAt(index : 'i32)'t --c--
 		if (index >= _parent->size || index < 0) {

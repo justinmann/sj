@@ -7,7 +7,7 @@
 model #model (
 	vertexBuffer : 'vertexBuffer!vertex_location_texture_normal
 	shader : 'shader
-	_world = mat4()
+	_world := mat4()
 
 	setWorld(world : 'mat4)'void {
 		_world = copy world

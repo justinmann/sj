@@ -40,13 +40,13 @@ public:
         return isMutable;
     }
     
-    shared_ptr<TrStoreValue> getStoreValue(Compiler* compiler, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op, bool isFirstAssignment) {
+    shared_ptr<TrStoreValue> getStoreValue(Compiler* compiler, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op) {
         if (isMutable) {
             if (this->scope.lock()->function->hasThis) {
-                return make_shared<TrStoreValue>(loc, scope, getType(compiler), "_this->" + argVar->cname, AssignOp::mutableOp, false);
+                return make_shared<TrStoreValue>(loc, scope, getType(compiler), "_this->" + argVar->cname, AssignOp::mutableUpdate);
             }
             else {
-                return make_shared<TrStoreValue>(loc, scope, getType(compiler), argVar->cname, AssignOp::mutableOp, false);
+                return make_shared<TrStoreValue>(loc, scope, getType(compiler), argVar->cname, AssignOp::mutableUpdate);
             }
         }
         return nullptr;
@@ -115,6 +115,9 @@ void NFunction::defineImpl(Compiler *compiler, shared_ptr<CBaseFunctionDefinitio
     }
         
     for (auto it : assignments) {
+        if (!it->op.isFirstAssignment) {
+            compiler->addError(loc, CErrorCode::InvalidFunction, "assignment '%s' must be : or :=", it->name.c_str());
+        }
         it->define(compiler, thisFunction);
     }
 
@@ -443,7 +446,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 
                 for (auto argVar : _data[returnMode].thisArgVars) {
                     auto argType = argVar->getType(compiler);
-                    TrStoreValue(argVar->loc, calleeScope, argType, "_this->" + argVar->name, AssignOp::create(true, true, CTM_Undefined), true).retainValue(compiler, argVar->loc, trCopyBlock.get(), make_shared<TrValue>(calleeScope, argType, "_from->" + argVar->name, false));
+                    TrStoreValue(argVar->loc, calleeScope, argType, "_this->" + argVar->name, AssignOp::create(true, true, true, CTM_Undefined)).retainValue(compiler, argVar->loc, trCopyBlock.get(), make_shared<TrValue>(calleeScope, argType, "_from->" + argVar->name, false));
                 }
 
                 if (_data[returnMode].copyVar) {
@@ -707,7 +710,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
             }
 
             auto parameterOp = (*parameters)[argIndex].op;
-            auto argStoreValue = make_shared<TrStoreValue>(isDefaultAssignment ? loc : calleeLoc, calleeScope, argType, calleeThisValue->getDotName(argVar->name), parameterOp, true);
+            auto argStoreValue = make_shared<TrStoreValue>(isDefaultAssignment ? loc : calleeLoc, calleeScope, argType, calleeThisValue->getDotName(argVar->name), parameterOp);
             parameterVar->transpile(compiler, trOutput, trBlock, nullptr, isDefaultAssignment ? calleeThisValue : thisValue, argStoreValue);
 
             if (!argStoreValue->hasSetValue) {

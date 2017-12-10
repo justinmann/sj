@@ -36,7 +36,7 @@ bool CNormalVar::getCanStoreValue() {
     return isMutable;
 }
 
-shared_ptr<TrStoreValue> CNormalVar::getStoreValue(Compiler* compiler, shared_ptr<CScope> scope_, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op, bool isFirstAssignment) {
+shared_ptr<TrStoreValue> CNormalVar::getStoreValue(Compiler* compiler, shared_ptr<CScope> scope_, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> dotValue, shared_ptr<TrValue> thisValue, AssignOp op) {
     stringstream lineStream;
 
     string varName;
@@ -65,7 +65,7 @@ shared_ptr<TrStoreValue> CNormalVar::getStoreValue(Compiler* compiler, shared_pt
         varName = cname;
     }
     
-    return make_shared<TrStoreValue>(loc, scope.lock(), type, varName, op, isFirstAssignment);
+    return make_shared<TrStoreValue>(loc, scope.lock(), type, varName, op);
 }
 
 void CNormalVar::dump(Compiler* compiler, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {

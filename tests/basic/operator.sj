@@ -1,5 +1,5 @@
 fancyMath(
-	x =' i32
+	x := 'i32
 
 	add(num :' fancyMath) {
 		fancyMath(x + num.x + 1)
@@ -40,16 +40,16 @@ fancyMath(
 
 a : fancyMath(1)
 b : fancyMath(2)
-c = a + b
-d = a - b
-e = a * b
-f = a / b
-g = a % b
+c := a + b
+d := a - b
+e := a * b
+f := a / b
+g := a % b
 c += c
 d -= d
 d *= d
 d /= d
 e ++
 f ++
-i = f.x
-j = a.bob = 12
+i := f.x
+j := a.bob = 12
