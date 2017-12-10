@@ -1,8 +1,20 @@
+class(x'i32:)'stack class {
+  this
+}
+
 global()'void {
-  if true {
+  a'i32 : if true {
     1i
   } else {
     2i
+  }
+  c'stack class = class(this = class(
+    x'i32 : this.x
+  ))
+  if true {
+    c'stack class = class(this = class(
+      x'i32 : this.x
+    ))
   }
   void
 }

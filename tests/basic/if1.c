@@ -60,26 +60,79 @@ struct td_double_option {
 const double_option double_empty = { true };
 
 #define sjs_object_typeId 1
+#define sjs_class_typeId 2
+#define sjs_class_heap_typeId 3
 
 typedef struct td_sjs_object sjs_object;
+typedef struct td_sjs_class sjs_class;
+typedef struct td_sjs_class_heap sjs_class_heap;
 
 struct td_sjs_object {
     intptr_t _refCount;
 };
 
-bool sjt_ifElse1;
+struct td_sjs_class {
+    int32_t x;
+};
 
+struct td_sjs_class_heap {
+    intptr_t _refCount;
+    int32_t x;
+};
+
+bool sjt_ifElse1;
+bool sjt_ifElse2;
+int32_t sjv_a;
+sjs_class sjv_c;
+
+void sjf_class(sjs_class* _this);
+void sjf_class_copy(sjs_class* _this, sjs_class* _from);
+void sjf_class_destroy(sjs_class* _this);
+void sjf_class_heap(sjs_class_heap* _this);
 void main_destroy(void);
+
+void sjf_class(sjs_class* _this) {
+}
+
+void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
+#line 3 ".\basic\if1.sj"
+    _this->x = _from->x;
+}
+
+void sjf_class_destroy(sjs_class* _this) {
+}
+
+void sjf_class_heap(sjs_class_heap* _this) {
+}
 
 int main(int argc, char** argv) {
 #line 1 ".\basic\if1.sj"
     sjt_ifElse1 = true;
     if (sjt_ifElse1) {
+#line 1 ".\basic\if1.sj"
+        sjv_a = 1;
     } else {
+#line 1 ".\basic\if1.sj"
+        sjv_a = 2;
+    }
+
+#line 5
+    sjv_c.x = 1;
+#line 0 ""
+    sjf_class(&sjv_c);
+#line 6 ".\basic\if1.sj"
+    sjt_ifElse2 = true;
+    if (sjt_ifElse2) {
+#line 6 ".\basic\if1.sj"
+        sjv_c.x = 2;
+#line 0 ""
+        sjf_class(&sjv_c);
     }
     main_destroy();
     return 0;
 }
 
 void main_destroy() {
+
+    sjf_class_destroy(&sjv_c);
 }

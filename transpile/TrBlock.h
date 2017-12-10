@@ -43,10 +43,10 @@ public:
     bool hasSetValue;
     bool isReturnValue;
     shared_ptr<TrValue> value;
+    bool isVoid;
 
 private:
     string name;
-    bool isVoid;
 };
 
 class TrBlock {

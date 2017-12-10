@@ -7,8 +7,8 @@
 -- language --
 * := for first time mutable assignment
 * second assignment to this var does not free
-* if return is not computed if ignored
 * store local values inside block to fix: if true { x : 1 } else { x : 1 }
+
 * de-dup global strings
 * enum
 * namespaces

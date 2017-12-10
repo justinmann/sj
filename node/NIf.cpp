@@ -37,17 +37,17 @@ void CIfElseVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
     auto trStatement = TrStatement(loc, ifLine.str(), trIfBlock);
 
     ifVar->transpile(compiler, trOutput, trIfBlock.get(), nullptr, thisValue, storeValue);
-    if (elseVar || type != compiler->typeVoid) {
+    if (elseVar) {
         auto trElseBlock = make_shared<TrBlock>();
         trElseBlock->parent = trBlock;
         trElseBlock->hasThis = trBlock->hasThis;
         trStatement.elseBlock = trElseBlock;
 
-        if (elseVar) {
-            elseVar->transpile(compiler, trOutput, trElseBlock.get(), nullptr, thisValue, storeValue);
-        }
-        else {
-            type->transpileDefaultValue(compiler, loc, trBlock, storeValue);
+        elseVar->transpile(compiler, trOutput, trElseBlock.get(), nullptr, thisValue, storeValue);
+    }
+    else {
+        if (!storeValue->isVoid) {
+            compiler->addError(loc, CErrorCode::NoDefaultValue, "if you store the result of an if clause then you must specify an else clause");
         }
     }
 
