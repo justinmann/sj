@@ -4,7 +4,7 @@ class!i32(x'i32:)'stack class_i32 {
 
 global()'void {
   c'stack class_i32 : class!i32(this = class!i32(
-    x'i32 : this.x
+    x'i32 : x
   ))
   c.x
   void

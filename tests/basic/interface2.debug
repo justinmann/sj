@@ -7,7 +7,7 @@ class #foo ()'heap class {
 global()'void {
   a'heap #foo : class(this = class()) as heap #foo
   test(
-    parent: a
+    parent: this
   )
   void
 }

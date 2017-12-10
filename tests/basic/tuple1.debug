@@ -16,8 +16,8 @@ anon4()'stack anon4 {
 
 func()'stack tuple2_i32_string {
   tuple2![i32, stack string](this = tuple2![i32, stack string](
-    item1'i32 : this.item1,
-    item2'stack string : this.item2
+    item1'i32 : item1,
+    item2'stack string : item2
   ))
 }
 
@@ -30,10 +30,28 @@ tuple3![stack string, f64, i32](item1'stack string:, item2'f64:, item3'i32:)'sta
 }
 
 global()'void {
+  --cinclude--
+  
+  
+  --cinclude--
   console'stack anon1 : anon1(this = anon1())
-  parse'stack anon2 : anon2(this = anon2())
-  random'stack anon3 : anon3(this = anon3())
-  convert'stack anon4 : anon4(this = anon4())
+  convert'stack anon2 : anon2(this = anon2())
+  --cdefine--
+  
+  void halt(const char * format, ...);
+  
+  --cdefine--
+  --cfunction--
+  
+  void halt(const char * format, ...) {
+  va_list args;
+  va_start (args, format);
+  vprintf (format, args);
+  va_end (args);
+  exit(-1);
+  }
+  
+  --cfunction--
   --cstruct--
   
   typedef struct pointer_td pointer;
@@ -165,7 +183,7 @@ global()'void {
   #else
   /* malloc failures result in lost memory, hash tables are unusable */
   #ifndef uthash_fatal
-  #define uthash_fatal(msg) exit(-1)        /* fatal OOM error */
+  #define uthash_fatal(msg) halt("Unknown")        /* fatal OOM error */
   #endif
   #define HASH_RECORD_OOM(oomed) uthash_fatal("out of memory")
   #define IF_HASH_NONFATAL_OOM(x)
@@ -506,7 +524,7 @@ global()'void {
   * This is for uthash developer only; it compiles away if HASH_DEBUG isn't defined.
   */
   #ifdef HASH_DEBUG
-  #define HASH_OOPS(...) do { fprintf(stderr,__VA_ARGS__); exit(-1); } while (0)
+  #define HASH_OOPS(...) do { halt(__VA_ARGS__); } while (0)
   #define HASH_FSCK(hh,head,where)                                                 \
   do {                                                                             \
   struct UT_hash_handle *_thh;                                                   \
@@ -1177,9 +1195,11 @@ global()'void {
   
   --ctypedef--
   f32_pi'f32 : 3.14159265358979323846ff
-  i32_max'i32 : (-2147483647 - 1)i
-  i32_min'i32 : 2147483647i
-  u32_max'u32 : (uint32_t)4294967295uu
+  u32_maxValue'u32 : (uint32_t)4294967295uu
+  i32_maxValue'i32 : (-2147483647 - 1)i
+  i32_minValue'i32 : 2147483647i
+  parse'stack anon3 : anon3(this = anon3())
+  random'stack anon4 : anon4(this = anon4())
   t'stack tuple2_i32_string : func()
   a'i32 = t.item1
   b'stack string = t.item2
@@ -1195,9 +1215,9 @@ global()'void {
   }
   {
     tupleResult3'stack tuple3_string_f64_i32 : tuple3![stack string, f64, i32](this = tuple3![stack string, f64, i32](
-      item1'stack string : this.item1,
-      item2'f64 : this.item2,
-      item3'i32 : this.item3
+      item1'stack string : item1,
+      item2'f64 : item2,
+      item3'i32 : item3
     ))
     e'stack string = tupleResult3.item1
     f'f64 = tupleResult3.item2

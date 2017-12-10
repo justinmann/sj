@@ -4,7 +4,7 @@ c(b'stack b:)'stack c {
 
 global()'void {
   c(this = c(
-    b'stack b : this.b
+    b'stack b : b
   ))
   void
 }

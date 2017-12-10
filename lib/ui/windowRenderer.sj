@@ -22,8 +22,7 @@ windowRenderer(
 ) {
 	--c--
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        printf("SDL_Init Error: %s\n", SDL_GetError());
-        exit(-1);
+        halt("SDL_Init Error: %s\n", SDL_GetError());
     }
 
 ##ifdef __APPLE__
@@ -39,8 +38,7 @@ windowRenderer(
 
     _this->win = SDL_CreateWindow("Hello World!", 100, 100, 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     if (_this->win == 0) {
-        printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
-        exit(-1);
+        halt("SDL_CreateWindow Error: %s\n", SDL_GetError());
     }
 
     SDL_GL_CreateContext((SDL_Window*)_this->win);
@@ -48,15 +46,13 @@ windowRenderer(
 	GLint GlewInitResult = glewInit();
 	if (GLEW_OK != GlewInitResult) 
 	{
-		printf("ERROR: %s\n", glewGetErrorString(GlewInitResult));
-		exit(EXIT_FAILURE);
+		halt("ERROR: %s\n", glewGetErrorString(GlewInitResult));
 	}
 ##endif
 
     _this->ren = SDL_CreateRenderer((SDL_Window*)_this->win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (_this->ren == 0) {
-        printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
-        exit(-1);
+        halt("SDL_CreateRenderer Error: %s\n", SDL_GetError());
     }
 
     glClearColor( 0.0, 0.0, 0.0, 0.0 );

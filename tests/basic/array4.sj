@@ -1,4 +1,4 @@
-include "../../lib/common/array.sj"
+include "../../lib/common/common.sj"
 
 class(x: 0) { this }
 a : array!class(1)

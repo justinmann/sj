@@ -4,7 +4,7 @@ func(x'f32:)'f32 {
 
 global()'void {
   func(
-    x'f32 : this.x
+    x'f32 : x
   )
   void
 }

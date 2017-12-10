@@ -5,7 +5,7 @@ class()'stack class {
 class_bar(x'i32:)'i32 {
   class_foo(
     parent: this,
-    x'i32 : this.x
+    x'i32 : x
   )
 }
 
@@ -13,7 +13,7 @@ class_foo(x'i32:)'i32 {
   if x > 0i {
     class_bar(
       parent: this,
-      x'i32 : this.x
+      x'i32 : x
     )
   } else {
     0i
@@ -23,8 +23,8 @@ class_foo(x'i32:)'i32 {
 global()'void {
   c'stack class : class(this = class())
   class_foo(
-    parent: c,
-    x'i32 : this.x
+    parent: this,
+    x'i32 : x
   )
   void
 }

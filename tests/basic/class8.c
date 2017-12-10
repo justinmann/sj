@@ -117,11 +117,11 @@ int main(int argc, char** argv) {
     sjv_c.y = 2;
 #line 0 ""
     sjf_class(&sjv_c);
-#line 3 ".\basic\class8.sj"
+#line 1 ".\basic\class8.sj"
     sjt_dot1 = &sjv_c;
 #line 3
     sjt_math1 = (sjt_dot1)->x;
-#line 3
+#line 1
     sjt_dot2 = &sjv_c;
 #line 3
     sjt_math2 = (sjt_dot2)->y;

@@ -116,9 +116,6 @@ cb_i32_data_heap_data sjt_callback6;
 cb_i32_data_heap_data sjt_callback7;
 cb_i32_data_heap_data sjt_callback8;
 cb_i32_data_heap_data sjt_callback9;
-sjs_class* sjt_dot3;
-sjs_class* sjt_dot4;
-sjs_class* sjt_dot5;
 int32_t sjt_functionParam1;
 int32_t sjt_functionParam10;
 int32_t sjt_functionParam11;
@@ -177,7 +174,7 @@ void main_destroy(void);
 
 void sjf_callback(cb_i32_data_heap_data f, int32_t* _return) {
     cb_i32_data_heap_data sjt_callback4;
-    sjs_data* sjt_dot2;
+    sjs_data* sjt_dot3;
     int32_t sjt_functionParam4;
     sjs_data sjv_d;
 
@@ -187,10 +184,10 @@ void sjf_callback(cb_i32_data_heap_data f, int32_t* _return) {
     sjt_functionParam4 = 12;
 #line 0 ""
     sjt_callback4._cb(sjt_callback4._parent, sjt_functionParam4, &sjv_d);
-#line 34 ".\basic\callback.sj"
-    sjt_dot2 = &sjv_d;
+#line 1 ".\basic\callback.sj"
+    sjt_dot3 = &sjv_d;
 #line 32
-    (*_return) = (sjt_dot2)->x;
+    (*_return) = (sjt_dot3)->x;
 
     sjf_data_destroy(&sjv_d);
 }
@@ -207,13 +204,16 @@ void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_func(sjs_class* _parent, int32_t a, sjs_data* _return) {
+    sjs_class* sjt_dot1;
     int32_t sjt_math5;
     int32_t sjt_math6;
 
 #line 7 ".\basic\callback.sj"
     sjt_math5 = a;
+#line 7
+    sjt_dot1 = _parent;
 #line 8
-    sjt_math6 = (_parent)->b;
+    sjt_math6 = (sjt_dot1)->b;
 #line 8
     _return->x = sjt_math5 + sjt_math6;
 #line 0 ""
@@ -221,6 +221,7 @@ void sjf_class_func(sjs_class* _parent, int32_t a, sjs_data* _return) {
 }
 
 void sjf_class_func_heap(sjs_class* _parent, int32_t a, sjs_data_heap** _return) {
+    sjs_class* sjt_dot2;
     int32_t sjt_math7;
     int32_t sjt_math8;
 
@@ -228,8 +229,10 @@ void sjf_class_func_heap(sjs_class* _parent, int32_t a, sjs_data_heap** _return)
     (*_return)->_refCount = 1;
 #line 7 ".\basic\callback.sj"
     sjt_math7 = a;
+#line 7
+    sjt_dot2 = _parent;
 #line 8
-    sjt_math8 = (_parent)->b;
+    sjt_math8 = (sjt_dot2)->b;
 #line 8
     (*_return)->x = sjt_math7 + sjt_math8;
 #line 0 ""
@@ -330,7 +333,6 @@ void sjf_func_heap_callback(void * _parent, int32_t a, sjs_data_heap** _return) 
 }
 
 void sjf_getCallback_heap(cb_i32_data_heap_data_heap* _return) {
-    sjs_class* sjt_dot1;
     sjs_class_heap* sjv_c;
 
     sjv_c = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
@@ -340,17 +342,19 @@ void sjf_getCallback_heap(cb_i32_data_heap_data_heap* _return) {
 #line 0 ""
     sjf_class_heap(sjv_c);
 #line 29 ".\basic\callback.sj"
-    sjt_dot1 = (sjs_class*)(((char*)sjv_c) + sizeof(intptr_t));
+    sjs_class_heap* callback1;
 #line 29
-    (*_return).inner._parent = (void*)sjt_dot1;
+    callback1 = sjv_c;
+#line 0 ""
+    callback1->_refCount++;
+#line 29 ".\basic\callback.sj"
+    (*_return).inner._parent = (void*)(sjs_class*)(((char*)callback1) + sizeof(intptr_t));
 #line 29
-    (sjs_object*)((char*)(*_return)._parent - sizeof(intptr_t))->_refCount++;
+    (*_return)._destroy = (void(*)(void*))sjf_class_destroy;
 #line 29
-    (*_return)._destroy = sjf_class_destroy;
+    (*_return).inner._cb = (void(*)(void*,int32_t, sjs_data*))sjf_class_func;
 #line 29
-    (*_return).inner._cb = sjf_class_func;
-#line 29
-    (*_return).inner._cb_heap = sjf_class_func_heap;
+    (*_return).inner._cb_heap = (void(*)(void*,int32_t, sjs_data_heap**))sjf_class_func_heap;
 
     sjv_c->_refCount--;
     if (sjv_c->_refCount <= 0) {
@@ -362,9 +366,9 @@ int main(int argc, char** argv) {
 #line 37 ".\basic\callback.sj"
     sjv_a._parent = (void*)1;
 #line 37
-    sjv_a._cb = sjf_func_callback;
+    sjv_a._cb = (void(*)(void*,int32_t, sjs_data*))sjf_func_callback;
 #line 37
-    sjv_a._cb_heap = sjf_func_heap_callback;
+    sjv_a._cb_heap = (void(*)(void*,int32_t, sjs_data_heap**))sjf_func_heap_callback;
 #line 38
     sjt_callback1 = sjv_a;
 #line 38
@@ -391,27 +395,25 @@ int main(int argc, char** argv) {
 #line 43 ".\basic\callback.sj"
     sjt_functionParam5._parent = (void*)1;
 #line 43
-    sjt_functionParam5._cb = sjf_func_callback;
+    sjt_functionParam5._cb = (void(*)(void*,int32_t, sjs_data*))sjf_func_callback;
 #line 43
-    sjt_functionParam5._cb_heap = sjf_func_heap_callback;
+    sjt_functionParam5._cb_heap = (void(*)(void*,int32_t, sjs_data_heap**))sjf_func_heap_callback;
 #line 0 ""
     sjf_callback(sjt_functionParam5, &sjv_a2);
 #line 44 ".\basic\callback.sj"
-    sjt_dot3 = &sjv_c;
+    sjt_functionParam6._parent = &sjv_c;
 #line 44
-    sjt_functionParam6._parent = (void*)sjt_dot3;
+    sjt_functionParam6._cb = (void(*)(void*,int32_t, sjs_data*))sjf_class_func;
 #line 44
-    sjt_functionParam6._cb = sjf_class_func;
-#line 44
-    sjt_functionParam6._cb_heap = sjf_class_func_heap;
+    sjt_functionParam6._cb_heap = (void(*)(void*,int32_t, sjs_data_heap**))sjf_class_func_heap;
 #line 0 ""
     sjf_callback(sjt_functionParam6, &sjv_b2);
 #line 45 ".\basic\callback.sj"
     sjv_f1._parent = (void*)1;
 #line 45
-    sjv_f1._cb = sjf_func_callback;
+    sjv_f1._cb = (void(*)(void*,int32_t, sjs_data*))sjf_func_callback;
 #line 45
-    sjv_f1._cb_heap = sjf_func_heap_callback;
+    sjv_f1._cb_heap = (void(*)(void*,int32_t, sjs_data_heap**))sjf_func_heap_callback;
 #line 46
     sjt_callback5 = sjv_f1;
 #line 46
@@ -419,13 +421,11 @@ int main(int argc, char** argv) {
 #line 0 ""
     sjt_callback5._cb(sjt_callback5._parent, sjt_functionParam7, &sjv_d);
 #line 47 ".\basic\callback.sj"
-    sjt_dot4 = &sjv_c;
+    sjv_f2._parent = &sjv_c;
 #line 47
-    sjv_f2._parent = (void*)sjt_dot4;
+    sjv_f2._cb = (void(*)(void*,int32_t, sjs_data*))sjf_class_func;
 #line 47
-    sjv_f2._cb = sjf_class_func;
-#line 47
-    sjv_f2._cb_heap = sjf_class_func_heap;
+    sjv_f2._cb_heap = (void(*)(void*,int32_t, sjs_data_heap**))sjf_class_func_heap;
 #line 48
     sjt_callback6 = sjv_f2;
 #line 48
@@ -439,17 +439,19 @@ int main(int argc, char** argv) {
 #line 0 ""
     sjf_class_heap(sjv_c_heap);
 #line 50 ".\basic\callback.sj"
-    sjt_dot5 = (sjs_class*)(((char*)sjv_c_heap) + sizeof(intptr_t));
+    sjs_class_heap* callback2;
 #line 50
-    sjv_f3.inner._parent = (void*)sjt_dot5;
+    callback2 = sjv_c_heap;
+#line 0 ""
+    callback2->_refCount++;
+#line 50 ".\basic\callback.sj"
+    sjv_f3.inner._parent = (void*)(sjs_class*)(((char*)callback2) + sizeof(intptr_t));
 #line 50
-    (sjs_object*)((char*)sjv_f3._parent - sizeof(intptr_t))->_refCount++;
+    sjv_f3._destroy = (void(*)(void*))sjf_class_destroy;
 #line 50
-    sjv_f3._destroy = sjf_class_destroy;
+    sjv_f3.inner._cb = (void(*)(void*,int32_t, sjs_data*))sjf_class_func;
 #line 50
-    sjv_f3.inner._cb = sjf_class_func;
-#line 50
-    sjv_f3.inner._cb_heap = sjf_class_func_heap;
+    sjv_f3.inner._cb_heap = (void(*)(void*,int32_t, sjs_data_heap**))sjf_class_func_heap;
 #line 51
     sjt_callback7 = sjv_f3.inner;
 #line 51
@@ -461,9 +463,9 @@ int main(int argc, char** argv) {
 #line 53
     sjt_value1._parent = (void*)1;
 #line 53
-    sjt_value1._cb = sjf_func_callback;
+    sjt_value1._cb = (void(*)(void*,int32_t, sjs_data*))sjf_func_callback;
 #line 53
-    sjt_value1._cb_heap = sjf_func_heap_callback;
+    sjt_value1._cb_heap = (void(*)(void*,int32_t, sjs_data_heap**))sjf_func_heap_callback;
 #line 53
     sjv_i = sjt_value1;
 #line 54
@@ -481,9 +483,9 @@ int main(int argc, char** argv) {
 #line 56 ".\basic\callback.sj"
     sjv_o._parent = (void*)1;
 #line 56
-    sjv_o._cb = sjf_func2_data_callback;
+    sjv_o._cb = (void(*)(void*,int32_t, sjs_data*))sjf_func2_data_callback;
 #line 56
-    sjv_o._cb_heap = sjf_func2_data_heap_callback;
+    sjv_o._cb_heap = (void(*)(void*,int32_t, sjs_data_heap**))sjf_func2_data_heap_callback;
 #line 57
     sjt_callback9 = sjv_l.inner;
 #line 57

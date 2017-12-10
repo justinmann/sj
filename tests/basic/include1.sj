@@ -1,4 +1,4 @@
-include "../../lib/common/array.sj"
+include "../../lib/common/common.sj"
 
 class(
 	bob : 1

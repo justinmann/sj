@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
     sjv_c.x = 0;
 #line 0 ""
     sjf_class(&sjv_c);
-#line 3 ".\basic\class5.sj"
+#line 1 ".\basic\class5.sj"
     sjt_dot1 = &sjv_c;
     main_destroy();
     return 0;

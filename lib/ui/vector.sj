@@ -309,9 +309,7 @@ vector_new( size_t item_size )
 
     if( !self )
     {
-        fprintf( stderr,
-                 "line %d: No more memory for allocating data\n", __LINE__ );
-        exit( EXIT_FAILURE );
+        halt("line %d: No more memory for allocating data\n", __LINE__ );
     }
     self->item_size = item_size;
     self->size      = 0;

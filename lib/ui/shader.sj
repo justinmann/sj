@@ -217,8 +217,7 @@ shader_compile( const char* source,
     {
         GLchar messages[256];
         glGetShaderInfoLog( handle, sizeof(messages), 0, &messages[0] );
-        fprintf( stderr, "%s: %s\n", source, messages );
-        exit( EXIT_FAILURE );
+        halt("%s: %s\n", source, messages);
     }
     return handle;
 }
@@ -256,8 +255,7 @@ shader_load( const char * vert_filename,
     {
         GLchar messages[256];
         glGetProgramInfoLog( handle, sizeof(messages), 0, &messages[0] );
-        fprintf( stderr, "%s\n", messages );
-        exit(1);
+        halt("%s\n", messages );
     }
     return handle;
 }

@@ -5,8 +5,7 @@ array!t (
 
 	getAt(index : 'i32)'t --c--
 		if (index >= _parent->size || index < 0) {
-			printf("getAt: out of bounds\n");
-			exit(-1);
+			halt("getAt: out of bounds\n");
 		}
 
 		#type(t)* p = (#type(t)*)_parent->data;
@@ -17,8 +16,7 @@ array!t (
 	initAt(index : 'i32, item : 't)'void {
 		--c--
 		if (index >= _parent->size || index < 0) {
-			printf("setAt: out of bounds %d:%d\n", index, _parent->size);
-			exit(-1);
+			halt("setAt: out of bounds %d:%d\n", index, _parent->size);
 		}
 
 		#type(t)* p = (#type(t)*)_parent->data;
@@ -29,8 +27,7 @@ array!t (
 	setAt(index : 'i32, item : 't)'void {
 		--c--
 		if (index >= _parent->size || index < 0) {
-			printf("setAt: out of bounds %d:%d\n", index, _parent->size);
-			exit(-1);
+			halt("setAt: out of bounds %d:%d\n", index, _parent->size);
 		}
 
 		#type(t)* p = (#type(t)*)_parent->data;
@@ -52,12 +49,17 @@ array!t (
 		match
 	}
 
+	each(cb : '(:t)void)'void {
+		for i (0 to size) {
+			cb(getAt(i))
+		}
+	}
+
 	grow(new_size :' i32)'void {
 		--c--
 		if (_parent->size != new_size) {
 			if (new_size < _parent->size) {
-				printf("grow: new _parent->size smaller than old _parent->size %d:%d\n", new_size, _parent->size);
-				exit(-1);
+				halt("grow: new _parent->size smaller than old _parent->size %d:%d\n", new_size, _parent->size);
 			}
 			
 			if (_parent->_isGlobal) {
@@ -65,15 +67,13 @@ array!t (
 				#type(t)* p = (#type(t)*)_parent->data;
 				_parent->data = (uintptr_t)calloc(new_size * sizeof(#type(t)), 1);
 				if (!_parent->data) {
-					printf("grow: out of memory\n");
-					exit(-1);				
+					halt("grow: out of memory\n");
 				}
 				memcpy((void*)_parent->data, p, _parent->size * sizeof(#type(t)));
 			} else {
 				_parent->data = (uintptr_t)realloc((void*)_parent->data, new_size * sizeof(#type(t)));
 				if (!_parent->data) {
-					printf("grow: out of memory\n");
-					exit(-1);				
+					halt("grow: out of memory\n");
 				}
 				memset((#type(t)*)_parent->data + _parent->size, 0, (new_size - _parent->size) * sizeof(#type(t)));
 			}
@@ -111,7 +111,7 @@ array!t (
 	#include(<string.h>)
 
 	if (_this->size < 0) {
-		exit(-1);
+		halt("size is less than zero");
 	}
 
 	if (_this->data) {
@@ -119,8 +119,7 @@ array!t (
 	} else {
 		_this->data = (uintptr_t)calloc(_this->size * sizeof(#type(t)), 1);
 		if (!_this->data) {
-			printf("grow: out of memory\n");
-			exit(-1);				
+			halt("grow: out of memory\n");
 		}
 	}
 	--c--

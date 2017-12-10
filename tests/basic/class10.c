@@ -103,8 +103,12 @@ void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_func(sjs_class* _parent, int32_t* _return) {
+    sjs_class* sjt_dot2;
+
 #line 1 ".\basic\class10.sj"
-    (*_return) = (_parent)->x;
+    sjt_dot2 = _parent;
+#line 1
+    (*_return) = (sjt_dot2)->x;
 }
 
 void sjf_class_heap(sjs_class_heap* _this) {

@@ -9,11 +9,11 @@ global()'void {
     2i
   }
   c'stack class = class(this = class(
-    x'i32 : this.x
+    x'i32 : x
   ))
   if true {
     c'stack class = class(this = class(
-      x'i32 : this.x
+      x'i32 : x
     ))
   }
   void

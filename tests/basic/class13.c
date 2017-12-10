@@ -143,12 +143,15 @@ void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return) {
     sjt_ifElse1 = sjt_compare1 > sjt_compare2;
     if (sjt_ifElse1) {
         sjs_math* sjt_dot2;
+        sjs_class* sjt_dot3;
         int32_t sjt_functionParam2;
         int32_t sjt_functionParam3;
         int32_t sjt_functionParam4;
 
-#line 10 ".\basic\class13.sj"
-        sjt_dot2 = &(_parent)->m;
+#line 8 ".\basic\class13.sj"
+        sjt_dot3 = _parent;
+#line 10
+        sjt_dot2 = &(sjt_dot3)->m;
 #line 8
         sjt_functionParam3 = x;
 #line 10

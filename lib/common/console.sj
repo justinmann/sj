@@ -1,7 +1,16 @@
+--cinclude--
+#include(<stdio.h>)
+--cinclude--
+
 console : ^(
 	write(data : 'string)'void {
 		--c--
-		#include(<stdio.h>)
+		printf("%s", (char*)data->data.data);
+		--c--
+	}
+
+	writeLine(data : 'string)'void {
+		--c--
 		printf("%s\n", (char*)data->data.data);
 		--c--
 	}
@@ -10,7 +19,6 @@ console : ^(
 		data := 0 as ptr
 		size := 1024
 		--c--
-		#include(<stdio.h>)
 	    char* str = (char*)malloc(size);
 	    int index = 0;
 	    char ch = ' ';

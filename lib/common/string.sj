@@ -1,5 +1,3 @@
-include "array.sj"
-
 string(
 	count := 0
 	data := array!char()

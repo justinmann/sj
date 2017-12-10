@@ -21,10 +21,28 @@ class #foo ()'heap class {
 
 
 global()'void {
+  --cinclude--
+  
+  
+  --cinclude--
   console'stack anon1 : anon1(this = anon1())
-  parse'stack anon2 : anon2(this = anon2())
-  random'stack anon3 : anon3(this = anon3())
-  convert'stack anon4 : anon4(this = anon4())
+  convert'stack anon2 : anon2(this = anon2())
+  --cdefine--
+  
+  void halt(const char * format, ...);
+  
+  --cdefine--
+  --cfunction--
+  
+  void halt(const char * format, ...) {
+  va_list args;
+  va_start (args, format);
+  vprintf (format, args);
+  va_end (args);
+  exit(-1);
+  }
+  
+  --cfunction--
   --cstruct--
   
   typedef struct pointer_td pointer;
@@ -156,7 +174,7 @@ global()'void {
   #else
   /* malloc failures result in lost memory, hash tables are unusable */
   #ifndef uthash_fatal
-  #define uthash_fatal(msg) exit(-1)        /* fatal OOM error */
+  #define uthash_fatal(msg) halt("Unknown")        /* fatal OOM error */
   #endif
   #define HASH_RECORD_OOM(oomed) uthash_fatal("out of memory")
   #define IF_HASH_NONFATAL_OOM(x)
@@ -497,7 +515,7 @@ global()'void {
   * This is for uthash developer only; it compiles away if HASH_DEBUG isn't defined.
   */
   #ifdef HASH_DEBUG
-  #define HASH_OOPS(...) do { fprintf(stderr,__VA_ARGS__); exit(-1); } while (0)
+  #define HASH_OOPS(...) do { halt(__VA_ARGS__); } while (0)
   #define HASH_FSCK(hh,head,where)                                                 \
   do {                                                                             \
   struct UT_hash_handle *_thh;                                                   \
@@ -1168,12 +1186,14 @@ global()'void {
   
   --ctypedef--
   f32_pi'f32 : 3.14159265358979323846ff
-  i32_max'i32 : (-2147483647 - 1)i
-  i32_min'i32 : 2147483647i
-  u32_max'u32 : (uint32_t)4294967295uu
+  u32_maxValue'u32 : (uint32_t)4294967295uu
+  i32_maxValue'i32 : (-2147483647 - 1)i
+  i32_minValue'i32 : 2147483647i
+  parse'stack anon3 : anon3(this = anon3())
+  random'stack anon4 : anon4(this = anon4())
   a'heap #foo : class(this = class()) as heap #foo
   bob'heap string : test(
-    parent: a
+    parent: this
   )
   void
 }

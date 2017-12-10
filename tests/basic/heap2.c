@@ -134,8 +134,12 @@ void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_get(sjs_class* _parent, sjs_class_anon1** _return) {
+    sjs_class* sjt_dot2;
+
 #line 6 ".\basic\heap2.sj"
-    (*_return) = &(_parent)->data;
+    sjt_dot2 = _parent;
+#line 6
+    (*_return) = &(sjt_dot2)->data;
 }
 
 void sjf_class_heap(sjs_class_heap* _this) {

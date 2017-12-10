@@ -95,8 +95,12 @@ void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_inner(sjs_class* _parent, int32_t* _return) {
+    sjs_class* sjt_dot1;
+
 #line 2 ".\basic\class14.sj"
-    (*_return) = (_parent)->m;
+    sjt_dot1 = _parent;
+#line 2
+    (*_return) = (sjt_dot1)->m;
 }
 
 int main(int argc, char** argv) {

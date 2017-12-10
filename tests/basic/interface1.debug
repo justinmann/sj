@@ -18,10 +18,10 @@ global()'void {
   namespace1'stack anon1 : anon1(this = anon1())
   namespace2'stack anon2 : anon2(this = anon2())
   a'heap #foo : anon1_class(this = anon1_class(
-    parent: namespace1
+    parent: this
   )) as heap #foo
   b'heap #foo : anon2_class(this = anon2_class(
-    parent: namespace2
+    parent: this
   )) as heap #foo
   void
 }

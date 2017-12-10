@@ -8,10 +8,10 @@ class_func()'i32 {
 
 global()'void {
   c'stack class : class(this = class(
-    x'i32 : this.x
+    x'i32 : x
   ))
   class_func(
-    parent: c
+    parent: this
   )
   void
 }

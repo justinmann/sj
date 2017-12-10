@@ -1,4 +1,4 @@
-include "../../lib/common/array.sj"
+include "../../lib/common/common.sj"
 
 a : array!i32(1)
 a.setAt(0, 1)

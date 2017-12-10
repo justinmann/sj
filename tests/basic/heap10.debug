@@ -8,22 +8,22 @@ class2(inner'heap inner?:)'stack class2 {
 
 global()'void {
   x1'stack class : class(this = class(
-    inner'stack inner : this.inner
+    inner'stack inner : inner
   ))
   x2'heap class : class(this = class(
-    inner'stack inner : this.inner
+    inner'stack inner : inner
   ))
   x4'heap class? : value(class(this = class(
-    inner'stack inner : this.inner
+    inner'stack inner : inner
   )))
   x5'stack class2 : class2(this = class2(
-    inner'heap inner? : this.inner
+    inner'heap inner? : inner
   ))
   x6'heap class2 : class2(this = class2(
-    inner'heap inner? : this.inner
+    inner'heap inner? : inner
   ))
   x8'heap class2? : value(class2(this = class2(
-    inner'heap inner? : this.inner
+    inner'heap inner? : inner
   )))
   void
 }

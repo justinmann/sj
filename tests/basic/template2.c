@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
     sjv_c.x = 1;
 #line 0 ""
     sjf_class_i32(&sjv_c);
-#line 5 ".\basic\template2.sj"
+#line 1 ".\basic\template2.sj"
     sjt_dot1 = &sjv_c;
     main_destroy();
     return 0;

@@ -81,17 +81,17 @@ struct td_sjs_fancyMath_heap {
 };
 
 sjs_fancyMath* sjt_dot1;
-sjs_fancyMath* sjt_dot10;
-sjs_fancyMath* sjt_dot13;
-sjs_fancyMath* sjt_dot16;
+sjs_fancyMath* sjt_dot12;
 sjs_fancyMath* sjt_dot17;
-sjs_fancyMath* sjt_dot18;
-sjs_fancyMath* sjt_dot19;
-sjs_fancyMath* sjt_dot20;
-sjs_fancyMath* sjt_dot21;
 sjs_fancyMath* sjt_dot22;
-sjs_fancyMath* sjt_dot23;
-sjs_fancyMath* sjt_dot4;
+sjs_fancyMath* sjt_dot27;
+sjs_fancyMath* sjt_dot28;
+sjs_fancyMath* sjt_dot29;
+sjs_fancyMath* sjt_dot30;
+sjs_fancyMath* sjt_dot31;
+sjs_fancyMath* sjt_dot34;
+sjs_fancyMath* sjt_dot35;
+sjs_fancyMath* sjt_dot36;
 sjs_fancyMath* sjt_dot7;
 sjs_fancyMath* sjt_functionParam1;
 int32_t sjt_functionParam10;
@@ -138,17 +138,20 @@ void sjf_fancyMath(sjs_fancyMath* _this) {
 
 void sjf_fancyMath_add(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath* _return) {
     sjs_fancyMath* sjt_dot2;
+    sjs_fancyMath* sjt_dot3;
     int32_t sjt_math1;
     int32_t sjt_math2;
     int32_t sjt_math3;
     int32_t sjt_math4;
 
-#line 5 ".\basic\operator.sj"
-    sjt_math3 = (_parent)->x;
+#line 4 ".\basic\operator.sj"
+    sjt_dot2 = _parent;
+#line 5
+    sjt_math3 = (sjt_dot2)->x;
 #line 4
-    sjt_dot2 = num;
+    sjt_dot3 = num;
 #line 0 ""
-    sjf_fancyMath_getX(sjt_dot2, &sjt_math4);
+    sjf_fancyMath_getX(sjt_dot3, &sjt_math4);
 #line 5 ".\basic\operator.sj"
     sjt_math1 = sjt_math3 + sjt_math4;
 #line 5
@@ -160,7 +163,8 @@ void sjf_fancyMath_add(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath
 }
 
 void sjf_fancyMath_add_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath_heap** _return) {
-    sjs_fancyMath* sjt_dot3;
+    sjs_fancyMath* sjt_dot5;
+    sjs_fancyMath* sjt_dot6;
     int32_t sjt_math5;
     int32_t sjt_math6;
     int32_t sjt_math7;
@@ -168,12 +172,14 @@ void sjf_fancyMath_add_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fanc
 
     (*_return) = (sjs_fancyMath_heap*)malloc(sizeof(sjs_fancyMath_heap));
     (*_return)->_refCount = 1;
-#line 5 ".\basic\operator.sj"
-    sjt_math7 = (_parent)->x;
+#line 4 ".\basic\operator.sj"
+    sjt_dot5 = _parent;
+#line 5
+    sjt_math7 = (sjt_dot5)->x;
 #line 4
-    sjt_dot3 = num;
+    sjt_dot6 = num;
 #line 0 ""
-    sjf_fancyMath_getX(sjt_dot3, &sjt_math8);
+    sjf_fancyMath_getX(sjt_dot6, &sjt_math8);
 #line 5 ".\basic\operator.sj"
     sjt_math5 = sjt_math7 + sjt_math8;
 #line 5
@@ -193,18 +199,21 @@ void sjf_fancyMath_destroy(sjs_fancyMath* _this) {
 }
 
 void sjf_fancyMath_divide(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath* _return) {
-    sjs_fancyMath* sjt_dot11;
+    sjs_fancyMath* sjt_dot18;
+    sjs_fancyMath* sjt_dot19;
     int32_t sjt_math25;
     int32_t sjt_math26;
     int32_t sjt_math27;
     int32_t sjt_math28;
 
-#line 17 ".\basic\operator.sj"
-    sjt_math27 = (_parent)->x;
+#line 16 ".\basic\operator.sj"
+    sjt_dot18 = _parent;
+#line 17
+    sjt_math27 = (sjt_dot18)->x;
 #line 16
-    sjt_dot11 = num;
+    sjt_dot19 = num;
 #line 0 ""
-    sjf_fancyMath_getX(sjt_dot11, &sjt_math28);
+    sjf_fancyMath_getX(sjt_dot19, &sjt_math28);
 #line 17 ".\basic\operator.sj"
     sjt_math25 = sjt_math27 / sjt_math28;
 #line 17
@@ -216,7 +225,8 @@ void sjf_fancyMath_divide(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyM
 }
 
 void sjf_fancyMath_divide_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath_heap** _return) {
-    sjs_fancyMath* sjt_dot12;
+    sjs_fancyMath* sjt_dot20;
+    sjs_fancyMath* sjt_dot21;
     int32_t sjt_math29;
     int32_t sjt_math30;
     int32_t sjt_math31;
@@ -224,12 +234,14 @@ void sjf_fancyMath_divide_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_f
 
     (*_return) = (sjs_fancyMath_heap*)malloc(sizeof(sjs_fancyMath_heap));
     (*_return)->_refCount = 1;
-#line 17 ".\basic\operator.sj"
-    sjt_math31 = (_parent)->x;
+#line 16 ".\basic\operator.sj"
+    sjt_dot20 = _parent;
+#line 17
+    sjt_math31 = (sjt_dot20)->x;
 #line 16
-    sjt_dot12 = num;
+    sjt_dot21 = num;
 #line 0 ""
-    sjf_fancyMath_getX(sjt_dot12, &sjt_math32);
+    sjf_fancyMath_getX(sjt_dot21, &sjt_math32);
 #line 17 ".\basic\operator.sj"
     sjt_math29 = sjt_math31 / sjt_math32;
 #line 17
@@ -241,19 +253,26 @@ void sjf_fancyMath_divide_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_f
 }
 
 void sjf_fancyMath_getX(sjs_fancyMath* _parent, int32_t* _return) {
+    sjs_fancyMath* sjt_dot4;
+
 #line 32 ".\basic\operator.sj"
-    (*_return) = (_parent)->x;
+    sjt_dot4 = _parent;
+#line 32
+    (*_return) = (sjt_dot4)->x;
 }
 
 void sjf_fancyMath_heap(sjs_fancyMath_heap* _this) {
 }
 
 void sjf_fancyMath_increment(sjs_fancyMath* _parent, sjs_fancyMath* _return) {
+    sjs_fancyMath* sjt_dot32;
     int32_t sjt_math41;
     int32_t sjt_math42;
 
-#line 25 ".\basic\operator.sj"
-    sjt_math41 = (_parent)->x;
+#line 24 ".\basic\operator.sj"
+    sjt_dot32 = _parent;
+#line 25
+    sjt_math41 = (sjt_dot32)->x;
 #line 25
     sjt_math42 = 1;
 #line 25
@@ -263,13 +282,16 @@ void sjf_fancyMath_increment(sjs_fancyMath* _parent, sjs_fancyMath* _return) {
 }
 
 void sjf_fancyMath_increment_heap(sjs_fancyMath* _parent, sjs_fancyMath_heap** _return) {
+    sjs_fancyMath* sjt_dot33;
     int32_t sjt_math43;
     int32_t sjt_math44;
 
     (*_return) = (sjs_fancyMath_heap*)malloc(sizeof(sjs_fancyMath_heap));
     (*_return)->_refCount = 1;
-#line 25 ".\basic\operator.sj"
-    sjt_math43 = (_parent)->x;
+#line 24 ".\basic\operator.sj"
+    sjt_dot33 = _parent;
+#line 25
+    sjt_math43 = (sjt_dot33)->x;
 #line 25
     sjt_math44 = 1;
 #line 25
@@ -279,18 +301,21 @@ void sjf_fancyMath_increment_heap(sjs_fancyMath* _parent, sjs_fancyMath_heap** _
 }
 
 void sjf_fancyMath_modulus(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath* _return) {
-    sjs_fancyMath* sjt_dot14;
+    sjs_fancyMath* sjt_dot23;
+    sjs_fancyMath* sjt_dot24;
     int32_t sjt_math33;
     int32_t sjt_math34;
     int32_t sjt_math35;
     int32_t sjt_math36;
 
-#line 21 ".\basic\operator.sj"
-    sjt_math35 = (_parent)->x;
+#line 20 ".\basic\operator.sj"
+    sjt_dot23 = _parent;
+#line 21
+    sjt_math35 = (sjt_dot23)->x;
 #line 20
-    sjt_dot14 = num;
+    sjt_dot24 = num;
 #line 0 ""
-    sjf_fancyMath_getX(sjt_dot14, &sjt_math36);
+    sjf_fancyMath_getX(sjt_dot24, &sjt_math36);
 #line 21 ".\basic\operator.sj"
     sjt_math33 = sjt_math35 % sjt_math36;
 #line 21
@@ -302,7 +327,8 @@ void sjf_fancyMath_modulus(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancy
 }
 
 void sjf_fancyMath_modulus_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath_heap** _return) {
-    sjs_fancyMath* sjt_dot15;
+    sjs_fancyMath* sjt_dot25;
+    sjs_fancyMath* sjt_dot26;
     int32_t sjt_math37;
     int32_t sjt_math38;
     int32_t sjt_math39;
@@ -310,12 +336,14 @@ void sjf_fancyMath_modulus_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_
 
     (*_return) = (sjs_fancyMath_heap*)malloc(sizeof(sjs_fancyMath_heap));
     (*_return)->_refCount = 1;
-#line 21 ".\basic\operator.sj"
-    sjt_math39 = (_parent)->x;
+#line 20 ".\basic\operator.sj"
+    sjt_dot25 = _parent;
+#line 21
+    sjt_math39 = (sjt_dot25)->x;
 #line 20
-    sjt_dot15 = num;
+    sjt_dot26 = num;
 #line 0 ""
-    sjf_fancyMath_getX(sjt_dot15, &sjt_math40);
+    sjf_fancyMath_getX(sjt_dot26, &sjt_math40);
 #line 21 ".\basic\operator.sj"
     sjt_math37 = sjt_math39 % sjt_math40;
 #line 21
@@ -327,18 +355,21 @@ void sjf_fancyMath_modulus_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_
 }
 
 void sjf_fancyMath_multiply(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath* _return) {
-    sjs_fancyMath* sjt_dot8;
+    sjs_fancyMath* sjt_dot13;
+    sjs_fancyMath* sjt_dot14;
     int32_t sjt_math17;
     int32_t sjt_math18;
     int32_t sjt_math19;
     int32_t sjt_math20;
 
-#line 13 ".\basic\operator.sj"
-    sjt_math19 = (_parent)->x;
+#line 12 ".\basic\operator.sj"
+    sjt_dot13 = _parent;
+#line 13
+    sjt_math19 = (sjt_dot13)->x;
 #line 12
-    sjt_dot8 = num;
+    sjt_dot14 = num;
 #line 0 ""
-    sjf_fancyMath_getX(sjt_dot8, &sjt_math20);
+    sjf_fancyMath_getX(sjt_dot14, &sjt_math20);
 #line 13 ".\basic\operator.sj"
     sjt_math17 = sjt_math19 * sjt_math20;
 #line 13
@@ -350,7 +381,8 @@ void sjf_fancyMath_multiply(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fanc
 }
 
 void sjf_fancyMath_multiply_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath_heap** _return) {
-    sjs_fancyMath* sjt_dot9;
+    sjs_fancyMath* sjt_dot15;
+    sjs_fancyMath* sjt_dot16;
     int32_t sjt_math21;
     int32_t sjt_math22;
     int32_t sjt_math23;
@@ -358,12 +390,14 @@ void sjf_fancyMath_multiply_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs
 
     (*_return) = (sjs_fancyMath_heap*)malloc(sizeof(sjs_fancyMath_heap));
     (*_return)->_refCount = 1;
-#line 13 ".\basic\operator.sj"
-    sjt_math23 = (_parent)->x;
+#line 12 ".\basic\operator.sj"
+    sjt_dot15 = _parent;
+#line 13
+    sjt_math23 = (sjt_dot15)->x;
 #line 12
-    sjt_dot9 = num;
+    sjt_dot16 = num;
 #line 0 ""
-    sjf_fancyMath_getX(sjt_dot9, &sjt_math24);
+    sjf_fancyMath_getX(sjt_dot16, &sjt_math24);
 #line 13 ".\basic\operator.sj"
     sjt_math21 = sjt_math23 * sjt_math24;
 #line 13
@@ -375,25 +409,32 @@ void sjf_fancyMath_multiply_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs
 }
 
 void sjf_fancyMath_setBob(sjs_fancyMath* _parent, int32_t i, int32_t* _return) {
+    sjs_fancyMath* sjt_dot37;
+
 #line 36 ".\basic\operator.sj"
-    _parent->x = i;
+    sjt_dot37 = _parent;
+#line 36
+    sjt_dot37->x = i;
 #line 37
-    (*_return) = _parent->x;
+    (*_return) = sjt_dot37->x;
 }
 
 void sjf_fancyMath_subtract(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath* _return) {
-    sjs_fancyMath* sjt_dot5;
+    sjs_fancyMath* sjt_dot8;
+    sjs_fancyMath* sjt_dot9;
     int32_t sjt_math10;
     int32_t sjt_math11;
     int32_t sjt_math12;
     int32_t sjt_math9;
 
-#line 9 ".\basic\operator.sj"
-    sjt_math11 = (_parent)->x;
+#line 8 ".\basic\operator.sj"
+    sjt_dot8 = _parent;
+#line 9
+    sjt_math11 = (sjt_dot8)->x;
 #line 8
-    sjt_dot5 = num;
+    sjt_dot9 = num;
 #line 0 ""
-    sjf_fancyMath_getX(sjt_dot5, &sjt_math12);
+    sjf_fancyMath_getX(sjt_dot9, &sjt_math12);
 #line 9 ".\basic\operator.sj"
     sjt_math9 = sjt_math11 - sjt_math12;
 #line 9
@@ -405,7 +446,8 @@ void sjf_fancyMath_subtract(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fanc
 }
 
 void sjf_fancyMath_subtract_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs_fancyMath_heap** _return) {
-    sjs_fancyMath* sjt_dot6;
+    sjs_fancyMath* sjt_dot10;
+    sjs_fancyMath* sjt_dot11;
     int32_t sjt_math13;
     int32_t sjt_math14;
     int32_t sjt_math15;
@@ -413,12 +455,14 @@ void sjf_fancyMath_subtract_heap(sjs_fancyMath* _parent, sjs_fancyMath* num, sjs
 
     (*_return) = (sjs_fancyMath_heap*)malloc(sizeof(sjs_fancyMath_heap));
     (*_return)->_refCount = 1;
-#line 9 ".\basic\operator.sj"
-    sjt_math15 = (_parent)->x;
+#line 8 ".\basic\operator.sj"
+    sjt_dot10 = _parent;
+#line 9
+    sjt_math15 = (sjt_dot10)->x;
 #line 8
-    sjt_dot6 = num;
+    sjt_dot11 = num;
 #line 0 ""
-    sjf_fancyMath_getX(sjt_dot6, &sjt_math16);
+    sjf_fancyMath_getX(sjt_dot11, &sjt_math16);
 #line 9 ".\basic\operator.sj"
     sjt_math13 = sjt_math15 - sjt_math16;
 #line 9
@@ -445,71 +489,71 @@ int main(int argc, char** argv) {
 #line 0 ""
     sjf_fancyMath_add(sjt_dot1, sjt_functionParam1, &sjv_c);
 #line 44 ".\basic\operator.sj"
-    sjt_dot4 = &sjv_a;
+    sjt_dot7 = &sjv_a;
 #line 44
     sjt_functionParam2 = &sjv_b;
 #line 0 ""
-    sjf_fancyMath_subtract(sjt_dot4, sjt_functionParam2, &sjv_d);
+    sjf_fancyMath_subtract(sjt_dot7, sjt_functionParam2, &sjv_d);
 #line 45 ".\basic\operator.sj"
-    sjt_dot7 = &sjv_a;
+    sjt_dot12 = &sjv_a;
 #line 45
     sjt_functionParam3 = &sjv_b;
 #line 0 ""
-    sjf_fancyMath_multiply(sjt_dot7, sjt_functionParam3, &sjv_e);
+    sjf_fancyMath_multiply(sjt_dot12, sjt_functionParam3, &sjv_e);
 #line 46 ".\basic\operator.sj"
-    sjt_dot10 = &sjv_a;
+    sjt_dot17 = &sjv_a;
 #line 46
     sjt_functionParam4 = &sjv_b;
 #line 0 ""
-    sjf_fancyMath_divide(sjt_dot10, sjt_functionParam4, &sjv_f);
+    sjf_fancyMath_divide(sjt_dot17, sjt_functionParam4, &sjv_f);
 #line 47 ".\basic\operator.sj"
-    sjt_dot13 = &sjv_a;
+    sjt_dot22 = &sjv_a;
 #line 47
     sjt_functionParam5 = &sjv_b;
 #line 0 ""
-    sjf_fancyMath_modulus(sjt_dot13, sjt_functionParam5, &sjv_g);
+    sjf_fancyMath_modulus(sjt_dot22, sjt_functionParam5, &sjv_g);
 #line 48 ".\basic\operator.sj"
-    sjt_dot16 = &sjv_c;
+    sjt_dot27 = &sjv_c;
 #line 48
     sjt_functionParam6 = &sjv_c;
 #line 0 ""
-    sjf_fancyMath_add(sjt_dot16, sjt_functionParam6, &sjv_c);
+    sjf_fancyMath_add(sjt_dot27, sjt_functionParam6, &sjv_c);
 #line 49 ".\basic\operator.sj"
-    sjt_dot17 = &sjv_d;
+    sjt_dot28 = &sjv_d;
 #line 49
     sjt_functionParam7 = &sjv_d;
 #line 0 ""
-    sjf_fancyMath_subtract(sjt_dot17, sjt_functionParam7, &sjv_d);
+    sjf_fancyMath_subtract(sjt_dot28, sjt_functionParam7, &sjv_d);
 #line 50 ".\basic\operator.sj"
-    sjt_dot18 = &sjv_d;
+    sjt_dot29 = &sjv_d;
 #line 50
     sjt_functionParam8 = &sjv_d;
 #line 0 ""
-    sjf_fancyMath_multiply(sjt_dot18, sjt_functionParam8, &sjv_d);
+    sjf_fancyMath_multiply(sjt_dot29, sjt_functionParam8, &sjv_d);
 #line 51 ".\basic\operator.sj"
-    sjt_dot19 = &sjv_d;
+    sjt_dot30 = &sjv_d;
 #line 51
     sjt_functionParam9 = &sjv_d;
 #line 0 ""
-    sjf_fancyMath_divide(sjt_dot19, sjt_functionParam9, &sjv_d);
+    sjf_fancyMath_divide(sjt_dot30, sjt_functionParam9, &sjv_d);
 #line 52 ".\basic\operator.sj"
-    sjt_dot20 = &sjv_e;
+    sjt_dot31 = &sjv_e;
 #line 0 ""
-    sjf_fancyMath_increment(sjt_dot20, &sjv_e);
+    sjf_fancyMath_increment(sjt_dot31, &sjv_e);
 #line 53 ".\basic\operator.sj"
-    sjt_dot21 = &sjv_f;
+    sjt_dot34 = &sjv_f;
 #line 0 ""
-    sjf_fancyMath_increment(sjt_dot21, &sjv_f);
+    sjf_fancyMath_increment(sjt_dot34, &sjv_f);
 #line 54 ".\basic\operator.sj"
-    sjt_dot22 = &sjv_f;
+    sjt_dot35 = &sjv_f;
 #line 0 ""
-    sjf_fancyMath_getX(sjt_dot22, &sjv_i);
+    sjf_fancyMath_getX(sjt_dot35, &sjv_i);
 #line 55 ".\basic\operator.sj"
-    sjt_dot23 = &sjv_a;
+    sjt_dot36 = &sjv_a;
 #line 55
     sjt_functionParam10 = 12;
 #line 0 ""
-    sjf_fancyMath_setBob(sjt_dot23, sjt_functionParam10, &sjv_j);
+    sjf_fancyMath_setBob(sjt_dot36, sjt_functionParam10, &sjv_j);
     main_destroy();
     return 0;
 }

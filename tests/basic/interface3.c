@@ -1,3 +1,5 @@
+
+
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -89,7 +91,7 @@ typedef unsigned char uint8_t;
 #else
 /* malloc failures result in lost memory, hash tables are unusable */
 #ifndef uthash_fatal
-#define uthash_fatal(msg) exit(-1)        /* fatal OOM error */
+#define uthash_fatal(msg) halt("Unknown")        /* fatal OOM error */
 #endif
 #define HASH_RECORD_OOM(oomed) uthash_fatal("out of memory")
 #define IF_HASH_NONFATAL_OOM(x)
@@ -430,7 +432,7 @@ HASH_DELETE(hh,head,delptr)
 * This is for uthash developer only; it compiles away if HASH_DEBUG isn't defined.
 */
 #ifdef HASH_DEBUG
-#define HASH_OOPS(...) do { fprintf(stderr,__VA_ARGS__); exit(-1); } while (0)
+#define HASH_OOPS(...) do { halt(__VA_ARGS__); } while (0)
 #define HASH_FSCK(hh,head,where)                                                 \
 do {                                                                             \
 struct UT_hash_handle *_thh;                                                   \
@@ -1279,6 +1281,9 @@ struct td_sjs_class_heap {
 };
 
 
+void halt(const char * format, ...);
+
+
 void _retain(void* ptr);
 bool _release(void* ptr);
 
@@ -1287,13 +1292,13 @@ sji_foo* sjt_dot1;
 sji_foo* sjv_a;
 sjs_string_heap* sjv_bob;
 sjs_anon1 sjv_console;
-sjs_anon4 sjv_convert;
+sjs_anon2 sjv_convert;
 float sjv_f32_pi;
-int32_t sjv_i32_max;
-int32_t sjv_i32_min;
-sjs_anon2 sjv_parse;
-sjs_anon3 sjv_random;
-uint32_t sjv_u32_max;
+int32_t sjv_i32_maxValue;
+int32_t sjv_i32_minValue;
+sjs_anon3 sjv_parse;
+sjs_anon4 sjv_random;
+uint32_t sjv_u32_maxValue;
 
 void sjf_anon1(sjs_anon1* _this);
 void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* _from);
@@ -1332,6 +1337,15 @@ void sjf_string_heap(sjs_string_heap* _this);
 void sji_foo_copy(sji_foo* _this, sji_foo* _from);
 void sji_foo_destroy(sji_foo* _this);
 void main_destroy(void);
+
+
+void halt(const char * format, ...) {
+    va_list args;
+    va_start (args, format);
+    vprintf (format, args);
+    va_end (args);
+    exit(-1);
+}
 
 
 void _retain(void* ptr) {
@@ -1412,7 +1426,7 @@ void sjf_array_char(sjs_array_char* _this) {
 #line 110 ".\..\lib\common\array.sj"
     if (_this->size < 0) {
 #line 110
-        exit(-1);
+        halt("size is less than zero");
 #line 110
     }
 #line 110
@@ -1426,9 +1440,7 @@ void sjf_array_char(sjs_array_char* _this) {
 #line 110
         if (!_this->data) {
 #line 110
-            printf("grow: out of memory\n");
-#line 110
-            exit(-1);
+            halt("grow: out of memory\n");
 #line 110
         }
 #line 110
@@ -1442,26 +1454,26 @@ void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
     _this->data = _from->data;
 #line 1
     _this->_isGlobal = _from->_isGlobal;
-#line 129
+#line 128
     _this->data = _from->data;
-#line 129
+#line 128
     if (!_this->_isGlobal && _this->data) {
-#line 129
+#line 128
         _retain((void*)_this->data);
-#line 129
+#line 128
     }
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
-#line 136 ".\..\lib\common\array.sj"
+#line 135 ".\..\lib\common\array.sj"
     if (!_this->_isGlobal && _this->data) {
-#line 136
+#line 135
         if (_release((void*)_this->data)) {
-#line 136
+#line 135
             free((char*)_this->data);
-#line 136
+#line 135
         }
-#line 136
+#line 135
     }
 }
 
@@ -1469,7 +1481,7 @@ void sjf_array_char_heap(sjs_array_char_heap* _this) {
 #line 110 ".\..\lib\common\array.sj"
     if (_this->size < 0) {
 #line 110
-        exit(-1);
+        halt("size is less than zero");
 #line 110
     }
 #line 110
@@ -1483,9 +1495,7 @@ void sjf_array_char_heap(sjs_array_char_heap* _this) {
 #line 110
         if (!_this->data) {
 #line 110
-            printf("grow: out of memory\n");
-#line 110
-            exit(-1);
+            halt("grow: out of memory\n");
 #line 110
         }
 #line 110
@@ -1586,9 +1596,9 @@ void sjf_string(sjs_string* _this) {
 }
 
 void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
-#line 3 ".\..\lib\common\string.sj"
+#line 1 ".\..\lib\common\string.sj"
     _this->count = _from->count;
-#line 3
+#line 1
     sjf_array_char_copy(&_this->data, &_from->data);
 }
 
@@ -1618,18 +1628,18 @@ void sji_foo_destroy(sji_foo* _this) {
 
 int main(int argc, char** argv) {
     sjf_anon1(&sjv_console);
-    sjf_anon2(&sjv_parse);
-    sjf_anon3(&sjv_random);
-    sjf_anon4(&sjv_convert);
+    sjf_anon2(&sjv_convert);
 #line 33 ".\..\lib\common\math.sj"
     sjv_f32_pi = 3.14159265358979323846f;
 #line 34
-    sjv_i32_max = (-2147483647 - 1);
-#line 35
-    sjv_i32_min = 2147483647;
+    sjv_u32_maxValue = (uint32_t)4294967295u;
 #line 36
-    sjv_u32_max = (uint32_t)4294967295u;
+    sjv_i32_maxValue = (-2147483647 - 1);
+#line 37
+    sjv_i32_minValue = 2147483647;
 #line 0 ""
+    sjf_anon3(&sjv_parse);
+    sjf_anon4(&sjv_random);
     sjt_cast1 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
     sjt_cast1->_refCount = 1;
     sjf_class_heap(sjt_cast1);
@@ -1661,7 +1671,7 @@ void main_destroy() {
         sjf_string_destroy((sjs_string*)(((char*)sjv_bob) + sizeof(intptr_t)));
     }
     sjf_anon1_destroy(&sjv_console);
-    sjf_anon4_destroy(&sjv_convert);
-    sjf_anon2_destroy(&sjv_parse);
-    sjf_anon3_destroy(&sjv_random);
+    sjf_anon2_destroy(&sjv_convert);
+    sjf_anon3_destroy(&sjv_parse);
+    sjf_anon4_destroy(&sjv_random);
 }

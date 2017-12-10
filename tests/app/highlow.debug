@@ -7,7 +7,6 @@ anon1_readLine()'stack string {
   size'i32 = 1024i
   --c--
   
-  
   char* str = (char*)malloc(size);
   int index = 0;
   char ch = ' ';
@@ -29,16 +28,15 @@ anon1_readLine()'stack string {
   
   --c--
   string(this = string(
-    count'i32 = this.count,
-    data'stack array_char = this.data
+    count'i32 = count,
+    data'stack array_char = data
   ))
 }
 
 anon1_write(data'stack string:)'void {
   --c--
   
-  
-  printf("%s\n", (char*)data->data.data);
+  printf("%s", (char*)data->data.data);
   
   --c--
 }
@@ -47,7 +45,11 @@ anon2()'stack anon2 {
   this
 }
 
-anon2_toInt(text'stack string:)'i32 {
+anon3()'stack anon3 {
+  this
+}
+
+anon3_toInt(text'stack string:)'i32 {
   x'i32 = 0i
   --c--
   
@@ -65,30 +67,44 @@ anon2_toInt(text'stack string:)'i32 {
   x
 }
 
-anon3()'stack anon3 {
+anon4()'stack anon4 {
   this
 }
 
-anon3_nextInt()'i32 --c--
+anon4_nextInt()'i32 --c--
 
 int x = rand();
 *_return = x;
 
 --c--
 
-anon4()'stack anon4 {
-  this
-}
-
 string(count'i32=, data'stack array_char=)'stack string {
   this
 }
 
 global()'void {
+  --cinclude--
+  
+  
+  --cinclude--
   console'stack anon1 : anon1(this = anon1())
-  parse'stack anon2 : anon2(this = anon2())
-  random'stack anon3 : anon3(this = anon3())
-  convert'stack anon4 : anon4(this = anon4())
+  convert'stack anon2 : anon2(this = anon2())
+  --cdefine--
+  
+  void halt(const char * format, ...);
+  
+  --cdefine--
+  --cfunction--
+  
+  void halt(const char * format, ...) {
+  va_list args;
+  va_start (args, format);
+  vprintf (format, args);
+  va_end (args);
+  exit(-1);
+  }
+  
+  --cfunction--
   --cstruct--
   
   typedef struct pointer_td pointer;
@@ -220,7 +236,7 @@ global()'void {
   #else
   /* malloc failures result in lost memory, hash tables are unusable */
   #ifndef uthash_fatal
-  #define uthash_fatal(msg) exit(-1)        /* fatal OOM error */
+  #define uthash_fatal(msg) halt("Unknown")        /* fatal OOM error */
   #endif
   #define HASH_RECORD_OOM(oomed) uthash_fatal("out of memory")
   #define IF_HASH_NONFATAL_OOM(x)
@@ -561,7 +577,7 @@ global()'void {
   * This is for uthash developer only; it compiles away if HASH_DEBUG isn't defined.
   */
   #ifdef HASH_DEBUG
-  #define HASH_OOPS(...) do { fprintf(stderr,__VA_ARGS__); exit(-1); } while (0)
+  #define HASH_OOPS(...) do { halt(__VA_ARGS__); } while (0)
   #define HASH_FSCK(hh,head,where)                                                 \
   do {                                                                             \
   struct UT_hash_handle *_thh;                                                   \
@@ -1232,35 +1248,37 @@ global()'void {
   
   --ctypedef--
   f32_pi'f32 : 3.14159265358979323846ff
-  i32_max'i32 : (-2147483647 - 1)i
-  i32_min'i32 : 2147483647i
-  u32_max'u32 : (uint32_t)4294967295uu
+  u32_maxValue'u32 : (uint32_t)4294967295uu
+  i32_maxValue'i32 : (-2147483647 - 1)i
+  i32_minValue'i32 : 2147483647i
+  parse'stack anon3 : anon3(this = anon3())
+  random'stack anon4 : anon4(this = anon4())
   anon1_write(
-    parent: console,
-    data'stack string : this.data
+    parent: this,
+    data'stack string : data
   )
-  num'i32 : anon3_nextInt(
-    parent: random
+  num'i32 : anon4_nextInt(
+    parent: this
   ) %% 10i + 1i
   isCorrect'bool = false
   while !isCorrect{
     str'stack string : anon1_readLine(
-      parent: console
+      parent: this
     )
-    guess'i32 : anon2_toInt(
-      parent: parse,
-      text'stack string : this.text
+    guess'i32 : anon3_toInt(
+      parent: this,
+      text'stack string : text
     )
     isCorrect'bool = if guess < num {
       anon1_write(
-        parent: console,
-        data'stack string : this.data
+        parent: this,
+        data'stack string : data
       )
       false
     } else if guess > num {
       anon1_write(
-        parent: console,
-        data'stack string : this.data
+        parent: this,
+        data'stack string : data
       )
       false
     } else {
@@ -1268,8 +1286,8 @@ global()'void {
     }
   }
   anon1_write(
-    parent: console,
-    data'stack string : this.data
+    parent: this,
+    data'stack string : data
   )
   void
 }

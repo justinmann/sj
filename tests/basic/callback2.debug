@@ -14,37 +14,47 @@ anon4()'stack anon4 {
   this
 }
 
-array!stack class(size'i32=, data'ptr=, _isGlobal'bool=)'stack array_class {
-  --c--
-  
-  
-  if (_this->size < 0) {
-  halt("size is less than zero");
+array_each(cb'local (i32)void:)'void {
+  for i : 0i to parent.size {
+    cb(
+      param'i32 : param
+    )
   }
-  if (_this->data) {
-  _this->_isGlobal = true;
-  } else {
-  _this->data = (uintptr_t)calloc(_this->size * sizeof(sjs_class), 1);
-  if (!_this->data) {
-  halt("grow: out of memory\n");
-  }
-  }
-  
-  --c--
-  this
 }
 
-array_setAt(index'i32:, item'stack class:)'void {
+array_initAt(index'i32:, item'i32:)'void {
   --c--
   
   if (index >= _parent->size || index < 0) {
   halt("setAt: out of bounds %d:%d\n", index, _parent->size);
   }
-  sjs_class* p = (sjs_class*)_parent->data;
-  ;
+  int32_t* p = (int32_t*)_parent->data;
   ;
   
   --c--
+}
+
+
+
+
+
+
+
+class!i32(item1'i32:, item2'i32:)'stack class_i32 {
+  this
+}
+
+class_each(cb'heap (i32)void:)'void {
+  cb(
+    param'i32 : param
+  )
+  cb(
+    param'i32 : param
+  )
+}
+
+sum(total'i32=)'heap sum {
+  this
 }
 
 global()'void {
@@ -1218,15 +1228,29 @@ global()'void {
   i32_minValue'i32 : 2147483647i
   parse'stack anon3 : anon3(this = anon3())
   random'stack anon4 : anon4(this = anon4())
-  a'stack array_class : array!stack class(this = array!stack class(
-    size'i32 = size,
-    data'ptr = data,
-    _isGlobal'bool = _isGlobal
+  s'heap sum : heap sum(this = sum(
+    total'i32 = total
   ))
-  array_setAt(
+  c'stack class_i32 : class!i32(this = class!i32(
+    item1'i32 : item1,
+    item2'i32 : item2
+  ))
+  class_each(
+    parent: this,
+    cb'heap (i32)void : cb
+  )
+  a'stack array_i32 : [array_initAt(
     parent: this,
     index'i32 : index,
-    item'stack class : item
+    item'i32 : item
+  ), array_initAt(
+    parent: this,
+    index'i32 : index,
+    item'i32 : item
+  )]
+  array_each(
+    parent: this,
+    cb'local (i32)void : cb
   )
   void
 }

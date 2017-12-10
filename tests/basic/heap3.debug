@@ -8,16 +8,16 @@ foo(x'i32:)'stack foo {
 
 func(b'stack bar:)'local foo {
   b.f'stack foo = foo(this = foo(
-    x'i32 : this.x
+    x'i32 : x
   ))
 }
 
 global()'void {
   b'stack bar : bar(this = bar(
-    f'stack foo = this.f
+    f'stack foo = f
   ))
   func(
-    b'stack bar : this.b
+    b'stack bar : b
   ).x
   void
 }

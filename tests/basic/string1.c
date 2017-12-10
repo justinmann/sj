@@ -1,3 +1,5 @@
+
+
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -89,7 +91,7 @@ typedef unsigned char uint8_t;
 #else
 /* malloc failures result in lost memory, hash tables are unusable */
 #ifndef uthash_fatal
-#define uthash_fatal(msg) exit(-1)        /* fatal OOM error */
+#define uthash_fatal(msg) halt("Unknown")        /* fatal OOM error */
 #endif
 #define HASH_RECORD_OOM(oomed) uthash_fatal("out of memory")
 #define IF_HASH_NONFATAL_OOM(x)
@@ -430,7 +432,7 @@ HASH_DELETE(hh,head,delptr)
 * This is for uthash developer only; it compiles away if HASH_DEBUG isn't defined.
 */
 #ifdef HASH_DEBUG
-#define HASH_OOPS(...) do { fprintf(stderr,__VA_ARGS__); exit(-1); } while (0)
+#define HASH_OOPS(...) do { halt(__VA_ARGS__); } while (0)
 #define HASH_FSCK(hh,head,where)                                                 \
 do {                                                                             \
 struct UT_hash_handle *_thh;                                                   \
@@ -1257,6 +1259,9 @@ struct td_sjs_string_heap {
 };
 
 
+void halt(const char * format, ...);
+
+
 void _retain(void* ptr);
 bool _release(void* ptr);
 
@@ -1265,8 +1270,8 @@ char sjt_compare2;
 sjs_string* sjt_compare3;
 sjs_string* sjt_compare4;
 sjs_string* sjt_dot1;
-sjs_string* sjt_dot3;
-sjs_string* sjt_dot6;
+sjs_string* sjt_dot4;
+sjs_string* sjt_dot8;
 int32_t sjt_functionParam2;
 sjs_string* sjt_functionParam4;
 sjs_string* sjt_functionParam6;
@@ -1274,21 +1279,21 @@ sjs_string sjv_a;
 sjs_string sjv_b;
 char sjv_c;
 sjs_anon1 sjv_console;
-sjs_anon4 sjv_convert;
+sjs_anon2 sjv_convert;
 char sjv_d;
 char sjv_e;
 sjs_string sjv_f;
 float sjv_f32_pi;
 char sjv_h;
 bool sjv_i;
-int32_t sjv_i32_max;
-int32_t sjv_i32_min;
+int32_t sjv_i32_maxValue;
+int32_t sjv_i32_minValue;
 bool sjv_j;
 bool sjv_k;
 bool sjv_l;
-sjs_anon2 sjv_parse;
-sjs_anon3 sjv_random;
-uint32_t sjv_u32_max;
+sjs_anon3 sjv_parse;
+sjs_anon4 sjv_random;
+uint32_t sjv_u32_maxValue;
 
 void sjf_anon1(sjs_anon1* _this);
 void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* _from);
@@ -1321,6 +1326,15 @@ void sjf_string_heap(sjs_string_heap* _this);
 void sjf_string_isEqual(sjs_string* _parent, sjs_string* test, bool* _return);
 void sjf_string_isLessOrEqual(sjs_string* _parent, sjs_string* test, bool* _return);
 void main_destroy(void);
+
+
+void halt(const char * format, ...) {
+    va_list args;
+    va_start (args, format);
+    vprintf (format, args);
+    va_end (args);
+    exit(-1);
+}
 
 
 void _retain(void* ptr) {
@@ -1401,7 +1415,7 @@ void sjf_array_char(sjs_array_char* _this) {
 #line 110 ".\..\lib\common\array.sj"
     if (_this->size < 0) {
 #line 110
-        exit(-1);
+        halt("size is less than zero");
 #line 110
     }
 #line 110
@@ -1415,9 +1429,7 @@ void sjf_array_char(sjs_array_char* _this) {
 #line 110
         if (!_this->data) {
 #line 110
-            printf("grow: out of memory\n");
-#line 110
-            exit(-1);
+            halt("grow: out of memory\n");
 #line 110
         }
 #line 110
@@ -1431,26 +1443,26 @@ void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
     _this->data = _from->data;
 #line 1
     _this->_isGlobal = _from->_isGlobal;
-#line 129
+#line 128
     _this->data = _from->data;
-#line 129
+#line 128
     if (!_this->_isGlobal && _this->data) {
-#line 129
+#line 128
         _retain((void*)_this->data);
-#line 129
+#line 128
     }
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
-#line 136 ".\..\lib\common\array.sj"
+#line 135 ".\..\lib\common\array.sj"
     if (!_this->_isGlobal && _this->data) {
-#line 136
+#line 135
         if (_release((void*)_this->data)) {
-#line 136
+#line 135
             free((char*)_this->data);
-#line 136
+#line 135
         }
-#line 136
+#line 135
     }
 }
 
@@ -1458,9 +1470,7 @@ void sjf_array_char_getAt(sjs_array_char* _parent, int32_t index, char* _return)
 #line 6 ".\..\lib\common\array.sj"
     if (index >= _parent->size || index < 0) {
 #line 6
-        printf("getAt: out of bounds\n");
-#line 6
-        exit(-1);
+        halt("getAt: out of bounds\n");
 #line 6
     }
 #line 6
@@ -1477,7 +1487,7 @@ void sjf_array_char_heap(sjs_array_char_heap* _this) {
 #line 110 ".\..\lib\common\array.sj"
     if (_this->size < 0) {
 #line 110
-        exit(-1);
+        halt("size is less than zero");
 #line 110
     }
 #line 110
@@ -1491,9 +1501,7 @@ void sjf_array_char_heap(sjs_array_char_heap* _this) {
 #line 110
         if (!_this->data) {
 #line 110
-            printf("grow: out of memory\n");
-#line 110
-            exit(-1);
+            halt("grow: out of memory\n");
 #line 110
         }
 #line 110
@@ -1520,9 +1528,9 @@ void sjf_string(sjs_string* _this) {
 }
 
 void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
-#line 3 ".\..\lib\common\string.sj"
+#line 1 ".\..\lib\common\string.sj"
     _this->count = _from->count;
-#line 3
+#line 1
     sjf_array_char_copy(&_this->data, &_from->data);
 }
 
@@ -1531,11 +1539,14 @@ void sjf_string_destroy(sjs_string* _this) {
 
 void sjf_string_getAt(sjs_string* _parent, int32_t index, char* _return) {
     sjs_array_char* sjt_dot2;
+    sjs_string* sjt_dot3;
     int32_t sjt_functionParam1;
 
-#line 25 ".\..\lib\common\string.sj"
-    sjt_dot2 = &(_parent)->data;
-#line 24
+#line 22 ".\..\lib\common\string.sj"
+    sjt_dot3 = _parent;
+#line 23
+    sjt_dot2 = &(sjt_dot3)->data;
+#line 22
     sjt_functionParam1 = index;
 #line 0 ""
     sjf_array_char_getAt(sjt_dot2, sjt_functionParam1, _return);
@@ -1545,48 +1556,55 @@ void sjf_string_heap(sjs_string_heap* _this) {
 }
 
 void sjf_string_isEqual(sjs_string* _parent, sjs_string* test, bool* _return) {
-    sjs_array_char* sjt_dot4;
-    sjs_string* sjt_dot5;
+    sjs_array_char* sjt_dot5;
+    sjs_string* sjt_dot6;
+    sjs_string* sjt_dot7;
     sjs_array_char* sjt_functionParam3;
 
-#line 33 ".\..\lib\common\string.sj"
-    sjt_dot4 = &(_parent)->data;
-#line 32
-    sjt_dot5 = test;
-#line 33
-    sjt_functionParam3 = &(sjt_dot5)->data;
+#line 30 ".\..\lib\common\string.sj"
+    sjt_dot6 = _parent;
+#line 31
+    sjt_dot5 = &(sjt_dot6)->data;
+#line 30
+    sjt_dot7 = test;
+#line 31
+    sjt_functionParam3 = &(sjt_dot7)->data;
 #line 0 ""
-    sjf_array_char_isEqual(sjt_dot4, sjt_functionParam3, _return);
+    sjf_array_char_isEqual(sjt_dot5, sjt_functionParam3, _return);
 }
 
 void sjf_string_isLessOrEqual(sjs_string* _parent, sjs_string* test, bool* _return) {
-    sjs_array_char* sjt_dot7;
-    sjs_string* sjt_dot8;
+    sjs_string* sjt_dot10;
+    sjs_string* sjt_dot11;
+    sjs_array_char* sjt_dot9;
     sjs_array_char* sjt_functionParam5;
 
-#line 49 ".\..\lib\common\string.sj"
-    sjt_dot7 = &(_parent)->data;
-#line 48
-    sjt_dot8 = test;
-#line 49
-    sjt_functionParam5 = &(sjt_dot8)->data;
+#line 46 ".\..\lib\common\string.sj"
+    sjt_dot10 = _parent;
+#line 47
+    sjt_dot9 = &(sjt_dot10)->data;
+#line 46
+    sjt_dot11 = test;
+#line 47
+    sjt_functionParam5 = &(sjt_dot11)->data;
 #line 0 ""
-    sjf_array_char_isLessOrEqual(sjt_dot7, sjt_functionParam5, _return);
+    sjf_array_char_isLessOrEqual(sjt_dot9, sjt_functionParam5, _return);
 }
 
 int main(int argc, char** argv) {
     sjf_anon1(&sjv_console);
-    sjf_anon2(&sjv_parse);
-    sjf_anon3(&sjv_random);
-    sjf_anon4(&sjv_convert);
+    sjf_anon2(&sjv_convert);
 #line 33 ".\..\lib\common\math.sj"
     sjv_f32_pi = 3.14159265358979323846f;
 #line 34
-    sjv_i32_max = (-2147483647 - 1);
-#line 35
-    sjv_i32_min = 2147483647;
+    sjv_u32_maxValue = (uint32_t)4294967295u;
 #line 36
-    sjv_u32_max = (uint32_t)4294967295u;
+    sjv_i32_maxValue = (-2147483647 - 1);
+#line 37
+    sjv_i32_minValue = 2147483647;
+#line 0 ""
+    sjf_anon3(&sjv_parse);
+    sjf_anon4(&sjv_random);
 #line 3 ".\basic\string1.sj"
     sjv_a.count = 7;
 #line 3
@@ -1639,17 +1657,17 @@ int main(int argc, char** argv) {
 #line 10
     sjv_i = sjt_compare1 == sjt_compare2;
 #line 11
-    sjt_dot3 = &sjv_f;
+    sjt_dot4 = &sjv_f;
 #line 11
     sjt_functionParam4 = &sjv_a;
 #line 0 ""
-    sjf_string_isEqual(sjt_dot3, sjt_functionParam4, &sjv_j);
+    sjf_string_isEqual(sjt_dot4, sjt_functionParam4, &sjv_j);
 #line 12 ".\basic\string1.sj"
-    sjt_dot6 = &sjv_f;
+    sjt_dot8 = &sjv_f;
 #line 12
     sjt_functionParam6 = &sjv_a;
 #line 0 ""
-    sjf_string_isLessOrEqual(sjt_dot6, sjt_functionParam6, &sjv_k);
+    sjf_string_isLessOrEqual(sjt_dot8, sjt_functionParam6, &sjv_k);
 #line 13 ".\basic\string1.sj"
     sjt_compare3 = &sjv_f;
 #line 13
@@ -1665,8 +1683,8 @@ void main_destroy() {
     sjf_string_destroy(&sjv_a);
     sjf_string_destroy(&sjv_b);
     sjf_anon1_destroy(&sjv_console);
-    sjf_anon4_destroy(&sjv_convert);
+    sjf_anon2_destroy(&sjv_convert);
     sjf_string_destroy(&sjv_f);
-    sjf_anon2_destroy(&sjv_parse);
-    sjf_anon3_destroy(&sjv_random);
+    sjf_anon3_destroy(&sjv_parse);
+    sjf_anon4_destroy(&sjv_random);
 }

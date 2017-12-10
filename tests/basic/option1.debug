@@ -17,7 +17,7 @@ global()'void {
   l'heap #interface? : empty'heap #interface?
   m'bool : isEmpty(l)
   n'heap class? : value(class(this = class(
-    bob'i32 : this.bob
+    bob'i32 : bob
   )))
   o'heap class : getValue(n)
   p'i32? : if isEmpty(n) empty'i32? else value(getValue(n).bob)

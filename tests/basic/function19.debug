@@ -1,7 +1,7 @@
 func(x'i32:)'i32 {
   if x > 0i {
     func(
-      x'i32 : this.x
+      x'i32 : x
     )
   } else {
     0i
@@ -10,7 +10,7 @@ func(x'i32:)'i32 {
 
 global()'void {
   func(
-    x'i32 : this.x
+    x'i32 : x
   )
   void
 }

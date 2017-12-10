@@ -162,7 +162,7 @@ typedef unsigned char uint8_t;
 /* malloc failures result in lost memory, hash tables are unusable */
 
 ##ifndef uthash_fatal
-##define uthash_fatal(msg) exit(-1)        /* fatal OOM error */
+##define uthash_fatal(msg) halt("Unknown")        /* fatal OOM error */
 ##endif
 
 ##define HASH_RECORD_OOM(oomed) uthash_fatal("out of memory")
@@ -544,7 +544,7 @@ do {                                                                            
  * This is for uthash developer only; it compiles away if HASH_DEBUG isn't defined.
  */
 ##ifdef HASH_DEBUG
-##define HASH_OOPS(...) do { fprintf(stderr,__VA_ARGS__); exit(-1); } while (0)
+##define HASH_OOPS(...) do { halt(__VA_ARGS__); } while (0)
 ##define HASH_FSCK(hh,head,where)                                                 \
 do {                                                                             \
   struct UT_hash_handle *_thh;                                                   \

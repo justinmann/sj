@@ -4,8 +4,8 @@ func(x'i32:, y'i32:)'i32 {
 
 global()'void {
   func(
-    x'i32 : this.x,
-    y'i32 : this.y
+    x'i32 : x,
+    y'i32 : y
   )
   void
 }

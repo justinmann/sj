@@ -4,7 +4,7 @@ class(b'i32=)'stack class {
 
 global()'void {
   a'stack class : class(this = class(
-    b'i32 = this.b
+    b'i32 = b
   ))
   a.b'i32 = 1i
   void

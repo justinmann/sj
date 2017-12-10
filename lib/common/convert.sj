@@ -4,13 +4,11 @@ convert: ^(
 		data := 0 as ptr
 		--c--
 		if (base < 2) {
-			printf("base is too small");
-			exit(-1);
+			halt("base is too small");
 		}
 
 		if (base > 16) {
-			printf("base is too large");
-			exit(-1);
+			halt("base is too large");
 		}
 
 		char buf[32] = { 0 };

@@ -126,6 +126,7 @@ void sjf_anon1_heap(sjs_anon1_heap* _this) {
 }
 
 void sjf_anon1_sub(sjs_anon1* _parent, int32_t x, int32_t y, int32_t* _return) {
+    sjs_anon1* sjt_dot3;
     int32_t sjt_math1;
     int32_t sjt_math2;
     int32_t sjt_math3;
@@ -137,8 +138,10 @@ void sjf_anon1_sub(sjs_anon1* _parent, int32_t x, int32_t y, int32_t* _return) {
     sjt_math4 = y;
 #line 4
     sjt_math1 = sjt_math3 - sjt_math4;
+#line 3
+    sjt_dot3 = _parent;
 #line 4
-    sjt_math2 = (_parent)->test;
+    sjt_math2 = (sjt_dot3)->test;
 #line 4
     (*_return) = sjt_math1 - sjt_math2;
 }

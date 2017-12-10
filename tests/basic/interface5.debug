@@ -9,11 +9,11 @@ class!i32 #bar, #foo!item ()'heap class_i32 {
 global()'void {
   a'heap #foo : class!i32(this = class!i32()) as heap #foo
   test1(
-    parent: a
+    parent: this
   )
   b'heap #bar? : a as heap #bar?
   if isEmpty(b) empty'i32? else value(test2(
-    parent: getValue(b)
+    parent: this
   ))
   void
 }

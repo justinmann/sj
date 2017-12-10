@@ -4,13 +4,13 @@ fancyMath(x'i32=)'stack fancyMath {
 
 fancyMath_add(num'stack fancyMath:)'stack fancyMath {
   fancyMath(this = fancyMath(
-    x'i32 = this.x
+    x'i32 = x
   ))
 }
 
 fancyMath_divide(num'stack fancyMath:)'stack fancyMath {
   fancyMath(this = fancyMath(
-    x'i32 = this.x
+    x'i32 = x
   ))
 }
 
@@ -20,19 +20,19 @@ fancyMath_getX()'i32 {
 
 fancyMath_increment()'stack fancyMath {
   fancyMath(this = fancyMath(
-    x'i32 = this.x
+    x'i32 = x
   ))
 }
 
 fancyMath_modulus(num'stack fancyMath:)'stack fancyMath {
   fancyMath(this = fancyMath(
-    x'i32 = this.x
+    x'i32 = x
   ))
 }
 
 fancyMath_multiply(num'stack fancyMath:)'stack fancyMath {
   fancyMath(this = fancyMath(
-    x'i32 = this.x
+    x'i32 = x
   ))
 }
 
@@ -42,65 +42,65 @@ fancyMath_setBob(i'i32:)'i32 {
 
 fancyMath_subtract(num'stack fancyMath:)'stack fancyMath {
   fancyMath(this = fancyMath(
-    x'i32 = this.x
+    x'i32 = x
   ))
 }
 
 global()'void {
   a'stack fancyMath : fancyMath(this = fancyMath(
-    x'i32 = this.x
+    x'i32 = x
   ))
   b'stack fancyMath : fancyMath(this = fancyMath(
-    x'i32 = this.x
+    x'i32 = x
   ))
   c'stack fancyMath = fancyMath_add(
-    parent: a,
-    num'stack fancyMath : this.num
+    parent: this,
+    num'stack fancyMath : num
   )
   d'stack fancyMath = fancyMath_subtract(
-    parent: a,
-    num'stack fancyMath : this.num
+    parent: this,
+    num'stack fancyMath : num
   )
   e'stack fancyMath = fancyMath_multiply(
-    parent: a,
-    num'stack fancyMath : this.num
+    parent: this,
+    num'stack fancyMath : num
   )
   f'stack fancyMath = fancyMath_divide(
-    parent: a,
-    num'stack fancyMath : this.num
+    parent: this,
+    num'stack fancyMath : num
   )
   g'stack fancyMath = fancyMath_modulus(
-    parent: a,
-    num'stack fancyMath : this.num
+    parent: this,
+    num'stack fancyMath : num
   )
   c'stack fancyMath = fancyMath_add(
-    parent: c,
-    num'stack fancyMath : this.num
+    parent: this,
+    num'stack fancyMath : num
   )
   d'stack fancyMath = fancyMath_subtract(
-    parent: d,
-    num'stack fancyMath : this.num
+    parent: this,
+    num'stack fancyMath : num
   )
   d'stack fancyMath = fancyMath_multiply(
-    parent: d,
-    num'stack fancyMath : this.num
+    parent: this,
+    num'stack fancyMath : num
   )
   d'stack fancyMath = fancyMath_divide(
-    parent: d,
-    num'stack fancyMath : this.num
+    parent: this,
+    num'stack fancyMath : num
   )
   e'stack fancyMath = fancyMath_increment(
-    parent: e
+    parent: this
   )
   f'stack fancyMath = fancyMath_increment(
-    parent: f
+    parent: this
   )
   i'i32 = fancyMath_getX(
-    parent: f
+    parent: this
   )
   j'i32 = fancyMath_setBob(
-    parent: a,
-    i'i32 : this.i
+    parent: this,
+    i'i32 : i
   )
   void
 }

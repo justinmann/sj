@@ -8,10 +8,10 @@ class_get()'local anon1 {
 
 global()'void {
   c'stack class : class(this = class(
-    data'stack anon1 : this.data
+    data'stack anon1 : data
   ))
   d'local anon1 : class_get(
-    parent: c
+    parent: this
   )
   void
 }
