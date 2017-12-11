@@ -1,17 +1,15 @@
 -- ui --
-* animation
 * load obj file: http://kixor.net/dev/objloader/ https://code.google.com/archive/p/saitoobjloader/ http://people.sc.fsu.edu/%7Ejburkardt/data/obj/obj.html
 * sphere - default to front of sphere being middle of texture
 * center text
 
 -- language --
-* array each
-* array map
 * i32.interpolate
-
+* ifValue a, b, c {} elseEmpty {}
+* array map
+* array filter
 * namespaces
 * enum
-* ifValue a, b, c {} elseEmpty {}
 * stack optional
 * stack interface
 * improve debug out for interfaces
@@ -20,25 +18,6 @@
 * weak pointer
 * override interfaces : a as type   -> a.asType()'t
 * interface as struct heap: { _parent, _vtbl, _destroy } or stack: { _parent, _vtbl }
-
--- animation -- 
-x.animateTextColor(color(1, 0, 0))
-
-buttonElement(
-	setTextColor ...
-
-	animateTextColor(toColor : 'color, duration : 'i32) {
-		animator.animations.add(
-			animation!color(
-				start : animator.currentTime
-				end : animator.currentTime + duration as i64
-				startValue : _textColor
-				endValue : toColor
-				setValue : setTextColor
-			) as #animation)
-	}
-)
-
 
 -- lambda --
 array!item(

@@ -75,8 +75,7 @@ windowRenderer()'stack windowRenderer {
   --c--
   
   if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-  printf("SDL_Init Error: %s\n", SDL_GetError());
-  exit(-1);
+  halt("SDL_Init Error: %s\n", SDL_GetError());
   }
   #ifdef __APPLE__
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
@@ -90,22 +89,19 @@ windowRenderer()'stack windowRenderer {
   SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
   _this->win = SDL_CreateWindow("Hello World!", 100, 100, 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
   if (_this->win == 0) {
-  printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
-  exit(-1);
+  halt("SDL_CreateWindow Error: %s\n", SDL_GetError());
   }
   SDL_GL_CreateContext((SDL_Window*)_this->win);
   #ifdef WIN32
   GLint GlewInitResult = glewInit();
   if (GLEW_OK != GlewInitResult)
   {
-  printf("ERROR: %s\n", glewGetErrorString(GlewInitResult));
-  exit(EXIT_FAILURE);
+  halt("ERROR: %s\n", glewGetErrorString(GlewInitResult));
   }
   #endif
   _this->ren = SDL_CreateRenderer((SDL_Window*)_this->win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
   if (_this->ren == 0) {
-  printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
-  exit(-1);
+  halt("SDL_CreateRenderer Error: %s\n", SDL_GetError());
   }
   glClearColor( 0.0, 0.0, 0.0, 0.0 );
   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -118,10 +114,10 @@ windowRenderer()'stack windowRenderer {
 global()'void {
   rootWindowRenderer'stack windowRenderer : windowRenderer(this = windowRenderer())
   rootScene'stack scene2d : scene2d(this = scene2d(
-    _size'stack size = this._size,
-    model'stack mat4 = this.model,
-    view'stack mat4 = this.view,
-    projection'stack mat4 = this.projection
+    _size'stack size = _size,
+    model'stack mat4 = model,
+    view'stack mat4 = view,
+    projection'stack mat4 = projection
   ))
   --cinclude--
   
@@ -135,10 +131,28 @@ global()'void {
   #endif
   
   --cinclude--
+  --cinclude--
+  
+  
+  --cinclude--
   console'stack anon1 : anon1(this = anon1())
-  parse'stack anon2 : anon2(this = anon2())
-  random'stack anon3 : anon3(this = anon3())
-  convert'stack anon4 : anon4(this = anon4())
+  convert'stack anon2 : anon2(this = anon2())
+  --cdefine--
+  
+  void halt(const char * format, ...);
+  
+  --cdefine--
+  --cfunction--
+  
+  void halt(const char * format, ...) {
+  va_list args;
+  va_start (args, format);
+  vprintf (format, args);
+  va_end (args);
+  exit(-1);
+  }
+  
+  --cfunction--
   --cstruct--
   
   typedef struct pointer_td pointer;
@@ -270,7 +284,7 @@ global()'void {
   #else
   /* malloc failures result in lost memory, hash tables are unusable */
   #ifndef uthash_fatal
-  #define uthash_fatal(msg) exit(-1)        /* fatal OOM error */
+  #define uthash_fatal(msg) halt("Unknown")        /* fatal OOM error */
   #endif
   #define HASH_RECORD_OOM(oomed) uthash_fatal("out of memory")
   #define IF_HASH_NONFATAL_OOM(x)
@@ -611,7 +625,7 @@ global()'void {
   * This is for uthash developer only; it compiles away if HASH_DEBUG isn't defined.
   */
   #ifdef HASH_DEBUG
-  #define HASH_OOPS(...) do { fprintf(stderr,__VA_ARGS__); exit(-1); } while (0)
+  #define HASH_OOPS(...) do { halt(__VA_ARGS__); } while (0)
   #define HASH_FSCK(hh,head,where)                                                 \
   do {                                                                             \
   struct UT_hash_handle *_thh;                                                   \
@@ -1282,19 +1296,21 @@ global()'void {
   
   --ctypedef--
   f32_pi'f32 : 3.14159265358979323846ff
-  i32_max'i32 : (-2147483647 - 1)i
-  i32_min'i32 : 2147483647i
-  u32_max'u32 : (uint32_t)4294967295uu
+  u32_maxValue'u32 : (uint32_t)4294967295uu
+  i32_maxValue'i32 : (-2147483647 - 1)i
+  i32_minValue'i32 : 2147483647i
+  parse'stack anon3 : anon3(this = anon3())
+  random'stack anon4 : anon4(this = anon4())
   animator'stack anon5 : anon5(this = anon5(
-    animations'stack list_heap_animation : this.animations,
-    current'i32 = this.current
+    animations'stack list_heap_animation : animations,
+    current'i32 = current
   ))
   borderPosition'stack anon6 : anon6(this = anon6(
-    fill'i32 : this.fill,
-    left'i32 : this.left,
-    right'i32 : this.right,
-    top'i32 : this.top,
-    bottom'i32 : this.bottom
+    fill'i32 : fill,
+    left'i32 : left,
+    right'i32 : right,
+    top'i32 : top,
+    bottom'i32 : bottom
   ))
   --cstruct--
   
@@ -1305,9 +1321,9 @@ global()'void {
   
   --cstruct--
   buttonState'stack anon7 : anon7(this = anon7(
-    normal'i32 : this.normal,
-    hot'i32 : this.hot,
-    pressed'i32 : this.pressed
+    normal'i32 : normal,
+    hot'i32 : hot,
+    pressed'i32 : pressed
   ))
   colors'stack anon8 : anon8(this = anon8())
   --cdefine--
@@ -1973,32 +1989,32 @@ global()'void {
   mouseEvent_up'i32 : 1i
   mouseEvent_down'i32 : 2i
   boxShader'stack shader : shader(this = shader(
-    vertex'stack string : this.vertex,
-    pixel'stack string : this.pixel
+    vertex'stack string : vertex,
+    pixel'stack string : pixel
   ))
   blurHorizontalShader'stack shader : shader(this = shader(
-    vertex'stack string : this.vertex,
-    pixel'stack string : this.pixel
+    vertex'stack string : vertex,
+    pixel'stack string : pixel
   ))
   blurVerticalShader'stack shader : shader(this = shader(
-    vertex'stack string : this.vertex,
-    pixel'stack string : this.pixel
+    vertex'stack string : vertex,
+    pixel'stack string : pixel
   ))
   imageShader'stack shader : shader(this = shader(
-    vertex'stack string : this.vertex,
-    pixel'stack string : this.pixel
+    vertex'stack string : vertex,
+    pixel'stack string : pixel
   ))
   phongColorShader'stack shader : shader(this = shader(
-    vertex'stack string : this.vertex,
-    pixel'stack string : this.pixel
+    vertex'stack string : vertex,
+    pixel'stack string : pixel
   ))
   phongTextureShader'stack shader : shader(this = shader(
-    vertex'stack string : this.vertex,
-    pixel'stack string : this.pixel
+    vertex'stack string : vertex,
+    pixel'stack string : pixel
   ))
   textShader'stack shader : shader(this = shader(
-    vertex'stack string : this.vertex,
-    pixel'stack string : this.pixel
+    vertex'stack string : vertex,
+    pixel'stack string : pixel
   ))
   --cdefine--
   
@@ -2162,8 +2178,7 @@ global()'void {
   {
   GLchar messages[256];
   glGetShaderInfoLog( handle, sizeof(messages), 0, &messages[0] );
-  fprintf( stderr, "%s: %s\n", source, messages );
-  exit( EXIT_FAILURE );
+  halt("%s: %s\n", source, messages);
   }
   return handle;
   }
@@ -2196,8 +2211,7 @@ global()'void {
   {
   GLchar messages[256];
   glGetProgramInfoLog( handle, sizeof(messages), 0, &messages[0] );
-  fprintf( stderr, "%s\n", messages );
-  exit(1);
+  halt("%s\n", messages );
   }
   return handle;
   }
@@ -2707,9 +2721,7 @@ global()'void {
   assert( (depth == 1) || (depth == 3) || (depth == 4) );
   if( self == NULL)
   {
-  fprintf( stderr,
-  "line %d: No more memory for allocating data\n", __LINE__ );
-  exit( EXIT_FAILURE );
+  halt("line %d: No more memory for allocating data\n", __LINE__ );
   }
   self->nodes = vector_new( sizeof(ivec3) );
   self->used = 0;
@@ -2722,9 +2734,7 @@ global()'void {
   calloc( width*height*depth, sizeof(unsigned char) );
   if( self->data == NULL)
   {
-  fprintf( stderr,
-  "line %d: No more memory for allocating data\n", __LINE__ );
-  exit( EXIT_FAILURE );
+  halt("line %d: No more memory for allocating data\n", __LINE__ );
   }
   return self;
   }
@@ -2871,9 +2881,7 @@ global()'void {
   node = (ivec3 *) malloc( sizeof(ivec3) );
   if( node == NULL)
   {
-  fprintf( stderr,
-  "line %d: No more memory for allocating data\n", __LINE__ );
-  exit( EXIT_FAILURE );
+  halt("line %d: No more memory for allocating data\n", __LINE__ );
   }
   node->x = region.x;
   node->y = region.y + height;
@@ -4251,9 +4259,7 @@ global()'void {
   assert( item_size );
   if( !self )
   {
-  fprintf( stderr,
-  "line %d: No more memory for allocating data\n", __LINE__ );
-  exit( EXIT_FAILURE );
+  halt("line %d: No more memory for allocating data\n", __LINE__ );
   }
   self->item_size = item_size;
   self->size      = 0;
@@ -5528,12 +5534,12 @@ global()'void {
   
   --cfunction--
   vertex_location_texture_normal_format'stack string : string(this = string(
-    count'i32 = this.count,
-    data'stack array_char = this.data
+    count'i32 = count,
+    data'stack array_char = data
   ))
   root'heap #element : fillElement(this = fillElement(
-    children'stack array_heap_element : this.children,
-    _rect'stack rect = this._rect
+    children'stack array_heap_element : children,
+    _rect'stack rect = _rect
   )) as heap #element
   runLoop()
   void

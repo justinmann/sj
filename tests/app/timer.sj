@@ -54,7 +54,7 @@ root : borderLayout(
 			position : borderPosition.right
 			child : boxElement(
 				color = colors.red()
-				idealSize = size(50, i32_max)
+				idealSize = size(50, i32_maxValue)
 			) as #element
 		) as #element,
 		boxElement(

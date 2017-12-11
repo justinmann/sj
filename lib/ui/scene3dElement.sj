@@ -1,6 +1,6 @@
 scene3dElement #element (
 	children : array!#model()
-	camera : property!vec3(vec3(0.0f, 0.0f, -5.0f))
+	camera : heap property!vec3(vec3(0.0f, 0.0f, -5.0f))
 	lookAt := vec3(0.0f, 0.0f, 0.0f)
 	up := vec3(0.0f, 1.0f, 0.0f)
 	fieldOfView := 90.0f
@@ -33,6 +33,10 @@ scene3dElement #element (
 	}
 
 	render(scene : 'scene2d)'void {
+		if camera.isDirty {
+			view = mat4_lookAtLH(camera.get(), lookAt, up)		
+		}
+
 		if _isUp { 
 			_angle += 0.2f
 			if _angle >= 180.0f {
@@ -82,6 +86,6 @@ scene3dElement #element (
 		--c--	
 	}
 ) { 
-	camera.animate(vec3(0.0f, 0.0f, -10.0f), 1000)
+	camera.animate(vec3(0.0f, 0.0f, -10.0f), 10000)
 	this 
 }

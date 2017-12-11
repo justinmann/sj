@@ -1,5 +1,5 @@
 #animation(
-	nextFrame()'bool
+	nextFrame(time : 'i32)'bool
 )
 
 animation!t #animation (
@@ -30,6 +30,16 @@ animator: ^(
 
 	nextFrame(time : 'i32) {
 		current = time
-		// Iterate and remove all that return false
+		if animations.count > 0 {
+			// Iterate and remove all that return false
+			for i (0 to animations.count) {
+				index : animations.count - 0 - 1
+				a : animations[index]
+				if a.nextFrame(time) {
+					animations.removeAt(index)
+				}
+			}
+		}
+		void
 	}
 ) { this }
