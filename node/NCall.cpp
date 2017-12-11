@@ -1,6 +1,6 @@
 #include "Node.h"
 
-shared_ptr<vector<FunctionParameter>> CCallVar::getParameters(Compiler* compiler, CLoc loc, shared_ptr<CScope> callerScope, shared_ptr<CBaseFunction> callee, shared_ptr<NodeList> arguments, CTypeMode returnMode) {
+shared_ptr<vector<FunctionParameter>> CCallVar::getParameters(Compiler* compiler, CLoc loc, shared_ptr<CScope> callerScope, shared_ptr<CBaseFunction> callee, shared_ptr<NodeList> arguments, bool isHelperFunction, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
     auto parameters = make_shared<vector<FunctionParameter>>(callee->getArgCount(returnMode));
 
     if (parameters->size() < arguments->size()) {
@@ -12,6 +12,14 @@ shared_ptr<vector<FunctionParameter>> CCallVar::getParameters(Compiler* compiler
     auto calleeScope = calleeFunction ? calleeFunction->getScope(compiler, returnMode) : nullptr;
     auto argIndex = (size_t)0;
     auto hasSetByName = false;
+
+    if (isHelperFunction) {
+        (*parameters)[argIndex].isDefaultValue = false;
+        (*parameters)[argIndex].op = AssignOp::immutableCreate;
+        (*parameters)[argIndex].var = dotVar;
+        argIndex++;
+    }
+
     for (auto it : *arguments) {
         if (it->nodeType == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
@@ -226,63 +234,74 @@ void NCall::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> t
     }
 }
 
-shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    // parentFunction will be specified if the NCall is used as the default NAssignment for a NFunction
-    auto cfunction = static_pointer_cast<CBaseFunction>(scope->function);
-    auto cfunctionReturnMode = scope->returnMode;
+shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode, bool* pisHelperFunction) {
     
+    // Check for the x.name() style function call  
+    *pisHelperFunction = false;
+    auto cfunction = static_pointer_cast<CBaseFunction>(scope->function);
+    auto cfunctionReturnMode = scope->returnMode;    
     if (dotVar) {
         cfunction = dotVar->getType(compiler)->parent.lock();
         cfunctionReturnMode = dotVar->getType(compiler)->typeMode == CTM_Heap ? CTM_Heap : CTM_Stack;
-        if (!cfunction) {
-            compiler->addError(loc, CErrorCode::InvalidVariable, "parent is not a function");
-            return nullptr;
-        }
-    }
-    
-    // Handle last name in list
-    auto callee = cfunction->getCFunction(compiler, loc, name, scope, templateTypeNames, returnMode);
-    if (!callee) {
-        // If we are still using "this" then we can check to see if it is a function on parent
-        if (cfunction == scope->function) {
-            auto temp = cfunction;
-            while (temp && !temp->parent.expired() && !callee) {
-                temp = temp->parent.lock();
-                if (temp) {
-                    callee = temp->getCFunction(compiler, loc, name, scope, templateTypeNames, returnMode);
+    }    
+    if (cfunction) {
+        // Handle last name in list
+        auto callee = cfunction->getCFunction(compiler, loc, name, scope, templateTypeNames, returnMode);
+        if (!callee) {
+            // If we are still using "this" then we can check to see if it is a function on parent
+            if (cfunction == scope->function) {
+                auto temp = cfunction;
+                while (temp && !temp->parent.expired() && !callee) {
+                    temp = temp->parent.lock();
+                    if (temp) {
+                        callee = temp->getCFunction(compiler, loc, name, scope, templateTypeNames, returnMode);
+                    }
                 }
             }
         }
-    }
-    
-    if (!callee) {
-        shared_ptr<CVar> var;
-        if (dotVar) {
-            auto temp = dynamic_pointer_cast<CFunction>(cfunction);
-            var = temp->getCVar(compiler, scope, vector<shared_ptr<FunctionBlock>>(), dotVar, name, VSM_ThisOnly, cfunctionReturnMode);
-        }
-        else {
-            var = scope->getCVar(compiler, nullptr, name, VSM_LocalThisParent);
-        }
 
-        if (var) {
-            auto type = var->getType(compiler);
-            if (type && type->category == CTC_Function) {
-                callee = type->callback.lock()->getFunction(compiler, var);
+        if (callee) {
+            return callee;
+        }
+    }
+
+    // Check for type_name(x) style function call
+    if (dotVar) {
+        auto functionName = dotVar->getType(compiler)->valueName + "_" + name;
+        auto callee = scope->function->getCFunction(compiler, loc, functionName, scope, templateTypeNames, returnMode);
+        if (callee) {
+            *pisHelperFunction = true;
+            return callee;
+        }
+    }
+
+    // Check for callback var
+    shared_ptr<CVar> var;
+    if (dotVar) {
+        auto temp = dynamic_pointer_cast<CFunction>(cfunction);
+        var = temp->getCVar(compiler, scope, vector<shared_ptr<FunctionBlock>>(), dotVar, name, VSM_ThisOnly, cfunctionReturnMode);
+    }
+    else {
+        var = scope->getCVar(compiler, nullptr, name, VSM_LocalThisParent);
+    }
+
+    if (var) {
+        auto type = var->getType(compiler);
+        if (type && type->category == CTC_Function) {
+            auto callee = type->callback.lock()->getFunction(compiler, var);
+            if (callee) {
+                return callee;
             }
         }
     }
 
-    if (!callee) {
-        compiler->addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", name.c_str());
-        return nullptr;
-    }
-
-    return callee;
+    compiler->addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", name.c_str());
+    return nullptr;
 }
 
 shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto callee = getCFunction(compiler, scope, dotVar, returnMode);
+    bool isHelperFunction = false;
+    auto callee = getCFunction(compiler, scope, dotVar, returnMode, &isHelperFunction);
     if (!callee) {
         return nullptr;
     }
@@ -296,16 +315,16 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
         }
     }
 
-    if ((int)arguments->size() > callee->getArgCount(returnMode)) {
-        compiler->addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments->size(), callee->getArgCount(returnMode));
+    if ((int)arguments->size() + (isHelperFunction ? 1 : 0) > callee->getArgCount(returnMode)) {
+        compiler->addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments->size() + (isHelperFunction ? 1 : 0), callee->getArgCount(returnMode));
         return nullptr;
     }
 
     // Fill in parameters
-    auto parameters = CCallVar::getParameters(compiler, loc, scope, callee, arguments, returnMode);
+    auto parameters = CCallVar::getParameters(compiler, loc, scope, callee, arguments, isHelperFunction, dotVar, returnMode);
     if (!parameters) {
         return nullptr;
     }
 
-    return CCallVar::create(compiler, loc, name, dotVar, parameters, scope, callee, returnMode);
+    return CCallVar::create(compiler, loc, name, isHelperFunction ? nullptr : dotVar, parameters, scope, callee, returnMode);
 }

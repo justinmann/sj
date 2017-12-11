@@ -43,3 +43,11 @@ animator: ^(
 		void
 	}
 ) { this }
+
+i32_interpolate(x : 'i32, y : 'i32, percent : 'f32) {
+	(x as f32 * (1.0f - percent) + y as f32 * percent) as i32
+}
+
+f32_interpolate(x : 'f32, y : 'f32, percent : 'f32) {
+	x * (1.0f - percent) + y * percent
+}

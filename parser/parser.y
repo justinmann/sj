@@ -70,7 +70,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch copy destroy expr end_optional end_star
-%type <var> var var_right expr_math expr_var const expr_and expr_comp tuple expr_and_inner
+%type <var> var_right expr_math expr_var const expr_and expr_comp tuple expr_and_inner
 %type <block> stmts
 %type <nif> if_expr
 %type <exprvec> func_args func_block array_args tuple_args interface_args interface_block
@@ -127,13 +127,13 @@ block 				: TLBRACE stmts TRBRACE 						{ $$ = $2; }
 					;
 
 var_decl 			: assign
-					| var TPLUSPLUS                         		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Inc, nullptr); }
-					| var TMINUSMINUS                       		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Dec, nullptr); }
-					| var TPLUSEQUAL expr_and                  		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Add, shared_ptr<NVariableBase>($3)); }
-					| var TMINUSEQUAL expr_and                		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Sub, shared_ptr<NVariableBase>($3)); }
-					| var TMULEQUAL expr_and                		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Mul, shared_ptr<NVariableBase>($3)); }
-					| var TDIVEQUAL expr_and                		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Div, shared_ptr<NVariableBase>($3)); }
-					| var TLBRACKET expr TRBRACKET TEQUAL stmt		{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NCall>(LOC, "setAt", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3), shared_ptr<NBase>($6)))); }
+					| expr_var TPLUSPLUS                         		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Inc, nullptr); }
+					| expr_var TMINUSMINUS                       		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Dec, nullptr); }
+					| expr_var TPLUSEQUAL expr_and                  		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Add, shared_ptr<NVariableBase>($3)); }
+					| expr_var TMINUSEQUAL expr_and                		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Sub, shared_ptr<NVariableBase>($3)); }
+					| expr_var TMULEQUAL expr_and                		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Mul, shared_ptr<NVariableBase>($3)); }
+					| expr_var TDIVEQUAL expr_and                		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Div, shared_ptr<NVariableBase>($3)); }
+					| expr_var TLBRACKET expr TRBRACKET TEQUAL stmt		{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NCall>(LOC, "setAt", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3), shared_ptr<NBase>($6)))); }
 					;
 
 func_decl 			: func_type_name func_block block catch copy destroy			{ 
@@ -226,7 +226,7 @@ expr 				: if_expr										{ $$ = $1; }
 					| TSTACK expr                             		{ $$ = new NChangeMode(LOC, CTM_Stack, shared_ptr<NBase>($2)); }
 					| TLOCAL expr                             		{ $$ = new NChangeMode(LOC, CTM_Local, shared_ptr<NBase>($2)); }
 					| THEAP expr                             		{ $$ = new NChangeMode(LOC, CTM_Heap, shared_ptr<NBase>($2)); }
-					| var TLBRACKET expr TRBRACKET					{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NCall>(LOC, "getAt", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3)))); }
+					| expr_var TLBRACKET expr TRBRACKET					{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NCall>(LOC, "getAt", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3)))); }
 					| TVOID											{ $$ = new NVoid(LOC); }
 					;
 
@@ -258,13 +258,16 @@ expr_math			: expr_math TPLUS expr_math 					{ $$ = new NMath(LOC, shared_ptr<NV
 					| expr_math TDIV expr_math 						{ $$ = new NMath(LOC, shared_ptr<NVariableBase>($1), NMathOp::Div, shared_ptr<NVariableBase>($3)); }
 					| expr_math TMOD expr_math 						{ $$ = new NMath(LOC, shared_ptr<NVariableBase>($1), NMathOp::Mod, shared_ptr<NVariableBase>($3)); }
 					| expr_math TQUESTIONCOLON expr_math			{ $$ = new NGetOrElse(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($3)); }
+					| TMINUS expr_var 								{ $$ = new NNegate(LOC, shared_ptr<NVariableBase>($2)); }
 					| TEXCLAIM expr_var                             { $$ = new NNot(LOC, shared_ptr<NVariableBase>($2)); }
 					| expr_var TAS arg_type 						{ $$ = new NCast(LOC, shared_ptr<CTypeName>($3), shared_ptr<NVariableBase>($1)); }
 					| expr_var										{ $$ = $1; }
 					;
 
 expr_var 			: TLPAREN expr_and_inner TRPAREN				{ $$ = $2; }
-					| var 											{ $$ = $1; }
+					| expr_var TDOT var_right						{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($3)); }
+					| expr_var TQUESTIONDOT var_right				{ $$ = new NOptionDot(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($3)); }
+					| var_right 									{ $$ = $1; }
 					| const											{ $$ = $1; }
 					;
 
@@ -279,11 +282,6 @@ if_expr		 		: TIF expr block								{ $$ = new NIf(LOC, shared_ptr<NBase>($2), s
 					| TIF expr block TELSE if_expr					{ $$ = new NIf(LOC, shared_ptr<NBase>($2), shared_ptr<NBase>($3), shared_ptr<NBase>($5)); }
 					;
 
-var					: var TDOT var_right							{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($3)); }
-					| var TQUESTIONDOT var_right					{ $$ = new NOptionDot(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($3)); }
-					| var_right										
-					;
-
 var_right			: func_type_name func_block						{ $$ = new NCall(LOC, $1->valueName.c_str(), $1->templateTypeNames, shared_ptr<NodeList>($2)); delete $1; }
 					| TISEMPTY TLPAREN expr TRPAREN					{ $$ = new NIsEmpty(LOC, shared_ptr<NBase>($3)); }
 					| TGETVALUE TLPAREN expr TRPAREN				{ $$ = new NGetValue(LOC, shared_ptr<NBase>($3), false); }
@@ -295,9 +293,7 @@ var_right			: func_type_name func_block						{ $$ = new NCall(LOC, $1->valueName
 	 				| THEAPTHIS										{ $$ = new NThis(LOC, true); }
 	 				;
 
-const 				: TMINUS TINTEGER 								{ $2->insert(0, "-"); $$ = new NInteger(LOC, $2->c_str()); delete $2; }
-					| TINTEGER 										{ $$ = new NInteger(LOC, $1->c_str()); delete $1; }
-					| TMINUS TDOUBLE 								{ $2->insert(0, "-"); $$ = new NDouble(LOC, $2->c_str()); delete $2; }
+const 				: TINTEGER 										{ $$ = new NInteger(LOC, $1->c_str()); delete $1; }
 					| TDOUBLE 										{ $$ = new NDouble(LOC, $1->c_str()); delete $1; }
 					| TTRUE											{ $$ = new NBool(LOC, true); }
 					| TFALSE										{ $$ = new NBool(LOC, false); }
@@ -309,9 +305,9 @@ const 				: TMINUS TINTEGER 								{ $2->insert(0, "-"); $$ = new NInteger(LOC,
 assign				: TIDENTIFIER assign_type stmt						{ $$ = new NAssignment(LOC, nullptr, nullptr, $1->c_str(), shared_ptr<NBase>($3), $2); }
 					| TIDENTIFIER assign_type arg_type_quote			{ $$ = new NAssignment(LOC, nullptr, shared_ptr<CTypeName>($3), $1->c_str(), nullptr, $2); }								
 					| TIDENTIFIER arg_type_quote assign_type stmt		{ $$ = new NAssignment(LOC, nullptr, shared_ptr<CTypeName>($2), $1->c_str(), shared_ptr<NBase>($4), $3); }
-					| var TDOT TIDENTIFIER assign_type stmt				{ $$ = new NAssignment(LOC, shared_ptr<NVariableBase>($1), nullptr, $3->c_str(), shared_ptr<NBase>($5), $4); }
-					| var TDOT TIDENTIFIER assign_type arg_type_quote	{ $$ = new NAssignment(LOC, shared_ptr<NVariableBase>($1), shared_ptr<CTypeName>($5), $3->c_str(), nullptr, $4); }								
-					| var TDOT TIDENTIFIER arg_type_quote assign_type stmt	{ $$ = new NAssignment(LOC, shared_ptr<NVariableBase>($1), shared_ptr<CTypeName>($4), $3->c_str(), shared_ptr<NBase>($6), $5); }
+					| expr_var TDOT TIDENTIFIER assign_type stmt				{ $$ = new NAssignment(LOC, shared_ptr<NVariableBase>($1), nullptr, $3->c_str(), shared_ptr<NBase>($5), $4); }
+					| expr_var TDOT TIDENTIFIER assign_type arg_type_quote	{ $$ = new NAssignment(LOC, shared_ptr<NVariableBase>($1), shared_ptr<CTypeName>($5), $3->c_str(), nullptr, $4); }								
+					| expr_var TDOT TIDENTIFIER arg_type_quote assign_type stmt	{ $$ = new NAssignment(LOC, shared_ptr<NVariableBase>($1), shared_ptr<CTypeName>($4), $3->c_str(), shared_ptr<NBase>($6), $5); }
 					| TLPAREN assign_tuple TRPAREN expr_and				{ $$ = new NTupleAssignment(LOC, shared_ptr<NTupleAssignmentArgList>($2), shared_ptr<NVariableBase>($4)); }
 					;
 
@@ -321,7 +317,7 @@ assign_tuple 		: assign_tuple_arg								{ $$ = new NTupleAssignmentArgList(); $
 
 assign_tuple_arg	: TIDENTIFIER assign_type						{ $$ = new NTupleAssignmentArg(LOC, nullptr, nullptr, $1->c_str(), $2); }
 					| TIDENTIFIER assign_type arg_type_quote		{ $$ = new NTupleAssignmentArg(LOC, nullptr, shared_ptr<CTypeName>($3), $1->c_str(), $2); }
-					| var TDOT TIDENTIFIER assign_type				{ $$ = new NTupleAssignmentArg(LOC, shared_ptr<NVariableBase>($1), nullptr, $3->c_str(), $4); }
+					| expr_var TDOT TIDENTIFIER assign_type				{ $$ = new NTupleAssignmentArg(LOC, shared_ptr<NVariableBase>($1), nullptr, $3->c_str(), $4); }
 					;
 
 assign_type 		: TEQUAL assign_copy							{ $$ = $2; $$.isMutable = true; $$.isFirstAssignment = false; }
