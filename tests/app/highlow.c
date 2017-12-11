@@ -1269,9 +1269,6 @@ bool _release(void* ptr);
 bool result1;
 sjs_string sjt_call1;
 sjs_string sjt_call4;
-sjs_anon1* sjt_dot1;
-sjs_anon4* sjt_dot2;
-sjs_anon1* sjt_dot7;
 sjs_string* sjt_functionParam1;
 sjs_string* sjt_functionParam5;
 int32_t sjt_math1;
@@ -1279,6 +1276,9 @@ int32_t sjt_math2;
 int32_t sjt_math3;
 int32_t sjt_math4;
 bool sjt_not1;
+sjs_anon1* sjt_parent1;
+sjs_anon4* sjt_parent2;
+sjs_anon1* sjt_parent7;
 bool sjt_while1;
 sjs_anon1 sjv_console;
 sjs_anon2 sjv_convert;
@@ -1688,9 +1688,9 @@ int main(int argc, char** argv) {
 #line 0 ""
     sjf_anon3(&sjv_parse);
     sjf_anon4(&sjv_random);
+#line 6 ".\..\lib\common\console.sj"
+    sjt_parent1 = &sjv_console;
 #line 3 ".\app\highlow.sj"
-    sjt_dot1 = &sjv_console;
-#line 3
     sjt_call1.count = 15;
 #line 3
     sjt_call1.data.size = 16;
@@ -1704,11 +1704,11 @@ int main(int argc, char** argv) {
 #line 3 ".\app\highlow.sj"
     sjt_functionParam1 = &sjt_call1;
 #line 0 ""
-    sjf_anon1_write(sjt_dot1, sjt_functionParam1);
-#line 5 ".\app\highlow.sj"
-    sjt_dot2 = &sjv_random;
+    sjf_anon1_write(sjt_parent1, sjt_functionParam1);
+#line 2 ".\..\lib\common\random.sj"
+    sjt_parent2 = &sjv_random;
 #line 0 ""
-    sjf_anon4_nextInt(sjt_dot2, &sjt_math3);
+    sjf_anon4_nextInt(sjt_parent2, &sjt_math3);
 #line 5 ".\app\highlow.sj"
     sjt_math4 = 10;
 #line 5
@@ -1729,24 +1729,24 @@ int main(int argc, char** argv) {
         bool result2;
         int32_t sjt_compare1;
         int32_t sjt_compare2;
-        sjs_anon1* sjt_dot3;
-        sjs_anon3* sjt_dot4;
         sjs_string* sjt_functionParam2;
         bool sjt_ifElse1;
         bool sjt_not2;
+        sjs_anon1* sjt_parent3;
+        sjs_anon3* sjt_parent4;
         int32_t sjv_guess;
         sjs_string sjv_str;
 
-#line 9 ".\app\highlow.sj"
-        sjt_dot3 = &sjv_console;
+#line 18 ".\..\lib\common\console.sj"
+        sjt_parent3 = &sjv_console;
 #line 0 ""
-        sjf_anon1_readLine(sjt_dot3, &sjv_str);
+        sjf_anon1_readLine(sjt_parent3, &sjv_str);
+#line 2 ".\..\lib\common\parse.sj"
+        sjt_parent4 = &sjv_parse;
 #line 10 ".\app\highlow.sj"
-        sjt_dot4 = &sjv_parse;
-#line 10
         sjt_functionParam2 = &sjv_str;
 #line 0 ""
-        sjf_anon3_toInt(sjt_dot4, sjt_functionParam2, &sjv_guess);
+        sjf_anon3_toInt(sjt_parent4, sjt_functionParam2, &sjv_guess);
 #line 11 ".\app\highlow.sj"
         sjt_compare1 = sjv_guess;
 #line 11
@@ -1755,12 +1755,12 @@ int main(int argc, char** argv) {
         sjt_ifElse1 = sjt_compare1 < sjt_compare2;
         if (sjt_ifElse1) {
             sjs_string sjt_call2;
-            sjs_anon1* sjt_dot5;
             sjs_string* sjt_functionParam3;
+            sjs_anon1* sjt_parent5;
 
+#line 6 ".\..\lib\common\console.sj"
+            sjt_parent5 = &sjv_console;
 #line 12 ".\app\highlow.sj"
-            sjt_dot5 = &sjv_console;
-#line 12
             sjt_call2.count = 9;
 #line 12
             sjt_call2.data.size = 10;
@@ -1774,7 +1774,7 @@ int main(int argc, char** argv) {
 #line 12 ".\app\highlow.sj"
             sjt_functionParam3 = &sjt_call2;
 #line 0 ""
-            sjf_anon1_write(sjt_dot5, sjt_functionParam3);
+            sjf_anon1_write(sjt_parent5, sjt_functionParam3);
 #line 13 ".\app\highlow.sj"
             sjv_isCorrect = false;
 
@@ -1792,12 +1792,12 @@ int main(int argc, char** argv) {
             sjt_ifElse2 = sjt_compare3 > sjt_compare4;
             if (sjt_ifElse2) {
                 sjs_string sjt_call3;
-                sjs_anon1* sjt_dot6;
                 sjs_string* sjt_functionParam4;
+                sjs_anon1* sjt_parent6;
 
+#line 6 ".\..\lib\common\console.sj"
+                sjt_parent6 = &sjv_console;
 #line 15 ".\app\highlow.sj"
-                sjt_dot6 = &sjv_console;
-#line 15
                 sjt_call3.count = 10;
 #line 15
                 sjt_call3.data.size = 11;
@@ -1811,7 +1811,7 @@ int main(int argc, char** argv) {
 #line 15 ".\app\highlow.sj"
                 sjt_functionParam4 = &sjt_call3;
 #line 0 ""
-                sjf_anon1_write(sjt_dot6, sjt_functionParam4);
+                sjf_anon1_write(sjt_parent6, sjt_functionParam4);
 #line 16 ".\app\highlow.sj"
                 sjv_isCorrect = false;
 
@@ -1832,9 +1832,9 @@ int main(int argc, char** argv) {
         sjf_string_destroy(&sjv_str);
     }
 
-#line 22
-    sjt_dot7 = &sjv_console;
-#line 22
+#line 6 ".\..\lib\common\console.sj"
+    sjt_parent7 = &sjv_console;
+#line 22 ".\app\highlow.sj"
     sjt_call4.count = 9;
 #line 22
     sjt_call4.data.size = 10;
@@ -1848,7 +1848,7 @@ int main(int argc, char** argv) {
 #line 22 ".\app\highlow.sj"
     sjt_functionParam5 = &sjt_call4;
 #line 0 ""
-    sjf_anon1_write(sjt_dot7, sjt_functionParam5);
+    sjf_anon1_write(sjt_parent7, sjt_functionParam5);
     main_destroy();
     return 0;
 }

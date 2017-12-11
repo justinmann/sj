@@ -9,9 +9,13 @@ vec3(
 
 	interpolate(v : 'vec3, percent : 'f32) {
 		vec3(
-			x * (1.0f - percent) + v.x * percent,
-			y * (1.0f - percent) + v.y * percent,
-			y * (1.0f - percent) + v.z * percent)
+			x : x * (1.0f - percent) + v.x * percent,
+			y : y * (1.0f - percent) + v.y * percent,
+			z : z * (1.0f - percent) + v.z * percent)
+	}
+
+	toString() {
+		"" + convert.f32toString(x) + ", " + convert.f32toString(y) + ", " + convert.f32toString(z)
 	}
 
 	subtract(v : 'vec3) {

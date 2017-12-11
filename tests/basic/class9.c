@@ -79,7 +79,7 @@ struct td_sjs_class_heap {
     intptr_t _refCount;
 };
 
-sjs_class* sjt_dot1;
+sjs_class* sjt_parent1;
 sjs_class sjv_c;
 int32_t void1;
 
@@ -109,10 +109,10 @@ void sjf_class_heap(sjs_class_heap* _this) {
 
 int main(int argc, char** argv) {
     sjf_class(&sjv_c);
-#line 3 ".\basic\class9.sj"
-    sjt_dot1 = &sjv_c;
+#line 1 ".\basic\class9.sj"
+    sjt_parent1 = &sjv_c;
 #line 0 ""
-    sjf_class_func(sjt_dot1, &void1);
+    sjf_class_func(sjt_parent1, &void1);
     main_destroy();
     return 0;
 }

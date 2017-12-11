@@ -1,0 +1,35 @@
+
+
+
+
+class(total'i32=)'heap class {
+  this
+}
+
+class_run()'i32 {
+  doMath(
+    cb'heap (i32)void : cb
+  )
+  parent.total
+}
+
+doMath(cb'heap (i32)void:)'void {
+  cb(
+    param'i32 : param
+  )
+  cb(
+    param'i32 : param
+  )
+  void
+}
+
+global()'void {
+  c'heap class : heap class(this = class(
+    total'i32 = total
+  ))
+  class_run(
+    parent: this
+  )
+  void
+}
+

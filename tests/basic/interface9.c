@@ -103,10 +103,10 @@ struct td_sjs_class_heap {
 };
 
 sjs_class_heap* sjt_cast1;
-sji_foo* sjt_dot1;
-sji_foo* sjt_dot2;
 int32_t sjt_interfaceParam1;
 int32_t sjt_interfaceParam2;
+sji_foo* sjt_parent1;
+sji_foo* sjt_parent2;
 sji_foo* sjv_a;
 sjs_bar sjv_b;
 sjs_bar_heap* sjv_c;
@@ -235,21 +235,21 @@ int main(int argc, char** argv) {
     sjf_class_heap(sjt_cast1);
 #line 1 ".\basic\interface9.sj"
     sjv_a = (sji_foo*)sjf_class_heap_as_sji_foo(sjt_cast1);
-#line 14
-    sjt_dot1 = sjv_a;
+#line 2
+    sjt_parent1 = sjv_a;
 #line 14
     sjt_interfaceParam1 = 1;
 #line 14
-    sjt_dot1->test((void*)(((char*)sjt_dot1->_parent) + sizeof(intptr_t)), sjt_interfaceParam1, &sjv_b);
-#line 15
-    sjt_dot2 = sjv_a;
+    sjt_parent1->test((void*)(((char*)sjt_parent1->_parent) + sizeof(intptr_t)), sjt_interfaceParam1, &sjv_b);
+#line 2
+    sjt_parent2 = sjv_a;
 #line 15
     sjt_interfaceParam2 = 1;
 #line 0 ""
     sjv_c = (sjs_bar_heap*)malloc(sizeof(sjs_bar_heap));
     sjv_c->_refCount = 1;
 #line 15 ".\basic\interface9.sj"
-    sjt_dot2->test_heap((void*)(((char*)sjt_dot2->_parent) + sizeof(intptr_t)), sjt_interfaceParam2, &sjv_c);
+    sjt_parent2->test_heap((void*)(((char*)sjt_parent2->_parent) + sizeof(intptr_t)), sjt_interfaceParam2, &sjv_c);
     main_destroy();
     return 0;
 }

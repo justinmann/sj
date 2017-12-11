@@ -1261,9 +1261,9 @@ bool _release(void* ptr);
 
 sjs_class sjt_call1;
 int32_t sjt_cast1;
-sjs_array_class* sjt_dot1;
 int32_t sjt_functionParam1;
 sjs_class* sjt_functionParam2;
+sjs_array_class* sjt_parent1;
 sjs_array_class sjv_a;
 sjs_anon1 sjv_console;
 sjs_anon2 sjv_convert;
@@ -1522,9 +1522,9 @@ int main(int argc, char** argv) {
     sjv_a._isGlobal = false;
 #line 0 ""
     sjf_array_class(&sjv_a);
+#line 27 ".\..\lib\common\array.sj"
+    sjt_parent1 = &sjv_a;
 #line 10 ".\basic\include1.sj"
-    sjt_dot1 = &sjv_a;
-#line 10
     sjt_functionParam1 = 0;
 #line 10
     sjt_call1.bob = 1;
@@ -1533,7 +1533,7 @@ int main(int argc, char** argv) {
 #line 10 ".\basic\include1.sj"
     sjt_functionParam2 = &sjt_call1;
 #line 0 ""
-    sjf_array_class_setAt(sjt_dot1, sjt_functionParam1, sjt_functionParam2);
+    sjf_array_class_setAt(sjt_parent1, sjt_functionParam1, sjt_functionParam2);
     main_destroy();
     return 0;
 }

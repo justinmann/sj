@@ -92,8 +92,8 @@ struct td_sjs_class_heap {
     sjs_math m;
 };
 
-sjs_class* sjt_dot1;
 int32_t sjt_functionParam5;
+sjs_class* sjt_parent2;
 sjs_class sjv_c;
 int32_t void1;
 
@@ -142,22 +142,22 @@ void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return) {
 #line 9
     sjt_ifElse1 = sjt_compare1 > sjt_compare2;
     if (sjt_ifElse1) {
-        sjs_math* sjt_dot2;
-        sjs_class* sjt_dot3;
+        sjs_class* sjt_dot1;
         int32_t sjt_functionParam2;
         int32_t sjt_functionParam3;
         int32_t sjt_functionParam4;
+        sjs_math* sjt_parent1;
 
 #line 8 ".\basic\class13.sj"
-        sjt_dot3 = _parent;
-#line 10
-        sjt_dot2 = &(sjt_dot3)->m;
+        sjt_dot1 = _parent;
+#line 2
+        sjt_parent1 = &(sjt_dot1)->m;
 #line 8
         sjt_functionParam3 = x;
 #line 10
         sjt_functionParam4 = 1;
 #line 0 ""
-        sjf_math_sub(sjt_dot2, sjt_functionParam3, sjt_functionParam4, &sjt_functionParam2);
+        sjf_math_sub(sjt_parent1, sjt_functionParam3, sjt_functionParam4, &sjt_functionParam2);
         sjf_class_bar(_parent, sjt_functionParam2, _return);
     } else {
 #line 12 ".\basic\class13.sj"
@@ -195,12 +195,12 @@ void sjf_math_sub(sjs_math* _parent, int32_t x, int32_t y, int32_t* _return) {
 int main(int argc, char** argv) {
     sjf_math(&sjv_c.m);
     sjf_class(&sjv_c);
-#line 20 ".\basic\class13.sj"
-    sjt_dot1 = &sjv_c;
+#line 8 ".\basic\class13.sj"
+    sjt_parent2 = &sjv_c;
 #line 20
     sjt_functionParam5 = 4;
 #line 0 ""
-    sjf_class_foo(sjt_dot1, sjt_functionParam5, &void1);
+    sjf_class_foo(sjt_parent2, sjt_functionParam5, &void1);
     main_destroy();
     return 0;
 }

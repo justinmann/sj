@@ -108,7 +108,9 @@ void updateLocation(YYLOCATION& loc, const char* s, const int len) {
 [ \t]+					SAVE_LOC; 
 "^"						TOKEN_STR(TIDENTIFIER, 0, 0);
 "this"					TOKEN_VAL(TTHIS);
+"heap this"				TOKEN_VAL(THEAPTHIS);
 "parent"				TOKEN_VAL(TPARENT);
+"heap parent"			TOKEN_VAL(THEAPPARENT);
 "include"				TOKEN_VAL(TINCLUDE);
 "isEmpty"				TOKEN_VAL(TISEMPTY);
 "getValue"				TOKEN_VAL(TGETVALUE);

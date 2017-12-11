@@ -90,7 +90,7 @@ struct td_sjs_class_heap {
 };
 
 sjs_class_heap* sjt_cast1;
-sji_foo* sjt_dot1;
+sji_foo* sjt_parent1;
 sji_foo* sjv_a;
 int32_t void1;
 
@@ -193,10 +193,10 @@ int main(int argc, char** argv) {
     sjf_class_heap(sjt_cast1);
 #line 1 ".\basic\interface2.sj"
     sjv_a = (sji_foo*)sjf_class_heap_as_sji_foo(sjt_cast1);
+#line 2
+    sjt_parent1 = sjv_a;
 #line 12
-    sjt_dot1 = sjv_a;
-#line 12
-    sjt_dot1->test((void*)(((char*)sjt_dot1->_parent) + sizeof(intptr_t)), &void1);
+    sjt_parent1->test((void*)(((char*)sjt_parent1->_parent) + sizeof(intptr_t)), &void1);
     main_destroy();
     return 0;
 }

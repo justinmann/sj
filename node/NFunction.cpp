@@ -167,7 +167,9 @@ _returnTypeName(nullptr),
 _interfaceTypeNames(nullptr),
 _hasInitializedInterfaces(false),
 _hasTranspileDefinitions(false),
-_isReturnThis(false)
+_isReturnThis(false),
+_hasHeapThis(false),
+_hasHeapParent(false)
  { }
 
 CTypeMode functionReturnModes[] = { CTM_Stack, CTM_Heap };
@@ -580,12 +582,12 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
     }
 }
 
-void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode returnMode) {
+void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<CVar> parentVar, CLoc& calleeLoc, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode returnMode) {
     transpileDefinition(compiler, trOutput);
 
     assert(compiler->state == CompilerState::Compile);
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
-    
+
     if (_data[returnMode].isInvalid) {
         compiler->addError(loc, CErrorCode::TypeMismatch, "function '%s' cannot return '%s'", name.c_str(), returnMode == CTM_Heap ? "heap" : "stack");
         return;
@@ -608,8 +610,13 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
     string parentName;
     if (hasParent) {
         stringstream parentLine;
-        if (!parentValue) {
+        if (!parentVar) {
             if (parent.lock() == callerScope->function) {
+                if (_hasHeapParent && !getHasHeapThis()) {
+                    compiler->addError(loc, CErrorCode::TypeMismatch, "function requires a heap parent");
+                    return;
+                }
+
                 if (thisValue != nullptr) {
                     parentName = TrValue::convertToLocalName(thisValue->type, thisValue->name, false);
                 }
@@ -618,6 +625,11 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
                 }
             }
             else if (parent.lock() == callerScope->function->parent.lock()) {
+                if (_hasHeapParent && !callerScope->function->getHasHeapParent()) {
+                    compiler->addError(loc, CErrorCode::TypeMismatch, "function requires a heap parent");
+                    return;
+                }
+
                 parentName = "_parent";
             }
             else {
@@ -625,6 +637,9 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
             }
         }
         else {
+            auto parentStoreValue = trBlock->createTempStoreVariable(loc, nullptr, _hasHeapParent ? parentVar->getType(compiler)->getHeapType() : parentVar->getType(compiler)->getLocalType(), "parent");
+            parentVar->transpile(compiler, trOutput, trBlock, thisValue, parentStoreValue);
+            auto parentValue = parentStoreValue->getValue();
             parentName = TrValue::convertToLocalName(parentValue->type, parentValue->name, false);
         }
     }
@@ -707,6 +722,11 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
         else {
             calleeThisValue = trBlock->createTempVariable(callerScope, calleeVar->getType(compiler), "object");
             calleeThisValue->addInitToStatements(trBlock);
+        }
+
+        if (_hasHeapThis && calleeThisValue->type->typeMode != CTM_Heap) {
+            compiler->addError(loc, CErrorCode::TypeMismatch, "function requires a heap this");
+            return;
         }
 
         auto argTypes = getCTypeList(compiler, returnMode);
@@ -1071,6 +1091,22 @@ shared_ptr<CTypes> CFunction::getThisTypes(Compiler* compiler) {
     return _thisTypes;
 }
 
+void CFunction::setHasHeapThis() {
+    _hasHeapThis = true;
+}
+
+bool CFunction::getHasHeapThis() {
+    return _hasHeapThis;
+}
+
+void CFunction::setHasHeapParent() {
+    _hasHeapParent = true;
+}
+
+bool CFunction::getHasHeapParent() {
+    return _hasHeapParent;
+}
+
 shared_ptr<CScope> CFunction::getScope(Compiler* compiler, CTypeMode returnMode) {
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
     if (_data[returnMode].scope == nullptr) {
@@ -1293,7 +1329,7 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, shared_ptr<CScope> calle
 
         if (scanMode == VSM_LocalThisParent) {
             shared_ptr<CFunction> parentCheck = dynamic_pointer_cast<CFunction>(parent.lock());
-            auto cvar = parentCheck->getCVar(compiler, callerScope, vector<shared_ptr<FunctionBlock>>(), make_shared<CParentVar>(loc, callerScope, dotVar, parentCheck), name, VSM_FromChild, CTM_Undefined);
+            auto cvar = parentCheck->getCVar(compiler, callerScope, vector<shared_ptr<FunctionBlock>>(), make_shared<CParentVar>(loc, callerScope, dotVar, parentCheck, parentCheck->getHasHeapParent()), name, VSM_FromChild, CTM_Undefined);
             if (cvar) {
                 return cvar;
             }

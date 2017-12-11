@@ -216,14 +216,18 @@ string CInterfaceMethod::getCDestroyFunctionName() {
 void CInterfaceMethod::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 }
 
-void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode /*returnMode*/) {
+void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<CVar> parentVar, CLoc& calleeLoc, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode /*returnMode*/) {
     assert(compiler->state == CompilerState::Compile);
-    assert(parentValue != nullptr);
+    assert(parentVar != nullptr);
 
     auto returnType = getReturnType(compiler, returnMode);
     if (!returnType) {
         return;
     }
+
+    auto parentStoreValue = trBlock->createTempStoreVariable(loc, nullptr, parentVar->getType(compiler)->getLocalType(), "parent");
+    parentVar->transpile(compiler, trOutput, trBlock, thisValue, parentStoreValue);
+    auto parentValue = parentStoreValue->getValue();
 
     // Call function
     stringstream line;

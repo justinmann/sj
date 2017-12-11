@@ -137,8 +137,8 @@ struct td_sjs_anon2_class_heap {
 
 sjs_anon1_class_heap* sjt_cast1;
 sjs_anon2_class_heap* sjt_cast2;
-sjs_anon1* sjt_dot1;
-sjs_anon2* sjt_dot2;
+sjs_anon1* sjt_parent1;
+sjs_anon2* sjt_parent2;
 sji_anon1_foo* sjv_a;
 sji_anon2_foo* sjv_b;
 sjs_anon1 sjv_namespace1;
@@ -363,20 +363,20 @@ void sji_anon2_foo_destroy(sji_anon2_foo* _this) {
 int main(int argc, char** argv) {
     sjf_anon1(&sjv_namespace1);
     sjf_anon2(&sjv_namespace2);
-#line 21 ".\basic\interface1.sj"
-    sjt_dot1 = &sjv_namespace1;
+#line 6 ".\basic\interface1.sj"
+    sjt_parent1 = &sjv_namespace1;
 #line 0 ""
     sjt_cast1 = (sjs_anon1_class_heap*)malloc(sizeof(sjs_anon1_class_heap));
     sjt_cast1->_refCount = 1;
-    sjf_anon1_class_heap(sjt_cast1, sjt_dot1);
+    sjf_anon1_class_heap(sjt_cast1, sjt_parent1);
 #line 2 ".\basic\interface1.sj"
     sjv_a = (sji_anon1_foo*)sjf_anon1_class_heap_as_sji_anon1_foo(sjt_cast1);
-#line 22
-    sjt_dot2 = &sjv_namespace2;
+#line 16
+    sjt_parent2 = &sjv_namespace2;
 #line 0 ""
     sjt_cast2 = (sjs_anon2_class_heap*)malloc(sizeof(sjs_anon2_class_heap));
     sjt_cast2->_refCount = 1;
-    sjf_anon2_class_heap(sjt_cast2, sjt_dot2);
+    sjf_anon2_class_heap(sjt_cast2, sjt_parent2);
 #line 12 ".\basic\interface1.sj"
     sjv_b = (sji_anon2_foo*)sjf_anon2_class_heap_as_sji_anon2_foo(sjt_cast2);
     main_destroy();

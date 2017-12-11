@@ -30,10 +30,7 @@ void CNormalVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
         auto returnValue = make_shared<TrValue>(scope.lock(), type, "(" + TrValue::convertToLocalName(dotValue->type, dotValue->getName(trBlock), false) + ")->" + cname, false);
         storeValue->retainValue(compiler, storeValue->loc, trBlock, returnValue);
     } else if (trBlock->hasThis && (mode == Var_Public || mode == Var_Private)) {
-        auto returnValue = trBlock->createTempVariable(scope.lock(), type->getLocalType(), "dotTemp");
-        stringstream lineStream;
-        lineStream << returnValue->name << " = " << TrValue::convertToLocalName(type, "_this->" + cname, false);
-        trBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
+        auto returnValue = make_shared<TrValue>(scope.lock(), type, "_this->" + cname, false);
         storeValue->retainValue(compiler, storeValue->loc, trBlock, returnValue);
     } else {
         auto returnValue = make_shared<TrValue>(scope.lock(), type, cname, false);

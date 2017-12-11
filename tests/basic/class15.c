@@ -92,8 +92,8 @@ struct td_sjs_class_heap {
     intptr_t _refCount;
 };
 
-sjs_class* sjt_dot1;
 int32_t sjt_functionParam5;
+sjs_class* sjt_parent2;
 sjs_class sjv_c;
 sjs_anon1 sjv_math;
 int32_t void1;
@@ -126,7 +126,7 @@ void sjf_anon1_heap(sjs_anon1_heap* _this) {
 }
 
 void sjf_anon1_sub(sjs_anon1* _parent, int32_t x, int32_t y, int32_t* _return) {
-    sjs_anon1* sjt_dot3;
+    sjs_anon1* sjt_dot1;
     int32_t sjt_math1;
     int32_t sjt_math2;
     int32_t sjt_math3;
@@ -139,9 +139,9 @@ void sjf_anon1_sub(sjs_anon1* _parent, int32_t x, int32_t y, int32_t* _return) {
 #line 4
     sjt_math1 = sjt_math3 - sjt_math4;
 #line 3
-    sjt_dot3 = _parent;
+    sjt_dot1 = _parent;
 #line 4
-    sjt_math2 = (sjt_dot3)->test;
+    sjt_math2 = (sjt_dot1)->test;
 #line 4
     (*_return) = sjt_math1 - sjt_math2;
 }
@@ -176,19 +176,19 @@ void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return) {
 #line 10
     sjt_ifElse1 = sjt_compare1 > sjt_compare2;
     if (sjt_ifElse1) {
-        sjs_anon1* sjt_dot2;
         int32_t sjt_functionParam2;
         int32_t sjt_functionParam3;
         int32_t sjt_functionParam4;
+        sjs_anon1* sjt_parent1;
 
-#line 11 ".\basic\class15.sj"
-        sjt_dot2 = &sjv_math;
+#line 3 ".\basic\class15.sj"
+        sjt_parent1 = &sjv_math;
 #line 9
         sjt_functionParam3 = x;
 #line 11
         sjt_functionParam4 = 1;
 #line 0 ""
-        sjf_anon1_sub(sjt_dot2, sjt_functionParam3, sjt_functionParam4, &sjt_functionParam2);
+        sjf_anon1_sub(sjt_parent1, sjt_functionParam3, sjt_functionParam4, &sjt_functionParam2);
         sjf_class_bar(_parent, sjt_functionParam2, _return);
     } else {
 #line 13 ".\basic\class15.sj"
@@ -205,12 +205,12 @@ int main(int argc, char** argv) {
 #line 0 ""
     sjf_anon1(&sjv_math);
     sjf_class(&sjv_c);
-#line 22 ".\basic\class15.sj"
-    sjt_dot1 = &sjv_c;
+#line 9 ".\basic\class15.sj"
+    sjt_parent2 = &sjv_c;
 #line 22
     sjt_functionParam5 = 4;
 #line 0 ""
-    sjf_class_foo(sjt_dot1, sjt_functionParam5, &void1);
+    sjf_class_foo(sjt_parent2, sjt_functionParam5, &void1);
     main_destroy();
     return 0;
 }

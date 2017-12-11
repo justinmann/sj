@@ -61,5 +61,10 @@ shared_ptr<CVar> NThis::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
     }
 
     scope->thisVar->setHasThis();
+
+    if (isHeap) {
+        scope->function->setHasHeapThis();
+    }
+
     return scope->thisVar;
 }

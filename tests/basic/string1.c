@@ -1269,12 +1269,12 @@ char sjt_compare1;
 char sjt_compare2;
 sjs_string* sjt_compare3;
 sjs_string* sjt_compare4;
-sjs_string* sjt_dot1;
-sjs_string* sjt_dot4;
-sjs_string* sjt_dot8;
 int32_t sjt_functionParam2;
 sjs_string* sjt_functionParam4;
 sjs_string* sjt_functionParam6;
+sjs_string* sjt_parent2;
+sjs_string* sjt_parent4;
+sjs_string* sjt_parent6;
 sjs_string sjv_a;
 sjs_string sjv_b;
 char sjv_c;
@@ -1538,57 +1538,57 @@ void sjf_string_destroy(sjs_string* _this) {
 }
 
 void sjf_string_getAt(sjs_string* _parent, int32_t index, char* _return) {
-    sjs_array_char* sjt_dot2;
-    sjs_string* sjt_dot3;
+    sjs_string* sjt_dot1;
     int32_t sjt_functionParam1;
+    sjs_array_char* sjt_parent1;
 
 #line 22 ".\..\lib\common\string.sj"
-    sjt_dot3 = _parent;
-#line 23
-    sjt_dot2 = &(sjt_dot3)->data;
-#line 22
+    sjt_dot1 = _parent;
+#line 6 ".\..\lib\common\array.sj"
+    sjt_parent1 = &(sjt_dot1)->data;
+#line 22 ".\..\lib\common\string.sj"
     sjt_functionParam1 = index;
 #line 0 ""
-    sjf_array_char_getAt(sjt_dot2, sjt_functionParam1, _return);
+    sjf_array_char_getAt(sjt_parent1, sjt_functionParam1, _return);
 }
 
 void sjf_string_heap(sjs_string_heap* _this) {
 }
 
 void sjf_string_isEqual(sjs_string* _parent, sjs_string* test, bool* _return) {
-    sjs_array_char* sjt_dot5;
-    sjs_string* sjt_dot6;
-    sjs_string* sjt_dot7;
+    sjs_string* sjt_dot2;
+    sjs_string* sjt_dot3;
     sjs_array_char* sjt_functionParam3;
+    sjs_array_char* sjt_parent3;
 
 #line 30 ".\..\lib\common\string.sj"
-    sjt_dot6 = _parent;
+    sjt_dot2 = _parent;
+#line 86 ".\..\lib\common\array.sj"
+    sjt_parent3 = &(sjt_dot2)->data;
+#line 30 ".\..\lib\common\string.sj"
+    sjt_dot3 = test;
 #line 31
-    sjt_dot5 = &(sjt_dot6)->data;
-#line 30
-    sjt_dot7 = test;
-#line 31
-    sjt_functionParam3 = &(sjt_dot7)->data;
+    sjt_functionParam3 = &(sjt_dot3)->data;
 #line 0 ""
-    sjf_array_char_isEqual(sjt_dot5, sjt_functionParam3, _return);
+    sjf_array_char_isEqual(sjt_parent3, sjt_functionParam3, _return);
 }
 
 void sjf_string_isLessOrEqual(sjs_string* _parent, sjs_string* test, bool* _return) {
-    sjs_string* sjt_dot10;
-    sjs_string* sjt_dot11;
-    sjs_array_char* sjt_dot9;
+    sjs_string* sjt_dot4;
+    sjs_string* sjt_dot5;
     sjs_array_char* sjt_functionParam5;
+    sjs_array_char* sjt_parent5;
 
 #line 46 ".\..\lib\common\string.sj"
-    sjt_dot10 = _parent;
+    sjt_dot4 = _parent;
+#line 106 ".\..\lib\common\array.sj"
+    sjt_parent5 = &(sjt_dot4)->data;
+#line 46 ".\..\lib\common\string.sj"
+    sjt_dot5 = test;
 #line 47
-    sjt_dot9 = &(sjt_dot10)->data;
-#line 46
-    sjt_dot11 = test;
-#line 47
-    sjt_functionParam5 = &(sjt_dot11)->data;
+    sjt_functionParam5 = &(sjt_dot5)->data;
 #line 0 ""
-    sjf_array_char_isLessOrEqual(sjt_dot9, sjt_functionParam5, _return);
+    sjf_array_char_isLessOrEqual(sjt_parent5, sjt_functionParam5, _return);
 }
 
 int main(int argc, char** argv) {
@@ -1644,30 +1644,30 @@ int main(int argc, char** argv) {
 #line 0 ""
     sjf_array_char(&sjv_f.data);
     sjf_string(&sjv_f);
+#line 22 ".\..\lib\common\string.sj"
+    sjt_parent2 = &sjv_a;
 #line 9 ".\basic\string1.sj"
-    sjt_dot1 = &sjv_a;
-#line 9
     sjt_functionParam2 = 0;
 #line 0 ""
-    sjf_string_getAt(sjt_dot1, sjt_functionParam2, &sjv_h);
+    sjf_string_getAt(sjt_parent2, sjt_functionParam2, &sjv_h);
 #line 10 ".\basic\string1.sj"
     sjt_compare1 = sjv_h;
 #line 10
     sjt_compare2 = 'h';
 #line 10
     sjv_i = sjt_compare1 == sjt_compare2;
-#line 11
-    sjt_dot4 = &sjv_f;
-#line 11
+#line 30 ".\..\lib\common\string.sj"
+    sjt_parent4 = &sjv_f;
+#line 11 ".\basic\string1.sj"
     sjt_functionParam4 = &sjv_a;
 #line 0 ""
-    sjf_string_isEqual(sjt_dot4, sjt_functionParam4, &sjv_j);
+    sjf_string_isEqual(sjt_parent4, sjt_functionParam4, &sjv_j);
+#line 46 ".\..\lib\common\string.sj"
+    sjt_parent6 = &sjv_f;
 #line 12 ".\basic\string1.sj"
-    sjt_dot8 = &sjv_f;
-#line 12
     sjt_functionParam6 = &sjv_a;
 #line 0 ""
-    sjf_string_isLessOrEqual(sjt_dot8, sjt_functionParam6, &sjv_k);
+    sjf_string_isLessOrEqual(sjt_parent6, sjt_functionParam6, &sjv_k);
 #line 13 ".\basic\string1.sj"
     sjt_compare3 = &sjv_f;
 #line 13

@@ -101,9 +101,9 @@ struct td_sjs_class_i32_heap {
 
 sjs_class_i32_heap* sjt_cast1;
 sji_foo* sjt_cast2;
-sji_foo* sjt_dot1;
 bool sjt_ifElse1;
 sji_bar* sjt_isEmpty1;
+sji_foo* sjt_parent1;
 sji_foo* sjv_a;
 sji_bar* sjv_b;
 int32_t void1;
@@ -268,10 +268,10 @@ int main(int argc, char** argv) {
     sjf_class_i32_heap(sjt_cast1);
 #line 1 ".\basic\interface5.sj"
     sjv_a = (sji_foo*)sjf_class_i32_heap_as_sji_foo(sjt_cast1);
+#line 2
+    sjt_parent1 = sjv_a;
 #line 21
-    sjt_dot1 = sjv_a;
-#line 21
-    sjt_dot1->test1((void*)(((char*)sjt_dot1->_parent) + sizeof(intptr_t)), &void1);
+    sjt_parent1->test1((void*)(((char*)sjt_parent1->_parent) + sizeof(intptr_t)), &void1);
 #line 22
     sjt_cast2 = sjv_a;
 #line 0 ""
@@ -288,8 +288,8 @@ int main(int argc, char** argv) {
     sjt_ifElse1 = (sjt_isEmpty1 == 0);
     if (sjt_ifElse1) {
     } else {
-        sji_bar* sjt_dot2;
         sji_bar* sjt_getValue1;
+        sji_bar* sjt_parent2;
         int32_t sjt_value1;
         int32_option value1;
 
@@ -300,9 +300,9 @@ int main(int argc, char** argv) {
         }
 
 #line 23
-        sjt_dot2 = sjt_getValue1;
+        sjt_parent2 = sjt_getValue1;
 #line 23
-        sjt_dot2->test2((void*)(((char*)sjt_dot2->_parent) + sizeof(intptr_t)), &sjt_value1);
+        sjt_parent2->test2((void*)(((char*)sjt_parent2->_parent) + sizeof(intptr_t)), &sjt_value1);
 #line 23
         value1.isEmpty = false;
 #line 23

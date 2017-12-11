@@ -100,6 +100,10 @@ public:
     bool init(Compiler* compiler, shared_ptr<NFunction> node);
     bool initBlocks(Compiler* compiler, shared_ptr<NFunction> node);
 
+    void setHasHeapThis();
+    bool getHasHeapThis();
+    void setHasHeapParent();
+    bool getHasHeapParent();
     shared_ptr<CScope> getScope(Compiler* compiler, CTypeMode returnMode);
     int getArgIndex(const string& name, CTypeMode returnMode);
     int getArgCount(CTypeMode returnMode);
@@ -119,7 +123,7 @@ public:
     shared_ptr<CType> getVarType(Compiler* compiler, string name);
     shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
     void transpileDefinition(Compiler* compiler, TrOutput* trOutput);
-    void transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> parentValue, CLoc& calleeLoc, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode returnMode);
+    void transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<CVar> parentVar, CLoc& calleeLoc, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode returnMode);
     void dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level, CTypeMode returnMode);
     string getCBaseName(CTypeMode typeMode);
     string getCStructName(CTypeMode typeMode);
@@ -146,7 +150,9 @@ private:
     bool _isReturnThis;
     shared_ptr<CTypes> _thisTypes;
     map<CTypeMode, CFunctionData> _data;
-    
+    bool _hasHeapThis;
+    bool _hasHeapParent;
+
     friend class CScope;
 };
 

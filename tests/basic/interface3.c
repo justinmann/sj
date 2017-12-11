@@ -1288,7 +1288,7 @@ void _retain(void* ptr);
 bool _release(void* ptr);
 
 sjs_class_heap* sjt_cast1;
-sji_foo* sjt_dot1;
+sji_foo* sjt_parent1;
 sji_foo* sjv_a;
 sjs_string_heap* sjv_bob;
 sjs_anon1 sjv_console;
@@ -1645,13 +1645,13 @@ int main(int argc, char** argv) {
     sjf_class_heap(sjt_cast1);
 #line 3 ".\basic\interface3.sj"
     sjv_a = (sji_foo*)sjf_class_heap_as_sji_foo(sjt_cast1);
-#line 14
-    sjt_dot1 = sjv_a;
+#line 4
+    sjt_parent1 = sjv_a;
 #line 0 ""
     sjv_bob = (sjs_string_heap*)malloc(sizeof(sjs_string_heap));
     sjv_bob->_refCount = 1;
 #line 14 ".\basic\interface3.sj"
-    sjt_dot1->test_heap((void*)(((char*)sjt_dot1->_parent) + sizeof(intptr_t)), &sjv_bob);
+    sjt_parent1->test_heap((void*)(((char*)sjt_parent1->_parent) + sizeof(intptr_t)), &sjv_bob);
     main_destroy();
     return 0;
 }

@@ -66,7 +66,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TSTRING TCHAR TCBLOCK TCFUNCTION TCDEFINE TCSTRUCT TCINCLUDE TCVAR TCTYPEDEF
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TQUESTION TEMPTY TVALUE TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TLOCAL TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR TINVALID TCOLONEQUAL
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TQUESTION TEMPTY TVALUE TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TLOCAL TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR TINVALID TCOLONEQUAL THEAPPARENT THEAPTHIS
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch copy destroy expr end_optional end_star
@@ -289,8 +289,10 @@ var_right			: func_type_name func_block						{ $$ = new NCall(LOC, $1->valueName
 					| TGETVALUE TLPAREN expr TRPAREN				{ $$ = new NGetValue(LOC, shared_ptr<NBase>($3), false); }
 					| TVALUE TLPAREN expr TRPAREN					{ $$ = new NValue(LOC, shared_ptr<NBase>($3)); }
 	 				| func_type_name								{ $$ = new NVariable(LOC, $1->valueName.c_str(), $1->templateTypeNames); delete $1; }
-	 				| TPARENT										{ $$ = new NParent(LOC); }
-	 				| TTHIS											{ $$ = new NThis(LOC); }
+	 				| TPARENT										{ $$ = new NParent(LOC, false); }
+	 				| TTHIS											{ $$ = new NThis(LOC, false); }
+	 				| THEAPPARENT									{ $$ = new NParent(LOC, true); }
+	 				| THEAPTHIS										{ $$ = new NThis(LOC, true); }
 	 				;
 
 const 				: TMINUS TINTEGER 								{ $2->insert(0, "-"); $$ = new NInteger(LOC, $2->c_str()); delete $2; }

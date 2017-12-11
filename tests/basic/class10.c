@@ -80,7 +80,7 @@ struct td_sjs_class_heap {
     int32_t x;
 };
 
-sjs_class* sjt_dot1;
+sjs_class* sjt_parent1;
 sjs_class sjv_c;
 int32_t void1;
 
@@ -103,12 +103,12 @@ void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_func(sjs_class* _parent, int32_t* _return) {
-    sjs_class* sjt_dot2;
+    sjs_class* sjt_dot1;
 
 #line 1 ".\basic\class10.sj"
-    sjt_dot2 = _parent;
+    sjt_dot1 = _parent;
 #line 1
-    (*_return) = (sjt_dot2)->x;
+    (*_return) = (sjt_dot1)->x;
 }
 
 void sjf_class_heap(sjs_class_heap* _this) {
@@ -119,10 +119,10 @@ int main(int argc, char** argv) {
     sjv_c.x = 1;
 #line 0 ""
     sjf_class(&sjv_c);
-#line 3 ".\basic\class10.sj"
-    sjt_dot1 = &sjv_c;
+#line 1 ".\basic\class10.sj"
+    sjt_parent1 = &sjv_c;
 #line 0 ""
-    sjf_class_func(sjt_dot1, &void1);
+    sjf_class_func(sjt_parent1, &void1);
     main_destroy();
     return 0;
 }

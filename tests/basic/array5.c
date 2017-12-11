@@ -1264,11 +1264,7 @@ sjs_class sjt_call2;
 sjs_class sjt_call3;
 sjs_class sjt_call4;
 int32_t sjt_cast1;
-sjs_array_class* sjt_dot1;
-sjs_array_class* sjt_dot2;
-sjs_array_class* sjt_dot3;
-sjs_array_class* sjt_dot4;
-sjs_class* sjt_dot5;
+sjs_class* sjt_dot1;
 int32_t sjt_functionParam1;
 sjs_class* sjt_functionParam2;
 int32_t sjt_functionParam3;
@@ -1276,6 +1272,10 @@ sjs_class* sjt_functionParam4;
 int32_t sjt_functionParam5;
 sjs_class* sjt_functionParam6;
 int32_t sjt_functionParam7;
+sjs_array_class* sjt_parent1;
+sjs_array_class* sjt_parent2;
+sjs_array_class* sjt_parent3;
+sjs_array_class* sjt_parent4;
 sjs_array_class sjv_a;
 sjs_class* sjv_c;
 sjs_anon1 sjv_console;
@@ -1556,7 +1556,7 @@ int main(int argc, char** argv) {
 #line 4
     array1 = &sjv_a;
 #line 4
-    sjt_dot1 = array1;
+    sjt_parent1 = array1;
 #line 4
     sjt_functionParam1 = 0;
 #line 4
@@ -1566,9 +1566,9 @@ int main(int argc, char** argv) {
 #line 4 ".\basic\array5.sj"
     sjt_functionParam2 = &sjt_call1;
 #line 0 ""
-    sjf_array_class_initAt(sjt_dot1, sjt_functionParam1, sjt_functionParam2);
+    sjf_array_class_initAt(sjt_parent1, sjt_functionParam1, sjt_functionParam2);
 #line 4 ".\basic\array5.sj"
-    sjt_dot2 = array1;
+    sjt_parent2 = array1;
 #line 4
     sjt_functionParam3 = 1;
 #line 4
@@ -1578,9 +1578,9 @@ int main(int argc, char** argv) {
 #line 4 ".\basic\array5.sj"
     sjt_functionParam4 = &sjt_call2;
 #line 0 ""
-    sjf_array_class_initAt(sjt_dot2, sjt_functionParam3, sjt_functionParam4);
+    sjf_array_class_initAt(sjt_parent2, sjt_functionParam3, sjt_functionParam4);
 #line 4 ".\basic\array5.sj"
-    sjt_dot3 = array1;
+    sjt_parent3 = array1;
 #line 4
     sjt_functionParam5 = 2;
 #line 4
@@ -1590,17 +1590,17 @@ int main(int argc, char** argv) {
 #line 4 ".\basic\array5.sj"
     sjt_functionParam6 = &sjt_call3;
 #line 0 ""
-    sjf_array_class_initAt(sjt_dot3, sjt_functionParam5, sjt_functionParam6);
+    sjf_array_class_initAt(sjt_parent3, sjt_functionParam5, sjt_functionParam6);
+#line 6 ".\..\lib\common\array.sj"
+    sjt_parent4 = &sjv_a;
 #line 5 ".\basic\array5.sj"
-    sjt_dot4 = &sjv_a;
-#line 5
     sjt_functionParam7 = 0;
 #line 0 ""
-    sjf_array_class_getAt(sjt_dot4, sjt_functionParam7, &sjt_call4);
+    sjf_array_class_getAt(sjt_parent4, sjt_functionParam7, &sjt_call4);
 #line 5 ".\basic\array5.sj"
     sjv_c = &sjt_call4;
 #line 3
-    sjt_dot5 = sjv_c;
+    sjt_dot1 = sjv_c;
     main_destroy();
     return 0;
 }

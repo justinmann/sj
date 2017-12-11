@@ -1289,16 +1289,16 @@ void _retain(void* ptr);
 bool _release(void* ptr);
 
 int32_t sjt_cast1;
-sjs_class_i32* sjt_dot1;
-sjs_array_i32* sjt_dot6;
-sjs_array_i32* sjt_dot7;
-sjs_array_i32* sjt_dot8;
 cb_i32_void sjt_functionParam10;
 cb_i32_void_heap sjt_functionParam3;
 int32_t sjt_functionParam4;
 int32_t sjt_functionParam5;
 int32_t sjt_functionParam6;
 int32_t sjt_functionParam7;
+sjs_class_i32* sjt_parent1;
+sjs_array_i32* sjt_parent2;
+sjs_array_i32* sjt_parent3;
+sjs_array_i32* sjt_parent4;
 sjs_array_i32 sjv_a;
 sjs_class_i32 sjv_c;
 sjs_anon1 sjv_console;
@@ -1487,7 +1487,7 @@ void sjf_array_i32_destroy(sjs_array_i32* _this) {
 
 void sjf_array_i32_each(sjs_array_i32* _parent, cb_i32_void cb) {
     int32_t i;
-    sjs_array_i32* sjt_dot9;
+    sjs_array_i32* sjt_dot5;
     int32_t sjt_forEnd1;
     int32_t sjt_forStart1;
 
@@ -1496,9 +1496,9 @@ void sjf_array_i32_each(sjs_array_i32* _parent, cb_i32_void cb) {
 #line 53
     i = sjt_forStart1;
 #line 52
-    sjt_dot9 = _parent;
+    sjt_dot5 = _parent;
 #line 53
-    sjt_forEnd1 = (sjt_dot9)->size;
+    sjt_forEnd1 = (sjt_dot5)->size;
     while (i < sjt_forEnd1) {
         cb_i32_void sjt_callback3;
         int32_t sjt_functionParam8;
@@ -1591,25 +1591,25 @@ void sjf_class_i32_destroy(sjs_class_i32* _this) {
 void sjf_class_i32_each(sjs_class_i32* _parent, cb_i32_void_heap cb) {
     cb_i32_void sjt_callback1;
     cb_i32_void sjt_callback2;
+    sjs_class_i32* sjt_dot1;
     sjs_class_i32* sjt_dot2;
-    sjs_class_i32* sjt_dot3;
     int32_t sjt_functionParam1;
     int32_t sjt_functionParam2;
 
 #line 6 ".\basic\callback2.sj"
     sjt_callback1 = cb.inner;
 #line 6
-    sjt_dot2 = _parent;
+    sjt_dot1 = _parent;
 #line 7
-    sjt_functionParam1 = (sjt_dot2)->item1;
+    sjt_functionParam1 = (sjt_dot1)->item1;
 #line 0 ""
     sjt_callback1._cb(sjt_callback1._parent, sjt_functionParam1);
 #line 6 ".\basic\callback2.sj"
     sjt_callback2 = cb.inner;
 #line 6
-    sjt_dot3 = _parent;
+    sjt_dot2 = _parent;
 #line 8
-    sjt_functionParam2 = (sjt_dot3)->item2;
+    sjt_functionParam2 = (sjt_dot2)->item2;
 #line 0 ""
     sjt_callback2._cb(sjt_callback2._parent, sjt_functionParam2);
 }
@@ -1632,21 +1632,21 @@ void sjf_sum_heap(sjs_sum_heap* _this) {
 }
 
 void sjf_sum_invoke(sjs_sum* _parent, int32_t a) {
+    sjs_sum* sjt_dot3;
     sjs_sum* sjt_dot4;
-    sjs_sum* sjt_dot5;
     int32_t sjt_math1;
     int32_t sjt_math2;
 
 #line 15 ".\basic\callback2.sj"
-    sjt_dot4 = _parent;
+    sjt_dot3 = _parent;
 #line 15
-    sjt_dot5 = _parent;
+    sjt_dot4 = _parent;
 #line 16
-    sjt_math1 = (sjt_dot5)->total;
+    sjt_math1 = (sjt_dot4)->total;
 #line 15
     sjt_math2 = a;
 #line 16
-    sjt_dot4->total = sjt_math1 + sjt_math2;
+    sjt_dot3->total = sjt_math1 + sjt_math2;
 }
 
 int main(int argc, char** argv) {
@@ -1675,8 +1675,8 @@ int main(int argc, char** argv) {
     sjv_c.item2 = 4;
 #line 0 ""
     sjf_class_i32(&sjv_c);
-#line 24 ".\basic\callback2.sj"
-    sjt_dot1 = &sjv_c;
+#line 6 ".\basic\callback2.sj"
+    sjt_parent1 = &sjv_c;
 #line 24
     sjs_sum_heap* callback1;
 #line 24
@@ -1690,7 +1690,7 @@ int main(int argc, char** argv) {
 #line 24
     sjt_functionParam3.inner._cb = (void(*)(void*,int32_t))sjf_sum_invoke;
 #line 0 ""
-    sjf_class_i32_each(sjt_dot1, sjt_functionParam3);
+    sjf_class_i32_each(sjt_parent1, sjt_functionParam3);
 #line 26 ".\basic\callback2.sj"
     sjv_a.size = 2;
 #line 3 ".\..\lib\common\array.sj"
@@ -1706,29 +1706,29 @@ int main(int argc, char** argv) {
 #line 26
     array1 = &sjv_a;
 #line 26
-    sjt_dot6 = array1;
+    sjt_parent2 = array1;
 #line 26
     sjt_functionParam4 = 0;
 #line 26
     sjt_functionParam5 = 1;
 #line 0 ""
-    sjf_array_i32_initAt(sjt_dot6, sjt_functionParam4, sjt_functionParam5);
+    sjf_array_i32_initAt(sjt_parent2, sjt_functionParam4, sjt_functionParam5);
 #line 26 ".\basic\callback2.sj"
-    sjt_dot7 = array1;
+    sjt_parent3 = array1;
 #line 26
     sjt_functionParam6 = 1;
 #line 26
     sjt_functionParam7 = 2;
 #line 0 ""
-    sjf_array_i32_initAt(sjt_dot7, sjt_functionParam6, sjt_functionParam7);
+    sjf_array_i32_initAt(sjt_parent3, sjt_functionParam6, sjt_functionParam7);
+#line 52 ".\..\lib\common\array.sj"
+    sjt_parent4 = &sjv_a;
 #line 27 ".\basic\callback2.sj"
-    sjt_dot8 = &sjv_a;
-#line 27
     sjt_functionParam10._parent = (sjs_sum*)(((char*)sjv_s) + sizeof(intptr_t));
 #line 27
     sjt_functionParam10._cb = (void(*)(void*,int32_t))sjf_sum_invoke;
 #line 0 ""
-    sjf_array_i32_each(sjt_dot8, sjt_functionParam10);
+    sjf_array_i32_each(sjt_parent4, sjt_functionParam10);
     main_destroy();
     return 0;
 }

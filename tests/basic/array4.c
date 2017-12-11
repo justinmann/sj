@@ -1261,12 +1261,12 @@ bool _release(void* ptr);
 
 sjs_class sjt_call1;
 int32_t sjt_cast1;
-sjs_array_class* sjt_dot1;
-sjs_array_class* sjt_dot2;
-sjs_class* sjt_dot3;
+sjs_class* sjt_dot1;
 int32_t sjt_functionParam1;
 sjs_class* sjt_functionParam2;
 int32_t sjt_functionParam3;
+sjs_array_class* sjt_parent1;
+sjs_array_class* sjt_parent2;
 sjs_array_class sjv_a;
 sjs_class sjv_b;
 int32_t sjv_c;
@@ -1545,9 +1545,9 @@ int main(int argc, char** argv) {
     sjv_a._isGlobal = false;
 #line 0 ""
     sjf_array_class(&sjv_a);
+#line 27 ".\..\lib\common\array.sj"
+    sjt_parent1 = &sjv_a;
 #line 5 ".\basic\array4.sj"
-    sjt_dot1 = &sjv_a;
-#line 5
     sjt_functionParam1 = 0;
 #line 5
     sjt_call1.x = 1;
@@ -1556,17 +1556,17 @@ int main(int argc, char** argv) {
 #line 5 ".\basic\array4.sj"
     sjt_functionParam2 = &sjt_call1;
 #line 0 ""
-    sjf_array_class_setAt(sjt_dot1, sjt_functionParam1, sjt_functionParam2);
+    sjf_array_class_setAt(sjt_parent1, sjt_functionParam1, sjt_functionParam2);
+#line 6 ".\..\lib\common\array.sj"
+    sjt_parent2 = &sjv_a;
 #line 6 ".\basic\array4.sj"
-    sjt_dot2 = &sjv_a;
-#line 6
     sjt_functionParam3 = 0;
 #line 0 ""
-    sjf_array_class_getAt(sjt_dot2, sjt_functionParam3, &sjv_b);
+    sjf_array_class_getAt(sjt_parent2, sjt_functionParam3, &sjv_b);
 #line 3 ".\basic\array4.sj"
-    sjt_dot3 = &sjv_b;
+    sjt_dot1 = &sjv_b;
 #line 7
-    sjv_c = (sjt_dot3)->x;
+    sjv_c = (sjt_dot1)->x;
     main_destroy();
     return 0;
 }
