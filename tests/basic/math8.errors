@@ -1,1 +1,1 @@
-ERROR:2 basic/math8.sj[1:1] left type 'i32' does not match right type 'f64'
+ERROR:2 math8.sj[1:1] left type 'i32' does not match right type 'f64'

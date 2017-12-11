@@ -1390,7 +1390,7 @@ void sjf_anon4_heap(sjs_anon4_heap* _this) {
 }
 
 void sjf_array_class(sjs_array_class* _this) {
-#line 110 ".\..\lib\common\array.sj"
+#line 110 "lib/common/array.sj"
     if (_this->size < 0) {
 #line 110
         halt("size is less than zero");
@@ -1415,7 +1415,7 @@ void sjf_array_class(sjs_array_class* _this) {
 }
 
 void sjf_array_class_copy(sjs_array_class* _this, sjs_array_class* _from) {
-#line 1 ".\..\lib\common\array.sj"
+#line 1 "lib/common/array.sj"
     _this->size = _from->size;
 #line 1
     _this->data = _from->data;
@@ -1432,7 +1432,7 @@ void sjf_array_class_copy(sjs_array_class* _this, sjs_array_class* _from) {
 }
 
 void sjf_array_class_destroy(sjs_array_class* _this) {
-#line 135 ".\..\lib\common\array.sj"
+#line 135 "lib/common/array.sj"
     if (!_this->_isGlobal && _this->data) {
 #line 135
         if (_release((void*)_this->data)) {
@@ -1445,7 +1445,7 @@ void sjf_array_class_destroy(sjs_array_class* _this) {
 }
 
 void sjf_array_class_heap(sjs_array_class_heap* _this) {
-#line 110 ".\..\lib\common\array.sj"
+#line 110 "lib/common/array.sj"
     if (_this->size < 0) {
 #line 110
         halt("size is less than zero");
@@ -1470,7 +1470,7 @@ void sjf_array_class_heap(sjs_array_class_heap* _this) {
 }
 
 void sjf_array_class_setAt(sjs_array_class* _parent, int32_t index, sjs_class* item) {
-#line 28 ".\..\lib\common\array.sj"
+#line 28 "lib/common/array.sj"
     if (index >= _parent->size || index < 0) {
 #line 28
         halt("setAt: out of bounds %d:%d\n", index, _parent->size);
@@ -1481,7 +1481,7 @@ void sjf_array_class_setAt(sjs_array_class* _parent, int32_t index, sjs_class* i
 #line 28
     ;
 #line 28
-    #line 27 ".\..\lib\common\array.sj"
+    #line 27 "lib/common/array.sj"
 #line 28
     sjf_class_copy(&p[index], item);
 #line 28
@@ -1492,7 +1492,7 @@ void sjf_class(sjs_class* _this) {
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
-#line 3 ".\basic\include1.sj"
+#line 3 "include1.sj"
     _this->bob = _from->bob;
 }
 
@@ -1505,7 +1505,7 @@ void sjf_class_heap(sjs_class_heap* _this) {
 int main(int argc, char** argv) {
     sjf_anon1(&sjv_console);
     sjf_anon2(&sjv_convert);
-#line 33 ".\..\lib\common\math.sj"
+#line 33 "lib/common/math.sj"
     sjv_f32_pi = 3.14159265358979323846f;
 #line 34
     sjv_u32_maxValue = (uint32_t)4294967295u;
@@ -1521,30 +1521,31 @@ int main(int argc, char** argv) {
     sjv_i32_maxValue = sjt_math1 - sjt_math2;
 #line 37
     sjv_i32_minValue = 2147483647;
-#line 0 ""
+#line 37
     sjf_anon3(&sjv_parse);
+#line 37
     sjf_anon4(&sjv_random);
-#line 9 ".\basic\include1.sj"
+#line 9 "include1.sj"
     sjv_a.size = 2;
-#line 3 ".\..\lib\common\array.sj"
+#line 3 "lib/common/array.sj"
     sjt_cast1 = 0;
 #line 3
     sjv_a.data = (uintptr_t)sjt_cast1;
 #line 4
     sjv_a._isGlobal = false;
-#line 0 ""
+#line 4
     sjf_array_class(&sjv_a);
-#line 27 ".\..\lib\common\array.sj"
+#line 27
     sjt_parent1 = &sjv_a;
-#line 10 ".\basic\include1.sj"
+#line 10 "include1.sj"
     sjt_functionParam1 = 0;
 #line 10
     sjt_call1.bob = 1;
-#line 0 ""
+#line 10
     sjf_class(&sjt_call1);
-#line 10 ".\basic\include1.sj"
+#line 10
     sjt_functionParam2 = &sjt_call1;
-#line 0 ""
+#line 10
     sjf_array_class_setAt(sjt_parent1, sjt_functionParam1, sjt_functionParam2);
     main_destroy();
     return 0;

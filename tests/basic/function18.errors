@@ -1,1 +1,1 @@
-ERROR:23 basic/function18.sj[1:22] parameter 0 is required for function 'func'
+ERROR:23 function18.sj[1:22] parameter 0 is required for function 'func'

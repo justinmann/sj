@@ -2,7 +2,7 @@
 
 callback(f'local (i32)data:)'i32 {
   d'stack data : f(
-    param'i32 : param
+    param0'i32 : param0
   )
   d.x
 }
@@ -36,14 +36,14 @@ getCallback()'heap (i32)data {
 global()'void {
   a'local (i32)data : 
   b'heap data : heap a(
-    param'i32 : param
+    param0'i32 : param0
   )
   l'heap (i32)data : getCallback()
   m'stack data : l(
-    param'i32 : param
+    param0'i32 : param0
   )
   n'heap data : heap l(
-    param'i32 : param
+    param0'i32 : param0
   )
   c'stack class : class(this = class(
     b'i32 : b
@@ -56,28 +56,28 @@ global()'void {
   )
   f1'local (i32)data : 
   d'stack data : f1(
-    param'i32 : param
+    param0'i32 : param0
   )
   f2'local (i32)data : 
   e'stack data : f2(
-    param'i32 : param
+    param0'i32 : param0
   )
   c_heap'heap class : heap class(this = class(
     b'i32 : b
   ))
   f3'heap (i32)data : 
   g'stack data : f3(
-    param'i32 : param
+    param0'i32 : param0
   )
   h'local (i32)data? : empty'local (i32)data?
   i'local (i32)data? : value()
   j'local (i32)data : getValue(i)
   k'stack data : j(
-    param'i32 : param
+    param0'i32 : param0
   )
   o'local (i32)data : 
   p'stack data : l(
-    param'i32 : param
+    param0'i32 : param0
   )
   void
 }

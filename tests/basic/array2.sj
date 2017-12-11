@@ -1,4 +1,4 @@
-include "../../lib/common/common.sj"
+include "lib/common/common.sj"
 
 a : [1, 2, 3]
 a[0]			// find method 'get'

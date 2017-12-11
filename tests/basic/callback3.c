@@ -111,7 +111,7 @@ void sjf_class(sjs_class* _this) {
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
-#line 7 ".\basic\callback3.sj"
+#line 7 "callback3.sj"
     _this->total = _from->total;
 }
 
@@ -124,7 +124,7 @@ void sjf_class_func(sjs_class* _parent, int32_t x) {
     int32_t sjt_math1;
     int32_t sjt_math2;
 
-#line 10 ".\basic\callback3.sj"
+#line 10 "callback3.sj"
     sjt_dot1 = _parent;
 #line 10
     sjt_dot2 = _parent;
@@ -143,21 +143,21 @@ void sjf_class_run(sjs_class* _parent, int32_t* _return) {
     sjs_class* sjt_dot3;
     cb_i32_void_heap sjt_functionParam3;
 
-#line 16 ".\basic\callback3.sj"
+#line 16 "callback3.sj"
     sjs_class_heap* callback1;
 #line 16
     callback1 = (sjs_class_heap*)((char*)_parent - sizeof(intptr_t));
-#line 0 ""
+#line 16
     callback1->_refCount++;
-#line 16 ".\basic\callback3.sj"
+#line 16
     sjt_functionParam3.inner._parent = (void*)(sjs_class*)(((char*)callback1) + sizeof(intptr_t));
 #line 16
     sjt_functionParam3._destroy = (void(*)(void*))sjf_class_destroy;
 #line 16
     sjt_functionParam3.inner._cb = (void(*)(void*,int32_t))sjf_class_func;
-#line 0 ""
+#line 16
     sjf_doMath(sjt_functionParam3);
-#line 15 ".\basic\callback3.sj"
+#line 15
     sjt_dot3 = _parent;
 #line 15
     (*_return) = (sjt_dot3)->total;
@@ -176,31 +176,32 @@ void sjf_doMath(cb_i32_void_heap cb) {
     int32_t sjt_functionParam1;
     int32_t sjt_functionParam2;
 
-#line 1 ".\basic\callback3.sj"
+#line 1 "callback3.sj"
     sjt_callback1 = cb.inner;
 #line 2
     sjt_functionParam1 = 1;
-#line 0 ""
+#line 2
     sjt_callback1._cb(sjt_callback1._parent, sjt_functionParam1);
-#line 1 ".\basic\callback3.sj"
+#line 1
     sjt_callback2 = cb.inner;
 #line 3
     sjt_functionParam2 = 2;
-#line 0 ""
+#line 3
     sjt_callback2._cb(sjt_callback2._parent, sjt_functionParam2);
 }
 
 int main(int argc, char** argv) {
     sjv_c = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
     sjv_c->_refCount = 1;
-#line 8 ".\basic\callback3.sj"
+#line 8 "callback3.sj"
     sjv_c->total = 0;
-#line 0 ""
+#line 8
     sjf_class_heap(sjv_c);
-#line 15 ".\basic\callback3.sj"
+#line 15
     sjt_parent1 = sjv_c;
-#line 0 ""
+#line 15
     sjt_parent1->_refCount++;
+#line 15
     sjf_class_run((sjs_class*)(((char*)sjt_parent1) + sizeof(intptr_t)), &void1);
     main_destroy();
     return 0;

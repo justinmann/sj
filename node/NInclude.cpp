@@ -8,7 +8,7 @@ void NInclude::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition
         compiler->addError(loc, CErrorCode::IncludeOnlyInGlobal, "can only use include in the global scope");
     }
     
-    auto path = (fs::path(*loc.fileName).remove_filename() / fs::path(fileName)).lexically_normal();
+    auto path = (fs::path(loc.fullFileName).remove_filename() / fs::path(fileName)).lexically_normal();
     compiler->includeFile(path.string());
 }
 

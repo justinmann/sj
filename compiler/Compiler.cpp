@@ -9,7 +9,6 @@
 #include "../node/Node.h"
 #include <fstream>
 #include <streambuf>
-#include <boost/filesystem.hpp>
 
 namespace fs = boost::filesystem;
 
@@ -96,7 +95,9 @@ shared_ptr<CParseFile> Compiler::genNode(const string& fileName, const string& c
 #endif
 
     auto parseFile = make_shared<CParseFile>();
-    parseFile->fileName = make_shared<string>(fileName);
+    auto shortName = fs::path(fileName).lexically_relative(rootPath).generic_string();
+    parseFile->fullFileName = fileName;
+    parseFile->shortFileName = shortName;
     parseFile->compiler = this;
     void* scanner;
     
@@ -122,13 +123,15 @@ std::string ReplaceAll(std::string str, const std::string& from, const std::stri
 void CError::writeToStream(ostream& stream) {
     stream 
         << "ERROR:" << code << " " 
-        << (fileName != nullptr ? fs::relative(fs::path(*fileName), fs::current_path()).generic_string() : "unknown")
+        << fileName
         << "[" << line << ":" << col << "] " 
         << msg;
 }
 
 bool Compiler::transpile(const string& fileName, ostream& stream, ostream& errorStream, ostream* debugStream) {
-	TrOutput output;
+    rootPath = fs::path(fileName).remove_filename();
+    
+    TrOutput output;
 	shared_ptr<CFunctionDefinition> globalFunctionDefinition;
 	shared_ptr<NFunction> anonFunction;
 	shared_ptr<CFunctionDefinition> currentFunctionDefintion;

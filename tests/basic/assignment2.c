@@ -73,7 +73,7 @@ int64_t sjv_x;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
-#line 1 ".\basic\assignment2.sj"
+#line 1 "assignment2.sj"
     sjt_cast1 = 1;
 #line 1
     sjv_x = (int64_t)sjt_cast1;

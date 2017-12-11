@@ -80,7 +80,9 @@ void runTest(fs::path path, bool updateResult) {
 void runAllTests(fs::path path, bool updateResult, const char* wildcard) {
     for (auto child : fs::directory_iterator(path)) {
         if (fs::is_directory(child.path())) {
-            runAllTests(child.path(), updateResult, wildcard);
+            if (child.path().filename() != "lib") {
+                runAllTests(child.path(), updateResult, wildcard);
+            }
         }
         else if (fs::is_regular_file(child.path()) && (wildcard == nullptr || child.path().generic_string().find(wildcard) != string::npos)) {
             runTest(child.path(), updateResult);

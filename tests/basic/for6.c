@@ -75,7 +75,7 @@ int32_t x;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
-#line 1 ".\basic\for6.sj"
+#line 1 "for6.sj"
     sjv_y = 0;
 #line 2
     sjt_forStart1 = 2;
@@ -87,7 +87,7 @@ int main(int argc, char** argv) {
         int32_t sjt_math1;
         int32_t sjt_math2;
 
-#line 2 ".\basic\for6.sj"
+#line 2 "for6.sj"
         sjt_math1 = sjv_y;
 #line 2
         sjt_math2 = x;

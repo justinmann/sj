@@ -1340,7 +1340,7 @@ void sjf_a(sjs_a* _this) {
 }
 
 void sjf_a_copy(sjs_a* _this, sjs_a* _from) {
-#line 3 ".\basic\heap5.sj"
+#line 3 "heap5.sj"
     sjf_array_char_copy(&_this->data, &_from->data);
 }
 
@@ -1399,7 +1399,7 @@ void sjf_anon4_heap(sjs_anon4_heap* _this) {
 }
 
 void sjf_array_char(sjs_array_char* _this) {
-#line 110 ".\..\lib\common\array.sj"
+#line 110 "lib/common/array.sj"
     if (_this->size < 0) {
 #line 110
         halt("size is less than zero");
@@ -1424,7 +1424,7 @@ void sjf_array_char(sjs_array_char* _this) {
 }
 
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
-#line 1 ".\..\lib\common\array.sj"
+#line 1 "lib/common/array.sj"
     _this->size = _from->size;
 #line 1
     _this->data = _from->data;
@@ -1441,7 +1441,7 @@ void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
-#line 135 ".\..\lib\common\array.sj"
+#line 135 "lib/common/array.sj"
     if (!_this->_isGlobal && _this->data) {
 #line 135
         if (_release((void*)_this->data)) {
@@ -1454,7 +1454,7 @@ void sjf_array_char_destroy(sjs_array_char* _this) {
 }
 
 void sjf_array_char_heap(sjs_array_char_heap* _this) {
-#line 110 ".\..\lib\common\array.sj"
+#line 110 "lib/common/array.sj"
     if (_this->size < 0) {
 #line 110
         halt("size is less than zero");
@@ -1481,7 +1481,7 @@ void sjf_array_char_heap(sjs_array_char_heap* _this) {
 int main(int argc, char** argv) {
     sjf_anon1(&sjv_console);
     sjf_anon2(&sjv_convert);
-#line 33 ".\..\lib\common\math.sj"
+#line 33 "lib/common/math.sj"
     sjv_f32_pi = 3.14159265358979323846f;
 #line 34
     sjv_u32_maxValue = (uint32_t)4294967295u;
@@ -1497,19 +1497,21 @@ int main(int argc, char** argv) {
     sjv_i32_maxValue = sjt_math1 - sjt_math2;
 #line 37
     sjv_i32_minValue = 2147483647;
-#line 0 ""
+#line 37
     sjf_anon3(&sjv_parse);
+#line 37
     sjf_anon4(&sjv_random);
-#line 4 ".\basic\heap5.sj"
+#line 4 "heap5.sj"
     void1.data.size = 0;
 #line 4
     sjt_cast1 = 0;
 #line 4
     void1.data.data = (uintptr_t)sjt_cast1;
-#line 4 ".\..\lib\common\array.sj"
+#line 4 "lib/common/array.sj"
     void1.data._isGlobal = false;
-#line 0 ""
+#line 4
     sjf_array_char(&void1.data);
+#line 4
     sjf_a(&void1);
     main_destroy();
     return 0;

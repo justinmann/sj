@@ -29,12 +29,13 @@ using namespace std;
 
 class CLoc {
 public:
-    shared_ptr<string> fileName;
+    string fullFileName;
+    string shortFileName;
     unsigned line;
     unsigned col;
     
-    CLoc() : fileName(make_shared<string>()), line(0), col(0) {}
-    CLoc(shared_ptr<string> fileName, const unsigned line, const unsigned col) : fileName(fileName), line(line), col(col) {}
+    CLoc() : fullFileName(""), shortFileName(""), line(0), col(0) {}
+    CLoc(string fullFileName, string shortFileName, const unsigned line, const unsigned col) : fullFileName(fullFileName), shortFileName(shortFileName), line(line), col(col) {}
     static CLoc undefined;
 };
 
@@ -109,7 +110,7 @@ enum CErrorCode {
 class CError {
 public:
     CErrorCode code;
-    shared_ptr<string> fileName;
+    string fileName;
     unsigned line;
     unsigned col;
     string msg;
@@ -125,7 +126,8 @@ enum CompilerState {
 class CParseFile {
 public:
     Compiler* compiler;
-    shared_ptr<string> fileName;
+    string fullFileName;
+    string shortFileName;
     shared_ptr<NBlock> block;
 };
 
@@ -145,11 +147,11 @@ public:
 #ifdef ERROR_OUTPUT
         printf("ERROR: %d:%d %s\n", loc.line, loc.col, str.c_str());
 #endif
-        errors[*loc.fileName][loc.line][str].code = code;
-        errors[*loc.fileName][loc.line][str].fileName = loc.fileName;
-        errors[*loc.fileName][loc.line][str].line = loc.line;
-        errors[*loc.fileName][loc.line][str].col = loc.col;
-        errors[*loc.fileName][loc.line][str].msg = str;
+        errors[loc.fullFileName][loc.line][str].code = code;
+        errors[loc.fullFileName][loc.line][str].fileName = loc.shortFileName;
+        errors[loc.fullFileName][loc.line][str].line = loc.line;
+        errors[loc.fullFileName][loc.line][str].col = loc.col;
+        errors[loc.fullFileName][loc.line][str].msg = str;
         
 #ifdef ASSERT_ON_ERROR
         assert(false);
@@ -160,17 +162,18 @@ public:
     void addWarning(CLoc loc, const CErrorCode code, const char* format, Args... args) {
         string str = strprintf(format, args...);
 
-        warnings[*loc.fileName][loc.line][str].code = code;
-        warnings[*loc.fileName][loc.line][str].fileName = loc.fileName;
-        warnings[*loc.fileName][loc.line][str].line = loc.line;
-        warnings[*loc.fileName][loc.line][str].col = loc.col;
-        warnings[*loc.fileName][loc.line][str].msg = str;
+        warnings[loc.fullFileName][loc.line][str].code = code;
+        warnings[loc.fullFileName][loc.line][str].fileName = loc.shortFileName;
+        warnings[loc.fullFileName][loc.line][str].line = loc.line;
+        warnings[loc.fullFileName][loc.line][str].col = loc.col;
+        warnings[loc.fullFileName][loc.line][str].msg = str;
 
 #ifdef ERROR_OUTPUT
         printf("WARN: %d:%d %s\n", loc.line, loc.col, str.c_str());
 #endif
     }
     
+    boost::filesystem::path rootPath;
     CompilerState state;
     map<string, map<unsigned, map<string, CError>>> errors;
     map<string, map<unsigned, map<string, CError>>> warnings;

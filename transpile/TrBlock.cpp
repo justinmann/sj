@@ -40,12 +40,12 @@ void TrBlock::writeVariablesToStream(ostream& stream, int level) {
 
 void getLineDirective(ostream& stream, CLoc& prevLoc, CLoc& loc) {
 #ifdef PRAGMA_LINE_OUTPUT
-    if (loc.fileName == nullptr) {
+    if (loc.shortFileName.size() == 0) {
         if (prevLoc.line != 0) {
             stream << "#line " << prevLoc.line << "\n";
         }
     }
-    else if (prevLoc.fileName == loc.fileName) {
+    else if (prevLoc.shortFileName == loc.shortFileName) {
         prevLoc = loc;
         if (loc.line != 0) {
             stream << "#line " << loc.line << "\n";
@@ -53,7 +53,7 @@ void getLineDirective(ostream& stream, CLoc& prevLoc, CLoc& loc) {
     }
     else {
         prevLoc = loc;
-        stream << "#line " << loc.line << " \"" << *loc.fileName << "\"\n";
+        stream << "#line " << loc.line << " \"" << loc.shortFileName << "\"\n";
     }
 #endif
 }

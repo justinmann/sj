@@ -1,5 +1,5 @@
-include "../../lib/common/common.sj"
-include "../../lib/ui/ui.sj"
+include "lib/common/common.sj"
+include "lib/ui/ui.sj"
 
 root : fillElement(
 	children : [

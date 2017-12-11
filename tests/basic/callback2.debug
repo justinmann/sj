@@ -17,7 +17,7 @@ anon4()'stack anon4 {
 array_each(cb'local (i32)void:)'void {
   for i : 0i to parent.size {
     cb(
-      param'i32 : param
+      param0'i32 : param0
     )
   }
 }
@@ -46,10 +46,10 @@ class!i32(item1'i32:, item2'i32:)'stack class_i32 {
 
 class_each(cb'heap (i32)void:)'void {
   cb(
-    param'i32 : param
+    param0'i32 : param0
   )
   cb(
-    param'i32 : param
+    param0'i32 : param0
   )
 }
 

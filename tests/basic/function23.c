@@ -97,7 +97,7 @@ void sjf_func(sjs_func* _this) {
 }
 
 void sjf_func_copy(sjs_func* _this, sjs_func* _from) {
-#line 1 ".\basic\function23.sj"
+#line 1 "function23.sj"
     _this->x = _from->x;
 #line 1
     _this->y = _from->y;
@@ -112,21 +112,21 @@ void sjf_func_heap(sjs_func_heap* _this) {
 }
 
 int main(int argc, char** argv) {
-#line 4 ".\basic\function23.sj"
+#line 4 "function23.sj"
     void1.x = 4;
 #line 5
     void1.y = 5;
 #line 6
     void1.z = 6;
-#line 0 ""
+#line 6
     sjf_func(&void1);
-#line 7 ".\basic\function23.sj"
+#line 7
     void2.x = 7;
 #line 7
     void2.y = 8;
 #line 7
     void2.z = 9;
-#line 0 ""
+#line 7
     sjf_func(&void2);
     main_destroy();
     return 0;

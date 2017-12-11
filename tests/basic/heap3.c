@@ -112,7 +112,7 @@ void sjf_bar(sjs_bar* _this) {
 }
 
 void sjf_bar_copy(sjs_bar* _this, sjs_bar* _from) {
-#line 1 ".\basic\heap3.sj"
+#line 1 "heap3.sj"
     sjf_foo_copy(&_this->f, &_from->f);
 }
 
@@ -126,7 +126,7 @@ void sjf_foo(sjs_foo* _this) {
 }
 
 void sjf_foo_copy(sjs_foo* _this, sjs_foo* _from) {
-#line 2 ".\basic\heap3.sj"
+#line 2 "heap3.sj"
     _this->x = _from->x;
 }
 
@@ -139,25 +139,26 @@ void sjf_foo_heap(sjs_foo_heap* _this) {
 void sjf_func(sjs_bar* b, sjs_foo** _return) {
     sjs_bar* sjt_dot2;
 
-#line 4 ".\basic\heap3.sj"
+#line 4 "heap3.sj"
     sjt_dot2 = b;
 #line 5
     sjt_dot2->f.x = 2;
-#line 0 ""
+#line 5
     sjf_foo(&sjt_dot2->f);
-#line 5 ".\basic\heap3.sj"
+#line 5
     (*_return) = &sjt_dot2->f;
 }
 
 int main(int argc, char** argv) {
-#line 1 ".\basic\heap3.sj"
+#line 1 "heap3.sj"
     sjv_b.f.x = 1;
-#line 0 ""
+#line 1
     sjf_foo(&sjv_b.f);
+#line 1
     sjf_bar(&sjv_b);
-#line 9 ".\basic\heap3.sj"
+#line 9
     sjt_functionParam1 = &sjv_b;
-#line 0 ""
+#line 9
     sjf_func(sjt_functionParam1, &sjt_dot1);
     main_destroy();
     return 0;

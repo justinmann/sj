@@ -105,7 +105,7 @@ void sjf_func(sjs_class** _return) {
 
     sjf_class(&sjv_a);
     sjf_class(&sjv_a);
-#line 5 ".\basic\heap1.sj"
+#line 5 "heap1.sj"
     (*_return) = &sjv_a;
 
     sjf_class_destroy(&sjv_a);

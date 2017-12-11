@@ -15,10 +15,10 @@ class_run()'i32 {
 
 doMath(cb'heap (i32)void:)'void {
   cb(
-    param'i32 : param
+    param0'i32 : param0
   )
   cb(
-    param'i32 : param
+    param0'i32 : param0
   )
   void
 }

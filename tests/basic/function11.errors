@@ -1,1 +1,1 @@
-ERROR:21 basic/function11.sj[1:29] defined parameter 'y' twice
+ERROR:21 function11.sj[1:29] defined parameter 'y' twice

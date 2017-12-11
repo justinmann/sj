@@ -1,4 +1,4 @@
-include "../../lib/common/common.sj"
+include "lib/common/common.sj"
 
 #foo(
     test()'string

@@ -98,7 +98,7 @@ void sjf_class(sjs_class* _this) {
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
-#line 7 ".\basic\helper.sj"
+#line 7 "helper.sj"
     _this->x = _from->x;
 }
 
@@ -109,29 +109,31 @@ void sjf_class_heap(sjs_class_heap* _this) {
 }
 
 void sjf_class_toString(sjs_class* x, int32_t* _return) {
-#line 10 ".\basic\helper.sj"
+#line 10 "helper.sj"
     (*_return) = 2;
 }
 
 void sjf_i32_toString(int32_t x, int32_t* _return) {
-#line 4 ".\basic\helper.sj"
+#line 4 "helper.sj"
     (*_return) = 1;
 }
 
 int main(int argc, char** argv) {
-#line 14 ".\basic\helper.sj"
+#line 14 "helper.sj"
     sjt_functionParam1 = 3;
-#line 0 ""
+#line 14
     sjf_i32_toString(sjt_functionParam1, &void1);
+#line 14
     sjv_c = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
+#line 14
     sjv_c->_refCount = 1;
-#line 15 ".\basic\helper.sj"
+#line 15
     sjv_c->x = 3;
-#line 0 ""
+#line 15
     sjf_class_heap(sjv_c);
-#line 16 ".\basic\helper.sj"
+#line 16
     sjt_functionParam2 = (sjs_class*)(((char*)sjv_c) + sizeof(intptr_t));
-#line 0 ""
+#line 16
     sjf_class_toString(sjt_functionParam2, &void2);
     main_destroy();
     return 0;

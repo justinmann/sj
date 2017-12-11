@@ -137,7 +137,7 @@ void sjf_b(sjs_b* _this) {
 }
 
 void sjf_b_copy(sjs_b* _this, sjs_b* _from) {
-#line 2 ".\basic\heap4.sj"
+#line 2 "heap4.sj"
     sjf_a_copy(&_this->a, &_from->a);
 }
 
@@ -151,7 +151,7 @@ void sjf_c(sjs_c* _this) {
 }
 
 void sjf_c_copy(sjs_c* _this, sjs_c* _from) {
-#line 3 ".\basic\heap4.sj"
+#line 3 "heap4.sj"
     sjf_b_copy(&_this->b, &_from->b);
 }
 

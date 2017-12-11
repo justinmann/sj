@@ -73,7 +73,7 @@ double sjt_math2;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
-#line 1 ".\basic\math5.sj"
+#line 1 "math5.sj"
     sjt_math1 = 4.0;
 #line 1
     sjt_math2 = 5.0;

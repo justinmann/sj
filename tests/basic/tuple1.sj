@@ -1,4 +1,4 @@
-include "../../lib/common/common.sj"
+include "lib/common/common.sj"
 
 func() { (1, "bob") }
 t : func()

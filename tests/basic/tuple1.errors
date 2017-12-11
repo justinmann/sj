@@ -1,4 +1,4 @@
-ERROR:2 basic/tuple1.sj[6:1] must use a copy operator like 'a = copy b' when assigning a stack variable to a stack variable
-ERROR:2 basic/tuple1.sj[7:1] must use a copy operator like 'a = copy b' when assigning a stack variable to a stack variable
-ERROR:2 basic/tuple1.sj[8:1] must use a copy operator like 'a = copy b' when assigning a stack variable to a stack variable
-ERROR:2 basic/tuple1.sj[9:1] must use a copy operator like 'a = copy b' when assigning a stack variable to a stack variable
+ERROR:2 tuple1.sj[6:1] must use a copy operator like 'a = copy b' when assigning a stack variable to a stack variable
+ERROR:2 tuple1.sj[7:1] must use a copy operator like 'a = copy b' when assigning a stack variable to a stack variable
+ERROR:2 tuple1.sj[8:1] must use a copy operator like 'a = copy b' when assigning a stack variable to a stack variable
+ERROR:2 tuple1.sj[9:1] must use a copy operator like 'a = copy b' when assigning a stack variable to a stack variable

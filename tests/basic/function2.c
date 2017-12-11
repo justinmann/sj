@@ -73,7 +73,7 @@ void sjf_func(int32_t* _return);
 void main_destroy(void);
 
 void sjf_func(int32_t* _return) {
-#line 1 ".\basic\function2.sj"
+#line 1 "function2.sj"
     (*_return) = 1;
 }
 

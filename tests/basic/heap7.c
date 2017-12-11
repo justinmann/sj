@@ -117,20 +117,23 @@ int main(int argc, char** argv) {
     sjf_foo_heap(sjv_heap_y);
     sjf_foo(&sjv_stack_y);
     sjf_foo(&sjt_call1);
-#line 5 ".\basic\heap7.sj"
+#line 5 "heap7.sj"
     sjv_local_y = &sjt_call1;
 #line 7
     sjv_heap_x1 = sjv_heap_y;
-#line 0 ""
+#line 7
     sjv_heap_x1->_refCount++;
+#line 7
     sjv_heap_x2 = (sjs_foo_heap*)malloc(sizeof(sjs_foo_heap));
+#line 7
     sjv_heap_x2->_refCount = 1;
-#line 8 ".\basic\heap7.sj"
+#line 8
     sjf_foo_copy((sjs_foo*)(((char*)sjv_heap_x2) + sizeof(intptr_t)), &sjv_stack_y);
-#line 0 ""
+#line 8
     sjv_heap_x3 = (sjs_foo_heap*)malloc(sizeof(sjs_foo_heap));
+#line 8
     sjv_heap_x3->_refCount = 1;
-#line 9 ".\basic\heap7.sj"
+#line 9
     sjf_foo_copy((sjs_foo*)(((char*)sjv_heap_x3) + sizeof(intptr_t)), sjv_local_y);
 #line 11
     sjf_foo_copy(&sjv_stack_x1, &sjv_stack_y);

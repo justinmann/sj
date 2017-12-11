@@ -72,10 +72,10 @@ bool sjt_while1;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
-#line 1 ".\basic\while1.sj"
+#line 1 "while1.sj"
     sjt_while1 = false;
     while (sjt_while1) {
-#line 1 ".\basic\while1.sj"
+#line 1 "while1.sj"
         sjt_while1 = false;
     }
     main_destroy();

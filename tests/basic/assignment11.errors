@@ -1,1 +1,1 @@
-ERROR:2 basic/assignment11.sj[1:1] cannot assign to immutable variable
+ERROR:2 assignment11.sj[1:1] cannot assign to immutable variable

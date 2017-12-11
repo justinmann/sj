@@ -74,7 +74,7 @@ void sjf_func(void);
 void main_destroy(void);
 
 void sjf_class_func(int32_t* _return) {
-#line 1 ".\basic\template4.sj"
+#line 1 "template4.sj"
     (*_return) = 1;
 }
 

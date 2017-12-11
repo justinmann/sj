@@ -77,7 +77,7 @@ void sjf_func(double* _return) {
     double result1;
     double sjt_negate1;
 
-#line 1 ".\basic\function4.sj"
+#line 1 "function4.sj"
     sjt_negate1 = 3.0;
 #line 1
     result1 = -sjt_negate1;
@@ -87,7 +87,7 @@ void sjf_func(double* _return) {
 
 int main(int argc, char** argv) {
     sjf_func(&sjt_compare1);
-#line 1 ".\basic\function4.sj"
+#line 1 "function4.sj"
     sjt_compare2 = 4.0;
     main_destroy();
     return 0;

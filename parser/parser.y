@@ -18,12 +18,12 @@ struct OPTIONANDTYPELIST {
 #include "../node/Node.h"
 #include "parser.hpp"
 
-#define LOC CLoc(parseFile->fileName, yyloc.first_line, yyloc.first_column)
-#define LLOC CLoc(parseFile->fileName, yylloc.first_line, yylloc.first_column)
+#define LOC CLoc(parseFile->fullFileName, parseFile->shortFileName, yyloc.first_line, yyloc.first_column)
+#define LLOC CLoc(parseFile->fullFileName, parseFile->shortFileName, yylloc.first_line, yylloc.first_column)
 
 int yyerror(YYLTYPE *locp, void *scanner, Compiler* compiler, CParseFile* parseFile, const char *msg) {
   if (locp) {
-  	compiler->addWarning(CLoc(parseFile->fileName, locp->first_line, locp->first_column), CErrorCode::Parser, msg);
+  	compiler->addWarning(CLoc(parseFile->fullFileName, parseFile->shortFileName, locp->first_line, locp->first_column), CErrorCode::Parser, msg);
   } else {
   	compiler->addWarning(CLoc::undefined, CErrorCode::Parser, msg);
   }

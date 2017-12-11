@@ -93,7 +93,7 @@ void sjf_class_i32(sjs_class_i32* _this) {
 }
 
 void sjf_class_i32_copy(sjs_class_i32* _this, sjs_class_i32* _from) {
-#line 1 ".\basic\template2.sj"
+#line 1 "template2.sj"
     _this->x = _from->x;
 }
 
@@ -104,11 +104,11 @@ void sjf_class_i32_heap(sjs_class_i32_heap* _this) {
 }
 
 int main(int argc, char** argv) {
-#line 4 ".\basic\template2.sj"
+#line 4 "template2.sj"
     sjv_c.x = 1;
-#line 0 ""
+#line 4
     sjf_class_i32(&sjv_c);
-#line 1 ".\basic\template2.sj"
+#line 1
     sjt_dot1 = &sjv_c;
     main_destroy();
     return 0;

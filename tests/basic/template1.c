@@ -77,17 +77,17 @@ void sjf_class_i32(int32_t* _return);
 void main_destroy(void);
 
 void sjf_class_bool(int32_t* _return) {
-#line 1 ".\basic\template1.sj"
+#line 1 "template1.sj"
     (*_return) = 1;
 }
 
 void sjf_class_f32(int32_t* _return) {
-#line 1 ".\basic\template1.sj"
+#line 1 "template1.sj"
     (*_return) = 1;
 }
 
 void sjf_class_i32(int32_t* _return) {
-#line 1 ".\basic\template1.sj"
+#line 1 "template1.sj"
     (*_return) = 1;
 }
 

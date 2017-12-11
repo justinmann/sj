@@ -98,9 +98,9 @@ void sjf_class(sjs_class* _this) {
 void sjf_class_bar(sjs_class* _parent, int32_t x, int32_t* _return) {
     int32_t sjt_functionParam1;
 
-#line 9 ".\basic\class12.sj"
+#line 9 "class12.sj"
     sjt_functionParam1 = x;
-#line 0 ""
+#line 9
     sjf_class_foo(_parent, sjt_functionParam1, _return);
 }
 
@@ -115,7 +115,7 @@ void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return) {
     int32_t sjt_compare2;
     bool sjt_ifElse1;
 
-#line 2 ".\basic\class12.sj"
+#line 2 "class12.sj"
     sjt_compare1 = x;
 #line 3
     sjt_compare2 = 0;
@@ -126,16 +126,16 @@ void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return) {
         int32_t sjt_math1;
         int32_t sjt_math2;
 
-#line 2 ".\basic\class12.sj"
+#line 2 "class12.sj"
         sjt_math1 = x;
 #line 4
         sjt_math2 = 1;
 #line 4
         sjt_functionParam2 = sjt_math1 - sjt_math2;
-#line 0 ""
+#line 4
         sjf_class_bar(_parent, sjt_functionParam2, _return);
     } else {
-#line 6 ".\basic\class12.sj"
+#line 6 "class12.sj"
         (*_return) = 0;
     }
 }
@@ -145,11 +145,11 @@ void sjf_class_heap(sjs_class_heap* _this) {
 
 int main(int argc, char** argv) {
     sjf_class(&sjv_c);
-#line 2 ".\basic\class12.sj"
+#line 2 "class12.sj"
     sjt_parent1 = &sjv_c;
 #line 14
     sjt_functionParam3 = 4;
-#line 0 ""
+#line 14
     sjf_class_foo(sjt_parent1, sjt_functionParam3, &void1);
     main_destroy();
     return 0;

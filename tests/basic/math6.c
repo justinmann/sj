@@ -75,7 +75,7 @@ int32_t sjt_negate1;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
-#line 1 ".\basic\math6.sj"
+#line 1 "math6.sj"
     sjt_negate1 = 4;
 #line 1
     result1 = -sjt_negate1;

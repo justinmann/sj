@@ -169,7 +169,7 @@ sji_interface* sjf_class_as_sji_interface(sjs_class* _this) {
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
-#line 3 ".\basic\option1.sj"
+#line 3 "option1.sj"
     _this->bob = _from->bob;
 }
 
@@ -234,7 +234,7 @@ void sji_interface_destroy(sji_interface* _this) {
 }
 
 int main(int argc, char** argv) {
-#line 7 ".\basic\option1.sj"
+#line 7 "option1.sj"
     sjv_a = int32_empty;
 #line 8
     sjv_b = int64_empty;
@@ -282,14 +282,15 @@ int main(int argc, char** argv) {
 
 #line 19
     sjv_m = (sjt_isEmpty3 == 0);
-#line 0 ""
+#line 19
     sjt_value1 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
+#line 19
     sjt_value1->_refCount = 1;
-#line 4 ".\basic\option1.sj"
+#line 4
     sjt_value1->bob = 0;
-#line 0 ""
+#line 4
     sjf_class_heap(sjt_value1);
-#line 21 ".\basic\option1.sj"
+#line 21
     sjv_n = sjt_value1;
     if (sjv_n != 0) {
         sjv_n->_refCount++;
@@ -305,9 +306,9 @@ int main(int argc, char** argv) {
     if (sjt_getValue1 == 0) { exit(-1); }
 #line 22
     sjv_o = sjt_getValue1;
-#line 0 ""
+#line 22
     sjv_o->_refCount++;
-#line 23 ".\basic\option1.sj"
+#line 23
     sjt_isEmpty4 = sjv_n;
     if (sjt_isEmpty4 != 0) {
         sjt_isEmpty4->_refCount++;
@@ -316,7 +317,7 @@ int main(int argc, char** argv) {
 #line 23
     sjt_ifElse1 = (sjt_isEmpty4 == 0);
     if (sjt_ifElse1) {
-#line 23 ".\basic\option1.sj"
+#line 23 "option1.sj"
         sjv_p = int32_empty;
     } else {
         sjs_class* sjt_dot1;
@@ -324,7 +325,7 @@ int main(int argc, char** argv) {
         int32_t sjt_value2;
         int32_option value1;
 
-#line 23 ".\basic\option1.sj"
+#line 23 "option1.sj"
         sjt_getValue2 = sjv_n;
         if (sjt_getValue2 != 0) {
             sjt_getValue2->_refCount++;
@@ -357,7 +358,7 @@ int main(int argc, char** argv) {
         int32_t result1;
         int32_t sjt_negate1;
 
-#line 24 ".\basic\option1.sj"
+#line 24 "option1.sj"
         sjt_negate1 = 1;
 #line 24
         result1 = -sjt_negate1;
@@ -366,7 +367,7 @@ int main(int argc, char** argv) {
     } else {
         int32_option sjt_getValue3;
 
-#line 24 ".\basic\option1.sj"
+#line 24 "option1.sj"
         sjt_getValue3 = sjv_a;
 #line 24
         sjv_q = sjt_getValue3.value;
@@ -379,10 +380,10 @@ int main(int argc, char** argv) {
     }
 
     if (sjt_cast1 != 0) {
-#line 1 ".\basic\option1.sj"
+#line 1 "option1.sj"
         sjv_r = (sji_interface*)sjf_class_heap_as_sji_interface(sjt_cast1);
     } else {
-#line 25 ".\basic\option1.sj"
+#line 25 "option1.sj"
         sjv_r = 0;
         if (sjv_r != 0) {
             sjv_r->_refCount++;
@@ -396,10 +397,10 @@ int main(int argc, char** argv) {
     }
 
     if (sjt_cast2 != 0) {
-#line 2 ".\basic\option1.sj"
+#line 2 "option1.sj"
         sjv_s = (sji_interface2*)sjt_cast2->asInterface(sjt_cast2->_parent, sji_interface2_typeId);
     } else {
-#line 26 ".\basic\option1.sj"
+#line 26 "option1.sj"
         sjv_s = 0;
         if (sjv_s != 0) {
             sjv_s->_refCount++;

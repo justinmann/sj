@@ -20,4 +20,6 @@
 #include <functional>
 #include <assert.h>
 
+#include <boost/filesystem.hpp>
+
 #endif /* sj_pch */

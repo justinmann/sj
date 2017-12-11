@@ -70,7 +70,7 @@ struct td_sjs_object {
 void main_destroy(void);
 
 int main(int argc, char** argv) {
-#line 1 ".\basic\c.sj"
+#line 1 "c.sj"
     printf("hi");
     main_destroy();
     return 0;

@@ -74,7 +74,7 @@ bool sjv_x;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
-#line 1 ".\basic\comparison19.sj"
+#line 1 "comparison19.sj"
     sjt_not1 = true;
 #line 1
     result1 = !sjt_not1;

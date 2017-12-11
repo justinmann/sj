@@ -219,12 +219,12 @@ sji_foo* sjf_class_i32_heap_as_sji_foo(sjs_class_i32_heap* _this) {
 }
 
 void sjf_class_i32_test1(sjs_class_i32* _parent, int32_t* _return) {
-#line 12 ".\basic\interface5.sj"
+#line 12 "interface5.sj"
     (*_return) = 1;
 }
 
 void sjf_class_i32_test2(sjs_class_i32* _parent, int32_t* _return) {
-#line 16 ".\basic\interface5.sj"
+#line 16 "interface5.sj"
     (*_return) = 2;
 }
 
@@ -266,7 +266,7 @@ int main(int argc, char** argv) {
     sjt_cast1 = (sjs_class_i32_heap*)malloc(sizeof(sjs_class_i32_heap));
     sjt_cast1->_refCount = 1;
     sjf_class_i32_heap(sjt_cast1);
-#line 1 ".\basic\interface5.sj"
+#line 1 "interface5.sj"
     sjv_a = (sji_foo*)sjf_class_i32_heap_as_sji_foo(sjt_cast1);
 #line 2
     sjt_parent1 = sjv_a;
@@ -274,9 +274,9 @@ int main(int argc, char** argv) {
     sjt_parent1->test1((void*)(((char*)sjt_parent1->_parent) + sizeof(intptr_t)), &void1);
 #line 22
     sjt_cast2 = sjv_a;
-#line 0 ""
+#line 22
     sjt_cast2->_refCount++;
-#line 6 ".\basic\interface5.sj"
+#line 6
     sjv_b = (sji_bar*)sjt_cast2->asInterface(sjt_cast2->_parent, sji_bar_typeId);
 #line 23
     sjt_isEmpty1 = sjv_b;
@@ -293,7 +293,7 @@ int main(int argc, char** argv) {
         int32_t sjt_value1;
         int32_option value1;
 
-#line 23 ".\basic\interface5.sj"
+#line 23 "interface5.sj"
         sjt_getValue1 = sjv_b;
         if (sjt_getValue1 != 0) {
             sjt_getValue1->_refCount++;

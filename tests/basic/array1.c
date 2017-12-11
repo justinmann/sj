@@ -1376,7 +1376,7 @@ void sjf_anon4_heap(sjs_anon4_heap* _this) {
 }
 
 void sjf_array_i32(sjs_array_i32* _this) {
-#line 110 ".\..\lib\common\array.sj"
+#line 110 "lib/common/array.sj"
     if (_this->size < 0) {
 #line 110
         halt("size is less than zero");
@@ -1401,7 +1401,7 @@ void sjf_array_i32(sjs_array_i32* _this) {
 }
 
 void sjf_array_i32_copy(sjs_array_i32* _this, sjs_array_i32* _from) {
-#line 1 ".\..\lib\common\array.sj"
+#line 1 "lib/common/array.sj"
     _this->size = _from->size;
 #line 1
     _this->data = _from->data;
@@ -1418,7 +1418,7 @@ void sjf_array_i32_copy(sjs_array_i32* _this, sjs_array_i32* _from) {
 }
 
 void sjf_array_i32_destroy(sjs_array_i32* _this) {
-#line 135 ".\..\lib\common\array.sj"
+#line 135 "lib/common/array.sj"
     if (!_this->_isGlobal && _this->data) {
 #line 135
         if (_release((void*)_this->data)) {
@@ -1431,7 +1431,7 @@ void sjf_array_i32_destroy(sjs_array_i32* _this) {
 }
 
 void sjf_array_i32_getAt(sjs_array_i32* _parent, int32_t index, int32_t* _return) {
-#line 6 ".\..\lib\common\array.sj"
+#line 6 "lib/common/array.sj"
     if (index >= _parent->size || index < 0) {
 #line 6
         halt("getAt: out of bounds\n");
@@ -1440,7 +1440,7 @@ void sjf_array_i32_getAt(sjs_array_i32* _parent, int32_t index, int32_t* _return
 #line 6
     int32_t* p = (int32_t*)_parent->data;
 #line 6
-    #line 6 ".\..\lib\common\array.sj"
+    #line 6 "lib/common/array.sj"
 #line 6
     (*_return) = p[index];
 #line 6
@@ -1448,7 +1448,7 @@ void sjf_array_i32_getAt(sjs_array_i32* _parent, int32_t index, int32_t* _return
 }
 
 void sjf_array_i32_heap(sjs_array_i32_heap* _this) {
-#line 110 ".\..\lib\common\array.sj"
+#line 110 "lib/common/array.sj"
     if (_this->size < 0) {
 #line 110
         halt("size is less than zero");
@@ -1473,7 +1473,7 @@ void sjf_array_i32_heap(sjs_array_i32_heap* _this) {
 }
 
 void sjf_array_i32_setAt(sjs_array_i32* _parent, int32_t index, int32_t item) {
-#line 28 ".\..\lib\common\array.sj"
+#line 28 "lib/common/array.sj"
     if (index >= _parent->size || index < 0) {
 #line 28
         halt("setAt: out of bounds %d:%d\n", index, _parent->size);
@@ -1484,7 +1484,7 @@ void sjf_array_i32_setAt(sjs_array_i32* _parent, int32_t index, int32_t item) {
 #line 28
     ;
 #line 28
-    #line 27 ".\..\lib\common\array.sj"
+    #line 27 "lib/common/array.sj"
 #line 28
     p[index] = item;
 #line 28
@@ -1494,7 +1494,7 @@ void sjf_array_i32_setAt(sjs_array_i32* _parent, int32_t index, int32_t item) {
 int main(int argc, char** argv) {
     sjf_anon1(&sjv_console);
     sjf_anon2(&sjv_convert);
-#line 33 ".\..\lib\common\math.sj"
+#line 33 "lib/common/math.sj"
     sjv_f32_pi = 3.14159265358979323846f;
 #line 34
     sjv_u32_maxValue = (uint32_t)4294967295u;
@@ -1510,32 +1510,33 @@ int main(int argc, char** argv) {
     sjv_i32_maxValue = sjt_math1 - sjt_math2;
 #line 37
     sjv_i32_minValue = 2147483647;
-#line 0 ""
+#line 37
     sjf_anon3(&sjv_parse);
+#line 37
     sjf_anon4(&sjv_random);
-#line 3 ".\basic\array1.sj"
+#line 3 "array1.sj"
     sjv_a.size = 1;
-#line 3 ".\..\lib\common\array.sj"
+#line 3 "lib/common/array.sj"
     sjt_cast1 = 0;
 #line 3
     sjv_a.data = (uintptr_t)sjt_cast1;
 #line 4
     sjv_a._isGlobal = false;
-#line 0 ""
+#line 4
     sjf_array_i32(&sjv_a);
-#line 27 ".\..\lib\common\array.sj"
+#line 27
     sjt_parent1 = &sjv_a;
-#line 4 ".\basic\array1.sj"
+#line 4 "array1.sj"
     sjt_functionParam1 = 0;
 #line 4
     sjt_functionParam2 = 1;
-#line 0 ""
+#line 4
     sjf_array_i32_setAt(sjt_parent1, sjt_functionParam1, sjt_functionParam2);
-#line 6 ".\..\lib\common\array.sj"
+#line 6 "lib/common/array.sj"
     sjt_parent2 = &sjv_a;
-#line 5 ".\basic\array1.sj"
+#line 5 "array1.sj"
     sjt_functionParam3 = 0;
-#line 0 ""
+#line 5
     sjf_array_i32_getAt(sjt_parent2, sjt_functionParam3, &sjv_c);
     main_destroy();
     return 0;

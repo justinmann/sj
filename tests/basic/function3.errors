@@ -1,1 +1,1 @@
-ERROR:16 basic/function3.sj[1:1] while trying to determine type a cycle was detected
+ERROR:16 function3.sj[1:1] while trying to determine type a cycle was detected

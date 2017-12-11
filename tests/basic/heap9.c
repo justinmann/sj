@@ -119,7 +119,7 @@ void sjf_foo2_heap(sjs_class_heap** _return) {
     sjt_value1 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
     sjt_value1->_refCount = 1;
     sjf_class_heap(sjt_value1);
-#line 8 ".\basic\heap9.sj"
+#line 8 "heap9.sj"
     (*_return) = sjt_value1;
     if ((*_return) != 0) {
         (*_return)->_refCount++;

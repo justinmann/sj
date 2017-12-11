@@ -96,7 +96,7 @@ void sjf_class(sjs_class* _this) {
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
-#line 1 ".\basic\ifValue.sj"
+#line 1 "ifValue.sj"
     _this->d = _from->d;
 }
 
@@ -107,7 +107,7 @@ void sjf_class_heap(sjs_class_heap* _this) {
 }
 
 int main(int argc, char** argv) {
-#line 5 ".\basic\ifValue.sj"
+#line 5 "ifValue.sj"
     sjv_a = int32_empty;
 #line 6
     sjt_value1 = 5;
@@ -119,7 +119,7 @@ int main(int argc, char** argv) {
     sjv_b = value1;
 #line 2
     sjv_c.d = int32_empty;
-#line 0 ""
+#line 2
     sjf_class(&sjv_c);
     main_destroy();
     return 0;

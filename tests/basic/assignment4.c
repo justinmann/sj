@@ -74,7 +74,7 @@ int32_t sjv_x;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
-#line 1 ".\basic\assignment4.sj"
+#line 1 "assignment4.sj"
     sjv_x = 1;
 #line 1
     sjv_x = 2;

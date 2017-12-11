@@ -233,7 +233,7 @@ int main(int argc, char** argv) {
     sjt_cast1 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
     sjt_cast1->_refCount = 1;
     sjf_class_heap(sjt_cast1);
-#line 1 ".\basic\interface9.sj"
+#line 1 "interface9.sj"
     sjv_a = (sji_foo*)sjf_class_heap_as_sji_foo(sjt_cast1);
 #line 2
     sjt_parent1 = sjv_a;
@@ -245,10 +245,11 @@ int main(int argc, char** argv) {
     sjt_parent2 = sjv_a;
 #line 15
     sjt_interfaceParam2 = 1;
-#line 0 ""
+#line 15
     sjv_c = (sjs_bar_heap*)malloc(sizeof(sjs_bar_heap));
+#line 15
     sjv_c->_refCount = 1;
-#line 15 ".\basic\interface9.sj"
+#line 15
     sjt_parent2->test_heap((void*)(((char*)sjt_parent2->_parent) + sizeof(intptr_t)), sjt_interfaceParam2, &sjv_c);
     main_destroy();
     return 0;

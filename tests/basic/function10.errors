@@ -1,1 +1,1 @@
-ERROR:20 basic/function10.sj[1:29] all named parameters must be after the un-named parameters
+ERROR:20 function10.sj[1:29] all named parameters must be after the un-named parameters
