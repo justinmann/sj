@@ -139,7 +139,9 @@ struct OPTIONANDTYPELIST {
     TINVALID = 340,
     TCOLONEQUAL = 341,
     THEAPPARENT = 342,
-    THEAPTHIS = 343
+    THEAPTHIS = 343,
+    TIFVALUE = 344,
+    TELSEEMPTY = 345
   };
 #endif
 
@@ -152,7 +154,6 @@ union YYSTYPE
 
 	NBase* node;
 	NBlock* block;
-	NIf* nif;
 	NVariableBase* var;
 	NodeList* exprvec;
 	std::string* string;

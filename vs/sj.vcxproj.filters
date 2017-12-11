@@ -192,6 +192,9 @@
     <ClInclude Include="..\node\NNegate.h">
       <Filter>Node</Filter>
     </ClInclude>
+    <ClInclude Include="..\node\NIfValue.h">
+      <Filter>Node</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\node\NAnd.cpp">
@@ -357,6 +360,9 @@
       <Filter>Node</Filter>
     </ClCompile>
     <ClCompile Include="..\node\NNegate.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NIfValue.cpp">
       <Filter>Node</Filter>
     </ClCompile>
   </ItemGroup>

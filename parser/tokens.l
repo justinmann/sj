@@ -101,7 +101,9 @@ void updateLocation(YYLOCATION& loc, const char* s, const int len) {
 "bool"					TOKEN_VAL(TTYPEBOOL);
 "ptr"					TOKEN_VAL(TTYPEPTR);
 "if"					TOKEN_VAL(TIF);
+"ifValue"				TOKEN_VAL(TIFVALUE);
 "else"					TOKEN_VAL(TELSE);
+"elseEmpty"				TOKEN_VAL(TELSEEMPTY);
 "for" 					TOKEN_VAL(TFOR);
 "to" 					TOKEN_VAL(TTO);
 "while"					TOKEN_VAL(TWHILE);

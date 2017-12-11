@@ -50,7 +50,6 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %union {
 	NBase* node;
 	NBlock* block;
-	NIf* nif;
 	NVariableBase* var;
 	NodeList* exprvec;
 	std::string* string;
@@ -66,14 +65,13 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TSTRING TCHAR TCBLOCK TCFUNCTION TCDEFINE TCSTRUCT TCINCLUDE TCVAR TCTYPEDEF
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TQUESTION TEMPTY TVALUE TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TLOCAL TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR TINVALID TCOLONEQUAL THEAPPARENT THEAPTHIS
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TQUESTION TEMPTY TVALUE TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TLOCAL TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR TINVALID TCOLONEQUAL THEAPPARENT THEAPTHIS TIFVALUE TELSEEMPTY
 
 /* Non Terminal symbols. Types refer to union decl above */
-%type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch copy destroy expr end_optional end_star
-%type <var> var_right expr_math expr_var const expr_and expr_comp tuple expr_and_inner
+%type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch copy destroy expr end_optional end_star if_expr
+%type <var> var_right expr_math expr_var const expr_and expr_comp tuple expr_and_inner ifValue_var
 %type <block> stmts
-%type <nif> if_expr
-%type <exprvec> func_args func_block array_args tuple_args interface_args interface_block
+%type <exprvec> func_args func_block array_args tuple_args interface_args interface_block ifValue_vars
 %type <assignOp> assign_type assign_copy
 %type <typeName> arg_type_quote arg_type return_type_quote return_type func_type func_arg_type func_type_name implement_arg value_type
 %type <templateTypeNames> temp_args temp_block temp_block_optional func_arg_type_list implement implement_args
@@ -280,7 +278,17 @@ while_expr			: TWHILE expr block 							{ $$ = new NWhile(LOC, shared_ptr<NBase>
 if_expr		 		: TIF expr block								{ $$ = new NIf(LOC, shared_ptr<NBase>($2), shared_ptr<NBase>($3), nullptr); }
 					| TIF expr block TELSE block					{ $$ = new NIf(LOC, shared_ptr<NBase>($2), shared_ptr<NBase>($3), shared_ptr<NBase>($5)); }
 					| TIF expr block TELSE if_expr					{ $$ = new NIf(LOC, shared_ptr<NBase>($2), shared_ptr<NBase>($3), shared_ptr<NBase>($5)); }
+					| TIFVALUE ifValue_vars block					{ $$ = new NIfValue(LOC, shared_ptr<NodeList>($2), shared_ptr<NBase>($3), nullptr); }
+					| TIFVALUE ifValue_vars block TELSEEMPTY block	{ $$ = new NIfValue(LOC, shared_ptr<NodeList>($2), shared_ptr<NBase>($3), shared_ptr<NBase>($5)); }
 					;
+
+ifValue_vars 		: ifValue_vars TCOMMA ifValue_var 				{ $1->push_back(shared_ptr<NBase>($3)); $$ = $1; }
+					| ifValue_var 									{ $$ = new NodeList(); $$->push_back(shared_ptr<NBase>($1)); }
+					;
+
+ifValue_var			: ifValue_var TDOT func_type_name				{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NVariable>(LOC, $3->valueName.c_str(), $3->templateTypeNames)); delete $3; }
+	 				| func_type_name								{ $$ = new NVariable(LOC, $1->valueName.c_str(), $1->templateTypeNames); delete $1; }
+	 				;
 
 var_right			: func_type_name func_block						{ $$ = new NCall(LOC, $1->valueName.c_str(), $1->templateTypeNames, shared_ptr<NodeList>($2)); delete $1; }
 					| TISEMPTY TLPAREN expr TRPAREN					{ $$ = new NIsEmpty(LOC, shared_ptr<NBase>($3)); }
