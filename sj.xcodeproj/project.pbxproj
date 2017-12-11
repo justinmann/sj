@@ -42,6 +42,9 @@
 		9C908F191E35C9D6005E253C /* NChar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C908F171E35C9D6005E253C /* NChar.cpp */; };
 		9CB7416D1E25EB310041A8A6 /* NMathAssignment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CB7416B1E25EB310041A8A6 /* NMathAssignment.cpp */; };
 		9CDED2CC1E3701C8002D9666 /* NBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CDED2CB1E3701C8002D9666 /* NBase.cpp */; };
+		9CE061721FDF23E6002FBBEA /* NNegate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CE0616F1FDF23E5002FBBEA /* NNegate.cpp */; };
+		9CE061731FDF23E6002FBBEA /* CCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CE061701FDF23E5002FBBEA /* CCallback.cpp */; };
+		9CE061741FDF23E6002FBBEA /* NIfValue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CE061711FDF23E5002FBBEA /* NIfValue.cpp */; };
 		9CE83C5E1FAA33A80045B0C6 /* TrStatement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CE83C5C1FAA33A80045B0C6 /* TrStatement.cpp */; };
 		9CE83C611FABE0A10045B0C6 /* NCCode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CE83C5F1FABE0A10045B0C6 /* NCCode.cpp */; };
 		9CE83C631FB006210045B0C6 /* libboost_filesystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CE83C621FB006210045B0C6 /* libboost_filesystem.a */; };
@@ -148,6 +151,12 @@
 		9CB7416B1E25EB310041A8A6 /* NMathAssignment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NMathAssignment.cpp; path = node/NMathAssignment.cpp; sourceTree = "<group>"; };
 		9CB7416C1E25EB310041A8A6 /* NMathAssignment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NMathAssignment.h; path = node/NMathAssignment.h; sourceTree = "<group>"; };
 		9CDED2CB1E3701C8002D9666 /* NBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NBase.cpp; path = node/NBase.cpp; sourceTree = "<group>"; };
+		9CE0616C1FDF23E4002FBBEA /* NIfValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NIfValue.h; path = node/NIfValue.h; sourceTree = "<group>"; };
+		9CE0616D1FDF23E4002FBBEA /* NNegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NNegate.h; path = node/NNegate.h; sourceTree = "<group>"; };
+		9CE0616E1FDF23E5002FBBEA /* CCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCallback.h; path = node/CCallback.h; sourceTree = "<group>"; };
+		9CE0616F1FDF23E5002FBBEA /* NNegate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NNegate.cpp; path = node/NNegate.cpp; sourceTree = "<group>"; };
+		9CE061701FDF23E5002FBBEA /* CCallback.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CCallback.cpp; path = node/CCallback.cpp; sourceTree = "<group>"; };
+		9CE061711FDF23E5002FBBEA /* NIfValue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NIfValue.cpp; path = node/NIfValue.cpp; sourceTree = "<group>"; };
 		9CE83C5C1FAA33A80045B0C6 /* TrStatement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TrStatement.cpp; sourceTree = "<group>"; };
 		9CE83C5D1FAA33A80045B0C6 /* TrStatement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrStatement.h; sourceTree = "<group>"; };
 		9CE83C5F1FABE0A10045B0C6 /* NCCode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NCCode.cpp; path = node/NCCode.cpp; sourceTree = "<group>"; };
@@ -280,6 +289,8 @@
 		9CF16BF81E19A86B006E9CB8 /* node */ = {
 			isa = PBXGroup;
 			children = (
+				9CE061701FDF23E5002FBBEA /* CCallback.cpp */,
+				9CE0616E1FDF23E5002FBBEA /* CCallback.h */,
 				9C908F0F1E348D5A005E253C /* NAnd.cpp */,
 				9C908F101E348D5A005E253C /* NAnd.h */,
 				9C908F001E345670005E253C /* NArray.cpp */,
@@ -322,6 +333,8 @@
 				9C0A1E821FBA204700778313 /* NGetValue.h */,
 				9CF16C081E19A888006E9CB8 /* NIf.cpp */,
 				9CF16C091E19A888006E9CB8 /* NIf.h */,
+				9CE061711FDF23E5002FBBEA /* NIfValue.cpp */,
+				9CE0616C1FDF23E4002FBBEA /* NIfValue.h */,
 				9C908F061E347E69005E253C /* NInclude.cpp */,
 				9C908F071E347E69005E253C /* NInclude.h */,
 				9CF16C0A1E19A888006E9CB8 /* NInteger.cpp */,
@@ -336,6 +349,8 @@
 				9CF16C0D1E19A888006E9CB8 /* NMath.h */,
 				9CB7416B1E25EB310041A8A6 /* NMathAssignment.cpp */,
 				9CB7416C1E25EB310041A8A6 /* NMathAssignment.h */,
+				9CE0616F1FDF23E5002FBBEA /* NNegate.cpp */,
+				9CE0616D1FDF23E4002FBBEA /* NNegate.h */,
 				9C29C0B01E273F7E001C1FC6 /* NNot.cpp */,
 				9C29C0B11E273F7E001C1FC6 /* NNot.h */,
 				9CF16C101E19A888006E9CB8 /* Node.h */,
@@ -444,6 +459,7 @@
 				9C0A1E951FBA204B00778313 /* NEmpty.cpp in Sources */,
 				9CF16C1B1E19A888006E9CB8 /* NFunction.cpp in Sources */,
 				9C74891A1E581783008A032C /* NInterface.cpp in Sources */,
+				9CE061741FDF23E6002FBBEA /* NIfValue.cpp in Sources */,
 				9C0A1E991FBA204B00778313 /* NParent.cpp in Sources */,
 				9C5F0CBC1FA78A5A004CD51D /* TrOutput.cpp in Sources */,
 				9CF16C1E1E19A888006E9CB8 /* NMath.cpp in Sources */,
@@ -486,7 +502,9 @@
 				9C908EFF1E33EFBF005E253C /* NThis.cpp in Sources */,
 				9CF16C191E19A888006E9CB8 /* NCompare.cpp in Sources */,
 				9C0A1E9A1FBA204B00778313 /* NTupleAssignment.cpp in Sources */,
+				9CE061721FDF23E6002FBBEA /* NNegate.cpp in Sources */,
 				9CF16C1D1E19A888006E9CB8 /* NInteger.cpp in Sources */,
+				9CE061731FDF23E6002FBBEA /* CCallback.cpp in Sources */,
 				9CFDBF961E19BD9500F5436F /* CType.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

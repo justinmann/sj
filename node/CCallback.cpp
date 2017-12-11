@@ -61,11 +61,12 @@ void CCallbackVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, strin
 
 }
 
-CCallbackFunction::CCallbackFunction(shared_ptr<CCallback> callback, shared_ptr<CVar> callbackVar) : CBaseFunction(CFT_Callback, string("INVALID"), weak_ptr<CBaseFunction>(), weak_ptr<CBaseFunctionDefinition>(), false), callback(callback), callbackVar(callbackVar) {
+CCallbackFunction::CCallbackFunction(shared_ptr<CCallback> callback, shared_ptr<CVar> callbackVar) : CBaseFunction(CFT_Callback, "INVALID", weak_ptr<CBaseFunction>(), weak_ptr<CBaseFunctionDefinition>(), false), callback(callback), callbackVar(callbackVar) {
     auto argIndex = 0;
     for (auto argType : callback->argTypes) {
-        string argName = "param" + argIndex;
-        auto argVar = make_shared<CNormalVar>(CLoc::undefined, nullptr, argType, argName, false, CVarType::Var_Public);
+        stringstream argName;
+        argName << "param" << argIndex;
+        auto argVar = make_shared<CNormalVar>(CLoc::undefined, nullptr, argType, argName.str(), false, CVarType::Var_Public);
         argVars.push_back(argVar);
         argIndex++;
     }
@@ -183,7 +184,6 @@ void CCallbackFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerS
         line << "_cb";
     }
     line << "(";
-    bool isFirstParameter = true;
 
     // Add "parent" to "this"
     line << callbackValue->getName(trBlock) << "._parent";
