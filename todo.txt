@@ -4,7 +4,6 @@
 * center text
 
 -- language --
-* i32.interpolate
 * ifValue a, b, c {} elseEmpty {}
 * array map
 * array filter

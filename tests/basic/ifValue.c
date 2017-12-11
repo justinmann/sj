@@ -60,35 +60,72 @@ struct td_double_option {
 const double_option double_empty = { true };
 
 #define sjs_object_typeId 1
+#define sjs_class_typeId 2
+#define sjs_class_heap_typeId 3
 
 typedef struct td_sjs_object sjs_object;
+typedef struct td_sjs_class sjs_class;
+typedef struct td_sjs_class_heap sjs_class_heap;
 
 struct td_sjs_object {
     intptr_t _refCount;
 };
 
-int32_t result1;
-int32_t sjt_compare1;
-int32_t sjt_compare2;
-int32_t sjt_negate1;
-bool sjv_x;
+struct td_sjs_class {
+    int32_option d;
+};
 
+struct td_sjs_class_heap {
+    intptr_t _refCount;
+    int32_option d;
+};
+
+int32_t sjt_value1;
+int32_option sjv_a;
+int32_option sjv_b;
+sjs_class sjv_c;
+int32_option value1;
+
+void sjf_class(sjs_class* _this);
+void sjf_class_copy(sjs_class* _this, sjs_class* _from);
+void sjf_class_destroy(sjs_class* _this);
+void sjf_class_heap(sjs_class_heap* _this);
 void main_destroy(void);
 
+void sjf_class(sjs_class* _this) {
+}
+
+void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
+#line 1 ".\basic\ifValue.sj"
+    _this->d = _from->d;
+}
+
+void sjf_class_destroy(sjs_class* _this) {
+}
+
+void sjf_class_heap(sjs_class_heap* _this) {
+}
+
 int main(int argc, char** argv) {
-#line 1 ".\basic\comparison9.sj"
-    sjt_negate1 = 3;
-#line 1
-    result1 = -sjt_negate1;
-#line 1
-    sjt_compare1 = result1;
-#line 1
-    sjt_compare2 = 4;
-#line 1
-    sjv_x = sjt_compare1 == sjt_compare2;
+#line 5 ".\basic\ifValue.sj"
+    sjv_a = int32_empty;
+#line 6
+    sjt_value1 = 5;
+#line 6
+    value1.isEmpty = false;
+#line 6
+    value1.value = sjt_value1;
+#line 6
+    sjv_b = value1;
+#line 2
+    sjv_c.d = int32_empty;
+#line 0 ""
+    sjf_class(&sjv_c);
     main_destroy();
     return 0;
 }
 
 void main_destroy() {
+
+    sjf_class_destroy(&sjv_c);
 }

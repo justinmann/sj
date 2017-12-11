@@ -74,8 +74,15 @@ void sjf_func(double* _return);
 void main_destroy(void);
 
 void sjf_func(double* _return) {
+    double result1;
+    double sjt_negate1;
+
 #line 1 ".\basic\function4.sj"
-    (*_return) = -3.0;
+    sjt_negate1 = 3.0;
+#line 1
+    result1 = -sjt_negate1;
+#line 1
+    (*_return) = result1;
 }
 
 int main(int argc, char** argv) {

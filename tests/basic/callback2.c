@@ -1288,6 +1288,7 @@ void halt(const char * format, ...);
 void _retain(void* ptr);
 bool _release(void* ptr);
 
+int32_t result1;
 int32_t sjt_cast1;
 cb_i32_void sjt_functionParam10;
 cb_i32_void_heap sjt_functionParam3;
@@ -1295,6 +1296,9 @@ int32_t sjt_functionParam4;
 int32_t sjt_functionParam5;
 int32_t sjt_functionParam6;
 int32_t sjt_functionParam7;
+int32_t sjt_math1;
+int32_t sjt_math2;
+int32_t sjt_negate1;
 sjs_class_i32* sjt_parent1;
 sjs_array_i32* sjt_parent2;
 sjs_array_i32* sjt_parent3;
@@ -1634,19 +1638,19 @@ void sjf_sum_heap(sjs_sum_heap* _this) {
 void sjf_sum_invoke(sjs_sum* _parent, int32_t a) {
     sjs_sum* sjt_dot3;
     sjs_sum* sjt_dot4;
-    int32_t sjt_math1;
-    int32_t sjt_math2;
+    int32_t sjt_math3;
+    int32_t sjt_math4;
 
 #line 15 ".\basic\callback2.sj"
     sjt_dot3 = _parent;
 #line 15
     sjt_dot4 = _parent;
 #line 16
-    sjt_math1 = (sjt_dot4)->total;
+    sjt_math3 = (sjt_dot4)->total;
 #line 15
-    sjt_math2 = a;
+    sjt_math4 = a;
 #line 16
-    sjt_dot3->total = sjt_math1 + sjt_math2;
+    sjt_dot3->total = sjt_math3 + sjt_math4;
 }
 
 int main(int argc, char** argv) {
@@ -1657,7 +1661,15 @@ int main(int argc, char** argv) {
 #line 34
     sjv_u32_maxValue = (uint32_t)4294967295u;
 #line 36
-    sjv_i32_maxValue = (-2147483647 - 1);
+    sjt_negate1 = 1;
+#line 36
+    result1 = -sjt_negate1;
+#line 36
+    sjt_math1 = result1;
+#line 36
+    sjt_math2 = 2147483647;
+#line 36
+    sjv_i32_maxValue = sjt_math1 - sjt_math2;
 #line 37
     sjv_i32_minValue = 2147483647;
 #line 0 ""

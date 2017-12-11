@@ -1274,11 +1274,15 @@ void halt(const char * format, ...);
 void _retain(void* ptr);
 bool _release(void* ptr);
 
+int32_t result1;
 int32_t sjt_cast1;
 sjs_class* sjt_dot12;
 int32_t sjt_forEnd1;
 int32_t sjt_forStart1;
 int32_t sjt_functionParam9;
+int32_t sjt_math1;
+int32_t sjt_math2;
+int32_t sjt_negate1;
 sjs_list_heap_class* sjt_parent5;
 sjs_list_heap_class sjv_a;
 sjs_class_heap* sjv_c;
@@ -1630,8 +1634,8 @@ void sjf_list_heap_class_add(sjs_list_heap_class* _parent, sjs_class_heap* item,
     int32_t sjt_functionParam5;
     sjs_class_heap* sjt_functionParam6;
     bool sjt_ifElse1;
-    int32_t sjt_math3;
-    int32_t sjt_math4;
+    int32_t sjt_math5;
+    int32_t sjt_math6;
     sjs_array_heap_class* sjt_parent2;
 
 #line 5 ".\..\lib\common\list.sj"
@@ -1652,8 +1656,8 @@ void sjf_list_heap_class_add(sjs_list_heap_class* _parent, sjs_class_heap* item,
         int32_t sjt_functionParam2;
         int32_t sjt_functionParam3;
         int32_t sjt_functionParam4;
-        int32_t sjt_math1;
-        int32_t sjt_math2;
+        int32_t sjt_math3;
+        int32_t sjt_math4;
 
 #line 7 ".\..\lib\common\list.sj"
         sjt_functionParam3 = 10;
@@ -1662,11 +1666,11 @@ void sjf_list_heap_class_add(sjs_list_heap_class* _parent, sjs_class_heap* item,
 #line 1 ".\..\lib\common\array.sj"
         sjt_dot5 = &(sjt_dot6)->data;
 #line 7 ".\..\lib\common\list.sj"
-        sjt_math1 = (sjt_dot5)->size;
+        sjt_math3 = (sjt_dot5)->size;
 #line 7
-        sjt_math2 = 2;
+        sjt_math4 = 2;
 #line 7
-        sjt_functionParam4 = sjt_math1 * sjt_math2;
+        sjt_functionParam4 = sjt_math3 * sjt_math4;
 #line 0 ""
         sjf_i32_max(sjt_functionParam3, sjt_functionParam4, &sjt_functionParam2);
         sjf_list_heap_class_setSize(_parent, sjt_functionParam2);
@@ -1690,11 +1694,11 @@ void sjf_list_heap_class_add(sjs_list_heap_class* _parent, sjs_class_heap* item,
 #line 5
     sjt_dot10 = _parent;
 #line 12
-    sjt_math3 = (sjt_dot10)->count;
+    sjt_math5 = (sjt_dot10)->count;
 #line 12
-    sjt_math4 = 1;
+    sjt_math6 = 1;
 #line 12
-    sjt_dot9->count = sjt_math3 + sjt_math4;
+    sjt_dot9->count = sjt_math5 + sjt_math6;
 #line 12
     (*_return) = sjt_dot9->count;
 
@@ -1755,7 +1759,15 @@ int main(int argc, char** argv) {
 #line 34
     sjv_u32_maxValue = (uint32_t)4294967295u;
 #line 36
-    sjv_i32_maxValue = (-2147483647 - 1);
+    sjt_negate1 = 1;
+#line 36
+    result1 = -sjt_negate1;
+#line 36
+    sjt_math1 = result1;
+#line 36
+    sjt_math2 = 2147483647;
+#line 36
+    sjv_i32_maxValue = sjt_math1 - sjt_math2;
 #line 37
     sjv_i32_minValue = 2147483647;
 #line 0 ""

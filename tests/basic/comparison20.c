@@ -67,9 +67,11 @@ struct td_sjs_object {
     intptr_t _refCount;
 };
 
-bool result1;
+double result1;
+bool result2;
 double sjt_compare1;
 double sjt_compare2;
+double sjt_negate1;
 bool sjt_not1;
 bool sjv_x;
 
@@ -77,15 +79,19 @@ void main_destroy(void);
 
 int main(int argc, char** argv) {
 #line 1 ".\basic\comparison20.sj"
-    sjt_compare1 = -3.0;
+    sjt_negate1 = 3.0;
+#line 1
+    result1 = -sjt_negate1;
+#line 1
+    sjt_compare1 = result1;
 #line 1
     sjt_compare2 = 4.0;
 #line 1
     sjt_not1 = sjt_compare1 != sjt_compare2;
 #line 1
-    result1 = !sjt_not1;
+    result2 = !sjt_not1;
 #line 1
-    sjv_x = result1;
+    sjv_x = result2;
     main_destroy();
     return 0;
 }

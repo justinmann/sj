@@ -1,0 +1,4 @@
+ERROR:19 basic/math2.sj[1:5] i64 '9223372036854775808' is out range
+ERROR:0 basic/math2.sj[1:1] no right side
+ERROR:19 basic/math2.sj[4:5] i32 '2147483648' is out range
+ERROR:0 basic/math2.sj[4:1] no right side

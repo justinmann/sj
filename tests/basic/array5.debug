@@ -1203,7 +1203,7 @@ global()'void {
   --ctypedef--
   f32_pi'f32 : 3.14159265358979323846ff
   u32_maxValue'u32 : (uint32_t)4294967295uu
-  i32_maxValue'i32 : (-2147483647 - 1)i
+  i32_maxValue'i32 : -1i - 2147483647i
   i32_minValue'i32 : 2147483647i
   parse'stack anon3 : anon3(this = anon3())
   random'stack anon4 : anon4(this = anon4())

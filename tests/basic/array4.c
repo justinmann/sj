@@ -1259,12 +1259,16 @@ void halt(const char * format, ...);
 void _retain(void* ptr);
 bool _release(void* ptr);
 
+int32_t result1;
 sjs_class sjt_call1;
 int32_t sjt_cast1;
 sjs_class* sjt_dot1;
 int32_t sjt_functionParam1;
 sjs_class* sjt_functionParam2;
 int32_t sjt_functionParam3;
+int32_t sjt_math1;
+int32_t sjt_math2;
+int32_t sjt_negate1;
 sjs_array_class* sjt_parent1;
 sjs_array_class* sjt_parent2;
 sjs_array_class sjv_a;
@@ -1529,7 +1533,15 @@ int main(int argc, char** argv) {
 #line 34
     sjv_u32_maxValue = (uint32_t)4294967295u;
 #line 36
-    sjv_i32_maxValue = (-2147483647 - 1);
+    sjt_negate1 = 1;
+#line 36
+    result1 = -sjt_negate1;
+#line 36
+    sjt_math1 = result1;
+#line 36
+    sjt_math2 = 2147483647;
+#line 36
+    sjv_i32_maxValue = sjt_math1 - sjt_math2;
 #line 37
     sjv_i32_minValue = 2147483647;
 #line 0 ""

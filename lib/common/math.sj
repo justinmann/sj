@@ -33,7 +33,7 @@ f32_tan(v : 'f32)'f32 {
 f32_pi : 3.14159265358979323846f
 u32_maxValue : 4294967295u
 
-i32_maxValue : -2147483648i
+i32_maxValue : -1i - 2147483647i
 i32_minValue : 2147483647i
 
 i32_max(a : 'i32, b : 'i32)'i32 {

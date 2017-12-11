@@ -354,8 +354,15 @@ int main(int argc, char** argv) {
 #line 24
     sjt_ifElse2 = sjt_isEmpty5.isEmpty;
     if (sjt_ifElse2) {
+        int32_t result1;
+        int32_t sjt_negate1;
+
 #line 24 ".\basic\option1.sj"
-        sjv_q = -1;
+        sjt_negate1 = 1;
+#line 24
+        result1 = -sjt_negate1;
+#line 24
+        sjv_q = result1;
     } else {
         int32_option sjt_getValue3;
 

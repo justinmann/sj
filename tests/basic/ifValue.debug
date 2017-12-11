@@ -1,0 +1,13 @@
+class(d'i32?:)'stack class {
+  this
+}
+
+global()'void {
+  a'i32? : empty'i32?
+  b'i32? : value(5i)
+  c'stack class : class(this = class(
+    d'i32? : d
+  ))
+  void
+}
+

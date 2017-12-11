@@ -1266,7 +1266,8 @@ void halt(const char * format, ...);
 void _retain(void* ptr);
 bool _release(void* ptr);
 
-bool result1;
+int32_t result1;
+bool result2;
 sjs_string sjt_call1;
 sjs_string sjt_call4;
 sjs_string* sjt_functionParam1;
@@ -1275,6 +1276,9 @@ int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_math3;
 int32_t sjt_math4;
+int32_t sjt_math5;
+int32_t sjt_math6;
+int32_t sjt_negate1;
 bool sjt_not1;
 sjs_anon1* sjt_parent1;
 sjs_anon4* sjt_parent2;
@@ -1372,8 +1376,8 @@ void sjf_anon1_heap(sjs_anon1_heap* _this) {
 
 void sjf_anon1_readLine(sjs_anon1* _parent, sjs_string* _return) {
     int32_t sjt_cast1;
-    int32_t sjt_math5;
-    int32_t sjt_math6;
+    int32_t sjt_math7;
+    int32_t sjt_math8;
     uintptr_t sjv_data;
     int32_t sjv_size;
 
@@ -1420,11 +1424,11 @@ void sjf_anon1_readLine(sjs_anon1* _parent, sjs_string* _return) {
 #line 21
     size = index;
 #line 43
-    sjt_math5 = sjv_size;
+    sjt_math7 = sjv_size;
 #line 43
-    sjt_math6 = 1;
+    sjt_math8 = 1;
 #line 43
-    _return->count = sjt_math5 - sjt_math6;
+    _return->count = sjt_math7 - sjt_math8;
 #line 43
     _return->data.size = sjv_size;
 #line 43
@@ -1438,8 +1442,8 @@ void sjf_anon1_readLine(sjs_anon1* _parent, sjs_string* _return) {
 
 void sjf_anon1_readLine_heap(sjs_anon1* _parent, sjs_string_heap** _return) {
     int32_t sjt_cast2;
-    int32_t sjt_math7;
-    int32_t sjt_math8;
+    int32_t sjt_math10;
+    int32_t sjt_math9;
     uintptr_t sjv_data;
     int32_t sjv_size;
 
@@ -1489,11 +1493,11 @@ void sjf_anon1_readLine_heap(sjs_anon1* _parent, sjs_string_heap** _return) {
     (*_return) = (sjs_string_heap*)malloc(sizeof(sjs_string_heap));
     (*_return)->_refCount = 1;
 #line 43 ".\..\lib\common\console.sj"
-    sjt_math7 = sjv_size;
+    sjt_math9 = sjv_size;
 #line 43
-    sjt_math8 = 1;
+    sjt_math10 = 1;
 #line 43
-    (*_return)->count = sjt_math7 - sjt_math8;
+    (*_return)->count = sjt_math9 - sjt_math10;
 #line 43
     (*_return)->data.size = sjv_size;
 #line 43
@@ -1682,7 +1686,15 @@ int main(int argc, char** argv) {
 #line 34
     sjv_u32_maxValue = (uint32_t)4294967295u;
 #line 36
-    sjv_i32_maxValue = (-2147483647 - 1);
+    sjt_negate1 = 1;
+#line 36
+    result1 = -sjt_negate1;
+#line 36
+    sjt_math1 = result1;
+#line 36
+    sjt_math2 = 2147483647;
+#line 36
+    sjv_i32_maxValue = sjt_math1 - sjt_math2;
 #line 37
     sjv_i32_minValue = 2147483647;
 #line 0 ""
@@ -1708,25 +1720,25 @@ int main(int argc, char** argv) {
 #line 2 ".\..\lib\common\random.sj"
     sjt_parent2 = &sjv_random;
 #line 0 ""
-    sjf_anon4_nextInt(sjt_parent2, &sjt_math3);
+    sjf_anon4_nextInt(sjt_parent2, &sjt_math5);
 #line 5 ".\app\highlow.sj"
-    sjt_math4 = 10;
+    sjt_math6 = 10;
 #line 5
-    sjt_math1 = sjt_math3 % sjt_math4;
+    sjt_math3 = sjt_math5 % sjt_math6;
 #line 5
-    sjt_math2 = 1;
+    sjt_math4 = 1;
 #line 5
-    sjv_num = sjt_math1 + sjt_math2;
+    sjv_num = sjt_math3 + sjt_math4;
 #line 6
     sjv_isCorrect = false;
 #line 8
     sjt_not1 = sjv_isCorrect;
 #line 8
-    result1 = !sjt_not1;
+    result2 = !sjt_not1;
 #line 8
-    sjt_while1 = result1;
+    sjt_while1 = result2;
     while (sjt_while1) {
-        bool result2;
+        bool result3;
         int32_t sjt_compare1;
         int32_t sjt_compare2;
         sjs_string* sjt_functionParam2;
@@ -1825,9 +1837,9 @@ int main(int argc, char** argv) {
 #line 8
         sjt_not2 = sjv_isCorrect;
 #line 8
-        result2 = !sjt_not2;
+        result3 = !sjt_not2;
 #line 8
-        sjt_while1 = result2;
+        sjt_while1 = result3;
 
         sjf_string_destroy(&sjv_str);
     }
