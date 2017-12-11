@@ -180,8 +180,8 @@ func_block			: TLPAREN end_optional func_args end_optional TRPAREN	{ $$ = $3; }
 					;
 
 func_args  			: func_arg										{ $$ = new NodeList(); if ($1) { $$->push_back(shared_ptr<NBase>($1)); } }
-					| func_args end_star func_arg 						{ if ($3) { $1->push_back(shared_ptr<NBase>($3)); } }
-					| func_args TCOMMA end_star func_arg 				{ if ($3) { $1->push_back(shared_ptr<NBase>($4)); } }
+					| func_args end_star func_arg 					{ if ($3) { $1->push_back(shared_ptr<NBase>($3)); } }
+					| func_args TCOMMA end_star func_arg 			{ if ($4) { $1->push_back(shared_ptr<NBase>($4)); } }
 					| func_args TCOMMA func_arg 					{ if ($3) { $1->push_back(shared_ptr<NBase>($3)); } }
 					;
 

@@ -1,0 +1,18 @@
+func(x'i32:, y'i32:, z'i32:)'stack func {
+  this
+}
+
+global()'void {
+  func(this = func(
+    x'i32 : x,
+    y'i32 : y,
+    z'i32 : z
+  ))
+  func(this = func(
+    x'i32 : x,
+    y'i32 : y,
+    z'i32 : z
+  ))
+  void
+}
+
