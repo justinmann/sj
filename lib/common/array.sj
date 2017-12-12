@@ -55,6 +55,21 @@ array!t (
 		}
 	}
 
+	map!new_t(cb : '(:t)new_t)'array!new_t {
+		new_data := 0 as ptr
+		--c--
+		sjv_new_data = (uintptr_t)calloc(_this->size * sizeof(#type(new_t)), 1);
+		--c--
+		for i (0 to size) {
+			new_item : cb(getAt(i))
+			--c--
+			#type(t)* p = (#type(new_t)*)sjv_new_data;
+			#retain(t, p[sjv_i], new_item);
+			--c--
+		}		
+		array!new_t(size, new_data)
+	}
+
 	grow(new_size :' i32)'void {
 		--c--
 		if (_parent->size != new_size) {
