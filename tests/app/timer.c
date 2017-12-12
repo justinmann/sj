@@ -7145,23 +7145,23 @@ void sjf_anon9_heap(sjs_anon9_heap* _this) {
 }
 
 void sjf_array_char(sjs_array_char* _this) {
-#line 167 "lib/common/array.sj"
+#line 165 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 167
+#line 165
         halt("size is less than zero");
-#line 167
+#line 165
     }
-#line 167
+#line 165
     if (!_this->data) {
-#line 167
+#line 165
         _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(char));
-#line 167
+#line 165
         if (!_this->data) {
-#line 167
+#line 165
             halt("grow: out of memory\n");
-#line 167
+#line 165
         }
-#line 167
+#line 165
     }
 }
 
@@ -7174,68 +7174,68 @@ void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
     _this->_isGlobal = _from->_isGlobal;
 #line 1
     _this->count = _from->count;
-#line 181
+#line 179
     _this->data = _from->data;
-#line 181
+#line 179
     if (!_this->_isGlobal && _this->data) {
-#line 181
+#line 179
         _retain((void*)_this->data);
-#line 181
+#line 179
     }
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
-#line 188 "lib/common/array.sj"
+#line 186 "lib/common/array.sj"
     if (!_this->_isGlobal && _this->data) {
-#line 188
+#line 186
         if (_release((void*)_this->data)) {
-#line 188
+#line 186
             free((char*)_this->data);
-#line 188
+#line 186
         }
-#line 188
+#line 186
     }
 }
 
 void sjf_array_char_heap(sjs_array_char_heap* _this) {
-#line 167 "lib/common/array.sj"
+#line 165 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 167
+#line 165
         halt("size is less than zero");
-#line 167
+#line 165
     }
-#line 167
+#line 165
     if (!_this->data) {
-#line 167
+#line 165
         _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(char));
-#line 167
+#line 165
         if (!_this->data) {
-#line 167
+#line 165
             halt("grow: out of memory\n");
-#line 167
+#line 165
         }
-#line 167
+#line 165
     }
 }
 
 void sjf_array_heap_animation(sjs_array_heap_animation* _this) {
-#line 167 "lib/common/array.sj"
+#line 165 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 167
+#line 165
         halt("size is less than zero");
-#line 167
+#line 165
     }
-#line 167
+#line 165
     if (!_this->data) {
-#line 167
+#line 165
         _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(sji_anon5_animation*));
-#line 167
+#line 165
         if (!_this->data) {
-#line 167
+#line 165
             halt("grow: out of memory\n");
-#line 167
+#line 165
         }
-#line 167
+#line 165
     }
 }
 
@@ -7248,26 +7248,26 @@ void sjf_array_heap_animation_copy(sjs_array_heap_animation* _this, sjs_array_he
     _this->_isGlobal = _from->_isGlobal;
 #line 1
     _this->count = _from->count;
-#line 181
+#line 179
     _this->data = _from->data;
-#line 181
+#line 179
     if (!_this->_isGlobal && _this->data) {
-#line 181
+#line 179
         _retain((void*)_this->data);
-#line 181
+#line 179
     }
 }
 
 void sjf_array_heap_animation_destroy(sjs_array_heap_animation* _this) {
-#line 188 "lib/common/array.sj"
+#line 186 "lib/common/array.sj"
     if (!_this->_isGlobal && _this->data) {
-#line 188
+#line 186
         if (_release((void*)_this->data)) {
-#line 188
+#line 186
             free((sji_anon5_animation**)_this->data);
-#line 188
+#line 186
         }
-#line 188
+#line 186
     }
 }
 
@@ -7293,68 +7293,68 @@ void sjf_array_heap_animation_getAt_heap(sjs_array_heap_animation* _parent, int3
 }
 
 void sjf_array_heap_animation_grow(sjs_array_heap_animation* _parent, int32_t new_size) {
-#line 116 "lib/common/array.sj"
+#line 114 "lib/common/array.sj"
     if (_parent->dataSize != new_size) {
-#line 116
+#line 114
         if (new_size < _parent->dataSize) {
-#line 116
+#line 114
             halt("grow: new size smaller than old _parent->dataSize %d:%d\n", new_size, _parent->dataSize);
-#line 116
+#line 114
         }
-#line 116
+#line 114
         if (_parent->_isGlobal) {
-#line 116
+#line 114
             _parent->_isGlobal = false;
-#line 116
+#line 114
             sji_anon5_animation** p = (sji_anon5_animation**)_parent->data;
-#line 116
+#line 114
             _parent->data = (uintptr_t)malloc(new_size * sizeof(sji_anon5_animation*));
-#line 116
+#line 114
             if (!_parent->data) {
-#line 116
+#line 114
                 halt("grow: out of memory\n");
-#line 116
+#line 114
             }
-#line 116
+#line 114
             memcpy((void*)_parent->data, p, _parent->dataSize * sizeof(sji_anon5_animation*));
-#line 116
+#line 114
         } else {
-#line 116
+#line 114
             _parent->data = (uintptr_t)realloc((void*)_parent->data, new_size * sizeof(sji_anon5_animation*));
-#line 116
+#line 114
             if (!_parent->data) {
-#line 116
+#line 114
                 halt("grow: out of memory\n");
-#line 116
+#line 114
             }
-#line 116
+#line 114
             memset((sji_anon5_animation**)_parent->data + _parent->dataSize, 0, (new_size - _parent->dataSize) * sizeof(sji_anon5_animation*));
-#line 116
+#line 114
         }
-#line 116
+#line 114
         _parent->dataSize = new_size;
-#line 116
+#line 114
     }
 }
 
 void sjf_array_heap_animation_heap(sjs_array_heap_animation_heap* _this) {
-#line 167 "lib/common/array.sj"
+#line 165 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 167
+#line 165
         halt("size is less than zero");
-#line 167
+#line 165
     }
-#line 167
+#line 165
     if (!_this->data) {
-#line 167
+#line 165
         _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(sji_anon5_animation*));
-#line 167
+#line 165
         if (!_this->data) {
-#line 167
+#line 165
             halt("grow: out of memory\n");
-#line 167
+#line 165
         }
-#line 167
+#line 165
     }
 }
 
@@ -7384,27 +7384,27 @@ void sjf_array_heap_animation_initAt(sjs_array_heap_animation* _parent, int32_t 
 #line 18
     ;
 #line 18
-    _parent->count = index;
+    _parent->count = index + 1;
 }
 
 void sjf_array_heap_element(sjs_array_heap_element* _this) {
-#line 167 "lib/common/array.sj"
+#line 165 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 167
+#line 165
         halt("size is less than zero");
-#line 167
+#line 165
     }
-#line 167
+#line 165
     if (!_this->data) {
-#line 167
+#line 165
         _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(sji_element*));
-#line 167
+#line 165
         if (!_this->data) {
-#line 167
+#line 165
             halt("grow: out of memory\n");
-#line 167
+#line 165
         }
-#line 167
+#line 165
     }
 }
 
@@ -7417,26 +7417,26 @@ void sjf_array_heap_element_copy(sjs_array_heap_element* _this, sjs_array_heap_e
     _this->_isGlobal = _from->_isGlobal;
 #line 1
     _this->count = _from->count;
-#line 181
+#line 179
     _this->data = _from->data;
-#line 181
+#line 179
     if (!_this->_isGlobal && _this->data) {
-#line 181
+#line 179
         _retain((void*)_this->data);
-#line 181
+#line 179
     }
 }
 
 void sjf_array_heap_element_destroy(sjs_array_heap_element* _this) {
-#line 188 "lib/common/array.sj"
+#line 186 "lib/common/array.sj"
     if (!_this->_isGlobal && _this->data) {
-#line 188
+#line 186
         if (_release((void*)_this->data)) {
-#line 188
+#line 186
             free((sji_element**)_this->data);
-#line 188
+#line 186
         }
-#line 188
+#line 186
     }
 }
 
@@ -7462,23 +7462,23 @@ void sjf_array_heap_element_getAt_heap(sjs_array_heap_element* _parent, int32_t 
 }
 
 void sjf_array_heap_element_heap(sjs_array_heap_element_heap* _this) {
-#line 167 "lib/common/array.sj"
+#line 165 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 167
+#line 165
         halt("size is less than zero");
-#line 167
+#line 165
     }
-#line 167
+#line 165
     if (!_this->data) {
-#line 167
+#line 165
         _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(sji_element*));
-#line 167
+#line 165
         if (!_this->data) {
-#line 167
+#line 165
             halt("grow: out of memory\n");
-#line 167
+#line 165
         }
-#line 167
+#line 165
     }
 }
 
@@ -7508,27 +7508,27 @@ void sjf_array_heap_element_initAt(sjs_array_heap_element* _parent, int32_t inde
 #line 18
     ;
 #line 18
-    _parent->count = index;
+    _parent->count = index + 1;
 }
 
 void sjf_array_heap_model(sjs_array_heap_model* _this) {
-#line 167 "lib/common/array.sj"
+#line 165 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 167
+#line 165
         halt("size is less than zero");
-#line 167
+#line 165
     }
-#line 167
+#line 165
     if (!_this->data) {
-#line 167
+#line 165
         _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(sji_scene3dElement_model*));
-#line 167
+#line 165
         if (!_this->data) {
-#line 167
+#line 165
             halt("grow: out of memory\n");
-#line 167
+#line 165
         }
-#line 167
+#line 165
     }
 }
 
@@ -7541,26 +7541,26 @@ void sjf_array_heap_model_copy(sjs_array_heap_model* _this, sjs_array_heap_model
     _this->_isGlobal = _from->_isGlobal;
 #line 1
     _this->count = _from->count;
-#line 181
+#line 179
     _this->data = _from->data;
-#line 181
+#line 179
     if (!_this->_isGlobal && _this->data) {
-#line 181
+#line 179
         _retain((void*)_this->data);
-#line 181
+#line 179
     }
 }
 
 void sjf_array_heap_model_destroy(sjs_array_heap_model* _this) {
-#line 188 "lib/common/array.sj"
+#line 186 "lib/common/array.sj"
     if (!_this->_isGlobal && _this->data) {
-#line 188
+#line 186
         if (_release((void*)_this->data)) {
-#line 188
+#line 186
             free((sji_scene3dElement_model**)_this->data);
-#line 188
+#line 186
         }
-#line 188
+#line 186
     }
 }
 
@@ -7586,23 +7586,23 @@ void sjf_array_heap_model_getAt_heap(sjs_array_heap_model* _parent, int32_t inde
 }
 
 void sjf_array_heap_model_heap(sjs_array_heap_model_heap* _this) {
-#line 167 "lib/common/array.sj"
+#line 165 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 167
+#line 165
         halt("size is less than zero");
-#line 167
+#line 165
     }
-#line 167
+#line 165
     if (!_this->data) {
-#line 167
+#line 165
         _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(sji_scene3dElement_model*));
-#line 167
+#line 165
         if (!_this->data) {
-#line 167
+#line 165
             halt("grow: out of memory\n");
-#line 167
+#line 165
         }
-#line 167
+#line 165
     }
 }
 
@@ -7632,27 +7632,27 @@ void sjf_array_heap_model_initAt(sjs_array_heap_model* _parent, int32_t index, s
 #line 18
     ;
 #line 18
-    _parent->count = index;
+    _parent->count = index + 1;
 }
 
 void sjf_array_i32(sjs_array_i32* _this) {
-#line 167 "lib/common/array.sj"
+#line 165 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 167
+#line 165
         halt("size is less than zero");
-#line 167
+#line 165
     }
-#line 167
+#line 165
     if (!_this->data) {
-#line 167
+#line 165
         _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(int32_t));
-#line 167
+#line 165
         if (!_this->data) {
-#line 167
+#line 165
             halt("grow: out of memory\n");
-#line 167
+#line 165
         }
-#line 167
+#line 165
     }
 }
 
@@ -7665,26 +7665,26 @@ void sjf_array_i32_copy(sjs_array_i32* _this, sjs_array_i32* _from) {
     _this->_isGlobal = _from->_isGlobal;
 #line 1
     _this->count = _from->count;
-#line 181
+#line 179
     _this->data = _from->data;
-#line 181
+#line 179
     if (!_this->_isGlobal && _this->data) {
-#line 181
+#line 179
         _retain((void*)_this->data);
-#line 181
+#line 179
     }
 }
 
 void sjf_array_i32_destroy(sjs_array_i32* _this) {
-#line 188 "lib/common/array.sj"
+#line 186 "lib/common/array.sj"
     if (!_this->_isGlobal && _this->data) {
-#line 188
+#line 186
         if (_release((void*)_this->data)) {
-#line 188
+#line 186
             free((int32_t*)_this->data);
-#line 188
+#line 186
         }
-#line 188
+#line 186
     }
 }
 
@@ -7706,23 +7706,23 @@ void sjf_array_i32_getAt(sjs_array_i32* _parent, int32_t index, int32_t* _return
 }
 
 void sjf_array_i32_heap(sjs_array_i32_heap* _this) {
-#line 167 "lib/common/array.sj"
+#line 165 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 167
+#line 165
         halt("size is less than zero");
-#line 167
+#line 165
     }
-#line 167
+#line 165
     if (!_this->data) {
-#line 167
+#line 165
         _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(int32_t));
-#line 167
+#line 165
         if (!_this->data) {
-#line 167
+#line 165
             halt("grow: out of memory\n");
-#line 167
+#line 165
         }
-#line 167
+#line 165
     }
 }
 
@@ -7748,27 +7748,27 @@ void sjf_array_i32_initAt(sjs_array_i32* _parent, int32_t index, int32_t item) {
 #line 18
     ;
 #line 18
-    _parent->count = index;
+    _parent->count = index + 1;
 }
 
 void sjf_array_local_cb_void(sjs_array_local_cb_void* _this) {
-#line 167 "lib/common/array.sj"
+#line 165 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 167
+#line 165
         halt("size is less than zero");
-#line 167
+#line 165
     }
-#line 167
+#line 165
     if (!_this->data) {
-#line 167
+#line 165
         _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(cb_void));
-#line 167
+#line 165
         if (!_this->data) {
-#line 167
+#line 165
             halt("grow: out of memory\n");
-#line 167
+#line 165
         }
-#line 167
+#line 165
     }
 }
 
@@ -7781,26 +7781,26 @@ void sjf_array_local_cb_void_copy(sjs_array_local_cb_void* _this, sjs_array_loca
     _this->_isGlobal = _from->_isGlobal;
 #line 1
     _this->count = _from->count;
-#line 181
+#line 179
     _this->data = _from->data;
-#line 181
+#line 179
     if (!_this->_isGlobal && _this->data) {
-#line 181
+#line 179
         _retain((void*)_this->data);
-#line 181
+#line 179
     }
 }
 
 void sjf_array_local_cb_void_destroy(sjs_array_local_cb_void* _this) {
-#line 188 "lib/common/array.sj"
+#line 186 "lib/common/array.sj"
     if (!_this->_isGlobal && _this->data) {
-#line 188
+#line 186
         if (_release((void*)_this->data)) {
-#line 188
+#line 186
             free((cb_void*)_this->data);
-#line 188
+#line 186
         }
-#line 188
+#line 186
     }
 }
 
@@ -7822,44 +7822,44 @@ void sjf_array_local_cb_void_getAt(sjs_array_local_cb_void* _parent, int32_t ind
 }
 
 void sjf_array_local_cb_void_heap(sjs_array_local_cb_void_heap* _this) {
-#line 167 "lib/common/array.sj"
+#line 165 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 167
+#line 165
         halt("size is less than zero");
-#line 167
+#line 165
     }
-#line 167
+#line 165
     if (!_this->data) {
-#line 167
+#line 165
         _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(cb_void));
-#line 167
+#line 165
         if (!_this->data) {
-#line 167
+#line 165
             halt("grow: out of memory\n");
-#line 167
+#line 165
         }
-#line 167
+#line 165
     }
 }
 
 void sjf_array_vertex_location_texture_normal(sjs_array_vertex_location_texture_normal* _this) {
-#line 167 "lib/common/array.sj"
+#line 165 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 167
+#line 165
         halt("size is less than zero");
-#line 167
+#line 165
     }
-#line 167
+#line 165
     if (!_this->data) {
-#line 167
+#line 165
         _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(sjs_vertex_location_texture_normal));
-#line 167
+#line 165
         if (!_this->data) {
-#line 167
+#line 165
             halt("grow: out of memory\n");
-#line 167
+#line 165
         }
-#line 167
+#line 165
     }
 }
 
@@ -7872,26 +7872,26 @@ void sjf_array_vertex_location_texture_normal_copy(sjs_array_vertex_location_tex
     _this->_isGlobal = _from->_isGlobal;
 #line 1
     _this->count = _from->count;
-#line 181
+#line 179
     _this->data = _from->data;
-#line 181
+#line 179
     if (!_this->_isGlobal && _this->data) {
-#line 181
+#line 179
         _retain((void*)_this->data);
-#line 181
+#line 179
     }
 }
 
 void sjf_array_vertex_location_texture_normal_destroy(sjs_array_vertex_location_texture_normal* _this) {
-#line 188 "lib/common/array.sj"
+#line 186 "lib/common/array.sj"
     if (!_this->_isGlobal && _this->data) {
-#line 188
+#line 186
         if (_release((void*)_this->data)) {
-#line 188
+#line 186
             free((sjs_vertex_location_texture_normal*)_this->data);
-#line 188
+#line 186
         }
-#line 188
+#line 186
     }
 }
 
@@ -7913,23 +7913,23 @@ void sjf_array_vertex_location_texture_normal_getAt(sjs_array_vertex_location_te
 }
 
 void sjf_array_vertex_location_texture_normal_heap(sjs_array_vertex_location_texture_normal_heap* _this) {
-#line 167 "lib/common/array.sj"
+#line 165 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 167
+#line 165
         halt("size is less than zero");
-#line 167
+#line 165
     }
-#line 167
+#line 165
     if (!_this->data) {
-#line 167
+#line 165
         _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(sjs_vertex_location_texture_normal));
-#line 167
+#line 165
         if (!_this->data) {
-#line 167
+#line 165
             halt("grow: out of memory\n");
-#line 167
+#line 165
         }
-#line 167
+#line 165
     }
 }
 
@@ -7955,7 +7955,7 @@ void sjf_array_vertex_location_texture_normal_initAt(sjs_array_vertex_location_t
 #line 18
     ;
 #line 18
-    _parent->count = index;
+    _parent->count = index + 1;
 }
 
 void sjf_boxRenderer(sjs_boxRenderer* _this) {
@@ -13244,7 +13244,7 @@ void sjf_list_heap_animation_add(sjs_list_heap_animation* _parent, sji_anon5_ani
 
 #line 36 "lib/common/list.sj"
         sjt_dot22 = _parent;
-#line 115 "lib/common/array.sj"
+#line 113 "lib/common/array.sj"
         sjt_parent8 = &(sjt_dot22)->array;
 #line 38 "lib/common/list.sj"
         sjt_functionParam7 = 10;
@@ -13335,7 +13335,7 @@ void sjf_list_heap_animation_removeAt(sjs_list_heap_animation* _parent, int32_t 
 #line 46
     sji_anon5_animation** p = (sji_anon5_animation**)_parent->array.data;
 #line 46
-    if (index != _parent->count - 1) {
+    if (index != _parent->array.count - 1) {
 #line 46
         memcpy(p + index, p + index + 1, _parent->array.count - index - 1);
 #line 46

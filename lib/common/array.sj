@@ -25,7 +25,7 @@ array!t (
 
 		#type(t)* p = (#type(t)*)_parent->data;
 		#retain(t, p[index], item);
-		_parent->count = index;
+		_parent->count = index + 1;
 		--c--
 	}
 
@@ -102,7 +102,6 @@ array!t (
 		r
 	}
 
-/*
 	foldr!result(initial : 'result, cb : '(:result, :t)result)'result {
 		r := initial
 		for i : 0 toReverse count {
@@ -110,7 +109,6 @@ array!t (
 		}			
 		r
 	}
-*/
 
 	grow(new_size :' i32)'void {
 		--c--

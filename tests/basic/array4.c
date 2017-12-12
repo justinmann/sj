@@ -1401,23 +1401,23 @@ void sjf_anon4_heap(sjs_anon4_heap* _this) {
 }
 
 void sjf_array_class(sjs_array_class* _this) {
-#line 167 "lib/common/array.sj"
+#line 165 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 167
+#line 165
         halt("size is less than zero");
-#line 167
+#line 165
     }
-#line 167
+#line 165
     if (!_this->data) {
-#line 167
+#line 165
         _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(sjs_class));
-#line 167
+#line 165
         if (!_this->data) {
-#line 167
+#line 165
             halt("grow: out of memory\n");
-#line 167
+#line 165
         }
-#line 167
+#line 165
     }
 }
 
@@ -1430,26 +1430,26 @@ void sjf_array_class_copy(sjs_array_class* _this, sjs_array_class* _from) {
     _this->_isGlobal = _from->_isGlobal;
 #line 1
     _this->count = _from->count;
-#line 181
+#line 179
     _this->data = _from->data;
-#line 181
+#line 179
     if (!_this->_isGlobal && _this->data) {
-#line 181
+#line 179
         _retain((void*)_this->data);
-#line 181
+#line 179
     }
 }
 
 void sjf_array_class_destroy(sjs_array_class* _this) {
-#line 188 "lib/common/array.sj"
+#line 186 "lib/common/array.sj"
     if (!_this->_isGlobal && _this->data) {
-#line 188
+#line 186
         if (_release((void*)_this->data)) {
-#line 188
+#line 186
             free((sjs_class*)_this->data);
-#line 188
+#line 186
         }
-#line 188
+#line 186
     }
 }
 
@@ -1471,23 +1471,23 @@ void sjf_array_class_getAt(sjs_array_class* _parent, int32_t index, sjs_class* _
 }
 
 void sjf_array_class_heap(sjs_array_class_heap* _this) {
-#line 167 "lib/common/array.sj"
+#line 165 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 167
+#line 165
         halt("size is less than zero");
-#line 167
+#line 165
     }
-#line 167
+#line 165
     if (!_this->data) {
-#line 167
+#line 165
         _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(sjs_class));
-#line 167
+#line 165
         if (!_this->data) {
-#line 167
+#line 165
             halt("grow: out of memory\n");
-#line 167
+#line 165
         }
-#line 167
+#line 165
     }
 }
 

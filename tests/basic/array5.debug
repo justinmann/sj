@@ -35,7 +35,7 @@ array_initAt(index'i32:, item'stack class:)'void {
   }
   sjs_class* p = (sjs_class*)_parent->data;
   ;
-  _parent->count = index;
+  _parent->count = index + 1;
   
   --c--
 }

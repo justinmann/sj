@@ -35,7 +35,7 @@ array_initAt(index'i32:, item'heap class:)'void {
   }
   sjs_class_heap** p = (sjs_class_heap**)_parent->data;
   ;
-  _parent->count = index;
+  _parent->count = index + 1;
   
   --c--
 }

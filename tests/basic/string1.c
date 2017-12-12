@@ -1421,23 +1421,23 @@ void sjf_anon4_heap(sjs_anon4_heap* _this) {
 }
 
 void sjf_array_char(sjs_array_char* _this) {
-#line 167 "lib/common/array.sj"
+#line 165 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 167
+#line 165
         halt("size is less than zero");
-#line 167
+#line 165
     }
-#line 167
+#line 165
     if (!_this->data) {
-#line 167
+#line 165
         _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(char));
-#line 167
+#line 165
         if (!_this->data) {
-#line 167
+#line 165
             halt("grow: out of memory\n");
-#line 167
+#line 165
         }
-#line 167
+#line 165
     }
 }
 
@@ -1450,26 +1450,26 @@ void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
     _this->_isGlobal = _from->_isGlobal;
 #line 1
     _this->count = _from->count;
-#line 181
+#line 179
     _this->data = _from->data;
-#line 181
+#line 179
     if (!_this->_isGlobal && _this->data) {
-#line 181
+#line 179
         _retain((void*)_this->data);
-#line 181
+#line 179
     }
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
-#line 188 "lib/common/array.sj"
+#line 186 "lib/common/array.sj"
     if (!_this->_isGlobal && _this->data) {
-#line 188
+#line 186
         if (_release((void*)_this->data)) {
-#line 188
+#line 186
             free((char*)_this->data);
-#line 188
+#line 186
         }
-#line 188
+#line 186
     }
 }
 
@@ -1491,39 +1491,39 @@ void sjf_array_char_getAt(sjs_array_char* _parent, int32_t index, char* _return)
 }
 
 void sjf_array_char_heap(sjs_array_char_heap* _this) {
-#line 167 "lib/common/array.sj"
+#line 165 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 167
+#line 165
         halt("size is less than zero");
-#line 167
+#line 165
     }
-#line 167
+#line 165
     if (!_this->data) {
-#line 167
+#line 165
         _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(char));
-#line 167
+#line 165
         if (!_this->data) {
-#line 167
+#line 165
             halt("grow: out of memory\n");
-#line 167
+#line 165
         }
-#line 167
+#line 165
     }
 }
 
 void sjf_array_char_isEqual(sjs_array_char* _parent, sjs_array_char* test, bool* _return) {
-#line 143 "lib/common/array.sj"
+#line 141 "lib/common/array.sj"
     if (_parent->count != test->count) {
-#line 143
+#line 141
         *_return = false;
-#line 143
+#line 141
     }
-#line 143
+#line 141
     *_return = memcmp((void*)_parent->data, (void*)test->data, _parent->count * sizeof(char)) == 0;
 }
 
 void sjf_array_char_isLessOrEqual(sjs_array_char* _parent, sjs_array_char* test, bool* _return) {
-#line 163 "lib/common/array.sj"
+#line 161 "lib/common/array.sj"
     *_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(char)) <= 0;
 }
 
@@ -1566,7 +1566,7 @@ void sjf_string_isEqual(sjs_string* _parent, sjs_string* test, bool* _return) {
 
 #line 30 "lib/common/string.sj"
     sjt_dot2 = _parent;
-#line 143 "lib/common/array.sj"
+#line 141 "lib/common/array.sj"
     sjt_parent3 = &(sjt_dot2)->data;
 #line 30 "lib/common/string.sj"
     sjt_dot3 = test;
@@ -1584,7 +1584,7 @@ void sjf_string_isLessOrEqual(sjs_string* _parent, sjs_string* test, bool* _retu
 
 #line 46 "lib/common/string.sj"
     sjt_dot4 = _parent;
-#line 163 "lib/common/array.sj"
+#line 161 "lib/common/array.sj"
     sjt_parent5 = &(sjt_dot4)->data;
 #line 46 "lib/common/string.sj"
     sjt_dot5 = test;

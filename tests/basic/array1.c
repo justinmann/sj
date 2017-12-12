@@ -1381,23 +1381,23 @@ void sjf_anon4_heap(sjs_anon4_heap* _this) {
 }
 
 void sjf_array_i32(sjs_array_i32* _this) {
-#line 167 "lib/common/array.sj"
+#line 165 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 167
+#line 165
         halt("size is less than zero");
-#line 167
+#line 165
     }
-#line 167
+#line 165
     if (!_this->data) {
-#line 167
+#line 165
         _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(int32_t));
-#line 167
+#line 165
         if (!_this->data) {
-#line 167
+#line 165
             halt("grow: out of memory\n");
-#line 167
+#line 165
         }
-#line 167
+#line 165
     }
 }
 
@@ -1410,26 +1410,26 @@ void sjf_array_i32_copy(sjs_array_i32* _this, sjs_array_i32* _from) {
     _this->_isGlobal = _from->_isGlobal;
 #line 1
     _this->count = _from->count;
-#line 181
+#line 179
     _this->data = _from->data;
-#line 181
+#line 179
     if (!_this->_isGlobal && _this->data) {
-#line 181
+#line 179
         _retain((void*)_this->data);
-#line 181
+#line 179
     }
 }
 
 void sjf_array_i32_destroy(sjs_array_i32* _this) {
-#line 188 "lib/common/array.sj"
+#line 186 "lib/common/array.sj"
     if (!_this->_isGlobal && _this->data) {
-#line 188
+#line 186
         if (_release((void*)_this->data)) {
-#line 188
+#line 186
             free((int32_t*)_this->data);
-#line 188
+#line 186
         }
-#line 188
+#line 186
     }
 }
 
@@ -1451,23 +1451,23 @@ void sjf_array_i32_getAt(sjs_array_i32* _parent, int32_t index, int32_t* _return
 }
 
 void sjf_array_i32_heap(sjs_array_i32_heap* _this) {
-#line 167 "lib/common/array.sj"
+#line 165 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 167
+#line 165
         halt("size is less than zero");
-#line 167
+#line 165
     }
-#line 167
+#line 165
     if (!_this->data) {
-#line 167
+#line 165
         _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(int32_t));
-#line 167
+#line 165
         if (!_this->data) {
-#line 167
+#line 165
             halt("grow: out of memory\n");
-#line 167
+#line 165
         }
-#line 167
+#line 165
     }
 }
 

@@ -96,7 +96,7 @@ array_initAt(index'i32:, item'i32:)'void {
   }
   int32_t* p = (int32_t*)_parent->data;
   ;
-  _parent->count = index;
+  _parent->count = index + 1;
   
   --c--
 }

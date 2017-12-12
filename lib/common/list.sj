@@ -48,7 +48,7 @@ list!t(
 			halt("removeAt: out of bounds %d:%d\n", index, _parent->array.count);
 		}
 		#type(t)* p = (#type(t)*)_parent->array.data;
-		if (index != _parent->count - 1) {
+		if (index != _parent->array.count - 1) {
 			memcpy(p + index, p + index + 1, _parent->array.count - index - 1);
 		}
 		_parent->array.count--;
