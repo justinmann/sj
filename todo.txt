@@ -4,8 +4,8 @@
 * center text
 
 -- language --
-* namespaces
 * enum
+* package/import
 * stack optional
 * stack interface
 * improve debug out for interfaces
@@ -14,6 +14,45 @@
 * weak pointer
 * override interfaces : a as type   -> a.asType()'t
 * interface as struct heap: { _parent, _vtbl, _destroy } or stack: { _parent, _vtbl }
+
+-- enum --
+// no values
+enum bar {
+	a
+	b
+	c
+}
+
+// all values
+enum bar2 {
+	a : 0
+	b : 1
+	c : 2
+}
+
+b : 'bar
+b : bar.a
+
+-- package/import --
+package foo
+class() { this }
+x := 0	
+x += 1
+
+package foo.bar
+bob() { this }
+
+foo.class()
+foo.x
+foo.bar.bob()
+
+import foo
+class()
+bar.bob()
+
+import f : foo
+f.class()
+f.bar.bob()
 
 -- lambda --
 array!item(

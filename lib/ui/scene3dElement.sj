@@ -27,7 +27,6 @@ scene3dElement #element (
 			_rect = copy rect_
 			projection = mat4_perspective(fieldOfView, _rect.h as f32 / _rect.w as f32, zNear, zFar)
 			view = mat4_lookAtLH(camera.get(), lookAt, up)
-			void
 		}
 		void
 	}
@@ -59,8 +58,8 @@ scene3dElement #element (
 		--c--
 
 		for i : 0 to children.count {
-			child2 : children[i]
-			child2.render(parent)
+			child : children[i]
+			child.render(parent)
 		}
 
 		--c--

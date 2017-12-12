@@ -11,7 +11,7 @@ model #model (
 
 	setWorld(world : 'mat4)'void {
 		_world = copy world
-		voide
+		void
 	}
 
 	render(scene3d : 'scene3dElement, model : 'mat4)'void {

@@ -38,12 +38,10 @@ blurElement #element (
 
 			if isEmpty(_frameBuffer1) {
 				_frameBuffer1 = value(frameBuffer(size(_rect.w, _rect.h)))
-				void			
 			}
 
 			if isEmpty(_frameBuffer2) {
 				_frameBuffer2 = value(frameBuffer(size(_rect.w, _rect.h)))
-				void			
 			}
 
 			_vertexBuffer = empty'boxVertexBuffer
@@ -74,8 +72,8 @@ blurElement #element (
 
 		if radius == 0.0f {
 			for i : 0 to children.size {
-				child2 : children[i]
-				child2.render(scene)
+				child : children[i]
+				child.render(scene)
 			}
 		} else if !isEmpty(_frameBuffer1) && !isEmpty(_frameBuffer2) {
 			f1 : getValue(_frameBuffer1)

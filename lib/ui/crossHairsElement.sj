@@ -16,7 +16,6 @@ crossHairsElement #element (
 			_rect = copy rect_
 			_topDownRenderer = empty'boxRenderer
 			_leftRightRenderer = empty'boxRenderer
-			void
 		}
 		void
 	}
@@ -48,8 +47,8 @@ crossHairsElement #element (
 				_point = copy point
 				_topDownRenderer = empty'boxRenderer
 				_leftRightRenderer = empty'boxRenderer
-				void
 			}
 		}
+		void
 	}
 ) { this }
