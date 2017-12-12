@@ -4,7 +4,6 @@
 * center text
 
 -- language --
-* list map/filter
 * namespaces
 * enum
 * stack optional
