@@ -4,9 +4,9 @@
 * center text
 
 -- language --
-* ifValue a, b, c {} elseEmpty {}
 * array map
 * array filter
+* list map/filter
 * namespaces
 * enum
 * stack optional
