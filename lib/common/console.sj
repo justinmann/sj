@@ -40,6 +40,6 @@ console : ^(
 	    size = index;
 		--c--
 
-		string(count := size - 1, data := array!char(size := size, data := data))
+		string(count := size - 1, data := array!char(dataSize := size, data := data, count := size))
 	}
 ) { this }

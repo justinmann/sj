@@ -16,7 +16,7 @@ anon4()'stack anon4 {
 
 array_getAt(index'i32:)'char --c--
 
-if (index >= _parent->size || index < 0) {
+if (index >= _parent->count || index < 0) {
 halt("getAt: out of bounds\n");
 }
 char* p = (char*)_parent->data;
@@ -26,16 +26,16 @@ char* p = (char*)_parent->data;
 
 array_isEqual(test'stack array_char:)'bool --c--
 
-if (_parent->size != test->size) {
+if (_parent->count != test->count) {
 *_return = false;
 }
-*_return = memcmp((void*)_parent->data, (void*)test->data, _parent->size * sizeof(char)) == 0;
+*_return = memcmp((void*)_parent->data, (void*)test->data, _parent->count * sizeof(char)) == 0;
 
 --c--
 
 array_isLessOrEqual(test'stack array_char:)'bool --c--
 
-*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(char)) <= 0;
+*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(char)) <= 0;
 
 --c--
 

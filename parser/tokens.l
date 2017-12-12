@@ -106,6 +106,7 @@ void updateLocation(YYLOCATION& loc, const char* s, const int len) {
 "elseEmpty"				TOKEN_VAL(TELSEEMPTY);
 "for" 					TOKEN_VAL(TFOR);
 "to" 					TOKEN_VAL(TTO);
+"toReverse"				TOKEN_VAL(TTOREVERSE);
 "while"					TOKEN_VAL(TWHILE);
 [ \t]+					SAVE_LOC; 
 "^"						TOKEN_STR(TIDENTIFIER, 0, 0);

@@ -14,12 +14,73 @@ anon4()'stack anon4 {
   this
 }
 
-array_getAt(index'i32:)'i32 --c--
+array!f32(dataSize'i32=, data'ptr=, _isGlobal'bool=, count'i32=)'stack array_f32 {
+  --c--
+  
+  if (_this->dataSize < 0) {
+  halt("size is less than zero");
+  }
+  if (!_this->data) {
+  _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(float));
+  if (!_this->data) {
+  halt("grow: out of memory\n");
+  }
+  }
+  
+  --c--
+  this
+}
+
+array_filter(cb'local (:f32)bool:)'stack array_f32 {
+  newData'ptr = 0i as ptr
+  newCount'i32 = 0i
+  --c--
+  
+  sjv_newData = (uintptr_t)malloc(_parent->count * sizeof(float));
+  
+  --c--
+  for i : 0i to parent.count {
+    item'f32 : array_getAt(
+      parent: this,
+      index'i32 : index
+    )
+    if cb(
+      param0'f32 : param0
+    ) {
+      --c--
+      
+      float* p = (float*)sjv_newData;
+      ;
+      
+      --c--
+      newCount'i32 = newCount + 1i
+    }
+  }
+  array!f32(this = array!f32(
+    dataSize'i32 = dataSize,
+    data'ptr = data,
+    _isGlobal'bool = _isGlobal,
+    count'i32 = count
+  ))
+}
+
+array_foldl!stack sum(initial'stack sum:, cb'local (:stack sum, :f32)stack sum:)'local sum {
+  r'local sum = initial
+  for i : 0i to parent.count {
+    r'local sum = cb(
+      param0'stack sum : param0,
+      param1'f32 : param1
+    )
+  }
+  r
+}
+
+array_getAt(index'i32:)'f32 --c--
 
 if (index >= _parent->count || index < 0) {
 halt("getAt: out of bounds\n");
 }
-int32_t* p = (int32_t*)_parent->data;
+float* p = (float*)_parent->data;
 ;
 
 --c--
@@ -39,6 +100,38 @@ array_initAt(index'i32:, item'i32:)'void {
   
   --c--
 }
+
+array_map!f32(cb'local (:i32)f32:)'stack array_f32 {
+  newData'ptr = 0i as ptr
+  --c--
+  
+  sjv_newData = (uintptr_t)malloc(_parent->count * sizeof(float));
+  
+  --c--
+  for i : 0i to parent.count {
+    newItem'f32 : cb(
+      param0'i32 : param0
+    )
+    --c--
+    
+    float* p = (float*)sjv_newData;
+    ;
+    
+    --c--
+  }
+  array!f32(this = array!f32(
+    dataSize'i32 = dataSize,
+    data'ptr = data,
+    _isGlobal'bool = _isGlobal,
+    count'i32 = count
+  ))
+}
+
+
+
+
+
+
 
 global()'void {
   --cinclude--
@@ -1228,9 +1321,18 @@ global()'void {
     index'i32 : index,
     item'i32 : item
   )]
-  array_getAt(
+  b'stack array_f32 : array_map!f32(
     parent: this,
-    index'i32 : index
+    cb'local (:i32)f32 : cb
+  )
+  c'stack array_f32 : array_filter(
+    parent: this,
+    cb'local (:f32)bool : cb
+  )
+  d'local sum : array_foldl!stack sum(
+    parent: this,
+    initial'stack sum : initial,
+    cb'local (:stack sum, :f32)stack sum : cb
   )
   void
 }

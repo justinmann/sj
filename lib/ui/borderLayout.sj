@@ -55,7 +55,7 @@ borderLayout #element (
 	setRect(rect_ : 'rect) {
 		rect = copy rect_
 		remaining = copy rect_
-		for i (0 to children.size) {
+		for i : 0 to children.size {
 			child : children[i]
 			borderChild : child as #borderChild?
 			position : borderChild?.getPosition()?:borderPosition.fill
@@ -81,7 +81,7 @@ borderLayout #element (
 			}
 		}	
 
-		for i (0 to children.size) {
+		for i : 0 to children.size {
 			child2 : children[i]
 			borderChild2 : child2 as #borderChild?
 			position2 : borderChild2?.getPosition()?:borderPosition.fill
@@ -94,7 +94,7 @@ borderLayout #element (
 	}
 
 	render(scene : 'scene2d) {
-		for i (0 to children.size) {
+		for i : 0 to children.size {
 			child : children[i]
 			child.render(scene)
 		}
@@ -106,7 +106,7 @@ borderLayout #element (
 	}
 
 	fireMouseEvent(point: 'point, eventId : 'i32)'void {
-		for i (0 to children.size) {
+		for i : 0 to children.size {
 			child : children[i]
 			child.fireMouseEvent(point, eventId)
 		}	

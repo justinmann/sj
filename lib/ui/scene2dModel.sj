@@ -18,7 +18,7 @@ scene2dModel #model (
 
 		_innerScene.setSize(frameBuffer.size)
 		_innerScene.clear()
-		for i (0 to children.size) {
+		for i : 0 to children.count {
 			child : children[i]
 			child.render(_innerScene)
 		}
@@ -49,7 +49,7 @@ scene2dModel #model (
 			scenePoint : point(
 				(texture.x * frameBuffer.size.w as f32) as i32
 				(texture.y * frameBuffer.size.h as f32) as i32)
-			for i (0 to children.size) {
+			for i : 0 to children.count {
 				child : children[i]
 				child.fireMouseEvent(scenePoint, eventId)
 			}
@@ -57,7 +57,7 @@ scene2dModel #model (
 	}
 ) { 
 	rect : rect(0, 0, frameBuffer.size.w, frameBuffer.size.h)
-	for i (0 to children.size) {
+	for i : 0 to children.count {
 		child : children[i]
 		child.setRect(rect)
 	}

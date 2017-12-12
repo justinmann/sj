@@ -16,9 +16,22 @@ void CCallbackVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* tr
     callback->transpileDefinition(compiler, trOutput);
     function->transpileDefinition(compiler, trOutput);
     
-    if (!CType::isSameExceptMode(storeValue->type, type)) {
-        compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' does not match left type '%s'", storeValue->type->fullName.c_str(), type->fullName.c_str());
+    auto destCallback = storeValue->type->callback.lock();
+    if (!destCallback) {
+        compiler->addError(loc, CErrorCode::TypeMismatch, "right must be a callback");
         return;
+    }
+
+    if (destCallback->argTypes.size() != callback->argTypes.size()) {
+        compiler->addError(loc, CErrorCode::TypeMismatch, "right arg count %d does not match left arg count %d", destCallback->argTypes.size(), callback->argTypes.size());
+        return;
+    }
+
+    for (auto i = 0; i < (int)destCallback->argTypes.size(); i++) {
+        if (destCallback->argTypes[i] != callback->argTypes[i]) {
+            compiler->addError(loc, CErrorCode::TypeMismatch, "right arg %d type '%s' does not match left arg type '%s'", i, destCallback->argTypes[i]->fullName.c_str(), callback->argTypes[i]->fullName.c_str());
+            return;
+        }
     }
 
     string name = storeValue->getName(trBlock);
@@ -45,13 +58,37 @@ void CCallbackVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* tr
         trBlock->statements.push_back(TrStatement(loc, name + "._parent = (void*)1"));
     }
 
-    if (callback->stackReturnType) {
-        string functionName = function->getCCallbackFunctionName(compiler, trOutput, CTM_Stack);
-        trBlock->statements.push_back(TrStatement(loc, name + "._cb = (" + callback->getCBName(compiler, false, CTM_Stack) + ")" + functionName));
+    auto destStackReturnType = storeValue->type->callback.lock()->stackReturnType;
+    auto destHeapReturnType = storeValue->type->callback.lock()->heapReturnType;
+
+    if (destStackReturnType) {
+        if (destStackReturnType == callback->stackReturnType) {
+            string functionName = function->getCCallbackFunctionName(compiler, trOutput, CTM_Stack);
+            trBlock->statements.push_back(TrStatement(loc, name + "._cb = (" + callback->getCBName(compiler, false, CTM_Stack) + ")" + functionName));
+        }
+        else if (destStackReturnType == callback->heapReturnType) {
+            string functionName = function->getCCallbackFunctionName(compiler, trOutput, CTM_Heap);
+            trBlock->statements.push_back(TrStatement(loc, name + "._cb = (" + callback->getCBName(compiler, false, CTM_Heap) + ")" + functionName));
+        }
+        else {
+            compiler->addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match '%s'", destHeapReturnType->fullName.c_str(), callback->heapReturnType->fullName.c_str());
+            return;
+        }
     }
-    if (callback->heapReturnType) {
-        string functionName = function->getCCallbackFunctionName(compiler, trOutput, CTM_Heap);
-        trBlock->statements.push_back(TrStatement(loc, name + "._cb_heap = (" + callback->getCBName(compiler, false, CTM_Heap) + ")" + functionName));
+
+    if (destHeapReturnType) {
+        if (destHeapReturnType == callback->stackReturnType) {
+            string functionName = function->getCCallbackFunctionName(compiler, trOutput, CTM_Stack);
+            trBlock->statements.push_back(TrStatement(loc, name + "._cb_heap = (" + callback->getCBName(compiler, false, CTM_Stack) + ")" + functionName));
+        }
+        else if (destHeapReturnType == callback->heapReturnType) {
+            string functionName = function->getCCallbackFunctionName(compiler, trOutput, CTM_Heap);
+            trBlock->statements.push_back(TrStatement(loc, name + "._cb_heap = (" + callback->getCBName(compiler, false, CTM_Heap) + ")" + functionName));
+        }
+        else {
+            compiler->addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match '%s'", destHeapReturnType->fullName.c_str(), callback->heapReturnType->fullName.c_str());
+            return;
+        }
     }
 
     storeValue->hasSetValue = true;

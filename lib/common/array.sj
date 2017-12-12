@@ -1,10 +1,11 @@
 array!t (
-	size := 0
+	dataSize := 0
 	data := 0 as ptr
 	_isGlobal := false
+	count := 0
 
 	getAt(index : 'i32)'t --c--
-		if (index >= _parent->size || index < 0) {
+		if (index >= _parent->count || index < 0) {
 			halt("getAt: out of bounds\n");
 		}
 
@@ -15,19 +16,23 @@ array!t (
 
 	initAt(index : 'i32, item : 't)'void {
 		--c--
-		if (index >= _parent->size || index < 0) {
-			halt("setAt: out of bounds %d:%d\n", index, _parent->size);
+		if (index != _parent->count) {
+			halt("initAt: can only initialize last element\n");		
+		}
+		if (index >= _parent->dataSize || index < 0) {
+			halt("initAt: out of bounds %d:%d\n", index, _parent->dataSize);
 		}
 
 		#type(t)* p = (#type(t)*)_parent->data;
 		#retain(t, p[index], item);
+		_parent->count = index;
 		--c--
 	}
 
 	setAt(index : 'i32, item : 't)'void {
 		--c--
-		if (index >= _parent->size || index < 0) {
-			halt("setAt: out of bounds %d:%d\n", index, _parent->size);
+		if (index >= _parent->count || index < 0) {
+			halt("setAt: out of bounds %d:%d\n", index, _parent->count);
 		}
 
 		#type(t)* p = (#type(t)*)_parent->data;
@@ -40,7 +45,7 @@ array!t (
 		match = -1
 		--c--	
 		#type(t)* p = (#type(t)*)_parent->data;
-		for (int index = 0; index < _parent->size; i++) {
+		for (int index = 0; index < _parent->count; i++) {
 			if (p[index] == item) {
 				match = index;
 			}
@@ -50,89 +55,122 @@ array!t (
 	}
 
 	each(cb : '(:t)void)'void {
-		for i (0 to size) {
+		for i : 0 to count {
 			cb(getAt(i))
 		}
 	}
 
 	map!new_t(cb : '(:t)new_t)'array!new_t {
-		new_data := 0 as ptr
+		newData := 0 as ptr
 		--c--
-		sjv_new_data = (uintptr_t)calloc(_this->size * sizeof(#type(new_t)), 1);
+		sjv_newData = (uintptr_t)malloc(_parent->count * sizeof(#type(new_t)));
 		--c--
-		for i (0 to size) {
-			new_item : cb(getAt(i))
+		for i : 0 to count {
+			newItem : cb(getAt(i))
 			--c--
-			#type(t)* p = (#type(new_t)*)sjv_new_data;
-			#retain(t, p[sjv_i], new_item);
+			#type(new_t)* p = (#type(new_t)*)sjv_newData;
+			#retain(new_t, p[i], newItem);
 			--c--
 		}		
-		array!new_t(size, new_data)
+		array!new_t(data: newData, dataSize: count, count: count)
 	}
+
+	filter(cb : '(:t)bool)'array!t {
+		newData := 0 as ptr
+		newCount := 0
+		--c--
+		sjv_newData = (uintptr_t)malloc(_parent->count * sizeof(#type(t)));
+		--c--
+		for i : 0 to count {
+			item : getAt(i)
+			if (cb(item)) {
+				--c--
+				#type(t)* p = (#type(t)*)sjv_newData;
+				#retain(t, p[sjv_newCount], item);
+				--c--
+				newCount++
+			}
+		}		
+		array!t(data: newData, dataSize: count, count: newCount)
+	}
+
+	foldl!result(initial : 'result, cb : '(:result, :t)result)'result {
+		r := initial
+		for i : 0 to count {
+			r = cb(r, getAt(i))
+		}			
+		r
+	}
+
+/*
+	foldr!result(initial : 'result, cb : '(:result, :t)result)'result {
+		r := initial
+		for i : 0 toReverse count {
+			r = cb(r, getAt(i))
+		}			
+		r
+	}
+*/
 
 	grow(new_size :' i32)'void {
 		--c--
-		if (_parent->size != new_size) {
-			if (new_size < _parent->size) {
-				halt("grow: new _parent->size smaller than old _parent->size %d:%d\n", new_size, _parent->size);
+		if (_parent->dataSize != new_size) {
+			if (new_size < _parent->dataSize) {
+				halt("grow: new size smaller than old _parent->dataSize %d:%d\n", new_size, _parent->dataSize);
 			}
 			
 			if (_parent->_isGlobal) {
 				_parent->_isGlobal = false;
 				#type(t)* p = (#type(t)*)_parent->data;
-				_parent->data = (uintptr_t)calloc(new_size * sizeof(#type(t)), 1);
+				_parent->data = (uintptr_t)malloc(new_size * sizeof(#type(t)));
 				if (!_parent->data) {
 					halt("grow: out of memory\n");
 				}
-				memcpy((void*)_parent->data, p, _parent->size * sizeof(#type(t)));
+				memcpy((void*)_parent->data, p, _parent->dataSize * sizeof(#type(t)));
 			} else {
 				_parent->data = (uintptr_t)realloc((void*)_parent->data, new_size * sizeof(#type(t)));
 				if (!_parent->data) {
 					halt("grow: out of memory\n");
 				}
-				memset((#type(t)*)_parent->data + _parent->size, 0, (new_size - _parent->size) * sizeof(#type(t)));
+				memset((#type(t)*)_parent->data + _parent->dataSize, 0, (new_size - _parent->dataSize) * sizeof(#type(t)));
 			}
-			_parent->size = new_size;
+			_parent->dataSize = new_size;
 		}
 		--c--
 		void
 	} 
 
 	isEqual(test :' array!t)'bool --c--
-		if (_parent->size != test->size) {
+		if (_parent->count != test->count) {
 			*_return = false;
 		}
 
-		*_return = memcmp((void*)_parent->data, (void*)test->data, _parent->size * sizeof(#type(t))) == 0;		
+		*_return = memcmp((void*)_parent->data, (void*)test->data, _parent->count * sizeof(#type(t))) == 0;		
 	--c--
 
 	isGreater(test :' array!t)'bool --c--
-		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) > 0;		
+		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) > 0;		
 	--c--
 
 	isGreaterOrEqual(test :' array!t)'bool --c--
-		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) >= 0;		
+		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) >= 0;		
 	--c--
 
 	isLess(test :' array!t)'bool --c--
-		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) < 0;		
+		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) < 0;		
 	--c--
 
 	isLessOrEqual(test :' array!t)'bool --c--
-		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->size < test->size ? _parent->size : test->size) * sizeof(#type(t))) <= 0;		
+		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) <= 0;		
 	--c--
 ) {
 	--c--
-	#include(<string.h>)
-
-	if (_this->size < 0) {
+	if (_this->dataSize < 0) {
 		halt("size is less than zero");
 	}
 
-	if (_this->data) {
-		_this->_isGlobal = true;
-	} else {
-		_this->data = (uintptr_t)calloc(_this->size * sizeof(#type(t)), 1);
+	if (!_this->data) {
+		_this->data = (uintptr_t)malloc(_this->dataSize * sizeof(#type(t)));
 		if (!_this->data) {
 			halt("grow: out of memory\n");
 		}

@@ -9,7 +9,7 @@ property!t(
 		if (t != x) {
 			t = copy x
 			_isDirty = true
-			for i (0 to invalidate.count) {
+			for i : 0 to invalidate.count {
 				cb : invalidate[i]
 				cb()
 			} 

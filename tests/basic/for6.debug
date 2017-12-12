@@ -1,6 +1,6 @@
 global()'void {
   y'i32 = 0i
-  for x : 2i to 1i {
+  for x : 2i toReverse 1i {
     y'i32 = y + x
   }
   y

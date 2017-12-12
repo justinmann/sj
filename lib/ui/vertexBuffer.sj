@@ -55,11 +55,11 @@ vertexBuffer!vertex(
             v.x*m.m02 + v.y*m.m12 + v.z*m.m22)
         vPickRayOrig : vec3(m.m30, m.m31, m.m32)
         
-        cTriangles : if indices.size > 0 { indices.size / 3 } else { vertices.size / 3 }
-        for i (0 to cTriangles) {
-            vertex0 : if indices.size > 0 { vertices[indices[i * 3 + 0]] } else { vertices[i * 3 + 0] }
-            vertex1 : if indices.size > 0 { vertices[indices[i * 3 + 1]] } else { vertices[i * 3 + 1] }
-            vertex2 : if indices.size > 0 { vertices[indices[i * 3 + 2]] } else { vertices[i * 3 + 2] }
+        cTriangles : if indices.count > 0 { indices.count / 3 } else { vertices.count / 3 }
+        for i : 0 to cTriangles {
+            vertex0 : if indices.count > 0 { vertices[indices[i * 3 + 0]] } else { vertices[i * 3 + 0] }
+            vertex1 : if indices.count > 0 { vertices[indices[i * 3 + 1]] } else { vertices[i * 3 + 1] }
+            vertex2 : if indices.count > 0 { vertices[indices[i * 3 + 2]] } else { vertices[i * 3 + 2] }
 
             // Check if the pick ray passes through this point
             result : intersectTriangle(vPickRayOrig, vPickRayDir, vertex0.location, vertex1.location, vertex2.location)
@@ -94,8 +94,8 @@ vertexBuffer!vertex(
 ) { 
     --c--
     _this->buffer = vertex_buffer_new((char*)_this->format.data.data);
-    vertex_buffer_push_back_indices(_this->buffer, (GLuint*)_this->indices.data, _this->indices.size);
-    vertex_buffer_push_back_vertices(_this->buffer, (#type(vertex)*)_this->vertices.data, _this->vertices.size);
+    vertex_buffer_push_back_indices(_this->buffer, (GLuint*)_this->indices.data, _this->indices.count);
+    vertex_buffer_push_back_vertices(_this->buffer, (#type(vertex)*)_this->vertices.data, _this->vertices.count);
     --c--
     this 
 } copy {

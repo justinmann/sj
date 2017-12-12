@@ -49,7 +49,7 @@ scene3dElement #element (
 			}
 		}
 		world : mat4_rotation(_angle, 0.0f, 1.0f, 0.0f)
-		for i (0 to children.size) {
+		for i : 0 to children.count {
 			child : children[i]
 			child.setWorld(world)
 		}
@@ -58,7 +58,7 @@ scene3dElement #element (
 	    glEnable( GL_DEPTH_TEST );
 		--c--
 
-		for i (0 to children.size) {
+		for i : 0 to children.count {
 			child2 : children[i]
 			child2.render(parent)
 		}
@@ -73,7 +73,7 @@ scene3dElement #element (
 	}
 
 	fireMouseEvent(point: 'point, eventId : 'i32)'void {
-		for i (0 to children.size) {
+		for i : 0 to children.count {
 			child : children[i]
 			child.fireMouseEvent(parent, point, eventId)
 		}

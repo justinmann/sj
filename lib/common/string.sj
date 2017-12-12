@@ -4,12 +4,12 @@ string(
 
 	add(item :'stack string) {
 		if item.count > 0 {
-			if count + item.count + 1 > data.size {
+			if count + item.count + 1 > data.dataSize {
 				data.grow(count + item.count + 1)
 				void
 			}
 
-			for i (0 to item.count) {
+			for i : 0 to item.count {
 				data.setAt(count, item.getAt(i))
 				count++		
 			}

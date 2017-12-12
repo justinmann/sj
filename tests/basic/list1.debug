@@ -16,7 +16,7 @@ anon4()'stack anon4 {
 
 array_getAt(index'i32:)'heap class --c--
 
-if (index >= _parent->size || index < 0) {
+if (index >= _parent->count || index < 0) {
 halt("getAt: out of bounds\n");
 }
 sjs_class_heap** p = (sjs_class_heap**)_parent->data;
@@ -27,27 +27,27 @@ sjs_class_heap** p = (sjs_class_heap**)_parent->data;
 array_grow(new_size'i32:)'void {
   --c--
   
-  if (_parent->size != new_size) {
-  if (new_size < _parent->size) {
-  halt("grow: new _parent->size smaller than old _parent->size %d:%d\n", new_size, _parent->size);
+  if (_parent->dataSize != new_size) {
+  if (new_size < _parent->dataSize) {
+  halt("grow: new size smaller than old _parent->dataSize %d:%d\n", new_size, _parent->dataSize);
   }
   
   if (_parent->_isGlobal) {
   _parent->_isGlobal = false;
   sjs_class_heap** p = (sjs_class_heap**)_parent->data;
-  _parent->data = (uintptr_t)calloc(new_size * sizeof(sjs_class_heap*), 1);
+  _parent->data = (uintptr_t)malloc(new_size * sizeof(sjs_class_heap*));
   if (!_parent->data) {
   halt("grow: out of memory\n");
   }
-  memcpy((void*)_parent->data, p, _parent->size * sizeof(sjs_class_heap*));
+  memcpy((void*)_parent->data, p, _parent->dataSize * sizeof(sjs_class_heap*));
   } else {
   _parent->data = (uintptr_t)realloc((void*)_parent->data, new_size * sizeof(sjs_class_heap*));
   if (!_parent->data) {
   halt("grow: out of memory\n");
   }
-  memset((sjs_class_heap**)_parent->data + _parent->size, 0, (new_size - _parent->size) * sizeof(sjs_class_heap*));
+  memset((sjs_class_heap**)_parent->data + _parent->dataSize, 0, (new_size - _parent->dataSize) * sizeof(sjs_class_heap*));
   }
-  _parent->size = new_size;
+  _parent->dataSize = new_size;
   }
   
   --c--
@@ -57,24 +57,28 @@ array_grow(new_size'i32:)'void {
 array_initAt(index'i32:, item'heap class:)'void {
   --c--
   
-  if (index >= _parent->size || index < 0) {
-  halt("setAt: out of bounds %d:%d\n", index, _parent->size);
+  if (index != _parent->count) {
+  halt("initAt: can only initialize last element\n");
+  }
+  if (index >= _parent->dataSize || index < 0) {
+  halt("initAt: out of bounds %d:%d\n", index, _parent->dataSize);
   }
   sjs_class_heap** p = (sjs_class_heap**)_parent->data;
   ;
+  _parent->count = index;
   
   --c--
 }
 
-list!heap class(count'i32=, data'stack array_heap_class=)'stack list_heap_class {
+list!heap class(array'stack array_heap_class=)'stack list_heap_class {
   this
 }
 
-list_add(item'heap class:)'i32 {
-  if parent.count >= parent.data.size {
-    list_setSize(
+list_add(item'heap class:)'void {
+  if parent.array.count >= parent.array.dataSize {
+    array_grow(
       parent: this,
-      size'i32 : size
+      new_size'i32 : new_size
     )
     void
   }
@@ -83,20 +87,12 @@ list_add(item'heap class:)'i32 {
     index'i32 : index,
     item'heap class : item
   )
-  parent.count'i32 = parent.count + 1i
 }
 
 list_getAt(index'i32:)'heap class {
   array_getAt(
     parent: this,
     index'i32 : index
-  )
-}
-
-list_setSize(size'i32:)'void {
-  array_grow(
-    parent: this,
-    new_size'i32 : new_size
   )
 }
 
@@ -1276,8 +1272,7 @@ global()'void {
   parse'stack anon3 : anon3(this = anon3())
   random'stack anon4 : anon4(this = anon4())
   a'stack list_heap_class : list!heap class(this = list!heap class(
-    count'i32 = count,
-    data'stack array_heap_class = data
+    array'stack array_heap_class = array
   ))
   for x : 1i to 100000i {
     list_add(

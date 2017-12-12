@@ -20,7 +20,7 @@ public:
 
 class CForLoopVar : public CVar {
 public:
-    CForLoopVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CForIndexVar> indexVar, shared_ptr<CVar> startVar, shared_ptr<CVar> endVar, shared_ptr<CVar> bodyVar, shared_ptr<FunctionBlock> forBlock) : CVar(loc, scope), indexVar(indexVar), startVar(startVar), endVar(endVar), bodyVar(bodyVar), forBlock(forBlock) {
+    CForLoopVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CForIndexVar> indexVar, shared_ptr<CVar> startVar, shared_ptr<CVar> endVar, shared_ptr<CVar> bodyVar, shared_ptr<FunctionBlock> forBlock, bool isAscending) : CVar(loc, scope), indexVar(indexVar), startVar(startVar), endVar(endVar), bodyVar(bodyVar), forBlock(forBlock), isAscending(isAscending) {
         assert(indexVar);
         assert(startVar);
         assert(endVar);
@@ -36,12 +36,13 @@ private:
     shared_ptr<CVar> startVar;
     shared_ptr<CVar> endVar;
     shared_ptr<CVar> bodyVar;
-    shared_ptr<FunctionBlock> forBlock;
+    shared_ptr<FunctionBlock> forBlock; 
+    bool isAscending;
 };
 
 class NFor : public NBase {
 public:
-    NFor(CLoc loc, const char* varName, shared_ptr<NBase> start, shared_ptr<NBase> end, shared_ptr<NBase> body) : NBase(NodeType_For, loc), varName(varName), start(start), end(end), body(body) { }
+    NFor(CLoc loc, const char* varName, shared_ptr<NBase> start, shared_ptr<NBase> end, shared_ptr<NBase> body, bool isAscending) : NBase(NodeType_For, loc), varName(varName), start(start), end(end), body(body), isAscending(isAscending) { }
     void defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
 
@@ -49,6 +50,7 @@ public:
     shared_ptr<NBase> start;
     shared_ptr<NBase> end;
     shared_ptr<NBase> body;    
+    bool isAscending;
 };
 
 #endif /* NFor_h */

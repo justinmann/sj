@@ -95,12 +95,12 @@ sphereVertexBuffer(
     radius : vec3(1.0f, 1.0f, 1.0f)
 ) {
     vertices : array!vertex_location_texture_normal((slices + 1) * (wedges + 1))
-    for slice (0 to slices + 1) {
+    for slice : 0 to slices + 1 {
         tv : slice as f32 / slices as f32
         theta : f32_pi * slice as f32 / slices as f32 + f32_pi
         y0 : f32_cos(theta) * radius.y
         r0 : f32_sin(theta)
-        for wedge (0 to wedges + 1) {
+        for wedge : 0 to wedges + 1 {
             tu : wedge as f32 / wedges as f32
             angle : (2.0f * f32_pi * wedge as f32 / wedges as f32) - 1.5f * f32_pi
             x0 : f32_cos(angle) * r0 * radius.x
@@ -117,8 +117,8 @@ sphereVertexBuffer(
     }
 
     indices : array!i32(slices * wedges * 6)
-    for slice (0 to slices) {
-        for wedge (0 to wedges) {
+    for slice : 0 to slices {
+        for wedge : 0 to wedges {
             wedge0 : wedge
             wedge1 : wedge + 1
 

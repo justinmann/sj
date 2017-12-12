@@ -327,7 +327,10 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                     if (!argType.second->parent.expired()) {
                         argType.second->parent.lock()->transpileDefinition(compiler, trOutput);
                     }
-                    
+                    else if (!argType.second->callback.expired()) {
+                        argType.second->callback.lock()->transpileDefinition(compiler, trOutput);
+                    }
+
                     functionDefinition << argType.second->cname << " " << argType.first;
                 }
 

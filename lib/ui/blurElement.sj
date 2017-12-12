@@ -17,7 +17,7 @@ blurElement #element (
 	setRect(rect_ : 'rect) {
 		if _rect != rect_ {
 			_rect = copy rect_
-			for i (0 to children.size) {
+			for i : 0 to children.size {
 				child : children[i]
 				child.setRect(_rect)
 			}	
@@ -73,7 +73,7 @@ blurElement #element (
 		}
 
 		if radius == 0.0f {
-			for i (0 to children.size) {
+			for i : 0 to children.size {
 				child2 : children[i]
 				child2.render(scene)
 			}
@@ -86,7 +86,7 @@ blurElement #element (
 
 			_innerScene.setSize(f1.size)
 			_innerScene.clear()
-			for i (0 to children.size) {
+			for i : 0 to children.size {
 				child : children[i]
 				child.render(_innerScene)
 			}
@@ -136,7 +136,7 @@ blurElement #element (
 	}
 
 	fireMouseEvent(point: 'point, eventId : 'i32)'void {
-		for i (0 to children.size) {
+		for i : 0 to children.size {
 			child : children[i]
 			child.fireMouseEvent(point, eventId)
 		}	

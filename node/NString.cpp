@@ -54,7 +54,8 @@ shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, shared_ptr<CScope> scop
         make_shared<CTypeNameList>(CTC_Value, CTM_Stack, compiler->typeChar->valueName, false),
         make_shared<NodeList>(
             make_shared<NInteger>(loc, str.size() + 1),
-            make_shared<NGlobalPtrVar>(loc, varName, str)));
+            make_shared<NGlobalPtrVar>(loc, varName, str),
+            make_shared<NBool>(loc, true)));
 
     auto createString = make_shared<NCall>(
         loc,

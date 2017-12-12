@@ -263,22 +263,22 @@ shared_ptr<CTypes> CType::create(vector<shared_ptr<CType>> argTypes, shared_ptr<
     bool isFirst = true;
     valueStream << "(";
     for (auto argType : argTypes) {
+        safeStream << "_";
         if (isFirst) {
             isFirst = false;
         }
         else {
-            valueStream << ",";
-            safeStream << "_";
+            valueStream << ", ";
         }
-        valueStream << argType->valueName;
+        valueStream << ":" << argType->fullName;
         safeStream << argType->safeName;
     }
     valueStream << ")";
     if (stackReturnType) {
-        valueStream << stackReturnType->valueName;
+        valueStream << stackReturnType->fullName;
     }
     else if (heapReturnType) {
-        valueStream << heapReturnType->valueName;
+        valueStream << heapReturnType->fullName;
     }
     if (stackReturnType) {
         safeStream << "_";

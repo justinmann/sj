@@ -4,8 +4,6 @@
 * center text
 
 -- language --
-* array map
-* array filter
 * list map/filter
 * namespaces
 * enum

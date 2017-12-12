@@ -77,9 +77,9 @@ int main(int argc, char** argv) {
 #line 1 "for1.sj"
     sjt_forStart1 = 1;
 #line 1
-    x = sjt_forStart1;
-#line 1
     sjt_forEnd1 = 10;
+#line 1
+    x = sjt_forStart1;
     while (x < sjt_forEnd1) {
 #line 1 "for1.sj"
         x++;

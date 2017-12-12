@@ -1239,16 +1239,18 @@ struct td_sjs_anon4_heap {
 };
 
 struct td_sjs_array_char {
-    int32_t size;
+    int32_t dataSize;
     uintptr_t data;
     bool _isGlobal;
+    int32_t count;
 };
 
 struct td_sjs_array_char_heap {
     intptr_t _refCount;
-    int32_t size;
+    int32_t dataSize;
     uintptr_t data;
     bool _isGlobal;
+    int32_t count;
 };
 
 struct td_sjs_string {
@@ -1433,14 +1435,16 @@ void sjf_anon1_readLine(sjs_anon1* _parent, sjs_string* _return) {
 #line 43
     _return->count = sjt_math7 - sjt_math8;
 #line 43
-    _return->data.size = sjv_size;
+    _return->data.dataSize = sjv_size;
 #line 43
     _return->data.data = sjv_data;
 #line 4 "lib/common/array.sj"
     _return->data._isGlobal = false;
-#line 4
+#line 43 "lib/common/console.sj"
+    _return->data.count = sjv_size;
+#line 43
     sjf_array_char(&_return->data);
-#line 4
+#line 43
     sjf_string(_return);
 }
 
@@ -1504,14 +1508,16 @@ void sjf_anon1_readLine_heap(sjs_anon1* _parent, sjs_string_heap** _return) {
 #line 43
     (*_return)->count = sjt_math9 - sjt_math10;
 #line 43
-    (*_return)->data.size = sjv_size;
+    (*_return)->data.dataSize = sjv_size;
 #line 43
     (*_return)->data.data = sjv_data;
 #line 4 "lib/common/array.sj"
     (*_return)->data._isGlobal = false;
-#line 4
+#line 43 "lib/common/console.sj"
+    (*_return)->data.count = sjv_size;
+#line 43
     sjf_array_char(&(*_return)->data);
-#line 4
+#line 43
     sjf_string_heap((*_return));
 }
 
@@ -1589,82 +1595,76 @@ void sjf_anon4_nextInt(sjs_anon4* _parent, int32_t* _return) {
 }
 
 void sjf_array_char(sjs_array_char* _this) {
-#line 110 "lib/common/array.sj"
-    if (_this->size < 0) {
-#line 110
+#line 167 "lib/common/array.sj"
+    if (_this->dataSize < 0) {
+#line 167
         halt("size is less than zero");
-#line 110
+#line 167
     }
-#line 110
-    if (_this->data) {
-#line 110
-        _this->_isGlobal = true;
-#line 110
-    } else {
-#line 110
-        _this->data = (uintptr_t)calloc(_this->size * sizeof(char), 1);
-#line 110
+#line 167
+    if (!_this->data) {
+#line 167
+        _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(char));
+#line 167
         if (!_this->data) {
-#line 110
+#line 167
             halt("grow: out of memory\n");
-#line 110
+#line 167
         }
-#line 110
+#line 167
     }
 }
 
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
 #line 1 "lib/common/array.sj"
-    _this->size = _from->size;
+    _this->dataSize = _from->dataSize;
 #line 1
     _this->data = _from->data;
 #line 1
     _this->_isGlobal = _from->_isGlobal;
-#line 128
+#line 1
+    _this->count = _from->count;
+#line 181
     _this->data = _from->data;
-#line 128
+#line 181
     if (!_this->_isGlobal && _this->data) {
-#line 128
+#line 181
         _retain((void*)_this->data);
-#line 128
+#line 181
     }
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
-#line 135 "lib/common/array.sj"
+#line 188 "lib/common/array.sj"
     if (!_this->_isGlobal && _this->data) {
-#line 135
+#line 188
         if (_release((void*)_this->data)) {
-#line 135
+#line 188
             free((char*)_this->data);
-#line 135
+#line 188
         }
-#line 135
+#line 188
     }
 }
 
 void sjf_array_char_heap(sjs_array_char_heap* _this) {
-#line 110 "lib/common/array.sj"
-    if (_this->size < 0) {
-#line 110
+#line 167 "lib/common/array.sj"
+    if (_this->dataSize < 0) {
+#line 167
         halt("size is less than zero");
-#line 110
+#line 167
     }
-#line 110
-    if (_this->data) {
-#line 110
-        _this->_isGlobal = true;
-#line 110
-    } else {
-#line 110
-        _this->data = (uintptr_t)calloc(_this->size * sizeof(char), 1);
-#line 110
+#line 167
+    if (!_this->data) {
+#line 167
+        _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(char));
+#line 167
         if (!_this->data) {
-#line 110
+#line 167
             halt("grow: out of memory\n");
-#line 110
+#line 167
         }
-#line 110
+#line 167
     }
 }
 
@@ -1712,14 +1712,16 @@ int main(int argc, char** argv) {
 #line 3 "highlow.sj"
     sjt_call1.count = 15;
 #line 3
-    sjt_call1.data.size = 16;
+    sjt_call1.data.dataSize = 16;
 #line 3
     sjt_call1.data.data = (uintptr_t)sjg_string1;
-#line 4 "lib/common/array.sj"
-    sjt_call1.data._isGlobal = false;
-#line 4
+#line 3
+    sjt_call1.data._isGlobal = true;
+#line 5 "lib/common/array.sj"
+    sjt_call1.data.count = 0;
+#line 5
     sjf_array_char(&sjt_call1.data);
-#line 4
+#line 5
     sjf_string(&sjt_call1);
 #line 3 "highlow.sj"
     sjt_functionParam1 = &sjt_call1;
@@ -1783,14 +1785,16 @@ int main(int argc, char** argv) {
 #line 12 "highlow.sj"
             sjt_call2.count = 9;
 #line 12
-            sjt_call2.data.size = 10;
+            sjt_call2.data.dataSize = 10;
 #line 12
             sjt_call2.data.data = (uintptr_t)sjg_string3;
-#line 4 "lib/common/array.sj"
-            sjt_call2.data._isGlobal = false;
-#line 4
+#line 12
+            sjt_call2.data._isGlobal = true;
+#line 5 "lib/common/array.sj"
+            sjt_call2.data.count = 0;
+#line 5
             sjf_array_char(&sjt_call2.data);
-#line 4
+#line 5
             sjf_string(&sjt_call2);
 #line 12 "highlow.sj"
             sjt_functionParam3 = &sjt_call2;
@@ -1821,14 +1825,16 @@ int main(int argc, char** argv) {
 #line 15 "highlow.sj"
                 sjt_call3.count = 10;
 #line 15
-                sjt_call3.data.size = 11;
+                sjt_call3.data.dataSize = 11;
 #line 15
                 sjt_call3.data.data = (uintptr_t)sjg_string2;
-#line 4 "lib/common/array.sj"
-                sjt_call3.data._isGlobal = false;
-#line 4
+#line 15
+                sjt_call3.data._isGlobal = true;
+#line 5 "lib/common/array.sj"
+                sjt_call3.data.count = 0;
+#line 5
                 sjf_array_char(&sjt_call3.data);
-#line 4
+#line 5
                 sjf_string(&sjt_call3);
 #line 15 "highlow.sj"
                 sjt_functionParam4 = &sjt_call3;
@@ -1859,14 +1865,16 @@ int main(int argc, char** argv) {
 #line 22 "highlow.sj"
     sjt_call4.count = 9;
 #line 22
-    sjt_call4.data.size = 10;
+    sjt_call4.data.dataSize = 10;
 #line 22
     sjt_call4.data.data = (uintptr_t)sjg_string4;
-#line 4 "lib/common/array.sj"
-    sjt_call4.data._isGlobal = false;
-#line 4
+#line 22
+    sjt_call4.data._isGlobal = true;
+#line 5 "lib/common/array.sj"
+    sjt_call4.data.count = 0;
+#line 5
     sjf_array_char(&sjt_call4.data);
-#line 4
+#line 5
     sjf_string(&sjt_call4);
 #line 22 "highlow.sj"
     sjt_functionParam5 = &sjt_call4;

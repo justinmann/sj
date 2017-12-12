@@ -14,8 +14,8 @@ anon4()'stack anon4 {
   this
 }
 
-array_each(cb'local (i32)void:)'void {
-  for i : 0i to parent.size {
+array_each(cb'local (:i32)void:)'void {
+  for i : 0i to parent.count {
     cb(
       param0'i32 : param0
     )
@@ -25,11 +25,15 @@ array_each(cb'local (i32)void:)'void {
 array_initAt(index'i32:, item'i32:)'void {
   --c--
   
-  if (index >= _parent->size || index < 0) {
-  halt("setAt: out of bounds %d:%d\n", index, _parent->size);
+  if (index != _parent->count) {
+  halt("initAt: can only initialize last element\n");
+  }
+  if (index >= _parent->dataSize || index < 0) {
+  halt("initAt: out of bounds %d:%d\n", index, _parent->dataSize);
   }
   int32_t* p = (int32_t*)_parent->data;
   ;
+  _parent->count = index;
   
   --c--
 }
@@ -44,7 +48,7 @@ class!i32(item1'i32:, item2'i32:)'stack class_i32 {
   this
 }
 
-class_each(cb'heap (i32)void:)'void {
+class_each(cb'heap (:i32)void:)'void {
   cb(
     param0'i32 : param0
   )
@@ -1241,7 +1245,7 @@ global()'void {
   ))
   class_each(
     parent: this,
-    cb'heap (i32)void : cb
+    cb'heap (:i32)void : cb
   )
   a'stack array_i32 : [array_initAt(
     parent: this,
@@ -1254,7 +1258,7 @@ global()'void {
   )]
   array_each(
     parent: this,
-    cb'local (i32)void : cb
+    cb'local (:i32)void : cb
   )
   void
 }

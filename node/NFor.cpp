@@ -25,43 +25,72 @@ shared_ptr<CType> CForLoopVar::getType(Compiler* compiler) {
 }
 
 void CForLoopVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    
     trBlock->createVariable(nullptr, compiler->typeI32, indexVar->name);
 
     auto loopStartTrValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeI32, "forStart");
     startVar->transpile(compiler, trOutput, trBlock, thisValue, loopStartTrValue);
-    
-    stringstream loopCounterLine;
-    loopCounterLine << indexVar->name << " = " << loopStartTrValue->getName(trBlock);
-    trBlock->statements.push_back(TrStatement(loc, loopCounterLine.str()));
-    
+
     auto loopEndTrValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeI32, "forEnd");
     endVar->transpile(compiler, trOutput, trBlock, thisValue, loopEndTrValue);
-        
-    auto trForBlock = make_shared<TrBlock>();
-    trForBlock->parent = trBlock;
-    trForBlock->hasThis = trBlock->hasThis;
-    stringstream whileLine;
-    whileLine << "while (" << indexVar->name << " < " << loopEndTrValue->getName(trBlock) << ")";
-    trBlock->statements.push_back(TrStatement(loc, whileLine.str(), trForBlock));
-    
-    scope.lock()->pushFunctionBlock(forBlock);
-    auto bodyType = bodyVar->getType(compiler);
-    bodyVar->transpile(compiler, trOutput, trForBlock.get(), thisValue, trBlock->createVoidStoreVariable(loc, bodyType));
-    scope.lock()->popFunctionBlock(forBlock);
 
-    stringstream loopCounterIncLine;
-    loopCounterIncLine << indexVar->name << "++";
-    trForBlock->statements.push_back(TrStatement(loc, loopCounterIncLine.str()));
+    if (isAscending) {
+        stringstream loopCounterLine;
+        loopCounterLine << indexVar->name << " = " << loopStartTrValue->getName(trBlock);
+        trBlock->statements.push_back(TrStatement(loc, loopCounterLine.str()));
+
+        auto trForBlock = make_shared<TrBlock>();
+        trForBlock->parent = trBlock;
+        trForBlock->hasThis = trBlock->hasThis;
+        stringstream whileLine;
+        whileLine << "while (" << indexVar->name << " < " << loopEndTrValue->getName(trBlock) << ")";
+        trBlock->statements.push_back(TrStatement(loc, whileLine.str(), trForBlock));
+
+        scope.lock()->pushFunctionBlock(forBlock);
+        auto bodyType = bodyVar->getType(compiler);
+        bodyVar->transpile(compiler, trOutput, trForBlock.get(), thisValue, trBlock->createVoidStoreVariable(loc, bodyType));
+        scope.lock()->popFunctionBlock(forBlock);
+
+        stringstream loopCounterIncLine;
+        loopCounterIncLine << indexVar->name << "++";
+        trForBlock->statements.push_back(TrStatement(loc, loopCounterIncLine.str()));
+    }
+    else {
+        stringstream loopCounterLine;
+        loopCounterLine << indexVar->name << " = " << loopEndTrValue->getName(trBlock) << " - 1";
+        trBlock->statements.push_back(TrStatement(loc, loopCounterLine.str()));
+
+        auto trForBlock = make_shared<TrBlock>();
+        trForBlock->parent = trBlock;
+        trForBlock->hasThis = trBlock->hasThis;
+        stringstream whileLine;
+        whileLine << "while (" << indexVar->name << " >= " << loopStartTrValue->getName(trBlock) << ")";
+        trBlock->statements.push_back(TrStatement(loc, whileLine.str(), trForBlock));
+
+        scope.lock()->pushFunctionBlock(forBlock);
+        auto bodyType = bodyVar->getType(compiler);
+        bodyVar->transpile(compiler, trOutput, trForBlock.get(), thisValue, trBlock->createVoidStoreVariable(loc, bodyType));
+        scope.lock()->popFunctionBlock(forBlock);
+
+        stringstream loopCounterIncLine;
+        loopCounterIncLine << indexVar->name << "--";
+        trForBlock->statements.push_back(TrStatement(loc, loopCounterIncLine.str()));
+    }
 }
 
 void CForLoopVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << "for " << indexVar->name << " : ";
     startVar->dump(compiler, functions, ss, level + 1);
-    ss << " to ";
+    if (isAscending) {
+        ss << " to ";
+    }
+    else {
+        ss << " toReverse ";
+    }
     endVar->dump(compiler, functions, ss, level + 1);
     ss << " ";
+    scope.lock()->pushFunctionBlock(forBlock);
     bodyVar->dump(compiler, functions, ss, level);
+    scope.lock()->popFunctionBlock(forBlock);
 }
 
 
@@ -98,6 +127,6 @@ shared_ptr<CVar> NFor::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, 
         return nullptr;
     }
 
-    return make_shared<CForLoopVar>(loc, scope, indexVar, startVar, endVar, bodyVar, forBlock);
+    return make_shared<CForLoopVar>(loc, scope, indexVar, startVar, endVar, bodyVar, forBlock, isAscending);
 }
 

@@ -10,7 +10,7 @@ fillElement #element (
 
 	setRect(rect_ : 'rect) {
 		_rect = copy rect_
-		for i (0 to children.size) {
+		for i : 0 to children.count {
 			child : children[i]
 			child.setRect(_rect)
 		}	
@@ -18,7 +18,7 @@ fillElement #element (
 	}
 
 	render(scene : 'scene2d) {
-		for i (0 to children.size) {
+		for i : 0 to children.count {
 			child : children[i]
 			child.render(scene)
 		}
@@ -30,7 +30,7 @@ fillElement #element (
 	}
 
 	fireMouseEvent(point: 'point, eventId : 'i32)'void {
-		for i (0 to children.size) {
+		for i : 0 to children.count {
 			child : children[i]
 			child.fireMouseEvent(point, eventId)
 		}	

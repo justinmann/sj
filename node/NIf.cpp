@@ -65,12 +65,16 @@ void CIfElseVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>
 
     if (ifVar) {
         ss << " ";
+        scope.lock()->pushFunctionBlock(ifFunctionBlock);
         ifVar->dump(compiler, functions, ss, level);
+        scope.lock()->popFunctionBlock(ifFunctionBlock);
     }
     
     if (elseVar) {
         ss << " else ";
+        scope.lock()->pushFunctionBlock(elseFunctionBlock);
         elseVar->dump(compiler, functions, ss, level);
+        scope.lock()->popFunctionBlock(elseFunctionBlock);
     }
 }
 

@@ -32,7 +32,7 @@ animator: ^(
 		current = time
 		if animations.count > 0 {
 			// Iterate and remove all that return false
-			for i (0 to animations.count) {
+			for i : 0 to animations.count {
 				index : animations.count - 0 - 1
 				a : animations[index]
 				if a.nextFrame(time) {

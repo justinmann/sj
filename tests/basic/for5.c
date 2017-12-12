@@ -80,9 +80,9 @@ int main(int argc, char** argv) {
 #line 2
     sjt_forStart1 = 2;
 #line 2
-    x = sjt_forStart1;
-#line 2
     sjt_forEnd1 = 4;
+#line 2
+    x = sjt_forStart1;
     while (x < sjt_forEnd1) {
         int32_t sjt_math1;
         int32_t sjt_math2;

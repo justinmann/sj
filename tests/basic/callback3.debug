@@ -8,12 +8,12 @@ class(total'i32=)'heap class {
 
 class_run()'i32 {
   doMath(
-    cb'heap (i32)void : cb
+    cb'heap (:i32)void : cb
   )
   parent.total
 }
 
-doMath(cb'heap (i32)void:)'void {
+doMath(cb'heap (:i32)void:)'void {
   cb(
     param0'i32 : param0
   )
