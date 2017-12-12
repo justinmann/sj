@@ -1679,10 +1679,12 @@ void CScope::popFunctionBlock(shared_ptr<FunctionBlock> functionBlock) {
     functionBlocks.erase(functionBlocks.end() - 1);
 }
 
-void CScope::setLocalVar(Compiler* compiler, CLoc loc, shared_ptr<CVar> var) {
-    auto existingVar = function->getCVar(compiler, shared_from_this(), functionBlocks, nullptr, var->name, VSM_LocalThisParent, returnMode);
-    if (existingVar) {
-        compiler->addError(loc, CErrorCode::InvalidVariable, "var '%s' already exists within function, must have a unique name", var->name.c_str());
+void CScope::setLocalVar(Compiler* compiler, CLoc loc, shared_ptr<CVar> var, bool overwrite) {
+    if (!overwrite) {
+        auto existingVar = function->getCVar(compiler, shared_from_this(), functionBlocks, nullptr, var->name, VSM_LocalThisParent, returnMode);
+        if (existingVar) {
+            compiler->addError(loc, CErrorCode::InvalidVariable, "var '%s' already exists within function, must have a unique name", var->name.c_str());
+        }
     }
     
     auto currentBlock = functionBlocks.size() > 0 ? functionBlocks.back() : nullptr;

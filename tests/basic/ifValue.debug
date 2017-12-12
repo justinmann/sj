@@ -8,6 +8,21 @@ global()'void {
   c'stack class : class(this = class(
     d'i32? : d
   ))
+  w'i32 : ifValue  {
+    a
+  } elseEmpty {
+    2i
+  }
+  x'i32 : ifValue  {
+    b
+  } elseEmpty {
+    2i
+  }
+  y'i32 : ifValue  {
+    c
+  } elseEmpty {
+    1i
+  }
   void
 }
 

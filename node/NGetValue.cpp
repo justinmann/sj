@@ -1,77 +1,69 @@
 #include "Node.h"
 
-class CGetValueVar : public CVar {
-public:
-    CGetValueVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> leftVar, bool isProtectedWithEmptyCheck) : CVar(loc, scope), leftVar(leftVar), isProtectedWithEmptyCheck(isProtectedWithEmptyCheck) { }
+bool CGetValueVar::getReturnThis() {
+    return false;
+}
 
-    bool getReturnThis() {
-        return false;
-    }
-    
-    shared_ptr<CType> getType(Compiler* compiler) {
-        auto leftType = leftVar->getType(compiler);
-        if (!leftType) {
-            return nullptr;
-        }
-
-        if (!leftType->isOption) {
-            compiler->addError(loc, CErrorCode::TypeMismatch, "getValue requires an option type");
-            return nullptr;
-        }
-
-        return leftType->getValueType();
+shared_ptr<CType> CGetValueVar::getType(Compiler* compiler) {
+    auto leftType = leftVar->getType(compiler);
+    if (!leftType) {
+        return nullptr;
     }
 
-    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-        auto leftValue = trBlock->createTempStoreVariable(loc, leftVar->scope.lock(), leftVar->getType(compiler), "getValue");
-        leftVar->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
-        if (!leftValue) {
-            return;
-        }
+    if (!leftType->isOption) {
+        compiler->addError(loc, CErrorCode::TypeMismatch, "getValue requires an option type");
+        return nullptr;
+    }
 
-        if (!leftValue->type->isOption) {
-            compiler->addError(loc, CErrorCode::TypeMismatch, "getValue requires an option type");
-            return;
-        }
+    return leftType->getValueType();
+}
 
-        stringstream line;
-        if (leftValue->type->parent.expired() && leftValue->type->category != CTC_Function) {
-            if (!isProtectedWithEmptyCheck) {
-                stringstream emptyCheck;
-                emptyCheck << "if (" << leftValue->getName(trBlock) << ".isEmpty) { exit(-1); }";
-                trBlock->statements.push_back(TrStatement(loc, emptyCheck.str()));
+void CGetValueVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    auto leftValue = trBlock->createTempStoreVariable(loc, leftVar->scope.lock(), leftVar->getType(compiler), "getValue");
+    leftVar->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
+    if (!leftValue) {
+        return;
+    }
+
+    if (!leftValue->type->isOption) {
+        compiler->addError(loc, CErrorCode::TypeMismatch, "getValue requires an option type");
+        return;
+    }
+
+    stringstream line;
+    if (leftValue->type->parent.expired() && leftValue->type->category != CTC_Function) {
+        if (!isProtectedWithEmptyCheck) {
+            stringstream emptyCheck;
+            emptyCheck << "if (" << leftValue->getName(trBlock) << ".isEmpty) { exit(-1); }";
+            trBlock->statements.push_back(TrStatement(loc, emptyCheck.str()));
+        }
+        line << leftValue->getName(trBlock) << ".value";
+    }
+    else {
+        if (!isProtectedWithEmptyCheck) {
+            stringstream emptyCheck;
+            emptyCheck << "if (";
+            if (leftValue->type->category == CTC_Function) {
+                emptyCheck << leftValue->getName(trBlock) << "._parent";
             }
-            line << leftValue->getName(trBlock) << ".value";
-        }
-        else {
-            if (!isProtectedWithEmptyCheck) {
-                stringstream emptyCheck;
-                emptyCheck << "if (";
-                if (leftValue->type->category == CTC_Function) {
-                    emptyCheck << leftValue->getName(trBlock) << "._parent";
-                }
-                else {
-                    emptyCheck << leftValue->getName(trBlock);
-                }
-                emptyCheck << " == 0) { exit(-1); }";
-                trBlock->statements.push_back(TrStatement(loc, emptyCheck.str()));
+            else {
+                emptyCheck << leftValue->getName(trBlock);
             }
-            line << leftValue->getName(trBlock);
+            emptyCheck << " == 0) { exit(-1); }";
+            trBlock->statements.push_back(TrStatement(loc, emptyCheck.str()));
         }
-
-        storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(scope.lock(), leftValue->type->getValueType(), line.str(), false));
+        line << leftValue->getName(trBlock);
     }
 
-    void dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-        ss << "getValue(";
-        leftVar->dump(compiler, functions, ss, level);
-        ss << ")";
-    }
+    storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(scope.lock(), leftValue->type->getValueType(), line.str(), false));
+}
 
-private:
-    shared_ptr<CVar> leftVar;
-    bool isProtectedWithEmptyCheck;
-};
+void CGetValueVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+    ss << "getValue(";
+    leftVar->dump(compiler, functions, ss, level);
+    ss << ")";
+}
+
 
 void NGetValue::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);

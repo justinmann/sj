@@ -82,7 +82,7 @@ public:
     void addOrUpdateLocalVar(Compiler* compiler, string name, shared_ptr<CVar> var);
     void pushFunctionBlock(shared_ptr<FunctionBlock> functionBlock);
     void popFunctionBlock(shared_ptr<FunctionBlock> functionBlock);
-    void setLocalVar(Compiler* compiler, CLoc loc, shared_ptr<CVar> var);
+    void setLocalVar(Compiler* compiler, CLoc loc, shared_ptr<CVar> var, bool overwrite);
     shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
     shared_ptr<CVar> getCVar(Compiler* compiler, shared_ptr<CVar> dotVar, const string& name, VarScanMode scanMode);
     static shared_ptr<CScope> getScopeForType(Compiler* compiler, shared_ptr<CType> type);

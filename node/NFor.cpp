@@ -90,7 +90,7 @@ shared_ptr<CVar> NFor::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, 
 
     auto forBlock = make_shared<FunctionBlock>();
     scope->pushFunctionBlock(forBlock);
-    scope->setLocalVar(compiler, loc, indexVar);
+    scope->setLocalVar(compiler, loc, indexVar, false);
     auto bodyVar = body->getVar(compiler, scope, CTM_Undefined);
     scope->popFunctionBlock(forBlock);
 

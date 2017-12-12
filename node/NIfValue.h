@@ -9,16 +9,23 @@
 #ifndef NIfValue_h
 #define NIfValue_h
 
+class CIfParameter {
+public:
+    shared_ptr<CVar> isEmptyVar;
+    shared_ptr<CVar> getValueVar;
+    shared_ptr<CStoreVar> storeVar;
+};
+
 class CIfValueVar : public CVar {
 public:
-    CIfValueVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> condVar, shared_ptr<CVar> ifVar, shared_ptr<FunctionBlock> ifFunctionBlock, shared_ptr<CVar> elseVar, shared_ptr<FunctionBlock> elseFunctionBlock) : CVar(loc, scope), condVar(condVar), ifVar(ifVar), ifFunctionBlock(ifFunctionBlock), elseVar(elseVar), elseFunctionBlock(elseFunctionBlock) { assert(condVar); assert(ifVar); }
+    CIfValueVar(CLoc loc, shared_ptr<CScope> scope, vector<CIfParameter> optionalVars, shared_ptr<CVar> ifVar, shared_ptr<FunctionBlock> ifFunctionBlock, shared_ptr<CVar> elseVar, shared_ptr<FunctionBlock> elseFunctionBlock) : CVar(loc, scope), optionalVars(optionalVars), ifVar(ifVar), ifFunctionBlock(ifFunctionBlock), elseVar(elseVar), elseFunctionBlock(elseFunctionBlock) { assert(ifVar); }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
     void dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
 
 private:
-    shared_ptr<CVar> condVar;
+    vector<CIfParameter> optionalVars;
     shared_ptr<CVar> ifVar;
     shared_ptr<FunctionBlock> ifFunctionBlock;
     shared_ptr<CVar> elseVar;
