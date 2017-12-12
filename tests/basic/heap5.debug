@@ -25,6 +25,10 @@ global()'void {
   --cinclude--
   console'stack anon1 : anon1(this = anon1())
   convert'stack anon2 : anon2(this = anon2())
+  --cinclude--
+  
+  
+  --cinclude--
   --cdefine--
   
   void halt(const char * format, ...);

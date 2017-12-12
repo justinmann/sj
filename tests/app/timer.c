@@ -11,6 +11,8 @@
 
 
 
+
+
 /**
 * Maximum number of attributes per vertex
 *
@@ -45,6 +47,7 @@
 #include <limits.h>
 #include <math.h>
 #include <png.h>
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>

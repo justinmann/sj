@@ -5,6 +5,10 @@ halt(reason : 'string) {
 	--c--
 }
 
+--cinclude--
+#include(<stdarg.h>)
+--cinclude--
+
 --cdefine--
 void halt(const char * format, ...);
 --cdefine--
