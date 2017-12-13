@@ -6,12 +6,12 @@
 -- language --
 * enum
 * package/import
+* lambda
+* map
+* weak pointer
 * stack optional
 * stack interface
 * improve debug out for interfaces
-* map
-* lambda
-* weak pointer
 * override interfaces : a as type   -> a.asType()'t
 * interface as struct heap: { _parent, _vtbl, _destroy } or stack: { _parent, _vtbl }
 
@@ -55,49 +55,24 @@ f.class()
 f.bar.bob()
 
 -- lambda --
-array!item(
-	each(lambda : '(item)void) {
-		for i : 0 to size {
-			lambda(getAt(i))
-		}
-	}
-)
-
-arr : [1, 2, 3]
-total = 0
-arr.each((i:'i32) {
-	total += i
-	void
+count := 0
+a : [1, 2, 3]
+a.map((y : 'i32) {
+	count += y
 })
+===
+count := 0
+a : [1, 2, 3]
+lambda1(
+	count := 'i32
+	invoke(y : 'i32) {
+		count += y
+	}
+) 
+lambda1 : lambda1(count := count)
+a.map(lambda1.invoke)
+count = lambda1.count
 
-// definition
-struct sjl_anon1 {
-	int _refCount
-	sjs_object* _parent;
-	void (*lambda)(sjs_object*, int32_t)
-}
-
-void sjl_anon1_destroy(sjl_anon1 *_this) {
-	_this->_parent->_refCount--;
-}
-
-// invoke
-void array_each() {
-	item = array_getAt();
-	lambda->lambda(lambda->_parent, item);
-}
-
-// create
-void sjf_anon2(sjs_func* _parent, int32_t i) {
-	_parent->total += i;
-}
-
-x = new sjl_anon1
-x->_refCount = 1;
-x->_parent = _this;
-x->_parent->_refCount++;
-x->lambda = sjf_anon2;
-array_each(arr, x);
 
 * fix mac build:
 brew install llvm && rm /usr/local/opt/emscripten/libexec/llvm/bin/llvm-ar && ln -s /usr/local/opt/llvm/bin/llvm-ar /usr/local/opt/emscripten/libexec/llvm/bin/llvm-ar
