@@ -2,15 +2,16 @@
 * depth sort for alpha blend
 * show people in field
 * animate camera on person click
-* mouse capture
 
 -- ui --
+* mouse capture
 * load obj file: http://kixor.net/dev/objloader/ https://code.google.com/archive/p/saitoobjloader/ http://people.sc.fsu.edu/%7Ejburkardt/data/obj/obj.html
 * sphere - default to front of sphere being middle of texture
 * center text
 
 -- language --
 * enum
+* switch
 * package/import
 * lambda
 * map
@@ -20,6 +21,10 @@
 * improve debug out for interfaces
 * override interfaces : a as type   -> a.asType()'t
 * interface as struct heap: { _parent, _vtbl, _destroy } or stack: { _parent, _vtbl }
+* do not allow local typeMode return for variable that is not part of the class
+	func()'local string { "c" } // this must fail
+	func()'stack string { copy "c" } // okay
+	func()'heap string { heap "c" } // okay
 
 -- enum --
 // no values
