@@ -47,3 +47,14 @@ f32_random()'f32 {
 	--c--
 	x
 }
+
+f32_toString(val : 'f32) {
+	count := 0
+	data := 0 as ptr
+	--c--
+	sjv_data = (uintptr_t)malloc(sizeof(char) * 50);
+	snprintf((char*)sjv_data, 50, "%f", val);
+	sjv_count = strlen((char*)sjv_data);
+	--c--
+	string(count := count, data := array!char(size := count + 1, data := data))
+}

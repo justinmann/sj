@@ -1,6 +1,5 @@
 include "array.sj"
 include "console.sj"
-include "convert.sj"
 include "f32.sj"
 include "halt.sj"
 include "hash.sj"
