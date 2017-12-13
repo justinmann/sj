@@ -1,20 +1,33 @@
+emptyStringData := 0 as ptr
+--c--
+sjv_emptyStringData = (uintptr_t)"";
+--c--
+
 string(
 	count := 0
-	data := array!char()
+	data := array!char(
+		data : emptyStringData
+		dataSize : 1
+		count : 1
+		_isGlobal : true
+	)
 
-	add(item :'stack string) {
+	add(item : 'string) {
 		if item.count > 0 {
 			if count + item.count + 1 > data.dataSize {
 				data.grow(count + item.count + 1)
 				void
 			}
 
-			for i : 0 to item.count {
-				data.setAt(count, item.getAt(i))
+			data.setAt(count, item.getAt(0))
+			count++
+
+			for i : 1 to item.count {
+				data.initAt(count, item.getAt(i))
 				count++		
 			}
 
-			data.setAt(count, 0 as char)
+			data.initAt(count, 0 as char)
 		}
 		parent
 	}
