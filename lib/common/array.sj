@@ -138,6 +138,96 @@ array!t (
 		void
 	} 
 
+	_quickSort(left : 'i32, right : 'i32) {
+		i := left
+		j := right
+
+		pivot : getAt((left + right) / 2)
+		while i <= j {
+			while getAt(i) < pivot {
+				i++
+			}
+
+			while getAt(j) > pivot {
+				j--
+			}
+
+			if i <= j {
+				tmp : getAt(i)
+				setAt(i, getAt(j))
+				setAt(j, tmp)
+				i++
+				j--
+			}
+		}
+
+		if left < j {
+			_quickSort(left, j);
+		}
+		if i < right {
+			_quickSort(i, right);
+		}
+	}
+
+	_quickSortCallback(left : 'i32, right : 'i32, cb : '(:t, :t)i32) {
+		i := left
+		j := right
+
+		pivot : getAt((left + right) / 2)
+		while i <= j {
+			while cb(getAt(i), pivot) < 0 {
+				i++
+			}
+
+			while cb(getAt(j), pivot) > 0 {
+				j--
+			}
+
+			if i <= j {
+				tmp : getAt(i)
+				setAt(i, getAt(j))
+				setAt(j, tmp)
+				i++
+				j--
+			}
+		}
+
+		if left < j {
+			_quickSortCallback(left, j, cb);
+		}
+		if i < right {
+			_quickSortCallback(i, right, cb);
+		}
+	}
+
+	sort() {
+		_quickSort(0, count - 1)
+	}
+
+	sortcb(cb : '(:t, :t)i32) {
+		_quickSortCallback(0, count - 1, cb)
+	}
+
+	reverse() {
+		for i : 0 to count / 2 {
+			j : count - i - 1
+			tmp : getAt(i)
+			setAt(i, getAt(j))
+			setAt(j, tmp)
+		}
+	}
+
+	toString(sep : ", ") {
+		result := ""
+		for i : 0 to count {
+			if i != 0 {
+				result = copy result + sep
+			}
+			result = copy result + getAt(i).toString()
+		}
+		copy result
+	}
+
 	isEqual(test :' array!t)'bool --c--
 		if (_parent->count != test->count) {
 			*_return = false;
