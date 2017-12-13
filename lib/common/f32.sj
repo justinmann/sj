@@ -1,3 +1,5 @@
+f32_pi : 3.14159265358979323846f
+
 f32_sqrt(v : 'f32)'f32 {
 	result := 0.0f
 	--c--
@@ -30,16 +32,18 @@ f32_tan(v : 'f32)'f32 {
 	result
 }
 
-f32_pi : 3.14159265358979323846f
-u32_maxValue : 4294967295u
-
-i32_maxValue : -1i - 2147483647i
-i32_minValue : 2147483647i
-
-i32_max(a : 'i32, b : 'i32)'i32 {
+f32_max(a : 'f32, b : 'f32)'f32 {
 	if a < b { b } else { a }
 }
 
-i32_min(a : 'i32, b : 'i32)'i32 {
+f32_min(a : 'f32, b : 'f32)'f32 {
 	if a < b { a } else { b }
+}
+
+f32_random()'f32 {
+	x := 0.0f
+	--c--
+	sjv_x = (float)rand() / (float)RAND_MAX;
+	--c--
+	x
 }

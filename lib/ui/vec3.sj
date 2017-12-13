@@ -18,6 +18,14 @@ vec3(
 		"" + convert.f32toString(x) + ", " + convert.f32toString(y) + ", " + convert.f32toString(z)
 	}
 
+	add(v : 'vec3) {
+		vec3(
+			x + v.x
+			y + v.y
+			z + v.z
+		)	
+	}
+
 	subtract(v : 'vec3) {
 		vec3(
 			x - v.x
@@ -47,3 +55,19 @@ vec3(
     	x * v.x + y * v.y + z * v.z		
 	}
 ) { this }
+
+vec3_min(a : 'vec3, b : 'vec3) {
+	vec3(
+		f32_min(a.x, b.x)
+		f32_min(a.y, b.y)
+		f32_min(a.z, b.z)
+	)
+}
+
+vec3_max(a : 'vec3, b : 'vec3) {
+	vec3(
+		f32_max(a.x, b.x)
+		f32_max(a.y, b.y)
+		f32_max(a.z, b.z)
+	)
+}

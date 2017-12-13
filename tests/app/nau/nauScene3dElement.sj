@@ -1,20 +1,13 @@
-light(
-	pos : vec3(1.0f, 1.0f, 1.0f)
-	diffuseColor : color(0.5f, 0.5f, 0.0f, 1.0f)
-	specColor : color(1.0f, 1.0f, 1.0f, 1.0f)
-) { this }
-
-scene3dElement #element (
+nauScene3dElement #element (
 	children : array!#model()
-	camera := vec3(0.0f, 0.0f, -5.0f)
-	lookAt := vec3(0.0f, 0.0f, 0.0f)
-	up := vec3(0.0f, 1.0f, 0.0f)
+	lookAtMin := vec3()
+	lookAtMax := vec3()
 	fieldOfView := 90.0f
 	zNear := 1.0f
 	zFar := 20.0f
 	light := light()
 	projection := mat4()
-	view := mat4()
+	view := mat4_lookAtLH(vec3(0.0f, 0.0f, -5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f))
 	world := mat4_identity()
 	_rect := rect()
 
@@ -28,7 +21,6 @@ scene3dElement #element (
 		if _rect != rect_ {
 			_rect = copy rect_
 			projection = mat4_perspective(fieldOfView, _rect.h as f32 / _rect.w as f32, zNear, zFar)
-			view = mat4_lookAtLH(camera, lookAt, up)
 		}
 		void
 	}
@@ -53,7 +45,32 @@ scene3dElement #element (
 		--c--
 	}
 
+	_isDragging := false
+	_startDrag := point()
+	_lookAt := vec3(0.0f, 0.0f, 0.0f)
+	_lookAtDrag := vec3()
+
 	fireMouseEvent(point: 'point, eventId : 'i32)'void {
+		if eventId == mouseEvent_down {
+			_isDragging = true
+			_startDrag = copy point
+			_lookAtDrag = copy _lookAt
+		}
+
+		if eventId == mouseEvent_move && _isDragging {
+			_lookAt = vec3_min(lookAtMax, vec3_max(lookAtMin, _lookAtDrag + vec3(
+				(_startDrag.x - point.x) as f32 / _rect.w as f32 * 2.0f
+				(point.y - _startDrag.y) as f32 / _rect.h as f32 * 2.0f
+				0.0f
+			)))
+			camera : _lookAt - vec3(0.0f, 0.0f, 5.0f)
+			view = mat4_lookAtLH(camera, _lookAt, vec3(0.0f, 1.0f, 0.0f))
+		}
+
+		if eventId == mouseEvent_up {
+			_isDragging = false
+		}
+
 		for i : 0 to children.count {
 			child : children[i]
 			child.fireMouseEvent(_rect, projection, view, point, eventId)

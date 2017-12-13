@@ -1664,29 +1664,29 @@ void sjf_sum_invoke(sjs_sum* _parent, int32_t a) {
 int main(int argc, char** argv) {
     sjf_anon1(&sjv_console);
     sjf_anon2(&sjv_convert);
-#line 33 "lib/common/math.sj"
+#line 1 "lib/common/f32.sj"
     sjv_f32_pi = 3.14159265358979323846f;
-#line 34
+#line 1 "lib/common/i32.sj"
     sjv_u32_maxValue = (uint32_t)4294967295u;
-#line 36
+#line 3
     sjt_negate1 = 1;
-#line 36
+#line 3
     result1 = -sjt_negate1;
-#line 36
+#line 3
     sjt_math1 = result1;
-#line 36
+#line 3
     sjt_math2 = 2147483647;
-#line 36
+#line 3
     sjv_i32_maxValue = sjt_math1 - sjt_math2;
-#line 37
+#line 4
     sjv_i32_minValue = 2147483647;
-#line 37
+#line 4
     sjf_anon3(&sjv_parse);
-#line 37
+#line 4
     sjf_anon4(&sjv_random);
-#line 37
+#line 4
     sjv_s = (sjs_sum_heap*)malloc(sizeof(sjs_sum_heap));
-#line 37
+#line 4
     sjv_s->_refCount = 1;
 #line 13 "callback2.sj"
     sjv_s->total = 0;

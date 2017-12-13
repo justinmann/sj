@@ -11,7 +11,7 @@ scene2dModel #model (
 		void
 	}
 
-	render(scene3d : 'scene3dElement)'void {
+	render(projection : 'mat4, view : 'mat4, light : 'light)'void {
 		--c--
 		glBindFramebuffer(GL_FRAMEBUFFER, _parent->frameBuffer.frameBufferId);
 		--c--
@@ -35,16 +35,16 @@ scene2dModel #model (
         glBindTexture(GL_TEXTURE_2D, _parent->frameBuffer.textureId);
         glUniformMatrix4fv(glGetUniformLocation(_parent->shader.id, "viewModel" ), 1, 0, (GLfloat*)&sjv_viewWorld);
         glUniformMatrix4fv(glGetUniformLocation(_parent->shader.id, "normalMat" ), 1, 0, (GLfloat*)&sjv_normalMat);
-        glUniformMatrix4fv(glGetUniformLocation(_parent->shader.id, "projection" ), 1, 0, (GLfloat*)&scene3d->projection);
-        glUniform3fv(glGetUniformLocation(_parent->shader.id, "lightPos" ), 1, (GLfloat*)&scene3d->lightPos);
-        glUniform3fv(glGetUniformLocation(_parent->shader.id, "diffuseColor" ), 1, (GLfloat*)&scene3d->diffuseColor);
-        glUniform3fv(glGetUniformLocation(_parent->shader.id, "specColor" ), 1, (GLfloat*)&scene3d->specColor);	
+        glUniformMatrix4fv(glGetUniformLocation(_parent->shader.id, "projection" ), 1, 0, (GLfloat*)projection);
+        glUniform3fv(glGetUniformLocation(_parent->shader.id, "lightPos" ), 1, (GLfloat*)&light->pos);
+        glUniform3fv(glGetUniformLocation(_parent->shader.id, "diffuseColor" ), 1, (GLfloat*)&light->diffuseColor);
+        glUniform3fv(glGetUniformLocation(_parent->shader.id, "specColor" ), 1, (GLfloat*)&light->specColor);	
         --c--
 		vertexBuffer.render()
 	}
 
-	fireMouseEvent(scene3d : 'scene3dElement, point: 'point, eventId : 'i32)'void {
-		texture : vertexBuffer.translateScreenToTexture(point, scene3d.rect, scene3d.projection, scene3d.view, _world)
+	fireMouseEvent(sceneRect : 'rect, projection : 'mat4, view : 'mat4, point: 'point, eventId : 'i32)'void {
+		texture : vertexBuffer.translateScreenToTexture(point, sceneRect, projection, view, _world)
 		if !isEmpty(texture) {
 			scenePoint : point(
 				(texture.x * frameBuffer.size.w as f32) as i32

@@ -1,7 +1,8 @@
 -- nau --
-* 3d picker
-	* find element with hit test
-	* 
+* depth sort for alpha blend
+* show people in field
+* animate camera on person click
+* mouse capture
 
 -- ui --
 * load obj file: http://kixor.net/dev/objloader/ https://code.google.com/archive/p/saitoobjloader/ http://people.sc.fsu.edu/%7Ejburkardt/data/obj/obj.html

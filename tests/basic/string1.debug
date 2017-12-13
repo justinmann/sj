@@ -71,6 +71,7 @@ global()'void {
   --cinclude--
   console'stack anon1 : anon1(this = anon1())
   convert'stack anon2 : anon2(this = anon2())
+  f32_pi'f32 : 3.14159265358979323846ff
   --cinclude--
   
   
@@ -1233,7 +1234,6 @@ global()'void {
   } UT_hash_handle;
   
   --ctypedef--
-  f32_pi'f32 : 3.14159265358979323846ff
   u32_maxValue'u32 : (uint32_t)4294967295uu
   i32_maxValue'i32 : -1i - 2147483647i
   i32_minValue'i32 : 2147483647i
