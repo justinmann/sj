@@ -79,12 +79,7 @@ void runTest(fs::path path, bool updateResult) {
 
 void runAllTests(fs::path path, bool updateResult, const char* wildcard) {
     for (auto child : fs::directory_iterator(path)) {
-        if (fs::is_directory(child.path())) {
-            if (child.path().filename() != "lib") {
-                runAllTests(child.path(), updateResult, wildcard);
-            }
-        }
-        else if (fs::is_regular_file(child.path()) && (wildcard == nullptr || child.path().generic_string().find(wildcard) != string::npos)) {
+        if (fs::is_regular_file(child.path()) && (wildcard == nullptr || child.path().generic_string().find(wildcard) != string::npos)) {
             runTest(child.path(), updateResult);
         }
     }
@@ -100,9 +95,11 @@ int main(int argc, char **argv) {
     }
     
 	if (strcmp(argv[1], "-test") == 0) {
-		runAllTests(".", false, argv[2]);
+        runAllTests("app", false, argv[2]);
+		runAllTests("basic", false, argv[2]);
 	} else if (strcmp(argv[1], "-testUpdate") == 0) {
-		runAllTests(".", true, argv[2]);
+        runAllTests("app", true, argv[2]);
+        runAllTests("basic", true, argv[2]);
     } else {
         auto path = fs::path(argv[1]);
         auto codeFileName = fs::change_extension(path, ".c");
