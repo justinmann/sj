@@ -3,8 +3,8 @@ class()'stack class {
 }
 
 func()'local class {
-  a'stack class = class(this = class())
-  a'stack class = class(this = class())
+  a'stack class = copy class(this = class())
+  a'stack class = copy class(this = class())
 }
 
 global()'void {

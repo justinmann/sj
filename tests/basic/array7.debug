@@ -2,6 +2,14 @@ anon1()'stack anon1 {
   this
 }
 
+anon1_writeLine(data'stack string:)'void {
+  --c--
+  
+  printf("%s\n", (char*)data->data.data);
+  
+  --c--
+}
+
 anon2()'stack anon2 {
   this
 }
@@ -10,47 +18,72 @@ anon3()'stack anon3 {
   this
 }
 
-array_getAt(index'i32:)'heap class --c--
+array__quickSort(left'i32:, right'i32:)'void {
+  i'i32 = left
+  j'i32 = right
+  pivot'stack class : array_getAt(
+    parent: this,
+    index'i32 : index
+  )
+  while i <= j{
+    while class_isLess(
+      parent: this,
+      c'stack class : c
+    ){
+      i'i32 = i + 1i
+    }
+    while class_isGreater(
+      parent: this,
+      c'stack class : c
+    ){
+      j'i32 = j - 1i
+    }
+    if i <= j {
+      tmp'stack class : array_getAt(
+        parent: this,
+        index'i32 : index
+      )
+      array_setAt(
+        parent: this,
+        index'i32 : index,
+        item'stack class : item
+      )
+      array_setAt(
+        parent: this,
+        index'i32 : index,
+        item'stack class : item
+      )
+      i'i32 = i + 1i
+      j'i32 = j - 1i
+    }
+  }
+  if left < j {
+    array__quickSort(
+      parent: this,
+      left'i32 : left,
+      right'i32 : right
+    )
+  }
+  if i < right {
+    array__quickSort(
+      parent: this,
+      left'i32 : left,
+      right'i32 : right
+    )
+  }
+}
+
+array_getAt(index'i32:)'stack class --c--
 
 if (index >= _parent->count || index < 0) {
 halt("getAt: out of bounds\n");
 }
-sjs_class_heap** p = (sjs_class_heap**)_parent->data;
+sjs_class* p = (sjs_class*)_parent->data;
 ;
 
 --c--
 
-array_grow(new_size'i32:)'void {
-  --c--
-  
-  if (_parent->dataSize != new_size) {
-  if (new_size < _parent->dataSize) {
-  halt("grow: new size smaller than old _parent->dataSize %d:%d\n", new_size, _parent->dataSize);
-  }
-  
-  if (_parent->_isGlobal) {
-  _parent->_isGlobal = false;
-  sjs_class_heap** p = (sjs_class_heap**)_parent->data;
-  _parent->data = (uintptr_t)malloc(new_size * sizeof(sjs_class_heap*));
-  if (!_parent->data) {
-  halt("grow: out of memory\n");
-  }
-  memcpy((void*)_parent->data, p, _parent->dataSize * sizeof(sjs_class_heap*));
-  } else {
-  _parent->data = (uintptr_t)realloc((void*)_parent->data, new_size * sizeof(sjs_class_heap*));
-  if (!_parent->data) {
-  halt("grow: out of memory\n");
-  }
-  memset((sjs_class_heap**)_parent->data + _parent->dataSize, 0, (new_size - _parent->dataSize) * sizeof(sjs_class_heap*));
-  }
-  _parent->dataSize = new_size;
-  }
-  
-  --c--
-  void
-}
-
-array_initAt(index'i32:, item'heap class:)'void {
+array_initAt(index'i32:, item'stack class:)'void {
   --c--
   
   if (index != _parent->count) {
@@ -59,37 +92,60 @@ array_initAt(index'i32:, item'heap class:)'void {
   if (index >= _parent->dataSize || index < 0) {
   halt("initAt: out of bounds %d:%d\n", index, _parent->dataSize);
   }
-  sjs_class_heap** p = (sjs_class_heap**)_parent->data;
+  sjs_class* p = (sjs_class*)_parent->data;
   ;
   _parent->count = index + 1;
   
   --c--
 }
 
-list!heap class(array'stack array_heap_class=)'stack list_heap_class {
-  this
-}
-
-list_add(item'heap class:)'void {
-  if parent.array.count >= parent.array.dataSize {
-    array_grow(
+array_reverse()'void {
+  for i : 0i to parent.count / 2i {
+    j'i32 : parent.count - i - 1i
+    tmp'stack class : array_getAt(
       parent: this,
-      new_size'i32 : new_size
+      index'i32 : index
     )
-    void
+    array_setAt(
+      parent: this,
+      index'i32 : index,
+      item'stack class : item
+    )
+    array_setAt(
+      parent: this,
+      index'i32 : index,
+      item'stack class : item
+    )
   }
-  array_initAt(
+}
+
+array_setAt(index'i32:, item'stack class:)'void {
+  --c--
+  
+  if (index >= _parent->count || index < 0) {
+  halt("setAt: out of bounds %d:%d\n", index, _parent->count);
+  }
+  sjs_class* p = (sjs_class*)_parent->data;
+  ;
+  ;
+  
+  --c--
+}
+
+array_sort()'void {
+  array__quickSort(
     parent: this,
-    index'i32 : index,
-    item'heap class : item
+    left'i32 : left,
+    right'i32 : right
   )
 }
 
-list_getAt(index'i32:)'heap class {
-  array_getAt(
-    parent: this,
-    index'i32 : index
-  )
+class_isGreater(c'stack class:)'bool {
+  parent.x > c.x
+}
+
+class_isLess(c'stack class:)'bool {
+  parent.x < c.x
 }
 
 global()'void {
@@ -1272,20 +1328,48 @@ global()'void {
   sjv_emptyStringData = (uintptr_t)"";
   
   --c--
-  a'stack list_heap_class : list!heap class(this = list!heap class(
-    array'stack array_heap_class = array
-  ))
-  for x : 1i to 100000i {
-    list_add(
-      parent: this,
-      item'heap class : item
-    )
-  }
-  c'heap class : heap list_getAt(
+  a'stack array_class : [array_initAt(
     parent: this,
-    index'i32 : index
+    index'i32 : index,
+    item'stack class : item
+  ), array_initAt(
+    parent: this,
+    index'i32 : index,
+    item'stack class : item
+  ), array_initAt(
+    parent: this,
+    index'i32 : index,
+    item'stack class : item
+  ), array_initAt(
+    parent: this,
+    index'i32 : index,
+    item'stack class : item
+  ), array_initAt(
+    parent: this,
+    index'i32 : index,
+    item'stack class : item
+  )]
+  array_sort(
+    parent: this
   )
-  c.x
+  anon1_writeLine(
+    parent: this,
+    data'stack string : data
+  )
+  array_reverse(
+    parent: this
+  )
+  anon1_writeLine(
+    parent: this,
+    data'stack string : data
+  )
+  array_sort(
+    parent: this
+  )
+  anon1_writeLine(
+    parent: this,
+    data'stack string : data
+  )
   void
 }
 

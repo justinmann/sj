@@ -10,10 +10,6 @@ anon3()'stack anon3 {
   this
 }
 
-anon4()'stack anon4 {
-  this
-}
-
 func()'stack tuple2_i32_string {
   tuple2![i32, stack string](this = tuple2![i32, stack string](
     item1'i32 : item1,
@@ -35,7 +31,6 @@ global()'void {
   
   --cinclude--
   console'stack anon1 : anon1(this = anon1())
-  convert'stack anon2 : anon2(this = anon2())
   f32_pi'f32 : 3.14159265358979323846ff
   --cinclude--
   
@@ -1202,8 +1197,14 @@ global()'void {
   u32_maxValue'u32 : (uint32_t)4294967295uu
   i32_maxValue'i32 : -1i - 2147483647i
   i32_minValue'i32 : 2147483647i
-  parse'stack anon3 : anon3(this = anon3())
-  random'stack anon4 : anon4(this = anon4())
+  parse'stack anon2 : anon2(this = anon2())
+  random'stack anon3 : anon3(this = anon3())
+  emptyStringData'ptr = 0i as ptr
+  --c--
+  
+  sjv_emptyStringData = (uintptr_t)"";
+  
+  --c--
   t'stack tuple2_i32_string : func()
   a'i32 = t.item1
   b'stack string = t.item2

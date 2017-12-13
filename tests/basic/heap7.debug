@@ -7,11 +7,11 @@ global()'void {
   stack_y'stack foo : foo(this = foo())
   local_y'local foo : foo(this = foo())
   heap_x1'heap foo : heap_y
-  heap_x2'heap foo : stack_y
-  heap_x3'heap foo : local_y
-  stack_x1'stack foo : stack_y
-  stack_x2'stack foo : heap_y
-  stack_x3'stack foo : local_y
+  heap_x2'heap foo : copy stack_y
+  heap_x3'heap foo : copy local_y
+  stack_x1'stack foo : copy stack_y
+  stack_x2'stack foo : copy heap_y
+  stack_x3'stack foo : copy local_y
   local_x1'local foo : heap_y
   local_x2'local foo : stack_y
   local_x3'local foo : local_y

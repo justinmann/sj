@@ -80,6 +80,11 @@ struct td_sjs_foo_heap {
 };
 
 sjs_foo sjt_call1;
+sjs_foo* sjt_copy1;
+sjs_foo* sjt_copy2;
+sjs_foo* sjt_copy3;
+sjs_foo_heap* sjt_copy4;
+sjs_foo* sjt_copy5;
 sjs_foo_heap* sjv_heap_x1;
 sjs_foo_heap* sjv_heap_x2;
 sjs_foo_heap* sjv_heap_x3;
@@ -123,24 +128,36 @@ int main(int argc, char** argv) {
     sjv_heap_x1 = sjv_heap_y;
 #line 7
     sjv_heap_x1->_refCount++;
-#line 7
+#line 8
+    sjt_copy1 = &sjv_stack_y;
+#line 8
     sjv_heap_x2 = (sjs_foo_heap*)malloc(sizeof(sjs_foo_heap));
-#line 7
+#line 8
     sjv_heap_x2->_refCount = 1;
 #line 8
-    sjf_foo_copy((sjs_foo*)(((char*)sjv_heap_x2) + sizeof(intptr_t)), &sjv_stack_y);
-#line 8
+    sjf_foo_copy((sjs_foo*)(((char*)sjv_heap_x2) + sizeof(intptr_t)), sjt_copy1);
+#line 9
+    sjt_copy2 = sjv_local_y;
+#line 9
     sjv_heap_x3 = (sjs_foo_heap*)malloc(sizeof(sjs_foo_heap));
-#line 8
+#line 9
     sjv_heap_x3->_refCount = 1;
 #line 9
-    sjf_foo_copy((sjs_foo*)(((char*)sjv_heap_x3) + sizeof(intptr_t)), sjv_local_y);
+    sjf_foo_copy((sjs_foo*)(((char*)sjv_heap_x3) + sizeof(intptr_t)), sjt_copy2);
 #line 11
-    sjf_foo_copy(&sjv_stack_x1, &sjv_stack_y);
+    sjt_copy3 = &sjv_stack_y;
+#line 11
+    sjf_foo_copy(&sjv_stack_x1, sjt_copy3);
 #line 12
-    sjf_foo_copy(&sjv_stack_x2, (sjs_foo*)(((char*)sjv_heap_y) + sizeof(intptr_t)));
+    sjt_copy4 = sjv_heap_y;
+#line 12
+    sjt_copy4->_refCount++;
+#line 12
+    sjf_foo_copy(&sjv_stack_x2, (sjs_foo*)(((char*)sjt_copy4) + sizeof(intptr_t)));
 #line 13
-    sjf_foo_copy(&sjv_stack_x3, sjv_local_y);
+    sjt_copy5 = sjv_local_y;
+#line 13
+    sjf_foo_copy(&sjv_stack_x3, sjt_copy5);
 #line 15
     sjv_local_x1 = (sjs_foo*)(((char*)sjv_heap_y) + sizeof(intptr_t));
 #line 16
@@ -153,6 +170,10 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
+    sjt_copy4->_refCount--;
+    if (sjt_copy4->_refCount <= 0) {
+        sjf_foo_destroy((sjs_foo*)(((char*)sjt_copy4) + sizeof(intptr_t)));
+    }
     sjv_heap_x1->_refCount--;
     if (sjv_heap_x1->_refCount <= 0) {
         sjf_foo_destroy((sjs_foo*)(((char*)sjv_heap_x1) + sizeof(intptr_t)));

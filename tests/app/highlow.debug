@@ -45,11 +45,7 @@ anon2()'stack anon2 {
   this
 }
 
-anon3()'stack anon3 {
-  this
-}
-
-anon3_toInt(text'stack string:)'i32 {
+anon2_toInt(text'stack string:)'i32 {
   x'i32 = 0i
   --c--
   
@@ -67,11 +63,11 @@ anon3_toInt(text'stack string:)'i32 {
   x
 }
 
-anon4()'stack anon4 {
+anon3()'stack anon3 {
   this
 }
 
-anon4_nextInt()'i32 --c--
+anon3_nextInt()'i32 --c--
 
 int x = rand();
 *_return = x;
@@ -88,7 +84,6 @@ global()'void {
   
   --cinclude--
   console'stack anon1 : anon1(this = anon1())
-  convert'stack anon2 : anon2(this = anon2())
   f32_pi'f32 : 3.14159265358979323846ff
   --cinclude--
   
@@ -1255,13 +1250,19 @@ global()'void {
   u32_maxValue'u32 : (uint32_t)4294967295uu
   i32_maxValue'i32 : -1i - 2147483647i
   i32_minValue'i32 : 2147483647i
-  parse'stack anon3 : anon3(this = anon3())
-  random'stack anon4 : anon4(this = anon4())
+  parse'stack anon2 : anon2(this = anon2())
+  random'stack anon3 : anon3(this = anon3())
+  emptyStringData'ptr = 0i as ptr
+  --c--
+  
+  sjv_emptyStringData = (uintptr_t)"";
+  
+  --c--
   anon1_write(
     parent: this,
     data'stack string : data
   )
-  num'i32 : anon4_nextInt(
+  num'i32 : anon3_nextInt(
     parent: this
   ) %% 10i + 1i
   isCorrect'bool = false
@@ -1269,7 +1270,7 @@ global()'void {
     str'stack string : anon1_readLine(
       parent: this
     )
-    guess'i32 : anon3_toInt(
+    guess'i32 : anon2_toInt(
       parent: this,
       text'stack string : text
     )

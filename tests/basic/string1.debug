@@ -10,10 +10,6 @@ anon3()'stack anon3 {
   this
 }
 
-anon4()'stack anon4 {
-  this
-}
-
 array_getAt(index'i32:)'char --c--
 
 if (index >= _parent->count || index < 0) {
@@ -70,7 +66,6 @@ global()'void {
   
   --cinclude--
   console'stack anon1 : anon1(this = anon1())
-  convert'stack anon2 : anon2(this = anon2())
   f32_pi'f32 : 3.14159265358979323846ff
   --cinclude--
   
@@ -1237,8 +1232,14 @@ global()'void {
   u32_maxValue'u32 : (uint32_t)4294967295uu
   i32_maxValue'i32 : -1i - 2147483647i
   i32_minValue'i32 : 2147483647i
-  parse'stack anon3 : anon3(this = anon3())
-  random'stack anon4 : anon4(this = anon4())
+  parse'stack anon2 : anon2(this = anon2())
+  random'stack anon3 : anon3(this = anon3())
+  emptyStringData'ptr = 0i as ptr
+  --c--
+  
+  sjv_emptyStringData = (uintptr_t)"";
+  
+  --c--
   a'stack string : string(this = string(
     count'i32 = count,
     data'stack array_char = data

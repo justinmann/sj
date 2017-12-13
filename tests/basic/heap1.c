@@ -101,13 +101,28 @@ void sjf_class_heap(sjs_class_heap* _this) {
 }
 
 void sjf_func(sjs_class** _return) {
+    sjs_class sjt_call1;
+    sjs_class sjt_call2;
+    sjs_class* sjt_copy1;
+    sjs_class* sjt_copy2;
     sjs_class sjv_a;
 
-    sjf_class(&sjv_a);
-    sjf_class(&sjv_a);
-#line 5 "heap1.sj"
+    sjf_class(&sjt_call1);
+#line 4 "heap1.sj"
+    sjt_copy1 = &sjt_call1;
+#line 4
+    sjf_class_copy(&sjv_a, sjt_copy1);
+#line 4
+    sjf_class(&sjt_call2);
+#line 5
+    sjt_copy2 = &sjt_call2;
+#line 5
+    sjf_class_copy(&sjv_a, sjt_copy2);
+#line 5
     (*_return) = &sjv_a;
 
+    sjf_class_destroy(&sjt_call1);
+    sjf_class_destroy(&sjt_call2);
     sjf_class_destroy(&sjv_a);
 }
 
