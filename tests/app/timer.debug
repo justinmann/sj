@@ -10,27 +10,23 @@ anon3()'stack anon3 {
   this
 }
 
-anon4()'stack anon4 {
+anon4(animations'stack list_heap_animation:, current'i32=)'stack anon4 {
   this
 }
 
-anon5(animations'stack list_heap_animation:, current'i32=)'stack anon5 {
+anon5(fill'i32:, left'i32:, right'i32:, top'i32:, bottom'i32:)'stack anon5 {
   this
 }
 
-anon6(fill'i32:, left'i32:, right'i32:, top'i32:, bottom'i32:)'stack anon6 {
+anon6(normal'i32:, hot'i32:, pressed'i32:)'stack anon6 {
   this
 }
 
-anon7(normal'i32:, hot'i32:, pressed'i32:)'stack anon7 {
+anon7()'stack anon7 {
   this
 }
 
 anon8()'stack anon8 {
-  this
-}
-
-anon9()'stack anon9 {
   this
 }
 
@@ -136,7 +132,7 @@ global()'void {
   
   --cinclude--
   console'stack anon1 : anon1(this = anon1())
-  convert'stack anon2 : anon2(this = anon2())
+  f32_pi'f32 : 3.14159265358979323846ff
   --cinclude--
   
   
@@ -1299,17 +1295,22 @@ global()'void {
   } UT_hash_handle;
   
   --ctypedef--
-  f32_pi'f32 : 3.14159265358979323846ff
   u32_maxValue'u32 : (uint32_t)4294967295uu
   i32_maxValue'i32 : -1i - 2147483647i
   i32_minValue'i32 : 2147483647i
-  parse'stack anon3 : anon3(this = anon3())
-  random'stack anon4 : anon4(this = anon4())
-  animator'stack anon5 : anon5(this = anon5(
+  parse'stack anon2 : anon2(this = anon2())
+  random'stack anon3 : anon3(this = anon3())
+  emptyStringData'ptr = 0i as ptr
+  --c--
+  
+  sjv_emptyStringData = (uintptr_t)"";
+  
+  --c--
+  animator'stack anon4 : anon4(this = anon4(
     animations'stack list_heap_animation : animations,
     current'i32 = current
   ))
-  borderPosition'stack anon6 : anon6(this = anon6(
+  borderPosition'stack anon5 : anon5(this = anon5(
     fill'i32 : fill,
     left'i32 : left,
     right'i32 : right,
@@ -1324,12 +1325,12 @@ global()'void {
   } vertex3_color4_t;
   
   --cstruct--
-  buttonState'stack anon7 : anon7(this = anon7(
+  buttonState'stack anon6 : anon6(this = anon6(
     normal'i32 : normal,
     hot'i32 : hot,
     pressed'i32 : pressed
   ))
-  colors'stack anon8 : anon8(this = anon8())
+  colors'stack anon7 : anon7(this = anon7())
   --cdefine--
   
   double *
@@ -2221,7 +2222,7 @@ global()'void {
   }
   
   --cfunction--
-  style'stack anon9 : anon9(this = anon9())
+  style'stack anon8 : anon8(this = anon8())
   --cstruct--
   
   typedef struct {

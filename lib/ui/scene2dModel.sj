@@ -11,7 +11,7 @@ scene2dModel #model (
 		void
 	}
 
-	render(projection : 'mat4, view : 'mat4, light : 'light)'void {
+	render(sceneRect : 'rect, projection : 'mat4, view : 'mat4, light : 'light)'void {
 		--c--
 		glBindFramebuffer(GL_FRAMEBUFFER, _parent->frameBuffer.frameBufferId);
 		--c--
@@ -27,8 +27,11 @@ scene2dModel #model (
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		--c--
 
-		scene3d.updateViewport()
-		viewWorld : scene3d.view * _world
+		--c--
+	    glViewport(sceneRect->_rect.x, sceneRect->_rect.y, sceneRect->_rect.w, sceneRect->_rect.h);
+	    glEnable( GL_DEPTH_TEST );
+		--c--	
+		viewWorld : view * _world
 		normalMat : viewWorld.invert().transpose()
 		--c--
         glUseProgram(_parent->shader.id);

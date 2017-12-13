@@ -10,10 +10,10 @@ leafPanel #model (
 		void
 	}
 
-	render(projection : 'mat4, view : 'mat4, light : 'light)'void {
+	render(sceneRect : 'rect, projection : 'mat4, view : 'mat4, light : 'light)'void {
 		for i : 0 to children.count {
 			c : children[i]
-			c.render(projection, view, light)
+			c.render(sceneRect, projection, view, light)
 		}
 	}
 

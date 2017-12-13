@@ -2366,7 +2366,7 @@ struct td_sji_nauScene3dElement_model {
     void (*destroy)(void* _this);
     sjs_object* (*asInterface)(sjs_object* _this, int typeId);
     void (*setWorld)(void* _parent, sjs_mat4* world);
-    void (*render)(void* _parent, sjs_mat4* projection, sjs_mat4* view, sjs_light* light);
+    void (*render)(void* _parent, sjs_rect* sceneRect, sjs_mat4* projection, sjs_mat4* view, sjs_light* light);
     void (*fireMouseEvent)(void* _parent, sjs_rect* sceneRect, sjs_mat4* projection, sjs_mat4* view, sjs_point* point, int32_t eventId);
 };
 
@@ -3985,7 +3985,7 @@ void sjf_leafPanel_fireMouseEvent(sjs_leafPanel* _parent, sjs_rect* sceneRect, s
 void sjf_leafPanel_heap(sjs_leafPanel_heap* _this);
 sjs_object* sjf_leafPanel_heap_asInterface(sjs_leafPanel_heap* _this, int typeId);
 sji_nauScene3dElement_model* sjf_leafPanel_heap_as_sji_nauScene3dElement_model(sjs_leafPanel_heap* _this);
-void sjf_leafPanel_render(sjs_leafPanel* _parent, sjs_mat4* projection, sjs_mat4* view, sjs_light* light);
+void sjf_leafPanel_render(sjs_leafPanel* _parent, sjs_rect* sceneRect, sjs_mat4* projection, sjs_mat4* view, sjs_light* light);
 void sjf_leafPanel_setWorld(sjs_leafPanel* _parent, sjs_mat4* world_);
 void sjf_leafPanel_textureToModel_heap(sjs_leafPanel* _parent, sjs_texture* texture, sji_nauScene3dElement_model** _return);
 void sjf_light(sjs_light* _this);
@@ -4034,7 +4034,7 @@ void sjf_model_fireMouseEvent(sjs_model* _parent, sjs_rect* sceneRect, sjs_mat4*
 void sjf_model_heap(sjs_model_heap* _this);
 sjs_object* sjf_model_heap_asInterface(sjs_model_heap* _this, int typeId);
 sji_nauScene3dElement_model* sjf_model_heap_as_sji_nauScene3dElement_model(sjs_model_heap* _this);
-void sjf_model_render(sjs_model* _parent, sjs_mat4* projection, sjs_mat4* view, sjs_light* light);
+void sjf_model_render(sjs_model* _parent, sjs_rect* sceneRect, sjs_mat4* projection, sjs_mat4* view, sjs_light* light);
 void sjf_model_setWorld(sjs_model* _parent, sjs_mat4* world);
 void sjf_nauScene3dElement(sjs_nauScene3dElement* _this);
 sjs_object* sjf_nauScene3dElement_asInterface(sjs_nauScene3dElement* _this, int typeId);
@@ -4059,7 +4059,7 @@ void sjf_panel3d_fireMouseEvent(sjs_panel3d* _parent, sjs_rect* sceneRect, sjs_m
 void sjf_panel3d_heap(sjs_panel3d_heap* _this);
 sjs_object* sjf_panel3d_heap_asInterface(sjs_panel3d_heap* _this, int typeId);
 sji_nauScene3dElement_model* sjf_panel3d_heap_as_sji_nauScene3dElement_model(sjs_panel3d_heap* _this);
-void sjf_panel3d_render(sjs_panel3d* _parent, sjs_mat4* projection, sjs_mat4* view, sjs_light* light);
+void sjf_panel3d_render(sjs_panel3d* _parent, sjs_rect* sceneRect, sjs_mat4* projection, sjs_mat4* view, sjs_light* light);
 void sjf_panel3d_setWorld(sjs_panel3d* _parent, sjs_mat4* world_);
 void sjf_planeVertexBuffer(float x0, float x1, float y0, float y1, float z0, float s0, float s1, float t0, float t1, sjs_vertexBuffer_vertex_location_texture_normal* _return);
 void sjf_planeVertexBuffer_heap(float x0, float x1, float y0, float y1, float z0, float s0, float s1, float t0, float t1, sjs_vertexBuffer_vertex_location_texture_normal_heap** _return);
@@ -6952,19 +6952,19 @@ void sjf_anon4_heap(sjs_anon4_heap* _this) {
 void sjf_anon4_nextFrame(sjs_anon4* _parent, int32_t time) {
     int32_t sjt_compare29;
     int32_t sjt_compare30;
-    sjs_anon4* sjt_dot1265;
-    sjs_anon4* sjt_dot1268;
+    sjs_anon4* sjt_dot1266;
+    sjs_anon4* sjt_dot1269;
     bool sjt_ifElse14;
     sjs_list_heap_animation* sjt_parent113;
 
 #line 31 "lib/ui/animation.sj"
-    sjt_dot1265 = _parent;
+    sjt_dot1266 = _parent;
 #line 31
-    sjt_dot1265->current = time;
+    sjt_dot1266->current = time;
 #line 31
-    sjt_dot1268 = _parent;
+    sjt_dot1269 = _parent;
 #line 4 "lib/common/list.sj"
-    sjt_parent113 = &(sjt_dot1268)->animations;
+    sjt_parent113 = &(sjt_dot1269)->animations;
 #line 4
     sjf_list_heap_animation_getCount(sjt_parent113, &sjt_compare29);
 #line 33 "lib/ui/animation.sj"
@@ -6973,7 +6973,7 @@ void sjf_anon4_nextFrame(sjs_anon4* _parent, int32_t time) {
     sjt_ifElse14 = sjt_compare29 > sjt_compare30;
     if (sjt_ifElse14) {
         int32_t i;
-        sjs_anon4* sjt_dot1269;
+        sjs_anon4* sjt_dot1270;
         int32_t sjt_forEnd15;
         int32_t sjt_forStart15;
         sjs_list_heap_animation* sjt_parent114;
@@ -6981,19 +6981,19 @@ void sjf_anon4_nextFrame(sjs_anon4* _parent, int32_t time) {
 #line 35 "lib/ui/animation.sj"
         sjt_forStart15 = 0;
 #line 31
-        sjt_dot1269 = _parent;
+        sjt_dot1270 = _parent;
 #line 4 "lib/common/list.sj"
-        sjt_parent114 = &(sjt_dot1269)->animations;
+        sjt_parent114 = &(sjt_dot1270)->animations;
 #line 4
         sjf_list_heap_animation_getCount(sjt_parent114, &sjt_forEnd15);
 #line 35 "lib/ui/animation.sj"
         i = sjt_forStart15;
         while (i < sjt_forEnd15) {
-            sjs_anon4* sjt_dot1270;
-            sjs_anon4* sjt_dot1272;
+            sjs_anon4* sjt_dot1271;
+            sjs_anon4* sjt_dot1273;
             int32_t sjt_functionParam383;
             bool sjt_ifElse15;
-            int32_t sjt_interfaceParam32;
+            int32_t sjt_interfaceParam35;
             int32_t sjt_math1995;
             int32_t sjt_math1996;
             int32_t sjt_math1997;
@@ -7005,9 +7005,9 @@ void sjf_anon4_nextFrame(sjs_anon4* _parent, int32_t time) {
             int32_t sjv_index;
 
 #line 31 "lib/ui/animation.sj"
-            sjt_dot1270 = _parent;
+            sjt_dot1271 = _parent;
 #line 4 "lib/common/list.sj"
-            sjt_parent115 = &(sjt_dot1270)->animations;
+            sjt_parent115 = &(sjt_dot1271)->animations;
 #line 4
             sjf_list_heap_animation_getCount(sjt_parent115, &sjt_math1997);
 #line 36 "lib/ui/animation.sj"
@@ -7019,9 +7019,9 @@ void sjf_anon4_nextFrame(sjs_anon4* _parent, int32_t time) {
 #line 36
             sjv_index = sjt_math1995 - sjt_math1996;
 #line 31
-            sjt_dot1272 = _parent;
+            sjt_dot1273 = _parent;
 #line 8 "lib/common/list.sj"
-            sjt_parent117 = &(sjt_dot1272)->animations;
+            sjt_parent117 = &(sjt_dot1273)->animations;
 #line 37 "lib/ui/animation.sj"
             sjt_functionParam383 = sjv_index;
 #line 37
@@ -7029,18 +7029,18 @@ void sjf_anon4_nextFrame(sjs_anon4* _parent, int32_t time) {
 #line 2
             sjt_parent118 = sjv_a;
 #line 31
-            sjt_interfaceParam32 = time;
+            sjt_interfaceParam35 = time;
 #line 38
-            sjt_parent118->nextFrame((void*)(((char*)sjt_parent118->_parent) + sizeof(intptr_t)), sjt_interfaceParam32, &sjt_ifElse15);
+            sjt_parent118->nextFrame((void*)(((char*)sjt_parent118->_parent) + sizeof(intptr_t)), sjt_interfaceParam35, &sjt_ifElse15);
             if (sjt_ifElse15) {
-                sjs_anon4* sjt_dot1273;
+                sjs_anon4* sjt_dot1274;
                 int32_t sjt_functionParam384;
                 sjs_list_heap_animation* sjt_parent119;
 
 #line 31 "lib/ui/animation.sj"
-                sjt_dot1273 = _parent;
+                sjt_dot1274 = _parent;
 #line 45 "lib/common/list.sj"
-                sjt_parent119 = &(sjt_dot1273)->animations;
+                sjt_parent119 = &(sjt_dot1274)->animations;
 #line 39 "lib/ui/animation.sj"
                 sjt_functionParam384 = sjv_index;
 #line 39
@@ -7785,9 +7785,9 @@ void sjf_array_texture_initAt(sjs_array_texture* _parent, int32_t index, sjs_tex
 void sjf_array_texture_map_heap_model(sjs_array_texture* _parent, cb_texture_heap_model cb, sjs_array_heap_model* _return) {
     int32_t i;
     int32_t sjt_cast20;
-    sjs_array_texture* sjt_dot1190;
     sjs_array_texture* sjt_dot1191;
     sjs_array_texture* sjt_dot1192;
+    sjs_array_texture* sjt_dot1193;
     int32_t sjt_forEnd7;
     int32_t sjt_forStart7;
     uintptr_t sjv_newData;
@@ -7801,9 +7801,9 @@ void sjf_array_texture_map_heap_model(sjs_array_texture* _parent, cb_texture_hea
 #line 68
     sjt_forStart7 = 0;
 #line 63
-    sjt_dot1190 = _parent;
+    sjt_dot1191 = _parent;
 #line 68
-    sjt_forEnd7 = (sjt_dot1190)->count;
+    sjt_forEnd7 = (sjt_dot1191)->count;
 #line 68
     i = sjt_forStart7;
     while (i < sjt_forEnd7) {
@@ -7846,17 +7846,17 @@ void sjf_array_texture_map_heap_model(sjs_array_texture* _parent, cb_texture_hea
     }
 
 #line 63
-    sjt_dot1191 = _parent;
+    sjt_dot1192 = _parent;
 #line 75
-    _return->dataSize = (sjt_dot1191)->count;
+    _return->dataSize = (sjt_dot1192)->count;
 #line 75
     _return->data = sjv_newData;
 #line 4
     _return->_isGlobal = false;
 #line 63
-    sjt_dot1192 = _parent;
+    sjt_dot1193 = _parent;
 #line 75
-    _return->count = (sjt_dot1192)->count;
+    _return->count = (sjt_dot1193)->count;
 #line 75
     sjf_array_heap_model(_return);
 }
@@ -7864,9 +7864,9 @@ void sjf_array_texture_map_heap_model(sjs_array_texture* _parent, cb_texture_hea
 void sjf_array_texture_map_heap_model_heap(sjs_array_texture* _parent, cb_texture_heap_model cb, sjs_array_heap_model_heap** _return) {
     int32_t i;
     int32_t sjt_cast21;
-    sjs_array_texture* sjt_dot1193;
     sjs_array_texture* sjt_dot1194;
     sjs_array_texture* sjt_dot1195;
+    sjs_array_texture* sjt_dot1196;
     int32_t sjt_forEnd8;
     int32_t sjt_forStart8;
     uintptr_t sjv_newData;
@@ -7880,9 +7880,9 @@ void sjf_array_texture_map_heap_model_heap(sjs_array_texture* _parent, cb_textur
 #line 68
     sjt_forStart8 = 0;
 #line 63
-    sjt_dot1193 = _parent;
+    sjt_dot1194 = _parent;
 #line 68
-    sjt_forEnd8 = (sjt_dot1193)->count;
+    sjt_forEnd8 = (sjt_dot1194)->count;
 #line 68
     i = sjt_forStart8;
     while (i < sjt_forEnd8) {
@@ -7929,17 +7929,17 @@ void sjf_array_texture_map_heap_model_heap(sjs_array_texture* _parent, cb_textur
 #line 68
     (*_return)->_refCount = 1;
 #line 63
-    sjt_dot1194 = _parent;
+    sjt_dot1195 = _parent;
 #line 75
-    (*_return)->dataSize = (sjt_dot1194)->count;
+    (*_return)->dataSize = (sjt_dot1195)->count;
 #line 75
     (*_return)->data = sjv_newData;
 #line 4
     (*_return)->_isGlobal = false;
 #line 63
-    sjt_dot1195 = _parent;
+    sjt_dot1196 = _parent;
 #line 75
-    (*_return)->count = (sjt_dot1195)->count;
+    (*_return)->count = (sjt_dot1196)->count;
 #line 75
     sjf_array_heap_model_heap((*_return));
 }
@@ -8231,15 +8231,15 @@ void sjf_crossHairsElement_destroy(sjs_crossHairsElement* _this) {
 }
 
 void sjf_crossHairsElement_fireMouseEvent(sjs_crossHairsElement* _parent, sjs_point* point, int32_t eventId) {
-    sjs_crossHairsElement* sjt_dot1261;
+    sjs_crossHairsElement* sjt_dot1262;
     sjs_point* sjt_functionParam381;
     bool sjt_ifElse12;
     sjs_rect* sjt_parent111;
 
 #line 44 "lib/ui/crossHairsElement.sj"
-    sjt_dot1261 = _parent;
+    sjt_dot1262 = _parent;
 #line 11 "lib/ui/rect.sj"
-    sjt_parent111 = &(sjt_dot1261)->_rect;
+    sjt_parent111 = &(sjt_dot1262)->_rect;
 #line 44 "lib/ui/crossHairsElement.sj"
     sjt_functionParam381 = point;
 #line 44
@@ -8257,88 +8257,88 @@ void sjf_crossHairsElement_fireMouseEvent(sjs_crossHairsElement* _parent, sjs_po
         sjt_ifElse13 = sjt_compare27 == sjt_compare28;
         if (sjt_ifElse13) {
             sjs_point* sjt_copy24;
-            sjs_crossHairsElement* sjt_dot1262;
             sjs_crossHairsElement* sjt_dot1263;
             sjs_crossHairsElement* sjt_dot1264;
+            sjs_crossHairsElement* sjt_dot1265;
 
 #line 44 "lib/ui/crossHairsElement.sj"
-            sjt_dot1262 = _parent;
+            sjt_dot1263 = _parent;
 #line 44
             sjt_copy24 = point;
 #line 47
-            sjf_point_copy(&sjt_dot1262->_point, sjt_copy24);
+            sjf_point_copy(&sjt_dot1263->_point, sjt_copy24);
 #line 44
-            sjt_dot1263 = _parent;
-            if (sjt_dot1263->_topDownRenderer != 0) {
-                sjt_dot1263->_topDownRenderer->_refCount--;
-                if (sjt_dot1263->_topDownRenderer->_refCount <= 0) {
-                    sjf_boxRenderer_destroy((sjs_boxRenderer*)(((char*)sjt_dot1263->_topDownRenderer) + sizeof(intptr_t)));
+            sjt_dot1264 = _parent;
+            if (sjt_dot1264->_topDownRenderer != 0) {
+                sjt_dot1264->_topDownRenderer->_refCount--;
+                if (sjt_dot1264->_topDownRenderer->_refCount <= 0) {
+                    sjf_boxRenderer_destroy((sjs_boxRenderer*)(((char*)sjt_dot1264->_topDownRenderer) + sizeof(intptr_t)));
                 }
             }
 
 #line 48
-            sjt_dot1263->_topDownRenderer = 0;
-            if (sjt_dot1263->_topDownRenderer != 0) {
-                sjt_dot1263->_topDownRenderer->_refCount++;
+            sjt_dot1264->_topDownRenderer = 0;
+            if (sjt_dot1264->_topDownRenderer != 0) {
+                sjt_dot1264->_topDownRenderer->_refCount++;
             }
 
 #line 44
-            sjt_dot1264 = _parent;
-            if (sjt_dot1264->_leftRightRenderer != 0) {
-                sjt_dot1264->_leftRightRenderer->_refCount--;
-                if (sjt_dot1264->_leftRightRenderer->_refCount <= 0) {
-                    sjf_boxRenderer_destroy((sjs_boxRenderer*)(((char*)sjt_dot1264->_leftRightRenderer) + sizeof(intptr_t)));
+            sjt_dot1265 = _parent;
+            if (sjt_dot1265->_leftRightRenderer != 0) {
+                sjt_dot1265->_leftRightRenderer->_refCount--;
+                if (sjt_dot1265->_leftRightRenderer->_refCount <= 0) {
+                    sjf_boxRenderer_destroy((sjs_boxRenderer*)(((char*)sjt_dot1265->_leftRightRenderer) + sizeof(intptr_t)));
                 }
             }
 
 #line 49
-            sjt_dot1264->_leftRightRenderer = 0;
-            if (sjt_dot1264->_leftRightRenderer != 0) {
-                sjt_dot1264->_leftRightRenderer->_refCount++;
+            sjt_dot1265->_leftRightRenderer = 0;
+            if (sjt_dot1265->_leftRightRenderer != 0) {
+                sjt_dot1265->_leftRightRenderer->_refCount++;
             }
         }
     }
 }
 
 void sjf_crossHairsElement_getRect(sjs_crossHairsElement* _parent, sjs_rect** _return) {
-    sjs_crossHairsElement* sjt_dot1224;
+    sjs_crossHairsElement* sjt_dot1225;
 
 #line 12 "lib/ui/crossHairsElement.sj"
-    sjt_dot1224 = _parent;
+    sjt_dot1225 = _parent;
 #line 12
-    (*_return) = &(sjt_dot1224)->_rect;
+    (*_return) = &(sjt_dot1225)->_rect;
 }
 
 void sjf_crossHairsElement_getSize(sjs_crossHairsElement* _parent, sjs_size* maxSize, sjs_size* _return) {
-    sjs_size* sjt_dot1220;
     sjs_size* sjt_dot1221;
+    sjs_size* sjt_dot1222;
 
 #line 8 "lib/ui/crossHairsElement.sj"
-    sjt_dot1220 = maxSize;
-#line 9
-    _return->w = (sjt_dot1220)->w;
-#line 8
     sjt_dot1221 = maxSize;
 #line 9
-    _return->h = (sjt_dot1221)->h;
+    _return->w = (sjt_dot1221)->w;
+#line 8
+    sjt_dot1222 = maxSize;
+#line 9
+    _return->h = (sjt_dot1222)->h;
 #line 9
     sjf_size(_return);
 }
 
 void sjf_crossHairsElement_getSize_heap(sjs_crossHairsElement* _parent, sjs_size* maxSize, sjs_size_heap** _return) {
-    sjs_size* sjt_dot1222;
     sjs_size* sjt_dot1223;
+    sjs_size* sjt_dot1224;
 
     (*_return) = (sjs_size_heap*)malloc(sizeof(sjs_size_heap));
     (*_return)->_refCount = 1;
 #line 8 "lib/ui/crossHairsElement.sj"
-    sjt_dot1222 = maxSize;
-#line 9
-    (*_return)->w = (sjt_dot1222)->w;
-#line 8
     sjt_dot1223 = maxSize;
 #line 9
-    (*_return)->h = (sjt_dot1223)->h;
+    (*_return)->w = (sjt_dot1223)->w;
+#line 8
+    sjt_dot1224 = maxSize;
+#line 9
+    (*_return)->h = (sjt_dot1224)->h;
 #line 9
     sjf_size_heap((*_return));
 }
@@ -8377,10 +8377,10 @@ sji_element* sjf_crossHairsElement_heap_as_sji_element(sjs_crossHairsElement_hea
 void sjf_crossHairsElement_render(sjs_crossHairsElement* _parent, sjs_scene2d* scene) {
     bool result47;
     bool result48;
-    sjs_crossHairsElement* sjt_dot1229;
-    sjs_crossHairsElement* sjt_dot1238;
-    sjs_crossHairsElement* sjt_dot1247;
-    sjs_crossHairsElement* sjt_dot1249;
+    sjs_crossHairsElement* sjt_dot1230;
+    sjs_crossHairsElement* sjt_dot1239;
+    sjs_crossHairsElement* sjt_dot1248;
+    sjs_crossHairsElement* sjt_dot1250;
     bool sjt_ifElse10;
     bool sjt_ifElse11;
     bool sjt_ifElse8;
@@ -8393,9 +8393,9 @@ void sjf_crossHairsElement_render(sjs_crossHairsElement* _parent, sjs_scene2d* s
     bool sjt_not4;
 
 #line 23 "lib/ui/crossHairsElement.sj"
-    sjt_dot1229 = _parent;
+    sjt_dot1230 = _parent;
 #line 24
-    sjt_isEmpty1 = (sjt_dot1229)->_topDownRenderer;
+    sjt_isEmpty1 = (sjt_dot1230)->_topDownRenderer;
     if (sjt_isEmpty1 != 0) {
         sjt_isEmpty1->_refCount++;
     }
@@ -8404,63 +8404,63 @@ void sjf_crossHairsElement_render(sjs_crossHairsElement* _parent, sjs_scene2d* s
     sjt_ifElse8 = (sjt_isEmpty1 == 0);
     if (sjt_ifElse8) {
         sjs_color* sjt_copy22;
-        sjs_crossHairsElement* sjt_dot1230;
-        sjs_point* sjt_dot1231;
-        sjs_crossHairsElement* sjt_dot1232;
-        sjs_rect* sjt_dot1233;
-        sjs_crossHairsElement* sjt_dot1234;
-        sjs_rect* sjt_dot1235;
-        sjs_crossHairsElement* sjt_dot1236;
+        sjs_crossHairsElement* sjt_dot1231;
+        sjs_point* sjt_dot1232;
+        sjs_crossHairsElement* sjt_dot1233;
+        sjs_rect* sjt_dot1234;
+        sjs_crossHairsElement* sjt_dot1235;
+        sjs_rect* sjt_dot1236;
         sjs_crossHairsElement* sjt_dot1237;
+        sjs_crossHairsElement* sjt_dot1238;
         sjs_boxRenderer_heap* sjt_value1;
 
 #line 23 "lib/ui/crossHairsElement.sj"
-        sjt_dot1230 = _parent;
+        sjt_dot1231 = _parent;
 #line 23
         sjt_value1 = (sjs_boxRenderer_heap*)malloc(sizeof(sjs_boxRenderer_heap));
 #line 23
         sjt_value1->_refCount = 1;
 #line 23
-        sjt_dot1232 = _parent;
+        sjt_dot1233 = _parent;
 #line 1 "lib/ui/point.sj"
-        sjt_dot1231 = &(sjt_dot1232)->_point;
+        sjt_dot1232 = &(sjt_dot1233)->_point;
 #line 26 "lib/ui/crossHairsElement.sj"
-        sjt_value1->rect.x = (sjt_dot1231)->x;
+        sjt_value1->rect.x = (sjt_dot1232)->x;
 #line 23
-        sjt_dot1234 = _parent;
+        sjt_dot1235 = _parent;
 #line 1 "lib/ui/rect.sj"
-        sjt_dot1233 = &(sjt_dot1234)->_rect;
+        sjt_dot1234 = &(sjt_dot1235)->_rect;
 #line 26 "lib/ui/crossHairsElement.sj"
-        sjt_value1->rect.y = (sjt_dot1233)->y;
+        sjt_value1->rect.y = (sjt_dot1234)->y;
 #line 26
         sjt_value1->rect.w = 1;
 #line 23
-        sjt_dot1236 = _parent;
+        sjt_dot1237 = _parent;
 #line 1 "lib/ui/rect.sj"
-        sjt_dot1235 = &(sjt_dot1236)->_rect;
+        sjt_dot1236 = &(sjt_dot1237)->_rect;
 #line 26 "lib/ui/crossHairsElement.sj"
-        sjt_value1->rect.h = (sjt_dot1235)->h;
+        sjt_value1->rect.h = (sjt_dot1236)->h;
 #line 26
         sjf_rect(&sjt_value1->rect);
 #line 23
-        sjt_dot1237 = _parent;
+        sjt_dot1238 = _parent;
 #line 27
-        sjt_copy22 = &(sjt_dot1237)->color;
+        sjt_copy22 = &(sjt_dot1238)->color;
 #line 27
         sjf_color_copy(&sjt_value1->color, sjt_copy22);
 #line 27
         sjf_boxRenderer_heap(sjt_value1);
-        if (sjt_dot1230->_topDownRenderer != 0) {
-            sjt_dot1230->_topDownRenderer->_refCount--;
-            if (sjt_dot1230->_topDownRenderer->_refCount <= 0) {
-                sjf_boxRenderer_destroy((sjs_boxRenderer*)(((char*)sjt_dot1230->_topDownRenderer) + sizeof(intptr_t)));
+        if (sjt_dot1231->_topDownRenderer != 0) {
+            sjt_dot1231->_topDownRenderer->_refCount--;
+            if (sjt_dot1231->_topDownRenderer->_refCount <= 0) {
+                sjf_boxRenderer_destroy((sjs_boxRenderer*)(((char*)sjt_dot1231->_topDownRenderer) + sizeof(intptr_t)));
             }
         }
 
 #line 25
-        sjt_dot1230->_topDownRenderer = sjt_value1;
-        if (sjt_dot1230->_topDownRenderer != 0) {
-            sjt_dot1230->_topDownRenderer->_refCount++;
+        sjt_dot1231->_topDownRenderer = sjt_value1;
+        if (sjt_dot1231->_topDownRenderer != 0) {
+            sjt_dot1231->_topDownRenderer->_refCount++;
         }
 
         sjt_value1->_refCount--;
@@ -8470,9 +8470,9 @@ void sjf_crossHairsElement_render(sjs_crossHairsElement* _parent, sjs_scene2d* s
     }
 
 #line 23
-    sjt_dot1238 = _parent;
+    sjt_dot1239 = _parent;
 #line 30
-    sjt_isEmpty2 = (sjt_dot1238)->_leftRightRenderer;
+    sjt_isEmpty2 = (sjt_dot1239)->_leftRightRenderer;
     if (sjt_isEmpty2 != 0) {
         sjt_isEmpty2->_refCount++;
     }
@@ -8481,63 +8481,63 @@ void sjf_crossHairsElement_render(sjs_crossHairsElement* _parent, sjs_scene2d* s
     sjt_ifElse9 = (sjt_isEmpty2 == 0);
     if (sjt_ifElse9) {
         sjs_color* sjt_copy23;
-        sjs_crossHairsElement* sjt_dot1239;
-        sjs_rect* sjt_dot1240;
-        sjs_crossHairsElement* sjt_dot1241;
-        sjs_point* sjt_dot1242;
-        sjs_crossHairsElement* sjt_dot1243;
-        sjs_rect* sjt_dot1244;
-        sjs_crossHairsElement* sjt_dot1245;
+        sjs_crossHairsElement* sjt_dot1240;
+        sjs_rect* sjt_dot1241;
+        sjs_crossHairsElement* sjt_dot1242;
+        sjs_point* sjt_dot1243;
+        sjs_crossHairsElement* sjt_dot1244;
+        sjs_rect* sjt_dot1245;
         sjs_crossHairsElement* sjt_dot1246;
+        sjs_crossHairsElement* sjt_dot1247;
         sjs_boxRenderer_heap* sjt_value2;
 
 #line 23 "lib/ui/crossHairsElement.sj"
-        sjt_dot1239 = _parent;
+        sjt_dot1240 = _parent;
 #line 23
         sjt_value2 = (sjs_boxRenderer_heap*)malloc(sizeof(sjs_boxRenderer_heap));
 #line 23
         sjt_value2->_refCount = 1;
 #line 23
-        sjt_dot1241 = _parent;
+        sjt_dot1242 = _parent;
 #line 1 "lib/ui/rect.sj"
-        sjt_dot1240 = &(sjt_dot1241)->_rect;
+        sjt_dot1241 = &(sjt_dot1242)->_rect;
 #line 32 "lib/ui/crossHairsElement.sj"
-        sjt_value2->rect.x = (sjt_dot1240)->x;
+        sjt_value2->rect.x = (sjt_dot1241)->x;
 #line 23
-        sjt_dot1243 = _parent;
+        sjt_dot1244 = _parent;
 #line 1 "lib/ui/point.sj"
-        sjt_dot1242 = &(sjt_dot1243)->_point;
+        sjt_dot1243 = &(sjt_dot1244)->_point;
 #line 32 "lib/ui/crossHairsElement.sj"
-        sjt_value2->rect.y = (sjt_dot1242)->y;
+        sjt_value2->rect.y = (sjt_dot1243)->y;
 #line 23
-        sjt_dot1245 = _parent;
+        sjt_dot1246 = _parent;
 #line 1 "lib/ui/rect.sj"
-        sjt_dot1244 = &(sjt_dot1245)->_rect;
+        sjt_dot1245 = &(sjt_dot1246)->_rect;
 #line 32 "lib/ui/crossHairsElement.sj"
-        sjt_value2->rect.w = (sjt_dot1244)->w;
+        sjt_value2->rect.w = (sjt_dot1245)->w;
 #line 32
         sjt_value2->rect.h = 1;
 #line 32
         sjf_rect(&sjt_value2->rect);
 #line 23
-        sjt_dot1246 = _parent;
+        sjt_dot1247 = _parent;
 #line 33
-        sjt_copy23 = &(sjt_dot1246)->color;
+        sjt_copy23 = &(sjt_dot1247)->color;
 #line 33
         sjf_color_copy(&sjt_value2->color, sjt_copy23);
 #line 33
         sjf_boxRenderer_heap(sjt_value2);
-        if (sjt_dot1239->_leftRightRenderer != 0) {
-            sjt_dot1239->_leftRightRenderer->_refCount--;
-            if (sjt_dot1239->_leftRightRenderer->_refCount <= 0) {
-                sjf_boxRenderer_destroy((sjs_boxRenderer*)(((char*)sjt_dot1239->_leftRightRenderer) + sizeof(intptr_t)));
+        if (sjt_dot1240->_leftRightRenderer != 0) {
+            sjt_dot1240->_leftRightRenderer->_refCount--;
+            if (sjt_dot1240->_leftRightRenderer->_refCount <= 0) {
+                sjf_boxRenderer_destroy((sjs_boxRenderer*)(((char*)sjt_dot1240->_leftRightRenderer) + sizeof(intptr_t)));
             }
         }
 
 #line 31
-        sjt_dot1239->_leftRightRenderer = sjt_value2;
-        if (sjt_dot1239->_leftRightRenderer != 0) {
-            sjt_dot1239->_leftRightRenderer->_refCount++;
+        sjt_dot1240->_leftRightRenderer = sjt_value2;
+        if (sjt_dot1240->_leftRightRenderer != 0) {
+            sjt_dot1240->_leftRightRenderer->_refCount++;
         }
 
         sjt_value2->_refCount--;
@@ -8547,9 +8547,9 @@ void sjf_crossHairsElement_render(sjs_crossHairsElement* _parent, sjs_scene2d* s
     }
 
 #line 23
-    sjt_dot1247 = _parent;
+    sjt_dot1248 = _parent;
 #line 36
-    sjt_isEmpty3 = (sjt_dot1247)->_topDownRenderer;
+    sjt_isEmpty3 = (sjt_dot1248)->_topDownRenderer;
     if (sjt_isEmpty3 != 0) {
         sjt_isEmpty3->_refCount++;
     }
@@ -8561,15 +8561,15 @@ void sjf_crossHairsElement_render(sjs_crossHairsElement* _parent, sjs_scene2d* s
 #line 36
     sjt_ifElse10 = result47;
     if (sjt_ifElse10) {
-        sjs_crossHairsElement* sjt_dot1248;
+        sjs_crossHairsElement* sjt_dot1249;
         sjs_scene2d* sjt_functionParam379;
         sjs_boxRenderer_heap* sjt_getValue1;
         sjs_boxRenderer* sjt_parent109;
 
 #line 23 "lib/ui/crossHairsElement.sj"
-        sjt_dot1248 = _parent;
+        sjt_dot1249 = _parent;
 #line 36
-        sjt_getValue1 = (sjt_dot1248)->_topDownRenderer;
+        sjt_getValue1 = (sjt_dot1249)->_topDownRenderer;
         if (sjt_getValue1 != 0) {
             sjt_getValue1->_refCount++;
         }
@@ -8590,9 +8590,9 @@ void sjf_crossHairsElement_render(sjs_crossHairsElement* _parent, sjs_scene2d* s
     }
 
 #line 23
-    sjt_dot1249 = _parent;
+    sjt_dot1250 = _parent;
 #line 37
-    sjt_isEmpty4 = (sjt_dot1249)->_leftRightRenderer;
+    sjt_isEmpty4 = (sjt_dot1250)->_leftRightRenderer;
     if (sjt_isEmpty4 != 0) {
         sjt_isEmpty4->_refCount++;
     }
@@ -8604,15 +8604,15 @@ void sjf_crossHairsElement_render(sjs_crossHairsElement* _parent, sjs_scene2d* s
 #line 37
     sjt_ifElse11 = result48;
     if (sjt_ifElse11) {
-        sjs_crossHairsElement* sjt_dot1250;
+        sjs_crossHairsElement* sjt_dot1251;
         sjs_scene2d* sjt_functionParam380;
         sjs_boxRenderer_heap* sjt_getValue2;
         sjs_boxRenderer* sjt_parent110;
 
 #line 23 "lib/ui/crossHairsElement.sj"
-        sjt_dot1250 = _parent;
+        sjt_dot1251 = _parent;
 #line 37
-        sjt_getValue2 = (sjt_dot1250)->_leftRightRenderer;
+        sjt_getValue2 = (sjt_dot1251)->_leftRightRenderer;
         if (sjt_getValue2 != 0) {
             sjt_getValue2->_refCount++;
         }
@@ -8660,16 +8660,16 @@ void sjf_crossHairsElement_render(sjs_crossHairsElement* _parent, sjs_scene2d* s
 
 void sjf_crossHairsElement_setRect(sjs_crossHairsElement* _parent, sjs_rect* rect_) {
     bool result46;
-    sjs_crossHairsElement* sjt_dot1225;
+    sjs_crossHairsElement* sjt_dot1226;
     sjs_rect* sjt_functionParam378;
     bool sjt_ifElse7;
     bool sjt_not2;
     sjs_rect* sjt_parent108;
 
 #line 14 "lib/ui/crossHairsElement.sj"
-    sjt_dot1225 = _parent;
+    sjt_dot1226 = _parent;
 #line 15 "lib/ui/rect.sj"
-    sjt_parent108 = &(sjt_dot1225)->_rect;
+    sjt_parent108 = &(sjt_dot1226)->_rect;
 #line 14 "lib/ui/crossHairsElement.sj"
     sjt_functionParam378 = rect_;
 #line 14
@@ -8680,44 +8680,44 @@ void sjf_crossHairsElement_setRect(sjs_crossHairsElement* _parent, sjs_rect* rec
     sjt_ifElse7 = result46;
     if (sjt_ifElse7) {
         sjs_rect* sjt_copy21;
-        sjs_crossHairsElement* sjt_dot1226;
         sjs_crossHairsElement* sjt_dot1227;
         sjs_crossHairsElement* sjt_dot1228;
+        sjs_crossHairsElement* sjt_dot1229;
 
 #line 14 "lib/ui/crossHairsElement.sj"
-        sjt_dot1226 = _parent;
+        sjt_dot1227 = _parent;
 #line 14
         sjt_copy21 = rect_;
 #line 16
-        sjf_rect_copy(&sjt_dot1226->_rect, sjt_copy21);
+        sjf_rect_copy(&sjt_dot1227->_rect, sjt_copy21);
 #line 14
-        sjt_dot1227 = _parent;
-        if (sjt_dot1227->_topDownRenderer != 0) {
-            sjt_dot1227->_topDownRenderer->_refCount--;
-            if (sjt_dot1227->_topDownRenderer->_refCount <= 0) {
-                sjf_boxRenderer_destroy((sjs_boxRenderer*)(((char*)sjt_dot1227->_topDownRenderer) + sizeof(intptr_t)));
+        sjt_dot1228 = _parent;
+        if (sjt_dot1228->_topDownRenderer != 0) {
+            sjt_dot1228->_topDownRenderer->_refCount--;
+            if (sjt_dot1228->_topDownRenderer->_refCount <= 0) {
+                sjf_boxRenderer_destroy((sjs_boxRenderer*)(((char*)sjt_dot1228->_topDownRenderer) + sizeof(intptr_t)));
             }
         }
 
 #line 17
-        sjt_dot1227->_topDownRenderer = 0;
-        if (sjt_dot1227->_topDownRenderer != 0) {
-            sjt_dot1227->_topDownRenderer->_refCount++;
+        sjt_dot1228->_topDownRenderer = 0;
+        if (sjt_dot1228->_topDownRenderer != 0) {
+            sjt_dot1228->_topDownRenderer->_refCount++;
         }
 
 #line 14
-        sjt_dot1228 = _parent;
-        if (sjt_dot1228->_leftRightRenderer != 0) {
-            sjt_dot1228->_leftRightRenderer->_refCount--;
-            if (sjt_dot1228->_leftRightRenderer->_refCount <= 0) {
-                sjf_boxRenderer_destroy((sjs_boxRenderer*)(((char*)sjt_dot1228->_leftRightRenderer) + sizeof(intptr_t)));
+        sjt_dot1229 = _parent;
+        if (sjt_dot1229->_leftRightRenderer != 0) {
+            sjt_dot1229->_leftRightRenderer->_refCount--;
+            if (sjt_dot1229->_leftRightRenderer->_refCount <= 0) {
+                sjf_boxRenderer_destroy((sjs_boxRenderer*)(((char*)sjt_dot1229->_leftRightRenderer) + sizeof(intptr_t)));
             }
         }
 
 #line 18
-        sjt_dot1228->_leftRightRenderer = 0;
-        if (sjt_dot1228->_leftRightRenderer != 0) {
-            sjt_dot1228->_leftRightRenderer->_refCount++;
+        sjt_dot1229->_leftRightRenderer = 0;
+        if (sjt_dot1229->_leftRightRenderer != 0) {
+            sjt_dot1229->_leftRightRenderer->_refCount++;
         }
     }
 }
@@ -9084,7 +9084,7 @@ void sjf_fillElement_setRect(sjs_fillElement* _parent, sjs_rect* rect_) {
 
 void sjf_leafPanel(sjs_leafPanel* _this) {
     int32_t sjt_cast19;
-    sjs_array_texture* sjt_dot1189;
+    sjs_array_texture* sjt_dot1190;
     cb_texture_heap_model sjt_functionParam132;
     float sjt_math1965;
     float sjt_math1966;
@@ -9093,9 +9093,9 @@ void sjf_leafPanel(sjs_leafPanel* _this) {
     sjs_array_texture* sjt_parent63;
 
 #line 1 "nau/leafPanel.sj"
-    sjt_dot1189 = &_this->textures;
+    sjt_dot1190 = &_this->textures;
 #line 44
-    sjt_cast19 = (sjt_dot1189)->count;
+    sjt_cast19 = (sjt_dot1190)->count;
 #line 44
     sjt_math1967 = (float)sjt_cast19;
 #line 44
@@ -9135,7 +9135,7 @@ sji_nauScene3dElement_model* sjf_leafPanel_as_sji_nauScene3dElement_model(sjs_le
     _interface->destroy = (void(*)(void*))sjf_leafPanel_destroy;
     _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_leafPanel_asInterface;
     _interface->setWorld = (void(*)(void*,sjs_mat4*))sjf_leafPanel_setWorld;
-    _interface->render = (void(*)(void*,sjs_mat4*,sjs_mat4*,sjs_light*))sjf_leafPanel_render;
+    _interface->render = (void(*)(void*,sjs_rect*,sjs_mat4*,sjs_mat4*,sjs_light*))sjf_leafPanel_render;
     _interface->fireMouseEvent = (void(*)(void*,sjs_rect*,sjs_mat4*,sjs_mat4*,sjs_point*,int32_t))sjf_leafPanel_fireMouseEvent;
 
     return _interface;
@@ -9155,37 +9155,37 @@ void sjf_leafPanel_destroy(sjs_leafPanel* _this) {
 
 void sjf_leafPanel_fireMouseEvent(sjs_leafPanel* _parent, sjs_rect* sceneRect, sjs_mat4* projection, sjs_mat4* view, sjs_point* point, int32_t eventId) {
     int32_t i;
-    sjs_array_heap_model* sjt_dot1206;
-    sjs_leafPanel* sjt_dot1207;
+    sjs_array_heap_model* sjt_dot1207;
+    sjs_leafPanel* sjt_dot1208;
     int32_t sjt_forEnd11;
     int32_t sjt_forStart11;
 
 #line 21 "nau/leafPanel.sj"
     sjt_forStart11 = 0;
 #line 20
-    sjt_dot1207 = _parent;
+    sjt_dot1208 = _parent;
 #line 1 "lib/common/array.sj"
-    sjt_dot1206 = &(sjt_dot1207)->children;
+    sjt_dot1207 = &(sjt_dot1208)->children;
 #line 21 "nau/leafPanel.sj"
-    sjt_forEnd11 = (sjt_dot1206)->count;
+    sjt_forEnd11 = (sjt_dot1207)->count;
 #line 21
     i = sjt_forStart11;
     while (i < sjt_forEnd11) {
-        sjs_leafPanel* sjt_dot1208;
+        sjs_leafPanel* sjt_dot1209;
         int32_t sjt_functionParam148;
-        sjs_rect* sjt_interfaceParam18;
-        sjs_mat4* sjt_interfaceParam19;
-        sjs_mat4* sjt_interfaceParam20;
-        sjs_point* sjt_interfaceParam21;
-        int32_t sjt_interfaceParam22;
+        sjs_rect* sjt_interfaceParam20;
+        sjs_mat4* sjt_interfaceParam21;
+        sjs_mat4* sjt_interfaceParam22;
+        sjs_point* sjt_interfaceParam23;
+        int32_t sjt_interfaceParam24;
         sjs_array_heap_model* sjt_parent68;
         sji_nauScene3dElement_model* sjt_parent69;
         sji_nauScene3dElement_model* sjv_c;
 
 #line 20 "nau/leafPanel.sj"
-        sjt_dot1208 = _parent;
+        sjt_dot1209 = _parent;
 #line 7 "lib/common/array.sj"
-        sjt_parent68 = &(sjt_dot1208)->children;
+        sjt_parent68 = &(sjt_dot1209)->children;
 #line 21 "nau/leafPanel.sj"
         sjt_functionParam148 = i;
 #line 21
@@ -9193,17 +9193,17 @@ void sjf_leafPanel_fireMouseEvent(sjs_leafPanel* _parent, sjs_rect* sceneRect, s
 #line 4 "lib/ui/model.sj"
         sjt_parent69 = sjv_c;
 #line 20 "nau/leafPanel.sj"
-        sjt_interfaceParam18 = sceneRect;
+        sjt_interfaceParam20 = sceneRect;
 #line 20
-        sjt_interfaceParam19 = projection;
+        sjt_interfaceParam21 = projection;
 #line 20
-        sjt_interfaceParam20 = view;
+        sjt_interfaceParam22 = view;
 #line 20
-        sjt_interfaceParam21 = point;
+        sjt_interfaceParam23 = point;
 #line 20
-        sjt_interfaceParam22 = eventId;
+        sjt_interfaceParam24 = eventId;
 #line 23
-        sjt_parent69->fireMouseEvent((void*)(((char*)sjt_parent69->_parent) + sizeof(intptr_t)), sjt_interfaceParam18, sjt_interfaceParam19, sjt_interfaceParam20, sjt_interfaceParam21, sjt_interfaceParam22);
+        sjt_parent69->fireMouseEvent((void*)(((char*)sjt_parent69->_parent) + sizeof(intptr_t)), sjt_interfaceParam20, sjt_interfaceParam21, sjt_interfaceParam22, sjt_interfaceParam23, sjt_interfaceParam24);
 #line 21
         i++;
 
@@ -9216,7 +9216,7 @@ void sjf_leafPanel_fireMouseEvent(sjs_leafPanel* _parent, sjs_rect* sceneRect, s
 
 void sjf_leafPanel_heap(sjs_leafPanel_heap* _this) {
     int32_t sjt_cast23;
-    sjs_array_texture* sjt_dot1209;
+    sjs_array_texture* sjt_dot1210;
     cb_texture_heap_model sjt_functionParam149;
     float sjt_math1987;
     float sjt_math1988;
@@ -9225,9 +9225,9 @@ void sjf_leafPanel_heap(sjs_leafPanel_heap* _this) {
     sjs_array_texture* sjt_parent70;
 
 #line 1 "lib/common/array.sj"
-    sjt_dot1209 = &_this->textures;
+    sjt_dot1210 = &_this->textures;
 #line 44 "nau/leafPanel.sj"
-    sjt_cast23 = (sjt_dot1209)->count;
+    sjt_cast23 = (sjt_dot1210)->count;
 #line 44
     sjt_math1989 = (float)sjt_cast23;
 #line 44
@@ -9267,43 +9267,44 @@ sji_nauScene3dElement_model* sjf_leafPanel_heap_as_sji_nauScene3dElement_model(s
     _interface->destroy = (void(*)(void*))sjf_leafPanel_destroy;
     _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_leafPanel_heap_asInterface;
     _interface->setWorld = (void(*)(void*,sjs_mat4*))sjf_leafPanel_setWorld;
-    _interface->render = (void(*)(void*,sjs_mat4*,sjs_mat4*,sjs_light*))sjf_leafPanel_render;
+    _interface->render = (void(*)(void*,sjs_rect*,sjs_mat4*,sjs_mat4*,sjs_light*))sjf_leafPanel_render;
     _interface->fireMouseEvent = (void(*)(void*,sjs_rect*,sjs_mat4*,sjs_mat4*,sjs_point*,int32_t))sjf_leafPanel_fireMouseEvent;
 
     return _interface;
 }
 
-void sjf_leafPanel_render(sjs_leafPanel* _parent, sjs_mat4* projection, sjs_mat4* view, sjs_light* light) {
+void sjf_leafPanel_render(sjs_leafPanel* _parent, sjs_rect* sceneRect, sjs_mat4* projection, sjs_mat4* view, sjs_light* light) {
     int32_t i;
-    sjs_array_heap_model* sjt_dot1203;
-    sjs_leafPanel* sjt_dot1204;
+    sjs_array_heap_model* sjt_dot1204;
+    sjs_leafPanel* sjt_dot1205;
     int32_t sjt_forEnd10;
     int32_t sjt_forStart10;
 
 #line 14 "nau/leafPanel.sj"
     sjt_forStart10 = 0;
 #line 13
-    sjt_dot1204 = _parent;
+    sjt_dot1205 = _parent;
 #line 1 "lib/common/array.sj"
-    sjt_dot1203 = &(sjt_dot1204)->children;
+    sjt_dot1204 = &(sjt_dot1205)->children;
 #line 14 "nau/leafPanel.sj"
-    sjt_forEnd10 = (sjt_dot1203)->count;
+    sjt_forEnd10 = (sjt_dot1204)->count;
 #line 14
     i = sjt_forStart10;
     while (i < sjt_forEnd10) {
-        sjs_leafPanel* sjt_dot1205;
+        sjs_leafPanel* sjt_dot1206;
         int32_t sjt_functionParam147;
-        sjs_mat4* sjt_interfaceParam15;
-        sjs_mat4* sjt_interfaceParam16;
-        sjs_light* sjt_interfaceParam17;
+        sjs_rect* sjt_interfaceParam16;
+        sjs_mat4* sjt_interfaceParam17;
+        sjs_mat4* sjt_interfaceParam18;
+        sjs_light* sjt_interfaceParam19;
         sjs_array_heap_model* sjt_parent66;
         sji_nauScene3dElement_model* sjt_parent67;
         sji_nauScene3dElement_model* sjv_c;
 
 #line 13 "nau/leafPanel.sj"
-        sjt_dot1205 = _parent;
+        sjt_dot1206 = _parent;
 #line 7 "lib/common/array.sj"
-        sjt_parent66 = &(sjt_dot1205)->children;
+        sjt_parent66 = &(sjt_dot1206)->children;
 #line 14 "nau/leafPanel.sj"
         sjt_functionParam147 = i;
 #line 14
@@ -9311,13 +9312,15 @@ void sjf_leafPanel_render(sjs_leafPanel* _parent, sjs_mat4* projection, sjs_mat4
 #line 3 "lib/ui/model.sj"
         sjt_parent67 = sjv_c;
 #line 13 "nau/leafPanel.sj"
-        sjt_interfaceParam15 = projection;
+        sjt_interfaceParam16 = sceneRect;
 #line 13
-        sjt_interfaceParam16 = view;
+        sjt_interfaceParam17 = projection;
 #line 13
-        sjt_interfaceParam17 = light;
+        sjt_interfaceParam18 = view;
+#line 13
+        sjt_interfaceParam19 = light;
 #line 16
-        sjt_parent67->render((void*)(((char*)sjt_parent67->_parent) + sizeof(intptr_t)), sjt_interfaceParam15, sjt_interfaceParam16, sjt_interfaceParam17);
+        sjt_parent67->render((void*)(((char*)sjt_parent67->_parent) + sizeof(intptr_t)), sjt_interfaceParam16, sjt_interfaceParam17, sjt_interfaceParam18, sjt_interfaceParam19);
 #line 14
         i++;
 
@@ -9330,33 +9333,33 @@ void sjf_leafPanel_render(sjs_leafPanel* _parent, sjs_mat4* projection, sjs_mat4
 
 void sjf_leafPanel_setWorld(sjs_leafPanel* _parent, sjs_mat4* world_) {
     int32_t i;
-    sjs_array_heap_model* sjt_dot1200;
-    sjs_leafPanel* sjt_dot1201;
+    sjs_array_heap_model* sjt_dot1201;
+    sjs_leafPanel* sjt_dot1202;
     int32_t sjt_forEnd9;
     int32_t sjt_forStart9;
 
 #line 6 "nau/leafPanel.sj"
     sjt_forStart9 = 0;
 #line 5
-    sjt_dot1201 = _parent;
+    sjt_dot1202 = _parent;
 #line 1 "lib/common/array.sj"
-    sjt_dot1200 = &(sjt_dot1201)->children;
+    sjt_dot1201 = &(sjt_dot1202)->children;
 #line 6 "nau/leafPanel.sj"
-    sjt_forEnd9 = (sjt_dot1200)->count;
+    sjt_forEnd9 = (sjt_dot1201)->count;
 #line 6
     i = sjt_forStart9;
     while (i < sjt_forEnd9) {
-        sjs_leafPanel* sjt_dot1202;
+        sjs_leafPanel* sjt_dot1203;
         int32_t sjt_functionParam146;
-        sjs_mat4* sjt_interfaceParam14;
+        sjs_mat4* sjt_interfaceParam15;
         sjs_array_heap_model* sjt_parent64;
         sji_nauScene3dElement_model* sjt_parent65;
         sji_nauScene3dElement_model* sjv_c;
 
 #line 5 "nau/leafPanel.sj"
-        sjt_dot1202 = _parent;
+        sjt_dot1203 = _parent;
 #line 7 "lib/common/array.sj"
-        sjt_parent64 = &(sjt_dot1202)->children;
+        sjt_parent64 = &(sjt_dot1203)->children;
 #line 6 "nau/leafPanel.sj"
         sjt_functionParam146 = i;
 #line 6
@@ -9364,9 +9367,9 @@ void sjf_leafPanel_setWorld(sjs_leafPanel* _parent, sjs_mat4* world_) {
 #line 2 "lib/ui/model.sj"
         sjt_parent65 = sjv_c;
 #line 5 "nau/leafPanel.sj"
-        sjt_interfaceParam14 = world_;
+        sjt_interfaceParam15 = world_;
 #line 8
-        sjt_parent65->setWorld((void*)(((char*)sjt_parent65->_parent) + sizeof(intptr_t)), sjt_interfaceParam14);
+        sjt_parent65->setWorld((void*)(((char*)sjt_parent65->_parent) + sizeof(intptr_t)), sjt_interfaceParam15);
 #line 6
         i++;
 
@@ -9383,10 +9386,10 @@ void sjf_leafPanel_textureToModel_heap(sjs_leafPanel* _parent, sjs_texture* text
     sjs_model_heap* sjt_cast22;
     sjs_texture* sjt_copy10;
     sjs_shader* sjt_copy9;
-    sjs_leafPanel* sjt_dot1196;
     sjs_leafPanel* sjt_dot1197;
     sjs_leafPanel* sjt_dot1198;
     sjs_leafPanel* sjt_dot1199;
+    sjs_leafPanel* sjt_dot1200;
     float sjt_functionParam133;
     float sjt_functionParam134;
     float sjt_functionParam135;
@@ -9431,9 +9434,9 @@ void sjf_leafPanel_textureToModel_heap(sjs_leafPanel* _parent, sjs_texture* text
 #line 30
     sjv_noise = sjt_math1969 - sjt_math1970;
 #line 29
-    sjt_dot1196 = _parent;
+    sjt_dot1197 = _parent;
 #line 31
-    sjt_math1973 = (sjt_dot1196)->_angle;
+    sjt_math1973 = (sjt_dot1197)->_angle;
 #line 31
     sjt_math1974 = 2.0f;
 #line 31
@@ -9453,9 +9456,9 @@ void sjf_leafPanel_textureToModel_heap(sjs_leafPanel* _parent, sjs_texture* text
 #line 32
     sjv_y = sjt_math1977 * sjt_math1978;
 #line 29
-    sjt_dot1197 = _parent;
+    sjt_dot1198 = _parent;
 #line 33
-    sjt_math1981 = (sjt_dot1197)->_angle;
+    sjt_math1981 = (sjt_dot1198)->_angle;
 #line 33
     sjt_math1983 = sjv_noise;
 #line 33
@@ -9471,15 +9474,15 @@ void sjf_leafPanel_textureToModel_heap(sjs_leafPanel* _parent, sjs_texture* text
 #line 33
     sjv_z = sjt_math1979 * sjt_math1980;
 #line 29
-    sjt_dot1198 = _parent;
-#line 29
     sjt_dot1199 = _parent;
+#line 29
+    sjt_dot1200 = _parent;
 #line 34
-    sjt_math1985 = (sjt_dot1199)->_angle;
+    sjt_math1985 = (sjt_dot1200)->_angle;
 #line 34
     sjt_math1986 = 0.8f;
 #line 34
-    sjt_dot1198->_angle = sjt_math1985 + sjt_math1986;
+    sjt_dot1199->_angle = sjt_math1985 + sjt_math1986;
 #line 34
     sjt_cast22 = (sjs_model_heap*)malloc(sizeof(sjs_model_heap));
 #line 34
@@ -9613,14 +9616,14 @@ void sjf_list_heap_animation_destroy(sjs_list_heap_animation* _this) {
 }
 
 void sjf_list_heap_animation_getAt_heap(sjs_list_heap_animation* _parent, int32_t index, sji_anon4_animation** _return) {
-    sjs_list_heap_animation* sjt_dot1271;
+    sjs_list_heap_animation* sjt_dot1272;
     int32_t sjt_functionParam382;
     sjs_array_heap_animation* sjt_parent116;
 
 #line 8 "lib/common/list.sj"
-    sjt_dot1271 = _parent;
+    sjt_dot1272 = _parent;
 #line 7 "lib/common/array.sj"
-    sjt_parent116 = &(sjt_dot1271)->array;
+    sjt_parent116 = &(sjt_dot1272)->array;
 #line 8 "lib/common/list.sj"
     sjt_functionParam382 = index;
 #line 8
@@ -9628,15 +9631,15 @@ void sjf_list_heap_animation_getAt_heap(sjs_list_heap_animation* _parent, int32_
 }
 
 void sjf_list_heap_animation_getCount(sjs_list_heap_animation* _parent, int32_t* _return) {
-    sjs_array_heap_animation* sjt_dot1266;
-    sjs_list_heap_animation* sjt_dot1267;
+    sjs_array_heap_animation* sjt_dot1267;
+    sjs_list_heap_animation* sjt_dot1268;
 
 #line 4 "lib/common/list.sj"
-    sjt_dot1267 = _parent;
+    sjt_dot1268 = _parent;
 #line 1 "lib/common/array.sj"
-    sjt_dot1266 = &(sjt_dot1267)->array;
+    sjt_dot1267 = &(sjt_dot1268)->array;
 #line 4 "lib/common/list.sj"
-    (*_return) = (sjt_dot1266)->count;
+    (*_return) = (sjt_dot1267)->count;
 }
 
 void sjf_list_heap_animation_heap(sjs_list_heap_animation_heap* _this) {
@@ -9666,13 +9669,13 @@ void sjf_mainLoop(void) {
     int32_t result55;
     int32_t sjt_compare35;
     int32_t sjt_compare36;
-    sjs_size* sjt_dot1287;
     sjs_size* sjt_dot1288;
+    sjs_size* sjt_dot1289;
     int32_t sjt_functionParam385;
     sjs_size* sjt_functionParam396;
     bool sjt_ifElse17;
-    sjs_rect* sjt_interfaceParam33;
-    sjs_scene2d* sjt_interfaceParam34;
+    sjs_rect* sjt_interfaceParam36;
+    sjs_scene2d* sjt_interfaceParam37;
     int32_t sjt_negate49;
     int32_t sjt_negate50;
     sjs_anon4* sjt_parent120;
@@ -9718,27 +9721,27 @@ void sjf_mainLoop(void) {
 #line 15
     sjv_rect.y = 0;
 #line 1 "lib/ui/size.sj"
-    sjt_dot1287 = &sjv_size;
-#line 15 "lib/ui/loop.sj"
-    sjv_rect.w = (sjt_dot1287)->w;
-#line 1 "lib/ui/size.sj"
     sjt_dot1288 = &sjv_size;
 #line 15 "lib/ui/loop.sj"
-    sjv_rect.h = (sjt_dot1288)->h;
+    sjv_rect.w = (sjt_dot1288)->w;
+#line 1 "lib/ui/size.sj"
+    sjt_dot1289 = &sjv_size;
+#line 15 "lib/ui/loop.sj"
+    sjv_rect.h = (sjt_dot1289)->h;
 #line 15
     sjf_rect(&sjv_rect);
 #line 4 "lib/ui/element.sj"
     sjt_parent125 = sjv_root;
 #line 4
-    sjt_interfaceParam33 = &sjv_rect;
+    sjt_interfaceParam36 = &sjv_rect;
 #line 16 "lib/ui/loop.sj"
-    sjt_parent125->setRect((void*)(((char*)sjt_parent125->_parent) + sizeof(intptr_t)), sjt_interfaceParam33);
+    sjt_parent125->setRect((void*)(((char*)sjt_parent125->_parent) + sizeof(intptr_t)), sjt_interfaceParam36);
 #line 5 "lib/ui/element.sj"
     sjt_parent126 = sjv_root;
 #line 5
-    sjt_interfaceParam34 = &sjv_rootScene;
+    sjt_interfaceParam37 = &sjv_rootScene;
 #line 17 "lib/ui/loop.sj"
-    sjt_parent126->render((void*)(((char*)sjt_parent126->_parent) + sizeof(intptr_t)), sjt_interfaceParam34);
+    sjt_parent126->render((void*)(((char*)sjt_parent126->_parent) + sizeof(intptr_t)), sjt_interfaceParam37);
 #line 16 "lib/ui/windowRenderer.sj"
     sjt_parent127 = &sjv_rootWindowRenderer;
 #line 16
@@ -9817,8 +9820,8 @@ void sjf_mainLoop(void) {
     sjt_ifElse17 = sjt_compare35 != sjt_compare36;
     if (sjt_ifElse17) {
         sjs_point sjt_call71;
-        sjs_point* sjt_interfaceParam35;
-        int32_t sjt_interfaceParam36;
+        sjs_point* sjt_interfaceParam38;
+        int32_t sjt_interfaceParam39;
         sji_element* sjt_parent128;
 
 #line 6 "lib/ui/element.sj"
@@ -9830,11 +9833,11 @@ void sjf_mainLoop(void) {
 #line 53
         sjf_point(&sjt_call71);
 #line 53
-        sjt_interfaceParam35 = &sjt_call71;
+        sjt_interfaceParam38 = &sjt_call71;
 #line 6 "lib/ui/element.sj"
-        sjt_interfaceParam36 = sjv_mouseEvent;
+        sjt_interfaceParam39 = sjv_mouseEvent;
 #line 53 "lib/ui/loop.sj"
-        sjt_parent128->fireMouseEvent((void*)(((char*)sjt_parent128->_parent) + sizeof(intptr_t)), sjt_interfaceParam35, sjt_interfaceParam36);
+        sjt_parent128->fireMouseEvent((void*)(((char*)sjt_parent128->_parent) + sizeof(intptr_t)), sjt_interfaceParam38, sjt_interfaceParam39);
 
         sjf_point_destroy(&sjt_call71);
     }
@@ -9885,7 +9888,6 @@ void sjf_mat4_destroy(sjs_mat4* _this) {
 }
 
 void sjf_mat4_determinant(sjs_mat4* _parent, float* _return) {
-    sjs_mat4* sjt_dot804;
     sjs_mat4* sjt_dot805;
     sjs_mat4* sjt_dot806;
     sjs_mat4* sjt_dot807;
@@ -9981,6 +9983,7 @@ void sjf_mat4_determinant(sjs_mat4* _parent, float* _return) {
     sjs_mat4* sjt_dot897;
     sjs_mat4* sjt_dot898;
     sjs_mat4* sjt_dot899;
+    sjs_mat4* sjt_dot900;
     float sjt_math1229;
     float sjt_math1230;
     float sjt_math1231;
@@ -10173,575 +10176,575 @@ void sjf_mat4_determinant(sjs_mat4* _parent, float* _return) {
     float sjt_math1418;
 
 #line 84 "lib/ui/mat4.sj"
-    sjt_dot804 = _parent;
-#line 85
-    sjt_math1279 = (sjt_dot804)->m03;
-#line 84
     sjt_dot805 = _parent;
 #line 85
-    sjt_math1280 = (sjt_dot805)->m12;
-#line 85
-    sjt_math1277 = sjt_math1279 * sjt_math1280;
+    sjt_math1279 = (sjt_dot805)->m03;
 #line 84
     sjt_dot806 = _parent;
 #line 85
-    sjt_math1278 = (sjt_dot806)->m21;
+    sjt_math1280 = (sjt_dot806)->m12;
 #line 85
-    sjt_math1275 = sjt_math1277 * sjt_math1278;
+    sjt_math1277 = sjt_math1279 * sjt_math1280;
 #line 84
     sjt_dot807 = _parent;
 #line 85
-    sjt_math1276 = (sjt_dot807)->m30;
+    sjt_math1278 = (sjt_dot807)->m21;
 #line 85
-    sjt_math1273 = sjt_math1275 * sjt_math1276;
+    sjt_math1275 = sjt_math1277 * sjt_math1278;
 #line 84
     sjt_dot808 = _parent;
 #line 85
-    sjt_math1285 = (sjt_dot808)->m02;
+    sjt_math1276 = (sjt_dot808)->m30;
+#line 85
+    sjt_math1273 = sjt_math1275 * sjt_math1276;
 #line 84
     sjt_dot809 = _parent;
 #line 85
-    sjt_math1286 = (sjt_dot809)->m13;
-#line 85
-    sjt_math1283 = sjt_math1285 * sjt_math1286;
+    sjt_math1285 = (sjt_dot809)->m02;
 #line 84
     sjt_dot810 = _parent;
 #line 85
-    sjt_math1284 = (sjt_dot810)->m21;
+    sjt_math1286 = (sjt_dot810)->m13;
 #line 85
-    sjt_math1281 = sjt_math1283 * sjt_math1284;
+    sjt_math1283 = sjt_math1285 * sjt_math1286;
 #line 84
     sjt_dot811 = _parent;
 #line 85
-    sjt_math1282 = (sjt_dot811)->m30;
+    sjt_math1284 = (sjt_dot811)->m21;
+#line 85
+    sjt_math1281 = sjt_math1283 * sjt_math1284;
+#line 84
+    sjt_dot812 = _parent;
+#line 85
+    sjt_math1282 = (sjt_dot812)->m30;
 #line 85
     sjt_math1274 = sjt_math1281 * sjt_math1282;
 #line 85
     sjt_math1271 = sjt_math1273 - sjt_math1274;
 #line 84
-    sjt_dot812 = _parent;
-#line 85
-    sjt_math1291 = (sjt_dot812)->m03;
-#line 84
     sjt_dot813 = _parent;
 #line 85
-    sjt_math1292 = (sjt_dot813)->m11;
-#line 85
-    sjt_math1289 = sjt_math1291 * sjt_math1292;
+    sjt_math1291 = (sjt_dot813)->m03;
 #line 84
     sjt_dot814 = _parent;
 #line 85
-    sjt_math1290 = (sjt_dot814)->m22;
+    sjt_math1292 = (sjt_dot814)->m11;
 #line 85
-    sjt_math1287 = sjt_math1289 * sjt_math1290;
+    sjt_math1289 = sjt_math1291 * sjt_math1292;
 #line 84
     sjt_dot815 = _parent;
 #line 85
-    sjt_math1288 = (sjt_dot815)->m30;
+    sjt_math1290 = (sjt_dot815)->m22;
+#line 85
+    sjt_math1287 = sjt_math1289 * sjt_math1290;
+#line 84
+    sjt_dot816 = _parent;
+#line 85
+    sjt_math1288 = (sjt_dot816)->m30;
 #line 85
     sjt_math1272 = sjt_math1287 * sjt_math1288;
 #line 85
     sjt_math1269 = sjt_math1271 - sjt_math1272;
 #line 84
-    sjt_dot816 = _parent;
-#line 85
-    sjt_math1297 = (sjt_dot816)->m01;
-#line 84
     sjt_dot817 = _parent;
 #line 85
-    sjt_math1298 = (sjt_dot817)->m13;
-#line 85
-    sjt_math1295 = sjt_math1297 * sjt_math1298;
+    sjt_math1297 = (sjt_dot817)->m01;
 #line 84
     sjt_dot818 = _parent;
 #line 85
-    sjt_math1296 = (sjt_dot818)->m22;
+    sjt_math1298 = (sjt_dot818)->m13;
 #line 85
-    sjt_math1293 = sjt_math1295 * sjt_math1296;
+    sjt_math1295 = sjt_math1297 * sjt_math1298;
 #line 84
     sjt_dot819 = _parent;
 #line 85
-    sjt_math1294 = (sjt_dot819)->m30;
+    sjt_math1296 = (sjt_dot819)->m22;
+#line 85
+    sjt_math1293 = sjt_math1295 * sjt_math1296;
+#line 84
+    sjt_dot820 = _parent;
+#line 85
+    sjt_math1294 = (sjt_dot820)->m30;
 #line 85
     sjt_math1270 = sjt_math1293 * sjt_math1294;
 #line 85
     sjt_math1267 = sjt_math1269 + sjt_math1270;
 #line 84
-    sjt_dot820 = _parent;
-#line 85
-    sjt_math1303 = (sjt_dot820)->m02;
-#line 84
     sjt_dot821 = _parent;
 #line 85
-    sjt_math1304 = (sjt_dot821)->m11;
-#line 85
-    sjt_math1301 = sjt_math1303 * sjt_math1304;
+    sjt_math1303 = (sjt_dot821)->m02;
 #line 84
     sjt_dot822 = _parent;
 #line 85
-    sjt_math1302 = (sjt_dot822)->m23;
+    sjt_math1304 = (sjt_dot822)->m11;
 #line 85
-    sjt_math1299 = sjt_math1301 * sjt_math1302;
+    sjt_math1301 = sjt_math1303 * sjt_math1304;
 #line 84
     sjt_dot823 = _parent;
 #line 85
-    sjt_math1300 = (sjt_dot823)->m30;
+    sjt_math1302 = (sjt_dot823)->m23;
+#line 85
+    sjt_math1299 = sjt_math1301 * sjt_math1302;
+#line 84
+    sjt_dot824 = _parent;
+#line 85
+    sjt_math1300 = (sjt_dot824)->m30;
 #line 85
     sjt_math1268 = sjt_math1299 * sjt_math1300;
 #line 85
     sjt_math1265 = sjt_math1267 + sjt_math1268;
 #line 84
-    sjt_dot824 = _parent;
-#line 85
-    sjt_math1309 = (sjt_dot824)->m01;
-#line 84
     sjt_dot825 = _parent;
 #line 85
-    sjt_math1310 = (sjt_dot825)->m12;
-#line 85
-    sjt_math1307 = sjt_math1309 * sjt_math1310;
+    sjt_math1309 = (sjt_dot825)->m01;
 #line 84
     sjt_dot826 = _parent;
 #line 85
-    sjt_math1308 = (sjt_dot826)->m23;
+    sjt_math1310 = (sjt_dot826)->m12;
 #line 85
-    sjt_math1305 = sjt_math1307 * sjt_math1308;
+    sjt_math1307 = sjt_math1309 * sjt_math1310;
 #line 84
     sjt_dot827 = _parent;
 #line 85
-    sjt_math1306 = (sjt_dot827)->m30;
+    sjt_math1308 = (sjt_dot827)->m23;
+#line 85
+    sjt_math1305 = sjt_math1307 * sjt_math1308;
+#line 84
+    sjt_dot828 = _parent;
+#line 85
+    sjt_math1306 = (sjt_dot828)->m30;
 #line 85
     sjt_math1266 = sjt_math1305 * sjt_math1306;
 #line 85
     sjt_math1263 = sjt_math1265 - sjt_math1266;
 #line 84
-    sjt_dot828 = _parent;
-#line 85
-    sjt_math1315 = (sjt_dot828)->m03;
-#line 84
     sjt_dot829 = _parent;
 #line 85
-    sjt_math1316 = (sjt_dot829)->m12;
-#line 85
-    sjt_math1313 = sjt_math1315 * sjt_math1316;
+    sjt_math1315 = (sjt_dot829)->m03;
 #line 84
     sjt_dot830 = _parent;
 #line 85
-    sjt_math1314 = (sjt_dot830)->m20;
+    sjt_math1316 = (sjt_dot830)->m12;
 #line 85
-    sjt_math1311 = sjt_math1313 * sjt_math1314;
+    sjt_math1313 = sjt_math1315 * sjt_math1316;
 #line 84
     sjt_dot831 = _parent;
 #line 85
-    sjt_math1312 = (sjt_dot831)->m31;
+    sjt_math1314 = (sjt_dot831)->m20;
+#line 85
+    sjt_math1311 = sjt_math1313 * sjt_math1314;
+#line 84
+    sjt_dot832 = _parent;
+#line 85
+    sjt_math1312 = (sjt_dot832)->m31;
 #line 85
     sjt_math1264 = sjt_math1311 * sjt_math1312;
 #line 85
     sjt_math1261 = sjt_math1263 - sjt_math1264;
 #line 84
-    sjt_dot832 = _parent;
-#line 85
-    sjt_math1321 = (sjt_dot832)->m02;
-#line 84
     sjt_dot833 = _parent;
 #line 85
-    sjt_math1322 = (sjt_dot833)->m13;
-#line 85
-    sjt_math1319 = sjt_math1321 * sjt_math1322;
+    sjt_math1321 = (sjt_dot833)->m02;
 #line 84
     sjt_dot834 = _parent;
 #line 85
-    sjt_math1320 = (sjt_dot834)->m20;
+    sjt_math1322 = (sjt_dot834)->m13;
 #line 85
-    sjt_math1317 = sjt_math1319 * sjt_math1320;
+    sjt_math1319 = sjt_math1321 * sjt_math1322;
 #line 84
     sjt_dot835 = _parent;
 #line 85
-    sjt_math1318 = (sjt_dot835)->m31;
+    sjt_math1320 = (sjt_dot835)->m20;
+#line 85
+    sjt_math1317 = sjt_math1319 * sjt_math1320;
+#line 84
+    sjt_dot836 = _parent;
+#line 85
+    sjt_math1318 = (sjt_dot836)->m31;
 #line 85
     sjt_math1262 = sjt_math1317 * sjt_math1318;
 #line 85
     sjt_math1259 = sjt_math1261 + sjt_math1262;
 #line 84
-    sjt_dot836 = _parent;
-#line 85
-    sjt_math1327 = (sjt_dot836)->m03;
-#line 84
     sjt_dot837 = _parent;
 #line 85
-    sjt_math1328 = (sjt_dot837)->m10;
-#line 85
-    sjt_math1325 = sjt_math1327 * sjt_math1328;
+    sjt_math1327 = (sjt_dot837)->m03;
 #line 84
     sjt_dot838 = _parent;
 #line 85
-    sjt_math1326 = (sjt_dot838)->m22;
+    sjt_math1328 = (sjt_dot838)->m10;
 #line 85
-    sjt_math1323 = sjt_math1325 * sjt_math1326;
+    sjt_math1325 = sjt_math1327 * sjt_math1328;
 #line 84
     sjt_dot839 = _parent;
 #line 85
-    sjt_math1324 = (sjt_dot839)->m31;
+    sjt_math1326 = (sjt_dot839)->m22;
+#line 85
+    sjt_math1323 = sjt_math1325 * sjt_math1326;
+#line 84
+    sjt_dot840 = _parent;
+#line 85
+    sjt_math1324 = (sjt_dot840)->m31;
 #line 85
     sjt_math1260 = sjt_math1323 * sjt_math1324;
 #line 85
     sjt_math1257 = sjt_math1259 + sjt_math1260;
 #line 84
-    sjt_dot840 = _parent;
-#line 85
-    sjt_math1333 = (sjt_dot840)->m00;
-#line 84
     sjt_dot841 = _parent;
 #line 85
-    sjt_math1334 = (sjt_dot841)->m13;
-#line 85
-    sjt_math1331 = sjt_math1333 * sjt_math1334;
+    sjt_math1333 = (sjt_dot841)->m00;
 #line 84
     sjt_dot842 = _parent;
 #line 85
-    sjt_math1332 = (sjt_dot842)->m22;
+    sjt_math1334 = (sjt_dot842)->m13;
 #line 85
-    sjt_math1329 = sjt_math1331 * sjt_math1332;
+    sjt_math1331 = sjt_math1333 * sjt_math1334;
 #line 84
     sjt_dot843 = _parent;
 #line 85
-    sjt_math1330 = (sjt_dot843)->m31;
+    sjt_math1332 = (sjt_dot843)->m22;
+#line 85
+    sjt_math1329 = sjt_math1331 * sjt_math1332;
+#line 84
+    sjt_dot844 = _parent;
+#line 85
+    sjt_math1330 = (sjt_dot844)->m31;
 #line 85
     sjt_math1258 = sjt_math1329 * sjt_math1330;
 #line 85
     sjt_math1255 = sjt_math1257 - sjt_math1258;
 #line 84
-    sjt_dot844 = _parent;
-#line 85
-    sjt_math1339 = (sjt_dot844)->m02;
-#line 84
     sjt_dot845 = _parent;
 #line 85
-    sjt_math1340 = (sjt_dot845)->m10;
-#line 85
-    sjt_math1337 = sjt_math1339 * sjt_math1340;
+    sjt_math1339 = (sjt_dot845)->m02;
 #line 84
     sjt_dot846 = _parent;
 #line 85
-    sjt_math1338 = (sjt_dot846)->m23;
+    sjt_math1340 = (sjt_dot846)->m10;
 #line 85
-    sjt_math1335 = sjt_math1337 * sjt_math1338;
+    sjt_math1337 = sjt_math1339 * sjt_math1340;
 #line 84
     sjt_dot847 = _parent;
 #line 85
-    sjt_math1336 = (sjt_dot847)->m31;
+    sjt_math1338 = (sjt_dot847)->m23;
+#line 85
+    sjt_math1335 = sjt_math1337 * sjt_math1338;
+#line 84
+    sjt_dot848 = _parent;
+#line 85
+    sjt_math1336 = (sjt_dot848)->m31;
 #line 85
     sjt_math1256 = sjt_math1335 * sjt_math1336;
 #line 85
     sjt_math1253 = sjt_math1255 - sjt_math1256;
 #line 84
-    sjt_dot848 = _parent;
-#line 85
-    sjt_math1345 = (sjt_dot848)->m00;
-#line 84
     sjt_dot849 = _parent;
 #line 85
-    sjt_math1346 = (sjt_dot849)->m12;
-#line 85
-    sjt_math1343 = sjt_math1345 * sjt_math1346;
+    sjt_math1345 = (sjt_dot849)->m00;
 #line 84
     sjt_dot850 = _parent;
 #line 85
-    sjt_math1344 = (sjt_dot850)->m23;
+    sjt_math1346 = (sjt_dot850)->m12;
 #line 85
-    sjt_math1341 = sjt_math1343 * sjt_math1344;
+    sjt_math1343 = sjt_math1345 * sjt_math1346;
 #line 84
     sjt_dot851 = _parent;
 #line 85
-    sjt_math1342 = (sjt_dot851)->m31;
+    sjt_math1344 = (sjt_dot851)->m23;
+#line 85
+    sjt_math1341 = sjt_math1343 * sjt_math1344;
+#line 84
+    sjt_dot852 = _parent;
+#line 85
+    sjt_math1342 = (sjt_dot852)->m31;
 #line 85
     sjt_math1254 = sjt_math1341 * sjt_math1342;
 #line 85
     sjt_math1251 = sjt_math1253 + sjt_math1254;
 #line 84
-    sjt_dot852 = _parent;
-#line 85
-    sjt_math1351 = (sjt_dot852)->m03;
-#line 84
     sjt_dot853 = _parent;
 #line 85
-    sjt_math1352 = (sjt_dot853)->m11;
-#line 85
-    sjt_math1349 = sjt_math1351 * sjt_math1352;
+    sjt_math1351 = (sjt_dot853)->m03;
 #line 84
     sjt_dot854 = _parent;
 #line 85
-    sjt_math1350 = (sjt_dot854)->m20;
+    sjt_math1352 = (sjt_dot854)->m11;
 #line 85
-    sjt_math1347 = sjt_math1349 * sjt_math1350;
+    sjt_math1349 = sjt_math1351 * sjt_math1352;
 #line 84
     sjt_dot855 = _parent;
 #line 85
-    sjt_math1348 = (sjt_dot855)->m32;
+    sjt_math1350 = (sjt_dot855)->m20;
+#line 85
+    sjt_math1347 = sjt_math1349 * sjt_math1350;
+#line 84
+    sjt_dot856 = _parent;
+#line 85
+    sjt_math1348 = (sjt_dot856)->m32;
 #line 85
     sjt_math1252 = sjt_math1347 * sjt_math1348;
 #line 85
     sjt_math1249 = sjt_math1251 + sjt_math1252;
 #line 84
-    sjt_dot856 = _parent;
-#line 85
-    sjt_math1357 = (sjt_dot856)->m01;
-#line 84
     sjt_dot857 = _parent;
 #line 85
-    sjt_math1358 = (sjt_dot857)->m13;
-#line 85
-    sjt_math1355 = sjt_math1357 * sjt_math1358;
+    sjt_math1357 = (sjt_dot857)->m01;
 #line 84
     sjt_dot858 = _parent;
 #line 85
-    sjt_math1356 = (sjt_dot858)->m20;
+    sjt_math1358 = (sjt_dot858)->m13;
 #line 85
-    sjt_math1353 = sjt_math1355 * sjt_math1356;
+    sjt_math1355 = sjt_math1357 * sjt_math1358;
 #line 84
     sjt_dot859 = _parent;
 #line 85
-    sjt_math1354 = (sjt_dot859)->m32;
+    sjt_math1356 = (sjt_dot859)->m20;
+#line 85
+    sjt_math1353 = sjt_math1355 * sjt_math1356;
+#line 84
+    sjt_dot860 = _parent;
+#line 85
+    sjt_math1354 = (sjt_dot860)->m32;
 #line 85
     sjt_math1250 = sjt_math1353 * sjt_math1354;
 #line 85
     sjt_math1247 = sjt_math1249 - sjt_math1250;
 #line 84
-    sjt_dot860 = _parent;
-#line 85
-    sjt_math1363 = (sjt_dot860)->m03;
-#line 84
     sjt_dot861 = _parent;
 #line 85
-    sjt_math1364 = (sjt_dot861)->m10;
-#line 85
-    sjt_math1361 = sjt_math1363 * sjt_math1364;
+    sjt_math1363 = (sjt_dot861)->m03;
 #line 84
     sjt_dot862 = _parent;
 #line 85
-    sjt_math1362 = (sjt_dot862)->m21;
+    sjt_math1364 = (sjt_dot862)->m10;
 #line 85
-    sjt_math1359 = sjt_math1361 * sjt_math1362;
+    sjt_math1361 = sjt_math1363 * sjt_math1364;
 #line 84
     sjt_dot863 = _parent;
 #line 85
-    sjt_math1360 = (sjt_dot863)->m32;
+    sjt_math1362 = (sjt_dot863)->m21;
+#line 85
+    sjt_math1359 = sjt_math1361 * sjt_math1362;
+#line 84
+    sjt_dot864 = _parent;
+#line 85
+    sjt_math1360 = (sjt_dot864)->m32;
 #line 85
     sjt_math1248 = sjt_math1359 * sjt_math1360;
 #line 85
     sjt_math1245 = sjt_math1247 - sjt_math1248;
 #line 84
-    sjt_dot864 = _parent;
-#line 85
-    sjt_math1369 = (sjt_dot864)->m00;
-#line 84
     sjt_dot865 = _parent;
 #line 85
-    sjt_math1370 = (sjt_dot865)->m13;
-#line 85
-    sjt_math1367 = sjt_math1369 * sjt_math1370;
+    sjt_math1369 = (sjt_dot865)->m00;
 #line 84
     sjt_dot866 = _parent;
 #line 85
-    sjt_math1368 = (sjt_dot866)->m21;
+    sjt_math1370 = (sjt_dot866)->m13;
 #line 85
-    sjt_math1365 = sjt_math1367 * sjt_math1368;
+    sjt_math1367 = sjt_math1369 * sjt_math1370;
 #line 84
     sjt_dot867 = _parent;
 #line 85
-    sjt_math1366 = (sjt_dot867)->m32;
+    sjt_math1368 = (sjt_dot867)->m21;
+#line 85
+    sjt_math1365 = sjt_math1367 * sjt_math1368;
+#line 84
+    sjt_dot868 = _parent;
+#line 85
+    sjt_math1366 = (sjt_dot868)->m32;
 #line 85
     sjt_math1246 = sjt_math1365 * sjt_math1366;
 #line 85
     sjt_math1243 = sjt_math1245 + sjt_math1246;
 #line 84
-    sjt_dot868 = _parent;
-#line 85
-    sjt_math1375 = (sjt_dot868)->m01;
-#line 84
     sjt_dot869 = _parent;
 #line 85
-    sjt_math1376 = (sjt_dot869)->m10;
-#line 85
-    sjt_math1373 = sjt_math1375 * sjt_math1376;
+    sjt_math1375 = (sjt_dot869)->m01;
 #line 84
     sjt_dot870 = _parent;
 #line 85
-    sjt_math1374 = (sjt_dot870)->m23;
+    sjt_math1376 = (sjt_dot870)->m10;
 #line 85
-    sjt_math1371 = sjt_math1373 * sjt_math1374;
+    sjt_math1373 = sjt_math1375 * sjt_math1376;
 #line 84
     sjt_dot871 = _parent;
 #line 85
-    sjt_math1372 = (sjt_dot871)->m32;
+    sjt_math1374 = (sjt_dot871)->m23;
+#line 85
+    sjt_math1371 = sjt_math1373 * sjt_math1374;
+#line 84
+    sjt_dot872 = _parent;
+#line 85
+    sjt_math1372 = (sjt_dot872)->m32;
 #line 85
     sjt_math1244 = sjt_math1371 * sjt_math1372;
 #line 85
     sjt_math1241 = sjt_math1243 + sjt_math1244;
 #line 84
-    sjt_dot872 = _parent;
-#line 85
-    sjt_math1381 = (sjt_dot872)->m00;
-#line 84
     sjt_dot873 = _parent;
 #line 85
-    sjt_math1382 = (sjt_dot873)->m11;
-#line 85
-    sjt_math1379 = sjt_math1381 * sjt_math1382;
+    sjt_math1381 = (sjt_dot873)->m00;
 #line 84
     sjt_dot874 = _parent;
 #line 85
-    sjt_math1380 = (sjt_dot874)->m23;
+    sjt_math1382 = (sjt_dot874)->m11;
 #line 85
-    sjt_math1377 = sjt_math1379 * sjt_math1380;
+    sjt_math1379 = sjt_math1381 * sjt_math1382;
 #line 84
     sjt_dot875 = _parent;
 #line 85
-    sjt_math1378 = (sjt_dot875)->m32;
+    sjt_math1380 = (sjt_dot875)->m23;
+#line 85
+    sjt_math1377 = sjt_math1379 * sjt_math1380;
+#line 84
+    sjt_dot876 = _parent;
+#line 85
+    sjt_math1378 = (sjt_dot876)->m32;
 #line 85
     sjt_math1242 = sjt_math1377 * sjt_math1378;
 #line 85
     sjt_math1239 = sjt_math1241 - sjt_math1242;
 #line 84
-    sjt_dot876 = _parent;
-#line 85
-    sjt_math1387 = (sjt_dot876)->m02;
-#line 84
     sjt_dot877 = _parent;
 #line 85
-    sjt_math1388 = (sjt_dot877)->m11;
-#line 85
-    sjt_math1385 = sjt_math1387 * sjt_math1388;
+    sjt_math1387 = (sjt_dot877)->m02;
 #line 84
     sjt_dot878 = _parent;
 #line 85
-    sjt_math1386 = (sjt_dot878)->m20;
+    sjt_math1388 = (sjt_dot878)->m11;
 #line 85
-    sjt_math1383 = sjt_math1385 * sjt_math1386;
+    sjt_math1385 = sjt_math1387 * sjt_math1388;
 #line 84
     sjt_dot879 = _parent;
 #line 85
-    sjt_math1384 = (sjt_dot879)->m33;
+    sjt_math1386 = (sjt_dot879)->m20;
+#line 85
+    sjt_math1383 = sjt_math1385 * sjt_math1386;
+#line 84
+    sjt_dot880 = _parent;
+#line 85
+    sjt_math1384 = (sjt_dot880)->m33;
 #line 85
     sjt_math1240 = sjt_math1383 * sjt_math1384;
 #line 85
     sjt_math1237 = sjt_math1239 - sjt_math1240;
 #line 84
-    sjt_dot880 = _parent;
-#line 85
-    sjt_math1393 = (sjt_dot880)->m01;
-#line 84
     sjt_dot881 = _parent;
 #line 85
-    sjt_math1394 = (sjt_dot881)->m12;
-#line 85
-    sjt_math1391 = sjt_math1393 * sjt_math1394;
+    sjt_math1393 = (sjt_dot881)->m01;
 #line 84
     sjt_dot882 = _parent;
 #line 85
-    sjt_math1392 = (sjt_dot882)->m20;
+    sjt_math1394 = (sjt_dot882)->m12;
 #line 85
-    sjt_math1389 = sjt_math1391 * sjt_math1392;
+    sjt_math1391 = sjt_math1393 * sjt_math1394;
 #line 84
     sjt_dot883 = _parent;
 #line 85
-    sjt_math1390 = (sjt_dot883)->m33;
+    sjt_math1392 = (sjt_dot883)->m20;
+#line 85
+    sjt_math1389 = sjt_math1391 * sjt_math1392;
+#line 84
+    sjt_dot884 = _parent;
+#line 85
+    sjt_math1390 = (sjt_dot884)->m33;
 #line 85
     sjt_math1238 = sjt_math1389 * sjt_math1390;
 #line 85
     sjt_math1235 = sjt_math1237 + sjt_math1238;
 #line 84
-    sjt_dot884 = _parent;
-#line 85
-    sjt_math1399 = (sjt_dot884)->m02;
-#line 84
     sjt_dot885 = _parent;
 #line 85
-    sjt_math1400 = (sjt_dot885)->m10;
-#line 85
-    sjt_math1397 = sjt_math1399 * sjt_math1400;
+    sjt_math1399 = (sjt_dot885)->m02;
 #line 84
     sjt_dot886 = _parent;
 #line 85
-    sjt_math1398 = (sjt_dot886)->m21;
+    sjt_math1400 = (sjt_dot886)->m10;
 #line 85
-    sjt_math1395 = sjt_math1397 * sjt_math1398;
+    sjt_math1397 = sjt_math1399 * sjt_math1400;
 #line 84
     sjt_dot887 = _parent;
 #line 85
-    sjt_math1396 = (sjt_dot887)->m33;
+    sjt_math1398 = (sjt_dot887)->m21;
+#line 85
+    sjt_math1395 = sjt_math1397 * sjt_math1398;
+#line 84
+    sjt_dot888 = _parent;
+#line 85
+    sjt_math1396 = (sjt_dot888)->m33;
 #line 85
     sjt_math1236 = sjt_math1395 * sjt_math1396;
 #line 85
     sjt_math1233 = sjt_math1235 + sjt_math1236;
 #line 84
-    sjt_dot888 = _parent;
-#line 85
-    sjt_math1405 = (sjt_dot888)->m00;
-#line 84
     sjt_dot889 = _parent;
 #line 85
-    sjt_math1406 = (sjt_dot889)->m12;
-#line 85
-    sjt_math1403 = sjt_math1405 * sjt_math1406;
+    sjt_math1405 = (sjt_dot889)->m00;
 #line 84
     sjt_dot890 = _parent;
 #line 85
-    sjt_math1404 = (sjt_dot890)->m21;
+    sjt_math1406 = (sjt_dot890)->m12;
 #line 85
-    sjt_math1401 = sjt_math1403 * sjt_math1404;
+    sjt_math1403 = sjt_math1405 * sjt_math1406;
 #line 84
     sjt_dot891 = _parent;
 #line 85
-    sjt_math1402 = (sjt_dot891)->m33;
+    sjt_math1404 = (sjt_dot891)->m21;
+#line 85
+    sjt_math1401 = sjt_math1403 * sjt_math1404;
+#line 84
+    sjt_dot892 = _parent;
+#line 85
+    sjt_math1402 = (sjt_dot892)->m33;
 #line 85
     sjt_math1234 = sjt_math1401 * sjt_math1402;
 #line 85
     sjt_math1231 = sjt_math1233 - sjt_math1234;
 #line 84
-    sjt_dot892 = _parent;
-#line 85
-    sjt_math1411 = (sjt_dot892)->m01;
-#line 84
     sjt_dot893 = _parent;
 #line 85
-    sjt_math1412 = (sjt_dot893)->m10;
-#line 85
-    sjt_math1409 = sjt_math1411 * sjt_math1412;
+    sjt_math1411 = (sjt_dot893)->m01;
 #line 84
     sjt_dot894 = _parent;
 #line 85
-    sjt_math1410 = (sjt_dot894)->m22;
+    sjt_math1412 = (sjt_dot894)->m10;
 #line 85
-    sjt_math1407 = sjt_math1409 * sjt_math1410;
+    sjt_math1409 = sjt_math1411 * sjt_math1412;
 #line 84
     sjt_dot895 = _parent;
 #line 85
-    sjt_math1408 = (sjt_dot895)->m33;
+    sjt_math1410 = (sjt_dot895)->m22;
+#line 85
+    sjt_math1407 = sjt_math1409 * sjt_math1410;
+#line 84
+    sjt_dot896 = _parent;
+#line 85
+    sjt_math1408 = (sjt_dot896)->m33;
 #line 85
     sjt_math1232 = sjt_math1407 * sjt_math1408;
 #line 85
     sjt_math1229 = sjt_math1231 - sjt_math1232;
 #line 84
-    sjt_dot896 = _parent;
-#line 85
-    sjt_math1417 = (sjt_dot896)->m00;
-#line 84
     sjt_dot897 = _parent;
 #line 85
-    sjt_math1418 = (sjt_dot897)->m11;
-#line 85
-    sjt_math1415 = sjt_math1417 * sjt_math1418;
+    sjt_math1417 = (sjt_dot897)->m00;
 #line 84
     sjt_dot898 = _parent;
 #line 85
-    sjt_math1416 = (sjt_dot898)->m22;
+    sjt_math1418 = (sjt_dot898)->m11;
 #line 85
-    sjt_math1413 = sjt_math1415 * sjt_math1416;
+    sjt_math1415 = sjt_math1417 * sjt_math1418;
 #line 84
     sjt_dot899 = _parent;
 #line 85
-    sjt_math1414 = (sjt_dot899)->m33;
+    sjt_math1416 = (sjt_dot899)->m22;
+#line 85
+    sjt_math1413 = sjt_math1415 * sjt_math1416;
+#line 84
+    sjt_dot900 = _parent;
+#line 85
+    sjt_math1414 = (sjt_dot900)->m33;
 #line 85
     sjt_math1230 = sjt_math1413 * sjt_math1414;
 #line 85
@@ -10828,7 +10831,6 @@ void sjf_mat4_identity_heap(sjs_mat4_heap** _return) {
 }
 
 void sjf_mat4_invert(sjs_mat4* _parent, sjs_mat4* _return) {
-    sjs_mat4* sjt_dot484;
     sjs_mat4* sjt_dot485;
     sjs_mat4* sjt_dot486;
     sjs_mat4* sjt_dot487;
@@ -11116,6 +11118,7 @@ void sjf_mat4_invert(sjs_mat4* _parent, sjs_mat4* _return) {
     sjs_mat4* sjt_dot769;
     sjs_mat4* sjt_dot770;
     sjs_mat4* sjt_dot771;
+    sjs_mat4* sjt_dot772;
     float sjt_functionParam67;
     float sjt_math1000;
     float sjt_math1001;
@@ -11667,1697 +11670,1697 @@ void sjf_mat4_invert(sjs_mat4* _parent, sjs_mat4* _return) {
     sjs_mat4 sjv_t;
 
 #line 61 "lib/ui/mat4.sj"
-    sjt_dot484 = _parent;
-#line 63
-    sjt_math631 = (sjt_dot484)->m12;
-#line 61
     sjt_dot485 = _parent;
 #line 63
-    sjt_math632 = (sjt_dot485)->m23;
-#line 63
-    sjt_math629 = sjt_math631 * sjt_math632;
+    sjt_math631 = (sjt_dot485)->m12;
 #line 61
     sjt_dot486 = _parent;
 #line 63
-    sjt_math630 = (sjt_dot486)->m31;
+    sjt_math632 = (sjt_dot486)->m23;
 #line 63
-    sjt_math627 = sjt_math629 * sjt_math630;
+    sjt_math629 = sjt_math631 * sjt_math632;
 #line 61
     sjt_dot487 = _parent;
 #line 63
-    sjt_math635 = (sjt_dot487)->m13;
+    sjt_math630 = (sjt_dot487)->m31;
+#line 63
+    sjt_math627 = sjt_math629 * sjt_math630;
 #line 61
     sjt_dot488 = _parent;
 #line 63
-    sjt_math636 = (sjt_dot488)->m22;
-#line 63
-    sjt_math633 = sjt_math635 * sjt_math636;
+    sjt_math635 = (sjt_dot488)->m13;
 #line 61
     sjt_dot489 = _parent;
 #line 63
-    sjt_math634 = (sjt_dot489)->m31;
+    sjt_math636 = (sjt_dot489)->m22;
+#line 63
+    sjt_math633 = sjt_math635 * sjt_math636;
+#line 61
+    sjt_dot490 = _parent;
+#line 63
+    sjt_math634 = (sjt_dot490)->m31;
 #line 63
     sjt_math628 = sjt_math633 * sjt_math634;
 #line 63
     sjt_math625 = sjt_math627 - sjt_math628;
 #line 61
-    sjt_dot490 = _parent;
-#line 63
-    sjt_math639 = (sjt_dot490)->m13;
-#line 61
     sjt_dot491 = _parent;
 #line 63
-    sjt_math640 = (sjt_dot491)->m21;
-#line 63
-    sjt_math637 = sjt_math639 * sjt_math640;
+    sjt_math639 = (sjt_dot491)->m13;
 #line 61
     sjt_dot492 = _parent;
 #line 63
-    sjt_math638 = (sjt_dot492)->m32;
+    sjt_math640 = (sjt_dot492)->m21;
+#line 63
+    sjt_math637 = sjt_math639 * sjt_math640;
+#line 61
+    sjt_dot493 = _parent;
+#line 63
+    sjt_math638 = (sjt_dot493)->m32;
 #line 63
     sjt_math626 = sjt_math637 * sjt_math638;
 #line 63
     sjt_math623 = sjt_math625 + sjt_math626;
 #line 61
-    sjt_dot493 = _parent;
-#line 63
-    sjt_math643 = (sjt_dot493)->m11;
-#line 61
     sjt_dot494 = _parent;
 #line 63
-    sjt_math644 = (sjt_dot494)->m23;
-#line 63
-    sjt_math641 = sjt_math643 * sjt_math644;
+    sjt_math643 = (sjt_dot494)->m11;
 #line 61
     sjt_dot495 = _parent;
 #line 63
-    sjt_math642 = (sjt_dot495)->m32;
+    sjt_math644 = (sjt_dot495)->m23;
+#line 63
+    sjt_math641 = sjt_math643 * sjt_math644;
+#line 61
+    sjt_dot496 = _parent;
+#line 63
+    sjt_math642 = (sjt_dot496)->m32;
 #line 63
     sjt_math624 = sjt_math641 * sjt_math642;
 #line 63
     sjt_math621 = sjt_math623 - sjt_math624;
 #line 61
-    sjt_dot496 = _parent;
-#line 63
-    sjt_math647 = (sjt_dot496)->m12;
-#line 61
     sjt_dot497 = _parent;
 #line 63
-    sjt_math648 = (sjt_dot497)->m21;
-#line 63
-    sjt_math645 = sjt_math647 * sjt_math648;
+    sjt_math647 = (sjt_dot497)->m12;
 #line 61
     sjt_dot498 = _parent;
 #line 63
-    sjt_math646 = (sjt_dot498)->m33;
+    sjt_math648 = (sjt_dot498)->m21;
+#line 63
+    sjt_math645 = sjt_math647 * sjt_math648;
+#line 61
+    sjt_dot499 = _parent;
+#line 63
+    sjt_math646 = (sjt_dot499)->m33;
 #line 63
     sjt_math622 = sjt_math645 * sjt_math646;
 #line 63
     sjt_math619 = sjt_math621 - sjt_math622;
 #line 61
-    sjt_dot499 = _parent;
-#line 63
-    sjt_math651 = (sjt_dot499)->m11;
-#line 61
     sjt_dot500 = _parent;
 #line 63
-    sjt_math652 = (sjt_dot500)->m22;
-#line 63
-    sjt_math649 = sjt_math651 * sjt_math652;
+    sjt_math651 = (sjt_dot500)->m11;
 #line 61
     sjt_dot501 = _parent;
 #line 63
-    sjt_math650 = (sjt_dot501)->m33;
+    sjt_math652 = (sjt_dot501)->m22;
+#line 63
+    sjt_math649 = sjt_math651 * sjt_math652;
+#line 61
+    sjt_dot502 = _parent;
+#line 63
+    sjt_math650 = (sjt_dot502)->m33;
 #line 63
     sjt_math620 = sjt_math649 * sjt_math650;
 #line 63
     sjv_t.m00 = sjt_math619 + sjt_math620;
 #line 61
-    sjt_dot502 = _parent;
-#line 64
-    sjt_math665 = (sjt_dot502)->m03;
-#line 61
     sjt_dot503 = _parent;
 #line 64
-    sjt_math666 = (sjt_dot503)->m22;
-#line 64
-    sjt_math663 = sjt_math665 * sjt_math666;
+    sjt_math665 = (sjt_dot503)->m03;
 #line 61
     sjt_dot504 = _parent;
 #line 64
-    sjt_math664 = (sjt_dot504)->m31;
+    sjt_math666 = (sjt_dot504)->m22;
 #line 64
-    sjt_math661 = sjt_math663 * sjt_math664;
+    sjt_math663 = sjt_math665 * sjt_math666;
 #line 61
     sjt_dot505 = _parent;
 #line 64
-    sjt_math669 = (sjt_dot505)->m02;
+    sjt_math664 = (sjt_dot505)->m31;
+#line 64
+    sjt_math661 = sjt_math663 * sjt_math664;
 #line 61
     sjt_dot506 = _parent;
 #line 64
-    sjt_math670 = (sjt_dot506)->m23;
-#line 64
-    sjt_math667 = sjt_math669 * sjt_math670;
+    sjt_math669 = (sjt_dot506)->m02;
 #line 61
     sjt_dot507 = _parent;
 #line 64
-    sjt_math668 = (sjt_dot507)->m31;
+    sjt_math670 = (sjt_dot507)->m23;
+#line 64
+    sjt_math667 = sjt_math669 * sjt_math670;
+#line 61
+    sjt_dot508 = _parent;
+#line 64
+    sjt_math668 = (sjt_dot508)->m31;
 #line 64
     sjt_math662 = sjt_math667 * sjt_math668;
 #line 64
     sjt_math659 = sjt_math661 - sjt_math662;
 #line 61
-    sjt_dot508 = _parent;
-#line 64
-    sjt_math673 = (sjt_dot508)->m03;
-#line 61
     sjt_dot509 = _parent;
 #line 64
-    sjt_math674 = (sjt_dot509)->m21;
-#line 64
-    sjt_math671 = sjt_math673 * sjt_math674;
+    sjt_math673 = (sjt_dot509)->m03;
 #line 61
     sjt_dot510 = _parent;
 #line 64
-    sjt_math672 = (sjt_dot510)->m32;
+    sjt_math674 = (sjt_dot510)->m21;
+#line 64
+    sjt_math671 = sjt_math673 * sjt_math674;
+#line 61
+    sjt_dot511 = _parent;
+#line 64
+    sjt_math672 = (sjt_dot511)->m32;
 #line 64
     sjt_math660 = sjt_math671 * sjt_math672;
 #line 64
     sjt_math657 = sjt_math659 - sjt_math660;
 #line 61
-    sjt_dot511 = _parent;
-#line 64
-    sjt_math677 = (sjt_dot511)->m01;
-#line 61
     sjt_dot512 = _parent;
 #line 64
-    sjt_math678 = (sjt_dot512)->m23;
-#line 64
-    sjt_math675 = sjt_math677 * sjt_math678;
+    sjt_math677 = (sjt_dot512)->m01;
 #line 61
     sjt_dot513 = _parent;
 #line 64
-    sjt_math676 = (sjt_dot513)->m32;
+    sjt_math678 = (sjt_dot513)->m23;
+#line 64
+    sjt_math675 = sjt_math677 * sjt_math678;
+#line 61
+    sjt_dot514 = _parent;
+#line 64
+    sjt_math676 = (sjt_dot514)->m32;
 #line 64
     sjt_math658 = sjt_math675 * sjt_math676;
 #line 64
     sjt_math655 = sjt_math657 + sjt_math658;
 #line 61
-    sjt_dot514 = _parent;
-#line 64
-    sjt_math681 = (sjt_dot514)->m02;
-#line 61
     sjt_dot515 = _parent;
 #line 64
-    sjt_math682 = (sjt_dot515)->m21;
-#line 64
-    sjt_math679 = sjt_math681 * sjt_math682;
+    sjt_math681 = (sjt_dot515)->m02;
 #line 61
     sjt_dot516 = _parent;
 #line 64
-    sjt_math680 = (sjt_dot516)->m33;
+    sjt_math682 = (sjt_dot516)->m21;
+#line 64
+    sjt_math679 = sjt_math681 * sjt_math682;
+#line 61
+    sjt_dot517 = _parent;
+#line 64
+    sjt_math680 = (sjt_dot517)->m33;
 #line 64
     sjt_math656 = sjt_math679 * sjt_math680;
 #line 64
     sjt_math653 = sjt_math655 + sjt_math656;
 #line 61
-    sjt_dot517 = _parent;
-#line 64
-    sjt_math685 = (sjt_dot517)->m01;
-#line 61
     sjt_dot518 = _parent;
 #line 64
-    sjt_math686 = (sjt_dot518)->m22;
-#line 64
-    sjt_math683 = sjt_math685 * sjt_math686;
+    sjt_math685 = (sjt_dot518)->m01;
 #line 61
     sjt_dot519 = _parent;
 #line 64
-    sjt_math684 = (sjt_dot519)->m33;
+    sjt_math686 = (sjt_dot519)->m22;
+#line 64
+    sjt_math683 = sjt_math685 * sjt_math686;
+#line 61
+    sjt_dot520 = _parent;
+#line 64
+    sjt_math684 = (sjt_dot520)->m33;
 #line 64
     sjt_math654 = sjt_math683 * sjt_math684;
 #line 64
     sjv_t.m01 = sjt_math653 - sjt_math654;
 #line 61
-    sjt_dot520 = _parent;
-#line 65
-    sjt_math699 = (sjt_dot520)->m02;
-#line 61
     sjt_dot521 = _parent;
 #line 65
-    sjt_math700 = (sjt_dot521)->m13;
-#line 65
-    sjt_math697 = sjt_math699 * sjt_math700;
+    sjt_math699 = (sjt_dot521)->m02;
 #line 61
     sjt_dot522 = _parent;
 #line 65
-    sjt_math698 = (sjt_dot522)->m31;
+    sjt_math700 = (sjt_dot522)->m13;
 #line 65
-    sjt_math695 = sjt_math697 * sjt_math698;
+    sjt_math697 = sjt_math699 * sjt_math700;
 #line 61
     sjt_dot523 = _parent;
 #line 65
-    sjt_math703 = (sjt_dot523)->m03;
+    sjt_math698 = (sjt_dot523)->m31;
+#line 65
+    sjt_math695 = sjt_math697 * sjt_math698;
 #line 61
     sjt_dot524 = _parent;
 #line 65
-    sjt_math704 = (sjt_dot524)->m12;
-#line 65
-    sjt_math701 = sjt_math703 * sjt_math704;
+    sjt_math703 = (sjt_dot524)->m03;
 #line 61
     sjt_dot525 = _parent;
 #line 65
-    sjt_math702 = (sjt_dot525)->m31;
+    sjt_math704 = (sjt_dot525)->m12;
+#line 65
+    sjt_math701 = sjt_math703 * sjt_math704;
+#line 61
+    sjt_dot526 = _parent;
+#line 65
+    sjt_math702 = (sjt_dot526)->m31;
 #line 65
     sjt_math696 = sjt_math701 * sjt_math702;
 #line 65
     sjt_math693 = sjt_math695 - sjt_math696;
 #line 61
-    sjt_dot526 = _parent;
-#line 65
-    sjt_math707 = (sjt_dot526)->m03;
-#line 61
     sjt_dot527 = _parent;
 #line 65
-    sjt_math708 = (sjt_dot527)->m11;
-#line 65
-    sjt_math705 = sjt_math707 * sjt_math708;
+    sjt_math707 = (sjt_dot527)->m03;
 #line 61
     sjt_dot528 = _parent;
 #line 65
-    sjt_math706 = (sjt_dot528)->m32;
+    sjt_math708 = (sjt_dot528)->m11;
+#line 65
+    sjt_math705 = sjt_math707 * sjt_math708;
+#line 61
+    sjt_dot529 = _parent;
+#line 65
+    sjt_math706 = (sjt_dot529)->m32;
 #line 65
     sjt_math694 = sjt_math705 * sjt_math706;
 #line 65
     sjt_math691 = sjt_math693 + sjt_math694;
 #line 61
-    sjt_dot529 = _parent;
-#line 65
-    sjt_math711 = (sjt_dot529)->m01;
-#line 61
     sjt_dot530 = _parent;
 #line 65
-    sjt_math712 = (sjt_dot530)->m13;
-#line 65
-    sjt_math709 = sjt_math711 * sjt_math712;
+    sjt_math711 = (sjt_dot530)->m01;
 #line 61
     sjt_dot531 = _parent;
 #line 65
-    sjt_math710 = (sjt_dot531)->m32;
+    sjt_math712 = (sjt_dot531)->m13;
+#line 65
+    sjt_math709 = sjt_math711 * sjt_math712;
+#line 61
+    sjt_dot532 = _parent;
+#line 65
+    sjt_math710 = (sjt_dot532)->m32;
 #line 65
     sjt_math692 = sjt_math709 * sjt_math710;
 #line 65
     sjt_math689 = sjt_math691 - sjt_math692;
 #line 61
-    sjt_dot532 = _parent;
-#line 65
-    sjt_math715 = (sjt_dot532)->m02;
-#line 61
     sjt_dot533 = _parent;
 #line 65
-    sjt_math716 = (sjt_dot533)->m11;
-#line 65
-    sjt_math713 = sjt_math715 * sjt_math716;
+    sjt_math715 = (sjt_dot533)->m02;
 #line 61
     sjt_dot534 = _parent;
 #line 65
-    sjt_math714 = (sjt_dot534)->m33;
+    sjt_math716 = (sjt_dot534)->m11;
+#line 65
+    sjt_math713 = sjt_math715 * sjt_math716;
+#line 61
+    sjt_dot535 = _parent;
+#line 65
+    sjt_math714 = (sjt_dot535)->m33;
 #line 65
     sjt_math690 = sjt_math713 * sjt_math714;
 #line 65
     sjt_math687 = sjt_math689 - sjt_math690;
 #line 61
-    sjt_dot535 = _parent;
-#line 65
-    sjt_math719 = (sjt_dot535)->m01;
-#line 61
     sjt_dot536 = _parent;
 #line 65
-    sjt_math720 = (sjt_dot536)->m12;
-#line 65
-    sjt_math717 = sjt_math719 * sjt_math720;
+    sjt_math719 = (sjt_dot536)->m01;
 #line 61
     sjt_dot537 = _parent;
 #line 65
-    sjt_math718 = (sjt_dot537)->m33;
+    sjt_math720 = (sjt_dot537)->m12;
+#line 65
+    sjt_math717 = sjt_math719 * sjt_math720;
+#line 61
+    sjt_dot538 = _parent;
+#line 65
+    sjt_math718 = (sjt_dot538)->m33;
 #line 65
     sjt_math688 = sjt_math717 * sjt_math718;
 #line 65
     sjv_t.m02 = sjt_math687 + sjt_math688;
 #line 61
-    sjt_dot538 = _parent;
-#line 66
-    sjt_math733 = (sjt_dot538)->m03;
-#line 61
     sjt_dot539 = _parent;
 #line 66
-    sjt_math734 = (sjt_dot539)->m12;
-#line 66
-    sjt_math731 = sjt_math733 * sjt_math734;
+    sjt_math733 = (sjt_dot539)->m03;
 #line 61
     sjt_dot540 = _parent;
 #line 66
-    sjt_math732 = (sjt_dot540)->m21;
+    sjt_math734 = (sjt_dot540)->m12;
 #line 66
-    sjt_math729 = sjt_math731 * sjt_math732;
+    sjt_math731 = sjt_math733 * sjt_math734;
 #line 61
     sjt_dot541 = _parent;
 #line 66
-    sjt_math737 = (sjt_dot541)->m02;
+    sjt_math732 = (sjt_dot541)->m21;
+#line 66
+    sjt_math729 = sjt_math731 * sjt_math732;
 #line 61
     sjt_dot542 = _parent;
 #line 66
-    sjt_math738 = (sjt_dot542)->m13;
-#line 66
-    sjt_math735 = sjt_math737 * sjt_math738;
+    sjt_math737 = (sjt_dot542)->m02;
 #line 61
     sjt_dot543 = _parent;
 #line 66
-    sjt_math736 = (sjt_dot543)->m21;
+    sjt_math738 = (sjt_dot543)->m13;
+#line 66
+    sjt_math735 = sjt_math737 * sjt_math738;
+#line 61
+    sjt_dot544 = _parent;
+#line 66
+    sjt_math736 = (sjt_dot544)->m21;
 #line 66
     sjt_math730 = sjt_math735 * sjt_math736;
 #line 66
     sjt_math727 = sjt_math729 - sjt_math730;
 #line 61
-    sjt_dot544 = _parent;
-#line 66
-    sjt_math741 = (sjt_dot544)->m03;
-#line 61
     sjt_dot545 = _parent;
 #line 66
-    sjt_math742 = (sjt_dot545)->m11;
-#line 66
-    sjt_math739 = sjt_math741 * sjt_math742;
+    sjt_math741 = (sjt_dot545)->m03;
 #line 61
     sjt_dot546 = _parent;
 #line 66
-    sjt_math740 = (sjt_dot546)->m22;
+    sjt_math742 = (sjt_dot546)->m11;
+#line 66
+    sjt_math739 = sjt_math741 * sjt_math742;
+#line 61
+    sjt_dot547 = _parent;
+#line 66
+    sjt_math740 = (sjt_dot547)->m22;
 #line 66
     sjt_math728 = sjt_math739 * sjt_math740;
 #line 66
     sjt_math725 = sjt_math727 - sjt_math728;
 #line 61
-    sjt_dot547 = _parent;
-#line 66
-    sjt_math745 = (sjt_dot547)->m01;
-#line 61
     sjt_dot548 = _parent;
 #line 66
-    sjt_math746 = (sjt_dot548)->m13;
-#line 66
-    sjt_math743 = sjt_math745 * sjt_math746;
+    sjt_math745 = (sjt_dot548)->m01;
 #line 61
     sjt_dot549 = _parent;
 #line 66
-    sjt_math744 = (sjt_dot549)->m22;
+    sjt_math746 = (sjt_dot549)->m13;
+#line 66
+    sjt_math743 = sjt_math745 * sjt_math746;
+#line 61
+    sjt_dot550 = _parent;
+#line 66
+    sjt_math744 = (sjt_dot550)->m22;
 #line 66
     sjt_math726 = sjt_math743 * sjt_math744;
 #line 66
     sjt_math723 = sjt_math725 + sjt_math726;
 #line 61
-    sjt_dot550 = _parent;
-#line 66
-    sjt_math749 = (sjt_dot550)->m02;
-#line 61
     sjt_dot551 = _parent;
 #line 66
-    sjt_math750 = (sjt_dot551)->m11;
-#line 66
-    sjt_math747 = sjt_math749 * sjt_math750;
+    sjt_math749 = (sjt_dot551)->m02;
 #line 61
     sjt_dot552 = _parent;
 #line 66
-    sjt_math748 = (sjt_dot552)->m23;
+    sjt_math750 = (sjt_dot552)->m11;
+#line 66
+    sjt_math747 = sjt_math749 * sjt_math750;
+#line 61
+    sjt_dot553 = _parent;
+#line 66
+    sjt_math748 = (sjt_dot553)->m23;
 #line 66
     sjt_math724 = sjt_math747 * sjt_math748;
 #line 66
     sjt_math721 = sjt_math723 + sjt_math724;
 #line 61
-    sjt_dot553 = _parent;
-#line 66
-    sjt_math753 = (sjt_dot553)->m01;
-#line 61
     sjt_dot554 = _parent;
 #line 66
-    sjt_math754 = (sjt_dot554)->m12;
-#line 66
-    sjt_math751 = sjt_math753 * sjt_math754;
+    sjt_math753 = (sjt_dot554)->m01;
 #line 61
     sjt_dot555 = _parent;
 #line 66
-    sjt_math752 = (sjt_dot555)->m23;
+    sjt_math754 = (sjt_dot555)->m12;
+#line 66
+    sjt_math751 = sjt_math753 * sjt_math754;
+#line 61
+    sjt_dot556 = _parent;
+#line 66
+    sjt_math752 = (sjt_dot556)->m23;
 #line 66
     sjt_math722 = sjt_math751 * sjt_math752;
 #line 66
     sjv_t.m03 = sjt_math721 - sjt_math722;
 #line 61
-    sjt_dot556 = _parent;
-#line 67
-    sjt_math767 = (sjt_dot556)->m13;
-#line 61
     sjt_dot557 = _parent;
 #line 67
-    sjt_math768 = (sjt_dot557)->m22;
-#line 67
-    sjt_math765 = sjt_math767 * sjt_math768;
+    sjt_math767 = (sjt_dot557)->m13;
 #line 61
     sjt_dot558 = _parent;
 #line 67
-    sjt_math766 = (sjt_dot558)->m30;
+    sjt_math768 = (sjt_dot558)->m22;
 #line 67
-    sjt_math763 = sjt_math765 * sjt_math766;
+    sjt_math765 = sjt_math767 * sjt_math768;
 #line 61
     sjt_dot559 = _parent;
 #line 67
-    sjt_math771 = (sjt_dot559)->m12;
+    sjt_math766 = (sjt_dot559)->m30;
+#line 67
+    sjt_math763 = sjt_math765 * sjt_math766;
 #line 61
     sjt_dot560 = _parent;
 #line 67
-    sjt_math772 = (sjt_dot560)->m23;
-#line 67
-    sjt_math769 = sjt_math771 * sjt_math772;
+    sjt_math771 = (sjt_dot560)->m12;
 #line 61
     sjt_dot561 = _parent;
 #line 67
-    sjt_math770 = (sjt_dot561)->m30;
+    sjt_math772 = (sjt_dot561)->m23;
+#line 67
+    sjt_math769 = sjt_math771 * sjt_math772;
+#line 61
+    sjt_dot562 = _parent;
+#line 67
+    sjt_math770 = (sjt_dot562)->m30;
 #line 67
     sjt_math764 = sjt_math769 * sjt_math770;
 #line 67
     sjt_math761 = sjt_math763 - sjt_math764;
 #line 61
-    sjt_dot562 = _parent;
-#line 67
-    sjt_math775 = (sjt_dot562)->m13;
-#line 61
     sjt_dot563 = _parent;
 #line 67
-    sjt_math776 = (sjt_dot563)->m20;
-#line 67
-    sjt_math773 = sjt_math775 * sjt_math776;
+    sjt_math775 = (sjt_dot563)->m13;
 #line 61
     sjt_dot564 = _parent;
 #line 67
-    sjt_math774 = (sjt_dot564)->m32;
+    sjt_math776 = (sjt_dot564)->m20;
+#line 67
+    sjt_math773 = sjt_math775 * sjt_math776;
+#line 61
+    sjt_dot565 = _parent;
+#line 67
+    sjt_math774 = (sjt_dot565)->m32;
 #line 67
     sjt_math762 = sjt_math773 * sjt_math774;
 #line 67
     sjt_math759 = sjt_math761 - sjt_math762;
 #line 61
-    sjt_dot565 = _parent;
-#line 67
-    sjt_math779 = (sjt_dot565)->m10;
-#line 61
     sjt_dot566 = _parent;
 #line 67
-    sjt_math780 = (sjt_dot566)->m23;
-#line 67
-    sjt_math777 = sjt_math779 * sjt_math780;
+    sjt_math779 = (sjt_dot566)->m10;
 #line 61
     sjt_dot567 = _parent;
 #line 67
-    sjt_math778 = (sjt_dot567)->m32;
+    sjt_math780 = (sjt_dot567)->m23;
+#line 67
+    sjt_math777 = sjt_math779 * sjt_math780;
+#line 61
+    sjt_dot568 = _parent;
+#line 67
+    sjt_math778 = (sjt_dot568)->m32;
 #line 67
     sjt_math760 = sjt_math777 * sjt_math778;
 #line 67
     sjt_math757 = sjt_math759 + sjt_math760;
 #line 61
-    sjt_dot568 = _parent;
-#line 67
-    sjt_math783 = (sjt_dot568)->m12;
-#line 61
     sjt_dot569 = _parent;
 #line 67
-    sjt_math784 = (sjt_dot569)->m20;
-#line 67
-    sjt_math781 = sjt_math783 * sjt_math784;
+    sjt_math783 = (sjt_dot569)->m12;
 #line 61
     sjt_dot570 = _parent;
 #line 67
-    sjt_math782 = (sjt_dot570)->m33;
+    sjt_math784 = (sjt_dot570)->m20;
+#line 67
+    sjt_math781 = sjt_math783 * sjt_math784;
+#line 61
+    sjt_dot571 = _parent;
+#line 67
+    sjt_math782 = (sjt_dot571)->m33;
 #line 67
     sjt_math758 = sjt_math781 * sjt_math782;
 #line 67
     sjt_math755 = sjt_math757 + sjt_math758;
 #line 61
-    sjt_dot571 = _parent;
-#line 67
-    sjt_math787 = (sjt_dot571)->m10;
-#line 61
     sjt_dot572 = _parent;
 #line 67
-    sjt_math788 = (sjt_dot572)->m22;
-#line 67
-    sjt_math785 = sjt_math787 * sjt_math788;
+    sjt_math787 = (sjt_dot572)->m10;
 #line 61
     sjt_dot573 = _parent;
 #line 67
-    sjt_math786 = (sjt_dot573)->m33;
+    sjt_math788 = (sjt_dot573)->m22;
+#line 67
+    sjt_math785 = sjt_math787 * sjt_math788;
+#line 61
+    sjt_dot574 = _parent;
+#line 67
+    sjt_math786 = (sjt_dot574)->m33;
 #line 67
     sjt_math756 = sjt_math785 * sjt_math786;
 #line 67
     sjv_t.m10 = sjt_math755 - sjt_math756;
 #line 61
-    sjt_dot574 = _parent;
-#line 68
-    sjt_math801 = (sjt_dot574)->m02;
-#line 61
     sjt_dot575 = _parent;
 #line 68
-    sjt_math802 = (sjt_dot575)->m23;
-#line 68
-    sjt_math799 = sjt_math801 * sjt_math802;
+    sjt_math801 = (sjt_dot575)->m02;
 #line 61
     sjt_dot576 = _parent;
 #line 68
-    sjt_math800 = (sjt_dot576)->m30;
+    sjt_math802 = (sjt_dot576)->m23;
 #line 68
-    sjt_math797 = sjt_math799 * sjt_math800;
+    sjt_math799 = sjt_math801 * sjt_math802;
 #line 61
     sjt_dot577 = _parent;
 #line 68
-    sjt_math805 = (sjt_dot577)->m03;
+    sjt_math800 = (sjt_dot577)->m30;
+#line 68
+    sjt_math797 = sjt_math799 * sjt_math800;
 #line 61
     sjt_dot578 = _parent;
 #line 68
-    sjt_math806 = (sjt_dot578)->m22;
-#line 68
-    sjt_math803 = sjt_math805 * sjt_math806;
+    sjt_math805 = (sjt_dot578)->m03;
 #line 61
     sjt_dot579 = _parent;
 #line 68
-    sjt_math804 = (sjt_dot579)->m30;
+    sjt_math806 = (sjt_dot579)->m22;
+#line 68
+    sjt_math803 = sjt_math805 * sjt_math806;
+#line 61
+    sjt_dot580 = _parent;
+#line 68
+    sjt_math804 = (sjt_dot580)->m30;
 #line 68
     sjt_math798 = sjt_math803 * sjt_math804;
 #line 68
     sjt_math795 = sjt_math797 - sjt_math798;
 #line 61
-    sjt_dot580 = _parent;
-#line 68
-    sjt_math809 = (sjt_dot580)->m03;
-#line 61
     sjt_dot581 = _parent;
 #line 68
-    sjt_math810 = (sjt_dot581)->m20;
-#line 68
-    sjt_math807 = sjt_math809 * sjt_math810;
+    sjt_math809 = (sjt_dot581)->m03;
 #line 61
     sjt_dot582 = _parent;
 #line 68
-    sjt_math808 = (sjt_dot582)->m32;
+    sjt_math810 = (sjt_dot582)->m20;
+#line 68
+    sjt_math807 = sjt_math809 * sjt_math810;
+#line 61
+    sjt_dot583 = _parent;
+#line 68
+    sjt_math808 = (sjt_dot583)->m32;
 #line 68
     sjt_math796 = sjt_math807 * sjt_math808;
 #line 68
     sjt_math793 = sjt_math795 + sjt_math796;
 #line 61
-    sjt_dot583 = _parent;
-#line 68
-    sjt_math813 = (sjt_dot583)->m00;
-#line 61
     sjt_dot584 = _parent;
 #line 68
-    sjt_math814 = (sjt_dot584)->m23;
-#line 68
-    sjt_math811 = sjt_math813 * sjt_math814;
+    sjt_math813 = (sjt_dot584)->m00;
 #line 61
     sjt_dot585 = _parent;
 #line 68
-    sjt_math812 = (sjt_dot585)->m32;
+    sjt_math814 = (sjt_dot585)->m23;
+#line 68
+    sjt_math811 = sjt_math813 * sjt_math814;
+#line 61
+    sjt_dot586 = _parent;
+#line 68
+    sjt_math812 = (sjt_dot586)->m32;
 #line 68
     sjt_math794 = sjt_math811 * sjt_math812;
 #line 68
     sjt_math791 = sjt_math793 - sjt_math794;
 #line 61
-    sjt_dot586 = _parent;
-#line 68
-    sjt_math817 = (sjt_dot586)->m02;
-#line 61
     sjt_dot587 = _parent;
 #line 68
-    sjt_math818 = (sjt_dot587)->m20;
-#line 68
-    sjt_math815 = sjt_math817 * sjt_math818;
+    sjt_math817 = (sjt_dot587)->m02;
 #line 61
     sjt_dot588 = _parent;
 #line 68
-    sjt_math816 = (sjt_dot588)->m33;
+    sjt_math818 = (sjt_dot588)->m20;
+#line 68
+    sjt_math815 = sjt_math817 * sjt_math818;
+#line 61
+    sjt_dot589 = _parent;
+#line 68
+    sjt_math816 = (sjt_dot589)->m33;
 #line 68
     sjt_math792 = sjt_math815 * sjt_math816;
 #line 68
     sjt_math789 = sjt_math791 - sjt_math792;
 #line 61
-    sjt_dot589 = _parent;
-#line 68
-    sjt_math821 = (sjt_dot589)->m00;
-#line 61
     sjt_dot590 = _parent;
 #line 68
-    sjt_math822 = (sjt_dot590)->m22;
-#line 68
-    sjt_math819 = sjt_math821 * sjt_math822;
+    sjt_math821 = (sjt_dot590)->m00;
 #line 61
     sjt_dot591 = _parent;
 #line 68
-    sjt_math820 = (sjt_dot591)->m33;
+    sjt_math822 = (sjt_dot591)->m22;
+#line 68
+    sjt_math819 = sjt_math821 * sjt_math822;
+#line 61
+    sjt_dot592 = _parent;
+#line 68
+    sjt_math820 = (sjt_dot592)->m33;
 #line 68
     sjt_math790 = sjt_math819 * sjt_math820;
 #line 68
     sjv_t.m11 = sjt_math789 + sjt_math790;
 #line 61
-    sjt_dot592 = _parent;
-#line 69
-    sjt_math835 = (sjt_dot592)->m03;
-#line 61
     sjt_dot593 = _parent;
 #line 69
-    sjt_math836 = (sjt_dot593)->m12;
-#line 69
-    sjt_math833 = sjt_math835 * sjt_math836;
+    sjt_math835 = (sjt_dot593)->m03;
 #line 61
     sjt_dot594 = _parent;
 #line 69
-    sjt_math834 = (sjt_dot594)->m30;
+    sjt_math836 = (sjt_dot594)->m12;
 #line 69
-    sjt_math831 = sjt_math833 * sjt_math834;
+    sjt_math833 = sjt_math835 * sjt_math836;
 #line 61
     sjt_dot595 = _parent;
 #line 69
-    sjt_math839 = (sjt_dot595)->m02;
+    sjt_math834 = (sjt_dot595)->m30;
+#line 69
+    sjt_math831 = sjt_math833 * sjt_math834;
 #line 61
     sjt_dot596 = _parent;
 #line 69
-    sjt_math840 = (sjt_dot596)->m13;
-#line 69
-    sjt_math837 = sjt_math839 * sjt_math840;
+    sjt_math839 = (sjt_dot596)->m02;
 #line 61
     sjt_dot597 = _parent;
 #line 69
-    sjt_math838 = (sjt_dot597)->m30;
+    sjt_math840 = (sjt_dot597)->m13;
+#line 69
+    sjt_math837 = sjt_math839 * sjt_math840;
+#line 61
+    sjt_dot598 = _parent;
+#line 69
+    sjt_math838 = (sjt_dot598)->m30;
 #line 69
     sjt_math832 = sjt_math837 * sjt_math838;
 #line 69
     sjt_math829 = sjt_math831 - sjt_math832;
 #line 61
-    sjt_dot598 = _parent;
-#line 69
-    sjt_math843 = (sjt_dot598)->m03;
-#line 61
     sjt_dot599 = _parent;
 #line 69
-    sjt_math844 = (sjt_dot599)->m10;
-#line 69
-    sjt_math841 = sjt_math843 * sjt_math844;
+    sjt_math843 = (sjt_dot599)->m03;
 #line 61
     sjt_dot600 = _parent;
 #line 69
-    sjt_math842 = (sjt_dot600)->m32;
+    sjt_math844 = (sjt_dot600)->m10;
+#line 69
+    sjt_math841 = sjt_math843 * sjt_math844;
+#line 61
+    sjt_dot601 = _parent;
+#line 69
+    sjt_math842 = (sjt_dot601)->m32;
 #line 69
     sjt_math830 = sjt_math841 * sjt_math842;
 #line 69
     sjt_math827 = sjt_math829 - sjt_math830;
 #line 61
-    sjt_dot601 = _parent;
-#line 69
-    sjt_math847 = (sjt_dot601)->m00;
-#line 61
     sjt_dot602 = _parent;
 #line 69
-    sjt_math848 = (sjt_dot602)->m13;
-#line 69
-    sjt_math845 = sjt_math847 * sjt_math848;
+    sjt_math847 = (sjt_dot602)->m00;
 #line 61
     sjt_dot603 = _parent;
 #line 69
-    sjt_math846 = (sjt_dot603)->m32;
+    sjt_math848 = (sjt_dot603)->m13;
+#line 69
+    sjt_math845 = sjt_math847 * sjt_math848;
+#line 61
+    sjt_dot604 = _parent;
+#line 69
+    sjt_math846 = (sjt_dot604)->m32;
 #line 69
     sjt_math828 = sjt_math845 * sjt_math846;
 #line 69
     sjt_math825 = sjt_math827 + sjt_math828;
 #line 61
-    sjt_dot604 = _parent;
-#line 69
-    sjt_math851 = (sjt_dot604)->m02;
-#line 61
     sjt_dot605 = _parent;
 #line 69
-    sjt_math852 = (sjt_dot605)->m10;
-#line 69
-    sjt_math849 = sjt_math851 * sjt_math852;
+    sjt_math851 = (sjt_dot605)->m02;
 #line 61
     sjt_dot606 = _parent;
 #line 69
-    sjt_math850 = (sjt_dot606)->m33;
+    sjt_math852 = (sjt_dot606)->m10;
+#line 69
+    sjt_math849 = sjt_math851 * sjt_math852;
+#line 61
+    sjt_dot607 = _parent;
+#line 69
+    sjt_math850 = (sjt_dot607)->m33;
 #line 69
     sjt_math826 = sjt_math849 * sjt_math850;
 #line 69
     sjt_math823 = sjt_math825 + sjt_math826;
 #line 61
-    sjt_dot607 = _parent;
-#line 69
-    sjt_math855 = (sjt_dot607)->m00;
-#line 61
     sjt_dot608 = _parent;
 #line 69
-    sjt_math856 = (sjt_dot608)->m12;
-#line 69
-    sjt_math853 = sjt_math855 * sjt_math856;
+    sjt_math855 = (sjt_dot608)->m00;
 #line 61
     sjt_dot609 = _parent;
 #line 69
-    sjt_math854 = (sjt_dot609)->m33;
+    sjt_math856 = (sjt_dot609)->m12;
+#line 69
+    sjt_math853 = sjt_math855 * sjt_math856;
+#line 61
+    sjt_dot610 = _parent;
+#line 69
+    sjt_math854 = (sjt_dot610)->m33;
 #line 69
     sjt_math824 = sjt_math853 * sjt_math854;
 #line 69
     sjv_t.m12 = sjt_math823 - sjt_math824;
 #line 61
-    sjt_dot610 = _parent;
-#line 70
-    sjt_math869 = (sjt_dot610)->m02;
-#line 61
     sjt_dot611 = _parent;
 #line 70
-    sjt_math870 = (sjt_dot611)->m13;
-#line 70
-    sjt_math867 = sjt_math869 * sjt_math870;
+    sjt_math869 = (sjt_dot611)->m02;
 #line 61
     sjt_dot612 = _parent;
 #line 70
-    sjt_math868 = (sjt_dot612)->m20;
+    sjt_math870 = (sjt_dot612)->m13;
 #line 70
-    sjt_math865 = sjt_math867 * sjt_math868;
+    sjt_math867 = sjt_math869 * sjt_math870;
 #line 61
     sjt_dot613 = _parent;
 #line 70
-    sjt_math873 = (sjt_dot613)->m03;
+    sjt_math868 = (sjt_dot613)->m20;
+#line 70
+    sjt_math865 = sjt_math867 * sjt_math868;
 #line 61
     sjt_dot614 = _parent;
 #line 70
-    sjt_math874 = (sjt_dot614)->m12;
-#line 70
-    sjt_math871 = sjt_math873 * sjt_math874;
+    sjt_math873 = (sjt_dot614)->m03;
 #line 61
     sjt_dot615 = _parent;
 #line 70
-    sjt_math872 = (sjt_dot615)->m20;
+    sjt_math874 = (sjt_dot615)->m12;
+#line 70
+    sjt_math871 = sjt_math873 * sjt_math874;
+#line 61
+    sjt_dot616 = _parent;
+#line 70
+    sjt_math872 = (sjt_dot616)->m20;
 #line 70
     sjt_math866 = sjt_math871 * sjt_math872;
 #line 70
     sjt_math863 = sjt_math865 - sjt_math866;
 #line 61
-    sjt_dot616 = _parent;
-#line 70
-    sjt_math877 = (sjt_dot616)->m03;
-#line 61
     sjt_dot617 = _parent;
 #line 70
-    sjt_math878 = (sjt_dot617)->m10;
-#line 70
-    sjt_math875 = sjt_math877 * sjt_math878;
+    sjt_math877 = (sjt_dot617)->m03;
 #line 61
     sjt_dot618 = _parent;
 #line 70
-    sjt_math876 = (sjt_dot618)->m22;
+    sjt_math878 = (sjt_dot618)->m10;
+#line 70
+    sjt_math875 = sjt_math877 * sjt_math878;
+#line 61
+    sjt_dot619 = _parent;
+#line 70
+    sjt_math876 = (sjt_dot619)->m22;
 #line 70
     sjt_math864 = sjt_math875 * sjt_math876;
 #line 70
     sjt_math861 = sjt_math863 + sjt_math864;
 #line 61
-    sjt_dot619 = _parent;
-#line 70
-    sjt_math881 = (sjt_dot619)->m00;
-#line 61
     sjt_dot620 = _parent;
 #line 70
-    sjt_math882 = (sjt_dot620)->m13;
-#line 70
-    sjt_math879 = sjt_math881 * sjt_math882;
+    sjt_math881 = (sjt_dot620)->m00;
 #line 61
     sjt_dot621 = _parent;
 #line 70
-    sjt_math880 = (sjt_dot621)->m22;
+    sjt_math882 = (sjt_dot621)->m13;
+#line 70
+    sjt_math879 = sjt_math881 * sjt_math882;
+#line 61
+    sjt_dot622 = _parent;
+#line 70
+    sjt_math880 = (sjt_dot622)->m22;
 #line 70
     sjt_math862 = sjt_math879 * sjt_math880;
 #line 70
     sjt_math859 = sjt_math861 - sjt_math862;
 #line 61
-    sjt_dot622 = _parent;
-#line 70
-    sjt_math885 = (sjt_dot622)->m02;
-#line 61
     sjt_dot623 = _parent;
 #line 70
-    sjt_math886 = (sjt_dot623)->m10;
-#line 70
-    sjt_math883 = sjt_math885 * sjt_math886;
+    sjt_math885 = (sjt_dot623)->m02;
 #line 61
     sjt_dot624 = _parent;
 #line 70
-    sjt_math884 = (sjt_dot624)->m23;
+    sjt_math886 = (sjt_dot624)->m10;
+#line 70
+    sjt_math883 = sjt_math885 * sjt_math886;
+#line 61
+    sjt_dot625 = _parent;
+#line 70
+    sjt_math884 = (sjt_dot625)->m23;
 #line 70
     sjt_math860 = sjt_math883 * sjt_math884;
 #line 70
     sjt_math857 = sjt_math859 - sjt_math860;
 #line 61
-    sjt_dot625 = _parent;
-#line 70
-    sjt_math889 = (sjt_dot625)->m00;
-#line 61
     sjt_dot626 = _parent;
 #line 70
-    sjt_math890 = (sjt_dot626)->m12;
-#line 70
-    sjt_math887 = sjt_math889 * sjt_math890;
+    sjt_math889 = (sjt_dot626)->m00;
 #line 61
     sjt_dot627 = _parent;
 #line 70
-    sjt_math888 = (sjt_dot627)->m23;
+    sjt_math890 = (sjt_dot627)->m12;
+#line 70
+    sjt_math887 = sjt_math889 * sjt_math890;
+#line 61
+    sjt_dot628 = _parent;
+#line 70
+    sjt_math888 = (sjt_dot628)->m23;
 #line 70
     sjt_math858 = sjt_math887 * sjt_math888;
 #line 70
     sjv_t.m13 = sjt_math857 + sjt_math858;
 #line 61
-    sjt_dot628 = _parent;
-#line 71
-    sjt_math903 = (sjt_dot628)->m11;
-#line 61
     sjt_dot629 = _parent;
 #line 71
-    sjt_math904 = (sjt_dot629)->m23;
-#line 71
-    sjt_math901 = sjt_math903 * sjt_math904;
+    sjt_math903 = (sjt_dot629)->m11;
 #line 61
     sjt_dot630 = _parent;
 #line 71
-    sjt_math902 = (sjt_dot630)->m30;
+    sjt_math904 = (sjt_dot630)->m23;
 #line 71
-    sjt_math899 = sjt_math901 * sjt_math902;
+    sjt_math901 = sjt_math903 * sjt_math904;
 #line 61
     sjt_dot631 = _parent;
 #line 71
-    sjt_math907 = (sjt_dot631)->m13;
+    sjt_math902 = (sjt_dot631)->m30;
+#line 71
+    sjt_math899 = sjt_math901 * sjt_math902;
 #line 61
     sjt_dot632 = _parent;
 #line 71
-    sjt_math908 = (sjt_dot632)->m21;
-#line 71
-    sjt_math905 = sjt_math907 * sjt_math908;
+    sjt_math907 = (sjt_dot632)->m13;
 #line 61
     sjt_dot633 = _parent;
 #line 71
-    sjt_math906 = (sjt_dot633)->m30;
+    sjt_math908 = (sjt_dot633)->m21;
+#line 71
+    sjt_math905 = sjt_math907 * sjt_math908;
+#line 61
+    sjt_dot634 = _parent;
+#line 71
+    sjt_math906 = (sjt_dot634)->m30;
 #line 71
     sjt_math900 = sjt_math905 * sjt_math906;
 #line 71
     sjt_math897 = sjt_math899 - sjt_math900;
 #line 61
-    sjt_dot634 = _parent;
-#line 71
-    sjt_math911 = (sjt_dot634)->m13;
-#line 61
     sjt_dot635 = _parent;
 #line 71
-    sjt_math912 = (sjt_dot635)->m20;
-#line 71
-    sjt_math909 = sjt_math911 * sjt_math912;
+    sjt_math911 = (sjt_dot635)->m13;
 #line 61
     sjt_dot636 = _parent;
 #line 71
-    sjt_math910 = (sjt_dot636)->m31;
+    sjt_math912 = (sjt_dot636)->m20;
+#line 71
+    sjt_math909 = sjt_math911 * sjt_math912;
+#line 61
+    sjt_dot637 = _parent;
+#line 71
+    sjt_math910 = (sjt_dot637)->m31;
 #line 71
     sjt_math898 = sjt_math909 * sjt_math910;
 #line 71
     sjt_math895 = sjt_math897 + sjt_math898;
 #line 61
-    sjt_dot637 = _parent;
-#line 71
-    sjt_math915 = (sjt_dot637)->m10;
-#line 61
     sjt_dot638 = _parent;
 #line 71
-    sjt_math916 = (sjt_dot638)->m23;
-#line 71
-    sjt_math913 = sjt_math915 * sjt_math916;
+    sjt_math915 = (sjt_dot638)->m10;
 #line 61
     sjt_dot639 = _parent;
 #line 71
-    sjt_math914 = (sjt_dot639)->m31;
+    sjt_math916 = (sjt_dot639)->m23;
+#line 71
+    sjt_math913 = sjt_math915 * sjt_math916;
+#line 61
+    sjt_dot640 = _parent;
+#line 71
+    sjt_math914 = (sjt_dot640)->m31;
 #line 71
     sjt_math896 = sjt_math913 * sjt_math914;
 #line 71
     sjt_math893 = sjt_math895 - sjt_math896;
 #line 61
-    sjt_dot640 = _parent;
-#line 71
-    sjt_math919 = (sjt_dot640)->m11;
-#line 61
     sjt_dot641 = _parent;
 #line 71
-    sjt_math920 = (sjt_dot641)->m20;
-#line 71
-    sjt_math917 = sjt_math919 * sjt_math920;
+    sjt_math919 = (sjt_dot641)->m11;
 #line 61
     sjt_dot642 = _parent;
 #line 71
-    sjt_math918 = (sjt_dot642)->m33;
+    sjt_math920 = (sjt_dot642)->m20;
+#line 71
+    sjt_math917 = sjt_math919 * sjt_math920;
+#line 61
+    sjt_dot643 = _parent;
+#line 71
+    sjt_math918 = (sjt_dot643)->m33;
 #line 71
     sjt_math894 = sjt_math917 * sjt_math918;
 #line 71
     sjt_math891 = sjt_math893 - sjt_math894;
 #line 61
-    sjt_dot643 = _parent;
-#line 71
-    sjt_math923 = (sjt_dot643)->m10;
-#line 61
     sjt_dot644 = _parent;
 #line 71
-    sjt_math924 = (sjt_dot644)->m21;
-#line 71
-    sjt_math921 = sjt_math923 * sjt_math924;
+    sjt_math923 = (sjt_dot644)->m10;
 #line 61
     sjt_dot645 = _parent;
 #line 71
-    sjt_math922 = (sjt_dot645)->m33;
+    sjt_math924 = (sjt_dot645)->m21;
+#line 71
+    sjt_math921 = sjt_math923 * sjt_math924;
+#line 61
+    sjt_dot646 = _parent;
+#line 71
+    sjt_math922 = (sjt_dot646)->m33;
 #line 71
     sjt_math892 = sjt_math921 * sjt_math922;
 #line 71
     sjv_t.m20 = sjt_math891 + sjt_math892;
 #line 61
-    sjt_dot646 = _parent;
-#line 72
-    sjt_math937 = (sjt_dot646)->m03;
-#line 61
     sjt_dot647 = _parent;
 #line 72
-    sjt_math938 = (sjt_dot647)->m21;
-#line 72
-    sjt_math935 = sjt_math937 * sjt_math938;
+    sjt_math937 = (sjt_dot647)->m03;
 #line 61
     sjt_dot648 = _parent;
 #line 72
-    sjt_math936 = (sjt_dot648)->m30;
+    sjt_math938 = (sjt_dot648)->m21;
 #line 72
-    sjt_math933 = sjt_math935 * sjt_math936;
+    sjt_math935 = sjt_math937 * sjt_math938;
 #line 61
     sjt_dot649 = _parent;
 #line 72
-    sjt_math941 = (sjt_dot649)->m01;
+    sjt_math936 = (sjt_dot649)->m30;
+#line 72
+    sjt_math933 = sjt_math935 * sjt_math936;
 #line 61
     sjt_dot650 = _parent;
 #line 72
-    sjt_math942 = (sjt_dot650)->m23;
-#line 72
-    sjt_math939 = sjt_math941 * sjt_math942;
+    sjt_math941 = (sjt_dot650)->m01;
 #line 61
     sjt_dot651 = _parent;
 #line 72
-    sjt_math940 = (sjt_dot651)->m30;
+    sjt_math942 = (sjt_dot651)->m23;
+#line 72
+    sjt_math939 = sjt_math941 * sjt_math942;
+#line 61
+    sjt_dot652 = _parent;
+#line 72
+    sjt_math940 = (sjt_dot652)->m30;
 #line 72
     sjt_math934 = sjt_math939 * sjt_math940;
 #line 72
     sjt_math931 = sjt_math933 - sjt_math934;
 #line 61
-    sjt_dot652 = _parent;
-#line 72
-    sjt_math945 = (sjt_dot652)->m03;
-#line 61
     sjt_dot653 = _parent;
 #line 72
-    sjt_math946 = (sjt_dot653)->m20;
-#line 72
-    sjt_math943 = sjt_math945 * sjt_math946;
+    sjt_math945 = (sjt_dot653)->m03;
 #line 61
     sjt_dot654 = _parent;
 #line 72
-    sjt_math944 = (sjt_dot654)->m31;
+    sjt_math946 = (sjt_dot654)->m20;
+#line 72
+    sjt_math943 = sjt_math945 * sjt_math946;
+#line 61
+    sjt_dot655 = _parent;
+#line 72
+    sjt_math944 = (sjt_dot655)->m31;
 #line 72
     sjt_math932 = sjt_math943 * sjt_math944;
 #line 72
     sjt_math929 = sjt_math931 - sjt_math932;
 #line 61
-    sjt_dot655 = _parent;
-#line 72
-    sjt_math949 = (sjt_dot655)->m00;
-#line 61
     sjt_dot656 = _parent;
 #line 72
-    sjt_math950 = (sjt_dot656)->m23;
-#line 72
-    sjt_math947 = sjt_math949 * sjt_math950;
+    sjt_math949 = (sjt_dot656)->m00;
 #line 61
     sjt_dot657 = _parent;
 #line 72
-    sjt_math948 = (sjt_dot657)->m31;
+    sjt_math950 = (sjt_dot657)->m23;
+#line 72
+    sjt_math947 = sjt_math949 * sjt_math950;
+#line 61
+    sjt_dot658 = _parent;
+#line 72
+    sjt_math948 = (sjt_dot658)->m31;
 #line 72
     sjt_math930 = sjt_math947 * sjt_math948;
 #line 72
     sjt_math927 = sjt_math929 + sjt_math930;
 #line 61
-    sjt_dot658 = _parent;
-#line 72
-    sjt_math953 = (sjt_dot658)->m01;
-#line 61
     sjt_dot659 = _parent;
 #line 72
-    sjt_math954 = (sjt_dot659)->m20;
-#line 72
-    sjt_math951 = sjt_math953 * sjt_math954;
+    sjt_math953 = (sjt_dot659)->m01;
 #line 61
     sjt_dot660 = _parent;
 #line 72
-    sjt_math952 = (sjt_dot660)->m33;
+    sjt_math954 = (sjt_dot660)->m20;
+#line 72
+    sjt_math951 = sjt_math953 * sjt_math954;
+#line 61
+    sjt_dot661 = _parent;
+#line 72
+    sjt_math952 = (sjt_dot661)->m33;
 #line 72
     sjt_math928 = sjt_math951 * sjt_math952;
 #line 72
     sjt_math925 = sjt_math927 + sjt_math928;
 #line 61
-    sjt_dot661 = _parent;
-#line 72
-    sjt_math957 = (sjt_dot661)->m00;
-#line 61
     sjt_dot662 = _parent;
 #line 72
-    sjt_math958 = (sjt_dot662)->m21;
-#line 72
-    sjt_math955 = sjt_math957 * sjt_math958;
+    sjt_math957 = (sjt_dot662)->m00;
 #line 61
     sjt_dot663 = _parent;
 #line 72
-    sjt_math956 = (sjt_dot663)->m33;
+    sjt_math958 = (sjt_dot663)->m21;
+#line 72
+    sjt_math955 = sjt_math957 * sjt_math958;
+#line 61
+    sjt_dot664 = _parent;
+#line 72
+    sjt_math956 = (sjt_dot664)->m33;
 #line 72
     sjt_math926 = sjt_math955 * sjt_math956;
 #line 72
     sjv_t.m21 = sjt_math925 - sjt_math926;
 #line 61
-    sjt_dot664 = _parent;
-#line 73
-    sjt_math971 = (sjt_dot664)->m01;
-#line 61
     sjt_dot665 = _parent;
 #line 73
-    sjt_math972 = (sjt_dot665)->m13;
-#line 73
-    sjt_math969 = sjt_math971 * sjt_math972;
+    sjt_math971 = (sjt_dot665)->m01;
 #line 61
     sjt_dot666 = _parent;
 #line 73
-    sjt_math970 = (sjt_dot666)->m30;
+    sjt_math972 = (sjt_dot666)->m13;
 #line 73
-    sjt_math967 = sjt_math969 * sjt_math970;
+    sjt_math969 = sjt_math971 * sjt_math972;
 #line 61
     sjt_dot667 = _parent;
 #line 73
-    sjt_math975 = (sjt_dot667)->m03;
+    sjt_math970 = (sjt_dot667)->m30;
+#line 73
+    sjt_math967 = sjt_math969 * sjt_math970;
 #line 61
     sjt_dot668 = _parent;
 #line 73
-    sjt_math976 = (sjt_dot668)->m11;
-#line 73
-    sjt_math973 = sjt_math975 * sjt_math976;
+    sjt_math975 = (sjt_dot668)->m03;
 #line 61
     sjt_dot669 = _parent;
 #line 73
-    sjt_math974 = (sjt_dot669)->m30;
+    sjt_math976 = (sjt_dot669)->m11;
+#line 73
+    sjt_math973 = sjt_math975 * sjt_math976;
+#line 61
+    sjt_dot670 = _parent;
+#line 73
+    sjt_math974 = (sjt_dot670)->m30;
 #line 73
     sjt_math968 = sjt_math973 * sjt_math974;
 #line 73
     sjt_math965 = sjt_math967 - sjt_math968;
 #line 61
-    sjt_dot670 = _parent;
-#line 73
-    sjt_math979 = (sjt_dot670)->m03;
-#line 61
     sjt_dot671 = _parent;
 #line 73
-    sjt_math980 = (sjt_dot671)->m10;
-#line 73
-    sjt_math977 = sjt_math979 * sjt_math980;
+    sjt_math979 = (sjt_dot671)->m03;
 #line 61
     sjt_dot672 = _parent;
 #line 73
-    sjt_math978 = (sjt_dot672)->m31;
+    sjt_math980 = (sjt_dot672)->m10;
+#line 73
+    sjt_math977 = sjt_math979 * sjt_math980;
+#line 61
+    sjt_dot673 = _parent;
+#line 73
+    sjt_math978 = (sjt_dot673)->m31;
 #line 73
     sjt_math966 = sjt_math977 * sjt_math978;
 #line 73
     sjt_math963 = sjt_math965 + sjt_math966;
 #line 61
-    sjt_dot673 = _parent;
-#line 73
-    sjt_math983 = (sjt_dot673)->m00;
-#line 61
     sjt_dot674 = _parent;
 #line 73
-    sjt_math984 = (sjt_dot674)->m13;
-#line 73
-    sjt_math981 = sjt_math983 * sjt_math984;
+    sjt_math983 = (sjt_dot674)->m00;
 #line 61
     sjt_dot675 = _parent;
 #line 73
-    sjt_math982 = (sjt_dot675)->m31;
+    sjt_math984 = (sjt_dot675)->m13;
+#line 73
+    sjt_math981 = sjt_math983 * sjt_math984;
+#line 61
+    sjt_dot676 = _parent;
+#line 73
+    sjt_math982 = (sjt_dot676)->m31;
 #line 73
     sjt_math964 = sjt_math981 * sjt_math982;
 #line 73
     sjt_math961 = sjt_math963 - sjt_math964;
 #line 61
-    sjt_dot676 = _parent;
-#line 73
-    sjt_math987 = (sjt_dot676)->m01;
-#line 61
     sjt_dot677 = _parent;
 #line 73
-    sjt_math988 = (sjt_dot677)->m10;
-#line 73
-    sjt_math985 = sjt_math987 * sjt_math988;
+    sjt_math987 = (sjt_dot677)->m01;
 #line 61
     sjt_dot678 = _parent;
 #line 73
-    sjt_math986 = (sjt_dot678)->m33;
+    sjt_math988 = (sjt_dot678)->m10;
+#line 73
+    sjt_math985 = sjt_math987 * sjt_math988;
+#line 61
+    sjt_dot679 = _parent;
+#line 73
+    sjt_math986 = (sjt_dot679)->m33;
 #line 73
     sjt_math962 = sjt_math985 * sjt_math986;
 #line 73
     sjt_math959 = sjt_math961 - sjt_math962;
 #line 61
-    sjt_dot679 = _parent;
-#line 73
-    sjt_math991 = (sjt_dot679)->m00;
-#line 61
     sjt_dot680 = _parent;
 #line 73
-    sjt_math992 = (sjt_dot680)->m11;
-#line 73
-    sjt_math989 = sjt_math991 * sjt_math992;
+    sjt_math991 = (sjt_dot680)->m00;
 #line 61
     sjt_dot681 = _parent;
 #line 73
-    sjt_math990 = (sjt_dot681)->m33;
+    sjt_math992 = (sjt_dot681)->m11;
+#line 73
+    sjt_math989 = sjt_math991 * sjt_math992;
+#line 61
+    sjt_dot682 = _parent;
+#line 73
+    sjt_math990 = (sjt_dot682)->m33;
 #line 73
     sjt_math960 = sjt_math989 * sjt_math990;
 #line 73
     sjv_t.m22 = sjt_math959 + sjt_math960;
 #line 61
-    sjt_dot682 = _parent;
-#line 74
-    sjt_math1005 = (sjt_dot682)->m03;
-#line 61
     sjt_dot683 = _parent;
 #line 74
-    sjt_math1006 = (sjt_dot683)->m11;
-#line 74
-    sjt_math1003 = sjt_math1005 * sjt_math1006;
+    sjt_math1005 = (sjt_dot683)->m03;
 #line 61
     sjt_dot684 = _parent;
 #line 74
-    sjt_math1004 = (sjt_dot684)->m20;
+    sjt_math1006 = (sjt_dot684)->m11;
 #line 74
-    sjt_math1001 = sjt_math1003 * sjt_math1004;
+    sjt_math1003 = sjt_math1005 * sjt_math1006;
 #line 61
     sjt_dot685 = _parent;
 #line 74
-    sjt_math1009 = (sjt_dot685)->m01;
+    sjt_math1004 = (sjt_dot685)->m20;
+#line 74
+    sjt_math1001 = sjt_math1003 * sjt_math1004;
 #line 61
     sjt_dot686 = _parent;
 #line 74
-    sjt_math1010 = (sjt_dot686)->m13;
-#line 74
-    sjt_math1007 = sjt_math1009 * sjt_math1010;
+    sjt_math1009 = (sjt_dot686)->m01;
 #line 61
     sjt_dot687 = _parent;
 #line 74
-    sjt_math1008 = (sjt_dot687)->m20;
+    sjt_math1010 = (sjt_dot687)->m13;
+#line 74
+    sjt_math1007 = sjt_math1009 * sjt_math1010;
+#line 61
+    sjt_dot688 = _parent;
+#line 74
+    sjt_math1008 = (sjt_dot688)->m20;
 #line 74
     sjt_math1002 = sjt_math1007 * sjt_math1008;
 #line 74
     sjt_math999 = sjt_math1001 - sjt_math1002;
 #line 61
-    sjt_dot688 = _parent;
-#line 74
-    sjt_math1013 = (sjt_dot688)->m03;
-#line 61
     sjt_dot689 = _parent;
 #line 74
-    sjt_math1014 = (sjt_dot689)->m10;
-#line 74
-    sjt_math1011 = sjt_math1013 * sjt_math1014;
+    sjt_math1013 = (sjt_dot689)->m03;
 #line 61
     sjt_dot690 = _parent;
 #line 74
-    sjt_math1012 = (sjt_dot690)->m21;
+    sjt_math1014 = (sjt_dot690)->m10;
+#line 74
+    sjt_math1011 = sjt_math1013 * sjt_math1014;
+#line 61
+    sjt_dot691 = _parent;
+#line 74
+    sjt_math1012 = (sjt_dot691)->m21;
 #line 74
     sjt_math1000 = sjt_math1011 * sjt_math1012;
 #line 74
     sjt_math997 = sjt_math999 - sjt_math1000;
 #line 61
-    sjt_dot691 = _parent;
-#line 74
-    sjt_math1017 = (sjt_dot691)->m00;
-#line 61
     sjt_dot692 = _parent;
 #line 74
-    sjt_math1018 = (sjt_dot692)->m13;
-#line 74
-    sjt_math1015 = sjt_math1017 * sjt_math1018;
+    sjt_math1017 = (sjt_dot692)->m00;
 #line 61
     sjt_dot693 = _parent;
 #line 74
-    sjt_math1016 = (sjt_dot693)->m21;
+    sjt_math1018 = (sjt_dot693)->m13;
+#line 74
+    sjt_math1015 = sjt_math1017 * sjt_math1018;
+#line 61
+    sjt_dot694 = _parent;
+#line 74
+    sjt_math1016 = (sjt_dot694)->m21;
 #line 74
     sjt_math998 = sjt_math1015 * sjt_math1016;
 #line 74
     sjt_math995 = sjt_math997 + sjt_math998;
 #line 61
-    sjt_dot694 = _parent;
-#line 74
-    sjt_math1021 = (sjt_dot694)->m01;
-#line 61
     sjt_dot695 = _parent;
 #line 74
-    sjt_math1022 = (sjt_dot695)->m10;
-#line 74
-    sjt_math1019 = sjt_math1021 * sjt_math1022;
+    sjt_math1021 = (sjt_dot695)->m01;
 #line 61
     sjt_dot696 = _parent;
 #line 74
-    sjt_math1020 = (sjt_dot696)->m23;
+    sjt_math1022 = (sjt_dot696)->m10;
+#line 74
+    sjt_math1019 = sjt_math1021 * sjt_math1022;
+#line 61
+    sjt_dot697 = _parent;
+#line 74
+    sjt_math1020 = (sjt_dot697)->m23;
 #line 74
     sjt_math996 = sjt_math1019 * sjt_math1020;
 #line 74
     sjt_math993 = sjt_math995 + sjt_math996;
 #line 61
-    sjt_dot697 = _parent;
-#line 74
-    sjt_math1025 = (sjt_dot697)->m00;
-#line 61
     sjt_dot698 = _parent;
 #line 74
-    sjt_math1026 = (sjt_dot698)->m11;
-#line 74
-    sjt_math1023 = sjt_math1025 * sjt_math1026;
+    sjt_math1025 = (sjt_dot698)->m00;
 #line 61
     sjt_dot699 = _parent;
 #line 74
-    sjt_math1024 = (sjt_dot699)->m23;
+    sjt_math1026 = (sjt_dot699)->m11;
+#line 74
+    sjt_math1023 = sjt_math1025 * sjt_math1026;
+#line 61
+    sjt_dot700 = _parent;
+#line 74
+    sjt_math1024 = (sjt_dot700)->m23;
 #line 74
     sjt_math994 = sjt_math1023 * sjt_math1024;
 #line 74
     sjv_t.m23 = sjt_math993 - sjt_math994;
 #line 61
-    sjt_dot700 = _parent;
-#line 75
-    sjt_math1039 = (sjt_dot700)->m12;
-#line 61
     sjt_dot701 = _parent;
 #line 75
-    sjt_math1040 = (sjt_dot701)->m21;
-#line 75
-    sjt_math1037 = sjt_math1039 * sjt_math1040;
+    sjt_math1039 = (sjt_dot701)->m12;
 #line 61
     sjt_dot702 = _parent;
 #line 75
-    sjt_math1038 = (sjt_dot702)->m30;
+    sjt_math1040 = (sjt_dot702)->m21;
 #line 75
-    sjt_math1035 = sjt_math1037 * sjt_math1038;
+    sjt_math1037 = sjt_math1039 * sjt_math1040;
 #line 61
     sjt_dot703 = _parent;
 #line 75
-    sjt_math1043 = (sjt_dot703)->m11;
+    sjt_math1038 = (sjt_dot703)->m30;
+#line 75
+    sjt_math1035 = sjt_math1037 * sjt_math1038;
 #line 61
     sjt_dot704 = _parent;
 #line 75
-    sjt_math1044 = (sjt_dot704)->m22;
-#line 75
-    sjt_math1041 = sjt_math1043 * sjt_math1044;
+    sjt_math1043 = (sjt_dot704)->m11;
 #line 61
     sjt_dot705 = _parent;
 #line 75
-    sjt_math1042 = (sjt_dot705)->m30;
+    sjt_math1044 = (sjt_dot705)->m22;
+#line 75
+    sjt_math1041 = sjt_math1043 * sjt_math1044;
+#line 61
+    sjt_dot706 = _parent;
+#line 75
+    sjt_math1042 = (sjt_dot706)->m30;
 #line 75
     sjt_math1036 = sjt_math1041 * sjt_math1042;
 #line 75
     sjt_math1033 = sjt_math1035 - sjt_math1036;
 #line 61
-    sjt_dot706 = _parent;
-#line 75
-    sjt_math1047 = (sjt_dot706)->m12;
-#line 61
     sjt_dot707 = _parent;
 #line 75
-    sjt_math1048 = (sjt_dot707)->m20;
-#line 75
-    sjt_math1045 = sjt_math1047 * sjt_math1048;
+    sjt_math1047 = (sjt_dot707)->m12;
 #line 61
     sjt_dot708 = _parent;
 #line 75
-    sjt_math1046 = (sjt_dot708)->m31;
+    sjt_math1048 = (sjt_dot708)->m20;
+#line 75
+    sjt_math1045 = sjt_math1047 * sjt_math1048;
+#line 61
+    sjt_dot709 = _parent;
+#line 75
+    sjt_math1046 = (sjt_dot709)->m31;
 #line 75
     sjt_math1034 = sjt_math1045 * sjt_math1046;
 #line 75
     sjt_math1031 = sjt_math1033 - sjt_math1034;
 #line 61
-    sjt_dot709 = _parent;
-#line 75
-    sjt_math1051 = (sjt_dot709)->m10;
-#line 61
     sjt_dot710 = _parent;
 #line 75
-    sjt_math1052 = (sjt_dot710)->m22;
-#line 75
-    sjt_math1049 = sjt_math1051 * sjt_math1052;
+    sjt_math1051 = (sjt_dot710)->m10;
 #line 61
     sjt_dot711 = _parent;
 #line 75
-    sjt_math1050 = (sjt_dot711)->m31;
+    sjt_math1052 = (sjt_dot711)->m22;
+#line 75
+    sjt_math1049 = sjt_math1051 * sjt_math1052;
+#line 61
+    sjt_dot712 = _parent;
+#line 75
+    sjt_math1050 = (sjt_dot712)->m31;
 #line 75
     sjt_math1032 = sjt_math1049 * sjt_math1050;
 #line 75
     sjt_math1029 = sjt_math1031 + sjt_math1032;
 #line 61
-    sjt_dot712 = _parent;
-#line 75
-    sjt_math1055 = (sjt_dot712)->m11;
-#line 61
     sjt_dot713 = _parent;
 #line 75
-    sjt_math1056 = (sjt_dot713)->m20;
-#line 75
-    sjt_math1053 = sjt_math1055 * sjt_math1056;
+    sjt_math1055 = (sjt_dot713)->m11;
 #line 61
     sjt_dot714 = _parent;
 #line 75
-    sjt_math1054 = (sjt_dot714)->m32;
+    sjt_math1056 = (sjt_dot714)->m20;
+#line 75
+    sjt_math1053 = sjt_math1055 * sjt_math1056;
+#line 61
+    sjt_dot715 = _parent;
+#line 75
+    sjt_math1054 = (sjt_dot715)->m32;
 #line 75
     sjt_math1030 = sjt_math1053 * sjt_math1054;
 #line 75
     sjt_math1027 = sjt_math1029 + sjt_math1030;
 #line 61
-    sjt_dot715 = _parent;
-#line 75
-    sjt_math1059 = (sjt_dot715)->m10;
-#line 61
     sjt_dot716 = _parent;
 #line 75
-    sjt_math1060 = (sjt_dot716)->m21;
-#line 75
-    sjt_math1057 = sjt_math1059 * sjt_math1060;
+    sjt_math1059 = (sjt_dot716)->m10;
 #line 61
     sjt_dot717 = _parent;
 #line 75
-    sjt_math1058 = (sjt_dot717)->m32;
+    sjt_math1060 = (sjt_dot717)->m21;
+#line 75
+    sjt_math1057 = sjt_math1059 * sjt_math1060;
+#line 61
+    sjt_dot718 = _parent;
+#line 75
+    sjt_math1058 = (sjt_dot718)->m32;
 #line 75
     sjt_math1028 = sjt_math1057 * sjt_math1058;
 #line 75
     sjv_t.m30 = sjt_math1027 - sjt_math1028;
 #line 61
-    sjt_dot718 = _parent;
-#line 76
-    sjt_math1073 = (sjt_dot718)->m01;
-#line 61
     sjt_dot719 = _parent;
 #line 76
-    sjt_math1074 = (sjt_dot719)->m22;
-#line 76
-    sjt_math1071 = sjt_math1073 * sjt_math1074;
+    sjt_math1073 = (sjt_dot719)->m01;
 #line 61
     sjt_dot720 = _parent;
 #line 76
-    sjt_math1072 = (sjt_dot720)->m30;
+    sjt_math1074 = (sjt_dot720)->m22;
 #line 76
-    sjt_math1069 = sjt_math1071 * sjt_math1072;
+    sjt_math1071 = sjt_math1073 * sjt_math1074;
 #line 61
     sjt_dot721 = _parent;
 #line 76
-    sjt_math1077 = (sjt_dot721)->m02;
+    sjt_math1072 = (sjt_dot721)->m30;
+#line 76
+    sjt_math1069 = sjt_math1071 * sjt_math1072;
 #line 61
     sjt_dot722 = _parent;
 #line 76
-    sjt_math1078 = (sjt_dot722)->m21;
-#line 76
-    sjt_math1075 = sjt_math1077 * sjt_math1078;
+    sjt_math1077 = (sjt_dot722)->m02;
 #line 61
     sjt_dot723 = _parent;
 #line 76
-    sjt_math1076 = (sjt_dot723)->m30;
+    sjt_math1078 = (sjt_dot723)->m21;
+#line 76
+    sjt_math1075 = sjt_math1077 * sjt_math1078;
+#line 61
+    sjt_dot724 = _parent;
+#line 76
+    sjt_math1076 = (sjt_dot724)->m30;
 #line 76
     sjt_math1070 = sjt_math1075 * sjt_math1076;
 #line 76
     sjt_math1067 = sjt_math1069 - sjt_math1070;
 #line 61
-    sjt_dot724 = _parent;
-#line 76
-    sjt_math1081 = (sjt_dot724)->m02;
-#line 61
     sjt_dot725 = _parent;
 #line 76
-    sjt_math1082 = (sjt_dot725)->m20;
-#line 76
-    sjt_math1079 = sjt_math1081 * sjt_math1082;
+    sjt_math1081 = (sjt_dot725)->m02;
 #line 61
     sjt_dot726 = _parent;
 #line 76
-    sjt_math1080 = (sjt_dot726)->m31;
+    sjt_math1082 = (sjt_dot726)->m20;
+#line 76
+    sjt_math1079 = sjt_math1081 * sjt_math1082;
+#line 61
+    sjt_dot727 = _parent;
+#line 76
+    sjt_math1080 = (sjt_dot727)->m31;
 #line 76
     sjt_math1068 = sjt_math1079 * sjt_math1080;
 #line 76
     sjt_math1065 = sjt_math1067 + sjt_math1068;
 #line 61
-    sjt_dot727 = _parent;
-#line 76
-    sjt_math1085 = (sjt_dot727)->m00;
-#line 61
     sjt_dot728 = _parent;
 #line 76
-    sjt_math1086 = (sjt_dot728)->m22;
-#line 76
-    sjt_math1083 = sjt_math1085 * sjt_math1086;
+    sjt_math1085 = (sjt_dot728)->m00;
 #line 61
     sjt_dot729 = _parent;
 #line 76
-    sjt_math1084 = (sjt_dot729)->m31;
+    sjt_math1086 = (sjt_dot729)->m22;
+#line 76
+    sjt_math1083 = sjt_math1085 * sjt_math1086;
+#line 61
+    sjt_dot730 = _parent;
+#line 76
+    sjt_math1084 = (sjt_dot730)->m31;
 #line 76
     sjt_math1066 = sjt_math1083 * sjt_math1084;
 #line 76
     sjt_math1063 = sjt_math1065 - sjt_math1066;
 #line 61
-    sjt_dot730 = _parent;
-#line 76
-    sjt_math1089 = (sjt_dot730)->m01;
-#line 61
     sjt_dot731 = _parent;
 #line 76
-    sjt_math1090 = (sjt_dot731)->m20;
-#line 76
-    sjt_math1087 = sjt_math1089 * sjt_math1090;
+    sjt_math1089 = (sjt_dot731)->m01;
 #line 61
     sjt_dot732 = _parent;
 #line 76
-    sjt_math1088 = (sjt_dot732)->m32;
+    sjt_math1090 = (sjt_dot732)->m20;
+#line 76
+    sjt_math1087 = sjt_math1089 * sjt_math1090;
+#line 61
+    sjt_dot733 = _parent;
+#line 76
+    sjt_math1088 = (sjt_dot733)->m32;
 #line 76
     sjt_math1064 = sjt_math1087 * sjt_math1088;
 #line 76
     sjt_math1061 = sjt_math1063 - sjt_math1064;
 #line 61
-    sjt_dot733 = _parent;
-#line 76
-    sjt_math1093 = (sjt_dot733)->m00;
-#line 61
     sjt_dot734 = _parent;
 #line 76
-    sjt_math1094 = (sjt_dot734)->m21;
-#line 76
-    sjt_math1091 = sjt_math1093 * sjt_math1094;
+    sjt_math1093 = (sjt_dot734)->m00;
 #line 61
     sjt_dot735 = _parent;
 #line 76
-    sjt_math1092 = (sjt_dot735)->m32;
+    sjt_math1094 = (sjt_dot735)->m21;
+#line 76
+    sjt_math1091 = sjt_math1093 * sjt_math1094;
+#line 61
+    sjt_dot736 = _parent;
+#line 76
+    sjt_math1092 = (sjt_dot736)->m32;
 #line 76
     sjt_math1062 = sjt_math1091 * sjt_math1092;
 #line 76
     sjv_t.m31 = sjt_math1061 + sjt_math1062;
 #line 61
-    sjt_dot736 = _parent;
-#line 77
-    sjt_math1107 = (sjt_dot736)->m02;
-#line 61
     sjt_dot737 = _parent;
 #line 77
-    sjt_math1108 = (sjt_dot737)->m11;
-#line 77
-    sjt_math1105 = sjt_math1107 * sjt_math1108;
+    sjt_math1107 = (sjt_dot737)->m02;
 #line 61
     sjt_dot738 = _parent;
 #line 77
-    sjt_math1106 = (sjt_dot738)->m30;
+    sjt_math1108 = (sjt_dot738)->m11;
 #line 77
-    sjt_math1103 = sjt_math1105 * sjt_math1106;
+    sjt_math1105 = sjt_math1107 * sjt_math1108;
 #line 61
     sjt_dot739 = _parent;
 #line 77
-    sjt_math1111 = (sjt_dot739)->m01;
+    sjt_math1106 = (sjt_dot739)->m30;
+#line 77
+    sjt_math1103 = sjt_math1105 * sjt_math1106;
 #line 61
     sjt_dot740 = _parent;
 #line 77
-    sjt_math1112 = (sjt_dot740)->m12;
-#line 77
-    sjt_math1109 = sjt_math1111 * sjt_math1112;
+    sjt_math1111 = (sjt_dot740)->m01;
 #line 61
     sjt_dot741 = _parent;
 #line 77
-    sjt_math1110 = (sjt_dot741)->m30;
+    sjt_math1112 = (sjt_dot741)->m12;
+#line 77
+    sjt_math1109 = sjt_math1111 * sjt_math1112;
+#line 61
+    sjt_dot742 = _parent;
+#line 77
+    sjt_math1110 = (sjt_dot742)->m30;
 #line 77
     sjt_math1104 = sjt_math1109 * sjt_math1110;
 #line 77
     sjt_math1101 = sjt_math1103 - sjt_math1104;
 #line 61
-    sjt_dot742 = _parent;
-#line 77
-    sjt_math1115 = (sjt_dot742)->m02;
-#line 61
     sjt_dot743 = _parent;
 #line 77
-    sjt_math1116 = (sjt_dot743)->m10;
-#line 77
-    sjt_math1113 = sjt_math1115 * sjt_math1116;
+    sjt_math1115 = (sjt_dot743)->m02;
 #line 61
     sjt_dot744 = _parent;
 #line 77
-    sjt_math1114 = (sjt_dot744)->m31;
+    sjt_math1116 = (sjt_dot744)->m10;
+#line 77
+    sjt_math1113 = sjt_math1115 * sjt_math1116;
+#line 61
+    sjt_dot745 = _parent;
+#line 77
+    sjt_math1114 = (sjt_dot745)->m31;
 #line 77
     sjt_math1102 = sjt_math1113 * sjt_math1114;
 #line 77
     sjt_math1099 = sjt_math1101 - sjt_math1102;
 #line 61
-    sjt_dot745 = _parent;
-#line 77
-    sjt_math1119 = (sjt_dot745)->m00;
-#line 61
     sjt_dot746 = _parent;
 #line 77
-    sjt_math1120 = (sjt_dot746)->m12;
-#line 77
-    sjt_math1117 = sjt_math1119 * sjt_math1120;
+    sjt_math1119 = (sjt_dot746)->m00;
 #line 61
     sjt_dot747 = _parent;
 #line 77
-    sjt_math1118 = (sjt_dot747)->m31;
+    sjt_math1120 = (sjt_dot747)->m12;
+#line 77
+    sjt_math1117 = sjt_math1119 * sjt_math1120;
+#line 61
+    sjt_dot748 = _parent;
+#line 77
+    sjt_math1118 = (sjt_dot748)->m31;
 #line 77
     sjt_math1100 = sjt_math1117 * sjt_math1118;
 #line 77
     sjt_math1097 = sjt_math1099 + sjt_math1100;
 #line 61
-    sjt_dot748 = _parent;
-#line 77
-    sjt_math1123 = (sjt_dot748)->m01;
-#line 61
     sjt_dot749 = _parent;
 #line 77
-    sjt_math1124 = (sjt_dot749)->m10;
-#line 77
-    sjt_math1121 = sjt_math1123 * sjt_math1124;
+    sjt_math1123 = (sjt_dot749)->m01;
 #line 61
     sjt_dot750 = _parent;
 #line 77
-    sjt_math1122 = (sjt_dot750)->m32;
+    sjt_math1124 = (sjt_dot750)->m10;
+#line 77
+    sjt_math1121 = sjt_math1123 * sjt_math1124;
+#line 61
+    sjt_dot751 = _parent;
+#line 77
+    sjt_math1122 = (sjt_dot751)->m32;
 #line 77
     sjt_math1098 = sjt_math1121 * sjt_math1122;
 #line 77
     sjt_math1095 = sjt_math1097 + sjt_math1098;
 #line 61
-    sjt_dot751 = _parent;
-#line 77
-    sjt_math1127 = (sjt_dot751)->m00;
-#line 61
     sjt_dot752 = _parent;
 #line 77
-    sjt_math1128 = (sjt_dot752)->m11;
-#line 77
-    sjt_math1125 = sjt_math1127 * sjt_math1128;
+    sjt_math1127 = (sjt_dot752)->m00;
 #line 61
     sjt_dot753 = _parent;
 #line 77
-    sjt_math1126 = (sjt_dot753)->m32;
+    sjt_math1128 = (sjt_dot753)->m11;
+#line 77
+    sjt_math1125 = sjt_math1127 * sjt_math1128;
+#line 61
+    sjt_dot754 = _parent;
+#line 77
+    sjt_math1126 = (sjt_dot754)->m32;
 #line 77
     sjt_math1096 = sjt_math1125 * sjt_math1126;
 #line 77
     sjv_t.m32 = sjt_math1095 - sjt_math1096;
 #line 61
-    sjt_dot754 = _parent;
-#line 78
-    sjt_math1141 = (sjt_dot754)->m01;
-#line 61
     sjt_dot755 = _parent;
 #line 78
-    sjt_math1142 = (sjt_dot755)->m12;
-#line 78
-    sjt_math1139 = sjt_math1141 * sjt_math1142;
+    sjt_math1141 = (sjt_dot755)->m01;
 #line 61
     sjt_dot756 = _parent;
 #line 78
-    sjt_math1140 = (sjt_dot756)->m20;
+    sjt_math1142 = (sjt_dot756)->m12;
 #line 78
-    sjt_math1137 = sjt_math1139 * sjt_math1140;
+    sjt_math1139 = sjt_math1141 * sjt_math1142;
 #line 61
     sjt_dot757 = _parent;
 #line 78
-    sjt_math1145 = (sjt_dot757)->m02;
+    sjt_math1140 = (sjt_dot757)->m20;
+#line 78
+    sjt_math1137 = sjt_math1139 * sjt_math1140;
 #line 61
     sjt_dot758 = _parent;
 #line 78
-    sjt_math1146 = (sjt_dot758)->m11;
-#line 78
-    sjt_math1143 = sjt_math1145 * sjt_math1146;
+    sjt_math1145 = (sjt_dot758)->m02;
 #line 61
     sjt_dot759 = _parent;
 #line 78
-    sjt_math1144 = (sjt_dot759)->m20;
+    sjt_math1146 = (sjt_dot759)->m11;
+#line 78
+    sjt_math1143 = sjt_math1145 * sjt_math1146;
+#line 61
+    sjt_dot760 = _parent;
+#line 78
+    sjt_math1144 = (sjt_dot760)->m20;
 #line 78
     sjt_math1138 = sjt_math1143 * sjt_math1144;
 #line 78
     sjt_math1135 = sjt_math1137 - sjt_math1138;
 #line 61
-    sjt_dot760 = _parent;
-#line 78
-    sjt_math1149 = (sjt_dot760)->m02;
-#line 61
     sjt_dot761 = _parent;
 #line 78
-    sjt_math1150 = (sjt_dot761)->m10;
-#line 78
-    sjt_math1147 = sjt_math1149 * sjt_math1150;
+    sjt_math1149 = (sjt_dot761)->m02;
 #line 61
     sjt_dot762 = _parent;
 #line 78
-    sjt_math1148 = (sjt_dot762)->m21;
+    sjt_math1150 = (sjt_dot762)->m10;
+#line 78
+    sjt_math1147 = sjt_math1149 * sjt_math1150;
+#line 61
+    sjt_dot763 = _parent;
+#line 78
+    sjt_math1148 = (sjt_dot763)->m21;
 #line 78
     sjt_math1136 = sjt_math1147 * sjt_math1148;
 #line 78
     sjt_math1133 = sjt_math1135 + sjt_math1136;
 #line 61
-    sjt_dot763 = _parent;
-#line 78
-    sjt_math1153 = (sjt_dot763)->m00;
-#line 61
     sjt_dot764 = _parent;
 #line 78
-    sjt_math1154 = (sjt_dot764)->m12;
-#line 78
-    sjt_math1151 = sjt_math1153 * sjt_math1154;
+    sjt_math1153 = (sjt_dot764)->m00;
 #line 61
     sjt_dot765 = _parent;
 #line 78
-    sjt_math1152 = (sjt_dot765)->m21;
+    sjt_math1154 = (sjt_dot765)->m12;
+#line 78
+    sjt_math1151 = sjt_math1153 * sjt_math1154;
+#line 61
+    sjt_dot766 = _parent;
+#line 78
+    sjt_math1152 = (sjt_dot766)->m21;
 #line 78
     sjt_math1134 = sjt_math1151 * sjt_math1152;
 #line 78
     sjt_math1131 = sjt_math1133 - sjt_math1134;
 #line 61
-    sjt_dot766 = _parent;
-#line 78
-    sjt_math1157 = (sjt_dot766)->m01;
-#line 61
     sjt_dot767 = _parent;
 #line 78
-    sjt_math1158 = (sjt_dot767)->m10;
-#line 78
-    sjt_math1155 = sjt_math1157 * sjt_math1158;
+    sjt_math1157 = (sjt_dot767)->m01;
 #line 61
     sjt_dot768 = _parent;
 #line 78
-    sjt_math1156 = (sjt_dot768)->m22;
+    sjt_math1158 = (sjt_dot768)->m10;
+#line 78
+    sjt_math1155 = sjt_math1157 * sjt_math1158;
+#line 61
+    sjt_dot769 = _parent;
+#line 78
+    sjt_math1156 = (sjt_dot769)->m22;
 #line 78
     sjt_math1132 = sjt_math1155 * sjt_math1156;
 #line 78
     sjt_math1129 = sjt_math1131 - sjt_math1132;
 #line 61
-    sjt_dot769 = _parent;
-#line 78
-    sjt_math1161 = (sjt_dot769)->m00;
-#line 61
     sjt_dot770 = _parent;
 #line 78
-    sjt_math1162 = (sjt_dot770)->m11;
-#line 78
-    sjt_math1159 = sjt_math1161 * sjt_math1162;
+    sjt_math1161 = (sjt_dot770)->m00;
 #line 61
     sjt_dot771 = _parent;
 #line 78
-    sjt_math1160 = (sjt_dot771)->m22;
+    sjt_math1162 = (sjt_dot771)->m11;
+#line 78
+    sjt_math1159 = sjt_math1161 * sjt_math1162;
+#line 61
+    sjt_dot772 = _parent;
+#line 78
+    sjt_math1160 = (sjt_dot772)->m22;
 #line 78
     sjt_math1130 = sjt_math1159 * sjt_math1160;
 #line 78
@@ -13567,7 +13570,7 @@ void sjf_mat4_invert_heap(sjs_mat4* _parent, sjs_mat4_heap** _return) {
     sjs_mat4* sjt_dot1185;
     sjs_mat4* sjt_dot1186;
     sjs_mat4* sjt_dot1187;
-    sjs_mat4* sjt_dot900;
+    sjs_mat4* sjt_dot1188;
     sjs_mat4* sjt_dot901;
     sjs_mat4* sjt_dot902;
     sjs_mat4* sjt_dot903;
@@ -14218,1697 +14221,1697 @@ void sjf_mat4_invert_heap(sjs_mat4* _parent, sjs_mat4_heap** _return) {
     sjs_mat4 sjv_t;
 
 #line 61 "lib/ui/mat4.sj"
-    sjt_dot900 = _parent;
-#line 63
-    sjt_math1431 = (sjt_dot900)->m12;
-#line 61
     sjt_dot901 = _parent;
 #line 63
-    sjt_math1432 = (sjt_dot901)->m23;
-#line 63
-    sjt_math1429 = sjt_math1431 * sjt_math1432;
+    sjt_math1431 = (sjt_dot901)->m12;
 #line 61
     sjt_dot902 = _parent;
 #line 63
-    sjt_math1430 = (sjt_dot902)->m31;
+    sjt_math1432 = (sjt_dot902)->m23;
 #line 63
-    sjt_math1427 = sjt_math1429 * sjt_math1430;
+    sjt_math1429 = sjt_math1431 * sjt_math1432;
 #line 61
     sjt_dot903 = _parent;
 #line 63
-    sjt_math1435 = (sjt_dot903)->m13;
+    sjt_math1430 = (sjt_dot903)->m31;
+#line 63
+    sjt_math1427 = sjt_math1429 * sjt_math1430;
 #line 61
     sjt_dot904 = _parent;
 #line 63
-    sjt_math1436 = (sjt_dot904)->m22;
-#line 63
-    sjt_math1433 = sjt_math1435 * sjt_math1436;
+    sjt_math1435 = (sjt_dot904)->m13;
 #line 61
     sjt_dot905 = _parent;
 #line 63
-    sjt_math1434 = (sjt_dot905)->m31;
+    sjt_math1436 = (sjt_dot905)->m22;
+#line 63
+    sjt_math1433 = sjt_math1435 * sjt_math1436;
+#line 61
+    sjt_dot906 = _parent;
+#line 63
+    sjt_math1434 = (sjt_dot906)->m31;
 #line 63
     sjt_math1428 = sjt_math1433 * sjt_math1434;
 #line 63
     sjt_math1425 = sjt_math1427 - sjt_math1428;
 #line 61
-    sjt_dot906 = _parent;
-#line 63
-    sjt_math1439 = (sjt_dot906)->m13;
-#line 61
     sjt_dot907 = _parent;
 #line 63
-    sjt_math1440 = (sjt_dot907)->m21;
-#line 63
-    sjt_math1437 = sjt_math1439 * sjt_math1440;
+    sjt_math1439 = (sjt_dot907)->m13;
 #line 61
     sjt_dot908 = _parent;
 #line 63
-    sjt_math1438 = (sjt_dot908)->m32;
+    sjt_math1440 = (sjt_dot908)->m21;
+#line 63
+    sjt_math1437 = sjt_math1439 * sjt_math1440;
+#line 61
+    sjt_dot909 = _parent;
+#line 63
+    sjt_math1438 = (sjt_dot909)->m32;
 #line 63
     sjt_math1426 = sjt_math1437 * sjt_math1438;
 #line 63
     sjt_math1423 = sjt_math1425 + sjt_math1426;
 #line 61
-    sjt_dot909 = _parent;
-#line 63
-    sjt_math1443 = (sjt_dot909)->m11;
-#line 61
     sjt_dot910 = _parent;
 #line 63
-    sjt_math1444 = (sjt_dot910)->m23;
-#line 63
-    sjt_math1441 = sjt_math1443 * sjt_math1444;
+    sjt_math1443 = (sjt_dot910)->m11;
 #line 61
     sjt_dot911 = _parent;
 #line 63
-    sjt_math1442 = (sjt_dot911)->m32;
+    sjt_math1444 = (sjt_dot911)->m23;
+#line 63
+    sjt_math1441 = sjt_math1443 * sjt_math1444;
+#line 61
+    sjt_dot912 = _parent;
+#line 63
+    sjt_math1442 = (sjt_dot912)->m32;
 #line 63
     sjt_math1424 = sjt_math1441 * sjt_math1442;
 #line 63
     sjt_math1421 = sjt_math1423 - sjt_math1424;
 #line 61
-    sjt_dot912 = _parent;
-#line 63
-    sjt_math1447 = (sjt_dot912)->m12;
-#line 61
     sjt_dot913 = _parent;
 #line 63
-    sjt_math1448 = (sjt_dot913)->m21;
-#line 63
-    sjt_math1445 = sjt_math1447 * sjt_math1448;
+    sjt_math1447 = (sjt_dot913)->m12;
 #line 61
     sjt_dot914 = _parent;
 #line 63
-    sjt_math1446 = (sjt_dot914)->m33;
+    sjt_math1448 = (sjt_dot914)->m21;
+#line 63
+    sjt_math1445 = sjt_math1447 * sjt_math1448;
+#line 61
+    sjt_dot915 = _parent;
+#line 63
+    sjt_math1446 = (sjt_dot915)->m33;
 #line 63
     sjt_math1422 = sjt_math1445 * sjt_math1446;
 #line 63
     sjt_math1419 = sjt_math1421 - sjt_math1422;
 #line 61
-    sjt_dot915 = _parent;
-#line 63
-    sjt_math1451 = (sjt_dot915)->m11;
-#line 61
     sjt_dot916 = _parent;
 #line 63
-    sjt_math1452 = (sjt_dot916)->m22;
-#line 63
-    sjt_math1449 = sjt_math1451 * sjt_math1452;
+    sjt_math1451 = (sjt_dot916)->m11;
 #line 61
     sjt_dot917 = _parent;
 #line 63
-    sjt_math1450 = (sjt_dot917)->m33;
+    sjt_math1452 = (sjt_dot917)->m22;
+#line 63
+    sjt_math1449 = sjt_math1451 * sjt_math1452;
+#line 61
+    sjt_dot918 = _parent;
+#line 63
+    sjt_math1450 = (sjt_dot918)->m33;
 #line 63
     sjt_math1420 = sjt_math1449 * sjt_math1450;
 #line 63
     sjv_t.m00 = sjt_math1419 + sjt_math1420;
 #line 61
-    sjt_dot918 = _parent;
-#line 64
-    sjt_math1465 = (sjt_dot918)->m03;
-#line 61
     sjt_dot919 = _parent;
 #line 64
-    sjt_math1466 = (sjt_dot919)->m22;
-#line 64
-    sjt_math1463 = sjt_math1465 * sjt_math1466;
+    sjt_math1465 = (sjt_dot919)->m03;
 #line 61
     sjt_dot920 = _parent;
 #line 64
-    sjt_math1464 = (sjt_dot920)->m31;
+    sjt_math1466 = (sjt_dot920)->m22;
 #line 64
-    sjt_math1461 = sjt_math1463 * sjt_math1464;
+    sjt_math1463 = sjt_math1465 * sjt_math1466;
 #line 61
     sjt_dot921 = _parent;
 #line 64
-    sjt_math1469 = (sjt_dot921)->m02;
+    sjt_math1464 = (sjt_dot921)->m31;
+#line 64
+    sjt_math1461 = sjt_math1463 * sjt_math1464;
 #line 61
     sjt_dot922 = _parent;
 #line 64
-    sjt_math1470 = (sjt_dot922)->m23;
-#line 64
-    sjt_math1467 = sjt_math1469 * sjt_math1470;
+    sjt_math1469 = (sjt_dot922)->m02;
 #line 61
     sjt_dot923 = _parent;
 #line 64
-    sjt_math1468 = (sjt_dot923)->m31;
+    sjt_math1470 = (sjt_dot923)->m23;
+#line 64
+    sjt_math1467 = sjt_math1469 * sjt_math1470;
+#line 61
+    sjt_dot924 = _parent;
+#line 64
+    sjt_math1468 = (sjt_dot924)->m31;
 #line 64
     sjt_math1462 = sjt_math1467 * sjt_math1468;
 #line 64
     sjt_math1459 = sjt_math1461 - sjt_math1462;
 #line 61
-    sjt_dot924 = _parent;
-#line 64
-    sjt_math1473 = (sjt_dot924)->m03;
-#line 61
     sjt_dot925 = _parent;
 #line 64
-    sjt_math1474 = (sjt_dot925)->m21;
-#line 64
-    sjt_math1471 = sjt_math1473 * sjt_math1474;
+    sjt_math1473 = (sjt_dot925)->m03;
 #line 61
     sjt_dot926 = _parent;
 #line 64
-    sjt_math1472 = (sjt_dot926)->m32;
+    sjt_math1474 = (sjt_dot926)->m21;
+#line 64
+    sjt_math1471 = sjt_math1473 * sjt_math1474;
+#line 61
+    sjt_dot927 = _parent;
+#line 64
+    sjt_math1472 = (sjt_dot927)->m32;
 #line 64
     sjt_math1460 = sjt_math1471 * sjt_math1472;
 #line 64
     sjt_math1457 = sjt_math1459 - sjt_math1460;
 #line 61
-    sjt_dot927 = _parent;
-#line 64
-    sjt_math1477 = (sjt_dot927)->m01;
-#line 61
     sjt_dot928 = _parent;
 #line 64
-    sjt_math1478 = (sjt_dot928)->m23;
-#line 64
-    sjt_math1475 = sjt_math1477 * sjt_math1478;
+    sjt_math1477 = (sjt_dot928)->m01;
 #line 61
     sjt_dot929 = _parent;
 #line 64
-    sjt_math1476 = (sjt_dot929)->m32;
+    sjt_math1478 = (sjt_dot929)->m23;
+#line 64
+    sjt_math1475 = sjt_math1477 * sjt_math1478;
+#line 61
+    sjt_dot930 = _parent;
+#line 64
+    sjt_math1476 = (sjt_dot930)->m32;
 #line 64
     sjt_math1458 = sjt_math1475 * sjt_math1476;
 #line 64
     sjt_math1455 = sjt_math1457 + sjt_math1458;
 #line 61
-    sjt_dot930 = _parent;
-#line 64
-    sjt_math1481 = (sjt_dot930)->m02;
-#line 61
     sjt_dot931 = _parent;
 #line 64
-    sjt_math1482 = (sjt_dot931)->m21;
-#line 64
-    sjt_math1479 = sjt_math1481 * sjt_math1482;
+    sjt_math1481 = (sjt_dot931)->m02;
 #line 61
     sjt_dot932 = _parent;
 #line 64
-    sjt_math1480 = (sjt_dot932)->m33;
+    sjt_math1482 = (sjt_dot932)->m21;
+#line 64
+    sjt_math1479 = sjt_math1481 * sjt_math1482;
+#line 61
+    sjt_dot933 = _parent;
+#line 64
+    sjt_math1480 = (sjt_dot933)->m33;
 #line 64
     sjt_math1456 = sjt_math1479 * sjt_math1480;
 #line 64
     sjt_math1453 = sjt_math1455 + sjt_math1456;
 #line 61
-    sjt_dot933 = _parent;
-#line 64
-    sjt_math1485 = (sjt_dot933)->m01;
-#line 61
     sjt_dot934 = _parent;
 #line 64
-    sjt_math1486 = (sjt_dot934)->m22;
-#line 64
-    sjt_math1483 = sjt_math1485 * sjt_math1486;
+    sjt_math1485 = (sjt_dot934)->m01;
 #line 61
     sjt_dot935 = _parent;
 #line 64
-    sjt_math1484 = (sjt_dot935)->m33;
+    sjt_math1486 = (sjt_dot935)->m22;
+#line 64
+    sjt_math1483 = sjt_math1485 * sjt_math1486;
+#line 61
+    sjt_dot936 = _parent;
+#line 64
+    sjt_math1484 = (sjt_dot936)->m33;
 #line 64
     sjt_math1454 = sjt_math1483 * sjt_math1484;
 #line 64
     sjv_t.m01 = sjt_math1453 - sjt_math1454;
 #line 61
-    sjt_dot936 = _parent;
-#line 65
-    sjt_math1499 = (sjt_dot936)->m02;
-#line 61
     sjt_dot937 = _parent;
 #line 65
-    sjt_math1500 = (sjt_dot937)->m13;
-#line 65
-    sjt_math1497 = sjt_math1499 * sjt_math1500;
+    sjt_math1499 = (sjt_dot937)->m02;
 #line 61
     sjt_dot938 = _parent;
 #line 65
-    sjt_math1498 = (sjt_dot938)->m31;
+    sjt_math1500 = (sjt_dot938)->m13;
 #line 65
-    sjt_math1495 = sjt_math1497 * sjt_math1498;
+    sjt_math1497 = sjt_math1499 * sjt_math1500;
 #line 61
     sjt_dot939 = _parent;
 #line 65
-    sjt_math1503 = (sjt_dot939)->m03;
+    sjt_math1498 = (sjt_dot939)->m31;
+#line 65
+    sjt_math1495 = sjt_math1497 * sjt_math1498;
 #line 61
     sjt_dot940 = _parent;
 #line 65
-    sjt_math1504 = (sjt_dot940)->m12;
-#line 65
-    sjt_math1501 = sjt_math1503 * sjt_math1504;
+    sjt_math1503 = (sjt_dot940)->m03;
 #line 61
     sjt_dot941 = _parent;
 #line 65
-    sjt_math1502 = (sjt_dot941)->m31;
+    sjt_math1504 = (sjt_dot941)->m12;
+#line 65
+    sjt_math1501 = sjt_math1503 * sjt_math1504;
+#line 61
+    sjt_dot942 = _parent;
+#line 65
+    sjt_math1502 = (sjt_dot942)->m31;
 #line 65
     sjt_math1496 = sjt_math1501 * sjt_math1502;
 #line 65
     sjt_math1493 = sjt_math1495 - sjt_math1496;
 #line 61
-    sjt_dot942 = _parent;
-#line 65
-    sjt_math1507 = (sjt_dot942)->m03;
-#line 61
     sjt_dot943 = _parent;
 #line 65
-    sjt_math1508 = (sjt_dot943)->m11;
-#line 65
-    sjt_math1505 = sjt_math1507 * sjt_math1508;
+    sjt_math1507 = (sjt_dot943)->m03;
 #line 61
     sjt_dot944 = _parent;
 #line 65
-    sjt_math1506 = (sjt_dot944)->m32;
+    sjt_math1508 = (sjt_dot944)->m11;
+#line 65
+    sjt_math1505 = sjt_math1507 * sjt_math1508;
+#line 61
+    sjt_dot945 = _parent;
+#line 65
+    sjt_math1506 = (sjt_dot945)->m32;
 #line 65
     sjt_math1494 = sjt_math1505 * sjt_math1506;
 #line 65
     sjt_math1491 = sjt_math1493 + sjt_math1494;
 #line 61
-    sjt_dot945 = _parent;
-#line 65
-    sjt_math1511 = (sjt_dot945)->m01;
-#line 61
     sjt_dot946 = _parent;
 #line 65
-    sjt_math1512 = (sjt_dot946)->m13;
-#line 65
-    sjt_math1509 = sjt_math1511 * sjt_math1512;
+    sjt_math1511 = (sjt_dot946)->m01;
 #line 61
     sjt_dot947 = _parent;
 #line 65
-    sjt_math1510 = (sjt_dot947)->m32;
+    sjt_math1512 = (sjt_dot947)->m13;
+#line 65
+    sjt_math1509 = sjt_math1511 * sjt_math1512;
+#line 61
+    sjt_dot948 = _parent;
+#line 65
+    sjt_math1510 = (sjt_dot948)->m32;
 #line 65
     sjt_math1492 = sjt_math1509 * sjt_math1510;
 #line 65
     sjt_math1489 = sjt_math1491 - sjt_math1492;
 #line 61
-    sjt_dot948 = _parent;
-#line 65
-    sjt_math1515 = (sjt_dot948)->m02;
-#line 61
     sjt_dot949 = _parent;
 #line 65
-    sjt_math1516 = (sjt_dot949)->m11;
-#line 65
-    sjt_math1513 = sjt_math1515 * sjt_math1516;
+    sjt_math1515 = (sjt_dot949)->m02;
 #line 61
     sjt_dot950 = _parent;
 #line 65
-    sjt_math1514 = (sjt_dot950)->m33;
+    sjt_math1516 = (sjt_dot950)->m11;
+#line 65
+    sjt_math1513 = sjt_math1515 * sjt_math1516;
+#line 61
+    sjt_dot951 = _parent;
+#line 65
+    sjt_math1514 = (sjt_dot951)->m33;
 #line 65
     sjt_math1490 = sjt_math1513 * sjt_math1514;
 #line 65
     sjt_math1487 = sjt_math1489 - sjt_math1490;
 #line 61
-    sjt_dot951 = _parent;
-#line 65
-    sjt_math1519 = (sjt_dot951)->m01;
-#line 61
     sjt_dot952 = _parent;
 #line 65
-    sjt_math1520 = (sjt_dot952)->m12;
-#line 65
-    sjt_math1517 = sjt_math1519 * sjt_math1520;
+    sjt_math1519 = (sjt_dot952)->m01;
 #line 61
     sjt_dot953 = _parent;
 #line 65
-    sjt_math1518 = (sjt_dot953)->m33;
+    sjt_math1520 = (sjt_dot953)->m12;
+#line 65
+    sjt_math1517 = sjt_math1519 * sjt_math1520;
+#line 61
+    sjt_dot954 = _parent;
+#line 65
+    sjt_math1518 = (sjt_dot954)->m33;
 #line 65
     sjt_math1488 = sjt_math1517 * sjt_math1518;
 #line 65
     sjv_t.m02 = sjt_math1487 + sjt_math1488;
 #line 61
-    sjt_dot954 = _parent;
-#line 66
-    sjt_math1533 = (sjt_dot954)->m03;
-#line 61
     sjt_dot955 = _parent;
 #line 66
-    sjt_math1534 = (sjt_dot955)->m12;
-#line 66
-    sjt_math1531 = sjt_math1533 * sjt_math1534;
+    sjt_math1533 = (sjt_dot955)->m03;
 #line 61
     sjt_dot956 = _parent;
 #line 66
-    sjt_math1532 = (sjt_dot956)->m21;
+    sjt_math1534 = (sjt_dot956)->m12;
 #line 66
-    sjt_math1529 = sjt_math1531 * sjt_math1532;
+    sjt_math1531 = sjt_math1533 * sjt_math1534;
 #line 61
     sjt_dot957 = _parent;
 #line 66
-    sjt_math1537 = (sjt_dot957)->m02;
+    sjt_math1532 = (sjt_dot957)->m21;
+#line 66
+    sjt_math1529 = sjt_math1531 * sjt_math1532;
 #line 61
     sjt_dot958 = _parent;
 #line 66
-    sjt_math1538 = (sjt_dot958)->m13;
-#line 66
-    sjt_math1535 = sjt_math1537 * sjt_math1538;
+    sjt_math1537 = (sjt_dot958)->m02;
 #line 61
     sjt_dot959 = _parent;
 #line 66
-    sjt_math1536 = (sjt_dot959)->m21;
+    sjt_math1538 = (sjt_dot959)->m13;
+#line 66
+    sjt_math1535 = sjt_math1537 * sjt_math1538;
+#line 61
+    sjt_dot960 = _parent;
+#line 66
+    sjt_math1536 = (sjt_dot960)->m21;
 #line 66
     sjt_math1530 = sjt_math1535 * sjt_math1536;
 #line 66
     sjt_math1527 = sjt_math1529 - sjt_math1530;
 #line 61
-    sjt_dot960 = _parent;
-#line 66
-    sjt_math1541 = (sjt_dot960)->m03;
-#line 61
     sjt_dot961 = _parent;
 #line 66
-    sjt_math1542 = (sjt_dot961)->m11;
-#line 66
-    sjt_math1539 = sjt_math1541 * sjt_math1542;
+    sjt_math1541 = (sjt_dot961)->m03;
 #line 61
     sjt_dot962 = _parent;
 #line 66
-    sjt_math1540 = (sjt_dot962)->m22;
+    sjt_math1542 = (sjt_dot962)->m11;
+#line 66
+    sjt_math1539 = sjt_math1541 * sjt_math1542;
+#line 61
+    sjt_dot963 = _parent;
+#line 66
+    sjt_math1540 = (sjt_dot963)->m22;
 #line 66
     sjt_math1528 = sjt_math1539 * sjt_math1540;
 #line 66
     sjt_math1525 = sjt_math1527 - sjt_math1528;
 #line 61
-    sjt_dot963 = _parent;
-#line 66
-    sjt_math1545 = (sjt_dot963)->m01;
-#line 61
     sjt_dot964 = _parent;
 #line 66
-    sjt_math1546 = (sjt_dot964)->m13;
-#line 66
-    sjt_math1543 = sjt_math1545 * sjt_math1546;
+    sjt_math1545 = (sjt_dot964)->m01;
 #line 61
     sjt_dot965 = _parent;
 #line 66
-    sjt_math1544 = (sjt_dot965)->m22;
+    sjt_math1546 = (sjt_dot965)->m13;
+#line 66
+    sjt_math1543 = sjt_math1545 * sjt_math1546;
+#line 61
+    sjt_dot966 = _parent;
+#line 66
+    sjt_math1544 = (sjt_dot966)->m22;
 #line 66
     sjt_math1526 = sjt_math1543 * sjt_math1544;
 #line 66
     sjt_math1523 = sjt_math1525 + sjt_math1526;
 #line 61
-    sjt_dot966 = _parent;
-#line 66
-    sjt_math1549 = (sjt_dot966)->m02;
-#line 61
     sjt_dot967 = _parent;
 #line 66
-    sjt_math1550 = (sjt_dot967)->m11;
-#line 66
-    sjt_math1547 = sjt_math1549 * sjt_math1550;
+    sjt_math1549 = (sjt_dot967)->m02;
 #line 61
     sjt_dot968 = _parent;
 #line 66
-    sjt_math1548 = (sjt_dot968)->m23;
+    sjt_math1550 = (sjt_dot968)->m11;
+#line 66
+    sjt_math1547 = sjt_math1549 * sjt_math1550;
+#line 61
+    sjt_dot969 = _parent;
+#line 66
+    sjt_math1548 = (sjt_dot969)->m23;
 #line 66
     sjt_math1524 = sjt_math1547 * sjt_math1548;
 #line 66
     sjt_math1521 = sjt_math1523 + sjt_math1524;
 #line 61
-    sjt_dot969 = _parent;
-#line 66
-    sjt_math1553 = (sjt_dot969)->m01;
-#line 61
     sjt_dot970 = _parent;
 #line 66
-    sjt_math1554 = (sjt_dot970)->m12;
-#line 66
-    sjt_math1551 = sjt_math1553 * sjt_math1554;
+    sjt_math1553 = (sjt_dot970)->m01;
 #line 61
     sjt_dot971 = _parent;
 #line 66
-    sjt_math1552 = (sjt_dot971)->m23;
+    sjt_math1554 = (sjt_dot971)->m12;
+#line 66
+    sjt_math1551 = sjt_math1553 * sjt_math1554;
+#line 61
+    sjt_dot972 = _parent;
+#line 66
+    sjt_math1552 = (sjt_dot972)->m23;
 #line 66
     sjt_math1522 = sjt_math1551 * sjt_math1552;
 #line 66
     sjv_t.m03 = sjt_math1521 - sjt_math1522;
 #line 61
-    sjt_dot972 = _parent;
-#line 67
-    sjt_math1567 = (sjt_dot972)->m13;
-#line 61
     sjt_dot973 = _parent;
 #line 67
-    sjt_math1568 = (sjt_dot973)->m22;
-#line 67
-    sjt_math1565 = sjt_math1567 * sjt_math1568;
+    sjt_math1567 = (sjt_dot973)->m13;
 #line 61
     sjt_dot974 = _parent;
 #line 67
-    sjt_math1566 = (sjt_dot974)->m30;
+    sjt_math1568 = (sjt_dot974)->m22;
 #line 67
-    sjt_math1563 = sjt_math1565 * sjt_math1566;
+    sjt_math1565 = sjt_math1567 * sjt_math1568;
 #line 61
     sjt_dot975 = _parent;
 #line 67
-    sjt_math1571 = (sjt_dot975)->m12;
+    sjt_math1566 = (sjt_dot975)->m30;
+#line 67
+    sjt_math1563 = sjt_math1565 * sjt_math1566;
 #line 61
     sjt_dot976 = _parent;
 #line 67
-    sjt_math1572 = (sjt_dot976)->m23;
-#line 67
-    sjt_math1569 = sjt_math1571 * sjt_math1572;
+    sjt_math1571 = (sjt_dot976)->m12;
 #line 61
     sjt_dot977 = _parent;
 #line 67
-    sjt_math1570 = (sjt_dot977)->m30;
+    sjt_math1572 = (sjt_dot977)->m23;
+#line 67
+    sjt_math1569 = sjt_math1571 * sjt_math1572;
+#line 61
+    sjt_dot978 = _parent;
+#line 67
+    sjt_math1570 = (sjt_dot978)->m30;
 #line 67
     sjt_math1564 = sjt_math1569 * sjt_math1570;
 #line 67
     sjt_math1561 = sjt_math1563 - sjt_math1564;
 #line 61
-    sjt_dot978 = _parent;
-#line 67
-    sjt_math1575 = (sjt_dot978)->m13;
-#line 61
     sjt_dot979 = _parent;
 #line 67
-    sjt_math1576 = (sjt_dot979)->m20;
-#line 67
-    sjt_math1573 = sjt_math1575 * sjt_math1576;
+    sjt_math1575 = (sjt_dot979)->m13;
 #line 61
     sjt_dot980 = _parent;
 #line 67
-    sjt_math1574 = (sjt_dot980)->m32;
+    sjt_math1576 = (sjt_dot980)->m20;
+#line 67
+    sjt_math1573 = sjt_math1575 * sjt_math1576;
+#line 61
+    sjt_dot981 = _parent;
+#line 67
+    sjt_math1574 = (sjt_dot981)->m32;
 #line 67
     sjt_math1562 = sjt_math1573 * sjt_math1574;
 #line 67
     sjt_math1559 = sjt_math1561 - sjt_math1562;
 #line 61
-    sjt_dot981 = _parent;
-#line 67
-    sjt_math1579 = (sjt_dot981)->m10;
-#line 61
     sjt_dot982 = _parent;
 #line 67
-    sjt_math1580 = (sjt_dot982)->m23;
-#line 67
-    sjt_math1577 = sjt_math1579 * sjt_math1580;
+    sjt_math1579 = (sjt_dot982)->m10;
 #line 61
     sjt_dot983 = _parent;
 #line 67
-    sjt_math1578 = (sjt_dot983)->m32;
+    sjt_math1580 = (sjt_dot983)->m23;
+#line 67
+    sjt_math1577 = sjt_math1579 * sjt_math1580;
+#line 61
+    sjt_dot984 = _parent;
+#line 67
+    sjt_math1578 = (sjt_dot984)->m32;
 #line 67
     sjt_math1560 = sjt_math1577 * sjt_math1578;
 #line 67
     sjt_math1557 = sjt_math1559 + sjt_math1560;
 #line 61
-    sjt_dot984 = _parent;
-#line 67
-    sjt_math1583 = (sjt_dot984)->m12;
-#line 61
     sjt_dot985 = _parent;
 #line 67
-    sjt_math1584 = (sjt_dot985)->m20;
-#line 67
-    sjt_math1581 = sjt_math1583 * sjt_math1584;
+    sjt_math1583 = (sjt_dot985)->m12;
 #line 61
     sjt_dot986 = _parent;
 #line 67
-    sjt_math1582 = (sjt_dot986)->m33;
+    sjt_math1584 = (sjt_dot986)->m20;
+#line 67
+    sjt_math1581 = sjt_math1583 * sjt_math1584;
+#line 61
+    sjt_dot987 = _parent;
+#line 67
+    sjt_math1582 = (sjt_dot987)->m33;
 #line 67
     sjt_math1558 = sjt_math1581 * sjt_math1582;
 #line 67
     sjt_math1555 = sjt_math1557 + sjt_math1558;
 #line 61
-    sjt_dot987 = _parent;
-#line 67
-    sjt_math1587 = (sjt_dot987)->m10;
-#line 61
     sjt_dot988 = _parent;
 #line 67
-    sjt_math1588 = (sjt_dot988)->m22;
-#line 67
-    sjt_math1585 = sjt_math1587 * sjt_math1588;
+    sjt_math1587 = (sjt_dot988)->m10;
 #line 61
     sjt_dot989 = _parent;
 #line 67
-    sjt_math1586 = (sjt_dot989)->m33;
+    sjt_math1588 = (sjt_dot989)->m22;
+#line 67
+    sjt_math1585 = sjt_math1587 * sjt_math1588;
+#line 61
+    sjt_dot990 = _parent;
+#line 67
+    sjt_math1586 = (sjt_dot990)->m33;
 #line 67
     sjt_math1556 = sjt_math1585 * sjt_math1586;
 #line 67
     sjv_t.m10 = sjt_math1555 - sjt_math1556;
 #line 61
-    sjt_dot990 = _parent;
-#line 68
-    sjt_math1601 = (sjt_dot990)->m02;
-#line 61
     sjt_dot991 = _parent;
 #line 68
-    sjt_math1602 = (sjt_dot991)->m23;
-#line 68
-    sjt_math1599 = sjt_math1601 * sjt_math1602;
+    sjt_math1601 = (sjt_dot991)->m02;
 #line 61
     sjt_dot992 = _parent;
 #line 68
-    sjt_math1600 = (sjt_dot992)->m30;
+    sjt_math1602 = (sjt_dot992)->m23;
 #line 68
-    sjt_math1597 = sjt_math1599 * sjt_math1600;
+    sjt_math1599 = sjt_math1601 * sjt_math1602;
 #line 61
     sjt_dot993 = _parent;
 #line 68
-    sjt_math1605 = (sjt_dot993)->m03;
+    sjt_math1600 = (sjt_dot993)->m30;
+#line 68
+    sjt_math1597 = sjt_math1599 * sjt_math1600;
 #line 61
     sjt_dot994 = _parent;
 #line 68
-    sjt_math1606 = (sjt_dot994)->m22;
-#line 68
-    sjt_math1603 = sjt_math1605 * sjt_math1606;
+    sjt_math1605 = (sjt_dot994)->m03;
 #line 61
     sjt_dot995 = _parent;
 #line 68
-    sjt_math1604 = (sjt_dot995)->m30;
+    sjt_math1606 = (sjt_dot995)->m22;
+#line 68
+    sjt_math1603 = sjt_math1605 * sjt_math1606;
+#line 61
+    sjt_dot996 = _parent;
+#line 68
+    sjt_math1604 = (sjt_dot996)->m30;
 #line 68
     sjt_math1598 = sjt_math1603 * sjt_math1604;
 #line 68
     sjt_math1595 = sjt_math1597 - sjt_math1598;
 #line 61
-    sjt_dot996 = _parent;
-#line 68
-    sjt_math1609 = (sjt_dot996)->m03;
-#line 61
     sjt_dot997 = _parent;
 #line 68
-    sjt_math1610 = (sjt_dot997)->m20;
-#line 68
-    sjt_math1607 = sjt_math1609 * sjt_math1610;
+    sjt_math1609 = (sjt_dot997)->m03;
 #line 61
     sjt_dot998 = _parent;
 #line 68
-    sjt_math1608 = (sjt_dot998)->m32;
+    sjt_math1610 = (sjt_dot998)->m20;
+#line 68
+    sjt_math1607 = sjt_math1609 * sjt_math1610;
+#line 61
+    sjt_dot999 = _parent;
+#line 68
+    sjt_math1608 = (sjt_dot999)->m32;
 #line 68
     sjt_math1596 = sjt_math1607 * sjt_math1608;
 #line 68
     sjt_math1593 = sjt_math1595 + sjt_math1596;
 #line 61
-    sjt_dot999 = _parent;
-#line 68
-    sjt_math1613 = (sjt_dot999)->m00;
-#line 61
     sjt_dot1000 = _parent;
 #line 68
-    sjt_math1614 = (sjt_dot1000)->m23;
-#line 68
-    sjt_math1611 = sjt_math1613 * sjt_math1614;
+    sjt_math1613 = (sjt_dot1000)->m00;
 #line 61
     sjt_dot1001 = _parent;
 #line 68
-    sjt_math1612 = (sjt_dot1001)->m32;
+    sjt_math1614 = (sjt_dot1001)->m23;
+#line 68
+    sjt_math1611 = sjt_math1613 * sjt_math1614;
+#line 61
+    sjt_dot1002 = _parent;
+#line 68
+    sjt_math1612 = (sjt_dot1002)->m32;
 #line 68
     sjt_math1594 = sjt_math1611 * sjt_math1612;
 #line 68
     sjt_math1591 = sjt_math1593 - sjt_math1594;
 #line 61
-    sjt_dot1002 = _parent;
-#line 68
-    sjt_math1617 = (sjt_dot1002)->m02;
-#line 61
     sjt_dot1003 = _parent;
 #line 68
-    sjt_math1618 = (sjt_dot1003)->m20;
-#line 68
-    sjt_math1615 = sjt_math1617 * sjt_math1618;
+    sjt_math1617 = (sjt_dot1003)->m02;
 #line 61
     sjt_dot1004 = _parent;
 #line 68
-    sjt_math1616 = (sjt_dot1004)->m33;
+    sjt_math1618 = (sjt_dot1004)->m20;
+#line 68
+    sjt_math1615 = sjt_math1617 * sjt_math1618;
+#line 61
+    sjt_dot1005 = _parent;
+#line 68
+    sjt_math1616 = (sjt_dot1005)->m33;
 #line 68
     sjt_math1592 = sjt_math1615 * sjt_math1616;
 #line 68
     sjt_math1589 = sjt_math1591 - sjt_math1592;
 #line 61
-    sjt_dot1005 = _parent;
-#line 68
-    sjt_math1621 = (sjt_dot1005)->m00;
-#line 61
     sjt_dot1006 = _parent;
 #line 68
-    sjt_math1622 = (sjt_dot1006)->m22;
-#line 68
-    sjt_math1619 = sjt_math1621 * sjt_math1622;
+    sjt_math1621 = (sjt_dot1006)->m00;
 #line 61
     sjt_dot1007 = _parent;
 #line 68
-    sjt_math1620 = (sjt_dot1007)->m33;
+    sjt_math1622 = (sjt_dot1007)->m22;
+#line 68
+    sjt_math1619 = sjt_math1621 * sjt_math1622;
+#line 61
+    sjt_dot1008 = _parent;
+#line 68
+    sjt_math1620 = (sjt_dot1008)->m33;
 #line 68
     sjt_math1590 = sjt_math1619 * sjt_math1620;
 #line 68
     sjv_t.m11 = sjt_math1589 + sjt_math1590;
 #line 61
-    sjt_dot1008 = _parent;
-#line 69
-    sjt_math1635 = (sjt_dot1008)->m03;
-#line 61
     sjt_dot1009 = _parent;
 #line 69
-    sjt_math1636 = (sjt_dot1009)->m12;
-#line 69
-    sjt_math1633 = sjt_math1635 * sjt_math1636;
+    sjt_math1635 = (sjt_dot1009)->m03;
 #line 61
     sjt_dot1010 = _parent;
 #line 69
-    sjt_math1634 = (sjt_dot1010)->m30;
+    sjt_math1636 = (sjt_dot1010)->m12;
 #line 69
-    sjt_math1631 = sjt_math1633 * sjt_math1634;
+    sjt_math1633 = sjt_math1635 * sjt_math1636;
 #line 61
     sjt_dot1011 = _parent;
 #line 69
-    sjt_math1639 = (sjt_dot1011)->m02;
+    sjt_math1634 = (sjt_dot1011)->m30;
+#line 69
+    sjt_math1631 = sjt_math1633 * sjt_math1634;
 #line 61
     sjt_dot1012 = _parent;
 #line 69
-    sjt_math1640 = (sjt_dot1012)->m13;
-#line 69
-    sjt_math1637 = sjt_math1639 * sjt_math1640;
+    sjt_math1639 = (sjt_dot1012)->m02;
 #line 61
     sjt_dot1013 = _parent;
 #line 69
-    sjt_math1638 = (sjt_dot1013)->m30;
+    sjt_math1640 = (sjt_dot1013)->m13;
+#line 69
+    sjt_math1637 = sjt_math1639 * sjt_math1640;
+#line 61
+    sjt_dot1014 = _parent;
+#line 69
+    sjt_math1638 = (sjt_dot1014)->m30;
 #line 69
     sjt_math1632 = sjt_math1637 * sjt_math1638;
 #line 69
     sjt_math1629 = sjt_math1631 - sjt_math1632;
 #line 61
-    sjt_dot1014 = _parent;
-#line 69
-    sjt_math1643 = (sjt_dot1014)->m03;
-#line 61
     sjt_dot1015 = _parent;
 #line 69
-    sjt_math1644 = (sjt_dot1015)->m10;
-#line 69
-    sjt_math1641 = sjt_math1643 * sjt_math1644;
+    sjt_math1643 = (sjt_dot1015)->m03;
 #line 61
     sjt_dot1016 = _parent;
 #line 69
-    sjt_math1642 = (sjt_dot1016)->m32;
+    sjt_math1644 = (sjt_dot1016)->m10;
+#line 69
+    sjt_math1641 = sjt_math1643 * sjt_math1644;
+#line 61
+    sjt_dot1017 = _parent;
+#line 69
+    sjt_math1642 = (sjt_dot1017)->m32;
 #line 69
     sjt_math1630 = sjt_math1641 * sjt_math1642;
 #line 69
     sjt_math1627 = sjt_math1629 - sjt_math1630;
 #line 61
-    sjt_dot1017 = _parent;
-#line 69
-    sjt_math1647 = (sjt_dot1017)->m00;
-#line 61
     sjt_dot1018 = _parent;
 #line 69
-    sjt_math1648 = (sjt_dot1018)->m13;
-#line 69
-    sjt_math1645 = sjt_math1647 * sjt_math1648;
+    sjt_math1647 = (sjt_dot1018)->m00;
 #line 61
     sjt_dot1019 = _parent;
 #line 69
-    sjt_math1646 = (sjt_dot1019)->m32;
+    sjt_math1648 = (sjt_dot1019)->m13;
+#line 69
+    sjt_math1645 = sjt_math1647 * sjt_math1648;
+#line 61
+    sjt_dot1020 = _parent;
+#line 69
+    sjt_math1646 = (sjt_dot1020)->m32;
 #line 69
     sjt_math1628 = sjt_math1645 * sjt_math1646;
 #line 69
     sjt_math1625 = sjt_math1627 + sjt_math1628;
 #line 61
-    sjt_dot1020 = _parent;
-#line 69
-    sjt_math1651 = (sjt_dot1020)->m02;
-#line 61
     sjt_dot1021 = _parent;
 #line 69
-    sjt_math1652 = (sjt_dot1021)->m10;
-#line 69
-    sjt_math1649 = sjt_math1651 * sjt_math1652;
+    sjt_math1651 = (sjt_dot1021)->m02;
 #line 61
     sjt_dot1022 = _parent;
 #line 69
-    sjt_math1650 = (sjt_dot1022)->m33;
+    sjt_math1652 = (sjt_dot1022)->m10;
+#line 69
+    sjt_math1649 = sjt_math1651 * sjt_math1652;
+#line 61
+    sjt_dot1023 = _parent;
+#line 69
+    sjt_math1650 = (sjt_dot1023)->m33;
 #line 69
     sjt_math1626 = sjt_math1649 * sjt_math1650;
 #line 69
     sjt_math1623 = sjt_math1625 + sjt_math1626;
 #line 61
-    sjt_dot1023 = _parent;
-#line 69
-    sjt_math1655 = (sjt_dot1023)->m00;
-#line 61
     sjt_dot1024 = _parent;
 #line 69
-    sjt_math1656 = (sjt_dot1024)->m12;
-#line 69
-    sjt_math1653 = sjt_math1655 * sjt_math1656;
+    sjt_math1655 = (sjt_dot1024)->m00;
 #line 61
     sjt_dot1025 = _parent;
 #line 69
-    sjt_math1654 = (sjt_dot1025)->m33;
+    sjt_math1656 = (sjt_dot1025)->m12;
+#line 69
+    sjt_math1653 = sjt_math1655 * sjt_math1656;
+#line 61
+    sjt_dot1026 = _parent;
+#line 69
+    sjt_math1654 = (sjt_dot1026)->m33;
 #line 69
     sjt_math1624 = sjt_math1653 * sjt_math1654;
 #line 69
     sjv_t.m12 = sjt_math1623 - sjt_math1624;
 #line 61
-    sjt_dot1026 = _parent;
-#line 70
-    sjt_math1669 = (sjt_dot1026)->m02;
-#line 61
     sjt_dot1027 = _parent;
 #line 70
-    sjt_math1670 = (sjt_dot1027)->m13;
-#line 70
-    sjt_math1667 = sjt_math1669 * sjt_math1670;
+    sjt_math1669 = (sjt_dot1027)->m02;
 #line 61
     sjt_dot1028 = _parent;
 #line 70
-    sjt_math1668 = (sjt_dot1028)->m20;
+    sjt_math1670 = (sjt_dot1028)->m13;
 #line 70
-    sjt_math1665 = sjt_math1667 * sjt_math1668;
+    sjt_math1667 = sjt_math1669 * sjt_math1670;
 #line 61
     sjt_dot1029 = _parent;
 #line 70
-    sjt_math1673 = (sjt_dot1029)->m03;
+    sjt_math1668 = (sjt_dot1029)->m20;
+#line 70
+    sjt_math1665 = sjt_math1667 * sjt_math1668;
 #line 61
     sjt_dot1030 = _parent;
 #line 70
-    sjt_math1674 = (sjt_dot1030)->m12;
-#line 70
-    sjt_math1671 = sjt_math1673 * sjt_math1674;
+    sjt_math1673 = (sjt_dot1030)->m03;
 #line 61
     sjt_dot1031 = _parent;
 #line 70
-    sjt_math1672 = (sjt_dot1031)->m20;
+    sjt_math1674 = (sjt_dot1031)->m12;
+#line 70
+    sjt_math1671 = sjt_math1673 * sjt_math1674;
+#line 61
+    sjt_dot1032 = _parent;
+#line 70
+    sjt_math1672 = (sjt_dot1032)->m20;
 #line 70
     sjt_math1666 = sjt_math1671 * sjt_math1672;
 #line 70
     sjt_math1663 = sjt_math1665 - sjt_math1666;
 #line 61
-    sjt_dot1032 = _parent;
-#line 70
-    sjt_math1677 = (sjt_dot1032)->m03;
-#line 61
     sjt_dot1033 = _parent;
 #line 70
-    sjt_math1678 = (sjt_dot1033)->m10;
-#line 70
-    sjt_math1675 = sjt_math1677 * sjt_math1678;
+    sjt_math1677 = (sjt_dot1033)->m03;
 #line 61
     sjt_dot1034 = _parent;
 #line 70
-    sjt_math1676 = (sjt_dot1034)->m22;
+    sjt_math1678 = (sjt_dot1034)->m10;
+#line 70
+    sjt_math1675 = sjt_math1677 * sjt_math1678;
+#line 61
+    sjt_dot1035 = _parent;
+#line 70
+    sjt_math1676 = (sjt_dot1035)->m22;
 #line 70
     sjt_math1664 = sjt_math1675 * sjt_math1676;
 #line 70
     sjt_math1661 = sjt_math1663 + sjt_math1664;
 #line 61
-    sjt_dot1035 = _parent;
-#line 70
-    sjt_math1681 = (sjt_dot1035)->m00;
-#line 61
     sjt_dot1036 = _parent;
 #line 70
-    sjt_math1682 = (sjt_dot1036)->m13;
-#line 70
-    sjt_math1679 = sjt_math1681 * sjt_math1682;
+    sjt_math1681 = (sjt_dot1036)->m00;
 #line 61
     sjt_dot1037 = _parent;
 #line 70
-    sjt_math1680 = (sjt_dot1037)->m22;
+    sjt_math1682 = (sjt_dot1037)->m13;
+#line 70
+    sjt_math1679 = sjt_math1681 * sjt_math1682;
+#line 61
+    sjt_dot1038 = _parent;
+#line 70
+    sjt_math1680 = (sjt_dot1038)->m22;
 #line 70
     sjt_math1662 = sjt_math1679 * sjt_math1680;
 #line 70
     sjt_math1659 = sjt_math1661 - sjt_math1662;
 #line 61
-    sjt_dot1038 = _parent;
-#line 70
-    sjt_math1685 = (sjt_dot1038)->m02;
-#line 61
     sjt_dot1039 = _parent;
 #line 70
-    sjt_math1686 = (sjt_dot1039)->m10;
-#line 70
-    sjt_math1683 = sjt_math1685 * sjt_math1686;
+    sjt_math1685 = (sjt_dot1039)->m02;
 #line 61
     sjt_dot1040 = _parent;
 #line 70
-    sjt_math1684 = (sjt_dot1040)->m23;
+    sjt_math1686 = (sjt_dot1040)->m10;
+#line 70
+    sjt_math1683 = sjt_math1685 * sjt_math1686;
+#line 61
+    sjt_dot1041 = _parent;
+#line 70
+    sjt_math1684 = (sjt_dot1041)->m23;
 #line 70
     sjt_math1660 = sjt_math1683 * sjt_math1684;
 #line 70
     sjt_math1657 = sjt_math1659 - sjt_math1660;
 #line 61
-    sjt_dot1041 = _parent;
-#line 70
-    sjt_math1689 = (sjt_dot1041)->m00;
-#line 61
     sjt_dot1042 = _parent;
 #line 70
-    sjt_math1690 = (sjt_dot1042)->m12;
-#line 70
-    sjt_math1687 = sjt_math1689 * sjt_math1690;
+    sjt_math1689 = (sjt_dot1042)->m00;
 #line 61
     sjt_dot1043 = _parent;
 #line 70
-    sjt_math1688 = (sjt_dot1043)->m23;
+    sjt_math1690 = (sjt_dot1043)->m12;
+#line 70
+    sjt_math1687 = sjt_math1689 * sjt_math1690;
+#line 61
+    sjt_dot1044 = _parent;
+#line 70
+    sjt_math1688 = (sjt_dot1044)->m23;
 #line 70
     sjt_math1658 = sjt_math1687 * sjt_math1688;
 #line 70
     sjv_t.m13 = sjt_math1657 + sjt_math1658;
 #line 61
-    sjt_dot1044 = _parent;
-#line 71
-    sjt_math1703 = (sjt_dot1044)->m11;
-#line 61
     sjt_dot1045 = _parent;
 #line 71
-    sjt_math1704 = (sjt_dot1045)->m23;
-#line 71
-    sjt_math1701 = sjt_math1703 * sjt_math1704;
+    sjt_math1703 = (sjt_dot1045)->m11;
 #line 61
     sjt_dot1046 = _parent;
 #line 71
-    sjt_math1702 = (sjt_dot1046)->m30;
+    sjt_math1704 = (sjt_dot1046)->m23;
 #line 71
-    sjt_math1699 = sjt_math1701 * sjt_math1702;
+    sjt_math1701 = sjt_math1703 * sjt_math1704;
 #line 61
     sjt_dot1047 = _parent;
 #line 71
-    sjt_math1707 = (sjt_dot1047)->m13;
+    sjt_math1702 = (sjt_dot1047)->m30;
+#line 71
+    sjt_math1699 = sjt_math1701 * sjt_math1702;
 #line 61
     sjt_dot1048 = _parent;
 #line 71
-    sjt_math1708 = (sjt_dot1048)->m21;
-#line 71
-    sjt_math1705 = sjt_math1707 * sjt_math1708;
+    sjt_math1707 = (sjt_dot1048)->m13;
 #line 61
     sjt_dot1049 = _parent;
 #line 71
-    sjt_math1706 = (sjt_dot1049)->m30;
+    sjt_math1708 = (sjt_dot1049)->m21;
+#line 71
+    sjt_math1705 = sjt_math1707 * sjt_math1708;
+#line 61
+    sjt_dot1050 = _parent;
+#line 71
+    sjt_math1706 = (sjt_dot1050)->m30;
 #line 71
     sjt_math1700 = sjt_math1705 * sjt_math1706;
 #line 71
     sjt_math1697 = sjt_math1699 - sjt_math1700;
 #line 61
-    sjt_dot1050 = _parent;
-#line 71
-    sjt_math1711 = (sjt_dot1050)->m13;
-#line 61
     sjt_dot1051 = _parent;
 #line 71
-    sjt_math1712 = (sjt_dot1051)->m20;
-#line 71
-    sjt_math1709 = sjt_math1711 * sjt_math1712;
+    sjt_math1711 = (sjt_dot1051)->m13;
 #line 61
     sjt_dot1052 = _parent;
 #line 71
-    sjt_math1710 = (sjt_dot1052)->m31;
+    sjt_math1712 = (sjt_dot1052)->m20;
+#line 71
+    sjt_math1709 = sjt_math1711 * sjt_math1712;
+#line 61
+    sjt_dot1053 = _parent;
+#line 71
+    sjt_math1710 = (sjt_dot1053)->m31;
 #line 71
     sjt_math1698 = sjt_math1709 * sjt_math1710;
 #line 71
     sjt_math1695 = sjt_math1697 + sjt_math1698;
 #line 61
-    sjt_dot1053 = _parent;
-#line 71
-    sjt_math1715 = (sjt_dot1053)->m10;
-#line 61
     sjt_dot1054 = _parent;
 #line 71
-    sjt_math1716 = (sjt_dot1054)->m23;
-#line 71
-    sjt_math1713 = sjt_math1715 * sjt_math1716;
+    sjt_math1715 = (sjt_dot1054)->m10;
 #line 61
     sjt_dot1055 = _parent;
 #line 71
-    sjt_math1714 = (sjt_dot1055)->m31;
+    sjt_math1716 = (sjt_dot1055)->m23;
+#line 71
+    sjt_math1713 = sjt_math1715 * sjt_math1716;
+#line 61
+    sjt_dot1056 = _parent;
+#line 71
+    sjt_math1714 = (sjt_dot1056)->m31;
 #line 71
     sjt_math1696 = sjt_math1713 * sjt_math1714;
 #line 71
     sjt_math1693 = sjt_math1695 - sjt_math1696;
 #line 61
-    sjt_dot1056 = _parent;
-#line 71
-    sjt_math1719 = (sjt_dot1056)->m11;
-#line 61
     sjt_dot1057 = _parent;
 #line 71
-    sjt_math1720 = (sjt_dot1057)->m20;
-#line 71
-    sjt_math1717 = sjt_math1719 * sjt_math1720;
+    sjt_math1719 = (sjt_dot1057)->m11;
 #line 61
     sjt_dot1058 = _parent;
 #line 71
-    sjt_math1718 = (sjt_dot1058)->m33;
+    sjt_math1720 = (sjt_dot1058)->m20;
+#line 71
+    sjt_math1717 = sjt_math1719 * sjt_math1720;
+#line 61
+    sjt_dot1059 = _parent;
+#line 71
+    sjt_math1718 = (sjt_dot1059)->m33;
 #line 71
     sjt_math1694 = sjt_math1717 * sjt_math1718;
 #line 71
     sjt_math1691 = sjt_math1693 - sjt_math1694;
 #line 61
-    sjt_dot1059 = _parent;
-#line 71
-    sjt_math1723 = (sjt_dot1059)->m10;
-#line 61
     sjt_dot1060 = _parent;
 #line 71
-    sjt_math1724 = (sjt_dot1060)->m21;
-#line 71
-    sjt_math1721 = sjt_math1723 * sjt_math1724;
+    sjt_math1723 = (sjt_dot1060)->m10;
 #line 61
     sjt_dot1061 = _parent;
 #line 71
-    sjt_math1722 = (sjt_dot1061)->m33;
+    sjt_math1724 = (sjt_dot1061)->m21;
+#line 71
+    sjt_math1721 = sjt_math1723 * sjt_math1724;
+#line 61
+    sjt_dot1062 = _parent;
+#line 71
+    sjt_math1722 = (sjt_dot1062)->m33;
 #line 71
     sjt_math1692 = sjt_math1721 * sjt_math1722;
 #line 71
     sjv_t.m20 = sjt_math1691 + sjt_math1692;
 #line 61
-    sjt_dot1062 = _parent;
-#line 72
-    sjt_math1737 = (sjt_dot1062)->m03;
-#line 61
     sjt_dot1063 = _parent;
 #line 72
-    sjt_math1738 = (sjt_dot1063)->m21;
-#line 72
-    sjt_math1735 = sjt_math1737 * sjt_math1738;
+    sjt_math1737 = (sjt_dot1063)->m03;
 #line 61
     sjt_dot1064 = _parent;
 #line 72
-    sjt_math1736 = (sjt_dot1064)->m30;
+    sjt_math1738 = (sjt_dot1064)->m21;
 #line 72
-    sjt_math1733 = sjt_math1735 * sjt_math1736;
+    sjt_math1735 = sjt_math1737 * sjt_math1738;
 #line 61
     sjt_dot1065 = _parent;
 #line 72
-    sjt_math1741 = (sjt_dot1065)->m01;
+    sjt_math1736 = (sjt_dot1065)->m30;
+#line 72
+    sjt_math1733 = sjt_math1735 * sjt_math1736;
 #line 61
     sjt_dot1066 = _parent;
 #line 72
-    sjt_math1742 = (sjt_dot1066)->m23;
-#line 72
-    sjt_math1739 = sjt_math1741 * sjt_math1742;
+    sjt_math1741 = (sjt_dot1066)->m01;
 #line 61
     sjt_dot1067 = _parent;
 #line 72
-    sjt_math1740 = (sjt_dot1067)->m30;
+    sjt_math1742 = (sjt_dot1067)->m23;
+#line 72
+    sjt_math1739 = sjt_math1741 * sjt_math1742;
+#line 61
+    sjt_dot1068 = _parent;
+#line 72
+    sjt_math1740 = (sjt_dot1068)->m30;
 #line 72
     sjt_math1734 = sjt_math1739 * sjt_math1740;
 #line 72
     sjt_math1731 = sjt_math1733 - sjt_math1734;
 #line 61
-    sjt_dot1068 = _parent;
-#line 72
-    sjt_math1745 = (sjt_dot1068)->m03;
-#line 61
     sjt_dot1069 = _parent;
 #line 72
-    sjt_math1746 = (sjt_dot1069)->m20;
-#line 72
-    sjt_math1743 = sjt_math1745 * sjt_math1746;
+    sjt_math1745 = (sjt_dot1069)->m03;
 #line 61
     sjt_dot1070 = _parent;
 #line 72
-    sjt_math1744 = (sjt_dot1070)->m31;
+    sjt_math1746 = (sjt_dot1070)->m20;
+#line 72
+    sjt_math1743 = sjt_math1745 * sjt_math1746;
+#line 61
+    sjt_dot1071 = _parent;
+#line 72
+    sjt_math1744 = (sjt_dot1071)->m31;
 #line 72
     sjt_math1732 = sjt_math1743 * sjt_math1744;
 #line 72
     sjt_math1729 = sjt_math1731 - sjt_math1732;
 #line 61
-    sjt_dot1071 = _parent;
-#line 72
-    sjt_math1749 = (sjt_dot1071)->m00;
-#line 61
     sjt_dot1072 = _parent;
 #line 72
-    sjt_math1750 = (sjt_dot1072)->m23;
-#line 72
-    sjt_math1747 = sjt_math1749 * sjt_math1750;
+    sjt_math1749 = (sjt_dot1072)->m00;
 #line 61
     sjt_dot1073 = _parent;
 #line 72
-    sjt_math1748 = (sjt_dot1073)->m31;
+    sjt_math1750 = (sjt_dot1073)->m23;
+#line 72
+    sjt_math1747 = sjt_math1749 * sjt_math1750;
+#line 61
+    sjt_dot1074 = _parent;
+#line 72
+    sjt_math1748 = (sjt_dot1074)->m31;
 #line 72
     sjt_math1730 = sjt_math1747 * sjt_math1748;
 #line 72
     sjt_math1727 = sjt_math1729 + sjt_math1730;
 #line 61
-    sjt_dot1074 = _parent;
-#line 72
-    sjt_math1753 = (sjt_dot1074)->m01;
-#line 61
     sjt_dot1075 = _parent;
 #line 72
-    sjt_math1754 = (sjt_dot1075)->m20;
-#line 72
-    sjt_math1751 = sjt_math1753 * sjt_math1754;
+    sjt_math1753 = (sjt_dot1075)->m01;
 #line 61
     sjt_dot1076 = _parent;
 #line 72
-    sjt_math1752 = (sjt_dot1076)->m33;
+    sjt_math1754 = (sjt_dot1076)->m20;
+#line 72
+    sjt_math1751 = sjt_math1753 * sjt_math1754;
+#line 61
+    sjt_dot1077 = _parent;
+#line 72
+    sjt_math1752 = (sjt_dot1077)->m33;
 #line 72
     sjt_math1728 = sjt_math1751 * sjt_math1752;
 #line 72
     sjt_math1725 = sjt_math1727 + sjt_math1728;
 #line 61
-    sjt_dot1077 = _parent;
-#line 72
-    sjt_math1757 = (sjt_dot1077)->m00;
-#line 61
     sjt_dot1078 = _parent;
 #line 72
-    sjt_math1758 = (sjt_dot1078)->m21;
-#line 72
-    sjt_math1755 = sjt_math1757 * sjt_math1758;
+    sjt_math1757 = (sjt_dot1078)->m00;
 #line 61
     sjt_dot1079 = _parent;
 #line 72
-    sjt_math1756 = (sjt_dot1079)->m33;
+    sjt_math1758 = (sjt_dot1079)->m21;
+#line 72
+    sjt_math1755 = sjt_math1757 * sjt_math1758;
+#line 61
+    sjt_dot1080 = _parent;
+#line 72
+    sjt_math1756 = (sjt_dot1080)->m33;
 #line 72
     sjt_math1726 = sjt_math1755 * sjt_math1756;
 #line 72
     sjv_t.m21 = sjt_math1725 - sjt_math1726;
 #line 61
-    sjt_dot1080 = _parent;
-#line 73
-    sjt_math1771 = (sjt_dot1080)->m01;
-#line 61
     sjt_dot1081 = _parent;
 #line 73
-    sjt_math1772 = (sjt_dot1081)->m13;
-#line 73
-    sjt_math1769 = sjt_math1771 * sjt_math1772;
+    sjt_math1771 = (sjt_dot1081)->m01;
 #line 61
     sjt_dot1082 = _parent;
 #line 73
-    sjt_math1770 = (sjt_dot1082)->m30;
+    sjt_math1772 = (sjt_dot1082)->m13;
 #line 73
-    sjt_math1767 = sjt_math1769 * sjt_math1770;
+    sjt_math1769 = sjt_math1771 * sjt_math1772;
 #line 61
     sjt_dot1083 = _parent;
 #line 73
-    sjt_math1775 = (sjt_dot1083)->m03;
+    sjt_math1770 = (sjt_dot1083)->m30;
+#line 73
+    sjt_math1767 = sjt_math1769 * sjt_math1770;
 #line 61
     sjt_dot1084 = _parent;
 #line 73
-    sjt_math1776 = (sjt_dot1084)->m11;
-#line 73
-    sjt_math1773 = sjt_math1775 * sjt_math1776;
+    sjt_math1775 = (sjt_dot1084)->m03;
 #line 61
     sjt_dot1085 = _parent;
 #line 73
-    sjt_math1774 = (sjt_dot1085)->m30;
+    sjt_math1776 = (sjt_dot1085)->m11;
+#line 73
+    sjt_math1773 = sjt_math1775 * sjt_math1776;
+#line 61
+    sjt_dot1086 = _parent;
+#line 73
+    sjt_math1774 = (sjt_dot1086)->m30;
 #line 73
     sjt_math1768 = sjt_math1773 * sjt_math1774;
 #line 73
     sjt_math1765 = sjt_math1767 - sjt_math1768;
 #line 61
-    sjt_dot1086 = _parent;
-#line 73
-    sjt_math1779 = (sjt_dot1086)->m03;
-#line 61
     sjt_dot1087 = _parent;
 #line 73
-    sjt_math1780 = (sjt_dot1087)->m10;
-#line 73
-    sjt_math1777 = sjt_math1779 * sjt_math1780;
+    sjt_math1779 = (sjt_dot1087)->m03;
 #line 61
     sjt_dot1088 = _parent;
 #line 73
-    sjt_math1778 = (sjt_dot1088)->m31;
+    sjt_math1780 = (sjt_dot1088)->m10;
+#line 73
+    sjt_math1777 = sjt_math1779 * sjt_math1780;
+#line 61
+    sjt_dot1089 = _parent;
+#line 73
+    sjt_math1778 = (sjt_dot1089)->m31;
 #line 73
     sjt_math1766 = sjt_math1777 * sjt_math1778;
 #line 73
     sjt_math1763 = sjt_math1765 + sjt_math1766;
 #line 61
-    sjt_dot1089 = _parent;
-#line 73
-    sjt_math1783 = (sjt_dot1089)->m00;
-#line 61
     sjt_dot1090 = _parent;
 #line 73
-    sjt_math1784 = (sjt_dot1090)->m13;
-#line 73
-    sjt_math1781 = sjt_math1783 * sjt_math1784;
+    sjt_math1783 = (sjt_dot1090)->m00;
 #line 61
     sjt_dot1091 = _parent;
 #line 73
-    sjt_math1782 = (sjt_dot1091)->m31;
+    sjt_math1784 = (sjt_dot1091)->m13;
+#line 73
+    sjt_math1781 = sjt_math1783 * sjt_math1784;
+#line 61
+    sjt_dot1092 = _parent;
+#line 73
+    sjt_math1782 = (sjt_dot1092)->m31;
 #line 73
     sjt_math1764 = sjt_math1781 * sjt_math1782;
 #line 73
     sjt_math1761 = sjt_math1763 - sjt_math1764;
 #line 61
-    sjt_dot1092 = _parent;
-#line 73
-    sjt_math1787 = (sjt_dot1092)->m01;
-#line 61
     sjt_dot1093 = _parent;
 #line 73
-    sjt_math1788 = (sjt_dot1093)->m10;
-#line 73
-    sjt_math1785 = sjt_math1787 * sjt_math1788;
+    sjt_math1787 = (sjt_dot1093)->m01;
 #line 61
     sjt_dot1094 = _parent;
 #line 73
-    sjt_math1786 = (sjt_dot1094)->m33;
+    sjt_math1788 = (sjt_dot1094)->m10;
+#line 73
+    sjt_math1785 = sjt_math1787 * sjt_math1788;
+#line 61
+    sjt_dot1095 = _parent;
+#line 73
+    sjt_math1786 = (sjt_dot1095)->m33;
 #line 73
     sjt_math1762 = sjt_math1785 * sjt_math1786;
 #line 73
     sjt_math1759 = sjt_math1761 - sjt_math1762;
 #line 61
-    sjt_dot1095 = _parent;
-#line 73
-    sjt_math1791 = (sjt_dot1095)->m00;
-#line 61
     sjt_dot1096 = _parent;
 #line 73
-    sjt_math1792 = (sjt_dot1096)->m11;
-#line 73
-    sjt_math1789 = sjt_math1791 * sjt_math1792;
+    sjt_math1791 = (sjt_dot1096)->m00;
 #line 61
     sjt_dot1097 = _parent;
 #line 73
-    sjt_math1790 = (sjt_dot1097)->m33;
+    sjt_math1792 = (sjt_dot1097)->m11;
+#line 73
+    sjt_math1789 = sjt_math1791 * sjt_math1792;
+#line 61
+    sjt_dot1098 = _parent;
+#line 73
+    sjt_math1790 = (sjt_dot1098)->m33;
 #line 73
     sjt_math1760 = sjt_math1789 * sjt_math1790;
 #line 73
     sjv_t.m22 = sjt_math1759 + sjt_math1760;
 #line 61
-    sjt_dot1098 = _parent;
-#line 74
-    sjt_math1805 = (sjt_dot1098)->m03;
-#line 61
     sjt_dot1099 = _parent;
 #line 74
-    sjt_math1806 = (sjt_dot1099)->m11;
-#line 74
-    sjt_math1803 = sjt_math1805 * sjt_math1806;
+    sjt_math1805 = (sjt_dot1099)->m03;
 #line 61
     sjt_dot1100 = _parent;
 #line 74
-    sjt_math1804 = (sjt_dot1100)->m20;
+    sjt_math1806 = (sjt_dot1100)->m11;
 #line 74
-    sjt_math1801 = sjt_math1803 * sjt_math1804;
+    sjt_math1803 = sjt_math1805 * sjt_math1806;
 #line 61
     sjt_dot1101 = _parent;
 #line 74
-    sjt_math1809 = (sjt_dot1101)->m01;
+    sjt_math1804 = (sjt_dot1101)->m20;
+#line 74
+    sjt_math1801 = sjt_math1803 * sjt_math1804;
 #line 61
     sjt_dot1102 = _parent;
 #line 74
-    sjt_math1810 = (sjt_dot1102)->m13;
-#line 74
-    sjt_math1807 = sjt_math1809 * sjt_math1810;
+    sjt_math1809 = (sjt_dot1102)->m01;
 #line 61
     sjt_dot1103 = _parent;
 #line 74
-    sjt_math1808 = (sjt_dot1103)->m20;
+    sjt_math1810 = (sjt_dot1103)->m13;
+#line 74
+    sjt_math1807 = sjt_math1809 * sjt_math1810;
+#line 61
+    sjt_dot1104 = _parent;
+#line 74
+    sjt_math1808 = (sjt_dot1104)->m20;
 #line 74
     sjt_math1802 = sjt_math1807 * sjt_math1808;
 #line 74
     sjt_math1799 = sjt_math1801 - sjt_math1802;
 #line 61
-    sjt_dot1104 = _parent;
-#line 74
-    sjt_math1813 = (sjt_dot1104)->m03;
-#line 61
     sjt_dot1105 = _parent;
 #line 74
-    sjt_math1814 = (sjt_dot1105)->m10;
-#line 74
-    sjt_math1811 = sjt_math1813 * sjt_math1814;
+    sjt_math1813 = (sjt_dot1105)->m03;
 #line 61
     sjt_dot1106 = _parent;
 #line 74
-    sjt_math1812 = (sjt_dot1106)->m21;
+    sjt_math1814 = (sjt_dot1106)->m10;
+#line 74
+    sjt_math1811 = sjt_math1813 * sjt_math1814;
+#line 61
+    sjt_dot1107 = _parent;
+#line 74
+    sjt_math1812 = (sjt_dot1107)->m21;
 #line 74
     sjt_math1800 = sjt_math1811 * sjt_math1812;
 #line 74
     sjt_math1797 = sjt_math1799 - sjt_math1800;
 #line 61
-    sjt_dot1107 = _parent;
-#line 74
-    sjt_math1817 = (sjt_dot1107)->m00;
-#line 61
     sjt_dot1108 = _parent;
 #line 74
-    sjt_math1818 = (sjt_dot1108)->m13;
-#line 74
-    sjt_math1815 = sjt_math1817 * sjt_math1818;
+    sjt_math1817 = (sjt_dot1108)->m00;
 #line 61
     sjt_dot1109 = _parent;
 #line 74
-    sjt_math1816 = (sjt_dot1109)->m21;
+    sjt_math1818 = (sjt_dot1109)->m13;
+#line 74
+    sjt_math1815 = sjt_math1817 * sjt_math1818;
+#line 61
+    sjt_dot1110 = _parent;
+#line 74
+    sjt_math1816 = (sjt_dot1110)->m21;
 #line 74
     sjt_math1798 = sjt_math1815 * sjt_math1816;
 #line 74
     sjt_math1795 = sjt_math1797 + sjt_math1798;
 #line 61
-    sjt_dot1110 = _parent;
-#line 74
-    sjt_math1821 = (sjt_dot1110)->m01;
-#line 61
     sjt_dot1111 = _parent;
 #line 74
-    sjt_math1822 = (sjt_dot1111)->m10;
-#line 74
-    sjt_math1819 = sjt_math1821 * sjt_math1822;
+    sjt_math1821 = (sjt_dot1111)->m01;
 #line 61
     sjt_dot1112 = _parent;
 #line 74
-    sjt_math1820 = (sjt_dot1112)->m23;
+    sjt_math1822 = (sjt_dot1112)->m10;
+#line 74
+    sjt_math1819 = sjt_math1821 * sjt_math1822;
+#line 61
+    sjt_dot1113 = _parent;
+#line 74
+    sjt_math1820 = (sjt_dot1113)->m23;
 #line 74
     sjt_math1796 = sjt_math1819 * sjt_math1820;
 #line 74
     sjt_math1793 = sjt_math1795 + sjt_math1796;
 #line 61
-    sjt_dot1113 = _parent;
-#line 74
-    sjt_math1825 = (sjt_dot1113)->m00;
-#line 61
     sjt_dot1114 = _parent;
 #line 74
-    sjt_math1826 = (sjt_dot1114)->m11;
-#line 74
-    sjt_math1823 = sjt_math1825 * sjt_math1826;
+    sjt_math1825 = (sjt_dot1114)->m00;
 #line 61
     sjt_dot1115 = _parent;
 #line 74
-    sjt_math1824 = (sjt_dot1115)->m23;
+    sjt_math1826 = (sjt_dot1115)->m11;
+#line 74
+    sjt_math1823 = sjt_math1825 * sjt_math1826;
+#line 61
+    sjt_dot1116 = _parent;
+#line 74
+    sjt_math1824 = (sjt_dot1116)->m23;
 #line 74
     sjt_math1794 = sjt_math1823 * sjt_math1824;
 #line 74
     sjv_t.m23 = sjt_math1793 - sjt_math1794;
 #line 61
-    sjt_dot1116 = _parent;
-#line 75
-    sjt_math1839 = (sjt_dot1116)->m12;
-#line 61
     sjt_dot1117 = _parent;
 #line 75
-    sjt_math1840 = (sjt_dot1117)->m21;
-#line 75
-    sjt_math1837 = sjt_math1839 * sjt_math1840;
+    sjt_math1839 = (sjt_dot1117)->m12;
 #line 61
     sjt_dot1118 = _parent;
 #line 75
-    sjt_math1838 = (sjt_dot1118)->m30;
+    sjt_math1840 = (sjt_dot1118)->m21;
 #line 75
-    sjt_math1835 = sjt_math1837 * sjt_math1838;
+    sjt_math1837 = sjt_math1839 * sjt_math1840;
 #line 61
     sjt_dot1119 = _parent;
 #line 75
-    sjt_math1843 = (sjt_dot1119)->m11;
+    sjt_math1838 = (sjt_dot1119)->m30;
+#line 75
+    sjt_math1835 = sjt_math1837 * sjt_math1838;
 #line 61
     sjt_dot1120 = _parent;
 #line 75
-    sjt_math1844 = (sjt_dot1120)->m22;
-#line 75
-    sjt_math1841 = sjt_math1843 * sjt_math1844;
+    sjt_math1843 = (sjt_dot1120)->m11;
 #line 61
     sjt_dot1121 = _parent;
 #line 75
-    sjt_math1842 = (sjt_dot1121)->m30;
+    sjt_math1844 = (sjt_dot1121)->m22;
+#line 75
+    sjt_math1841 = sjt_math1843 * sjt_math1844;
+#line 61
+    sjt_dot1122 = _parent;
+#line 75
+    sjt_math1842 = (sjt_dot1122)->m30;
 #line 75
     sjt_math1836 = sjt_math1841 * sjt_math1842;
 #line 75
     sjt_math1833 = sjt_math1835 - sjt_math1836;
 #line 61
-    sjt_dot1122 = _parent;
-#line 75
-    sjt_math1847 = (sjt_dot1122)->m12;
-#line 61
     sjt_dot1123 = _parent;
 #line 75
-    sjt_math1848 = (sjt_dot1123)->m20;
-#line 75
-    sjt_math1845 = sjt_math1847 * sjt_math1848;
+    sjt_math1847 = (sjt_dot1123)->m12;
 #line 61
     sjt_dot1124 = _parent;
 #line 75
-    sjt_math1846 = (sjt_dot1124)->m31;
+    sjt_math1848 = (sjt_dot1124)->m20;
+#line 75
+    sjt_math1845 = sjt_math1847 * sjt_math1848;
+#line 61
+    sjt_dot1125 = _parent;
+#line 75
+    sjt_math1846 = (sjt_dot1125)->m31;
 #line 75
     sjt_math1834 = sjt_math1845 * sjt_math1846;
 #line 75
     sjt_math1831 = sjt_math1833 - sjt_math1834;
 #line 61
-    sjt_dot1125 = _parent;
-#line 75
-    sjt_math1851 = (sjt_dot1125)->m10;
-#line 61
     sjt_dot1126 = _parent;
 #line 75
-    sjt_math1852 = (sjt_dot1126)->m22;
-#line 75
-    sjt_math1849 = sjt_math1851 * sjt_math1852;
+    sjt_math1851 = (sjt_dot1126)->m10;
 #line 61
     sjt_dot1127 = _parent;
 #line 75
-    sjt_math1850 = (sjt_dot1127)->m31;
+    sjt_math1852 = (sjt_dot1127)->m22;
+#line 75
+    sjt_math1849 = sjt_math1851 * sjt_math1852;
+#line 61
+    sjt_dot1128 = _parent;
+#line 75
+    sjt_math1850 = (sjt_dot1128)->m31;
 #line 75
     sjt_math1832 = sjt_math1849 * sjt_math1850;
 #line 75
     sjt_math1829 = sjt_math1831 + sjt_math1832;
 #line 61
-    sjt_dot1128 = _parent;
-#line 75
-    sjt_math1855 = (sjt_dot1128)->m11;
-#line 61
     sjt_dot1129 = _parent;
 #line 75
-    sjt_math1856 = (sjt_dot1129)->m20;
-#line 75
-    sjt_math1853 = sjt_math1855 * sjt_math1856;
+    sjt_math1855 = (sjt_dot1129)->m11;
 #line 61
     sjt_dot1130 = _parent;
 #line 75
-    sjt_math1854 = (sjt_dot1130)->m32;
+    sjt_math1856 = (sjt_dot1130)->m20;
+#line 75
+    sjt_math1853 = sjt_math1855 * sjt_math1856;
+#line 61
+    sjt_dot1131 = _parent;
+#line 75
+    sjt_math1854 = (sjt_dot1131)->m32;
 #line 75
     sjt_math1830 = sjt_math1853 * sjt_math1854;
 #line 75
     sjt_math1827 = sjt_math1829 + sjt_math1830;
 #line 61
-    sjt_dot1131 = _parent;
-#line 75
-    sjt_math1859 = (sjt_dot1131)->m10;
-#line 61
     sjt_dot1132 = _parent;
 #line 75
-    sjt_math1860 = (sjt_dot1132)->m21;
-#line 75
-    sjt_math1857 = sjt_math1859 * sjt_math1860;
+    sjt_math1859 = (sjt_dot1132)->m10;
 #line 61
     sjt_dot1133 = _parent;
 #line 75
-    sjt_math1858 = (sjt_dot1133)->m32;
+    sjt_math1860 = (sjt_dot1133)->m21;
+#line 75
+    sjt_math1857 = sjt_math1859 * sjt_math1860;
+#line 61
+    sjt_dot1134 = _parent;
+#line 75
+    sjt_math1858 = (sjt_dot1134)->m32;
 #line 75
     sjt_math1828 = sjt_math1857 * sjt_math1858;
 #line 75
     sjv_t.m30 = sjt_math1827 - sjt_math1828;
 #line 61
-    sjt_dot1134 = _parent;
-#line 76
-    sjt_math1873 = (sjt_dot1134)->m01;
-#line 61
     sjt_dot1135 = _parent;
 #line 76
-    sjt_math1874 = (sjt_dot1135)->m22;
-#line 76
-    sjt_math1871 = sjt_math1873 * sjt_math1874;
+    sjt_math1873 = (sjt_dot1135)->m01;
 #line 61
     sjt_dot1136 = _parent;
 #line 76
-    sjt_math1872 = (sjt_dot1136)->m30;
+    sjt_math1874 = (sjt_dot1136)->m22;
 #line 76
-    sjt_math1869 = sjt_math1871 * sjt_math1872;
+    sjt_math1871 = sjt_math1873 * sjt_math1874;
 #line 61
     sjt_dot1137 = _parent;
 #line 76
-    sjt_math1877 = (sjt_dot1137)->m02;
+    sjt_math1872 = (sjt_dot1137)->m30;
+#line 76
+    sjt_math1869 = sjt_math1871 * sjt_math1872;
 #line 61
     sjt_dot1138 = _parent;
 #line 76
-    sjt_math1878 = (sjt_dot1138)->m21;
-#line 76
-    sjt_math1875 = sjt_math1877 * sjt_math1878;
+    sjt_math1877 = (sjt_dot1138)->m02;
 #line 61
     sjt_dot1139 = _parent;
 #line 76
-    sjt_math1876 = (sjt_dot1139)->m30;
+    sjt_math1878 = (sjt_dot1139)->m21;
+#line 76
+    sjt_math1875 = sjt_math1877 * sjt_math1878;
+#line 61
+    sjt_dot1140 = _parent;
+#line 76
+    sjt_math1876 = (sjt_dot1140)->m30;
 #line 76
     sjt_math1870 = sjt_math1875 * sjt_math1876;
 #line 76
     sjt_math1867 = sjt_math1869 - sjt_math1870;
 #line 61
-    sjt_dot1140 = _parent;
-#line 76
-    sjt_math1881 = (sjt_dot1140)->m02;
-#line 61
     sjt_dot1141 = _parent;
 #line 76
-    sjt_math1882 = (sjt_dot1141)->m20;
-#line 76
-    sjt_math1879 = sjt_math1881 * sjt_math1882;
+    sjt_math1881 = (sjt_dot1141)->m02;
 #line 61
     sjt_dot1142 = _parent;
 #line 76
-    sjt_math1880 = (sjt_dot1142)->m31;
+    sjt_math1882 = (sjt_dot1142)->m20;
+#line 76
+    sjt_math1879 = sjt_math1881 * sjt_math1882;
+#line 61
+    sjt_dot1143 = _parent;
+#line 76
+    sjt_math1880 = (sjt_dot1143)->m31;
 #line 76
     sjt_math1868 = sjt_math1879 * sjt_math1880;
 #line 76
     sjt_math1865 = sjt_math1867 + sjt_math1868;
 #line 61
-    sjt_dot1143 = _parent;
-#line 76
-    sjt_math1885 = (sjt_dot1143)->m00;
-#line 61
     sjt_dot1144 = _parent;
 #line 76
-    sjt_math1886 = (sjt_dot1144)->m22;
-#line 76
-    sjt_math1883 = sjt_math1885 * sjt_math1886;
+    sjt_math1885 = (sjt_dot1144)->m00;
 #line 61
     sjt_dot1145 = _parent;
 #line 76
-    sjt_math1884 = (sjt_dot1145)->m31;
+    sjt_math1886 = (sjt_dot1145)->m22;
+#line 76
+    sjt_math1883 = sjt_math1885 * sjt_math1886;
+#line 61
+    sjt_dot1146 = _parent;
+#line 76
+    sjt_math1884 = (sjt_dot1146)->m31;
 #line 76
     sjt_math1866 = sjt_math1883 * sjt_math1884;
 #line 76
     sjt_math1863 = sjt_math1865 - sjt_math1866;
 #line 61
-    sjt_dot1146 = _parent;
-#line 76
-    sjt_math1889 = (sjt_dot1146)->m01;
-#line 61
     sjt_dot1147 = _parent;
 #line 76
-    sjt_math1890 = (sjt_dot1147)->m20;
-#line 76
-    sjt_math1887 = sjt_math1889 * sjt_math1890;
+    sjt_math1889 = (sjt_dot1147)->m01;
 #line 61
     sjt_dot1148 = _parent;
 #line 76
-    sjt_math1888 = (sjt_dot1148)->m32;
+    sjt_math1890 = (sjt_dot1148)->m20;
+#line 76
+    sjt_math1887 = sjt_math1889 * sjt_math1890;
+#line 61
+    sjt_dot1149 = _parent;
+#line 76
+    sjt_math1888 = (sjt_dot1149)->m32;
 #line 76
     sjt_math1864 = sjt_math1887 * sjt_math1888;
 #line 76
     sjt_math1861 = sjt_math1863 - sjt_math1864;
 #line 61
-    sjt_dot1149 = _parent;
-#line 76
-    sjt_math1893 = (sjt_dot1149)->m00;
-#line 61
     sjt_dot1150 = _parent;
 #line 76
-    sjt_math1894 = (sjt_dot1150)->m21;
-#line 76
-    sjt_math1891 = sjt_math1893 * sjt_math1894;
+    sjt_math1893 = (sjt_dot1150)->m00;
 #line 61
     sjt_dot1151 = _parent;
 #line 76
-    sjt_math1892 = (sjt_dot1151)->m32;
+    sjt_math1894 = (sjt_dot1151)->m21;
+#line 76
+    sjt_math1891 = sjt_math1893 * sjt_math1894;
+#line 61
+    sjt_dot1152 = _parent;
+#line 76
+    sjt_math1892 = (sjt_dot1152)->m32;
 #line 76
     sjt_math1862 = sjt_math1891 * sjt_math1892;
 #line 76
     sjv_t.m31 = sjt_math1861 + sjt_math1862;
 #line 61
-    sjt_dot1152 = _parent;
-#line 77
-    sjt_math1907 = (sjt_dot1152)->m02;
-#line 61
     sjt_dot1153 = _parent;
 #line 77
-    sjt_math1908 = (sjt_dot1153)->m11;
-#line 77
-    sjt_math1905 = sjt_math1907 * sjt_math1908;
+    sjt_math1907 = (sjt_dot1153)->m02;
 #line 61
     sjt_dot1154 = _parent;
 #line 77
-    sjt_math1906 = (sjt_dot1154)->m30;
+    sjt_math1908 = (sjt_dot1154)->m11;
 #line 77
-    sjt_math1903 = sjt_math1905 * sjt_math1906;
+    sjt_math1905 = sjt_math1907 * sjt_math1908;
 #line 61
     sjt_dot1155 = _parent;
 #line 77
-    sjt_math1911 = (sjt_dot1155)->m01;
+    sjt_math1906 = (sjt_dot1155)->m30;
+#line 77
+    sjt_math1903 = sjt_math1905 * sjt_math1906;
 #line 61
     sjt_dot1156 = _parent;
 #line 77
-    sjt_math1912 = (sjt_dot1156)->m12;
-#line 77
-    sjt_math1909 = sjt_math1911 * sjt_math1912;
+    sjt_math1911 = (sjt_dot1156)->m01;
 #line 61
     sjt_dot1157 = _parent;
 #line 77
-    sjt_math1910 = (sjt_dot1157)->m30;
+    sjt_math1912 = (sjt_dot1157)->m12;
+#line 77
+    sjt_math1909 = sjt_math1911 * sjt_math1912;
+#line 61
+    sjt_dot1158 = _parent;
+#line 77
+    sjt_math1910 = (sjt_dot1158)->m30;
 #line 77
     sjt_math1904 = sjt_math1909 * sjt_math1910;
 #line 77
     sjt_math1901 = sjt_math1903 - sjt_math1904;
 #line 61
-    sjt_dot1158 = _parent;
-#line 77
-    sjt_math1915 = (sjt_dot1158)->m02;
-#line 61
     sjt_dot1159 = _parent;
 #line 77
-    sjt_math1916 = (sjt_dot1159)->m10;
-#line 77
-    sjt_math1913 = sjt_math1915 * sjt_math1916;
+    sjt_math1915 = (sjt_dot1159)->m02;
 #line 61
     sjt_dot1160 = _parent;
 #line 77
-    sjt_math1914 = (sjt_dot1160)->m31;
+    sjt_math1916 = (sjt_dot1160)->m10;
+#line 77
+    sjt_math1913 = sjt_math1915 * sjt_math1916;
+#line 61
+    sjt_dot1161 = _parent;
+#line 77
+    sjt_math1914 = (sjt_dot1161)->m31;
 #line 77
     sjt_math1902 = sjt_math1913 * sjt_math1914;
 #line 77
     sjt_math1899 = sjt_math1901 - sjt_math1902;
 #line 61
-    sjt_dot1161 = _parent;
-#line 77
-    sjt_math1919 = (sjt_dot1161)->m00;
-#line 61
     sjt_dot1162 = _parent;
 #line 77
-    sjt_math1920 = (sjt_dot1162)->m12;
-#line 77
-    sjt_math1917 = sjt_math1919 * sjt_math1920;
+    sjt_math1919 = (sjt_dot1162)->m00;
 #line 61
     sjt_dot1163 = _parent;
 #line 77
-    sjt_math1918 = (sjt_dot1163)->m31;
+    sjt_math1920 = (sjt_dot1163)->m12;
+#line 77
+    sjt_math1917 = sjt_math1919 * sjt_math1920;
+#line 61
+    sjt_dot1164 = _parent;
+#line 77
+    sjt_math1918 = (sjt_dot1164)->m31;
 #line 77
     sjt_math1900 = sjt_math1917 * sjt_math1918;
 #line 77
     sjt_math1897 = sjt_math1899 + sjt_math1900;
 #line 61
-    sjt_dot1164 = _parent;
-#line 77
-    sjt_math1923 = (sjt_dot1164)->m01;
-#line 61
     sjt_dot1165 = _parent;
 #line 77
-    sjt_math1924 = (sjt_dot1165)->m10;
-#line 77
-    sjt_math1921 = sjt_math1923 * sjt_math1924;
+    sjt_math1923 = (sjt_dot1165)->m01;
 #line 61
     sjt_dot1166 = _parent;
 #line 77
-    sjt_math1922 = (sjt_dot1166)->m32;
+    sjt_math1924 = (sjt_dot1166)->m10;
+#line 77
+    sjt_math1921 = sjt_math1923 * sjt_math1924;
+#line 61
+    sjt_dot1167 = _parent;
+#line 77
+    sjt_math1922 = (sjt_dot1167)->m32;
 #line 77
     sjt_math1898 = sjt_math1921 * sjt_math1922;
 #line 77
     sjt_math1895 = sjt_math1897 + sjt_math1898;
 #line 61
-    sjt_dot1167 = _parent;
-#line 77
-    sjt_math1927 = (sjt_dot1167)->m00;
-#line 61
     sjt_dot1168 = _parent;
 #line 77
-    sjt_math1928 = (sjt_dot1168)->m11;
-#line 77
-    sjt_math1925 = sjt_math1927 * sjt_math1928;
+    sjt_math1927 = (sjt_dot1168)->m00;
 #line 61
     sjt_dot1169 = _parent;
 #line 77
-    sjt_math1926 = (sjt_dot1169)->m32;
+    sjt_math1928 = (sjt_dot1169)->m11;
+#line 77
+    sjt_math1925 = sjt_math1927 * sjt_math1928;
+#line 61
+    sjt_dot1170 = _parent;
+#line 77
+    sjt_math1926 = (sjt_dot1170)->m32;
 #line 77
     sjt_math1896 = sjt_math1925 * sjt_math1926;
 #line 77
     sjv_t.m32 = sjt_math1895 - sjt_math1896;
 #line 61
-    sjt_dot1170 = _parent;
-#line 78
-    sjt_math1941 = (sjt_dot1170)->m01;
-#line 61
     sjt_dot1171 = _parent;
 #line 78
-    sjt_math1942 = (sjt_dot1171)->m12;
-#line 78
-    sjt_math1939 = sjt_math1941 * sjt_math1942;
+    sjt_math1941 = (sjt_dot1171)->m01;
 #line 61
     sjt_dot1172 = _parent;
 #line 78
-    sjt_math1940 = (sjt_dot1172)->m20;
+    sjt_math1942 = (sjt_dot1172)->m12;
 #line 78
-    sjt_math1937 = sjt_math1939 * sjt_math1940;
+    sjt_math1939 = sjt_math1941 * sjt_math1942;
 #line 61
     sjt_dot1173 = _parent;
 #line 78
-    sjt_math1945 = (sjt_dot1173)->m02;
+    sjt_math1940 = (sjt_dot1173)->m20;
+#line 78
+    sjt_math1937 = sjt_math1939 * sjt_math1940;
 #line 61
     sjt_dot1174 = _parent;
 #line 78
-    sjt_math1946 = (sjt_dot1174)->m11;
-#line 78
-    sjt_math1943 = sjt_math1945 * sjt_math1946;
+    sjt_math1945 = (sjt_dot1174)->m02;
 #line 61
     sjt_dot1175 = _parent;
 #line 78
-    sjt_math1944 = (sjt_dot1175)->m20;
+    sjt_math1946 = (sjt_dot1175)->m11;
+#line 78
+    sjt_math1943 = sjt_math1945 * sjt_math1946;
+#line 61
+    sjt_dot1176 = _parent;
+#line 78
+    sjt_math1944 = (sjt_dot1176)->m20;
 #line 78
     sjt_math1938 = sjt_math1943 * sjt_math1944;
 #line 78
     sjt_math1935 = sjt_math1937 - sjt_math1938;
 #line 61
-    sjt_dot1176 = _parent;
-#line 78
-    sjt_math1949 = (sjt_dot1176)->m02;
-#line 61
     sjt_dot1177 = _parent;
 #line 78
-    sjt_math1950 = (sjt_dot1177)->m10;
-#line 78
-    sjt_math1947 = sjt_math1949 * sjt_math1950;
+    sjt_math1949 = (sjt_dot1177)->m02;
 #line 61
     sjt_dot1178 = _parent;
 #line 78
-    sjt_math1948 = (sjt_dot1178)->m21;
+    sjt_math1950 = (sjt_dot1178)->m10;
+#line 78
+    sjt_math1947 = sjt_math1949 * sjt_math1950;
+#line 61
+    sjt_dot1179 = _parent;
+#line 78
+    sjt_math1948 = (sjt_dot1179)->m21;
 #line 78
     sjt_math1936 = sjt_math1947 * sjt_math1948;
 #line 78
     sjt_math1933 = sjt_math1935 + sjt_math1936;
 #line 61
-    sjt_dot1179 = _parent;
-#line 78
-    sjt_math1953 = (sjt_dot1179)->m00;
-#line 61
     sjt_dot1180 = _parent;
 #line 78
-    sjt_math1954 = (sjt_dot1180)->m12;
-#line 78
-    sjt_math1951 = sjt_math1953 * sjt_math1954;
+    sjt_math1953 = (sjt_dot1180)->m00;
 #line 61
     sjt_dot1181 = _parent;
 #line 78
-    sjt_math1952 = (sjt_dot1181)->m21;
+    sjt_math1954 = (sjt_dot1181)->m12;
+#line 78
+    sjt_math1951 = sjt_math1953 * sjt_math1954;
+#line 61
+    sjt_dot1182 = _parent;
+#line 78
+    sjt_math1952 = (sjt_dot1182)->m21;
 #line 78
     sjt_math1934 = sjt_math1951 * sjt_math1952;
 #line 78
     sjt_math1931 = sjt_math1933 - sjt_math1934;
 #line 61
-    sjt_dot1182 = _parent;
-#line 78
-    sjt_math1957 = (sjt_dot1182)->m01;
-#line 61
     sjt_dot1183 = _parent;
 #line 78
-    sjt_math1958 = (sjt_dot1183)->m10;
-#line 78
-    sjt_math1955 = sjt_math1957 * sjt_math1958;
+    sjt_math1957 = (sjt_dot1183)->m01;
 #line 61
     sjt_dot1184 = _parent;
 #line 78
-    sjt_math1956 = (sjt_dot1184)->m22;
+    sjt_math1958 = (sjt_dot1184)->m10;
+#line 78
+    sjt_math1955 = sjt_math1957 * sjt_math1958;
+#line 61
+    sjt_dot1185 = _parent;
+#line 78
+    sjt_math1956 = (sjt_dot1185)->m22;
 #line 78
     sjt_math1932 = sjt_math1955 * sjt_math1956;
 #line 78
     sjt_math1929 = sjt_math1931 - sjt_math1932;
 #line 61
-    sjt_dot1185 = _parent;
-#line 78
-    sjt_math1961 = (sjt_dot1185)->m00;
-#line 61
     sjt_dot1186 = _parent;
 #line 78
-    sjt_math1962 = (sjt_dot1186)->m11;
-#line 78
-    sjt_math1959 = sjt_math1961 * sjt_math1962;
+    sjt_math1961 = (sjt_dot1186)->m00;
 #line 61
     sjt_dot1187 = _parent;
 #line 78
-    sjt_math1960 = (sjt_dot1187)->m22;
+    sjt_math1962 = (sjt_dot1187)->m11;
+#line 78
+    sjt_math1959 = sjt_math1961 * sjt_math1962;
+#line 61
+    sjt_dot1188 = _parent;
+#line 78
+    sjt_math1960 = (sjt_dot1188)->m22;
 #line 78
     sjt_math1930 = sjt_math1959 * sjt_math1960;
 #line 78
@@ -15931,7 +15934,6 @@ void sjf_mat4_invert_heap(sjs_mat4* _parent, sjs_mat4_heap** _return) {
 
 void sjf_mat4_lookAtLH(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sjs_mat4* _return) {
     sjs_vec3 sjt_call5;
-    sjs_vec3* sjt_dot161;
     sjs_vec3* sjt_dot162;
     sjs_vec3* sjt_dot163;
     sjs_vec3* sjt_dot164;
@@ -15940,6 +15942,7 @@ void sjf_mat4_lookAtLH(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sjs_mat
     sjs_vec3* sjt_dot167;
     sjs_vec3* sjt_dot168;
     sjs_vec3* sjt_dot169;
+    sjs_vec3* sjt_dot170;
     sjs_vec3* sjt_functionParam45;
     sjs_vec3* sjt_functionParam48;
     sjs_vec3* sjt_functionParam49;
@@ -15992,45 +15995,45 @@ void sjf_mat4_lookAtLH(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sjs_mat
 #line 123
     sjf_vec3_cross(sjt_parent19, sjt_functionParam49, &sjv_yaxis);
 #line 1 "lib/ui/vec3.sj"
-    sjt_dot161 = &sjv_xaxis;
+    sjt_dot162 = &sjv_xaxis;
 #line 124 "lib/ui/mat4.sj"
-    _return->m00 = (sjt_dot161)->x;
+    _return->m00 = (sjt_dot162)->x;
 #line 1 "lib/ui/vec3.sj"
-    sjt_dot162 = &sjv_yaxis;
+    sjt_dot163 = &sjv_yaxis;
 #line 124 "lib/ui/mat4.sj"
-    _return->m01 = (sjt_dot162)->x;
+    _return->m01 = (sjt_dot163)->x;
 #line 1 "lib/ui/vec3.sj"
-    sjt_dot163 = &sjv_zaxis;
+    sjt_dot164 = &sjv_zaxis;
 #line 124 "lib/ui/mat4.sj"
-    _return->m02 = (sjt_dot163)->x;
+    _return->m02 = (sjt_dot164)->x;
 #line 128
     _return->m03 = 0.0f;
 #line 1 "lib/ui/vec3.sj"
-    sjt_dot164 = &sjv_xaxis;
+    sjt_dot165 = &sjv_xaxis;
 #line 124 "lib/ui/mat4.sj"
-    _return->m10 = (sjt_dot164)->y;
+    _return->m10 = (sjt_dot165)->y;
 #line 1 "lib/ui/vec3.sj"
-    sjt_dot165 = &sjv_yaxis;
+    sjt_dot166 = &sjv_yaxis;
 #line 124 "lib/ui/mat4.sj"
-    _return->m11 = (sjt_dot165)->y;
+    _return->m11 = (sjt_dot166)->y;
 #line 1 "lib/ui/vec3.sj"
-    sjt_dot166 = &sjv_zaxis;
+    sjt_dot167 = &sjv_zaxis;
 #line 124 "lib/ui/mat4.sj"
-    _return->m12 = (sjt_dot166)->y;
+    _return->m12 = (sjt_dot167)->y;
 #line 132
     _return->m13 = 0.0f;
 #line 1 "lib/ui/vec3.sj"
-    sjt_dot167 = &sjv_xaxis;
+    sjt_dot168 = &sjv_xaxis;
 #line 124 "lib/ui/mat4.sj"
-    _return->m20 = (sjt_dot167)->z;
+    _return->m20 = (sjt_dot168)->z;
 #line 1 "lib/ui/vec3.sj"
-    sjt_dot168 = &sjv_yaxis;
+    sjt_dot169 = &sjv_yaxis;
 #line 124 "lib/ui/mat4.sj"
-    _return->m21 = (sjt_dot168)->z;
+    _return->m21 = (sjt_dot169)->z;
 #line 1 "lib/ui/vec3.sj"
-    sjt_dot169 = &sjv_zaxis;
+    sjt_dot170 = &sjv_zaxis;
 #line 124 "lib/ui/mat4.sj"
-    _return->m22 = (sjt_dot169)->z;
+    _return->m22 = (sjt_dot170)->z;
 #line 136
     _return->m23 = 0.0f;
 #line 137
@@ -16077,7 +16080,6 @@ void sjf_mat4_lookAtLH(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sjs_mat
 
 void sjf_mat4_lookAtLH_heap(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sjs_mat4_heap** _return) {
     sjs_vec3 sjt_call6;
-    sjs_vec3* sjt_dot176;
     sjs_vec3* sjt_dot177;
     sjs_vec3* sjt_dot178;
     sjs_vec3* sjt_dot179;
@@ -16086,6 +16088,7 @@ void sjf_mat4_lookAtLH_heap(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sj
     sjs_vec3* sjt_dot182;
     sjs_vec3* sjt_dot183;
     sjs_vec3* sjt_dot184;
+    sjs_vec3* sjt_dot185;
     sjs_vec3* sjt_functionParam53;
     sjs_vec3* sjt_functionParam54;
     sjs_vec3* sjt_functionParam55;
@@ -16142,45 +16145,45 @@ void sjf_mat4_lookAtLH_heap(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sj
 #line 123
     (*_return)->_refCount = 1;
 #line 1 "lib/ui/vec3.sj"
-    sjt_dot176 = &sjv_xaxis;
+    sjt_dot177 = &sjv_xaxis;
 #line 124 "lib/ui/mat4.sj"
-    (*_return)->m00 = (sjt_dot176)->x;
+    (*_return)->m00 = (sjt_dot177)->x;
 #line 1 "lib/ui/vec3.sj"
-    sjt_dot177 = &sjv_yaxis;
+    sjt_dot178 = &sjv_yaxis;
 #line 124 "lib/ui/mat4.sj"
-    (*_return)->m01 = (sjt_dot177)->x;
+    (*_return)->m01 = (sjt_dot178)->x;
 #line 1 "lib/ui/vec3.sj"
-    sjt_dot178 = &sjv_zaxis;
+    sjt_dot179 = &sjv_zaxis;
 #line 124 "lib/ui/mat4.sj"
-    (*_return)->m02 = (sjt_dot178)->x;
+    (*_return)->m02 = (sjt_dot179)->x;
 #line 128
     (*_return)->m03 = 0.0f;
 #line 1 "lib/ui/vec3.sj"
-    sjt_dot179 = &sjv_xaxis;
+    sjt_dot180 = &sjv_xaxis;
 #line 124 "lib/ui/mat4.sj"
-    (*_return)->m10 = (sjt_dot179)->y;
+    (*_return)->m10 = (sjt_dot180)->y;
 #line 1 "lib/ui/vec3.sj"
-    sjt_dot180 = &sjv_yaxis;
+    sjt_dot181 = &sjv_yaxis;
 #line 124 "lib/ui/mat4.sj"
-    (*_return)->m11 = (sjt_dot180)->y;
+    (*_return)->m11 = (sjt_dot181)->y;
 #line 1 "lib/ui/vec3.sj"
-    sjt_dot181 = &sjv_zaxis;
+    sjt_dot182 = &sjv_zaxis;
 #line 124 "lib/ui/mat4.sj"
-    (*_return)->m12 = (sjt_dot181)->y;
+    (*_return)->m12 = (sjt_dot182)->y;
 #line 132
     (*_return)->m13 = 0.0f;
 #line 1 "lib/ui/vec3.sj"
-    sjt_dot182 = &sjv_xaxis;
+    sjt_dot183 = &sjv_xaxis;
 #line 124 "lib/ui/mat4.sj"
-    (*_return)->m20 = (sjt_dot182)->z;
+    (*_return)->m20 = (sjt_dot183)->z;
 #line 1 "lib/ui/vec3.sj"
-    sjt_dot183 = &sjv_yaxis;
+    sjt_dot184 = &sjv_yaxis;
 #line 124 "lib/ui/mat4.sj"
-    (*_return)->m21 = (sjt_dot183)->z;
+    (*_return)->m21 = (sjt_dot184)->z;
 #line 1 "lib/ui/vec3.sj"
-    sjt_dot184 = &sjv_zaxis;
+    sjt_dot185 = &sjv_zaxis;
 #line 124 "lib/ui/mat4.sj"
-    (*_return)->m22 = (sjt_dot184)->z;
+    (*_return)->m22 = (sjt_dot185)->z;
 #line 136
     (*_return)->m23 = 0.0f;
 #line 137
@@ -16226,7 +16229,6 @@ void sjf_mat4_lookAtLH_heap(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sj
 }
 
 void sjf_mat4_multiply(sjs_mat4* _parent, sjs_mat4* m, sjs_mat4* _return) {
-    sjs_mat4* sjt_dot194;
     sjs_mat4* sjt_dot195;
     sjs_mat4* sjt_dot196;
     sjs_mat4* sjt_dot197;
@@ -16354,6 +16356,7 @@ void sjf_mat4_multiply(sjs_mat4* _parent, sjs_mat4* m, sjs_mat4* _return) {
     sjs_mat4* sjt_dot319;
     sjs_mat4* sjt_dot320;
     sjs_mat4* sjt_dot321;
+    sjs_mat4* sjt_dot322;
     float sjt_math171;
     float sjt_math172;
     float sjt_math173;
@@ -16580,737 +16583,737 @@ void sjf_mat4_multiply(sjs_mat4* _parent, sjs_mat4* m, sjs_mat4* _return) {
     float sjt_math394;
 
 #line 19 "lib/ui/mat4.sj"
-    sjt_dot194 = m;
+    sjt_dot195 = m;
 #line 21
-    sjt_math177 = (sjt_dot194)->m00;
+    sjt_math177 = (sjt_dot195)->m00;
 #line 19
-    sjt_dot195 = _parent;
+    sjt_dot196 = _parent;
 #line 21
-    sjt_math178 = (sjt_dot195)->m00;
+    sjt_math178 = (sjt_dot196)->m00;
 #line 21
     sjt_math175 = sjt_math177 * sjt_math178;
 #line 19
-    sjt_dot196 = m;
+    sjt_dot197 = m;
 #line 21
-    sjt_math179 = (sjt_dot196)->m01;
+    sjt_math179 = (sjt_dot197)->m01;
 #line 19
-    sjt_dot197 = _parent;
+    sjt_dot198 = _parent;
 #line 21
-    sjt_math180 = (sjt_dot197)->m10;
+    sjt_math180 = (sjt_dot198)->m10;
 #line 21
     sjt_math176 = sjt_math179 * sjt_math180;
 #line 21
     sjt_math173 = sjt_math175 + sjt_math176;
 #line 19
-    sjt_dot198 = m;
+    sjt_dot199 = m;
 #line 21
-    sjt_math181 = (sjt_dot198)->m02;
+    sjt_math181 = (sjt_dot199)->m02;
 #line 19
-    sjt_dot199 = _parent;
+    sjt_dot200 = _parent;
 #line 21
-    sjt_math182 = (sjt_dot199)->m20;
+    sjt_math182 = (sjt_dot200)->m20;
 #line 21
     sjt_math174 = sjt_math181 * sjt_math182;
 #line 21
     sjt_math171 = sjt_math173 + sjt_math174;
 #line 19
-    sjt_dot200 = m;
+    sjt_dot201 = m;
 #line 21
-    sjt_math183 = (sjt_dot200)->m03;
+    sjt_math183 = (sjt_dot201)->m03;
 #line 19
-    sjt_dot201 = _parent;
+    sjt_dot202 = _parent;
 #line 21
-    sjt_math184 = (sjt_dot201)->m30;
+    sjt_math184 = (sjt_dot202)->m30;
 #line 21
     sjt_math172 = sjt_math183 * sjt_math184;
 #line 21
     _return->m00 = sjt_math171 + sjt_math172;
 #line 19
-    sjt_dot202 = m;
+    sjt_dot203 = m;
 #line 22
-    sjt_math191 = (sjt_dot202)->m00;
+    sjt_math191 = (sjt_dot203)->m00;
 #line 19
-    sjt_dot203 = _parent;
+    sjt_dot204 = _parent;
 #line 22
-    sjt_math192 = (sjt_dot203)->m01;
+    sjt_math192 = (sjt_dot204)->m01;
 #line 22
     sjt_math189 = sjt_math191 * sjt_math192;
 #line 19
-    sjt_dot204 = m;
+    sjt_dot205 = m;
 #line 22
-    sjt_math193 = (sjt_dot204)->m01;
+    sjt_math193 = (sjt_dot205)->m01;
 #line 19
-    sjt_dot205 = _parent;
+    sjt_dot206 = _parent;
 #line 22
-    sjt_math194 = (sjt_dot205)->m11;
+    sjt_math194 = (sjt_dot206)->m11;
 #line 22
     sjt_math190 = sjt_math193 * sjt_math194;
 #line 22
     sjt_math187 = sjt_math189 + sjt_math190;
 #line 19
-    sjt_dot206 = m;
+    sjt_dot207 = m;
 #line 22
-    sjt_math195 = (sjt_dot206)->m02;
+    sjt_math195 = (sjt_dot207)->m02;
 #line 19
-    sjt_dot207 = _parent;
+    sjt_dot208 = _parent;
 #line 22
-    sjt_math196 = (sjt_dot207)->m21;
+    sjt_math196 = (sjt_dot208)->m21;
 #line 22
     sjt_math188 = sjt_math195 * sjt_math196;
 #line 22
     sjt_math185 = sjt_math187 + sjt_math188;
 #line 19
-    sjt_dot208 = m;
+    sjt_dot209 = m;
 #line 22
-    sjt_math197 = (sjt_dot208)->m03;
+    sjt_math197 = (sjt_dot209)->m03;
 #line 19
-    sjt_dot209 = _parent;
+    sjt_dot210 = _parent;
 #line 22
-    sjt_math198 = (sjt_dot209)->m31;
+    sjt_math198 = (sjt_dot210)->m31;
 #line 22
     sjt_math186 = sjt_math197 * sjt_math198;
 #line 22
     _return->m01 = sjt_math185 + sjt_math186;
 #line 19
-    sjt_dot210 = m;
+    sjt_dot211 = m;
 #line 23
-    sjt_math205 = (sjt_dot210)->m00;
+    sjt_math205 = (sjt_dot211)->m00;
 #line 19
-    sjt_dot211 = _parent;
+    sjt_dot212 = _parent;
 #line 23
-    sjt_math206 = (sjt_dot211)->m02;
+    sjt_math206 = (sjt_dot212)->m02;
 #line 23
     sjt_math203 = sjt_math205 * sjt_math206;
 #line 19
-    sjt_dot212 = m;
+    sjt_dot213 = m;
 #line 23
-    sjt_math207 = (sjt_dot212)->m01;
+    sjt_math207 = (sjt_dot213)->m01;
 #line 19
-    sjt_dot213 = _parent;
+    sjt_dot214 = _parent;
 #line 23
-    sjt_math208 = (sjt_dot213)->m12;
+    sjt_math208 = (sjt_dot214)->m12;
 #line 23
     sjt_math204 = sjt_math207 * sjt_math208;
 #line 23
     sjt_math201 = sjt_math203 + sjt_math204;
 #line 19
-    sjt_dot214 = m;
+    sjt_dot215 = m;
 #line 23
-    sjt_math209 = (sjt_dot214)->m02;
+    sjt_math209 = (sjt_dot215)->m02;
 #line 19
-    sjt_dot215 = _parent;
+    sjt_dot216 = _parent;
 #line 23
-    sjt_math210 = (sjt_dot215)->m22;
+    sjt_math210 = (sjt_dot216)->m22;
 #line 23
     sjt_math202 = sjt_math209 * sjt_math210;
 #line 23
     sjt_math199 = sjt_math201 + sjt_math202;
 #line 19
-    sjt_dot216 = m;
+    sjt_dot217 = m;
 #line 23
-    sjt_math211 = (sjt_dot216)->m03;
+    sjt_math211 = (sjt_dot217)->m03;
 #line 19
-    sjt_dot217 = _parent;
+    sjt_dot218 = _parent;
 #line 23
-    sjt_math212 = (sjt_dot217)->m32;
+    sjt_math212 = (sjt_dot218)->m32;
 #line 23
     sjt_math200 = sjt_math211 * sjt_math212;
 #line 23
     _return->m02 = sjt_math199 + sjt_math200;
 #line 19
-    sjt_dot218 = m;
+    sjt_dot219 = m;
 #line 24
-    sjt_math219 = (sjt_dot218)->m00;
+    sjt_math219 = (sjt_dot219)->m00;
 #line 19
-    sjt_dot219 = _parent;
+    sjt_dot220 = _parent;
 #line 24
-    sjt_math220 = (sjt_dot219)->m03;
+    sjt_math220 = (sjt_dot220)->m03;
 #line 24
     sjt_math217 = sjt_math219 * sjt_math220;
 #line 19
-    sjt_dot220 = m;
+    sjt_dot221 = m;
 #line 24
-    sjt_math221 = (sjt_dot220)->m01;
+    sjt_math221 = (sjt_dot221)->m01;
 #line 19
-    sjt_dot221 = _parent;
+    sjt_dot222 = _parent;
 #line 24
-    sjt_math222 = (sjt_dot221)->m13;
+    sjt_math222 = (sjt_dot222)->m13;
 #line 24
     sjt_math218 = sjt_math221 * sjt_math222;
 #line 24
     sjt_math215 = sjt_math217 + sjt_math218;
 #line 19
-    sjt_dot222 = m;
+    sjt_dot223 = m;
 #line 24
-    sjt_math223 = (sjt_dot222)->m02;
+    sjt_math223 = (sjt_dot223)->m02;
 #line 19
-    sjt_dot223 = _parent;
+    sjt_dot224 = _parent;
 #line 24
-    sjt_math224 = (sjt_dot223)->m23;
+    sjt_math224 = (sjt_dot224)->m23;
 #line 24
     sjt_math216 = sjt_math223 * sjt_math224;
 #line 24
     sjt_math213 = sjt_math215 + sjt_math216;
 #line 19
-    sjt_dot224 = m;
+    sjt_dot225 = m;
 #line 24
-    sjt_math225 = (sjt_dot224)->m03;
+    sjt_math225 = (sjt_dot225)->m03;
 #line 19
-    sjt_dot225 = _parent;
+    sjt_dot226 = _parent;
 #line 24
-    sjt_math226 = (sjt_dot225)->m33;
+    sjt_math226 = (sjt_dot226)->m33;
 #line 24
     sjt_math214 = sjt_math225 * sjt_math226;
 #line 24
     _return->m03 = sjt_math213 + sjt_math214;
 #line 19
-    sjt_dot226 = m;
+    sjt_dot227 = m;
 #line 25
-    sjt_math233 = (sjt_dot226)->m10;
+    sjt_math233 = (sjt_dot227)->m10;
 #line 19
-    sjt_dot227 = _parent;
+    sjt_dot228 = _parent;
 #line 25
-    sjt_math234 = (sjt_dot227)->m00;
+    sjt_math234 = (sjt_dot228)->m00;
 #line 25
     sjt_math231 = sjt_math233 * sjt_math234;
 #line 19
-    sjt_dot228 = m;
+    sjt_dot229 = m;
 #line 25
-    sjt_math235 = (sjt_dot228)->m11;
+    sjt_math235 = (sjt_dot229)->m11;
 #line 19
-    sjt_dot229 = _parent;
+    sjt_dot230 = _parent;
 #line 25
-    sjt_math236 = (sjt_dot229)->m10;
+    sjt_math236 = (sjt_dot230)->m10;
 #line 25
     sjt_math232 = sjt_math235 * sjt_math236;
 #line 25
     sjt_math229 = sjt_math231 + sjt_math232;
 #line 19
-    sjt_dot230 = m;
+    sjt_dot231 = m;
 #line 25
-    sjt_math237 = (sjt_dot230)->m12;
+    sjt_math237 = (sjt_dot231)->m12;
 #line 19
-    sjt_dot231 = _parent;
+    sjt_dot232 = _parent;
 #line 25
-    sjt_math238 = (sjt_dot231)->m20;
+    sjt_math238 = (sjt_dot232)->m20;
 #line 25
     sjt_math230 = sjt_math237 * sjt_math238;
 #line 25
     sjt_math227 = sjt_math229 + sjt_math230;
 #line 19
-    sjt_dot232 = m;
+    sjt_dot233 = m;
 #line 25
-    sjt_math239 = (sjt_dot232)->m13;
+    sjt_math239 = (sjt_dot233)->m13;
 #line 19
-    sjt_dot233 = _parent;
+    sjt_dot234 = _parent;
 #line 25
-    sjt_math240 = (sjt_dot233)->m30;
+    sjt_math240 = (sjt_dot234)->m30;
 #line 25
     sjt_math228 = sjt_math239 * sjt_math240;
 #line 25
     _return->m10 = sjt_math227 + sjt_math228;
 #line 19
-    sjt_dot234 = m;
+    sjt_dot235 = m;
 #line 26
-    sjt_math247 = (sjt_dot234)->m10;
+    sjt_math247 = (sjt_dot235)->m10;
 #line 19
-    sjt_dot235 = _parent;
+    sjt_dot236 = _parent;
 #line 26
-    sjt_math248 = (sjt_dot235)->m01;
+    sjt_math248 = (sjt_dot236)->m01;
 #line 26
     sjt_math245 = sjt_math247 * sjt_math248;
 #line 19
-    sjt_dot236 = m;
+    sjt_dot237 = m;
 #line 26
-    sjt_math249 = (sjt_dot236)->m11;
+    sjt_math249 = (sjt_dot237)->m11;
 #line 19
-    sjt_dot237 = _parent;
+    sjt_dot238 = _parent;
 #line 26
-    sjt_math250 = (sjt_dot237)->m11;
+    sjt_math250 = (sjt_dot238)->m11;
 #line 26
     sjt_math246 = sjt_math249 * sjt_math250;
 #line 26
     sjt_math243 = sjt_math245 + sjt_math246;
 #line 19
-    sjt_dot238 = m;
+    sjt_dot239 = m;
 #line 26
-    sjt_math251 = (sjt_dot238)->m12;
+    sjt_math251 = (sjt_dot239)->m12;
 #line 19
-    sjt_dot239 = _parent;
+    sjt_dot240 = _parent;
 #line 26
-    sjt_math252 = (sjt_dot239)->m21;
+    sjt_math252 = (sjt_dot240)->m21;
 #line 26
     sjt_math244 = sjt_math251 * sjt_math252;
 #line 26
     sjt_math241 = sjt_math243 + sjt_math244;
 #line 19
-    sjt_dot240 = m;
+    sjt_dot241 = m;
 #line 26
-    sjt_math253 = (sjt_dot240)->m13;
+    sjt_math253 = (sjt_dot241)->m13;
 #line 19
-    sjt_dot241 = _parent;
+    sjt_dot242 = _parent;
 #line 26
-    sjt_math254 = (sjt_dot241)->m31;
+    sjt_math254 = (sjt_dot242)->m31;
 #line 26
     sjt_math242 = sjt_math253 * sjt_math254;
 #line 26
     _return->m11 = sjt_math241 + sjt_math242;
 #line 19
-    sjt_dot242 = m;
+    sjt_dot243 = m;
 #line 27
-    sjt_math261 = (sjt_dot242)->m10;
+    sjt_math261 = (sjt_dot243)->m10;
 #line 19
-    sjt_dot243 = _parent;
+    sjt_dot244 = _parent;
 #line 27
-    sjt_math262 = (sjt_dot243)->m02;
+    sjt_math262 = (sjt_dot244)->m02;
 #line 27
     sjt_math259 = sjt_math261 * sjt_math262;
 #line 19
-    sjt_dot244 = m;
+    sjt_dot245 = m;
 #line 27
-    sjt_math263 = (sjt_dot244)->m11;
+    sjt_math263 = (sjt_dot245)->m11;
 #line 19
-    sjt_dot245 = _parent;
+    sjt_dot246 = _parent;
 #line 27
-    sjt_math264 = (sjt_dot245)->m12;
+    sjt_math264 = (sjt_dot246)->m12;
 #line 27
     sjt_math260 = sjt_math263 * sjt_math264;
 #line 27
     sjt_math257 = sjt_math259 + sjt_math260;
 #line 19
-    sjt_dot246 = m;
+    sjt_dot247 = m;
 #line 27
-    sjt_math265 = (sjt_dot246)->m12;
+    sjt_math265 = (sjt_dot247)->m12;
 #line 19
-    sjt_dot247 = _parent;
+    sjt_dot248 = _parent;
 #line 27
-    sjt_math266 = (sjt_dot247)->m22;
+    sjt_math266 = (sjt_dot248)->m22;
 #line 27
     sjt_math258 = sjt_math265 * sjt_math266;
 #line 27
     sjt_math255 = sjt_math257 + sjt_math258;
 #line 19
-    sjt_dot248 = m;
+    sjt_dot249 = m;
 #line 27
-    sjt_math267 = (sjt_dot248)->m13;
+    sjt_math267 = (sjt_dot249)->m13;
 #line 19
-    sjt_dot249 = _parent;
+    sjt_dot250 = _parent;
 #line 27
-    sjt_math268 = (sjt_dot249)->m32;
+    sjt_math268 = (sjt_dot250)->m32;
 #line 27
     sjt_math256 = sjt_math267 * sjt_math268;
 #line 27
     _return->m12 = sjt_math255 + sjt_math256;
 #line 19
-    sjt_dot250 = m;
+    sjt_dot251 = m;
 #line 28
-    sjt_math275 = (sjt_dot250)->m10;
+    sjt_math275 = (sjt_dot251)->m10;
 #line 19
-    sjt_dot251 = _parent;
+    sjt_dot252 = _parent;
 #line 28
-    sjt_math276 = (sjt_dot251)->m03;
+    sjt_math276 = (sjt_dot252)->m03;
 #line 28
     sjt_math273 = sjt_math275 * sjt_math276;
 #line 19
-    sjt_dot252 = m;
+    sjt_dot253 = m;
 #line 28
-    sjt_math277 = (sjt_dot252)->m11;
+    sjt_math277 = (sjt_dot253)->m11;
 #line 19
-    sjt_dot253 = _parent;
+    sjt_dot254 = _parent;
 #line 28
-    sjt_math278 = (sjt_dot253)->m13;
+    sjt_math278 = (sjt_dot254)->m13;
 #line 28
     sjt_math274 = sjt_math277 * sjt_math278;
 #line 28
     sjt_math271 = sjt_math273 + sjt_math274;
 #line 19
-    sjt_dot254 = m;
+    sjt_dot255 = m;
 #line 28
-    sjt_math279 = (sjt_dot254)->m12;
+    sjt_math279 = (sjt_dot255)->m12;
 #line 19
-    sjt_dot255 = _parent;
+    sjt_dot256 = _parent;
 #line 28
-    sjt_math280 = (sjt_dot255)->m23;
+    sjt_math280 = (sjt_dot256)->m23;
 #line 28
     sjt_math272 = sjt_math279 * sjt_math280;
 #line 28
     sjt_math269 = sjt_math271 + sjt_math272;
 #line 19
-    sjt_dot256 = m;
+    sjt_dot257 = m;
 #line 28
-    sjt_math281 = (sjt_dot256)->m13;
+    sjt_math281 = (sjt_dot257)->m13;
 #line 19
-    sjt_dot257 = _parent;
+    sjt_dot258 = _parent;
 #line 28
-    sjt_math282 = (sjt_dot257)->m33;
+    sjt_math282 = (sjt_dot258)->m33;
 #line 28
     sjt_math270 = sjt_math281 * sjt_math282;
 #line 28
     _return->m13 = sjt_math269 + sjt_math270;
 #line 19
-    sjt_dot258 = m;
+    sjt_dot259 = m;
 #line 29
-    sjt_math289 = (sjt_dot258)->m20;
+    sjt_math289 = (sjt_dot259)->m20;
 #line 19
-    sjt_dot259 = _parent;
+    sjt_dot260 = _parent;
 #line 29
-    sjt_math290 = (sjt_dot259)->m00;
+    sjt_math290 = (sjt_dot260)->m00;
 #line 29
     sjt_math287 = sjt_math289 * sjt_math290;
 #line 19
-    sjt_dot260 = m;
+    sjt_dot261 = m;
 #line 29
-    sjt_math291 = (sjt_dot260)->m21;
+    sjt_math291 = (sjt_dot261)->m21;
 #line 19
-    sjt_dot261 = _parent;
+    sjt_dot262 = _parent;
 #line 29
-    sjt_math292 = (sjt_dot261)->m10;
+    sjt_math292 = (sjt_dot262)->m10;
 #line 29
     sjt_math288 = sjt_math291 * sjt_math292;
 #line 29
     sjt_math285 = sjt_math287 + sjt_math288;
 #line 19
-    sjt_dot262 = m;
+    sjt_dot263 = m;
 #line 29
-    sjt_math293 = (sjt_dot262)->m22;
+    sjt_math293 = (sjt_dot263)->m22;
 #line 19
-    sjt_dot263 = _parent;
+    sjt_dot264 = _parent;
 #line 29
-    sjt_math294 = (sjt_dot263)->m20;
+    sjt_math294 = (sjt_dot264)->m20;
 #line 29
     sjt_math286 = sjt_math293 * sjt_math294;
 #line 29
     sjt_math283 = sjt_math285 + sjt_math286;
 #line 19
-    sjt_dot264 = m;
+    sjt_dot265 = m;
 #line 29
-    sjt_math295 = (sjt_dot264)->m23;
+    sjt_math295 = (sjt_dot265)->m23;
 #line 19
-    sjt_dot265 = _parent;
+    sjt_dot266 = _parent;
 #line 29
-    sjt_math296 = (sjt_dot265)->m30;
+    sjt_math296 = (sjt_dot266)->m30;
 #line 29
     sjt_math284 = sjt_math295 * sjt_math296;
 #line 29
     _return->m20 = sjt_math283 + sjt_math284;
 #line 19
-    sjt_dot266 = m;
+    sjt_dot267 = m;
 #line 30
-    sjt_math303 = (sjt_dot266)->m20;
+    sjt_math303 = (sjt_dot267)->m20;
 #line 19
-    sjt_dot267 = _parent;
+    sjt_dot268 = _parent;
 #line 30
-    sjt_math304 = (sjt_dot267)->m01;
+    sjt_math304 = (sjt_dot268)->m01;
 #line 30
     sjt_math301 = sjt_math303 * sjt_math304;
 #line 19
-    sjt_dot268 = m;
+    sjt_dot269 = m;
 #line 30
-    sjt_math305 = (sjt_dot268)->m21;
+    sjt_math305 = (sjt_dot269)->m21;
 #line 19
-    sjt_dot269 = _parent;
+    sjt_dot270 = _parent;
 #line 30
-    sjt_math306 = (sjt_dot269)->m11;
+    sjt_math306 = (sjt_dot270)->m11;
 #line 30
     sjt_math302 = sjt_math305 * sjt_math306;
 #line 30
     sjt_math299 = sjt_math301 + sjt_math302;
 #line 19
-    sjt_dot270 = m;
+    sjt_dot271 = m;
 #line 30
-    sjt_math307 = (sjt_dot270)->m22;
+    sjt_math307 = (sjt_dot271)->m22;
 #line 19
-    sjt_dot271 = _parent;
+    sjt_dot272 = _parent;
 #line 30
-    sjt_math308 = (sjt_dot271)->m21;
+    sjt_math308 = (sjt_dot272)->m21;
 #line 30
     sjt_math300 = sjt_math307 * sjt_math308;
 #line 30
     sjt_math297 = sjt_math299 + sjt_math300;
 #line 19
-    sjt_dot272 = m;
+    sjt_dot273 = m;
 #line 30
-    sjt_math309 = (sjt_dot272)->m23;
+    sjt_math309 = (sjt_dot273)->m23;
 #line 19
-    sjt_dot273 = _parent;
+    sjt_dot274 = _parent;
 #line 30
-    sjt_math310 = (sjt_dot273)->m31;
+    sjt_math310 = (sjt_dot274)->m31;
 #line 30
     sjt_math298 = sjt_math309 * sjt_math310;
 #line 30
     _return->m21 = sjt_math297 + sjt_math298;
 #line 19
-    sjt_dot274 = m;
+    sjt_dot275 = m;
 #line 31
-    sjt_math317 = (sjt_dot274)->m20;
+    sjt_math317 = (sjt_dot275)->m20;
 #line 19
-    sjt_dot275 = _parent;
+    sjt_dot276 = _parent;
 #line 31
-    sjt_math318 = (sjt_dot275)->m02;
+    sjt_math318 = (sjt_dot276)->m02;
 #line 31
     sjt_math315 = sjt_math317 * sjt_math318;
 #line 19
-    sjt_dot276 = m;
+    sjt_dot277 = m;
 #line 31
-    sjt_math319 = (sjt_dot276)->m21;
+    sjt_math319 = (sjt_dot277)->m21;
 #line 19
-    sjt_dot277 = _parent;
+    sjt_dot278 = _parent;
 #line 31
-    sjt_math320 = (sjt_dot277)->m12;
+    sjt_math320 = (sjt_dot278)->m12;
 #line 31
     sjt_math316 = sjt_math319 * sjt_math320;
 #line 31
     sjt_math313 = sjt_math315 + sjt_math316;
 #line 19
-    sjt_dot278 = m;
+    sjt_dot279 = m;
 #line 31
-    sjt_math321 = (sjt_dot278)->m22;
+    sjt_math321 = (sjt_dot279)->m22;
 #line 19
-    sjt_dot279 = _parent;
+    sjt_dot280 = _parent;
 #line 31
-    sjt_math322 = (sjt_dot279)->m22;
+    sjt_math322 = (sjt_dot280)->m22;
 #line 31
     sjt_math314 = sjt_math321 * sjt_math322;
 #line 31
     sjt_math311 = sjt_math313 + sjt_math314;
 #line 19
-    sjt_dot280 = m;
+    sjt_dot281 = m;
 #line 31
-    sjt_math323 = (sjt_dot280)->m23;
+    sjt_math323 = (sjt_dot281)->m23;
 #line 19
-    sjt_dot281 = _parent;
+    sjt_dot282 = _parent;
 #line 31
-    sjt_math324 = (sjt_dot281)->m32;
+    sjt_math324 = (sjt_dot282)->m32;
 #line 31
     sjt_math312 = sjt_math323 * sjt_math324;
 #line 31
     _return->m22 = sjt_math311 + sjt_math312;
 #line 19
-    sjt_dot282 = m;
+    sjt_dot283 = m;
 #line 32
-    sjt_math331 = (sjt_dot282)->m20;
+    sjt_math331 = (sjt_dot283)->m20;
 #line 19
-    sjt_dot283 = _parent;
+    sjt_dot284 = _parent;
 #line 32
-    sjt_math332 = (sjt_dot283)->m03;
+    sjt_math332 = (sjt_dot284)->m03;
 #line 32
     sjt_math329 = sjt_math331 * sjt_math332;
 #line 19
-    sjt_dot284 = m;
+    sjt_dot285 = m;
 #line 32
-    sjt_math333 = (sjt_dot284)->m21;
+    sjt_math333 = (sjt_dot285)->m21;
 #line 19
-    sjt_dot285 = _parent;
+    sjt_dot286 = _parent;
 #line 32
-    sjt_math334 = (sjt_dot285)->m13;
+    sjt_math334 = (sjt_dot286)->m13;
 #line 32
     sjt_math330 = sjt_math333 * sjt_math334;
 #line 32
     sjt_math327 = sjt_math329 + sjt_math330;
 #line 19
-    sjt_dot286 = m;
+    sjt_dot287 = m;
 #line 32
-    sjt_math335 = (sjt_dot286)->m22;
+    sjt_math335 = (sjt_dot287)->m22;
 #line 19
-    sjt_dot287 = _parent;
+    sjt_dot288 = _parent;
 #line 32
-    sjt_math336 = (sjt_dot287)->m23;
+    sjt_math336 = (sjt_dot288)->m23;
 #line 32
     sjt_math328 = sjt_math335 * sjt_math336;
 #line 32
     sjt_math325 = sjt_math327 + sjt_math328;
 #line 19
-    sjt_dot288 = m;
+    sjt_dot289 = m;
 #line 32
-    sjt_math337 = (sjt_dot288)->m23;
+    sjt_math337 = (sjt_dot289)->m23;
 #line 19
-    sjt_dot289 = _parent;
+    sjt_dot290 = _parent;
 #line 32
-    sjt_math338 = (sjt_dot289)->m33;
+    sjt_math338 = (sjt_dot290)->m33;
 #line 32
     sjt_math326 = sjt_math337 * sjt_math338;
 #line 32
     _return->m23 = sjt_math325 + sjt_math326;
 #line 19
-    sjt_dot290 = m;
+    sjt_dot291 = m;
 #line 33
-    sjt_math345 = (sjt_dot290)->m30;
+    sjt_math345 = (sjt_dot291)->m30;
 #line 19
-    sjt_dot291 = _parent;
+    sjt_dot292 = _parent;
 #line 33
-    sjt_math346 = (sjt_dot291)->m00;
+    sjt_math346 = (sjt_dot292)->m00;
 #line 33
     sjt_math343 = sjt_math345 * sjt_math346;
 #line 19
-    sjt_dot292 = m;
+    sjt_dot293 = m;
 #line 33
-    sjt_math347 = (sjt_dot292)->m31;
+    sjt_math347 = (sjt_dot293)->m31;
 #line 19
-    sjt_dot293 = _parent;
+    sjt_dot294 = _parent;
 #line 33
-    sjt_math348 = (sjt_dot293)->m10;
+    sjt_math348 = (sjt_dot294)->m10;
 #line 33
     sjt_math344 = sjt_math347 * sjt_math348;
 #line 33
     sjt_math341 = sjt_math343 + sjt_math344;
 #line 19
-    sjt_dot294 = m;
+    sjt_dot295 = m;
 #line 33
-    sjt_math349 = (sjt_dot294)->m32;
+    sjt_math349 = (sjt_dot295)->m32;
 #line 19
-    sjt_dot295 = _parent;
+    sjt_dot296 = _parent;
 #line 33
-    sjt_math350 = (sjt_dot295)->m20;
+    sjt_math350 = (sjt_dot296)->m20;
 #line 33
     sjt_math342 = sjt_math349 * sjt_math350;
 #line 33
     sjt_math339 = sjt_math341 + sjt_math342;
 #line 19
-    sjt_dot296 = m;
+    sjt_dot297 = m;
 #line 33
-    sjt_math351 = (sjt_dot296)->m33;
+    sjt_math351 = (sjt_dot297)->m33;
 #line 19
-    sjt_dot297 = _parent;
+    sjt_dot298 = _parent;
 #line 33
-    sjt_math352 = (sjt_dot297)->m30;
+    sjt_math352 = (sjt_dot298)->m30;
 #line 33
     sjt_math340 = sjt_math351 * sjt_math352;
 #line 33
     _return->m30 = sjt_math339 + sjt_math340;
 #line 19
-    sjt_dot298 = m;
+    sjt_dot299 = m;
 #line 34
-    sjt_math359 = (sjt_dot298)->m30;
+    sjt_math359 = (sjt_dot299)->m30;
 #line 19
-    sjt_dot299 = _parent;
+    sjt_dot300 = _parent;
 #line 34
-    sjt_math360 = (sjt_dot299)->m01;
+    sjt_math360 = (sjt_dot300)->m01;
 #line 34
     sjt_math357 = sjt_math359 * sjt_math360;
 #line 19
-    sjt_dot300 = m;
+    sjt_dot301 = m;
 #line 34
-    sjt_math361 = (sjt_dot300)->m31;
+    sjt_math361 = (sjt_dot301)->m31;
 #line 19
-    sjt_dot301 = _parent;
+    sjt_dot302 = _parent;
 #line 34
-    sjt_math362 = (sjt_dot301)->m11;
+    sjt_math362 = (sjt_dot302)->m11;
 #line 34
     sjt_math358 = sjt_math361 * sjt_math362;
 #line 34
     sjt_math355 = sjt_math357 + sjt_math358;
 #line 19
-    sjt_dot302 = m;
+    sjt_dot303 = m;
 #line 34
-    sjt_math363 = (sjt_dot302)->m32;
+    sjt_math363 = (sjt_dot303)->m32;
 #line 19
-    sjt_dot303 = _parent;
+    sjt_dot304 = _parent;
 #line 34
-    sjt_math364 = (sjt_dot303)->m21;
+    sjt_math364 = (sjt_dot304)->m21;
 #line 34
     sjt_math356 = sjt_math363 * sjt_math364;
 #line 34
     sjt_math353 = sjt_math355 + sjt_math356;
 #line 19
-    sjt_dot304 = m;
+    sjt_dot305 = m;
 #line 34
-    sjt_math365 = (sjt_dot304)->m33;
+    sjt_math365 = (sjt_dot305)->m33;
 #line 19
-    sjt_dot305 = _parent;
+    sjt_dot306 = _parent;
 #line 34
-    sjt_math366 = (sjt_dot305)->m31;
+    sjt_math366 = (sjt_dot306)->m31;
 #line 34
     sjt_math354 = sjt_math365 * sjt_math366;
 #line 34
     _return->m31 = sjt_math353 + sjt_math354;
 #line 19
-    sjt_dot306 = m;
+    sjt_dot307 = m;
 #line 35
-    sjt_math373 = (sjt_dot306)->m30;
+    sjt_math373 = (sjt_dot307)->m30;
 #line 19
-    sjt_dot307 = _parent;
+    sjt_dot308 = _parent;
 #line 35
-    sjt_math374 = (sjt_dot307)->m02;
+    sjt_math374 = (sjt_dot308)->m02;
 #line 35
     sjt_math371 = sjt_math373 * sjt_math374;
 #line 19
-    sjt_dot308 = m;
+    sjt_dot309 = m;
 #line 35
-    sjt_math375 = (sjt_dot308)->m31;
+    sjt_math375 = (sjt_dot309)->m31;
 #line 19
-    sjt_dot309 = _parent;
+    sjt_dot310 = _parent;
 #line 35
-    sjt_math376 = (sjt_dot309)->m12;
+    sjt_math376 = (sjt_dot310)->m12;
 #line 35
     sjt_math372 = sjt_math375 * sjt_math376;
 #line 35
     sjt_math369 = sjt_math371 + sjt_math372;
 #line 19
-    sjt_dot310 = m;
+    sjt_dot311 = m;
 #line 35
-    sjt_math377 = (sjt_dot310)->m32;
+    sjt_math377 = (sjt_dot311)->m32;
 #line 19
-    sjt_dot311 = _parent;
+    sjt_dot312 = _parent;
 #line 35
-    sjt_math378 = (sjt_dot311)->m22;
+    sjt_math378 = (sjt_dot312)->m22;
 #line 35
     sjt_math370 = sjt_math377 * sjt_math378;
 #line 35
     sjt_math367 = sjt_math369 + sjt_math370;
 #line 19
-    sjt_dot312 = m;
+    sjt_dot313 = m;
 #line 35
-    sjt_math379 = (sjt_dot312)->m33;
+    sjt_math379 = (sjt_dot313)->m33;
 #line 19
-    sjt_dot313 = _parent;
+    sjt_dot314 = _parent;
 #line 35
-    sjt_math380 = (sjt_dot313)->m32;
+    sjt_math380 = (sjt_dot314)->m32;
 #line 35
     sjt_math368 = sjt_math379 * sjt_math380;
 #line 35
     _return->m32 = sjt_math367 + sjt_math368;
 #line 19
-    sjt_dot314 = m;
+    sjt_dot315 = m;
 #line 36
-    sjt_math387 = (sjt_dot314)->m30;
+    sjt_math387 = (sjt_dot315)->m30;
 #line 19
-    sjt_dot315 = _parent;
+    sjt_dot316 = _parent;
 #line 36
-    sjt_math388 = (sjt_dot315)->m03;
+    sjt_math388 = (sjt_dot316)->m03;
 #line 36
     sjt_math385 = sjt_math387 * sjt_math388;
 #line 19
-    sjt_dot316 = m;
+    sjt_dot317 = m;
 #line 36
-    sjt_math389 = (sjt_dot316)->m31;
+    sjt_math389 = (sjt_dot317)->m31;
 #line 19
-    sjt_dot317 = _parent;
+    sjt_dot318 = _parent;
 #line 36
-    sjt_math390 = (sjt_dot317)->m13;
+    sjt_math390 = (sjt_dot318)->m13;
 #line 36
     sjt_math386 = sjt_math389 * sjt_math390;
 #line 36
     sjt_math383 = sjt_math385 + sjt_math386;
 #line 19
-    sjt_dot318 = m;
+    sjt_dot319 = m;
 #line 36
-    sjt_math391 = (sjt_dot318)->m32;
+    sjt_math391 = (sjt_dot319)->m32;
 #line 19
-    sjt_dot319 = _parent;
+    sjt_dot320 = _parent;
 #line 36
-    sjt_math392 = (sjt_dot319)->m23;
+    sjt_math392 = (sjt_dot320)->m23;
 #line 36
     sjt_math384 = sjt_math391 * sjt_math392;
 #line 36
     sjt_math381 = sjt_math383 + sjt_math384;
 #line 19
-    sjt_dot320 = m;
+    sjt_dot321 = m;
 #line 36
-    sjt_math393 = (sjt_dot320)->m33;
+    sjt_math393 = (sjt_dot321)->m33;
 #line 19
-    sjt_dot321 = _parent;
+    sjt_dot322 = _parent;
 #line 36
-    sjt_math394 = (sjt_dot321)->m33;
+    sjt_math394 = (sjt_dot322)->m33;
 #line 36
     sjt_math382 = sjt_math393 * sjt_math394;
 #line 36
@@ -17320,7 +17323,6 @@ void sjf_mat4_multiply(sjs_mat4* _parent, sjs_mat4* m, sjs_mat4* _return) {
 }
 
 void sjf_mat4_multiply_f32(sjs_mat4* _parent, float x, sjs_mat4* _return) {
-    sjs_mat4* sjt_dot772;
     sjs_mat4* sjt_dot773;
     sjs_mat4* sjt_dot774;
     sjs_mat4* sjt_dot775;
@@ -17336,6 +17338,7 @@ void sjf_mat4_multiply_f32(sjs_mat4* _parent, float x, sjs_mat4* _return) {
     sjs_mat4* sjt_dot785;
     sjs_mat4* sjt_dot786;
     sjs_mat4* sjt_dot787;
+    sjs_mat4* sjt_dot788;
     float sjt_math1163;
     float sjt_math1164;
     float sjt_math1165;
@@ -17370,129 +17373,129 @@ void sjf_mat4_multiply_f32(sjs_mat4* _parent, float x, sjs_mat4* _return) {
     float sjt_math1194;
 
 #line 40 "lib/ui/mat4.sj"
-    sjt_dot772 = _parent;
+    sjt_dot773 = _parent;
 #line 42
-    sjt_math1163 = (sjt_dot772)->m00;
+    sjt_math1163 = (sjt_dot773)->m00;
 #line 40
     sjt_math1164 = x;
 #line 42
     _return->m00 = sjt_math1163 * sjt_math1164;
 #line 40
-    sjt_dot773 = _parent;
+    sjt_dot774 = _parent;
 #line 43
-    sjt_math1165 = (sjt_dot773)->m01;
+    sjt_math1165 = (sjt_dot774)->m01;
 #line 40
     sjt_math1166 = x;
 #line 43
     _return->m01 = sjt_math1165 * sjt_math1166;
 #line 40
-    sjt_dot774 = _parent;
+    sjt_dot775 = _parent;
 #line 44
-    sjt_math1167 = (sjt_dot774)->m02;
+    sjt_math1167 = (sjt_dot775)->m02;
 #line 40
     sjt_math1168 = x;
 #line 44
     _return->m02 = sjt_math1167 * sjt_math1168;
 #line 40
-    sjt_dot775 = _parent;
+    sjt_dot776 = _parent;
 #line 45
-    sjt_math1169 = (sjt_dot775)->m03;
+    sjt_math1169 = (sjt_dot776)->m03;
 #line 40
     sjt_math1170 = x;
 #line 45
     _return->m03 = sjt_math1169 * sjt_math1170;
 #line 40
-    sjt_dot776 = _parent;
+    sjt_dot777 = _parent;
 #line 46
-    sjt_math1171 = (sjt_dot776)->m10;
+    sjt_math1171 = (sjt_dot777)->m10;
 #line 40
     sjt_math1172 = x;
 #line 46
     _return->m10 = sjt_math1171 * sjt_math1172;
 #line 40
-    sjt_dot777 = _parent;
+    sjt_dot778 = _parent;
 #line 47
-    sjt_math1173 = (sjt_dot777)->m11;
+    sjt_math1173 = (sjt_dot778)->m11;
 #line 40
     sjt_math1174 = x;
 #line 47
     _return->m11 = sjt_math1173 * sjt_math1174;
 #line 40
-    sjt_dot778 = _parent;
+    sjt_dot779 = _parent;
 #line 48
-    sjt_math1175 = (sjt_dot778)->m12;
+    sjt_math1175 = (sjt_dot779)->m12;
 #line 40
     sjt_math1176 = x;
 #line 48
     _return->m12 = sjt_math1175 * sjt_math1176;
 #line 40
-    sjt_dot779 = _parent;
+    sjt_dot780 = _parent;
 #line 49
-    sjt_math1177 = (sjt_dot779)->m13;
+    sjt_math1177 = (sjt_dot780)->m13;
 #line 40
     sjt_math1178 = x;
 #line 49
     _return->m13 = sjt_math1177 * sjt_math1178;
 #line 40
-    sjt_dot780 = _parent;
+    sjt_dot781 = _parent;
 #line 50
-    sjt_math1179 = (sjt_dot780)->m20;
+    sjt_math1179 = (sjt_dot781)->m20;
 #line 40
     sjt_math1180 = x;
 #line 50
     _return->m20 = sjt_math1179 * sjt_math1180;
 #line 40
-    sjt_dot781 = _parent;
+    sjt_dot782 = _parent;
 #line 51
-    sjt_math1181 = (sjt_dot781)->m21;
+    sjt_math1181 = (sjt_dot782)->m21;
 #line 40
     sjt_math1182 = x;
 #line 51
     _return->m21 = sjt_math1181 * sjt_math1182;
 #line 40
-    sjt_dot782 = _parent;
+    sjt_dot783 = _parent;
 #line 52
-    sjt_math1183 = (sjt_dot782)->m22;
+    sjt_math1183 = (sjt_dot783)->m22;
 #line 40
     sjt_math1184 = x;
 #line 52
     _return->m22 = sjt_math1183 * sjt_math1184;
 #line 40
-    sjt_dot783 = _parent;
+    sjt_dot784 = _parent;
 #line 53
-    sjt_math1185 = (sjt_dot783)->m23;
+    sjt_math1185 = (sjt_dot784)->m23;
 #line 40
     sjt_math1186 = x;
 #line 53
     _return->m23 = sjt_math1185 * sjt_math1186;
 #line 40
-    sjt_dot784 = _parent;
+    sjt_dot785 = _parent;
 #line 54
-    sjt_math1187 = (sjt_dot784)->m30;
+    sjt_math1187 = (sjt_dot785)->m30;
 #line 40
     sjt_math1188 = x;
 #line 54
     _return->m30 = sjt_math1187 * sjt_math1188;
 #line 40
-    sjt_dot785 = _parent;
+    sjt_dot786 = _parent;
 #line 55
-    sjt_math1189 = (sjt_dot785)->m31;
+    sjt_math1189 = (sjt_dot786)->m31;
 #line 40
     sjt_math1190 = x;
 #line 55
     _return->m31 = sjt_math1189 * sjt_math1190;
 #line 40
-    sjt_dot786 = _parent;
+    sjt_dot787 = _parent;
 #line 56
-    sjt_math1191 = (sjt_dot786)->m32;
+    sjt_math1191 = (sjt_dot787)->m32;
 #line 40
     sjt_math1192 = x;
 #line 56
     _return->m32 = sjt_math1191 * sjt_math1192;
 #line 40
-    sjt_dot787 = _parent;
+    sjt_dot788 = _parent;
 #line 57
-    sjt_math1193 = (sjt_dot787)->m33;
+    sjt_math1193 = (sjt_dot788)->m33;
 #line 40
     sjt_math1194 = x;
 #line 57
@@ -17502,7 +17505,6 @@ void sjf_mat4_multiply_f32(sjs_mat4* _parent, float x, sjs_mat4* _return) {
 }
 
 void sjf_mat4_multiply_f32_heap(sjs_mat4* _parent, float x, sjs_mat4_heap** _return) {
-    sjs_mat4* sjt_dot788;
     sjs_mat4* sjt_dot789;
     sjs_mat4* sjt_dot790;
     sjs_mat4* sjt_dot791;
@@ -17518,6 +17520,7 @@ void sjf_mat4_multiply_f32_heap(sjs_mat4* _parent, float x, sjs_mat4_heap** _ret
     sjs_mat4* sjt_dot801;
     sjs_mat4* sjt_dot802;
     sjs_mat4* sjt_dot803;
+    sjs_mat4* sjt_dot804;
     float sjt_math1195;
     float sjt_math1196;
     float sjt_math1197;
@@ -17554,129 +17557,129 @@ void sjf_mat4_multiply_f32_heap(sjs_mat4* _parent, float x, sjs_mat4_heap** _ret
     (*_return) = (sjs_mat4_heap*)malloc(sizeof(sjs_mat4_heap));
     (*_return)->_refCount = 1;
 #line 40 "lib/ui/mat4.sj"
-    sjt_dot788 = _parent;
+    sjt_dot789 = _parent;
 #line 42
-    sjt_math1195 = (sjt_dot788)->m00;
+    sjt_math1195 = (sjt_dot789)->m00;
 #line 40
     sjt_math1196 = x;
 #line 42
     (*_return)->m00 = sjt_math1195 * sjt_math1196;
 #line 40
-    sjt_dot789 = _parent;
+    sjt_dot790 = _parent;
 #line 43
-    sjt_math1197 = (sjt_dot789)->m01;
+    sjt_math1197 = (sjt_dot790)->m01;
 #line 40
     sjt_math1198 = x;
 #line 43
     (*_return)->m01 = sjt_math1197 * sjt_math1198;
 #line 40
-    sjt_dot790 = _parent;
+    sjt_dot791 = _parent;
 #line 44
-    sjt_math1199 = (sjt_dot790)->m02;
+    sjt_math1199 = (sjt_dot791)->m02;
 #line 40
     sjt_math1200 = x;
 #line 44
     (*_return)->m02 = sjt_math1199 * sjt_math1200;
 #line 40
-    sjt_dot791 = _parent;
+    sjt_dot792 = _parent;
 #line 45
-    sjt_math1201 = (sjt_dot791)->m03;
+    sjt_math1201 = (sjt_dot792)->m03;
 #line 40
     sjt_math1202 = x;
 #line 45
     (*_return)->m03 = sjt_math1201 * sjt_math1202;
 #line 40
-    sjt_dot792 = _parent;
+    sjt_dot793 = _parent;
 #line 46
-    sjt_math1203 = (sjt_dot792)->m10;
+    sjt_math1203 = (sjt_dot793)->m10;
 #line 40
     sjt_math1204 = x;
 #line 46
     (*_return)->m10 = sjt_math1203 * sjt_math1204;
 #line 40
-    sjt_dot793 = _parent;
+    sjt_dot794 = _parent;
 #line 47
-    sjt_math1205 = (sjt_dot793)->m11;
+    sjt_math1205 = (sjt_dot794)->m11;
 #line 40
     sjt_math1206 = x;
 #line 47
     (*_return)->m11 = sjt_math1205 * sjt_math1206;
 #line 40
-    sjt_dot794 = _parent;
+    sjt_dot795 = _parent;
 #line 48
-    sjt_math1207 = (sjt_dot794)->m12;
+    sjt_math1207 = (sjt_dot795)->m12;
 #line 40
     sjt_math1208 = x;
 #line 48
     (*_return)->m12 = sjt_math1207 * sjt_math1208;
 #line 40
-    sjt_dot795 = _parent;
+    sjt_dot796 = _parent;
 #line 49
-    sjt_math1209 = (sjt_dot795)->m13;
+    sjt_math1209 = (sjt_dot796)->m13;
 #line 40
     sjt_math1210 = x;
 #line 49
     (*_return)->m13 = sjt_math1209 * sjt_math1210;
 #line 40
-    sjt_dot796 = _parent;
+    sjt_dot797 = _parent;
 #line 50
-    sjt_math1211 = (sjt_dot796)->m20;
+    sjt_math1211 = (sjt_dot797)->m20;
 #line 40
     sjt_math1212 = x;
 #line 50
     (*_return)->m20 = sjt_math1211 * sjt_math1212;
 #line 40
-    sjt_dot797 = _parent;
+    sjt_dot798 = _parent;
 #line 51
-    sjt_math1213 = (sjt_dot797)->m21;
+    sjt_math1213 = (sjt_dot798)->m21;
 #line 40
     sjt_math1214 = x;
 #line 51
     (*_return)->m21 = sjt_math1213 * sjt_math1214;
 #line 40
-    sjt_dot798 = _parent;
+    sjt_dot799 = _parent;
 #line 52
-    sjt_math1215 = (sjt_dot798)->m22;
+    sjt_math1215 = (sjt_dot799)->m22;
 #line 40
     sjt_math1216 = x;
 #line 52
     (*_return)->m22 = sjt_math1215 * sjt_math1216;
 #line 40
-    sjt_dot799 = _parent;
+    sjt_dot800 = _parent;
 #line 53
-    sjt_math1217 = (sjt_dot799)->m23;
+    sjt_math1217 = (sjt_dot800)->m23;
 #line 40
     sjt_math1218 = x;
 #line 53
     (*_return)->m23 = sjt_math1217 * sjt_math1218;
 #line 40
-    sjt_dot800 = _parent;
+    sjt_dot801 = _parent;
 #line 54
-    sjt_math1219 = (sjt_dot800)->m30;
+    sjt_math1219 = (sjt_dot801)->m30;
 #line 40
     sjt_math1220 = x;
 #line 54
     (*_return)->m30 = sjt_math1219 * sjt_math1220;
 #line 40
-    sjt_dot801 = _parent;
+    sjt_dot802 = _parent;
 #line 55
-    sjt_math1221 = (sjt_dot801)->m31;
+    sjt_math1221 = (sjt_dot802)->m31;
 #line 40
     sjt_math1222 = x;
 #line 55
     (*_return)->m31 = sjt_math1221 * sjt_math1222;
 #line 40
-    sjt_dot802 = _parent;
+    sjt_dot803 = _parent;
 #line 56
-    sjt_math1223 = (sjt_dot802)->m32;
+    sjt_math1223 = (sjt_dot803)->m32;
 #line 40
     sjt_math1224 = x;
 #line 56
     (*_return)->m32 = sjt_math1223 * sjt_math1224;
 #line 40
-    sjt_dot803 = _parent;
+    sjt_dot804 = _parent;
 #line 57
-    sjt_math1225 = (sjt_dot803)->m33;
+    sjt_math1225 = (sjt_dot804)->m33;
 #line 40
     sjt_math1226 = x;
 #line 57
@@ -17686,7 +17689,6 @@ void sjf_mat4_multiply_f32_heap(sjs_mat4* _parent, float x, sjs_mat4_heap** _ret
 }
 
 void sjf_mat4_multiply_heap(sjs_mat4* _parent, sjs_mat4* m, sjs_mat4_heap** _return) {
-    sjs_mat4* sjt_dot322;
     sjs_mat4* sjt_dot323;
     sjs_mat4* sjt_dot324;
     sjs_mat4* sjt_dot325;
@@ -17814,6 +17816,7 @@ void sjf_mat4_multiply_heap(sjs_mat4* _parent, sjs_mat4* m, sjs_mat4_heap** _ret
     sjs_mat4* sjt_dot447;
     sjs_mat4* sjt_dot448;
     sjs_mat4* sjt_dot449;
+    sjs_mat4* sjt_dot450;
     float sjt_math395;
     float sjt_math396;
     float sjt_math397;
@@ -18042,737 +18045,737 @@ void sjf_mat4_multiply_heap(sjs_mat4* _parent, sjs_mat4* m, sjs_mat4_heap** _ret
     (*_return) = (sjs_mat4_heap*)malloc(sizeof(sjs_mat4_heap));
     (*_return)->_refCount = 1;
 #line 19 "lib/ui/mat4.sj"
-    sjt_dot322 = m;
+    sjt_dot323 = m;
 #line 21
-    sjt_math401 = (sjt_dot322)->m00;
+    sjt_math401 = (sjt_dot323)->m00;
 #line 19
-    sjt_dot323 = _parent;
+    sjt_dot324 = _parent;
 #line 21
-    sjt_math402 = (sjt_dot323)->m00;
+    sjt_math402 = (sjt_dot324)->m00;
 #line 21
     sjt_math399 = sjt_math401 * sjt_math402;
 #line 19
-    sjt_dot324 = m;
+    sjt_dot325 = m;
 #line 21
-    sjt_math403 = (sjt_dot324)->m01;
+    sjt_math403 = (sjt_dot325)->m01;
 #line 19
-    sjt_dot325 = _parent;
+    sjt_dot326 = _parent;
 #line 21
-    sjt_math404 = (sjt_dot325)->m10;
+    sjt_math404 = (sjt_dot326)->m10;
 #line 21
     sjt_math400 = sjt_math403 * sjt_math404;
 #line 21
     sjt_math397 = sjt_math399 + sjt_math400;
 #line 19
-    sjt_dot326 = m;
+    sjt_dot327 = m;
 #line 21
-    sjt_math405 = (sjt_dot326)->m02;
+    sjt_math405 = (sjt_dot327)->m02;
 #line 19
-    sjt_dot327 = _parent;
+    sjt_dot328 = _parent;
 #line 21
-    sjt_math406 = (sjt_dot327)->m20;
+    sjt_math406 = (sjt_dot328)->m20;
 #line 21
     sjt_math398 = sjt_math405 * sjt_math406;
 #line 21
     sjt_math395 = sjt_math397 + sjt_math398;
 #line 19
-    sjt_dot328 = m;
+    sjt_dot329 = m;
 #line 21
-    sjt_math407 = (sjt_dot328)->m03;
+    sjt_math407 = (sjt_dot329)->m03;
 #line 19
-    sjt_dot329 = _parent;
+    sjt_dot330 = _parent;
 #line 21
-    sjt_math408 = (sjt_dot329)->m30;
+    sjt_math408 = (sjt_dot330)->m30;
 #line 21
     sjt_math396 = sjt_math407 * sjt_math408;
 #line 21
     (*_return)->m00 = sjt_math395 + sjt_math396;
 #line 19
-    sjt_dot330 = m;
+    sjt_dot331 = m;
 #line 22
-    sjt_math415 = (sjt_dot330)->m00;
+    sjt_math415 = (sjt_dot331)->m00;
 #line 19
-    sjt_dot331 = _parent;
+    sjt_dot332 = _parent;
 #line 22
-    sjt_math416 = (sjt_dot331)->m01;
+    sjt_math416 = (sjt_dot332)->m01;
 #line 22
     sjt_math413 = sjt_math415 * sjt_math416;
 #line 19
-    sjt_dot332 = m;
+    sjt_dot333 = m;
 #line 22
-    sjt_math417 = (sjt_dot332)->m01;
+    sjt_math417 = (sjt_dot333)->m01;
 #line 19
-    sjt_dot333 = _parent;
+    sjt_dot334 = _parent;
 #line 22
-    sjt_math418 = (sjt_dot333)->m11;
+    sjt_math418 = (sjt_dot334)->m11;
 #line 22
     sjt_math414 = sjt_math417 * sjt_math418;
 #line 22
     sjt_math411 = sjt_math413 + sjt_math414;
 #line 19
-    sjt_dot334 = m;
+    sjt_dot335 = m;
 #line 22
-    sjt_math419 = (sjt_dot334)->m02;
+    sjt_math419 = (sjt_dot335)->m02;
 #line 19
-    sjt_dot335 = _parent;
+    sjt_dot336 = _parent;
 #line 22
-    sjt_math420 = (sjt_dot335)->m21;
+    sjt_math420 = (sjt_dot336)->m21;
 #line 22
     sjt_math412 = sjt_math419 * sjt_math420;
 #line 22
     sjt_math409 = sjt_math411 + sjt_math412;
 #line 19
-    sjt_dot336 = m;
+    sjt_dot337 = m;
 #line 22
-    sjt_math421 = (sjt_dot336)->m03;
+    sjt_math421 = (sjt_dot337)->m03;
 #line 19
-    sjt_dot337 = _parent;
+    sjt_dot338 = _parent;
 #line 22
-    sjt_math422 = (sjt_dot337)->m31;
+    sjt_math422 = (sjt_dot338)->m31;
 #line 22
     sjt_math410 = sjt_math421 * sjt_math422;
 #line 22
     (*_return)->m01 = sjt_math409 + sjt_math410;
 #line 19
-    sjt_dot338 = m;
+    sjt_dot339 = m;
 #line 23
-    sjt_math429 = (sjt_dot338)->m00;
+    sjt_math429 = (sjt_dot339)->m00;
 #line 19
-    sjt_dot339 = _parent;
+    sjt_dot340 = _parent;
 #line 23
-    sjt_math430 = (sjt_dot339)->m02;
+    sjt_math430 = (sjt_dot340)->m02;
 #line 23
     sjt_math427 = sjt_math429 * sjt_math430;
 #line 19
-    sjt_dot340 = m;
+    sjt_dot341 = m;
 #line 23
-    sjt_math431 = (sjt_dot340)->m01;
+    sjt_math431 = (sjt_dot341)->m01;
 #line 19
-    sjt_dot341 = _parent;
+    sjt_dot342 = _parent;
 #line 23
-    sjt_math432 = (sjt_dot341)->m12;
+    sjt_math432 = (sjt_dot342)->m12;
 #line 23
     sjt_math428 = sjt_math431 * sjt_math432;
 #line 23
     sjt_math425 = sjt_math427 + sjt_math428;
 #line 19
-    sjt_dot342 = m;
+    sjt_dot343 = m;
 #line 23
-    sjt_math433 = (sjt_dot342)->m02;
+    sjt_math433 = (sjt_dot343)->m02;
 #line 19
-    sjt_dot343 = _parent;
+    sjt_dot344 = _parent;
 #line 23
-    sjt_math434 = (sjt_dot343)->m22;
+    sjt_math434 = (sjt_dot344)->m22;
 #line 23
     sjt_math426 = sjt_math433 * sjt_math434;
 #line 23
     sjt_math423 = sjt_math425 + sjt_math426;
 #line 19
-    sjt_dot344 = m;
+    sjt_dot345 = m;
 #line 23
-    sjt_math435 = (sjt_dot344)->m03;
+    sjt_math435 = (sjt_dot345)->m03;
 #line 19
-    sjt_dot345 = _parent;
+    sjt_dot346 = _parent;
 #line 23
-    sjt_math436 = (sjt_dot345)->m32;
+    sjt_math436 = (sjt_dot346)->m32;
 #line 23
     sjt_math424 = sjt_math435 * sjt_math436;
 #line 23
     (*_return)->m02 = sjt_math423 + sjt_math424;
 #line 19
-    sjt_dot346 = m;
+    sjt_dot347 = m;
 #line 24
-    sjt_math443 = (sjt_dot346)->m00;
+    sjt_math443 = (sjt_dot347)->m00;
 #line 19
-    sjt_dot347 = _parent;
+    sjt_dot348 = _parent;
 #line 24
-    sjt_math444 = (sjt_dot347)->m03;
+    sjt_math444 = (sjt_dot348)->m03;
 #line 24
     sjt_math441 = sjt_math443 * sjt_math444;
 #line 19
-    sjt_dot348 = m;
+    sjt_dot349 = m;
 #line 24
-    sjt_math445 = (sjt_dot348)->m01;
+    sjt_math445 = (sjt_dot349)->m01;
 #line 19
-    sjt_dot349 = _parent;
+    sjt_dot350 = _parent;
 #line 24
-    sjt_math446 = (sjt_dot349)->m13;
+    sjt_math446 = (sjt_dot350)->m13;
 #line 24
     sjt_math442 = sjt_math445 * sjt_math446;
 #line 24
     sjt_math439 = sjt_math441 + sjt_math442;
 #line 19
-    sjt_dot350 = m;
+    sjt_dot351 = m;
 #line 24
-    sjt_math447 = (sjt_dot350)->m02;
+    sjt_math447 = (sjt_dot351)->m02;
 #line 19
-    sjt_dot351 = _parent;
+    sjt_dot352 = _parent;
 #line 24
-    sjt_math448 = (sjt_dot351)->m23;
+    sjt_math448 = (sjt_dot352)->m23;
 #line 24
     sjt_math440 = sjt_math447 * sjt_math448;
 #line 24
     sjt_math437 = sjt_math439 + sjt_math440;
 #line 19
-    sjt_dot352 = m;
+    sjt_dot353 = m;
 #line 24
-    sjt_math449 = (sjt_dot352)->m03;
+    sjt_math449 = (sjt_dot353)->m03;
 #line 19
-    sjt_dot353 = _parent;
+    sjt_dot354 = _parent;
 #line 24
-    sjt_math450 = (sjt_dot353)->m33;
+    sjt_math450 = (sjt_dot354)->m33;
 #line 24
     sjt_math438 = sjt_math449 * sjt_math450;
 #line 24
     (*_return)->m03 = sjt_math437 + sjt_math438;
 #line 19
-    sjt_dot354 = m;
+    sjt_dot355 = m;
 #line 25
-    sjt_math457 = (sjt_dot354)->m10;
+    sjt_math457 = (sjt_dot355)->m10;
 #line 19
-    sjt_dot355 = _parent;
+    sjt_dot356 = _parent;
 #line 25
-    sjt_math458 = (sjt_dot355)->m00;
+    sjt_math458 = (sjt_dot356)->m00;
 #line 25
     sjt_math455 = sjt_math457 * sjt_math458;
 #line 19
-    sjt_dot356 = m;
+    sjt_dot357 = m;
 #line 25
-    sjt_math459 = (sjt_dot356)->m11;
+    sjt_math459 = (sjt_dot357)->m11;
 #line 19
-    sjt_dot357 = _parent;
+    sjt_dot358 = _parent;
 #line 25
-    sjt_math460 = (sjt_dot357)->m10;
+    sjt_math460 = (sjt_dot358)->m10;
 #line 25
     sjt_math456 = sjt_math459 * sjt_math460;
 #line 25
     sjt_math453 = sjt_math455 + sjt_math456;
 #line 19
-    sjt_dot358 = m;
+    sjt_dot359 = m;
 #line 25
-    sjt_math461 = (sjt_dot358)->m12;
+    sjt_math461 = (sjt_dot359)->m12;
 #line 19
-    sjt_dot359 = _parent;
+    sjt_dot360 = _parent;
 #line 25
-    sjt_math462 = (sjt_dot359)->m20;
+    sjt_math462 = (sjt_dot360)->m20;
 #line 25
     sjt_math454 = sjt_math461 * sjt_math462;
 #line 25
     sjt_math451 = sjt_math453 + sjt_math454;
 #line 19
-    sjt_dot360 = m;
+    sjt_dot361 = m;
 #line 25
-    sjt_math463 = (sjt_dot360)->m13;
+    sjt_math463 = (sjt_dot361)->m13;
 #line 19
-    sjt_dot361 = _parent;
+    sjt_dot362 = _parent;
 #line 25
-    sjt_math464 = (sjt_dot361)->m30;
+    sjt_math464 = (sjt_dot362)->m30;
 #line 25
     sjt_math452 = sjt_math463 * sjt_math464;
 #line 25
     (*_return)->m10 = sjt_math451 + sjt_math452;
 #line 19
-    sjt_dot362 = m;
+    sjt_dot363 = m;
 #line 26
-    sjt_math471 = (sjt_dot362)->m10;
+    sjt_math471 = (sjt_dot363)->m10;
 #line 19
-    sjt_dot363 = _parent;
+    sjt_dot364 = _parent;
 #line 26
-    sjt_math472 = (sjt_dot363)->m01;
+    sjt_math472 = (sjt_dot364)->m01;
 #line 26
     sjt_math469 = sjt_math471 * sjt_math472;
 #line 19
-    sjt_dot364 = m;
+    sjt_dot365 = m;
 #line 26
-    sjt_math473 = (sjt_dot364)->m11;
+    sjt_math473 = (sjt_dot365)->m11;
 #line 19
-    sjt_dot365 = _parent;
+    sjt_dot366 = _parent;
 #line 26
-    sjt_math474 = (sjt_dot365)->m11;
+    sjt_math474 = (sjt_dot366)->m11;
 #line 26
     sjt_math470 = sjt_math473 * sjt_math474;
 #line 26
     sjt_math467 = sjt_math469 + sjt_math470;
 #line 19
-    sjt_dot366 = m;
+    sjt_dot367 = m;
 #line 26
-    sjt_math475 = (sjt_dot366)->m12;
+    sjt_math475 = (sjt_dot367)->m12;
 #line 19
-    sjt_dot367 = _parent;
+    sjt_dot368 = _parent;
 #line 26
-    sjt_math476 = (sjt_dot367)->m21;
+    sjt_math476 = (sjt_dot368)->m21;
 #line 26
     sjt_math468 = sjt_math475 * sjt_math476;
 #line 26
     sjt_math465 = sjt_math467 + sjt_math468;
 #line 19
-    sjt_dot368 = m;
+    sjt_dot369 = m;
 #line 26
-    sjt_math477 = (sjt_dot368)->m13;
+    sjt_math477 = (sjt_dot369)->m13;
 #line 19
-    sjt_dot369 = _parent;
+    sjt_dot370 = _parent;
 #line 26
-    sjt_math478 = (sjt_dot369)->m31;
+    sjt_math478 = (sjt_dot370)->m31;
 #line 26
     sjt_math466 = sjt_math477 * sjt_math478;
 #line 26
     (*_return)->m11 = sjt_math465 + sjt_math466;
 #line 19
-    sjt_dot370 = m;
+    sjt_dot371 = m;
 #line 27
-    sjt_math485 = (sjt_dot370)->m10;
+    sjt_math485 = (sjt_dot371)->m10;
 #line 19
-    sjt_dot371 = _parent;
+    sjt_dot372 = _parent;
 #line 27
-    sjt_math486 = (sjt_dot371)->m02;
+    sjt_math486 = (sjt_dot372)->m02;
 #line 27
     sjt_math483 = sjt_math485 * sjt_math486;
 #line 19
-    sjt_dot372 = m;
+    sjt_dot373 = m;
 #line 27
-    sjt_math487 = (sjt_dot372)->m11;
+    sjt_math487 = (sjt_dot373)->m11;
 #line 19
-    sjt_dot373 = _parent;
+    sjt_dot374 = _parent;
 #line 27
-    sjt_math488 = (sjt_dot373)->m12;
+    sjt_math488 = (sjt_dot374)->m12;
 #line 27
     sjt_math484 = sjt_math487 * sjt_math488;
 #line 27
     sjt_math481 = sjt_math483 + sjt_math484;
 #line 19
-    sjt_dot374 = m;
+    sjt_dot375 = m;
 #line 27
-    sjt_math489 = (sjt_dot374)->m12;
+    sjt_math489 = (sjt_dot375)->m12;
 #line 19
-    sjt_dot375 = _parent;
+    sjt_dot376 = _parent;
 #line 27
-    sjt_math490 = (sjt_dot375)->m22;
+    sjt_math490 = (sjt_dot376)->m22;
 #line 27
     sjt_math482 = sjt_math489 * sjt_math490;
 #line 27
     sjt_math479 = sjt_math481 + sjt_math482;
 #line 19
-    sjt_dot376 = m;
+    sjt_dot377 = m;
 #line 27
-    sjt_math491 = (sjt_dot376)->m13;
+    sjt_math491 = (sjt_dot377)->m13;
 #line 19
-    sjt_dot377 = _parent;
+    sjt_dot378 = _parent;
 #line 27
-    sjt_math492 = (sjt_dot377)->m32;
+    sjt_math492 = (sjt_dot378)->m32;
 #line 27
     sjt_math480 = sjt_math491 * sjt_math492;
 #line 27
     (*_return)->m12 = sjt_math479 + sjt_math480;
 #line 19
-    sjt_dot378 = m;
+    sjt_dot379 = m;
 #line 28
-    sjt_math499 = (sjt_dot378)->m10;
+    sjt_math499 = (sjt_dot379)->m10;
 #line 19
-    sjt_dot379 = _parent;
+    sjt_dot380 = _parent;
 #line 28
-    sjt_math500 = (sjt_dot379)->m03;
+    sjt_math500 = (sjt_dot380)->m03;
 #line 28
     sjt_math497 = sjt_math499 * sjt_math500;
 #line 19
-    sjt_dot380 = m;
+    sjt_dot381 = m;
 #line 28
-    sjt_math501 = (sjt_dot380)->m11;
+    sjt_math501 = (sjt_dot381)->m11;
 #line 19
-    sjt_dot381 = _parent;
+    sjt_dot382 = _parent;
 #line 28
-    sjt_math502 = (sjt_dot381)->m13;
+    sjt_math502 = (sjt_dot382)->m13;
 #line 28
     sjt_math498 = sjt_math501 * sjt_math502;
 #line 28
     sjt_math495 = sjt_math497 + sjt_math498;
 #line 19
-    sjt_dot382 = m;
+    sjt_dot383 = m;
 #line 28
-    sjt_math503 = (sjt_dot382)->m12;
+    sjt_math503 = (sjt_dot383)->m12;
 #line 19
-    sjt_dot383 = _parent;
+    sjt_dot384 = _parent;
 #line 28
-    sjt_math504 = (sjt_dot383)->m23;
+    sjt_math504 = (sjt_dot384)->m23;
 #line 28
     sjt_math496 = sjt_math503 * sjt_math504;
 #line 28
     sjt_math493 = sjt_math495 + sjt_math496;
 #line 19
-    sjt_dot384 = m;
+    sjt_dot385 = m;
 #line 28
-    sjt_math505 = (sjt_dot384)->m13;
+    sjt_math505 = (sjt_dot385)->m13;
 #line 19
-    sjt_dot385 = _parent;
+    sjt_dot386 = _parent;
 #line 28
-    sjt_math506 = (sjt_dot385)->m33;
+    sjt_math506 = (sjt_dot386)->m33;
 #line 28
     sjt_math494 = sjt_math505 * sjt_math506;
 #line 28
     (*_return)->m13 = sjt_math493 + sjt_math494;
 #line 19
-    sjt_dot386 = m;
+    sjt_dot387 = m;
 #line 29
-    sjt_math513 = (sjt_dot386)->m20;
+    sjt_math513 = (sjt_dot387)->m20;
 #line 19
-    sjt_dot387 = _parent;
+    sjt_dot388 = _parent;
 #line 29
-    sjt_math514 = (sjt_dot387)->m00;
+    sjt_math514 = (sjt_dot388)->m00;
 #line 29
     sjt_math511 = sjt_math513 * sjt_math514;
 #line 19
-    sjt_dot388 = m;
+    sjt_dot389 = m;
 #line 29
-    sjt_math515 = (sjt_dot388)->m21;
+    sjt_math515 = (sjt_dot389)->m21;
 #line 19
-    sjt_dot389 = _parent;
+    sjt_dot390 = _parent;
 #line 29
-    sjt_math516 = (sjt_dot389)->m10;
+    sjt_math516 = (sjt_dot390)->m10;
 #line 29
     sjt_math512 = sjt_math515 * sjt_math516;
 #line 29
     sjt_math509 = sjt_math511 + sjt_math512;
 #line 19
-    sjt_dot390 = m;
+    sjt_dot391 = m;
 #line 29
-    sjt_math517 = (sjt_dot390)->m22;
+    sjt_math517 = (sjt_dot391)->m22;
 #line 19
-    sjt_dot391 = _parent;
+    sjt_dot392 = _parent;
 #line 29
-    sjt_math518 = (sjt_dot391)->m20;
+    sjt_math518 = (sjt_dot392)->m20;
 #line 29
     sjt_math510 = sjt_math517 * sjt_math518;
 #line 29
     sjt_math507 = sjt_math509 + sjt_math510;
 #line 19
-    sjt_dot392 = m;
+    sjt_dot393 = m;
 #line 29
-    sjt_math519 = (sjt_dot392)->m23;
+    sjt_math519 = (sjt_dot393)->m23;
 #line 19
-    sjt_dot393 = _parent;
+    sjt_dot394 = _parent;
 #line 29
-    sjt_math520 = (sjt_dot393)->m30;
+    sjt_math520 = (sjt_dot394)->m30;
 #line 29
     sjt_math508 = sjt_math519 * sjt_math520;
 #line 29
     (*_return)->m20 = sjt_math507 + sjt_math508;
 #line 19
-    sjt_dot394 = m;
+    sjt_dot395 = m;
 #line 30
-    sjt_math527 = (sjt_dot394)->m20;
+    sjt_math527 = (sjt_dot395)->m20;
 #line 19
-    sjt_dot395 = _parent;
+    sjt_dot396 = _parent;
 #line 30
-    sjt_math528 = (sjt_dot395)->m01;
+    sjt_math528 = (sjt_dot396)->m01;
 #line 30
     sjt_math525 = sjt_math527 * sjt_math528;
 #line 19
-    sjt_dot396 = m;
+    sjt_dot397 = m;
 #line 30
-    sjt_math529 = (sjt_dot396)->m21;
+    sjt_math529 = (sjt_dot397)->m21;
 #line 19
-    sjt_dot397 = _parent;
+    sjt_dot398 = _parent;
 #line 30
-    sjt_math530 = (sjt_dot397)->m11;
+    sjt_math530 = (sjt_dot398)->m11;
 #line 30
     sjt_math526 = sjt_math529 * sjt_math530;
 #line 30
     sjt_math523 = sjt_math525 + sjt_math526;
 #line 19
-    sjt_dot398 = m;
+    sjt_dot399 = m;
 #line 30
-    sjt_math531 = (sjt_dot398)->m22;
+    sjt_math531 = (sjt_dot399)->m22;
 #line 19
-    sjt_dot399 = _parent;
+    sjt_dot400 = _parent;
 #line 30
-    sjt_math532 = (sjt_dot399)->m21;
+    sjt_math532 = (sjt_dot400)->m21;
 #line 30
     sjt_math524 = sjt_math531 * sjt_math532;
 #line 30
     sjt_math521 = sjt_math523 + sjt_math524;
 #line 19
-    sjt_dot400 = m;
+    sjt_dot401 = m;
 #line 30
-    sjt_math533 = (sjt_dot400)->m23;
+    sjt_math533 = (sjt_dot401)->m23;
 #line 19
-    sjt_dot401 = _parent;
+    sjt_dot402 = _parent;
 #line 30
-    sjt_math534 = (sjt_dot401)->m31;
+    sjt_math534 = (sjt_dot402)->m31;
 #line 30
     sjt_math522 = sjt_math533 * sjt_math534;
 #line 30
     (*_return)->m21 = sjt_math521 + sjt_math522;
 #line 19
-    sjt_dot402 = m;
+    sjt_dot403 = m;
 #line 31
-    sjt_math541 = (sjt_dot402)->m20;
+    sjt_math541 = (sjt_dot403)->m20;
 #line 19
-    sjt_dot403 = _parent;
+    sjt_dot404 = _parent;
 #line 31
-    sjt_math542 = (sjt_dot403)->m02;
+    sjt_math542 = (sjt_dot404)->m02;
 #line 31
     sjt_math539 = sjt_math541 * sjt_math542;
 #line 19
-    sjt_dot404 = m;
+    sjt_dot405 = m;
 #line 31
-    sjt_math543 = (sjt_dot404)->m21;
+    sjt_math543 = (sjt_dot405)->m21;
 #line 19
-    sjt_dot405 = _parent;
+    sjt_dot406 = _parent;
 #line 31
-    sjt_math544 = (sjt_dot405)->m12;
+    sjt_math544 = (sjt_dot406)->m12;
 #line 31
     sjt_math540 = sjt_math543 * sjt_math544;
 #line 31
     sjt_math537 = sjt_math539 + sjt_math540;
 #line 19
-    sjt_dot406 = m;
+    sjt_dot407 = m;
 #line 31
-    sjt_math545 = (sjt_dot406)->m22;
+    sjt_math545 = (sjt_dot407)->m22;
 #line 19
-    sjt_dot407 = _parent;
+    sjt_dot408 = _parent;
 #line 31
-    sjt_math546 = (sjt_dot407)->m22;
+    sjt_math546 = (sjt_dot408)->m22;
 #line 31
     sjt_math538 = sjt_math545 * sjt_math546;
 #line 31
     sjt_math535 = sjt_math537 + sjt_math538;
 #line 19
-    sjt_dot408 = m;
+    sjt_dot409 = m;
 #line 31
-    sjt_math547 = (sjt_dot408)->m23;
+    sjt_math547 = (sjt_dot409)->m23;
 #line 19
-    sjt_dot409 = _parent;
+    sjt_dot410 = _parent;
 #line 31
-    sjt_math548 = (sjt_dot409)->m32;
+    sjt_math548 = (sjt_dot410)->m32;
 #line 31
     sjt_math536 = sjt_math547 * sjt_math548;
 #line 31
     (*_return)->m22 = sjt_math535 + sjt_math536;
 #line 19
-    sjt_dot410 = m;
+    sjt_dot411 = m;
 #line 32
-    sjt_math555 = (sjt_dot410)->m20;
+    sjt_math555 = (sjt_dot411)->m20;
 #line 19
-    sjt_dot411 = _parent;
+    sjt_dot412 = _parent;
 #line 32
-    sjt_math556 = (sjt_dot411)->m03;
+    sjt_math556 = (sjt_dot412)->m03;
 #line 32
     sjt_math553 = sjt_math555 * sjt_math556;
 #line 19
-    sjt_dot412 = m;
+    sjt_dot413 = m;
 #line 32
-    sjt_math557 = (sjt_dot412)->m21;
+    sjt_math557 = (sjt_dot413)->m21;
 #line 19
-    sjt_dot413 = _parent;
+    sjt_dot414 = _parent;
 #line 32
-    sjt_math558 = (sjt_dot413)->m13;
+    sjt_math558 = (sjt_dot414)->m13;
 #line 32
     sjt_math554 = sjt_math557 * sjt_math558;
 #line 32
     sjt_math551 = sjt_math553 + sjt_math554;
 #line 19
-    sjt_dot414 = m;
+    sjt_dot415 = m;
 #line 32
-    sjt_math559 = (sjt_dot414)->m22;
+    sjt_math559 = (sjt_dot415)->m22;
 #line 19
-    sjt_dot415 = _parent;
+    sjt_dot416 = _parent;
 #line 32
-    sjt_math560 = (sjt_dot415)->m23;
+    sjt_math560 = (sjt_dot416)->m23;
 #line 32
     sjt_math552 = sjt_math559 * sjt_math560;
 #line 32
     sjt_math549 = sjt_math551 + sjt_math552;
 #line 19
-    sjt_dot416 = m;
+    sjt_dot417 = m;
 #line 32
-    sjt_math561 = (sjt_dot416)->m23;
+    sjt_math561 = (sjt_dot417)->m23;
 #line 19
-    sjt_dot417 = _parent;
+    sjt_dot418 = _parent;
 #line 32
-    sjt_math562 = (sjt_dot417)->m33;
+    sjt_math562 = (sjt_dot418)->m33;
 #line 32
     sjt_math550 = sjt_math561 * sjt_math562;
 #line 32
     (*_return)->m23 = sjt_math549 + sjt_math550;
 #line 19
-    sjt_dot418 = m;
+    sjt_dot419 = m;
 #line 33
-    sjt_math569 = (sjt_dot418)->m30;
+    sjt_math569 = (sjt_dot419)->m30;
 #line 19
-    sjt_dot419 = _parent;
+    sjt_dot420 = _parent;
 #line 33
-    sjt_math570 = (sjt_dot419)->m00;
+    sjt_math570 = (sjt_dot420)->m00;
 #line 33
     sjt_math567 = sjt_math569 * sjt_math570;
 #line 19
-    sjt_dot420 = m;
+    sjt_dot421 = m;
 #line 33
-    sjt_math571 = (sjt_dot420)->m31;
+    sjt_math571 = (sjt_dot421)->m31;
 #line 19
-    sjt_dot421 = _parent;
+    sjt_dot422 = _parent;
 #line 33
-    sjt_math572 = (sjt_dot421)->m10;
+    sjt_math572 = (sjt_dot422)->m10;
 #line 33
     sjt_math568 = sjt_math571 * sjt_math572;
 #line 33
     sjt_math565 = sjt_math567 + sjt_math568;
 #line 19
-    sjt_dot422 = m;
+    sjt_dot423 = m;
 #line 33
-    sjt_math573 = (sjt_dot422)->m32;
+    sjt_math573 = (sjt_dot423)->m32;
 #line 19
-    sjt_dot423 = _parent;
+    sjt_dot424 = _parent;
 #line 33
-    sjt_math574 = (sjt_dot423)->m20;
+    sjt_math574 = (sjt_dot424)->m20;
 #line 33
     sjt_math566 = sjt_math573 * sjt_math574;
 #line 33
     sjt_math563 = sjt_math565 + sjt_math566;
 #line 19
-    sjt_dot424 = m;
+    sjt_dot425 = m;
 #line 33
-    sjt_math575 = (sjt_dot424)->m33;
+    sjt_math575 = (sjt_dot425)->m33;
 #line 19
-    sjt_dot425 = _parent;
+    sjt_dot426 = _parent;
 #line 33
-    sjt_math576 = (sjt_dot425)->m30;
+    sjt_math576 = (sjt_dot426)->m30;
 #line 33
     sjt_math564 = sjt_math575 * sjt_math576;
 #line 33
     (*_return)->m30 = sjt_math563 + sjt_math564;
 #line 19
-    sjt_dot426 = m;
+    sjt_dot427 = m;
 #line 34
-    sjt_math583 = (sjt_dot426)->m30;
+    sjt_math583 = (sjt_dot427)->m30;
 #line 19
-    sjt_dot427 = _parent;
+    sjt_dot428 = _parent;
 #line 34
-    sjt_math584 = (sjt_dot427)->m01;
+    sjt_math584 = (sjt_dot428)->m01;
 #line 34
     sjt_math581 = sjt_math583 * sjt_math584;
 #line 19
-    sjt_dot428 = m;
+    sjt_dot429 = m;
 #line 34
-    sjt_math585 = (sjt_dot428)->m31;
+    sjt_math585 = (sjt_dot429)->m31;
 #line 19
-    sjt_dot429 = _parent;
+    sjt_dot430 = _parent;
 #line 34
-    sjt_math586 = (sjt_dot429)->m11;
+    sjt_math586 = (sjt_dot430)->m11;
 #line 34
     sjt_math582 = sjt_math585 * sjt_math586;
 #line 34
     sjt_math579 = sjt_math581 + sjt_math582;
 #line 19
-    sjt_dot430 = m;
+    sjt_dot431 = m;
 #line 34
-    sjt_math587 = (sjt_dot430)->m32;
+    sjt_math587 = (sjt_dot431)->m32;
 #line 19
-    sjt_dot431 = _parent;
+    sjt_dot432 = _parent;
 #line 34
-    sjt_math588 = (sjt_dot431)->m21;
+    sjt_math588 = (sjt_dot432)->m21;
 #line 34
     sjt_math580 = sjt_math587 * sjt_math588;
 #line 34
     sjt_math577 = sjt_math579 + sjt_math580;
 #line 19
-    sjt_dot432 = m;
+    sjt_dot433 = m;
 #line 34
-    sjt_math589 = (sjt_dot432)->m33;
+    sjt_math589 = (sjt_dot433)->m33;
 #line 19
-    sjt_dot433 = _parent;
+    sjt_dot434 = _parent;
 #line 34
-    sjt_math590 = (sjt_dot433)->m31;
+    sjt_math590 = (sjt_dot434)->m31;
 #line 34
     sjt_math578 = sjt_math589 * sjt_math590;
 #line 34
     (*_return)->m31 = sjt_math577 + sjt_math578;
 #line 19
-    sjt_dot434 = m;
+    sjt_dot435 = m;
 #line 35
-    sjt_math597 = (sjt_dot434)->m30;
+    sjt_math597 = (sjt_dot435)->m30;
 #line 19
-    sjt_dot435 = _parent;
+    sjt_dot436 = _parent;
 #line 35
-    sjt_math598 = (sjt_dot435)->m02;
+    sjt_math598 = (sjt_dot436)->m02;
 #line 35
     sjt_math595 = sjt_math597 * sjt_math598;
 #line 19
-    sjt_dot436 = m;
+    sjt_dot437 = m;
 #line 35
-    sjt_math599 = (sjt_dot436)->m31;
+    sjt_math599 = (sjt_dot437)->m31;
 #line 19
-    sjt_dot437 = _parent;
+    sjt_dot438 = _parent;
 #line 35
-    sjt_math600 = (sjt_dot437)->m12;
+    sjt_math600 = (sjt_dot438)->m12;
 #line 35
     sjt_math596 = sjt_math599 * sjt_math600;
 #line 35
     sjt_math593 = sjt_math595 + sjt_math596;
 #line 19
-    sjt_dot438 = m;
+    sjt_dot439 = m;
 #line 35
-    sjt_math601 = (sjt_dot438)->m32;
+    sjt_math601 = (sjt_dot439)->m32;
 #line 19
-    sjt_dot439 = _parent;
+    sjt_dot440 = _parent;
 #line 35
-    sjt_math602 = (sjt_dot439)->m22;
+    sjt_math602 = (sjt_dot440)->m22;
 #line 35
     sjt_math594 = sjt_math601 * sjt_math602;
 #line 35
     sjt_math591 = sjt_math593 + sjt_math594;
 #line 19
-    sjt_dot440 = m;
+    sjt_dot441 = m;
 #line 35
-    sjt_math603 = (sjt_dot440)->m33;
+    sjt_math603 = (sjt_dot441)->m33;
 #line 19
-    sjt_dot441 = _parent;
+    sjt_dot442 = _parent;
 #line 35
-    sjt_math604 = (sjt_dot441)->m32;
+    sjt_math604 = (sjt_dot442)->m32;
 #line 35
     sjt_math592 = sjt_math603 * sjt_math604;
 #line 35
     (*_return)->m32 = sjt_math591 + sjt_math592;
 #line 19
-    sjt_dot442 = m;
+    sjt_dot443 = m;
 #line 36
-    sjt_math611 = (sjt_dot442)->m30;
+    sjt_math611 = (sjt_dot443)->m30;
 #line 19
-    sjt_dot443 = _parent;
+    sjt_dot444 = _parent;
 #line 36
-    sjt_math612 = (sjt_dot443)->m03;
+    sjt_math612 = (sjt_dot444)->m03;
 #line 36
     sjt_math609 = sjt_math611 * sjt_math612;
 #line 19
-    sjt_dot444 = m;
+    sjt_dot445 = m;
 #line 36
-    sjt_math613 = (sjt_dot444)->m31;
+    sjt_math613 = (sjt_dot445)->m31;
 #line 19
-    sjt_dot445 = _parent;
+    sjt_dot446 = _parent;
 #line 36
-    sjt_math614 = (sjt_dot445)->m13;
+    sjt_math614 = (sjt_dot446)->m13;
 #line 36
     sjt_math610 = sjt_math613 * sjt_math614;
 #line 36
     sjt_math607 = sjt_math609 + sjt_math610;
 #line 19
-    sjt_dot446 = m;
+    sjt_dot447 = m;
 #line 36
-    sjt_math615 = (sjt_dot446)->m32;
+    sjt_math615 = (sjt_dot447)->m32;
 #line 19
-    sjt_dot447 = _parent;
+    sjt_dot448 = _parent;
 #line 36
-    sjt_math616 = (sjt_dot447)->m23;
+    sjt_math616 = (sjt_dot448)->m23;
 #line 36
     sjt_math608 = sjt_math615 * sjt_math616;
 #line 36
     sjt_math605 = sjt_math607 + sjt_math608;
 #line 19
-    sjt_dot448 = m;
+    sjt_dot449 = m;
 #line 36
-    sjt_math617 = (sjt_dot448)->m33;
+    sjt_math617 = (sjt_dot449)->m33;
 #line 19
-    sjt_dot449 = _parent;
+    sjt_dot450 = _parent;
 #line 36
-    sjt_math618 = (sjt_dot449)->m33;
+    sjt_math618 = (sjt_dot450)->m33;
 #line 36
     sjt_math606 = sjt_math617 * sjt_math618;
 #line 36
@@ -19458,7 +19461,6 @@ void sjf_mat4_translate_heap(float x, float y, float z, sjs_mat4_heap** _return)
 }
 
 void sjf_mat4_transpose(sjs_mat4* _parent, sjs_mat4* _return) {
-    sjs_mat4* sjt_dot452;
     sjs_mat4* sjt_dot453;
     sjs_mat4* sjt_dot454;
     sjs_mat4* sjt_dot455;
@@ -19474,77 +19476,77 @@ void sjf_mat4_transpose(sjs_mat4* _parent, sjs_mat4* _return) {
     sjs_mat4* sjt_dot465;
     sjs_mat4* sjt_dot466;
     sjs_mat4* sjt_dot467;
+    sjs_mat4* sjt_dot468;
 
 #line 88 "lib/ui/mat4.sj"
-    sjt_dot452 = _parent;
-#line 89
-    _return->m00 = (sjt_dot452)->m00;
-#line 88
     sjt_dot453 = _parent;
 #line 89
-    _return->m01 = (sjt_dot453)->m10;
+    _return->m00 = (sjt_dot453)->m00;
 #line 88
     sjt_dot454 = _parent;
 #line 89
-    _return->m02 = (sjt_dot454)->m20;
+    _return->m01 = (sjt_dot454)->m10;
 #line 88
     sjt_dot455 = _parent;
 #line 89
-    _return->m03 = (sjt_dot455)->m30;
+    _return->m02 = (sjt_dot455)->m20;
 #line 88
     sjt_dot456 = _parent;
 #line 89
-    _return->m10 = (sjt_dot456)->m01;
+    _return->m03 = (sjt_dot456)->m30;
 #line 88
     sjt_dot457 = _parent;
 #line 89
-    _return->m11 = (sjt_dot457)->m11;
+    _return->m10 = (sjt_dot457)->m01;
 #line 88
     sjt_dot458 = _parent;
 #line 89
-    _return->m12 = (sjt_dot458)->m21;
+    _return->m11 = (sjt_dot458)->m11;
 #line 88
     sjt_dot459 = _parent;
 #line 89
-    _return->m13 = (sjt_dot459)->m31;
+    _return->m12 = (sjt_dot459)->m21;
 #line 88
     sjt_dot460 = _parent;
 #line 89
-    _return->m20 = (sjt_dot460)->m02;
+    _return->m13 = (sjt_dot460)->m31;
 #line 88
     sjt_dot461 = _parent;
 #line 89
-    _return->m21 = (sjt_dot461)->m12;
+    _return->m20 = (sjt_dot461)->m02;
 #line 88
     sjt_dot462 = _parent;
 #line 89
-    _return->m22 = (sjt_dot462)->m22;
+    _return->m21 = (sjt_dot462)->m12;
 #line 88
     sjt_dot463 = _parent;
 #line 89
-    _return->m23 = (sjt_dot463)->m32;
+    _return->m22 = (sjt_dot463)->m22;
 #line 88
     sjt_dot464 = _parent;
 #line 89
-    _return->m30 = (sjt_dot464)->m03;
+    _return->m23 = (sjt_dot464)->m32;
 #line 88
     sjt_dot465 = _parent;
 #line 89
-    _return->m31 = (sjt_dot465)->m13;
+    _return->m30 = (sjt_dot465)->m03;
 #line 88
     sjt_dot466 = _parent;
 #line 89
-    _return->m32 = (sjt_dot466)->m23;
+    _return->m31 = (sjt_dot466)->m13;
 #line 88
     sjt_dot467 = _parent;
 #line 89
-    _return->m33 = (sjt_dot467)->m33;
+    _return->m32 = (sjt_dot467)->m23;
+#line 88
+    sjt_dot468 = _parent;
+#line 89
+    _return->m33 = (sjt_dot468)->m33;
 #line 89
     sjf_mat4(_return);
 }
 
 void sjf_mat4_transpose_heap(sjs_mat4* _parent, sjs_mat4_heap** _return) {
-    sjs_mat4* sjt_dot468;
     sjs_mat4* sjt_dot469;
     sjs_mat4* sjt_dot470;
     sjs_mat4* sjt_dot471;
@@ -19560,73 +19562,74 @@ void sjf_mat4_transpose_heap(sjs_mat4* _parent, sjs_mat4_heap** _return) {
     sjs_mat4* sjt_dot481;
     sjs_mat4* sjt_dot482;
     sjs_mat4* sjt_dot483;
+    sjs_mat4* sjt_dot484;
 
     (*_return) = (sjs_mat4_heap*)malloc(sizeof(sjs_mat4_heap));
     (*_return)->_refCount = 1;
 #line 88 "lib/ui/mat4.sj"
-    sjt_dot468 = _parent;
-#line 89
-    (*_return)->m00 = (sjt_dot468)->m00;
-#line 88
     sjt_dot469 = _parent;
 #line 89
-    (*_return)->m01 = (sjt_dot469)->m10;
+    (*_return)->m00 = (sjt_dot469)->m00;
 #line 88
     sjt_dot470 = _parent;
 #line 89
-    (*_return)->m02 = (sjt_dot470)->m20;
+    (*_return)->m01 = (sjt_dot470)->m10;
 #line 88
     sjt_dot471 = _parent;
 #line 89
-    (*_return)->m03 = (sjt_dot471)->m30;
+    (*_return)->m02 = (sjt_dot471)->m20;
 #line 88
     sjt_dot472 = _parent;
 #line 89
-    (*_return)->m10 = (sjt_dot472)->m01;
+    (*_return)->m03 = (sjt_dot472)->m30;
 #line 88
     sjt_dot473 = _parent;
 #line 89
-    (*_return)->m11 = (sjt_dot473)->m11;
+    (*_return)->m10 = (sjt_dot473)->m01;
 #line 88
     sjt_dot474 = _parent;
 #line 89
-    (*_return)->m12 = (sjt_dot474)->m21;
+    (*_return)->m11 = (sjt_dot474)->m11;
 #line 88
     sjt_dot475 = _parent;
 #line 89
-    (*_return)->m13 = (sjt_dot475)->m31;
+    (*_return)->m12 = (sjt_dot475)->m21;
 #line 88
     sjt_dot476 = _parent;
 #line 89
-    (*_return)->m20 = (sjt_dot476)->m02;
+    (*_return)->m13 = (sjt_dot476)->m31;
 #line 88
     sjt_dot477 = _parent;
 #line 89
-    (*_return)->m21 = (sjt_dot477)->m12;
+    (*_return)->m20 = (sjt_dot477)->m02;
 #line 88
     sjt_dot478 = _parent;
 #line 89
-    (*_return)->m22 = (sjt_dot478)->m22;
+    (*_return)->m21 = (sjt_dot478)->m12;
 #line 88
     sjt_dot479 = _parent;
 #line 89
-    (*_return)->m23 = (sjt_dot479)->m32;
+    (*_return)->m22 = (sjt_dot479)->m22;
 #line 88
     sjt_dot480 = _parent;
 #line 89
-    (*_return)->m30 = (sjt_dot480)->m03;
+    (*_return)->m23 = (sjt_dot480)->m32;
 #line 88
     sjt_dot481 = _parent;
 #line 89
-    (*_return)->m31 = (sjt_dot481)->m13;
+    (*_return)->m30 = (sjt_dot481)->m03;
 #line 88
     sjt_dot482 = _parent;
 #line 89
-    (*_return)->m32 = (sjt_dot482)->m23;
+    (*_return)->m31 = (sjt_dot482)->m13;
 #line 88
     sjt_dot483 = _parent;
 #line 89
-    (*_return)->m33 = (sjt_dot483)->m33;
+    (*_return)->m32 = (sjt_dot483)->m23;
+#line 88
+    sjt_dot484 = _parent;
+#line 89
+    (*_return)->m33 = (sjt_dot484)->m33;
 #line 89
     sjf_mat4_heap((*_return));
 }
@@ -19653,7 +19656,7 @@ sji_nauScene3dElement_model* sjf_model_as_sji_nauScene3dElement_model(sjs_model*
     _interface->destroy = (void(*)(void*))sjf_model_destroy;
     _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_model_asInterface;
     _interface->setWorld = (void(*)(void*,sjs_mat4*))sjf_model_setWorld;
-    _interface->render = (void(*)(void*,sjs_mat4*,sjs_mat4*,sjs_light*))sjf_model_render;
+    _interface->render = (void(*)(void*,sjs_rect*,sjs_mat4*,sjs_mat4*,sjs_light*))sjf_model_render;
     _interface->fireMouseEvent = (void(*)(void*,sjs_rect*,sjs_mat4*,sjs_mat4*,sjs_point*,int32_t))sjf_model_fireMouseEvent;
 
     return _interface;
@@ -19704,17 +19707,17 @@ sji_nauScene3dElement_model* sjf_model_heap_as_sji_nauScene3dElement_model(sjs_m
     _interface->destroy = (void(*)(void*))sjf_model_destroy;
     _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_model_heap_asInterface;
     _interface->setWorld = (void(*)(void*,sjs_mat4*))sjf_model_setWorld;
-    _interface->render = (void(*)(void*,sjs_mat4*,sjs_mat4*,sjs_light*))sjf_model_render;
+    _interface->render = (void(*)(void*,sjs_rect*,sjs_mat4*,sjs_mat4*,sjs_light*))sjf_model_render;
     _interface->fireMouseEvent = (void(*)(void*,sjs_rect*,sjs_mat4*,sjs_mat4*,sjs_point*,int32_t))sjf_model_fireMouseEvent;
 
     return _interface;
 }
 
-void sjf_model_render(sjs_model* _parent, sjs_mat4* projection, sjs_mat4* view, sjs_light* light) {
+void sjf_model_render(sjs_model* _parent, sjs_rect* sceneRect, sjs_mat4* projection, sjs_mat4* view, sjs_light* light) {
     sjs_mat4 sjt_call8;
-    sjs_model* sjt_dot1188;
-    sjs_model* sjt_dot450;
+    sjs_model* sjt_dot1189;
     sjs_model* sjt_dot451;
+    sjs_model* sjt_dot452;
     sjs_mat4* sjt_functionParam65;
     sjs_mat4* sjt_functionParam66;
     sjs_mat4* sjt_parent34;
@@ -19727,13 +19730,13 @@ void sjf_model_render(sjs_model* _parent, sjs_mat4* projection, sjs_mat4* view, 
     sjs_mat4 sjv_viewWorld;
 
 #line 21 "lib/ui/model.sj"
-    sjt_dot450 = _parent;
-#line 19 "lib/ui/mat4.sj"
-    sjt_parent34 = &(sjt_dot450)->_parentWorld;
-#line 21 "lib/ui/model.sj"
     sjt_dot451 = _parent;
+#line 19 "lib/ui/mat4.sj"
+    sjt_parent34 = &(sjt_dot451)->_parentWorld;
+#line 21 "lib/ui/model.sj"
+    sjt_dot452 = _parent;
 #line 22
-    sjt_functionParam65 = &(sjt_dot451)->world;
+    sjt_functionParam65 = &(sjt_dot452)->world;
 #line 22
     sjf_mat4_multiply(sjt_parent34, sjt_functionParam65, &sjv_totalWorld);
 #line 21
@@ -19767,9 +19770,9 @@ void sjf_model_render(sjs_model* _parent, sjs_mat4* projection, sjs_mat4* view, 
 #line 25
     glUniform3fv(glGetUniformLocation(_parent->shader.id, "specColor" ), 1, (GLfloat*)&light->specColor);
 #line 21
-    sjt_dot1188 = _parent;
+    sjt_dot1189 = _parent;
 #line 88 "lib/ui/vertexBuffer.sj"
-    sjt_parent40 = &(sjt_dot1188)->vertexBuffer;
+    sjt_parent40 = &(sjt_dot1189)->vertexBuffer;
 #line 88
     sjf_vertexBuffer_vertex_location_texture_normal_render(sjt_parent40);
 
@@ -19781,14 +19784,14 @@ void sjf_model_render(sjs_model* _parent, sjs_mat4* projection, sjs_mat4* view, 
 
 void sjf_model_setWorld(sjs_model* _parent, sjs_mat4* world) {
     sjs_mat4* sjt_copy5;
-    sjs_model* sjt_dot193;
+    sjs_model* sjt_dot194;
 
 #line 16 "lib/ui/model.sj"
-    sjt_dot193 = _parent;
+    sjt_dot194 = _parent;
 #line 16
     sjt_copy5 = world;
 #line 17
-    sjf_mat4_copy(&sjt_dot193->_parentWorld, sjt_copy5);
+    sjf_mat4_copy(&sjt_dot194->_parentWorld, sjt_copy5);
 }
 
 void sjf_nauScene3dElement(sjs_nauScene3dElement* _this) {
@@ -19868,9 +19871,9 @@ void sjf_nauScene3dElement_fireMouseEvent(sjs_nauScene3dElement* _parent, sjs_po
     int32_t sjt_compare17;
     int32_t sjt_compare18;
     int32_t sjt_compare9;
-    sjs_array_heap_model* sjt_dot187;
-    sjs_nauScene3dElement* sjt_dot188;
-    sjs_nauScene3dElement* sjt_dot54;
+    sjs_array_heap_model* sjt_dot188;
+    sjs_nauScene3dElement* sjt_dot189;
+    sjs_nauScene3dElement* sjt_dot55;
     int32_t sjt_forEnd6;
     int32_t sjt_forStart6;
     bool sjt_ifElse2;
@@ -19886,29 +19889,29 @@ void sjf_nauScene3dElement_fireMouseEvent(sjs_nauScene3dElement* _parent, sjs_po
     if (sjt_ifElse2) {
         sjs_point* sjt_copy3;
         sjs_vec3* sjt_copy4;
-        sjs_nauScene3dElement* sjt_dot50;
         sjs_nauScene3dElement* sjt_dot51;
         sjs_nauScene3dElement* sjt_dot52;
         sjs_nauScene3dElement* sjt_dot53;
+        sjs_nauScene3dElement* sjt_dot54;
 
 #line 53 "nau/nauScene3dElement.sj"
-        sjt_dot50 = _parent;
-#line 55
-        sjt_dot50->_isDragging = true;
-#line 53
         sjt_dot51 = _parent;
-#line 53
-        sjt_copy3 = point;
-#line 56
-        sjf_point_copy(&sjt_dot51->_startDrag, sjt_copy3);
+#line 55
+        sjt_dot51->_isDragging = true;
 #line 53
         sjt_dot52 = _parent;
 #line 53
+        sjt_copy3 = point;
+#line 56
+        sjf_point_copy(&sjt_dot52->_startDrag, sjt_copy3);
+#line 53
         sjt_dot53 = _parent;
+#line 53
+        sjt_dot54 = _parent;
 #line 57
-        sjt_copy4 = &(sjt_dot53)->_lookAt;
+        sjt_copy4 = &(sjt_dot54)->_lookAt;
 #line 57
-        sjf_vec3_copy(&sjt_dot52->_lookAtDrag, sjt_copy4);
+        sjf_vec3_copy(&sjt_dot53->_lookAtDrag, sjt_copy4);
     }
 
 #line 53
@@ -19918,9 +19921,9 @@ void sjf_nauScene3dElement_fireMouseEvent(sjs_nauScene3dElement* _parent, sjs_po
 #line 60
     sjt_and7 = sjt_compare11 == sjt_compare12;
 #line 53
-    sjt_dot54 = _parent;
+    sjt_dot55 = _parent;
 #line 60
-    sjt_and8 = (sjt_dot54)->_isDragging;
+    sjt_and8 = (sjt_dot55)->_isDragging;
 #line 60
     sjt_ifElse3 = sjt_and7 && sjt_and8;
     if (sjt_ifElse3) {
@@ -19933,23 +19936,23 @@ void sjf_nauScene3dElement_fireMouseEvent(sjs_nauScene3dElement* _parent, sjs_po
         int32_t sjt_cast11;
         int32_t sjt_cast8;
         int32_t sjt_cast9;
-        sjs_point* sjt_dot100;
+        sjs_nauScene3dElement* sjt_dot100;
         sjs_point* sjt_dot101;
-        sjs_nauScene3dElement* sjt_dot102;
-        sjs_rect* sjt_dot103;
-        sjs_nauScene3dElement* sjt_dot104;
-        sjs_nauScene3dElement* sjt_dot117;
+        sjs_point* sjt_dot102;
+        sjs_nauScene3dElement* sjt_dot103;
+        sjs_rect* sjt_dot104;
+        sjs_nauScene3dElement* sjt_dot105;
         sjs_nauScene3dElement* sjt_dot118;
-        sjs_nauScene3dElement* sjt_dot185;
-        sjs_nauScene3dElement* sjt_dot55;
-        sjs_nauScene3dElement* sjt_dot68;
-        sjs_nauScene3dElement* sjt_dot81;
-        sjs_nauScene3dElement* sjt_dot94;
-        sjs_point* sjt_dot95;
-        sjs_nauScene3dElement* sjt_dot96;
-        sjs_point* sjt_dot97;
-        sjs_rect* sjt_dot98;
-        sjs_nauScene3dElement* sjt_dot99;
+        sjs_nauScene3dElement* sjt_dot119;
+        sjs_nauScene3dElement* sjt_dot186;
+        sjs_nauScene3dElement* sjt_dot56;
+        sjs_nauScene3dElement* sjt_dot69;
+        sjs_nauScene3dElement* sjt_dot82;
+        sjs_nauScene3dElement* sjt_dot95;
+        sjs_point* sjt_dot96;
+        sjs_nauScene3dElement* sjt_dot97;
+        sjs_point* sjt_dot98;
+        sjs_rect* sjt_dot99;
         sjs_vec3* sjt_functionParam27;
         sjs_vec3* sjt_functionParam28;
         sjs_vec3* sjt_functionParam41;
@@ -19976,39 +19979,39 @@ void sjf_nauScene3dElement_fireMouseEvent(sjs_nauScene3dElement* _parent, sjs_po
         sjs_vec3 sjv_camera;
 
 #line 53 "nau/nauScene3dElement.sj"
-        sjt_dot55 = _parent;
+        sjt_dot56 = _parent;
 #line 53
-        sjt_dot68 = _parent;
+        sjt_dot69 = _parent;
 #line 61
-        sjt_functionParam27 = &(sjt_dot68)->lookAtMax;
+        sjt_functionParam27 = &(sjt_dot69)->lookAtMax;
 #line 53
-        sjt_dot81 = _parent;
+        sjt_dot82 = _parent;
 #line 61
-        sjt_functionParam41 = &(sjt_dot81)->lookAtMin;
+        sjt_functionParam41 = &(sjt_dot82)->lookAtMin;
 #line 53
-        sjt_dot94 = _parent;
+        sjt_dot95 = _parent;
 #line 21 "lib/ui/vec3.sj"
-        sjt_parent13 = &(sjt_dot94)->_lookAtDrag;
+        sjt_parent13 = &(sjt_dot95)->_lookAtDrag;
 #line 53 "nau/nauScene3dElement.sj"
-        sjt_dot96 = _parent;
+        sjt_dot97 = _parent;
 #line 1 "lib/ui/point.sj"
-        sjt_dot95 = &(sjt_dot96)->_startDrag;
+        sjt_dot96 = &(sjt_dot97)->_startDrag;
 #line 62 "nau/nauScene3dElement.sj"
-        sjt_math61 = (sjt_dot95)->x;
+        sjt_math61 = (sjt_dot96)->x;
 #line 53
-        sjt_dot97 = point;
+        sjt_dot98 = point;
 #line 62
-        sjt_math62 = (sjt_dot97)->x;
+        sjt_math62 = (sjt_dot98)->x;
 #line 62
         sjt_cast8 = sjt_math61 - sjt_math62;
 #line 62
         sjt_math59 = (float)sjt_cast8;
 #line 53
-        sjt_dot99 = _parent;
+        sjt_dot100 = _parent;
 #line 1 "lib/ui/rect.sj"
-        sjt_dot98 = &(sjt_dot99)->_rect;
+        sjt_dot99 = &(sjt_dot100)->_rect;
 #line 62 "nau/nauScene3dElement.sj"
-        sjt_cast9 = (sjt_dot98)->w;
+        sjt_cast9 = (sjt_dot99)->w;
 #line 62
         sjt_math60 = (float)sjt_cast9;
 #line 62
@@ -20018,25 +20021,25 @@ void sjf_nauScene3dElement_fireMouseEvent(sjs_nauScene3dElement* _parent, sjs_po
 #line 62
         sjt_call3.x = sjt_math57 * sjt_math58;
 #line 53
-        sjt_dot100 = point;
+        sjt_dot101 = point;
 #line 63
-        sjt_math67 = (sjt_dot100)->y;
+        sjt_math67 = (sjt_dot101)->y;
 #line 53
-        sjt_dot102 = _parent;
+        sjt_dot103 = _parent;
 #line 1 "lib/ui/point.sj"
-        sjt_dot101 = &(sjt_dot102)->_startDrag;
+        sjt_dot102 = &(sjt_dot103)->_startDrag;
 #line 63 "nau/nauScene3dElement.sj"
-        sjt_math68 = (sjt_dot101)->y;
+        sjt_math68 = (sjt_dot102)->y;
 #line 63
         sjt_cast10 = sjt_math67 - sjt_math68;
 #line 63
         sjt_math65 = (float)sjt_cast10;
 #line 53
-        sjt_dot104 = _parent;
+        sjt_dot105 = _parent;
 #line 1 "lib/ui/rect.sj"
-        sjt_dot103 = &(sjt_dot104)->_rect;
+        sjt_dot104 = &(sjt_dot105)->_rect;
 #line 63 "nau/nauScene3dElement.sj"
-        sjt_cast11 = (sjt_dot103)->h;
+        sjt_cast11 = (sjt_dot104)->h;
 #line 63
         sjt_math66 = (float)sjt_cast11;
 #line 63
@@ -20060,11 +20063,11 @@ void sjf_nauScene3dElement_fireMouseEvent(sjs_nauScene3dElement* _parent, sjs_po
 #line 61
         sjt_functionParam28 = &sjt_call1;
 #line 61
-        sjf_vec3_min(sjt_functionParam27, sjt_functionParam28, &sjt_dot55->_lookAt);
+        sjf_vec3_min(sjt_functionParam27, sjt_functionParam28, &sjt_dot56->_lookAt);
 #line 53
-        sjt_dot117 = _parent;
+        sjt_dot118 = _parent;
 #line 29 "lib/ui/vec3.sj"
-        sjt_parent14 = &(sjt_dot117)->_lookAt;
+        sjt_parent14 = &(sjt_dot118)->_lookAt;
 #line 66 "nau/nauScene3dElement.sj"
         sjt_call4.x = 0.0f;
 #line 66
@@ -20078,13 +20081,13 @@ void sjf_nauScene3dElement_fireMouseEvent(sjs_nauScene3dElement* _parent, sjs_po
 #line 66
         sjf_vec3_subtract(sjt_parent14, sjt_functionParam44, &sjv_camera);
 #line 53
-        sjt_dot118 = _parent;
+        sjt_dot119 = _parent;
 #line 67
         sjt_functionParam59 = &sjv_camera;
 #line 53
-        sjt_dot185 = _parent;
+        sjt_dot186 = _parent;
 #line 67
-        sjt_functionParam60 = &(sjt_dot185)->_lookAt;
+        sjt_functionParam60 = &(sjt_dot186)->_lookAt;
 #line 67
         sjt_call7.x = 0.0f;
 #line 67
@@ -20096,7 +20099,7 @@ void sjf_nauScene3dElement_fireMouseEvent(sjs_nauScene3dElement* _parent, sjs_po
 #line 67
         sjt_functionParam61 = &sjt_call7;
 #line 67
-        sjf_mat4_lookAtLH(sjt_functionParam59, sjt_functionParam60, sjt_functionParam61, &sjt_dot118->view);
+        sjf_mat4_lookAtLH(sjt_functionParam59, sjt_functionParam60, sjt_functionParam61, &sjt_dot119->view);
 
         sjf_vec3_destroy(&sjt_call1);
         sjf_vec3_destroy(&sjt_call2);
@@ -20113,43 +20116,43 @@ void sjf_nauScene3dElement_fireMouseEvent(sjs_nauScene3dElement* _parent, sjs_po
 #line 70
     sjt_ifElse6 = sjt_compare17 == sjt_compare18;
     if (sjt_ifElse6) {
-        sjs_nauScene3dElement* sjt_dot186;
+        sjs_nauScene3dElement* sjt_dot187;
 
 #line 53 "nau/nauScene3dElement.sj"
-        sjt_dot186 = _parent;
+        sjt_dot187 = _parent;
 #line 71
-        sjt_dot186->_isDragging = false;
+        sjt_dot187->_isDragging = false;
     }
 
 #line 74
     sjt_forStart6 = 0;
 #line 53
-    sjt_dot188 = _parent;
+    sjt_dot189 = _parent;
 #line 1 "lib/common/array.sj"
-    sjt_dot187 = &(sjt_dot188)->children;
+    sjt_dot188 = &(sjt_dot189)->children;
 #line 74 "nau/nauScene3dElement.sj"
-    sjt_forEnd6 = (sjt_dot187)->count;
+    sjt_forEnd6 = (sjt_dot188)->count;
 #line 74
     i = sjt_forStart6;
     while (i < sjt_forEnd6) {
-        sjs_nauScene3dElement* sjt_dot189;
         sjs_nauScene3dElement* sjt_dot190;
         sjs_nauScene3dElement* sjt_dot191;
         sjs_nauScene3dElement* sjt_dot192;
+        sjs_nauScene3dElement* sjt_dot193;
         int32_t sjt_functionParam62;
-        sjs_mat4* sjt_interfaceParam10;
+        sjs_rect* sjt_interfaceParam10;
         sjs_mat4* sjt_interfaceParam11;
-        sjs_point* sjt_interfaceParam12;
-        int32_t sjt_interfaceParam13;
-        sjs_rect* sjt_interfaceParam9;
+        sjs_mat4* sjt_interfaceParam12;
+        sjs_point* sjt_interfaceParam13;
+        int32_t sjt_interfaceParam14;
         sjs_array_heap_model* sjt_parent31;
         sji_nauScene3dElement_model* sjt_parent32;
         sji_nauScene3dElement_model* sjv_child;
 
 #line 53 "nau/nauScene3dElement.sj"
-        sjt_dot189 = _parent;
+        sjt_dot190 = _parent;
 #line 7 "lib/common/array.sj"
-        sjt_parent31 = &(sjt_dot189)->children;
+        sjt_parent31 = &(sjt_dot190)->children;
 #line 74 "nau/nauScene3dElement.sj"
         sjt_functionParam62 = i;
 #line 74
@@ -20157,23 +20160,23 @@ void sjf_nauScene3dElement_fireMouseEvent(sjs_nauScene3dElement* _parent, sjs_po
 #line 4 "lib/ui/model.sj"
         sjt_parent32 = sjv_child;
 #line 53 "nau/nauScene3dElement.sj"
-        sjt_dot190 = _parent;
-#line 4 "lib/ui/model.sj"
-        sjt_interfaceParam9 = &(sjt_dot190)->_rect;
-#line 53 "nau/nauScene3dElement.sj"
         sjt_dot191 = _parent;
 #line 4 "lib/ui/model.sj"
-        sjt_interfaceParam10 = &(sjt_dot191)->projection;
+        sjt_interfaceParam10 = &(sjt_dot191)->_rect;
 #line 53 "nau/nauScene3dElement.sj"
         sjt_dot192 = _parent;
 #line 4 "lib/ui/model.sj"
-        sjt_interfaceParam11 = &(sjt_dot192)->view;
+        sjt_interfaceParam11 = &(sjt_dot192)->projection;
 #line 53 "nau/nauScene3dElement.sj"
-        sjt_interfaceParam12 = point;
+        sjt_dot193 = _parent;
+#line 4 "lib/ui/model.sj"
+        sjt_interfaceParam12 = &(sjt_dot193)->view;
+#line 53 "nau/nauScene3dElement.sj"
+        sjt_interfaceParam13 = point;
 #line 53
-        sjt_interfaceParam13 = eventId;
+        sjt_interfaceParam14 = eventId;
 #line 76
-        sjt_parent32->fireMouseEvent((void*)(((char*)sjt_parent32->_parent) + sizeof(intptr_t)), sjt_interfaceParam9, sjt_interfaceParam10, sjt_interfaceParam11, sjt_interfaceParam12, sjt_interfaceParam13);
+        sjt_parent32->fireMouseEvent((void*)(((char*)sjt_parent32->_parent) + sizeof(intptr_t)), sjt_interfaceParam10, sjt_interfaceParam11, sjt_interfaceParam12, sjt_interfaceParam13, sjt_interfaceParam14);
 #line 74
         i++;
 
@@ -20330,10 +20333,12 @@ void sjf_nauScene3dElement_render(sjs_nauScene3dElement* _parent, sjs_scene2d* s
         sjs_nauScene3dElement* sjt_dot47;
         sjs_nauScene3dElement* sjt_dot48;
         sjs_nauScene3dElement* sjt_dot49;
+        sjs_nauScene3dElement* sjt_dot50;
         int32_t sjt_functionParam14;
-        sjs_mat4* sjt_interfaceParam6;
+        sjs_rect* sjt_interfaceParam6;
         sjs_mat4* sjt_interfaceParam7;
-        sjs_light* sjt_interfaceParam8;
+        sjs_mat4* sjt_interfaceParam8;
+        sjs_light* sjt_interfaceParam9;
         sjs_array_heap_model* sjt_parent11;
         sji_nauScene3dElement_model* sjt_parent12;
         sji_nauScene3dElement_model* sjv_child;
@@ -20351,17 +20356,21 @@ void sjf_nauScene3dElement_render(sjs_nauScene3dElement* _parent, sjs_scene2d* s
 #line 28 "nau/nauScene3dElement.sj"
         sjt_dot47 = _parent;
 #line 3 "lib/ui/model.sj"
-        sjt_interfaceParam6 = &(sjt_dot47)->projection;
+        sjt_interfaceParam6 = &(sjt_dot47)->_rect;
 #line 28 "nau/nauScene3dElement.sj"
         sjt_dot48 = _parent;
 #line 3 "lib/ui/model.sj"
-        sjt_interfaceParam7 = &(sjt_dot48)->view;
+        sjt_interfaceParam7 = &(sjt_dot48)->projection;
 #line 28 "nau/nauScene3dElement.sj"
         sjt_dot49 = _parent;
 #line 3 "lib/ui/model.sj"
-        sjt_interfaceParam8 = &(sjt_dot49)->light;
+        sjt_interfaceParam8 = &(sjt_dot49)->view;
+#line 28 "nau/nauScene3dElement.sj"
+        sjt_dot50 = _parent;
+#line 3 "lib/ui/model.sj"
+        sjt_interfaceParam9 = &(sjt_dot50)->light;
 #line 40 "nau/nauScene3dElement.sj"
-        sjt_parent12->render((void*)(((char*)sjt_parent12->_parent) + sizeof(intptr_t)), sjt_interfaceParam6, sjt_interfaceParam7, sjt_interfaceParam8);
+        sjt_parent12->render((void*)(((char*)sjt_parent12->_parent) + sizeof(intptr_t)), sjt_interfaceParam6, sjt_interfaceParam7, sjt_interfaceParam8, sjt_interfaceParam9);
 #line 38
         i++;
 
@@ -20480,7 +20489,7 @@ sji_nauScene3dElement_model* sjf_panel3d_as_sji_nauScene3dElement_model(sjs_pane
     _interface->destroy = (void(*)(void*))sjf_panel3d_destroy;
     _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_panel3d_asInterface;
     _interface->setWorld = (void(*)(void*,sjs_mat4*))sjf_panel3d_setWorld;
-    _interface->render = (void(*)(void*,sjs_mat4*,sjs_mat4*,sjs_light*))sjf_panel3d_render;
+    _interface->render = (void(*)(void*,sjs_rect*,sjs_mat4*,sjs_mat4*,sjs_light*))sjf_panel3d_render;
     _interface->fireMouseEvent = (void(*)(void*,sjs_rect*,sjs_mat4*,sjs_mat4*,sjs_point*,int32_t))sjf_panel3d_fireMouseEvent;
 
     return _interface;
@@ -20498,37 +20507,37 @@ void sjf_panel3d_destroy(sjs_panel3d* _this) {
 
 void sjf_panel3d_fireMouseEvent(sjs_panel3d* _parent, sjs_rect* sceneRect, sjs_mat4* projection, sjs_mat4* view, sjs_point* point, int32_t eventId) {
     int32_t i;
-    sjs_array_heap_model* sjt_dot1217;
-    sjs_panel3d* sjt_dot1218;
+    sjs_array_heap_model* sjt_dot1218;
+    sjs_panel3d* sjt_dot1219;
     int32_t sjt_forEnd14;
     int32_t sjt_forStart14;
 
 #line 22 "lib/ui/panel3d.sj"
     sjt_forStart14 = 0;
 #line 21
-    sjt_dot1218 = _parent;
+    sjt_dot1219 = _parent;
 #line 1 "lib/common/array.sj"
-    sjt_dot1217 = &(sjt_dot1218)->children;
+    sjt_dot1218 = &(sjt_dot1219)->children;
 #line 22 "lib/ui/panel3d.sj"
-    sjt_forEnd14 = (sjt_dot1217)->count;
+    sjt_forEnd14 = (sjt_dot1218)->count;
 #line 22
     i = sjt_forStart14;
     while (i < sjt_forEnd14) {
-        sjs_panel3d* sjt_dot1219;
+        sjs_panel3d* sjt_dot1220;
         int32_t sjt_functionParam179;
-        sjs_rect* sjt_interfaceParam27;
-        sjs_mat4* sjt_interfaceParam28;
-        sjs_mat4* sjt_interfaceParam29;
-        sjs_point* sjt_interfaceParam30;
-        int32_t sjt_interfaceParam31;
+        sjs_rect* sjt_interfaceParam30;
+        sjs_mat4* sjt_interfaceParam31;
+        sjs_mat4* sjt_interfaceParam32;
+        sjs_point* sjt_interfaceParam33;
+        int32_t sjt_interfaceParam34;
         sjs_array_heap_model* sjt_parent85;
         sji_nauScene3dElement_model* sjt_parent86;
         sji_nauScene3dElement_model* sjv_c;
 
 #line 21 "lib/ui/panel3d.sj"
-        sjt_dot1219 = _parent;
+        sjt_dot1220 = _parent;
 #line 7 "lib/common/array.sj"
-        sjt_parent85 = &(sjt_dot1219)->children;
+        sjt_parent85 = &(sjt_dot1220)->children;
 #line 22 "lib/ui/panel3d.sj"
         sjt_functionParam179 = i;
 #line 22
@@ -20536,17 +20545,17 @@ void sjf_panel3d_fireMouseEvent(sjs_panel3d* _parent, sjs_rect* sceneRect, sjs_m
 #line 4 "lib/ui/model.sj"
         sjt_parent86 = sjv_c;
 #line 21 "lib/ui/panel3d.sj"
-        sjt_interfaceParam27 = sceneRect;
+        sjt_interfaceParam30 = sceneRect;
 #line 21
-        sjt_interfaceParam28 = projection;
+        sjt_interfaceParam31 = projection;
 #line 21
-        sjt_interfaceParam29 = view;
+        sjt_interfaceParam32 = view;
 #line 21
-        sjt_interfaceParam30 = point;
+        sjt_interfaceParam33 = point;
 #line 21
-        sjt_interfaceParam31 = eventId;
+        sjt_interfaceParam34 = eventId;
 #line 24
-        sjt_parent86->fireMouseEvent((void*)(((char*)sjt_parent86->_parent) + sizeof(intptr_t)), sjt_interfaceParam27, sjt_interfaceParam28, sjt_interfaceParam29, sjt_interfaceParam30, sjt_interfaceParam31);
+        sjt_parent86->fireMouseEvent((void*)(((char*)sjt_parent86->_parent) + sizeof(intptr_t)), sjt_interfaceParam30, sjt_interfaceParam31, sjt_interfaceParam32, sjt_interfaceParam33, sjt_interfaceParam34);
 #line 22
         i++;
 
@@ -20579,43 +20588,44 @@ sji_nauScene3dElement_model* sjf_panel3d_heap_as_sji_nauScene3dElement_model(sjs
     _interface->destroy = (void(*)(void*))sjf_panel3d_destroy;
     _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_panel3d_heap_asInterface;
     _interface->setWorld = (void(*)(void*,sjs_mat4*))sjf_panel3d_setWorld;
-    _interface->render = (void(*)(void*,sjs_mat4*,sjs_mat4*,sjs_light*))sjf_panel3d_render;
+    _interface->render = (void(*)(void*,sjs_rect*,sjs_mat4*,sjs_mat4*,sjs_light*))sjf_panel3d_render;
     _interface->fireMouseEvent = (void(*)(void*,sjs_rect*,sjs_mat4*,sjs_mat4*,sjs_point*,int32_t))sjf_panel3d_fireMouseEvent;
 
     return _interface;
 }
 
-void sjf_panel3d_render(sjs_panel3d* _parent, sjs_mat4* projection, sjs_mat4* view, sjs_light* light) {
+void sjf_panel3d_render(sjs_panel3d* _parent, sjs_rect* sceneRect, sjs_mat4* projection, sjs_mat4* view, sjs_light* light) {
     int32_t i;
-    sjs_array_heap_model* sjt_dot1214;
-    sjs_panel3d* sjt_dot1215;
+    sjs_array_heap_model* sjt_dot1215;
+    sjs_panel3d* sjt_dot1216;
     int32_t sjt_forEnd13;
     int32_t sjt_forStart13;
 
 #line 15 "lib/ui/panel3d.sj"
     sjt_forStart13 = 0;
 #line 14
-    sjt_dot1215 = _parent;
+    sjt_dot1216 = _parent;
 #line 1 "lib/common/array.sj"
-    sjt_dot1214 = &(sjt_dot1215)->children;
+    sjt_dot1215 = &(sjt_dot1216)->children;
 #line 15 "lib/ui/panel3d.sj"
-    sjt_forEnd13 = (sjt_dot1214)->count;
+    sjt_forEnd13 = (sjt_dot1215)->count;
 #line 15
     i = sjt_forStart13;
     while (i < sjt_forEnd13) {
-        sjs_panel3d* sjt_dot1216;
+        sjs_panel3d* sjt_dot1217;
         int32_t sjt_functionParam178;
-        sjs_mat4* sjt_interfaceParam24;
-        sjs_mat4* sjt_interfaceParam25;
-        sjs_light* sjt_interfaceParam26;
+        sjs_rect* sjt_interfaceParam26;
+        sjs_mat4* sjt_interfaceParam27;
+        sjs_mat4* sjt_interfaceParam28;
+        sjs_light* sjt_interfaceParam29;
         sjs_array_heap_model* sjt_parent83;
         sji_nauScene3dElement_model* sjt_parent84;
         sji_nauScene3dElement_model* sjv_c;
 
 #line 14 "lib/ui/panel3d.sj"
-        sjt_dot1216 = _parent;
+        sjt_dot1217 = _parent;
 #line 7 "lib/common/array.sj"
-        sjt_parent83 = &(sjt_dot1216)->children;
+        sjt_parent83 = &(sjt_dot1217)->children;
 #line 15 "lib/ui/panel3d.sj"
         sjt_functionParam178 = i;
 #line 15
@@ -20623,13 +20633,15 @@ void sjf_panel3d_render(sjs_panel3d* _parent, sjs_mat4* projection, sjs_mat4* vi
 #line 3 "lib/ui/model.sj"
         sjt_parent84 = sjv_c;
 #line 14 "lib/ui/panel3d.sj"
-        sjt_interfaceParam24 = projection;
+        sjt_interfaceParam26 = sceneRect;
 #line 14
-        sjt_interfaceParam25 = view;
+        sjt_interfaceParam27 = projection;
 #line 14
-        sjt_interfaceParam26 = light;
+        sjt_interfaceParam28 = view;
+#line 14
+        sjt_interfaceParam29 = light;
 #line 17
-        sjt_parent84->render((void*)(((char*)sjt_parent84->_parent) + sizeof(intptr_t)), sjt_interfaceParam24, sjt_interfaceParam25, sjt_interfaceParam26);
+        sjt_parent84->render((void*)(((char*)sjt_parent84->_parent) + sizeof(intptr_t)), sjt_interfaceParam26, sjt_interfaceParam27, sjt_interfaceParam28, sjt_interfaceParam29);
 #line 15
         i++;
 
@@ -20642,9 +20654,9 @@ void sjf_panel3d_render(sjs_panel3d* _parent, sjs_mat4* projection, sjs_mat4* vi
 
 void sjf_panel3d_setWorld(sjs_panel3d* _parent, sjs_mat4* world_) {
     int32_t i;
-    sjs_panel3d* sjt_dot1210;
-    sjs_array_heap_model* sjt_dot1211;
-    sjs_panel3d* sjt_dot1212;
+    sjs_panel3d* sjt_dot1211;
+    sjs_array_heap_model* sjt_dot1212;
+    sjs_panel3d* sjt_dot1213;
     int32_t sjt_forEnd12;
     int32_t sjt_forStart12;
     sjs_mat4* sjt_functionParam176;
@@ -20654,33 +20666,33 @@ void sjf_panel3d_setWorld(sjs_panel3d* _parent, sjs_mat4* world_) {
 #line 5 "lib/ui/panel3d.sj"
     sjt_parent80 = world_;
 #line 5
-    sjt_dot1210 = _parent;
+    sjt_dot1211 = _parent;
 #line 6
-    sjt_functionParam176 = &(sjt_dot1210)->world;
+    sjt_functionParam176 = &(sjt_dot1211)->world;
 #line 6
     sjf_mat4_multiply(sjt_parent80, sjt_functionParam176, &sjv_totalWorld);
 #line 7
     sjt_forStart12 = 0;
 #line 5
-    sjt_dot1212 = _parent;
+    sjt_dot1213 = _parent;
 #line 1 "lib/common/array.sj"
-    sjt_dot1211 = &(sjt_dot1212)->children;
+    sjt_dot1212 = &(sjt_dot1213)->children;
 #line 7 "lib/ui/panel3d.sj"
-    sjt_forEnd12 = (sjt_dot1211)->count;
+    sjt_forEnd12 = (sjt_dot1212)->count;
 #line 7
     i = sjt_forStart12;
     while (i < sjt_forEnd12) {
-        sjs_panel3d* sjt_dot1213;
+        sjs_panel3d* sjt_dot1214;
         int32_t sjt_functionParam177;
-        sjs_mat4* sjt_interfaceParam23;
+        sjs_mat4* sjt_interfaceParam25;
         sjs_array_heap_model* sjt_parent81;
         sji_nauScene3dElement_model* sjt_parent82;
         sji_nauScene3dElement_model* sjv_c;
 
 #line 5 "lib/ui/panel3d.sj"
-        sjt_dot1213 = _parent;
+        sjt_dot1214 = _parent;
 #line 7 "lib/common/array.sj"
-        sjt_parent81 = &(sjt_dot1213)->children;
+        sjt_parent81 = &(sjt_dot1214)->children;
 #line 7 "lib/ui/panel3d.sj"
         sjt_functionParam177 = i;
 #line 7
@@ -20688,9 +20700,9 @@ void sjf_panel3d_setWorld(sjs_panel3d* _parent, sjs_mat4* world_) {
 #line 2 "lib/ui/model.sj"
         sjt_parent82 = sjv_c;
 #line 2
-        sjt_interfaceParam23 = &sjv_totalWorld;
+        sjt_interfaceParam25 = &sjv_totalWorld;
 #line 9 "lib/ui/panel3d.sj"
-        sjt_parent82->setWorld((void*)(((char*)sjt_parent82->_parent) + sizeof(intptr_t)), sjt_interfaceParam23);
+        sjt_parent82->setWorld((void*)(((char*)sjt_parent82->_parent) + sizeof(intptr_t)), sjt_interfaceParam25);
 #line 7
         i++;
 
@@ -21307,69 +21319,69 @@ void sjf_rect_containsPoint(sjs_rect* _parent, sjs_point* point, bool* _return) 
     int32_t sjt_compare24;
     int32_t sjt_compare25;
     int32_t sjt_compare26;
-    sjs_rect* sjt_dot1251;
-    sjs_point* sjt_dot1252;
-    sjs_rect* sjt_dot1253;
-    sjs_point* sjt_dot1254;
+    sjs_rect* sjt_dot1252;
+    sjs_point* sjt_dot1253;
+    sjs_rect* sjt_dot1254;
     sjs_point* sjt_dot1255;
-    sjs_rect* sjt_dot1256;
+    sjs_point* sjt_dot1256;
     sjs_rect* sjt_dot1257;
-    sjs_point* sjt_dot1258;
-    sjs_rect* sjt_dot1259;
+    sjs_rect* sjt_dot1258;
+    sjs_point* sjt_dot1259;
     sjs_rect* sjt_dot1260;
+    sjs_rect* sjt_dot1261;
     int32_t sjt_math1991;
     int32_t sjt_math1992;
     int32_t sjt_math1993;
     int32_t sjt_math1994;
 
 #line 11 "lib/ui/rect.sj"
-    sjt_dot1251 = _parent;
+    sjt_dot1252 = _parent;
 #line 12
-    sjt_compare19 = (sjt_dot1251)->x;
+    sjt_compare19 = (sjt_dot1252)->x;
 #line 11
-    sjt_dot1252 = point;
+    sjt_dot1253 = point;
 #line 12
-    sjt_compare20 = (sjt_dot1252)->x;
+    sjt_compare20 = (sjt_dot1253)->x;
 #line 12
     sjt_and9 = sjt_compare19 <= sjt_compare20;
 #line 11
-    sjt_dot1253 = _parent;
+    sjt_dot1254 = _parent;
 #line 12
-    sjt_compare21 = (sjt_dot1253)->y;
-#line 11
-    sjt_dot1254 = point;
-#line 12
-    sjt_compare22 = (sjt_dot1254)->x;
-#line 12
-    sjt_and11 = sjt_compare21 <= sjt_compare22;
+    sjt_compare21 = (sjt_dot1254)->y;
 #line 11
     sjt_dot1255 = point;
 #line 12
-    sjt_compare23 = (sjt_dot1255)->x;
-#line 11
-    sjt_dot1256 = _parent;
+    sjt_compare22 = (sjt_dot1255)->x;
 #line 12
-    sjt_math1991 = (sjt_dot1256)->x;
+    sjt_and11 = sjt_compare21 <= sjt_compare22;
+#line 11
+    sjt_dot1256 = point;
+#line 12
+    sjt_compare23 = (sjt_dot1256)->x;
 #line 11
     sjt_dot1257 = _parent;
 #line 12
-    sjt_math1992 = (sjt_dot1257)->w;
+    sjt_math1991 = (sjt_dot1257)->x;
+#line 11
+    sjt_dot1258 = _parent;
+#line 12
+    sjt_math1992 = (sjt_dot1258)->w;
 #line 12
     sjt_compare24 = sjt_math1991 + sjt_math1992;
 #line 12
     sjt_and13 = sjt_compare23 < sjt_compare24;
 #line 11
-    sjt_dot1258 = point;
+    sjt_dot1259 = point;
 #line 12
-    sjt_compare25 = (sjt_dot1258)->y;
-#line 11
-    sjt_dot1259 = _parent;
-#line 12
-    sjt_math1993 = (sjt_dot1259)->y;
+    sjt_compare25 = (sjt_dot1259)->y;
 #line 11
     sjt_dot1260 = _parent;
 #line 12
-    sjt_math1994 = (sjt_dot1260)->h;
+    sjt_math1993 = (sjt_dot1260)->y;
+#line 11
+    sjt_dot1261 = _parent;
+#line 12
+    sjt_math1994 = (sjt_dot1261)->h;
 #line 12
     sjt_compare26 = sjt_math1993 + sjt_math1994;
 #line 12
@@ -21525,16 +21537,16 @@ void sjf_scene2d_heap(sjs_scene2d_heap* _this) {
 
 void sjf_scene2d_setSize(sjs_scene2d* _parent, sjs_size* size) {
     bool result49;
-    sjs_scene2d* sjt_dot1278;
+    sjs_scene2d* sjt_dot1279;
     sjs_size* sjt_functionParam386;
     bool sjt_ifElse16;
     bool sjt_not5;
     sjs_size* sjt_parent122;
 
 #line 27 "lib/ui/scene2d.sj"
-    sjt_dot1278 = _parent;
+    sjt_dot1279 = _parent;
 #line 16 "lib/ui/size.sj"
-    sjt_parent122 = &(sjt_dot1278)->_size;
+    sjt_parent122 = &(sjt_dot1279)->_size;
 #line 27 "lib/ui/scene2d.sj"
     sjt_functionParam386 = size;
 #line 27
@@ -21549,14 +21561,14 @@ void sjf_scene2d_setSize(sjs_scene2d* _parent, sjs_size* size) {
         int32_t sjt_cast39;
         int32_t sjt_cast40;
         sjs_size* sjt_copy25;
-        sjs_scene2d* sjt_dot1279;
         sjs_scene2d* sjt_dot1280;
-        sjs_size* sjt_dot1281;
-        sjs_scene2d* sjt_dot1282;
-        sjs_size* sjt_dot1283;
-        sjs_scene2d* sjt_dot1284;
+        sjs_scene2d* sjt_dot1281;
+        sjs_size* sjt_dot1282;
+        sjs_scene2d* sjt_dot1283;
+        sjs_size* sjt_dot1284;
         sjs_scene2d* sjt_dot1285;
         sjs_scene2d* sjt_dot1286;
+        sjs_scene2d* sjt_dot1287;
         float sjt_functionParam387;
         float sjt_functionParam388;
         float sjt_functionParam389;
@@ -21572,31 +21584,31 @@ void sjf_scene2d_setSize(sjs_scene2d* _parent, sjs_size* size) {
         float sjt_negate48;
 
 #line 27 "lib/ui/scene2d.sj"
-        sjt_dot1279 = _parent;
+        sjt_dot1280 = _parent;
 #line 27
         sjt_copy25 = size;
 #line 29
-        sjf_size_copy(&sjt_dot1279->_size, sjt_copy25);
+        sjf_size_copy(&sjt_dot1280->_size, sjt_copy25);
 #line 27
-        sjt_dot1280 = _parent;
+        sjt_dot1281 = _parent;
 #line 30
         sjt_functionParam387 = 0.0f;
 #line 27
-        sjt_dot1282 = _parent;
+        sjt_dot1283 = _parent;
 #line 1 "lib/ui/size.sj"
-        sjt_dot1281 = &(sjt_dot1282)->_size;
+        sjt_dot1282 = &(sjt_dot1283)->_size;
 #line 30 "lib/ui/scene2d.sj"
-        sjt_cast39 = (sjt_dot1281)->w;
+        sjt_cast39 = (sjt_dot1282)->w;
 #line 30
         sjt_functionParam388 = (float)sjt_cast39;
 #line 30
         sjt_math2071 = 0;
 #line 27
-        sjt_dot1284 = _parent;
+        sjt_dot1285 = _parent;
 #line 1 "lib/ui/size.sj"
-        sjt_dot1283 = &(sjt_dot1284)->_size;
+        sjt_dot1284 = &(sjt_dot1285)->_size;
 #line 30 "lib/ui/scene2d.sj"
-        sjt_math2072 = (sjt_dot1283)->h;
+        sjt_math2072 = (sjt_dot1284)->h;
 #line 30
         sjt_cast40 = sjt_math2071 - sjt_math2072;
 #line 30
@@ -21612,9 +21624,9 @@ void sjf_scene2d_setSize(sjs_scene2d* _parent, sjs_size* size) {
 #line 30
         sjt_functionParam392 = 1.0f;
 #line 30
-        sjf_mat4_orthographic(sjt_functionParam387, sjt_functionParam388, sjt_functionParam389, sjt_functionParam390, sjt_functionParam391, sjt_functionParam392, &sjt_dot1280->projection);
+        sjf_mat4_orthographic(sjt_functionParam387, sjt_functionParam388, sjt_functionParam389, sjt_functionParam390, sjt_functionParam391, sjt_functionParam392, &sjt_dot1281->projection);
 #line 27
-        sjt_dot1285 = _parent;
+        sjt_dot1286 = _parent;
 #line 31
         sjt_functionParam393 = 1.0f;
 #line 31
@@ -21626,11 +21638,11 @@ void sjf_scene2d_setSize(sjs_scene2d* _parent, sjs_size* size) {
 #line 31
         sjt_functionParam395 = 1.0f;
 #line 31
-        sjf_mat4_scale(sjt_functionParam393, sjt_functionParam394, sjt_functionParam395, &sjt_dot1285->model);
+        sjf_mat4_scale(sjt_functionParam393, sjt_functionParam394, sjt_functionParam395, &sjt_dot1286->model);
 #line 27
-        sjt_dot1286 = _parent;
+        sjt_dot1287 = _parent;
 #line 27
-        sjf_mat4_identity(&sjt_dot1286->view);
+        sjf_mat4_identity(&sjt_dot1287->view);
     }
 }
 
@@ -21692,29 +21704,29 @@ void sjf_size_isEqual(sjs_size* _parent, sjs_size* size, bool* _return) {
     int32_t sjt_compare32;
     int32_t sjt_compare33;
     int32_t sjt_compare34;
-    sjs_size* sjt_dot1274;
     sjs_size* sjt_dot1275;
     sjs_size* sjt_dot1276;
     sjs_size* sjt_dot1277;
+    sjs_size* sjt_dot1278;
 
 #line 16 "lib/ui/size.sj"
-    sjt_dot1274 = _parent;
+    sjt_dot1275 = _parent;
 #line 17
-    sjt_compare31 = (sjt_dot1274)->w;
+    sjt_compare31 = (sjt_dot1275)->w;
 #line 16
-    sjt_dot1275 = size;
+    sjt_dot1276 = size;
 #line 17
-    sjt_compare32 = (sjt_dot1275)->w;
+    sjt_compare32 = (sjt_dot1276)->w;
 #line 17
     sjt_and15 = sjt_compare31 == sjt_compare32;
 #line 16
-    sjt_dot1276 = _parent;
+    sjt_dot1277 = _parent;
 #line 17
-    sjt_compare33 = (sjt_dot1276)->h;
+    sjt_compare33 = (sjt_dot1277)->h;
 #line 16
-    sjt_dot1277 = size;
+    sjt_dot1278 = size;
 #line 17
-    sjt_compare34 = (sjt_dot1277)->h;
+    sjt_compare34 = (sjt_dot1278)->h;
 #line 17
     sjt_and16 = sjt_compare33 == sjt_compare34;
 #line 17
@@ -21835,12 +21847,12 @@ void sjf_vec3(sjs_vec3* _this) {
 }
 
 void sjf_vec3_add(sjs_vec3* _parent, sjs_vec3* v, sjs_vec3* _return) {
-    sjs_vec3* sjt_dot82;
     sjs_vec3* sjt_dot83;
     sjs_vec3* sjt_dot84;
     sjs_vec3* sjt_dot85;
     sjs_vec3* sjt_dot86;
     sjs_vec3* sjt_dot87;
+    sjs_vec3* sjt_dot88;
     float sjt_math45;
     float sjt_math46;
     float sjt_math47;
@@ -21849,33 +21861,33 @@ void sjf_vec3_add(sjs_vec3* _parent, sjs_vec3* v, sjs_vec3* _return) {
     float sjt_math50;
 
 #line 21 "lib/ui/vec3.sj"
-    sjt_dot82 = _parent;
+    sjt_dot83 = _parent;
 #line 23
-    sjt_math45 = (sjt_dot82)->x;
+    sjt_math45 = (sjt_dot83)->x;
 #line 21
-    sjt_dot83 = v;
+    sjt_dot84 = v;
 #line 23
-    sjt_math46 = (sjt_dot83)->x;
+    sjt_math46 = (sjt_dot84)->x;
 #line 23
     _return->x = sjt_math45 + sjt_math46;
 #line 21
-    sjt_dot84 = _parent;
+    sjt_dot85 = _parent;
 #line 24
-    sjt_math47 = (sjt_dot84)->y;
+    sjt_math47 = (sjt_dot85)->y;
 #line 21
-    sjt_dot85 = v;
+    sjt_dot86 = v;
 #line 24
-    sjt_math48 = (sjt_dot85)->y;
+    sjt_math48 = (sjt_dot86)->y;
 #line 24
     _return->y = sjt_math47 + sjt_math48;
 #line 21
-    sjt_dot86 = _parent;
+    sjt_dot87 = _parent;
 #line 25
-    sjt_math49 = (sjt_dot86)->z;
+    sjt_math49 = (sjt_dot87)->z;
 #line 21
-    sjt_dot87 = v;
+    sjt_dot88 = v;
 #line 25
-    sjt_math50 = (sjt_dot87)->z;
+    sjt_math50 = (sjt_dot88)->z;
 #line 25
     _return->z = sjt_math49 + sjt_math50;
 #line 25
@@ -21883,12 +21895,12 @@ void sjf_vec3_add(sjs_vec3* _parent, sjs_vec3* v, sjs_vec3* _return) {
 }
 
 void sjf_vec3_add_heap(sjs_vec3* _parent, sjs_vec3* v, sjs_vec3_heap** _return) {
-    sjs_vec3* sjt_dot88;
     sjs_vec3* sjt_dot89;
     sjs_vec3* sjt_dot90;
     sjs_vec3* sjt_dot91;
     sjs_vec3* sjt_dot92;
     sjs_vec3* sjt_dot93;
+    sjs_vec3* sjt_dot94;
     float sjt_math51;
     float sjt_math52;
     float sjt_math53;
@@ -21899,33 +21911,33 @@ void sjf_vec3_add_heap(sjs_vec3* _parent, sjs_vec3* v, sjs_vec3_heap** _return) 
     (*_return) = (sjs_vec3_heap*)malloc(sizeof(sjs_vec3_heap));
     (*_return)->_refCount = 1;
 #line 21 "lib/ui/vec3.sj"
-    sjt_dot88 = _parent;
+    sjt_dot89 = _parent;
 #line 23
-    sjt_math51 = (sjt_dot88)->x;
+    sjt_math51 = (sjt_dot89)->x;
 #line 21
-    sjt_dot89 = v;
+    sjt_dot90 = v;
 #line 23
-    sjt_math52 = (sjt_dot89)->x;
+    sjt_math52 = (sjt_dot90)->x;
 #line 23
     (*_return)->x = sjt_math51 + sjt_math52;
 #line 21
-    sjt_dot90 = _parent;
+    sjt_dot91 = _parent;
 #line 24
-    sjt_math53 = (sjt_dot90)->y;
+    sjt_math53 = (sjt_dot91)->y;
 #line 21
-    sjt_dot91 = v;
+    sjt_dot92 = v;
 #line 24
-    sjt_math54 = (sjt_dot91)->y;
+    sjt_math54 = (sjt_dot92)->y;
 #line 24
     (*_return)->y = sjt_math53 + sjt_math54;
 #line 21
-    sjt_dot92 = _parent;
+    sjt_dot93 = _parent;
 #line 25
-    sjt_math55 = (sjt_dot92)->z;
+    sjt_math55 = (sjt_dot93)->z;
 #line 21
-    sjt_dot93 = v;
+    sjt_dot94 = v;
 #line 25
-    sjt_math56 = (sjt_dot93)->z;
+    sjt_math56 = (sjt_dot94)->z;
 #line 25
     (*_return)->z = sjt_math55 + sjt_math56;
 #line 25
@@ -21942,7 +21954,6 @@ void sjf_vec3_copy(sjs_vec3* _this, sjs_vec3* _from) {
 }
 
 void sjf_vec3_cross(sjs_vec3* _parent, sjs_vec3* v, sjs_vec3* _return) {
-    sjs_vec3* sjt_dot137;
     sjs_vec3* sjt_dot138;
     sjs_vec3* sjt_dot139;
     sjs_vec3* sjt_dot140;
@@ -21954,6 +21965,7 @@ void sjf_vec3_cross(sjs_vec3* _parent, sjs_vec3* v, sjs_vec3* _return) {
     sjs_vec3* sjt_dot146;
     sjs_vec3* sjt_dot147;
     sjs_vec3* sjt_dot148;
+    sjs_vec3* sjt_dot149;
     float sjt_math113;
     float sjt_math114;
     float sjt_math115;
@@ -21974,67 +21986,67 @@ void sjf_vec3_cross(sjs_vec3* _parent, sjs_vec3* v, sjs_vec3* _return) {
     float sjt_math130;
 
 #line 46 "lib/ui/vec3.sj"
-    sjt_dot137 = _parent;
+    sjt_dot138 = _parent;
 #line 48
-    sjt_math115 = (sjt_dot137)->y;
+    sjt_math115 = (sjt_dot138)->y;
 #line 46
-    sjt_dot138 = v;
+    sjt_dot139 = v;
 #line 48
-    sjt_math116 = (sjt_dot138)->z;
+    sjt_math116 = (sjt_dot139)->z;
 #line 48
     sjt_math113 = sjt_math115 * sjt_math116;
 #line 46
-    sjt_dot139 = _parent;
+    sjt_dot140 = _parent;
 #line 48
-    sjt_math117 = (sjt_dot139)->z;
+    sjt_math117 = (sjt_dot140)->z;
 #line 46
-    sjt_dot140 = v;
+    sjt_dot141 = v;
 #line 48
-    sjt_math118 = (sjt_dot140)->y;
+    sjt_math118 = (sjt_dot141)->y;
 #line 48
     sjt_math114 = sjt_math117 * sjt_math118;
 #line 48
     _return->x = sjt_math113 - sjt_math114;
 #line 46
-    sjt_dot141 = _parent;
+    sjt_dot142 = _parent;
 #line 49
-    sjt_math121 = (sjt_dot141)->z;
+    sjt_math121 = (sjt_dot142)->z;
 #line 46
-    sjt_dot142 = v;
+    sjt_dot143 = v;
 #line 49
-    sjt_math122 = (sjt_dot142)->x;
+    sjt_math122 = (sjt_dot143)->x;
 #line 49
     sjt_math119 = sjt_math121 * sjt_math122;
 #line 46
-    sjt_dot143 = _parent;
+    sjt_dot144 = _parent;
 #line 49
-    sjt_math123 = (sjt_dot143)->x;
+    sjt_math123 = (sjt_dot144)->x;
 #line 46
-    sjt_dot144 = v;
+    sjt_dot145 = v;
 #line 49
-    sjt_math124 = (sjt_dot144)->z;
+    sjt_math124 = (sjt_dot145)->z;
 #line 49
     sjt_math120 = sjt_math123 * sjt_math124;
 #line 49
     _return->y = sjt_math119 - sjt_math120;
 #line 46
-    sjt_dot145 = _parent;
+    sjt_dot146 = _parent;
 #line 50
-    sjt_math127 = (sjt_dot145)->x;
+    sjt_math127 = (sjt_dot146)->x;
 #line 46
-    sjt_dot146 = v;
+    sjt_dot147 = v;
 #line 50
-    sjt_math128 = (sjt_dot146)->y;
+    sjt_math128 = (sjt_dot147)->y;
 #line 50
     sjt_math125 = sjt_math127 * sjt_math128;
 #line 46
-    sjt_dot147 = _parent;
+    sjt_dot148 = _parent;
 #line 50
-    sjt_math129 = (sjt_dot147)->y;
+    sjt_math129 = (sjt_dot148)->y;
 #line 46
-    sjt_dot148 = v;
+    sjt_dot149 = v;
 #line 50
-    sjt_math130 = (sjt_dot148)->x;
+    sjt_math130 = (sjt_dot149)->x;
 #line 50
     sjt_math126 = sjt_math129 * sjt_math130;
 #line 50
@@ -22044,7 +22056,6 @@ void sjf_vec3_cross(sjs_vec3* _parent, sjs_vec3* v, sjs_vec3* _return) {
 }
 
 void sjf_vec3_cross_heap(sjs_vec3* _parent, sjs_vec3* v, sjs_vec3_heap** _return) {
-    sjs_vec3* sjt_dot149;
     sjs_vec3* sjt_dot150;
     sjs_vec3* sjt_dot151;
     sjs_vec3* sjt_dot152;
@@ -22056,6 +22067,7 @@ void sjf_vec3_cross_heap(sjs_vec3* _parent, sjs_vec3* v, sjs_vec3_heap** _return
     sjs_vec3* sjt_dot158;
     sjs_vec3* sjt_dot159;
     sjs_vec3* sjt_dot160;
+    sjs_vec3* sjt_dot161;
     float sjt_math131;
     float sjt_math132;
     float sjt_math133;
@@ -22078,67 +22090,67 @@ void sjf_vec3_cross_heap(sjs_vec3* _parent, sjs_vec3* v, sjs_vec3_heap** _return
     (*_return) = (sjs_vec3_heap*)malloc(sizeof(sjs_vec3_heap));
     (*_return)->_refCount = 1;
 #line 46 "lib/ui/vec3.sj"
-    sjt_dot149 = _parent;
+    sjt_dot150 = _parent;
 #line 48
-    sjt_math133 = (sjt_dot149)->y;
+    sjt_math133 = (sjt_dot150)->y;
 #line 46
-    sjt_dot150 = v;
+    sjt_dot151 = v;
 #line 48
-    sjt_math134 = (sjt_dot150)->z;
+    sjt_math134 = (sjt_dot151)->z;
 #line 48
     sjt_math131 = sjt_math133 * sjt_math134;
 #line 46
-    sjt_dot151 = _parent;
+    sjt_dot152 = _parent;
 #line 48
-    sjt_math135 = (sjt_dot151)->z;
+    sjt_math135 = (sjt_dot152)->z;
 #line 46
-    sjt_dot152 = v;
+    sjt_dot153 = v;
 #line 48
-    sjt_math136 = (sjt_dot152)->y;
+    sjt_math136 = (sjt_dot153)->y;
 #line 48
     sjt_math132 = sjt_math135 * sjt_math136;
 #line 48
     (*_return)->x = sjt_math131 - sjt_math132;
 #line 46
-    sjt_dot153 = _parent;
+    sjt_dot154 = _parent;
 #line 49
-    sjt_math139 = (sjt_dot153)->z;
+    sjt_math139 = (sjt_dot154)->z;
 #line 46
-    sjt_dot154 = v;
+    sjt_dot155 = v;
 #line 49
-    sjt_math140 = (sjt_dot154)->x;
+    sjt_math140 = (sjt_dot155)->x;
 #line 49
     sjt_math137 = sjt_math139 * sjt_math140;
 #line 46
-    sjt_dot155 = _parent;
+    sjt_dot156 = _parent;
 #line 49
-    sjt_math141 = (sjt_dot155)->x;
+    sjt_math141 = (sjt_dot156)->x;
 #line 46
-    sjt_dot156 = v;
+    sjt_dot157 = v;
 #line 49
-    sjt_math142 = (sjt_dot156)->z;
+    sjt_math142 = (sjt_dot157)->z;
 #line 49
     sjt_math138 = sjt_math141 * sjt_math142;
 #line 49
     (*_return)->y = sjt_math137 - sjt_math138;
 #line 46
-    sjt_dot157 = _parent;
+    sjt_dot158 = _parent;
 #line 50
-    sjt_math145 = (sjt_dot157)->x;
+    sjt_math145 = (sjt_dot158)->x;
 #line 46
-    sjt_dot158 = v;
+    sjt_dot159 = v;
 #line 50
-    sjt_math146 = (sjt_dot158)->y;
+    sjt_math146 = (sjt_dot159)->y;
 #line 50
     sjt_math143 = sjt_math145 * sjt_math146;
 #line 46
-    sjt_dot159 = _parent;
+    sjt_dot160 = _parent;
 #line 50
-    sjt_math147 = (sjt_dot159)->y;
+    sjt_math147 = (sjt_dot160)->y;
 #line 46
-    sjt_dot160 = v;
+    sjt_dot161 = v;
 #line 50
-    sjt_math148 = (sjt_dot160)->x;
+    sjt_math148 = (sjt_dot161)->x;
 #line 50
     sjt_math144 = sjt_math147 * sjt_math148;
 #line 50
@@ -22151,12 +22163,12 @@ void sjf_vec3_destroy(sjs_vec3* _this) {
 }
 
 void sjf_vec3_dot(sjs_vec3* _parent, sjs_vec3* v, float* _return) {
-    sjs_vec3* sjt_dot170;
     sjs_vec3* sjt_dot171;
     sjs_vec3* sjt_dot172;
     sjs_vec3* sjt_dot173;
     sjs_vec3* sjt_dot174;
     sjs_vec3* sjt_dot175;
+    sjs_vec3* sjt_dot176;
     float sjt_math151;
     float sjt_math152;
     float sjt_math153;
@@ -22169,35 +22181,35 @@ void sjf_vec3_dot(sjs_vec3* _parent, sjs_vec3* v, float* _return) {
     float sjt_math160;
 
 #line 54 "lib/ui/vec3.sj"
-    sjt_dot170 = _parent;
+    sjt_dot171 = _parent;
 #line 55
-    sjt_math155 = (sjt_dot170)->x;
+    sjt_math155 = (sjt_dot171)->x;
 #line 54
-    sjt_dot171 = v;
+    sjt_dot172 = v;
 #line 55
-    sjt_math156 = (sjt_dot171)->x;
+    sjt_math156 = (sjt_dot172)->x;
 #line 55
     sjt_math153 = sjt_math155 * sjt_math156;
 #line 54
-    sjt_dot172 = _parent;
+    sjt_dot173 = _parent;
 #line 55
-    sjt_math157 = (sjt_dot172)->y;
+    sjt_math157 = (sjt_dot173)->y;
 #line 54
-    sjt_dot173 = v;
+    sjt_dot174 = v;
 #line 55
-    sjt_math158 = (sjt_dot173)->y;
+    sjt_math158 = (sjt_dot174)->y;
 #line 55
     sjt_math154 = sjt_math157 * sjt_math158;
 #line 55
     sjt_math151 = sjt_math153 + sjt_math154;
 #line 54
-    sjt_dot174 = _parent;
+    sjt_dot175 = _parent;
 #line 55
-    sjt_math159 = (sjt_dot174)->z;
+    sjt_math159 = (sjt_dot175)->z;
 #line 54
-    sjt_dot175 = v;
+    sjt_dot176 = v;
 #line 55
-    sjt_math160 = (sjt_dot175)->z;
+    sjt_math160 = (sjt_dot176)->z;
 #line 55
     sjt_math152 = sjt_math159 * sjt_math160;
 #line 55
@@ -22208,12 +22220,12 @@ void sjf_vec3_heap(sjs_vec3_heap* _this) {
 }
 
 void sjf_vec3_max(sjs_vec3* a, sjs_vec3* b, sjs_vec3* _return) {
-    sjs_vec3* sjt_dot69;
     sjs_vec3* sjt_dot70;
     sjs_vec3* sjt_dot71;
     sjs_vec3* sjt_dot72;
     sjs_vec3* sjt_dot73;
     sjs_vec3* sjt_dot74;
+    sjs_vec3* sjt_dot75;
     float sjt_functionParam29;
     float sjt_functionParam30;
     float sjt_functionParam31;
@@ -22222,33 +22234,33 @@ void sjf_vec3_max(sjs_vec3* a, sjs_vec3* b, sjs_vec3* _return) {
     float sjt_functionParam34;
 
 #line 67 "lib/ui/vec3.sj"
-    sjt_dot69 = a;
+    sjt_dot70 = a;
 #line 69
-    sjt_functionParam29 = (sjt_dot69)->x;
+    sjt_functionParam29 = (sjt_dot70)->x;
 #line 67
-    sjt_dot70 = b;
+    sjt_dot71 = b;
 #line 69
-    sjt_functionParam30 = (sjt_dot70)->x;
+    sjt_functionParam30 = (sjt_dot71)->x;
 #line 69
     sjf_f32_max(sjt_functionParam29, sjt_functionParam30, &_return->x);
 #line 67
-    sjt_dot71 = a;
+    sjt_dot72 = a;
 #line 70
-    sjt_functionParam31 = (sjt_dot71)->y;
+    sjt_functionParam31 = (sjt_dot72)->y;
 #line 67
-    sjt_dot72 = b;
+    sjt_dot73 = b;
 #line 70
-    sjt_functionParam32 = (sjt_dot72)->y;
+    sjt_functionParam32 = (sjt_dot73)->y;
 #line 70
     sjf_f32_max(sjt_functionParam31, sjt_functionParam32, &_return->y);
 #line 67
-    sjt_dot73 = a;
+    sjt_dot74 = a;
 #line 71
-    sjt_functionParam33 = (sjt_dot73)->z;
+    sjt_functionParam33 = (sjt_dot74)->z;
 #line 67
-    sjt_dot74 = b;
+    sjt_dot75 = b;
 #line 71
-    sjt_functionParam34 = (sjt_dot74)->z;
+    sjt_functionParam34 = (sjt_dot75)->z;
 #line 71
     sjf_f32_max(sjt_functionParam33, sjt_functionParam34, &_return->z);
 #line 71
@@ -22256,12 +22268,12 @@ void sjf_vec3_max(sjs_vec3* a, sjs_vec3* b, sjs_vec3* _return) {
 }
 
 void sjf_vec3_max_heap(sjs_vec3* a, sjs_vec3* b, sjs_vec3_heap** _return) {
-    sjs_vec3* sjt_dot75;
     sjs_vec3* sjt_dot76;
     sjs_vec3* sjt_dot77;
     sjs_vec3* sjt_dot78;
     sjs_vec3* sjt_dot79;
     sjs_vec3* sjt_dot80;
+    sjs_vec3* sjt_dot81;
     float sjt_functionParam35;
     float sjt_functionParam36;
     float sjt_functionParam37;
@@ -22272,33 +22284,33 @@ void sjf_vec3_max_heap(sjs_vec3* a, sjs_vec3* b, sjs_vec3_heap** _return) {
     (*_return) = (sjs_vec3_heap*)malloc(sizeof(sjs_vec3_heap));
     (*_return)->_refCount = 1;
 #line 67 "lib/ui/vec3.sj"
-    sjt_dot75 = a;
+    sjt_dot76 = a;
 #line 69
-    sjt_functionParam35 = (sjt_dot75)->x;
+    sjt_functionParam35 = (sjt_dot76)->x;
 #line 67
-    sjt_dot76 = b;
+    sjt_dot77 = b;
 #line 69
-    sjt_functionParam36 = (sjt_dot76)->x;
+    sjt_functionParam36 = (sjt_dot77)->x;
 #line 69
     sjf_f32_max(sjt_functionParam35, sjt_functionParam36, &(*_return)->x);
 #line 67
-    sjt_dot77 = a;
+    sjt_dot78 = a;
 #line 70
-    sjt_functionParam37 = (sjt_dot77)->y;
+    sjt_functionParam37 = (sjt_dot78)->y;
 #line 67
-    sjt_dot78 = b;
+    sjt_dot79 = b;
 #line 70
-    sjt_functionParam38 = (sjt_dot78)->y;
+    sjt_functionParam38 = (sjt_dot79)->y;
 #line 70
     sjf_f32_max(sjt_functionParam37, sjt_functionParam38, &(*_return)->y);
 #line 67
-    sjt_dot79 = a;
+    sjt_dot80 = a;
 #line 71
-    sjt_functionParam39 = (sjt_dot79)->z;
+    sjt_functionParam39 = (sjt_dot80)->z;
 #line 67
-    sjt_dot80 = b;
+    sjt_dot81 = b;
 #line 71
-    sjt_functionParam40 = (sjt_dot80)->z;
+    sjt_functionParam40 = (sjt_dot81)->z;
 #line 71
     sjf_f32_max(sjt_functionParam39, sjt_functionParam40, &(*_return)->z);
 #line 71
@@ -22306,12 +22318,12 @@ void sjf_vec3_max_heap(sjs_vec3* a, sjs_vec3* b, sjs_vec3_heap** _return) {
 }
 
 void sjf_vec3_min(sjs_vec3* a, sjs_vec3* b, sjs_vec3* _return) {
-    sjs_vec3* sjt_dot56;
     sjs_vec3* sjt_dot57;
     sjs_vec3* sjt_dot58;
     sjs_vec3* sjt_dot59;
     sjs_vec3* sjt_dot60;
     sjs_vec3* sjt_dot61;
+    sjs_vec3* sjt_dot62;
     float sjt_functionParam15;
     float sjt_functionParam16;
     float sjt_functionParam17;
@@ -22320,33 +22332,33 @@ void sjf_vec3_min(sjs_vec3* a, sjs_vec3* b, sjs_vec3* _return) {
     float sjt_functionParam20;
 
 #line 59 "lib/ui/vec3.sj"
-    sjt_dot56 = a;
+    sjt_dot57 = a;
 #line 61
-    sjt_functionParam15 = (sjt_dot56)->x;
+    sjt_functionParam15 = (sjt_dot57)->x;
 #line 59
-    sjt_dot57 = b;
+    sjt_dot58 = b;
 #line 61
-    sjt_functionParam16 = (sjt_dot57)->x;
+    sjt_functionParam16 = (sjt_dot58)->x;
 #line 61
     sjf_f32_min(sjt_functionParam15, sjt_functionParam16, &_return->x);
 #line 59
-    sjt_dot58 = a;
+    sjt_dot59 = a;
 #line 62
-    sjt_functionParam17 = (sjt_dot58)->y;
+    sjt_functionParam17 = (sjt_dot59)->y;
 #line 59
-    sjt_dot59 = b;
+    sjt_dot60 = b;
 #line 62
-    sjt_functionParam18 = (sjt_dot59)->y;
+    sjt_functionParam18 = (sjt_dot60)->y;
 #line 62
     sjf_f32_min(sjt_functionParam17, sjt_functionParam18, &_return->y);
 #line 59
-    sjt_dot60 = a;
+    sjt_dot61 = a;
 #line 63
-    sjt_functionParam19 = (sjt_dot60)->z;
+    sjt_functionParam19 = (sjt_dot61)->z;
 #line 59
-    sjt_dot61 = b;
+    sjt_dot62 = b;
 #line 63
-    sjt_functionParam20 = (sjt_dot61)->z;
+    sjt_functionParam20 = (sjt_dot62)->z;
 #line 63
     sjf_f32_min(sjt_functionParam19, sjt_functionParam20, &_return->z);
 #line 63
@@ -22354,12 +22366,12 @@ void sjf_vec3_min(sjs_vec3* a, sjs_vec3* b, sjs_vec3* _return) {
 }
 
 void sjf_vec3_min_heap(sjs_vec3* a, sjs_vec3* b, sjs_vec3_heap** _return) {
-    sjs_vec3* sjt_dot62;
     sjs_vec3* sjt_dot63;
     sjs_vec3* sjt_dot64;
     sjs_vec3* sjt_dot65;
     sjs_vec3* sjt_dot66;
     sjs_vec3* sjt_dot67;
+    sjs_vec3* sjt_dot68;
     float sjt_functionParam21;
     float sjt_functionParam22;
     float sjt_functionParam23;
@@ -22370,33 +22382,33 @@ void sjf_vec3_min_heap(sjs_vec3* a, sjs_vec3* b, sjs_vec3_heap** _return) {
     (*_return) = (sjs_vec3_heap*)malloc(sizeof(sjs_vec3_heap));
     (*_return)->_refCount = 1;
 #line 59 "lib/ui/vec3.sj"
-    sjt_dot62 = a;
+    sjt_dot63 = a;
 #line 61
-    sjt_functionParam21 = (sjt_dot62)->x;
+    sjt_functionParam21 = (sjt_dot63)->x;
 #line 59
-    sjt_dot63 = b;
+    sjt_dot64 = b;
 #line 61
-    sjt_functionParam22 = (sjt_dot63)->x;
+    sjt_functionParam22 = (sjt_dot64)->x;
 #line 61
     sjf_f32_min(sjt_functionParam21, sjt_functionParam22, &(*_return)->x);
 #line 59
-    sjt_dot64 = a;
+    sjt_dot65 = a;
 #line 62
-    sjt_functionParam23 = (sjt_dot64)->y;
+    sjt_functionParam23 = (sjt_dot65)->y;
 #line 59
-    sjt_dot65 = b;
+    sjt_dot66 = b;
 #line 62
-    sjt_functionParam24 = (sjt_dot65)->y;
+    sjt_functionParam24 = (sjt_dot66)->y;
 #line 62
     sjf_f32_min(sjt_functionParam23, sjt_functionParam24, &(*_return)->y);
 #line 59
-    sjt_dot66 = a;
+    sjt_dot67 = a;
 #line 63
-    sjt_functionParam25 = (sjt_dot66)->z;
+    sjt_functionParam25 = (sjt_dot67)->z;
 #line 59
-    sjt_dot67 = b;
+    sjt_dot68 = b;
 #line 63
-    sjt_functionParam26 = (sjt_dot67)->z;
+    sjt_functionParam26 = (sjt_dot68)->z;
 #line 63
     sjf_f32_min(sjt_functionParam25, sjt_functionParam26, &(*_return)->z);
 #line 63
@@ -22404,7 +22416,6 @@ void sjf_vec3_min_heap(sjs_vec3* a, sjs_vec3* b, sjs_vec3_heap** _return) {
 }
 
 void sjf_vec3_normalize(sjs_vec3* _parent, sjs_vec3* _return) {
-    sjs_vec3* sjt_dot119;
     sjs_vec3* sjt_dot120;
     sjs_vec3* sjt_dot121;
     sjs_vec3* sjt_dot122;
@@ -22413,6 +22424,7 @@ void sjf_vec3_normalize(sjs_vec3* _parent, sjs_vec3* _return) {
     sjs_vec3* sjt_dot125;
     sjs_vec3* sjt_dot126;
     sjs_vec3* sjt_dot127;
+    sjs_vec3* sjt_dot128;
     float sjt_functionParam46;
     float sjt_math81;
     float sjt_math82;
@@ -22433,35 +22445,35 @@ void sjf_vec3_normalize(sjs_vec3* _parent, sjs_vec3* _return) {
     float sjv_t;
 
 #line 37 "lib/ui/vec3.sj"
-    sjt_dot119 = _parent;
-#line 38
-    sjt_math85 = (sjt_dot119)->x;
-#line 37
     sjt_dot120 = _parent;
 #line 38
-    sjt_math86 = (sjt_dot120)->x;
-#line 38
-    sjt_math83 = sjt_math85 * sjt_math86;
+    sjt_math85 = (sjt_dot120)->x;
 #line 37
     sjt_dot121 = _parent;
 #line 38
-    sjt_math87 = (sjt_dot121)->y;
+    sjt_math86 = (sjt_dot121)->x;
+#line 38
+    sjt_math83 = sjt_math85 * sjt_math86;
 #line 37
     sjt_dot122 = _parent;
 #line 38
-    sjt_math88 = (sjt_dot122)->y;
+    sjt_math87 = (sjt_dot122)->y;
+#line 37
+    sjt_dot123 = _parent;
+#line 38
+    sjt_math88 = (sjt_dot123)->y;
 #line 38
     sjt_math84 = sjt_math87 * sjt_math88;
 #line 38
     sjt_math81 = sjt_math83 + sjt_math84;
 #line 37
-    sjt_dot123 = _parent;
-#line 38
-    sjt_math89 = (sjt_dot123)->z;
-#line 37
     sjt_dot124 = _parent;
 #line 38
-    sjt_math90 = (sjt_dot124)->z;
+    sjt_math89 = (sjt_dot124)->z;
+#line 37
+    sjt_dot125 = _parent;
+#line 38
+    sjt_math90 = (sjt_dot125)->z;
 #line 38
     sjt_math82 = sjt_math89 * sjt_math90;
 #line 38
@@ -22469,25 +22481,25 @@ void sjf_vec3_normalize(sjs_vec3* _parent, sjs_vec3* _return) {
 #line 38
     sjf_f32_sqrt(sjt_functionParam46, &sjv_t);
 #line 37
-    sjt_dot125 = _parent;
+    sjt_dot126 = _parent;
 #line 40
-    sjt_math91 = (sjt_dot125)->x;
+    sjt_math91 = (sjt_dot126)->x;
 #line 40
     sjt_math92 = sjv_t;
 #line 40
     _return->x = sjt_math91 / sjt_math92;
 #line 37
-    sjt_dot126 = _parent;
+    sjt_dot127 = _parent;
 #line 41
-    sjt_math93 = (sjt_dot126)->y;
+    sjt_math93 = (sjt_dot127)->y;
 #line 41
     sjt_math94 = sjv_t;
 #line 41
     _return->y = sjt_math93 / sjt_math94;
 #line 37
-    sjt_dot127 = _parent;
+    sjt_dot128 = _parent;
 #line 42
-    sjt_math95 = (sjt_dot127)->z;
+    sjt_math95 = (sjt_dot128)->z;
 #line 42
     sjt_math96 = sjv_t;
 #line 42
@@ -22497,7 +22509,6 @@ void sjf_vec3_normalize(sjs_vec3* _parent, sjs_vec3* _return) {
 }
 
 void sjf_vec3_normalize_heap(sjs_vec3* _parent, sjs_vec3_heap** _return) {
-    sjs_vec3* sjt_dot128;
     sjs_vec3* sjt_dot129;
     sjs_vec3* sjt_dot130;
     sjs_vec3* sjt_dot131;
@@ -22506,6 +22517,7 @@ void sjf_vec3_normalize_heap(sjs_vec3* _parent, sjs_vec3_heap** _return) {
     sjs_vec3* sjt_dot134;
     sjs_vec3* sjt_dot135;
     sjs_vec3* sjt_dot136;
+    sjs_vec3* sjt_dot137;
     float sjt_functionParam47;
     float sjt_math100;
     float sjt_math101;
@@ -22526,35 +22538,35 @@ void sjf_vec3_normalize_heap(sjs_vec3* _parent, sjs_vec3_heap** _return) {
     float sjv_t;
 
 #line 37 "lib/ui/vec3.sj"
-    sjt_dot128 = _parent;
-#line 38
-    sjt_math101 = (sjt_dot128)->x;
-#line 37
     sjt_dot129 = _parent;
 #line 38
-    sjt_math102 = (sjt_dot129)->x;
-#line 38
-    sjt_math99 = sjt_math101 * sjt_math102;
+    sjt_math101 = (sjt_dot129)->x;
 #line 37
     sjt_dot130 = _parent;
 #line 38
-    sjt_math103 = (sjt_dot130)->y;
+    sjt_math102 = (sjt_dot130)->x;
+#line 38
+    sjt_math99 = sjt_math101 * sjt_math102;
 #line 37
     sjt_dot131 = _parent;
 #line 38
-    sjt_math104 = (sjt_dot131)->y;
+    sjt_math103 = (sjt_dot131)->y;
+#line 37
+    sjt_dot132 = _parent;
+#line 38
+    sjt_math104 = (sjt_dot132)->y;
 #line 38
     sjt_math100 = sjt_math103 * sjt_math104;
 #line 38
     sjt_math97 = sjt_math99 + sjt_math100;
 #line 37
-    sjt_dot132 = _parent;
-#line 38
-    sjt_math105 = (sjt_dot132)->z;
-#line 37
     sjt_dot133 = _parent;
 #line 38
-    sjt_math106 = (sjt_dot133)->z;
+    sjt_math105 = (sjt_dot133)->z;
+#line 37
+    sjt_dot134 = _parent;
+#line 38
+    sjt_math106 = (sjt_dot134)->z;
 #line 38
     sjt_math98 = sjt_math105 * sjt_math106;
 #line 38
@@ -22566,25 +22578,25 @@ void sjf_vec3_normalize_heap(sjs_vec3* _parent, sjs_vec3_heap** _return) {
 #line 38
     (*_return)->_refCount = 1;
 #line 37
-    sjt_dot134 = _parent;
+    sjt_dot135 = _parent;
 #line 40
-    sjt_math107 = (sjt_dot134)->x;
+    sjt_math107 = (sjt_dot135)->x;
 #line 40
     sjt_math108 = sjv_t;
 #line 40
     (*_return)->x = sjt_math107 / sjt_math108;
 #line 37
-    sjt_dot135 = _parent;
+    sjt_dot136 = _parent;
 #line 41
-    sjt_math109 = (sjt_dot135)->y;
+    sjt_math109 = (sjt_dot136)->y;
 #line 41
     sjt_math110 = sjv_t;
 #line 41
     (*_return)->y = sjt_math109 / sjt_math110;
 #line 37
-    sjt_dot136 = _parent;
+    sjt_dot137 = _parent;
 #line 42
-    sjt_math111 = (sjt_dot136)->z;
+    sjt_math111 = (sjt_dot137)->z;
 #line 42
     sjt_math112 = sjv_t;
 #line 42
@@ -22594,12 +22606,12 @@ void sjf_vec3_normalize_heap(sjs_vec3* _parent, sjs_vec3_heap** _return) {
 }
 
 void sjf_vec3_subtract(sjs_vec3* _parent, sjs_vec3* v, sjs_vec3* _return) {
-    sjs_vec3* sjt_dot105;
     sjs_vec3* sjt_dot106;
     sjs_vec3* sjt_dot107;
     sjs_vec3* sjt_dot108;
     sjs_vec3* sjt_dot109;
     sjs_vec3* sjt_dot110;
+    sjs_vec3* sjt_dot111;
     float sjt_math69;
     float sjt_math70;
     float sjt_math71;
@@ -22608,33 +22620,33 @@ void sjf_vec3_subtract(sjs_vec3* _parent, sjs_vec3* v, sjs_vec3* _return) {
     float sjt_math74;
 
 #line 29 "lib/ui/vec3.sj"
-    sjt_dot105 = _parent;
+    sjt_dot106 = _parent;
 #line 31
-    sjt_math69 = (sjt_dot105)->x;
+    sjt_math69 = (sjt_dot106)->x;
 #line 29
-    sjt_dot106 = v;
+    sjt_dot107 = v;
 #line 31
-    sjt_math70 = (sjt_dot106)->x;
+    sjt_math70 = (sjt_dot107)->x;
 #line 31
     _return->x = sjt_math69 - sjt_math70;
 #line 29
-    sjt_dot107 = _parent;
+    sjt_dot108 = _parent;
 #line 32
-    sjt_math71 = (sjt_dot107)->y;
+    sjt_math71 = (sjt_dot108)->y;
 #line 29
-    sjt_dot108 = v;
+    sjt_dot109 = v;
 #line 32
-    sjt_math72 = (sjt_dot108)->y;
+    sjt_math72 = (sjt_dot109)->y;
 #line 32
     _return->y = sjt_math71 - sjt_math72;
 #line 29
-    sjt_dot109 = _parent;
+    sjt_dot110 = _parent;
 #line 33
-    sjt_math73 = (sjt_dot109)->z;
+    sjt_math73 = (sjt_dot110)->z;
 #line 29
-    sjt_dot110 = v;
+    sjt_dot111 = v;
 #line 33
-    sjt_math74 = (sjt_dot110)->z;
+    sjt_math74 = (sjt_dot111)->z;
 #line 33
     _return->z = sjt_math73 - sjt_math74;
 #line 33
@@ -22642,12 +22654,12 @@ void sjf_vec3_subtract(sjs_vec3* _parent, sjs_vec3* v, sjs_vec3* _return) {
 }
 
 void sjf_vec3_subtract_heap(sjs_vec3* _parent, sjs_vec3* v, sjs_vec3_heap** _return) {
-    sjs_vec3* sjt_dot111;
     sjs_vec3* sjt_dot112;
     sjs_vec3* sjt_dot113;
     sjs_vec3* sjt_dot114;
     sjs_vec3* sjt_dot115;
     sjs_vec3* sjt_dot116;
+    sjs_vec3* sjt_dot117;
     float sjt_math75;
     float sjt_math76;
     float sjt_math77;
@@ -22658,33 +22670,33 @@ void sjf_vec3_subtract_heap(sjs_vec3* _parent, sjs_vec3* v, sjs_vec3_heap** _ret
     (*_return) = (sjs_vec3_heap*)malloc(sizeof(sjs_vec3_heap));
     (*_return)->_refCount = 1;
 #line 29 "lib/ui/vec3.sj"
-    sjt_dot111 = _parent;
+    sjt_dot112 = _parent;
 #line 31
-    sjt_math75 = (sjt_dot111)->x;
+    sjt_math75 = (sjt_dot112)->x;
 #line 29
-    sjt_dot112 = v;
+    sjt_dot113 = v;
 #line 31
-    sjt_math76 = (sjt_dot112)->x;
+    sjt_math76 = (sjt_dot113)->x;
 #line 31
     (*_return)->x = sjt_math75 - sjt_math76;
 #line 29
-    sjt_dot113 = _parent;
+    sjt_dot114 = _parent;
 #line 32
-    sjt_math77 = (sjt_dot113)->y;
+    sjt_math77 = (sjt_dot114)->y;
 #line 29
-    sjt_dot114 = v;
+    sjt_dot115 = v;
 #line 32
-    sjt_math78 = (sjt_dot114)->y;
+    sjt_math78 = (sjt_dot115)->y;
 #line 32
     (*_return)->y = sjt_math77 - sjt_math78;
 #line 29
-    sjt_dot115 = _parent;
+    sjt_dot116 = _parent;
 #line 33
-    sjt_math79 = (sjt_dot115)->z;
+    sjt_math79 = (sjt_dot116)->z;
 #line 29
-    sjt_dot116 = v;
+    sjt_dot117 = v;
 #line 33
-    sjt_math80 = (sjt_dot116)->z;
+    sjt_math80 = (sjt_dot117)->z;
 #line 33
     (*_return)->z = sjt_math79 - sjt_math80;
 #line 33

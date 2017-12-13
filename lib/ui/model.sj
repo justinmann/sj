@@ -1,6 +1,6 @@
 #model(
 	setWorld(world : 'mat4)'void
-	render(projection : 'mat4, view : 'mat4, light : 'light)'void
+	render(sceneRect : 'rect, projection : 'mat4, view : 'mat4, light : 'light)'void
 	fireMouseEvent(sceneRect : 'rect, projection : 'mat4, view : 'mat4, point: 'point, eventId : 'i32)'void
 )
 
@@ -18,7 +18,7 @@ model #model (
 		void
 	}
 
-	render(projection : 'mat4, view : 'mat4, light : 'light)'void {
+	render(sceneRect : 'rect, projection : 'mat4, view : 'mat4, light : 'light)'void {
 		totalWorld : _parentWorld * world
 		viewWorld : view * totalWorld
 		normalMat : viewWorld.invert().transpose()

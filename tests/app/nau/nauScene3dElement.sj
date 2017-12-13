@@ -37,7 +37,7 @@ nauScene3dElement #element (
 
 		for i : 0 to children.count {
 			child : children[i]
-			child.render(projection, view, light)
+			child.render(_rect, projection, view, light)
 		}
 
 		--c--
