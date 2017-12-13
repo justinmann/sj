@@ -1,6 +1,7 @@
 #include "../node/Node.h"
 
 #define SKIP_FREE
+#define PRAGMA_LINE_OUTPUT
 
 void TrBlock::writeToStream(ostream& stream, int level) {
     writeVariablesToStream(stream,level);
