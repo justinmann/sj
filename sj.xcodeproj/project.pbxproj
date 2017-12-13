@@ -45,6 +45,7 @@
 		9CE061721FDF23E6002FBBEA /* NNegate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CE0616F1FDF23E5002FBBEA /* NNegate.cpp */; };
 		9CE061731FDF23E6002FBBEA /* CCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CE061701FDF23E5002FBBEA /* CCallback.cpp */; };
 		9CE061741FDF23E6002FBBEA /* NIfValue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CE061711FDF23E5002FBBEA /* NIfValue.cpp */; };
+		9CE061791FE1AA1E002FBBEA /* NCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CE061771FE1AA1D002FBBEA /* NCopy.cpp */; };
 		9CE83C5E1FAA33A80045B0C6 /* TrStatement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CE83C5C1FAA33A80045B0C6 /* TrStatement.cpp */; };
 		9CE83C611FABE0A10045B0C6 /* NCCode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CE83C5F1FABE0A10045B0C6 /* NCCode.cpp */; };
 		9CE83C631FB006210045B0C6 /* libboost_filesystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CE83C621FB006210045B0C6 /* libboost_filesystem.a */; };
@@ -157,6 +158,8 @@
 		9CE0616F1FDF23E5002FBBEA /* NNegate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NNegate.cpp; path = node/NNegate.cpp; sourceTree = "<group>"; };
 		9CE061701FDF23E5002FBBEA /* CCallback.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CCallback.cpp; path = node/CCallback.cpp; sourceTree = "<group>"; };
 		9CE061711FDF23E5002FBBEA /* NIfValue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NIfValue.cpp; path = node/NIfValue.cpp; sourceTree = "<group>"; };
+		9CE061771FE1AA1D002FBBEA /* NCopy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NCopy.cpp; path = node/NCopy.cpp; sourceTree = "<group>"; };
+		9CE061781FE1AA1E002FBBEA /* NCopy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NCopy.h; path = node/NCopy.h; sourceTree = "<group>"; };
 		9CE83C5C1FAA33A80045B0C6 /* TrStatement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TrStatement.cpp; sourceTree = "<group>"; };
 		9CE83C5D1FAA33A80045B0C6 /* TrStatement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrStatement.h; sourceTree = "<group>"; };
 		9CE83C5F1FABE0A10045B0C6 /* NCCode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NCCode.cpp; path = node/NCCode.cpp; sourceTree = "<group>"; };
@@ -317,6 +320,8 @@
 				9C908F181E35C9D6005E253C /* NChar.h */,
 				9CF16C021E19A888006E9CB8 /* NCompare.cpp */,
 				9CF16C031E19A888006E9CB8 /* NCompare.h */,
+				9CE061771FE1AA1D002FBBEA /* NCopy.cpp */,
+				9CE061781FE1AA1E002FBBEA /* NCopy.h */,
 				9C908EFA1E3343C2005E253C /* NDot.cpp */,
 				9C908EFB1E3343C2005E253C /* NDot.h */,
 				9CF16C041E19A888006E9CB8 /* NDouble.cpp */,
@@ -490,6 +495,7 @@
 				9C0A1E941FBA204B00778313 /* NGetValue.cpp in Sources */,
 				9C908F081E347E69005E253C /* NInclude.cpp in Sources */,
 				9C29C0B21E273F7E001C1FC6 /* NNot.cpp in Sources */,
+				9CE061791FE1AA1E002FBBEA /* NCopy.cpp in Sources */,
 				9C0A1E9C1FBA204B00778313 /* NOptionDot.cpp in Sources */,
 				9C89B2411FC7CE4E004A91AB /* NChangeMode.cpp in Sources */,
 				9C908F191E35C9D6005E253C /* NChar.cpp in Sources */,

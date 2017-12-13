@@ -72,7 +72,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %type <var> var_right expr_math expr_var const expr_and expr_comp tuple expr_and_inner
 %type <block> stmts
 %type <exprvec> func_args func_block array_args tuple_args interface_args interface_block ifValue_vars
-%type <assignOp> assign_type assign_copy
+%type <assignOp> assign_type
 %type <typeName> arg_type_quote arg_type return_type_quote return_type func_type func_arg_type func_type_name implement_arg value_type
 %type <templateTypeNames> temp_args temp_block temp_block_optional func_arg_type_list implement implement_args
 %type <string> arg_type_interface
@@ -224,6 +224,7 @@ expr 				: if_expr										{ $$ = $1; }
 					| TSTACK expr                             		{ $$ = new NChangeMode(LOC, CTM_Stack, shared_ptr<NBase>($2)); }
 					| TLOCAL expr                             		{ $$ = new NChangeMode(LOC, CTM_Local, shared_ptr<NBase>($2)); }
 					| THEAP expr                             		{ $$ = new NChangeMode(LOC, CTM_Heap, shared_ptr<NBase>($2)); }
+					| TCOPY expr                             		{ $$ = new NCopy(LOC, shared_ptr<NBase>($2)); }
 					| expr_var TLBRACKET expr TRBRACKET					{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NCall>(LOC, "getAt", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3)))); }
 					| TVOID											{ $$ = new NVoid(LOC); }
 					;
@@ -329,13 +330,9 @@ assign_tuple_arg	: TIDENTIFIER assign_type						{ $$ = new NTupleAssignmentArg(L
 					| expr_var TDOT TIDENTIFIER assign_type				{ $$ = new NTupleAssignmentArg(LOC, shared_ptr<NVariableBase>($1), nullptr, $3->c_str(), $4); }
 					;
 
-assign_type 		: TEQUAL assign_copy							{ $$ = $2; $$.isMutable = true; $$.isFirstAssignment = false; }
-					| TCOLONEQUAL assign_copy						{ $$ = $2; $$.isMutable = true; $$.isFirstAssignment = true; }
-					| TCOLON assign_copy							{ $$ = $2; $$.isMutable = false; $$.isFirstAssignment = true; }
-					;
-
-assign_copy			: /* Blank! */									{ $$.isCopy = false; $$.typeMode = CTM_Undefined; }
-					| TCOPY 										{ $$.isCopy = true; $$.typeMode = CTM_Undefined;  }
+assign_type 		: TEQUAL 										{ $$.isCopy = false; $$.typeMode = CTM_Undefined; $$.isMutable = true;  $$.isFirstAssignment = false; }
+					| TCOLONEQUAL 									{ $$.isCopy = false; $$.typeMode = CTM_Undefined; $$.isMutable = true;  $$.isFirstAssignment = true; }
+					| TCOLON 										{ $$.isCopy = false; $$.typeMode = CTM_Undefined; $$.isMutable = false; $$.isFirstAssignment = true; }
 					;
 
 tuple				: tuple_args TCOMMA expr_comp					{ $1->push_back(shared_ptr<NBase>($3)); $$ = new NTuple(LOC, shared_ptr<NodeList>($1)); }

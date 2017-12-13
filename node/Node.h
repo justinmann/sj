@@ -54,6 +54,7 @@ enum NodeType {
     NodeType_Char,
     NodeType_Code,
     NodeType_Compare,
+    NodeType_Copy,
     NodeType_Dot,
     NodeType_Double,
     NodeType_Empty,
@@ -101,6 +102,7 @@ enum NodeType {
 #include "NChangeMode.h"
 #include "NChar.h"
 #include "NCompare.h"
+#include "NCopy.h"
 #include "NDot.h"
 #include "NDouble.h"
 #include "NEmpty.h"

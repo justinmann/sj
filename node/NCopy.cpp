@@ -1,81 +1,76 @@
 #include "Node.h"
 
-shared_ptr<CType> CCopyVar::getType(Compiler* compiler, CResult& result) {
-    auto type = var->getType(compiler, result);
-    if (!type) {
-        return nullptr;
+bool CCopyVar::getReturnThis() {
+    return false;
+}
+
+shared_ptr<CType> CCopyVar::getType(Compiler* compiler) {
+    auto type = var->getType(compiler);
+    if (type->typeMode == CTM_Value) {
+        return type;
     }
-
-    if (type->isOption) {
-        result.addError(loc, CErrorCode::TypeMismatch, "copy cannot take an option type");
-        return nullptr;
+    else if (type->typeMode != CTM_Heap) {
+        return type->getStackType();
     }
-
-    return type->getOptionType();
-}
-
-shared_ptr<ReturnValue> CCopyVar::transpileGet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, const char* thisName) {
-    auto rightValue = var->transpileGet(compiler, result, trOutput, trBlock, nullptr, thisName);
-    
-    // figure out type
-    shared_ptr<CType> leftType;
-    switch (returnMode) {
-    case CTM_Local:
-    case CTM_Undefined:
-    case CTM_Stack:
-        leftType = rightValue->type->getStackValueType();
-        break;
-    case CTM_Heap:
-        leftType = rightValue->type->getHeapValueType();
-        break;
+    else {
+        return type->getHeapType();
     }
-
-    // create temp variable
-    auto resultValue = trBlock->createTempVariable(leftType, "copy");
-
-    // init temp variable
-    resultValue->addInitToStatements(trBlock);
-
-    // copy
-    auto copyName = leftType->parent.lock()->getCCopyFunctionName();
-    stringstream ss;
-    ss << copyName << "(" << rightValue->name << ", " << resultValue->name << ")";
-    trBlock->statements.push_back(ss.str());
-
-    return resultValue;
 }
 
-void CCopyVar::transpileSet(Compiler* compiler, CResult& result, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<ReturnValue> dotValue, shared_ptr<ReturnValue> returnValue, const char* thisName) {
-    assert(false);
+void CCopyVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    auto type = getType(compiler);
+    if (type->typeMode == CTM_Value) {
+        var->transpile(compiler, trOutput, trBlock, thisValue, storeValue);
+    }
+    else {
+        auto destType = returnMode == CTM_Heap ? type->getHeapType() : type->getStackType();
+        auto rightValue = trBlock->createTempStoreVariable(loc, scope.lock(), type->typeMode == CTM_Heap ? type : type->getLocalType(), "copy");
+        var->transpile(compiler, trOutput, trBlock, thisValue, rightValue);
+        
+        if (storeValue->op.isFirstAssignment) {
+            storeValue->getValue()->addInitToStatements(trBlock);
+        } else {
+            storeValue->getValue()->addReleaseToStatements(trBlock);
+        }
+        
+        if (!type->parent.expired()) {
+            stringstream lineStream;
+            lineStream << type->parent.lock()->getCCopyFunctionName() << "(" << TrValue::convertToLocalName(storeValue->type, storeValue->getName(trBlock), storeValue->isReturnValue) << ", " << TrValue::convertToLocalName(rightValue->type, rightValue->getName(trBlock), rightValue->isReturnValue) << ")";
+            trBlock->statements.push_back(TrStatement(loc, lineStream.str()));
+        }
+        else if (type->category == CTC_Function) {
+            type->callback.lock()->writeCopy(trBlock, rightValue->getName(trBlock), storeValue->getName(trBlock), type->typeMode == CTM_Heap);
+        }
+        
+        storeValue->hasSetValue = true;
+    }
 }
 
-void CCopyVar::dump(Compiler* compiler, CResult& result, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) {
-    ss << "copy(";
-    var->dump(compiler, result, returnMode, nullptr, functions, ss, dotSS, level);
-    ss << ")";
-
+void CCopyVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+    ss << "copy ";
+    var->dump(compiler, functions, ss, level);
 }
 
-void NCopy::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NCopy::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
-    node->define(compiler, result, thisFunction);
+    node->define(compiler, thisFunction);
 }
 
-shared_ptr<CVar> NCopy::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CThisVar> thisVar, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto leftVar = node->getVar(compiler, result, thisFunction, thisVar);
+shared_ptr<CVar> NCopy::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+    auto leftVar = node->getVar(compiler, scope, CTM_Undefined);
     if (!leftVar) {
         return nullptr;
     }
 
-    auto leftType = leftVar->getType(compiler, result, CTM_Undefined);
+    auto leftType = leftVar->getType(compiler);
     if (!leftType) {
         return nullptr;
     }
 
     if (leftType->isOption) {
-        result.addError(loc, CErrorCode::TypeMismatch, "value cannot take an option type");
+        compiler->addError(loc, CErrorCode::TypeMismatch, "value cannot take an option type");
         return nullptr;
     }
 
-    return make_shared<CCopyVar>(loc, leftVar);
+    return make_shared<CCopyVar>(loc, scope, leftVar, returnMode);
 }
