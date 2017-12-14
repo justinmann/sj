@@ -11,6 +11,7 @@
 
 -- language --
 * package - reference local var in same package
+* perf: get flex/bison to convert c code block into list of trimmed lines
 * import
 * enum
 * switch

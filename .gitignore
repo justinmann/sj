@@ -68,3 +68,5 @@ tests/app/timer.data
 tests/app/lib
 
 tests/basic/lib
+*.vspx
+*.psess
