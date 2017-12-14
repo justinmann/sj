@@ -24,20 +24,20 @@ struct YYLOCATION {
 };
 #define YY_EXTRA_TYPE YYLOCATION
 
-void updateLocation(YYLOCATION& loc, const char* s, const int len) {
-	int lastReturn = 0;
-	for (int i = 0; i < len; i++) {
+void updateLocation(YYLOCATION& loc, const char* s, const size_t len) {
+	size_t lastReturn = 0;
+	for (size_t i = 0; i < len; i++) {
 		if (s[i] == '\n') {
 			loc.l++;
 			loc.c = 0;
 			lastReturn = 0;
 		}
 	}
-	loc.c += len - lastReturn;
+	loc.c += (int)(len - lastReturn);
 }
 
 #define SAVE_LOC yylloc_param->first_line = yyg->yyextra_r.l; yylloc_param->first_column = yyg->yyextra_r.c; updateLocation(yyg->yyextra_r, yytext, yyleng)
-#define TOKEN_STR(t, leftTrim, rightTrim) SAVE_LOC; yylval->string = new std::string(yytext + leftTrim, yyleng - leftTrim - rightTrim); return t
+#define TOKEN_STR(t, leftTrim, rightTrim) SAVE_LOC; yylval->string = new std::string(yytext + (size_t)leftTrim, yyleng - (size_t)leftTrim - (size_t)rightTrim); return t
 #define TOKEN_VAL(t) SAVE_LOC; yylval->token = t; return t
 %}
 
@@ -119,6 +119,13 @@ void updateLocation(YYLOCATION& loc, const char* s, const int len) {
 "getValue"				TOKEN_VAL(TGETVALUE);
 "value"					TOKEN_VAL(TVALUE);
 "empty"					TOKEN_VAL(TEMPTY);
+"enum"					TOKEN_VAL(TENUM);
+"switch"				TOKEN_VAL(TSWITCH);
+"case"					TOKEN_VAL(TCASE);
+"default"				TOKEN_VAL(TDEFAULT);
+"package"				TOKEN_VAL(TPACKAGE);
+"import"				TOKEN_VAL(TIMPORT);
+"_"						TOKEN_VAL(TUNDERSCORE);
 "#"						TOKEN_VAL(THASH);
 "?:"					TOKEN_VAL(TQUESTIONCOLON);
 "?."					TOKEN_VAL(TQUESTIONDOT);

@@ -102,7 +102,8 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
     }
     else {
         if (!rightSide) {
-            assert(false);
+            compiler->addError(loc, CErrorCode::InvalidVariable, "assignment needs a right side");
+            return nullptr;
         }
         
         shared_ptr<CStoreVar> leftStoreVar;
@@ -149,7 +150,23 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
                 if (!leftType) {
                     return nullptr;
                 }
-                leftStoreVar = make_shared<CNormalVar>(loc, scope, leftType, name, op.isMutable, CVarType::Var_Local);
+                
+                string nameNS;
+                bool isFirst = true;
+                for (auto ns : scope->ns) {
+                    if (isFirst) {
+                        isFirst = false;
+                    } else {
+                        nameNS += "_";
+                    }
+                    nameNS += ns;
+                }
+                if (!isFirst) {
+                    nameNS += "_";
+                }
+                nameNS += name;
+                
+                leftStoreVar = make_shared<CNormalVar>(loc, scope, leftType, nameNS, op.isMutable, CVarType::Var_Local);
 
                 scope->addOrUpdateLocalVar(compiler, name, leftStoreVar);
             }

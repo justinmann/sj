@@ -280,7 +280,7 @@ shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, shared_ptr<CSc
     if (dotVar) {
         auto temp = dynamic_pointer_cast<CFunction>(cfunction);
         if (temp) {
-            var = temp->getCVar(compiler, scope, vector<shared_ptr<FunctionBlock>>(), dotVar, name, VSM_ThisOnly, cfunctionReturnMode);
+            var = temp->getCVar(compiler, scope, vector<shared_ptr<FunctionBlock>>(), vector<string>(), dotVar, name, VSM_ThisOnly, cfunctionReturnMode);
         }
     }
     else {

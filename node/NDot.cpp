@@ -7,17 +7,43 @@ void NDot::defineImpl(Compiler *compiler, shared_ptr<CBaseFunctionDefinition> th
 }
 
 shared_ptr<CVar> NDot::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto leftVar = left->getVar(compiler, scope, dotVar, CTM_Undefined);
-    if (!leftVar) {
-        compiler->addError(loc, CErrorCode::InvalidDot, "left side of dot has no value");
-        return nullptr;
+    vector<string> ns;
+    if (dotVar == nullptr) {
+        auto leftNVar = dynamic_pointer_cast<NVariable>(left);
+        if (leftNVar && (leftNVar->templateTypeNames == nullptr || leftNVar->templateTypeNames->size() == 0)) {
+            ns = scope->getNamespace(compiler, leftNVar->name);
+        }
     }
 
-    auto rightVar = right->getVar(compiler, scope, leftVar, returnMode);
-    if (!rightVar) {
-        compiler->addError(loc, CErrorCode::InvalidDot, "right side of dot has no value");
-        return nullptr;
+    if (ns.size() > 0) {
+        scope->pushNamespace(compiler, ns);
+        auto rightVar = right->getVar(compiler, scope, nullptr, returnMode);
+        scope->popNamespace(compiler, ns);
+        if (!rightVar) {
+            compiler->addError(loc, CErrorCode::InvalidDot, "right side of dot has no value");
+            return nullptr;
+        }
+        return rightVar;
     }
+    else {
+        auto leftVar = left->getVar(compiler, scope, dotVar, CTM_Undefined);
+        if (!leftVar) {
+            compiler->addError(loc, CErrorCode::InvalidDot, "left side of dot has no value");
+            return nullptr;
+        }
 
-    return rightVar;
+        if (ns.size() > 0) {
+            scope->pushNamespace(compiler, ns);
+        }
+        auto rightVar = right->getVar(compiler, scope, leftVar, returnMode);
+        if (ns.size() > 0) {
+            scope->popNamespace(compiler, ns);
+        }
+        if (!rightVar) {
+            compiler->addError(loc, CErrorCode::InvalidDot, "right side of dot has no value");
+            return nullptr;
+        }
+        
+        return rightVar;
+    }
 }

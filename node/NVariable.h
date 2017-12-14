@@ -34,8 +34,6 @@ public:
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 
     string name;
-
-private:
     shared_ptr<CTypeNameList> templateTypeNames;
 };
 

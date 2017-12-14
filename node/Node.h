@@ -57,6 +57,7 @@ enum NodeType {
     NodeType_Copy,
     NodeType_Dot,
     NodeType_Double,
+    NodeType_Enum,
     NodeType_Empty,
     NodeType_For,
     NodeType_Function,
@@ -76,6 +77,7 @@ enum NodeType {
     NodeType_Not,
     NodeType_OptionDot,
     NodeType_Or,
+    NodeType_Package,
     NodeType_Parent,
     NodeType_String,
     NodeType_StringArray,
@@ -105,6 +107,7 @@ enum NodeType {
 #include "NCopy.h"
 #include "NDot.h"
 #include "NDouble.h"
+#include "NEnum.h"
 #include "NEmpty.h"
 #include "NFor.h"
 #include "NFunction.h"
@@ -117,6 +120,7 @@ enum NodeType {
 #include "NInterface.h"
 #include "NInterfaceMethod.h"
 #include "NIsEmpty.h"
+#include "NPackage.h"
 #include "NParent.h"
 #include "NMath.h"
 #include "NMathAssignment.h"

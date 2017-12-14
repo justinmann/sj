@@ -196,6 +196,7 @@ public:
     shared_ptr<CType> typeBoolOption;
     shared_ptr<CType> typeCharOption;
     map<string, shared_ptr<CTypes>> types;
+    map<vector<string>, bool> namespaces;
 
 private:
     shared_ptr<CParseFile> genNodeFile(const string& fileName);

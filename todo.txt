@@ -10,9 +10,10 @@
 * center text
 
 -- language --
+* package function
 * enum
+* import
 * switch
-* package/import
 * lambda
 * map
 * weak pointer
@@ -26,23 +27,18 @@
 	func()'stack string { copy "c" } // okay
 	func()'heap string { heap "c" } // okay
 
--- enum --
-// no values
-enum bar {
-	a
-	b
-	c
-}
+-- switch --
+switch x {
+	case 0 {
 
-// all values
-enum bar2 {
-	a : 0
-	b : 1
-	c : 2
-}
+	}
+	case _ == 2 {
 
-b : 'bar
-b : bar.a
+	}
+	default {
+
+	}
+}
 
 -- package/import --
 package foo

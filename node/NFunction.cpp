@@ -1240,7 +1240,7 @@ shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, const string
                 return cfunc->getCInterface(compiler, name, callerScope, templateTypeNames);
             }
             else {
-                auto var = cfunc->getCVar(compiler, callerScope, vector<shared_ptr<FunctionBlock>>(), nullptr, name, VSM_LocalOnly, CTM_Stack);
+                auto var = cfunc->getCVar(compiler, callerScope, vector<shared_ptr<FunctionBlock>>(), vector<string>(), nullptr, name, VSM_LocalOnly, CTM_Stack);
                 if (!var) {
                     return nullptr;
                 }
@@ -1272,17 +1272,17 @@ shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, const string
     }
 }
 
-shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, shared_ptr<CScope> callerScope, vector<shared_ptr<FunctionBlock>> functionBlocks, shared_ptr<CVar> dotVar, const string& name, VarScanMode scanMode, CTypeMode returnMode) {
+shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, shared_ptr<CScope> callerScope, vector<shared_ptr<FunctionBlock>> functionBlocks, vector<string> ns, shared_ptr<CVar> dotVar, const string& name, VarScanMode scanMode, CTypeMode returnMode) {
     if (returnMode == CTM_Undefined) {
         if (!_data[CTM_Stack].isInvalid) {
-            auto result = getCVar(compiler, callerScope, functionBlocks, dotVar, name, scanMode, CTM_Stack);
+            auto result = getCVar(compiler, callerScope, functionBlocks, ns, dotVar, name, scanMode, CTM_Stack);
             if (result) {
                 return result;
             }
         }
 
         if (!_data[CTM_Heap].isInvalid) {
-            auto result = getCVar(compiler, callerScope, functionBlocks, dotVar, name, scanMode, CTM_Heap);
+            auto result = getCVar(compiler, callerScope, functionBlocks, ns, dotVar, name, scanMode, CTM_Heap);
             if (result) {
                 return result;
             }
@@ -1294,14 +1294,14 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, shared_ptr<CScope> calle
 
         if (scanMode == VSM_LocalOnly || scanMode == VSM_LocalThisParent) {
             for (auto fb = functionBlocks.rbegin(); fb != functionBlocks.rend(); ++fb) {
-                auto t1 = _data[returnMode].localVarsByName[*fb].find(name);
-                if (t1 != _data[returnMode].localVarsByName[*fb].end()) {
+                auto t1 = _data[returnMode].localVarsByName[*fb][ns].find(name);
+                if (t1 != _data[returnMode].localVarsByName[*fb][ns].end()) {
                     return t1->second;
                 }
             }
 
-            auto t1 = _data[returnMode].localVarsByName[nullptr].find(name);
-            if (t1 != _data[returnMode].localVarsByName[nullptr].end()) {
+            auto t1 = _data[returnMode].localVarsByName[nullptr][ns].find(name);
+            if (t1 != _data[returnMode].localVarsByName[nullptr][ns].end()) {
                 return t1->second;
             }
         }
@@ -1332,7 +1332,7 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, shared_ptr<CScope> calle
 
         if (scanMode == VSM_LocalThisParent) {
             shared_ptr<CFunction> parentCheck = dynamic_pointer_cast<CFunction>(parent.lock());
-            auto cvar = parentCheck->getCVar(compiler, callerScope, vector<shared_ptr<FunctionBlock>>(), make_shared<CParentVar>(loc, callerScope, dotVar, parentCheck, parentCheck->getHasHeapParent()), name, VSM_FromChild, CTM_Undefined);
+            auto cvar = parentCheck->getCVar(compiler, callerScope, vector<shared_ptr<FunctionBlock>>(), vector<string>(), make_shared<CParentVar>(loc, callerScope, dotVar, parentCheck, parentCheck->getHasHeapParent()), name, VSM_FromChild, CTM_Undefined);
             if (cvar) {
                 return cvar;
             }
@@ -1343,7 +1343,7 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, shared_ptr<CScope> calle
             }
 
             if (globalFunction) {
-                cvar = globalFunction->getCVar(compiler, callerScope, vector<shared_ptr<FunctionBlock>>(), nullptr, name, VSM_LocalOnly, CTM_Undefined);
+                cvar = globalFunction->getCVar(compiler, callerScope, vector<shared_ptr<FunctionBlock>>(), vector<string>(), nullptr, name, VSM_LocalOnly, CTM_Undefined);
                 return cvar;
             }
         }
@@ -1661,16 +1661,25 @@ void CFunctionDefinition::dump(Compiler* compiler, int level) {
 }
 
 shared_ptr<CVar> CScope::findLocalVar(Compiler* compiler, string name) {
-    auto iter = function->_data[returnMode].localVarsByName[functionBlocks.back()].find(name);
-    if (iter != function->_data[returnMode].localVarsByName[functionBlocks.back()].end()) {
+    // TODO: This is where we need to search all of the imports for a match
+    vector<string> emptyNS;
+    auto iter = function->_data[returnMode].localVarsByName[functionBlocks.back()][emptyNS].find(name);
+    if (iter != function->_data[returnMode].localVarsByName[functionBlocks.back()][emptyNS].end()) {
         return iter->second;
+    }
+    
+    if (ns.size() > 0) {
+        auto iter = function->_data[returnMode].localVarsByName[functionBlocks.back()][ns].find(name);
+        if (iter != function->_data[returnMode].localVarsByName[functionBlocks.back()][ns].end()) {
+            return iter->second;
+        }
     }
     return nullptr;
 }
 
 void CScope::addOrUpdateLocalVar(Compiler* compiler, string name, shared_ptr<CVar> var) {
     auto currentBlock = functionBlocks.size() > 0 ? functionBlocks.back() : nullptr;
-    function->_data[returnMode].localVarsByName[currentBlock][name] = var;
+    function->_data[returnMode].localVarsByName[currentBlock][ns][name] = var;
 }
 
 void CScope::pushFunctionBlock(shared_ptr<FunctionBlock> functionBlock) {
@@ -1684,14 +1693,14 @@ void CScope::popFunctionBlock(shared_ptr<FunctionBlock> functionBlock) {
 
 void CScope::setLocalVar(Compiler* compiler, CLoc loc, shared_ptr<CVar> var, bool overwrite) {
     if (!overwrite) {
-        auto existingVar = function->getCVar(compiler, shared_from_this(), functionBlocks, nullptr, var->name, VSM_LocalThisParent, returnMode);
+        auto existingVar = function->getCVar(compiler, shared_from_this(), functionBlocks, ns, nullptr, var->name, VSM_LocalThisParent, returnMode);
         if (existingVar) {
             compiler->addError(loc, CErrorCode::InvalidVariable, "var '%s' already exists within function, must have a unique name", var->name.c_str());
         }
     }
     
     auto currentBlock = functionBlocks.size() > 0 ? functionBlocks.back() : nullptr;
-    function->_data[returnMode].localVarsByName[currentBlock][var->name] = var;
+    function->_data[returnMode].localVarsByName[currentBlock][ns][var->name] = var;
 }
 
 shared_ptr<CType> CScope::getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
@@ -1709,7 +1718,12 @@ shared_ptr<CType> CScope::getVarType(CLoc loc, Compiler* compiler, shared_ptr<CT
 
 shared_ptr<CVar> CScope::getCVar(Compiler* compiler, shared_ptr<CVar> dotVar, const string& name, VarScanMode scanMode) {
     if (function) {
-        return function->getCVar(compiler, shared_from_this(), functionBlocks, dotVar, name, scanMode, returnMode);
+        vector<string> emptyNS;
+        auto cvar = function->getCVar(compiler, shared_from_this(), functionBlocks, emptyNS, dotVar, name, scanMode, returnMode);
+        if (!cvar && ns.size() > 0) {
+            cvar = function->getCVar(compiler, shared_from_this(), functionBlocks, ns, dotVar, name, scanMode, returnMode);
+        }
+        return cvar;
     }
     else {
         assert(false);
@@ -1745,5 +1759,34 @@ shared_ptr<CScope> CScope::getScopeForType(Compiler* compiler, shared_ptr<CType>
     else {
         assert(false);
         return nullptr;
+    }
+}
+
+vector<string> CScope::getNamespace(Compiler* compiler, string name) {
+    // TODO: This is where we would map import x to the underlying namespace
+    
+    vector<string> nsTest = ns;
+    nsTest.push_back(name);
+    if (compiler->namespaces.find(nsTest) != compiler->namespaces.end()) {
+        vector<string> nsChild;
+        nsChild.push_back(name);
+        return nsChild;
+    } else {
+        return vector<string>();
+    }
+}
+
+void CScope::pushNamespace(Compiler* compiler, vector<string> nsChild) {
+    for (auto nsTemp : nsChild) {
+        ns.push_back(nsTemp);
+        compiler->namespaces[ns] = true;
+    }
+}
+
+void CScope::popNamespace(Compiler* compiler, vector<string> nsChild) {
+    for (auto nsTemp = nsChild.rbegin(); nsTemp != nsChild.rend(); nsTemp++) {
+        assert(ns.back() == *nsTemp);
+        assert(ns.size() > 0);
+        ns.erase(ns.end() - 1);
     }
 }

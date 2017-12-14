@@ -1,0 +1,3 @@
+ERROR:7 enum.sj[14:5] cannot find variable 'bar'
+ERROR:8 enum.sj[14:5] left side of dot has no value
+ERROR:0 enum.sj[14:1] no right side

@@ -142,7 +142,14 @@ struct OPTIONANDTYPELIST {
     THEAPTHIS = 343,
     TIFVALUE = 344,
     TELSEEMPTY = 345,
-    TTOREVERSE = 346
+    TTOREVERSE = 346,
+    TENUM = 347,
+    TSWITCH = 348,
+    TCASE = 349,
+    TDEFAULT = 350,
+    TPACKAGE = 351,
+    TIMPORT = 352,
+    TUNDERSCORE = 353
   };
 #endif
 
@@ -166,6 +173,9 @@ union YYSTYPE
 	NTupleAssignmentArgList* tupleAssignmentArgList;
 	NTupleAssignmentArg* tupleAssignmentArg;
 	CTypeMode typeMode;
+	EnumArg* enumArg;
+	EnumArgs* enumArgs;
+	std::vector<std::string>* strings;
 
 
 };

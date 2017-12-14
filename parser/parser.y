@@ -61,14 +61,17 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 	NTupleAssignmentArgList* tupleAssignmentArgList;
 	NTupleAssignmentArg* tupleAssignmentArg;
 	CTypeMode typeMode;
+	EnumArg* enumArg;
+	EnumArgs* enumArgs;
+	std::vector<std::string>* strings;
 }
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TSTRING TCHAR TCBLOCK TCFUNCTION TCDEFINE TCSTRUCT TCINCLUDE TCVAR TCTYPEDEF
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TQUESTION TEMPTY TVALUE TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TLOCAL TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR TINVALID TCOLONEQUAL THEAPPARENT THEAPTHIS TIFVALUE TELSEEMPTY TTOREVERSE
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TQUESTION TEMPTY TVALUE TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TLOCAL TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR TINVALID TCOLONEQUAL THEAPPARENT THEAPTHIS TIFVALUE TELSEEMPTY TTOREVERSE TENUM TSWITCH TCASE TDEFAULT TPACKAGE TIMPORT TUNDERSCORE
 
 /* Non Terminal symbols. Types refer to union decl above */
-%type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch copy destroy expr end_optional end_star if_expr ifValue_var
+%type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch copy destroy expr end_optional end_star if_expr ifValue_var enum_decl
 %type <var> var_right expr_math expr_var const expr_and expr_comp tuple expr_and_inner
 %type <block> stmts
 %type <exprvec> func_args func_block array_args tuple_args interface_args interface_block ifValue_vars
@@ -80,6 +83,9 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %type <tupleAssignmentArgList> assign_tuple
 %type <optionAndTypeList> temp_option_optional
 %type <typeMode> arg_mode
+%type <enumArgs> enum_args
+%type <enumArg> enum_arg
+%type <strings> namespace
 
 /* Operator precedence */
 %left TAND TOR
@@ -107,6 +113,7 @@ stmt 				: /* Blank! */									{ $$ = nullptr; }
 					| var_decl
 					| func_decl 
 					| interface_decl
+					| enum_decl
 					| expr 											{ $$ = $1; }
 					| TCBLOCK										{ $$ = new NCCode(LOC, NCC_BLOCK, $1->c_str()); delete $1; }
 					| TCDEFINE										{ $$ = new NCCode(LOC, NCC_DEFINE, $1->c_str()); delete $1; }
@@ -115,7 +122,12 @@ stmt 				: /* Blank! */									{ $$ = nullptr; }
 					| TCINCLUDE										{ $$ = new NCCode(LOC, NCC_INCLUDE, $1->c_str()); delete $1; }
 					| TCTYPEDEF										{ $$ = new NCCode(LOC, NCC_TYPEDEF, $1->c_str()); delete $1; }
 					| TINCLUDE TSTRING								{ $$ = new NInclude(LOC, $2->c_str()); delete $2; }
+					| TPACKAGE namespace block						{ $$ = new NPackage(LOC, *$2, shared_ptr<NBase>($3)); delete $2; }
 					| error	 										{ $$ = nullptr; /* yyclearin; */ compiler->addError(LLOC, CErrorCode::InvalidCharacter, "Something failed to parse"); }
+					;
+
+namespace 			: namespace TDOT TIDENTIFIER               		{ $$->push_back(*$3); delete $3; }
+					| TIDENTIFIER									{ $$ = new vector<string>(); $$->push_back(*$1); delete $1; }
 					;
 
 block 				: TLBRACE stmts TRBRACE 						{ $$ = $2; }
@@ -127,11 +139,23 @@ block 				: TLBRACE stmts TRBRACE 						{ $$ = $2; }
 var_decl 			: assign
 					| expr_var TPLUSPLUS                         		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Inc, nullptr); }
 					| expr_var TMINUSMINUS                       		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Dec, nullptr); }
-					| expr_var TPLUSEQUAL expr_and                  		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Add, shared_ptr<NVariableBase>($3)); }
+					| expr_var TPLUSEQUAL expr_and                  	{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Add, shared_ptr<NVariableBase>($3)); }
 					| expr_var TMINUSEQUAL expr_and                		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Sub, shared_ptr<NVariableBase>($3)); }
 					| expr_var TMULEQUAL expr_and                		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Mul, shared_ptr<NVariableBase>($3)); }
 					| expr_var TDIVEQUAL expr_and                		{ $$ = new NMathAssignment(LOC, shared_ptr<NVariableBase>($1), NMAO_Div, shared_ptr<NVariableBase>($3)); }
 					| expr_var TLBRACKET expr TRBRACKET TEQUAL stmt		{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NCall>(LOC, "setAt", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3), shared_ptr<NBase>($6)))); }
+					;
+
+enum_decl			: TENUM TIDENTIFIER TLPAREN end_optional enum_args end_optional TRPAREN 		{ $$ = new NEnum(LOC, shared_ptr<EnumArgs>($5)); }
+					;
+
+enum_args			: enum_args end_star enum_arg 						{ $1->push_back(shared_ptr<EnumArg>($3)); }
+					| enum_args TCOMMA enum_arg                         { $1->push_back(shared_ptr<EnumArg>($3)); }
+					| enum_arg 											{ $$ = new EnumArgs(shared_ptr<EnumArg>($1)); }
+					;
+
+enum_arg 			: TIDENTIFIER 										{ $$ = new EnumArg(*$1); delete $1; }
+					| TIDENTIFIER TCOLON TINTEGER 						{ $$ = new EnumArg(*$1, *$3); delete $1; delete $3; }
 					;
 
 func_decl 			: func_type_name func_block block catch copy destroy			{ 
