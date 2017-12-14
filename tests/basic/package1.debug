@@ -1,5 +1,5 @@
 func()'i32 {
-  12i
+  a_x
 }
 
 global()'void {

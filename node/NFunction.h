@@ -171,6 +171,7 @@ public:
     shared_ptr<CTypeNameList> implementedInterfaceTypeNames;
     vector<shared_ptr<NCCode>> ccodes;
     vector<vector<string>> namespaces;
+    vector<string> packageNamespace;
 
     CFunctionDefinition() : CBaseFunctionDefinition(CFT_Function) {}
     static shared_ptr<CFunctionDefinition> create(Compiler* compiler, vector<vector<string>>& namespaces, shared_ptr<CFunctionDefinition> parent, CFunctionType type, vector<string> packageNamespace, const string& name, shared_ptr<CTypeNameList> implementedInterfaceTypeNames, shared_ptr<NFunction> node);

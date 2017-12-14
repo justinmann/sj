@@ -6,7 +6,11 @@ void NPackage::defineImpl(Compiler* compiler, vector<vector<string>>& namespaces
     for (auto t : ns) {
         newPackageNamespace.push_back(t);
     }
-    node->define(compiler, namespaces, newPackageNamespace, thisFunction);
+    
+    vector<vector<string>> newNamespaces = namespaces;
+    newNamespaces.push_back(newPackageNamespace);
+    
+    node->define(compiler, newNamespaces, newPackageNamespace, thisFunction);
 }
 
 shared_ptr<CVar> NPackage::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {

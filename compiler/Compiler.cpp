@@ -145,7 +145,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
         vector<string> packageNamespace;
         auto globalBlock = globalFile->block;
 		anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, nullptr, "global", nullptr, nullptr, nullptr, globalBlock, nullptr, nullptr, nullptr);
-		currentFunctionDefintion = CFunctionDefinition::create(this, vector<vector<string>>(), nullptr, FT_Public, packageNamespace, "", nullptr, nullptr);
+		currentFunctionDefintion = CFunctionDefinition::create(this, namespaces, nullptr, FT_Public, packageNamespace, "", nullptr, nullptr);
 		state = CompilerState::Define;
         anonFunction->define(this, namespaces, packageNamespace, currentFunctionDefintion);
 

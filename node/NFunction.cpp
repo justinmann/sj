@@ -1352,7 +1352,7 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, shared_ptr<CScope> calle
 
         if (scanMode == VSM_LocalThisParent) {
             shared_ptr<CFunction> parentCheck = dynamic_pointer_cast<CFunction>(parent.lock());
-            auto cvar = parentCheck->getCVar(compiler, callerScope, vector<shared_ptr<FunctionBlock>>(), vector<string>(), make_shared<CParentVar>(loc, callerScope, dotVar, parentCheck, parentCheck->getHasHeapParent()), name, VSM_FromChild, CTM_Undefined);
+            auto cvar = parentCheck->getCVar(compiler, callerScope, vector<shared_ptr<FunctionBlock>>(), ns, make_shared<CParentVar>(loc, callerScope, dotVar, parentCheck, parentCheck->getHasHeapParent()), name, VSM_FromChild, CTM_Undefined);
             if (cvar) {
                 return cvar;
             }
@@ -1363,7 +1363,7 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, shared_ptr<CScope> calle
             }
 
             if (globalFunction) {
-                cvar = globalFunction->getCVar(compiler, callerScope, vector<shared_ptr<FunctionBlock>>(), vector<string>(), nullptr, name, VSM_LocalOnly, CTM_Undefined);
+                cvar = globalFunction->getCVar(compiler, callerScope, vector<shared_ptr<FunctionBlock>>(), ns, nullptr, name, VSM_LocalOnly, CTM_Undefined);
                 return cvar;
             }
         }
@@ -1400,6 +1400,10 @@ string CFunction::fullName(bool includeTemplateTypes) {
 
 string CFunction::getCFullName(bool includeTemplateTypes) {
     stringstream ss;
+    for (auto ns : static_pointer_cast<CFunctionDefinition>(definition.lock())->packageNamespace) {
+        ss << ns << "_";
+    }
+    
     ss << definition.lock()->name;
     if (includeTemplateTypes) {
         if (templateTypes.size() > 0) {
@@ -1539,6 +1543,7 @@ shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, 
     c->implementedInterfaceTypeNames = implementedInterfaceTypeNames;
     c->node = node;
     c->namespaces = namespaces;
+    c->packageNamespace = packageNamespace;
     
     if (node) {
         c->ccodes = node->ccodes;
@@ -1727,11 +1732,12 @@ void CScope::setLocalVar(Compiler* compiler, CLoc loc, shared_ptr<CVar> var, boo
 }
 
 shared_ptr<CType> CScope::getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
+    auto allNamespaces = getAllNamespaces();
     if (function) {
-        return function->getVarType(loc, compiler, getAllNamespaces(), typeName, defaultMode);
+        return function->getVarType(loc, compiler, allNamespaces, typeName, defaultMode);
     }
     else if (cinterface) {
-        return cinterface->getVarType(loc, compiler, getAllNamespaces(), typeName, defaultMode);
+        return cinterface->getVarType(loc, compiler, allNamespaces, typeName, defaultMode);
     }
     else {
         assert(false);
@@ -1742,6 +1748,11 @@ shared_ptr<CType> CScope::getVarType(CLoc loc, Compiler* compiler, shared_ptr<CT
 shared_ptr<CVar> CScope::getCVar(Compiler* compiler, shared_ptr<CVar> dotVar, const string& name, VarScanMode scanMode) {
     if (function) {
         for (auto ns : getAllNamespaces()) {
+            printf("find: ");
+            for (auto j : ns) {
+                printf("%s.", j.c_str());
+            }
+            printf("%s\n", name.c_str());
             auto cvar = function->getCVar(compiler, shared_from_this(), functionBlocks, ns, dotVar, name, scanMode, returnMode);
             if (cvar) {
                 return cvar;
@@ -1817,8 +1828,20 @@ void CScope::popNamespace(Compiler* compiler, vector<string> nsChild) {
 vector<vector<string>> CScope::getAllNamespaces() {
     vector<vector<string>> allNamespaces;
     allNamespaces.push_back(vector<string>());
+    
+    for (auto importNamespace : function->namespaces) {
+        allNamespaces.push_back(importNamespace);
+    }
+    
     if (ns.size() > 0) {
         allNamespaces.push_back(ns);
+    }
+    
+    for (auto i : allNamespaces) {
+        for (auto j : i) {
+            printf("%s.", j.c_str());
+        }
+        printf("\n");
     }
     return allNamespaces;
     // TODO: add all other namespaces that are referenced from import

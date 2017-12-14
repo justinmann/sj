@@ -71,12 +71,12 @@ int32_t sjv_a_x;
 int32_t sjv_b;
 int32_t sjv_c;
 
-void sjf_func(int32_t* _return);
+void sjf_a_func(int32_t* _return);
 void main_destroy(void);
 
-void sjf_func(int32_t* _return) {
+void sjf_a_func(int32_t* _return) {
 #line 3 "package1.sj"
-    (*_return) = 12;
+    (*_return) = sjv_a_x;
 }
 
 int main(int argc, char** argv) {
@@ -85,7 +85,7 @@ int main(int argc, char** argv) {
 #line 6
     sjv_b = sjv_a_x;
 #line 6
-    sjf_func(&sjv_c);
+    sjf_a_func(&sjv_c);
     main_destroy();
     return 0;
 }
