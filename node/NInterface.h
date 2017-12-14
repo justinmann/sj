@@ -18,7 +18,7 @@ public:
     vector<shared_ptr<NInterfaceMethod>> methodList;
 
     NInterface(CLoc loc, const string& name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> methodList);
-    void defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    void defineImpl(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) { return nullptr; }
 
 private:
@@ -43,7 +43,7 @@ public:
     map<string, shared_ptr<CType>> templateTypesByName;
     
     CInterface(CLoc loc, weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent);
-    shared_ptr<CInterface> init(Compiler* compiler, shared_ptr<NInterface> node, vector<shared_ptr<CType>>& templateTypes);
+    shared_ptr<CInterface> init(Compiler* compiler, vector<vector<string>>& namespaces, shared_ptr<NInterface> node, vector<shared_ptr<CType>>& templateTypes);
     string fullName(bool includeTemplateTypes);
     
     shared_ptr<CScope> getScope();
@@ -55,8 +55,8 @@ public:
     int getArgStart();
 
     shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CLoc locCaller, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode);
-    pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(string name) { assert(false); return make_pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>>(nullptr, nullptr); }
-    shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
+    pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(vector<string> packageNamespace, string name) { assert(false); return make_pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>>(nullptr, nullptr); }
+    shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, vector<vector<string>>& namespaces, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
     bool getIsReturnModeValid(Compiler* compiler, CTypeMode returnMode);
     shared_ptr<CType> getReturnType(Compiler* compiler, CTypeMode returnMode);
     string getCFunctionName(CTypeMode returnMode);
@@ -86,10 +86,11 @@ public:
     CLoc loc;
     shared_ptr<CTypeName> typeName;
     shared_ptr<NInterface> ninterface;
+    vector<vector<string>> namespaces;
 
-    CInterfaceDefinition(CLoc loc, string& name);
+    CInterfaceDefinition(CLoc loc, vector<vector<string>>& namespaces, string& name);
     string fullName();
-    void addChildFunction(string& name, shared_ptr<CBaseFunctionDefinition> childFunction);
+    void addChildFunction(vector<string> packageNamespace, string& name, shared_ptr<CBaseFunctionDefinition> childFunction);
     shared_ptr<CInterface> getInterface(Compiler* compiler, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent);
     
 private:

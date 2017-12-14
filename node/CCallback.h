@@ -28,13 +28,13 @@ public:
     shared_ptr<CTypes> getThisTypes(Compiler* compiler);
     shared_ptr<CVar> getCVar(Compiler* compiler, vector<shared_ptr<FunctionBlock>> functionBlocks, const string& name, VarScanMode scanMode, CTypeMode returnMode);
     shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CLoc locCaller, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode);
-    shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
+    shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, vector<vector<string>>& namespaces, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
     string getCFunctionName(CTypeMode returnMode);
     string getCCallbackFunctionName(Compiler* compiler, TrOutput* trOutput, CTypeMode returnMode);
     string getCCopyFunctionName();
     string getCDestroyFunctionName();
     string getCStructName(CTypeMode typeMode);
-    pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(string name);
+    pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(vector<string> packageNamespace, string name);
     bool getIsReturnModeValid(Compiler* compiler, CTypeMode returnMode);
     shared_ptr<CType> getReturnType(Compiler* compiler, CTypeMode returnMode);
     void transpileDefinition(Compiler* compiler, TrOutput* trOutput);

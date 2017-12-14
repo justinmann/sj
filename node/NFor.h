@@ -43,7 +43,7 @@ private:
 class NFor : public NBase {
 public:
     NFor(CLoc loc, const char* varName, shared_ptr<NBase> start, shared_ptr<NBase> end, shared_ptr<NBase> body, bool isAscending) : NBase(NodeType_For, loc), varName(varName), start(start), end(end), body(body), isAscending(isAscending) { }
-    void defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    void defineImpl(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
 
     string varName;

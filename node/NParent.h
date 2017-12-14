@@ -26,7 +26,7 @@ private:
 class NParent : public NVariableBase {
 public:
     NParent(CLoc loc, bool isHeap) : NVariableBase(NodeType_Parent, loc), isHeap(isHeap) { }
-    void defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) { }
+    void defineImpl(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) { }
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 
 private:

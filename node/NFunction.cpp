@@ -92,49 +92,49 @@ NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnT
     }
 }
 
-void NFunction::defineImpl(Compiler *compiler, shared_ptr<CBaseFunctionDefinition> parentFunction) {
+void NFunction::defineImpl(Compiler *compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> parentFunction) {
     assert(compiler->state == CompilerState::Define);
     if (invalid.size() > 0) {
         compiler->addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments, function definitions, or interface definitions");
         return;
     }
     
-    auto thisFunction = getFunctionDefinition(compiler, static_pointer_cast<CFunctionDefinition>(parentFunction));
+    auto thisFunction = getFunctionDefinition(compiler, namespaces, packageNamespace, static_pointer_cast<CFunctionDefinition>(parentFunction));
     if (!thisFunction) {
         return;
     }
 
-    parentFunction->addChildFunction(name, thisFunction);
+    parentFunction->addChildFunction(packageNamespace, name, thisFunction);
 
     for (auto it : interfaces) {
-        it->define(compiler, thisFunction);
+        it->define(compiler, namespaces, packageNamespace, thisFunction);
     }
 
     for (auto it : functions) {
-        it->define(compiler, thisFunction);
+        it->define(compiler, namespaces, packageNamespace, thisFunction);
     }
         
     for (auto it : assignments) {
         if (!it->op.isFirstAssignment) {
             compiler->addError(loc, CErrorCode::InvalidFunction, "assignment '%s' must be : or :=", it->name.c_str());
         }
-        it->define(compiler, thisFunction);
+        it->define(compiler, namespaces, packageNamespace, thisFunction);
     }
 
     if (block) {
-        block->define(compiler, thisFunction);
+        block->define(compiler, namespaces, packageNamespace, thisFunction);
     }
 
     if (copyBlock) {
-        copyBlock->define(compiler, thisFunction);
+        copyBlock->define(compiler, namespaces, packageNamespace, thisFunction);
     }
 
     if (destroyBlock) {
-        destroyBlock->define(compiler, thisFunction);
+        destroyBlock->define(compiler, namespaces, packageNamespace, thisFunction);
     }
 
     if (catchBlock) {
-        catchBlock->define(compiler, thisFunction);
+        catchBlock->define(compiler, namespaces, packageNamespace, thisFunction);
     }
 
     if ((copyBlock == nullptr) != (destroyBlock == nullptr)) {
@@ -142,8 +142,8 @@ void NFunction::defineImpl(Compiler *compiler, shared_ptr<CBaseFunctionDefinitio
     }
 }
 
-shared_ptr<CFunctionDefinition> NFunction::getFunctionDefinition(Compiler *compiler, shared_ptr<CFunctionDefinition> parentFunction) {
-    return CFunctionDefinition::create(compiler, parentFunction, type, name, interfaceTypeNames, shared_from_this());
+shared_ptr<CFunctionDefinition> NFunction::getFunctionDefinition(Compiler *compiler, vector<vector<string>>& namespaces, vector<string> packageNamespace, shared_ptr<CFunctionDefinition> parentFunction) {
+    return CFunctionDefinition::create(compiler, namespaces, parentFunction, type, packageNamespace, name, interfaceTypeNames, shared_from_this());
 }
 
 shared_ptr<CVar> NFunction::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
@@ -155,7 +155,7 @@ shared_ptr<CVar> NFunction::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
     return nullptr;
 }
 
-CFunction::CFunction(weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, vector<shared_ptr<NCCode>> ccodes) :
+CFunction::CFunction(vector<vector<string>>& namespaces, weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, vector<shared_ptr<NCCode>> ccodes) :
 CBaseFunction(CFT_Function, definition.lock()->name, parent, definition, false),
 loc(CLoc::undefined),
 type(type),
@@ -169,7 +169,8 @@ _hasInitializedInterfaces(false),
 _hasTranspileDefinitions(false),
 _isReturnThis(false),
 _hasHeapThis(false),
-_hasHeapParent(false)
+_hasHeapParent(false),
+namespaces(namespaces)
  { }
 
 CTypeMode functionReturnModes[] = { CTM_Stack, CTM_Heap };
@@ -1000,7 +1001,7 @@ shared_ptr<CThisVar> CFunction::getThisVar(Compiler* compiler, CTypeMode returnM
     if (!_data[returnMode].thisVar) {
         auto defaultTypeMode = CTM_Undefined;
         if (_returnTypeName) {
-            shared_ptr<CType> valueType = getVarType(loc, compiler, _returnTypeName, CTM_Undefined);
+            shared_ptr<CType> valueType = getVarType(loc, compiler, namespaces, _returnTypeName, CTM_Undefined);
             if (!valueType) {
                 compiler->addError(loc, CErrorCode::InvalidType, "explicit type '%s' does not exist", _returnTypeName->getFullName().c_str());
                 return nullptr;
@@ -1032,7 +1033,7 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CTypeMode returnM
     if (!_data[returnMode].returnType) {
         auto getReturnTypeFromBlock = true;
         if (_returnTypeName) {
-            shared_ptr<CType> valueType = getVarType(loc, compiler, _returnTypeName, CTM_Undefined);
+            shared_ptr<CType> valueType = getVarType(loc, compiler, namespaces, _returnTypeName, CTM_Undefined);
             if (!valueType) {
                 compiler->addError(loc, CErrorCode::InvalidType, "explicit type '%s' does not exist", _returnTypeName->getFullName().c_str());
                 _data[returnMode].returnType = nullptr;
@@ -1179,7 +1180,15 @@ bool getTemplateTypes(Compiler* compiler, CLoc loc, shared_ptr<CBaseFunction> th
             }
             
             if (!ctype) {
-                ctype = thisFunction->getVarType(loc, compiler, templateTypeName, CTM_Undefined);
+                vector<vector<string>> allNamespaces;
+                if (callerScope) {
+                    allNamespaces = callerScope->getAllNamespaces();
+                }
+                else {
+                    allNamespaces.push_back(vector<string>());
+                }
+
+                ctype = thisFunction->getVarType(loc, compiler, allNamespaces, templateTypeName, CTM_Undefined);
                 if (!ctype) {
                     compiler->addError(loc, CErrorCode::TemplateUnspecified, "cannot find template type: '%s'", templateTypeName->getFullName().c_str());
                     return false;
@@ -1200,16 +1209,27 @@ bool getTemplateTypes(Compiler* compiler, CLoc loc, shared_ptr<CBaseFunction> th
 
 shared_ptr<CBaseFunction> CFunction::getCFunction(Compiler* compiler, CLoc locCaller, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode) {
     auto def = static_pointer_cast<CFunctionDefinition>(definition.lock());
-    auto t = def->funcsByName.find(name);
-    if (t != def->funcsByName.end()) {
-        auto funcDef = t->second;
-        
-        vector<shared_ptr<CType>> templateTypes;
-        if (!getTemplateTypes(compiler, locCaller, shared_from_this(), callerScope, templateTypeNames, funcDef->node->templateTypeNames, templateTypes)) {
-            return nullptr;
+
+    vector<vector<string>> allNamespaces;
+    if (callerScope) {
+        allNamespaces = callerScope->getAllNamespaces();
+    }
+    else {
+        allNamespaces.push_back(vector<string>());
+    }
+
+    for (auto ns : allNamespaces) {
+        auto t = def->funcsByName[ns].find(name);
+        if (t != def->funcsByName[ns].end()) {
+            auto funcDef = t->second;
+
+            vector<shared_ptr<CType>> templateTypes;
+            if (!getTemplateTypes(compiler, locCaller, shared_from_this(), callerScope, templateTypeNames, funcDef->node->templateTypeNames, templateTypes)) {
+                return nullptr;
+            }
+
+            return funcDef->getFunction(compiler, locCaller, templateTypes, shared_from_this());
         }
-        
-        return funcDef->getFunction(compiler, locCaller, templateTypes, shared_from_this());
     }
 
     auto tt = templateTypesByName.find(name);
@@ -1397,15 +1417,15 @@ string CFunction::getCFullName(bool includeTemplateTypes) {
     return ss.str();
 }
 
-pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> CFunction::getFunctionDefinition(string name) {
+pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> CFunction::getFunctionDefinition(vector<string> packageNamespace, string name) {
     auto functionDefinition = static_pointer_cast<CFunctionDefinition>(definition.lock());
-    auto t2 = functionDefinition->funcsByName.find(name);
-    if (t2 != functionDefinition->funcsByName.end()) {
+    auto t2 = functionDefinition->funcsByName[packageNamespace].find(name);
+    if (t2 != functionDefinition->funcsByName[packageNamespace].end()) {
         return make_pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>>(shared_from_this(), t2->second);
     }
-    
+
     if (!parent.expired()) {
-        return parent.lock()->getFunctionDefinition(name);
+        return parent.lock()->getFunctionDefinition(packageNamespace, name);
     }
 
     return make_pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>>(nullptr, nullptr);
@@ -1424,7 +1444,7 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, string name) {
     return compiler->getType(name);
 }
 
-shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
+shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, vector<vector<string>>& namespaces, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
     auto typeMode = defaultMode;
     if (typeName->typeMode != CTM_Undefined) {
         typeMode = typeName->typeMode;
@@ -1438,7 +1458,7 @@ shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, shared_ptr
         }
     }
     else if (typeName->category == CTC_Function) {
-        auto stackReturnType = getVarType(loc, compiler, typeName->returnTypeName, CTM_Undefined);
+        auto stackReturnType = getVarType(loc, compiler, namespaces, typeName->returnTypeName, CTM_Undefined);
         if (stackReturnType == nullptr) {
             compiler->addError(loc, CErrorCode::InvalidType, "cannot find type '%s'", typeName->returnTypeName->valueName.c_str());
         }
@@ -1446,7 +1466,7 @@ shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, shared_ptr
             stackReturnType = nullptr;
         }
 
-        auto heapReturnType = getVarType(loc, compiler, typeName->returnTypeName, CTM_Heap);
+        auto heapReturnType = getVarType(loc, compiler, namespaces, typeName->returnTypeName, CTM_Heap);
         if (heapReturnType->typeMode != CTM_Heap) {
             heapReturnType = nullptr;
         }
@@ -1454,7 +1474,7 @@ shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, shared_ptr
         vector<shared_ptr<CType>> argTypes;
         if (typeName->argTypeNames) {
             for (auto argTypeName : *typeName->argTypeNames) {
-                auto argType = getVarType(loc, compiler, argTypeName, CTM_Undefined);
+                auto argType = getVarType(loc, compiler, namespaces, argTypeName, CTM_Undefined);
                 if (argType == nullptr) {
                     compiler->addError(loc, CErrorCode::InvalidType, "cannot find type '%s'", argTypeName->valueName.c_str());
                 }
@@ -1471,12 +1491,12 @@ shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, shared_ptr
             }
         }
         
-        auto baseFunctionDefinition = getFunctionDefinition(typeName->valueName);
+        auto baseFunctionDefinition = getFunctionDefinition(typeName->packageNamespace, typeName->valueName);
         if (baseFunctionDefinition.second != nullptr) {
             auto templateTypes = vector<shared_ptr<CType>>();
             if (typeName->templateTypeNames) {
                 for (auto it : *typeName->templateTypeNames) {
-                    auto t = getVarType(loc, compiler, it, CTM_Undefined);
+                    auto t = getVarType(loc, compiler, namespaces, it, CTM_Undefined);
                     if (!t) {
                         return nullptr;
                     }
@@ -1511,23 +1531,24 @@ shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, shared_ptr
     return nullptr;
 }
 
-shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, shared_ptr<CFunctionDefinition> parent, CFunctionType type, const string& name, shared_ptr<CTypeNameList> implementedInterfaceTypeNames, shared_ptr<NFunction> node) {
+shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, vector<vector<string>>& namespaces, shared_ptr<CFunctionDefinition> parent, CFunctionType type, vector<string> packageNamespace, const string& name, shared_ptr<CTypeNameList> implementedInterfaceTypeNames, shared_ptr<NFunction> node) {
     auto c = make_shared<CFunctionDefinition>();
     c->parent = parent;
     c->type = type;
     c->name = name;
     c->implementedInterfaceTypeNames = implementedInterfaceTypeNames;
     c->node = node;
+    c->namespaces = namespaces;
     
     if (node) {
         c->ccodes = node->ccodes;
 
         for (auto it : node->interfaces) {
-            it->define(compiler, c);
+            it->define(compiler, namespaces, packageNamespace, c);
         }
 
         for (auto it : node->functions) {
-            c->funcsByName[it->name] = it->getFunctionDefinition(compiler, c);
+            c->funcsByName[packageNamespace][it->name] = it->getFunctionDefinition(compiler, namespaces, packageNamespace, c);
         }
         
         for (auto it : node->assignments) {
@@ -1550,8 +1571,8 @@ string CFunctionDefinition::fullName() {
     return n;
 }
 
-void CFunctionDefinition::addChildFunction(string& name, shared_ptr<CBaseFunctionDefinition> childFunction) {
-    funcsByName[name] = static_pointer_cast<CFunctionDefinition>(childFunction);
+void CFunctionDefinition::addChildFunction(vector<string> packageNamespace, string& name, shared_ptr<CBaseFunctionDefinition> childFunction) {
+    funcsByName[packageNamespace][name] = static_pointer_cast<CFunctionDefinition>(childFunction);
 }
 
 shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CLoc loc, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent) {
@@ -1569,7 +1590,7 @@ shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CLoc 
             interfaces = make_shared<vector<shared_ptr<CInterface>>>();
         }
         
-        func = make_shared<CFunction>(shared_from_this(), type, templateTypes, funcParent, interfaces, ccodes);
+        func = make_shared<CFunction>(namespaces, shared_from_this(), type, templateTypes, funcParent, interfaces, ccodes);
         if (func == nullptr) {
             return nullptr;
         }
@@ -1628,8 +1649,8 @@ shared_ptr<CInterfaceDefinition> CFunctionDefinition::getDefinedInterfaceDefinit
     }
 }
 
-shared_ptr<CInterfaceDefinition> CFunctionDefinition::createDefinedInterfaceDefinition(CLoc loc, string& name) {
-    auto result = make_shared<CInterfaceDefinition>(loc, name);
+shared_ptr<CInterfaceDefinition> CFunctionDefinition::createDefinedInterfaceDefinition(CLoc loc, vector<vector<string>>& namespaces, string& name) {
+    auto result = make_shared<CInterfaceDefinition>(loc, namespaces, name);
     _definedInterfaceDefinitions[name] = result;
     return result;
 }
@@ -1653,9 +1674,11 @@ shared_ptr<vector<pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameLis
 
 void CFunctionDefinition::dump(Compiler* compiler, int level) {
     // Skip if this is the function around global
-    if (funcsByName.size() > 0) {
+    if (funcsByName[vector<string>()].size() > 0) {
         for (auto it : funcsByName) {
-            it.second->dump(compiler, level);
+            for (auto it2 : it.second) {
+                it2.second->dump(compiler, level);
+            }
         }
     }
 }
@@ -1705,10 +1728,10 @@ void CScope::setLocalVar(Compiler* compiler, CLoc loc, shared_ptr<CVar> var, boo
 
 shared_ptr<CType> CScope::getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
     if (function) {
-        return function->getVarType(loc, compiler, typeName, defaultMode);
+        return function->getVarType(loc, compiler, getAllNamespaces(), typeName, defaultMode);
     }
     else if (cinterface) {
-        return cinterface->getVarType(loc, compiler, typeName, defaultMode);
+        return cinterface->getVarType(loc, compiler, getAllNamespaces(), typeName, defaultMode);
     }
     else {
         assert(false);
@@ -1718,17 +1741,17 @@ shared_ptr<CType> CScope::getVarType(CLoc loc, Compiler* compiler, shared_ptr<CT
 
 shared_ptr<CVar> CScope::getCVar(Compiler* compiler, shared_ptr<CVar> dotVar, const string& name, VarScanMode scanMode) {
     if (function) {
-        vector<string> emptyNS;
-        auto cvar = function->getCVar(compiler, shared_from_this(), functionBlocks, emptyNS, dotVar, name, scanMode, returnMode);
-        if (!cvar && ns.size() > 0) {
-            cvar = function->getCVar(compiler, shared_from_this(), functionBlocks, ns, dotVar, name, scanMode, returnMode);
+        for (auto ns : getAllNamespaces()) {
+            auto cvar = function->getCVar(compiler, shared_from_this(), functionBlocks, ns, dotVar, name, scanMode, returnMode);
+            if (cvar) {
+                return cvar;
+            }
         }
-        return cvar;
     }
     else {
         assert(false);
-        return nullptr;
     }
+    return nullptr;
 }
 
 shared_ptr<CScope> CScope::getScopeForType(Compiler* compiler, shared_ptr<CType> type) {
@@ -1789,4 +1812,14 @@ void CScope::popNamespace(Compiler* compiler, vector<string> nsChild) {
         assert(ns.size() > 0);
         ns.erase(ns.end() - 1);
     }
+}
+
+vector<vector<string>> CScope::getAllNamespaces() {
+    vector<vector<string>> allNamespaces;
+    allNamespaces.push_back(vector<string>());
+    if (ns.size() > 0) {
+        allNamespaces.push_back(ns);
+    }
+    return allNamespaces;
+    // TODO: add all other namespaces that are referenced from import
 }

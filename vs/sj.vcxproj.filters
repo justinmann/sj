@@ -195,6 +195,15 @@
     <ClInclude Include="..\node\NIfValue.h">
       <Filter>Node</Filter>
     </ClInclude>
+    <ClInclude Include="..\node\NCopy.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NEnum.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NPackage.h">
+      <Filter>Node</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\node\NAnd.cpp">
@@ -363,6 +372,15 @@
       <Filter>Node</Filter>
     </ClCompile>
     <ClCompile Include="..\node\NIfValue.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NCopy.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NEnum.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NPackage.cpp">
       <Filter>Node</Filter>
     </ClCompile>
   </ItemGroup>

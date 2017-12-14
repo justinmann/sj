@@ -165,7 +165,9 @@
     <ClInclude Include="..\node\NAnd.h" />
     <ClInclude Include="..\node\NArray.h" />
     <ClInclude Include="..\node\NChangeMode.h" />
+    <ClInclude Include="..\node\NCopy.h" />
     <ClInclude Include="..\node\NEmpty.h" />
+    <ClInclude Include="..\node\NEnum.h" />
     <ClInclude Include="..\node\NFunction.h" />
     <ClInclude Include="..\node\NGetOrElse.h" />
     <ClInclude Include="..\node\NGetValue.h" />
@@ -173,6 +175,7 @@
     <ClInclude Include="..\node\NIsEmpty.h" />
     <ClInclude Include="..\node\NNegate.h" />
     <ClInclude Include="..\node\NOptionDot.h" />
+    <ClInclude Include="..\node\NPackage.h" />
     <ClInclude Include="..\node\NParent.h" />
     <ClInclude Include="..\node\NTuple.h" />
     <ClInclude Include="..\node\NTupleAssignment.h" />
@@ -224,13 +227,16 @@
     <ClCompile Include="..\node\NAnd.cpp" />
     <ClCompile Include="..\node\NArray.cpp" />
     <ClCompile Include="..\node\NChangeMode.cpp" />
+    <ClCompile Include="..\node\NCopy.cpp" />
     <ClCompile Include="..\node\NEmpty.cpp" />
+    <ClCompile Include="..\node\NEnum.cpp" />
     <ClCompile Include="..\node\NGetOrElse.cpp" />
     <ClCompile Include="..\node\NGetValue.cpp" />
     <ClCompile Include="..\node\NIfValue.cpp" />
     <ClCompile Include="..\node\NIsEmpty.cpp" />
     <ClCompile Include="..\node\NNegate.cpp" />
     <ClCompile Include="..\node\NOptionDot.cpp" />
+    <ClCompile Include="..\node\NPackage.cpp" />
     <ClCompile Include="..\node\NParent.cpp" />
     <ClCompile Include="..\node\NTuple.cpp" />
     <ClCompile Include="..\node\NTupleAssignment.cpp" />

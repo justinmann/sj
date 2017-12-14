@@ -53,9 +53,9 @@ void CTempVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& 
 }
 
 
-void NArray::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NArray::defineImpl(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     for (auto element : *elements) {
-        element->define(compiler, thisFunction);
+        element->define(compiler, namespaces, packageNamespace, thisFunction);
     }
 }
 

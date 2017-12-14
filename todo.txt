@@ -10,9 +10,9 @@
 * center text
 
 -- language --
-* package function
-* enum
+* package - reference local var in same package
 * import
+* enum
 * switch
 * lambda
 * map

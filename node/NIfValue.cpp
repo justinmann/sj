@@ -94,16 +94,16 @@ void CIfValueVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string
     }
 }
 
-void NIfValue::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NIfValue::defineImpl(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
 //    condition->define(compiler, thisFunction);
 
     if (elseBlock) {
-        elseBlock->define(compiler, thisFunction);
+        elseBlock->define(compiler, namespaces, packageNamespace, thisFunction);
     }
     
     if (ifBlock) {
-        ifBlock->define(compiler, thisFunction);
+        ifBlock->define(compiler, namespaces, packageNamespace, thisFunction);
     }
 }
 
@@ -116,6 +116,9 @@ shared_ptr<CVar> NIfValue::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
             auto cname = TrBlock::nextVarName("ifValue");
             auto assignment = static_pointer_cast<NAssignment>(var);
             auto optionalVar = assignment->rightSide->getVar(compiler, scope, CTM_Undefined);
+            if (!optionalVar) {
+                return nullptr;
+            }
             param.isEmptyVar = make_shared<CIsEmptyVar>(loc, scope, optionalVar);
             param.getValueVar = make_shared<CGetValueVar>(loc, scope, optionalVar, true);
             param.storeVar = make_shared<CNormalVar>(loc, scope, param.getValueVar->getType(compiler), assignment->name, cname, false, CVarType::Var_Local, nullptr);
@@ -125,6 +128,9 @@ shared_ptr<CVar> NIfValue::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
             auto cname = TrBlock::nextVarName("ifValue");
             auto variable = static_pointer_cast<NVariable>(var);
             auto optionalVar = variable->getVar(compiler, scope, nullptr, CTM_Undefined);
+            if (!optionalVar) {
+                return nullptr;
+            }
             param.isEmptyVar = make_shared<CIsEmptyVar>(loc, scope, optionalVar);
             param.getValueVar = make_shared<CGetValueVar>(loc, scope, optionalVar, true);
             param.storeVar = make_shared<CNormalVar>(loc, scope, param.getValueVar->getType(compiler), variable->name, cname, false, CVarType::Var_Local, nullptr);

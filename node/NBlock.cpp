@@ -41,10 +41,10 @@ void CBlockVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>&
 }
 
 
-void NBlock::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NBlock::defineImpl(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     for (auto it : statements) {
-        it->define(compiler, thisFunction);
+        it->define(compiler, namespaces, packageNamespace, thisFunction);
     }
 }
 

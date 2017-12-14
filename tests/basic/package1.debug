@@ -1,8 +1,13 @@
+func()'i32 {
+  12i
+}
+
 global()'void {
   {
     a_x'i32 : 0i
   }
   b'i32 : a_x
+  c'i32 : func()
   void
 }
 

@@ -44,9 +44,9 @@ void CIsEmptyVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string
 }
 
 
-void NIsEmpty::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NIsEmpty::defineImpl(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
-    node->define(compiler, thisFunction);
+    node->define(compiler, namespaces, packageNamespace, thisFunction);
 }
 
 shared_ptr<CVar> NIsEmpty::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {

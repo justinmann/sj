@@ -140,7 +140,7 @@ shared_ptr<CBaseFunction> CCallbackFunction::getCFunction(Compiler* compiler, CL
     return nullptr;
 }
 
-shared_ptr<CType> CCallbackFunction::getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
+shared_ptr<CType> CCallbackFunction::getVarType(CLoc loc, Compiler* compiler, vector<vector<string>>& namespaces, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
     assert(false);
     return nullptr;
 }
@@ -170,7 +170,7 @@ string CCallbackFunction::getCStructName(CTypeMode typeMode) {
     return "INVALID";
 }
 
-pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> CCallbackFunction::getFunctionDefinition(string name) {
+pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> CCallbackFunction::getFunctionDefinition(vector<string> packageNamespace, string name) {
     assert(false);
     return make_pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>>(nullptr, nullptr);
 }

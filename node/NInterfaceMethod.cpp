@@ -73,10 +73,10 @@ CInterfaceMethod::CInterfaceMethod(string& name, weak_ptr<CInterface> parent, in
     
 }
 
-shared_ptr<CInterfaceMethod> CInterfaceMethod::init(Compiler* compiler, shared_ptr<NInterfaceMethod> method, shared_ptr<CBaseFunction> thisFunction) {
+shared_ptr<CInterfaceMethod> CInterfaceMethod::init(Compiler* compiler, vector<vector<string>>& namespaces, shared_ptr<NInterfaceMethod> method, shared_ptr<CBaseFunction> thisFunction) {
     hasParent = true;
     loc = method->loc;
-    returnType = getVarType(loc, compiler, method->returnTypeName, returnMode);
+    returnType = getVarType(loc, compiler, namespaces, method->returnTypeName, returnMode);
     if (!returnType) {
         compiler->addError(method->loc, CErrorCode::InvalidType, "type '%s' is not defined", method->returnTypeName->getFullName().c_str());
         return nullptr;
@@ -173,9 +173,9 @@ string CInterfaceMethod::getCTypeName(Compiler* compiler, bool includeNames) {
     return ss.str();
 }
 
-shared_ptr<CType> CInterfaceMethod::getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
+shared_ptr<CType> CInterfaceMethod::getVarType(CLoc loc, Compiler* compiler, vector<vector<string>>& namespaces, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
     if (!parent.expired()) {
-        return parent.lock()->getVarType(loc, compiler, typeName, defaultMode);
+        return parent.lock()->getVarType(loc, compiler, namespaces, typeName, defaultMode);
     }
     
     return compiler->getType(typeName->valueName);

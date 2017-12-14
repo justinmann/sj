@@ -9,19 +9,19 @@ NInterface::NInterface(CLoc loc, const string& name, shared_ptr<CTypeNameList> t
     }
 }
 
-void NInterface::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NInterface::defineImpl(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     auto parentFunction = static_pointer_cast<CFunctionDefinition>(thisFunction);
     auto def = parentFunction->getDefinedInterfaceDefinition(name);
     if (def != nullptr) {
         compiler->addError(loc, CErrorCode::InvalidType, "interface can only be defined once: '%s'", name.c_str());
         return;
     }
-    def = parentFunction->createDefinedInterfaceDefinition(loc, name);
+    def = parentFunction->createDefinedInterfaceDefinition(loc, namespaces, name);
     def->typeName = make_shared<CTypeName>(CTC_Interface, CTM_Stack, name, templateTypeNames, false);
     def->ninterface = shared_from_this();
 
     for (auto it : methodList) {
-        it->define(compiler, thisFunction);
+        it->define(compiler, namespaces, packageNamespace, thisFunction);
     }
 }
 
@@ -77,7 +77,7 @@ CInterface::CInterface(CLoc loc, weak_ptr<CInterfaceDefinition> definition, weak
     setHasThis();
 }
 
-shared_ptr<CInterface> CInterface::init(Compiler* compiler, shared_ptr<NInterface> node, vector<shared_ptr<CType>>& templateTypes) {
+shared_ptr<CInterface> CInterface::init(Compiler* compiler, vector<vector<string>>& namespaces, shared_ptr<NInterface> node, vector<shared_ptr<CType>>& templateTypes) {
     if (node->templateTypeNames) {
         assert(node->templateTypeNames->size() == templateTypes.size());
         auto index = 0;
@@ -97,7 +97,7 @@ shared_ptr<CInterface> CInterface::init(Compiler* compiler, shared_ptr<NInterfac
         // need to create a stack and heap version if return typename is not explicit
 
         auto method = make_shared<CInterfaceMethod>(it->name, shared_from_this(), argIndex, CTM_Stack);
-        method = method->init(compiler, it, shared_from_this());
+        method = method->init(compiler, namespaces, it, shared_from_this());
         if (!method) {
             return nullptr;
         }
@@ -110,7 +110,7 @@ shared_ptr<CInterface> CInterface::init(Compiler* compiler, shared_ptr<NInterfac
         }
 
         method = make_shared<CInterfaceMethod>(it->name, shared_from_this(), argIndex, CTM_Heap);
-        method = method->init(compiler, it, shared_from_this());
+        method = method->init(compiler, namespaces, it, shared_from_this());
         if (!method) {
             return nullptr;
         }
@@ -191,7 +191,7 @@ shared_ptr<CBaseFunction> CInterface::getCFunction(Compiler* compiler, CLoc locC
     return interfaceMethod;
 }
 
-shared_ptr<CType> CInterface::getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
+shared_ptr<CType> CInterface::getVarType(CLoc loc, Compiler* compiler, vector<vector<string>>& namespaces, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
     if (typeName->templateTypeNames == nullptr) {
         auto t = templateTypesByName.find(typeName->valueName);
         if (t != templateTypesByName.end()) {
@@ -200,7 +200,7 @@ shared_ptr<CType> CInterface::getVarType(CLoc loc, Compiler* compiler, shared_pt
     }
     
     if (!parent.expired()) {
-        return parent.lock()->getVarType(loc, compiler, typeName, defaultMode);
+        return parent.lock()->getVarType(loc, compiler, namespaces, typeName, defaultMode);
     }
     
     return compiler->getType(typeName->valueName);
@@ -381,7 +381,7 @@ bool CInterface::getReturnMustRelease(Compiler* compiler) {
     return false;
 }
 
-CInterfaceDefinition::CInterfaceDefinition(CLoc loc, string& name_) : CBaseFunctionDefinition(CFT_Interface), loc(loc) {
+CInterfaceDefinition::CInterfaceDefinition(CLoc loc, vector<vector<string>>& namespaces, string& name_) : CBaseFunctionDefinition(CFT_Interface), loc(loc), namespaces(namespaces){
     name = name_;
 }
 
@@ -389,7 +389,7 @@ string CInterfaceDefinition::fullName() {
     return typeName->getFullName();
 }
 
-void CInterfaceDefinition::addChildFunction(string& name, shared_ptr<CBaseFunctionDefinition> childFunction) {
+void CInterfaceDefinition::addChildFunction(vector<string> packageNamespace, string& name, shared_ptr<CBaseFunctionDefinition> childFunction) {
     assert(false);
 }
 
@@ -411,7 +411,7 @@ shared_ptr<CInterface> CInterfaceDefinition::getInterface(Compiler* compiler, ve
         
         interface = make_shared<CInterface>(loc, shared_from_this(), funcParent);
         cinterfaces[templateTypes] = interface;
-        interface = interface->init(compiler, ninterface, templateTypes);
+        interface = interface->init(compiler, namespaces, ninterface, templateTypes);
     }
     return interface;
 }

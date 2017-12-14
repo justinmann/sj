@@ -48,19 +48,19 @@ NAssignment::NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTy
     }
 }
 
-void NAssignment::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NAssignment::defineImpl(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     
     if (var) {
-        var->define(compiler, thisFunction);
+        var->define(compiler, namespaces, packageNamespace, thisFunction);
     }
     
     if (nfunction) {
-        nfunction->define(compiler, thisFunction);
+        nfunction->define(compiler, namespaces, packageNamespace, thisFunction);
     }
     
     if (rightSide) {
-        rightSide->define(compiler, thisFunction);
+        rightSide->define(compiler, namespaces, packageNamespace, thisFunction);
     }
 }
 

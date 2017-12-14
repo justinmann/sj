@@ -36,7 +36,7 @@ private:
 class NCCode : public NBase {
 public:
     NCCode(CLoc loc, NCCodeType codeType, const char* code_) : NBase(NodeType_Code, loc), codeType(codeType), code(code_) { }
-    void defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) { }
+    void defineImpl(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) { }
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
     void addToStruct(Compiler* compiler, shared_ptr<CScope> scope, vector<string>& lines);
 

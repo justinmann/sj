@@ -1,8 +1,8 @@
 #include "Node.h"
 
-void NOptionDot::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {
-    left->define(compiler, thisFunction);
-    right->define(compiler, thisFunction);
+void NOptionDot::defineImpl(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+    left->define(compiler, namespaces, packageNamespace, thisFunction);
+    right->define(compiler, namespaces, packageNamespace, thisFunction);
 }
 
 shared_ptr<CVar> NOptionDot::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {

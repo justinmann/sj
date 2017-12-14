@@ -26,6 +26,7 @@ public:
     CTypeCategory category;
     CTypeImmutability mutability;
     CTypeMode typeMode;
+    vector<string> packageNamespace;
     string valueName;
     shared_ptr<CTypeNameList> templateTypeNames;
     shared_ptr<CTypeNameList> argTypeNames;

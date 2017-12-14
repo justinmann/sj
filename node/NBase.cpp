@@ -6,11 +6,11 @@ void dumpf(stringstream& ss, int level) {
     }
 }
 
-void NBase::define(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NBase::define(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     if (!_hasDefined) {
         _hasDefined = true;
-        defineImpl(compiler, thisFunction);
+        defineImpl(compiler, namespaces, packageNamespace, thisFunction);
     }
 }
 

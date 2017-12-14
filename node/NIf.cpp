@@ -78,16 +78,16 @@ void CIfElseVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>
     }
 }
 
-void NIf::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NIf::defineImpl(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
-    condition->define(compiler, thisFunction);
+    condition->define(compiler, namespaces, packageNamespace, thisFunction);
 
     if (elseBlock) {
-        elseBlock->define(compiler, thisFunction);
+        elseBlock->define(compiler, namespaces, packageNamespace, thisFunction);
     }
     
     if (ifBlock) {
-        ifBlock->define(compiler, thisFunction);
+        ifBlock->define(compiler, namespaces, packageNamespace, thisFunction);
     }
 }
 

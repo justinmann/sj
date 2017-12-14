@@ -219,7 +219,7 @@ NCall::NCall(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeN
     }
 }
 
-void NCall::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NCall::defineImpl(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     for (auto it : *arguments) {
         if (it->nodeType == NodeType_Assignment) {
@@ -227,9 +227,9 @@ void NCall::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> t
             if (!parameterAssignment->op.isFirstAssignment) {
                 compiler->addError(loc, CErrorCode::InvalidFunction, "assignment '%s' must be : or :=", parameterAssignment->name.c_str());
             }
-            parameterAssignment->define(compiler, thisFunction);
+            parameterAssignment->define(compiler, namespaces, packageNamespace, thisFunction);
         } else {
-            it->define(compiler, thisFunction);
+            it->define(compiler, namespaces, packageNamespace, thisFunction);
         }
     }
 }

@@ -69,14 +69,23 @@ struct td_sjs_object {
 
 int32_t sjv_a_x;
 int32_t sjv_b;
+int32_t sjv_c;
 
+void sjf_func(int32_t* _return);
 void main_destroy(void);
+
+void sjf_func(int32_t* _return) {
+#line 3 "package1.sj"
+    (*_return) = 12;
+}
 
 int main(int argc, char** argv) {
 #line 2 "package1.sj"
     sjv_a_x = 0;
-#line 5
+#line 6
     sjv_b = sjv_a_x;
+#line 6
+    sjf_func(&sjv_c);
     main_destroy();
     return 0;
 }

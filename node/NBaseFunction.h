@@ -77,13 +77,13 @@ public:
     virtual string fullName(bool includeTemplateTypes) = 0;
     virtual shared_ptr<CTypes> getThisTypes(Compiler* compiler) = 0;
     virtual shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CLoc locCaller, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode) = 0;
-    virtual shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) = 0;
+    virtual shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, vector<vector<string>>& namespaces, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) = 0;
     virtual string getCFunctionName(CTypeMode returnMode) = 0;
     virtual string getCCallbackFunctionName(Compiler* compiler, TrOutput* trOutput, CTypeMode returnMode) = 0;
     virtual string getCCopyFunctionName() = 0;
     virtual string getCDestroyFunctionName() = 0;
     virtual string getCStructName(CTypeMode typeMode) = 0;
-    virtual pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(string name) = 0;
+    virtual pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(vector<string> packageNamespace, string name) = 0;
     virtual bool getIsReturnModeValid(Compiler* compiler, CTypeMode returnMode) = 0;
     virtual shared_ptr<CType> getReturnType(Compiler* compiler, CTypeMode returnMode) = 0;
     virtual void transpileDefinition(Compiler* compiler, TrOutput* trOutput) = 0;
@@ -99,7 +99,7 @@ public:
 
     CBaseFunctionDefinition(CClassFunctionType classType) : classType(classType) { }
     virtual string fullName() = 0;
-    virtual void addChildFunction(string& name, shared_ptr<CBaseFunctionDefinition> childFunction) = 0;
+    virtual void addChildFunction(vector<string> packageNamespace, string& name, shared_ptr<CBaseFunctionDefinition> childFunction) = 0;
 };
 
 #endif /* NFunction_h */

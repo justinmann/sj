@@ -11,7 +11,7 @@
 
 class CGetValueVar : public CVar {
 public:
-    CGetValueVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> leftVar, bool isProtectedWithEmptyCheck) : CVar(loc, scope), leftVar(leftVar), isProtectedWithEmptyCheck(isProtectedWithEmptyCheck) { }
+    CGetValueVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> leftVar, bool isProtectedWithEmptyCheck) : CVar(loc, scope), leftVar(leftVar), isProtectedWithEmptyCheck(isProtectedWithEmptyCheck) { assert(leftVar); }
     
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
@@ -27,7 +27,7 @@ class NGetValue : public NVariableBase {
 public:
     NGetValue(CLoc loc, shared_ptr<NBase> node, bool isProtectedWithEmptyCheck) : NVariableBase(NodeType_GetValue, loc), node(node), isProtectedWithEmptyCheck(isProtectedWithEmptyCheck) {}
 
-    virtual void defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    virtual void defineImpl(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
     virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 
 private:

@@ -1,10 +1,10 @@
 #include "Node.h"
 
-void NTupleAssignment::defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction) {
-    rightSide->define(compiler, thisFunction);
+void NTupleAssignment::defineImpl(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+    rightSide->define(compiler, namespaces, packageNamespace, thisFunction);
     for (auto arg : *args) {
         if (arg->var) {
-            arg->var->define(compiler, thisFunction);
+            arg->var->define(compiler, namespaces, packageNamespace, thisFunction);
         }
     }
 }

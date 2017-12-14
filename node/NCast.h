@@ -25,7 +25,7 @@ private:
 class NCast : public NVariableBase {
 public:
     NCast(CLoc loc, shared_ptr<CTypeName> typeName, shared_ptr<NVariableBase> node) : NVariableBase(NodeType_Cast, loc), typeName(typeName), node(node) { }
-    void defineImpl(Compiler* compiler, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    void defineImpl(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
     
 private:
