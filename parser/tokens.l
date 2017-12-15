@@ -51,32 +51,39 @@ void updateLocation(YYLOCATION& loc, const char* s, const size_t len) {
 
 %%
 "--c--"							{ BEGIN(CBLOCK); }
-<CBLOCK>.|\n 					{ yymore(); }
+<CBLOCK>. 	 					{ yymore(); }
+<CBLOCK>\n 					    { TOKEN_STR(TCBLOCK, 0, 1); }
 <CBLOCK>"--c--"					{ BEGIN(INITIAL); TOKEN_STR(TCBLOCK, 0, 5); }
 
 "--cvar--"						{ BEGIN(CVAR); }
-<CVAR>.|\n 						{ yymore(); }
+<CVAR>. 						{ yymore(); }
+<CVAR>\n 						{ TOKEN_STR(TCVAR, 0, 1); }
 <CVAR>"--cvar--"				{ BEGIN(INITIAL); TOKEN_STR(TCVAR, 0, 8); }
 
 "--cstruct--"					{ BEGIN(CSTRUCT); }
-<CSTRUCT>.|\n 					{ yymore(); }
+<CSTRUCT>. 						{ yymore(); }
+<CSTRUCT>\n 					{ TOKEN_STR(TCSTRUCT, 0, 1); }
 <CSTRUCT>"--cstruct--"			{ BEGIN(INITIAL); TOKEN_STR(TCSTRUCT, 0, 11); }
 
 "--cdefine--"					{ BEGIN(CDEFINE); }
-<CDEFINE>.|\n 					{ yymore(); }
+<CDEFINE>. 						{ yymore(); }
+<CDEFINE>\n 					{ TOKEN_STR(TCDEFINE, 0, 1); }
 <CDEFINE>"--cdefine--"			{ BEGIN(INITIAL); TOKEN_STR(TCDEFINE, 0, 11); }
 
 "--cinclude--"					{ BEGIN(CINCLUDE); }
-<CINCLUDE>.|\n 					{ yymore(); }
+<CINCLUDE>. 					{ yymore(); }
+<CINCLUDE>\n 					{ TOKEN_STR(TCINCLUDE, 0, 1); }
 <CINCLUDE>"--cinclude--"		{ BEGIN(INITIAL); TOKEN_STR(TCINCLUDE, 0, 12); }
 
 "--ctypedef--"					{ BEGIN(CTYPEDEF); }
-<CTYPEDEF>.|\n 					{ yymore(); }
+<CTYPEDEF>. 					{ yymore(); }
+<CTYPEDEF>\n 					{ TOKEN_STR(TCTYPEDEF, 0, 1); }
 <CTYPEDEF>"--ctypedef--"		{ BEGIN(INITIAL); TOKEN_STR(TCTYPEDEF, 0, 12); }
 
 "--cfunction--"					{ BEGIN(CFUNCTION); }
+<CFUNCTION>. 					{ yymore(); }
+<CFUNCTION>\n 					{ TOKEN_STR(TCFUNCTION, 0, 1); }
 <CFUNCTION>"--cfunction--"		{ BEGIN(INITIAL); TOKEN_STR(TCFUNCTION, 0, 13); }
-<CFUNCTION>.|\n 				{ yymore(); }
 
 "/*"([^*]|\*+[^*/])*\*+"/"	TOKEN_VAL(TEND);
 "//".*					TOKEN_VAL(TEND);

@@ -64,6 +64,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 	EnumArg* enumArg;
 	EnumArgs* enumArgs;
 	std::vector<std::string>* strings;
+	NCCode* ccode;
 }
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
@@ -86,6 +87,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %type <enumArgs> enum_args
 %type <enumArg> enum_arg
 %type <strings> namespace
+%type <ccode> cblock cdefine cstruct cfunction cinclude ctypedef cvar
 
 /* Operator precedence */
 %left TAND TOR
@@ -115,15 +117,43 @@ stmt 				: /* Blank! */									{ $$ = nullptr; }
 					| interface_decl
 					| enum_decl
 					| expr 											{ $$ = $1; }
-					| TCBLOCK										{ $$ = new NCCode(LOC, NCC_BLOCK, $1->c_str()); delete $1; }
-					| TCDEFINE										{ $$ = new NCCode(LOC, NCC_DEFINE, $1->c_str()); delete $1; }
-					| TCSTRUCT										{ $$ = new NCCode(LOC, NCC_STRUCT, $1->c_str()); delete $1; }
-					| TCFUNCTION									{ $$ = new NCCode(LOC, NCC_FUNCTION, $1->c_str()); delete $1; }
-					| TCINCLUDE										{ $$ = new NCCode(LOC, NCC_INCLUDE, $1->c_str()); delete $1; }
-					| TCTYPEDEF										{ $$ = new NCCode(LOC, NCC_TYPEDEF, $1->c_str()); delete $1; }
+					| cblock										{ $$ = $1; }
+					| cdefine										{ $$ = $1; }
+					| cstruct										{ $$ = $1; }
+					| cfunction										{ $$ = $1; }
+					| cinclude										{ $$ = $1; }
+					| ctypedef										{ $$ = $1; }
 					| TINCLUDE TSTRING								{ $$ = new NInclude(LOC, $2->c_str()); delete $2; }
 					| TPACKAGE namespace block						{ $$ = new NPackage(LOC, *$2, shared_ptr<NBase>($3)); delete $2; }
 					| error	 										{ $$ = nullptr; /* yyclearin; */ compiler->addError(LLOC, CErrorCode::InvalidCharacter, "Something failed to parse"); }
+					;
+
+cblock 				: cblock TCBLOCK 								{ $$->lines.push_back(*$2); delete $2; }
+					| TCBLOCK                                       { $$ = new NCCode(LOC, NCC_BLOCK, $1->c_str()); delete $1; }
+					;
+
+cdefine 			: cdefine TCDEFINE 								{ $$->lines.push_back(*$2); delete $2; }
+					| TCDEFINE                                      { $$ = new NCCode(LOC, NCC_DEFINE, $1->c_str()); delete $1; }
+					;
+
+cstruct 			: cstruct TCSTRUCT 								{ $$->lines.push_back(*$2); delete $2; }
+					| TCSTRUCT                                      { $$ = new NCCode(LOC, NCC_STRUCT, $1->c_str()); delete $1; }
+					;
+
+cfunction 			: cfunction TCFUNCTION 							{ $$->lines.push_back(*$2); delete $2; }
+					| TCFUNCTION                                    { $$ = new NCCode(LOC, NCC_FUNCTION, $1->c_str()); delete $1; }
+					;
+
+cinclude			: cinclude TCINCLUDE 							{ $$->lines.push_back(*$2); delete $2; }
+					| TCINCLUDE                                     { $$ = new NCCode(LOC, NCC_INCLUDE, $1->c_str()); delete $1; }
+					;
+
+ctypedef			: ctypedef TCTYPEDEF 							{ $$->lines.push_back(*$2); delete $2; }
+					| TCTYPEDEF                                     { $$ = new NCCode(LOC, NCC_TYPEDEF, $1->c_str()); delete $1; }
+					;
+
+cvar				: cvar TCVAR 									{ $$->lines.push_back(*$2); delete $2; }
+					| TCVAR                                     	{ $$ = new NCCode(LOC, NCC_VAR, $1->c_str()); delete $1; }
 					;
 
 namespace 			: namespace TDOT TIDENTIFIER               		{ $$->push_back(*$3); delete $3; }
@@ -131,9 +161,6 @@ namespace 			: namespace TDOT TIDENTIFIER               		{ $$->push_back(*$3); 
 					;
 
 block 				: TLBRACE stmts TRBRACE 						{ $$ = $2; }
-					| TCBLOCK										{ $$ = new NCCode(LOC, NCC_BLOCK, $1->c_str()); delete $1; }
-					| TCDEFINE										{ $$ = new NCCode(LOC, NCC_DEFINE, $1->c_str()); delete $1; }
-					| TCFUNCTION									{ $$ = new NCCode(LOC, NCC_FUNCTION, $1->c_str()); delete $1; }
 					;
 
 var_decl 			: assign
@@ -210,7 +237,7 @@ func_args  			: func_arg										{ $$ = new NodeList(); if ($1) { $$->push_back
 func_arg			: interface_decl
 					| assign 										
 					| func_decl 										
-					| TCVAR											{ $$ = new NCCode(LOC, NCC_VAR, $1->c_str()); delete $1; }
+					| cvar											{ $$ = $1; }
 					| expr 											{ $$ = $1; }
 					; 
 

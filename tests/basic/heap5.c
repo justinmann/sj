@@ -1,7 +1,3 @@
-
-
-
-
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -10,10 +6,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-
-/* memcmp, memset, strlen */
-/* ptrdiff_t */
-/* exit */
+   /* memcmp, memset, strlen */
+   /* ptrdiff_t */
+   /* exit */
 /* These macros use decltype or the earlier __typeof GNU extension.
 As decltype is only available in newer compilers (VS2010 or gcc 4.3+
 when compiling c++ source) this code uses whatever method is needed
@@ -1103,7 +1098,6 @@ void *key;                        /* ptr to enclosing struct's key  */
 unsigned keylen;                  /* enclosing struct's key len     */
 unsigned hashv;                   /* result of hash-fcn(key)        */
 } UT_hash_handle;
-
 typedef struct td_int32_option int32_option;
 struct td_int32_option {
     bool isEmpty;
@@ -1160,7 +1154,6 @@ struct td_double_option {
 };
 const double_option double_empty = { true };
 
-
 typedef struct pointer_td pointer;
 struct pointer_td {
     void* ptr;
@@ -1168,26 +1161,17 @@ struct pointer_td {
     UT_hash_handle hh;
 };
 pointer* g_pointers = 0;
-
 #define sjs_object_typeId 1
 #define sjs_anon1_typeId 2
 #define sjs_anon1_heap_typeId 3
-#define sjs_anon2_typeId 4
-#define sjs_anon2_heap_typeId 5
-#define sjs_anon3_typeId 6
-#define sjs_anon3_heap_typeId 7
-#define sjs_array_char_typeId 8
-#define sjs_array_char_heap_typeId 9
-#define sjs_a_typeId 10
-#define sjs_a_heap_typeId 11
+#define sjs_array_char_typeId 4
+#define sjs_array_char_heap_typeId 5
+#define sjs_a_typeId 6
+#define sjs_a_heap_typeId 7
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_anon1 sjs_anon1;
 typedef struct td_sjs_anon1_heap sjs_anon1_heap;
-typedef struct td_sjs_anon2 sjs_anon2;
-typedef struct td_sjs_anon2_heap sjs_anon2_heap;
-typedef struct td_sjs_anon3 sjs_anon3;
-typedef struct td_sjs_anon3_heap sjs_anon3_heap;
 typedef struct td_sjs_array_char sjs_array_char;
 typedef struct td_sjs_array_char_heap sjs_array_char_heap;
 typedef struct td_sjs_a sjs_a;
@@ -1202,22 +1186,6 @@ struct td_sjs_anon1 {
 };
 
 struct td_sjs_anon1_heap {
-    intptr_t _refCount;
-};
-
-struct td_sjs_anon2 {
-    int structsNeedAValue;
-};
-
-struct td_sjs_anon2_heap {
-    intptr_t _refCount;
-};
-
-struct td_sjs_anon3 {
-    int structsNeedAValue;
-};
-
-struct td_sjs_anon3_heap {
     intptr_t _refCount;
 };
 
@@ -1245,13 +1213,9 @@ struct td_sjs_a_heap {
     sjs_array_char data;
 };
 
-
 void halt(const char * format, ...);
-
-
 void _retain(void* ptr);
 bool _release(void* ptr);
-
 int32_t result1;
 int32_t sjt_cast1;
 int32_t sjt_cast2;
@@ -1263,8 +1227,6 @@ uintptr_t sjv_emptyStringData;
 float sjv_f32_pi;
 int32_t sjv_i32_maxValue;
 int32_t sjv_i32_minValue;
-sjs_anon2 sjv_parse;
-sjs_anon3 sjv_random;
 uint32_t sjv_u32_maxValue;
 sjs_a void1;
 
@@ -1276,20 +1238,11 @@ void sjf_anon1(sjs_anon1* _this);
 void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* _from);
 void sjf_anon1_destroy(sjs_anon1* _this);
 void sjf_anon1_heap(sjs_anon1_heap* _this);
-void sjf_anon2(sjs_anon2* _this);
-void sjf_anon2_copy(sjs_anon2* _this, sjs_anon2* _from);
-void sjf_anon2_destroy(sjs_anon2* _this);
-void sjf_anon2_heap(sjs_anon2_heap* _this);
-void sjf_anon3(sjs_anon3* _this);
-void sjf_anon3_copy(sjs_anon3* _this, sjs_anon3* _from);
-void sjf_anon3_destroy(sjs_anon3* _this);
-void sjf_anon3_heap(sjs_anon3_heap* _this);
 void sjf_array_char(sjs_array_char* _this);
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from);
 void sjf_array_char_destroy(sjs_array_char* _this);
 void sjf_array_char_heap(sjs_array_char_heap* _this);
 void main_destroy(void);
-
 
 void halt(const char * format, ...) {
     va_list args;
@@ -1298,8 +1251,6 @@ void halt(const char * format, ...) {
     va_end (args);
     exit(-1);
 }
-
-
 void _retain(void* ptr) {
     pointer* p;
     HASH_FIND_PTR(g_pointers, &ptr, p);
@@ -1309,7 +1260,7 @@ void _retain(void* ptr) {
         p = (pointer*)malloc(sizeof(pointer));
         p->ptr = ptr;
         p->refCount = 1;
-        HASH_ADD_PTR(g_pointers, ptr, p);
+        HASH_ADD_PTR(g_pointers, ptr, p);    
     }
 }
 bool _release(void* ptr) {
@@ -1325,7 +1276,6 @@ bool _release(void* ptr) {
     }
     return true;
 }
-
 void sjf_a(sjs_a* _this) {
 }
 
@@ -1352,48 +1302,24 @@ void sjf_anon1_destroy(sjs_anon1* _this) {
 void sjf_anon1_heap(sjs_anon1_heap* _this) {
 }
 
-void sjf_anon2(sjs_anon2* _this) {
-}
-
-void sjf_anon2_copy(sjs_anon2* _this, sjs_anon2* _from) {
-}
-
-void sjf_anon2_destroy(sjs_anon2* _this) {
-}
-
-void sjf_anon2_heap(sjs_anon2_heap* _this) {
-}
-
-void sjf_anon3(sjs_anon3* _this) {
-}
-
-void sjf_anon3_copy(sjs_anon3* _this, sjs_anon3* _from) {
-}
-
-void sjf_anon3_destroy(sjs_anon3* _this) {
-}
-
-void sjf_anon3_heap(sjs_anon3_heap* _this) {
-}
-
 void sjf_array_char(sjs_array_char* _this) {
-#line 255 "lib/common/array.sj"
+#line 272 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 255
+#line 272
         halt("size is less than zero");
-#line 255
+#line 272
     }
-#line 255
+#line 272
     if (!_this->data) {
-#line 255
+#line 272
         _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(char));
-#line 255
+#line 272
         if (!_this->data) {
-#line 255
+#line 272
             halt("grow: out of memory\n");
-#line 255
+#line 272
         }
-#line 255
+#line 272
     }
 }
 
@@ -1406,47 +1332,47 @@ void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
     _this->_isGlobal = _from->_isGlobal;
 #line 1
     _this->count = _from->count;
-#line 269
+#line 286
     _this->data = _from->data;
-#line 269
+#line 286
     if (!_this->_isGlobal && _this->data) {
-#line 269
+#line 286
         _retain((void*)_this->data);
-#line 269
+#line 286
     }
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
-#line 276 "lib/common/array.sj"
+#line 293 "lib/common/array.sj"
     if (!_this->_isGlobal && _this->data) {
-#line 276
+#line 293
         if (_release((void*)_this->data)) {
-#line 276
+#line 293
             free((char*)_this->data);
-#line 276
+#line 293
         }
-#line 276
+#line 293
     }
 }
 
 void sjf_array_char_heap(sjs_array_char_heap* _this) {
-#line 255 "lib/common/array.sj"
+#line 272 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 255
+#line 272
         halt("size is less than zero");
-#line 255
+#line 272
     }
-#line 255
+#line 272
     if (!_this->data) {
-#line 255
+#line 272
         _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(char));
-#line 255
+#line 272
         if (!_this->data) {
-#line 255
+#line 272
             halt("grow: out of memory\n");
-#line 255
+#line 272
         }
-#line 255
+#line 272
     }
 }
 
@@ -1468,10 +1394,6 @@ int main(int argc, char** argv) {
     sjv_i32_maxValue = sjt_math1 - sjt_math2;
 #line 4
     sjv_i32_minValue = 2147483647;
-#line 4
-    sjf_anon2(&sjv_parse);
-#line 4
-    sjf_anon3(&sjv_random);
 #line 1 "lib/common/string.sj"
     sjt_cast1 = 0;
 #line 1
@@ -1499,7 +1421,5 @@ int main(int argc, char** argv) {
 void main_destroy() {
 
     sjf_anon1_destroy(&sjv_console);
-    sjf_anon2_destroy(&sjv_parse);
-    sjf_anon3_destroy(&sjv_random);
     sjf_a_destroy(&void1);
 }

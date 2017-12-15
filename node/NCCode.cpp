@@ -202,22 +202,26 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
     return "";
 }
 
-vector<string> expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOutput* trOutput, string& code, shared_ptr<TrStoreValue> returnValue, vector<shared_ptr<CFunction>>& functions, map<string, map<string, bool>>& includes, shared_ptr<CType>& returnType) {
+string expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOutput* trOutput, string& code, shared_ptr<TrStoreValue> returnValue, vector<shared_ptr<CFunction>>& functions, map<string, map<string, bool>>& includes, shared_ptr<CType>& returnType) {
     stringstream finalCode;
     stringstream macro;
     bool isInMacro = false;
+    bool isInWhitespace = true;
     for (auto ch : code) {
+        if (isInWhitespace) {
+            if (ch == ' ' || ch == '\t' || ch == ' ') {
+                continue;
+            }
+            else {
+                isInWhitespace = false;
+            }
+        }
+
         if (isInMacro) {
             if (ch == ')') {
                 macro << ch;
                 isInMacro = false;
                 finalCode << expandMacro(compiler, loc, scope, trOutput, macro.str(), returnValue, functions, includes, returnType);
-                macro.str("");
-                macro.clear();
-            }
-            else if (ch == '\n') {
-                isInMacro = false;
-                finalCode << expandMacro(compiler, loc, scope, trOutput, macro.str(), returnValue, functions, includes, returnType) << '\n';
                 macro.str("");
                 macro.clear();
             }
@@ -238,14 +242,7 @@ vector<string> expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> sco
             finalCode << ch;
         }
     }
-
-    vector<string> lines;
-    string str = finalCode.str();
-    boost::split(lines, str, boost::is_any_of("\n"), boost::token_compress_on);
-    for (auto i = 0; i < (int)lines.size(); i++) {
-        boost::trim_if(lines[i], boost::is_any_of(" \n\r\t"));
-    }
-    return lines;
+    return finalCode.str();
 }
 
 bool CCCodeVar::getReturnThis() {
@@ -260,36 +257,39 @@ void CCCodeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
     vector<shared_ptr<CFunction>> functions;
     map<string, map<string, bool>> includes;
     shared_ptr<CType> returnType;
-    auto finalCode = expandMacros(compiler, loc, scope.lock(), trOutput, code, storeValue, functions, includes, returnType);
+    for (auto line : lines) {
+        auto finalLine = expandMacros(compiler, loc, scope.lock(), trOutput, line, storeValue, functions, includes, returnType);
+        if (finalLine.size() == 0) {
+            continue;
+        }
 
-    for (auto cfunction : functions) {
-        cfunction->transpileDefinition(compiler, trOutput);
-    }
-
-    for (auto line : finalCode) {
         switch (codeType) {
         case NCC_VAR:
             assert(false);
             break;
         case NCC_BLOCK:
-            trBlock->statements.push_back(TrStatement(loc, line, true));
+            trBlock->statements.push_back(TrStatement(loc, finalLine, true));
             break;
         case NCC_DEFINE:
-            trOutput->ccodeDefines.push_back(line);
+            trOutput->ccodeDefines.push_back(finalLine);
             break;
         case NCC_STRUCT:
-            trOutput->ccodeStructs.push_back(line);
+            trOutput->ccodeStructs.push_back(finalLine);
             break;
         case NCC_INCLUDE:
-            trOutput->ccodeIncludes.push_back(line);
+            trOutput->ccodeIncludes.push_back(finalLine);
             break;
         case NCC_TYPEDEF:
-            trOutput->ccodeTypedefs.push_back(line);
+            trOutput->ccodeTypedefs.push_back(finalLine);
             break;
         case NCC_FUNCTION:
-            trOutput->ccodeFunctions.push_back(line);
+            trOutput->ccodeFunctions.push_back(finalLine);
             break;
         }
+    }
+
+    for (auto cfunction : functions) {
+        cfunction->transpileDefinition(compiler, trOutput);
     }
 
     for (auto include : includes) {
@@ -303,7 +303,6 @@ void CCCodeVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>&
     vector<shared_ptr<CFunction>> functions2;
     map<string, map<string, bool>> includes;
     shared_ptr<CType> returnType;
-    auto finalCode = expandMacros(compiler, loc, scope.lock(), nullptr, code, nullptr, functions2, includes, returnType);
 
     switch (codeType) {
     case NCC_VAR:
@@ -329,9 +328,14 @@ void CCCodeVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>&
         break;
     }
 
-    for (auto line : finalCode) {
+    for (auto line : lines) {
+        auto finalLine = expandMacros(compiler, loc, scope.lock(), nullptr, line, nullptr, functions2, includes, returnType);
+        if (finalLine.size() == 0) {
+            continue;
+        }
+
         dumpf(ss, level);
-        ss << line;
+        ss << finalLine;
         ss << "\n";
     }
 
@@ -365,19 +369,25 @@ shared_ptr<CVar> NCCode::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
     vector<shared_ptr<CFunction>> functions;
     map<string, map<string, bool>> includes;
     shared_ptr<CType> returnType = compiler->typeVoid;
-    expandMacros(compiler, loc, scope, nullptr, code, nullptr, functions, includes, returnType);
+    for (auto line : lines) {
+        expandMacros(compiler, loc, scope, nullptr, line, nullptr, functions, includes, returnType);
+    }
 
-    return make_shared<CCCodeVar>(loc, scope, codeType, code, returnType);
+    return make_shared<CCCodeVar>(loc, scope, codeType, lines, returnType);
 }
 
 
-void NCCode::addToStruct(Compiler* compiler, shared_ptr<CScope> scope, vector<string>& lines) {
+void NCCode::addToStruct(Compiler* compiler, shared_ptr<CScope> scope, vector<string>& structLines) {
     vector<shared_ptr<CFunction>> functions;
     map<string, map<string, bool>> includes;
     shared_ptr<CType> returnType = compiler->typeVoid;
-    auto finalCode = expandMacros(compiler, loc, scope, nullptr, code, nullptr, functions, includes, returnType);
 
-    for (auto line : finalCode) {
-        lines.push_back(line);
+    for (auto line : lines) {
+        auto finalLine = expandMacros(compiler, loc, scope, nullptr, line, nullptr, functions, includes, returnType);
+        if (finalLine.size() == 0) {
+            continue;
+        }
+
+        structLines.push_back(finalLine);
     }
 }

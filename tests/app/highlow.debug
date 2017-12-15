@@ -6,7 +6,6 @@ anon1_readLine()'stack string {
   data'ptr = 0i as ptr
   size'i32 = 1024i
   --c--
-  
   char* str = (char*)malloc(size);
   int index = 0;
   char ch = ' ';
@@ -25,7 +24,6 @@ anon1_readLine()'stack string {
   index++;
   data = (uintptr_t)str;
   size = index;
-  
   --c--
   string(this = string(
     count'i32 = count,
@@ -35,67 +33,48 @@ anon1_readLine()'stack string {
 
 anon1_write(data'stack string:)'void {
   --c--
-  
   printf("%s", (char*)data->data.data);
-  
   --c--
 }
 
-anon2()'stack anon2 {
+i32_random()'i32 {
+  x'i32 = 0i
+  --c--
+  sjv_x = rand();
+  --c--
+  x
+}
+
+string(count'i32=, data'stack array_char=)'stack string {
   this
 }
 
-anon2_toInt(text'stack string:)'i32 {
+string_toI32(text'stack string:)'i32 {
   x'i32 = 0i
   --c--
-  
   char* e;
   int v = (int)strtol((char*)text->data.data, &e, 10);
-  
   if (*e != '\0') {
   sjv_x = 0;
   }
   else {
   sjv_x = v;
   }
-  
   --c--
   x
 }
 
-anon3()'stack anon3 {
-  this
-}
-
-anon3_nextInt()'i32 --c--
-
-int x = rand();
-*_return = x;
-
---c--
-
-string(count'i32=, data'stack array_char=)'stack string {
-  this
-}
-
 global()'void {
   --cinclude--
-  
-  
   --cinclude--
   console'stack anon1 : anon1(this = anon1())
   f32_pi'f32 : 3.14159265358979323846ff
   --cinclude--
-  
-  
   --cinclude--
   --cdefine--
-  
   void halt(const char * format, ...);
-  
   --cdefine--
   --cfunction--
-  
   void halt(const char * format, ...) {
   va_list args;
   va_start (args, format);
@@ -103,10 +82,8 @@ global()'void {
   va_end (args);
   exit(-1);
   }
-  
   --cfunction--
   --cstruct--
-  
   typedef struct pointer_td pointer;
   struct pointer_td {
   void* ptr;
@@ -114,16 +91,12 @@ global()'void {
   UT_hash_handle hh;
   };
   pointer* g_pointers = 0;
-  
   --cstruct--
   --cdefine--
-  
   void _retain(void* ptr);
   bool _release(void* ptr);
-  
   --cdefine--
   --cfunction--
-  
   void _retain(void* ptr) {
   pointer* p;
   HASH_FIND_PTR(g_pointers, &ptr, p);
@@ -133,7 +106,7 @@ global()'void {
   p = (pointer*)malloc(sizeof(pointer));
   p->ptr = ptr;
   p->refCount = 1;
-  HASH_ADD_PTR(g_pointers, ptr, p);
+  HASH_ADD_PTR(g_pointers, ptr, p);    
   }
   }
   bool _release(void* ptr) {
@@ -149,13 +122,11 @@ global()'void {
   }
   return true;
   }
-  
   --cfunction--
   --ctypedef--
-  
-  /* memcmp, memset, strlen */
-  /* ptrdiff_t */
-  /* exit */
+     /* memcmp, memset, strlen */
+     /* ptrdiff_t */
+     /* exit */
   /* These macros use decltype or the earlier __typeof GNU extension.
   As decltype is only available in newer compilers (VS2010 or gcc 4.3+
   when compiling c++ source) this code uses whatever method is needed
@@ -1245,33 +1216,25 @@ global()'void {
   unsigned keylen;                  /* enclosing struct's key len     */
   unsigned hashv;                   /* result of hash-fcn(key)        */
   } UT_hash_handle;
-  
   --ctypedef--
   u32_maxValue'u32 : (uint32_t)4294967295uu
   i32_maxValue'i32 : -1i - 2147483647i
   i32_minValue'i32 : 2147483647i
-  parse'stack anon2 : anon2(this = anon2())
-  random'stack anon3 : anon3(this = anon3())
   emptyStringData'ptr = 0i as ptr
   --c--
-  
   sjv_emptyStringData = (uintptr_t)"";
-  
   --c--
   anon1_write(
     parent: this,
     data'stack string : data
   )
-  num'i32 : anon3_nextInt(
-    parent: this
-  ) %% 10i + 1i
+  num'i32 : i32_random() %% 10i + 1i
   isCorrect'bool = false
   while !isCorrect{
     str'stack string : anon1_readLine(
       parent: this
     )
-    guess'i32 : anon2_toInt(
-      parent: this,
+    guess'i32 : string_toI32(
       text'stack string : text
     )
     isCorrect'bool = if guess < num {

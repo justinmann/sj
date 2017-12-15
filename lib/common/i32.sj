@@ -49,3 +49,18 @@ i32_toString(val : 'i32, base : 10, minLength : 0) {
 	string(count := count, data := array!char(dataSize := count + 1, count := count + 1, data := data))
 }
 
+string_toI32(text : 'string)'i32 {
+	x := 0
+	--c--
+	char* e;
+    int v = (int)strtol((char*)text->data.data, &e, 10);
+    
+    if (*e != '\0') {
+        sjv_x = 0;
+    }
+    else {
+    	sjv_x = v;
+	}
+    --c--
+    x
+}

@@ -1748,11 +1748,6 @@ shared_ptr<CType> CScope::getVarType(CLoc loc, Compiler* compiler, shared_ptr<CT
 shared_ptr<CVar> CScope::getCVar(Compiler* compiler, shared_ptr<CVar> dotVar, const string& name, VarScanMode scanMode) {
     if (function) {
         for (auto ns : getAllNamespaces()) {
-            printf("find: ");
-            for (auto j : ns) {
-                printf("%s.", j.c_str());
-            }
-            printf("%s\n", name.c_str());
             auto cvar = function->getCVar(compiler, shared_from_this(), functionBlocks, ns, dotVar, name, scanMode, returnMode);
             if (cvar) {
                 return cvar;
@@ -1829,20 +1824,15 @@ vector<vector<string>> CScope::getAllNamespaces() {
     vector<vector<string>> allNamespaces;
     allNamespaces.push_back(vector<string>());
     
-    for (auto importNamespace : function->namespaces) {
-        allNamespaces.push_back(importNamespace);
+    if (function) {
+        for (auto importNamespace : function->namespaces) {
+            allNamespaces.push_back(importNamespace);
+        }
     }
     
     if (ns.size() > 0) {
         allNamespaces.push_back(ns);
     }
     
-    for (auto i : allNamespaces) {
-        for (auto j : i) {
-            printf("%s.", j.c_str());
-        }
-        printf("\n");
-    }
     return allNamespaces;
-    // TODO: add all other namespaces that are referenced from import
 }

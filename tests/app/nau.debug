@@ -2,31 +2,23 @@ anon1()'stack anon1 {
   this
 }
 
-anon2()'stack anon2 {
+anon2(animations'stack list_heap_animation:, current'i32=)'stack anon2 {
   this
 }
 
-anon3()'stack anon3 {
+anon3(fill'i32:, left'i32:, right'i32:, top'i32:, bottom'i32:)'stack anon3 {
   this
 }
 
-anon4(animations'stack list_heap_animation:, current'i32=)'stack anon4 {
+anon4(normal'i32:, hot'i32:, pressed'i32:)'stack anon4 {
   this
 }
 
-anon5(fill'i32:, left'i32:, right'i32:, top'i32:, bottom'i32:)'stack anon5 {
+anon5()'stack anon5 {
   this
 }
 
-anon6(normal'i32:, hot'i32:, pressed'i32:)'stack anon6 {
-  this
-}
-
-anon7()'stack anon7 {
-  this
-}
-
-anon8()'stack anon8 {
+anon6()'stack anon6 {
   this
 }
 
@@ -36,7 +28,6 @@ fillElement #element (children'stack array_heap_element:, _rect'stack rect=)'hea
 
 runLoop()'void {
   --c--
-  
   #ifdef EMSCRIPTEN
   emscripten_set_main_loop((em_callback_func)sjf_mainLoop, 0, 0);
   exit(0);
@@ -45,8 +36,7 @@ runLoop()'void {
   while (!quit) {
   sjf_mainLoop();
   }
-  #endif
-  
+  #endif	
   --c--
 }
 
@@ -56,9 +46,7 @@ scene2d(_size'stack size=, model'stack mat4=, view'stack mat4=, projection'stack
 
 shader(vertex'stack string:, pixel'stack string:)'stack shader {
   --c--
-  
   _this->id = shader_load((char*)_this->vertex.data.data, (char*)_this->pixel.data.data);
-  
   --c--
   this
 }
@@ -69,7 +57,6 @@ string(count'i32=, data'stack array_char=)'stack string {
 
 windowRenderer()'stack windowRenderer {
   --c--
-  
   if (SDL_Init(SDL_INIT_VIDEO) != 0) {
   halt("SDL_Init Error: %s\n", SDL_GetError());
   }
@@ -90,7 +77,7 @@ windowRenderer()'stack windowRenderer {
   SDL_GL_CreateContext((SDL_Window*)_this->win);
   #ifdef WIN32
   GLint GlewInitResult = glewInit();
-  if (GLEW_OK != GlewInitResult)
+  if (GLEW_OK != GlewInitResult) 
   {
   halt("ERROR: %s\n", glewGetErrorString(GlewInitResult));
   }
@@ -102,7 +89,6 @@ windowRenderer()'stack windowRenderer {
   glClearColor( 0.0, 0.0, 0.0, 0.0 );
   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   glEnable( GL_BLEND );
-  
   --c--
   this
 }
@@ -116,7 +102,6 @@ global()'void {
     projection'stack mat4 = projection
   ))
   --cinclude--
-  
   #ifdef WIN32
   #pragma warning(disable:4996)
   #define GLEW_STATIC
@@ -125,25 +110,17 @@ global()'void {
   #include <GL/gl.h>
   #include <GL/glu.h>
   #endif
-  
   --cinclude--
   --cinclude--
-  
-  
   --cinclude--
   console'stack anon1 : anon1(this = anon1())
   f32_pi'f32 : 3.14159265358979323846ff
   --cinclude--
-  
-  
   --cinclude--
   --cdefine--
-  
   void halt(const char * format, ...);
-  
   --cdefine--
   --cfunction--
-  
   void halt(const char * format, ...) {
   va_list args;
   va_start (args, format);
@@ -151,10 +128,8 @@ global()'void {
   va_end (args);
   exit(-1);
   }
-  
   --cfunction--
   --cstruct--
-  
   typedef struct pointer_td pointer;
   struct pointer_td {
   void* ptr;
@@ -162,16 +137,12 @@ global()'void {
   UT_hash_handle hh;
   };
   pointer* g_pointers = 0;
-  
   --cstruct--
   --cdefine--
-  
   void _retain(void* ptr);
   bool _release(void* ptr);
-  
   --cdefine--
   --cfunction--
-  
   void _retain(void* ptr) {
   pointer* p;
   HASH_FIND_PTR(g_pointers, &ptr, p);
@@ -181,7 +152,7 @@ global()'void {
   p = (pointer*)malloc(sizeof(pointer));
   p->ptr = ptr;
   p->refCount = 1;
-  HASH_ADD_PTR(g_pointers, ptr, p);
+  HASH_ADD_PTR(g_pointers, ptr, p);    
   }
   }
   bool _release(void* ptr) {
@@ -197,13 +168,11 @@ global()'void {
   }
   return true;
   }
-  
   --cfunction--
   --ctypedef--
-  
-  /* memcmp, memset, strlen */
-  /* ptrdiff_t */
-  /* exit */
+     /* memcmp, memset, strlen */
+     /* ptrdiff_t */
+     /* exit */
   /* These macros use decltype or the earlier __typeof GNU extension.
   As decltype is only available in newer compilers (VS2010 or gcc 4.3+
   when compiling c++ source) this code uses whatever method is needed
@@ -1293,24 +1262,19 @@ global()'void {
   unsigned keylen;                  /* enclosing struct's key len     */
   unsigned hashv;                   /* result of hash-fcn(key)        */
   } UT_hash_handle;
-  
   --ctypedef--
   u32_maxValue'u32 : (uint32_t)4294967295uu
   i32_maxValue'i32 : -1i - 2147483647i
   i32_minValue'i32 : 2147483647i
-  parse'stack anon2 : anon2(this = anon2())
-  random'stack anon3 : anon3(this = anon3())
   emptyStringData'ptr = 0i as ptr
   --c--
-  
   sjv_emptyStringData = (uintptr_t)"";
-  
   --c--
-  animator'stack anon4 : anon4(this = anon4(
+  animator'stack anon2 : anon2(this = anon2(
     animations'stack list_heap_animation : animations,
     current'i32 = current
   ))
-  borderPosition'stack anon5 : anon5(this = anon5(
+  borderPosition'stack anon3 : anon3(this = anon3(
     fill'i32 : fill,
     left'i32 : left,
     right'i32 : right,
@@ -1318,31 +1282,26 @@ global()'void {
     bottom'i32 : bottom
   ))
   --cstruct--
-  
   typedef struct {
   float x, y, z;    // position
   float r, g, b, a; // color
-  } vertex3_color4_t;
-  
+  } vertex3_color4_t;	
   --cstruct--
-  buttonState'stack anon6 : anon6(this = anon6(
+  buttonState'stack anon4 : anon4(this = anon4(
     normal'i32 : normal,
     hot'i32 : hot,
     pressed'i32 : pressed
   ))
-  colors'stack anon7 : anon7(this = anon7())
+  colors'stack anon5 : anon5(this = anon5())
   --cdefine--
-  
   double *
   make_distance_mapd( double *img,
   unsigned int width, unsigned int height );
   unsigned char *
   make_distance_mapb( unsigned char *img,
-  unsigned int width, unsigned int height );
-  
+  unsigned int width, unsigned int height );    
   --cdefine--
   --cfunction--
-  
   double *
   make_distance_mapd( double *data, unsigned int width, unsigned int height )
   {
@@ -1422,10 +1381,8 @@ global()'void {
   free( data );
   return out;
   }
-  
   --cfunction--
   --cdefine--
-  
   /*
   * Compute the local gradient at edge pixels using convolution filters.
   * The gradient is computed only at edge pixels. At other places in the
@@ -1445,11 +1402,9 @@ global()'void {
   double distaa3(double *img, double *gximg, double *gyimg, int w, int c, int xc, int yc, int xi, int yi);
   // Shorthand macro: add ubiquitous parameters dist, gx, gy, img and w and call distaa3()
   #define DISTAA(c,xc,yc,xi,yi) (distaa3(img, gx, gy, w, c, xc, yc, xi, yi))
-  void edtaa3(double *img, double *gx, double *gy, int w, int h, short *distx, short *disty, double *dist);
-  
+  void edtaa3(double *img, double *gx, double *gy, int w, int h, short *distx, short *disty, double *dist);  
   --cdefine--
   --cfunction--
-  
   /*
   * Compute the local gradient at edge pixels using convolution filters.
   * The gradient is computed only at edge pixels. At other places in the
@@ -1497,7 +1452,7 @@ global()'void {
   // Either A) gu or gv are zero, or B) both
   if ((gx == 0) || (gy == 0)) {
   // Linear approximation is A) correct or B) a fair guess
-  df = 0.5-a;
+  df = 0.5-a;  
   } else {
   glength = sqrt(gx*gx + gy*gy);
   if(glength>0) {
@@ -1934,10 +1889,8 @@ global()'void {
   while(changed); // Sweep until no more updates are made
   /* The transformation is completed. */
   }
-  
   --cfunction--
   --cstruct--
-  
   typedef struct GLid_td GLid_s;
   struct GLid_td {
   GLuint id;
@@ -1945,16 +1898,12 @@ global()'void {
   UT_hash_handle hh;
   };
   GLid_s* g_GLids = 0;
-  
   --cstruct--
   --cdefine--
-  
   void _retainGLid(GLuint id);
   bool _releaseGLid(GLuint id);
-  
   --cdefine--
   --cfunction--
-  
   void _retainGLid(GLuint id) {
   GLid_s* p;
   HASH_FIND_PTR(g_GLids, &id, p);
@@ -1964,7 +1913,7 @@ global()'void {
   p = (GLid_s*)malloc(sizeof(GLid_s));
   p->id = id;
   p->refCount = 1;
-  HASH_ADD_PTR(g_GLids, id, p);
+  HASH_ADD_PTR(g_GLids, id, p);    
   }
   }
   bool _releaseGLid(GLuint id) {
@@ -1980,15 +1929,12 @@ global()'void {
   }
   return true;
   }
-  
   --cfunction--
   --cstruct--
-  
   typedef struct {
   float x, y, z;    // position
   float s, t;       // texture
-  } vertex3_texture2_t;
-  
+  } vertex3_texture2_t;	
   --cstruct--
   mouseEvent_move'i32 : 0i
   mouseEvent_up'i32 : 1i
@@ -2022,7 +1968,6 @@ global()'void {
     pixel'stack string : pixel
   ))
   --cdefine--
-  
   /* Freetype GL - A C OpenGL Freetype engine
   *
   * Distributed under the OSI-approved BSD 2-Clause License.  See accompanying
@@ -2061,11 +2006,9 @@ global()'void {
   */
   GLuint
   shader_load( const char * vert_filename,
-  const char * frag_filename );
-  
+  const char * frag_filename );    
   --cdefine--
   --cfunction--
-  
   char *repl_str(const char *str, const char *from, const char *to) {
   /* Adjust each of the below values to suit your needs. */
   /* Increment positions cache size initially by this number. */
@@ -2220,26 +2163,20 @@ global()'void {
   }
   return handle;
   }
-  
   --cfunction--
-  style'stack anon8 : anon8(this = anon8())
+  style'stack anon6 : anon6(this = anon6())
   --cstruct--
-  
   typedef struct {
   float x, y, z;    // position
   float s, t;       // texture
   float r, g, b, a; // color
-  } vertex3_texture2_color3_t;
-  
+  } vertex3_texture2_color3_t;	
   --cstruct--
   --cdefine--
-  
-  void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen);
+  void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen);	
   vec2 get_text_size(texture_font_t * font, char *text);
-  
   --cdefine--
   --cfunction--
-  
   void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen) {
   pen->y += (float)(int)font->ascender;
   size_t i;
@@ -2274,7 +2211,7 @@ global()'void {
   pen->x += glyph->advance_x;
   }
   }
-  }
+  }	
   vec2 get_text_size(texture_font_t * font, char *text) {
   vec2 size = {{ 0, font->height }};
   size_t i;
@@ -2290,11 +2227,9 @@ global()'void {
   }
   }
   return size;
-  }
-  
+  }   
   --cfunction--
   --cfunction--
-  
   GLuint png_texture_load(const char * file_name, int * width, int * height)
   {
   // This function was originally written by David Grayson for
@@ -2427,10 +2362,8 @@ global()'void {
   fclose(fp);
   return texture;
   }
-  
   --cfunction--
   --cstruct--
-  
   /**
   * Tuple of 4 ints.
   *
@@ -2643,11 +2576,9 @@ global()'void {
   * Atlas data
   */
   unsigned char * data;
-  } texture_atlas_t;
-  
+  } texture_atlas_t;    
   --cstruct--
   --cdefine--
-  
   /**
   * Creates a new empty texture atlas.
   *
@@ -2708,11 +2639,9 @@ global()'void {
   *  @param self   a texture atlas structure
   */
   void
-  texture_atlas_clear( texture_atlas_t * self );
-  
+  texture_atlas_clear( texture_atlas_t * self );    
   --cdefine--
   --cfunction--
-  
   // ------------------------------------------------------ texture_atlas_new ---
   texture_atlas_t *
   texture_atlas_new( const size_t width,
@@ -2775,8 +2704,7 @@ global()'void {
   assert( (x + width) <= (self->width-1));
   assert( y < (self->height-1));
   assert( (y + height) <= (self->height-1));
-  
-  //prevent copying data from undefined position
+  //prevent copying data from undefined position 
   //and prevent memcpy's undefined behavior when count is zero
   assert(height == 0 || (data != NULL && width > 0));
   depth = self->depth;
@@ -2936,10 +2864,8 @@ global()'void {
   vector_push_back( self->nodes, &node );
   memset( self->data, 0, self->width*self->height*self->depth );
   }
-  
   --cfunction--
   --cstruct--
-  
   #undef __FTERRORS_H__
   #define FT_ERRORDEF( e, v, s )  { e, s },
   #define FT_ERROR_START_LIST     {
@@ -2948,7 +2874,7 @@ global()'void {
   int          code;
   const char*  message;
   } FT_Errors[] =
-  #include FT_ERRORS_H
+  #include FT_ERRORS_H    
   /**
   * A list of possible ways to render a glyph.
   */
@@ -3079,7 +3005,7 @@ global()'void {
   */
   float outline_thickness;
   } texture_glyph_t;
-  typedef struct texture_atlas_t texture_atlas_td;
+  typedef struct texture_atlas_t texture_atlas_td; 
   /**
   *  Texture font structure.
   */
@@ -3185,10 +3111,8 @@ global()'void {
   */
   float underline_thickness;
   } texture_font_t;
-  
   --cstruct--
   --cdefine--
-  
   /**
   * This function creates a new texture font from given filename and size.  The
   * texture atlas is used to store glyph on demand. Note the depth of the atlas
@@ -3249,9 +3173,9 @@ global()'void {
   texture_glyph_t *
   texture_font_get_glyph( texture_font_t * self,
   const char * codepoint );
-  /**
-  * Request an already loaded glyph from the font.
-  *
+  /** 
+  * Request an already loaded glyph from the font. 
+  * 
   * @param self      A valid texture font
   * @param codepoint Character codepoint to be found in UTF-8 encoding.
   *
@@ -3260,7 +3184,6 @@ global()'void {
   texture_glyph_t *
   texture_font_find_glyph( texture_font_t * self,
   const char * codepoint );
-  
   /**
   * Request the loading of a given glyph.
   *
@@ -3314,11 +3237,9 @@ global()'void {
   * @return a new empty glyph (not valid)
   */
   texture_glyph_t *
-  texture_glyph_new( void );
-  
+  texture_glyph_new( void );    
   --cdefine--
   --cfunction--
-  
   #define HRES  64
   #define HRESf 64.f
   #define DPI   72
@@ -3908,10 +3829,8 @@ global()'void {
   g->t1 *= mulh;
   }
   }
-  
   --cfunction--
   --cdefine--
-  
   /**
   * Returns the size in bytes of a given UTF-8 encoded character surrogate
   *
@@ -3941,10 +3860,8 @@ global()'void {
   */
   uint32_t
   utf8_to_utf32( const char * character );
-  
   --cdefine--
   --cfunction--
-  
   // ----------------------------------------------------- utf8_surrogate_len ---
   size_t
   utf8_surrogate_len( const char* character )
@@ -4006,15 +3923,11 @@ global()'void {
   }
   return result;
   }
-  
   --cfunction--
   --ctypedef--
-  
   typedef struct vector_td vector_t;
-  
   --ctypedef--
   --cstruct--
-  
   /**
   *  Generic vector structure.
   *
@@ -4031,10 +3944,8 @@ global()'void {
   /** Size (in bytes) of a single item. */
   size_t item_size;
   };
-  
   --cstruct--
   --cdefine--
-  
   /**
   * @file   vector.h
   * @author Nicolas Rougier (Nicolas.Rougier@inria.fr)
@@ -4251,11 +4162,9 @@ global()'void {
   */
   void
   vector_sort( vector_t *self,
-  int (*cmp)(const void *, const void *) );
-  
+  int (*cmp)(const void *, const void *) );    
   --cdefine--
   --cfunction--
-  
   // ------------------------------------------------------------- vector_new ---
   vector_t *
   vector_new( size_t item_size )
@@ -4510,25 +4419,19 @@ global()'void {
   assert( self->size );
   qsort(self->items, self->size, self->item_size, cmp);
   }
-  
   --cfunction--
   --cinclude--
-  
   /**
   * Maximum number of attributes per vertex
   *
   * @private
   */
-  #define MAX_VERTEX_ATTRIBUTE 16
-  
+  #define MAX_VERTEX_ATTRIBUTE 16    
   --cinclude--
   --ctypedef--
-  
   typedef struct vertex_attribute_td vertex_attribute_t;
-  
   --ctypedef--
   --cstruct--
-  
   /**
   *  Generic vertex attribute.
   */
@@ -4579,10 +4482,8 @@ global()'void {
   */
   void ( * enable )(void *);
   };
-  
   --cstruct--
   --cdefine--
-  
   /**
   * Create an attribute from the given parameters.
   *
@@ -4631,11 +4532,9 @@ global()'void {
   * @private
   */
   void
-  vertex_attribute_enable( vertex_attribute_t *attr );
-  
+  vertex_attribute_enable( vertex_attribute_t *attr );    
   --cdefine--
   --cfunction--
-  
   // ----------------------------------------------------------------------------
   vertex_attribute_t *
   vertex_attribute_new( GLchar * name,
@@ -4743,15 +4642,11 @@ global()'void {
   glVertexAttribPointer( attr->index, attr->size, attr->type,
   attr->normalized, attr->stride, attr->pointer );
   }
-  
   --cfunction--
   --ctypedef--
-  
   typedef struct vertex_buffer_td vertex_buffer_t;
-  
   --ctypedef--
   --cstruct--
-  
   /**
   * Generic vertex buffer.
   */
@@ -4784,10 +4679,8 @@ global()'void {
   /** Array of attributes. */
   vertex_attribute_t *attributes[MAX_VERTEX_ATTRIBUTE];
   };
-  
   --cstruct--
   --cdefine--
-  
   #ifdef WIN32
   // strndup() is not available on Windows
   char *strndup( const char *s1, size_t n);
@@ -4998,11 +4891,9 @@ global()'void {
   */
   void
   vertex_buffer_erase( vertex_buffer_t * self,
-  const size_t index );
-  
+  const size_t index );    
   --cdefine--
   --cfunction--
-  
   #ifdef WIN32
   // strndup() is not available on Windows
   char *strndup( const char *s1, size_t n)
@@ -5536,7 +5427,6 @@ global()'void {
   vector_erase( self->items, index );
   self->state = DIRTY;
   }
-  
   --cfunction--
   vertex_location_texture_normal_format'stack string : string(this = string(
     count'i32 = count,

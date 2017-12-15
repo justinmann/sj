@@ -4,14 +4,16 @@ array!t (
 	_isGlobal := false
 	count := 0
 
-	getAt(index : 'i32)'t --c--
+	getAt(index : 'i32)'t {
+		--c--
 		if (index >= _parent->count || index < 0) {
 			halt("getAt: out of bounds\n");
 		}
 
 		#type(t)* p = (#type(t)*)_parent->data;
 		#return(t, p[index]);		
-	--c--
+		--c--
+	}
 	
 
 	initAt(index : 'i32, item : 't)'void {
@@ -228,29 +230,44 @@ array!t (
 		copy result
 	}
 
-	isEqual(test :' array!t)'bool --c--
+	isEqual(test :' array!t)'bool {
+		--c--
 		if (_parent->count != test->count) {
 			*_return = false;
 		}
 
-		*_return = memcmp((void*)_parent->data, (void*)test->data, _parent->count * sizeof(#type(t))) == 0;		
-	--c--
+		bool result = memcmp((void*)_parent->data, (void*)test->data, _parent->count * sizeof(#type(t))) == 0);
+		#return(bool, result);		
+		--c--
+	}
 
-	isGreater(test :' array!t)'bool --c--
-		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) > 0;		
-	--c--
+	isGreater(test :' array!t)'bool {
+		--c--
+		bool result = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) > 0);		
+		#return(bool, result);		
+		--c--
+	}
 
-	isGreaterOrEqual(test :' array!t)'bool --c--
-		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) >= 0;		
-	--c--
+	isGreaterOrEqual(test :' array!t)'bool {
+		--c--
+		bool result = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) >= 0);		
+		#return(bool, result);		
+		--c--
+	}
 
-	isLess(test :' array!t)'bool --c--
-		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) < 0;		
-	--c--
+	isLess(test :' array!t)'bool {
+		--c--
+		bool result = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) < 0);		
+		#return(bool, result);		
+		--c--
+	}
 
-	isLessOrEqual(test :' array!t)'bool --c--
-		*_return = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) <= 0;		
-	--c--
+	isLessOrEqual(test :' array!t)'bool {
+		--c--
+		bool result = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) <= 0);		
+		#return(bool, result);		
+		--c--
+	}
 ) {
 	--c--
 	if (_this->dataSize < 0) {

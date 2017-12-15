@@ -6,32 +6,17 @@ anon1()'stack anon1 {
   this
 }
 
-anon2()'stack anon2 {
-  this
-}
-
-anon3()'stack anon3 {
-  this
-}
-
 global()'void {
   --cinclude--
-  
-  
   --cinclude--
   console'stack anon1 : anon1(this = anon1())
   f32_pi'f32 : 3.14159265358979323846ff
   --cinclude--
-  
-  
   --cinclude--
   --cdefine--
-  
   void halt(const char * format, ...);
-  
   --cdefine--
   --cfunction--
-  
   void halt(const char * format, ...) {
   va_list args;
   va_start (args, format);
@@ -39,10 +24,8 @@ global()'void {
   va_end (args);
   exit(-1);
   }
-  
   --cfunction--
   --cstruct--
-  
   typedef struct pointer_td pointer;
   struct pointer_td {
   void* ptr;
@@ -50,16 +33,12 @@ global()'void {
   UT_hash_handle hh;
   };
   pointer* g_pointers = 0;
-  
   --cstruct--
   --cdefine--
-  
   void _retain(void* ptr);
   bool _release(void* ptr);
-  
   --cdefine--
   --cfunction--
-  
   void _retain(void* ptr) {
   pointer* p;
   HASH_FIND_PTR(g_pointers, &ptr, p);
@@ -69,7 +48,7 @@ global()'void {
   p = (pointer*)malloc(sizeof(pointer));
   p->ptr = ptr;
   p->refCount = 1;
-  HASH_ADD_PTR(g_pointers, ptr, p);
+  HASH_ADD_PTR(g_pointers, ptr, p);    
   }
   }
   bool _release(void* ptr) {
@@ -85,13 +64,11 @@ global()'void {
   }
   return true;
   }
-  
   --cfunction--
   --ctypedef--
-  
-  /* memcmp, memset, strlen */
-  /* ptrdiff_t */
-  /* exit */
+     /* memcmp, memset, strlen */
+     /* ptrdiff_t */
+     /* exit */
   /* These macros use decltype or the earlier __typeof GNU extension.
   As decltype is only available in newer compilers (VS2010 or gcc 4.3+
   when compiling c++ source) this code uses whatever method is needed
@@ -1181,18 +1158,13 @@ global()'void {
   unsigned keylen;                  /* enclosing struct's key len     */
   unsigned hashv;                   /* result of hash-fcn(key)        */
   } UT_hash_handle;
-  
   --ctypedef--
   u32_maxValue'u32 : (uint32_t)4294967295uu
   i32_maxValue'i32 : -1i - 2147483647i
   i32_minValue'i32 : 2147483647i
-  parse'stack anon2 : anon2(this = anon2())
-  random'stack anon3 : anon3(this = anon3())
   emptyStringData'ptr = 0i as ptr
   --c--
-  
   sjv_emptyStringData = (uintptr_t)"";
-  
   --c--
   a(this = a(
     data'stack array_char = data
