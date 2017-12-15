@@ -203,8 +203,11 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
 }
 
 string expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOutput* trOutput, string& code, shared_ptr<TrStoreValue> returnValue, vector<shared_ptr<CFunction>>& functions, map<string, map<string, bool>>& includes, shared_ptr<CType>& returnType) {
-    stringstream finalCode;
-    stringstream macro;
+    char finalCode[1024];
+    char macro[1024];
+    int finalIndex = 0;
+    int macroIndex = 0;
+
     bool isInMacro = false;
     bool isInWhitespace = true;
     for (auto ch : code) {
@@ -219,30 +222,41 @@ string expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOu
 
         if (isInMacro) {
             if (ch == ')') {
-                macro << ch;
+                macro[macroIndex] = ch;
+                macroIndex++;
+
                 isInMacro = false;
-                finalCode << expandMacro(compiler, loc, scope, trOutput, macro.str(), returnValue, functions, includes, returnType);
-                macro.str("");
-                macro.clear();
+                macro[macroIndex] = 0;
+                string t = macro;
+                auto expandedMacro = expandMacro(compiler, loc, scope, trOutput, t, returnValue, functions, includes, returnType);
+                for (auto i : expandedMacro) {
+                    finalCode[finalIndex] = i;
+                    finalIndex++;
+                }
+                macroIndex = 0;
             }
             else if (ch == '#') {
                 isInMacro = false;
-                finalCode << '#';
-                macro.str("");
-                macro.clear();
+                finalCode[finalIndex] = ch;
+                finalIndex++;
+                macroIndex = 0;
             }
             else {
-                macro << ch;
+                macro[macroIndex] = ch;
+                macroIndex++;
             }
         }
         else if (ch == '#') {
             isInMacro = true;
         }
         else {
-            finalCode << ch;
+            finalCode[finalIndex] = ch;
+            finalIndex++;
         }
     }
-    return finalCode.str();
+
+    finalCode[finalIndex] = 0;
+    return string(finalCode);
 }
 
 bool CCCodeVar::getReturnThis() {
