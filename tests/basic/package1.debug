@@ -10,6 +10,9 @@ global()'void {
     b'i32 : a_x
     c'i32 : func()
   }
+  import  {
+    x'i32 : 0i
+  }
   void
 }
 

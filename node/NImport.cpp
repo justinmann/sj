@@ -24,20 +24,20 @@ void CImportVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>
     }
 }
 
-void NImport::defineImpl(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NImport::defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces_, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
 
-    vector<vector<string>> newNamespaces = namespaces;
-    newNamespaces.push_back(ns);
+    vector<vector<string>> newNamespaces = importNamespaces_;
+    for (auto importNamespace : importNamespaces) {
+        newNamespaces.push_back(importNamespace);
+    }
     
     node->define(compiler, newNamespaces, packageNamespace, thisFunction);
 }
 
 shared_ptr<CVar> NImport::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
     auto functionBlock = make_shared<FunctionBlock>();
-    vector<vector<string>> namespaces;
-    namespaces.push_back(ns);
-    functionBlock->namespaces = namespaces;
+    functionBlock->importNamespaces = importNamespaces;
     scope->pushFunctionBlock(functionBlock);
     auto var = node->getVar(compiler, scope, returnMode);
     scope->popFunctionBlock(functionBlock);

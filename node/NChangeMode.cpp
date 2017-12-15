@@ -34,9 +34,9 @@ void CChangeModeVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, str
 }
 
 
-void NChangeMode::defineImpl(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NChangeMode::defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
-    node->define(compiler, namespaces, packageNamespace, thisFunction);
+    node->define(compiler, importNamespaces, packageNamespace, thisFunction);
 }
 
 shared_ptr<CVar> NChangeMode::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {

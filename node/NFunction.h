@@ -78,7 +78,6 @@ class CScope : public enable_shared_from_this<CScope> {
 public:
     CScope(shared_ptr<CFunction> function, shared_ptr<CThisVar> thisVar, CTypeMode returnMode) : function(function), thisVar(thisVar), returnMode(returnMode) {}
     CScope(shared_ptr<CInterface> cinterface) : cinterface(cinterface) {}
-    shared_ptr<CVar> findLocalVar(Compiler* compiler, string name);
     void addOrUpdateLocalVar(Compiler* compiler, string name, shared_ptr<CVar> var);
     void pushFunctionBlock(shared_ptr<FunctionBlock> functionBlock);
     void popFunctionBlock(shared_ptr<FunctionBlock> functionBlock);
@@ -94,14 +93,14 @@ public:
     shared_ptr<CThisVar> thisVar;
     shared_ptr<CFunction> function;
     shared_ptr<CInterface> cinterface;
-    vector<string> ns;
+    vector<string> dotNamespace;
     CTypeMode returnMode;
     vector<shared_ptr<FunctionBlock>> functionBlocks;
 };
 
 class CFunction : public CBaseFunction, public enable_shared_from_this<CFunction> {
 public:
-    CFunction(vector<vector<string>>& namespaces, weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, vector<shared_ptr<NCCode>> ccodes);
+    CFunction(vector<vector<string>>& importNamespaces, weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, vector<shared_ptr<NCCode>> ccodes);
     bool init(Compiler* compiler, shared_ptr<NFunction> node);
     bool initBlocks(Compiler* compiler, shared_ptr<NFunction> node);
 
@@ -157,7 +156,7 @@ private:
     map<CTypeMode, CFunctionData> _data;
     bool _hasHeapThis;
     bool _hasHeapParent;
-    vector<vector<string>> namespaces;
+    vector<vector<string>> importNamespaces;
 
     friend class CScope;
 };
@@ -170,11 +169,11 @@ public:
     map<vector<string>, map<string, shared_ptr<CFunctionDefinition>>> funcsByName;
     shared_ptr<CTypeNameList> implementedInterfaceTypeNames;
     vector<shared_ptr<NCCode>> ccodes;
-    vector<vector<string>> namespaces;
+    vector<vector<string>> importNamespaces;
     vector<string> packageNamespace;
 
     CFunctionDefinition() : CBaseFunctionDefinition(CFT_Function) {}
-    static shared_ptr<CFunctionDefinition> create(Compiler* compiler, vector<vector<string>>& namespaces, shared_ptr<CFunctionDefinition> parent, CFunctionType type, vector<string> packageNamespace, const string& name, shared_ptr<CTypeNameList> implementedInterfaceTypeNames, shared_ptr<NFunction> node);
+    static shared_ptr<CFunctionDefinition> create(Compiler* compiler, vector<vector<string>>& importNamespaces, shared_ptr<CFunctionDefinition> parent, CFunctionType type, vector<string> packageNamespace, const string& name, shared_ptr<CTypeNameList> implementedInterfaceTypeNames, shared_ptr<NFunction> node);
     string fullName();
     void addChildFunction(vector<string> packageNamespace, string& name, shared_ptr<CBaseFunctionDefinition> childFunction);
     void dump(Compiler* compiler, int level);

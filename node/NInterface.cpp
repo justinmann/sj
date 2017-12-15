@@ -9,19 +9,19 @@ NInterface::NInterface(CLoc loc, const string& name, shared_ptr<CTypeNameList> t
     }
 }
 
-void NInterface::defineImpl(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NInterface::defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     auto parentFunction = static_pointer_cast<CFunctionDefinition>(thisFunction);
     auto def = parentFunction->getDefinedInterfaceDefinition(name);
     if (def != nullptr) {
         compiler->addError(loc, CErrorCode::InvalidType, "interface can only be defined once: '%s'", name.c_str());
         return;
     }
-    def = parentFunction->createDefinedInterfaceDefinition(loc, namespaces, name);
+    def = parentFunction->createDefinedInterfaceDefinition(loc, importNamespaces, name);
     def->typeName = make_shared<CTypeName>(CTC_Interface, CTM_Stack, name, templateTypeNames, false);
     def->ninterface = shared_from_this();
 
     for (auto it : methodList) {
-        it->define(compiler, namespaces, packageNamespace, thisFunction);
+        it->define(compiler, importNamespaces, packageNamespace, thisFunction);
     }
 }
 

@@ -1,8 +1,8 @@
 #include "Node.h"
 
-void NTuple::defineImpl(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NTuple::defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     for (auto element : *elements) {
-        element->define(compiler, namespaces, packageNamespace, thisFunction);
+        element->define(compiler, importNamespaces, packageNamespace, thisFunction);
     }
 }
 

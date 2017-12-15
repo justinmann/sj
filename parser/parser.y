@@ -64,6 +64,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 	EnumArg* enumArg;
 	EnumArgs* enumArgs;
 	std::vector<std::string>* strings;
+	std::vector<std::vector<std::string>>* namespaces;
 	NCCode* ccode;
 }
 
@@ -88,6 +89,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %type <enumArg> enum_arg
 %type <strings> namespace
 %type <ccode> cblock cdefine cstruct cfunction cinclude ctypedef cvar
+%type <namespaces> namespaces
 
 /* Operator precedence */
 %left TAND TOR
@@ -125,7 +127,7 @@ stmt 				: /* Blank! */									{ $$ = nullptr; }
 					| ctypedef										{ $$ = $1; }
 					| TINCLUDE TSTRING								{ $$ = new NInclude(LOC, $2->c_str()); delete $2; }
 					| TPACKAGE namespace block						{ $$ = new NPackage(LOC, *$2, shared_ptr<NBase>($3)); delete $2; }
-					| TIMPORT namespace	block						{ $$ = new NImport(LOC, *$2, shared_ptr<NBase>($3)); delete $2; }
+					| TIMPORT end_optional namespaces end_optional block			{ $$ = new NImport(LOC, *$3, shared_ptr<NBase>($5)); delete $3; }
 					| error	 										{ $$ = nullptr; /* yyclearin; */ compiler->addError(LLOC, CErrorCode::InvalidCharacter, "Something failed to parse"); }
 					;
 
@@ -155,6 +157,11 @@ ctypedef			: ctypedef TCTYPEDEF 							{ $$->lines.push_back(*$2); delete $2; }
 
 cvar				: cvar TCVAR 									{ $$->lines.push_back(*$2); delete $2; }
 					| TCVAR                                     	{ $$ = new NCCode(LOC, NCC_VAR, $1->c_str()); delete $1; }
+					;
+
+namespaces 			: namespaces end_star namespace 				{ $1->push_back(*$3); delete $3; }
+					| namespaces TCOMMA namespace                   { $1->push_back(*$3); delete $3; }
+					| namespace 									{ $$ = new vector<vector<string>>(); $$->push_back(*$1); delete $1; }
 					;
 
 namespace 			: namespace TDOT TIDENTIFIER               		{ $$->push_back(*$3); delete $3; }

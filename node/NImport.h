@@ -24,12 +24,12 @@ private:
 
 class NImport : public NBase {
 public:
-    NImport(CLoc loc, vector<string> ns, shared_ptr<NBase> node) : NBase(NodeType_Import, loc), ns(ns), node(node) { }
-    void defineImpl(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    NImport(CLoc loc, vector<vector<string>> importNamespaces, shared_ptr<NBase> node) : NBase(NodeType_Import, loc), importNamespaces(importNamespaces), node(node) { }
+    void defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
     
 private:
-    vector<string> ns;
+    vector<vector<string>> importNamespaces;
     shared_ptr<NBase> node;
 };
 

@@ -176,6 +176,7 @@ union YYSTYPE
 	EnumArg* enumArg;
 	EnumArgs* enumArgs;
 	std::vector<std::string>* strings;
+	std::vector<std::vector<std::string>>* namespaces;
 	NCCode* ccode;
 
 

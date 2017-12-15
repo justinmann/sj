@@ -48,19 +48,19 @@ NAssignment::NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTy
     }
 }
 
-void NAssignment::defineImpl(Compiler* compiler, vector<vector<string>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NAssignment::defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     
     if (var) {
-        var->define(compiler, namespaces, packageNamespace, thisFunction);
+        var->define(compiler, importNamespaces, packageNamespace, thisFunction);
     }
     
     if (nfunction) {
-        nfunction->define(compiler, namespaces, packageNamespace, thisFunction);
+        nfunction->define(compiler, importNamespaces, packageNamespace, thisFunction);
     }
     
     if (rightSide) {
-        rightSide->define(compiler, namespaces, packageNamespace, thisFunction);
+        rightSide->define(compiler, importNamespaces, packageNamespace, thisFunction);
     }
 }
 
@@ -153,7 +153,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
                 
                 string nameNS;
                 bool isFirst = true;
-                for (auto ns : scope->ns) {
+                for (auto ns : scope->dotNamespace) {
                     if (isFirst) {
                         isFirst = false;
                     } else {

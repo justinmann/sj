@@ -56,7 +56,7 @@ public:
 class FunctionBlock {
 public:
     FunctionBlock* parent;
-    vector<vector<string>> namespaces;
+    vector<vector<string>> importNamespaces;
 };
 
 class CBaseFunction {

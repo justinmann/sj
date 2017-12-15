@@ -70,6 +70,7 @@ struct td_sjs_object {
 int32_t sjv_a_x;
 int32_t sjv_b;
 int32_t sjv_c;
+int32_t sjv_x;
 
 void sjf_a_func(int32_t* _return);
 void main_destroy(void);
@@ -86,6 +87,8 @@ int main(int argc, char** argv) {
     sjv_b = sjv_a_x;
 #line 7
     sjf_a_func(&sjv_c);
+#line 16
+    sjv_x = 0;
     main_destroy();
     return 0;
 }
