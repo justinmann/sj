@@ -17,14 +17,14 @@ array_isEqual(test'stack array_char:)'bool {
   if (_parent->count != test->count) {
   *_return = false;
   }
-  bool result = memcmp((void*)_parent->data, (void*)test->data, _parent->count * sizeof(char)) == 0);
+  bool result = memcmp((void*)_parent->data, (void*)test->data, _parent->count * sizeof(char)) == 0;
   ;		
   --c--
 }
 
 array_isLessOrEqual(test'stack array_char:)'bool {
   --c--
-  bool result = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(char)) <= 0);		
+  bool result = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(char)) <= 0;		
   ;		
   --c--
 }

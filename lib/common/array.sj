@@ -236,35 +236,35 @@ array!t (
 			*_return = false;
 		}
 
-		bool result = memcmp((void*)_parent->data, (void*)test->data, _parent->count * sizeof(#type(t))) == 0);
+		bool result = memcmp((void*)_parent->data, (void*)test->data, _parent->count * sizeof(#type(t))) == 0;
 		#return(bool, result);		
 		--c--
 	}
 
 	isGreater(test :' array!t)'bool {
 		--c--
-		bool result = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) > 0);		
+		bool result = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) > 0;		
 		#return(bool, result);		
 		--c--
 	}
 
 	isGreaterOrEqual(test :' array!t)'bool {
 		--c--
-		bool result = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) >= 0);		
+		bool result = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) >= 0;		
 		#return(bool, result);		
 		--c--
 	}
 
 	isLess(test :' array!t)'bool {
 		--c--
-		bool result = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) < 0);		
+		bool result = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) < 0;		
 		#return(bool, result);		
 		--c--
 	}
 
 	isLessOrEqual(test :' array!t)'bool {
 		--c--
-		bool result = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) <= 0);		
+		bool result = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) <= 0;		
 		#return(bool, result);		
 		--c--
 	}

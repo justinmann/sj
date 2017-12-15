@@ -1416,7 +1416,7 @@ void sjf_array_char_isEqual(sjs_array_char* _parent, sjs_array_char* test, bool*
 #line 234
     }
 #line 234
-    bool result = memcmp((void*)_parent->data, (void*)test->data, _parent->count * sizeof(char)) == 0);
+    bool result = memcmp((void*)_parent->data, (void*)test->data, _parent->count * sizeof(char)) == 0;
 #line 234
     #line 234 "lib/common/array.sj"
 (*_return) = result;
@@ -1425,7 +1425,7 @@ void sjf_array_char_isEqual(sjs_array_char* _parent, sjs_array_char* test, bool*
 
 void sjf_array_char_isLessOrEqual(sjs_array_char* _parent, sjs_array_char* test, bool* _return) {
 #line 266 "lib/common/array.sj"
-    bool result = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(char)) <= 0);		
+    bool result = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(char)) <= 0;		
 #line 266
     #line 266 "lib/common/array.sj"
 (*_return) = result;
