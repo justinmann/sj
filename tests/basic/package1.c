@@ -67,28 +67,28 @@ struct td_sjs_object {
     intptr_t _refCount;
 };
 
-int32_t sjv_a_x;
 int32_t sjv_b;
 int32_t sjv_c;
 int32_t sjv_x;
+int32_t sjv_y;
 
-void sjf_a_func(int32_t* _return);
+void sjf_b_func(int32_t* _return);
 void main_destroy(void);
 
-void sjf_a_func(int32_t* _return) {
-#line 3 "package1.sj"
-    (*_return) = sjv_a_x;
+void sjf_b_func(int32_t* _return) {
+#line 6 "package1.sj"
+    (*_return) = sjv_x;
 }
 
 int main(int argc, char** argv) {
 #line 2 "package1.sj"
-    sjv_a_x = 0;
-#line 7
-    sjv_b = sjv_a_x;
-#line 7
-    sjf_a_func(&sjv_c);
-#line 16
     sjv_x = 0;
+#line 10
+    sjv_b = sjv_x;
+#line 10
+    sjf_b_func(&sjv_c);
+#line 19
+    sjv_y = 0;
     main_destroy();
     return 0;
 }

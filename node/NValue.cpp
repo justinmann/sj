@@ -54,7 +54,7 @@ void CValueVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>&
 
 }
 
-void NValue::defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NValue::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     node->define(compiler, importNamespaces, packageNamespace, thisFunction);
 }

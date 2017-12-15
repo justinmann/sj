@@ -65,7 +65,7 @@ void CGetValueVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, strin
 }
 
 
-void NGetValue::defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NGetValue::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     node->define(compiler, importNamespaces, packageNamespace, thisFunction);
 }

@@ -130,7 +130,7 @@ shared_ptr<CTypes> CCallbackFunction::getThisTypes(Compiler* compiler) {
     return nullptr;
 }
 
-shared_ptr<CVar> CCallbackFunction::getCVar(Compiler* compiler, vector<shared_ptr<FunctionBlock>> functionBlocks, const string& name, VarScanMode scanMode, CTypeMode returnMode) {
+shared_ptr<CVar> CCallbackFunction::getCVar(Compiler* compiler, vector<shared_ptr<LocalVarScope>> localVarScopes, const string& name, VarScanMode scanMode, CTypeMode returnMode) {
     assert(false);
     return nullptr;
 }
@@ -140,7 +140,7 @@ shared_ptr<CBaseFunction> CCallbackFunction::getCFunction(Compiler* compiler, CL
     return nullptr;
 }
 
-shared_ptr<CType> CCallbackFunction::getVarType(CLoc loc, Compiler* compiler, vector<vector<string>>& namespaces, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
+shared_ptr<CType> CCallbackFunction::getVarType(CLoc loc, Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
     assert(false);
     return nullptr;
 }

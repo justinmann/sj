@@ -18,7 +18,7 @@ public:
 
 class CIfValueVar : public CVar {
 public:
-    CIfValueVar(CLoc loc, shared_ptr<CScope> scope, vector<CIfParameter> optionalVars, shared_ptr<CVar> ifVar, shared_ptr<FunctionBlock> ifFunctionBlock, shared_ptr<CVar> elseVar, shared_ptr<FunctionBlock> elseFunctionBlock) : CVar(loc, scope), optionalVars(optionalVars), ifVar(ifVar), ifFunctionBlock(ifFunctionBlock), elseVar(elseVar), elseFunctionBlock(elseFunctionBlock) { assert(ifVar); }
+    CIfValueVar(CLoc loc, shared_ptr<CScope> scope, vector<CIfParameter> optionalVars, shared_ptr<CVar> ifVar, shared_ptr<LocalVarScope> ifLocalVarScope, shared_ptr<CVar> elseVar, shared_ptr<LocalVarScope> elseLocalVarScope) : CVar(loc, scope), optionalVars(optionalVars), ifVar(ifVar), ifLocalVarScope(ifLocalVarScope), elseVar(elseVar), elseLocalVarScope(elseLocalVarScope) { assert(ifVar); }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -27,15 +27,15 @@ public:
 private:
     vector<CIfParameter> optionalVars;
     shared_ptr<CVar> ifVar;
-    shared_ptr<FunctionBlock> ifFunctionBlock;
+    shared_ptr<LocalVarScope> ifLocalVarScope;
     shared_ptr<CVar> elseVar;
-    shared_ptr<FunctionBlock> elseFunctionBlock;
+    shared_ptr<LocalVarScope> elseLocalVarScope;
 };
 
 class NIfValue : public NVariableBase {
 public:
     NIfValue(CLoc loc, shared_ptr<NodeList> vars, shared_ptr<NBase> ifBlock, shared_ptr<NBase> elseBlock) : NVariableBase(NodeType_If, loc), vars(vars), ifBlock(ifBlock), elseBlock(elseBlock) { }
-    void defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
     
 private:

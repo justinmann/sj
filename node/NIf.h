@@ -11,7 +11,7 @@
 
 class CIfElseVar : public CVar {
 public:
-    CIfElseVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> condVar, shared_ptr<CVar> ifVar, shared_ptr<FunctionBlock> ifFunctionBlock, shared_ptr<CVar> elseVar, shared_ptr<FunctionBlock> elseFunctionBlock) : CVar(loc, scope), condVar(condVar), ifVar(ifVar), ifFunctionBlock(ifFunctionBlock), elseVar(elseVar), elseFunctionBlock(elseFunctionBlock) { assert(condVar); assert(ifVar); }
+    CIfElseVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> condVar, shared_ptr<CVar> ifVar, shared_ptr<LocalVarScope> ifLocalVarScope, shared_ptr<CVar> elseVar, shared_ptr<LocalVarScope> elseLocalVarScope) : CVar(loc, scope), condVar(condVar), ifVar(ifVar), ifLocalVarScope(ifLocalVarScope), elseVar(elseVar), elseLocalVarScope(elseLocalVarScope) { assert(condVar); assert(ifVar); }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -20,15 +20,15 @@ public:
 private:
     shared_ptr<CVar> condVar;
     shared_ptr<CVar> ifVar;
-    shared_ptr<FunctionBlock> ifFunctionBlock;
+    shared_ptr<LocalVarScope> ifLocalVarScope;
     shared_ptr<CVar> elseVar;
-    shared_ptr<FunctionBlock> elseFunctionBlock;
+    shared_ptr<LocalVarScope> elseLocalVarScope;
 };
 
 class NIf : public NVariableBase {
 public:
     NIf(CLoc loc, shared_ptr<NBase> condition, shared_ptr<NBase> ifBlock, shared_ptr<NBase> elseBlock) : NVariableBase(NodeType_If, loc), condition(condition), ifBlock(ifBlock), elseBlock(elseBlock) { }
-    void defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
     
 private:

@@ -3,7 +3,7 @@
 
 namespace fs = boost::filesystem;
 
-void NInclude::defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NInclude::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     if (thisFunction->name != "global") {
         compiler->addError(loc, CErrorCode::IncludeOnlyInGlobal, "can only use include in the global scope");
     }

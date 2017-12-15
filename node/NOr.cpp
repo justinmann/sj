@@ -27,7 +27,7 @@ void COrVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& fu
     rightVar->dump(compiler, functions, ss, level);
 }
 
-void NOr::defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NOr::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     left->define(compiler, importNamespaces, packageNamespace, thisFunction);
     right->define(compiler, importNamespaces, packageNamespace, thisFunction);

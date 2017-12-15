@@ -29,7 +29,7 @@ void CWhileVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>&
     bodyVar->dump(compiler, functions, ss, level);
 }
 
-void NWhile::defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NWhile::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     cond->define(compiler, importNamespaces, packageNamespace, thisFunction);
     body->define(compiler, importNamespaces, packageNamespace, thisFunction);

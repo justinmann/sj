@@ -16,7 +16,7 @@ void CThrowVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>&
     ss << "throw";
 }
 
-void NThrow::defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NThrow::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     node->define(compiler, importNamespaces, packageNamespace, thisFunction);
 }
 

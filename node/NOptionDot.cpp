@@ -1,6 +1,6 @@
 #include "Node.h"
 
-void NOptionDot::defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NOptionDot::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     left->define(compiler, importNamespaces, packageNamespace, thisFunction);
     right->define(compiler, importNamespaces, packageNamespace, thisFunction);
 }

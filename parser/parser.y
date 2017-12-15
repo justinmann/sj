@@ -64,7 +64,8 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 	EnumArg* enumArg;
 	EnumArgs* enumArgs;
 	std::vector<std::string>* strings;
-	std::vector<std::vector<std::string>>* namespaces;
+	std::vector<std::pair<std::string, std::vector<std::string>>>* import_namespaces;
+	std::pair<std::string, std::vector<std::string>>* import_namespace;
 	NCCode* ccode;
 }
 
@@ -89,7 +90,8 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %type <enumArg> enum_arg
 %type <strings> namespace
 %type <ccode> cblock cdefine cstruct cfunction cinclude ctypedef cvar
-%type <namespaces> namespaces
+%type <import_namespaces> import_namespaces
+%type <import_namespace> import_namespace
 
 /* Operator precedence */
 %left TAND TOR
@@ -127,7 +129,7 @@ stmt 				: /* Blank! */									{ $$ = nullptr; }
 					| ctypedef										{ $$ = $1; }
 					| TINCLUDE TSTRING								{ $$ = new NInclude(LOC, $2->c_str()); delete $2; }
 					| TPACKAGE namespace block						{ $$ = new NPackage(LOC, *$2, shared_ptr<NBase>($3)); delete $2; }
-					| TIMPORT end_optional namespaces end_optional block			{ $$ = new NImport(LOC, *$3, shared_ptr<NBase>($5)); delete $3; }
+					| TIMPORT end_optional import_namespaces end_optional block	{ $$ = new NImport(LOC, *$3, shared_ptr<NBase>($5)); delete $3; }
 					| error	 										{ $$ = nullptr; /* yyclearin; */ compiler->addError(LLOC, CErrorCode::InvalidCharacter, "Something failed to parse"); }
 					;
 
@@ -159,9 +161,13 @@ cvar				: cvar TCVAR 									{ $$->lines.push_back(*$2); delete $2; }
 					| TCVAR                                     	{ $$ = new NCCode(LOC, NCC_VAR, $1->c_str()); delete $1; }
 					;
 
-namespaces 			: namespaces end_star namespace 				{ $1->push_back(*$3); delete $3; }
-					| namespaces TCOMMA namespace                   { $1->push_back(*$3); delete $3; }
-					| namespace 									{ $$ = new vector<vector<string>>(); $$->push_back(*$1); delete $1; }
+import_namespaces 	: import_namespaces end_star import_namespace 	{ $1->push_back(*$3); delete $3; }
+					| import_namespaces TCOMMA import_namespace     { $1->push_back(*$3); delete $3; }
+					| import_namespace 								{ $$ = new vector<pair<string, vector<string>>>(); $$->push_back(*$1); delete $1; }
+					;
+
+import_namespace    : TIDENTIFIER TCOLON namespace 					{ $$ = new pair<string, vector<string>>(*$1, *$3); delete $1; delete $3; }
+					| namespace 									{ $$ = new pair<string, vector<string>>("", *$1); delete $1; }
 					;
 
 namespace 			: namespace TDOT TIDENTIFIER               		{ $$->push_back(*$3); delete $3; }

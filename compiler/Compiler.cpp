@@ -141,20 +141,20 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 
 	auto globalFile = genNodeFile(fileName);
 	if (errors.size() == 0) {
-        vector<vector<string>> namespaces;
+        vector<pair<string, vector<string>>> importNamespaces;
         vector<string> packageNamespace;
         auto globalBlock = globalFile->block;
 		anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, nullptr, "global", nullptr, nullptr, nullptr, globalBlock, nullptr, nullptr, nullptr);
-		currentFunctionDefintion = CFunctionDefinition::create(this, namespaces, nullptr, FT_Public, packageNamespace, "", nullptr, nullptr);
+		currentFunctionDefintion = CFunctionDefinition::create(this, importNamespaces, nullptr, FT_Public, packageNamespace, "", nullptr, nullptr);
 		state = CompilerState::Define;
-        anonFunction->define(this, namespaces, packageNamespace, currentFunctionDefintion);
+        anonFunction->define(this, importNamespaces, packageNamespace, currentFunctionDefintion);
 
 		if (errors.size() == 0) {
 			globalFunctionDefinition = currentFunctionDefintion->funcsByName[vector<string>()]["global"];
             NodeList includeStatements;
 			for (auto index = (size_t)0; index < includedBlocks.size(); index++) {
 				auto includedBlock = includedBlocks[index].second;
-				includedBlock->define(this, namespaces, packageNamespace, globalFunctionDefinition);
+				includedBlock->define(this, importNamespaces, packageNamespace, globalFunctionDefinition);
                 includeStatements.insert(includeStatements.end(), includedBlock->statements.begin(), includedBlock->statements.end());
 			}
             globalBlock->statements.insert(globalBlock->statements.begin(), includeStatements.begin(), includeStatements.end());
@@ -164,7 +164,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 
 			if (errors.size() == 0) {
                 state = CompilerState::Compile;
-				currentFunction = make_shared<CFunction>(namespaces, currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr, vector<shared_ptr<NCCode>>());
+				currentFunction = make_shared<CFunction>(importNamespaces, currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr, vector<shared_ptr<NCCode>>());
 				currentFunction->init(this, nullptr);
                 auto currentScope = currentFunction->getScope(this, CTM_Stack);
 				anonFunction->getVar(this, currentScope, CTM_Stack);

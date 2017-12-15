@@ -219,7 +219,7 @@ NCall::NCall(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeN
     }
 }
 
-void NCall::defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NCall::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     for (auto it : *arguments) {
         if (it->nodeType == NodeType_Assignment) {
@@ -280,7 +280,7 @@ shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, shared_ptr<CSc
     if (dotVar) {
         auto temp = dynamic_pointer_cast<CFunction>(cfunction);
         if (temp) {
-            var = temp->getCVar(compiler, scope, vector<shared_ptr<FunctionBlock>>(), vector<string>(), dotVar, name, VSM_ThisOnly, cfunctionReturnMode);
+            var = temp->getCVar(compiler, scope, vector<shared_ptr<LocalVarScope>>(), vector<string>(), dotVar, name, VSM_ThisOnly, cfunctionReturnMode);
         }
     }
     else {

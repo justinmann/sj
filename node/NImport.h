@@ -11,7 +11,7 @@
 
 class CImportVar : public CVar {
 public:
-    CImportVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> var, shared_ptr<FunctionBlock> functionBlock) : CVar(loc, scope), var(var), functionBlock(functionBlock) { assert(var); }
+    CImportVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> var, shared_ptr<ImportScope> functionBlock) : CVar(loc, scope), var(var), importScope(importScope) { assert(var); }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -19,17 +19,17 @@ public:
 
 private:
     shared_ptr<CVar> var;
-    shared_ptr<FunctionBlock> functionBlock;
+    shared_ptr<ImportScope> importScope;
 };
 
 class NImport : public NBase {
 public:
-    NImport(CLoc loc, vector<vector<string>> importNamespaces, shared_ptr<NBase> node) : NBase(NodeType_Import, loc), importNamespaces(importNamespaces), node(node) { }
-    void defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    NImport(CLoc loc, vector<pair<string, vector<string>>> importNamespaces, shared_ptr<NBase> node) : NBase(NodeType_Import, loc), importNamespaces(importNamespaces), node(node) { }
+    void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
     
 private:
-    vector<vector<string>> importNamespaces;
+    vector<pair<string, vector<string>>> importNamespaces;
     shared_ptr<NBase> node;
 };
 

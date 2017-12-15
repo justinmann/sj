@@ -53,7 +53,7 @@ void CTempVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& 
 }
 
 
-void NArray::defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NArray::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     for (auto element : *elements) {
         element->define(compiler, importNamespaces, packageNamespace, thisFunction);
     }

@@ -51,7 +51,7 @@ void CCopyVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& 
     var->dump(compiler, functions, ss, level);
 }
 
-void NCopy::defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NCopy::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     node->define(compiler, importNamespaces, packageNamespace, thisFunction);
 }

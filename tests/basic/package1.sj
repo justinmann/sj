@@ -1,10 +1,13 @@
 package a {
 	x : 0
-	func() { x }
 }
 
-import a, b {
-	b : x
+package b {
+	func() { a.x }	
+}
+
+import z : a, b {
+	b : z.x
 	c : func()
 }
 
@@ -13,5 +16,5 @@ import
 	b.c.d
 	c.d.e.f
 {
-	x : 0
+	y : 0
 }

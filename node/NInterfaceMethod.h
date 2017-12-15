@@ -17,7 +17,7 @@ public:
     shared_ptr<CTypeName> returnTypeName;
 
     NInterfaceMethod(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<CTypeName> returnTypeName);
-    void defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {}
+    void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {}
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) { return nullptr; }
 };
 
@@ -52,7 +52,7 @@ public:
     vector<shared_ptr<CVar>> argVars;
 
     CInterfaceMethod(string& name, weak_ptr<CInterface> parent, int methodIndex, CTypeMode returnMode);
-    shared_ptr<CInterfaceMethod> init(Compiler* compiler, vector<vector<string>>& namespaces, shared_ptr<NInterfaceMethod> method, shared_ptr<CBaseFunction> thisFunction);
+    shared_ptr<CInterfaceMethod> init(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, shared_ptr<NInterfaceMethod> method, shared_ptr<CBaseFunction> thisFunction);
     string fullName(bool includeTemplateTypes);
     
     shared_ptr<CTypes> getThisTypes(Compiler* compiler);
@@ -63,7 +63,7 @@ public:
     
     shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CLoc locCaller, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode) { assert(false); return nullptr; }
     pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(vector<string> packageNamespace, string name) { assert(false); return make_pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>>(nullptr, nullptr); }
-    shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, vector<vector<string>>& namespaces, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
+    shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
     bool getIsReturnModeValid(Compiler* compiler, CTypeMode returnMode);
     shared_ptr<CType> getReturnType(Compiler* compiler, CTypeMode returnMode);
     string getCTypeName(Compiler* compiler, bool includeNames);

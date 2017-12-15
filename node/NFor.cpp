@@ -45,10 +45,10 @@ void CForLoopVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
         whileLine << "while (" << indexVar->name << " < " << loopEndTrValue->getName(trBlock) << ")";
         trBlock->statements.push_back(TrStatement(loc, whileLine.str(), trForBlock));
 
-        scope.lock()->pushFunctionBlock(forBlock);
+        scope.lock()->pushLocalVarScope(forLocalVarScope);
         auto bodyType = bodyVar->getType(compiler);
         bodyVar->transpile(compiler, trOutput, trForBlock.get(), thisValue, trBlock->createVoidStoreVariable(loc, bodyType));
-        scope.lock()->popFunctionBlock(forBlock);
+        scope.lock()->popLocalVarScope(forLocalVarScope);
 
         stringstream loopCounterIncLine;
         loopCounterIncLine << indexVar->name << "++";
@@ -66,10 +66,10 @@ void CForLoopVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
         whileLine << "while (" << indexVar->name << " >= " << loopStartTrValue->getName(trBlock) << ")";
         trBlock->statements.push_back(TrStatement(loc, whileLine.str(), trForBlock));
 
-        scope.lock()->pushFunctionBlock(forBlock);
+        scope.lock()->pushLocalVarScope(forLocalVarScope);
         auto bodyType = bodyVar->getType(compiler);
         bodyVar->transpile(compiler, trOutput, trForBlock.get(), thisValue, trBlock->createVoidStoreVariable(loc, bodyType));
-        scope.lock()->popFunctionBlock(forBlock);
+        scope.lock()->popLocalVarScope(forLocalVarScope);
 
         stringstream loopCounterIncLine;
         loopCounterIncLine << indexVar->name << "--";
@@ -88,13 +88,13 @@ void CForLoopVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string
     }
     endVar->dump(compiler, functions, ss, level + 1);
     ss << " ";
-    scope.lock()->pushFunctionBlock(forBlock);
+    scope.lock()->pushLocalVarScope(forLocalVarScope);
     bodyVar->dump(compiler, functions, ss, level);
-    scope.lock()->popFunctionBlock(forBlock);
+    scope.lock()->popLocalVarScope(forLocalVarScope);
 }
 
 
-void NFor::defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NFor::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     start->define(compiler, importNamespaces, packageNamespace, thisFunction);
     end->define(compiler, importNamespaces, packageNamespace, thisFunction);
@@ -117,16 +117,16 @@ shared_ptr<CVar> NFor::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, 
         return nullptr;
     }
 
-    auto forBlock = make_shared<FunctionBlock>();
-    scope->pushFunctionBlock(forBlock);
+    auto forLocalVarScope = make_shared<LocalVarScope>();
+    scope->pushLocalVarScope(forLocalVarScope);
     scope->setLocalVar(compiler, loc, indexVar, false);
     auto bodyVar = body->getVar(compiler, scope, CTM_Undefined);
-    scope->popFunctionBlock(forBlock);
+    scope->popLocalVarScope(forLocalVarScope);
 
     if (!bodyVar) {
         return nullptr;
     }
 
-    return make_shared<CForLoopVar>(loc, scope, indexVar, startVar, endVar, bodyVar, forBlock, isAscending);
+    return make_shared<CForLoopVar>(loc, scope, indexVar, startVar, endVar, bodyVar, forLocalVarScope, isAscending);
 }
 

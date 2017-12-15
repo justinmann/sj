@@ -3,7 +3,7 @@
 NMathAssignment::NMathAssignment(CLoc loc, shared_ptr<NVariableBase> leftSide, NMathAssignmentOp op, shared_ptr<NVariableBase> numberSide) : NBase(NodeType_MathAssignment, loc), op(op), leftSide(leftSide), numberSide(numberSide) {
 }
 
-void NMathAssignment::defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NMathAssignment::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     if (leftSide) {
         leftSide->define(compiler, importNamespaces, packageNamespace, thisFunction);

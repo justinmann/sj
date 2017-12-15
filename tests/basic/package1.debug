@@ -1,17 +1,19 @@
 func()'i32 {
-  a_x
+  x
 }
 
 global()'void {
-  {
-    a_x'i32 : 0i
+  import  {
+    x'i32 : 0i
   }
   import  {
-    b'i32 : a_x
+  }
+  import  {
+    b'i32 : x
     c'i32 : func()
   }
   import  {
-    x'i32 : 0i
+    y'i32 : 0i
   }
   void
 }

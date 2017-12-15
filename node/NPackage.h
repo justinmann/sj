@@ -11,12 +11,12 @@
 
 class NPackage : public NBase {
 public:
-    NPackage(CLoc loc, vector<string> ns, shared_ptr<NBase> node) : NBase(NodeType_Package, loc), ns(ns), node(node) { }
-    void defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    NPackage(CLoc loc, vector<string> packageNamespace, shared_ptr<NBase> node) : NBase(NodeType_Package, loc), packageNamespace(packageNamespace), node(node) { }
+    void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
     
 private:
-    vector<string> ns;
+    vector<string> packageNamespace;
     shared_ptr<NBase> node;
 };
 

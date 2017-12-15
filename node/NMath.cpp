@@ -63,7 +63,7 @@ void CMathVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& 
     rightVar->dump(compiler, functions, ss, level);
 }
 
-void NMath::defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NMath::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     leftSide->define(compiler, importNamespaces, packageNamespace, thisFunction);
     rightSide->define(compiler, importNamespaces, packageNamespace, thisFunction);

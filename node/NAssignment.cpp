@@ -48,7 +48,7 @@ NAssignment::NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTy
     }
 }
 
-void NAssignment::defineImpl(Compiler* compiler, vector<vector<string>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NAssignment::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     
     if (var) {
