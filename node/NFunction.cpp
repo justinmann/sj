@@ -1435,17 +1435,19 @@ pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> CFunction::getF
     return make_pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>>(nullptr, nullptr);
 }
 
-shared_ptr<CType> CFunction::getVarType(Compiler* compiler, string name) {
-    auto t = templateTypesByName.find(name);
-    if (t != templateTypesByName.end()) {
-        return t->second;
+shared_ptr<CType> CFunction::getVarType(Compiler* compiler, string name, bool isOption) {
+    if (!isOption) {
+        auto t = templateTypesByName.find(name);
+        if (t != templateTypesByName.end()) {
+            return t->second;
+        }
     }
 
     if (!parent.expired()) {
-        return static_pointer_cast<CFunction>(parent.lock())->getVarType(compiler, name);
+        return static_pointer_cast<CFunction>(parent.lock())->getVarType(compiler, name, isOption);
     }
     
-    return compiler->getType(name);
+    return compiler->getType(name, isOption);
 }
 
 shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
@@ -1489,7 +1491,7 @@ shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, vector<pai
     } else {
         assert(typeName->category == CTC_Value);
         if (typeName->templateTypeNames == nullptr) {
-            auto ctype = getVarType(compiler, typeName->valueName);
+            auto ctype = getVarType(compiler, typeName->valueName, typeName->isOption);
             if (ctype) {
                 return ctype;
             }

@@ -2257,7 +2257,7 @@ yyreduce:
 
   case 51:
 
-    { (yyval.node) = new NEnum(LOC, shared_ptr<EnumArgs>((yyvsp[-2].enumArgs))); }
+    { (yyval.node) = new NEnum(LOC, *(yyvsp[-5].string), shared_ptr<EnumArgs>((yyvsp[-2].enumArgs))); delete (yyvsp[-5].string); }
 
     break;
 

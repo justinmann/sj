@@ -178,7 +178,7 @@ shared_ptr<CType> CInterfaceMethod::getVarType(CLoc loc, Compiler* compiler, vec
         return parent.lock()->getVarType(loc, compiler, importNamespaces, typeName, defaultMode);
     }
     
-    return compiler->getType(typeName->valueName);
+    return compiler->getType(typeName->valueName, typeName->isOption);
 }
 
 bool CInterfaceMethod::getIsReturnModeValid(Compiler* compiler, CTypeMode returnMode) {

@@ -1,0 +1,19 @@
+func()'bar? {
+  value(bar_a)
+}
+
+global()'void {
+  {
+    bar_a'bar : 0
+    bar_b'bar : 1
+    bar_c'bar : 2
+  }
+  {
+    bar2_a'bar2 : 0
+    bar2_b'bar2 : 1
+    bar2_c'bar2 : 2
+  }
+  b'bar? : func()
+  void
+}
+

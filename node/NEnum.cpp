@@ -37,98 +37,50 @@ void CConstantVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, strin
 */
 
 shared_ptr<CVar> NEnum::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    /* if (strValue.size() > 0) {
-        if (type == NIT_I32) {
-            char* e;
-            errno = 0;
-            auto v = strtol(strValue.c_str(), &e, 10);
-            if (ERANGE == errno || v < INT32_MIN || v > INT32_MAX) {
-                compiler->addError(loc, CErrorCode::InvalidNumber, "i32 '%s' is out range", strValue.c_str());
-                return nullptr;
-            }
+    // create a new type
+    auto ctypes = CType::create(name, "int32_t", "(int32_t)0", "int32_option", "int32_empty");
+    compiler->types[name] = ctypes;
 
-            if (*e != '\0') {
-                compiler->addError(loc, CErrorCode::InvalidNumber, "not a valid i32 '%s'", strValue.c_str());
-                return nullptr;
-            }
-
-            stringstream line;
-            if (v == INT32_MIN) {
-                line << "(" << v + 1 << " - 1)";
-            }
-            else {
-                line << v;
-            }
-            return make_shared<CConstantVar>(loc, scope, compiler->typeI32, line.str());
-        }
-        else if (type == NIT_U32) {
-            char* e;
-            errno = 0;
-            auto v = strtoul(strValue.c_str(), &e, 10);
-            if (ERANGE == errno || v > UINT32_MAX) {
-                compiler->addError(loc, CErrorCode::InvalidNumber, "u32 '%s' is out range", strValue.c_str());
-                return nullptr;
-            }
-
-            if (*e != '\0') {
-                compiler->addError(loc, CErrorCode::InvalidNumber, "not a valid u32 '%s'", strValue.c_str());
-                return nullptr;
-            }
-
-            stringstream line;
-            line << v << "u";
-            return make_shared<CConstantVar>(loc, scope, compiler->typeU32, "(uint32_t)" + line.str());
-        }
-        else if (type == NIT_I64) {
-            char* e;
-            errno = 0;
-            auto v = strtoll(strValue.c_str(), &e, 10);
-            if (ERANGE == errno) {
-                compiler->addError(loc, CErrorCode::InvalidNumber, "i64 '%s' is out range", strValue.c_str());
-                return nullptr;
-            }
-
-            if (*e != '\0') {
-                compiler->addError(loc, CErrorCode::InvalidNumber, "not a valid i64 '%s'", strValue.c_str());
-                return nullptr;
-            }
-
-            stringstream line;
-            if (v == INT64_MIN) {
-                line << "(" << v + 1 << "ll" << " - 1ll)";
-            }
-            else {
-                line << v << "ll";
-            }
-            return make_shared<CConstantVar>(loc, scope, compiler->typeI64, line.str());
-        }
-        else if (type == NIT_U64) {
-            char* e;
-            errno = 0;
-            auto v = strtoull(strValue.c_str(), &e, 10);
-            if (ERANGE == errno) {
-                compiler->addError(loc, CErrorCode::InvalidNumber, "u64 '%s' is out range", strValue.c_str());
-                return nullptr;
-            }
-
-            if (*e != '\0') {
-                compiler->addError(loc, CErrorCode::InvalidNumber, "not a valid u64 '%s'", strValue.c_str());
-                return nullptr;
-            }
-
-            stringstream line;
-            line << v << "ull";
-            return make_shared<CConstantVar>(loc, scope, compiler->typeU64, line.str());
-        }
-        else {
-            assert(false);
+    // create constants in a package namespace
+    vector<string> enumNamespace;
+    vector<shared_ptr<CVar>> statementVars;
+    enumNamespace.push_back(name);
+    scope->pushNamespace(compiler, enumNamespace);
+    auto index = 0;
+    for (auto enumArg : *enumArgs) {
+        auto leftVar = scope->getCVar(compiler, nullptr, enumArg->name, VSM_LocalThisParent);
+        if (leftVar) {
+            compiler->addError(loc, CErrorCode::ImmutableAssignment, "var '%s' already exists", name.c_str());
             return nullptr;
         }
-    } else if (hasValue) {
-        stringstream line;
-        line << value;
-        return make_shared<CConstantVar>(loc, scope, compiler->typeI32, line.str());
-    } */
-    return nullptr;
+
+        string nameNS;
+        bool isFirst = true;
+        for (auto ns : scope->dotNamespace) {
+            if (isFirst) {
+                isFirst = false;
+            }
+            else {
+                nameNS += "_";
+            }
+            nameNS += ns;
+        }
+        if (!isFirst) {
+            nameNS += "_";
+        }
+        nameNS += enumArg->name;
+
+        auto leftStoreVar = make_shared<CNormalVar>(loc, scope, ctypes->stackValueType, nameNS, false, CVarType::Var_Local);
+        scope->addOrUpdateLocalVar(compiler, enumArg->name, leftStoreVar);
+        stringstream t;
+        t << index;
+        auto rightVar = make_shared<CConstantVar>(loc, scope, ctypes->stackValueType, enumArg->hasValue ? enumArg->value : t.str());
+        auto assignVar = make_shared<CAssignVar>(loc, scope, AssignOp::immutableCreate, leftStoreVar, rightVar);
+        statementVars.push_back(assignVar);
+        index++;
+    }
+    scope->popNamespace(compiler, enumNamespace);
+
+    return make_shared<CBlockVar>(loc, scope, statementVars);
 }
 

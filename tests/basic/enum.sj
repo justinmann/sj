@@ -11,4 +11,8 @@ enum bar2 (
 	c : 2
 )
 
-b : bar.a
+func()'bar? {
+	value(bar.a)
+}
+
+b : func()

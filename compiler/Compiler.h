@@ -137,7 +137,7 @@ class Compiler
 public:
     Compiler();
 	bool transpile(const string& fileName, ostream& stream, ostream& errorStream, ostream* debugStream);
-    shared_ptr<CType> getType(const string& name) const;
+    shared_ptr<CType> getType(const string& name, bool isOption) const;
     void includeFile(const string& fileName);
 
     template< typename... Args >
@@ -186,15 +186,6 @@ public:
     shared_ptr<CType> typeBool;
     shared_ptr<CType> typeChar;
     shared_ptr<CType> typeVoid;
-    shared_ptr<CType> typeI32Option;
-    shared_ptr<CType> typeI64Option;
-    shared_ptr<CType> typeU32Option;
-    shared_ptr<CType> typeU64Option;
-    shared_ptr<CType> typePtrOption;
-    shared_ptr<CType> typeF32Option;
-    shared_ptr<CType> typeF64Option;
-    shared_ptr<CType> typeBoolOption;
-    shared_ptr<CType> typeCharOption;
     map<string, shared_ptr<CTypes>> types;
     map<vector<string>, bool> namespaces;
 

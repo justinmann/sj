@@ -28,42 +28,43 @@ CLoc CLoc::undefined = CLoc();
 Compiler::Compiler() {
     auto ctypes = CType::create("i32", "int32_t", "(int32_t)0", "int32_option", "int32_empty");
     typeI32 = ctypes->stackValueType;
-    typeI32Option = ctypes->stackOptionType;
+    types["i32"] = ctypes;
 
     ctypes = CType::create("i64", "int64_t", "(int64_t)0", "int64_option", "int64_empty");
     typeI64 = ctypes->stackValueType;
-    typeI64Option = ctypes->stackOptionType;
+    types["i64"] = ctypes;
 
     ctypes = CType::create("u32", "uint32_t", "(uint32_t)0", "uint32_option", "uint32_empty");
     typeU32 = ctypes->stackValueType;
-    typeU32Option = ctypes->stackOptionType;
+    types["u32"] = ctypes;
 
     ctypes = CType::create("u64", "uint64_t", "(uint64_t)0", "uint64_option", "uint64_empty");
     typeU64 = ctypes->stackValueType;
-    typeU64Option = ctypes->stackOptionType;
+    types["u64"] = ctypes;
 
     ctypes = CType::create("ptr", "uintptr_t", "(uintptr_t)0", "uintptr_option", "uintptr_empty");
     typePtr = ctypes->stackValueType;
-    typePtrOption = ctypes->stackOptionType;
+    types["ptr"] = ctypes;
 
     ctypes = CType::create("f32", "float", "0.0f", "float_option", "float_empty");
     typeF32 = ctypes->stackValueType;
-    typeF32Option = ctypes->stackOptionType;
+    types["f32"] = ctypes;
 
     ctypes = CType::create("f64", "double", "0.0", "double_option", "double_empty");
     typeF64 = ctypes->stackValueType;
-    typeF64Option = ctypes->stackOptionType;
+    types["f64"] = ctypes;
 
     ctypes = CType::create("bool", "bool", "false", "bool_option", "bool_empty");
     typeBool = ctypes->stackValueType;
-    typeBoolOption = ctypes->stackOptionType;
+    types["bool"] = ctypes;
 
     ctypes = CType::create("char", "char", "'\0'", "char_option", "char_empty");
     typeChar = ctypes->stackValueType;
-    typeCharOption = ctypes->stackOptionType;
+    types["char"] = ctypes;
 
     ctypes = CType::create("void", "void", "", "", "");
     typeVoid = ctypes->stackValueType;
+    types["void"] = ctypes;
 }
 
 shared_ptr<CParseFile> Compiler::genNodeFile(const string& fileName) {
@@ -238,67 +239,12 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 	return true;
 }
 
-shared_ptr<CType> Compiler::getType(const string& name) const {
-    if (name == "i32") {
-        return typeI32;
+shared_ptr<CType> Compiler::getType(const string& name, bool isOption) const {
+    auto t = types.find(name);
+    if (t != types.end()) {
+        return isOption ? t->second->stackOptionType : t->second->stackValueType;
     }
-    else if (name == "i64") {
-        return typeI64;
-    }
-    else if (name == "u32") {
-        return typeU32;
-    }
-    else if (name == "u64") {
-        return typeU64;
-    }
-    else if (name == "f32") {
-        return typeF32;
-    }
-    else if (name == "f64") {
-        return typeF64;
-    }
-    else if (name == "ptr") {
-        return typePtr;
-    }
-    else if (name == "bool") {
-        return typeBool;
-    }
-    else if (name == "char") {
-        return typeChar;
-    }
-    else if (name == "void") {
-        return typeVoid;
-    }
-    else if (name == "i32?") {
-        return typeI32Option;
-    }
-    else if (name == "i64?") {
-        return typeI64Option;
-    }
-    else if (name == "u32?") {
-        return typeU32Option;
-    }
-    else if (name == "u64?") {
-        return typeU64Option;
-    }
-    else if (name == "f32?") {
-        return typeF32Option;
-    }
-    else if (name == "f64?") {
-        return typeF64Option;
-    }
-    else if (name == "ptr?") {
-        return typePtrOption;
-    }
-    else if (name == "bool?") {
-        return typeBoolOption;
-    }
-    else if (name == "char?") {
-        return typeCharOption;
-    }
-    else {
-        return nullptr;
-    }
+    return nullptr;
 }
 
 void Compiler::includeFile(const string& fileName) {

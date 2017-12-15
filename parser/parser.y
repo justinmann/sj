@@ -187,7 +187,7 @@ var_decl 			: assign
 					| expr_var TLBRACKET expr TRBRACKET TEQUAL stmt		{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NCall>(LOC, "setAt", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3), shared_ptr<NBase>($6)))); }
 					;
 
-enum_decl			: TENUM TIDENTIFIER TLPAREN end_optional enum_args end_optional TRPAREN 		{ $$ = new NEnum(LOC, shared_ptr<EnumArgs>($5)); }
+enum_decl			: TENUM TIDENTIFIER TLPAREN end_optional enum_args end_optional TRPAREN 		{ $$ = new NEnum(LOC, *$2, shared_ptr<EnumArgs>($5)); delete $2; }
 					;
 
 enum_args			: enum_args end_star enum_arg 						{ $1->push_back(shared_ptr<EnumArg>($3)); }

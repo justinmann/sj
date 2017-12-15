@@ -46,12 +46,13 @@ private:
 
 class NEnum : public NVariableBase {
 public:
-    NEnum(CLoc loc, shared_ptr<EnumArgs> args) : NVariableBase(NodeType_Enum, loc), args(args) { }
+    NEnum(CLoc loc, string name, shared_ptr<EnumArgs> enumArgs) : NVariableBase(NodeType_Enum, loc), name(name), enumArgs(enumArgs) { }
     void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) { }
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 
 private:
-    shared_ptr<EnumArgs> args;
+    string name;
+    shared_ptr<EnumArgs> enumArgs;
 };
 
 #endif /* NEnum_h */
