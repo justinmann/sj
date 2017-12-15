@@ -3,5 +3,7 @@ package a {
 	func() { x }
 }
 
-b : a.x
-c : a.func()
+import a {
+	b : x
+	c : func()
+}

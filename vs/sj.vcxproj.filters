@@ -204,6 +204,9 @@
     <ClInclude Include="..\node\NPackage.h">
       <Filter>Node</Filter>
     </ClInclude>
+    <ClInclude Include="..\node\NImport.h">
+      <Filter>Node</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\node\NAnd.cpp">
@@ -381,6 +384,9 @@
       <Filter>Node</Filter>
     </ClCompile>
     <ClCompile Include="..\node\NPackage.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NImport.cpp">
       <Filter>Node</Filter>
     </ClCompile>
   </ItemGroup>

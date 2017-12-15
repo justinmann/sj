@@ -1829,6 +1829,12 @@ vector<vector<string>> CScope::getAllNamespaces() {
             allNamespaces.push_back(importNamespace);
         }
     }
+
+    for (auto functionBlock : functionBlocks) {
+        for (auto importNamespace : functionBlock->namespaces) {
+            allNamespaces.push_back(importNamespace);
+        }
+    }
     
     if (ns.size() > 0) {
         allNamespaces.push_back(ns);

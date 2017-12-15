@@ -65,6 +65,7 @@ enum NodeType {
     NodeType_GetValue,
     NodeType_If,
     NodeType_IfValue,
+    NodeType_Import,
     NodeType_Include,
     NodeType_Integer,
     NodeType_Interface,
@@ -115,6 +116,7 @@ enum NodeType {
 #include "NGetValue.h"
 #include "NIf.h"
 #include "NIfValue.h"
+#include "NImport.h"
 #include "NInclude.h"
 #include "NInteger.h"
 #include "NInterface.h"

@@ -82,9 +82,9 @@ void sjf_a_func(int32_t* _return) {
 int main(int argc, char** argv) {
 #line 2 "package1.sj"
     sjv_a_x = 0;
-#line 6
+#line 7
     sjv_b = sjv_a_x;
-#line 6
+#line 7
     sjf_a_func(&sjv_c);
     main_destroy();
     return 0;

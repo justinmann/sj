@@ -125,6 +125,7 @@ stmt 				: /* Blank! */									{ $$ = nullptr; }
 					| ctypedef										{ $$ = $1; }
 					| TINCLUDE TSTRING								{ $$ = new NInclude(LOC, $2->c_str()); delete $2; }
 					| TPACKAGE namespace block						{ $$ = new NPackage(LOC, *$2, shared_ptr<NBase>($3)); delete $2; }
+					| TIMPORT namespace	block						{ $$ = new NImport(LOC, *$2, shared_ptr<NBase>($3)); delete $2; }
 					| error	 										{ $$ = nullptr; /* yyclearin; */ compiler->addError(LLOC, CErrorCode::InvalidCharacter, "Something failed to parse"); }
 					;
 
