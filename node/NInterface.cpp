@@ -13,12 +13,12 @@ NInterface::NInterface(CLoc loc, const string& name, shared_ptr<CTypeNameList> t
 
 void NInterface::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     auto parentFunction = static_pointer_cast<CFunctionDefinition>(thisFunction);
-    auto def = parentFunction->getDefinedInterfaceDefinition(name);
+    auto def = parentFunction->getDefinedInterfaceDefinition(packageNamespace, name);
     if (def != nullptr) {
         compiler->addError(loc, CErrorCode::InvalidType, "interface can only be defined once: '%s'", name.c_str());
         return;
     }
-    def = parentFunction->createDefinedInterfaceDefinition(loc, importNamespaces, name);
+    def = parentFunction->createDefinedInterfaceDefinition(compiler, loc, importNamespaces, packageNamespace, name);
     def->typeName = make_shared<CTypeName>(CTC_Interface, CTM_Stack, name, templateTypeNames, false);
     def->ninterface = shared_from_this();
 
@@ -388,7 +388,7 @@ bool CInterface::getReturnMustRelease(Compiler* compiler) {
     return false;
 }
 
-CInterfaceDefinition::CInterfaceDefinition(CLoc loc, vector<pair<string, vector<string>>>& importNamespaces, string& name_) : CBaseFunctionDefinition(CFT_Interface), loc(loc), importNamespaces(importNamespaces){
+CInterfaceDefinition::CInterfaceDefinition(CLoc loc, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, string& name_) : CBaseFunctionDefinition(CFT_Interface), loc(loc), importNamespaces(importNamespaces){
     name = name_;
 }
 
@@ -396,7 +396,7 @@ string CInterfaceDefinition::fullName() {
     return typeName->getFullName();
 }
 
-void CInterfaceDefinition::addChildFunction(vector<string> packageNamespace, string& name, shared_ptr<CBaseFunctionDefinition> childFunction) {
+void CInterfaceDefinition::addChildFunction(Compiler* compiler, CLoc loc, vector<string> packageNamespace, string& name, shared_ptr<CBaseFunctionDefinition> childFunction) {
     assert(false);
 }
 

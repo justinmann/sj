@@ -106,7 +106,7 @@ void NFunction::defineImpl(Compiler* compiler, vector<pair<string, vector<string
         return;
     }
 
-    parentFunction->addChildFunction(packageNamespace, name, thisFunction);
+    parentFunction->addChildFunction(compiler, loc, packageNamespace, name, thisFunction);
 
     for (auto it : interfaces) {
         it->define(compiler, importNamespaces, packageNamespace, thisFunction);
@@ -1305,7 +1305,8 @@ shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, const string
     }
     else {
         auto def = static_pointer_cast<CFunctionDefinition>(definition.lock());
-        auto interfaceDef = def->getDefinedInterfaceDefinition(name);
+        // TODO: this look will not work for package namespace interfaces
+        auto interfaceDef = def->getDefinedInterfaceDefinition(vector<string>(), name);
         if (!interfaceDef) {
             return nullptr;
         }
@@ -1583,10 +1584,6 @@ shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, 
             it->define(compiler, importNamespaces, packageNamespace, c);
         }
 
-        for (auto it : node->functions) {
-            c->funcsByName[packageNamespace][it->name] = it->getFunctionDefinition(compiler, importNamespaces, packageNamespace, c);
-        }
-        
         for (auto it : node->assignments) {
             if (it->var) {
                 compiler->addError(it->loc, CErrorCode::InvalidDot, "cannot use '.' in variable declaration for a function: '%s'", it->name.c_str());
@@ -1607,7 +1604,11 @@ string CFunctionDefinition::fullName() {
     return n;
 }
 
-void CFunctionDefinition::addChildFunction(vector<string> packageNamespace, string& name, shared_ptr<CBaseFunctionDefinition> childFunction) {
+void CFunctionDefinition::addChildFunction(Compiler* compiler, CLoc loc, vector<string> packageNamespace, string& name, shared_ptr<CBaseFunctionDefinition> childFunction) {
+    if (funcsByName[packageNamespace][name] != nullptr) {
+        compiler->addError(loc, CErrorCode::InvalidFunction, "function '%s' is already defined", name.c_str());
+        return;
+    }
     funcsByName[packageNamespace][name] = static_pointer_cast<CFunctionDefinition>(childFunction);
 }
 
@@ -1669,12 +1670,12 @@ shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CLoc 
     return func;
 }
 
-shared_ptr<CInterfaceDefinition> CFunctionDefinition::getDefinedInterfaceDefinition(const string& name) {
-    auto it = _definedInterfaceDefinitions.find(name);
-    if (it == _definedInterfaceDefinitions.end()) {
+shared_ptr<CInterfaceDefinition> CFunctionDefinition::getDefinedInterfaceDefinition(vector<string>& packageNamespace, const string& name) {
+    auto it = _definedInterfaceDefinitions[packageNamespace].find(name);
+    if (it == _definedInterfaceDefinitions[packageNamespace].end()) {
         if (!parent.expired()) {
             auto t = static_pointer_cast<CFunctionDefinition>(parent.lock());
-            return t->getDefinedInterfaceDefinition(name);
+            return t->getDefinedInterfaceDefinition(packageNamespace, name);
         }
         else {
             return nullptr;
@@ -1685,9 +1686,14 @@ shared_ptr<CInterfaceDefinition> CFunctionDefinition::getDefinedInterfaceDefinit
     }
 }
 
-shared_ptr<CInterfaceDefinition> CFunctionDefinition::createDefinedInterfaceDefinition(CLoc loc, vector<pair<string, vector<string>>>& namespaces, string& name) {
-    auto result = make_shared<CInterfaceDefinition>(loc, namespaces, name);
-    _definedInterfaceDefinitions[name] = result;
+shared_ptr<CInterfaceDefinition> CFunctionDefinition::createDefinedInterfaceDefinition(Compiler* compiler, CLoc loc, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, string& name) {
+    if (_definedInterfaceDefinitions[packageNamespace][name] != nullptr) {
+        compiler->addError(loc, CErrorCode::InvalidFunction, "interface '%s' is already defined", name.c_str());
+        return nullptr;
+    }
+
+    auto result = make_shared<CInterfaceDefinition>(loc, importNamespaces, packageNamespace, name);
+    _definedInterfaceDefinitions[packageNamespace][name] = result;
     return result;
 }
 
@@ -1696,7 +1702,7 @@ shared_ptr<vector<pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameLis
         if (implementedInterfaceTypeNames) {
             _implementedInterfaceDefinitions = make_shared<vector<pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameList>>>>();
             for (auto it : *implementedInterfaceTypeNames) {
-                auto interface = getDefinedInterfaceDefinition(it->valueName);
+                auto interface = getDefinedInterfaceDefinition(it->packageNamespace, it->valueName);
                 if (interface == nullptr) {
                     compiler->addError(loc, CErrorCode::InterfaceDoesNotExist, "cannot find interface '%s'", it->valueName.c_str());
                     return nullptr;

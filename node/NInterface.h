@@ -89,9 +89,9 @@ public:
     shared_ptr<NInterface> ninterface;
     vector<pair<string, vector<string>>> importNamespaces;
 
-    CInterfaceDefinition(CLoc loc, vector<pair<string, vector<string>>>& importNamespaces, string& name);
+    CInterfaceDefinition(CLoc loc, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, string& name);
     string fullName();
-    void addChildFunction(vector<string> packageNamespace, string& name, shared_ptr<CBaseFunctionDefinition> childFunction);
+    void addChildFunction(Compiler* compiler, CLoc loc, vector<string> packageNamespace, string& name, shared_ptr<CBaseFunctionDefinition> childFunction);
     shared_ptr<CInterface> getInterface(Compiler* compiler, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent);
     
 private:

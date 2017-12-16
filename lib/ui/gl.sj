@@ -100,8 +100,8 @@ glViewport(rect : 'rect) {
 
 glBindFramebuffer(framebuffer : 'framebuffer) {
 	--c--
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer->id);
-	--c--
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer->id);
+    --c--
 }
 
 glUnbindFramebuffer() {
@@ -155,12 +155,6 @@ glGenTexture(size: 'size)'texture {
     glGenTextures(1, &sjv_id);
     --c--
     texture(copy size, id)
-}
-
-glBindFramebuffer(framebuffer : 'framebuffer) {
-	--c--
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer->id);
-    --c--
 }
 
 glTexParameteri(type : 'glTexture, attribute : 'glTextureAttribute, val : 'glTextureValue) {

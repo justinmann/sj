@@ -9046,12 +9046,12 @@ void sjf_framebuffer_heap(sjs_framebuffer_heap* _this) {
 }
 
 void sjf_glbindframebuffer(sjs_framebuffer* framebuffer) {
-#line 162 "lib/ui/gl.sj"
+#line 103 "lib/ui/gl.sj"
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer->id);
 }
 
 void sjf_glbindrenderbuffer(sjs_renderbuffer* renderbuffer) {
-#line 214 "lib/ui/gl.sj"
+#line 208 "lib/ui/gl.sj"
     glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer->id);
 }
 
@@ -9063,11 +9063,11 @@ void sjf_glbindtexture(int32_t type, sjs_texture* texture) {
 void sjf_glcheckframebufferstatus(int32_t* _return) {
     int32_t sjv_status;
 
-#line 205 "lib/ui/gl.sj"
+#line 199 "lib/ui/gl.sj"
     sjv_status = sjv_glframebufferstatus_gl_framebuffer_unsupported;
-#line 207
+#line 201
     sjv_status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-#line 204
+#line 198
     (*_return) = sjv_status;
 }
 
@@ -9082,12 +9082,12 @@ void sjf_glenable(int32_t feature) {
 }
 
 void sjf_glframebufferrenderbuffer(int32_t attachment, sjs_renderbuffer* renderbuffer) {
-#line 200 "lib/ui/gl.sj"
+#line 194 "lib/ui/gl.sj"
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, renderbuffer->id);
 }
 
 void sjf_glframebuffertexture2d(int32_t attachment, int32_t target, sjs_texture* texture, int32_t level) {
-#line 180 "lib/ui/gl.sj"
+#line 174 "lib/ui/gl.sj"
     glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, target, texture->id, level);
 }
 
@@ -9125,17 +9125,17 @@ void sjf_glgenrenderbuffer(sjs_size* size, sjs_renderbuffer* _return) {
     sjs_size* sjt_copy5;
     uint32_t sjv_id;
 
-#line 185 "lib/ui/gl.sj"
+#line 179 "lib/ui/gl.sj"
     sjv_id = (uint32_t)0u;
-#line 187
+#line 181
     glGenRenderbuffers(1, &sjv_id); 
-#line 184
+#line 178
     sjt_copy5 = size;
-#line 189
+#line 183
     sjf_size_copy(&_return->size, sjt_copy5);
-#line 189
+#line 183
     _return->id = sjv_id;
-#line 189
+#line 183
     sjf_renderbuffer(_return);
 }
 
@@ -9143,21 +9143,21 @@ void sjf_glgenrenderbuffer_heap(sjs_size* size, sjs_renderbuffer_heap** _return)
     sjs_size* sjt_copy6;
     uint32_t sjv_id;
 
-#line 185 "lib/ui/gl.sj"
+#line 179 "lib/ui/gl.sj"
     sjv_id = (uint32_t)0u;
-#line 187
+#line 181
     glGenRenderbuffers(1, &sjv_id); 
-#line 187
+#line 181
     (*_return) = (sjs_renderbuffer_heap*)malloc(sizeof(sjs_renderbuffer_heap));
-#line 187
+#line 181
     (*_return)->_refCount = 1;
-#line 184
+#line 178
     sjt_copy6 = size;
-#line 189
+#line 183
     sjf_size_copy(&(*_return)->size, sjt_copy6);
-#line 189
+#line 183
     (*_return)->id = sjv_id;
-#line 189
+#line 183
     sjf_renderbuffer_heap((*_return));
 }
 
@@ -9211,17 +9211,17 @@ void sjf_glgetuniformlocation(sjs_shader* shader, sjs_string* name, int32_t* _re
 }
 
 void sjf_glrenderbufferstorage(int32_t format, sjs_size* size) {
-#line 194 "lib/ui/gl.sj"
+#line 188 "lib/ui/gl.sj"
     glRenderbufferStorage(GL_RENDERBUFFER, format, size->w, size->h);
 }
 
 void sjf_glteximage2d(int32_t type, int32_t level, int32_t format, sjs_size* size, int32_t datatype, void* data) {
-#line 174 "lib/ui/gl.sj"
+#line 168 "lib/ui/gl.sj"
     glTexImage2D(type, level, format, size->w, size->h, 0, format, dataType, data);
 }
 
 void sjf_gltexparameteri(int32_t type, int32_t attribute, int32_t val) {
-#line 168 "lib/ui/gl.sj"
+#line 162 "lib/ui/gl.sj"
     glTexParameteri(type, attribute, val);
 }
 
@@ -22047,9 +22047,9 @@ void sjf_scene2dmodel(sjs_scene2dmodel* _this) {
     sjt_functionParam91 = &_this->texturesize;
 #line 95
     sjt_functionParam92 = sjv_gltexturetype_gl_unsigned_byte;
-#line 172 "lib/ui/gl.sj"
+#line 166 "lib/ui/gl.sj"
     sjt_functionParam93 = 0;
-#line 172
+#line 166
     sjf_glteximage2d(sjt_functionParam88, sjt_functionParam89, sjt_functionParam90, sjt_functionParam91, sjt_functionParam92, sjt_functionParam93);
 #line 96 "lib/ui/scene2dModel.sj"
     sjt_functionParam94 = sjv_glframebufferattachment_gl_color_attachment0;
@@ -22575,9 +22575,9 @@ void sjf_scene2dmodel_heap(sjs_scene2dmodel_heap* _this) {
     sjt_functionParam213 = &_this->texturesize;
 #line 95
     sjt_functionParam214 = sjv_gltexturetype_gl_unsigned_byte;
-#line 172 "lib/ui/gl.sj"
+#line 166 "lib/ui/gl.sj"
     sjt_functionParam215 = 0;
-#line 172
+#line 166
     sjf_glteximage2d(sjt_functionParam210, sjt_functionParam211, sjt_functionParam212, sjt_functionParam213, sjt_functionParam214, sjt_functionParam215);
 #line 96 "lib/ui/scene2dModel.sj"
     sjt_functionParam216 = sjv_glframebufferattachment_gl_color_attachment0;

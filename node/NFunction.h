@@ -196,16 +196,16 @@ public:
     CFunctionDefinition() : CBaseFunctionDefinition(CFT_Function) {}
     static shared_ptr<CFunctionDefinition> create(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, shared_ptr<CFunctionDefinition> parent, CFunctionType type, vector<string> packageNamespace, const string& name, shared_ptr<CTypeNameList> implementedInterfaceTypeNames, shared_ptr<NFunction> node);
     string fullName();
-    void addChildFunction(vector<string> packageNamespace, string& name, shared_ptr<CBaseFunctionDefinition> childFunction);
+    void addChildFunction(Compiler* compiler, CLoc loc, vector<string> packageNamespace, string& name, shared_ptr<CBaseFunctionDefinition> childFunction);
     void dump(Compiler* compiler, int level);
     shared_ptr<CFunction> getFunction(Compiler* compiler, CLoc loc, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent);
-    shared_ptr<CInterfaceDefinition> getDefinedInterfaceDefinition(const string& name);
-    shared_ptr<CInterfaceDefinition> createDefinedInterfaceDefinition(CLoc loc, vector<pair<string, vector<string>>>& importNamespaces, string& name);
+    shared_ptr<CInterfaceDefinition> getDefinedInterfaceDefinition(vector<string>& packageNamespace, const string& name);
+    shared_ptr<CInterfaceDefinition> createDefinedInterfaceDefinition(Compiler* compiler, CLoc loc, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, string& name);
     shared_ptr<vector<pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameList>>>> getImplementedInterfaceDefintions(Compiler* compiler);
     
 private:
     map<CFunction*, map<vector<shared_ptr<CType>>, shared_ptr<CFunction>>> _cfunctions;
-    map<string, shared_ptr<CInterfaceDefinition>> _definedInterfaceDefinitions;
+    map<vector<string>, map<string, shared_ptr<CInterfaceDefinition>>> _definedInterfaceDefinitions;
     shared_ptr<vector<pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameList>>>> _implementedInterfaceDefinitions;
 };
 

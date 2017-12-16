@@ -95,7 +95,7 @@ public:
 
     CBaseFunctionDefinition(CClassFunctionType classType) : classType(classType) { }
     virtual string fullName() = 0;
-    virtual void addChildFunction(vector<string> packageNamespace, string& name, shared_ptr<CBaseFunctionDefinition> childFunction) = 0;
+    virtual void addChildFunction(Compiler* compiler, CLoc loc, vector<string> packageNamespace, string& name, shared_ptr<CBaseFunctionDefinition> childFunction) = 0;
 };
 
 #endif /* NFunction_h */
