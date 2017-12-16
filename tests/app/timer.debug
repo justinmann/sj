@@ -2008,9 +2008,12 @@ global()'void {
   float s, t;       // texture
   } vertex3_texture2_t;	
   --cstruct--
-  mouseEvent_move'i32 : 0i
-  mouseEvent_up'i32 : 1i
-  mouseEvent_down'i32 : 2i
+  mouse_captureElement'heap #element? = empty'heap #element?
+  {
+    mouseEventType_move'mouseEventType : 0
+    mouseEventType_up'mouseEventType : 1
+    mouseEventType_down'mouseEventType : 2
+  }
   boxShader'stack shader : shader(this = shader(
     vertex'stack string : vertex,
     pixel'stack string : pixel

@@ -133,10 +133,10 @@ blurElement #element (
 		value(a)
 	}
 
-	fireMouseEvent(point: 'point, eventId : 'i32)'void {
+	fireMouseEvent(mouseEvent : 'mouseEvent)'void {
 		for i : 0 to children.size {
 			child : children[i]
-			child.fireMouseEvent(point, eventId)
+			child.fireMouseEvent(mouseEvent)
 		}	
 	}
 ) { this } 

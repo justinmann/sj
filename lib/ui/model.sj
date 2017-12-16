@@ -3,7 +3,7 @@
 	getZ()'f32
 	renderOrQueue(zqueue : 'list!#model)'void
 	render()'void
-	fireMouseEvent(point: 'point, eventId : 'i32)'void
+	fireMouseEvent(mouseEvent : 'mouseEvent)'void
 )
 
 model_zsort(l : '#model, r : '#model) {
@@ -62,7 +62,7 @@ model #model (
 		vertexBuffer.render()
 	}
 
-	fireMouseEvent(point: 'point, eventId : 'i32)'void {
+	fireMouseEvent(mouseEvent : 'mouseEvent)'void {
 
 	}
 ) { this }

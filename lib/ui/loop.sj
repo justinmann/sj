@@ -1,7 +1,3 @@
-mouseEvent_move : 0
-mouseEvent_up : 1
-mouseEvent_down : 2
-
 mainLoop() {
     ticks := 0
     --c--
@@ -17,7 +13,7 @@ mainLoop() {
     root.render(rootScene)
     rootWindowRenderer.present()
 
-    mouseEvent := -1
+    mouseEventType := empty'mouseEventType
     x := 0
     y := 0
     --c--
@@ -29,19 +25,21 @@ mainLoop() {
                 break;
             case SDL_MOUSEBUTTONDOWN:
                 printf("SDL_MOUSEBUTTONDOWN\n");
-                sjv_mouseEvent = sjv_mouseEvent_down;
+                sjv_mouseEventType.isEmpty = false;
+                sjv_mouseEventType.value = sjv_mouseEventType_down;
                 sjv_x = e.button.x;
                 sjv_y = e.button.y;
                 break;
             case SDL_MOUSEBUTTONUP:
                 printf("SDL_MOUSEBUTTONUP\n");
-                sjv_mouseEvent = sjv_mouseEvent_up;
+                sjv_mouseEventType.isEmpty = false;
+                sjv_mouseEventType.value = sjv_mouseEventType_up;
                 sjv_x = e.button.x;
                 sjv_y = e.button.y;
                 break;
             case SDL_MOUSEMOTION:
-                printf("SDL_MOUSEMOTION\n");
-                sjv_mouseEvent = sjv_mouseEvent_move;
+                sjv_mouseEventType.isEmpty = false;
+                sjv_mouseEventType.value = sjv_mouseEventType_move;
                 sjv_x = e.motion.x;
                 sjv_y = e.motion.y;
                 break;
@@ -49,8 +47,20 @@ mainLoop() {
     }
     --c--
 
-    if mouseEvent != -1 {
-        root.fireMouseEvent(point(x, y), mouseEvent) 
+    ifValue mouseEventType {
+        ifValue m : mouse_captureElement {
+            m.fireMouseEvent(mouseEvent(
+                type : mouseEventType
+                point : point(x, y)
+                isCaptured : true
+            )) 
+        } elseEmpty {
+            root.fireMouseEvent(mouseEvent(
+                type : mouseEventType
+                point : point(x, y)
+                isCaptured : false
+            )) 
+        }
     }
     void
 }

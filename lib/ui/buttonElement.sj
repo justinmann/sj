@@ -87,12 +87,14 @@ buttonElement #element (
 
 	onMouseUp(point : 'point)'void {
 		console.write("buttonElement onMouseUp " + convert.i32toString(point.x) + ", " + convert.i32toString(point.y))
+		mouse_capture(heap parent as #element)
 		state = buttonState.normal
 		void
 	}
 
 	onMouseDown(point : 'point)'void {
 		console.write("buttonElement onMouseDown")
+		mouse_release(heap parent as #element)
 		state = buttonState.pressed
 		void
 	}
@@ -105,13 +107,13 @@ buttonElement #element (
 		void
 	}
 
-	fireMouseEvent(point: 'point, eventId : 'i32)'void {
-		if _rect.containsPoint(point) {
-			if eventId == mouseEvent_up {
+	fireMouseEvent(mouseEvent : 'mouseEvent)'void {
+		if _rect.containsPoint(mouseEvent.point) {
+			if mouseEvent.type == mouseEventType.up {
 				onMouseUp(point)
-			} else if eventId == mouseEvent_down {
+			} else if mouseEvent.type == mouseEventType.down {
 				onMouseDown(point)
-			} else if eventId == mouseEvent_move {
+			} else if mouseEvent.type == mouseEventType.move {
 				onMouseMove(point)
 			}
 		}

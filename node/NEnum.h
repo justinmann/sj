@@ -28,26 +28,11 @@ public:
     }
 };
 
-/*
-class CConstantVar : public CVar {
-public:
-    CConstantVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, string value) : CVar(loc, scope), type(type), value(value) { }
-    bool getReturnThis();
-    shared_ptr<CType> getType(Compiler* compiler);
-    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
-    void dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
-    
-private:
-    shared_ptr<CType> type;
-    string value;
-};
-
-*/
 
 class NEnum : public NVariableBase {
 public:
     NEnum(CLoc loc, string name, shared_ptr<EnumArgs> enumArgs) : NVariableBase(NodeType_Enum, loc), name(name), enumArgs(enumArgs) { }
-    void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) { }
+    void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 
 private:

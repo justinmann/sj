@@ -41,10 +41,10 @@ crossHairsElement #element (
 		empty'local array?!#element
 	}
 
-	fireMouseEvent(point: 'point, eventId : 'i32)'void {
-		if _rect.containsPoint(point) {
-			if eventId == mouseEvent_move {
-				_point = copy point
+	fireMouseEvent(mouseEvent : 'mouseEvent)'void {
+		if _rect.containsPoint(mouseEvent.point) {
+			if mouseEvent.type == mouseEventType.move {
+				_point = copy mouseEvent.point
 				_topDownRenderer = empty'boxRenderer
 				_leftRightRenderer = empty'boxRenderer
 			}

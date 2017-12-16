@@ -25,10 +25,10 @@ leafPanel #model (
 		void
 	}
 
-	fireMouseEvent(point: 'point, eventId : 'i32)'void {
+	fireMouseEvent(mouseEvent : 'mouseEvent)'void {
 		for i : 0 to children.count {
 			c : children[i]
-			c.fireMouseEvent(point, eventId)
+			c.fireMouseEvent(mouseEvent)
 		}
 	}
 

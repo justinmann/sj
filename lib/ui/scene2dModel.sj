@@ -66,15 +66,19 @@ scene2dModel #model (
 		vertexBuffer.render()
 	}
 
-	fireMouseEvent(point: 'point, eventId : 'i32)'void {
-		texture : vertexBuffer.translateScreenToTexture(point, _sceneRect, _projection, _view, _world * model)
-		if !isEmpty(texture) {
+	fireMouseEvent(mouseEvent : 'mouseEvent)'void {
+		texture : vertexBuffer.translateScreenToTexture(mouseEvent.point, _sceneRect, _projection, _view, _world * model)
+		ifValue texture {
 			scenePoint : point(
 				(texture.x * textureSize.w as f32) as i32
 				(texture.y * textureSize.h as f32) as i32)
 			for i : 0 to children.count {
 				child : children[i]
-				child.fireMouseEvent(scenePoint, eventId)
+				child.fireMouseEvent(mouseEvent(
+					type : mouseEvent.type
+					point : copy scenePoint
+					isCaptured : mouseEvent.isCaptured
+				))
 			}
 		}
 	}

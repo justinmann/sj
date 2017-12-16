@@ -1,45 +1,13 @@
 #include "Node.h"
 
-/*
-bool CConstantVar::getReturnThis() {
-    return false;
-}
-
-shared_ptr<CType> CConstantVar::getType(Compiler* compiler) {
-    return type;
-}
-
-void CConstantVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, type, value, false));
-}
-
-void CConstantVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-    ss << value;
-    if (type == compiler->typeI32) {
-        ss << "i";
-    }
-    else if (type == compiler->typeU32) {
-        ss << "u";
-    }
-    else if (type == compiler->typeI64) {
-        ss << "l";
-    }
-    else if (type == compiler->typeU64) {
-        ss << "v";
-    }
-    else if (type == compiler->typeF32) {
-        ss << "f";
-    }
-    else if (type == compiler->typeF64) {
-        ss << "d";
-    }
-}
-*/
-
-shared_ptr<CVar> NEnum::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+void NEnum::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     // create a new type
     auto ctypes = CType::create(name, "int32_t", "(int32_t)0", "int32_option", "int32_empty");
     compiler->types[name] = ctypes;
+}
+
+shared_ptr<CVar> NEnum::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+    auto ctypes = compiler->types[name];
 
     // create constants in a package namespace
     vector<string> enumNamespace;

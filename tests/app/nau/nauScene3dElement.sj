@@ -41,7 +41,7 @@ nauScene3dElement #element (
 		}
 
 		a.sortcb(model_zsort)
-		for i : 0 to a.count {
+		for i : 0 toReverse a.count {
 			child : a[i]
 			child.render()
 		}
@@ -54,30 +54,34 @@ nauScene3dElement #element (
 	_lookAt := vec3(0.0f, 0.0f, 0.0f)
 	_lookAtDrag := vec3()
 
-	fireMouseEvent(point: 'point, eventId : 'i32)'void {
-		if eventId == mouseEvent_down {
+	fireMouseEvent(mouseEvent : 'mouseEvent)'void {
+		if mouseEvent.type == mouseEventType.down {
 			_isDragging = true
-			_startDrag = copy point
+			_startDrag = copy mouseEvent.point
 			_lookAtDrag = copy _lookAt
+			mouse_capture(heap parent as #element)
 		}
 
-		if eventId == mouseEvent_move && _isDragging {
+		if mouseEvent.type == mouseEventType.move && _isDragging {
 			_lookAt = vec3_min(lookAtMax, vec3_max(lookAtMin, _lookAtDrag + vec3(
-				(_startDrag.x - point.x) as f32 / _rect.w as f32 * 2.0f
-				(point.y - _startDrag.y) as f32 / _rect.h as f32 * 2.0f
+				(_startDrag.x - mouseEvent.point.x) as f32 / _rect.w as f32 * 2.0f
+				(mouseEvent.point.y - _startDrag.y) as f32 / _rect.h as f32 * 2.0f
 				0.0f
 			)))
 			camera : _lookAt - vec3(0.0f, 0.0f, 5.0f)
 			view = mat4_lookAtLH(camera, _lookAt, vec3(0.0f, 1.0f, 0.0f))
 		}
 
-		if eventId == mouseEvent_up {
+		if mouseEvent.type == mouseEventType.up {
 			_isDragging = false
+			mouse_release(heap parent as #element)
 		}
 
-		for i : 0 to children.count {
-			child : children[i]
-			child.fireMouseEvent(point, eventId)
+		if !mouseEvent.isCaptured {
+			for i : 0 to children.count {
+				child : children[i]
+				child.fireMouseEvent(mouseEvent)
+			}
 		}
 	}
 ) { this }
