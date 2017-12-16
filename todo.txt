@@ -1,21 +1,18 @@
 -- nau --
-* depth sort for alpha blend
 * show people in field
 * animate camera on person click
 
 -- ui --
-* mouse capture
 * load obj file: http://kixor.net/dev/objloader/ https://code.google.com/archive/p/saitoobjloader/ http://people.sc.fsu.edu/%7Ejburkardt/data/obj/obj.html
 * sphere - default to front of sphere being middle of texture
 * center text
 
 -- language --
-* perf: get flex/bison to convert c code block into list of trimmed lines
-* import
-* enum
 * switch
-* lambda
-* map
+* multiply[Type]() to handle mat4 * vec4
+* error for double function def
+* make function/var names case insentive
+* better error when using "value" as var name
 * weak pointer
 * stack optional
 * stack interface
@@ -26,6 +23,8 @@
 	func()'local string { "c" } // this must fail
 	func()'stack string { copy "c" } // okay
 	func()'heap string { heap "c" } // okay
+* map
+* lambda
 
 -- switch --
 switch x {
@@ -39,27 +38,6 @@ switch x {
 
 	}
 }
-
--- package/import --
-package foo
-class() { this }
-x := 0	
-x += 1
-
-package foo.bar
-bob() { this }
-
-foo.class()
-foo.x
-foo.bar.bob()
-
-import foo
-class()
-bar.bob()
-
-import f : foo
-f.class()
-f.bar.bob()
 
 -- lambda --
 count := 0
@@ -79,7 +57,6 @@ lambda1(
 lambda1 : lambda1(count := count)
 a.map(lambda1.invoke)
 count = lambda1.count
-
 
 * fix mac build:
 brew install llvm && rm /usr/local/opt/emscripten/libexec/llvm/bin/llvm-ar && ln -s /usr/local/opt/llvm/bin/llvm-ar /usr/local/opt/emscripten/libexec/llvm/bin/llvm-ar
