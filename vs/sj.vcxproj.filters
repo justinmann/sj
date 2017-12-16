@@ -210,6 +210,9 @@
     <ClInclude Include="..\node\NNullPtr.h">
       <Filter>Node</Filter>
     </ClInclude>
+    <ClInclude Include="..\node\NSwitch.h">
+      <Filter>Node</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\node\NAnd.cpp">
@@ -393,6 +396,9 @@
       <Filter>Node</Filter>
     </ClCompile>
     <ClCompile Include="..\node\NNullPtr.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NSwitch.cpp">
       <Filter>Node</Filter>
     </ClCompile>
   </ItemGroup>

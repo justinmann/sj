@@ -68,6 +68,8 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 	std::pair<std::string, std::vector<std::string>>* import_namespace;
 	NCCode* ccode;
 	CTypeNameParts* typeNameParts;
+	vector<shared_ptr<NSwitchClause>>* switchClauses;
+	NSwitchClause* switchClause;
 }
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
@@ -75,7 +77,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TQUESTION TEMPTY TVALUE TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TLOCAL TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR TINVALID TCOLONEQUAL THEAPPARENT THEAPTHIS TIFVALUE TELSEEMPTY TTOREVERSE TENUM TSWITCH TCASE TDEFAULT TPACKAGE TIMPORT TUNDERSCORE TNULLPTR
 
 /* Non Terminal symbols. Types refer to union decl above */
-%type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch copy destroy expr end_optional end_star if_expr ifValue_var enum_decl
+%type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch copy destroy expr end_optional end_star if_expr ifValue_var enum_decl switch_expr
 %type <var> var_right expr_math expr_var const expr_and expr_comp tuple expr_and_inner
 %type <block> stmts
 %type <exprvec> func_args func_block array_args tuple_args interface_args interface_block ifValue_vars
@@ -94,6 +96,8 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %type <import_namespace> import_namespace
 %type <typeNameParts> namespace_hash namespace_last
 %type <string> namespace_ident
+%type <switchClauses> switch_clauses
+%type <switchClause> switch_clause
 
 /* Operator precedence */
 %left TAND TOR
@@ -283,7 +287,8 @@ interface_arg 		: /* Blank! */									{ $$ = nullptr; }
 					;
 
 expr 				: if_expr										{ $$ = $1; }
-					| for_expr										
+					| for_expr	
+					| switch_expr 									{ $$ = $1; }									
 					| while_expr								
 					| expr_and										{ $$ = $1; }
 					| array
@@ -342,6 +347,18 @@ for_expr			: TFOR TIDENTIFIER TCOLON expr TTO expr block   { $$ = new NFor(LOC, 
 					;
 
 while_expr			: TWHILE expr block 							{ $$ = new NWhile(LOC, shared_ptr<NBase>($2), shared_ptr<NBase>($3)); }
+					;
+
+switch_expr 		: TSWITCH expr TLBRACE end_optional switch_clauses end_optional TRBRACE   { $$ = new NSwitch(LOC, shared_ptr<NBase>($2), *$5); delete $5; }
+					| TSWITCH TLBRACE end_optional switch_clauses end_optional TRBRACE 		  { $$ = new NSwitch(LOC, nullptr, *$4); delete $4; }
+					;
+
+switch_clauses      : switch_clause 								{ $$ = new vector<shared_ptr<NSwitchClause>>(); $$->push_back(shared_ptr<NSwitchClause>($1)); }
+					| switch_clauses end_star switch_clause         { $$ = $1; $$->push_back(shared_ptr<NSwitchClause>($3)); }
+					;
+
+switch_clause       : expr block 									{ $$ = new NSwitchClause(LOC, shared_ptr<NBase>($1), shared_ptr<NBase>($2)); }
+					| TDEFAULT block 								{ $$ = new NSwitchClause(LOC, nullptr, shared_ptr<NBase>($2)); }
 					;
 					
 if_expr		 		: TIF expr block								{ $$ = new NIf(LOC, shared_ptr<NBase>($2), shared_ptr<NBase>($3), nullptr); }

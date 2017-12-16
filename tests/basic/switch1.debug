@@ -1,0 +1,18 @@
+global()'void {
+  a'i32 : 3i
+  y'i32 : switcha == 0i {
+{
+      1i
+    }
+}a == 2i {
+{
+      2i
+    }
+}default {
+{
+      3i
+    }
+}
+  void
+}
+

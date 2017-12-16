@@ -83,6 +83,8 @@ enum NodeType {
     NodeType_Parent,
     NodeType_String,
     NodeType_StringArray,
+    NodeType_Switch,
+    NodeType_SwitchClause,
     NodeType_This,
     NodeType_Throw,
     NodeType_Tuple,
@@ -133,6 +135,7 @@ enum NodeType {
 #include "NNullPtr.h"
 #include "NOr.h"
 #include "NString.h"
+#include "NSwitch.h"
 #include "NThis.h"
 #include "NThrow.h"
 #include "NTuple.h"

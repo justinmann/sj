@@ -179,6 +179,7 @@
     <ClInclude Include="..\node\NOptionDot.h" />
     <ClInclude Include="..\node\NPackage.h" />
     <ClInclude Include="..\node\NParent.h" />
+    <ClInclude Include="..\node\NSwitch.h" />
     <ClInclude Include="..\node\NTuple.h" />
     <ClInclude Include="..\node\NTupleAssignment.h" />
     <ClInclude Include="..\node\NAssignment.h" />
@@ -242,6 +243,7 @@
     <ClCompile Include="..\node\NOptionDot.cpp" />
     <ClCompile Include="..\node\NPackage.cpp" />
     <ClCompile Include="..\node\NParent.cpp" />
+    <ClCompile Include="..\node\NSwitch.cpp" />
     <ClCompile Include="..\node\NTuple.cpp" />
     <ClCompile Include="..\node\NTupleAssignment.cpp" />
     <ClCompile Include="..\node\NAssignment.cpp" />
