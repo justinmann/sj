@@ -2,7 +2,7 @@ anon1()'stack anon1 {
   this
 }
 
-array_getAt(index'i32:)'char {
+array_getat(index'i32:)'char {
   --c--
   if (index >= _parent->count || index < 0) {
   halt("getAt: out of bounds\n");
@@ -12,7 +12,7 @@ array_getAt(index'i32:)'char {
   --c--
 }
 
-array_isEqual(test'stack array_char:)'bool {
+array_isequal(test'stack array_char:)'bool {
   --c--
   if (_parent->count != test->count) {
   *_return = false;
@@ -22,7 +22,7 @@ array_isEqual(test'stack array_char:)'bool {
   --c--
 }
 
-array_isLessOrEqual(test'stack array_char:)'bool {
+array_islessorequal(test'stack array_char:)'bool {
   --c--
   bool result = memcmp(_parent->data, test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(char)) <= 0;		
   ;		
@@ -33,22 +33,22 @@ string(count'i32=, data'stack array_char=)'stack string {
   this
 }
 
-string_getAt(index'i32:)'char {
-  array_getAt(
+string_getat(index'i32:)'char {
+  array_getat(
     parent: this,
     index'i32 : index
   )
 }
 
-string_isEqual(test'stack string:)'bool {
-  array_isEqual(
+string_isequal(test'stack string:)'bool {
+  array_isequal(
     parent: this,
     test'stack array_char : test
   )
 }
 
-string_isLessOrEqual(test'stack string:)'bool {
-  array_isLessOrEqual(
+string_islessorequal(test'stack string:)'bool {
+  array_islessorequal(
     parent: this,
     test'stack array_char : test
   )
@@ -1207,12 +1207,12 @@ global()'void {
   unsigned hashv;                   /* result of hash-fcn(key)        */
   } UT_hash_handle;
   --ctypedef--
-  u32_maxValue'u32 : (uint32_t)4294967295uu
-  i32_maxValue'i32 : -1i - 2147483647i
-  i32_minValue'i32 : 2147483647i
-  emptyStringData'ptr = 0
+  u32_maxvalue'u32 : (uint32_t)4294967295uu
+  i32_maxvalue'i32 : -1i - 2147483647i
+  i32_minvalue'i32 : 2147483647i
+  emptystringdata'ptr = 0
   --c--
-  sjv_emptyStringData = "";
+  sjv_emptystringdata = "";
   --c--
   a'stack string : string(this = string(
     count'i32 = count,
@@ -1229,16 +1229,16 @@ global()'void {
     count'i32 = count,
     data'stack array_char = data
   ))
-  h'char : string_getAt(
+  h'char : string_getat(
     parent: this,
     index'i32 : index
   )
   i'bool : h == 'h'
-  j'bool : string_isEqual(
+  j'bool : string_isequal(
     parent: this,
     test'stack string : test
   )
-  k'bool : string_isLessOrEqual(
+  k'bool : string_islessorequal(
     parent: this,
     test'stack string : test
   )

@@ -2,7 +2,7 @@ anon1()'stack anon1 {
   this
 }
 
-array_getAt(index'i32:)'stack class {
+array_getat(index'i32:)'stack class {
   --c--
   if (index >= _parent->count || index < 0) {
   halt("getAt: out of bounds\n");
@@ -12,13 +12,13 @@ array_getAt(index'i32:)'stack class {
   --c--
 }
 
-array_initAt(index'i32:, item'stack class:)'void {
+array_initat(index'i32:, item'stack class:)'void {
   --c--
   if (index != _parent->count) {
   halt("initAt: can only initialize last element\n");		
   }
-  if (index >= _parent->dataSize || index < 0) {
-  halt("initAt: out of bounds %d:%d\n", index, _parent->dataSize);
+  if (index >= _parent->datasize || index < 0) {
+  halt("initAt: out of bounds %d:%d\n", index, _parent->datasize);
   }
   sjs_class* p = (sjs_class*)_parent->data;
   ;
@@ -1179,27 +1179,27 @@ global()'void {
   unsigned hashv;                   /* result of hash-fcn(key)        */
   } UT_hash_handle;
   --ctypedef--
-  u32_maxValue'u32 : (uint32_t)4294967295uu
-  i32_maxValue'i32 : -1i - 2147483647i
-  i32_minValue'i32 : 2147483647i
-  emptyStringData'ptr = 0
+  u32_maxvalue'u32 : (uint32_t)4294967295uu
+  i32_maxvalue'i32 : -1i - 2147483647i
+  i32_minvalue'i32 : 2147483647i
+  emptystringdata'ptr = 0
   --c--
-  sjv_emptyStringData = "";
+  sjv_emptystringdata = "";
   --c--
-  a'stack array_class : [array_initAt(
+  a'stack array_class : [array_initat(
     parent: this,
     index'i32 : index,
     item'stack class : item
-  ), array_initAt(
+  ), array_initat(
     parent: this,
     index'i32 : index,
     item'stack class : item
-  ), array_initAt(
+  ), array_initat(
     parent: this,
     index'i32 : index,
     item'stack class : item
   )]
-  c'local class : local array_getAt(
+  c'local class : local array_getat(
     parent: this,
     index'i32 : index
   )

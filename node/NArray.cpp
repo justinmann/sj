@@ -96,7 +96,7 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
 
     auto tempVar = make_shared<CTempVar>(loc, scope, createArrayCallee->getReturnType(compiler, returnMode)->getLocalType(), tempName);
     
-    auto initAtCallee = createArrayCallee->getCFunction(compiler, loc, "initAt", scope, nullptr, CTM_Undefined);
+    auto initAtCallee = createArrayCallee->getCFunction(compiler, loc, "initat", scope, nullptr, CTM_Undefined);
     if (!initAtCallee) {
         return nullptr;
     }
@@ -105,7 +105,7 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
     vector<shared_ptr<CVar>> initAtVars;
     for (auto element : *elements) {
         auto initAtParameters = CCallVar::getParameters(compiler, loc, scope, initAtCallee, make_shared<NodeList>(make_shared<NInteger>(loc, index), element), false, nullptr, CTM_Stack);
-        auto initAtVar = CCallVar::create(compiler, loc, "initAt", tempVar, initAtParameters, scope, initAtCallee, CTM_Stack);
+        auto initAtVar = CCallVar::create(compiler, loc, "initat", tempVar, initAtParameters, scope, initAtCallee, CTM_Stack);
         if (!initAtVar) {
             return nullptr;
         }

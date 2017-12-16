@@ -1,6 +1,6 @@
 emptyStringData := nullptr
 --c--
-sjv_emptyStringData = "";
+sjv_emptystringdata = "";
 --c--
 
 string(

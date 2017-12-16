@@ -5,56 +5,56 @@
 
 typedef struct td_int32_option int32_option;
 struct td_int32_option {
-    bool isEmpty;
+    bool isempty;
     int32_t value;
 };
 const int32_option int32_empty = { true };
 
 typedef struct td_uint32_option uint32_option;
 struct td_uint32_option {
-    bool isEmpty;
+    bool isempty;
     uint32_t value;
 };
 const uint32_option uint32_empty = { true };
 
 typedef struct td_int64_option int64_option;
 struct td_int64_option {
-    bool isEmpty;
+    bool isempty;
     int64_t value;
 };
 const int64_option int64_empty = { true };
 
 typedef struct td_uint64_option uint64_option;
 struct td_uint64_option {
-    bool isEmpty;
+    bool isempty;
     uint64_t value;
 };
 const uint64_option uint64_empty = { true };
 
 typedef struct td_void_option void_option;
 struct td_void_option {
-    bool isEmpty;
+    bool isempty;
     void* value;
 };
 const void_option void_empty = { true };
 
 typedef struct td_char_option char_option;
 struct td_char_option {
-    bool isEmpty;
+    bool isempty;
     char value;
 };
 const char_option char_empty = { true };
 
 typedef struct td_float_option float_option;
 struct td_float_option {
-    bool isEmpty;
+    bool isempty;
     float value;
 };
 const float_option float_empty = { true };
 
 typedef struct td_double_option double_option;
 struct td_double_option {
-    bool isEmpty;
+    bool isempty;
     double value;
 };
 const double_option double_empty = { true };
@@ -104,7 +104,7 @@ void sjf_class_destroy(sjs_class* _this);
 void sjf_class_func(sjs_class* _parent, int32_t x);
 void sjf_class_heap(sjs_class_heap* _this);
 void sjf_class_run(sjs_class* _parent, int32_t* _return);
-void sjf_doMath(cb_i32_void_heap cb);
+void sjf_domath(cb_i32_void_heap cb);
 void main_destroy(void);
 
 void sjf_class(sjs_class* _this) {
@@ -156,7 +156,7 @@ void sjf_class_run(sjs_class* _parent, int32_t* _return) {
 #line 16
     sjt_functionParam3.inner._cb = (void(*)(void*,int32_t))sjf_class_func;
 #line 16
-    sjf_doMath(sjt_functionParam3);
+    sjf_domath(sjt_functionParam3);
 #line 15
     sjt_dot3 = _parent;
 #line 15
@@ -170,7 +170,7 @@ void sjf_class_run(sjs_class* _parent, int32_t* _return) {
     }
 }
 
-void sjf_doMath(cb_i32_void_heap cb) {
+void sjf_domath(cb_i32_void_heap cb) {
     cb_i32_void sjt_callback1;
     cb_i32_void sjt_callback2;
     int32_t sjt_functionParam1;

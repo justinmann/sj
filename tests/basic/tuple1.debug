@@ -1170,34 +1170,34 @@ global()'void {
   unsigned hashv;                   /* result of hash-fcn(key)        */
   } UT_hash_handle;
   --ctypedef--
-  u32_maxValue'u32 : (uint32_t)4294967295uu
-  i32_maxValue'i32 : -1i - 2147483647i
-  i32_minValue'i32 : 2147483647i
-  emptyStringData'ptr = 0
+  u32_maxvalue'u32 : (uint32_t)4294967295uu
+  i32_maxvalue'i32 : -1i - 2147483647i
+  i32_minvalue'i32 : 2147483647i
+  emptystringdata'ptr = 0
   --c--
-  sjv_emptyStringData = "";
+  sjv_emptystringdata = "";
   --c--
   t'stack tuple2_i32_string : func()
   a'i32 = t.item1
   b'stack string = t.item2
   {
-    tupleResult1'stack tuple2_i32_string : func()
-    a'i32 = tupleResult1.item1
-    b'stack string = tupleResult1.item2
+    tupleresult1'stack tuple2_i32_string : func()
+    a'i32 = tupleresult1.item1
+    b'stack string = tupleresult1.item2
   }
   {
-    tupleResult2'stack tuple2_i32_string : func()
-    c'i32 : tupleResult2.item1
-    d'stack string : tupleResult2.item2
+    tupleresult2'stack tuple2_i32_string : func()
+    c'i32 : tupleresult2.item1
+    d'stack string : tupleresult2.item2
   }
   {
-    tupleResult3'stack tuple3_string_f64_i32 : tuple3![stack string, f64, i32](this = tuple3![stack string, f64, i32](
+    tupleresult3'stack tuple3_string_f64_i32 : tuple3![stack string, f64, i32](this = tuple3![stack string, f64, i32](
       item1'stack string : item1,
       item2'f64 : item2,
       item3'i32 : item3
     ))
-    e'stack string = tupleResult3.item1
-    f'f64 = tupleResult3.item2
+    e'stack string = tupleresult3.item1
+    f'f64 = tupleresult3.item2
   }
   void
 }

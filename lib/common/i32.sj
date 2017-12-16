@@ -40,7 +40,7 @@ i32_toString(val : 'i32, base : 10, minLength : 0) {
 	} while (val && i);
 	sjv_count = 30 - i;
 
-	if (sjv_count < minLength) {				
+	if (sjv_count < minlength) {				
 	}
 
 	sjv_data = malloc(sizeof(char) * (sjv_count + 1));

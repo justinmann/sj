@@ -2,22 +2,22 @@ class(x'i32:)'heap class {
   this
 }
 
-class_toString(x'stack class:)'i32 {
+class_tostring(x'stack class:)'i32 {
   2i
 }
 
-i32_toString(x'i32:)'i32 {
+i32_tostring(x'i32:)'i32 {
   1i
 }
 
 global()'void {
-  i32_toString(
+  i32_tostring(
     x'i32 : x
   )
   c'heap class : heap class(this = class(
     x'i32 : x
   ))
-  class_toString(
+  class_tostring(
     x'stack class : x
   )
   void

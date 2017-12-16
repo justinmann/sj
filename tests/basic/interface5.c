@@ -5,56 +5,56 @@
 
 typedef struct td_int32_option int32_option;
 struct td_int32_option {
-    bool isEmpty;
+    bool isempty;
     int32_t value;
 };
 const int32_option int32_empty = { true };
 
 typedef struct td_uint32_option uint32_option;
 struct td_uint32_option {
-    bool isEmpty;
+    bool isempty;
     uint32_t value;
 };
 const uint32_option uint32_empty = { true };
 
 typedef struct td_int64_option int64_option;
 struct td_int64_option {
-    bool isEmpty;
+    bool isempty;
     int64_t value;
 };
 const int64_option int64_empty = { true };
 
 typedef struct td_uint64_option uint64_option;
 struct td_uint64_option {
-    bool isEmpty;
+    bool isempty;
     uint64_t value;
 };
 const uint64_option uint64_empty = { true };
 
 typedef struct td_void_option void_option;
 struct td_void_option {
-    bool isEmpty;
+    bool isempty;
     void* value;
 };
 const void_option void_empty = { true };
 
 typedef struct td_char_option char_option;
 struct td_char_option {
-    bool isEmpty;
+    bool isempty;
     char value;
 };
 const char_option char_empty = { true };
 
 typedef struct td_float_option float_option;
 struct td_float_option {
-    bool isEmpty;
+    bool isempty;
     float value;
 };
 const float_option float_empty = { true };
 
 typedef struct td_double_option double_option;
 struct td_double_option {
-    bool isEmpty;
+    bool isempty;
     double value;
 };
 const double_option double_empty = { true };
@@ -304,7 +304,7 @@ int main(int argc, char** argv) {
 #line 23
         sjt_parent2->test2((void*)(((char*)sjt_parent2->_parent) + sizeof(intptr_t)), &sjt_value1);
 #line 23
-        value1.isEmpty = false;
+        value1.isempty = false;
 #line 23
         value1.value = sjt_value1;
 

@@ -1,6 +1,8 @@
 #include "Node.h"
 
 NInterface::NInterface(CLoc loc, const string& name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> methodList_) : NBaseFunction(NodeType_Interface, loc), name(name), templateTypeNames(templateTypeNames) {
+    boost::algorithm::to_lower(this->name);
+
     if (methodList_) {
         for (auto it : *methodList_) {
             assert(it->nodeType == NodeType_InterfaceMethod);

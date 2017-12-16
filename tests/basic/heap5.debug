@@ -1159,12 +1159,12 @@ global()'void {
   unsigned hashv;                   /* result of hash-fcn(key)        */
   } UT_hash_handle;
   --ctypedef--
-  u32_maxValue'u32 : (uint32_t)4294967295uu
-  i32_maxValue'i32 : -1i - 2147483647i
-  i32_minValue'i32 : 2147483647i
-  emptyStringData'ptr = 0
+  u32_maxvalue'u32 : (uint32_t)4294967295uu
+  i32_maxvalue'i32 : -1i - 2147483647i
+  i32_minvalue'i32 : 2147483647i
+  emptystringdata'ptr = 0
   --c--
-  sjv_emptyStringData = "";
+  sjv_emptystringdata = "";
   --c--
   a(this = a(
     data'stack array_char = data

@@ -22,7 +22,7 @@ void CIsEmptyVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
     
     stringstream line;
     if (leftValue->type->parent.expired() && leftValue->type->category != CTC_Function) {
-        line << leftValue->getName(trBlock) << ".isEmpty";
+        line << leftValue->getName(trBlock) << ".isempty";
     }
     else {
         line << "(";

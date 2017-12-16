@@ -1100,56 +1100,56 @@ unsigned hashv;                   /* result of hash-fcn(key)        */
 } UT_hash_handle;
 typedef struct td_int32_option int32_option;
 struct td_int32_option {
-    bool isEmpty;
+    bool isempty;
     int32_t value;
 };
 const int32_option int32_empty = { true };
 
 typedef struct td_uint32_option uint32_option;
 struct td_uint32_option {
-    bool isEmpty;
+    bool isempty;
     uint32_t value;
 };
 const uint32_option uint32_empty = { true };
 
 typedef struct td_int64_option int64_option;
 struct td_int64_option {
-    bool isEmpty;
+    bool isempty;
     int64_t value;
 };
 const int64_option int64_empty = { true };
 
 typedef struct td_uint64_option uint64_option;
 struct td_uint64_option {
-    bool isEmpty;
+    bool isempty;
     uint64_t value;
 };
 const uint64_option uint64_empty = { true };
 
 typedef struct td_void_option void_option;
 struct td_void_option {
-    bool isEmpty;
+    bool isempty;
     void* value;
 };
 const void_option void_empty = { true };
 
 typedef struct td_char_option char_option;
 struct td_char_option {
-    bool isEmpty;
+    bool isempty;
     char value;
 };
 const char_option char_empty = { true };
 
 typedef struct td_float_option float_option;
 struct td_float_option {
-    bool isEmpty;
+    bool isempty;
     float value;
 };
 const float_option float_empty = { true };
 
 typedef struct td_double_option double_option;
 struct td_double_option {
-    bool isEmpty;
+    bool isempty;
     double value;
 };
 const double_option double_empty = { true };
@@ -1195,17 +1195,17 @@ struct td_sjs_anon1_heap {
 };
 
 struct td_sjs_array_char {
-    int32_t dataSize;
+    int32_t datasize;
     void* data;
-    bool _isGlobal;
+    bool _isglobal;
     int32_t count;
 };
 
 struct td_sjs_array_char_heap {
     intptr_t _refCount;
-    int32_t dataSize;
+    int32_t datasize;
     void* data;
-    bool _isGlobal;
+    bool _isglobal;
     int32_t count;
 };
 
@@ -1241,20 +1241,20 @@ sjs_anon1* sjt_parent1;
 sjs_anon1* sjt_parent5;
 bool sjt_while1;
 sjs_anon1 sjv_console;
-void* sjv_emptyStringData;
+void* sjv_emptystringdata;
 float sjv_f32_pi;
-int32_t sjv_i32_maxValue;
-int32_t sjv_i32_minValue;
-bool sjv_isCorrect;
+int32_t sjv_i32_maxvalue;
+int32_t sjv_i32_minvalue;
+bool sjv_iscorrect;
 int32_t sjv_num;
-uint32_t sjv_u32_maxValue;
+uint32_t sjv_u32_maxvalue;
 
 void sjf_anon1(sjs_anon1* _this);
 void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* _from);
 void sjf_anon1_destroy(sjs_anon1* _this);
 void sjf_anon1_heap(sjs_anon1_heap* _this);
-void sjf_anon1_readLine(sjs_anon1* _parent, sjs_string* _return);
-void sjf_anon1_readLine_heap(sjs_anon1* _parent, sjs_string_heap** _return);
+void sjf_anon1_readline(sjs_anon1* _parent, sjs_string* _return);
+void sjf_anon1_readline_heap(sjs_anon1* _parent, sjs_string_heap** _return);
 void sjf_anon1_write(sjs_anon1* _parent, sjs_string* data);
 void sjf_array_char(sjs_array_char* _this);
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from);
@@ -1265,7 +1265,7 @@ void sjf_string(sjs_string* _this);
 void sjf_string_copy(sjs_string* _this, sjs_string* _from);
 void sjf_string_destroy(sjs_string* _this);
 void sjf_string_heap(sjs_string_heap* _this);
-void sjf_string_toI32(sjs_string* text, int32_t* _return);
+void sjf_string_toi32(sjs_string* text, int32_t* _return);
 void main_destroy(void);
 
 void halt(const char * format, ...) {
@@ -1312,7 +1312,7 @@ void sjf_anon1_destroy(sjs_anon1* _this) {
 void sjf_anon1_heap(sjs_anon1_heap* _this) {
 }
 
-void sjf_anon1_readLine(sjs_anon1* _parent, sjs_string* _return) {
+void sjf_anon1_readline(sjs_anon1* _parent, sjs_string* _return) {
     int32_t sjt_math7;
     int32_t sjt_math8;
     void* sjv_data;
@@ -1322,41 +1322,41 @@ void sjf_anon1_readLine(sjs_anon1* _parent, sjs_string* _return) {
     sjv_data = 0;
 #line 20
     sjv_size = 1024;
-#line 21
+#line 22
     char* str = (char*)malloc(size);
-#line 21
+#line 23
     int index = 0;
-#line 21
+#line 24
     char ch = ' ';
-#line 21
+#line 25
     do {
-#line 21
+#line 26
         ch = getchar();
-#line 21
+#line 27
         if (ch != '\n') {
-#line 21
+#line 28
             str[index] = ch;
-#line 21
+#line 29
             index++;
-#line 21
+#line 30
             if (index >= size) {
-#line 21
+#line 31
                 size *= 2;
-#line 21
+#line 32
                 str = (char*)realloc(str, size);
-#line 21
+#line 33
             }
-#line 21
+#line 34
         }
-#line 21
+#line 35
     } while (ch != '\n');
-#line 21
+#line 37
     str[index] = 0;
-#line 21
+#line 38
     index++;
-#line 21
+#line 39
     data = (void*)str;
-#line 21
+#line 40
     size = index;
 #line 43
     sjt_math7 = sjv_size;
@@ -1365,11 +1365,11 @@ void sjf_anon1_readLine(sjs_anon1* _parent, sjs_string* _return) {
 #line 43
     _return->count = sjt_math7 - sjt_math8;
 #line 43
-    _return->data.dataSize = sjv_size;
+    _return->data.datasize = sjv_size;
 #line 43
     _return->data.data = sjv_data;
 #line 4 "lib/common/array.sj"
-    _return->data._isGlobal = false;
+    _return->data._isglobal = false;
 #line 43 "lib/common/console.sj"
     _return->data.count = sjv_size;
 #line 43
@@ -1378,7 +1378,7 @@ void sjf_anon1_readLine(sjs_anon1* _parent, sjs_string* _return) {
     sjf_string(_return);
 }
 
-void sjf_anon1_readLine_heap(sjs_anon1* _parent, sjs_string_heap** _return) {
+void sjf_anon1_readline_heap(sjs_anon1* _parent, sjs_string_heap** _return) {
     int32_t sjt_math10;
     int32_t sjt_math9;
     void* sjv_data;
@@ -1388,45 +1388,45 @@ void sjf_anon1_readLine_heap(sjs_anon1* _parent, sjs_string_heap** _return) {
     sjv_data = 0;
 #line 20
     sjv_size = 1024;
-#line 21
+#line 22
     char* str = (char*)malloc(size);
-#line 21
+#line 23
     int index = 0;
-#line 21
+#line 24
     char ch = ' ';
-#line 21
+#line 25
     do {
-#line 21
+#line 26
         ch = getchar();
-#line 21
+#line 27
         if (ch != '\n') {
-#line 21
+#line 28
             str[index] = ch;
-#line 21
+#line 29
             index++;
-#line 21
+#line 30
             if (index >= size) {
-#line 21
+#line 31
                 size *= 2;
-#line 21
+#line 32
                 str = (char*)realloc(str, size);
-#line 21
+#line 33
             }
-#line 21
+#line 34
         }
-#line 21
+#line 35
     } while (ch != '\n');
-#line 21
+#line 37
     str[index] = 0;
-#line 21
+#line 38
     index++;
-#line 21
+#line 39
     data = (void*)str;
-#line 21
+#line 40
     size = index;
-#line 21
+#line 40
     (*_return) = (sjs_string_heap*)malloc(sizeof(sjs_string_heap));
-#line 21
+#line 40
     (*_return)->_refCount = 1;
 #line 43
     sjt_math9 = sjv_size;
@@ -1435,11 +1435,11 @@ void sjf_anon1_readLine_heap(sjs_anon1* _parent, sjs_string_heap** _return) {
 #line 43
     (*_return)->count = sjt_math9 - sjt_math10;
 #line 43
-    (*_return)->data.dataSize = sjv_size;
+    (*_return)->data.datasize = sjv_size;
 #line 43
     (*_return)->data.data = sjv_data;
 #line 4 "lib/common/array.sj"
-    (*_return)->data._isGlobal = false;
+    (*_return)->data._isglobal = false;
 #line 43 "lib/common/console.sj"
     (*_return)->data.count = sjv_size;
 #line 43
@@ -1449,81 +1449,81 @@ void sjf_anon1_readLine_heap(sjs_anon1* _parent, sjs_string_heap** _return) {
 }
 
 void sjf_anon1_write(sjs_anon1* _parent, sjs_string* data) {
-#line 7 "lib/common/console.sj"
+#line 8 "lib/common/console.sj"
     printf("%s", (char*)data->data.data);
 }
 
 void sjf_array_char(sjs_array_char* _this) {
-#line 266 "lib/common/array.sj"
-    if (_this->dataSize < 0) {
-#line 266
+#line 267 "lib/common/array.sj"
+    if (_this->datasize < 0) {
+#line 268
         halt("size is less than zero");
-#line 266
+#line 269
     }
-#line 266
+#line 271
     if (!_this->data) {
-#line 266
-        _this->data = malloc(_this->dataSize * sizeof(char));
-#line 266
+#line 272
+        _this->data = malloc(_this->datasize * sizeof(char));
+#line 273
         if (!_this->data) {
-#line 266
+#line 274
             halt("grow: out of memory\n");
-#line 266
+#line 275
         }
-#line 266
+#line 276
     }
 }
 
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
 #line 1 "lib/common/array.sj"
-    _this->dataSize = _from->dataSize;
+    _this->datasize = _from->datasize;
 #line 1
     _this->data = _from->data;
 #line 1
-    _this->_isGlobal = _from->_isGlobal;
+    _this->_isglobal = _from->_isglobal;
 #line 1
     _this->count = _from->count;
-#line 280
+#line 281
     _this->data = _from->data;
-#line 280
-    if (!_this->_isGlobal && _this->data) {
-#line 280
+#line 282
+    if (!_this->_isglobal && _this->data) {
+#line 283
         _retain(_this->data);
-#line 280
+#line 284
     }
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
-#line 287 "lib/common/array.sj"
-    if (!_this->_isGlobal && _this->data) {
-#line 287
+#line 288 "lib/common/array.sj"
+    if (!_this->_isglobal && _this->data) {
+#line 289
         if (_release(_this->data)) {
-#line 287
+#line 290
             free((char*)_this->data);
-#line 287
+#line 291
         }
-#line 287
+#line 292
     }
 }
 
 void sjf_array_char_heap(sjs_array_char_heap* _this) {
-#line 266 "lib/common/array.sj"
-    if (_this->dataSize < 0) {
-#line 266
+#line 267 "lib/common/array.sj"
+    if (_this->datasize < 0) {
+#line 268
         halt("size is less than zero");
-#line 266
+#line 269
     }
-#line 266
+#line 271
     if (!_this->data) {
-#line 266
-        _this->data = malloc(_this->dataSize * sizeof(char));
-#line 266
+#line 272
+        _this->data = malloc(_this->datasize * sizeof(char));
+#line 273
         if (!_this->data) {
-#line 266
+#line 274
             halt("grow: out of memory\n");
-#line 266
+#line 275
         }
-#line 266
+#line 276
     }
 }
 
@@ -1532,7 +1532,7 @@ void sjf_i32_random(int32_t* _return) {
 
 #line 15 "lib/common/i32.sj"
     sjv_x = 0;
-#line 16
+#line 17
     sjv_x = rand();
 #line 14
     (*_return) = sjv_x;
@@ -1554,26 +1554,26 @@ void sjf_string_destroy(sjs_string* _this) {
 void sjf_string_heap(sjs_string_heap* _this) {
 }
 
-void sjf_string_toI32(sjs_string* text, int32_t* _return) {
+void sjf_string_toi32(sjs_string* text, int32_t* _return) {
     int32_t sjv_x;
 
 #line 63 "lib/common/i32.sj"
     sjv_x = 0;
-#line 64
+#line 65
     char* e;
-#line 64
+#line 66
     int v = (int)strtol((char*)text->data.data, &e, 10);
-#line 64
+#line 68
     if (*e != '\0') {
-#line 64
+#line 69
         sjv_x = 0;
-#line 64
+#line 70
     }
-#line 64
+#line 71
     else {
-#line 64
+#line 72
         sjv_x = v;
-#line 64
+#line 73
     }
 #line 62
     (*_return) = sjv_x;
@@ -1584,7 +1584,7 @@ int main(int argc, char** argv) {
 #line 1 "lib/common/f32.sj"
     sjv_f32_pi = 3.14159265358979323846f;
 #line 1 "lib/common/i32.sj"
-    sjv_u32_maxValue = (uint32_t)4294967295u;
+    sjv_u32_maxvalue = (uint32_t)4294967295u;
 #line 3
     sjt_negate1 = 1;
 #line 3
@@ -1594,23 +1594,23 @@ int main(int argc, char** argv) {
 #line 3
     sjt_math2 = 2147483647;
 #line 3
-    sjv_i32_maxValue = sjt_math1 - sjt_math2;
+    sjv_i32_maxvalue = sjt_math1 - sjt_math2;
 #line 4
-    sjv_i32_minValue = 2147483647;
+    sjv_i32_minvalue = 2147483647;
 #line 1 "lib/common/string.sj"
-    sjv_emptyStringData = 0;
-#line 2
-    sjv_emptyStringData = "";
+    sjv_emptystringdata = 0;
+#line 3
+    sjv_emptystringdata = "";
 #line 6 "lib/common/console.sj"
     sjt_parent1 = &sjv_console;
 #line 3 "highlow.sj"
     sjt_call1.count = 15;
 #line 3
-    sjt_call1.data.dataSize = 16;
+    sjt_call1.data.datasize = 16;
 #line 3
     sjt_call1.data.data = (void*)sjg_string1;
 #line 3
-    sjt_call1.data._isGlobal = true;
+    sjt_call1.data._isglobal = true;
 #line 3
     sjt_call1.data.count = 16;
 #line 3
@@ -1632,9 +1632,9 @@ int main(int argc, char** argv) {
 #line 5
     sjv_num = sjt_math3 + sjt_math4;
 #line 6
-    sjv_isCorrect = false;
+    sjv_iscorrect = false;
 #line 8
-    sjt_not1 = sjv_isCorrect;
+    sjt_not1 = sjv_iscorrect;
 #line 8
     result2 = !sjt_not1;
 #line 8
@@ -1653,11 +1653,11 @@ int main(int argc, char** argv) {
 #line 18 "lib/common/console.sj"
         sjt_parent2 = &sjv_console;
 #line 18
-        sjf_anon1_readLine(sjt_parent2, &sjv_str);
+        sjf_anon1_readline(sjt_parent2, &sjv_str);
 #line 10 "highlow.sj"
         sjt_functionParam2 = &sjv_str;
 #line 10
-        sjf_string_toI32(sjt_functionParam2, &sjv_guess);
+        sjf_string_toi32(sjt_functionParam2, &sjv_guess);
 #line 11
         sjt_compare1 = sjv_guess;
 #line 11
@@ -1674,11 +1674,11 @@ int main(int argc, char** argv) {
 #line 12 "highlow.sj"
             sjt_call2.count = 9;
 #line 12
-            sjt_call2.data.dataSize = 10;
+            sjt_call2.data.datasize = 10;
 #line 12
             sjt_call2.data.data = (void*)sjg_string3;
 #line 12
-            sjt_call2.data._isGlobal = true;
+            sjt_call2.data._isglobal = true;
 #line 12
             sjt_call2.data.count = 10;
 #line 12
@@ -1690,7 +1690,7 @@ int main(int argc, char** argv) {
 #line 12
             sjf_anon1_write(sjt_parent3, sjt_functionParam3);
 #line 13
-            sjv_isCorrect = false;
+            sjv_iscorrect = false;
 
             sjf_string_destroy(&sjt_call2);
         } else {
@@ -1714,11 +1714,11 @@ int main(int argc, char** argv) {
 #line 15 "highlow.sj"
                 sjt_call3.count = 10;
 #line 15
-                sjt_call3.data.dataSize = 11;
+                sjt_call3.data.datasize = 11;
 #line 15
                 sjt_call3.data.data = (void*)sjg_string2;
 #line 15
-                sjt_call3.data._isGlobal = true;
+                sjt_call3.data._isglobal = true;
 #line 15
                 sjt_call3.data.count = 11;
 #line 15
@@ -1730,17 +1730,17 @@ int main(int argc, char** argv) {
 #line 15
                 sjf_anon1_write(sjt_parent4, sjt_functionParam4);
 #line 16
-                sjv_isCorrect = false;
+                sjv_iscorrect = false;
 
                 sjf_string_destroy(&sjt_call3);
             } else {
 #line 18 "highlow.sj"
-                sjv_isCorrect = true;
+                sjv_iscorrect = true;
             }
         }
 
 #line 8
-        sjt_not2 = sjv_isCorrect;
+        sjt_not2 = sjv_iscorrect;
 #line 8
         result3 = !sjt_not2;
 #line 8
@@ -1754,11 +1754,11 @@ int main(int argc, char** argv) {
 #line 22 "highlow.sj"
     sjt_call4.count = 9;
 #line 22
-    sjt_call4.data.dataSize = 10;
+    sjt_call4.data.datasize = 10;
 #line 22
     sjt_call4.data.data = (void*)sjg_string4;
 #line 22
-    sjt_call4.data._isGlobal = true;
+    sjt_call4.data._isglobal = true;
 #line 22
     sjt_call4.data.count = 10;
 #line 22

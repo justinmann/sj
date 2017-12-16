@@ -9,7 +9,9 @@ shared_ptr<CVar> NVariableBase::getVar(Compiler* compiler, shared_ptr<CScope> sc
     return _var[key1];
 }
 
-NVariable::NVariable(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames) : NVariableBase(NodeType_Variable, loc), name(name), templateTypeNames(templateTypeNames) { }
+NVariable::NVariable(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames) : NVariableBase(NodeType_Variable, loc), name(name), templateTypeNames(templateTypeNames) {
+    boost::algorithm::to_lower(this->name);
+}
 
 shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
     auto varScope = scope;
@@ -18,9 +20,7 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
     }
     
     if (dotVar && varScope && varScope->function && !templateTypeNames) {
-        string nameWithUpper = name;
-        nameWithUpper[0] = (char)toupper(nameWithUpper[0]);
-        auto getPropertyFunction = varScope->function->getCFunction(compiler, loc, "get" + nameWithUpper, scope, nullptr, returnMode);
+        auto getPropertyFunction = varScope->function->getCFunction(compiler, loc, "get" + name, scope, nullptr, returnMode);
         if (getPropertyFunction != nullptr) {
             if (returnMode != CTM_Heap) {
                 returnMode = CTM_Stack;

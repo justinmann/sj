@@ -21,5 +21,6 @@
 #include <assert.h>
 
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string.hpp> 
 
 #endif /* sj_pch */

@@ -40,6 +40,8 @@ public:
         assert(valueName.find("#") == string::npos);
         assert(valueName.back() != '?');
         assert(category != CTC_Function);
+
+        boost::algorithm::to_lower(this->valueName);
     }
 
     CTypeName(CTypeCategory category, CTypeMode typeMode, const string& valueName, shared_ptr<CTypeNameList> templateTypeNames, bool isOption) : category(category), mutability(CTI_Undefined), typeMode(typeMode), valueName(valueName), templateTypeNames(templateTypeNames), isOption(isOption) {
@@ -49,6 +51,8 @@ public:
         assert(valueName.find("#") == string::npos);
         assert(valueName.back() != '?');
         assert(category != CTC_Function);
+
+        boost::algorithm::to_lower(this->valueName);
     }
 
     CTypeName(CTypeMode typeMode, shared_ptr<CTypeNameList> argTypeNames, shared_ptr<CTypeName> returnTypeName) : category(CTC_Function), mutability(CTI_Undefined), typeMode(typeMode), argTypeNames(argTypeNames), returnTypeName(returnTypeName), isOption(false) {

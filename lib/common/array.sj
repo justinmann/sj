@@ -21,8 +21,8 @@ array!t (
 		if (index != _parent->count) {
 			halt("initAt: can only initialize last element\n");		
 		}
-		if (index >= _parent->dataSize || index < 0) {
-			halt("initAt: out of bounds %d:%d\n", index, _parent->dataSize);
+		if (index >= _parent->datasize || index < 0) {
+			halt("initAt: out of bounds %d:%d\n", index, _parent->datasize);
 		}
 
 		#type(t)* p = (#type(t)*)_parent->data;
@@ -65,13 +65,13 @@ array!t (
 	map!new_t(cb : '(:t)new_t)'array!new_t {
 		newData := nullptr
 		--c--
-		sjv_newData = malloc(_parent->count * sizeof(#type(new_t)));
+		sjv_newdata = malloc(_parent->count * sizeof(#type(new_t)));
 		--c--
 		for i : 0 to count {
 			newItem : cb(getAt(i))
 			--c--
-			#type(new_t)* p = (#type(new_t)*)sjv_newData;
-			#retain(new_t, p[i], newItem);
+			#type(new_t)* p = (#type(new_t)*)sjv_newdata;
+			#retain(new_t, p[i], newitem);
 			--c--
 		}		
 		array!new_t(data: newData, dataSize: count, count: count)
@@ -81,14 +81,14 @@ array!t (
 		newData := nullptr
 		newCount := 0
 		--c--
-		sjv_newData = malloc(_parent->count * sizeof(#type(t)));
+		sjv_newdata = malloc(_parent->count * sizeof(#type(t)));
 		--c--
 		for i : 0 to count {
 			item : getAt(i)
 			if (cb(item)) {
 				--c--
-				#type(t)* p = (#type(t)*)sjv_newData;
-				#retain(t, p[sjv_newCount], item);
+				#type(t)* p = (#type(t)*)sjv_newdata;
+				#retain(t, p[sjv_newcount], item);
 				--c--
 				newCount++
 			}
@@ -115,16 +115,16 @@ array!t (
 	grow(newSize :' i32)'array!t {
 		newData := nullptr
 		--c--
-		if (_parent->dataSize != newSize) {
-			if (newSize < _parent->dataSize) {
-				halt("grow: new size smaller than old _parent->dataSize %d:%d\n", newSize, _parent->dataSize);
+		if (_parent->datasize != newsize) {
+			if (newsize < _parent->datasize) {
+				halt("grow: new size smaller than old _parent->datasize %d:%d\n", newsize, _parent->datasize);
 			}
 			
-			sjv_newData = malloc(newSize * sizeof(#type(t)));
+			sjv_newdata = malloc(newsize * sizeof(#type(t)));
 			if (!_parent->data) {
 				halt("grow: out of memory\n");
 			}
-			memcpy(sjv_newData, _parent->data, _parent->dataSize * sizeof(#type(t)));
+			memcpy(sjv_newdata, _parent->data, _parent->datasize * sizeof(#type(t)));
 		}
 		--c--
 		array!t(data: newData, dataSize: newSize, count: count)
@@ -264,12 +264,12 @@ array!t (
 	}
 ) {
 	--c--
-	if (_this->dataSize < 0) {
+	if (_this->datasize < 0) {
 		halt("size is less than zero");
 	}
 
 	if (!_this->data) {
-		_this->data = malloc(_this->dataSize * sizeof(#type(t)));
+		_this->data = malloc(_this->datasize * sizeof(#type(t)));
 		if (!_this->data) {
 			halt("grow: out of memory\n");
 		}
@@ -279,13 +279,13 @@ array!t (
 } copy {
 	--c--
 	_this->data = _from->data;
-	if (!_this->_isGlobal && _this->data) {
+	if (!_this->_isglobal && _this->data) {
 		_retain(_this->data);
 	}
 	--c--
 } destroy {
 	--c--
-	if (!_this->_isGlobal && _this->data) {
+	if (!_this->_isglobal && _this->data) {
 		if (_release(_this->data)) {
 			free((#type(t)*)_this->data);
 		}

@@ -5,56 +5,56 @@
 
 typedef struct td_int32_option int32_option;
 struct td_int32_option {
-    bool isEmpty;
+    bool isempty;
     int32_t value;
 };
 const int32_option int32_empty = { true };
 
 typedef struct td_uint32_option uint32_option;
 struct td_uint32_option {
-    bool isEmpty;
+    bool isempty;
     uint32_t value;
 };
 const uint32_option uint32_empty = { true };
 
 typedef struct td_int64_option int64_option;
 struct td_int64_option {
-    bool isEmpty;
+    bool isempty;
     int64_t value;
 };
 const int64_option int64_empty = { true };
 
 typedef struct td_uint64_option uint64_option;
 struct td_uint64_option {
-    bool isEmpty;
+    bool isempty;
     uint64_t value;
 };
 const uint64_option uint64_empty = { true };
 
 typedef struct td_void_option void_option;
 struct td_void_option {
-    bool isEmpty;
+    bool isempty;
     void* value;
 };
 const void_option void_empty = { true };
 
 typedef struct td_char_option char_option;
 struct td_char_option {
-    bool isEmpty;
+    bool isempty;
     char value;
 };
 const char_option char_empty = { true };
 
 typedef struct td_float_option float_option;
 struct td_float_option {
-    bool isEmpty;
+    bool isempty;
     float value;
 };
 const float_option float_empty = { true };
 
 typedef struct td_double_option double_option;
 struct td_double_option {
-    bool isEmpty;
+    bool isempty;
     double value;
 };
 const double_option double_empty = { true };
@@ -259,7 +259,7 @@ int main(int argc, char** argv) {
 #line 16
     sjt_isEmpty1 = sjv_a;
 #line 16
-    sjv_j = sjt_isEmpty1.isEmpty;
+    sjv_j = sjt_isEmpty1.isempty;
 #line 17
     sjt_isEmpty2 = sjv_i;
     if (sjt_isEmpty2 != 0) {
@@ -336,7 +336,7 @@ int main(int argc, char** argv) {
 #line 23
         sjt_value2 = (sjt_dot1)->bob;
 #line 23
-        value1.isEmpty = false;
+        value1.isempty = false;
 #line 23
         value1.value = sjt_value2;
 #line 23
@@ -353,7 +353,7 @@ int main(int argc, char** argv) {
 #line 24
     sjt_isEmpty5 = sjv_a;
 #line 24
-    sjt_ifElse2 = sjt_isEmpty5.isEmpty;
+    sjt_ifElse2 = sjt_isEmpty5.isempty;
     if (sjt_ifElse2) {
         int32_t result1;
         int32_t sjt_negate1;

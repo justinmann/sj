@@ -1100,56 +1100,56 @@ unsigned hashv;                   /* result of hash-fcn(key)        */
 } UT_hash_handle;
 typedef struct td_int32_option int32_option;
 struct td_int32_option {
-    bool isEmpty;
+    bool isempty;
     int32_t value;
 };
 const int32_option int32_empty = { true };
 
 typedef struct td_uint32_option uint32_option;
 struct td_uint32_option {
-    bool isEmpty;
+    bool isempty;
     uint32_t value;
 };
 const uint32_option uint32_empty = { true };
 
 typedef struct td_int64_option int64_option;
 struct td_int64_option {
-    bool isEmpty;
+    bool isempty;
     int64_t value;
 };
 const int64_option int64_empty = { true };
 
 typedef struct td_uint64_option uint64_option;
 struct td_uint64_option {
-    bool isEmpty;
+    bool isempty;
     uint64_t value;
 };
 const uint64_option uint64_empty = { true };
 
 typedef struct td_void_option void_option;
 struct td_void_option {
-    bool isEmpty;
+    bool isempty;
     void* value;
 };
 const void_option void_empty = { true };
 
 typedef struct td_char_option char_option;
 struct td_char_option {
-    bool isEmpty;
+    bool isempty;
     char value;
 };
 const char_option char_empty = { true };
 
 typedef struct td_float_option float_option;
 struct td_float_option {
-    bool isEmpty;
+    bool isempty;
     float value;
 };
 const float_option float_empty = { true };
 
 typedef struct td_double_option double_option;
 struct td_double_option {
-    bool isEmpty;
+    bool isempty;
     double value;
 };
 const double_option double_empty = { true };
@@ -1190,17 +1190,17 @@ struct td_sjs_anon1_heap {
 };
 
 struct td_sjs_array_char {
-    int32_t dataSize;
+    int32_t datasize;
     void* data;
-    bool _isGlobal;
+    bool _isglobal;
     int32_t count;
 };
 
 struct td_sjs_array_char_heap {
     intptr_t _refCount;
-    int32_t dataSize;
+    int32_t datasize;
     void* data;
-    bool _isGlobal;
+    bool _isglobal;
     int32_t count;
 };
 
@@ -1226,36 +1226,36 @@ int32_t sjt_math2;
 int32_t sjt_negate1;
 sjs_anon1* sjt_parent1;
 sjs_anon1 sjv_console;
-void* sjv_emptyStringData;
+void* sjv_emptystringdata;
 float sjv_f32_pi;
-int32_t sjv_i32_maxValue;
-int32_t sjv_i32_minValue;
-uint32_t sjv_u32_maxValue;
+int32_t sjv_i32_maxvalue;
+int32_t sjv_i32_minvalue;
+uint32_t sjv_u32_maxvalue;
 
 void sjf_anon1(sjs_anon1* _this);
 void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* _from);
 void sjf_anon1_destroy(sjs_anon1* _this);
 void sjf_anon1_heap(sjs_anon1_heap* _this);
-void sjf_anon1_writeLine(sjs_anon1* _parent, sjs_string* data);
+void sjf_anon1_writeline(sjs_anon1* _parent, sjs_string* data);
 void sjf_array_char(sjs_array_char* _this);
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from);
 void sjf_array_char_destroy(sjs_array_char* _this);
-void sjf_array_char_getAt(sjs_array_char* _parent, int32_t index, char* _return);
-void sjf_array_char_grow(sjs_array_char* _parent, int32_t newSize, sjs_array_char* _return);
-void sjf_array_char_grow_heap(sjs_array_char* _parent, int32_t newSize, sjs_array_char_heap** _return);
+void sjf_array_char_getat(sjs_array_char* _parent, int32_t index, char* _return);
+void sjf_array_char_grow(sjs_array_char* _parent, int32_t newsize, sjs_array_char* _return);
+void sjf_array_char_grow_heap(sjs_array_char* _parent, int32_t newsize, sjs_array_char_heap** _return);
 void sjf_array_char_heap(sjs_array_char_heap* _this);
-void sjf_array_char_initAt(sjs_array_char* _parent, int32_t index, char item);
-void sjf_array_char_setAt(sjs_array_char* _parent, int32_t index, char item);
+void sjf_array_char_initat(sjs_array_char* _parent, int32_t index, char item);
+void sjf_array_char_setat(sjs_array_char* _parent, int32_t index, char item);
 void sjf_func(sjs_string* _return);
 void sjf_func_heap(sjs_string_heap** _return);
-void sjf_i32_toString(int32_t val, int32_t base, int32_t minLength, sjs_string* _return);
-void sjf_i32_toString_heap(int32_t val, int32_t base, int32_t minLength, sjs_string_heap** _return);
+void sjf_i32_tostring(int32_t val, int32_t base, int32_t minlength, sjs_string* _return);
+void sjf_i32_tostring_heap(int32_t val, int32_t base, int32_t minlength, sjs_string_heap** _return);
 void sjf_string(sjs_string* _this);
 void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return);
 void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string_heap** _return);
 void sjf_string_copy(sjs_string* _this, sjs_string* _from);
 void sjf_string_destroy(sjs_string* _this);
-void sjf_string_getAt(sjs_string* _parent, int32_t index, char* _return);
+void sjf_string_getat(sjs_string* _parent, int32_t index, char* _return);
 void sjf_string_heap(sjs_string_heap* _this);
 void main_destroy(void);
 
@@ -1303,111 +1303,111 @@ void sjf_anon1_destroy(sjs_anon1* _this) {
 void sjf_anon1_heap(sjs_anon1_heap* _this) {
 }
 
-void sjf_anon1_writeLine(sjs_anon1* _parent, sjs_string* data) {
-#line 13 "lib/common/console.sj"
+void sjf_anon1_writeline(sjs_anon1* _parent, sjs_string* data) {
+#line 14 "lib/common/console.sj"
     printf("%s\n", (char*)data->data.data);
 }
 
 void sjf_array_char(sjs_array_char* _this) {
-#line 266 "lib/common/array.sj"
-    if (_this->dataSize < 0) {
-#line 266
+#line 267 "lib/common/array.sj"
+    if (_this->datasize < 0) {
+#line 268
         halt("size is less than zero");
-#line 266
+#line 269
     }
-#line 266
+#line 271
     if (!_this->data) {
-#line 266
-        _this->data = malloc(_this->dataSize * sizeof(char));
-#line 266
+#line 272
+        _this->data = malloc(_this->datasize * sizeof(char));
+#line 273
         if (!_this->data) {
-#line 266
+#line 274
             halt("grow: out of memory\n");
-#line 266
+#line 275
         }
-#line 266
+#line 276
     }
 }
 
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
 #line 1 "lib/common/array.sj"
-    _this->dataSize = _from->dataSize;
+    _this->datasize = _from->datasize;
 #line 1
     _this->data = _from->data;
 #line 1
-    _this->_isGlobal = _from->_isGlobal;
+    _this->_isglobal = _from->_isglobal;
 #line 1
     _this->count = _from->count;
-#line 280
+#line 281
     _this->data = _from->data;
-#line 280
-    if (!_this->_isGlobal && _this->data) {
-#line 280
+#line 282
+    if (!_this->_isglobal && _this->data) {
+#line 283
         _retain(_this->data);
-#line 280
+#line 284
     }
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
-#line 287 "lib/common/array.sj"
-    if (!_this->_isGlobal && _this->data) {
-#line 287
+#line 288 "lib/common/array.sj"
+    if (!_this->_isglobal && _this->data) {
+#line 289
         if (_release(_this->data)) {
-#line 287
+#line 290
             free((char*)_this->data);
-#line 287
+#line 291
         }
-#line 287
+#line 292
     }
 }
 
-void sjf_array_char_getAt(sjs_array_char* _parent, int32_t index, char* _return) {
-#line 8 "lib/common/array.sj"
+void sjf_array_char_getat(sjs_array_char* _parent, int32_t index, char* _return) {
+#line 9 "lib/common/array.sj"
     if (index >= _parent->count || index < 0) {
-#line 8
+#line 10
         halt("getAt: out of bounds\n");
-#line 8
+#line 11
     }
-#line 8
+#line 13
     char* p = (char*)_parent->data;
-#line 8
+#line 14
     #line 8 "lib/common/array.sj"
 (*_return) = p[index];
 ;		
 }
 
-void sjf_array_char_grow(sjs_array_char* _parent, int32_t newSize, sjs_array_char* _return) {
+void sjf_array_char_grow(sjs_array_char* _parent, int32_t newsize, sjs_array_char* _return) {
     sjs_array_char* sjt_dot4;
-    void* sjv_newData;
+    void* sjv_newdata;
 
 #line 116 "lib/common/array.sj"
-    sjv_newData = 0;
-#line 117
-    if (_parent->dataSize != newSize) {
-#line 117
-        if (newSize < _parent->dataSize) {
-#line 117
-            halt("grow: new size smaller than old _parent->dataSize %d:%d\n", newSize, _parent->dataSize);
-#line 117
+    sjv_newdata = 0;
+#line 118
+    if (_parent->datasize != newsize) {
+#line 119
+        if (newsize < _parent->datasize) {
+#line 120
+            halt("grow: new size smaller than old _parent->datasize %d:%d\n", newsize, _parent->datasize);
+#line 121
         }
-#line 117
-        sjv_newData = malloc(newSize * sizeof(char));
-#line 117
+#line 123
+        sjv_newdata = malloc(newsize * sizeof(char));
+#line 124
         if (!_parent->data) {
-#line 117
+#line 125
             halt("grow: out of memory\n");
-#line 117
+#line 126
         }
-#line 117
-        memcpy(sjv_newData, _parent->data, _parent->dataSize * sizeof(char));
-#line 117
+#line 127
+        memcpy(sjv_newdata, _parent->data, _parent->datasize * sizeof(char));
+#line 128
     }
 #line 115
-    _return->dataSize = newSize;
+    _return->datasize = newsize;
 #line 130
-    _return->data = sjv_newData;
+    _return->data = sjv_newdata;
 #line 4
-    _return->_isGlobal = false;
+    _return->_isglobal = false;
 #line 115
     sjt_dot4 = _parent;
 #line 130
@@ -1416,42 +1416,42 @@ void sjf_array_char_grow(sjs_array_char* _parent, int32_t newSize, sjs_array_cha
     sjf_array_char(_return);
 }
 
-void sjf_array_char_grow_heap(sjs_array_char* _parent, int32_t newSize, sjs_array_char_heap** _return) {
+void sjf_array_char_grow_heap(sjs_array_char* _parent, int32_t newsize, sjs_array_char_heap** _return) {
     sjs_array_char* sjt_dot5;
-    void* sjv_newData;
+    void* sjv_newdata;
 
 #line 116 "lib/common/array.sj"
-    sjv_newData = 0;
-#line 117
-    if (_parent->dataSize != newSize) {
-#line 117
-        if (newSize < _parent->dataSize) {
-#line 117
-            halt("grow: new size smaller than old _parent->dataSize %d:%d\n", newSize, _parent->dataSize);
-#line 117
+    sjv_newdata = 0;
+#line 118
+    if (_parent->datasize != newsize) {
+#line 119
+        if (newsize < _parent->datasize) {
+#line 120
+            halt("grow: new size smaller than old _parent->datasize %d:%d\n", newsize, _parent->datasize);
+#line 121
         }
-#line 117
-        sjv_newData = malloc(newSize * sizeof(char));
-#line 117
+#line 123
+        sjv_newdata = malloc(newsize * sizeof(char));
+#line 124
         if (!_parent->data) {
-#line 117
+#line 125
             halt("grow: out of memory\n");
-#line 117
+#line 126
         }
-#line 117
-        memcpy(sjv_newData, _parent->data, _parent->dataSize * sizeof(char));
-#line 117
+#line 127
+        memcpy(sjv_newdata, _parent->data, _parent->datasize * sizeof(char));
+#line 128
     }
-#line 117
+#line 128
     (*_return) = (sjs_array_char_heap*)malloc(sizeof(sjs_array_char_heap));
-#line 117
+#line 128
     (*_return)->_refCount = 1;
 #line 115
-    (*_return)->dataSize = newSize;
+    (*_return)->datasize = newsize;
 #line 130
-    (*_return)->data = sjv_newData;
+    (*_return)->data = sjv_newdata;
 #line 4
-    (*_return)->_isGlobal = false;
+    (*_return)->_isglobal = false;
 #line 115
     sjt_dot5 = _parent;
 #line 130
@@ -1461,61 +1461,61 @@ void sjf_array_char_grow_heap(sjs_array_char* _parent, int32_t newSize, sjs_arra
 }
 
 void sjf_array_char_heap(sjs_array_char_heap* _this) {
-#line 266 "lib/common/array.sj"
-    if (_this->dataSize < 0) {
-#line 266
+#line 267 "lib/common/array.sj"
+    if (_this->datasize < 0) {
+#line 268
         halt("size is less than zero");
-#line 266
+#line 269
     }
-#line 266
+#line 271
     if (!_this->data) {
-#line 266
-        _this->data = malloc(_this->dataSize * sizeof(char));
-#line 266
+#line 272
+        _this->data = malloc(_this->datasize * sizeof(char));
+#line 273
         if (!_this->data) {
-#line 266
+#line 274
             halt("grow: out of memory\n");
-#line 266
+#line 275
         }
-#line 266
+#line 276
     }
 }
 
-void sjf_array_char_initAt(sjs_array_char* _parent, int32_t index, char item) {
-#line 20 "lib/common/array.sj"
+void sjf_array_char_initat(sjs_array_char* _parent, int32_t index, char item) {
+#line 21 "lib/common/array.sj"
     if (index != _parent->count) {
-#line 20
+#line 22
         halt("initAt: can only initialize last element\n");		
-#line 20
+#line 23
     }
-#line 20
-    if (index >= _parent->dataSize || index < 0) {
-#line 20
-        halt("initAt: out of bounds %d:%d\n", index, _parent->dataSize);
-#line 20
+#line 24
+    if (index >= _parent->datasize || index < 0) {
+#line 25
+        halt("initAt: out of bounds %d:%d\n", index, _parent->datasize);
+#line 26
     }
-#line 20
+#line 28
     char* p = (char*)_parent->data;
-#line 20
+#line 29
     #line 19 "lib/common/array.sj"
 p[index] = item;
 ;
-#line 20
+#line 30
     _parent->count = index + 1;
 }
 
-void sjf_array_char_setAt(sjs_array_char* _parent, int32_t index, char item) {
-#line 35 "lib/common/array.sj"
+void sjf_array_char_setat(sjs_array_char* _parent, int32_t index, char item) {
+#line 36 "lib/common/array.sj"
     if (index >= _parent->count || index < 0) {
-#line 35
+#line 37
         halt("setAt: out of bounds %d:%d\n", index, _parent->count);
-#line 35
+#line 38
     }
-#line 35
+#line 40
     char* p = (char*)_parent->data;
-#line 35
+#line 41
     ;
-#line 35
+#line 42
     #line 34 "lib/common/array.sj"
 p[index] = item;
 ;
@@ -1540,7 +1540,7 @@ void sjf_func(sjs_string* _return) {
 #line 22
     sjt_functionParam23 = 0;
 #line 22
-    sjf_i32_toString(sjt_functionParam21, sjt_functionParam22, sjt_functionParam23, &sjt_call2);
+    sjf_i32_tostring(sjt_functionParam21, sjt_functionParam22, sjt_functionParam23, &sjt_call2);
 #line 5 "string2.sj"
     sjt_parent15 = &sjt_call2;
 #line 5
@@ -1550,7 +1550,7 @@ void sjf_func(sjs_string* _return) {
 #line 22
     sjt_functionParam27 = 0;
 #line 22
-    sjf_i32_toString(sjt_functionParam25, sjt_functionParam26, sjt_functionParam27, &sjt_call3);
+    sjf_i32_tostring(sjt_functionParam25, sjt_functionParam26, sjt_functionParam27, &sjt_call3);
 #line 5 "string2.sj"
     sjt_functionParam24 = &sjt_call3;
 #line 5
@@ -1579,7 +1579,7 @@ void sjf_func_heap(sjs_string_heap** _return) {
 #line 22
     sjt_functionParam30 = 0;
 #line 22
-    sjf_i32_toString(sjt_functionParam28, sjt_functionParam29, sjt_functionParam30, &sjt_call4);
+    sjf_i32_tostring(sjt_functionParam28, sjt_functionParam29, sjt_functionParam30, &sjt_call4);
 #line 5 "string2.sj"
     sjt_parent16 = &sjt_call4;
 #line 5
@@ -1589,7 +1589,7 @@ void sjf_func_heap(sjs_string_heap** _return) {
 #line 22
     sjt_functionParam34 = 0;
 #line 22
-    sjf_i32_toString(sjt_functionParam32, sjt_functionParam33, sjt_functionParam34, &sjt_call5);
+    sjf_i32_tostring(sjt_functionParam32, sjt_functionParam33, sjt_functionParam34, &sjt_call5);
 #line 5 "string2.sj"
     sjt_functionParam31 = &sjt_call5;
 #line 5
@@ -1599,7 +1599,7 @@ void sjf_func_heap(sjs_string_heap** _return) {
     sjf_string_destroy(&sjt_call5);
 }
 
-void sjf_i32_toString(int32_t val, int32_t base, int32_t minLength, sjs_string* _return) {
+void sjf_i32_tostring(int32_t val, int32_t base, int32_t minlength, sjs_string* _return) {
     int32_t sjt_math19;
     int32_t sjt_math20;
     int32_t sjt_math21;
@@ -1611,41 +1611,41 @@ void sjf_i32_toString(int32_t val, int32_t base, int32_t minLength, sjs_string* 
     sjv_count = 0;
 #line 24
     sjv_data = 0;
-#line 25
+#line 26
     if (base < 2) {
-#line 25
+#line 27
         halt("base is too small");
-#line 25
+#line 28
     }
-#line 25
+#line 30
     if (base > 16) {
-#line 25
+#line 31
         halt("base is too large");
-#line 25
+#line 32
     }
-#line 25
+#line 34
     char buf[32] = { 0 };
-#line 25
+#line 35
     int i = 30;	
-#line 25
+#line 36
     do {
-#line 25
+#line 37
         buf[i] = "0123456789ABCDEF"[val % base];	
-#line 25
+#line 38
         i--;
-#line 25
+#line 39
         val /= base;
-#line 25
+#line 40
     } while (val && i);
-#line 25
+#line 41
     sjv_count = 30 - i;
-#line 25
-    if (sjv_count < minLength) {				
-#line 25
+#line 43
+    if (sjv_count < minlength) {				
+#line 44
 }
-#line 25
+#line 46
 sjv_data = malloc(sizeof(char) * (sjv_count + 1));
-#line 25
+#line 47
 memcpy(sjv_data, &buf[i+1], sjv_count + 1);
 #line 49
 _return->count = sjv_count;
@@ -1654,11 +1654,11 @@ sjt_math19 = sjv_count;
 #line 49
 sjt_math20 = 1;
 #line 49
-_return->data.dataSize = sjt_math19 + sjt_math20;
+_return->data.datasize = sjt_math19 + sjt_math20;
 #line 49
 _return->data.data = sjv_data;
 #line 4 "lib/common/array.sj"
-_return->data._isGlobal = false;
+_return->data._isglobal = false;
 #line 49 "lib/common/i32.sj"
 sjt_math21 = sjv_count;
 #line 49
@@ -1671,7 +1671,7 @@ sjf_array_char(&_return->data);
 sjf_string(_return);
 }
 
-void sjf_i32_toString_heap(int32_t val, int32_t base, int32_t minLength, sjs_string_heap** _return) {
+void sjf_i32_tostring_heap(int32_t val, int32_t base, int32_t minlength, sjs_string_heap** _return) {
     int32_t sjt_math23;
     int32_t sjt_math24;
     int32_t sjt_math25;
@@ -1683,45 +1683,45 @@ void sjf_i32_toString_heap(int32_t val, int32_t base, int32_t minLength, sjs_str
     sjv_count = 0;
 #line 24
     sjv_data = 0;
-#line 25
+#line 26
     if (base < 2) {
-#line 25
+#line 27
         halt("base is too small");
-#line 25
+#line 28
     }
-#line 25
+#line 30
     if (base > 16) {
-#line 25
+#line 31
         halt("base is too large");
-#line 25
+#line 32
     }
-#line 25
+#line 34
     char buf[32] = { 0 };
-#line 25
+#line 35
     int i = 30;	
-#line 25
+#line 36
     do {
-#line 25
+#line 37
         buf[i] = "0123456789ABCDEF"[val % base];	
-#line 25
+#line 38
         i--;
-#line 25
+#line 39
         val /= base;
-#line 25
+#line 40
     } while (val && i);
-#line 25
+#line 41
     sjv_count = 30 - i;
-#line 25
-    if (sjv_count < minLength) {				
-#line 25
+#line 43
+    if (sjv_count < minlength) {				
+#line 44
 }
-#line 25
+#line 46
 sjv_data = malloc(sizeof(char) * (sjv_count + 1));
-#line 25
+#line 47
 memcpy(sjv_data, &buf[i+1], sjv_count + 1);
-#line 25
+#line 47
 (*_return) = (sjs_string_heap*)malloc(sizeof(sjs_string_heap));
-#line 25
+#line 47
 (*_return)->_refCount = 1;
 #line 49
 (*_return)->count = sjv_count;
@@ -1730,11 +1730,11 @@ sjt_math23 = sjv_count;
 #line 49
 sjt_math24 = 1;
 #line 49
-(*_return)->data.dataSize = sjt_math23 + sjt_math24;
+(*_return)->data.datasize = sjt_math23 + sjt_math24;
 #line 49
 (*_return)->data.data = sjv_data;
 #line 4 "lib/common/array.sj"
-(*_return)->data._isGlobal = false;
+(*_return)->data._isglobal = false;
 #line 49 "lib/common/i32.sj"
 sjt_math25 = sjv_count;
 #line 49
@@ -1808,8 +1808,8 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
         sjs_array_char* sjt_parent3;
         sjs_string* sjt_parent5;
         sjs_array_char* sjt_parent8;
-        int32_t sjv_newCount;
-        sjs_array_char sjv_newData;
+        int32_t sjv_newcount;
+        sjs_array_char sjv_newdata;
 
 #line 15 "lib/common/string.sj"
         sjt_dot6 = _parent;
@@ -1830,29 +1830,29 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
 #line 19
         sjt_functionParam2 = sjt_math3 + sjt_math4;
 #line 19
-        sjf_array_char_grow(sjt_parent2, sjt_functionParam2, &sjv_newData);
+        sjf_array_char_grow(sjt_parent2, sjt_functionParam2, &sjv_newdata);
 #line 15
         sjt_dot9 = _parent;
 #line 20
-        sjv_newCount = (sjt_dot9)->count;
+        sjv_newcount = (sjt_dot9)->count;
 #line 34 "lib/common/array.sj"
-        sjt_parent3 = &sjv_newData;
+        sjt_parent3 = &sjv_newdata;
 #line 21 "lib/common/string.sj"
-        sjt_functionParam3 = sjv_newCount;
+        sjt_functionParam3 = sjv_newcount;
 #line 15
         sjt_parent5 = item;
 #line 21
         sjt_functionParam6 = 0;
 #line 21
-        sjf_string_getAt(sjt_parent5, sjt_functionParam6, &sjt_functionParam4);
+        sjf_string_getat(sjt_parent5, sjt_functionParam6, &sjt_functionParam4);
 #line 21
-        sjf_array_char_setAt(sjt_parent3, sjt_functionParam3, sjt_functionParam4);
+        sjf_array_char_setat(sjt_parent3, sjt_functionParam3, sjt_functionParam4);
 #line 22
-        sjt_math7 = sjv_newCount;
+        sjt_math7 = sjv_newcount;
 #line 22
         sjt_math8 = 1;
 #line 22
-        sjv_newCount = sjt_math7 + sjt_math8;
+        sjv_newcount = sjt_math7 + sjt_math8;
 #line 24
         sjt_forStart1 = 1;
 #line 15
@@ -1871,47 +1871,47 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
             sjs_string* sjt_parent7;
 
 #line 19 "lib/common/array.sj"
-            sjt_parent6 = &sjv_newData;
+            sjt_parent6 = &sjv_newdata;
 #line 25 "lib/common/string.sj"
-            sjt_functionParam7 = sjv_newCount;
+            sjt_functionParam7 = sjv_newcount;
 #line 15
             sjt_parent7 = item;
 #line 24
             sjt_functionParam9 = i;
 #line 24
-            sjf_string_getAt(sjt_parent7, sjt_functionParam9, &sjt_functionParam8);
+            sjf_string_getat(sjt_parent7, sjt_functionParam9, &sjt_functionParam8);
 #line 24
-            sjf_array_char_initAt(sjt_parent6, sjt_functionParam7, sjt_functionParam8);
+            sjf_array_char_initat(sjt_parent6, sjt_functionParam7, sjt_functionParam8);
 #line 26
-            sjt_math9 = sjv_newCount;
+            sjt_math9 = sjv_newcount;
 #line 26
             sjt_math10 = 1;
 #line 26
-            sjv_newCount = sjt_math9 + sjt_math10;
+            sjv_newcount = sjt_math9 + sjt_math10;
 #line 24
             i++;
         }
 
 #line 19 "lib/common/array.sj"
-        sjt_parent8 = &sjv_newData;
+        sjt_parent8 = &sjv_newdata;
 #line 29 "lib/common/string.sj"
-        sjt_functionParam10 = sjv_newCount;
+        sjt_functionParam10 = sjv_newcount;
 #line 29
         sjt_cast1 = 0;
 #line 29
         sjt_functionParam11 = (char)sjt_cast1;
 #line 29
-        sjf_array_char_initAt(sjt_parent8, sjt_functionParam10, sjt_functionParam11);
+        sjf_array_char_initat(sjt_parent8, sjt_functionParam10, sjt_functionParam11);
 #line 30
-        _return->count = sjv_newCount;
+        _return->count = sjv_newcount;
 #line 30
-        sjt_copy2 = &sjv_newData;
+        sjt_copy2 = &sjv_newdata;
 #line 30
         sjf_array_char_copy(&_return->data, sjt_copy2);
 #line 30
         sjf_string(_return);
 
-        sjf_array_char_destroy(&sjv_newData);
+        sjf_array_char_destroy(&sjv_newdata);
     }
 }
 
@@ -1975,8 +1975,8 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string_heap*
         sjs_string* sjt_parent11;
         sjs_array_char* sjt_parent14;
         sjs_array_char* sjt_parent9;
-        int32_t sjv_newCount;
-        sjs_array_char sjv_newData;
+        int32_t sjv_newcount;
+        sjs_array_char sjv_newdata;
 
 #line 15 "lib/common/string.sj"
         sjt_dot15 = _parent;
@@ -1997,29 +1997,29 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string_heap*
 #line 19
         sjt_functionParam12 = sjt_math11 + sjt_math12;
 #line 19
-        sjf_array_char_grow(sjt_parent9, sjt_functionParam12, &sjv_newData);
+        sjf_array_char_grow(sjt_parent9, sjt_functionParam12, &sjv_newdata);
 #line 15
         sjt_dot18 = _parent;
 #line 20
-        sjv_newCount = (sjt_dot18)->count;
+        sjv_newcount = (sjt_dot18)->count;
 #line 34 "lib/common/array.sj"
-        sjt_parent10 = &sjv_newData;
+        sjt_parent10 = &sjv_newdata;
 #line 21 "lib/common/string.sj"
-        sjt_functionParam13 = sjv_newCount;
+        sjt_functionParam13 = sjv_newcount;
 #line 15
         sjt_parent11 = item;
 #line 21
         sjt_functionParam15 = 0;
 #line 21
-        sjf_string_getAt(sjt_parent11, sjt_functionParam15, &sjt_functionParam14);
+        sjf_string_getat(sjt_parent11, sjt_functionParam15, &sjt_functionParam14);
 #line 21
-        sjf_array_char_setAt(sjt_parent10, sjt_functionParam13, sjt_functionParam14);
+        sjf_array_char_setat(sjt_parent10, sjt_functionParam13, sjt_functionParam14);
 #line 22
-        sjt_math15 = sjv_newCount;
+        sjt_math15 = sjv_newcount;
 #line 22
         sjt_math16 = 1;
 #line 22
-        sjv_newCount = sjt_math15 + sjt_math16;
+        sjv_newcount = sjt_math15 + sjt_math16;
 #line 24
         sjt_forStart2 = 1;
 #line 15
@@ -2038,51 +2038,51 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string_heap*
             sjs_string* sjt_parent13;
 
 #line 19 "lib/common/array.sj"
-            sjt_parent12 = &sjv_newData;
+            sjt_parent12 = &sjv_newdata;
 #line 25 "lib/common/string.sj"
-            sjt_functionParam16 = sjv_newCount;
+            sjt_functionParam16 = sjv_newcount;
 #line 15
             sjt_parent13 = item;
 #line 24
             sjt_functionParam18 = i;
 #line 24
-            sjf_string_getAt(sjt_parent13, sjt_functionParam18, &sjt_functionParam17);
+            sjf_string_getat(sjt_parent13, sjt_functionParam18, &sjt_functionParam17);
 #line 24
-            sjf_array_char_initAt(sjt_parent12, sjt_functionParam16, sjt_functionParam17);
+            sjf_array_char_initat(sjt_parent12, sjt_functionParam16, sjt_functionParam17);
 #line 26
-            sjt_math17 = sjv_newCount;
+            sjt_math17 = sjv_newcount;
 #line 26
             sjt_math18 = 1;
 #line 26
-            sjv_newCount = sjt_math17 + sjt_math18;
+            sjv_newcount = sjt_math17 + sjt_math18;
 #line 24
             i++;
         }
 
 #line 19 "lib/common/array.sj"
-        sjt_parent14 = &sjv_newData;
+        sjt_parent14 = &sjv_newdata;
 #line 29 "lib/common/string.sj"
-        sjt_functionParam19 = sjv_newCount;
+        sjt_functionParam19 = sjv_newcount;
 #line 29
         sjt_cast2 = 0;
 #line 29
         sjt_functionParam20 = (char)sjt_cast2;
 #line 29
-        sjf_array_char_initAt(sjt_parent14, sjt_functionParam19, sjt_functionParam20);
+        sjf_array_char_initat(sjt_parent14, sjt_functionParam19, sjt_functionParam20);
 #line 29
         (*_return) = (sjs_string_heap*)malloc(sizeof(sjs_string_heap));
 #line 29
         (*_return)->_refCount = 1;
 #line 30
-        (*_return)->count = sjv_newCount;
+        (*_return)->count = sjv_newcount;
 #line 30
-        sjt_copy4 = &sjv_newData;
+        sjt_copy4 = &sjv_newdata;
 #line 30
         sjf_array_char_copy(&(*_return)->data, sjt_copy4);
 #line 30
         sjf_string_heap((*_return));
 
-        sjf_array_char_destroy(&sjv_newData);
+        sjf_array_char_destroy(&sjv_newdata);
     }
 }
 
@@ -2096,7 +2096,7 @@ void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
 void sjf_string_destroy(sjs_string* _this) {
 }
 
-void sjf_string_getAt(sjs_string* _parent, int32_t index, char* _return) {
+void sjf_string_getat(sjs_string* _parent, int32_t index, char* _return) {
     sjs_string* sjt_dot10;
     int32_t sjt_functionParam5;
     sjs_array_char* sjt_parent4;
@@ -2108,7 +2108,7 @@ void sjf_string_getAt(sjs_string* _parent, int32_t index, char* _return) {
 #line 34 "lib/common/string.sj"
     sjt_functionParam5 = index;
 #line 34
-    sjf_array_char_getAt(sjt_parent4, sjt_functionParam5, _return);
+    sjf_array_char_getat(sjt_parent4, sjt_functionParam5, _return);
 }
 
 void sjf_string_heap(sjs_string_heap* _this) {
@@ -2119,7 +2119,7 @@ int main(int argc, char** argv) {
 #line 1 "lib/common/f32.sj"
     sjv_f32_pi = 3.14159265358979323846f;
 #line 1 "lib/common/i32.sj"
-    sjv_u32_maxValue = (uint32_t)4294967295u;
+    sjv_u32_maxvalue = (uint32_t)4294967295u;
 #line 3
     sjt_negate1 = 1;
 #line 3
@@ -2129,13 +2129,13 @@ int main(int argc, char** argv) {
 #line 3
     sjt_math2 = 2147483647;
 #line 3
-    sjv_i32_maxValue = sjt_math1 - sjt_math2;
+    sjv_i32_maxvalue = sjt_math1 - sjt_math2;
 #line 4
-    sjv_i32_minValue = 2147483647;
+    sjv_i32_minvalue = 2147483647;
 #line 1 "lib/common/string.sj"
-    sjv_emptyStringData = 0;
-#line 2
-    sjv_emptyStringData = "";
+    sjv_emptystringdata = 0;
+#line 3
+    sjv_emptystringdata = "";
 #line 12 "lib/common/console.sj"
     sjt_parent1 = &sjv_console;
 #line 12
@@ -2143,7 +2143,7 @@ int main(int argc, char** argv) {
 #line 8 "string2.sj"
     sjt_functionParam1 = &sjt_call1;
 #line 8
-    sjf_anon1_writeLine(sjt_parent1, sjt_functionParam1);
+    sjf_anon1_writeline(sjt_parent1, sjt_functionParam1);
     main_destroy();
     return 0;
 }

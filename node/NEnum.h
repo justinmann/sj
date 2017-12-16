@@ -11,8 +11,8 @@
 
 class EnumArg {
 public:
-    EnumArg(string name) : name(name), hasValue(false) { }
-    EnumArg(string name, string value) : name(name), hasValue(true), value(value) { }
+    EnumArg(string name);
+    EnumArg(string name, string value);
     
     string name;
     bool hasValue;
@@ -31,7 +31,7 @@ public:
 
 class NEnum : public NVariableBase {
 public:
-    NEnum(CLoc loc, string name, shared_ptr<EnumArgs> enumArgs) : NVariableBase(NodeType_Enum, loc), name(name), enumArgs(enumArgs) { }
+    NEnum(CLoc loc, string name, shared_ptr<EnumArgs> enumArgs);
     void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 

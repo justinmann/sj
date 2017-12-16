@@ -25,21 +25,21 @@ mainLoop() {
                 break;
             case SDL_MOUSEBUTTONDOWN:
                 printf("SDL_MOUSEBUTTONDOWN\n");
-                sjv_mouseEventType.isEmpty = false;
-                sjv_mouseEventType.value = sjv_mouseEventType_down;
+                sjv_mouseeventtype.isempty = false;
+                sjv_mouseeventtype.value = sjv_mouseeventtype_down;
                 sjv_x = e.button.x;
                 sjv_y = e.button.y;
                 break;
             case SDL_MOUSEBUTTONUP:
                 printf("SDL_MOUSEBUTTONUP\n");
-                sjv_mouseEventType.isEmpty = false;
-                sjv_mouseEventType.value = sjv_mouseEventType_up;
+                sjv_mouseeventtype.isempty = false;
+                sjv_mouseeventtype.value = sjv_mouseeventtype_up;
                 sjv_x = e.button.x;
                 sjv_y = e.button.y;
                 break;
             case SDL_MOUSEMOTION:
-                sjv_mouseEventType.isEmpty = false;
-                sjv_mouseEventType.value = sjv_mouseEventType_move;
+                sjv_mouseeventtype.isempty = false;
+                sjv_mouseeventtype.value = sjv_mouseeventtype_move;
                 sjv_x = e.motion.x;
                 sjv_y = e.motion.y;
                 break;
@@ -68,12 +68,12 @@ mainLoop() {
 runLoop() {
 	--c--
 ##ifdef EMSCRIPTEN
-	emscripten_set_main_loop((em_callback_func)sjf_mainLoop, 0, 0);
+	emscripten_set_main_loop((em_callback_func)sjf_mainloop, 0, 0);
 	exit(0);
 ##else
 	bool quit = false;
     while (!quit) {
-        sjf_mainLoop();
+        #functionStack(mainLoop)();
     }
 ##endif	
 	--c--

@@ -2,7 +2,7 @@ anon1()'stack anon1 {
   this
 }
 
-anon1_readLine()'stack string {
+anon1_readline()'stack string {
   data'ptr = 0
   size'i32 = 1024i
   --c--
@@ -49,7 +49,7 @@ string(count'i32=, data'stack array_char=)'stack string {
   this
 }
 
-string_toI32(text'stack string:)'i32 {
+string_toi32(text'stack string:)'i32 {
   x'i32 = 0i
   --c--
   char* e;
@@ -1217,27 +1217,27 @@ global()'void {
   unsigned hashv;                   /* result of hash-fcn(key)        */
   } UT_hash_handle;
   --ctypedef--
-  u32_maxValue'u32 : (uint32_t)4294967295uu
-  i32_maxValue'i32 : -1i - 2147483647i
-  i32_minValue'i32 : 2147483647i
-  emptyStringData'ptr = 0
+  u32_maxvalue'u32 : (uint32_t)4294967295uu
+  i32_maxvalue'i32 : -1i - 2147483647i
+  i32_minvalue'i32 : 2147483647i
+  emptystringdata'ptr = 0
   --c--
-  sjv_emptyStringData = "";
+  sjv_emptystringdata = "";
   --c--
   anon1_write(
     parent: this,
     data'stack string : data
   )
   num'i32 : i32_random() %% 10i + 1i
-  isCorrect'bool = false
-  while !isCorrect{
-    str'stack string : anon1_readLine(
+  iscorrect'bool = false
+  while !iscorrect{
+    str'stack string : anon1_readline(
       parent: this
     )
-    guess'i32 : string_toI32(
+    guess'i32 : string_toi32(
       text'stack string : text
     )
-    isCorrect'bool = if guess < num {
+    iscorrect'bool = if guess < num {
       anon1_write(
         parent: this,
         data'stack string : data

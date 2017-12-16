@@ -5,56 +5,56 @@
 
 typedef struct td_int32_option int32_option;
 struct td_int32_option {
-    bool isEmpty;
+    bool isempty;
     int32_t value;
 };
 const int32_option int32_empty = { true };
 
 typedef struct td_uint32_option uint32_option;
 struct td_uint32_option {
-    bool isEmpty;
+    bool isempty;
     uint32_t value;
 };
 const uint32_option uint32_empty = { true };
 
 typedef struct td_int64_option int64_option;
 struct td_int64_option {
-    bool isEmpty;
+    bool isempty;
     int64_t value;
 };
 const int64_option int64_empty = { true };
 
 typedef struct td_uint64_option uint64_option;
 struct td_uint64_option {
-    bool isEmpty;
+    bool isempty;
     uint64_t value;
 };
 const uint64_option uint64_empty = { true };
 
 typedef struct td_void_option void_option;
 struct td_void_option {
-    bool isEmpty;
+    bool isempty;
     void* value;
 };
 const void_option void_empty = { true };
 
 typedef struct td_char_option char_option;
 struct td_char_option {
-    bool isEmpty;
+    bool isempty;
     char value;
 };
 const char_option char_empty = { true };
 
 typedef struct td_float_option float_option;
 struct td_float_option {
-    bool isEmpty;
+    bool isempty;
     float value;
 };
 const float_option float_empty = { true };
 
 typedef struct td_double_option double_option;
 struct td_double_option {
-    bool isEmpty;
+    bool isempty;
     double value;
 };
 const double_option double_empty = { true };
@@ -169,7 +169,7 @@ void sjf_func2_data_heap_callback(void * _parent, int32_t a, sjs_data_heap** _re
 void sjf_func_callback(void * _parent, int32_t a, sjs_data* _return);
 void sjf_func_heap(int32_t a, sjs_data_heap** _return);
 void sjf_func_heap_callback(void * _parent, int32_t a, sjs_data_heap** _return);
-void sjf_getCallback_heap(cb_i32_data_heap_data_heap* _return);
+void sjf_getcallback_heap(cb_i32_data_heap_data_heap* _return);
 void main_destroy(void);
 
 void sjf_callback(cb_i32_data_heap_data f, int32_t* _return) {
@@ -332,7 +332,7 @@ void sjf_func_heap_callback(void * _parent, int32_t a, sjs_data_heap** _return) 
     sjf_func_heap(a, _return);
 }
 
-void sjf_getCallback_heap(cb_i32_data_heap_data_heap* _return) {
+void sjf_getcallback_heap(cb_i32_data_heap_data_heap* _return) {
     sjs_class_heap* sjv_c;
 
     sjv_c = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
@@ -376,7 +376,7 @@ int main(int argc, char** argv) {
 #line 38
     sjt_callback1._cb_heap(sjt_callback1._parent, sjt_functionParam1, &sjv_b);
 #line 38
-    sjf_getCallback_heap(&sjv_l);
+    sjf_getcallback_heap(&sjv_l);
 #line 40
     sjt_callback2 = sjv_l.inner;
 #line 40

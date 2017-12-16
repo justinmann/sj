@@ -19,7 +19,7 @@ class(b'i32:)'heap class {
 
 
 
-getCallback()'heap (:i32)stack data {
+getcallback()'heap (:i32)stack data {
   c'heap class : heap class(this = class(
     b'i32 : b
   ))
@@ -38,7 +38,7 @@ global()'void {
   b'heap data : heap a(
     param0'i32 : param0
   )
-  l'heap (:i32)stack data : getCallback()
+  l'heap (:i32)stack data : getcallback()
   m'stack data : l(
     param0'i32 : param0
   )

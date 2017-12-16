@@ -22,19 +22,19 @@ anon6()'stack anon6 {
   this
 }
 
-fillElement #element (children'stack array_heap_element:, _rect'stack rect=)'heap fillElement {
+fillelement #element (children'stack array_heap_element:, _rect'stack rect=)'heap fillelement {
   this
 }
 
-runLoop()'void {
+runloop()'void {
   --c--
   #ifdef EMSCRIPTEN
-  emscripten_set_main_loop((em_callback_func)sjf_mainLoop, 0, 0);
+  emscripten_set_main_loop((em_callback_func)sjf_mainloop, 0, 0);
   exit(0);
   #else
   bool quit = false;
   while (!quit) {
-  sjf_mainLoop();
+  sjf_mainloop();
   }
   #endif	
   --c--
@@ -55,7 +55,7 @@ string(count'i32=, data'stack array_char=)'stack string {
   this
 }
 
-windowRenderer()'stack windowRenderer {
+windowrenderer()'stack windowrenderer {
   --c--
   if (SDL_Init(SDL_INIT_VIDEO) != 0) {
   halt("SDL_Init Error: %s\n", SDL_GetError());
@@ -94,8 +94,8 @@ windowRenderer()'stack windowRenderer {
 }
 
 global()'void {
-  rootWindowRenderer'stack windowRenderer : windowRenderer(this = windowRenderer())
-  rootScene'stack scene2d : scene2d(this = scene2d(
+  rootwindowrenderer'stack windowrenderer : windowrenderer(this = windowrenderer())
+  rootscene'stack scene2d : scene2d(this = scene2d(
     _size'stack size = _size,
     model'stack mat4 = model,
     view'stack mat4 = view,
@@ -1263,18 +1263,18 @@ global()'void {
   unsigned hashv;                   /* result of hash-fcn(key)        */
   } UT_hash_handle;
   --ctypedef--
-  u32_maxValue'u32 : (uint32_t)4294967295uu
-  i32_maxValue'i32 : -1i - 2147483647i
-  i32_minValue'i32 : 2147483647i
-  emptyStringData'ptr = 0
+  u32_maxvalue'u32 : (uint32_t)4294967295uu
+  i32_maxvalue'i32 : -1i - 2147483647i
+  i32_minvalue'i32 : 2147483647i
+  emptystringdata'ptr = 0
   --c--
-  sjv_emptyStringData = "";
+  sjv_emptystringdata = "";
   --c--
   animator'stack anon2 : anon2(this = anon2(
     animations'stack list_heap_animation : animations,
     current'i32 = current
   ))
-  borderPosition'stack anon3 : anon3(this = anon3(
+  borderposition'stack anon3 : anon3(this = anon3(
     fill'i32 : fill,
     left'i32 : left,
     right'i32 : right,
@@ -1287,7 +1287,7 @@ global()'void {
   float r, g, b, a; // color
   } vertex3_color4_t;	
   --cstruct--
-  buttonState'stack anon4 : anon4(this = anon4(
+  buttonstate'stack anon4 : anon4(this = anon4(
     normal'i32 : normal,
     hot'i32 : hot,
     pressed'i32 : pressed
@@ -1891,76 +1891,76 @@ global()'void {
   }
   --cfunction--
   {
-    glFeature_GL_BLEND'glFeature : 0x0BE2
-    glFeature_GL_CULL_FACE'glFeature : 0x0B44
-    glFeature_GL_DEPTH_TEST'glFeature : 0x0B71
-    glFeature_GL_DITHER'glFeature : 0x0BD0
-    glFeature_GL_POLYGON_OFFSET_FILL'glFeature : 0x8037
-    glFeature_GL_SAMPLE_ALPHA_TO_COVERAGE'glFeature : 0x809E
-    glFeature_GL_SAMPLE_COVERAGE'glFeature : 0x80A0
-    glFeature_GL_SCISSOR_TEST'glFeature : 0x0C11
-    glFeature_GL_STENCIL_TEST'glFeature : 0x0B90
+    glfeature_gl_blend'glfeature : 0x0BE2
+    glfeature_gl_cull_face'glfeature : 0x0B44
+    glfeature_gl_depth_test'glfeature : 0x0B71
+    glfeature_gl_dither'glfeature : 0x0BD0
+    glfeature_gl_polygon_offset_fill'glfeature : 0x8037
+    glfeature_gl_sample_alpha_to_coverage'glfeature : 0x809E
+    glfeature_gl_sample_coverage'glfeature : 0x80A0
+    glfeature_gl_scissor_test'glfeature : 0x0C11
+    glfeature_gl_stencil_test'glfeature : 0x0B90
   }
   {
-    glTexture_GL_TEXTURE_2D'glTexture : 0x0DE1
-    glTexture_GL_TEXTURE_CUBE_MAP'glTexture : 0x8513
+    gltexture_gl_texture_2d'gltexture : 0x0DE1
+    gltexture_gl_texture_cube_map'gltexture : 0x8513
   }
   {
-    glTextureAttribute_GL_TEXTURE_MIN_FILTER'glTextureAttribute : 0x2801
-    glTextureAttribute_GL_TEXTURE_MAG_FILTER'glTextureAttribute : 0x2800
-    glTextureAttribute_GL_TEXTURE_WRAP_S'glTextureAttribute : 0x2802
-    glTextureAttribute_GL_TEXTURE_WRAP_T'glTextureAttribute : 0x2803
+    gltextureattribute_gl_texture_min_filter'gltextureattribute : 0x2801
+    gltextureattribute_gl_texture_mag_filter'gltextureattribute : 0x2800
+    gltextureattribute_gl_texture_wrap_s'gltextureattribute : 0x2802
+    gltextureattribute_gl_texture_wrap_t'gltextureattribute : 0x2803
   }
   {
-    glTextureValue_GL_CLAMP_TO_EDGE'glTextureValue : 0x812F
-    glTextureValue_GL_MIRRORED_REPEAT'glTextureValue : 0x8370
-    glTextureValue_GL_REPEAT'glTextureValue : 0x2901
-    glTextureValue_GL_NEAREST'glTextureValue : 0x2600
-    glTextureValue_GL_LINEAR'glTextureValue : 0x2601
-    glTextureValue_GL_NEAREST_MIPMAP_NEAREST'glTextureValue : 0x2700
-    glTextureValue_GL_LINEAR_MIPMAP_NEAREST'glTextureValue : 0x2701
-    glTextureValue_GL_NEAREST_MIPMAP_LINEAR'glTextureValue : 0x2702
-    glTextureValue_GL_LINEAR_MIPMAP_LINEAR'glTextureValue : 0x2703
+    gltexturevalue_gl_clamp_to_edge'gltexturevalue : 0x812F
+    gltexturevalue_gl_mirrored_repeat'gltexturevalue : 0x8370
+    gltexturevalue_gl_repeat'gltexturevalue : 0x2901
+    gltexturevalue_gl_nearest'gltexturevalue : 0x2600
+    gltexturevalue_gl_linear'gltexturevalue : 0x2601
+    gltexturevalue_gl_nearest_mipmap_nearest'gltexturevalue : 0x2700
+    gltexturevalue_gl_linear_mipmap_nearest'gltexturevalue : 0x2701
+    gltexturevalue_gl_nearest_mipmap_linear'gltexturevalue : 0x2702
+    gltexturevalue_gl_linear_mipmap_linear'gltexturevalue : 0x2703
   }
   {
-    glTextureFormat_GL_ALPHA'glTextureFormat : 0x1906
-    glTextureFormat_GL_LUMINANCE'glTextureFormat : 0x1909
-    glTextureFormat_GL_LUMINANCE_ALPHA'glTextureFormat : 0x190A
-    glTextureFormat_GL_RGB'glTextureFormat : 0x1907
-    glTextureFormat_GL_RGBA'glTextureFormat : 0x1908
+    gltextureformat_gl_alpha'gltextureformat : 0x1906
+    gltextureformat_gl_luminance'gltextureformat : 0x1909
+    gltextureformat_gl_luminance_alpha'gltextureformat : 0x190A
+    gltextureformat_gl_rgb'gltextureformat : 0x1907
+    gltextureformat_gl_rgba'gltextureformat : 0x1908
   }
   {
-    glTextureType_GL_UNSIGNED_BYTE'glTextureType : 0x1401
-    glTextureType_GL_UNSIGNED_SHORT_5_6_5'glTextureType : 0x8363
-    glTextureType_GL_UNSIGNED_SHORT_4_4_4_4'glTextureType : 0x8033
-    glTextureType_GL_UNSIGNED_SHORT_5_5_5_1'glTextureType : 0x8034
+    gltexturetype_gl_unsigned_byte'gltexturetype : 0x1401
+    gltexturetype_gl_unsigned_short_5_6_5'gltexturetype : 0x8363
+    gltexturetype_gl_unsigned_short_4_4_4_4'gltexturetype : 0x8033
+    gltexturetype_gl_unsigned_short_5_5_5_1'gltexturetype : 0x8034
   }
   {
-    glFramebufferAttachment_GL_COLOR_ATTACHMENT0'glFramebufferAttachment : 0x8CE0
-    glFramebufferAttachment_GL_DEPTH_ATTACHMENT'glFramebufferAttachment : 0x8D00
-    glFramebufferAttachment_GL_STENCIL_ATTACHMENT'glFramebufferAttachment : 0x8D20
+    glframebufferattachment_gl_color_attachment0'glframebufferattachment : 0x8CE0
+    glframebufferattachment_gl_depth_attachment'glframebufferattachment : 0x8D00
+    glframebufferattachment_gl_stencil_attachment'glframebufferattachment : 0x8D20
   }
   {
-    glFramebufferTexture_GL_TEXTURE_2D'glFramebufferTexture : 0x0DE1
-    glFramebufferTexture_GL_TEXTURE_CUBE_MAP_POSITIVE_X'glFramebufferTexture : 0x8515
-    glFramebufferTexture_GL_TEXTURE_CUBE_MAP_NEGATIVE_X'glFramebufferTexture : 0x8516
-    glFramebufferTexture_GL_TEXTURE_CUBE_MAP_POSITIVE_Y'glFramebufferTexture : 0x8517
-    glFramebufferTexture_GL_TEXTURE_CUBE_MAP_NEGATIVE_Y'glFramebufferTexture : 0x8518
-    glFramebufferTexture_GL_TEXTURE_CUBE_MAP_POSITIVE_Z'glFramebufferTexture : 0x8519
-    glFramebufferTexture_GL_TEXTURE_CUBE_MAP_NEGATIVE_Z'glFramebufferTexture : 0x851A
+    glframebuffertexture_gl_texture_2d'glframebuffertexture : 0x0DE1
+    glframebuffertexture_gl_texture_cube_map_positive_x'glframebuffertexture : 0x8515
+    glframebuffertexture_gl_texture_cube_map_negative_x'glframebuffertexture : 0x8516
+    glframebuffertexture_gl_texture_cube_map_positive_y'glframebuffertexture : 0x8517
+    glframebuffertexture_gl_texture_cube_map_negative_y'glframebuffertexture : 0x8518
+    glframebuffertexture_gl_texture_cube_map_positive_z'glframebuffertexture : 0x8519
+    glframebuffertexture_gl_texture_cube_map_negative_z'glframebuffertexture : 0x851A
   }
   {
-    glRenderbufferFormat_GL_RGBA4'glRenderbufferFormat : 0x8056
-    glRenderbufferFormat_GL_RGB565'glRenderbufferFormat : 0x8D62
-    glRenderbufferFormat_GL_RGB5_A1'glRenderbufferFormat : 0x8057
-    glRenderbufferFormat_GL_DEPTH_COMPONENT16'glRenderbufferFormat : 0x81A5
-    glRenderbufferFormat_GL_STENCIL_INDEX8'glRenderbufferFormat : 0x8D48
+    glrenderbufferformat_gl_rgba4'glrenderbufferformat : 0x8056
+    glrenderbufferformat_gl_rgb565'glrenderbufferformat : 0x8D62
+    glrenderbufferformat_gl_rgb5_a1'glrenderbufferformat : 0x8057
+    glrenderbufferformat_gl_depth_component16'glrenderbufferformat : 0x81A5
+    glrenderbufferformat_gl_stencil_index8'glrenderbufferformat : 0x8D48
   }
   {
-    glFramebufferStatus_GL_FRAMEBUFFER_COMPLETE'glFramebufferStatus : 0x8CD5
-    glFramebufferStatus_GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT'glFramebufferStatus : 0x8CD6
-    glFramebufferStatus_GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT'glFramebufferStatus : 0x8CD7
-    glFramebufferStatus_GL_FRAMEBUFFER_UNSUPPORTED'glFramebufferStatus : 0x8CDD
+    glframebufferstatus_gl_framebuffer_complete'glframebufferstatus : 0x8CD5
+    glframebufferstatus_gl_framebuffer_incomplete_attachment'glframebufferstatus : 0x8CD6
+    glframebufferstatus_gl_framebuffer_incomplete_missing_attachment'glframebufferstatus : 0x8CD7
+    glframebufferstatus_gl_framebuffer_unsupported'glframebufferstatus : 0x8CDD
   }
   --cstruct--
   typedef struct GLid_td GLid_s;
@@ -2008,37 +2008,37 @@ global()'void {
   float s, t;       // texture
   } vertex3_texture2_t;	
   --cstruct--
-  mouse_captureElement'heap #element? = empty'heap #element?
+  mouse_captureelement'heap #element? = empty'heap #element?
   {
-    mouseEventType_move'mouseEventType : 0
-    mouseEventType_up'mouseEventType : 1
-    mouseEventType_down'mouseEventType : 2
+    mouseeventtype_move'mouseeventtype : 0
+    mouseeventtype_up'mouseeventtype : 1
+    mouseeventtype_down'mouseeventtype : 2
   }
-  boxShader'stack shader : shader(this = shader(
+  boxshader'stack shader : shader(this = shader(
     vertex'stack string : vertex,
     pixel'stack string : pixel
   ))
-  blurHorizontalShader'stack shader : shader(this = shader(
+  blurhorizontalshader'stack shader : shader(this = shader(
     vertex'stack string : vertex,
     pixel'stack string : pixel
   ))
-  blurVerticalShader'stack shader : shader(this = shader(
+  blurverticalshader'stack shader : shader(this = shader(
     vertex'stack string : vertex,
     pixel'stack string : pixel
   ))
-  imageShader'stack shader : shader(this = shader(
+  imageshader'stack shader : shader(this = shader(
     vertex'stack string : vertex,
     pixel'stack string : pixel
   ))
-  phongColorShader'stack shader : shader(this = shader(
+  phongcolorshader'stack shader : shader(this = shader(
     vertex'stack string : vertex,
     pixel'stack string : pixel
   ))
-  phongTextureShader'stack shader : shader(this = shader(
+  phongtextureshader'stack shader : shader(this = shader(
     vertex'stack string : vertex,
     pixel'stack string : pixel
   ))
-  textShader'stack shader : shader(this = shader(
+  textshader'stack shader : shader(this = shader(
     vertex'stack string : vertex,
     pixel'stack string : pixel
   ))
@@ -5507,11 +5507,11 @@ global()'void {
     count'i32 = count,
     data'stack array_char = data
   ))
-  root'heap #element : fillElement(this = fillElement(
+  root'heap #element : fillelement(this = fillelement(
     children'stack array_heap_element : children,
     _rect'stack rect = _rect
   )) as heap #element
-  runLoop()
+  runloop()
   void
 }
 

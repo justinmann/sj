@@ -1,5 +1,17 @@
 #include "Node.h"
 
+EnumArg::EnumArg(string name) : name(name), hasValue(false) {
+    boost::algorithm::to_lower(this->name);
+}
+
+EnumArg::EnumArg(string name, string value) : name(name), hasValue(true), value(value) {
+    boost::algorithm::to_lower(this->name);
+}
+
+NEnum::NEnum(CLoc loc, string name, shared_ptr<EnumArgs> enumArgs) : NVariableBase(NodeType_Enum, loc), name(name), enumArgs(enumArgs) {
+    boost::algorithm::to_lower(this->name);
+}
+
 void NEnum::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     // create a new type
     auto ctypes = CType::create(name, "int32_t", "(int32_t)0", "int32_option", "int32_empty");

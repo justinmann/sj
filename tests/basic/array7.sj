@@ -1,6 +1,5 @@
 include "lib/common/common.sj"
 
-
 class(
 	x : 'i32
 

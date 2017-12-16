@@ -271,7 +271,10 @@ void CCCodeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
     vector<shared_ptr<CFunction>> functions;
     map<string, map<string, bool>> includes;
     shared_ptr<CType> returnType;
+    auto lineIndex = -1;
     for (auto line : lines) {
+        lineIndex++;
+
         auto finalLine = expandMacros(compiler, loc, scope.lock(), trOutput, line, storeValue, functions, includes, returnType);
         if (finalLine.size() == 0) {
             continue;
@@ -282,7 +285,7 @@ void CCCodeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
             assert(false);
             break;
         case NCC_BLOCK:
-            trBlock->statements.push_back(TrStatement(loc, finalLine, true));
+            trBlock->statements.push_back(TrStatement(CLoc(loc.fullFileName, loc.shortFileName, loc.line + lineIndex, 1), finalLine, true));
             break;
         case NCC_DEFINE:
             trOutput->ccodeDefines.push_back(finalLine);

@@ -5,56 +5,56 @@
 
 typedef struct td_int32_option int32_option;
 struct td_int32_option {
-    bool isEmpty;
+    bool isempty;
     int32_t value;
 };
 const int32_option int32_empty = { true };
 
 typedef struct td_uint32_option uint32_option;
 struct td_uint32_option {
-    bool isEmpty;
+    bool isempty;
     uint32_t value;
 };
 const uint32_option uint32_empty = { true };
 
 typedef struct td_int64_option int64_option;
 struct td_int64_option {
-    bool isEmpty;
+    bool isempty;
     int64_t value;
 };
 const int64_option int64_empty = { true };
 
 typedef struct td_uint64_option uint64_option;
 struct td_uint64_option {
-    bool isEmpty;
+    bool isempty;
     uint64_t value;
 };
 const uint64_option uint64_empty = { true };
 
 typedef struct td_void_option void_option;
 struct td_void_option {
-    bool isEmpty;
+    bool isempty;
     void* value;
 };
 const void_option void_empty = { true };
 
 typedef struct td_char_option char_option;
 struct td_char_option {
-    bool isEmpty;
+    bool isempty;
     char value;
 };
 const char_option char_empty = { true };
 
 typedef struct td_float_option float_option;
 struct td_float_option {
-    bool isEmpty;
+    bool isempty;
     float value;
 };
 const float_option float_empty = { true };
 
 typedef struct td_double_option double_option;
 struct td_double_option {
-    bool isEmpty;
+    bool isempty;
     double value;
 };
 const double_option double_empty = { true };
@@ -122,7 +122,7 @@ int main(int argc, char** argv) {
 #line 6
     sjt_value1 = 5;
 #line 6
-    value1.isEmpty = false;
+    value1.isempty = false;
 #line 6
     value1.value = sjt_value1;
 #line 6
@@ -134,7 +134,7 @@ int main(int argc, char** argv) {
 #line 9
     sjt_isEmpty2 = sjv_a;
 #line 9
-    sjt_isEmpty1 = sjt_isEmpty2.isEmpty;
+    sjt_isEmpty1 = sjt_isEmpty2.isempty;
     if (!sjt_isEmpty1) {
         int32_t ifValue1;
         int32_option sjt_getValue1;
@@ -153,7 +153,7 @@ int main(int argc, char** argv) {
 #line 15
     sjt_isEmpty4 = sjv_b;
 #line 15
-    sjt_isEmpty3 = sjt_isEmpty4.isEmpty;
+    sjt_isEmpty3 = sjt_isEmpty4.isempty;
     if (!sjt_isEmpty3) {
         int32_t ifValue2;
         int32_option sjt_getValue2;
@@ -174,7 +174,7 @@ int main(int argc, char** argv) {
 #line 21
     sjt_isEmpty6 = (sjt_dot1)->d;
 #line 21
-    sjt_isEmpty5 = sjt_isEmpty6.isEmpty;
+    sjt_isEmpty5 = sjt_isEmpty6.isempty;
     if (!sjt_isEmpty5) {
         int32_t ifValue3;
         sjs_class* sjt_dot2;

@@ -41,6 +41,8 @@ void CAssignVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>
 }
 
 NAssignment::NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTypeName> typeName, const char* name, shared_ptr<NBase> rightSide_, AssignOp op) : NBase(NodeType_Assignment, loc), var(var), typeName(typeName), name(name), inFunctionDeclaration(false), rightSide(rightSide_), op(op), _isFirstAssignment(false) {
+    boost::algorithm::to_lower(this->name);
+
     // If we are assigning a function to a var then we will call the function to get its value
     if (rightSide && rightSide->nodeType == NodeType_Function) {
         nfunction = static_pointer_cast<NFunction>(rightSide);
@@ -88,9 +90,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
     }
     
     // Check for operator overload first
-    string temp = name;
-    temp[0] = toupper(temp[0]);
-    string setFunctionName = "set" + temp;
+    string setFunctionName = "set" + name;
     auto setFunction = cfunction->getCFunction(compiler, loc, setFunctionName, scope, nullptr, returnMode);
     if (parentVar && setFunction) {
         if (returnMode != CTM_Heap) {
@@ -115,20 +115,22 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
 
             auto dotScope = CScope::getScopeForType(compiler, dotVar->getType(compiler));
             auto leftVar = dotScope->getCVar(compiler, dotVar, name, VSM_ThisOnly);
-            if (leftVar) {
-                if (!op.isMutable) {
-                    compiler->addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var '%s'", name.c_str());
-                    return nullptr;
-                }
-                else if (!leftVar->isMutable) {
-                    compiler->addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var '%s'", name.c_str());
-                    return nullptr;
-                }
+            if (!leftVar) {
+                return nullptr;
+            }
 
-                if (op.isFirstAssignment) {
-                    compiler->addError(loc, CErrorCode::ImmutableAssignment, "use '=' to assign value to class variables instead of ':' or ':='");
-                    return nullptr;
-                }
+            if (!op.isMutable) {
+                compiler->addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var '%s'", name.c_str());
+                return nullptr;
+            }
+            else if (!leftVar->isMutable) {
+                compiler->addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var '%s'", name.c_str());
+                return nullptr;
+            }
+
+            if (op.isFirstAssignment) {
+                compiler->addError(loc, CErrorCode::ImmutableAssignment, "use '=' to assign value to class variables instead of ':' or ':='");
+                return nullptr;
             }
 
             leftStoreVar = dynamic_pointer_cast<CStoreVar>(leftVar);

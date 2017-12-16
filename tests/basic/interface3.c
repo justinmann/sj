@@ -1100,56 +1100,56 @@ unsigned hashv;                   /* result of hash-fcn(key)        */
 } UT_hash_handle;
 typedef struct td_int32_option int32_option;
 struct td_int32_option {
-    bool isEmpty;
+    bool isempty;
     int32_t value;
 };
 const int32_option int32_empty = { true };
 
 typedef struct td_uint32_option uint32_option;
 struct td_uint32_option {
-    bool isEmpty;
+    bool isempty;
     uint32_t value;
 };
 const uint32_option uint32_empty = { true };
 
 typedef struct td_int64_option int64_option;
 struct td_int64_option {
-    bool isEmpty;
+    bool isempty;
     int64_t value;
 };
 const int64_option int64_empty = { true };
 
 typedef struct td_uint64_option uint64_option;
 struct td_uint64_option {
-    bool isEmpty;
+    bool isempty;
     uint64_t value;
 };
 const uint64_option uint64_empty = { true };
 
 typedef struct td_void_option void_option;
 struct td_void_option {
-    bool isEmpty;
+    bool isempty;
     void* value;
 };
 const void_option void_empty = { true };
 
 typedef struct td_char_option char_option;
 struct td_char_option {
-    bool isEmpty;
+    bool isempty;
     char value;
 };
 const char_option char_empty = { true };
 
 typedef struct td_float_option float_option;
 struct td_float_option {
-    bool isEmpty;
+    bool isempty;
     float value;
 };
 const float_option float_empty = { true };
 
 typedef struct td_double_option double_option;
 struct td_double_option {
-    bool isEmpty;
+    bool isempty;
     double value;
 };
 const double_option double_empty = { true };
@@ -1207,17 +1207,17 @@ struct td_sjs_class_heap {
 };
 
 struct td_sjs_array_char {
-    int32_t dataSize;
+    int32_t datasize;
     void* data;
-    bool _isGlobal;
+    bool _isglobal;
     int32_t count;
 };
 
 struct td_sjs_array_char_heap {
     intptr_t _refCount;
-    int32_t dataSize;
+    int32_t datasize;
     void* data;
-    bool _isGlobal;
+    bool _isglobal;
     int32_t count;
 };
 
@@ -1253,11 +1253,11 @@ sji_foo* sjt_parent1;
 sji_foo* sjv_a;
 sjs_string_heap* sjv_bob;
 sjs_anon1 sjv_console;
-void* sjv_emptyStringData;
+void* sjv_emptystringdata;
 float sjv_f32_pi;
-int32_t sjv_i32_maxValue;
-int32_t sjv_i32_minValue;
-uint32_t sjv_u32_maxValue;
+int32_t sjv_i32_maxvalue;
+int32_t sjv_i32_minvalue;
+uint32_t sjv_u32_maxvalue;
 
 void sjf_anon1(sjs_anon1* _this);
 void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* _from);
@@ -1330,76 +1330,76 @@ void sjf_anon1_heap(sjs_anon1_heap* _this) {
 }
 
 void sjf_array_char(sjs_array_char* _this) {
-#line 266 "lib/common/array.sj"
-    if (_this->dataSize < 0) {
-#line 266
+#line 267 "lib/common/array.sj"
+    if (_this->datasize < 0) {
+#line 268
         halt("size is less than zero");
-#line 266
+#line 269
     }
-#line 266
+#line 271
     if (!_this->data) {
-#line 266
-        _this->data = malloc(_this->dataSize * sizeof(char));
-#line 266
+#line 272
+        _this->data = malloc(_this->datasize * sizeof(char));
+#line 273
         if (!_this->data) {
-#line 266
+#line 274
             halt("grow: out of memory\n");
-#line 266
+#line 275
         }
-#line 266
+#line 276
     }
 }
 
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
 #line 1 "lib/common/array.sj"
-    _this->dataSize = _from->dataSize;
+    _this->datasize = _from->datasize;
 #line 1
     _this->data = _from->data;
 #line 1
-    _this->_isGlobal = _from->_isGlobal;
+    _this->_isglobal = _from->_isglobal;
 #line 1
     _this->count = _from->count;
-#line 280
+#line 281
     _this->data = _from->data;
-#line 280
-    if (!_this->_isGlobal && _this->data) {
-#line 280
+#line 282
+    if (!_this->_isglobal && _this->data) {
+#line 283
         _retain(_this->data);
-#line 280
+#line 284
     }
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
-#line 287 "lib/common/array.sj"
-    if (!_this->_isGlobal && _this->data) {
-#line 287
+#line 288 "lib/common/array.sj"
+    if (!_this->_isglobal && _this->data) {
+#line 289
         if (_release(_this->data)) {
-#line 287
+#line 290
             free((char*)_this->data);
-#line 287
+#line 291
         }
-#line 287
+#line 292
     }
 }
 
 void sjf_array_char_heap(sjs_array_char_heap* _this) {
-#line 266 "lib/common/array.sj"
-    if (_this->dataSize < 0) {
-#line 266
+#line 267 "lib/common/array.sj"
+    if (_this->datasize < 0) {
+#line 268
         halt("size is less than zero");
-#line 266
+#line 269
     }
-#line 266
+#line 271
     if (!_this->data) {
-#line 266
-        _this->data = malloc(_this->dataSize * sizeof(char));
-#line 266
+#line 272
+        _this->data = malloc(_this->datasize * sizeof(char));
+#line 273
         if (!_this->data) {
-#line 266
+#line 274
             halt("grow: out of memory\n");
-#line 266
+#line 275
         }
-#line 266
+#line 276
     }
 }
 
@@ -1467,11 +1467,11 @@ void sjf_class_test(sjs_class* _parent, sjs_string* _return) {
 #line 9 "interface3.sj"
     _return->count = 1;
 #line 9
-    _return->data.dataSize = 2;
+    _return->data.datasize = 2;
 #line 9
     _return->data.data = (void*)sjg_string1;
 #line 9
-    _return->data._isGlobal = true;
+    _return->data._isglobal = true;
 #line 9
     _return->data.count = 2;
 #line 9
@@ -1486,11 +1486,11 @@ void sjf_class_test_heap(sjs_class* _parent, sjs_string_heap** _return) {
 #line 9 "interface3.sj"
     (*_return)->count = 1;
 #line 9
-    (*_return)->data.dataSize = 2;
+    (*_return)->data.datasize = 2;
 #line 9
     (*_return)->data.data = (void*)sjg_string2;
 #line 9
-    (*_return)->data._isGlobal = true;
+    (*_return)->data._isglobal = true;
 #line 9
     (*_return)->data.count = 2;
 #line 9
@@ -1538,7 +1538,7 @@ int main(int argc, char** argv) {
 #line 1 "lib/common/f32.sj"
     sjv_f32_pi = 3.14159265358979323846f;
 #line 1 "lib/common/i32.sj"
-    sjv_u32_maxValue = (uint32_t)4294967295u;
+    sjv_u32_maxvalue = (uint32_t)4294967295u;
 #line 3
     sjt_negate1 = 1;
 #line 3
@@ -1548,18 +1548,18 @@ int main(int argc, char** argv) {
 #line 3
     sjt_math2 = 2147483647;
 #line 3
-    sjv_i32_maxValue = sjt_math1 - sjt_math2;
+    sjv_i32_maxvalue = sjt_math1 - sjt_math2;
 #line 4
-    sjv_i32_minValue = 2147483647;
+    sjv_i32_minvalue = 2147483647;
 #line 1 "lib/common/string.sj"
-    sjv_emptyStringData = 0;
-#line 2
-    sjv_emptyStringData = "";
-#line 2
+    sjv_emptystringdata = 0;
+#line 3
+    sjv_emptystringdata = "";
+#line 3
     sjt_cast1 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
-#line 2
+#line 3
     sjt_cast1->_refCount = 1;
-#line 2
+#line 3
     sjf_class_heap(sjt_cast1);
 #line 3 "interface3.sj"
     sjv_a = (sji_foo*)sjf_class_heap_as_sji_foo(sjt_cast1);

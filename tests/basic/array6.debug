@@ -2,13 +2,13 @@ anon1()'stack anon1 {
   this
 }
 
-array!f32(dataSize'i32:, data'ptr:, _isGlobal'bool:, count'i32:)'stack array_f32 {
+array!f32(datasize'i32:, data'ptr:, _isglobal'bool:, count'i32:)'stack array_f32 {
   --c--
-  if (_this->dataSize < 0) {
+  if (_this->datasize < 0) {
   halt("size is less than zero");
   }
   if (!_this->data) {
-  _this->data = malloc(_this->dataSize * sizeof(float));
+  _this->data = malloc(_this->datasize * sizeof(float));
   if (!_this->data) {
   halt("grow: out of memory\n");
   }
@@ -18,13 +18,13 @@ array!f32(dataSize'i32:, data'ptr:, _isGlobal'bool:, count'i32:)'stack array_f32
 }
 
 array_filter(cb'local (:f32)bool:)'stack array_f32 {
-  newData'ptr = 0
-  newCount'i32 = 0i
+  newdata'ptr = 0
+  newcount'i32 = 0i
   --c--
-  sjv_newData = malloc(_parent->count * sizeof(float));
+  sjv_newdata = malloc(_parent->count * sizeof(float));
   --c--
   for i : 0i to parent.count {
-    item'f32 : array_getAt(
+    item'f32 : array_getat(
       parent: this,
       index'i32 : index
     )
@@ -32,16 +32,16 @@ array_filter(cb'local (:f32)bool:)'stack array_f32 {
       param0'f32 : param0
     ) {
       --c--
-      float* p = (float*)sjv_newData;
+      float* p = (float*)sjv_newdata;
       ;
       --c--
-      newCount'i32 = newCount + 1i
+      newcount'i32 = newcount + 1i
     }
   }
   array!f32(this = array!f32(
-    dataSize'i32 : dataSize,
+    datasize'i32 : datasize,
     data'ptr : data,
-    _isGlobal'bool : _isGlobal,
+    _isglobal'bool : _isglobal,
     count'i32 : count
   ))
 }
@@ -57,7 +57,7 @@ array_foldl!stack sum(initial'stack sum:, cb'local (:stack sum, :f32)stack sum:)
   r
 }
 
-array_getAt(index'i32:)'f32 {
+array_getat(index'i32:)'f32 {
   --c--
   if (index >= _parent->count || index < 0) {
   halt("getAt: out of bounds\n");
@@ -67,13 +67,13 @@ array_getAt(index'i32:)'f32 {
   --c--
 }
 
-array_initAt(index'i32:, item'i32:)'void {
+array_initat(index'i32:, item'i32:)'void {
   --c--
   if (index != _parent->count) {
   halt("initAt: can only initialize last element\n");		
   }
-  if (index >= _parent->dataSize || index < 0) {
-  halt("initAt: out of bounds %d:%d\n", index, _parent->dataSize);
+  if (index >= _parent->datasize || index < 0) {
+  halt("initAt: out of bounds %d:%d\n", index, _parent->datasize);
   }
   int32_t* p = (int32_t*)_parent->data;
   ;
@@ -82,23 +82,23 @@ array_initAt(index'i32:, item'i32:)'void {
 }
 
 array_map!f32(cb'local (:i32)f32:)'stack array_f32 {
-  newData'ptr = 0
+  newdata'ptr = 0
   --c--
-  sjv_newData = malloc(_parent->count * sizeof(float));
+  sjv_newdata = malloc(_parent->count * sizeof(float));
   --c--
   for i : 0i to parent.count {
-    newItem'f32 : cb(
+    newitem'f32 : cb(
       param0'i32 : param0
     )
     --c--
-    float* p = (float*)sjv_newData;
+    float* p = (float*)sjv_newdata;
     ;
     --c--
   }
   array!f32(this = array!f32(
-    dataSize'i32 : dataSize,
+    datasize'i32 : datasize,
     data'ptr : data,
-    _isGlobal'bool : _isGlobal,
+    _isglobal'bool : _isglobal,
     count'i32 : count
   ))
 }
@@ -1262,22 +1262,22 @@ global()'void {
   unsigned hashv;                   /* result of hash-fcn(key)        */
   } UT_hash_handle;
   --ctypedef--
-  u32_maxValue'u32 : (uint32_t)4294967295uu
-  i32_maxValue'i32 : -1i - 2147483647i
-  i32_minValue'i32 : 2147483647i
-  emptyStringData'ptr = 0
+  u32_maxvalue'u32 : (uint32_t)4294967295uu
+  i32_maxvalue'i32 : -1i - 2147483647i
+  i32_minvalue'i32 : 2147483647i
+  emptystringdata'ptr = 0
   --c--
-  sjv_emptyStringData = "";
+  sjv_emptystringdata = "";
   --c--
-  a'stack array_i32 : [array_initAt(
+  a'stack array_i32 : [array_initat(
     parent: this,
     index'i32 : index,
     item'i32 : item
-  ), array_initAt(
+  ), array_initat(
     parent: this,
     index'i32 : index,
     item'i32 : item
-  ), array_initAt(
+  ), array_initat(
     parent: this,
     index'i32 : index,
     item'i32 : item

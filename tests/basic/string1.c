@@ -1100,56 +1100,56 @@ unsigned hashv;                   /* result of hash-fcn(key)        */
 } UT_hash_handle;
 typedef struct td_int32_option int32_option;
 struct td_int32_option {
-    bool isEmpty;
+    bool isempty;
     int32_t value;
 };
 const int32_option int32_empty = { true };
 
 typedef struct td_uint32_option uint32_option;
 struct td_uint32_option {
-    bool isEmpty;
+    bool isempty;
     uint32_t value;
 };
 const uint32_option uint32_empty = { true };
 
 typedef struct td_int64_option int64_option;
 struct td_int64_option {
-    bool isEmpty;
+    bool isempty;
     int64_t value;
 };
 const int64_option int64_empty = { true };
 
 typedef struct td_uint64_option uint64_option;
 struct td_uint64_option {
-    bool isEmpty;
+    bool isempty;
     uint64_t value;
 };
 const uint64_option uint64_empty = { true };
 
 typedef struct td_void_option void_option;
 struct td_void_option {
-    bool isEmpty;
+    bool isempty;
     void* value;
 };
 const void_option void_empty = { true };
 
 typedef struct td_char_option char_option;
 struct td_char_option {
-    bool isEmpty;
+    bool isempty;
     char value;
 };
 const char_option char_empty = { true };
 
 typedef struct td_float_option float_option;
 struct td_float_option {
-    bool isEmpty;
+    bool isempty;
     float value;
 };
 const float_option float_empty = { true };
 
 typedef struct td_double_option double_option;
 struct td_double_option {
-    bool isEmpty;
+    bool isempty;
     double value;
 };
 const double_option double_empty = { true };
@@ -1194,17 +1194,17 @@ struct td_sjs_anon1_heap {
 };
 
 struct td_sjs_array_char {
-    int32_t dataSize;
+    int32_t datasize;
     void* data;
-    bool _isGlobal;
+    bool _isglobal;
     int32_t count;
 };
 
 struct td_sjs_array_char_heap {
     intptr_t _refCount;
-    int32_t dataSize;
+    int32_t datasize;
     void* data;
-    bool _isGlobal;
+    bool _isglobal;
     int32_t count;
 };
 
@@ -1242,17 +1242,17 @@ char sjv_c;
 sjs_anon1 sjv_console;
 char sjv_d;
 char sjv_e;
-void* sjv_emptyStringData;
+void* sjv_emptystringdata;
 sjs_string sjv_f;
 float sjv_f32_pi;
 char sjv_h;
 bool sjv_i;
-int32_t sjv_i32_maxValue;
-int32_t sjv_i32_minValue;
+int32_t sjv_i32_maxvalue;
+int32_t sjv_i32_minvalue;
 bool sjv_j;
 bool sjv_k;
 bool sjv_l;
-uint32_t sjv_u32_maxValue;
+uint32_t sjv_u32_maxvalue;
 
 void sjf_anon1(sjs_anon1* _this);
 void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* _from);
@@ -1261,17 +1261,17 @@ void sjf_anon1_heap(sjs_anon1_heap* _this);
 void sjf_array_char(sjs_array_char* _this);
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from);
 void sjf_array_char_destroy(sjs_array_char* _this);
-void sjf_array_char_getAt(sjs_array_char* _parent, int32_t index, char* _return);
+void sjf_array_char_getat(sjs_array_char* _parent, int32_t index, char* _return);
 void sjf_array_char_heap(sjs_array_char_heap* _this);
-void sjf_array_char_isEqual(sjs_array_char* _parent, sjs_array_char* test, bool* _return);
-void sjf_array_char_isLessOrEqual(sjs_array_char* _parent, sjs_array_char* test, bool* _return);
+void sjf_array_char_isequal(sjs_array_char* _parent, sjs_array_char* test, bool* _return);
+void sjf_array_char_islessorequal(sjs_array_char* _parent, sjs_array_char* test, bool* _return);
 void sjf_string(sjs_string* _this);
 void sjf_string_copy(sjs_string* _this, sjs_string* _from);
 void sjf_string_destroy(sjs_string* _this);
-void sjf_string_getAt(sjs_string* _parent, int32_t index, char* _return);
+void sjf_string_getat(sjs_string* _parent, int32_t index, char* _return);
 void sjf_string_heap(sjs_string_heap* _this);
-void sjf_string_isEqual(sjs_string* _parent, sjs_string* test, bool* _return);
-void sjf_string_isLessOrEqual(sjs_string* _parent, sjs_string* test, bool* _return);
+void sjf_string_isequal(sjs_string* _parent, sjs_string* test, bool* _return);
+void sjf_string_islessorequal(sjs_string* _parent, sjs_string* test, bool* _return);
 void main_destroy(void);
 
 void halt(const char * format, ...) {
@@ -1319,113 +1319,113 @@ void sjf_anon1_heap(sjs_anon1_heap* _this) {
 }
 
 void sjf_array_char(sjs_array_char* _this) {
-#line 266 "lib/common/array.sj"
-    if (_this->dataSize < 0) {
-#line 266
+#line 267 "lib/common/array.sj"
+    if (_this->datasize < 0) {
+#line 268
         halt("size is less than zero");
-#line 266
+#line 269
     }
-#line 266
+#line 271
     if (!_this->data) {
-#line 266
-        _this->data = malloc(_this->dataSize * sizeof(char));
-#line 266
+#line 272
+        _this->data = malloc(_this->datasize * sizeof(char));
+#line 273
         if (!_this->data) {
-#line 266
+#line 274
             halt("grow: out of memory\n");
-#line 266
+#line 275
         }
-#line 266
+#line 276
     }
 }
 
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
 #line 1 "lib/common/array.sj"
-    _this->dataSize = _from->dataSize;
+    _this->datasize = _from->datasize;
 #line 1
     _this->data = _from->data;
 #line 1
-    _this->_isGlobal = _from->_isGlobal;
+    _this->_isglobal = _from->_isglobal;
 #line 1
     _this->count = _from->count;
-#line 280
+#line 281
     _this->data = _from->data;
-#line 280
-    if (!_this->_isGlobal && _this->data) {
-#line 280
+#line 282
+    if (!_this->_isglobal && _this->data) {
+#line 283
         _retain(_this->data);
-#line 280
+#line 284
     }
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
-#line 287 "lib/common/array.sj"
-    if (!_this->_isGlobal && _this->data) {
-#line 287
+#line 288 "lib/common/array.sj"
+    if (!_this->_isglobal && _this->data) {
+#line 289
         if (_release(_this->data)) {
-#line 287
+#line 290
             free((char*)_this->data);
-#line 287
+#line 291
         }
-#line 287
+#line 292
     }
 }
 
-void sjf_array_char_getAt(sjs_array_char* _parent, int32_t index, char* _return) {
-#line 8 "lib/common/array.sj"
+void sjf_array_char_getat(sjs_array_char* _parent, int32_t index, char* _return) {
+#line 9 "lib/common/array.sj"
     if (index >= _parent->count || index < 0) {
-#line 8
+#line 10
         halt("getAt: out of bounds\n");
-#line 8
+#line 11
     }
-#line 8
+#line 13
     char* p = (char*)_parent->data;
-#line 8
+#line 14
     #line 8 "lib/common/array.sj"
 (*_return) = p[index];
 ;		
 }
 
 void sjf_array_char_heap(sjs_array_char_heap* _this) {
-#line 266 "lib/common/array.sj"
-    if (_this->dataSize < 0) {
-#line 266
+#line 267 "lib/common/array.sj"
+    if (_this->datasize < 0) {
+#line 268
         halt("size is less than zero");
-#line 266
+#line 269
     }
-#line 266
+#line 271
     if (!_this->data) {
-#line 266
-        _this->data = malloc(_this->dataSize * sizeof(char));
-#line 266
+#line 272
+        _this->data = malloc(_this->datasize * sizeof(char));
+#line 273
         if (!_this->data) {
-#line 266
+#line 274
             halt("grow: out of memory\n");
-#line 266
+#line 275
         }
-#line 266
+#line 276
     }
 }
 
-void sjf_array_char_isEqual(sjs_array_char* _parent, sjs_array_char* test, bool* _return) {
-#line 228 "lib/common/array.sj"
+void sjf_array_char_isequal(sjs_array_char* _parent, sjs_array_char* test, bool* _return) {
+#line 229 "lib/common/array.sj"
     if (_parent->count != test->count) {
-#line 228
+#line 230
         *_return = false;
-#line 228
+#line 231
     }
-#line 228
+#line 233
     bool result = memcmp(_parent->data, test->data, _parent->count * sizeof(char)) == 0;
-#line 228
+#line 234
     #line 228 "lib/common/array.sj"
 (*_return) = result;
 ;		
 }
 
-void sjf_array_char_isLessOrEqual(sjs_array_char* _parent, sjs_array_char* test, bool* _return) {
-#line 260 "lib/common/array.sj"
+void sjf_array_char_islessorequal(sjs_array_char* _parent, sjs_array_char* test, bool* _return) {
+#line 261 "lib/common/array.sj"
     bool result = memcmp(_parent->data, test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(char)) <= 0;		
-#line 260
+#line 262
     #line 260 "lib/common/array.sj"
 (*_return) = result;
 ;		
@@ -1444,7 +1444,7 @@ void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
 void sjf_string_destroy(sjs_string* _this) {
 }
 
-void sjf_string_getAt(sjs_string* _parent, int32_t index, char* _return) {
+void sjf_string_getat(sjs_string* _parent, int32_t index, char* _return) {
     sjs_string* sjt_dot1;
     int32_t sjt_functionParam1;
     sjs_array_char* sjt_parent1;
@@ -1456,13 +1456,13 @@ void sjf_string_getAt(sjs_string* _parent, int32_t index, char* _return) {
 #line 34 "lib/common/string.sj"
     sjt_functionParam1 = index;
 #line 34
-    sjf_array_char_getAt(sjt_parent1, sjt_functionParam1, _return);
+    sjf_array_char_getat(sjt_parent1, sjt_functionParam1, _return);
 }
 
 void sjf_string_heap(sjs_string_heap* _this) {
 }
 
-void sjf_string_isEqual(sjs_string* _parent, sjs_string* test, bool* _return) {
+void sjf_string_isequal(sjs_string* _parent, sjs_string* test, bool* _return) {
     sjs_string* sjt_dot2;
     sjs_string* sjt_dot3;
     sjs_array_char* sjt_functionParam3;
@@ -1477,10 +1477,10 @@ void sjf_string_isEqual(sjs_string* _parent, sjs_string* test, bool* _return) {
 #line 43
     sjt_functionParam3 = &(sjt_dot3)->data;
 #line 43
-    sjf_array_char_isEqual(sjt_parent3, sjt_functionParam3, _return);
+    sjf_array_char_isequal(sjt_parent3, sjt_functionParam3, _return);
 }
 
-void sjf_string_isLessOrEqual(sjs_string* _parent, sjs_string* test, bool* _return) {
+void sjf_string_islessorequal(sjs_string* _parent, sjs_string* test, bool* _return) {
     sjs_string* sjt_dot4;
     sjs_string* sjt_dot5;
     sjs_array_char* sjt_functionParam5;
@@ -1495,7 +1495,7 @@ void sjf_string_isLessOrEqual(sjs_string* _parent, sjs_string* test, bool* _retu
 #line 59
     sjt_functionParam5 = &(sjt_dot5)->data;
 #line 59
-    sjf_array_char_isLessOrEqual(sjt_parent5, sjt_functionParam5, _return);
+    sjf_array_char_islessorequal(sjt_parent5, sjt_functionParam5, _return);
 }
 
 int main(int argc, char** argv) {
@@ -1503,7 +1503,7 @@ int main(int argc, char** argv) {
 #line 1 "lib/common/f32.sj"
     sjv_f32_pi = 3.14159265358979323846f;
 #line 1 "lib/common/i32.sj"
-    sjv_u32_maxValue = (uint32_t)4294967295u;
+    sjv_u32_maxvalue = (uint32_t)4294967295u;
 #line 3
     sjt_negate1 = 1;
 #line 3
@@ -1513,21 +1513,21 @@ int main(int argc, char** argv) {
 #line 3
     sjt_math2 = 2147483647;
 #line 3
-    sjv_i32_maxValue = sjt_math1 - sjt_math2;
+    sjv_i32_maxvalue = sjt_math1 - sjt_math2;
 #line 4
-    sjv_i32_minValue = 2147483647;
+    sjv_i32_minvalue = 2147483647;
 #line 1 "lib/common/string.sj"
-    sjv_emptyStringData = 0;
-#line 2
-    sjv_emptyStringData = "";
+    sjv_emptystringdata = 0;
+#line 3
+    sjv_emptystringdata = "";
 #line 3 "string1.sj"
     sjv_a.count = 7;
 #line 3
-    sjv_a.data.dataSize = 8;
+    sjv_a.data.datasize = 8;
 #line 3
     sjv_a.data.data = (void*)sjg_string1;
 #line 3
-    sjv_a.data._isGlobal = true;
+    sjv_a.data._isglobal = true;
 #line 3
     sjv_a.data.count = 8;
 #line 3
@@ -1537,11 +1537,11 @@ int main(int argc, char** argv) {
 #line 4
     sjv_b.count = 7;
 #line 4
-    sjv_b.data.dataSize = 8;
+    sjv_b.data.datasize = 8;
 #line 4
     sjv_b.data.data = (void*)sjg_string2;
 #line 4
-    sjv_b.data._isGlobal = true;
+    sjv_b.data._isglobal = true;
 #line 4
     sjv_b.data.count = 8;
 #line 4
@@ -1557,11 +1557,11 @@ int main(int argc, char** argv) {
 #line 8
     sjv_f.count = 5;
 #line 8
-    sjv_f.data.dataSize = 6;
+    sjv_f.data.datasize = 6;
 #line 8
     sjv_f.data.data = (void*)sjg_string3;
 #line 8
-    sjv_f.data._isGlobal = true;
+    sjv_f.data._isglobal = true;
 #line 8
     sjv_f.data.count = 6;
 #line 8
@@ -1573,7 +1573,7 @@ int main(int argc, char** argv) {
 #line 9 "string1.sj"
     sjt_functionParam2 = 0;
 #line 9
-    sjf_string_getAt(sjt_parent2, sjt_functionParam2, &sjv_h);
+    sjf_string_getat(sjt_parent2, sjt_functionParam2, &sjv_h);
 #line 10
     sjt_compare1 = sjv_h;
 #line 10
@@ -1585,13 +1585,13 @@ int main(int argc, char** argv) {
 #line 11 "string1.sj"
     sjt_functionParam4 = &sjv_a;
 #line 11
-    sjf_string_isEqual(sjt_parent4, sjt_functionParam4, &sjv_j);
+    sjf_string_isequal(sjt_parent4, sjt_functionParam4, &sjv_j);
 #line 58 "lib/common/string.sj"
     sjt_parent6 = &sjv_f;
 #line 12 "string1.sj"
     sjt_functionParam6 = &sjv_a;
 #line 12
-    sjf_string_isLessOrEqual(sjt_parent6, sjt_functionParam6, &sjv_k);
+    sjf_string_islessorequal(sjt_parent6, sjt_functionParam6, &sjv_k);
 #line 13
     sjt_compare3 = &sjv_f;
 #line 13

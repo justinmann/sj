@@ -207,6 +207,8 @@ void CCallVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& 
 
 
 NCall::NCall(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments) : NVariableBase(NodeType_Call, loc), name(name), templateTypeNames(templateTypeNames), arguments(arguments) {
+    boost::algorithm::to_lower(this->name);
+
     if (!this->arguments) {
         this->arguments = make_shared<NodeList>();
     } else {
