@@ -1891,76 +1891,76 @@ global()'void {
   }
   --cfunction--
   {
-    glfeature_gl_blend'glfeature : 0x0BE2
-    glfeature_gl_cull_face'glfeature : 0x0B44
-    glfeature_gl_depth_test'glfeature : 0x0B71
-    glfeature_gl_dither'glfeature : 0x0BD0
-    glfeature_gl_polygon_offset_fill'glfeature : 0x8037
-    glfeature_gl_sample_alpha_to_coverage'glfeature : 0x809E
-    glfeature_gl_sample_coverage'glfeature : 0x80A0
-    glfeature_gl_scissor_test'glfeature : 0x0C11
-    glfeature_gl_stencil_test'glfeature : 0x0B90
+    gl_blend'glfeature : 0x0BE2
+    gl_cull_face'glfeature : 0x0B44
+    gl_depth_test'glfeature : 0x0B71
+    gl_dither'glfeature : 0x0BD0
+    gl_polygon_offset_fill'glfeature : 0x8037
+    gl_sample_alpha_to_coverage'glfeature : 0x809E
+    gl_sample_coverage'glfeature : 0x80A0
+    gl_scissor_test'glfeature : 0x0C11
+    gl_stencil_test'glfeature : 0x0B90
   }
   {
-    gltexture_gl_texture_2d'gltexture : 0x0DE1
-    gltexture_gl_texture_cube_map'gltexture : 0x8513
+    gl_texture_2d'gltexture : 0x0DE1
+    gl_texture_cube_map'gltexture : 0x8513
   }
   {
-    gltextureattribute_gl_texture_min_filter'gltextureattribute : 0x2801
-    gltextureattribute_gl_texture_mag_filter'gltextureattribute : 0x2800
-    gltextureattribute_gl_texture_wrap_s'gltextureattribute : 0x2802
-    gltextureattribute_gl_texture_wrap_t'gltextureattribute : 0x2803
+    gl_texture_min_filter'gltextureattribute : 0x2801
+    gl_texture_mag_filter'gltextureattribute : 0x2800
+    gl_texture_wrap_s'gltextureattribute : 0x2802
+    gl_texture_wrap_t'gltextureattribute : 0x2803
   }
   {
-    gltexturevalue_gl_clamp_to_edge'gltexturevalue : 0x812F
-    gltexturevalue_gl_mirrored_repeat'gltexturevalue : 0x8370
-    gltexturevalue_gl_repeat'gltexturevalue : 0x2901
-    gltexturevalue_gl_nearest'gltexturevalue : 0x2600
-    gltexturevalue_gl_linear'gltexturevalue : 0x2601
-    gltexturevalue_gl_nearest_mipmap_nearest'gltexturevalue : 0x2700
-    gltexturevalue_gl_linear_mipmap_nearest'gltexturevalue : 0x2701
-    gltexturevalue_gl_nearest_mipmap_linear'gltexturevalue : 0x2702
-    gltexturevalue_gl_linear_mipmap_linear'gltexturevalue : 0x2703
+    gl_clamp_to_edge'gltexturevalue : 0x812F
+    gl_mirrored_repeat'gltexturevalue : 0x8370
+    gl_repeat'gltexturevalue : 0x2901
+    gl_nearest'gltexturevalue : 0x2600
+    gl_linear'gltexturevalue : 0x2601
+    gl_nearest_mipmap_nearest'gltexturevalue : 0x2700
+    gl_linear_mipmap_nearest'gltexturevalue : 0x2701
+    gl_nearest_mipmap_linear'gltexturevalue : 0x2702
+    gl_linear_mipmap_linear'gltexturevalue : 0x2703
   }
   {
-    gltextureformat_gl_alpha'gltextureformat : 0x1906
-    gltextureformat_gl_luminance'gltextureformat : 0x1909
-    gltextureformat_gl_luminance_alpha'gltextureformat : 0x190A
-    gltextureformat_gl_rgb'gltextureformat : 0x1907
-    gltextureformat_gl_rgba'gltextureformat : 0x1908
+    gl_alpha'gltextureformat : 0x1906
+    gl_luminance'gltextureformat : 0x1909
+    gl_luminance_alpha'gltextureformat : 0x190A
+    gl_rgb'gltextureformat : 0x1907
+    gl_rgba'gltextureformat : 0x1908
   }
   {
-    gltexturetype_gl_unsigned_byte'gltexturetype : 0x1401
-    gltexturetype_gl_unsigned_short_5_6_5'gltexturetype : 0x8363
-    gltexturetype_gl_unsigned_short_4_4_4_4'gltexturetype : 0x8033
-    gltexturetype_gl_unsigned_short_5_5_5_1'gltexturetype : 0x8034
+    gl_unsigned_byte'gltexturetype : 0x1401
+    gl_unsigned_short_5_6_5'gltexturetype : 0x8363
+    gl_unsigned_short_4_4_4_4'gltexturetype : 0x8033
+    gl_unsigned_short_5_5_5_1'gltexturetype : 0x8034
   }
   {
-    glframebufferattachment_gl_color_attachment0'glframebufferattachment : 0x8CE0
-    glframebufferattachment_gl_depth_attachment'glframebufferattachment : 0x8D00
-    glframebufferattachment_gl_stencil_attachment'glframebufferattachment : 0x8D20
+    gl_color_attachment0'glframebufferattachment : 0x8CE0
+    gl_depth_attachment'glframebufferattachment : 0x8D00
+    gl_stencil_attachment'glframebufferattachment : 0x8D20
   }
   {
-    glframebuffertexture_gl_texture_2d'glframebuffertexture : 0x0DE1
-    glframebuffertexture_gl_texture_cube_map_positive_x'glframebuffertexture : 0x8515
-    glframebuffertexture_gl_texture_cube_map_negative_x'glframebuffertexture : 0x8516
-    glframebuffertexture_gl_texture_cube_map_positive_y'glframebuffertexture : 0x8517
-    glframebuffertexture_gl_texture_cube_map_negative_y'glframebuffertexture : 0x8518
-    glframebuffertexture_gl_texture_cube_map_positive_z'glframebuffertexture : 0x8519
-    glframebuffertexture_gl_texture_cube_map_negative_z'glframebuffertexture : 0x851A
+    gl_texture_2d'glframebuffertexture : 0x0DE1
+    gl_texture_cube_map_positive_x'glframebuffertexture : 0x8515
+    gl_texture_cube_map_negative_x'glframebuffertexture : 0x8516
+    gl_texture_cube_map_positive_y'glframebuffertexture : 0x8517
+    gl_texture_cube_map_negative_y'glframebuffertexture : 0x8518
+    gl_texture_cube_map_positive_z'glframebuffertexture : 0x8519
+    gl_texture_cube_map_negative_z'glframebuffertexture : 0x851A
   }
   {
-    glrenderbufferformat_gl_rgba4'glrenderbufferformat : 0x8056
-    glrenderbufferformat_gl_rgb565'glrenderbufferformat : 0x8D62
-    glrenderbufferformat_gl_rgb5_a1'glrenderbufferformat : 0x8057
-    glrenderbufferformat_gl_depth_component16'glrenderbufferformat : 0x81A5
-    glrenderbufferformat_gl_stencil_index8'glrenderbufferformat : 0x8D48
+    gl_rgba4'glrenderbufferformat : 0x8056
+    gl_rgb565'glrenderbufferformat : 0x8D62
+    gl_rgb5_a1'glrenderbufferformat : 0x8057
+    gl_depth_component16'glrenderbufferformat : 0x81A5
+    gl_stencil_index8'glrenderbufferformat : 0x8D48
   }
   {
-    glframebufferstatus_gl_framebuffer_complete'glframebufferstatus : 0x8CD5
-    glframebufferstatus_gl_framebuffer_incomplete_attachment'glframebufferstatus : 0x8CD6
-    glframebufferstatus_gl_framebuffer_incomplete_missing_attachment'glframebufferstatus : 0x8CD7
-    glframebufferstatus_gl_framebuffer_unsupported'glframebufferstatus : 0x8CDD
+    gl_framebuffer_complete'glframebufferstatus : 0x8CD5
+    gl_framebuffer_incomplete_attachment'glframebufferstatus : 0x8CD6
+    gl_framebuffer_incomplete_missing_attachment'glframebufferstatus : 0x8CD7
+    gl_framebuffer_unsupported'glframebufferstatus : 0x8CDD
   }
   --cstruct--
   typedef struct GLid_td GLid_s;
@@ -2010,9 +2010,9 @@ global()'void {
   --cstruct--
   mouse_captureelement'heap #element? = empty'heap #element?
   {
-    mouseeventtype_move'mouseeventtype : 0
-    mouseeventtype_up'mouseeventtype : 1
-    mouseeventtype_down'mouseeventtype : 2
+    move'mouseeventtype : 0
+    up'mouseeventtype : 1
+    down'mouseeventtype : 2
   }
   boxshader'stack shader : shader(this = shader(
     vertex'stack string : vertex,

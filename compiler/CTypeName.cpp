@@ -8,12 +8,15 @@
 
 #include "../node/Node.h"
 
-CTypeNameList::CTypeNameList(CTypeCategory category, CTypeMode typeMode, const string& valueName, bool isOption) {
-    push_back(make_shared<CTypeName>(category, typeMode, valueName, isOption));
+vector<string> emptyNamespace; 
+
+CTypeNameList::CTypeNameList(CTypeCategory category, CTypeMode typeMode, vector<string> packageNamespace, const string& valueName, bool isOption) {
+    push_back(make_shared<CTypeName>(category, typeMode, packageNamespace, valueName, isOption));
 }
 
 shared_ptr<CTypeName> CTypeName::parse(string name) {
     CTypeMode typeMode;
+    vector<string> packageNamespace;
 
     if (name.find("stack ") == 0) {
         typeMode = CTM_Stack;
@@ -29,10 +32,10 @@ shared_ptr<CTypeName> CTypeName::parse(string name) {
 
     if (name.front() == '(') {
         assert(false);
-        return make_shared<CTypeName>(CTC_Function, typeMode, name, name.back() == '?');
+        return make_shared<CTypeName>(CTC_Function, typeMode, packageNamespace, name, name.back() == '?');
     } else if (name.front() == '#') {
         assert(false);
-        return make_shared<CTypeName>(CTC_Interface, typeMode, name, name.back() == '?');
+        return make_shared<CTypeName>(CTC_Interface, typeMode, packageNamespace, name, name.back() == '?');
     } else {
         auto bang = name.find('!');
         if (bang != string::npos) {
@@ -63,9 +66,9 @@ shared_ptr<CTypeName> CTypeName::parse(string name) {
                 typeNameList->push_back(templateType);
             }
             
-            return make_shared<CTypeName>(CTC_Value, typeMode, typeName, typeNameList, typeName.back() == '?');
+            return make_shared<CTypeName>(CTC_Value, typeMode, packageNamespace, typeName, typeNameList, typeName.back() == '?');
         } else {
-            return make_shared<CTypeName>(CTC_Value, typeMode, name, name.back() == '?');
+            return make_shared<CTypeName>(CTC_Value, typeMode, packageNamespace, name, name.back() == '?');
         }
     }
     return nullptr;

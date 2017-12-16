@@ -1,3 +1,15 @@
+
+
+
+
+class #foo ()'heap class {
+  this
+}
+
+class #foo ()'heap class {
+  this
+}
+
 func()'i32 {
   x
 }
@@ -7,6 +19,8 @@ global()'void {
     x'i32 : 0i
   }
   import  {
+    x'i32 : 1i
+    d'i32 : 12i
   }
   import  {
     b'i32 : x
@@ -15,6 +29,14 @@ global()'void {
   import  {
     y'i32 : 0i
   }
+  e'heap #foo : class(this = class()) as heap #foo
+  f'i32 : bar(
+    parent: this
+  )
+  h'heap #foo : class(this = class()) as heap #foo
+  i'i32 : bar(
+    parent: this
+  )
   void
 }
 

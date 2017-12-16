@@ -1,28 +1,18 @@
-anon1()'stack anon1 {
+class #foo ()'heap class {
   this
 }
 
-anon1_class #foo ()'heap class {
-  this
-}
-
-anon2()'stack anon2 {
-  this
-}
-
-anon2_class #foo ()'heap class {
+class #foo ()'heap class {
   this
 }
 
 global()'void {
-  namespace1'stack anon1 : anon1(this = anon1())
-  namespace2'stack anon2 : anon2(this = anon2())
-  a'heap #foo : anon1_class(this = anon1_class(
-    parent: this
-  )) as heap #foo
-  b'heap #foo : anon2_class(this = anon2_class(
-    parent: this
-  )) as heap #foo
+  import  {
+  }
+  import  {
+  }
+  a'heap #foo : class(this = class()) as heap #foo
+  b'heap #foo : class(this = class()) as heap #foo
   void
 }
 

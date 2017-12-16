@@ -13,8 +13,11 @@ NEnum::NEnum(CLoc loc, string name, shared_ptr<EnumArgs> enumArgs) : NVariableBa
 }
 
 void NEnum::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+    this->packageNamespace = packageNamespace;
+    this->packageNamespace.push_back(name);
+    
     // create a new type
-    auto ctypes = CType::create(name, "int32_t", "(int32_t)0", "int32_option", "int32_empty");
+    auto ctypes = CType::create(packageNamespace, name, "int32_t", "(int32_t)0", "int32_option", "int32_empty");
     compiler->types[name] = ctypes;
 }
 
@@ -30,13 +33,13 @@ shared_ptr<CVar> NEnum::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
     for (auto enumArg : *enumArgs) {
         auto leftVar = scope->getCVar(compiler, nullptr, enumArg->name, VSM_LocalThisParent);
         if (leftVar) {
-            compiler->addError(loc, CErrorCode::ImmutableAssignment, "var '%s' already exists", name.c_str());
+            compiler->addError(loc, CErrorCode::ImmutableAssignment, "var '%s' already exists", enumArg->name.c_str());
             return nullptr;
         }
 
         string nameNS;
         bool isFirst = true;
-        for (auto ns : scope->dotNamespace) {
+        for (auto ns : packageNamespace) {
             if (isFirst) {
                 isFirst = false;
             }
@@ -50,8 +53,8 @@ shared_ptr<CVar> NEnum::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
         }
         nameNS += enumArg->name;
 
-        auto leftStoreVar = make_shared<CNormalVar>(loc, scope, ctypes->stackValueType, nameNS, false, CVarType::Var_Local);
-        scope->addOrUpdateLocalVar(compiler, enumArg->name, leftStoreVar);
+        auto leftStoreVar = make_shared<CNormalVar>(loc, scope, ctypes->stackValueType, enumArg->name, "sjv_" + nameNS, false, CVarType::Var_Local, nullptr);
+        scope->addOrUpdateLocalVar(compiler, packageNamespace, leftStoreVar);
         stringstream t;
         t << index;
         auto rightVar = make_shared<CConstantVar>(loc, scope, ctypes->stackValueType, enumArg->hasValue ? enumArg->value : t.str());

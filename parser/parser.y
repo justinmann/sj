@@ -67,6 +67,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 	std::vector<std::pair<std::string, std::vector<std::string>>>* import_namespaces;
 	std::pair<std::string, std::vector<std::string>>* import_namespace;
 	NCCode* ccode;
+	CTypeNameParts* typeNameParts;
 }
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
@@ -79,19 +80,20 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %type <block> stmts
 %type <exprvec> func_args func_block array_args tuple_args interface_args interface_block ifValue_vars
 %type <assignOp> assign_type
-%type <typeName> arg_type_quote arg_type return_type_quote return_type func_type func_arg_type func_type_name implement_arg value_type
+%type <typeName> arg_type_quote arg_type return_type_quote return_type func_type func_arg_type func_type_name implement_arg value_type  
 %type <templateTypeNames> temp_args temp_block temp_block_optional func_arg_type_list implement implement_args
-%type <string> arg_type_interface
 %type <tupleAssignmentArg> assign_tuple_arg
 %type <tupleAssignmentArgList> assign_tuple
 %type <optionAndTypeList> temp_option_optional
 %type <typeMode> arg_mode
 %type <enumArgs> enum_args
 %type <enumArg> enum_arg
-%type <strings> namespace
+%type <strings> namespace namespace_dot
 %type <ccode> cblock cdefine cstruct cfunction cinclude ctypedef cvar
 %type <import_namespaces> import_namespaces
 %type <import_namespace> import_namespace
+%type <typeNameParts> namespace_hash namespace_last
+%type <string> namespace_ident
 
 /* Operator precedence */
 %left TAND TOR
@@ -222,8 +224,8 @@ func_decl 			: func_type_name func_block block catch copy destroy			{
 					}
 					;
 
-func_type_name		: TIDENTIFIER									{ $$ = new CTypeName(CTC_Value, CTM_Stack, $1->c_str(), false); delete $1; }
-					| TIDENTIFIER temp_block 						{ $$ = new CTypeName(CTC_Value, CTM_Stack, $1->c_str(), shared_ptr<CTypeNameList>($2), false); delete $1; }
+func_type_name		: TIDENTIFIER									{ $$ = new CTypeName(CTC_Value, CTM_Stack, emptyNamespace, $1->c_str(), false); delete $1; }
+					| TIDENTIFIER temp_block 						{ $$ = new CTypeName(CTC_Value, CTM_Stack, emptyNamespace, $1->c_str(), shared_ptr<CTypeNameList>($2), false); delete $1; }
 					;
 
 copy				: /* Blank! */									{ $$ = nullptr; }
@@ -262,7 +264,7 @@ implement_args 		: implement_arg									{ $$ = new CTypeNameList(); $$->push_ba
 					| implement_args implement_arg 					{ $$ = $1; $$->push_back(shared_ptr<CTypeName>($2)); }
 					;
 
-implement_arg 		: THASH arg_type_interface temp_block_optional	{ $$ = new CTypeName(CTC_Interface, CTM_Stack, *$2, shared_ptr<CTypeNameList>($3), false); delete $2; }							
+implement_arg 		: THASH namespace temp_block_optional			{ string t = $2->back(); $2->pop_back(); $$ = new CTypeName(CTC_Interface, CTM_Stack, *$2, t, shared_ptr<CTypeNameList>($3), false); delete $2; }							
 					;
 
 interface_decl		: THASH TIDENTIFIER temp_block_optional interface_block { $$ = new NInterface(LOC, *$2, shared_ptr<CTypeNameList>($3), shared_ptr<NodeList>($4)); delete $2; }
@@ -290,7 +292,7 @@ expr 				: if_expr										{ $$ = $1; }
 					| TLOCAL expr                             		{ $$ = new NChangeMode(LOC, CTM_Local, shared_ptr<NBase>($2)); }
 					| THEAP expr                             		{ $$ = new NChangeMode(LOC, CTM_Heap, shared_ptr<NBase>($2)); }
 					| TCOPY expr                             		{ $$ = new NCopy(LOC, shared_ptr<NBase>($2)); }
-					| expr_var TLBRACKET expr TRBRACKET					{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NCall>(LOC, "getAt", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3)))); }
+					| expr_var TLBRACKET expr TRBRACKET				{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NCall>(LOC, "getAt", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3)))); }
 					| TVOID											{ $$ = new NVoid(LOC); }
 					;
 
@@ -431,10 +433,9 @@ return_type_quote	: TQUOTE return_type							{ $$ = $2; }
 arg_type_quote		: TQUOTE arg_type								{ $$ = $2; }
 					;
 
-arg_type			: value_type												{ $$ = $1; }
-					| arg_mode TIDENTIFIER temp_option_optional 				{ $$ = new CTypeName(CTC_Value, $1, *$2, shared_ptr<CTypeNameList>($3.templateTypeNames), $3.isOption); delete $2; }
-					| arg_mode THASH arg_type_interface temp_option_optional 	{ $$ = new CTypeName(CTC_Interface, $1, *$3, shared_ptr<CTypeNameList>($4.templateTypeNames), $4.isOption); delete $3; }
-					| func_type													{ $$ = $1; }
+arg_type			: value_type										{ $$ = $1; }
+					| arg_mode namespace_hash temp_option_optional 		{ $$ = new CTypeName($2->isHash ? CTC_Interface : CTC_Value, $1, $2->packageNamespace, $2->name, shared_ptr<CTypeNameList>($3.templateTypeNames), $3.isOption); delete $2; }
+					| func_type											{ $$ = $1; }
 					;
 
 arg_mode			: /* Blank! */									{ $$ = CTM_Undefined; }
@@ -443,26 +444,19 @@ arg_mode			: /* Blank! */									{ $$ = CTM_Undefined; }
 					| THEAP 										{ $$ = CTM_Heap; }
 					;
 
-arg_type_interface	: TIDENTIFIER									{ $$ = $1; }
-					| TIDENTIFIER TDOT arg_type_interface			{ $$ = new string(*$1 + "." + *$3); }
+return_type			: arg_type											{ $$ = $1; }
+					| TVOID												{ $$ = new CTypeName(CTC_Value, CTM_Stack, emptyNamespace, "void", false); }
 					;
 
-return_type			: value_type													{ $$ = $1; }
-					| arg_mode TIDENTIFIER temp_option_optional 					{ $$ = new CTypeName(CTC_Value, $1, *$2, shared_ptr<CTypeNameList>($3.templateTypeNames), $3.isOption); delete $2; }
-					| arg_mode THASH arg_type_interface temp_option_optional 		{ $$ = new CTypeName(CTC_Interface, $1, *$3, shared_ptr<CTypeNameList>($4.templateTypeNames), $4.isOption); delete $3; }
-					| func_type														{ $$ = $1; }
-					| TVOID															{ $$ = new CTypeName(CTC_Value, CTM_Stack, "void", false); }
-					;
-
-value_type			: TTYPEI32											{ $$ = new CTypeName(CTC_Value, CTM_Value, "i32", false); }
-					| TTYPEU32											{ $$ = new CTypeName(CTC_Value, CTM_Value, "u32", false); }
-					| TTYPEF32											{ $$ = new CTypeName(CTC_Value, CTM_Value, "f32", false); }
-					| TTYPEI64											{ $$ = new CTypeName(CTC_Value, CTM_Value, "i64", false); }
-					| TTYPEU64											{ $$ = new CTypeName(CTC_Value, CTM_Value, "u64", false); }
-					| TTYPEF64											{ $$ = new CTypeName(CTC_Value, CTM_Value, "f64", false); }
-					| TTYPECHAR											{ $$ = new CTypeName(CTC_Value, CTM_Value, "char", false); }
-					| TTYPEBOOL											{ $$ = new CTypeName(CTC_Value, CTM_Value, "bool", false); }
-					| TTYPEPTR											{ $$ = new CTypeName(CTC_Value, CTM_Value, "ptr", false); }
+value_type			: TTYPEI32											{ $$ = new CTypeName(CTC_Value, CTM_Value, emptyNamespace, "i32", false); }
+					| TTYPEU32											{ $$ = new CTypeName(CTC_Value, CTM_Value, emptyNamespace, "u32", false); }
+					| TTYPEF32											{ $$ = new CTypeName(CTC_Value, CTM_Value, emptyNamespace, "f32", false); }
+					| TTYPEI64											{ $$ = new CTypeName(CTC_Value, CTM_Value, emptyNamespace, "i64", false); }
+					| TTYPEU64											{ $$ = new CTypeName(CTC_Value, CTM_Value, emptyNamespace, "u64", false); }
+					| TTYPEF64											{ $$ = new CTypeName(CTC_Value, CTM_Value, emptyNamespace, "f64", false); }
+					| TTYPECHAR											{ $$ = new CTypeName(CTC_Value, CTM_Value, emptyNamespace, "char", false); }
+					| TTYPEBOOL											{ $$ = new CTypeName(CTC_Value, CTM_Value, emptyNamespace, "bool", false); }
+					| TTYPEPTR											{ $$ = new CTypeName(CTC_Value, CTM_Value, emptyNamespace, "ptr", false); }
 					;
 
 func_type			: arg_mode TLPAREN func_arg_type_list TRPAREN return_type { $$ = new CTypeName($1, shared_ptr<CTypeNameList>($3), shared_ptr<CTypeName>($5)); }
@@ -479,6 +473,21 @@ func_arg_type_list	: /* Blank! */									{ $$ = new CTypeNameList(); }
 
 temp_block_optional : /* Blank! */									{ $$ = nullptr; }
 					| temp_block									{ $$ = $1; }
+					;
+
+namespace_hash		: namespace_dot namespace_last               	{ $$ = $2; $$->packageNamespace = *$1; delete $1; }
+					| namespace_last								{ $$ = $1; }
+					;
+
+namespace_dot		: namespace_ident               				{ $$ = new vector<string>(); $$->push_back(*$1); delete $1; }
+					| namespace_ident namespace_dot					{ $$ = $2; $$->push_back(*$1); delete $1; }
+					;
+
+namespace_ident     : TIDENTIFIER TDOT 								{ $$ = $1; }
+					;
+
+namespace_last      : THASH TIDENTIFIER								{ $$ = new CTypeNameParts(); $$->isHash = true;  $$->name = *$2; delete $2; }
+					| TIDENTIFIER									{ $$ = new CTypeNameParts(); $$->isHash = false; $$->name = *$1; delete $1; }
 					;
 
 temp_option_optional: /* Blank! */									{ $$.isOption = false;  $$.templateTypeNames = nullptr; }

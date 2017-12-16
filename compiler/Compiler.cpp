@@ -26,43 +26,43 @@ extern void yy_delete_buffer(YY_BUFFER_STATE, void*);
 CLoc CLoc::undefined = CLoc();
 
 Compiler::Compiler() {
-    auto ctypes = CType::create("i32", "int32_t", "(int32_t)0", "int32_option", "int32_empty");
+    auto ctypes = CType::create(emptyNamespace, "i32", "int32_t", "(int32_t)0", "int32_option", "int32_empty");
     typeI32 = ctypes->stackValueType;
     types["i32"] = ctypes;
 
-    ctypes = CType::create("i64", "int64_t", "(int64_t)0", "int64_option", "int64_empty");
+    ctypes = CType::create(emptyNamespace, "i64", "int64_t", "(int64_t)0", "int64_option", "int64_empty");
     typeI64 = ctypes->stackValueType;
     types["i64"] = ctypes;
 
-    ctypes = CType::create("u32", "uint32_t", "(uint32_t)0", "uint32_option", "uint32_empty");
+    ctypes = CType::create(emptyNamespace, "u32", "uint32_t", "(uint32_t)0", "uint32_option", "uint32_empty");
     typeU32 = ctypes->stackValueType;
     types["u32"] = ctypes;
 
-    ctypes = CType::create("u64", "uint64_t", "(uint64_t)0", "uint64_option", "uint64_empty");
+    ctypes = CType::create(emptyNamespace, "u64", "uint64_t", "(uint64_t)0", "uint64_option", "uint64_empty");
     typeU64 = ctypes->stackValueType;
     types["u64"] = ctypes;
 
-    ctypes = CType::create("ptr", "void*", "(void*)0", "void_option", "void_empty");
+    ctypes = CType::create(emptyNamespace, "ptr", "void*", "(void*)0", "void_option", "void_empty");
     typePtr = ctypes->stackValueType;
     types["ptr"] = ctypes;
 
-    ctypes = CType::create("f32", "float", "0.0f", "float_option", "float_empty");
+    ctypes = CType::create(emptyNamespace, "f32", "float", "0.0f", "float_option", "float_empty");
     typeF32 = ctypes->stackValueType;
     types["f32"] = ctypes;
 
-    ctypes = CType::create("f64", "double", "0.0", "double_option", "double_empty");
+    ctypes = CType::create(emptyNamespace, "f64", "double", "0.0", "double_option", "double_empty");
     typeF64 = ctypes->stackValueType;
     types["f64"] = ctypes;
 
-    ctypes = CType::create("bool", "bool", "false", "bool_option", "bool_empty");
+    ctypes = CType::create(emptyNamespace, "bool", "bool", "false", "bool_option", "bool_empty");
     typeBool = ctypes->stackValueType;
     types["bool"] = ctypes;
 
-    ctypes = CType::create("char", "char", "'\0'", "char_option", "char_empty");
+    ctypes = CType::create(emptyNamespace, "char", "char", "'\0'", "char_option", "char_empty");
     typeChar = ctypes->stackValueType;
     types["char"] = ctypes;
 
-    ctypes = CType::create("void", "void", "", "", "");
+    ctypes = CType::create(emptyNamespace, "void", "void", "", "", "");
     typeVoid = ctypes->stackValueType;
     types["void"] = ctypes;
 }

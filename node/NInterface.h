@@ -41,6 +41,7 @@ public:
     vector<shared_ptr<CInterfaceMethod>> methods;
     map<string, map<CTypeMode, shared_ptr<CInterfaceMethod>>> methodByName;
     map<string, shared_ptr<CType>> templateTypesByName;
+    vector<shared_ptr<CType>> templateTypes;
     
     CInterface(CLoc loc, weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent);
     shared_ptr<CInterface> init(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, shared_ptr<NInterface> node, vector<shared_ptr<CType>>& templateTypes);
@@ -88,6 +89,7 @@ public:
     shared_ptr<CTypeName> typeName;
     shared_ptr<NInterface> ninterface;
     vector<pair<string, vector<string>>> importNamespaces;
+    vector<string> packageNamespace;
 
     CInterfaceDefinition(CLoc loc, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, string& name);
     string fullName();

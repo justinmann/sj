@@ -51,7 +51,7 @@ shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, shared_ptr<CScope> scop
     auto createArray = make_shared<NCall>(
         loc,
         "array",
-        make_shared<CTypeNameList>(CTC_Value, CTM_Stack, compiler->typeChar->valueName, false),
+        make_shared<CTypeNameList>(CTC_Value, CTM_Stack, emptyNamespace, compiler->typeChar->valueName, false),
         make_shared<NodeList>(
             make_shared<NInteger>(loc, str.size() + 1),
             make_shared<NGlobalPtrVar>(loc, varName, str),

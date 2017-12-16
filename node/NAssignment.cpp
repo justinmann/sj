@@ -53,6 +53,8 @@ NAssignment::NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTy
 void NAssignment::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     
+    this->packageNamespace = packageNamespace;
+
     if (var) {
         var->define(compiler, importNamespaces, packageNamespace, thisFunction);
     }
@@ -155,7 +157,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
                 
                 string nameNS;
                 bool isFirst = true;
-                for (auto ns : scope->dotNamespace) {
+                for (auto ns : packageNamespace) {
                     if (isFirst) {
                         isFirst = false;
                     } else {
@@ -168,9 +170,9 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
                 }
                 nameNS += name;
                 
-                leftStoreVar = make_shared<CNormalVar>(loc, scope, leftType, nameNS, op.isMutable, CVarType::Var_Local);
+                leftStoreVar = make_shared<CNormalVar>(loc, scope, leftType, name, "sjv_" + nameNS, op.isMutable, CVarType::Var_Local, nullptr);
 
-                scope->addOrUpdateLocalVar(compiler, name, leftStoreVar);
+                scope->addOrUpdateLocalVar(compiler, packageNamespace, leftStoreVar);
             }
             else {
                 auto leftVar = scope->getCVar(compiler, nullptr, name, VSM_LocalThisParent);

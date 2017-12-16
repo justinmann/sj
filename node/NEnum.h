@@ -38,6 +38,7 @@ public:
 private:
     string name;
     shared_ptr<EnumArgs> enumArgs;
+    vector<string> packageNamespace;
 };
 
 #endif /* NEnum_h */

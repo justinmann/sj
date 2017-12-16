@@ -19,7 +19,7 @@ void NInterface::defineImpl(Compiler* compiler, vector<pair<string, vector<strin
         return;
     }
     def = parentFunction->createDefinedInterfaceDefinition(compiler, loc, importNamespaces, packageNamespace, name);
-    def->typeName = make_shared<CTypeName>(CTC_Interface, CTM_Stack, name, templateTypeNames, false);
+    def->typeName = make_shared<CTypeName>(CTC_Interface, CTM_Stack, packageNamespace, name, templateTypeNames, false);
     def->ninterface = shared_from_this();
 
     for (auto it : methodList) {
@@ -80,6 +80,8 @@ CInterface::CInterface(CLoc loc, weak_ptr<CInterfaceDefinition> definition, weak
 }
 
 shared_ptr<CInterface> CInterface::init(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, shared_ptr<NInterface> node, vector<shared_ptr<CType>>& templateTypes) {
+    this->templateTypes = templateTypes;
+
     if (node->templateTypeNames) {
         assert(node->templateTypeNames->size() == templateTypes.size());
         auto index = 0;
@@ -135,7 +137,7 @@ string CInterface::fullName(bool includeTemplateTypes) {
 
 shared_ptr<CTypes> CInterface::getThisTypes(Compiler* compiler) {
     if (!thisTypes) {
-        thisTypes = CType::create(compiler, name.c_str(), shared_from_this());
+        thisTypes = CType::create(compiler, static_pointer_cast<CInterfaceDefinition>(definition.lock())->packageNamespace, name.c_str(), shared_from_this());
     }
     return thisTypes;
 }
@@ -228,17 +230,25 @@ string CInterface::getCCallbackFunctionName(Compiler* compiler, TrOutput* trOutp
 }
 
 string CInterface::getCBaseName(CTypeMode typeMode) {
-    auto functionName = name;
-    if (!parent.expired()) {
-        auto tempType = parent.lock();
-        while (tempType != nullptr && tempType->name.compare("global") != 0 && tempType->name.size() > 0) {
-            functionName.insert(0, "_");
-            assert(tempType->classType == CFT_Function);
-            functionName.insert(0, static_pointer_cast<CFunction>(tempType)->getCFullName(true));
-            tempType = tempType->parent.lock();
-        }
+    stringstream ss;
+    for (auto ns : static_pointer_cast<CInterfaceDefinition>(definition.lock())->packageNamespace) {
+        ss << ns << "_";
     }
-    return functionName;
+
+    ss << definition.lock()->name;
+    if (templateTypes.size() > 0) {
+        ss << "_";
+    }
+
+    for (auto it : templateTypes) {
+        if (it != templateTypes.front()) {
+            ss << "_";
+        }
+
+        ss << it->safeName;
+    }
+
+    return ss.str();
 }
 
 string CInterface::getCStructName(CTypeMode typeMode) {
@@ -388,7 +398,7 @@ bool CInterface::getReturnMustRelease(Compiler* compiler) {
     return false;
 }
 
-CInterfaceDefinition::CInterfaceDefinition(CLoc loc, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, string& name_) : CBaseFunctionDefinition(CFT_Interface), loc(loc), importNamespaces(importNamespaces){
+CInterfaceDefinition::CInterfaceDefinition(CLoc loc, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, string& name_) : CBaseFunctionDefinition(CFT_Interface), loc(loc), importNamespaces(importNamespaces), packageNamespace(packageNamespace) {
     name = name_;
 }
 

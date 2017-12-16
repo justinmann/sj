@@ -1119,7 +1119,7 @@ shared_ptr<vector<shared_ptr<CVar>>> CFunction::getArgVars(Compiler* compiler, C
 
 shared_ptr<CTypes> CFunction::getThisTypes(Compiler* compiler) {
     if (!_thisTypes) {
-        _thisTypes = CType::create(compiler, name.c_str(), shared_from_this());
+        _thisTypes = CType::create(compiler, static_pointer_cast<CFunctionDefinition>(definition.lock())->packageNamespace, name.c_str(), shared_from_this());
     }
     return _thisTypes;
 }
@@ -1245,6 +1245,9 @@ shared_ptr<CBaseFunction> CFunction::getCFunction(Compiler* compiler, CLoc locCa
     }
     else {
         allNamespaces.push_back(vector<string>());
+        if (def->packageNamespace.size() > 0) {
+            allNamespaces.push_back(def->packageNamespace);
+        }
     }
 
     for (auto ns : allNamespaces) {
@@ -1274,7 +1277,7 @@ shared_ptr<CBaseFunction> CFunction::getCFunction(Compiler* compiler, CLoc locCa
     return nullptr;
 }
 
-shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames) {
+shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, vector<string>& packageNamespace, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames) {
     if (name.find('.') != string::npos) {
         vector<string> names;
         istringstream f(name);
@@ -1286,7 +1289,7 @@ shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, const string
         auto cfunc = shared_from_this();
         for (auto name : names) {
             if (name == names.back()) {
-                return cfunc->getCInterface(compiler, name, callerScope, templateTypeNames);
+                return cfunc->getCInterface(compiler, packageNamespace, name, callerScope, templateTypeNames);
             }
             else {
                 auto var = cfunc->getCVar(compiler, callerScope, vector<shared_ptr<LocalVarScope>>(), vector<string>(), nullptr, name, VSM_LocalOnly, CTM_Stack);
@@ -1305,8 +1308,7 @@ shared_ptr<CInterface> CFunction::getCInterface(Compiler* compiler, const string
     }
     else {
         auto def = static_pointer_cast<CFunctionDefinition>(definition.lock());
-        // TODO: this look will not work for package namespace interfaces
-        auto interfaceDef = def->getDefinedInterfaceDefinition(vector<string>(), name);
+        auto interfaceDef = def->getDefinedInterfaceDefinition(packageNamespace, name);
         if (!interfaceDef) {
             return nullptr;
         }
@@ -1487,7 +1489,7 @@ shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, vector<pai
     }
 
     if (typeName->category == CTC_Interface) {
-        auto interface = getCInterface(compiler, typeName->valueName, nullptr, typeName->templateTypeNames);
+        auto interface = getCInterface(compiler, typeName->packageNamespace, typeName->valueName, nullptr, typeName->templateTypeNames);
         if (interface) {
             auto thisTypes = interface->getThisTypes(compiler);
             return typeName->isOption ? thisTypes->heapOptionType : thisTypes->heapValueType;
@@ -1576,6 +1578,14 @@ shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, 
     c->node = node;
     c->importNamespaces = importNamespaces;
     c->packageNamespace = packageNamespace;
+
+    if (c->implementedInterfaceTypeNames) {
+        for (auto it : *c->implementedInterfaceTypeNames) {
+            if (it->packageNamespace.size() == 0) {
+                it->packageNamespace = packageNamespace;
+            }
+        }
+    }
     
     if (node) {
         c->ccodes = node->ccodes;
@@ -1725,9 +1735,9 @@ void CFunctionDefinition::dump(Compiler* compiler, int level) {
     }
 }
 
-void CScope::addOrUpdateLocalVar(Compiler* compiler, string name, shared_ptr<CVar> var) {
+void CScope::addOrUpdateLocalVar(Compiler* compiler, vector<string>& packageNamespace, shared_ptr<CVar> var) {
     auto currentBlock = localVarScopes.size() > 0 ? localVarScopes.back() : nullptr;
-    function->_data[returnMode].localVarsByName[currentBlock][dotNamespace][name] = var;
+    function->_data[returnMode].localVarsByName[currentBlock][packageNamespace][var->name] = var;
 }
 
 void CScope::pushLocalVarScope(shared_ptr<LocalVarScope> localVarScope) {

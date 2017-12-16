@@ -87,7 +87,7 @@ class CScope : public enable_shared_from_this<CScope> {
 public:
     CScope(shared_ptr<CFunction> function, shared_ptr<CThisVar> thisVar, CTypeMode returnMode) : function(function), thisVar(thisVar), returnMode(returnMode) {}
     CScope(shared_ptr<CInterface> cinterface) : cinterface(cinterface) {}
-    void addOrUpdateLocalVar(Compiler* compiler, string name, shared_ptr<CVar> var);
+    void addOrUpdateLocalVar(Compiler* compiler, vector<string>& packageNamespace, shared_ptr<CVar> var);
     void pushLocalVarScope(shared_ptr<LocalVarScope> localVarScope);
     void popLocalVarScope(shared_ptr<LocalVarScope> localVarScope);
     void pushImportScope(shared_ptr<ImportScope> importScope);
@@ -133,7 +133,7 @@ public:
     shared_ptr<CVar> getArgVar(int index, CTypeMode returnMode);
     shared_ptr<CThisVar> getThisVar(Compiler* compiler, CTypeMode returnMode);
     shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CLoc locCaller, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode);
-    shared_ptr<CInterface> getCInterface(Compiler* compiler, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames);
+    shared_ptr<CInterface> getCInterface(Compiler* compiler, vector<string>& packageNamespace, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames);
     shared_ptr<CVar> getCVar(Compiler* compiler, shared_ptr<CScope> callerScope, vector<shared_ptr<LocalVarScope>> localVarScopes, vector<string> ns, shared_ptr<CVar> dotVar, const string& name, VarScanMode scanMode, CTypeMode returnMode);
     bool getIsReturnModeValid(Compiler* compiler, CTypeMode returnMode);
     shared_ptr<CType> getReturnType(Compiler* compiler, CTypeMode returnMode);

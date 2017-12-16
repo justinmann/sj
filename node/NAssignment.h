@@ -48,6 +48,7 @@ private:
     shared_ptr<CVar> _assignVar;
     shared_ptr<NAssignment> shared_from_this();
     shared_ptr<CCallVar> _callVar;
+    vector<string> packageNamespace;
 };
 
 #endif /* NAssignment_h */

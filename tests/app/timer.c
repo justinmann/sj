@@ -1826,7 +1826,7 @@ struct vertex_buffer_td
 #define sjs_list_heap_animation_heap_typeId 15
 #define sjs_anon2_typeId 16
 #define sjs_anon2_heap_typeId 17
-#define sji_anon2_animation_typeId 18
+#define sji_animation_typeId 18
 #define sjs_anon3_typeId 19
 #define sjs_anon3_heap_typeId 20
 #define sjs_anon4_typeId 21
@@ -1862,7 +1862,7 @@ struct vertex_buffer_td
 #define sjs_light_heap_typeId 51
 #define sjs_scene3delement_typeId 52
 #define sjs_scene3delement_heap_typeId 53
-#define sji_scene3delement_model_typeId 54
+#define sji_model_typeId 54
 #define sjs_list_heap_model_typeId 55
 #define sjs_list_heap_model_heap_typeId 56
 #define cb_heap_model_heap_model_i32_typeId 57
@@ -1917,7 +1917,7 @@ typedef struct td_sjs_list_heap_animation sjs_list_heap_animation;
 typedef struct td_sjs_list_heap_animation_heap sjs_list_heap_animation_heap;
 typedef struct td_sjs_anon2 sjs_anon2;
 typedef struct td_sjs_anon2_heap sjs_anon2_heap;
-typedef struct td_sji_anon2_animation sji_anon2_animation;
+typedef struct td_sji_animation sji_animation;
 typedef struct td_sjs_anon3 sjs_anon3;
 typedef struct td_sjs_anon3_heap sjs_anon3_heap;
 typedef struct td_sjs_anon4 sjs_anon4;
@@ -1953,7 +1953,7 @@ typedef struct td_sjs_light sjs_light;
 typedef struct td_sjs_light_heap sjs_light_heap;
 typedef struct td_sjs_scene3delement sjs_scene3delement;
 typedef struct td_sjs_scene3delement_heap sjs_scene3delement_heap;
-typedef struct td_sji_scene3delement_model sji_scene3delement_model;
+typedef struct td_sji_model sji_model;
 typedef struct td_sjs_list_heap_model sjs_list_heap_model;
 typedef struct td_sjs_list_heap_model_heap sjs_list_heap_model_heap;
 typedef struct td_cb_heap_model_heap_model_i32 cb_heap_model_heap_model_i32;
@@ -2115,7 +2115,7 @@ struct td_sjs_anon2_heap {
     int32_t current;
 };
 
-struct td_sji_anon2_animation {
+struct td_sji_animation {
     intptr_t _refCount;
     sjs_object* _parent;
     void (*destroy)(void* _this);
@@ -2373,7 +2373,7 @@ struct td_sjs_scene3delement_heap {
     sjs_rect _rect;
 };
 
-struct td_sji_scene3delement_model {
+struct td_sji_model {
     intptr_t _refCount;
     sjs_object* _parent;
     void (*destroy)(void* _this);
@@ -2396,7 +2396,7 @@ struct td_sjs_list_heap_model_heap {
 
 struct td_cb_heap_model_heap_model_i32 {
     void* _parent;
-    void (*_cb)(void* _parent, sji_scene3delement_model*, sji_scene3delement_model*, int32_t* _return);
+    void (*_cb)(void* _parent, sji_model*, sji_model*, int32_t* _return);
 };
 
 struct td_cb_heap_model_heap_model_i32_heap {
@@ -3436,7 +3436,7 @@ sji_element* sjt_functionParam281;
 int32_t sjt_functionParam4;
 sji_element* sjt_functionParam5;
 int32_t sjt_functionParam69;
-sji_scene3delement_model* sjt_functionParam70;
+sji_model* sjt_functionParam70;
 int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_negate1;
@@ -3563,7 +3563,7 @@ void sjf_array_char_heap(sjs_array_char_heap* _this);
 void sjf_array_heap_animation(sjs_array_heap_animation* _this);
 void sjf_array_heap_animation_copy(sjs_array_heap_animation* _this, sjs_array_heap_animation* _from);
 void sjf_array_heap_animation_destroy(sjs_array_heap_animation* _this);
-void sjf_array_heap_animation_getat_heap(sjs_array_heap_animation* _parent, int32_t index, sji_anon2_animation** _return);
+void sjf_array_heap_animation_getat_heap(sjs_array_heap_animation* _parent, int32_t index, sji_animation** _return);
 void sjf_array_heap_animation_heap(sjs_array_heap_animation_heap* _this);
 void sjf_array_heap_element(sjs_array_heap_element* _this);
 void sjf_array_heap_element_copy(sjs_array_heap_element* _this, sjs_array_heap_element* _from);
@@ -3575,12 +3575,12 @@ void sjf_array_heap_model(sjs_array_heap_model* _this);
 void sjf_array_heap_model__quicksortcallback(sjs_array_heap_model* _parent, int32_t left, int32_t right, cb_heap_model_heap_model_i32 cb);
 void sjf_array_heap_model_copy(sjs_array_heap_model* _this, sjs_array_heap_model* _from);
 void sjf_array_heap_model_destroy(sjs_array_heap_model* _this);
-void sjf_array_heap_model_getat_heap(sjs_array_heap_model* _parent, int32_t index, sji_scene3delement_model** _return);
+void sjf_array_heap_model_getat_heap(sjs_array_heap_model* _parent, int32_t index, sji_model** _return);
 void sjf_array_heap_model_grow(sjs_array_heap_model* _parent, int32_t newsize, sjs_array_heap_model* _return);
 void sjf_array_heap_model_grow_heap(sjs_array_heap_model* _parent, int32_t newsize, sjs_array_heap_model_heap** _return);
 void sjf_array_heap_model_heap(sjs_array_heap_model_heap* _this);
-void sjf_array_heap_model_initat(sjs_array_heap_model* _parent, int32_t index, sji_scene3delement_model* item);
-void sjf_array_heap_model_setat(sjs_array_heap_model* _parent, int32_t index, sji_scene3delement_model* item);
+void sjf_array_heap_model_initat(sjs_array_heap_model* _parent, int32_t index, sji_model* item);
+void sjf_array_heap_model_setat(sjs_array_heap_model* _parent, int32_t index, sji_model* item);
 void sjf_array_heap_model_sortcb(sjs_array_heap_model* _parent, cb_heap_model_heap_model_i32 cb);
 void sjf_array_i32(sjs_array_i32* _this);
 void sjf_array_i32_copy(sjs_array_i32* _this, sjs_array_i32* _from);
@@ -3698,15 +3698,15 @@ void sjf_light_heap(sjs_light_heap* _this);
 void sjf_list_heap_animation(sjs_list_heap_animation* _this);
 void sjf_list_heap_animation_copy(sjs_list_heap_animation* _this, sjs_list_heap_animation* _from);
 void sjf_list_heap_animation_destroy(sjs_list_heap_animation* _this);
-void sjf_list_heap_animation_getat_heap(sjs_list_heap_animation* _parent, int32_t index, sji_anon2_animation** _return);
+void sjf_list_heap_animation_getat_heap(sjs_list_heap_animation* _parent, int32_t index, sji_animation** _return);
 void sjf_list_heap_animation_getcount(sjs_list_heap_animation* _parent, int32_t* _return);
 void sjf_list_heap_animation_heap(sjs_list_heap_animation_heap* _this);
 void sjf_list_heap_animation_removeat(sjs_list_heap_animation* _parent, int32_t index);
 void sjf_list_heap_model(sjs_list_heap_model* _this);
-void sjf_list_heap_model_add(sjs_list_heap_model* _parent, sji_scene3delement_model* item);
+void sjf_list_heap_model_add(sjs_list_heap_model* _parent, sji_model* item);
 void sjf_list_heap_model_copy(sjs_list_heap_model* _this, sjs_list_heap_model* _from);
 void sjf_list_heap_model_destroy(sjs_list_heap_model* _this);
-void sjf_list_heap_model_getat_heap(sjs_list_heap_model* _parent, int32_t index, sji_scene3delement_model** _return);
+void sjf_list_heap_model_getat_heap(sjs_list_heap_model* _parent, int32_t index, sji_model** _return);
 void sjf_list_heap_model_getcount(sjs_list_heap_model* _parent, int32_t* _return);
 void sjf_list_heap_model_heap(sjs_list_heap_model_heap* _this);
 void sjf_list_heap_model_sortcb(sjs_list_heap_model* _parent, cb_heap_model_heap_model_i32 cb);
@@ -3740,8 +3740,8 @@ void sjf_mat4_scale(float x, float y, float z, sjs_mat4* _return);
 void sjf_mat4_scale_heap(float x, float y, float z, sjs_mat4_heap** _return);
 void sjf_mat4_transpose(sjs_mat4* _parent, sjs_mat4* _return);
 void sjf_mat4_transpose_heap(sjs_mat4* _parent, sjs_mat4_heap** _return);
-void sjf_model_zsort(sji_scene3delement_model* l, sji_scene3delement_model* r, int32_t* _return);
-void sjf_model_zsort_callback(void * _parent, sji_scene3delement_model* l, sji_scene3delement_model* r, int32_t* _return);
+void sjf_model_zsort(sji_model* l, sji_model* r, int32_t* _return);
+void sjf_model_zsort_callback(void * _parent, sji_model* l, sji_model* r, int32_t* _return);
 void sjf_mouseevent(sjs_mouseevent* _this);
 void sjf_mouseevent_copy(sjs_mouseevent* _this, sjs_mouseevent* _from);
 void sjf_mouseevent_destroy(sjs_mouseevent* _this);
@@ -3772,14 +3772,14 @@ void sjf_scene2d_setsize(sjs_scene2d* _parent, sjs_size* size);
 void sjf_scene2d_updateviewport(sjs_scene2d* _parent);
 void sjf_scene2dmodel(sjs_scene2dmodel* _this);
 sjs_object* sjf_scene2dmodel_asInterface(sjs_scene2dmodel* _this, int typeId);
-sji_scene3delement_model* sjf_scene2dmodel_as_sji_scene3delement_model(sjs_scene2dmodel* _this);
+sji_model* sjf_scene2dmodel_as_sji_model(sjs_scene2dmodel* _this);
 void sjf_scene2dmodel_copy(sjs_scene2dmodel* _this, sjs_scene2dmodel* _from);
 void sjf_scene2dmodel_destroy(sjs_scene2dmodel* _this);
 void sjf_scene2dmodel_firemouseevent(sjs_scene2dmodel* _parent, sjs_mouseevent* mouseevent);
 void sjf_scene2dmodel_getz(sjs_scene2dmodel* _parent, float* _return);
 void sjf_scene2dmodel_heap(sjs_scene2dmodel_heap* _this);
 sjs_object* sjf_scene2dmodel_heap_asInterface(sjs_scene2dmodel_heap* _this, int typeId);
-sji_scene3delement_model* sjf_scene2dmodel_heap_as_sji_scene3delement_model(sjs_scene2dmodel_heap* _this);
+sji_model* sjf_scene2dmodel_heap_as_sji_model(sjs_scene2dmodel_heap* _this);
 void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent);
 void sjf_scene2dmodel_renderorqueue(sjs_scene2dmodel* _parent, sjs_list_heap_model* alphamodels);
 void sjf_scene2dmodel_update(sjs_scene2dmodel* _parent, sjs_rect* scenerect, sjs_mat4* projection, sjs_mat4* view, sjs_mat4* world, sjs_light* light);
@@ -3856,12 +3856,12 @@ void sjf_windowrenderer_getsize(sjs_windowrenderer* _parent, sjs_size* _return);
 void sjf_windowrenderer_getsize_heap(sjs_windowrenderer* _parent, sjs_size_heap** _return);
 void sjf_windowrenderer_heap(sjs_windowrenderer_heap* _this);
 void sjf_windowrenderer_present(sjs_windowrenderer* _parent);
-void sji_anon2_animation_copy(sji_anon2_animation* _this, sji_anon2_animation* _from);
-void sji_anon2_animation_destroy(sji_anon2_animation* _this);
+void sji_animation_copy(sji_animation* _this, sji_animation* _from);
+void sji_animation_destroy(sji_animation* _this);
 void sji_element_copy(sji_element* _this, sji_element* _from);
 void sji_element_destroy(sji_element* _this);
-void sji_scene3delement_model_copy(sji_scene3delement_model* _this, sji_scene3delement_model* _from);
-void sji_scene3delement_model_destroy(sji_scene3delement_model* _this);
+void sji_model_copy(sji_model* _this, sji_model* _from);
+void sji_model_destroy(sji_model* _this);
 void main_destroy(void);
 
 void halt(const char * format, ...) {
@@ -6666,8 +6666,8 @@ void sjf_anon2_nextframe(sjs_anon2* _parent, int32_t time) {
             int32_t sjt_math2560;
             sjs_list_heap_animation* sjt_parent123;
             sjs_list_heap_animation* sjt_parent125;
-            sji_anon2_animation* sjt_parent126;
-            sji_anon2_animation* sjv_a;
+            sji_animation* sjt_parent126;
+            sji_animation* sjv_a;
             int32_t sjv_index;
 
 #line 31 "lib/ui/animation.sj"
@@ -6718,7 +6718,7 @@ void sjf_anon2_nextframe(sjs_anon2* _parent, int32_t time) {
 
             sjv_a->_refCount--;
             if (sjv_a->_refCount <= 0) {
-                sji_anon2_animation_destroy(sjv_a);
+                sji_animation_destroy(sjv_a);
             }
         }
     }
@@ -6928,7 +6928,7 @@ void sjf_array_heap_animation(sjs_array_heap_animation* _this) {
 #line 271
     if (!_this->data) {
 #line 272
-        _this->data = malloc(_this->datasize * sizeof(sji_anon2_animation*));
+        _this->data = malloc(_this->datasize * sizeof(sji_animation*));
 #line 273
         if (!_this->data) {
 #line 274
@@ -6964,14 +6964,14 @@ void sjf_array_heap_animation_destroy(sjs_array_heap_animation* _this) {
 #line 289
         if (_release(_this->data)) {
 #line 290
-            free((sji_anon2_animation**)_this->data);
+            free((sji_animation**)_this->data);
 #line 291
         }
 #line 292
     }
 }
 
-void sjf_array_heap_animation_getat_heap(sjs_array_heap_animation* _parent, int32_t index, sji_anon2_animation** _return) {
+void sjf_array_heap_animation_getat_heap(sjs_array_heap_animation* _parent, int32_t index, sji_animation** _return) {
 #line 9 "lib/common/array.sj"
     if (index >= _parent->count || index < 0) {
 #line 10
@@ -6979,7 +6979,7 @@ void sjf_array_heap_animation_getat_heap(sjs_array_heap_animation* _parent, int3
 #line 11
     }
 #line 13
-    sji_anon2_animation** p = (sji_anon2_animation**)_parent->data;
+    sji_animation** p = (sji_animation**)_parent->data;
 #line 14
     #line 8 "lib/common/array.sj"
 (*_return) = p[index];
@@ -6998,7 +6998,7 @@ void sjf_array_heap_animation_heap(sjs_array_heap_animation_heap* _this) {
 #line 271
     if (!_this->data) {
 #line 272
-        _this->data = malloc(_this->datasize * sizeof(sji_anon2_animation*));
+        _this->data = malloc(_this->datasize * sizeof(sji_animation*));
 #line 273
         if (!_this->data) {
 #line 274
@@ -7135,7 +7135,7 @@ void sjf_array_heap_model(sjs_array_heap_model* _this) {
 #line 271
     if (!_this->data) {
 #line 272
-        _this->data = malloc(_this->datasize * sizeof(sji_scene3delement_model*));
+        _this->data = malloc(_this->datasize * sizeof(sji_model*));
 #line 273
         if (!_this->data) {
 #line 274
@@ -7163,7 +7163,7 @@ void sjf_array_heap_model__quicksortcallback(sjs_array_heap_model* _parent, int3
     bool sjt_while1;
     int32_t sjv_i;
     int32_t sjv_j;
-    sji_scene3delement_model* sjv_pivot;
+    sji_model* sjv_pivot;
 
 #line 164 "lib/common/array.sj"
     sjv_i = left;
@@ -7198,12 +7198,12 @@ void sjf_array_heap_model__quicksortcallback(sjs_array_heap_model* _parent, int3
         int32_t sjt_compare22;
         int32_t sjt_compare23;
         int32_t sjt_compare24;
-        sji_scene3delement_model* sjt_functionParam34;
+        sji_model* sjt_functionParam34;
         int32_t sjt_functionParam35;
-        sji_scene3delement_model* sjt_functionParam36;
-        sji_scene3delement_model* sjt_functionParam40;
+        sji_model* sjt_functionParam36;
+        sji_model* sjt_functionParam40;
         int32_t sjt_functionParam41;
-        sji_scene3delement_model* sjt_functionParam42;
+        sji_model* sjt_functionParam42;
         bool sjt_ifElse3;
         bool sjt_while2;
         bool sjt_while3;
@@ -7228,9 +7228,9 @@ void sjf_array_heap_model__quicksortcallback(sjs_array_heap_model* _parent, int3
             cb_heap_model_heap_model_i32 sjt_callback2;
             int32_t sjt_compare15;
             int32_t sjt_compare16;
-            sji_scene3delement_model* sjt_functionParam37;
+            sji_model* sjt_functionParam37;
             int32_t sjt_functionParam38;
-            sji_scene3delement_model* sjt_functionParam39;
+            sji_model* sjt_functionParam39;
             int32_t sjt_math151;
             int32_t sjt_math152;
 
@@ -7259,11 +7259,11 @@ void sjf_array_heap_model__quicksortcallback(sjs_array_heap_model* _parent, int3
 
             sjt_functionParam37->_refCount--;
             if (sjt_functionParam37->_refCount <= 0) {
-                sji_scene3delement_model_destroy(sjt_functionParam37);
+                sji_model_destroy(sjt_functionParam37);
             }
             sjt_functionParam39->_refCount--;
             if (sjt_functionParam39->_refCount <= 0) {
-                sji_scene3delement_model_destroy(sjt_functionParam39);
+                sji_model_destroy(sjt_functionParam39);
             }
         }
 
@@ -7287,9 +7287,9 @@ void sjf_array_heap_model__quicksortcallback(sjs_array_heap_model* _parent, int3
             cb_heap_model_heap_model_i32 sjt_callback4;
             int32_t sjt_compare19;
             int32_t sjt_compare20;
-            sji_scene3delement_model* sjt_functionParam43;
+            sji_model* sjt_functionParam43;
             int32_t sjt_functionParam44;
-            sji_scene3delement_model* sjt_functionParam45;
+            sji_model* sjt_functionParam45;
             int32_t sjt_math153;
             int32_t sjt_math154;
 
@@ -7318,11 +7318,11 @@ void sjf_array_heap_model__quicksortcallback(sjs_array_heap_model* _parent, int3
 
             sjt_functionParam43->_refCount--;
             if (sjt_functionParam43->_refCount <= 0) {
-                sji_scene3delement_model_destroy(sjt_functionParam43);
+                sji_model_destroy(sjt_functionParam43);
             }
             sjt_functionParam45->_refCount--;
             if (sjt_functionParam45->_refCount <= 0) {
-                sji_scene3delement_model_destroy(sjt_functionParam45);
+                sji_model_destroy(sjt_functionParam45);
             }
         }
 
@@ -7335,15 +7335,15 @@ void sjf_array_heap_model__quicksortcallback(sjs_array_heap_model* _parent, int3
         if (sjt_ifElse3) {
             int32_t sjt_functionParam46;
             int32_t sjt_functionParam47;
-            sji_scene3delement_model* sjt_functionParam48;
+            sji_model* sjt_functionParam48;
             int32_t sjt_functionParam49;
             int32_t sjt_functionParam50;
-            sji_scene3delement_model* sjt_functionParam51;
+            sji_model* sjt_functionParam51;
             int32_t sjt_math155;
             int32_t sjt_math156;
             int32_t sjt_math157;
             int32_t sjt_math158;
-            sji_scene3delement_model* sjv_tmp;
+            sji_model* sjv_tmp;
 
 #line 179 "lib/common/array.sj"
             sjt_functionParam46 = sjv_i;
@@ -7380,15 +7380,15 @@ void sjf_array_heap_model__quicksortcallback(sjs_array_heap_model* _parent, int3
 
             sjt_functionParam48->_refCount--;
             if (sjt_functionParam48->_refCount <= 0) {
-                sji_scene3delement_model_destroy(sjt_functionParam48);
+                sji_model_destroy(sjt_functionParam48);
             }
             sjt_functionParam51->_refCount--;
             if (sjt_functionParam51->_refCount <= 0) {
-                sji_scene3delement_model_destroy(sjt_functionParam51);
+                sji_model_destroy(sjt_functionParam51);
             }
             sjv_tmp->_refCount--;
             if (sjv_tmp->_refCount <= 0) {
-                sji_scene3delement_model_destroy(sjv_tmp);
+                sji_model_destroy(sjv_tmp);
             }
         }
 
@@ -7401,19 +7401,19 @@ void sjf_array_heap_model__quicksortcallback(sjs_array_heap_model* _parent, int3
 
         sjt_functionParam34->_refCount--;
         if (sjt_functionParam34->_refCount <= 0) {
-            sji_scene3delement_model_destroy(sjt_functionParam34);
+            sji_model_destroy(sjt_functionParam34);
         }
         sjt_functionParam36->_refCount--;
         if (sjt_functionParam36->_refCount <= 0) {
-            sji_scene3delement_model_destroy(sjt_functionParam36);
+            sji_model_destroy(sjt_functionParam36);
         }
         sjt_functionParam40->_refCount--;
         if (sjt_functionParam40->_refCount <= 0) {
-            sji_scene3delement_model_destroy(sjt_functionParam40);
+            sji_model_destroy(sjt_functionParam40);
         }
         sjt_functionParam42->_refCount--;
         if (sjt_functionParam42->_refCount <= 0) {
-            sji_scene3delement_model_destroy(sjt_functionParam42);
+            sji_model_destroy(sjt_functionParam42);
         }
     }
 
@@ -7461,7 +7461,7 @@ void sjf_array_heap_model__quicksortcallback(sjs_array_heap_model* _parent, int3
 
     sjv_pivot->_refCount--;
     if (sjv_pivot->_refCount <= 0) {
-        sji_scene3delement_model_destroy(sjv_pivot);
+        sji_model_destroy(sjv_pivot);
     }
 }
 
@@ -7490,14 +7490,14 @@ void sjf_array_heap_model_destroy(sjs_array_heap_model* _this) {
 #line 289
         if (_release(_this->data)) {
 #line 290
-            free((sji_scene3delement_model**)_this->data);
+            free((sji_model**)_this->data);
 #line 291
         }
 #line 292
     }
 }
 
-void sjf_array_heap_model_getat_heap(sjs_array_heap_model* _parent, int32_t index, sji_scene3delement_model** _return) {
+void sjf_array_heap_model_getat_heap(sjs_array_heap_model* _parent, int32_t index, sji_model** _return) {
 #line 9 "lib/common/array.sj"
     if (index >= _parent->count || index < 0) {
 #line 10
@@ -7505,7 +7505,7 @@ void sjf_array_heap_model_getat_heap(sjs_array_heap_model* _parent, int32_t inde
 #line 11
     }
 #line 13
-    sji_scene3delement_model** p = (sji_scene3delement_model**)_parent->data;
+    sji_model** p = (sji_model**)_parent->data;
 #line 14
     #line 8 "lib/common/array.sj"
 (*_return) = p[index];
@@ -7529,7 +7529,7 @@ void sjf_array_heap_model_grow(sjs_array_heap_model* _parent, int32_t newsize, s
 #line 121
         }
 #line 123
-        sjv_newdata = malloc(newsize * sizeof(sji_scene3delement_model*));
+        sjv_newdata = malloc(newsize * sizeof(sji_model*));
 #line 124
         if (!_parent->data) {
 #line 125
@@ -7537,7 +7537,7 @@ void sjf_array_heap_model_grow(sjs_array_heap_model* _parent, int32_t newsize, s
 #line 126
         }
 #line 127
-        memcpy(sjv_newdata, _parent->data, _parent->datasize * sizeof(sji_scene3delement_model*));
+        memcpy(sjv_newdata, _parent->data, _parent->datasize * sizeof(sji_model*));
 #line 128
     }
 #line 115
@@ -7569,7 +7569,7 @@ void sjf_array_heap_model_grow_heap(sjs_array_heap_model* _parent, int32_t newsi
 #line 121
         }
 #line 123
-        sjv_newdata = malloc(newsize * sizeof(sji_scene3delement_model*));
+        sjv_newdata = malloc(newsize * sizeof(sji_model*));
 #line 124
         if (!_parent->data) {
 #line 125
@@ -7577,7 +7577,7 @@ void sjf_array_heap_model_grow_heap(sjs_array_heap_model* _parent, int32_t newsi
 #line 126
         }
 #line 127
-        memcpy(sjv_newdata, _parent->data, _parent->datasize * sizeof(sji_scene3delement_model*));
+        memcpy(sjv_newdata, _parent->data, _parent->datasize * sizeof(sji_model*));
 #line 128
     }
 #line 128
@@ -7608,7 +7608,7 @@ void sjf_array_heap_model_heap(sjs_array_heap_model_heap* _this) {
 #line 271
     if (!_this->data) {
 #line 272
-        _this->data = malloc(_this->datasize * sizeof(sji_scene3delement_model*));
+        _this->data = malloc(_this->datasize * sizeof(sji_model*));
 #line 273
         if (!_this->data) {
 #line 274
@@ -7619,7 +7619,7 @@ void sjf_array_heap_model_heap(sjs_array_heap_model_heap* _this) {
     }
 }
 
-void sjf_array_heap_model_initat(sjs_array_heap_model* _parent, int32_t index, sji_scene3delement_model* item) {
+void sjf_array_heap_model_initat(sjs_array_heap_model* _parent, int32_t index, sji_model* item) {
 #line 21 "lib/common/array.sj"
     if (index != _parent->count) {
 #line 22
@@ -7633,7 +7633,7 @@ void sjf_array_heap_model_initat(sjs_array_heap_model* _parent, int32_t index, s
 #line 26
     }
 #line 28
-    sji_scene3delement_model** p = (sji_scene3delement_model**)_parent->data;
+    sji_model** p = (sji_model**)_parent->data;
 #line 29
     #line 19 "lib/common/array.sj"
 p[index] = item;
@@ -7644,7 +7644,7 @@ p[index]->_refCount++;
     _parent->count = index + 1;
 }
 
-void sjf_array_heap_model_setat(sjs_array_heap_model* _parent, int32_t index, sji_scene3delement_model* item) {
+void sjf_array_heap_model_setat(sjs_array_heap_model* _parent, int32_t index, sji_model* item) {
 #line 36 "lib/common/array.sj"
     if (index >= _parent->count || index < 0) {
 #line 37
@@ -7652,11 +7652,11 @@ void sjf_array_heap_model_setat(sjs_array_heap_model* _parent, int32_t index, sj
 #line 38
     }
 #line 40
-    sji_scene3delement_model** p = (sji_scene3delement_model**)_parent->data;
+    sji_model** p = (sji_model**)_parent->data;
 #line 41
     p[index]->_refCount--;
 if (p[index]->_refCount <= 0) {
-    sji_scene3delement_model_destroy(p[index]);
+    sji_model_destroy(p[index]);
 }
 ;
 #line 42
@@ -10616,7 +10616,7 @@ void sjf_list_heap_animation_copy(sjs_list_heap_animation* _this, sjs_list_heap_
 void sjf_list_heap_animation_destroy(sjs_list_heap_animation* _this) {
 }
 
-void sjf_list_heap_animation_getat_heap(sjs_list_heap_animation* _parent, int32_t index, sji_anon2_animation** _return) {
+void sjf_list_heap_animation_getat_heap(sjs_list_heap_animation* _parent, int32_t index, sji_animation** _return) {
     sjs_list_heap_animation* sjt_dot1499;
     int32_t sjt_functionParam282;
     sjs_array_heap_animation* sjt_parent124;
@@ -10654,7 +10654,7 @@ void sjf_list_heap_animation_removeat(sjs_list_heap_animation* _parent, int32_t 
 #line 57
     }
 #line 58
-    sji_anon2_animation** p = (sji_anon2_animation**)_parent->array.data;
+    sji_animation** p = (sji_animation**)_parent->array.data;
 #line 59
     if (index != _parent->array.count - 1) {
 #line 60
@@ -10668,7 +10668,7 @@ void sjf_list_heap_animation_removeat(sjs_list_heap_animation* _parent, int32_t 
 void sjf_list_heap_model(sjs_list_heap_model* _this) {
 }
 
-void sjf_list_heap_model_add(sjs_list_heap_model* _parent, sji_scene3delement_model* item) {
+void sjf_list_heap_model_add(sjs_list_heap_model* _parent, sji_model* item) {
     int32_t sjt_compare39;
     int32_t sjt_compare40;
     sjs_array_heap_model* sjt_dot497;
@@ -10679,7 +10679,7 @@ void sjf_list_heap_model_add(sjs_list_heap_model* _parent, sji_scene3delement_mo
     sjs_array_heap_model* sjt_dot508;
     sjs_list_heap_model* sjt_dot509;
     int32_t sjt_functionParam123;
-    sji_scene3delement_model* sjt_functionParam124;
+    sji_model* sjt_functionParam124;
     bool sjt_ifElse11;
     sjs_array_heap_model* sjt_parent49;
 
@@ -10752,7 +10752,7 @@ void sjf_list_heap_model_add(sjs_list_heap_model* _parent, sji_scene3delement_mo
 
     sjt_functionParam124->_refCount--;
     if (sjt_functionParam124->_refCount <= 0) {
-        sji_scene3delement_model_destroy(sjt_functionParam124);
+        sji_model_destroy(sjt_functionParam124);
     }
 }
 
@@ -10764,7 +10764,7 @@ void sjf_list_heap_model_copy(sjs_list_heap_model* _this, sjs_list_heap_model* _
 void sjf_list_heap_model_destroy(sjs_list_heap_model* _this) {
 }
 
-void sjf_list_heap_model_getat_heap(sjs_list_heap_model* _parent, int32_t index, sji_scene3delement_model** _return) {
+void sjf_list_heap_model_getat_heap(sjs_list_heap_model* _parent, int32_t index, sji_model** _return) {
     sjs_list_heap_model* sjt_dot138;
     int32_t sjt_functionParam65;
     sjs_array_heap_model* sjt_parent34;
@@ -21346,11 +21346,11 @@ void sjf_mat4_transpose_heap(sjs_mat4* _parent, sjs_mat4_heap** _return) {
     sjf_mat4_heap((*_return));
 }
 
-void sjf_model_zsort(sji_scene3delement_model* l, sji_scene3delement_model* r, int32_t* _return) {
+void sjf_model_zsort(sji_model* l, sji_model* r, int32_t* _return) {
     float sjt_functionParam63;
     float sjt_functionParam64;
-    sji_scene3delement_model* sjt_parent31;
-    sji_scene3delement_model* sjt_parent32;
+    sji_model* sjt_parent31;
+    sji_model* sjt_parent32;
 
 #line 9 "lib/ui/model.sj"
     sjt_parent31 = l;
@@ -21364,7 +21364,7 @@ void sjf_model_zsort(sji_scene3delement_model* l, sji_scene3delement_model* r, i
     sjf_f32_compare(sjt_functionParam63, sjt_functionParam64, _return);
 }
 
-void sjf_model_zsort_callback(void * _parent, sji_scene3delement_model* l, sji_scene3delement_model* r, int32_t* _return) {
+void sjf_model_zsort_callback(void * _parent, sji_model* l, sji_model* r, int32_t* _return) {
     sjf_model_zsort(l, r, _return);
 }
 
@@ -22172,17 +22172,17 @@ void sjf_scene2dmodel(sjs_scene2dmodel* _this) {
 
 sjs_object* sjf_scene2dmodel_asInterface(sjs_scene2dmodel* _this, int typeId) {
     switch (typeId) {
-        case sji_scene3delement_model_typeId:  {
-            return (sjs_object*)sjf_scene2dmodel_as_sji_scene3delement_model(_this);
+        case sji_model_typeId:  {
+            return (sjs_object*)sjf_scene2dmodel_as_sji_model(_this);
         }
     }
 
     return 0;
 }
 
-sji_scene3delement_model* sjf_scene2dmodel_as_sji_scene3delement_model(sjs_scene2dmodel* _this) {
-    sji_scene3delement_model* _interface;
-    _interface = (sji_scene3delement_model*)malloc(sizeof(sji_scene3delement_model));
+sji_model* sjf_scene2dmodel_as_sji_model(sjs_scene2dmodel* _this) {
+    sji_model* _interface;
+    _interface = (sji_model*)malloc(sizeof(sji_model));
     _interface->_refCount = 1;
     _interface->_parent = (sjs_object*)_this;
     _interface->_parent->_refCount++;
@@ -22700,17 +22700,17 @@ void sjf_scene2dmodel_heap(sjs_scene2dmodel_heap* _this) {
 
 sjs_object* sjf_scene2dmodel_heap_asInterface(sjs_scene2dmodel_heap* _this, int typeId) {
     switch (typeId) {
-        case sji_scene3delement_model_typeId:  {
-            return (sjs_object*)sjf_scene2dmodel_heap_as_sji_scene3delement_model(_this);
+        case sji_model_typeId:  {
+            return (sjs_object*)sjf_scene2dmodel_heap_as_sji_model(_this);
         }
     }
 
     return 0;
 }
 
-sji_scene3delement_model* sjf_scene2dmodel_heap_as_sji_scene3delement_model(sjs_scene2dmodel_heap* _this) {
-    sji_scene3delement_model* _interface;
-    _interface = (sji_scene3delement_model*)malloc(sizeof(sji_scene3delement_model));
+sji_model* sjf_scene2dmodel_heap_as_sji_model(sjs_scene2dmodel_heap* _this) {
+    sji_model* _interface;
+    _interface = (sji_model*)malloc(sizeof(sji_model));
     _interface->_refCount = 1;
     _interface->_parent = (sjs_object*)_this;
     _interface->_parent->_refCount++;
@@ -23123,7 +23123,7 @@ void sjf_scene2dmodel_renderorqueue(sjs_scene2dmodel* _parent, sjs_list_heap_mod
     sjt_ifElse10 = (sjt_dot496)->hasalpha;
     if (sjt_ifElse10) {
         sjs_scene2dmodel_heap* sjt_cast8;
-        sji_scene3delement_model* sjt_functionParam125;
+        sji_model* sjt_functionParam125;
         sjs_list_heap_model* sjt_parent50;
 
 #line 35 "lib/ui/scene2dModel.sj"
@@ -23133,7 +23133,7 @@ void sjf_scene2dmodel_renderorqueue(sjs_scene2dmodel* _parent, sjs_list_heap_mod
 #line 37
         sjt_cast8->_refCount++;
 #line 1 "lib/ui/model.sj"
-        sjt_functionParam125 = (sji_scene3delement_model*)sjf_scene2dmodel_heap_as_sji_scene3delement_model(sjt_cast8);
+        sjt_functionParam125 = (sji_model*)sjf_scene2dmodel_heap_as_sji_model(sjt_cast8);
 #line 1
         sjf_list_heap_model_add(sjt_parent50, sjt_functionParam125);
 
@@ -23143,7 +23143,7 @@ void sjf_scene2dmodel_renderorqueue(sjs_scene2dmodel* _parent, sjs_list_heap_mod
         }
         sjt_functionParam125->_refCount--;
         if (sjt_functionParam125->_refCount <= 0) {
-            sji_scene3delement_model_destroy(sjt_functionParam125);
+            sji_model_destroy(sjt_functionParam125);
         }
     } else {
         sjf_scene2dmodel_render(_parent);
@@ -23361,8 +23361,8 @@ void sjf_scene3delement_firemouseevent(sjs_scene3delement* _parent, sjs_mouseeve
         int32_t sjt_functionParam68;
         sjs_mouseevent* sjt_interfaceParam10;
         sjs_array_heap_model* sjt_parent37;
-        sji_scene3delement_model* sjt_parent38;
-        sji_scene3delement_model* sjv_child;
+        sji_model* sjt_parent38;
+        sji_model* sjv_child;
 
 #line 64 "lib/ui/scene3dElement.sj"
         sjt_dot141 = _parent;
@@ -23383,7 +23383,7 @@ void sjf_scene3delement_firemouseevent(sjs_scene3delement* _parent, sjs_mouseeve
 
         sjv_child->_refCount--;
         if (sjv_child->_refCount <= 0) {
-            sji_scene3delement_model_destroy(sjv_child);
+            sji_model_destroy(sjv_child);
         }
     }
 }
@@ -23505,8 +23505,8 @@ void sjf_scene3delement_render(sjs_scene3delement* _parent, sjs_scene2d* scene) 
         sjs_mat4* sjt_interfaceParam7;
         sjs_light* sjt_interfaceParam8;
         sjs_array_heap_model* sjt_parent25;
-        sji_scene3delement_model* sjt_parent26;
-        sji_scene3delement_model* sjv_child;
+        sji_model* sjt_parent26;
+        sji_model* sjv_child;
 
 #line 40 "lib/ui/scene3dElement.sj"
         sjt_dot124 = _parent;
@@ -23545,7 +23545,7 @@ void sjf_scene3delement_render(sjs_scene3delement* _parent, sjs_scene2d* scene) 
 
         sjv_child->_refCount--;
         if (sjv_child->_refCount <= 0) {
-            sji_scene3delement_model_destroy(sjv_child);
+            sji_model_destroy(sjv_child);
         }
     }
 
@@ -23580,8 +23580,8 @@ void sjf_scene3delement_render(sjs_scene3delement* _parent, sjs_scene2d* scene) 
         int32_t sjt_functionParam32;
         sjs_list_heap_model* sjt_interfaceParam9;
         sjs_array_heap_model* sjt_parent27;
-        sji_scene3delement_model* sjt_parent28;
-        sji_scene3delement_model* sjv_child;
+        sji_model* sjt_parent28;
+        sji_model* sjv_child;
 
 #line 40 "lib/ui/scene3dElement.sj"
         sjt_dot132 = _parent;
@@ -23602,7 +23602,7 @@ void sjf_scene3delement_render(sjs_scene3delement* _parent, sjs_scene2d* scene) 
 
         sjv_child->_refCount--;
         if (sjv_child->_refCount <= 0) {
-            sji_scene3delement_model_destroy(sjv_child);
+            sji_model_destroy(sjv_child);
         }
     }
 
@@ -23611,7 +23611,7 @@ void sjf_scene3delement_render(sjs_scene3delement* _parent, sjs_scene2d* scene) 
 #line 55 "lib/ui/scene3dElement.sj"
     sjt_functionParam62._parent = (void*)1;
 #line 55
-    sjt_functionParam62._cb = (void(*)(void*,sji_scene3delement_model*,sji_scene3delement_model*, int32_t*))sjf_model_zsort_callback;
+    sjt_functionParam62._cb = (void(*)(void*,sji_model*,sji_model*, int32_t*))sjf_model_zsort_callback;
 #line 55
     sjf_list_heap_model_sortcb(sjt_parent30, sjt_functionParam62);
 #line 56
@@ -23625,8 +23625,8 @@ void sjf_scene3delement_render(sjs_scene3delement* _parent, sjs_scene2d* scene) 
     while (i >= sjt_forStart6) {
         int32_t sjt_functionParam66;
         sjs_list_heap_model* sjt_parent35;
-        sji_scene3delement_model* sjt_parent36;
-        sji_scene3delement_model* sjv_child;
+        sji_model* sjt_parent36;
+        sji_model* sjv_child;
 
 #line 8 "lib/common/list.sj"
         sjt_parent35 = &sjv_a;
@@ -23643,7 +23643,7 @@ void sjf_scene3delement_render(sjs_scene3delement* _parent, sjs_scene2d* scene) 
 
         sjv_child->_refCount--;
         if (sjv_child->_refCount <= 0) {
-            sji_scene3delement_model_destroy(sjv_child);
+            sji_model_destroy(sjv_child);
         }
     }
 
@@ -27469,7 +27469,7 @@ void sjf_windowrenderer_present(sjs_windowrenderer* _parent) {
     SDL_GL_SwapWindow((SDL_Window*)_parent->win);
 }
 
-void sji_anon2_animation_copy(sji_anon2_animation* _this, sji_anon2_animation* _from) {
+void sji_animation_copy(sji_animation* _this, sji_animation* _from) {
     _this->_refCount = 1;
     _this->_parent = _from->_parent;
     _this->_parent->_refCount++;
@@ -27478,7 +27478,7 @@ void sji_anon2_animation_copy(sji_anon2_animation* _this, sji_anon2_animation* _
     _this->nextframe = _from->nextframe;
 }
 
-void sji_anon2_animation_destroy(sji_anon2_animation* _this) {
+void sji_animation_destroy(sji_animation* _this) {
     _this->_parent->_refCount--;
     if (_this->_parent->_refCount <= 0) {
         _this->destroy((void*)(((char*)_this->_parent) + sizeof(intptr_t)));
@@ -27508,7 +27508,7 @@ void sji_element_destroy(sji_element* _this) {
     }
 }
 
-void sji_scene3delement_model_copy(sji_scene3delement_model* _this, sji_scene3delement_model* _from) {
+void sji_model_copy(sji_model* _this, sji_model* _from) {
     _this->_refCount = 1;
     _this->_parent = _from->_parent;
     _this->_parent->_refCount++;
@@ -27521,7 +27521,7 @@ void sji_scene3delement_model_copy(sji_scene3delement_model* _this, sji_scene3de
     _this->firemouseevent = _from->firemouseevent;
 }
 
-void sji_scene3delement_model_destroy(sji_scene3delement_model* _this) {
+void sji_model_destroy(sji_model* _this) {
     _this->_parent->_refCount--;
     if (_this->_parent->_refCount <= 0) {
         _this->destroy((void*)(((char*)_this->_parent) + sizeof(intptr_t)));
@@ -28566,7 +28566,7 @@ int main(int argc, char** argv) {
 #line 3
     sjf_scene2dmodel_heap(sjt_cast5);
 #line 1 "lib/ui/model.sj"
-    sjt_functionParam70 = (sji_scene3delement_model*)sjf_scene2dmodel_heap_as_sji_scene3delement_model(sjt_cast5);
+    sjt_functionParam70 = (sji_model*)sjf_scene2dmodel_heap_as_sji_model(sjt_cast5);
 #line 1
     sjf_array_heap_model_initat(sjt_parent39, sjt_functionParam69, sjt_functionParam70);
 #line 13 "lib/ui/scene3dElement.sj"
@@ -28829,7 +28829,7 @@ void main_destroy() {
     }
     sjt_functionParam70->_refCount--;
     if (sjt_functionParam70->_refCount <= 0) {
-        sji_scene3delement_model_destroy(sjt_functionParam70);
+        sji_model_destroy(sjt_functionParam70);
     }
     if (sjv_mouse_captureelement != 0) {
         sjv_mouse_captureelement->_refCount--;

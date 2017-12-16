@@ -83,7 +83,7 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
 
     auto tempName = TrBlock::nextVarName("array");
 
-    auto createArrayCallee = scope->function->getCFunction(compiler, loc, "array", scope, make_shared<CTypeNameList>(elementType->category, elementType->typeMode, elementType->valueName, elementType->isOption), returnMode);
+    auto createArrayCallee = scope->function->getCFunction(compiler, loc, "array", scope, make_shared<CTypeNameList>(elementType->category, elementType->typeMode, elementType->packageNamespace, elementType->valueName, elementType->isOption), returnMode);
     if (!createArrayCallee) {
         return nullptr;
     }
