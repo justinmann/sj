@@ -2,25 +2,33 @@ leafPanel #model (
 	textures : array!texture()
 	children := array!#model()
 
-	setWorld(world_ : 'mat4)'void {
+	update(sceneRect : 'rect, projection : 'mat4, view : 'mat4, world : 'mat4, light : 'light)'void {
 		for i : 0 to children.count {
 			c : children[i]
-			c.setWorld(world_)
+			c.update(sceneRect, projection, view, world, light)
 		}
 		void
 	}
 
-	render(sceneRect : 'rect, projection : 'mat4, view : 'mat4, light : 'light)'void {
+	getZ() {
+		0.0f
+	}
+
+	renderOrQueue(zqueue : 'list!#model)'void {
 		for i : 0 to children.count {
 			c : children[i]
-			c.render(sceneRect, projection, view, light)
+			c.renderOrQueue(zqueue)
 		}
 	}
 
-	fireMouseEvent(sceneRect : 'rect, projection : 'mat4, view : 'mat4, point: 'point, eventId : 'i32)'void {
+	render() {
+		void
+	}
+
+	fireMouseEvent(point: 'point, eventId : 'i32)'void {
 		for i : 0 to children.count {
 			c : children[i]
-			c.fireMouseEvent(sceneRect, projection, view, point, eventId)
+			c.fireMouseEvent(point, eventId)
 		}
 	}
 
@@ -34,10 +42,12 @@ leafPanel #model (
 		_angle += 0.8f;
 
 	    model(
+	    	id : "leaf" + z.toString()
 	    	texture : copy texture
 	    	shader : copy phongTextureShader
-	    	world : mat4_translate(x, y, z)
+	    	model : mat4_translate(x, y, z)
 	    	vertexBuffer : planeVertexBuffer() 
+        	hasAlpha : true
 	    ) as #model
 	}
 ) {

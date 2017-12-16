@@ -1266,9 +1266,9 @@ global()'void {
   u32_maxValue'u32 : (uint32_t)4294967295uu
   i32_maxValue'i32 : -1i - 2147483647i
   i32_minValue'i32 : 2147483647i
-  emptyStringData'ptr = 0i as ptr
+  emptyStringData'ptr = 0
   --c--
-  sjv_emptyStringData = (uintptr_t)"";
+  sjv_emptyStringData = "";
   --c--
   animator'stack anon2 : anon2(this = anon2(
     animations'stack list_heap_animation : animations,
@@ -1890,6 +1890,78 @@ global()'void {
   /* The transformation is completed. */
   }
   --cfunction--
+  {
+    glFeature_GL_BLEND'glFeature : 0x0BE2
+    glFeature_GL_CULL_FACE'glFeature : 0x0B44
+    glFeature_GL_DEPTH_TEST'glFeature : 0x0B71
+    glFeature_GL_DITHER'glFeature : 0x0BD0
+    glFeature_GL_POLYGON_OFFSET_FILL'glFeature : 0x8037
+    glFeature_GL_SAMPLE_ALPHA_TO_COVERAGE'glFeature : 0x809E
+    glFeature_GL_SAMPLE_COVERAGE'glFeature : 0x80A0
+    glFeature_GL_SCISSOR_TEST'glFeature : 0x0C11
+    glFeature_GL_STENCIL_TEST'glFeature : 0x0B90
+  }
+  {
+    glTexture_GL_TEXTURE_2D'glTexture : 0x0DE1
+    glTexture_GL_TEXTURE_CUBE_MAP'glTexture : 0x8513
+  }
+  {
+    glTextureAttribute_GL_TEXTURE_MIN_FILTER'glTextureAttribute : 0x2801
+    glTextureAttribute_GL_TEXTURE_MAG_FILTER'glTextureAttribute : 0x2800
+    glTextureAttribute_GL_TEXTURE_WRAP_S'glTextureAttribute : 0x2802
+    glTextureAttribute_GL_TEXTURE_WRAP_T'glTextureAttribute : 0x2803
+  }
+  {
+    glTextureValue_GL_CLAMP_TO_EDGE'glTextureValue : 0x812F
+    glTextureValue_GL_MIRRORED_REPEAT'glTextureValue : 0x8370
+    glTextureValue_GL_REPEAT'glTextureValue : 0x2901
+    glTextureValue_GL_NEAREST'glTextureValue : 0x2600
+    glTextureValue_GL_LINEAR'glTextureValue : 0x2601
+    glTextureValue_GL_NEAREST_MIPMAP_NEAREST'glTextureValue : 0x2700
+    glTextureValue_GL_LINEAR_MIPMAP_NEAREST'glTextureValue : 0x2701
+    glTextureValue_GL_NEAREST_MIPMAP_LINEAR'glTextureValue : 0x2702
+    glTextureValue_GL_LINEAR_MIPMAP_LINEAR'glTextureValue : 0x2703
+  }
+  {
+    glTextureFormat_GL_ALPHA'glTextureFormat : 0x1906
+    glTextureFormat_GL_LUMINANCE'glTextureFormat : 0x1909
+    glTextureFormat_GL_LUMINANCE_ALPHA'glTextureFormat : 0x190A
+    glTextureFormat_GL_RGB'glTextureFormat : 0x1907
+    glTextureFormat_GL_RGBA'glTextureFormat : 0x1908
+  }
+  {
+    glTextureType_GL_UNSIGNED_BYTE'glTextureType : 0x1401
+    glTextureType_GL_UNSIGNED_SHORT_5_6_5'glTextureType : 0x8363
+    glTextureType_GL_UNSIGNED_SHORT_4_4_4_4'glTextureType : 0x8033
+    glTextureType_GL_UNSIGNED_SHORT_5_5_5_1'glTextureType : 0x8034
+  }
+  {
+    glFramebufferAttachment_GL_COLOR_ATTACHMENT0'glFramebufferAttachment : 0x8CE0
+    glFramebufferAttachment_GL_DEPTH_ATTACHMENT'glFramebufferAttachment : 0x8D00
+    glFramebufferAttachment_GL_STENCIL_ATTACHMENT'glFramebufferAttachment : 0x8D20
+  }
+  {
+    glFramebufferTexture_GL_TEXTURE_2D'glFramebufferTexture : 0x0DE1
+    glFramebufferTexture_GL_TEXTURE_CUBE_MAP_POSITIVE_X'glFramebufferTexture : 0x8515
+    glFramebufferTexture_GL_TEXTURE_CUBE_MAP_NEGATIVE_X'glFramebufferTexture : 0x8516
+    glFramebufferTexture_GL_TEXTURE_CUBE_MAP_POSITIVE_Y'glFramebufferTexture : 0x8517
+    glFramebufferTexture_GL_TEXTURE_CUBE_MAP_NEGATIVE_Y'glFramebufferTexture : 0x8518
+    glFramebufferTexture_GL_TEXTURE_CUBE_MAP_POSITIVE_Z'glFramebufferTexture : 0x8519
+    glFramebufferTexture_GL_TEXTURE_CUBE_MAP_NEGATIVE_Z'glFramebufferTexture : 0x851A
+  }
+  {
+    glRenderbufferFormat_GL_RGBA4'glRenderbufferFormat : 0x8056
+    glRenderbufferFormat_GL_RGB565'glRenderbufferFormat : 0x8D62
+    glRenderbufferFormat_GL_RGB5_A1'glRenderbufferFormat : 0x8057
+    glRenderbufferFormat_GL_DEPTH_COMPONENT16'glRenderbufferFormat : 0x81A5
+    glRenderbufferFormat_GL_STENCIL_INDEX8'glRenderbufferFormat : 0x8D48
+  }
+  {
+    glFramebufferStatus_GL_FRAMEBUFFER_COMPLETE'glFramebufferStatus : 0x8CD5
+    glFramebufferStatus_GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT'glFramebufferStatus : 0x8CD6
+    glFramebufferStatus_GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT'glFramebufferStatus : 0x8CD7
+    glFramebufferStatus_GL_FRAMEBUFFER_UNSUPPORTED'glFramebufferStatus : 0x8CDD
+  }
   --cstruct--
   typedef struct GLid_td GLid_s;
   struct GLid_td {

@@ -31,12 +31,12 @@ struct td_uint64_option {
 };
 const uint64_option uint64_empty = { true };
 
-typedef struct td_uintptr_option uintptr_option;
-struct td_uintptr_option {
+typedef struct td_void_option void_option;
+struct td_void_option {
     bool isEmpty;
-    uintptr_t value;
+    void* value;
 };
-const uintptr_option uintptr_empty = { true };
+const void_option void_empty = { true };
 
 typedef struct td_char_option char_option;
 struct td_char_option {
@@ -61,14 +61,14 @@ const double_option double_empty = { true };
 
 #define sjs_object_typeId 1
 #define sjs_class_typeId 2
-#define sji_interface_typeId 3
-#define sjs_class_heap_typeId 4
+#define sjs_class_heap_typeId 3
+#define sji_interface_typeId 4
 #define sji_interface2_typeId 5
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_class sjs_class;
-typedef struct td_sji_interface sji_interface;
 typedef struct td_sjs_class_heap sjs_class_heap;
+typedef struct td_sji_interface sji_interface;
 typedef struct td_sji_interface2 sji_interface2;
 
 struct td_sjs_object {
@@ -79,16 +79,16 @@ struct td_sjs_class {
     int32_t bob;
 };
 
+struct td_sjs_class_heap {
+    intptr_t _refCount;
+    int32_t bob;
+};
+
 struct td_sji_interface {
     intptr_t _refCount;
     sjs_object* _parent;
     void (*destroy)(void* _this);
     sjs_object* (*asInterface)(sjs_object* _this, int typeId);
-};
-
-struct td_sjs_class_heap {
-    intptr_t _refCount;
-    int32_t bob;
 };
 
 struct td_sji_interface2 {
@@ -116,7 +116,7 @@ uint64_option sjv_d;
 float_option sjv_e;
 double_option sjv_f;
 char_option sjv_g;
-uintptr_option sjv_h;
+void_option sjv_h;
 sjs_class_heap* sjv_i;
 bool sjv_j;
 bool sjv_k;
@@ -249,7 +249,7 @@ int main(int argc, char** argv) {
 #line 13
     sjv_g = char_empty;
 #line 14
-    sjv_h = uintptr_empty;
+    sjv_h = void_empty;
 #line 15
     sjv_i = 0;
     if (sjv_i != 0) {

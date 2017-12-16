@@ -1,6 +1,6 @@
-emptyStringData := 0 as ptr
+emptyStringData := nullptr
 --c--
-sjv_emptyStringData = (uintptr_t)"";
+sjv_emptyStringData = "";
 --c--
 
 string(
@@ -13,23 +13,22 @@ string(
 	)
 
 	add(item : 'string) {
-		if item.count > 0 {
-			if count + item.count + 1 > data.dataSize {
-				data.grow(count + item.count + 1)
-				void
-			}
-
-			data.setAt(count, item.getAt(0))
-			count++
+		if item.count == 0 {
+			string(count : count, data : copy data)			
+		} else {
+			newData : data.grow(count + item.count + 1)
+			newCount := count
+			newData.setAt(newCount, item.getAt(0))
+			newCount++
 
 			for i : 1 to item.count {
-				data.initAt(count, item.getAt(i))
-				count++		
+				newData.initAt(newCount, item.getAt(i))
+				newCount++		
 			}
 
-			data.initAt(count, 0 as char)
+			newData.initAt(newCount, 0 as char)
+			string(count : newCount, data : copy newData)
 		}
-		parent
 	}
 
 	getAt(index : 'i32)'char {

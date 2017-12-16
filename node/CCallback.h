@@ -37,6 +37,7 @@ public:
     pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(vector<string> packageNamespace, string name);
     bool getIsReturnModeValid(Compiler* compiler, CTypeMode returnMode);
     shared_ptr<CType> getReturnType(Compiler* compiler, CTypeMode returnMode);
+    void transpileStructDefinition(Compiler* compiler, TrOutput* trOutput);
     void transpileDefinition(Compiler* compiler, TrOutput* trOutput);
     void transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<CVar> parentVar, CLoc& calleeLoc, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode returnMode);
     void dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level, CTypeMode returnMode);
@@ -54,6 +55,7 @@ public:
     static shared_ptr<CType> getType(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> stackReturnType, shared_ptr<CType> heapReturnType, CTypeMode returnMode, bool isOption);
     static shared_ptr<CVar> getVar(Compiler* compiler, shared_ptr<CScope> scope, CLoc loc, shared_ptr<CVar> dotVar, shared_ptr<CBaseFunction> function, CTypeMode returnMode);
     shared_ptr<CBaseFunction> getFunction(Compiler* compiler, shared_ptr<CVar> callbackVar);
+    void transpileStructDefinition(Compiler* compiler, TrOutput* trOutput);
     void transpileDefinition(Compiler* compiler, TrOutput* trOutput);
     string getCBName(Compiler* compiler, bool includeNames, CTypeMode returnMode);
     string getCName(CTypeMode typeMode, bool isOption);

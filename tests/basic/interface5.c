@@ -31,12 +31,12 @@ struct td_uint64_option {
 };
 const uint64_option uint64_empty = { true };
 
-typedef struct td_uintptr_option uintptr_option;
-struct td_uintptr_option {
+typedef struct td_void_option void_option;
+struct td_void_option {
     bool isEmpty;
-    uintptr_t value;
+    void* value;
 };
-const uintptr_option uintptr_empty = { true };
+const void_option void_empty = { true };
 
 typedef struct td_char_option char_option;
 struct td_char_option {
@@ -61,15 +61,15 @@ const double_option double_empty = { true };
 
 #define sjs_object_typeId 1
 #define sjs_class_i32_typeId 2
-#define sji_bar_typeId 3
-#define sji_foo_typeId 4
-#define sjs_class_i32_heap_typeId 5
+#define sjs_class_i32_heap_typeId 3
+#define sji_bar_typeId 4
+#define sji_foo_typeId 5
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_class_i32 sjs_class_i32;
+typedef struct td_sjs_class_i32_heap sjs_class_i32_heap;
 typedef struct td_sji_bar sji_bar;
 typedef struct td_sji_foo sji_foo;
-typedef struct td_sjs_class_i32_heap sjs_class_i32_heap;
 
 struct td_sjs_object {
     intptr_t _refCount;
@@ -77,6 +77,10 @@ struct td_sjs_object {
 
 struct td_sjs_class_i32 {
     int structsNeedAValue;
+};
+
+struct td_sjs_class_i32_heap {
+    intptr_t _refCount;
 };
 
 struct td_sji_bar {
@@ -93,10 +97,6 @@ struct td_sji_foo {
     void (*destroy)(void* _this);
     sjs_object* (*asInterface)(sjs_object* _this, int typeId);
     void (*test1)(void* _parent, int32_t* _return);
-};
-
-struct td_sjs_class_i32_heap {
-    intptr_t _refCount;
 };
 
 sjs_class_i32_heap* sjt_cast1;

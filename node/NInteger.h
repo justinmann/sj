@@ -39,6 +39,7 @@ public:
 private:
     NIT type;
     string strValue;
+    int strBase;
     int32_t value;
     bool hasValue;
 };

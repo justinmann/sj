@@ -58,6 +58,16 @@ mat4(
         )
     }
 
+
+    multiplyVec4(v : 'vec4) {
+        vec4(
+            m00 * v.x + m10 * v.y + m20 * v.z + m30 * v.w
+            m01 * v.x + m11 * v.y + m21 * v.z + m31 * v.w
+            m02 * v.x + m12 * v.y + m22 * v.z + m32 * v.w
+            m03 * v.x + m13 * v.y + m23 * v.z + m33 * v.w
+        )
+    }
+
     invert() {
         t : mat4(
            m00 : m12*m23*m31 - m13*m22*m31 + m13*m21*m32 - m11*m23*m32 - m12*m21*m33 + m11*m22*m33
@@ -104,6 +114,10 @@ mat4(
             m32 : m23
             m33 : m33
         )
+    }
+
+    toString() {
+        "[[" + m00.toString() + " " + m01.toString() + " " + m02.toString() + " " + m03.toString() + "] [" + m10.toString() + " " + m11.toString() + " " + m12.toString() + " " + m13.toString() + "] [" + m20.toString() + " " + m21.toString() + " " + m22.toString() + " " + m23.toString() + "] [" + m30.toString() + " " + m31.toString() + " " + m32.toString() + " " + m33.toString() + "]"
     }
 ) { this }
 

@@ -50,11 +50,21 @@ f32_random()'f32 {
 
 f32_toString(val : 'f32) {
 	count := 0
-	data := 0 as ptr
+	data := nullptr
 	--c--
-	sjv_data = (uintptr_t)malloc(sizeof(char) * 50);
+	sjv_data = malloc(sizeof(char) * 50);
 	snprintf((char*)sjv_data, 50, "%f", val);
 	sjv_count = strlen((char*)sjv_data);
 	--c--
-	string(count := count, data := array!char(size := count + 1, data := data))
+	string(count := count, data := array!char(dataSize := count + 1, count := count + 1, data := data))
+}
+
+f32_compare(l : 'f32, r : 'f32) {
+	if l == r {
+		0
+	} else if l < r {
+		-1
+	} else {
+		1
+	}
 }

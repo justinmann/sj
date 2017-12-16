@@ -213,6 +213,9 @@ string CInterfaceMethod::getCDestroyFunctionName() {
     return "";
 }
 
+void CInterfaceMethod::transpileStructDefinition(Compiler* compiler, TrOutput* trOutput) {
+}
+
 void CInterfaceMethod::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 }
 
@@ -251,7 +254,7 @@ void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> callerSc
             assert(compiler->errors.size() > 0);
             return;
         }
-        auto argStoreValue = trBlock->createTempStoreVariable(loc, callerScope, argType->typeMode == CTM_Heap ? argType : argType->getLocalValueType(), "interfaceParam");
+        auto argStoreValue = trBlock->createTempStoreVariable(calleeLoc, callerScope, argType->typeMode == CTM_Heap ? argType : argType->getLocalValueType(), "interfaceParam");
         parameterVar->transpile(compiler, trOutput, trBlock, isDefaultAssignment ? nullptr : thisValue, argStoreValue);
         
         if (!argStoreValue->hasSetValue) {

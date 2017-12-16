@@ -1,4 +1,5 @@
-framebuffer(
+renderbuffer(
+    size : size()
     id : 0u
 ) { 
     this 
@@ -10,7 +11,7 @@ framebuffer(
 } destroy {
     --c--
     if (_releaseGLid(_this->id)) {
-        glDeleteFramebuffers(1, &_this->id);
+        glDeleteRenderbuffers(1, &_this->id);
     }
     --c--
 }

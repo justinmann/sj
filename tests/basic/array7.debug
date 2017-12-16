@@ -63,6 +63,63 @@ array__quickSort(left'i32:, right'i32:)'void {
   }
 }
 
+array__quickSortCallback(left'i32:, right'i32:, cb'local (:stack class, :stack class)i32:)'void {
+  i'i32 = left
+  j'i32 = right
+  pivot'stack class : array_getAt(
+    parent: this,
+    index'i32 : index
+  )
+  while i <= j{
+    while cb(
+      param0'stack class : param0,
+      param1'stack class : param1
+    ) < 0i{
+      i'i32 = i + 1i
+    }
+    while cb(
+      param0'stack class : param0,
+      param1'stack class : param1
+    ) > 0i{
+      j'i32 = j - 1i
+    }
+    if i <= j {
+      tmp'stack class : array_getAt(
+        parent: this,
+        index'i32 : index
+      )
+      array_setAt(
+        parent: this,
+        index'i32 : index,
+        item'stack class : item
+      )
+      array_setAt(
+        parent: this,
+        index'i32 : index,
+        item'stack class : item
+      )
+      i'i32 = i + 1i
+      j'i32 = j - 1i
+    }
+  }
+  if left < j {
+    array__quickSortCallback(
+      parent: this,
+      left'i32 : left,
+      right'i32 : right,
+      cb'local (:stack class, :stack class)i32 : cb
+    )
+  }
+  if i < right {
+    array__quickSortCallback(
+      parent: this,
+      left'i32 : left,
+      right'i32 : right,
+      cb'local (:stack class, :stack class)i32 : cb
+    )
+  }
+}
+
 array_getAt(index'i32:)'stack class {
   --c--
   if (index >= _parent->count || index < 0) {
@@ -119,12 +176,29 @@ array_setAt(index'i32:, item'stack class:)'void {
 }
 
 array_sort()'void {
-  array__quickSort(
-    parent: this,
-    left'i32 : left,
-    right'i32 : right
-  )
+  if parent.count > 1i {
+    array__quickSort(
+      parent: this,
+      left'i32 : left,
+      right'i32 : right
+    )
+  }
 }
+
+array_sortcb(cb'local (:stack class, :stack class)i32:)'void {
+  if parent.count > 1i {
+    array__quickSortCallback(
+      parent: this,
+      left'i32 : left,
+      right'i32 : right,
+      cb'local (:stack class, :stack class)i32 : cb
+    )
+  }
+}
+
+
+
+
 
 class_isGreater(c'stack class:)'bool {
   parent.x > c.x
@@ -1290,9 +1364,9 @@ global()'void {
   u32_maxValue'u32 : (uint32_t)4294967295uu
   i32_maxValue'i32 : -1i - 2147483647i
   i32_minValue'i32 : 2147483647i
-  emptyStringData'ptr = 0i as ptr
+  emptyStringData'ptr = 0
   --c--
-  sjv_emptyStringData = (uintptr_t)"";
+  sjv_emptyStringData = "";
   --c--
   a'stack array_class : [array_initAt(
     parent: this,
@@ -1329,8 +1403,9 @@ global()'void {
     parent: this,
     data'stack string : data
   )
-  array_sort(
-    parent: this
+  array_sortcb(
+    parent: this,
+    cb'local (:stack class, :stack class)i32 : cb
   )
   anon1_writeLine(
     parent: this,

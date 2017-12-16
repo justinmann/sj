@@ -4,6 +4,10 @@ light(
 	specColor : color(1.0f, 1.0f, 1.0f, 1.0f)
 ) { this }
 
+model_hasAlpha(m : '#model) {
+	m.hasAlpha
+}
+
 scene3dElement #element (
 	children : array!#model()
 	camera := vec3(0.0f, 0.0f, -5.0f)
@@ -36,34 +40,31 @@ scene3dElement #element (
 	render(scene : 'scene2d)'void {
 		for i : 0 to children.count {
 			child : children[i]
-			child.setWorld(world)
+			child.update(_rect, projection, view, world, light)
 		}
 
-		--c--
-	    glEnable( GL_DEPTH_TEST );
-		--c--
+	    glEnable(glFeature.GL_DEPTH_TEST)
+
+	    a : list!#model()
 
 		for i : 0 to children.count {
 			child : children[i]
-			child.render(_rect, projection, view, light)
+			child.renderOrQueue(a)
 		}
 
-		--c--
-	    glDisable( GL_DEPTH_TEST );
-		--c--
+		a.sortcb(model_zsort)
+		for i : 0 toReverse a.count {
+			child : a[i]
+			child.render()
+		}
+
+	    glDisable(glFeature.GL_DEPTH_TEST)
 	}
 
 	fireMouseEvent(point: 'point, eventId : 'i32)'void {
 		for i : 0 to children.count {
 			child : children[i]
-			child.fireMouseEvent(_rect, projection, view, point, eventId)
+			child.fireMouseEvent(point, eventId)
 		}
-	}
-
-	updateViewport()'void {
-		--c--
-	    glViewport(_parent->_rect.x, _parent->_rect.y, _parent->_rect.w, _parent->_rect.h);
-	    glEnable( GL_DEPTH_TEST );
-		--c--	
 	}
 ) { this }

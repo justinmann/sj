@@ -2,6 +2,21 @@ anon1()'stack anon1 {
   this
 }
 
+array!heap class(dataSize'i32:, data'ptr:, _isGlobal'bool:, count'i32:)'stack array_heap_class {
+  --c--
+  if (_this->dataSize < 0) {
+  halt("size is less than zero");
+  }
+  if (!_this->data) {
+  _this->data = malloc(_this->dataSize * sizeof(sjs_class_heap*));
+  if (!_this->data) {
+  halt("grow: out of memory\n");
+  }
+  }
+  --c--
+  this
+}
+
 array_getAt(index'i32:)'heap class {
   --c--
   if (index >= _parent->count || index < 0) {
@@ -12,31 +27,26 @@ array_getAt(index'i32:)'heap class {
   --c--
 }
 
-array_grow(new_size'i32:)'void {
+array_grow(newSize'i32:)'stack array_heap_class {
+  newData'ptr = 0
   --c--
-  if (_parent->dataSize != new_size) {
-  if (new_size < _parent->dataSize) {
-  halt("grow: new size smaller than old _parent->dataSize %d:%d\n", new_size, _parent->dataSize);
+  if (_parent->dataSize != newSize) {
+  if (newSize < _parent->dataSize) {
+  halt("grow: new size smaller than old _parent->dataSize %d:%d\n", newSize, _parent->dataSize);
   }
-  if (_parent->_isGlobal) {
-  _parent->_isGlobal = false;
-  sjs_class_heap** p = (sjs_class_heap**)_parent->data;
-  _parent->data = (uintptr_t)malloc(new_size * sizeof(sjs_class_heap*));
+  sjv_newData = malloc(newSize * sizeof(sjs_class_heap*));
   if (!_parent->data) {
   halt("grow: out of memory\n");
   }
-  memcpy((void*)_parent->data, p, _parent->dataSize * sizeof(sjs_class_heap*));
-  } else {
-  _parent->data = (uintptr_t)realloc((void*)_parent->data, new_size * sizeof(sjs_class_heap*));
-  if (!_parent->data) {
-  halt("grow: out of memory\n");
-  }
-  memset((sjs_class_heap**)_parent->data + _parent->dataSize, 0, (new_size - _parent->dataSize) * sizeof(sjs_class_heap*));
-  }
-  _parent->dataSize = new_size;
+  memcpy(sjv_newData, _parent->data, _parent->dataSize * sizeof(sjs_class_heap*));
   }
   --c--
-  void
+  array!heap class(this = array!heap class(
+    dataSize'i32 : dataSize,
+    data'ptr : data,
+    _isGlobal'bool : _isGlobal,
+    count'i32 : count
+  ))
 }
 
 array_initAt(index'i32:, item'heap class:)'void {
@@ -59,9 +69,9 @@ list!heap class(array'stack array_heap_class=)'stack list_heap_class {
 
 list_add(item'heap class:)'void {
   if parent.array.count >= parent.array.dataSize {
-    array_grow(
+    parent.array'stack array_heap_class = array_grow(
       parent: this,
-      new_size'i32 : new_size
+      newSize'i32 : newSize
     )
     void
   }
@@ -1235,9 +1245,9 @@ global()'void {
   u32_maxValue'u32 : (uint32_t)4294967295uu
   i32_maxValue'i32 : -1i - 2147483647i
   i32_minValue'i32 : 2147483647i
-  emptyStringData'ptr = 0i as ptr
+  emptyStringData'ptr = 0
   --c--
-  sjv_emptyStringData = (uintptr_t)"";
+  sjv_emptyStringData = "";
   --c--
   a'stack list_heap_class : list!heap class(this = list!heap class(
     array'stack array_heap_class = array

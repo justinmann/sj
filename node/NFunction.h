@@ -111,6 +111,12 @@ public:
     vector<shared_ptr<ImportScope>> importScopes;
 };
 
+enum FunctionState {
+    NOTSTARTED,
+    STARTED,
+    DONE
+};
+
 class CFunction : public CBaseFunction, public enable_shared_from_this<CFunction> {
 public:
     CFunction(vector<pair<string, vector<string>>>& importNamespaces, weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, vector<shared_ptr<NCCode>> ccodes);
@@ -139,6 +145,7 @@ public:
     pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(vector<string> packageNamespace, string name);
     shared_ptr<CType> getVarType(Compiler* compiler, string name, bool isOption);
     shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
+    void transpileStructDefinition(Compiler* compiler, TrOutput* trOutput);
     void transpileDefinition(Compiler* compiler, TrOutput* trOutput);
     void transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<CVar> parentVar, CLoc& calleeLoc, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode returnMode);
     void dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level, CTypeMode returnMode);
@@ -163,7 +170,8 @@ private:
     shared_ptr<CTypeName> _returnTypeName;
     shared_ptr<CTypeNameList> _interfaceTypeNames;
     bool _hasInitializedInterfaces;
-    bool _hasTranspileDefinitions;
+    FunctionState _hasTranspileDefinitions;
+    FunctionState _hasTranspileStructDefinitions;
     bool _isReturnThis;
     shared_ptr<CTypes> _thisTypes;
     map<CTypeMode, CFunctionData> _data;

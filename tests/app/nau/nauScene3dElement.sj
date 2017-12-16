@@ -28,21 +28,25 @@ nauScene3dElement #element (
 	render(scene : 'scene2d)'void {
 		for i : 0 to children.count {
 			child : children[i]
-			child.setWorld(world)
+			child.update(_rect, projection, view, world, light)
 		}
 
-		--c--
-	    glEnable( GL_DEPTH_TEST );
-		--c--
+	    glEnable(glFeature.GL_DEPTH_TEST)
+
+	    a : list!#model()
 
 		for i : 0 to children.count {
 			child : children[i]
-			child.render(_rect, projection, view, light)
+			child.renderOrQueue(a)
 		}
 
-		--c--
-	    glDisable( GL_DEPTH_TEST );
-		--c--
+		a.sortcb(model_zsort)
+		for i : 0 to a.count {
+			child : a[i]
+			child.render()
+		}
+
+	    glDisable(glFeature.GL_DEPTH_TEST)
 	}
 
 	_isDragging := false
@@ -73,14 +77,7 @@ nauScene3dElement #element (
 
 		for i : 0 to children.count {
 			child : children[i]
-			child.fireMouseEvent(_rect, projection, view, point, eventId)
+			child.fireMouseEvent(point, eventId)
 		}
-	}
-
-	updateViewport()'void {
-		--c--
-	    glViewport(_parent->_rect.x, _parent->_rect.y, _parent->_rect.w, _parent->_rect.h);
-	    glEnable( GL_DEPTH_TEST );
-		--c--	
 	}
 ) { this }

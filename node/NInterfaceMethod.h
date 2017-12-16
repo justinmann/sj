@@ -73,6 +73,7 @@ public:
     string getCCopyFunctionName();
     string getCDestroyFunctionName();
 
+    void transpileStructDefinition(Compiler* compiler, TrOutput* trOutput);
     void transpileDefinition(Compiler* compiler, TrOutput* trOutput);
     void transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<CVar> parentVar, CLoc& calleeLoc, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode returnMode);
     void dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level, CTypeMode returnMode);

@@ -15,4 +15,12 @@ color(
 	asString() {
 		"#" + convert.i32toString((a * 255.0f) as i32, 16, 2) + convert.i32toString((r * 255.0f) as i32, 16, 2) + convert.i32toString((g * 255.0f) as i32, 16, 2) + convert.i32toString((b * 255.0f) as i32, 16, 2)
 	}
+
+	asVec3() {
+		vec3(r, g, b)
+	}
+
+	asVec4() {
+		vec4(r, g, b, a)
+	}
 ) { this }

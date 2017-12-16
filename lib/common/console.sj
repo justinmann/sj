@@ -16,7 +16,7 @@ console : ^(
 	}
 
 	readLine()'string { 
-		data := 0 as ptr
+		data := nullptr
 		size := 1024
 		--c--
 	    char* str = (char*)malloc(size);
@@ -36,7 +36,7 @@ console : ^(
 
 		str[index] = 0;
 	    index++;
-	    data = (uintptr_t)str;
+	    data = (void*)str;
 	    size = index;
 		--c--
 

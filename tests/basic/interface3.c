@@ -1126,12 +1126,12 @@ struct td_uint64_option {
 };
 const uint64_option uint64_empty = { true };
 
-typedef struct td_uintptr_option uintptr_option;
-struct td_uintptr_option {
+typedef struct td_void_option void_option;
+struct td_void_option {
     bool isEmpty;
-    uintptr_t value;
+    void* value;
 };
-const uintptr_option uintptr_empty = { true };
+const void_option void_empty = { true };
 
 typedef struct td_char_option char_option;
 struct td_char_option {
@@ -1168,23 +1168,23 @@ pointer* g_pointers = 0;
 #define sjs_anon1_typeId 2
 #define sjs_anon1_heap_typeId 3
 #define sjs_class_typeId 4
-#define sjs_array_char_typeId 5
-#define sjs_array_char_heap_typeId 6
-#define sjs_string_typeId 7
-#define sjs_string_heap_typeId 8
-#define sji_foo_typeId 9
-#define sjs_class_heap_typeId 10
+#define sjs_class_heap_typeId 5
+#define sjs_array_char_typeId 6
+#define sjs_array_char_heap_typeId 7
+#define sjs_string_typeId 8
+#define sjs_string_heap_typeId 9
+#define sji_foo_typeId 10
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_anon1 sjs_anon1;
 typedef struct td_sjs_anon1_heap sjs_anon1_heap;
 typedef struct td_sjs_class sjs_class;
+typedef struct td_sjs_class_heap sjs_class_heap;
 typedef struct td_sjs_array_char sjs_array_char;
 typedef struct td_sjs_array_char_heap sjs_array_char_heap;
 typedef struct td_sjs_string sjs_string;
 typedef struct td_sjs_string_heap sjs_string_heap;
 typedef struct td_sji_foo sji_foo;
-typedef struct td_sjs_class_heap sjs_class_heap;
 
 struct td_sjs_object {
     intptr_t _refCount;
@@ -1202,9 +1202,13 @@ struct td_sjs_class {
     int structsNeedAValue;
 };
 
+struct td_sjs_class_heap {
+    intptr_t _refCount;
+};
+
 struct td_sjs_array_char {
     int32_t dataSize;
-    uintptr_t data;
+    void* data;
     bool _isGlobal;
     int32_t count;
 };
@@ -1212,7 +1216,7 @@ struct td_sjs_array_char {
 struct td_sjs_array_char_heap {
     intptr_t _refCount;
     int32_t dataSize;
-    uintptr_t data;
+    void* data;
     bool _isGlobal;
     int32_t count;
 };
@@ -1237,16 +1241,11 @@ struct td_sji_foo {
     void (*test_heap)(void* _parent, sjs_string_heap** _return);
 };
 
-struct td_sjs_class_heap {
-    intptr_t _refCount;
-};
-
 void halt(const char * format, ...);
 void _retain(void* ptr);
 bool _release(void* ptr);
 int32_t result1;
-int32_t sjt_cast1;
-sjs_class_heap* sjt_cast2;
+sjs_class_heap* sjt_cast1;
 int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_negate1;
@@ -1254,7 +1253,7 @@ sji_foo* sjt_parent1;
 sji_foo* sjv_a;
 sjs_string_heap* sjv_bob;
 sjs_anon1 sjv_console;
-uintptr_t sjv_emptyStringData;
+void* sjv_emptyStringData;
 float sjv_f32_pi;
 int32_t sjv_i32_maxValue;
 int32_t sjv_i32_minValue;
@@ -1331,23 +1330,23 @@ void sjf_anon1_heap(sjs_anon1_heap* _this) {
 }
 
 void sjf_array_char(sjs_array_char* _this) {
-#line 272 "lib/common/array.sj"
+#line 266 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 272
+#line 266
         halt("size is less than zero");
-#line 272
+#line 266
     }
-#line 272
+#line 266
     if (!_this->data) {
-#line 272
-        _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(char));
-#line 272
+#line 266
+        _this->data = malloc(_this->dataSize * sizeof(char));
+#line 266
         if (!_this->data) {
-#line 272
+#line 266
             halt("grow: out of memory\n");
-#line 272
+#line 266
         }
-#line 272
+#line 266
     }
 }
 
@@ -1360,47 +1359,47 @@ void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
     _this->_isGlobal = _from->_isGlobal;
 #line 1
     _this->count = _from->count;
-#line 286
+#line 280
     _this->data = _from->data;
-#line 286
+#line 280
     if (!_this->_isGlobal && _this->data) {
-#line 286
-        _retain((void*)_this->data);
-#line 286
+#line 280
+        _retain(_this->data);
+#line 280
     }
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
-#line 293 "lib/common/array.sj"
+#line 287 "lib/common/array.sj"
     if (!_this->_isGlobal && _this->data) {
-#line 293
-        if (_release((void*)_this->data)) {
-#line 293
+#line 287
+        if (_release(_this->data)) {
+#line 287
             free((char*)_this->data);
-#line 293
+#line 287
         }
-#line 293
+#line 287
     }
 }
 
 void sjf_array_char_heap(sjs_array_char_heap* _this) {
-#line 272 "lib/common/array.sj"
+#line 266 "lib/common/array.sj"
     if (_this->dataSize < 0) {
-#line 272
+#line 266
         halt("size is less than zero");
-#line 272
+#line 266
     }
-#line 272
+#line 266
     if (!_this->data) {
-#line 272
-        _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(char));
-#line 272
+#line 266
+        _this->data = malloc(_this->dataSize * sizeof(char));
+#line 266
         if (!_this->data) {
-#line 272
+#line 266
             halt("grow: out of memory\n");
-#line 272
+#line 266
         }
-#line 272
+#line 266
     }
 }
 
@@ -1470,7 +1469,7 @@ void sjf_class_test(sjs_class* _parent, sjs_string* _return) {
 #line 9
     _return->data.dataSize = 2;
 #line 9
-    _return->data.data = (uintptr_t)sjg_string1;
+    _return->data.data = (void*)sjg_string1;
 #line 9
     _return->data._isGlobal = true;
 #line 9
@@ -1489,7 +1488,7 @@ void sjf_class_test_heap(sjs_class* _parent, sjs_string_heap** _return) {
 #line 9
     (*_return)->data.dataSize = 2;
 #line 9
-    (*_return)->data.data = (uintptr_t)sjg_string2;
+    (*_return)->data.data = (void*)sjg_string2;
 #line 9
     (*_return)->data._isGlobal = true;
 #line 9
@@ -1553,19 +1552,17 @@ int main(int argc, char** argv) {
 #line 4
     sjv_i32_minValue = 2147483647;
 #line 1 "lib/common/string.sj"
-    sjt_cast1 = 0;
-#line 1
-    sjv_emptyStringData = (uintptr_t)sjt_cast1;
+    sjv_emptyStringData = 0;
 #line 2
-    sjv_emptyStringData = (uintptr_t)"";
+    sjv_emptyStringData = "";
 #line 2
-    sjt_cast2 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
+    sjt_cast1 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
 #line 2
-    sjt_cast2->_refCount = 1;
+    sjt_cast1->_refCount = 1;
 #line 2
-    sjf_class_heap(sjt_cast2);
+    sjf_class_heap(sjt_cast1);
 #line 3 "interface3.sj"
-    sjv_a = (sji_foo*)sjf_class_heap_as_sji_foo(sjt_cast2);
+    sjv_a = (sji_foo*)sjf_class_heap_as_sji_foo(sjt_cast1);
 #line 4
     sjt_parent1 = sjv_a;
 #line 4
@@ -1580,9 +1577,9 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    sjt_cast2->_refCount--;
-    if (sjt_cast2->_refCount <= 0) {
-        sjf_class_destroy((sjs_class*)(((char*)sjt_cast2) + sizeof(intptr_t)));
+    sjt_cast1->_refCount--;
+    if (sjt_cast1->_refCount <= 0) {
+        sjf_class_destroy((sjs_class*)(((char*)sjt_cast1) + sizeof(intptr_t)));
     }
     sjv_a->_refCount--;
     if (sjv_a->_refCount <= 0) {

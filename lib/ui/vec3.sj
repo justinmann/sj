@@ -9,13 +9,14 @@ vec3(
 
 	interpolate(v : 'vec3, percent : 'f32) {
 		vec3(
-			x : x * (1.0f - percent) + v.x * percent,
-			y : y * (1.0f - percent) + v.y * percent,
-			z : z * (1.0f - percent) + v.z * percent)
+			x : x * (1.0f - percent) + v.x * percent
+			y : y * (1.0f - percent) + v.y * percent
+			z : z * (1.0f - percent) + v.z * percent
+		)
 	}
 
 	toString() {
-		"" + convert.f32toString(x) + ", " + convert.f32toString(y) + ", " + convert.f32toString(z)
+		x.toString() + ", " + y.toString() + ", " + z.toString()
 	}
 
 	add(v : 'vec3) {
@@ -45,9 +46,9 @@ vec3(
 
 	cross(v : 'vec3) {
     	vec3(
-    		y * v.z - z * v.y;
-    		z * v.x - x * v.z;
-    		x * v.y - y * v.x;	
+    		y * v.z - z * v.y
+    		z * v.x - x * v.z
+       		x * v.y - y * v.x
     	)
 	}
 

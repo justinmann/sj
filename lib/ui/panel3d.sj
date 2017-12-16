@@ -1,27 +1,35 @@
 panel3d #model(
-	world : mat4_identity()
+	model : mat4_identity()
 	children : array!#model()
 
-	setWorld(world_ : 'mat4)'void {
-		totalWorld : world_ * world 
+	update(sceneRect : 'rect, projection : 'mat4, view : 'mat4, world : 'mat4, light : 'light)'void {
+		childWorld : world * model 
 		for i : 0 to children.count {
 			c : children[i]
-			c.setWorld(totalWorld)
+			c.update(sceneRect, projection, view, childWorld, light)
 		}
 		void
 	}
 
-	render(sceneRect : 'rect, projection : 'mat4, view : 'mat4, light : 'light)'void {
+	getZ() {
+		0.0f
+	}
+
+	renderOrQueue(zqueue : 'list!#model)'void {
 		for i : 0 to children.count {
 			c : children[i]
-			c.render(sceneRect, projection, view, light)
+			c.renderOrQueue(zqueue)
 		}
 	}
 
-	fireMouseEvent(sceneRect : 'rect, projection : 'mat4, view : 'mat4, point: 'point, eventId : 'i32)'void {
+	render()'void {
+
+	}
+
+	fireMouseEvent(point: 'point, eventId : 'i32)'void {
 		for i : 0 to children.count {
 			c : children[i]
-			c.fireMouseEvent(sceneRect, projection, view, point, eventId)
+			c.fireMouseEvent(point, eventId)
 		}
 	}
 ) { this }

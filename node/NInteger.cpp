@@ -36,7 +36,12 @@ void CConstantVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, strin
 }
 
 
-NInteger::NInteger(CLoc loc, const char* value_) : NVariableBase(NodeType_Integer, loc), strValue(value_), hasValue(false) {
+NInteger::NInteger(CLoc loc, const char* value_) : NVariableBase(NodeType_Integer, loc), strValue(value_), hasValue(false), strBase(10) {
+    if (strValue.size() > 2 && strValue[0] == '0' && strValue[1] == 'x') {
+        strBase = 16;
+        strValue = strValue.substr(2, strValue.size() - 2);
+    }
+
     if (strValue.back() == 'i') {
         type = NIT_I32;
         strValue = strValue.substr(0, strValue.size() - 1);
@@ -63,7 +68,7 @@ shared_ptr<CVar> NInteger::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
         if (type == NIT_I32) {
             char* e;
             errno = 0;
-            auto v = strtol(strValue.c_str(), &e, 10);
+            auto v = strtol(strValue.c_str(), &e, strBase);
             if (ERANGE == errno || v < INT32_MIN || v > INT32_MAX) {
                 compiler->addError(loc, CErrorCode::InvalidNumber, "i32 '%s' is out range", strValue.c_str());
                 return nullptr;
@@ -86,7 +91,7 @@ shared_ptr<CVar> NInteger::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
         else if (type == NIT_U32) {
             char* e;
             errno = 0;
-            auto v = strtoul(strValue.c_str(), &e, 10);
+            auto v = strtoul(strValue.c_str(), &e, strBase);
             if (ERANGE == errno || v > UINT32_MAX) {
                 compiler->addError(loc, CErrorCode::InvalidNumber, "u32 '%s' is out range", strValue.c_str());
                 return nullptr;
@@ -104,7 +109,7 @@ shared_ptr<CVar> NInteger::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
         else if (type == NIT_I64) {
             char* e;
             errno = 0;
-            auto v = strtoll(strValue.c_str(), &e, 10);
+            auto v = strtoll(strValue.c_str(), &e, strBase);
             if (ERANGE == errno) {
                 compiler->addError(loc, CErrorCode::InvalidNumber, "i64 '%s' is out range", strValue.c_str());
                 return nullptr;
@@ -127,7 +132,7 @@ shared_ptr<CVar> NInteger::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
         else if (type == NIT_U64) {
             char* e;
             errno = 0;
-            auto v = strtoull(strValue.c_str(), &e, 10);
+            auto v = strtoull(strValue.c_str(), &e, strBase);
             if (ERANGE == errno) {
                 compiler->addError(loc, CErrorCode::InvalidNumber, "u64 '%s' is out range", strValue.c_str());
                 return nullptr;

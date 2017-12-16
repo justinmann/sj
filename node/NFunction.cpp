@@ -166,7 +166,8 @@ _isInGetType(false),
 _returnTypeName(nullptr),
 _interfaceTypeNames(nullptr),
 _hasInitializedInterfaces(false),
-_hasTranspileDefinitions(false),
+_hasTranspileDefinitions(NOTSTARTED),
+_hasTranspileStructDefinitions(NOTSTARTED),
 _isReturnThis(false),
 _hasHeapThis(false),
 _hasHeapParent(false),
@@ -270,11 +271,105 @@ bool CFunction::initBlocks(Compiler* compiler, shared_ptr<NFunction> node) {
     return true;
 }
 
-void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
-    if (_hasTranspileDefinitions)
+void CFunction::transpileStructDefinition(Compiler* compiler, TrOutput* trOutput) {
+    if (_hasTranspileStructDefinitions == DONE) {
         return;
+    }
+    else if (_hasTranspileStructDefinitions == STARTED) {
+        assert(false);
+    }
+
+    _hasTranspileStructDefinitions = STARTED;
+
+    for (auto returnMode : functionReturnModes) {
+        if (hasThis) {
+            auto calleeVar = getThisVar(compiler, returnMode);
+            auto calleeScope = getScope(compiler, returnMode);
+
+            // Create struct
+            string stackStructName = getCStructName(CTM_Stack);
+            if (trOutput->structs.find(stackStructName) == trOutput->structs.end()) {
+                bool hasValues = false;
+                auto argTypes = getCTypeList(compiler, returnMode);
+                for (auto argType : *argTypes) {
+                    hasValues = true;
+                    stringstream ss;
+                    ss << argType.second->cname;
+
+                    // C requires that inline structs be defined before use
+                    if (!argType.second->parent.expired()) {
+                        argType.second->parent.lock()->transpileStructDefinition(compiler, trOutput);
+                    }
+                    else if (!argType.second->callback.expired()) {
+                        argType.second->callback.lock()->transpileStructDefinition(compiler, trOutput);
+                    }
+
+                    if (argType.second->typeMode == CTM_Stack) {
+                    }
+                    else if (argType.second->typeMode != CTM_Heap && argType.second->typeMode != CTM_Value && argType.first.compare("_parent") != 0) {
+                        compiler->addError(loc, CErrorCode::InvalidType, "var '%s' is local which is not allowed", argType.first.c_str());
+                    }
+                    ss << " " << argType.first;
+                    trOutput->structs[stackStructName].push_back(ss.str());
+                }
+
+                for (auto ccode : ccodes) {
+                    ccode->addToStruct(compiler, calleeScope, trOutput->structs[stackStructName]);
+                }
+
+                if (!hasValues) {
+                    trOutput->structs[stackStructName].push_back("int structsNeedAValue");
+                }
+
+                trOutput->structOrder.push_back(stackStructName);
+            }
+
+            if (calleeVar->getTypeMode() == CTM_Heap) {
+                string heapStructName = getCStructName(CTM_Heap);
+                if (trOutput->structs.find(heapStructName) == trOutput->structs.end()) {
+                    trOutput->structs[heapStructName].push_back("intptr_t _refCount");
+
+                    auto argTypes = getCTypeList(compiler, returnMode);
+                    for (auto argType : *argTypes) {
+                        stringstream ss;
+                        ss << argType.second->cname;
+
+                        // C requires that inline structs be defined before use
+                        if (!argType.second->parent.expired()) {
+                            argType.second->parent.lock()->transpileStructDefinition(compiler, trOutput);
+                        }
+                        else if (!argType.second->callback.expired()) {
+                            argType.second->callback.lock()->transpileStructDefinition(compiler, trOutput);
+                        }
+
+                        if (argType.second->typeMode == CTM_Stack) {
+                        }
+                        else if (argType.second->typeMode != CTM_Heap && argType.second->typeMode != CTM_Value && argType.first.compare("_parent") != 0) {
+                            compiler->addError(loc, CErrorCode::InvalidType, "var '%s' is local which is not allowed", argType.first.c_str());
+                        }
+                        ss << " " << argType.first;
+                        trOutput->structs[heapStructName].push_back(ss.str());
+                    }
+
+                    for (auto ccode : ccodes) {
+                        ccode->addToStruct(compiler, calleeScope, trOutput->structs[heapStructName]);
+                    }
+
+                    trOutput->structOrder.push_back(heapStructName);
+                }
+            }
+        }
+    }
+
+    _hasTranspileStructDefinitions = DONE;
+}
+
+void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
+    if (_hasTranspileDefinitions != NOTSTARTED) {
+        return;
+    }
     
-    _hasTranspileDefinitions = true;
+    _hasTranspileDefinitions = STARTED;
 
     for (auto t : templateTypes) {
         if (!t->parent.expired()) {
@@ -284,6 +379,8 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
             t->callback.lock()->transpileDefinition(compiler, trOutput);
         }
     }
+
+    transpileStructDefinition(compiler, trOutput);
     
     for (auto returnMode : functionReturnModes) {
         auto returnType = getReturnType(compiler, returnMode);        
@@ -380,80 +477,8 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                 trFunctionBlock->definition = functionDefinition.str();
             }
 
-            // Create struct
-            string stackStructName = getCStructName(CTM_Stack);
-            if (trOutput->structs.find(stackStructName) == trOutput->structs.end()) {
-                bool hasValues = false;
-                auto argTypes = getCTypeList(compiler, returnMode);
-                for (auto argType : *argTypes) {
-                    hasValues = true;
-                    stringstream ss;
-                    ss << argType.second->cname;
-
-                    // C requires that inline structs be defined before use
-                    if (!argType.second->parent.expired()) {
-                        argType.second->parent.lock()->transpileDefinition(compiler, trOutput);
-                    }
-                    else if (!argType.second->callback.expired()) {
-                        argType.second->callback.lock()->transpileDefinition(compiler, trOutput);
-                    }
-                    
-                    if (argType.second->typeMode == CTM_Stack) {
-                    }
-                    else if (argType.second->typeMode != CTM_Heap && argType.second->typeMode != CTM_Value && argType.first.compare("_parent") != 0) {
-                        compiler->addError(loc, CErrorCode::InvalidType, "var '%s' is local which is not allowed", argType.first.c_str());
-                    }
-                    ss << " " << argType.first;
-                    trOutput->structs[stackStructName].push_back(ss.str());
-                }
-
-                for (auto ccode : ccodes) {
-                    ccode->addToStruct(compiler, calleeScope, trOutput->structs[stackStructName]);
-                }
-
-                if (!hasValues) {
-                    trOutput->structs[stackStructName].push_back("int structsNeedAValue");
-                }
-
-                trOutput->structOrder.push_back(stackStructName);
-            }
-
-            if (calleeVar->getTypeMode() == CTM_Heap) {
-                string heapStructName = getCStructName(CTM_Heap);
-                if (trOutput->structs.find(heapStructName) == trOutput->structs.end()) {
-                    trOutput->structs[heapStructName].push_back("intptr_t _refCount");
-
-                    auto argTypes = getCTypeList(compiler, returnMode);
-                    for (auto argType : *argTypes) {
-                        stringstream ss;
-                        ss << argType.second->cname;
-
-                        // C requires that inline structs be defined before use
-                        if (!argType.second->parent.expired()) {
-                            argType.second->parent.lock()->transpileDefinition(compiler, trOutput);
-                        }
-                        else if (!argType.second->callback.expired()) {
-                            argType.second->callback.lock()->transpileDefinition(compiler, trOutput);
-                        }
-
-                        if (argType.second->typeMode == CTM_Stack) {
-                        }
-                        else if (argType.second->typeMode != CTM_Heap && argType.second->typeMode != CTM_Value && argType.first.compare("_parent") != 0) {
-                            compiler->addError(loc, CErrorCode::InvalidType, "var '%s' is local which is not allowed", argType.first.c_str());
-                        }
-                        ss << " " << argType.first;
-                        trOutput->structs[heapStructName].push_back(ss.str());
-                    }
-
-                    for (auto ccode : ccodes) {
-                        ccode->addToStruct(compiler, calleeScope, trOutput->structs[heapStructName]);
-                    }
-
-                    trOutput->structOrder.push_back(heapStructName);
-                }
-            }
-
             // Create copy function body
+            string stackStructName = getCStructName(CTM_Stack);
             string functionCopyName = getCCopyFunctionName();
             if (trOutput->functions.find(functionCopyName) == trOutput->functions.end()) {
                 auto trCopyBlock = make_shared<TrBlock>();
@@ -584,6 +609,8 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
             }
         }
     }
+
+    _hasTranspileDefinitions = DONE;
 }
 
 void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<CVar> parentVar, CLoc& calleeLoc, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode returnMode) {
@@ -1141,7 +1168,7 @@ int CFunction::getArgCount(CTypeMode returnMode) {
 shared_ptr<vector<pair<string, shared_ptr<CType>>>> CFunction::getCTypeList(Compiler* compiler, CTypeMode returnMode) {
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
     assert(!_data[returnMode].isInvalid);
-    assert(_hasTranspileDefinitions);
+    assert(_hasTranspileStructDefinitions != NOTSTARTED);
 
     if (!_data[returnMode].ctypeList) {
         _data[returnMode].ctypeList = make_shared<vector<pair<string, shared_ptr<CType>>>>();
@@ -1749,7 +1776,7 @@ shared_ptr<CVar> CScope::getCVar(Compiler* compiler, shared_ptr<CVar> dotVar, co
         }
     }
     else {
-        assert(false);
+        compiler->addError(CLoc::undefined, CErrorCode::Internal, "looking up var on non-function");
     }
     return nullptr;
 }

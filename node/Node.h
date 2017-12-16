@@ -76,6 +76,7 @@ enum NodeType {
     NodeType_MathAssignment,
     NodeType_Negate,
     NodeType_Not,
+    NodeType_NullPtr,
     NodeType_OptionDot,
     NodeType_Or,
     NodeType_Package,
@@ -129,6 +130,7 @@ enum NodeType {
 #include "NNot.h"
 #include "NNegate.h"
 #include "NOptionDot.h"
+#include "NNullPtr.h"
 #include "NOr.h"
 #include "NString.h"
 #include "NThis.h"

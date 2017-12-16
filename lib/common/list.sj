@@ -21,8 +21,16 @@ list!t(
 		array.map!new_t(cb)
 	}
 
-	filter(cb : '(:t)bool)'array!t {
-		array.filter(cb)
+	sort() {
+		array.sort()
+	}
+
+	sortcb(cb : '(:t, :t)i32) {
+		array.sortcb(cb)
+	}
+
+	filter(cb : '(:t)bool)'list!t {
+		list!t(array.filter(cb))
 	}
 
 	foldl!result(initial : 'result, cb : '(:result, :t)result)'result {
@@ -35,7 +43,7 @@ list!t(
 	
 	add(item :'t) {
 		if array.count >= array.dataSize {
-			array.grow(10.max(array.dataSize * 2))
+			array = array.grow(10.max(array.dataSize * 2))
 			void
 		}
 

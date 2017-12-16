@@ -1,8 +1,8 @@
 array!t (
-	dataSize := 0
-	data := 0 as ptr
-	_isGlobal := false
-	count := 0
+	dataSize : 0
+	data : nullptr
+	_isGlobal : false
+	count : 0
 
 	getAt(index : 'i32)'t {
 		--c--
@@ -63,9 +63,9 @@ array!t (
 	}
 
 	map!new_t(cb : '(:t)new_t)'array!new_t {
-		newData := 0 as ptr
+		newData := nullptr
 		--c--
-		sjv_newData = (uintptr_t)malloc(_parent->count * sizeof(#type(new_t)));
+		sjv_newData = malloc(_parent->count * sizeof(#type(new_t)));
 		--c--
 		for i : 0 to count {
 			newItem : cb(getAt(i))
@@ -78,10 +78,10 @@ array!t (
 	}
 
 	filter(cb : '(:t)bool)'array!t {
-		newData := 0 as ptr
+		newData := nullptr
 		newCount := 0
 		--c--
-		sjv_newData = (uintptr_t)malloc(_parent->count * sizeof(#type(t)));
+		sjv_newData = malloc(_parent->count * sizeof(#type(t)));
 		--c--
 		for i : 0 to count {
 			item : getAt(i)
@@ -112,32 +112,22 @@ array!t (
 		r
 	}
 
-	grow(new_size :' i32)'void {
+	grow(newSize :' i32)'array!t {
+		newData := nullptr
 		--c--
-		if (_parent->dataSize != new_size) {
-			if (new_size < _parent->dataSize) {
-				halt("grow: new size smaller than old _parent->dataSize %d:%d\n", new_size, _parent->dataSize);
+		if (_parent->dataSize != newSize) {
+			if (newSize < _parent->dataSize) {
+				halt("grow: new size smaller than old _parent->dataSize %d:%d\n", newSize, _parent->dataSize);
 			}
 			
-			if (_parent->_isGlobal) {
-				_parent->_isGlobal = false;
-				#type(t)* p = (#type(t)*)_parent->data;
-				_parent->data = (uintptr_t)malloc(new_size * sizeof(#type(t)));
-				if (!_parent->data) {
-					halt("grow: out of memory\n");
-				}
-				memcpy((void*)_parent->data, p, _parent->dataSize * sizeof(#type(t)));
-			} else {
-				_parent->data = (uintptr_t)realloc((void*)_parent->data, new_size * sizeof(#type(t)));
-				if (!_parent->data) {
-					halt("grow: out of memory\n");
-				}
-				memset((#type(t)*)_parent->data + _parent->dataSize, 0, (new_size - _parent->dataSize) * sizeof(#type(t)));
+			sjv_newData = malloc(newSize * sizeof(#type(t)));
+			if (!_parent->data) {
+				halt("grow: out of memory\n");
 			}
-			_parent->dataSize = new_size;
+			memcpy(sjv_newData, _parent->data, _parent->dataSize * sizeof(#type(t)));
 		}
 		--c--
-		void
+		array!t(data: newData, dataSize: newSize, count: count)
 	} 
 
 	_quickSort(left : 'i32, right : 'i32) {
@@ -202,12 +192,16 @@ array!t (
 		}
 	}
 
-	sort() {
-		_quickSort(0, count - 1)
+	sort()'void {
+		if count > 1 {
+			_quickSort(0, count - 1)
+		}
 	}
 
-	sortcb(cb : '(:t, :t)i32) {
-		_quickSortCallback(0, count - 1, cb)
+	sortcb(cb : '(:t, :t)i32)'void {
+		if count > 1 {
+			_quickSortCallback(0, count - 1, cb)
+		}
 	}
 
 	reverse() {
@@ -236,35 +230,35 @@ array!t (
 			*_return = false;
 		}
 
-		bool result = memcmp((void*)_parent->data, (void*)test->data, _parent->count * sizeof(#type(t))) == 0;
+		bool result = memcmp(_parent->data, test->data, _parent->count * sizeof(#type(t))) == 0;
 		#return(bool, result);		
 		--c--
 	}
 
 	isGreater(test :' array!t)'bool {
 		--c--
-		bool result = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) > 0;		
+		bool result = memcmp(_parent->data, test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) > 0;		
 		#return(bool, result);		
 		--c--
 	}
 
 	isGreaterOrEqual(test :' array!t)'bool {
 		--c--
-		bool result = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) >= 0;		
+		bool result = memcmp(_parent->data, test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) >= 0;		
 		#return(bool, result);		
 		--c--
 	}
 
 	isLess(test :' array!t)'bool {
 		--c--
-		bool result = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) < 0;		
+		bool result = memcmp(_parent->data, test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) < 0;		
 		#return(bool, result);		
 		--c--
 	}
 
 	isLessOrEqual(test :' array!t)'bool {
 		--c--
-		bool result = memcmp((void*)_parent->data, (void*)test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) <= 0;		
+		bool result = memcmp(_parent->data, test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(#type(t))) <= 0;		
 		#return(bool, result);		
 		--c--
 	}
@@ -275,7 +269,7 @@ array!t (
 	}
 
 	if (!_this->data) {
-		_this->data = (uintptr_t)malloc(_this->dataSize * sizeof(#type(t)));
+		_this->data = malloc(_this->dataSize * sizeof(#type(t)));
 		if (!_this->data) {
 			halt("grow: out of memory\n");
 		}
@@ -286,13 +280,13 @@ array!t (
 	--c--
 	_this->data = _from->data;
 	if (!_this->_isGlobal && _this->data) {
-		_retain((void*)_this->data);
+		_retain(_this->data);
 	}
 	--c--
 } destroy {
 	--c--
 	if (!_this->_isGlobal && _this->data) {
-		if (_release((void*)_this->data)) {
+		if (_release(_this->data)) {
 			free((#type(t)*)_this->data);
 		}
 	}

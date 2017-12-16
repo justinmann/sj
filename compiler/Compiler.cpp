@@ -42,7 +42,7 @@ Compiler::Compiler() {
     typeU64 = ctypes->stackValueType;
     types["u64"] = ctypes;
 
-    ctypes = CType::create("ptr", "uintptr_t", "(uintptr_t)0", "uintptr_option", "uintptr_empty");
+    ctypes = CType::create("ptr", "void*", "(void*)0", "void_option", "void_empty");
     typePtr = ctypes->stackValueType;
     types["ptr"] = ctypes;
 

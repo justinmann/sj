@@ -276,7 +276,7 @@ void CInterface::transpileCast(Compiler* compiler, TrOutput* trOutput, TrBlock* 
     }    
 }
 
-void CInterface::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
+void CInterface::transpileStructDefinition(Compiler* compiler, TrOutput* trOutput) {
     // Create stack struct
     string heapStructName = getCStructName(CTM_Heap);
     if (trOutput->structs.find(heapStructName) == trOutput->structs.end()) {
@@ -301,7 +301,12 @@ void CInterface::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
         }
         trOutput->structOrder.push_back(heapStructName);
     }
+}
 
+void CInterface::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
+    transpileStructDefinition(compiler, trOutput);
+
+    string heapStructName = getCStructName(CTM_Heap);
     string copyInterfaceName = "void " + getCCopyFunctionName() + "(" + heapStructName + "* _this, " + heapStructName + "* _from)";
     if (trOutput->functions.find(copyInterfaceName) == trOutput->functions.end()) {
         auto copyBlock = make_shared<TrBlock>();

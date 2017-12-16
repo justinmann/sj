@@ -1182,9 +1182,9 @@ global()'void {
   u32_maxValue'u32 : (uint32_t)4294967295uu
   i32_maxValue'i32 : -1i - 2147483647i
   i32_minValue'i32 : 2147483647i
-  emptyStringData'ptr = 0i as ptr
+  emptyStringData'ptr = 0
   --c--
-  sjv_emptyStringData = (uintptr_t)"";
+  sjv_emptyStringData = "";
   --c--
   a'stack array_class : [array_initAt(
     parent: this,

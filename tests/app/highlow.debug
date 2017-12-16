@@ -3,7 +3,7 @@ anon1()'stack anon1 {
 }
 
 anon1_readLine()'stack string {
-  data'ptr = 0i as ptr
+  data'ptr = 0
   size'i32 = 1024i
   --c--
   char* str = (char*)malloc(size);
@@ -22,7 +22,7 @@ anon1_readLine()'stack string {
   } while (ch != '\n');
   str[index] = 0;
   index++;
-  data = (uintptr_t)str;
+  data = (void*)str;
   size = index;
   --c--
   string(this = string(
@@ -1220,9 +1220,9 @@ global()'void {
   u32_maxValue'u32 : (uint32_t)4294967295uu
   i32_maxValue'i32 : -1i - 2147483647i
   i32_minValue'i32 : 2147483647i
-  emptyStringData'ptr = 0i as ptr
+  emptyStringData'ptr = 0
   --c--
-  sjv_emptyStringData = (uintptr_t)"";
+  sjv_emptyStringData = "";
   --c--
   anon1_write(
     parent: this,

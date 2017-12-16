@@ -21,7 +21,7 @@ i32_random()'i32 {
 
 i32_toString(val : 'i32, base : 10, minLength : 0) {
 	count := 0
-	data := 0 as ptr
+	data := nullptr
 	--c--
 	if (base < 2) {
 		halt("base is too small");
@@ -43,10 +43,20 @@ i32_toString(val : 'i32, base : 10, minLength : 0) {
 	if (sjv_count < minLength) {				
 	}
 
-	sjv_data = (uintptr_t)malloc(sizeof(char) * (sjv_count + 1));
-	memcpy((void*)sjv_data, &buf[i+1], sjv_count + 1);
+	sjv_data = malloc(sizeof(char) * (sjv_count + 1));
+	memcpy(sjv_data, &buf[i+1], sjv_count + 1);
 	--c--
 	string(count := count, data := array!char(dataSize := count + 1, count := count + 1, data := data))
+}
+
+i32_compare(l : 'i32, r : 'i32) {
+	if l == r {
+		0
+	} else if l < r {
+		-1
+	} else {
+		1
+	}
 }
 
 string_toI32(text : 'string)'i32 {
@@ -64,3 +74,4 @@ string_toI32(text : 'string)'i32 {
     --c--
     x
 }
+

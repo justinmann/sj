@@ -2,13 +2,13 @@ anon1()'stack anon1 {
   this
 }
 
-array!f32(dataSize'i32=, data'ptr=, _isGlobal'bool=, count'i32=)'stack array_f32 {
+array!f32(dataSize'i32:, data'ptr:, _isGlobal'bool:, count'i32:)'stack array_f32 {
   --c--
   if (_this->dataSize < 0) {
   halt("size is less than zero");
   }
   if (!_this->data) {
-  _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(float));
+  _this->data = malloc(_this->dataSize * sizeof(float));
   if (!_this->data) {
   halt("grow: out of memory\n");
   }
@@ -18,10 +18,10 @@ array!f32(dataSize'i32=, data'ptr=, _isGlobal'bool=, count'i32=)'stack array_f32
 }
 
 array_filter(cb'local (:f32)bool:)'stack array_f32 {
-  newData'ptr = 0i as ptr
+  newData'ptr = 0
   newCount'i32 = 0i
   --c--
-  sjv_newData = (uintptr_t)malloc(_parent->count * sizeof(float));
+  sjv_newData = malloc(_parent->count * sizeof(float));
   --c--
   for i : 0i to parent.count {
     item'f32 : array_getAt(
@@ -39,10 +39,10 @@ array_filter(cb'local (:f32)bool:)'stack array_f32 {
     }
   }
   array!f32(this = array!f32(
-    dataSize'i32 = dataSize,
-    data'ptr = data,
-    _isGlobal'bool = _isGlobal,
-    count'i32 = count
+    dataSize'i32 : dataSize,
+    data'ptr : data,
+    _isGlobal'bool : _isGlobal,
+    count'i32 : count
   ))
 }
 
@@ -82,9 +82,9 @@ array_initAt(index'i32:, item'i32:)'void {
 }
 
 array_map!f32(cb'local (:i32)f32:)'stack array_f32 {
-  newData'ptr = 0i as ptr
+  newData'ptr = 0
   --c--
-  sjv_newData = (uintptr_t)malloc(_parent->count * sizeof(float));
+  sjv_newData = malloc(_parent->count * sizeof(float));
   --c--
   for i : 0i to parent.count {
     newItem'f32 : cb(
@@ -96,10 +96,10 @@ array_map!f32(cb'local (:i32)f32:)'stack array_f32 {
     --c--
   }
   array!f32(this = array!f32(
-    dataSize'i32 = dataSize,
-    data'ptr = data,
-    _isGlobal'bool = _isGlobal,
-    count'i32 = count
+    dataSize'i32 : dataSize,
+    data'ptr : data,
+    _isGlobal'bool : _isGlobal,
+    count'i32 : count
   ))
 }
 
@@ -1265,9 +1265,9 @@ global()'void {
   u32_maxValue'u32 : (uint32_t)4294967295uu
   i32_maxValue'i32 : -1i - 2147483647i
   i32_minValue'i32 : 2147483647i
-  emptyStringData'ptr = 0i as ptr
+  emptyStringData'ptr = 0
   --c--
-  sjv_emptyStringData = (uintptr_t)"";
+  sjv_emptyStringData = "";
   --c--
   a'stack array_i32 : [array_initAt(
     parent: this,

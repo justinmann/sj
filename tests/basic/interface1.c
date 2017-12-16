@@ -31,12 +31,12 @@ struct td_uint64_option {
 };
 const uint64_option uint64_empty = { true };
 
-typedef struct td_uintptr_option uintptr_option;
-struct td_uintptr_option {
+typedef struct td_void_option void_option;
+struct td_void_option {
     bool isEmpty;
-    uintptr_t value;
+    void* value;
 };
-const uintptr_option uintptr_empty = { true };
+const void_option void_empty = { true };
 
 typedef struct td_char_option char_option;
 struct td_char_option {
@@ -65,11 +65,11 @@ const double_option double_empty = { true };
 #define sjs_anon2_typeId 4
 #define sjs_anon2_heap_typeId 5
 #define sjs_anon1_class_typeId 6
-#define sji_anon1_foo_typeId 7
-#define sjs_anon1_class_heap_typeId 8
+#define sjs_anon1_class_heap_typeId 7
+#define sji_anon1_foo_typeId 8
 #define sjs_anon2_class_typeId 9
-#define sji_anon2_foo_typeId 10
-#define sjs_anon2_class_heap_typeId 11
+#define sjs_anon2_class_heap_typeId 10
+#define sji_anon2_foo_typeId 11
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_anon1 sjs_anon1;
@@ -77,11 +77,11 @@ typedef struct td_sjs_anon1_heap sjs_anon1_heap;
 typedef struct td_sjs_anon2 sjs_anon2;
 typedef struct td_sjs_anon2_heap sjs_anon2_heap;
 typedef struct td_sjs_anon1_class sjs_anon1_class;
-typedef struct td_sji_anon1_foo sji_anon1_foo;
 typedef struct td_sjs_anon1_class_heap sjs_anon1_class_heap;
+typedef struct td_sji_anon1_foo sji_anon1_foo;
 typedef struct td_sjs_anon2_class sjs_anon2_class;
-typedef struct td_sji_anon2_foo sji_anon2_foo;
 typedef struct td_sjs_anon2_class_heap sjs_anon2_class_heap;
+typedef struct td_sji_anon2_foo sji_anon2_foo;
 
 struct td_sjs_object {
     intptr_t _refCount;
@@ -107,6 +107,10 @@ struct td_sjs_anon1_class {
     int structsNeedAValue;
 };
 
+struct td_sjs_anon1_class_heap {
+    intptr_t _refCount;
+};
+
 struct td_sji_anon1_foo {
     intptr_t _refCount;
     sjs_object* _parent;
@@ -115,12 +119,12 @@ struct td_sji_anon1_foo {
     void (*test1)(void* _parent, int32_t* _return);
 };
 
-struct td_sjs_anon1_class_heap {
-    intptr_t _refCount;
-};
-
 struct td_sjs_anon2_class {
     int structsNeedAValue;
+};
+
+struct td_sjs_anon2_class_heap {
+    intptr_t _refCount;
 };
 
 struct td_sji_anon2_foo {
@@ -129,10 +133,6 @@ struct td_sji_anon2_foo {
     void (*destroy)(void* _this);
     sjs_object* (*asInterface)(sjs_object* _this, int typeId);
     void (*test2)(void* _parent, int32_t* _return);
-};
-
-struct td_sjs_anon2_class_heap {
-    intptr_t _refCount;
 };
 
 sjs_anon1_class_heap* sjt_cast1;

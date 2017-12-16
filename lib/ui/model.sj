@@ -1,39 +1,68 @@
 #model(
-	setWorld(world : 'mat4)'void
-	render(sceneRect : 'rect, projection : 'mat4, view : 'mat4, light : 'light)'void
-	fireMouseEvent(sceneRect : 'rect, projection : 'mat4, view : 'mat4, point: 'point, eventId : 'i32)'void
+	update(sceneRect : 'rect, projection : 'mat4, view : 'mat4, world : 'mat4, light : 'light)'void
+	getZ()'f32
+	renderOrQueue(zqueue : 'list!#model)'void
+	render()'void
+	fireMouseEvent(point: 'point, eventId : 'i32)'void
 )
+
+model_zsort(l : '#model, r : '#model) {
+	f32_compare(l.getZ(), r.getZ())
+}
 
 model #model (
 	vertexBuffer : 'vertexBuffer!vertex_location_texture_normal
 	shader : 'shader
 	texture : 'texture
-	scale : 1.0f
+	model : mat4_identity()
 	center : vec3()
-	world : mat4_identity()
-	_parentWorld := mat4()
+	hasAlpha : false
+	id : string()
+	_projection := mat4()
+	_view := mat4()
+	_world := mat4()
+	_light := light()
+	_projectedCenter := vec3()
 
-	setWorld(world : 'mat4)'void {
-		_parentWorld = copy world
+	update(sceneRect : 'rect, projection : 'mat4, view : 'mat4, world : 'mat4, light : 'light)'void {
+		_projection = copy projection
+		_view = copy view
+		_world = copy world
+		t : _view * _world * model
+		t2 : t.multiplyVec4(vec4(center.x, center.y, center.z, 1.0f))
+		_projectedCenter = vec3(t2.x / t2.w, t2.y / t2.w, t2.z / t2.w)
+		_light = copy light
 		void
 	}
 
-	render(sceneRect : 'rect, projection : 'mat4, view : 'mat4, light : 'light)'void {
-		totalWorld : _parentWorld * world
-		viewWorld : view * totalWorld
+	getZ() {
+		_projectedCenter.z
+	}
+
+	renderOrQueue(zqueue : 'list!#model) {
+		if hasAlpha {
+			zqueue.add(heap parent as #model)
+		} else {
+			render()
+		}
+	}
+
+	render()'void {
+		world : _world * model
+		viewWorld : _view * world
 		normalMat : viewWorld.invert().transpose()
-		--c--
-        glUseProgram(_parent->shader.id);
-        glBindTexture(GL_TEXTURE_2D, _parent->texture.id);
-        glUniformMatrix4fv(glGetUniformLocation(_parent->shader.id, "viewModel" ), 1, 0, (GLfloat*)&sjv_viewWorld);
-        glUniformMatrix4fv(glGetUniformLocation(_parent->shader.id, "normalMat" ), 1, 0, (GLfloat*)&sjv_normalMat);
-        glUniformMatrix4fv(glGetUniformLocation(_parent->shader.id, "projection" ), 1, 0, (GLfloat*)projection);
-        glUniform3fv(glGetUniformLocation(_parent->shader.id, "lightPos" ), 1, (GLfloat*)&light->pos);
-        glUniform3fv(glGetUniformLocation(_parent->shader.id, "diffuseColor" ), 1, (GLfloat*)&light->diffuseColor);
-        glUniform3fv(glGetUniformLocation(_parent->shader.id, "specColor" ), 1, (GLfloat*)&light->specColor);	
-        --c--
+        glUseProgram(shader);
+        glBindTexture(glTexture.GL_TEXTURE_2D, texture)
+        glUniformMat4(glGetUniformLocation(shader, "viewModel"), viewWorld)
+        glUniformMat4(glGetUniformLocation(shader, "normalMat"), normalMat)
+        glUniformMat4(glGetUniformLocation(shader, "projection"), _projection)
+        glUniformVec3(glGetUniformLocation(shader, "lightPos"), _light.pos)
+        glUniformVec3(glGetUniformLocation(shader, "diffuseColor"), _light.diffuseColor.asVec3())
+        glUniformVec3(glGetUniformLocation(shader, "specColor"), _light.specColor.asVec3())
 		vertexBuffer.render()
 	}
 
-	fireMouseEvent(sceneRect : 'rect, projection : 'mat4, view : 'mat4, point: 'point, eventId : 'i32)'void {}
+	fireMouseEvent(point: 'point, eventId : 'i32)'void {
+
+	}
 ) { this }

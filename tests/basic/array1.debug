@@ -2,13 +2,13 @@ anon1()'stack anon1 {
   this
 }
 
-array!i32(dataSize'i32=, data'ptr=, _isGlobal'bool=, count'i32=)'stack array_i32 {
+array!i32(dataSize'i32:, data'ptr:, _isGlobal'bool:, count'i32:)'stack array_i32 {
   --c--
   if (_this->dataSize < 0) {
   halt("size is less than zero");
   }
   if (!_this->data) {
-  _this->data = (uintptr_t)malloc(_this->dataSize * sizeof(int32_t));
+  _this->data = malloc(_this->dataSize * sizeof(int32_t));
   if (!_this->data) {
   halt("grow: out of memory\n");
   }
@@ -1194,15 +1194,15 @@ global()'void {
   u32_maxValue'u32 : (uint32_t)4294967295uu
   i32_maxValue'i32 : -1i - 2147483647i
   i32_minValue'i32 : 2147483647i
-  emptyStringData'ptr = 0i as ptr
+  emptyStringData'ptr = 0
   --c--
-  sjv_emptyStringData = (uintptr_t)"";
+  sjv_emptyStringData = "";
   --c--
   a'stack array_i32 : array!i32(this = array!i32(
-    dataSize'i32 = dataSize,
-    data'ptr = data,
-    _isGlobal'bool = _isGlobal,
-    count'i32 = count
+    dataSize'i32 : dataSize,
+    data'ptr : data,
+    _isGlobal'bool : _isGlobal,
+    count'i32 : count
   ))
   array_setAt(
     parent: this,

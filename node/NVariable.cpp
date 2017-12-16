@@ -17,7 +17,7 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
         varScope = CScope::getScopeForType(compiler, dotVar->getType(compiler));
     }
     
-    if (dotVar && varScope && !templateTypeNames) {
+    if (dotVar && varScope && varScope->function && !templateTypeNames) {
         string nameWithUpper = name;
         nameWithUpper[0] = (char)toupper(nameWithUpper[0]);
         auto getPropertyFunction = varScope->function->getCFunction(compiler, loc, "get" + nameWithUpper, scope, nullptr, returnMode);
@@ -31,7 +31,7 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
         }
     }
 
-    if (varScope) {
+    if (varScope && varScope->function) {
         shared_ptr<CVar> cvar;
         if (!templateTypeNames) {
             cvar = varScope->getCVar(compiler, dotVar, name, dotVar ? VSM_ThisOnly : VSM_LocalThisParent);

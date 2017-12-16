@@ -149,7 +149,8 @@ struct OPTIONANDTYPELIST {
     TDEFAULT = 350,
     TPACKAGE = 351,
     TIMPORT = 352,
-    TUNDERSCORE = 353
+    TUNDERSCORE = 353,
+    TNULLPTR = 354
   };
 #endif
 

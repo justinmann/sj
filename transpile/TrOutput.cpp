@@ -77,12 +77,12 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
     stream << "const uint64_option uint64_empty = { true };\n";
     stream << "\n";
 
-    stream << "typedef struct td_uintptr_option uintptr_option;\n";
-    stream << "struct td_uintptr_option {\n";
+    stream << "typedef struct td_void_option void_option;\n";
+    stream << "struct td_void_option {\n";
     stream << "    bool isEmpty;\n";
-    stream << "    uintptr_t value;\n";
+    stream << "    void* value;\n";
     stream << "};\n";
-    stream << "const uintptr_option uintptr_empty = { true };\n";
+    stream << "const void_option void_empty = { true };\n";
     stream << "\n";
 
     stream << "typedef struct td_char_option char_option;\n";

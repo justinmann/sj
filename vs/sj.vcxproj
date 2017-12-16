@@ -175,6 +175,7 @@
     <ClInclude Include="..\node\NImport.h" />
     <ClInclude Include="..\node\NIsEmpty.h" />
     <ClInclude Include="..\node\NNegate.h" />
+    <ClInclude Include="..\node\NNullPtr.h" />
     <ClInclude Include="..\node\NOptionDot.h" />
     <ClInclude Include="..\node\NPackage.h" />
     <ClInclude Include="..\node\NParent.h" />
@@ -237,6 +238,7 @@
     <ClCompile Include="..\node\NImport.cpp" />
     <ClCompile Include="..\node\NIsEmpty.cpp" />
     <ClCompile Include="..\node\NNegate.cpp" />
+    <ClCompile Include="..\node\NNullPtr.cpp" />
     <ClCompile Include="..\node\NOptionDot.cpp" />
     <ClCompile Include="..\node\NPackage.cpp" />
     <ClCompile Include="..\node\NParent.cpp" />

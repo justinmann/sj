@@ -71,7 +71,7 @@ void CCallbackVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* tr
             trBlock->statements.push_back(TrStatement(loc, name + "._cb = (" + callback->getCBName(compiler, false, CTM_Heap) + ")" + functionName));
         }
         else {
-            compiler->addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match '%s'", destHeapReturnType->fullName.c_str(), callback->heapReturnType->fullName.c_str());
+            compiler->addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match '%s'", destStackReturnType->fullName.c_str(), callback->stackReturnType->fullName.c_str());
             return;
         }
     }
@@ -191,6 +191,10 @@ shared_ptr<CType> CCallbackFunction::getReturnType(Compiler* compiler, CTypeMode
     else {
         return callback->stackReturnType;
     }
+}
+
+void CCallbackFunction::transpileStructDefinition(Compiler* compiler, TrOutput* trOutput) {
+    assert(false);
 }
 
 void CCallbackFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
@@ -337,7 +341,7 @@ shared_ptr<CBaseFunction> CCallback::getFunction(Compiler* compiler, shared_ptr<
     return make_shared<CCallbackFunction>(shared_from_this(), callbackVar);
 }
 
-void CCallback::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
+void CCallback::transpileStructDefinition(Compiler* compiler, TrOutput* trOutput) {
     string stackStructName = getCName(CTM_Local, false);
     if (trOutput->structs.find(stackStructName) == trOutput->structs.end()) {
         trOutput->structs[stackStructName].push_back("void* _parent");
@@ -356,6 +360,10 @@ void CCallback::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
         trOutput->structs[heapStructName].push_back("void (*_destroy)(void*)");
         trOutput->structOrder.push_back(heapStructName);
     }
+}
+
+void CCallback::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
+    transpileStructDefinition(compiler, trOutput);
 }
 
 string CCallback::getCBName(Compiler* compiler, bool includeNames, CTypeMode returnMode) {

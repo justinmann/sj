@@ -1,14 +1,8 @@
-// include "lib/common/common.sj"
+include "lib/common/common.sj"
 
-/*
+
 func() {
-	convert.i32toString(1) + convert.i32toString(2)
+	1.toString() + 2.toString()
 }
 
-a : func()
-
-*/
-
-// a : "hello" + "bob"
-
-1
+console.writeLine(func())
