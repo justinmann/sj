@@ -28,8 +28,7 @@ model #model (
 		_projection = copy projection
 		_view = copy view
 		_world = copy world
-		t : _view * _world * model
-		t2 : t.multiplyVec4(vec4(center.x, center.y, center.z, 1.0f))
+		t2 : _view * _world * model * vec4(center.x, center.y, center.z, 1.0f)
 		_projectedCenter = vec3(t2.x / t2.w, t2.y / t2.w, t2.z / t2.w)
 		_light = copy light
 		void

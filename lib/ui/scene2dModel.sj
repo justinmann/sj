@@ -23,8 +23,7 @@ scene2dModel #model (
 		_view = copy view
 		_world = copy world
 		_light = copy light
-		t : _projection * _view * _world * model
-		_projectedCenter = t.multiplyVec4(vec4(center.x, center.y, center.z, 1.0f))
+		_projectedCenter = _projection * _view * _world * model * vec4(center.x, center.y, center.z, 1.0f)
 		void
 	}
 

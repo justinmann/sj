@@ -37,7 +37,7 @@ mat4(
         )
     }
 
-    multiply_f32(x : 'f32) {
+    multiplyF32(x : 'f32) {
         mat4(
             m00 * x
             m01 * x
@@ -88,7 +88,7 @@ mat4(
            m33 : m01*m12*m20 - m02*m11*m20 + m02*m10*m21 - m00*m12*m21 - m01*m10*m22 + m00*m11*m22
        )
 
-       t.multiply_f32(1.0f / determinant())
+       t * (1.0f / determinant())
     }
 
     determinant() {

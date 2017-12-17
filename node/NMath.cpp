@@ -83,32 +83,34 @@ shared_ptr<CVar> NMath::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
         return nullptr;
     }
 
-    if (!CType::isSameExceptMode(leftType, rightType)) {        
-        compiler->addError(loc, CErrorCode::TypeMismatch, "left type '%s' does not match right type '%s'", leftType->fullName.c_str(), rightType->fullName.c_str());
-        return nullptr;
-    }
-
     // Check to see if we have operator overloading
     if (!leftType->parent.expired()) {
+        string rightTypeName;
+        auto rightVar = rightSide->getVar(compiler, scope, nullptr, CTM_Undefined);
+        auto rightType = rightVar->getType(compiler);
+        if (!CType::isSameExceptMode(leftType, rightType)) {
+            rightTypeName = rightType->valueName;
+        }
+
         switch (op) {
         case NMathOp::Add:
-            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "add", nullptr, make_shared<NodeList>(rightSide)));
+            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "add" + rightTypeName, nullptr, make_shared<NodeList>(rightSide)));
             return operatorOverloadNode->getVar(compiler, scope, returnMode);
             break;
         case NMathOp::Sub:
-            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "subtract", nullptr, make_shared<NodeList>(rightSide)));
+            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "subtract" + rightTypeName, nullptr, make_shared<NodeList>(rightSide)));
             return operatorOverloadNode->getVar(compiler, scope, returnMode);
             break;
         case NMathOp::Div:
-            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "divide", nullptr, make_shared<NodeList>(rightSide)));
+            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "divide" + rightTypeName, nullptr, make_shared<NodeList>(rightSide)));
             return operatorOverloadNode->getVar(compiler, scope, returnMode);
             break;
         case NMathOp::Mul:
-            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "multiply", nullptr, make_shared<NodeList>(rightSide)));
+            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "multiply" + rightTypeName, nullptr, make_shared<NodeList>(rightSide)));
             return operatorOverloadNode->getVar(compiler, scope, returnMode);
             break;
         case NMathOp::Mod:
-            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "modulus", nullptr, make_shared<NodeList>(rightSide)));
+            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "modulus" + rightTypeName, nullptr, make_shared<NodeList>(rightSide)));
             return operatorOverloadNode->getVar(compiler, scope, returnMode);
             break;
         default:
@@ -116,6 +118,11 @@ shared_ptr<CVar> NMath::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
             return nullptr;
         }
     } else {
+        if (!CType::isSameExceptMode(leftType, rightType)) {
+            compiler->addError(loc, CErrorCode::TypeMismatch, "left type '%s' does not match right type '%s'", leftType->fullName.c_str(), rightType->fullName.c_str());
+            return nullptr;
+        }
+
         return make_shared<CMathVar>(loc, scope, op, leftVar, rightVar);
     }
 }

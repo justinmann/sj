@@ -17,6 +17,10 @@ fancyMath(
 		fancyMath(x / num.x + 1)
 	}
 
+	divideI32(num : 'i32) {
+		fancyMath(x / num + 1)
+	}
+
 	modulus(num :' fancyMath) {
 		fancyMath(x % num.x + 1)
 	}
@@ -40,6 +44,7 @@ fancyMath(
 
 a : fancyMath(1)
 b : fancyMath(2)
+ii : 2
 c := a + b
 d := a - b
 e := a * b
@@ -53,3 +58,4 @@ e ++
 f ++
 i := f.x
 j := a.bob = 12
+k := a / ii

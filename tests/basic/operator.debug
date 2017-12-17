@@ -14,6 +14,12 @@ fancymath_divide(num'stack fancymath:)'stack fancymath {
   ))
 }
 
+fancymath_dividei32(num'i32:)'stack fancymath {
+  fancymath(this = fancymath(
+    x'i32 = x
+  ))
+}
+
 fancymath_getx()'i32 {
   parent.x
 }
@@ -53,6 +59,7 @@ global()'void {
   b'stack fancymath : fancymath(this = fancymath(
     x'i32 = x
   ))
+  ii'i32 : 2i
   c'stack fancymath = fancymath_add(
     parent: this,
     num'stack fancymath : num
@@ -101,6 +108,10 @@ global()'void {
   j'i32 = fancymath_setbob(
     parent: this,
     i'i32 : i
+  )
+  k'stack fancymath = fancymath_dividei32(
+    parent: this,
+    num'i32 : num
   )
   void
 }

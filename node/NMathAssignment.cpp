@@ -29,6 +29,15 @@ shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, shared_ptr<CSco
     // Check to see if we have operator overloading
     shared_ptr<CVar> rightVar;
     if (!leftType->parent.expired()) {
+        string rightTypeName;
+        if (numberSide) {
+            auto numberVar = numberSide->getVar(compiler, scope, nullptr, CTM_Undefined);
+            auto numberType = numberVar->getType(compiler);
+            if (!CType::isSameExceptMode(leftType, numberType)) {
+                rightTypeName = numberType->valueName;
+            }
+        }
+
         shared_ptr<NDot> operatorOverloadNode;
         switch (op) {
         case NMathAssignmentOp::NMAO_Inc:
@@ -40,19 +49,19 @@ shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, shared_ptr<CSco
             rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
             break;
         case NMathAssignmentOp::NMAO_Add:
-            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "add", nullptr, make_shared<NodeList>(numberSide)));
+            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "add" + rightTypeName, nullptr, make_shared<NodeList>(numberSide)));
             rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
             break;
         case NMathAssignmentOp::NMAO_Sub:
-            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "subtract", nullptr, make_shared<NodeList>(numberSide)));
+            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "subtract" + rightTypeName, nullptr, make_shared<NodeList>(numberSide)));
             rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
             break;
         case NMathAssignmentOp::NMAO_Mul:
-            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "multiply", nullptr, make_shared<NodeList>(numberSide)));
+            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "multiply" + rightTypeName, nullptr, make_shared<NodeList>(numberSide)));
             rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
             break;
         case NMathAssignmentOp::NMAO_Div:
-            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "divide", nullptr, make_shared<NodeList>(numberSide)));
+            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "divide" + rightTypeName, nullptr, make_shared<NodeList>(numberSide)));
             rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
             break;
         default:
