@@ -1,8 +1,4 @@
---cinclude--
-#include(<stdio.h>)
---cinclude--
-
-console : ^(
+package console {
 	write(data : 'string)'void {
 		--c--
 		printf("%s", (char*)data->data.data);
@@ -42,4 +38,4 @@ console : ^(
 
 		string(count := size - 1, data := array!char(dataSize := size, data := data, count := size))
 	}
-) { this }
+}

@@ -11,7 +11,7 @@ hash![key, val] (
         }
 
         int ret;
-        k = kh_put(#type(key)_#type(val)_hash_type, _parent->_hash, val, &ret);
+        k = kh_put(#type(key)_#type(val)_hash_type, _parent->_hash, key, &ret);
         if (!ret) kh_del(#type(key)_#type(val)_hash_type, _parent->_hash, key);
         #retain(val, kh_val(_parent->_hash, k), val);
         --c--

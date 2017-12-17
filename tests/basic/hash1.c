@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef WIN32
+#include <windows.h>
+#endif
 
 typedef struct td_delete_cb delete_cb;
 typedef struct td_delete_cb_list delete_cb_list;
@@ -359,26 +362,22 @@ KHASH_INIT_TYPEDEF(int32_t_int32_t_hash_type, int32_t, int32_t)
 KHASH_INIT_TYPEDEF(int32_t_int32_t_hash_type, int32_t, int32_t)
 #endif
 #define sjs_object_typeId 1
-#define sjs_anon1_typeId 2
-#define sjs_anon1_heap_typeId 3
-#define sjs_hash_i32i32_typeId 4
-#define sjs_hash_i32i32_heap_typeId 5
+#define sjs_hash_i32i32_typeId 2
+#define sjs_hash_i32i32_heap_typeId 3
+#define sjs_array_char_typeId 4
+#define sjs_array_char_heap_typeId 5
+#define sjs_string_typeId 6
+#define sjs_string_heap_typeId 7
 
 typedef struct td_sjs_object sjs_object;
-typedef struct td_sjs_anon1 sjs_anon1;
-typedef struct td_sjs_anon1_heap sjs_anon1_heap;
 typedef struct td_sjs_hash_i32i32 sjs_hash_i32i32;
 typedef struct td_sjs_hash_i32i32_heap sjs_hash_i32i32_heap;
+typedef struct td_sjs_array_char sjs_array_char;
+typedef struct td_sjs_array_char_heap sjs_array_char_heap;
+typedef struct td_sjs_string sjs_string;
+typedef struct td_sjs_string_heap sjs_string_heap;
 
 struct td_sjs_object {
-    intptr_t _refCount;
-};
-
-struct td_sjs_anon1 {
-    int structsNeedAValue;
-};
-
-struct td_sjs_anon1_heap {
     intptr_t _refCount;
 };
 
@@ -390,6 +389,32 @@ struct td_sjs_hash_i32i32 {
 struct td_sjs_hash_i32i32_heap {
     intptr_t _refCount;
     khash_t(int32_t_int32_t_hash_type)* _hash;
+};
+
+struct td_sjs_array_char {
+    int32_t datasize;
+    void* data;
+    bool _isglobal;
+    int32_t count;
+};
+
+struct td_sjs_array_char_heap {
+    intptr_t _refCount;
+    int32_t datasize;
+    void* data;
+    bool _isglobal;
+    int32_t count;
+};
+
+struct td_sjs_string {
+    int32_t count;
+    sjs_array_char data;
+};
+
+struct td_sjs_string_heap {
+    intptr_t _refCount;
+    int32_t count;
+    sjs_array_char data;
 };
 
 void halt(const char * format, ...);
@@ -407,9 +432,14 @@ void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
 int32_t result1;
+sjs_string sjt_call1;
 int32_t sjt_functionParam1;
 int32_t sjt_functionParam2;
 int32_t sjt_functionParam3;
+sjs_string* sjt_functionParam4;
+int32_t sjt_functionParam5;
+int32_t sjt_functionParam6;
+int32_t sjt_functionParam7;
 int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_negate1;
@@ -417,17 +447,17 @@ sjs_hash_i32i32* sjt_parent1;
 sjs_hash_i32i32* sjt_parent2;
 sjs_hash_i32i32 sjv_a;
 int32_t sjv_b;
-sjs_anon1 sjv_console;
 void* sjv_emptystringdata;
 float sjv_f32_pi;
 int32_t sjv_i32_maxvalue;
 int32_t sjv_i32_minvalue;
 uint32_t sjv_u32_maxvalue;
 
-void sjf_anon1(sjs_anon1* _this);
-void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* _from);
-void sjf_anon1_destroy(sjs_anon1* _this);
-void sjf_anon1_heap(sjs_anon1_heap* _this);
+void sjf_array_char(sjs_array_char* _this);
+void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from);
+void sjf_array_char_destroy(sjs_array_char* _this);
+void sjf_array_char_heap(sjs_array_char_heap* _this);
+void sjf_debug_writeline(sjs_string* data);
 void sjf_hash_i32i32(sjs_hash_i32i32* _this);
 void sjf_hash_i32i32_copy(sjs_hash_i32i32* _this, sjs_hash_i32i32* _from);
 void sjf_hash_i32i32_destroy(sjs_hash_i32i32* _this);
@@ -436,13 +466,23 @@ void sjf_hash_i32i32_heap(sjs_hash_i32i32_heap* _this);
 void sjf_hash_i32i32_setat(sjs_hash_i32i32* _parent, int32_t key, int32_t val);
 void sjf_i32_hash(int32_t val, uint32_t* _return);
 void sjf_i32_isequal(int32_t l, int32_t r, bool* _return);
+void sjf_i32_tostring(int32_t val, int32_t base, int32_t minlength, sjs_string* _return);
+void sjf_i32_tostring_heap(int32_t val, int32_t base, int32_t minlength, sjs_string_heap** _return);
+void sjf_string(sjs_string* _this);
+void sjf_string_copy(sjs_string* _this, sjs_string* _from);
+void sjf_string_destroy(sjs_string* _this);
+void sjf_string_heap(sjs_string_heap* _this);
 void main_destroy(void);
 
 void halt(const char * format, ...) {
+    char s[1024];
     va_list args;
-    va_start (args, format);
-    vprintf (format, args);
-    va_end (args);
+    va_start(args, format);
+    vprintf(format, args);
+    va_end(args);
+    #ifdef _DEBUG
+    getchar();
+    #endif
     exit(-1);
 }
 void ptr_hash(void* p, uintptr_t* result) {
@@ -567,76 +607,89 @@ KHASH_INIT_FUNCTION(int32_t_int32_t_hash_type, int32_t, int32_t, 1, sjf_i32_hash
 #define int32_t_int32_t_hash_function
 KHASH_INIT_FUNCTION(int32_t_int32_t_hash_type, int32_t, int32_t, 1, sjf_i32_hash, sjf_i32_isequal)
 #endif
-void sjf_anon1(sjs_anon1* _this) {
+void sjf_array_char(sjs_array_char* _this) {
+    if (_this->datasize < 0) {
+        halt("size is less than zero");
+    }
+    if (!_this->data) {
+        _this->data = malloc(_this->datasize * sizeof(char));
+        if (!_this->data) {
+            halt("grow: out of memory\n");
+        }
+    }
 }
 
-void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* _from) {
+void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
+    _this->datasize = _from->datasize;
+    _this->data = _from->data;
+    _this->_isglobal = _from->_isglobal;
+    _this->count = _from->count;
+    _this->data = _from->data;
+    if (!_this->_isglobal && _this->data) {
+        ptr_retain(_this->data);
+    }
 }
 
-void sjf_anon1_destroy(sjs_anon1* _this) {
+void sjf_array_char_destroy(sjs_array_char* _this) {
+    if (!_this->_isglobal && _this->data) {
+        if (ptr_release(_this->data)) {
+            free((char*)_this->data);
+        }
+    }
 }
 
-void sjf_anon1_heap(sjs_anon1_heap* _this) {
+void sjf_array_char_heap(sjs_array_char_heap* _this) {
+    if (_this->datasize < 0) {
+        halt("size is less than zero");
+    }
+    if (!_this->data) {
+        _this->data = malloc(_this->datasize * sizeof(char));
+        if (!_this->data) {
+            halt("grow: out of memory\n");
+        }
+    }
+}
+
+void sjf_debug_writeline(sjs_string* data) {
+    printf("%s\n", (char*)data->data.data);
 }
 
 void sjf_hash_i32i32(sjs_hash_i32i32* _this) {
-#line 45 "lib/common/hash.sj"
     _this->_hash = kh_init(int32_t_int32_t_hash_type);
 }
 
 void sjf_hash_i32i32_copy(sjs_hash_i32i32* _this, sjs_hash_i32i32* _from) {
-#line 50 "lib/common/hash.sj"
     _this->_hash = _from->_hash;
-#line 51
     ptr_retain(_this->_hash);
 }
 
 void sjf_hash_i32i32_destroy(sjs_hash_i32i32* _this) {
-#line 55 "lib/common/hash.sj"
     if (ptr_release(_this->_hash)) {
-#line 56
         kh_destroy(int32_t_int32_t_hash_type, _this->_hash);
-#line 57
     }
 }
 
 void sjf_hash_i32i32_getat(sjs_hash_i32i32* _parent, int32_t key, int32_t* _return) {
-#line 22 "lib/common/hash.sj"
     khiter_t k = kh_get(int32_t_int32_t_hash_type, _parent->_hash, key);
-#line 23
     if (k == kh_end(_parent->_hash)) {
-#line 24
         halt("cannot find key");
-#line 25
     }
-#line 26
-    #line 21 "lib/common/hash.sj"
-(*_return) = kh_val(_parent->_hash, k);
+    (*_return) = kh_val(_parent->_hash, k);
 ;
 }
 
 void sjf_hash_i32i32_heap(sjs_hash_i32i32_heap* _this) {
-#line 45 "lib/common/hash.sj"
     _this->_hash = kh_init(int32_t_int32_t_hash_type);
 }
 
 void sjf_hash_i32i32_setat(sjs_hash_i32i32* _parent, int32_t key, int32_t val) {
-#line 8 "lib/common/hash.sj"
     khiter_t k = kh_get(int32_t_int32_t_hash_type, _parent->_hash, key);
-#line 9
     if (k != kh_end(_parent->_hash)) {            
-#line 10
     ;
-#line 11
 }
-#line 13
 int ret;
-#line 14
-k = kh_put(int32_t_int32_t_hash_type, _parent->_hash, val, &ret);
-#line 15
+k = kh_put(int32_t_int32_t_hash_type, _parent->_hash, key, &ret);
 if (!ret) kh_del(int32_t_int32_t_hash_type, _parent->_hash, key);
-#line 16
-#line 6 "lib/common/hash.sj"
 kh_val(_parent->_hash, k) = val;
 ;
 }
@@ -644,9 +697,7 @@ kh_val(_parent->_hash, k) = val;
 void sjf_i32_hash(int32_t val, uint32_t* _return) {
     int32_t sjt_cast1;
 
-#line 62 "lib/common/i32.sj"
     sjt_cast1 = val;
-#line 63
     (*_return) = (uint32_t)sjt_cast1;
 }
 
@@ -654,62 +705,145 @@ void sjf_i32_isequal(int32_t l, int32_t r, bool* _return) {
     int32_t sjt_compare1;
     int32_t sjt_compare2;
 
-#line 66 "lib/common/i32.sj"
     sjt_compare1 = l;
-#line 66
     sjt_compare2 = r;
-#line 67
     (*_return) = sjt_compare1 == sjt_compare2;
 }
 
+void sjf_i32_tostring(int32_t val, int32_t base, int32_t minlength, sjs_string* _return) {
+    int32_t sjt_math3;
+    int32_t sjt_math4;
+    int32_t sjt_math5;
+    int32_t sjt_math6;
+    int32_t sjv_count;
+    void* sjv_data;
+
+    sjv_count = 0;
+    sjv_data = 0;
+    if (base < 2) {
+        halt("base is too small");
+    }
+    if (base > 16) {
+        halt("base is too large");
+    }
+    char buf[32] = { 0 };
+    int i = 30;	
+    do {
+        buf[i] = "0123456789ABCDEF"[val % base];	
+        i--;
+        val /= base;
+    } while (val && i);
+    sjv_count = 30 - i;
+    if (sjv_count < minlength) {				
+}
+sjv_data = malloc(sizeof(char) * (sjv_count + 1));
+memcpy(sjv_data, &buf[i+1], sjv_count + 1);
+_return->count = sjv_count;
+sjt_math3 = sjv_count;
+sjt_math4 = 1;
+_return->data.datasize = sjt_math3 + sjt_math4;
+_return->data.data = sjv_data;
+_return->data._isglobal = false;
+sjt_math5 = sjv_count;
+sjt_math6 = 1;
+_return->data.count = sjt_math5 + sjt_math6;
+sjf_array_char(&_return->data);
+sjf_string(_return);
+}
+
+void sjf_i32_tostring_heap(int32_t val, int32_t base, int32_t minlength, sjs_string_heap** _return) {
+    int32_t sjt_math10;
+    int32_t sjt_math7;
+    int32_t sjt_math8;
+    int32_t sjt_math9;
+    int32_t sjv_count;
+    void* sjv_data;
+
+    sjv_count = 0;
+    sjv_data = 0;
+    if (base < 2) {
+        halt("base is too small");
+    }
+    if (base > 16) {
+        halt("base is too large");
+    }
+    char buf[32] = { 0 };
+    int i = 30;	
+    do {
+        buf[i] = "0123456789ABCDEF"[val % base];	
+        i--;
+        val /= base;
+    } while (val && i);
+    sjv_count = 30 - i;
+    if (sjv_count < minlength) {				
+}
+sjv_data = malloc(sizeof(char) * (sjv_count + 1));
+memcpy(sjv_data, &buf[i+1], sjv_count + 1);
+(*_return) = (sjs_string_heap*)malloc(sizeof(sjs_string_heap));
+(*_return)->_refCount = 1;
+(*_return)->count = sjv_count;
+sjt_math7 = sjv_count;
+sjt_math8 = 1;
+(*_return)->data.datasize = sjt_math7 + sjt_math8;
+(*_return)->data.data = sjv_data;
+(*_return)->data._isglobal = false;
+sjt_math9 = sjv_count;
+sjt_math10 = 1;
+(*_return)->data.count = sjt_math9 + sjt_math10;
+sjf_array_char(&(*_return)->data);
+sjf_string_heap((*_return));
+}
+
+void sjf_string(sjs_string* _this) {
+}
+
+void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
+    _this->count = _from->count;
+    sjf_array_char_copy(&_this->data, &_from->data);
+}
+
+void sjf_string_destroy(sjs_string* _this) {
+}
+
+void sjf_string_heap(sjs_string_heap* _this) {
+}
+
 int main(int argc, char** argv) {
-    sjf_anon1(&sjv_console);
-#line 1 "lib/common/f32.sj"
     sjv_f32_pi = 3.14159265358979323846f;
-#line 1 "lib/common/i32.sj"
     sjv_u32_maxvalue = (uint32_t)4294967295u;
-#line 3
     sjt_negate1 = 1;
-#line 3
     result1 = -sjt_negate1;
-#line 3
     sjt_math1 = result1;
-#line 3
     sjt_math2 = 2147483647;
-#line 3
     sjv_i32_maxvalue = sjt_math1 - sjt_math2;
-#line 4
     sjv_i32_minvalue = 2147483647;
-#line 1 "lib/common/string.sj"
     sjv_emptystringdata = 0;
-#line 3
     sjv_emptystringdata = "";
-#line 169 "lib/common/weakptr.sj"
     ptr_init();
-#line 170
     weakptr_init();
-#line 170
     sjf_hash_i32i32(&sjv_a);
-#line 6 "lib/common/hash.sj"
     sjt_parent1 = &sjv_a;
-#line 4 "hash1.sj"
     sjt_functionParam1 = 1;
-#line 4
     sjt_functionParam2 = 2;
-#line 4
     sjf_hash_i32i32_setat(sjt_parent1, sjt_functionParam1, sjt_functionParam2);
-#line 20 "lib/common/hash.sj"
     sjt_parent2 = &sjv_a;
-#line 5 "hash1.sj"
     sjt_functionParam3 = 1;
-#line 5
     sjf_hash_i32i32_getat(sjt_parent2, sjt_functionParam3, &sjv_b);
+    sjt_functionParam5 = sjv_b;
+    sjt_functionParam6 = 10;
+    sjt_functionParam7 = 0;
+    sjf_i32_tostring(sjt_functionParam5, sjt_functionParam6, sjt_functionParam7, &sjt_call1);
+    sjt_functionParam4 = &sjt_call1;
+    sjf_debug_writeline(sjt_functionParam4);
     main_destroy();
+    #ifdef _DEBUG
+    getchar();
+    #endif
     return 0;
 }
 
 void main_destroy() {
 
+    sjf_string_destroy(&sjt_call1);
     sjf_hash_i32i32_destroy(&sjv_a);
-    sjf_anon1_destroy(&sjv_console);
 }

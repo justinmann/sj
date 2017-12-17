@@ -1,13 +1,8 @@
 halt(reason : 'string) {
 	--c--
-	printf("%s\n", (char*)reason->data.data);
-	exit(-1);
+	halt("%s\n", (char*)data->data.data);
 	--c--
 }
-
---cinclude--
-#include(<stdarg.h>)
---cinclude--
 
 --cdefine--
 void halt(const char * format, ...);
@@ -15,10 +10,14 @@ void halt(const char * format, ...);
 
 --cfunction--
 void halt(const char * format, ...) {
-  va_list args;
-  va_start (args, format);
-  vprintf (format, args);
-  va_end (args);
-  exit(-1);
+	char s[1024];
+	va_list args;
+	va_start(args, format);
+	vprintf(format, args);
+	va_end(args);
+##ifdef _DEBUG
+	getchar();
+##endif
+	exit(-1);
 }
 --cfunction--

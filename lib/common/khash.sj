@@ -1,8 +1,4 @@
 --cstruct--
-#include(<stdint.h>)
-#include(<stdlib.h>)
-#include(<string.h>)
-
 /* The MIT License
 
 Copyright (c) 2008, by Attractive Chaos <attractivechaos@aol.co.uk>
