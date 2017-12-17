@@ -1873,6 +1873,19 @@ void CScope::popNamespace(Compiler* compiler, vector<string> nsChild) {
     }
 }
 
+void CScope::pushUnderscore(shared_ptr<CVar> underscoreVar) {
+    underscoreVars.push_back(underscoreVar);
+}
+
+void CScope::popUnderscore(shared_ptr<CVar> underscoreVar) {
+    assert(underscoreVars.back() == underscoreVar);
+    underscoreVars.pop_back();
+}
+
+shared_ptr<CVar> CScope::getUnderscore() {
+    return underscoreVars.back();
+}
+
 vector<vector<string>> CScope::getImportNamespaces() {
     vector<vector<string>> allNamespaces;
     allNamespaces.push_back(vector<string>());

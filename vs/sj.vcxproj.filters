@@ -213,6 +213,9 @@
     <ClInclude Include="..\node\NSwitch.h">
       <Filter>Node</Filter>
     </ClInclude>
+    <ClInclude Include="..\node\NUnderscore.h">
+      <Filter>Node</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\node\NAnd.cpp">
@@ -399,6 +402,9 @@
       <Filter>Node</Filter>
     </ClCompile>
     <ClCompile Include="..\node\NSwitch.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NUnderscore.cpp">
       <Filter>Node</Filter>
     </ClCompile>
   </ItemGroup>

@@ -99,6 +99,9 @@ public:
     vector<string> getNamespace(Compiler* compiler, string name);
     void pushNamespace(Compiler* compiler, vector<string> nsChild);
     void popNamespace(Compiler* compiler, vector<string> nsChild);
+    void pushUnderscore(shared_ptr<CVar> underscoreVar);
+    void popUnderscore(shared_ptr<CVar> underscoreVar);
+    shared_ptr<CVar> getUnderscore();
     vector<vector<string>> getImportNamespaces();
     vector<pair<string, vector<string>>> getImportNamespacesWithRenames();
 
@@ -109,6 +112,7 @@ public:
     CTypeMode returnMode;
     vector<shared_ptr<LocalVarScope>> localVarScopes;
     vector<shared_ptr<ImportScope>> importScopes;
+    vector<shared_ptr<CVar>> underscoreVars;
 };
 
 enum FunctionState {

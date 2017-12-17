@@ -208,6 +208,7 @@
     <ClInclude Include="..\node\NString.h" />
     <ClInclude Include="..\node\NThis.h" />
     <ClInclude Include="..\node\NThrow.h" />
+    <ClInclude Include="..\node\NUnderscore.h" />
     <ClInclude Include="..\node\NValue.h" />
     <ClInclude Include="..\node\NVariable.h" />
     <ClInclude Include="..\node\NVoid.h" />
@@ -272,6 +273,7 @@
     <ClCompile Include="..\node\NString.cpp" />
     <ClCompile Include="..\node\NThis.cpp" />
     <ClCompile Include="..\node\NThrow.cpp" />
+    <ClCompile Include="..\node\NUnderscore.cpp" />
     <ClCompile Include="..\node\NValue.cpp" />
     <ClCompile Include="..\node\NVariable.cpp" />
     <ClCompile Include="..\node\NVoid.cpp" />

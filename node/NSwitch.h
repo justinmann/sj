@@ -20,7 +20,7 @@ public:
 
 class CSwitchVar : public CVar {
 public:
-    CSwitchVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> valueVar, vector<CSwitchClause> clauseVars, shared_ptr<CSwitchClause> defaultClauseVar) : CVar(loc, scope), valueVar(valueVar), clauseVars(clauseVars), defaultClauseVar(defaultClauseVar) { }
+    CSwitchVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> valueVar, string underscoreName, shared_ptr<CType> underscoreType, vector<CSwitchClause> clauseVars, shared_ptr<CSwitchClause> defaultClauseVar) : CVar(loc, scope), valueVar(valueVar), underscoreName(underscoreName), underscoreType(underscoreType), clauseVars(clauseVars), defaultClauseVar(defaultClauseVar) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -28,6 +28,8 @@ public:
 
 private:
     shared_ptr<CVar> valueVar;
+    string underscoreName;
+    shared_ptr<CType> underscoreType;
     vector<CSwitchClause> clauseVars;
     shared_ptr<CSwitchClause> defaultClauseVar;
 };

@@ -72,14 +72,17 @@ int32_t sjt_compare2;
 bool sjt_switch1;
 int32_t sjv_a;
 int32_t sjv_y;
+int32_t underscore1;
 
 void main_destroy(void);
 
 int main(int argc, char** argv) {
 #line 1 "switch1.sj"
     sjv_a = 3;
-#line 3
-    sjt_compare1 = sjv_a;
+#line 2
+    underscore1 = sjv_a;
+#line 2
+    sjt_compare1 = underscore1;
 #line 3
     sjt_compare2 = 0;
 #line 3
@@ -92,8 +95,8 @@ int main(int argc, char** argv) {
         int32_t sjt_compare4;
         bool sjt_switch2;
 
-#line 4 "switch1.sj"
-        sjt_compare3 = sjv_a;
+#line 2 "switch1.sj"
+        sjt_compare3 = underscore1;
 #line 4
         sjt_compare4 = 2;
 #line 4

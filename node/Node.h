@@ -89,6 +89,7 @@ enum NodeType {
     NodeType_Throw,
     NodeType_Tuple,
     NodeType_TupleAssignment,
+    NodeType_Underscore,
     NodeType_Value,
     NodeType_Variable,
     NodeType_Void,
@@ -140,6 +141,7 @@ enum NodeType {
 #include "NThrow.h"
 #include "NTuple.h"
 #include "NTupleAssignment.h"
+#include "NUnderscore.h"
 #include "NValue.h"
 #include "NVariable.h"
 #include "NVoid.h"

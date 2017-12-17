@@ -15,6 +15,12 @@ void CSwitchVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
     auto type = getType(compiler);
     TrStatement* previousStatement = nullptr;
 
+    if (valueVar) {
+        auto underscoreValue = trBlock->createVariable(scope.lock(), underscoreType, underscoreName);
+        auto underscoreStoreValue = make_shared<TrStoreValue>(loc, scope.lock(), underscoreType, underscoreName, AssignOp::immutableCreate);
+        valueVar->transpile(compiler, trOutput, trBlock, thisValue, underscoreStoreValue);
+    }
+
     for (auto clauseVar : clauseVars) {
         TrBlock* currentBlock = nullptr;
         if (previousStatement) {
@@ -86,25 +92,22 @@ void CSwitchVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>
     }
 
     for (auto clause : clauseVars) {
+        ss << "\n";
         if (clause.condVar) {
             clause.condVar->dump(compiler, functions, ss, level);
         }
 
-        ss << " {\n";
         scope.lock()->pushLocalVarScope(clause.localVarScope);
         clause.blockVar->dump(compiler, functions, ss, level + 1);
         scope.lock()->popLocalVarScope(clause.localVarScope);
-        ss << "\n";
-        ss << "}";
     }
 
     if (defaultClauseVar) {
-        ss << "default {\n";
+        ss << "\n";
+        ss << "default ";
         scope.lock()->pushLocalVarScope(defaultClauseVar->localVarScope);
         defaultClauseVar->blockVar->dump(compiler, functions, ss, level + 1);
         scope.lock()->popLocalVarScope(defaultClauseVar->localVarScope);
-        ss << "\n";
-        ss << "}";
     }
 }
 
@@ -137,6 +140,9 @@ void NSwitch::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>
 
 shared_ptr<CVar> NSwitch::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
     shared_ptr<CVar> valueVar;
+    string underscoreName;
+    shared_ptr<CType> underscoreType;
+    shared_ptr<CVar> underscoreVar;
     vector<CSwitchClause> clauseVars;
     shared_ptr<CSwitchClause> defaultClauseVar;
 
@@ -145,6 +151,10 @@ shared_ptr<CVar> NSwitch::getVarImpl(Compiler* compiler, shared_ptr<CScope> scop
         if (!valueVar) {
             return nullptr;
         }
+
+        underscoreName = TrBlock::nextVarName("underscore");
+        underscoreType = valueVar->getType(compiler)->getLocalType();
+        underscoreVar = make_shared<CTempVar>(loc, scope, underscoreType, underscoreName);
     }
 
     for (auto clause : clauses) {
@@ -157,7 +167,14 @@ shared_ptr<CVar> NSwitch::getVarImpl(Compiler* compiler, shared_ptr<CScope> scop
         }
 
         if (clause->condition) {
+            if (underscoreVar) {
+                scope->pushUnderscore(underscoreVar);
+            }
             auto condVar = clause->condition->getVar(compiler, scope, CTM_Undefined);
+            if (underscoreVar) {
+                scope->popUnderscore(underscoreVar);
+            }
+
             if (!condVar) {
                 return nullptr;
             }
@@ -174,6 +191,6 @@ shared_ptr<CVar> NSwitch::getVarImpl(Compiler* compiler, shared_ptr<CScope> scop
         }
     }
 
-    return make_shared<CSwitchVar>(loc, scope, valueVar, clauseVars, defaultClauseVar);
+    return make_shared<CSwitchVar>(loc, scope, valueVar, underscoreName, underscoreType, clauseVars, defaultClauseVar);
 }
 

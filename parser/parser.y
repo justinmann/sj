@@ -394,6 +394,7 @@ const 				: TINTEGER 										{ $$ = new NInteger(LOC, $1->c_str()); delete $1;
 					| TSTRING										{ $$ = new NString(LOC, $1->c_str()); delete $1; }
 					| TCHAR											{ $$ = new NChar(LOC, $1->c_str()); delete $1; }
 					| TNULLPTR 										{ $$ = new NNullPtr(LOC); }
+					| TUNDERSCORE 									{ $$ = new NUnderscore(LOC); }
 					| TEMPTY arg_type_quote							{ $$ = new NEmpty(LOC, shared_ptr<CTypeName>($2)); }
 					;
 										

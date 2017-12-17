@@ -1,18 +1,12 @@
 global()'void {
   a'i32 : 3i
-  y'i32 : switcha == 0i {
-{
+  y'i32 : switch a == 0i{
       1i
-    }
-}a == 2i {
-{
+    } == 2i{
       2i
-    }
-}default {
-{
+    }default {
       3i
     }
-}
   void
 }
 
