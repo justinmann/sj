@@ -209,48 +209,55 @@ glBindRenderbuffer(renderbuffer : 'renderbuffer) {
 	--c--
 }
 
---cstruct--
-typedef struct GLid_td GLid_s;
-
-struct GLid_td {
-    GLuint id;
-    int refCount;
-    UT_hash_handle hh;
-};
-
-GLid_s* g_GLids = 0;
---cstruct--
-
 --cdefine--
-void _retainGLid(GLuint id);
-bool _releaseGLid(GLuint id);
+void glid_retain(GLuint id);
+bool glid_release(GLuint id);
+uint32_t glid_getHash(GLuint id);
+int glid_isEqual(GLuint id1, GLuint id2);
 --cdefine--
 
 --cfunction--
-void _retainGLid(GLuint id) {
-  GLid_s* p;
-  HASH_FIND_PTR(g_GLids, &id, p);
-  if (p) {
-    p->refCount++;
-  } else {
-    p = (GLid_s*)malloc(sizeof(GLid_s));
-    p->id = id;
-    p->refCount = 1;
-    HASH_ADD_PTR(g_GLids, id, p);    
-  }
+KHASH_INIT(glid_hash_type, GLuint, int, 1, glid_getHash, glid_isEqual)
+khash_t(glid_hash_type)* glid_hash;
+
+uint32_t glid_getHash(GLuint id) {
+    return kh_int_hash_func(id);
 }
 
-bool _releaseGLid(GLuint id) {
-  GLid_s* p;
-  HASH_FIND_PTR(g_GLids, &id, p);
-  if (p) {
-    p->refCount--;
-    if (p->refCount == 0) {
-      HASH_DEL(g_GLids, p);
-      free(p);
+int glid_isEqual(GLuint id1, GLuint id2) {
+    return (id2 == id2);
+}
+
+void glid_init() {
+    glid_hash = kh_init(glid_hash_type);
+}
+
+void glid_retain(GLuint id) {
+    khiter_t k = kh_get(glid_hash_type, glid_hash, id);
+    if (k == kh_end(glid_hash)) {
+        int ret;
+        khiter_t k = kh_put(glid_hash_type, glid_hash, id, &ret);
+        if (!ret) kh_del(glid_hash_type, glid_hash, k);
+        kh_value(glid_hash, k) = 1;
     }
-    return false;
-  }
-  return true;
+    else {
+        kh_value(glid_hash, k)++;
+    }
+}
+
+bool glid_release(GLuint id) {
+    khiter_t k = kh_get(glid_hash_type, glid_hash, id);
+    if (k != kh_end(glid_hash)) {
+        kh_value(glid_hash, k)--;
+        if (kh_value(glid_hash, k) == 0) {
+            kh_del(glid_hash_type, glid_hash, k);
+        }
+        return false;
+    }
+    return true;
 }
 --cfunction--
+
+--c--
+glid_init();
+--c--

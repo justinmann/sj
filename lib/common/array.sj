@@ -280,13 +280,13 @@ array!t (
 	--c--
 	_this->data = _from->data;
 	if (!_this->_isglobal && _this->data) {
-		_retain(_this->data);
+		ptr_retain(_this->data);
 	}
 	--c--
 } destroy {
 	--c--
 	if (!_this->_isglobal && _this->data) {
-		if (_release(_this->data)) {
+		if (ptr_release(_this->data)) {
 			free((#type(t)*)_this->data);
 		}
 	}

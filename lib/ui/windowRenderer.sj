@@ -63,16 +63,16 @@ windowRenderer(
 } copy {
 	--c--
 	_this->ren = _from->ren;
-	_retain(_this->ren);
+	ptr_retain(_this->ren);
 	_this->win = _from->win;
-	_retain(_this->win);
+	ptr_retain(_this->win);
 	--c--
 } destroy {
 	--c--
-	if (_release(_this->ren)) {
+	if (ptr_release(_this->ren)) {
 		SDL_DestroyRenderer(_this->ren);
 	}
-	if (_release(_this->win)) {
+	if (ptr_release(_this->win)) {
 		SDL_DestroyWindow(_this->win);
 	}
 	--c--

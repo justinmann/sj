@@ -48,10 +48,10 @@ font(
 } copy {
     --c--
     _this->atlas = _from->atlas;
-    _retain(_this->atlas);
+    ptr_retain(_this->atlas);
 
     _this->font = _from->font;
-    _retain(_this->font);
+    ptr_retain(_this->font);
     --c--
 } destroy {
     --c--

@@ -41,11 +41,11 @@ boxVertexBuffer(
 } copy {
     --c--
     _this->buffer = _from->buffer;
-    _retain(_this->buffer);
+    ptr_retain(_this->buffer);
     --c--
 } destroy {
     --c--
-    if (_release(_this->buffer)) {
+    if (ptr_release(_this->buffer)) {
         vertex_buffer_delete(_this->buffer);
     }  
     --c--

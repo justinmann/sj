@@ -20,11 +20,11 @@ shader(
 } copy {
     --c--
     _this->id = _from->id;
-    _retainGLid(_this->id);
+    glid_retain(_this->id);
     --c--
 } destroy {
     --c--
-    if (_releaseGLid(_this->id)) {
+    if (glid_release(_this->id)) {
         glDeleteShader(_this->id);
     }
     --c--
