@@ -1,4 +1,4 @@
---cdefine--
+--cstruct--
 #include(<stdint.h>)
 #include(<stdlib.h>)
 #include(<string.h>)
@@ -110,13 +110,15 @@ static const uint32_t __ac_prime_list[__ac_HASH_PRIME_SIZE] =
 
 static const double __ac_HASH_UPPER = 0.77;
 
-##define KHASH_INIT(name, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal) \
+##define KHASH_INIT_TYPEDEF(name, khkey_t, khval_t) \
     typedef struct {                                                    \
         khint_t n_buckets, size, n_occupied, upper_bound;               \
         uint32_t *flags;                                                \
         khkey_t *keys;                                                  \
         khval_t *vals;                                                  \
-    } kh_####name####_t;                                                    \
+    } kh_####name####_t;                                                
+
+##define KHASH_INIT_FUNCTION(name, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal) \
     static inline kh_####name####_t *kh_init_####name() {                     \
         return (kh_####name####_t*)calloc(1, sizeof(kh_####name####_t));        \
     }                                                                   \
@@ -139,12 +141,15 @@ static const double __ac_HASH_UPPER = 0.77;
     {                                                                   \
         if (h->n_buckets) {                                             \
             khint_t inc, k, i, last;                                    \
-            k = __hash_func(key); i = k % h->n_buckets;                 \
+            __hash_func(key, &k); i = k % h->n_buckets;                 \
             inc = 1 + k % (h->n_buckets - 1); last = i;                 \
-            while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !__hash_equal(h->keys[i], key))) { \
+            bool isEqual;                                               \
+            __hash_equal(h->keys[i], key, &isEqual);                    \
+            while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
                 if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
                 else i += inc;                                          \
                 if (i == last) return h->n_buckets;                     \
+                __hash_equal(h->keys[i], key, &isEqual);                \
             }                                                           \
             return __ac_iseither(h->flags, i)? h->n_buckets : i;            \
         } else return 0;                                                \
@@ -177,7 +182,7 @@ static const double __ac_HASH_UPPER = 0.77;
                     __ac_set_isdel_true(h->flags, j);                   \
                     while (1) {                                         \
                         khint_t inc, k, i;                              \
-                        k = __hash_func(key);                           \
+                        __hash_func(key, &k);                           \
                         i = k % new_n_buckets;                          \
                         inc = 1 + k % (new_n_buckets - 1);              \
                         while (!__ac_isempty(new_flags, i)) {           \
@@ -218,15 +223,18 @@ static const double __ac_HASH_UPPER = 0.77;
         }                                                               \
         {                                                               \
             khint_t inc, k, i, site, last;                              \
-            x = site = h->n_buckets; k = __hash_func(key); i = k % h->n_buckets; \
+            x = site = h->n_buckets; __hash_func(key, &k); i = k % h->n_buckets; \
             if (__ac_isempty(h->flags, i)) x = i;                       \
             else {                                                      \
                 inc = 1 + k % (h->n_buckets - 1); last = i;             \
-                while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !__hash_equal(h->keys[i], key))) { \
+                bool isEqual;                                           \
+                __hash_equal(h->keys[i], key, &isEqual);                \
+                while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
                     if (__ac_isdel(h->flags, i)) site = i;              \
                     if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
                     else i += inc;                                      \
                     if (i == last) { x = site; break; }                 \
+                    __hash_equal(h->keys[i], key, &isEqual);            \
                 }                                                       \
                 if (x == h->n_buckets) {                                \
                     if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \
@@ -315,4 +323,4 @@ typedef const char *kh_cstr_t;
     KHASH_INIT(name, kh_cstr_t, khval_t, 1, kh_str_hash_func, kh_str_hash_equal)
 
 ##endif /* __AC_KHASH_H */
---cdefine--
+--cstruct--

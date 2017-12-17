@@ -59,6 +59,14 @@ i32_compare(l : 'i32, r : 'i32) {
 	}
 }
 
+i32_hash(val : 'i32)'u32 {
+	val as u32
+}
+
+i32_isEqual(l : 'i32, r : 'i32)'bool {
+	l == r
+}
+
 string_toI32(text : 'string)'i32 {
 	x := 0
 	--c--

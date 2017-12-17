@@ -5,33 +5,44 @@ hash![key, val] (
 
     setAt(key : 'key, val : 'val) {
         --c--
-        khiter_t k = kh_get(#type(key)_#type(val)_hash_type, _hash, key);
-        if (k != kh_end(_hash)) {
-            #release(val, kh_val(_hash, k));
+        khiter_t k = kh_get(#type(key)_#type(val)_hash_type, _parent->_hash, key);
+        if (k != kh_end(_parent->_hash)) {            
+            #release(val, kh_val(_parent->_hash, k));
         }
 
         int ret;
-        khiter_t k = kh_put(#type(key)_#type(val)_hash_type, _hash, val, &ret);
-        if (!ret) kh_del(#type(key)_#type(val)_hash_type, _hash, key);
-        #retain(val, kh_val(_hash, k), val);
+        k = kh_put(#type(key)_#type(val)_hash_type, _parent->_hash, val, &ret);
+        if (!ret) kh_del(#type(key)_#type(val)_hash_type, _parent->_hash, key);
+        #retain(val, kh_val(_parent->_hash, k), val);
         --c--
     }
 
-    getAt(k : 'key)'val {
+    getAt(key : 'key)'val {
         --c--
-        khiter_t k = kh_get(#type(key)_#type(val)_hash_type, _hash, key);
-        if (k == kh_end(_hash)) {
+        khiter_t k = kh_get(#type(key)_#type(val)_hash_type, _parent->_hash, key);
+        if (k == kh_end(_parent->_hash)) {
             halt("cannot find key");
         }
-        #return(val, kh_val(_hash, k));
+        #return(val, kh_val(_parent->_hash, k));
         --c--
     }
 ) {
+    --cstruct--
+    ##ifndef #type(key)_#type(val)_hash_typedef
+    ##define #type(key)_#type(val)_hash_typedef
+    KHASH_INIT_TYPEDEF(#type(key)_#type(val)_hash_type, #type(key), #type(val))
+    ##endif
+    --cstruct--
+
     --cfunction--
-    KHASH_INIT(#type(key)_#type(val)_type, #type(key), #type(val), 1, #functionStack(key, hash), #functionStack(key, isEqual))
+    ##ifndef #type(key)_#type(val)_hash_function
+    ##define #type(key)_#type(val)_hash_function
+    KHASH_INIT_FUNCTION(#type(key)_#type(val)_hash_type, #type(key), #type(val), 1, #functionStack(key, hash), #functionStack(key, isEqual))
+    ##endif
     --cfunction--
+
     --c--
-    _hash = kh_init(#type(key)_#type(val)_hash_type);
+    _this->_hash = kh_init(#type(key)_#type(val)_hash_type);
     --c--
     this
 } copy {
@@ -42,7 +53,7 @@ hash![key, val] (
 } destroy {
     --c--
     if (ptr_release(_this->_hash)) {
-        kh_destroy(#type(key)_#type(val)_hash_type, _hash);
+        kh_destroy(#type(key)_#type(val)_hash_type, _this->_hash);
     }
     --c--
 }

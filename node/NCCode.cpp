@@ -6,7 +6,19 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
     auto functionName = macro.substr(0, paramStart);
     auto t = macro.substr(paramStart + 1, macro.size() - paramStart - 2);
     vector<string> params;
-    boost::split(params, t, boost::is_any_of(","), boost::token_compress_on);
+    auto lastI = 0;
+    auto parenCount = 0;
+    for (auto i = 0; i < t.size(); i++) {
+        if (t[i] == ',' && parenCount == 0) {
+            params.push_back(t.substr(lastI, i - lastI));
+            lastI = i + 1;
+        }
+        if (t[i] == '(') { parenCount++; }
+        if (t[i] == ')') { parenCount--; }
+    }
+
+    params.push_back(t.substr(lastI, t.size() - lastI));
+
     for (auto i = 0; i < (int)params.size(); i++) {
         boost::trim(params[i]);
     }
@@ -38,9 +50,10 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
             compiler->addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", params[0].c_str());
         }
     }
-    else if (functionName.compare("functionHeap") == 0) {
-        if (params.size() != 1) {
-            compiler->addError(loc, CErrorCode::InvalidMacro, "functionHeap requires 1 parameter");
+    else if (functionName.compare("functionStack") == 0 || functionName.compare("functionHeap") == 0) {
+        auto typeMode = functionName.compare("functionStack") == 0 ? CTM_Stack : CTM_Heap;
+        if (params.size() != 1 && params.size() != 2) {
+            compiler->addError(loc, CErrorCode::InvalidMacro, "functionStack requires 1 or 2 parameters");
             return "";
         }
 
@@ -49,35 +62,48 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
             compiler->addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", params[0].c_str());
         }
 
-        auto cfunction = static_pointer_cast<CFunction>(scope->function->getCFunction(compiler, loc, ctypeName->valueName, scope, ctypeName->argTypeNames, CTM_Heap));
-        if (cfunction) {
-            functions.push_back(cfunction);
-            // Do they want the stack or heap version
-            return cfunction->getCFunctionName(CTM_Heap);
+        if (params.size() == 2) {
+            auto ctype = scope->getVarType(loc, compiler, ctypeName, CTM_Undefined);
+            if (ctype) {
+                auto ctypeName2 = CTypeName::parse(params[1]);
+                if (!ctypeName2) {
+                    compiler->addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", params[1].c_str());
+                }
+
+                if (!ctype->parent.expired()) {
+                    auto cfunction = static_pointer_cast<CFunction>(ctype->parent.lock()->getCFunction(compiler, loc, ctypeName2->valueName, scope, ctypeName2->templateTypeNames, CTM_Stack));
+                    if (cfunction) {
+                        functions.push_back(cfunction);
+                        // Do they want the stack or heap version
+                        return cfunction->getCFunctionName(CTM_Stack);
+                    }
+                }
+
+                string helperFunctionName = ctype->valueName + "_" + ctypeName2->valueName;
+                auto cfunction = static_pointer_cast<CFunction>(scope->function->getCFunction(compiler, loc, helperFunctionName, scope, ctypeName2->templateTypeNames, typeMode));
+                if (cfunction) {
+                    functions.push_back(cfunction);
+                    // Do they want the stack or heap version
+                    return cfunction->getCFunctionName(CTM_Stack);
+                }
+                else {
+                    compiler->addError(loc, CErrorCode::InvalidMacro, "cannot find function '%s' for type '%s'", params[1].c_str(), ctype->fullName.c_str());
+                }
+            }
+            else {
+                compiler->addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", params[0].c_str());
+            }
         }
         else {
-            compiler->addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", params[0].c_str());
-        }
-    }
-    else if (functionName.compare("functionStack") == 0) {
-        if (params.size() != 1) {
-            compiler->addError(loc, CErrorCode::InvalidMacro, "functionStack requires 1 parameter");
-            return "";
-        }
-
-        auto ctypeName = CTypeName::parse(params[0]);
-        if (!ctypeName) {
-            compiler->addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", params[0].c_str());
-        }
-
-        auto cfunction = static_pointer_cast<CFunction>(scope->function->getCFunction(compiler, loc, ctypeName->valueName, scope, ctypeName->argTypeNames, CTM_Stack));
-        if (cfunction) {
-            functions.push_back(cfunction);
-            // Do they want the stack or heap version
-            return cfunction->getCFunctionName(CTM_Stack);
-        }
-        else {
-            compiler->addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", params[0].c_str());
+            auto cfunction = static_pointer_cast<CFunction>(scope->function->getCFunction(compiler, loc, ctypeName->valueName, scope, ctypeName->argTypeNames, typeMode));
+            if (cfunction) {
+                functions.push_back(cfunction);
+                // Do they want the stack or heap version
+                return cfunction->getCFunctionName(CTM_Stack);
+            }
+            else {
+                compiler->addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", params[0].c_str());
+            }
         }
     }
     else if (functionName.compare("return") == 0) {
@@ -207,9 +233,11 @@ string expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOu
     char macro[1024];
     int finalIndex = 0;
     int macroIndex = 0;
+    int macroParenCount = 0;
 
     bool isInMacro = false;
     bool isInWhitespace = true;
+    int parenCount = 0;
     for (auto ch : code) {
         if (isInWhitespace) {
             if (ch == ' ' || ch == '\t' || ch == ' ') {
@@ -222,24 +250,31 @@ string expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOu
 
         if (isInMacro) {
             if (ch == ')') {
+                parenCount--;
                 macro[macroIndex] = ch;
                 macroIndex++;
-
-                isInMacro = false;
-                macro[macroIndex] = 0;
-                string t = macro;
-                auto expandedMacro = expandMacro(compiler, loc, scope, trOutput, t, returnValue, functions, includes, returnType);
-                for (auto i : expandedMacro) {
-                    finalCode[finalIndex] = i;
-                    finalIndex++;
+                if (parenCount == macroParenCount) {
+                    isInMacro = false;
+                    macro[macroIndex] = 0;
+                    string t = macro;
+                    auto expandedMacro = expandMacro(compiler, loc, scope, trOutput, t, returnValue, functions, includes, returnType);
+                    for (auto i : expandedMacro) {
+                        finalCode[finalIndex] = i;
+                        finalIndex++;
+                    }
+                    macroIndex = 0;
                 }
-                macroIndex = 0;
             }
             else if (ch == '#') {
                 isInMacro = false;
                 finalCode[finalIndex] = ch;
                 finalIndex++;
                 macroIndex = 0;
+            }
+            else if (ch == '(') {
+                parenCount++;
+                macro[macroIndex] = ch;
+                macroIndex++;
             }
             else {
                 macro[macroIndex] = ch;
@@ -248,6 +283,7 @@ string expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOu
         }
         else if (ch == '#') {
             isInMacro = true;
+            macroParenCount = parenCount;
         }
         else {
             finalCode[finalIndex] = ch;
