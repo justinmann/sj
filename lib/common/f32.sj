@@ -48,6 +48,22 @@ f32_random()'f32 {
 	x
 }
 
+f32_ceil(v : 'f32)'f32 {
+	x := 0.0f
+	--c--
+	sjv_x = ceilf(v);
+	--c--
+	x
+}
+
+f32_floor(v : 'f32)'f32 {
+	x := 0.0f
+	--c--
+	sjv_x = floorf(v);
+	--c--
+	x
+}
+
 f32_toString(val : 'f32) {
 	count := 0
 	data := nullptr
