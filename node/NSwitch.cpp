@@ -89,13 +89,19 @@ void CSwitchVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>
     if (valueVar) {
         ss << " ";
         valueVar->dump(compiler, functions, ss, level);
+        ss << " ";
     }
+    ss << "{";
+
+    level++;
 
     for (auto clause : clauseVars) {
         ss << "\n";
+        dumpf(ss, level);
         if (clause.condVar) {
             clause.condVar->dump(compiler, functions, ss, level);
         }
+        ss << " ";
 
         scope.lock()->pushLocalVarScope(clause.localVarScope);
         clause.blockVar->dump(compiler, functions, ss, level + 1);
@@ -104,11 +110,17 @@ void CSwitchVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>
 
     if (defaultClauseVar) {
         ss << "\n";
+        dumpf(ss, level);
         ss << "default ";
         scope.lock()->pushLocalVarScope(defaultClauseVar->localVarScope);
         defaultClauseVar->blockVar->dump(compiler, functions, ss, level + 1);
         scope.lock()->popLocalVarScope(defaultClauseVar->localVarScope);
     }
+
+    ss << "\n";
+    level--;
+    dumpf(ss, level);
+    ss << "}";
 }
 
 void NSwitchClause::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
@@ -178,6 +190,32 @@ shared_ptr<CVar> NSwitch::getVarImpl(Compiler* compiler, shared_ptr<CScope> scop
             if (!condVar) {
                 return nullptr;
             }
+
+            auto condType = condVar->getType(compiler);
+            if (condType != compiler->typeBool) {
+                if (!CType::isSameExceptMode(condType, underscoreType)) {
+                    if (underscoreType) {
+                        compiler->addError(clause->condition->loc, CErrorCode::InvalidType, "condition returned '%s' must return bool or '%s'", condType->valueName.c_str(), underscoreType->valueName.c_str());
+                    }
+                    else {
+                        compiler->addError(clause->condition->loc, CErrorCode::InvalidType, "condition returned '%s' must return bool", condType->valueName.c_str(), underscoreType->valueName.c_str());
+                    }
+                    return nullptr;
+                }
+
+                NCompare t = NCompare(clause->condition->loc, make_shared<NUnderscore>(clause->condition->loc), NCompareOp::EQ, clause->condition);
+                if (underscoreVar) {
+                    scope->pushUnderscore(underscoreVar);
+                }
+                condVar = t.getVar(compiler, scope, nullptr, CTM_Undefined);
+                if (underscoreVar) {
+                    scope->popUnderscore(underscoreVar);
+                }
+                if (!condVar) {
+                    return nullptr;
+                }
+            }
+
             clauseVars.push_back(CSwitchClause(condVar, blockVar, localVarScope));
         }
         else {

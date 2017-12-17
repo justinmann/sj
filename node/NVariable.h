@@ -27,6 +27,16 @@ public:
     virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) = 0;
 };
 
+class NVariableStub : public NVariableBase {
+public:
+    NVariableStub(shared_ptr<NBase> node) : NVariableBase(NodeType_Variable, CLoc::undefined), node(node) {}
+
+    void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) { node->define(compiler, importNamespaces, packageNamespace, thisFunction);  }
+    shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) { assert(dotVar == nullptr); return node->getVar(compiler, scope, returnMode); }
+
+    shared_ptr<NBase> node;
+};
+
 class NVariable : public NVariableBase {
 public:
     NVariable(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames);

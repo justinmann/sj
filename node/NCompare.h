@@ -37,14 +37,14 @@ private:
 
 class NCompare : public NVariableBase {
 public:
-    NCompare(CLoc loc, shared_ptr<NVariableBase> leftSide, NCompareOp op, shared_ptr<NVariableBase> rightSide) : NVariableBase(NodeType_Compare, loc), op(op), leftSide(leftSide), rightSide(rightSide) { }
+    NCompare(CLoc loc, shared_ptr<NBase> leftSide, NCompareOp op, shared_ptr<NBase> rightSide) : NVariableBase(NodeType_Compare, loc), op(op), leftSide(leftSide), rightSide(rightSide) { }
     void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
     
 private:
     NCompareOp op;
-    const shared_ptr<NVariableBase> leftSide;
-    const shared_ptr<NVariableBase> rightSide;
+    const shared_ptr<NBase> leftSide;
+    const shared_ptr<NBase> rightSide;
     shared_ptr<NBase> operatorOverloadNode;
 };
 

@@ -1,6 +1,13 @@
-a : 3
+class(
+	bob : 1
+	isEqual(r : 'class) {
+		bob == r.bob
+	}
+) { this }
+
+a : class(3)
 y : switch a {
-	_ == 0  { 1 } 
-	_ == 2  { 2 }
-	default { 3 }
+	class(4)		{ 1 } 
+	_ == class(2)   { 2 }
+	default 		{ 3 }
 }

@@ -1883,7 +1883,7 @@ void CScope::popUnderscore(shared_ptr<CVar> underscoreVar) {
 }
 
 shared_ptr<CVar> CScope::getUnderscore() {
-    return underscoreVars.back();
+    return underscoreVars.size() > 0 ? underscoreVars.back() : nullptr;
 }
 
 vector<vector<string>> CScope::getImportNamespaces() {
