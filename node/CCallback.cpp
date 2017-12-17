@@ -86,7 +86,7 @@ void CCallbackVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* tr
             trBlock->statements.push_back(TrStatement(loc, name + "._cb_heap = (" + callback->getCBName(compiler, false, CTM_Heap) + ")" + functionName));
         }
         else {
-            compiler->addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match '%s'", destHeapReturnType->fullName.c_str(), callback->heapReturnType->fullName.c_str());
+            compiler->addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match '%s'", destHeapReturnType->fullName.c_str(), callback->heapReturnType ? callback->heapReturnType->fullName.c_str() : "UNKNOWN");
             return;
         }
     }

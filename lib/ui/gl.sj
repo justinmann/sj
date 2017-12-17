@@ -165,7 +165,7 @@ glTexParameteri(type : 'glTexture, attribute : 'glTextureAttribute, val : 'glTex
 
 glTexImage2D(type : 'glTexture, level : 'i32, format : 'glTextureFormat, size : 'size, dataType : 'glTextureType, data : nullptr) {
 	--c--
-    glTexImage2D(type, level, format, size->w, size->h, 0, format, dataType, data);
+    glTexImage2D(type, level, format, size->w, size->h, 0, format, datatype, data);
     --c--
 }
 

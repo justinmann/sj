@@ -31,4 +31,6 @@ boxElement #element (
 	getChildren()'local array?!#element {
 		empty'local array?!#element
 	}
+
+	fireMouseEvent(mouseEvent : 'mouseEvent)'void { }
 ) { this }
