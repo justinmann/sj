@@ -41,20 +41,21 @@ vertexBuffer!vertex(
         // Compute the vector of the pick ray in screen space
         start : vec2(
             (screen.x - viewport.x) as f32 / viewport.w as f32 * 2.0f - 1.0f
-            (screen.y - viewport.y) as f32 / viewport.h as f32 * 2.0f - 1.0f)
-        v : vec3(start.x / projection.m00, start.y / projection.m11, 1.0f) 
+            1.0f - (screen.y - viewport.y) as f32 / viewport.h as f32 * 2.0f)
 
-        // Get the inverse view matrix
-        worldView : view * world
-        m : worldView.invert()
+        vScreenOrigin1 : vec4(start.x, start.y, 0.0f, 1.0f)
+        vScreenOrigin2 : vec4(start.x, start.y, 1.0f, 1.0f)
+        all : projection * view * world
+        allInverse : all.invert()
+        vProjectedOrigin1 : allInverse * vScreenOrigin1
+        vProjectedOrigin2 : allInverse * vScreenOrigin2
+        vFlattenedOrigin1 : vec3(vProjectedOrigin1.x / vProjectedOrigin1.w, vProjectedOrigin1.y / vProjectedOrigin1.w, vProjectedOrigin1.z / vProjectedOrigin1.w)
+        vFlattenedOrigin2 : vec3(vProjectedOrigin2.x / vProjectedOrigin2.w, vProjectedOrigin2.y / vProjectedOrigin2.w, vProjectedOrigin2.z / vProjectedOrigin2.w)
+        vFlattenedDir : vFlattenedOrigin2 - vFlattenedOrigin1
 
-        // Transform the screen space pick ray into 3D space
-        vPickRayDir : vec3(
-            v.x*m.m00 + v.y*m.m10 + v.z*m.m20
-            v.x*m.m01 + v.y*m.m11 + v.z*m.m21
-            v.x*m.m02 + v.y*m.m12 + v.z*m.m22)
-        vPickRayOrig : vec3(m.m30, m.m31, m.m32)
-        
+        vPickRayOrig : copy vFlattenedOrigin1
+        vPickRayDir : vFlattenedDir.normalize()
+
         cTriangles : if indices.count > 0 { indices.count / 3 } else { vertices.count / 3 }
         for i : 0 to cTriangles {
             vertex0 : if indices.count > 0 { vertices[indices[i * 3 + 0]] } else { vertices[i * 3 + 0] }

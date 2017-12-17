@@ -70,7 +70,7 @@ scene2dModel #model (
 		ifValue texture {
 			scenePoint : point(
 				(texture.x * textureSize.w as f32) as i32
-				(texture.y * textureSize.h as f32) as i32)
+				textureSize.h - 1 - (texture.y * textureSize.h as f32) as i32)
 			for i : 0 to children.count {
 				child : children[i]
 				child.fireMouseEvent(mouseEvent(
