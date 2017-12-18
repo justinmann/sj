@@ -117,6 +117,10 @@ void CCallVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
         calleeStoreValue = trBlock->createTempStoreVariable(loc, scope.lock(), calleeReturnType, "call");
     }
 
+    if (!calleeStoreValue->op.isFirstAssignment) {
+        calleeStoreValue->getValue()->addReleaseToStatements(trBlock);
+    }
+
     callee->transpile(compiler, scope.lock(), trOutput, trBlock, dotVar, loc, parameters, thisValue, calleeStoreValue, returnMode);
 
     if (calleeStoreValue != storeValue) {
