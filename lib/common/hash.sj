@@ -128,9 +128,9 @@ hash![key, val] (
     ##ifndef #safeName(key)_#safeName(val)_hash_function
     ##define #safeName(key)_#safeName(val)_hash_function
     ##if #isStack(key)
-    KHASH_INIT_FUNCTION(#safeName(key)_#safeName(val)_hash_type, #type(key), #type(val), 1, #functionStack(key, hash), #functionStack(key, isEqual), &)
+    KHASH_INIT_FUNCTION_DEREF(#safeName(key)_#safeName(val)_hash_type, #type(key), #type(val), 1, #functionStack(key, hash), #functionStack(key, isEqual))
     ##else
-    KHASH_INIT_FUNCTION(#safeName(key)_#safeName(val)_hash_type, #type(key), #type(val), 1, #functionStack(key, hash), #functionStack(key, isEqual), )
+    KHASH_INIT_FUNCTION(#safeName(key)_#safeName(val)_hash_type, #type(key), #type(val), 1, #functionStack(key, hash), #functionStack(key, isEqual))
     ##endif
     ##endif
     --cfunction--
