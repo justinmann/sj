@@ -35,6 +35,7 @@
 
 include "khash.sj"
 include "array.sj"
+include "bool.sj"
 include "console.sj"
 include "debug.sj"
 include "f32.sj"
