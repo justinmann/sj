@@ -83,7 +83,7 @@ struct td_sjs_bar {
 
 sjs_foo* sjt_dot1;
 sjs_bar* sjt_functionParam1;
-sjs_bar sjv_b;
+sjs_bar sjv_b = { -1 };
 
 void sjf_bar(sjs_bar* _this);
 void sjf_bar_copy(sjs_bar* _this, sjs_bar* _from);
@@ -100,6 +100,7 @@ void sjf_bar(sjs_bar* _this) {
 }
 
 void sjf_bar_copy(sjs_bar* _this, sjs_bar* _from) {
+    _this->f._refCount = 1;
     sjf_foo_copy(&_this->f, &_from->f);
 }
 
@@ -126,12 +127,15 @@ void sjf_func(sjs_bar* b, sjs_foo** _return) {
     sjs_bar* sjt_dot2;
 
     sjt_dot2 = b;
+    sjt_dot2->f._refCount = 1;
     sjt_dot2->f.x = 2;
     sjf_foo(&sjt_dot2->f);
     (*_return) = &sjt_dot2->f;
 }
 
 int main(int argc, char** argv) {
+    sjv_b._refCount = 1;
+    sjv_b.f._refCount = 1;
     sjv_b.f.x = 1;
     sjf_foo(&sjv_b.f);
     sjf_bar(&sjv_b);
@@ -147,5 +151,5 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    sjf_bar_destroy(&sjv_b);
+    if (sjv_b._refCount == 1) { sjf_bar_destroy(&sjv_b); }
 }

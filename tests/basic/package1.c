@@ -99,8 +99,8 @@ struct td_sji_b_foo {
     void (*bar)(void* _parent, int32_t* _return);
 };
 
-sjs_a_class* sjt_cast1;
-sjs_b_class* sjt_cast2;
+sjs_a_class* sjt_cast1 = 0;
+sjs_b_class* sjt_cast2 = 0;
 sji_a_foo* sjt_parent1;
 sji_b_foo* sjt_parent2;
 int32_t sjv_a_x;
@@ -108,9 +108,9 @@ int32_t sjv_b;
 int32_t sjv_b_d;
 int32_t sjv_b_x;
 int32_t sjv_c;
-sji_a_foo* sjv_e;
+sji_a_foo* sjv_e = 0;
 int32_t sjv_f;
-sji_b_foo* sjv_h;
+sji_b_foo* sjv_h = 0;
 int32_t sjv_i;
 int32_t sjv_y;
 

@@ -99,17 +99,17 @@ sjs_fancymath* sjt_parent24;
 sjs_fancymath* sjt_parent3;
 sjs_fancymath* sjt_parent6;
 sjs_fancymath* sjt_parent9;
-sjs_fancymath sjv_a;
-sjs_fancymath sjv_b;
-sjs_fancymath sjv_c;
-sjs_fancymath sjv_d;
-sjs_fancymath sjv_e;
-sjs_fancymath sjv_f;
-sjs_fancymath sjv_g;
+sjs_fancymath sjv_a = { -1 };
+sjs_fancymath sjv_b = { -1 };
+sjs_fancymath sjv_c = { -1 };
+sjs_fancymath sjv_d = { -1 };
+sjs_fancymath sjv_e = { -1 };
+sjs_fancymath sjv_f = { -1 };
+sjs_fancymath sjv_g = { -1 };
 int32_t sjv_i;
 int32_t sjv_ii;
 int32_t sjv_j;
-sjs_fancymath sjv_k;
+sjs_fancymath sjv_k = { -1 };
 
 void sjf_fancymath(sjs_fancymath* _this);
 void sjf_fancymath_add(sjs_fancymath* _parent, sjs_fancymath* num, sjs_fancymath* _return);
@@ -144,6 +144,7 @@ void sjf_fancymath_add(sjs_fancymath* _parent, sjs_fancymath* num, sjs_fancymath
     int32_t sjt_math4;
     sjs_fancymath* sjt_parent1;
 
+    _return->_refCount = 1;
     sjt_dot1 = _parent;
     sjt_math3 = (sjt_dot1)->x;
     sjt_parent1 = num;
@@ -189,6 +190,7 @@ void sjf_fancymath_divide(sjs_fancymath* _parent, sjs_fancymath* num, sjs_fancym
     int32_t sjt_math28;
     sjs_fancymath* sjt_parent10;
 
+    _return->_refCount = 1;
     sjt_dot8 = _parent;
     sjt_math27 = (sjt_dot8)->x;
     sjt_parent10 = num;
@@ -226,6 +228,7 @@ void sjf_fancymath_dividei32(sjs_fancymath* _parent, int32_t num, sjs_fancymath*
     int32_t sjt_math47;
     int32_t sjt_math48;
 
+    _return->_refCount = 1;
     sjt_dot15 = _parent;
     sjt_math47 = (sjt_dot15)->x;
     sjt_math48 = num;
@@ -268,6 +271,7 @@ void sjf_fancymath_increment(sjs_fancymath* _parent, sjs_fancymath* _return) {
     int32_t sjt_math41;
     int32_t sjt_math42;
 
+    _return->_refCount = 1;
     sjt_dot12 = _parent;
     sjt_math41 = (sjt_dot12)->x;
     sjt_math42 = 1;
@@ -297,6 +301,7 @@ void sjf_fancymath_modulus(sjs_fancymath* _parent, sjs_fancymath* num, sjs_fancy
     int32_t sjt_math36;
     sjs_fancymath* sjt_parent13;
 
+    _return->_refCount = 1;
     sjt_dot10 = _parent;
     sjt_math35 = (sjt_dot10)->x;
     sjt_parent13 = num;
@@ -335,6 +340,7 @@ void sjf_fancymath_multiply(sjs_fancymath* _parent, sjs_fancymath* num, sjs_fanc
     int32_t sjt_math20;
     sjs_fancymath* sjt_parent7;
 
+    _return->_refCount = 1;
     sjt_dot6 = _parent;
     sjt_math19 = (sjt_dot6)->x;
     sjt_parent7 = num;
@@ -381,6 +387,7 @@ void sjf_fancymath_subtract(sjs_fancymath* _parent, sjs_fancymath* num, sjs_fanc
     int32_t sjt_math9;
     sjs_fancymath* sjt_parent4;
 
+    _return->_refCount = 1;
     sjt_dot4 = _parent;
     sjt_math11 = (sjt_dot4)->x;
     sjt_parent4 = num;
@@ -412,8 +419,10 @@ void sjf_fancymath_subtract_heap(sjs_fancymath* _parent, sjs_fancymath* num, sjs
 }
 
 int main(int argc, char** argv) {
+    sjv_a._refCount = 1;
     sjv_a.x = 1;
     sjf_fancymath(&sjv_a);
+    sjv_b._refCount = 1;
     sjv_b.x = 2;
     sjf_fancymath(&sjv_b);
     sjv_ii = 2;
@@ -466,12 +475,12 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    sjf_fancymath_destroy(&sjv_a);
-    sjf_fancymath_destroy(&sjv_b);
-    sjf_fancymath_destroy(&sjv_c);
-    sjf_fancymath_destroy(&sjv_d);
-    sjf_fancymath_destroy(&sjv_e);
-    sjf_fancymath_destroy(&sjv_f);
-    sjf_fancymath_destroy(&sjv_g);
-    sjf_fancymath_destroy(&sjv_k);
+    if (sjv_a._refCount == 1) { sjf_fancymath_destroy(&sjv_a); }
+    if (sjv_b._refCount == 1) { sjf_fancymath_destroy(&sjv_b); }
+    if (sjv_c._refCount == 1) { sjf_fancymath_destroy(&sjv_c); }
+    if (sjv_d._refCount == 1) { sjf_fancymath_destroy(&sjv_d); }
+    if (sjv_e._refCount == 1) { sjf_fancymath_destroy(&sjv_e); }
+    if (sjv_f._refCount == 1) { sjf_fancymath_destroy(&sjv_f); }
+    if (sjv_g._refCount == 1) { sjf_fancymath_destroy(&sjv_g); }
+    if (sjv_k._refCount == 1) { sjf_fancymath_destroy(&sjv_k); }
 }

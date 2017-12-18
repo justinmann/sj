@@ -73,7 +73,7 @@ struct td_sjs_foo {
     int _refCount;
 };
 
-sjs_foo sjv_a;
+sjs_foo sjv_a = { -1 };
 
 void sjf_bar(sjs_foo* _return);
 void sjf_bar_heap(sjs_foo** _return);
@@ -84,6 +84,7 @@ void sjf_foo_heap(sjs_foo* _this);
 void main_destroy(void);
 
 void sjf_bar(sjs_foo* _return) {
+    _return->_refCount = 1;
     sjf_foo(_return);
 }
 
@@ -117,5 +118,5 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    sjf_foo_destroy(&sjv_a);
+    if (sjv_a._refCount == 1) { sjf_foo_destroy(&sjv_a); }
 }

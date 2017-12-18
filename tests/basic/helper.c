@@ -76,7 +76,7 @@ struct td_sjs_class {
 
 int32_t sjt_functionParam1;
 sjs_class* sjt_functionParam2;
-sjs_class* sjv_c;
+sjs_class* sjv_c = 0;
 int32_t void1;
 int32_t void2;
 

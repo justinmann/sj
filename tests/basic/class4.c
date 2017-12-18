@@ -75,7 +75,7 @@ struct td_sjs_class {
 };
 
 sjs_class* sjt_dot1;
-sjs_class sjv_a;
+sjs_class sjv_a = { -1 };
 
 void sjf_class(sjs_class* _this);
 void sjf_class_copy(sjs_class* _this, sjs_class* _from);
@@ -97,6 +97,7 @@ void sjf_class_heap(sjs_class* _this) {
 }
 
 int main(int argc, char** argv) {
+    sjv_a._refCount = 1;
     sjv_a.b = 0;
     sjf_class(&sjv_a);
     sjt_dot1 = &sjv_a;
@@ -111,5 +112,5 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    sjf_class_destroy(&sjv_a);
+    if (sjv_a._refCount == 1) { sjf_class_destroy(&sjv_a); }
 }

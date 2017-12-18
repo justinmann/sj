@@ -202,17 +202,26 @@ static inline khint_t kh_get_##name(kh_##name##_t *h, khkey_t key)  \
 {                                                                   \
 if (h->n_buckets) {                                             \
 khint_t inc, k, i, last;                                    \
-__hash_func(key, &k); i = k % h->n_buckets;                 \
+__hash_func(key, &k); i = k % h->n_buckets;        \
 inc = 1 + k % (h->n_buckets - 1); last = i;                 \
-bool isEqual;                                               \
-__hash_equal(h->keys[i], key, &isEqual);                    \
-while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
+bool shouldContinue = false;                                \
+if (!__ac_isempty(h->flags, i)) {                           \
+bool isEqual;                                           \
+__hash_equal(h->keys[i], key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+}                                                           \
+while (shouldContinue) {                                    \
 if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
 else i += inc;                                          \
 if (i == last) return h->n_buckets;                     \
-__hash_equal(h->keys[i], key, &isEqual);                \
+shouldContinue = false;                                 \
+if (!__ac_isempty(h->flags, i)) {                       \
+bool isEqual;                                       \
+__hash_equal(h->keys[i], key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual; \
+}                                                       \
 }                                                           \
-return __ac_iseither(h->flags, i)? h->n_buckets : i;            \
+return __ac_iseither(h->flags, i)? h->n_buckets : i;        \
 } else return 0;                                                \
 }                                                                   \
 static inline void kh_resize_##name(kh_##name##_t *h, khint_t new_n_buckets) \
@@ -323,6 +332,159 @@ __ac_set_isdel_true(h->flags, x);                           \
 --h->size;                                                  \
 }                                                               \
 }
+#define KHASH_INIT_FUNCTION_DEREF(name, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal) \
+static inline kh_##name##_t *kh_init_##name() {                     \
+return (kh_##name##_t*)calloc(1, sizeof(kh_##name##_t));        \
+}                                                                   \
+static inline void kh_destroy_##name(kh_##name##_t *h)              \
+{                                                                   \
+if (h) {                                                        \
+free(h->keys); free(h->flags);                              \
+free(h->vals);                                              \
+free(h);                                                    \
+}                                                               \
+}                                                                   \
+static inline void kh_clear_##name(kh_##name##_t *h)                \
+{                                                                   \
+if (h && h->flags) { \
+memset(h->flags, 0xaa, ((h->n_buckets>>4) + 1) * sizeof(uint32_t)); \
+h->size = h->n_occupied = 0;                                \
+}                                                               \
+}                                                                   \
+static inline khint_t kh_get_##name(kh_##name##_t *h, khkey_t key)  \
+{                                                                   \
+if (h->n_buckets) {                                             \
+khint_t inc, k, i, last;                                    \
+__hash_func(&key, &k); i = k % h->n_buckets;        \
+inc = 1 + k % (h->n_buckets - 1); last = i;                 \
+bool shouldContinue = false;                                \
+if (!__ac_isempty(h->flags, i)) {                           \
+bool isEqual;                                           \
+__hash_equal(&h->keys[i], &key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+}                                                           \
+while (shouldContinue) {                                    \
+if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
+else i += inc;                                          \
+if (i == last) return h->n_buckets;                     \
+shouldContinue = false;                                 \
+if (!__ac_isempty(h->flags, i)) {                       \
+bool isEqual;                                       \
+__hash_equal(&h->keys[i], &key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual; \
+}                                                       \
+}                                                           \
+return __ac_iseither(h->flags, i)? h->n_buckets : i;        \
+} else return 0;                                                \
+}                                                                   \
+static inline void kh_resize_##name(kh_##name##_t *h, khint_t new_n_buckets) \
+{                                                                   \
+uint32_t *new_flags = 0;                                        \
+khint_t j = 1;                                                  \
+{                                                               \
+khint_t t = __ac_HASH_PRIME_SIZE - 1;                       \
+while (__ac_prime_list[t] > new_n_buckets) --t;             \
+new_n_buckets = __ac_prime_list[t+1];                       \
+if (h->size >= (khint_t)(new_n_buckets * __ac_HASH_UPPER + 0.5)) j = 0; \
+else {                                                      \
+new_flags = (uint32_t*)malloc(((new_n_buckets>>4) + 1) * sizeof(uint32_t)); \
+memset(new_flags, 0xaa, ((new_n_buckets>>4) + 1) * sizeof(uint32_t)); \
+if (h->n_buckets < new_n_buckets) {                     \
+h->keys = (khkey_t*)realloc(h->keys, new_n_buckets * sizeof(khkey_t)); \
+if (kh_is_map)                                      \
+h->vals = (khval_t*)realloc(h->vals, new_n_buckets * sizeof(khval_t)); \
+}                                                       \
+}                                                           \
+}                                                               \
+if (j) {                                                        \
+for (j = 0; j != h->n_buckets; ++j) {                       \
+if (__ac_iseither(h->flags, j) == 0) {                  \
+khkey_t key = h->keys[j];                           \
+khval_t val;                                        \
+if (kh_is_map) val = h->vals[j];                    \
+__ac_set_isdel_true(h->flags, j);                   \
+while (1) {                                         \
+khint_t inc, k, i;                              \
+__hash_func(&key, &k);                           \
+i = k % new_n_buckets;                          \
+inc = 1 + k % (new_n_buckets - 1);              \
+while (!__ac_isempty(new_flags, i)) {           \
+if (i + inc >= new_n_buckets) i = i + inc - new_n_buckets; \
+else i += inc;                              \
+}                                               \
+__ac_set_isempty_false(new_flags, i);           \
+if (i < h->n_buckets && __ac_iseither(h->flags, i) == 0) { \
+{ khkey_t tmp = h->keys[i]; h->keys[i] = key; key = tmp; } \
+if (kh_is_map) { khval_t tmp = h->vals[i]; h->vals[i] = val; val = tmp; } \
+__ac_set_isdel_true(h->flags, i);           \
+} else {                                        \
+h->keys[i] = key;                           \
+if (kh_is_map) h->vals[i] = val;            \
+break;                                      \
+}                                               \
+}                                                   \
+}                                                       \
+}                                                           \
+if (h->n_buckets > new_n_buckets) {                         \
+h->keys = (khkey_t*)realloc(h->keys, new_n_buckets * sizeof(khkey_t)); \
+if (kh_is_map)                                          \
+h->vals = (khval_t*)realloc(h->vals, new_n_buckets * sizeof(khval_t)); \
+}                                                           \
+free(h->flags);                                             \
+h->flags = new_flags;                                       \
+h->n_buckets = new_n_buckets;                               \
+h->n_occupied = h->size;                                    \
+h->upper_bound = (khint_t)(h->n_buckets * __ac_HASH_UPPER + 0.5); \
+}                                                               \
+}                                                                   \
+static inline khint_t kh_put_##name(kh_##name##_t *h, khkey_t key, int *ret) \
+{                                                                   \
+khint_t x;                                                      \
+if (h->n_occupied >= h->upper_bound) {                          \
+if (h->n_buckets > (h->size<<1)) kh_resize_##name(h, h->n_buckets - 1); \
+else kh_resize_##name(h, h->n_buckets + 1);                 \
+}                                                               \
+{                                                               \
+khint_t inc, k, i, site, last;                              \
+x = site = h->n_buckets; __hash_func(&key, &k); i = k % h->n_buckets; \
+if (__ac_isempty(h->flags, i)) x = i;                       \
+else {                                                      \
+inc = 1 + k % (h->n_buckets - 1); last = i;             \
+bool isEqual;                                           \
+__hash_equal(&h->keys[i], &key, &isEqual);                \
+while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
+if (__ac_isdel(h->flags, i)) site = i;              \
+if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
+else i += inc;                                      \
+if (i == last) { x = site; break; }                 \
+__hash_equal(&h->keys[i], &key, &isEqual);            \
+}                                                       \
+if (x == h->n_buckets) {                                \
+if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \
+else x = i;                                         \
+}                                                       \
+}                                                           \
+}                                                               \
+if (__ac_isempty(h->flags, x)) {                                \
+h->keys[x] = key;                                           \
+__ac_set_isboth_false(h->flags, x);                         \
+++h->size; ++h->n_occupied;                                 \
+*ret = 1;                                                   \
+} else if (__ac_isdel(h->flags, x)) {                           \
+h->keys[x] = key;                                           \
+__ac_set_isboth_false(h->flags, x);                         \
+++h->size;                                                  \
+*ret = 2;                                                   \
+} else *ret = 0;                                                \
+return x;                                                       \
+}                                                                   \
+static inline void kh_del_##name(kh_##name##_t *h, khint_t x)       \
+{                                                                   \
+if (x != h->n_buckets && !__ac_iseither(h->flags, x)) {         \
+__ac_set_isdel_true(h->flags, x);                           \
+--h->size;                                                  \
+}                                                               \
+}
 /* --- BEGIN OF HASH FUNCTIONS --- */
 #define kh_int_hash_func(key) (uint32_t)(key)
 #define kh_int_hash_equal(a, b) (a == b)
@@ -378,14 +540,6 @@ int size;
 delete_cb cb[5];
 delete_cb_list* next;
 };
-#ifndef int32_t_int32_t_hash_typedef
-#define int32_t_int32_t_hash_typedef
-KHASH_INIT_TYPEDEF(int32_t_int32_t_hash_type, int32_t, int32_t)
-#endif
-#ifndef int32_t_int32_t_hash_typedef
-#define int32_t_int32_t_hash_typedef
-KHASH_INIT_TYPEDEF(int32_t_int32_t_hash_type, int32_t, int32_t)
-#endif
 #define sjs_object_typeId 1
 #define sjs_hash_i32i32_typeId 2
 #define sjs_array_char_typeId 3
@@ -402,7 +556,7 @@ struct td_sjs_object {
 
 struct td_sjs_hash_i32i32 {
     int _refCount;
-    khash_t(int32_t_int32_t_hash_type)* _hash;
+    void* _hash;
 };
 
 struct td_sjs_array_char {
@@ -433,12 +587,20 @@ void weakptr_cb_remove(void* v, delete_cb cb);
 void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
+#ifndef i32_i32_hash_typedef
+#define i32_i32_hash_typedef
+KHASH_INIT_TYPEDEF(i32_i32_hash_type, int32_t, int32_t)
+#endif
+#ifndef i32_i32_hash_typedef
+#define i32_i32_hash_typedef
+KHASH_INIT_TYPEDEF(i32_i32_hash_type, int32_t, int32_t)
+#endif
 int32_t result1;
-sjs_string sjt_call1;
+sjs_string sjt_call1 = { -1 };
 int32_t sjt_functionParam1;
 int32_t sjt_functionParam2;
 int32_t sjt_functionParam3;
-sjs_string* sjt_functionParam7;
+sjs_string* sjt_functionParam5;
 bool sjt_ifElse1;
 bool sjt_ifElse2;
 int32_option sjt_isEmpty1;
@@ -448,9 +610,9 @@ int32_t sjt_math2;
 int32_t sjt_negate1;
 sjs_hash_i32i32* sjt_parent1;
 sjs_hash_i32i32* sjt_parent2;
-sjs_hash_i32i32 sjv_a;
+sjs_hash_i32i32 sjv_a = { -1 };
 int32_option sjv_b;
-sjs_string sjv_c;
+sjs_string sjv_c = { -1 };
 void* sjv_emptystringdata;
 float sjv_f32_pi;
 int32_t sjv_i32_maxvalue;
@@ -470,8 +632,8 @@ void sjf_hash_i32i32_heap(sjs_hash_i32i32* _this);
 void sjf_hash_i32i32_setat(sjs_hash_i32i32* _parent, int32_t key, int32_t val);
 void sjf_i32_hash(int32_t val, uint32_t* _return);
 void sjf_i32_isequal(int32_t l, int32_t r, bool* _return);
-void sjf_i32_tostring(int32_t val, int32_t base, int32_t minlength, sjs_string* _return);
-void sjf_i32_tostring_heap(int32_t val, int32_t base, int32_t minlength, sjs_string** _return);
+void sjf_i32_tostring(int32_t val, sjs_string* _return);
+void sjf_i32_tostring_heap(int32_t val, sjs_string** _return);
 void sjf_string(sjs_string* _this);
 void sjf_string_copy(sjs_string* _this, sjs_string* _from);
 void sjf_string_destroy(sjs_string* _this);
@@ -607,13 +769,21 @@ bool ptr_release(void* v) {
     }
     return true;
 }
-#ifndef int32_t_int32_t_hash_function
-#define int32_t_int32_t_hash_function
-KHASH_INIT_FUNCTION(int32_t_int32_t_hash_type, int32_t, int32_t, 1, sjf_i32_hash, sjf_i32_isequal)
+#ifndef i32_i32_hash_function
+#define i32_i32_hash_function
+#if false
+KHASH_INIT_FUNCTION_DEREF(i32_i32_hash_type, int32_t, int32_t, 1, sjf_i32_hash, sjf_i32_isequal)
+#else
+KHASH_INIT_FUNCTION(i32_i32_hash_type, int32_t, int32_t, 1, sjf_i32_hash, sjf_i32_isequal)
 #endif
-#ifndef int32_t_int32_t_hash_function
-#define int32_t_int32_t_hash_function
-KHASH_INIT_FUNCTION(int32_t_int32_t_hash_type, int32_t, int32_t, 1, sjf_i32_hash, sjf_i32_isequal)
+#endif
+#ifndef i32_i32_hash_function
+#define i32_i32_hash_function
+#if false
+KHASH_INIT_FUNCTION_DEREF(i32_i32_hash_type, int32_t, int32_t, 1, sjf_i32_hash, sjf_i32_isequal)
+#else
+KHASH_INIT_FUNCTION(i32_i32_hash_type, int32_t, int32_t, 1, sjf_i32_hash, sjf_i32_isequal)
+#endif
 #endif
 void sjf_array_char(sjs_array_char* _this) {
     if (_this->datasize < 0) {
@@ -663,7 +833,7 @@ void sjf_debug_writeline(sjs_string* data) {
 }
 
 void sjf_hash_i32i32(sjs_hash_i32i32* _this) {
-    _this->_hash = kh_init(int32_t_int32_t_hash_type);
+    _this->_hash = kh_init(i32_i32_hash_type);
 }
 
 void sjf_hash_i32i32_copy(sjs_hash_i32i32* _this, sjs_hash_i32i32* _from) {
@@ -673,34 +843,58 @@ void sjf_hash_i32i32_copy(sjs_hash_i32i32* _this, sjs_hash_i32i32* _from) {
 
 void sjf_hash_i32i32_destroy(sjs_hash_i32i32* _this) {
     if (ptr_release(_this->_hash)) {
-        kh_destroy(int32_t_int32_t_hash_type, _this->_hash);
+        khash_t(i32_i32_hash_type)* p = (khash_t(i32_i32_hash_type)*)_this->_hash;
+        for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
+            if (kh_exist(p, k)) {
+                ;
+                ;
+            }
+        }
+        kh_destroy(i32_i32_hash_type, _this->_hash);
     }
 }
 
 void sjf_hash_i32i32_getat(sjs_hash_i32i32* _parent, int32_t key, int32_option* _return) {
-    khiter_t k = kh_get(int32_t_int32_t_hash_type, _parent->_hash, key);
-    if (k == kh_end(_parent->_hash)) {
+    khash_t(i32_i32_hash_type)* p = (khash_t(i32_i32_hash_type)*)_parent->_hash;
+    #if false
+    khiter_t k = kh_get(i32_i32_hash_type, p, *key);
+    #else
+    khiter_t k = kh_get(i32_i32_hash_type, p, key);
+    #endif
+    if (k == kh_end(p)) {
         (*_return) = int32_empty;
-
+return;
     }
     _return->isempty = false;
-_return->value = kh_val(_parent->_hash, k);
-;
+_return->value = kh_val(p, k);
+return;;
 }
 
 void sjf_hash_i32i32_heap(sjs_hash_i32i32* _this) {
-    _this->_hash = kh_init(int32_t_int32_t_hash_type);
+    _this->_hash = kh_init(i32_i32_hash_type);
 }
 
 void sjf_hash_i32i32_setat(sjs_hash_i32i32* _parent, int32_t key, int32_t val) {
-    khiter_t k = kh_get(int32_t_int32_t_hash_type, _parent->_hash, key);
-    if (k != kh_end(_parent->_hash)) {            
+    khash_t(i32_i32_hash_type)* p = (khash_t(i32_i32_hash_type)*)_parent->_hash;
+    #if false
+    khiter_t k = kh_get(i32_i32_hash_type, p, *key);
+    #else
+    khiter_t k = kh_get(i32_i32_hash_type, p, key);
+    #endif
+    if (k != kh_end(p)) {            
     ;
 }
 int ret;
-k = kh_put(int32_t_int32_t_hash_type, _parent->_hash, key, &ret);
-if (!ret) kh_del(int32_t_int32_t_hash_type, _parent->_hash, key);
-kh_val(_parent->_hash, k) = val;
+#if false
+k = kh_put(i32_i32_hash_type, _parent->_hash, *key, &ret);
+#else
+k = kh_put(i32_i32_hash_type, _parent->_hash, key, &ret);
+#endif
+if (!ret) kh_del(i32_i32_hash_type, p, k);
+int32_t t;
+t = key;
+;
+kh_val(p, k) = val;
 ;
 }
 
@@ -720,7 +914,7 @@ void sjf_i32_isequal(int32_t l, int32_t r, bool* _return) {
     (*_return) = sjt_compare1 == sjt_compare2;
 }
 
-void sjf_i32_tostring(int32_t val, int32_t base, int32_t minlength, sjs_string* _return) {
+void sjf_i32_tostring(int32_t val, sjs_string* _return) {
     int32_t sjt_math3;
     int32_t sjt_math4;
     int32_t sjt_math5;
@@ -730,38 +924,25 @@ void sjf_i32_tostring(int32_t val, int32_t base, int32_t minlength, sjs_string* 
 
     sjv_count = 0;
     sjv_data = 0;
-    if (base < 2) {
-        halt("base is too small");
-    }
-    if (base > 16) {
-        halt("base is too large");
-    }
-    char buf[32] = { 0 };
-    int i = 30;	
-    do {
-        buf[i] = "0123456789ABCDEF"[val % base];	
-        i--;
-        val /= base;
-    } while (val && i);
-    sjv_count = 30 - i;
-    if (sjv_count < minlength) {				
-}
-sjv_data = malloc(sizeof(char) * (sjv_count + 1));
-memcpy(sjv_data, &buf[i+1], sjv_count + 1);
-_return->count = sjv_count;
-sjt_math3 = sjv_count;
-sjt_math4 = 1;
-_return->data.datasize = sjt_math3 + sjt_math4;
-_return->data.data = sjv_data;
-_return->data._isglobal = false;
-sjt_math5 = sjv_count;
-sjt_math6 = 1;
-_return->data.count = sjt_math5 + sjt_math6;
-sjf_array_char(&_return->data);
-sjf_string(_return);
+    sjv_data = malloc(sizeof(char) * 50);
+    snprintf((char*)sjv_data, 50, "%d", val);
+    sjv_count = strlen((char*)sjv_data);
+    _return->_refCount = 1;
+    _return->count = sjv_count;
+    _return->data._refCount = 1;
+    sjt_math3 = sjv_count;
+    sjt_math4 = 1;
+    _return->data.datasize = sjt_math3 + sjt_math4;
+    _return->data.data = sjv_data;
+    _return->data._isglobal = false;
+    sjt_math5 = sjv_count;
+    sjt_math6 = 1;
+    _return->data.count = sjt_math5 + sjt_math6;
+    sjf_array_char(&_return->data);
+    sjf_string(_return);
 }
 
-void sjf_i32_tostring_heap(int32_t val, int32_t base, int32_t minlength, sjs_string** _return) {
+void sjf_i32_tostring_heap(int32_t val, sjs_string** _return) {
     int32_t sjt_math10;
     int32_t sjt_math7;
     int32_t sjt_math8;
@@ -771,37 +952,23 @@ void sjf_i32_tostring_heap(int32_t val, int32_t base, int32_t minlength, sjs_str
 
     sjv_count = 0;
     sjv_data = 0;
-    if (base < 2) {
-        halt("base is too small");
-    }
-    if (base > 16) {
-        halt("base is too large");
-    }
-    char buf[32] = { 0 };
-    int i = 30;	
-    do {
-        buf[i] = "0123456789ABCDEF"[val % base];	
-        i--;
-        val /= base;
-    } while (val && i);
-    sjv_count = 30 - i;
-    if (sjv_count < minlength) {				
-}
-sjv_data = malloc(sizeof(char) * (sjv_count + 1));
-memcpy(sjv_data, &buf[i+1], sjv_count + 1);
-(*_return) = (sjs_string*)malloc(sizeof(sjs_string));
-(*_return)->_refCount = 1;
-(*_return)->count = sjv_count;
-sjt_math7 = sjv_count;
-sjt_math8 = 1;
-(*_return)->data.datasize = sjt_math7 + sjt_math8;
-(*_return)->data.data = sjv_data;
-(*_return)->data._isglobal = false;
-sjt_math9 = sjv_count;
-sjt_math10 = 1;
-(*_return)->data.count = sjt_math9 + sjt_math10;
-sjf_array_char(&(*_return)->data);
-sjf_string_heap((*_return));
+    sjv_data = malloc(sizeof(char) * 50);
+    snprintf((char*)sjv_data, 50, "%d", val);
+    sjv_count = strlen((char*)sjv_data);
+    (*_return) = (sjs_string*)malloc(sizeof(sjs_string));
+    (*_return)->_refCount = 1;
+    (*_return)->count = sjv_count;
+    (*_return)->data._refCount = 1;
+    sjt_math7 = sjv_count;
+    sjt_math8 = 1;
+    (*_return)->data.datasize = sjt_math7 + sjt_math8;
+    (*_return)->data.data = sjv_data;
+    (*_return)->data._isglobal = false;
+    sjt_math9 = sjv_count;
+    sjt_math10 = 1;
+    (*_return)->data.count = sjt_math9 + sjt_math10;
+    sjf_array_char(&(*_return)->data);
+    sjf_string_heap((*_return));
 }
 
 void sjf_string(sjs_string* _this) {
@@ -809,6 +976,7 @@ void sjf_string(sjs_string* _this) {
 
 void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
     _this->count = _from->count;
+    _this->data._refCount = 1;
     sjf_array_char_copy(&_this->data, &_from->data);
 }
 
@@ -831,6 +999,7 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
+    sjv_a._refCount = 1;
     sjf_hash_i32i32(&sjv_a);
     sjt_parent1 = &sjv_a;
     sjt_functionParam1 = 1;
@@ -845,34 +1014,31 @@ int main(int argc, char** argv) {
         sjv_c._refCount = -1;
     } else {
         int32_t sjt_functionParam4;
-        int32_t sjt_functionParam5;
-        int32_t sjt_functionParam6;
         int32_option sjt_getValue1;
 
-        sjv_c._refCount = 1;
         sjt_getValue1 = sjv_b;
         sjt_functionParam4 = sjt_getValue1.value;
-        sjt_functionParam5 = 10;
-        sjt_functionParam6 = 0;
-        sjf_i32_tostring(sjt_functionParam4, sjt_functionParam5, sjt_functionParam6, &sjv_c);
+        sjf_i32_tostring(sjt_functionParam4, &sjv_c);
     }
 
     sjt_isEmpty2 = (sjv_c._refCount != -1 ? &sjv_c : 0);
     sjt_ifElse2 = (sjt_isEmpty2 == 0);
     if (sjt_ifElse2) {
+        sjt_call1._refCount = 1;
         sjt_call1.count = 9;
+        sjt_call1.data._refCount = 1;
         sjt_call1.data.datasize = 10;
         sjt_call1.data.data = (void*)sjg_string1;
         sjt_call1.data._isglobal = true;
         sjt_call1.data.count = 10;
         sjf_array_char(&sjt_call1.data);
         sjf_string(&sjt_call1);
-        sjt_functionParam7 = &sjt_call1;
+        sjt_functionParam5 = &sjt_call1;
     } else {
-        sjt_functionParam7 = (sjv_c._refCount != -1 ? &sjv_c : 0);
+        sjt_functionParam5 = (sjv_c._refCount != -1 ? &sjv_c : 0);
     }
 
-    sjf_debug_writeline(sjt_functionParam7);
+    sjf_debug_writeline(sjt_functionParam5);
     main_destroy();
     #ifdef _DEBUG
     printf("\npress return to end\n");
@@ -883,7 +1049,7 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    sjf_string_destroy(&sjt_call1);
-    sjf_hash_i32i32_destroy(&sjv_a);
-    sjf_string_destroy(&sjv_c);
+    if (sjt_call1._refCount == 1) { sjf_string_destroy(&sjt_call1); }
+    if (sjv_a._refCount == 1) { sjf_hash_i32i32_destroy(&sjv_a); }
+    if (sjv_c._refCount == 1) { sjf_string_destroy(&sjv_c); }
 }

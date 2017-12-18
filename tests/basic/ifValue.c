@@ -84,7 +84,7 @@ int32_option sjt_isEmpty6;
 int32_t sjt_value1;
 int32_option sjv_a;
 int32_option sjv_b;
-sjs_class sjv_c;
+sjs_class sjv_c = { -1 };
 int32_t sjv_w;
 int32_t sjv_x;
 int32_t sjv_y;
@@ -115,6 +115,7 @@ int main(int argc, char** argv) {
     value1.isempty = false;
     value1.value = sjt_value1;
     sjv_b = value1;
+    sjv_c._refCount = 1;
     sjv_c.d = int32_empty;
     sjf_class(&sjv_c);
     sjt_isEmpty2 = sjv_a;
@@ -168,5 +169,5 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    sjf_class_destroy(&sjv_c);
+    if (sjv_c._refCount == 1) { sjf_class_destroy(&sjv_c); }
 }

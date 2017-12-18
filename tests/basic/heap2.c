@@ -82,7 +82,7 @@ struct td_sjs_class {
 };
 
 sjs_class* sjt_parent1;
-sjs_class sjv_c;
+sjs_class sjv_c = { -1 };
 sjs_class_anon1* sjv_d;
 
 void sjf_class(sjs_class* _this);
@@ -113,6 +113,7 @@ void sjf_class_anon1_heap(sjs_class_anon1* _this, sjs_class* _parent) {
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
+    _this->data._refCount = 1;
     sjf_class_anon1_copy(&_this->data, &_from->data);
 }
 
@@ -130,6 +131,8 @@ void sjf_class_heap(sjs_class* _this) {
 }
 
 int main(int argc, char** argv) {
+    sjv_c._refCount = 1;
+    sjv_c.data._refCount = 1;
     sjv_c.data.x = 0;
     sjf_class_anon1(&sjv_c.data, &sjv_c);
     sjf_class(&sjv_c);
@@ -145,5 +148,5 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    sjf_class_destroy(&sjv_c);
+    if (sjv_c._refCount == 1) { sjf_class_destroy(&sjv_c); }
 }

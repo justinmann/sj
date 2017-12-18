@@ -93,13 +93,13 @@ struct td_sji_foo_i32 {
     void (*test1)(void* _parent, int32_t* _return);
 };
 
-sjs_class_i32* sjt_cast1;
-sji_foo_i32* sjt_cast2;
+sjs_class_i32* sjt_cast1 = 0;
+sji_foo_i32* sjt_cast2 = 0;
 bool sjt_ifElse1;
 sji_bar* sjt_isEmpty1;
 sji_foo_i32* sjt_parent1;
-sji_foo_i32* sjv_a;
-sji_bar* sjv_b;
+sji_foo_i32* sjv_a = 0;
+sji_bar* sjv_b = 0;
 int32_t void1;
 
 void sjf_class_i32(sjs_class_i32* _this);

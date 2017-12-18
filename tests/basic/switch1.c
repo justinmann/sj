@@ -74,11 +74,11 @@ struct td_sjs_class {
     int32_t bob;
 };
 
-sjs_class sjt_call1;
+sjs_class sjt_call1 = { -1 };
 sjs_class* sjt_functionParam1;
 sjs_class* sjt_parent1;
 bool sjt_switch1;
-sjs_class sjv_a;
+sjs_class sjv_a = { -1 };
 int32_t sjv_y;
 sjs_class* underscore1;
 
@@ -116,10 +116,12 @@ void sjf_class_isequal(sjs_class* _parent, sjs_class* r, bool* _return) {
 }
 
 int main(int argc, char** argv) {
+    sjv_a._refCount = 1;
     sjv_a.bob = 3;
     sjf_class(&sjv_a);
     underscore1 = &sjv_a;
     sjt_parent1 = underscore1;
+    sjt_call1._refCount = 1;
     sjt_call1.bob = 4;
     sjf_class(&sjt_call1);
     sjt_functionParam1 = &sjt_call1;
@@ -127,12 +129,13 @@ int main(int argc, char** argv) {
     if (sjt_switch1) {
         sjv_y = 1;
     } else {
-        sjs_class sjt_call2;
+        sjs_class sjt_call2 = { -1 };
         sjs_class* sjt_functionParam2;
         sjs_class* sjt_parent2;
         bool sjt_switch2;
 
         sjt_parent2 = underscore1;
+        sjt_call2._refCount = 1;
         sjt_call2.bob = 2;
         sjf_class(&sjt_call2);
         sjt_functionParam2 = &sjt_call2;
@@ -143,7 +146,7 @@ int main(int argc, char** argv) {
             sjv_y = 3;
         }
 
-        sjf_class_destroy(&sjt_call2);
+        if (sjt_call2._refCount == 1) { sjf_class_destroy(&sjt_call2); }
     }
     main_destroy();
     #ifdef _DEBUG
@@ -155,6 +158,6 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    sjf_class_destroy(&sjt_call1);
-    sjf_class_destroy(&sjv_a);
+    if (sjt_call1._refCount == 1) { sjf_class_destroy(&sjt_call1); }
+    if (sjv_a._refCount == 1) { sjf_class_destroy(&sjv_a); }
 }

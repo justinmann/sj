@@ -77,7 +77,7 @@ struct td_sjs_class {
 bool sjt_ifElse1;
 bool sjt_ifElse2;
 int32_t sjv_a;
-sjs_class sjv_c;
+sjs_class sjv_c = { -1 };
 
 void sjf_class(sjs_class* _this);
 void sjf_class_copy(sjs_class* _this, sjs_class* _from);
@@ -106,10 +106,12 @@ int main(int argc, char** argv) {
         sjv_a = 2;
     }
 
+    sjv_c._refCount = 1;
     sjv_c.x = 1;
     sjf_class(&sjv_c);
     sjt_ifElse2 = true;
     if (sjt_ifElse2) {
+        sjv_c._refCount = 1;
         sjv_c.x = 2;
         sjf_class(&sjv_c);
     }
@@ -123,5 +125,5 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    sjf_class_destroy(&sjv_c);
+    if (sjv_c._refCount == 1) { sjf_class_destroy(&sjv_c); }
 }

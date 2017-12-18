@@ -73,7 +73,7 @@ struct td_sjs_func {
     int _refCount;
 };
 
-sjs_func object1;
+sjs_func object1 = { -1 };
 int32_t void1;
 
 void sjf_func(sjs_func* _this, int32_t* _return);
@@ -97,6 +97,7 @@ void sjf_func_destroy(sjs_func* _this) {
 }
 
 int main(int argc, char** argv) {
+    object1._refCount = 1;
     sjf_func(&object1, &void1);
     main_destroy();
     #ifdef _DEBUG
@@ -108,5 +109,5 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    sjf_func_destroy(&object1);
+    if (object1._refCount == 1) { sjf_func_destroy(&object1); }
 }

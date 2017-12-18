@@ -74,7 +74,7 @@ struct td_sjs_class {
     int32_t x;
 };
 
-sjs_class sjt_call1;
+sjs_class sjt_call1 = { -1 };
 sjs_class* sjt_dot1;
 
 void sjf_class(sjs_class* _this);
@@ -99,6 +99,7 @@ void sjf_class_heap(sjs_class* _this) {
 }
 
 void sjf_func(sjs_class* _return) {
+    _return->_refCount = 1;
     _return->x = 1;
     sjf_class(_return);
 }
@@ -123,5 +124,5 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    sjf_class_destroy(&sjt_call1);
+    if (sjt_call1._refCount == 1) { sjf_class_destroy(&sjt_call1); }
 }

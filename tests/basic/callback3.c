@@ -88,8 +88,8 @@ struct td_cb_i32_void_heap {
     void (*_destroy)(void*);
 };
 
-sjs_class* sjt_parent1;
-sjs_class* sjv_c;
+sjs_class* sjt_parent1 = 0;
+sjs_class* sjv_c = 0;
 int32_t void1;
 
 void sjf_class(sjs_class* _this);

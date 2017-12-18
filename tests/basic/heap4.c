@@ -87,7 +87,7 @@ struct td_sjs_c {
     sjs_b b;
 };
 
-sjs_c void1;
+sjs_c void1 = { -1 };
 
 void sjf_a(sjs_a* _this);
 void sjf_a_copy(sjs_a* _this, sjs_a* _from);
@@ -119,6 +119,7 @@ void sjf_b(sjs_b* _this) {
 }
 
 void sjf_b_copy(sjs_b* _this, sjs_b* _from) {
+    _this->a._refCount = 1;
     sjf_a_copy(&_this->a, &_from->a);
 }
 
@@ -132,6 +133,7 @@ void sjf_c(sjs_c* _this) {
 }
 
 void sjf_c_copy(sjs_c* _this, sjs_c* _from) {
+    _this->b._refCount = 1;
     sjf_b_copy(&_this->b, &_from->b);
 }
 
@@ -142,6 +144,9 @@ void sjf_c_heap(sjs_c* _this) {
 }
 
 int main(int argc, char** argv) {
+    void1._refCount = 1;
+    void1.b._refCount = 1;
+    void1.b.a._refCount = 1;
     sjf_a(&void1.b.a);
     sjf_b(&void1.b);
     sjf_c(&void1);
@@ -155,5 +160,5 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    sjf_c_destroy(&void1);
+    if (void1._refCount == 1) { sjf_c_destroy(&void1); }
 }

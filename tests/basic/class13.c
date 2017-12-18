@@ -82,7 +82,7 @@ struct td_sjs_class {
 
 int32_t sjt_functionParam5;
 sjs_class* sjt_parent2;
-sjs_class sjv_c;
+sjs_class sjv_c = { -1 };
 int32_t void1;
 
 void sjf_class(sjs_class* _this);
@@ -109,6 +109,7 @@ void sjf_class_bar(sjs_class* _parent, int32_t x, int32_t* _return) {
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
+    _this->m._refCount = 1;
     sjf_math_copy(&_this->m, &_from->m);
 }
 
@@ -166,6 +167,8 @@ void sjf_math_sub(sjs_math* _parent, int32_t x, int32_t y, int32_t* _return) {
 }
 
 int main(int argc, char** argv) {
+    sjv_c._refCount = 1;
+    sjv_c.m._refCount = 1;
     sjf_math(&sjv_c.m);
     sjf_class(&sjv_c);
     sjt_parent2 = &sjv_c;
@@ -181,5 +184,5 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    sjf_class_destroy(&sjv_c);
+    if (sjv_c._refCount == 1) { sjf_class_destroy(&sjv_c); }
 }

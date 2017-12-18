@@ -95,23 +95,26 @@ void sjf_class_heap(sjs_class* _this) {
 }
 
 void sjf_func(sjs_class** _return) {
-    sjs_class sjt_call1;
-    sjs_class sjt_call2;
+    sjs_class sjt_call1 = { -1 };
+    sjs_class sjt_call2 = { -1 };
     sjs_class* sjt_copy1;
     sjs_class* sjt_copy2;
-    sjs_class sjv_a;
+    sjs_class sjv_a = { -1 };
 
+    sjt_call1._refCount = 1;
     sjf_class(&sjt_call1);
     sjt_copy1 = &sjt_call1;
+    sjv_a._refCount = 1;
     sjf_class_copy(&sjv_a, sjt_copy1);
+    sjt_call2._refCount = 1;
     sjf_class(&sjt_call2);
     sjt_copy2 = &sjt_call2;
     sjf_class_copy(&sjv_a, sjt_copy2);
     (*_return) = &sjv_a;
 
-    sjf_class_destroy(&sjt_call1);
-    sjf_class_destroy(&sjt_call2);
-    sjf_class_destroy(&sjv_a);
+    if (sjt_call1._refCount == 1) { sjf_class_destroy(&sjt_call1); }
+    if (sjt_call2._refCount == 1) { sjf_class_destroy(&sjt_call2); }
+    if (sjv_a._refCount == 1) { sjf_class_destroy(&sjv_a); }
 }
 
 int main(int argc, char** argv) {

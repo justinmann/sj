@@ -203,17 +203,26 @@ static inline khint_t kh_get_##name(kh_##name##_t *h, khkey_t key)  \
 {                                                                   \
 if (h->n_buckets) {                                             \
 khint_t inc, k, i, last;                                    \
-__hash_func(key, &k); i = k % h->n_buckets;                 \
+__hash_func(key, &k); i = k % h->n_buckets;        \
 inc = 1 + k % (h->n_buckets - 1); last = i;                 \
-bool isEqual;                                               \
-__hash_equal(h->keys[i], key, &isEqual);                    \
-while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
+bool shouldContinue = false;                                \
+if (!__ac_isempty(h->flags, i)) {                           \
+bool isEqual;                                           \
+__hash_equal(h->keys[i], key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+}                                                           \
+while (shouldContinue) {                                    \
 if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
 else i += inc;                                          \
 if (i == last) return h->n_buckets;                     \
-__hash_equal(h->keys[i], key, &isEqual);                \
+shouldContinue = false;                                 \
+if (!__ac_isempty(h->flags, i)) {                       \
+bool isEqual;                                       \
+__hash_equal(h->keys[i], key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual; \
+}                                                       \
 }                                                           \
-return __ac_iseither(h->flags, i)? h->n_buckets : i;            \
+return __ac_iseither(h->flags, i)? h->n_buckets : i;        \
 } else return 0;                                                \
 }                                                                   \
 static inline void kh_resize_##name(kh_##name##_t *h, khint_t new_n_buckets) \
@@ -297,6 +306,159 @@ if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
 else i += inc;                                      \
 if (i == last) { x = site; break; }                 \
 __hash_equal(h->keys[i], key, &isEqual);            \
+}                                                       \
+if (x == h->n_buckets) {                                \
+if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \
+else x = i;                                         \
+}                                                       \
+}                                                           \
+}                                                               \
+if (__ac_isempty(h->flags, x)) {                                \
+h->keys[x] = key;                                           \
+__ac_set_isboth_false(h->flags, x);                         \
+++h->size; ++h->n_occupied;                                 \
+*ret = 1;                                                   \
+} else if (__ac_isdel(h->flags, x)) {                           \
+h->keys[x] = key;                                           \
+__ac_set_isboth_false(h->flags, x);                         \
+++h->size;                                                  \
+*ret = 2;                                                   \
+} else *ret = 0;                                                \
+return x;                                                       \
+}                                                                   \
+static inline void kh_del_##name(kh_##name##_t *h, khint_t x)       \
+{                                                                   \
+if (x != h->n_buckets && !__ac_iseither(h->flags, x)) {         \
+__ac_set_isdel_true(h->flags, x);                           \
+--h->size;                                                  \
+}                                                               \
+}
+#define KHASH_INIT_FUNCTION_DEREF(name, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal) \
+static inline kh_##name##_t *kh_init_##name() {                     \
+return (kh_##name##_t*)calloc(1, sizeof(kh_##name##_t));        \
+}                                                                   \
+static inline void kh_destroy_##name(kh_##name##_t *h)              \
+{                                                                   \
+if (h) {                                                        \
+free(h->keys); free(h->flags);                              \
+free(h->vals);                                              \
+free(h);                                                    \
+}                                                               \
+}                                                                   \
+static inline void kh_clear_##name(kh_##name##_t *h)                \
+{                                                                   \
+if (h && h->flags) { \
+memset(h->flags, 0xaa, ((h->n_buckets>>4) + 1) * sizeof(uint32_t)); \
+h->size = h->n_occupied = 0;                                \
+}                                                               \
+}                                                                   \
+static inline khint_t kh_get_##name(kh_##name##_t *h, khkey_t key)  \
+{                                                                   \
+if (h->n_buckets) {                                             \
+khint_t inc, k, i, last;                                    \
+__hash_func(&key, &k); i = k % h->n_buckets;        \
+inc = 1 + k % (h->n_buckets - 1); last = i;                 \
+bool shouldContinue = false;                                \
+if (!__ac_isempty(h->flags, i)) {                           \
+bool isEqual;                                           \
+__hash_equal(&h->keys[i], &key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+}                                                           \
+while (shouldContinue) {                                    \
+if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
+else i += inc;                                          \
+if (i == last) return h->n_buckets;                     \
+shouldContinue = false;                                 \
+if (!__ac_isempty(h->flags, i)) {                       \
+bool isEqual;                                       \
+__hash_equal(&h->keys[i], &key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual; \
+}                                                       \
+}                                                           \
+return __ac_iseither(h->flags, i)? h->n_buckets : i;        \
+} else return 0;                                                \
+}                                                                   \
+static inline void kh_resize_##name(kh_##name##_t *h, khint_t new_n_buckets) \
+{                                                                   \
+uint32_t *new_flags = 0;                                        \
+khint_t j = 1;                                                  \
+{                                                               \
+khint_t t = __ac_HASH_PRIME_SIZE - 1;                       \
+while (__ac_prime_list[t] > new_n_buckets) --t;             \
+new_n_buckets = __ac_prime_list[t+1];                       \
+if (h->size >= (khint_t)(new_n_buckets * __ac_HASH_UPPER + 0.5)) j = 0; \
+else {                                                      \
+new_flags = (uint32_t*)malloc(((new_n_buckets>>4) + 1) * sizeof(uint32_t)); \
+memset(new_flags, 0xaa, ((new_n_buckets>>4) + 1) * sizeof(uint32_t)); \
+if (h->n_buckets < new_n_buckets) {                     \
+h->keys = (khkey_t*)realloc(h->keys, new_n_buckets * sizeof(khkey_t)); \
+if (kh_is_map)                                      \
+h->vals = (khval_t*)realloc(h->vals, new_n_buckets * sizeof(khval_t)); \
+}                                                       \
+}                                                           \
+}                                                               \
+if (j) {                                                        \
+for (j = 0; j != h->n_buckets; ++j) {                       \
+if (__ac_iseither(h->flags, j) == 0) {                  \
+khkey_t key = h->keys[j];                           \
+khval_t val;                                        \
+if (kh_is_map) val = h->vals[j];                    \
+__ac_set_isdel_true(h->flags, j);                   \
+while (1) {                                         \
+khint_t inc, k, i;                              \
+__hash_func(&key, &k);                           \
+i = k % new_n_buckets;                          \
+inc = 1 + k % (new_n_buckets - 1);              \
+while (!__ac_isempty(new_flags, i)) {           \
+if (i + inc >= new_n_buckets) i = i + inc - new_n_buckets; \
+else i += inc;                              \
+}                                               \
+__ac_set_isempty_false(new_flags, i);           \
+if (i < h->n_buckets && __ac_iseither(h->flags, i) == 0) { \
+{ khkey_t tmp = h->keys[i]; h->keys[i] = key; key = tmp; } \
+if (kh_is_map) { khval_t tmp = h->vals[i]; h->vals[i] = val; val = tmp; } \
+__ac_set_isdel_true(h->flags, i);           \
+} else {                                        \
+h->keys[i] = key;                           \
+if (kh_is_map) h->vals[i] = val;            \
+break;                                      \
+}                                               \
+}                                                   \
+}                                                       \
+}                                                           \
+if (h->n_buckets > new_n_buckets) {                         \
+h->keys = (khkey_t*)realloc(h->keys, new_n_buckets * sizeof(khkey_t)); \
+if (kh_is_map)                                          \
+h->vals = (khval_t*)realloc(h->vals, new_n_buckets * sizeof(khval_t)); \
+}                                                           \
+free(h->flags);                                             \
+h->flags = new_flags;                                       \
+h->n_buckets = new_n_buckets;                               \
+h->n_occupied = h->size;                                    \
+h->upper_bound = (khint_t)(h->n_buckets * __ac_HASH_UPPER + 0.5); \
+}                                                               \
+}                                                                   \
+static inline khint_t kh_put_##name(kh_##name##_t *h, khkey_t key, int *ret) \
+{                                                                   \
+khint_t x;                                                      \
+if (h->n_occupied >= h->upper_bound) {                          \
+if (h->n_buckets > (h->size<<1)) kh_resize_##name(h, h->n_buckets - 1); \
+else kh_resize_##name(h, h->n_buckets + 1);                 \
+}                                                               \
+{                                                               \
+khint_t inc, k, i, site, last;                              \
+x = site = h->n_buckets; __hash_func(&key, &k); i = k % h->n_buckets; \
+if (__ac_isempty(h->flags, i)) x = i;                       \
+else {                                                      \
+inc = 1 + k % (h->n_buckets - 1); last = i;             \
+bool isEqual;                                           \
+__hash_equal(&h->keys[i], &key, &isEqual);                \
+while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
+if (__ac_isdel(h->flags, i)) site = i;              \
+if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
+else i += inc;                                      \
+if (i == last) { x = site; break; }                 \
+__hash_equal(&h->keys[i], &key, &isEqual);            \
 }                                                       \
 if (x == h->n_buckets) {                                \
 if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \
@@ -449,19 +611,19 @@ int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_negate1;
 int32_t sjv_a;
-sjs_string sjv_b;
+sjs_string sjv_b = { -1 };
 int32_t sjv_c;
-sjs_string sjv_d;
+sjs_string sjv_d = { -1 };
 double sjv_e;
 void* sjv_emptystringdata;
 int32_t sjv_f;
 float sjv_f32_pi;
 int32_t sjv_i32_maxvalue;
 int32_t sjv_i32_minvalue;
-sjs_tuple2_i32_string sjv_t;
-sjs_tuple2_i32_string sjv_tupleresult1;
-sjs_tuple2_i32_string sjv_tupleresult2;
-sjs_tuple2_f64_i32 sjv_tupleresult3;
+sjs_tuple2_i32_string sjv_t = { -1 };
+sjs_tuple2_i32_string sjv_tupleresult1 = { -1 };
+sjs_tuple2_i32_string sjv_tupleresult2 = { -1 };
+sjs_tuple2_f64_i32 sjv_tupleresult3 = { -1 };
 uint32_t sjv_u32_maxvalue;
 
 void sjf_array_char(sjs_array_char* _this);
@@ -657,8 +819,11 @@ void sjf_array_char_heap(sjs_array_char* _this) {
 }
 
 void sjf_func(sjs_tuple2_i32_string* _return) {
+    _return->_refCount = 1;
     _return->item1 = 1;
+    _return->item2._refCount = 1;
     _return->item2.count = 3;
+    _return->item2.data._refCount = 1;
     _return->item2.data.datasize = 4;
     _return->item2.data.data = (void*)sjg_string1;
     _return->item2.data._isglobal = true;
@@ -672,7 +837,9 @@ void sjf_func_heap(sjs_tuple2_i32_string** _return) {
     (*_return) = (sjs_tuple2_i32_string*)malloc(sizeof(sjs_tuple2_i32_string));
     (*_return)->_refCount = 1;
     (*_return)->item1 = 1;
+    (*_return)->item2._refCount = 1;
     (*_return)->item2.count = 3;
+    (*_return)->item2.data._refCount = 1;
     (*_return)->item2.data.datasize = 4;
     (*_return)->item2.data.data = (void*)sjg_string2;
     (*_return)->item2.data._isglobal = true;
@@ -687,6 +854,7 @@ void sjf_string(sjs_string* _this) {
 
 void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
     _this->count = _from->count;
+    _this->data._refCount = 1;
     sjf_array_char_copy(&_this->data, &_from->data);
 }
 
@@ -715,6 +883,7 @@ void sjf_tuple2_i32_string(sjs_tuple2_i32_string* _this) {
 
 void sjf_tuple2_i32_string_copy(sjs_tuple2_i32_string* _this, sjs_tuple2_i32_string* _from) {
     _this->item1 = _from->item1;
+    _this->item2._refCount = 1;
     sjf_string_copy(&_this->item2, &_from->item2);
 }
 
@@ -742,6 +911,7 @@ int main(int argc, char** argv) {
     sjv_a = (sjt_dot1)->item1;
     sjt_dot2 = &sjv_t;
     sjt_copy1 = &(sjt_dot2)->item2;
+    sjv_b._refCount = 1;
     sjf_string_copy(&sjv_b, sjt_copy1);
     sjf_func(&sjv_tupleresult1);
     sjt_dot3 = &sjv_tupleresult1;
@@ -752,7 +922,9 @@ int main(int argc, char** argv) {
     sjt_dot5 = &sjv_tupleresult2;
     sjv_c = (sjt_dot5)->item1;
     sjt_dot6 = &sjv_tupleresult2;
+    sjv_d._refCount = 1;
     sjf_string_copy(&sjv_d, &(sjt_dot6)->item2);
+    sjv_tupleresult3._refCount = 1;
     sjv_tupleresult3.item1 = 1.0;
     sjv_tupleresult3.item2 = 4;
     sjf_tuple2_f64_i32(&sjv_tupleresult3);
@@ -770,10 +942,10 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    sjf_string_destroy(&sjv_b);
-    sjf_string_destroy(&sjv_d);
-    sjf_tuple2_i32_string_destroy(&sjv_t);
-    sjf_tuple2_i32_string_destroy(&sjv_tupleresult1);
-    sjf_tuple2_i32_string_destroy(&sjv_tupleresult2);
-    sjf_tuple2_f64_i32_destroy(&sjv_tupleresult3);
+    if (sjv_b._refCount == 1) { sjf_string_destroy(&sjv_b); }
+    if (sjv_d._refCount == 1) { sjf_string_destroy(&sjv_d); }
+    if (sjv_t._refCount == 1) { sjf_tuple2_i32_string_destroy(&sjv_t); }
+    if (sjv_tupleresult1._refCount == 1) { sjf_tuple2_i32_string_destroy(&sjv_tupleresult1); }
+    if (sjv_tupleresult2._refCount == 1) { sjf_tuple2_i32_string_destroy(&sjv_tupleresult2); }
+    if (sjv_tupleresult3._refCount == 1) { sjf_tuple2_f64_i32_destroy(&sjv_tupleresult3); }
 }

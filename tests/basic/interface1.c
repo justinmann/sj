@@ -99,10 +99,10 @@ struct td_sji_namespace2_foo {
     void (*test2)(void* _parent, int32_t* _return);
 };
 
-sjs_namespace1_class* sjt_cast1;
-sjs_namespace2_class* sjt_cast2;
-sji_namespace1_foo* sjv_a;
-sji_namespace2_foo* sjv_b;
+sjs_namespace1_class* sjt_cast1 = 0;
+sjs_namespace2_class* sjt_cast2 = 0;
+sji_namespace1_foo* sjv_a = 0;
+sji_namespace2_foo* sjv_b = 0;
 
 void sjf_namespace1_class(sjs_namespace1_class* _this);
 sjs_object* sjf_namespace1_class_asInterface(sjs_namespace1_class* _this, int typeId);

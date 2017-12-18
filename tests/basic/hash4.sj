@@ -15,6 +15,12 @@ class #interface(
 ) { this }
 
 a : hash![#interface, i32]()
-a[class(1) as #interface] = 1
+a[class(32) as #interface] = 1
 b : a[class(1) as #interface]
+
+a.each(print)
 debug.writeLine((b?:-1).toString())
+
+print(k : '#interface, v : 'i32) {
+	debug.writeLine(k.bob().toString() + " = " + v.toString())	
+}

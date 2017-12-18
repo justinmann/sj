@@ -90,14 +90,14 @@ struct td_sji_foo {
     void (*test_heap)(void* _parent, int32_t a, sjs_bar** _return);
 };
 
-sjs_class* sjt_cast1;
+sjs_class* sjt_cast1 = 0;
 int32_t sjt_interfaceParam1;
 int32_t sjt_interfaceParam2;
 sji_foo* sjt_parent1;
 sji_foo* sjt_parent2;
-sji_foo* sjv_a;
-sjs_bar sjv_b;
-sjs_bar* sjv_c;
+sji_foo* sjv_a = 0;
+sjs_bar sjv_b = { -1 };
+sjs_bar* sjv_c = 0;
 
 void sjf_bar(sjs_bar* _this);
 void sjf_bar_copy(sjs_bar* _this, sjs_bar* _from);
@@ -190,6 +190,7 @@ sji_foo* sjf_class_heap_as_sji_foo(sjs_class* _this) {
 }
 
 void sjf_class_test(sjs_class* _parent, int32_t a, sjs_bar* _return) {
+    _return->_refCount = 1;
     sjf_bar(_return);
 }
 
@@ -224,6 +225,7 @@ int main(int argc, char** argv) {
     sjv_a = (sji_foo*)sjf_class_heap_as_sji_foo(sjt_cast1);
     sjt_parent1 = sjv_a;
     sjt_interfaceParam1 = 1;
+    sjv_b._refCount = 1;
     sjt_parent1->test(sjt_parent1->_parent, sjt_interfaceParam1, &sjv_b);
     sjt_parent2 = sjv_a;
     sjt_interfaceParam2 = 1;
@@ -252,5 +254,5 @@ void main_destroy() {
     if (sjv_c->_refCount <= 0) {
         sjf_bar_destroy(sjv_c);
     }
-    sjf_bar_destroy(&sjv_b);
+    if (sjv_b._refCount == 1) { sjf_bar_destroy(&sjv_b); }
 }

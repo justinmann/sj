@@ -74,7 +74,7 @@ struct td_sjs_class {
 };
 
 sjs_class* sjt_parent1;
-sjs_class sjv_c;
+sjs_class sjv_c = { -1 };
 int32_t void1;
 
 void sjf_class(sjs_class* _this);
@@ -101,6 +101,7 @@ void sjf_class_heap(sjs_class* _this) {
 }
 
 int main(int argc, char** argv) {
+    sjv_c._refCount = 1;
     sjf_class(&sjv_c);
     sjt_parent1 = &sjv_c;
     sjf_class_func(sjt_parent1, &void1);
@@ -114,5 +115,5 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    sjf_class_destroy(&sjv_c);
+    if (sjv_c._refCount == 1) { sjf_class_destroy(&sjv_c); }
 }

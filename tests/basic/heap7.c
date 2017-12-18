@@ -73,24 +73,24 @@ struct td_sjs_foo {
     int _refCount;
 };
 
-sjs_foo sjt_call1;
+sjs_foo sjt_call1 = { -1 };
 sjs_foo* sjt_copy1;
 sjs_foo* sjt_copy2;
 sjs_foo* sjt_copy3;
-sjs_foo* sjt_copy4;
+sjs_foo* sjt_copy4 = 0;
 sjs_foo* sjt_copy5;
-sjs_foo* sjv_heap_x1;
-sjs_foo* sjv_heap_x2;
-sjs_foo* sjv_heap_x3;
-sjs_foo* sjv_heap_y;
+sjs_foo* sjv_heap_x1 = 0;
+sjs_foo* sjv_heap_x2 = 0;
+sjs_foo* sjv_heap_x3 = 0;
+sjs_foo* sjv_heap_y = 0;
 sjs_foo* sjv_local_x1;
 sjs_foo* sjv_local_x2;
 sjs_foo* sjv_local_x3;
 sjs_foo* sjv_local_y;
-sjs_foo sjv_stack_x1;
-sjs_foo sjv_stack_x2;
-sjs_foo sjv_stack_x3;
-sjs_foo sjv_stack_y;
+sjs_foo sjv_stack_x1 = { -1 };
+sjs_foo sjv_stack_x2 = { -1 };
+sjs_foo sjv_stack_x3 = { -1 };
+sjs_foo sjv_stack_y = { -1 };
 
 void sjf_foo(sjs_foo* _this);
 void sjf_foo_copy(sjs_foo* _this, sjs_foo* _from);
@@ -114,7 +114,9 @@ int main(int argc, char** argv) {
     sjv_heap_y = (sjs_foo*)malloc(sizeof(sjs_foo));
     sjv_heap_y->_refCount = 1;
     sjf_foo_heap(sjv_heap_y);
+    sjv_stack_y._refCount = 1;
     sjf_foo(&sjv_stack_y);
+    sjt_call1._refCount = 1;
     sjf_foo(&sjt_call1);
     sjv_local_y = &sjt_call1;
     sjv_heap_x1 = sjv_heap_y;
@@ -128,11 +130,14 @@ int main(int argc, char** argv) {
     sjv_heap_x3->_refCount = 1;
     sjf_foo_copy(sjv_heap_x3, sjt_copy2);
     sjt_copy3 = &sjv_stack_y;
+    sjv_stack_x1._refCount = 1;
     sjf_foo_copy(&sjv_stack_x1, sjt_copy3);
     sjt_copy4 = sjv_heap_y;
     sjt_copy4->_refCount++;
+    sjv_stack_x2._refCount = 1;
     sjf_foo_copy(&sjv_stack_x2, sjt_copy4);
     sjt_copy5 = sjv_local_y;
+    sjv_stack_x3._refCount = 1;
     sjf_foo_copy(&sjv_stack_x3, sjt_copy5);
     sjv_local_x1 = sjv_heap_y;
     sjv_local_x2 = &sjv_stack_y;
@@ -167,9 +172,9 @@ void main_destroy() {
     if (sjv_heap_y->_refCount <= 0) {
         sjf_foo_destroy(sjv_heap_y);
     }
-    sjf_foo_destroy(&sjt_call1);
-    sjf_foo_destroy(&sjv_stack_x1);
-    sjf_foo_destroy(&sjv_stack_x2);
-    sjf_foo_destroy(&sjv_stack_x3);
-    sjf_foo_destroy(&sjv_stack_y);
+    if (sjt_call1._refCount == 1) { sjf_foo_destroy(&sjt_call1); }
+    if (sjv_stack_x1._refCount == 1) { sjf_foo_destroy(&sjv_stack_x1); }
+    if (sjv_stack_x2._refCount == 1) { sjf_foo_destroy(&sjv_stack_x2); }
+    if (sjv_stack_x3._refCount == 1) { sjf_foo_destroy(&sjv_stack_x3); }
+    if (sjv_stack_y._refCount == 1) { sjf_foo_destroy(&sjv_stack_y); }
 }

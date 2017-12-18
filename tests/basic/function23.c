@@ -76,8 +76,8 @@ struct td_sjs_func {
     int32_t z;
 };
 
-sjs_func void1;
-sjs_func void2;
+sjs_func void1 = { -1 };
+sjs_func void2 = { -1 };
 
 void sjf_func(sjs_func* _this);
 void sjf_func_copy(sjs_func* _this, sjs_func* _from);
@@ -101,10 +101,12 @@ void sjf_func_heap(sjs_func* _this) {
 }
 
 int main(int argc, char** argv) {
+    void1._refCount = 1;
     void1.x = 4;
     void1.y = 5;
     void1.z = 6;
     sjf_func(&void1);
+    void2._refCount = 1;
     void2.x = 7;
     void2.y = 8;
     void2.z = 9;
@@ -119,6 +121,6 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    sjf_func_destroy(&void1);
-    sjf_func_destroy(&void2);
+    if (void1._refCount == 1) { sjf_func_destroy(&void1); }
+    if (void2._refCount == 1) { sjf_func_destroy(&void2); }
 }

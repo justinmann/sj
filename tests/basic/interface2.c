@@ -83,9 +83,9 @@ struct td_sji_foo {
     void (*test)(void* _parent, int32_t* _return);
 };
 
-sjs_class* sjt_cast1;
+sjs_class* sjt_cast1 = 0;
 sji_foo* sjt_parent1;
-sji_foo* sjv_a;
+sji_foo* sjv_a = 0;
 int32_t void1;
 
 void sjf_class(sjs_class* _this);

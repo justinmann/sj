@@ -87,14 +87,14 @@ struct td_sjs_class2 {
     sjs_inner inner;
 };
 
-sjs_class* sjt_value1;
-sjs_class2* sjt_value2;
-sjs_class sjv_x1;
-sjs_class* sjv_x2;
-sjs_class* sjv_x4;
-sjs_class2 sjv_x5;
-sjs_class2* sjv_x6;
-sjs_class2* sjv_x8;
+sjs_class* sjt_value1 = 0;
+sjs_class2* sjt_value2 = 0;
+sjs_class sjv_x1 = { -1 };
+sjs_class* sjv_x2 = 0;
+sjs_class* sjv_x4 = 0;
+sjs_class2 sjv_x5 = { -1 };
+sjs_class2* sjv_x6 = 0;
+sjs_class2* sjv_x8 = 0;
 
 void sjf_class(sjs_class* _this);
 void sjf_class2(sjs_class2* _this);
@@ -117,6 +117,7 @@ void sjf_class2(sjs_class2* _this) {
 }
 
 void sjf_class2_copy(sjs_class2* _this, sjs_class2* _from) {
+    _this->inner._refCount = 1;
     sjf_inner_copy((_this->inner._refCount != -1 ? &_this->inner : 0), (_from->inner._refCount != -1 ? &_from->inner : 0));
 }
 
@@ -127,6 +128,7 @@ void sjf_class2_heap(sjs_class2* _this) {
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
+    _this->inner._refCount = 1;
     sjf_inner_copy(&_this->inner, &_from->inner);
 }
 
@@ -149,14 +151,18 @@ void sjf_inner_heap(sjs_inner* _this) {
 }
 
 int main(int argc, char** argv) {
+    sjv_x1._refCount = 1;
+    sjv_x1.inner._refCount = 1;
     sjf_inner(&sjv_x1.inner);
     sjf_class(&sjv_x1);
     sjv_x2 = (sjs_class*)malloc(sizeof(sjs_class));
     sjv_x2->_refCount = 1;
+    sjv_x2->inner._refCount = 1;
     sjf_inner(&sjv_x2->inner);
     sjf_class_heap(sjv_x2);
     sjt_value1 = (sjs_class*)malloc(sizeof(sjs_class));
     sjt_value1->_refCount = 1;
+    sjt_value1->inner._refCount = 1;
     sjf_inner(&sjt_value1->inner);
     sjf_class_heap(sjt_value1);
     sjv_x4 = sjt_value1;
@@ -164,6 +170,7 @@ int main(int argc, char** argv) {
         sjv_x4->_refCount++;
     }
 
+    sjv_x5._refCount = 1;
     sjv_x5.inner._refCount = 1;
     sjf_inner(&sjv_x5.inner);
     sjf_class2(&sjv_x5);
@@ -219,6 +226,6 @@ void main_destroy() {
             sjf_class2_destroy(sjv_x8);
         }
     }
-    sjf_class_destroy(&sjv_x1);
-    sjf_class2_destroy(&sjv_x5);
+    if (sjv_x1._refCount == 1) { sjf_class_destroy(&sjv_x1); }
+    if (sjv_x5._refCount == 1) { sjf_class2_destroy(&sjv_x5); }
 }

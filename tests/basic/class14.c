@@ -74,7 +74,7 @@ struct td_sjs_class {
     int32_t m;
 };
 
-sjs_class object1;
+sjs_class object1 = { -1 };
 int32_t void1;
 
 void sjf_class(sjs_class* _this, int32_t* _return);
@@ -102,6 +102,7 @@ void sjf_class_inner(sjs_class* _parent, int32_t* _return) {
 }
 
 int main(int argc, char** argv) {
+    object1._refCount = 1;
     object1.m = 1;
     sjf_class(&object1, &void1);
     main_destroy();
@@ -114,5 +115,5 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    sjf_class_destroy(&object1);
+    if (object1._refCount == 1) { sjf_class_destroy(&object1); }
 }

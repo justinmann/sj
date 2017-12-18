@@ -92,10 +92,8 @@ struct td_sji_interface2 {
     sjs_object* (*asInterface)(sjs_object* _this, int typeId);
 };
 
-int32_t result1;
-sjs_class* sjt_cast1;
-sji_interface* sjt_cast2;
-int32_option sjt_getValue1;
+sjs_class* sjt_cast1 = 0;
+sji_interface* sjt_cast2 = 0;
 bool sjt_ifElse1;
 bool sjt_ifElse2;
 int32_option sjt_isEmpty1;
@@ -103,8 +101,7 @@ sjs_class* sjt_isEmpty2;
 sji_interface* sjt_isEmpty3;
 sjs_class* sjt_isEmpty4;
 int32_option sjt_isEmpty5;
-int32_t sjt_negate1;
-sjs_class* sjt_value1;
+sjs_class* sjt_value1 = 0;
 int32_option sjv_a;
 int64_option sjv_b;
 uint32_option sjv_c;
@@ -113,17 +110,17 @@ float_option sjv_e;
 double_option sjv_f;
 char_option sjv_g;
 void_option sjv_h;
-sjs_class sjv_i;
+sjs_class sjv_i = { -1 };
 bool sjv_j;
 bool sjv_k;
-sji_interface* sjv_l;
+sji_interface* sjv_l = 0;
 bool sjv_m;
-sjs_class* sjv_n;
-sjs_class* sjv_o;
+sjs_class* sjv_n = 0;
+sjs_class* sjv_o = 0;
 int32_option sjv_p;
 int32_t sjv_q;
-sji_interface* sjv_r;
-sji_interface2* sjv_s;
+sji_interface* sjv_r = 0;
+sji_interface2* sjv_s = 0;
 
 void sjf_class(sjs_class* _this);
 sjs_object* sjf_class_asInterface(sjs_class* _this, int typeId);
@@ -283,10 +280,15 @@ int main(int argc, char** argv) {
     sjt_isEmpty5 = sjv_a;
     sjt_ifElse2 = sjt_isEmpty5.isempty;
     if (sjt_ifElse2) {
+        int32_t result1;
+        int32_t sjt_negate1;
+
         sjt_negate1 = 1;
         result1 = -sjt_negate1;
         sjv_q = result1;
     } else {
+        int32_option sjt_getValue1;
+
         sjt_getValue1 = sjv_a;
         sjv_q = sjt_getValue1.value;
     }
@@ -372,5 +374,5 @@ void main_destroy() {
             sji_interface2_destroy(sjv_s);
         }
     }
-    sjf_class_destroy(&sjv_i);
+    if (sjv_i._refCount == 1) { sjf_class_destroy(&sjv_i); }
 }
