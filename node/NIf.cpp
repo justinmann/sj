@@ -33,7 +33,7 @@ void CIfElseVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
     }
     auto trIfBlock = make_shared<TrBlock>();
     trIfBlock->hasThis = trBlock->hasThis;
-    trIfBlock->localVarParent = ifLocalVarScope ? nullptr : trBlock;
+    trIfBlock->localVarParent = trBlock;
     auto trStatement = TrStatement(loc, ifLine.str(), trIfBlock);
 
     if (ifLocalVarScope) {
@@ -46,7 +46,7 @@ void CIfElseVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
 
     if (elseVar) {
         auto trElseBlock = make_shared<TrBlock>();
-        trElseBlock->localVarParent = elseLocalVarScope ? nullptr : trBlock;
+        trElseBlock->localVarParent = trBlock;
         trElseBlock->hasThis = trBlock->hasThis;
         trStatement.elseBlock = trElseBlock;
 

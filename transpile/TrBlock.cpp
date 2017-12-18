@@ -14,24 +14,24 @@ void TrBlock::writeVariablesToStream(ostream& stream, int level) {
     for (auto variable : variables)
     {
         addSpacing(stream, level);
+        stream << variable.second->type->cname;
+        stream << " " << variable.first;
         switch (variable.second->type->typeMode) {
         case CTM_Local:
-            stream << variable.second->type->cname;
             break;
         case CTM_Stack:
-            stream << variable.second->type->cname;
+            stream << " = { -1 }";
             break;
         case CTM_Heap:
-            stream << variable.second->type->cname;
+            stream << " = 0";
             break;
         case CTM_Value:
-            stream << variable.second->type->cname;
             break;
         default:
             assert(false);
             break;
         }
-        stream << " " << variable.first << ";\n";
+        stream << ";\n";
     }
 
     if (variables.size() > 0) {
@@ -116,7 +116,7 @@ void TrBlock::writeVariablesReleaseToStream(ostream& stream, int level) {
     {
         if (variable.second->type->typeMode == CTM_Stack) {
             addSpacing(varStream, level);
-            varStream << variable.second->type->parent.lock()->getCDestroyFunctionName() << "(&" << variable.first << ");\n";
+            varStream << "if (" << variable.first << "._refCount == 1) { " << variable.second->type->parent.lock()->getCDestroyFunctionName() << "(&" << variable.first << "); }\n";
         }
     }
 
@@ -146,7 +146,7 @@ shared_ptr<TrValue> TrBlock::getVariable(string name) {
 }
 
 shared_ptr<TrValue> TrBlock::createVariable(shared_ptr<CScope> scope, shared_ptr<CType> type, string name) {
-    if (localVarParent) {
+    if (localVarParent && type->typeMode == CTM_Stack) {
         return localVarParent->createVariable(scope, type, name);
     }
     else {
@@ -163,7 +163,7 @@ shared_ptr<TrValue> TrBlock::createVariable(shared_ptr<CScope> scope, shared_ptr
 }
 
 shared_ptr<TrValue> TrBlock::createTempVariable(shared_ptr<CScope> scope, shared_ptr<CType> type, string prefix) {
-    if (localVarParent) {
+    if (localVarParent && type->typeMode == CTM_Stack) {
         return localVarParent->createTempVariable(scope, type, prefix);
     }
     else {
@@ -175,7 +175,7 @@ shared_ptr<TrValue> TrBlock::createTempVariable(shared_ptr<CScope> scope, shared
 }
 
 shared_ptr<TrStoreValue> TrBlock::createTempStoreVariable(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, string prefix) {
-    if (localVarParent) {
+    if (localVarParent && type->typeMode == CTM_Stack) {
         return localVarParent->createTempStoreVariable(loc, scope, type, prefix);
     }
     else {
@@ -373,6 +373,15 @@ void TrValue::addInitToStatements(TrBlock* block) {
     }
     else if (type->typeMode == CTM_Stack) {
         assert(!type->parent.expired());
+
+        stringstream initLine;
+        if (isReturnValue) {
+            initLine << name << "->_refCount = 1";
+        }
+        else {
+            initLine << name << "._refCount = 1";
+        }
+        block->statements.push_back(TrStatement(CLoc::undefined, initLine.str()));
     }
     else if (type->typeMode == CTM_Local) {
     }
