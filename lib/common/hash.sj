@@ -48,6 +48,74 @@ hash![key, val] (
         #returnValue(val, kh_val(p, k));
         --c--
     }
+
+    each(cb : '(:key,:val)void)'void {
+        --c--
+        khash_t(#safeName(key)_#safeName(val)_hash_type)* p = (khash_t(#safeName(key)_#safeName(val)_hash_type)*)_parent->_hash;
+        for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
+            if (kh_exist(p, k)) {
+                cb._cb(
+                    cb._parent, 
+    ##if #isStack(key)
+                    &kh_key(p, k), 
+    ##else
+                    kh_key(p, k), 
+    ##endif
+    ##if #isStack(key)
+                    &kh_value(p, k)
+    ##else
+                    kh_value(p, k)
+    ##endif
+                );
+            }
+        }
+        --c--
+    }
+
+    filter(cb : '(:key,:val)bool)'hash![key, val] {
+        newHash : hash![key, val]()
+        --c--
+        khash_t(#safeName(key)_#safeName(val)_hash_type)* p = (khash_t(#safeName(key)_#safeName(val)_hash_type)*)_parent->_hash;
+        khash_t(#safeName(key)_#safeName(val)_hash_type)* newP = (khash_t(#safeName(key)_#safeName(val)_hash_type)*)sjv_newHash->_hash;
+        for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
+            if (kh_exist(p, k)) {
+                bool result;
+                cb._cb(
+                    cb._parent, 
+    ##if #isStack(key)
+                    &kh_key(p, k), 
+    ##else
+                    kh_key(p, k), 
+    ##endif
+    ##if #isStack(key)
+                    &kh_value(p, k), 
+    ##else
+                    kh_value(p, k), 
+    ##endif
+                    &result
+                );
+
+                if (result) {
+                    int ret;
+                    khiter_t k = kh_put(#safeName(key)_#safeName(val)_hash_type, newP, kh_key(p, k), &ret);
+                    if (!ret) kh_del(#safeName(key)_#safeName(val)_hash_type, newP, k);
+                    #type(key) t;
+                    #retain(key, t, kh_key(p, k));
+                    #retain(val, kh_val(newP, k), kh_value(p, k));
+                }
+            }
+        }
+        --c--
+        copy newHash
+    }
+
+    foldl!result(initial : 'result, cb : '(:result,:key,:val)result)'result {
+        r := initial
+        for i : 0 to count {
+            r = cb(r, getAt(i))
+        }           
+        r
+    }
 ) {
     --cdefine--
     ##ifndef #safeName(key)_#safeName(val)_hash_typedef
@@ -79,6 +147,13 @@ hash![key, val] (
 } destroy {
     --c--
     if (ptr_release(_this->_hash)) {
+        khash_t(#safeName(key)_#safeName(val)_hash_type)* p = (khash_t(#safeName(key)_#safeName(val)_hash_type)*)_this->_hash;
+        for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
+            if (kh_exist(p, k)) {
+                #release(key, kh_key(p, k));
+                #release(val, kh_value(p, k));
+            }
+        }
         kh_destroy(#safeName(key)_#safeName(val)_hash_type, _this->_hash);
     }
     --c--
