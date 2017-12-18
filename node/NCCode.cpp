@@ -167,6 +167,7 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
                 block.writeVariablesToStream(retainStream, 0);
                 block.writeBodyToStream(retainStream, 0);
             }
+            retainStream << "return;";
             return retainStream.str();
         }
         else {
@@ -200,6 +201,7 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
                 block.writeVariablesToStream(retainStream, 0);
                 block.writeBodyToStream(retainStream, 0);
             }
+            retainStream << "return;";
             return retainStream.str();
         }
         else {
@@ -253,6 +255,7 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
                 block.writeVariablesToStream(retainStream, 0);
                 block.writeBodyToStream(retainStream, 0);
             }
+            retainStream << "return;";
             return retainStream.str();
         }
         else {
