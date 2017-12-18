@@ -16,20 +16,22 @@ void TrBlock::writeVariablesToStream(ostream& stream, int level) {
         addSpacing(stream, level);
         stream << variable.second->type->cname;
         stream << " " << variable.first;
-        switch (variable.second->type->typeMode) {
-        case CTM_Local:
-            break;
-        case CTM_Stack:
-            stream << " = { -1 }";
-            break;
-        case CTM_Heap:
-            stream << " = 0";
-            break;
-        case CTM_Value:
-            break;
-        default:
-            assert(false);
-            break;
+        if (!variable.second->type->parent.expired()) {
+            switch (variable.second->type->typeMode) {
+            case CTM_Local:
+                break;
+            case CTM_Stack:
+                stream << " = { -1 }";
+                break;
+            case CTM_Heap:
+                stream << " = 0";
+                break;
+            case CTM_Value:
+                break;
+            default:
+                assert(false);
+                break;
+            }
         }
         stream << ";\n";
     }

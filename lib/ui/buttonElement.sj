@@ -46,13 +46,13 @@ buttonElement #element (
 
 	render(scene : 'scene2d) {
 		if isEmpty(_imageRenderer) {
-			image : local if (_state == buttonState.hot) {
+			image : local (if (_state == buttonState.hot) {
 					hotImage
 				} else if (_state == buttonState.pressed) {
 					pressedImage
 				} else {
 					normalImage
-				}
+				})
 
 			_imageRenderer = value(heap imageRenderer(
 				image : copy image

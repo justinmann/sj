@@ -294,7 +294,6 @@ expr 				: if_expr										{ $$ = $1; }
 					| tuple 										{ $$ = $1; }
 					| array
 					| TTHROW TLPAREN expr TRPAREN					{ $$ = new NThrow(LOC, shared_ptr<NBase>($3)); }
-					| expr_var TLBRACKET expr TRBRACKET				{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NCall>(LOC, "getAt", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3)))); }
 					| TVOID											{ $$ = new NVoid(LOC); }
 					;
 
@@ -320,6 +319,10 @@ expr_math			: expr_math TPLUS expr_math 					{ $$ = new NMath(LOC, shared_ptr<NV
 					| expr_math TDIV expr_math 						{ $$ = new NMath(LOC, shared_ptr<NVariableBase>($1), NMathOp::Div, shared_ptr<NVariableBase>($3)); }
 					| expr_math TMOD expr_math 						{ $$ = new NMath(LOC, shared_ptr<NVariableBase>($1), NMathOp::Mod, shared_ptr<NVariableBase>($3)); }
 					| TEXCLAIM expr_var                             { $$ = new NNot(LOC, shared_ptr<NVariableBase>($2)); }
+					| TSTACK expr_var                             	{ $$ = new NChangeMode(LOC, CTM_Stack, shared_ptr<NBase>($2)); }
+					| TLOCAL expr_var                             	{ $$ = new NChangeMode(LOC, CTM_Local, shared_ptr<NBase>($2)); }
+					| THEAP expr_var                             	{ $$ = new NChangeMode(LOC, CTM_Heap, shared_ptr<NBase>($2)); }
+					| TCOPY expr_var                             	{ $$ = new NCopy(LOC, shared_ptr<NBase>($2)); }
 					| expr_var										{ $$ = $1; }
 					;
 
@@ -327,6 +330,7 @@ expr_var 			: expr_var TAS arg_type 						{ $$ = new NCast(LOC, shared_ptr<CType
 					| expr_var TDOT var_right						{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($3)); }
 					| expr_var TQUESTIONCOLON var_right				{ $$ = new NGetOrElse(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NBase>($3)); }
 					| expr_var TQUESTIONDOT var_right				{ $$ = new NOptionDot(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($3)); }
+					| expr_var TLBRACKET expr TRBRACKET				{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NCall>(LOC, "getAt", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3)))); }
 					| var_right 									{ $$ = $1; }
 					;
 
@@ -375,10 +379,6 @@ var_right			: TLPAREN expr TRPAREN							{ $$ = new NVariableStub(shared_ptr<NBa
 	 				| THEAPPARENT									{ $$ = new NParent(LOC, true); }
 	 				| THEAPTHIS										{ $$ = new NThis(LOC, true); }
 					| TMINUS var_right 								{ $$ = new NNegate(LOC, shared_ptr<NVariableBase>($2)); }
-					| TSTACK var_right                             		{ $$ = new NChangeMode(LOC, CTM_Stack, shared_ptr<NBase>($2)); }
-					| TLOCAL var_right                             		{ $$ = new NChangeMode(LOC, CTM_Local, shared_ptr<NBase>($2)); }
-					| THEAP var_right                             		{ $$ = new NChangeMode(LOC, CTM_Heap, shared_ptr<NBase>($2)); }
-					| TCOPY var_right                             		{ $$ = new NCopy(LOC, shared_ptr<NBase>($2)); }
 					| const											{ $$ = $1; }
 	 				;
 
