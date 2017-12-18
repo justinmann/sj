@@ -38,6 +38,7 @@ enum CTypeMode {
     CTM_Undefined,
     CTM_Stack,
     CTM_Heap,
+    CTM_Weak,
     CTM_Local,
     CTM_Value
 };
@@ -59,13 +60,14 @@ class CType;
 
 class CTypes {
 public:
-    CTypes(shared_ptr<CType> stackValueType, shared_ptr<CType> stackOptionType, shared_ptr<CType> heapValueType, shared_ptr<CType> heapOptionType, shared_ptr<CType> localValueType, shared_ptr<CType> localOptionType) : stackValueType(stackValueType), stackOptionType(stackOptionType), heapValueType(heapValueType), heapOptionType(heapOptionType), localValueType(localValueType), localOptionType(localOptionType) {}
+    CTypes(shared_ptr<CType> stackValueType, shared_ptr<CType> stackOptionType, shared_ptr<CType> heapValueType, shared_ptr<CType> heapOptionType, shared_ptr<CType> localValueType, shared_ptr<CType> localOptionType, shared_ptr<CType> weakType);
     shared_ptr<CType> stackValueType;
     shared_ptr<CType> stackOptionType;
     shared_ptr<CType> heapValueType;
     shared_ptr<CType> heapOptionType;
     shared_ptr<CType> localValueType;
     shared_ptr<CType> localOptionType;
+    shared_ptr<CType> weakType;
 };
 
 class CType : public enable_shared_from_this<CType> {
@@ -101,6 +103,7 @@ public:
     shared_ptr<CType> getLocalType();
     shared_ptr<CType> getLocalValueType();
     shared_ptr<CType> getLocalOptionType();
+    shared_ptr<CType> getWeakType();
 
 private:
     string _defaultValue;
@@ -110,6 +113,9 @@ private:
     weak_ptr<CType> heapOptionType;
     weak_ptr<CType> localValueType;
     weak_ptr<CType> localOptionType;
+    weak_ptr<CType> weakType;
+
+    friend class CTypes;
 };
 
 #endif /* CType_h */

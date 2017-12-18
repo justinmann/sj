@@ -74,7 +74,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TSTRING TCHAR TCBLOCK TCFUNCTION TCDEFINE TCSTRUCT TCINCLUDE TCVAR TCTYPEDEF
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TQUESTION TEMPTY TVALUE TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TLOCAL TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR TINVALID TCOLONEQUAL THEAPPARENT THEAPTHIS TIFVALUE TELSEEMPTY TTOREVERSE TENUM TSWITCH TCASE TDEFAULT TPACKAGE TIMPORT TUNDERSCORE TNULLPTR
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TQUESTION TEMPTY TVALUE TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TWEAK TLOCAL TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR TINVALID TCOLONEQUAL THEAPPARENT THEAPTHIS TIFVALUE TELSEEMPTY TTOREVERSE TENUM TSWITCH TCASE TDEFAULT TPACKAGE TIMPORT TUNDERSCORE TNULLPTR
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch copy destroy expr end_optional end_star if_expr ifValue_var enum_decl switch_expr
@@ -322,6 +322,7 @@ expr_math			: expr_math TPLUS expr_math 					{ $$ = new NMath(LOC, shared_ptr<NV
 					| TSTACK expr_var                             	{ $$ = new NChangeMode(LOC, CTM_Stack, shared_ptr<NBase>($2)); }
 					| TLOCAL expr_var                             	{ $$ = new NChangeMode(LOC, CTM_Local, shared_ptr<NBase>($2)); }
 					| THEAP expr_var                             	{ $$ = new NChangeMode(LOC, CTM_Heap, shared_ptr<NBase>($2)); }
+					| TWEAK expr_var                             	{ $$ = new NChangeMode(LOC, CTM_Weak, shared_ptr<NBase>($2)); }
 					| TCOPY expr_var                             	{ $$ = new NCopy(LOC, shared_ptr<NBase>($2)); }
 					| expr_var										{ $$ = $1; }
 					;
@@ -462,6 +463,7 @@ arg_mode			: /* Blank! */									{ $$ = CTM_Undefined; }
 					| TLOCAL 										{ $$ = CTM_Local; }
 					| TSTACK 										{ $$ = CTM_Stack; }
 					| THEAP 										{ $$ = CTM_Heap; }
+					| TWEAK 										{ $$ = CTM_Weak; }
 					;
 
 return_type			: arg_type											{ $$ = $1; }

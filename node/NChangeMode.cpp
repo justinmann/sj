@@ -9,6 +9,9 @@ shared_ptr<CType> CChangeModeVar::getType(Compiler* compiler) {
     if (typeMode == CTM_Local) {
         type = type->getLocalType();
     }
+    else if (typeMode == CTM_Weak) {
+        type = type->getWeakType();
+    }
     return type;
 }
 
@@ -26,6 +29,9 @@ void CChangeModeVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, str
             break;
         case CTM_Local:
             ss << "local ";
+            break;
+        case CTM_Weak:
+            ss << "weak ";
             break;
         default:
             break;

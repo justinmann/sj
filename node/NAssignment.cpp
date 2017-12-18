@@ -199,6 +199,10 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
         }
 
         auto leftType = leftStoreVar->getType(compiler);
+        if (!leftType) {
+            return nullptr;
+        }
+
         if (op.typeMode != CTM_Undefined && leftType->typeMode != op.typeMode) {
             compiler->addError(loc, CErrorCode::Internal, "var '%s' was already defined as '%s' cannot convert to %s", name.c_str(), leftType->fullName.c_str(), op.typeMode == CTM_Heap ? "heap" : op.typeMode == CTM_Stack ? "stack" : "local");
             return nullptr;
