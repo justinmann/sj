@@ -145,7 +145,7 @@ shared_ptr<CType> CCallbackFunction::getVarType(CLoc loc, Compiler* compiler, ve
     return nullptr;
 }
 
-string CCallbackFunction::getCFunctionName(CTypeMode returnMode) {
+string CCallbackFunction::getCFunctionName(Compiler* compiler, TrOutput* trOutput, CTypeMode returnMode) {
     assert(false);
     return "INVALID";
 }

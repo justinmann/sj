@@ -1,33 +1,33 @@
-hash![stack stringstack string]()'stack hash_string_string {
+hash![stack string, heap #interface]()'stack hash_string_heap_interface {
   --cdefine--
-  #ifndef string_string_hash_typedef
-  #define string_string_hash_typedef
-  KHASH_INIT_TYPEDEF(string_string_hash_type, sjs_string, sjs_string)
+  #ifndef string_heap_interface_hash_typedef
+  #define string_heap_interface_hash_typedef
+  KHASH_INIT_TYPEDEF(string_heap_interface_hash_type, sjs_string, sji_interface*)
   #endif
   --cdefine--
   --cfunction--
-  #ifndef string_string_hash_function
-  #define string_string_hash_function
+  #ifndef string_heap_interface_hash_function
+  #define string_heap_interface_hash_function
   #if true
-  KHASH_INIT_FUNCTION(string_string_hash_type, sjs_string, sjs_string, 1, sjf_string_hash, sjf_string_isequal, &)
+  KHASH_INIT_FUNCTION(string_heap_interface_hash_type, sjs_string, sji_interface*, 1, sjf_string_hash, sjf_string_isequal, &)
   #else
-  KHASH_INIT_FUNCTION(string_string_hash_type, sjs_string, sjs_string, 1, sjf_string_hash, sjf_string_isequal, )
+  KHASH_INIT_FUNCTION(string_heap_interface_hash_type, sjs_string, sji_interface*, 1, sjf_string_hash, sjf_string_isequal, )
   #endif
   #endif
   --cfunction--
   --c--
-  _this->_hash = kh_init(string_string_hash_type);
+  _this->_hash = kh_init(string_heap_interface_hash_type);
   --c--
   this
 }
 
-hash_getat(key'stack string:)'stack string? {
+hash_getat(key'stack string:)'heap #interface? {
   --c--
-  khash_t(string_string_hash_type)* p = (khash_t(string_string_hash_type)*)_parent->_hash;
+  khash_t(string_heap_interface_hash_type)* p = (khash_t(string_heap_interface_hash_type)*)_parent->_hash;
   #if true
-  khiter_t k = kh_get(string_string_hash_type, p, *key);
+  khiter_t k = kh_get(string_heap_interface_hash_type, p, *key);
   #else
-  khiter_t k = kh_get(string_string_hash_type, p, key);
+  khiter_t k = kh_get(string_heap_interface_hash_type, p, key);
   #endif
   if (k == kh_end(p)) {
   }
@@ -35,24 +35,28 @@ hash_getat(key'stack string:)'stack string? {
   --c--
 }
 
-hash_setat(key'stack string:, val'stack string:)'void {
+hash_setat(key'stack string:, val'heap #interface:)'void {
   --c--
-  khash_t(string_string_hash_type)* p = (khash_t(string_string_hash_type)*)_parent->_hash;
+  khash_t(string_heap_interface_hash_type)* p = (khash_t(string_heap_interface_hash_type)*)_parent->_hash;
   #if true
-  khiter_t k = kh_get(string_string_hash_type, p, *key);
+  khiter_t k = kh_get(string_heap_interface_hash_type, p, *key);
   #else
-  khiter_t k = kh_get(string_string_hash_type, p, key);
+  khiter_t k = kh_get(string_heap_interface_hash_type, p, key);
   #endif
   if (k != kh_end(p)) {            
-  ;
+  kh_val(p, k)->_refCount--;
+if (kh_val(p, k)->_refCount <= 0) {
+    sji_interface_destroy(kh_val(p, k));
+}
+;
   }
   int ret;
   #if true
-  k = kh_put(string_string_hash_type, _parent->_hash, *key, &ret);
+  k = kh_put(string_heap_interface_hash_type, _parent->_hash, *key, &ret);
   #else
-  k = kh_put(string_string_hash_type, _parent->_hash, key, &ret);
+  k = kh_put(string_heap_interface_hash_type, _parent->_hash, key, &ret);
   #endif
-  if (!ret) kh_del(string_string_hash_type, p, k);
+  if (!ret) kh_del(string_heap_interface_hash_type, p, k);
   sjs_string t;
   ;
   ;
@@ -553,13 +557,13 @@ global()'void {
   ptr_init();
   weakptr_init();
   --c--
-  a'stack hash_string_string : hash![stack stringstack string](this = hash![stack stringstack string]())
+  a'stack hash_string_heap_interface : hash![stack string, heap #interface](this = hash![stack string, heap #interface]())
   hash_setat(
     parent: this,
     key'stack string : key,
-    val'stack string : val
+    val'heap #interface : val
   )
-  b'stack string? : hash_getat(
+  b'heap #interface? : hash_getat(
     parent: this,
     key'stack string : key
   )

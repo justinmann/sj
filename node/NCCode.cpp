@@ -1,7 +1,7 @@
 #include "Node.h"
 #include <boost/algorithm/string.hpp>
 
-string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOutput* trOutput, string macro, shared_ptr<TrStoreValue> returnValue, vector<shared_ptr<CFunction>>& functions, map<string, map<string, bool>>& includes , shared_ptr<CType>& returnType) {
+string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOutput* trOutput, string macro, shared_ptr<TrStoreValue> returnValue, vector<shared_ptr<CBaseFunction>>& functions, map<string, map<string, bool>>& includes , shared_ptr<CType>& returnType) {
     auto paramStart = macro.find('(');
     auto functionName = macro.substr(0, paramStart);
     auto t = macro.substr(paramStart + 1, macro.size() - paramStart - 2);
@@ -90,20 +90,30 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
                 }
 
                 if (!ctype->parent.expired()) {
-                    auto cfunction = static_pointer_cast<CFunction>(ctype->parent.lock()->getCFunction(compiler, loc, ctypeName2->valueName, scope, ctypeName2->templateTypeNames, CTM_Stack));
+                    auto cfunction = static_pointer_cast<CBaseFunction>(ctype->parent.lock()->getCFunction(compiler, loc, ctypeName2->valueName, scope, ctypeName2->templateTypeNames, CTM_Stack));
                     if (cfunction) {
                         functions.push_back(cfunction);
-                        // Do they want the stack or heap version
-                        return cfunction->getCFunctionName(CTM_Stack);
+                        if (trOutput) {
+                            // Do they want the stack or heap version
+                            return cfunction->getCFunctionName(compiler, trOutput, typeMode);
+                        }
+                        else {
+                            return "INVALID";
+                        }
                     }
                 }
 
                 string helperFunctionName = ctype->valueName + "_" + ctypeName2->valueName;
-                auto cfunction = static_pointer_cast<CFunction>(scope->function->getCFunction(compiler, loc, helperFunctionName, scope, ctypeName2->templateTypeNames, typeMode));
+                auto cfunction = static_pointer_cast<CBaseFunction>(scope->function->getCFunction(compiler, loc, helperFunctionName, scope, ctypeName2->templateTypeNames, typeMode));
                 if (cfunction) {
                     functions.push_back(cfunction);
-                    // Do they want the stack or heap version
-                    return cfunction->getCFunctionName(CTM_Stack);
+                    if (trOutput) {
+                        // Do they want the stack or heap version
+                        return cfunction->getCFunctionName(compiler, trOutput, typeMode);
+                    }
+                    else {
+                        return "INVALID";
+                    }
                 }
                 else {
                     compiler->addError(loc, CErrorCode::InvalidMacro, "cannot find function '%s' for type '%s'", params[1].c_str(), ctype->fullName.c_str());
@@ -114,11 +124,11 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
             }
         }
         else {
-            auto cfunction = static_pointer_cast<CFunction>(scope->function->getCFunction(compiler, loc, ctypeName->valueName, scope, ctypeName->argTypeNames, typeMode));
+            auto cfunction = scope->function->getCFunction(compiler, loc, ctypeName->valueName, scope, ctypeName->argTypeNames, typeMode);
             if (cfunction) {
                 functions.push_back(cfunction);
                 // Do they want the stack or heap version
-                return cfunction->getCFunctionName(CTM_Stack);
+                return cfunction->getCFunctionName(compiler, trOutput, CTM_Stack);
             }
             else {
                 compiler->addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", params[0].c_str());
@@ -355,7 +365,7 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
     return "";
 }
 
-string expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOutput* trOutput, string& code, shared_ptr<TrStoreValue> returnValue, vector<shared_ptr<CFunction>>& functions, map<string, map<string, bool>>& includes, shared_ptr<CType>& returnType) {
+string expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOutput* trOutput, string& code, shared_ptr<TrStoreValue> returnValue, vector<shared_ptr<CBaseFunction>>& functions, map<string, map<string, bool>>& includes, shared_ptr<CType>& returnType) {
     char finalCode[1024];
     char macro[1024];
     int finalIndex = 0;
@@ -431,7 +441,7 @@ shared_ptr<CType> CCCodeVar::getType(Compiler* compiler) {
 }
 
 void CCCodeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    vector<shared_ptr<CFunction>> functions;
+    vector<shared_ptr<CBaseFunction>> functions;
     map<string, map<string, bool>> includes;
     shared_ptr<CType> returnType;
     auto lineIndex = -1;
@@ -480,7 +490,7 @@ void CCCodeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
 }
 
 void CCCodeVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-    vector<shared_ptr<CFunction>> functions2;
+    vector<shared_ptr<CBaseFunction>> functions2;
     map<string, map<string, bool>> includes;
     shared_ptr<CType> returnType;
 
@@ -546,7 +556,7 @@ void CCCodeVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>&
 }
 
 shared_ptr<CVar> NCCode::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
-    vector<shared_ptr<CFunction>> functions;
+    vector<shared_ptr<CBaseFunction>> functions;
     map<string, map<string, bool>> includes;
     shared_ptr<CType> returnType = nullptr;
     for (auto line : lines) {
@@ -562,7 +572,7 @@ shared_ptr<CVar> NCCode::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
 
 
 void NCCode::addToStruct(Compiler* compiler, shared_ptr<CScope> scope, vector<string>& structLines) {
-    vector<shared_ptr<CFunction>> functions;
+    vector<shared_ptr<CBaseFunction>> functions;
     map<string, map<string, bool>> includes;
     shared_ptr<CType> returnType = nullptr;
 

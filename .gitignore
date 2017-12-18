@@ -70,3 +70,5 @@ tests/app/lib
 tests/basic/lib
 *.vspx
 *.psess
+lc.sh
+lang_definitions.txt

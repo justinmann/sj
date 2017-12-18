@@ -25,6 +25,9 @@ hash![key, val] (
         ##endif
 
         if (!ret) kh_del(#safeName(key)_#safeName(val)_hash_type, p, k);
+
+        #type(key) t;
+        #retain(key, t, key);
         #retain(val, kh_val(p, k), val);
         --c--
     }

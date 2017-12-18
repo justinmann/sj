@@ -73,7 +73,7 @@ public:
     virtual shared_ptr<CTypes> getThisTypes(Compiler* compiler) = 0;
     virtual shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CLoc locCaller, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode) = 0;
     virtual shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) = 0;
-    virtual string getCFunctionName(CTypeMode returnMode) = 0;
+    virtual string getCFunctionName(Compiler* compiler, TrOutput* trOutput, CTypeMode returnMode) = 0;
     virtual string getCCallbackFunctionName(Compiler* compiler, TrOutput* trOutput, CTypeMode returnMode) = 0;
     virtual string getCCopyFunctionName() = 0;
     virtual string getCDestroyFunctionName() = 0;

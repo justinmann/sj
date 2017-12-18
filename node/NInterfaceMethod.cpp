@@ -195,9 +195,76 @@ shared_ptr<CType> CInterfaceMethod::getReturnType(Compiler* compiler, CTypeMode 
     return returnType;
 }
 
-string CInterfaceMethod::getCFunctionName(CTypeMode returnMode) {
-    assert(false);
-    return "";
+string CInterfaceMethod::getCFunctionName(Compiler* compiler, TrOutput* trOutput, CTypeMode returnMode) {
+    stringstream nameStream;
+    nameStream << parent.lock()->getCStructName(CTM_Stack) << "_" << name;
+    if (returnMode == CTM_Heap) {
+        nameStream << "_heap";
+    }
+
+    auto functionName = nameStream.str();
+
+    auto functionBody = trOutput->functions.find(functionName);
+    if (functionBody == trOutput->functions.end()) {
+        auto trFunctionBlock = make_shared<TrBlock>();
+        trFunctionBlock->hasThis = false;
+        trOutput->functions[functionName] = trFunctionBlock;
+
+        stringstream callStream;
+        callStream << "_parent->" << name;
+        if (returnMode == CTM_Heap) {
+            callStream << "_heap";
+        }
+        callStream << "(";
+        bool isFirstArg = true;
+        if (hasParent) {
+            callStream << "_parent->_parent";
+            isFirstArg = false;
+        }
+
+        for (auto argVar : argVars) {
+            if (isFirstArg) {
+                isFirstArg = false;
+            }
+            else {
+                callStream << ", ";
+            }
+
+            callStream << argVar->name;
+        }
+
+        if (returnType != compiler->typeVoid) {
+            if (isFirstArg) {
+                isFirstArg = false;
+            }
+            else {
+                callStream << ", ";
+            }
+            callStream << "_return";
+        }
+        callStream << ")";
+        trFunctionBlock->statements.push_back(TrStatement(CLoc::undefined, callStream.str()));
+
+        stringstream functionDefinition;
+        functionDefinition << "void " << functionName << "(";
+
+        functionDefinition << parent.lock()->getCStructName(CTM_Stack) << "* _parent";
+
+        for (auto argVar : argVars) {
+            functionDefinition << ", ";
+            functionDefinition << argVar->getType(compiler)->cname << " " << argVar->name;
+        }
+
+        if (returnType != compiler->typeVoid) {
+            functionDefinition << ", ";
+            functionDefinition << returnType->cname << "* _return";
+        }
+
+        functionDefinition << ")";
+        trFunctionBlock->definition = functionDefinition.str();
+    }
+
+    return functionName;
 }
 
 string CInterfaceMethod::getCCallbackFunctionName(Compiler* compiler, TrOutput* trOutput, CTypeMode returnMode) {

@@ -89,11 +89,6 @@ struct td_double_option {
 };
 const double_option double_empty = { true };
 
-const char* sjg_string1 = "foo";
-const char* sjg_string2 = "hi";
-const char* sjg_string3 = "foo";
-const char* sjg_string4 = "not found";
-
 /* The MIT License
 Copyright (c) 2008, by Attractive Chaos <attractivechaos@aol.co.uk>
 Permission is hereby granted, free of charge, to any person obtaining
@@ -382,17 +377,41 @@ delete_cb cb[5];
 delete_cb_list* next;
 };
 #define sjs_object_typeId 1
-#define sjs_array_char_typeId 2
-#define sjs_string_typeId 3
-#define sjs_hash_stringstring_typeId 4
+#define sji_interface_typeId 2
+#define sjs_hash_heap_interface_i32_typeId 3
+#define sjs_class_typeId 4
+#define sjs_array_char_typeId 5
+#define sjs_string_typeId 6
 
 typedef struct td_sjs_object sjs_object;
+typedef struct td_sji_interface sji_interface;
+typedef struct td_sjs_hash_heap_interface_i32 sjs_hash_heap_interface_i32;
+typedef struct td_sjs_class sjs_class;
 typedef struct td_sjs_array_char sjs_array_char;
 typedef struct td_sjs_string sjs_string;
-typedef struct td_sjs_hash_stringstring sjs_hash_stringstring;
 
 struct td_sjs_object {
     intptr_t _refCount;
+};
+
+struct td_sji_interface {
+    intptr_t _refCount;
+    sjs_object* _parent;
+    void (*destroy)(void* _this);
+    sjs_object* (*asInterface)(sjs_object* _this, int typeId);
+    void (*bob)(void* _parent, int32_t* _return);
+    void (*hash)(void* _parent, uint32_t* _return);
+    void (*isequal)(void* _parent, sji_interface* b, bool* _return);
+};
+
+struct td_sjs_hash_heap_interface_i32 {
+    int _refCount;
+    void* _hash;
+};
+
+struct td_sjs_class {
+    int _refCount;
+    int32_t x;
 };
 
 struct td_sjs_array_char {
@@ -409,11 +428,6 @@ struct td_sjs_string {
     sjs_array_char data;
 };
 
-struct td_sjs_hash_stringstring {
-    int _refCount;
-    void* _hash;
-};
-
 void halt(const char * format, ...);
 void ptr_hash(void* p, uint32_t* result);
 void ptr_isequal(void *p1, void* p2, bool* result);
@@ -428,32 +442,34 @@ void weakptr_cb_remove(void* v, delete_cb cb);
 void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
-#ifndef string_string_hash_typedef
-#define string_string_hash_typedef
-KHASH_INIT_TYPEDEF(string_string_hash_type, sjs_string, sjs_string)
+#ifndef heap_interface_i32_hash_typedef
+#define heap_interface_i32_hash_typedef
+KHASH_INIT_TYPEDEF(heap_interface_i32_hash_type, sji_interface*, int32_t)
 #endif
-#ifndef string_string_hash_typedef
-#define string_string_hash_typedef
-KHASH_INIT_TYPEDEF(string_string_hash_type, sjs_string, sjs_string)
+#ifndef heap_interface_i32_hash_typedef
+#define heap_interface_i32_hash_typedef
+KHASH_INIT_TYPEDEF(heap_interface_i32_hash_type, sji_interface*, int32_t)
 #endif
 int32_t result1;
 sjs_string sjt_call1 = { -1 };
-sjs_string sjt_call2 = { -1 };
-sjs_string sjt_call3 = { -1 };
-sjs_string sjt_call4 = { -1 };
-sjs_string* sjt_functionParam2;
-sjs_string* sjt_functionParam3;
+sjs_class* sjt_cast1 = 0;
+sjs_class* sjt_cast3 = 0;
+sji_interface* sjt_functionParam1 = 0;
+int32_t sjt_functionParam2;
+sji_interface* sjt_functionParam3 = 0;
 sjs_string* sjt_functionParam4;
-sjs_string* sjt_functionParam5;
+int32_t sjt_functionParam5;
+int32_t sjt_functionParam6;
+int32_t sjt_functionParam7;
 bool sjt_ifElse1;
-sjs_string* sjt_isEmpty1;
+int32_option sjt_isEmpty1;
 int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_negate1;
-sjs_hash_stringstring* sjt_parent2;
-sjs_hash_stringstring* sjt_parent3;
-sjs_hash_stringstring sjv_a = { -1 };
-sjs_string sjv_b = { -1 };
+sjs_hash_heap_interface_i32* sjt_parent1;
+sjs_hash_heap_interface_i32* sjt_parent3;
+sjs_hash_heap_interface_i32 sjv_a = { -1 };
+int32_option sjv_b;
 void* sjv_emptystringdata;
 float sjv_f32_pi;
 int32_t sjv_i32_maxvalue;
@@ -464,20 +480,34 @@ void sjf_array_char(sjs_array_char* _this);
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from);
 void sjf_array_char_destroy(sjs_array_char* _this);
 void sjf_array_char_heap(sjs_array_char* _this);
-void sjf_array_char_isequal(sjs_array_char* _parent, sjs_array_char* test, bool* _return);
+void sjf_class(sjs_class* _this);
+sjs_object* sjf_class_asInterface(sjs_class* _this, int typeId);
+sji_interface* sjf_class_as_sji_interface(sjs_class* _this);
+void sjf_class_bob(sjs_class* _parent, int32_t* _return);
+void sjf_class_copy(sjs_class* _this, sjs_class* _from);
+void sjf_class_destroy(sjs_class* _this);
+void sjf_class_hash(sjs_class* _parent, uint32_t* _return);
+void sjf_class_heap(sjs_class* _this);
+sjs_object* sjf_class_heap_asInterface(sjs_class* _this, int typeId);
+sji_interface* sjf_class_heap_as_sji_interface(sjs_class* _this);
+void sjf_class_isequal(sjs_class* _parent, sji_interface* b, bool* _return);
 void sjf_debug_writeline(sjs_string* data);
-void sjf_hash_stringstring(sjs_hash_stringstring* _this);
-void sjf_hash_stringstring_copy(sjs_hash_stringstring* _this, sjs_hash_stringstring* _from);
-void sjf_hash_stringstring_destroy(sjs_hash_stringstring* _this);
-void sjf_hash_stringstring_getat(sjs_hash_stringstring* _parent, sjs_string* key, sjs_string* _return);
-void sjf_hash_stringstring_heap(sjs_hash_stringstring* _this);
-void sjf_hash_stringstring_setat(sjs_hash_stringstring* _parent, sjs_string* key, sjs_string* val);
+void sjf_hash_heap_interface_i32(sjs_hash_heap_interface_i32* _this);
+void sjf_hash_heap_interface_i32_copy(sjs_hash_heap_interface_i32* _this, sjs_hash_heap_interface_i32* _from);
+void sjf_hash_heap_interface_i32_destroy(sjs_hash_heap_interface_i32* _this);
+void sjf_hash_heap_interface_i32_getat(sjs_hash_heap_interface_i32* _parent, sji_interface* key, int32_option* _return);
+void sjf_hash_heap_interface_i32_heap(sjs_hash_heap_interface_i32* _this);
+void sjf_hash_heap_interface_i32_setat(sjs_hash_heap_interface_i32* _parent, sji_interface* key, int32_t val);
+void sjf_i32_tostring(int32_t val, int32_t base, int32_t minlength, sjs_string* _return);
+void sjf_i32_tostring_heap(int32_t val, int32_t base, int32_t minlength, sjs_string** _return);
 void sjf_string(sjs_string* _this);
 void sjf_string_copy(sjs_string* _this, sjs_string* _from);
 void sjf_string_destroy(sjs_string* _this);
-void sjf_string_hash(sjs_string* _parent, uint32_t* _return);
 void sjf_string_heap(sjs_string* _this);
-void sjf_string_isequal(sjs_string* _parent, sjs_string* test, bool* _return);
+void sji_interface_hash(sji_interface* _parent, uint32_t* _return);
+void sji_interface_isequal(sji_interface* _parent, sji_interface* b, bool* _return);
+void sji_interface_copy(sji_interface* _this, sji_interface* _from);
+void sji_interface_destroy(sji_interface* _this);
 void main_destroy(void);
 
 void halt(const char * format, ...) {
@@ -609,20 +639,20 @@ bool ptr_release(void* v) {
     }
     return true;
 }
-#ifndef string_string_hash_function
-#define string_string_hash_function
-#if true
-KHASH_INIT_FUNCTION(string_string_hash_type, sjs_string, sjs_string, 1, sjf_string_hash, sjf_string_isequal, &)
+#ifndef heap_interface_i32_hash_function
+#define heap_interface_i32_hash_function
+#if false
+KHASH_INIT_FUNCTION(heap_interface_i32_hash_type, sji_interface*, int32_t, 1, sji_interface_hash, sji_interface_isequal, &)
 #else
-KHASH_INIT_FUNCTION(string_string_hash_type, sjs_string, sjs_string, 1, sjf_string_hash, sjf_string_isequal, )
+KHASH_INIT_FUNCTION(heap_interface_i32_hash_type, sji_interface*, int32_t, 1, sji_interface_hash, sji_interface_isequal, )
 #endif
 #endif
-#ifndef string_string_hash_function
-#define string_string_hash_function
-#if true
-KHASH_INIT_FUNCTION(string_string_hash_type, sjs_string, sjs_string, 1, sjf_string_hash, sjf_string_isequal, &)
+#ifndef heap_interface_i32_hash_function
+#define heap_interface_i32_hash_function
+#if false
+KHASH_INIT_FUNCTION(heap_interface_i32_hash_type, sji_interface*, int32_t, 1, sji_interface_hash, sji_interface_isequal, &)
 #else
-KHASH_INIT_FUNCTION(string_string_hash_type, sjs_string, sjs_string, 1, sjf_string_hash, sjf_string_isequal, )
+KHASH_INIT_FUNCTION(heap_interface_i32_hash_type, sji_interface*, int32_t, 1, sji_interface_hash, sji_interface_isequal, )
 #endif
 #endif
 void sjf_array_char(sjs_array_char* _this) {
@@ -668,78 +698,243 @@ void sjf_array_char_heap(sjs_array_char* _this) {
     }
 }
 
-void sjf_array_char_isequal(sjs_array_char* _parent, sjs_array_char* test, bool* _return) {
-    if (_parent->count != test->count) {
-        *_return = false;
+void sjf_class(sjs_class* _this) {
+}
+
+sjs_object* sjf_class_asInterface(sjs_class* _this, int typeId) {
+    switch (typeId) {
+        case sji_interface_typeId:  {
+            return (sjs_object*)sjf_class_as_sji_interface(_this);
+        }
     }
-    bool result = memcmp(_parent->data, test->data, _parent->count * sizeof(char)) == 0;
-    (*_return) = result;
-;		
+
+    return 0;
+}
+
+sji_interface* sjf_class_as_sji_interface(sjs_class* _this) {
+    sji_interface* _interface;
+    _interface = (sji_interface*)malloc(sizeof(sji_interface));
+    _interface->_refCount = 1;
+    _interface->_parent = (sjs_object*)_this;
+    _interface->_parent->_refCount++;
+    _interface->destroy = (void(*)(void*))sjf_class_destroy;
+    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_class_asInterface;
+    _interface->bob = (void(*)(void*, int32_t*))sjf_class_bob;
+    _interface->hash = (void(*)(void*, uint32_t*))sjf_class_hash;
+    _interface->isequal = (void(*)(void*,sji_interface*, bool*))sjf_class_isequal;
+
+    return _interface;
+}
+
+void sjf_class_bob(sjs_class* _parent, int32_t* _return) {
+    sjs_class* sjt_dot1;
+
+    sjt_dot1 = _parent;
+    (*_return) = (sjt_dot1)->x;
+}
+
+void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
+    _this->x = _from->x;
+}
+
+void sjf_class_destroy(sjs_class* _this) {
+}
+
+void sjf_class_hash(sjs_class* _parent, uint32_t* _return) {
+    int32_t sjt_cast2;
+
+    sjf_class_bob(_parent, &sjt_cast2);
+    (*_return) = (uint32_t)sjt_cast2;
+}
+
+void sjf_class_heap(sjs_class* _this) {
+}
+
+sjs_object* sjf_class_heap_asInterface(sjs_class* _this, int typeId) {
+    switch (typeId) {
+        case sji_interface_typeId:  {
+            return (sjs_object*)sjf_class_heap_as_sji_interface(_this);
+        }
+    }
+
+    return 0;
+}
+
+sji_interface* sjf_class_heap_as_sji_interface(sjs_class* _this) {
+    sji_interface* _interface;
+    _interface = (sji_interface*)malloc(sizeof(sji_interface));
+    _interface->_refCount = 1;
+    _interface->_parent = (sjs_object*)_this;
+    _interface->_parent->_refCount++;
+    _interface->destroy = (void(*)(void*))sjf_class_destroy;
+    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_class_heap_asInterface;
+    _interface->bob = (void(*)(void*, int32_t*))sjf_class_bob;
+    _interface->hash = (void(*)(void*, uint32_t*))sjf_class_hash;
+    _interface->isequal = (void(*)(void*,sji_interface*, bool*))sjf_class_isequal;
+
+    return _interface;
+}
+
+void sjf_class_isequal(sjs_class* _parent, sji_interface* b, bool* _return) {
+    int32_t sjt_compare1;
+    int32_t sjt_compare2;
+    sji_interface* sjt_parent2;
+
+    sjf_class_bob(_parent, &sjt_compare1);
+    sjt_parent2 = b;
+    sjt_parent2->bob(sjt_parent2->_parent, &sjt_compare2);
+    (*_return) = sjt_compare1 == sjt_compare2;
 }
 
 void sjf_debug_writeline(sjs_string* data) {
     printf("%s\n", (char*)data->data.data);
 }
 
-void sjf_hash_stringstring(sjs_hash_stringstring* _this) {
-    _this->_hash = kh_init(string_string_hash_type);
+void sjf_hash_heap_interface_i32(sjs_hash_heap_interface_i32* _this) {
+    _this->_hash = kh_init(heap_interface_i32_hash_type);
 }
 
-void sjf_hash_stringstring_copy(sjs_hash_stringstring* _this, sjs_hash_stringstring* _from) {
+void sjf_hash_heap_interface_i32_copy(sjs_hash_heap_interface_i32* _this, sjs_hash_heap_interface_i32* _from) {
     _this->_hash = _from->_hash;
     ptr_retain(_this->_hash);
 }
 
-void sjf_hash_stringstring_destroy(sjs_hash_stringstring* _this) {
+void sjf_hash_heap_interface_i32_destroy(sjs_hash_heap_interface_i32* _this) {
     if (ptr_release(_this->_hash)) {
-        kh_destroy(string_string_hash_type, _this->_hash);
+        kh_destroy(heap_interface_i32_hash_type, _this->_hash);
     }
 }
 
-void sjf_hash_stringstring_getat(sjs_hash_stringstring* _parent, sjs_string* key, sjs_string* _return) {
-    khash_t(string_string_hash_type)* p = (khash_t(string_string_hash_type)*)_parent->_hash;
-    #if true
-    khiter_t k = kh_get(string_string_hash_type, p, *key);
+void sjf_hash_heap_interface_i32_getat(sjs_hash_heap_interface_i32* _parent, sji_interface* key, int32_option* _return) {
+    khash_t(heap_interface_i32_hash_type)* p = (khash_t(heap_interface_i32_hash_type)*)_parent->_hash;
+    #if false
+    khiter_t k = kh_get(heap_interface_i32_hash_type, p, *key);
     #else
-    khiter_t k = kh_get(string_string_hash_type, p, key);
+    khiter_t k = kh_get(heap_interface_i32_hash_type, p, key);
     #endif
     if (k == kh_end(p)) {
-        _return->_refCount = -1;
+        (*_return) = int32_empty;
 
     }
-    _return->_refCount = 1;
-sjf_string_copy(_return, (kh_val(p, k)._refCount != -1 ? &kh_val(p, k) : 0));
+    _return->isempty = false;
+_return->value = kh_val(p, k);
 ;
 }
 
-void sjf_hash_stringstring_heap(sjs_hash_stringstring* _this) {
-    _this->_hash = kh_init(string_string_hash_type);
+void sjf_hash_heap_interface_i32_heap(sjs_hash_heap_interface_i32* _this) {
+    _this->_hash = kh_init(heap_interface_i32_hash_type);
 }
 
-void sjf_hash_stringstring_setat(sjs_hash_stringstring* _parent, sjs_string* key, sjs_string* val) {
-    khash_t(string_string_hash_type)* p = (khash_t(string_string_hash_type)*)_parent->_hash;
-    #if true
-    khiter_t k = kh_get(string_string_hash_type, p, *key);
+void sjf_hash_heap_interface_i32_setat(sjs_hash_heap_interface_i32* _parent, sji_interface* key, int32_t val) {
+    khash_t(heap_interface_i32_hash_type)* p = (khash_t(heap_interface_i32_hash_type)*)_parent->_hash;
+    #if false
+    khiter_t k = kh_get(heap_interface_i32_hash_type, p, *key);
     #else
-    khiter_t k = kh_get(string_string_hash_type, p, key);
+    khiter_t k = kh_get(heap_interface_i32_hash_type, p, key);
     #endif
     if (k != kh_end(p)) {            
     ;
 }
 int ret;
-#if true
-k = kh_put(string_string_hash_type, _parent->_hash, *key, &ret);
+#if false
+k = kh_put(heap_interface_i32_hash_type, _parent->_hash, *key, &ret);
 #else
-k = kh_put(string_string_hash_type, _parent->_hash, key, &ret);
+k = kh_put(heap_interface_i32_hash_type, _parent->_hash, key, &ret);
 #endif
-if (!ret) kh_del(string_string_hash_type, p, k);
-sjs_string t;
-t._refCount = 1;
-sjf_string_copy(&t, key);
+if (!ret) kh_del(heap_interface_i32_hash_type, p, k);
+sji_interface* t;
+t = key;
+t->_refCount++;
 ;
-kh_val(p, k)._refCount = 1;
-sjf_string_copy(&kh_val(p, k), val);
+kh_val(p, k) = val;
 ;
+}
+
+void sjf_i32_tostring(int32_t val, int32_t base, int32_t minlength, sjs_string* _return) {
+    int32_t sjt_math3;
+    int32_t sjt_math4;
+    int32_t sjt_math5;
+    int32_t sjt_math6;
+    int32_t sjv_count;
+    void* sjv_data;
+
+    sjv_count = 0;
+    sjv_data = 0;
+    if (base < 2) {
+        halt("base is too small");
+    }
+    if (base > 16) {
+        halt("base is too large");
+    }
+    char buf[32] = { 0 };
+    int i = 30;	
+    do {
+        buf[i] = "0123456789ABCDEF"[val % base];	
+        i--;
+        val /= base;
+    } while (val && i);
+    sjv_count = 30 - i;
+    if (sjv_count < minlength) {				
+}
+sjv_data = malloc(sizeof(char) * (sjv_count + 1));
+memcpy(sjv_data, &buf[i+1], sjv_count + 1);
+_return->_refCount = 1;
+_return->count = sjv_count;
+_return->data._refCount = 1;
+sjt_math3 = sjv_count;
+sjt_math4 = 1;
+_return->data.datasize = sjt_math3 + sjt_math4;
+_return->data.data = sjv_data;
+_return->data._isglobal = false;
+sjt_math5 = sjv_count;
+sjt_math6 = 1;
+_return->data.count = sjt_math5 + sjt_math6;
+sjf_array_char(&_return->data);
+sjf_string(_return);
+}
+
+void sjf_i32_tostring_heap(int32_t val, int32_t base, int32_t minlength, sjs_string** _return) {
+    int32_t sjt_math10;
+    int32_t sjt_math7;
+    int32_t sjt_math8;
+    int32_t sjt_math9;
+    int32_t sjv_count;
+    void* sjv_data;
+
+    sjv_count = 0;
+    sjv_data = 0;
+    if (base < 2) {
+        halt("base is too small");
+    }
+    if (base > 16) {
+        halt("base is too large");
+    }
+    char buf[32] = { 0 };
+    int i = 30;	
+    do {
+        buf[i] = "0123456789ABCDEF"[val % base];	
+        i--;
+        val /= base;
+    } while (val && i);
+    sjv_count = 30 - i;
+    if (sjv_count < minlength) {				
+}
+sjv_data = malloc(sizeof(char) * (sjv_count + 1));
+memcpy(sjv_data, &buf[i+1], sjv_count + 1);
+(*_return) = (sjs_string*)malloc(sizeof(sjs_string));
+(*_return)->_refCount = 1;
+(*_return)->count = sjv_count;
+(*_return)->data._refCount = 1;
+sjt_math7 = sjv_count;
+sjt_math8 = 1;
+(*_return)->data.datasize = sjt_math7 + sjt_math8;
+(*_return)->data.data = sjv_data;
+(*_return)->data._isglobal = false;
+sjt_math9 = sjv_count;
+sjt_math10 = 1;
+(*_return)->data.count = sjt_math9 + sjt_math10;
+sjf_array_char(&(*_return)->data);
+sjf_string_heap((*_return));
 }
 
 void sjf_string(sjs_string* _this) {
@@ -754,25 +949,34 @@ void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
 void sjf_string_destroy(sjs_string* _this) {
 }
 
-void sjf_string_hash(sjs_string* _parent, uint32_t* _return) {
-    (*_return) = kh_str_hash_func((char*)_parent->data.data);
-;
-}
-
 void sjf_string_heap(sjs_string* _this) {
 }
 
-void sjf_string_isequal(sjs_string* _parent, sjs_string* test, bool* _return) {
-    sjs_string* sjt_dot1;
-    sjs_string* sjt_dot2;
-    sjs_array_char* sjt_functionParam1;
-    sjs_array_char* sjt_parent1;
+void sji_interface_hash(sji_interface* _parent, uint32_t* _return) {
+    _parent->hash(_parent->_parent, _return);
+}
 
-    sjt_dot1 = _parent;
-    sjt_parent1 = &(sjt_dot1)->data;
-    sjt_dot2 = test;
-    sjt_functionParam1 = &(sjt_dot2)->data;
-    sjf_array_char_isequal(sjt_parent1, sjt_functionParam1, _return);
+void sji_interface_isequal(sji_interface* _parent, sji_interface* b, bool* _return) {
+    _parent->isequal(_parent->_parent, b, _return);
+}
+
+void sji_interface_copy(sji_interface* _this, sji_interface* _from) {
+    _this->_refCount = 1;
+    _this->_parent = _from->_parent;
+    _this->_parent->_refCount++;
+    _this->destroy = _from->destroy;
+    _this->asInterface = _from->asInterface;
+    _this->bob = _from->bob;
+    _this->hash = _from->hash;
+    _this->isequal = _from->isequal;
+}
+
+void sji_interface_destroy(sji_interface* _this) {
+    _this->_parent->_refCount--;
+    if (_this->_parent->_refCount <= 0) {
+        _this->destroy(_this->_parent);
+        free(_this->_parent);
+    }
 }
 
 int main(int argc, char** argv) {
@@ -789,59 +993,43 @@ int main(int argc, char** argv) {
     ptr_init();
     weakptr_init();
     sjv_a._refCount = 1;
-    sjf_hash_stringstring(&sjv_a);
-    sjt_parent2 = &sjv_a;
-    sjt_call1._refCount = 1;
-    sjt_call1.count = 3;
-    sjt_call1.data._refCount = 1;
-    sjt_call1.data.datasize = 4;
-    sjt_call1.data.data = (void*)sjg_string1;
-    sjt_call1.data._isglobal = true;
-    sjt_call1.data.count = 4;
-    sjf_array_char(&sjt_call1.data);
-    sjf_string(&sjt_call1);
-    sjt_functionParam2 = &sjt_call1;
-    sjt_call2._refCount = 1;
-    sjt_call2.count = 2;
-    sjt_call2.data._refCount = 1;
-    sjt_call2.data.datasize = 3;
-    sjt_call2.data.data = (void*)sjg_string2;
-    sjt_call2.data._isglobal = true;
-    sjt_call2.data.count = 3;
-    sjf_array_char(&sjt_call2.data);
-    sjf_string(&sjt_call2);
-    sjt_functionParam3 = &sjt_call2;
-    sjf_hash_stringstring_setat(sjt_parent2, sjt_functionParam2, sjt_functionParam3);
+    sjf_hash_heap_interface_i32(&sjv_a);
+    sjt_parent1 = &sjv_a;
+    sjt_cast1 = (sjs_class*)malloc(sizeof(sjs_class));
+    sjt_cast1->_refCount = 1;
+    sjt_cast1->x = 1;
+    sjf_class_heap(sjt_cast1);
+    sjt_functionParam1 = (sji_interface*)sjf_class_heap_as_sji_interface(sjt_cast1);
+    sjt_functionParam2 = 1;
+    sjf_hash_heap_interface_i32_setat(sjt_parent1, sjt_functionParam1, sjt_functionParam2);
     sjt_parent3 = &sjv_a;
-    sjt_call3._refCount = 1;
-    sjt_call3.count = 3;
-    sjt_call3.data._refCount = 1;
-    sjt_call3.data.datasize = 4;
-    sjt_call3.data.data = (void*)sjg_string3;
-    sjt_call3.data._isglobal = true;
-    sjt_call3.data.count = 4;
-    sjf_array_char(&sjt_call3.data);
-    sjf_string(&sjt_call3);
-    sjt_functionParam4 = &sjt_call3;
-    sjf_hash_stringstring_getat(sjt_parent3, sjt_functionParam4, &sjv_b);
-    sjt_isEmpty1 = (sjv_b._refCount != -1 ? &sjv_b : 0);
-    sjt_ifElse1 = (sjt_isEmpty1 == 0);
+    sjt_cast3 = (sjs_class*)malloc(sizeof(sjs_class));
+    sjt_cast3->_refCount = 1;
+    sjt_cast3->x = 1;
+    sjf_class_heap(sjt_cast3);
+    sjt_functionParam3 = (sji_interface*)sjf_class_heap_as_sji_interface(sjt_cast3);
+    sjf_hash_heap_interface_i32_getat(sjt_parent3, sjt_functionParam3, &sjv_b);
+    sjt_isEmpty1 = sjv_b;
+    sjt_ifElse1 = sjt_isEmpty1.isempty;
     if (sjt_ifElse1) {
-        sjt_call4._refCount = 1;
-        sjt_call4.count = 9;
-        sjt_call4.data._refCount = 1;
-        sjt_call4.data.datasize = 10;
-        sjt_call4.data.data = (void*)sjg_string4;
-        sjt_call4.data._isglobal = true;
-        sjt_call4.data.count = 10;
-        sjf_array_char(&sjt_call4.data);
-        sjf_string(&sjt_call4);
-        sjt_functionParam5 = &sjt_call4;
+        int32_t result2;
+        int32_t sjt_negate2;
+
+        sjt_negate2 = 1;
+        result2 = -sjt_negate2;
+        sjt_functionParam5 = result2;
     } else {
-        sjt_functionParam5 = (sjv_b._refCount != -1 ? &sjv_b : 0);
+        int32_option sjt_getValue1;
+
+        sjt_getValue1 = sjv_b;
+        sjt_functionParam5 = sjt_getValue1.value;
     }
 
-    sjf_debug_writeline(sjt_functionParam5);
+    sjt_functionParam6 = 10;
+    sjt_functionParam7 = 0;
+    sjf_i32_tostring(sjt_functionParam5, sjt_functionParam6, sjt_functionParam7, &sjt_call1);
+    sjt_functionParam4 = &sjt_call1;
+    sjf_debug_writeline(sjt_functionParam4);
     main_destroy();
     #ifdef _DEBUG
     printf("\npress return to end\n");
@@ -852,10 +1040,22 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
+    sjt_cast1->_refCount--;
+    if (sjt_cast1->_refCount <= 0) {
+        sjf_class_destroy(sjt_cast1);
+    }
+    sjt_cast3->_refCount--;
+    if (sjt_cast3->_refCount <= 0) {
+        sjf_class_destroy(sjt_cast3);
+    }
+    sjt_functionParam1->_refCount--;
+    if (sjt_functionParam1->_refCount <= 0) {
+        sji_interface_destroy(sjt_functionParam1);
+    }
+    sjt_functionParam3->_refCount--;
+    if (sjt_functionParam3->_refCount <= 0) {
+        sji_interface_destroy(sjt_functionParam3);
+    }
     if (sjt_call1._refCount == 1) { sjf_string_destroy(&sjt_call1); }
-    if (sjt_call2._refCount == 1) { sjf_string_destroy(&sjt_call2); }
-    if (sjt_call3._refCount == 1) { sjf_string_destroy(&sjt_call3); }
-    if (sjt_call4._refCount == 1) { sjf_string_destroy(&sjt_call4); }
-    if (sjv_a._refCount == 1) { sjf_hash_stringstring_destroy(&sjv_a); }
-    if (sjv_b._refCount == 1) { sjf_string_destroy(&sjv_b); }
+    if (sjv_a._refCount == 1) { sjf_hash_heap_interface_i32_destroy(&sjv_a); }
 }

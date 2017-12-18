@@ -219,7 +219,7 @@ shared_ptr<CType> CInterface::getReturnType(Compiler* compiler, CTypeMode return
     return nullptr;
 }
 
-string CInterface::getCFunctionName(CTypeMode returnMode) {
+string CInterface::getCFunctionName(Compiler* compiler, TrOutput* trOutput, CTypeMode returnMode) {
     assert(false);
     return "";
 }
@@ -267,9 +267,9 @@ string CInterface::getCTypeIdName() {
     return getCStructName(CTM_Stack) + "_typeId";
 }
 
-string CInterface::getCCastFunctionName(shared_ptr<CBaseFunction> fromFunction, CTypeMode returnMode) {
+string CInterface::getCCastFunctionName(Compiler* compiler, TrOutput* trOutput, shared_ptr<CBaseFunction> fromFunction, CTypeMode returnMode) {
     stringstream line;
-    line << fromFunction->getCFunctionName(returnMode) << "_as_" << getCStructName(CTM_Stack);
+    line << fromFunction->getCFunctionName(compiler, trOutput, returnMode) << "_as_" << getCStructName(CTM_Stack);
     return line.str();
 }
 
@@ -287,7 +287,7 @@ void CInterface::transpileCast(Compiler* compiler, TrOutput* trOutput, TrBlock* 
     }
     else {
         stringstream line;
-        line << "(" << getCStructName(CTM_Heap) << "*)" << getCCastFunctionName(fromValue->type->parent.lock(), fromValue->type->typeMode) << "(" << fromValue->name << ")";
+        line << "(" << getCStructName(CTM_Heap) << "*)" << getCCastFunctionName(compiler, trOutput, fromValue->type->parent.lock(), fromValue->type->typeMode) << "(" << fromValue->name << ")";
         toValue->takeOverValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, toValue->type, line.str(), false));
     }    
 }

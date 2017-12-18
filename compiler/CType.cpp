@@ -454,7 +454,7 @@ void CType::transpileDefaultValue(Compiler* compiler, CLoc loc, TrBlock* trBlock
                 storeValue->hasSetValue = true;
             }
             else {
-                auto temp = make_shared<TrValue>(nullptr, shared_from_this(), "0", false);
+                auto temp = make_shared<TrValue>(nullptr, storeValue->type, "0", false);
                 storeValue->retainValue(compiler, loc, trBlock, temp);
             }
         }
