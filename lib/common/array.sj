@@ -217,9 +217,9 @@ array!t (
 		result := ""
 		for i : 0 to count {
 			if i != 0 {
-				result = copy result + sep
+				result = copy (result + sep)
 			}
-			result = copy result + getAt(i).toString()
+			result = copy (result + getAt(i).toString())
 		}
 		copy result
 	}

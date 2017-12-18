@@ -12,7 +12,7 @@ class(
 	}
 
 	toString() {
-		copy "c" + i32_toString(x)
+		"c" + i32_toString(x)
 	}
 ) { this }
 
