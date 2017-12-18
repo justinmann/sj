@@ -333,44 +333,52 @@ void main_destroy() {
     if (sjt_cast1 != 0) {
         sjt_cast1->_refCount--;
         if (sjt_cast1->_refCount <= 0) {
+            weakptr_release(sjt_cast1);
             sjf_class_destroy(sjt_cast1);
         }
     }
     if (sjt_cast2 != 0) {
         sjt_cast2->_refCount--;
         if (sjt_cast2->_refCount <= 0) {
+            weakptr_release(sjt_cast2);
             sji_interface_destroy(sjt_cast2);
         }
     }
     sjt_value1->_refCount--;
     if (sjt_value1->_refCount <= 0) {
+        weakptr_release(sjt_value1);
         sjf_class_destroy(sjt_value1);
     }
     if (sjv_l != 0) {
         sjv_l->_refCount--;
         if (sjv_l->_refCount <= 0) {
+            weakptr_release(sjv_l);
             sji_interface_destroy(sjv_l);
         }
     }
     if (sjv_n != 0) {
         sjv_n->_refCount--;
         if (sjv_n->_refCount <= 0) {
+            weakptr_release(sjv_n);
             sjf_class_destroy(sjv_n);
         }
     }
     sjv_o->_refCount--;
     if (sjv_o->_refCount <= 0) {
+        weakptr_release(sjv_o);
         sjf_class_destroy(sjv_o);
     }
     if (sjv_r != 0) {
         sjv_r->_refCount--;
         if (sjv_r->_refCount <= 0) {
+            weakptr_release(sjv_r);
             sji_interface_destroy(sjv_r);
         }
     }
     if (sjv_s != 0) {
         sjv_s->_refCount--;
         if (sjv_s->_refCount <= 0) {
+            weakptr_release(sjv_s);
             sji_interface2_destroy(sjv_s);
         }
     }

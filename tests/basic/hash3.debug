@@ -47,6 +47,7 @@ hash_setat(key'stack string:, val'heap #interface:)'void {
   if (k != kh_end(p)) {            
   kh_val(p, k)->_refCount--;
 if (kh_val(p, k)->_refCount <= 0) {
+    weakptr_release(kh_val(p, k));
     sji_interface_destroy(kh_val(p, k));
 }
 ;
@@ -592,6 +593,7 @@ global()'void {
   void weakptr_release(void* v);
   void weakptr_cb_add(void* v, delete_cb cb);
   void weakptr_cb_remove(void* v, delete_cb cb);
+  void weakptr_clear(void* parent, void* v);
   void ptr_init();
   void ptr_retain(void* ptr);
   bool ptr_release(void* ptr);
@@ -714,6 +716,13 @@ global()'void {
   return false;
   }
   return true;
+  }
+  void weakptr_clear(void* parent, void* v) {
+  void** p = (void**)parent;
+  if (*p != v) {
+  halt("weakptr was changed without clearing callback");
+  }
+  *p = 0;
   }
   --cfunction--
   --c--

@@ -183,10 +183,12 @@ void main_destroy() {
 
     sjt_parent1->_refCount--;
     if (sjt_parent1->_refCount <= 0) {
+        weakptr_release(sjt_parent1);
         sjf_class_destroy(sjt_parent1);
     }
     sjv_c->_refCount--;
     if (sjv_c->_refCount <= 0) {
+        weakptr_release(sjv_c);
         sjf_class_destroy(sjv_c);
     }
 }

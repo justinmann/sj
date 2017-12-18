@@ -337,18 +337,22 @@ void main_destroy() {
 
     sjt_cast1->_refCount--;
     if (sjt_cast1->_refCount <= 0) {
+        weakptr_release(sjt_cast1);
         sjf_a_class_destroy(sjt_cast1);
     }
     sjt_cast2->_refCount--;
     if (sjt_cast2->_refCount <= 0) {
+        weakptr_release(sjt_cast2);
         sjf_b_class_destroy(sjt_cast2);
     }
     sjv_e->_refCount--;
     if (sjv_e->_refCount <= 0) {
+        weakptr_release(sjv_e);
         sji_a_foo_destroy(sjv_e);
     }
     sjv_h->_refCount--;
     if (sjv_h->_refCount <= 0) {
+        weakptr_release(sjv_h);
         sji_b_foo_destroy(sjv_h);
     }
 }

@@ -595,6 +595,7 @@ void weakptr_init();
 void weakptr_release(void* v);
 void weakptr_cb_add(void* v, delete_cb cb);
 void weakptr_cb_remove(void* v, delete_cb cb);
+void weakptr_clear(void* parent, void* v);
 void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
@@ -762,6 +763,13 @@ bool ptr_release(void* v) {
         return false;
     }
     return true;
+}
+void weakptr_clear(void* parent, void* v) {
+    void** p = (void**)parent;
+    if (*p != v) {
+        halt("weakptr was changed without clearing callback");
+    }
+    *p = 0;
 }
 void sjf_array_char(sjs_array_char* _this) {
     if (_this->datasize < 0) {
@@ -957,14 +965,17 @@ void main_destroy() {
 
     sjt_cast1->_refCount--;
     if (sjt_cast1->_refCount <= 0) {
+        weakptr_release(sjt_cast1);
         sjf_class_destroy(sjt_cast1);
     }
     sjv_a->_refCount--;
     if (sjv_a->_refCount <= 0) {
+        weakptr_release(sjv_a);
         sji_foo_destroy(sjv_a);
     }
     sjv_bob->_refCount--;
     if (sjv_bob->_refCount <= 0) {
+        weakptr_release(sjv_bob);
         sjf_string_destroy(sjv_bob);
     }
 }

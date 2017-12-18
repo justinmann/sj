@@ -289,19 +289,23 @@ void main_destroy() {
 
     sjt_cast1->_refCount--;
     if (sjt_cast1->_refCount <= 0) {
+        weakptr_release(sjt_cast1);
         sjf_class_i32_destroy(sjt_cast1);
     }
     sjt_cast2->_refCount--;
     if (sjt_cast2->_refCount <= 0) {
+        weakptr_release(sjt_cast2);
         sji_foo_i32_destroy(sjt_cast2);
     }
     sjv_a->_refCount--;
     if (sjv_a->_refCount <= 0) {
+        weakptr_release(sjv_a);
         sji_foo_i32_destroy(sjv_a);
     }
     if (sjv_b != 0) {
         sjv_b->_refCount--;
         if (sjv_b->_refCount <= 0) {
+            weakptr_release(sjv_b);
             sji_bar_destroy(sjv_b);
         }
     }

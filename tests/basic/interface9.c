@@ -244,14 +244,17 @@ void main_destroy() {
 
     sjt_cast1->_refCount--;
     if (sjt_cast1->_refCount <= 0) {
+        weakptr_release(sjt_cast1);
         sjf_class_destroy(sjt_cast1);
     }
     sjv_a->_refCount--;
     if (sjv_a->_refCount <= 0) {
+        weakptr_release(sjv_a);
         sji_foo_destroy(sjv_a);
     }
     sjv_c->_refCount--;
     if (sjv_c->_refCount <= 0) {
+        weakptr_release(sjv_c);
         sjf_bar_destroy(sjv_c);
     }
     if (sjv_b._refCount == 1) { sjf_bar_destroy(&sjv_b); }

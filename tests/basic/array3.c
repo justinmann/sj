@@ -574,6 +574,7 @@ void weakptr_init();
 void weakptr_release(void* v);
 void weakptr_cb_add(void* v, delete_cb cb);
 void weakptr_cb_remove(void* v, delete_cb cb);
+void weakptr_clear(void* parent, void* v);
 void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
@@ -742,6 +743,13 @@ bool ptr_release(void* v) {
     }
     return true;
 }
+void weakptr_clear(void* parent, void* v) {
+    void** p = (void**)parent;
+    if (*p != v) {
+        halt("weakptr was changed without clearing callback");
+    }
+    *p = 0;
+}
 void sjf_array_heap_class(sjs_array_heap_class* _this) {
     if (_this->datasize < 0) {
         halt("size is less than zero");
@@ -881,22 +889,27 @@ void main_destroy() {
 
     sjt_functionParam2->_refCount--;
     if (sjt_functionParam2->_refCount <= 0) {
+        weakptr_release(sjt_functionParam2);
         sjf_class_destroy(sjt_functionParam2);
     }
     sjt_functionParam4->_refCount--;
     if (sjt_functionParam4->_refCount <= 0) {
+        weakptr_release(sjt_functionParam4);
         sjf_class_destroy(sjt_functionParam4);
     }
     sjt_functionParam6->_refCount--;
     if (sjt_functionParam6->_refCount <= 0) {
+        weakptr_release(sjt_functionParam6);
         sjf_class_destroy(sjt_functionParam6);
     }
     sjv_a->_refCount--;
     if (sjv_a->_refCount <= 0) {
+        weakptr_release(sjv_a);
         sjf_array_heap_class_destroy(sjv_a);
     }
     sjv_c->_refCount--;
     if (sjv_c->_refCount <= 0) {
+        weakptr_release(sjv_c);
         sjf_class_destroy(sjv_c);
     }
 }

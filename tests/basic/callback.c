@@ -307,6 +307,7 @@ void sjf_getcallback_heap(cb_i32_data_heap_data_heap* _return) {
 
     sjv_c->_refCount--;
     if (sjv_c->_refCount <= 0) {
+        weakptr_release(sjv_c);
         sjf_class_destroy(sjv_c);
     }
 }
@@ -391,10 +392,12 @@ void main_destroy() {
 
     sjv_b->_refCount--;
     if (sjv_b->_refCount <= 0) {
+        weakptr_release(sjv_b);
         sjf_data_destroy(sjv_b);
     }
     sjv_c_heap->_refCount--;
     if (sjv_c_heap->_refCount <= 0) {
+        weakptr_release(sjv_c_heap);
         sjf_class_destroy(sjv_c_heap);
     }
     if ((uintptr_t)sjv_f3.inner._parent > 1) {
@@ -411,6 +414,7 @@ void main_destroy() {
     }
     sjv_n->_refCount--;
     if (sjv_n->_refCount <= 0) {
+        weakptr_release(sjv_n);
         sjf_data_destroy(sjv_n);
     }
     if (sjv_c._refCount == 1) { sjf_class_destroy(&sjv_c); }

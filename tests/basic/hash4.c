@@ -617,6 +617,7 @@ void weakptr_init();
 void weakptr_release(void* v);
 void weakptr_cb_add(void* v, delete_cb cb);
 void weakptr_cb_remove(void* v, delete_cb cb);
+void weakptr_clear(void* parent, void* v);
 void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
@@ -827,6 +828,13 @@ bool ptr_release(void* v) {
         return false;
     }
     return true;
+}
+void weakptr_clear(void* parent, void* v) {
+    void** p = (void**)parent;
+    if (*p != v) {
+        halt("weakptr was changed without clearing callback");
+    }
+    *p = 0;
 }
 #ifndef heap_interface_i32_hash_function
 #define heap_interface_i32_hash_function
@@ -1076,6 +1084,7 @@ void sjf_hash_heap_interface_i32_destroy(sjs_hash_heap_interface_i32* _this) {
             if (kh_exist(p, k)) {
                 kh_key(p, k)->_refCount--;
 if (kh_key(p, k)->_refCount <= 0) {
+    weakptr_release(kh_key(p, k));
     sji_interface_destroy(kh_key(p, k));
 }
 ;
@@ -1608,18 +1617,22 @@ void main_destroy() {
 
     sjt_cast1->_refCount--;
     if (sjt_cast1->_refCount <= 0) {
+        weakptr_release(sjt_cast1);
         sjf_class_destroy(sjt_cast1);
     }
     sjt_cast3->_refCount--;
     if (sjt_cast3->_refCount <= 0) {
+        weakptr_release(sjt_cast3);
         sjf_class_destroy(sjt_cast3);
     }
     sjt_functionParam1->_refCount--;
     if (sjt_functionParam1->_refCount <= 0) {
+        weakptr_release(sjt_functionParam1);
         sji_interface_destroy(sjt_functionParam1);
     }
     sjt_functionParam3->_refCount--;
     if (sjt_functionParam3->_refCount <= 0) {
+        weakptr_release(sjt_functionParam3);
         sji_interface_destroy(sjt_functionParam3);
     }
     if (sjt_call6._refCount == 1) { sjf_string_destroy(&sjt_call6); }

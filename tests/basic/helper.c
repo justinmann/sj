@@ -130,6 +130,7 @@ void main_destroy() {
 
     sjv_c->_refCount--;
     if (sjv_c->_refCount <= 0) {
+        weakptr_release(sjv_c);
         sjf_class_destroy(sjv_c);
     }
 }

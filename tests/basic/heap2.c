@@ -121,12 +121,10 @@ void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_get(sjs_class* _parent, sjs_class_anon1** _return) {
-    sjs_class_anon1* sjt_changeMode1 = 0;
     sjs_class* sjt_dot1 = 0;
 
     sjt_dot1 = _parent;
-    sjt_changeMode1 = &(sjt_dot1)->data;
-    (*_return) = sjt_changeMode1;
+    (*_return) = &(sjt_dot1)->data;
 }
 
 void sjf_class_heap(sjs_class* _this) {

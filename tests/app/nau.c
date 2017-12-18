@@ -1816,6 +1816,7 @@ void weakptr_init();
 void weakptr_release(void* v);
 void weakptr_cb_add(void* v, delete_cb cb);
 void weakptr_cb_remove(void* v, delete_cb cb);
+void weakptr_clear(void* parent, void* v);
 void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
@@ -3749,6 +3750,13 @@ bool ptr_release(void* v) {
         return false;
     }
     return true;
+}
+void weakptr_clear(void* parent, void* v) {
+    void** p = (void**)parent;
+    if (*p != v) {
+        halt("weakptr was changed without clearing callback");
+    }
+    *p = 0;
 }
 double *
 make_distance_mapd( double *data, unsigned int width, unsigned int height )
@@ -6538,6 +6546,7 @@ void sjf_anon1_nextframe(sjs_anon1* _parent, int32_t time) {
 
             sjv_a->_refCount--;
             if (sjv_a->_refCount <= 0) {
+                weakptr_release(sjv_a);
                 sji_animation_destroy(sjv_a);
             }
         }
@@ -7015,10 +7024,12 @@ void sjf_array_heap_model__quicksortcallback(sjs_array_heap_model* _parent, int3
 
             sjt_functionParam20->_refCount--;
             if (sjt_functionParam20->_refCount <= 0) {
+                weakptr_release(sjt_functionParam20);
                 sji_model_destroy(sjt_functionParam20);
             }
             sjt_functionParam22->_refCount--;
             if (sjt_functionParam22->_refCount <= 0) {
+                weakptr_release(sjt_functionParam22);
                 sji_model_destroy(sjt_functionParam22);
             }
         }
@@ -7055,10 +7066,12 @@ void sjf_array_heap_model__quicksortcallback(sjs_array_heap_model* _parent, int3
 
             sjt_functionParam26->_refCount--;
             if (sjt_functionParam26->_refCount <= 0) {
+                weakptr_release(sjt_functionParam26);
                 sji_model_destroy(sjt_functionParam26);
             }
             sjt_functionParam28->_refCount--;
             if (sjt_functionParam28->_refCount <= 0) {
+                weakptr_release(sjt_functionParam28);
                 sji_model_destroy(sjt_functionParam28);
             }
         }
@@ -7098,14 +7111,17 @@ void sjf_array_heap_model__quicksortcallback(sjs_array_heap_model* _parent, int3
 
             sjt_functionParam31->_refCount--;
             if (sjt_functionParam31->_refCount <= 0) {
+                weakptr_release(sjt_functionParam31);
                 sji_model_destroy(sjt_functionParam31);
             }
             sjt_functionParam34->_refCount--;
             if (sjt_functionParam34->_refCount <= 0) {
+                weakptr_release(sjt_functionParam34);
                 sji_model_destroy(sjt_functionParam34);
             }
             sjv_tmp->_refCount--;
             if (sjv_tmp->_refCount <= 0) {
+                weakptr_release(sjv_tmp);
                 sji_model_destroy(sjv_tmp);
             }
         }
@@ -7116,18 +7132,22 @@ void sjf_array_heap_model__quicksortcallback(sjs_array_heap_model* _parent, int3
 
         sjt_functionParam17->_refCount--;
         if (sjt_functionParam17->_refCount <= 0) {
+            weakptr_release(sjt_functionParam17);
             sji_model_destroy(sjt_functionParam17);
         }
         sjt_functionParam19->_refCount--;
         if (sjt_functionParam19->_refCount <= 0) {
+            weakptr_release(sjt_functionParam19);
             sji_model_destroy(sjt_functionParam19);
         }
         sjt_functionParam23->_refCount--;
         if (sjt_functionParam23->_refCount <= 0) {
+            weakptr_release(sjt_functionParam23);
             sji_model_destroy(sjt_functionParam23);
         }
         sjt_functionParam25->_refCount--;
         if (sjt_functionParam25->_refCount <= 0) {
+            weakptr_release(sjt_functionParam25);
             sji_model_destroy(sjt_functionParam25);
         }
     }
@@ -7162,6 +7182,7 @@ void sjf_array_heap_model__quicksortcallback(sjs_array_heap_model* _parent, int3
 
     sjv_pivot->_refCount--;
     if (sjv_pivot->_refCount <= 0) {
+        weakptr_release(sjv_pivot);
         sji_model_destroy(sjv_pivot);
     }
 }
@@ -7303,6 +7324,7 @@ sjf_mat4_copy(&p[i], &sjv_newitem);
 
         sjt_functionParam280->_refCount--;
         if (sjt_functionParam280->_refCount <= 0) {
+            weakptr_release(sjt_functionParam280);
             sji_model_destroy(sjt_functionParam280);
         }
         if (sjv_newitem._refCount == 1) { sjf_mat4_destroy(&sjv_newitem); }
@@ -7351,6 +7373,7 @@ sjf_mat4_copy(&p[i], &sjv_newitem);
 
         sjt_functionParam282->_refCount--;
         if (sjt_functionParam282->_refCount <= 0) {
+            weakptr_release(sjt_functionParam282);
             sji_model_destroy(sjt_functionParam282);
         }
         if (sjv_newitem._refCount == 1) { sjf_mat4_destroy(&sjv_newitem); }
@@ -7374,6 +7397,7 @@ void sjf_array_heap_model_setat(sjs_array_heap_model* _parent, int32_t index, sj
     sji_model** p = (sji_model**)_parent->data;
     p[index]->_refCount--;
 if (p[index]->_refCount <= 0) {
+    weakptr_release(p[index]);
     sji_model_destroy(p[index]);
 }
 ;
@@ -7630,6 +7654,7 @@ p[i]->_refCount++;
 
         sjv_newitem->_refCount--;
         if (sjv_newitem->_refCount <= 0) {
+            weakptr_release(sjv_newitem);
             sji_model_destroy(sjv_newitem);
         }
         if (sjt_call33._refCount == 1) { sjf_texture_destroy(&sjt_call33); }
@@ -7680,6 +7705,7 @@ p[i]->_refCount++;
 
         sjv_newitem->_refCount--;
         if (sjv_newitem->_refCount <= 0) {
+            weakptr_release(sjv_newitem);
             sji_model_destroy(sjv_newitem);
         }
         if (sjt_call34._refCount == 1) { sjf_texture_destroy(&sjt_call34); }
@@ -8600,6 +8626,7 @@ void sjf_fillelement_firemouseevent(sjs_fillelement* _parent, sjs_mouseevent* mo
 
         sjv_child->_refCount--;
         if (sjv_child->_refCount <= 0) {
+            weakptr_release(sjv_child);
             sji_element_destroy(sjv_child);
         }
     }
@@ -8699,6 +8726,7 @@ void sjf_fillelement_render(sjs_fillelement* _parent, sjs_scene2d* scene) {
 
         sjv_child->_refCount--;
         if (sjv_child->_refCount <= 0) {
+            weakptr_release(sjv_child);
             sji_element_destroy(sjv_child);
         }
     }
@@ -8742,6 +8770,7 @@ void sjf_fillelement_setrect(sjs_fillelement* _parent, sjs_rect* rect_) {
 
         sjv_child->_refCount--;
         if (sjv_child->_refCount <= 0) {
+            weakptr_release(sjv_child);
             sji_element_destroy(sjv_child);
         }
     }
@@ -9874,6 +9903,7 @@ void sjf_intersecttriangle_heap(sjs_vec3* orig, sjs_vec3* dir, sjs_vec3* v0, sjs
 
                 sjt_value2->_refCount--;
                 if (sjt_value2->_refCount <= 0) {
+                    weakptr_release(sjt_value2);
                     sjf_vec3_destroy(sjt_value2);
                 }
             }
@@ -9979,6 +10009,7 @@ void sjf_leafpanel_firemouseevent(sjs_leafpanel* _parent, sjs_mouseevent* mousee
 
         sjv_c->_refCount--;
         if (sjv_c->_refCount <= 0) {
+            weakptr_release(sjv_c);
             sji_model_destroy(sjv_c);
         }
     }
@@ -10072,6 +10103,7 @@ void sjf_leafpanel_renderorqueue(sjs_leafpanel* _parent, sjs_list_heap_model* zq
 
         sjv_c->_refCount--;
         if (sjv_c->_refCount <= 0) {
+            weakptr_release(sjv_c);
             sji_model_destroy(sjv_c);
         }
     }
@@ -10287,6 +10319,7 @@ void sjf_leafpanel_texturetomodel_heap(sjs_leafpanel* _parent, sjs_texture* text
 
     sjt_cast15->_refCount--;
     if (sjt_cast15->_refCount <= 0) {
+        weakptr_release(sjt_cast15);
         sjf_model_destroy(sjt_cast15);
     }
     if (sjt_call35._refCount == 1) { sjf_string_destroy(&sjt_call35); }
@@ -10332,6 +10365,7 @@ void sjf_leafpanel_update(sjs_leafpanel* _parent, sjs_rect* scenerect, sjs_mat4*
 
         sjv_c->_refCount--;
         if (sjv_c->_refCount <= 0) {
+            weakptr_release(sjv_c);
             sji_model_destroy(sjv_c);
         }
     }
@@ -10461,6 +10495,7 @@ void sjf_list_heap_model_add(sjs_list_heap_model* _parent, sji_model* item) {
 
     sjt_functionParam112->_refCount--;
     if (sjt_functionParam112->_refCount <= 0) {
+        weakptr_release(sjt_functionParam112);
         sji_model_destroy(sjt_functionParam112);
     }
 }
@@ -10626,6 +10661,7 @@ void sjf_mainloop(void) {
 
             ifValue2->_refCount--;
             if (ifValue2->_refCount <= 0) {
+                weakptr_release(ifValue2);
                 sji_element_destroy(ifValue2);
             }
             if (sjt_call110._refCount == 1) { sjf_mouseevent_destroy(&sjt_call110); }
@@ -17827,10 +17863,12 @@ void sjf_model_renderorqueue(sjs_model* _parent, sjs_list_heap_model* zqueue) {
 
         sjt_cast12->_refCount--;
         if (sjt_cast12->_refCount <= 0) {
+            weakptr_release(sjt_cast12);
             sjf_model_destroy(sjt_cast12);
         }
         sjt_functionParam113->_refCount--;
         if (sjt_functionParam113->_refCount <= 0) {
+            weakptr_release(sjt_functionParam113);
             sji_model_destroy(sjt_functionParam113);
         }
     } else {
@@ -17966,6 +18004,7 @@ void sjf_mouse_capture(sji_element* element) {
     if (sjv_mouse_captureelement != 0) {
         sjv_mouse_captureelement->_refCount--;
         if (sjv_mouse_captureelement->_refCount <= 0) {
+            weakptr_release(sjv_mouse_captureelement);
             sji_element_destroy(sjv_mouse_captureelement);
         }
     }
@@ -17979,6 +18018,7 @@ void sjf_mouse_capture(sji_element* element) {
 
     sjt_value1->_refCount--;
     if (sjt_value1->_refCount <= 0) {
+        weakptr_release(sjt_value1);
         sji_element_destroy(sjt_value1);
     }
 }
@@ -18026,6 +18066,7 @@ void sjf_mouse_release(sji_element* element) {
         if (sjv_mouse_captureelement != 0) {
             sjv_mouse_captureelement->_refCount--;
             if (sjv_mouse_captureelement->_refCount <= 0) {
+                weakptr_release(sjv_mouse_captureelement);
                 sji_element_destroy(sjv_mouse_captureelement);
             }
         }
@@ -18039,6 +18080,7 @@ void sjf_mouse_release(sji_element* element) {
 
         ifValue5->_refCount--;
         if (ifValue5->_refCount <= 0) {
+            weakptr_release(ifValue5);
             sji_element_destroy(ifValue5);
         }
         if (sjt_call9._refCount == 1) { sjf_string_destroy(&sjt_call9); }
@@ -18170,10 +18212,12 @@ void sjf_nauscene3delement_firemouseevent(sjs_nauscene3delement* _parent, sjs_mo
 
         sjt_cast5->_refCount--;
         if (sjt_cast5->_refCount <= 0) {
+            weakptr_release(sjt_cast5);
             sjf_nauscene3delement_destroy(sjt_cast5);
         }
         sjt_functionParam51->_refCount--;
         if (sjt_functionParam51->_refCount <= 0) {
+            weakptr_release(sjt_functionParam51);
             sji_element_destroy(sjt_functionParam51);
         }
     } else {
@@ -18340,10 +18384,12 @@ void sjf_nauscene3delement_firemouseevent(sjs_nauscene3delement* _parent, sjs_mo
 
                 sjt_cast10->_refCount--;
                 if (sjt_cast10->_refCount <= 0) {
+                    weakptr_release(sjt_cast10);
                     sjf_nauscene3delement_destroy(sjt_cast10);
                 }
                 sjt_functionParam101->_refCount--;
                 if (sjt_functionParam101->_refCount <= 0) {
+                    weakptr_release(sjt_functionParam101);
                     sji_element_destroy(sjt_functionParam101);
                 }
             }
@@ -18385,6 +18431,7 @@ void sjf_nauscene3delement_firemouseevent(sjs_nauscene3delement* _parent, sjs_mo
 
             sjv_child->_refCount--;
             if (sjv_child->_refCount <= 0) {
+                weakptr_release(sjv_child);
                 sji_model_destroy(sjv_child);
             }
         }
@@ -18515,6 +18562,7 @@ void sjf_nauscene3delement_render(sjs_nauscene3delement* _parent, sjs_scene2d* s
 
         sjv_child->_refCount--;
         if (sjv_child->_refCount <= 0) {
+            weakptr_release(sjv_child);
             sji_model_destroy(sjv_child);
         }
     }
@@ -18553,6 +18601,7 @@ void sjf_nauscene3delement_render(sjs_nauscene3delement* _parent, sjs_scene2d* s
 
         sjv_child->_refCount--;
         if (sjv_child->_refCount <= 0) {
+            weakptr_release(sjv_child);
             sji_model_destroy(sjv_child);
         }
     }
@@ -18580,6 +18629,7 @@ void sjf_nauscene3delement_render(sjs_nauscene3delement* _parent, sjs_scene2d* s
 
         sjv_child->_refCount--;
         if (sjv_child->_refCount <= 0) {
+            weakptr_release(sjv_child);
             sji_model_destroy(sjv_child);
         }
     }
@@ -18718,6 +18768,7 @@ void sjf_panel3d_firemouseevent(sjs_panel3d* _parent, sjs_mouseevent* mouseevent
 
         sjv_c->_refCount--;
         if (sjv_c->_refCount <= 0) {
+            weakptr_release(sjv_c);
             sji_model_destroy(sjv_c);
         }
     }
@@ -18791,6 +18842,7 @@ void sjf_panel3d_renderorqueue(sjs_panel3d* _parent, sjs_list_heap_model* zqueue
 
         sjv_c->_refCount--;
         if (sjv_c->_refCount <= 0) {
+            weakptr_release(sjv_c);
             sji_model_destroy(sjv_c);
         }
     }
@@ -18843,6 +18895,7 @@ void sjf_panel3d_update(sjs_panel3d* _parent, sjs_rect* scenerect, sjs_mat4* pro
 
         sjv_c->_refCount--;
         if (sjv_c->_refCount <= 0) {
+            weakptr_release(sjv_c);
             sji_model_destroy(sjv_c);
         }
     }
@@ -18960,6 +19013,7 @@ void sjf_peoplepanel_firemouseevent(sjs_peoplepanel* _parent, sjs_mouseevent* mo
 
         sjv_c->_refCount--;
         if (sjv_c->_refCount <= 0) {
+            weakptr_release(sjv_c);
             sji_model_destroy(sjv_c);
         }
     }
@@ -19291,6 +19345,7 @@ void sjf_peoplepanel_renderorqueue(sjs_peoplepanel* _parent, sjs_list_heap_model
 
         sjv_c->_refCount--;
         if (sjv_c->_refCount <= 0) {
+            weakptr_release(sjv_c);
             sji_model_destroy(sjv_c);
         }
     }
@@ -19357,6 +19412,7 @@ void sjf_peoplepanel_update(sjs_peoplepanel* _parent, sjs_rect* scenerect, sjs_m
 
         sjv_c->_refCount--;
         if (sjv_c->_refCount <= 0) {
+            weakptr_release(sjv_c);
             sji_model_destroy(sjv_c);
         }
         if (sjt_call53._refCount == 1) { sjf_mat4_destroy(&sjt_call53); }
@@ -20268,6 +20324,7 @@ void sjf_scene2dmodel(sjs_scene2dmodel* _this) {
 
         sjv_child->_refCount--;
         if (sjv_child->_refCount <= 0) {
+            weakptr_release(sjv_child);
             sji_element_destroy(sjv_child);
         }
     }
@@ -20473,6 +20530,7 @@ void sjf_scene2dmodel_firemouseevent(sjs_scene2dmodel* _parent, sjs_mouseevent* 
 
             sjv_child->_refCount--;
             if (sjv_child->_refCount <= 0) {
+                weakptr_release(sjv_child);
                 sji_element_destroy(sjv_child);
             }
             if (sjt_call71._refCount == 1) { sjf_mouseevent_destroy(&sjt_call71); }
@@ -20639,6 +20697,7 @@ void sjf_scene2dmodel_heap(sjs_scene2dmodel* _this) {
 
         sjv_child->_refCount--;
         if (sjv_child->_refCount <= 0) {
+            weakptr_release(sjv_child);
             sji_element_destroy(sjv_child);
         }
     }
@@ -20787,6 +20846,7 @@ void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
 
         sjv_child->_refCount--;
         if (sjv_child->_refCount <= 0) {
+            weakptr_release(sjv_child);
             sji_element_destroy(sjv_child);
         }
     }
@@ -20955,10 +21015,12 @@ void sjf_scene2dmodel_renderorqueue(sjs_scene2dmodel* _parent, sjs_list_heap_mod
 
         sjt_cast33->_refCount--;
         if (sjt_cast33->_refCount <= 0) {
+            weakptr_release(sjt_cast33);
             sjf_scene2dmodel_destroy(sjt_cast33);
         }
         sjt_functionParam355->_refCount--;
         if (sjt_functionParam355->_refCount <= 0) {
+            weakptr_release(sjt_functionParam355);
             sji_model_destroy(sjt_functionParam355);
         }
     } else {
@@ -25928,208 +25990,259 @@ void main_destroy() {
 
     sjt_cast1->_refCount--;
     if (sjt_cast1->_refCount <= 0) {
+        weakptr_release(sjt_cast1);
         sjf_fillelement_destroy(sjt_cast1);
     }
     sjt_cast11->_refCount--;
     if (sjt_cast11->_refCount <= 0) {
+        weakptr_release(sjt_cast11);
         sjf_model_destroy(sjt_cast11);
     }
     sjt_cast13->_refCount--;
     if (sjt_cast13->_refCount <= 0) {
+        weakptr_release(sjt_cast13);
         sjf_leafpanel_destroy(sjt_cast13);
     }
     sjt_cast19->_refCount--;
     if (sjt_cast19->_refCount <= 0) {
+        weakptr_release(sjt_cast19);
         sjf_peoplepanel_destroy(sjt_cast19);
     }
     sjt_cast2->_refCount--;
     if (sjt_cast2->_refCount <= 0) {
+        weakptr_release(sjt_cast2);
         sjf_nauscene3delement_destroy(sjt_cast2);
     }
     sjt_cast30->_refCount--;
     if (sjt_cast30->_refCount <= 0) {
+        weakptr_release(sjt_cast30);
         sjf_scene2dmodel_destroy(sjt_cast30);
     }
     sjt_cast42->_refCount--;
     if (sjt_cast42->_refCount <= 0) {
+        weakptr_release(sjt_cast42);
         sjf_boxelement_destroy(sjt_cast42);
     }
     sjt_cast43->_refCount--;
     if (sjt_cast43->_refCount <= 0) {
+        weakptr_release(sjt_cast43);
         sjf_imageelement_destroy(sjt_cast43);
     }
     sjt_cast44->_refCount--;
     if (sjt_cast44->_refCount <= 0) {
+        weakptr_release(sjt_cast44);
         sjf_crosshairselement_destroy(sjt_cast44);
     }
     sjt_cast45->_refCount--;
     if (sjt_cast45->_refCount <= 0) {
+        weakptr_release(sjt_cast45);
         sjf_scene2dmodel_destroy(sjt_cast45);
     }
     sjt_cast46->_refCount--;
     if (sjt_cast46->_refCount <= 0) {
+        weakptr_release(sjt_cast46);
         sjf_boxelement_destroy(sjt_cast46);
     }
     sjt_cast47->_refCount--;
     if (sjt_cast47->_refCount <= 0) {
+        weakptr_release(sjt_cast47);
         sjf_imageelement_destroy(sjt_cast47);
     }
     sjt_cast48->_refCount--;
     if (sjt_cast48->_refCount <= 0) {
+        weakptr_release(sjt_cast48);
         sjf_crosshairselement_destroy(sjt_cast48);
     }
     sjt_cast49->_refCount--;
     if (sjt_cast49->_refCount <= 0) {
+        weakptr_release(sjt_cast49);
         sjf_panel3d_destroy(sjt_cast49);
     }
     sjt_cast50->_refCount--;
     if (sjt_cast50->_refCount <= 0) {
+        weakptr_release(sjt_cast50);
         sjf_model_destroy(sjt_cast50);
     }
     sjt_cast51->_refCount--;
     if (sjt_cast51->_refCount <= 0) {
+        weakptr_release(sjt_cast51);
         sjf_model_destroy(sjt_cast51);
     }
     sjt_cast52->_refCount--;
     if (sjt_cast52->_refCount <= 0) {
+        weakptr_release(sjt_cast52);
         sjf_model_destroy(sjt_cast52);
     }
     sjt_cast53->_refCount--;
     if (sjt_cast53->_refCount <= 0) {
+        weakptr_release(sjt_cast53);
         sjf_model_destroy(sjt_cast53);
     }
     sjt_cast54->_refCount--;
     if (sjt_cast54->_refCount <= 0) {
+        weakptr_release(sjt_cast54);
         sjf_model_destroy(sjt_cast54);
     }
     sjt_cast55->_refCount--;
     if (sjt_cast55->_refCount <= 0) {
+        weakptr_release(sjt_cast55);
         sjf_model_destroy(sjt_cast55);
     }
     sjt_cast56->_refCount--;
     if (sjt_cast56->_refCount <= 0) {
+        weakptr_release(sjt_cast56);
         sjf_model_destroy(sjt_cast56);
     }
     sjt_cast57->_refCount--;
     if (sjt_cast57->_refCount <= 0) {
+        weakptr_release(sjt_cast57);
         sjf_model_destroy(sjt_cast57);
     }
     sjt_cast58->_refCount--;
     if (sjt_cast58->_refCount <= 0) {
+        weakptr_release(sjt_cast58);
         sjf_model_destroy(sjt_cast58);
     }
     sjt_cast59->_refCount--;
     if (sjt_cast59->_refCount <= 0) {
+        weakptr_release(sjt_cast59);
         sjf_model_destroy(sjt_cast59);
     }
     sjt_cast60->_refCount--;
     if (sjt_cast60->_refCount <= 0) {
+        weakptr_release(sjt_cast60);
         sjf_crosshairselement_destroy(sjt_cast60);
     }
     sjt_functionParam104->_refCount--;
     if (sjt_functionParam104->_refCount <= 0) {
+        weakptr_release(sjt_functionParam104);
         sji_model_destroy(sjt_functionParam104);
     }
     sjt_functionParam209->_refCount--;
     if (sjt_functionParam209->_refCount <= 0) {
+        weakptr_release(sjt_functionParam209);
         sji_model_destroy(sjt_functionParam209);
     }
     sjt_functionParam278->_refCount--;
     if (sjt_functionParam278->_refCount <= 0) {
+        weakptr_release(sjt_functionParam278);
         sji_model_destroy(sjt_functionParam278);
     }
     sjt_functionParam305->_refCount--;
     if (sjt_functionParam305->_refCount <= 0) {
+        weakptr_release(sjt_functionParam305);
         sji_model_destroy(sjt_functionParam305);
     }
     sjt_functionParam480->_refCount--;
     if (sjt_functionParam480->_refCount <= 0) {
+        weakptr_release(sjt_functionParam480);
         sji_element_destroy(sjt_functionParam480);
     }
     sjt_functionParam486->_refCount--;
     if (sjt_functionParam486->_refCount <= 0) {
+        weakptr_release(sjt_functionParam486);
         sji_element_destroy(sjt_functionParam486);
     }
     sjt_functionParam492->_refCount--;
     if (sjt_functionParam492->_refCount <= 0) {
+        weakptr_release(sjt_functionParam492);
         sji_element_destroy(sjt_functionParam492);
     }
     sjt_functionParam498->_refCount--;
     if (sjt_functionParam498->_refCount <= 0) {
+        weakptr_release(sjt_functionParam498);
         sji_model_destroy(sjt_functionParam498);
     }
     sjt_functionParam5->_refCount--;
     if (sjt_functionParam5->_refCount <= 0) {
+        weakptr_release(sjt_functionParam5);
         sji_element_destroy(sjt_functionParam5);
     }
     sjt_functionParam509->_refCount--;
     if (sjt_functionParam509->_refCount <= 0) {
+        weakptr_release(sjt_functionParam509);
         sji_element_destroy(sjt_functionParam509);
     }
     sjt_functionParam511->_refCount--;
     if (sjt_functionParam511->_refCount <= 0) {
+        weakptr_release(sjt_functionParam511);
         sji_element_destroy(sjt_functionParam511);
     }
     sjt_functionParam514->_refCount--;
     if (sjt_functionParam514->_refCount <= 0) {
+        weakptr_release(sjt_functionParam514);
         sji_element_destroy(sjt_functionParam514);
     }
     sjt_functionParam516->_refCount--;
     if (sjt_functionParam516->_refCount <= 0) {
+        weakptr_release(sjt_functionParam516);
         sji_model_destroy(sjt_functionParam516);
     }
     sjt_functionParam525->_refCount--;
     if (sjt_functionParam525->_refCount <= 0) {
+        weakptr_release(sjt_functionParam525);
         sji_model_destroy(sjt_functionParam525);
     }
     sjt_functionParam544->_refCount--;
     if (sjt_functionParam544->_refCount <= 0) {
+        weakptr_release(sjt_functionParam544);
         sji_model_destroy(sjt_functionParam544);
     }
     sjt_functionParam563->_refCount--;
     if (sjt_functionParam563->_refCount <= 0) {
+        weakptr_release(sjt_functionParam563);
         sji_model_destroy(sjt_functionParam563);
     }
     sjt_functionParam582->_refCount--;
     if (sjt_functionParam582->_refCount <= 0) {
+        weakptr_release(sjt_functionParam582);
         sji_model_destroy(sjt_functionParam582);
     }
     sjt_functionParam601->_refCount--;
     if (sjt_functionParam601->_refCount <= 0) {
+        weakptr_release(sjt_functionParam601);
         sji_model_destroy(sjt_functionParam601);
     }
     sjt_functionParam620->_refCount--;
     if (sjt_functionParam620->_refCount <= 0) {
+        weakptr_release(sjt_functionParam620);
         sji_model_destroy(sjt_functionParam620);
     }
     sjt_functionParam639->_refCount--;
     if (sjt_functionParam639->_refCount <= 0) {
+        weakptr_release(sjt_functionParam639);
         sji_model_destroy(sjt_functionParam639);
     }
     sjt_functionParam658->_refCount--;
     if (sjt_functionParam658->_refCount <= 0) {
+        weakptr_release(sjt_functionParam658);
         sji_model_destroy(sjt_functionParam658);
     }
     sjt_functionParam677->_refCount--;
     if (sjt_functionParam677->_refCount <= 0) {
+        weakptr_release(sjt_functionParam677);
         sji_model_destroy(sjt_functionParam677);
     }
     sjt_functionParam696->_refCount--;
     if (sjt_functionParam696->_refCount <= 0) {
+        weakptr_release(sjt_functionParam696);
         sji_model_destroy(sjt_functionParam696);
     }
     sjt_functionParam718->_refCount--;
     if (sjt_functionParam718->_refCount <= 0) {
+        weakptr_release(sjt_functionParam718);
         sji_element_destroy(sjt_functionParam718);
     }
     if (sjv_mouse_captureelement != 0) {
         sjv_mouse_captureelement->_refCount--;
         if (sjv_mouse_captureelement->_refCount <= 0) {
+            weakptr_release(sjv_mouse_captureelement);
             sji_element_destroy(sjv_mouse_captureelement);
         }
     }
     sjv_root->_refCount--;
     if (sjv_root->_refCount <= 0) {
+        weakptr_release(sjv_root);
         sji_element_destroy(sjv_root);
     }
     if (sjt_call100._refCount == 1) { sjf_mat4_destroy(&sjt_call100); }

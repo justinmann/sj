@@ -154,22 +154,27 @@ void main_destroy() {
 
     sjt_copy4->_refCount--;
     if (sjt_copy4->_refCount <= 0) {
+        weakptr_release(sjt_copy4);
         sjf_foo_destroy(sjt_copy4);
     }
     sjv_heap_x1->_refCount--;
     if (sjv_heap_x1->_refCount <= 0) {
+        weakptr_release(sjv_heap_x1);
         sjf_foo_destroy(sjv_heap_x1);
     }
     sjv_heap_x2->_refCount--;
     if (sjv_heap_x2->_refCount <= 0) {
+        weakptr_release(sjv_heap_x2);
         sjf_foo_destroy(sjv_heap_x2);
     }
     sjv_heap_x3->_refCount--;
     if (sjv_heap_x3->_refCount <= 0) {
+        weakptr_release(sjv_heap_x3);
         sjf_foo_destroy(sjv_heap_x3);
     }
     sjv_heap_y->_refCount--;
     if (sjv_heap_y->_refCount <= 0) {
+        weakptr_release(sjv_heap_y);
         sjf_foo_destroy(sjv_heap_y);
     }
     if (sjt_call1._refCount == 1) { sjf_foo_destroy(&sjt_call1); }

@@ -574,6 +574,7 @@ void weakptr_init();
 void weakptr_release(void* v);
 void weakptr_cb_add(void* v, delete_cb cb);
 void weakptr_cb_remove(void* v, delete_cb cb);
+void weakptr_clear(void* parent, void* v);
 void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
@@ -582,7 +583,6 @@ sjs_class sjt_call1 = { -1 };
 sjs_class sjt_call2 = { -1 };
 sjs_class sjt_call3 = { -1 };
 sjs_class sjt_call4 = { -1 };
-sjs_class* sjt_changeMode1 = 0;
 sjs_class* sjt_dot1 = 0;
 int32_t sjt_functionParam1;
 sjs_class* sjt_functionParam2 = 0;
@@ -747,6 +747,13 @@ bool ptr_release(void* v) {
     }
     return true;
 }
+void weakptr_clear(void* parent, void* v) {
+    void** p = (void**)parent;
+    if (*p != v) {
+        halt("weakptr was changed without clearing callback");
+    }
+    *p = 0;
+}
 void sjf_array_class(sjs_array_class* _this) {
     if (_this->datasize < 0) {
         halt("size is less than zero");
@@ -872,8 +879,7 @@ int main(int argc, char** argv) {
     sjt_parent4 = &sjv_a;
     sjt_functionParam7 = 0;
     sjf_array_class_getat(sjt_parent4, sjt_functionParam7, &sjt_call4);
-    sjt_changeMode1 = &sjt_call4;
-    sjv_c = sjt_changeMode1;
+    sjv_c = &sjt_call4;
     sjt_dot1 = sjv_c;
     main_destroy();
     #ifdef _DEBUG
