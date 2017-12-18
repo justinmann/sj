@@ -17,11 +17,10 @@ hash![i32i32]()'stack hash_i32_i32 {
   this
 }
 
-hash_getat(key'i32:)'i32 {
+hash_getat(key'i32:)'i32? {
   --c--
   khiter_t k = kh_get(int32_t_int32_t_hash_type, _parent->_hash, key);
   if (k == kh_end(_parent->_hash)) {
-  halt("cannot find key");
   }
   ;
   --c--
@@ -40,6 +39,39 @@ hash_setat(key'i32:, val'i32:)'void {
   --c--
 }
 
+i32_tostring(val'i32:, base'i32:, minlength'i32:)'stack string {
+  count'i32 = 0i
+  data'ptr = 0
+  --c--
+  if (base < 2) {
+  halt("base is too small");
+  }
+  if (base > 16) {
+  halt("base is too large");
+  }
+  char buf[32] = { 0 };
+  int i = 30;	
+  do {
+  buf[i] = "0123456789ABCDEF"[val % base];	
+  i--;
+  val /= base;
+  } while (val && i);
+  sjv_count = 30 - i;
+  if (sjv_count < minlength) {				
+  }
+  sjv_data = malloc(sizeof(char) * (sjv_count + 1));
+  memcpy(sjv_data, &buf[i+1], sjv_count + 1);
+  --c--
+  string(this = string(
+    count'i32 = count,
+    data'stack array_char = data
+  ))
+}
+
+string(count'i32=, data'stack array_char=)'stack string {
+  this
+}
+
 writeline(data'stack string:)'void {
   --c--
   printf("%s\n", (char*)data->data.data);
@@ -48,6 +80,29 @@ writeline(data'stack string:)'void {
 
 global()'void {
   --cinclude--
+  #ifdef __GNUC__
+  #if __x86_64__ 
+  #define __LINUX__
+  #define __64__
+  #elif __i386__ 
+  #define __LINUX__
+  #define __32__
+  #else
+  Invalid bits
+  #endif
+  #elif _MSC_VER
+  #if _WIN64 
+  #define __WINDOWS__
+  #define __64__
+  #elif _WIN32 
+  #define __WINDOWS__
+  #define __32__
+  #else
+  Invalid bits
+  #endif
+  #else
+  Invalid compiler
+  #endif
   --cinclude--
   --cstruct--
   /* The MIT License
@@ -339,12 +394,12 @@ global()'void {
   --cdefine--
   --cfunction--
   void halt(const char * format, ...) {
-  char s[1024];
   va_list args;
   va_start(args, format);
   vprintf(format, args);
   va_end(args);
   #ifdef _DEBUG
+  printf("\npress return to end\n");
   getchar();
   #endif
   exit(-1);
@@ -373,7 +428,7 @@ global()'void {
   };
   --cstruct--
   --cdefine--
-  void ptr_hash(void* p, uintptr_t* result);
+  void ptr_hash(void* p, uint32_t* result);
   void ptr_isequal(void *p1, void* p2, bool* result);
   void delete_cb_list_free(delete_cb_list* d);
   void delete_cb_list_add(delete_cb_list* d, delete_cb cb);
@@ -388,8 +443,12 @@ global()'void {
   bool ptr_release(void* ptr);
   --cdefine--
   --cfunction--
-  void ptr_hash(void* p, uintptr_t* result) {
+  void ptr_hash(void* p, uint32_t* result) {
+  #ifdef __32__
   *result = kh_int_hash_func((uintptr_t)p);
+  #else
+  *result = kh_int64_hash_func((uintptr_t)p);
+  #endif
   }
   void ptr_isequal(void *p1, void* p2, bool* result) {
   *result = (p1 == p2);
@@ -513,10 +572,15 @@ global()'void {
     key'i32 : key,
     val'i32 : val
   )
-  b'i32 : hash_getat(
+  b'i32? : hash_getat(
     parent: this,
     key'i32 : key
   )
+  c'stack string? : if isEmpty(b) empty'stack string? else value(i32_tostring(
+    val'i32 : val,
+    base'i32 : base,
+    minlength'i32 : minlength
+  ))
   writeline(
     data'stack string : data
   )

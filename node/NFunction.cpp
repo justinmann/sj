@@ -1423,11 +1423,9 @@ pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> CFunction::getF
 }
 
 shared_ptr<CType> CFunction::getVarType(Compiler* compiler, string name, bool isOption) {
-    if (!isOption) {
-        auto t = templateTypesByName.find(name);
-        if (t != templateTypesByName.end()) {
-            return t->second;
-        }
+    auto t = templateTypesByName.find(name);
+    if (t != templateTypesByName.end()) {
+        return isOption ? t->second->getOptionType() : t->second;
     }
 
     if (!parent.expired()) {

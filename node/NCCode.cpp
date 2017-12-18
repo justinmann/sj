@@ -122,6 +122,9 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
 
         auto ctype = scope->getVarType(loc, compiler, ctypeName, CTM_Undefined);
         if (ctype) {
+            if (returnType != nullptr && returnType != ctype) {
+                compiler->addError(loc, CErrorCode::InvalidType, "all return types must agree");
+            }
             returnType = ctype;
             TrBlock block;
             stringstream retainStream;
@@ -132,6 +135,88 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
                     returnValue->op.isCopy = true;
                 }
                 returnValue->retainValue(compiler, loc, &block, rightValue);
+                block.writeVariablesToStream(retainStream, 0);
+                block.writeBodyToStream(retainStream, 0);
+            }
+            return retainStream.str();
+        }
+        else {
+            compiler->addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", typeName.c_str());
+        }
+    }
+    else if (functionName.compare("returnEmpty") == 0) {
+        if (params.size() != 1) {
+            compiler->addError(loc, CErrorCode::InvalidMacro, "returnEmpty requires 1 parameter");
+            return "";
+        }
+
+        auto typeName = params[0];
+
+        auto ctypeName = CTypeName::parse(typeName);
+        if (!ctypeName) {
+            compiler->addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", typeName.c_str());
+        }
+
+        auto ctype = scope->getVarType(loc, compiler, ctypeName, CTM_Undefined);
+        if (ctype) {
+            if (returnType != nullptr && returnType != ctype->getOptionType()) {
+                compiler->addError(loc, CErrorCode::InvalidType, "all return types must agree");
+            }
+            returnType = ctype->getOptionType();
+            TrBlock block;
+            stringstream retainStream;
+
+            if (trOutput) {
+                returnType->transpileDefaultValue(compiler, loc, &block, returnValue);
+                block.writeVariablesToStream(retainStream, 0);
+                block.writeBodyToStream(retainStream, 0);
+            }
+            return retainStream.str();
+        }
+        else {
+            compiler->addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", typeName.c_str());
+        }
+    }
+    else if (functionName.compare("returnValue") == 0) {
+        if (params.size() != 2) {
+            compiler->addError(loc, CErrorCode::InvalidMacro, "returnValue requires 2 parameters");
+            return "";
+        }
+
+        auto typeName = params[0];
+        auto rightName = params[1];
+
+        auto ctypeName = CTypeName::parse(typeName);
+        if (!ctypeName) {
+            compiler->addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", typeName.c_str());
+        }
+
+        auto ctype = scope->getVarType(loc, compiler, ctypeName, CTM_Undefined);
+        if (ctype) {
+            if (returnType != nullptr && returnType != ctype->getOptionType()) {
+                compiler->addError(loc, CErrorCode::InvalidType, "all return types must agree");
+            }
+            returnType = ctype->getOptionType();
+            TrBlock block;
+            stringstream retainStream;
+
+            if (trOutput) {
+                if (returnType->parent.expired() && returnType->category != CTC_Function) {
+                    stringstream line1;
+                    line1 << "_return->isempty = false";
+                    block.statements.push_back(TrStatement(loc, line1.str()));
+
+                    stringstream line2;
+                    line2 << "_return->value = " << rightName;
+                    block.statements.push_back(TrStatement(loc, line2.str()));
+                }
+                else {
+                    auto rightValue = make_shared<TrValue>(scope, ctype, rightName, false);
+                    if (ctype->typeMode == CTM_Stack) {
+                        returnValue->op.isCopy = true;
+                    }
+                    returnValue->retainValue(compiler, loc, &block, rightValue);
+                }
                 block.writeVariablesToStream(retainStream, 0);
                 block.writeBodyToStream(retainStream, 0);
             }
@@ -421,9 +506,13 @@ void CCCodeVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>&
 shared_ptr<CVar> NCCode::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
     vector<shared_ptr<CFunction>> functions;
     map<string, map<string, bool>> includes;
-    shared_ptr<CType> returnType = compiler->typeVoid;
+    shared_ptr<CType> returnType = nullptr;
     for (auto line : lines) {
         expandMacros(compiler, loc, scope, nullptr, line, nullptr, functions, includes, returnType);
+    }
+
+    if (!returnType) {
+        returnType = compiler->typeVoid;
     }
 
     return make_shared<CCCodeVar>(loc, scope, codeType, lines, returnType);
@@ -433,7 +522,7 @@ shared_ptr<CVar> NCCode::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
 void NCCode::addToStruct(Compiler* compiler, shared_ptr<CScope> scope, vector<string>& structLines) {
     vector<shared_ptr<CFunction>> functions;
     map<string, map<string, bool>> includes;
-    shared_ptr<CType> returnType = compiler->typeVoid;
+    shared_ptr<CType> returnType = nullptr;
 
     for (auto line : lines) {
         auto finalLine = expandMacros(compiler, loc, scope, nullptr, line, nullptr, functions, includes, returnType);
