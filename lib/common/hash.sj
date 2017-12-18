@@ -1,48 +1,71 @@
 hash![key, val] (
     --cvar--
-    khash_t(#type(key)_#type(val)_hash_type)* _hash;
+    void* _hash;
     --cvar--
 
     setAt(key : 'key, val : 'val) {
         --c--
-        khiter_t k = kh_get(#type(key)_#type(val)_hash_type, _parent->_hash, key);
-        if (k != kh_end(_parent->_hash)) {            
-            #release(val, kh_val(_parent->_hash, k));
+        khash_t(#safeName(key)_#safeName(val)_hash_type)* p = (khash_t(#safeName(key)_#safeName(val)_hash_type)*)_parent->_hash;
+
+        ##if #isStack(key)
+        khiter_t k = kh_get(#safeName(key)_#safeName(val)_hash_type, p, *key);
+        ##else
+        khiter_t k = kh_get(#safeName(key)_#safeName(val)_hash_type, p, key);
+        ##endif
+
+        if (k != kh_end(p)) {            
+            #release(val, kh_val(p, k));
         }
 
         int ret;
-        k = kh_put(#type(key)_#type(val)_hash_type, _parent->_hash, key, &ret);
-        if (!ret) kh_del(#type(key)_#type(val)_hash_type, _parent->_hash, key);
-        #retain(val, kh_val(_parent->_hash, k), val);
+        ##if #isStack(key)
+        k = kh_put(#safeName(key)_#safeName(val)_hash_type, _parent->_hash, *key, &ret);
+        ##else
+        k = kh_put(#safeName(key)_#safeName(val)_hash_type, _parent->_hash, key, &ret);
+        ##endif
+
+        if (!ret) kh_del(#safeName(key)_#safeName(val)_hash_type, p, k);
+        #retain(val, kh_val(p, k), val);
         --c--
     }
 
     getAt(key : 'key)'val? {
         --c--
-        khiter_t k = kh_get(#type(key)_#type(val)_hash_type, _parent->_hash, key);
-        if (k == kh_end(_parent->_hash)) {
+        khash_t(#safeName(key)_#safeName(val)_hash_type)* p = (khash_t(#safeName(key)_#safeName(val)_hash_type)*)_parent->_hash;
+    
+        ##if #isStack(key)
+        khiter_t k = kh_get(#safeName(key)_#safeName(val)_hash_type, p, *key);
+        ##else
+        khiter_t k = kh_get(#safeName(key)_#safeName(val)_hash_type, p, key);
+        ##endif
+
+        if (k == kh_end(p)) {
             #returnEmpty(val)
         }
-        #returnValue(val, kh_val(_parent->_hash, k));
+        #returnValue(val, kh_val(p, k));
         --c--
     }
 ) {
-    --cstruct--
-    ##ifndef #type(key)_#type(val)_hash_typedef
-    ##define #type(key)_#type(val)_hash_typedef
-    KHASH_INIT_TYPEDEF(#type(key)_#type(val)_hash_type, #type(key), #type(val))
+    --cdefine--
+    ##ifndef #safeName(key)_#safeName(val)_hash_typedef
+    ##define #safeName(key)_#safeName(val)_hash_typedef
+    KHASH_INIT_TYPEDEF(#safeName(key)_#safeName(val)_hash_type, #type(key), #type(val))
     ##endif
-    --cstruct--
+    --cdefine--
 
     --cfunction--
-    ##ifndef #type(key)_#type(val)_hash_function
-    ##define #type(key)_#type(val)_hash_function
-    KHASH_INIT_FUNCTION(#type(key)_#type(val)_hash_type, #type(key), #type(val), 1, #functionStack(key, hash), #functionStack(key, isEqual))
+    ##ifndef #safeName(key)_#safeName(val)_hash_function
+    ##define #safeName(key)_#safeName(val)_hash_function
+    ##if #isStack(key)
+    KHASH_INIT_FUNCTION(#safeName(key)_#safeName(val)_hash_type, #type(key), #type(val), 1, #functionStack(key, hash), #functionStack(key, isEqual), &)
+    ##else
+    KHASH_INIT_FUNCTION(#safeName(key)_#safeName(val)_hash_type, #type(key), #type(val), 1, #functionStack(key, hash), #functionStack(key, isEqual), )
+    ##endif
     ##endif
     --cfunction--
 
     --c--
-    _this->_hash = kh_init(#type(key)_#type(val)_hash_type);
+    _this->_hash = kh_init(#safeName(key)_#safeName(val)_hash_type);
     --c--
     this
 } copy {
@@ -53,7 +76,7 @@ hash![key, val] (
 } destroy {
     --c--
     if (ptr_release(_this->_hash)) {
-        kh_destroy(#type(key)_#type(val)_hash_type, _this->_hash);
+        kh_destroy(#safeName(key)_#safeName(val)_hash_type, _this->_hash);
     }
     --c--
 }

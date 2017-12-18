@@ -114,7 +114,7 @@ static const double __ac_HASH_UPPER = 0.77;
         khval_t *vals;                                                  \
     } kh_####name####_t;                                                
 
-##define KHASH_INIT_FUNCTION(name, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal) \
+##define KHASH_INIT_FUNCTION(name, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal, deref) \
     static inline kh_####name####_t *kh_init_####name() {                     \
         return (kh_####name####_t*)calloc(1, sizeof(kh_####name####_t));        \
     }                                                                   \
@@ -137,15 +137,15 @@ static const double __ac_HASH_UPPER = 0.77;
     {                                                                   \
         if (h->n_buckets) {                                             \
             khint_t inc, k, i, last;                                    \
-            __hash_func(key, &k); i = k % h->n_buckets;                 \
+            __hash_func(deref####key, &k); i = k % h->n_buckets;                 \
             inc = 1 + k % (h->n_buckets - 1); last = i;                 \
             bool isEqual;                                               \
-            __hash_equal(h->keys[i], key, &isEqual);                    \
+            __hash_equal(deref####h->keys[i], deref####key, &isEqual);                    \
             while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
                 if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
                 else i += inc;                                          \
                 if (i == last) return h->n_buckets;                     \
-                __hash_equal(h->keys[i], key, &isEqual);                \
+                __hash_equal(deref####h->keys[i], deref####key, &isEqual);                \
             }                                                           \
             return __ac_iseither(h->flags, i)? h->n_buckets : i;            \
         } else return 0;                                                \
@@ -178,7 +178,7 @@ static const double __ac_HASH_UPPER = 0.77;
                     __ac_set_isdel_true(h->flags, j);                   \
                     while (1) {                                         \
                         khint_t inc, k, i;                              \
-                        __hash_func(key, &k);                           \
+                        __hash_func(deref####key, &k);                           \
                         i = k % new_n_buckets;                          \
                         inc = 1 + k % (new_n_buckets - 1);              \
                         while (!__ac_isempty(new_flags, i)) {           \
@@ -219,18 +219,18 @@ static const double __ac_HASH_UPPER = 0.77;
         }                                                               \
         {                                                               \
             khint_t inc, k, i, site, last;                              \
-            x = site = h->n_buckets; __hash_func(key, &k); i = k % h->n_buckets; \
+            x = site = h->n_buckets; __hash_func(deref####key, &k); i = k % h->n_buckets; \
             if (__ac_isempty(h->flags, i)) x = i;                       \
             else {                                                      \
                 inc = 1 + k % (h->n_buckets - 1); last = i;             \
                 bool isEqual;                                           \
-                __hash_equal(h->keys[i], key, &isEqual);                \
+                __hash_equal(deref####h->keys[i], deref####key, &isEqual);                \
                 while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
                     if (__ac_isdel(h->flags, i)) site = i;              \
                     if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
                     else i += inc;                                      \
                     if (i == last) { x = site; break; }                 \
-                    __hash_equal(h->keys[i], key, &isEqual);            \
+                    __hash_equal(deref####h->keys[i], deref####key, &isEqual);            \
                 }                                                       \
                 if (x == h->n_buckets) {                                \
                     if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \

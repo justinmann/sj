@@ -58,4 +58,11 @@ string(
 	isLessOrEqual(test : 'stack string)'bool {
 		data.isLessOrEqual(test.data)
 	}
+
+	hash()'u32 {
+		--c--
+		#return(u32, kh_str_hash_func((char*)_parent->data.data));
+		--c--
+	}
 ) { this }
+

@@ -50,6 +50,25 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
             compiler->addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", params[0].c_str());
         }
     }
+    else if (functionName.compare("safeName") == 0) {
+        if (params.size() != 1) {
+            compiler->addError(loc, CErrorCode::InvalidMacro, "type requires 1 parameter");
+            return "";
+        }
+
+        auto ctypeName = CTypeName::parse(params[0]);
+        if (!ctypeName) {
+            compiler->addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", params[0].c_str());
+        }
+
+        auto ctype = scope->getVarType(loc, compiler, ctypeName, CTM_Undefined);
+        if (ctype) {
+            return ctype->safeName;
+        }
+        else {
+            compiler->addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", params[0].c_str());
+        }
+    }
     else if (functionName.compare("functionStack") == 0 || functionName.compare("functionHeap") == 0) {
         auto typeMode = functionName.compare("functionStack") == 0 ? CTM_Stack : CTM_Heap;
         if (params.size() != 1 && params.size() != 2) {
@@ -211,11 +230,15 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
                     block.statements.push_back(TrStatement(loc, line2.str()));
                 }
                 else {
-                    auto rightValue = make_shared<TrValue>(scope, ctype, rightName, false);
                     if (ctype->typeMode == CTM_Stack) {
+                        auto rightValue = make_shared<TrValue>(scope, returnType, rightName, false);
                         returnValue->op.isCopy = true;
+                        returnValue->retainValue(compiler, loc, &block, rightValue);
                     }
-                    returnValue->retainValue(compiler, loc, &block, rightValue);
+                    else {
+                        auto rightValue = make_shared<TrValue>(scope, returnType, rightName, false);
+                        returnValue->retainValue(compiler, loc, &block, rightValue);
+                    }
                 }
                 block.writeVariablesToStream(retainStream, 0);
                 block.writeBodyToStream(retainStream, 0);
@@ -301,6 +324,25 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
         auto ctype = scope->getVarType(loc, compiler, ctypeName, CTM_Undefined);
         if (ctype) {
             return ctype->parent.expired() ? "true" : "false";
+        }
+        else {
+            compiler->addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", params[0].c_str());
+        }
+    }
+    else if (functionName.compare("isStack") == 0) {
+        if (params.size() != 1) {
+            compiler->addError(loc, CErrorCode::InvalidMacro, "isValue requires 1 parameter");
+            return "";
+        }
+
+        auto ctypeName = CTypeName::parse(params[0]);
+        if (!ctypeName) {
+            compiler->addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", params[0].c_str());
+        }
+
+        auto ctype = scope->getVarType(loc, compiler, ctypeName, CTM_Undefined);
+        if (ctype) {
+            return ctype->typeMode == CTM_Stack ? "true" : "false";
         }
         else {
             compiler->addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", params[0].c_str());

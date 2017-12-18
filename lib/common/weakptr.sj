@@ -91,7 +91,7 @@ void delete_cb_list_invoke(delete_cb_list* d, void* p) {
 }
 
 KHASH_INIT_TYPEDEF(weakptr_hashtable_type, void*, delete_cb_list)
-KHASH_INIT_FUNCTION(weakptr_hashtable_type, void*, delete_cb_list, 1, ptr_hash, ptr_isequal)
+KHASH_INIT_FUNCTION(weakptr_hashtable_type, void*, delete_cb_list, 1, ptr_hash, ptr_isequal, )
 khash_t(weakptr_hashtable_type)* weakptr_hashtable;
 
 void weakptr_init() {
@@ -136,7 +136,7 @@ void weakptr_cb_remove(void* v, delete_cb cb) {
 }
 
 KHASH_INIT_TYPEDEF(ptr_hashtable_type, void*, int)
-KHASH_INIT_FUNCTION(ptr_hashtable_type, void*, int, 1, ptr_hash, ptr_isequal)
+KHASH_INIT_FUNCTION(ptr_hashtable_type, void*, int, 1, ptr_hash, ptr_isequal, )
 khash_t(ptr_hashtable_type)* ptr_hashtable;
 
 void ptr_init() {
