@@ -21,10 +21,16 @@ shared_ptr<CType> CValueVar::getType(Compiler* compiler) {
 void CValueVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     if (!storeValue->type->parent.expired() && storeValue->type->typeMode == CTM_Stack) {
         stringstream line1;
-        line1 << storeValue->getName(trBlock) << "._refCount = 1";
+        if (storeValue->isReturnValue) {
+            line1 << storeValue->getName(trBlock) << "->_refCount = 1";
+        }
+        else {
+            line1 << storeValue->getName(trBlock) << "._refCount = 1";
+        }
         trBlock->statements.push_back(TrStatement(loc, line1.str()));
 
         auto leftValue = make_shared<TrStoreValue>(storeValue->loc, storeValue->scope, storeValue->type->getValueType(), storeValue->getName(trBlock), storeValue->op);
+        leftValue->isReturnValue = storeValue->isReturnValue;
         var->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
         if (!leftValue->hasSetValue) {
             return;

@@ -102,9 +102,9 @@ blurElement #element (
 	        glUniform1i(glGetUniformLocation(sjv_blurVerticalShader.id, "texture" ), 0 );
 	        glUniform1f(glGetUniformLocation(sjv_blurVerticalShader.id, "sigma" ), _parent->radius );
 	        glUniform1f(glGetUniformLocation(sjv_blurVerticalShader.id, "blurSize" ), 1.0f / (float)_parent->_frameBuffer1->size.h );
-	        glUniformMatrix4fv(glGetUniformLocation(sjv_blurVerticalShader.id, "model" ), 1, 0, (GLfloat*)&scene->model);
-	        glUniformMatrix4fv(glGetUniformLocation(sjv_blurVerticalShader.id, "view" ), 1, 0, (GLfloat*)&scene->view);
-	        glUniformMatrix4fv(glGetUniformLocation(sjv_blurVerticalShader.id, "projection" ), 1, 0, (GLfloat*)&scene->projection);
+	        glUniformMatrix4fv(glGetUniformLocation(sjv_blurVerticalShader.id, "model" ), 1, 0, (GLfloat*)&scene->model.m00);
+	        glUniformMatrix4fv(glGetUniformLocation(sjv_blurVerticalShader.id, "view" ), 1, 0, (GLfloat*)&scene->view.m00);
+	        glUniformMatrix4fv(glGetUniformLocation(sjv_blurVerticalShader.id, "projection" ), 1, 0, (GLfloat*)&scene->projection.m00);
 			--c--
 			_vertexBuffer?.render(scene)
 
@@ -120,9 +120,9 @@ blurElement #element (
 	        glUniform1i(glGetUniformLocation(sjv_blurHorizontalShader.id, "texture" ), 0 );
 	        glUniform1f(glGetUniformLocation(sjv_blurHorizontalShader.id, "sigma" ), _parent->radius );
 	        glUniform1f(glGetUniformLocation(sjv_blurHorizontalShader.id, "blurSize" ), 1.0f / (float)_parent->_frameBuffer2->size.w );
-	        glUniformMatrix4fv(glGetUniformLocation(sjv_blurHorizontalShader.id, "model" ), 1, 0, (GLfloat*)&scene->model);
-	        glUniformMatrix4fv(glGetUniformLocation(sjv_blurHorizontalShader.id, "view" ), 1, 0, (GLfloat*)&scene->view);
-	        glUniformMatrix4fv(glGetUniformLocation(sjv_blurHorizontalShader.id, "projection" ), 1, 0, (GLfloat*)&scene->projection);
+	        glUniformMatrix4fv(glGetUniformLocation(sjv_blurHorizontalShader.id, "model" ), 1, 0, (GLfloat*)&scene->model.m00);
+	        glUniformMatrix4fv(glGetUniformLocation(sjv_blurHorizontalShader.id, "view" ), 1, 0, (GLfloat*)&scene->view.m00);
+	        glUniformMatrix4fv(glGetUniformLocation(sjv_blurHorizontalShader.id, "projection" ), 1, 0, (GLfloat*)&scene->projection.m00);
 			--c--
 			_vertexBuffer?.render(scene)
 		}

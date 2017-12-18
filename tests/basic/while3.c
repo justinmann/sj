@@ -84,7 +84,6 @@ int main(int argc, char** argv) {
         int32_t sjt_compare4;
         int32_t sjt_math1;
         int32_t sjt_math2;
-        int32_t sjv_x;
 
         sjt_math1 = sjv_x;
         sjt_math2 = 1;

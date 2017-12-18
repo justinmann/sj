@@ -74,15 +74,19 @@ struct td_sjs_class {
     int32_t x;
 };
 
-bool sjt_ifElse1;
-bool sjt_ifElse2;
-int32_t sjv_a;
+bool sjt_isEmpty1;
+sjs_class* sjt_isEmpty2;
+sjs_class sjv_a;
+int32_t sjv_b;
 sjs_class sjv_c;
 
 void sjf_class(sjs_class* _this);
 void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_heap(sjs_class* _this);
+void sjf_func(sjs_class* _return);
+void sjf_func_heap(sjs_class** _return);
+void sjf_test(sjs_class* _return);
 void main_destroy(void);
 
 void sjf_class(sjs_class* _this) {
@@ -98,21 +102,77 @@ void sjf_class_destroy(sjs_class* _this) {
 void sjf_class_heap(sjs_class* _this) {
 }
 
-int main(int argc, char** argv) {
+void sjf_func(sjs_class* _return) {
+    _return->_refCount = -1;
+}
+
+void sjf_func_heap(sjs_class** _return) {
+    (*_return) = 0;
+    if ((*_return) != 0) {
+        (*_return)->_refCount++;
+    }
+}
+
+void sjf_test(sjs_class* _return) {
+    bool sjt_ifElse1;
+
     sjt_ifElse1 = true;
     if (sjt_ifElse1) {
-        sjv_a = 1;
+        sjs_class* sjt_copy1;
+        bool sjt_ifElse2;
+        sjs_class* sjt_isEmpty3;
+
+        sjt_isEmpty3 = (0._refCount != -1 ? &0 : 0);
+        sjt_ifElse2 = (sjt_isEmpty3 == 0);
+        if (sjt_ifElse2) {
+            _return->_refCount = -1;
+        } else {
+            _return->_refCount = 1;
+            sjt_copy1 = (0._refCount != -1 ? &0 : 0);
+            sjf_class_copy(_return, sjt_copy1);
+        }
     } else {
-        sjv_a = 2;
+        sjs_class* sjt_copy2;
+        bool sjt_ifElse3;
+        sjs_class* sjt_isEmpty4;
+        sjs_class sjt_value1;
+        sjs_class sjt_value2;
+
+        sjt_value1.x = 2;
+        sjf_class(&sjt_value1);
+        sjt_isEmpty4 = (sjt_value1._refCount != -1 ? &sjt_value1 : 0);
+        sjt_ifElse3 = (sjt_isEmpty4 == 0);
+        if (sjt_ifElse3) {
+            _return->_refCount = -1;
+        } else {
+            _return->_refCount = 1;
+            sjt_value2.x = 2;
+            sjf_class(&sjt_value2);
+            sjt_copy2 = (sjt_value2._refCount != -1 ? &sjt_value2 : 0);
+            sjf_class_copy(_return, sjt_copy2);
+        }
+
+        sjf_class_destroy(&sjt_value1);
+        sjf_class_destroy(&sjt_value2);
+    }
+}
+
+int main(int argc, char** argv) {
+    sjf_func(&sjv_a);
+    sjt_isEmpty2 = (sjv_a._refCount != -1 ? &sjv_a : 0);
+    sjt_isEmpty1 = (sjt_isEmpty2 == 0);
+    if (!sjt_isEmpty1) {
+        sjs_class* ifValue1;
+        sjs_class* sjt_dot1;
+
+        ifValue1 = (sjv_a._refCount != -1 ? &sjv_a : 0);
+        sjt_dot1 = ifValue1;
+        sjv_b = (sjt_dot1)->x;
+    } else {
+        sjv_b = 0;
     }
 
-    sjv_c.x = 1;
-    sjf_class(&sjv_c);
-    sjt_ifElse2 = true;
-    if (sjt_ifElse2) {
-        sjv_c.x = 2;
-        sjf_class(&sjv_c);
-    }
+    sjf_test(&sjv_c);
     main_destroy();
     #ifdef _DEBUG
     printf("\npress return to end\n");
@@ -123,5 +183,6 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
+    sjf_class_destroy(&sjv_a);
     sjf_class_destroy(&sjv_c);
 }

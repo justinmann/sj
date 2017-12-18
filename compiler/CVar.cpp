@@ -60,7 +60,7 @@ shared_ptr<TrStoreValue> CNormalVar::getStoreValue(Compiler* compiler, shared_pt
         varName = "_this->" + cname;
     }
     else {
-        if (!trBlock->getVariable(cname)) {
+        if (op.isFirstAssignment) {
             if (scope.lock()->function->name != "global" || scope.lock()->function == scope_->function) {
                 trBlock->createVariable(scope.lock(), type, cname);
             }

@@ -29,7 +29,12 @@ vertexBuffer!vertex(
 
     addVertex(vertex : 'vertex) {
         --c--
-        vertex_buffer_push_back_vertices(_parent->buffer, vertex, 1);
+        #functionStack(vertex, getRawSize)(&vertexSize);
+        char* t = malloc(vertexSize);
+        char* buffer = t;
+        #functionStack(vertex, rawCopy)(vertex, buffer, &buffer);
+        vertex_buffer_push_back_vertices(_parent->buffer, t, 1);
+        free(t);
         --c--
         void
     }
@@ -66,9 +71,9 @@ vertexBuffer!vertex(
             result : intersectTriangle(vPickRayOrig, vPickRayDir, vertex0.location, vertex1.location, vertex2.location)
             ifValue result {
                 if isEmpty(intersection) || result.z < intersection?.z?:0.0f {
-                    intersection = value(result)                    
+                    intersection = value(copy result)                    
 
-                    t : getValue(intersection)
+                    t : copy getValue(intersection)
                     // If all you want is the vertices hit, then you are done.  In this sample, we
                     // want to show how to infer texture coordinates as well, using the BaryCentric
                     // coordinates supplied by D3DXIntersect
@@ -96,7 +101,18 @@ vertexBuffer!vertex(
     --c--
     _this->buffer = vertex_buffer_new((char*)_this->format.data.data);
     vertex_buffer_push_back_indices(_this->buffer, (GLuint*)_this->indices.data, _this->indices.count);
-    vertex_buffer_push_back_vertices(_this->buffer, (#type(vertex)*)_this->vertices.data, _this->vertices.count);
+
+    int vertexSize;
+    #functionStack(vertex, getRawSize)(&vertexSize);
+    int verticesSize = _this->vertices.count * vertexSize;
+    char* t = malloc(verticesSize);
+    char* buffer = t;
+    #type(vertex)* p = (#type(vertex)*)_this->vertices.data;
+    for (int i = 0; i < _this->vertices.count; i++) {
+        #functionStack(vertex, rawCopy)(&p[i], buffer, &buffer);
+    }
+    vertex_buffer_push_back_vertices(_this->buffer, t, _this->vertices.count);
+    free(t);
     --c--
     this 
 } copy {
@@ -139,7 +155,7 @@ intersectTriangle(orig : 'vec3, dir : 'vec3, v0 : 'vec3, v1 : 'vec3, v2 : 'vec3)
             } else {
                 // Calculate t, scale parameters, ray intersects triangle
                 t : edge2.dot(qvec)
-                fInvDet : 1.0f / det;
+                fInvDet : 1.0f / det
                 value(vec3(u * fInvDet, v * fInvDet, t * fInvDet))
             }
         }

@@ -87,7 +87,7 @@ void NGetValue::defineImpl(Compiler* compiler, vector<pair<string, vector<string
 }
 
 shared_ptr<CVar> NGetValue::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto leftVar = node->getVar(compiler, scope, CTM_Undefined);
+    auto leftVar = node->getVar(compiler, scope, returnMode);
     if (!leftVar) {
         return nullptr;
     }

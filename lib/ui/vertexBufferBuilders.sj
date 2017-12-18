@@ -5,6 +5,17 @@ vertex_location_texture_normal(
     normal : vec3()
 ) { this }
 
+vertex_location_texture_normal_getRawSize() {
+    vec3_getRawSize() + vec2_getRawSize() + vec3_getRawSize()
+}
+
+vertex_location_texture_normal_rawCopy(v : 'vertex_location_texture_normal, p := 'ptr) {
+    p = v.location.rawCopy(p)
+    p = v.texture.rawCopy(p)
+    p = v.normal.rawCopy(p)
+    p
+}
+
 cubeVertexBuffer(    
     x0 : -1.0f
     x1 : 1.0f

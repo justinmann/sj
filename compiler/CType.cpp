@@ -445,7 +445,12 @@ void CType::transpileDefaultValue(Compiler* compiler, CLoc loc, TrBlock* trBlock
     else if (isOption) {
         if (!parent.expired()) {
             if (storeValue->type->typeMode == CTM_Stack) {
-                trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._refCount = -1"));
+                if (storeValue->isReturnValue) {
+                    trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "->_refCount = -1"));
+                }
+                else {
+                    trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._refCount = -1"));
+                }
                 storeValue->hasSetValue = true;
             }
             else {

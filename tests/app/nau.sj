@@ -186,12 +186,6 @@ root : fillElement(
 		                ) as #model
 					]
 				) as #model
-
-
-/*       
-              <PeoplePanel Center="0.0, -1.3, 0.0" Control_Role="NAUSection!PeoplePanel" PeopleImages="{List('forestperson1', 'forestperson2', 'forestperson3', 'forestperson4', 'forestperson5', 'forestperson6', 'forestperson7', 'forestperson8')}" />
-            <LeafPanel LeafImages="{List(Bitmap('whitestar1'), Bitmap('whitestar2'), Bitmap('whitestar1'), Bitmap('whitestar2'), Bitmap('whitestar1'), Bitmap('whitestar2'), Bitmap('whitestar1'), Bitmap('whitestar2'))}" />
-*/
 			]
 		) as #element
 		crossHairsElement(

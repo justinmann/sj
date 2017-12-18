@@ -121,7 +121,14 @@ shared_ptr<CVar> NIfValue::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
             }
             param.isEmptyVar = make_shared<CIsEmptyVar>(loc, scope, optionalVar);
             param.getValueVar = make_shared<CGetValueVar>(loc, scope, optionalVar, true);
-            param.storeVar = make_shared<CNormalVar>(loc, scope, param.getValueVar->getType(compiler), assignment->name, cname, false, CVarType::Var_Local, nullptr);
+            auto storeType = param.getValueVar->getType(compiler);
+            if (!storeType) {
+                return nullptr;
+            }
+            if (storeType->typeMode == CTM_Stack) {
+                storeType = storeType->getLocalType();
+            }
+            param.storeVar = make_shared<CNormalVar>(loc, scope, storeType, assignment->name, cname, false, CVarType::Var_Local, nullptr);
             optionalVars.push_back(param);
         } else if (var->nodeType == NodeType_Variable) {
             CIfParameter param;
@@ -133,7 +140,14 @@ shared_ptr<CVar> NIfValue::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
             }
             param.isEmptyVar = make_shared<CIsEmptyVar>(loc, scope, optionalVar);
             param.getValueVar = make_shared<CGetValueVar>(loc, scope, optionalVar, true);
-            param.storeVar = make_shared<CNormalVar>(loc, scope, param.getValueVar->getType(compiler), variable->name, cname, false, CVarType::Var_Local, nullptr);
+            auto storeType = param.getValueVar->getType(compiler);
+            if (!storeType) {
+                return nullptr;
+            }
+            if (storeType->typeMode == CTM_Stack) {
+                storeType = storeType->getLocalType();
+            }
+            param.storeVar = make_shared<CNormalVar>(loc, scope, storeType, variable->name, cname, false, CVarType::Var_Local, nullptr);
             optionalVars.push_back(param);
         } else {
             compiler->addError(loc, CErrorCode::Internal, "ifValue can only have var or assignment");

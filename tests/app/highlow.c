@@ -787,7 +787,6 @@ int main(int argc, char** argv) {
         bool sjt_ifElse1;
         bool sjt_not2;
         int32_t sjv_guess;
-        bool sjv_iscorrect;
         sjs_string sjv_str;
 
         sjf_console_readline(&sjv_str);

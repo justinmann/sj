@@ -72,3 +72,23 @@ vec3_max(a : 'vec3, b : 'vec3) {
 		f32_max(a.z, b.z)
 	)
 }
+
+vec3_getRawSize() {
+	--c--
+	int x = sizeof(float) * 3;
+	#return(i32, x);
+	--c--
+}
+
+vec3_rawCopy(v : 'vec3, p := 'ptr) {
+	--c--
+	float* f = (float*)p;
+	*f = v->x;
+	f++;
+	*f = v->y;
+	f++;
+	*f = v->z;
+	f++;
+	#return(ptr, (void*)f);
+	--c--
+}

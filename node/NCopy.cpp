@@ -34,6 +34,10 @@ void CCopyVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
         }
         
         if (!type->parent.expired()) {
+            if (type->isOption) {
+                assert(false);
+            }
+
             stringstream lineStream;
             lineStream << type->parent.lock()->getCCopyFunctionName() << "(" << TrValue::convertToLocalName(storeValue->type, storeValue->getName(trBlock), storeValue->isReturnValue) << ", " << TrValue::convertToLocalName(rightValue->type, rightValue->getName(trBlock), rightValue->isReturnValue) << ")";
             trBlock->statements.push_back(TrStatement(loc, lineStream.str()));
@@ -68,9 +72,14 @@ shared_ptr<CVar> NCopy::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
     }
 
     if (leftType->isOption) {
-        compiler->addError(loc, CErrorCode::TypeMismatch, "value cannot take an option type");
-        return nullptr;
+        auto getValueVar = make_shared<CGetValueVar>(loc, leftVar->scope.lock(), leftVar, true);
+        auto copyVar = make_shared<CCopyVar>(loc, scope, getValueVar, returnMode);
+        auto valueVar = make_shared<CValueVar>(loc, scope, copyVar);
+        auto emptyVar = make_shared<CEmptyVar>(loc, leftType, scope);
+        auto isEmptyVar = make_shared<CIsEmptyVar>(loc, scope, leftVar);
+        return make_shared<CIfElseVar>(loc, scope, isEmptyVar, emptyVar, nullptr, valueVar, nullptr);
     }
-
-    return make_shared<CCopyVar>(loc, scope, leftVar, returnMode);
+    else {
+        return make_shared<CCopyVar>(loc, scope, leftVar, returnMode);
+    }
 }

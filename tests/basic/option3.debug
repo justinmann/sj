@@ -1,0 +1,31 @@
+class(x'i32:)'stack class {
+  this
+}
+
+func()'stack class? {
+  empty'stack class?
+}
+
+test()'stack class? {
+  if true {
+    if isEmpty(empty'stack class?) empty'stack class? else value(copy getValue(empty'stack class?))
+  } else {
+    if isEmpty(value(class(this = class(
+      x'i32 : x
+    )))) empty'stack class? else value(copy getValue(value(class(this = class(
+      x'i32 : x
+    )))))
+  }
+}
+
+global()'void {
+  a'stack class? : func()
+  b'i32 : ifValue  {
+    a.x
+  } elseEmpty {
+    0i
+  }
+  c'stack class? : test()
+  void
+}
+

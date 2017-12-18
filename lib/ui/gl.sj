@@ -131,13 +131,13 @@ glGetUniformLocation(shader : 'shader, name : 'string) {
 
 glUniformMat4(loc : 'i32, m : 'mat4) {
 	--c--
-    glUniformMatrix4fv(loc, 1, 0, (GLfloat*)m);
+    glUniformMatrix4fv(loc, 1, 0, (GLfloat*)&m->m00);
 	--c--	
 }
 
 glUniformVec3(loc : 'i32, v : 'vec3) {
 	--c--
-    glUniform3fv(loc, 1, (GLfloat*)v);
+    glUniform3fv(loc, 1, (GLfloat*)&v->x);
 	--c--	
 }
 
@@ -212,20 +212,21 @@ glBindRenderbuffer(renderbuffer : 'renderbuffer) {
 --cdefine--
 void glid_retain(GLuint id);
 bool glid_release(GLuint id);
-uint32_t glid_getHash(GLuint id);
-int glid_isEqual(GLuint id1, GLuint id2);
+void glid_gethash(GLuint id, uint32_t* result);
+void glid_isequal(GLuint id1, GLuint id2, bool* result);
 --cdefine--
 
 --cfunction--
-KHASH_INIT(glid_hash_type, GLuint, int, 1, glid_getHash, glid_isEqual)
+KHASH_INIT_TYPEDEF(glid_hash_type, GLuint, int)
+KHASH_INIT_FUNCTION(glid_hash_type, GLuint, int, 1, glid_gethash, glid_isequal)
 khash_t(glid_hash_type)* glid_hash;
 
-uint32_t glid_getHash(GLuint id) {
-    return kh_int_hash_func(id);
+void glid_gethash(GLuint id, uint32_t* result) {
+    *result = kh_int_hash_func(id);
 }
 
-int glid_isEqual(GLuint id1, GLuint id2) {
-    return (id2 == id2);
+void glid_isequal(GLuint id1, GLuint id2, bool* result) {
+    *result = (id2 == id2);
 }
 
 void glid_init() {

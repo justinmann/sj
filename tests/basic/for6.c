@@ -82,7 +82,6 @@ int main(int argc, char** argv) {
     while (x >= sjt_forStart1) {
         int32_t sjt_math1;
         int32_t sjt_math2;
-        int32_t sjv_y;
 
         sjt_math1 = sjv_y;
         sjt_math2 = x;

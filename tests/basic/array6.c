@@ -733,7 +733,6 @@ void sjf_array_f32_filter(sjs_array_f32* _parent, cb_f32_bool cb, sjs_array_f32*
         if (sjt_ifElse1) {
             int32_t sjt_math5;
             int32_t sjt_math6;
-            int32_t sjv_newcount;
 
             float* p = (float*)sjv_newdata;
             p[sjv_newcount] = sjv_item;
@@ -785,7 +784,6 @@ void sjf_array_f32_filter_heap(sjs_array_f32* _parent, cb_f32_bool cb, sjs_array
         if (sjt_ifElse2) {
             int32_t sjt_math7;
             int32_t sjt_math8;
-            int32_t sjv_newcount;
 
             float* p = (float*)sjv_newdata;
             p[sjv_newcount] = sjv_item;
@@ -826,7 +824,6 @@ void sjf_array_f32_foldl_sum(sjs_array_f32* _parent, sjs_sum* initial, cb_sum_f3
         sjs_sum* sjt_functionParam17;
         float sjt_functionParam18;
         int32_t sjt_functionParam19;
-        sjs_sum* sjv_r;
 
         sjt_callback5 = cb;
         sjt_functionParam17 = sjv_r;

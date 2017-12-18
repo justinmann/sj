@@ -934,7 +934,6 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
             int32_t sjt_math9;
             sjs_array_char* sjt_parent5;
             sjs_string* sjt_parent6;
-            int32_t sjv_newcount;
 
             sjt_parent5 = &sjv_newdata;
             sjt_functionParam7 = sjv_newcount;
@@ -1048,7 +1047,6 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
             int32_t sjt_math18;
             sjs_array_char* sjt_parent11;
             sjs_string* sjt_parent12;
-            int32_t sjv_newcount;
 
             sjt_parent11 = &sjv_newdata;
             sjt_functionParam16 = sjv_newcount;
