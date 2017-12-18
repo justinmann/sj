@@ -5,18 +5,40 @@ bool CChangeModeVar::getReturnThis() {
 }
 
 shared_ptr<CType> CChangeModeVar::getType(Compiler* compiler) {
-    auto type = var->getType(compiler);
-    if (typeMode == CTM_Local) {
-        type = type->getLocalType();
+    auto varType = var->getType(compiler);
+    if (varType->typeMode != typeMode) {
+        shared_ptr<CType> changeType = varType;
+        switch (typeMode) {
+        case CTM_Local:
+            return varType->getLocalType();
+        case CTM_Weak:
+            return varType->getWeakType();
+        case CTM_Heap:
+            compiler->addError(loc, CErrorCode::InvalidType, "cannot change type to heap");
+            return nullptr;
+        case CTM_Value:
+            compiler->addError(loc, CErrorCode::InvalidType, "cannot change type to value");
+            return nullptr;
+        }
     }
-    else if (typeMode == CTM_Weak) {
-        type = type->getWeakType();
-    }
-    return type;
+    return varType;
 }
 
 void CChangeModeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    var->transpile(compiler, trOutput, trBlock, thisValue, storeValue);
+    auto varType = var->getType(compiler);
+    if (varType->typeMode == typeMode) {
+        var->transpile(compiler, trOutput, trBlock, thisValue, storeValue);
+    }
+    else {
+        shared_ptr<CType> changeType = getType(compiler);
+        if (!changeType) {
+            return;
+        }
+
+        auto changeValue = trBlock->createTempStoreVariable(loc, scope.lock(), changeType, "changeMode");
+        var->transpile(compiler, trOutput, trBlock, thisValue, changeValue);
+        storeValue->retainValue(compiler, loc, trBlock, changeValue->getValue());
+    }
 }
 
 void CChangeModeVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {

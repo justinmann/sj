@@ -112,8 +112,8 @@ void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_func(sjs_class* _parent, int32_t x) {
-    sjs_class* sjt_dot1;
-    sjs_class* sjt_dot2;
+    sjs_class* sjt_dot1 = 0;
+    sjs_class* sjt_dot2 = 0;
     int32_t sjt_math1;
     int32_t sjt_math2;
 
@@ -128,7 +128,7 @@ void sjf_class_heap(sjs_class* _this) {
 }
 
 void sjf_class_run(sjs_class* _parent, int32_t* _return) {
-    sjs_class* sjt_dot3;
+    sjs_class* sjt_dot3 = 0;
     cb_i32_void_heap sjt_functionParam3;
 
     sjs_class* callback1;

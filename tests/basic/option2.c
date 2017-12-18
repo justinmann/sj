@@ -75,14 +75,14 @@ struct td_sjs_class {
 };
 
 sjs_class sjt_call1 = { -1 };
-sjs_class* sjt_copy1;
-sjs_class* sjt_functionParam1;
+sjs_class* sjt_copy1 = 0;
+sjs_class* sjt_functionParam1 = 0;
 bool sjt_ifElse1;
 bool sjt_ifElse2;
 bool sjt_ifElse4;
 int32_option sjt_isEmpty1;
-sjs_class* sjt_isEmpty2;
-sjs_class* sjt_isEmpty4;
+sjs_class* sjt_isEmpty2 = 0;
+sjs_class* sjt_isEmpty4 = 0;
 sjs_class sjv_c = { -1 };
 int32_t sjv_d;
 sjs_class sjv_e = { -1 };
@@ -112,14 +112,14 @@ void sjf_func(sjs_class* c, int32_t* _return) {
     bool sjt_ifElse5;
     bool sjt_ifElse6;
     int32_option sjt_isEmpty5;
-    sjs_class* sjt_isEmpty6;
+    sjs_class* sjt_isEmpty6 = 0;
 
     sjt_isEmpty6 = c;
     sjt_ifElse6 = (sjt_isEmpty6 == 0);
     if (sjt_ifElse6) {
         sjt_isEmpty5 = int32_empty;
     } else {
-        sjs_class* sjt_dot3;
+        sjs_class* sjt_dot3 = 0;
         int32_t sjt_value3;
         int32_option value3;
 
@@ -136,14 +136,14 @@ void sjf_func(sjs_class* c, int32_t* _return) {
     } else {
         int32_option sjt_getValue2;
         bool sjt_ifElse7;
-        sjs_class* sjt_isEmpty7;
+        sjs_class* sjt_isEmpty7 = 0;
 
         sjt_isEmpty7 = c;
         sjt_ifElse7 = (sjt_isEmpty7 == 0);
         if (sjt_ifElse7) {
             sjt_getValue2 = int32_empty;
         } else {
-            sjs_class* sjt_dot4;
+            sjs_class* sjt_dot4 = 0;
             int32_t sjt_value4;
             int32_option value4;
 
@@ -167,7 +167,7 @@ int main(int argc, char** argv) {
     if (sjt_ifElse2) {
         sjt_isEmpty1 = int32_empty;
     } else {
-        sjs_class* sjt_dot1;
+        sjs_class* sjt_dot1 = 0;
         int32_t sjt_value1;
         int32_option value1;
 
@@ -184,14 +184,14 @@ int main(int argc, char** argv) {
     } else {
         int32_option sjt_getValue1;
         bool sjt_ifElse3;
-        sjs_class* sjt_isEmpty3;
+        sjs_class* sjt_isEmpty3 = 0;
 
         sjt_isEmpty3 = (sjv_c._refCount != -1 ? &sjv_c : 0);
         sjt_ifElse3 = (sjt_isEmpty3 == 0);
         if (sjt_ifElse3) {
             sjt_getValue1 = int32_empty;
         } else {
-            sjs_class* sjt_dot2;
+            sjs_class* sjt_dot2 = 0;
             int32_t sjt_value2;
             int32_option value2;
 

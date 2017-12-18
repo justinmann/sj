@@ -75,8 +75,8 @@ struct td_sjs_class {
     int32_t y;
 };
 
-sjs_class* sjt_dot1;
-sjs_class* sjt_dot2;
+sjs_class* sjt_dot1 = 0;
+sjs_class* sjt_dot2 = 0;
 int32_t sjt_math1;
 int32_t sjt_math2;
 sjs_class sjv_c = { -1 };

@@ -81,8 +81,8 @@ struct td_sjs_bar {
     sjs_foo f;
 };
 
-sjs_foo* sjt_dot1;
-sjs_bar* sjt_functionParam1;
+sjs_foo* sjt_dot1 = 0;
+sjs_bar* sjt_functionParam1 = 0;
 sjs_bar sjv_b = { -1 };
 
 void sjf_bar(sjs_bar* _this);
@@ -124,7 +124,7 @@ void sjf_foo_heap(sjs_foo* _this) {
 }
 
 void sjf_func(sjs_bar* b, sjs_foo** _return) {
-    sjs_bar* sjt_dot2;
+    sjs_bar* sjt_dot2 = 0;
 
     sjt_dot2 = b;
     sjt_dot2->f._refCount = 1;

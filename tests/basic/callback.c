@@ -162,7 +162,7 @@ void main_destroy(void);
 
 void sjf_callback(cb_i32_data_heap_data f, int32_t* _return) {
     cb_i32_data_heap_data sjt_callback4;
-    sjs_data* sjt_dot3;
+    sjs_data* sjt_dot3 = 0;
     int32_t sjt_functionParam4;
     sjs_data sjv_d = { -1 };
 
@@ -186,7 +186,7 @@ void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_func(sjs_class* _parent, int32_t a, sjs_data* _return) {
-    sjs_class* sjt_dot1;
+    sjs_class* sjt_dot1 = 0;
     int32_t sjt_math5;
     int32_t sjt_math6;
 
@@ -199,7 +199,7 @@ void sjf_class_func(sjs_class* _parent, int32_t a, sjs_data* _return) {
 }
 
 void sjf_class_func_heap(sjs_class* _parent, int32_t a, sjs_data** _return) {
-    sjs_class* sjt_dot2;
+    sjs_class* sjt_dot2 = 0;
     int32_t sjt_math7;
     int32_t sjt_math8;
 

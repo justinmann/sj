@@ -81,7 +81,7 @@ struct td_sjs_class {
 };
 
 int32_t sjt_functionParam5;
-sjs_class* sjt_parent2;
+sjs_class* sjt_parent2 = 0;
 sjs_class sjv_c = { -1 };
 int32_t void1;
 
@@ -125,11 +125,11 @@ void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return) {
     sjt_compare2 = 0;
     sjt_ifElse1 = sjt_compare1 > sjt_compare2;
     if (sjt_ifElse1) {
-        sjs_class* sjt_dot1;
+        sjs_class* sjt_dot1 = 0;
         int32_t sjt_functionParam2;
         int32_t sjt_functionParam3;
         int32_t sjt_functionParam4;
-        sjs_math* sjt_parent1;
+        sjs_math* sjt_parent1 = 0;
 
         sjt_dot1 = _parent;
         sjt_parent1 = &(sjt_dot1)->m;

@@ -93,8 +93,8 @@ struct td_sji_foo {
 sjs_class* sjt_cast1 = 0;
 int32_t sjt_interfaceParam1;
 int32_t sjt_interfaceParam2;
-sji_foo* sjt_parent1;
-sji_foo* sjt_parent2;
+sji_foo* sjt_parent1 = 0;
+sji_foo* sjt_parent2 = 0;
 sji_foo* sjv_a = 0;
 sjs_bar sjv_b = { -1 };
 sjs_bar* sjv_c = 0;

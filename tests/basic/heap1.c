@@ -73,7 +73,7 @@ struct td_sjs_class {
     int _refCount;
 };
 
-sjs_class* sjv_b;
+sjs_class* sjv_b = 0;
 
 void sjf_class(sjs_class* _this);
 void sjf_class_copy(sjs_class* _this, sjs_class* _from);
@@ -97,8 +97,8 @@ void sjf_class_heap(sjs_class* _this) {
 void sjf_func(sjs_class** _return) {
     sjs_class sjt_call1 = { -1 };
     sjs_class sjt_call2 = { -1 };
-    sjs_class* sjt_copy1;
-    sjs_class* sjt_copy2;
+    sjs_class* sjt_copy1 = 0;
+    sjs_class* sjt_copy2 = 0;
     sjs_class sjv_a = { -1 };
 
     sjt_call1._refCount = 1;

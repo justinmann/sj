@@ -73,7 +73,7 @@ struct td_sjs_class {
     int _refCount;
 };
 
-sjs_class* sjt_parent1;
+sjs_class* sjt_parent1 = 0;
 sjs_class sjv_c = { -1 };
 int32_t void1;
 

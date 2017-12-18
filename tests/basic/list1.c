@@ -585,14 +585,14 @@ void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
 int32_t result1;
-sjs_class* sjt_dot15;
+sjs_class* sjt_dot15 = 0;
 int32_t sjt_forEnd1;
 int32_t sjt_forStart1;
 int32_t sjt_functionParam8;
 int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_negate1;
-sjs_list_heap_class* sjt_parent5;
+sjs_list_heap_class* sjt_parent5 = 0;
 sjs_list_heap_class sjv_a = { -1 };
 sjs_class* sjv_c = 0;
 void* sjv_emptystringdata;
@@ -794,7 +794,7 @@ return;;
 }
 
 void sjf_array_heap_class_grow(sjs_array_heap_class* _parent, int32_t newsize, sjs_array_heap_class* _return) {
-    sjs_array_heap_class* sjt_dot6;
+    sjs_array_heap_class* sjt_dot6 = 0;
     void* sjv_newdata;
 
     sjv_newdata = 0;
@@ -818,7 +818,7 @@ void sjf_array_heap_class_grow(sjs_array_heap_class* _parent, int32_t newsize, s
 }
 
 void sjf_array_heap_class_grow_heap(sjs_array_heap_class* _parent, int32_t newsize, sjs_array_heap_class** _return) {
-    sjs_array_heap_class* sjt_dot7;
+    sjs_array_heap_class* sjt_dot7 = 0;
     void* sjv_newdata;
 
     sjv_newdata = 0;
@@ -902,17 +902,17 @@ void sjf_list_heap_class(sjs_list_heap_class* _this) {
 void sjf_list_heap_class_add(sjs_list_heap_class* _parent, sjs_class* item) {
     int32_t sjt_compare1;
     int32_t sjt_compare2;
-    sjs_array_heap_class* sjt_dot1;
-    sjs_list_heap_class* sjt_dot11;
-    sjs_array_heap_class* sjt_dot12;
-    sjs_list_heap_class* sjt_dot13;
-    sjs_list_heap_class* sjt_dot2;
-    sjs_array_heap_class* sjt_dot3;
-    sjs_list_heap_class* sjt_dot4;
+    sjs_array_heap_class* sjt_dot1 = 0;
+    sjs_list_heap_class* sjt_dot11 = 0;
+    sjs_array_heap_class* sjt_dot12 = 0;
+    sjs_list_heap_class* sjt_dot13 = 0;
+    sjs_list_heap_class* sjt_dot2 = 0;
+    sjs_array_heap_class* sjt_dot3 = 0;
+    sjs_list_heap_class* sjt_dot4 = 0;
     int32_t sjt_functionParam4;
     sjs_class* sjt_functionParam5 = 0;
     bool sjt_ifElse1;
-    sjs_array_heap_class* sjt_parent2;
+    sjs_array_heap_class* sjt_parent2 = 0;
 
     sjt_dot2 = _parent;
     sjt_dot1 = &(sjt_dot2)->array;
@@ -922,16 +922,16 @@ void sjf_list_heap_class_add(sjs_list_heap_class* _parent, sjs_class* item) {
     sjt_compare2 = (sjt_dot3)->datasize;
     sjt_ifElse1 = sjt_compare1 >= sjt_compare2;
     if (sjt_ifElse1) {
-        sjs_list_heap_class* sjt_dot10;
-        sjs_list_heap_class* sjt_dot5;
-        sjs_list_heap_class* sjt_dot8;
-        sjs_array_heap_class* sjt_dot9;
+        sjs_list_heap_class* sjt_dot10 = 0;
+        sjs_list_heap_class* sjt_dot5 = 0;
+        sjs_list_heap_class* sjt_dot8 = 0;
+        sjs_array_heap_class* sjt_dot9 = 0;
         int32_t sjt_functionParam1;
         int32_t sjt_functionParam2;
         int32_t sjt_functionParam3;
         int32_t sjt_math3;
         int32_t sjt_math4;
-        sjs_array_heap_class* sjt_parent1;
+        sjs_array_heap_class* sjt_parent1 = 0;
 
         sjt_dot5 = _parent;
         sjt_dot8 = _parent;
@@ -970,9 +970,9 @@ void sjf_list_heap_class_destroy(sjs_list_heap_class* _this) {
 }
 
 void sjf_list_heap_class_getat_heap(sjs_list_heap_class* _parent, int32_t index, sjs_class** _return) {
-    sjs_list_heap_class* sjt_dot14;
+    sjs_list_heap_class* sjt_dot14 = 0;
     int32_t sjt_functionParam7;
-    sjs_array_heap_class* sjt_parent4;
+    sjs_array_heap_class* sjt_parent4 = 0;
 
     sjt_dot14 = _parent;
     sjt_parent4 = &(sjt_dot14)->array;
@@ -1009,7 +1009,7 @@ int main(int argc, char** argv) {
     x = sjt_forStart1;
     while (x < sjt_forEnd1) {
         sjs_class* sjt_functionParam6 = 0;
-        sjs_list_heap_class* sjt_parent3;
+        sjs_list_heap_class* sjt_parent3 = 0;
 
         sjt_parent3 = &sjv_a;
         sjt_functionParam6 = (sjs_class*)malloc(sizeof(sjs_class));

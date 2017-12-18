@@ -84,7 +84,7 @@ struct td_sji_foo {
 };
 
 sjs_class* sjt_cast1 = 0;
-sji_foo* sjt_parent1;
+sji_foo* sjt_parent1 = 0;
 sji_foo* sjv_a = 0;
 int32_t void1;
 

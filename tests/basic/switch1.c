@@ -75,12 +75,12 @@ struct td_sjs_class {
 };
 
 sjs_class sjt_call1 = { -1 };
-sjs_class* sjt_functionParam1;
-sjs_class* sjt_parent1;
+sjs_class* sjt_functionParam1 = 0;
+sjs_class* sjt_parent1 = 0;
 bool sjt_switch1;
 sjs_class sjv_a = { -1 };
 int32_t sjv_y;
-sjs_class* underscore1;
+sjs_class* underscore1 = 0;
 
 void sjf_class(sjs_class* _this);
 void sjf_class_copy(sjs_class* _this, sjs_class* _from);
@@ -105,8 +105,8 @@ void sjf_class_heap(sjs_class* _this) {
 void sjf_class_isequal(sjs_class* _parent, sjs_class* r, bool* _return) {
     int32_t sjt_compare1;
     int32_t sjt_compare2;
-    sjs_class* sjt_dot1;
-    sjs_class* sjt_dot2;
+    sjs_class* sjt_dot1 = 0;
+    sjs_class* sjt_dot2 = 0;
 
     sjt_dot1 = _parent;
     sjt_compare1 = (sjt_dot1)->bob;
@@ -130,8 +130,8 @@ int main(int argc, char** argv) {
         sjv_y = 1;
     } else {
         sjs_class sjt_call2 = { -1 };
-        sjs_class* sjt_functionParam2;
-        sjs_class* sjt_parent2;
+        sjs_class* sjt_functionParam2 = 0;
+        sjs_class* sjt_parent2 = 0;
         bool sjt_switch2;
 
         sjt_parent2 = underscore1;

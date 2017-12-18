@@ -609,10 +609,10 @@ int32_t sjt_functionParam7;
 int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_negate1;
-sjs_class_i32* sjt_parent1;
-sjs_array_i32* sjt_parent2;
-sjs_array_i32* sjt_parent3;
-sjs_array_i32* sjt_parent4;
+sjs_class_i32* sjt_parent1 = 0;
+sjs_array_i32* sjt_parent2 = 0;
+sjs_array_i32* sjt_parent3 = 0;
+sjs_array_i32* sjt_parent4 = 0;
 sjs_array_i32 sjv_a = { -1 };
 sjs_class_i32 sjv_c = { -1 };
 void* sjv_emptystringdata;
@@ -803,7 +803,7 @@ void sjf_array_i32_destroy(sjs_array_i32* _this) {
 
 void sjf_array_i32_each(sjs_array_i32* _parent, cb_i32_void cb) {
     int32_t i;
-    sjs_array_i32* sjt_dot5;
+    sjs_array_i32* sjt_dot5 = 0;
     int32_t sjt_forEnd1;
     int32_t sjt_forStart1;
 
@@ -872,8 +872,8 @@ void sjf_class_i32_destroy(sjs_class_i32* _this) {
 void sjf_class_i32_each(sjs_class_i32* _parent, cb_i32_void_heap cb) {
     cb_i32_void sjt_callback1;
     cb_i32_void sjt_callback2;
-    sjs_class_i32* sjt_dot1;
-    sjs_class_i32* sjt_dot2;
+    sjs_class_i32* sjt_dot1 = 0;
+    sjs_class_i32* sjt_dot2 = 0;
     int32_t sjt_functionParam1;
     int32_t sjt_functionParam2;
 
@@ -904,8 +904,8 @@ void sjf_sum_heap(sjs_sum* _this) {
 }
 
 void sjf_sum_invoke(sjs_sum* _parent, int32_t a) {
-    sjs_sum* sjt_dot3;
-    sjs_sum* sjt_dot4;
+    sjs_sum* sjt_dot3 = 0;
+    sjs_sum* sjt_dot4 = 0;
     int32_t sjt_math3;
     int32_t sjt_math4;
 

@@ -627,36 +627,36 @@ sjs_string sjt_call30 = { -1 };
 sjs_class sjt_call4 = { -1 };
 sjs_class sjt_call5 = { -1 };
 int32_t sjt_functionParam1;
-sjs_class* sjt_functionParam10;
-sjs_string* sjt_functionParam100;
-sjs_class* sjt_functionParam2;
+sjs_class* sjt_functionParam10 = 0;
+sjs_string* sjt_functionParam100 = 0;
+sjs_class* sjt_functionParam2 = 0;
 int32_t sjt_functionParam3;
-sjs_string* sjt_functionParam32;
-sjs_class* sjt_functionParam4;
+sjs_string* sjt_functionParam32 = 0;
+sjs_class* sjt_functionParam4 = 0;
 int32_t sjt_functionParam5;
-sjs_string* sjt_functionParam59;
-sjs_class* sjt_functionParam6;
-sjs_string* sjt_functionParam66;
-sjs_string* sjt_functionParam67;
+sjs_string* sjt_functionParam59 = 0;
+sjs_class* sjt_functionParam6 = 0;
+sjs_string* sjt_functionParam66 = 0;
+sjs_string* sjt_functionParam67 = 0;
 int32_t sjt_functionParam7;
-sjs_class* sjt_functionParam8;
+sjs_class* sjt_functionParam8 = 0;
 int32_t sjt_functionParam9;
 cb_class_class_i32 sjt_functionParam96;
-sjs_string* sjt_functionParam99;
+sjs_string* sjt_functionParam99 = 0;
 int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_negate1;
-sjs_array_class* sjt_parent1;
-sjs_array_class* sjt_parent10;
-sjs_array_class* sjt_parent2;
-sjs_array_class* sjt_parent29;
-sjs_array_class* sjt_parent3;
-sjs_array_class* sjt_parent30;
-sjs_array_class* sjt_parent31;
-sjs_array_class* sjt_parent32;
-sjs_array_class* sjt_parent33;
-sjs_array_class* sjt_parent4;
-sjs_array_class* sjt_parent5;
+sjs_array_class* sjt_parent1 = 0;
+sjs_array_class* sjt_parent10 = 0;
+sjs_array_class* sjt_parent2 = 0;
+sjs_array_class* sjt_parent29 = 0;
+sjs_array_class* sjt_parent3 = 0;
+sjs_array_class* sjt_parent30 = 0;
+sjs_array_class* sjt_parent31 = 0;
+sjs_array_class* sjt_parent32 = 0;
+sjs_array_class* sjt_parent33 = 0;
+sjs_array_class* sjt_parent4 = 0;
+sjs_array_class* sjt_parent5 = 0;
 sjs_array_class sjv_a = { -1 };
 void* sjv_emptystringdata;
 float sjv_f32_pi;
@@ -879,7 +879,7 @@ return;;
 }
 
 void sjf_array_char_grow(sjs_array_char* _parent, int32_t newsize, sjs_array_char* _return) {
-    sjs_array_char* sjt_dot11;
+    sjs_array_char* sjt_dot11 = 0;
     void* sjv_newdata;
 
     sjv_newdata = 0;
@@ -903,7 +903,7 @@ void sjf_array_char_grow(sjs_array_char* _parent, int32_t newsize, sjs_array_cha
 }
 
 void sjf_array_char_grow_heap(sjs_array_char* _parent, int32_t newsize, sjs_array_char** _return) {
-    sjs_array_char* sjt_dot12;
+    sjs_array_char* sjt_dot12 = 0;
     void* sjv_newdata;
 
     sjv_newdata = 0;
@@ -1013,12 +1013,12 @@ void sjf_array_class__quicksort(sjs_array_class* _parent, int32_t left, int32_t 
         int32_t sjt_compare12;
         int32_t sjt_compare9;
         int32_t sjt_functionParam12;
-        sjs_class* sjt_functionParam13;
+        sjs_class* sjt_functionParam13 = 0;
         int32_t sjt_functionParam16;
-        sjs_class* sjt_functionParam17;
+        sjs_class* sjt_functionParam17 = 0;
         bool sjt_ifElse2;
-        sjs_class* sjt_parent6;
-        sjs_class* sjt_parent8;
+        sjs_class* sjt_parent6 = 0;
+        sjs_class* sjt_parent8 = 0;
         bool sjt_while2;
         bool sjt_while3;
         sjs_class sjv_tmp = { -1 };
@@ -1031,10 +1031,10 @@ void sjf_array_class__quicksort(sjs_array_class* _parent, int32_t left, int32_t 
         while (sjt_while2) {
             sjs_class sjt_call7 = { -1 };
             int32_t sjt_functionParam14;
-            sjs_class* sjt_functionParam15;
+            sjs_class* sjt_functionParam15 = 0;
             int32_t sjt_math7;
             int32_t sjt_math8;
-            sjs_class* sjt_parent7;
+            sjs_class* sjt_parent7 = 0;
 
             sjt_math7 = sjv_i;
             sjt_math8 = 1;
@@ -1056,10 +1056,10 @@ void sjf_array_class__quicksort(sjs_array_class* _parent, int32_t left, int32_t 
         while (sjt_while3) {
             sjs_class sjt_call9 = { -1 };
             int32_t sjt_functionParam18;
-            sjs_class* sjt_functionParam19;
+            sjs_class* sjt_functionParam19 = 0;
             int32_t sjt_math10;
             int32_t sjt_math9;
-            sjs_class* sjt_parent9;
+            sjs_class* sjt_parent9 = 0;
 
             sjt_math9 = sjv_j;
             sjt_math10 = 1;
@@ -1079,10 +1079,10 @@ void sjf_array_class__quicksort(sjs_array_class* _parent, int32_t left, int32_t 
         if (sjt_ifElse2) {
             int32_t sjt_functionParam20;
             int32_t sjt_functionParam21;
-            sjs_class* sjt_functionParam22;
+            sjs_class* sjt_functionParam22 = 0;
             int32_t sjt_functionParam23;
             int32_t sjt_functionParam24;
-            sjs_class* sjt_functionParam25;
+            sjs_class* sjt_functionParam25 = 0;
             int32_t sjt_math11;
             int32_t sjt_math12;
             int32_t sjt_math13;
@@ -1187,12 +1187,12 @@ void sjf_array_class__quicksortcallback(sjs_array_class* _parent, int32_t left, 
         int32_t sjt_compare36;
         int32_t sjt_compare37;
         int32_t sjt_compare38;
-        sjs_class* sjt_functionParam69;
+        sjs_class* sjt_functionParam69 = 0;
         int32_t sjt_functionParam70;
-        sjs_class* sjt_functionParam71;
-        sjs_class* sjt_functionParam75;
+        sjs_class* sjt_functionParam71 = 0;
+        sjs_class* sjt_functionParam75 = 0;
         int32_t sjt_functionParam76;
-        sjs_class* sjt_functionParam77;
+        sjs_class* sjt_functionParam77 = 0;
         bool sjt_ifElse9;
         bool sjt_while5;
         bool sjt_while6;
@@ -1211,9 +1211,9 @@ void sjf_array_class__quicksortcallback(sjs_array_class* _parent, int32_t left, 
             cb_class_class_i32 sjt_callback2;
             int32_t sjt_compare29;
             int32_t sjt_compare30;
-            sjs_class* sjt_functionParam72;
+            sjs_class* sjt_functionParam72 = 0;
             int32_t sjt_functionParam73;
-            sjs_class* sjt_functionParam74;
+            sjs_class* sjt_functionParam74 = 0;
             int32_t sjt_math51;
             int32_t sjt_math52;
 
@@ -1245,9 +1245,9 @@ void sjf_array_class__quicksortcallback(sjs_array_class* _parent, int32_t left, 
             cb_class_class_i32 sjt_callback4;
             int32_t sjt_compare33;
             int32_t sjt_compare34;
-            sjs_class* sjt_functionParam78;
+            sjs_class* sjt_functionParam78 = 0;
             int32_t sjt_functionParam79;
-            sjs_class* sjt_functionParam80;
+            sjs_class* sjt_functionParam80 = 0;
             int32_t sjt_math53;
             int32_t sjt_math54;
 
@@ -1272,10 +1272,10 @@ void sjf_array_class__quicksortcallback(sjs_array_class* _parent, int32_t left, 
         if (sjt_ifElse9) {
             int32_t sjt_functionParam81;
             int32_t sjt_functionParam82;
-            sjs_class* sjt_functionParam83;
+            sjs_class* sjt_functionParam83 = 0;
             int32_t sjt_functionParam84;
             int32_t sjt_functionParam85;
-            sjs_class* sjt_functionParam86;
+            sjs_class* sjt_functionParam86 = 0;
             int32_t sjt_math55;
             int32_t sjt_math56;
             int32_t sjt_math57;
@@ -1397,7 +1397,7 @@ sjf_class_copy(&p[index], item);
 
 void sjf_array_class_reverse(sjs_array_class* _parent) {
     int32_t i;
-    sjs_array_class* sjt_dot29;
+    sjs_array_class* sjt_dot29 = 0;
     int32_t sjt_forEnd4;
     int32_t sjt_forStart4;
     int32_t sjt_math41;
@@ -1411,13 +1411,13 @@ void sjf_array_class_reverse(sjs_array_class* _parent) {
     i = sjt_forStart4;
     while (i < sjt_forEnd4) {
         sjs_class sjt_call21 = { -1 };
-        sjs_array_class* sjt_dot30;
+        sjs_array_class* sjt_dot30 = 0;
         int32_t sjt_functionParam60;
         int32_t sjt_functionParam61;
-        sjs_class* sjt_functionParam62;
+        sjs_class* sjt_functionParam62 = 0;
         int32_t sjt_functionParam63;
         int32_t sjt_functionParam64;
-        sjs_class* sjt_functionParam65;
+        sjs_class* sjt_functionParam65 = 0;
         int32_t sjt_math43;
         int32_t sjt_math44;
         int32_t sjt_math45;
@@ -1462,7 +1462,7 @@ sjf_class_copy(&p[index], item);
 void sjf_array_class_sort(sjs_array_class* _parent) {
     int32_t sjt_compare1;
     int32_t sjt_compare2;
-    sjs_array_class* sjt_dot1;
+    sjs_array_class* sjt_dot1 = 0;
     bool sjt_ifElse1;
 
     sjt_dot1 = _parent;
@@ -1470,7 +1470,7 @@ void sjf_array_class_sort(sjs_array_class* _parent) {
     sjt_compare2 = 1;
     sjt_ifElse1 = sjt_compare1 > sjt_compare2;
     if (sjt_ifElse1) {
-        sjs_array_class* sjt_dot6;
+        sjs_array_class* sjt_dot6 = 0;
         int32_t sjt_functionParam30;
         int32_t sjt_functionParam31;
         int32_t sjt_math15;
@@ -1488,7 +1488,7 @@ void sjf_array_class_sort(sjs_array_class* _parent) {
 void sjf_array_class_sortcb(sjs_array_class* _parent, cb_class_class_i32 cb) {
     int32_t sjt_compare23;
     int32_t sjt_compare24;
-    sjs_array_class* sjt_dot31;
+    sjs_array_class* sjt_dot31 = 0;
     bool sjt_ifElse8;
 
     sjt_dot31 = _parent;
@@ -1496,7 +1496,7 @@ void sjf_array_class_sortcb(sjs_array_class* _parent, cb_class_class_i32 cb) {
     sjt_compare24 = 1;
     sjt_ifElse8 = sjt_compare23 > sjt_compare24;
     if (sjt_ifElse8) {
-        sjs_array_class* sjt_dot32;
+        sjs_array_class* sjt_dot32 = 0;
         int32_t sjt_functionParam93;
         int32_t sjt_functionParam94;
         cb_class_class_i32 sjt_functionParam95;
@@ -1515,8 +1515,8 @@ void sjf_array_class_sortcb(sjs_array_class* _parent, cb_class_class_i32 cb) {
 
 void sjf_array_class_tostring(sjs_array_class* _parent, sjs_string* sep, sjs_string* _return) {
     int32_t i;
-    sjs_string* sjt_copy7;
-    sjs_array_class* sjt_dot7;
+    sjs_string* sjt_copy7 = 0;
+    sjs_array_class* sjt_dot7 = 0;
     int32_t sjt_forEnd1;
     int32_t sjt_forStart1;
     sjs_string sjv_result = { -1 };
@@ -1541,20 +1541,20 @@ void sjf_array_class_tostring(sjs_array_class* _parent, sjs_string* sep, sjs_str
         sjs_class sjt_call19 = { -1 };
         int32_t sjt_compare17;
         int32_t sjt_compare18;
-        sjs_string* sjt_copy6;
-        sjs_string* sjt_functionParam53;
+        sjs_string* sjt_copy6 = 0;
+        sjs_string* sjt_functionParam53 = 0;
         int32_t sjt_functionParam58;
         bool sjt_ifElse5;
-        sjs_string* sjt_parent25;
-        sjs_class* sjt_parent28;
+        sjs_string* sjt_parent25 = 0;
+        sjs_class* sjt_parent28 = 0;
 
         sjt_compare17 = i;
         sjt_compare18 = 0;
         sjt_ifElse5 = sjt_compare17 != sjt_compare18;
         if (sjt_ifElse5) {
-            sjs_string* sjt_copy1;
-            sjs_string* sjt_functionParam52;
-            sjs_string* sjt_parent24;
+            sjs_string* sjt_copy1 = 0;
+            sjs_string* sjt_functionParam52 = 0;
+            sjs_string* sjt_parent24 = 0;
 
             sjt_parent24 = &sjv_result;
             sjt_functionParam52 = sep;
@@ -1591,8 +1591,8 @@ void sjf_class(sjs_class* _this) {
 }
 
 void sjf_class_compare(sjs_class* l, sjs_class* r, int32_t* _return) {
-    sjs_class* sjt_dot33;
-    sjs_class* sjt_dot34;
+    sjs_class* sjt_dot33 = 0;
+    sjs_class* sjt_dot34 = 0;
     int32_t sjt_functionParam97;
     int32_t sjt_functionParam98;
 
@@ -1620,8 +1620,8 @@ void sjf_class_heap(sjs_class* _this) {
 void sjf_class_isgreater(sjs_class* _parent, sjs_class* c, bool* _return) {
     int32_t sjt_compare7;
     int32_t sjt_compare8;
-    sjs_class* sjt_dot4;
-    sjs_class* sjt_dot5;
+    sjs_class* sjt_dot4 = 0;
+    sjs_class* sjt_dot5 = 0;
 
     sjt_dot4 = _parent;
     sjt_compare7 = (sjt_dot4)->x;
@@ -1633,8 +1633,8 @@ void sjf_class_isgreater(sjs_class* _parent, sjs_class* c, bool* _return) {
 void sjf_class_isless(sjs_class* _parent, sjs_class* c, bool* _return) {
     int32_t sjt_compare5;
     int32_t sjt_compare6;
-    sjs_class* sjt_dot2;
-    sjs_class* sjt_dot3;
+    sjs_class* sjt_dot2 = 0;
+    sjs_class* sjt_dot3 = 0;
 
     sjt_dot2 = _parent;
     sjt_compare5 = (sjt_dot2)->x;
@@ -1646,10 +1646,10 @@ void sjf_class_isless(sjs_class* _parent, sjs_class* c, bool* _return) {
 void sjf_class_tostring(sjs_class* _parent, sjs_string* _return) {
     sjs_string sjt_call15 = { -1 };
     sjs_string sjt_call16 = { -1 };
-    sjs_class* sjt_dot27;
-    sjs_string* sjt_functionParam54;
+    sjs_class* sjt_dot27 = 0;
+    sjs_string* sjt_functionParam54 = 0;
     int32_t sjt_functionParam55;
-    sjs_string* sjt_parent26;
+    sjs_string* sjt_parent26 = 0;
 
     sjt_call15._refCount = 1;
     sjt_call15.count = 1;
@@ -1674,10 +1674,10 @@ void sjf_class_tostring(sjs_class* _parent, sjs_string* _return) {
 void sjf_class_tostring_heap(sjs_class* _parent, sjs_string** _return) {
     sjs_string sjt_call17 = { -1 };
     sjs_string sjt_call18 = { -1 };
-    sjs_class* sjt_dot28;
-    sjs_string* sjt_functionParam56;
+    sjs_class* sjt_dot28 = 0;
+    sjs_string* sjt_functionParam56 = 0;
     int32_t sjt_functionParam57;
-    sjs_string* sjt_parent27;
+    sjs_string* sjt_parent27 = 0;
 
     sjt_call17._refCount = 1;
     sjt_call17.count = 1;
@@ -1797,7 +1797,7 @@ void sjf_string(sjs_string* _this) {
 void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) {
     int32_t sjt_compare19;
     int32_t sjt_compare20;
-    sjs_string* sjt_dot8;
+    sjs_string* sjt_dot8 = 0;
     bool sjt_ifElse6;
     sjs_array_char sjv_newdata = { -1 };
 
@@ -1806,9 +1806,9 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
     sjt_compare20 = 0;
     sjt_ifElse6 = sjt_compare19 == sjt_compare20;
     if (sjt_ifElse6) {
-        sjs_array_char* sjt_copy2;
-        sjs_string* sjt_dot10;
-        sjs_string* sjt_dot9;
+        sjs_array_char* sjt_copy2 = 0;
+        sjs_string* sjt_dot10 = 0;
+        sjs_string* sjt_dot9 = 0;
 
         _return->_refCount = 1;
         sjt_dot9 = _parent;
@@ -1821,12 +1821,12 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
     } else {
         int32_t i;
         int32_t sjt_cast1;
-        sjs_array_char* sjt_copy3;
-        sjs_string* sjt_dot13;
-        sjs_string* sjt_dot14;
-        sjs_string* sjt_dot15;
-        sjs_string* sjt_dot16;
-        sjs_string* sjt_dot18;
+        sjs_array_char* sjt_copy3 = 0;
+        sjs_string* sjt_dot13 = 0;
+        sjs_string* sjt_dot14 = 0;
+        sjs_string* sjt_dot15 = 0;
+        sjs_string* sjt_dot16 = 0;
+        sjs_string* sjt_dot18 = 0;
         int32_t sjt_forEnd2;
         int32_t sjt_forStart2;
         int32_t sjt_functionParam33;
@@ -1841,10 +1841,10 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
         int32_t sjt_math20;
         int32_t sjt_math21;
         int32_t sjt_math22;
-        sjs_array_char* sjt_parent11;
-        sjs_array_char* sjt_parent12;
-        sjs_string* sjt_parent14;
-        sjs_array_char* sjt_parent17;
+        sjs_array_char* sjt_parent11 = 0;
+        sjs_array_char* sjt_parent12 = 0;
+        sjs_string* sjt_parent14 = 0;
+        sjs_array_char* sjt_parent17 = 0;
         int32_t sjv_newcount;
 
         sjt_dot13 = _parent;
@@ -1878,8 +1878,8 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
             int32_t sjt_functionParam40;
             int32_t sjt_math23;
             int32_t sjt_math24;
-            sjs_array_char* sjt_parent15;
-            sjs_string* sjt_parent16;
+            sjs_array_char* sjt_parent15 = 0;
+            sjs_string* sjt_parent16 = 0;
 
             sjt_parent15 = &sjv_newdata;
             sjt_functionParam38 = sjv_newcount;
@@ -1912,7 +1912,7 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
 void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _return) {
     int32_t sjt_compare21;
     int32_t sjt_compare22;
-    sjs_string* sjt_dot19;
+    sjs_string* sjt_dot19 = 0;
     bool sjt_ifElse7;
     sjs_array_char sjv_newdata = { -1 };
 
@@ -1921,9 +1921,9 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
     sjt_compare22 = 0;
     sjt_ifElse7 = sjt_compare21 == sjt_compare22;
     if (sjt_ifElse7) {
-        sjs_array_char* sjt_copy4;
-        sjs_string* sjt_dot20;
-        sjs_string* sjt_dot21;
+        sjs_array_char* sjt_copy4 = 0;
+        sjs_string* sjt_dot20 = 0;
+        sjs_string* sjt_dot21 = 0;
 
         (*_return) = (sjs_string*)malloc(sizeof(sjs_string));
         (*_return)->_refCount = 1;
@@ -1937,12 +1937,12 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
     } else {
         int32_t i;
         int32_t sjt_cast2;
-        sjs_array_char* sjt_copy5;
-        sjs_string* sjt_dot22;
-        sjs_string* sjt_dot23;
-        sjs_string* sjt_dot24;
-        sjs_string* sjt_dot25;
-        sjs_string* sjt_dot26;
+        sjs_array_char* sjt_copy5 = 0;
+        sjs_string* sjt_dot22 = 0;
+        sjs_string* sjt_dot23 = 0;
+        sjs_string* sjt_dot24 = 0;
+        sjs_string* sjt_dot25 = 0;
+        sjs_string* sjt_dot26 = 0;
         int32_t sjt_forEnd3;
         int32_t sjt_forStart3;
         int32_t sjt_functionParam43;
@@ -1957,10 +1957,10 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
         int32_t sjt_math28;
         int32_t sjt_math29;
         int32_t sjt_math30;
-        sjs_array_char* sjt_parent18;
-        sjs_array_char* sjt_parent19;
-        sjs_string* sjt_parent20;
-        sjs_array_char* sjt_parent23;
+        sjs_array_char* sjt_parent18 = 0;
+        sjs_array_char* sjt_parent19 = 0;
+        sjs_string* sjt_parent20 = 0;
+        sjs_array_char* sjt_parent23 = 0;
         int32_t sjv_newcount;
 
         sjt_dot22 = _parent;
@@ -1994,8 +1994,8 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
             int32_t sjt_functionParam49;
             int32_t sjt_math31;
             int32_t sjt_math32;
-            sjs_array_char* sjt_parent21;
-            sjs_string* sjt_parent22;
+            sjs_array_char* sjt_parent21 = 0;
+            sjs_string* sjt_parent22 = 0;
 
             sjt_parent21 = &sjv_newdata;
             sjt_functionParam47 = sjv_newcount;
@@ -2036,9 +2036,9 @@ void sjf_string_destroy(sjs_string* _this) {
 }
 
 void sjf_string_getat(sjs_string* _parent, int32_t index, char* _return) {
-    sjs_string* sjt_dot17;
+    sjs_string* sjt_dot17 = 0;
     int32_t sjt_functionParam36;
-    sjs_array_char* sjt_parent13;
+    sjs_array_char* sjt_parent13 = 0;
 
     sjt_dot17 = _parent;
     sjt_parent13 = &(sjt_dot17)->data;

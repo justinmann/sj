@@ -97,9 +97,9 @@ sji_interface* sjt_cast2 = 0;
 bool sjt_ifElse1;
 bool sjt_ifElse2;
 int32_option sjt_isEmpty1;
-sjs_class* sjt_isEmpty2;
-sji_interface* sjt_isEmpty3;
-sjs_class* sjt_isEmpty4;
+sjs_class* sjt_isEmpty2 = 0;
+sji_interface* sjt_isEmpty3 = 0;
+sjs_class* sjt_isEmpty4 = 0;
 int32_option sjt_isEmpty5;
 sjs_class* sjt_value1 = 0;
 int32_option sjv_a;
@@ -266,7 +266,7 @@ int main(int argc, char** argv) {
     if (sjt_ifElse1) {
         sjv_p = int32_empty;
     } else {
-        sjs_class* sjt_dot1;
+        sjs_class* sjt_dot1 = 0;
         int32_t sjt_value2;
         int32_option value1;
 

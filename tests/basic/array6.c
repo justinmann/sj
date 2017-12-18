@@ -650,7 +650,7 @@ int32_t sjt_functionParam1;
 cb_i32_f32 sjt_functionParam11;
 cb_f32_bool sjt_functionParam16;
 int32_t sjt_functionParam2;
-sjs_sum* sjt_functionParam20;
+sjs_sum* sjt_functionParam20 = 0;
 cb_sum_f32_sum sjt_functionParam21;
 int32_t sjt_functionParam3;
 int32_t sjt_functionParam4;
@@ -659,16 +659,16 @@ int32_t sjt_functionParam6;
 int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_negate1;
-sjs_array_i32* sjt_parent1;
-sjs_array_i32* sjt_parent2;
-sjs_array_i32* sjt_parent3;
-sjs_array_i32* sjt_parent4;
-sjs_array_f32* sjt_parent5;
-sjs_array_f32* sjt_parent6;
+sjs_array_i32* sjt_parent1 = 0;
+sjs_array_i32* sjt_parent2 = 0;
+sjs_array_i32* sjt_parent3 = 0;
+sjs_array_i32* sjt_parent4 = 0;
+sjs_array_f32* sjt_parent5 = 0;
+sjs_array_f32* sjt_parent6 = 0;
 sjs_array_i32 sjv_a = { -1 };
 sjs_array_f32 sjv_b = { -1 };
 sjs_array_f32 sjv_c = { -1 };
-sjs_sum* sjv_d;
+sjs_sum* sjv_d = 0;
 void* sjv_emptystringdata;
 float sjv_f32_pi;
 int32_t sjv_i32_maxvalue;
@@ -866,8 +866,8 @@ void sjf_array_f32_destroy(sjs_array_f32* _this) {
 
 void sjf_array_f32_filter(sjs_array_f32* _parent, cb_f32_bool cb, sjs_array_f32* _return) {
     int32_t i;
-    sjs_array_f32* sjt_dot7;
-    sjs_array_f32* sjt_dot8;
+    sjs_array_f32* sjt_dot7 = 0;
+    sjs_array_f32* sjt_dot8 = 0;
     int32_t sjt_forEnd3;
     int32_t sjt_forStart3;
     int32_t sjv_newcount;
@@ -918,8 +918,8 @@ void sjf_array_f32_filter(sjs_array_f32* _parent, cb_f32_bool cb, sjs_array_f32*
 
 void sjf_array_f32_filter_heap(sjs_array_f32* _parent, cb_f32_bool cb, sjs_array_f32** _return) {
     int32_t i;
-    sjs_array_f32* sjt_dot10;
-    sjs_array_f32* sjt_dot9;
+    sjs_array_f32* sjt_dot10 = 0;
+    sjs_array_f32* sjt_dot9 = 0;
     int32_t sjt_forEnd4;
     int32_t sjt_forStart4;
     int32_t sjv_newcount;
@@ -971,10 +971,10 @@ void sjf_array_f32_filter_heap(sjs_array_f32* _parent, cb_f32_bool cb, sjs_array
 
 void sjf_array_f32_foldl_sum(sjs_array_f32* _parent, sjs_sum* initial, cb_sum_f32_sum cb, sjs_sum** _return) {
     int32_t i;
-    sjs_array_f32* sjt_dot11;
+    sjs_array_f32* sjt_dot11 = 0;
     int32_t sjt_forEnd5;
     int32_t sjt_forStart5;
-    sjs_sum* sjv_r;
+    sjs_sum* sjv_r = 0;
 
     sjv_r = initial;
     sjt_forStart5 = 0;
@@ -984,7 +984,7 @@ void sjf_array_f32_foldl_sum(sjs_array_f32* _parent, sjs_sum* initial, cb_sum_f3
     while (i < sjt_forEnd5) {
         sjs_sum sjt_call1 = { -1 };
         cb_sum_f32_sum sjt_callback5;
-        sjs_sum* sjt_functionParam17;
+        sjs_sum* sjt_functionParam17 = 0;
         float sjt_functionParam18;
         int32_t sjt_functionParam19;
 
@@ -1090,9 +1090,9 @@ void sjf_array_i32_initat(sjs_array_i32* _parent, int32_t index, int32_t item) {
 
 void sjf_array_i32_map_f32(sjs_array_i32* _parent, cb_i32_f32 cb, sjs_array_f32* _return) {
     int32_t i;
-    sjs_array_i32* sjt_dot1;
-    sjs_array_i32* sjt_dot2;
-    sjs_array_i32* sjt_dot3;
+    sjs_array_i32* sjt_dot1 = 0;
+    sjs_array_i32* sjt_dot2 = 0;
+    sjs_array_i32* sjt_dot3 = 0;
     int32_t sjt_forEnd1;
     int32_t sjt_forStart1;
     void* sjv_newdata;
@@ -1131,9 +1131,9 @@ void sjf_array_i32_map_f32(sjs_array_i32* _parent, cb_i32_f32 cb, sjs_array_f32*
 
 void sjf_array_i32_map_f32_heap(sjs_array_i32* _parent, cb_i32_f32 cb, sjs_array_f32** _return) {
     int32_t i;
-    sjs_array_i32* sjt_dot4;
-    sjs_array_i32* sjt_dot5;
-    sjs_array_i32* sjt_dot6;
+    sjs_array_i32* sjt_dot4 = 0;
+    sjs_array_i32* sjt_dot5 = 0;
+    sjs_array_i32* sjt_dot6 = 0;
     int32_t sjt_forEnd2;
     int32_t sjt_forStart2;
     void* sjv_newdata;
@@ -1213,7 +1213,7 @@ void sjf_sum_heap(sjs_sum* _this) {
 }
 
 void sjf_sumadd(sjs_sum* sum, float x, sjs_sum* _return) {
-    sjs_sum* sjt_dot12;
+    sjs_sum* sjt_dot12 = 0;
     float sjt_math10;
     float sjt_math9;
 
@@ -1230,7 +1230,7 @@ void sjf_sumadd_callback(void * _parent, sjs_sum* sum, float x, sjs_sum* _return
 }
 
 void sjf_sumadd_heap(sjs_sum* sum, float x, sjs_sum** _return) {
-    sjs_sum* sjt_dot13;
+    sjs_sum* sjt_dot13 = 0;
     float sjt_math11;
     float sjt_math12;
 

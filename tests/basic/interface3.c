@@ -603,7 +603,7 @@ sjs_class* sjt_cast1 = 0;
 int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_negate1;
-sji_foo* sjt_parent1;
+sji_foo* sjt_parent1 = 0;
 sji_foo* sjv_a = 0;
 sjs_string* sjv_bob = 0;
 void* sjv_emptystringdata;

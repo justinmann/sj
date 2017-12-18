@@ -477,7 +477,7 @@ void CType::transpileDefaultValue(Compiler* compiler, CLoc loc, TrBlock* trBlock
 }
 
 bool CType::isSameExceptMode(shared_ptr<CType> l, shared_ptr<CType> r) {
-    return l->category == r->category && l->stackValueType.lock()->cname == r->stackValueType.lock()->cname && l->isOption == r->isOption;
+    return l->category == r->category && l->stackValueType.lock()->cname == r->stackValueType.lock()->cname && (l->isOption == r->isOption || l->typeMode == CTM_Weak || r->typeMode == CTM_Weak);
 }
 
 

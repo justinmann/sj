@@ -74,7 +74,7 @@ struct td_sjs_class_i32 {
     int32_t x;
 };
 
-sjs_class_i32* sjt_dot1;
+sjs_class_i32* sjt_dot1 = 0;
 sjs_class_i32 sjv_c = { -1 };
 
 void sjf_class_i32(sjs_class_i32* _this);

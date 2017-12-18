@@ -19,6 +19,7 @@ void TrBlock::writeVariablesToStream(ostream& stream, int level) {
         if (!variable.second->type->parent.expired()) {
             switch (variable.second->type->typeMode) {
             case CTM_Local:
+                stream << " = 0";
                 break;
             case CTM_Stack:
                 stream << " = { -1 }";
@@ -27,6 +28,9 @@ void TrBlock::writeVariablesToStream(ostream& stream, int level) {
                 stream << " = 0";
                 break;
             case CTM_Value:
+                break;
+            case CTM_Weak:
+                stream << " = 0";
                 break;
             default:
                 assert(false);
@@ -444,6 +448,8 @@ string TrValue::convertToLocalName(shared_ptr<CType> from, string name, bool isR
         }
     case CTM_Value:
         return name;
+    case CTM_Weak:
+        return "weak_" + name;
     default:
         assert(false);
         return "";
@@ -465,18 +471,37 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
         return;
     }
 
-    if (type->typeMode != CTM_Local && type->typeMode != rightValue->type->typeMode && !op.isCopy) {
-        compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot change mode to left type '%s' without using a copy operator like 'a = copy b'", rightValue->type->fullName.c_str(), type->fullName.c_str());
-        return;
-    }
-
     if (isVoid) {
         return;
     }
 
-    if (type->typeMode == CTM_Stack && rightValue->type->typeMode == CTM_Stack && !op.isCopy) {
-        compiler->addError(loc, CErrorCode::TypeMismatch, "must use a copy operator like 'a = copy b' when assigning a stack variable to a stack variable");
-        return;
+    switch (type->typeMode) {
+    case CTM_Value:
+        break;
+    case CTM_Local:
+        break;
+    case CTM_Weak:
+        if (rightValue->type->typeMode != CTM_Heap && rightValue->type->typeMode != CTM_Weak) {
+            compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot change mode to left type '%s'", rightValue->type->fullName.c_str(), type->fullName.c_str());
+            return;
+        }
+        break;
+    case CTM_Stack:
+        if (type->typeMode != rightValue->type->typeMode && !op.isCopy) {
+            compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot change mode to left type '%s' without using a copy operator like 'a = copy b'", rightValue->type->fullName.c_str(), type->fullName.c_str());
+            return;
+        }
+        if (rightValue->type->typeMode == CTM_Stack && !op.isCopy) {
+            compiler->addError(loc, CErrorCode::TypeMismatch, "must use a copy operator like 'a = copy b' when assigning a stack variable to a stack variable");
+            return;
+        }
+        break;
+    case CTM_Heap:
+        if (type->typeMode != rightValue->type->typeMode && !op.isCopy) {
+            compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot change mode to left type '%s' without using a copy operator like 'a = copy b'", rightValue->type->fullName.c_str(), type->fullName.c_str());
+            return;
+        }
+        break;
     }
 
     TrValue leftValue(scope, type, name, isReturnValue);

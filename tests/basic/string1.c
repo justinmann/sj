@@ -585,17 +585,17 @@ bool ptr_release(void* ptr);
 int32_t result1;
 char sjt_compare1;
 char sjt_compare2;
-sjs_string* sjt_compare3;
-sjs_string* sjt_compare4;
+sjs_string* sjt_compare3 = 0;
+sjs_string* sjt_compare4 = 0;
 int32_t sjt_functionParam2;
-sjs_string* sjt_functionParam4;
-sjs_string* sjt_functionParam6;
+sjs_string* sjt_functionParam4 = 0;
+sjs_string* sjt_functionParam6 = 0;
 int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_negate1;
-sjs_string* sjt_parent2;
-sjs_string* sjt_parent4;
-sjs_string* sjt_parent6;
+sjs_string* sjt_parent2 = 0;
+sjs_string* sjt_parent4 = 0;
+sjs_string* sjt_parent6 = 0;
 sjs_string sjv_a = { -1 };
 sjs_string sjv_b = { -1 };
 char sjv_c;
@@ -838,9 +838,9 @@ void sjf_string_destroy(sjs_string* _this) {
 }
 
 void sjf_string_getat(sjs_string* _parent, int32_t index, char* _return) {
-    sjs_string* sjt_dot1;
+    sjs_string* sjt_dot1 = 0;
     int32_t sjt_functionParam1;
-    sjs_array_char* sjt_parent1;
+    sjs_array_char* sjt_parent1 = 0;
 
     sjt_dot1 = _parent;
     sjt_parent1 = &(sjt_dot1)->data;
@@ -852,10 +852,10 @@ void sjf_string_heap(sjs_string* _this) {
 }
 
 void sjf_string_isequal(sjs_string* _parent, sjs_string* test, bool* _return) {
-    sjs_string* sjt_dot2;
-    sjs_string* sjt_dot3;
-    sjs_array_char* sjt_functionParam3;
-    sjs_array_char* sjt_parent3;
+    sjs_string* sjt_dot2 = 0;
+    sjs_string* sjt_dot3 = 0;
+    sjs_array_char* sjt_functionParam3 = 0;
+    sjs_array_char* sjt_parent3 = 0;
 
     sjt_dot2 = _parent;
     sjt_parent3 = &(sjt_dot2)->data;
@@ -865,10 +865,10 @@ void sjf_string_isequal(sjs_string* _parent, sjs_string* test, bool* _return) {
 }
 
 void sjf_string_islessorequal(sjs_string* _parent, sjs_string* test, bool* _return) {
-    sjs_string* sjt_dot4;
-    sjs_string* sjt_dot5;
-    sjs_array_char* sjt_functionParam5;
-    sjs_array_char* sjt_parent5;
+    sjs_string* sjt_dot4 = 0;
+    sjs_string* sjt_dot5 = 0;
+    sjs_array_char* sjt_functionParam5 = 0;
+    sjs_array_char* sjt_parent5 = 0;
 
     sjt_dot4 = _parent;
     sjt_parent5 = &(sjt_dot4)->data;

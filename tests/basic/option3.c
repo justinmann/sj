@@ -75,7 +75,7 @@ struct td_sjs_class {
 };
 
 bool sjt_isEmpty1;
-sjs_class* sjt_isEmpty2;
+sjs_class* sjt_isEmpty2 = 0;
 sjs_class sjv_a = { -1 };
 int32_t sjv_b;
 sjs_class sjv_c = { -1 };
@@ -121,14 +121,14 @@ void sjf_test(sjs_class* _return) {
     sjt_ifElse1 = true;
     if (sjt_ifElse1) {
         bool sjt_ifElse2;
-        sjs_class* sjt_isEmpty3;
+        sjs_class* sjt_isEmpty3 = 0;
 
         sjt_isEmpty3 = 0;
         sjt_ifElse2 = (sjt_isEmpty3 == 0);
         if (sjt_ifElse2) {
             _return->_refCount = -1;
         } else {
-            sjs_class* sjt_copy1;
+            sjs_class* sjt_copy1 = 0;
 
             sjt_copy1 = 0;
             _return->_refCount = 1;
@@ -136,7 +136,7 @@ void sjf_test(sjs_class* _return) {
         }
     } else {
         bool sjt_ifElse3;
-        sjs_class* sjt_isEmpty4;
+        sjs_class* sjt_isEmpty4 = 0;
 
         sjt_value1._refCount = 1;
         sjt_value1.x = 2;
@@ -146,7 +146,7 @@ void sjf_test(sjs_class* _return) {
         if (sjt_ifElse3) {
             _return->_refCount = -1;
         } else {
-            sjs_class* sjt_copy2;
+            sjs_class* sjt_copy2 = 0;
 
             sjt_value2._refCount = 1;
             sjt_value2.x = 2;
@@ -166,8 +166,8 @@ int main(int argc, char** argv) {
     sjt_isEmpty2 = (sjv_a._refCount != -1 ? &sjv_a : 0);
     sjt_isEmpty1 = (sjt_isEmpty2 == 0);
     if (!sjt_isEmpty1) {
-        sjs_class* ifValue1;
-        sjs_class* sjt_dot1;
+        sjs_class* ifValue1 = 0;
+        sjs_class* sjt_dot1 = 0;
 
         ifValue1 = (sjv_a._refCount != -1 ? &sjv_a : 0);
         sjt_dot1 = ifValue1;

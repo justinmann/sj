@@ -621,19 +621,19 @@ sjs_string sjt_call1 = { -1 };
 sjs_string sjt_call2 = { -1 };
 sjs_string sjt_call3 = { -1 };
 sjs_class* sjt_cast1 = 0;
-sjs_string* sjt_functionParam2;
+sjs_string* sjt_functionParam2 = 0;
 sji_interface* sjt_functionParam3 = 0;
-sjs_string* sjt_functionParam4;
-sjs_string* sjt_functionParam5;
+sjs_string* sjt_functionParam4 = 0;
+sjs_string* sjt_functionParam5 = 0;
 bool sjt_ifElse1;
 bool sjt_ifElse2;
-sjs_string* sjt_isEmpty1;
-sji_interface* sjt_isEmpty2;
+sjs_string* sjt_isEmpty1 = 0;
+sji_interface* sjt_isEmpty2 = 0;
 int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_negate1;
-sjs_hash_string_heap_interface* sjt_parent2;
-sjs_hash_string_heap_interface* sjt_parent3;
+sjs_hash_string_heap_interface* sjt_parent2 = 0;
+sjs_hash_string_heap_interface* sjt_parent3 = 0;
 sjs_string sjt_value1 = { -1 };
 sjs_string sjt_value2 = { -1 };
 sjs_hash_string_heap_interface sjv_a = { -1 };
@@ -1064,10 +1064,10 @@ void sjf_string_heap(sjs_string* _this) {
 }
 
 void sjf_string_isequal(sjs_string* _parent, sjs_string* test, bool* _return) {
-    sjs_string* sjt_dot1;
-    sjs_string* sjt_dot2;
-    sjs_array_char* sjt_functionParam1;
-    sjs_array_char* sjt_parent1;
+    sjs_string* sjt_dot1 = 0;
+    sjs_string* sjt_dot2 = 0;
+    sjs_array_char* sjt_functionParam1 = 0;
+    sjs_array_char* sjt_parent1 = 0;
 
     sjt_dot1 = _parent;
     sjt_parent1 = &(sjt_dot1)->data;
@@ -1142,7 +1142,7 @@ int main(int argc, char** argv) {
     if (sjt_ifElse2) {
         sjt_isEmpty1 = 0;
     } else {
-        sji_interface* sjt_parent4;
+        sji_interface* sjt_parent4 = 0;
 
         sjt_parent4 = sjv_b;
         sjt_value1._refCount = 1;
@@ -1164,14 +1164,14 @@ int main(int argc, char** argv) {
         sjt_functionParam5 = &sjt_call3;
     } else {
         bool sjt_ifElse3;
-        sji_interface* sjt_isEmpty3;
+        sji_interface* sjt_isEmpty3 = 0;
 
         sjt_isEmpty3 = sjv_b;
         sjt_ifElse3 = (sjt_isEmpty3 == 0);
         if (sjt_ifElse3) {
             sjt_functionParam5 = 0;
         } else {
-            sji_interface* sjt_parent5;
+            sji_interface* sjt_parent5 = 0;
 
             sjt_parent5 = sjv_b;
             sjt_value2._refCount = 1;

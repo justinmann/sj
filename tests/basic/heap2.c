@@ -81,9 +81,9 @@ struct td_sjs_class {
     sjs_class_anon1 data;
 };
 
-sjs_class* sjt_parent1;
+sjs_class* sjt_parent1 = 0;
 sjs_class sjv_c = { -1 };
-sjs_class_anon1* sjv_d;
+sjs_class_anon1* sjv_d = 0;
 
 void sjf_class(sjs_class* _this);
 void sjf_class_anon1(sjs_class_anon1* _this, sjs_class* _parent);
@@ -121,10 +121,12 @@ void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_get(sjs_class* _parent, sjs_class_anon1** _return) {
-    sjs_class* sjt_dot1;
+    sjs_class_anon1* sjt_changeMode1 = 0;
+    sjs_class* sjt_dot1 = 0;
 
     sjt_dot1 = _parent;
-    (*_return) = &(sjt_dot1)->data;
+    sjt_changeMode1 = &(sjt_dot1)->data;
+    (*_return) = sjt_changeMode1;
 }
 
 void sjf_class_heap(sjs_class* _this) {

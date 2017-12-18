@@ -74,7 +74,7 @@ struct td_sjs_class {
     int32_option d;
 };
 
-sjs_class* sjt_dot1;
+sjs_class* sjt_dot1 = 0;
 bool sjt_isEmpty1;
 int32_option sjt_isEmpty2;
 bool sjt_isEmpty3;
@@ -149,7 +149,7 @@ int main(int argc, char** argv) {
     sjt_isEmpty5 = sjt_isEmpty6.isempty;
     if (!sjt_isEmpty5) {
         int32_t ifValue3;
-        sjs_class* sjt_dot2;
+        sjs_class* sjt_dot2 = 0;
         int32_option sjt_getValue3;
 
         sjt_dot2 = &sjv_c;

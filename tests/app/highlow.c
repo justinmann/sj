@@ -587,8 +587,8 @@ int32_t result1;
 bool result2;
 sjs_string sjt_call1 = { -1 };
 sjs_string sjt_call4 = { -1 };
-sjs_string* sjt_functionParam1;
-sjs_string* sjt_functionParam5;
+sjs_string* sjt_functionParam1 = 0;
+sjs_string* sjt_functionParam5 = 0;
 int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_math3;
@@ -953,7 +953,7 @@ int main(int argc, char** argv) {
         sjs_string sjt_call3 = { -1 };
         int32_t sjt_compare1;
         int32_t sjt_compare2;
-        sjs_string* sjt_functionParam2;
+        sjs_string* sjt_functionParam2 = 0;
         bool sjt_ifElse1;
         bool sjt_not2;
         int32_t sjv_guess;
@@ -966,7 +966,7 @@ int main(int argc, char** argv) {
         sjt_compare2 = sjv_num;
         sjt_ifElse1 = sjt_compare1 < sjt_compare2;
         if (sjt_ifElse1) {
-            sjs_string* sjt_functionParam3;
+            sjs_string* sjt_functionParam3 = 0;
 
             sjt_call2._refCount = 1;
             sjt_call2.count = 9;
@@ -989,7 +989,7 @@ int main(int argc, char** argv) {
             sjt_compare4 = sjv_num;
             sjt_ifElse2 = sjt_compare3 > sjt_compare4;
             if (sjt_ifElse2) {
-                sjs_string* sjt_functionParam4;
+                sjs_string* sjt_functionParam4 = 0;
 
                 sjt_call3._refCount = 1;
                 sjt_call3.count = 10;

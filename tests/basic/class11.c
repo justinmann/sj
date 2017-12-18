@@ -75,7 +75,7 @@ struct td_sjs_class {
 };
 
 sjs_class sjt_call1 = { -1 };
-sjs_class* sjt_dot1;
+sjs_class* sjt_dot1 = 0;
 
 void sjf_class(sjs_class* _this);
 void sjf_class_copy(sjs_class* _this, sjs_class* _from);

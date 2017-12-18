@@ -96,8 +96,8 @@ struct td_sji_foo_i32 {
 sjs_class_i32* sjt_cast1 = 0;
 sji_foo_i32* sjt_cast2 = 0;
 bool sjt_ifElse1;
-sji_bar* sjt_isEmpty1;
-sji_foo_i32* sjt_parent1;
+sji_bar* sjt_isEmpty1 = 0;
+sji_foo_i32* sjt_parent1 = 0;
 sji_foo_i32* sjv_a = 0;
 sji_bar* sjv_b = 0;
 int32_t void1;
@@ -268,7 +268,7 @@ int main(int argc, char** argv) {
     sjt_ifElse1 = (sjt_isEmpty1 == 0);
     if (sjt_ifElse1) {
     } else {
-        sji_bar* sjt_parent2;
+        sji_bar* sjt_parent2 = 0;
         int32_t sjt_value1;
         int32_option value1;
 

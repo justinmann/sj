@@ -101,8 +101,8 @@ struct td_sji_b_foo {
 
 sjs_a_class* sjt_cast1 = 0;
 sjs_b_class* sjt_cast2 = 0;
-sji_a_foo* sjt_parent1;
-sji_b_foo* sjt_parent2;
+sji_a_foo* sjt_parent1 = 0;
+sji_b_foo* sjt_parent2 = 0;
 int32_t sjv_a_x;
 int32_t sjv_b;
 int32_t sjv_b_d;

@@ -603,17 +603,17 @@ sjs_string sjt_call1 = { -1 };
 sjs_string sjt_call2 = { -1 };
 sjs_string sjt_call3 = { -1 };
 sjs_string sjt_call4 = { -1 };
-sjs_string* sjt_functionParam2;
-sjs_string* sjt_functionParam3;
-sjs_string* sjt_functionParam4;
-sjs_string* sjt_functionParam5;
+sjs_string* sjt_functionParam2 = 0;
+sjs_string* sjt_functionParam3 = 0;
+sjs_string* sjt_functionParam4 = 0;
+sjs_string* sjt_functionParam5 = 0;
 bool sjt_ifElse1;
-sjs_string* sjt_isEmpty1;
+sjs_string* sjt_isEmpty1 = 0;
 int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_negate1;
-sjs_hash_stringstring* sjt_parent2;
-sjs_hash_stringstring* sjt_parent3;
+sjs_hash_stringstring* sjt_parent2 = 0;
+sjs_hash_stringstring* sjt_parent3 = 0;
 sjs_hash_stringstring sjv_a = { -1 };
 sjs_string sjv_b = { -1 };
 void* sjv_emptystringdata;
@@ -932,10 +932,10 @@ void sjf_string_heap(sjs_string* _this) {
 }
 
 void sjf_string_isequal(sjs_string* _parent, sjs_string* test, bool* _return) {
-    sjs_string* sjt_dot1;
-    sjs_string* sjt_dot2;
-    sjs_array_char* sjt_functionParam1;
-    sjs_array_char* sjt_parent1;
+    sjs_string* sjt_dot1 = 0;
+    sjs_string* sjt_dot2 = 0;
+    sjs_array_char* sjt_functionParam1 = 0;
+    sjs_array_char* sjt_parent1 = 0;
 
     sjt_dot1 = _parent;
     sjt_parent1 = &(sjt_dot1)->data;

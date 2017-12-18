@@ -74,19 +74,19 @@ struct td_sjs_foo {
 };
 
 sjs_foo sjt_call1 = { -1 };
-sjs_foo* sjt_copy1;
-sjs_foo* sjt_copy2;
-sjs_foo* sjt_copy3;
+sjs_foo* sjt_copy1 = 0;
+sjs_foo* sjt_copy2 = 0;
+sjs_foo* sjt_copy3 = 0;
 sjs_foo* sjt_copy4 = 0;
-sjs_foo* sjt_copy5;
+sjs_foo* sjt_copy5 = 0;
 sjs_foo* sjv_heap_x1 = 0;
 sjs_foo* sjv_heap_x2 = 0;
 sjs_foo* sjv_heap_x3 = 0;
 sjs_foo* sjv_heap_y = 0;
-sjs_foo* sjv_local_x1;
-sjs_foo* sjv_local_x2;
-sjs_foo* sjv_local_x3;
-sjs_foo* sjv_local_y;
+sjs_foo* sjv_local_x1 = 0;
+sjs_foo* sjv_local_x2 = 0;
+sjs_foo* sjv_local_x3 = 0;
+sjs_foo* sjv_local_y = 0;
 sjs_foo sjv_stack_x1 = { -1 };
 sjs_foo sjv_stack_x2 = { -1 };
 sjs_foo sjv_stack_x3 = { -1 };

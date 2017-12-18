@@ -81,7 +81,7 @@ struct td_sjs_class {
 };
 
 int32_t sjt_functionParam5;
-sjs_class* sjt_parent2;
+sjs_class* sjt_parent2 = 0;
 sjs_class sjv_c = { -1 };
 sjs_anon1 sjv_math = { -1 };
 int32_t void1;
@@ -113,7 +113,7 @@ void sjf_anon1_heap(sjs_anon1* _this) {
 }
 
 void sjf_anon1_sub(sjs_anon1* _parent, int32_t x, int32_t y, int32_t* _return) {
-    sjs_anon1* sjt_dot1;
+    sjs_anon1* sjt_dot1 = 0;
     int32_t sjt_math1;
     int32_t sjt_math2;
     int32_t sjt_math3;
@@ -155,7 +155,7 @@ void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return) {
         int32_t sjt_functionParam2;
         int32_t sjt_functionParam3;
         int32_t sjt_functionParam4;
-        sjs_anon1* sjt_parent1;
+        sjs_anon1* sjt_parent1 = 0;
 
         sjt_parent1 = &sjv_math;
         sjt_functionParam3 = x;
