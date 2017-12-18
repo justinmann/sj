@@ -50,139 +50,138 @@ void updateLocation(YYLOCATION& loc, const char* s, const size_t len) {
 %x CFUNCTION
 
 %%
-"--c--"							{ BEGIN(CBLOCK); }
+(?:"--c--")						{ BEGIN(CBLOCK); }
 <CBLOCK>. 	 					{ yymore(); }
 <CBLOCK>\n 					    { TOKEN_STR(TCBLOCK, 0, 1); }
-<CBLOCK>"--c--"					{ BEGIN(INITIAL); TOKEN_STR(TCBLOCK, 0, 5); }
+<CBLOCK>(?:"--c--")				{ BEGIN(INITIAL); TOKEN_STR(TCBLOCK, 0, 5); }
 
-"--cvar--"						{ BEGIN(CVAR); }
+(?:"--cvar--")					{ BEGIN(CVAR); }
 <CVAR>. 						{ yymore(); }
 <CVAR>\n 						{ TOKEN_STR(TCVAR, 0, 1); }
-<CVAR>"--cvar--"				{ BEGIN(INITIAL); TOKEN_STR(TCVAR, 0, 8); }
+<CVAR>(?:"--cvar--")			{ BEGIN(INITIAL); TOKEN_STR(TCVAR, 0, 8); }
 
-"--cstruct--"					{ BEGIN(CSTRUCT); }
+(?:"--cstruct--")				{ BEGIN(CSTRUCT); }
 <CSTRUCT>. 						{ yymore(); }
 <CSTRUCT>\n 					{ TOKEN_STR(TCSTRUCT, 0, 1); }
-<CSTRUCT>"--cstruct--"			{ BEGIN(INITIAL); TOKEN_STR(TCSTRUCT, 0, 11); }
+<CSTRUCT>(?:"--cstruct--")		{ BEGIN(INITIAL); TOKEN_STR(TCSTRUCT, 0, 11); }
 
-"--cdefine--"					{ BEGIN(CDEFINE); }
+(?:"--cdefine--")				{ BEGIN(CDEFINE); }
 <CDEFINE>. 						{ yymore(); }
 <CDEFINE>\n 					{ TOKEN_STR(TCDEFINE, 0, 1); }
-<CDEFINE>"--cdefine--"			{ BEGIN(INITIAL); TOKEN_STR(TCDEFINE, 0, 11); }
+<CDEFINE>(?:"--cdefine--")		{ BEGIN(INITIAL); TOKEN_STR(TCDEFINE, 0, 11); }
 
-"--cinclude--"					{ BEGIN(CINCLUDE); }
+(?:"--cinclude--")				{ BEGIN(CINCLUDE); }
 <CINCLUDE>. 					{ yymore(); }
 <CINCLUDE>\n 					{ TOKEN_STR(TCINCLUDE, 0, 1); }
-<CINCLUDE>"--cinclude--"		{ BEGIN(INITIAL); TOKEN_STR(TCINCLUDE, 0, 12); }
+<CINCLUDE>(?:"--cinclude--")	{ BEGIN(INITIAL); TOKEN_STR(TCINCLUDE, 0, 12); }
 
-"--ctypedef--"					{ BEGIN(CTYPEDEF); }
+(?:"--ctypedef--")				{ BEGIN(CTYPEDEF); }
 <CTYPEDEF>. 					{ yymore(); }
 <CTYPEDEF>\n 					{ TOKEN_STR(TCTYPEDEF, 0, 1); }
-<CTYPEDEF>"--ctypedef--"		{ BEGIN(INITIAL); TOKEN_STR(TCTYPEDEF, 0, 12); }
+<CTYPEDEF>(?:"--ctypedef--")	{ BEGIN(INITIAL); TOKEN_STR(TCTYPEDEF, 0, 12); }
 
-"--cfunction--"					{ BEGIN(CFUNCTION); }
+(?:"--cfunction--")				{ BEGIN(CFUNCTION); }
 <CFUNCTION>. 					{ yymore(); }
 <CFUNCTION>\n 					{ TOKEN_STR(TCFUNCTION, 0, 1); }
-<CFUNCTION>"--cfunction--"		{ BEGIN(INITIAL); TOKEN_STR(TCFUNCTION, 0, 13); }
+<CFUNCTION>(?:"--cfunction--")	{ BEGIN(INITIAL); TOKEN_STR(TCFUNCTION, 0, 13); }
 
 "/*"([^*]|\*+[^*/])*\*+"/"	TOKEN_VAL(TEND);
-"//".*					TOKEN_VAL(TEND);
-"as"					TOKEN_VAL(TAS);
-"throw"					TOKEN_VAL(TTHROW);
-"copy"					TOKEN_VAL(TCOPY);
-"catch"					TOKEN_VAL(TCATCH);
-"destroy"				TOKEN_VAL(TDESTROY);
-"true"					TOKEN_VAL(TTRUE);
-"false"					TOKEN_VAL(TFALSE);
-"void"					TOKEN_VAL(TVOID);
-"stack"					TOKEN_VAL(TSTACK);
-"heap"					TOKEN_VAL(THEAP);
-"weak"					TOKEN_VAL(TWEAK);
-"local"					TOKEN_VAL(TLOCAL);
-"i32"					TOKEN_VAL(TTYPEI32);
-"u32"					TOKEN_VAL(TTYPEU32);
-"f32"					TOKEN_VAL(TTYPEF32);
-"i64"					TOKEN_VAL(TTYPEI64);
-"u64"					TOKEN_VAL(TTYPEU64);
-"f64"					TOKEN_VAL(TTYPEF64);
-"char"					TOKEN_VAL(TTYPECHAR);
-"bool"					TOKEN_VAL(TTYPEBOOL);
-"ptr"					TOKEN_VAL(TTYPEPTR);
-"if"					TOKEN_VAL(TIF);
-"ifValue"				TOKEN_VAL(TIFVALUE);
-"else"					TOKEN_VAL(TELSE);
-"elseEmpty"				TOKEN_VAL(TELSEEMPTY);
-"for" 					TOKEN_VAL(TFOR);
-"to" 					TOKEN_VAL(TTO);
-"toReverse"				TOKEN_VAL(TTOREVERSE);
-"while"					TOKEN_VAL(TWHILE);
-[ \t]+					SAVE_LOC; 
-"^"						TOKEN_STR(TIDENTIFIER, 0, 0);
-"this"					TOKEN_VAL(TTHIS);
-"heap this"				TOKEN_VAL(THEAPTHIS);
-"parent"				TOKEN_VAL(TPARENT);
-"heap parent"			TOKEN_VAL(THEAPPARENT);
-"include"				TOKEN_VAL(TINCLUDE);
-"isEmpty"				TOKEN_VAL(TISEMPTY);
-"getValue"				TOKEN_VAL(TGETVALUE);
-"value"					TOKEN_VAL(TVALUE);
-"empty"					TOKEN_VAL(TEMPTY);
-"enum"					TOKEN_VAL(TENUM);
-"switch"				TOKEN_VAL(TSWITCH);
-"case"					TOKEN_VAL(TCASE);
-"default"				TOKEN_VAL(TDEFAULT);
-"package"				TOKEN_VAL(TPACKAGE);
-"import"				TOKEN_VAL(TIMPORT);
-"nullptr"				TOKEN_VAL(TNULLPTR);	
-"_"						TOKEN_VAL(TUNDERSCORE);
-"#"						TOKEN_VAL(THASH);
-"?:"					TOKEN_VAL(TQUESTIONCOLON);
-"?."					TOKEN_VAL(TQUESTIONDOT);
-"?"						TOKEN_VAL(TQUESTION);
-"."						TOKEN_VAL(TDOT);
-[a-zA-Z_][a-zA-Z0-9_]*	TOKEN_STR(TIDENTIFIER, 0, 0);
-[0-9]+\.[0-9]+(f|d)*	TOKEN_STR(TDOUBLE, 0, 0);
-[0-9]+(i|u|v|l)*		TOKEN_STR(TINTEGER, 0, 0);
-"0x"[0-9a-fA-F]+(i|u|v|l)*		TOKEN_STR(TINTEGER, 0, 0);
-\n						TOKEN_VAL(TEND);
-;						TOKEN_VAL(TEND);
-"'\\''"					TOKEN_STR(TCHAR, 1, 1);
-"'\\"([^'])"'"			TOKEN_STR(TCHAR, 1, 1);
-"'"([^'])"'"			TOKEN_STR(TCHAR, 1, 1);
-\"(\\.|[^\"])*\"		TOKEN_STR(TSTRING, 1, 1);
-"!"						TOKEN_VAL(TEXCLAIM);
-"["						TOKEN_VAL(TLBRACKET);
-"]"						TOKEN_VAL(TRBRACKET);
-"&&"					TOKEN_VAL(TAND);
-"||"					TOKEN_VAL(TOR);
-"++"					TOKEN_VAL(TPLUSPLUS);
-"--"					TOKEN_VAL(TMINUSMINUS);
-"+="					TOKEN_VAL(TPLUSEQUAL);
-"-="					TOKEN_VAL(TMINUSEQUAL);
-"*="					TOKEN_VAL(TMULEQUAL);
-"/="					TOKEN_VAL(TDIVEQUAL);
-"="						TOKEN_VAL(TEQUAL);
-"==="					TOKEN_VAL(TCPEQ);
-"!=="					TOKEN_VAL(TCPNE);
-"=="					TOKEN_VAL(TCEQ);
-"!="					TOKEN_VAL(TCNE);
-"<"						TOKEN_VAL(TCLT);
-"<="					TOKEN_VAL(TCLE);
-">"						TOKEN_VAL(TCGT);
-">="					TOKEN_VAL(TCGE);
-"("						TOKEN_VAL(TLPAREN);
-")"						TOKEN_VAL(TRPAREN);
-"{"						TOKEN_VAL(TLBRACE);
-"}"						TOKEN_VAL(TRBRACE);
-","						TOKEN_VAL(TCOMMA);
-":"						TOKEN_VAL(TCOLON);
-":="					TOKEN_VAL(TCOLONEQUAL);
-"\'"					TOKEN_VAL(TQUOTE);
-"+"						TOKEN_VAL(TPLUS);
-"-"						TOKEN_VAL(TMINUS);
-"*"						TOKEN_VAL(TMUL);
-"/"						TOKEN_VAL(TDIV);
-"%"						TOKEN_VAL(TMOD);
-.						TOKEN_STR(TINVALID, 0, 0);
+"//".*						TOKEN_VAL(TEND);
+(?:"as")					TOKEN_VAL(TAS);
+(?:"throw")					TOKEN_VAL(TTHROW);
+(?:"copy")					TOKEN_VAL(TCOPY);
+(?:"catch")					TOKEN_VAL(TCATCH);
+(?:"destroy")				TOKEN_VAL(TDESTROY);
+(?:"true")					TOKEN_VAL(TTRUE);
+(?:"false")					TOKEN_VAL(TFALSE);
+(?:"void")					TOKEN_VAL(TVOID);
+(?:"stack")					TOKEN_VAL(TSTACK);
+(?:"heap")					TOKEN_VAL(THEAP);
+(?:"weak")					TOKEN_VAL(TWEAK);
+(?:"local")					TOKEN_VAL(TLOCAL);
+(?:"i32")					TOKEN_VAL(TTYPEI32);
+(?:"u32")					TOKEN_VAL(TTYPEU32);
+(?:"f32")					TOKEN_VAL(TTYPEF32);
+(?:"i64")					TOKEN_VAL(TTYPEI64);
+(?:"u64")					TOKEN_VAL(TTYPEU64);
+(?:"f64")					TOKEN_VAL(TTYPEF64);
+(?:"char")					TOKEN_VAL(TTYPECHAR);
+(?:"bool")					TOKEN_VAL(TTYPEBOOL);
+(?:"ptr")					TOKEN_VAL(TTYPEPTR);
+(?:"if")					TOKEN_VAL(TIF);
+(?:"ifValue")				TOKEN_VAL(TIFVALUE);
+(?:"else")					TOKEN_VAL(TELSE);
+(?:"elseEmpty")				TOKEN_VAL(TELSEEMPTY);
+(?:"for") 					TOKEN_VAL(TFOR);
+(?:"to") 					TOKEN_VAL(TTO);
+(?:"toReverse")				TOKEN_VAL(TTOREVERSE);
+(?:"while")					TOKEN_VAL(TWHILE);
+[ \t]+						SAVE_LOC; 
+"^"							TOKEN_STR(TIDENTIFIER, 0, 0);
+(?:"this")					TOKEN_VAL(TTHIS);
+(?:"heap this")				TOKEN_VAL(THEAPTHIS);
+(?:"parent")				TOKEN_VAL(TPARENT);
+(?:"heap parent")			TOKEN_VAL(THEAPPARENT);
+(?:"include")				TOKEN_VAL(TINCLUDE);
+(?:"isEmpty")				TOKEN_VAL(TISEMPTY);
+(?:"getValue")				TOKEN_VAL(TGETVALUE);
+(?:"value")					TOKEN_VAL(TVALUE);
+(?:"empty")					TOKEN_VAL(TEMPTY);
+(?:"enum")					TOKEN_VAL(TENUM);
+(?:"switch")				TOKEN_VAL(TSWITCH);
+(?:"default")				TOKEN_VAL(TDEFAULT);
+(?:"package")				TOKEN_VAL(TPACKAGE);
+(?:"import")				TOKEN_VAL(TIMPORT);
+(?:"nullptr")				TOKEN_VAL(TNULLPTR);	
+"_"							TOKEN_VAL(TUNDERSCORE);
+"#"							TOKEN_VAL(THASH);
+"?:"						TOKEN_VAL(TQUESTIONCOLON);
+"?."						TOKEN_VAL(TQUESTIONDOT);
+"?"							TOKEN_VAL(TQUESTION);
+"."							TOKEN_VAL(TDOT);
+[a-zA-Z_][a-zA-Z0-9_]*		TOKEN_STR(TIDENTIFIER, 0, 0);
+[0-9]+\.[0-9]+(f|d)*		TOKEN_STR(TDOUBLE, 0, 0);
+[0-9]+(i|u|v|l)*			TOKEN_STR(TINTEGER, 0, 0);
+"0x"[0-9a-fA-F]+(i|u|v|l)*	TOKEN_STR(TINTEGER, 0, 0);
+\n							TOKEN_VAL(TEND);
+;							TOKEN_VAL(TEND);
+"'\\''"						TOKEN_STR(TCHAR, 1, 1);
+"'\\"([^'])"'"				TOKEN_STR(TCHAR, 1, 1);
+"'"([^'])"'"				TOKEN_STR(TCHAR, 1, 1);
+\"(\\.|[^\"])*\"			TOKEN_STR(TSTRING, 1, 1);
+"!"							TOKEN_VAL(TEXCLAIM);
+"["							TOKEN_VAL(TLBRACKET);
+"]"							TOKEN_VAL(TRBRACKET);
+"&&"						TOKEN_VAL(TAND);
+"||"						TOKEN_VAL(TOR);
+"++"						TOKEN_VAL(TPLUSPLUS);
+"--"						TOKEN_VAL(TMINUSMINUS);
+"+="						TOKEN_VAL(TPLUSEQUAL);
+"-="						TOKEN_VAL(TMINUSEQUAL);
+"*="						TOKEN_VAL(TMULEQUAL);
+"/="						TOKEN_VAL(TDIVEQUAL);
+"="							TOKEN_VAL(TEQUAL);
+"==="						TOKEN_VAL(TCPEQ);
+"!=="						TOKEN_VAL(TCPNE);
+"=="						TOKEN_VAL(TCEQ);
+"!="						TOKEN_VAL(TCNE);
+"<"							TOKEN_VAL(TCLT);
+"<="						TOKEN_VAL(TCLE);
+">"							TOKEN_VAL(TCGT);
+">="						TOKEN_VAL(TCGE);
+"("							TOKEN_VAL(TLPAREN);
+")"							TOKEN_VAL(TRPAREN);
+"{"							TOKEN_VAL(TLBRACE);
+"}"							TOKEN_VAL(TRBRACE);
+","							TOKEN_VAL(TCOMMA);
+":"							TOKEN_VAL(TCOLON);
+":="						TOKEN_VAL(TCOLONEQUAL);
+"\'"						TOKEN_VAL(TQUOTE);
+"+"							TOKEN_VAL(TPLUS);
+"-"							TOKEN_VAL(TMINUS);
+"*"							TOKEN_VAL(TMUL);
+"/"							TOKEN_VAL(TDIV);
+"%"							TOKEN_VAL(TMOD);
+.							TOKEN_STR(TINVALID, 0, 0);
 
 %%

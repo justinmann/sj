@@ -1,7 +1,6 @@
 Terminals unused in grammar
 
    TINVALID
-   TCASE
 
 
 State 257 conflicts: 1 shift/reduce
@@ -429,177 +428,176 @@ TELSEEMPTY (346) 142
 TTOREVERSE (347) 130
 TENUM (348) 50
 TSWITCH (349) 132 133
-TCASE (350)
-TDEFAULT (351) 137
-TPACKAGE (352) 17
-TIMPORT (353) 18
-TUNDERSCORE (354) 166
-TNULLPTR (355) 165
+TDEFAULT (350) 137
+TPACKAGE (351) 17
+TIMPORT (352) 18
+TUNDERSCORE (353) 166
+TNULLPTR (354) 165
 
 
 Nonterminals, with rules where they appear
 
-$accept (101)
+$accept (100)
     on left: 0
-program (102)
+program (101)
     on left: 1, on right: 0
-stmts (103)
+stmts (102)
     on left: 2 3, on right: 1 3 41
-stmt (104)
+stmt (103)
     on left: 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19, on right: 2
     3 49 168 170 171 173
-cblock (105)
+cblock (104)
     on left: 20 21, on right: 10 20
-cdefine (106)
+cdefine (105)
     on left: 22 23, on right: 11 22
-cstruct (107)
+cstruct (106)
     on left: 24 25, on right: 12 24
-cfunction (108)
+cfunction (107)
     on left: 26 27, on right: 13 26
-cinclude (109)
+cinclude (108)
     on left: 28 29, on right: 14 28
-ctypedef (110)
+ctypedef (109)
     on left: 30 31, on right: 15 30
-cvar (111)
+cvar (110)
     on left: 32 33, on right: 32 77
-import_namespaces (112)
+import_namespaces (111)
     on left: 34 35 36, on right: 18 34 35
-import_namespace (113)
+import_namespace (112)
     on left: 37 38, on right: 34 35 36
-namespace (114)
+namespace (113)
     on left: 39 40, on right: 17 37 38 39 82
-block (115)
+block (114)
     on left: 41, on right: 17 18 56 57 58 59 63 65 67 129 130 131 136
     137 138 139 140 141 142
-var_decl (116)
+var_decl (115)
     on left: 42 43 44 45 46 47 48 49, on right: 5
-enum_decl (117)
+enum_decl (116)
     on left: 50, on right: 8
-enum_args (118)
+enum_args (117)
     on left: 51 52 53, on right: 50 51 52
-enum_arg (119)
+enum_arg (118)
     on left: 54 55, on right: 51 52 53
-func_decl (120)
+func_decl (119)
     on left: 56 57 58 59, on right: 6 76
-func_type_name (121)
+func_type_name (120)
     on left: 60 61, on right: 56 57 58 59 89 146 148 152
-copy (122)
+copy (121)
     on left: 62 63, on right: 56 57 58 59
-catch (123)
+catch (122)
     on left: 64 65, on right: 56 57 58 59
-destroy (124)
+destroy (123)
     on left: 66 67, on right: 56 57 58 59
-func_block (125)
+func_block (124)
     on left: 68 69, on right: 56 57 58 59 89 148
-func_args (126)
+func_args (125)
     on left: 70 71 72 73, on right: 68 71 72 73
-func_arg (127)
+func_arg (126)
     on left: 74 75 76 77 78, on right: 70 71 72 73
-implement (128)
+implement (127)
     on left: 79, on right: 57 59
-implement_args (129)
+implement_args (128)
     on left: 80 81, on right: 79 81
-implement_arg (130)
+implement_arg (129)
     on left: 82, on right: 80 81
-interface_decl (131)
+interface_decl (130)
     on left: 83, on right: 7 74
-interface_block (132)
+interface_block (131)
     on left: 84, on right: 83
-interface_args (133)
+interface_args (132)
     on left: 85 86 87, on right: 84 86 87
-interface_arg (134)
+interface_arg (133)
     on left: 88 89, on right: 85 86 87
-expr (135)
+expr (134)
     on left: 90 91 92 93 94 95 96 97 98, on right: 9 49 78 97 127 129
     130 131 132 136 138 139 140 145 147 149 150 151 174 196 197 198
     199
-expr_and (136)
+expr_and (135)
     on left: 99 100 101, on right: 45 46 47 48 94 99 100
-expr_comp (137)
+expr_comp (136)
     on left: 102 103 104 105 106 107 108 109 110, on right: 99 100
     101 188 189 190
-expr_math (138)
+expr_math (137)
     on left: 111 112 113 114 115 116 117 118 119 120 121 122, on right:
     102 103 104 105 106 107 108 109 110 111 112 113 114 115
-expr_var (139)
+expr_var (138)
     on left: 123 124 125 126 127 128, on right: 43 44 45 46 47 48 49
     116 117 118 119 120 121 122 123 124 125 126 127 171 172 173 178
-for_expr (140)
+for_expr (139)
     on left: 129 130, on right: 91
-while_expr (141)
+while_expr (140)
     on left: 131, on right: 93
-switch_expr (142)
+switch_expr (141)
     on left: 132 133, on right: 92
-switch_clauses (143)
+switch_clauses (142)
     on left: 134 135, on right: 132 133 135
-switch_clause (144)
+switch_clause (143)
     on left: 136 137, on right: 134 135
-if_expr (145)
+if_expr (144)
     on left: 138 139 140 141 142, on right: 90 140
-ifValue_vars (146)
+ifValue_vars (145)
     on left: 143 144, on right: 141 142 143
-ifValue_var (147)
+ifValue_var (146)
     on left: 145 146, on right: 143 144
-var_right (148)
+var_right (147)
     on left: 147 148 149 150 151 152 153 154 155 156 157 158, on right:
     124 125 126 128 157
-const (149)
+const (148)
     on left: 159 160 161 162 163 164 165 166 167, on right: 158
-assign (150)
+assign (149)
     on left: 168 169 170 171 172 173 174, on right: 42 75
-assign_tuple (151)
+assign_tuple (150)
     on left: 175 176, on right: 174 176
-assign_tuple_arg (152)
+assign_tuple_arg (151)
     on left: 177 178, on right: 175 176
-assign_tuple_type (153)
+assign_tuple_type (152)
     on left: 179 180 181 182 183 184, on right: 177 178
-assign_type (154)
+assign_type (153)
     on left: 185 186 187, on right: 145 168 169 170 171 172 173
-tuple (155)
+tuple (154)
     on left: 188, on right: 95
-tuple_args (156)
+tuple_args (155)
     on left: 189 190, on right: 188 190
-array (157)
+array (156)
     on left: 191, on right: 96
-end_optional (158)
+end_optional (157)
     on left: 192 193, on right: 18 50 68 132 133 191
-end_star (159)
+end_star (158)
     on left: 194 195, on right: 34 51 71 72 135 193 195 197 198
-array_args (160)
+array_args (159)
     on left: 196 197 198 199, on right: 191 197 198 199
-return_type_quote (161)
+return_type_quote (160)
     on left: 200, on right: 58 59 89
-arg_type_quote (162)
+arg_type_quote (161)
     on left: 201, on right: 167 169 170 172 173
-arg_type (163)
+arg_type (162)
     on left: 202 203 204, on right: 123 201 210 222 223 240 242 243
-arg_mode (164)
+arg_mode (163)
     on left: 205 206 207 208 209, on right: 203 221
-return_type (165)
+return_type (164)
     on left: 210 211, on right: 200 221
-value_type (166)
+value_type (165)
     on left: 212 213 214 215 216 217 218 219 220, on right: 202
-func_type (167)
+func_type (166)
     on left: 221, on right: 204
-func_arg_type (168)
+func_arg_type (167)
     on left: 222 223, on right: 225 226
-func_arg_type_list (169)
+func_arg_type_list (168)
     on left: 224 225 226, on right: 221 226
-temp_block_optional (170)
+temp_block_optional (169)
     on left: 227 228, on right: 82 83
-namespace_hash (171)
+namespace_hash (170)
     on left: 229 230, on right: 203
-namespace_dot (172)
+namespace_dot (171)
     on left: 231 232, on right: 229 232
-namespace_ident (173)
+namespace_ident (172)
     on left: 233, on right: 231 232
-namespace_last (174)
+namespace_last (173)
     on left: 234 235, on right: 229 230
-temp_option_optional (175)
+temp_option_optional (174)
     on left: 236 237 238 239, on right: 203
-temp_block (176)
+temp_block (175)
     on left: 240 241, on right: 61 228 238 239
-temp_args (177)
+temp_args (176)
     on left: 242 243, on right: 241 243
 
 
