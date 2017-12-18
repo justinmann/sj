@@ -137,17 +137,26 @@ static const double __ac_HASH_UPPER = 0.77;
     {                                                                   \
         if (h->n_buckets) {                                             \
             khint_t inc, k, i, last;                                    \
-            __hash_func(deref####key, &k); i = k % h->n_buckets;                 \
+            __hash_func(deref####key, &k); i = k % h->n_buckets;        \
             inc = 1 + k % (h->n_buckets - 1); last = i;                 \
-            bool isEqual;                                               \
-            __hash_equal(deref####h->keys[i], deref####key, &isEqual);                    \
-            while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
+            bool shouldContinue = false;                                \
+            if (!__ac_isempty(h->flags, i)) {                           \
+                bool isEqual;                                           \
+                __hash_equal(deref####h->keys[i], deref####key, &isEqual);  \
+                shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+            }                                                           \
+            while (shouldContinue) {                                    \
                 if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
                 else i += inc;                                          \
                 if (i == last) return h->n_buckets;                     \
-                __hash_equal(deref####h->keys[i], deref####key, &isEqual);                \
+                shouldContinue = false;                                 \
+                if (!__ac_isempty(h->flags, i)) {                       \
+                    bool isEqual;                                       \
+                    __hash_equal(deref####h->keys[i], deref####key, &isEqual);  \
+                    shouldContinue = __ac_isdel(h->flags, i) || !isEqual; \
+                }                                                       \
             }                                                           \
-            return __ac_iseither(h->flags, i)? h->n_buckets : i;            \
+            return __ac_iseither(h->flags, i)? h->n_buckets : i;        \
         } else return 0;                                                \
     }                                                                   \
     static inline void kh_resize_####name(kh_####name####_t *h, khint_t new_n_buckets) \
