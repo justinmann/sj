@@ -296,6 +296,10 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
             ifStream << "if (" << name << "->_refCount <= 0)";
             innerBlock->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifBlock));
 
+            stringstream killweakptrStream;
+            killweakptrStream << "weakptr_release(" << convertToLocalName(type, name, false) << ")";
+            ifBlock->statements.push_back(TrStatement(CLoc::undefined, killweakptrStream.str()));
+
             stringstream destroyStream;
             destroyStream << type->parent.lock()->getCDestroyFunctionName() << "(" << convertToLocalName(type, name, false) << ")";
             ifBlock->statements.push_back(TrStatement(CLoc::undefined, destroyStream.str()));
@@ -306,6 +310,17 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
             ifBlock->statements.push_back(freeStream.str());
 #endif // !SKIP_FREE
         }
+    }
+    else if (type->typeMode == CTM_Weak) {
+        auto cbName = TrBlock::nextVarName("weakptrcb");
+
+        stringstream cbStream;
+        cbStream << "delete_cb " << cbName << " = { &" << name << ", weakptr_clear };";
+        block->statements.push_back(TrStatement(CLoc::undefined, cbStream.str()));
+
+        stringstream lineStream;
+        lineStream << "if (" << name << " != 0) { weakptr_cb_remove(" << name << ", " << cbName << "); }";
+        block->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
     }
 }
 
@@ -345,6 +360,17 @@ void TrValue::addRetainToStatements(TrBlock* block) {
             innerBlock->statements.push_back(logStream.str());
 #endif
         }
+    }
+    else if (type->typeMode == CTM_Weak) {
+        auto cbName = TrBlock::nextVarName("weakptrcb");
+
+        stringstream cbStream;
+        cbStream << "delete_cb " << cbName << " = { &" << name << ", weakptr_clear };";
+        block->statements.push_back(TrStatement(CLoc::undefined, cbStream.str()));
+
+        stringstream lineStream;
+        lineStream << "if (" << name << " != 0) { weakptr_cb_add(" << name << ", " << cbName << "); }";
+        block->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
     }
 }
     
@@ -424,6 +450,8 @@ string TrValue::convertToLocalName(CTypeMode typeMode, string name, bool isRetur
         return name;
     case CTM_Value:
         return name;
+    case CTM_Weak:
+        return name;
     default:
         assert(false);
         return "";
@@ -449,7 +477,7 @@ string TrValue::convertToLocalName(shared_ptr<CType> from, string name, bool isR
     case CTM_Value:
         return name;
     case CTM_Weak:
-        return "weak_" + name;
+        return name;
     default:
         assert(false);
         return "";

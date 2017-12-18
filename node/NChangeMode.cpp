@@ -26,19 +26,7 @@ shared_ptr<CType> CChangeModeVar::getType(Compiler* compiler) {
 
 void CChangeModeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     auto varType = var->getType(compiler);
-    if (varType->typeMode == typeMode) {
-        var->transpile(compiler, trOutput, trBlock, thisValue, storeValue);
-    }
-    else {
-        shared_ptr<CType> changeType = getType(compiler);
-        if (!changeType) {
-            return;
-        }
-
-        auto changeValue = trBlock->createTempStoreVariable(loc, scope.lock(), changeType, "changeMode");
-        var->transpile(compiler, trOutput, trBlock, thisValue, changeValue);
-        storeValue->retainValue(compiler, loc, trBlock, changeValue->getValue());
-    }
+    var->transpile(compiler, trOutput, trBlock, thisValue, storeValue);
 }
 
 void CChangeModeVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
