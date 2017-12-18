@@ -1,9 +1,35 @@
+#ifdef __GNUC__
+#if __x86_64__ 
+#define __LINUX__
+#define __64__
+#elif __i386__ 
+#define __LINUX__
+#define __32__
+#else
+Invalid bits
+#endif
+#elif _MSC_VER
+#if _WIN64 
+#define __WINDOWS__
+#define __64__
+#elif _WIN32 
+#define __WINDOWS__
+#define __32__
+#else
+Invalid bits
+#endif
+#else
+Invalid compiler
+#endif
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef __WINDOWS__
+#include <windows.h>
+#endif
 
 typedef struct td_delete_cb delete_cb;
 typedef struct td_delete_cb_list delete_cb_list;
@@ -67,70 +93,6 @@ const char* sjg_string1 = "he\"llo";
 const char* sjg_string2 = "he\nllo";
 const char* sjg_string3 = "hello";
 
-struct td_delete_cb {
-    void* _parent;
-    void (*_cb)(void* _parent, void* object);
-};
-struct td_delete_cb_list {
-    int size;
-    delete_cb cb[5];
-    delete_cb_list* next;
-};
-#define sjs_object_typeId 1
-#define sjs_anon1_typeId 2
-#define sjs_anon1_heap_typeId 3
-#define sjs_array_char_typeId 4
-#define sjs_array_char_heap_typeId 5
-#define sjs_string_typeId 6
-#define sjs_string_heap_typeId 7
-
-typedef struct td_sjs_object sjs_object;
-typedef struct td_sjs_anon1 sjs_anon1;
-typedef struct td_sjs_anon1_heap sjs_anon1_heap;
-typedef struct td_sjs_array_char sjs_array_char;
-typedef struct td_sjs_array_char_heap sjs_array_char_heap;
-typedef struct td_sjs_string sjs_string;
-typedef struct td_sjs_string_heap sjs_string_heap;
-
-struct td_sjs_object {
-    intptr_t _refCount;
-};
-
-struct td_sjs_anon1 {
-    int structsNeedAValue;
-};
-
-struct td_sjs_anon1_heap {
-    intptr_t _refCount;
-};
-
-struct td_sjs_array_char {
-    int32_t datasize;
-    void* data;
-    bool _isglobal;
-    int32_t count;
-};
-
-struct td_sjs_array_char_heap {
-    intptr_t _refCount;
-    int32_t datasize;
-    void* data;
-    bool _isglobal;
-    int32_t count;
-};
-
-struct td_sjs_string {
-    int32_t count;
-    sjs_array_char data;
-};
-
-struct td_sjs_string_heap {
-    intptr_t _refCount;
-    int32_t count;
-    sjs_array_char data;
-};
-
-void halt(const char * format, ...);
 /* The MIT License
 Copyright (c) 2008, by Attractive Chaos <attractivechaos@aol.co.uk>
 Permission is hereby granted, free of charge, to any person obtaining
@@ -212,13 +174,14 @@ static const uint32_t __ac_prime_list[__ac_HASH_PRIME_SIZE] =
 #define __ac_set_isboth_false(flag, i) (flag[i>>4]&=~(3ul<<((i&0xfU)<<1)))
 #define __ac_set_isdel_true(flag, i) (flag[i>>4]|=1ul<<((i&0xfU)<<1))
 static const double __ac_HASH_UPPER = 0.77;
-#define KHASH_INIT(name, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal) \
+#define KHASH_INIT_TYPEDEF(name, khkey_t, khval_t) \
 typedef struct {                                                    \
 khint_t n_buckets, size, n_occupied, upper_bound;               \
 uint32_t *flags;                                                \
 khkey_t *keys;                                                  \
 khval_t *vals;                                                  \
-} kh_##name##_t;                                                    \
+} kh_##name##_t;                                                
+#define KHASH_INIT_FUNCTION(name, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal) \
 static inline kh_##name##_t *kh_init_##name() {                     \
 return (kh_##name##_t*)calloc(1, sizeof(kh_##name##_t));        \
 }                                                                   \
@@ -241,12 +204,15 @@ static inline khint_t kh_get_##name(kh_##name##_t *h, khkey_t key)  \
 {                                                                   \
 if (h->n_buckets) {                                             \
 khint_t inc, k, i, last;                                    \
-k = __hash_func(key); i = k % h->n_buckets;                 \
+__hash_func(key, &k); i = k % h->n_buckets;                 \
 inc = 1 + k % (h->n_buckets - 1); last = i;                 \
-while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !__hash_equal(h->keys[i], key))) { \
+bool isEqual;                                               \
+__hash_equal(h->keys[i], key, &isEqual);                    \
+while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
 if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
 else i += inc;                                          \
 if (i == last) return h->n_buckets;                     \
+__hash_equal(h->keys[i], key, &isEqual);                \
 }                                                           \
 return __ac_iseither(h->flags, i)? h->n_buckets : i;            \
 } else return 0;                                                \
@@ -279,7 +245,7 @@ if (kh_is_map) val = h->vals[j];                    \
 __ac_set_isdel_true(h->flags, j);                   \
 while (1) {                                         \
 khint_t inc, k, i;                              \
-k = __hash_func(key);                           \
+__hash_func(key, &k);                           \
 i = k % new_n_buckets;                          \
 inc = 1 + k % (new_n_buckets - 1);              \
 while (!__ac_isempty(new_flags, i)) {           \
@@ -320,15 +286,18 @@ else kh_resize_##name(h, h->n_buckets + 1);                 \
 }                                                               \
 {                                                               \
 khint_t inc, k, i, site, last;                              \
-x = site = h->n_buckets; k = __hash_func(key); i = k % h->n_buckets; \
+x = site = h->n_buckets; __hash_func(key, &k); i = k % h->n_buckets; \
 if (__ac_isempty(h->flags, i)) x = i;                       \
 else {                                                      \
 inc = 1 + k % (h->n_buckets - 1); last = i;             \
-while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !__hash_equal(h->keys[i], key))) { \
+bool isEqual;                                           \
+__hash_equal(h->keys[i], key, &isEqual);                \
+while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
 if (__ac_isdel(h->flags, i)) site = i;              \
 if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
 else i += inc;                                      \
 if (i == last) { x = site; break; }                 \
+__hash_equal(h->keys[i], key, &isEqual);            \
 }                                                       \
 if (x == h->n_buckets) {                                \
 if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \
@@ -402,8 +371,44 @@ KHASH_INIT(name, kh_cstr_t, char, 0, kh_str_hash_func, kh_str_hash_equal)
 #define KHASH_MAP_INIT_STR(name, khval_t)                               \
 KHASH_INIT(name, kh_cstr_t, khval_t, 1, kh_str_hash_func, kh_str_hash_equal)
 #endif /* __AC_KHASH_H */
-uint32_t void_hash(void* p);
-int void_equal(void *p1, void* p2);
+struct td_delete_cb {
+void* _parent;
+void (*_cb)(void* _parent, void* object);
+};
+struct td_delete_cb_list {
+int size;
+delete_cb cb[5];
+delete_cb_list* next;
+};
+#define sjs_object_typeId 1
+#define sjs_array_char_typeId 2
+#define sjs_string_typeId 3
+
+typedef struct td_sjs_object sjs_object;
+typedef struct td_sjs_array_char sjs_array_char;
+typedef struct td_sjs_string sjs_string;
+
+struct td_sjs_object {
+    intptr_t _refCount;
+};
+
+struct td_sjs_array_char {
+    int _refCount;
+    int32_t datasize;
+    void* data;
+    bool _isglobal;
+    int32_t count;
+};
+
+struct td_sjs_string {
+    int _refCount;
+    int32_t count;
+    sjs_array_char data;
+};
+
+void halt(const char * format, ...);
+void ptr_hash(void* p, uint32_t* result);
+void ptr_isequal(void *p1, void* p2, bool* result);
 void delete_cb_list_free(delete_cb_list* d);
 void delete_cb_list_add(delete_cb_list* d, delete_cb cb);
 void delete_cb_list_remove(delete_cb_list* d, delete_cb cb);
@@ -432,7 +437,6 @@ sjs_string* sjt_parent6;
 sjs_string sjv_a;
 sjs_string sjv_b;
 char sjv_c;
-sjs_anon1 sjv_console;
 char sjv_d;
 char sjv_e;
 void* sjv_emptystringdata;
@@ -447,38 +451,42 @@ bool sjv_k;
 bool sjv_l;
 uint32_t sjv_u32_maxvalue;
 
-void sjf_anon1(sjs_anon1* _this);
-void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* _from);
-void sjf_anon1_destroy(sjs_anon1* _this);
-void sjf_anon1_heap(sjs_anon1_heap* _this);
 void sjf_array_char(sjs_array_char* _this);
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from);
 void sjf_array_char_destroy(sjs_array_char* _this);
 void sjf_array_char_getat(sjs_array_char* _parent, int32_t index, char* _return);
-void sjf_array_char_heap(sjs_array_char_heap* _this);
+void sjf_array_char_heap(sjs_array_char* _this);
 void sjf_array_char_isequal(sjs_array_char* _parent, sjs_array_char* test, bool* _return);
 void sjf_array_char_islessorequal(sjs_array_char* _parent, sjs_array_char* test, bool* _return);
 void sjf_string(sjs_string* _this);
 void sjf_string_copy(sjs_string* _this, sjs_string* _from);
 void sjf_string_destroy(sjs_string* _this);
 void sjf_string_getat(sjs_string* _parent, int32_t index, char* _return);
-void sjf_string_heap(sjs_string_heap* _this);
+void sjf_string_heap(sjs_string* _this);
 void sjf_string_isequal(sjs_string* _parent, sjs_string* test, bool* _return);
 void sjf_string_islessorequal(sjs_string* _parent, sjs_string* test, bool* _return);
 void main_destroy(void);
 
 void halt(const char * format, ...) {
     va_list args;
-    va_start (args, format);
-    vprintf (format, args);
-    va_end (args);
+    va_start(args, format);
+    vprintf(format, args);
+    va_end(args);
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     exit(-1);
 }
-uint32_t void_hash(void* p) {
-    return kh_int_hash_func((uintptr_t)p);
+void ptr_hash(void* p, uint32_t* result) {
+    #ifdef __32__
+    *result = kh_int_hash_func((uintptr_t)p);
+    #else
+    *result = kh_int64_hash_func((uintptr_t)p);
+    #endif
 }
-int void_equal(void *p1, void* p2) {
-    return (p1 == p2);
+void ptr_isequal(void *p1, void* p2, bool* result) {
+    *result = (p1 == p2);
 }
 void delete_cb_list_free(delete_cb_list* d) {
     if (d->next) {
@@ -519,195 +527,139 @@ void delete_cb_list_invoke(delete_cb_list* d, void* p) {
         delete_cb_list_invoke(d->next, p);
     }
 }
-KHASH_INIT(weakptr_hash_type, void*, delete_cb_list, 1, void_hash, void_equal)
-khash_t(weakptr_hash_type)* weakptr_hash;
+KHASH_INIT_TYPEDEF(weakptr_hashtable_type, void*, delete_cb_list)
+KHASH_INIT_FUNCTION(weakptr_hashtable_type, void*, delete_cb_list, 1, ptr_hash, ptr_isequal)
+khash_t(weakptr_hashtable_type)* weakptr_hashtable;
 void weakptr_init() {
-    weakptr_hash = kh_init(weakptr_hash_type);
+    weakptr_hashtable = kh_init(weakptr_hashtable_type);
 }
 void weakptr_release(void* v) {
-    khiter_t k = kh_get(weakptr_hash_type, weakptr_hash, v);
-    if (k != kh_end(weakptr_hash)) {
-        delete_cb_list* d = &kh_value(weakptr_hash, k);
+    khiter_t k = kh_get(weakptr_hashtable_type, weakptr_hashtable, v);
+    if (k != kh_end(weakptr_hashtable)) {
+        delete_cb_list* d = &kh_value(weakptr_hashtable, k);
         delete_cb_list_invoke(d, v);
         if (d->next) {
             delete_cb_list_free(d->next);
         }
-        kh_del(weakptr_hash_type, weakptr_hash, k);
+        kh_del(weakptr_hashtable_type, weakptr_hashtable, k);
     }
 }
 void weakptr_cb_add(void* v, delete_cb cb) {
     delete_cb_list* d;
-    khiter_t k = kh_get(weakptr_hash_type, weakptr_hash, v);
-    if (k == kh_end(weakptr_hash)) {
+    khiter_t k = kh_get(weakptr_hashtable_type, weakptr_hashtable, v);
+    if (k == kh_end(weakptr_hashtable)) {
         int ret;
-        khiter_t k = kh_put(weakptr_hash_type, weakptr_hash, v, &ret);
-        if (!ret) kh_del(weakptr_hash_type, weakptr_hash, k);
-        d = &kh_value(weakptr_hash, k);
+        khiter_t k = kh_put(weakptr_hashtable_type, weakptr_hashtable, v, &ret);
+        if (!ret) kh_del(weakptr_hashtable_type, weakptr_hashtable, k);
+        d = &kh_value(weakptr_hashtable, k);
         d->size = 0;
         d->next = 0;
     }
     else {
-        d = &kh_value(weakptr_hash, k);
+        d = &kh_value(weakptr_hashtable, k);
     }
     delete_cb_list_add(d, cb);
 }
 void weakptr_cb_remove(void* v, delete_cb cb) {
-    khiter_t k = kh_get(weakptr_hash_type, weakptr_hash, v);
-    if (k != kh_end(weakptr_hash)) {
-        delete_cb_list* d = &kh_value(weakptr_hash, k);
+    khiter_t k = kh_get(weakptr_hashtable_type, weakptr_hashtable, v);
+    if (k != kh_end(weakptr_hashtable)) {
+        delete_cb_list* d = &kh_value(weakptr_hashtable, k);
         delete_cb_list_remove(d, cb);
     }
 }
-KHASH_INIT(ptr_hash_type, void*, int, 1, void_hash, void_equal)
-khash_t(ptr_hash_type)* ptr_hash;
+KHASH_INIT_TYPEDEF(ptr_hashtable_type, void*, int)
+KHASH_INIT_FUNCTION(ptr_hashtable_type, void*, int, 1, ptr_hash, ptr_isequal)
+khash_t(ptr_hashtable_type)* ptr_hashtable;
 void ptr_init() {
-    ptr_hash = kh_init(ptr_hash_type);
+    ptr_hashtable = kh_init(ptr_hashtable_type);
 }
 void ptr_retain(void* v) {
-    khiter_t k = kh_get(ptr_hash_type, ptr_hash, v);
-    if (k == kh_end(ptr_hash)) {
+    khiter_t k = kh_get(ptr_hashtable_type, ptr_hashtable, v);
+    if (k == kh_end(ptr_hashtable)) {
         int ret;
-        khiter_t k = kh_put(ptr_hash_type, ptr_hash, v, &ret);
-        if (!ret) kh_del(ptr_hash_type, ptr_hash, k);
-        kh_value(ptr_hash, k) = 1;
+        khiter_t k = kh_put(ptr_hashtable_type, ptr_hashtable, v, &ret);
+        if (!ret) kh_del(ptr_hashtable_type, ptr_hashtable, k);
+        kh_value(ptr_hashtable, k) = 1;
     }
     else {
-        kh_value(ptr_hash, k)++;
+        kh_value(ptr_hashtable, k)++;
     }
 }
 bool ptr_release(void* v) {
-    khiter_t k = kh_get(ptr_hash_type, ptr_hash, v);
-    if (k != kh_end(ptr_hash)) {
-        kh_value(ptr_hash, k)--;
-        if (kh_value(ptr_hash, k) == 0) {
-            kh_del(ptr_hash_type, ptr_hash, k);
+    khiter_t k = kh_get(ptr_hashtable_type, ptr_hashtable, v);
+    if (k != kh_end(ptr_hashtable)) {
+        kh_value(ptr_hashtable, k)--;
+        if (kh_value(ptr_hashtable, k) == 0) {
+            kh_del(ptr_hashtable_type, ptr_hashtable, k);
         }
         return false;
     }
     return true;
 }
-void sjf_anon1(sjs_anon1* _this) {
-}
-
-void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* _from) {
-}
-
-void sjf_anon1_destroy(sjs_anon1* _this) {
-}
-
-void sjf_anon1_heap(sjs_anon1_heap* _this) {
-}
-
 void sjf_array_char(sjs_array_char* _this) {
-#line 267 "lib/common/array.sj"
     if (_this->datasize < 0) {
-#line 268
         halt("size is less than zero");
-#line 269
     }
-#line 271
     if (!_this->data) {
-#line 272
         _this->data = malloc(_this->datasize * sizeof(char));
-#line 273
         if (!_this->data) {
-#line 274
             halt("grow: out of memory\n");
-#line 275
         }
-#line 276
     }
 }
 
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
-#line 1 "lib/common/array.sj"
     _this->datasize = _from->datasize;
-#line 1
     _this->data = _from->data;
-#line 1
     _this->_isglobal = _from->_isglobal;
-#line 1
     _this->count = _from->count;
-#line 281
     _this->data = _from->data;
-#line 282
     if (!_this->_isglobal && _this->data) {
-#line 283
         ptr_retain(_this->data);
-#line 284
     }
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
-#line 288 "lib/common/array.sj"
     if (!_this->_isglobal && _this->data) {
-#line 289
         if (ptr_release(_this->data)) {
-#line 290
             free((char*)_this->data);
-#line 291
         }
-#line 292
     }
 }
 
 void sjf_array_char_getat(sjs_array_char* _parent, int32_t index, char* _return) {
-#line 9 "lib/common/array.sj"
     if (index >= _parent->count || index < 0) {
-#line 10
         halt("getAt: out of bounds\n");
-#line 11
     }
-#line 13
     char* p = (char*)_parent->data;
-#line 14
-    #line 8 "lib/common/array.sj"
-(*_return) = p[index];
+    (*_return) = p[index];
 ;		
 }
 
-void sjf_array_char_heap(sjs_array_char_heap* _this) {
-#line 267 "lib/common/array.sj"
+void sjf_array_char_heap(sjs_array_char* _this) {
     if (_this->datasize < 0) {
-#line 268
         halt("size is less than zero");
-#line 269
     }
-#line 271
     if (!_this->data) {
-#line 272
         _this->data = malloc(_this->datasize * sizeof(char));
-#line 273
         if (!_this->data) {
-#line 274
             halt("grow: out of memory\n");
-#line 275
         }
-#line 276
     }
 }
 
 void sjf_array_char_isequal(sjs_array_char* _parent, sjs_array_char* test, bool* _return) {
-#line 229 "lib/common/array.sj"
     if (_parent->count != test->count) {
-#line 230
         *_return = false;
-#line 231
     }
-#line 233
     bool result = memcmp(_parent->data, test->data, _parent->count * sizeof(char)) == 0;
-#line 234
-    #line 228 "lib/common/array.sj"
-(*_return) = result;
+    (*_return) = result;
 ;		
 }
 
 void sjf_array_char_islessorequal(sjs_array_char* _parent, sjs_array_char* test, bool* _return) {
-#line 261 "lib/common/array.sj"
     bool result = memcmp(_parent->data, test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(char)) <= 0;		
-#line 262
-    #line 260 "lib/common/array.sj"
-(*_return) = result;
+    (*_return) = result;
 ;		
 }
 
@@ -715,9 +667,7 @@ void sjf_string(sjs_string* _this) {
 }
 
 void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
-#line 6 "lib/common/string.sj"
     _this->count = _from->count;
-#line 6
     sjf_array_char_copy(&_this->data, &_from->data);
 }
 
@@ -729,17 +679,13 @@ void sjf_string_getat(sjs_string* _parent, int32_t index, char* _return) {
     int32_t sjt_functionParam1;
     sjs_array_char* sjt_parent1;
 
-#line 34 "lib/common/string.sj"
     sjt_dot1 = _parent;
-#line 7 "lib/common/array.sj"
     sjt_parent1 = &(sjt_dot1)->data;
-#line 34 "lib/common/string.sj"
     sjt_functionParam1 = index;
-#line 34
     sjf_array_char_getat(sjt_parent1, sjt_functionParam1, _return);
 }
 
-void sjf_string_heap(sjs_string_heap* _this) {
+void sjf_string_heap(sjs_string* _this) {
 }
 
 void sjf_string_isequal(sjs_string* _parent, sjs_string* test, bool* _return) {
@@ -748,15 +694,10 @@ void sjf_string_isequal(sjs_string* _parent, sjs_string* test, bool* _return) {
     sjs_array_char* sjt_functionParam3;
     sjs_array_char* sjt_parent3;
 
-#line 42 "lib/common/string.sj"
     sjt_dot2 = _parent;
-#line 227 "lib/common/array.sj"
     sjt_parent3 = &(sjt_dot2)->data;
-#line 42 "lib/common/string.sj"
     sjt_dot3 = test;
-#line 43
     sjt_functionParam3 = &(sjt_dot3)->data;
-#line 43
     sjf_array_char_isequal(sjt_parent3, sjt_functionParam3, _return);
 }
 
@@ -766,123 +707,70 @@ void sjf_string_islessorequal(sjs_string* _parent, sjs_string* test, bool* _retu
     sjs_array_char* sjt_functionParam5;
     sjs_array_char* sjt_parent5;
 
-#line 58 "lib/common/string.sj"
     sjt_dot4 = _parent;
-#line 259 "lib/common/array.sj"
     sjt_parent5 = &(sjt_dot4)->data;
-#line 58 "lib/common/string.sj"
     sjt_dot5 = test;
-#line 59
     sjt_functionParam5 = &(sjt_dot5)->data;
-#line 59
     sjf_array_char_islessorequal(sjt_parent5, sjt_functionParam5, _return);
 }
 
 int main(int argc, char** argv) {
-    sjf_anon1(&sjv_console);
-#line 1 "lib/common/f32.sj"
     sjv_f32_pi = 3.14159265358979323846f;
-#line 1 "lib/common/i32.sj"
     sjv_u32_maxvalue = (uint32_t)4294967295u;
-#line 3
     sjt_negate1 = 1;
-#line 3
     result1 = -sjt_negate1;
-#line 3
     sjt_math1 = result1;
-#line 3
     sjt_math2 = 2147483647;
-#line 3
     sjv_i32_maxvalue = sjt_math1 - sjt_math2;
-#line 4
     sjv_i32_minvalue = 2147483647;
-#line 1 "lib/common/string.sj"
     sjv_emptystringdata = 0;
-#line 3
     sjv_emptystringdata = "";
-#line 167 "lib/common/weakptr.sj"
     ptr_init();
-#line 168
     weakptr_init();
-#line 3 "string1.sj"
     sjv_a.count = 7;
-#line 3
     sjv_a.data.datasize = 8;
-#line 3
     sjv_a.data.data = (void*)sjg_string1;
-#line 3
     sjv_a.data._isglobal = true;
-#line 3
     sjv_a.data.count = 8;
-#line 3
     sjf_array_char(&sjv_a.data);
-#line 3
     sjf_string(&sjv_a);
-#line 4
     sjv_b.count = 7;
-#line 4
     sjv_b.data.datasize = 8;
-#line 4
     sjv_b.data.data = (void*)sjg_string2;
-#line 4
     sjv_b.data._isglobal = true;
-#line 4
     sjv_b.data.count = 8;
-#line 4
     sjf_array_char(&sjv_b.data);
-#line 4
     sjf_string(&sjv_b);
-#line 5
     sjv_c = 'a';
-#line 6
     sjv_d = '\'';
-#line 7
     sjv_e = '\n';
-#line 8
     sjv_f.count = 5;
-#line 8
     sjv_f.data.datasize = 6;
-#line 8
     sjv_f.data.data = (void*)sjg_string3;
-#line 8
     sjv_f.data._isglobal = true;
-#line 8
     sjv_f.data.count = 6;
-#line 8
     sjf_array_char(&sjv_f.data);
-#line 8
     sjf_string(&sjv_f);
-#line 34 "lib/common/string.sj"
     sjt_parent2 = &sjv_a;
-#line 9 "string1.sj"
     sjt_functionParam2 = 0;
-#line 9
     sjf_string_getat(sjt_parent2, sjt_functionParam2, &sjv_h);
-#line 10
     sjt_compare1 = sjv_h;
-#line 10
     sjt_compare2 = 'h';
-#line 10
     sjv_i = sjt_compare1 == sjt_compare2;
-#line 42 "lib/common/string.sj"
     sjt_parent4 = &sjv_f;
-#line 11 "string1.sj"
     sjt_functionParam4 = &sjv_a;
-#line 11
     sjf_string_isequal(sjt_parent4, sjt_functionParam4, &sjv_j);
-#line 58 "lib/common/string.sj"
     sjt_parent6 = &sjv_f;
-#line 12 "string1.sj"
     sjt_functionParam6 = &sjv_a;
-#line 12
     sjf_string_islessorequal(sjt_parent6, sjt_functionParam6, &sjv_k);
-#line 13
     sjt_compare3 = &sjv_f;
-#line 13
     sjt_compare4 = &sjv_a;
-#line 13
     sjv_l = sjt_compare3 == sjt_compare4;
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 
@@ -890,6 +778,5 @@ void main_destroy() {
 
     sjf_string_destroy(&sjv_a);
     sjf_string_destroy(&sjv_b);
-    sjf_anon1_destroy(&sjv_console);
     sjf_string_destroy(&sjv_f);
 }

@@ -75,34 +75,29 @@ int32_t sjv_x;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
-#line 1 "while3.sj"
     sjv_x = 10;
-#line 1
     sjt_compare1 = sjv_x;
-#line 1
     sjt_compare2 = 0;
-#line 1
     sjt_while1 = sjt_compare1 > sjt_compare2;
     while (sjt_while1) {
         int32_t sjt_compare3;
         int32_t sjt_compare4;
         int32_t sjt_math1;
         int32_t sjt_math2;
+        int32_t sjv_x;
 
-#line 1 "while3.sj"
         sjt_math1 = sjv_x;
-#line 1
         sjt_math2 = 1;
-#line 1
         sjv_x = sjt_math1 - sjt_math2;
-#line 1
         sjt_compare3 = sjv_x;
-#line 1
         sjt_compare4 = 0;
-#line 1
         sjt_while1 = sjt_compare3 > sjt_compare4;
     }
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

@@ -226,6 +226,7 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
     mainFunction->writeBodyToStream(stream, 1);
     stream << "    main_destroy();\n";
     stream << "    #ifdef _DEBUG\n";
+    stream << "    printf(\"\\npress return to end\\n\");\n";
     stream << "    getchar();\n";
     stream << "    #endif\n";
     stream << "    return 0;\n";

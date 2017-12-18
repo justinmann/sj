@@ -274,7 +274,11 @@ string CInterface::getCCastFunctionName(shared_ptr<CBaseFunction> fromFunction, 
 }
 
 void CInterface::transpileCast(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> fromValue, shared_ptr<TrStoreValue> toValue) {
-    assert(fromValue->type->typeMode == CTM_Heap);
+    if (fromValue->type->typeMode != CTM_Heap) {
+        compiler->addError(loc, CErrorCode::TypeMismatch, "must use heap type when casting to interface");
+        return;
+    }
+
     if (fromValue->type->parent.lock()->classType == CFT_Interface) {
         auto fromInterface = static_pointer_cast<CInterface>(fromValue->type->parent.lock());
         stringstream line;

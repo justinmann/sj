@@ -15,7 +15,6 @@ void CWhileVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
     stringstream whileLine;
     whileLine << "while (" << whileValue->getName(trBlock) << ")";
     auto trWhileBlock = make_shared<TrBlock>();
-    trWhileBlock->parent = trBlock;
     trWhileBlock->hasThis = trBlock->hasThis;
     auto bodyType = bodyVar->getType(compiler);
     bodyVar->transpile(compiler, trOutput, trWhileBlock.get(), thisValue, trBlock->createVoidStoreVariable(loc, bodyType));

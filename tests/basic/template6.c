@@ -74,18 +74,20 @@ void sjf_func_i32(int32_t* _return);
 void main_destroy(void);
 
 void sjf_class_func_i32(int32_t* _return) {
-#line 1 "template6.sj"
     (*_return) = 1;
 }
 
 void sjf_func_i32(int32_t* _return) {
-#line 2 "template6.sj"
     (*_return) = 1;
 }
 
 int main(int argc, char** argv) {
     sjf_class_func_i32(&sjv_d);
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

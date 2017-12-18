@@ -19,31 +19,45 @@ shared_ptr<CType> CValueVar::getType(Compiler* compiler) {
 }
 
 void CValueVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    auto leftValue = trBlock->createTempStoreVariable(loc, scope.lock(), var->getType(compiler), "value");
-    var->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
-    if (!leftValue->hasSetValue) {
-        return;
-    }
-
-    if (leftValue->type->isOption) {
-        compiler->addError(loc, CErrorCode::TypeMismatch, "value cannot take an option type");
-        return;
-    }
-
-    if (leftValue->type->parent.expired() && leftValue->type->category != CTC_Function) {
-        auto returnValue = trBlock->createTempVariable(scope.lock(), leftValue->type->getOptionType(), "value");
+    if (!storeValue->type->parent.expired() && storeValue->type->typeMode == CTM_Stack) {
         stringstream line1;
-        line1 << returnValue->name << ".isempty = false";
+        line1 << storeValue->getName(trBlock) << "._refCount = 1";
         trBlock->statements.push_back(TrStatement(loc, line1.str()));
 
-        stringstream line2;
-        line2 << returnValue->name << ".value = " << leftValue->getName(trBlock);
-        trBlock->statements.push_back(TrStatement(loc, line2.str()));
-
-        storeValue->retainValue(compiler, loc, trBlock, returnValue);
+        auto leftValue = make_shared<TrStoreValue>(storeValue->loc, storeValue->scope, storeValue->type->getValueType(), storeValue->getName(trBlock), storeValue->op);
+        var->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
+        if (!leftValue->hasSetValue) {
+            return;
+        }
+        storeValue->hasSetValue = true;
     }
     else {
-        storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(leftValue->scope, leftValue->type->getOptionType(), leftValue->getName(trBlock), leftValue->isReturnValue));
+        auto leftValue = trBlock->createTempStoreVariable(loc, scope.lock(), var->getType(compiler), "value");
+        var->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
+        if (!leftValue->hasSetValue) {
+            return;
+        }
+
+        if (leftValue->type->isOption) {
+            compiler->addError(loc, CErrorCode::TypeMismatch, "value cannot take an option type");
+            return;
+        }
+
+        if (leftValue->type->parent.expired() && leftValue->type->category != CTC_Function) {
+            auto returnValue = trBlock->createTempVariable(scope.lock(), leftValue->type->getOptionType(), "value");
+            stringstream line1;
+            line1 << returnValue->name << ".isempty = false";
+            trBlock->statements.push_back(TrStatement(loc, line1.str()));
+
+            stringstream line2;
+            line2 << returnValue->name << ".value = " << leftValue->getName(trBlock);
+            trBlock->statements.push_back(TrStatement(loc, line2.str()));
+
+            storeValue->retainValue(compiler, loc, trBlock, returnValue);
+        }
+        else {
+            storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(leftValue->scope, leftValue->type->getOptionType(), leftValue->getName(trBlock), leftValue->isReturnValue));
+        }
     }
 }
 
@@ -60,7 +74,7 @@ void NValue::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>
 }
 
 shared_ptr<CVar> NValue::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto leftVar = node->getVar(compiler, scope, CTM_Heap);
+    auto leftVar = node->getVar(compiler, scope, returnMode);
     if (!leftVar) {
         return nullptr;
     }
@@ -72,11 +86,6 @@ shared_ptr<CVar> NValue::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
 
     if (leftType->isOption) {
         compiler->addError(loc, CErrorCode::TypeMismatch, "value cannot take an option type");
-        return nullptr;
-    }
-
-    if (leftType->typeMode != CTM_Heap && leftType->typeMode != CTM_Value && leftType->typeMode != CTM_Local) {
-        compiler->addError(loc, CErrorCode::TypeMismatch, "value can only work on local, heap, or value objects");
         return nullptr;
     }
 

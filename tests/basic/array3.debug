@@ -1,13 +1,9 @@
-anon1()'stack anon1 {
-  this
-}
-
 array_getat(index'i32:)'heap class {
   --c--
   if (index >= _parent->count || index < 0) {
   halt("getAt: out of bounds\n");
   }
-  sjs_class_heap** p = (sjs_class_heap**)_parent->data;
+  sjs_class** p = (sjs_class**)_parent->data;
   ;		
   --c--
 }
@@ -20,7 +16,7 @@ array_initat(index'i32:, item'heap class:)'void {
   if (index >= _parent->datasize || index < 0) {
   halt("initAt: out of bounds %d:%d\n", index, _parent->datasize);
   }
-  sjs_class_heap** p = (sjs_class_heap**)_parent->data;
+  sjs_class** p = (sjs_class**)_parent->data;
   ;
   _parent->count = index + 1;
   --c--
@@ -28,27 +24,31 @@ array_initat(index'i32:, item'heap class:)'void {
 
 global()'void {
   --cinclude--
+  #ifdef __GNUC__
+  #if __x86_64__ 
+  #define __LINUX__
+  #define __64__
+  #elif __i386__ 
+  #define __LINUX__
+  #define __32__
+  #else
+  Invalid bits
+  #endif
+  #elif _MSC_VER
+  #if _WIN64 
+  #define __WINDOWS__
+  #define __64__
+  #elif _WIN32 
+  #define __WINDOWS__
+  #define __32__
+  #else
+  Invalid bits
+  #endif
+  #else
+  Invalid compiler
+  #endif
   --cinclude--
-  console'stack anon1 : anon1(this = anon1())
-  f32_pi'f32 : 3.14159265358979323846ff
-  --cinclude--
-  --cinclude--
-  --cdefine--
-  void halt(const char * format, ...);
-  --cdefine--
-  --cfunction--
-  void halt(const char * format, ...) {
-  va_list args;
-  va_start (args, format);
-  vprintf (format, args);
-  va_end (args);
-  exit(-1);
-  }
-  --cfunction--
-  u32_maxvalue'u32 : (uint32_t)4294967295uu
-  i32_maxvalue'i32 : -1i - 2147483647i
-  i32_minvalue'i32 : 2147483647i
-  --cdefine--
+  --cstruct--
   /* The MIT License
   Copyright (c) 2008, by Attractive Chaos <attractivechaos@aol.co.uk>
   Permission is hereby granted, free of charge, to any person obtaining
@@ -130,13 +130,14 @@ global()'void {
   #define __ac_set_isboth_false(flag, i) (flag[i>>4]&=~(3ul<<((i&0xfU)<<1)))
   #define __ac_set_isdel_true(flag, i) (flag[i>>4]|=1ul<<((i&0xfU)<<1))
   static const double __ac_HASH_UPPER = 0.77;
-  #define KHASH_INIT(name, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal) \
+  #define KHASH_INIT_TYPEDEF(name, khkey_t, khval_t) \
   typedef struct {                                                    \
   khint_t n_buckets, size, n_occupied, upper_bound;               \
   uint32_t *flags;                                                \
   khkey_t *keys;                                                  \
   khval_t *vals;                                                  \
-  } kh_##name##_t;                                                    \
+  } kh_##name##_t;                                                
+  #define KHASH_INIT_FUNCTION(name, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal) \
   static inline kh_##name##_t *kh_init_##name() {                     \
   return (kh_##name##_t*)calloc(1, sizeof(kh_##name##_t));        \
   }                                                                   \
@@ -159,12 +160,15 @@ global()'void {
   {                                                                   \
   if (h->n_buckets) {                                             \
   khint_t inc, k, i, last;                                    \
-  k = __hash_func(key); i = k % h->n_buckets;                 \
+  __hash_func(key, &k); i = k % h->n_buckets;                 \
   inc = 1 + k % (h->n_buckets - 1); last = i;                 \
-  while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !__hash_equal(h->keys[i], key))) { \
+  bool isEqual;                                               \
+  __hash_equal(h->keys[i], key, &isEqual);                    \
+  while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
   if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
   else i += inc;                                          \
   if (i == last) return h->n_buckets;                     \
+  __hash_equal(h->keys[i], key, &isEqual);                \
   }                                                           \
   return __ac_iseither(h->flags, i)? h->n_buckets : i;            \
   } else return 0;                                                \
@@ -197,7 +201,7 @@ global()'void {
   __ac_set_isdel_true(h->flags, j);                   \
   while (1) {                                         \
   khint_t inc, k, i;                              \
-  k = __hash_func(key);                           \
+  __hash_func(key, &k);                           \
   i = k % new_n_buckets;                          \
   inc = 1 + k % (new_n_buckets - 1);              \
   while (!__ac_isempty(new_flags, i)) {           \
@@ -238,15 +242,18 @@ global()'void {
   }                                                               \
   {                                                               \
   khint_t inc, k, i, site, last;                              \
-  x = site = h->n_buckets; k = __hash_func(key); i = k % h->n_buckets; \
+  x = site = h->n_buckets; __hash_func(key, &k); i = k % h->n_buckets; \
   if (__ac_isempty(h->flags, i)) x = i;                       \
   else {                                                      \
   inc = 1 + k % (h->n_buckets - 1); last = i;             \
-  while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !__hash_equal(h->keys[i], key))) { \
+  bool isEqual;                                           \
+  __hash_equal(h->keys[i], key, &isEqual);                \
+  while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
   if (__ac_isdel(h->flags, i)) site = i;              \
   if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
   else i += inc;                                      \
   if (i == last) { x = site; break; }                 \
+  __hash_equal(h->keys[i], key, &isEqual);            \
   }                                                       \
   if (x == h->n_buckets) {                                \
   if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \
@@ -320,7 +327,31 @@ global()'void {
   #define KHASH_MAP_INIT_STR(name, khval_t)                               \
   KHASH_INIT(name, kh_cstr_t, khval_t, 1, kh_str_hash_func, kh_str_hash_equal)
   #endif /* __AC_KHASH_H */
+  --cstruct--
+  import  {
+  }
+  import  {
+  }
+  f32_pi'f32 : 3.14159265358979323846ff
   --cdefine--
+  void halt(const char * format, ...);
+  --cdefine--
+  --cfunction--
+  void halt(const char * format, ...) {
+  va_list args;
+  va_start(args, format);
+  vprintf(format, args);
+  va_end(args);
+  #ifdef _DEBUG
+  printf("\npress return to end\n");
+  getchar();
+  #endif
+  exit(-1);
+  }
+  --cfunction--
+  u32_maxvalue'u32 : (uint32_t)4294967295uu
+  i32_maxvalue'i32 : -1i - 2147483647i
+  i32_minvalue'i32 : 2147483647i
   emptystringdata'ptr = 0
   --c--
   sjv_emptystringdata = "";
@@ -341,8 +372,8 @@ global()'void {
   };
   --cstruct--
   --cdefine--
-  uint32_t void_hash(void* p);
-  int void_equal(void *p1, void* p2);
+  void ptr_hash(void* p, uint32_t* result);
+  void ptr_isequal(void *p1, void* p2, bool* result);
   void delete_cb_list_free(delete_cb_list* d);
   void delete_cb_list_add(delete_cb_list* d, delete_cb cb);
   void delete_cb_list_remove(delete_cb_list* d, delete_cb cb);
@@ -356,11 +387,15 @@ global()'void {
   bool ptr_release(void* ptr);
   --cdefine--
   --cfunction--
-  uint32_t void_hash(void* p) {
-  return kh_int_hash_func((uintptr_t)p);
+  void ptr_hash(void* p, uint32_t* result) {
+  #ifdef __32__
+  *result = kh_int_hash_func((uintptr_t)p);
+  #else
+  *result = kh_int64_hash_func((uintptr_t)p);
+  #endif
   }
-  int void_equal(void *p1, void* p2) {
-  return (p1 == p2);
+  void ptr_isequal(void *p1, void* p2, bool* result) {
+  *result = (p1 == p2);
   }
   void delete_cb_list_free(delete_cb_list* d) {
   if (d->next) {
@@ -401,68 +436,70 @@ global()'void {
   delete_cb_list_invoke(d->next, p);
   }
   }
-  KHASH_INIT(weakptr_hash_type, void*, delete_cb_list, 1, void_hash, void_equal)
-  khash_t(weakptr_hash_type)* weakptr_hash;
+  KHASH_INIT_TYPEDEF(weakptr_hashtable_type, void*, delete_cb_list)
+  KHASH_INIT_FUNCTION(weakptr_hashtable_type, void*, delete_cb_list, 1, ptr_hash, ptr_isequal)
+  khash_t(weakptr_hashtable_type)* weakptr_hashtable;
   void weakptr_init() {
-  weakptr_hash = kh_init(weakptr_hash_type);
+  weakptr_hashtable = kh_init(weakptr_hashtable_type);
   }
   void weakptr_release(void* v) {
-  khiter_t k = kh_get(weakptr_hash_type, weakptr_hash, v);
-  if (k != kh_end(weakptr_hash)) {
-  delete_cb_list* d = &kh_value(weakptr_hash, k);
+  khiter_t k = kh_get(weakptr_hashtable_type, weakptr_hashtable, v);
+  if (k != kh_end(weakptr_hashtable)) {
+  delete_cb_list* d = &kh_value(weakptr_hashtable, k);
   delete_cb_list_invoke(d, v);
   if (d->next) {
   delete_cb_list_free(d->next);
   }
-  kh_del(weakptr_hash_type, weakptr_hash, k);
+  kh_del(weakptr_hashtable_type, weakptr_hashtable, k);
   }
   }
   void weakptr_cb_add(void* v, delete_cb cb) {
   delete_cb_list* d;
-  khiter_t k = kh_get(weakptr_hash_type, weakptr_hash, v);
-  if (k == kh_end(weakptr_hash)) {
+  khiter_t k = kh_get(weakptr_hashtable_type, weakptr_hashtable, v);
+  if (k == kh_end(weakptr_hashtable)) {
   int ret;
-  khiter_t k = kh_put(weakptr_hash_type, weakptr_hash, v, &ret);
-  if (!ret) kh_del(weakptr_hash_type, weakptr_hash, k);
-  d = &kh_value(weakptr_hash, k);
+  khiter_t k = kh_put(weakptr_hashtable_type, weakptr_hashtable, v, &ret);
+  if (!ret) kh_del(weakptr_hashtable_type, weakptr_hashtable, k);
+  d = &kh_value(weakptr_hashtable, k);
   d->size = 0;
   d->next = 0;
   }
   else {
-  d = &kh_value(weakptr_hash, k);
+  d = &kh_value(weakptr_hashtable, k);
   }
   delete_cb_list_add(d, cb);
   }
   void weakptr_cb_remove(void* v, delete_cb cb) {
-  khiter_t k = kh_get(weakptr_hash_type, weakptr_hash, v);
-  if (k != kh_end(weakptr_hash)) {
-  delete_cb_list* d = &kh_value(weakptr_hash, k);
+  khiter_t k = kh_get(weakptr_hashtable_type, weakptr_hashtable, v);
+  if (k != kh_end(weakptr_hashtable)) {
+  delete_cb_list* d = &kh_value(weakptr_hashtable, k);
   delete_cb_list_remove(d, cb);
   }
   }
-  KHASH_INIT(ptr_hash_type, void*, int, 1, void_hash, void_equal)
-  khash_t(ptr_hash_type)* ptr_hash;
+  KHASH_INIT_TYPEDEF(ptr_hashtable_type, void*, int)
+  KHASH_INIT_FUNCTION(ptr_hashtable_type, void*, int, 1, ptr_hash, ptr_isequal)
+  khash_t(ptr_hashtable_type)* ptr_hashtable;
   void ptr_init() {
-  ptr_hash = kh_init(ptr_hash_type);
+  ptr_hashtable = kh_init(ptr_hashtable_type);
   }
   void ptr_retain(void* v) {
-  khiter_t k = kh_get(ptr_hash_type, ptr_hash, v);
-  if (k == kh_end(ptr_hash)) {
+  khiter_t k = kh_get(ptr_hashtable_type, ptr_hashtable, v);
+  if (k == kh_end(ptr_hashtable)) {
   int ret;
-  khiter_t k = kh_put(ptr_hash_type, ptr_hash, v, &ret);
-  if (!ret) kh_del(ptr_hash_type, ptr_hash, k);
-  kh_value(ptr_hash, k) = 1;
+  khiter_t k = kh_put(ptr_hashtable_type, ptr_hashtable, v, &ret);
+  if (!ret) kh_del(ptr_hashtable_type, ptr_hashtable, k);
+  kh_value(ptr_hashtable, k) = 1;
   }
   else {
-  kh_value(ptr_hash, k)++;
+  kh_value(ptr_hashtable, k)++;
   }
   }
   bool ptr_release(void* v) {
-  khiter_t k = kh_get(ptr_hash_type, ptr_hash, v);
-  if (k != kh_end(ptr_hash)) {
-  kh_value(ptr_hash, k)--;
-  if (kh_value(ptr_hash, k) == 0) {
-  kh_del(ptr_hash_type, ptr_hash, k);
+  khiter_t k = kh_get(ptr_hashtable_type, ptr_hashtable, v);
+  if (k != kh_end(ptr_hashtable)) {
+  kh_value(ptr_hashtable, k)--;
+  if (kh_value(ptr_hashtable, k) == 0) {
+  kh_del(ptr_hashtable_type, ptr_hashtable, k);
   }
   return false;
   }

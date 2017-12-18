@@ -11,12 +11,12 @@ global()'void {
   f'f64? : empty'f64?
   g'char? : empty'char?
   h'ptr? : empty'ptr?
-  i'heap class? : empty'heap class?
+  i'stack class? : empty'stack class?
   j'bool : isEmpty(a)
   k'bool : isEmpty(i)
   l'heap #interface? : empty'heap #interface?
   m'bool : isEmpty(l)
-  n'heap class? : value(class(this = class(
+  n'heap class? : value(heap class(this = class(
     bob'i32 : bob
   )))
   o'heap class : getValue(n)

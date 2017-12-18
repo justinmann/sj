@@ -61,24 +61,16 @@ const double_option double_empty = { true };
 
 #define sjs_object_typeId 1
 #define sjs_func_typeId 2
-#define sjs_func_heap_typeId 3
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_func sjs_func;
-typedef struct td_sjs_func_heap sjs_func_heap;
 
 struct td_sjs_object {
     intptr_t _refCount;
 };
 
 struct td_sjs_func {
-    int32_t x;
-    int32_t y;
-    int32_t z;
-};
-
-struct td_sjs_func_heap {
-    intptr_t _refCount;
+    int _refCount;
     int32_t x;
     int32_t y;
     int32_t z;
@@ -90,45 +82,38 @@ sjs_func void2;
 void sjf_func(sjs_func* _this);
 void sjf_func_copy(sjs_func* _this, sjs_func* _from);
 void sjf_func_destroy(sjs_func* _this);
-void sjf_func_heap(sjs_func_heap* _this);
+void sjf_func_heap(sjs_func* _this);
 void main_destroy(void);
 
 void sjf_func(sjs_func* _this) {
 }
 
 void sjf_func_copy(sjs_func* _this, sjs_func* _from) {
-#line 1 "function23.sj"
     _this->x = _from->x;
-#line 1
     _this->y = _from->y;
-#line 1
     _this->z = _from->z;
 }
 
 void sjf_func_destroy(sjs_func* _this) {
 }
 
-void sjf_func_heap(sjs_func_heap* _this) {
+void sjf_func_heap(sjs_func* _this) {
 }
 
 int main(int argc, char** argv) {
-#line 4 "function23.sj"
     void1.x = 4;
-#line 5
     void1.y = 5;
-#line 6
     void1.z = 6;
-#line 6
     sjf_func(&void1);
-#line 7
     void2.x = 7;
-#line 7
     void2.y = 8;
-#line 7
     void2.z = 9;
-#line 7
     sjf_func(&void2);
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

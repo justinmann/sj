@@ -71,6 +71,10 @@ void main_destroy(void);
 
 int main(int argc, char** argv) {
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

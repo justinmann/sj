@@ -61,22 +61,16 @@ const double_option double_empty = { true };
 
 #define sjs_object_typeId 1
 #define sjs_class_i32_typeId 2
-#define sjs_class_i32_heap_typeId 3
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_class_i32 sjs_class_i32;
-typedef struct td_sjs_class_i32_heap sjs_class_i32_heap;
 
 struct td_sjs_object {
     intptr_t _refCount;
 };
 
 struct td_sjs_class_i32 {
-    int structsNeedAValue;
-};
-
-struct td_sjs_class_i32_heap {
-    intptr_t _refCount;
+    int _refCount;
 };
 
 sjs_class_i32 sjv_c;
@@ -84,7 +78,7 @@ sjs_class_i32 sjv_c;
 void sjf_class_i32(sjs_class_i32* _this);
 void sjf_class_i32_copy(sjs_class_i32* _this, sjs_class_i32* _from);
 void sjf_class_i32_destroy(sjs_class_i32* _this);
-void sjf_class_i32_heap(sjs_class_i32_heap* _this);
+void sjf_class_i32_heap(sjs_class_i32* _this);
 void main_destroy(void);
 
 void sjf_class_i32(sjs_class_i32* _this) {
@@ -96,12 +90,16 @@ void sjf_class_i32_copy(sjs_class_i32* _this, sjs_class_i32* _from) {
 void sjf_class_i32_destroy(sjs_class_i32* _this) {
 }
 
-void sjf_class_i32_heap(sjs_class_i32_heap* _this) {
+void sjf_class_i32_heap(sjs_class_i32* _this) {
 }
 
 int main(int argc, char** argv) {
     sjf_class_i32(&sjv_c);
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

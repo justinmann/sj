@@ -74,15 +74,15 @@ int32_t sjv_a;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
-#line 1 "assignment13.sj"
     sjv_a = 0;
-#line 1
     sjt_math1 = sjv_a;
-#line 1
     sjt_math2 = 1;
-#line 1
     sjv_a = sjt_math1 + sjt_math2;
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

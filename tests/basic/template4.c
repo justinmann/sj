@@ -74,7 +74,6 @@ void sjf_func(void);
 void main_destroy(void);
 
 void sjf_class_func(int32_t* _return) {
-#line 1 "template4.sj"
     (*_return) = 1;
 }
 
@@ -84,6 +83,10 @@ void sjf_func(void) {
 int main(int argc, char** argv) {
     sjf_class_func(&sjv_d);
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

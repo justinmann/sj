@@ -11,14 +11,14 @@
 
 class NGetOrElse : public NVariableBase {
 public:
-    NGetOrElse(CLoc loc, shared_ptr<NVariableBase> left, shared_ptr<NVariableBase> right) : NVariableBase(NodeType_GetOrElse, loc), left(left), right(right) {}
+    NGetOrElse(CLoc loc, shared_ptr<NVariableBase> left, shared_ptr<NBase> right) : NVariableBase(NodeType_GetOrElse, loc), left(left), right(right) {}
 
     void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 
 private:
     shared_ptr<NVariableBase> left;
-    shared_ptr<NVariableBase> right;
+    shared_ptr<NBase> right;
 };
 
 #endif /* NGetOrElse_h */

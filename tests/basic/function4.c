@@ -77,19 +77,19 @@ void sjf_func(double* _return) {
     double result1;
     double sjt_negate1;
 
-#line 1 "function4.sj"
     sjt_negate1 = 3.0;
-#line 1
     result1 = -sjt_negate1;
-#line 1
     (*_return) = result1;
 }
 
 int main(int argc, char** argv) {
     sjf_func(&sjt_compare1);
-#line 1 "function4.sj"
     sjt_compare2 = 4.0;
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

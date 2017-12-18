@@ -72,18 +72,20 @@ bool sjt_ifElse1;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
-#line 1 "if4.sj"
     sjt_ifElse1 = false;
     if (sjt_ifElse1) {
     } else {
         bool sjt_ifElse2;
 
-#line 1 "if4.sj"
         sjt_ifElse2 = true;
         if (sjt_ifElse2) {
         }
     }
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

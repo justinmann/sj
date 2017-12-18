@@ -64,9 +64,9 @@ vertexBuffer!vertex(
 
             // Check if the pick ray passes through this point
             result : intersectTriangle(vPickRayOrig, vPickRayDir, vertex0.location, vertex1.location, vertex2.location)
-            if !isEmpty(result) {
-                if isEmpty(intersection) || result?.z?:0.0f < intersection?.z?:0.0f {
-                    intersection = result                    
+            ifValue result {
+                if isEmpty(intersection) || result.z < intersection?.z?:0.0f {
+                    intersection = value(result)                    
 
                     t : getValue(intersection)
                     // If all you want is the vertices hit, then you are done.  In this sample, we
@@ -83,7 +83,7 @@ vertexBuffer!vertex(
             }
         }
 
-        texture
+        copy texture
     }
 
     render()'void {

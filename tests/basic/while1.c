@@ -72,13 +72,15 @@ bool sjt_while1;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
-#line 1 "while1.sj"
     sjt_while1 = false;
     while (sjt_while1) {
-#line 1 "while1.sj"
         sjt_while1 = false;
     }
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

@@ -10,12 +10,12 @@ void halt(const char * format, ...);
 
 --cfunction--
 void halt(const char * format, ...) {
-	char s[1024];
 	va_list args;
 	va_start(args, format);
 	vprintf(format, args);
 	va_end(args);
 ##ifdef _DEBUG
+	printf("\npress return to end\n");
 	getchar();
 ##endif
 	exit(-1);

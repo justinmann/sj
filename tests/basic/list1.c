@@ -1,9 +1,35 @@
+#ifdef __GNUC__
+#if __x86_64__ 
+#define __LINUX__
+#define __64__
+#elif __i386__ 
+#define __LINUX__
+#define __32__
+#else
+Invalid bits
+#endif
+#elif _MSC_VER
+#if _WIN64 
+#define __WINDOWS__
+#define __64__
+#elif _WIN32 
+#define __WINDOWS__
+#define __32__
+#else
+Invalid bits
+#endif
+#else
+Invalid compiler
+#endif
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef __WINDOWS__
+#include <windows.h>
+#endif
 
 typedef struct td_delete_cb delete_cb;
 typedef struct td_delete_cb_list delete_cb_list;
@@ -63,81 +89,6 @@ struct td_double_option {
 };
 const double_option double_empty = { true };
 
-struct td_delete_cb {
-    void* _parent;
-    void (*_cb)(void* _parent, void* object);
-};
-struct td_delete_cb_list {
-    int size;
-    delete_cb cb[5];
-    delete_cb_list* next;
-};
-#define sjs_object_typeId 1
-#define sjs_anon1_typeId 2
-#define sjs_anon1_heap_typeId 3
-#define sjs_class_typeId 4
-#define sjs_class_heap_typeId 5
-#define sjs_array_heap_class_typeId 6
-#define sjs_array_heap_class_heap_typeId 7
-#define sjs_list_heap_class_typeId 8
-#define sjs_list_heap_class_heap_typeId 9
-
-typedef struct td_sjs_object sjs_object;
-typedef struct td_sjs_anon1 sjs_anon1;
-typedef struct td_sjs_anon1_heap sjs_anon1_heap;
-typedef struct td_sjs_class sjs_class;
-typedef struct td_sjs_class_heap sjs_class_heap;
-typedef struct td_sjs_array_heap_class sjs_array_heap_class;
-typedef struct td_sjs_array_heap_class_heap sjs_array_heap_class_heap;
-typedef struct td_sjs_list_heap_class sjs_list_heap_class;
-typedef struct td_sjs_list_heap_class_heap sjs_list_heap_class_heap;
-
-struct td_sjs_object {
-    intptr_t _refCount;
-};
-
-struct td_sjs_anon1 {
-    int structsNeedAValue;
-};
-
-struct td_sjs_anon1_heap {
-    intptr_t _refCount;
-};
-
-struct td_sjs_class {
-    int32_t x;
-};
-
-struct td_sjs_class_heap {
-    intptr_t _refCount;
-    int32_t x;
-};
-
-struct td_sjs_array_heap_class {
-    int32_t datasize;
-    void* data;
-    bool _isglobal;
-    int32_t count;
-};
-
-struct td_sjs_array_heap_class_heap {
-    intptr_t _refCount;
-    int32_t datasize;
-    void* data;
-    bool _isglobal;
-    int32_t count;
-};
-
-struct td_sjs_list_heap_class {
-    sjs_array_heap_class array;
-};
-
-struct td_sjs_list_heap_class_heap {
-    intptr_t _refCount;
-    sjs_array_heap_class array;
-};
-
-void halt(const char * format, ...);
 /* The MIT License
 Copyright (c) 2008, by Attractive Chaos <attractivechaos@aol.co.uk>
 Permission is hereby granted, free of charge, to any person obtaining
@@ -219,13 +170,14 @@ static const uint32_t __ac_prime_list[__ac_HASH_PRIME_SIZE] =
 #define __ac_set_isboth_false(flag, i) (flag[i>>4]&=~(3ul<<((i&0xfU)<<1)))
 #define __ac_set_isdel_true(flag, i) (flag[i>>4]|=1ul<<((i&0xfU)<<1))
 static const double __ac_HASH_UPPER = 0.77;
-#define KHASH_INIT(name, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal) \
+#define KHASH_INIT_TYPEDEF(name, khkey_t, khval_t) \
 typedef struct {                                                    \
 khint_t n_buckets, size, n_occupied, upper_bound;               \
 uint32_t *flags;                                                \
 khkey_t *keys;                                                  \
 khval_t *vals;                                                  \
-} kh_##name##_t;                                                    \
+} kh_##name##_t;                                                
+#define KHASH_INIT_FUNCTION(name, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal) \
 static inline kh_##name##_t *kh_init_##name() {                     \
 return (kh_##name##_t*)calloc(1, sizeof(kh_##name##_t));        \
 }                                                                   \
@@ -248,12 +200,15 @@ static inline khint_t kh_get_##name(kh_##name##_t *h, khkey_t key)  \
 {                                                                   \
 if (h->n_buckets) {                                             \
 khint_t inc, k, i, last;                                    \
-k = __hash_func(key); i = k % h->n_buckets;                 \
+__hash_func(key, &k); i = k % h->n_buckets;                 \
 inc = 1 + k % (h->n_buckets - 1); last = i;                 \
-while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !__hash_equal(h->keys[i], key))) { \
+bool isEqual;                                               \
+__hash_equal(h->keys[i], key, &isEqual);                    \
+while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
 if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
 else i += inc;                                          \
 if (i == last) return h->n_buckets;                     \
+__hash_equal(h->keys[i], key, &isEqual);                \
 }                                                           \
 return __ac_iseither(h->flags, i)? h->n_buckets : i;            \
 } else return 0;                                                \
@@ -286,7 +241,7 @@ if (kh_is_map) val = h->vals[j];                    \
 __ac_set_isdel_true(h->flags, j);                   \
 while (1) {                                         \
 khint_t inc, k, i;                              \
-k = __hash_func(key);                           \
+__hash_func(key, &k);                           \
 i = k % new_n_buckets;                          \
 inc = 1 + k % (new_n_buckets - 1);              \
 while (!__ac_isempty(new_flags, i)) {           \
@@ -327,15 +282,18 @@ else kh_resize_##name(h, h->n_buckets + 1);                 \
 }                                                               \
 {                                                               \
 khint_t inc, k, i, site, last;                              \
-x = site = h->n_buckets; k = __hash_func(key); i = k % h->n_buckets; \
+x = site = h->n_buckets; __hash_func(key, &k); i = k % h->n_buckets; \
 if (__ac_isempty(h->flags, i)) x = i;                       \
 else {                                                      \
 inc = 1 + k % (h->n_buckets - 1); last = i;             \
-while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !__hash_equal(h->keys[i], key))) { \
+bool isEqual;                                           \
+__hash_equal(h->keys[i], key, &isEqual);                \
+while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
 if (__ac_isdel(h->flags, i)) site = i;              \
 if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
 else i += inc;                                      \
 if (i == last) { x = site; break; }                 \
+__hash_equal(h->keys[i], key, &isEqual);            \
 }                                                       \
 if (x == h->n_buckets) {                                \
 if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \
@@ -409,8 +367,50 @@ KHASH_INIT(name, kh_cstr_t, char, 0, kh_str_hash_func, kh_str_hash_equal)
 #define KHASH_MAP_INIT_STR(name, khval_t)                               \
 KHASH_INIT(name, kh_cstr_t, khval_t, 1, kh_str_hash_func, kh_str_hash_equal)
 #endif /* __AC_KHASH_H */
-uint32_t void_hash(void* p);
-int void_equal(void *p1, void* p2);
+struct td_delete_cb {
+void* _parent;
+void (*_cb)(void* _parent, void* object);
+};
+struct td_delete_cb_list {
+int size;
+delete_cb cb[5];
+delete_cb_list* next;
+};
+#define sjs_object_typeId 1
+#define sjs_class_typeId 2
+#define sjs_array_heap_class_typeId 3
+#define sjs_list_heap_class_typeId 4
+
+typedef struct td_sjs_object sjs_object;
+typedef struct td_sjs_class sjs_class;
+typedef struct td_sjs_array_heap_class sjs_array_heap_class;
+typedef struct td_sjs_list_heap_class sjs_list_heap_class;
+
+struct td_sjs_object {
+    intptr_t _refCount;
+};
+
+struct td_sjs_class {
+    int _refCount;
+    int32_t x;
+};
+
+struct td_sjs_array_heap_class {
+    int _refCount;
+    int32_t datasize;
+    void* data;
+    bool _isglobal;
+    int32_t count;
+};
+
+struct td_sjs_list_heap_class {
+    int _refCount;
+    sjs_array_heap_class array;
+};
+
+void halt(const char * format, ...);
+void ptr_hash(void* p, uint32_t* result);
+void ptr_isequal(void *p1, void* p2, bool* result);
 void delete_cb_list_free(delete_cb_list* d);
 void delete_cb_list_add(delete_cb_list* d, delete_cb cb);
 void delete_cb_list_remove(delete_cb_list* d, delete_cb cb);
@@ -432,8 +432,7 @@ int32_t sjt_math2;
 int32_t sjt_negate1;
 sjs_list_heap_class* sjt_parent5;
 sjs_list_heap_class sjv_a;
-sjs_class_heap* sjv_c;
-sjs_anon1 sjv_console;
+sjs_class* sjv_c;
 void* sjv_emptystringdata;
 float sjv_f32_pi;
 int32_t sjv_i32_maxvalue;
@@ -441,43 +440,47 @@ int32_t sjv_i32_minvalue;
 uint32_t sjv_u32_maxvalue;
 int32_t x;
 
-void sjf_anon1(sjs_anon1* _this);
-void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* _from);
-void sjf_anon1_destroy(sjs_anon1* _this);
-void sjf_anon1_heap(sjs_anon1_heap* _this);
 void sjf_array_heap_class(sjs_array_heap_class* _this);
 void sjf_array_heap_class_copy(sjs_array_heap_class* _this, sjs_array_heap_class* _from);
 void sjf_array_heap_class_destroy(sjs_array_heap_class* _this);
-void sjf_array_heap_class_getat_heap(sjs_array_heap_class* _parent, int32_t index, sjs_class_heap** _return);
+void sjf_array_heap_class_getat_heap(sjs_array_heap_class* _parent, int32_t index, sjs_class** _return);
 void sjf_array_heap_class_grow(sjs_array_heap_class* _parent, int32_t newsize, sjs_array_heap_class* _return);
-void sjf_array_heap_class_grow_heap(sjs_array_heap_class* _parent, int32_t newsize, sjs_array_heap_class_heap** _return);
-void sjf_array_heap_class_heap(sjs_array_heap_class_heap* _this);
-void sjf_array_heap_class_initat(sjs_array_heap_class* _parent, int32_t index, sjs_class_heap* item);
+void sjf_array_heap_class_grow_heap(sjs_array_heap_class* _parent, int32_t newsize, sjs_array_heap_class** _return);
+void sjf_array_heap_class_heap(sjs_array_heap_class* _this);
+void sjf_array_heap_class_initat(sjs_array_heap_class* _parent, int32_t index, sjs_class* item);
 void sjf_class(sjs_class* _this);
 void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
-void sjf_class_heap(sjs_class_heap* _this);
+void sjf_class_heap(sjs_class* _this);
 void sjf_i32_max(int32_t a, int32_t b, int32_t* _return);
 void sjf_list_heap_class(sjs_list_heap_class* _this);
-void sjf_list_heap_class_add(sjs_list_heap_class* _parent, sjs_class_heap* item);
+void sjf_list_heap_class_add(sjs_list_heap_class* _parent, sjs_class* item);
 void sjf_list_heap_class_copy(sjs_list_heap_class* _this, sjs_list_heap_class* _from);
 void sjf_list_heap_class_destroy(sjs_list_heap_class* _this);
-void sjf_list_heap_class_getat_heap(sjs_list_heap_class* _parent, int32_t index, sjs_class_heap** _return);
-void sjf_list_heap_class_heap(sjs_list_heap_class_heap* _this);
+void sjf_list_heap_class_getat_heap(sjs_list_heap_class* _parent, int32_t index, sjs_class** _return);
+void sjf_list_heap_class_heap(sjs_list_heap_class* _this);
 void main_destroy(void);
 
 void halt(const char * format, ...) {
     va_list args;
-    va_start (args, format);
-    vprintf (format, args);
-    va_end (args);
+    va_start(args, format);
+    vprintf(format, args);
+    va_end(args);
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     exit(-1);
 }
-uint32_t void_hash(void* p) {
-    return kh_int_hash_func((uintptr_t)p);
+void ptr_hash(void* p, uint32_t* result) {
+    #ifdef __32__
+    *result = kh_int_hash_func((uintptr_t)p);
+    #else
+    *result = kh_int64_hash_func((uintptr_t)p);
+    #endif
 }
-int void_equal(void *p1, void* p2) {
-    return (p1 == p2);
+void ptr_isequal(void *p1, void* p2, bool* result) {
+    *result = (p1 == p2);
 }
 void delete_cb_list_free(delete_cb_list* d) {
     if (d->next) {
@@ -518,151 +521,112 @@ void delete_cb_list_invoke(delete_cb_list* d, void* p) {
         delete_cb_list_invoke(d->next, p);
     }
 }
-KHASH_INIT(weakptr_hash_type, void*, delete_cb_list, 1, void_hash, void_equal)
-khash_t(weakptr_hash_type)* weakptr_hash;
+KHASH_INIT_TYPEDEF(weakptr_hashtable_type, void*, delete_cb_list)
+KHASH_INIT_FUNCTION(weakptr_hashtable_type, void*, delete_cb_list, 1, ptr_hash, ptr_isequal)
+khash_t(weakptr_hashtable_type)* weakptr_hashtable;
 void weakptr_init() {
-    weakptr_hash = kh_init(weakptr_hash_type);
+    weakptr_hashtable = kh_init(weakptr_hashtable_type);
 }
 void weakptr_release(void* v) {
-    khiter_t k = kh_get(weakptr_hash_type, weakptr_hash, v);
-    if (k != kh_end(weakptr_hash)) {
-        delete_cb_list* d = &kh_value(weakptr_hash, k);
+    khiter_t k = kh_get(weakptr_hashtable_type, weakptr_hashtable, v);
+    if (k != kh_end(weakptr_hashtable)) {
+        delete_cb_list* d = &kh_value(weakptr_hashtable, k);
         delete_cb_list_invoke(d, v);
         if (d->next) {
             delete_cb_list_free(d->next);
         }
-        kh_del(weakptr_hash_type, weakptr_hash, k);
+        kh_del(weakptr_hashtable_type, weakptr_hashtable, k);
     }
 }
 void weakptr_cb_add(void* v, delete_cb cb) {
     delete_cb_list* d;
-    khiter_t k = kh_get(weakptr_hash_type, weakptr_hash, v);
-    if (k == kh_end(weakptr_hash)) {
+    khiter_t k = kh_get(weakptr_hashtable_type, weakptr_hashtable, v);
+    if (k == kh_end(weakptr_hashtable)) {
         int ret;
-        khiter_t k = kh_put(weakptr_hash_type, weakptr_hash, v, &ret);
-        if (!ret) kh_del(weakptr_hash_type, weakptr_hash, k);
-        d = &kh_value(weakptr_hash, k);
+        khiter_t k = kh_put(weakptr_hashtable_type, weakptr_hashtable, v, &ret);
+        if (!ret) kh_del(weakptr_hashtable_type, weakptr_hashtable, k);
+        d = &kh_value(weakptr_hashtable, k);
         d->size = 0;
         d->next = 0;
     }
     else {
-        d = &kh_value(weakptr_hash, k);
+        d = &kh_value(weakptr_hashtable, k);
     }
     delete_cb_list_add(d, cb);
 }
 void weakptr_cb_remove(void* v, delete_cb cb) {
-    khiter_t k = kh_get(weakptr_hash_type, weakptr_hash, v);
-    if (k != kh_end(weakptr_hash)) {
-        delete_cb_list* d = &kh_value(weakptr_hash, k);
+    khiter_t k = kh_get(weakptr_hashtable_type, weakptr_hashtable, v);
+    if (k != kh_end(weakptr_hashtable)) {
+        delete_cb_list* d = &kh_value(weakptr_hashtable, k);
         delete_cb_list_remove(d, cb);
     }
 }
-KHASH_INIT(ptr_hash_type, void*, int, 1, void_hash, void_equal)
-khash_t(ptr_hash_type)* ptr_hash;
+KHASH_INIT_TYPEDEF(ptr_hashtable_type, void*, int)
+KHASH_INIT_FUNCTION(ptr_hashtable_type, void*, int, 1, ptr_hash, ptr_isequal)
+khash_t(ptr_hashtable_type)* ptr_hashtable;
 void ptr_init() {
-    ptr_hash = kh_init(ptr_hash_type);
+    ptr_hashtable = kh_init(ptr_hashtable_type);
 }
 void ptr_retain(void* v) {
-    khiter_t k = kh_get(ptr_hash_type, ptr_hash, v);
-    if (k == kh_end(ptr_hash)) {
+    khiter_t k = kh_get(ptr_hashtable_type, ptr_hashtable, v);
+    if (k == kh_end(ptr_hashtable)) {
         int ret;
-        khiter_t k = kh_put(ptr_hash_type, ptr_hash, v, &ret);
-        if (!ret) kh_del(ptr_hash_type, ptr_hash, k);
-        kh_value(ptr_hash, k) = 1;
+        khiter_t k = kh_put(ptr_hashtable_type, ptr_hashtable, v, &ret);
+        if (!ret) kh_del(ptr_hashtable_type, ptr_hashtable, k);
+        kh_value(ptr_hashtable, k) = 1;
     }
     else {
-        kh_value(ptr_hash, k)++;
+        kh_value(ptr_hashtable, k)++;
     }
 }
 bool ptr_release(void* v) {
-    khiter_t k = kh_get(ptr_hash_type, ptr_hash, v);
-    if (k != kh_end(ptr_hash)) {
-        kh_value(ptr_hash, k)--;
-        if (kh_value(ptr_hash, k) == 0) {
-            kh_del(ptr_hash_type, ptr_hash, k);
+    khiter_t k = kh_get(ptr_hashtable_type, ptr_hashtable, v);
+    if (k != kh_end(ptr_hashtable)) {
+        kh_value(ptr_hashtable, k)--;
+        if (kh_value(ptr_hashtable, k) == 0) {
+            kh_del(ptr_hashtable_type, ptr_hashtable, k);
         }
         return false;
     }
     return true;
 }
-void sjf_anon1(sjs_anon1* _this) {
-}
-
-void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* _from) {
-}
-
-void sjf_anon1_destroy(sjs_anon1* _this) {
-}
-
-void sjf_anon1_heap(sjs_anon1_heap* _this) {
-}
-
 void sjf_array_heap_class(sjs_array_heap_class* _this) {
-#line 267 "lib/common/array.sj"
     if (_this->datasize < 0) {
-#line 268
         halt("size is less than zero");
-#line 269
     }
-#line 271
     if (!_this->data) {
-#line 272
-        _this->data = malloc(_this->datasize * sizeof(sjs_class_heap*));
-#line 273
+        _this->data = malloc(_this->datasize * sizeof(sjs_class*));
         if (!_this->data) {
-#line 274
             halt("grow: out of memory\n");
-#line 275
         }
-#line 276
     }
 }
 
 void sjf_array_heap_class_copy(sjs_array_heap_class* _this, sjs_array_heap_class* _from) {
-#line 1 "lib/common/array.sj"
     _this->datasize = _from->datasize;
-#line 1
     _this->data = _from->data;
-#line 1
     _this->_isglobal = _from->_isglobal;
-#line 1
     _this->count = _from->count;
-#line 281
     _this->data = _from->data;
-#line 282
     if (!_this->_isglobal && _this->data) {
-#line 283
         ptr_retain(_this->data);
-#line 284
     }
 }
 
 void sjf_array_heap_class_destroy(sjs_array_heap_class* _this) {
-#line 288 "lib/common/array.sj"
     if (!_this->_isglobal && _this->data) {
-#line 289
         if (ptr_release(_this->data)) {
-#line 290
-            free((sjs_class_heap**)_this->data);
-#line 291
+            free((sjs_class**)_this->data);
         }
-#line 292
     }
 }
 
-void sjf_array_heap_class_getat_heap(sjs_array_heap_class* _parent, int32_t index, sjs_class_heap** _return) {
-#line 9 "lib/common/array.sj"
+void sjf_array_heap_class_getat_heap(sjs_array_heap_class* _parent, int32_t index, sjs_class** _return) {
     if (index >= _parent->count || index < 0) {
-#line 10
         halt("getAt: out of bounds\n");
-#line 11
     }
-#line 13
-    sjs_class_heap** p = (sjs_class_heap**)_parent->data;
-#line 14
-    #line 8 "lib/common/array.sj"
-(*_return) = p[index];
-#line 8
+    sjs_class** p = (sjs_class**)_parent->data;
+    (*_return) = p[index];
 (*_return)->_refCount++;
 ;		
 }
@@ -671,129 +635,73 @@ void sjf_array_heap_class_grow(sjs_array_heap_class* _parent, int32_t newsize, s
     sjs_array_heap_class* sjt_dot6;
     void* sjv_newdata;
 
-#line 116 "lib/common/array.sj"
     sjv_newdata = 0;
-#line 118
     if (_parent->datasize != newsize) {
-#line 119
         if (newsize < _parent->datasize) {
-#line 120
             halt("grow: new size smaller than old _parent->datasize %d:%d\n", newsize, _parent->datasize);
-#line 121
         }
-#line 123
-        sjv_newdata = malloc(newsize * sizeof(sjs_class_heap*));
-#line 124
+        sjv_newdata = malloc(newsize * sizeof(sjs_class*));
         if (!_parent->data) {
-#line 125
             halt("grow: out of memory\n");
-#line 126
         }
-#line 127
-        memcpy(sjv_newdata, _parent->data, _parent->datasize * sizeof(sjs_class_heap*));
-#line 128
+        memcpy(sjv_newdata, _parent->data, _parent->datasize * sizeof(sjs_class*));
     }
-#line 115
     _return->datasize = newsize;
-#line 130
     _return->data = sjv_newdata;
-#line 4
     _return->_isglobal = false;
-#line 115
     sjt_dot6 = _parent;
-#line 130
     _return->count = (sjt_dot6)->count;
-#line 130
     sjf_array_heap_class(_return);
 }
 
-void sjf_array_heap_class_grow_heap(sjs_array_heap_class* _parent, int32_t newsize, sjs_array_heap_class_heap** _return) {
+void sjf_array_heap_class_grow_heap(sjs_array_heap_class* _parent, int32_t newsize, sjs_array_heap_class** _return) {
     sjs_array_heap_class* sjt_dot7;
     void* sjv_newdata;
 
-#line 116 "lib/common/array.sj"
     sjv_newdata = 0;
-#line 118
     if (_parent->datasize != newsize) {
-#line 119
         if (newsize < _parent->datasize) {
-#line 120
             halt("grow: new size smaller than old _parent->datasize %d:%d\n", newsize, _parent->datasize);
-#line 121
         }
-#line 123
-        sjv_newdata = malloc(newsize * sizeof(sjs_class_heap*));
-#line 124
+        sjv_newdata = malloc(newsize * sizeof(sjs_class*));
         if (!_parent->data) {
-#line 125
             halt("grow: out of memory\n");
-#line 126
         }
-#line 127
-        memcpy(sjv_newdata, _parent->data, _parent->datasize * sizeof(sjs_class_heap*));
-#line 128
+        memcpy(sjv_newdata, _parent->data, _parent->datasize * sizeof(sjs_class*));
     }
-#line 128
-    (*_return) = (sjs_array_heap_class_heap*)malloc(sizeof(sjs_array_heap_class_heap));
-#line 128
+    (*_return) = (sjs_array_heap_class*)malloc(sizeof(sjs_array_heap_class));
     (*_return)->_refCount = 1;
-#line 115
     (*_return)->datasize = newsize;
-#line 130
     (*_return)->data = sjv_newdata;
-#line 4
     (*_return)->_isglobal = false;
-#line 115
     sjt_dot7 = _parent;
-#line 130
     (*_return)->count = (sjt_dot7)->count;
-#line 130
     sjf_array_heap_class_heap((*_return));
 }
 
-void sjf_array_heap_class_heap(sjs_array_heap_class_heap* _this) {
-#line 267 "lib/common/array.sj"
+void sjf_array_heap_class_heap(sjs_array_heap_class* _this) {
     if (_this->datasize < 0) {
-#line 268
         halt("size is less than zero");
-#line 269
     }
-#line 271
     if (!_this->data) {
-#line 272
-        _this->data = malloc(_this->datasize * sizeof(sjs_class_heap*));
-#line 273
+        _this->data = malloc(_this->datasize * sizeof(sjs_class*));
         if (!_this->data) {
-#line 274
             halt("grow: out of memory\n");
-#line 275
         }
-#line 276
     }
 }
 
-void sjf_array_heap_class_initat(sjs_array_heap_class* _parent, int32_t index, sjs_class_heap* item) {
-#line 21 "lib/common/array.sj"
+void sjf_array_heap_class_initat(sjs_array_heap_class* _parent, int32_t index, sjs_class* item) {
     if (index != _parent->count) {
-#line 22
         halt("initAt: can only initialize last element\n");		
-#line 23
     }
-#line 24
     if (index >= _parent->datasize || index < 0) {
-#line 25
         halt("initAt: out of bounds %d:%d\n", index, _parent->datasize);
-#line 26
     }
-#line 28
-    sjs_class_heap** p = (sjs_class_heap**)_parent->data;
-#line 29
-    #line 19 "lib/common/array.sj"
-p[index] = item;
-#line 19
+    sjs_class** p = (sjs_class**)_parent->data;
+    p[index] = item;
 p[index]->_refCount++;
 ;
-#line 30
     _parent->count = index + 1;
 }
 
@@ -801,14 +709,13 @@ void sjf_class(sjs_class* _this) {
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
-#line 3 "list1.sj"
     _this->x = _from->x;
 }
 
 void sjf_class_destroy(sjs_class* _this) {
 }
 
-void sjf_class_heap(sjs_class_heap* _this) {
+void sjf_class_heap(sjs_class* _this) {
 }
 
 void sjf_i32_max(int32_t a, int32_t b, int32_t* _return) {
@@ -816,17 +723,12 @@ void sjf_i32_max(int32_t a, int32_t b, int32_t* _return) {
     int32_t sjt_compare4;
     bool sjt_ifElse2;
 
-#line 6 "lib/common/i32.sj"
     sjt_compare3 = a;
-#line 6
     sjt_compare4 = b;
-#line 7
     sjt_ifElse2 = sjt_compare3 < sjt_compare4;
     if (sjt_ifElse2) {
-#line 6 "lib/common/i32.sj"
         (*_return) = b;
     } else {
-#line 6 "lib/common/i32.sj"
         (*_return) = a;
     }
 }
@@ -834,7 +736,7 @@ void sjf_i32_max(int32_t a, int32_t b, int32_t* _return) {
 void sjf_list_heap_class(sjs_list_heap_class* _this) {
 }
 
-void sjf_list_heap_class_add(sjs_list_heap_class* _parent, sjs_class_heap* item) {
+void sjf_list_heap_class_add(sjs_list_heap_class* _parent, sjs_class* item) {
     int32_t sjt_compare1;
     int32_t sjt_compare2;
     sjs_array_heap_class* sjt_dot1;
@@ -845,23 +747,16 @@ void sjf_list_heap_class_add(sjs_list_heap_class* _parent, sjs_class_heap* item)
     sjs_array_heap_class* sjt_dot3;
     sjs_list_heap_class* sjt_dot4;
     int32_t sjt_functionParam4;
-    sjs_class_heap* sjt_functionParam5;
+    sjs_class* sjt_functionParam5;
     bool sjt_ifElse1;
     sjs_array_heap_class* sjt_parent2;
 
-#line 44 "lib/common/list.sj"
     sjt_dot2 = _parent;
-#line 1 "lib/common/array.sj"
     sjt_dot1 = &(sjt_dot2)->array;
-#line 45 "lib/common/list.sj"
     sjt_compare1 = (sjt_dot1)->count;
-#line 44
     sjt_dot4 = _parent;
-#line 1 "lib/common/array.sj"
     sjt_dot3 = &(sjt_dot4)->array;
-#line 45 "lib/common/list.sj"
     sjt_compare2 = (sjt_dot3)->datasize;
-#line 45
     sjt_ifElse1 = sjt_compare1 >= sjt_compare2;
     if (sjt_ifElse1) {
         sjs_list_heap_class* sjt_dot10;
@@ -875,157 +770,104 @@ void sjf_list_heap_class_add(sjs_list_heap_class* _parent, sjs_class_heap* item)
         int32_t sjt_math4;
         sjs_array_heap_class* sjt_parent1;
 
-#line 44 "lib/common/list.sj"
         sjt_dot5 = _parent;
-#line 44
         sjt_dot8 = _parent;
-#line 115 "lib/common/array.sj"
         sjt_parent1 = &(sjt_dot8)->array;
-#line 46 "lib/common/list.sj"
         sjt_functionParam2 = 10;
-#line 44
         sjt_dot10 = _parent;
-#line 1 "lib/common/array.sj"
         sjt_dot9 = &(sjt_dot10)->array;
-#line 46 "lib/common/list.sj"
         sjt_math3 = (sjt_dot9)->datasize;
-#line 46
         sjt_math4 = 2;
-#line 46
         sjt_functionParam3 = sjt_math3 * sjt_math4;
-#line 46
         sjf_i32_max(sjt_functionParam2, sjt_functionParam3, &sjt_functionParam1);
-#line 46
         sjf_array_heap_class_grow(sjt_parent1, sjt_functionParam1, &sjt_dot5->array);
     }
 
-#line 44
     sjt_dot11 = _parent;
-#line 19 "lib/common/array.sj"
     sjt_parent2 = &(sjt_dot11)->array;
-#line 44 "lib/common/list.sj"
     sjt_dot13 = _parent;
-#line 1 "lib/common/array.sj"
     sjt_dot12 = &(sjt_dot13)->array;
-#line 50 "lib/common/list.sj"
     sjt_functionParam4 = (sjt_dot12)->count;
-#line 44
     sjt_functionParam5 = item;
-#line 44
     sjt_functionParam5->_refCount++;
-#line 44
     sjf_array_heap_class_initat(sjt_parent2, sjt_functionParam4, sjt_functionParam5);
 
     sjt_functionParam5->_refCount--;
     if (sjt_functionParam5->_refCount <= 0) {
-        sjf_class_destroy((sjs_class*)(((char*)sjt_functionParam5) + sizeof(intptr_t)));
+        sjf_class_destroy(sjt_functionParam5);
     }
 }
 
 void sjf_list_heap_class_copy(sjs_list_heap_class* _this, sjs_list_heap_class* _from) {
-#line 1 "lib/common/list.sj"
     sjf_array_heap_class_copy(&_this->array, &_from->array);
 }
 
 void sjf_list_heap_class_destroy(sjs_list_heap_class* _this) {
 }
 
-void sjf_list_heap_class_getat_heap(sjs_list_heap_class* _parent, int32_t index, sjs_class_heap** _return) {
+void sjf_list_heap_class_getat_heap(sjs_list_heap_class* _parent, int32_t index, sjs_class** _return) {
     sjs_list_heap_class* sjt_dot14;
     int32_t sjt_functionParam7;
     sjs_array_heap_class* sjt_parent4;
 
-#line 8 "lib/common/list.sj"
     sjt_dot14 = _parent;
-#line 7 "lib/common/array.sj"
     sjt_parent4 = &(sjt_dot14)->array;
-#line 8 "lib/common/list.sj"
     sjt_functionParam7 = index;
-#line 8
     sjf_array_heap_class_getat_heap(sjt_parent4, sjt_functionParam7, _return);
 }
 
-void sjf_list_heap_class_heap(sjs_list_heap_class_heap* _this) {
+void sjf_list_heap_class_heap(sjs_list_heap_class* _this) {
 }
 
 int main(int argc, char** argv) {
-    sjf_anon1(&sjv_console);
-#line 1 "lib/common/f32.sj"
     sjv_f32_pi = 3.14159265358979323846f;
-#line 1 "lib/common/i32.sj"
     sjv_u32_maxvalue = (uint32_t)4294967295u;
-#line 3
     sjt_negate1 = 1;
-#line 3
     result1 = -sjt_negate1;
-#line 3
     sjt_math1 = result1;
-#line 3
     sjt_math2 = 2147483647;
-#line 3
     sjv_i32_maxvalue = sjt_math1 - sjt_math2;
-#line 4
     sjv_i32_minvalue = 2147483647;
-#line 1 "lib/common/string.sj"
     sjv_emptystringdata = 0;
-#line 3
     sjv_emptystringdata = "";
-#line 167 "lib/common/weakptr.sj"
     ptr_init();
-#line 168
     weakptr_init();
-#line 2 "lib/common/list.sj"
     sjv_a.array.datasize = 0;
-#line 3 "lib/common/array.sj"
     sjv_a.array.data = 0;
-#line 4
     sjv_a.array._isglobal = false;
-#line 5
     sjv_a.array.count = 0;
-#line 5
     sjf_array_heap_class(&sjv_a.array);
-#line 5
     sjf_list_heap_class(&sjv_a);
-#line 5 "list1.sj"
     sjt_forStart1 = 1;
-#line 5
     sjt_forEnd1 = 100000;
-#line 5
     x = sjt_forStart1;
     while (x < sjt_forEnd1) {
-        sjs_class_heap* sjt_functionParam6;
+        sjs_class* sjt_functionParam6;
         sjs_list_heap_class* sjt_parent3;
 
-#line 44 "lib/common/list.sj"
         sjt_parent3 = &sjv_a;
-#line 44
-        sjt_functionParam6 = (sjs_class_heap*)malloc(sizeof(sjs_class_heap));
-#line 44
+        sjt_functionParam6 = (sjs_class*)malloc(sizeof(sjs_class));
         sjt_functionParam6->_refCount = 1;
-#line 5 "list1.sj"
         sjt_functionParam6->x = x;
-#line 5
         sjf_class_heap(sjt_functionParam6);
-#line 5
         sjf_list_heap_class_add(sjt_parent3, sjt_functionParam6);
-#line 5
         x++;
 
         sjt_functionParam6->_refCount--;
         if (sjt_functionParam6->_refCount <= 0) {
-            sjf_class_destroy((sjs_class*)(((char*)sjt_functionParam6) + sizeof(intptr_t)));
+            sjf_class_destroy(sjt_functionParam6);
         }
     }
 
-#line 8 "lib/common/list.sj"
     sjt_parent5 = &sjv_a;
-#line 8 "list1.sj"
     sjt_functionParam8 = 0;
-#line 8
     sjf_list_heap_class_getat_heap(sjt_parent5, sjt_functionParam8, &sjv_c);
-#line 3
-    sjt_dot15 = (sjs_class*)(((char*)sjv_c) + sizeof(intptr_t));
+    sjt_dot15 = sjv_c;
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 
@@ -1033,8 +875,7 @@ void main_destroy() {
 
     sjv_c->_refCount--;
     if (sjv_c->_refCount <= 0) {
-        sjf_class_destroy((sjs_class*)(((char*)sjv_c) + sizeof(intptr_t)));
+        sjf_class_destroy(sjv_c);
     }
     sjf_list_heap_class_destroy(&sjv_a);
-    sjf_anon1_destroy(&sjv_console);
 }

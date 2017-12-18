@@ -238,6 +238,10 @@ shared_ptr<CType> NAssignment::getType(Compiler* compiler, shared_ptr<CScope> sc
     }
 
     auto rightType = rightVar->getType(compiler);
+    if (!rightType) {
+        compiler->addError(loc, CErrorCode::Internal, "right type is undefined");
+        return nullptr;
+    }
 
     if (rightType->typeMode != CTM_Value && op.isCopy) {
         if (returnMode == CTM_Heap) {

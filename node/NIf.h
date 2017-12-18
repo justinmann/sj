@@ -27,7 +27,7 @@ private:
 
 class NIf : public NVariableBase {
 public:
-    NIf(CLoc loc, shared_ptr<NBase> condition, shared_ptr<NBase> ifBlock, shared_ptr<NBase> elseBlock) : NVariableBase(NodeType_If, loc), condition(condition), ifBlock(ifBlock), elseBlock(elseBlock) { }
+    NIf(CLoc loc, shared_ptr<NBase> condition, shared_ptr<NBase> ifBlock, shared_ptr<NBase> elseBlock, bool useLocalVarScope = true) : NVariableBase(NodeType_If, loc), condition(condition), ifBlock(ifBlock), elseBlock(elseBlock), useLocalVarScope(useLocalVarScope) { }
     void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
     
@@ -35,6 +35,7 @@ private:
     shared_ptr<NBase> condition;
     shared_ptr<NBase> ifBlock;
     shared_ptr<NBase> elseBlock;
+    bool useLocalVarScope;
 };
 
 #endif /* NIf_h */

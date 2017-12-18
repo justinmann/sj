@@ -76,6 +76,10 @@ void sjf_foo(void) {
 int main(int argc, char** argv) {
     sjf_foo();
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

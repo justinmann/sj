@@ -18,7 +18,7 @@ k : isEmpty(i)
 l : empty'#interface
 m : isEmpty(l)
 
-n : value(class())
+n : value(heap class())
 o : getValue(n)
 p : n?.bob
 q : a?:-1

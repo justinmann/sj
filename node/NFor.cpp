@@ -39,7 +39,6 @@ void CForLoopVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
         trBlock->statements.push_back(TrStatement(loc, loopCounterLine.str()));
 
         auto trForBlock = make_shared<TrBlock>();
-        trForBlock->parent = trBlock;
         trForBlock->hasThis = trBlock->hasThis;
         stringstream whileLine;
         whileLine << "while (" << indexVar->name << " < " << loopEndTrValue->getName(trBlock) << ")";
@@ -60,7 +59,6 @@ void CForLoopVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
         trBlock->statements.push_back(TrStatement(loc, loopCounterLine.str()));
 
         auto trForBlock = make_shared<TrBlock>();
-        trForBlock->parent = trBlock;
         trForBlock->hasThis = trBlock->hasThis;
         stringstream whileLine;
         whileLine << "while (" << indexVar->name << " >= " << loopStartTrValue->getName(trBlock) << ")";

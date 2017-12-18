@@ -43,7 +43,7 @@ void CIfValueVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
 
     auto trIfBlock = make_shared<TrBlock>();
     trIfBlock->hasThis = trBlock->hasThis;
-    trIfBlock->parent = trBlock;
+    trIfBlock->localVarParent = ifLocalVarScope ? nullptr : trBlock;
     auto trStatement = TrStatement(loc, ifLine.str(), trIfBlock);
 
     scope.lock()->pushLocalVarScope(ifLocalVarScope);
@@ -58,7 +58,7 @@ void CIfValueVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
 
     if (elseVar) {
         auto trElseBlock = make_shared<TrBlock>();
-        trElseBlock->parent = trBlock;
+        trElseBlock->localVarParent = elseLocalVarScope ? nullptr : trBlock;
         trElseBlock->hasThis = trBlock->hasThis;
         trStatement.elseBlock = trElseBlock;
 

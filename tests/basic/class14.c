@@ -70,6 +70,7 @@ struct td_sjs_object {
 };
 
 struct td_sjs_class {
+    int _refCount;
     int32_t m;
 };
 
@@ -87,7 +88,6 @@ void sjf_class(sjs_class* _this, int32_t* _return) {
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
-#line 1 "class14.sj"
     _this->m = _from->m;
 }
 
@@ -97,18 +97,18 @@ void sjf_class_destroy(sjs_class* _this) {
 void sjf_class_inner(sjs_class* _parent, int32_t* _return) {
     sjs_class* sjt_dot1;
 
-#line 2 "class14.sj"
     sjt_dot1 = _parent;
-#line 2
     (*_return) = (sjt_dot1)->m;
 }
 
 int main(int argc, char** argv) {
-#line 1 "class14.sj"
     object1.m = 1;
-#line 1
     sjf_class(&object1, &void1);
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

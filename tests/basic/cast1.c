@@ -73,11 +73,13 @@ float sjv_x;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
-#line 1 "cast1.sj"
     sjt_cast1 = 5;
-#line 1
     sjv_x = (float)sjt_cast1;
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

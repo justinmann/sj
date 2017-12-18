@@ -17,13 +17,13 @@ hash![key, val] (
         --c--
     }
 
-    getAt(key : 'key)'val {
+    getAt(key : 'key)'val? {
         --c--
         khiter_t k = kh_get(#type(key)_#type(val)_hash_type, _parent->_hash, key);
         if (k == kh_end(_parent->_hash)) {
-            halt("cannot find key");
+            #returnEmpty(val)
         }
-        #return(val, kh_val(_parent->_hash, k));
+        #returnValue(val, kh_val(_parent->_hash, k));
         --c--
     }
 ) {

@@ -61,18 +61,14 @@ const double_option double_empty = { true };
 
 #define sjs_object_typeId 1
 #define sjs_a_class_typeId 2
-#define sjs_a_class_heap_typeId 3
-#define sji_a_foo_typeId 4
-#define sjs_b_class_typeId 5
-#define sjs_b_class_heap_typeId 6
-#define sji_b_foo_typeId 7
+#define sji_a_foo_typeId 3
+#define sjs_b_class_typeId 4
+#define sji_b_foo_typeId 5
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_a_class sjs_a_class;
-typedef struct td_sjs_a_class_heap sjs_a_class_heap;
 typedef struct td_sji_a_foo sji_a_foo;
 typedef struct td_sjs_b_class sjs_b_class;
-typedef struct td_sjs_b_class_heap sjs_b_class_heap;
 typedef struct td_sji_b_foo sji_b_foo;
 
 struct td_sjs_object {
@@ -80,11 +76,7 @@ struct td_sjs_object {
 };
 
 struct td_sjs_a_class {
-    int structsNeedAValue;
-};
-
-struct td_sjs_a_class_heap {
-    intptr_t _refCount;
+    int _refCount;
 };
 
 struct td_sji_a_foo {
@@ -96,11 +88,7 @@ struct td_sji_a_foo {
 };
 
 struct td_sjs_b_class {
-    int structsNeedAValue;
-};
-
-struct td_sjs_b_class_heap {
-    intptr_t _refCount;
+    int _refCount;
 };
 
 struct td_sji_b_foo {
@@ -111,8 +99,8 @@ struct td_sji_b_foo {
     void (*bar)(void* _parent, int32_t* _return);
 };
 
-sjs_a_class_heap* sjt_cast1;
-sjs_b_class_heap* sjt_cast2;
+sjs_a_class* sjt_cast1;
+sjs_b_class* sjt_cast2;
 sji_a_foo* sjt_parent1;
 sji_b_foo* sjt_parent2;
 int32_t sjv_a_x;
@@ -132,9 +120,9 @@ sjs_object* sjf_a_class_asInterface(sjs_a_class* _this, int typeId);
 sji_a_foo* sjf_a_class_as_sji_a_foo(sjs_a_class* _this);
 void sjf_a_class_copy(sjs_a_class* _this, sjs_a_class* _from);
 void sjf_a_class_destroy(sjs_a_class* _this);
-void sjf_a_class_heap(sjs_a_class_heap* _this);
-sjs_object* sjf_a_class_heap_asInterface(sjs_a_class_heap* _this, int typeId);
-sji_a_foo* sjf_a_class_heap_as_sji_a_foo(sjs_a_class_heap* _this);
+void sjf_a_class_heap(sjs_a_class* _this);
+sjs_object* sjf_a_class_heap_asInterface(sjs_a_class* _this, int typeId);
+sji_a_foo* sjf_a_class_heap_as_sji_a_foo(sjs_a_class* _this);
 void sjf_a_func(int32_t* _return);
 void sjf_b_class(sjs_b_class* _this);
 sjs_object* sjf_b_class_asInterface(sjs_b_class* _this, int typeId);
@@ -142,9 +130,9 @@ sji_b_foo* sjf_b_class_as_sji_b_foo(sjs_b_class* _this);
 void sjf_b_class_b_bar(sjs_b_class* _parent, int32_t* _return);
 void sjf_b_class_copy(sjs_b_class* _this, sjs_b_class* _from);
 void sjf_b_class_destroy(sjs_b_class* _this);
-void sjf_b_class_heap(sjs_b_class_heap* _this);
-sjs_object* sjf_b_class_heap_asInterface(sjs_b_class_heap* _this, int typeId);
-sji_b_foo* sjf_b_class_heap_as_sji_b_foo(sjs_b_class_heap* _this);
+void sjf_b_class_heap(sjs_b_class* _this);
+sjs_object* sjf_b_class_heap_asInterface(sjs_b_class* _this, int typeId);
+sji_b_foo* sjf_b_class_heap_as_sji_b_foo(sjs_b_class* _this);
 void sjf_b_func(int32_t* _return);
 void sji_a_foo_copy(sji_a_foo* _this, sji_a_foo* _from);
 void sji_a_foo_destroy(sji_a_foo* _this);
@@ -188,10 +176,10 @@ void sjf_a_class_copy(sjs_a_class* _this, sjs_a_class* _from) {
 void sjf_a_class_destroy(sjs_a_class* _this) {
 }
 
-void sjf_a_class_heap(sjs_a_class_heap* _this) {
+void sjf_a_class_heap(sjs_a_class* _this) {
 }
 
-sjs_object* sjf_a_class_heap_asInterface(sjs_a_class_heap* _this, int typeId) {
+sjs_object* sjf_a_class_heap_asInterface(sjs_a_class* _this, int typeId) {
     switch (typeId) {
         case sji_a_foo_typeId:  {
             return (sjs_object*)sjf_a_class_heap_as_sji_a_foo(_this);
@@ -201,7 +189,7 @@ sjs_object* sjf_a_class_heap_asInterface(sjs_a_class_heap* _this, int typeId) {
     return 0;
 }
 
-sji_a_foo* sjf_a_class_heap_as_sji_a_foo(sjs_a_class_heap* _this) {
+sji_a_foo* sjf_a_class_heap_as_sji_a_foo(sjs_a_class* _this) {
     sji_a_foo* _interface;
     _interface = (sji_a_foo*)malloc(sizeof(sji_a_foo));
     _interface->_refCount = 1;
@@ -215,7 +203,6 @@ sji_a_foo* sjf_a_class_heap_as_sji_a_foo(sjs_a_class_heap* _this) {
 }
 
 void sjf_a_func(int32_t* _return) {
-#line 3 "package1.sj"
     (*_return) = sjv_a_x;
 }
 
@@ -255,10 +242,10 @@ void sjf_b_class_copy(sjs_b_class* _this, sjs_b_class* _from) {
 void sjf_b_class_destroy(sjs_b_class* _this) {
 }
 
-void sjf_b_class_heap(sjs_b_class_heap* _this) {
+void sjf_b_class_heap(sjs_b_class* _this) {
 }
 
-sjs_object* sjf_b_class_heap_asInterface(sjs_b_class_heap* _this, int typeId) {
+sjs_object* sjf_b_class_heap_asInterface(sjs_b_class* _this, int typeId) {
     switch (typeId) {
         case sji_b_foo_typeId:  {
             return (sjs_object*)sjf_b_class_heap_as_sji_b_foo(_this);
@@ -268,7 +255,7 @@ sjs_object* sjf_b_class_heap_asInterface(sjs_b_class_heap* _this, int typeId) {
     return 0;
 }
 
-sji_b_foo* sjf_b_class_heap_as_sji_b_foo(sjs_b_class_heap* _this) {
+sji_b_foo* sjf_b_class_heap_as_sji_b_foo(sjs_b_class* _this) {
     sji_b_foo* _interface;
     _interface = (sji_b_foo*)malloc(sizeof(sji_b_foo));
     _interface->_refCount = 1;
@@ -282,7 +269,6 @@ sji_b_foo* sjf_b_class_heap_as_sji_b_foo(sjs_b_class_heap* _this) {
 }
 
 void sjf_b_func(int32_t* _return) {
-#line 15 "package1.sj"
     (*_return) = sjv_b_x;
 }
 
@@ -298,7 +284,7 @@ void sji_a_foo_copy(sji_a_foo* _this, sji_a_foo* _from) {
 void sji_a_foo_destroy(sji_a_foo* _this) {
     _this->_parent->_refCount--;
     if (_this->_parent->_refCount <= 0) {
-        _this->destroy((void*)(((char*)_this->_parent) + sizeof(intptr_t)));
+        _this->destroy(_this->_parent);
         free(_this->_parent);
     }
 }
@@ -315,49 +301,35 @@ void sji_b_foo_copy(sji_b_foo* _this, sji_b_foo* _from) {
 void sji_b_foo_destroy(sji_b_foo* _this) {
     _this->_parent->_refCount--;
     if (_this->_parent->_refCount <= 0) {
-        _this->destroy((void*)(((char*)_this->_parent) + sizeof(intptr_t)));
+        _this->destroy(_this->_parent);
         free(_this->_parent);
     }
 }
 
 int main(int argc, char** argv) {
-#line 2 "package1.sj"
     sjv_a_x = 0;
-#line 13
     sjv_b_x = 1;
-#line 14
     sjv_b_d = 12;
-#line 25
     sjv_b = sjv_b_x;
-#line 25
     sjf_b_func(&sjv_c);
-#line 34
     sjv_y = 0;
-#line 34
-    sjt_cast1 = (sjs_a_class_heap*)malloc(sizeof(sjs_a_class_heap));
-#line 34
+    sjt_cast1 = (sjs_a_class*)malloc(sizeof(sjs_a_class));
     sjt_cast1->_refCount = 1;
-#line 34
     sjf_a_class_heap(sjt_cast1);
-#line 4
     sjv_e = (sji_a_foo*)sjf_a_class_heap_as_sji_a_foo(sjt_cast1);
-#line 5
     sjt_parent1 = sjv_e;
-#line 38
-    sjt_parent1->bar((void*)(((char*)sjt_parent1->_parent) + sizeof(intptr_t)), &sjv_f);
-#line 38
-    sjt_cast2 = (sjs_b_class_heap*)malloc(sizeof(sjs_b_class_heap));
-#line 38
+    sjt_parent1->bar(sjt_parent1->_parent, &sjv_f);
+    sjt_cast2 = (sjs_b_class*)malloc(sizeof(sjs_b_class));
     sjt_cast2->_refCount = 1;
-#line 38
     sjf_b_class_heap(sjt_cast2);
-#line 16
     sjv_h = (sji_b_foo*)sjf_b_class_heap_as_sji_b_foo(sjt_cast2);
-#line 17
     sjt_parent2 = sjv_h;
-#line 41
-    sjt_parent2->bar((void*)(((char*)sjt_parent2->_parent) + sizeof(intptr_t)), &sjv_i);
+    sjt_parent2->bar(sjt_parent2->_parent, &sjv_i);
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 
@@ -365,11 +337,11 @@ void main_destroy() {
 
     sjt_cast1->_refCount--;
     if (sjt_cast1->_refCount <= 0) {
-        sjf_a_class_destroy((sjs_a_class*)(((char*)sjt_cast1) + sizeof(intptr_t)));
+        sjf_a_class_destroy(sjt_cast1);
     }
     sjt_cast2->_refCount--;
     if (sjt_cast2->_refCount <= 0) {
-        sjf_b_class_destroy((sjs_b_class*)(((char*)sjt_cast2) + sizeof(intptr_t)));
+        sjf_b_class_destroy(sjt_cast2);
     }
     sjv_e->_refCount--;
     if (sjv_e->_refCount <= 0) {

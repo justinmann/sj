@@ -61,22 +61,16 @@ const double_option double_empty = { true };
 
 #define sjs_object_typeId 1
 #define sjs_class_typeId 2
-#define sjs_class_heap_typeId 3
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_class sjs_class;
-typedef struct td_sjs_class_heap sjs_class_heap;
 
 struct td_sjs_object {
     intptr_t _refCount;
 };
 
 struct td_sjs_class {
-    int structsNeedAValue;
-};
-
-struct td_sjs_class_heap {
-    intptr_t _refCount;
+    int _refCount;
 };
 
 sjs_class* sjt_parent1;
@@ -87,7 +81,7 @@ void sjf_class(sjs_class* _this);
 void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_func(sjs_class* _parent, int32_t* _return);
-void sjf_class_heap(sjs_class_heap* _this);
+void sjf_class_heap(sjs_class* _this);
 void main_destroy(void);
 
 void sjf_class(sjs_class* _this) {
@@ -100,20 +94,21 @@ void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_func(sjs_class* _parent, int32_t* _return) {
-#line 1 "class9.sj"
     (*_return) = 1;
 }
 
-void sjf_class_heap(sjs_class_heap* _this) {
+void sjf_class_heap(sjs_class* _this) {
 }
 
 int main(int argc, char** argv) {
     sjf_class(&sjv_c);
-#line 1 "class9.sj"
     sjt_parent1 = &sjv_c;
-#line 1
     sjf_class_func(sjt_parent1, &void1);
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

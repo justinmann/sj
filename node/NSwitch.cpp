@@ -26,7 +26,6 @@ void CSwitchVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
         if (previousStatement) {
             auto t = make_shared<TrBlock>();
             t->hasThis = trBlock->hasThis;
-            t->parent = trBlock;
             previousStatement->elseBlock = t;
             currentBlock = t.get();
         }
@@ -49,7 +48,6 @@ void CSwitchVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
         }
         auto trIfBlock = make_shared<TrBlock>();
         trIfBlock->hasThis = trBlock->hasThis;
-        trIfBlock->parent = trBlock;
         auto trStatement = TrStatement(loc, ifLine.str(), trIfBlock);
 
         scope.lock()->pushLocalVarScope(clauseVar.localVarScope);
@@ -70,7 +68,6 @@ void CSwitchVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
         if (previousStatement) {
             auto t = make_shared<TrBlock>();
             t->hasThis = trBlock->hasThis;
-            t->parent = trBlock;
             previousStatement->elseBlock = t;
             currentBlock = t.get();
         }

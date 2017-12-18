@@ -61,22 +61,16 @@ const double_option double_empty = { true };
 
 #define sjs_object_typeId 1
 #define sjs_class_typeId 2
-#define sjs_class_heap_typeId 3
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_class sjs_class;
-typedef struct td_sjs_class_heap sjs_class_heap;
 
 struct td_sjs_object {
     intptr_t _refCount;
 };
 
 struct td_sjs_class {
-    int structsNeedAValue;
-};
-
-struct td_sjs_class_heap {
-    intptr_t _refCount;
+    int _refCount;
 };
 
 sjs_class* sjv_b;
@@ -84,7 +78,7 @@ sjs_class* sjv_b;
 void sjf_class(sjs_class* _this);
 void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
-void sjf_class_heap(sjs_class_heap* _this);
+void sjf_class_heap(sjs_class* _this);
 void sjf_func(sjs_class** _return);
 void main_destroy(void);
 
@@ -97,7 +91,7 @@ void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
 void sjf_class_destroy(sjs_class* _this) {
 }
 
-void sjf_class_heap(sjs_class_heap* _this) {
+void sjf_class_heap(sjs_class* _this) {
 }
 
 void sjf_func(sjs_class** _return) {
@@ -108,17 +102,11 @@ void sjf_func(sjs_class** _return) {
     sjs_class sjv_a;
 
     sjf_class(&sjt_call1);
-#line 4 "heap1.sj"
     sjt_copy1 = &sjt_call1;
-#line 4
     sjf_class_copy(&sjv_a, sjt_copy1);
-#line 4
     sjf_class(&sjt_call2);
-#line 5
     sjt_copy2 = &sjt_call2;
-#line 5
     sjf_class_copy(&sjv_a, sjt_copy2);
-#line 5
     (*_return) = &sjv_a;
 
     sjf_class_destroy(&sjt_call1);
@@ -129,6 +117,10 @@ void sjf_func(sjs_class** _return) {
 int main(int argc, char** argv) {
     sjf_func(&sjv_b);
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

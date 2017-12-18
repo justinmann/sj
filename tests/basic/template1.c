@@ -77,17 +77,14 @@ void sjf_class_i32(int32_t* _return);
 void main_destroy(void);
 
 void sjf_class_bool(int32_t* _return) {
-#line 1 "template1.sj"
     (*_return) = 1;
 }
 
 void sjf_class_f32(int32_t* _return) {
-#line 1 "template1.sj"
     (*_return) = 1;
 }
 
 void sjf_class_i32(int32_t* _return) {
-#line 1 "template1.sj"
     (*_return) = 1;
 }
 
@@ -96,6 +93,10 @@ int main(int argc, char** argv) {
     sjf_class_f32(&sjv_b);
     sjf_class_bool(&sjv_c);
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

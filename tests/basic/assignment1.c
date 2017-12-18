@@ -73,22 +73,22 @@ int32_t sjv_x;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
-#line 1 "assignment1.sj"
     sjv_x = 1;
-#line 3
     sjt_ifElse1 = true;
     if (sjt_ifElse1) {
         int32_t sjv_y;
 
-#line 4 "assignment1.sj"
         sjv_y = 1;
     } else {
         int32_t sjv_y;
 
-#line 6 "assignment1.sj"
         sjv_y = 1;
     }
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

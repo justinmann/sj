@@ -74,17 +74,17 @@ int32_t x;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
-#line 1 "for1.sj"
     sjt_forStart1 = 1;
-#line 1
     sjt_forEnd1 = 10;
-#line 1
     x = sjt_forStart1;
     while (x < sjt_forEnd1) {
-#line 1 "for1.sj"
         x++;
     }
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

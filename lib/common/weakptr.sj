@@ -17,7 +17,7 @@ struct td_delete_cb_list {
 --cstruct--
 
 --cdefine--
-void ptr_hash(void* p, uintptr_t* result);
+void ptr_hash(void* p, uint32_t* result);
 void ptr_isequal(void *p1, void* p2, bool* result);
 void delete_cb_list_free(delete_cb_list* d);
 void delete_cb_list_add(delete_cb_list* d, delete_cb cb);
@@ -33,8 +33,12 @@ bool ptr_release(void* ptr);
 --cdefine--
 
 --cfunction--
-void ptr_hash(void* p, uintptr_t* result) {
+void ptr_hash(void* p, uint32_t* result) {
+##ifdef __32__
     *result = kh_int_hash_func((uintptr_t)p);
+##else
+    *result = kh_int64_hash_func((uintptr_t)p);
+##endif
 }
 
 void ptr_isequal(void *p1, void* p2, bool* result) {

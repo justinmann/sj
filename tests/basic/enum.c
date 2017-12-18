@@ -82,32 +82,25 @@ void sjf_func(int32_option* _return) {
     int32_t sjt_value1;
     int32_option value1;
 
-#line 15 "enum.sj"
     sjt_value1 = sjv_bar_a;
-#line 15
     value1.isempty = false;
-#line 15
     value1.value = sjt_value1;
-#line 15
     (*_return) = value1;
 }
 
 int main(int argc, char** argv) {
-#line 1 "enum.sj"
     sjv_bar_a = 0;
-#line 1
     sjv_bar_b = 1;
-#line 1
     sjv_bar_c = 2;
-#line 8
     sjv_bar2_a = 0;
-#line 8
     sjv_bar2_b = 1;
-#line 8
     sjv_bar2_c = 2;
-#line 8
     sjf_func(&sjv_b);
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

@@ -76,17 +76,16 @@ bool sjv_x;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
-#line 1 "comparison13.sj"
     sjt_negate1 = 3.0;
-#line 1
     result1 = -sjt_negate1;
-#line 1
     sjt_compare1 = result1;
-#line 1
     sjt_compare2 = 4.0;
-#line 1
     sjv_x = sjt_compare1 <= sjt_compare2;
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

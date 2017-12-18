@@ -137,8 +137,8 @@ void TrBlock::writeReturnToStream(ostream& stream, int level) {
 shared_ptr<TrValue> TrBlock::getVariable(string name) {
     auto var = variables.find(name);
     if (var == variables.end()) {
-        if (parent != nullptr) {
-            return parent->getVariable(name);
+        if (localVarParent != nullptr) {
+            return localVarParent->getVariable(name);
         }
         return nullptr;
     }
@@ -146,28 +146,44 @@ shared_ptr<TrValue> TrBlock::getVariable(string name) {
 }
 
 shared_ptr<TrValue> TrBlock::createVariable(shared_ptr<CScope> scope, shared_ptr<CType> type, string name) {
-    auto var = getVariable(name);
-    if (var) {
-        assert(var->type == type);
-    } else {
-        var = make_shared<TrValue>(scope, type, name, false);
-        variables[name] = var;
+    if (localVarParent) {
+        return localVarParent->createVariable(scope, type, name);
     }
-    return var;
+    else {
+        auto var = getVariable(name);
+        if (var) {
+            assert(var->type == type);
+        }
+        else {
+            var = make_shared<TrValue>(scope, type, name, false);
+            variables[name] = var;
+        }
+        return var;
+    }
 }
 
 shared_ptr<TrValue> TrBlock::createTempVariable(shared_ptr<CScope> scope, shared_ptr<CType> type, string prefix) {
-    auto varStr = nextVarName(prefix);
-    auto var = make_shared<TrValue>(scope, type, varStr, false);
-    variables[varStr] = var;
-    return var;
+    if (localVarParent) {
+        return localVarParent->createTempVariable(scope, type, prefix);
+    }
+    else {
+        auto varStr = nextVarName(prefix);
+        auto var = make_shared<TrValue>(scope, type, varStr, false);
+        variables[varStr] = var;
+        return var;
+    }
 }
 
 shared_ptr<TrStoreValue> TrBlock::createTempStoreVariable(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, string prefix) {
-    auto varStr = nextVarName("sjt_" + prefix);
-    auto var = make_shared<TrStoreValue>(loc, scope, type, varStr, AssignOp::immutableCreate);
-    variables[varStr] = make_shared<TrValue>(scope, type, varStr, false);
-    return var;
+    if (localVarParent) {
+        return localVarParent->createTempStoreVariable(loc, scope, type, prefix);
+    }
+    else {
+        auto varStr = nextVarName("sjt_" + prefix);
+        auto var = make_shared<TrStoreValue>(loc, scope, type, varStr, AssignOp::immutableCreate);
+        variables[varStr] = make_shared<TrValue>(scope, type, varStr, false);
+        return var;
+    }
 }
 
 shared_ptr<TrStoreValue> TrBlock::createVoidStoreVariable(CLoc loc, shared_ptr<CType> type) {
@@ -200,9 +216,6 @@ void TrBlock::addSpacing(ostream& stream, int level) {
 string TrBlock::getFunctionName() {
     if (definition.size() > 0)
         return definition;
-    if (parent) {
-        return parent->getFunctionName();
-    }
     return "";
 }
 
@@ -360,7 +373,6 @@ void TrValue::addInitToStatements(TrBlock* block) {
     }
     else if (type->typeMode == CTM_Stack) {
         assert(!type->parent.expired());
-        assert(!type->isOption);
     }
     else if (type->typeMode == CTM_Local) {
     }
@@ -394,7 +406,7 @@ string TrValue::convertToLocalName(CTypeMode typeMode, string name, bool isRetur
     case CTM_Stack:
         return isReturnValue ? name : "&" + name;
     case CTM_Heap:
-        return "(void*)(((char*)" + name + ") + sizeof(intptr_t))";
+        return name;
     case CTM_Value:
         return name;
     default:
@@ -408,7 +420,7 @@ string TrValue::convertToLocalName(shared_ptr<CType> from, string name, bool isR
     case CTM_Local:
         return name;
     case CTM_Stack:
-        return isReturnValue ? name : "&" + name;
+        return isReturnValue ? name :from->isOption ? ("(" + name + "._refCount != -1 ? &" + name + " : 0)") : ("&" + name);
     case CTM_Heap:
         if (from->category == CTC_Interface) {
             return name;
@@ -417,7 +429,7 @@ string TrValue::convertToLocalName(shared_ptr<CType> from, string name, bool isR
             return name + ".inner";
         }
         else {
-            return "(" + from->parent.lock()->getCStructName(CTM_Stack) + "*)(((char*)" + name + ") + sizeof(intptr_t))";
+            return name;
         }
     case CTM_Value:
         return name;

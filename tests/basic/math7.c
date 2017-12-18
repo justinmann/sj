@@ -75,15 +75,15 @@ int32_t sjt_negate1;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
-#line 1 "math7.sj"
     sjt_math1 = 4;
-#line 1
     sjt_negate1 = 5;
-#line 1
     result1 = -sjt_negate1;
-#line 1
     sjt_math2 = result1;
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

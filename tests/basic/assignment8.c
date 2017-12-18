@@ -73,11 +73,13 @@ int32_t sjv_y;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
-#line 1 "assignment8.sj"
     sjv_y = 2;
-#line 1
     sjv_x = sjv_y;
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

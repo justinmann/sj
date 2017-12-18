@@ -1,0 +1,18 @@
+class(inner'stack inner:)'stack class {
+  this
+}
+
+class2(inner'stack inner?:)'stack class2 {
+  this
+}
+
+global()'void {
+  x3'stack class? : value(class(this = class(
+    inner'stack inner : inner
+  )))
+  x7'stack class2? : value(class2(this = class2(
+    inner'stack inner? : inner
+  )))
+  void
+}
+

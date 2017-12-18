@@ -70,7 +70,7 @@ struct td_sjs_object {
 };
 
 struct td_sjs_func {
-    int structsNeedAValue;
+    int _refCount;
 };
 
 sjs_func object1;
@@ -87,7 +87,6 @@ void sjf_func(sjs_func* _this, int32_t* _return) {
 }
 
 void sjf_func_bar(sjs_func* _parent, int32_t* _return) {
-#line 2 "function21.sj"
     (*_return) = 9;
 }
 
@@ -100,6 +99,10 @@ void sjf_func_destroy(sjs_func* _this) {
 int main(int argc, char** argv) {
     sjf_func(&object1, &void1);
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

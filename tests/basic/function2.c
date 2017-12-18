@@ -73,13 +73,16 @@ void sjf_func(int32_t* _return);
 void main_destroy(void);
 
 void sjf_func(int32_t* _return) {
-#line 1 "function2.sj"
     (*_return) = 1;
 }
 
 int main(int argc, char** argv) {
     sjf_func(&void1);
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

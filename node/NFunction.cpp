@@ -285,12 +285,13 @@ void CFunction::transpileStructDefinition(Compiler* compiler, TrOutput* trOutput
 
     for (auto returnMode : functionReturnModes) {
         if (hasThis) {
-            auto calleeVar = getThisVar(compiler, returnMode);
             auto calleeScope = getScope(compiler, returnMode);
 
             // Create struct
             string stackStructName = getCStructName(CTM_Stack);
             if (trOutput->structs.find(stackStructName) == trOutput->structs.end()) {
+                trOutput->structs[stackStructName].push_back("int _refCount");
+
                 bool hasValues = false;
                 auto argTypes = getCTypeList(compiler, returnMode);
                 for (auto argType : *argTypes) {
@@ -319,46 +320,7 @@ void CFunction::transpileStructDefinition(Compiler* compiler, TrOutput* trOutput
                     ccode->addToStruct(compiler, calleeScope, trOutput->structs[stackStructName]);
                 }
 
-                if (!hasValues) {
-                    trOutput->structs[stackStructName].push_back("int structsNeedAValue");
-                }
-
                 trOutput->structOrder.push_back(stackStructName);
-            }
-
-            if (calleeVar->getTypeMode() == CTM_Heap) {
-                string heapStructName = getCStructName(CTM_Heap);
-                if (trOutput->structs.find(heapStructName) == trOutput->structs.end()) {
-                    trOutput->structs[heapStructName].push_back("intptr_t _refCount");
-
-                    auto argTypes = getCTypeList(compiler, returnMode);
-                    for (auto argType : *argTypes) {
-                        stringstream ss;
-                        ss << argType.second->cname;
-
-                        // C requires that inline structs be defined before use
-                        if (!argType.second->parent.expired()) {
-                            argType.second->parent.lock()->transpileStructDefinition(compiler, trOutput);
-                        }
-                        else if (!argType.second->callback.expired()) {
-                            argType.second->callback.lock()->transpileStructDefinition(compiler, trOutput);
-                        }
-
-                        if (argType.second->typeMode == CTM_Stack) {
-                        }
-                        else if (argType.second->typeMode != CTM_Heap && argType.second->typeMode != CTM_Value && argType.first.compare("_parent") != 0) {
-                            compiler->addError(loc, CErrorCode::InvalidType, "var '%s' is local which is not allowed", argType.first.c_str());
-                        }
-                        ss << " " << argType.first;
-                        trOutput->structs[heapStructName].push_back(ss.str());
-                    }
-
-                    for (auto ccode : ccodes) {
-                        ccode->addToStruct(compiler, calleeScope, trOutput->structs[heapStructName]);
-                    }
-
-                    trOutput->structOrder.push_back(heapStructName);
-                }
             }
         }
     }
@@ -399,7 +361,6 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
             auto functionBody = trOutput->functions.find(functionName);
             if (functionBody == trOutput->functions.end()) {
                 auto trFunctionBlock = make_shared<TrBlock>();
-                trFunctionBlock->parent = nullptr;
                 trFunctionBlock->hasThis = false;
                 trOutput->functions[functionName] = trFunctionBlock;
 
@@ -458,7 +419,6 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
             if (functionBody == trOutput->functions.end()) {
                 auto returnType = getReturnType(compiler, returnMode);
                 auto trFunctionBlock = make_shared<TrBlock>();
-                trFunctionBlock->parent = nullptr;
                 trFunctionBlock->hasThis = true;
                 trOutput->functions[functionName] = trFunctionBlock;
 
@@ -484,7 +444,6 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
             string functionCopyName = getCCopyFunctionName();
             if (trOutput->functions.find(functionCopyName) == trOutput->functions.end()) {
                 auto trCopyBlock = make_shared<TrBlock>();
-                trCopyBlock->parent = nullptr;
                 trCopyBlock->hasThis = true;
                 trOutput->functions[functionCopyName] = trCopyBlock;
 
@@ -507,7 +466,6 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
             string functionDestroyName = getCDestroyFunctionName();
             if (trOutput->functions.find(functionDestroyName) == trOutput->functions.end()) {
                 auto trDestroyBlock = make_shared<TrBlock>();
-                trDestroyBlock->parent = nullptr;
                 trDestroyBlock->hasThis = true;
                 trOutput->functions[functionDestroyName] = trDestroyBlock;
 
@@ -535,7 +493,6 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                     auto functionBody = trOutput->functions.find(castFunctionName);
                     if (functionBody == trOutput->functions.end()) {
                         auto trFunctionBlock = make_shared<TrBlock>();
-                        trFunctionBlock->parent = nullptr;
                         trFunctionBlock->hasThis = true;
                         trOutput->functions[castFunctionName] = trFunctionBlock;
 
@@ -589,7 +546,6 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                 auto asInterfaceFunctionBody = trOutput->functions.find(asInterfaceFunctionName);
                 if (asInterfaceFunctionBody == trOutput->functions.end()) {
                     auto trFunctionBlock = make_shared<TrBlock>();
-                    trFunctionBlock->parent = nullptr;
                     trFunctionBlock->hasThis = true;
                     trOutput->functions[asInterfaceFunctionName] = trFunctionBlock;
 
@@ -709,7 +665,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
                 assert(compiler->errors.size() > 0);
                 return;
             }
-            auto argStoreValue = trBlock->createTempStoreVariable(calleeLoc, callerScope, argType->typeMode == CTM_Heap ? argType : argType->getLocalValueType(), "functionParam");
+            auto argStoreValue = trBlock->createTempStoreVariable(calleeLoc, callerScope, argType->typeMode == CTM_Heap ? argType : argType->getLocalType(), "functionParam");
             parameterVar->transpile(compiler, trOutput, trBlock, isDefaultAssignment ? nullptr : thisValue, argStoreValue);
 
             if (!argStoreValue->hasSetValue) {
@@ -839,7 +795,7 @@ string CFunction::getCBaseName(CTypeMode returnMode) {
 }
 
 string CFunction::getCStructName(CTypeMode returnMode) {
-    return string("sjs_") + getCBaseName(returnMode);
+    return string("sjs_") + getCBaseName(CTM_Stack);
 }
 
 string CFunction::getCFunctionName(CTypeMode returnMode) {
@@ -856,7 +812,6 @@ string CFunction::getCCallbackFunctionName(Compiler* compiler, TrOutput* trOutpu
         auto functionBody = trOutput->functions.find(functionName);
         if (functionBody == trOutput->functions.end()) {
             auto trFunctionBlock = make_shared<TrBlock>();
-            trFunctionBlock->parent = nullptr;
             trFunctionBlock->hasThis = false;
             trOutput->functions[functionName] = trFunctionBlock;
 
@@ -1552,17 +1507,11 @@ shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, vector<pai
                 case CTM_Heap:
                     return typeName->isOption ? thisTypes->heapOptionType : thisTypes->heapValueType;
                 case CTM_Stack:
-                    if (typeName->isOption) {
-                        compiler->addError(loc, CErrorCode::InvalidType, "option type cannot be stack, stack x? is invalid use heap x?");
-                        return nullptr;
-                    }
-                    else {
-                        return thisTypes->stackValueType;
-                    }
+                    return typeName->isOption ? thisTypes->stackOptionType : thisTypes->stackValueType;
                 case CTM_Local:
                     return typeName->isOption ? thisTypes->localOptionType : thisTypes->localValueType;
                 default:
-                    return typeName->isOption ? thisTypes->heapOptionType : thisTypes->stackValueType;
+                    return typeName->isOption ? thisTypes->stackOptionType : thisTypes->stackValueType;
             }
         }
     }

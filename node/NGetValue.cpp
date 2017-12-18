@@ -19,43 +19,59 @@ shared_ptr<CType> CGetValueVar::getType(Compiler* compiler) {
 }
 
 void CGetValueVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    auto leftValue = trBlock->createTempStoreVariable(loc, leftVar->scope.lock(), leftVar->getType(compiler), "getValue");
-    leftVar->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
-    if (!leftValue) {
-        return;
-    }
+    if (!storeValue->type->parent.expired()) {
+        auto leftValue = make_shared<TrStoreValue>(storeValue->loc, storeValue->scope, storeValue->type->getOptionType(), storeValue->getName(trBlock), storeValue->op);
+        leftVar->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
+        if (!leftValue->hasSetValue) {
+            return;
+        }
+        storeValue->hasSetValue = true;
 
-    if (!leftValue->type->isOption) {
-        compiler->addError(loc, CErrorCode::TypeMismatch, "getValue requires an option type");
-        return;
-    }
-
-    stringstream line;
-    if (leftValue->type->parent.expired() && leftValue->type->category != CTC_Function) {
         if (!isProtectedWithEmptyCheck) {
             stringstream emptyCheck;
-            emptyCheck << "if (" << leftValue->getName(trBlock) << ".isempty) { exit(-1); }";
+            emptyCheck << "if (" << leftValue->getName(trBlock) << "->_refCount == -1) { exit(-1); }";
             trBlock->statements.push_back(TrStatement(loc, emptyCheck.str()));
         }
-        line << leftValue->getName(trBlock) << ".value";
     }
     else {
-        if (!isProtectedWithEmptyCheck) {
-            stringstream emptyCheck;
-            emptyCheck << "if (";
-            if (leftValue->type->category == CTC_Function) {
-                emptyCheck << leftValue->getName(trBlock) << "._parent";
-            }
-            else {
-                emptyCheck << leftValue->getName(trBlock);
-            }
-            emptyCheck << " == 0) { exit(-1); }";
-            trBlock->statements.push_back(TrStatement(loc, emptyCheck.str()));
+        auto leftValue = trBlock->createTempStoreVariable(loc, leftVar->scope.lock(), leftVar->getType(compiler), "getValue");
+        leftVar->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
+        if (!leftValue) {
+            return;
         }
-        line << leftValue->getName(trBlock);
-    }
 
-    storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(scope.lock(), leftValue->type->getValueType(), line.str(), false));
+        if (!leftValue->type->isOption) {
+            compiler->addError(loc, CErrorCode::TypeMismatch, "getValue requires an option type");
+            return;
+        }
+
+        stringstream line;
+        if (leftValue->type->parent.expired() && leftValue->type->category != CTC_Function) {
+            if (!isProtectedWithEmptyCheck) {
+                stringstream emptyCheck;
+                emptyCheck << "if (" << leftValue->getName(trBlock) << ".isempty) { exit(-1); }";
+                trBlock->statements.push_back(TrStatement(loc, emptyCheck.str()));
+            }
+            line << leftValue->getName(trBlock) << ".value";
+        }
+        else {
+            if (!isProtectedWithEmptyCheck) {
+                stringstream emptyCheck;
+                emptyCheck << "if (";
+                if (leftValue->type->category == CTC_Function) {
+                    emptyCheck << leftValue->getName(trBlock) << "._parent";
+                }
+                else {
+                    emptyCheck << leftValue->getName(trBlock);
+                }
+                emptyCheck << " == 0) { exit(-1); }";
+                trBlock->statements.push_back(TrStatement(loc, emptyCheck.str()));
+            }
+            line << leftValue->getName(trBlock);
+        }
+
+        storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(scope.lock(), leftValue->type->getValueType(), line.str(), false));
+    }
 }
 
 void CGetValueVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {

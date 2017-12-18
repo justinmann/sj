@@ -89,43 +89,29 @@ double sjv_f;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
-#line 1 "math1.sj"
     sjt_math1 = 4;
-#line 1
     sjt_math2 = 5;
-#line 1
     sjv_a = sjt_math1 + sjt_math2;
-#line 2
     sjt_math3 = (uint32_t)4u;
-#line 2
     sjt_math4 = (uint32_t)5u;
-#line 2
     sjv_b = sjt_math3 + sjt_math4;
-#line 3
     sjt_math5 = 4ull;
-#line 3
     sjt_math6 = 5ull;
-#line 3
     sjv_c = sjt_math5 + sjt_math6;
-#line 4
     sjt_math7 = 4ll;
-#line 4
     sjt_math8 = 5ll;
-#line 4
     sjv_d = sjt_math7 + sjt_math8;
-#line 5
     sjt_math9 = 4.0f;
-#line 5
     sjt_math10 = 5.0f;
-#line 5
     sjv_e = sjt_math9 + sjt_math10;
-#line 6
     sjt_math11 = 4.0;
-#line 6
     sjt_math12 = 5.0;
-#line 6
     sjv_f = sjt_math11 + sjt_math12;
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

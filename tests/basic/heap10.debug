@@ -2,7 +2,7 @@ class(inner'stack inner:)'stack class {
   this
 }
 
-class2(inner'heap inner?:)'stack class2 {
+class2(inner'stack inner?:)'stack class2 {
   this
 }
 
@@ -17,13 +17,13 @@ global()'void {
     inner'stack inner : inner
   )))
   x5'stack class2 : class2(this = class2(
-    inner'heap inner? : inner
+    inner'stack inner? : inner
   ))
   x6'heap class2 : class2(this = class2(
-    inner'heap inner? : inner
+    inner'stack inner? : inner
   ))
   x8'heap class2? : value(class2(this = class2(
-    inner'heap inner? : inner
+    inner'stack inner? : inner
   )))
   void
 }

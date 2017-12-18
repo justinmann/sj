@@ -8,7 +8,7 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
     vector<string> params;
     auto lastI = 0;
     auto parenCount = 0;
-    for (auto i = 0; i < t.size(); i++) {
+    for (auto i = 0; i < (int)t.size(); i++) {
         if (t[i] == ',' && parenCount == 0) {
             params.push_back(t.substr(lastI, i - lastI));
             lastI = i + 1;

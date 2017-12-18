@@ -78,6 +78,7 @@ shared_ptr<CTypes> CType::create(Compiler* compiler, vector<string>& packageName
     }
 
     auto stackValueType = make_shared<CType>();
+    auto stackOptionType = make_shared<CType>();
     auto heapValueType = make_shared<CType>();
     auto heapOptionType = make_shared<CType>();
     auto localValueType = make_shared<CType>();
@@ -95,8 +96,25 @@ shared_ptr<CTypes> CType::create(Compiler* compiler, vector<string>& packageName
     stackValueType->heapValueType = heapValueType;
     stackValueType->heapOptionType = heapOptionType;
     stackValueType->stackValueType = stackValueType;
+    stackValueType->stackOptionType = stackOptionType;
     stackValueType->localValueType = localValueType;
     stackValueType->localOptionType = localOptionType;
+
+    stackOptionType->isOption = true;
+    stackOptionType->typeMode = CTM_Stack;
+    stackOptionType->category = CTC_Value;
+    stackOptionType->parent = parent;
+    stackOptionType->packageNamespace = packageNamespace;
+    stackOptionType->valueName = valueName;
+    stackOptionType->fullName = "stack " + valueName + "?";
+    stackOptionType->cname = parent.lock()->getCStructName(CTM_Stack);
+    stackOptionType->safeName = valueName + "_option";
+    stackOptionType->heapValueType = heapValueType;
+    stackOptionType->heapOptionType = heapOptionType;
+    stackOptionType->stackValueType = stackValueType;
+    stackOptionType->stackOptionType = stackOptionType;
+    stackOptionType->localValueType = localValueType;
+    stackOptionType->localOptionType = localOptionType;
 
     heapValueType->isOption = false;
     heapValueType->typeMode = CTM_Heap;
@@ -110,6 +128,7 @@ shared_ptr<CTypes> CType::create(Compiler* compiler, vector<string>& packageName
     heapValueType->heapValueType = heapValueType;
     heapValueType->heapOptionType = heapOptionType;
     heapValueType->stackValueType = stackValueType;
+    heapValueType->stackOptionType = stackOptionType;
     heapValueType->localValueType = localValueType;
     heapValueType->localOptionType = localOptionType;
 
@@ -125,6 +144,7 @@ shared_ptr<CTypes> CType::create(Compiler* compiler, vector<string>& packageName
     heapOptionType->heapValueType = heapValueType;
     heapOptionType->heapOptionType = heapOptionType;
     heapOptionType->stackValueType = stackValueType;
+    heapOptionType->stackOptionType = stackOptionType;
     heapOptionType->localValueType = localValueType;
     heapOptionType->localOptionType = localOptionType;
 
@@ -142,7 +162,8 @@ shared_ptr<CTypes> CType::create(Compiler* compiler, vector<string>& packageName
     localValueType->localValueType = localValueType;
     localValueType->localOptionType = localOptionType;
     localValueType->stackValueType = stackValueType;
-    
+    localValueType->stackOptionType = stackOptionType;
+
     localOptionType->isOption = true;
     localOptionType->typeMode = CTM_Local;
     localOptionType->category = CTC_Value;
@@ -157,8 +178,9 @@ shared_ptr<CTypes> CType::create(Compiler* compiler, vector<string>& packageName
     localOptionType->localValueType = localValueType;
     localOptionType->localOptionType = localOptionType;
     localOptionType->stackValueType = stackValueType;
-    
-    compiler->types[key] = make_shared<CTypes>(stackValueType, nullptr, heapValueType, heapOptionType, localValueType, localOptionType);
+    localOptionType->stackOptionType = stackOptionType;
+
+    compiler->types[key] = make_shared<CTypes>(stackValueType, stackOptionType, heapValueType, heapOptionType, localValueType, localOptionType);
     return compiler->types[key];
 }
 
@@ -422,8 +444,14 @@ void CType::transpileDefaultValue(Compiler* compiler, CLoc loc, TrBlock* trBlock
     }
     else if (isOption) {
         if (!parent.expired()) {
-            auto temp = make_shared<TrValue>(nullptr, shared_from_this(), "0", false);
-            storeValue->retainValue(compiler, loc, trBlock, temp);
+            if (storeValue->type->typeMode == CTM_Stack) {
+                trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._refCount = -1"));
+                storeValue->hasSetValue = true;
+            }
+            else {
+                auto temp = make_shared<TrValue>(nullptr, shared_from_this(), "0", false);
+                storeValue->retainValue(compiler, loc, trBlock, temp);
+            }
         }
         else if (category == CTC_Function) {
             trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._parent = 0"));

@@ -10,7 +10,7 @@ void NTupleAssignment::defineImpl(Compiler* compiler, vector<pair<string, vector
 }
 
 shared_ptr<CVar> NTupleAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto rightVar = rightSide->getVar(compiler, scope, nullptr, CTM_Undefined);
+    auto rightVar = rightSide->getVar(compiler, scope, CTM_Undefined);
     if (!rightVar) {
         return nullptr;
     }

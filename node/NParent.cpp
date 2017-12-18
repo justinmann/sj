@@ -26,7 +26,7 @@ void CParentVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
     else {
         if (storeValue->type->typeMode == CTM_Heap) {
             if (scope.lock()->function->getHasHeapParent()) {
-                storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, parentTypes->heapValueType, "(" + parentTypes->heapValueType->cname + ")((char*)_parent - sizeof(intptr_t))", false));
+                storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, parentTypes->heapValueType, "_parent", false));
             }
             else {
                 compiler->addError(loc, CErrorCode::InvalidType, "parent must be heap");                

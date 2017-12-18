@@ -16,7 +16,11 @@ NVariable::NVariable(CLoc loc, const char* name, shared_ptr<CTypeNameList> templ
 shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
     auto varScope = scope;
     if (dotVar) {
-        varScope = CScope::getScopeForType(compiler, dotVar->getType(compiler));
+        auto dotType = dotVar->getType(compiler);
+        if (!dotType) {
+            return nullptr;
+        }
+        varScope = CScope::getScopeForType(compiler, dotType);
     }
     
     if (dotVar && varScope && varScope->function && !templateTypeNames) {

@@ -73,11 +73,13 @@ int32_t sjt_math2;
 void main_destroy(void);
 
 int main(int argc, char** argv) {
-#line 1 "math4.sj"
     sjt_math1 = 4;
-#line 1
     sjt_math2 = 5;
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 

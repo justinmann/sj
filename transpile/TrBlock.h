@@ -50,9 +50,9 @@ private:
 
 class TrBlock {
 public:
-    TrBlock() : parent(nullptr) { }
+    TrBlock() : localVarParent(nullptr) { }
     
-    TrBlock* parent;
+    TrBlock* localVarParent;
 	bool hasThis;
     string definition;
     map<string, shared_ptr<TrValue>> variables;

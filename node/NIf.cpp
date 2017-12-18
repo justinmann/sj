@@ -33,22 +33,30 @@ void CIfElseVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
     }
     auto trIfBlock = make_shared<TrBlock>();
     trIfBlock->hasThis = trBlock->hasThis;
-    trIfBlock->parent = trBlock;
+    trIfBlock->localVarParent = ifLocalVarScope ? nullptr : trBlock;
     auto trStatement = TrStatement(loc, ifLine.str(), trIfBlock);
 
-    scope.lock()->pushLocalVarScope(ifLocalVarScope);
+    if (ifLocalVarScope) {
+        scope.lock()->pushLocalVarScope(ifLocalVarScope);
+    }
     ifVar->transpile(compiler, trOutput, trIfBlock.get(), thisValue, storeValue);
-    scope.lock()->popLocalVarScope(ifLocalVarScope);
+    if (ifLocalVarScope) {
+        scope.lock()->popLocalVarScope(ifLocalVarScope);
+    }
 
     if (elseVar) {
         auto trElseBlock = make_shared<TrBlock>();
-        trElseBlock->parent = trBlock;
+        trElseBlock->localVarParent = elseLocalVarScope ? nullptr : trBlock;
         trElseBlock->hasThis = trBlock->hasThis;
         trStatement.elseBlock = trElseBlock;
 
-        scope.lock()->pushLocalVarScope(elseLocalVarScope);
+        if (elseLocalVarScope) {
+            scope.lock()->pushLocalVarScope(elseLocalVarScope);
+        }
         elseVar->transpile(compiler, trOutput, trElseBlock.get(), thisValue, storeValue);
-        scope.lock()->popLocalVarScope(elseLocalVarScope);
+        if (elseLocalVarScope) {
+            scope.lock()->popLocalVarScope(elseLocalVarScope);
+        }
     }
     else {
         if (!storeValue->isVoid) {
@@ -65,16 +73,24 @@ void CIfElseVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>
 
     if (ifVar) {
         ss << " ";
-        scope.lock()->pushLocalVarScope(ifLocalVarScope);
+        if (ifLocalVarScope) {
+            scope.lock()->pushLocalVarScope(ifLocalVarScope);
+        }
         ifVar->dump(compiler, functions, ss, level);
-        scope.lock()->popLocalVarScope(ifLocalVarScope);
+        if (ifLocalVarScope) {
+            scope.lock()->popLocalVarScope(ifLocalVarScope);
+        }
     }
     
     if (elseVar) {
         ss << " else ";
-        scope.lock()->pushLocalVarScope(elseLocalVarScope);
+        if (elseLocalVarScope) {
+            scope.lock()->pushLocalVarScope(elseLocalVarScope);
+        }
         elseVar->dump(compiler, functions, ss, level);
-        scope.lock()->popLocalVarScope(elseLocalVarScope);
+        if (elseLocalVarScope) {
+            scope.lock()->popLocalVarScope(elseLocalVarScope);
+        }
     }
 }
 
@@ -96,22 +112,29 @@ shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, s
     if (condVar == nullptr) {
         return nullptr;
     }
-    
+
     shared_ptr<LocalVarScope> elseLocalVarScope;
     shared_ptr<CVar> elseVar;
     if (elseBlock) {
-        elseLocalVarScope = make_shared<LocalVarScope>();
-        scope->pushLocalVarScope(elseLocalVarScope);
+        if (useLocalVarScope) {
+            elseLocalVarScope = make_shared<LocalVarScope>();
+            scope->pushLocalVarScope(elseLocalVarScope);
+        }
         elseVar = elseBlock->getVar(compiler, scope, returnMode);
-        scope->popLocalVarScope(elseLocalVarScope);
+        if (useLocalVarScope) {
+            scope->popLocalVarScope(elseLocalVarScope);
+        }
     }
-    
+
     shared_ptr<LocalVarScope> ifLocalVarScope;
-    shared_ptr<CVar> ifVar;
-    ifLocalVarScope = make_shared<LocalVarScope>();
-    scope->pushLocalVarScope(ifLocalVarScope);
-    ifVar = ifBlock->getVar(compiler, scope, returnMode);
-    scope->popLocalVarScope(ifLocalVarScope);
+    if (useLocalVarScope) {
+        ifLocalVarScope = make_shared<LocalVarScope>();
+        scope->pushLocalVarScope(ifLocalVarScope);
+    }
+    auto ifVar = ifBlock->getVar(compiler, scope, returnMode);
+    if (useLocalVarScope) {
+        scope->popLocalVarScope(ifLocalVarScope);
+    }
     if (ifVar == nullptr) {
         return nullptr;
     }

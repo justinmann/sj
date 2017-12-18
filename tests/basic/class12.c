@@ -61,22 +61,16 @@ const double_option double_empty = { true };
 
 #define sjs_object_typeId 1
 #define sjs_class_typeId 2
-#define sjs_class_heap_typeId 3
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_class sjs_class;
-typedef struct td_sjs_class_heap sjs_class_heap;
 
 struct td_sjs_object {
     intptr_t _refCount;
 };
 
 struct td_sjs_class {
-    int structsNeedAValue;
-};
-
-struct td_sjs_class_heap {
-    intptr_t _refCount;
+    int _refCount;
 };
 
 int32_t sjt_functionParam3;
@@ -89,7 +83,7 @@ void sjf_class_bar(sjs_class* _parent, int32_t x, int32_t* _return);
 void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return);
-void sjf_class_heap(sjs_class_heap* _this);
+void sjf_class_heap(sjs_class* _this);
 void main_destroy(void);
 
 void sjf_class(sjs_class* _this) {
@@ -98,9 +92,7 @@ void sjf_class(sjs_class* _this) {
 void sjf_class_bar(sjs_class* _parent, int32_t x, int32_t* _return) {
     int32_t sjt_functionParam1;
 
-#line 9 "class12.sj"
     sjt_functionParam1 = x;
-#line 9
     sjf_class_foo(_parent, sjt_functionParam1, _return);
 }
 
@@ -115,43 +107,36 @@ void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return) {
     int32_t sjt_compare2;
     bool sjt_ifElse1;
 
-#line 2 "class12.sj"
     sjt_compare1 = x;
-#line 3
     sjt_compare2 = 0;
-#line 3
     sjt_ifElse1 = sjt_compare1 > sjt_compare2;
     if (sjt_ifElse1) {
         int32_t sjt_functionParam2;
         int32_t sjt_math1;
         int32_t sjt_math2;
 
-#line 2 "class12.sj"
         sjt_math1 = x;
-#line 4
         sjt_math2 = 1;
-#line 4
         sjt_functionParam2 = sjt_math1 - sjt_math2;
-#line 4
         sjf_class_bar(_parent, sjt_functionParam2, _return);
     } else {
-#line 6 "class12.sj"
         (*_return) = 0;
     }
 }
 
-void sjf_class_heap(sjs_class_heap* _this) {
+void sjf_class_heap(sjs_class* _this) {
 }
 
 int main(int argc, char** argv) {
     sjf_class(&sjv_c);
-#line 2 "class12.sj"
     sjt_parent1 = &sjv_c;
-#line 14
     sjt_functionParam3 = 4;
-#line 14
     sjf_class_foo(sjt_parent1, sjt_functionParam3, &void1);
     main_destroy();
+    #ifdef _DEBUG
+    printf("\npress return to end\n");
+    getchar();
+    #endif
     return 0;
 }
 
