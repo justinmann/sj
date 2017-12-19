@@ -611,7 +611,8 @@ void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
 int32_t result1;
-sjs_class sjt_cast1 = { -1 };
+sjs_class sjt_call1 = { -1 };
+sjs_class* sjt_cast1 = 0;
 int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_negate1;
@@ -872,23 +873,23 @@ void sjf_class_heap_asinterface(sjs_class* _this, int typeId, sjs_interface* _re
 }
 
 void sjf_class_test(sjs_class* _parent, int32_t* _return) {
-    sjs_string sjt_call1 = { -1 };
+    sjs_string sjt_call2 = { -1 };
     sjs_string* sjt_functionParam1 = 0;
 
-    sjt_call1._refCount = 1;
-    sjt_call1.count = 4;
-    sjt_call1.data._refCount = 1;
-    sjt_call1.data.datasize = 5;
-    sjt_call1.data.data = (void*)sjg_string1;
-    sjt_call1.data._isglobal = true;
-    sjt_call1.data.count = 5;
-    sjf_array_char(&sjt_call1.data);
-    sjf_string(&sjt_call1);
-    sjt_functionParam1 = &sjt_call1;
+    sjt_call2._refCount = 1;
+    sjt_call2.count = 4;
+    sjt_call2.data._refCount = 1;
+    sjt_call2.data.datasize = 5;
+    sjt_call2.data.data = (void*)sjg_string1;
+    sjt_call2.data._isglobal = true;
+    sjt_call2.data.count = 5;
+    sjf_array_char(&sjt_call2.data);
+    sjf_string(&sjt_call2);
+    sjt_functionParam1 = &sjt_call2;
     sjf_debug_writeline(sjt_functionParam1);
     (*_return) = 5;
 
-    if (sjt_call1._refCount == 1) { sjf_string_destroy(&sjt_call1); }
+    if (sjt_call2._refCount == 1) { sjf_string_destroy(&sjt_call2); }
 }
 
 void sjf_debug_writeline(sjs_string* data) {
@@ -926,9 +927,10 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
-    sjt_cast1._refCount = 1;
-    sjf_class(&sjt_cast1);
-    sjf_class_as_sji_foo(&sjt_cast1, &sjv_a);
+    sjt_call1._refCount = 1;
+    sjf_class(&sjt_call1);
+    sjt_cast1 = &sjt_call1;
+    sjf_class_as_sji_foo(sjt_cast1, &sjv_a);
     sjt_parent1 = sjv_a;
     sjt_parent1._vtbl->test(sjt_parent1._parent, &void1);
     main_destroy();
@@ -941,5 +943,5 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    if (sjt_cast1._refCount == 1) { sjf_class_destroy(&sjt_cast1); }
+    if (sjt_call1._refCount == 1) { sjf_class_destroy(&sjt_call1); }
 }

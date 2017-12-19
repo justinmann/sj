@@ -613,8 +613,10 @@ void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
 int32_t result1;
-sjs_namespace1_class sjt_cast1 = { -1 };
-sjs_namespace2_class sjt_cast2 = { -1 };
+sjs_namespace1_class sjt_call1 = { -1 };
+sjs_namespace2_class sjt_call2 = { -1 };
+sjs_namespace1_class* sjt_cast1 = 0;
+sjs_namespace2_class* sjt_cast2 = 0;
 int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_negate1;
@@ -897,12 +899,14 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
-    sjt_cast1._refCount = 1;
-    sjf_namespace1_class(&sjt_cast1);
-    sjf_namespace1_class_as_sji_namespace1_foo(&sjt_cast1, &sjv_a);
-    sjt_cast2._refCount = 1;
-    sjf_namespace2_class(&sjt_cast2);
-    sjf_namespace2_class_as_sji_namespace2_foo(&sjt_cast2, &sjv_b);
+    sjt_call1._refCount = 1;
+    sjf_namespace1_class(&sjt_call1);
+    sjt_cast1 = &sjt_call1;
+    sjf_namespace1_class_as_sji_namespace1_foo(sjt_cast1, &sjv_a);
+    sjt_call2._refCount = 1;
+    sjf_namespace2_class(&sjt_call2);
+    sjt_cast2 = &sjt_call2;
+    sjf_namespace2_class_as_sji_namespace2_foo(sjt_cast2, &sjv_b);
     main_destroy();
     #ifdef _DEBUG
     printf("\npress return to end\n");
@@ -913,6 +917,6 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    if (sjt_cast1._refCount == 1) { sjf_namespace1_class_destroy(&sjt_cast1); }
-    if (sjt_cast2._refCount == 1) { sjf_namespace2_class_destroy(&sjt_cast2); }
+    if (sjt_call1._refCount == 1) { sjf_namespace1_class_destroy(&sjt_call1); }
+    if (sjt_call2._refCount == 1) { sjf_namespace2_class_destroy(&sjt_call2); }
 }

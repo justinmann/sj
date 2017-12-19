@@ -607,7 +607,8 @@ void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
 int32_t result1;
-sjs_class_i32 sjt_cast1 = { -1 };
+sjs_class_i32 sjt_call1 = { -1 };
+sjs_class_i32* sjt_cast1 = 0;
 sji_foo_i32 sjt_cast2 = { 0 };
 bool sjt_ifElse1;
 sji_bar sjt_isEmpty1 = { 0 };
@@ -865,9 +866,10 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
-    sjt_cast1._refCount = 1;
-    sjf_class_i32(&sjt_cast1);
-    sjf_class_i32_as_sji_foo_i32(&sjt_cast1, &sjv_a);
+    sjt_call1._refCount = 1;
+    sjf_class_i32(&sjt_call1);
+    sjt_cast1 = &sjt_call1;
+    sjf_class_i32_as_sji_foo_i32(sjt_cast1, &sjv_a);
     sjt_parent1 = sjv_a;
     sjt_parent1._vtbl->test1(sjt_parent1._parent, &void1);
     sjt_cast2 = sjv_a;
@@ -895,5 +897,5 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    if (sjt_cast1._refCount == 1) { sjf_class_i32_destroy(&sjt_cast1); }
+    if (sjt_call1._refCount == 1) { sjf_class_i32_destroy(&sjt_call1); }
 }

@@ -9,7 +9,7 @@ shared_ptr<CType> CCastVar::getType(Compiler* compiler) {
 }
 
 void CCastVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    auto rightStoreValue = trBlock->createTempStoreVariable(loc, scope.lock(), var->getType(compiler), "cast");
+    auto rightStoreValue = trBlock->createTempStoreVariable(loc, scope.lock(), var->getType(compiler)->getLocalType(), "cast");
     var->transpile(compiler, trOutput, trBlock, thisValue, rightStoreValue);
     if (!rightStoreValue->hasSetValue) {
         return;

@@ -354,13 +354,24 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
     else if (type->typeMode == CTM_Weak) {
         auto cbName = TrBlock::nextVarName("weakptrcb");
 
-        stringstream cbStream;
-        cbStream << "delete_cb " << cbName << " = { &" << name << ", weakptr_clear };";
-        block->statements.push_back(TrStatement(CLoc::undefined, cbStream.str()));
+        if (type->category == CTC_Interface) {
+            stringstream cbStream;
+            cbStream << "delete_cb " << cbName << " = { &" << name << "._parent, weakptr_clear };";
+            block->statements.push_back(TrStatement(CLoc::undefined, cbStream.str()));
 
-        stringstream lineStream;
-        lineStream << "if (" << name << " != 0) { weakptr_cb_remove(" << name << ", " << cbName << "); }";
-        block->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
+            stringstream lineStream;
+            lineStream << "if (" << name << "._parent != 0) { weakptr_cb_remove(" << name << "._parent, " << cbName << "); }";
+            block->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
+        }
+        else {
+            stringstream cbStream;
+            cbStream << "delete_cb " << cbName << " = { &" << name << ", weakptr_clear };";
+            block->statements.push_back(TrStatement(CLoc::undefined, cbStream.str()));
+
+            stringstream lineStream;
+            lineStream << "if (" << name << " != 0) { weakptr_cb_remove(" << name << ", " << cbName << "); }";
+            block->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
+        }
     }
 }
 
@@ -415,13 +426,24 @@ void TrValue::addRetainToStatements(TrBlock* block) {
     else if (type->typeMode == CTM_Weak) {
         auto cbName = TrBlock::nextVarName("weakptrcb");
 
-        stringstream cbStream;
-        cbStream << "delete_cb " << cbName << " = { &" << name << ", weakptr_clear };";
-        block->statements.push_back(TrStatement(CLoc::undefined, cbStream.str()));
+        if (type->category == CTC_Interface) {
+            stringstream cbStream;
+            cbStream << "delete_cb " << cbName << " = { &" << name << "._parent, weakptr_clear };";
+            block->statements.push_back(TrStatement(CLoc::undefined, cbStream.str()));
 
-        stringstream lineStream;
-        lineStream << "if (" << name << " != 0) { weakptr_cb_add(" << name << ", " << cbName << "); }";
-        block->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
+            stringstream lineStream;
+            lineStream << "if (" << name << "._parent != 0) { weakptr_cb_add(" << name << "._parent, " << cbName << "); }";
+            block->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
+        }
+        else {
+            stringstream cbStream;
+            cbStream << "delete_cb " << cbName << " = { &" << name << ", weakptr_clear };";
+            block->statements.push_back(TrStatement(CLoc::undefined, cbStream.str()));
+
+            stringstream lineStream;
+            lineStream << "if (" << name << " != 0) { weakptr_cb_add(" << name << ", " << cbName << "); }";
+            block->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
+        }
     }
 }
     

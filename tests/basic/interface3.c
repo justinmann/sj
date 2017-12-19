@@ -613,7 +613,8 @@ void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
 int32_t result1;
-sjs_class sjt_cast1 = { -1 };
+sjs_class sjt_call1 = { -1 };
+sjs_class* sjt_cast1 = 0;
 int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_negate1;
@@ -930,9 +931,10 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
-    sjt_cast1._refCount = 1;
-    sjf_class(&sjt_cast1);
-    sjf_class_as_sji_foo(&sjt_cast1, &sjv_a);
+    sjt_call1._refCount = 1;
+    sjf_class(&sjt_call1);
+    sjt_cast1 = &sjt_call1;
+    sjf_class_as_sji_foo(sjt_cast1, &sjv_a);
     sjt_parent1 = sjv_a;
     sjv_bob = (sjs_string*)malloc(sizeof(sjs_string));
     sjv_bob->_refCount = 1;
@@ -952,5 +954,5 @@ void main_destroy() {
         weakptr_release(sjv_bob);
         sjf_string_destroy(sjv_bob);
     }
-    if (sjt_cast1._refCount == 1) { sjf_class_destroy(&sjt_cast1); }
+    if (sjt_call1._refCount == 1) { sjf_class_destroy(&sjt_call1); }
 }

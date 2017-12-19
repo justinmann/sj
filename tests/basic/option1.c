@@ -914,10 +914,6 @@ int main(int argc, char** argv) {
 
     sjt_cast1 = sjv_n;
     if (sjt_cast1 != 0) {
-        sjt_cast1->_refCount++;
-    }
-
-    if (sjt_cast1 != 0) {
         sjf_class_as_sji_interface(sjt_cast1, &sjv_r);
     } else {
         sjv_r._parent = 0;
@@ -939,13 +935,6 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    if (sjt_cast1 != 0) {
-        sjt_cast1->_refCount--;
-        if (sjt_cast1->_refCount <= 0) {
-            weakptr_release(sjt_cast1);
-            sjf_class_destroy(sjt_cast1);
-        }
-    }
     sjt_value1->_refCount--;
     if (sjt_value1->_refCount <= 0) {
         weakptr_release(sjt_value1);

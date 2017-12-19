@@ -643,9 +643,11 @@ KHASH_INIT_TYPEDEF(local_interface_i32_hash_type, sji_interface, int32_t)
 KHASH_INIT_TYPEDEF(local_interface_i32_hash_type, sji_interface, int32_t)
 #endif
 int32_t result1;
-sjs_string sjt_call6 = { -1 };
-sjs_class sjt_cast1 = { -1 };
-sjs_class sjt_cast3 = { -1 };
+sjs_class sjt_call1 = { -1 };
+sjs_class sjt_call2 = { -1 };
+sjs_string sjt_call8 = { -1 };
+sjs_class* sjt_cast1 = 0;
+sjs_class* sjt_cast3 = 0;
 sji_interface sjt_functionParam1 = { 0 };
 int32_t sjt_functionParam2;
 sjs_string* sjt_functionParam29 = 0;
@@ -1269,11 +1271,11 @@ void sjf_i32_tostring_heap(int32_t val, sjs_string** _return) {
 }
 
 void sjf_print(sji_interface k, int32_t v) {
-    sjs_string sjt_call1 = { -1 };
-    sjs_string sjt_call2 = { -1 };
     sjs_string sjt_call3 = { -1 };
     sjs_string sjt_call4 = { -1 };
     sjs_string sjt_call5 = { -1 };
+    sjs_string sjt_call6 = { -1 };
+    sjs_string sjt_call7 = { -1 };
     int32_t sjt_functionParam25;
     sjs_string* sjt_functionParam26 = 0;
     sjs_string* sjt_functionParam27 = 0;
@@ -1285,32 +1287,32 @@ void sjf_print(sji_interface k, int32_t v) {
 
     sjt_parent20 = k;
     sjt_parent20._vtbl->bob(sjt_parent20._parent, &sjt_functionParam25);
-    sjf_i32_tostring(sjt_functionParam25, &sjt_call3);
-    sjt_parent19 = &sjt_call3;
-    sjt_call4._refCount = 1;
-    sjt_call4.count = 3;
-    sjt_call4.data._refCount = 1;
-    sjt_call4.data.datasize = 4;
-    sjt_call4.data.data = (void*)sjg_string1;
-    sjt_call4.data._isglobal = true;
-    sjt_call4.data.count = 4;
-    sjf_array_char(&sjt_call4.data);
-    sjf_string(&sjt_call4);
-    sjt_functionParam26 = &sjt_call4;
-    sjf_string_add(sjt_parent19, sjt_functionParam26, &sjt_call2);
-    sjt_parent18 = &sjt_call2;
+    sjf_i32_tostring(sjt_functionParam25, &sjt_call5);
+    sjt_parent19 = &sjt_call5;
+    sjt_call6._refCount = 1;
+    sjt_call6.count = 3;
+    sjt_call6.data._refCount = 1;
+    sjt_call6.data.datasize = 4;
+    sjt_call6.data.data = (void*)sjg_string1;
+    sjt_call6.data._isglobal = true;
+    sjt_call6.data.count = 4;
+    sjf_array_char(&sjt_call6.data);
+    sjf_string(&sjt_call6);
+    sjt_functionParam26 = &sjt_call6;
+    sjf_string_add(sjt_parent19, sjt_functionParam26, &sjt_call4);
+    sjt_parent18 = &sjt_call4;
     sjt_functionParam28 = v;
-    sjf_i32_tostring(sjt_functionParam28, &sjt_call5);
-    sjt_functionParam27 = &sjt_call5;
-    sjf_string_add(sjt_parent18, sjt_functionParam27, &sjt_call1);
-    sjt_functionParam5 = &sjt_call1;
+    sjf_i32_tostring(sjt_functionParam28, &sjt_call7);
+    sjt_functionParam27 = &sjt_call7;
+    sjf_string_add(sjt_parent18, sjt_functionParam27, &sjt_call3);
+    sjt_functionParam5 = &sjt_call3;
     sjf_debug_writeline(sjt_functionParam5);
 
-    if (sjt_call1._refCount == 1) { sjf_string_destroy(&sjt_call1); }
-    if (sjt_call2._refCount == 1) { sjf_string_destroy(&sjt_call2); }
     if (sjt_call3._refCount == 1) { sjf_string_destroy(&sjt_call3); }
     if (sjt_call4._refCount == 1) { sjf_string_destroy(&sjt_call4); }
     if (sjt_call5._refCount == 1) { sjf_string_destroy(&sjt_call5); }
+    if (sjt_call6._refCount == 1) { sjf_string_destroy(&sjt_call6); }
+    if (sjt_call7._refCount == 1) { sjf_string_destroy(&sjt_call7); }
 }
 
 void sjf_print_callback(void * _parent, sji_interface k, int32_t v) {
@@ -1604,17 +1606,19 @@ int main(int argc, char** argv) {
     sjv_a._refCount = 1;
     sjf_hash_local_interface_i32(&sjv_a);
     sjt_parent1 = &sjv_a;
-    sjt_cast1._refCount = 1;
-    sjt_cast1.x = 32;
-    sjf_class(&sjt_cast1);
-    sjf_class_as_sji_interface(&sjt_cast1, &sjt_functionParam1);
+    sjt_call1._refCount = 1;
+    sjt_call1.x = 32;
+    sjf_class(&sjt_call1);
+    sjt_cast1 = &sjt_call1;
+    sjf_class_as_sji_interface(sjt_cast1, &sjt_functionParam1);
     sjt_functionParam2 = 1;
     sjf_hash_local_interface_i32_setat(sjt_parent1, sjt_functionParam1, sjt_functionParam2);
     sjt_parent3 = &sjv_a;
-    sjt_cast3._refCount = 1;
-    sjt_cast3.x = 1;
-    sjf_class(&sjt_cast3);
-    sjf_class_as_sji_interface(&sjt_cast3, &sjt_functionParam3);
+    sjt_call2._refCount = 1;
+    sjt_call2.x = 1;
+    sjf_class(&sjt_call2);
+    sjt_cast3 = &sjt_call2;
+    sjf_class_as_sji_interface(sjt_cast3, &sjt_functionParam3);
     sjf_hash_local_interface_i32_getat(sjt_parent3, sjt_functionParam3, &sjv_b);
     sjt_parent4 = &sjv_a;
     sjt_functionParam4._parent = (void*)1;
@@ -1636,8 +1640,8 @@ int main(int argc, char** argv) {
         sjt_functionParam30 = sjt_getValue1.value;
     }
 
-    sjf_i32_tostring(sjt_functionParam30, &sjt_call6);
-    sjt_functionParam29 = &sjt_call6;
+    sjf_i32_tostring(sjt_functionParam30, &sjt_call8);
+    sjt_functionParam29 = &sjt_call8;
     sjf_debug_writeline(sjt_functionParam29);
     main_destroy();
     #ifdef _DEBUG
@@ -1649,8 +1653,8 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    if (sjt_call6._refCount == 1) { sjf_string_destroy(&sjt_call6); }
-    if (sjt_cast1._refCount == 1) { sjf_class_destroy(&sjt_cast1); }
-    if (sjt_cast3._refCount == 1) { sjf_class_destroy(&sjt_cast3); }
+    if (sjt_call1._refCount == 1) { sjf_class_destroy(&sjt_call1); }
+    if (sjt_call2._refCount == 1) { sjf_class_destroy(&sjt_call2); }
+    if (sjt_call8._refCount == 1) { sjf_string_destroy(&sjt_call8); }
     if (sjv_a._refCount == 1) { sjf_hash_local_interface_i32_destroy(&sjv_a); }
 }

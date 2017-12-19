@@ -593,8 +593,10 @@ void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
 int32_t result1;
-sjs_class sjt_cast1 = { -1 };
-sjs_class sjt_cast2 = { -1 };
+sjs_class sjt_call1 = { -1 };
+sjs_class sjt_call2 = { -1 };
+sjs_class* sjt_cast1 = 0;
+sjs_class* sjt_cast2 = 0;
 sji_foo sjt_compare3 = { 0 };
 sji_foo sjt_compare4 = { 0 };
 sji_foo sjt_compare5 = { 0 };
@@ -843,14 +845,16 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
-    sjt_cast1._refCount = 1;
-    sjt_cast1.x = 1;
-    sjf_class(&sjt_cast1);
-    sjf_class_as_sji_foo(&sjt_cast1, &sjv_a);
-    sjt_cast2._refCount = 1;
-    sjt_cast2.x = 1;
-    sjf_class(&sjt_cast2);
-    sjf_class_as_sji_foo(&sjt_cast2, &sjv_b);
+    sjt_call1._refCount = 1;
+    sjt_call1.x = 1;
+    sjf_class(&sjt_call1);
+    sjt_cast1 = &sjt_call1;
+    sjf_class_as_sji_foo(sjt_cast1, &sjv_a);
+    sjt_call2._refCount = 1;
+    sjt_call2.x = 1;
+    sjf_class(&sjt_call2);
+    sjt_cast2 = &sjt_call2;
+    sjf_class_as_sji_foo(sjt_cast2, &sjv_b);
     sjt_compare3 = sjv_a;
     sjt_compare4 = sjv_a;
     sjv_t1 = sjt_compare3._parent == sjt_compare4._parent;
@@ -870,6 +874,6 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    if (sjt_cast1._refCount == 1) { sjf_class_destroy(&sjt_cast1); }
-    if (sjt_cast2._refCount == 1) { sjf_class_destroy(&sjt_cast2); }
+    if (sjt_call1._refCount == 1) { sjf_class_destroy(&sjt_call1); }
+    if (sjt_call2._refCount == 1) { sjf_class_destroy(&sjt_call2); }
 }

@@ -632,9 +632,10 @@ KHASH_INIT_TYPEDEF(string_local_interface_hash_type, sjs_string, sji_interface)
 #endif
 int32_t result1;
 sjs_string sjt_call1 = { -1 };
-sjs_string sjt_call2 = { -1 };
+sjs_class sjt_call2 = { -1 };
 sjs_string sjt_call3 = { -1 };
-sjs_class sjt_cast1 = { -1 };
+sjs_string sjt_call4 = { -1 };
+sjs_class* sjt_cast1 = 0;
 sjs_string* sjt_functionParam2 = 0;
 sji_interface sjt_functionParam3 = { 0 };
 sjs_string* sjt_functionParam4 = 0;
@@ -1148,21 +1149,22 @@ int main(int argc, char** argv) {
     sjf_array_char(&sjt_call1.data);
     sjf_string(&sjt_call1);
     sjt_functionParam2 = &sjt_call1;
-    sjt_cast1._refCount = 1;
-    sjf_class(&sjt_cast1);
-    sjf_class_as_sji_interface(&sjt_cast1, &sjt_functionParam3);
+    sjt_call2._refCount = 1;
+    sjf_class(&sjt_call2);
+    sjt_cast1 = &sjt_call2;
+    sjf_class_as_sji_interface(sjt_cast1, &sjt_functionParam3);
     sjf_hash_string_local_interface_setat(sjt_parent2, sjt_functionParam2, sjt_functionParam3);
     sjt_parent3 = &sjv_a;
-    sjt_call2._refCount = 1;
-    sjt_call2.count = 3;
-    sjt_call2.data._refCount = 1;
-    sjt_call2.data.datasize = 4;
-    sjt_call2.data.data = (void*)sjg_string4;
-    sjt_call2.data._isglobal = true;
-    sjt_call2.data.count = 4;
-    sjf_array_char(&sjt_call2.data);
-    sjf_string(&sjt_call2);
-    sjt_functionParam4 = &sjt_call2;
+    sjt_call3._refCount = 1;
+    sjt_call3.count = 3;
+    sjt_call3.data._refCount = 1;
+    sjt_call3.data.datasize = 4;
+    sjt_call3.data.data = (void*)sjg_string4;
+    sjt_call3.data._isglobal = true;
+    sjt_call3.data.count = 4;
+    sjf_array_char(&sjt_call3.data);
+    sjf_string(&sjt_call3);
+    sjt_functionParam4 = &sjt_call3;
     sjf_hash_string_local_interface_getat_heap(sjt_parent3, sjt_functionParam4, &sjv_b);
     sjt_isEmpty2 = sjv_b;
     sjt_ifElse2 = (sjt_isEmpty2._parent == 0);
@@ -1179,16 +1181,16 @@ int main(int argc, char** argv) {
 
     sjt_ifElse1 = (sjt_isEmpty1 == 0);
     if (sjt_ifElse1) {
-        sjt_call3._refCount = 1;
-        sjt_call3.count = 9;
-        sjt_call3.data._refCount = 1;
-        sjt_call3.data.datasize = 10;
-        sjt_call3.data.data = (void*)sjg_string5;
-        sjt_call3.data._isglobal = true;
-        sjt_call3.data.count = 10;
-        sjf_array_char(&sjt_call3.data);
-        sjf_string(&sjt_call3);
-        sjt_functionParam5 = &sjt_call3;
+        sjt_call4._refCount = 1;
+        sjt_call4.count = 9;
+        sjt_call4.data._refCount = 1;
+        sjt_call4.data.datasize = 10;
+        sjt_call4.data.data = (void*)sjg_string5;
+        sjt_call4.data._isglobal = true;
+        sjt_call4.data.count = 10;
+        sjf_array_char(&sjt_call4.data);
+        sjf_string(&sjt_call4);
+        sjt_functionParam5 = &sjt_call4;
     } else {
         bool sjt_ifElse3;
         sji_interface sjt_isEmpty3 = { 0 };
@@ -1225,9 +1227,9 @@ void main_destroy() {
         }
     }
     if (sjt_call1._refCount == 1) { sjf_string_destroy(&sjt_call1); }
-    if (sjt_call2._refCount == 1) { sjf_string_destroy(&sjt_call2); }
+    if (sjt_call2._refCount == 1) { sjf_class_destroy(&sjt_call2); }
     if (sjt_call3._refCount == 1) { sjf_string_destroy(&sjt_call3); }
-    if (sjt_cast1._refCount == 1) { sjf_class_destroy(&sjt_cast1); }
+    if (sjt_call4._refCount == 1) { sjf_string_destroy(&sjt_call4); }
     if (sjt_value1._refCount == 1) { sjf_string_destroy(&sjt_value1); }
     if (sjt_value2._refCount == 1) { sjf_string_destroy(&sjt_value2); }
     if (sjv_a._refCount == 1) { sjf_hash_string_local_interface_destroy(&sjv_a); }
