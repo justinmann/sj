@@ -19,15 +19,11 @@ void TrBlock::writeVariablesToStream(ostream& stream, int level) {
         if (!variable.second->type->parent.expired()) {
             if (variable.second->type->category == CTC_Value) {
                 switch (variable.second->type->typeMode) {
-                case CTM_Local:
-                    stream << " = 0";
-                    break;
                 case CTM_Stack:
                     stream << " = { -1 }";
                     break;
+                case CTM_Local:
                 case CTM_Heap:
-                    stream << " = 0";
-                    break;
                 case CTM_Weak:
                     stream << " = 0";
                     break;
@@ -39,11 +35,8 @@ void TrBlock::writeVariablesToStream(ostream& stream, int level) {
             else {
                 switch (variable.second->type->typeMode) {
                 case CTM_Local:
-                    stream << " = { 0 }";
-                    break;
                 case CTM_Heap:
-                    stream << " = { 0 }";
-                    break;
+                case CTM_Stack:
                 case CTM_Weak:
                     stream << " = { 0 }";
                     break;
@@ -129,13 +122,11 @@ void TrBlock::writeBodyToStream(ostream& stream, int level) {
 
 void TrBlock::writeVariablesReleaseToStream(ostream& stream, int level) {
     stringstream varStream;
-    for (auto variable : variables)
-    {
+    for (auto variable : variables) {
         variable.second->writeReleaseToStream(varStream, level);
     }
 
-    for (auto variable : variables)
-    {
+    for (auto variable : variables) {
         if (variable.second->type->typeMode == CTM_Stack) {
             addSpacing(varStream, level);
             varStream << "if (" << variable.first << "._refCount == 1) { " << variable.second->type->parent.lock()->getCDestroyFunctionName() << "(&" << variable.first << "); }\n";
@@ -441,9 +432,16 @@ void TrValue::addInitToStatements(TrBlock* block) {
     else if (type->typeMode == CTM_Heap) {
         if (!type->parent.expired()) {
             if (type->isOption) {
-                stringstream initLine;
-                initLine << name << " = 0";
-                block->statements.push_back(TrStatement(CLoc::undefined, initLine.str()));
+                if (type->category == CTC_Interface) {
+                    stringstream initLine;
+                    initLine << name << "._parent = 0";
+                    block->statements.push_back(TrStatement(CLoc::undefined, initLine.str()));
+                }
+                else {
+                    stringstream initLine;
+                    initLine << name << " = 0";
+                    block->statements.push_back(TrStatement(CLoc::undefined, initLine.str()));
+                }
             }
             else {
                 string structName = type->parent.lock()->getCStructName(type->typeMode);
@@ -625,13 +623,16 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
                 leftValue.addReleaseToStatements(block);
             }
 
-            if (!type->parent.expired()) {
+            if (type->category == CTC_Function) {
+                type->callback.lock()->writeCopy(block, rightValue->name, name, type->typeMode == CTM_Heap);
+            } 
+            else if (type->category == CTC_Interface) {
+                compiler->addError(loc, CErrorCode::Internal, "interface cannot be copied");
+            } 
+            else {
                 stringstream lineStream;
                 lineStream << type->parent.lock()->getCCopyFunctionName() << "(" << TrValue::convertToLocalName(type, name, isReturnValue) << ", " << TrValue::convertToLocalName(rightValue->type, rightValue->name, rightValue->isReturnValue) << ")";
                 block->statements.push_back(TrStatement(loc, lineStream.str()));
-            }
-            else if (type->category == CTC_Function) {
-                type->callback.lock()->writeCopy(block, rightValue->name, name, type->typeMode == CTM_Heap);
             }
         }
     }
