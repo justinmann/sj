@@ -20,6 +20,9 @@ void CCompareVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
 
     stringstream line;
     line << leftValue->getName(trBlock);
+    if (varType->category == CTC_Interface && (op == NCompareOp::PEQ || op == NCompareOp::PNE)) {
+        line << "._parent";
+    }
     switch (op) {
     case NCompareOp::EQ:
     case NCompareOp::PEQ:
@@ -43,6 +46,9 @@ void CCompareVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
         break;
     }
     line << rightValue->getName(trBlock);
+    if (varType->category == CTC_Interface && (op == NCompareOp::PEQ || op == NCompareOp::PNE)) {
+        line << "._parent";
+    }
 
     auto resultValue = make_shared<TrValue>(nullptr, compiler->typeBool, line.str(), false);
     storeValue->retainValue(compiler, loc, trBlock, resultValue);
