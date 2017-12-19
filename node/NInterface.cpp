@@ -166,13 +166,6 @@ shared_ptr<CVar> CInterface::getThisVar(Compiler* compiler) {
     return make_shared<CInterfaceVar>(loc, nullptr, shared_from_this());
 }
 
-int CInterface::getArgStart() {
-    if (hasThis) {
-        return 2;
-    }
-    return 1;
-}
-
 shared_ptr<CBaseFunction> CInterface::getCFunction(Compiler* compiler, CLoc locCaller, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode) {
     shared_ptr<CBaseFunction> interfaceMethod;
     if (templateTypeNames == nullptr) {
@@ -252,15 +245,21 @@ string CInterface::getCBaseName(CTypeMode typeMode) {
 }
 
 string CInterface::getCStructName(CTypeMode typeMode) {
-    return "sji_" + getCBaseName(typeMode);
+    return "sji_" + getCBaseName(CTM_Undefined);
+}
+
+string CInterface::getCVtblName() {
+    return "sji_" + getCBaseName(CTM_Undefined) + "_vtbl";
 }
 
 string CInterface::getCCopyFunctionName() {
-    return getCStructName(CTM_Stack) + "_copy";
+    assert(false);
+    return "INVALID";
 }
 
 string CInterface::getCDestroyFunctionName() {
-    return getCStructName(CTM_Stack) + "_destroy";
+    assert(false);
+    return "INVALID";
 }
 
 string CInterface::getCTypeIdName() {
@@ -274,32 +273,29 @@ string CInterface::getCCastFunctionName(Compiler* compiler, TrOutput* trOutput, 
 }
 
 void CInterface::transpileCast(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> fromValue, shared_ptr<TrStoreValue> toValue) {
-    if (fromValue->type->typeMode != CTM_Heap) {
-        compiler->addError(loc, CErrorCode::TypeMismatch, "must use heap type when casting to interface");
-        return;
-    }
-
     if (fromValue->type->parent.lock()->classType == CFT_Interface) {
         auto fromInterface = static_pointer_cast<CInterface>(fromValue->type->parent.lock());
         stringstream line;
-        line << "(" << getCStructName(CTM_Heap) << "*)" << fromValue->name << "->asInterface(" << fromValue->name << "->_parent, " << getCTypeIdName() << ")";
-        toValue->takeOverValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, toValue->type, line.str(), false));
+        line << fromValue->name << "._vtbl->asinterface(" << fromValue->name << "._parent, " << getCTypeIdName() << ", &" << toValue->getName(trBlock) << ")";
+        trBlock->statements.push_back(TrStatement(loc, line.str()));
+        toValue->getValue()->addRetainToStatements(trBlock);
+        toValue->hasSetValue = true;
     }
     else {
         stringstream line;
-        line << "(" << getCStructName(CTM_Heap) << "*)" << getCCastFunctionName(compiler, trOutput, fromValue->type->parent.lock(), fromValue->type->typeMode) << "(" << fromValue->name << ")";
-        toValue->takeOverValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, toValue->type, line.str(), false));
-    }    
+        line << getCCastFunctionName(compiler, trOutput, fromValue->type->parent.lock(), fromValue->type->typeMode) << "(" << TrValue::convertToLocalName(fromValue->type, fromValue->name, false) << ", &" << toValue->getName(trBlock) << ")";
+        trBlock->statements.push_back(TrStatement(loc, line.str()));
+        toValue->getValue()->addRetainToStatements(trBlock);
+        toValue->hasSetValue = true;
+    }
 }
 
 void CInterface::transpileStructDefinition(Compiler* compiler, TrOutput* trOutput) {
     // Create stack struct
-    string heapStructName = getCStructName(CTM_Heap);
-    if (trOutput->structs.find(heapStructName) == trOutput->structs.end()) {
-        trOutput->structs[heapStructName].push_back("intptr_t _refCount");
-        trOutput->structs[heapStructName].push_back("sjs_object* _parent");
-        trOutput->structs[heapStructName].push_back("void (*destroy)(void* _this)");
-        trOutput->structs[heapStructName].push_back("sjs_object* (*asInterface)(sjs_object* _this, int typeId)");
+    string vtblStructName = getCVtblName();
+    if (trOutput->structs.find(vtblStructName) == trOutput->structs.end()) {
+        trOutput->structs[vtblStructName].push_back("void (*destroy)(void* _this)");
+        trOutput->structs[vtblStructName].push_back("void (*asinterface)(sjs_object* _this, int typeId, sjs_interface* _return)");
         for (auto method : methods) {
             for (auto argVar : method->argVars) {
                 auto argType = argVar->getType(compiler);
@@ -313,79 +309,21 @@ void CInterface::transpileStructDefinition(Compiler* compiler, TrOutput* trOutpu
                 returnType->parent.lock()->transpileDefinition(compiler, trOutput);
             }
 
-            trOutput->structs[heapStructName].push_back(method->getCTypeName(compiler, true));
+            trOutput->structs[vtblStructName].push_back(method->getCTypeName(compiler, true));
         }
-        trOutput->structOrder.push_back(heapStructName);
+        trOutput->structOrder.push_back(vtblStructName);
+    }
+
+    string structName = getCStructName(CTM_Heap);
+    if (trOutput->structs.find(structName) == trOutput->structs.end()) {
+        trOutput->structs[structName].push_back("sjs_object* _parent");
+        trOutput->structs[structName].push_back(vtblStructName + "* _vtbl");
+        trOutput->structOrder.push_back(structName);
     }
 }
 
 void CInterface::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
     transpileStructDefinition(compiler, trOutput);
-
-    string heapStructName = getCStructName(CTM_Heap);
-    string copyInterfaceName = "void " + getCCopyFunctionName() + "(" + heapStructName + "* _this, " + heapStructName + "* _from)";
-    if (trOutput->functions.find(copyInterfaceName) == trOutput->functions.end()) {
-        auto copyBlock = make_shared<TrBlock>();
-        copyBlock->definition = copyInterfaceName;
-
-        copyBlock->statements.push_back(TrStatement(CLoc::undefined, string("_this->_refCount = 1")));
-        copyBlock->statements.push_back(TrStatement(CLoc::undefined, string("_this->_parent = _from->_parent")));
-
-        string name = "_this->_parent";
-
-        stringstream lineStream;
-        lineStream << name << "->_refCount++";
-        copyBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
-
-#ifdef DEBUG_ALLOC
-        stringstream logStream;
-        logStream << "printf(\"RELEASE\\t" << destroyInterfaceName << "\\t%0x\\t" << destroyBlock->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
-        destroyBlock->statements.push_back(logStream.str());
-#endif
-        copyBlock->statements.push_back(TrStatement(CLoc::undefined, string("_this->destroy = _from->destroy")));
-        copyBlock->statements.push_back(TrStatement(CLoc::undefined, string("_this->asInterface = _from->asInterface")));
-
-        for (auto method : methods) {
-            stringstream copyStream;
-            copyStream << "_this->" << method->name << " = _from->"<< method->name;
-            copyBlock->statements.push_back(TrStatement(CLoc::undefined, copyStream.str()));
-        }
-
-        trOutput->functions[copyInterfaceName] = copyBlock;
-    }
-
-    string destroyInterfaceName = "void " + getCDestroyFunctionName() + "(" + heapStructName + "* _this)";
-    if (trOutput->functions.find(destroyInterfaceName) == trOutput->functions.end()) {
-        auto destroyBlock = make_shared<TrBlock>();
-        destroyBlock->definition = destroyInterfaceName;
-
-        string name = "_this->_parent";
-
-        stringstream lineStream;
-        lineStream << name << "->_refCount--";
-        destroyBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
-
-#ifdef DEBUG_ALLOC
-        stringstream logStream;
-        logStream << "printf(\"RELEASE\\t" << destroyInterfaceName << "\\t%0x\\t" << destroyBlock->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
-        destroyBlock->statements.push_back(logStream.str());
-#endif
-
-        auto ifBlock = make_shared<TrBlock>();
-        stringstream ifStream;
-        ifStream << "if (" << name << "->_refCount <= 0)";
-        destroyBlock->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifBlock));
-
-        stringstream destroyStream;
-        destroyStream << "_this->destroy(" << TrValue::convertToLocalName(CTM_Heap, name, false) << ")";
-        ifBlock->statements.push_back(TrStatement(CLoc::undefined, destroyStream.str()));
-
-        stringstream freeStream;
-        freeStream << "free(" << name << ")";
-        ifBlock->statements.push_back(TrStatement(CLoc::undefined, freeStream.str()));
-
-        trOutput->functions[destroyInterfaceName] = destroyBlock;
-    }
 }
 
 void CInterface::transpile(Compiler* compiler, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<CVar> parentVar, CLoc& calleeLoc, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode returnMode) {

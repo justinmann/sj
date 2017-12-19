@@ -303,12 +303,12 @@ void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> callerSc
 
     // Call function
     stringstream line;
-    line << parentValue->name << "->" << name;
+    line << parentValue->name << "._vtbl->" << name;
     if (returnMode == CTM_Heap) {
         line << "_heap";
     }
     line << "(";
-    line << TrValue::convertToLocalName(CTM_Heap, parentValue->name + "->_parent", false);
+    line << TrValue::convertToLocalName(CTM_Heap, parentValue->name + "._parent", false);
 
     // Fill in "this" with normal arguments
     auto argIndex = 0;

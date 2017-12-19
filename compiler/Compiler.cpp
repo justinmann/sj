@@ -208,6 +208,13 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                     }
                     output.structOrder.push_back("sjs_object");
 
+                    structName = "sjs_interface";
+                    if (output.structs.find(structName) == output.structs.end()) {
+                        output.structs[structName].push_back("sjs_object* _parent");
+                        output.structs[structName].push_back("void* _vtbl");
+                    }
+                    output.structOrder.push_back("sjs_interface");
+
                     globalFunction->transpileDefinition(this, &output);
 
                     auto hasMainLoop = false;

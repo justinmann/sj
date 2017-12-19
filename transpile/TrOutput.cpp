@@ -162,6 +162,12 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
 		}
 	}
     
+    if (vtbls.size() > 0) {
+        for (auto t : vtbls) {
+            stream << t.second->ctype << " " << t.first << ";\n";
+        }
+    }
+
     level = 0;
     for (auto line : ccodeDefines) {
         if (line.size() > 0) {
@@ -223,6 +229,16 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
     }
 
     stream << "int main(int argc, char** argv) {\n";
+
+    if (vtbls.size() > 0) {
+        for (auto t : vtbls) {
+            for (auto line : t.second->functions) {
+                TrBlock::addSpacing(stream, 1);
+                stream << t.first << "." << line.first << " = " << line.second << ";\n";
+            }
+        }
+    }
+
     mainFunction->writeBodyToStream(stream, 1);
     stream << "    main_destroy();\n";
     stream << "    #ifdef _DEBUG\n";

@@ -53,7 +53,6 @@ public:
     int getArgCount(CTypeMode returnMode);
     shared_ptr<CVar> getArgVar(int index, CTypeMode returnMode);
     shared_ptr<CVar> getThisVar(Compiler* compiler);
-    int getArgStart();
 
     shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CLoc locCaller, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode);
     pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(vector<string> packageNamespace, string name) { assert(false); return make_pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>>(nullptr, nullptr); }
@@ -67,6 +66,7 @@ public:
     string getCCastFunctionName(Compiler* compiler, TrOutput* trOutput, shared_ptr<CBaseFunction> fromFunction, CTypeMode returnMode);
     string getCBaseName(CTypeMode typeMode);
     string getCStructName(CTypeMode typeMode);
+    string getCVtblName();
     string getCTypeIdName();
     void transpileCast(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> fromValue, shared_ptr<TrStoreValue> toValue);
 

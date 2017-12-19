@@ -6,6 +6,7 @@ include "lib/common/common.sj"
 
 class #foo (
     test() {
+        debug.writeLine("test")
         5
     }
 ) { this }

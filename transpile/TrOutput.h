@@ -2,10 +2,17 @@
 
 #include "TrBlock.h"
 
+class TrVtbl {
+public:
+    string ctype;
+    vector<pair<string, string>> functions;
+};
+
 class TrOutput {
 public:
 	map<string, shared_ptr<TrBlock>> functions;
 	map<string, vector<string>> structs;
+    map<string, shared_ptr<TrVtbl>> vtbls;
     vector<string> structOrder;
     map<string, string> strings;
     map<string, map<string, bool>> includes;
