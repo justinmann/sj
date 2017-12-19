@@ -1,4 +1,4 @@
-class #foo ()'heap class {
+class #foo ()'stack class {
   this
 }
 
@@ -662,7 +662,7 @@ global()'void {
   ptr_init();
   weakptr_init();
   --c--
-  a'heap #foo : class(this = class()) as heap #foo
+  a'local #foo : class(this = class()) as local #foo
   bob'heap string : test(
     parent: this
   )

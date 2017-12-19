@@ -6,10 +6,11 @@ foo(x'i32:)'stack foo {
   this
 }
 
-func(b'stack bar:)'local foo {
+func(b'stack bar:)'stack foo {
   b.f'stack foo = foo(this = foo(
     x'i32 : x
   ))
+  copy b.f
 }
 
 global()'void {

@@ -42,7 +42,7 @@ array_filter(cb'local (:f32)bool:)'stack array_f32 {
   ))
 }
 
-array_foldl!stack sum(initial'stack sum:, cb'local (:stack sum, :f32)stack sum:)'local sum {
+array_foldl!stack sum(initial'stack sum:, cb'local (:stack sum, :f32)stack sum:)'stack sum {
   r'local sum = initial
   for i : 0i to parent.count {
     r'local sum = cb(
@@ -50,7 +50,7 @@ array_foldl!stack sum(initial'stack sum:, cb'local (:stack sum, :f32)stack sum:)
       param1'f32 : param1
     )
   }
-  r
+  copy r
 }
 
 array_getat(index'i32:)'f32 {
@@ -784,7 +784,7 @@ global()'void {
     parent: this,
     cb'local (:f32)bool : cb
   )
-  d'local sum : array_foldl!stack sum(
+  d'stack sum : array_foldl!stack sum(
     parent: this,
     initial'stack sum : initial,
     cb'local (:stack sum, :f32)stack sum : cb

@@ -3,7 +3,7 @@ class(
 		x : 0
 	) { this }
 
-	get() { local data }
+	get() { copy data }
 ) { this }
 
 c : class()

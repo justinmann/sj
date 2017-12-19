@@ -1,4 +1,4 @@
-anon1(animations'stack list_heap_animation:, current'i32=)'stack anon1 {
+anon1(animations'stack list_local_animation:, current'i32=)'stack anon1 {
   this
 }
 
@@ -765,7 +765,7 @@ global()'void {
   weakptr_init();
   --c--
   animator'stack anon1 : anon1(this = anon1(
-    animations'stack list_heap_animation : animations,
+    animations'stack list_local_animation : animations,
     current'i32 = current
   ))
   borderposition'stack anon2 : anon2(this = anon2(
@@ -5007,7 +5007,7 @@ global()'void {
     count'i32 = count,
     data'stack array_char = data
   ))
-  root'heap #element : fillelement(this = fillelement(
+  root'heap #element : heap fillelement(this = fillelement(
     children'stack array_heap_element : children,
     _rect'stack rect = _rect
   )) as heap #element

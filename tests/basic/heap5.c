@@ -539,15 +539,22 @@ delete_cb cb[5];
 delete_cb_list* next;
 };
 #define sjs_object_typeId 1
-#define sjs_array_char_typeId 2
-#define sjs_a_typeId 3
+#define sjs_interface_typeId 2
+#define sjs_array_char_typeId 3
+#define sjs_a_typeId 4
 
 typedef struct td_sjs_object sjs_object;
+typedef struct td_sjs_interface sjs_interface;
 typedef struct td_sjs_array_char sjs_array_char;
 typedef struct td_sjs_a sjs_a;
 
 struct td_sjs_object {
     intptr_t _refCount;
+};
+
+struct td_sjs_interface {
+    sjs_object* _parent;
+    void* _vtbl;
 };
 
 struct td_sjs_array_char {

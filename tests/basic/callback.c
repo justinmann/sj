@@ -539,12 +539,14 @@ delete_cb cb[5];
 delete_cb_list* next;
 };
 #define sjs_object_typeId 1
-#define cb_i32_data_heap_data_typeId 2
-#define cb_i32_data_heap_data_heap_typeId 3
-#define sjs_data_typeId 4
-#define sjs_class_typeId 5
+#define sjs_interface_typeId 2
+#define cb_i32_data_heap_data_typeId 3
+#define cb_i32_data_heap_data_heap_typeId 4
+#define sjs_data_typeId 5
+#define sjs_class_typeId 6
 
 typedef struct td_sjs_object sjs_object;
+typedef struct td_sjs_interface sjs_interface;
 typedef struct td_cb_i32_data_heap_data cb_i32_data_heap_data;
 typedef struct td_cb_i32_data_heap_data_heap cb_i32_data_heap_data_heap;
 typedef struct td_sjs_data sjs_data;
@@ -552,6 +554,11 @@ typedef struct td_sjs_class sjs_class;
 
 struct td_sjs_object {
     intptr_t _refCount;
+};
+
+struct td_sjs_interface {
+    sjs_object* _parent;
+    void* _vtbl;
 };
 
 struct td_cb_i32_data_heap_data {

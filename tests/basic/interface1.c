@@ -539,45 +539,64 @@ delete_cb cb[5];
 delete_cb_list* next;
 };
 #define sjs_object_typeId 1
-#define sjs_namespace1_class_typeId 2
-#define sji_namespace1_foo_typeId 3
-#define sjs_namespace2_class_typeId 4
-#define sji_namespace2_foo_typeId 5
+#define sjs_interface_typeId 2
+#define sjs_namespace1_class_typeId 3
+#define sji_namespace1_foo_vtbl_typeId 4
+#define sji_namespace1_foo_typeId 5
+#define sjs_namespace2_class_typeId 6
+#define sji_namespace2_foo_vtbl_typeId 7
+#define sji_namespace2_foo_typeId 8
 
 typedef struct td_sjs_object sjs_object;
+typedef struct td_sjs_interface sjs_interface;
 typedef struct td_sjs_namespace1_class sjs_namespace1_class;
+typedef struct td_sji_namespace1_foo_vtbl sji_namespace1_foo_vtbl;
 typedef struct td_sji_namespace1_foo sji_namespace1_foo;
 typedef struct td_sjs_namespace2_class sjs_namespace2_class;
+typedef struct td_sji_namespace2_foo_vtbl sji_namespace2_foo_vtbl;
 typedef struct td_sji_namespace2_foo sji_namespace2_foo;
 
 struct td_sjs_object {
     intptr_t _refCount;
 };
 
+struct td_sjs_interface {
+    sjs_object* _parent;
+    void* _vtbl;
+};
+
 struct td_sjs_namespace1_class {
     int _refCount;
 };
 
-struct td_sji_namespace1_foo {
-    intptr_t _refCount;
-    sjs_object* _parent;
+struct td_sji_namespace1_foo_vtbl {
     void (*destroy)(void* _this);
-    sjs_object* (*asInterface)(sjs_object* _this, int typeId);
-    void (*test1)(void* _parent, int32_t* _return);
+    void (*asinterface)(sjs_object* _this, int typeId, sjs_interface* _return);
+    void (*test1)(sjs_object* _parent, int32_t* _return);
+};
+
+struct td_sji_namespace1_foo {
+    sjs_object* _parent;
+    sji_namespace1_foo_vtbl* _vtbl;
 };
 
 struct td_sjs_namespace2_class {
     int _refCount;
 };
 
-struct td_sji_namespace2_foo {
-    intptr_t _refCount;
-    sjs_object* _parent;
+struct td_sji_namespace2_foo_vtbl {
     void (*destroy)(void* _this);
-    sjs_object* (*asInterface)(sjs_object* _this, int typeId);
-    void (*test2)(void* _parent, int32_t* _return);
+    void (*asinterface)(sjs_object* _this, int typeId, sjs_interface* _return);
+    void (*test2)(sjs_object* _parent, int32_t* _return);
 };
 
+struct td_sji_namespace2_foo {
+    sjs_object* _parent;
+    sji_namespace2_foo_vtbl* _vtbl;
+};
+
+sji_namespace1_foo_vtbl sjs_namespace1_class_foo_vtbl;
+sji_namespace2_foo_vtbl sjs_namespace2_class_foo_vtbl;
 void halt(const char * format, ...);
 void ptr_hash(void* p, uint32_t* result);
 void ptr_isequal(void *p1, void* p2, bool* result);
@@ -594,13 +613,13 @@ void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
 int32_t result1;
-sjs_namespace1_class* sjt_cast1 = 0;
-sjs_namespace2_class* sjt_cast2 = 0;
+sjs_namespace1_class sjt_cast1 = { -1 };
+sjs_namespace2_class sjt_cast2 = { -1 };
 int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_negate1;
-sji_namespace1_foo* sjv_a = 0;
-sji_namespace2_foo* sjv_b = 0;
+sji_namespace1_foo sjv_a = { 0 };
+sji_namespace2_foo sjv_b = { 0 };
 void* sjv_emptystringdata;
 float sjv_f32_pi;
 int32_t sjv_i32_maxvalue;
@@ -608,27 +627,23 @@ int32_t sjv_i32_minvalue;
 uint32_t sjv_u32_maxvalue;
 
 void sjf_namespace1_class(sjs_namespace1_class* _this);
-sjs_object* sjf_namespace1_class_asInterface(sjs_namespace1_class* _this, int typeId);
-sji_namespace1_foo* sjf_namespace1_class_as_sji_namespace1_foo(sjs_namespace1_class* _this);
+void sjf_namespace1_class_as_sji_namespace1_foo(sjs_namespace1_class* _this, sji_namespace1_foo* _return);
+void sjf_namespace1_class_asinterface(sjs_namespace1_class* _this, int typeId, sjs_interface* _return);
 void sjf_namespace1_class_copy(sjs_namespace1_class* _this, sjs_namespace1_class* _from);
 void sjf_namespace1_class_destroy(sjs_namespace1_class* _this);
 void sjf_namespace1_class_heap(sjs_namespace1_class* _this);
-sjs_object* sjf_namespace1_class_heap_asInterface(sjs_namespace1_class* _this, int typeId);
-sji_namespace1_foo* sjf_namespace1_class_heap_as_sji_namespace1_foo(sjs_namespace1_class* _this);
+void sjf_namespace1_class_heap_as_sji_namespace1_foo(sjs_namespace1_class* _this, sji_namespace1_foo* _return);
+void sjf_namespace1_class_heap_asinterface(sjs_namespace1_class* _this, int typeId, sjs_interface* _return);
 void sjf_namespace1_class_namespace1_test1(sjs_namespace1_class* _parent, int32_t* _return);
 void sjf_namespace2_class(sjs_namespace2_class* _this);
-sjs_object* sjf_namespace2_class_asInterface(sjs_namespace2_class* _this, int typeId);
-sji_namespace2_foo* sjf_namespace2_class_as_sji_namespace2_foo(sjs_namespace2_class* _this);
+void sjf_namespace2_class_as_sji_namespace2_foo(sjs_namespace2_class* _this, sji_namespace2_foo* _return);
+void sjf_namespace2_class_asinterface(sjs_namespace2_class* _this, int typeId, sjs_interface* _return);
 void sjf_namespace2_class_copy(sjs_namespace2_class* _this, sjs_namespace2_class* _from);
 void sjf_namespace2_class_destroy(sjs_namespace2_class* _this);
 void sjf_namespace2_class_heap(sjs_namespace2_class* _this);
-sjs_object* sjf_namespace2_class_heap_asInterface(sjs_namespace2_class* _this, int typeId);
-sji_namespace2_foo* sjf_namespace2_class_heap_as_sji_namespace2_foo(sjs_namespace2_class* _this);
+void sjf_namespace2_class_heap_as_sji_namespace2_foo(sjs_namespace2_class* _this, sji_namespace2_foo* _return);
+void sjf_namespace2_class_heap_asinterface(sjs_namespace2_class* _this, int typeId, sjs_interface* _return);
 void sjf_namespace2_class_namespace2_test2(sjs_namespace2_class* _parent, int32_t* _return);
-void sji_namespace1_foo_copy(sji_namespace1_foo* _this, sji_namespace1_foo* _from);
-void sji_namespace1_foo_destroy(sji_namespace1_foo* _this);
-void sji_namespace2_foo_copy(sji_namespace2_foo* _this, sji_namespace2_foo* _from);
-void sji_namespace2_foo_destroy(sji_namespace2_foo* _this);
 void main_destroy(void);
 
 void halt(const char * format, ...) {
@@ -770,27 +785,20 @@ void weakptr_clear(void* parent, void* v) {
 void sjf_namespace1_class(sjs_namespace1_class* _this) {
 }
 
-sjs_object* sjf_namespace1_class_asInterface(sjs_namespace1_class* _this, int typeId) {
+void sjf_namespace1_class_as_sji_namespace1_foo(sjs_namespace1_class* _this, sji_namespace1_foo* _return) {
+    _return->_parent = (sjs_object*)_this;
+    _return->_vtbl = &sjs_namespace1_class_foo_vtbl;
+}
+
+void sjf_namespace1_class_asinterface(sjs_namespace1_class* _this, int typeId, sjs_interface* _return) {
     switch (typeId) {
         case sji_namespace1_foo_typeId:  {
-            return (sjs_object*)sjf_namespace1_class_as_sji_namespace1_foo(_this);
+            sjf_namespace1_class_as_sji_namespace1_foo(_this, (sji_namespace1_foo*)_return);
+            break;
         }
     }
 
-    return 0;
-}
-
-sji_namespace1_foo* sjf_namespace1_class_as_sji_namespace1_foo(sjs_namespace1_class* _this) {
-    sji_namespace1_foo* _interface;
-    _interface = (sji_namespace1_foo*)malloc(sizeof(sji_namespace1_foo));
-    _interface->_refCount = 1;
-    _interface->_parent = (sjs_object*)_this;
-    _interface->_parent->_refCount++;
-    _interface->destroy = (void(*)(void*))sjf_namespace1_class_destroy;
-    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_namespace1_class_asInterface;
-    _interface->test1 = (void(*)(void*, int32_t*))sjf_namespace1_class_namespace1_test1;
-
-    return _interface;
+    _return->_parent = 0;
 }
 
 void sjf_namespace1_class_copy(sjs_namespace1_class* _this, sjs_namespace1_class* _from) {
@@ -802,27 +810,20 @@ void sjf_namespace1_class_destroy(sjs_namespace1_class* _this) {
 void sjf_namespace1_class_heap(sjs_namespace1_class* _this) {
 }
 
-sjs_object* sjf_namespace1_class_heap_asInterface(sjs_namespace1_class* _this, int typeId) {
+void sjf_namespace1_class_heap_as_sji_namespace1_foo(sjs_namespace1_class* _this, sji_namespace1_foo* _return) {
+    _return->_parent = (sjs_object*)_this;
+    _return->_vtbl = &sjs_namespace1_class_foo_vtbl;
+}
+
+void sjf_namespace1_class_heap_asinterface(sjs_namespace1_class* _this, int typeId, sjs_interface* _return) {
     switch (typeId) {
         case sji_namespace1_foo_typeId:  {
-            return (sjs_object*)sjf_namespace1_class_heap_as_sji_namespace1_foo(_this);
+            sjf_namespace1_class_heap_as_sji_namespace1_foo(_this, (sji_namespace1_foo*)_return);
+            break;
         }
     }
 
-    return 0;
-}
-
-sji_namespace1_foo* sjf_namespace1_class_heap_as_sji_namespace1_foo(sjs_namespace1_class* _this) {
-    sji_namespace1_foo* _interface;
-    _interface = (sji_namespace1_foo*)malloc(sizeof(sji_namespace1_foo));
-    _interface->_refCount = 1;
-    _interface->_parent = (sjs_object*)_this;
-    _interface->_parent->_refCount++;
-    _interface->destroy = (void(*)(void*))sjf_namespace1_class_destroy;
-    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_namespace1_class_heap_asInterface;
-    _interface->test1 = (void(*)(void*, int32_t*))sjf_namespace1_class_namespace1_test1;
-
-    return _interface;
+    _return->_parent = 0;
 }
 
 void sjf_namespace1_class_namespace1_test1(sjs_namespace1_class* _parent, int32_t* _return) {
@@ -832,27 +833,20 @@ void sjf_namespace1_class_namespace1_test1(sjs_namespace1_class* _parent, int32_
 void sjf_namespace2_class(sjs_namespace2_class* _this) {
 }
 
-sjs_object* sjf_namespace2_class_asInterface(sjs_namespace2_class* _this, int typeId) {
+void sjf_namespace2_class_as_sji_namespace2_foo(sjs_namespace2_class* _this, sji_namespace2_foo* _return) {
+    _return->_parent = (sjs_object*)_this;
+    _return->_vtbl = &sjs_namespace2_class_foo_vtbl;
+}
+
+void sjf_namespace2_class_asinterface(sjs_namespace2_class* _this, int typeId, sjs_interface* _return) {
     switch (typeId) {
         case sji_namespace2_foo_typeId:  {
-            return (sjs_object*)sjf_namespace2_class_as_sji_namespace2_foo(_this);
+            sjf_namespace2_class_as_sji_namespace2_foo(_this, (sji_namespace2_foo*)_return);
+            break;
         }
     }
 
-    return 0;
-}
-
-sji_namespace2_foo* sjf_namespace2_class_as_sji_namespace2_foo(sjs_namespace2_class* _this) {
-    sji_namespace2_foo* _interface;
-    _interface = (sji_namespace2_foo*)malloc(sizeof(sji_namespace2_foo));
-    _interface->_refCount = 1;
-    _interface->_parent = (sjs_object*)_this;
-    _interface->_parent->_refCount++;
-    _interface->destroy = (void(*)(void*))sjf_namespace2_class_destroy;
-    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_namespace2_class_asInterface;
-    _interface->test2 = (void(*)(void*, int32_t*))sjf_namespace2_class_namespace2_test2;
-
-    return _interface;
+    _return->_parent = 0;
 }
 
 void sjf_namespace2_class_copy(sjs_namespace2_class* _this, sjs_namespace2_class* _from) {
@@ -864,68 +858,33 @@ void sjf_namespace2_class_destroy(sjs_namespace2_class* _this) {
 void sjf_namespace2_class_heap(sjs_namespace2_class* _this) {
 }
 
-sjs_object* sjf_namespace2_class_heap_asInterface(sjs_namespace2_class* _this, int typeId) {
+void sjf_namespace2_class_heap_as_sji_namespace2_foo(sjs_namespace2_class* _this, sji_namespace2_foo* _return) {
+    _return->_parent = (sjs_object*)_this;
+    _return->_vtbl = &sjs_namespace2_class_foo_vtbl;
+}
+
+void sjf_namespace2_class_heap_asinterface(sjs_namespace2_class* _this, int typeId, sjs_interface* _return) {
     switch (typeId) {
         case sji_namespace2_foo_typeId:  {
-            return (sjs_object*)sjf_namespace2_class_heap_as_sji_namespace2_foo(_this);
+            sjf_namespace2_class_heap_as_sji_namespace2_foo(_this, (sji_namespace2_foo*)_return);
+            break;
         }
     }
 
-    return 0;
-}
-
-sji_namespace2_foo* sjf_namespace2_class_heap_as_sji_namespace2_foo(sjs_namespace2_class* _this) {
-    sji_namespace2_foo* _interface;
-    _interface = (sji_namespace2_foo*)malloc(sizeof(sji_namespace2_foo));
-    _interface->_refCount = 1;
-    _interface->_parent = (sjs_object*)_this;
-    _interface->_parent->_refCount++;
-    _interface->destroy = (void(*)(void*))sjf_namespace2_class_destroy;
-    _interface->asInterface = (sjs_object*(*)(sjs_object*,int))sjf_namespace2_class_heap_asInterface;
-    _interface->test2 = (void(*)(void*, int32_t*))sjf_namespace2_class_namespace2_test2;
-
-    return _interface;
+    _return->_parent = 0;
 }
 
 void sjf_namespace2_class_namespace2_test2(sjs_namespace2_class* _parent, int32_t* _return) {
     (*_return) = 5;
 }
 
-void sji_namespace1_foo_copy(sji_namespace1_foo* _this, sji_namespace1_foo* _from) {
-    _this->_refCount = 1;
-    _this->_parent = _from->_parent;
-    _this->_parent->_refCount++;
-    _this->destroy = _from->destroy;
-    _this->asInterface = _from->asInterface;
-    _this->test1 = _from->test1;
-}
-
-void sji_namespace1_foo_destroy(sji_namespace1_foo* _this) {
-    _this->_parent->_refCount--;
-    if (_this->_parent->_refCount <= 0) {
-        _this->destroy(_this->_parent);
-        free(_this->_parent);
-    }
-}
-
-void sji_namespace2_foo_copy(sji_namespace2_foo* _this, sji_namespace2_foo* _from) {
-    _this->_refCount = 1;
-    _this->_parent = _from->_parent;
-    _this->_parent->_refCount++;
-    _this->destroy = _from->destroy;
-    _this->asInterface = _from->asInterface;
-    _this->test2 = _from->test2;
-}
-
-void sji_namespace2_foo_destroy(sji_namespace2_foo* _this) {
-    _this->_parent->_refCount--;
-    if (_this->_parent->_refCount <= 0) {
-        _this->destroy(_this->_parent);
-        free(_this->_parent);
-    }
-}
-
 int main(int argc, char** argv) {
+    sjs_namespace1_class_foo_vtbl.destroy = (void(*)(void*))sjf_namespace1_class_destroy;
+    sjs_namespace1_class_foo_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_namespace1_class_asinterface;
+    sjs_namespace1_class_foo_vtbl.test1 = (void(*)(sjs_object*, int32_t*))sjf_namespace1_class_namespace1_test1;
+    sjs_namespace2_class_foo_vtbl.destroy = (void(*)(void*))sjf_namespace2_class_destroy;
+    sjs_namespace2_class_foo_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_namespace2_class_asinterface;
+    sjs_namespace2_class_foo_vtbl.test2 = (void(*)(sjs_object*, int32_t*))sjf_namespace2_class_namespace2_test2;
     sjv_f32_pi = 3.14159265358979323846f;
     sjv_u32_maxvalue = (uint32_t)4294967295u;
     sjt_negate1 = 1;
@@ -938,14 +897,12 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
-    sjt_cast1 = (sjs_namespace1_class*)malloc(sizeof(sjs_namespace1_class));
-    sjt_cast1->_refCount = 1;
-    sjf_namespace1_class_heap(sjt_cast1);
-    sjv_a = (sji_namespace1_foo*)sjf_namespace1_class_heap_as_sji_namespace1_foo(sjt_cast1);
-    sjt_cast2 = (sjs_namespace2_class*)malloc(sizeof(sjs_namespace2_class));
-    sjt_cast2->_refCount = 1;
-    sjf_namespace2_class_heap(sjt_cast2);
-    sjv_b = (sji_namespace2_foo*)sjf_namespace2_class_heap_as_sji_namespace2_foo(sjt_cast2);
+    sjt_cast1._refCount = 1;
+    sjf_namespace1_class(&sjt_cast1);
+    sjf_namespace1_class_as_sji_namespace1_foo(&sjt_cast1, &sjv_a);
+    sjt_cast2._refCount = 1;
+    sjf_namespace2_class(&sjt_cast2);
+    sjf_namespace2_class_as_sji_namespace2_foo(&sjt_cast2, &sjv_b);
     main_destroy();
     #ifdef _DEBUG
     printf("\npress return to end\n");
@@ -956,24 +913,6 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    sjt_cast1->_refCount--;
-    if (sjt_cast1->_refCount <= 0) {
-        weakptr_release(sjt_cast1);
-        sjf_namespace1_class_destroy(sjt_cast1);
-    }
-    sjt_cast2->_refCount--;
-    if (sjt_cast2->_refCount <= 0) {
-        weakptr_release(sjt_cast2);
-        sjf_namespace2_class_destroy(sjt_cast2);
-    }
-    sjv_a->_refCount--;
-    if (sjv_a->_refCount <= 0) {
-        weakptr_release(sjv_a);
-        sji_namespace1_foo_destroy(sjv_a);
-    }
-    sjv_b->_refCount--;
-    if (sjv_b->_refCount <= 0) {
-        weakptr_release(sjv_b);
-        sji_namespace2_foo_destroy(sjv_b);
-    }
+    if (sjt_cast1._refCount == 1) { sjf_namespace1_class_destroy(&sjt_cast1); }
+    if (sjt_cast2._refCount == 1) { sjf_namespace2_class_destroy(&sjt_cast2); }
 }

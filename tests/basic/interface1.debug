@@ -1,8 +1,8 @@
-class #foo ()'heap class {
+class #foo ()'stack class {
   this
 }
 
-class #foo ()'heap class {
+class #foo ()'stack class {
   this
 }
 
@@ -668,8 +668,8 @@ global()'void {
   }
   import  {
   }
-  a'heap #foo : class(this = class()) as heap #foo
-  b'heap #foo : class(this = class()) as heap #foo
+  a'local #foo : class(this = class()) as local #foo
+  b'local #foo : class(this = class()) as local #foo
   void
 }
 

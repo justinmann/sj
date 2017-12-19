@@ -60,15 +60,22 @@ struct td_double_option {
 const double_option double_empty = { true };
 
 #define sjs_object_typeId 1
-#define sjs_anon1_typeId 2
-#define sjs_class_typeId 3
+#define sjs_interface_typeId 2
+#define sjs_anon1_typeId 3
+#define sjs_class_typeId 4
 
 typedef struct td_sjs_object sjs_object;
+typedef struct td_sjs_interface sjs_interface;
 typedef struct td_sjs_anon1 sjs_anon1;
 typedef struct td_sjs_class sjs_class;
 
 struct td_sjs_object {
     intptr_t _refCount;
+};
+
+struct td_sjs_interface {
+    sjs_object* _parent;
+    void* _vtbl;
 };
 
 struct td_sjs_anon1 {

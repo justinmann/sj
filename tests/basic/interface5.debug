@@ -1,4 +1,4 @@
-class!i32 #bar, #foo!item ()'heap class_i32 {
+class!i32 #bar, #foo!item ()'stack class_i32 {
   this
 }
 
@@ -664,11 +664,11 @@ global()'void {
   ptr_init();
   weakptr_init();
   --c--
-  a'heap #foo : class!i32(this = class!i32()) as heap #foo
+  a'local #foo : class!i32(this = class!i32()) as local #foo
   test1(
     parent: this
   )
-  b'heap #bar? : a as heap #bar?
+  b'local #bar? : a as local #bar?
   if isEmpty(b) empty'i32? else value(test2(
     parent: this
   ))

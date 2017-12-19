@@ -572,7 +572,7 @@ struct td_sjs_class {
 struct td_sji_foo_vtbl {
     void (*destroy)(void* _this);
     void (*asinterface)(sjs_object* _this, int typeId, sjs_interface* _return);
-    void (*test)(void* _parent, int32_t* _return);
+    void (*test)(sjs_object* _parent, int32_t* _return);
 };
 
 struct td_sji_foo {
@@ -594,7 +594,7 @@ struct td_sjs_string {
     sjs_array_char data;
 };
 
-sji_foo_vtbl sjs_class_vtbl;
+sji_foo_vtbl sjs_class_foo_vtbl;
 void halt(const char * format, ...);
 void ptr_hash(void* p, uint32_t* result);
 void ptr_isequal(void *p1, void* p2, bool* result);
@@ -832,7 +832,7 @@ void sjf_class(sjs_class* _this) {
 
 void sjf_class_as_sji_foo(sjs_class* _this, sji_foo* _return) {
     _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_class_vtbl;
+    _return->_vtbl = &sjs_class_foo_vtbl;
 }
 
 void sjf_class_asinterface(sjs_class* _this, int typeId, sjs_interface* _return) {
@@ -857,7 +857,7 @@ void sjf_class_heap(sjs_class* _this) {
 
 void sjf_class_heap_as_sji_foo(sjs_class* _this, sji_foo* _return) {
     _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_class_vtbl;
+    _return->_vtbl = &sjs_class_foo_vtbl;
 }
 
 void sjf_class_heap_asinterface(sjs_class* _this, int typeId, sjs_interface* _return) {
@@ -911,9 +911,9 @@ void sjf_string_heap(sjs_string* _this) {
 }
 
 int main(int argc, char** argv) {
-    sjs_class_vtbl.destroy = (void(*)(void*))sjf_class_destroy;
-    sjs_class_vtbl.asinterface = (void(*)(sjs_object*,int,void*))sjf_class_asinterface;
-    sjs_class_vtbl.test = (void(*)(void*, int32_t*))sjf_class_test;
+    sjs_class_foo_vtbl.destroy = (void(*)(void*))sjf_class_destroy;
+    sjs_class_foo_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_class_asinterface;
+    sjs_class_foo_vtbl.test = (void(*)(sjs_object*, int32_t*))sjf_class_test;
     sjv_f32_pi = 3.14159265358979323846f;
     sjv_u32_maxvalue = (uint32_t)4294967295u;
     sjt_negate1 = 1;

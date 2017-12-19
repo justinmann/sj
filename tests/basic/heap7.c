@@ -539,13 +539,20 @@ delete_cb cb[5];
 delete_cb_list* next;
 };
 #define sjs_object_typeId 1
-#define sjs_foo_typeId 2
+#define sjs_interface_typeId 2
+#define sjs_foo_typeId 3
 
 typedef struct td_sjs_object sjs_object;
+typedef struct td_sjs_interface sjs_interface;
 typedef struct td_sjs_foo sjs_foo;
 
 struct td_sjs_object {
     intptr_t _refCount;
+};
+
+struct td_sjs_interface {
+    sjs_object* _parent;
+    void* _vtbl;
 };
 
 struct td_sjs_foo {
@@ -784,7 +791,6 @@ int main(int argc, char** argv) {
     sjv_stack_x1._refCount = 1;
     sjf_foo_copy(&sjv_stack_x1, sjt_copy3);
     sjt_copy4 = sjv_heap_y;
-    sjt_copy4->_refCount++;
     sjv_stack_x2._refCount = 1;
     sjf_foo_copy(&sjv_stack_x2, sjt_copy4);
     sjt_copy5 = sjv_local_y;
@@ -803,11 +809,6 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    sjt_copy4->_refCount--;
-    if (sjt_copy4->_refCount <= 0) {
-        weakptr_release(sjt_copy4);
-        sjf_foo_destroy(sjt_copy4);
-    }
     sjv_heap_x1->_refCount--;
     if (sjv_heap_x1->_refCount <= 0) {
         weakptr_release(sjv_heap_x1);

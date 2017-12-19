@@ -671,7 +671,7 @@ global()'void {
   i'stack class? : empty'stack class?
   j'bool : isEmpty(a)
   k'bool : isEmpty(i)
-  l'heap #interface? : empty'heap #interface?
+  l'local #interface? : empty'local #interface?
   m'bool : isEmpty(l)
   n'heap class? : value(heap class(this = class(
     bob'i32 : bob
@@ -679,8 +679,8 @@ global()'void {
   o'heap class : getValue(n)
   p'i32? : if isEmpty(n) empty'i32? else value(getValue(n).bob)
   q'i32 : if isEmpty(a) -1i else getValue(a)
-  r'heap #interface? : n as heap #interface?
-  s'heap #interface2? : r as heap #interface2?
+  r'local #interface? : n as local #interface?
+  s'local #interface2? : r as local #interface2?
   void
 }
 

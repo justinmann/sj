@@ -2,11 +2,11 @@
 
 
 
-class #foo ()'heap class {
+class #foo ()'stack class {
   this
 }
 
-class #foo ()'heap class {
+class #foo ()'stack class {
   this
 }
 
@@ -686,11 +686,11 @@ global()'void {
   import  {
     y'i32 : 0i
   }
-  e'heap #foo : class(this = class()) as heap #foo
+  e'local #foo : class(this = class()) as local #foo
   f'i32 : bar(
     parent: this
   )
-  h'heap #foo : class(this = class()) as heap #foo
+  h'local #foo : class(this = class()) as local #foo
   i'i32 : bar(
     parent: this
   )

@@ -60,11 +60,18 @@ struct td_double_option {
 const double_option double_empty = { true };
 
 #define sjs_object_typeId 1
+#define sjs_interface_typeId 2
 
 typedef struct td_sjs_object sjs_object;
+typedef struct td_sjs_interface sjs_interface;
 
 struct td_sjs_object {
     intptr_t _refCount;
+};
+
+struct td_sjs_interface {
+    sjs_object* _parent;
+    void* _vtbl;
 };
 
 int32_option sjv_b;
