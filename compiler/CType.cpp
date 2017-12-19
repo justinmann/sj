@@ -242,22 +242,11 @@ shared_ptr<CTypes> CType::create(Compiler* compiler, vector<string>& packageName
         return types;
     }
 
-    auto stackValueType = make_shared<CType>();
     auto heapValueType = make_shared<CType>();
     auto heapOptionType = make_shared<CType>();
     auto localValueType = make_shared<CType>();
     auto localOptionType = make_shared<CType>();
     auto weakType = make_shared<CType>();
-
-    stackValueType->isOption = false;
-    stackValueType->typeMode = CTM_Stack;
-    stackValueType->category = CTC_Interface;
-    stackValueType->parent = parent;
-    stackValueType->packageNamespace = packageNamespace;
-    stackValueType->valueName = valueName;
-    stackValueType->fullName = "stack #" + valueName;
-    stackValueType->cname = parent.lock()->getCStructName(CTM_Stack);
-    stackValueType->safeName = valueName;
 
     heapValueType->isOption = false;
     heapValueType->typeMode = CTM_Heap;
@@ -309,13 +298,11 @@ shared_ptr<CTypes> CType::create(Compiler* compiler, vector<string>& packageName
     weakType->cname = parent.lock()->getCStructName(CTM_Stack);
     weakType->safeName = "weak_" + valueName;
 
-    compiler->types[key] = make_shared<CTypes>(stackValueType, nullptr, heapValueType, heapOptionType, localValueType, localOptionType, weakType);
+    compiler->types[key] = make_shared<CTypes>(nullptr, nullptr, heapValueType, heapOptionType, localValueType, localOptionType, weakType);
     return compiler->types[key];
 }
 
 shared_ptr<CTypes> CType::create(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> stackReturnType, shared_ptr<CType> heapReturnType, weak_ptr<CCallback> callback) {
-    auto stackValueType = make_shared<CType>();
-    auto stackOptionType = make_shared<CType>();
     auto heapValueType = make_shared<CType>();
     auto heapOptionType = make_shared<CType>();
     auto localValueType = make_shared<CType>();
@@ -357,30 +344,6 @@ shared_ptr<CTypes> CType::create(vector<shared_ptr<CType>> argTypes, shared_ptr<
 
     auto valueName = valueStream.str();
     auto safeName = safeStream.str();
-
-    stackValueType->isOption = false;
-    stackValueType->typeMode = CTM_Stack;
-    stackValueType->category = CTC_Function;
-    stackValueType->callback = callback;
-    stackValueType->argTypes = argTypes;
-    stackValueType->stackReturnType = stackReturnType;
-    stackValueType->heapReturnType = heapReturnType;
-    stackValueType->valueName = valueName;
-    stackValueType->fullName = "stack " + valueName;
-    stackValueType->cname = callback.lock()->getCName(CTM_Stack, false);
-    stackValueType->safeName = "stack_" + safeName;
-
-    stackOptionType->isOption = true;
-    stackOptionType->typeMode = CTM_Stack;
-    stackOptionType->category = CTC_Function;
-    stackOptionType->callback = callback;
-    stackOptionType->argTypes = argTypes;
-    stackOptionType->stackReturnType = stackReturnType;
-    stackOptionType->heapReturnType = heapReturnType;
-    stackOptionType->valueName = valueName;
-    stackOptionType->fullName = "stack " + valueName + "?";
-    stackOptionType->cname = callback.lock()->getCName(CTM_Stack, true);
-    stackOptionType->safeName = "stack_" + safeName + "_option";
 
     heapValueType->isOption = false;
     heapValueType->typeMode = CTM_Heap;
@@ -442,7 +405,7 @@ shared_ptr<CTypes> CType::create(vector<shared_ptr<CType>> argTypes, shared_ptr<
     weakType->cname = callback.lock()->getCName(CTM_Local, true);
     weakType->safeName = "weak_" + safeName;
 
-    return make_shared<CTypes>(stackValueType, stackOptionType, heapValueType, heapOptionType, localValueType, localOptionType, weakType);
+    return make_shared<CTypes>(nullptr, nullptr, heapValueType, heapOptionType, localValueType, localOptionType, weakType);
 }
 
 void CType::transpileDefaultValue(Compiler* compiler, CLoc loc, TrBlock* trBlock, shared_ptr<TrStoreValue> storeValue) {
@@ -451,7 +414,15 @@ void CType::transpileDefaultValue(Compiler* compiler, CLoc loc, TrBlock* trBlock
         storeValue->retainValue(compiler, loc, trBlock, temp);
     }
     else if (isOption) {
-        if (!parent.expired()) {
+        if (category == CTC_Function) {
+            trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._parent = 0"));
+            storeValue->hasSetValue = true;
+        }
+        else if (category == CTC_Interface) {
+            trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._parent = 0"));
+            storeValue->hasSetValue = true;
+        }
+        else if (!parent.expired()) {
             if (storeValue->type->typeMode == CTM_Stack) {
                 if (storeValue->isReturnValue) {
                     trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "->_refCount = -1"));
@@ -466,10 +437,6 @@ void CType::transpileDefaultValue(Compiler* compiler, CLoc loc, TrBlock* trBlock
                 storeValue->retainValue(compiler, loc, trBlock, temp);
             }
         }
-        else if (category == CTC_Function) {
-            trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._parent = 0"));
-            storeValue->hasSetValue = true;
-        }
     }
     else {
         compiler->addError(loc, CErrorCode::InvalidType, "no default value for type '%s'", valueName.c_str());
@@ -477,7 +444,7 @@ void CType::transpileDefaultValue(Compiler* compiler, CLoc loc, TrBlock* trBlock
 }
 
 bool CType::isSameExceptMode(shared_ptr<CType> l, shared_ptr<CType> r) {
-    return l->category == r->category && l->stackValueType.lock()->cname == r->stackValueType.lock()->cname && (l->isOption == r->isOption || l->typeMode == CTM_Weak || r->typeMode == CTM_Weak);
+    return l->category == r->category && l->localValueType.lock()->cname == r->localValueType.lock()->cname && (l->isOption == r->isOption || l->typeMode == CTM_Weak || r->typeMode == CTM_Weak);
 }
 
 

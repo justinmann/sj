@@ -28,7 +28,7 @@ void CCallbackVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* tr
     }
 
     for (auto i = 0; i < (int)destCallback->argTypes.size(); i++) {
-        if (destCallback->argTypes[i] != callback->argTypes[i]) {
+        if (!CType::isSameExceptMode(destCallback->argTypes[i], callback->argTypes[i])) {
             compiler->addError(loc, CErrorCode::TypeMismatch, "right arg %d type '%s' does not match left arg type '%s'", i, destCallback->argTypes[i]->fullName.c_str(), callback->argTypes[i]->fullName.c_str());
             return;
         }

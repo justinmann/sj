@@ -28,6 +28,9 @@ void CIsEmptyVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
         if (leftValue->type->category == CTC_Function) {
             line << "(" << leftValue->getName(trBlock) << "->_parent" << " == 0)";
         }
+        else if (leftValue->type->category == CTC_Interface) {
+            line << "(" << leftValue->getName(trBlock) << "._parent" << " == 0)";
+        }
         else {
             line << "(" << leftValue->getName(trBlock) << " == 0)";
         }

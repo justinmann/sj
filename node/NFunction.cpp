@@ -489,7 +489,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                     interfaceVal->transpileDefinition(compiler, trOutput);
 
                     // Create explict cast
-                    auto vtblName = getCStructName(CTM_Stack) + "_vtbl";
+                    auto vtblName = getCStructName(CTM_Stack) + "_" + interfaceVal->name + "_vtbl";
                     auto vtblBody = trOutput->vtbls.find(vtblName);
                     if (vtblBody == trOutput->vtbls.end()) {
                         auto vtbl = make_shared<TrVtbl>();
@@ -497,7 +497,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                         trOutput->vtbls[vtblName] = vtbl;
 
                         vtbl->functions.push_back(make_pair("destroy", "(void(*)(void*))" + getCDestroyFunctionName()));
-                        vtbl->functions.push_back(make_pair("asinterface", "(void(*)(sjs_object*,int,void*))" + getCAsInterfaceFunctionName(compiler, trOutput, returnMode)));
+                        vtbl->functions.push_back(make_pair("asinterface", "(void(*)(sjs_object*,int,sjs_interface*))" + getCAsInterfaceFunctionName(compiler, trOutput, returnMode)));
 
                         for (auto interfaceMethod : interfaceVal->methods) {
                             auto implementation = static_pointer_cast<CFunction>(getCFunction(compiler, loc, interfaceMethod->name, nullptr, nullptr, CTM_Undefined));
@@ -520,7 +520,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 
                                 stringstream initStream;
                                 initStream << "(" << interfaceMethod->getCTypeName(compiler, false) << ")" << implementation->getCFunctionName(compiler, trOutput, interfaceMethod->returnMode);
-                                vtbl->functions.push_back(make_pair(interfaceMethod->name, initStream.str()));
+                                vtbl->functions.push_back(make_pair(interfaceMethod->name + (interfaceMethod->returnMode == CTM_Heap ? "_heap" : ""), initStream.str()));
                             }
                         }
                     }
@@ -1039,6 +1039,10 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CTypeMode returnM
             _data[returnMode].returnType = compiler->typeVoid;
         }
         
+        if (_data[returnMode].returnType->typeMode == CTM_Local) {
+            compiler->addError(loc, CErrorCode::InvalidType, "cannot return local mode");
+            _data[returnMode].isInvalid = true;
+        }
         
         // If we attempt to return stack and can only generate a heap return then the stack return mode is invalid
         if (returnMode == CTM_Stack && _data[returnMode].returnType->typeMode == CTM_Heap) {

@@ -150,7 +150,7 @@ string CInterfaceMethod::getCTypeName(Compiler* compiler, bool includeNames) {
             ss << "_heap";
         }
     }
-    ss << ")(void*";
+    ss << ")(sjs_object*";
     if (includeNames) {
         ss << " _parent";
     }
@@ -211,14 +211,14 @@ string CInterfaceMethod::getCFunctionName(Compiler* compiler, TrOutput* trOutput
         trOutput->functions[functionName] = trFunctionBlock;
 
         stringstream callStream;
-        callStream << "_parent->" << name;
+        callStream << "_parent._vtbl->" << name;
         if (returnMode == CTM_Heap) {
             callStream << "_heap";
         }
         callStream << "(";
         bool isFirstArg = true;
         if (hasParent) {
-            callStream << "_parent->_parent";
+            callStream << "_parent._parent";
             isFirstArg = false;
         }
 
@@ -248,7 +248,7 @@ string CInterfaceMethod::getCFunctionName(Compiler* compiler, TrOutput* trOutput
         stringstream functionDefinition;
         functionDefinition << "void " << functionName << "(";
 
-        functionDefinition << parent.lock()->getCStructName(CTM_Stack) << "* _parent";
+        functionDefinition << parent.lock()->getCStructName(CTM_Stack) << " _parent";
 
         for (auto argVar : argVars) {
             functionDefinition << ", ";

@@ -276,14 +276,14 @@ void CInterface::transpileCast(Compiler* compiler, TrOutput* trOutput, TrBlock* 
     if (fromValue->type->parent.lock()->classType == CFT_Interface) {
         auto fromInterface = static_pointer_cast<CInterface>(fromValue->type->parent.lock());
         stringstream line;
-        line << fromValue->name << "._vtbl->asinterface(" << fromValue->name << "._parent, " << getCTypeIdName() << ", &" << toValue->getName(trBlock) << ")";
+        line << fromValue->name << "._vtbl->asinterface(" << fromValue->name << "._parent, " << getCTypeIdName() << ", (sjs_interface*)&" << toValue->getName(trBlock) << ")";
         trBlock->statements.push_back(TrStatement(loc, line.str()));
         toValue->getValue()->addRetainToStatements(trBlock);
         toValue->hasSetValue = true;
     }
     else {
         stringstream line;
-        line << getCCastFunctionName(compiler, trOutput, fromValue->type->parent.lock(), fromValue->type->typeMode) << "(" << TrValue::convertToLocalName(fromValue->type, fromValue->name, false) << ", &" << toValue->getName(trBlock) << ")";
+        line << getCCastFunctionName(compiler, trOutput, fromValue->type->parent.lock(), CTM_Stack) << "(" << TrValue::convertToLocalName(fromValue->type, fromValue->name, false) << ", &" << toValue->getName(trBlock) << ")";
         trBlock->statements.push_back(TrStatement(loc, line.str()));
         toValue->getValue()->addRetainToStatements(trBlock);
         toValue->hasSetValue = true;
