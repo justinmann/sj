@@ -14,7 +14,7 @@ public:
         }
         else {
             auto type = argVar->getType(compiler);
-            if (type->typeMode != CTM_Heap) {
+            if (type->typeMode != CTM_Heap && type->typeMode != CTM_Weak) {
                 type = type->getLocalType();
             }
             return type;
@@ -665,7 +665,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
                 assert(compiler->errors.size() > 0);
                 return;
             }
-            auto argStoreValue = trBlock->createTempStoreVariable(calleeLoc, callerScope, argType->typeMode == CTM_Heap ? argType : argType->getLocalType(), "functionParam");
+            auto argStoreValue = trBlock->createTempStoreVariable(calleeLoc, callerScope, (argType->typeMode == CTM_Heap || argType->typeMode == CTM_Weak) ? argType : argType->getLocalType(), "functionParam");
             parameterVar->transpile(compiler, trOutput, trBlock, isDefaultAssignment ? nullptr : thisValue, argStoreValue);
 
             if (!argStoreValue->hasSetValue) {
@@ -1504,12 +1504,16 @@ shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, vector<pai
             switch (typeMode) {
                 case CTM_Heap:
                     return typeName->isOption ? thisTypes->heapOptionType : thisTypes->heapValueType;
+                case CTM_Undefined:
                 case CTM_Stack:
                     return typeName->isOption ? thisTypes->stackOptionType : thisTypes->stackValueType;
                 case CTM_Local:
                     return typeName->isOption ? thisTypes->localOptionType : thisTypes->localValueType;
+                case CTM_Weak:
+                    return thisTypes->weakType;
                 default:
-                    return typeName->isOption ? thisTypes->stackOptionType : thisTypes->stackValueType;
+                    assert(false);
+                    return nullptr;
             }
         }
     }

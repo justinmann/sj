@@ -482,12 +482,16 @@ bool CType::isSameExceptMode(shared_ptr<CType> l, shared_ptr<CType> r) {
 
 
 shared_ptr<CType> CType::getValueType() {
-    assert(isOption);
+    if (!isOption) {
+        return shared_from_this();
+    }
     return (heapOptionType.lock().get() == this) ? heapValueType.lock() : ((stackOptionType.lock().get() == this) ? stackValueType.lock() : localValueType.lock());
 }
 
 shared_ptr<CType> CType::getOptionType() {
-    assert(!isOption);
+    if (isOption) {
+        return shared_from_this();
+    }
     return (heapValueType.lock().get() == this) ? heapOptionType.lock() : ((stackValueType.lock().get() == this) ? stackOptionType.lock() : localOptionType.lock());
 }
 
