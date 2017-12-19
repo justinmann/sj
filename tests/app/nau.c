@@ -2787,7 +2787,8 @@ sjs_model* sjt_cast58 = 0;
 sjs_model* sjt_cast59 = 0;
 sjs_crosshairselement* sjt_cast60 = 0;
 sjs_shader* sjt_copy15 = 0;
-sjs_shader* sjt_copy37 = 0;
+sjs_shader* sjt_copy36 = 0;
+sjs_shader* sjt_copy54 = 0;
 sjs_shader* sjt_copy55 = 0;
 sjs_shader* sjt_copy56 = 0;
 sjs_shader* sjt_copy57 = 0;
@@ -2798,7 +2799,6 @@ sjs_shader* sjt_copy61 = 0;
 sjs_shader* sjt_copy62 = 0;
 sjs_shader* sjt_copy63 = 0;
 sjs_shader* sjt_copy64 = 0;
-sjs_shader* sjt_copy65 = 0;
 int32_t sjt_functionParam103;
 sji_model sjt_functionParam104 = { 0 };
 float sjt_functionParam191;
@@ -8089,24 +8089,24 @@ void sjf_boxelement_firemouseevent(sjs_boxelement* _parent, sjs_mouseevent* mous
 }
 
 void sjf_boxelement_getrect(sjs_boxelement* _parent, sjs_rect* _return) {
-    sjs_rect* sjt_copy38 = 0;
+    sjs_rect* sjt_copy37 = 0;
     sjs_boxelement* sjt_dot1578 = 0;
 
     sjt_dot1578 = _parent;
-    sjt_copy38 = &(sjt_dot1578)->rect;
+    sjt_copy37 = &(sjt_dot1578)->rect;
     _return->_refCount = 1;
-    sjf_rect_copy(_return, sjt_copy38);
+    sjf_rect_copy(_return, sjt_copy37);
 }
 
 void sjf_boxelement_getrect_heap(sjs_boxelement* _parent, sjs_rect** _return) {
-    sjs_rect* sjt_copy39 = 0;
+    sjs_rect* sjt_copy38 = 0;
     sjs_boxelement* sjt_dot1579 = 0;
 
     sjt_dot1579 = _parent;
-    sjt_copy39 = &(sjt_dot1579)->rect;
+    sjt_copy38 = &(sjt_dot1579)->rect;
     (*_return) = (sjs_rect*)malloc(sizeof(sjs_rect));
     (*_return)->_refCount = 1;
-    sjf_rect_copy((*_return), sjt_copy39);
+    sjf_rect_copy((*_return), sjt_copy38);
 }
 
 void sjf_boxelement_getsize(sjs_boxelement* _parent, sjs_size* maxsize, sjs_size* _return) {
@@ -8162,8 +8162,8 @@ void sjf_boxelement_render(sjs_boxelement* _parent, sjs_scene2d* scene) {
     sjt_isEmpty12 = ((sjt_dot1583)->boxrenderer._refCount != -1 ? &(sjt_dot1583)->boxrenderer : 0);
     sjt_ifElse45 = (sjt_isEmpty12 == 0);
     if (sjt_ifElse45) {
-        sjs_rect* sjt_copy41 = 0;
-        sjs_color* sjt_copy42 = 0;
+        sjs_rect* sjt_copy40 = 0;
+        sjs_color* sjt_copy41 = 0;
         sjs_boxelement* sjt_dot1584 = 0;
         sjs_boxelement* sjt_dot1585 = 0;
         sjs_boxelement* sjt_dot1586 = 0;
@@ -8171,13 +8171,13 @@ void sjf_boxelement_render(sjs_boxelement* _parent, sjs_scene2d* scene) {
         sjt_dot1584 = _parent;
         sjt_dot1584->boxrenderer._refCount = 1;
         sjt_dot1585 = _parent;
-        sjt_copy41 = &(sjt_dot1585)->rect;
+        sjt_copy40 = &(sjt_dot1585)->rect;
         sjt_dot1584->boxrenderer.rect._refCount = 1;
-        sjf_rect_copy(&sjt_dot1584->boxrenderer.rect, sjt_copy41);
+        sjf_rect_copy(&sjt_dot1584->boxrenderer.rect, sjt_copy40);
         sjt_dot1586 = _parent;
-        sjt_copy42 = &(sjt_dot1586)->color;
+        sjt_copy41 = &(sjt_dot1586)->color;
         sjt_dot1584->boxrenderer.color._refCount = 1;
-        sjf_color_copy(&sjt_dot1584->boxrenderer.color, sjt_copy42);
+        sjf_color_copy(&sjt_dot1584->boxrenderer.color, sjt_copy41);
         sjf_boxrenderer(&sjt_dot1584->boxrenderer);
     }
 
@@ -8211,14 +8211,14 @@ void sjf_boxelement_setrect(sjs_boxelement* _parent, sjs_rect* rect_) {
     result26 = !sjt_not4;
     sjt_ifElse44 = result26;
     if (sjt_ifElse44) {
-        sjs_rect* sjt_copy40 = 0;
+        sjs_rect* sjt_copy39 = 0;
         sjs_boxelement* sjt_dot1581 = 0;
         sjs_boxelement* sjt_dot1582 = 0;
 
         sjt_dot1581 = _parent;
-        sjt_copy40 = rect_;
+        sjt_copy39 = rect_;
         sjt_dot1581->rect._refCount = 1;
-        sjf_rect_copy(&sjt_dot1581->rect, sjt_copy40);
+        sjf_rect_copy(&sjt_dot1581->rect, sjt_copy39);
         sjt_dot1582 = _parent;
         sjt_dot1582->boxrenderer._refCount = -1;
     }
@@ -8394,7 +8394,7 @@ void sjf_crosshairselement_firemouseevent(sjs_crosshairselement* _parent, sjs_mo
         sjt_compare122 = sjv_mouseeventtype_move;
         sjt_ifElse58 = sjt_compare121 == sjt_compare122;
         if (sjt_ifElse58) {
-            sjs_point* sjt_copy54 = 0;
+            sjs_point* sjt_copy53 = 0;
             sjs_crosshairselement* sjt_dot1686 = 0;
             sjs_mouseevent* sjt_dot1687 = 0;
             sjs_crosshairselement* sjt_dot1688 = 0;
@@ -8402,9 +8402,9 @@ void sjf_crosshairselement_firemouseevent(sjs_crosshairselement* _parent, sjs_mo
 
             sjt_dot1686 = _parent;
             sjt_dot1687 = mouseevent;
-            sjt_copy54 = &(sjt_dot1687)->point;
+            sjt_copy53 = &(sjt_dot1687)->point;
             sjt_dot1686->_point._refCount = 1;
-            sjf_point_copy(&sjt_dot1686->_point, sjt_copy54);
+            sjf_point_copy(&sjt_dot1686->_point, sjt_copy53);
             sjt_dot1688 = _parent;
             sjt_dot1688->_topdownrenderer._refCount = -1;
             sjt_dot1689 = _parent;
@@ -8414,24 +8414,24 @@ void sjf_crosshairselement_firemouseevent(sjs_crosshairselement* _parent, sjs_mo
 }
 
 void sjf_crosshairselement_getrect(sjs_crosshairselement* _parent, sjs_rect* _return) {
-    sjs_rect* sjt_copy49 = 0;
+    sjs_rect* sjt_copy48 = 0;
     sjs_crosshairselement* sjt_dot1645 = 0;
 
     sjt_dot1645 = _parent;
-    sjt_copy49 = &(sjt_dot1645)->_rect;
+    sjt_copy48 = &(sjt_dot1645)->_rect;
     _return->_refCount = 1;
-    sjf_rect_copy(_return, sjt_copy49);
+    sjf_rect_copy(_return, sjt_copy48);
 }
 
 void sjf_crosshairselement_getrect_heap(sjs_crosshairselement* _parent, sjs_rect** _return) {
-    sjs_rect* sjt_copy50 = 0;
+    sjs_rect* sjt_copy49 = 0;
     sjs_crosshairselement* sjt_dot1646 = 0;
 
     sjt_dot1646 = _parent;
-    sjt_copy50 = &(sjt_dot1646)->_rect;
+    sjt_copy49 = &(sjt_dot1646)->_rect;
     (*_return) = (sjs_rect*)malloc(sizeof(sjs_rect));
     (*_return)->_refCount = 1;
-    sjf_rect_copy((*_return), sjt_copy50);
+    sjf_rect_copy((*_return), sjt_copy49);
 }
 
 void sjf_crosshairselement_getsize(sjs_crosshairselement* _parent, sjs_size* maxsize, sjs_size* _return) {
@@ -8496,7 +8496,7 @@ void sjf_crosshairselement_render(sjs_crosshairselement* _parent, sjs_scene2d* s
     sjt_isEmpty16 = ((sjt_dot1651)->_topdownrenderer._refCount != -1 ? &(sjt_dot1651)->_topdownrenderer : 0);
     sjt_ifElse53 = (sjt_isEmpty16 == 0);
     if (sjt_ifElse53) {
-        sjs_color* sjt_copy52 = 0;
+        sjs_color* sjt_copy51 = 0;
         sjs_crosshairselement* sjt_dot1652 = 0;
         sjs_point* sjt_dot1653 = 0;
         sjs_crosshairselement* sjt_dot1654 = 0;
@@ -8521,9 +8521,9 @@ void sjf_crosshairselement_render(sjs_crosshairselement* _parent, sjs_scene2d* s
         sjt_dot1652->_topdownrenderer.rect.h = (sjt_dot1657)->h;
         sjf_rect(&sjt_dot1652->_topdownrenderer.rect);
         sjt_dot1659 = _parent;
-        sjt_copy52 = &(sjt_dot1659)->color;
+        sjt_copy51 = &(sjt_dot1659)->color;
         sjt_dot1652->_topdownrenderer.color._refCount = 1;
-        sjf_color_copy(&sjt_dot1652->_topdownrenderer.color, sjt_copy52);
+        sjf_color_copy(&sjt_dot1652->_topdownrenderer.color, sjt_copy51);
         sjf_boxrenderer(&sjt_dot1652->_topdownrenderer);
     }
 
@@ -8531,7 +8531,7 @@ void sjf_crosshairselement_render(sjs_crosshairselement* _parent, sjs_scene2d* s
     sjt_isEmpty17 = ((sjt_dot1660)->_leftrightrenderer._refCount != -1 ? &(sjt_dot1660)->_leftrightrenderer : 0);
     sjt_ifElse54 = (sjt_isEmpty17 == 0);
     if (sjt_ifElse54) {
-        sjs_color* sjt_copy53 = 0;
+        sjs_color* sjt_copy52 = 0;
         sjs_crosshairselement* sjt_dot1661 = 0;
         sjs_rect* sjt_dot1662 = 0;
         sjs_crosshairselement* sjt_dot1663 = 0;
@@ -8556,9 +8556,9 @@ void sjf_crosshairselement_render(sjs_crosshairselement* _parent, sjs_scene2d* s
         sjt_dot1661->_leftrightrenderer.rect.h = 1;
         sjf_rect(&sjt_dot1661->_leftrightrenderer.rect);
         sjt_dot1668 = _parent;
-        sjt_copy53 = &(sjt_dot1668)->color;
+        sjt_copy52 = &(sjt_dot1668)->color;
         sjt_dot1661->_leftrightrenderer.color._refCount = 1;
-        sjf_color_copy(&sjt_dot1661->_leftrightrenderer.color, sjt_copy53);
+        sjf_color_copy(&sjt_dot1661->_leftrightrenderer.color, sjt_copy52);
         sjf_boxrenderer(&sjt_dot1661->_leftrightrenderer);
     }
 
@@ -8606,15 +8606,15 @@ void sjf_crosshairselement_setrect(sjs_crosshairselement* _parent, sjs_rect* rec
     result28 = !sjt_not6;
     sjt_ifElse52 = result28;
     if (sjt_ifElse52) {
-        sjs_rect* sjt_copy51 = 0;
+        sjs_rect* sjt_copy50 = 0;
         sjs_crosshairselement* sjt_dot1648 = 0;
         sjs_crosshairselement* sjt_dot1649 = 0;
         sjs_crosshairselement* sjt_dot1650 = 0;
 
         sjt_dot1648 = _parent;
-        sjt_copy51 = rect_;
+        sjt_copy50 = rect_;
         sjt_dot1648->_rect._refCount = 1;
-        sjf_rect_copy(&sjt_dot1648->_rect, sjt_copy51);
+        sjf_rect_copy(&sjt_dot1648->_rect, sjt_copy50);
         sjt_dot1649 = _parent;
         sjt_dot1649->_topdownrenderer._refCount = -1;
         sjt_dot1650 = _parent;
@@ -9217,7 +9217,7 @@ void sjf_image(sjs_image* _this) {
     sjt_and10 = sjt_compare107 == sjt_compare108;
     sjt_ifElse50 = sjt_and9 && sjt_and10;
     if (sjt_ifElse50) {
-        sjs_rect* sjt_copy47 = 0;
+        sjs_rect* sjt_copy46 = 0;
         sjs_size* sjt_dot1635 = 0;
         sjs_size* sjt_dot1636 = 0;
         sjs_texture* sjt_parent194 = 0;
@@ -9232,9 +9232,9 @@ void sjf_image(sjs_image* _this) {
         sjt_dot1636 = &sjv_size;
         sjt_call83.h = (sjt_dot1636)->h;
         sjf_rect(&sjt_call83);
-        sjt_copy47 = &sjt_call83;
+        sjt_copy46 = &sjt_call83;
         _this->rect._refCount = 1;
-        sjf_rect_copy(&_this->rect, sjt_copy47);
+        sjf_rect_copy(&_this->rect, sjt_copy46);
     }
 
     if (sjt_call83._refCount == 1) { sjf_rect_destroy(&sjt_call83); }
@@ -9276,7 +9276,7 @@ void sjf_image_heap(sjs_image* _this) {
     sjt_and12 = sjt_compare111 == sjt_compare112;
     sjt_ifElse51 = sjt_and11 && sjt_and12;
     if (sjt_ifElse51) {
-        sjs_rect* sjt_copy48 = 0;
+        sjs_rect* sjt_copy47 = 0;
         sjs_size* sjt_dot1639 = 0;
         sjs_size* sjt_dot1640 = 0;
         sjs_texture* sjt_parent195 = 0;
@@ -9291,9 +9291,9 @@ void sjf_image_heap(sjs_image* _this) {
         sjt_dot1640 = &sjv_size;
         sjt_call84.h = (sjt_dot1640)->h;
         sjf_rect(&sjt_call84);
-        sjt_copy48 = &sjt_call84;
+        sjt_copy47 = &sjt_call84;
         _this->rect._refCount = 1;
-        sjf_rect_copy(&_this->rect, sjt_copy48);
+        sjf_rect_copy(&_this->rect, sjt_copy47);
     }
 
     if (sjt_call84._refCount == 1) { sjf_rect_destroy(&sjt_call84); }
@@ -9337,24 +9337,24 @@ void sjf_imageelement_firemouseevent(sjs_imageelement* _parent, sjs_mouseevent* 
 }
 
 void sjf_imageelement_getrect(sjs_imageelement* _parent, sjs_rect* _return) {
-    sjs_rect* sjt_copy43 = 0;
+    sjs_rect* sjt_copy42 = 0;
     sjs_imageelement* sjt_dot1593 = 0;
 
     sjt_dot1593 = _parent;
-    sjt_copy43 = &(sjt_dot1593)->_rect;
+    sjt_copy42 = &(sjt_dot1593)->_rect;
     _return->_refCount = 1;
-    sjf_rect_copy(_return, sjt_copy43);
+    sjf_rect_copy(_return, sjt_copy42);
 }
 
 void sjf_imageelement_getrect_heap(sjs_imageelement* _parent, sjs_rect** _return) {
-    sjs_rect* sjt_copy44 = 0;
+    sjs_rect* sjt_copy43 = 0;
     sjs_imageelement* sjt_dot1594 = 0;
 
     sjt_dot1594 = _parent;
-    sjt_copy44 = &(sjt_dot1594)->_rect;
+    sjt_copy43 = &(sjt_dot1594)->_rect;
     (*_return) = (sjs_rect*)malloc(sizeof(sjs_rect));
     (*_return)->_refCount = 1;
-    sjf_rect_copy((*_return), sjt_copy44);
+    sjf_rect_copy((*_return), sjt_copy43);
 }
 
 void sjf_imageelement_getsize(sjs_imageelement* _parent, sjs_size* maxsize, sjs_size* _return) {
@@ -9413,7 +9413,7 @@ void sjf_imageelement_render(sjs_imageelement* _parent, sjs_scene2d* scene) {
     sjt_isEmpty14 = ((sjt_dot1598)->_imagerenderer._refCount != -1 ? &(sjt_dot1598)->_imagerenderer : 0);
     sjt_ifElse48 = (sjt_isEmpty14 == 0);
     if (sjt_ifElse48) {
-        sjs_image* sjt_copy46 = 0;
+        sjs_image* sjt_copy45 = 0;
         sjs_imageelement* sjt_dot1599 = 0;
         sjs_imageelement* sjt_dot1620 = 0;
         sjs_imageelement* sjt_dot1621 = 0;
@@ -9429,9 +9429,9 @@ void sjf_imageelement_render(sjs_imageelement* _parent, sjs_scene2d* scene) {
         sjt_functionParam488 = &(sjt_dot1621)->_margin;
         sjf_rect_subtractmargin(sjt_parent192, sjt_functionParam488, &sjt_dot1599->_imagerenderer.rect);
         sjt_dot1622 = _parent;
-        sjt_copy46 = &(sjt_dot1622)->image;
+        sjt_copy45 = &(sjt_dot1622)->image;
         sjt_dot1599->_imagerenderer.image._refCount = 1;
-        sjf_image_copy(&sjt_dot1599->_imagerenderer.image, sjt_copy46);
+        sjf_image_copy(&sjt_dot1599->_imagerenderer.image, sjt_copy45);
         sjf_imagerenderer(&sjt_dot1599->_imagerenderer);
     }
 
@@ -9465,14 +9465,14 @@ void sjf_imageelement_setrect(sjs_imageelement* _parent, sjs_rect* rect_) {
     result27 = !sjt_not5;
     sjt_ifElse47 = result27;
     if (sjt_ifElse47) {
-        sjs_rect* sjt_copy45 = 0;
+        sjs_rect* sjt_copy44 = 0;
         sjs_imageelement* sjt_dot1596 = 0;
         sjs_imageelement* sjt_dot1597 = 0;
 
         sjt_dot1596 = _parent;
-        sjt_copy45 = rect_;
+        sjt_copy44 = rect_;
         sjt_dot1596->_rect._refCount = 1;
-        sjf_rect_copy(&sjt_dot1596->_rect, sjt_copy45);
+        sjf_rect_copy(&sjt_dot1596->_rect, sjt_copy44);
         sjt_dot1597 = _parent;
         sjt_dot1597->_imagerenderer._refCount = -1;
     }
@@ -20607,7 +20607,7 @@ void sjf_scene2dmodel_firemouseevent(sjs_scene2dmodel* _parent, sjs_mouseevent* 
         i = sjt_forStart23;
         while (i < sjt_forEnd23) {
             sjs_mouseevent sjt_call79 = { -1 };
-            sjs_point* sjt_copy36 = 0;
+            sjs_point* sjt_copy35 = 0;
             sjs_scene2dmodel* sjt_dot1554 = 0;
             sjs_mouseevent* sjt_dot1555 = 0;
             sjs_mouseevent* sjt_dot1556 = 0;
@@ -20625,9 +20625,9 @@ void sjf_scene2dmodel_firemouseevent(sjs_scene2dmodel* _parent, sjs_mouseevent* 
             sjt_call79._refCount = 1;
             sjt_dot1555 = mouseevent;
             sjt_call79.type = (sjt_dot1555)->type;
-            sjt_copy36 = &sjv_scenepoint;
+            sjt_copy35 = &sjv_scenepoint;
             sjt_call79.point._refCount = 1;
-            sjf_point_copy(&sjt_call79.point, sjt_copy36);
+            sjf_point_copy(&sjt_call79.point, sjt_copy35);
             sjt_dot1556 = mouseevent;
             sjt_call79.iscaptured = (sjt_dot1556)->iscaptured;
             sjf_mouseevent(&sjt_call79);
@@ -22903,7 +22903,6 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
             sjs_vec3* sjt_isEmpty7 = 0;
             bool sjt_or10;
             bool sjt_or9;
-            sjs_vec3 sjv_t = { -1 };
 
             ifValue7 = (sjv_result._refCount != -1 ? &sjv_result : 0);
             sjt_isEmpty5 = (sjv_intersection._refCount != -1 ? &sjv_intersection : 0);
@@ -22957,7 +22956,6 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
             sjt_ifElse34 = sjt_or9 || sjt_or10;
             if (sjt_ifElse34) {
                 sjs_vec3* sjt_copy33 = 0;
-                sjs_vec3* sjt_copy34 = 0;
                 sjs_vec2* sjt_dot1513 = 0;
                 sjs_vertex_location_texture_normal* sjt_dot1514 = 0;
                 sjs_vec2* sjt_dot1515 = 0;
@@ -23014,10 +23012,6 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
                 sjt_copy33 = ifValue7;
                 sjv_intersection._refCount = 1;
                 sjf_vec3_copy(&sjv_intersection, sjt_copy33);
-                sjt_copy34 = (sjv_intersection._refCount != -1 ? &sjv_intersection : 0);
-                if (sjt_copy34->_refCount == -1) { exit(-1); }
-                sjv_t._refCount = 1;
-                sjf_vec3_copy(&sjv_t, sjt_copy34);
                 sjt_dot1514 = &sjv_vertex1;
                 sjt_dot1513 = &(sjt_dot1514)->texture;
                 sjt_math2371 = (sjt_dot1513)->x;
@@ -23050,12 +23044,12 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
                 sjt_dot1530 = &sjv_vertex0;
                 sjt_dot1529 = &(sjt_dot1530)->texture;
                 sjt_math2381 = (sjt_dot1529)->x;
-                sjt_dot1531 = &sjv_t;
+                sjt_dot1531 = ifValue7;
                 sjt_math2383 = (sjt_dot1531)->x;
                 sjt_math2384 = sjv_dtu1;
                 sjt_math2382 = sjt_math2383 * sjt_math2384;
                 sjt_math2379 = sjt_math2381 + sjt_math2382;
-                sjt_dot1532 = &sjv_t;
+                sjt_dot1532 = ifValue7;
                 sjt_math2385 = (sjt_dot1532)->y;
                 sjt_math2386 = sjv_dtu2;
                 sjt_math2380 = sjt_math2385 * sjt_math2386;
@@ -23063,20 +23057,18 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
                 sjt_dot1534 = &sjv_vertex0;
                 sjt_dot1533 = &(sjt_dot1534)->texture;
                 sjt_math2389 = (sjt_dot1533)->y;
-                sjt_dot1535 = &sjv_t;
+                sjt_dot1535 = ifValue7;
                 sjt_math2391 = (sjt_dot1535)->x;
                 sjt_math2392 = sjv_dtv1;
                 sjt_math2390 = sjt_math2391 * sjt_math2392;
                 sjt_math2387 = sjt_math2389 + sjt_math2390;
-                sjt_dot1536 = &sjv_t;
+                sjt_dot1536 = ifValue7;
                 sjt_math2393 = (sjt_dot1536)->y;
                 sjt_math2394 = sjv_dtv2;
                 sjt_math2388 = sjt_math2393 * sjt_math2394;
                 sjv_texture.y = sjt_math2387 + sjt_math2388;
                 sjf_vec2(&sjv_texture);
             }
-
-            if (sjv_t._refCount == 1) { sjf_vec3_destroy(&sjv_t); }
         }
 
         i++;
@@ -23090,11 +23082,11 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
     sjt_isEmpty9 = (sjv_texture._refCount != -1 ? &sjv_texture : 0);
     sjt_ifElse38 = (sjt_isEmpty9 != 0);
     if (sjt_ifElse38) {
-        sjs_vec2* sjt_copy35 = 0;
+        sjs_vec2* sjt_copy34 = 0;
 
-        sjt_copy35 = (sjv_texture._refCount != -1 ? &sjv_texture : 0);
+        sjt_copy34 = (sjv_texture._refCount != -1 ? &sjv_texture : 0);
         _return->_refCount = 1;
-        sjf_vec2_copy(_return, sjt_copy35);
+        sjf_vec2_copy(_return, sjt_copy34);
     } else {
         _return->_refCount = -1;
     }
@@ -23967,9 +23959,9 @@ int main(int argc, char** argv) {
     sjt_functionParam477 = 0.0f;
     sjt_functionParam478 = 1.0f;
     sjf_planevertexbuffer(sjt_functionParam470, sjt_functionParam471, sjt_functionParam472, sjt_functionParam473, sjt_functionParam474, sjt_functionParam475, sjt_functionParam476, sjt_functionParam477, sjt_functionParam478, &sjt_call61->vertexbuffer);
-    sjt_copy37 = &sjv_phongtextureshader;
+    sjt_copy36 = &sjv_phongtextureshader;
     sjt_call61->shader._refCount = 1;
-    sjf_shader_copy(&sjt_call61->shader, sjt_copy37);
+    sjf_shader_copy(&sjt_call61->shader, sjt_copy36);
     sjt_call61->texturesize._refCount = 1;
     sjt_call61->texturesize.w = 512;
     sjt_call61->texturesize.h = 512;
@@ -24276,9 +24268,9 @@ int main(int argc, char** argv) {
     sjt_functionParam506 = 0.0f;
     sjt_functionParam507 = 1.0f;
     sjf_planevertexbuffer(sjt_functionParam499, sjt_functionParam500, sjt_functionParam501, sjt_functionParam502, sjt_functionParam503, sjt_functionParam504, sjt_functionParam505, sjt_functionParam506, sjt_functionParam507, &sjt_call87->vertexbuffer);
-    sjt_copy55 = &sjv_phongtextureshader;
+    sjt_copy54 = &sjv_phongtextureshader;
     sjt_call87->shader._refCount = 1;
-    sjf_shader_copy(&sjt_call87->shader, sjt_copy55);
+    sjf_shader_copy(&sjt_call87->shader, sjt_copy54);
     sjt_call87->texturesize._refCount = 1;
     sjt_call87->texturesize.w = 512;
     sjt_call87->texturesize.h = 512;
@@ -24622,9 +24614,9 @@ int main(int argc, char** argv) {
     sjt_functionParam533 = 0.0f;
     sjt_functionParam534 = 1.0f;
     sjf_planevertexbuffer(sjt_functionParam526, sjt_functionParam527, sjt_functionParam528, sjt_functionParam529, sjt_functionParam530, sjt_functionParam531, sjt_functionParam532, sjt_functionParam533, sjt_functionParam534, &sjt_call93->vertexbuffer);
-    sjt_copy56 = &sjv_phongtextureshader;
+    sjt_copy55 = &sjv_phongtextureshader;
     sjt_call93->shader._refCount = 1;
-    sjf_shader_copy(&sjt_call93->shader, sjt_copy56);
+    sjf_shader_copy(&sjt_call93->shader, sjt_copy55);
     sjt_call94._refCount = 1;
     sjt_call94.count = 16;
     sjt_call94.data._refCount = 1;
@@ -24768,9 +24760,9 @@ int main(int argc, char** argv) {
     sjt_functionParam552 = 0.0f;
     sjt_functionParam553 = 1.0f;
     sjf_planevertexbuffer(sjt_functionParam545, sjt_functionParam546, sjt_functionParam547, sjt_functionParam548, sjt_functionParam549, sjt_functionParam550, sjt_functionParam551, sjt_functionParam552, sjt_functionParam553, &sjt_call97->vertexbuffer);
-    sjt_copy57 = &sjv_phongtextureshader;
+    sjt_copy56 = &sjv_phongtextureshader;
     sjt_call97->shader._refCount = 1;
-    sjf_shader_copy(&sjt_call97->shader, sjt_copy57);
+    sjf_shader_copy(&sjt_call97->shader, sjt_copy56);
     sjt_call98._refCount = 1;
     sjt_call98.count = 16;
     sjt_call98.data._refCount = 1;
@@ -24912,9 +24904,9 @@ int main(int argc, char** argv) {
     sjt_functionParam571 = 0.0f;
     sjt_functionParam572 = 1.0f;
     sjf_planevertexbuffer(sjt_functionParam564, sjt_functionParam565, sjt_functionParam566, sjt_functionParam567, sjt_functionParam568, sjt_functionParam569, sjt_functionParam570, sjt_functionParam571, sjt_functionParam572, &sjt_call101->vertexbuffer);
-    sjt_copy58 = &sjv_phongtextureshader;
+    sjt_copy57 = &sjv_phongtextureshader;
     sjt_call101->shader._refCount = 1;
-    sjf_shader_copy(&sjt_call101->shader, sjt_copy58);
+    sjf_shader_copy(&sjt_call101->shader, sjt_copy57);
     sjt_call102._refCount = 1;
     sjt_call102.count = 16;
     sjt_call102.data._refCount = 1;
@@ -25058,9 +25050,9 @@ int main(int argc, char** argv) {
     sjt_functionParam590 = 0.0f;
     sjt_functionParam591 = 1.0f;
     sjf_planevertexbuffer(sjt_functionParam583, sjt_functionParam584, sjt_functionParam585, sjt_functionParam586, sjt_functionParam587, sjt_functionParam588, sjt_functionParam589, sjt_functionParam590, sjt_functionParam591, &sjt_call105->vertexbuffer);
-    sjt_copy59 = &sjv_phongtextureshader;
+    sjt_copy58 = &sjv_phongtextureshader;
     sjt_call105->shader._refCount = 1;
-    sjf_shader_copy(&sjt_call105->shader, sjt_copy59);
+    sjf_shader_copy(&sjt_call105->shader, sjt_copy58);
     sjt_call106._refCount = 1;
     sjt_call106.count = 16;
     sjt_call106.data._refCount = 1;
@@ -25202,9 +25194,9 @@ int main(int argc, char** argv) {
     sjt_functionParam609 = 0.0f;
     sjt_functionParam610 = 1.0f;
     sjf_planevertexbuffer(sjt_functionParam602, sjt_functionParam603, sjt_functionParam604, sjt_functionParam605, sjt_functionParam606, sjt_functionParam607, sjt_functionParam608, sjt_functionParam609, sjt_functionParam610, &sjt_call109->vertexbuffer);
-    sjt_copy60 = &sjv_phongtextureshader;
+    sjt_copy59 = &sjv_phongtextureshader;
     sjt_call109->shader._refCount = 1;
-    sjf_shader_copy(&sjt_call109->shader, sjt_copy60);
+    sjf_shader_copy(&sjt_call109->shader, sjt_copy59);
     sjt_call110._refCount = 1;
     sjt_call110.count = 16;
     sjt_call110.data._refCount = 1;
@@ -25348,9 +25340,9 @@ int main(int argc, char** argv) {
     sjt_functionParam628 = 0.0f;
     sjt_functionParam629 = 1.0f;
     sjf_planevertexbuffer(sjt_functionParam621, sjt_functionParam622, sjt_functionParam623, sjt_functionParam624, sjt_functionParam625, sjt_functionParam626, sjt_functionParam627, sjt_functionParam628, sjt_functionParam629, &sjt_call113->vertexbuffer);
-    sjt_copy61 = &sjv_phongtextureshader;
+    sjt_copy60 = &sjv_phongtextureshader;
     sjt_call113->shader._refCount = 1;
-    sjf_shader_copy(&sjt_call113->shader, sjt_copy61);
+    sjf_shader_copy(&sjt_call113->shader, sjt_copy60);
     sjt_call114._refCount = 1;
     sjt_call114.count = 16;
     sjt_call114.data._refCount = 1;
@@ -25492,9 +25484,9 @@ int main(int argc, char** argv) {
     sjt_functionParam647 = 0.0f;
     sjt_functionParam648 = 1.0f;
     sjf_planevertexbuffer(sjt_functionParam640, sjt_functionParam641, sjt_functionParam642, sjt_functionParam643, sjt_functionParam644, sjt_functionParam645, sjt_functionParam646, sjt_functionParam647, sjt_functionParam648, &sjt_call117->vertexbuffer);
-    sjt_copy62 = &sjv_phongtextureshader;
+    sjt_copy61 = &sjv_phongtextureshader;
     sjt_call117->shader._refCount = 1;
-    sjf_shader_copy(&sjt_call117->shader, sjt_copy62);
+    sjf_shader_copy(&sjt_call117->shader, sjt_copy61);
     sjt_call118._refCount = 1;
     sjt_call118.count = 16;
     sjt_call118.data._refCount = 1;
@@ -25638,9 +25630,9 @@ int main(int argc, char** argv) {
     sjt_functionParam666 = 0.0f;
     sjt_functionParam667 = 1.0f;
     sjf_planevertexbuffer(sjt_functionParam659, sjt_functionParam660, sjt_functionParam661, sjt_functionParam662, sjt_functionParam663, sjt_functionParam664, sjt_functionParam665, sjt_functionParam666, sjt_functionParam667, &sjt_call121->vertexbuffer);
-    sjt_copy63 = &sjv_phongtextureshader;
+    sjt_copy62 = &sjv_phongtextureshader;
     sjt_call121->shader._refCount = 1;
-    sjf_shader_copy(&sjt_call121->shader, sjt_copy63);
+    sjf_shader_copy(&sjt_call121->shader, sjt_copy62);
     sjt_call122._refCount = 1;
     sjt_call122.count = 16;
     sjt_call122.data._refCount = 1;
@@ -25782,9 +25774,9 @@ int main(int argc, char** argv) {
     sjt_functionParam685 = 0.0f;
     sjt_functionParam686 = 1.0f;
     sjf_planevertexbuffer(sjt_functionParam678, sjt_functionParam679, sjt_functionParam680, sjt_functionParam681, sjt_functionParam682, sjt_functionParam683, sjt_functionParam684, sjt_functionParam685, sjt_functionParam686, &sjt_call125->vertexbuffer);
-    sjt_copy64 = &sjv_phongtextureshader;
+    sjt_copy63 = &sjv_phongtextureshader;
     sjt_call125->shader._refCount = 1;
-    sjf_shader_copy(&sjt_call125->shader, sjt_copy64);
+    sjf_shader_copy(&sjt_call125->shader, sjt_copy63);
     sjt_call126._refCount = 1;
     sjt_call126.count = 16;
     sjt_call126.data._refCount = 1;
@@ -25930,9 +25922,9 @@ int main(int argc, char** argv) {
     sjt_functionParam704 = 0.0f;
     sjt_functionParam705 = 1.0f;
     sjf_planevertexbuffer(sjt_functionParam697, sjt_functionParam698, sjt_functionParam699, sjt_functionParam700, sjt_functionParam701, sjt_functionParam702, sjt_functionParam703, sjt_functionParam704, sjt_functionParam705, &sjt_call129->vertexbuffer);
-    sjt_copy65 = &sjv_phongtextureshader;
+    sjt_copy64 = &sjv_phongtextureshader;
     sjt_call129->shader._refCount = 1;
-    sjf_shader_copy(&sjt_call129->shader, sjt_copy65);
+    sjf_shader_copy(&sjt_call129->shader, sjt_copy64);
     sjt_call130._refCount = 1;
     sjt_call130.count = 16;
     sjt_call130.data._refCount = 1;

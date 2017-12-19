@@ -22,15 +22,13 @@ blurElement #element (
 				child.setRect(_rect)
 			}	
 
-			if !isEmpty(_frameBuffer1) {
-				t1 : opt_getValue(_frameBuffer1)			
+			ifValid t1 : _frameBuffer1 {
 				if t1.size != size(_rect.w, _rect.h) {
 					_frameBuffer1 = empty'frameBuffer
 				}
 			}
 
-			if !isEmpty(_frameBuffer2) {
-				t2 : opt_getValue(_frameBuffer2)			
+			ifValid t2 : _frameBuffer2 {
 				if t2.size != size(_rect.w, _rect.h) {
 					_frameBuffer2 = empty'frameBuffer
 				}
@@ -75,9 +73,7 @@ blurElement #element (
 				child : children[i]
 				child.render(scene)
 			}
-		} else if !isEmpty(_frameBuffer1) && !isEmpty(_frameBuffer2) {
-			f1 : opt_getValue(_frameBuffer1)
-			f2 : opt_getValue(_frameBuffer2)
+		} else ifValid f1 : _frameBuffer1, f2 : _frameBuffer2 {
 			--c--
 			glBindFramebuffer(GL_FRAMEBUFFER, _parent->_frameBuffer1->frameBufferId);
 			--c--

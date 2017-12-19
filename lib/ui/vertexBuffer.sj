@@ -72,8 +72,7 @@ vertexBuffer!vertex(
             ifValid result {
                 if isEmpty(intersection) || result.z < intersection?.z?:0.0f {
                     intersection = valid(copy result)                    
-
-                    t : copy opt_getValue(intersection)
+                    
                     // If all you want is the vertices hit, then you are done.  In this sample, we
                     // want to show how to infer texture coordinates as well, using the BaryCentric
                     // coordinates supplied by D3DXIntersect
@@ -82,8 +81,8 @@ vertexBuffer!vertex(
                     dtv1 : vertex1.texture.y - vertex0.texture.y;
                     dtv2 : vertex2.texture.y - vertex0.texture.y;
                     texture = valid(vec2(
-                        x: vertex0.texture.x + t.x * dtu1 + t.y * dtu2
-                        y: vertex0.texture.y + t.x * dtv1 + t.y * dtv2))
+                        x: vertex0.texture.x + result.x * dtu1 + result.y * dtu2
+                        y: vertex0.texture.y + result.x * dtv1 + result.y * dtv2))
                 }
             }
         }
