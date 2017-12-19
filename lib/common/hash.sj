@@ -3,6 +3,38 @@ hash![key, val] (
     void* _hash;
     --cvar--
 
+    getCount() {
+        --c--
+        khash_t(#safeName(key)_#safeName(val)_hash_type)* p = (khash_t(#safeName(key)_#safeName(val)_hash_type)*)_parent->_hash;
+        int x = kh_size(p);
+        #return(i32, x);
+        --c--   
+    }
+
+    resize(newBuckets : 'i32) {
+        --c--
+        khash_t(#safeName(key)_#safeName(val)_hash_type)* p = (khash_t(#safeName(key)_#safeName(val)_hash_type)*)_parent->_hash;
+        kh_resize(#safeName(key)_#safeName(val)_hash_type, p, newbuckets);
+        --c--   
+    }
+
+    getAt(key : 'key)'val? {
+        --c--
+        khash_t(#safeName(key)_#safeName(val)_hash_type)* p = (khash_t(#safeName(key)_#safeName(val)_hash_type)*)_parent->_hash;
+    
+    ##if #isStack(key)
+        khiter_t k = kh_get(#safeName(key)_#safeName(val)_hash_type, p, *key);
+    ##else
+        khiter_t k = kh_get(#safeName(key)_#safeName(val)_hash_type, p, key);
+    ##endif
+
+        if (k == kh_end(p)) {
+            #returnEmpty(val)
+        }
+        #returnValue(val, kh_val(p, k));
+        --c--
+    }
+
     setAt(key : 'key, val : 'val) {
         --c--
         khash_t(#safeName(key)_#safeName(val)_hash_type)* p = (khash_t(#safeName(key)_#safeName(val)_hash_type)*)_parent->_hash;
@@ -44,21 +76,21 @@ hash![key, val] (
         --c--
     }
 
-    getAt(key : 'key)'val? {
+    remove(key : 'key) {
         --c--
         khash_t(#safeName(key)_#safeName(val)_hash_type)* p = (khash_t(#safeName(key)_#safeName(val)_hash_type)*)_parent->_hash;
-    
+
     ##if #isStack(key)
         khiter_t k = kh_get(#safeName(key)_#safeName(val)_hash_type, p, *key);
     ##else
         khiter_t k = kh_get(#safeName(key)_#safeName(val)_hash_type, p, key);
     ##endif
 
-        if (k == kh_end(p)) {
-            #returnEmpty(val)
+        if (k != kh_end(p)) {            
+            #release(val, kh_val(p, k));
+            kh_del(#safeName(key)_#safeName(val)_hash_type, p, k);
         }
-        #returnValue(val, kh_val(p, k));
-        --c--
+        --c--    
     }
 
     each(cb : '(:key,:val)void)'void {

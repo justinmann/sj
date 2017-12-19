@@ -13,7 +13,7 @@
 
 class CHashVar : public CVar {
 public:
-    CHashVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> createHashVar, vector<shared_ptr<CVar>> setAtVars, string name) : CVar(loc, scope), createHashVar(createHashVar), setAtVars(setAtVars), name(name) {}
+    CHashVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> createHashVar, shared_ptr<CVar> resizeHashVar, vector<shared_ptr<CVar>> setAtVars, string name) : CVar(loc, scope), createHashVar(createHashVar), resizeHashVar(resizeHashVar), setAtVars(setAtVars), name(name) {}
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -21,6 +21,7 @@ public:
     
 private:
     shared_ptr<CVar> createHashVar;
+    shared_ptr<CVar> resizeHashVar;
     vector<shared_ptr<CVar>> setAtVars;
     string name;
 };

@@ -15,8 +15,11 @@ void CHashVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
     auto arrayTemp = make_shared<TrStoreValue>(loc, scope.lock(), storeValue->type->getLocalType(), name, AssignOp::immutableCreate);
     arrayTemp->retainValue(compiler, loc, trBlock, storeValue->getValue());
 
+    auto returnType = resizeHashVar->getType(compiler);
+    resizeHashVar->transpile(compiler, trOutput, trBlock, thisValue, trBlock->createVoidStoreVariable(loc, returnType));
+
     for (auto setAtVar : setAtVars) {
-        auto returnType = setAtVar->getType(compiler);
+        returnType = setAtVar->getType(compiler);
         setAtVar->transpile(compiler, trOutput, trBlock, thisValue, trBlock->createVoidStoreVariable(loc, returnType));
     }
 }
@@ -88,14 +91,26 @@ shared_ptr<CVar> NHash::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
         return nullptr;
     }
 
-    auto createHashParameters = CCallVar::getParameters(compiler, loc, scope, createHashCallee, make_shared<NodeList>(/*make_shared<NInteger>(loc, elements->size())*/), false, nullptr, returnMode);
+    auto createHashParameters = CCallVar::getParameters(compiler, loc, scope, createHashCallee, make_shared<NodeList>(), false, nullptr, returnMode);
     auto createHashVar = CCallVar::create(compiler, loc, "hash", nullptr, createHashParameters, scope, createHashCallee, returnMode);
     if (!createHashVar) {
         return nullptr;
     }
 
+    auto resizeCallee = createHashCallee->getCFunction(compiler, loc, "resize", scope, nullptr, CTM_Undefined);
+    if (!resizeCallee) {
+        return nullptr;
+    }
+
     auto tempVar = make_shared<CTempVar>(loc, scope, createHashCallee->getReturnType(compiler, returnMode)->getLocalType(), tempName);
-    
+
+    int buckets = (int)(((double)elements.size() - 0.5) / 0.77);
+    auto resizeHashParameters = CCallVar::getParameters(compiler, loc, scope, resizeCallee, make_shared<NodeList>(make_shared<NInteger>(loc, buckets)), false, nullptr, CTM_Stack);
+    auto resizeHashVar = CCallVar::create(compiler, loc, "resize", tempVar, resizeHashParameters, scope, resizeCallee, CTM_Stack);
+    if (!resizeHashVar) {
+        return nullptr;
+    }
+
     auto setAtCallee = createHashCallee->getCFunction(compiler, loc, "setat", scope, nullptr, CTM_Undefined);
     if (!setAtCallee) {
         return nullptr;
@@ -105,7 +120,7 @@ shared_ptr<CVar> NHash::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
     vector<shared_ptr<CVar>> setAtVars;
     for (auto element : elements) {
         auto setAtParameters = CCallVar::getParameters(compiler, loc, scope, setAtCallee, make_shared<NodeList>(element.first, element.second), false, nullptr, CTM_Stack);
-        auto setAtVar = CCallVar::create(compiler, loc, "initat", tempVar, setAtParameters, scope, setAtCallee, CTM_Stack);
+        auto setAtVar = CCallVar::create(compiler, loc, "setat", tempVar, setAtParameters, scope, setAtCallee, CTM_Stack);
         if (!setAtVar) {
             return nullptr;
         }
@@ -114,5 +129,5 @@ shared_ptr<CVar> NHash::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
         index++;
     }
 
-    return make_shared<CHashVar>(loc, scope, createHashVar, setAtVars, tempName);
+    return make_shared<CHashVar>(loc, scope, createHashVar, resizeHashVar, setAtVars, tempName);
 }
