@@ -595,13 +595,13 @@ struct td_sjs_class {
 };
 
 struct td_cb_local_interface_i32_void {
-    void* _parent;
-    void (*_cb)(void* _parent, sji_interface, int32_t);
+    sjs_object* _parent;
+    void (*_cb)(sjs_object* _parent, sji_interface, int32_t);
 };
 
 struct td_cb_local_interface_i32_void_heap {
     cb_local_interface_i32_void inner;
-    void (*_destroy)(void*);
+    void (*_destroy)(sjs_object*);
 };
 
 struct td_sjs_array_char {
@@ -1621,8 +1621,8 @@ int main(int argc, char** argv) {
     sjf_class_as_sji_interface(sjt_cast3, &sjt_functionParam3);
     sjf_hash_local_interface_i32_getat(sjt_parent3, sjt_functionParam3, &sjv_b);
     sjt_parent4 = &sjv_a;
-    sjt_functionParam4._parent = (void*)1;
-    sjt_functionParam4._cb = (void(*)(void*,sji_interface,int32_t))sjf_print_callback;
+    sjt_functionParam4._parent = (sjs_object*)1;
+    sjt_functionParam4._cb = (void(*)(sjs_object*,sji_interface,int32_t))sjf_print_callback;
     sjf_hash_local_interface_i32_each(sjt_parent4, sjt_functionParam4);
     sjt_isEmpty1 = sjv_b;
     sjt_ifElse3 = sjt_isEmpty1.isempty;

@@ -93,6 +93,7 @@ public:
 
     void transpileDefaultValue(Compiler* compiler, CLoc loc, TrBlock* trBlock, shared_ptr<TrStoreValue> storeValue);
     static bool isSameExceptMode(shared_ptr<CType> l, shared_ptr<CType> r);
+    static bool isSameExceptModeAndOption(shared_ptr<CType> l, shared_ptr<CType> r);
     shared_ptr<CType> getValueType();
     shared_ptr<CType> getOptionType();
     shared_ptr<CType> getHeapType();

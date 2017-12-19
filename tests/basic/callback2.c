@@ -575,13 +575,13 @@ struct td_sjs_class_i32 {
 };
 
 struct td_cb_i32_void {
-    void* _parent;
-    void (*_cb)(void* _parent, int32_t);
+    sjs_object* _parent;
+    void (*_cb)(sjs_object* _parent, int32_t);
 };
 
 struct td_cb_i32_void_heap {
     cb_i32_void inner;
-    void (*_destroy)(void*);
+    void (*_destroy)(sjs_object*);
 };
 
 struct td_sjs_array_i32 {
@@ -957,12 +957,10 @@ int main(int argc, char** argv) {
     sjv_c.item2 = 4;
     sjf_class_i32(&sjv_c);
     sjt_parent1 = &sjv_c;
-    sjs_sum* callback1;
-    callback1 = sjv_s;
-    callback1->_refCount++;
-    sjt_functionParam3.inner._parent = (void*)callback1;
-    sjt_functionParam3._destroy = (void(*)(void*))sjf_sum_destroy;
-    sjt_functionParam3.inner._cb = (void(*)(void*,int32_t))sjf_sum_invoke;
+    sjt_functionParam3.inner._parent = (sjs_object*)sjv_s;
+    sjt_functionParam3.inner._parent->_refCount++;
+    sjt_functionParam3._destroy = (void(*)(sjs_object*))sjf_sum_destroy;
+    sjt_functionParam3.inner._cb = (void(*)(sjs_object*,int32_t))sjf_sum_invoke;
     sjf_class_i32_each(sjt_parent1, sjt_functionParam3);
     sjv_a._refCount = 1;
     sjv_a.datasize = 2;
@@ -981,8 +979,8 @@ int main(int argc, char** argv) {
     sjt_functionParam7 = 2;
     sjf_array_i32_initat(sjt_parent3, sjt_functionParam6, sjt_functionParam7);
     sjt_parent4 = &sjv_a;
-    sjt_functionParam10._parent = sjv_s;
-    sjt_functionParam10._cb = (void(*)(void*,int32_t))sjf_sum_invoke;
+    sjt_functionParam10._parent = (sjs_object*)sjv_s;
+    sjt_functionParam10._cb = (void(*)(sjs_object*,int32_t))sjf_sum_invoke;
     sjf_array_i32_each(sjt_parent4, sjt_functionParam10);
     main_destroy();
     #ifdef _DEBUG

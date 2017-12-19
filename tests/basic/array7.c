@@ -599,13 +599,13 @@ struct td_sjs_string {
 };
 
 struct td_cb_class_class_i32 {
-    void* _parent;
-    void (*_cb)(void* _parent, sjs_class*, sjs_class*, int32_t* _return);
+    sjs_object* _parent;
+    void (*_cb)(sjs_object* _parent, sjs_class*, sjs_class*, int32_t* _return);
 };
 
 struct td_cb_class_class_i32_heap {
     cb_class_class_i32 inner;
-    void (*_destroy)(void*);
+    void (*_destroy)(sjs_object*);
 };
 
 void halt(const char * format, ...);
@@ -2230,8 +2230,8 @@ int main(int argc, char** argv) {
     sjt_functionParam69 = &sjt_call22;
     sjf_console_writeline(sjt_functionParam69);
     sjt_parent35 = &sjv_a;
-    sjt_functionParam99._parent = (void*)1;
-    sjt_functionParam99._cb = (void(*)(void*,sjs_class*,sjs_class*, int32_t*))sjf_class_compare_callback;
+    sjt_functionParam99._parent = (sjs_object*)1;
+    sjt_functionParam99._cb = (void(*)(sjs_object*,sjs_class*,sjs_class*, int32_t*))sjf_class_compare_callback;
     sjf_array_class_sortcb(sjt_parent35, sjt_functionParam99);
     sjt_parent36 = &sjv_a;
     sjt_call30._refCount = 1;

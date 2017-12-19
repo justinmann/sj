@@ -363,6 +363,15 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
             lineStream << "if (" << name << "._parent != 0) { weakptr_cb_remove(" << name << "._parent, " << cbName << "); }";
             block->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
         }
+        else if (type->category == CTC_Function) {
+            stringstream cbStream;
+            cbStream << "delete_cb " << cbName << " = { &" << name << "._parent, weakptr_clear };";
+            block->statements.push_back(TrStatement(CLoc::undefined, cbStream.str()));
+
+            stringstream lineStream;
+            lineStream << "if (" << name << "._parent != 0) { weakptr_cb_remove(" << name << "._parent, " << cbName << "); }";
+            block->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
+        }
         else {
             stringstream cbStream;
             cbStream << "delete_cb " << cbName << " = { &" << name << ", weakptr_clear };";
@@ -427,6 +436,15 @@ void TrValue::addRetainToStatements(TrBlock* block) {
         auto cbName = TrBlock::nextVarName("weakptrcb");
 
         if (type->category == CTC_Interface) {
+            stringstream cbStream;
+            cbStream << "delete_cb " << cbName << " = { &" << name << "._parent, weakptr_clear };";
+            block->statements.push_back(TrStatement(CLoc::undefined, cbStream.str()));
+
+            stringstream lineStream;
+            lineStream << "if (" << name << "._parent != 0) { weakptr_cb_add(" << name << "._parent, " << cbName << "); }";
+            block->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
+        }
+        else if (type->category == CTC_Function) {
             stringstream cbStream;
             cbStream << "delete_cb " << cbName << " = { &" << name << "._parent, weakptr_clear };";
             block->statements.push_back(TrStatement(CLoc::undefined, cbStream.str()));
@@ -574,8 +592,13 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
         return;
     }
 
-    if (!CType::isSameExceptMode(type, rightValue->type)) {
+    if (!CType::isSameExceptModeAndOption(type, rightValue->type)) {
         compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' does not match left type '%s'", rightValue->type->fullName.c_str(), type->fullName.c_str());
+        return;
+    }
+
+    if (rightValue->type->isOption && !type->isOption && type->typeMode != CTM_Local) {
+        compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot be converted to left type '%s'", rightValue->type->fullName.c_str(), type->fullName.c_str());
         return;
     }
 
@@ -618,16 +641,30 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
             leftValue.addReleaseToStatements(block);
         }
 
-        stringstream lineStream;
-        lineStream << name << " = ";
-        if (type->typeMode == CTM_Stack || type->typeMode == CTM_Local) {
-            lineStream << TrValue::convertToLocalName(rightValue->type, rightValue->name, rightValue->isReturnValue);
+        if (type->typeMode == CTM_Value && type->isOption && !rightValue->type->isOption) {
+            stringstream line1;
+            line1 << name << ".isempty = false";
+            block->statements.push_back(TrStatement(loc, line1.str()));
+
+            stringstream line2;
+            line2 << name << ".value = " << rightValue->name;
+            block->statements.push_back(TrStatement(loc, line2.str()));
         }
         else {
-            lineStream << rightValue->name;
+            stringstream lineStream;
+            lineStream << name << " = ";
+            if (isObjectCast) {
+                lineStream << "(sjs_object*)";
+            }
+            if (type->typeMode == CTM_Stack || type->typeMode == CTM_Local) {
+                lineStream << TrValue::convertToLocalName(rightValue->type, rightValue->name, rightValue->isReturnValue);
+            }
+            else {
+                lineStream << rightValue->name;
+            }
+            block->statements.push_back(TrStatement(loc, lineStream.str()));
         }
 
-        block->statements.push_back(TrStatement(loc, lineStream.str()));
         leftValue.addRetainToStatements(block);
     }
     else {

@@ -447,6 +447,9 @@ bool CType::isSameExceptMode(shared_ptr<CType> l, shared_ptr<CType> r) {
     return l->category == r->category && l->localValueType.lock()->cname == r->localValueType.lock()->cname && (l->isOption == r->isOption || l->typeMode == CTM_Weak || r->typeMode == CTM_Weak);
 }
 
+bool CType::isSameExceptModeAndOption(shared_ptr<CType> l, shared_ptr<CType> r) {
+    return l->category == r->category && l->localValueType.lock()->cname == r->localValueType.lock()->cname;
+}
 
 shared_ptr<CType> CType::getValueType() {
     if (!isOption) {

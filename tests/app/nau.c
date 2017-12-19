@@ -1604,13 +1604,13 @@ struct td_sjs_list_local_model {
 };
 
 struct td_cb_local_model_local_model_i32 {
-    void* _parent;
-    void (*_cb)(void* _parent, sji_model, sji_model, int32_t* _return);
+    sjs_object* _parent;
+    void (*_cb)(sjs_object* _parent, sji_model, sji_model, int32_t* _return);
 };
 
 struct td_cb_local_model_local_model_i32_heap {
     cb_local_model_local_model_i32 inner;
-    void (*_destroy)(void*);
+    void (*_destroy)(sjs_object*);
 };
 
 struct td_sjs_array_i32 {
@@ -1696,13 +1696,13 @@ struct td_sjs_leafpanel {
 };
 
 struct td_cb_texture_heap_model {
-    void* _parent;
-    void (*_cb_heap)(void* _parent, sjs_texture*, sji_model* _return);
+    sjs_object* _parent;
+    void (*_cb_heap)(sjs_object* _parent, sjs_texture*, sji_model* _return);
 };
 
 struct td_cb_texture_heap_model_heap {
     cb_texture_heap_model inner;
-    void (*_destroy)(void*);
+    void (*_destroy)(sjs_object*);
 };
 
 struct td_sjs_array_mat4 {
@@ -1726,24 +1726,24 @@ struct td_sjs_peoplepanel {
 };
 
 struct td_cb_heap_model_mat4 {
-    void* _parent;
-    void (*_cb)(void* _parent, sji_model, sjs_mat4* _return);
+    sjs_object* _parent;
+    void (*_cb)(sjs_object* _parent, sji_model, sjs_mat4* _return);
 };
 
 struct td_cb_heap_model_mat4_heap {
     cb_heap_model_mat4 inner;
-    void (*_destroy)(void*);
+    void (*_destroy)(sjs_object*);
 };
 
 struct td_cb_local_model_mat4_heap_mat4 {
-    void* _parent;
-    void (*_cb)(void* _parent, sji_model, sjs_mat4* _return);
-    void (*_cb_heap)(void* _parent, sji_model, sjs_mat4** _return);
+    sjs_object* _parent;
+    void (*_cb)(sjs_object* _parent, sji_model, sjs_mat4* _return);
+    void (*_cb_heap)(sjs_object* _parent, sji_model, sjs_mat4** _return);
 };
 
 struct td_cb_local_model_mat4_heap_mat4_heap {
     cb_local_model_mat4_heap_mat4 inner;
-    void (*_destroy)(void*);
+    void (*_destroy)(sjs_object*);
 };
 
 struct td_sjs_framebuffer {
@@ -10151,8 +10151,8 @@ void sjf_leafpanel(sjs_leafpanel* _this) {
     sjt_math2104 = 2.0f;
     _this->_angle = sjt_math2103 / sjt_math2104;
     sjt_parent79 = &_this->textures;
-    sjt_functionParam214._parent = &_this;
-    sjt_functionParam214._cb_heap = (void(*)(void*,sjs_texture*, sji_model*))sjf_leafpanel_texturetomodel_heap;
+    sjt_functionParam214._parent = (sjs_object*)&_this;
+    sjt_functionParam214._cb_heap = (void(*)(sjs_object*,sjs_texture*, sji_model*))sjf_leafpanel_texturetomodel_heap;
     sjf_array_texture_map_heap_model(sjt_parent79, sjt_functionParam214, &_this->children);
 }
 
@@ -10243,8 +10243,8 @@ void sjf_leafpanel_heap(sjs_leafpanel* _this) {
     sjt_math2150 = 2.0f;
     _this->_angle = sjt_math2149 / sjt_math2150;
     sjt_parent100 = &_this->textures;
-    sjt_functionParam252._parent = _this;
-    sjt_functionParam252._cb_heap = (void(*)(void*,sjs_texture*, sji_model*))sjf_leafpanel_texturetomodel_heap;
+    sjt_functionParam252._parent = (sjs_object*)_this;
+    sjt_functionParam252._cb_heap = (void(*)(sjs_object*,sjs_texture*, sji_model*))sjf_leafpanel_texturetomodel_heap;
     sjf_array_texture_map_heap_model(sjt_parent100, sjt_functionParam252, &_this->children);
 }
 
@@ -18758,8 +18758,8 @@ void sjf_nauscene3delement_render(sjs_nauscene3delement* _parent, sjs_scene2d* s
     }
 
     sjt_parent14 = &sjv_a;
-    sjt_functionParam45._parent = (void*)1;
-    sjt_functionParam45._cb = (void(*)(void*,sji_model,sji_model, int32_t*))sjf_model_zsort_callback;
+    sjt_functionParam45._parent = (sjs_object*)1;
+    sjt_functionParam45._cb = (void(*)(sjs_object*,sji_model,sji_model, int32_t*))sjf_model_zsort_callback;
     sjf_list_local_model_sortcb(sjt_parent14, sjt_functionParam45);
     sjt_forStart6 = 0;
     sjt_parent17 = &sjv_a;
@@ -19067,8 +19067,8 @@ void sjf_peoplepanel(sjs_peoplepanel* _this) {
     result17 = -sjt_negate15;
     _this->_xoffset = result17;
     sjt_parent110 = &_this->children;
-    sjt_functionParam284._parent = &_this;
-    sjt_functionParam284._cb = (void(*)(void*,sji_model, sjs_mat4*))sjf_peoplepanel_getmodelmatrix;
+    sjt_functionParam284._parent = (sjs_object*)&_this;
+    sjt_functionParam284._cb = (void(*)(sjs_object*,sji_model, sjs_mat4*))sjf_peoplepanel_getmodelmatrix;
     sjf_array_heap_model_map_mat4(sjt_parent110, sjt_functionParam284, &_this->_childrenmodel);
 }
 
@@ -19403,8 +19403,8 @@ void sjf_peoplepanel_heap(sjs_peoplepanel* _this) {
     result18 = -sjt_negate16;
     _this->_xoffset = result18;
     sjt_parent120 = &_this->children;
-    sjt_functionParam300._parent = _this;
-    sjt_functionParam300._cb = (void(*)(void*,sji_model, sjs_mat4*))sjf_peoplepanel_getmodelmatrix;
+    sjt_functionParam300._parent = (sjs_object*)_this;
+    sjt_functionParam300._cb = (void(*)(sjs_object*,sji_model, sjs_mat4*))sjf_peoplepanel_getmodelmatrix;
     sjf_array_heap_model_map_mat4(sjt_parent120, sjt_functionParam300, &_this->_childrenmodel);
 }
 

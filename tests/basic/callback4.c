@@ -89,6 +89,8 @@ struct td_double_option {
 };
 const double_option double_empty = { true };
 
+const char* sjg_string1 = "hello";
+
 /* The MIT License
 Copyright (c) 2008, by Attractive Chaos <attractivechaos@aol.co.uk>
 Permission is hereby granted, free of charge, to any person obtaining
@@ -541,14 +543,18 @@ delete_cb_list* next;
 #define sjs_object_typeId 1
 #define sjs_interface_typeId 2
 #define sjs_class_typeId 3
-#define cb_i32_void_typeId 4
-#define cb_i32_void_heap_typeId 5
+#define cb_i32_option_typeId 4
+#define cb_i32_option_heap_typeId 5
+#define sjs_array_char_typeId 6
+#define sjs_string_typeId 7
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_interface sjs_interface;
 typedef struct td_sjs_class sjs_class;
-typedef struct td_cb_i32_void cb_i32_void;
-typedef struct td_cb_i32_void_heap cb_i32_void_heap;
+typedef struct td_cb_i32_option cb_i32_option;
+typedef struct td_cb_i32_option_heap cb_i32_option_heap;
+typedef struct td_sjs_array_char sjs_array_char;
+typedef struct td_sjs_string sjs_string;
 
 struct td_sjs_object {
     intptr_t _refCount;
@@ -561,17 +567,30 @@ struct td_sjs_interface {
 
 struct td_sjs_class {
     int _refCount;
-    int32_t total;
 };
 
-struct td_cb_i32_void {
+struct td_cb_i32_option {
     sjs_object* _parent;
-    void (*_cb)(sjs_object* _parent, int32_t);
+    void (*_cb)(sjs_object* _parent, int32_option* _return);
 };
 
-struct td_cb_i32_void_heap {
-    cb_i32_void inner;
+struct td_cb_i32_option_heap {
+    cb_i32_option inner;
     void (*_destroy)(sjs_object*);
+};
+
+struct td_sjs_array_char {
+    int _refCount;
+    int32_t datasize;
+    void* data;
+    bool _isglobal;
+    int32_t count;
+};
+
+struct td_sjs_string {
+    int _refCount;
+    int32_t count;
+    sjs_array_char data;
 };
 
 void halt(const char * format, ...);
@@ -590,25 +609,47 @@ void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
 int32_t result1;
+sjs_string sjt_call2 = { -1 };
+sjs_string sjt_call3 = { -1 };
+cb_i32_option sjt_callback1;
+cb_i32_option sjt_callback2;
+sjs_string* sjt_functionParam2 = 0;
+int32_t sjt_functionParam3;
+sjs_string* sjt_functionParam4 = 0;
+int32_t sjt_functionParam5;
+bool sjt_ifElse1;
+bool sjt_ifElse2;
+int32_option sjt_isEmpty1;
+int32_option sjt_isEmpty2;
 int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_negate1;
-sjs_class* sjt_parent1 = 0;
 sjs_class* sjv_c = 0;
+cb_i32_option sjv_d;
 void* sjv_emptystringdata;
 float sjv_f32_pi;
 int32_t sjv_i32_maxvalue;
 int32_t sjv_i32_minvalue;
+int32_option sjv_result1;
+int32_option sjv_result2;
 uint32_t sjv_u32_maxvalue;
-int32_t void1;
 
+void sjf_array_char(sjs_array_char* _this);
+void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from);
+void sjf_array_char_destroy(sjs_array_char* _this);
+void sjf_array_char_heap(sjs_array_char* _this);
 void sjf_class(sjs_class* _this);
 void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
-void sjf_class_func(sjs_class* _parent, int32_t x);
 void sjf_class_heap(sjs_class* _this);
-void sjf_class_run(sjs_class* _parent, int32_t* _return);
-void sjf_domath(cb_i32_void_heap cb);
+void sjf_class_run(sjs_class* _parent, int32_option* _return);
+void sjf_debug_writeline(sjs_string* data);
+void sjf_i32_tostring(int32_t val, sjs_string* _return);
+void sjf_i32_tostring_heap(int32_t val, sjs_string** _return);
+void sjf_string(sjs_string* _this);
+void sjf_string_copy(sjs_string* _this, sjs_string* _from);
+void sjf_string_destroy(sjs_string* _this);
+void sjf_string_heap(sjs_string* _this);
 void main_destroy(void);
 
 void halt(const char * format, ...) {
@@ -747,64 +788,164 @@ void weakptr_clear(void* parent, void* v) {
     }
     *p = 0;
 }
+void sjf_array_char(sjs_array_char* _this) {
+    if (_this->datasize < 0) {
+        halt("size is less than zero");
+    }
+    if (!_this->data) {
+        _this->data = malloc(_this->datasize * sizeof(char));
+        if (!_this->data) {
+            halt("grow: out of memory\n");
+        }
+    }
+}
+
+void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
+    _this->datasize = _from->datasize;
+    _this->data = _from->data;
+    _this->_isglobal = _from->_isglobal;
+    _this->count = _from->count;
+    _this->data = _from->data;
+    if (!_this->_isglobal && _this->data) {
+        ptr_retain(_this->data);
+    }
+}
+
+void sjf_array_char_destroy(sjs_array_char* _this) {
+    if (!_this->_isglobal && _this->data) {
+        if (ptr_release(_this->data)) {
+            char* p = (char*)_this->data;
+            for (int i = 0; i < _this->count; i++) {
+                ;
+            }
+            free(p);
+        }
+    }
+}
+
+void sjf_array_char_heap(sjs_array_char* _this) {
+    if (_this->datasize < 0) {
+        halt("size is less than zero");
+    }
+    if (!_this->data) {
+        _this->data = malloc(_this->datasize * sizeof(char));
+        if (!_this->data) {
+            halt("grow: out of memory\n");
+        }
+    }
+}
+
 void sjf_class(sjs_class* _this) {
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
-    _this->total = _from->total;
 }
 
 void sjf_class_destroy(sjs_class* _this) {
 }
 
-void sjf_class_func(sjs_class* _parent, int32_t x) {
-    sjs_class* sjt_dot1 = 0;
-    sjs_class* sjt_dot2 = 0;
-    int32_t sjt_math3;
-    int32_t sjt_math4;
-
-    sjt_dot1 = _parent;
-    sjt_dot2 = _parent;
-    sjt_math3 = (sjt_dot2)->total;
-    sjt_math4 = x;
-    sjt_dot1->total = sjt_math3 + sjt_math4;
-}
-
 void sjf_class_heap(sjs_class* _this) {
 }
 
-void sjf_class_run(sjs_class* _parent, int32_t* _return) {
-    sjs_class* sjt_dot3 = 0;
-    cb_i32_void_heap sjt_functionParam3;
+void sjf_class_run(sjs_class* _parent, int32_option* _return) {
+    sjs_string sjt_call1 = { -1 };
+    sjs_string* sjt_functionParam1 = 0;
+    int32_t sjt_value1;
+    int32_option value1;
 
-    sjt_functionParam3.inner._parent = (sjs_object*)_parent;
-    sjt_functionParam3.inner._parent->_refCount++;
-    sjt_functionParam3._destroy = (void(*)(sjs_object*))sjf_class_destroy;
-    sjt_functionParam3.inner._cb = (void(*)(sjs_object*,int32_t))sjf_class_func;
-    sjf_domath(sjt_functionParam3);
-    sjt_dot3 = _parent;
-    (*_return) = (sjt_dot3)->total;
+    sjt_call1._refCount = 1;
+    sjt_call1.count = 5;
+    sjt_call1.data._refCount = 1;
+    sjt_call1.data.datasize = 6;
+    sjt_call1.data.data = (void*)sjg_string1;
+    sjt_call1.data._isglobal = true;
+    sjt_call1.data.count = 6;
+    sjf_array_char(&sjt_call1.data);
+    sjf_string(&sjt_call1);
+    sjt_functionParam1 = &sjt_call1;
+    sjf_debug_writeline(sjt_functionParam1);
+    sjt_value1 = 1;
+    value1.isempty = false;
+    value1.value = sjt_value1;
+    (*_return) = value1;
 
-    if ((uintptr_t)sjt_functionParam3.inner._parent > 1) {
-        ((sjs_object*)((char*)sjt_functionParam3.inner._parent - sizeof(intptr_t)))->_refCount--;
-        if (((sjs_object*)((char*)sjt_functionParam3.inner._parent - sizeof(intptr_t)))->_refCount <= 0) {
-            sjt_functionParam3._destroy(sjt_functionParam3.inner._parent);
-        }
-    }
+    if (sjt_call1._refCount == 1) { sjf_string_destroy(&sjt_call1); }
 }
 
-void sjf_domath(cb_i32_void_heap cb) {
-    cb_i32_void sjt_callback1;
-    cb_i32_void sjt_callback2;
-    int32_t sjt_functionParam1;
-    int32_t sjt_functionParam2;
+void sjf_debug_writeline(sjs_string* data) {
+    printf("%s\n", (char*)data->data.data);
+}
 
-    sjt_callback1 = cb.inner;
-    sjt_functionParam1 = 1;
-    sjt_callback1._cb(sjt_callback1._parent, sjt_functionParam1);
-    sjt_callback2 = cb.inner;
-    sjt_functionParam2 = 2;
-    sjt_callback2._cb(sjt_callback2._parent, sjt_functionParam2);
+void sjf_i32_tostring(int32_t val, sjs_string* _return) {
+    int32_t sjt_math3;
+    int32_t sjt_math4;
+    int32_t sjt_math5;
+    int32_t sjt_math6;
+    int32_t sjv_count;
+    void* sjv_data;
+
+    sjv_count = 0;
+    sjv_data = 0;
+    sjv_data = malloc(sizeof(char) * 50);
+    snprintf((char*)sjv_data, 50, "%d", val);
+    sjv_count = strlen((char*)sjv_data);
+    _return->_refCount = 1;
+    _return->count = sjv_count;
+    _return->data._refCount = 1;
+    sjt_math3 = sjv_count;
+    sjt_math4 = 1;
+    _return->data.datasize = sjt_math3 + sjt_math4;
+    _return->data.data = sjv_data;
+    _return->data._isglobal = false;
+    sjt_math5 = sjv_count;
+    sjt_math6 = 1;
+    _return->data.count = sjt_math5 + sjt_math6;
+    sjf_array_char(&_return->data);
+    sjf_string(_return);
+}
+
+void sjf_i32_tostring_heap(int32_t val, sjs_string** _return) {
+    int32_t sjt_math10;
+    int32_t sjt_math7;
+    int32_t sjt_math8;
+    int32_t sjt_math9;
+    int32_t sjv_count;
+    void* sjv_data;
+
+    sjv_count = 0;
+    sjv_data = 0;
+    sjv_data = malloc(sizeof(char) * 50);
+    snprintf((char*)sjv_data, 50, "%d", val);
+    sjv_count = strlen((char*)sjv_data);
+    (*_return) = (sjs_string*)malloc(sizeof(sjs_string));
+    (*_return)->_refCount = 1;
+    (*_return)->count = sjv_count;
+    (*_return)->data._refCount = 1;
+    sjt_math7 = sjv_count;
+    sjt_math8 = 1;
+    (*_return)->data.datasize = sjt_math7 + sjt_math8;
+    (*_return)->data.data = sjv_data;
+    (*_return)->data._isglobal = false;
+    sjt_math9 = sjv_count;
+    sjt_math10 = 1;
+    (*_return)->data.count = sjt_math9 + sjt_math10;
+    sjf_array_char(&(*_return)->data);
+    sjf_string_heap((*_return));
+}
+
+void sjf_string(sjs_string* _this) {
+}
+
+void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
+    _this->count = _from->count;
+    _this->data._refCount = 1;
+    sjf_array_char_copy(&_this->data, &_from->data);
+}
+
+void sjf_string_destroy(sjs_string* _this) {
+}
+
+void sjf_string_heap(sjs_string* _this) {
 }
 
 int main(int argc, char** argv) {
@@ -822,11 +963,72 @@ int main(int argc, char** argv) {
     weakptr_init();
     sjv_c = (sjs_class*)malloc(sizeof(sjs_class));
     sjv_c->_refCount = 1;
-    sjv_c->total = 0;
     sjf_class_heap(sjv_c);
-    sjt_parent1 = sjv_c;
-    sjt_parent1->_refCount++;
-    sjf_class_run(sjt_parent1, &void1);
+    sjv_d._parent = (sjs_object*)sjv_c;
+    delete_cb weakptrcb1 = { &sjv_d._parent, weakptr_clear };
+    if (sjv_d._parent != 0) { weakptr_cb_add(sjv_d._parent, weakptrcb1); }
+    sjv_d._cb = (void(*)(sjs_object*, int32_option*))sjf_class_run;
+    sjt_callback1 = sjv_d;
+    if (sjt_callback1._parent != 0) {
+        sjt_callback1._cb(sjt_callback1._parent, &sjv_result1);
+    }
+    else {
+        sjv_result1 = int32_empty;
+    }
+    sjt_isEmpty1 = sjv_result1;
+    sjt_ifElse1 = sjt_isEmpty1.isempty;
+    if (sjt_ifElse1) {
+        int32_t result2;
+        int32_t sjt_negate2;
+
+        sjt_negate2 = 1;
+        result2 = -sjt_negate2;
+        sjt_functionParam3 = result2;
+    } else {
+        int32_option sjt_getValue1;
+
+        sjt_getValue1 = sjv_result1;
+        sjt_functionParam3 = sjt_getValue1.value;
+    }
+
+    sjf_i32_tostring(sjt_functionParam3, &sjt_call2);
+    sjt_functionParam2 = &sjt_call2;
+    sjf_debug_writeline(sjt_functionParam2);
+    sjv_c->_refCount--;
+    if (sjv_c->_refCount <= 0) {
+        weakptr_release(sjv_c);
+        sjf_class_destroy(sjv_c);
+    }
+
+    sjv_c = (sjs_class*)malloc(sizeof(sjs_class));
+    sjv_c->_refCount = 1;
+    sjf_class_heap(sjv_c);
+    sjt_callback2 = sjv_d;
+    if (sjt_callback2._parent != 0) {
+        sjt_callback2._cb(sjt_callback2._parent, &sjv_result2);
+    }
+    else {
+        sjv_result2 = int32_empty;
+    }
+    sjt_isEmpty2 = sjv_result2;
+    sjt_ifElse2 = sjt_isEmpty2.isempty;
+    if (sjt_ifElse2) {
+        int32_t result3;
+        int32_t sjt_negate3;
+
+        sjt_negate3 = 1;
+        result3 = -sjt_negate3;
+        sjt_functionParam5 = result3;
+    } else {
+        int32_option sjt_getValue2;
+
+        sjt_getValue2 = sjv_result2;
+        sjt_functionParam5 = sjt_getValue2.value;
+    }
+
+    sjf_i32_tostring(sjt_functionParam5, &sjt_call3);
+    sjt_functionParam4 = &sjt_call3;
+    sjf_debug_writeline(sjt_functionParam4);
     main_destroy();
     #ifdef _DEBUG
     printf("\npress return to end\n");
@@ -837,14 +1039,13 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
-    sjt_parent1->_refCount--;
-    if (sjt_parent1->_refCount <= 0) {
-        weakptr_release(sjt_parent1);
-        sjf_class_destroy(sjt_parent1);
-    }
     sjv_c->_refCount--;
     if (sjv_c->_refCount <= 0) {
         weakptr_release(sjv_c);
         sjf_class_destroy(sjv_c);
     }
+    delete_cb weakptrcb2 = { &sjv_d._parent, weakptr_clear };
+    if (sjv_d._parent != 0) { weakptr_cb_remove(sjv_d._parent, weakptrcb2); }
+    if (sjt_call2._refCount == 1) { sjf_string_destroy(&sjt_call2); }
+    if (sjt_call3._refCount == 1) { sjf_string_destroy(&sjt_call3); }
 }

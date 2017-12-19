@@ -592,23 +592,23 @@ struct td_sjs_array_f32 {
 };
 
 struct td_cb_i32_f32 {
-    void* _parent;
-    void (*_cb)(void* _parent, int32_t, float* _return);
+    sjs_object* _parent;
+    void (*_cb)(sjs_object* _parent, int32_t, float* _return);
 };
 
 struct td_cb_i32_f32_heap {
     cb_i32_f32 inner;
-    void (*_destroy)(void*);
+    void (*_destroy)(sjs_object*);
 };
 
 struct td_cb_f32_bool {
-    void* _parent;
-    void (*_cb)(void* _parent, float, bool* _return);
+    sjs_object* _parent;
+    void (*_cb)(sjs_object* _parent, float, bool* _return);
 };
 
 struct td_cb_f32_bool_heap {
     cb_f32_bool inner;
-    void (*_destroy)(void*);
+    void (*_destroy)(sjs_object*);
 };
 
 struct td_sjs_sum {
@@ -617,24 +617,24 @@ struct td_sjs_sum {
 };
 
 struct td_cb_sum_f32_sum {
-    void* _parent;
-    void (*_cb)(void* _parent, sjs_sum*, float, sjs_sum* _return);
+    sjs_object* _parent;
+    void (*_cb)(sjs_object* _parent, sjs_sum*, float, sjs_sum* _return);
 };
 
 struct td_cb_sum_f32_sum_heap {
     cb_sum_f32_sum inner;
-    void (*_destroy)(void*);
+    void (*_destroy)(sjs_object*);
 };
 
 struct td_cb_sum_f32_sum_heap_sum {
-    void* _parent;
-    void (*_cb)(void* _parent, sjs_sum*, float, sjs_sum* _return);
-    void (*_cb_heap)(void* _parent, sjs_sum*, float, sjs_sum** _return);
+    sjs_object* _parent;
+    void (*_cb)(sjs_object* _parent, sjs_sum*, float, sjs_sum* _return);
+    void (*_cb_heap)(sjs_object* _parent, sjs_sum*, float, sjs_sum** _return);
 };
 
 struct td_cb_sum_f32_sum_heap_sum_heap {
     cb_sum_f32_sum_heap_sum inner;
-    void (*_destroy)(void*);
+    void (*_destroy)(sjs_object*);
 };
 
 void halt(const char * format, ...);
@@ -1341,20 +1341,20 @@ int main(int argc, char** argv) {
     sjt_functionParam6 = 3;
     sjf_array_i32_initat(sjt_parent3, sjt_functionParam5, sjt_functionParam6);
     sjt_parent4 = &sjv_a;
-    sjt_functionParam11._parent = (void*)1;
-    sjt_functionParam11._cb = (void(*)(void*,int32_t, float*))sjf_double_callback;
+    sjt_functionParam11._parent = (sjs_object*)1;
+    sjt_functionParam11._cb = (void(*)(sjs_object*,int32_t, float*))sjf_double_callback;
     sjf_array_i32_map_f32(sjt_parent4, sjt_functionParam11, &sjv_b);
     sjt_parent5 = &sjv_b;
-    sjt_functionParam16._parent = (void*)1;
-    sjt_functionParam16._cb = (void(*)(void*,float, bool*))sjf_lessthan5_callback;
+    sjt_functionParam16._parent = (sjs_object*)1;
+    sjt_functionParam16._cb = (void(*)(sjs_object*,float, bool*))sjf_lessthan5_callback;
     sjf_array_f32_filter(sjt_parent5, sjt_functionParam16, &sjv_c);
     sjt_parent6 = &sjv_c;
     sjt_call3._refCount = 1;
     sjt_call3.x = 0.0f;
     sjf_sum(&sjt_call3);
     sjt_functionParam23 = &sjt_call3;
-    sjt_functionParam24._parent = (void*)1;
-    sjt_functionParam24._cb = (void(*)(void*,sjs_sum*,float, sjs_sum*))sjf_sumadd_callback;
+    sjt_functionParam24._parent = (sjs_object*)1;
+    sjt_functionParam24._cb = (void(*)(sjs_object*,sjs_sum*,float, sjs_sum*))sjf_sumadd_callback;
     sjf_array_f32_foldl_sum(sjt_parent6, sjt_functionParam23, sjt_functionParam24, &sjv_d);
     main_destroy();
     #ifdef _DEBUG

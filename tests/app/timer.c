@@ -1536,13 +1536,13 @@ struct td_sjs_list_local_model {
 };
 
 struct td_cb_local_model_local_model_i32 {
-    void* _parent;
-    void (*_cb)(void* _parent, sji_model, sji_model, int32_t* _return);
+    sjs_object* _parent;
+    void (*_cb)(sjs_object* _parent, sji_model, sji_model, int32_t* _return);
 };
 
 struct td_cb_local_model_local_model_i32_heap {
     cb_local_model_local_model_i32 inner;
-    void (*_destroy)(void*);
+    void (*_destroy)(sjs_object*);
 };
 
 struct td_sjs_array_i32 {
@@ -17312,8 +17312,8 @@ void sjf_scene3delement_render(sjs_scene3delement* _parent, sjs_scene2d* scene) 
     }
 
     sjt_parent30 = &sjv_a;
-    sjt_functionParam62._parent = (void*)1;
-    sjt_functionParam62._cb = (void(*)(void*,sji_model,sji_model, int32_t*))sjf_model_zsort_callback;
+    sjt_functionParam62._parent = (sjs_object*)1;
+    sjt_functionParam62._cb = (void(*)(sjs_object*,sji_model,sji_model, int32_t*))sjf_model_zsort_callback;
     sjf_list_local_model_sortcb(sjt_parent30, sjt_functionParam62);
     sjt_forStart6 = 0;
     sjt_parent33 = &sjv_a;

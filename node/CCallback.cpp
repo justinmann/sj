@@ -41,21 +41,26 @@ void CCallbackVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* tr
 
     if (dotVar) {
         if (storeValue->type->typeMode == CTM_Heap) {
-            auto tempName = TrBlock::nextVarName("callback");
-            auto dotType = dotVar->getType(compiler)->getHeapType();
-            trBlock->statements.push_back(TrStatement(loc, dotType->cname + " " + tempName));
-            auto parentValue = make_shared<TrStoreValue>(loc, scope.lock(), dotType, tempName, AssignOp::immutableCreate);
+            auto parentValue = make_shared<TrStoreValue>(loc, scope.lock(), dotVar->getType(compiler)->getHeapType(), name + "._parent", AssignOp::immutableCreate);
+            parentValue->isObjectCast = true;
             dotVar->transpile(compiler, trOutput, trBlock, thisValue, parentValue);
-            trBlock->statements.push_back(TrStatement(loc, name + "._parent = (void*)" + TrValue::convertToLocalName(dotType, tempName, false)));
-            trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._destroy = (void(*)(void*))" + dotType->parent.lock()->getCDestroyFunctionName()));
+            
+            auto dotType = dotVar->getType(compiler);
+            trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._destroy = (void(*)(sjs_object*))" + dotType->parent.lock()->getCDestroyFunctionName()));
+        }
+        else if (storeValue->type->typeMode == CTM_Weak) {
+            auto parentValue = make_shared<TrStoreValue>(loc, scope.lock(), dotVar->getType(compiler)->getWeakType(), name + "._parent", AssignOp::immutableCreate);
+            parentValue->isObjectCast = true;
+            dotVar->transpile(compiler, trOutput, trBlock, thisValue, parentValue);
         }
         else {
             auto parentValue = make_shared<TrStoreValue>(loc, scope.lock(), dotVar->getType(compiler)->getLocalType(), name + "._parent", AssignOp::immutableCreate);
+            parentValue->isObjectCast = true;
             dotVar->transpile(compiler, trOutput, trBlock, thisValue, parentValue);
         }
     }
     else {
-        trBlock->statements.push_back(TrStatement(loc, name + "._parent = (void*)1"));
+        trBlock->statements.push_back(TrStatement(loc, name + "._parent = (sjs_object*)1"));
     }
 
     auto destStackReturnType = storeValue->type->callback.lock()->stackReturnType;
@@ -186,10 +191,10 @@ bool CCallbackFunction::getIsReturnModeValid(Compiler* compiler, CTypeMode retur
 
 shared_ptr<CType> CCallbackFunction::getReturnType(Compiler* compiler, CTypeMode returnMode) {
     if (returnMode == CTM_Heap) {
-        return callback->heapReturnType;
+        return callbackVar->getType(compiler)->typeMode == CTM_Weak ? callback->heapReturnType->getOptionType() : callback->heapReturnType;
     }
     else {
-        return callback->stackReturnType;
+        return callbackVar->getType(compiler)->typeMode == CTM_Weak ? callback->stackReturnType->getOptionType() : callback->stackReturnType;
     }
 }
 
@@ -215,7 +220,19 @@ void CCallbackFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerS
 
     auto callbackValue = trBlock->createTempStoreVariable(calleeLoc, callerScope, callback->types->localValueType, "callback");
     callbackVar->transpile(compiler, trOutput, trBlock, thisValue, callbackValue);
-    
+
+    bool isWeak = callbackVar->getType(compiler)->typeMode == CTM_Weak;
+    shared_ptr<TrStoreValue> weakReturnValue;
+    if (isWeak) {
+        trBlock->statements.push_back(TrStatement(CLoc::undefined, "if (" + callbackValue->getName(trBlock) + "._parent != 0) {"));
+
+        auto normalReturnType = returnMode == CTM_Heap ? callback->heapReturnType : callback->stackReturnType;
+        if (normalReturnType != getReturnType(compiler, returnMode)) {
+            weakReturnValue = storeValue;
+            storeValue = trBlock->createTempStoreVariable(storeValue->loc, storeValue->scope, normalReturnType, "callbackreturn");
+        }
+    }
+
     stringstream line;
     line << callbackValue->getName(trBlock) << ".";
     if (returnMode == CTM_Heap) {
@@ -265,6 +282,19 @@ void CCallbackFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerS
     }
     line << ")";
     trBlock->statements.push_back(TrStatement(CLoc::undefined, line.str()));
+
+    if (isWeak) {
+        if (weakReturnValue) {
+            weakReturnValue->retainValue(compiler, CLoc::undefined, trBlock, storeValue->getValue());
+        }
+
+        trBlock->statements.push_back(TrStatement(CLoc::undefined, "}"));
+        if (!storeValue->isVoid) {
+            trBlock->statements.push_back(TrStatement(CLoc::undefined, "else {"));
+            getReturnType(compiler, returnMode)->transpileDefaultValue(compiler, CLoc::undefined, trBlock, weakReturnValue ? weakReturnValue : storeValue);
+            trBlock->statements.push_back(TrStatement(CLoc::undefined, "}"));
+        }
+    }
 }
 
 void CCallbackFunction::dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level, CTypeMode returnMode) {
@@ -344,7 +374,7 @@ shared_ptr<CBaseFunction> CCallback::getFunction(Compiler* compiler, shared_ptr<
 void CCallback::transpileStructDefinition(Compiler* compiler, TrOutput* trOutput) {
     string stackStructName = getCName(CTM_Local, false);
     if (trOutput->structs.find(stackStructName) == trOutput->structs.end()) {
-        trOutput->structs[stackStructName].push_back("void* _parent");
+        trOutput->structs[stackStructName].push_back("sjs_object* _parent");
         if (stackReturnType) {
             trOutput->structs[stackStructName].push_back(getCBName(compiler, true, CTM_Stack));
         }
@@ -357,7 +387,7 @@ void CCallback::transpileStructDefinition(Compiler* compiler, TrOutput* trOutput
     string heapStructName = getCName(CTM_Heap, false);
     if (trOutput->structs.find(heapStructName) == trOutput->structs.end()) {
         trOutput->structs[heapStructName].push_back(stackStructName + " inner");
-        trOutput->structs[heapStructName].push_back("void (*_destroy)(void*)");
+        trOutput->structs[heapStructName].push_back("void (*_destroy)(sjs_object*)");
         trOutput->structOrder.push_back(heapStructName);
     }
 }
@@ -376,7 +406,7 @@ string CCallback::getCBName(Compiler* compiler, bool includeNames, CTypeMode ret
     if (includeNames) {
         ss << ((returnMode == CTM_Heap) ? "_cb_heap" : "_cb");
     }
-    ss << ")(void*";
+    ss << ")(sjs_object*";
     if (includeNames) {
         ss << " _parent";
     }
@@ -424,7 +454,7 @@ string CCallback::getCName(CTypeMode typeMode, bool isOption) {
 void CCallback::writeCopy(TrBlock* trBlock, string from, string to, bool isHeap) {
     if (isHeap) {
         trBlock->statements.push_back(TrStatement(CLoc::undefined, to + ".inner._parent = " + from + ".inner._parent"));
-        trBlock->statements.push_back(TrStatement(CLoc::undefined, "((sjs_object*)((char*)" + to + ".inner._parent - sizeof(intptr_t)))->_refCount++"));
+        trBlock->statements.push_back(TrStatement(CLoc::undefined, to + ".inner._parent->_refCount++"));
         if (stackReturnType) {
             trBlock->statements.push_back(TrStatement(CLoc::undefined, to + ".inner._cb = " + from + ".inner._cb"));
         }
