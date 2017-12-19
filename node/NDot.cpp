@@ -32,6 +32,16 @@ shared_ptr<CVar> NDot::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, 
             return nullptr;
         }
 
+        auto leftType = leftVar->getType(compiler);
+        if (!leftType) {
+            return nullptr;
+        }
+
+        if (leftType->isOption) {
+            compiler->addError(loc, CErrorCode::InvalidDot, "left side of dot cannot be option");
+            return nullptr;
+        }
+
         if (ns.size() > 0) {
             scope->pushNamespace(compiler, ns);
         }
