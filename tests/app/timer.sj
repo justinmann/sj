@@ -1,25 +1,25 @@
 include "lib/common/common.sj"
 include "lib/ui/ui.sj"
 
-root : fillElement(
+root : heap fillElement(
 	children : [
-		scene3dElement(
+		heap scene3dElement(
 			children: [
-				scene2dModel(
+				heap scene2dModel(
 					vertexBuffer : sphereVertexBuffer()
 					shader : copy phongTextureShader
 					children : [
-				 		imageElement(
+				 		heap imageElement(
 							image : image(textureFromPng("assets/test.png"), margin: margin(150, 50, 150, 150))
 						) as #element
-						crossHairsElement(
+						heap crossHairsElement(
 							color : colors.blue()
 						) as #element
 					]
 				) as #model
 			]
 		) as #element
-		crossHairsElement(
+		heap crossHairsElement(
 			color : colors.red()
 		) as #element
 	]

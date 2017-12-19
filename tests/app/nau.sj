@@ -6,18 +6,18 @@ include "nau/peoplePanel.sj"
 
 root : fillElement(
 	children : [
-		nauScene3dElement(
+		heap nauScene3dElement(
 			lookAtMin := vec3(-16.0f, -1.0f, 0.0f)
 			lookAtMax := vec3(16.0f, 1.0f, 6.0f)
 			children: [
-                model(
+                heap model(
                 	texture : textureFromPng("assets/forest_backdrop.png")
                 	shader : copy phongTextureShader
                 	model : mat4_translate(0.0f, 8.0f, 20.0f) * mat4_scale(12.0f, 12.0f, 12.0f)
                 	vertexBuffer : planeVertexBuffer(x0 : -6.3f, y0 : -1.0f, x1 : 6.3f, y1 : 1.0f) 
                 ) as #model
 
-				leafPanel(
+				heap leafPanel(
 					textures : [
 						textureFromPng("assets/whitestar1.png")
 						textureFromPng("assets/whitestar2.png")
@@ -30,32 +30,32 @@ root : fillElement(
 					]
 				) as #model
 
-				peoplePanel(
+				heap peoplePanel(
 					model : mat4_translate(0.0f, 0.0f, 0.0f)
 					children : [
-						scene2dModel(
+						heap scene2dModel(
 							vertexBuffer : planeVertexBuffer()  
 		                	shader : copy phongTextureShader
 							children : [
-								boxElement() as #element
-								imageElement(
+								heap boxElement() as #element
+								heap imageElement(
 									image : image(texture : textureFromPng("assets/forestperson1.png"))
 								) as #element
-								crossHairsElement(
+								heap crossHairsElement(
 									color : colors.blue()
 								) as #element
 							]
 						) as #model
 
-						scene2dModel(
+						heap scene2dModel(
 							vertexBuffer : planeVertexBuffer()  
 		                	shader : copy phongTextureShader
 							children : [
-								boxElement() as #element
-								imageElement(
+								heap boxElement() as #element
+								heap imageElement(
 									image : image(texture : textureFromPng("assets/forestperson2.png"))
 								) as #element
-								crossHairsElement(
+								heap crossHairsElement(
 									color : colors.green()
 								) as #element
 							]
@@ -91,10 +91,10 @@ root : fillElement(
 					]
 				) as #model
 
-				panel3d(
+				heap panel3d(
 					model : mat4_translate(0.0f, -1.3f, 0.0f)
 					children : [
-		                model(
+		                heap model(
 		                	id : "grass6.2"
 		                	texture : textureFromPng("assets/grass.png")
 		                	shader : copy phongTextureShader
@@ -104,7 +104,7 @@ root : fillElement(
 		                ) as #model
 
 
-		                model(
+		                heap model(
 		                	id : "grass6.2"
 		                	texture : textureFromPng("assets/grass.png")
 		                	shader : copy phongTextureShader
@@ -113,7 +113,7 @@ root : fillElement(
 		                	hasAlpha : true
 		                ) as #model
 
-		                model(
+		                heap model(
 		                	id : "grass4.2"
 		                	texture : textureFromPng("assets/grass.png")
 		                	shader : copy phongTextureShader
@@ -122,7 +122,7 @@ root : fillElement(
 		                	hasAlpha : true
 		                ) as #model
 
-		                model(
+		                heap model(
 		                	id : "grass4.2"
 		                	texture : textureFromPng("assets/grass.png")
 		                	shader : copy phongTextureShader
@@ -131,7 +131,7 @@ root : fillElement(
 		                	hasAlpha : true
 		                ) as #model
 
-		                model(
+		                heap model(
 		                	id : "grass2.2"
 		                	texture : textureFromPng("assets/grass.png")
 		                	shader : copy phongTextureShader
@@ -140,7 +140,7 @@ root : fillElement(
 		                	hasAlpha : true
 		                ) as #model
 
-		                model(
+		                heap model(
 		                	id : "grass2.2"
 		                	texture : textureFromPng("assets/grass.png")
 		                	shader : copy phongTextureShader
@@ -149,7 +149,7 @@ root : fillElement(
 		                	hasAlpha : true
 		                ) as #model
 
-		                model(
+		                heap model(
 		                	id : "grass0.2"
 		                	texture : textureFromPng("assets/grass.png")
 		                	shader : copy phongTextureShader
@@ -158,7 +158,7 @@ root : fillElement(
 		                	hasAlpha : true
 		                ) as #model
 
-		                model(
+		                heap model(
 		                	id : "grass0.2"
 		                	texture : textureFromPng("assets/grass.png")
 		                	shader : copy phongTextureShader
@@ -167,7 +167,7 @@ root : fillElement(
 		                	hasAlpha : true
 		                ) as #model
 
-		                model(
+		                heap model(
 		                	id : "grass-1.8"
 		                	texture : textureFromPng("assets/grass.png")
 		                	shader : copy phongTextureShader
@@ -176,7 +176,7 @@ root : fillElement(
 		                	hasAlpha : true
 		                ) as #model
 
-		                model(
+		                heap model(
 		                	id : "grass-1.8"
 		                	texture : textureFromPng("assets/grass.png")
 		                	shader : copy phongTextureShader
@@ -188,7 +188,7 @@ root : fillElement(
 				) as #model
 			]
 		) as #element
-		crossHairsElement(
+		heap crossHairsElement(
 			color : colors.red()
 		) as #element
 	]

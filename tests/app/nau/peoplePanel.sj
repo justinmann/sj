@@ -1,6 +1,6 @@
 peoplePanel #model (
 	model : mat4_identity()
-	children : array!#model()
+	children : array!heap #model()
 	_childrenModel := array!mat4()
 
 	update(sceneRect : 'rect, projection : 'mat4, view : 'mat4, world : 'mat4, light : 'light)'void {

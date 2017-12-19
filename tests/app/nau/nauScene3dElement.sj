@@ -1,5 +1,5 @@
 nauScene3dElement #element (
-	children : array!#model()
+	children : array!heap #model()
 	lookAtMin := vec3()
 	lookAtMax := vec3()
 	fieldOfView := 90.0f
@@ -15,7 +15,7 @@ nauScene3dElement #element (
 		size(maxSize.w, maxSize.h)
 	}
 
-	getRect()'local rect { _rect }
+	getRect()'rect { copy _rect }
 
 	setRect(rect_ : 'rect)'void {
 		if _rect != rect_ {

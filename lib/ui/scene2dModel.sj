@@ -2,7 +2,7 @@ scene2dModel #model (
 	vertexBuffer : 'vertexBuffer!vertex_location_texture_normal
 	shader : 'shader
 	textureSize : size(512, 512)
-	children : array!#element()
+	children : array!heap #element()
 	hasAlpha : false
 	center : vec3()
 	model := mat4_identity()

@@ -9,7 +9,7 @@ model_hasAlpha(m : '#model) {
 }
 
 scene3dElement #element (
-	children : array!#model()
+	children : array!heap #model()
 	camera := vec3(0.0f, 0.0f, -5.0f)
 	lookAt := vec3(0.0f, 0.0f, 0.0f)
 	up := vec3(0.0f, 1.0f, 0.0f)
@@ -26,7 +26,7 @@ scene3dElement #element (
 		size(maxSize.w, maxSize.h)
 	}
 
-	getRect()'local rect { _rect }
+	getRect()'rect { copy _rect }
 
 	setRect(rect_ : 'rect)'void {
 		if _rect != rect_ {

@@ -1,6 +1,6 @@
 panel3d #model(
 	model : mat4_identity()
-	children : array!#model()
+	children : array!heap #model()
 
 	update(sceneRect : 'rect, projection : 'mat4, view : 'mat4, world : 'mat4, light : 'light)'void {
 		childWorld : world * model 
