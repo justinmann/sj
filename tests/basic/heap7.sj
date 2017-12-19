@@ -1,3 +1,5 @@
+include "lib/common/common.sj"
+
 foo() { this }
 
 heap_y'heap foo : foo()

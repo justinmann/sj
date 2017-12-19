@@ -675,7 +675,7 @@ global()'void {
   writeline(
     data'stack string : data
   )
-  e'weak class = empty'stack class?
+  e'weak class = empty'weak class
   writeline(
     data'stack string : data
   )

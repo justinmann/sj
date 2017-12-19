@@ -27,7 +27,7 @@ hash![key, val] (
         if (!ret) kh_del(#safeName(key)_#safeName(val)_hash_type, p, k);
 
     ##if #isWeak(key)
-        delete_cb cb = { _parent, #functionStack(parent, _weakPtrRemoveKey) };
+        delete_cb cb = { _parent, (void(*)(void*, void*))#functionStack(parent, _weakPtrRemoveKey) };
         weakptr_cb_add(key, cb);
     ##else
         #type(key) t;
@@ -35,7 +35,7 @@ hash![key, val] (
     ##endif
 
     ##if #isWeak(val)
-        delete_cb cb = { _parent, #functionStack(parent, _weakPtrRemoveValue) };
+        delete_cb cb = { _parent, (void(*)(void*, void*))#functionStack(parent, _weakPtrRemoveValue) };
         weakptr_cb_add(val, cb);
         kh_val(p, k) = val;
     ##else
@@ -115,7 +115,7 @@ hash![key, val] (
                     if (!ret) kh_del(#safeName(key)_#safeName(val)_hash_type, newP, k);
 
     ##if #isWeak(key)
-                    delete_cb cb = { sjv_newHash, #functionStack(parent, _weakPtrRemoveKey) };
+                    delete_cb cb = { sjv_newHash, (void(*)(void*, void*))#functionStack(parent, _weakPtrRemoveKey) };
                     weakptr_cb_add(kh_key(newP, k), cb);
     ##else
                     #type(key) t;
@@ -123,7 +123,7 @@ hash![key, val] (
     ##endif
 
     ##if #isWeak(val)
-                    delete_cb cb = { sjv_newHash, #functionStack(parent, _weakPtrRemoveValue) };
+                    delete_cb cb = { sjv_newHash, (void(*)(void*, void*))#functionStack(parent, _weakPtrRemoveValue) };
                     weakptr_cb_add(kh_val(newP, k), cb);
     ##else
                     #retain(val, kh_val(newP, k), kh_value(p, k));
@@ -206,14 +206,14 @@ hash![key, val] (
             if (kh_exist(p, k)) {
     
     ##if #isWeak(key)
-                delete_cb cb = { p, #functionStack(this, _weakPtrRemoveKey) };
+                delete_cb cb = { p, (void(*)(void*, void*))#functionStack(this, _weakPtrRemoveKey) };
                 weakptr_cb_remove(kh_key(p, k), cb);
     ##else
                 #release(key, kh_key(p, k));
     ##endif
 
     ##if #isWeak(val)
-                delete_cb cb = { p, #functionStack(this, _weakPtrRemoveValue) };
+                delete_cb cb = { p, (void(*)(void*, void*))#functionStack(this, _weakPtrRemoveValue) };
                 weakptr_cb_remove(kh_value(p, k), cb);
     ##else
                 #release(val, kh_value(p, k));

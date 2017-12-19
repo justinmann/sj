@@ -77,9 +77,20 @@ hash_setat(key'heap #interface:, val'i32:)'void {
   k = kh_put(heap_interface_i32_hash_type, _parent->_hash, key, &ret);
   #endif
   if (!ret) kh_del(heap_interface_i32_hash_type, p, k);
+  #if false
+  delete_cb cb = { _parent, (void(*)(void*, void*))INVALID };
+  weakptr_cb_add(key, cb);
+  #else
   sji_interface* t;
   ;
+  #endif
+  #if false
+  delete_cb cb = { _parent, (void(*)(void*, void*))INVALID };
+  weakptr_cb_add(val, cb);
+  kh_val(p, k) = val;
+  #else
   ;
+  #endif
   --c--
 }
 

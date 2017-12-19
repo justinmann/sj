@@ -1,8 +1,4 @@
-// include "lib/common/common.sj"
-
-i32_toString(x : 'i32) {
-	1
-}
+include "lib/common/common.sj"
 
 class(x : 1) { this }
 

@@ -1,3 +1,5 @@
+include "lib/common/common.sj"
+
 #interface()
 #interface2()
 class #interface (

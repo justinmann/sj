@@ -44,14 +44,14 @@ hash_setat(key'weak class:, val'i32:)'void {
   #endif
   if (!ret) kh_del(weak_class_i32_hash_type, p, k);
   #if true
-  delete_cb cb = { _parent, INVALID };
+  delete_cb cb = { _parent, (void(*)(void*, void*))INVALID };
   weakptr_cb_add(key, cb);
   #else
   sjs_class* t;
   ;
   #endif
   #if false
-  delete_cb cb = { _parent, INVALID };
+  delete_cb cb = { _parent, (void(*)(void*, void*))INVALID };
   weakptr_cb_add(val, cb);
   kh_val(p, k) = val;
   #else

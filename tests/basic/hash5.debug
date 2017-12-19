@@ -46,14 +46,14 @@ if (kh_val(p, k) != 0) { weakptr_cb_remove(kh_val(p, k), weakptrcb5); }
   #endif
   if (!ret) kh_del(i32_weak_class_hash_type, p, k);
   #if false
-  delete_cb cb = { _parent, INVALID };
-  weakptr_cb_add(val, cb);
+  delete_cb cb = { _parent, (void(*)(void*, void*))INVALID };
+  weakptr_cb_add(key, cb);
   #else
   int32_t t;
   ;
   #endif
   #if true
-  delete_cb cb = { _parent, INVALID };
+  delete_cb cb = { _parent, (void(*)(void*, void*))INVALID };
   weakptr_cb_add(val, cb);
   kh_val(p, k) = val;
   #else

@@ -1,3 +1,5 @@
+include "lib/common/common.sj"
+
 #foo!item(
     test()'item
 )

@@ -662,6 +662,8 @@ sjs_object* sjf_class_heap_asInterface(sjs_class* _this, int typeId);
 sji_interface* sjf_class_heap_as_sji_interface(sjs_class* _this);
 void sjf_debug_writeline(sjs_string* data);
 void sjf_hash_string_heap_interface(sjs_hash_string_heap_interface* _this);
+void sjf_hash_string_heap_interface__weakptrremovekey(sjs_hash_string_heap_interface* _parent, sjs_string* key);
+void sjf_hash_string_heap_interface__weakptrremovevalue(sjs_hash_string_heap_interface* _parent, sji_interface* val);
 void sjf_hash_string_heap_interface_copy(sjs_hash_string_heap_interface* _this, sjs_hash_string_heap_interface* _from);
 void sjf_hash_string_heap_interface_destroy(sjs_hash_string_heap_interface* _this);
 void sjf_hash_string_heap_interface_getat_heap(sjs_hash_string_heap_interface* _parent, sjs_string* key, sji_interface** _return);
@@ -974,6 +976,30 @@ void sjf_hash_string_heap_interface(sjs_hash_string_heap_interface* _this) {
     _this->_hash = kh_init(string_heap_interface_hash_type);
 }
 
+void sjf_hash_string_heap_interface__weakptrremovekey(sjs_hash_string_heap_interface* _parent, sjs_string* key) {
+    #if false
+    khash_t(string_heap_interface_hash_type)* p = (khash_t(string_heap_interface_hash_type)*)_parent->_hash;    
+    khiter_t k = kh_get(string_heap_interface_hash_type, p, key);
+    if (k != kh_end(p)) {
+        kh_del(string_heap_interface_hash_type, p, k);
+    }
+    #endif
+}
+
+void sjf_hash_string_heap_interface__weakptrremovevalue(sjs_hash_string_heap_interface* _parent, sji_interface* val) {
+    #if false
+    khash_t(string_heap_interface_hash_type)* p = (khash_t(string_heap_interface_hash_type)*)_parent->_hash;
+    for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
+        if (kh_exist(p, k)) {
+            sji_interface* t = kh_value(p, k);
+            if (t == val) {
+                kh_del(string_heap_interface_hash_type, p, k);
+            }
+        }
+    }
+    #endif
+}
+
 void sjf_hash_string_heap_interface_copy(sjs_hash_string_heap_interface* _this, sjs_hash_string_heap_interface* _from) {
     _this->_hash = _from->_hash;
     ptr_retain(_this->_hash);
@@ -984,13 +1010,23 @@ void sjf_hash_string_heap_interface_destroy(sjs_hash_string_heap_interface* _thi
         khash_t(string_heap_interface_hash_type)* p = (khash_t(string_heap_interface_hash_type)*)_this->_hash;
         for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
             if (kh_exist(p, k)) {
+                #if false
+                delete_cb cb = { p, (void(*)(void*, void*))sjf_hash_string_heap_interface__weakptrremovekey };
+                weakptr_cb_remove(kh_key(p, k), cb);
+                #else
                 ;
+                #endif
+                #if false
+                delete_cb cb = { p, (void(*)(void*, void*))sjf_hash_string_heap_interface__weakptrremovevalue };
+                weakptr_cb_remove(kh_value(p, k), cb);
+                #else
                 kh_value(p, k)->_refCount--;
 if (kh_value(p, k)->_refCount <= 0) {
     weakptr_release(kh_value(p, k));
     sji_interface_destroy(kh_value(p, k));
 }
 ;
+                #endif
             }
         }
         kh_destroy(string_heap_interface_hash_type, _this->_hash);
@@ -1044,13 +1080,24 @@ k = kh_put(string_heap_interface_hash_type, _parent->_hash, *key, &ret);
 k = kh_put(string_heap_interface_hash_type, _parent->_hash, key, &ret);
 #endif
 if (!ret) kh_del(string_heap_interface_hash_type, p, k);
+#if false
+delete_cb cb = { _parent, (void(*)(void*, void*))sjf_hash_string_heap_interface__weakptrremovekey };
+weakptr_cb_add(key, cb);
+#else
 sjs_string t;
 t._refCount = 1;
 sjf_string_copy(&t, key);
 ;
+#endif
+#if false
+delete_cb cb = { _parent, (void(*)(void*, void*))sjf_hash_string_heap_interface__weakptrremovevalue };
+weakptr_cb_add(val, cb);
+kh_val(p, k) = val;
+#else
 kh_val(p, k) = val;
 kh_val(p, k)->_refCount++;
 ;
+#endif
 }
 
 void sjf_string(sjs_string* _this) {

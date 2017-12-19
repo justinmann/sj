@@ -930,7 +930,7 @@ void sjf_hash_weak_class_i32_destroy(sjs_hash_weak_class_i32* _this) {
         for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
             if (kh_exist(p, k)) {
                 #if true
-                delete_cb cb = { p, sjf_hash_weak_class_i32__weakptrremovekey };
+                delete_cb cb = { p, (void(*)(void*, void*))sjf_hash_weak_class_i32__weakptrremovekey };
                 weakptr_cb_remove(kh_key(p, k), cb);
                 #else
                 delete_cb weakptrcb3 = { &kh_key(p, k), weakptr_clear };
@@ -938,7 +938,7 @@ if (kh_key(p, k) != 0) { weakptr_cb_remove(kh_key(p, k), weakptrcb3); }
 ;
                 #endif
                 #if false
-                delete_cb cb = { p, sjf_hash_weak_class_i32__weakptrremovevalue };
+                delete_cb cb = { p, (void(*)(void*, void*))sjf_hash_weak_class_i32__weakptrremovevalue };
                 weakptr_cb_remove(kh_value(p, k), cb);
                 #else
                 ;
@@ -987,7 +987,7 @@ k = kh_put(weak_class_i32_hash_type, _parent->_hash, key, &ret);
 #endif
 if (!ret) kh_del(weak_class_i32_hash_type, p, k);
 #if true
-delete_cb cb = { _parent, sjf_hash_weak_class_i32__weakptrremovekey };
+delete_cb cb = { _parent, (void(*)(void*, void*))sjf_hash_weak_class_i32__weakptrremovekey };
 weakptr_cb_add(key, cb);
 #else
 sjs_class* t;
@@ -997,7 +997,7 @@ if (t != 0) { weakptr_cb_add(t, weakptrcb4); }
 ;
 #endif
 #if false
-delete_cb cb = { _parent, sjf_hash_weak_class_i32__weakptrremovevalue };
+delete_cb cb = { _parent, (void(*)(void*, void*))sjf_hash_weak_class_i32__weakptrremovevalue };
 weakptr_cb_add(val, cb);
 kh_val(p, k) = val;
 #else

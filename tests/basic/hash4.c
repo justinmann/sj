@@ -677,6 +677,8 @@ sji_interface* sjf_class_heap_as_sji_interface(sjs_class* _this);
 void sjf_class_isequal(sjs_class* _parent, sji_interface* b, bool* _return);
 void sjf_debug_writeline(sjs_string* data);
 void sjf_hash_heap_interface_i32(sjs_hash_heap_interface_i32* _this);
+void sjf_hash_heap_interface_i32__weakptrremovekey(sjs_hash_heap_interface_i32* _parent, sji_interface* key);
+void sjf_hash_heap_interface_i32__weakptrremovevalue(sjs_hash_heap_interface_i32* _parent, int32_t val);
 void sjf_hash_heap_interface_i32_copy(sjs_hash_heap_interface_i32* _this, sjs_hash_heap_interface_i32* _from);
 void sjf_hash_heap_interface_i32_destroy(sjs_hash_heap_interface_i32* _this);
 void sjf_hash_heap_interface_i32_each(sjs_hash_heap_interface_i32* _parent, cb_heap_interface_i32_void cb);
@@ -1072,6 +1074,30 @@ void sjf_hash_heap_interface_i32(sjs_hash_heap_interface_i32* _this) {
     _this->_hash = kh_init(heap_interface_i32_hash_type);
 }
 
+void sjf_hash_heap_interface_i32__weakptrremovekey(sjs_hash_heap_interface_i32* _parent, sji_interface* key) {
+    #if false
+    khash_t(heap_interface_i32_hash_type)* p = (khash_t(heap_interface_i32_hash_type)*)_parent->_hash;    
+    khiter_t k = kh_get(heap_interface_i32_hash_type, p, key);
+    if (k != kh_end(p)) {
+        kh_del(heap_interface_i32_hash_type, p, k);
+    }
+    #endif
+}
+
+void sjf_hash_heap_interface_i32__weakptrremovevalue(sjs_hash_heap_interface_i32* _parent, int32_t val) {
+    #if false
+    khash_t(heap_interface_i32_hash_type)* p = (khash_t(heap_interface_i32_hash_type)*)_parent->_hash;
+    for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
+        if (kh_exist(p, k)) {
+            int32_t t = kh_value(p, k);
+            if (t == val) {
+                kh_del(heap_interface_i32_hash_type, p, k);
+            }
+        }
+    }
+    #endif
+}
+
 void sjf_hash_heap_interface_i32_copy(sjs_hash_heap_interface_i32* _this, sjs_hash_heap_interface_i32* _from) {
     _this->_hash = _from->_hash;
     ptr_retain(_this->_hash);
@@ -1082,13 +1108,23 @@ void sjf_hash_heap_interface_i32_destroy(sjs_hash_heap_interface_i32* _this) {
         khash_t(heap_interface_i32_hash_type)* p = (khash_t(heap_interface_i32_hash_type)*)_this->_hash;
         for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
             if (kh_exist(p, k)) {
+                #if false
+                delete_cb cb = { p, (void(*)(void*, void*))sjf_hash_heap_interface_i32__weakptrremovekey };
+                weakptr_cb_remove(kh_key(p, k), cb);
+                #else
                 kh_key(p, k)->_refCount--;
 if (kh_key(p, k)->_refCount <= 0) {
     weakptr_release(kh_key(p, k));
     sji_interface_destroy(kh_key(p, k));
 }
 ;
+                #endif
+                #if false
+                delete_cb cb = { p, (void(*)(void*, void*))sjf_hash_heap_interface_i32__weakptrremovevalue };
+                weakptr_cb_remove(kh_value(p, k), cb);
+                #else
                 ;
+                #endif
             }
         }
         kh_destroy(heap_interface_i32_hash_type, _this->_hash);
@@ -1153,12 +1189,23 @@ k = kh_put(heap_interface_i32_hash_type, _parent->_hash, *key, &ret);
 k = kh_put(heap_interface_i32_hash_type, _parent->_hash, key, &ret);
 #endif
 if (!ret) kh_del(heap_interface_i32_hash_type, p, k);
+#if false
+delete_cb cb = { _parent, (void(*)(void*, void*))sjf_hash_heap_interface_i32__weakptrremovekey };
+weakptr_cb_add(key, cb);
+#else
 sji_interface* t;
 t = key;
 t->_refCount++;
 ;
+#endif
+#if false
+delete_cb cb = { _parent, (void(*)(void*, void*))sjf_hash_heap_interface_i32__weakptrremovevalue };
+weakptr_cb_add(val, cb);
+kh_val(p, k) = val;
+#else
 kh_val(p, k) = val;
 ;
+#endif
 }
 
 void sjf_i32_tostring(int32_t val, sjs_string* _return) {

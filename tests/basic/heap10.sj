@@ -1,3 +1,5 @@
+include "lib/common/common.sj"
+
 inner() { this }
 
 class(

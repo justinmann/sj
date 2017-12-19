@@ -1,3 +1,5 @@
+include "lib/common/common.sj"
+
 package a {
 	x : 0
 	func() { x }

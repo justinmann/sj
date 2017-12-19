@@ -59,9 +59,20 @@ if (kh_val(p, k)->_refCount <= 0) {
   k = kh_put(string_heap_interface_hash_type, _parent->_hash, key, &ret);
   #endif
   if (!ret) kh_del(string_heap_interface_hash_type, p, k);
+  #if false
+  delete_cb cb = { _parent, (void(*)(void*, void*))INVALID };
+  weakptr_cb_add(key, cb);
+  #else
   sjs_string t;
   ;
+  #endif
+  #if false
+  delete_cb cb = { _parent, (void(*)(void*, void*))INVALID };
+  weakptr_cb_add(val, cb);
+  kh_val(p, k) = val;
+  #else
   ;
+  #endif
   --c--
 }
 
