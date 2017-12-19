@@ -171,6 +171,7 @@
     <ClInclude Include="..\node\NFunction.h" />
     <ClInclude Include="..\node\NGetOrElse.h" />
     <ClInclude Include="..\node\NGetValue.h" />
+    <ClInclude Include="..\node\NHash.h" />
     <ClInclude Include="..\node\NIfValue.h" />
     <ClInclude Include="..\node\NImport.h" />
     <ClInclude Include="..\node\NIsEmpty.h" />
@@ -236,6 +237,7 @@
     <ClCompile Include="..\node\NEnum.cpp" />
     <ClCompile Include="..\node\NGetOrElse.cpp" />
     <ClCompile Include="..\node\NGetValue.cpp" />
+    <ClCompile Include="..\node\NHash.cpp" />
     <ClCompile Include="..\node\NIfValue.cpp" />
     <ClCompile Include="..\node\NImport.cpp" />
     <ClCompile Include="..\node\NIsEmpty.cpp" />

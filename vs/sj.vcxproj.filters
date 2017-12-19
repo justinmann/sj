@@ -216,6 +216,9 @@
     <ClInclude Include="..\node\NUnderscore.h">
       <Filter>Node</Filter>
     </ClInclude>
+    <ClInclude Include="..\node\NHash.h">
+      <Filter>Node</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\node\NAnd.cpp">
@@ -405,6 +408,9 @@
       <Filter>Node</Filter>
     </ClCompile>
     <ClCompile Include="..\node\NUnderscore.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NHash.cpp">
       <Filter>Node</Filter>
     </ClCompile>
   </ItemGroup>

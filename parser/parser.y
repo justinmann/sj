@@ -70,6 +70,8 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 	CTypeNameParts* typeNameParts;
 	vector<shared_ptr<NSwitchClause>>* switchClauses;
 	NSwitchClause* switchClause;
+	vector<pair<shared_ptr<NBase>, shared_ptr<NBase>>>* hashArgs;
+	pair<shared_ptr<NBase>, shared_ptr<NBase>>* hashArg;
 }
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
@@ -77,7 +79,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TGETVALUE TQUESTION TEMPTY TVALUE TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TWEAK TLOCAL TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR TINVALID TCOLONEQUAL THEAPPARENT THEAPTHIS TIFVALUE TELSEEMPTY TTOREVERSE TENUM TSWITCH TDEFAULT TPACKAGE TIMPORT TUNDERSCORE TNULLPTR
 
 /* Non Terminal symbols. Types refer to union decl above */
-%type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch copy destroy expr end_optional end_star if_expr ifValue_var enum_decl switch_expr
+%type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch copy destroy expr end_optional end_star if_expr ifValue_var enum_decl switch_expr hash
 %type <var> var_right expr_math expr_var const expr_and expr_comp tuple
 %type <block> stmts
 %type <exprvec> func_args func_block array_args tuple_args interface_args interface_block ifValue_vars
@@ -98,6 +100,8 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %type <string> namespace_ident
 %type <switchClauses> switch_clauses
 %type <switchClause> switch_clause
+%type <hashArg> hash_arg
+%type <hashArgs> hash_args
 
 /* Operator precedence */
 %left TAND TOR
@@ -293,6 +297,7 @@ expr 				: if_expr										{ $$ = $1; }
 					| expr_and										{ $$ = $1; }
 					| tuple 										{ $$ = $1; }
 					| array
+					| hash
 					| TTHROW TLPAREN expr TRPAREN					{ $$ = new NThrow(LOC, shared_ptr<NBase>($3)); }
 					| TVOID											{ $$ = new NVoid(LOC); }
 					;
@@ -432,6 +437,18 @@ tuple_args 			: expr_comp										{ $$ = new NodeList(); $$->push_back(shared_p
 					;
 
 array				: TLBRACKET end_optional array_args end_optional TRBRACKET	{ $$ = new NArray(LOC, shared_ptr<NodeList>($3)); }
+					;
+
+hash				: TLBRACE end_optional hash_args end_optional TRBRACE	{ $$ = new NHash(LOC, *$3); delete $3; }
+					;
+
+hash_args 			: hash_arg										{ $$ = new vector<pair<shared_ptr<NBase>, shared_ptr<NBase>>>(); $$->push_back(*$1); delete $1; }
+					| hash_args end_star hash_arg 					{ $1->push_back(*$3); delete $3; }
+					| hash_args TCOMMA end_star hash_arg 			{ $1->push_back(*$4); delete $4; }
+					| hash_args TCOMMA hash_arg 					{ $1->push_back(*$3); delete $3; }
+					;
+
+hash_arg 			: expr TCOLON expr								{ $$ = new pair<shared_ptr<NBase>, shared_ptr<NBase>>(shared_ptr<NBase>($1), shared_ptr<NBase>($3)); }
 					;
 
 end_optional		: /* Blank! */									{ $$ = nullptr; }			

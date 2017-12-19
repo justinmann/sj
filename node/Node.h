@@ -63,6 +63,7 @@ enum NodeType {
     NodeType_Function,
     NodeType_GetOrElse,
     NodeType_GetValue,
+    NodeType_Hash,
     NodeType_If,
     NodeType_IfValue,
     NodeType_Import,
@@ -118,6 +119,7 @@ enum NodeType {
 #include "NFunction.h"
 #include "NGetOrElse.h"
 #include "NGetValue.h"
+#include "NHash.h"
 #include "NIf.h"
 #include "NIfValue.h"
 #include "NImport.h"

@@ -183,6 +183,8 @@ union YYSTYPE
 	CTypeNameParts* typeNameParts;
 	vector<shared_ptr<NSwitchClause>>* switchClauses;
 	NSwitchClause* switchClause;
+	vector<pair<shared_ptr<NBase>, shared_ptr<NBase>>>* hashArgs;
+	pair<shared_ptr<NBase>, shared_ptr<NBase>>* hashArg;
 
 
 };
