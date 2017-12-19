@@ -776,7 +776,11 @@ void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
 void sjf_array_char_destroy(sjs_array_char* _this) {
     if (!_this->_isglobal && _this->data) {
         if (ptr_release(_this->data)) {
-            free((char*)_this->data);
+            char* p = (char*)_this->data;
+            for (int i = 0; i < _this->count; i++) {
+                ;
+            }
+            free(p);
         }
     }
 }
@@ -803,7 +807,13 @@ void sjf_array_char_grow(sjs_array_char* _parent, int32_t newsize, sjs_array_cha
         if (!_parent->data) {
             halt("grow: out of memory\n");
         }
-        memcpy(sjv_newdata, _parent->data, _parent->datasize * sizeof(char));
+        char* p = (char*)_parent->data;
+        char* newp = (char*)sjv_newdata;
+        int count = _parent->count;
+        for (int i = 0; i < count; i++) {
+            newp[i] = p[i];
+;
+        }
     }
     _return->_refCount = 1;
     _return->datasize = newsize;
@@ -827,7 +837,13 @@ void sjf_array_char_grow_heap(sjs_array_char* _parent, int32_t newsize, sjs_arra
         if (!_parent->data) {
             halt("grow: out of memory\n");
         }
-        memcpy(sjv_newdata, _parent->data, _parent->datasize * sizeof(char));
+        char* p = (char*)_parent->data;
+        char* newp = (char*)sjv_newdata;
+        int count = _parent->count;
+        for (int i = 0; i < count; i++) {
+            newp[i] = p[i];
+;
+        }
     }
     (*_return) = (sjs_array_char*)malloc(sizeof(sjs_array_char));
     (*_return)->_refCount = 1;

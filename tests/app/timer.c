@@ -5926,7 +5926,11 @@ void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
 void sjf_array_char_destroy(sjs_array_char* _this) {
     if (!_this->_isglobal && _this->data) {
         if (ptr_release(_this->data)) {
-            free((char*)_this->data);
+            char* p = (char*)_this->data;
+            for (int i = 0; i < _this->count; i++) {
+                ;
+            }
+            free(p);
         }
     }
 }
@@ -5969,7 +5973,16 @@ void sjf_array_heap_animation_copy(sjs_array_heap_animation* _this, sjs_array_he
 void sjf_array_heap_animation_destroy(sjs_array_heap_animation* _this) {
     if (!_this->_isglobal && _this->data) {
         if (ptr_release(_this->data)) {
-            free((sji_animation**)_this->data);
+            sji_animation** p = (sji_animation**)_this->data;
+            for (int i = 0; i < _this->count; i++) {
+                p[i]->_refCount--;
+if (p[i]->_refCount <= 0) {
+    weakptr_release(p[i]);
+    sji_animation_destroy(p[i]);
+}
+;
+            }
+            free(p);
         }
     }
 }
@@ -6022,7 +6035,16 @@ void sjf_array_heap_element_copy(sjs_array_heap_element* _this, sjs_array_heap_e
 void sjf_array_heap_element_destroy(sjs_array_heap_element* _this) {
     if (!_this->_isglobal && _this->data) {
         if (ptr_release(_this->data)) {
-            free((sji_element**)_this->data);
+            sji_element** p = (sji_element**)_this->data;
+            for (int i = 0; i < _this->count; i++) {
+                p[i]->_refCount--;
+if (p[i]->_refCount <= 0) {
+    weakptr_release(p[i]);
+    sji_element_destroy(p[i]);
+}
+;
+            }
+            free(p);
         }
     }
 }
@@ -6335,7 +6357,16 @@ void sjf_array_heap_model_copy(sjs_array_heap_model* _this, sjs_array_heap_model
 void sjf_array_heap_model_destroy(sjs_array_heap_model* _this) {
     if (!_this->_isglobal && _this->data) {
         if (ptr_release(_this->data)) {
-            free((sji_model**)_this->data);
+            sji_model** p = (sji_model**)_this->data;
+            for (int i = 0; i < _this->count; i++) {
+                p[i]->_refCount--;
+if (p[i]->_refCount <= 0) {
+    weakptr_release(p[i]);
+    sji_model_destroy(p[i]);
+}
+;
+            }
+            free(p);
         }
     }
 }
@@ -6363,7 +6394,14 @@ void sjf_array_heap_model_grow(sjs_array_heap_model* _parent, int32_t newsize, s
         if (!_parent->data) {
             halt("grow: out of memory\n");
         }
-        memcpy(sjv_newdata, _parent->data, _parent->datasize * sizeof(sji_model*));
+        sji_model** p = (sji_model**)_parent->data;
+        sji_model** newp = (sji_model**)sjv_newdata;
+        int count = _parent->count;
+        for (int i = 0; i < count; i++) {
+            newp[i] = p[i];
+newp[i]->_refCount++;
+;
+        }
     }
     _return->_refCount = 1;
     _return->datasize = newsize;
@@ -6387,7 +6425,14 @@ void sjf_array_heap_model_grow_heap(sjs_array_heap_model* _parent, int32_t newsi
         if (!_parent->data) {
             halt("grow: out of memory\n");
         }
-        memcpy(sjv_newdata, _parent->data, _parent->datasize * sizeof(sji_model*));
+        sji_model** p = (sji_model**)_parent->data;
+        sji_model** newp = (sji_model**)sjv_newdata;
+        int count = _parent->count;
+        for (int i = 0; i < count; i++) {
+            newp[i] = p[i];
+newp[i]->_refCount++;
+;
+        }
     }
     (*_return) = (sjs_array_heap_model*)malloc(sizeof(sjs_array_heap_model));
     (*_return)->_refCount = 1;
@@ -6495,7 +6540,11 @@ void sjf_array_i32_copy(sjs_array_i32* _this, sjs_array_i32* _from) {
 void sjf_array_i32_destroy(sjs_array_i32* _this) {
     if (!_this->_isglobal && _this->data) {
         if (ptr_release(_this->data)) {
-            free((int32_t*)_this->data);
+            int32_t* p = (int32_t*)_this->data;
+            for (int i = 0; i < _this->count; i++) {
+                ;
+            }
+            free(p);
         }
     }
 }
@@ -6560,7 +6609,11 @@ void sjf_array_vertex_location_texture_normal_copy(sjs_array_vertex_location_tex
 void sjf_array_vertex_location_texture_normal_destroy(sjs_array_vertex_location_texture_normal* _this) {
     if (!_this->_isglobal && _this->data) {
         if (ptr_release(_this->data)) {
-            free((sjs_vertex_location_texture_normal*)_this->data);
+            sjs_vertex_location_texture_normal* p = (sjs_vertex_location_texture_normal*)_this->data;
+            for (int i = 0; i < _this->count; i++) {
+                ;
+            }
+            free(p);
         }
     }
 }

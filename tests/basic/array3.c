@@ -776,7 +776,16 @@ void sjf_array_heap_class_copy(sjs_array_heap_class* _this, sjs_array_heap_class
 void sjf_array_heap_class_destroy(sjs_array_heap_class* _this) {
     if (!_this->_isglobal && _this->data) {
         if (ptr_release(_this->data)) {
-            free((sjs_class**)_this->data);
+            sjs_class** p = (sjs_class**)_this->data;
+            for (int i = 0; i < _this->count; i++) {
+                p[i]->_refCount--;
+if (p[i]->_refCount <= 0) {
+    weakptr_release(p[i]);
+    sjf_class_destroy(p[i]);
+}
+;
+            }
+            free(p);
         }
     }
 }

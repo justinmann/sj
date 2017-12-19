@@ -6,7 +6,7 @@
     <LocalDebuggerWorkingDirectory>..\tests</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LocalDebuggerCommandArguments>-testUpdate</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-testUpdate package1</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>..\tests</LocalDebuggerWorkingDirectory>
   </PropertyGroup>

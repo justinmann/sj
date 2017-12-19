@@ -780,7 +780,11 @@ void sjf_array_class_copy(sjs_array_class* _this, sjs_array_class* _from) {
 void sjf_array_class_destroy(sjs_array_class* _this) {
     if (!_this->_isglobal && _this->data) {
         if (ptr_release(_this->data)) {
-            free((sjs_class*)_this->data);
+            sjs_class* p = (sjs_class*)_this->data;
+            for (int i = 0; i < _this->count; i++) {
+                ;
+            }
+            free(p);
         }
     }
 }

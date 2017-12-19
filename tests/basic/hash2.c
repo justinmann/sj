@@ -823,7 +823,11 @@ void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
 void sjf_array_char_destroy(sjs_array_char* _this) {
     if (!_this->_isglobal && _this->data) {
         if (ptr_release(_this->data)) {
-            free((char*)_this->data);
+            char* p = (char*)_this->data;
+            for (int i = 0; i < _this->count; i++) {
+                ;
+            }
+            free(p);
         }
     }
 }

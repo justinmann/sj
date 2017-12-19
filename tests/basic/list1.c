@@ -786,7 +786,16 @@ void sjf_array_heap_class_copy(sjs_array_heap_class* _this, sjs_array_heap_class
 void sjf_array_heap_class_destroy(sjs_array_heap_class* _this) {
     if (!_this->_isglobal && _this->data) {
         if (ptr_release(_this->data)) {
-            free((sjs_class**)_this->data);
+            sjs_class** p = (sjs_class**)_this->data;
+            for (int i = 0; i < _this->count; i++) {
+                p[i]->_refCount--;
+if (p[i]->_refCount <= 0) {
+    weakptr_release(p[i]);
+    sjf_class_destroy(p[i]);
+}
+;
+            }
+            free(p);
         }
     }
 }
@@ -814,7 +823,14 @@ void sjf_array_heap_class_grow(sjs_array_heap_class* _parent, int32_t newsize, s
         if (!_parent->data) {
             halt("grow: out of memory\n");
         }
-        memcpy(sjv_newdata, _parent->data, _parent->datasize * sizeof(sjs_class*));
+        sjs_class** p = (sjs_class**)_parent->data;
+        sjs_class** newp = (sjs_class**)sjv_newdata;
+        int count = _parent->count;
+        for (int i = 0; i < count; i++) {
+            newp[i] = p[i];
+newp[i]->_refCount++;
+;
+        }
     }
     _return->_refCount = 1;
     _return->datasize = newsize;
@@ -838,7 +854,14 @@ void sjf_array_heap_class_grow_heap(sjs_array_heap_class* _parent, int32_t newsi
         if (!_parent->data) {
             halt("grow: out of memory\n");
         }
-        memcpy(sjv_newdata, _parent->data, _parent->datasize * sizeof(sjs_class*));
+        sjs_class** p = (sjs_class**)_parent->data;
+        sjs_class** newp = (sjs_class**)sjv_newdata;
+        int count = _parent->count;
+        for (int i = 0; i < count; i++) {
+            newp[i] = p[i];
+newp[i]->_refCount++;
+;
+        }
     }
     (*_return) = (sjs_array_heap_class*)malloc(sizeof(sjs_array_heap_class));
     (*_return)->_refCount = 1;

@@ -867,7 +867,11 @@ void sjf_array_f32_copy(sjs_array_f32* _this, sjs_array_f32* _from) {
 void sjf_array_f32_destroy(sjs_array_f32* _this) {
     if (!_this->_isglobal && _this->data) {
         if (ptr_release(_this->data)) {
-            free((float*)_this->data);
+            float* p = (float*)_this->data;
+            for (int i = 0; i < _this->count; i++) {
+                ;
+            }
+            free(p);
         }
     }
 }
@@ -1057,7 +1061,11 @@ void sjf_array_i32_copy(sjs_array_i32* _this, sjs_array_i32* _from) {
 void sjf_array_i32_destroy(sjs_array_i32* _this) {
     if (!_this->_isglobal && _this->data) {
         if (ptr_release(_this->data)) {
-            free((int32_t*)_this->data);
+            int32_t* p = (int32_t*)_this->data;
+            for (int i = 0; i < _this->count; i++) {
+                ;
+            }
+            free(p);
         }
     }
 }
