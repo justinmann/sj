@@ -298,14 +298,19 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
             auto leftStoreValue = make_shared<TrStoreValue>(loc, scope, ctype, leftName, AssignOp::create(true, false, ctype->typeMode == CTM_Stack, ctype->typeMode));
             auto rightVar = scope->getCVar(compiler, nullptr, rightName, VSM_LocalThisParent);
             if (!rightVar) {
-                compiler->addError(loc, CErrorCode::InvalidMacro, "cannot find var '%s'", rightName.c_str());
-                return "";
+                auto rightValue = make_shared<TrValue>(scope, ctype, rightName, false);
+                if (trOutput) {
+                    leftStoreValue->retainValue(compiler, loc, &block, rightValue);
+                    block.writeVariablesToStream(retainStream, 0);
+                    block.writeBodyToStream(retainStream, 0);
+                }
             }
-
-            if (trOutput) {
-                rightVar->transpile(compiler, trOutput, &block, nullptr, leftStoreValue);
-                block.writeVariablesToStream(retainStream, 0);
-                block.writeBodyToStream(retainStream, 0);
+            else {
+                if (trOutput) {
+                    rightVar->transpile(compiler, trOutput, &block, nullptr, leftStoreValue);
+                    block.writeVariablesToStream(retainStream, 0);
+                    block.writeBodyToStream(retainStream, 0);
+                }
             }
             return retainStream.str();
         }

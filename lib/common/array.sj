@@ -124,7 +124,13 @@ array!t (
 			if (!_parent->data) {
 				halt("grow: out of memory\n");
 			}
-			memcpy(sjv_newdata, _parent->data, _parent->datasize * sizeof(#type(t)));
+
+			#type(t)* p = (#type(t)*)_parent->data;
+			#type(t)* newp = (#type(t)*)sjv_newdata;
+			int count = _parent->count;
+			for (int i = 0; i < count; i++) {
+				#retain(t, newp[i], p[i]);
+			}
 		}
 		--c--
 		array!t(data: newData, dataSize: newSize, count: count)
@@ -217,9 +223,9 @@ array!t (
 		result := ""
 		for i : 0 to count {
 			if i != 0 {
-				result = copy (result + sep)
+				result = result + sep
 			}
-			result = copy (result + getAt(i).toString())
+			result = result + getAt(i)?.toString()?:""
 		}
 		copy result
 	}
@@ -287,7 +293,11 @@ array!t (
 	--c--
 	if (!_this->_isglobal && _this->data) {
 		if (ptr_release(_this->data)) {
-			free((#type(t)*)_this->data);
+			#type(t)* p = (#type(t)*)_this->data;
+			for (int i = 0; i < _this->count; i++) {
+				#release(t, p[i]);
+			}
+			free(p);
 		}
 	}
 	--c--
