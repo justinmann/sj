@@ -9,7 +9,7 @@ shared_ptr<CType> CCopyVar::getType(Compiler* compiler) {
     if (type->typeMode == CTM_Value) {
         return type;
     }
-    else if (type->typeMode != CTM_Heap) {
+    else if (returnMode != CTM_Heap) {
         return type->getStackType();
     }
     else {
@@ -24,17 +24,14 @@ void CCopyVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
     }
     else {
         auto destType = returnMode == CTM_Heap ? type->getHeapType() : type->getStackType();
-        auto rightValue = trBlock->createTempStoreVariable(loc, scope.lock(), 
-                (type->typeMode == CTM_Heap || type->typeMode == CTM_Weak) ? type : type->getLocalType(),
-                "copy");
+        auto rightValue = trBlock->createTempStoreVariable(loc, scope.lock(), type->getLocalType(), "copy");
         var->transpile(compiler, trOutput, trBlock, thisValue, rightValue);
         
-        if (storeValue->op.isFirstAssignment) {
-            storeValue->getValue()->addInitToStatements(trBlock);
-        } else {
+        if (!storeValue->op.isFirstAssignment) {
             storeValue->getValue()->addReleaseToStatements(trBlock);
         }
-        
+
+        storeValue->getValue()->addInitToStatements(trBlock);
         if (!type->parent.expired()) {
             if (type->isOption) {
                 assert(false);
@@ -63,7 +60,7 @@ void NCopy::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>&
 }
 
 shared_ptr<CVar> NCopy::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto leftVar = node->getVar(compiler, scope, CTM_Undefined);
+    auto leftVar = node->getVar(compiler, scope, returnMode);
     if (!leftVar) {
         return nullptr;
     }

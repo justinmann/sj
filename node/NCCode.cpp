@@ -165,6 +165,10 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
 
         auto ctype = scope->getVarType(loc, compiler, ctypeName, CTM_Undefined);
         if (ctype) {
+            if (ctype->typeMode == CTM_Local) {
+                ctype = ctype->getStackType() ? ctype->getStackType() : ctype->getHeapType();
+            }
+
             if (returnType != nullptr && returnType != ctype) {
                 compiler->addError(loc, CErrorCode::InvalidType, "all return types must agree");
             }
@@ -203,6 +207,10 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
 
         auto ctype = scope->getVarType(loc, compiler, ctypeName, CTM_Undefined);
         if (ctype) {
+            if (ctype->typeMode == CTM_Local) {
+                ctype = ctype->getStackType() ? ctype->getStackType() : ctype->getHeapType();
+            }
+
             if (returnType != nullptr && returnType != ctype->getOptionType()) {
                 compiler->addError(loc, CErrorCode::InvalidType, "all return types must agree");
             }
@@ -238,6 +246,10 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
 
         auto ctype = scope->getVarType(loc, compiler, ctypeName, CTM_Undefined);
         if (ctype) {
+            if (ctype->typeMode == CTM_Local) {
+                ctype = ctype->getStackType() ? ctype->getStackType() : ctype->getHeapType();
+            }
+
             if (returnType != nullptr && returnType != ctype->getOptionType()) {
                 compiler->addError(loc, CErrorCode::InvalidType, "all return types must agree");
             }

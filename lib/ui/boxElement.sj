@@ -8,7 +8,7 @@ boxElement #element (
 		idealSize.cap(maxSize)
 	}
 
-	getRect()'local rect { rect }
+	getRect()'rect { copy rect }
 
 	setRect(rect_ : 'rect)'void {
 		if rect != rect_ {
@@ -26,10 +26,6 @@ boxElement #element (
 		}
 
 		boxRenderer?.render(scene)
-	}
-
-	getChildren()'local array?!#element {
-		empty'local array?!#element
 	}
 
 	fireMouseEvent(mouseEvent : 'mouseEvent)'void { }

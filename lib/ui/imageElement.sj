@@ -8,7 +8,7 @@ imageElement #element (
 		size(maxSize.w, maxSize.h)
 	}
 
-	getRect()'local rect { _rect }
+	getRect()'rect { copy _rect }
 
 	setRect(rect_ : 'rect)'void {
 		if _rect != rect_ {
@@ -29,10 +29,6 @@ imageElement #element (
 		}
 
 		_imageRenderer?.render(scene)
-	}
-
-	getChildren()'local array?!#element {
-		empty'local array?!#element
 	}
 
 	fireMouseEvent(mouseEvent : 'mouseEvent)'void {

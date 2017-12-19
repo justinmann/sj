@@ -101,7 +101,7 @@ array!t (
 		for i : 0 to count {
 			r = cb(r, getAt(i))
 		}			
-		r
+		copy r
 	}
 
 	foldr!result(initial : 'result, cb : '(:result, :t)result)'result {
@@ -109,7 +109,7 @@ array!t (
 		for i : 0 toReverse count {
 			r = cb(r, getAt(i))
 		}			
-		r
+		copy r
 	}
 
 	grow(newSize :' i32)'array!t {
