@@ -7,6 +7,7 @@
 %option stack
 %option warn
 %option never-interactive
+%option caseless
 
 %{
 #include <string>
@@ -109,12 +110,12 @@ void updateLocation(YYLOCATION& loc, const char* s, const size_t len) {
 (?:"bool")					TOKEN_VAL(TTYPEBOOL);
 (?:"ptr")					TOKEN_VAL(TTYPEPTR);
 (?:"if")					TOKEN_VAL(TIF);
-(?:"ifValue")				TOKEN_VAL(TIFVALUE);
 (?:"else")					TOKEN_VAL(TELSE);
-(?:"elseEmpty")				TOKEN_VAL(TELSEEMPTY);
+(?:"ifvalid")				TOKEN_VAL(TIFVALID);
+(?:"elseempty")				TOKEN_VAL(TELSEEMPTY);
 (?:"for") 					TOKEN_VAL(TFOR);
 (?:"to") 					TOKEN_VAL(TTO);
-(?:"toReverse")				TOKEN_VAL(TTOREVERSE);
+(?:"toreverse")				TOKEN_VAL(TTOREVERSE);
 (?:"while")					TOKEN_VAL(TWHILE);
 [ \t]+						SAVE_LOC; 
 "^"							TOKEN_STR(TIDENTIFIER, 0, 0);
@@ -123,9 +124,10 @@ void updateLocation(YYLOCATION& loc, const char* s, const size_t len) {
 (?:"parent")				TOKEN_VAL(TPARENT);
 (?:"heap parent")			TOKEN_VAL(THEAPPARENT);
 (?:"include")				TOKEN_VAL(TINCLUDE);
-(?:"isEmpty")				TOKEN_VAL(TISEMPTY);
-(?:"getValue")				TOKEN_VAL(TGETVALUE);
-(?:"value")					TOKEN_VAL(TVALUE);
+(?:"isempty")				TOKEN_VAL(TISEMPTY);
+(?:"isvalid")				TOKEN_VAL(TISVALID);
+(?:"opt_getvalue")			TOKEN_VAL(TGETVALUE);
+(?:"valid")					TOKEN_VAL(TVALID);
 (?:"empty")					TOKEN_VAL(TEMPTY);
 (?:"enum")					TOKEN_VAL(TENUM);
 (?:"switch")				TOKEN_VAL(TSWITCH);

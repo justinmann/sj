@@ -52,8 +52,8 @@ c_heap : heap class()
 f3 : c_heap.func
 g : f3(3)
 h : empty'(:i32)data
-i : value(func)
-j : getValue(i)
+i : valid(func)
+j : opt_getValue(i)
 k : j(12)
 o : func2![data]
 p : l(1)

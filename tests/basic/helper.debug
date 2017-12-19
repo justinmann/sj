@@ -257,14 +257,23 @@ global()'void {
   if (__ac_isempty(h->flags, i)) x = i;                       \
   else {                                                      \
   inc = 1 + k % (h->n_buckets - 1); last = i;             \
+  bool shouldContinue = false;                                \
+  if (!__ac_isempty(h->flags, i)) {                           \
   bool isEqual;                                           \
-  __hash_equal(h->keys[i], key, &isEqual);                \
-  while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
+  __hash_equal(h->keys[i], key, &isEqual);  \
+  shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+  }                                                           \
+  while (shouldContinue) { \
   if (__ac_isdel(h->flags, i)) site = i;              \
   if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
   else i += inc;                                      \
   if (i == last) { x = site; break; }                 \
-  __hash_equal(h->keys[i], key, &isEqual);            \
+  shouldContinue = false;                             \
+  if (!__ac_isempty(h->flags, i)) {                           \
+  bool isEqual;                                           \
+  __hash_equal(h->keys[i], key, &isEqual);  \
+  shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+  }                                                           \
   }                                                       \
   if (x == h->n_buckets) {                                \
   if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \
@@ -410,14 +419,23 @@ global()'void {
   if (__ac_isempty(h->flags, i)) x = i;                       \
   else {                                                      \
   inc = 1 + k % (h->n_buckets - 1); last = i;             \
+  bool shouldContinue = false;                                \
+  if (!__ac_isempty(h->flags, i)) {                           \
   bool isEqual;                                           \
-  __hash_equal(&h->keys[i], &key, &isEqual);                \
-  while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
+  __hash_equal(&h->keys[i], &key, &isEqual);  \
+  shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+  }                                                           \
+  while (shouldContinue) { \
   if (__ac_isdel(h->flags, i)) site = i;              \
   if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
   else i += inc;                                      \
   if (i == last) { x = site; break; }                 \
-  __hash_equal(&h->keys[i], &key, &isEqual);            \
+  shouldContinue = false;                             \
+  if (!__ac_isempty(h->flags, i)) {                           \
+  bool isEqual;                                           \
+  __hash_equal(&h->keys[i], &key, &isEqual);  \
+  shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+  }                                                           \
   }                                                       \
   if (x == h->n_buckets) {                                \
   if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \

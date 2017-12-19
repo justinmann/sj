@@ -165,9 +165,6 @@
     <ClInclude Include="..\node\NOptionDot.h">
       <Filter>Node</Filter>
     </ClInclude>
-    <ClInclude Include="..\node\NIsEmpty.h">
-      <Filter>Node</Filter>
-    </ClInclude>
     <ClInclude Include="..\node\NGetValue.h">
       <Filter>Node</Filter>
     </ClInclude>
@@ -192,9 +189,6 @@
     <ClInclude Include="..\node\NNegate.h">
       <Filter>Node</Filter>
     </ClInclude>
-    <ClInclude Include="..\node\NIfValue.h">
-      <Filter>Node</Filter>
-    </ClInclude>
     <ClInclude Include="..\node\NCopy.h">
       <Filter>Node</Filter>
     </ClInclude>
@@ -217,6 +211,12 @@
       <Filter>Node</Filter>
     </ClInclude>
     <ClInclude Include="..\node\NHash.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NIfValid.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NIsEmptyOrValid.h">
       <Filter>Node</Filter>
     </ClInclude>
   </ItemGroup>
@@ -362,9 +362,6 @@
     <ClCompile Include="..\node\NOptionDot.cpp">
       <Filter>Node</Filter>
     </ClCompile>
-    <ClCompile Include="..\node\NIsEmpty.cpp">
-      <Filter>Node</Filter>
-    </ClCompile>
     <ClCompile Include="..\node\NGetValue.cpp">
       <Filter>Node</Filter>
     </ClCompile>
@@ -384,9 +381,6 @@
       <Filter>Node</Filter>
     </ClCompile>
     <ClCompile Include="..\node\NNegate.cpp">
-      <Filter>Node</Filter>
-    </ClCompile>
-    <ClCompile Include="..\node\NIfValue.cpp">
       <Filter>Node</Filter>
     </ClCompile>
     <ClCompile Include="..\node\NCopy.cpp">
@@ -411,6 +405,12 @@
       <Filter>Node</Filter>
     </ClCompile>
     <ClCompile Include="..\node\NHash.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NIfValid.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NIsEmptyOrValid.cpp">
       <Filter>Node</Filter>
     </ClCompile>
   </ItemGroup>

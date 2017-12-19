@@ -1,7 +1,7 @@
 mouse_captureElement := empty'heap #element
 
 mouse_capture(element : 'heap #element) {
-	mouse_captureElement = value(element)
+	mouse_captureElement = valid(element)
 	--c--
 	SDL_CaptureMouse(true);
 	--c--
@@ -9,7 +9,7 @@ mouse_capture(element : 'heap #element) {
 
 mouse_release(element : 'heap #element) {
 	console.writeLine("release")
-	ifValue m : mouse_captureElement {
+	ifValid m : mouse_captureElement {
 	 	// TODO: need to fix interface pointer comparison if m === element {
 			console.writeLine("release done")
 			mouse_captureElement = empty'#element

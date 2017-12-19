@@ -5,59 +5,59 @@
 
 typedef struct td_int32_option int32_option;
 struct td_int32_option {
-    bool isempty;
+    bool isvalid;
     int32_t value;
 };
-const int32_option int32_empty = { true };
+const int32_option int32_empty = { false };
 
 typedef struct td_uint32_option uint32_option;
 struct td_uint32_option {
-    bool isempty;
+    bool isvalid;
     uint32_t value;
 };
-const uint32_option uint32_empty = { true };
+const uint32_option uint32_empty = { false };
 
 typedef struct td_int64_option int64_option;
 struct td_int64_option {
-    bool isempty;
+    bool isvalid;
     int64_t value;
 };
-const int64_option int64_empty = { true };
+const int64_option int64_empty = { false };
 
 typedef struct td_uint64_option uint64_option;
 struct td_uint64_option {
-    bool isempty;
+    bool isvalid;
     uint64_t value;
 };
-const uint64_option uint64_empty = { true };
+const uint64_option uint64_empty = { false };
 
 typedef struct td_void_option void_option;
 struct td_void_option {
-    bool isempty;
+    bool isvalid;
     void* value;
 };
-const void_option void_empty = { true };
+const void_option void_empty = { false };
 
 typedef struct td_char_option char_option;
 struct td_char_option {
-    bool isempty;
+    bool isvalid;
     char value;
 };
-const char_option char_empty = { true };
+const char_option char_empty = { false };
 
 typedef struct td_float_option float_option;
 struct td_float_option {
-    bool isempty;
+    bool isvalid;
     float value;
 };
-const float_option float_empty = { true };
+const float_option float_empty = { false };
 
 typedef struct td_double_option double_option;
 struct td_double_option {
-    bool isempty;
+    bool isvalid;
     double value;
 };
-const double_option double_empty = { true };
+const double_option double_empty = { false };
 
 #define sjs_object_typeId 1
 #define sjs_interface_typeId 2
@@ -122,46 +122,46 @@ void sjf_func(sjs_class* c, int32_t* _return) {
     sjs_class* sjt_isEmpty6 = 0;
 
     sjt_isEmpty6 = c;
-    sjt_ifElse6 = (sjt_isEmpty6 == 0);
+    sjt_ifElse6 = (sjt_isEmpty6 != 0);
     if (sjt_ifElse6) {
-        sjt_isEmpty5 = int32_empty;
-    } else {
         sjs_class* sjt_dot3 = 0;
         int32_t sjt_value3;
         int32_option value3;
 
         sjt_dot3 = c;
         sjt_value3 = (sjt_dot3)->x;
-        value3.isempty = false;
+        value3.isvalid = true;
         value3.value = sjt_value3;
         sjt_isEmpty5 = value3;
+    } else {
+        sjt_isEmpty5 = int32_empty;
     }
 
-    sjt_ifElse5 = sjt_isEmpty5.isempty;
+    sjt_ifElse5 = sjt_isEmpty5.isvalid;
     if (sjt_ifElse5) {
-        (*_return) = 0;
-    } else {
         int32_option sjt_getValue2;
         bool sjt_ifElse7;
         sjs_class* sjt_isEmpty7 = 0;
 
         sjt_isEmpty7 = c;
-        sjt_ifElse7 = (sjt_isEmpty7 == 0);
+        sjt_ifElse7 = (sjt_isEmpty7 != 0);
         if (sjt_ifElse7) {
-            sjt_getValue2 = int32_empty;
-        } else {
             sjs_class* sjt_dot4 = 0;
             int32_t sjt_value4;
             int32_option value4;
 
             sjt_dot4 = c;
             sjt_value4 = (sjt_dot4)->x;
-            value4.isempty = false;
+            value4.isvalid = true;
             value4.value = sjt_value4;
             sjt_getValue2 = value4;
+        } else {
+            sjt_getValue2 = int32_empty;
         }
 
         (*_return) = sjt_getValue2.value;
+    } else {
+        (*_return) = 0;
     }
 }
 
@@ -170,57 +170,57 @@ int main(int argc, char** argv) {
     sjv_c.x = 1;
     sjf_class(&sjv_c);
     sjt_isEmpty2 = (sjv_c._refCount != -1 ? &sjv_c : 0);
-    sjt_ifElse2 = (sjt_isEmpty2 == 0);
+    sjt_ifElse2 = (sjt_isEmpty2 != 0);
     if (sjt_ifElse2) {
-        sjt_isEmpty1 = int32_empty;
-    } else {
         sjs_class* sjt_dot1 = 0;
         int32_t sjt_value1;
         int32_option value1;
 
         sjt_dot1 = (sjv_c._refCount != -1 ? &sjv_c : 0);
         sjt_value1 = (sjt_dot1)->x;
-        value1.isempty = false;
+        value1.isvalid = true;
         value1.value = sjt_value1;
         sjt_isEmpty1 = value1;
+    } else {
+        sjt_isEmpty1 = int32_empty;
     }
 
-    sjt_ifElse1 = sjt_isEmpty1.isempty;
+    sjt_ifElse1 = sjt_isEmpty1.isvalid;
     if (sjt_ifElse1) {
-        sjv_d = 0;
-    } else {
         int32_option sjt_getValue1;
         bool sjt_ifElse3;
         sjs_class* sjt_isEmpty3 = 0;
 
         sjt_isEmpty3 = (sjv_c._refCount != -1 ? &sjv_c : 0);
-        sjt_ifElse3 = (sjt_isEmpty3 == 0);
+        sjt_ifElse3 = (sjt_isEmpty3 != 0);
         if (sjt_ifElse3) {
-            sjt_getValue1 = int32_empty;
-        } else {
             sjs_class* sjt_dot2 = 0;
             int32_t sjt_value2;
             int32_option value2;
 
             sjt_dot2 = (sjv_c._refCount != -1 ? &sjv_c : 0);
             sjt_value2 = (sjt_dot2)->x;
-            value2.isempty = false;
+            value2.isvalid = true;
             value2.value = sjt_value2;
             sjt_getValue1 = value2;
+        } else {
+            sjt_getValue1 = int32_empty;
         }
 
         sjv_d = sjt_getValue1.value;
+    } else {
+        sjv_d = 0;
     }
 
     sjt_isEmpty4 = (sjv_c._refCount != -1 ? &sjv_c : 0);
-    sjt_ifElse4 = (sjt_isEmpty4 == 0);
+    sjt_ifElse4 = (sjt_isEmpty4 != 0);
     if (sjt_ifElse4) {
+        sjt_copy1 = (sjv_c._refCount != -1 ? &sjv_c : 0);
+    } else {
         sjt_call1._refCount = 1;
         sjt_call1.x = 2;
         sjf_class(&sjt_call1);
         sjt_copy1 = &sjt_call1;
-    } else {
-        sjt_copy1 = (sjv_c._refCount != -1 ? &sjv_c : 0);
     }
 
     sjv_e._refCount = 1;

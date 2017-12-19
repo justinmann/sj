@@ -3,22 +3,22 @@ class(
 ) { this }
 
 a : empty'i32
-b : value(5)
+b : valid(5)
 c : class()
 
-w : ifValue a {
+w : ifValid a {
 	a
 } elseEmpty {
 	2
 }
 
-x : ifValue b {
+x : ifValid b {
 	b
 } elseEmpty {
 	2
 }
 
-y : ifValue c : c.d {
+y : ifValid c : c.d {
 	c
 } elseEmpty {
 	1

@@ -36,7 +36,7 @@ borderChild #element #borderChild (
 
 	getChildren()'local array?!#element {
 		if isEmpty(_children) {
-			_children = value([child])
+			_children = valid([child])
 		}
 		_children
 	}
@@ -102,7 +102,7 @@ borderLayout #element (
 
 	getChildren()'local array?!#element {
 		a : local children
-		value(a)
+		valid(a)
 	}
 
 	fireMouseEvent(mouseEvent : 'mouseEvent)'void {

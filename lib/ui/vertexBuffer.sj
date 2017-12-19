@@ -69,11 +69,11 @@ vertexBuffer!vertex(
 
             // Check if the pick ray passes through this point
             result : intersectTriangle(vPickRayOrig, vPickRayDir, vertex0.location, vertex1.location, vertex2.location)
-            ifValue result {
+            ifValid result {
                 if isEmpty(intersection) || result.z < intersection?.z?:0.0f {
-                    intersection = value(copy result)                    
+                    intersection = valid(copy result)                    
 
-                    t : copy getValue(intersection)
+                    t : copy opt_getValue(intersection)
                     // If all you want is the vertices hit, then you are done.  In this sample, we
                     // want to show how to infer texture coordinates as well, using the BaryCentric
                     // coordinates supplied by D3DXIntersect
@@ -81,7 +81,7 @@ vertexBuffer!vertex(
                     dtu2 : vertex2.texture.x - vertex0.texture.x;
                     dtv1 : vertex1.texture.y - vertex0.texture.y;
                     dtv2 : vertex2.texture.y - vertex0.texture.y;
-                    texture = value(vec2(
+                    texture = valid(vec2(
                         x: vertex0.texture.x + t.x * dtu1 + t.y * dtu2
                         y: vertex0.texture.y + t.x * dtv1 + t.y * dtv2))
                 }
@@ -156,7 +156,7 @@ intersectTriangle(orig : 'vec3, dir : 'vec3, v0 : 'vec3, v1 : 'vec3, v2 : 'vec3)
                 // Calculate t, scale parameters, ray intersects triangle
                 t : edge2.dot(qvec)
                 fInvDet : 1.0f / det
-                value(vec3(u * fInvDet, v * fInvDet, t * fInvDet))
+                valid(vec3(u * fInvDet, v * fInvDet, t * fInvDet))
             }
         }
     }

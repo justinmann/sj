@@ -75,8 +75,8 @@ shared_ptr<CVar> NCopy::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
         auto copyVar = make_shared<CCopyVar>(loc, scope, getValueVar, returnMode);
         auto valueVar = make_shared<CValueVar>(loc, scope, copyVar);
         auto emptyVar = make_shared<CEmptyVar>(loc, leftType, scope);
-        auto isEmptyVar = make_shared<CIsEmptyVar>(loc, scope, leftVar);
-        return make_shared<CIfElseVar>(loc, scope, isEmptyVar, emptyVar, nullptr, valueVar, nullptr);
+        auto isValidVar = make_shared<CIsEmptyOrValidVar>(loc, scope, leftVar, false);
+        return make_shared<CIfElseVar>(loc, scope, isValidVar, valueVar, nullptr, emptyVar, nullptr);
     }
     else {
         return make_shared<CCopyVar>(loc, scope, leftVar, returnMode);

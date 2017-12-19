@@ -20,7 +20,7 @@ imageElement #element (
 
 	render(scene : 'scene2d)'void {
 		if isEmpty(_imageRenderer) {
-			_imageRenderer = value(imageRenderer(
+			_imageRenderer = valid(imageRenderer(
 				image : copy image
 				rect : _rect.subtractMargin(_margin)
 			))

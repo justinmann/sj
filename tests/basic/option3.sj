@@ -12,13 +12,13 @@ test()'class? {
 	if true {
 		copy empty'class
 	} else {
-		copy value(class(2))
+		copy valid(class(2))
 	}
 }
 
 a : func()
 
-b : ifValue a {
+b : ifValid a {
 	a.x
 } elseEmpty {
 	0

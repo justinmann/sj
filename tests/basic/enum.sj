@@ -12,7 +12,7 @@ enum bar2 (
 )
 
 func()'bar? {
-	value(bar.a)
+	valid(bar.a)
 }
 
 b : func()

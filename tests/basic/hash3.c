@@ -35,59 +35,59 @@ typedef struct td_delete_cb delete_cb;
 typedef struct td_delete_cb_list delete_cb_list;
 typedef struct td_int32_option int32_option;
 struct td_int32_option {
-    bool isempty;
+    bool isvalid;
     int32_t value;
 };
-const int32_option int32_empty = { true };
+const int32_option int32_empty = { false };
 
 typedef struct td_uint32_option uint32_option;
 struct td_uint32_option {
-    bool isempty;
+    bool isvalid;
     uint32_t value;
 };
-const uint32_option uint32_empty = { true };
+const uint32_option uint32_empty = { false };
 
 typedef struct td_int64_option int64_option;
 struct td_int64_option {
-    bool isempty;
+    bool isvalid;
     int64_t value;
 };
-const int64_option int64_empty = { true };
+const int64_option int64_empty = { false };
 
 typedef struct td_uint64_option uint64_option;
 struct td_uint64_option {
-    bool isempty;
+    bool isvalid;
     uint64_t value;
 };
-const uint64_option uint64_empty = { true };
+const uint64_option uint64_empty = { false };
 
 typedef struct td_void_option void_option;
 struct td_void_option {
-    bool isempty;
+    bool isvalid;
     void* value;
 };
-const void_option void_empty = { true };
+const void_option void_empty = { false };
 
 typedef struct td_char_option char_option;
 struct td_char_option {
-    bool isempty;
+    bool isvalid;
     char value;
 };
-const char_option char_empty = { true };
+const char_option char_empty = { false };
 
 typedef struct td_float_option float_option;
 struct td_float_option {
-    bool isempty;
+    bool isvalid;
     float value;
 };
-const float_option float_empty = { true };
+const float_option float_empty = { false };
 
 typedef struct td_double_option double_option;
 struct td_double_option {
-    bool isempty;
+    bool isvalid;
     double value;
 };
-const double_option double_empty = { true };
+const double_option double_empty = { false };
 
 const char* sjg_string1 = "foo";
 const char* sjg_string2 = "bob";
@@ -301,14 +301,23 @@ x = site = h->n_buckets; __hash_func(key, &k); i = k % h->n_buckets; \
 if (__ac_isempty(h->flags, i)) x = i;                       \
 else {                                                      \
 inc = 1 + k % (h->n_buckets - 1); last = i;             \
+bool shouldContinue = false;                                \
+if (!__ac_isempty(h->flags, i)) {                           \
 bool isEqual;                                           \
-__hash_equal(h->keys[i], key, &isEqual);                \
-while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
+__hash_equal(h->keys[i], key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+}                                                           \
+while (shouldContinue) { \
 if (__ac_isdel(h->flags, i)) site = i;              \
 if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
 else i += inc;                                      \
 if (i == last) { x = site; break; }                 \
-__hash_equal(h->keys[i], key, &isEqual);            \
+shouldContinue = false;                             \
+if (!__ac_isempty(h->flags, i)) {                           \
+bool isEqual;                                           \
+__hash_equal(h->keys[i], key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+}                                                           \
 }                                                       \
 if (x == h->n_buckets) {                                \
 if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \
@@ -454,14 +463,23 @@ x = site = h->n_buckets; __hash_func(&key, &k); i = k % h->n_buckets; \
 if (__ac_isempty(h->flags, i)) x = i;                       \
 else {                                                      \
 inc = 1 + k % (h->n_buckets - 1); last = i;             \
+bool shouldContinue = false;                                \
+if (!__ac_isempty(h->flags, i)) {                           \
 bool isEqual;                                           \
-__hash_equal(&h->keys[i], &key, &isEqual);                \
-while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
+__hash_equal(&h->keys[i], &key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+}                                                           \
+while (shouldContinue) { \
 if (__ac_isdel(h->flags, i)) site = i;              \
 if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
 else i += inc;                                      \
 if (i == last) { x = site; break; }                 \
-__hash_equal(&h->keys[i], &key, &isEqual);            \
+shouldContinue = false;                             \
+if (!__ac_isempty(h->flags, i)) {                           \
+bool isEqual;                                           \
+__hash_equal(&h->keys[i], &key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+}                                                           \
 }                                                       \
 if (x == h->n_buckets) {                                \
 if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \
@@ -1167,20 +1185,36 @@ int main(int argc, char** argv) {
     sjt_functionParam4 = &sjt_call3;
     sjf_hash_string_local_interface_getat_heap(sjt_parent3, sjt_functionParam4, &sjv_b);
     sjt_isEmpty2 = sjv_b;
-    sjt_ifElse2 = (sjt_isEmpty2._parent == 0);
+    sjt_ifElse2 = (sjt_isEmpty2._parent != 0);
     if (sjt_ifElse2) {
-        sjt_isEmpty1 = 0;
-    } else {
         sji_interface sjt_parent4 = { 0 };
 
         sjt_parent4 = sjv_b;
         sjt_value1._refCount = 1;
         sjt_parent4._vtbl->bob(sjt_parent4._parent, &sjt_value1);
         sjt_isEmpty1 = (sjt_value1._refCount != -1 ? &sjt_value1 : 0);
+    } else {
+        sjt_isEmpty1 = 0;
     }
 
-    sjt_ifElse1 = (sjt_isEmpty1 == 0);
+    sjt_ifElse1 = (sjt_isEmpty1 != 0);
     if (sjt_ifElse1) {
+        bool sjt_ifElse3;
+        sji_interface sjt_isEmpty3 = { 0 };
+
+        sjt_isEmpty3 = sjv_b;
+        sjt_ifElse3 = (sjt_isEmpty3._parent != 0);
+        if (sjt_ifElse3) {
+            sji_interface sjt_parent5 = { 0 };
+
+            sjt_parent5 = sjv_b;
+            sjt_value2._refCount = 1;
+            sjt_parent5._vtbl->bob(sjt_parent5._parent, &sjt_value2);
+            sjt_functionParam5 = (sjt_value2._refCount != -1 ? &sjt_value2 : 0);
+        } else {
+            sjt_functionParam5 = 0;
+        }
+    } else {
         sjt_call4._refCount = 1;
         sjt_call4.count = 9;
         sjt_call4.data._refCount = 1;
@@ -1191,22 +1225,6 @@ int main(int argc, char** argv) {
         sjf_array_char(&sjt_call4.data);
         sjf_string(&sjt_call4);
         sjt_functionParam5 = &sjt_call4;
-    } else {
-        bool sjt_ifElse3;
-        sji_interface sjt_isEmpty3 = { 0 };
-
-        sjt_isEmpty3 = sjv_b;
-        sjt_ifElse3 = (sjt_isEmpty3._parent == 0);
-        if (sjt_ifElse3) {
-            sjt_functionParam5 = 0;
-        } else {
-            sji_interface sjt_parent5 = { 0 };
-
-            sjt_parent5 = sjv_b;
-            sjt_value2._refCount = 1;
-            sjt_parent5._vtbl->bob(sjt_parent5._parent, &sjt_value2);
-            sjt_functionParam5 = (sjt_value2._refCount != -1 ? &sjt_value2 : 0);
-        }
     }
 
     sjf_debug_writeline(sjt_functionParam5);

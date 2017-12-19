@@ -49,7 +49,7 @@ void CGetValueVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* tr
         if (leftValue->type->parent.expired() && leftValue->type->category != CTC_Function) {
             if (!isProtectedWithEmptyCheck) {
                 stringstream emptyCheck;
-                emptyCheck << "if (" << leftValue->getName(trBlock) << ".isempty) { exit(-1); }";
+                emptyCheck << "if (!" << leftValue->getName(trBlock) << ".isvalid) { exit(-1); }";
                 trBlock->statements.push_back(TrStatement(loc, emptyCheck.str()));
             }
             line << leftValue->getName(trBlock) << ".value";

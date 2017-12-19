@@ -643,7 +643,7 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
 
         if (type->typeMode == CTM_Value && type->isOption && !rightValue->type->isOption) {
             stringstream line1;
-            line1 << name << ".isempty = false";
+            line1 << name << ".isvalid = true";
             block->statements.push_back(TrStatement(loc, line1.str()));
 
             stringstream line2;

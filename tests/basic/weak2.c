@@ -35,59 +35,59 @@ typedef struct td_delete_cb delete_cb;
 typedef struct td_delete_cb_list delete_cb_list;
 typedef struct td_int32_option int32_option;
 struct td_int32_option {
-    bool isempty;
+    bool isvalid;
     int32_t value;
 };
-const int32_option int32_empty = { true };
+const int32_option int32_empty = { false };
 
 typedef struct td_uint32_option uint32_option;
 struct td_uint32_option {
-    bool isempty;
+    bool isvalid;
     uint32_t value;
 };
-const uint32_option uint32_empty = { true };
+const uint32_option uint32_empty = { false };
 
 typedef struct td_int64_option int64_option;
 struct td_int64_option {
-    bool isempty;
+    bool isvalid;
     int64_t value;
 };
-const int64_option int64_empty = { true };
+const int64_option int64_empty = { false };
 
 typedef struct td_uint64_option uint64_option;
 struct td_uint64_option {
-    bool isempty;
+    bool isvalid;
     uint64_t value;
 };
-const uint64_option uint64_empty = { true };
+const uint64_option uint64_empty = { false };
 
 typedef struct td_void_option void_option;
 struct td_void_option {
-    bool isempty;
+    bool isvalid;
     void* value;
 };
-const void_option void_empty = { true };
+const void_option void_empty = { false };
 
 typedef struct td_char_option char_option;
 struct td_char_option {
-    bool isempty;
+    bool isvalid;
     char value;
 };
-const char_option char_empty = { true };
+const char_option char_empty = { false };
 
 typedef struct td_float_option float_option;
 struct td_float_option {
-    bool isempty;
+    bool isvalid;
     float value;
 };
-const float_option float_empty = { true };
+const float_option float_empty = { false };
 
 typedef struct td_double_option double_option;
 struct td_double_option {
-    bool isempty;
+    bool isvalid;
     double value;
 };
-const double_option double_empty = { true };
+const double_option double_empty = { false };
 
 const char* sjg_string1 = ", ";
 const char* sjg_string3 = "";
@@ -301,14 +301,23 @@ x = site = h->n_buckets; __hash_func(key, &k); i = k % h->n_buckets; \
 if (__ac_isempty(h->flags, i)) x = i;                       \
 else {                                                      \
 inc = 1 + k % (h->n_buckets - 1); last = i;             \
+bool shouldContinue = false;                                \
+if (!__ac_isempty(h->flags, i)) {                           \
 bool isEqual;                                           \
-__hash_equal(h->keys[i], key, &isEqual);                \
-while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
+__hash_equal(h->keys[i], key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+}                                                           \
+while (shouldContinue) { \
 if (__ac_isdel(h->flags, i)) site = i;              \
 if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
 else i += inc;                                      \
 if (i == last) { x = site; break; }                 \
-__hash_equal(h->keys[i], key, &isEqual);            \
+shouldContinue = false;                             \
+if (!__ac_isempty(h->flags, i)) {                           \
+bool isEqual;                                           \
+__hash_equal(h->keys[i], key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+}                                                           \
 }                                                       \
 if (x == h->n_buckets) {                                \
 if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \
@@ -454,14 +463,23 @@ x = site = h->n_buckets; __hash_func(&key, &k); i = k % h->n_buckets; \
 if (__ac_isempty(h->flags, i)) x = i;                       \
 else {                                                      \
 inc = 1 + k % (h->n_buckets - 1); last = i;             \
+bool shouldContinue = false;                                \
+if (!__ac_isempty(h->flags, i)) {                           \
 bool isEqual;                                           \
-__hash_equal(&h->keys[i], &key, &isEqual);                \
-while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
+__hash_equal(&h->keys[i], &key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+}                                                           \
+while (shouldContinue) { \
 if (__ac_isdel(h->flags, i)) site = i;              \
 if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
 else i += inc;                                      \
 if (i == last) { x = site; break; }                 \
-__hash_equal(&h->keys[i], &key, &isEqual);            \
+shouldContinue = false;                             \
+if (!__ac_isempty(h->flags, i)) {                           \
+bool isEqual;                                           \
+__hash_equal(&h->keys[i], &key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+}                                                           \
 }                                                       \
 if (x == h->n_buckets) {                                \
 if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \
@@ -1052,7 +1070,7 @@ void sjf_array_weak_class_tostring(sjs_array_weak_class* _parent, sjs_string* se
     i = sjt_forStart1;
     while (i < sjt_forEnd1) {
         sjs_class* sjt_call2 = 0;
-        sjs_string sjt_call4 = { -1 };
+        sjs_string sjt_call6 = { -1 };
         int32_t sjt_compare1;
         int32_t sjt_compare2;
         sjs_string* sjt_functionParam26 = 0;
@@ -1082,10 +1100,8 @@ void sjf_array_weak_class_tostring(sjs_array_weak_class* _parent, sjs_string* se
         sjt_functionParam27 = i;
         sjf_array_weak_class_getat(_parent, sjt_functionParam27, &sjt_call2);
         sjt_isEmpty2 = sjt_call2;
-        sjt_ifElse5 = (sjt_isEmpty2 == 0);
+        sjt_ifElse5 = (sjt_isEmpty2 != 0);
         if (sjt_ifElse5) {
-            sjt_isEmpty1 = 0;
-        } else {
             sjs_class* sjt_call3 = 0;
             int32_t sjt_functionParam30;
             sjs_class* sjt_parent18 = 0;
@@ -1098,49 +1114,51 @@ void sjf_array_weak_class_tostring(sjs_array_weak_class* _parent, sjs_string* se
 
             delete_cb weakptrcb8 = { &sjt_call3, weakptr_clear };
             if (sjt_call3 != 0) { weakptr_cb_remove(sjt_call3, weakptrcb8); }
+        } else {
+            sjt_isEmpty1 = 0;
         }
 
-        sjt_ifElse4 = (sjt_isEmpty1 == 0);
+        sjt_ifElse4 = (sjt_isEmpty1 != 0);
         if (sjt_ifElse4) {
-            sjt_call4._refCount = 1;
-            sjt_call4.count = 0;
-            sjt_call4.data._refCount = 1;
-            sjt_call4.data.datasize = 1;
-            sjt_call4.data.data = (void*)sjg_string4;
-            sjt_call4.data._isglobal = true;
-            sjt_call4.data.count = 1;
-            sjf_array_char(&sjt_call4.data);
-            sjf_string(&sjt_call4);
-            sjt_functionParam26 = &sjt_call4;
-        } else {
-            sjs_class* sjt_call5 = 0;
+            sjs_class* sjt_call4 = 0;
             int32_t sjt_functionParam31;
             bool sjt_ifElse6;
             sjs_class* sjt_isEmpty3 = 0;
 
             sjt_functionParam31 = i;
-            sjf_array_weak_class_getat(_parent, sjt_functionParam31, &sjt_call5);
-            sjt_isEmpty3 = sjt_call5;
-            sjt_ifElse6 = (sjt_isEmpty3 == 0);
+            sjf_array_weak_class_getat(_parent, sjt_functionParam31, &sjt_call4);
+            sjt_isEmpty3 = sjt_call4;
+            sjt_ifElse6 = (sjt_isEmpty3 != 0);
             if (sjt_ifElse6) {
-                sjt_functionParam26 = 0;
-            } else {
-                sjs_class* sjt_call6 = 0;
+                sjs_class* sjt_call5 = 0;
                 int32_t sjt_functionParam32;
                 sjs_class* sjt_parent19 = 0;
 
                 sjt_functionParam32 = i;
-                sjf_array_weak_class_getat(_parent, sjt_functionParam32, &sjt_call6);
-                sjt_parent19 = sjt_call6;
+                sjf_array_weak_class_getat(_parent, sjt_functionParam32, &sjt_call5);
+                sjt_parent19 = sjt_call5;
                 sjf_class_tostring(sjt_parent19, &sjt_value2);
                 sjt_functionParam26 = (sjt_value2._refCount != -1 ? &sjt_value2 : 0);
 
-                delete_cb weakptrcb9 = { &sjt_call6, weakptr_clear };
-                if (sjt_call6 != 0) { weakptr_cb_remove(sjt_call6, weakptrcb9); }
+                delete_cb weakptrcb9 = { &sjt_call5, weakptr_clear };
+                if (sjt_call5 != 0) { weakptr_cb_remove(sjt_call5, weakptrcb9); }
+            } else {
+                sjt_functionParam26 = 0;
             }
 
-            delete_cb weakptrcb10 = { &sjt_call5, weakptr_clear };
-            if (sjt_call5 != 0) { weakptr_cb_remove(sjt_call5, weakptrcb10); }
+            delete_cb weakptrcb10 = { &sjt_call4, weakptr_clear };
+            if (sjt_call4 != 0) { weakptr_cb_remove(sjt_call4, weakptrcb10); }
+        } else {
+            sjt_call6._refCount = 1;
+            sjt_call6.count = 0;
+            sjt_call6.data._refCount = 1;
+            sjt_call6.data.datasize = 1;
+            sjt_call6.data.data = (void*)sjg_string4;
+            sjt_call6.data._isglobal = true;
+            sjt_call6.data.count = 1;
+            sjf_array_char(&sjt_call6.data);
+            sjf_string(&sjt_call6);
+            sjt_functionParam26 = &sjt_call6;
         }
 
         sjf_string_add(sjt_parent17, sjt_functionParam26, &sjv_result);
@@ -1148,7 +1166,7 @@ void sjf_array_weak_class_tostring(sjs_array_weak_class* _parent, sjs_string* se
 
         delete_cb weakptrcb11 = { &sjt_call2, weakptr_clear };
         if (sjt_call2 != 0) { weakptr_cb_remove(sjt_call2, weakptrcb11); }
-        if (sjt_call4._refCount == 1) { sjf_string_destroy(&sjt_call4); }
+        if (sjt_call6._refCount == 1) { sjf_string_destroy(&sjt_call6); }
         if (sjt_value1._refCount == 1) { sjf_string_destroy(&sjt_value1); }
         if (sjt_value2._refCount == 1) { sjf_string_destroy(&sjt_value2); }
     }
@@ -1182,8 +1200,8 @@ void sjf_array_weak_class_tostring_heap(sjs_array_weak_class* _parent, sjs_strin
     sjt_forEnd4 = (sjt_dot23)->count;
     i = sjt_forStart4;
     while (i < sjt_forEnd4) {
+        sjs_string sjt_call11 = { -1 };
         sjs_class* sjt_call7 = 0;
-        sjs_string sjt_call9 = { -1 };
         int32_t sjt_compare7;
         int32_t sjt_compare8;
         sjs_string* sjt_functionParam34 = 0;
@@ -1213,10 +1231,8 @@ void sjf_array_weak_class_tostring_heap(sjs_array_weak_class* _parent, sjs_strin
         sjt_functionParam35 = i;
         sjf_array_weak_class_getat(_parent, sjt_functionParam35, &sjt_call7);
         sjt_isEmpty5 = sjt_call7;
-        sjt_ifElse9 = (sjt_isEmpty5 == 0);
+        sjt_ifElse9 = (sjt_isEmpty5 != 0);
         if (sjt_ifElse9) {
-            sjt_isEmpty4 = 0;
-        } else {
             sjs_class* sjt_call8 = 0;
             int32_t sjt_functionParam36;
             sjs_class* sjt_parent22 = 0;
@@ -1229,49 +1245,51 @@ void sjf_array_weak_class_tostring_heap(sjs_array_weak_class* _parent, sjs_strin
 
             delete_cb weakptrcb12 = { &sjt_call8, weakptr_clear };
             if (sjt_call8 != 0) { weakptr_cb_remove(sjt_call8, weakptrcb12); }
+        } else {
+            sjt_isEmpty4 = 0;
         }
 
-        sjt_ifElse8 = (sjt_isEmpty4 == 0);
+        sjt_ifElse8 = (sjt_isEmpty4 != 0);
         if (sjt_ifElse8) {
-            sjt_call9._refCount = 1;
-            sjt_call9.count = 0;
-            sjt_call9.data._refCount = 1;
-            sjt_call9.data.datasize = 1;
-            sjt_call9.data.data = (void*)sjg_string6;
-            sjt_call9.data._isglobal = true;
-            sjt_call9.data.count = 1;
-            sjf_array_char(&sjt_call9.data);
-            sjf_string(&sjt_call9);
-            sjt_functionParam34 = &sjt_call9;
-        } else {
-            sjs_class* sjt_call10 = 0;
+            sjs_class* sjt_call9 = 0;
             int32_t sjt_functionParam37;
             bool sjt_ifElse10;
             sjs_class* sjt_isEmpty6 = 0;
 
             sjt_functionParam37 = i;
-            sjf_array_weak_class_getat(_parent, sjt_functionParam37, &sjt_call10);
-            sjt_isEmpty6 = sjt_call10;
-            sjt_ifElse10 = (sjt_isEmpty6 == 0);
+            sjf_array_weak_class_getat(_parent, sjt_functionParam37, &sjt_call9);
+            sjt_isEmpty6 = sjt_call9;
+            sjt_ifElse10 = (sjt_isEmpty6 != 0);
             if (sjt_ifElse10) {
-                sjt_functionParam34 = 0;
-            } else {
-                sjs_class* sjt_call11 = 0;
+                sjs_class* sjt_call10 = 0;
                 int32_t sjt_functionParam38;
                 sjs_class* sjt_parent23 = 0;
 
                 sjt_functionParam38 = i;
-                sjf_array_weak_class_getat(_parent, sjt_functionParam38, &sjt_call11);
-                sjt_parent23 = sjt_call11;
+                sjf_array_weak_class_getat(_parent, sjt_functionParam38, &sjt_call10);
+                sjt_parent23 = sjt_call10;
                 sjf_class_tostring(sjt_parent23, &sjt_value4);
                 sjt_functionParam34 = (sjt_value4._refCount != -1 ? &sjt_value4 : 0);
 
-                delete_cb weakptrcb13 = { &sjt_call11, weakptr_clear };
-                if (sjt_call11 != 0) { weakptr_cb_remove(sjt_call11, weakptrcb13); }
+                delete_cb weakptrcb13 = { &sjt_call10, weakptr_clear };
+                if (sjt_call10 != 0) { weakptr_cb_remove(sjt_call10, weakptrcb13); }
+            } else {
+                sjt_functionParam34 = 0;
             }
 
-            delete_cb weakptrcb14 = { &sjt_call10, weakptr_clear };
-            if (sjt_call10 != 0) { weakptr_cb_remove(sjt_call10, weakptrcb14); }
+            delete_cb weakptrcb14 = { &sjt_call9, weakptr_clear };
+            if (sjt_call9 != 0) { weakptr_cb_remove(sjt_call9, weakptrcb14); }
+        } else {
+            sjt_call11._refCount = 1;
+            sjt_call11.count = 0;
+            sjt_call11.data._refCount = 1;
+            sjt_call11.data.datasize = 1;
+            sjt_call11.data.data = (void*)sjg_string6;
+            sjt_call11.data._isglobal = true;
+            sjt_call11.data.count = 1;
+            sjf_array_char(&sjt_call11.data);
+            sjf_string(&sjt_call11);
+            sjt_functionParam34 = &sjt_call11;
         }
 
         sjf_string_add(sjt_parent21, sjt_functionParam34, &sjv_result);
@@ -1279,7 +1297,7 @@ void sjf_array_weak_class_tostring_heap(sjs_array_weak_class* _parent, sjs_strin
 
         delete_cb weakptrcb15 = { &sjt_call7, weakptr_clear };
         if (sjt_call7 != 0) { weakptr_cb_remove(sjt_call7, weakptrcb15); }
-        if (sjt_call9._refCount == 1) { sjf_string_destroy(&sjt_call9); }
+        if (sjt_call11._refCount == 1) { sjf_string_destroy(&sjt_call11); }
         if (sjt_value3._refCount == 1) { sjf_string_destroy(&sjt_value3); }
         if (sjt_value4._refCount == 1) { sjf_string_destroy(&sjt_value4); }
     }

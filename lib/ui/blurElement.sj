@@ -23,25 +23,25 @@ blurElement #element (
 			}	
 
 			if !isEmpty(_frameBuffer1) {
-				t1 : getValue(_frameBuffer1)			
+				t1 : opt_getValue(_frameBuffer1)			
 				if t1.size != size(_rect.w, _rect.h) {
 					_frameBuffer1 = empty'frameBuffer
 				}
 			}
 
 			if !isEmpty(_frameBuffer2) {
-				t2 : getValue(_frameBuffer2)			
+				t2 : opt_getValue(_frameBuffer2)			
 				if t2.size != size(_rect.w, _rect.h) {
 					_frameBuffer2 = empty'frameBuffer
 				}
 			}
 
 			if isEmpty(_frameBuffer1) {
-				_frameBuffer1 = value(frameBuffer(size(_rect.w, _rect.h)))
+				_frameBuffer1 = valid(frameBuffer(size(_rect.w, _rect.h)))
 			}
 
 			if isEmpty(_frameBuffer2) {
-				_frameBuffer2 = value(frameBuffer(size(_rect.w, _rect.h)))
+				_frameBuffer2 = valid(frameBuffer(size(_rect.w, _rect.h)))
 			}
 
 			_vertexBuffer = empty'boxVertexBuffer
@@ -64,7 +64,7 @@ blurElement #element (
 		}
 
 		if isEmpty(_vertexBuffer) {
-			_vertexBuffer = value(heap boxVertexBuffer(
+			_vertexBuffer = valid(heap boxVertexBuffer(
 				rect : copy _rect
 			))
 			void
@@ -76,8 +76,8 @@ blurElement #element (
 				child.render(scene)
 			}
 		} else if !isEmpty(_frameBuffer1) && !isEmpty(_frameBuffer2) {
-			f1 : getValue(_frameBuffer1)
-			f2 : getValue(_frameBuffer2)
+			f1 : opt_getValue(_frameBuffer1)
+			f2 : opt_getValue(_frameBuffer2)
 			--c--
 			glBindFramebuffer(GL_FRAMEBUFFER, _parent->_frameBuffer1->frameBufferId);
 			--c--
@@ -130,7 +130,7 @@ blurElement #element (
 
 	getChildren()'local array?!#element {
 		a : local children
-		value(a)
+		valid(a)
 	}
 
 	fireMouseEvent(mouseEvent : 'mouseEvent)'void {

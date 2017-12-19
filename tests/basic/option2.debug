@@ -3,17 +3,17 @@ class(x'i32:)'stack class {
 }
 
 func(c'stack class?:)'i32 {
-  if isEmpty(if isEmpty(c) empty'i32? else value(getValue(c).x)) 0i else getValue(if isEmpty(c) empty'i32? else value(getValue(c).x))
+  if isValid(if isValid(c) value(getValue(c).x) else empty'i32?) getValue(if isValid(c) value(getValue(c).x) else empty'i32?) else 0i
 }
 
 global()'void {
   c'stack class? : value(class(this = class(
     x'i32 : x
   )))
-  d'i32 : if isEmpty(if isEmpty(c) empty'i32? else value(getValue(c).x)) 0i else getValue(if isEmpty(c) empty'i32? else value(getValue(c).x))
-  e'stack class : copy if isEmpty(c) class(this = class(
+  d'i32 : if isValid(if isValid(c) value(getValue(c).x) else empty'i32?) getValue(if isValid(c) value(getValue(c).x) else empty'i32?) else 0i
+  e'stack class : copy if isValid(c) getValue(c) else class(this = class(
     x'i32 : x
-  )) else getValue(c)
+  ))
   func(
     c'stack class? : c
   )

@@ -35,59 +35,59 @@ typedef struct td_delete_cb delete_cb;
 typedef struct td_delete_cb_list delete_cb_list;
 typedef struct td_int32_option int32_option;
 struct td_int32_option {
-    bool isempty;
+    bool isvalid;
     int32_t value;
 };
-const int32_option int32_empty = { true };
+const int32_option int32_empty = { false };
 
 typedef struct td_uint32_option uint32_option;
 struct td_uint32_option {
-    bool isempty;
+    bool isvalid;
     uint32_t value;
 };
-const uint32_option uint32_empty = { true };
+const uint32_option uint32_empty = { false };
 
 typedef struct td_int64_option int64_option;
 struct td_int64_option {
-    bool isempty;
+    bool isvalid;
     int64_t value;
 };
-const int64_option int64_empty = { true };
+const int64_option int64_empty = { false };
 
 typedef struct td_uint64_option uint64_option;
 struct td_uint64_option {
-    bool isempty;
+    bool isvalid;
     uint64_t value;
 };
-const uint64_option uint64_empty = { true };
+const uint64_option uint64_empty = { false };
 
 typedef struct td_void_option void_option;
 struct td_void_option {
-    bool isempty;
+    bool isvalid;
     void* value;
 };
-const void_option void_empty = { true };
+const void_option void_empty = { false };
 
 typedef struct td_char_option char_option;
 struct td_char_option {
-    bool isempty;
+    bool isvalid;
     char value;
 };
-const char_option char_empty = { true };
+const char_option char_empty = { false };
 
 typedef struct td_float_option float_option;
 struct td_float_option {
-    bool isempty;
+    bool isvalid;
     float value;
 };
-const float_option float_empty = { true };
+const float_option float_empty = { false };
 
 typedef struct td_double_option double_option;
 struct td_double_option {
-    bool isempty;
+    bool isvalid;
     double value;
 };
-const double_option double_empty = { true };
+const double_option double_empty = { false };
 
 /* The MIT License
 Copyright (c) 2008, by Attractive Chaos <attractivechaos@aol.co.uk>
@@ -295,14 +295,23 @@ x = site = h->n_buckets; __hash_func(key, &k); i = k % h->n_buckets; \
 if (__ac_isempty(h->flags, i)) x = i;                       \
 else {                                                      \
 inc = 1 + k % (h->n_buckets - 1); last = i;             \
+bool shouldContinue = false;                                \
+if (!__ac_isempty(h->flags, i)) {                           \
 bool isEqual;                                           \
-__hash_equal(h->keys[i], key, &isEqual);                \
-while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
+__hash_equal(h->keys[i], key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+}                                                           \
+while (shouldContinue) { \
 if (__ac_isdel(h->flags, i)) site = i;              \
 if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
 else i += inc;                                      \
 if (i == last) { x = site; break; }                 \
-__hash_equal(h->keys[i], key, &isEqual);            \
+shouldContinue = false;                             \
+if (!__ac_isempty(h->flags, i)) {                           \
+bool isEqual;                                           \
+__hash_equal(h->keys[i], key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+}                                                           \
 }                                                       \
 if (x == h->n_buckets) {                                \
 if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \
@@ -448,14 +457,23 @@ x = site = h->n_buckets; __hash_func(&key, &k); i = k % h->n_buckets; \
 if (__ac_isempty(h->flags, i)) x = i;                       \
 else {                                                      \
 inc = 1 + k % (h->n_buckets - 1); last = i;             \
+bool shouldContinue = false;                                \
+if (!__ac_isempty(h->flags, i)) {                           \
 bool isEqual;                                           \
-__hash_equal(&h->keys[i], &key, &isEqual);                \
-while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
+__hash_equal(&h->keys[i], &key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+}                                                           \
+while (shouldContinue) { \
 if (__ac_isdel(h->flags, i)) site = i;              \
 if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
 else i += inc;                                      \
 if (i == last) { x = site; break; }                 \
-__hash_equal(&h->keys[i], &key, &isEqual);            \
+shouldContinue = false;                             \
+if (!__ac_isempty(h->flags, i)) {                           \
+bool isEqual;                                           \
+__hash_equal(&h->keys[i], &key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+}                                                           \
 }                                                       \
 if (x == h->n_buckets) {                                \
 if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \
@@ -771,15 +789,15 @@ void sjf_test(sjs_class* _return) {
         sjs_class* sjt_isEmpty3 = 0;
 
         sjt_isEmpty3 = 0;
-        sjt_ifElse2 = (sjt_isEmpty3 == 0);
+        sjt_ifElse2 = (sjt_isEmpty3 != 0);
         if (sjt_ifElse2) {
-            _return->_refCount = -1;
-        } else {
             sjs_class* sjt_copy1 = 0;
 
             sjt_copy1 = 0;
             _return->_refCount = 1;
             sjf_class_copy(_return, sjt_copy1);
+        } else {
+            _return->_refCount = -1;
         }
     } else {
         bool sjt_ifElse3;
@@ -789,10 +807,8 @@ void sjf_test(sjs_class* _return) {
         sjt_value1.x = 2;
         sjf_class(&sjt_value1);
         sjt_isEmpty4 = (sjt_value1._refCount != -1 ? &sjt_value1 : 0);
-        sjt_ifElse3 = (sjt_isEmpty4 == 0);
+        sjt_ifElse3 = (sjt_isEmpty4 != 0);
         if (sjt_ifElse3) {
-            _return->_refCount = -1;
-        } else {
             sjs_class* sjt_copy2 = 0;
 
             sjt_value2._refCount = 1;
@@ -801,6 +817,8 @@ void sjf_test(sjs_class* _return) {
             sjt_copy2 = (sjt_value2._refCount != -1 ? &sjt_value2 : 0);
             _return->_refCount = 1;
             sjf_class_copy(_return, sjt_copy2);
+        } else {
+            _return->_refCount = -1;
         }
     }
 
@@ -817,13 +835,8 @@ void sjf_test_heap(sjs_class** _return) {
         sjs_class* sjt_isEmpty5 = 0;
 
         sjt_isEmpty5 = 0;
-        sjt_ifElse5 = (sjt_isEmpty5 == 0);
+        sjt_ifElse5 = (sjt_isEmpty5 != 0);
         if (sjt_ifElse5) {
-            (*_return) = 0;
-            if ((*_return) != 0) {
-                (*_return)->_refCount++;
-            }
-        } else {
             sjs_class* sjt_copy3 = 0;
             sjs_class* sjt_value3 = 0;
 
@@ -841,6 +854,11 @@ void sjf_test_heap(sjs_class** _return) {
                 weakptr_release(sjt_value3);
                 sjf_class_destroy(sjt_value3);
             }
+        } else {
+            (*_return) = 0;
+            if ((*_return) != 0) {
+                (*_return)->_refCount++;
+            }
         }
     } else {
         bool sjt_ifElse6;
@@ -852,13 +870,8 @@ void sjf_test_heap(sjs_class** _return) {
         sjt_value4->x = 2;
         sjf_class_heap(sjt_value4);
         sjt_isEmpty6 = sjt_value4;
-        sjt_ifElse6 = (sjt_isEmpty6 == 0);
+        sjt_ifElse6 = (sjt_isEmpty6 != 0);
         if (sjt_ifElse6) {
-            (*_return) = 0;
-            if ((*_return) != 0) {
-                (*_return)->_refCount++;
-            }
-        } else {
             sjs_class* sjt_copy4 = 0;
             sjs_class* sjt_value5 = 0;
             sjs_class* sjt_value6 = 0;
@@ -886,6 +899,11 @@ void sjf_test_heap(sjs_class** _return) {
                 weakptr_release(sjt_value6);
                 sjf_class_destroy(sjt_value6);
             }
+        } else {
+            (*_return) = 0;
+            if ((*_return) != 0) {
+                (*_return)->_refCount++;
+            }
         }
 
         sjt_value4->_refCount--;
@@ -911,8 +929,8 @@ int main(int argc, char** argv) {
     weakptr_init();
     sjf_func(&sjv_a);
     sjt_isEmpty2 = (sjv_a._refCount != -1 ? &sjv_a : 0);
-    sjt_isEmpty1 = (sjt_isEmpty2 == 0);
-    if (!sjt_isEmpty1) {
+    sjt_isEmpty1 = (sjt_isEmpty2 != 0);
+    if (sjt_isEmpty1) {
         sjs_class* ifValue1 = 0;
         sjs_class* sjt_dot1 = 0;
 

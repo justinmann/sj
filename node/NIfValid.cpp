@@ -1,10 +1,10 @@
 #include "Node.h"
 
-bool CIfValueVar::getReturnThis() {
+bool CIfValidVar::getReturnThis() {
     return false;
 }
 
-shared_ptr<CType> CIfValueVar::getType(Compiler* compiler) {
+shared_ptr<CType> CIfValidVar::getType(Compiler* compiler) {
     if (elseVar) {
         return elseVar->getType(compiler);
     }
@@ -16,28 +16,28 @@ shared_ptr<CType> CIfValueVar::getType(Compiler* compiler) {
     return nullptr;
 }
 
-void CIfValueVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+void CIfValidVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     auto type = getType(compiler);
-    vector<shared_ptr<TrStoreValue>> isEmptyValues;
+    vector<shared_ptr<TrStoreValue>> isValidValues;
     for (auto optionalVar : optionalVars) {
         auto trValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "isEmpty");
-        optionalVar.isEmptyVar->transpile(compiler, trOutput, trBlock, thisValue, trValue);
+        optionalVar.isValidVar->transpile(compiler, trOutput, trBlock, thisValue, trValue);
         if (!trValue->hasSetValue) {
             return;
         }
-        isEmptyValues.push_back(trValue);
+        isValidValues.push_back(trValue);
     }
 
     bool isFirst = true;
     stringstream ifLine;
     ifLine << "if (";
-    for (auto isEmptyValue : isEmptyValues) {
+    for (auto isValidValue : isValidValues) {
         if (isFirst) {
             isFirst = false;
         } else {
             ifLine << " && ";
         }
-        ifLine << "!" << isEmptyValue->getName(trBlock);
+        ifLine << isValidValue->getName(trBlock);
     }
     ifLine << ")";
 
@@ -75,9 +75,8 @@ void CIfValueVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
     trBlock->statements.push_back(trStatement);
 }
 
-void CIfValueVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+void CIfValidVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     ss << "ifValue ";
-    // condVar->dump(compiler, functions, ss, level);
 
     if (ifVar) {
         ss << " ";
@@ -94,7 +93,7 @@ void CIfValueVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string
     }
 }
 
-void NIfValue::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NIfValid::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
 //    condition->define(compiler, thisFunction);
 
@@ -107,7 +106,7 @@ void NIfValue::defineImpl(Compiler* compiler, vector<pair<string, vector<string>
     }
 }
 
-shared_ptr<CVar> NIfValue::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+shared_ptr<CVar> NIfValid::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
     vector<CIfParameter> optionalVars;
     
     for (auto var : *vars) {
@@ -119,7 +118,7 @@ shared_ptr<CVar> NIfValue::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
             if (!optionalVar) {
                 return nullptr;
             }
-            param.isEmptyVar = make_shared<CIsEmptyVar>(loc, scope, optionalVar);
+            param.isValidVar = make_shared<CIsEmptyOrValidVar>(loc, scope, optionalVar, false);
             param.getValueVar = make_shared<CGetValueVar>(loc, scope, optionalVar, true);
             auto storeType = param.getValueVar->getType(compiler);
             if (!storeType) {
@@ -138,7 +137,7 @@ shared_ptr<CVar> NIfValue::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
             if (!optionalVar) {
                 return nullptr;
             }
-            param.isEmptyVar = make_shared<CIsEmptyVar>(loc, scope, optionalVar);
+            param.isValidVar = make_shared<CIsEmptyOrValidVar>(loc, scope, optionalVar, false);
             param.getValueVar = make_shared<CGetValueVar>(loc, scope, optionalVar, true);
             auto storeType = param.getValueVar->getType(compiler);
             if (!storeType) {
@@ -201,6 +200,6 @@ shared_ptr<CVar> NIfValue::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
         }
     }
     
-    return make_shared<CIfValueVar>(loc, ifVar->scope.lock(), optionalVars, ifVar, ifLocalVarScope, elseVar, elseLocalVarScope);
+    return make_shared<CIfValidVar>(loc, ifVar->scope.lock(), optionalVars, ifVar, ifLocalVarScope, elseVar, elseLocalVarScope);
 }
 

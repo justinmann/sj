@@ -67,7 +67,7 @@ scene2dModel #model (
 
 	fireMouseEvent(mouseEvent : 'mouseEvent)'void {
 		texture : vertexBuffer.translateScreenToTexture(mouseEvent.point, _sceneRect, _projection, _view, _world * model)
-		ifValue texture {
+		ifValid texture {
 			scenePoint : point(
 				(texture.x * textureSize.w as f32) as i32
 				textureSize.h - 1 - (texture.y * textureSize.h as f32) as i32)

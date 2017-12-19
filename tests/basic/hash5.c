@@ -35,59 +35,59 @@ typedef struct td_delete_cb delete_cb;
 typedef struct td_delete_cb_list delete_cb_list;
 typedef struct td_int32_option int32_option;
 struct td_int32_option {
-    bool isempty;
+    bool isvalid;
     int32_t value;
 };
-const int32_option int32_empty = { true };
+const int32_option int32_empty = { false };
 
 typedef struct td_uint32_option uint32_option;
 struct td_uint32_option {
-    bool isempty;
+    bool isvalid;
     uint32_t value;
 };
-const uint32_option uint32_empty = { true };
+const uint32_option uint32_empty = { false };
 
 typedef struct td_int64_option int64_option;
 struct td_int64_option {
-    bool isempty;
+    bool isvalid;
     int64_t value;
 };
-const int64_option int64_empty = { true };
+const int64_option int64_empty = { false };
 
 typedef struct td_uint64_option uint64_option;
 struct td_uint64_option {
-    bool isempty;
+    bool isvalid;
     uint64_t value;
 };
-const uint64_option uint64_empty = { true };
+const uint64_option uint64_empty = { false };
 
 typedef struct td_void_option void_option;
 struct td_void_option {
-    bool isempty;
+    bool isvalid;
     void* value;
 };
-const void_option void_empty = { true };
+const void_option void_empty = { false };
 
 typedef struct td_char_option char_option;
 struct td_char_option {
-    bool isempty;
+    bool isvalid;
     char value;
 };
-const char_option char_empty = { true };
+const char_option char_empty = { false };
 
 typedef struct td_float_option float_option;
 struct td_float_option {
-    bool isempty;
+    bool isvalid;
     float value;
 };
-const float_option float_empty = { true };
+const float_option float_empty = { false };
 
 typedef struct td_double_option double_option;
 struct td_double_option {
-    bool isempty;
+    bool isvalid;
     double value;
 };
-const double_option double_empty = { true };
+const double_option double_empty = { false };
 
 /* The MIT License
 Copyright (c) 2008, by Attractive Chaos <attractivechaos@aol.co.uk>
@@ -295,14 +295,23 @@ x = site = h->n_buckets; __hash_func(key, &k); i = k % h->n_buckets; \
 if (__ac_isempty(h->flags, i)) x = i;                       \
 else {                                                      \
 inc = 1 + k % (h->n_buckets - 1); last = i;             \
+bool shouldContinue = false;                                \
+if (!__ac_isempty(h->flags, i)) {                           \
 bool isEqual;                                           \
-__hash_equal(h->keys[i], key, &isEqual);                \
-while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
+__hash_equal(h->keys[i], key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+}                                                           \
+while (shouldContinue) { \
 if (__ac_isdel(h->flags, i)) site = i;              \
 if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
 else i += inc;                                      \
 if (i == last) { x = site; break; }                 \
-__hash_equal(h->keys[i], key, &isEqual);            \
+shouldContinue = false;                             \
+if (!__ac_isempty(h->flags, i)) {                           \
+bool isEqual;                                           \
+__hash_equal(h->keys[i], key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+}                                                           \
 }                                                       \
 if (x == h->n_buckets) {                                \
 if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \
@@ -448,14 +457,23 @@ x = site = h->n_buckets; __hash_func(&key, &k); i = k % h->n_buckets; \
 if (__ac_isempty(h->flags, i)) x = i;                       \
 else {                                                      \
 inc = 1 + k % (h->n_buckets - 1); last = i;             \
+bool shouldContinue = false;                                \
+if (!__ac_isempty(h->flags, i)) {                           \
 bool isEqual;                                           \
-__hash_equal(&h->keys[i], &key, &isEqual);                \
-while (!__ac_isempty(h->flags, i) && (__ac_isdel(h->flags, i) || !isEqual)) { \
+__hash_equal(&h->keys[i], &key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+}                                                           \
+while (shouldContinue) { \
 if (__ac_isdel(h->flags, i)) site = i;              \
 if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
 else i += inc;                                      \
 if (i == last) { x = site; break; }                 \
-__hash_equal(&h->keys[i], &key, &isEqual);            \
+shouldContinue = false;                             \
+if (!__ac_isempty(h->flags, i)) {                           \
+bool isEqual;                                           \
+__hash_equal(&h->keys[i], &key, &isEqual);  \
+shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
+}                                                           \
 }                                                       \
 if (x == h->n_buckets) {                                \
 if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \
@@ -1123,10 +1141,8 @@ int main(int argc, char** argv) {
     sjt_functionParam5 = 0;
     sjf_hash_i32_weak_class_getat(sjt_parent2, sjt_functionParam5, &sjt_call2);
     sjt_isEmpty2 = sjt_call2;
-    sjt_ifElse2 = (sjt_isEmpty2 == 0);
+    sjt_ifElse2 = (sjt_isEmpty2 != 0);
     if (sjt_ifElse2) {
-        sjt_isEmpty1 = int32_empty;
-    } else {
         sjs_class* sjt_call3 = 0;
         sjs_class* sjt_dot1 = 0;
         int32_t sjt_functionParam6;
@@ -1139,23 +1155,18 @@ int main(int argc, char** argv) {
         sjf_hash_i32_weak_class_getat(sjt_parent3, sjt_functionParam6, &sjt_call3);
         sjt_dot1 = sjt_call3;
         sjt_value1 = (sjt_dot1)->x;
-        value1.isempty = false;
+        value1.isvalid = true;
         value1.value = sjt_value1;
         sjt_isEmpty1 = value1;
 
         delete_cb weakptrcb12 = { &sjt_call3, weakptr_clear };
         if (sjt_call3 != 0) { weakptr_cb_remove(sjt_call3, weakptrcb12); }
+    } else {
+        sjt_isEmpty1 = int32_empty;
     }
 
-    sjt_ifElse1 = sjt_isEmpty1.isempty;
+    sjt_ifElse1 = sjt_isEmpty1.isvalid;
     if (sjt_ifElse1) {
-        int32_t result2;
-        int32_t sjt_negate2;
-
-        sjt_negate2 = 1;
-        result2 = -sjt_negate2;
-        sjt_functionParam4 = result2;
-    } else {
         sjs_class* sjt_call4 = 0;
         int32_t sjt_functionParam7;
         int32_option sjt_getValue1;
@@ -1167,10 +1178,8 @@ int main(int argc, char** argv) {
         sjt_functionParam7 = 0;
         sjf_hash_i32_weak_class_getat(sjt_parent4, sjt_functionParam7, &sjt_call4);
         sjt_isEmpty3 = sjt_call4;
-        sjt_ifElse3 = (sjt_isEmpty3 == 0);
+        sjt_ifElse3 = (sjt_isEmpty3 != 0);
         if (sjt_ifElse3) {
-            sjt_getValue1 = int32_empty;
-        } else {
             sjs_class* sjt_call5 = 0;
             sjs_class* sjt_dot2 = 0;
             int32_t sjt_functionParam8;
@@ -1183,18 +1192,27 @@ int main(int argc, char** argv) {
             sjf_hash_i32_weak_class_getat(sjt_parent5, sjt_functionParam8, &sjt_call5);
             sjt_dot2 = sjt_call5;
             sjt_value2 = (sjt_dot2)->x;
-            value2.isempty = false;
+            value2.isvalid = true;
             value2.value = sjt_value2;
             sjt_getValue1 = value2;
 
             delete_cb weakptrcb13 = { &sjt_call5, weakptr_clear };
             if (sjt_call5 != 0) { weakptr_cb_remove(sjt_call5, weakptrcb13); }
+        } else {
+            sjt_getValue1 = int32_empty;
         }
 
         sjt_functionParam4 = sjt_getValue1.value;
 
         delete_cb weakptrcb14 = { &sjt_call4, weakptr_clear };
         if (sjt_call4 != 0) { weakptr_cb_remove(sjt_call4, weakptrcb14); }
+    } else {
+        int32_t result2;
+        int32_t sjt_negate2;
+
+        sjt_negate2 = 1;
+        result2 = -sjt_negate2;
+        sjt_functionParam4 = result2;
     }
 
     sjf_i32_tostring(sjt_functionParam4, &sjt_call1);
@@ -1214,10 +1232,8 @@ int main(int argc, char** argv) {
     sjt_functionParam11 = 0;
     sjf_hash_i32_weak_class_getat(sjt_parent6, sjt_functionParam11, &sjt_call7);
     sjt_isEmpty5 = sjt_call7;
-    sjt_ifElse5 = (sjt_isEmpty5 == 0);
+    sjt_ifElse5 = (sjt_isEmpty5 != 0);
     if (sjt_ifElse5) {
-        sjt_isEmpty4 = int32_empty;
-    } else {
         sjs_class* sjt_call8 = 0;
         sjs_class* sjt_dot3 = 0;
         int32_t sjt_functionParam12;
@@ -1230,23 +1246,18 @@ int main(int argc, char** argv) {
         sjf_hash_i32_weak_class_getat(sjt_parent7, sjt_functionParam12, &sjt_call8);
         sjt_dot3 = sjt_call8;
         sjt_value3 = (sjt_dot3)->x;
-        value3.isempty = false;
+        value3.isvalid = true;
         value3.value = sjt_value3;
         sjt_isEmpty4 = value3;
 
         delete_cb weakptrcb15 = { &sjt_call8, weakptr_clear };
         if (sjt_call8 != 0) { weakptr_cb_remove(sjt_call8, weakptrcb15); }
+    } else {
+        sjt_isEmpty4 = int32_empty;
     }
 
-    sjt_ifElse4 = sjt_isEmpty4.isempty;
+    sjt_ifElse4 = sjt_isEmpty4.isvalid;
     if (sjt_ifElse4) {
-        int32_t result3;
-        int32_t sjt_negate3;
-
-        sjt_negate3 = 1;
-        result3 = -sjt_negate3;
-        sjt_functionParam10 = result3;
-    } else {
         sjs_class* sjt_call9 = 0;
         int32_t sjt_functionParam13;
         int32_option sjt_getValue2;
@@ -1258,10 +1269,8 @@ int main(int argc, char** argv) {
         sjt_functionParam13 = 0;
         sjf_hash_i32_weak_class_getat(sjt_parent8, sjt_functionParam13, &sjt_call9);
         sjt_isEmpty6 = sjt_call9;
-        sjt_ifElse6 = (sjt_isEmpty6 == 0);
+        sjt_ifElse6 = (sjt_isEmpty6 != 0);
         if (sjt_ifElse6) {
-            sjt_getValue2 = int32_empty;
-        } else {
             sjs_class* sjt_call10 = 0;
             sjs_class* sjt_dot4 = 0;
             int32_t sjt_functionParam14;
@@ -1274,18 +1283,27 @@ int main(int argc, char** argv) {
             sjf_hash_i32_weak_class_getat(sjt_parent9, sjt_functionParam14, &sjt_call10);
             sjt_dot4 = sjt_call10;
             sjt_value4 = (sjt_dot4)->x;
-            value4.isempty = false;
+            value4.isvalid = true;
             value4.value = sjt_value4;
             sjt_getValue2 = value4;
 
             delete_cb weakptrcb16 = { &sjt_call10, weakptr_clear };
             if (sjt_call10 != 0) { weakptr_cb_remove(sjt_call10, weakptrcb16); }
+        } else {
+            sjt_getValue2 = int32_empty;
         }
 
         sjt_functionParam10 = sjt_getValue2.value;
 
         delete_cb weakptrcb17 = { &sjt_call9, weakptr_clear };
         if (sjt_call9 != 0) { weakptr_cb_remove(sjt_call9, weakptrcb17); }
+    } else {
+        int32_t result3;
+        int32_t sjt_negate3;
+
+        sjt_negate3 = 1;
+        result3 = -sjt_negate3;
+        sjt_functionParam10 = result3;
     }
 
     sjf_i32_tostring(sjt_functionParam10, &sjt_call6);

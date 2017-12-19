@@ -7,7 +7,7 @@ foo1() {
 }
 
 foo2() {
-    value(heap class()) // value will force the class to be heap
+    valid(heap class()) // value will force the class to be heap
 }
 
 x1 : foo1()

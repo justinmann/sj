@@ -30,7 +30,7 @@ textElement #element (
 		)
 
 		if isEmpty(textRenderer) {
-			textRenderer = value(heap textRenderer(
+			textRenderer = valid(heap textRenderer(
 				text: copy text
 			    point: point(rect.x, rect.y)
 			    color: copy color

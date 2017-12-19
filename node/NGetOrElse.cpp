@@ -17,7 +17,7 @@ shared_ptr<CVar> NGetOrElse::getVarImpl(Compiler* compiler, shared_ptr<CScope> s
 
     if (leftType->isOption) {
         auto getValueNode = make_shared<NGetValue>(loc, left, true);
-        auto ifNode = make_shared<NIf>(loc, make_shared<NIsEmpty>(loc, left), right, getValueNode, true);
+        auto ifNode = make_shared<NIf>(loc, make_shared<NIsEmptyOrValid>(loc, left, false), getValueNode, right, true);
         return ifNode->getVar(compiler, scope, dotVar, returnMode);
     }
     else {

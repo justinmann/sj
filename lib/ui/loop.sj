@@ -25,20 +25,20 @@ mainLoop() {
                 break;
             case SDL_MOUSEBUTTONDOWN:
                 printf("SDL_MOUSEBUTTONDOWN\n");
-                sjv_mouseeventtype.isempty = false;
+                sjv_mouseeventtype.isvalid = true;
                 sjv_mouseeventtype.value = sjv_mouseeventtype_down;
                 sjv_x = e.button.x;
                 sjv_y = e.button.y;
                 break;
             case SDL_MOUSEBUTTONUP:
                 printf("SDL_MOUSEBUTTONUP\n");
-                sjv_mouseeventtype.isempty = false;
+                sjv_mouseeventtype.isvalid = true;
                 sjv_mouseeventtype.value = sjv_mouseeventtype_up;
                 sjv_x = e.button.x;
                 sjv_y = e.button.y;
                 break;
             case SDL_MOUSEMOTION:
-                sjv_mouseeventtype.isempty = false;
+                sjv_mouseeventtype.isvalid = true;
                 sjv_mouseeventtype.value = sjv_mouseeventtype_move;
                 sjv_x = e.motion.x;
                 sjv_y = e.motion.y;
@@ -47,8 +47,8 @@ mainLoop() {
     }
     --c--
 
-    ifValue mouseEventType {
-        ifValue m : mouse_captureElement {
+    ifValid mouseEventType {
+        ifValid m : mouse_captureElement {
             m.fireMouseEvent(mouseEvent(
                 type : mouseEventType
                 point : point(x, y)

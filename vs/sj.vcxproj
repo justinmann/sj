@@ -172,9 +172,9 @@
     <ClInclude Include="..\node\NGetOrElse.h" />
     <ClInclude Include="..\node\NGetValue.h" />
     <ClInclude Include="..\node\NHash.h" />
-    <ClInclude Include="..\node\NIfValue.h" />
+    <ClInclude Include="..\node\NIfValid.h" />
     <ClInclude Include="..\node\NImport.h" />
-    <ClInclude Include="..\node\NIsEmpty.h" />
+    <ClInclude Include="..\node\NIsEmptyOrValid.h" />
     <ClInclude Include="..\node\NNegate.h" />
     <ClInclude Include="..\node\NNullPtr.h" />
     <ClInclude Include="..\node\NOptionDot.h" />
@@ -238,9 +238,9 @@
     <ClCompile Include="..\node\NGetOrElse.cpp" />
     <ClCompile Include="..\node\NGetValue.cpp" />
     <ClCompile Include="..\node\NHash.cpp" />
-    <ClCompile Include="..\node\NIfValue.cpp" />
+    <ClCompile Include="..\node\NIfValid.cpp" />
     <ClCompile Include="..\node\NImport.cpp" />
-    <ClCompile Include="..\node\NIsEmpty.cpp" />
+    <ClCompile Include="..\node\NIsEmptyOrValid.cpp" />
     <ClCompile Include="..\node\NNegate.cpp" />
     <ClCompile Include="..\node\NNullPtr.cpp" />
     <ClCompile Include="..\node\NOptionDot.cpp" />

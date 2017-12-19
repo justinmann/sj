@@ -20,8 +20,8 @@ k : isEmpty(i)
 l : empty'#interface
 m : isEmpty(l)
 
-n : value(heap class())
-o : getValue(n)
+n : valid(heap class())
+o : opt_getValue(n)
 p : n?.bob
 q : a?:-1
 r : n as #interface?

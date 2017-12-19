@@ -65,13 +65,13 @@ enum NodeType {
     NodeType_GetValue,
     NodeType_Hash,
     NodeType_If,
-    NodeType_IfValue,
+    NodeType_IfValid,
     NodeType_Import,
     NodeType_Include,
     NodeType_Integer,
     NodeType_Interface,
     NodeType_InterfaceMethod,
-    NodeType_IsEmpty,
+    NodeType_IsEmptyOrValid,
     NodeType_List,
     NodeType_Math,
     NodeType_MathAssignment,
@@ -121,13 +121,13 @@ enum NodeType {
 #include "NGetValue.h"
 #include "NHash.h"
 #include "NIf.h"
-#include "NIfValue.h"
+#include "NIfValid.h"
 #include "NImport.h"
 #include "NInclude.h"
 #include "NInteger.h"
 #include "NInterface.h"
 #include "NInterfaceMethod.h"
-#include "NIsEmpty.h"
+#include "NIsEmptyOrValid.h"
 #include "NPackage.h"
 #include "NParent.h"
 #include "NMath.h"

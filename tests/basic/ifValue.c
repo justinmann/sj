@@ -5,59 +5,59 @@
 
 typedef struct td_int32_option int32_option;
 struct td_int32_option {
-    bool isempty;
+    bool isvalid;
     int32_t value;
 };
-const int32_option int32_empty = { true };
+const int32_option int32_empty = { false };
 
 typedef struct td_uint32_option uint32_option;
 struct td_uint32_option {
-    bool isempty;
+    bool isvalid;
     uint32_t value;
 };
-const uint32_option uint32_empty = { true };
+const uint32_option uint32_empty = { false };
 
 typedef struct td_int64_option int64_option;
 struct td_int64_option {
-    bool isempty;
+    bool isvalid;
     int64_t value;
 };
-const int64_option int64_empty = { true };
+const int64_option int64_empty = { false };
 
 typedef struct td_uint64_option uint64_option;
 struct td_uint64_option {
-    bool isempty;
+    bool isvalid;
     uint64_t value;
 };
-const uint64_option uint64_empty = { true };
+const uint64_option uint64_empty = { false };
 
 typedef struct td_void_option void_option;
 struct td_void_option {
-    bool isempty;
+    bool isvalid;
     void* value;
 };
-const void_option void_empty = { true };
+const void_option void_empty = { false };
 
 typedef struct td_char_option char_option;
 struct td_char_option {
-    bool isempty;
+    bool isvalid;
     char value;
 };
-const char_option char_empty = { true };
+const char_option char_empty = { false };
 
 typedef struct td_float_option float_option;
 struct td_float_option {
-    bool isempty;
+    bool isvalid;
     float value;
 };
-const float_option float_empty = { true };
+const float_option float_empty = { false };
 
 typedef struct td_double_option double_option;
 struct td_double_option {
-    bool isempty;
+    bool isvalid;
     double value;
 };
-const double_option double_empty = { true };
+const double_option double_empty = { false };
 
 #define sjs_object_typeId 1
 #define sjs_interface_typeId 2
@@ -119,15 +119,15 @@ void sjf_class_heap(sjs_class* _this) {
 int main(int argc, char** argv) {
     sjv_a = int32_empty;
     sjt_value1 = 5;
-    value1.isempty = false;
+    value1.isvalid = true;
     value1.value = sjt_value1;
     sjv_b = value1;
     sjv_c._refCount = 1;
     sjv_c.d = int32_empty;
     sjf_class(&sjv_c);
     sjt_isEmpty2 = sjv_a;
-    sjt_isEmpty1 = sjt_isEmpty2.isempty;
-    if (!sjt_isEmpty1) {
+    sjt_isEmpty1 = sjt_isEmpty2.isvalid;
+    if (sjt_isEmpty1) {
         int32_t ifValue1;
         int32_option sjt_getValue1;
 
@@ -139,8 +139,8 @@ int main(int argc, char** argv) {
     }
 
     sjt_isEmpty4 = sjv_b;
-    sjt_isEmpty3 = sjt_isEmpty4.isempty;
-    if (!sjt_isEmpty3) {
+    sjt_isEmpty3 = sjt_isEmpty4.isvalid;
+    if (sjt_isEmpty3) {
         int32_t ifValue2;
         int32_option sjt_getValue2;
 
@@ -153,8 +153,8 @@ int main(int argc, char** argv) {
 
     sjt_dot1 = &sjv_c;
     sjt_isEmpty6 = (sjt_dot1)->d;
-    sjt_isEmpty5 = sjt_isEmpty6.isempty;
-    if (!sjt_isEmpty5) {
+    sjt_isEmpty5 = sjt_isEmpty6.isvalid;
+    if (sjt_isEmpty5) {
         int32_t ifValue3;
         sjs_class* sjt_dot2 = 0;
         int32_option sjt_getValue3;

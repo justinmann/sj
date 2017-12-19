@@ -3,7 +3,7 @@ include "lib/common/common.sj"
 class(
 	run() {
 		debug.writeLine("hello")
-		value(1)
+		valid(1)
 	}
 ) { this }
 

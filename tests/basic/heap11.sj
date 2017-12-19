@@ -5,8 +5,8 @@ class(
 ) { this }
 
 class2(
-	inner : value(inner())
+	inner : valid(inner())
 ) { this }
 
-x3'stack class? : value(class())
-x7'stack class2? : value(class2())
+x3'stack class? : valid(class())
+x7'stack class2? : valid(class2())

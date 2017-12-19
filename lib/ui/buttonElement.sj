@@ -54,7 +54,7 @@ buttonElement #element (
 					normalImage
 				})
 
-			_imageRenderer = value(heap imageRenderer(
+			_imageRenderer = valid(heap imageRenderer(
 				image : copy image
 				rect : copy _rect			
 			))
@@ -67,7 +67,7 @@ buttonElement #element (
 
 			textSize : font.getTextSize(text)
 
-			_textRenderer = value(heap textRenderer(
+			_textRenderer = valid(heap textRenderer(
 				text: copy text
 			    point: point(innerRect.x + (innerRect.w - textSize.w) / 2, innerRect.y + (innerRect.h - textSize.h) / 2)
 			    color: copy textColor

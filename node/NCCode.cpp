@@ -260,7 +260,7 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
             if (trOutput) {
                 if (returnType->parent.expired() && returnType->category != CTC_Function) {
                     stringstream line1;
-                    line1 << "_return->isempty = false";
+                    line1 << "_return->isvalid = true";
                     block.statements.push_back(TrStatement(loc, line1.str()));
 
                     stringstream line2;
