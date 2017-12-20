@@ -10,6 +10,8 @@ shared_ptr<CType> CThisVar::getType(Compiler* compiler) {
         return types->stackValueType;
     case CTM_Heap:
         return types->heapValueType;
+    case CTM_Weak:
+        return types->weakType;
     case CTM_Undefined:
         return types->stackValueType;
     default:
@@ -50,21 +52,19 @@ shared_ptr<CVar> NThis::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
     }
     
     assert(returnMode != CTM_Value);
-    if (returnMode != CTM_Undefined) {
-        if (scope->thisVar->typeMode == CTM_Undefined) {
-            scope->thisVar->typeMode = returnMode;
-        }
-
-        if (returnMode != scope->thisVar->typeMode) {
-            compiler->addError(loc, CErrorCode::TypeMismatch, "cannot change this from stack to heap in the same function");
-        }
+    if (isHeap) {
+        scope->function->setHasHeapThis();
+        scope->thisVar->typeMode = CTM_Heap;
+    }
+    if (returnMode == CTM_Heap || returnMode == CTM_Weak) {
+        scope->thisVar->typeMode = CTM_Heap;
+    }
+    else if (returnMode == CTM_Stack) {
+        scope->thisVar->typeMode = CTM_Stack;
     }
 
     scope->thisVar->setHasThis();
 
-    if (isHeap) {
-        scope->function->setHasHeapThis();
-    }
 
     return scope->thisVar;
 }
