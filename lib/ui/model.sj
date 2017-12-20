@@ -64,4 +64,9 @@ model #model (
 	fireMouseEvent(mouseEvent : 'mouseEvent)'void {
 
 	}
-) { this }
+) { 
+	if id.count > 0 {
+		modelsById[id] = weak (heap this as #model)
+	}
+	heap this 
+}
