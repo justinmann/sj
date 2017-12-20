@@ -45,6 +45,7 @@ nauScene : heap nauScene3dElement(
 						) as #element
 						heap imageElement(
 							image : image(texture : textureFromPng("assets/forestperson1.png"))
+							stretch : imageStretch.aspectRatio
 						) as #element
 						heap crossHairsElement(
 							color : colors.blue()
@@ -63,6 +64,7 @@ nauScene : heap nauScene3dElement(
 						heap boxElement() as #element
 						heap imageElement(
 							image : image(texture : textureFromPng("assets/forestperson2.png"))
+							stretch : imageStretch.aspectRatio
 						) as #element
 						heap crossHairsElement(
 							color : colors.green()

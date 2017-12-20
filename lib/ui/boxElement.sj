@@ -5,7 +5,7 @@ boxElement #element (
 	boxRenderer := empty'boxRenderer
 
 	getSize(maxSize : 'size) {
-		idealSize.cap(maxSize)
+		idealSize.min(maxSize)
 	}
 
 	getRect()'rect { copy rect }
