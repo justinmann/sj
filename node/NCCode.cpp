@@ -331,7 +331,7 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
         }
     }
     else if (functionName.compare("release") == 0) {
-        if (params.size() != 2) {
+        if (params.size() < 2) {
             compiler->addError(loc, CErrorCode::InvalidMacro, "release requires 2 parameters");
             return "";
         }
@@ -406,6 +406,60 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
         auto ctype = scope->getVarType(loc, compiler, ctypeName, CTM_Undefined);
         if (ctype) {
             return ctype->typeMode == CTM_Weak ? "true" : "false";
+        }
+        else {
+            compiler->addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", params[0].c_str());
+        }
+    }
+    else if (functionName.compare("isPtrEqual") == 0) {
+        if (params.size() != 3) {
+            compiler->addError(loc, CErrorCode::InvalidMacro, "isPtrEqual requires 3 parameter");
+            return "";
+        }
+
+        auto ctypeName = CTypeName::parse(params[0]);
+        if (!ctypeName) {
+            compiler->addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", params[0].c_str());
+        }
+
+        auto ctype = scope->getVarType(loc, compiler, ctypeName, CTM_Undefined);
+        if (ctype) {
+            if (ctype->category == CTC_Function) {
+                return "(" + params[1] + "._parent == " + params[2] + "._parent && " + params[1] + "._cb == " + params[2] + "._cb)";
+            }
+            else if (ctype->category == CTC_Interface) {
+                return "(" + params[1] + "._parent == " + params[2] + "._parent)";
+            }
+            else {
+                return "(" + params[1] + " == " + params[2] + ")";
+            }
+        }
+        else {
+            compiler->addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", params[0].c_str());
+        }
+    }
+    else if (functionName.compare("parent") == 0) {
+        if (params.size() != 2) {
+            compiler->addError(loc, CErrorCode::InvalidMacro, "parent requires 3 parameter");
+            return "";
+        }
+
+        auto ctypeName = CTypeName::parse(params[0]);
+        if (!ctypeName) {
+            compiler->addError(loc, CErrorCode::InvalidMacro, "invalid type specification '%s'", params[0].c_str());
+        }
+
+        auto ctype = scope->getVarType(loc, compiler, ctypeName, CTM_Undefined);
+        if (ctype) {
+            if (ctype->category == CTC_Function) {
+                return params[1] + "._parent";
+            }
+            else if (ctype->category == CTC_Interface) {
+                return params[1] + "._parent";
+            }
+            else {
+                return params[1];
+            }
         }
         else {
             compiler->addError(loc, CErrorCode::InvalidMacro, "cannot find type '%s'", params[0].c_str());
