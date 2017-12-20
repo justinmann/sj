@@ -924,7 +924,7 @@ void sjf_hash_i32_weak_class__weakptrremovevalue(sjs_hash_i32_weak_class* _paren
     for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
         if (kh_exist(p, k)) {
             sjs_class* t = kh_value(p, k);
-            if (t == val) {
+            if ((t == val)) {
                 kh_del(i32_weak_class_hash_type, p, k);
             }
         }

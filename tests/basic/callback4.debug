@@ -13,31 +13,6 @@ writeline(data'stack string:)'void {
 }
 
 global()'void {
-  --cinclude--
-  #ifdef __GNUC__
-  #if __x86_64__ 
-  #define __LINUX__
-  #define __64__
-  #elif __i386__ 
-  #define __LINUX__
-  #define __32__
-  #else
-  Invalid bits
-  #endif
-  #elif _MSC_VER
-  #if _WIN64 
-  #define __WINDOWS__
-  #define __64__
-  #elif _WIN32 
-  #define __WINDOWS__
-  #define __32__
-  #else
-  Invalid bits
-  #endif
-  #else
-  Invalid compiler
-  #endif
-  --cinclude--
   --cstruct--
   /* The MIT License
   Copyright (c) 2008, by Attractive Chaos <attractivechaos@aol.co.uk>
@@ -688,6 +663,31 @@ global()'void {
   ptr_init();
   weakptr_init();
   --c--
+  --cinclude--
+  #ifdef __GNUC__
+  #if __x86_64__ 
+  #define __LINUX__
+  #define __64__
+  #elif __i386__ 
+  #define __LINUX__
+  #define __32__
+  #else
+  Invalid bits
+  #endif
+  #elif _MSC_VER
+  #if _WIN64 
+  #define __WINDOWS__
+  #define __64__
+  #elif _WIN32 
+  #define __WINDOWS__
+  #define __32__
+  #else
+  Invalid bits
+  #endif
+  #else
+  Invalid compiler
+  #endif
+  --cinclude--
   c'heap class = heap class(this = class())
   d'weak ()i32? : weak 
   result1'i32? : d()

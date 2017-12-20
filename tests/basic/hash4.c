@@ -1119,7 +1119,7 @@ void sjf_hash_local_iface_interface_i32__weakptrremovevalue(sjs_hash_local_iface
     for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
         if (kh_exist(p, k)) {
             int32_t t = kh_value(p, k);
-            if (t == val) {
+            if ((t == val)) {
                 kh_del(local_iface_interface_i32_hash_type, p, k);
             }
         }
@@ -1139,7 +1139,7 @@ void sjf_hash_local_iface_interface_i32_destroy(sjs_hash_local_iface_interface_i
             if (kh_exist(p, k)) {
                 #if false
                 delete_cb cb = { p, (void(*)(void*, void*))sjf_hash_local_iface_interface_i32__weakptrremovekey };
-                weakptr_cb_remove(kh_key(p, k), cb);
+                weakptr_cb_remove(kh_key(p, k)._parent, cb);
                 #else
                 ;
                 #endif
@@ -1215,7 +1215,7 @@ k = kh_put(local_iface_interface_i32_hash_type, _parent->_hash, key, &ret);
 if (!ret) kh_del(local_iface_interface_i32_hash_type, p, k);
 #if false
 delete_cb cb = { _parent, (void(*)(void*, void*))sjf_hash_local_iface_interface_i32__weakptrremovekey };
-weakptr_cb_add(key, cb);
+weakptr_cb_add(key._parent, cb);
 #else
 sji_interface t;
 t = key;

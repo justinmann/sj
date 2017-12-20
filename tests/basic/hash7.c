@@ -1069,7 +1069,7 @@ void sjf_hash_stringstring__weakptrremovevalue(sjs_hash_stringstring* _parent, s
     for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
         if (kh_exist(p, k)) {
             sjs_string t = kh_value(p, k);
-            if (t == val) {
+            if ((t == val)) {
                 kh_del(string_string_hash_type, p, k);
             }
         }

@@ -79,7 +79,7 @@ hash_setat(key'local #interface:, val'i32:)'void {
   if (!ret) kh_del(local_iface_interface_i32_hash_type, p, k);
   #if false
   delete_cb cb = { _parent, (void(*)(void*, void*))INVALID };
-  weakptr_cb_add(key, cb);
+  weakptr_cb_add(key._parent, cb);
   #else
   sji_interface t;
   ;
@@ -101,31 +101,6 @@ writeline(data'stack string:)'void {
 }
 
 global()'void {
-  --cinclude--
-  #ifdef __GNUC__
-  #if __x86_64__ 
-  #define __LINUX__
-  #define __64__
-  #elif __i386__ 
-  #define __LINUX__
-  #define __32__
-  #else
-  Invalid bits
-  #endif
-  #elif _MSC_VER
-  #if _WIN64 
-  #define __WINDOWS__
-  #define __64__
-  #elif _WIN32 
-  #define __WINDOWS__
-  #define __32__
-  #else
-  Invalid bits
-  #endif
-  #else
-  Invalid compiler
-  #endif
-  --cinclude--
   --cstruct--
   /* The MIT License
   Copyright (c) 2008, by Attractive Chaos <attractivechaos@aol.co.uk>
@@ -776,6 +751,31 @@ global()'void {
   ptr_init();
   weakptr_init();
   --c--
+  --cinclude--
+  #ifdef __GNUC__
+  #if __x86_64__ 
+  #define __LINUX__
+  #define __64__
+  #elif __i386__ 
+  #define __LINUX__
+  #define __32__
+  #else
+  Invalid bits
+  #endif
+  #elif _MSC_VER
+  #if _WIN64 
+  #define __WINDOWS__
+  #define __64__
+  #elif _WIN32 
+  #define __WINDOWS__
+  #define __32__
+  #else
+  Invalid bits
+  #endif
+  #else
+  Invalid compiler
+  #endif
+  --cinclude--
   a'stack hash![#interface, i32] : hash![local #interface, i32](this = hash![local #interface, i32]())
   hash_setat(
     parent: this,

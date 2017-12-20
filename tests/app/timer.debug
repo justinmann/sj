@@ -22,6 +22,52 @@ fillelement #element (children'stack array!#element:, _rect'stack rect=)'heap fi
   this
 }
 
+hash![stack string, weak #element]()'stack hash![string, #element?] {
+  --cdefine--
+  #ifndef string_weak_iface_element_hash_typedef
+  #define string_weak_iface_element_hash_typedef
+  KHASH_INIT_TYPEDEF(string_weak_iface_element_hash_type, sjs_string, sji_element)
+  #endif
+  --cdefine--
+  --cfunction--
+  #ifndef string_weak_iface_element_hash_function
+  #define string_weak_iface_element_hash_function
+  #if true
+  KHASH_INIT_FUNCTION_DEREF(string_weak_iface_element_hash_type, sjs_string, sji_element, 1, INVALID, INVALID)
+  #else
+  KHASH_INIT_FUNCTION(string_weak_iface_element_hash_type, sjs_string, sji_element, 1, INVALID, INVALID)
+  #endif
+  #endif
+  --cfunction--
+  --c--
+  _this->_hash = kh_init(string_weak_iface_element_hash_type);
+  --c--
+  this
+}
+
+hash![stack string, weak #model]()'stack hash![string, #model?] {
+  --cdefine--
+  #ifndef string_weak_iface_model_hash_typedef
+  #define string_weak_iface_model_hash_typedef
+  KHASH_INIT_TYPEDEF(string_weak_iface_model_hash_type, sjs_string, sji_model)
+  #endif
+  --cdefine--
+  --cfunction--
+  #ifndef string_weak_iface_model_hash_function
+  #define string_weak_iface_model_hash_function
+  #if true
+  KHASH_INIT_FUNCTION_DEREF(string_weak_iface_model_hash_type, sjs_string, sji_model, 1, INVALID, INVALID)
+  #else
+  KHASH_INIT_FUNCTION(string_weak_iface_model_hash_type, sjs_string, sji_model, 1, INVALID, INVALID)
+  #endif
+  #endif
+  --cfunction--
+  --c--
+  _this->_hash = kh_init(string_weak_iface_model_hash_type);
+  --c--
+  this
+}
+
 runloop()'void {
   --c--
   #ifdef EMSCRIPTEN
@@ -90,48 +136,6 @@ windowrenderer()'stack windowrenderer {
 }
 
 global()'void {
-  --cinclude--
-  #ifdef __GNUC__
-  #if __x86_64__ 
-  #define __LINUX__
-  #define __64__
-  #elif __i386__ 
-  #define __LINUX__
-  #define __32__
-  #else
-  Invalid bits
-  #endif
-  #elif _MSC_VER
-  #if _WIN64 
-  #define __WINDOWS__
-  #define __64__
-  #elif _WIN32 
-  #define __WINDOWS__
-  #define __32__
-  #else
-  Invalid bits
-  #endif
-  #else
-  Invalid compiler
-  #endif
-  --cinclude--
-  rootwindowrenderer'stack windowrenderer : windowrenderer(this = windowrenderer())
-  rootscene'stack scene2d : scene2d(this = scene2d(
-    _size'stack size = _size,
-    model'stack mat4 = model,
-    view'stack mat4 = view,
-    projection'stack mat4 = projection
-  ))
-  --cinclude--
-  #ifdef WIN32
-  #pragma warning(disable:4996)
-  #define GLEW_STATIC
-  #include <windows.h>
-  #include <GL/glew.h>
-  #include <GL/gl.h>
-  #include <GL/glu.h>
-  #endif
-  --cinclude--
   --cstruct--
   /* The MIT License
   Copyright (c) 2008, by Attractive Chaos <attractivechaos@aol.co.uk>
@@ -782,6 +786,50 @@ global()'void {
   ptr_init();
   weakptr_init();
   --c--
+  --cinclude--
+  #ifdef __GNUC__
+  #if __x86_64__ 
+  #define __LINUX__
+  #define __64__
+  #elif __i386__ 
+  #define __LINUX__
+  #define __32__
+  #else
+  Invalid bits
+  #endif
+  #elif _MSC_VER
+  #if _WIN64 
+  #define __WINDOWS__
+  #define __64__
+  #elif _WIN32 
+  #define __WINDOWS__
+  #define __32__
+  #else
+  Invalid bits
+  #endif
+  #else
+  Invalid compiler
+  #endif
+  --cinclude--
+  --cinclude--
+  #ifdef WIN32
+  #pragma warning(disable:4996)
+  #define GLEW_STATIC
+  #include <windows.h>
+  #include <GL/glew.h>
+  #include <GL/gl.h>
+  #include <GL/glu.h>
+  #endif
+  --cinclude--
+  rootwindowrenderer'stack windowrenderer : windowrenderer(this = windowrenderer())
+  rootscene'stack scene2d : scene2d(this = scene2d(
+    _size'stack size = _size,
+    model'stack mat4 = model,
+    view'stack mat4 = view,
+    projection'stack mat4 = projection
+  ))
+  modelsbyid'stack hash![string, #model?] : hash![stack string, weak #model](this = hash![stack string, weak #model]())
+  elementsbyid'stack hash![string, #element?] : hash![stack string, weak #element](this = hash![stack string, weak #element]())
   animator'stack anon1 : anon1(this = anon1(
     animations'stack list!#animation : animations,
     current'i32 = current
