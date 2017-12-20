@@ -69,6 +69,7 @@ class NBlock;
 class NBase;
 class NAssignment;
 class CInterfaceDefinition;
+class CFunctionDefinition;
 
 enum CErrorCode {
     Internal,
@@ -197,6 +198,11 @@ private:
     vector<pair<string, shared_ptr<NBlock>>> includedBlocks;
 
     shared_ptr<NBlock> globalBlock;
+    vector<pair<string, vector<string>>> importNamespaces;
+    vector<string> packageNamespace;
+    shared_ptr<CFunctionDefinition> globalFunctionDefinition;
+    shared_ptr<NFunction> anonFunction;
+    shared_ptr<CFunctionDefinition> currentFunctionDefintion;
 };
 
 #endif /* Compiler_h */

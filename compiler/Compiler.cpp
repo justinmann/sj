@@ -133,17 +133,12 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
     rootPath = fs::path(fileName).remove_filename();
     
     TrOutput output;
-	shared_ptr<CFunctionDefinition> globalFunctionDefinition;
-	shared_ptr<NFunction> anonFunction;
-	shared_ptr<CFunctionDefinition> currentFunctionDefintion;
 	auto templateTypes = vector<shared_ptr<CType>>();
 	shared_ptr<CFunction> currentFunction;
 	shared_ptr<CFunction> globalFunction;
 
 	auto globalFile = genNodeFile(fileName);
 	if (errors.size() == 0) {
-        vector<pair<string, vector<string>>> importNamespaces;
-        vector<string> packageNamespace;
         auto globalBlock = globalFile->block;
 		anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, nullptr, "global", nullptr, nullptr, nullptr, globalBlock, nullptr, nullptr, nullptr);
 		currentFunctionDefintion = CFunctionDefinition::create(this, importNamespaces, nullptr, FT_Public, packageNamespace, "", nullptr, nullptr);
@@ -261,6 +256,10 @@ void Compiler::includeFile(const string& fileName) {
         auto parseFile = genNodeFile(fileName);
         if (parseFile && parseFile->block) {
             includedBlockFileNames[fileName] = true;
+
+            globalFunctionDefinition = currentFunctionDefintion->funcsByName[vector<string>()]["global"];
+            parseFile->block->define(this, importNamespaces, packageNamespace, globalFunctionDefinition);
+
             includedBlocks.push_back(pair<string, shared_ptr<NBlock>>(fileName, parseFile->block));
         }
     }
