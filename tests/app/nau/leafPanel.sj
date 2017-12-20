@@ -1,6 +1,7 @@
 leafPanel #model (
 	textures : array!texture()
 	children := array!heap #model()
+	_world : mat4_identity()
 
 	update(sceneRect : 'rect, projection : 'mat4, view : 'mat4, world : 'mat4, light : 'light)'void {
 		for i : 0 to children.count {
@@ -10,9 +11,9 @@ leafPanel #model (
 		void
 	}
 
-	getZ() {
-		0.0f
-	}
+	getZ() { 0.0f }
+	getCenter() { vec3() }
+	getWorld() { copy _world }
 
 	renderOrQueue(zqueue : 'list!#model)'void {
 		for i : 0 to children.count {
@@ -42,7 +43,7 @@ leafPanel #model (
 		_angle += 0.8f;
 
 	    heap model(
-	    	id : "leaf" + z.toString()
+	    	id : valid("leaf" + z.toString())
 	    	texture : copy texture
 	    	shader : copy phongTextureShader
 	    	model : mat4_translate(x, y, z)

@@ -1,4 +1,5 @@
 scene2dModel #model (
+	id : empty'string
 	vertexBuffer : 'vertexBuffer!vertex_location_texture_normal
 	shader : 'shader
 	textureSize : size(512, 512)
@@ -27,9 +28,9 @@ scene2dModel #model (
 		void
 	}
 
-	getZ() {
-		_projectedCenter.z
-	}
+	getZ() { _projectedCenter.z }
+	getCenter() { copy center }
+	getWorld() { _world * model }
 
 	renderOrQueue(alphaModels : 'list!#model) {
 		if hasAlpha {
@@ -82,6 +83,10 @@ scene2dModel #model (
 		}
 	}
 ) { 
+	ifValid id {
+		modelsById[id] = weak (this as #model)
+	}
+
     _texture = glGenTexture(textureSize)
     _renderbuffer = glGenRenderbuffer(textureSize)
 

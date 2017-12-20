@@ -1,8 +1,10 @@
 panel3d #model(
 	model : mat4_identity()
 	children : array!heap #model()
+	_world := mat4_identity()
 
 	update(sceneRect : 'rect, projection : 'mat4, view : 'mat4, world : 'mat4, light : 'light)'void {
+		_world = copy world
 		childWorld : world * model 
 		for i : 0 to children.count {
 			c : children[i]
@@ -11,9 +13,9 @@ panel3d #model(
 		void
 	}
 
-	getZ() {
-		0.0f
-	}
+	getZ() { 0.0f }
+	getCenter() { vec3() }
+	getWorld() { _world * model }
 
 	renderOrQueue(zqueue : 'list!#model)'void {
 		for i : 0 to children.count {

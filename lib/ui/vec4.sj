@@ -52,6 +52,10 @@ vec4(
 	dot(v : 'vec4) {
     	x * v.x + y * v.y + z * v.z	 + w * v.w	
 	}
+
+	toVec3() {
+		vec3(x / w, y / w, z / w)
+	}
 ) { this }
 
 vec4_min(a : 'vec4, b : 'vec4) {

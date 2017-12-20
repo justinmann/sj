@@ -25,6 +25,26 @@ nauScene3dElement #element (
 		void
 	}
 
+	animateLookAt(v : 'vec3, duration : 'i32) {
+		animator.animations.add(
+			heap animation!vec3(
+				startValue : copy _lookAt
+				endValue : copy v
+				start : animator.current
+				end : animator.current + duration
+				setValue : heap parent.lookAt
+			) as #animation
+		)
+		void
+	}
+
+	lookAt(v : 'vec3) {
+		_lookAt = copy v
+		camera : _lookAt - vec3(0.0f, 0.0f, 5.0f)
+		view = mat4_lookAtLH(camera, _lookAt, vec3(0.0f, 1.0f, 0.0f))
+		void
+	}
+
 	render(scene : 'scene2d)'void {
 		for i : 0 to children.count {
 			child : children[i]
@@ -89,4 +109,6 @@ nauScene3dElement #element (
 			}
 		}
 	}
-) { this }
+) { 
+	this 
+}

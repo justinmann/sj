@@ -1,6 +1,8 @@
 #model(
 	update(sceneRect : 'rect, projection : 'mat4, view : 'mat4, world : 'mat4, light : 'light)'void
 	getZ()'f32
+	getCenter()'vec3
+	getWorld()'mat4
 	renderOrQueue(zqueue : 'list!#model)'void
 	render()'void
 	fireMouseEvent(mouseEvent : 'mouseEvent)'void
@@ -17,7 +19,7 @@ model #model (
 	model : mat4_identity()
 	center : vec3()
 	hasAlpha : false
-	id : string()
+	id : empty'string
 	_projection := mat4()
 	_view := mat4()
 	_world := mat4()
@@ -34,9 +36,9 @@ model #model (
 		void
 	}
 
-	getZ() {
-		_projectedCenter.z
-	}
+	getZ() { _projectedCenter.z }
+	getCenter() { copy center }
+	getWorld() { _world * model }
 
 	renderOrQueue(zqueue : 'list!#model) {
 		if hasAlpha {
@@ -65,8 +67,8 @@ model #model (
 
 	}
 ) { 
-	if id.count > 0 {
-		modelsById[id] = weak (heap this as #model)
+	ifValid id {
+		modelsById[id] = weak (this as #model)
 	}
 	heap this 
 }

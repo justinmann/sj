@@ -2,8 +2,10 @@ peoplePanel #model (
 	model : mat4_identity()
 	children : array!heap #model()
 	_childrenModel := array!mat4()
+	_world := mat4_identity()
 
 	update(sceneRect : 'rect, projection : 'mat4, view : 'mat4, world : 'mat4, light : 'light)'void {
+		_world = copy world
 		for i : 0 to children.count {
 			c : children[i]
 			childModel : _childrenModel[i]
@@ -13,9 +15,9 @@ peoplePanel #model (
 		void
 	}
 
-	getZ() {
-		0.0f
-	}
+	getZ() { 0.0f }
+	getCenter() { vec3() }
+	getWorld() { _world * model }
 
 	renderOrQueue(zqueue : 'list!#model)'void {
 		for i : 0 to children.count {

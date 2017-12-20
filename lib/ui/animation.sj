@@ -25,7 +25,7 @@ animation!t #animation (
 ) { this }
 
 animator: ^(
-	animations : list!#animation()
+	animations : list!heap #animation()
 	current := 0
 
 	nextFrame(time : 'i32) {
