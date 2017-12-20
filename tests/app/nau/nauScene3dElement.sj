@@ -4,7 +4,7 @@ nauScene3dElement #element (
 	lookAtMax := vec3()
 	fieldOfView := 90.0f
 	zNear := 1.0f
-	zFar := 50.0f
+	zFar := 100.0f
 	light := light()
 	projection := mat4()
 	view := mat4_lookAtLH(vec3(0.0f, 0.0f, -5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f))

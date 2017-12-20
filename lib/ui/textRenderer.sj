@@ -10,11 +10,11 @@ textRenderer(
     render(scene : 'scene2d)'void {
         --c--
         glBindTexture(GL_TEXTURE_2D, _parent->font.atlas->id);
-        glUseProgram(sjv_textShader.id);
-        glUniform1i(glGetUniformLocation(sjv_textShader.id, "texture" ), 0 );
-        glUniformMatrix4fv(glGetUniformLocation(sjv_textShader.id, "model" ), 1, 0, scene->model.data);
-        glUniformMatrix4fv(glGetUniformLocation(sjv_textShader.id, "view" ), 1, 0, scene->view.data);
-        glUniformMatrix4fv(glGetUniformLocation(sjv_textShader.id, "projection" ), 1, 0, scene->projection.data);
+        glUseProgram(sjv_textshader.id);
+        glUniform1i(glGetUniformLocation(sjv_textshader.id, "texture" ), 0 );
+        glUniformMatrix4fv(glGetUniformLocation(sjv_textshader.id, "model" ), 1, 0, &scene->model.m00);
+        glUniformMatrix4fv(glGetUniformLocation(sjv_textshader.id, "view" ), 1, 0, &scene->view.m00);
+        glUniformMatrix4fv(glGetUniformLocation(sjv_textshader.id, "projection" ), 1, 0, &scene->projection.m00);
         vertex_buffer_render(_parent->buffer, GL_TRIANGLES);
         --c--
         void
@@ -34,11 +34,11 @@ textRenderer(
 } copy {
     --c--
     _this->buffer = _from->buffer;
-    _retain(_this->buffer);
+    ptr_retain(_this->buffer);
     --c--
 } destroy {
     --c--
-    if (_release(_this->buffer)) {
+    if (ptr_release(_this->buffer)) {
         vertex_buffer_delete(_this->buffer);
     }  
     --c--

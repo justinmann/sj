@@ -179,37 +179,33 @@ mat4_orthographic(left : 'f32, right : 'f32, bottom : 'f32, top : 'f32, znear : 
     )
 }
 
-mat4_rotation(angle : 'f32, x : 'f32, y : 'f32, z : 'f32) {
+mat4_rotate(angle : 'f32, axis : 'vec3) {
     c : f32_cos(f32_pi * angle / 180.0f)
     s : f32_sin(f32_pi * angle / 180.0f)
-    norm : f32_sqrt(x * x + y * y + z * z)
-
-    xnorm : x / norm
-    ynorm : y / norm
-    znorm : z / norm;
+    norm : axis.normalize()
 
     mat4(
-        m00 : xnorm * xnorm * (1.0f - c) + c
-        m10 : ynorm * xnorm * (1.0f - c) - znorm * s
-        m20 : znorm * xnorm * (1.0f - c) + ynorm * s
-        m01 : xnorm * ynorm * (1.0f - c) + znorm * s
-        m11 : ynorm * ynorm * (1.0f - c) + c
-        m21 : znorm * ynorm * (1.0f - c) - xnorm * s
-        m02 : xnorm * znorm * (1.0f - c) - ynorm * s
-        m12 : ynorm * znorm * (1.0f - c) + xnorm * s
-        m22 : znorm * znorm * (1.0f - c) + c
+        m00 : norm.x * norm.x * (1.0f - c) + c
+        m10 : norm.y * norm.x * (1.0f - c) - norm.z * s
+        m20 : norm.z * norm.x * (1.0f - c) + norm.y * s
+        m01 : norm.x * norm.y * (1.0f - c) + norm.z * s
+        m11 : norm.y * norm.y * (1.0f - c) + c
+        m21 : norm.z * norm.y * (1.0f - c) - norm.x * s
+        m02 : norm.x * norm.z * (1.0f - c) - norm.y * s
+        m12 : norm.y * norm.z * (1.0f - c) + norm.x * s
+        m22 : norm.z * norm.z * (1.0f - c) + c
         m33 : 1.0f
     )
 }
 
-mat4_translate(x : 'f32, y : 'f32, z : 'f32) {
+mat4_translate(offset : 'vec3) {
     mat4(
         m00 : 1.0f
         m11 : 1.0f
         m22 : 1.0f
-        m30 : x
-        m31 : y
-        m32 : z
+        m30 : offset.x
+        m31 : offset.y
+        m32 : offset.z
         m33 : 1.0f
     )
 }

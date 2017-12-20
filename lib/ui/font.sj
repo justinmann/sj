@@ -55,11 +55,11 @@ font(
     --c--
 } destroy {
     --c--
-    if (_release(_this->atlas)) {
+    if (ptr_release(_this->atlas)) {
 	   texture_atlas_delete(_this->atlas);
     }
 
-    if (_release(_this->font)) {
+    if (ptr_release(_this->font)) {
 	   texture_font_delete(_this->font);
     }
     --c--
