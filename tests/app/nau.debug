@@ -1,4 +1,4 @@
-anon1(animations'stack list_local_animation:, current'i32=)'stack anon1 {
+anon1(animations'stack list!#animation:, current'i32=)'stack anon1 {
   this
 }
 
@@ -18,7 +18,7 @@ anon5()'stack anon5 {
   this
 }
 
-fillelement #element (children'stack array_heap_element:, _rect'stack rect=)'stack fillelement {
+fillelement #element (children'stack array!#element:, _rect'stack rect=)'stack fillelement {
   this
 }
 
@@ -47,7 +47,7 @@ shader(vertex'stack string:, pixel'stack string:)'stack shader {
   this
 }
 
-string(count'i32=, data'stack array_char=)'stack string {
+string(count'i32=, data'stack array!char=)'stack string {
   this
 }
 
@@ -783,7 +783,7 @@ global()'void {
   weakptr_init();
   --c--
   animator'stack anon1 : anon1(this = anon1(
-    animations'stack list_local_animation : animations,
+    animations'stack list!#animation : animations,
     current'i32 = current
   ))
   borderposition'stack anon2 : anon2(this = anon2(
@@ -5023,10 +5023,10 @@ global()'void {
   --cfunction--
   vertex_location_texture_normal_format'stack string : string(this = string(
     count'i32 = count,
-    data'stack array_char = data
+    data'stack array!char = data
   ))
   root'local #element : fillelement(this = fillelement(
-    children'stack array_heap_element : children,
+    children'stack array!#element : children,
     _rect'stack rect = _rect
   )) as local #element
   runloop()

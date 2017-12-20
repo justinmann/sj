@@ -240,7 +240,7 @@ void NCall::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>&
     }
 }
 
-shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode, bool* pisHelperFunction) {
+shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, string name, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode, bool* pisHelperFunction) {
     
     // Check for the x.name() style function call  
     *pisHelperFunction = false;
@@ -303,14 +303,14 @@ shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, shared_ptr<CSc
         }
     }
 
-    compiler->addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", name.c_str());
     return nullptr;
 }
 
 shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
     bool isHelperFunction = false;
-    auto callee = getCFunction(compiler, scope, dotVar, returnMode, &isHelperFunction);
+    auto callee = getCFunction(compiler, loc, scope, dotVar, name, templateTypeNames, returnMode, &isHelperFunction);
     if (!callee) {
+        compiler->addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", name.c_str());
         return nullptr;
     }
 

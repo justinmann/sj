@@ -16,11 +16,11 @@ i32_tostring(val'i32:)'stack string {
   --c--
   string(this = string(
     count'i32 = count,
-    data'stack array_char = data
+    data'stack array!char = data
   ))
 }
 
-string(count'i32=, data'stack array_char=)'stack string {
+string(count'i32=, data'stack array!char=)'stack string {
   this
 }
 

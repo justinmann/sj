@@ -103,7 +103,7 @@ void CCallbackVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, strin
 
 }
 
-CCallbackFunction::CCallbackFunction(shared_ptr<CCallback> callback, shared_ptr<CVar> callbackVar) : CBaseFunction(CFT_Callback, "INVALID", weak_ptr<CBaseFunction>(), weak_ptr<CBaseFunctionDefinition>(), false), callback(callback), callbackVar(callbackVar) {
+CCallbackFunction::CCallbackFunction(shared_ptr<CCallback> callback, shared_ptr<CVar> callbackVar) : CBaseFunction(CFT_Callback, "INVALID", "INVALID", weak_ptr<CBaseFunction>(), weak_ptr<CBaseFunctionDefinition>(), false), callback(callback), callbackVar(callbackVar) {
     auto argIndex = 0;
     for (auto argType : callback->argTypes) {
         stringstream argName;

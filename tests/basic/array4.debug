@@ -1,4 +1,4 @@
-array!stack class(datasize'i32:, data'ptr:, _isglobal'bool:, count'i32:)'stack array_class {
+array!stack class(datasize'i32:, data'ptr:, _isglobal'bool:, count'i32:)'stack array!class {
   --c--
   if (_this->datasize < 0) {
   halt("size is less than zero");
@@ -710,7 +710,7 @@ global()'void {
   ptr_init();
   weakptr_init();
   --c--
-  a'stack array_class : array!stack class(this = array!stack class(
+  a'stack array!class : array!stack class(this = array!stack class(
     datasize'i32 : datasize,
     data'ptr : data,
     _isglobal'bool : _isglobal,

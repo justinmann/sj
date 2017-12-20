@@ -26,7 +26,7 @@ array_initat(index'i32:, item'i32:)'void {
 
 
 
-class!i32(item1'i32:, item2'i32:)'stack class_i32 {
+class!i32(item1'i32:, item2'i32:)'stack class!i32 {
   this
 }
 
@@ -722,7 +722,7 @@ global()'void {
   s'heap sum : heap sum(this = sum(
     total'i32 = total
   ))
-  c'stack class_i32 : class!i32(this = class!i32(
+  c'stack class!i32 : class!i32(this = class!i32(
     item1'i32 : item1,
     item2'i32 : item2
   ))
@@ -730,7 +730,7 @@ global()'void {
     parent: this,
     cb'heap (:i32)void : cb
   )
-  a'stack array_i32 : [array_initat(
+  a'stack array!i32 : [array_initat(
     parent: this,
     index'i32 : index,
     item'i32 : item

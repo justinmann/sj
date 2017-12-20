@@ -73,8 +73,8 @@ public:
 class CType : public enable_shared_from_this<CType> {
 public:
     static shared_ptr<CTypes> create(vector<string>& packageNamespace, string valueName, string cname, string defaultValue, string cnameOption, string defaultValueOption);
-    static shared_ptr<CTypes> create(Compiler* compiler, vector<string>& packageNamespace, string valueName, weak_ptr<CFunction> parent);
-    static shared_ptr<CTypes> create(Compiler* compiler, vector<string>& packageNamespace, string valueName, weak_ptr<CInterface> parent);
+    static shared_ptr<CTypes> create(Compiler* compiler, vector<string>& packageNamespace, string valueName, string safeName, weak_ptr<CFunction> parent);
+    static shared_ptr<CTypes> create(Compiler* compiler, vector<string>& packageNamespace, string valueName, string safeName, weak_ptr<CInterface> parent);
     static shared_ptr<CTypes> create(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> stackReturnType, shared_ptr<CType> heapReturnType, weak_ptr<CCallback> callback);
 
     CTypeCategory category;
@@ -82,6 +82,7 @@ public:
     string fullName;
     vector<string> packageNamespace;
     string valueName;
+    string shortName;
     string cname;
     string safeName;
     weak_ptr<CBaseFunction> parent;

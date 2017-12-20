@@ -83,43 +83,42 @@ shared_ptr<CVar> NMath::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
         return nullptr;
     }
 
-    // Check to see if we have operator overloading
-    if (!leftType->parent.expired()) {
-        string rightTypeName;
-        auto rightVar = rightSide->getVar(compiler, scope, nullptr, CTM_Undefined);
-        auto rightType = rightVar->getType(compiler);
-        if (!CType::isSameExceptMode(leftType, rightType)) {
-            rightTypeName = rightType->valueName;
-        }
+    string rightTypeName;
+    if (!CType::isSameExceptMode(leftType, rightType)) {
+        rightTypeName = rightType->shortName;
+    }
 
-        switch (op) {
-        case NMathOp::Add:
-            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "add" + rightTypeName, nullptr, make_shared<NodeList>(rightSide)));
-            return operatorOverloadNode->getVar(compiler, scope, returnMode);
-            break;
-        case NMathOp::Sub:
-            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "subtract" + rightTypeName, nullptr, make_shared<NodeList>(rightSide)));
-            return operatorOverloadNode->getVar(compiler, scope, returnMode);
-            break;
-        case NMathOp::Div:
-            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "divide" + rightTypeName, nullptr, make_shared<NodeList>(rightSide)));
-            return operatorOverloadNode->getVar(compiler, scope, returnMode);
-            break;
-        case NMathOp::Mul:
-            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "multiply" + rightTypeName, nullptr, make_shared<NodeList>(rightSide)));
-            return operatorOverloadNode->getVar(compiler, scope, returnMode);
-            break;
-        case NMathOp::Mod:
-            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "modulus" + rightTypeName, nullptr, make_shared<NodeList>(rightSide)));
-            return operatorOverloadNode->getVar(compiler, scope, returnMode);
-            break;
-        default:
-            assert(false);
-            return nullptr;
-        }
+    string functionName;
+    switch (op) {
+    case NMathOp::Add:
+        functionName = "add" + rightTypeName;
+        break;
+    case NMathOp::Sub:
+        functionName = "subtract" + rightTypeName;
+        break;
+    case NMathOp::Div:
+        functionName = "divide" + rightTypeName;
+        break;
+    case NMathOp::Mul:
+        functionName = "multiply" + rightTypeName;
+        break;
+    case NMathOp::Mod:
+        functionName = "modulus" + rightTypeName;
+        break;
+    default:
+        assert(false);
+        return nullptr;
+    }
+
+    // Check to see if we have operator overloading
+    bool isHelperFunction;
+    auto cfunction = NCall::getCFunction(compiler, loc, scope, leftVar, functionName, nullptr, returnMode, &isHelperFunction);
+    if (cfunction) {
+        operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, functionName, nullptr, make_shared<NodeList>(rightSide)));
+        return operatorOverloadNode->getVar(compiler, scope, returnMode);
     } else {
         if (!CType::isSameExceptMode(leftType, rightType)) {
-            compiler->addError(loc, CErrorCode::TypeMismatch, "left type '%s' does not match right type '%s'", leftType->fullName.c_str(), rightType->fullName.c_str());
+            compiler->addError(loc, CErrorCode::TypeMismatch, "left type '%s' does not match right type '%s' and no helper function '%s'", leftType->fullName.c_str(), rightType->fullName.c_str(), functionName.c_str());
             return nullptr;
         }
 

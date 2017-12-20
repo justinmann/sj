@@ -698,7 +698,7 @@ global()'void {
   ptr_init();
   weakptr_init();
   --c--
-  a'stack array_i32 : [array_initat(
+  a'stack array!i32 : [array_initat(
     parent: this,
     index'i32 : index,
     item'i32 : item

@@ -1,4 +1,4 @@
-a(data'stack array_char=)'stack a {
+a(data'stack array!char=)'stack a {
   this
 }
 
@@ -679,7 +679,7 @@ global()'void {
   weakptr_init();
   --c--
   a(this = a(
-    data'stack array_char = data
+    data'stack array!char = data
   ))
   void
 }

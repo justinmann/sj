@@ -1,4 +1,4 @@
-hash![stack stringstack string]()'stack hash_string_string {
+hash![stack stringstack string]()'stack hash![string, string] {
   --cdefine--
   #ifndef string_string_hash_typedef
   #define string_string_hash_typedef
@@ -753,7 +753,7 @@ global()'void {
   ptr_init();
   weakptr_init();
   --c--
-  a'stack hash_string_string : hash![stack stringstack string](this = hash![stack stringstack string]())
+  a'stack hash![string, string] : hash![stack stringstack string](this = hash![stack stringstack string]())
   hash_setat(
     parent: this,
     key'stack string : key,

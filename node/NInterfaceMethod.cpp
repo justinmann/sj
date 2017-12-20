@@ -71,8 +71,13 @@ void CInterfaceMethodArgVar::dump(Compiler* compiler, map<shared_ptr<CBaseFuncti
     ss << "interfaceArg";
 }
 
-CInterfaceMethod::CInterfaceMethod(string& name, weak_ptr<CInterface> parent, int methodIndex, CTypeMode returnMode) : CBaseFunction(CFT_InterfaceMethod, name, parent, weak_ptr<CBaseFunctionDefinition>(), true), returnMode(returnMode) {
-    
+CInterfaceMethod::CInterfaceMethod(string& name, weak_ptr<CInterface> parent, int methodIndex, CTypeMode returnMode) : CBaseFunction(CFT_InterfaceMethod, name, name, parent, weak_ptr<CBaseFunctionDefinition>(), true), returnMode(returnMode) {
+    boost::replace_all(safeName, "#", "_hash_");
+    boost::replace_all(safeName, "!", "_bang_");
+    boost::replace_all(safeName, ",", "_");
+    boost::replace_all(safeName, " ", "");
+    boost::replace_all(safeName, "[", "");
+    boost::replace_all(safeName, "]", "");
 }
 
 shared_ptr<CInterfaceMethod> CInterfaceMethod::init(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, shared_ptr<NInterfaceMethod> method, shared_ptr<CBaseFunction> thisFunction) {

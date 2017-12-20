@@ -46,7 +46,6 @@ public:
         assert(valueName.find("stack ") != 0);
         assert(valueName.find("heap ") != 0);
         assert(valueName.find("local ") != 0);
-        assert(valueName.find("#") == string::npos);
         assert(valueName.back() != '?');
         assert(category != CTC_Function);
 
@@ -57,7 +56,6 @@ public:
         assert(valueName.find("stack ") != 0);
         assert(valueName.find("heap ") != 0);
         assert(valueName.find("local ") != 0);
-        assert(valueName.find("#") == string::npos);
         assert(valueName.back() != '?');
         assert(category != CTC_Function);
 

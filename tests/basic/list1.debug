@@ -1,4 +1,4 @@
-array!heap class(datasize'i32:, data'ptr:, _isglobal'bool:, count'i32:)'stack array_heap_class {
+array!heap class(datasize'i32:, data'ptr:, _isglobal'bool:, count'i32:)'stack array!class {
   --c--
   if (_this->datasize < 0) {
   halt("size is less than zero");
@@ -23,7 +23,7 @@ array_getat(index'i32:)'heap class {
   --c--
 }
 
-array_grow(newsize'i32:)'stack array_heap_class {
+array_grow(newsize'i32:)'stack array!class {
   newdata'ptr = 0
   --c--
   if (_parent->datasize != newsize) {
@@ -64,13 +64,13 @@ array_initat(index'i32:, item'heap class:)'void {
   --c--
 }
 
-list!heap class(array'stack array_heap_class=)'stack list_heap_class {
+list!heap class(array'stack array!class=)'stack list!class {
   this
 }
 
 list_add(item'heap class:)'void {
   if parent.array.count >= parent.array.datasize {
-    parent.array'stack array_heap_class = array_grow(
+    parent.array'stack array!class = array_grow(
       parent: this,
       newsize'i32 : newsize
     )
@@ -766,8 +766,8 @@ global()'void {
   ptr_init();
   weakptr_init();
   --c--
-  a'stack list_heap_class : list!heap class(this = list!heap class(
-    array'stack array_heap_class = array
+  a'stack list!class : list!heap class(this = list!heap class(
+    array'stack array!class = array
   ))
   for x : 1i to 100000i {
     list_add(

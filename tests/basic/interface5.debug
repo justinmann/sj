@@ -1,4 +1,4 @@
-class!i32 #bar, #foo!item ()'stack class_i32 {
+class!i32 #bar, #foo!item ()'stack class!i32 {
   this
 }
 

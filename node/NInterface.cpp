@@ -75,7 +75,7 @@ void CInterfaceVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, stri
     assert(false);
 }
 
-CInterface::CInterface(CLoc loc, weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent) : CBaseFunction(CFT_Interface, definition.lock()->name, parent, definition, false), loc(loc) {
+CInterface::CInterface(CLoc loc, weak_ptr<CInterfaceDefinition> definition, weak_ptr<CFunction> parent) : CBaseFunction(CFT_Interface, definition.lock()->name, definition.lock()->safeName, parent, definition, false), loc(loc) {
     setHasThis();
 }
 
@@ -137,7 +137,7 @@ string CInterface::fullName(bool includeTemplateTypes) {
 
 shared_ptr<CTypes> CInterface::getThisTypes(Compiler* compiler) {
     if (!thisTypes) {
-        thisTypes = CType::create(compiler, static_pointer_cast<CInterfaceDefinition>(definition.lock())->packageNamespace, name.c_str(), shared_from_this());
+        thisTypes = CType::create(compiler, static_pointer_cast<CInterfaceDefinition>(definition.lock())->packageNamespace, name, safeName, shared_from_this());
     }
     return thisTypes;
 }
@@ -342,6 +342,7 @@ bool CInterface::getReturnMustRelease(Compiler* compiler) {
 
 CInterfaceDefinition::CInterfaceDefinition(CLoc loc, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, string& name_) : CBaseFunctionDefinition(CFT_Interface), loc(loc), importNamespaces(importNamespaces), packageNamespace(packageNamespace) {
     name = name_;
+    safeName = "iface_" + name_;
 }
 
 string CInterfaceDefinition::fullName() {

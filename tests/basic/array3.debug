@@ -698,7 +698,7 @@ global()'void {
   ptr_init();
   weakptr_init();
   --c--
-  a'heap array_heap_class : heap [array_initat(
+  a'heap array!class : heap [array_initat(
     parent: this,
     index'i32 : index,
     item'heap class : item

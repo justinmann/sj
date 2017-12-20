@@ -57,13 +57,14 @@ class CBaseFunction {
 public:
     CClassFunctionType classType;
     string name;
+    string safeName;
     bool hasParent;
     bool hasThis;
     weak_ptr<CBaseFunction> parent;
     weak_ptr<CBaseFunctionDefinition> definition;
     vector<FunctionDefaultValue> argDefaultValues;
     
-    CBaseFunction(CClassFunctionType classType, string name, weak_ptr<CBaseFunction> parent, weak_ptr<CBaseFunctionDefinition> definition, bool hasParent) : classType(classType), name(name), hasParent(hasParent), hasThis(false), parent(parent), definition(definition) { }
+    CBaseFunction(CClassFunctionType classType, string name, string safeName, weak_ptr<CBaseFunction> parent, weak_ptr<CBaseFunctionDefinition> definition, bool hasParent) : classType(classType), name(name), safeName(safeName), hasParent(hasParent), hasThis(false), parent(parent), definition(definition) { }
     virtual void setHasThis();
 
     virtual int getArgIndex(const string& name, CTypeMode returnMode) = 0;
@@ -91,6 +92,7 @@ class CBaseFunctionDefinition {
 public:
     CClassFunctionType classType;
     string name;
+    string safeName;
     weak_ptr<CBaseFunctionDefinition> parent;
 
     CBaseFunctionDefinition(CClassFunctionType classType) : classType(classType) { }

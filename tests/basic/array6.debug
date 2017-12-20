@@ -1,4 +1,4 @@
-array!f32(datasize'i32:, data'ptr:, _isglobal'bool:, count'i32:)'stack array_f32 {
+array!f32(datasize'i32:, data'ptr:, _isglobal'bool:, count'i32:)'stack array!f32 {
   --c--
   if (_this->datasize < 0) {
   halt("size is less than zero");
@@ -13,7 +13,7 @@ array!f32(datasize'i32:, data'ptr:, _isglobal'bool:, count'i32:)'stack array_f32
   this
 }
 
-array_filter(cb'local (:f32)bool:)'stack array_f32 {
+array_filter(cb'local (:f32)bool:)'stack array!f32 {
   newdata'ptr = 0
   newcount'i32 = 0i
   --c--
@@ -77,7 +77,7 @@ array_initat(index'i32:, item'i32:)'void {
   --c--
 }
 
-array_map!f32(cb'local (:i32)f32:)'stack array_f32 {
+array_map!f32(cb'local (:i32)f32:)'stack array!f32 {
   newdata'ptr = 0
   --c--
   sjv_newdata = malloc(_parent->count * sizeof(float));
@@ -781,7 +781,7 @@ global()'void {
   ptr_init();
   weakptr_init();
   --c--
-  a'stack array_i32 : [array_initat(
+  a'stack array!i32 : [array_initat(
     parent: this,
     index'i32 : index,
     item'i32 : item
@@ -794,11 +794,11 @@ global()'void {
     index'i32 : index,
     item'i32 : item
   )]
-  b'stack array_f32 : array_map!f32(
+  b'stack array!f32 : array_map!f32(
     parent: this,
     cb'local (:i32)f32 : cb
   )
-  c'stack array_f32 : array_filter(
+  c'stack array!f32 : array_filter(
     parent: this,
     cb'local (:f32)bool : cb
   )

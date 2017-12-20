@@ -158,7 +158,7 @@ shared_ptr<CVar> NFunction::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
 }
 
 CFunction::CFunction(vector<pair<string, vector<string>>>& importNamespaces, weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, vector<shared_ptr<NCCode>> ccodes) :
-CBaseFunction(CFT_Function, definition.lock()->name, parent, definition, false),
+CBaseFunction(CFT_Function, definition.lock()->name, definition.lock()->safeName, parent, definition, false),
 loc(CLoc::undefined),
 type(type),
 templateTypes(templateTypes),
@@ -179,10 +179,31 @@ importNamespaces(importNamespaces)
 CTypeMode functionReturnModes[] = { CTM_Stack, CTM_Heap };
 
 bool CFunction::init(Compiler* compiler, shared_ptr<NFunction> node) {
-    for (auto it : templateTypes) {
-        name = name + "_" + it->safeName;
+    if (templateTypes.size() == 0) {
+
+    }
+    else if (templateTypes.size() == 1) {
+        name = name + "!" + templateTypes[0]->shortName;
+    }
+    else {
+        name = name + "![";
+        bool isFirst = true;
+        for (auto it : templateTypes) {
+            if (isFirst) {
+                name = name + it->shortName;
+                isFirst = false;
+            }
+            else {
+                name = name + ", " + it->shortName;
+            }
+        }
+        name = name + "]";
     }
     
+    for (auto it : templateTypes) {
+        safeName = safeName + "_" + it->safeName;
+    }
+
     hasParent = !parent.expired() && name != "global" && parent.lock()->name != "global";
     if (hasParent) {
         parent.lock()->setHasThis();
@@ -1079,7 +1100,7 @@ shared_ptr<vector<shared_ptr<CVar>>> CFunction::getArgVars(Compiler* compiler, C
 
 shared_ptr<CTypes> CFunction::getThisTypes(Compiler* compiler) {
     if (!_thisTypes) {
-        _thisTypes = CType::create(compiler, static_pointer_cast<CFunctionDefinition>(definition.lock())->packageNamespace, name.c_str(), shared_from_this());
+        _thisTypes = CType::create(compiler, static_pointer_cast<CFunctionDefinition>(definition.lock())->packageNamespace, name, safeName, shared_from_this());
     }
     return _thisTypes;
 }
@@ -1396,7 +1417,7 @@ string CFunction::getCFullName(bool includeTemplateTypes) {
         ss << ns << "_";
     }
     
-    ss << definition.lock()->name;
+    ss << definition.lock()->safeName;
     if (includeTemplateTypes) {
         if (templateTypes.size() > 0) {
             ss << "_";
@@ -1542,10 +1563,18 @@ shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, 
     c->parent = parent;
     c->type = type;
     c->name = name;
+    c->safeName = name;
     c->implementedInterfaceTypeNames = implementedInterfaceTypeNames;
     c->node = node;
     c->importNamespaces = importNamespaces;
     c->packageNamespace = packageNamespace;
+
+    boost::replace_all(c->safeName, "#", "_hash_");
+    boost::replace_all(c->safeName, "!", "_bang_");
+    boost::replace_all(c->safeName, ",", "_");
+    boost::replace_all(c->safeName, " ", "");
+    boost::replace_all(c->safeName, "[", "");
+    boost::replace_all(c->safeName, "]", "");
 
     if (c->implementedInterfaceTypeNames) {
         for (auto it : *c->implementedInterfaceTypeNames) {
@@ -1603,6 +1632,12 @@ shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CLoc 
         shared_ptr<vector<shared_ptr<CInterface>>> interfaces;
         if (getImplementedInterfaceDefintions(compiler)) {
             interfaces = make_shared<vector<shared_ptr<CInterface>>>();
+        }
+
+        int targetTemplateTypeCount = node->templateTypeNames ? node->templateTypeNames->size() : 0;
+        if (templateTypes.size() != targetTemplateTypeCount) {
+            compiler->addError(loc, CErrorCode::InvalidType, "template type count does not match");
+            return nullptr;
         }
         
         func = make_shared<CFunction>(importNamespaces, shared_from_this(), type, templateTypes, funcParent, interfaces, ccodes);

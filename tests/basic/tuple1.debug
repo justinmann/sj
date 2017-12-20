@@ -1,15 +1,15 @@
-func()'stack tuple2_i32_string {
+func()'stack tuple2![i32, string] {
   tuple2![i32, stack string](this = tuple2![i32, stack string](
     item1'i32 : item1,
     item2'stack string : item2
   ))
 }
 
-tuple2![f64, i32](item1'f64:, item2'i32:)'stack tuple2_f64_i32 {
+tuple2![f64, i32](item1'f64:, item2'i32:)'stack tuple2![f64, i32] {
   this
 }
 
-tuple2![i32, stack string](item1'i32:, item2'stack string:)'stack tuple2_i32_string {
+tuple2![i32, stack string](item1'i32:, item2'stack string:)'stack tuple2![i32, string] {
   this
 }
 
@@ -689,21 +689,21 @@ global()'void {
   ptr_init();
   weakptr_init();
   --c--
-  t'stack tuple2_i32_string : func()
+  t'stack tuple2![i32, string] : func()
   a'i32 = t.item1
   b'stack string = copy t.item2
   {
-    tupleresult1'stack tuple2_i32_string : func()
+    tupleresult1'stack tuple2![i32, string] : func()
     a'i32 = tupleresult1.item1
     b'stack string = tupleresult1.item2
   }
   {
-    tupleresult2'stack tuple2_i32_string : func()
+    tupleresult2'stack tuple2![i32, string] : func()
     c'i32 : tupleresult2.item1
     d'stack string : tupleresult2.item2
   }
   {
-    tupleresult3'stack tuple2_f64_i32 : tuple2![f64, i32](this = tuple2![f64, i32](
+    tupleresult3'stack tuple2![f64, i32] : tuple2![f64, i32](this = tuple2![f64, i32](
       item1'f64 : item1,
       item2'i32 : item2
     ))

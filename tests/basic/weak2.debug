@@ -704,7 +704,7 @@ global()'void {
   d'heap class = heap class(this = class(
     x'i32 : x
   ))
-  a'stack array_weak_class : [array_initat(
+  a'stack array!class? : [array_initat(
     parent: this,
     index'i32 : index,
     item'weak class : item

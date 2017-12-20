@@ -1,4 +1,4 @@
-hash![i32i32]()'stack hash_i32_i32 {
+hash![i32i32]()'stack hash![i32, i32] {
   --cdefine--
   #ifndef i32_i32_hash_typedef
   #define i32_i32_hash_typedef
@@ -81,11 +81,11 @@ i32_tostring(val'i32:)'stack string {
   --c--
   string(this = string(
     count'i32 = count,
-    data'stack array_char = data
+    data'stack array!char = data
   ))
 }
 
-string(count'i32=, data'stack array_char=)'stack string {
+string(count'i32=, data'stack array!char=)'stack string {
   this
 }
 
@@ -771,7 +771,7 @@ global()'void {
   ptr_init();
   weakptr_init();
   --c--
-  a'stack hash_i32_i32 : hash![i32i32](this = hash![i32i32]())
+  a'stack hash![i32, i32] : hash![i32i32](this = hash![i32i32]())
   hash_setat(
     parent: this,
     key'i32 : key,

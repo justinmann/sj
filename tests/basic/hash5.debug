@@ -2,7 +2,7 @@ class(x'i32:)'heap class {
   this
 }
 
-hash![i32, weak class]()'stack hash_i32_weak_class {
+hash![i32, weak class]()'stack hash![i32, class?] {
   --cdefine--
   #ifndef i32_weak_class_hash_typedef
   #define i32_weak_class_hash_typedef
@@ -744,7 +744,7 @@ global()'void {
   ptr_init();
   weakptr_init();
   --c--
-  a'stack hash_i32_weak_class : hash![i32, weak class](this = hash![i32, weak class]())
+  a'stack hash![i32, class?] : hash![i32, weak class](this = hash![i32, weak class]())
   c'heap class = heap class(this = class(
     x'i32 : x
   ))

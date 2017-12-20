@@ -8,7 +8,7 @@ array_getat(index'i32:)'char {
   --c--
 }
 
-array_isequal(test'stack array_char:)'bool {
+array_isequal(test'stack array!char:)'bool {
   --c--
   if (_parent->count != test->count) {
   *_return = false;
@@ -18,14 +18,14 @@ array_isequal(test'stack array_char:)'bool {
   --c--
 }
 
-array_islessorequal(test'stack array_char:)'bool {
+array_islessorequal(test'stack array!char:)'bool {
   --c--
   bool result = memcmp(_parent->data, test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(char)) <= 0;		
   return;;		
   --c--
 }
 
-string(count'i32=, data'stack array_char=)'stack string {
+string(count'i32=, data'stack array!char=)'stack string {
   this
 }
 
@@ -39,14 +39,14 @@ string_getat(index'i32:)'char {
 string_isequal(test'stack string:)'bool {
   array_isequal(
     parent: this,
-    test'stack array_char : test
+    test'stack array!char : test
   )
 }
 
 string_islessorequal(test'stack string:)'bool {
   array_islessorequal(
     parent: this,
-    test'stack array_char : test
+    test'stack array!char : test
   )
 }
 
@@ -728,18 +728,18 @@ global()'void {
   --c--
   a'stack string : string(this = string(
     count'i32 = count,
-    data'stack array_char = data
+    data'stack array!char = data
   ))
   b'stack string : string(this = string(
     count'i32 = count,
-    data'stack array_char = data
+    data'stack array!char = data
   ))
   c'char : 'a'
   d'char : '\''
   e'char : '\n'
   f'stack string : string(this = string(
     count'i32 = count,
-    data'stack array_char = data
+    data'stack array!char = data
   ))
   h'char : string_getat(
     parent: this,

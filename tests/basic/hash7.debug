@@ -730,7 +730,7 @@ global()'void {
   ptr_init();
   weakptr_init();
   --c--
-  a'stack hash_string_string : {hash_setat(
+  a'stack hash![string, string] : {hash_setat(
     parent: this,
     key'stack string : key,
     val'stack string : val
