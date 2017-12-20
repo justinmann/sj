@@ -68,6 +68,10 @@ hash![stack string, weak #model]()'stack hash![string, #model?] {
   this
 }
 
+nauscene3delement #element (children'stack array!#model:, lookatmin'stack vec3=, lookatmax'stack vec3=, fieldofview'f32=, znear'f32=, zfar'f32=, light'stack light=, projection'stack mat4=, view'stack mat4=, world'stack mat4=, _rect'stack rect=, _isdragging'bool=, _startdrag'stack point=, _lookat'stack vec3=, _lookatdrag'stack vec3=)'heap nauscene3delement {
+  this
+}
+
 runloop()'void {
   --c--
   #ifdef EMSCRIPTEN
@@ -1568,6 +1572,11 @@ global()'void {
   --c--
   glid_init();
   --c--
+  {
+    fill'imagestretch : 0
+    center'imagestretch : 1
+    aspectratio'imagestretch : 2
+  }
   --cstruct--
   typedef struct {
   float x, y, z;    // position
@@ -5072,6 +5081,23 @@ global()'void {
   vertex_location_texture_normal_format'stack string : string(this = string(
     count'i32 = count,
     data'stack array!char = data
+  ))
+  nauscene'heap nauscene3delement : heap nauscene3delement(this = nauscene3delement(
+    children'stack array!#model : children,
+    lookatmin'stack vec3 = lookatmin,
+    lookatmax'stack vec3 = lookatmax,
+    fieldofview'f32 = fieldofview,
+    znear'f32 = znear,
+    zfar'f32 = zfar,
+    light'stack light = light,
+    projection'stack mat4 = projection,
+    view'stack mat4 = view,
+    world'stack mat4 = world,
+    _rect'stack rect = _rect,
+    _isdragging'bool = _isdragging,
+    _startdrag'stack point = _startdrag,
+    _lookat'stack vec3 = _lookat,
+    _lookatdrag'stack vec3 = _lookatdrag
   ))
   root'local #element : fillelement(this = fillelement(
     children'stack array!#element : children,

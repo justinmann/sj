@@ -1568,6 +1568,11 @@ global()'void {
   --c--
   glid_init();
   --c--
+  {
+    fill'imagestretch : 0
+    center'imagestretch : 1
+    aspectratio'imagestretch : 2
+  }
   --cstruct--
   typedef struct {
   float x, y, z;    // position
