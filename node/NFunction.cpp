@@ -540,13 +540,13 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                                 auto interfaceReturnType = interfaceMethod->getReturnType(compiler, interfaceMethod->returnMode);
                                 auto implementationReturnType = implementation->getReturnType(compiler, interfaceMethod->returnMode);
                                 if (interfaceReturnType != implementationReturnType) {
-                                    compiler->addError(loc, CErrorCode::InterfaceMethodTypeMismatch, "return type '%s' does not match '%s'", implementationReturnType->fullName.c_str(), interfaceReturnType->fullName.c_str());
+                                    compiler->addError(implementation->loc, CErrorCode::InterfaceMethodTypeMismatch, "return type '%s' does not match '%s'", implementationReturnType->fullName.c_str(), interfaceReturnType->fullName.c_str());
                                 }
 
                                 implementation->transpileDefinition(compiler, trOutput);
 
                                 if (implementation->_data[interfaceMethod->returnMode].isInvalid) {
-                                    compiler->addError(loc, CErrorCode::InterfaceMethodDoesNotExist, "method '%s' does not support %s return mode", implementation->name.c_str(), interfaceMethod->returnMode == CTM_Heap ? "heap" : "stack");
+                                    compiler->addError(implementation->loc, CErrorCode::InterfaceMethodDoesNotExist, "method '%s' does not support %s return mode", implementation->name.c_str(), interfaceMethod->returnMode == CTM_Heap ? "heap" : "stack");
                                     continue;
                                 }
 
