@@ -15,7 +15,7 @@ scene3dElement #element (
 	up := vec3(0.0f, 1.0f, 0.0f)
 	fieldOfView := 90.0f
 	zNear := 1.0f
-	zFar := 20.0f
+	zFar := 100.0f
 	light := light()
 	projection := mat4()
 	view := mat4()
@@ -44,6 +44,9 @@ scene3dElement #element (
 		}
 
 	    glEnable(glFeature.GL_DEPTH_TEST)
+	    glPushViewport(_rect, scene.windowRect)
+
+	    debug.writeLine(_rect.asString())
 
 	    a : list!heap #model()
 
@@ -58,13 +61,15 @@ scene3dElement #element (
 			child.render()
 		}
 
+	    glPopViewport(_rect, scene.windowRect)
 	    glDisable(glFeature.GL_DEPTH_TEST)
 	}
 
-	fireMouseEvent(mouseEvent : 'mouseEvent)'void {
+	fireMouseEvent(mouseEvent : 'mouseEvent)'bool {
 		for i : 0 to children.count {
 			child : children[i]
 			child.fireMouseEvent(mouseEvent)
 		}
+		true
 	}
 ) { this }

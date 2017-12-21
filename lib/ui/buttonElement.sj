@@ -77,8 +77,8 @@ buttonElement #element (
 	}
 
 	onMouseUp(point : 'point)'bool {
-		mouse_release(heap parent as #element)
-		if _state == buttonState.pressed {
+		if mouse_hasCapture(heap parent as #element) {
+			mouse_release(heap parent as #element)
 			ifValid onClick {
 				onClick()
 			}

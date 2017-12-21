@@ -14,7 +14,7 @@ scene2dModel #model (
 	_view := mat4()
 	_light := light()
 	_projectedCenter := vec4()
-	_framebuffer : glGenFramebuffer()
+	_framebuffer := framebuffer()
     _texture := texture()
     _renderbuffer := renderbuffer()
 
@@ -88,6 +88,7 @@ scene2dModel #model (
 		modelsById[id] = weak (this as #model)
 	}
 
+    _framebuffer = glGenFramebuffer(textureSize)
     _texture = glGenTexture(textureSize)
     _renderbuffer = glGenRenderbuffer(textureSize)
 

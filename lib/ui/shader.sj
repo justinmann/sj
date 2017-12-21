@@ -1,6 +1,4 @@
 boxShader : shader("shaders/v3f-c4f.vert", "shaders/v3f-c4f.frag")
-blurHorizontalShader : shader("shaders/v3f-t2f-c4f.vert", "shaders/blur-horizontal.frag")
-blurVerticalShader : shader("shaders/v3f-t2f-c4f.vert", "shaders/blur-vertical.frag")
 imageShader : shader("shaders/v3f-t2f.vert", "shaders/v3f-t2f.frag")
 phongColorShader : shader("shaders/v3f-n3f-phong.vert", "shaders/v3f-n3f-phong.frag")
 phongTextureShader : shader("shaders/v3f-t2f-n3f-phong.vert", "shaders/v3f-t2f-n3f-phong.frag")

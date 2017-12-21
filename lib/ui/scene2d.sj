@@ -3,21 +3,21 @@ scene2d(
 	model := mat4()
 	view := mat4()
 	projection := mat4()
+	windowRect := rect()
 
-	clear()'void {
+	start()'void {
+		windowRect = rect(0, 0, _size.w, _size.h)
+		glPushViewport(windowRect, windowRect)
 	    --c--
 	    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	    glEnable( GL_TEXTURE_2D );
 	    glDisable( GL_DEPTH_TEST );
 		--c--
-		updateViewport()
 		void
 	}
 
-	updateViewport()'void {
-		--c--
-	    glViewport(0, 0, _parent->_size.w, _parent->_size.h);
-		--c--	
+	end()'void {
+		glPopViewport(windowRect, windowRect)	
 	}
 
 	getSize()'size {

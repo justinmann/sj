@@ -1,4 +1,5 @@
 framebuffer(
+    size : size()
     id : 0u
 ) { 
     this 

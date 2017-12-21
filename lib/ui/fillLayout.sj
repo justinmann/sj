@@ -1,6 +1,7 @@
 fillLayout #element (
 	children : array!heap #element()
 	margin := margin()
+	effect := empty'heap #effect
 	_rect := rect()
 
 	getSize(maxSize : 'size) {
@@ -18,17 +19,27 @@ fillLayout #element (
 	setRect(rect_ : 'rect) {
 		_rect = copy rect_
 		innerRect : _rect - margin
-		for i : 0 to children.count {
-			child : children[i]
-			child.setRect(innerRect)
-		}	
+
+		ifValid effect {
+			effect.setRect(innerRect, children)
+		} elseEmpty {
+			for i : 0 to children.count {
+				child : children[i]
+				child.setRect(innerRect)
+			}	
+		}
+
 		void	
 	}
 
 	render(scene : 'scene2d) {
-		for i : 0 to children.count {
-			child : children[i]
-			child.render(scene)
+		ifValid effect {
+			effect.render(scene, children)
+		} elseEmpty {
+			for i : 0 to children.count {
+				child : children[i]
+				child.render(scene)
+			}
 		}
 	}
 

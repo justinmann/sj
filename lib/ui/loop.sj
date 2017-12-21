@@ -9,12 +9,13 @@ mainLoop() {
 
     size : rootWindowRenderer.getSize()
     rootScene.setSize(size)
-    rootScene.clear()
+    rootScene.start()
     rect : rect(0, 0, size.w, size.h)
     if loopLastRect != rect {
         root.setRect(rect)
     }
     root.render(rootScene)
+    rootScene.end()
     rootWindowRenderer.present()
 
     mouseEventType := empty'mouseEventType

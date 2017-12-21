@@ -92,9 +92,25 @@ glDisable(feature : 'glFeature) {
 	--c--
 }
 
-glViewport(rect : 'rect) {
+glViewports : list!rect()
+
+glPushViewport(rect : 'rect, sceneRect : 'rect) {
+	newRect : rect(rect.x, sceneRect.h - (rect.y + rect.h), rect.w, rect.h)
+	glViewports.add(newRect)
 	--c--
-	glViewport(rect->x, rect->y, rect->w, rect->h);
+	glViewport(sjv_newrect.x, sjv_newrect.y, sjv_newrect.w, sjv_newrect.h);
+	--c--
+}
+
+glPopViewport(rect : 'rect, sceneRect : 'rect) {
+	oldRect : rect(rect.x, sceneRect.h - (rect.y + rect.h), rect.w, rect.h)
+	if glViewports[glViewports.count - 1] != oldRect {
+		halt("viewport being pop'ed is wrong")
+	}
+	glViewports.removeAt(glViewports.count - 1)
+	newRect : if glViewports.count > 0 { glViewports[glViewports.count - 1] } else { rect() }
+	--c--
+	glViewport(sjv_newrect.x, sjv_newrect.y, sjv_newrect.w, sjv_newrect.h);
 	--c--
 }
 
@@ -149,12 +165,24 @@ glUniformVec3(loc : 'i32, v : 'vec3) {
 	--c--	
 }
 
-glGenFramebuffer()'framebuffer {
+glUniformI32(loc : 'i32, v : 'i32) {
+	--c--
+    glUniform1i(loc, v);
+	--c--	
+}
+
+glUniformF32(loc : 'i32, v : 'f32) {
+	--c--
+    glUniform1f(loc, v);
+	--c--	
+}
+
+glGenFramebuffer(size : 'size)'framebuffer {
 	id := 0u
 	--c--
 	glGenFramebuffers(1, &sjv_id);
 	--c--
-	framebuffer(id)
+	framebuffer(copy size, id)
 }
 
 glGenTexture(size: 'size)'texture {
