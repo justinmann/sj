@@ -9,7 +9,7 @@ fadeEffect #effect (
 
 	getRect()'rect { copy _rect }
 
-	setRect(rect_ : 'rect, children : 'array!heap #element) {
+	setRect(rect_ : 'rect, cb : '(:rect)void) {
 		if _rect != rect_ {
 			_rect = copy rect_
 
@@ -22,15 +22,12 @@ fadeEffect #effect (
 			_vertexBuffer = empty'boxVertexBuffer
 		}
 
-		for i : 0 to children.count {
-			child : children[i]
-			child.setRect(rect(0, 0, _rect.w, _rect.h))
-		}	
+		cb(rect(0, 0, _rect.w, _rect.h))
 
 		void	
 	}
 
-	render(scene : 'scene2d, children : 'array!heap #element) {
+	render(scene : 'scene2d, cb : '(:scene2d)void) {
 		if isEmpty(_vertexBuffer) {
 			_vertexBuffer = valid(boxVertexBuffer(
 				rect : copy _rect
@@ -48,10 +45,7 @@ fadeEffect #effect (
 			_innerScene.setSize(f1.size)
 			_innerScene.start()
 
-			for i : 0 to children.count {
-				child : children[i]
-				child.render(_innerScene)
-			}
+			cb(_innerScene)
 
 			_innerScene.end()
 			

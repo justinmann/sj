@@ -43,15 +43,15 @@ scene2dModel #model (
 	render()'void {
 		glPushFramebuffer(_framebuffer)
 
-		_innerScene.clear()
+		_innerScene.start()
 		for i : 0 to children.count {
 			child : children[i]
 			child.render(_innerScene)
 		}
+		_innerScene.end()
 
 		glPopFramebuffer(_framebuffer)
 
-		glViewport(_sceneRect)
 		glEnable(glFeature.GL_DEPTH_TEST)
 		viewWorld : _view * _world * model
 		normalMat : viewWorld.invert().transpose()

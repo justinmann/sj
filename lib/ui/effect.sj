@@ -1,5 +1,5 @@
 #effect(
 	getRect()'rect
-	setRect(rect : 'rect, children : 'array!heap #element)'void
-	render(scene : 'scene2d, children : 'array!heap #element)'void
+	setRect(rect : 'rect, cb : '(:rect)void)'void
+	render(scene : 'scene2d, cb : '(:scene2d)void)'void
 )

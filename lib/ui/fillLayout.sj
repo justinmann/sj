@@ -21,26 +21,35 @@ fillLayout #element (
 		innerRect : _rect - margin
 
 		ifValid effect {
-			effect.setRect(innerRect, children)
+			effect.setRect(innerRect, parent.setRectInner)
 		} elseEmpty {
-			for i : 0 to children.count {
-				child : children[i]
-				child.setRect(innerRect)
-			}	
+			setRectInner(innerRect)
 		}
 
 		void	
 	}
 
+	setRectInner(innerRect : 'rect) {
+		for i : 0 to children.count {
+			child : children[i]
+			child.setRect(innerRect)
+		}	
+		void	
+	}
+
 	render(scene : 'scene2d) {
 		ifValid effect {
-			effect.render(scene, children)
+			effect.render(scene, parent.renderInner)
 		} elseEmpty {
-			for i : 0 to children.count {
-				child : children[i]
-				child.render(scene)
-			}
+			renderInner(scene)
 		}
+	}
+
+	renderInner(scene : 'scene2d) {
+		for i : 0 to children.count {
+			child : children[i]
+			child.render(scene)
+		}	
 	}
 
 	fireMouseEvent(mouseEvent : 'mouseEvent) {
