@@ -99,6 +99,6 @@ borderLayout #element (
 	}
 
 	fireMouseEvent(mouseEvent : 'mouseEvent)'bool {
-		mouseEvent.fireChildren(children.array)
+		mouseEvent.fireChildren(children)
 	}
 ) { this }

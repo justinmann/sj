@@ -161,10 +161,7 @@ gridLayout #element (
 		}
 	}
 
-	fireMouseEvent(mouseEvent : 'mouseEvent)'void {
-		for i : 0 to children.count {
-			child : children[i]
-			child.fireMouseEvent(mouseEvent)
-		}	
+	fireMouseEvent(mouseEvent : 'mouseEvent) {
+		mouseEvent.fireChildren(children)
 	}
 ) { this }
