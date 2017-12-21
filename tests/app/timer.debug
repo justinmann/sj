@@ -10,7 +10,7 @@ color(r'f32:, g'f32:, b'f32:, a'f32:)'stack color {
   this
 }
 
-filllayout #element (children'stack array!#element:, margin'stack margin=, _rect'stack rect=)'heap filllayout {
+filllayout #element (children'stack array!#element:, margin'stack margin=, effect'heap #effect?=, _rect'stack rect=)'heap filllayout {
   this
 }
 
@@ -83,6 +83,10 @@ hash![stack string, weak #model]()'stack hash![string, #model?] {
   this
 }
 
+list!stack rect(array'stack array!rect=)'stack list!rect {
+  this
+}
+
 list!u32(array'stack array!u32=)'stack list!u32 {
   this
 }
@@ -105,7 +109,7 @@ runloop()'void {
   --c--
 }
 
-scene2d(_size'stack size=, model'stack mat4=, view'stack mat4=, projection'stack mat4=)'stack scene2d {
+scene2d(_size'stack size=, model'stack mat4=, view'stack mat4=, projection'stack mat4=, windowrect'stack rect=)'stack scene2d {
   this
 }
 
@@ -849,13 +853,22 @@ global()'void {
     _size'stack size = _size,
     model'stack mat4 = model,
     view'stack mat4 = view,
-    projection'stack mat4 = projection
+    projection'stack mat4 = projection,
+    windowrect'stack rect = windowrect
   ))
   modelsbyid'stack hash![string, #model?] : hash![stack string, weak #model](this = hash![stack string, weak #model]())
   elementsbyid'stack hash![string, #element?] : hash![stack string, weak #element](this = hash![stack string, weak #element]())
   animator'stack anon1 : anon1(this = anon1(
     animations'stack list!#animation : animations,
     current'i32 = current
+  ))
+  blurhorizontalshader'stack shader : shader(this = shader(
+    vertex'stack string : vertex,
+    pixel'stack string : pixel
+  ))
+  blurverticalshader'stack shader : shader(this = shader(
+    vertex'stack string : vertex,
+    pixel'stack string : pixel
   ))
   {
     fill'borderposition : 0
@@ -1510,6 +1523,10 @@ global()'void {
   /* The transformation is completed. */
   }
   --cfunction--
+  fadeshader'stack shader : shader(this = shader(
+    vertex'stack string : vertex,
+    pixel'stack string : pixel
+  ))
   {
     topbottom'flowlayoutorientation : 0
     leftright'flowlayoutorientation : 1
@@ -1589,6 +1606,9 @@ global()'void {
     gl_framebuffer_incomplete_missing_attachment'glframebufferstatus : 0x8CD7
     gl_framebuffer_unsupported'glframebufferstatus : 0x8CDD
   }
+  glviewports'stack list!rect : list!stack rect(this = list!stack rect(
+    array'stack array!rect = array
+  ))
   glframebuffers'stack list!u32 : list!u32(this = list!u32(
     array'stack array!u32 = array
   ))
@@ -1672,14 +1692,6 @@ global()'void {
     down'mouseeventtype : 2
   }
   boxshader'stack shader : shader(this = shader(
-    vertex'stack string : vertex,
-    pixel'stack string : pixel
-  ))
-  blurhorizontalshader'stack shader : shader(this = shader(
-    vertex'stack string : vertex,
-    pixel'stack string : pixel
-  ))
-  blurverticalshader'stack shader : shader(this = shader(
     vertex'stack string : vertex,
     pixel'stack string : pixel
   ))
@@ -5177,6 +5189,7 @@ global()'void {
   root'heap #element : heap filllayout(this = filllayout(
     children'stack array!#element : children,
     margin'stack margin = margin,
+    effect'heap #effect? = effect,
     _rect'stack rect = _rect
   )) as heap #element
   runloop()
