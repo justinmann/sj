@@ -816,9 +816,12 @@ void sjf_namespace1_class_asinterface(sjs_namespace1_class* _this, int typeId, s
             sjf_namespace1_class_as_sji_namespace1_foo(_this, (sji_namespace1_foo*)_return);
             break;
         }
-    }
 
-    _return->_parent = 0;
+        default: {
+            _return->_parent = 0;
+            break;
+        }
+    }
 }
 
 void sjf_namespace1_class_copy(sjs_namespace1_class* _this, sjs_namespace1_class* _from) {
@@ -841,9 +844,12 @@ void sjf_namespace1_class_heap_asinterface(sjs_namespace1_class* _this, int type
             sjf_namespace1_class_heap_as_sji_namespace1_foo(_this, (sji_namespace1_foo*)_return);
             break;
         }
-    }
 
-    _return->_parent = 0;
+        default: {
+            _return->_parent = 0;
+            break;
+        }
+    }
 }
 
 void sjf_namespace1_class_namespace1_test1(sjs_namespace1_class* _parent, int32_t* _return) {
@@ -864,9 +870,12 @@ void sjf_namespace2_class_asinterface(sjs_namespace2_class* _this, int typeId, s
             sjf_namespace2_class_as_sji_namespace2_foo(_this, (sji_namespace2_foo*)_return);
             break;
         }
-    }
 
-    _return->_parent = 0;
+        default: {
+            _return->_parent = 0;
+            break;
+        }
+    }
 }
 
 void sjf_namespace2_class_copy(sjs_namespace2_class* _this, sjs_namespace2_class* _from) {
@@ -889,9 +898,12 @@ void sjf_namespace2_class_heap_asinterface(sjs_namespace2_class* _this, int type
             sjf_namespace2_class_heap_as_sji_namespace2_foo(_this, (sji_namespace2_foo*)_return);
             break;
         }
-    }
 
-    _return->_parent = 0;
+        default: {
+            _return->_parent = 0;
+            break;
+        }
+    }
 }
 
 void sjf_namespace2_class_namespace2_test2(sjs_namespace2_class* _parent, int32_t* _return) {

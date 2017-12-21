@@ -2,7 +2,7 @@ include "lib/common/common.sj"
 
 
 func() {
-	1.toString() + 2.toString()
+	1.asString() + 2.asString()
 }
 
 console.writeLine(func())

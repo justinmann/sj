@@ -2,11 +2,11 @@ class(x'i32:)'heap class {
   this
 }
 
-class_tostring(x'stack class:)'i32 {
+class_asstring(x'stack class:)'i32 {
   2i
 }
 
-i32_tostring(val'i32:)'stack string {
+i32_asstring(val'i32:)'stack string {
   count'i32 = 0i
   data'ptr = 0
   --c--
@@ -700,13 +700,13 @@ global()'void {
   Invalid compiler
   #endif
   --cinclude--
-  i32_tostring(
+  i32_asstring(
     val'i32 : val
   )
   c'heap class : heap class(this = class(
     x'i32 : x
   ))
-  class_tostring(
+  class_asstring(
     x'stack class : x
   )
   void

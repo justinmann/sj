@@ -862,9 +862,12 @@ void sjf_class_asinterface(sjs_class* _this, int typeId, sjs_interface* _return)
             sjf_class_as_sji_foo(_this, (sji_foo*)_return);
             break;
         }
-    }
 
-    _return->_parent = 0;
+        default: {
+            _return->_parent = 0;
+            break;
+        }
+    }
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
@@ -887,9 +890,12 @@ void sjf_class_heap_asinterface(sjs_class* _this, int typeId, sjs_interface* _re
             sjf_class_heap_as_sji_foo(_this, (sji_foo*)_return);
             break;
         }
-    }
 
-    _return->_parent = 0;
+        default: {
+            _return->_parent = 0;
+            break;
+        }
+    }
 }
 
 void sjf_class_test(sjs_class* _parent, sjs_string* _return) {

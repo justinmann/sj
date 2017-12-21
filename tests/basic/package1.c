@@ -832,9 +832,12 @@ void sjf_a_class_asinterface(sjs_a_class* _this, int typeId, sjs_interface* _ret
             sjf_a_class_as_sji_a_foo(_this, (sji_a_foo*)_return);
             break;
         }
-    }
 
-    _return->_parent = 0;
+        default: {
+            _return->_parent = 0;
+            break;
+        }
+    }
 }
 
 void sjf_a_class_copy(sjs_a_class* _this, sjs_a_class* _from) {
@@ -857,9 +860,12 @@ void sjf_a_class_heap_asinterface(sjs_a_class* _this, int typeId, sjs_interface*
             sjf_a_class_heap_as_sji_a_foo(_this, (sji_a_foo*)_return);
             break;
         }
-    }
 
-    _return->_parent = 0;
+        default: {
+            _return->_parent = 0;
+            break;
+        }
+    }
 }
 
 void sjf_a_func(int32_t* _return) {
@@ -880,9 +886,12 @@ void sjf_b_class_asinterface(sjs_b_class* _this, int typeId, sjs_interface* _ret
             sjf_b_class_as_sji_b_foo(_this, (sji_b_foo*)_return);
             break;
         }
-    }
 
-    _return->_parent = 0;
+        default: {
+            _return->_parent = 0;
+            break;
+        }
+    }
 }
 
 void sjf_b_class_b_bar(sjs_b_class* _parent, int32_t* _return) {
@@ -909,9 +918,12 @@ void sjf_b_class_heap_asinterface(sjs_b_class* _this, int typeId, sjs_interface*
             sjf_b_class_heap_as_sji_b_foo(_this, (sji_b_foo*)_return);
             break;
         }
-    }
 
-    _return->_parent = 0;
+        default: {
+            _return->_parent = 0;
+            break;
+        }
+    }
 }
 
 void sjf_b_func(int32_t* _return) {

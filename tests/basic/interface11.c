@@ -670,8 +670,8 @@ void sjf_class_heap_asinterface(sjs_class* _this, int typeId, sjs_interface* _re
 void sjf_class_isequal(sjs_class* _parent, sji_foo f, bool* _return);
 void sjf_class_test(sjs_class* _parent, int32_t* _return);
 void sjf_debug_writeline(sjs_string* data);
-void sjf_i32_tostring(int32_t val, sjs_string* _return);
-void sjf_i32_tostring_heap(int32_t val, sjs_string** _return);
+void sjf_i32_asstring(int32_t val, sjs_string* _return);
+void sjf_i32_asstring_heap(int32_t val, sjs_string** _return);
 void sjf_string(sjs_string* _this);
 void sjf_string_copy(sjs_string* _this, sjs_string* _from);
 void sjf_string_destroy(sjs_string* _this);
@@ -875,9 +875,12 @@ void sjf_class_asinterface(sjs_class* _this, int typeId, sjs_interface* _return)
             sjf_class_as_sji_foo(_this, (sji_foo*)_return);
             break;
         }
-    }
 
-    _return->_parent = 0;
+        default: {
+            _return->_parent = 0;
+            break;
+        }
+    }
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
@@ -901,9 +904,12 @@ void sjf_class_heap_asinterface(sjs_class* _this, int typeId, sjs_interface* _re
             sjf_class_heap_as_sji_foo(_this, (sji_foo*)_return);
             break;
         }
-    }
 
-    _return->_parent = 0;
+        default: {
+            _return->_parent = 0;
+            break;
+        }
+    }
 }
 
 void sjf_class_isequal(sjs_class* _parent, sji_foo f, bool* _return) {
@@ -928,7 +934,7 @@ void sjf_debug_writeline(sjs_string* data) {
     printf("%s\n", (char*)data->data.data);
 }
 
-void sjf_i32_tostring(int32_t val, sjs_string* _return) {
+void sjf_i32_asstring(int32_t val, sjs_string* _return) {
     int32_t sjt_math3;
     int32_t sjt_math4;
     int32_t sjt_math5;
@@ -956,7 +962,7 @@ void sjf_i32_tostring(int32_t val, sjs_string* _return) {
     sjf_string(_return);
 }
 
-void sjf_i32_tostring_heap(int32_t val, sjs_string** _return) {
+void sjf_i32_asstring_heap(int32_t val, sjs_string** _return) {
     int32_t sjt_math10;
     int32_t sjt_math7;
     int32_t sjt_math8;
@@ -1073,7 +1079,7 @@ int main(int argc, char** argv) {
         sjt_functionParam2 = result2;
     }
 
-    sjf_i32_tostring(sjt_functionParam2, &sjt_call1);
+    sjf_i32_asstring(sjt_functionParam2, &sjt_call1);
     sjt_functionParam1 = &sjt_call1;
     sjf_debug_writeline(sjt_functionParam1);
     sjv_c->_refCount--;
@@ -1134,7 +1140,7 @@ int main(int argc, char** argv) {
         sjt_functionParam4 = result3;
     }
 
-    sjf_i32_tostring(sjt_functionParam4, &sjt_call2);
+    sjf_i32_asstring(sjt_functionParam4, &sjt_call2);
     sjt_functionParam3 = &sjt_call2;
     sjf_debug_writeline(sjt_functionParam3);
     main_destroy();

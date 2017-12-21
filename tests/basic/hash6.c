@@ -674,8 +674,8 @@ void sjf_hash_weak_class_i32_destroy(sjs_hash_weak_class_i32* _this);
 void sjf_hash_weak_class_i32_getat(sjs_hash_weak_class_i32* _parent, sjs_class* key, int32_option* _return);
 void sjf_hash_weak_class_i32_heap(sjs_hash_weak_class_i32* _this);
 void sjf_hash_weak_class_i32_setat(sjs_hash_weak_class_i32* _parent, sjs_class* key, int32_t val);
-void sjf_i32_tostring(int32_t val, sjs_string* _return);
-void sjf_i32_tostring_heap(int32_t val, sjs_string** _return);
+void sjf_i32_asstring(int32_t val, sjs_string* _return);
+void sjf_i32_asstring_heap(int32_t val, sjs_string** _return);
 void sjf_string(sjs_string* _this);
 void sjf_string_copy(sjs_string* _this, sjs_string* _from);
 void sjf_string_destroy(sjs_string* _this);
@@ -1035,7 +1035,7 @@ kh_val(p, k) = val;
 #endif
 }
 
-void sjf_i32_tostring(int32_t val, sjs_string* _return) {
+void sjf_i32_asstring(int32_t val, sjs_string* _return) {
     int32_t sjt_math3;
     int32_t sjt_math4;
     int32_t sjt_math5;
@@ -1063,7 +1063,7 @@ void sjf_i32_tostring(int32_t val, sjs_string* _return) {
     sjf_string(_return);
 }
 
-void sjf_i32_tostring_heap(int32_t val, sjs_string** _return) {
+void sjf_i32_asstring_heap(int32_t val, sjs_string** _return) {
     int32_t sjt_math10;
     int32_t sjt_math7;
     int32_t sjt_math8;
@@ -1161,7 +1161,7 @@ int main(int argc, char** argv) {
         sjt_functionParam4 = result2;
     }
 
-    sjf_i32_tostring(sjt_functionParam4, &sjt_call1);
+    sjf_i32_asstring(sjt_functionParam4, &sjt_call1);
     sjt_functionParam3 = &sjt_call1;
     sjf_debug_writeline(sjt_functionParam3);
     sjv_c->_refCount--;
@@ -1203,7 +1203,7 @@ int main(int argc, char** argv) {
         sjt_functionParam8 = result3;
     }
 
-    sjf_i32_tostring(sjt_functionParam8, &sjt_call2);
+    sjf_i32_asstring(sjt_functionParam8, &sjt_call2);
     sjt_functionParam7 = &sjt_call2;
     sjf_debug_writeline(sjt_functionParam7);
     main_destroy();

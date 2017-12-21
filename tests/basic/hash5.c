@@ -678,10 +678,10 @@ void sjf_hash_i32_weak_class_destroy(sjs_hash_i32_weak_class* _this);
 void sjf_hash_i32_weak_class_getat(sjs_hash_i32_weak_class* _parent, int32_t key, sjs_class** _return);
 void sjf_hash_i32_weak_class_heap(sjs_hash_i32_weak_class* _this);
 void sjf_hash_i32_weak_class_setat(sjs_hash_i32_weak_class* _parent, int32_t key, sjs_class* val);
+void sjf_i32_asstring(int32_t val, sjs_string* _return);
+void sjf_i32_asstring_heap(int32_t val, sjs_string** _return);
 void sjf_i32_hash(int32_t val, uint32_t* _return);
 void sjf_i32_isequal(int32_t l, int32_t r, bool* _return);
-void sjf_i32_tostring(int32_t val, sjs_string* _return);
-void sjf_i32_tostring_heap(int32_t val, sjs_string** _return);
 void sjf_string(sjs_string* _this);
 void sjf_string_copy(sjs_string* _this, sjs_string* _from);
 void sjf_string_destroy(sjs_string* _this);
@@ -1024,23 +1024,7 @@ if (kh_val(p, k) != 0) { weakptr_cb_add(kh_val(p, k), weakptrcb8); }
 #endif
 }
 
-void sjf_i32_hash(int32_t val, uint32_t* _return) {
-    int32_t sjt_cast1;
-
-    sjt_cast1 = val;
-    (*_return) = (uint32_t)sjt_cast1;
-}
-
-void sjf_i32_isequal(int32_t l, int32_t r, bool* _return) {
-    int32_t sjt_compare1;
-    int32_t sjt_compare2;
-
-    sjt_compare1 = l;
-    sjt_compare2 = r;
-    (*_return) = sjt_compare1 == sjt_compare2;
-}
-
-void sjf_i32_tostring(int32_t val, sjs_string* _return) {
+void sjf_i32_asstring(int32_t val, sjs_string* _return) {
     int32_t sjt_math3;
     int32_t sjt_math4;
     int32_t sjt_math5;
@@ -1068,7 +1052,7 @@ void sjf_i32_tostring(int32_t val, sjs_string* _return) {
     sjf_string(_return);
 }
 
-void sjf_i32_tostring_heap(int32_t val, sjs_string** _return) {
+void sjf_i32_asstring_heap(int32_t val, sjs_string** _return) {
     int32_t sjt_math10;
     int32_t sjt_math7;
     int32_t sjt_math8;
@@ -1095,6 +1079,22 @@ void sjf_i32_tostring_heap(int32_t val, sjs_string** _return) {
     (*_return)->data.count = sjt_math9 + sjt_math10;
     sjf_array_char(&(*_return)->data);
     sjf_string_heap((*_return));
+}
+
+void sjf_i32_hash(int32_t val, uint32_t* _return) {
+    int32_t sjt_cast1;
+
+    sjt_cast1 = val;
+    (*_return) = (uint32_t)sjt_cast1;
+}
+
+void sjf_i32_isequal(int32_t l, int32_t r, bool* _return) {
+    int32_t sjt_compare1;
+    int32_t sjt_compare2;
+
+    sjt_compare1 = l;
+    sjt_compare2 = r;
+    (*_return) = sjt_compare1 == sjt_compare2;
 }
 
 void sjf_string(sjs_string* _this) {
@@ -1215,7 +1215,7 @@ int main(int argc, char** argv) {
         sjt_functionParam4 = result2;
     }
 
-    sjf_i32_tostring(sjt_functionParam4, &sjt_call1);
+    sjf_i32_asstring(sjt_functionParam4, &sjt_call1);
     sjt_functionParam3 = &sjt_call1;
     sjf_debug_writeline(sjt_functionParam3);
     sjv_c->_refCount--;
@@ -1306,7 +1306,7 @@ int main(int argc, char** argv) {
         sjt_functionParam10 = result3;
     }
 
-    sjf_i32_tostring(sjt_functionParam10, &sjt_call6);
+    sjf_i32_asstring(sjt_functionParam10, &sjt_call6);
     sjt_functionParam9 = &sjt_call6;
     sjf_debug_writeline(sjt_functionParam9);
     main_destroy();

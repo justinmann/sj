@@ -71,7 +71,7 @@ hash_setat(key'i32:, val'i32:)'void {
   --c--
 }
 
-i32_tostring(val'i32:)'stack string {
+i32_asstring(val'i32:)'stack string {
   count'i32 = 0i
   data'ptr = 0
   --c--
@@ -781,7 +781,7 @@ global()'void {
     parent: this,
     key'i32 : key
   )
-  c'stack string? : if isValid(b) value(i32_tostring(
+  c'stack string? : if isValid(b) value(i32_asstring(
     val'i32 : val
   )) else empty'stack string?
   writeline(

@@ -718,8 +718,8 @@ void sjf_hash_local_iface_interface_i32_each(sjs_hash_local_iface_interface_i32*
 void sjf_hash_local_iface_interface_i32_getat(sjs_hash_local_iface_interface_i32* _parent, sji_interface key, int32_option* _return);
 void sjf_hash_local_iface_interface_i32_heap(sjs_hash_local_iface_interface_i32* _this);
 void sjf_hash_local_iface_interface_i32_setat(sjs_hash_local_iface_interface_i32* _parent, sji_interface key, int32_t val);
-void sjf_i32_tostring(int32_t val, sjs_string* _return);
-void sjf_i32_tostring_heap(int32_t val, sjs_string** _return);
+void sjf_i32_asstring(int32_t val, sjs_string* _return);
+void sjf_i32_asstring_heap(int32_t val, sjs_string** _return);
 void sjf_print(sji_interface k, int32_t v);
 void sjf_print_callback(void * _parent, sji_interface k, int32_t v);
 void sjf_string(sjs_string* _this);
@@ -1039,9 +1039,12 @@ void sjf_class_asinterface(sjs_class* _this, int typeId, sjs_interface* _return)
             sjf_class_as_sji_interface(_this, (sji_interface*)_return);
             break;
         }
-    }
 
-    _return->_parent = 0;
+        default: {
+            _return->_parent = 0;
+            break;
+        }
+    }
 }
 
 void sjf_class_bob(sjs_class* _parent, int32_t* _return) {
@@ -1079,9 +1082,12 @@ void sjf_class_heap_asinterface(sjs_class* _this, int typeId, sjs_interface* _re
             sjf_class_heap_as_sji_interface(_this, (sji_interface*)_return);
             break;
         }
-    }
 
-    _return->_parent = 0;
+        default: {
+            _return->_parent = 0;
+            break;
+        }
+    }
 }
 
 void sjf_class_isequal(sjs_class* _parent, sji_interface b, bool* _return) {
@@ -1231,7 +1237,7 @@ kh_val(p, k) = val;
 #endif
 }
 
-void sjf_i32_tostring(int32_t val, sjs_string* _return) {
+void sjf_i32_asstring(int32_t val, sjs_string* _return) {
     int32_t sjt_math19;
     int32_t sjt_math20;
     int32_t sjt_math21;
@@ -1259,7 +1265,7 @@ void sjf_i32_tostring(int32_t val, sjs_string* _return) {
     sjf_string(_return);
 }
 
-void sjf_i32_tostring_heap(int32_t val, sjs_string** _return) {
+void sjf_i32_asstring_heap(int32_t val, sjs_string** _return) {
     int32_t sjt_math23;
     int32_t sjt_math24;
     int32_t sjt_math25;
@@ -1305,7 +1311,7 @@ void sjf_print(sji_interface k, int32_t v) {
 
     sjt_parent20 = k;
     sjt_parent20._vtbl->bob(sjt_parent20._parent, &sjt_functionParam25);
-    sjf_i32_tostring(sjt_functionParam25, &sjt_call5);
+    sjf_i32_asstring(sjt_functionParam25, &sjt_call5);
     sjt_parent19 = &sjt_call5;
     sjt_call6._refCount = 1;
     sjt_call6.count = 3;
@@ -1320,7 +1326,7 @@ void sjf_print(sji_interface k, int32_t v) {
     sjf_string_add(sjt_parent19, sjt_functionParam26, &sjt_call4);
     sjt_parent18 = &sjt_call4;
     sjt_functionParam28 = v;
-    sjf_i32_tostring(sjt_functionParam28, &sjt_call7);
+    sjf_i32_asstring(sjt_functionParam28, &sjt_call7);
     sjt_functionParam27 = &sjt_call7;
     sjf_string_add(sjt_parent18, sjt_functionParam27, &sjt_call3);
     sjt_functionParam5 = &sjt_call3;
@@ -1658,7 +1664,7 @@ int main(int argc, char** argv) {
         sjt_functionParam30 = result2;
     }
 
-    sjf_i32_tostring(sjt_functionParam30, &sjt_call8);
+    sjf_i32_asstring(sjt_functionParam30, &sjt_call8);
     sjt_functionParam29 = &sjt_call8;
     sjf_debug_writeline(sjt_functionParam29);
     main_destroy();

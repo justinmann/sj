@@ -11,11 +11,11 @@ include "nau/menuScene.sj"
 // nauScene : fieldScene()
 nauScene : menuScene()
 
-root : fillElement(
+root : fillLayout(
 	children : [
 		heap nauScene as #element
 		heap crossHairsElement(
-			color : colors.red()
+			color : copy colors.red
 		) as #element
 	]
 ) as #element

@@ -19,8 +19,8 @@ a[class(32) as #interface] = 1
 b : a[class(1) as #interface]
 
 a.each(print)
-debug.writeLine((b?:-1).toString())
+debug.writeLine((b?:-1).asString())
 
 print(k : '#interface, v : 'i32) {
-	debug.writeLine(k.bob().toString() + " = " + v.toString())	
+	debug.writeLine(k.bob().asString() + " = " + v.asString())	
 }

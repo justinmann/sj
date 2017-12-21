@@ -817,9 +817,12 @@ void sjf_class_i32_asinterface(sjs_class_i32* _this, int typeId, sjs_interface* 
             sjf_class_i32_as_sji_foo_i32(_this, (sji_foo_i32*)_return);
             break;
         }
-    }
 
-    _return->_parent = 0;
+        default: {
+            _return->_parent = 0;
+            break;
+        }
+    }
 }
 
 void sjf_class_i32_copy(sjs_class_i32* _this, sjs_class_i32* _from) {
@@ -852,9 +855,12 @@ void sjf_class_i32_heap_asinterface(sjs_class_i32* _this, int typeId, sjs_interf
             sjf_class_i32_heap_as_sji_foo_i32(_this, (sji_foo_i32*)_return);
             break;
         }
-    }
 
-    _return->_parent = 0;
+        default: {
+            _return->_parent = 0;
+            break;
+        }
+    }
 }
 
 void sjf_class_i32_test1(sjs_class_i32* _parent, int32_t* _return) {

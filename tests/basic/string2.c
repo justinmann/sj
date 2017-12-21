@@ -628,8 +628,8 @@ void sjf_array_char_setat(sjs_array_char* _parent, int32_t index, char item);
 void sjf_console_writeline(sjs_string* data);
 void sjf_func(sjs_string* _return);
 void sjf_func_heap(sjs_string** _return);
-void sjf_i32_tostring(int32_t val, sjs_string* _return);
-void sjf_i32_tostring_heap(int32_t val, sjs_string** _return);
+void sjf_i32_asstring(int32_t val, sjs_string* _return);
+void sjf_i32_asstring_heap(int32_t val, sjs_string** _return);
 void sjf_string(sjs_string* _this);
 void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return);
 void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _return);
@@ -928,10 +928,10 @@ void sjf_func(sjs_string* _return) {
     sjs_string* sjt_parent14 = 0;
 
     sjt_functionParam21 = 1;
-    sjf_i32_tostring(sjt_functionParam21, &sjt_call2);
+    sjf_i32_asstring(sjt_functionParam21, &sjt_call2);
     sjt_parent14 = &sjt_call2;
     sjt_functionParam23 = 2;
-    sjf_i32_tostring(sjt_functionParam23, &sjt_call3);
+    sjf_i32_asstring(sjt_functionParam23, &sjt_call3);
     sjt_functionParam22 = &sjt_call3;
     sjf_string_add(sjt_parent14, sjt_functionParam22, _return);
 
@@ -948,10 +948,10 @@ void sjf_func_heap(sjs_string** _return) {
     sjs_string* sjt_parent15 = 0;
 
     sjt_functionParam24 = 1;
-    sjf_i32_tostring(sjt_functionParam24, &sjt_call4);
+    sjf_i32_asstring(sjt_functionParam24, &sjt_call4);
     sjt_parent15 = &sjt_call4;
     sjt_functionParam26 = 2;
-    sjf_i32_tostring(sjt_functionParam26, &sjt_call5);
+    sjf_i32_asstring(sjt_functionParam26, &sjt_call5);
     sjt_functionParam25 = &sjt_call5;
     sjf_string_add_heap(sjt_parent15, sjt_functionParam25, _return);
 
@@ -959,7 +959,7 @@ void sjf_func_heap(sjs_string** _return) {
     if (sjt_call5._refCount == 1) { sjf_string_destroy(&sjt_call5); }
 }
 
-void sjf_i32_tostring(int32_t val, sjs_string* _return) {
+void sjf_i32_asstring(int32_t val, sjs_string* _return) {
     int32_t sjt_math19;
     int32_t sjt_math20;
     int32_t sjt_math21;
@@ -987,7 +987,7 @@ void sjf_i32_tostring(int32_t val, sjs_string* _return) {
     sjf_string(_return);
 }
 
-void sjf_i32_tostring_heap(int32_t val, sjs_string** _return) {
+void sjf_i32_asstring_heap(int32_t val, sjs_string** _return) {
     int32_t sjt_math23;
     int32_t sjt_math24;
     int32_t sjt_math25;

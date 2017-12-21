@@ -631,12 +631,12 @@ void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from);
 void sjf_array_char_destroy(sjs_array_char* _this);
 void sjf_array_char_heap(sjs_array_char* _this);
 void sjf_class(sjs_class* _this);
+void sjf_class_asstring(sjs_class* x, int32_t* _return);
 void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_heap(sjs_class* _this);
-void sjf_class_tostring(sjs_class* x, int32_t* _return);
-void sjf_i32_tostring(int32_t val, sjs_string* _return);
-void sjf_i32_tostring_heap(int32_t val, sjs_string** _return);
+void sjf_i32_asstring(int32_t val, sjs_string* _return);
+void sjf_i32_asstring_heap(int32_t val, sjs_string** _return);
 void sjf_string(sjs_string* _this);
 void sjf_string_copy(sjs_string* _this, sjs_string* _from);
 void sjf_string_destroy(sjs_string* _this);
@@ -829,6 +829,10 @@ void sjf_array_char_heap(sjs_array_char* _this) {
 void sjf_class(sjs_class* _this) {
 }
 
+void sjf_class_asstring(sjs_class* x, int32_t* _return) {
+    (*_return) = 2;
+}
+
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
     _this->x = _from->x;
 }
@@ -839,11 +843,7 @@ void sjf_class_destroy(sjs_class* _this) {
 void sjf_class_heap(sjs_class* _this) {
 }
 
-void sjf_class_tostring(sjs_class* x, int32_t* _return) {
-    (*_return) = 2;
-}
-
-void sjf_i32_tostring(int32_t val, sjs_string* _return) {
+void sjf_i32_asstring(int32_t val, sjs_string* _return) {
     int32_t sjt_math3;
     int32_t sjt_math4;
     int32_t sjt_math5;
@@ -871,7 +871,7 @@ void sjf_i32_tostring(int32_t val, sjs_string* _return) {
     sjf_string(_return);
 }
 
-void sjf_i32_tostring_heap(int32_t val, sjs_string** _return) {
+void sjf_i32_asstring_heap(int32_t val, sjs_string** _return) {
     int32_t sjt_math10;
     int32_t sjt_math7;
     int32_t sjt_math8;
@@ -929,13 +929,13 @@ int main(int argc, char** argv) {
     ptr_init();
     weakptr_init();
     sjt_functionParam1 = 3;
-    sjf_i32_tostring(sjt_functionParam1, &void1);
+    sjf_i32_asstring(sjt_functionParam1, &void1);
     sjv_c = (sjs_class*)malloc(sizeof(sjs_class));
     sjv_c->_refCount = 1;
     sjv_c->x = 3;
     sjf_class_heap(sjv_c);
     sjt_functionParam2 = sjv_c;
-    sjf_class_tostring(sjt_functionParam2, &void2);
+    sjf_class_asstring(sjt_functionParam2, &void2);
     main_destroy();
     #ifdef _DEBUG
     printf("\npress return to end\n");

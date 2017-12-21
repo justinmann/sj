@@ -5,12 +5,12 @@ a : {
 	"bye" : "good bye"
 }
 
-debug.writeLine(a["hi"]?:"empty" + a.count.toString())
+debug.writeLine(a["hi"]?:"empty" + a.count.asString())
 
 a.remove("bye")
 
-debug.writeLine(a["hi"]?:"empty" + a.count.toString())
+debug.writeLine(a["hi"]?:"empty" + a.count.asString())
 
 a.remove("hi")
 
-debug.writeLine(a["hi"]?:"empty" + a.count.toString())
+debug.writeLine(a["hi"]?:"empty" + a.count.asString())

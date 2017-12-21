@@ -15,7 +15,7 @@ class #foo (
 
 c := heap class(1)
 a : weak c as #foo
-debug.writeLine((a?.test()?:-1).toString())
+debug.writeLine((a?.test()?:-1).asString())
 
 c = heap class(2)
-debug.writeLine((a?.test()?:-1).toString())
+debug.writeLine((a?.test()?:-1).asString())

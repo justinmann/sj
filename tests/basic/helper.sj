@@ -2,11 +2,11 @@ include "lib/common/common.sj"
 
 class(x : 1) { this }
 
-class_toString(x : 'class) {
+class_asString(x : 'class) {
 	2
 }
 
 
-3.toString()
+3.asString()
 c : heap class(3)
-c.toString()
+c.asString()

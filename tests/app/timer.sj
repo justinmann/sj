@@ -1,7 +1,7 @@
 include "lib/common/common.sj"
 include "lib/ui/ui.sj"
 
-root : heap fillElement(
+root : heap fillLayout(
 	children : [
 		heap scene3dElement(
 			children: [
@@ -13,14 +13,14 @@ root : heap fillElement(
 							image : image(textureFromPng("assets/test.png"), margin: margin(150, 50, 150, 150))
 						) as #element
 						heap crossHairsElement(
-							color : colors.blue()
+							color : copy colors.blue
 						) as #element
 					]
 				) as #model
 			]
 		) as #element
 		heap crossHairsElement(
-			color : colors.red()
+			color : copy colors.red
 		) as #element
 	]
 ) as #element
@@ -64,7 +64,7 @@ root : borderLayout(
 ) as #element
 */
 /*
-fillElement(
+fillLayout(
 	children : [ 
 		imageElement(
 			image : image(rootscene.getTexture("assets/hello2.bmp"))

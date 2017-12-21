@@ -2,23 +2,15 @@ anon1(animations'stack list!#animation:, current'i32=)'stack anon1 {
   this
 }
 
-anon2(fill'i32:, left'i32:, right'i32:, top'i32:, bottom'i32:)'stack anon2 {
+anon2()'stack anon2 {
   this
 }
 
-anon3(normal'i32:, hot'i32:, pressed'i32:)'stack anon3 {
+color(r'f32:, g'f32:, b'f32:, a'f32:)'stack color {
   this
 }
 
-anon4()'stack anon4 {
-  this
-}
-
-anon5()'stack anon5 {
-  this
-}
-
-fillelement #element (children'stack array!#element:, _rect'stack rect=)'heap fillelement {
+filllayout #element (children'stack array!#element:, margin'stack margin=, _rect'stack rect=)'heap filllayout {
   this
 }
 
@@ -834,25 +826,62 @@ global()'void {
     animations'stack list!#animation : animations,
     current'i32 = current
   ))
-  borderposition'stack anon2 : anon2(this = anon2(
-    fill'i32 : fill,
-    left'i32 : left,
-    right'i32 : right,
-    top'i32 : top,
-    bottom'i32 : bottom
-  ))
+  {
+    fill'borderposition : 0
+    left'borderposition : 1
+    right'borderposition : 2
+    top'borderposition : 3
+    bottom'borderposition : 4
+  }
   --cstruct--
   typedef struct {
   float x, y, z;    // position
   float r, g, b, a; // color
   } vertex3_color4_t;	
   --cstruct--
-  buttonstate'stack anon3 : anon3(this = anon3(
-    normal'i32 : normal,
-    hot'i32 : hot,
-    pressed'i32 : pressed
-  ))
-  colors'stack anon4 : anon4(this = anon4())
+  {
+    normal'buttonstate : 0
+    hot'buttonstate : 1
+    pressed'buttonstate : 2
+  }
+  import  {
+    red'stack color : color(this = color(
+      r'f32 : r,
+      g'f32 : g,
+      b'f32 : b,
+      a'f32 : a
+    ))
+    green'stack color : color(this = color(
+      r'f32 : r,
+      g'f32 : g,
+      b'f32 : b,
+      a'f32 : a
+    ))
+    blue'stack color : color(this = color(
+      r'f32 : r,
+      g'f32 : g,
+      b'f32 : b,
+      a'f32 : a
+    ))
+    black'stack color : color(this = color(
+      r'f32 : r,
+      g'f32 : g,
+      b'f32 : b,
+      a'f32 : a
+    ))
+    white'stack color : color(this = color(
+      r'f32 : r,
+      g'f32 : g,
+      b'f32 : b,
+      a'f32 : a
+    ))
+    gray'stack color : color(this = color(
+      r'f32 : r,
+      g'f32 : g,
+      b'f32 : b,
+      a'f32 : a
+    ))
+  }
   --cdefine--
   double *
   make_distance_mapd( double *img,
@@ -1810,7 +1839,17 @@ global()'void {
   return handle;
   }
   --cfunction--
-  style'stack anon5 : anon5(this = anon5())
+  style'stack anon2 : anon2(this = anon2())
+  {
+    left'texthorizontal : 0
+    right'texthorizontal : 1
+    center'texthorizontal : 2
+  }
+  {
+    top'textvertical : 0
+    bottom'textvertical : 1
+    center'textvertical : 2
+  }
   --cstruct--
   typedef struct {
   float x, y, z;    // position
@@ -5078,8 +5117,9 @@ global()'void {
     count'i32 = count,
     data'stack array!char = data
   ))
-  root'heap #element : heap fillelement(this = fillelement(
+  root'heap #element : heap filllayout(this = filllayout(
     children'stack array!#element : children,
+    margin'stack margin = margin,
     _rect'stack rect = _rect
   )) as heap #element
   runloop()

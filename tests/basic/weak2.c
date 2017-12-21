@@ -671,22 +671,22 @@ void sjf_array_char_heap(sjs_array_char* _this);
 void sjf_array_char_initat(sjs_array_char* _parent, int32_t index, char item);
 void sjf_array_char_setat(sjs_array_char* _parent, int32_t index, char item);
 void sjf_array_weak_class(sjs_array_weak_class* _this);
+void sjf_array_weak_class_asstring(sjs_array_weak_class* _parent, sjs_string* sep, sjs_string* _return);
+void sjf_array_weak_class_asstring_heap(sjs_array_weak_class* _parent, sjs_string* sep, sjs_string** _return);
 void sjf_array_weak_class_copy(sjs_array_weak_class* _this, sjs_array_weak_class* _from);
 void sjf_array_weak_class_destroy(sjs_array_weak_class* _this);
 void sjf_array_weak_class_getat(sjs_array_weak_class* _parent, int32_t index, sjs_class** _return);
 void sjf_array_weak_class_heap(sjs_array_weak_class* _this);
 void sjf_array_weak_class_initat(sjs_array_weak_class* _parent, int32_t index, sjs_class* item);
-void sjf_array_weak_class_tostring(sjs_array_weak_class* _parent, sjs_string* sep, sjs_string* _return);
-void sjf_array_weak_class_tostring_heap(sjs_array_weak_class* _parent, sjs_string* sep, sjs_string** _return);
 void sjf_class(sjs_class* _this);
+void sjf_class_asstring(sjs_class* _parent, sjs_string* _return);
+void sjf_class_asstring_heap(sjs_class* _parent, sjs_string** _return);
 void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_heap(sjs_class* _this);
-void sjf_class_tostring(sjs_class* _parent, sjs_string* _return);
-void sjf_class_tostring_heap(sjs_class* _parent, sjs_string** _return);
 void sjf_debug_writeline(sjs_string* data);
-void sjf_i32_tostring(int32_t val, sjs_string* _return);
-void sjf_i32_tostring_heap(int32_t val, sjs_string** _return);
+void sjf_i32_asstring(int32_t val, sjs_string* _return);
+void sjf_i32_asstring_heap(int32_t val, sjs_string** _return);
 void sjf_string(sjs_string* _this);
 void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return);
 void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _return);
@@ -984,6 +984,269 @@ void sjf_array_weak_class(sjs_array_weak_class* _this) {
     }
 }
 
+void sjf_array_weak_class_asstring(sjs_array_weak_class* _parent, sjs_string* sep, sjs_string* _return) {
+    int32_t i;
+    sjs_string* sjt_copy5 = 0;
+    sjs_array_weak_class* sjt_dot1 = 0;
+    int32_t sjt_forEnd1;
+    int32_t sjt_forStart1;
+    sjs_string sjv_result = { -1 };
+
+    sjv_result._refCount = 1;
+    sjv_result.count = 0;
+    sjv_result.data._refCount = 1;
+    sjv_result.data.datasize = 1;
+    sjv_result.data.data = (void*)sjg_string3;
+    sjv_result.data._isglobal = true;
+    sjv_result.data.count = 1;
+    sjf_array_char(&sjv_result.data);
+    sjf_string(&sjv_result);
+    sjt_forStart1 = 0;
+    sjt_dot1 = _parent;
+    sjt_forEnd1 = (sjt_dot1)->count;
+    i = sjt_forStart1;
+    while (i < sjt_forEnd1) {
+        sjs_class* sjt_call2 = 0;
+        sjs_string sjt_call6 = { -1 };
+        int32_t sjt_compare1;
+        int32_t sjt_compare2;
+        sjs_string* sjt_functionParam26 = 0;
+        int32_t sjt_functionParam27;
+        bool sjt_ifElse1;
+        bool sjt_ifElse4;
+        bool sjt_ifElse5;
+        sjs_string* sjt_isEmpty1 = 0;
+        sjs_class* sjt_isEmpty2 = 0;
+        sjs_string* sjt_parent17 = 0;
+        sjs_string sjt_value1 = { -1 };
+        sjs_string sjt_value2 = { -1 };
+
+        sjt_compare1 = i;
+        sjt_compare2 = 0;
+        sjt_ifElse1 = sjt_compare1 != sjt_compare2;
+        if (sjt_ifElse1) {
+            sjs_string* sjt_functionParam25 = 0;
+            sjs_string* sjt_parent16 = 0;
+
+            sjt_parent16 = &sjv_result;
+            sjt_functionParam25 = sep;
+            sjf_string_add(sjt_parent16, sjt_functionParam25, &sjv_result);
+        }
+
+        sjt_parent17 = &sjv_result;
+        sjt_functionParam27 = i;
+        sjf_array_weak_class_getat(_parent, sjt_functionParam27, &sjt_call2);
+        sjt_isEmpty2 = sjt_call2;
+        sjt_ifElse5 = (sjt_isEmpty2 != 0);
+        if (sjt_ifElse5) {
+            sjs_class* sjt_call3 = 0;
+            int32_t sjt_functionParam30;
+            sjs_class* sjt_parent18 = 0;
+
+            sjt_functionParam30 = i;
+            sjf_array_weak_class_getat(_parent, sjt_functionParam30, &sjt_call3);
+            sjt_parent18 = sjt_call3;
+            sjf_class_asstring(sjt_parent18, &sjt_value1);
+            sjt_isEmpty1 = (sjt_value1._refCount != -1 ? &sjt_value1 : 0);
+
+            delete_cb weakptrcb8 = { &sjt_call3, weakptr_clear };
+            if (sjt_call3 != 0) { weakptr_cb_remove(sjt_call3, weakptrcb8); }
+        } else {
+            sjt_isEmpty1 = 0;
+        }
+
+        sjt_ifElse4 = (sjt_isEmpty1 != 0);
+        if (sjt_ifElse4) {
+            sjs_class* sjt_call4 = 0;
+            int32_t sjt_functionParam31;
+            bool sjt_ifElse6;
+            sjs_class* sjt_isEmpty3 = 0;
+
+            sjt_functionParam31 = i;
+            sjf_array_weak_class_getat(_parent, sjt_functionParam31, &sjt_call4);
+            sjt_isEmpty3 = sjt_call4;
+            sjt_ifElse6 = (sjt_isEmpty3 != 0);
+            if (sjt_ifElse6) {
+                sjs_class* sjt_call5 = 0;
+                int32_t sjt_functionParam32;
+                sjs_class* sjt_parent19 = 0;
+
+                sjt_functionParam32 = i;
+                sjf_array_weak_class_getat(_parent, sjt_functionParam32, &sjt_call5);
+                sjt_parent19 = sjt_call5;
+                sjf_class_asstring(sjt_parent19, &sjt_value2);
+                sjt_functionParam26 = (sjt_value2._refCount != -1 ? &sjt_value2 : 0);
+
+                delete_cb weakptrcb9 = { &sjt_call5, weakptr_clear };
+                if (sjt_call5 != 0) { weakptr_cb_remove(sjt_call5, weakptrcb9); }
+            } else {
+                sjt_functionParam26 = 0;
+            }
+
+            delete_cb weakptrcb10 = { &sjt_call4, weakptr_clear };
+            if (sjt_call4 != 0) { weakptr_cb_remove(sjt_call4, weakptrcb10); }
+        } else {
+            sjt_call6._refCount = 1;
+            sjt_call6.count = 0;
+            sjt_call6.data._refCount = 1;
+            sjt_call6.data.datasize = 1;
+            sjt_call6.data.data = (void*)sjg_string4;
+            sjt_call6.data._isglobal = true;
+            sjt_call6.data.count = 1;
+            sjf_array_char(&sjt_call6.data);
+            sjf_string(&sjt_call6);
+            sjt_functionParam26 = &sjt_call6;
+        }
+
+        sjf_string_add(sjt_parent17, sjt_functionParam26, &sjv_result);
+        i++;
+
+        delete_cb weakptrcb11 = { &sjt_call2, weakptr_clear };
+        if (sjt_call2 != 0) { weakptr_cb_remove(sjt_call2, weakptrcb11); }
+        if (sjt_call6._refCount == 1) { sjf_string_destroy(&sjt_call6); }
+        if (sjt_value1._refCount == 1) { sjf_string_destroy(&sjt_value1); }
+        if (sjt_value2._refCount == 1) { sjf_string_destroy(&sjt_value2); }
+    }
+
+    sjt_copy5 = &sjv_result;
+    _return->_refCount = 1;
+    sjf_string_copy(_return, sjt_copy5);
+
+    if (sjv_result._refCount == 1) { sjf_string_destroy(&sjv_result); }
+}
+
+void sjf_array_weak_class_asstring_heap(sjs_array_weak_class* _parent, sjs_string* sep, sjs_string** _return) {
+    int32_t i;
+    sjs_string* sjt_copy6 = 0;
+    sjs_array_weak_class* sjt_dot23 = 0;
+    int32_t sjt_forEnd4;
+    int32_t sjt_forStart4;
+    sjs_string sjv_result = { -1 };
+
+    sjv_result._refCount = 1;
+    sjv_result.count = 0;
+    sjv_result.data._refCount = 1;
+    sjv_result.data.datasize = 1;
+    sjv_result.data.data = (void*)sjg_string5;
+    sjv_result.data._isglobal = true;
+    sjv_result.data.count = 1;
+    sjf_array_char(&sjv_result.data);
+    sjf_string(&sjv_result);
+    sjt_forStart4 = 0;
+    sjt_dot23 = _parent;
+    sjt_forEnd4 = (sjt_dot23)->count;
+    i = sjt_forStart4;
+    while (i < sjt_forEnd4) {
+        sjs_string sjt_call11 = { -1 };
+        sjs_class* sjt_call7 = 0;
+        int32_t sjt_compare7;
+        int32_t sjt_compare8;
+        sjs_string* sjt_functionParam34 = 0;
+        int32_t sjt_functionParam35;
+        bool sjt_ifElse7;
+        bool sjt_ifElse8;
+        bool sjt_ifElse9;
+        sjs_string* sjt_isEmpty4 = 0;
+        sjs_class* sjt_isEmpty5 = 0;
+        sjs_string* sjt_parent21 = 0;
+        sjs_string sjt_value3 = { -1 };
+        sjs_string sjt_value4 = { -1 };
+
+        sjt_compare7 = i;
+        sjt_compare8 = 0;
+        sjt_ifElse7 = sjt_compare7 != sjt_compare8;
+        if (sjt_ifElse7) {
+            sjs_string* sjt_functionParam33 = 0;
+            sjs_string* sjt_parent20 = 0;
+
+            sjt_parent20 = &sjv_result;
+            sjt_functionParam33 = sep;
+            sjf_string_add(sjt_parent20, sjt_functionParam33, &sjv_result);
+        }
+
+        sjt_parent21 = &sjv_result;
+        sjt_functionParam35 = i;
+        sjf_array_weak_class_getat(_parent, sjt_functionParam35, &sjt_call7);
+        sjt_isEmpty5 = sjt_call7;
+        sjt_ifElse9 = (sjt_isEmpty5 != 0);
+        if (sjt_ifElse9) {
+            sjs_class* sjt_call8 = 0;
+            int32_t sjt_functionParam36;
+            sjs_class* sjt_parent22 = 0;
+
+            sjt_functionParam36 = i;
+            sjf_array_weak_class_getat(_parent, sjt_functionParam36, &sjt_call8);
+            sjt_parent22 = sjt_call8;
+            sjf_class_asstring(sjt_parent22, &sjt_value3);
+            sjt_isEmpty4 = (sjt_value3._refCount != -1 ? &sjt_value3 : 0);
+
+            delete_cb weakptrcb12 = { &sjt_call8, weakptr_clear };
+            if (sjt_call8 != 0) { weakptr_cb_remove(sjt_call8, weakptrcb12); }
+        } else {
+            sjt_isEmpty4 = 0;
+        }
+
+        sjt_ifElse8 = (sjt_isEmpty4 != 0);
+        if (sjt_ifElse8) {
+            sjs_class* sjt_call9 = 0;
+            int32_t sjt_functionParam37;
+            bool sjt_ifElse10;
+            sjs_class* sjt_isEmpty6 = 0;
+
+            sjt_functionParam37 = i;
+            sjf_array_weak_class_getat(_parent, sjt_functionParam37, &sjt_call9);
+            sjt_isEmpty6 = sjt_call9;
+            sjt_ifElse10 = (sjt_isEmpty6 != 0);
+            if (sjt_ifElse10) {
+                sjs_class* sjt_call10 = 0;
+                int32_t sjt_functionParam38;
+                sjs_class* sjt_parent23 = 0;
+
+                sjt_functionParam38 = i;
+                sjf_array_weak_class_getat(_parent, sjt_functionParam38, &sjt_call10);
+                sjt_parent23 = sjt_call10;
+                sjf_class_asstring(sjt_parent23, &sjt_value4);
+                sjt_functionParam34 = (sjt_value4._refCount != -1 ? &sjt_value4 : 0);
+
+                delete_cb weakptrcb13 = { &sjt_call10, weakptr_clear };
+                if (sjt_call10 != 0) { weakptr_cb_remove(sjt_call10, weakptrcb13); }
+            } else {
+                sjt_functionParam34 = 0;
+            }
+
+            delete_cb weakptrcb14 = { &sjt_call9, weakptr_clear };
+            if (sjt_call9 != 0) { weakptr_cb_remove(sjt_call9, weakptrcb14); }
+        } else {
+            sjt_call11._refCount = 1;
+            sjt_call11.count = 0;
+            sjt_call11.data._refCount = 1;
+            sjt_call11.data.datasize = 1;
+            sjt_call11.data.data = (void*)sjg_string6;
+            sjt_call11.data._isglobal = true;
+            sjt_call11.data.count = 1;
+            sjf_array_char(&sjt_call11.data);
+            sjf_string(&sjt_call11);
+            sjt_functionParam34 = &sjt_call11;
+        }
+
+        sjf_string_add(sjt_parent21, sjt_functionParam34, &sjv_result);
+        i++;
+
+        delete_cb weakptrcb15 = { &sjt_call7, weakptr_clear };
+        if (sjt_call7 != 0) { weakptr_cb_remove(sjt_call7, weakptrcb15); }
+        if (sjt_call11._refCount == 1) { sjf_string_destroy(&sjt_call11); }
+        if (sjt_value3._refCount == 1) { sjf_string_destroy(&sjt_value3); }
+        if (sjt_value4._refCount == 1) { sjf_string_destroy(&sjt_value4); }
+    }
+
+    sjt_copy6 = &sjv_result;
+    (*_return) = (sjs_string*)malloc(sizeof(sjs_string));
+    (*_return)->_refCount = 1;
+    sjf_string_copy((*_return), sjt_copy6);
+
+    if (sjv_result._refCount == 1) { sjf_string_destroy(&sjv_result); }
+}
+
 void sjf_array_weak_class_copy(sjs_array_weak_class* _this, sjs_array_weak_class* _from) {
     _this->datasize = _from->datasize;
     _this->data = _from->data;
@@ -1047,270 +1310,25 @@ if (p[index] != 0) { weakptr_cb_add(p[index], weakptrcb4); }
     _parent->count = index + 1;
 }
 
-void sjf_array_weak_class_tostring(sjs_array_weak_class* _parent, sjs_string* sep, sjs_string* _return) {
-    int32_t i;
-    sjs_string* sjt_copy5 = 0;
-    sjs_array_weak_class* sjt_dot1 = 0;
-    int32_t sjt_forEnd1;
-    int32_t sjt_forStart1;
-    sjs_string sjv_result = { -1 };
-
-    sjv_result._refCount = 1;
-    sjv_result.count = 0;
-    sjv_result.data._refCount = 1;
-    sjv_result.data.datasize = 1;
-    sjv_result.data.data = (void*)sjg_string3;
-    sjv_result.data._isglobal = true;
-    sjv_result.data.count = 1;
-    sjf_array_char(&sjv_result.data);
-    sjf_string(&sjv_result);
-    sjt_forStart1 = 0;
-    sjt_dot1 = _parent;
-    sjt_forEnd1 = (sjt_dot1)->count;
-    i = sjt_forStart1;
-    while (i < sjt_forEnd1) {
-        sjs_class* sjt_call2 = 0;
-        sjs_string sjt_call6 = { -1 };
-        int32_t sjt_compare1;
-        int32_t sjt_compare2;
-        sjs_string* sjt_functionParam26 = 0;
-        int32_t sjt_functionParam27;
-        bool sjt_ifElse1;
-        bool sjt_ifElse4;
-        bool sjt_ifElse5;
-        sjs_string* sjt_isEmpty1 = 0;
-        sjs_class* sjt_isEmpty2 = 0;
-        sjs_string* sjt_parent17 = 0;
-        sjs_string sjt_value1 = { -1 };
-        sjs_string sjt_value2 = { -1 };
-
-        sjt_compare1 = i;
-        sjt_compare2 = 0;
-        sjt_ifElse1 = sjt_compare1 != sjt_compare2;
-        if (sjt_ifElse1) {
-            sjs_string* sjt_functionParam25 = 0;
-            sjs_string* sjt_parent16 = 0;
-
-            sjt_parent16 = &sjv_result;
-            sjt_functionParam25 = sep;
-            sjf_string_add(sjt_parent16, sjt_functionParam25, &sjv_result);
-        }
-
-        sjt_parent17 = &sjv_result;
-        sjt_functionParam27 = i;
-        sjf_array_weak_class_getat(_parent, sjt_functionParam27, &sjt_call2);
-        sjt_isEmpty2 = sjt_call2;
-        sjt_ifElse5 = (sjt_isEmpty2 != 0);
-        if (sjt_ifElse5) {
-            sjs_class* sjt_call3 = 0;
-            int32_t sjt_functionParam30;
-            sjs_class* sjt_parent18 = 0;
-
-            sjt_functionParam30 = i;
-            sjf_array_weak_class_getat(_parent, sjt_functionParam30, &sjt_call3);
-            sjt_parent18 = sjt_call3;
-            sjf_class_tostring(sjt_parent18, &sjt_value1);
-            sjt_isEmpty1 = (sjt_value1._refCount != -1 ? &sjt_value1 : 0);
-
-            delete_cb weakptrcb8 = { &sjt_call3, weakptr_clear };
-            if (sjt_call3 != 0) { weakptr_cb_remove(sjt_call3, weakptrcb8); }
-        } else {
-            sjt_isEmpty1 = 0;
-        }
-
-        sjt_ifElse4 = (sjt_isEmpty1 != 0);
-        if (sjt_ifElse4) {
-            sjs_class* sjt_call4 = 0;
-            int32_t sjt_functionParam31;
-            bool sjt_ifElse6;
-            sjs_class* sjt_isEmpty3 = 0;
-
-            sjt_functionParam31 = i;
-            sjf_array_weak_class_getat(_parent, sjt_functionParam31, &sjt_call4);
-            sjt_isEmpty3 = sjt_call4;
-            sjt_ifElse6 = (sjt_isEmpty3 != 0);
-            if (sjt_ifElse6) {
-                sjs_class* sjt_call5 = 0;
-                int32_t sjt_functionParam32;
-                sjs_class* sjt_parent19 = 0;
-
-                sjt_functionParam32 = i;
-                sjf_array_weak_class_getat(_parent, sjt_functionParam32, &sjt_call5);
-                sjt_parent19 = sjt_call5;
-                sjf_class_tostring(sjt_parent19, &sjt_value2);
-                sjt_functionParam26 = (sjt_value2._refCount != -1 ? &sjt_value2 : 0);
-
-                delete_cb weakptrcb9 = { &sjt_call5, weakptr_clear };
-                if (sjt_call5 != 0) { weakptr_cb_remove(sjt_call5, weakptrcb9); }
-            } else {
-                sjt_functionParam26 = 0;
-            }
-
-            delete_cb weakptrcb10 = { &sjt_call4, weakptr_clear };
-            if (sjt_call4 != 0) { weakptr_cb_remove(sjt_call4, weakptrcb10); }
-        } else {
-            sjt_call6._refCount = 1;
-            sjt_call6.count = 0;
-            sjt_call6.data._refCount = 1;
-            sjt_call6.data.datasize = 1;
-            sjt_call6.data.data = (void*)sjg_string4;
-            sjt_call6.data._isglobal = true;
-            sjt_call6.data.count = 1;
-            sjf_array_char(&sjt_call6.data);
-            sjf_string(&sjt_call6);
-            sjt_functionParam26 = &sjt_call6;
-        }
-
-        sjf_string_add(sjt_parent17, sjt_functionParam26, &sjv_result);
-        i++;
-
-        delete_cb weakptrcb11 = { &sjt_call2, weakptr_clear };
-        if (sjt_call2 != 0) { weakptr_cb_remove(sjt_call2, weakptrcb11); }
-        if (sjt_call6._refCount == 1) { sjf_string_destroy(&sjt_call6); }
-        if (sjt_value1._refCount == 1) { sjf_string_destroy(&sjt_value1); }
-        if (sjt_value2._refCount == 1) { sjf_string_destroy(&sjt_value2); }
-    }
-
-    sjt_copy5 = &sjv_result;
-    _return->_refCount = 1;
-    sjf_string_copy(_return, sjt_copy5);
-
-    if (sjv_result._refCount == 1) { sjf_string_destroy(&sjv_result); }
-}
-
-void sjf_array_weak_class_tostring_heap(sjs_array_weak_class* _parent, sjs_string* sep, sjs_string** _return) {
-    int32_t i;
-    sjs_string* sjt_copy6 = 0;
-    sjs_array_weak_class* sjt_dot23 = 0;
-    int32_t sjt_forEnd4;
-    int32_t sjt_forStart4;
-    sjs_string sjv_result = { -1 };
-
-    sjv_result._refCount = 1;
-    sjv_result.count = 0;
-    sjv_result.data._refCount = 1;
-    sjv_result.data.datasize = 1;
-    sjv_result.data.data = (void*)sjg_string5;
-    sjv_result.data._isglobal = true;
-    sjv_result.data.count = 1;
-    sjf_array_char(&sjv_result.data);
-    sjf_string(&sjv_result);
-    sjt_forStart4 = 0;
-    sjt_dot23 = _parent;
-    sjt_forEnd4 = (sjt_dot23)->count;
-    i = sjt_forStart4;
-    while (i < sjt_forEnd4) {
-        sjs_string sjt_call11 = { -1 };
-        sjs_class* sjt_call7 = 0;
-        int32_t sjt_compare7;
-        int32_t sjt_compare8;
-        sjs_string* sjt_functionParam34 = 0;
-        int32_t sjt_functionParam35;
-        bool sjt_ifElse7;
-        bool sjt_ifElse8;
-        bool sjt_ifElse9;
-        sjs_string* sjt_isEmpty4 = 0;
-        sjs_class* sjt_isEmpty5 = 0;
-        sjs_string* sjt_parent21 = 0;
-        sjs_string sjt_value3 = { -1 };
-        sjs_string sjt_value4 = { -1 };
-
-        sjt_compare7 = i;
-        sjt_compare8 = 0;
-        sjt_ifElse7 = sjt_compare7 != sjt_compare8;
-        if (sjt_ifElse7) {
-            sjs_string* sjt_functionParam33 = 0;
-            sjs_string* sjt_parent20 = 0;
-
-            sjt_parent20 = &sjv_result;
-            sjt_functionParam33 = sep;
-            sjf_string_add(sjt_parent20, sjt_functionParam33, &sjv_result);
-        }
-
-        sjt_parent21 = &sjv_result;
-        sjt_functionParam35 = i;
-        sjf_array_weak_class_getat(_parent, sjt_functionParam35, &sjt_call7);
-        sjt_isEmpty5 = sjt_call7;
-        sjt_ifElse9 = (sjt_isEmpty5 != 0);
-        if (sjt_ifElse9) {
-            sjs_class* sjt_call8 = 0;
-            int32_t sjt_functionParam36;
-            sjs_class* sjt_parent22 = 0;
-
-            sjt_functionParam36 = i;
-            sjf_array_weak_class_getat(_parent, sjt_functionParam36, &sjt_call8);
-            sjt_parent22 = sjt_call8;
-            sjf_class_tostring(sjt_parent22, &sjt_value3);
-            sjt_isEmpty4 = (sjt_value3._refCount != -1 ? &sjt_value3 : 0);
-
-            delete_cb weakptrcb12 = { &sjt_call8, weakptr_clear };
-            if (sjt_call8 != 0) { weakptr_cb_remove(sjt_call8, weakptrcb12); }
-        } else {
-            sjt_isEmpty4 = 0;
-        }
-
-        sjt_ifElse8 = (sjt_isEmpty4 != 0);
-        if (sjt_ifElse8) {
-            sjs_class* sjt_call9 = 0;
-            int32_t sjt_functionParam37;
-            bool sjt_ifElse10;
-            sjs_class* sjt_isEmpty6 = 0;
-
-            sjt_functionParam37 = i;
-            sjf_array_weak_class_getat(_parent, sjt_functionParam37, &sjt_call9);
-            sjt_isEmpty6 = sjt_call9;
-            sjt_ifElse10 = (sjt_isEmpty6 != 0);
-            if (sjt_ifElse10) {
-                sjs_class* sjt_call10 = 0;
-                int32_t sjt_functionParam38;
-                sjs_class* sjt_parent23 = 0;
-
-                sjt_functionParam38 = i;
-                sjf_array_weak_class_getat(_parent, sjt_functionParam38, &sjt_call10);
-                sjt_parent23 = sjt_call10;
-                sjf_class_tostring(sjt_parent23, &sjt_value4);
-                sjt_functionParam34 = (sjt_value4._refCount != -1 ? &sjt_value4 : 0);
-
-                delete_cb weakptrcb13 = { &sjt_call10, weakptr_clear };
-                if (sjt_call10 != 0) { weakptr_cb_remove(sjt_call10, weakptrcb13); }
-            } else {
-                sjt_functionParam34 = 0;
-            }
-
-            delete_cb weakptrcb14 = { &sjt_call9, weakptr_clear };
-            if (sjt_call9 != 0) { weakptr_cb_remove(sjt_call9, weakptrcb14); }
-        } else {
-            sjt_call11._refCount = 1;
-            sjt_call11.count = 0;
-            sjt_call11.data._refCount = 1;
-            sjt_call11.data.datasize = 1;
-            sjt_call11.data.data = (void*)sjg_string6;
-            sjt_call11.data._isglobal = true;
-            sjt_call11.data.count = 1;
-            sjf_array_char(&sjt_call11.data);
-            sjf_string(&sjt_call11);
-            sjt_functionParam34 = &sjt_call11;
-        }
-
-        sjf_string_add(sjt_parent21, sjt_functionParam34, &sjv_result);
-        i++;
-
-        delete_cb weakptrcb15 = { &sjt_call7, weakptr_clear };
-        if (sjt_call7 != 0) { weakptr_cb_remove(sjt_call7, weakptrcb15); }
-        if (sjt_call11._refCount == 1) { sjf_string_destroy(&sjt_call11); }
-        if (sjt_value3._refCount == 1) { sjf_string_destroy(&sjt_value3); }
-        if (sjt_value4._refCount == 1) { sjf_string_destroy(&sjt_value4); }
-    }
-
-    sjt_copy6 = &sjv_result;
-    (*_return) = (sjs_string*)malloc(sizeof(sjs_string));
-    (*_return)->_refCount = 1;
-    sjf_string_copy((*_return), sjt_copy6);
-
-    if (sjv_result._refCount == 1) { sjf_string_destroy(&sjv_result); }
-}
-
 void sjf_class(sjs_class* _this) {
+}
+
+void sjf_class_asstring(sjs_class* _parent, sjs_string* _return) {
+    sjs_class* sjt_dot21 = 0;
+    int32_t sjt_functionParam28;
+
+    sjt_dot21 = _parent;
+    sjt_functionParam28 = (sjt_dot21)->x;
+    sjf_i32_asstring(sjt_functionParam28, _return);
+}
+
+void sjf_class_asstring_heap(sjs_class* _parent, sjs_string** _return) {
+    sjs_class* sjt_dot22 = 0;
+    int32_t sjt_functionParam29;
+
+    sjt_dot22 = _parent;
+    sjt_functionParam29 = (sjt_dot22)->x;
+    sjf_i32_asstring_heap(sjt_functionParam29, _return);
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
@@ -1323,29 +1341,11 @@ void sjf_class_destroy(sjs_class* _this) {
 void sjf_class_heap(sjs_class* _this) {
 }
 
-void sjf_class_tostring(sjs_class* _parent, sjs_string* _return) {
-    sjs_class* sjt_dot21 = 0;
-    int32_t sjt_functionParam28;
-
-    sjt_dot21 = _parent;
-    sjt_functionParam28 = (sjt_dot21)->x;
-    sjf_i32_tostring(sjt_functionParam28, _return);
-}
-
-void sjf_class_tostring_heap(sjs_class* _parent, sjs_string** _return) {
-    sjs_class* sjt_dot22 = 0;
-    int32_t sjt_functionParam29;
-
-    sjt_dot22 = _parent;
-    sjt_functionParam29 = (sjt_dot22)->x;
-    sjf_i32_tostring_heap(sjt_functionParam29, _return);
-}
-
 void sjf_debug_writeline(sjs_string* data) {
     printf("%s\n", (char*)data->data.data);
 }
 
-void sjf_i32_tostring(int32_t val, sjs_string* _return) {
+void sjf_i32_asstring(int32_t val, sjs_string* _return) {
     int32_t sjt_math19;
     int32_t sjt_math20;
     int32_t sjt_math21;
@@ -1373,7 +1373,7 @@ void sjf_i32_tostring(int32_t val, sjs_string* _return) {
     sjf_string(_return);
 }
 
-void sjf_i32_tostring_heap(int32_t val, sjs_string** _return) {
+void sjf_i32_asstring_heap(int32_t val, sjs_string** _return) {
     int32_t sjt_math23;
     int32_t sjt_math24;
     int32_t sjt_math25;
@@ -1712,7 +1712,7 @@ int main(int argc, char** argv) {
     sjf_array_char(&sjt_call12.data);
     sjf_string(&sjt_call12);
     sjt_functionParam39 = &sjt_call12;
-    sjf_array_weak_class_tostring(sjt_parent24, sjt_functionParam39, &sjt_call1);
+    sjf_array_weak_class_asstring(sjt_parent24, sjt_functionParam39, &sjt_call1);
     sjt_functionParam5 = &sjt_call1;
     sjf_debug_writeline(sjt_functionParam5);
     sjv_c->_refCount--;
@@ -1736,7 +1736,7 @@ int main(int argc, char** argv) {
     sjf_array_char(&sjt_call14.data);
     sjf_string(&sjt_call14);
     sjt_functionParam41 = &sjt_call14;
-    sjf_array_weak_class_tostring(sjt_parent25, sjt_functionParam41, &sjt_call13);
+    sjf_array_weak_class_asstring(sjt_parent25, sjt_functionParam41, &sjt_call13);
     sjt_functionParam40 = &sjt_call13;
     sjf_debug_writeline(sjt_functionParam40);
     sjv_d->_refCount--;
@@ -1760,7 +1760,7 @@ int main(int argc, char** argv) {
     sjf_array_char(&sjt_call16.data);
     sjf_string(&sjt_call16);
     sjt_functionParam43 = &sjt_call16;
-    sjf_array_weak_class_tostring(sjt_parent26, sjt_functionParam43, &sjt_call15);
+    sjf_array_weak_class_asstring(sjt_parent26, sjt_functionParam43, &sjt_call15);
     sjt_functionParam42 = &sjt_call15;
     sjf_debug_writeline(sjt_functionParam42);
     main_destroy();

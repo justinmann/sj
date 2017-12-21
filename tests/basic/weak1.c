@@ -656,8 +656,8 @@ void sjf_array_char(sjs_array_char* _this);
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from);
 void sjf_array_char_destroy(sjs_array_char* _this);
 void sjf_array_char_heap(sjs_array_char* _this);
-void sjf_bool_tostring(bool val, sjs_string* _return);
-void sjf_bool_tostring_heap(bool val, sjs_string** _return);
+void sjf_bool_asstring(bool val, sjs_string* _return);
+void sjf_bool_asstring_heap(bool val, sjs_string** _return);
 void sjf_class(sjs_class* _this);
 void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
@@ -852,7 +852,7 @@ void sjf_array_char_heap(sjs_array_char* _this) {
     }
 }
 
-void sjf_bool_tostring(bool val, sjs_string* _return) {
+void sjf_bool_asstring(bool val, sjs_string* _return) {
     bool sjt_ifElse1;
 
     sjt_ifElse1 = val;
@@ -879,7 +879,7 @@ void sjf_bool_tostring(bool val, sjs_string* _return) {
     }
 }
 
-void sjf_bool_tostring_heap(bool val, sjs_string** _return) {
+void sjf_bool_asstring_heap(bool val, sjs_string** _return) {
     bool sjt_ifElse2;
 
     sjt_ifElse2 = val;
@@ -963,12 +963,12 @@ int main(int argc, char** argv) {
     if (sjv_e != 0) { weakptr_cb_add(sjv_e, weakptrcb2); }
     sjt_isEmpty1 = sjv_d;
     sjt_functionParam2 = (sjt_isEmpty1 == 0);
-    sjf_bool_tostring(sjt_functionParam2, &sjt_call1);
+    sjf_bool_asstring(sjt_functionParam2, &sjt_call1);
     sjt_functionParam1 = &sjt_call1;
     sjf_debug_writeline(sjt_functionParam1);
     sjt_isEmpty2 = sjv_e;
     sjt_functionParam4 = (sjt_isEmpty2 == 0);
-    sjf_bool_tostring(sjt_functionParam4, &sjt_call2);
+    sjf_bool_asstring(sjt_functionParam4, &sjt_call2);
     sjt_functionParam3 = &sjt_call2;
     sjf_debug_writeline(sjt_functionParam3);
     delete_cb weakptrcb3 = { &sjv_e, weakptr_clear };
@@ -978,12 +978,12 @@ int main(int argc, char** argv) {
     if (sjv_e != 0) { weakptr_cb_add(sjv_e, weakptrcb4); }
     sjt_isEmpty3 = sjv_d;
     sjt_functionParam6 = (sjt_isEmpty3 == 0);
-    sjf_bool_tostring(sjt_functionParam6, &sjt_call3);
+    sjf_bool_asstring(sjt_functionParam6, &sjt_call3);
     sjt_functionParam5 = &sjt_call3;
     sjf_debug_writeline(sjt_functionParam5);
     sjt_isEmpty4 = sjv_e;
     sjt_functionParam8 = (sjt_isEmpty4 == 0);
-    sjf_bool_tostring(sjt_functionParam8, &sjt_call4);
+    sjf_bool_asstring(sjt_functionParam8, &sjt_call4);
     sjt_functionParam7 = &sjt_call4;
     sjf_debug_writeline(sjt_functionParam7);
     sjv_c->_refCount--;
@@ -997,12 +997,12 @@ int main(int argc, char** argv) {
     sjf_class_heap(sjv_c);
     sjt_isEmpty5 = sjv_d;
     sjt_functionParam10 = (sjt_isEmpty5 == 0);
-    sjf_bool_tostring(sjt_functionParam10, &sjt_call5);
+    sjf_bool_asstring(sjt_functionParam10, &sjt_call5);
     sjt_functionParam9 = &sjt_call5;
     sjf_debug_writeline(sjt_functionParam9);
     sjt_isEmpty6 = sjv_e;
     sjt_functionParam12 = (sjt_isEmpty6 == 0);
-    sjf_bool_tostring(sjt_functionParam12, &sjt_call6);
+    sjf_bool_asstring(sjt_functionParam12, &sjt_call6);
     sjt_functionParam11 = &sjt_call6;
     sjf_debug_writeline(sjt_functionParam11);
     main_destroy();

@@ -731,8 +731,8 @@ void sjf_hash_stringstring_heap(sjs_hash_stringstring* _this);
 void sjf_hash_stringstring_remove(sjs_hash_stringstring* _parent, sjs_string* key);
 void sjf_hash_stringstring_resize(sjs_hash_stringstring* _parent, int32_t newbuckets);
 void sjf_hash_stringstring_setat(sjs_hash_stringstring* _parent, sjs_string* key, sjs_string* val);
-void sjf_i32_tostring(int32_t val, sjs_string* _return);
-void sjf_i32_tostring_heap(int32_t val, sjs_string** _return);
+void sjf_i32_asstring(int32_t val, sjs_string* _return);
+void sjf_i32_asstring_heap(int32_t val, sjs_string** _return);
 void sjf_string(sjs_string* _this);
 void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return);
 void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _return);
@@ -1187,7 +1187,7 @@ sjf_string_copy(&kh_val(p, k), val);
 #endif
 }
 
-void sjf_i32_tostring(int32_t val, sjs_string* _return) {
+void sjf_i32_asstring(int32_t val, sjs_string* _return) {
     int32_t sjt_math19;
     int32_t sjt_math20;
     int32_t sjt_math21;
@@ -1215,7 +1215,7 @@ void sjf_i32_tostring(int32_t val, sjs_string* _return) {
     sjf_string(_return);
 }
 
-void sjf_i32_tostring_heap(int32_t val, sjs_string** _return) {
+void sjf_i32_asstring_heap(int32_t val, sjs_string** _return) {
     int32_t sjt_math23;
     int32_t sjt_math24;
     int32_t sjt_math25;
@@ -1630,7 +1630,7 @@ int main(int argc, char** argv) {
 
     sjt_parent21 = &sjv_a;
     sjf_hash_stringstring_getcount(sjt_parent21, &sjt_functionParam30);
-    sjf_i32_tostring(sjt_functionParam30, &sjt_call11);
+    sjf_i32_asstring(sjt_functionParam30, &sjt_call11);
     sjt_functionParam29 = &sjt_call11;
     sjf_string_add(sjt_parent18, sjt_functionParam29, &sjt_call5);
     sjt_functionParam7 = &sjt_call5;
@@ -1693,7 +1693,7 @@ int main(int argc, char** argv) {
 
     sjt_parent26 = &sjv_a;
     sjf_hash_stringstring_getcount(sjt_parent26, &sjt_functionParam36);
-    sjf_i32_tostring(sjt_functionParam36, &sjt_call19);
+    sjf_i32_asstring(sjt_functionParam36, &sjt_call19);
     sjt_functionParam35 = &sjt_call19;
     sjf_string_add(sjt_parent23, sjt_functionParam35, &sjt_call13);
     sjt_functionParam32 = &sjt_call13;
@@ -1756,7 +1756,7 @@ int main(int argc, char** argv) {
 
     sjt_parent31 = &sjv_a;
     sjf_hash_stringstring_getcount(sjt_parent31, &sjt_functionParam42);
-    sjf_i32_tostring(sjt_functionParam42, &sjt_call27);
+    sjf_i32_asstring(sjt_functionParam42, &sjt_call27);
     sjt_functionParam41 = &sjt_call27;
     sjf_string_add(sjt_parent28, sjt_functionParam41, &sjt_call21);
     sjt_functionParam38 = &sjt_call21;

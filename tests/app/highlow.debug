@@ -39,7 +39,7 @@ string(count'i32=, data'stack array!char=)'stack string {
   this
 }
 
-string_toi32(text'stack string:)'i32 {
+string_asi32(text'stack string:)'i32 {
   x'i32 = 0i
   --c--
   char* e;
@@ -743,7 +743,7 @@ global()'void {
   iscorrect'bool = false
   while !iscorrect{
     str'stack string : readline()
-    guess'i32 : string_toi32(
+    guess'i32 : string_asi32(
       text'stack string : text
     )
     iscorrect'bool = if guess < num {

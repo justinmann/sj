@@ -641,10 +641,10 @@ void sjf_console_readline_heap(sjs_string** _return);
 void sjf_console_write(sjs_string* data);
 void sjf_i32_random(int32_t* _return);
 void sjf_string(sjs_string* _this);
+void sjf_string_asi32(sjs_string* text, int32_t* _return);
 void sjf_string_copy(sjs_string* _this, sjs_string* _from);
 void sjf_string_destroy(sjs_string* _this);
 void sjf_string_heap(sjs_string* _this);
-void sjf_string_toi32(sjs_string* text, int32_t* _return);
 void main_destroy(void);
 
 void halt(const char * format, ...) {
@@ -924,19 +924,7 @@ void sjf_i32_random(int32_t* _return) {
 void sjf_string(sjs_string* _this) {
 }
 
-void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
-    _this->count = _from->count;
-    _this->data._refCount = 1;
-    sjf_array_char_copy(&_this->data, &_from->data);
-}
-
-void sjf_string_destroy(sjs_string* _this) {
-}
-
-void sjf_string_heap(sjs_string* _this) {
-}
-
-void sjf_string_toi32(sjs_string* text, int32_t* _return) {
+void sjf_string_asi32(sjs_string* text, int32_t* _return) {
     int32_t sjv_x;
 
     sjv_x = 0;
@@ -949,6 +937,18 @@ void sjf_string_toi32(sjs_string* text, int32_t* _return) {
         sjv_x = v;
     }
     (*_return) = sjv_x;
+}
+
+void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
+    _this->count = _from->count;
+    _this->data._refCount = 1;
+    sjf_array_char_copy(&_this->data, &_from->data);
+}
+
+void sjf_string_destroy(sjs_string* _this) {
+}
+
+void sjf_string_heap(sjs_string* _this) {
 }
 
 int main(int argc, char** argv) {
@@ -998,7 +998,7 @@ int main(int argc, char** argv) {
 
         sjf_console_readline(&sjv_str);
         sjt_functionParam2 = &sjv_str;
-        sjf_string_toi32(sjt_functionParam2, &sjv_guess);
+        sjf_string_asi32(sjt_functionParam2, &sjv_guess);
         sjt_compare1 = sjv_guess;
         sjt_compare2 = sjv_num;
         sjt_ifElse1 = sjt_compare1 < sjt_compare2;

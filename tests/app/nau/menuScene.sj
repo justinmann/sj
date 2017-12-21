@@ -198,7 +198,7 @@ menuScene() {
                                     heap textElement(
                                         font : font("assets/sample.ttf", 15.0f)
                                         text : "womens"
-                                        color : colors.red()
+                                        color : copy colors.red
                                     ) as #element
                                 ]
                             ) as #model

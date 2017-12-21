@@ -662,8 +662,8 @@ void sjf_class_destroy(sjs_class* _this);
 void sjf_class_heap(sjs_class* _this);
 void sjf_class_run(sjs_class* _parent, int32_option* _return);
 void sjf_debug_writeline(sjs_string* data);
-void sjf_i32_tostring(int32_t val, sjs_string* _return);
-void sjf_i32_tostring_heap(int32_t val, sjs_string** _return);
+void sjf_i32_asstring(int32_t val, sjs_string* _return);
+void sjf_i32_asstring_heap(int32_t val, sjs_string** _return);
 void sjf_string(sjs_string* _this);
 void sjf_string_copy(sjs_string* _this, sjs_string* _from);
 void sjf_string_destroy(sjs_string* _this);
@@ -894,7 +894,7 @@ void sjf_debug_writeline(sjs_string* data) {
     printf("%s\n", (char*)data->data.data);
 }
 
-void sjf_i32_tostring(int32_t val, sjs_string* _return) {
+void sjf_i32_asstring(int32_t val, sjs_string* _return) {
     int32_t sjt_math3;
     int32_t sjt_math4;
     int32_t sjt_math5;
@@ -922,7 +922,7 @@ void sjf_i32_tostring(int32_t val, sjs_string* _return) {
     sjf_string(_return);
 }
 
-void sjf_i32_tostring_heap(int32_t val, sjs_string** _return) {
+void sjf_i32_asstring_heap(int32_t val, sjs_string** _return) {
     int32_t sjt_math10;
     int32_t sjt_math7;
     int32_t sjt_math8;
@@ -1009,7 +1009,7 @@ int main(int argc, char** argv) {
         sjt_functionParam3 = result2;
     }
 
-    sjf_i32_tostring(sjt_functionParam3, &sjt_call2);
+    sjf_i32_asstring(sjt_functionParam3, &sjt_call2);
     sjt_functionParam2 = &sjt_call2;
     sjf_debug_writeline(sjt_functionParam2);
     sjv_c->_refCount--;
@@ -1044,7 +1044,7 @@ int main(int argc, char** argv) {
         sjt_functionParam5 = result3;
     }
 
-    sjf_i32_tostring(sjt_functionParam5, &sjt_call3);
+    sjf_i32_asstring(sjt_functionParam5, &sjt_call3);
     sjt_functionParam4 = &sjt_call3;
     sjf_debug_writeline(sjt_functionParam4);
     main_destroy();
