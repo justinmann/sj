@@ -14,7 +14,12 @@ enum NMathOp {
     Sub,
     Div,
     Mul,
-    Mod
+    Mod,
+    Xor,
+    Or,
+    And,
+    ShiftLeft,
+    ShiftRight
 };
 
 class CMathVar : public CVar {

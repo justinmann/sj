@@ -32,6 +32,24 @@ void CMathVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
     case NMathOp::Mod:
         line << " % ";
         break;
+    case NMathOp::Xor:
+        line << " ^ ";
+        break;
+    case NMathOp::Or:
+        line << " | ";
+        break;
+    case NMathOp::And:
+        line << " & ";
+        break;
+    case NMathOp::ShiftLeft:
+        line << " << ";
+        break;
+    case NMathOp::ShiftRight:
+        line << " << ";
+        break;
+    default:
+        assert(false);
+        break;
     }
     line << rightValue->getName(trBlock);
 
@@ -57,6 +75,24 @@ void CMathVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& 
             break;
         case NMathOp::Mod:
             ss << " %% ";
+            break;
+        case NMathOp::Xor:
+            ss << " xor ";
+            break;
+        case NMathOp::Or:
+            ss << " or ";
+            break;
+        case NMathOp::And:
+            ss << " and ";
+            break;
+        case NMathOp::ShiftLeft:
+            ss << " shl ";
+            break;
+        case NMathOp::ShiftRight:
+            ss << " shr ";
+            break;
+        default:
+            assert(false);
             break;
     }
     
@@ -106,13 +142,12 @@ shared_ptr<CVar> NMath::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
         functionName = "modulus" + rightTypeName;
         break;
     default:
-        assert(false);
-        return nullptr;
+        break;
     }
 
     // Check to see if we have operator overloading
     bool isHelperFunction;
-    auto cfunction = NCall::getCFunction(compiler, loc, scope, leftVar, functionName, nullptr, returnMode, &isHelperFunction);
+    auto cfunction = functionName.size() > 0 ? NCall::getCFunction(compiler, loc, scope, leftVar, functionName, nullptr, returnMode, &isHelperFunction) : nullptr;
     if (cfunction) {
         operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, functionName, nullptr, make_shared<NodeList>(rightSide)));
         return operatorOverloadNode->getVar(compiler, scope, returnMode);

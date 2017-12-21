@@ -76,7 +76,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TSTRING TCHAR TCBLOCK TCFUNCTION TCDEFINE TCSTRUCT TCINCLUDE TCVAR TCTYPEDEF TQUOTEDIDENTIFIER
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TISVALID TGETVALUE TQUESTION TEMPTY TVALID TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TWEAK TLOCAL TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR TINVALID TCOLONEQUAL THEAPPARENT THEAPTHIS TIFVALID TELSEEMPTY TTOREVERSE TENUM TSWITCH TDEFAULT TPACKAGE TIMPORT TUNDERSCORE TNULLPTR
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TISVALID TGETVALUE TQUESTION TEMPTY TVALID TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TWEAK TLOCAL TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR TINVALID TCOLONEQUAL THEAPPARENT THEAPTHIS TIFVALID TELSEEMPTY TTOREVERSE TENUM TSWITCH TDEFAULT TPACKAGE TIMPORT TUNDERSCORE TNULLPTR TBOOLXOR TBOOLOR TBOOLAND TBOOLSHL TBOOLSHR TBOOLNOT
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch copy destroy expr end_optional end_star if_expr ifValue_var enum_decl switch_expr hash
@@ -108,6 +108,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %left TPLUS TMINUS
 %left TMUL TDIV
 %left TMOD
+%left TBOOLXOR TBOOLOR TBOOLAND TBOOLSHR TBOOLSHL
 %left TQUESTIONCOLON
 
 /* Starting rule in the grammar*/
@@ -325,6 +326,11 @@ expr_math			: expr_math TPLUS expr_math 					{ $$ = new NMath(LOC, shared_ptr<NV
 					| expr_math TMUL expr_math 						{ $$ = new NMath(LOC, shared_ptr<NVariableBase>($1), NMathOp::Mul, shared_ptr<NVariableBase>($3)); }
 					| expr_math TDIV expr_math 						{ $$ = new NMath(LOC, shared_ptr<NVariableBase>($1), NMathOp::Div, shared_ptr<NVariableBase>($3)); }
 					| expr_math TMOD expr_math 						{ $$ = new NMath(LOC, shared_ptr<NVariableBase>($1), NMathOp::Mod, shared_ptr<NVariableBase>($3)); }
+					| expr_math TBOOLXOR expr_math 					{ $$ = new NMath(LOC, shared_ptr<NVariableBase>($1), NMathOp::Xor, shared_ptr<NVariableBase>($3)); }
+					| expr_math TBOOLOR expr_math 					{ $$ = new NMath(LOC, shared_ptr<NVariableBase>($1), NMathOp::Or, shared_ptr<NVariableBase>($3)); }
+					| expr_math TBOOLAND expr_math 					{ $$ = new NMath(LOC, shared_ptr<NVariableBase>($1), NMathOp::And, shared_ptr<NVariableBase>($3)); }
+					| expr_math TBOOLSHR expr_math 					{ $$ = new NMath(LOC, shared_ptr<NVariableBase>($1), NMathOp::ShiftRight, shared_ptr<NVariableBase>($3)); }
+					| expr_math TBOOLSHL expr_math 					{ $$ = new NMath(LOC, shared_ptr<NVariableBase>($1), NMathOp::ShiftLeft, shared_ptr<NVariableBase>($3)); }
 					| TEXCLAIM expr_var                             { $$ = new NNot(LOC, shared_ptr<NVariableBase>($2)); }
 					| TSTACK expr_var                             	{ $$ = new NChangeMode(LOC, CTM_Stack, shared_ptr<NBase>($2)); }
 					| TLOCAL expr_var                             	{ $$ = new NChangeMode(LOC, CTM_Local, shared_ptr<NBase>($2)); }
