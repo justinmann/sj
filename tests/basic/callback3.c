@@ -807,6 +807,7 @@ void sjf_class_run(sjs_class* _parent, int32_t* _return) {
         ((sjs_object*)((char*)sjt_functionParam3.inner._parent - sizeof(intptr_t)))->_refCount--;
         if (((sjs_object*)((char*)sjt_functionParam3.inner._parent - sizeof(intptr_t)))->_refCount <= 0) {
             sjt_functionParam3._destroy(sjt_functionParam3.inner._parent);
+            free(sjt_functionParam3._parent);
         }
     }
 }
@@ -859,10 +860,12 @@ void main_destroy() {
     if (sjt_parent1->_refCount <= 0) {
         weakptr_release(sjt_parent1);
         sjf_class_destroy(sjt_parent1);
+        free(sjt_parent1);
     }
     sjv_c->_refCount--;
     if (sjv_c->_refCount <= 0) {
         weakptr_release(sjv_c);
         sjf_class_destroy(sjv_c);
+        free(sjv_c);
     }
 }

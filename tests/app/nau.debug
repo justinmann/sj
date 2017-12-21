@@ -192,6 +192,10 @@ nauscene3delement_animatelookat(v'stack vec3:, duration'i32:)'void {
   void
 }
 
+rect(x'i32:, y'i32:, w'i32:, h'i32:)'stack rect {
+  this
+}
+
 runloop()'void {
   --c--
   #ifdef EMSCRIPTEN
@@ -1611,6 +1615,12 @@ global()'void {
   /* The transformation is completed. */
   }
   --cfunction--
+  {
+    topbottom'flowlayoutorientation : 0
+    leftright'flowlayoutorientation : 1
+    bottomtop'flowlayoutorientation : 2
+    rightleft'flowlayoutorientation : 3
+  }
   fonthash'stack hash![fontkey, font?] : hash![stack fontkey, weak font](this = hash![stack fontkey, weak font]())
   {
     gl_blend'glfeature : 0x0BE2
@@ -1731,6 +1741,10 @@ global()'void {
   glid_init();
   --c--
   {
+    fixed'gridunittype : 0
+    star'gridunittype : 1
+  }
+  {
     fill'imagestretch : 0
     center'imagestretch : 1
     aspectratio'imagestretch : 2
@@ -1741,6 +1755,18 @@ global()'void {
   float s, t;       // texture
   } vertex3_texture2_t;	
   --cstruct--
+  {
+    topbottom'listlayoutorientation : 0
+    leftright'listlayoutorientation : 1
+    bottomtop'listlayoutorientation : 2
+    rightleft'listlayoutorientation : 3
+  }
+  looplastrect'stack rect = rect(this = rect(
+    x'i32 : x,
+    y'i32 : y,
+    w'i32 : w,
+    h'i32 : h
+  ))
   mouse_captureelement'heap #element? = empty'heap #element?
   {
     move'mouseeventtype : 0

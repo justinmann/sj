@@ -963,18 +963,21 @@ void main_destroy() {
     if (sjt_value1->_refCount <= 0) {
         weakptr_release(sjt_value1);
         sjf_class_destroy(sjt_value1);
+        free(sjt_value1);
     }
     if (sjv_n != 0) {
         sjv_n->_refCount--;
         if (sjv_n->_refCount <= 0) {
             weakptr_release(sjv_n);
             sjf_class_destroy(sjv_n);
+            free(sjv_n);
         }
     }
     sjv_o->_refCount--;
     if (sjv_o->_refCount <= 0) {
         weakptr_release(sjv_o);
         sjf_class_destroy(sjv_o);
+        free(sjv_o);
     }
     if (sjv_i._refCount == 1) { sjf_class_destroy(&sjv_i); }
 }

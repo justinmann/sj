@@ -971,6 +971,7 @@ void sjf_getcallback_heap(cb_i32_data_heap_data_heap* _return) {
     if (sjv_c->_refCount <= 0) {
         weakptr_release(sjv_c);
         sjf_class_destroy(sjv_c);
+        free(sjv_c);
     }
 }
 
@@ -1066,28 +1067,33 @@ void main_destroy() {
     if (sjv_b->_refCount <= 0) {
         weakptr_release(sjv_b);
         sjf_data_destroy(sjv_b);
+        free(sjv_b);
     }
     sjv_c_heap->_refCount--;
     if (sjv_c_heap->_refCount <= 0) {
         weakptr_release(sjv_c_heap);
         sjf_class_destroy(sjv_c_heap);
+        free(sjv_c_heap);
     }
     if ((uintptr_t)sjv_f3.inner._parent > 1) {
         ((sjs_object*)((char*)sjv_f3.inner._parent - sizeof(intptr_t)))->_refCount--;
         if (((sjs_object*)((char*)sjv_f3.inner._parent - sizeof(intptr_t)))->_refCount <= 0) {
             sjv_f3._destroy(sjv_f3.inner._parent);
+            free(sjv_f3._parent);
         }
     }
     if ((uintptr_t)sjv_l.inner._parent > 1) {
         ((sjs_object*)((char*)sjv_l.inner._parent - sizeof(intptr_t)))->_refCount--;
         if (((sjs_object*)((char*)sjv_l.inner._parent - sizeof(intptr_t)))->_refCount <= 0) {
             sjv_l._destroy(sjv_l.inner._parent);
+            free(sjv_l._parent);
         }
     }
     sjv_n->_refCount--;
     if (sjv_n->_refCount <= 0) {
         weakptr_release(sjv_n);
         sjf_data_destroy(sjv_n);
+        free(sjv_n);
     }
     if (sjv_c._refCount == 1) { sjf_class_destroy(&sjv_c); }
     if (sjv_d._refCount == 1) { sjf_data_destroy(&sjv_d); }

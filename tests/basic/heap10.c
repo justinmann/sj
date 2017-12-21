@@ -878,34 +878,40 @@ void main_destroy() {
     if (sjt_value1->_refCount <= 0) {
         weakptr_release(sjt_value1);
         sjf_class_destroy(sjt_value1);
+        free(sjt_value1);
     }
     sjt_value2->_refCount--;
     if (sjt_value2->_refCount <= 0) {
         weakptr_release(sjt_value2);
         sjf_class2_destroy(sjt_value2);
+        free(sjt_value2);
     }
     sjv_x2->_refCount--;
     if (sjv_x2->_refCount <= 0) {
         weakptr_release(sjv_x2);
         sjf_class_destroy(sjv_x2);
+        free(sjv_x2);
     }
     if (sjv_x4 != 0) {
         sjv_x4->_refCount--;
         if (sjv_x4->_refCount <= 0) {
             weakptr_release(sjv_x4);
             sjf_class_destroy(sjv_x4);
+            free(sjv_x4);
         }
     }
     sjv_x6->_refCount--;
     if (sjv_x6->_refCount <= 0) {
         weakptr_release(sjv_x6);
         sjf_class2_destroy(sjv_x6);
+        free(sjv_x6);
     }
     if (sjv_x8 != 0) {
         sjv_x8->_refCount--;
         if (sjv_x8->_refCount <= 0) {
             weakptr_release(sjv_x8);
             sjf_class2_destroy(sjv_x8);
+            free(sjv_x8);
         }
     }
     if (sjv_x1._refCount == 1) { sjf_class_destroy(&sjv_x1); }

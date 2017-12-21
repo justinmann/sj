@@ -1719,6 +1719,7 @@ int main(int argc, char** argv) {
     if (sjv_c->_refCount <= 0) {
         weakptr_release(sjv_c);
         sjf_class_destroy(sjv_c);
+        free(sjv_c);
     }
 
     sjv_c = (sjs_class*)malloc(sizeof(sjs_class));
@@ -1743,6 +1744,7 @@ int main(int argc, char** argv) {
     if (sjv_d->_refCount <= 0) {
         weakptr_release(sjv_d);
         sjf_class_destroy(sjv_d);
+        free(sjv_d);
     }
 
     sjv_d = (sjs_class*)malloc(sizeof(sjs_class));
@@ -1781,11 +1783,13 @@ void main_destroy() {
     if (sjv_c->_refCount <= 0) {
         weakptr_release(sjv_c);
         sjf_class_destroy(sjv_c);
+        free(sjv_c);
     }
     sjv_d->_refCount--;
     if (sjv_d->_refCount <= 0) {
         weakptr_release(sjv_d);
         sjf_class_destroy(sjv_d);
+        free(sjv_d);
     }
     if (sjt_call1._refCount == 1) { sjf_string_destroy(&sjt_call1); }
     if (sjt_call12._refCount == 1) { sjf_string_destroy(&sjt_call12); }

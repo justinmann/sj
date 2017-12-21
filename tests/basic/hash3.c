@@ -1248,6 +1248,7 @@ void main_destroy() {
         sjv_b._parent->_refCount--;
         if (sjv_b._parent->_refCount <= 0) {
             sjv_b._vtbl->destroy(sjv_b._parent);
+            free(sjv_b._parent);
         }
     }
     if (sjt_call1._refCount == 1) { sjf_string_destroy(&sjt_call1); }

@@ -903,6 +903,7 @@ void main_destroy() {
     if (sjv_c->_refCount <= 0) {
         weakptr_release(sjv_c);
         sjf_bar_destroy(sjv_c);
+        free(sjv_c);
     }
     if (sjt_call1._refCount == 1) { sjf_class_destroy(&sjt_call1); }
     if (sjv_b._refCount == 1) { sjf_bar_destroy(&sjv_b); }

@@ -1014,12 +1014,14 @@ void main_destroy() {
         ((sjs_object*)((char*)sjt_functionParam3.inner._parent - sizeof(intptr_t)))->_refCount--;
         if (((sjs_object*)((char*)sjt_functionParam3.inner._parent - sizeof(intptr_t)))->_refCount <= 0) {
             sjt_functionParam3._destroy(sjt_functionParam3.inner._parent);
+            free(sjt_functionParam3._parent);
         }
     }
     sjv_s->_refCount--;
     if (sjv_s->_refCount <= 0) {
         weakptr_release(sjv_s);
         sjf_sum_destroy(sjv_s);
+        free(sjv_s);
     }
     if (sjv_a._refCount == 1) { sjf_array_i32_destroy(&sjv_a); }
     if (sjv_c._refCount == 1) { sjf_class_i32_destroy(&sjv_c); }

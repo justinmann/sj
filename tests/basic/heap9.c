@@ -787,6 +787,7 @@ void sjf_foo2_heap(sjs_class** _return) {
     if (sjt_value1->_refCount <= 0) {
         weakptr_release(sjt_value1);
         sjf_class_destroy(sjt_value1);
+        free(sjt_value1);
     }
 }
 
@@ -820,6 +821,7 @@ void main_destroy() {
         if (sjv_x2->_refCount <= 0) {
             weakptr_release(sjv_x2);
             sjf_class_destroy(sjv_x2);
+            free(sjv_x2);
         }
     }
     if (sjv_x1._refCount == 1) { sjf_class_destroy(&sjv_x1); }

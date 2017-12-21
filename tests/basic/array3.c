@@ -807,6 +807,7 @@ void sjf_array_heap_class_destroy(sjs_array_heap_class* _this) {
 if (p[i]->_refCount <= 0) {
     weakptr_release(p[i]);
     sjf_class_destroy(p[i]);
+    free(p[i]);
 }
 ;
             }
@@ -925,25 +926,30 @@ void main_destroy() {
     if (sjt_functionParam2->_refCount <= 0) {
         weakptr_release(sjt_functionParam2);
         sjf_class_destroy(sjt_functionParam2);
+        free(sjt_functionParam2);
     }
     sjt_functionParam4->_refCount--;
     if (sjt_functionParam4->_refCount <= 0) {
         weakptr_release(sjt_functionParam4);
         sjf_class_destroy(sjt_functionParam4);
+        free(sjt_functionParam4);
     }
     sjt_functionParam6->_refCount--;
     if (sjt_functionParam6->_refCount <= 0) {
         weakptr_release(sjt_functionParam6);
         sjf_class_destroy(sjt_functionParam6);
+        free(sjt_functionParam6);
     }
     sjv_a->_refCount--;
     if (sjv_a->_refCount <= 0) {
         weakptr_release(sjv_a);
         sjf_array_heap_class_destroy(sjv_a);
+        free(sjv_a);
     }
     sjv_c->_refCount--;
     if (sjv_c->_refCount <= 0) {
         weakptr_release(sjv_c);
         sjf_class_destroy(sjv_c);
+        free(sjv_c);
     }
 }

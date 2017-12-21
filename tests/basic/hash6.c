@@ -1168,6 +1168,7 @@ int main(int argc, char** argv) {
     if (sjv_c->_refCount <= 0) {
         weakptr_release(sjv_c);
         sjf_class_destroy(sjv_c);
+        free(sjv_c);
     }
 
     sjv_c = (sjs_class*)malloc(sizeof(sjs_class));
@@ -1226,6 +1227,7 @@ void main_destroy() {
     if (sjv_c->_refCount <= 0) {
         weakptr_release(sjv_c);
         sjf_class_destroy(sjv_c);
+        free(sjv_c);
     }
     if (sjt_call1._refCount == 1) { sjf_string_destroy(&sjt_call1); }
     if (sjt_call2._refCount == 1) { sjf_string_destroy(&sjt_call2); }

@@ -950,6 +950,7 @@ void main_destroy() {
     if (sjv_c->_refCount <= 0) {
         weakptr_release(sjv_c);
         sjf_class_destroy(sjv_c);
+        free(sjv_c);
     }
     if (void1._refCount == 1) { sjf_string_destroy(&void1); }
 }

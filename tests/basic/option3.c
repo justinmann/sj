@@ -853,6 +853,7 @@ void sjf_test_heap(sjs_class** _return) {
             if (sjt_value3->_refCount <= 0) {
                 weakptr_release(sjt_value3);
                 sjf_class_destroy(sjt_value3);
+                free(sjt_value3);
             }
         } else {
             (*_return) = 0;
@@ -893,11 +894,13 @@ void sjf_test_heap(sjs_class** _return) {
             if (sjt_value5->_refCount <= 0) {
                 weakptr_release(sjt_value5);
                 sjf_class_destroy(sjt_value5);
+                free(sjt_value5);
             }
             sjt_value6->_refCount--;
             if (sjt_value6->_refCount <= 0) {
                 weakptr_release(sjt_value6);
                 sjf_class_destroy(sjt_value6);
+                free(sjt_value6);
             }
         } else {
             (*_return) = 0;
@@ -910,6 +913,7 @@ void sjf_test_heap(sjs_class** _return) {
         if (sjt_value4->_refCount <= 0) {
             weakptr_release(sjt_value4);
             sjf_class_destroy(sjt_value4);
+            free(sjt_value4);
         }
     }
 }
