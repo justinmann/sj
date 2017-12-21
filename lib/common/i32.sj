@@ -19,7 +19,7 @@ i32_random()'i32 {
 	x
 }
 
-i32_toString(val : 'i32) {
+i32_asString(val : 'i32) {
 	count := 0
 	data := nullptr
 	--c--
@@ -48,7 +48,7 @@ i32_isEqual(l : 'i32, r : 'i32)'bool {
 	l == r
 }
 
-string_toI32(text : 'string)'i32 {
+string_asI32(text : 'string)'i32 {
 	x := 0
 	--c--
 	char* e;

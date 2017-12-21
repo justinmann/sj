@@ -64,7 +64,7 @@ f32_floor(v : 'f32)'f32 {
 	x
 }
 
-f32_toString(val : 'f32) {
+f32_asString(val : 'f32) {
 	count := 0
 	data := nullptr
 	--c--

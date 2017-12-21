@@ -22,7 +22,7 @@ personElement #element (
 	}
 
 	onMouseUp(point : 'point)'void {
-		debug.writeLine("personElement onMouseUp " + point.x.toString() + ", " + point.y.toString())
+		debug.writeLine("personElement onMouseUp " + point.x.asString() + ", " + point.y.asString())
 		void
 	}
 
@@ -33,10 +33,10 @@ personElement #element (
 			ifValid m : modelsById[id] {
 				c : m.getCenter()
 				w : m.getWorld()
-				l : w * c.toVec4()
-				d : l.toVec3()
+				l : w * c.asVec4()
+				d : l.asVec3()
 
-				debug.writeLine(c.toString() + " => " + l.toString() + " & " + d.toString())
+				debug.writeLine(c.asString() + " => " + l.asString() + " & " + d.asString())
 
 				nauScene.animateLookAt(d, 2000)
 			} elseEmpty {
@@ -55,7 +55,7 @@ personElement #element (
 	}
 
 	fireMouseEvent(mouseEvent : 'mouseEvent)'void {
-		debug.writeLine("personElement " + mouseEvent.point.toString())
+		debug.writeLine("personElement " + mouseEvent.point.asString())
 		if _rect.containsPoint(mouseEvent.point) {
 			if mouseEvent.type == mouseEventType.up {
 				onMouseUp(mouseEvent.point)

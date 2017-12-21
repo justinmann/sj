@@ -15,8 +15,8 @@ vec3(
 		)
 	}
 
-	toString() {
-		x.toString() + ", " + y.toString() + ", " + z.toString()
+	asString() {
+		x.asString() + ", " + y.asString() + ", " + z.asString()
 	}
 
 	add(v : 'vec3) {
@@ -56,7 +56,7 @@ vec3(
     	x * v.x + y * v.y + z * v.z		
 	}
 
-	toVec4() {
+	asVec4() {
 		vec4(x, y, z, 1.0f)
 	}
 ) { this }

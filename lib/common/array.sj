@@ -219,13 +219,13 @@ array!t (
 		}
 	}
 
-	toString(sep : ", ") {
+	asString(sep : ", ") {
 		result := ""
 		for i : 0 to count {
 			if i != 0 {
 				result = result + sep
 			}
-			result = result + getAt(i)?.toString()?:""
+			result = result + getAt(i)?.asString()?:""
 		}
 		copy result
 	}

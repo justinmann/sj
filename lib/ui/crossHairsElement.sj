@@ -1,5 +1,5 @@
 crossHairsElement #element (
-	color := colors.white()
+	color := copy colors.white
 	_rect := rect()
 	_topDownRenderer := empty'boxRenderer
 	_leftRightRenderer := empty'boxRenderer

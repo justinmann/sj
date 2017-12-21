@@ -15,4 +15,8 @@ rect(
 	isEqual(rect: 'rect) {
 		x == rect.x && y == rect.y && w == rect.w && h == rect.h
 	}
+
+	asString() {
+		"x: " + x.asString() + " y: " + y.asString() + " w: " + w.asString() + " h: " + h.asString()
+	}
 ) { this }

@@ -116,8 +116,8 @@ mat4(
         )
     }
 
-    toString() {
-        "[[" + m00.toString() + " " + m01.toString() + " " + m02.toString() + " " + m03.toString() + "] [" + m10.toString() + " " + m11.toString() + " " + m12.toString() + " " + m13.toString() + "] [" + m20.toString() + " " + m21.toString() + " " + m22.toString() + " " + m23.toString() + "] [" + m30.toString() + " " + m31.toString() + " " + m32.toString() + " " + m33.toString() + "]"
+    asString() {
+        "[[" + m00.asString() + " " + m01.asString() + " " + m02.asString() + " " + m03.asString() + "] [" + m10.asString() + " " + m11.asString() + " " + m12.asString() + " " + m13.asString() + "] [" + m20.asString() + " " + m21.asString() + " " + m22.asString() + " " + m23.asString() + "] [" + m30.asString() + " " + m31.asString() + " " + m32.asString() + " " + m33.asString() + "]"
     }
 ) { this }
 

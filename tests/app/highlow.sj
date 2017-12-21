@@ -7,7 +7,7 @@ isCorrect := false
 
 while !isCorrect {
     str : console.readLine()
-    guess : str.toI32()
+    guess : str.asI32()
     isCorrect = if guess < num {
                     console.write("Too Low\n")
                     false

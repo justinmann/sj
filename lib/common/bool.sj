@@ -1,4 +1,4 @@
-bool_toString(val : 'bool) {
+bool_asString(val : 'bool) {
 	if val {
 		"true"
 	} else {
@@ -24,7 +24,7 @@ bool_isEqual(l : 'bool, r : 'bool)'bool {
 	l == r
 }
 
-string_toBool(text : 'string)'bool {
+string_asBool(text : 'string)'bool {
 	if text == "true" {
 		true
 	} else {

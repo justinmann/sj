@@ -12,8 +12,8 @@ mainPanel #model (
 
 			t : world * model * childWorld
 
-			center : t * vec3().toVec4()
-			debug.writeLine("model: " + center.toString())
+			center : t * vec3().asVec4()
+			debug.writeLine("model: " + center.asString())
 
 			c.update(sceneRect, projection, view, t, light)
 		}

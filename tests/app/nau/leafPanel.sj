@@ -43,7 +43,7 @@ leafPanel #model (
 		_angle += 0.8f;
 
 	    heap model(
-	    	id : valid("leaf" + z.toString())
+	    	id : valid("leaf" + z.asString())
 	    	texture : copy texture
 	    	shader : copy phongTextureShader
 	    	model : mat4_translate(x, y, z)
