@@ -24,7 +24,7 @@ mainPanel #model (
 	getCenter() { vec3() }
 	getWorld() { _world * model }
 
-	renderOrQueue(zqueue : 'list!#model)'void {
+	renderOrQueue(zqueue : 'list!heap #model)'void {
 		for i : 0 to children.count {
 			c : children[i]
 			c.renderOrQueue(zqueue)

@@ -1,3 +1,0 @@
-ERROR:2 lib/ui/panel3d.sj[20:2] right type 'local list!#model' does not match left type 'local list!#model'
-ERROR:2 nau/mainPanel.sj[27:2] right type 'local list!#model' does not match left type 'local list!#model'
-ERROR:2 nau/nauScene3dElement.sj[60:10] right type 'stack list!#model' does not match left type 'local list!#model'

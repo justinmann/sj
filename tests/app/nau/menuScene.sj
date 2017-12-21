@@ -196,7 +196,6 @@ menuScene() {
                                         image : image(texture : textureFromPng("assets/menu8.png"))
                                     ) as #element
                                     heap textElement(
-                                        font : font("assets/sample.ttf", 15.0f)
                                         text : "womens"
                                         color : copy colors.red
                                     ) as #element
