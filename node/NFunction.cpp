@@ -330,7 +330,7 @@ void CFunction::transpileStructDefinition(Compiler* compiler, TrOutput* trOutput
 
                     if (argType.second->typeMode == CTM_Stack) {
                     }
-                    else if (argType.second->typeMode != CTM_Heap && argType.second->typeMode != CTM_Value && argType.first.compare("_parent") != 0) {
+                    else if (argType.second->typeMode != CTM_Heap && argType.second->typeMode != CTM_Weak && argType.second->typeMode != CTM_Value && argType.first.compare("_parent") != 0) {
                         compiler->addError(loc, CErrorCode::InvalidType, "var '%s' is local which is not allowed", argType.first.c_str());
                     }
                     ss << " " << argType.first;
