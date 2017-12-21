@@ -1,3 +1,5 @@
+loopLastRect := rect()
+
 mainLoop() {
     ticks := 0
     --c--
@@ -9,7 +11,9 @@ mainLoop() {
     rootScene.setSize(size)
     rootScene.clear()
     rect : rect(0, 0, size.w, size.h)
-    root.setRect(rect)
+    if loopLastRect != rect {
+        root.setRect(rect)
+    }
     root.render(rootScene)
     rootWindowRenderer.present()
 
