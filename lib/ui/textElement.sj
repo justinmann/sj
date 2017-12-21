@@ -11,7 +11,7 @@ enum textVertical(
 )
 
 textElement #element (
-	font := 'font
+	font := 'heap font
 	text := 'string
 	color := copy colors.white
 	margin := margin()

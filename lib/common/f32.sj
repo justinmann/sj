@@ -75,6 +75,15 @@ f32_asString(val : 'f32) {
 	string(count := count, data := array!char(dataSize := count + 1, count := count + 1, data := data))
 }
 
+f32_hash(val : 'f32)'u32 {
+	result := 0u
+	--c--
+	int32_t* p = (int32_t*)&val;
+	sjv_result = *p;
+	--c--
+	result
+}
+
 f32_compare(l : 'f32, r : 'f32) {
 	if l == r {
 		0

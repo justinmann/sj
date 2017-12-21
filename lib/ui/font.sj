@@ -1,3 +1,35 @@
+fontHash : hash![fontKey, weak font]()
+
+font_load(src : 'string, size : 'f32)'heap font {
+    k : fontKey(
+        src : copy src 
+        size : size)
+    w : fontHash[k]
+    h : heap w
+    ifValid h {
+        h
+    } elseEmpty {
+        result : heap font(
+            src : copy src
+            size : size)
+        fontHash[k] = weak result
+        result
+    }
+}
+
+fontKey(
+    src : 'string
+    size : 'f32
+
+    hash()'u32 {
+        src.hash() xor size.hash()
+    }
+
+    isEqual(x : 'fontKey) {
+        src == x.src && size == x.size
+    }
+) { this }
+
 font(
 	src : 'string
 	size : 'f32
