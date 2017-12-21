@@ -14,6 +14,29 @@ filllayout #element (children'stack array!#element:, margin'stack margin=, _rect
   this
 }
 
+hash![stack fontkey, weak font]()'stack hash![fontkey, font?] {
+  --cdefine--
+  #ifndef fontkey_weak_font_hash_typedef
+  #define fontkey_weak_font_hash_typedef
+  KHASH_INIT_TYPEDEF(fontkey_weak_font_hash_type, sjs_fontkey, sjs_font*)
+  #endif
+  --cdefine--
+  --cfunction--
+  #ifndef fontkey_weak_font_hash_function
+  #define fontkey_weak_font_hash_function
+  #if true
+  KHASH_INIT_FUNCTION_DEREF(fontkey_weak_font_hash_type, sjs_fontkey, sjs_font*, 1, INVALID, INVALID)
+  #else
+  KHASH_INIT_FUNCTION(fontkey_weak_font_hash_type, sjs_fontkey, sjs_font*, 1, INVALID, INVALID)
+  #endif
+  #endif
+  --cfunction--
+  --c--
+  _this->_hash = kh_init(fontkey_weak_font_hash_type);
+  --c--
+  this
+}
+
 hash![stack string, weak #element]()'stack hash![string, #element?] {
   --cdefine--
   #ifndef string_weak_iface_element_hash_typedef
@@ -1479,6 +1502,7 @@ global()'void {
   /* The transformation is completed. */
   }
   --cfunction--
+  fonthash'stack hash![fontkey, font?] : hash![stack fontkey, weak font](this = hash![stack fontkey, weak font]())
   {
     gl_blend'glfeature : 0x0BE2
     gl_cull_face'glfeature : 0x0B44
