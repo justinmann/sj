@@ -1,8 +1,41 @@
 menuController(
     scene := empty'weak nauScene3dElement
-    view() {
-        scene?.animateLookAt(vec3(0.0f, 0.0f, 30.0f), 5000)
-        debug.writeLine("yeah")
+    
+    viewFieldMenu() {
+        m : modelsById["fieldMenu"]
+        ifValid m {
+            c : m.getCenter()
+            w : m.getWorld()
+            l : w * c.asVec4()
+            d : l.asVec3()
+
+            fromScene : heap scene
+            ifValid fromScene {
+                nauScene = fieldScene()
+                destScene : heap nauScene as #element
+
+                crossFade : heap crossFadeElement(
+                    fromElement : heap fromScene as #element
+                    toElement : destScene
+                )
+
+                root = heap crossFade as #element
+
+                fromScene.animateLookAt(d, 2000)
+                fromScene.animateCameraDistance(3.0f, 2000)
+
+                animator.animations.add(
+                    heap animation!f32(
+                        startValue : 0.0f
+                        endValue : 1.0f
+                        start : animator.current + 1500
+                        end : animator.current + 3000
+                        setValue : heap crossFade.setAmount
+                    ) as #animation
+                )                
+            }
+        }
+        void
     }
 ) { this }
 
@@ -272,6 +305,7 @@ menuScene() {
                             ) as #model
 
                             heap scene2dModel(
+                                id : valid("fieldMenu")
                                 shader : copy phongTextureShader
                                 textureSize : size(800, 352)
                                 model : mat4_translate(vec3(1.5f, 0.0f, 0.5f))
@@ -280,7 +314,10 @@ menuScene() {
                                     heap fieldScene() as #element
 
                                     heap buttonElement(
-                                        onClick : valid(controller.view)
+                                        normalImage : empty'image
+                                        hotImage : empty'image
+                                        pressedImage : empty'image
+                                        onClick : valid(controller.viewFieldMenu)
                                     ) as #element
 
                                     heap centerLayout(

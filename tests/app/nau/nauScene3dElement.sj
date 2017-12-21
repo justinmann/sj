@@ -2,6 +2,7 @@ nauScene3dElement #element (
 	children : array!heap #model()
 	lookAtMin := vec3()
 	lookAtMax := vec3()
+	cameraDistance := 5.0f
 	fieldOfView := 90.0f
 	zNear := 1.0f
 	zFar := 100.0f
@@ -32,20 +33,39 @@ nauScene3dElement #element (
 				endValue : copy v
 				start : animator.current
 				end : animator.current + duration
-				setValue : heap parent.lookAt
+				setValue : heap parent.setLookAt
 			) as #animation
 		)
 		void
 	}
 
-	lookAt(v : 'vec3) {
+	animateCameraDistance(v : 'f32, duration : 'i32) {
+		animator.animations.add(
+			heap animation!f32(
+				startValue : cameraDistance
+				endValue : v
+				start : animator.current
+				end : animator.current + duration
+				setValue : heap parent.setCameraDistance
+			) as #animation
+		)
+		void
+	}
+
+	setCameraDistance(v : 'f32) {
+		cameraDistance = v
+		void
+	}
+
+	setLookAt(v : 'vec3) {
 		_lookAt = copy v
-		camera : _lookAt - vec3(0.0f, 0.0f, 5.0f)
-		view = mat4_lookAtLH(camera, _lookAt, vec3(0.0f, 1.0f, 0.0f))
 		void
 	}
 
 	render(scene : 'scene2d)'void {
+		camera : _lookAt - vec3(0.0f, 0.0f, cameraDistance)
+		view = mat4_lookAtLH(camera, _lookAt, vec3(0.0f, 1.0f, 0.0f))
+
 		for i : 0 to children.count {
 			child : children[i]
 			child.update(_rect, projection, view, world, light)
@@ -89,7 +109,7 @@ nauScene3dElement #element (
 						(mouseEvent.point.y - _startDrag.y) as f32 / _rect.h as f32 * 2.0f
 						0.0f
 					)))
-					camera : _lookAt - vec3(0.0f, 0.0f, 5.0f)
+					camera : _lookAt - vec3(0.0f, 0.0f, cameraDistance)
 					view = mat4_lookAtLH(camera, _lookAt, vec3(0.0f, 1.0f, 0.0f))
 					void
 				}

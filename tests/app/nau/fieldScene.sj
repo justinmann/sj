@@ -30,19 +30,14 @@ fieldScene() {
                         id : valid("person1")
                         vertexBuffer : planeVertexBuffer()  
                         shader : copy phongTextureShader
+                        hasAlpha : true
                         children : [
                             heap personElement(
                                 id : valid("person1")
                             ) as #element
-                            heap boxElement(
-                                color : copy colors.red
-                            ) as #element
                             heap imageElement(
                                 image : image(texture : textureFromPng("assets/forestperson1.png"))
                                 stretch : imageStretch.aspectRatio
-                            ) as #element
-                            heap crossHairsElement(
-                                color : copy colors.blue
                             ) as #element
                         ]
                     ) as #model
@@ -51,17 +46,14 @@ fieldScene() {
                         id : valid("person2")
                         vertexBuffer : planeVertexBuffer()  
                         shader : copy phongTextureShader
+                        hasAlpha : true
                         children : [
                             heap personElement(
                                 id : valid("person2")
                             ) as #element
-                            heap boxElement() as #element
                             heap imageElement(
                                 image : image(texture : textureFromPng("assets/forestperson2.png"))
                                 stretch : imageStretch.aspectRatio
-                            ) as #element
-                            heap crossHairsElement(
-                                color : copy colors.green
                             ) as #element
                         ]
                     ) as #model
