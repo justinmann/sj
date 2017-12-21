@@ -57,7 +57,7 @@ list!t(
 		}
 		#type(t)* p = (#type(t)*)_parent->array.data;
 		if (index != _parent->array.count - 1) {
-			memcpy(p + index, p + index + 1, _parent->array.count - index - 1);
+			memcpy(p + index, p + index + 1, (_parent->array.count - index - 1) * sizeof(#type(t)));
 		}
 		_parent->array.count--;
 		--c--
