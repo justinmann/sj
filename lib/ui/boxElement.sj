@@ -5,14 +5,12 @@ boxElement #element (
 	boxRenderer := empty'boxRenderer
 
 	getSize(maxSize : 'size) {
-		debug.writeLine("boxElement:getSize:" + maxSize.asString())
 		idealSize.min(maxSize)
 	}
 
 	getRect()'rect { copy rect }
 
 	setRect(rect_ : 'rect)'void {
-		debug.writeLine("boxElement:setRect:" + rect_.asString())
 		if rect != rect_ {
 			rect = copy rect_
 			boxRenderer = empty'boxRenderer

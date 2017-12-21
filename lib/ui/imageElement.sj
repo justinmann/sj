@@ -42,16 +42,13 @@ imageElement #element (
 					void
 				}
 				imageStretch.aspectRatio { 
-					debug.writeLine("aspectRatio")
 					imageAspectRatio : image.texture.size.w as f32 / image.texture.size.h as f32
 					rectAspectRatio  : r.w as f32 / r.h as f32
-					debug.writeLine("imageAspectRatio: " + imageAspectRatio.asString())
 					finalSize : if imageAspectRatio > rectAspectRatio {
 						size(r.w, (r.h as f32 / imageAspectRatio) as i32)
 					} else {
 						size((r.w as f32 * imageAspectRatio) as i32, r.h)
 					}
-					debug.writeLine("finalSize: " + finalSize.asString())
 					r = rect(
 						(r.w - finalSize.w) / 2
 						(r.h - finalSize.h) / 2

@@ -9,12 +9,7 @@ mainPanel #model (
 		for i : 0 to children.count {
 			c : children[i]
 			childWorld : _childWorlds[i]
-
 			t : world * model * childWorld
-
-			center : t * vec3().asVec4()
-			debug.writeLine("model: " + center.asString())
-
 			c.update(sceneRect, projection, view, t, light)
 		}
 		void
