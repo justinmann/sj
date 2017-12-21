@@ -1,12 +1,27 @@
+enum textHorizontal(
+	left
+	right
+	center
+)
+
+enum textVertical(
+	top
+	bottom
+	center
+)
+
 textElement #element (
 	font := 'font
 	text := 'string
-	color := colors.white()
+	color := copy colors.white
+	margin := margin()
+	halign := textHorizontal.left
+	valign := textVertical.top
 	_rect := rect()
 	_textRenderer := empty'textRenderer
 
 	getSize(maxSize : 'size) {
-		textSize : font.getTextSize(text)
+		textSize : font.getTextSize(text) + margin
 		textSize.min(maxSize)	
 	}
 
@@ -21,18 +36,26 @@ textElement #element (
 	}
 
 	render(scene : 'scene2d)'void {
-		textSize : font.getTextSize(text)
-		final : rect(
-			x : _rect.x
-			y : _rect.y
-			w : textSize.w
-			h : textSize.h
-		)
-
 		if isEmpty(_textRenderer) {
+			textSize : font.getTextSize(text)
+			innerRect : _rect - margin
+			x : switch halign {
+				textHorizontal.left 	{ innerRect.x }
+				textHorizontal.right 	{ innerRect.x + innerRect.w - textSize.w }
+				textHorizontal.center 	{ innerRect.x + (innerRect.w - textSize.w) / 2 }
+				default					{ 0 }
+			}
+
+			y : switch valign {
+				textVertical.top 		{ innerRect.y }
+				textVertical.bottom 	{ innerRect.y + innerRect.h - textSize.h }
+				textVertical.center 	{ innerRect.y + (innerRect.h - textSize.h) / 2 }
+				default					{ 0 }
+			}
+
 			_textRenderer = valid(textRenderer(
 				text: copy text
-			    point: point(_rect.x, _rect.y)
+			    point: point(x, y)
 			    color: copy color
 			    font: copy font))
 		}

@@ -45,7 +45,7 @@ scene3dElement #element (
 
 	    glEnable(glFeature.GL_DEPTH_TEST)
 
-	    a : list!#model()
+	    a : list!heap #model()
 
 		for i : 0 to children.count {
 			child : children[i]

@@ -3,7 +3,7 @@
 	getZ()'f32
 	getCenter()'vec3
 	getWorld()'mat4
-	renderOrQueue(zqueue : 'list!#model)'void
+	renderOrQueue(zqueue : 'list!heap #model)'void
 	render()'void
 	fireMouseEvent(mouseEvent : 'mouseEvent)'void
 )

@@ -1,18 +1,26 @@
-fillElement #element (
+fillLayout #element (
 	children : array!heap #element()
+	margin := margin()
 	_rect := rect()
 
 	getSize(maxSize : 'size) {
-		size(maxSize.w, maxSize.h)
+		size := size()
+		innerSize : maxSize - margin
+		for i : 0 to children.count {
+			child : children[i]			
+			size = size.max(child.getSize(innerSize))
+		}
+		size + margin
 	}
 
 	getRect()'rect { copy _rect }
 
 	setRect(rect_ : 'rect) {
 		_rect = copy rect_
+		innerRect : _rect - margin
 		for i : 0 to children.count {
 			child : children[i]
-			child.setRect(_rect)
+			child.setRect(innerRect)
 		}	
 		void	
 	}

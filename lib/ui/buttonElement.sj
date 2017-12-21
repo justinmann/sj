@@ -1,8 +1,8 @@
-buttonState: ^(
-	normal : 0
-	hot : 1
-	pressed : 2
-) { this }
+enum buttonState (
+	normal
+	hot
+	pressed
+)
 
 buttonElement #element (
 	text := ""
@@ -86,7 +86,7 @@ buttonElement #element (
 	}
 
 	onMouseUp(point : 'point)'void {
-		console.write("buttonElement onMouseUp " + convert.i32toString(point.x) + ", " + convert.i32toString(point.y))
+		console.write("buttonElement onMouseUp " + convert.i32asString(point.x) + ", " + convert.i32asString(point.y))
 		mouse_capture(heap parent as #element)
 		state = buttonState.normal
 		void
