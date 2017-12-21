@@ -251,7 +251,7 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
             auto innerBlock = ifNullBlock.get();
 
             stringstream lineStream;
-            lineStream << "((sjs_object*)((char*)" << name << ".inner._parent - sizeof(intptr_t)))->_refCount--";
+            lineStream << name << ".inner._parent->_refCount--";
             innerBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
 
 #ifdef DEBUG_ALLOC
@@ -262,7 +262,7 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
 
             auto ifBlock = make_shared<TrBlock>();
             stringstream ifStream2;
-            ifStream2 << "if (((sjs_object*)((char*)" << name << ".inner._parent - sizeof(intptr_t)))->_refCount <= 0)";
+            ifStream2 << "if (" << name << ".inner._parent->_refCount <= 0)";
             innerBlock->statements.push_back(TrStatement(CLoc::undefined, ifStream2.str(), ifBlock));
 
             stringstream destroyStream;
@@ -271,7 +271,7 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
 
 #ifndef SKIP_FREE
             stringstream freeStream;
-            freeStream << "free(" << name << "._parent)";
+            freeStream << "free(" << name << ".inner._parent)";
             ifBlock->statements.push_back(TrStatement(CLoc::undefined, freeStream.str()));
 #endif // !SKIP_FREE
         } 
@@ -394,7 +394,7 @@ void TrValue::addRetainToStatements(TrBlock* block) {
 
             auto innerBlock = ifNullBlock.get();
             stringstream lineStream;
-            lineStream << "((sjs_object*)((char*)" << name << ".inner._parent - sizeof(intptr_t)))->_refCount++";
+            lineStream << name << ".inner._parent->_refCount++";
             innerBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
         }
         else if (type->category == CTC_Interface) {
