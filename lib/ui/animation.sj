@@ -32,11 +32,10 @@ animator: ^(
 		current = time
 		if animations.count > 0 {
 			// Iterate and remove all that return false
-			for i : 0 to animations.count {
-				index : animations.count - 0 - 1
-				a : animations[index]
+			for i : 0 toReverse animations.count {
+				a : animations[i]
 				if a.nextFrame(time) {
-					animations.removeAt(index)
+					animations.removeAt(i)
 				}
 			}
 		}
