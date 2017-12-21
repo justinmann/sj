@@ -1,6 +1,6 @@
 #include "../node/Node.h"
 
-#define SKIP_FREE
+// #define SKIP_FREE
 // #define PRAGMA_LINE_OUTPUT
 
 void TrBlock::writeToStream(ostream& stream, int level) {
@@ -272,7 +272,7 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
 #ifndef SKIP_FREE
             stringstream freeStream;
             freeStream << "free(" << name << "._parent)";
-            ifBlock->statements.push_back(freeStream.str());
+            ifBlock->statements.push_back(TrStatement(CLoc::undefined, freeStream.str()));
 #endif // !SKIP_FREE
         } 
         else if (type->category == CTC_Interface) {
@@ -305,7 +305,7 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
 #ifndef SKIP_FREE
             stringstream freeStream;
             freeStream << "free(" << name << "._parent)";
-            ifBlock->statements.push_back(freeStream.str());
+            ifBlock->statements.push_back(TrStatement(CLoc::undefined, freeStream.str()));
 #endif // !SKIP_FREE
         }
         else {
@@ -347,7 +347,7 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
 #ifndef SKIP_FREE
             stringstream freeStream;
             freeStream << "free(" << name << ")";
-            ifBlock->statements.push_back(freeStream.str());
+            ifBlock->statements.push_back(TrStatement(CLoc::undefined, freeStream.str()));
 #endif // !SKIP_FREE
         }
     }
