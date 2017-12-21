@@ -27,7 +27,7 @@ void CIsEmptyOrValidVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlo
         }
         else {
             if (leftValue->type->category == CTC_Function) {
-                line << "(" << leftValue->getName(trBlock) << "->_parent" << " == 0)";
+                line << "(" << leftValue->getName(trBlock) << "._parent" << " == 0)";
             }
             else if (leftValue->type->category == CTC_Interface) {
                 line << "(" << leftValue->getName(trBlock) << "._parent" << " == 0)";
@@ -43,7 +43,7 @@ void CIsEmptyOrValidVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlo
         }
         else {
             if (leftValue->type->category == CTC_Function) {
-                line << "(" << leftValue->getName(trBlock) << "->_parent" << " != 0)";
+                line << "(" << leftValue->getName(trBlock) << "._parent" << " != 0)";
             }
             else if (leftValue->type->category == CTC_Interface) {
                 line << "(" << leftValue->getName(trBlock) << "._parent" << " != 0)";
