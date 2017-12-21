@@ -1,5 +1,5 @@
 style: ^(
-	getFont(typeId : 'i32) {
-		font("assets/sample.ttf", 12.0f)
+	getFont() {
+		font_load("assets/sample.ttf", 24.0f)
 	}
 ) { this }

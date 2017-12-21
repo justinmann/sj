@@ -11,8 +11,8 @@ enum textVertical(
 )
 
 textElement #element (
-	font := 'heap font
-	text := 'string
+	font := style.getFont()
+	text := string()
 	color := copy colors.white
 	margin := margin()
 	halign := textHorizontal.left
