@@ -51,19 +51,22 @@ mainLoop() {
     }
     --c--
 
+    shouldContinue := true // TODO: should not need this
     ifValid mouseEventType {
         ifValid m : mouse_captureElement {
-            m.fireMouseEvent(mouseEvent(
+            shouldContinue = m.fireMouseEvent(mouseEvent(
                 type : mouseEventType
                 point : point(x, y)
                 isCaptured : true
             )) 
+            void
         } elseEmpty {
-            root.fireMouseEvent(mouseEvent(
+            shouldContinue = root.fireMouseEvent(mouseEvent(
                 type : mouseEventType
                 point : point(x, y)
                 isCaptured : false
             )) 
+            void
         }
     }
     void

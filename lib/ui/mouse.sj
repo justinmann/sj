@@ -31,4 +31,16 @@ mouseEvent(
 	type : 'mouseEventType
 	point : 'point
 	isCaptured : 'bool
+
+	fireChildren(children : 'array!heap #element) {
+		shouldContinue := true
+		for i : 0 toReverse children.count {
+			if shouldContinue {
+				child : children[i]
+				shouldContinue = child.fireMouseEvent(parent)
+			}
+		}	
+		shouldContinue
+	}
 ) { this }
+

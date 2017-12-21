@@ -74,7 +74,7 @@ nauScene3dElement #element (
 	_lookAt := vec3(0.0f, 0.0f, 0.0f)
 	_lookAtDrag := vec3()
 
-	fireMouseEvent(mouseEvent : 'mouseEvent)'void {
+	fireMouseEvent(mouseEvent : 'mouseEvent) {
 		switch mouseEvent.type {
 			mouseEventType.down {
 				_isDragging = true
@@ -108,7 +108,7 @@ nauScene3dElement #element (
 				child.fireMouseEvent(mouseEvent)
 			}
 		}
+
+		true
 	}
-) { 
-	this 
-}
+) { this }

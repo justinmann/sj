@@ -33,7 +33,7 @@ borderChild #element #borderChild (
 		child.render(scene)
 	}
 
-	fireMouseEvent(mouseEvent : 'mouseEvent)'void {
+	fireMouseEvent(mouseEvent : 'mouseEvent)'bool {
 		child.fireMouseEvent(mouseEvent)
 	}
 ) { this }
@@ -98,10 +98,7 @@ borderLayout #element (
 		}
 	}
 
-	fireMouseEvent(mouseEvent : 'mouseEvent)'void {
-		for i : 0 to children.count {
-			child : children[i]
-			child.fireMouseEvent(mouseEvent)
-		}	
+	fireMouseEvent(mouseEvent : 'mouseEvent)'bool {
+		mouseEvent.fireChildren(children.array)
 	}
 ) { this }

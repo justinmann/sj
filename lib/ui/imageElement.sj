@@ -70,6 +70,7 @@ imageElement #element (
 		_imageRenderer?.render(scene)
 	}
 
-	fireMouseEvent(mouseEvent : 'mouseEvent)'void {
+	fireMouseEvent(mouseEvent : 'mouseEvent) {
+		true
 	}
 ) { this }

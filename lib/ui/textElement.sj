@@ -65,6 +65,7 @@ textElement #element (
 		void
 	}
 
-	fireMouseEvent(mouseEvent : 'mouseEvent)'void {
+	fireMouseEvent(mouseEvent : 'mouseEvent) {
+		true
 	}
 ) { this }

@@ -28,5 +28,5 @@ boxElement #element (
 		boxRenderer?.render(scene)
 	}
 
-	fireMouseEvent(mouseEvent : 'mouseEvent)'void { }
+	fireMouseEvent(mouseEvent : 'mouseEvent)'bool { }
 ) { this }

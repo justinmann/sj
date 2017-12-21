@@ -54,7 +54,7 @@ personElement #element (
 		void
 	}
 
-	fireMouseEvent(mouseEvent : 'mouseEvent)'void {
+	fireMouseEvent(mouseEvent : 'mouseEvent) {
 		debug.writeLine("personElement " + mouseEvent.point.asString())
 		if _rect.containsPoint(mouseEvent.point) {
 			if mouseEvent.type == mouseEventType.up {
@@ -65,5 +65,7 @@ personElement #element (
 				onMouseMove(mouseEvent.point)
 			}
 		}
+
+		true
 	}
 ) { this }

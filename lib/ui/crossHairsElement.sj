@@ -37,7 +37,7 @@ crossHairsElement #element (
 		_leftRightRenderer?.render(scene)
 	}
 
-	fireMouseEvent(mouseEvent : 'mouseEvent)'void {
+	fireMouseEvent(mouseEvent : 'mouseEvent)'bool {
 		if _rect.containsPoint(mouseEvent.point) {
 			if mouseEvent.type == mouseEventType.move {
 				_point = copy mouseEvent.point
@@ -45,6 +45,6 @@ crossHairsElement #element (
 				_leftRightRenderer = empty'boxRenderer
 			}
 		}
-		void
+		true
 	}
 ) { this }

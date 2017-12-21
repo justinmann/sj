@@ -3,5 +3,5 @@
 	getRect()'rect
 	setRect(rect : 'rect)'void
 	render(scene : 'scene2d)'void
-	fireMouseEvent(mouseEvent : 'mouseEvent)'void
+	fireMouseEvent(mouseEvent : 'mouseEvent)'bool
 )
