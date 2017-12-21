@@ -103,7 +103,7 @@ gridLayout #element (
 		colStarUnit : if colStars > 0 { (innerRect.w - colFixed) / colStars } else { 0 }
 		colStarRemainder := if colStars > 0 { (innerRect.w - colFixed) % colStars } else { 0 }
 
-		xPos : array!i32(rows.count + 1)
+		xPos : array!i32(cols.count + 1)
 		x := innerRect.x
 		xPos.initAt(0, x)
 		for c : 0 to cols.count {
@@ -144,10 +144,10 @@ gridLayout #element (
 			}
 
 			child.setRect(rect(
-				xPos[r]
-				yPos[c]
-				xPos[r + 1] - xPos[r]
-				yPos[c + 1] - yPos[c]
+				xPos[c]
+				yPos[r]
+				xPos[c + 1] - xPos[c]
+				yPos[r + 1] - yPos[r]
 			))
 		}	
 
