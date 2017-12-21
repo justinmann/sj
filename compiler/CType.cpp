@@ -431,7 +431,12 @@ void CType::transpileDefaultValue(Compiler* compiler, CLoc loc, TrBlock* trBlock
     }
     else if (isOption) {
         if (category == CTC_Function) {
-            trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._parent = 0"));
+            if (storeValue->type->typeMode == CTM_Heap) {
+                trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + ".inner._parent = 0"));
+            }
+            else {
+                trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._parent = 0"));
+            }
             storeValue->hasSetValue = true;
         }
         else if (category == CTC_Interface) {
