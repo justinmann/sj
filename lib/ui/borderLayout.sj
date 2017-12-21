@@ -40,6 +40,7 @@ borderChild #element #borderChild (
 
 borderLayout #element (
 	children : array!heap #element()
+	margin := margin()
 	_rect := rect()
 
 	getSize(maxSize : 'size) {
@@ -50,7 +51,7 @@ borderLayout #element (
 
 	setRect(rect_ : 'rect) {
 		_rect = copy rect_
-		remaining := copy rect_
+		remaining := rect_ - margin
 		for i : 0 to children.count {
 			child : children[i]
 			borderChild : child as heap #borderChild?
