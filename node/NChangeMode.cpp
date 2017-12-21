@@ -14,7 +14,12 @@ shared_ptr<CType> CChangeModeVar::getType(Compiler* compiler) {
         case CTM_Weak:
             return varType->getWeakType();
         case CTM_Heap:
-            compiler->addError(loc, CErrorCode::InvalidType, "cannot change type to heap");
+            if (varType->typeMode == CTM_Weak) {
+                return varType->getHeapType();
+            }
+            else {
+                compiler->addError(loc, CErrorCode::InvalidType, "cannot change type to heap");
+            }
             return nullptr;
         case CTM_Value:
             compiler->addError(loc, CErrorCode::InvalidType, "cannot change type to value");

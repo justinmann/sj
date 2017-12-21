@@ -628,7 +628,7 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
         }
         break;
     case CTM_Heap:
-        if (type->typeMode != rightValue->type->typeMode && !op.isCopy) {
+        if (rightValue->type->typeMode != CTM_Heap && rightValue->type->typeMode != CTM_Weak && !op.isCopy) {
             compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot change mode to left type '%s' without using a copy operator like 'a = copy b'", rightValue->type->fullName.c_str(), type->fullName.c_str());
             return;
         }
