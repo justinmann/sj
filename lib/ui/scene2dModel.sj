@@ -41,7 +41,7 @@ scene2dModel #model (
 	}
 
 	render()'void {
-		glBindFramebuffer(_framebuffer)
+		glPushFramebuffer(_framebuffer)
 
 		_innerScene.clear()
 		for i : 0 to children.count {
@@ -49,7 +49,7 @@ scene2dModel #model (
 			child.render(_innerScene)
 		}
 
-		glUnbindFramebuffer()
+		glPopFramebuffer(_framebuffer)
 
 		glViewport(_sceneRect)
 		glEnable(glFeature.GL_DEPTH_TEST)
@@ -72,14 +72,15 @@ scene2dModel #model (
 			scenePoint : point(
 				(texture.x * textureSize.w as f32) as i32
 				textureSize.h - 1 - (texture.y * textureSize.h as f32) as i32)
-			for i : 0 to children.count {
-				child : children[i]
-				child.fireMouseEvent(mouseEvent(
-					type : mouseEvent.type
-					point : copy scenePoint
-					isCaptured : mouseEvent.isCaptured
-				))
-			}
+
+			newMouseEvent : mouseEvent(
+				type : mouseEvent.type
+				point : copy scenePoint
+				isCaptured : mouseEvent.isCaptured
+			)
+
+			newMouseEvent.fireChildren(children)
+			void // TODO: should not be required
 		}
 	}
 ) { 
@@ -90,12 +91,12 @@ scene2dModel #model (
     _texture = glGenTexture(textureSize)
     _renderbuffer = glGenRenderbuffer(textureSize)
 
-    glBindFramebuffer(_framebuffer)
+    glPushFramebuffer(_framebuffer)
     glBindTexture(glTexture.GL_TEXTURE_2D, _texture)
     glTexParameteri(glTexture.GL_TEXTURE_2D, glTextureAttribute.GL_TEXTURE_WRAP_S, glTextureValue.GL_CLAMP_TO_EDGE)
     glTexParameteri(glTexture.GL_TEXTURE_2D, glTextureAttribute.GL_TEXTURE_WRAP_T, glTextureValue.GL_CLAMP_TO_EDGE)
-    glTexParameteri(glTexture.GL_TEXTURE_2D, glTextureAttribute.GL_TEXTURE_MIN_FILTER, glTextureValue.GL_NEAREST)
-    glTexParameteri(glTexture.GL_TEXTURE_2D, glTextureAttribute.GL_TEXTURE_MAG_FILTER, glTextureValue.GL_NEAREST)
+    glTexParameteri(glTexture.GL_TEXTURE_2D, glTextureAttribute.GL_TEXTURE_MIN_FILTER, glTextureValue.GL_LINEAR)
+    glTexParameteri(glTexture.GL_TEXTURE_2D, glTextureAttribute.GL_TEXTURE_MAG_FILTER, glTextureValue.GL_LINEAR)
     glTexImage2D(glTexture.GL_TEXTURE_2D, 0, glTextureFormat.GL_RGBA, textureSize, glTextureType.GL_UNSIGNED_BYTE)
     glFramebufferTexture2D(glFramebufferAttachment.GL_COLOR_ATTACHMENT0, glFramebufferTexture.GL_TEXTURE_2D, _texture, 0)
 
@@ -107,6 +108,7 @@ scene2dModel #model (
     if status != glFramebufferStatus.GL_FRAMEBUFFER_COMPLETE {
         halt("Framebuffer failed")       
     }
+    glPopFramebuffer(_framebuffer)
 
 	_innerScene.setSize(textureSize)
 	rect : rect(0, 0, textureSize.w, textureSize.h)

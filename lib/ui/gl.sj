@@ -98,15 +98,23 @@ glViewport(rect : 'rect) {
 	--c--
 }
 
-glBindFramebuffer(framebuffer : 'framebuffer) {
+glFrameBuffers : list!u32()
+
+glPushFramebuffer(framebuffer : 'framebuffer) {
+	glFrameBuffers.add(framebuffer.id)
 	--c--
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer->id);
     --c--
 }
 
-glUnbindFramebuffer() {
+glPopFramebuffer(framebuffer : 'framebuffer) {
+	if glFrameBuffers[glFrameBuffers.count - 1] != frameBuffer.id {
+		halt("framebuffer being pop'ed is wrong")
+	}
+	glFrameBuffers.removeAt(glFrameBuffers.count - 1)
+	id : if glFrameBuffers.count > 0 { glFrameBuffers[glFrameBuffers.count - 1] } else { 0u }
 	--c--
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, sjv_id);
 	--c--
 }
 
