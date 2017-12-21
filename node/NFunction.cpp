@@ -474,7 +474,18 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 
                 for (auto argVar : _data[returnMode].thisArgVars) {
                     auto argType = argVar->getType(compiler);
-                    TrStoreValue(argVar->loc, calleeScope, argType, "_this->" + argVar->name, AssignOp::create(true, true, true, CTM_Undefined)).retainValue(compiler, argVar->loc, trCopyBlock.get(), make_shared<TrValue>(calleeScope, argType, "_from->" + argVar->name, false));
+
+                    if (!argType->parent.expired()) {
+                        argType->parent.lock()->transpileDefinition(compiler, trOutput);
+                    }
+                    else if (!argType->callback.expired()) {
+                        argType->callback.lock()->transpileDefinition(compiler, trOutput);
+                    }
+
+                    auto isCopy = (argType->typeMode == CTM_Stack);
+                    assert(argType->typeMode != CTM_Local);
+                    assert(argType->typeMode != CTM_Undefined);
+                    TrStoreValue(argVar->loc, calleeScope, argType, "_this->" + argVar->name, AssignOp::create(true, true, isCopy, CTM_Undefined)).retainValue(compiler, argVar->loc, trCopyBlock.get(), make_shared<TrValue>(calleeScope, argType, "_from->" + argVar->name, false));
                 }
 
                 if (_data[returnMode].copyVar) {
@@ -584,7 +595,10 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                         switchBlock->statements.push_back(TrStatement(CLoc::undefined, string("case ") + interfaceVal->getCTypeIdName() + ": ", caseBlock));
                     }
 
-                    trFunctionBlock->statements.push_back(TrStatement(CLoc::undefined, "_return->_parent = 0"));
+                    auto caseBlock = make_shared<TrBlock>();
+                    caseBlock->statements.push_back(TrStatement(CLoc::undefined, "_return->_parent = 0"));
+                    caseBlock->statements.push_back(TrStatement(CLoc::undefined, "break"));
+                    switchBlock->statements.push_back(TrStatement(CLoc::undefined, string("default:"), caseBlock));
                 }
             }
         }
