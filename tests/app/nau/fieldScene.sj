@@ -6,7 +6,7 @@ fieldScene() {
             heap model(
                 texture : textureFromPng("assets/forest_backdrop.png")
                 shader : copy phongTextureShader
-                model : mat4_translate(0.0f, 8.0f, 20.0f) * mat4_scale(12.0f, 12.0f, 12.0f)
+                model : mat4_translate(vec3(0.0f, 8.0f, 20.0f)) * mat4_scale(12.0f, 12.0f, 12.0f)
                 vertexBuffer : planeVertexBuffer(x0 : -6.3f, y0 : -1.0f, x1 : 6.3f, y1 : 1.0f) 
             ) as #model
 
@@ -24,7 +24,7 @@ fieldScene() {
             ) as #model
 
             heap peoplePanel(
-                model : mat4_translate(0.0f, 0.0f, 0.0f)
+                model : mat4_translate(vec3(0.0f, 0.0f, 0.0f))
                 children : [
                     heap scene2dModel(
                         id : valid("person1")
@@ -35,14 +35,14 @@ fieldScene() {
                                 id : valid("person1")
                             ) as #element
                             heap boxElement(
-                                color : colors.red()
+                                color : copy colors.red
                             ) as #element
                             heap imageElement(
                                 image : image(texture : textureFromPng("assets/forestperson1.png"))
                                 stretch : imageStretch.aspectRatio
                             ) as #element
                             heap crossHairsElement(
-                                color : colors.blue()
+                                color : copy colors.blue
                             ) as #element
                         ]
                     ) as #model
@@ -61,7 +61,7 @@ fieldScene() {
                                 stretch : imageStretch.aspectRatio
                             ) as #element
                             heap crossHairsElement(
-                                color : colors.green()
+                                color : copy colors.green
                             ) as #element
                         ]
                     ) as #model
@@ -97,13 +97,13 @@ fieldScene() {
             ) as #model
 
             heap panel3d(
-                model : mat4_translate(0.0f, -1.3f, 0.0f)
+                model : mat4_translate(vec3(0.0f, -1.3f, 0.0f))
                 children : [
                     heap model(
                         id : valid("grass6.2")
                         texture : textureFromPng("assets/grass.png")
                         shader : copy phongTextureShader
-                        model : mat4_translate(-8.6f, 0.0f, 6.2f) * mat4_scale(2.0f, 2.0f, 2.0f)
+                        model : mat4_translate(vec3(-8.6f, 0.0f, 6.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
                         vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
                         hasAlpha : true
                     ) as #model
@@ -113,7 +113,7 @@ fieldScene() {
                         id : valid("grass6.2")
                         texture : textureFromPng("assets/grass.png")
                         shader : copy phongTextureShader
-                        model : mat4_translate(8.6f, 0.0f, 6.2f) * mat4_scale(2.0f, 2.0f, 2.0f)
+                        model : mat4_translate(vec3(8.6f, 0.0f, 6.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
                         vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
                         hasAlpha : true
                     ) as #model
@@ -122,7 +122,7 @@ fieldScene() {
                         id : valid("grass4.2")
                         texture : textureFromPng("assets/grass.png")
                         shader : copy phongTextureShader
-                        model : mat4_translate(-8.6f, 0.0f, 4.2f) * mat4_scale(2.0f, 2.0f, 2.0f)
+                        model : mat4_translate(vec3(-8.6f, 0.0f, 4.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
                         vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
                         hasAlpha : true
                     ) as #model
@@ -131,7 +131,7 @@ fieldScene() {
                         id : valid("grass4.2")
                         texture : textureFromPng("assets/grass.png")
                         shader : copy phongTextureShader
-                        model : mat4_translate(8.6f, 0.0f, 4.2f) * mat4_scale(2.0f, 2.0f, 2.0f)
+                        model : mat4_translate(vec3(8.6f, 0.0f, 4.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
                         vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
                         hasAlpha : true
                     ) as #model
@@ -140,7 +140,7 @@ fieldScene() {
                         id : valid("grass2.2")
                         texture : textureFromPng("assets/grass.png")
                         shader : copy phongTextureShader
-                        model : mat4_translate(-9.6f, 0.0f, 2.2f) * mat4_scale(2.0f, 2.0f, 2.0f)
+                        model : mat4_translate(vec3(-9.6f, 0.0f, 2.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
                         vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
                         hasAlpha : true
                     ) as #model
@@ -149,7 +149,7 @@ fieldScene() {
                         id : valid("grass2.2")
                         texture : textureFromPng("assets/grass.png")
                         shader : copy phongTextureShader
-                        model : mat4_translate(7.6f, 0.0f, 2.2f) * mat4_scale(2.0f, 2.0f, 2.0f)
+                        model : mat4_translate(vec3(7.6f, 0.0f, 2.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
                         vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
                         hasAlpha : true
                     ) as #model
@@ -158,7 +158,7 @@ fieldScene() {
                         id : valid("grass0.2")
                         texture : textureFromPng("assets/grass.png")
                         shader : copy phongTextureShader
-                        model : mat4_translate(-10.6f, 0.0f, 0.2f) * mat4_scale(2.0f, 2.0f, 2.0f)
+                        model : mat4_translate(vec3(-10.6f, 0.0f, 0.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
                         vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
                         hasAlpha : true
                     ) as #model
@@ -167,7 +167,7 @@ fieldScene() {
                         id : valid("grass0.2")
                         texture : textureFromPng("assets/grass.png")
                         shader : copy phongTextureShader
-                        model : mat4_translate(6.6f, 0.0f, 0.2f) * mat4_scale(2.0f, 2.0f, 2.0f)
+                        model : mat4_translate(vec3(6.6f, 0.0f, 0.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
                         vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
                         hasAlpha : true
                     ) as #model
@@ -176,7 +176,7 @@ fieldScene() {
                         id : valid("grass-1.8")
                         texture : textureFromPng("assets/grass.png")
                         shader : copy phongTextureShader
-                        model : mat4_translate(-8.6f, 0.0f, -1.8f) * mat4_scale(2.0f, 2.0f, 2.0f)
+                        model : mat4_translate(vec3(-8.6f, 0.0f, -1.8f)) * mat4_scale(2.0f, 2.0f, 2.0f)
                         vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
                         hasAlpha : true
                     ) as #model
@@ -185,7 +185,7 @@ fieldScene() {
                         id : valid("grass-1.8")
                         texture : textureFromPng("assets/grass.png")
                         shader : copy phongTextureShader
-                        model : mat4_translate(8.6f, 0.0f, -1.8f) * mat4_scale(2.0f, 2.0f, 2.0f)
+                        model : mat4_translate(vec3(8.6f, 0.0f, -1.8f)) * mat4_scale(2.0f, 2.0f, 2.0f)
                         vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
                         hasAlpha : true
                     ) as #model

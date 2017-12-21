@@ -19,7 +19,7 @@ peoplePanel #model (
 	getCenter() { vec3() }
 	getWorld() { _world * model }
 
-	renderOrQueue(zqueue : 'list!#model)'void {
+	renderOrQueue(zqueue : 'list!heap #model)'void {
 		for i : 0 to children.count {
 			c : children[i]
 			c.renderOrQueue(zqueue)
@@ -56,7 +56,7 @@ peoplePanel #model (
 
 	    _index++
 
-	    mat4_translate(x, 0.0f, z)
+	    mat4_translate(vec3(x, 0.0f, z))
 	}
 ) {
 	_xoffset = -(_xincrement * f32_ceil(children.count as f32 / _depth as f32) / 2.0f)

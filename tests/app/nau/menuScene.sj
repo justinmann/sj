@@ -1,4 +1,14 @@
+menuController(
+    scene := empty'weak nauScene3dElement
+    view() {
+        scene?.animateLookAt(vec3(0.0f, 0.0f, 30.0f), 5000)
+        debug.writeLine("yeah")
+    }
+) { this }
+
 menuScene() {
+    controller : heap menuController()
+
     result : heap nauScene3dElement(
         lookAtMin := vec3(-7.0f, -1.0f, 0.0f)
         lookAtMax := vec3(7.0f, 1.0f, 50.0f)
@@ -187,7 +197,7 @@ menuScene() {
                         children : [
                             heap scene2dModel(
                                 shader : copy phongTextureShader
-                                textureSize : size(200, 88)
+                                textureSize : size(800, 352)
                                 model : mat4_translate(vec3(1.5f, 0.0f, 0.5f))
                                 vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                                 hasAlpha : true
@@ -195,63 +205,116 @@ menuScene() {
                                     heap imageElement(
                                         image : image(texture : textureFromPng("assets/menu8.png"))
                                     ) as #element
-                                    heap textElement(
-                                        text : "womens"
-                                        color : copy colors.red
+
+                                    heap centerLayout(
+                                        margin : margin(20, 20, 20, 20)
+                                        centerX : valid(0.1f)
+                                        centerY : valid(0.9f)
+                                        children: [
+                                            heap listLayout(
+                                                orientation : listLayoutOrientation.topBottom
+                                                children: [
+                                                    heap textElement(
+                                                        font : font_load("assets/arial.ttf", 30.0f)
+                                                        text : "womens"
+                                                        halign : textHorizontal.right
+                                                        color : copy colors.white
+                                                    ) as #element
+                                                    heap textElement(
+                                                        font : font_load("assets/arial.ttf", 50.0f)
+                                                        text : "pants/shorts"
+                                                        halign : textHorizontal.right
+                                                        color : copy colors.white
+                                                    ) as #element
+                                                ]
+                                            ) as #element
+                                        ]
                                     ) as #element
                                 ]
                             ) as #model
-/*
-                            heap model(
-                                texture : textureFromPng("assets/menu12.png")
+
+                            heap scene2dModel(
                                 shader : copy phongTextureShader
+                                textureSize : size(800, 352)
                                 model : mat4_translate(vec3(1.5f, 0.0f, 0.5f))
                                 vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                                 hasAlpha : true
+                                children : [
+                                    heap imageElement(
+                                        image : image(texture : textureFromPng("assets/menu9.png"))
+                                    ) as #element
+
+                                    heap centerLayout(
+                                        margin : margin(20, 20, 20, 20)
+                                        centerX : valid(1.0f)
+                                        centerY : valid(0.65f)
+                                        children: [
+                                            heap listLayout(
+                                                orientation : listLayoutOrientation.topBottom
+                                                children: [
+                                                    heap textElement(
+                                                        font : font_load("assets/arial.ttf", 30.0f)
+                                                        text : "womens"
+                                                        halign : textHorizontal.right
+                                                        color : copy colors.white
+                                                    ) as #element
+                                                    heap textElement(
+                                                        font : font_load("assets/arial.ttf", 50.0f)
+                                                        text : "pants/shorts"
+                                                        halign : textHorizontal.right
+                                                        color : copy colors.white
+                                                    ) as #element
+                                                ]
+                                            ) as #element
+                                        ]
+                                    ) as #element
+                                ]
                             ) as #model
 
-                            heap model(
-                                texture : textureFromPng("assets/menu1.png")
+                            heap scene2dModel(
                                 shader : copy phongTextureShader
+                                textureSize : size(800, 352)
                                 model : mat4_translate(vec3(1.5f, 0.0f, 0.5f))
                                 vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
-                                hasAlpha : true
-                            ) as #model
+                                children : [
+                                    heap fieldScene() as #element
 
-                            heap model(
-                                texture : textureFromPng("assets/menu2.png")
-                                shader : copy phongTextureShader
-                                model : mat4_translate(vec3(1.5f, 0.0f, 0.5f))
-                                vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
-                                hasAlpha : true
+                                    heap buttonElement(
+                                        onClick : valid(controller.view)
+                                    ) as #element
+
+                                    heap centerLayout(
+                                        margin : margin(20, 20, 20, 20)
+                                        centerX : valid(1.0f)
+                                        centerY : valid(1.0f)
+                                        children: [
+                                            heap listLayout(
+                                                orientation : listLayoutOrientation.topBottom
+                                                children: [
+                                                    heap textElement(
+                                                        font : font_load("assets/arial.ttf", 30.0f)
+                                                        text : "mens"
+                                                        halign : textHorizontal.right
+                                                        color : copy colors.white
+                                                    ) as #element
+                                                    heap textElement(
+                                                        font : font_load("assets/arial.ttf", 50.0f)
+                                                        text : "autumn collection"
+                                                        halign : textHorizontal.right
+                                                        color : copy colors.white
+                                                    ) as #element
+                                                ]
+                                            ) as #element
+                                        ]
+                                    ) as #element
+                                ]
                             ) as #model
-*/
                         ]
                     ) as #model
                 ]
             ) as #model
 /*
 
-        <Panel3D Control_Role="NAUSection!MainPanel">
-          <MainPanel Center="0.0, -1.0, 0.0" Radius="50.0">
-            <Model CacheContentAsTexture="True" Center="1.5, 0.0, 0.5" ContentSize="200, 88" HasAlpha="True" Mesh="{Mesh!CreateRectangle(-1.4, -0.6, 1.4, 0.6)}">
-              <Image Bitmap="{Bitmap('menu8')}" />
-              <CenterPanel CenterX="0.1" CenterY="0.9">
-                <ListPanel>
-                  <Text Content="womens" FontColor="#ffffff" FontSize="15" />
-                  <Text Content="pants/shorts" FontColor="#ffffff" FontSize="25" />
-                </ListPanel>
-              </CenterPanel>
-            </Model>
-            <Model CacheContentAsTexture="True" Center="1.5, 0.0, 0.5" ContentSize="200, 88" HasAlpha="True" Mesh="{Mesh!CreateRectangle(-1.4, -0.6, 1.4, 0.6)}">
-              <Image Bitmap="{Bitmap('menu9')}" />
-              <CenterPanel CenterX="1.0" CenterY="0.65">
-                <ListPanel>
-                  <Text Content="womens" FontColor="#ffffff" FontSize="15" HorizontalAlignment="Right" />
-                  <Text Content="pants/shorts" FontColor="#ffffff" FontSize="25" />
-                </ListPanel>
-              </CenterPanel>
-            </Model>
             <Model CacheContentAsTexture="True" Center="-2.2, 0.0, 1.8" ContentSize="200, 88" HasAlpha="True" Mesh="{Mesh!CreateRectangle(-1.4, -0.6, 1.4, 0.6)}">
                 <NAUSection OnClick="{ControlRoot.NAUSection!ZoomIn(this)}" Template="{Template('PeopleSection1')}" />
                 <CenterPanel CenterX="1.0" CenterY="1.0">
@@ -301,6 +364,8 @@ menuScene() {
     )
 
     result.animateLookAt(vec3(0.0f, 0.0f, 50.0f), 5000)
+
+    controller.scene = weak result
 
     result
 }

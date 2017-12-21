@@ -15,7 +15,7 @@ leafPanel #model (
 	getCenter() { vec3() }
 	getWorld() { copy _world }
 
-	renderOrQueue(zqueue : 'list!#model)'void {
+	renderOrQueue(zqueue : 'list!heap #model)'void {
 		for i : 0 to children.count {
 			c : children[i]
 			c.renderOrQueue(zqueue)
@@ -46,7 +46,7 @@ leafPanel #model (
 	    	id : valid("leaf" + z.asString())
 	    	texture : copy texture
 	    	shader : copy phongTextureShader
-	    	model : mat4_translate(x, y, z)
+	    	model : mat4_translate(vec3(x, y, z))
 	    	vertexBuffer : planeVertexBuffer() 
         	hasAlpha : true
 	    ) as #model
