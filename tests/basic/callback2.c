@@ -1011,10 +1011,10 @@ int main(int argc, char** argv) {
 void main_destroy() {
 
     if ((uintptr_t)sjt_functionParam3.inner._parent > 1) {
-        ((sjs_object*)((char*)sjt_functionParam3.inner._parent - sizeof(intptr_t)))->_refCount--;
-        if (((sjs_object*)((char*)sjt_functionParam3.inner._parent - sizeof(intptr_t)))->_refCount <= 0) {
+        sjt_functionParam3.inner._parent->_refCount--;
+        if (sjt_functionParam3.inner._parent->_refCount <= 0) {
             sjt_functionParam3._destroy(sjt_functionParam3.inner._parent);
-            free(sjt_functionParam3._parent);
+            free(sjt_functionParam3.inner._parent);
         }
     }
     sjv_s->_refCount--;

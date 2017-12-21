@@ -1076,17 +1076,17 @@ void main_destroy() {
         free(sjv_c_heap);
     }
     if ((uintptr_t)sjv_f3.inner._parent > 1) {
-        ((sjs_object*)((char*)sjv_f3.inner._parent - sizeof(intptr_t)))->_refCount--;
-        if (((sjs_object*)((char*)sjv_f3.inner._parent - sizeof(intptr_t)))->_refCount <= 0) {
+        sjv_f3.inner._parent->_refCount--;
+        if (sjv_f3.inner._parent->_refCount <= 0) {
             sjv_f3._destroy(sjv_f3.inner._parent);
-            free(sjv_f3._parent);
+            free(sjv_f3.inner._parent);
         }
     }
     if ((uintptr_t)sjv_l.inner._parent > 1) {
-        ((sjs_object*)((char*)sjv_l.inner._parent - sizeof(intptr_t)))->_refCount--;
-        if (((sjs_object*)((char*)sjv_l.inner._parent - sizeof(intptr_t)))->_refCount <= 0) {
+        sjv_l.inner._parent->_refCount--;
+        if (sjv_l.inner._parent->_refCount <= 0) {
             sjv_l._destroy(sjv_l.inner._parent);
-            free(sjv_l._parent);
+            free(sjv_l.inner._parent);
         }
     }
     sjv_n->_refCount--;

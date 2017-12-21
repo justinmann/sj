@@ -83,6 +83,10 @@ hash![stack string, weak #model]()'stack hash![string, #model?] {
   this
 }
 
+list!u32(array'stack array!u32=)'stack list!u32 {
+  this
+}
+
 rect(x'i32:, y'i32:, w'i32:, h'i32:)'stack rect {
   this
 }
@@ -1585,6 +1589,9 @@ global()'void {
     gl_framebuffer_incomplete_missing_attachment'glframebufferstatus : 0x8CD7
     gl_framebuffer_unsupported'glframebufferstatus : 0x8CDD
   }
+  glframebuffers'stack list!u32 : list!u32(this = list!u32(
+    array'stack array!u32 = array
+  ))
   --cdefine--
   void glid_retain(GLuint id);
   bool glid_release(GLuint id);

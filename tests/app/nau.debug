@@ -139,6 +139,10 @@ hash![stack string, weak #model]()'stack hash![string, #model?] {
   this
 }
 
+list!u32(array'stack array!u32=)'stack list!u32 {
+  this
+}
+
 list_add(item'heap #animation:)'void {
   if parent.array.count >= parent.array.datasize {
     parent.array'stack array!#animation = array_grow(
@@ -154,7 +158,14 @@ list_add(item'heap #animation:)'void {
   )
 }
 
+menucontroller(scene'weak nauscene3delement=)'heap menucontroller {
+  this
+}
+
 menuscene()'heap nauscene3delement {
+  controller'heap menucontroller : heap menucontroller(this = menucontroller(
+    scene'weak nauscene3delement = scene
+  ))
   result'heap nauscene3delement : heap nauscene3delement(this = nauscene3delement(
     children'stack array!#model : children,
     lookatmin'stack vec3 = lookatmin,
@@ -177,6 +188,7 @@ menuscene()'heap nauscene3delement {
     v'stack vec3 : v,
     duration'i32 : duration
   )
+  controller.scene'weak nauscene3delement = weak result
   result
 }
 
@@ -1694,6 +1706,9 @@ global()'void {
     gl_framebuffer_incomplete_missing_attachment'glframebufferstatus : 0x8CD7
     gl_framebuffer_unsupported'glframebufferstatus : 0x8CDD
   }
+  glframebuffers'stack list!u32 : list!u32(this = list!u32(
+    array'stack array!u32 = array
+  ))
   --cdefine--
   void glid_retain(GLuint id);
   bool glid_release(GLuint id);
