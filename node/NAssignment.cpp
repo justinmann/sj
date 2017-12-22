@@ -75,7 +75,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
     }
     
     // We need to see if var already exists, if not create a new local var
-    auto cfunction = scope->function;
+    auto cfunction = static_pointer_cast<CBaseFunction>(scope->function);
     shared_ptr<CVar> parentVar = nullptr;
     if (var) {
         parentVar = var->getVar(compiler, scope, nullptr, returnMode);
@@ -84,7 +84,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
         }
 
         auto parentType = parentVar->getType(compiler);
-        cfunction = dynamic_pointer_cast<CFunction>(parentType->parent.lock());
+        cfunction = parentType->parent.lock();
         if (!cfunction) {
             compiler->addError(loc, CErrorCode::InvalidVariable, "var must be a function");
             return nullptr;
