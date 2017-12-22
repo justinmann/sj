@@ -1,3 +1,4 @@
+@heap
 scene2dModel #model (
 	id : empty'string
 	vertexBuffer : 'vertexBuffer!vertex_location_texture_normal
@@ -32,9 +33,9 @@ scene2dModel #model (
 	getCenter() { copy center }
 	getWorld() { _world * model }
 
-	renderOrQueue(alphaModels : 'list!#model) {
+	renderOrQueue(alphaModels : 'list!heap #model) {
 		if hasAlpha {
-			alphaModels.add(heap parent as #model)
+			alphaModels.add(parent as #model)
 		} else {
 			render()
 		}

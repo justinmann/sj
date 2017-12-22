@@ -135,7 +135,7 @@ enum FunctionState {
 class CFunction : public CBaseFunction, public enable_shared_from_this<CFunction> {
 public:
     CFunction(vector<pair<string, vector<string>>>& importNamespaces, weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, vector<shared_ptr<NCCode>> ccodes, bool hasHeapThis);
-    bool init(Compiler* compiler, shared_ptr<NFunction> node);
+    bool init(Compiler* compiler, shared_ptr<NFunction> node, CLoc locCaller);
     bool initBlocks(Compiler* compiler, shared_ptr<NFunction> node);
 
     shared_ptr<CScope> getScope(Compiler* compiler, CTypeMode returnMode);

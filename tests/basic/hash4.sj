@@ -14,9 +14,9 @@ class #interface(
 	isEqual(b : '#interface) { bob() == b.bob() } 
 ) { this }
 
-a : hash![#interface, i32]()
-a[class(32) as #interface] = 1
-b : a[class(1) as #interface]
+a : hash![heap #interface, i32]()
+a[heap class(32) as #interface] = 1
+b : a[heap class(1) as #interface]
 
 a.each(print)
 debug.writeLine((b?:-1).asString())

@@ -175,7 +175,7 @@ importNamespaces(importNamespaces)
 
 CTypeMode functionReturnModes[] = { CTM_Stack, CTM_Heap };
 
-bool CFunction::init(Compiler* compiler, shared_ptr<NFunction> node) {
+bool CFunction::init(Compiler* compiler, shared_ptr<NFunction> node, CLoc locCaller) {
     if (templateTypes.size() == 0) {
 
     }
@@ -220,6 +220,12 @@ bool CFunction::init(Compiler* compiler, shared_ptr<NFunction> node) {
                     compiler->addError(loc, CErrorCode::InvalidType, "cannot use ! in template type name");
                     return nullptr;
                 }
+
+                if (templateTypes[index]->typeMode == CTM_Local) {
+                    compiler->addError(locCaller, CErrorCode::InvalidType, "template '%s' with type '%s' cannot be local", templateTypeName->valueName.c_str(), templateTypes[index]->fullName.c_str());
+                    return false;
+                }
+
                 templateTypesByName[templateTypeName->valueName] = templateTypes[index];
                 index++;
             }
@@ -1655,7 +1661,7 @@ shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CLoc 
             return nullptr;
         }
 
-        if (!func->init(compiler, node)) {
+        if (!func->init(compiler, node, loc)) {
             return nullptr;
         }
 

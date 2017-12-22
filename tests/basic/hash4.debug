@@ -1,29 +1,29 @@
-hash![local #interface, i32]()'stack hash![#interface, i32] {
+hash![heap #interface, i32]()'stack hash![#interface, i32] {
   --cdefine--
-  #ifndef local_iface_interface_i32_hash_typedef
-  #define local_iface_interface_i32_hash_typedef
-  KHASH_INIT_TYPEDEF(local_iface_interface_i32_hash_type, sji_interface, int32_t)
+  #ifndef heap_iface_interface_i32_hash_typedef
+  #define heap_iface_interface_i32_hash_typedef
+  KHASH_INIT_TYPEDEF(heap_iface_interface_i32_hash_type, sji_interface, int32_t)
   #endif
   --cdefine--
   --cfunction--
-  #ifndef local_iface_interface_i32_hash_function
-  #define local_iface_interface_i32_hash_function
+  #ifndef heap_iface_interface_i32_hash_function
+  #define heap_iface_interface_i32_hash_function
   #if false
-  KHASH_INIT_FUNCTION_DEREF(local_iface_interface_i32_hash_type, sji_interface, int32_t, 1, INVALID, INVALID)
+  KHASH_INIT_FUNCTION_DEREF(heap_iface_interface_i32_hash_type, sji_interface, int32_t, 1, INVALID, INVALID)
   #else
-  KHASH_INIT_FUNCTION(local_iface_interface_i32_hash_type, sji_interface, int32_t, 1, INVALID, INVALID)
+  KHASH_INIT_FUNCTION(heap_iface_interface_i32_hash_type, sji_interface, int32_t, 1, INVALID, INVALID)
   #endif
   #endif
   --cfunction--
   --c--
-  _this->_hash = kh_init(local_iface_interface_i32_hash_type);
+  _this->_hash = kh_init(heap_iface_interface_i32_hash_type);
   --c--
   this
 }
 
-hash_each(cb'local (:local #interface, :i32)void:)'void {
+hash_each(cb'local (:heap #interface, :i32)void:)'void {
   --c--
-  khash_t(local_iface_interface_i32_hash_type)* p = (khash_t(local_iface_interface_i32_hash_type)*)_parent->_hash;
+  khash_t(heap_iface_interface_i32_hash_type)* p = (khash_t(heap_iface_interface_i32_hash_type)*)_parent->_hash;
   for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
   if (kh_exist(p, k)) {
   cb._cb(
@@ -44,13 +44,13 @@ hash_each(cb'local (:local #interface, :i32)void:)'void {
   --c--
 }
 
-hash_getat(key'local #interface:)'i32? {
+hash_getat(key'heap #interface:)'i32? {
   --c--
-  khash_t(local_iface_interface_i32_hash_type)* p = (khash_t(local_iface_interface_i32_hash_type)*)_parent->_hash;
+  khash_t(heap_iface_interface_i32_hash_type)* p = (khash_t(heap_iface_interface_i32_hash_type)*)_parent->_hash;
   #if false
-  khiter_t k = kh_get(local_iface_interface_i32_hash_type, p, *key);
+  khiter_t k = kh_get(heap_iface_interface_i32_hash_type, p, *key);
   #else
-  khiter_t k = kh_get(local_iface_interface_i32_hash_type, p, key);
+  khiter_t k = kh_get(heap_iface_interface_i32_hash_type, p, key);
   #endif
   if (k == kh_end(p)) {
   return;
@@ -59,24 +59,24 @@ hash_getat(key'local #interface:)'i32? {
   --c--
 }
 
-hash_setat(key'local #interface:, val'i32:)'void {
+hash_setat(key'heap #interface:, val'i32:)'void {
   --c--
-  khash_t(local_iface_interface_i32_hash_type)* p = (khash_t(local_iface_interface_i32_hash_type)*)_parent->_hash;
+  khash_t(heap_iface_interface_i32_hash_type)* p = (khash_t(heap_iface_interface_i32_hash_type)*)_parent->_hash;
   #if false
-  khiter_t k = kh_get(local_iface_interface_i32_hash_type, p, *key);
+  khiter_t k = kh_get(heap_iface_interface_i32_hash_type, p, *key);
   #else
-  khiter_t k = kh_get(local_iface_interface_i32_hash_type, p, key);
+  khiter_t k = kh_get(heap_iface_interface_i32_hash_type, p, key);
   #endif
   if (k != kh_end(p)) {            
   ;
   }
   int ret;
   #if false
-  k = kh_put(local_iface_interface_i32_hash_type, _parent->_hash, *key, &ret);
+  k = kh_put(heap_iface_interface_i32_hash_type, _parent->_hash, *key, &ret);
   #else
-  k = kh_put(local_iface_interface_i32_hash_type, _parent->_hash, key, &ret);
+  k = kh_put(heap_iface_interface_i32_hash_type, _parent->_hash, key, &ret);
   #endif
-  if (!ret) kh_del(local_iface_interface_i32_hash_type, p, k);
+  if (!ret) kh_del(heap_iface_interface_i32_hash_type, p, k);
   #if false
   delete_cb cb = { _parent, (void(*)(void*, void*))INVALID };
   weakptr_cb_add(key._parent, cb);
@@ -776,19 +776,19 @@ global()'void {
   Invalid compiler
   #endif
   --cinclude--
-  a'stack hash![#interface, i32] : hash![local #interface, i32](this = hash![local #interface, i32]())
+  a'stack hash![#interface, i32] : hash![heap #interface, i32](this = hash![heap #interface, i32]())
   hash_setat(
     parent: this,
-    key'local #interface : key,
+    key'heap #interface : key,
     val'i32 : val
   )
   b'i32? : hash_getat(
     parent: this,
-    key'local #interface : key
+    key'heap #interface : key
   )
   hash_each(
     parent: this,
-    cb'local (:local #interface, :i32)void : cb
+    cb'local (:heap #interface, :i32)void : cb
   )
   writeline(
     data'stack string : data

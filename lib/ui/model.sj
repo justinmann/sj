@@ -12,6 +12,7 @@ model_zsort(l : '#model, r : '#model) {
 	f32_compare(l.getZ(), r.getZ())
 }
 
+@heap
 model #model (
 	vertexBuffer : 'vertexBuffer!vertex_location_texture_normal
 	shader : 'shader
@@ -40,9 +41,9 @@ model #model (
 	getCenter() { copy center }
 	getWorld() { _world * model }
 
-	renderOrQueue(zqueue : 'list!#model) {
+	renderOrQueue(zqueue : 'list!heap #model) {
 		if hasAlpha {
-			zqueue.add(heap parent as #model)
+			zqueue.add(parent as #model)
 		} else {
 			render()
 		}

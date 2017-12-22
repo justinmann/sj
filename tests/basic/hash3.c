@@ -568,7 +568,7 @@ delete_cb_list* next;
 #define sjs_string_typeId 4
 #define sji_interface_vtbl_typeId 5
 #define sji_interface_typeId 6
-#define sjs_hash_string_local_iface_interface_typeId 7
+#define sjs_hash_string_heap_iface_interface_typeId 7
 #define sjs_class_typeId 8
 
 typedef struct td_sjs_object sjs_object;
@@ -577,7 +577,7 @@ typedef struct td_sjs_array_char sjs_array_char;
 typedef struct td_sjs_string sjs_string;
 typedef struct td_sji_interface_vtbl sji_interface_vtbl;
 typedef struct td_sji_interface sji_interface;
-typedef struct td_sjs_hash_string_local_iface_interface sjs_hash_string_local_iface_interface;
+typedef struct td_sjs_hash_string_heap_iface_interface sjs_hash_string_heap_iface_interface;
 typedef struct td_sjs_class sjs_class;
 
 struct td_sjs_object {
@@ -615,7 +615,7 @@ struct td_sji_interface {
     sji_interface_vtbl* _vtbl;
 };
 
-struct td_sjs_hash_string_local_iface_interface {
+struct td_sjs_hash_string_heap_iface_interface {
     int _refCount;
     void* _hash;
 };
@@ -640,17 +640,17 @@ void weakptr_clear(void* parent, void* v);
 void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
-#ifndef string_local_iface_interface_hash_typedef
-#define string_local_iface_interface_hash_typedef
-KHASH_INIT_TYPEDEF(string_local_iface_interface_hash_type, sjs_string, sji_interface)
+#ifndef string_heap_iface_interface_hash_typedef
+#define string_heap_iface_interface_hash_typedef
+KHASH_INIT_TYPEDEF(string_heap_iface_interface_hash_type, sjs_string, sji_interface)
 #endif
-#ifndef string_local_iface_interface_hash_typedef
-#define string_local_iface_interface_hash_typedef
-KHASH_INIT_TYPEDEF(string_local_iface_interface_hash_type, sjs_string, sji_interface)
+#ifndef string_heap_iface_interface_hash_typedef
+#define string_heap_iface_interface_hash_typedef
+KHASH_INIT_TYPEDEF(string_heap_iface_interface_hash_type, sjs_string, sji_interface)
 #endif
 int32_t result1;
 sjs_string sjt_call1 = { -1 };
-sjs_class sjt_call2 = { -1 };
+sjs_class* sjt_call2 = 0;
 sjs_string sjt_call3 = { -1 };
 sjs_string sjt_call4 = { -1 };
 sjs_class* sjt_cast1 = 0;
@@ -665,11 +665,11 @@ sji_interface sjt_isEmpty2 = { 0 };
 int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_negate1;
-sjs_hash_string_local_iface_interface* sjt_parent2 = 0;
-sjs_hash_string_local_iface_interface* sjt_parent3 = 0;
+sjs_hash_string_heap_iface_interface* sjt_parent2 = 0;
+sjs_hash_string_heap_iface_interface* sjt_parent3 = 0;
 sjs_string sjt_value1 = { -1 };
 sjs_string sjt_value2 = { -1 };
-sjs_hash_string_local_iface_interface sjv_a = { -1 };
+sjs_hash_string_heap_iface_interface sjv_a = { -1 };
 sji_interface sjv_b = { 0 };
 void* sjv_emptystringdata;
 float sjv_f32_pi;
@@ -693,14 +693,14 @@ void sjf_class_heap(sjs_class* _this);
 void sjf_class_heap_as_sji_interface(sjs_class* _this, sji_interface* _return);
 void sjf_class_heap_asinterface(sjs_class* _this, int typeId, sjs_interface* _return);
 void sjf_debug_writeline(sjs_string* data);
-void sjf_hash_string_local_iface_interface(sjs_hash_string_local_iface_interface* _this);
-void sjf_hash_string_local_iface_interface__weakptrremovekey(sjs_hash_string_local_iface_interface* _parent, sjs_string* key);
-void sjf_hash_string_local_iface_interface__weakptrremovevalue(sjs_hash_string_local_iface_interface* _parent, sji_interface val);
-void sjf_hash_string_local_iface_interface_copy(sjs_hash_string_local_iface_interface* _this, sjs_hash_string_local_iface_interface* _from);
-void sjf_hash_string_local_iface_interface_destroy(sjs_hash_string_local_iface_interface* _this);
-void sjf_hash_string_local_iface_interface_getat_heap(sjs_hash_string_local_iface_interface* _parent, sjs_string* key, sji_interface* _return);
-void sjf_hash_string_local_iface_interface_heap(sjs_hash_string_local_iface_interface* _this);
-void sjf_hash_string_local_iface_interface_setat(sjs_hash_string_local_iface_interface* _parent, sjs_string* key, sji_interface val);
+void sjf_hash_string_heap_iface_interface(sjs_hash_string_heap_iface_interface* _this);
+void sjf_hash_string_heap_iface_interface__weakptrremovekey(sjs_hash_string_heap_iface_interface* _parent, sjs_string* key);
+void sjf_hash_string_heap_iface_interface__weakptrremovevalue(sjs_hash_string_heap_iface_interface* _parent, sji_interface val);
+void sjf_hash_string_heap_iface_interface_copy(sjs_hash_string_heap_iface_interface* _this, sjs_hash_string_heap_iface_interface* _from);
+void sjf_hash_string_heap_iface_interface_destroy(sjs_hash_string_heap_iface_interface* _this);
+void sjf_hash_string_heap_iface_interface_getat_heap(sjs_hash_string_heap_iface_interface* _parent, sjs_string* key, sji_interface* _return);
+void sjf_hash_string_heap_iface_interface_heap(sjs_hash_string_heap_iface_interface* _this);
+void sjf_hash_string_heap_iface_interface_setat(sjs_hash_string_heap_iface_interface* _parent, sjs_string* key, sji_interface val);
 void sjf_string(sjs_string* _this);
 void sjf_string_copy(sjs_string* _this, sjs_string* _from);
 void sjf_string_destroy(sjs_string* _this);
@@ -845,20 +845,20 @@ void weakptr_clear(void* parent, void* v) {
     }
     *p = 0;
 }
-#ifndef string_local_iface_interface_hash_function
-#define string_local_iface_interface_hash_function
+#ifndef string_heap_iface_interface_hash_function
+#define string_heap_iface_interface_hash_function
 #if true
-KHASH_INIT_FUNCTION_DEREF(string_local_iface_interface_hash_type, sjs_string, sji_interface, 1, sjf_string_hash, sjf_string_isequal)
+KHASH_INIT_FUNCTION_DEREF(string_heap_iface_interface_hash_type, sjs_string, sji_interface, 1, sjf_string_hash, sjf_string_isequal)
 #else
-KHASH_INIT_FUNCTION(string_local_iface_interface_hash_type, sjs_string, sji_interface, 1, sjf_string_hash, sjf_string_isequal)
+KHASH_INIT_FUNCTION(string_heap_iface_interface_hash_type, sjs_string, sji_interface, 1, sjf_string_hash, sjf_string_isequal)
 #endif
 #endif
-#ifndef string_local_iface_interface_hash_function
-#define string_local_iface_interface_hash_function
+#ifndef string_heap_iface_interface_hash_function
+#define string_heap_iface_interface_hash_function
 #if true
-KHASH_INIT_FUNCTION_DEREF(string_local_iface_interface_hash_type, sjs_string, sji_interface, 1, sjf_string_hash, sjf_string_isequal)
+KHASH_INIT_FUNCTION_DEREF(string_heap_iface_interface_hash_type, sjs_string, sji_interface, 1, sjf_string_hash, sjf_string_isequal)
 #else
-KHASH_INIT_FUNCTION(string_local_iface_interface_hash_type, sjs_string, sji_interface, 1, sjf_string_hash, sjf_string_isequal)
+KHASH_INIT_FUNCTION(string_heap_iface_interface_hash_type, sjs_string, sji_interface, 1, sjf_string_hash, sjf_string_isequal)
 #endif
 #endif
 void sjf_array_char(sjs_array_char* _this) {
@@ -996,68 +996,75 @@ void sjf_debug_writeline(sjs_string* data) {
     printf("%s\n", (char*)data->data.data);
 }
 
-void sjf_hash_string_local_iface_interface(sjs_hash_string_local_iface_interface* _this) {
-    _this->_hash = kh_init(string_local_iface_interface_hash_type);
+void sjf_hash_string_heap_iface_interface(sjs_hash_string_heap_iface_interface* _this) {
+    _this->_hash = kh_init(string_heap_iface_interface_hash_type);
 }
 
-void sjf_hash_string_local_iface_interface__weakptrremovekey(sjs_hash_string_local_iface_interface* _parent, sjs_string* key) {
+void sjf_hash_string_heap_iface_interface__weakptrremovekey(sjs_hash_string_heap_iface_interface* _parent, sjs_string* key) {
     #if false
-    khash_t(string_local_iface_interface_hash_type)* p = (khash_t(string_local_iface_interface_hash_type)*)_parent->_hash;    
-    khiter_t k = kh_get(string_local_iface_interface_hash_type, p, key);
+    khash_t(string_heap_iface_interface_hash_type)* p = (khash_t(string_heap_iface_interface_hash_type)*)_parent->_hash;    
+    khiter_t k = kh_get(string_heap_iface_interface_hash_type, p, key);
     if (k != kh_end(p)) {
-        kh_del(string_local_iface_interface_hash_type, p, k);
+        kh_del(string_heap_iface_interface_hash_type, p, k);
     }
     #endif
 }
 
-void sjf_hash_string_local_iface_interface__weakptrremovevalue(sjs_hash_string_local_iface_interface* _parent, sji_interface val) {
+void sjf_hash_string_heap_iface_interface__weakptrremovevalue(sjs_hash_string_heap_iface_interface* _parent, sji_interface val) {
     #if false
-    khash_t(string_local_iface_interface_hash_type)* p = (khash_t(string_local_iface_interface_hash_type)*)_parent->_hash;
+    khash_t(string_heap_iface_interface_hash_type)* p = (khash_t(string_heap_iface_interface_hash_type)*)_parent->_hash;
     for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
         if (kh_exist(p, k)) {
             sji_interface t = kh_value(p, k);
             if ((t._parent == val._parent)) {
-                kh_del(string_local_iface_interface_hash_type, p, k);
+                kh_del(string_heap_iface_interface_hash_type, p, k);
             }
         }
     }
     #endif
 }
 
-void sjf_hash_string_local_iface_interface_copy(sjs_hash_string_local_iface_interface* _this, sjs_hash_string_local_iface_interface* _from) {
+void sjf_hash_string_heap_iface_interface_copy(sjs_hash_string_heap_iface_interface* _this, sjs_hash_string_heap_iface_interface* _from) {
     _this->_hash = _from->_hash;
     ptr_retain(_this->_hash);
 }
 
-void sjf_hash_string_local_iface_interface_destroy(sjs_hash_string_local_iface_interface* _this) {
+void sjf_hash_string_heap_iface_interface_destroy(sjs_hash_string_heap_iface_interface* _this) {
     if (ptr_release(_this->_hash)) {
-        khash_t(string_local_iface_interface_hash_type)* p = (khash_t(string_local_iface_interface_hash_type)*)_this->_hash;
+        khash_t(string_heap_iface_interface_hash_type)* p = (khash_t(string_heap_iface_interface_hash_type)*)_this->_hash;
         for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
             if (kh_exist(p, k)) {
                 #if false
-                delete_cb cb = { p, (void(*)(void*, void*))sjf_hash_string_local_iface_interface__weakptrremovekey };
+                delete_cb cb = { p, (void(*)(void*, void*))sjf_hash_string_heap_iface_interface__weakptrremovekey };
                 weakptr_cb_remove(kh_key(p, k), cb);
                 #else
                 ;
                 #endif
                 #if false
-                delete_cb cb = { p, (void(*)(void*, void*))sjf_hash_string_local_iface_interface__weakptrremovevalue };
+                delete_cb cb = { p, (void(*)(void*, void*))sjf_hash_string_heap_iface_interface__weakptrremovevalue };
                 weakptr_cb_remove(kh_value(p, k)._parent, cb);
                 #else
-                ;
+                if (kh_value(p, k)._parent != 0) {
+    kh_value(p, k)._parent->_refCount--;
+    if (kh_value(p, k)._parent->_refCount <= 0) {
+        kh_value(p, k)._vtbl->destroy(kh_value(p, k)._parent);
+        free(kh_value(p, k)._parent);
+    }
+}
+;
                 #endif
             }
         }
-        kh_destroy(string_local_iface_interface_hash_type, _this->_hash);
+        kh_destroy(string_heap_iface_interface_hash_type, _this->_hash);
     }
 }
 
-void sjf_hash_string_local_iface_interface_getat_heap(sjs_hash_string_local_iface_interface* _parent, sjs_string* key, sji_interface* _return) {
-    khash_t(string_local_iface_interface_hash_type)* p = (khash_t(string_local_iface_interface_hash_type)*)_parent->_hash;
+void sjf_hash_string_heap_iface_interface_getat_heap(sjs_hash_string_heap_iface_interface* _parent, sjs_string* key, sji_interface* _return) {
+    khash_t(string_heap_iface_interface_hash_type)* p = (khash_t(string_heap_iface_interface_hash_type)*)_parent->_hash;
     #if true
-    khiter_t k = kh_get(string_local_iface_interface_hash_type, p, *key);
+    khiter_t k = kh_get(string_heap_iface_interface_hash_type, p, *key);
     #else
-    khiter_t k = kh_get(string_local_iface_interface_hash_type, p, key);
+    khiter_t k = kh_get(string_heap_iface_interface_hash_type, p, key);
     #endif
     if (k == kh_end(p)) {
         (*_return)._parent = 0;
@@ -1070,29 +1077,36 @@ if ((*_return)._parent != 0) {
 return;;
 }
 
-void sjf_hash_string_local_iface_interface_heap(sjs_hash_string_local_iface_interface* _this) {
-    _this->_hash = kh_init(string_local_iface_interface_hash_type);
+void sjf_hash_string_heap_iface_interface_heap(sjs_hash_string_heap_iface_interface* _this) {
+    _this->_hash = kh_init(string_heap_iface_interface_hash_type);
 }
 
-void sjf_hash_string_local_iface_interface_setat(sjs_hash_string_local_iface_interface* _parent, sjs_string* key, sji_interface val) {
-    khash_t(string_local_iface_interface_hash_type)* p = (khash_t(string_local_iface_interface_hash_type)*)_parent->_hash;
+void sjf_hash_string_heap_iface_interface_setat(sjs_hash_string_heap_iface_interface* _parent, sjs_string* key, sji_interface val) {
+    khash_t(string_heap_iface_interface_hash_type)* p = (khash_t(string_heap_iface_interface_hash_type)*)_parent->_hash;
     #if true
-    khiter_t k = kh_get(string_local_iface_interface_hash_type, p, *key);
+    khiter_t k = kh_get(string_heap_iface_interface_hash_type, p, *key);
     #else
-    khiter_t k = kh_get(string_local_iface_interface_hash_type, p, key);
+    khiter_t k = kh_get(string_heap_iface_interface_hash_type, p, key);
     #endif
     if (k != kh_end(p)) {            
-    ;
+    if (kh_val(p, k)._parent != 0) {
+    kh_val(p, k)._parent->_refCount--;
+    if (kh_val(p, k)._parent->_refCount <= 0) {
+        kh_val(p, k)._vtbl->destroy(kh_val(p, k)._parent);
+        free(kh_val(p, k)._parent);
+    }
+}
+;
 }
 int ret;
 #if true
-k = kh_put(string_local_iface_interface_hash_type, _parent->_hash, *key, &ret);
+k = kh_put(string_heap_iface_interface_hash_type, _parent->_hash, *key, &ret);
 #else
-k = kh_put(string_local_iface_interface_hash_type, _parent->_hash, key, &ret);
+k = kh_put(string_heap_iface_interface_hash_type, _parent->_hash, key, &ret);
 #endif
-if (!ret) kh_del(string_local_iface_interface_hash_type, p, k);
+if (!ret) kh_del(string_heap_iface_interface_hash_type, p, k);
 #if false
-delete_cb cb = { _parent, (void(*)(void*, void*))sjf_hash_string_local_iface_interface__weakptrremovekey };
+delete_cb cb = { _parent, (void(*)(void*, void*))sjf_hash_string_heap_iface_interface__weakptrremovekey };
 weakptr_cb_add(key, cb);
 #else
 sjs_string t;
@@ -1101,11 +1115,14 @@ sjf_string_copy(&t, key);
 ;
 #endif
 #if false
-delete_cb cb = { _parent, (void(*)(void*, void*))sjf_hash_string_local_iface_interface__weakptrremovevalue };
+delete_cb cb = { _parent, (void(*)(void*, void*))sjf_hash_string_heap_iface_interface__weakptrremovevalue };
 weakptr_cb_add(val._parent, cb);
 kh_val(p, k) = val;
 #else
 kh_val(p, k) = val;
+if (kh_val(p, k)._parent != 0) {
+    kh_val(p, k)._parent->_refCount++;
+}
 ;
 #endif
 }
@@ -1161,7 +1178,7 @@ int main(int argc, char** argv) {
     ptr_init();
     weakptr_init();
     sjv_a._refCount = 1;
-    sjf_hash_string_local_iface_interface(&sjv_a);
+    sjf_hash_string_heap_iface_interface(&sjv_a);
     sjt_parent2 = &sjv_a;
     sjt_call1._refCount = 1;
     sjt_call1.count = 3;
@@ -1173,11 +1190,16 @@ int main(int argc, char** argv) {
     sjf_array_char(&sjt_call1.data);
     sjf_string(&sjt_call1);
     sjt_functionParam2 = &sjt_call1;
-    sjt_call2._refCount = 1;
-    sjf_class(&sjt_call2);
-    sjt_cast1 = &sjt_call2;
+    sjt_call2 = (sjs_class*)malloc(sizeof(sjs_class));
+    sjt_call2->_refCount = 1;
+    sjf_class_heap(sjt_call2);
+    sjt_cast1 = sjt_call2;
     sjf_class_as_sji_interface(sjt_cast1, &sjt_functionParam3);
-    sjf_hash_string_local_iface_interface_setat(sjt_parent2, sjt_functionParam2, sjt_functionParam3);
+    if (sjt_functionParam3._parent != 0) {
+        sjt_functionParam3._parent->_refCount++;
+    }
+
+    sjf_hash_string_heap_iface_interface_setat(sjt_parent2, sjt_functionParam2, sjt_functionParam3);
     sjt_parent3 = &sjv_a;
     sjt_call3._refCount = 1;
     sjt_call3.count = 3;
@@ -1189,7 +1211,7 @@ int main(int argc, char** argv) {
     sjf_array_char(&sjt_call3.data);
     sjf_string(&sjt_call3);
     sjt_functionParam4 = &sjt_call3;
-    sjf_hash_string_local_iface_interface_getat_heap(sjt_parent3, sjt_functionParam4, &sjv_b);
+    sjf_hash_string_heap_iface_interface_getat_heap(sjt_parent3, sjt_functionParam4, &sjv_b);
     sjt_isEmpty2 = sjv_b;
     sjt_ifElse2 = (sjt_isEmpty2._parent != 0);
     if (sjt_ifElse2) {
@@ -1244,6 +1266,19 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
+    sjt_call2->_refCount--;
+    if (sjt_call2->_refCount <= 0) {
+        weakptr_release(sjt_call2);
+        sjf_class_destroy(sjt_call2);
+        free(sjt_call2);
+    }
+    if (sjt_functionParam3._parent != 0) {
+        sjt_functionParam3._parent->_refCount--;
+        if (sjt_functionParam3._parent->_refCount <= 0) {
+            sjt_functionParam3._vtbl->destroy(sjt_functionParam3._parent);
+            free(sjt_functionParam3._parent);
+        }
+    }
     if (sjv_b._parent != 0) {
         sjv_b._parent->_refCount--;
         if (sjv_b._parent->_refCount <= 0) {
@@ -1252,10 +1287,9 @@ void main_destroy() {
         }
     }
     if (sjt_call1._refCount == 1) { sjf_string_destroy(&sjt_call1); }
-    if (sjt_call2._refCount == 1) { sjf_class_destroy(&sjt_call2); }
     if (sjt_call3._refCount == 1) { sjf_string_destroy(&sjt_call3); }
     if (sjt_call4._refCount == 1) { sjf_string_destroy(&sjt_call4); }
     if (sjt_value1._refCount == 1) { sjf_string_destroy(&sjt_value1); }
     if (sjt_value2._refCount == 1) { sjf_string_destroy(&sjt_value2); }
-    if (sjv_a._refCount == 1) { sjf_hash_string_local_iface_interface_destroy(&sjv_a); }
+    if (sjv_a._refCount == 1) { sjf_hash_string_heap_iface_interface_destroy(&sjv_a); }
 }

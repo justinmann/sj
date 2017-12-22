@@ -8,7 +8,7 @@ class #interface(
 	bob() { "bob" }
 ) { this }
 
-a : hash![string, #interface]()
-a["foo"] = class() as #interface
+a : hash![string, heap #interface]()
+a["foo"] = heap class() as #interface
 b : a["foo"]
 debug.writeLine(b?.bob()?:"not found")
