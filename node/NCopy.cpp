@@ -26,7 +26,12 @@ void CCopyVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
         auto destType = returnMode == CTM_Heap ? type->getHeapType() : type->getStackType();
         auto rightValue = trBlock->createTempStoreVariable(loc, scope.lock(), type->getLocalType(), "copy");
         var->transpile(compiler, trOutput, trBlock, thisValue, rightValue);
-        
+
+        if (!CType::isSameExceptMode(rightValue->type, storeValue->type)) {
+            compiler->addError(loc, CErrorCode::InvalidType, "right type '%s' does not match left type '%s'", storeValue->type->fullName.c_str(), rightValue->type->fullName.c_str());
+            return;
+        }
+
         if (!storeValue->op.isFirstAssignment) {
             storeValue->getValue()->addReleaseToStatements(trBlock);
         }
