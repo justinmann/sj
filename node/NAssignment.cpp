@@ -116,7 +116,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
             }
 
             auto dotScope = CScope::getScopeForType(compiler, dotVar->getType(compiler));
-            auto leftVar = dotScope->getCVar(compiler, dotVar, name, VSM_ThisOnly);
+            auto leftVar = dotScope->getCVar(compiler, scope, dotVar, name, VSM_ThisOnly);
             if (!leftVar) {
                 return nullptr;
             }
@@ -142,7 +142,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
         }
         else {
             if (op.isFirstAssignment) {
-                auto leftVar = scope->getCVar(compiler, nullptr, name, VSM_LocalThisParent);
+                auto leftVar = scope->getCVar(compiler, scope, nullptr, name, VSM_LocalThisParent);
                 if (leftVar) {
                     compiler->addError(loc, CErrorCode::ImmutableAssignment, "var '%s' already exists", name.c_str());
                     return nullptr;
@@ -169,13 +169,18 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
                     nameNS += "_";
                 }
                 nameNS += name;
+
+                if (name[0] == '_') {
+                    compiler->addError(loc, CErrorCode::InvalidType, "local var cannot be private '%s'", name.c_str());
+                    return nullptr;
+                }
                 
                 leftStoreVar = make_shared<CNormalVar>(loc, scope, leftType, name, "sjv_" + nameNS, op.isMutable, CVarType::Var_Local, nullptr);
 
                 scope->addOrUpdateLocalVar(compiler, packageNamespace, leftStoreVar);
             }
             else {
-                auto leftVar = scope->getCVar(compiler, nullptr, name, VSM_LocalThisParent);
+                auto leftVar = scope->getCVar(compiler, scope, nullptr, name, VSM_LocalThisParent);
                 if (!leftVar) {
                     compiler->addError(loc, CErrorCode::ImmutableAssignment, "var '%s' does not exist", name.c_str());
                     return nullptr;

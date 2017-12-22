@@ -99,6 +99,10 @@ shared_ptr<CInterface> CInterface::init(Compiler* compiler, vector<pair<string, 
     auto argIndex = 0;
     for (auto it : node->methodList) {
         // need to create a stack and heap version if return typename is not explicit
+        if (it->name[0] == '_') {
+            compiler->addError(it->loc, CErrorCode::InvalidType, "interface methods cannot be private");
+            return nullptr;
+        }
 
         auto method = make_shared<CInterfaceMethod>(it->name, shared_from_this(), argIndex, CTM_Stack);
         method = method->init(compiler, importNamespaces, it, shared_from_this());

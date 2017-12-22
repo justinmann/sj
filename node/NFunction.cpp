@@ -239,13 +239,15 @@ bool CFunction::init(Compiler* compiler, shared_ptr<NFunction> node, CLoc locCal
             }
 
             for (auto returnMode : functionReturnModes) {
+                auto cvarType = it->name[0] == '_' ? CVarType::Var_Private : CVarType::Var_Public;
+
                 auto calleeScope = getScope(compiler, returnMode);
-                auto argType = it->getType(compiler, calleeScope, CVarType::Var_Public, CTM_Undefined);
+                auto argType = it->getType(compiler, calleeScope, cvarType, CTM_Undefined);
                 if (!argType) {
                     return nullptr;
                 }
 
-                auto thisArgVar = make_shared<CNormalVar>(node->loc, calleeScope, argType, it->name, it->op.isMutable, CVarType::Var_Public);
+                auto thisArgVar = make_shared<CNormalVar>(node->loc, calleeScope, argType, it->name, it->op.isMutable, cvarType);
                 _data[returnMode].thisArgVarsByName[it->name] = pair<int, shared_ptr<CNormalVar>>(index, thisArgVar);
                 _data[returnMode].thisArgVars.push_back(thisArgVar);
             }
@@ -1247,6 +1249,14 @@ shared_ptr<CBaseFunction> CFunction::getCFunction(Compiler* compiler, CLoc locCa
                 return nullptr;
             }
 
+            if (funcDef->isPrivate) {
+                auto fun = callerScope->function;
+                if (fun.get() != this && (fun->parent.expired() || fun->parent.lock().get() != this)) {
+                    // private functions are accessible from "this" or "parent" scope
+                    return nullptr;
+                }
+            }
+
             return funcDef->getFunction(compiler, locCaller, templateTypes, shared_from_this());
         }
     }
@@ -1346,9 +1356,24 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, shared_ptr<CScope> calle
         }
         
         if (scanMode == VSM_ThisOnly || scanMode == VSM_LocalThisParent || scanMode == VSM_FromChild) {
+            auto isPrivateOkay = false;
+            if (scanMode == VSM_FromChild) {
+                isPrivateOkay = true;
+            }
+            else {
+                if (callerScope->function.get() == this) {
+                    isPrivateOkay = true;
+                }
+            }
+
             auto t2 = _data[returnMode].thisArgVarsByName.find(name);
             if (t2 != _data[returnMode].thisArgVarsByName.end()) {
                 auto thisArgVar = t2->second.second;
+
+                if (thisArgVar->mode == Var_Private && !isPrivateOkay) {
+                    return nullptr;
+                }
+
                 if (!hasThis && scanMode != VSM_FromChild) {
                     auto argVarType = thisArgVar->getType(compiler);
                     if (!argVarType->parent.expired()) {
@@ -1577,6 +1602,7 @@ shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, 
     c->node = node;
     c->importNamespaces = importNamespaces;
     c->packageNamespace = packageNamespace;
+    c->isPrivate = name[0] == '_';
 
     boost::replace_all(c->safeName, "#", "_hash_");
     boost::replace_all(c->safeName, "!", "_bang_");
@@ -1813,10 +1839,10 @@ shared_ptr<CType> CScope::getVarType(CLoc loc, Compiler* compiler, shared_ptr<CT
     }
 }
 
-shared_ptr<CVar> CScope::getCVar(Compiler* compiler, shared_ptr<CVar> dotVar, const string& name, VarScanMode scanMode) {
+shared_ptr<CVar> CScope::getCVar(Compiler* compiler, shared_ptr<CScope> callerScope, shared_ptr<CVar> dotVar, const string& name, VarScanMode scanMode) {
     if (function) {
         for (auto ns : getImportNamespaces()) {
-            auto cvar = function->getCVar(compiler, shared_from_this(), localVarScopes, ns, dotVar, name, scanMode, returnMode);
+            auto cvar = function->getCVar(compiler, callerScope == nullptr ? shared_from_this() : callerScope, localVarScopes, ns, dotVar, name, scanMode, returnMode);
             if (cvar) {
                 return cvar;
             }

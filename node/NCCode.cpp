@@ -308,7 +308,7 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
             TrBlock block;
             stringstream retainStream;
             auto leftStoreValue = make_shared<TrStoreValue>(loc, scope, ctype, leftName, AssignOp::create(true, false, ctype->typeMode == CTM_Stack, ctype->typeMode));
-            auto rightVar = scope->getCVar(compiler, nullptr, rightName, VSM_LocalThisParent);
+            auto rightVar = scope->getCVar(compiler, scope, nullptr, rightName, VSM_LocalThisParent);
             if (!rightVar) {
                 auto rightValue = make_shared<TrValue>(scope, ctype, rightName, false);
                 if (trOutput) {

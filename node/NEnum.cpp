@@ -31,7 +31,7 @@ shared_ptr<CVar> NEnum::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
     scope->pushNamespace(compiler, enumNamespace);
     auto index = 0;
     for (auto enumArg : *enumArgs) {
-        auto leftVar = scope->getCVar(compiler, nullptr, enumArg->name, VSM_LocalThisParent);
+        auto leftVar = scope->getCVar(compiler, scope, nullptr, enumArg->name, VSM_LocalThisParent);
         if (leftVar) {
             compiler->addError(loc, CErrorCode::ImmutableAssignment, "var '%s' already exists", enumArg->name.c_str());
             return nullptr;

@@ -105,7 +105,7 @@ public:
     void setLocalVar(Compiler* compiler, CLoc loc, shared_ptr<CVar> var, bool overwrite);
     shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CLoc locCaller, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode);
     shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
-    shared_ptr<CVar> getCVar(Compiler* compiler, shared_ptr<CVar> dotVar, const string& name, VarScanMode scanMode);
+    shared_ptr<CVar> getCVar(Compiler* compiler, shared_ptr<CScope> callerScope, shared_ptr<CVar> dotVar, const string& name, VarScanMode scanMode);
     static shared_ptr<CScope> getScopeForType(Compiler* compiler, shared_ptr<CType> type);
     vector<string> getNamespace(Compiler* compiler, string name);
     void pushNamespace(Compiler* compiler, vector<string> nsChild);
@@ -202,6 +202,7 @@ public:
     vector<shared_ptr<NCCode>> ccodes;
     vector<pair<string, vector<string>>> importNamespaces;
     vector<string> packageNamespace;
+    bool isPrivate;
 
     CFunctionDefinition() : CBaseFunctionDefinition(CFT_Function) {}
     static shared_ptr<CFunctionDefinition> create(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, shared_ptr<CFunctionDefinition> parent, CFunctionType type, vector<string> packageNamespace, const string& name, shared_ptr<CTypeNameList> implementedInterfaceTypeNames, shared_ptr<NFunction> node);

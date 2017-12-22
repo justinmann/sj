@@ -290,7 +290,7 @@ shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, CLoc loc, shar
         }
     }
     else {
-        var = scope->getCVar(compiler, nullptr, name, VSM_LocalThisParent);
+        var = scope->getCVar(compiler, scope, nullptr, name, VSM_LocalThisParent);
     }
 
     if (var) {
