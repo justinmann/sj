@@ -540,7 +540,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                         trOutput->vtbls[vtblName] = vtbl;
 
                         vtbl->functions.push_back(make_pair("destroy", "(void(*)(void*))" + getCDestroyFunctionName()));
-                        vtbl->functions.push_back(make_pair("asinterface", "(void(*)(sjs_object*,int,sjs_interface*))" + getCAsInterfaceFunctionName(compiler, trOutput, returnMode)));
+                        vtbl->functions.push_back(make_pair("asinterface", "(void(*)(sjs_object*,int,sjs_interface*))" + getCAsInterfaceFunctionName(compiler, trOutput, CTM_Stack)));
 
                         for (auto interfaceMethod : interfaceVal->methods) {
                             auto implementation = static_pointer_cast<CFunction>(getCFunction(compiler, loc, interfaceMethod->name, nullptr, nullptr, CTM_Undefined));
@@ -561,6 +561,24 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                                     continue;
                                 }
 
+                                if (interfaceMethod->getArgCount(interfaceMethod->returnMode) != implementation->getArgCount(interfaceMethod->returnMode)) {
+                                    compiler->addError(implementation->loc, CErrorCode::InterfaceMethodTypeMismatch, "method '%s' has wrong argument count", implementation->name.c_str());
+                                    continue;
+                                }
+
+                                for (auto argIndex = 0; argIndex < interfaceMethod->getArgCount(interfaceMethod->returnMode); argIndex++) {
+                                    auto leftArg = interfaceMethod->getArgVar(argIndex, interfaceMethod->returnMode);
+                                    auto leftType = leftArg->getType(compiler);
+
+                                    auto rightArg = implementation->getArgVar(argIndex, interfaceMethod->returnMode);
+                                    auto rightType = rightArg->getType(compiler);
+
+                                    if (leftType != rightType) {
+                                        compiler->addError(implementation->loc, CErrorCode::InterfaceMethodTypeMismatch, "method '%s' arg %d type '%s' does not match '%s'", implementation->name.c_str(), argIndex, rightType->fullName.c_str(), leftType->fullName.c_str());
+                                        continue;
+                                    }
+                                }
+
                                 stringstream initStream;
                                 initStream << "(" << interfaceMethod->getCTypeName(compiler, false) << ")" << implementation->getCFunctionName(compiler, trOutput, interfaceMethod->returnMode);
                                 vtbl->functions.push_back(make_pair(interfaceMethod->name + (interfaceMethod->returnMode == CTM_Heap ? "_heap" : ""), initStream.str()));
@@ -568,7 +586,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                         }
                     }
 
-                    auto castFunctionName = interfaceVal->getCCastFunctionName(compiler, trOutput, shared_from_this(), returnMode);
+                    auto castFunctionName = interfaceVal->getCCastFunctionName(compiler, trOutput, shared_from_this(), CTM_Stack);
                     auto functionBody = trOutput->functions.find(castFunctionName);
                     if (functionBody == trOutput->functions.end()) {
                         auto trFunctionBlock = make_shared<TrBlock>();
@@ -585,7 +603,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                     }
                 }
 
-                string asInterfaceFunctionName = getCAsInterfaceFunctionName(compiler, trOutput, returnMode);
+                string asInterfaceFunctionName = getCAsInterfaceFunctionName(compiler, trOutput, CTM_Stack);
                 auto asInterfaceFunctionBody = trOutput->functions.find(asInterfaceFunctionName);
                 if (asInterfaceFunctionBody == trOutput->functions.end()) {
                     auto trFunctionBlock = make_shared<TrBlock>();
@@ -601,7 +619,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                     trFunctionBlock->statements.push_back(TrStatement(CLoc::undefined, "switch (typeId)", switchBlock));
                     for (auto interfaceVal : *interfaces) {
                         auto caseBlock = make_shared<TrBlock>();
-                        caseBlock->statements.push_back(TrStatement(CLoc::undefined, interfaceVal->getCCastFunctionName(compiler, trOutput, shared_from_this(), returnMode) + "(_this, (" + interfaceVal->getCStructName(CTM_Undefined) + "*)_return)"));
+                        caseBlock->statements.push_back(TrStatement(CLoc::undefined, interfaceVal->getCCastFunctionName(compiler, trOutput, shared_from_this(), CTM_Stack) + "(_this, (" + interfaceVal->getCStructName(CTM_Undefined) + "*)_return)"));
                         caseBlock->statements.push_back(TrStatement(CLoc::undefined, "break"));
                         switchBlock->statements.push_back(TrStatement(CLoc::undefined, string("case ") + interfaceVal->getCTypeIdName() + ": ", caseBlock));
                     }

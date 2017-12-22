@@ -272,7 +272,7 @@ string CInterface::getCTypeIdName() {
 
 string CInterface::getCCastFunctionName(Compiler* compiler, TrOutput* trOutput, shared_ptr<CBaseFunction> fromFunction, CTypeMode returnMode) {
     stringstream line;
-    line << fromFunction->getCFunctionName(compiler, trOutput, returnMode) << "_as_" << getCStructName(CTM_Stack);
+    line << fromFunction->getCFunctionName(compiler, trOutput, CTM_Stack) << "_as_" << getCStructName(CTM_Stack);
     return line.str();
 }
 
