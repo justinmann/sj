@@ -3,7 +3,6 @@ blurVerticalShader : shader("shaders/v3f-t2f.vert", "shaders/blur-vertical.frag"
 
 blurEffect #effect (
 	radius := 0.0f
-	up := true
 	_rect := rect()
 	_vertexBuffer1 := empty'boxVertexBuffer
 	_vertexBuffer2 := empty'boxVertexBuffer
@@ -11,9 +10,9 @@ blurEffect #effect (
 	_scenebuffer2 := empty'scenebuffer
 	_innerScene : scene2d()
 
-	getRect()'rect { copy _rect }
+	getRect() { copy _rect }
 
-	setRect(rect_ : 'rect, children : 'array!heap #element) {
+	setRect(rect_ : 'rect, cb : '(:rect)void) {
 		if _rect != rect_ {
 			_rect = copy rect_
 
@@ -33,64 +32,51 @@ blurEffect #effect (
 			_vertexBuffer2 = empty'boxVertexBuffer
 		}
 
-		for i : 0 to children.count {
-			child : children[i]
-			child.setRect(rect(0, 0, _rect.w, _rect.h))
-		}	
+		if radius == 0.0f {
+			cb(_rect)
+		} else {
+			cb(rect(0, 0, _rect.w, _rect.h))
+		}
 
 		void	
 	}
 
-	render(scene : 'scene2d, children : 'array!heap #element) {
-		if up {
-			radius = radius + 0.03f
-			if radius > 5.0f {
-				up = false
-			}
+	render(scene : 'scene2d, cb : '(:scene2d)void) {
+		if radius == 0.0f {
+			cb(scene)
 		} else {
-			radius = radius - 0.03f
-			if radius <= 0.0f {
-				radius = 0.0f
-				up = true
-			}
-		}
-
-		if isEmpty(_vertexBuffer1) {
-			_vertexBuffer1 = valid(boxVertexBuffer(
-				rect : rect(0, 0, _rect.w, _rect.h)
-			))
-			void
-		}
-
-		if isEmpty(_vertexBuffer2) {
-			_vertexBuffer2 = valid(boxVertexBuffer(
-				rect : copy _rect
-			))
-			void
-		}
-
-		if isEmpty(_scenebuffer1) {
-			_scenebuffer1 = valid(scenebuffer(size(_rect.w, _rect.h)))
-		}
-
-		if isEmpty(_scenebuffer2) {
-			_scenebuffer2 = valid(scenebuffer(size(_rect.w, _rect.h)))
-		}
-
-		ifValid f1 : _scenebuffer1, f2 : _scenebuffer2, v1 : _vertexBuffer1, v2 : _vertexBuffer2 {
-			glPushFramebuffer(f1.framebuffer)
-			_innerScene.setSize(f1.size)
-			_innerScene.start()
-
-			for i : 0 to children.count {
-				child : children[i]
-				child.render(_innerScene)
+			if isEmpty(_vertexBuffer1) {
+				_vertexBuffer1 = valid(boxVertexBuffer(
+					rect : rect(0, 0, _rect.w, _rect.h)
+				))
+				void
 			}
 
-			_innerScene.end()
-			glPopFramebuffer(f1.framebuffer)
+			if isEmpty(_vertexBuffer2) {
+				_vertexBuffer2 = valid(boxVertexBuffer(
+					rect : copy _rect
+				))
+				void
+			}
 
-			if radius != 0.0f {
+			if isEmpty(_scenebuffer1) {
+				_scenebuffer1 = valid(scenebuffer(size(_rect.w, _rect.h)))
+			}
+
+			if isEmpty(_scenebuffer2) {
+				_scenebuffer2 = valid(scenebuffer(size(_rect.w, _rect.h)))
+			}
+
+			ifValid f1 : _scenebuffer1, f2 : _scenebuffer2, v1 : _vertexBuffer1, v2 : _vertexBuffer2 {
+				glPushFramebuffer(f1.framebuffer)
+				_innerScene.setSize(f1.size)
+				_innerScene.start()
+
+				cb(_innerScene)
+
+				_innerScene.end()
+				glPopFramebuffer(f1.framebuffer)
+
 				glPushFramebuffer(f2.framebuffer)
 				_innerScene.setSize(f2.size)
 				_innerScene.start()
@@ -116,13 +102,6 @@ blurEffect #effect (
 		        glUniformMat4(glGetUniformLocation(blurHorizontalShader, "model"), scene.model)
 		        glUniformMat4(glGetUniformLocation(blurHorizontalShader, "view"), scene.view)
 		        glUniformMat4(glGetUniformLocation(blurHorizontalShader, "projection"), scene.projection)
-				v2.render(scene)			
-			} else {
-		        glBindTexture(glTexture.GL_TEXTURE_2D, f1.texture)
-		        glUseProgram(imageShader)
-		        glUniformMat4(glGetUniformLocation(imageShader, "model"), scene.model)
-		        glUniformMat4(glGetUniformLocation(imageShader, "view"), scene.view)
-		        glUniformMat4(glGetUniformLocation(imageShader, "projection"), scene.projection)			
 				v2.render(scene)			
 			}
 		}
