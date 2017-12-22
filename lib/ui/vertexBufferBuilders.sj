@@ -114,8 +114,8 @@ sphereVertexBuffer(
         for wedge : 0 to wedges + 1 {
             tu : wedge as f32 / wedges as f32
             angle : (2.0f * f32_pi * wedge as f32 / wedges as f32) - 1.5f * f32_pi
-            x0 : f32_cos(angle) * r0 * radius.x
-            z0 : f32_sin(angle) * r0 * radius.y
+            x0 : f32_sin(angle) * r0 * radius.x
+            z0 : f32_cos(angle) * r0 * radius.y
             normal : vec3(x0, y0, z0)
 
             v : vertex_location_texture_normal(
