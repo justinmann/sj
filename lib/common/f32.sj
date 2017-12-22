@@ -32,6 +32,14 @@ f32_tan(v : 'f32)'f32 {
 	result
 }
 
+f32_atan2(y : 'f32, x : 'f32)'f32 {
+	result := 0.0f
+	--c--
+	sjv_result = atan2f(y, x);
+	--c--
+	result
+}
+
 f32_max(a : 'f32, b : 'f32)'f32 {
 	if a < b { b } else { a }
 }

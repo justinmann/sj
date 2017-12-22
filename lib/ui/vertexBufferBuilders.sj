@@ -153,3 +153,140 @@ sphereVertexBuffer(
         vertices : copy vertices
     )
 }
+
+--cfunction--
+#include(<lib/ui/obj_parser.h>)
+##include <lib/ui/obj_parser.c>
+--cfunction--
+
+vertexBuffer_loadObj(filename : 'string) {
+    indices : list!i32()
+    vertices : list!vertex_location_texture_normal()
+    location := vec3()
+    texture := vec2()
+    normal := vec3()
+    index := 0
+    includeNormals := true
+    includeTextures := true
+    --c--
+    obj_scene_data data = { 0 };
+    if (parse_obj_scene(&data, (char*)filename->data.data)) {
+        for (int i = 0; i < data.face_count; i++) {
+            if (data.face_list[i]->vertex_count != 3) {
+                printf("warn: do not support obj with non-triangles\n");
+            }
+
+            for (int j = 0; j < 3; j++) {
+                sjv_index = data.face_list[i]->vertex_index[j];
+                if (data.face_list[i]->vertex_index[j] != data.face_list[i]->normal_index[j]) {
+                    sjv_includenormals = false;
+                }
+                if (data.face_list[i]->vertex_index[j] != data.face_list[i]->texture_index[j]) {
+                    sjv_includetextures = false;
+                }
+    --c--
+                indices.add(index)
+    --c--
+            }
+        }
+
+        if (data.vertex_count != data.vertex_normal_count) {
+            sjv_includenormals = false;
+        }
+
+        if (data.vertex_count != data.vertex_texture_count) {
+            sjv_includetextures = false;
+        }
+
+        for (int i = 0; i < data.vertex_count; i++) {
+            sjv_location.x = (float)data.vertex_list[i]->e[0];
+            sjv_location.y = (float)data.vertex_list[i]->e[1];
+            sjv_location.z = (float)data.vertex_list[i]->e[2];
+
+            if (sjv_includenormals) {
+                sjv_normal.x = (float)data.vertex_normal_list[i]->e[0];
+                sjv_normal.y = (float)data.vertex_normal_list[i]->e[1];
+                sjv_normal.z = (float)data.vertex_normal_list[i]->e[2];            
+            }
+
+            if (sjv_includetextures) {
+                sjv_texture.x = (float)data.vertex_texture_list[i]->e[0];
+                sjv_texture.y = (float)data.vertex_texture_list[i]->e[1];
+            }
+
+    --c--
+            debug.writeLine(location.asString() + " " + normal.asString() + " " + texture.asString())
+            vertices.add(vertex_location_texture_normal(
+                location : copy location
+                texture : copy texture
+                normal : copy normal
+            ))
+    --c--
+        }
+
+    }
+    delete_obj_data(&data);
+    --c--
+
+    // If file does not provide normals then compute them
+    if !includeNormals {
+        normals : array!vec3(vertices.count)
+        for i : 0 to vertices.count {
+            normals.initAt(i, vec3())
+        }
+
+        for i : 0 to indices.count / 3 {
+            i1 : indices[i * 3 + 0]
+            i2 : indices[i * 3 + 1]
+            i3 : indices[i * 3 + 2]
+
+            v1 : copy vertices[i1].location
+            v2 : copy vertices[i2].location
+            v3 : copy vertices[i3].location
+
+            side1 : v2 - v1
+            side2 : v3 - v1
+
+            newNormal : side2.cross(side1).normalize()
+
+            normals[i1] = normals[i1] + newNormal
+            normals[i2] = normals[i2] + newNormal
+            normals[i3] = normals[i3] + newNormal
+        }
+
+        for i : 0 to vertices.count {
+            newNormal : normals[i].normalize()
+            vertices[i] = vertex_location_texture_normal(
+                location : copy vertices[i].location
+                texture : copy vertices[i].texture
+                normal : copy newNormal
+            )
+        }
+    }
+
+    // If file does not provide textures then compute them
+    if !includeTextures {
+        yMin := 0.0f
+        yMax := 0.0f
+        for i : 0 to vertices.count {
+            yMin = yMin.min(vertices[i].location.y)
+            yMax = yMax.max(vertices[i].location.y)
+        }
+
+        for i : 0 to vertices.count {
+            s : (f32_atan2(vertices[i].location.x, vertices[i].location.z) + f32_pi) / (2.0f * f32_pi)
+            t : (vertices[i].location.y - yMin) / (yMax - yMin)
+            vertices[i] = vertex_location_texture_normal(
+                location : copy vertices[i].location
+                texture : vec2(s, t)
+                normal : copy vertices[i].normal
+            )
+        }
+    }
+
+    vertexBuffer!vertex_location_texture_normal(
+        format : copy vertex_location_texture_normal_format
+        indices : copy indices.array
+        vertices : copy vertices.array
+    )
+}
