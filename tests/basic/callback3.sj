@@ -6,6 +6,7 @@ doMath(cb : 'heap (:i32)void) {
 	void
 }
 
+@heap
 class(
 	total := 0
 
@@ -15,7 +16,7 @@ class(
 	}
 
 	run() {
-		doMath(cb : heap parent.func)
+		doMath(cb : parent.func)
 		total
 	}
 ) { this }

@@ -13,6 +13,8 @@ shared_ptr<CType> CChangeModeVar::getType(Compiler* compiler) {
             return varType->getLocalType();
         case CTM_Weak:
             return varType->getWeakType();
+        case CTM_Stack:
+            return varType->getStackType();
         case CTM_Heap:
             if (varType->typeMode == CTM_Weak) {
                 return varType->getHeapType();

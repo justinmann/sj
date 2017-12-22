@@ -21,6 +21,10 @@ void CBlockVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
     for (auto it : statements) {
         auto isLastStatement = it == statements.back();
         auto type = it->getType(compiler);
+        if (!type) {
+            compiler->addError(it->loc, CErrorCode::InvalidType, "line has no type");
+            continue;
+        }
         it->transpile(compiler, trOutput, trBlock, thisValue, isLastStatement ? storeValue : trBlock->createVoidStoreVariable(loc, type));
     }
 }

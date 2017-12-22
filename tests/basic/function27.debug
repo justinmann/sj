@@ -1,0 +1,11 @@
+func #bar ()'heap func {
+  c'weak #bar = weak this as heap #bar
+  this
+}
+
+global()'void {
+  c'weak #bar = empty'weak #bar
+  a'heap func : func(this = func())
+  void
+}
+

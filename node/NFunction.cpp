@@ -56,9 +56,7 @@ private:
     shared_ptr<CVar> argVar;
 };
 
-
-
-NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> copyBlock, shared_ptr<NBase> destroyBlock) : NBaseFunction(NodeType_Function, loc), type(type), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), interfaceTypeNames(interfaceTypeNames), block(block), catchBlock(catchBlock), copyBlock(copyBlock), destroyBlock(destroyBlock) {
+NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<vector<string>> attributes, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> copyBlock, shared_ptr<NBase> destroyBlock) : NBaseFunction(NodeType_Function, loc), type(type), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), attributes(attributes), interfaceTypeNames(interfaceTypeNames), block(block), catchBlock(catchBlock), copyBlock(copyBlock), destroyBlock(destroyBlock) {
     boost::algorithm::to_lower(this->name);
 
     if (this->name == "^") {
@@ -157,7 +155,7 @@ shared_ptr<CVar> NFunction::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
     return nullptr;
 }
 
-CFunction::CFunction(vector<pair<string, vector<string>>>& importNamespaces, weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, vector<shared_ptr<NCCode>> ccodes) :
+CFunction::CFunction(vector<pair<string, vector<string>>>& importNamespaces, weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, vector<shared_ptr<NCCode>> ccodes, bool hasHeapThis) :
 CBaseFunction(CFT_Function, definition.lock()->name, definition.lock()->safeName, parent, definition, false),
 loc(CLoc::undefined),
 type(type),
@@ -171,8 +169,7 @@ _hasInitializedInterfaces(false),
 _hasTranspileDefinitions(NOTSTARTED),
 _hasTranspileStructDefinitions(NOTSTARTED),
 _isReturnThis(false),
-_hasHeapThis(false),
-_hasHeapParent(false),
+hasHeapThis(hasHeapThis),
 importNamespaces(importNamespaces)
  { }
 
@@ -304,45 +301,49 @@ void CFunction::transpileStructDefinition(Compiler* compiler, TrOutput* trOutput
 
     _hasTranspileStructDefinitions = STARTED;
 
-    for (auto returnMode : functionReturnModes) {
-        if (hasThis) {
-            auto calleeScope = getScope(compiler, returnMode);
+    if (hasThis) {
+        auto returnMode = hasHeapThis ? CTM_Heap : CTM_Stack;
+        auto calleeScope = getScope(compiler, returnMode);
 
-            // Create struct
-            string stackStructName = getCStructName(CTM_Stack);
-            if (trOutput->structs.find(stackStructName) == trOutput->structs.end()) {
-                trOutput->structs[stackStructName].push_back("int _refCount");
+        // Create struct
+        string stackStructName = getCStructName(returnMode);
+        if (trOutput->structs.find(stackStructName) == trOutput->structs.end()) {
+            trOutput->structs[stackStructName].push_back("int _refCount");
 
-                bool hasValues = false;
-                auto argTypes = getCTypeList(compiler, returnMode);
-                for (auto argType : *argTypes) {
-                    hasValues = true;
-                    stringstream ss;
-                    ss << argType.second->cname;
-
-                    // C requires that inline structs be defined before use
-                    if (!argType.second->parent.expired()) {
-                        argType.second->parent.lock()->transpileStructDefinition(compiler, trOutput);
-                    }
-                    else if (!argType.second->callback.expired()) {
-                        argType.second->callback.lock()->transpileStructDefinition(compiler, trOutput);
-                    }
-
-                    if (argType.second->typeMode == CTM_Stack) {
-                    }
-                    else if (argType.second->typeMode != CTM_Heap && argType.second->typeMode != CTM_Weak && argType.second->typeMode != CTM_Value && argType.first.compare("_parent") != 0) {
-                        compiler->addError(loc, CErrorCode::InvalidType, "var '%s' is local which is not allowed", argType.first.c_str());
-                    }
-                    ss << " " << argType.first;
-                    trOutput->structs[stackStructName].push_back(ss.str());
-                }
-
-                for (auto ccode : ccodes) {
-                    ccode->addToStruct(compiler, calleeScope, trOutput->structs[stackStructName]);
-                }
-
-                trOutput->structOrder.push_back(stackStructName);
+            bool hasValues = false;
+            auto argTypes = getCTypeList(compiler, returnMode);
+            if (!argTypes) {
+                compiler->addError(loc, CErrorCode::InvalidType, "something bad");
+                return;
             }
+
+            for (auto argType : *argTypes) {
+                hasValues = true;
+                stringstream ss;
+                ss << argType.second->cname;
+
+                // C requires that inline structs be defined before use
+                if (!argType.second->parent.expired()) {
+                    argType.second->parent.lock()->transpileStructDefinition(compiler, trOutput);
+                }
+                else if (!argType.second->callback.expired()) {
+                    argType.second->callback.lock()->transpileStructDefinition(compiler, trOutput);
+                }
+
+                if (argType.second->typeMode == CTM_Stack) {
+                }
+                else if (argType.second->typeMode != CTM_Heap && argType.second->typeMode != CTM_Weak && argType.second->typeMode != CTM_Value && argType.first.compare("_parent") != 0) {
+                    compiler->addError(loc, CErrorCode::InvalidType, "var '%s' is local which is not allowed", argType.first.c_str());
+                }
+                ss << " " << argType.first;
+                trOutput->structs[stackStructName].push_back(ss.str());
+            }
+
+            for (auto ccode : ccodes) {
+                ccode->addToStruct(compiler, calleeScope, trOutput->structs[stackStructName]);
+            }
+
+            trOutput->structOrder.push_back(stackStructName);
         }
     }
 
@@ -637,11 +638,6 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
         stringstream parentLine;
         if (!parentVar) {
             if (parent.lock() == callerScope->function) {
-                if (_hasHeapParent && !getHasHeapThis()) {
-                    compiler->addError(loc, CErrorCode::TypeMismatch, "function requires a heap parent");
-                    return;
-                }
-
                 if (thisValue != nullptr) {
                     parentName = TrValue::convertToLocalName(thisValue->type, thisValue->name, false);
                 }
@@ -650,11 +646,6 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
                 }
             }
             else if (parent.lock() == callerScope->function->parent.lock()) {
-                if (_hasHeapParent && !callerScope->function->getHasHeapParent()) {
-                    compiler->addError(loc, CErrorCode::TypeMismatch, "function requires a heap parent");
-                    return;
-                }
-
                 parentName = "_parent";
             }
             else {
@@ -662,7 +653,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
             }
         }
         else {
-            auto parentStoreValue = trBlock->createTempStoreVariable(loc, nullptr, _hasHeapParent ? parentVar->getType(compiler)->getHeapType() : parentVar->getType(compiler)->getLocalType(), "parent");
+            auto parentStoreValue = trBlock->createTempStoreVariable(loc, nullptr, static_pointer_cast<CFunction>(parent.lock())->hasHeapThis ? parentVar->getType(compiler)->getHeapType() : parentVar->getType(compiler)->getLocalType(), "parent");
             parentVar->transpile(compiler, trOutput, trBlock, thisValue, parentStoreValue);
             auto parentValue = parentStoreValue->getValue();
             parentName = TrValue::convertToLocalName(parentValue->type, parentValue->name, false);
@@ -749,7 +740,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
             calleeThisValue->addInitToStatements(trBlock);
         }
 
-        if (_hasHeapThis && calleeThisValue->type->typeMode != CTM_Heap) {
+        if (hasHeapThis && calleeThisValue->type->typeMode != CTM_Heap) {
             compiler->addError(loc, CErrorCode::TypeMismatch, "function requires a heap this");
             return;
         }
@@ -803,8 +794,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
 
 string CFunction::getCBaseName(CTypeMode returnMode) {
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
-    assert(!_data[returnMode].isInvalid);
-
+    
     string functionName = getCFullName(true);
     if (!parent.expired()) {
         auto tempType = parent.lock();
@@ -973,7 +963,10 @@ void CFunction::dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, stri
 
 shared_ptr<CThisVar> CFunction::getThisVar(Compiler* compiler, CTypeMode returnMode) {
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
-    assert(!_data[returnMode].isInvalid);
+
+    if (_data[returnMode].isInvalid) {
+        return nullptr;
+    }
 
     if (!_hasInitializedInterfaces) {
         _hasInitializedInterfaces = true;
@@ -1027,6 +1020,10 @@ shared_ptr<CThisVar> CFunction::getThisVar(Compiler* compiler, CTypeMode returnM
                 return nullptr;
             }
             defaultTypeMode = valueType->typeMode;
+        }
+
+        if (hasHeapThis) {
+            defaultTypeMode = CTM_Heap;
         }
 
         auto thisTypes = getThisTypes(compiler);
@@ -1119,22 +1116,6 @@ shared_ptr<CTypes> CFunction::getThisTypes(Compiler* compiler) {
     return _thisTypes;
 }
 
-void CFunction::setHasHeapThis() {
-    _hasHeapThis = true;
-}
-
-bool CFunction::getHasHeapThis() {
-    return _hasHeapThis;
-}
-
-void CFunction::setHasHeapParent() {
-    _hasHeapParent = true;
-}
-
-bool CFunction::getHasHeapParent() {
-    return _hasHeapParent;
-}
-
 shared_ptr<CScope> CFunction::getScope(Compiler* compiler, CTypeMode returnMode) {
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
     if (_data[returnMode].scope == nullptr) {
@@ -1164,8 +1145,11 @@ int CFunction::getArgCount(CTypeMode returnMode) {
 
 shared_ptr<vector<pair<string, shared_ptr<CType>>>> CFunction::getCTypeList(Compiler* compiler, CTypeMode returnMode) {
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
-    assert(!_data[returnMode].isInvalid);
     assert(_hasTranspileStructDefinitions != NOTSTARTED);
+
+    if (_data[returnMode].isInvalid) {
+        return nullptr;
+    }
 
     if (!_data[returnMode].ctypeList) {
         _data[returnMode].ctypeList = make_shared<vector<pair<string, shared_ptr<CType>>>>();
@@ -1379,7 +1363,7 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, shared_ptr<CScope> calle
 
         if (scanMode == VSM_LocalThisParent) {
             shared_ptr<CFunction> parentCheck = dynamic_pointer_cast<CFunction>(parent.lock());
-            auto cvar = parentCheck->getCVar(compiler, callerScope, vector<shared_ptr<LocalVarScope>>(), ns, make_shared<CParentVar>(loc, callerScope, dotVar, parentCheck, parentCheck->getHasHeapParent()), name, VSM_FromChild, CTM_Undefined);
+            auto cvar = parentCheck->getCVar(compiler, callerScope, vector<shared_ptr<LocalVarScope>>(), ns, make_shared<CParentVar>(loc, callerScope, dotVar, parentCheck), name, VSM_FromChild, CTM_Undefined);
             if (cvar) {
                 return cvar;
             }
@@ -1495,7 +1479,6 @@ shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, vector<pai
             case CTM_Weak:
                 return thisTypes->weakType;
             default:
-                assert(false);
                 return nullptr;
             }
         }
@@ -1653,8 +1636,15 @@ shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CLoc 
             compiler->addError(loc, CErrorCode::InvalidType, "template type count does not match");
             return nullptr;
         }
+
+        bool isHeapThis = false;
+        if (node->attributes) {
+            if (std::find(node->attributes->begin(), node->attributes->end(), "heap") != node->attributes->end()) {
+                isHeapThis = true;
+            }
+        }
         
-        func = make_shared<CFunction>(importNamespaces, shared_from_this(), type, templateTypes, funcParent, interfaces, ccodes);
+        func = make_shared<CFunction>(importNamespaces, shared_from_this(), type, templateTypes, funcParent, interfaces, ccodes, isHeapThis);
         if (func == nullptr) {
             return nullptr;
         }

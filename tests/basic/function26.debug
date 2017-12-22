@@ -1,0 +1,16 @@
+func()'heap func {
+  this
+}
+
+func_bar()'heap func {
+  parent
+}
+
+global()'void {
+  a'heap func : func(this = func())
+  b'heap func : func_bar(
+    parent: this
+  )
+  void
+}
+

@@ -697,8 +697,8 @@ global()'void {
   o'heap class : getValue(n)
   p'i32? : if isValid(n) value(getValue(n).bob) else empty'i32?
   q'i32 : if isValid(a) getValue(a) else -1i
-  r'local #interface? : n as local #interface?
-  s'local #interface2? : r as local #interface2?
+  r'heap #interface? : n as heap #interface?
+  s'heap #interface2? : r as heap #interface2?
   void
 }
 

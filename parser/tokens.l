@@ -120,9 +120,7 @@ void updateLocation(YYLOCATION& loc, const char* s, const size_t len) {
 [ \t]+						SAVE_LOC; 
 "^"							TOKEN_STR(TIDENTIFIER, 0, 0);
 (?:"this")					TOKEN_VAL(TTHIS);
-(?:"heap this")				TOKEN_VAL(THEAPTHIS);
 (?:"parent")				TOKEN_VAL(TPARENT);
-(?:"heap parent")			TOKEN_VAL(THEAPPARENT);
 (?:"include")				TOKEN_VAL(TINCLUDE);
 (?:"isempty")				TOKEN_VAL(TISEMPTY);
 (?:"isvalid")				TOKEN_VAL(TISVALID);
@@ -143,6 +141,7 @@ void updateLocation(YYLOCATION& loc, const char* s, const size_t len) {
 (?:"shl")					TOKEN_VAL(TBOOLSHL);
 "_"							TOKEN_VAL(TUNDERSCORE);
 "#"							TOKEN_VAL(THASH);
+"@"							TOKEN_VAL(TAT);
 "?:"						TOKEN_VAL(TQUESTIONCOLON);
 "?."						TOKEN_VAL(TQUESTIONDOT);
 "?"							TOKEN_VAL(TQUESTION);

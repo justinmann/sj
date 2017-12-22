@@ -86,18 +86,19 @@ void NCast::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>&
 }
 
 shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto type = scope->getVarType(loc, compiler, typeName, returnMode);
-    if (!type) {
-        compiler->addError(loc, CErrorCode::InvalidType, "type '%s' does not exist", typeName->getFullName().c_str());
-        return nullptr;
-    }
-
-    auto var = node->getVar(compiler, scope, nullptr, type->typeMode);
+    auto var = node->getVar(compiler, scope, nullptr, returnMode);
     if (!var) {
         return nullptr;
     }
 
     auto fromType = var->getType(compiler);
+
+    auto type = scope->getVarType(loc, compiler, typeName, fromType->typeMode);
+    if (!type) {
+        compiler->addError(loc, CErrorCode::InvalidType, "type '%s' does not exist", typeName->getFullName().c_str());
+        return nullptr;
+    }
+
     return make_shared<CCastVar>(loc, scope, type, var);
 }
 

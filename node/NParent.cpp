@@ -9,7 +9,7 @@ shared_ptr<CType> CParentVar::getType(Compiler* compiler) {
     if (!parentTypes) {
         return nullptr;
     }
-    return isHeap ? parentTypes->heapValueType : parentTypes->localValueType;
+    return function->hasHeapThis ? parentTypes->heapValueType : parentTypes->localValueType;
 }
 
 void CParentVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
@@ -25,11 +25,11 @@ void CParentVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
     }
     else {
         if (storeValue->type->typeMode == CTM_Heap) {
-            if (scope.lock()->function->getHasHeapParent()) {
+            if (function->hasHeapThis) {
                 storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, parentTypes->heapValueType, "_parent", false));
             }
             else {
-                compiler->addError(loc, CErrorCode::InvalidType, "parent must be heap");                
+                compiler->addError(loc, CErrorCode::InvalidType, "parent must be heap, add the @heap annotation to the parent function");                
             }
         }
         else {
@@ -44,9 +44,6 @@ void CParentVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>
         ss << ".";
     }
 
-    if (isHeap) {
-        ss << "heap ";
-    }
     ss << "parent";
 }
 
@@ -56,11 +53,7 @@ shared_ptr<CVar> NParent::getVarImpl(Compiler* compiler, shared_ptr<CScope> scop
         return nullptr;
     }
 
-    if (isHeap) {
-        scope->function->setHasHeapParent();
-    }
-    
     auto parentFunction = static_pointer_cast<CFunction>(scope->function->parent.lock());
     parentFunction->setHasThis();
-    return make_shared<CParentVar>(loc, scope, nullptr, parentFunction, isHeap);
+    return make_shared<CParentVar>(loc, scope, nullptr, parentFunction);
 }

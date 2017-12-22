@@ -72,11 +72,12 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 	NSwitchClause* switchClause;
 	vector<pair<shared_ptr<NBase>, shared_ptr<NBase>>>* hashArgs;
 	pair<shared_ptr<NBase>, shared_ptr<NBase>>* hashArg;
+	CFunctionName* functionName;
 }
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TSTRING TCHAR TCBLOCK TCFUNCTION TCDEFINE TCSTRUCT TCINCLUDE TCVAR TCTYPEDEF TQUOTEDIDENTIFIER
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TISVALID TGETVALUE TQUESTION TEMPTY TVALID TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TWEAK TLOCAL TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR TINVALID TCOLONEQUAL THEAPPARENT THEAPTHIS TIFVALID TELSEEMPTY TTOREVERSE TENUM TSWITCH TDEFAULT TPACKAGE TIMPORT TUNDERSCORE TNULLPTR TBOOLXOR TBOOLOR TBOOLAND TBOOLSHL TBOOLSHR TBOOLNOT
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TISVALID TGETVALUE TQUESTION TEMPTY TVALID TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TWEAK TLOCAL TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR TINVALID TCOLONEQUAL TIFVALID TELSEEMPTY TTOREVERSE TENUM TSWITCH TDEFAULT TPACKAGE TIMPORT TUNDERSCORE TNULLPTR TBOOLXOR TBOOLOR TBOOLAND TBOOLSHL TBOOLSHR TBOOLNOT TAT
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch copy destroy expr end_optional end_star if_expr ifValue_var enum_decl switch_expr hash
@@ -84,7 +85,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %type <block> stmts
 %type <exprvec> func_args func_block array_args tuple_args interface_args interface_block ifValue_vars
 %type <assignOp> assign_type assign_tuple_type
-%type <typeName> arg_type_quote arg_type return_type_quote return_type func_type func_arg_type func_type_name implement_arg value_type  
+%type <typeName> arg_type_quote arg_type return_type_quote return_type func_type func_arg_type implement_arg value_type
 %type <templateTypeNames> temp_args temp_block temp_block_optional func_arg_type_list implement implement_args
 %type <tupleAssignmentArg> assign_tuple_arg
 %type <tupleAssignmentArgList> assign_tuple
@@ -92,16 +93,17 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %type <typeMode> arg_mode
 %type <enumArgs> enum_args
 %type <enumArg> enum_arg
-%type <strings> namespace namespace_dot
+%type <strings> namespace namespace_dot func_attribs 
 %type <ccode> cblock cdefine cstruct cfunction cinclude ctypedef cvar
 %type <import_namespaces> import_namespaces
 %type <import_namespace> import_namespace
 %type <typeNameParts> namespace_hash namespace_last
-%type <string> namespace_ident
+%type <string> namespace_ident func_attrib
 %type <switchClauses> switch_clauses
 %type <switchClause> switch_clause
 %type <hashArg> hash_arg
 %type <hashArgs> hash_args
+%type <functionName> func_type_name
 
 /* Operator precedence */
 %left TAND TOR
@@ -211,32 +213,44 @@ enum_arg 			: TIDENTIFIER 										{ $$ = new EnumArg(*$1); delete $1; }
 					;
 
 func_decl 			: func_type_name func_block block catch copy destroy			{ 
-						$$ = new NFunction(LOC, FT_Private, nullptr, $1->valueName.c_str(), $1->templateTypeNames, 
+						$$ = new NFunction(LOC, FT_Private, nullptr, $1->name.c_str(), $1->templateTypeNames, $1->attributes, 
 							nullptr, shared_ptr<NodeList>($2), 
 							shared_ptr<NBase>($3), shared_ptr<NBase>($4), shared_ptr<NBase>($5), shared_ptr<NBase>($6));
 						delete $1; 
 					}
 					| func_type_name implement func_block block catch copy destroy			{ 
-						$$ = new NFunction(LOC, FT_Private, nullptr, $1->valueName.c_str(), $1->templateTypeNames, 
+						$$ = new NFunction(LOC, FT_Private, nullptr, $1->name.c_str(), $1->templateTypeNames, $1->attributes, 
 							shared_ptr<CTypeNameList>($2), shared_ptr<NodeList>($3), 
 							shared_ptr<NBase>($4), shared_ptr<NBase>($5), shared_ptr<NBase>($6), shared_ptr<NBase>($7)); 
 					}
 					| func_type_name func_block return_type_quote block catch copy destroy { 
-						$$ = new NFunction(LOC, FT_Private, shared_ptr<CTypeName>($3), $1->valueName.c_str(), $1->templateTypeNames, 
+						$$ = new NFunction(LOC, FT_Private, shared_ptr<CTypeName>($3), $1->name.c_str(), $1->templateTypeNames, $1->attributes, 
 							nullptr, shared_ptr<NodeList>($2), 
 							shared_ptr<NBase>($4), shared_ptr<NBase>($5), shared_ptr<NBase>($6), shared_ptr<NBase>($7)); 
 					}
 					| func_type_name implement func_block return_type_quote block catch copy destroy { 
-						$$ = new NFunction(LOC, FT_Private, shared_ptr<CTypeName>($4), $1->valueName.c_str(), $1->templateTypeNames, 
+						$$ = new NFunction(LOC, FT_Private, shared_ptr<CTypeName>($4), $1->name.c_str(), $1->templateTypeNames, $1->attributes, 
 							shared_ptr<CTypeNameList>($2), shared_ptr<NodeList>($3), 
 							shared_ptr<NBase>($5), shared_ptr<NBase>($6), shared_ptr<NBase>($7), shared_ptr<NBase>($8)); 
 					}
 					;
 
-func_type_name		: TIDENTIFIER									{ $$ = new CTypeName(CTC_Value, CTM_Stack, emptyNamespace, $1->c_str(), false); delete $1; }
-					| TIDENTIFIER temp_block 						{ $$ = new CTypeName(CTC_Value, CTM_Stack, emptyNamespace, $1->c_str(), shared_ptr<CTypeNameList>($2), false); delete $1; }
-					| TQUOTEDIDENTIFIER								{ $$ = new CTypeName(CTC_Value, CTM_Stack, emptyNamespace, $1->c_str(), false); delete $1; }
-					| TQUOTEDIDENTIFIER temp_block 					{ $$ = new CTypeName(CTC_Value, CTM_Stack, emptyNamespace, $1->c_str(), shared_ptr<CTypeNameList>($2), false); delete $1; }
+func_type_name		: TIDENTIFIER												{ $$ = new CFunctionName($1->c_str(), nullptr, nullptr); delete $1; }
+					| TIDENTIFIER temp_block 									{ $$ = new CFunctionName($1->c_str(), shared_ptr<CTypeNameList>($2), nullptr); delete $1; }
+					| TQUOTEDIDENTIFIER											{ $$ = new CFunctionName($1->c_str(), nullptr, nullptr); delete $1; }
+					| TQUOTEDIDENTIFIER temp_block 								{ $$ = new CFunctionName($1->c_str(), shared_ptr<CTypeNameList>($2), nullptr); delete $1; }
+					| func_attribs end_optional TIDENTIFIER						{ $$ = new CFunctionName($3->c_str(), nullptr, shared_ptr<vector<string>>($1)); delete $3; }
+					| func_attribs end_optional TIDENTIFIER temp_block 			{ $$ = new CFunctionName($3->c_str(), shared_ptr<CTypeNameList>($4), shared_ptr<vector<string>>($1)); delete $3; }
+					| func_attribs end_optional TQUOTEDIDENTIFIER				{ $$ = new CFunctionName($3->c_str(), nullptr, shared_ptr<vector<string>>($1)); delete $3; }
+					| func_attribs end_optional TQUOTEDIDENTIFIER temp_block 	{ $$ = new CFunctionName($3->c_str(), shared_ptr<CTypeNameList>($4), shared_ptr<vector<string>>($1)); delete $3; }
+					;
+
+func_attribs 		: func_attrib 									{ $$ = new vector<string>(); $$->push_back(*$1); delete $1; }
+					| func_attribs end_optional func_attrib    		{ $$ = $1; $$->push_back(*$3); delete $3; }
+					;
+
+func_attrib 		: TAT THEAP 									{ $$ = new string("heap"); }									
+					| TAT TIDENTIFIER 								{ $$ = $2; }
 					;
 
 copy				: /* Blank! */									{ $$ = nullptr; }
@@ -278,7 +292,7 @@ implement_args 		: implement_arg									{ $$ = new CTypeNameList(); $$->push_ba
 implement_arg 		: THASH namespace temp_block_optional			{ string t = $2->back(); $2->pop_back(); $$ = new CTypeName(CTC_Interface, CTM_Stack, *$2, t, shared_ptr<CTypeNameList>($3), false); delete $2; }							
 					;
 
-interface_decl		: THASH TIDENTIFIER temp_block_optional interface_block { $$ = new NInterface(LOC, *$2, shared_ptr<CTypeNameList>($3), shared_ptr<NodeList>($4)); delete $2; }
+interface_decl		: THASH TIDENTIFIER temp_block_optional interface_block { $$ = new NInterface(LOC, *$2, shared_ptr<CTypeNameList>($3), nullptr, shared_ptr<NodeList>($4)); delete $2; }
 					;
 
 interface_block		: TLPAREN interface_args TRPAREN 				{ $$ = $2; }
@@ -290,7 +304,7 @@ interface_args		: interface_arg									{ $$ = new NodeList(); if ($1) { $$->pus
 					;
 
 interface_arg 		: /* Blank! */									{ $$ = nullptr; }
-					| func_type_name func_block return_type_quote 	{ $$ = new NInterfaceMethod(LOC, $1->valueName.c_str(), $1->templateTypeNames, shared_ptr<NodeList>($2), shared_ptr<CTypeName>($3)); }
+					| func_type_name func_block return_type_quote 	{ $$ = new NInterfaceMethod(LOC, $1->name.c_str(), $1->templateTypeNames, $1->attributes, shared_ptr<NodeList>($2), shared_ptr<CTypeName>($3)); }
 					;
 
 expr 				: if_expr										{ $$ = $1; }
@@ -379,20 +393,18 @@ ifValue_vars 		: ifValue_vars TCOMMA ifValue_var 				{ $1->push_back(shared_ptr<
 					;
 
 ifValue_var			: TIDENTIFIER assign_type expr					{ $$ = new NAssignment(LOC, nullptr, nullptr, $1->c_str(), shared_ptr<NBase>($3), $2); }
-					| func_type_name 								{ $$ = new NVariable(LOC, $1->valueName.c_str(), $1->templateTypeNames); delete $1; }
+					| func_type_name 								{ $$ = new NVariable(LOC, $1->name.c_str(), $1->templateTypeNames); delete $1; }
 					;
 
 var_right			: TLPAREN expr TRPAREN							{ $$ = new NVariableStub(shared_ptr<NBase>($2)); }
-					| func_type_name func_block						{ $$ = new NCall(LOC, $1->valueName.c_str(), $1->templateTypeNames, shared_ptr<NodeList>($2)); delete $1; }
+					| func_type_name func_block						{ $$ = new NCall(LOC, $1->name.c_str(), $1->templateTypeNames, shared_ptr<NodeList>($2)); delete $1; }
 					| TISEMPTY TLPAREN expr TRPAREN					{ $$ = new NIsEmptyOrValid(LOC, shared_ptr<NBase>($3), true); }
 					| TISVALID TLPAREN expr TRPAREN					{ $$ = new NIsEmptyOrValid(LOC, shared_ptr<NBase>($3), false); }
 					| TGETVALUE TLPAREN expr TRPAREN				{ $$ = new NGetValue(LOC, shared_ptr<NBase>($3), false); }
 					| TVALID TLPAREN expr TRPAREN					{ $$ = new NValue(LOC, shared_ptr<NBase>($3)); }
-	 				| func_type_name								{ $$ = new NVariable(LOC, $1->valueName.c_str(), $1->templateTypeNames); delete $1; }
-	 				| TPARENT										{ $$ = new NParent(LOC, false); }
-	 				| TTHIS											{ $$ = new NThis(LOC, false); }
-	 				| THEAPPARENT									{ $$ = new NParent(LOC, true); }
-	 				| THEAPTHIS										{ $$ = new NThis(LOC, true); }
+	 				| func_type_name								{ $$ = new NVariable(LOC, $1->name.c_str(), $1->templateTypeNames); delete $1; }
+	 				| TPARENT										{ $$ = new NParent(LOC); }
+	 				| TTHIS											{ $$ = new NThis(LOC); }
 					| TMINUS var_right 								{ $$ = new NNegate(LOC, shared_ptr<NVariableBase>($2)); }
 					| const											{ $$ = $1; }
 	 				;

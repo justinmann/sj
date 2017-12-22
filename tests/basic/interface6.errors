@@ -1,2 +1,6 @@
 ERROR:29 interface6.sj[5:1] cannot find interface method: 'test'
 ERROR:7 interface6.sj[9:5] function does not have a this value
+ERROR:0 interface6.sj[11:1] no right side
+ERROR:4 interface6.sj[11:4] type '#foo' does not exist
+ERROR:7 interface6.sj[12:1] cannot find variable 'a'
+ERROR:8 interface6.sj[12:1] left side of dot has no value

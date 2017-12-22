@@ -1,3 +1,4 @@
+@heap
 nauScene3dElement #element (
 	children : array!heap #model()
 	lookAtMin := vec3()
@@ -33,7 +34,7 @@ nauScene3dElement #element (
 				endValue : copy v
 				start : animator.current
 				end : animator.current + duration
-				setValue : heap parent.setLookAt
+				setValue : parent.setLookAt
 			) as #animation
 		)
 		void
@@ -46,7 +47,7 @@ nauScene3dElement #element (
 				endValue : v
 				start : animator.current
 				end : animator.current + duration
-				setValue : heap parent.setCameraDistance
+				setValue : parent.setCameraDistance
 			) as #animation
 		)
 		void

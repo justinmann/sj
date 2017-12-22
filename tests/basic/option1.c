@@ -939,6 +939,9 @@ int main(int argc, char** argv) {
     sjt_cast1 = sjv_n;
     if (sjt_cast1 != 0) {
         sjf_class_as_sji_interface(sjt_cast1, &sjv_r);
+        if (sjv_r._parent != 0) {
+            sjv_r._parent->_refCount++;
+        }
     } else {
         sjv_r._parent = 0;
     }
@@ -946,6 +949,9 @@ int main(int argc, char** argv) {
     sjt_cast2 = sjv_r;
     if (sjt_cast2._parent != 0) {
         sjt_cast2._vtbl->asinterface(sjt_cast2._parent, sji_interface2_typeId, (sjs_interface*)&sjv_s);
+        if (sjv_s._parent != 0) {
+            sjv_s._parent->_refCount++;
+        }
     } else {
         sjv_s._parent = 0;
     }
@@ -978,6 +984,20 @@ void main_destroy() {
         weakptr_release(sjv_o);
         sjf_class_destroy(sjv_o);
         free(sjv_o);
+    }
+    if (sjv_r._parent != 0) {
+        sjv_r._parent->_refCount--;
+        if (sjv_r._parent->_refCount <= 0) {
+            sjv_r._vtbl->destroy(sjv_r._parent);
+            free(sjv_r._parent);
+        }
+    }
+    if (sjv_s._parent != 0) {
+        sjv_s._parent->_refCount--;
+        if (sjv_s._parent->_refCount <= 0) {
+            sjv_s._vtbl->destroy(sjv_s._parent);
+            free(sjv_s._parent);
+        }
     }
     if (sjv_i._refCount == 1) { sjf_class_destroy(&sjv_i); }
 }

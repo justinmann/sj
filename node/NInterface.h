@@ -16,8 +16,9 @@ public:
     string name;
     shared_ptr<CTypeNameList> templateTypeNames;
     vector<shared_ptr<NInterfaceMethod>> methodList;
+    shared_ptr<vector<string>> attributes;
 
-    NInterface(CLoc loc, const string& name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> methodList);
+    NInterface(CLoc loc, const string& name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<vector<string>> attributes, shared_ptr<NodeList> methodList);
     void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) { return nullptr; }
 

@@ -620,7 +620,6 @@ int32_t sjv_i32_minvalue;
 uint32_t sjv_u32_maxvalue;
 int32_t void1;
 
-void sjf_class(sjs_class* _this);
 void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_func(sjs_class* _parent, int32_t x);
@@ -765,9 +764,6 @@ void weakptr_clear(void* parent, void* v) {
     }
     *p = 0;
 }
-void sjf_class(sjs_class* _this) {
-}
-
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
     _this->total = _from->total;
 }

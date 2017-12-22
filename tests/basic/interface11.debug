@@ -687,7 +687,7 @@ global()'void {
   c'heap class = heap class(this = class(
     x'i32 : x
   ))
-  a'weak #foo : weak c as weak #foo
+  a'weak #foo : weak c as heap #foo
   writeline(
     data'stack string : data
   )

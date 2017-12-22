@@ -1,0 +1,10 @@
+foo #bar ()'heap foo {
+  this
+}
+
+global()'void {
+  a'heap foo : heap foo(this = foo())
+  b'heap #bar : a as heap #bar
+  void
+}
+

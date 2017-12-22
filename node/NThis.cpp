@@ -52,15 +52,14 @@ shared_ptr<CVar> NThis::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
     }
     
     assert(returnMode != CTM_Value);
-    if (isHeap) {
-        scope->function->setHasHeapThis();
-        scope->thisVar->typeMode = CTM_Heap;
-    }
-    if (returnMode == CTM_Heap || returnMode == CTM_Weak) {
-        scope->thisVar->typeMode = CTM_Heap;
-    }
-    else if (returnMode == CTM_Stack) {
-        scope->thisVar->typeMode = CTM_Stack;
+
+    if (scope->thisVar->typeMode == CTM_Undefined) {
+        if (returnMode == CTM_Heap || returnMode == CTM_Weak) {
+            scope->thisVar->typeMode = CTM_Heap;
+        }
+        else if (returnMode == CTM_Stack) {
+            scope->thisVar->typeMode = CTM_Stack;
+        }
     }
 
     scope->thisVar->setHasThis();

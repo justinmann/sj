@@ -141,24 +141,23 @@ struct OPTIONANDTYPELIST {
     TTYPEPTR = 342,
     TINVALID = 343,
     TCOLONEQUAL = 344,
-    THEAPPARENT = 345,
-    THEAPTHIS = 346,
-    TIFVALID = 347,
-    TELSEEMPTY = 348,
-    TTOREVERSE = 349,
-    TENUM = 350,
-    TSWITCH = 351,
-    TDEFAULT = 352,
-    TPACKAGE = 353,
-    TIMPORT = 354,
-    TUNDERSCORE = 355,
-    TNULLPTR = 356,
-    TBOOLXOR = 357,
-    TBOOLOR = 358,
-    TBOOLAND = 359,
-    TBOOLSHL = 360,
-    TBOOLSHR = 361,
-    TBOOLNOT = 362
+    TIFVALID = 345,
+    TELSEEMPTY = 346,
+    TTOREVERSE = 347,
+    TENUM = 348,
+    TSWITCH = 349,
+    TDEFAULT = 350,
+    TPACKAGE = 351,
+    TIMPORT = 352,
+    TUNDERSCORE = 353,
+    TNULLPTR = 354,
+    TBOOLXOR = 355,
+    TBOOLOR = 356,
+    TBOOLAND = 357,
+    TBOOLSHL = 358,
+    TBOOLSHR = 359,
+    TBOOLNOT = 360,
+    TAT = 361
   };
 #endif
 
@@ -193,6 +192,7 @@ union YYSTYPE
 	NSwitchClause* switchClause;
 	vector<pair<shared_ptr<NBase>, shared_ptr<NBase>>>* hashArgs;
 	pair<shared_ptr<NBase>, shared_ptr<NBase>>* hashArg;
+	CFunctionName* functionName;
 
 
 };

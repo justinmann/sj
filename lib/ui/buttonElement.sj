@@ -4,6 +4,7 @@ enum buttonState (
 	pressed
 )
 
+@heap
 buttonElement #element (
 	text := ""
 	textColor := copy colors.black
@@ -77,8 +78,8 @@ buttonElement #element (
 	}
 
 	onMouseUp(point : 'point)'bool {
-		if mouse_hasCapture(heap parent as #element) {
-			mouse_release(heap parent as #element)
+		if mouse_hasCapture(parent as #element) {
+			mouse_release(parent as #element)
 			ifValid onClick {
 				onClick()
 			}
@@ -90,7 +91,7 @@ buttonElement #element (
 	}
 
 	onMouseDown(point : 'point)'bool {
-		mouse_capture(heap parent as #element)
+		mouse_capture(parent as #element)
 		setState(buttonState.pressed)
 		false
 	}
@@ -103,7 +104,6 @@ buttonElement #element (
 	}
 
 	fireMouseEvent(mouseEvent : 'mouseEvent)'bool {
-		heap parent // TODO: ugly
 		if _rect.containsPoint(mouseEvent.point) {
 			if mouseEvent.type == mouseEventType.up {
 				onMouseUp(mouseEvent.point)
