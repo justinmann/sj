@@ -4844,6 +4844,9 @@ global()'void {
     count'i32 = count,
     data'stack array!char = data
   ))
+  --cfunction--
+  #include <lib/ui/obj_parser.c>
+  --cfunction--
   saturateshader'stack shader : shader(this = shader(
     vertex'stack string : vertex,
     pixel'stack string : pixel

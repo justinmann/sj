@@ -11,9 +11,10 @@ testScene() {
 			heap scene3dElement(
 				children : [
 					heap model(
-						vertexBuffer : sphereVertexBuffer()
+						vertexBuffer : vertexBuffer_loadObj("assets/teapot.obj")
 						shader : copy phongTextureShader
 						texture : textureFromPng("assets/cat.png")
+						model : mat4_scale(0.02f, 0.02f, 0.02f)
 					) as #model
 				]
 			) as #element	

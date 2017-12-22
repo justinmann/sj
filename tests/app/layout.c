@@ -61,6 +61,7 @@ Invalid compiler
 #include <ft2build.h>
 #include <lib/common/khash.h>
 #include <lib/common/value_option_types.h>
+#include <lib/ui/obj_parser.h>
 #include <limits.h>
 #include <math.h>
 #include <png.h>
@@ -5681,6 +5682,7 @@ shader_read( const char *filename )
         vector_erase( self->items, index );
         self->state = DIRTY;
     }
+    #include <lib/ui/obj_parser.c>
 void sjf_anon1(sjs_anon1* _this) {
 }
 
