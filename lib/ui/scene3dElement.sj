@@ -46,8 +46,6 @@ scene3dElement #element (
 	    glEnable(glFeature.GL_DEPTH_TEST)
 	    glPushViewport(_rect, scene.windowRect)
 
-	    debug.writeLine(_rect.asString())
-
 	    a : list!heap #model()
 
 		for i : 0 to children.count {

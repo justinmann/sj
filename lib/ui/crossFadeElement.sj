@@ -23,7 +23,6 @@ crossFadeElement #element (
 	}
 
 	setAmount(amount : 'f32) {
-		debug.writeLine("crossFadeElement:setAmount:" + amount.asString())
 		_fromEffect.alpha = 1.0f - amount
 		void
 	}
