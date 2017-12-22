@@ -1,3 +1,5 @@
+include "lib/common/common.sj"
+
 enum bar (
 	a
 	b

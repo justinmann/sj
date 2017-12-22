@@ -30,8 +30,8 @@
 #include(<stdlib.h>)
 #include(<string.h>)
 #include(<windows.h>, __WINDOWS__)
-#include("lib/common/khash.h")
-#include("lib/common/value_option_types.h")
+#include(<lib/common/khash.h>)
+#include(<lib/common/value_option_types.h>)
 --cinclude--
 
 

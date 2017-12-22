@@ -35,8 +35,6 @@ Invalid compiler
 * @private
 */
 #define MAX_VERTEX_ATTRIBUTE 16    
-#include "lib/common/khash.h"
-#include "lib/common/value_option_types.h"
 #ifdef EMSCRIPTEN
 #include <GLES3/gl3.h>
 #endif
@@ -61,6 +59,8 @@ Invalid compiler
 #endif
 #include <float.h>
 #include <ft2build.h>
+#include <lib/common/khash.h>
+#include <lib/common/value_option_types.h>
 #include <limits.h>
 #include <math.h>
 #include <png.h>

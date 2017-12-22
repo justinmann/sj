@@ -21,8 +21,8 @@ Invalid bits
 #else
 Invalid compiler
 #endif
-#include "lib/common/khash.h"
-#include "lib/common/value_option_types.h"
+#include <lib/common/khash.h>
+#include <lib/common/value_option_types.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdint.h>

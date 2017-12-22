@@ -1,7 +1,7 @@
 TARGET = test
 LIBS = -lm
 CC = gcc
-CFLAGS = -g -Wall -Wno-unused-but-set-variable -Wno-unknown-warning-option -std=c99
+CFLAGS = -g -Wall -Wno-unused-but-set-variable -Wno-unknown-warning-option -I.. -std=c99
 BASIC_OBJECTS = $(patsubst %.c, %.o, $(wildcard basic/*.c))
 APP_OBJECTS = $(patsubst %.c, %.o, $(wildcard app/*.c))
 HEADERS = $(wildcard *.h)
