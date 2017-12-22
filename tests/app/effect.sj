@@ -48,7 +48,7 @@ root : heap gridLayout(
 
 		heap fillLayout(
 			margin : margin(10, 10, 10, 10)
-			effect : valid(heap blurEffect(0.5f) as #effect)
+			effect : valid(heap blurEffect(5.0f) as #effect)
 			children : [
 				testScene()
 			]
@@ -57,6 +57,14 @@ root : heap gridLayout(
 		heap fillLayout(
 			margin : margin(10, 10, 10, 10)
 			effect : valid(heap fadeEffect(0.5f) as #effect)
+			children : [
+				testScene()
+			]
+		) as #element
+
+		heap fillLayout(
+			margin : margin(10, 10, 10, 10)
+			effect : valid(heap saturateEffect(0.2f) as #effect)
 			children : [
 				testScene()
 			]
