@@ -3,62 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct td_int32_option int32_option;
-struct td_int32_option {
-    bool isvalid;
-    int32_t value;
-};
-const int32_option int32_empty = { false };
-
-typedef struct td_uint32_option uint32_option;
-struct td_uint32_option {
-    bool isvalid;
-    uint32_t value;
-};
-const uint32_option uint32_empty = { false };
-
-typedef struct td_int64_option int64_option;
-struct td_int64_option {
-    bool isvalid;
-    int64_t value;
-};
-const int64_option int64_empty = { false };
-
-typedef struct td_uint64_option uint64_option;
-struct td_uint64_option {
-    bool isvalid;
-    uint64_t value;
-};
-const uint64_option uint64_empty = { false };
-
-typedef struct td_void_option void_option;
-struct td_void_option {
-    bool isvalid;
-    void* value;
-};
-const void_option void_empty = { false };
-
-typedef struct td_char_option char_option;
-struct td_char_option {
-    bool isvalid;
-    char value;
-};
-const char_option char_empty = { false };
-
-typedef struct td_float_option float_option;
-struct td_float_option {
-    bool isvalid;
-    float value;
-};
-const float_option float_empty = { false };
-
-typedef struct td_double_option double_option;
-struct td_double_option {
-    bool isvalid;
-    double value;
-};
-const double_option double_empty = { false };
-
 #define sjs_object_typeId 1
 #define sjs_interface_typeId 2
 #define sji_foo_vtbl_typeId 3
@@ -115,8 +59,6 @@ void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_getx(sjs_class* _parent, int32_t* _return);
 void sjf_class_heap(sjs_class* _this);
-void sjf_class_heap_as_sji_foo(sjs_class* _this, sji_foo* _return);
-void sjf_class_heap_asinterface(sjs_class* _this, int typeId, sjs_interface* _return);
 void sjf_i32_add_hash_foo(int32_t x, sji_foo y, int32_t* _return);
 void main_destroy(void);
 
@@ -157,25 +99,6 @@ void sjf_class_getx(sjs_class* _parent, int32_t* _return) {
 }
 
 void sjf_class_heap(sjs_class* _this) {
-}
-
-void sjf_class_heap_as_sji_foo(sjs_class* _this, sji_foo* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_class_foo_vtbl;
-}
-
-void sjf_class_heap_asinterface(sjs_class* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_foo_typeId:  {
-            sjf_class_heap_as_sji_foo(_this, (sji_foo*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
 }
 
 void sjf_i32_add_hash_foo(int32_t x, sji_foo y, int32_t* _return) {

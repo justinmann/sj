@@ -35,6 +35,8 @@ Invalid compiler
 * @private
 */
 #define MAX_VERTEX_ATTRIBUTE 16    
+#include "lib/common/khash.h"
+#include "lib/common/value_option_types.h"
 #ifdef EMSCRIPTEN
 #include <GLES3/gl3.h>
 #endif
@@ -80,192 +82,138 @@ typedef struct td_delete_cb_list delete_cb_list;
 typedef struct vector_td vector_t;
 typedef struct vertex_attribute_td vertex_attribute_t;
 typedef struct vertex_buffer_td vertex_buffer_t;
-typedef struct td_int32_option int32_option;
-struct td_int32_option {
-    bool isvalid;
-    int32_t value;
-};
-const int32_option int32_empty = { false };
-
-typedef struct td_uint32_option uint32_option;
-struct td_uint32_option {
-    bool isvalid;
-    uint32_t value;
-};
-const uint32_option uint32_empty = { false };
-
-typedef struct td_int64_option int64_option;
-struct td_int64_option {
-    bool isvalid;
-    int64_t value;
-};
-const int64_option int64_empty = { false };
-
-typedef struct td_uint64_option uint64_option;
-struct td_uint64_option {
-    bool isvalid;
-    uint64_t value;
-};
-const uint64_option uint64_empty = { false };
-
-typedef struct td_void_option void_option;
-struct td_void_option {
-    bool isvalid;
-    void* value;
-};
-const void_option void_empty = { false };
-
-typedef struct td_char_option char_option;
-struct td_char_option {
-    bool isvalid;
-    char value;
-};
-const char_option char_empty = { false };
-
-typedef struct td_float_option float_option;
-struct td_float_option {
-    bool isvalid;
-    float value;
-};
-const float_option float_empty = { false };
-
-typedef struct td_double_option double_option;
-struct td_double_option {
-    bool isvalid;
-    double value;
-};
-const double_option double_empty = { false };
-
 const char* sjg_string1 = "shaders/v3f-t2f.vert";
 const char* sjg_string10 = "shaders/v3f-t2f.frag";
-const char* sjg_string100 = "person1";
-const char* sjg_string101 = "person1";
-const char* sjg_string102 = "assets/forestperson1.png";
-const char* sjg_string103 = "person2";
-const char* sjg_string104 = "person2";
-const char* sjg_string105 = "assets/forestperson2.png";
-const char* sjg_string106 = "grass6.2";
-const char* sjg_string107 = "assets/grass.png";
+const char* sjg_string100 = "assets/whitestar1.png";
+const char* sjg_string101 = "assets/whitestar2.png";
+const char* sjg_string102 = "person1";
+const char* sjg_string103 = "person1";
+const char* sjg_string104 = "assets/forestperson1.png";
+const char* sjg_string105 = "person2";
+const char* sjg_string106 = "person2";
+const char* sjg_string107 = "assets/forestperson2.png";
 const char* sjg_string108 = "grass6.2";
 const char* sjg_string109 = "assets/grass.png";
 const char* sjg_string11 = "shaders/v3f-n3f-phong.vert";
-const char* sjg_string110 = "grass4.2";
+const char* sjg_string110 = "grass6.2";
 const char* sjg_string111 = "assets/grass.png";
 const char* sjg_string112 = "grass4.2";
 const char* sjg_string113 = "assets/grass.png";
-const char* sjg_string114 = "grass2.2";
+const char* sjg_string114 = "grass4.2";
 const char* sjg_string115 = "assets/grass.png";
 const char* sjg_string116 = "grass2.2";
 const char* sjg_string117 = "assets/grass.png";
-const char* sjg_string118 = "grass0.2";
+const char* sjg_string118 = "grass2.2";
 const char* sjg_string119 = "assets/grass.png";
 const char* sjg_string12 = "shaders/v3f-n3f-phong.frag";
 const char* sjg_string120 = "grass0.2";
 const char* sjg_string121 = "assets/grass.png";
-const char* sjg_string122 = "grass-1.8";
+const char* sjg_string122 = "grass0.2";
 const char* sjg_string123 = "assets/grass.png";
 const char* sjg_string124 = "grass-1.8";
 const char* sjg_string125 = "assets/grass.png";
-const char* sjg_string127 = "";
+const char* sjg_string126 = "grass-1.8";
+const char* sjg_string127 = "assets/grass.png";
+const char* sjg_string129 = "";
 const char* sjg_string13 = "shaders/v3f-t2f-n3f-phong.vert";
-const char* sjg_string134 = "fieldMenu";
-const char* sjg_string135 = "Framebuffer failed";
-const char* sjg_string136 = "Framebuffer failed";
-const char* sjg_string137 = "crossFadeElement:setAmount:";
+const char* sjg_string136 = "fieldMenu";
+const char* sjg_string137 = "Framebuffer failed";
+const char* sjg_string138 = "Framebuffer failed";
+const char* sjg_string139 = "crossFadeElement:setAmount:";
 const char* sjg_string14 = "shaders/v3f-t2f-n3f-phong.frag";
-const char* sjg_string144 = "assets/menu1.png";
-const char* sjg_string145 = "assets/menu2.png";
-const char* sjg_string146 = "assets/menu3.png";
-const char* sjg_string147 = "assets/menu4.png";
-const char* sjg_string148 = "assets/menu5.png";
-const char* sjg_string149 = "assets/menu6.png";
+const char* sjg_string146 = "assets/menu1.png";
+const char* sjg_string147 = "assets/menu2.png";
+const char* sjg_string148 = "assets/menu3.png";
+const char* sjg_string149 = "assets/menu4.png";
 const char* sjg_string15 = "shaders/v3f-t2f-c4f.vert";
-const char* sjg_string150 = "assets/menu7.png";
-const char* sjg_string151 = "assets/menu8.png";
-const char* sjg_string152 = "assets/menu9.png";
-const char* sjg_string153 = "assets/menu10.png";
-const char* sjg_string154 = "assets/menu3.png";
-const char* sjg_string155 = "assets/menu4.png";
-const char* sjg_string156 = "assets/menu5.png";
-const char* sjg_string157 = "assets/menu6.png";
-const char* sjg_string158 = "assets/menu7.png";
-const char* sjg_string159 = "assets/menu11.png";
+const char* sjg_string150 = "assets/menu5.png";
+const char* sjg_string151 = "assets/menu6.png";
+const char* sjg_string152 = "assets/menu7.png";
+const char* sjg_string153 = "assets/menu8.png";
+const char* sjg_string154 = "assets/menu9.png";
+const char* sjg_string155 = "assets/menu10.png";
+const char* sjg_string156 = "assets/menu3.png";
+const char* sjg_string157 = "assets/menu4.png";
+const char* sjg_string158 = "assets/menu5.png";
+const char* sjg_string159 = "assets/menu6.png";
 const char* sjg_string16 = "shaders/v3f-t2f-c4f.frag";
-const char* sjg_string160 = "assets/menu12.png";
-const char* sjg_string161 = "assets/menu1.png";
-const char* sjg_string162 = "assets/menu2.png";
-const char* sjg_string163 = "assets/menu8.png";
-const char* sjg_string164 = "assets/arial.ttf";
-const char* sjg_string165 = "womens";
+const char* sjg_string160 = "assets/menu7.png";
+const char* sjg_string161 = "assets/menu11.png";
+const char* sjg_string162 = "assets/menu12.png";
+const char* sjg_string163 = "assets/menu1.png";
+const char* sjg_string164 = "assets/menu2.png";
+const char* sjg_string165 = "assets/menu8.png";
 const char* sjg_string166 = "assets/arial.ttf";
-const char* sjg_string167 = "pants/shorts";
-const char* sjg_string168 = "assets/menu9.png";
-const char* sjg_string169 = "assets/arial.ttf";
+const char* sjg_string167 = "womens";
+const char* sjg_string168 = "assets/arial.ttf";
+const char* sjg_string169 = "pants/shorts";
 const char* sjg_string17 = "vertex:3f,tex_coord:2f,normal:3f";
-const char* sjg_string170 = "womens";
+const char* sjg_string170 = "assets/menu9.png";
 const char* sjg_string171 = "assets/arial.ttf";
-const char* sjg_string172 = "pants/shorts";
-const char* sjg_string173 = "fieldMenu";
-const char* sjg_string174 = "assets/arial.ttf";
-const char* sjg_string175 = "mens";
+const char* sjg_string172 = "womens";
+const char* sjg_string173 = "assets/arial.ttf";
+const char* sjg_string174 = "pants/shorts";
+const char* sjg_string175 = "fieldMenu";
 const char* sjg_string176 = "assets/arial.ttf";
-const char* sjg_string177 = "autumn collection";
-const char* sjg_string178 = "viewport being pop'ed is wrong";
-const char* sjg_string197 = "release";
-const char* sjg_string198 = "release done";
+const char* sjg_string177 = "mens";
+const char* sjg_string178 = "assets/arial.ttf";
+const char* sjg_string179 = "autumn collection";
+const char* sjg_string18 = "shaders/v3f-t2f.vert";
+const char* sjg_string180 = "viewport being pop'ed is wrong";
+const char* sjg_string19 = "shaders/saturate.frag";
 const char* sjg_string2 = "shaders/blur-horizontal.frag";
-const char* sjg_string201 = "viewModel";
-const char* sjg_string202 = "normalMat";
-const char* sjg_string203 = "projection";
-const char* sjg_string204 = "lightPos";
-const char* sjg_string205 = "diffuseColor";
-const char* sjg_string206 = "specColor";
-const char* sjg_string213 = "viewModel";
-const char* sjg_string214 = "normalMat";
-const char* sjg_string215 = "projection";
-const char* sjg_string216 = "lightPos";
-const char* sjg_string217 = "diffuseColor";
-const char* sjg_string218 = "specColor";
-const char* sjg_string225 = "personElement ";
-const char* sjg_string226 = ", ";
-const char* sjg_string227 = ", ";
-const char* sjg_string228 = "personElement onMouseMove";
-const char* sjg_string230 = "personElement onMouseDown";
-const char* sjg_string231 = "personElement has no id";
-const char* sjg_string232 = "cannot find parent mode by id: ";
-const char* sjg_string233 = ", ";
-const char* sjg_string234 = ", ";
-const char* sjg_string235 = ", ";
-const char* sjg_string236 = ", ";
-const char* sjg_string237 = " => ";
+const char* sjg_string201 = "release";
+const char* sjg_string202 = "release done";
+const char* sjg_string205 = "viewModel";
+const char* sjg_string206 = "normalMat";
+const char* sjg_string207 = "projection";
+const char* sjg_string208 = "lightPos";
+const char* sjg_string209 = "diffuseColor";
+const char* sjg_string210 = "specColor";
+const char* sjg_string217 = "viewModel";
+const char* sjg_string218 = "normalMat";
+const char* sjg_string219 = "projection";
+const char* sjg_string220 = "lightPos";
+const char* sjg_string221 = "diffuseColor";
+const char* sjg_string222 = "specColor";
+const char* sjg_string229 = "personElement ";
+const char* sjg_string230 = ", ";
+const char* sjg_string231 = ", ";
+const char* sjg_string232 = "personElement onMouseMove";
+const char* sjg_string234 = "personElement onMouseDown";
+const char* sjg_string235 = "personElement has no id";
+const char* sjg_string236 = "cannot find parent mode by id: ";
+const char* sjg_string237 = ", ";
 const char* sjg_string238 = ", ";
 const char* sjg_string239 = ", ";
 const char* sjg_string240 = ", ";
-const char* sjg_string241 = ", ";
+const char* sjg_string241 = " => ";
 const char* sjg_string242 = ", ";
 const char* sjg_string243 = ", ";
-const char* sjg_string244 = " & ";
-const char* sjg_string250 = "personElement onMouseUp ";
-const char* sjg_string251 = ", ";
-const char* sjg_string255 = "texture";
-const char* sjg_string256 = "alpha";
-const char* sjg_string257 = "model";
-const char* sjg_string258 = "view";
-const char* sjg_string259 = "projection";
+const char* sjg_string244 = ", ";
+const char* sjg_string245 = ", ";
+const char* sjg_string246 = ", ";
+const char* sjg_string247 = ", ";
+const char* sjg_string248 = " & ";
+const char* sjg_string254 = "personElement onMouseUp ";
+const char* sjg_string255 = ", ";
+const char* sjg_string259 = "texture";
+const char* sjg_string260 = "alpha";
+const char* sjg_string261 = "model";
+const char* sjg_string262 = "view";
+const char* sjg_string263 = "projection";
 const char* sjg_string3 = "shaders/v3f-t2f.vert";
-const char* sjg_string38 = "framebuffer being pop'ed is wrong";
 const char* sjg_string4 = "shaders/blur-vertical.frag";
-const char* sjg_string40 = "Framebuffer failed";
-const char* sjg_string43 = "assets/arial.ttf";
+const char* sjg_string40 = "framebuffer being pop'ed is wrong";
+const char* sjg_string42 = "Framebuffer failed";
+const char* sjg_string45 = "assets/arial.ttf";
 const char* sjg_string5 = "shaders/v3f-t2f.vert";
-const char* sjg_string56 = "leaf";
+const char* sjg_string58 = "leaf";
 const char* sjg_string6 = "shaders/fade.frag";
 const char* sjg_string7 = "shaders/v3f-c4f.vert";
 const char* sjg_string8 = "shaders/v3f-c4f.frag";
 const char* sjg_string9 = "shaders/v3f-t2f.vert";
-const char* sjg_string91 = "assets/forest_backdrop.png";
-const char* sjg_string92 = "assets/whitestar1.png";
-const char* sjg_string93 = "assets/whitestar2.png";
+const char* sjg_string93 = "assets/forest_backdrop.png";
 const char* sjg_string94 = "assets/whitestar1.png";
 const char* sjg_string95 = "assets/whitestar2.png";
 const char* sjg_string96 = "assets/whitestar1.png";
@@ -273,485 +221,27 @@ const char* sjg_string97 = "assets/whitestar2.png";
 const char* sjg_string98 = "assets/whitestar1.png";
 const char* sjg_string99 = "assets/whitestar2.png";
 
-/* The MIT License
-Copyright (c) 2008, by Attractive Chaos <attractivechaos@aol.co.uk>
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
-/*
-An example:
-#include "khash.h"
-KHASH_MAP_INIT_INT(32, char)
-int main() {
-    int ret, is_missing;
-    khiter_t k;
-    khash_t(32) *h = kh_init(32);
-    k = kh_put(32, h, 5, &ret);
-    if (!ret) kh_del(32, h, k);
-    kh_value(h, k) = 10;
-    k = kh_get(32, h, 10);
-    is_missing = (k == kh_end(h));
-    k = kh_get(32, h, 5);
-    kh_del(32, h, k);
-    for (k = kh_begin(h); k != kh_end(h); ++k)
-    if (kh_exist(h, k)) kh_value(h, k) = 1;
-    kh_destroy(32, h);
-    return 0;
-}
-*/
-/*
-2008-09-19 (0.2.3):
-* Corrected the example
-* Improved interfaces
-2008-09-11 (0.2.2):
-* Improved speed a little in kh_put()
-2008-09-10 (0.2.1):
-* Added kh_clear()
-* Fixed a compiling error
-2008-09-02 (0.2.0):
-* Changed to token concatenation which increases flexibility.
-2008-08-31 (0.1.2):
-* Fixed a bug in kh_get(), which has not been tested previously.
-2008-08-31 (0.1.1):
-* Added destructor
-*/
-#ifndef __AC_KHASH_H
-#define __AC_KHASH_H
-#define AC_VERSION_KHASH_H "0.2.2"
-typedef uint32_t khint_t;
-typedef khint_t khiter_t;
-#define __ac_HASH_PRIME_SIZE 32
-static const uint32_t __ac_prime_list[__ac_HASH_PRIME_SIZE] =
-{
-    0ul,          3ul,          11ul,         23ul,         53ul,
-    97ul,         193ul,        389ul,        769ul,        1543ul,
-    3079ul,       6151ul,       12289ul,      24593ul,      49157ul,
-    98317ul,      196613ul,     393241ul,     786433ul,     1572869ul,
-    3145739ul,    6291469ul,    12582917ul,   25165843ul,   50331653ul,
-    100663319ul,  201326611ul,  402653189ul,  805306457ul,  1610612741ul,
-    3221225473ul, 4294967291ul
-};
-#define __ac_isempty(flag, i) ((flag[i>>4]>>((i&0xfU)<<1))&2)
-#define __ac_isdel(flag, i) ((flag[i>>4]>>((i&0xfU)<<1))&1)
-#define __ac_iseither(flag, i) ((flag[i>>4]>>((i&0xfU)<<1))&3)
-#define __ac_set_isdel_false(flag, i) (flag[i>>4]&=~(1ul<<((i&0xfU)<<1)))
-#define __ac_set_isempty_false(flag, i) (flag[i>>4]&=~(2ul<<((i&0xfU)<<1)))
-#define __ac_set_isboth_false(flag, i) (flag[i>>4]&=~(3ul<<((i&0xfU)<<1)))
-#define __ac_set_isdel_true(flag, i) (flag[i>>4]|=1ul<<((i&0xfU)<<1))
-static const double __ac_HASH_UPPER = 0.77;
-#define KHASH_INIT_TYPEDEF(name, khkey_t, khval_t) \
-typedef struct {                                                    \
-khint_t n_buckets, size, n_occupied, upper_bound;               \
-uint32_t *flags;                                                \
-khkey_t *keys;                                                  \
-khval_t *vals;                                                  \
-} kh_##name##_t;                                                
-#define KHASH_INIT_FUNCTION(name, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal) \
-static inline kh_##name##_t *kh_init_##name() {                     \
-return (kh_##name##_t*)calloc(1, sizeof(kh_##name##_t));        \
-}                                                                   \
-static inline void kh_destroy_##name(kh_##name##_t *h)              \
-{                                                                   \
-if (h) {                                                        \
-free(h->keys); free(h->flags);                              \
-free(h->vals);                                              \
-free(h);                                                    \
-}                                                               \
-}                                                                   \
-static inline void kh_clear_##name(kh_##name##_t *h)                \
-{                                                                   \
-if (h && h->flags) { \
-memset(h->flags, 0xaa, ((h->n_buckets>>4) + 1) * sizeof(uint32_t)); \
-h->size = h->n_occupied = 0;                                \
-}                                                               \
-}                                                                   \
-static inline khint_t kh_get_##name(kh_##name##_t *h, khkey_t key)  \
-{                                                                   \
-if (h->n_buckets) {                                             \
-khint_t inc, k, i, last;                                    \
-__hash_func(key, &k); i = k % h->n_buckets;        \
-inc = 1 + k % (h->n_buckets - 1); last = i;                 \
-bool shouldContinue = false;                                \
-if (!__ac_isempty(h->flags, i)) {                           \
-bool isEqual;                                           \
-__hash_equal(h->keys[i], key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
-}                                                           \
-while (shouldContinue) {                                    \
-if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
-else i += inc;                                          \
-if (i == last) return h->n_buckets;                     \
-shouldContinue = false;                                 \
-if (!__ac_isempty(h->flags, i)) {                       \
-bool isEqual;                                       \
-__hash_equal(h->keys[i], key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual; \
-}                                                       \
-}                                                           \
-return __ac_iseither(h->flags, i)? h->n_buckets : i;        \
-} else return 0;                                                \
-}                                                                   \
-static inline void kh_resize_##name(kh_##name##_t *h, khint_t new_n_buckets) \
-{                                                                   \
-uint32_t *new_flags = 0;                                        \
-khint_t j = 1;                                                  \
-{                                                               \
-khint_t t = __ac_HASH_PRIME_SIZE - 1;                       \
-while (__ac_prime_list[t] > new_n_buckets) --t;             \
-new_n_buckets = __ac_prime_list[t+1];                       \
-if (h->size >= (khint_t)(new_n_buckets * __ac_HASH_UPPER + 0.5)) j = 0; \
-else {                                                      \
-new_flags = (uint32_t*)malloc(((new_n_buckets>>4) + 1) * sizeof(uint32_t)); \
-memset(new_flags, 0xaa, ((new_n_buckets>>4) + 1) * sizeof(uint32_t)); \
-if (h->n_buckets < new_n_buckets) {                     \
-h->keys = (khkey_t*)realloc(h->keys, new_n_buckets * sizeof(khkey_t)); \
-if (kh_is_map)                                      \
-h->vals = (khval_t*)realloc(h->vals, new_n_buckets * sizeof(khval_t)); \
-}                                                       \
-}                                                           \
-}                                                               \
-if (j) {                                                        \
-for (j = 0; j != h->n_buckets; ++j) {                       \
-if (__ac_iseither(h->flags, j) == 0) {                  \
-khkey_t key = h->keys[j];                           \
-khval_t val;                                        \
-if (kh_is_map) val = h->vals[j];                    \
-__ac_set_isdel_true(h->flags, j);                   \
-while (1) {                                         \
-khint_t inc, k, i;                              \
-__hash_func(key, &k);                           \
-i = k % new_n_buckets;                          \
-inc = 1 + k % (new_n_buckets - 1);              \
-while (!__ac_isempty(new_flags, i)) {           \
-if (i + inc >= new_n_buckets) i = i + inc - new_n_buckets; \
-else i += inc;                              \
-}                                               \
-__ac_set_isempty_false(new_flags, i);           \
-if (i < h->n_buckets && __ac_iseither(h->flags, i) == 0) { \
-{ khkey_t tmp = h->keys[i]; h->keys[i] = key; key = tmp; } \
-if (kh_is_map) { khval_t tmp = h->vals[i]; h->vals[i] = val; val = tmp; } \
-__ac_set_isdel_true(h->flags, i);           \
-} else {                                        \
-h->keys[i] = key;                           \
-if (kh_is_map) h->vals[i] = val;            \
-break;                                      \
-}                                               \
-}                                                   \
-}                                                       \
-}                                                           \
-if (h->n_buckets > new_n_buckets) {                         \
-h->keys = (khkey_t*)realloc(h->keys, new_n_buckets * sizeof(khkey_t)); \
-if (kh_is_map)                                          \
-h->vals = (khval_t*)realloc(h->vals, new_n_buckets * sizeof(khval_t)); \
-}                                                           \
-free(h->flags);                                             \
-h->flags = new_flags;                                       \
-h->n_buckets = new_n_buckets;                               \
-h->n_occupied = h->size;                                    \
-h->upper_bound = (khint_t)(h->n_buckets * __ac_HASH_UPPER + 0.5); \
-}                                                               \
-}                                                                   \
-static inline khint_t kh_put_##name(kh_##name##_t *h, khkey_t key, int *ret) \
-{                                                                   \
-khint_t x;                                                      \
-if (h->n_occupied >= h->upper_bound) {                          \
-if (h->n_buckets > (h->size<<1)) kh_resize_##name(h, h->n_buckets - 1); \
-else kh_resize_##name(h, h->n_buckets + 1);                 \
-}                                                               \
-{                                                               \
-khint_t inc, k, i, site, last;                              \
-x = site = h->n_buckets; __hash_func(key, &k); i = k % h->n_buckets; \
-if (__ac_isempty(h->flags, i)) x = i;                       \
-else {                                                      \
-inc = 1 + k % (h->n_buckets - 1); last = i;             \
-bool shouldContinue = false;                                \
-if (!__ac_isempty(h->flags, i)) {                           \
-bool isEqual;                                           \
-__hash_equal(h->keys[i], key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
-}                                                           \
-while (shouldContinue) { \
-if (__ac_isdel(h->flags, i)) site = i;              \
-if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
-else i += inc;                                      \
-if (i == last) { x = site; break; }                 \
-shouldContinue = false;                             \
-if (!__ac_isempty(h->flags, i)) {                           \
-bool isEqual;                                           \
-__hash_equal(h->keys[i], key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
-}                                                           \
-}                                                       \
-if (x == h->n_buckets) {                                \
-if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \
-else x = i;                                         \
-}                                                       \
-}                                                           \
-}                                                               \
-if (__ac_isempty(h->flags, x)) {                                \
-h->keys[x] = key;                                           \
-__ac_set_isboth_false(h->flags, x);                         \
-++h->size; ++h->n_occupied;                                 \
-*ret = 1;                                                   \
-} else if (__ac_isdel(h->flags, x)) {                           \
-h->keys[x] = key;                                           \
-__ac_set_isboth_false(h->flags, x);                         \
-++h->size;                                                  \
-*ret = 2;                                                   \
-} else *ret = 0;                                                \
-return x;                                                       \
-}                                                                   \
-static inline void kh_del_##name(kh_##name##_t *h, khint_t x)       \
-{                                                                   \
-if (x != h->n_buckets && !__ac_iseither(h->flags, x)) {         \
-__ac_set_isdel_true(h->flags, x);                           \
---h->size;                                                  \
-}                                                               \
-}
-#define KHASH_INIT_FUNCTION_DEREF(name, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal) \
-static inline kh_##name##_t *kh_init_##name() {                     \
-return (kh_##name##_t*)calloc(1, sizeof(kh_##name##_t));        \
-}                                                                   \
-static inline void kh_destroy_##name(kh_##name##_t *h)              \
-{                                                                   \
-if (h) {                                                        \
-free(h->keys); free(h->flags);                              \
-free(h->vals);                                              \
-free(h);                                                    \
-}                                                               \
-}                                                                   \
-static inline void kh_clear_##name(kh_##name##_t *h)                \
-{                                                                   \
-if (h && h->flags) { \
-memset(h->flags, 0xaa, ((h->n_buckets>>4) + 1) * sizeof(uint32_t)); \
-h->size = h->n_occupied = 0;                                \
-}                                                               \
-}                                                                   \
-static inline khint_t kh_get_##name(kh_##name##_t *h, khkey_t key)  \
-{                                                                   \
-if (h->n_buckets) {                                             \
-khint_t inc, k, i, last;                                    \
-__hash_func(&key, &k); i = k % h->n_buckets;        \
-inc = 1 + k % (h->n_buckets - 1); last = i;                 \
-bool shouldContinue = false;                                \
-if (!__ac_isempty(h->flags, i)) {                           \
-bool isEqual;                                           \
-__hash_equal(&h->keys[i], &key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
-}                                                           \
-while (shouldContinue) {                                    \
-if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
-else i += inc;                                          \
-if (i == last) return h->n_buckets;                     \
-shouldContinue = false;                                 \
-if (!__ac_isempty(h->flags, i)) {                       \
-bool isEqual;                                       \
-__hash_equal(&h->keys[i], &key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual; \
-}                                                       \
-}                                                           \
-return __ac_iseither(h->flags, i)? h->n_buckets : i;        \
-} else return 0;                                                \
-}                                                                   \
-static inline void kh_resize_##name(kh_##name##_t *h, khint_t new_n_buckets) \
-{                                                                   \
-uint32_t *new_flags = 0;                                        \
-khint_t j = 1;                                                  \
-{                                                               \
-khint_t t = __ac_HASH_PRIME_SIZE - 1;                       \
-while (__ac_prime_list[t] > new_n_buckets) --t;             \
-new_n_buckets = __ac_prime_list[t+1];                       \
-if (h->size >= (khint_t)(new_n_buckets * __ac_HASH_UPPER + 0.5)) j = 0; \
-else {                                                      \
-new_flags = (uint32_t*)malloc(((new_n_buckets>>4) + 1) * sizeof(uint32_t)); \
-memset(new_flags, 0xaa, ((new_n_buckets>>4) + 1) * sizeof(uint32_t)); \
-if (h->n_buckets < new_n_buckets) {                     \
-h->keys = (khkey_t*)realloc(h->keys, new_n_buckets * sizeof(khkey_t)); \
-if (kh_is_map)                                      \
-h->vals = (khval_t*)realloc(h->vals, new_n_buckets * sizeof(khval_t)); \
-}                                                       \
-}                                                           \
-}                                                               \
-if (j) {                                                        \
-for (j = 0; j != h->n_buckets; ++j) {                       \
-if (__ac_iseither(h->flags, j) == 0) {                  \
-khkey_t key = h->keys[j];                           \
-khval_t val;                                        \
-if (kh_is_map) val = h->vals[j];                    \
-__ac_set_isdel_true(h->flags, j);                   \
-while (1) {                                         \
-khint_t inc, k, i;                              \
-__hash_func(&key, &k);                           \
-i = k % new_n_buckets;                          \
-inc = 1 + k % (new_n_buckets - 1);              \
-while (!__ac_isempty(new_flags, i)) {           \
-if (i + inc >= new_n_buckets) i = i + inc - new_n_buckets; \
-else i += inc;                              \
-}                                               \
-__ac_set_isempty_false(new_flags, i);           \
-if (i < h->n_buckets && __ac_iseither(h->flags, i) == 0) { \
-{ khkey_t tmp = h->keys[i]; h->keys[i] = key; key = tmp; } \
-if (kh_is_map) { khval_t tmp = h->vals[i]; h->vals[i] = val; val = tmp; } \
-__ac_set_isdel_true(h->flags, i);           \
-} else {                                        \
-h->keys[i] = key;                           \
-if (kh_is_map) h->vals[i] = val;            \
-break;                                      \
-}                                               \
-}                                                   \
-}                                                       \
-}                                                           \
-if (h->n_buckets > new_n_buckets) {                         \
-h->keys = (khkey_t*)realloc(h->keys, new_n_buckets * sizeof(khkey_t)); \
-if (kh_is_map)                                          \
-h->vals = (khval_t*)realloc(h->vals, new_n_buckets * sizeof(khval_t)); \
-}                                                           \
-free(h->flags);                                             \
-h->flags = new_flags;                                       \
-h->n_buckets = new_n_buckets;                               \
-h->n_occupied = h->size;                                    \
-h->upper_bound = (khint_t)(h->n_buckets * __ac_HASH_UPPER + 0.5); \
-}                                                               \
-}                                                                   \
-static inline khint_t kh_put_##name(kh_##name##_t *h, khkey_t key, int *ret) \
-{                                                                   \
-khint_t x;                                                      \
-if (h->n_occupied >= h->upper_bound) {                          \
-if (h->n_buckets > (h->size<<1)) kh_resize_##name(h, h->n_buckets - 1); \
-else kh_resize_##name(h, h->n_buckets + 1);                 \
-}                                                               \
-{                                                               \
-khint_t inc, k, i, site, last;                              \
-x = site = h->n_buckets; __hash_func(&key, &k); i = k % h->n_buckets; \
-if (__ac_isempty(h->flags, i)) x = i;                       \
-else {                                                      \
-inc = 1 + k % (h->n_buckets - 1); last = i;             \
-bool shouldContinue = false;                                \
-if (!__ac_isempty(h->flags, i)) {                           \
-bool isEqual;                                           \
-__hash_equal(&h->keys[i], &key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
-}                                                           \
-while (shouldContinue) { \
-if (__ac_isdel(h->flags, i)) site = i;              \
-if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
-else i += inc;                                      \
-if (i == last) { x = site; break; }                 \
-shouldContinue = false;                             \
-if (!__ac_isempty(h->flags, i)) {                           \
-bool isEqual;                                           \
-__hash_equal(&h->keys[i], &key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
-}                                                           \
-}                                                       \
-if (x == h->n_buckets) {                                \
-if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \
-else x = i;                                         \
-}                                                       \
-}                                                           \
-}                                                               \
-if (__ac_isempty(h->flags, x)) {                                \
-h->keys[x] = key;                                           \
-__ac_set_isboth_false(h->flags, x);                         \
-++h->size; ++h->n_occupied;                                 \
-*ret = 1;                                                   \
-} else if (__ac_isdel(h->flags, x)) {                           \
-h->keys[x] = key;                                           \
-__ac_set_isboth_false(h->flags, x);                         \
-++h->size;                                                  \
-*ret = 2;                                                   \
-} else *ret = 0;                                                \
-return x;                                                       \
-}                                                                   \
-static inline void kh_del_##name(kh_##name##_t *h, khint_t x)       \
-{                                                                   \
-if (x != h->n_buckets && !__ac_iseither(h->flags, x)) {         \
-__ac_set_isdel_true(h->flags, x);                           \
---h->size;                                                  \
-}                                                               \
-}
-/* --- BEGIN OF HASH FUNCTIONS --- */
-#define kh_int_hash_func(key) (uint32_t)(key)
-#define kh_int_hash_equal(a, b) (a == b)
-#define kh_int64_hash_func(key) (uint32_t)((key)>>33^(key)^(key)<<11)
-#define kh_int64_hash_equal(a, b) (a == b)
-static inline khint_t __ac_X31_hash_string(const char *s)
-{
-khint_t h = *s;
-if (h) for (++s; *s; ++s) h = (h << 5) - h + *s;
-return h;
-}
-#define kh_str_hash_func(key) __ac_X31_hash_string(key)
-#define kh_str_hash_equal(a, b) (strcmp(a, b) == 0)
-/* --- END OF HASH FUNCTIONS --- */
-/* Other necessary macros... */
-#define khash_t(name) kh_##name##_t
-#define kh_init(name) kh_init_##name()
-#define kh_destroy(name, h) kh_destroy_##name(h)
-#define kh_clear(name, h) kh_clear_##name(h)
-#define kh_resize(name, h, s) kh_resize_##name(h, s)
-#define kh_put(name, h, k, r) kh_put_##name(h, k, r)
-#define kh_get(name, h, k) kh_get_##name(h, k)
-#define kh_del(name, h, k) kh_del_##name(h, k)
-#define kh_exist(h, x) (!__ac_iseither((h)->flags, (x)))
-#define kh_key(h, x) ((h)->keys[x])
-#define kh_val(h, x) ((h)->vals[x])
-#define kh_value(h, x) ((h)->vals[x])
-#define kh_begin(h) (khint_t)(0)
-#define kh_end(h) ((h)->n_buckets)
-#define kh_size(h) ((h)->size)
-#define kh_n_buckets(h) ((h)->n_buckets)
-/* More conenient interfaces */
-#define KHASH_SET_INIT_INT(name)                                        \
-KHASH_INIT(name, uint32_t, char, 0, kh_int_hash_func, kh_int_hash_equal)
-#define KHASH_MAP_INIT_INT(name, khval_t)                               \
-KHASH_INIT(name, uint32_t, khval_t, 1, kh_int_hash_func, kh_int_hash_equal)
-#define KHASH_SET_INIT_INT64(name)                                      \
-KHASH_INIT(name, uint64_t, char, 0, kh_int64_hash_func, kh_int64_hash_equal)
-#define KHASH_MAP_INIT_INT64(name, khval_t)                             \
-KHASH_INIT(name, uint64_t, khval_t, 1, kh_int64_hash_func, kh_int64_hash_equal)
-typedef const char *kh_cstr_t;
-#define KHASH_SET_INIT_STR(name)                                        \
-KHASH_INIT(name, kh_cstr_t, char, 0, kh_str_hash_func, kh_str_hash_equal)
-#define KHASH_MAP_INIT_STR(name, khval_t)                               \
-KHASH_INIT(name, kh_cstr_t, khval_t, 1, kh_str_hash_func, kh_str_hash_equal)
-#endif /* __AC_KHASH_H */
 struct td_delete_cb {
-void* _parent;
-void (*_cb)(void* _parent, void* object);
+    void* _parent;
+    void (*_cb)(void* _parent, void* object);
 };
 struct td_delete_cb_list {
-int size;
-delete_cb cb[5];
-delete_cb_list* next;
+    int size;
+    delete_cb cb[5];
+    delete_cb_list* next;
 };
 typedef struct {
-float x, y, z;    // position
-float r, g, b, a; // color
+    float x, y, z;    // position
+    float r, g, b, a; // color
 } vertex3_color4_t;	
 typedef struct {
-float x, y, z;    // position
-float s, t;       // texture
+    float x, y, z;    // position
+    float s, t;       // texture
 } vertex3_texture2_t;	
 typedef struct {
-float x, y, z;    // position
-float s, t;       // texture
-float r, g, b, a; // color
+    float x, y, z;    // position
+    float s, t;       // texture
+    float r, g, b, a; // color
 } vertex3_texture2_color3_t;	
 /**
 * Tuple of 4 ints.
@@ -765,37 +255,37 @@ float r, g, b, a; // color
 */
 typedef union
 {
-int data[4];    /**< All compoments at once     */
-struct {
-int x;      /**< Alias for first component  */
-int y;      /**< Alias for second component */
-int z;      /**< Alias for third component  */
-int w;      /**< Alias for fourht component */
-};
-struct {
-int x_;     /**< Alias for first component  */
-int y_;     /**< Alias for second component */
-int width;  /**< Alias for third component  */
-int height; /**< Alias for fourth component */
-};
-struct {
-int r;      /**< Alias for first component  */
-int g;      /**< Alias for second component */
-int b;      /**< Alias for third component  */
-int a;      /**< Alias for fourth component */
-};
-struct {
-int red;    /**< Alias for first component  */
-int green;  /**< Alias for second component */
-int blue;   /**< Alias for third component  */
-int alpha;  /**< Alias for fourth component */
-};
-struct {
-int vstart; /**< Alias for first component  */
-int vcount; /**< Alias for second component */
-int istart; /**< Alias for third component  */
-int icount; /**< Alias for fourth component */
-};
+    int data[4];    /**< All compoments at once     */
+    struct {
+        int x;      /**< Alias for first component  */
+        int y;      /**< Alias for second component */
+        int z;      /**< Alias for third component  */
+        int w;      /**< Alias for fourht component */
+    };
+    struct {
+        int x_;     /**< Alias for first component  */
+        int y_;     /**< Alias for second component */
+        int width;  /**< Alias for third component  */
+        int height; /**< Alias for fourth component */
+    };
+    struct {
+        int r;      /**< Alias for first component  */
+        int g;      /**< Alias for second component */
+        int b;      /**< Alias for third component  */
+        int a;      /**< Alias for fourth component */
+    };
+    struct {
+        int red;    /**< Alias for first component  */
+        int green;  /**< Alias for second component */
+        int blue;   /**< Alias for third component  */
+        int alpha;  /**< Alias for fourth component */
+    };
+    struct {
+        int vstart; /**< Alias for first component  */
+        int vcount; /**< Alias for second component */
+        int istart; /**< Alias for third component  */
+        int icount; /**< Alias for fourth component */
+    };
 } ivec4;
 /**
 * Tuple of 3 ints.
@@ -808,22 +298,22 @@ int icount; /**< Alias for fourth component */
 */
 typedef union
 {
-int data[3];    /**< All compoments at once     */
-struct {
-int x;      /**< Alias for first component  */
-int y;      /**< Alias for second component */
-int z;      /**< Alias for third component  */
-};
-struct {
-int r;      /**< Alias for first component  */
-int g;      /**< Alias for second component */
-int b;      /**< Alias for third component  */
-};
-struct {
-int red;    /**< Alias for first component  */
-int green;  /**< Alias for second component */
-int blue;   /**< Alias for third component  */
-};
+    int data[3];    /**< All compoments at once     */
+    struct {
+        int x;      /**< Alias for first component  */
+        int y;      /**< Alias for second component */
+        int z;      /**< Alias for third component  */
+    };
+    struct {
+        int r;      /**< Alias for first component  */
+        int g;      /**< Alias for second component */
+        int b;      /**< Alias for third component  */
+    };
+    struct {
+        int red;    /**< Alias for first component  */
+        int green;  /**< Alias for second component */
+        int blue;   /**< Alias for third component  */
+    };
 } ivec3;
 /**
 * Tuple of 2 ints.
@@ -835,19 +325,19 @@ int blue;   /**< Alias for third component  */
 */
 typedef union
 {
-int data[2];    /**< All compoments at once     */
-struct {
-int x;      /**< Alias for first component  */
-int y;      /**< Alias for second component */
-};
-struct {
-int s;      /**< Alias for first component  */
-int t;      /**< Alias for second component */
-};
-struct {
-int start;  /**< Alias for first component  */
-int end;    /**< Alias for second component */
-};
+    int data[2];    /**< All compoments at once     */
+    struct {
+        int x;      /**< Alias for first component  */
+        int y;      /**< Alias for second component */
+    };
+    struct {
+        int s;      /**< Alias for first component  */
+        int t;      /**< Alias for second component */
+    };
+    struct {
+        int start;  /**< Alias for first component  */
+        int end;    /**< Alias for second component */
+    };
 } ivec2;
 /**
 * Tuple of 4 floats.
@@ -860,31 +350,31 @@ int end;    /**< Alias for second component */
 */
 typedef union
 {
-float data[4];    /**< All compoments at once    */
-struct {
-float x;      /**< Alias for first component */
-float y;      /**< Alias for second component */
-float z;      /**< Alias for third component  */
-float w;      /**< Alias for fourth component */
-};
-struct {
-float left;   /**< Alias for first component */
-float top;    /**< Alias for second component */
-float width;  /**< Alias for third component  */
-float height; /**< Alias for fourth component */
-};
-struct {
-float r;      /**< Alias for first component */
-float g;      /**< Alias for second component */
-float b;      /**< Alias for third component  */
-float a;      /**< Alias for fourth component */
-};
-struct {
-float red;    /**< Alias for first component */
-float green;  /**< Alias for second component */
-float blue;   /**< Alias for third component  */
-float alpha;  /**< Alias for fourth component */
-};
+    float data[4];    /**< All compoments at once    */
+    struct {
+        float x;      /**< Alias for first component */
+        float y;      /**< Alias for second component */
+        float z;      /**< Alias for third component  */
+        float w;      /**< Alias for fourth component */
+    };
+    struct {
+        float left;   /**< Alias for first component */
+        float top;    /**< Alias for second component */
+        float width;  /**< Alias for third component  */
+        float height; /**< Alias for fourth component */
+    };
+    struct {
+        float r;      /**< Alias for first component */
+        float g;      /**< Alias for second component */
+        float b;      /**< Alias for third component  */
+        float a;      /**< Alias for fourth component */
+    };
+    struct {
+        float red;    /**< Alias for first component */
+        float green;  /**< Alias for second component */
+        float blue;   /**< Alias for third component  */
+        float alpha;  /**< Alias for fourth component */
+    };
 } vec4;
 /**
 * Tuple of 3 floats
@@ -896,22 +386,22 @@ float alpha;  /**< Alias for fourth component */
 */
 typedef union
 {
-float data[3];   /**< All compoments at once    */
-struct {
-float x;     /**< Alias for first component */
-float y;     /**< Alias fo second component */
-float z;     /**< Alias fo third component  */
-};
-struct {
-float r;     /**< Alias for first component */
-float g;     /**< Alias fo second component */
-float b;     /**< Alias fo third component  */
-};
-struct {
-float red;   /**< Alias for first component */
-float green; /**< Alias fo second component */
-float blue;  /**< Alias fo third component  */
-};
+    float data[3];   /**< All compoments at once    */
+    struct {
+        float x;     /**< Alias for first component */
+        float y;     /**< Alias fo second component */
+        float z;     /**< Alias fo third component  */
+    };
+    struct {
+        float r;     /**< Alias for first component */
+        float g;     /**< Alias fo second component */
+        float b;     /**< Alias fo third component  */
+    };
+    struct {
+        float red;   /**< Alias for first component */
+        float green; /**< Alias fo second component */
+        float blue;  /**< Alias fo third component  */
+    };
 } vec3;
 /**
 * Tuple of 2 floats
@@ -922,57 +412,57 @@ float blue;  /**< Alias fo third component  */
 */
 typedef union
 {
-float data[2]; /**< All components at once     */
-struct {
-float x;   /**< Alias for first component  */
-float y;   /**< Alias for second component */
-};
-struct {
-float s;   /**< Alias for first component  */
-float t;   /**< Alias for second component */
-};
+    float data[2]; /**< All components at once     */
+    struct {
+        float x;   /**< Alias for first component  */
+        float y;   /**< Alias for second component */
+    };
+    struct {
+        float s;   /**< Alias for first component  */
+        float t;   /**< Alias for second component */
+    };
 } vec2;
 /**
 * A texture atlas is used to pack several small regions into a single texture.
 */
 typedef struct texture_atlas_t
 {
-/**
-* Allocated nodes
-*/
-vector_t * nodes;
-/**
-*  Width (in pixels) of the underlying texture
-*/
-size_t width;
-/**
-* Height (in pixels) of the underlying texture
-*/
-size_t height;
-/**
-* Depth (in bytes) of the underlying texture
-*/
-size_t depth;
-/**
-* Allocated surface size
-*/
-size_t used;
-/**
-* Texture identity (OpenGL)
-*/
-unsigned int id;
-/**
-* Atlas data
-*/
-unsigned char * data;
+    /**
+    * Allocated nodes
+    */
+    vector_t * nodes;
+    /**
+    *  Width (in pixels) of the underlying texture
+    */
+    size_t width;
+    /**
+    * Height (in pixels) of the underlying texture
+    */
+    size_t height;
+    /**
+    * Depth (in bytes) of the underlying texture
+    */
+    size_t depth;
+    /**
+    * Allocated surface size
+    */
+    size_t used;
+    /**
+    * Texture identity (OpenGL)
+    */
+    unsigned int id;
+    /**
+    * Atlas data
+    */
+    unsigned char * data;
 } texture_atlas_t;    
 #undef __FTERRORS_H__
 #define FT_ERRORDEF( e, v, s )  { e, s },
 #define FT_ERROR_START_LIST     {
 #define FT_ERROR_END_LIST       { 0, 0 } };
 const struct {
-int          code;
-const char*  message;
+    int          code;
+    const char*  message;
 } FT_Errors[] =
 #include FT_ERRORS_H    
 /**
@@ -980,11 +470,11 @@ const char*  message;
 */
 typedef enum rendermode_t
 {
-RENDER_NORMAL,
-RENDER_OUTLINE_EDGE,
-RENDER_OUTLINE_POSITIVE,
-RENDER_OUTLINE_NEGATIVE,
-RENDER_SIGNED_DISTANCE_FIELD
+    RENDER_NORMAL,
+    RENDER_OUTLINE_EDGE,
+    RENDER_OUTLINE_POSITIVE,
+    RENDER_OUTLINE_NEGATIVE,
+    RENDER_SIGNED_DISTANCE_FIELD
 } rendermode_t;
 /**
 * A structure that hold a kerning value relatively to a Unicode
@@ -995,14 +485,14 @@ RENDER_SIGNED_DISTANCE_FIELD
 */
 typedef struct kerning_t
 {
-/**
-* Left Unicode codepoint in the kern pair in UTF-32 LE encoding.
-*/
-uint32_t codepoint;
-/**
-* Kerning value (in fractional pixels).
-*/
-float kerning;
+    /**
+    * Left Unicode codepoint in the kern pair in UTF-32 LE encoding.
+    */
+    uint32_t codepoint;
+    /**
+    * Kerning value (in fractional pixels).
+    */
+    float kerning;
 } kerning_t;
 /*
 * Glyph metrics:
@@ -1041,69 +531,69 @@ float kerning;
 */
 typedef struct texture_glyph_t
 {
-/**
-* Unicode codepoint this glyph represents in UTF-32 LE encoding.
-*/
-uint32_t codepoint;
-/**
-* Glyph's width in pixels.
-*/
-size_t width;
-/**
-* Glyph's height in pixels.
-*/
-size_t height;
-/**
-* Glyph's left bearing expressed in integer pixels.
-*/
-int offset_x;
-/**
-* Glyphs's top bearing expressed in integer pixels.
-*
-* Remember that this is the distance from the baseline to the top-most
-* glyph scanline, upwards y coordinates being positive.
-*/
-int offset_y;
-/**
-* For horizontal text layouts, this is the horizontal distance (in
-* fractional pixels) used to increment the pen position when the glyph is
-* drawn as part of a string of text.
-*/
-float advance_x;
-/**
-* For vertical text layouts, this is the vertical distance (in fractional
-* pixels) used to increment the pen position when the glyph is drawn as
-* part of a string of text.
-*/
-float advance_y;
-/**
-* First normalized texture coordinate (x) of top-left corner
-*/
-float s0;
-/**
-* Second normalized texture coordinate (y) of top-left corner
-*/
-float t0;
-/**
-* First normalized texture coordinate (x) of bottom-right corner
-*/
-float s1;
-/**
-* Second normalized texture coordinate (y) of bottom-right corner
-*/
-float t1;
-/**
-* A vector of kerning pairs relative to this glyph.
-*/
-vector_t * kerning;
-/**
-* Mode this glyph was rendered
-*/
-rendermode_t rendermode;
-/**
-* Glyph outline thickness
-*/
-float outline_thickness;
+    /**
+    * Unicode codepoint this glyph represents in UTF-32 LE encoding.
+    */
+    uint32_t codepoint;
+    /**
+    * Glyph's width in pixels.
+    */
+    size_t width;
+    /**
+    * Glyph's height in pixels.
+    */
+    size_t height;
+    /**
+    * Glyph's left bearing expressed in integer pixels.
+    */
+    int offset_x;
+    /**
+    * Glyphs's top bearing expressed in integer pixels.
+    *
+    * Remember that this is the distance from the baseline to the top-most
+    * glyph scanline, upwards y coordinates being positive.
+    */
+    int offset_y;
+    /**
+    * For horizontal text layouts, this is the horizontal distance (in
+    * fractional pixels) used to increment the pen position when the glyph is
+    * drawn as part of a string of text.
+    */
+    float advance_x;
+    /**
+    * For vertical text layouts, this is the vertical distance (in fractional
+    * pixels) used to increment the pen position when the glyph is drawn as
+    * part of a string of text.
+    */
+    float advance_y;
+    /**
+    * First normalized texture coordinate (x) of top-left corner
+    */
+    float s0;
+    /**
+    * Second normalized texture coordinate (y) of top-left corner
+    */
+    float t0;
+    /**
+    * First normalized texture coordinate (x) of bottom-right corner
+    */
+    float s1;
+    /**
+    * Second normalized texture coordinate (y) of bottom-right corner
+    */
+    float t1;
+    /**
+    * A vector of kerning pairs relative to this glyph.
+    */
+    vector_t * kerning;
+    /**
+    * Mode this glyph was rendered
+    */
+    rendermode_t rendermode;
+    /**
+    * Glyph outline thickness
+    */
+    float outline_thickness;
 } texture_glyph_t;
 typedef struct texture_atlas_t texture_atlas_td; 
 /**
@@ -1111,105 +601,105 @@ typedef struct texture_atlas_t texture_atlas_td;
 */
 typedef struct texture_font_t
 {
-/**
-* Vector of glyphs contained in this font.
-*/
-vector_t * glyphs;
-/**
-* Atlas structure to store glyphs data.
-*/
-texture_atlas_td * atlas;
-/**
-* font location
-*/
-enum {
-TEXTURE_FONT_FILE = 0,
-TEXTURE_FONT_MEMORY,
-} location;
-union {
-/**
-* Font filename, for when location == TEXTURE_FONT_FILE
-*/
-char *filename;
-/**
-* Font memory address, for when location == TEXTURE_FONT_MEMORY
-*/
-struct {
-const void *base;
-size_t size;
-} memory;
-};
-/**
-* Font size
-*/
-float size;
-/**
-* Whether to use autohint when rendering font
-*/
-int hinting;
-/**
-* Mode the font is rendering its next glyph
-*/
-rendermode_t rendermode;
-/**
-* Outline thickness
-*/
-float outline_thickness;
-/**
-* Whether to use our own lcd filter.
-*/
-int filtering;
-/**
-* LCD filter weights
-*/
-unsigned char lcd_weights[5];
-/**
-* Whether to use kerning if available
-*/
-int kerning;
-/**
-* This field is simply used to compute a default line spacing (i.e., the
-* baseline-to-baseline distance) when writing text with this font. Note
-* that it usually is larger than the sum of the ascender and descender
-* taken as absolute values. There is also no guarantee that no glyphs
-* extend above or below subsequent baselines when using this distance.
-*/
-float height;
-/**
-* This field is the distance that must be placed between two lines of
-* text. The baseline-to-baseline distance should be computed as:
-* ascender - descender + linegap
-*/
-float linegap;
-/**
-* The ascender is the vertical distance from the horizontal baseline to
-* the highest 'character' coordinate in a font face. Unfortunately, font
-* formats define the ascender differently. For some, it represents the
-* ascent of all capital latin characters (without accents), for others it
-* is the ascent of the highest accented character, and finally, other
-* formats define it as being equal to bbox.yMax.
-*/
-float ascender;
-/**
-* The descender is the vertical distance from the horizontal baseline to
-* the lowest 'character' coordinate in a font face. Unfortunately, font
-* formats define the descender differently. For some, it represents the
-* descent of all capital latin characters (without accents), for others it
-* is the ascent of the lowest accented character, and finally, other
-* formats define it as being equal to bbox.yMin. This field is negative
-* for values below the baseline.
-*/
-float descender;
-/**
-* The position of the underline line for this face. It is the center of
-* the underlining stem. Only relevant for scalable formats.
-*/
-float underline_position;
-/**
-* The thickness of the underline for this face. Only relevant for scalable
-* formats.
-*/
-float underline_thickness;
+    /**
+    * Vector of glyphs contained in this font.
+    */
+    vector_t * glyphs;
+    /**
+    * Atlas structure to store glyphs data.
+    */
+    texture_atlas_td * atlas;
+    /**
+    * font location
+    */
+    enum {
+        TEXTURE_FONT_FILE = 0,
+        TEXTURE_FONT_MEMORY,
+    } location;
+    union {
+        /**
+        * Font filename, for when location == TEXTURE_FONT_FILE
+        */
+        char *filename;
+        /**
+        * Font memory address, for when location == TEXTURE_FONT_MEMORY
+        */
+        struct {
+            const void *base;
+            size_t size;
+        } memory;
+    };
+    /**
+    * Font size
+    */
+    float size;
+    /**
+    * Whether to use autohint when rendering font
+    */
+    int hinting;
+    /**
+    * Mode the font is rendering its next glyph
+    */
+    rendermode_t rendermode;
+    /**
+    * Outline thickness
+    */
+    float outline_thickness;
+    /**
+    * Whether to use our own lcd filter.
+    */
+    int filtering;
+    /**
+    * LCD filter weights
+    */
+    unsigned char lcd_weights[5];
+    /**
+    * Whether to use kerning if available
+    */
+    int kerning;
+    /**
+    * This field is simply used to compute a default line spacing (i.e., the
+    * baseline-to-baseline distance) when writing text with this font. Note
+    * that it usually is larger than the sum of the ascender and descender
+    * taken as absolute values. There is also no guarantee that no glyphs
+    * extend above or below subsequent baselines when using this distance.
+    */
+    float height;
+    /**
+    * This field is the distance that must be placed between two lines of
+    * text. The baseline-to-baseline distance should be computed as:
+    * ascender - descender + linegap
+    */
+    float linegap;
+    /**
+    * The ascender is the vertical distance from the horizontal baseline to
+    * the highest 'character' coordinate in a font face. Unfortunately, font
+    * formats define the ascender differently. For some, it represents the
+    * ascent of all capital latin characters (without accents), for others it
+    * is the ascent of the highest accented character, and finally, other
+    * formats define it as being equal to bbox.yMax.
+    */
+    float ascender;
+    /**
+    * The descender is the vertical distance from the horizontal baseline to
+    * the lowest 'character' coordinate in a font face. Unfortunately, font
+    * formats define the descender differently. For some, it represents the
+    * descent of all capital latin characters (without accents), for others it
+    * is the ascent of the lowest accented character, and finally, other
+    * formats define it as being equal to bbox.yMin. This field is negative
+    * for values below the baseline.
+    */
+    float descender;
+    /**
+    * The position of the underline line for this face. It is the center of
+    * the underlining stem. Only relevant for scalable formats.
+    */
+    float underline_position;
+    /**
+    * The thickness of the underline for this face. Only relevant for scalable
+    * formats.
+    */
+    float underline_thickness;
 } texture_font_t;
 /**
 *  Generic vector structure.
@@ -1218,96 +708,96 @@ float underline_thickness;
 */
 struct vector_td
 {
-/** Pointer to dynamically allocated items. */
-void * items;
-/** Number of items that can be held in currently allocated storage. */
-size_t capacity;
-/** Number of items. */
-size_t size;
-/** Size (in bytes) of a single item. */
-size_t item_size;
+    /** Pointer to dynamically allocated items. */
+    void * items;
+    /** Number of items that can be held in currently allocated storage. */
+    size_t capacity;
+    /** Number of items. */
+    size_t size;
+    /** Size (in bytes) of a single item. */
+    size_t item_size;
 };
 /**
 *  Generic vertex attribute.
 */
 struct vertex_attribute_td
 {
-/**
-*  atribute name
-*/
-GLchar * name;
-/**
-* index of the generic vertex attribute to be modified.
-*/
-GLuint index;
-/**
-* Number of components per generic vertex attribute.
-*
-* Must be 1, 2, 3, or 4. The initial value is 4.
-*/
-GLint size;
-/**
-*  data type of each component in the array.
-*
-*  Symbolic constants GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT,
-*  GL_UNSIGNED_SHORT, GL_INT, GL_UNSIGNED_INT, GL_FLOAT, or GL_DOUBLE are
-*  accepted. The initial value is GL_FLOAT.
-*/
-GLenum type;
-/**
-*  whether fixed-point data values should be normalized (GL_TRUE) or
-*  converted directly as fixed-point values (GL_FALSE) when they are
-*  accessed.
-*/
-GLboolean normalized;
-/**
-*  byte offset between consecutive generic vertex attributes.
-*
-*  If stride is 0, the generic vertex attributes are understood to be
-*  tightly packed in the array. The initial value is 0.
-*/
-GLsizei stride;
-/**
-*  pointer to the first component of the first attribute element in the
-*  array.
-*/
-GLvoid * pointer;
-/**
-* pointer to the function that enable this attribute.
-*/
-void ( * enable )(void *);
+    /**
+    *  atribute name
+    */
+    GLchar * name;
+    /**
+    * index of the generic vertex attribute to be modified.
+    */
+    GLuint index;
+    /**
+    * Number of components per generic vertex attribute.
+    *
+    * Must be 1, 2, 3, or 4. The initial value is 4.
+    */
+    GLint size;
+    /**
+    *  data type of each component in the array.
+    *
+    *  Symbolic constants GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT,
+    *  GL_UNSIGNED_SHORT, GL_INT, GL_UNSIGNED_INT, GL_FLOAT, or GL_DOUBLE are
+    *  accepted. The initial value is GL_FLOAT.
+    */
+    GLenum type;
+    /**
+    *  whether fixed-point data values should be normalized (GL_TRUE) or
+    *  converted directly as fixed-point values (GL_FALSE) when they are
+    *  accessed.
+    */
+    GLboolean normalized;
+    /**
+    *  byte offset between consecutive generic vertex attributes.
+    *
+    *  If stride is 0, the generic vertex attributes are understood to be
+    *  tightly packed in the array. The initial value is 0.
+    */
+    GLsizei stride;
+    /**
+    *  pointer to the first component of the first attribute element in the
+    *  array.
+    */
+    GLvoid * pointer;
+    /**
+    * pointer to the function that enable this attribute.
+    */
+    void ( * enable )(void *);
 };
 /**
 * Generic vertex buffer.
 */
 struct vertex_buffer_td
 {
-/** Format of the vertex buffer. */
-char * format;
-/** Vector of vertices. */
-vector_t * vertices;
-#ifdef FREETYPE_GL_USE_VAO
-/** GL identity of the Vertex Array Object */
-GLuint VAO_id;
-#endif
-/** GL identity of the vertices buffer. */
-GLuint vertices_id;
-/** Vector of indices. */
-vector_t * indices;
-/** GL identity of the indices buffer. */
-GLuint indices_id;
-/** Current size of the vertices buffer in GPU */
-size_t GPU_vsize;
-/** Current size of the indices buffer in GPU*/
-size_t GPU_isize;
-/** GL primitives to render. */
-GLenum mode;
-/** Whether the vertex buffer needs to be uploaded to GPU memory. */
-char state;
-/** Individual items */
-vector_t * items;
-/** Array of attributes. */
-vertex_attribute_t *attributes[MAX_VERTEX_ATTRIBUTE];
+    /** Format of the vertex buffer. */
+    char * format;
+    /** Vector of vertices. */
+    vector_t * vertices;
+    #ifdef FREETYPE_GL_USE_VAO
+    /** GL identity of the Vertex Array Object */
+    GLuint VAO_id;
+    #endif
+    /** GL identity of the vertices buffer. */
+    GLuint vertices_id;
+    /** Vector of indices. */
+    vector_t * indices;
+    /** GL identity of the indices buffer. */
+    GLuint indices_id;
+    /** Current size of the vertices buffer in GPU */
+    size_t GPU_vsize;
+    /** Current size of the indices buffer in GPU*/
+    size_t GPU_isize;
+    /** GL primitives to render. */
+    GLenum mode;
+    /** Whether the vertex buffer needs to be uploaded to GPU memory. */
+    char state;
+    /** Individual items */
+    vector_t * items;
+    /** Array of attributes. */
+    vertex_attribute_t *attributes[MAX_VERTEX_ATTRIBUTE];
 };
 #define sjs_object_typeId 1
 #define sjs_interface_typeId 2
@@ -3150,6 +2640,7 @@ sjs_shader sjv_phongtextureshader = { -1 };
 sji_element sjv_root = { 0 };
 sjs_scene2d sjv_rootscene = { -1 };
 sjs_windowrenderer sjv_rootwindowrenderer = { -1 };
+sjs_shader sjv_saturateshader = { -1 };
 sjs_anon2 sjv_style = { -1 };
 int32_t sjv_texthorizontal_center;
 int32_t sjv_texthorizontal_left;
@@ -3167,8 +2658,6 @@ void sjf_animation_f32_asinterface(sjs_animation_f32* _this, int typeId, sjs_int
 void sjf_animation_f32_copy(sjs_animation_f32* _this, sjs_animation_f32* _from);
 void sjf_animation_f32_destroy(sjs_animation_f32* _this);
 void sjf_animation_f32_heap(sjs_animation_f32* _this);
-void sjf_animation_f32_heap_as_sji_animation(sjs_animation_f32* _this, sji_animation* _return);
-void sjf_animation_f32_heap_asinterface(sjs_animation_f32* _this, int typeId, sjs_interface* _return);
 void sjf_animation_f32_nextframe(sjs_animation_f32* _parent, int32_t time, bool* _return);
 void sjf_animation_vec3(sjs_animation_vec3* _this);
 void sjf_animation_vec3_as_sji_animation(sjs_animation_vec3* _this, sji_animation* _return);
@@ -3176,8 +2665,6 @@ void sjf_animation_vec3_asinterface(sjs_animation_vec3* _this, int typeId, sjs_i
 void sjf_animation_vec3_copy(sjs_animation_vec3* _this, sjs_animation_vec3* _from);
 void sjf_animation_vec3_destroy(sjs_animation_vec3* _this);
 void sjf_animation_vec3_heap(sjs_animation_vec3* _this);
-void sjf_animation_vec3_heap_as_sji_animation(sjs_animation_vec3* _this, sji_animation* _return);
-void sjf_animation_vec3_heap_asinterface(sjs_animation_vec3* _this, int typeId, sjs_interface* _return);
 void sjf_animation_vec3_nextframe(sjs_animation_vec3* _parent, int32_t time, bool* _return);
 void sjf_anon1(sjs_anon1* _this);
 void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* _from);
@@ -3275,6 +2762,8 @@ void sjf_boxvertexbuffer_copy(sjs_boxvertexbuffer* _this, sjs_boxvertexbuffer* _
 void sjf_boxvertexbuffer_destroy(sjs_boxvertexbuffer* _this);
 void sjf_boxvertexbuffer_heap(sjs_boxvertexbuffer* _this);
 void sjf_boxvertexbuffer_render(sjs_boxvertexbuffer* _parent, sjs_scene2d* scene);
+void sjf_buttonelement_as_sji_element(sjs_buttonelement* _this, sji_element* _return);
+void sjf_buttonelement_asinterface(sjs_buttonelement* _this, int typeId, sjs_interface* _return);
 void sjf_buttonelement_copy(sjs_buttonelement* _this, sjs_buttonelement* _from);
 void sjf_buttonelement_destroy(sjs_buttonelement* _this);
 void sjf_buttonelement_firemouseevent(sjs_buttonelement* _parent, sjs_mouseevent* mouseevent, bool* _return);
@@ -3283,8 +2772,6 @@ void sjf_buttonelement_getrect_heap(sjs_buttonelement* _parent, sjs_rect** _retu
 void sjf_buttonelement_getsize(sjs_buttonelement* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_buttonelement_getsize_heap(sjs_buttonelement* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_buttonelement_heap(sjs_buttonelement* _this);
-void sjf_buttonelement_heap_as_sji_element(sjs_buttonelement* _this, sji_element* _return);
-void sjf_buttonelement_heap_asinterface(sjs_buttonelement* _this, int typeId, sjs_interface* _return);
 void sjf_buttonelement_onmousedown(sjs_buttonelement* _parent, sjs_point* point, bool* _return);
 void sjf_buttonelement_onmousemove(sjs_buttonelement* _parent, sjs_point* point, bool* _return);
 void sjf_buttonelement_onmouseup(sjs_buttonelement* _parent, sjs_point* point, bool* _return);
@@ -3302,8 +2789,6 @@ void sjf_centerlayout_getrect_heap(sjs_centerlayout* _parent, sjs_rect** _return
 void sjf_centerlayout_getsize(sjs_centerlayout* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_centerlayout_getsize_heap(sjs_centerlayout* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_centerlayout_heap(sjs_centerlayout* _this);
-void sjf_centerlayout_heap_as_sji_element(sjs_centerlayout* _this, sji_element* _return);
-void sjf_centerlayout_heap_asinterface(sjs_centerlayout* _this, int typeId, sjs_interface* _return);
 void sjf_centerlayout_render(sjs_centerlayout* _parent, sjs_scene2d* scene);
 void sjf_centerlayout_setrect(sjs_centerlayout* _parent, sjs_rect* rect_);
 void sjf_color(sjs_color* _this);
@@ -3324,8 +2809,6 @@ void sjf_crossfadeelement_getrect_heap(sjs_crossfadeelement* _parent, sjs_rect**
 void sjf_crossfadeelement_getsize(sjs_crossfadeelement* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_crossfadeelement_getsize_heap(sjs_crossfadeelement* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_crossfadeelement_heap(sjs_crossfadeelement* _this);
-void sjf_crossfadeelement_heap_as_sji_element(sjs_crossfadeelement* _this, sji_element* _return);
-void sjf_crossfadeelement_heap_asinterface(sjs_crossfadeelement* _this, int typeId, sjs_interface* _return);
 void sjf_crossfadeelement_render(sjs_crossfadeelement* _parent, sjs_scene2d* scene);
 void sjf_crossfadeelement_renderinner(sjs_crossfadeelement* _parent, sjs_scene2d* scene);
 void sjf_crossfadeelement_setamount(sjs_crossfadeelement* _parent, float amount);
@@ -3354,8 +2837,6 @@ void sjf_fadeeffect_destroy(sjs_fadeeffect* _this);
 void sjf_fadeeffect_getrect(sjs_fadeeffect* _parent, sjs_rect* _return);
 void sjf_fadeeffect_getrect_heap(sjs_fadeeffect* _parent, sjs_rect** _return);
 void sjf_fadeeffect_heap(sjs_fadeeffect* _this);
-void sjf_fadeeffect_heap_as_sji_effect(sjs_fadeeffect* _this, sji_effect* _return);
-void sjf_fadeeffect_heap_asinterface(sjs_fadeeffect* _this, int typeId, sjs_interface* _return);
 void sjf_fadeeffect_render(sjs_fadeeffect* _parent, sjs_scene2d* scene, cb_scene2d_void cb);
 void sjf_fadeeffect_setrect(sjs_fadeeffect* _parent, sjs_rect* rect_, cb_rect_void cb);
 void sjf_fieldscene_heap(sjs_nauscene3delement** _return);
@@ -3370,8 +2851,6 @@ void sjf_filllayout_getrect_heap(sjs_filllayout* _parent, sjs_rect** _return);
 void sjf_filllayout_getsize(sjs_filllayout* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_filllayout_getsize_heap(sjs_filllayout* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_filllayout_heap(sjs_filllayout* _this);
-void sjf_filllayout_heap_as_sji_element(sjs_filllayout* _this, sji_element* _return);
-void sjf_filllayout_heap_asinterface(sjs_filllayout* _this, int typeId, sjs_interface* _return);
 void sjf_filllayout_render(sjs_filllayout* _parent, sjs_scene2d* scene);
 void sjf_filllayout_renderinner(sjs_filllayout* _parent, sjs_scene2d* scene);
 void sjf_filllayout_setrect(sjs_filllayout* _parent, sjs_rect* rect_);
@@ -3460,8 +2939,6 @@ void sjf_imageelement_getrect_heap(sjs_imageelement* _parent, sjs_rect** _return
 void sjf_imageelement_getsize(sjs_imageelement* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_imageelement_getsize_heap(sjs_imageelement* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_imageelement_heap(sjs_imageelement* _this);
-void sjf_imageelement_heap_as_sji_element(sjs_imageelement* _this, sji_element* _return);
-void sjf_imageelement_heap_asinterface(sjs_imageelement* _this, int typeId, sjs_interface* _return);
 void sjf_imageelement_render(sjs_imageelement* _parent, sjs_scene2d* scene);
 void sjf_imageelement_setrect(sjs_imageelement* _parent, sjs_rect* rect_);
 void sjf_imagerenderer(sjs_imagerenderer* _this);
@@ -3483,8 +2960,6 @@ void sjf_leafpanel_getworld(sjs_leafpanel* _parent, sjs_mat4* _return);
 void sjf_leafpanel_getworld_heap(sjs_leafpanel* _parent, sjs_mat4** _return);
 void sjf_leafpanel_getz(sjs_leafpanel* _parent, float* _return);
 void sjf_leafpanel_heap(sjs_leafpanel* _this);
-void sjf_leafpanel_heap_as_sji_model(sjs_leafpanel* _this, sji_model* _return);
-void sjf_leafpanel_heap_asinterface(sjs_leafpanel* _this, int typeId, sjs_interface* _return);
 void sjf_leafpanel_render(sjs_leafpanel* _parent);
 void sjf_leafpanel_renderorqueue(sjs_leafpanel* _parent, sjs_list_heap_iface_model* zqueue);
 void sjf_leafpanel_texturetomodel_heap(sjs_leafpanel* _parent, sjs_texture* texture, sji_model* _return);
@@ -3542,8 +3017,6 @@ void sjf_listlayout_getrect_heap(sjs_listlayout* _parent, sjs_rect** _return);
 void sjf_listlayout_getsize(sjs_listlayout* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_listlayout_getsize_heap(sjs_listlayout* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_listlayout_heap(sjs_listlayout* _this);
-void sjf_listlayout_heap_as_sji_element(sjs_listlayout* _this, sji_element* _return);
-void sjf_listlayout_heap_asinterface(sjs_listlayout* _this, int typeId, sjs_interface* _return);
 void sjf_listlayout_render(sjs_listlayout* _parent, sjs_scene2d* scene);
 void sjf_listlayout_setrect(sjs_listlayout* _parent, sjs_rect* rect_);
 void sjf_mainloop(void);
@@ -3559,8 +3032,6 @@ void sjf_mainpanel_getworld(sjs_mainpanel* _parent, sjs_mat4* _return);
 void sjf_mainpanel_getworld_heap(sjs_mainpanel* _parent, sjs_mat4** _return);
 void sjf_mainpanel_getz(sjs_mainpanel* _parent, float* _return);
 void sjf_mainpanel_heap(sjs_mainpanel* _this);
-void sjf_mainpanel_heap_as_sji_model(sjs_mainpanel* _this, sji_model* _return);
-void sjf_mainpanel_heap_asinterface(sjs_mainpanel* _this, int typeId, sjs_interface* _return);
 void sjf_mainpanel_render(sjs_mainpanel* _parent);
 void sjf_mainpanel_renderorqueue(sjs_mainpanel* _parent, sjs_list_heap_iface_model* zqueue);
 void sjf_mainpanel_update(sjs_mainpanel* _parent, sjs_rect* scenerect, sjs_mat4* projection, sjs_mat4* view, sjs_mat4* world, sjs_light* light);
@@ -3603,6 +3074,8 @@ void sjf_menucontroller_destroy(sjs_menucontroller* _this);
 void sjf_menucontroller_heap(sjs_menucontroller* _this);
 void sjf_menucontroller_viewfieldmenu(sjs_menucontroller* _parent);
 void sjf_menuscene_heap(sjs_nauscene3delement** _return);
+void sjf_model_as_sji_model(sjs_model* _this, sji_model* _return);
+void sjf_model_asinterface(sjs_model* _this, int typeId, sjs_interface* _return);
 void sjf_model_copy(sjs_model* _this, sjs_model* _from);
 void sjf_model_destroy(sjs_model* _this);
 void sjf_model_firemouseevent(sjs_model* _parent, sjs_mouseevent* mouseevent);
@@ -3612,8 +3085,6 @@ void sjf_model_getworld(sjs_model* _parent, sjs_mat4* _return);
 void sjf_model_getworld_heap(sjs_model* _parent, sjs_mat4** _return);
 void sjf_model_getz(sjs_model* _parent, float* _return);
 void sjf_model_heap(sjs_model* _this, sjs_model** _return);
-void sjf_model_heap_as_sji_model(sjs_model* _this, sji_model* _return);
-void sjf_model_heap_asinterface(sjs_model* _this, int typeId, sjs_interface* _return);
 void sjf_model_render(sjs_model* _parent);
 void sjf_model_renderorqueue(sjs_model* _parent, sjs_list_heap_iface_model* zqueue);
 void sjf_model_update(sjs_model* _parent, sjs_rect* scenerect, sjs_mat4* projection, sjs_mat4* view, sjs_mat4* world, sjs_light* light);
@@ -3629,6 +3100,8 @@ void sjf_mouseevent_firechildren(sjs_mouseevent* _parent, sjs_array_heap_iface_e
 void sjf_mouseevent_heap(sjs_mouseevent* _this);
 void sjf_nauscene3delement_animatecameradistance(sjs_nauscene3delement* _parent, float v, int32_t duration);
 void sjf_nauscene3delement_animatelookat(sjs_nauscene3delement* _parent, sjs_vec3* v, int32_t duration);
+void sjf_nauscene3delement_as_sji_element(sjs_nauscene3delement* _this, sji_element* _return);
+void sjf_nauscene3delement_asinterface(sjs_nauscene3delement* _this, int typeId, sjs_interface* _return);
 void sjf_nauscene3delement_copy(sjs_nauscene3delement* _this, sjs_nauscene3delement* _from);
 void sjf_nauscene3delement_destroy(sjs_nauscene3delement* _this);
 void sjf_nauscene3delement_firemouseevent(sjs_nauscene3delement* _parent, sjs_mouseevent* mouseevent, bool* _return);
@@ -3637,8 +3110,6 @@ void sjf_nauscene3delement_getrect_heap(sjs_nauscene3delement* _parent, sjs_rect
 void sjf_nauscene3delement_getsize(sjs_nauscene3delement* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_nauscene3delement_getsize_heap(sjs_nauscene3delement* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_nauscene3delement_heap(sjs_nauscene3delement* _this);
-void sjf_nauscene3delement_heap_as_sji_element(sjs_nauscene3delement* _this, sji_element* _return);
-void sjf_nauscene3delement_heap_asinterface(sjs_nauscene3delement* _this, int typeId, sjs_interface* _return);
 void sjf_nauscene3delement_render(sjs_nauscene3delement* _parent, sjs_scene2d* scene);
 void sjf_nauscene3delement_setcameradistance(sjs_nauscene3delement* _parent, float v);
 void sjf_nauscene3delement_setlookat(sjs_nauscene3delement* _parent, sjs_vec3* v);
@@ -3655,8 +3126,6 @@ void sjf_panel3d_getworld(sjs_panel3d* _parent, sjs_mat4* _return);
 void sjf_panel3d_getworld_heap(sjs_panel3d* _parent, sjs_mat4** _return);
 void sjf_panel3d_getz(sjs_panel3d* _parent, float* _return);
 void sjf_panel3d_heap(sjs_panel3d* _this);
-void sjf_panel3d_heap_as_sji_model(sjs_panel3d* _this, sji_model* _return);
-void sjf_panel3d_heap_asinterface(sjs_panel3d* _this, int typeId, sjs_interface* _return);
 void sjf_panel3d_render(sjs_panel3d* _parent);
 void sjf_panel3d_renderorqueue(sjs_panel3d* _parent, sjs_list_heap_iface_model* zqueue);
 void sjf_panel3d_update(sjs_panel3d* _parent, sjs_rect* scenerect, sjs_mat4* projection, sjs_mat4* view, sjs_mat4* world, sjs_light* light);
@@ -3674,8 +3143,6 @@ void sjf_peoplepanel_getworld(sjs_peoplepanel* _parent, sjs_mat4* _return);
 void sjf_peoplepanel_getworld_heap(sjs_peoplepanel* _parent, sjs_mat4** _return);
 void sjf_peoplepanel_getz(sjs_peoplepanel* _parent, float* _return);
 void sjf_peoplepanel_heap(sjs_peoplepanel* _this);
-void sjf_peoplepanel_heap_as_sji_model(sjs_peoplepanel* _this, sji_model* _return);
-void sjf_peoplepanel_heap_asinterface(sjs_peoplepanel* _this, int typeId, sjs_interface* _return);
 void sjf_peoplepanel_render(sjs_peoplepanel* _parent);
 void sjf_peoplepanel_renderorqueue(sjs_peoplepanel* _parent, sjs_list_heap_iface_model* zqueue);
 void sjf_peoplepanel_update(sjs_peoplepanel* _parent, sjs_rect* scenerect, sjs_mat4* projection, sjs_mat4* view, sjs_mat4* world, sjs_light* light);
@@ -3690,8 +3157,6 @@ void sjf_personelement_getrect_heap(sjs_personelement* _parent, sjs_rect** _retu
 void sjf_personelement_getsize(sjs_personelement* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_personelement_getsize_heap(sjs_personelement* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_personelement_heap(sjs_personelement* _this);
-void sjf_personelement_heap_as_sji_element(sjs_personelement* _this, sji_element* _return);
-void sjf_personelement_heap_asinterface(sjs_personelement* _this, int typeId, sjs_interface* _return);
 void sjf_personelement_onmousedown(sjs_personelement* _parent, sjs_point* point);
 void sjf_personelement_onmousemove(sjs_personelement* _parent, sjs_point* point);
 void sjf_personelement_onmouseup(sjs_personelement* _parent, sjs_point* point);
@@ -3725,6 +3190,8 @@ void sjf_scene2d_end(sjs_scene2d* _parent);
 void sjf_scene2d_heap(sjs_scene2d* _this);
 void sjf_scene2d_setsize(sjs_scene2d* _parent, sjs_size* size);
 void sjf_scene2d_start(sjs_scene2d* _parent);
+void sjf_scene2dmodel_as_sji_model(sjs_scene2dmodel* _this, sji_model* _return);
+void sjf_scene2dmodel_asinterface(sjs_scene2dmodel* _this, int typeId, sjs_interface* _return);
 void sjf_scene2dmodel_copy(sjs_scene2dmodel* _this, sjs_scene2dmodel* _from);
 void sjf_scene2dmodel_destroy(sjs_scene2dmodel* _this);
 void sjf_scene2dmodel_firemouseevent(sjs_scene2dmodel* _parent, sjs_mouseevent* mouseevent);
@@ -3734,8 +3201,6 @@ void sjf_scene2dmodel_getworld(sjs_scene2dmodel* _parent, sjs_mat4* _return);
 void sjf_scene2dmodel_getworld_heap(sjs_scene2dmodel* _parent, sjs_mat4** _return);
 void sjf_scene2dmodel_getz(sjs_scene2dmodel* _parent, float* _return);
 void sjf_scene2dmodel_heap(sjs_scene2dmodel* _this);
-void sjf_scene2dmodel_heap_as_sji_model(sjs_scene2dmodel* _this, sji_model* _return);
-void sjf_scene2dmodel_heap_asinterface(sjs_scene2dmodel* _this, int typeId, sjs_interface* _return);
 void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent);
 void sjf_scene2dmodel_renderorqueue(sjs_scene2dmodel* _parent, sjs_list_heap_iface_model* alphamodels);
 void sjf_scene2dmodel_update(sjs_scene2dmodel* _parent, sjs_rect* scenerect, sjs_mat4* projection, sjs_mat4* view, sjs_mat4* world, sjs_light* light);
@@ -3780,8 +3245,6 @@ void sjf_textelement_getrect_heap(sjs_textelement* _parent, sjs_rect** _return);
 void sjf_textelement_getsize(sjs_textelement* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_textelement_getsize_heap(sjs_textelement* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_textelement_heap(sjs_textelement* _this);
-void sjf_textelement_heap_as_sji_element(sjs_textelement* _this, sji_element* _return);
-void sjf_textelement_heap_asinterface(sjs_textelement* _this, int typeId, sjs_interface* _return);
 void sjf_textelement_render(sjs_textelement* _parent, sjs_scene2d* scene);
 void sjf_textelement_setrect(sjs_textelement* _parent, sjs_rect* rect_);
 void sjf_textrenderer(sjs_textrenderer* _this);
@@ -6788,25 +6251,6 @@ void sjf_animation_f32_destroy(sjs_animation_f32* _this) {
 void sjf_animation_f32_heap(sjs_animation_f32* _this) {
 }
 
-void sjf_animation_f32_heap_as_sji_animation(sjs_animation_f32* _this, sji_animation* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_animation_f32_animation_vtbl;
-}
-
-void sjf_animation_f32_heap_asinterface(sjs_animation_f32* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_animation_typeId:  {
-            sjf_animation_f32_heap_as_sji_animation(_this, (sji_animation*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
-}
-
 void sjf_animation_f32_nextframe(sjs_animation_f32* _parent, int32_t time, bool* _return) {
     cb_f32_void sjt_callback13;
     int32_t sjt_cast124;
@@ -6924,25 +6368,6 @@ void sjf_animation_vec3_destroy(sjs_animation_vec3* _this) {
 }
 
 void sjf_animation_vec3_heap(sjs_animation_vec3* _this) {
-}
-
-void sjf_animation_vec3_heap_as_sji_animation(sjs_animation_vec3* _this, sji_animation* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_animation_vec3_animation_vtbl;
-}
-
-void sjf_animation_vec3_heap_asinterface(sjs_animation_vec3* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_animation_typeId:  {
-            sjf_animation_vec3_heap_as_sji_animation(_this, (sji_animation*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
 }
 
 void sjf_animation_vec3_nextframe(sjs_animation_vec3* _parent, int32_t time, bool* _return) {
@@ -7120,7 +6545,7 @@ void sjf_anon2_getfont_heap(sjs_anon2* _parent, sjs_font** _return) {
     sjt_call353.count = 16;
     sjt_call353.data._refCount = 1;
     sjt_call353.data.datasize = 17;
-    sjt_call353.data.data = (void*)sjg_string43;
+    sjt_call353.data.data = (void*)sjg_string45;
     sjt_call353.data._isglobal = true;
     sjt_call353.data.count = 17;
     sjf_array_char(&sjt_call353.data);
@@ -8883,6 +8308,25 @@ void sjf_boxvertexbuffer_render(sjs_boxvertexbuffer* _parent, sjs_scene2d* scene
     vertex_buffer_render(_parent->buffer, GL_TRIANGLES);
 }
 
+void sjf_buttonelement_as_sji_element(sjs_buttonelement* _this, sji_element* _return) {
+    _return->_parent = (sjs_object*)_this;
+    _return->_vtbl = &sjs_buttonelement_element_vtbl;
+}
+
+void sjf_buttonelement_asinterface(sjs_buttonelement* _this, int typeId, sjs_interface* _return) {
+    switch (typeId) {
+        case sji_element_typeId:  {
+            sjf_buttonelement_as_sji_element(_this, (sji_element*)_return);
+            break;
+        }
+
+        default: {
+            _return->_parent = 0;
+            break;
+        }
+    }
+}
+
 void sjf_buttonelement_copy(sjs_buttonelement* _this, sjs_buttonelement* _from) {
     _this->text._refCount = 1;
     sjf_string_copy(&_this->text, &_from->text);
@@ -9084,25 +8528,6 @@ void sjf_buttonelement_getsize_heap(sjs_buttonelement* _parent, sjs_size* maxsiz
 }
 
 void sjf_buttonelement_heap(sjs_buttonelement* _this) {
-}
-
-void sjf_buttonelement_heap_as_sji_element(sjs_buttonelement* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_buttonelement_element_vtbl;
-}
-
-void sjf_buttonelement_heap_asinterface(sjs_buttonelement* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_buttonelement_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
 }
 
 void sjf_buttonelement_onmousedown(sjs_buttonelement* _parent, sjs_point* point, bool* _return) {
@@ -9750,25 +9175,6 @@ void sjf_centerlayout_getsize_heap(sjs_centerlayout* _parent, sjs_size* maxsize,
 void sjf_centerlayout_heap(sjs_centerlayout* _this) {
 }
 
-void sjf_centerlayout_heap_as_sji_element(sjs_centerlayout* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_centerlayout_element_vtbl;
-}
-
-void sjf_centerlayout_heap_asinterface(sjs_centerlayout* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_centerlayout_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
-}
-
 void sjf_centerlayout_render(sjs_centerlayout* _parent, sjs_scene2d* scene) {
     int32_t i;
     sjs_array_heap_iface_element* sjt_dot1839 = 0;
@@ -10159,25 +9565,6 @@ void sjf_crossfadeelement_getsize_heap(sjs_crossfadeelement* _parent, sjs_size* 
 void sjf_crossfadeelement_heap(sjs_crossfadeelement* _this) {
 }
 
-void sjf_crossfadeelement_heap_as_sji_element(sjs_crossfadeelement* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_crossfadeelement_element_vtbl;
-}
-
-void sjf_crossfadeelement_heap_asinterface(sjs_crossfadeelement* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_crossfadeelement_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
-}
-
 void sjf_crossfadeelement_render(sjs_crossfadeelement* _parent, sjs_scene2d* scene) {
     sjs_crossfadeelement* sjt_dot2220 = 0;
     sjs_crossfadeelement* sjt_dot2221 = 0;
@@ -10227,7 +9614,7 @@ void sjf_crossfadeelement_setamount(sjs_crossfadeelement* _parent, float amount)
     sjt_call368.count = 27;
     sjt_call368.data._refCount = 1;
     sjt_call368.data.datasize = 28;
-    sjt_call368.data.data = (void*)sjg_string137;
+    sjt_call368.data.data = (void*)sjg_string139;
     sjt_call368.data._isglobal = true;
     sjt_call368.data.count = 28;
     sjf_array_char(&sjt_call368.data);
@@ -10561,25 +9948,6 @@ void sjf_fadeeffect_getrect_heap(sjs_fadeeffect* _parent, sjs_rect** _return) {
 void sjf_fadeeffect_heap(sjs_fadeeffect* _this) {
 }
 
-void sjf_fadeeffect_heap_as_sji_effect(sjs_fadeeffect* _this, sji_effect* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_fadeeffect_effect_vtbl;
-}
-
-void sjf_fadeeffect_heap_asinterface(sjs_fadeeffect* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_effect_typeId:  {
-            sjf_fadeeffect_heap_as_sji_effect(_this, (sji_effect*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
-}
-
 void sjf_fadeeffect_render(sjs_fadeeffect* _parent, sjs_scene2d* scene, cb_scene2d_void cb) {
     sjs_fadeeffect* sjt_dot2187 = 0;
     sjs_fadeeffect* sjt_dot2190 = 0;
@@ -10753,7 +10121,7 @@ void sjf_fadeeffect_render(sjs_fadeeffect* _parent, sjs_scene2d* scene, cb_scene
         sjt_call360.count = 7;
         sjt_call360.data._refCount = 1;
         sjt_call360.data.datasize = 8;
-        sjt_call360.data.data = (void*)sjg_string255;
+        sjt_call360.data.data = (void*)sjg_string259;
         sjt_call360.data._isglobal = true;
         sjt_call360.data.count = 8;
         sjf_array_char(&sjt_call360.data);
@@ -10767,7 +10135,7 @@ void sjf_fadeeffect_render(sjs_fadeeffect* _parent, sjs_scene2d* scene, cb_scene
         sjt_call361.count = 5;
         sjt_call361.data._refCount = 1;
         sjt_call361.data.datasize = 6;
-        sjt_call361.data.data = (void*)sjg_string256;
+        sjt_call361.data.data = (void*)sjg_string260;
         sjt_call361.data._isglobal = true;
         sjt_call361.data.count = 6;
         sjf_array_char(&sjt_call361.data);
@@ -10782,7 +10150,7 @@ void sjf_fadeeffect_render(sjs_fadeeffect* _parent, sjs_scene2d* scene, cb_scene
         sjt_call362.count = 5;
         sjt_call362.data._refCount = 1;
         sjt_call362.data.datasize = 6;
-        sjt_call362.data.data = (void*)sjg_string257;
+        sjt_call362.data.data = (void*)sjg_string261;
         sjt_call362.data._isglobal = true;
         sjt_call362.data.count = 6;
         sjf_array_char(&sjt_call362.data);
@@ -10797,7 +10165,7 @@ void sjf_fadeeffect_render(sjs_fadeeffect* _parent, sjs_scene2d* scene, cb_scene
         sjt_call363.count = 4;
         sjt_call363.data._refCount = 1;
         sjt_call363.data.datasize = 5;
-        sjt_call363.data.data = (void*)sjg_string258;
+        sjt_call363.data.data = (void*)sjg_string262;
         sjt_call363.data._isglobal = true;
         sjt_call363.data.count = 5;
         sjf_array_char(&sjt_call363.data);
@@ -10812,7 +10180,7 @@ void sjf_fadeeffect_render(sjs_fadeeffect* _parent, sjs_scene2d* scene, cb_scene
         sjt_call364.count = 10;
         sjt_call364.data._refCount = 1;
         sjt_call364.data.datasize = 11;
-        sjt_call364.data.data = (void*)sjg_string259;
+        sjt_call364.data.data = (void*)sjg_string263;
         sjt_call364.data._isglobal = true;
         sjt_call364.data.count = 11;
         sjf_array_char(&sjt_call364.data);
@@ -11467,7 +10835,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call178.count = 26;
     sjt_call178.data._refCount = 1;
     sjt_call178.data.datasize = 27;
-    sjt_call178.data.data = (void*)sjg_string91;
+    sjt_call178.data.data = (void*)sjg_string93;
     sjt_call178.data._isglobal = true;
     sjt_call178.data.count = 27;
     sjf_array_char(&sjt_call178.data);
@@ -11599,7 +10967,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call190.count = 21;
     sjt_call190.data._refCount = 1;
     sjt_call190.data.datasize = 22;
-    sjt_call190.data.data = (void*)sjg_string92;
+    sjt_call190.data.data = (void*)sjg_string94;
     sjt_call190.data._isglobal = true;
     sjt_call190.data.count = 22;
     sjf_array_char(&sjt_call190.data);
@@ -11614,7 +10982,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call192.count = 21;
     sjt_call192.data._refCount = 1;
     sjt_call192.data.datasize = 22;
-    sjt_call192.data.data = (void*)sjg_string93;
+    sjt_call192.data.data = (void*)sjg_string95;
     sjt_call192.data._isglobal = true;
     sjt_call192.data.count = 22;
     sjf_array_char(&sjt_call192.data);
@@ -11629,7 +10997,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call194.count = 21;
     sjt_call194.data._refCount = 1;
     sjt_call194.data.datasize = 22;
-    sjt_call194.data.data = (void*)sjg_string94;
+    sjt_call194.data.data = (void*)sjg_string96;
     sjt_call194.data._isglobal = true;
     sjt_call194.data.count = 22;
     sjf_array_char(&sjt_call194.data);
@@ -11644,7 +11012,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call196.count = 21;
     sjt_call196.data._refCount = 1;
     sjt_call196.data.datasize = 22;
-    sjt_call196.data.data = (void*)sjg_string95;
+    sjt_call196.data.data = (void*)sjg_string97;
     sjt_call196.data._isglobal = true;
     sjt_call196.data.count = 22;
     sjf_array_char(&sjt_call196.data);
@@ -11659,7 +11027,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call198.count = 21;
     sjt_call198.data._refCount = 1;
     sjt_call198.data.datasize = 22;
-    sjt_call198.data.data = (void*)sjg_string96;
+    sjt_call198.data.data = (void*)sjg_string98;
     sjt_call198.data._isglobal = true;
     sjt_call198.data.count = 22;
     sjf_array_char(&sjt_call198.data);
@@ -11674,7 +11042,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call200.count = 21;
     sjt_call200.data._refCount = 1;
     sjt_call200.data.datasize = 22;
-    sjt_call200.data.data = (void*)sjg_string97;
+    sjt_call200.data.data = (void*)sjg_string99;
     sjt_call200.data._isglobal = true;
     sjt_call200.data.count = 22;
     sjf_array_char(&sjt_call200.data);
@@ -11689,7 +11057,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call202.count = 21;
     sjt_call202.data._refCount = 1;
     sjt_call202.data.datasize = 22;
-    sjt_call202.data.data = (void*)sjg_string98;
+    sjt_call202.data.data = (void*)sjg_string100;
     sjt_call202.data._isglobal = true;
     sjt_call202.data.count = 22;
     sjf_array_char(&sjt_call202.data);
@@ -11704,7 +11072,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call204.count = 21;
     sjt_call204.data._refCount = 1;
     sjt_call204.data.datasize = 22;
-    sjt_call204.data.data = (void*)sjg_string99;
+    sjt_call204.data.data = (void*)sjg_string101;
     sjt_call204.data._isglobal = true;
     sjt_call204.data.count = 22;
     sjf_array_char(&sjt_call204.data);
@@ -11756,7 +11124,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call210->id.count = 7;
     sjt_call210->id.data._refCount = 1;
     sjt_call210->id.data.datasize = 8;
-    sjt_call210->id.data.data = (void*)sjg_string100;
+    sjt_call210->id.data.data = (void*)sjg_string102;
     sjt_call210->id.data._isglobal = true;
     sjt_call210->id.data.count = 8;
     sjf_array_char(&sjt_call210->id.data);
@@ -11798,7 +11166,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call211->id.count = 7;
     sjt_call211->id.data._refCount = 1;
     sjt_call211->id.data.datasize = 8;
-    sjt_call211->id.data.data = (void*)sjg_string101;
+    sjt_call211->id.data.data = (void*)sjg_string103;
     sjt_call211->id.data._isglobal = true;
     sjt_call211->id.data.count = 8;
     sjf_array_char(&sjt_call211->id.data);
@@ -11826,7 +11194,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call290.count = 24;
     sjt_call290.data._refCount = 1;
     sjt_call290.data.datasize = 25;
-    sjt_call290.data.data = (void*)sjg_string102;
+    sjt_call290.data.data = (void*)sjg_string104;
     sjt_call290.data._isglobal = true;
     sjt_call290.data.count = 25;
     sjf_array_char(&sjt_call290.data);
@@ -12063,7 +11431,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call291->id.count = 7;
     sjt_call291->id.data._refCount = 1;
     sjt_call291->id.data.datasize = 8;
-    sjt_call291->id.data.data = (void*)sjg_string103;
+    sjt_call291->id.data.data = (void*)sjg_string105;
     sjt_call291->id.data._isglobal = true;
     sjt_call291->id.data.count = 8;
     sjf_array_char(&sjt_call291->id.data);
@@ -12105,7 +11473,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call292->id.count = 7;
     sjt_call292->id.data._refCount = 1;
     sjt_call292->id.data.datasize = 8;
-    sjt_call292->id.data.data = (void*)sjg_string104;
+    sjt_call292->id.data.data = (void*)sjg_string106;
     sjt_call292->id.data._isglobal = true;
     sjt_call292->id.data.count = 8;
     sjf_array_char(&sjt_call292->id.data);
@@ -12133,7 +11501,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call294.count = 24;
     sjt_call294.data._refCount = 1;
     sjt_call294.data.datasize = 25;
-    sjt_call294.data.data = (void*)sjg_string105;
+    sjt_call294.data.data = (void*)sjg_string107;
     sjt_call294.data._isglobal = true;
     sjt_call294.data.count = 25;
     sjf_array_char(&sjt_call294.data);
@@ -12428,7 +11796,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call298.count = 16;
     sjt_call298.data._refCount = 1;
     sjt_call298.data.datasize = 17;
-    sjt_call298.data.data = (void*)sjg_string107;
+    sjt_call298.data.data = (void*)sjg_string109;
     sjt_call298.data._isglobal = true;
     sjt_call298.data.count = 17;
     sjf_array_char(&sjt_call298.data);
@@ -12461,7 +11829,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     object22->id.count = 8;
     object22->id.data._refCount = 1;
     object22->id.data.datasize = 9;
-    object22->id.data.data = (void*)sjg_string106;
+    object22->id.data.data = (void*)sjg_string108;
     object22->id.data._isglobal = true;
     object22->id.data.count = 9;
     sjf_array_char(&object22->id.data);
@@ -12577,7 +11945,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call303.count = 16;
     sjt_call303.data._refCount = 1;
     sjt_call303.data.datasize = 17;
-    sjt_call303.data.data = (void*)sjg_string109;
+    sjt_call303.data.data = (void*)sjg_string111;
     sjt_call303.data._isglobal = true;
     sjt_call303.data.count = 17;
     sjf_array_char(&sjt_call303.data);
@@ -12608,7 +11976,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     object23->id.count = 8;
     object23->id.data._refCount = 1;
     object23->id.data.datasize = 9;
-    object23->id.data.data = (void*)sjg_string108;
+    object23->id.data.data = (void*)sjg_string110;
     object23->id.data._isglobal = true;
     object23->id.data.count = 9;
     sjf_array_char(&object23->id.data);
@@ -12724,7 +12092,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call308.count = 16;
     sjt_call308.data._refCount = 1;
     sjt_call308.data.datasize = 17;
-    sjt_call308.data.data = (void*)sjg_string111;
+    sjt_call308.data.data = (void*)sjg_string113;
     sjt_call308.data._isglobal = true;
     sjt_call308.data.count = 17;
     sjf_array_char(&sjt_call308.data);
@@ -12757,7 +12125,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     object24->id.count = 8;
     object24->id.data._refCount = 1;
     object24->id.data.datasize = 9;
-    object24->id.data.data = (void*)sjg_string110;
+    object24->id.data.data = (void*)sjg_string112;
     object24->id.data._isglobal = true;
     object24->id.data.count = 9;
     sjf_array_char(&object24->id.data);
@@ -12873,7 +12241,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call313.count = 16;
     sjt_call313.data._refCount = 1;
     sjt_call313.data.datasize = 17;
-    sjt_call313.data.data = (void*)sjg_string113;
+    sjt_call313.data.data = (void*)sjg_string115;
     sjt_call313.data._isglobal = true;
     sjt_call313.data.count = 17;
     sjf_array_char(&sjt_call313.data);
@@ -12904,7 +12272,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     object25->id.count = 8;
     object25->id.data._refCount = 1;
     object25->id.data.datasize = 9;
-    object25->id.data.data = (void*)sjg_string112;
+    object25->id.data.data = (void*)sjg_string114;
     object25->id.data._isglobal = true;
     object25->id.data.count = 9;
     sjf_array_char(&object25->id.data);
@@ -13020,7 +12388,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call318.count = 16;
     sjt_call318.data._refCount = 1;
     sjt_call318.data.datasize = 17;
-    sjt_call318.data.data = (void*)sjg_string115;
+    sjt_call318.data.data = (void*)sjg_string117;
     sjt_call318.data._isglobal = true;
     sjt_call318.data.count = 17;
     sjf_array_char(&sjt_call318.data);
@@ -13053,7 +12421,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     object26->id.count = 8;
     object26->id.data._refCount = 1;
     object26->id.data.datasize = 9;
-    object26->id.data.data = (void*)sjg_string114;
+    object26->id.data.data = (void*)sjg_string116;
     object26->id.data._isglobal = true;
     object26->id.data.count = 9;
     sjf_array_char(&object26->id.data);
@@ -13169,7 +12537,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call323.count = 16;
     sjt_call323.data._refCount = 1;
     sjt_call323.data.datasize = 17;
-    sjt_call323.data.data = (void*)sjg_string117;
+    sjt_call323.data.data = (void*)sjg_string119;
     sjt_call323.data._isglobal = true;
     sjt_call323.data.count = 17;
     sjf_array_char(&sjt_call323.data);
@@ -13200,7 +12568,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     object27->id.count = 8;
     object27->id.data._refCount = 1;
     object27->id.data.datasize = 9;
-    object27->id.data.data = (void*)sjg_string116;
+    object27->id.data.data = (void*)sjg_string118;
     object27->id.data._isglobal = true;
     object27->id.data.count = 9;
     sjf_array_char(&object27->id.data);
@@ -13316,7 +12684,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call328.count = 16;
     sjt_call328.data._refCount = 1;
     sjt_call328.data.datasize = 17;
-    sjt_call328.data.data = (void*)sjg_string119;
+    sjt_call328.data.data = (void*)sjg_string121;
     sjt_call328.data._isglobal = true;
     sjt_call328.data.count = 17;
     sjf_array_char(&sjt_call328.data);
@@ -13349,7 +12717,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     object28->id.count = 8;
     object28->id.data._refCount = 1;
     object28->id.data.datasize = 9;
-    object28->id.data.data = (void*)sjg_string118;
+    object28->id.data.data = (void*)sjg_string120;
     object28->id.data._isglobal = true;
     object28->id.data.count = 9;
     sjf_array_char(&object28->id.data);
@@ -13465,7 +12833,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call333.count = 16;
     sjt_call333.data._refCount = 1;
     sjt_call333.data.datasize = 17;
-    sjt_call333.data.data = (void*)sjg_string121;
+    sjt_call333.data.data = (void*)sjg_string123;
     sjt_call333.data._isglobal = true;
     sjt_call333.data.count = 17;
     sjf_array_char(&sjt_call333.data);
@@ -13496,7 +12864,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     object29->id.count = 8;
     object29->id.data._refCount = 1;
     object29->id.data.datasize = 9;
-    object29->id.data.data = (void*)sjg_string120;
+    object29->id.data.data = (void*)sjg_string122;
     object29->id.data._isglobal = true;
     object29->id.data.count = 9;
     sjf_array_char(&object29->id.data);
@@ -13612,7 +12980,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call338.count = 16;
     sjt_call338.data._refCount = 1;
     sjt_call338.data.datasize = 17;
-    sjt_call338.data.data = (void*)sjg_string123;
+    sjt_call338.data.data = (void*)sjg_string125;
     sjt_call338.data._isglobal = true;
     sjt_call338.data.count = 17;
     sjf_array_char(&sjt_call338.data);
@@ -13647,7 +13015,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     object30->id.count = 9;
     object30->id.data._refCount = 1;
     object30->id.data.datasize = 10;
-    object30->id.data.data = (void*)sjg_string122;
+    object30->id.data.data = (void*)sjg_string124;
     object30->id.data._isglobal = true;
     object30->id.data.count = 10;
     sjf_array_char(&object30->id.data);
@@ -13763,7 +13131,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     sjt_call343.count = 16;
     sjt_call343.data._refCount = 1;
     sjt_call343.data.datasize = 17;
-    sjt_call343.data.data = (void*)sjg_string125;
+    sjt_call343.data.data = (void*)sjg_string127;
     sjt_call343.data._isglobal = true;
     sjt_call343.data.count = 17;
     sjf_array_char(&sjt_call343.data);
@@ -13796,7 +13164,7 @@ void sjf_fieldscene_heap(sjs_nauscene3delement** _return) {
     object31->id.count = 9;
     object31->id.data._refCount = 1;
     object31->id.data.datasize = 10;
-    object31->id.data.data = (void*)sjg_string124;
+    object31->id.data.data = (void*)sjg_string126;
     object31->id.data._isglobal = true;
     object31->id.data.count = 10;
     sjf_array_char(&object31->id.data);
@@ -14614,25 +13982,6 @@ void sjf_filllayout_getsize_heap(sjs_filllayout* _parent, sjs_size* maxsize, sjs
 void sjf_filllayout_heap(sjs_filllayout* _this) {
 }
 
-void sjf_filllayout_heap_as_sji_element(sjs_filllayout* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_filllayout_element_vtbl;
-}
-
-void sjf_filllayout_heap_asinterface(sjs_filllayout* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_filllayout_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
-}
-
 void sjf_filllayout_render(sjs_filllayout* _parent, sjs_scene2d* scene) {
     sjs_filllayout* sjt_dot89 = 0;
     bool sjt_isEmpty3;
@@ -15222,7 +14571,7 @@ void sjf_glpopframebuffer(sjs_framebuffer* framebuffer) {
         sjt_call118.count = 33;
         sjt_call118.data._refCount = 1;
         sjt_call118.data.datasize = 34;
-        sjt_call118.data.data = (void*)sjg_string38;
+        sjt_call118.data.data = (void*)sjg_string40;
         sjt_call118.data._isglobal = true;
         sjt_call118.data.count = 34;
         sjf_array_char(&sjt_call118.data);
@@ -15332,7 +14681,7 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
         sjt_call124.count = 30;
         sjt_call124.data._refCount = 1;
         sjt_call124.data.datasize = 31;
-        sjt_call124.data.data = (void*)sjg_string178;
+        sjt_call124.data.data = (void*)sjg_string180;
         sjt_call124.data._isglobal = true;
         sjt_call124.data.count = 31;
         sjf_array_char(&sjt_call124.data);
@@ -16036,25 +15385,6 @@ void sjf_imageelement_getsize_heap(sjs_imageelement* _parent, sjs_size* maxsize,
 }
 
 void sjf_imageelement_heap(sjs_imageelement* _this) {
-}
-
-void sjf_imageelement_heap_as_sji_element(sjs_imageelement* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_imageelement_element_vtbl;
-}
-
-void sjf_imageelement_heap_asinterface(sjs_imageelement* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_imageelement_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
 }
 
 void sjf_imageelement_render(sjs_imageelement* _parent, sjs_scene2d* scene) {
@@ -17180,25 +16510,6 @@ void sjf_leafpanel_heap(sjs_leafpanel* _this) {
     sjf_array_texture_map_heap_iface_model(sjt_parent324, sjt_functionParam836, &_this->children);
 }
 
-void sjf_leafpanel_heap_as_sji_model(sjs_leafpanel* _this, sji_model* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_leafpanel_model_vtbl;
-}
-
-void sjf_leafpanel_heap_asinterface(sjs_leafpanel* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_model_typeId:  {
-            sjf_leafpanel_heap_as_sji_model(_this, (sji_model*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
-}
-
 void sjf_leafpanel_render(sjs_leafpanel* _parent) {
 }
 
@@ -17362,7 +16673,7 @@ void sjf_leafpanel_texturetomodel_heap(sjs_leafpanel* _parent, sjs_texture* text
     sjt_call187.count = 4;
     sjt_call187.data._refCount = 1;
     sjt_call187.data.datasize = 5;
-    sjt_call187.data.data = (void*)sjg_string56;
+    sjt_call187.data.data = (void*)sjg_string58;
     sjt_call187.data._isglobal = true;
     sjt_call187.data.count = 5;
     sjf_array_char(&sjt_call187.data);
@@ -18141,25 +17452,6 @@ void sjf_listlayout_getsize_heap(sjs_listlayout* _parent, sjs_size* maxsize, sjs
 }
 
 void sjf_listlayout_heap(sjs_listlayout* _this) {
-}
-
-void sjf_listlayout_heap_as_sji_element(sjs_listlayout* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_listlayout_element_vtbl;
-}
-
-void sjf_listlayout_heap_asinterface(sjs_listlayout* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_listlayout_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
 }
 
 void sjf_listlayout_render(sjs_listlayout* _parent, sjs_scene2d* scene) {
@@ -19098,25 +18390,6 @@ void sjf_mainpanel_heap(sjs_mainpanel* _this) {
         if (sjt_call28._refCount == 1) { sjf_vec3_destroy(&sjt_call28); }
         if (sjt_call29._refCount == 1) { sjf_mat4_destroy(&sjt_call29); }
         if (sjt_call30._refCount == 1) { sjf_vec3_destroy(&sjt_call30); }
-    }
-}
-
-void sjf_mainpanel_heap_as_sji_model(sjs_mainpanel* _this, sji_model* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_mainpanel_model_vtbl;
-}
-
-void sjf_mainpanel_heap_asinterface(sjs_mainpanel* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_model_typeId:  {
-            sjf_mainpanel_heap_as_sji_model(_this, (sji_model*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
     }
 }
 
@@ -26660,7 +25933,7 @@ void sjf_menucontroller_viewfieldmenu(sjs_menucontroller* _parent) {
     sjt_call354.count = 9;
     sjt_call354.data._refCount = 1;
     sjt_call354.data.datasize = 10;
-    sjt_call354.data.data = (void*)sjg_string134;
+    sjt_call354.data.data = (void*)sjg_string136;
     sjt_call354.data._isglobal = true;
     sjt_call354.data.count = 10;
     sjf_array_char(&sjt_call354.data);
@@ -27750,7 +27023,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call52.count = 16;
     sjt_call52.data._refCount = 1;
     sjt_call52.data.datasize = 17;
-    sjt_call52.data.data = (void*)sjg_string144;
+    sjt_call52.data.data = (void*)sjg_string146;
     sjt_call52.data._isglobal = true;
     sjt_call52.data.count = 17;
     sjf_array_char(&sjt_call52.data);
@@ -27884,7 +27157,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call55.count = 16;
     sjt_call55.data._refCount = 1;
     sjt_call55.data.datasize = 17;
-    sjt_call55.data.data = (void*)sjg_string145;
+    sjt_call55.data.data = (void*)sjg_string147;
     sjt_call55.data._isglobal = true;
     sjt_call55.data.count = 17;
     sjf_array_char(&sjt_call55.data);
@@ -28016,7 +27289,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call58.count = 16;
     sjt_call58.data._refCount = 1;
     sjt_call58.data.datasize = 17;
-    sjt_call58.data.data = (void*)sjg_string146;
+    sjt_call58.data.data = (void*)sjg_string148;
     sjt_call58.data._isglobal = true;
     sjt_call58.data.count = 17;
     sjf_array_char(&sjt_call58.data);
@@ -28148,7 +27421,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call61.count = 16;
     sjt_call61.data._refCount = 1;
     sjt_call61.data.datasize = 17;
-    sjt_call61.data.data = (void*)sjg_string147;
+    sjt_call61.data.data = (void*)sjg_string149;
     sjt_call61.data._isglobal = true;
     sjt_call61.data.count = 17;
     sjf_array_char(&sjt_call61.data);
@@ -28280,7 +27553,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call64.count = 16;
     sjt_call64.data._refCount = 1;
     sjt_call64.data.datasize = 17;
-    sjt_call64.data.data = (void*)sjg_string148;
+    sjt_call64.data.data = (void*)sjg_string150;
     sjt_call64.data._isglobal = true;
     sjt_call64.data.count = 17;
     sjf_array_char(&sjt_call64.data);
@@ -28451,7 +27724,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call69.count = 16;
     sjt_call69.data._refCount = 1;
     sjt_call69.data.datasize = 17;
-    sjt_call69.data.data = (void*)sjg_string149;
+    sjt_call69.data.data = (void*)sjg_string151;
     sjt_call69.data._isglobal = true;
     sjt_call69.data.count = 17;
     sjf_array_char(&sjt_call69.data);
@@ -28583,7 +27856,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call72.count = 16;
     sjt_call72.data._refCount = 1;
     sjt_call72.data.datasize = 17;
-    sjt_call72.data.data = (void*)sjg_string150;
+    sjt_call72.data.data = (void*)sjg_string152;
     sjt_call72.data._isglobal = true;
     sjt_call72.data.count = 17;
     sjf_array_char(&sjt_call72.data);
@@ -28717,7 +27990,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call75.count = 16;
     sjt_call75.data._refCount = 1;
     sjt_call75.data.datasize = 17;
-    sjt_call75.data.data = (void*)sjg_string151;
+    sjt_call75.data.data = (void*)sjg_string153;
     sjt_call75.data._isglobal = true;
     sjt_call75.data.count = 17;
     sjf_array_char(&sjt_call75.data);
@@ -28851,7 +28124,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call78.count = 16;
     sjt_call78.data._refCount = 1;
     sjt_call78.data.datasize = 17;
-    sjt_call78.data.data = (void*)sjg_string152;
+    sjt_call78.data.data = (void*)sjg_string154;
     sjt_call78.data._isglobal = true;
     sjt_call78.data.count = 17;
     sjf_array_char(&sjt_call78.data);
@@ -28985,7 +28258,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call81.count = 17;
     sjt_call81.data._refCount = 1;
     sjt_call81.data.datasize = 18;
-    sjt_call81.data.data = (void*)sjg_string153;
+    sjt_call81.data.data = (void*)sjg_string155;
     sjt_call81.data._isglobal = true;
     sjt_call81.data.count = 18;
     sjf_array_char(&sjt_call81.data);
@@ -29156,7 +28429,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call86.count = 16;
     sjt_call86.data._refCount = 1;
     sjt_call86.data.datasize = 17;
-    sjt_call86.data.data = (void*)sjg_string154;
+    sjt_call86.data.data = (void*)sjg_string156;
     sjt_call86.data._isglobal = true;
     sjt_call86.data.count = 17;
     sjf_array_char(&sjt_call86.data);
@@ -29288,7 +28561,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call89.count = 16;
     sjt_call89.data._refCount = 1;
     sjt_call89.data.datasize = 17;
-    sjt_call89.data.data = (void*)sjg_string155;
+    sjt_call89.data.data = (void*)sjg_string157;
     sjt_call89.data._isglobal = true;
     sjt_call89.data.count = 17;
     sjf_array_char(&sjt_call89.data);
@@ -29420,7 +28693,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call92.count = 16;
     sjt_call92.data._refCount = 1;
     sjt_call92.data.datasize = 17;
-    sjt_call92.data.data = (void*)sjg_string156;
+    sjt_call92.data.data = (void*)sjg_string158;
     sjt_call92.data._isglobal = true;
     sjt_call92.data.count = 17;
     sjf_array_char(&sjt_call92.data);
@@ -29554,7 +28827,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call95.count = 16;
     sjt_call95.data._refCount = 1;
     sjt_call95.data.datasize = 17;
-    sjt_call95.data.data = (void*)sjg_string157;
+    sjt_call95.data.data = (void*)sjg_string159;
     sjt_call95.data._isglobal = true;
     sjt_call95.data.count = 17;
     sjf_array_char(&sjt_call95.data);
@@ -29688,7 +28961,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call98.count = 16;
     sjt_call98.data._refCount = 1;
     sjt_call98.data.datasize = 17;
-    sjt_call98.data.data = (void*)sjg_string158;
+    sjt_call98.data.data = (void*)sjg_string160;
     sjt_call98.data._isglobal = true;
     sjt_call98.data.count = 17;
     sjf_array_char(&sjt_call98.data);
@@ -29859,7 +29132,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call103.count = 17;
     sjt_call103.data._refCount = 1;
     sjt_call103.data.datasize = 18;
-    sjt_call103.data.data = (void*)sjg_string159;
+    sjt_call103.data.data = (void*)sjg_string161;
     sjt_call103.data._isglobal = true;
     sjt_call103.data.count = 18;
     sjf_array_char(&sjt_call103.data);
@@ -29993,7 +29266,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call106.count = 17;
     sjt_call106.data._refCount = 1;
     sjt_call106.data.datasize = 18;
-    sjt_call106.data.data = (void*)sjg_string160;
+    sjt_call106.data.data = (void*)sjg_string162;
     sjt_call106.data._isglobal = true;
     sjt_call106.data.count = 18;
     sjf_array_char(&sjt_call106.data);
@@ -30125,7 +29398,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call109.count = 16;
     sjt_call109.data._refCount = 1;
     sjt_call109.data.datasize = 17;
-    sjt_call109.data.data = (void*)sjg_string161;
+    sjt_call109.data.data = (void*)sjg_string163;
     sjt_call109.data._isglobal = true;
     sjt_call109.data.count = 17;
     sjf_array_char(&sjt_call109.data);
@@ -30257,7 +29530,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call112.count = 16;
     sjt_call112.data._refCount = 1;
     sjt_call112.data.datasize = 17;
-    sjt_call112.data.data = (void*)sjg_string162;
+    sjt_call112.data.data = (void*)sjg_string164;
     sjt_call112.data._isglobal = true;
     sjt_call112.data.count = 17;
     sjf_array_char(&sjt_call112.data);
@@ -30444,7 +29717,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call143.count = 16;
     sjt_call143.data._refCount = 1;
     sjt_call143.data.datasize = 17;
-    sjt_call143.data.data = (void*)sjg_string163;
+    sjt_call143.data.data = (void*)sjg_string165;
     sjt_call143.data._isglobal = true;
     sjt_call143.data.count = 17;
     sjf_array_char(&sjt_call143.data);
@@ -30518,7 +29791,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call161.count = 16;
     sjt_call161.data._refCount = 1;
     sjt_call161.data.datasize = 17;
-    sjt_call161.data.data = (void*)sjg_string164;
+    sjt_call161.data.data = (void*)sjg_string166;
     sjt_call161.data._isglobal = true;
     sjt_call161.data.count = 17;
     sjf_array_char(&sjt_call161.data);
@@ -30530,7 +29803,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call158->text.count = 6;
     sjt_call158->text.data._refCount = 1;
     sjt_call158->text.data.datasize = 7;
-    sjt_call158->text.data.data = (void*)sjg_string165;
+    sjt_call158->text.data.data = (void*)sjg_string167;
     sjt_call158->text.data._isglobal = true;
     sjt_call158->text.data.count = 7;
     sjf_array_char(&sjt_call158->text.data);
@@ -30569,7 +29842,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call163.count = 16;
     sjt_call163.data._refCount = 1;
     sjt_call163.data.datasize = 17;
-    sjt_call163.data.data = (void*)sjg_string166;
+    sjt_call163.data.data = (void*)sjg_string168;
     sjt_call163.data._isglobal = true;
     sjt_call163.data.count = 17;
     sjf_array_char(&sjt_call163.data);
@@ -30581,7 +29854,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call162->text.count = 12;
     sjt_call162->text.data._refCount = 1;
     sjt_call162->text.data.datasize = 13;
-    sjt_call162->text.data.data = (void*)sjg_string167;
+    sjt_call162->text.data.data = (void*)sjg_string169;
     sjt_call162->text.data._isglobal = true;
     sjt_call162->text.data.count = 13;
     sjf_array_char(&sjt_call162->text.data);
@@ -30897,7 +30170,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call167.count = 16;
     sjt_call167.data._refCount = 1;
     sjt_call167.data.datasize = 17;
-    sjt_call167.data.data = (void*)sjg_string168;
+    sjt_call167.data.data = (void*)sjg_string170;
     sjt_call167.data._isglobal = true;
     sjt_call167.data.count = 17;
     sjf_array_char(&sjt_call167.data);
@@ -30971,7 +30244,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call171.count = 16;
     sjt_call171.data._refCount = 1;
     sjt_call171.data.datasize = 17;
-    sjt_call171.data.data = (void*)sjg_string169;
+    sjt_call171.data.data = (void*)sjg_string171;
     sjt_call171.data._isglobal = true;
     sjt_call171.data.count = 17;
     sjf_array_char(&sjt_call171.data);
@@ -30983,7 +30256,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call170->text.count = 6;
     sjt_call170->text.data._refCount = 1;
     sjt_call170->text.data.datasize = 7;
-    sjt_call170->text.data.data = (void*)sjg_string170;
+    sjt_call170->text.data.data = (void*)sjg_string172;
     sjt_call170->text.data._isglobal = true;
     sjt_call170->text.data.count = 7;
     sjf_array_char(&sjt_call170->text.data);
@@ -31022,7 +30295,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call173.count = 16;
     sjt_call173.data._refCount = 1;
     sjt_call173.data.datasize = 17;
-    sjt_call173.data.data = (void*)sjg_string171;
+    sjt_call173.data.data = (void*)sjg_string173;
     sjt_call173.data._isglobal = true;
     sjt_call173.data.count = 17;
     sjf_array_char(&sjt_call173.data);
@@ -31034,7 +30307,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call172->text.count = 12;
     sjt_call172->text.data._refCount = 1;
     sjt_call172->text.data.datasize = 13;
-    sjt_call172->text.data.data = (void*)sjg_string172;
+    sjt_call172->text.data.data = (void*)sjg_string174;
     sjt_call172->text.data._isglobal = true;
     sjt_call172->text.data.count = 13;
     sjf_array_char(&sjt_call172->text.data);
@@ -31315,7 +30588,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call175->id.count = 9;
     sjt_call175->id.data._refCount = 1;
     sjt_call175->id.data.datasize = 10;
-    sjt_call175->id.data.data = (void*)sjg_string173;
+    sjt_call175->id.data.data = (void*)sjg_string175;
     sjt_call175->id.data._isglobal = true;
     sjt_call175->id.data.count = 10;
     sjf_array_char(&sjt_call175->id.data);
@@ -31367,7 +30640,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call350->text.count = 0;
     sjt_call350->text.data._refCount = 1;
     sjt_call350->text.data.datasize = 1;
-    sjt_call350->text.data.data = (void*)sjg_string127;
+    sjt_call350->text.data.data = (void*)sjg_string129;
     sjt_call350->text.data._isglobal = true;
     sjt_call350->text.data.count = 1;
     sjf_array_char(&sjt_call350->text.data);
@@ -31444,7 +30717,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call373.count = 16;
     sjt_call373.data._refCount = 1;
     sjt_call373.data.datasize = 17;
-    sjt_call373.data.data = (void*)sjg_string174;
+    sjt_call373.data.data = (void*)sjg_string176;
     sjt_call373.data._isglobal = true;
     sjt_call373.data.count = 17;
     sjf_array_char(&sjt_call373.data);
@@ -31456,7 +30729,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call372->text.count = 4;
     sjt_call372->text.data._refCount = 1;
     sjt_call372->text.data.datasize = 5;
-    sjt_call372->text.data.data = (void*)sjg_string175;
+    sjt_call372->text.data.data = (void*)sjg_string177;
     sjt_call372->text.data._isglobal = true;
     sjt_call372->text.data.count = 5;
     sjf_array_char(&sjt_call372->text.data);
@@ -31495,7 +30768,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call375.count = 16;
     sjt_call375.data._refCount = 1;
     sjt_call375.data.datasize = 17;
-    sjt_call375.data.data = (void*)sjg_string176;
+    sjt_call375.data.data = (void*)sjg_string178;
     sjt_call375.data._isglobal = true;
     sjt_call375.data.count = 17;
     sjf_array_char(&sjt_call375.data);
@@ -31507,7 +30780,7 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     sjt_call374->text.count = 17;
     sjt_call374->text.data._refCount = 1;
     sjt_call374->text.data.datasize = 18;
-    sjt_call374->text.data.data = (void*)sjg_string177;
+    sjt_call374->text.data.data = (void*)sjg_string179;
     sjt_call374->text.data._isglobal = true;
     sjt_call374->text.data.count = 18;
     sjf_array_char(&sjt_call374->text.data);
@@ -32705,6 +31978,25 @@ void sjf_menuscene_heap(sjs_nauscene3delement** _return) {
     if (sjt_call99._refCount == 1) { sjf_vec3_destroy(&sjt_call99); }
 }
 
+void sjf_model_as_sji_model(sjs_model* _this, sji_model* _return) {
+    _return->_parent = (sjs_object*)_this;
+    _return->_vtbl = &sjs_model_model_vtbl;
+}
+
+void sjf_model_asinterface(sjs_model* _this, int typeId, sjs_interface* _return) {
+    switch (typeId) {
+        case sji_model_typeId:  {
+            sjf_model_as_sji_model(_this, (sji_model*)_return);
+            break;
+        }
+
+        default: {
+            _return->_parent = 0;
+            break;
+        }
+    }
+}
+
 void sjf_model_copy(sjs_model* _this, sjs_model* _from) {
     _this->vertexbuffer._refCount = 1;
     sjf_vertexbuffer_vertex_location_texture_normal_copy(&_this->vertexbuffer, &_from->vertexbuffer);
@@ -32823,25 +32115,6 @@ void sjf_model_heap(sjs_model* _this, sjs_model** _return) {
     (*_return)->_refCount++;
 }
 
-void sjf_model_heap_as_sji_model(sjs_model* _this, sji_model* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_model_model_vtbl;
-}
-
-void sjf_model_heap_asinterface(sjs_model* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_model_typeId:  {
-            sjf_model_heap_as_sji_model(_this, (sji_model*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
-}
-
 void sjf_model_render(sjs_model* _parent) {
     sjs_mat4 sjt_call35 = { -1 };
     sjs_string sjt_call36 = { -1 };
@@ -32937,7 +32210,7 @@ void sjf_model_render(sjs_model* _parent) {
     sjt_call36.count = 9;
     sjt_call36.data._refCount = 1;
     sjt_call36.data.datasize = 10;
-    sjt_call36.data.data = (void*)sjg_string201;
+    sjt_call36.data.data = (void*)sjg_string205;
     sjt_call36.data._isglobal = true;
     sjt_call36.data.count = 10;
     sjf_array_char(&sjt_call36.data);
@@ -32952,7 +32225,7 @@ void sjf_model_render(sjs_model* _parent) {
     sjt_call37.count = 9;
     sjt_call37.data._refCount = 1;
     sjt_call37.data.datasize = 10;
-    sjt_call37.data.data = (void*)sjg_string202;
+    sjt_call37.data.data = (void*)sjg_string206;
     sjt_call37.data._isglobal = true;
     sjt_call37.data.count = 10;
     sjf_array_char(&sjt_call37.data);
@@ -32967,7 +32240,7 @@ void sjf_model_render(sjs_model* _parent) {
     sjt_call38.count = 10;
     sjt_call38.data._refCount = 1;
     sjt_call38.data.datasize = 11;
-    sjt_call38.data.data = (void*)sjg_string203;
+    sjt_call38.data.data = (void*)sjg_string207;
     sjt_call38.data._isglobal = true;
     sjt_call38.data.count = 11;
     sjf_array_char(&sjt_call38.data);
@@ -32983,7 +32256,7 @@ void sjf_model_render(sjs_model* _parent) {
     sjt_call39.count = 8;
     sjt_call39.data._refCount = 1;
     sjt_call39.data.datasize = 9;
-    sjt_call39.data.data = (void*)sjg_string204;
+    sjt_call39.data.data = (void*)sjg_string208;
     sjt_call39.data._isglobal = true;
     sjt_call39.data.count = 9;
     sjf_array_char(&sjt_call39.data);
@@ -33000,7 +32273,7 @@ void sjf_model_render(sjs_model* _parent) {
     sjt_call40.count = 12;
     sjt_call40.data._refCount = 1;
     sjt_call40.data.datasize = 13;
-    sjt_call40.data.data = (void*)sjg_string205;
+    sjt_call40.data.data = (void*)sjg_string209;
     sjt_call40.data._isglobal = true;
     sjt_call40.data.count = 13;
     sjf_array_char(&sjt_call40.data);
@@ -33019,7 +32292,7 @@ void sjf_model_render(sjs_model* _parent) {
     sjt_call42.count = 9;
     sjt_call42.data._refCount = 1;
     sjt_call42.data.datasize = 10;
-    sjt_call42.data.data = (void*)sjg_string206;
+    sjt_call42.data.data = (void*)sjg_string210;
     sjt_call42.data._isglobal = true;
     sjt_call42.data.count = 10;
     sjf_array_char(&sjt_call42.data);
@@ -33280,7 +32553,7 @@ void sjf_mouse_release(sji_element element) {
     sjt_call13.count = 7;
     sjt_call13.data._refCount = 1;
     sjt_call13.data.datasize = 8;
-    sjt_call13.data.data = (void*)sjg_string197;
+    sjt_call13.data.data = (void*)sjg_string201;
     sjt_call13.data._isglobal = true;
     sjt_call13.data.count = 8;
     sjf_array_char(&sjt_call13.data);
@@ -33311,7 +32584,7 @@ void sjf_mouse_release(sji_element element) {
             sjt_call14.count = 12;
             sjt_call14.data._refCount = 1;
             sjt_call14.data.datasize = 13;
-            sjt_call14.data.data = (void*)sjg_string198;
+            sjt_call14.data.data = (void*)sjg_string202;
             sjt_call14.data._isglobal = true;
             sjt_call14.data.count = 13;
             sjf_array_char(&sjt_call14.data);
@@ -33504,6 +32777,25 @@ void sjf_nauscene3delement_animatelookat(sjs_nauscene3delement* _parent, sjs_vec
         if (sjt_functionParam964._parent->_refCount <= 0) {
             sjt_functionParam964._vtbl->destroy(sjt_functionParam964._parent);
             free(sjt_functionParam964._parent);
+        }
+    }
+}
+
+void sjf_nauscene3delement_as_sji_element(sjs_nauscene3delement* _this, sji_element* _return) {
+    _return->_parent = (sjs_object*)_this;
+    _return->_vtbl = &sjs_nauscene3delement_element_vtbl;
+}
+
+void sjf_nauscene3delement_asinterface(sjs_nauscene3delement* _this, int typeId, sjs_interface* _return) {
+    switch (typeId) {
+        case sji_element_typeId:  {
+            sjf_nauscene3delement_as_sji_element(_this, (sji_element*)_return);
+            break;
+        }
+
+        default: {
+            _return->_parent = 0;
+            break;
         }
     }
 }
@@ -33873,25 +33165,6 @@ void sjf_nauscene3delement_getsize_heap(sjs_nauscene3delement* _parent, sjs_size
 }
 
 void sjf_nauscene3delement_heap(sjs_nauscene3delement* _this) {
-}
-
-void sjf_nauscene3delement_heap_as_sji_element(sjs_nauscene3delement* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_nauscene3delement_element_vtbl;
-}
-
-void sjf_nauscene3delement_heap_asinterface(sjs_nauscene3delement* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_nauscene3delement_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
 }
 
 void sjf_nauscene3delement_render(sjs_nauscene3delement* _parent, sjs_scene2d* scene) {
@@ -34271,25 +33544,6 @@ void sjf_panel3d_getz(sjs_panel3d* _parent, float* _return) {
 }
 
 void sjf_panel3d_heap(sjs_panel3d* _this) {
-}
-
-void sjf_panel3d_heap_as_sji_model(sjs_panel3d* _this, sji_model* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_panel3d_model_vtbl;
-}
-
-void sjf_panel3d_heap_asinterface(sjs_panel3d* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_model_typeId:  {
-            sjf_panel3d_heap_as_sji_model(_this, (sji_model*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
 }
 
 void sjf_panel3d_render(sjs_panel3d* _parent) {
@@ -34825,25 +34079,6 @@ void sjf_peoplepanel_heap(sjs_peoplepanel* _this) {
     sjf_array_heap_iface_model_map_mat4(sjt_parent346, sjt_functionParam882, &_this->_childrenmodel);
 }
 
-void sjf_peoplepanel_heap_as_sji_model(sjs_peoplepanel* _this, sji_model* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_peoplepanel_model_vtbl;
-}
-
-void sjf_peoplepanel_heap_asinterface(sjs_peoplepanel* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_model_typeId:  {
-            sjf_peoplepanel_heap_as_sji_model(_this, (sji_model*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
-}
-
 void sjf_peoplepanel_render(sjs_peoplepanel* _parent) {
 }
 
@@ -35015,7 +34250,7 @@ void sjf_personelement_firemouseevent(sjs_personelement* _parent, sjs_mouseevent
     sjt_call213.count = 14;
     sjt_call213.data._refCount = 1;
     sjt_call213.data.datasize = 15;
-    sjt_call213.data.data = (void*)sjg_string225;
+    sjt_call213.data.data = (void*)sjg_string229;
     sjt_call213.data._isglobal = true;
     sjt_call213.data.count = 15;
     sjf_array_char(&sjt_call213.data);
@@ -35137,25 +34372,6 @@ void sjf_personelement_getsize_heap(sjs_personelement* _parent, sjs_size* maxsiz
 void sjf_personelement_heap(sjs_personelement* _this) {
 }
 
-void sjf_personelement_heap_as_sji_element(sjs_personelement* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_personelement_element_vtbl;
-}
-
-void sjf_personelement_heap_asinterface(sjs_personelement* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_personelement_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
-}
-
 void sjf_personelement_onmousedown(sjs_personelement* _parent, sjs_point* point) {
     sjs_string sjt_call230 = { -1 };
     sjs_personelement* sjt_dot2041 = 0;
@@ -35167,7 +34383,7 @@ void sjf_personelement_onmousedown(sjs_personelement* _parent, sjs_point* point)
     sjt_call230.count = 25;
     sjt_call230.data._refCount = 1;
     sjt_call230.data.datasize = 26;
-    sjt_call230.data.data = (void*)sjg_string230;
+    sjt_call230.data.data = (void*)sjg_string234;
     sjt_call230.data._isglobal = true;
     sjt_call230.data.count = 26;
     sjf_array_char(&sjt_call230.data);
@@ -35258,7 +34474,7 @@ void sjf_personelement_onmousedown(sjs_personelement* _parent, sjs_point* point)
             sjt_call255.count = 4;
             sjt_call255.data._refCount = 1;
             sjt_call255.data.datasize = 5;
-            sjt_call255.data.data = (void*)sjg_string237;
+            sjt_call255.data.data = (void*)sjg_string241;
             sjt_call255.data._isglobal = true;
             sjt_call255.data.count = 5;
             sjf_array_char(&sjt_call255.data);
@@ -35275,7 +34491,7 @@ void sjf_personelement_onmousedown(sjs_personelement* _parent, sjs_point* point)
             sjt_call281.count = 3;
             sjt_call281.data._refCount = 1;
             sjt_call281.data.datasize = 4;
-            sjt_call281.data.data = (void*)sjg_string244;
+            sjt_call281.data.data = (void*)sjg_string248;
             sjt_call281.data._isglobal = true;
             sjt_call281.data.count = 4;
             sjf_array_char(&sjt_call281.data);
@@ -35328,7 +34544,7 @@ void sjf_personelement_onmousedown(sjs_personelement* _parent, sjs_point* point)
             sjt_call286.count = 31;
             sjt_call286.data._refCount = 1;
             sjt_call286.data.datasize = 32;
-            sjt_call286.data.data = (void*)sjg_string232;
+            sjt_call286.data.data = (void*)sjg_string236;
             sjt_call286.data._isglobal = true;
             sjt_call286.data.count = 32;
             sjf_array_char(&sjt_call286.data);
@@ -35353,7 +34569,7 @@ void sjf_personelement_onmousedown(sjs_personelement* _parent, sjs_point* point)
         sjt_call287.count = 23;
         sjt_call287.data._refCount = 1;
         sjt_call287.data.datasize = 24;
-        sjt_call287.data.data = (void*)sjg_string231;
+        sjt_call287.data.data = (void*)sjg_string235;
         sjt_call287.data._isglobal = true;
         sjt_call287.data.count = 24;
         sjf_array_char(&sjt_call287.data);
@@ -35375,7 +34591,7 @@ void sjf_personelement_onmousemove(sjs_personelement* _parent, sjs_point* point)
     sjt_call288.count = 25;
     sjt_call288.data._refCount = 1;
     sjt_call288.data.datasize = 26;
-    sjt_call288.data.data = (void*)sjg_string228;
+    sjt_call288.data.data = (void*)sjg_string232;
     sjt_call288.data._isglobal = true;
     sjt_call288.data.count = 26;
     sjf_array_char(&sjt_call288.data);
@@ -35410,7 +34626,7 @@ void sjf_personelement_onmouseup(sjs_personelement* _parent, sjs_point* point) {
     sjt_call226.count = 24;
     sjt_call226.data._refCount = 1;
     sjt_call226.data.datasize = 25;
-    sjt_call226.data.data = (void*)sjg_string250;
+    sjt_call226.data.data = (void*)sjg_string254;
     sjt_call226.data._isglobal = true;
     sjt_call226.data.count = 25;
     sjf_array_char(&sjt_call226.data);
@@ -35426,7 +34642,7 @@ void sjf_personelement_onmouseup(sjs_personelement* _parent, sjs_point* point) {
     sjt_call228.count = 2;
     sjt_call228.data._refCount = 1;
     sjt_call228.data.datasize = 3;
-    sjt_call228.data.data = (void*)sjg_string251;
+    sjt_call228.data.data = (void*)sjg_string255;
     sjt_call228.data._isglobal = true;
     sjt_call228.data.count = 3;
     sjf_array_char(&sjt_call228.data);
@@ -35875,7 +35091,7 @@ void sjf_point_asstring(sjs_point* _parent, sjs_string* _return) {
     sjt_call217.count = 2;
     sjt_call217.data._refCount = 1;
     sjt_call217.data.datasize = 3;
-    sjt_call217.data.data = (void*)sjg_string226;
+    sjt_call217.data.data = (void*)sjg_string230;
     sjt_call217.data._isglobal = true;
     sjt_call217.data.count = 3;
     sjf_array_char(&sjt_call217.data);
@@ -35917,7 +35133,7 @@ void sjf_point_asstring_heap(sjs_point* _parent, sjs_string** _return) {
     sjt_call221.count = 2;
     sjt_call221.data._refCount = 1;
     sjt_call221.data.datasize = 3;
-    sjt_call221.data.data = (void*)sjg_string227;
+    sjt_call221.data.data = (void*)sjg_string231;
     sjt_call221.data._isglobal = true;
     sjt_call221.data.count = 3;
     sjf_array_char(&sjt_call221.data);
@@ -36358,6 +35574,25 @@ void sjf_scene2d_start(sjs_scene2d* _parent) {
     glDisable( GL_DEPTH_TEST );
 }
 
+void sjf_scene2dmodel_as_sji_model(sjs_scene2dmodel* _this, sji_model* _return) {
+    _return->_parent = (sjs_object*)_this;
+    _return->_vtbl = &sjs_scene2dmodel_model_vtbl;
+}
+
+void sjf_scene2dmodel_asinterface(sjs_scene2dmodel* _this, int typeId, sjs_interface* _return) {
+    switch (typeId) {
+        case sji_model_typeId:  {
+            sjf_scene2dmodel_as_sji_model(_this, (sji_model*)_return);
+            break;
+        }
+
+        default: {
+            _return->_parent = 0;
+            break;
+        }
+    }
+}
+
 void sjf_scene2dmodel_copy(sjs_scene2dmodel* _this, sjs_scene2dmodel* _from) {
     _this->id._refCount = 1;
     sjf_string_copy((_this->id._refCount != -1 ? &_this->id : 0), (_from->id._refCount != -1 ? &_from->id : 0));
@@ -36706,7 +35941,7 @@ void sjf_scene2dmodel_heap(sjs_scene2dmodel* _this) {
         sjt_call117.count = 18;
         sjt_call117.data._refCount = 1;
         sjt_call117.data.datasize = 19;
-        sjt_call117.data.data = (void*)sjg_string40;
+        sjt_call117.data.data = (void*)sjg_string42;
         sjt_call117.data._isglobal = true;
         sjt_call117.data.count = 19;
         sjf_array_char(&sjt_call117.data);
@@ -36758,25 +35993,6 @@ void sjf_scene2dmodel_heap(sjs_scene2dmodel* _this) {
 
     if (sjt_call117._refCount == 1) { sjf_string_destroy(&sjt_call117); }
     if (sjv_rect._refCount == 1) { sjf_rect_destroy(&sjv_rect); }
-}
-
-void sjf_scene2dmodel_heap_as_sji_model(sjs_scene2dmodel* _this, sji_model* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_scene2dmodel_model_vtbl;
-}
-
-void sjf_scene2dmodel_heap_asinterface(sjs_scene2dmodel* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_model_typeId:  {
-            sjf_scene2dmodel_heap_as_sji_model(_this, (sji_model*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
 }
 
 void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
@@ -36935,7 +36151,7 @@ void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
     sjt_call127.count = 9;
     sjt_call127.data._refCount = 1;
     sjt_call127.data.datasize = 10;
-    sjt_call127.data.data = (void*)sjg_string213;
+    sjt_call127.data.data = (void*)sjg_string217;
     sjt_call127.data._isglobal = true;
     sjt_call127.data.count = 10;
     sjf_array_char(&sjt_call127.data);
@@ -36950,7 +36166,7 @@ void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
     sjt_call128.count = 9;
     sjt_call128.data._refCount = 1;
     sjt_call128.data.datasize = 10;
-    sjt_call128.data.data = (void*)sjg_string214;
+    sjt_call128.data.data = (void*)sjg_string218;
     sjt_call128.data._isglobal = true;
     sjt_call128.data.count = 10;
     sjf_array_char(&sjt_call128.data);
@@ -36965,7 +36181,7 @@ void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
     sjt_call129.count = 10;
     sjt_call129.data._refCount = 1;
     sjt_call129.data.datasize = 11;
-    sjt_call129.data.data = (void*)sjg_string215;
+    sjt_call129.data.data = (void*)sjg_string219;
     sjt_call129.data._isglobal = true;
     sjt_call129.data.count = 11;
     sjf_array_char(&sjt_call129.data);
@@ -36981,7 +36197,7 @@ void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
     sjt_call130.count = 8;
     sjt_call130.data._refCount = 1;
     sjt_call130.data.datasize = 9;
-    sjt_call130.data.data = (void*)sjg_string216;
+    sjt_call130.data.data = (void*)sjg_string220;
     sjt_call130.data._isglobal = true;
     sjt_call130.data.count = 9;
     sjf_array_char(&sjt_call130.data);
@@ -36998,7 +36214,7 @@ void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
     sjt_call131.count = 12;
     sjt_call131.data._refCount = 1;
     sjt_call131.data.datasize = 13;
-    sjt_call131.data.data = (void*)sjg_string217;
+    sjt_call131.data.data = (void*)sjg_string221;
     sjt_call131.data._isglobal = true;
     sjt_call131.data.count = 13;
     sjf_array_char(&sjt_call131.data);
@@ -37017,7 +36233,7 @@ void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
     sjt_call133.count = 9;
     sjt_call133.data._refCount = 1;
     sjt_call133.data.datasize = 10;
-    sjt_call133.data.data = (void*)sjg_string218;
+    sjt_call133.data.data = (void*)sjg_string222;
     sjt_call133.data._isglobal = true;
     sjt_call133.data.count = 10;
     sjf_array_char(&sjt_call133.data);
@@ -37270,7 +36486,7 @@ void sjf_scenebuffer(sjs_scenebuffer* _this) {
         sjt_call356.count = 18;
         sjt_call356.data._refCount = 1;
         sjt_call356.data.datasize = 19;
-        sjt_call356.data.data = (void*)sjg_string135;
+        sjt_call356.data.data = (void*)sjg_string137;
         sjt_call356.data._isglobal = true;
         sjt_call356.data.count = 19;
         sjf_array_char(&sjt_call356.data);
@@ -37398,7 +36614,7 @@ void sjf_scenebuffer_heap(sjs_scenebuffer* _this) {
         sjt_call357.count = 18;
         sjt_call357.data._refCount = 1;
         sjt_call357.data.datasize = 19;
-        sjt_call357.data.data = (void*)sjg_string136;
+        sjt_call357.data.data = (void*)sjg_string138;
         sjt_call357.data._isglobal = true;
         sjt_call357.data.count = 19;
         sjf_array_char(&sjt_call357.data);
@@ -38235,25 +37451,6 @@ void sjf_textelement_getsize_heap(sjs_textelement* _parent, sjs_size* maxsize, s
 void sjf_textelement_heap(sjs_textelement* _this) {
 }
 
-void sjf_textelement_heap_as_sji_element(sjs_textelement* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_textelement_element_vtbl;
-}
-
-void sjf_textelement_heap_asinterface(sjs_textelement* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_textelement_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
-}
-
 void sjf_textelement_render(sjs_textelement* _parent, sjs_scene2d* scene) {
     sjs_textelement* sjt_dot1902 = 0;
     sjs_textelement* sjt_dot1927 = 0;
@@ -38781,7 +37978,7 @@ void sjf_vec3_asstring(sjs_vec3* _parent, sjs_string* _return) {
     sjt_call243.count = 2;
     sjt_call243.data._refCount = 1;
     sjt_call243.data.datasize = 3;
-    sjt_call243.data.data = (void*)sjg_string233;
+    sjt_call243.data.data = (void*)sjg_string237;
     sjt_call243.data._isglobal = true;
     sjt_call243.data.count = 3;
     sjf_array_char(&sjt_call243.data);
@@ -38799,7 +37996,7 @@ void sjf_vec3_asstring(sjs_vec3* _parent, sjs_string* _return) {
     sjt_call245.count = 2;
     sjt_call245.data._refCount = 1;
     sjt_call245.data.datasize = 3;
-    sjt_call245.data.data = (void*)sjg_string234;
+    sjt_call245.data.data = (void*)sjg_string238;
     sjt_call245.data._isglobal = true;
     sjt_call245.data.count = 3;
     sjf_array_char(&sjt_call245.data);
@@ -38855,7 +38052,7 @@ void sjf_vec3_asstring_heap(sjs_vec3* _parent, sjs_string** _return) {
     sjt_call251.count = 2;
     sjt_call251.data._refCount = 1;
     sjt_call251.data.datasize = 3;
-    sjt_call251.data.data = (void*)sjg_string235;
+    sjt_call251.data.data = (void*)sjg_string239;
     sjt_call251.data._isglobal = true;
     sjt_call251.data.count = 3;
     sjf_array_char(&sjt_call251.data);
@@ -38873,7 +38070,7 @@ void sjf_vec3_asstring_heap(sjs_vec3* _parent, sjs_string** _return) {
     sjt_call253.count = 2;
     sjt_call253.data._refCount = 1;
     sjt_call253.data.datasize = 3;
-    sjt_call253.data.data = (void*)sjg_string236;
+    sjt_call253.data.data = (void*)sjg_string240;
     sjt_call253.data._isglobal = true;
     sjt_call253.data.count = 3;
     sjf_array_char(&sjt_call253.data);
@@ -39648,7 +38845,7 @@ void sjf_vec4_asstring(sjs_vec4* _parent, sjs_string* _return) {
     sjt_call263.count = 2;
     sjt_call263.data._refCount = 1;
     sjt_call263.data.datasize = 3;
-    sjt_call263.data.data = (void*)sjg_string238;
+    sjt_call263.data.data = (void*)sjg_string242;
     sjt_call263.data._isglobal = true;
     sjt_call263.data.count = 3;
     sjf_array_char(&sjt_call263.data);
@@ -39666,7 +38863,7 @@ void sjf_vec4_asstring(sjs_vec4* _parent, sjs_string* _return) {
     sjt_call265.count = 2;
     sjt_call265.data._refCount = 1;
     sjt_call265.data.datasize = 3;
-    sjt_call265.data.data = (void*)sjg_string239;
+    sjt_call265.data.data = (void*)sjg_string243;
     sjt_call265.data._isglobal = true;
     sjt_call265.data.count = 3;
     sjf_array_char(&sjt_call265.data);
@@ -39684,7 +38881,7 @@ void sjf_vec4_asstring(sjs_vec4* _parent, sjs_string* _return) {
     sjt_call267.count = 2;
     sjt_call267.data._refCount = 1;
     sjt_call267.data.datasize = 3;
-    sjt_call267.data.data = (void*)sjg_string240;
+    sjt_call267.data.data = (void*)sjg_string244;
     sjt_call267.data._isglobal = true;
     sjt_call267.data.count = 3;
     sjf_array_char(&sjt_call267.data);
@@ -39754,7 +38951,7 @@ void sjf_vec4_asstring_heap(sjs_vec4* _parent, sjs_string** _return) {
     sjt_call275.count = 2;
     sjt_call275.data._refCount = 1;
     sjt_call275.data.datasize = 3;
-    sjt_call275.data.data = (void*)sjg_string241;
+    sjt_call275.data.data = (void*)sjg_string245;
     sjt_call275.data._isglobal = true;
     sjt_call275.data.count = 3;
     sjf_array_char(&sjt_call275.data);
@@ -39772,7 +38969,7 @@ void sjf_vec4_asstring_heap(sjs_vec4* _parent, sjs_string** _return) {
     sjt_call277.count = 2;
     sjt_call277.data._refCount = 1;
     sjt_call277.data.datasize = 3;
-    sjt_call277.data.data = (void*)sjg_string242;
+    sjt_call277.data.data = (void*)sjg_string246;
     sjt_call277.data._isglobal = true;
     sjt_call277.data.count = 3;
     sjf_array_char(&sjt_call277.data);
@@ -39790,7 +38987,7 @@ void sjf_vec4_asstring_heap(sjs_vec4* _parent, sjs_string** _return) {
     sjt_call279.count = 2;
     sjt_call279.data._refCount = 1;
     sjt_call279.data.datasize = 3;
-    sjt_call279.data.data = (void*)sjg_string243;
+    sjt_call279.data.data = (void*)sjg_string247;
     sjt_call279.data._isglobal = true;
     sjt_call279.data.count = 3;
     sjf_array_char(&sjt_call279.data);
@@ -40765,7 +39962,7 @@ int main(int argc, char** argv) {
     sjs_animation_vec3_animation_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_animation_vec3_asinterface;
     sjs_animation_vec3_animation_vtbl.nextframe = (void(*)(sjs_object*,int32_t, bool*))sjf_animation_vec3_nextframe;
     sjs_buttonelement_element_vtbl.destroy = (void(*)(void*))sjf_buttonelement_destroy;
-    sjs_buttonelement_element_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_buttonelement_heap_asinterface;
+    sjs_buttonelement_element_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_buttonelement_asinterface;
     sjs_buttonelement_element_vtbl.getsize = (void(*)(sjs_object*,sjs_size*, sjs_size*))sjf_buttonelement_getsize;
     sjs_buttonelement_element_vtbl.getsize_heap = (void(*)(sjs_object*,sjs_size*, sjs_size**))sjf_buttonelement_getsize_heap;
     sjs_buttonelement_element_vtbl.getrect = (void(*)(sjs_object*, sjs_rect*))sjf_buttonelement_getrect;
@@ -40847,7 +40044,7 @@ int main(int argc, char** argv) {
     sjs_mainpanel_model_vtbl.render = (void(*)(sjs_object*))sjf_mainpanel_render;
     sjs_mainpanel_model_vtbl.firemouseevent = (void(*)(sjs_object*,sjs_mouseevent*))sjf_mainpanel_firemouseevent;
     sjs_model_model_vtbl.destroy = (void(*)(void*))sjf_model_destroy;
-    sjs_model_model_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_model_heap_asinterface;
+    sjs_model_model_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_model_asinterface;
     sjs_model_model_vtbl.update = (void(*)(sjs_object*,sjs_rect*,sjs_mat4*,sjs_mat4*,sjs_mat4*,sjs_light*))sjf_model_update;
     sjs_model_model_vtbl.getz = (void(*)(sjs_object*, float*))sjf_model_getz;
     sjs_model_model_vtbl.getcenter = (void(*)(sjs_object*, sjs_vec3*))sjf_model_getcenter;
@@ -40858,7 +40055,7 @@ int main(int argc, char** argv) {
     sjs_model_model_vtbl.render = (void(*)(sjs_object*))sjf_model_render;
     sjs_model_model_vtbl.firemouseevent = (void(*)(sjs_object*,sjs_mouseevent*))sjf_model_firemouseevent;
     sjs_nauscene3delement_element_vtbl.destroy = (void(*)(void*))sjf_nauscene3delement_destroy;
-    sjs_nauscene3delement_element_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_nauscene3delement_heap_asinterface;
+    sjs_nauscene3delement_element_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_nauscene3delement_asinterface;
     sjs_nauscene3delement_element_vtbl.getsize = (void(*)(sjs_object*,sjs_size*, sjs_size*))sjf_nauscene3delement_getsize;
     sjs_nauscene3delement_element_vtbl.getsize_heap = (void(*)(sjs_object*,sjs_size*, sjs_size**))sjf_nauscene3delement_getsize_heap;
     sjs_nauscene3delement_element_vtbl.getrect = (void(*)(sjs_object*, sjs_rect*))sjf_nauscene3delement_getrect;
@@ -40898,7 +40095,7 @@ int main(int argc, char** argv) {
     sjs_personelement_element_vtbl.render = (void(*)(sjs_object*,sjs_scene2d*))sjf_personelement_render;
     sjs_personelement_element_vtbl.firemouseevent = (void(*)(sjs_object*,sjs_mouseevent*, bool*))sjf_personelement_firemouseevent;
     sjs_scene2dmodel_model_vtbl.destroy = (void(*)(void*))sjf_scene2dmodel_destroy;
-    sjs_scene2dmodel_model_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_scene2dmodel_heap_asinterface;
+    sjs_scene2dmodel_model_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_scene2dmodel_asinterface;
     sjs_scene2dmodel_model_vtbl.update = (void(*)(sjs_object*,sjs_rect*,sjs_mat4*,sjs_mat4*,sjs_mat4*,sjs_light*))sjf_scene2dmodel_update;
     sjs_scene2dmodel_model_vtbl.getz = (void(*)(sjs_object*, float*))sjf_scene2dmodel_getz;
     sjs_scene2dmodel_model_vtbl.getcenter = (void(*)(sjs_object*, sjs_vec3*))sjf_scene2dmodel_getcenter;
@@ -41327,6 +40524,26 @@ int main(int argc, char** argv) {
     sjv_vertex_location_texture_normal_format.data.count = 33;
     sjf_array_char(&sjv_vertex_location_texture_normal_format.data);
     sjf_string(&sjv_vertex_location_texture_normal_format);
+    sjv_saturateshader._refCount = 1;
+    sjv_saturateshader.vertex._refCount = 1;
+    sjv_saturateshader.vertex.count = 20;
+    sjv_saturateshader.vertex.data._refCount = 1;
+    sjv_saturateshader.vertex.data.datasize = 21;
+    sjv_saturateshader.vertex.data.data = (void*)sjg_string18;
+    sjv_saturateshader.vertex.data._isglobal = true;
+    sjv_saturateshader.vertex.data.count = 21;
+    sjf_array_char(&sjv_saturateshader.vertex.data);
+    sjf_string(&sjv_saturateshader.vertex);
+    sjv_saturateshader.pixel._refCount = 1;
+    sjv_saturateshader.pixel.count = 21;
+    sjv_saturateshader.pixel.data._refCount = 1;
+    sjv_saturateshader.pixel.data.datasize = 22;
+    sjv_saturateshader.pixel.data.data = (void*)sjg_string19;
+    sjv_saturateshader.pixel.data._isglobal = true;
+    sjv_saturateshader.pixel.data.count = 22;
+    sjf_array_char(&sjv_saturateshader.pixel.data);
+    sjf_string(&sjv_saturateshader.pixel);
+    sjf_shader(&sjv_saturateshader);
     sjt_call1 = (sjs_filllayout*)malloc(sizeof(sjs_filllayout));
     sjt_call1->_refCount = 1;
     sjt_call1->children._refCount = 1;
@@ -41534,6 +40751,7 @@ void main_destroy() {
     if (sjv_phongtextureshader._refCount == 1) { sjf_shader_destroy(&sjv_phongtextureshader); }
     if (sjv_rootscene._refCount == 1) { sjf_scene2d_destroy(&sjv_rootscene); }
     if (sjv_rootwindowrenderer._refCount == 1) { sjf_windowrenderer_destroy(&sjv_rootwindowrenderer); }
+    if (sjv_saturateshader._refCount == 1) { sjf_shader_destroy(&sjv_saturateshader); }
     if (sjv_style._refCount == 1) { sjf_anon2_destroy(&sjv_style); }
     if (sjv_textshader._refCount == 1) { sjf_shader_destroy(&sjv_textshader); }
     if (sjv_vertex_location_texture_normal_format._refCount == 1) { sjf_string_destroy(&sjv_vertex_location_texture_normal_format); }

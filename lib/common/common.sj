@@ -30,10 +30,11 @@
 #include(<stdlib.h>)
 #include(<string.h>)
 #include(<windows.h>, __WINDOWS__)
+#include("lib/common/khash.h")
+#include("lib/common/value_option_types.h")
 --cinclude--
 
 
-include "khash.sj"
 include "array.sj"
 include "bool.sj"
 include "console.sj"

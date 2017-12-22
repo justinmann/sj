@@ -35,6 +35,8 @@ Invalid compiler
 * @private
 */
 #define MAX_VERTEX_ATTRIBUTE 16    
+#include "lib/common/khash.h"
+#include "lib/common/value_option_types.h"
 #ifdef EMSCRIPTEN
 #include <GLES3/gl3.h>
 #endif
@@ -80,62 +82,6 @@ typedef struct td_delete_cb_list delete_cb_list;
 typedef struct vector_td vector_t;
 typedef struct vertex_attribute_td vertex_attribute_t;
 typedef struct vertex_buffer_td vertex_buffer_t;
-typedef struct td_int32_option int32_option;
-struct td_int32_option {
-    bool isvalid;
-    int32_t value;
-};
-const int32_option int32_empty = { false };
-
-typedef struct td_uint32_option uint32_option;
-struct td_uint32_option {
-    bool isvalid;
-    uint32_t value;
-};
-const uint32_option uint32_empty = { false };
-
-typedef struct td_int64_option int64_option;
-struct td_int64_option {
-    bool isvalid;
-    int64_t value;
-};
-const int64_option int64_empty = { false };
-
-typedef struct td_uint64_option uint64_option;
-struct td_uint64_option {
-    bool isvalid;
-    uint64_t value;
-};
-const uint64_option uint64_empty = { false };
-
-typedef struct td_void_option void_option;
-struct td_void_option {
-    bool isvalid;
-    void* value;
-};
-const void_option void_empty = { false };
-
-typedef struct td_char_option char_option;
-struct td_char_option {
-    bool isvalid;
-    char value;
-};
-const char_option char_empty = { false };
-
-typedef struct td_float_option float_option;
-struct td_float_option {
-    bool isvalid;
-    float value;
-};
-const float_option float_empty = { false };
-
-typedef struct td_double_option double_option;
-struct td_double_option {
-    bool isvalid;
-    double value;
-};
-const double_option double_empty = { false };
-
 const char* sjg_string1 = "shaders/v3f-t2f.vert";
 const char* sjg_string10 = "shaders/v3f-t2f.frag";
 const char* sjg_string11 = "shaders/v3f-n3f-phong.vert";
@@ -145,530 +91,74 @@ const char* sjg_string14 = "shaders/v3f-t2f-n3f-phong.frag";
 const char* sjg_string15 = "shaders/v3f-t2f-c4f.vert";
 const char* sjg_string16 = "shaders/v3f-t2f-c4f.frag";
 const char* sjg_string17 = "vertex:3f,tex_coord:2f,normal:3f";
-const char* sjg_string19 = "assets/arial.ttf";
+const char* sjg_string18 = "shaders/v3f-t2f.vert";
+const char* sjg_string19 = "shaders/saturate.frag";
 const char* sjg_string2 = "shaders/blur-horizontal.frag";
-const char* sjg_string20 = "1";
-const char* sjg_string21 = "2";
-const char* sjg_string22 = "3";
-const char* sjg_string23 = "4";
-const char* sjg_string24 = "left";
-const char* sjg_string25 = "bottom";
-const char* sjg_string26 = "top";
-const char* sjg_string27 = "right";
-const char* sjg_string28 = "fill";
-const char* sjg_string29 = "1";
+const char* sjg_string21 = "assets/arial.ttf";
+const char* sjg_string22 = "1";
+const char* sjg_string23 = "2";
+const char* sjg_string24 = "3";
+const char* sjg_string25 = "4";
+const char* sjg_string26 = "left";
+const char* sjg_string27 = "bottom";
+const char* sjg_string28 = "top";
+const char* sjg_string29 = "right";
 const char* sjg_string3 = "shaders/v3f-t2f.vert";
-const char* sjg_string30 = "2";
-const char* sjg_string31 = "3";
-const char* sjg_string32 = "4";
-const char* sjg_string33 = "1";
-const char* sjg_string34 = "2";
-const char* sjg_string35 = "3";
-const char* sjg_string36 = "4";
-const char* sjg_string37 = "1";
-const char* sjg_string38 = "2";
-const char* sjg_string39 = "3";
+const char* sjg_string30 = "fill";
+const char* sjg_string31 = "1";
+const char* sjg_string32 = "2";
+const char* sjg_string33 = "3";
+const char* sjg_string34 = "4";
+const char* sjg_string35 = "1";
+const char* sjg_string36 = "2";
+const char* sjg_string37 = "3";
+const char* sjg_string38 = "4";
+const char* sjg_string39 = "1";
 const char* sjg_string4 = "shaders/blur-vertical.frag";
-const char* sjg_string40 = "4";
-const char* sjg_string41 = "1";
-const char* sjg_string42 = "2";
-const char* sjg_string43 = "3";
-const char* sjg_string44 = "4";
-const char* sjg_string45 = "1";
-const char* sjg_string46 = "2";
-const char* sjg_string47 = "3";
-const char* sjg_string48 = "4";
-const char* sjg_string49 = "1";
+const char* sjg_string40 = "2";
+const char* sjg_string41 = "3";
+const char* sjg_string42 = "4";
+const char* sjg_string43 = "1";
+const char* sjg_string44 = "2";
+const char* sjg_string45 = "3";
+const char* sjg_string46 = "4";
+const char* sjg_string47 = "1";
+const char* sjg_string48 = "2";
+const char* sjg_string49 = "3";
 const char* sjg_string5 = "shaders/v3f-t2f.vert";
-const char* sjg_string50 = "2";
-const char* sjg_string51 = "3";
-const char* sjg_string52 = "4";
-const char* sjg_string53 = "1";
-const char* sjg_string54 = "viewport being pop'ed is wrong";
+const char* sjg_string50 = "4";
+const char* sjg_string51 = "1";
+const char* sjg_string52 = "2";
+const char* sjg_string53 = "3";
+const char* sjg_string54 = "4";
+const char* sjg_string55 = "1";
+const char* sjg_string56 = "viewport being pop'ed is wrong";
 const char* sjg_string6 = "shaders/fade.frag";
 const char* sjg_string7 = "shaders/v3f-c4f.vert";
 const char* sjg_string8 = "shaders/v3f-c4f.frag";
 const char* sjg_string9 = "shaders/v3f-t2f.vert";
 
-/* The MIT License
-Copyright (c) 2008, by Attractive Chaos <attractivechaos@aol.co.uk>
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
-/*
-An example:
-#include "khash.h"
-KHASH_MAP_INIT_INT(32, char)
-int main() {
-    int ret, is_missing;
-    khiter_t k;
-    khash_t(32) *h = kh_init(32);
-    k = kh_put(32, h, 5, &ret);
-    if (!ret) kh_del(32, h, k);
-    kh_value(h, k) = 10;
-    k = kh_get(32, h, 10);
-    is_missing = (k == kh_end(h));
-    k = kh_get(32, h, 5);
-    kh_del(32, h, k);
-    for (k = kh_begin(h); k != kh_end(h); ++k)
-    if (kh_exist(h, k)) kh_value(h, k) = 1;
-    kh_destroy(32, h);
-    return 0;
-}
-*/
-/*
-2008-09-19 (0.2.3):
-* Corrected the example
-* Improved interfaces
-2008-09-11 (0.2.2):
-* Improved speed a little in kh_put()
-2008-09-10 (0.2.1):
-* Added kh_clear()
-* Fixed a compiling error
-2008-09-02 (0.2.0):
-* Changed to token concatenation which increases flexibility.
-2008-08-31 (0.1.2):
-* Fixed a bug in kh_get(), which has not been tested previously.
-2008-08-31 (0.1.1):
-* Added destructor
-*/
-#ifndef __AC_KHASH_H
-#define __AC_KHASH_H
-#define AC_VERSION_KHASH_H "0.2.2"
-typedef uint32_t khint_t;
-typedef khint_t khiter_t;
-#define __ac_HASH_PRIME_SIZE 32
-static const uint32_t __ac_prime_list[__ac_HASH_PRIME_SIZE] =
-{
-    0ul,          3ul,          11ul,         23ul,         53ul,
-    97ul,         193ul,        389ul,        769ul,        1543ul,
-    3079ul,       6151ul,       12289ul,      24593ul,      49157ul,
-    98317ul,      196613ul,     393241ul,     786433ul,     1572869ul,
-    3145739ul,    6291469ul,    12582917ul,   25165843ul,   50331653ul,
-    100663319ul,  201326611ul,  402653189ul,  805306457ul,  1610612741ul,
-    3221225473ul, 4294967291ul
-};
-#define __ac_isempty(flag, i) ((flag[i>>4]>>((i&0xfU)<<1))&2)
-#define __ac_isdel(flag, i) ((flag[i>>4]>>((i&0xfU)<<1))&1)
-#define __ac_iseither(flag, i) ((flag[i>>4]>>((i&0xfU)<<1))&3)
-#define __ac_set_isdel_false(flag, i) (flag[i>>4]&=~(1ul<<((i&0xfU)<<1)))
-#define __ac_set_isempty_false(flag, i) (flag[i>>4]&=~(2ul<<((i&0xfU)<<1)))
-#define __ac_set_isboth_false(flag, i) (flag[i>>4]&=~(3ul<<((i&0xfU)<<1)))
-#define __ac_set_isdel_true(flag, i) (flag[i>>4]|=1ul<<((i&0xfU)<<1))
-static const double __ac_HASH_UPPER = 0.77;
-#define KHASH_INIT_TYPEDEF(name, khkey_t, khval_t) \
-typedef struct {                                                    \
-khint_t n_buckets, size, n_occupied, upper_bound;               \
-uint32_t *flags;                                                \
-khkey_t *keys;                                                  \
-khval_t *vals;                                                  \
-} kh_##name##_t;                                                
-#define KHASH_INIT_FUNCTION(name, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal) \
-static inline kh_##name##_t *kh_init_##name() {                     \
-return (kh_##name##_t*)calloc(1, sizeof(kh_##name##_t));        \
-}                                                                   \
-static inline void kh_destroy_##name(kh_##name##_t *h)              \
-{                                                                   \
-if (h) {                                                        \
-free(h->keys); free(h->flags);                              \
-free(h->vals);                                              \
-free(h);                                                    \
-}                                                               \
-}                                                                   \
-static inline void kh_clear_##name(kh_##name##_t *h)                \
-{                                                                   \
-if (h && h->flags) { \
-memset(h->flags, 0xaa, ((h->n_buckets>>4) + 1) * sizeof(uint32_t)); \
-h->size = h->n_occupied = 0;                                \
-}                                                               \
-}                                                                   \
-static inline khint_t kh_get_##name(kh_##name##_t *h, khkey_t key)  \
-{                                                                   \
-if (h->n_buckets) {                                             \
-khint_t inc, k, i, last;                                    \
-__hash_func(key, &k); i = k % h->n_buckets;        \
-inc = 1 + k % (h->n_buckets - 1); last = i;                 \
-bool shouldContinue = false;                                \
-if (!__ac_isempty(h->flags, i)) {                           \
-bool isEqual;                                           \
-__hash_equal(h->keys[i], key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
-}                                                           \
-while (shouldContinue) {                                    \
-if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
-else i += inc;                                          \
-if (i == last) return h->n_buckets;                     \
-shouldContinue = false;                                 \
-if (!__ac_isempty(h->flags, i)) {                       \
-bool isEqual;                                       \
-__hash_equal(h->keys[i], key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual; \
-}                                                       \
-}                                                           \
-return __ac_iseither(h->flags, i)? h->n_buckets : i;        \
-} else return 0;                                                \
-}                                                                   \
-static inline void kh_resize_##name(kh_##name##_t *h, khint_t new_n_buckets) \
-{                                                                   \
-uint32_t *new_flags = 0;                                        \
-khint_t j = 1;                                                  \
-{                                                               \
-khint_t t = __ac_HASH_PRIME_SIZE - 1;                       \
-while (__ac_prime_list[t] > new_n_buckets) --t;             \
-new_n_buckets = __ac_prime_list[t+1];                       \
-if (h->size >= (khint_t)(new_n_buckets * __ac_HASH_UPPER + 0.5)) j = 0; \
-else {                                                      \
-new_flags = (uint32_t*)malloc(((new_n_buckets>>4) + 1) * sizeof(uint32_t)); \
-memset(new_flags, 0xaa, ((new_n_buckets>>4) + 1) * sizeof(uint32_t)); \
-if (h->n_buckets < new_n_buckets) {                     \
-h->keys = (khkey_t*)realloc(h->keys, new_n_buckets * sizeof(khkey_t)); \
-if (kh_is_map)                                      \
-h->vals = (khval_t*)realloc(h->vals, new_n_buckets * sizeof(khval_t)); \
-}                                                       \
-}                                                           \
-}                                                               \
-if (j) {                                                        \
-for (j = 0; j != h->n_buckets; ++j) {                       \
-if (__ac_iseither(h->flags, j) == 0) {                  \
-khkey_t key = h->keys[j];                           \
-khval_t val;                                        \
-if (kh_is_map) val = h->vals[j];                    \
-__ac_set_isdel_true(h->flags, j);                   \
-while (1) {                                         \
-khint_t inc, k, i;                              \
-__hash_func(key, &k);                           \
-i = k % new_n_buckets;                          \
-inc = 1 + k % (new_n_buckets - 1);              \
-while (!__ac_isempty(new_flags, i)) {           \
-if (i + inc >= new_n_buckets) i = i + inc - new_n_buckets; \
-else i += inc;                              \
-}                                               \
-__ac_set_isempty_false(new_flags, i);           \
-if (i < h->n_buckets && __ac_iseither(h->flags, i) == 0) { \
-{ khkey_t tmp = h->keys[i]; h->keys[i] = key; key = tmp; } \
-if (kh_is_map) { khval_t tmp = h->vals[i]; h->vals[i] = val; val = tmp; } \
-__ac_set_isdel_true(h->flags, i);           \
-} else {                                        \
-h->keys[i] = key;                           \
-if (kh_is_map) h->vals[i] = val;            \
-break;                                      \
-}                                               \
-}                                                   \
-}                                                       \
-}                                                           \
-if (h->n_buckets > new_n_buckets) {                         \
-h->keys = (khkey_t*)realloc(h->keys, new_n_buckets * sizeof(khkey_t)); \
-if (kh_is_map)                                          \
-h->vals = (khval_t*)realloc(h->vals, new_n_buckets * sizeof(khval_t)); \
-}                                                           \
-free(h->flags);                                             \
-h->flags = new_flags;                                       \
-h->n_buckets = new_n_buckets;                               \
-h->n_occupied = h->size;                                    \
-h->upper_bound = (khint_t)(h->n_buckets * __ac_HASH_UPPER + 0.5); \
-}                                                               \
-}                                                                   \
-static inline khint_t kh_put_##name(kh_##name##_t *h, khkey_t key, int *ret) \
-{                                                                   \
-khint_t x;                                                      \
-if (h->n_occupied >= h->upper_bound) {                          \
-if (h->n_buckets > (h->size<<1)) kh_resize_##name(h, h->n_buckets - 1); \
-else kh_resize_##name(h, h->n_buckets + 1);                 \
-}                                                               \
-{                                                               \
-khint_t inc, k, i, site, last;                              \
-x = site = h->n_buckets; __hash_func(key, &k); i = k % h->n_buckets; \
-if (__ac_isempty(h->flags, i)) x = i;                       \
-else {                                                      \
-inc = 1 + k % (h->n_buckets - 1); last = i;             \
-bool shouldContinue = false;                                \
-if (!__ac_isempty(h->flags, i)) {                           \
-bool isEqual;                                           \
-__hash_equal(h->keys[i], key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
-}                                                           \
-while (shouldContinue) { \
-if (__ac_isdel(h->flags, i)) site = i;              \
-if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
-else i += inc;                                      \
-if (i == last) { x = site; break; }                 \
-shouldContinue = false;                             \
-if (!__ac_isempty(h->flags, i)) {                           \
-bool isEqual;                                           \
-__hash_equal(h->keys[i], key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
-}                                                           \
-}                                                       \
-if (x == h->n_buckets) {                                \
-if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \
-else x = i;                                         \
-}                                                       \
-}                                                           \
-}                                                               \
-if (__ac_isempty(h->flags, x)) {                                \
-h->keys[x] = key;                                           \
-__ac_set_isboth_false(h->flags, x);                         \
-++h->size; ++h->n_occupied;                                 \
-*ret = 1;                                                   \
-} else if (__ac_isdel(h->flags, x)) {                           \
-h->keys[x] = key;                                           \
-__ac_set_isboth_false(h->flags, x);                         \
-++h->size;                                                  \
-*ret = 2;                                                   \
-} else *ret = 0;                                                \
-return x;                                                       \
-}                                                                   \
-static inline void kh_del_##name(kh_##name##_t *h, khint_t x)       \
-{                                                                   \
-if (x != h->n_buckets && !__ac_iseither(h->flags, x)) {         \
-__ac_set_isdel_true(h->flags, x);                           \
---h->size;                                                  \
-}                                                               \
-}
-#define KHASH_INIT_FUNCTION_DEREF(name, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal) \
-static inline kh_##name##_t *kh_init_##name() {                     \
-return (kh_##name##_t*)calloc(1, sizeof(kh_##name##_t));        \
-}                                                                   \
-static inline void kh_destroy_##name(kh_##name##_t *h)              \
-{                                                                   \
-if (h) {                                                        \
-free(h->keys); free(h->flags);                              \
-free(h->vals);                                              \
-free(h);                                                    \
-}                                                               \
-}                                                                   \
-static inline void kh_clear_##name(kh_##name##_t *h)                \
-{                                                                   \
-if (h && h->flags) { \
-memset(h->flags, 0xaa, ((h->n_buckets>>4) + 1) * sizeof(uint32_t)); \
-h->size = h->n_occupied = 0;                                \
-}                                                               \
-}                                                                   \
-static inline khint_t kh_get_##name(kh_##name##_t *h, khkey_t key)  \
-{                                                                   \
-if (h->n_buckets) {                                             \
-khint_t inc, k, i, last;                                    \
-__hash_func(&key, &k); i = k % h->n_buckets;        \
-inc = 1 + k % (h->n_buckets - 1); last = i;                 \
-bool shouldContinue = false;                                \
-if (!__ac_isempty(h->flags, i)) {                           \
-bool isEqual;                                           \
-__hash_equal(&h->keys[i], &key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
-}                                                           \
-while (shouldContinue) {                                    \
-if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
-else i += inc;                                          \
-if (i == last) return h->n_buckets;                     \
-shouldContinue = false;                                 \
-if (!__ac_isempty(h->flags, i)) {                       \
-bool isEqual;                                       \
-__hash_equal(&h->keys[i], &key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual; \
-}                                                       \
-}                                                           \
-return __ac_iseither(h->flags, i)? h->n_buckets : i;        \
-} else return 0;                                                \
-}                                                                   \
-static inline void kh_resize_##name(kh_##name##_t *h, khint_t new_n_buckets) \
-{                                                                   \
-uint32_t *new_flags = 0;                                        \
-khint_t j = 1;                                                  \
-{                                                               \
-khint_t t = __ac_HASH_PRIME_SIZE - 1;                       \
-while (__ac_prime_list[t] > new_n_buckets) --t;             \
-new_n_buckets = __ac_prime_list[t+1];                       \
-if (h->size >= (khint_t)(new_n_buckets * __ac_HASH_UPPER + 0.5)) j = 0; \
-else {                                                      \
-new_flags = (uint32_t*)malloc(((new_n_buckets>>4) + 1) * sizeof(uint32_t)); \
-memset(new_flags, 0xaa, ((new_n_buckets>>4) + 1) * sizeof(uint32_t)); \
-if (h->n_buckets < new_n_buckets) {                     \
-h->keys = (khkey_t*)realloc(h->keys, new_n_buckets * sizeof(khkey_t)); \
-if (kh_is_map)                                      \
-h->vals = (khval_t*)realloc(h->vals, new_n_buckets * sizeof(khval_t)); \
-}                                                       \
-}                                                           \
-}                                                               \
-if (j) {                                                        \
-for (j = 0; j != h->n_buckets; ++j) {                       \
-if (__ac_iseither(h->flags, j) == 0) {                  \
-khkey_t key = h->keys[j];                           \
-khval_t val;                                        \
-if (kh_is_map) val = h->vals[j];                    \
-__ac_set_isdel_true(h->flags, j);                   \
-while (1) {                                         \
-khint_t inc, k, i;                              \
-__hash_func(&key, &k);                           \
-i = k % new_n_buckets;                          \
-inc = 1 + k % (new_n_buckets - 1);              \
-while (!__ac_isempty(new_flags, i)) {           \
-if (i + inc >= new_n_buckets) i = i + inc - new_n_buckets; \
-else i += inc;                              \
-}                                               \
-__ac_set_isempty_false(new_flags, i);           \
-if (i < h->n_buckets && __ac_iseither(h->flags, i) == 0) { \
-{ khkey_t tmp = h->keys[i]; h->keys[i] = key; key = tmp; } \
-if (kh_is_map) { khval_t tmp = h->vals[i]; h->vals[i] = val; val = tmp; } \
-__ac_set_isdel_true(h->flags, i);           \
-} else {                                        \
-h->keys[i] = key;                           \
-if (kh_is_map) h->vals[i] = val;            \
-break;                                      \
-}                                               \
-}                                                   \
-}                                                       \
-}                                                           \
-if (h->n_buckets > new_n_buckets) {                         \
-h->keys = (khkey_t*)realloc(h->keys, new_n_buckets * sizeof(khkey_t)); \
-if (kh_is_map)                                          \
-h->vals = (khval_t*)realloc(h->vals, new_n_buckets * sizeof(khval_t)); \
-}                                                           \
-free(h->flags);                                             \
-h->flags = new_flags;                                       \
-h->n_buckets = new_n_buckets;                               \
-h->n_occupied = h->size;                                    \
-h->upper_bound = (khint_t)(h->n_buckets * __ac_HASH_UPPER + 0.5); \
-}                                                               \
-}                                                                   \
-static inline khint_t kh_put_##name(kh_##name##_t *h, khkey_t key, int *ret) \
-{                                                                   \
-khint_t x;                                                      \
-if (h->n_occupied >= h->upper_bound) {                          \
-if (h->n_buckets > (h->size<<1)) kh_resize_##name(h, h->n_buckets - 1); \
-else kh_resize_##name(h, h->n_buckets + 1);                 \
-}                                                               \
-{                                                               \
-khint_t inc, k, i, site, last;                              \
-x = site = h->n_buckets; __hash_func(&key, &k); i = k % h->n_buckets; \
-if (__ac_isempty(h->flags, i)) x = i;                       \
-else {                                                      \
-inc = 1 + k % (h->n_buckets - 1); last = i;             \
-bool shouldContinue = false;                                \
-if (!__ac_isempty(h->flags, i)) {                           \
-bool isEqual;                                           \
-__hash_equal(&h->keys[i], &key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
-}                                                           \
-while (shouldContinue) { \
-if (__ac_isdel(h->flags, i)) site = i;              \
-if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
-else i += inc;                                      \
-if (i == last) { x = site; break; }                 \
-shouldContinue = false;                             \
-if (!__ac_isempty(h->flags, i)) {                           \
-bool isEqual;                                           \
-__hash_equal(&h->keys[i], &key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
-}                                                           \
-}                                                       \
-if (x == h->n_buckets) {                                \
-if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \
-else x = i;                                         \
-}                                                       \
-}                                                           \
-}                                                               \
-if (__ac_isempty(h->flags, x)) {                                \
-h->keys[x] = key;                                           \
-__ac_set_isboth_false(h->flags, x);                         \
-++h->size; ++h->n_occupied;                                 \
-*ret = 1;                                                   \
-} else if (__ac_isdel(h->flags, x)) {                           \
-h->keys[x] = key;                                           \
-__ac_set_isboth_false(h->flags, x);                         \
-++h->size;                                                  \
-*ret = 2;                                                   \
-} else *ret = 0;                                                \
-return x;                                                       \
-}                                                                   \
-static inline void kh_del_##name(kh_##name##_t *h, khint_t x)       \
-{                                                                   \
-if (x != h->n_buckets && !__ac_iseither(h->flags, x)) {         \
-__ac_set_isdel_true(h->flags, x);                           \
---h->size;                                                  \
-}                                                               \
-}
-/* --- BEGIN OF HASH FUNCTIONS --- */
-#define kh_int_hash_func(key) (uint32_t)(key)
-#define kh_int_hash_equal(a, b) (a == b)
-#define kh_int64_hash_func(key) (uint32_t)((key)>>33^(key)^(key)<<11)
-#define kh_int64_hash_equal(a, b) (a == b)
-static inline khint_t __ac_X31_hash_string(const char *s)
-{
-khint_t h = *s;
-if (h) for (++s; *s; ++s) h = (h << 5) - h + *s;
-return h;
-}
-#define kh_str_hash_func(key) __ac_X31_hash_string(key)
-#define kh_str_hash_equal(a, b) (strcmp(a, b) == 0)
-/* --- END OF HASH FUNCTIONS --- */
-/* Other necessary macros... */
-#define khash_t(name) kh_##name##_t
-#define kh_init(name) kh_init_##name()
-#define kh_destroy(name, h) kh_destroy_##name(h)
-#define kh_clear(name, h) kh_clear_##name(h)
-#define kh_resize(name, h, s) kh_resize_##name(h, s)
-#define kh_put(name, h, k, r) kh_put_##name(h, k, r)
-#define kh_get(name, h, k) kh_get_##name(h, k)
-#define kh_del(name, h, k) kh_del_##name(h, k)
-#define kh_exist(h, x) (!__ac_iseither((h)->flags, (x)))
-#define kh_key(h, x) ((h)->keys[x])
-#define kh_val(h, x) ((h)->vals[x])
-#define kh_value(h, x) ((h)->vals[x])
-#define kh_begin(h) (khint_t)(0)
-#define kh_end(h) ((h)->n_buckets)
-#define kh_size(h) ((h)->size)
-#define kh_n_buckets(h) ((h)->n_buckets)
-/* More conenient interfaces */
-#define KHASH_SET_INIT_INT(name)                                        \
-KHASH_INIT(name, uint32_t, char, 0, kh_int_hash_func, kh_int_hash_equal)
-#define KHASH_MAP_INIT_INT(name, khval_t)                               \
-KHASH_INIT(name, uint32_t, khval_t, 1, kh_int_hash_func, kh_int_hash_equal)
-#define KHASH_SET_INIT_INT64(name)                                      \
-KHASH_INIT(name, uint64_t, char, 0, kh_int64_hash_func, kh_int64_hash_equal)
-#define KHASH_MAP_INIT_INT64(name, khval_t)                             \
-KHASH_INIT(name, uint64_t, khval_t, 1, kh_int64_hash_func, kh_int64_hash_equal)
-typedef const char *kh_cstr_t;
-#define KHASH_SET_INIT_STR(name)                                        \
-KHASH_INIT(name, kh_cstr_t, char, 0, kh_str_hash_func, kh_str_hash_equal)
-#define KHASH_MAP_INIT_STR(name, khval_t)                               \
-KHASH_INIT(name, kh_cstr_t, khval_t, 1, kh_str_hash_func, kh_str_hash_equal)
-#endif /* __AC_KHASH_H */
 struct td_delete_cb {
-void* _parent;
-void (*_cb)(void* _parent, void* object);
+    void* _parent;
+    void (*_cb)(void* _parent, void* object);
 };
 struct td_delete_cb_list {
-int size;
-delete_cb cb[5];
-delete_cb_list* next;
+    int size;
+    delete_cb cb[5];
+    delete_cb_list* next;
 };
 typedef struct {
-float x, y, z;    // position
-float r, g, b, a; // color
+    float x, y, z;    // position
+    float r, g, b, a; // color
 } vertex3_color4_t;	
 typedef struct {
-float x, y, z;    // position
-float s, t;       // texture
+    float x, y, z;    // position
+    float s, t;       // texture
 } vertex3_texture2_t;	
 typedef struct {
-float x, y, z;    // position
-float s, t;       // texture
-float r, g, b, a; // color
+    float x, y, z;    // position
+    float s, t;       // texture
+    float r, g, b, a; // color
 } vertex3_texture2_color3_t;	
 /**
 * Tuple of 4 ints.
@@ -682,37 +172,37 @@ float r, g, b, a; // color
 */
 typedef union
 {
-int data[4];    /**< All compoments at once     */
-struct {
-int x;      /**< Alias for first component  */
-int y;      /**< Alias for second component */
-int z;      /**< Alias for third component  */
-int w;      /**< Alias for fourht component */
-};
-struct {
-int x_;     /**< Alias for first component  */
-int y_;     /**< Alias for second component */
-int width;  /**< Alias for third component  */
-int height; /**< Alias for fourth component */
-};
-struct {
-int r;      /**< Alias for first component  */
-int g;      /**< Alias for second component */
-int b;      /**< Alias for third component  */
-int a;      /**< Alias for fourth component */
-};
-struct {
-int red;    /**< Alias for first component  */
-int green;  /**< Alias for second component */
-int blue;   /**< Alias for third component  */
-int alpha;  /**< Alias for fourth component */
-};
-struct {
-int vstart; /**< Alias for first component  */
-int vcount; /**< Alias for second component */
-int istart; /**< Alias for third component  */
-int icount; /**< Alias for fourth component */
-};
+    int data[4];    /**< All compoments at once     */
+    struct {
+        int x;      /**< Alias for first component  */
+        int y;      /**< Alias for second component */
+        int z;      /**< Alias for third component  */
+        int w;      /**< Alias for fourht component */
+    };
+    struct {
+        int x_;     /**< Alias for first component  */
+        int y_;     /**< Alias for second component */
+        int width;  /**< Alias for third component  */
+        int height; /**< Alias for fourth component */
+    };
+    struct {
+        int r;      /**< Alias for first component  */
+        int g;      /**< Alias for second component */
+        int b;      /**< Alias for third component  */
+        int a;      /**< Alias for fourth component */
+    };
+    struct {
+        int red;    /**< Alias for first component  */
+        int green;  /**< Alias for second component */
+        int blue;   /**< Alias for third component  */
+        int alpha;  /**< Alias for fourth component */
+    };
+    struct {
+        int vstart; /**< Alias for first component  */
+        int vcount; /**< Alias for second component */
+        int istart; /**< Alias for third component  */
+        int icount; /**< Alias for fourth component */
+    };
 } ivec4;
 /**
 * Tuple of 3 ints.
@@ -725,22 +215,22 @@ int icount; /**< Alias for fourth component */
 */
 typedef union
 {
-int data[3];    /**< All compoments at once     */
-struct {
-int x;      /**< Alias for first component  */
-int y;      /**< Alias for second component */
-int z;      /**< Alias for third component  */
-};
-struct {
-int r;      /**< Alias for first component  */
-int g;      /**< Alias for second component */
-int b;      /**< Alias for third component  */
-};
-struct {
-int red;    /**< Alias for first component  */
-int green;  /**< Alias for second component */
-int blue;   /**< Alias for third component  */
-};
+    int data[3];    /**< All compoments at once     */
+    struct {
+        int x;      /**< Alias for first component  */
+        int y;      /**< Alias for second component */
+        int z;      /**< Alias for third component  */
+    };
+    struct {
+        int r;      /**< Alias for first component  */
+        int g;      /**< Alias for second component */
+        int b;      /**< Alias for third component  */
+    };
+    struct {
+        int red;    /**< Alias for first component  */
+        int green;  /**< Alias for second component */
+        int blue;   /**< Alias for third component  */
+    };
 } ivec3;
 /**
 * Tuple of 2 ints.
@@ -752,19 +242,19 @@ int blue;   /**< Alias for third component  */
 */
 typedef union
 {
-int data[2];    /**< All compoments at once     */
-struct {
-int x;      /**< Alias for first component  */
-int y;      /**< Alias for second component */
-};
-struct {
-int s;      /**< Alias for first component  */
-int t;      /**< Alias for second component */
-};
-struct {
-int start;  /**< Alias for first component  */
-int end;    /**< Alias for second component */
-};
+    int data[2];    /**< All compoments at once     */
+    struct {
+        int x;      /**< Alias for first component  */
+        int y;      /**< Alias for second component */
+    };
+    struct {
+        int s;      /**< Alias for first component  */
+        int t;      /**< Alias for second component */
+    };
+    struct {
+        int start;  /**< Alias for first component  */
+        int end;    /**< Alias for second component */
+    };
 } ivec2;
 /**
 * Tuple of 4 floats.
@@ -777,31 +267,31 @@ int end;    /**< Alias for second component */
 */
 typedef union
 {
-float data[4];    /**< All compoments at once    */
-struct {
-float x;      /**< Alias for first component */
-float y;      /**< Alias for second component */
-float z;      /**< Alias for third component  */
-float w;      /**< Alias for fourth component */
-};
-struct {
-float left;   /**< Alias for first component */
-float top;    /**< Alias for second component */
-float width;  /**< Alias for third component  */
-float height; /**< Alias for fourth component */
-};
-struct {
-float r;      /**< Alias for first component */
-float g;      /**< Alias for second component */
-float b;      /**< Alias for third component  */
-float a;      /**< Alias for fourth component */
-};
-struct {
-float red;    /**< Alias for first component */
-float green;  /**< Alias for second component */
-float blue;   /**< Alias for third component  */
-float alpha;  /**< Alias for fourth component */
-};
+    float data[4];    /**< All compoments at once    */
+    struct {
+        float x;      /**< Alias for first component */
+        float y;      /**< Alias for second component */
+        float z;      /**< Alias for third component  */
+        float w;      /**< Alias for fourth component */
+    };
+    struct {
+        float left;   /**< Alias for first component */
+        float top;    /**< Alias for second component */
+        float width;  /**< Alias for third component  */
+        float height; /**< Alias for fourth component */
+    };
+    struct {
+        float r;      /**< Alias for first component */
+        float g;      /**< Alias for second component */
+        float b;      /**< Alias for third component  */
+        float a;      /**< Alias for fourth component */
+    };
+    struct {
+        float red;    /**< Alias for first component */
+        float green;  /**< Alias for second component */
+        float blue;   /**< Alias for third component  */
+        float alpha;  /**< Alias for fourth component */
+    };
 } vec4;
 /**
 * Tuple of 3 floats
@@ -813,22 +303,22 @@ float alpha;  /**< Alias for fourth component */
 */
 typedef union
 {
-float data[3];   /**< All compoments at once    */
-struct {
-float x;     /**< Alias for first component */
-float y;     /**< Alias fo second component */
-float z;     /**< Alias fo third component  */
-};
-struct {
-float r;     /**< Alias for first component */
-float g;     /**< Alias fo second component */
-float b;     /**< Alias fo third component  */
-};
-struct {
-float red;   /**< Alias for first component */
-float green; /**< Alias fo second component */
-float blue;  /**< Alias fo third component  */
-};
+    float data[3];   /**< All compoments at once    */
+    struct {
+        float x;     /**< Alias for first component */
+        float y;     /**< Alias fo second component */
+        float z;     /**< Alias fo third component  */
+    };
+    struct {
+        float r;     /**< Alias for first component */
+        float g;     /**< Alias fo second component */
+        float b;     /**< Alias fo third component  */
+    };
+    struct {
+        float red;   /**< Alias for first component */
+        float green; /**< Alias fo second component */
+        float blue;  /**< Alias fo third component  */
+    };
 } vec3;
 /**
 * Tuple of 2 floats
@@ -839,57 +329,57 @@ float blue;  /**< Alias fo third component  */
 */
 typedef union
 {
-float data[2]; /**< All components at once     */
-struct {
-float x;   /**< Alias for first component  */
-float y;   /**< Alias for second component */
-};
-struct {
-float s;   /**< Alias for first component  */
-float t;   /**< Alias for second component */
-};
+    float data[2]; /**< All components at once     */
+    struct {
+        float x;   /**< Alias for first component  */
+        float y;   /**< Alias for second component */
+    };
+    struct {
+        float s;   /**< Alias for first component  */
+        float t;   /**< Alias for second component */
+    };
 } vec2;
 /**
 * A texture atlas is used to pack several small regions into a single texture.
 */
 typedef struct texture_atlas_t
 {
-/**
-* Allocated nodes
-*/
-vector_t * nodes;
-/**
-*  Width (in pixels) of the underlying texture
-*/
-size_t width;
-/**
-* Height (in pixels) of the underlying texture
-*/
-size_t height;
-/**
-* Depth (in bytes) of the underlying texture
-*/
-size_t depth;
-/**
-* Allocated surface size
-*/
-size_t used;
-/**
-* Texture identity (OpenGL)
-*/
-unsigned int id;
-/**
-* Atlas data
-*/
-unsigned char * data;
+    /**
+    * Allocated nodes
+    */
+    vector_t * nodes;
+    /**
+    *  Width (in pixels) of the underlying texture
+    */
+    size_t width;
+    /**
+    * Height (in pixels) of the underlying texture
+    */
+    size_t height;
+    /**
+    * Depth (in bytes) of the underlying texture
+    */
+    size_t depth;
+    /**
+    * Allocated surface size
+    */
+    size_t used;
+    /**
+    * Texture identity (OpenGL)
+    */
+    unsigned int id;
+    /**
+    * Atlas data
+    */
+    unsigned char * data;
 } texture_atlas_t;    
 #undef __FTERRORS_H__
 #define FT_ERRORDEF( e, v, s )  { e, s },
 #define FT_ERROR_START_LIST     {
 #define FT_ERROR_END_LIST       { 0, 0 } };
 const struct {
-int          code;
-const char*  message;
+    int          code;
+    const char*  message;
 } FT_Errors[] =
 #include FT_ERRORS_H    
 /**
@@ -897,11 +387,11 @@ const char*  message;
 */
 typedef enum rendermode_t
 {
-RENDER_NORMAL,
-RENDER_OUTLINE_EDGE,
-RENDER_OUTLINE_POSITIVE,
-RENDER_OUTLINE_NEGATIVE,
-RENDER_SIGNED_DISTANCE_FIELD
+    RENDER_NORMAL,
+    RENDER_OUTLINE_EDGE,
+    RENDER_OUTLINE_POSITIVE,
+    RENDER_OUTLINE_NEGATIVE,
+    RENDER_SIGNED_DISTANCE_FIELD
 } rendermode_t;
 /**
 * A structure that hold a kerning value relatively to a Unicode
@@ -912,14 +402,14 @@ RENDER_SIGNED_DISTANCE_FIELD
 */
 typedef struct kerning_t
 {
-/**
-* Left Unicode codepoint in the kern pair in UTF-32 LE encoding.
-*/
-uint32_t codepoint;
-/**
-* Kerning value (in fractional pixels).
-*/
-float kerning;
+    /**
+    * Left Unicode codepoint in the kern pair in UTF-32 LE encoding.
+    */
+    uint32_t codepoint;
+    /**
+    * Kerning value (in fractional pixels).
+    */
+    float kerning;
 } kerning_t;
 /*
 * Glyph metrics:
@@ -958,69 +448,69 @@ float kerning;
 */
 typedef struct texture_glyph_t
 {
-/**
-* Unicode codepoint this glyph represents in UTF-32 LE encoding.
-*/
-uint32_t codepoint;
-/**
-* Glyph's width in pixels.
-*/
-size_t width;
-/**
-* Glyph's height in pixels.
-*/
-size_t height;
-/**
-* Glyph's left bearing expressed in integer pixels.
-*/
-int offset_x;
-/**
-* Glyphs's top bearing expressed in integer pixels.
-*
-* Remember that this is the distance from the baseline to the top-most
-* glyph scanline, upwards y coordinates being positive.
-*/
-int offset_y;
-/**
-* For horizontal text layouts, this is the horizontal distance (in
-* fractional pixels) used to increment the pen position when the glyph is
-* drawn as part of a string of text.
-*/
-float advance_x;
-/**
-* For vertical text layouts, this is the vertical distance (in fractional
-* pixels) used to increment the pen position when the glyph is drawn as
-* part of a string of text.
-*/
-float advance_y;
-/**
-* First normalized texture coordinate (x) of top-left corner
-*/
-float s0;
-/**
-* Second normalized texture coordinate (y) of top-left corner
-*/
-float t0;
-/**
-* First normalized texture coordinate (x) of bottom-right corner
-*/
-float s1;
-/**
-* Second normalized texture coordinate (y) of bottom-right corner
-*/
-float t1;
-/**
-* A vector of kerning pairs relative to this glyph.
-*/
-vector_t * kerning;
-/**
-* Mode this glyph was rendered
-*/
-rendermode_t rendermode;
-/**
-* Glyph outline thickness
-*/
-float outline_thickness;
+    /**
+    * Unicode codepoint this glyph represents in UTF-32 LE encoding.
+    */
+    uint32_t codepoint;
+    /**
+    * Glyph's width in pixels.
+    */
+    size_t width;
+    /**
+    * Glyph's height in pixels.
+    */
+    size_t height;
+    /**
+    * Glyph's left bearing expressed in integer pixels.
+    */
+    int offset_x;
+    /**
+    * Glyphs's top bearing expressed in integer pixels.
+    *
+    * Remember that this is the distance from the baseline to the top-most
+    * glyph scanline, upwards y coordinates being positive.
+    */
+    int offset_y;
+    /**
+    * For horizontal text layouts, this is the horizontal distance (in
+    * fractional pixels) used to increment the pen position when the glyph is
+    * drawn as part of a string of text.
+    */
+    float advance_x;
+    /**
+    * For vertical text layouts, this is the vertical distance (in fractional
+    * pixels) used to increment the pen position when the glyph is drawn as
+    * part of a string of text.
+    */
+    float advance_y;
+    /**
+    * First normalized texture coordinate (x) of top-left corner
+    */
+    float s0;
+    /**
+    * Second normalized texture coordinate (y) of top-left corner
+    */
+    float t0;
+    /**
+    * First normalized texture coordinate (x) of bottom-right corner
+    */
+    float s1;
+    /**
+    * Second normalized texture coordinate (y) of bottom-right corner
+    */
+    float t1;
+    /**
+    * A vector of kerning pairs relative to this glyph.
+    */
+    vector_t * kerning;
+    /**
+    * Mode this glyph was rendered
+    */
+    rendermode_t rendermode;
+    /**
+    * Glyph outline thickness
+    */
+    float outline_thickness;
 } texture_glyph_t;
 typedef struct texture_atlas_t texture_atlas_td; 
 /**
@@ -1028,105 +518,105 @@ typedef struct texture_atlas_t texture_atlas_td;
 */
 typedef struct texture_font_t
 {
-/**
-* Vector of glyphs contained in this font.
-*/
-vector_t * glyphs;
-/**
-* Atlas structure to store glyphs data.
-*/
-texture_atlas_td * atlas;
-/**
-* font location
-*/
-enum {
-TEXTURE_FONT_FILE = 0,
-TEXTURE_FONT_MEMORY,
-} location;
-union {
-/**
-* Font filename, for when location == TEXTURE_FONT_FILE
-*/
-char *filename;
-/**
-* Font memory address, for when location == TEXTURE_FONT_MEMORY
-*/
-struct {
-const void *base;
-size_t size;
-} memory;
-};
-/**
-* Font size
-*/
-float size;
-/**
-* Whether to use autohint when rendering font
-*/
-int hinting;
-/**
-* Mode the font is rendering its next glyph
-*/
-rendermode_t rendermode;
-/**
-* Outline thickness
-*/
-float outline_thickness;
-/**
-* Whether to use our own lcd filter.
-*/
-int filtering;
-/**
-* LCD filter weights
-*/
-unsigned char lcd_weights[5];
-/**
-* Whether to use kerning if available
-*/
-int kerning;
-/**
-* This field is simply used to compute a default line spacing (i.e., the
-* baseline-to-baseline distance) when writing text with this font. Note
-* that it usually is larger than the sum of the ascender and descender
-* taken as absolute values. There is also no guarantee that no glyphs
-* extend above or below subsequent baselines when using this distance.
-*/
-float height;
-/**
-* This field is the distance that must be placed between two lines of
-* text. The baseline-to-baseline distance should be computed as:
-* ascender - descender + linegap
-*/
-float linegap;
-/**
-* The ascender is the vertical distance from the horizontal baseline to
-* the highest 'character' coordinate in a font face. Unfortunately, font
-* formats define the ascender differently. For some, it represents the
-* ascent of all capital latin characters (without accents), for others it
-* is the ascent of the highest accented character, and finally, other
-* formats define it as being equal to bbox.yMax.
-*/
-float ascender;
-/**
-* The descender is the vertical distance from the horizontal baseline to
-* the lowest 'character' coordinate in a font face. Unfortunately, font
-* formats define the descender differently. For some, it represents the
-* descent of all capital latin characters (without accents), for others it
-* is the ascent of the lowest accented character, and finally, other
-* formats define it as being equal to bbox.yMin. This field is negative
-* for values below the baseline.
-*/
-float descender;
-/**
-* The position of the underline line for this face. It is the center of
-* the underlining stem. Only relevant for scalable formats.
-*/
-float underline_position;
-/**
-* The thickness of the underline for this face. Only relevant for scalable
-* formats.
-*/
-float underline_thickness;
+    /**
+    * Vector of glyphs contained in this font.
+    */
+    vector_t * glyphs;
+    /**
+    * Atlas structure to store glyphs data.
+    */
+    texture_atlas_td * atlas;
+    /**
+    * font location
+    */
+    enum {
+        TEXTURE_FONT_FILE = 0,
+        TEXTURE_FONT_MEMORY,
+    } location;
+    union {
+        /**
+        * Font filename, for when location == TEXTURE_FONT_FILE
+        */
+        char *filename;
+        /**
+        * Font memory address, for when location == TEXTURE_FONT_MEMORY
+        */
+        struct {
+            const void *base;
+            size_t size;
+        } memory;
+    };
+    /**
+    * Font size
+    */
+    float size;
+    /**
+    * Whether to use autohint when rendering font
+    */
+    int hinting;
+    /**
+    * Mode the font is rendering its next glyph
+    */
+    rendermode_t rendermode;
+    /**
+    * Outline thickness
+    */
+    float outline_thickness;
+    /**
+    * Whether to use our own lcd filter.
+    */
+    int filtering;
+    /**
+    * LCD filter weights
+    */
+    unsigned char lcd_weights[5];
+    /**
+    * Whether to use kerning if available
+    */
+    int kerning;
+    /**
+    * This field is simply used to compute a default line spacing (i.e., the
+    * baseline-to-baseline distance) when writing text with this font. Note
+    * that it usually is larger than the sum of the ascender and descender
+    * taken as absolute values. There is also no guarantee that no glyphs
+    * extend above or below subsequent baselines when using this distance.
+    */
+    float height;
+    /**
+    * This field is the distance that must be placed between two lines of
+    * text. The baseline-to-baseline distance should be computed as:
+    * ascender - descender + linegap
+    */
+    float linegap;
+    /**
+    * The ascender is the vertical distance from the horizontal baseline to
+    * the highest 'character' coordinate in a font face. Unfortunately, font
+    * formats define the ascender differently. For some, it represents the
+    * ascent of all capital latin characters (without accents), for others it
+    * is the ascent of the highest accented character, and finally, other
+    * formats define it as being equal to bbox.yMax.
+    */
+    float ascender;
+    /**
+    * The descender is the vertical distance from the horizontal baseline to
+    * the lowest 'character' coordinate in a font face. Unfortunately, font
+    * formats define the descender differently. For some, it represents the
+    * descent of all capital latin characters (without accents), for others it
+    * is the ascent of the lowest accented character, and finally, other
+    * formats define it as being equal to bbox.yMin. This field is negative
+    * for values below the baseline.
+    */
+    float descender;
+    /**
+    * The position of the underline line for this face. It is the center of
+    * the underlining stem. Only relevant for scalable formats.
+    */
+    float underline_position;
+    /**
+    * The thickness of the underline for this face. Only relevant for scalable
+    * formats.
+    */
+    float underline_thickness;
 } texture_font_t;
 /**
 *  Generic vector structure.
@@ -1135,96 +625,96 @@ float underline_thickness;
 */
 struct vector_td
 {
-/** Pointer to dynamically allocated items. */
-void * items;
-/** Number of items that can be held in currently allocated storage. */
-size_t capacity;
-/** Number of items. */
-size_t size;
-/** Size (in bytes) of a single item. */
-size_t item_size;
+    /** Pointer to dynamically allocated items. */
+    void * items;
+    /** Number of items that can be held in currently allocated storage. */
+    size_t capacity;
+    /** Number of items. */
+    size_t size;
+    /** Size (in bytes) of a single item. */
+    size_t item_size;
 };
 /**
 *  Generic vertex attribute.
 */
 struct vertex_attribute_td
 {
-/**
-*  atribute name
-*/
-GLchar * name;
-/**
-* index of the generic vertex attribute to be modified.
-*/
-GLuint index;
-/**
-* Number of components per generic vertex attribute.
-*
-* Must be 1, 2, 3, or 4. The initial value is 4.
-*/
-GLint size;
-/**
-*  data type of each component in the array.
-*
-*  Symbolic constants GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT,
-*  GL_UNSIGNED_SHORT, GL_INT, GL_UNSIGNED_INT, GL_FLOAT, or GL_DOUBLE are
-*  accepted. The initial value is GL_FLOAT.
-*/
-GLenum type;
-/**
-*  whether fixed-point data values should be normalized (GL_TRUE) or
-*  converted directly as fixed-point values (GL_FALSE) when they are
-*  accessed.
-*/
-GLboolean normalized;
-/**
-*  byte offset between consecutive generic vertex attributes.
-*
-*  If stride is 0, the generic vertex attributes are understood to be
-*  tightly packed in the array. The initial value is 0.
-*/
-GLsizei stride;
-/**
-*  pointer to the first component of the first attribute element in the
-*  array.
-*/
-GLvoid * pointer;
-/**
-* pointer to the function that enable this attribute.
-*/
-void ( * enable )(void *);
+    /**
+    *  atribute name
+    */
+    GLchar * name;
+    /**
+    * index of the generic vertex attribute to be modified.
+    */
+    GLuint index;
+    /**
+    * Number of components per generic vertex attribute.
+    *
+    * Must be 1, 2, 3, or 4. The initial value is 4.
+    */
+    GLint size;
+    /**
+    *  data type of each component in the array.
+    *
+    *  Symbolic constants GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT,
+    *  GL_UNSIGNED_SHORT, GL_INT, GL_UNSIGNED_INT, GL_FLOAT, or GL_DOUBLE are
+    *  accepted. The initial value is GL_FLOAT.
+    */
+    GLenum type;
+    /**
+    *  whether fixed-point data values should be normalized (GL_TRUE) or
+    *  converted directly as fixed-point values (GL_FALSE) when they are
+    *  accessed.
+    */
+    GLboolean normalized;
+    /**
+    *  byte offset between consecutive generic vertex attributes.
+    *
+    *  If stride is 0, the generic vertex attributes are understood to be
+    *  tightly packed in the array. The initial value is 0.
+    */
+    GLsizei stride;
+    /**
+    *  pointer to the first component of the first attribute element in the
+    *  array.
+    */
+    GLvoid * pointer;
+    /**
+    * pointer to the function that enable this attribute.
+    */
+    void ( * enable )(void *);
 };
 /**
 * Generic vertex buffer.
 */
 struct vertex_buffer_td
 {
-/** Format of the vertex buffer. */
-char * format;
-/** Vector of vertices. */
-vector_t * vertices;
-#ifdef FREETYPE_GL_USE_VAO
-/** GL identity of the Vertex Array Object */
-GLuint VAO_id;
-#endif
-/** GL identity of the vertices buffer. */
-GLuint vertices_id;
-/** Vector of indices. */
-vector_t * indices;
-/** GL identity of the indices buffer. */
-GLuint indices_id;
-/** Current size of the vertices buffer in GPU */
-size_t GPU_vsize;
-/** Current size of the indices buffer in GPU*/
-size_t GPU_isize;
-/** GL primitives to render. */
-GLenum mode;
-/** Whether the vertex buffer needs to be uploaded to GPU memory. */
-char state;
-/** Individual items */
-vector_t * items;
-/** Array of attributes. */
-vertex_attribute_t *attributes[MAX_VERTEX_ATTRIBUTE];
+    /** Format of the vertex buffer. */
+    char * format;
+    /** Vector of vertices. */
+    vector_t * vertices;
+    #ifdef FREETYPE_GL_USE_VAO
+    /** GL identity of the Vertex Array Object */
+    GLuint VAO_id;
+    #endif
+    /** GL identity of the vertices buffer. */
+    GLuint vertices_id;
+    /** Vector of indices. */
+    vector_t * indices;
+    /** GL identity of the indices buffer. */
+    GLuint indices_id;
+    /** Current size of the vertices buffer in GPU */
+    size_t GPU_vsize;
+    /** Current size of the indices buffer in GPU*/
+    size_t GPU_isize;
+    /** GL primitives to render. */
+    GLenum mode;
+    /** Whether the vertex buffer needs to be uploaded to GPU memory. */
+    char state;
+    /** Individual items */
+    vector_t * items;
+    /** Array of attributes. */
+    vertex_attribute_t *attributes[MAX_VERTEX_ATTRIBUTE];
 };
 #define sjs_object_typeId 1
 #define sjs_interface_typeId 2
@@ -2956,6 +2446,7 @@ sjs_shader sjv_phongtextureshader = { -1 };
 sji_element sjv_root = { 0 };
 sjs_scene2d sjv_rootscene = { -1 };
 sjs_windowrenderer sjv_rootwindowrenderer = { -1 };
+sjs_shader sjv_saturateshader = { -1 };
 sjs_anon2 sjv_style = { -1 };
 int32_t sjv_texthorizontal_center;
 int32_t sjv_texthorizontal_left;
@@ -3036,9 +2527,6 @@ void sjf_borderchild_getrect_heap(sjs_borderchild* _parent, sjs_rect** _return);
 void sjf_borderchild_getsize(sjs_borderchild* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_borderchild_getsize_heap(sjs_borderchild* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_borderchild_heap(sjs_borderchild* _this);
-void sjf_borderchild_heap_as_sji_borderchild(sjs_borderchild* _this, sji_borderchild* _return);
-void sjf_borderchild_heap_as_sji_element(sjs_borderchild* _this, sji_element* _return);
-void sjf_borderchild_heap_asinterface(sjs_borderchild* _this, int typeId, sjs_interface* _return);
 void sjf_borderchild_render(sjs_borderchild* _parent, sjs_scene2d* scene);
 void sjf_borderchild_setrect(sjs_borderchild* _parent, sjs_rect* rect_);
 void sjf_borderlayout(sjs_borderlayout* _this);
@@ -3052,8 +2540,6 @@ void sjf_borderlayout_getrect_heap(sjs_borderlayout* _parent, sjs_rect** _return
 void sjf_borderlayout_getsize(sjs_borderlayout* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_borderlayout_getsize_heap(sjs_borderlayout* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_borderlayout_heap(sjs_borderlayout* _this);
-void sjf_borderlayout_heap_as_sji_element(sjs_borderlayout* _this, sji_element* _return);
-void sjf_borderlayout_heap_asinterface(sjs_borderlayout* _this, int typeId, sjs_interface* _return);
 void sjf_borderlayout_render(sjs_borderlayout* _parent, sjs_scene2d* scene);
 void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_);
 void sjf_boxelement(sjs_boxelement* _this);
@@ -3067,8 +2553,6 @@ void sjf_boxelement_getrect_heap(sjs_boxelement* _parent, sjs_rect** _return);
 void sjf_boxelement_getsize(sjs_boxelement* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_boxelement_getsize_heap(sjs_boxelement* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_boxelement_heap(sjs_boxelement* _this);
-void sjf_boxelement_heap_as_sji_element(sjs_boxelement* _this, sji_element* _return);
-void sjf_boxelement_heap_asinterface(sjs_boxelement* _this, int typeId, sjs_interface* _return);
 void sjf_boxelement_render(sjs_boxelement* _parent, sjs_scene2d* scene);
 void sjf_boxelement_setrect(sjs_boxelement* _parent, sjs_rect* rect_);
 void sjf_boxrenderer(sjs_boxrenderer* _this);
@@ -3087,8 +2571,6 @@ void sjf_centerlayout_getrect_heap(sjs_centerlayout* _parent, sjs_rect** _return
 void sjf_centerlayout_getsize(sjs_centerlayout* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_centerlayout_getsize_heap(sjs_centerlayout* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_centerlayout_heap(sjs_centerlayout* _this);
-void sjf_centerlayout_heap_as_sji_element(sjs_centerlayout* _this, sji_element* _return);
-void sjf_centerlayout_heap_asinterface(sjs_centerlayout* _this, int typeId, sjs_interface* _return);
 void sjf_centerlayout_render(sjs_centerlayout* _parent, sjs_scene2d* scene);
 void sjf_centerlayout_setrect(sjs_centerlayout* _parent, sjs_rect* rect_);
 void sjf_color(sjs_color* _this);
@@ -3108,8 +2590,6 @@ void sjf_filllayout_getrect_heap(sjs_filllayout* _parent, sjs_rect** _return);
 void sjf_filllayout_getsize(sjs_filllayout* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_filllayout_getsize_heap(sjs_filllayout* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_filllayout_heap(sjs_filllayout* _this);
-void sjf_filllayout_heap_as_sji_element(sjs_filllayout* _this, sji_element* _return);
-void sjf_filllayout_heap_asinterface(sjs_filllayout* _this, int typeId, sjs_interface* _return);
 void sjf_filllayout_render(sjs_filllayout* _parent, sjs_scene2d* scene);
 void sjf_filllayout_renderinner(sjs_filllayout* _parent, sjs_scene2d* scene);
 void sjf_filllayout_setrect(sjs_filllayout* _parent, sjs_rect* rect_);
@@ -3125,8 +2605,6 @@ void sjf_flowlayout_getrect_heap(sjs_flowlayout* _parent, sjs_rect** _return);
 void sjf_flowlayout_getsize(sjs_flowlayout* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_flowlayout_getsize_heap(sjs_flowlayout* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_flowlayout_heap(sjs_flowlayout* _this);
-void sjf_flowlayout_heap_as_sji_element(sjs_flowlayout* _this, sji_element* _return);
-void sjf_flowlayout_heap_asinterface(sjs_flowlayout* _this, int typeId, sjs_interface* _return);
 void sjf_flowlayout_render(sjs_flowlayout* _parent, sjs_scene2d* scene);
 void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_);
 void sjf_font(sjs_font* _this);
@@ -3155,8 +2633,6 @@ void sjf_gridlayout_getrect_heap(sjs_gridlayout* _parent, sjs_rect** _return);
 void sjf_gridlayout_getsize(sjs_gridlayout* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_gridlayout_getsize_heap(sjs_gridlayout* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_gridlayout_heap(sjs_gridlayout* _this);
-void sjf_gridlayout_heap_as_sji_element(sjs_gridlayout* _this, sji_element* _return);
-void sjf_gridlayout_heap_asinterface(sjs_gridlayout* _this, int typeId, sjs_interface* _return);
 void sjf_gridlayout_render(sjs_gridlayout* _parent, sjs_scene2d* scene);
 void sjf_gridlayout_setrect(sjs_gridlayout* _parent, sjs_rect* rect_);
 void sjf_gridunit(sjs_gridunit* _this);
@@ -3224,8 +2700,6 @@ void sjf_listlayout_getrect_heap(sjs_listlayout* _parent, sjs_rect** _return);
 void sjf_listlayout_getsize(sjs_listlayout* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_listlayout_getsize_heap(sjs_listlayout* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_listlayout_heap(sjs_listlayout* _this);
-void sjf_listlayout_heap_as_sji_element(sjs_listlayout* _this, sji_element* _return);
-void sjf_listlayout_heap_asinterface(sjs_listlayout* _this, int typeId, sjs_interface* _return);
 void sjf_listlayout_render(sjs_listlayout* _parent, sjs_scene2d* scene);
 void sjf_listlayout_setrect(sjs_listlayout* _parent, sjs_rect* rect_);
 void sjf_mainloop(void);
@@ -3302,8 +2776,6 @@ void sjf_textelement_getrect_heap(sjs_textelement* _parent, sjs_rect** _return);
 void sjf_textelement_getsize(sjs_textelement* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_textelement_getsize_heap(sjs_textelement* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_textelement_heap(sjs_textelement* _this);
-void sjf_textelement_heap_as_sji_element(sjs_textelement* _this, sji_element* _return);
-void sjf_textelement_heap_asinterface(sjs_textelement* _this, int typeId, sjs_interface* _return);
 void sjf_textelement_render(sjs_textelement* _parent, sjs_scene2d* scene);
 void sjf_textelement_setrect(sjs_textelement* _parent, sjs_rect* rect_);
 void sjf_textrenderer(sjs_textrenderer* _this);
@@ -6309,7 +5781,7 @@ void sjf_anon2_getfont_heap(sjs_anon2* _parent, sjs_font** _return) {
     sjt_call11.count = 16;
     sjt_call11.data._refCount = 1;
     sjt_call11.data.datasize = 17;
-    sjt_call11.data.data = (void*)sjg_string19;
+    sjt_call11.data.data = (void*)sjg_string21;
     sjt_call11.data._isglobal = true;
     sjt_call11.data.count = 17;
     sjf_array_char(&sjt_call11.data);
@@ -7023,35 +6495,6 @@ void sjf_borderchild_getsize_heap(sjs_borderchild* _parent, sjs_size* maxsize, s
 void sjf_borderchild_heap(sjs_borderchild* _this) {
 }
 
-void sjf_borderchild_heap_as_sji_borderchild(sjs_borderchild* _this, sji_borderchild* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_borderchild_borderchild_vtbl;
-}
-
-void sjf_borderchild_heap_as_sji_element(sjs_borderchild* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_borderchild_element_vtbl;
-}
-
-void sjf_borderchild_heap_asinterface(sjs_borderchild* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_borderchild_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        case sji_borderchild_typeId:  {
-            sjf_borderchild_heap_as_sji_borderchild(_this, (sji_borderchild*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
-}
-
 void sjf_borderchild_render(sjs_borderchild* _parent, sjs_scene2d* scene) {
     sjs_borderchild* sjt_dot295 = 0;
     sjs_scene2d* sjt_interfaceParam22 = 0;
@@ -7174,25 +6617,6 @@ void sjf_borderlayout_getsize_heap(sjs_borderlayout* _parent, sjs_size* maxsize,
 }
 
 void sjf_borderlayout_heap(sjs_borderlayout* _this) {
-}
-
-void sjf_borderlayout_heap_as_sji_element(sjs_borderlayout* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_borderlayout_element_vtbl;
-}
-
-void sjf_borderlayout_heap_asinterface(sjs_borderlayout* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_borderlayout_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
 }
 
 void sjf_borderlayout_render(sjs_borderlayout* _parent, sjs_scene2d* scene) {
@@ -7810,25 +7234,6 @@ void sjf_boxelement_getsize_heap(sjs_boxelement* _parent, sjs_size* maxsize, sjs
 void sjf_boxelement_heap(sjs_boxelement* _this) {
 }
 
-void sjf_boxelement_heap_as_sji_element(sjs_boxelement* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_boxelement_element_vtbl;
-}
-
-void sjf_boxelement_heap_asinterface(sjs_boxelement* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_boxelement_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
-}
-
 void sjf_boxelement_render(sjs_boxelement* _parent, sjs_scene2d* scene) {
     sjs_boxelement* sjt_dot182 = 0;
     sjs_boxelement* sjt_dot186 = 0;
@@ -8175,25 +7580,6 @@ void sjf_centerlayout_getsize_heap(sjs_centerlayout* _parent, sjs_size* maxsize,
 }
 
 void sjf_centerlayout_heap(sjs_centerlayout* _this) {
-}
-
-void sjf_centerlayout_heap_as_sji_element(sjs_centerlayout* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_centerlayout_element_vtbl;
-}
-
-void sjf_centerlayout_heap_asinterface(sjs_centerlayout* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_centerlayout_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
 }
 
 void sjf_centerlayout_render(sjs_centerlayout* _parent, sjs_scene2d* scene) {
@@ -8674,25 +8060,6 @@ void sjf_filllayout_getsize_heap(sjs_filllayout* _parent, sjs_size* maxsize, sjs
 void sjf_filllayout_heap(sjs_filllayout* _this) {
 }
 
-void sjf_filllayout_heap_as_sji_element(sjs_filllayout* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_filllayout_element_vtbl;
-}
-
-void sjf_filllayout_heap_asinterface(sjs_filllayout* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_filllayout_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
-}
-
 void sjf_filllayout_render(sjs_filllayout* _parent, sjs_scene2d* scene) {
     sjs_filllayout* sjt_dot145 = 0;
     bool sjt_isEmpty5;
@@ -8966,25 +8333,6 @@ void sjf_flowlayout_getsize_heap(sjs_flowlayout* _parent, sjs_size* maxsize, sjs
 }
 
 void sjf_flowlayout_heap(sjs_flowlayout* _this) {
-}
-
-void sjf_flowlayout_heap_as_sji_element(sjs_flowlayout* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_flowlayout_element_vtbl;
-}
-
-void sjf_flowlayout_heap_asinterface(sjs_flowlayout* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_flowlayout_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
 }
 
 void sjf_flowlayout_render(sjs_flowlayout* _parent, sjs_scene2d* scene) {
@@ -9796,7 +9144,7 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
         sjt_call90.count = 30;
         sjt_call90.data._refCount = 1;
         sjt_call90.data.datasize = 31;
-        sjt_call90.data.data = (void*)sjg_string54;
+        sjt_call90.data.data = (void*)sjg_string56;
         sjt_call90.data._isglobal = true;
         sjt_call90.data.count = 31;
         sjf_array_char(&sjt_call90.data);
@@ -9980,25 +9328,6 @@ void sjf_gridlayout_getsize_heap(sjs_gridlayout* _parent, sjs_size* maxsize, sjs
 }
 
 void sjf_gridlayout_heap(sjs_gridlayout* _this) {
-}
-
-void sjf_gridlayout_heap_as_sji_element(sjs_gridlayout* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_gridlayout_element_vtbl;
-}
-
-void sjf_gridlayout_heap_asinterface(sjs_gridlayout* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_gridlayout_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
 }
 
 void sjf_gridlayout_render(sjs_gridlayout* _parent, sjs_scene2d* scene) {
@@ -11236,25 +10565,6 @@ void sjf_listlayout_getsize_heap(sjs_listlayout* _parent, sjs_size* maxsize, sjs
 }
 
 void sjf_listlayout_heap(sjs_listlayout* _this) {
-}
-
-void sjf_listlayout_heap_as_sji_element(sjs_listlayout* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_listlayout_element_vtbl;
-}
-
-void sjf_listlayout_heap_asinterface(sjs_listlayout* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_listlayout_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
 }
 
 void sjf_listlayout_render(sjs_listlayout* _parent, sjs_scene2d* scene) {
@@ -13279,25 +12589,6 @@ void sjf_textelement_getsize_heap(sjs_textelement* _parent, sjs_size* maxsize, s
 void sjf_textelement_heap(sjs_textelement* _this) {
 }
 
-void sjf_textelement_heap_as_sji_element(sjs_textelement* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_textelement_element_vtbl;
-}
-
-void sjf_textelement_heap_asinterface(sjs_textelement* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_textelement_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
-}
-
 void sjf_textelement_render(sjs_textelement* _parent, sjs_scene2d* scene) {
     sjs_textelement* sjt_dot199 = 0;
     sjs_textelement* sjt_dot224 = 0;
@@ -14231,6 +13522,26 @@ int main(int argc, char** argv) {
     sjv_vertex_location_texture_normal_format.data.count = 33;
     sjf_array_char(&sjv_vertex_location_texture_normal_format.data);
     sjf_string(&sjv_vertex_location_texture_normal_format);
+    sjv_saturateshader._refCount = 1;
+    sjv_saturateshader.vertex._refCount = 1;
+    sjv_saturateshader.vertex.count = 20;
+    sjv_saturateshader.vertex.data._refCount = 1;
+    sjv_saturateshader.vertex.data.datasize = 21;
+    sjv_saturateshader.vertex.data.data = (void*)sjg_string18;
+    sjv_saturateshader.vertex.data._isglobal = true;
+    sjv_saturateshader.vertex.data.count = 21;
+    sjf_array_char(&sjv_saturateshader.vertex.data);
+    sjf_string(&sjv_saturateshader.vertex);
+    sjv_saturateshader.pixel._refCount = 1;
+    sjv_saturateshader.pixel.count = 21;
+    sjv_saturateshader.pixel.data._refCount = 1;
+    sjv_saturateshader.pixel.data.datasize = 22;
+    sjv_saturateshader.pixel.data.data = (void*)sjg_string19;
+    sjv_saturateshader.pixel.data._isglobal = true;
+    sjv_saturateshader.pixel.data.count = 22;
+    sjf_array_char(&sjv_saturateshader.pixel.data);
+    sjf_string(&sjv_saturateshader.pixel);
+    sjf_shader(&sjv_saturateshader);
     sjt_call1 = (sjs_gridlayout*)malloc(sizeof(sjs_gridlayout));
     sjt_call1->_refCount = 1;
     sjt_call1->children._refCount = 1;
@@ -14259,7 +13570,7 @@ int main(int argc, char** argv) {
     sjt_call12.count = 1;
     sjt_call12.data._refCount = 1;
     sjt_call12.data.datasize = 2;
-    sjt_call12.data.data = (void*)sjg_string20;
+    sjt_call12.data.data = (void*)sjg_string22;
     sjt_call12.data._isglobal = true;
     sjt_call12.data.count = 2;
     sjf_array_char(&sjt_call12.data);
@@ -14273,7 +13584,7 @@ int main(int argc, char** argv) {
     sjt_call13.count = 1;
     sjt_call13.data._refCount = 1;
     sjt_call13.data.datasize = 2;
-    sjt_call13.data.data = (void*)sjg_string21;
+    sjt_call13.data.data = (void*)sjg_string23;
     sjt_call13.data._isglobal = true;
     sjt_call13.data.count = 2;
     sjf_array_char(&sjt_call13.data);
@@ -14287,7 +13598,7 @@ int main(int argc, char** argv) {
     sjt_call14.count = 1;
     sjt_call14.data._refCount = 1;
     sjt_call14.data.datasize = 2;
-    sjt_call14.data.data = (void*)sjg_string22;
+    sjt_call14.data.data = (void*)sjg_string24;
     sjt_call14.data._isglobal = true;
     sjt_call14.data.count = 2;
     sjf_array_char(&sjt_call14.data);
@@ -14301,7 +13612,7 @@ int main(int argc, char** argv) {
     sjt_call15.count = 1;
     sjt_call15.data._refCount = 1;
     sjt_call15.data.datasize = 2;
-    sjt_call15.data.data = (void*)sjg_string23;
+    sjt_call15.data.data = (void*)sjg_string25;
     sjt_call15.data._isglobal = true;
     sjt_call15.data.count = 2;
     sjf_array_char(&sjt_call15.data);
@@ -14397,7 +13708,7 @@ int main(int argc, char** argv) {
     sjt_call27.count = 4;
     sjt_call27.data._refCount = 1;
     sjt_call27.data.datasize = 5;
-    sjt_call27.data.data = (void*)sjg_string24;
+    sjt_call27.data.data = (void*)sjg_string26;
     sjt_call27.data._isglobal = true;
     sjt_call27.data.count = 5;
     sjf_array_char(&sjt_call27.data);
@@ -14427,7 +13738,7 @@ int main(int argc, char** argv) {
     sjt_call29.count = 6;
     sjt_call29.data._refCount = 1;
     sjt_call29.data.datasize = 7;
-    sjt_call29.data.data = (void*)sjg_string25;
+    sjt_call29.data.data = (void*)sjg_string27;
     sjt_call29.data._isglobal = true;
     sjt_call29.data.count = 7;
     sjf_array_char(&sjt_call29.data);
@@ -14457,7 +13768,7 @@ int main(int argc, char** argv) {
     sjt_call31.count = 3;
     sjt_call31.data._refCount = 1;
     sjt_call31.data.datasize = 4;
-    sjt_call31.data.data = (void*)sjg_string26;
+    sjt_call31.data.data = (void*)sjg_string28;
     sjt_call31.data._isglobal = true;
     sjt_call31.data.count = 4;
     sjf_array_char(&sjt_call31.data);
@@ -14487,7 +13798,7 @@ int main(int argc, char** argv) {
     sjt_call33.count = 5;
     sjt_call33.data._refCount = 1;
     sjt_call33.data.datasize = 6;
-    sjt_call33.data.data = (void*)sjg_string27;
+    sjt_call33.data.data = (void*)sjg_string29;
     sjt_call33.data._isglobal = true;
     sjt_call33.data.count = 6;
     sjf_array_char(&sjt_call33.data);
@@ -14517,7 +13828,7 @@ int main(int argc, char** argv) {
     sjt_call35.count = 4;
     sjt_call35.data._refCount = 1;
     sjt_call35.data.datasize = 5;
-    sjt_call35.data.data = (void*)sjg_string28;
+    sjt_call35.data.data = (void*)sjg_string30;
     sjt_call35.data._isglobal = true;
     sjt_call35.data.count = 5;
     sjf_array_char(&sjt_call35.data);
@@ -14577,7 +13888,7 @@ int main(int argc, char** argv) {
     sjt_call45.count = 1;
     sjt_call45.data._refCount = 1;
     sjt_call45.data.datasize = 2;
-    sjt_call45.data.data = (void*)sjg_string29;
+    sjt_call45.data.data = (void*)sjg_string31;
     sjt_call45.data._isglobal = true;
     sjt_call45.data.count = 2;
     sjf_array_char(&sjt_call45.data);
@@ -14591,7 +13902,7 @@ int main(int argc, char** argv) {
     sjt_call46.count = 1;
     sjt_call46.data._refCount = 1;
     sjt_call46.data.datasize = 2;
-    sjt_call46.data.data = (void*)sjg_string30;
+    sjt_call46.data.data = (void*)sjg_string32;
     sjt_call46.data._isglobal = true;
     sjt_call46.data.count = 2;
     sjf_array_char(&sjt_call46.data);
@@ -14605,7 +13916,7 @@ int main(int argc, char** argv) {
     sjt_call47.count = 1;
     sjt_call47.data._refCount = 1;
     sjt_call47.data.datasize = 2;
-    sjt_call47.data.data = (void*)sjg_string31;
+    sjt_call47.data.data = (void*)sjg_string33;
     sjt_call47.data._isglobal = true;
     sjt_call47.data.count = 2;
     sjf_array_char(&sjt_call47.data);
@@ -14619,7 +13930,7 @@ int main(int argc, char** argv) {
     sjt_call48.count = 1;
     sjt_call48.data._refCount = 1;
     sjt_call48.data.datasize = 2;
-    sjt_call48.data.data = (void*)sjg_string32;
+    sjt_call48.data.data = (void*)sjg_string34;
     sjt_call48.data._isglobal = true;
     sjt_call48.data.count = 2;
     sjf_array_char(&sjt_call48.data);
@@ -14666,7 +13977,7 @@ int main(int argc, char** argv) {
     sjt_call58.count = 1;
     sjt_call58.data._refCount = 1;
     sjt_call58.data.datasize = 2;
-    sjt_call58.data.data = (void*)sjg_string33;
+    sjt_call58.data.data = (void*)sjg_string35;
     sjt_call58.data._isglobal = true;
     sjt_call58.data.count = 2;
     sjf_array_char(&sjt_call58.data);
@@ -14680,7 +13991,7 @@ int main(int argc, char** argv) {
     sjt_call59.count = 1;
     sjt_call59.data._refCount = 1;
     sjt_call59.data.datasize = 2;
-    sjt_call59.data.data = (void*)sjg_string34;
+    sjt_call59.data.data = (void*)sjg_string36;
     sjt_call59.data._isglobal = true;
     sjt_call59.data.count = 2;
     sjf_array_char(&sjt_call59.data);
@@ -14694,7 +14005,7 @@ int main(int argc, char** argv) {
     sjt_call60.count = 1;
     sjt_call60.data._refCount = 1;
     sjt_call60.data.datasize = 2;
-    sjt_call60.data.data = (void*)sjg_string35;
+    sjt_call60.data.data = (void*)sjg_string37;
     sjt_call60.data._isglobal = true;
     sjt_call60.data.count = 2;
     sjf_array_char(&sjt_call60.data);
@@ -14708,7 +14019,7 @@ int main(int argc, char** argv) {
     sjt_call61.count = 1;
     sjt_call61.data._refCount = 1;
     sjt_call61.data.datasize = 2;
-    sjt_call61.data.data = (void*)sjg_string36;
+    sjt_call61.data.data = (void*)sjg_string38;
     sjt_call61.data._isglobal = true;
     sjt_call61.data.count = 2;
     sjf_array_char(&sjt_call61.data);
@@ -14722,7 +14033,7 @@ int main(int argc, char** argv) {
     sjt_call62.count = 1;
     sjt_call62.data._refCount = 1;
     sjt_call62.data.datasize = 2;
-    sjt_call62.data.data = (void*)sjg_string37;
+    sjt_call62.data.data = (void*)sjg_string39;
     sjt_call62.data._isglobal = true;
     sjt_call62.data.count = 2;
     sjf_array_char(&sjt_call62.data);
@@ -14736,7 +14047,7 @@ int main(int argc, char** argv) {
     sjt_call63.count = 1;
     sjt_call63.data._refCount = 1;
     sjt_call63.data.datasize = 2;
-    sjt_call63.data.data = (void*)sjg_string38;
+    sjt_call63.data.data = (void*)sjg_string40;
     sjt_call63.data._isglobal = true;
     sjt_call63.data.count = 2;
     sjf_array_char(&sjt_call63.data);
@@ -14750,7 +14061,7 @@ int main(int argc, char** argv) {
     sjt_call64.count = 1;
     sjt_call64.data._refCount = 1;
     sjt_call64.data.datasize = 2;
-    sjt_call64.data.data = (void*)sjg_string39;
+    sjt_call64.data.data = (void*)sjg_string41;
     sjt_call64.data._isglobal = true;
     sjt_call64.data.count = 2;
     sjf_array_char(&sjt_call64.data);
@@ -14764,7 +14075,7 @@ int main(int argc, char** argv) {
     sjt_call65.count = 1;
     sjt_call65.data._refCount = 1;
     sjt_call65.data.datasize = 2;
-    sjt_call65.data.data = (void*)sjg_string40;
+    sjt_call65.data.data = (void*)sjg_string42;
     sjt_call65.data._isglobal = true;
     sjt_call65.data.count = 2;
     sjf_array_char(&sjt_call65.data);
@@ -14778,7 +14089,7 @@ int main(int argc, char** argv) {
     sjt_call66.count = 1;
     sjt_call66.data._refCount = 1;
     sjt_call66.data.datasize = 2;
-    sjt_call66.data.data = (void*)sjg_string41;
+    sjt_call66.data.data = (void*)sjg_string43;
     sjt_call66.data._isglobal = true;
     sjt_call66.data.count = 2;
     sjf_array_char(&sjt_call66.data);
@@ -14792,7 +14103,7 @@ int main(int argc, char** argv) {
     sjt_call67.count = 1;
     sjt_call67.data._refCount = 1;
     sjt_call67.data.datasize = 2;
-    sjt_call67.data.data = (void*)sjg_string42;
+    sjt_call67.data.data = (void*)sjg_string44;
     sjt_call67.data._isglobal = true;
     sjt_call67.data.count = 2;
     sjf_array_char(&sjt_call67.data);
@@ -14806,7 +14117,7 @@ int main(int argc, char** argv) {
     sjt_call68.count = 1;
     sjt_call68.data._refCount = 1;
     sjt_call68.data.datasize = 2;
-    sjt_call68.data.data = (void*)sjg_string43;
+    sjt_call68.data.data = (void*)sjg_string45;
     sjt_call68.data._isglobal = true;
     sjt_call68.data.count = 2;
     sjf_array_char(&sjt_call68.data);
@@ -14820,7 +14131,7 @@ int main(int argc, char** argv) {
     sjt_call69.count = 1;
     sjt_call69.data._refCount = 1;
     sjt_call69.data.datasize = 2;
-    sjt_call69.data.data = (void*)sjg_string44;
+    sjt_call69.data.data = (void*)sjg_string46;
     sjt_call69.data._isglobal = true;
     sjt_call69.data.count = 2;
     sjf_array_char(&sjt_call69.data);
@@ -14834,7 +14145,7 @@ int main(int argc, char** argv) {
     sjt_call70.count = 1;
     sjt_call70.data._refCount = 1;
     sjt_call70.data.datasize = 2;
-    sjt_call70.data.data = (void*)sjg_string45;
+    sjt_call70.data.data = (void*)sjg_string47;
     sjt_call70.data._isglobal = true;
     sjt_call70.data.count = 2;
     sjf_array_char(&sjt_call70.data);
@@ -14848,7 +14159,7 @@ int main(int argc, char** argv) {
     sjt_call71.count = 1;
     sjt_call71.data._refCount = 1;
     sjt_call71.data.datasize = 2;
-    sjt_call71.data.data = (void*)sjg_string46;
+    sjt_call71.data.data = (void*)sjg_string48;
     sjt_call71.data._isglobal = true;
     sjt_call71.data.count = 2;
     sjf_array_char(&sjt_call71.data);
@@ -14862,7 +14173,7 @@ int main(int argc, char** argv) {
     sjt_call72.count = 1;
     sjt_call72.data._refCount = 1;
     sjt_call72.data.datasize = 2;
-    sjt_call72.data.data = (void*)sjg_string47;
+    sjt_call72.data.data = (void*)sjg_string49;
     sjt_call72.data._isglobal = true;
     sjt_call72.data.count = 2;
     sjf_array_char(&sjt_call72.data);
@@ -14876,7 +14187,7 @@ int main(int argc, char** argv) {
     sjt_call73.count = 1;
     sjt_call73.data._refCount = 1;
     sjt_call73.data.datasize = 2;
-    sjt_call73.data.data = (void*)sjg_string48;
+    sjt_call73.data.data = (void*)sjg_string50;
     sjt_call73.data._isglobal = true;
     sjt_call73.data.count = 2;
     sjf_array_char(&sjt_call73.data);
@@ -14890,7 +14201,7 @@ int main(int argc, char** argv) {
     sjt_call74.count = 1;
     sjt_call74.data._refCount = 1;
     sjt_call74.data.datasize = 2;
-    sjt_call74.data.data = (void*)sjg_string49;
+    sjt_call74.data.data = (void*)sjg_string51;
     sjt_call74.data._isglobal = true;
     sjt_call74.data.count = 2;
     sjf_array_char(&sjt_call74.data);
@@ -14904,7 +14215,7 @@ int main(int argc, char** argv) {
     sjt_call75.count = 1;
     sjt_call75.data._refCount = 1;
     sjt_call75.data.datasize = 2;
-    sjt_call75.data.data = (void*)sjg_string50;
+    sjt_call75.data.data = (void*)sjg_string52;
     sjt_call75.data._isglobal = true;
     sjt_call75.data.count = 2;
     sjf_array_char(&sjt_call75.data);
@@ -14918,7 +14229,7 @@ int main(int argc, char** argv) {
     sjt_call76.count = 1;
     sjt_call76.data._refCount = 1;
     sjt_call76.data.datasize = 2;
-    sjt_call76.data.data = (void*)sjg_string51;
+    sjt_call76.data.data = (void*)sjg_string53;
     sjt_call76.data._isglobal = true;
     sjt_call76.data.count = 2;
     sjf_array_char(&sjt_call76.data);
@@ -14932,7 +14243,7 @@ int main(int argc, char** argv) {
     sjt_call77.count = 1;
     sjt_call77.data._refCount = 1;
     sjt_call77.data.datasize = 2;
-    sjt_call77.data.data = (void*)sjg_string52;
+    sjt_call77.data.data = (void*)sjg_string54;
     sjt_call77.data._isglobal = true;
     sjt_call77.data.count = 2;
     sjf_array_char(&sjt_call77.data);
@@ -14979,7 +14290,7 @@ int main(int argc, char** argv) {
     sjt_call83.count = 1;
     sjt_call83.data._refCount = 1;
     sjt_call83.data.datasize = 2;
-    sjt_call83.data.data = (void*)sjg_string53;
+    sjt_call83.data.data = (void*)sjg_string55;
     sjt_call83.data._isglobal = true;
     sjt_call83.data.count = 2;
     sjf_array_char(&sjt_call83.data);
@@ -15519,6 +14830,7 @@ void main_destroy() {
     if (sjv_phongtextureshader._refCount == 1) { sjf_shader_destroy(&sjv_phongtextureshader); }
     if (sjv_rootscene._refCount == 1) { sjf_scene2d_destroy(&sjv_rootscene); }
     if (sjv_rootwindowrenderer._refCount == 1) { sjf_windowrenderer_destroy(&sjv_rootwindowrenderer); }
+    if (sjv_saturateshader._refCount == 1) { sjf_shader_destroy(&sjv_saturateshader); }
     if (sjv_style._refCount == 1) { sjf_anon2_destroy(&sjv_style); }
     if (sjv_textshader._refCount == 1) { sjf_shader_destroy(&sjv_textshader); }
     if (sjv_vertex_location_texture_normal_format._refCount == 1) { sjf_string_destroy(&sjv_vertex_location_texture_normal_format); }

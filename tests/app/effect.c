@@ -35,6 +35,8 @@ Invalid compiler
 * @private
 */
 #define MAX_VERTEX_ATTRIBUTE 16    
+#include "lib/common/khash.h"
+#include "lib/common/value_option_types.h"
 #ifdef EMSCRIPTEN
 #include <GLES3/gl3.h>
 #endif
@@ -80,66 +82,13 @@ typedef struct td_delete_cb_list delete_cb_list;
 typedef struct vector_td vector_t;
 typedef struct vertex_attribute_td vertex_attribute_t;
 typedef struct vertex_buffer_td vertex_buffer_t;
-typedef struct td_int32_option int32_option;
-struct td_int32_option {
-    bool isvalid;
-    int32_t value;
-};
-const int32_option int32_empty = { false };
-
-typedef struct td_uint32_option uint32_option;
-struct td_uint32_option {
-    bool isvalid;
-    uint32_t value;
-};
-const uint32_option uint32_empty = { false };
-
-typedef struct td_int64_option int64_option;
-struct td_int64_option {
-    bool isvalid;
-    int64_t value;
-};
-const int64_option int64_empty = { false };
-
-typedef struct td_uint64_option uint64_option;
-struct td_uint64_option {
-    bool isvalid;
-    uint64_t value;
-};
-const uint64_option uint64_empty = { false };
-
-typedef struct td_void_option void_option;
-struct td_void_option {
-    bool isvalid;
-    void* value;
-};
-const void_option void_empty = { false };
-
-typedef struct td_char_option char_option;
-struct td_char_option {
-    bool isvalid;
-    char value;
-};
-const char_option char_empty = { false };
-
-typedef struct td_float_option float_option;
-struct td_float_option {
-    bool isvalid;
-    float value;
-};
-const float_option float_empty = { false };
-
-typedef struct td_double_option double_option;
-struct td_double_option {
-    bool isvalid;
-    double value;
-};
-const double_option double_empty = { false };
-
 const char* sjg_string1 = "shaders/v3f-t2f.vert";
 const char* sjg_string10 = "shaders/v3f-t2f.frag";
-const char* sjg_string100 = "view";
-const char* sjg_string101 = "projection";
+const char* sjg_string105 = "texture";
+const char* sjg_string106 = "amount";
+const char* sjg_string107 = "model";
+const char* sjg_string108 = "view";
+const char* sjg_string109 = "projection";
 const char* sjg_string11 = "shaders/v3f-n3f-phong.vert";
 const char* sjg_string12 = "shaders/v3f-n3f-phong.frag";
 const char* sjg_string13 = "shaders/v3f-t2f-n3f-phong.vert";
@@ -147,533 +96,76 @@ const char* sjg_string14 = "shaders/v3f-t2f-n3f-phong.frag";
 const char* sjg_string15 = "shaders/v3f-t2f-c4f.vert";
 const char* sjg_string16 = "shaders/v3f-t2f-c4f.frag";
 const char* sjg_string17 = "vertex:3f,tex_coord:2f,normal:3f";
+const char* sjg_string18 = "shaders/v3f-t2f.vert";
+const char* sjg_string19 = "shaders/saturate.frag";
 const char* sjg_string2 = "shaders/blur-horizontal.frag";
-const char* sjg_string20 = "assets/arial.ttf";
-const char* sjg_string22 = "assets/cat.png";
-const char* sjg_string23 = "Hello";
-const char* sjg_string24 = "Framebuffer failed";
-const char* sjg_string25 = "framebuffer being pop'ed is wrong";
-const char* sjg_string27 = "Framebuffer failed";
-const char* sjg_string28 = "viewport being pop'ed is wrong";
+const char* sjg_string22 = "assets/arial.ttf";
+const char* sjg_string24 = "assets/cat.png";
+const char* sjg_string25 = "Hello";
+const char* sjg_string26 = "Framebuffer failed";
+const char* sjg_string27 = "framebuffer being pop'ed is wrong";
+const char* sjg_string29 = "Framebuffer failed";
 const char* sjg_string3 = "shaders/v3f-t2f.vert";
+const char* sjg_string30 = "viewport being pop'ed is wrong";
 const char* sjg_string4 = "shaders/blur-vertical.frag";
-const char* sjg_string47 = "x: ";
-const char* sjg_string48 = " y: ";
-const char* sjg_string49 = " w: ";
 const char* sjg_string5 = "shaders/v3f-t2f.vert";
-const char* sjg_string50 = " h: ";
 const char* sjg_string51 = "x: ";
 const char* sjg_string52 = " y: ";
 const char* sjg_string53 = " w: ";
 const char* sjg_string54 = " h: ";
-const char* sjg_string55 = "viewModel";
-const char* sjg_string56 = "normalMat";
-const char* sjg_string57 = "projection";
-const char* sjg_string58 = "lightPos";
-const char* sjg_string59 = "diffuseColor";
+const char* sjg_string55 = "x: ";
+const char* sjg_string56 = " y: ";
+const char* sjg_string57 = " w: ";
+const char* sjg_string58 = " h: ";
+const char* sjg_string59 = "viewModel";
 const char* sjg_string6 = "shaders/fade.frag";
-const char* sjg_string60 = "specColor";
-const char* sjg_string67 = "model";
-const char* sjg_string68 = "view";
-const char* sjg_string69 = "projection";
+const char* sjg_string60 = "normalMat";
+const char* sjg_string61 = "projection";
+const char* sjg_string62 = "lightPos";
+const char* sjg_string63 = "diffuseColor";
+const char* sjg_string64 = "specColor";
 const char* sjg_string7 = "shaders/v3f-c4f.vert";
-const char* sjg_string70 = "texture";
-const char* sjg_string71 = "sigma";
-const char* sjg_string72 = "blurSize";
-const char* sjg_string73 = "model";
-const char* sjg_string74 = "view";
-const char* sjg_string75 = "projection";
-const char* sjg_string76 = "texture";
-const char* sjg_string77 = "sigma";
-const char* sjg_string78 = "blurSize";
-const char* sjg_string79 = "model";
+const char* sjg_string71 = "texture";
+const char* sjg_string72 = "sigma";
+const char* sjg_string73 = "blurSize";
+const char* sjg_string74 = "model";
+const char* sjg_string75 = "view";
+const char* sjg_string76 = "projection";
+const char* sjg_string77 = "texture";
+const char* sjg_string78 = "sigma";
+const char* sjg_string79 = "blurSize";
 const char* sjg_string8 = "shaders/v3f-c4f.frag";
-const char* sjg_string80 = "view";
-const char* sjg_string81 = "projection";
+const char* sjg_string80 = "model";
+const char* sjg_string81 = "view";
+const char* sjg_string82 = "projection";
 const char* sjg_string9 = "shaders/v3f-t2f.vert";
-const char* sjg_string97 = "texture";
-const char* sjg_string98 = "alpha";
-const char* sjg_string99 = "model";
+const char* sjg_string95 = "texture";
+const char* sjg_string96 = "alpha";
+const char* sjg_string97 = "model";
+const char* sjg_string98 = "view";
+const char* sjg_string99 = "projection";
 
-/* The MIT License
-Copyright (c) 2008, by Attractive Chaos <attractivechaos@aol.co.uk>
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
-/*
-An example:
-#include "khash.h"
-KHASH_MAP_INIT_INT(32, char)
-int main() {
-    int ret, is_missing;
-    khiter_t k;
-    khash_t(32) *h = kh_init(32);
-    k = kh_put(32, h, 5, &ret);
-    if (!ret) kh_del(32, h, k);
-    kh_value(h, k) = 10;
-    k = kh_get(32, h, 10);
-    is_missing = (k == kh_end(h));
-    k = kh_get(32, h, 5);
-    kh_del(32, h, k);
-    for (k = kh_begin(h); k != kh_end(h); ++k)
-    if (kh_exist(h, k)) kh_value(h, k) = 1;
-    kh_destroy(32, h);
-    return 0;
-}
-*/
-/*
-2008-09-19 (0.2.3):
-* Corrected the example
-* Improved interfaces
-2008-09-11 (0.2.2):
-* Improved speed a little in kh_put()
-2008-09-10 (0.2.1):
-* Added kh_clear()
-* Fixed a compiling error
-2008-09-02 (0.2.0):
-* Changed to token concatenation which increases flexibility.
-2008-08-31 (0.1.2):
-* Fixed a bug in kh_get(), which has not been tested previously.
-2008-08-31 (0.1.1):
-* Added destructor
-*/
-#ifndef __AC_KHASH_H
-#define __AC_KHASH_H
-#define AC_VERSION_KHASH_H "0.2.2"
-typedef uint32_t khint_t;
-typedef khint_t khiter_t;
-#define __ac_HASH_PRIME_SIZE 32
-static const uint32_t __ac_prime_list[__ac_HASH_PRIME_SIZE] =
-{
-    0ul,          3ul,          11ul,         23ul,         53ul,
-    97ul,         193ul,        389ul,        769ul,        1543ul,
-    3079ul,       6151ul,       12289ul,      24593ul,      49157ul,
-    98317ul,      196613ul,     393241ul,     786433ul,     1572869ul,
-    3145739ul,    6291469ul,    12582917ul,   25165843ul,   50331653ul,
-    100663319ul,  201326611ul,  402653189ul,  805306457ul,  1610612741ul,
-    3221225473ul, 4294967291ul
-};
-#define __ac_isempty(flag, i) ((flag[i>>4]>>((i&0xfU)<<1))&2)
-#define __ac_isdel(flag, i) ((flag[i>>4]>>((i&0xfU)<<1))&1)
-#define __ac_iseither(flag, i) ((flag[i>>4]>>((i&0xfU)<<1))&3)
-#define __ac_set_isdel_false(flag, i) (flag[i>>4]&=~(1ul<<((i&0xfU)<<1)))
-#define __ac_set_isempty_false(flag, i) (flag[i>>4]&=~(2ul<<((i&0xfU)<<1)))
-#define __ac_set_isboth_false(flag, i) (flag[i>>4]&=~(3ul<<((i&0xfU)<<1)))
-#define __ac_set_isdel_true(flag, i) (flag[i>>4]|=1ul<<((i&0xfU)<<1))
-static const double __ac_HASH_UPPER = 0.77;
-#define KHASH_INIT_TYPEDEF(name, khkey_t, khval_t) \
-typedef struct {                                                    \
-khint_t n_buckets, size, n_occupied, upper_bound;               \
-uint32_t *flags;                                                \
-khkey_t *keys;                                                  \
-khval_t *vals;                                                  \
-} kh_##name##_t;                                                
-#define KHASH_INIT_FUNCTION(name, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal) \
-static inline kh_##name##_t *kh_init_##name() {                     \
-return (kh_##name##_t*)calloc(1, sizeof(kh_##name##_t));        \
-}                                                                   \
-static inline void kh_destroy_##name(kh_##name##_t *h)              \
-{                                                                   \
-if (h) {                                                        \
-free(h->keys); free(h->flags);                              \
-free(h->vals);                                              \
-free(h);                                                    \
-}                                                               \
-}                                                                   \
-static inline void kh_clear_##name(kh_##name##_t *h)                \
-{                                                                   \
-if (h && h->flags) { \
-memset(h->flags, 0xaa, ((h->n_buckets>>4) + 1) * sizeof(uint32_t)); \
-h->size = h->n_occupied = 0;                                \
-}                                                               \
-}                                                                   \
-static inline khint_t kh_get_##name(kh_##name##_t *h, khkey_t key)  \
-{                                                                   \
-if (h->n_buckets) {                                             \
-khint_t inc, k, i, last;                                    \
-__hash_func(key, &k); i = k % h->n_buckets;        \
-inc = 1 + k % (h->n_buckets - 1); last = i;                 \
-bool shouldContinue = false;                                \
-if (!__ac_isempty(h->flags, i)) {                           \
-bool isEqual;                                           \
-__hash_equal(h->keys[i], key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
-}                                                           \
-while (shouldContinue) {                                    \
-if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
-else i += inc;                                          \
-if (i == last) return h->n_buckets;                     \
-shouldContinue = false;                                 \
-if (!__ac_isempty(h->flags, i)) {                       \
-bool isEqual;                                       \
-__hash_equal(h->keys[i], key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual; \
-}                                                       \
-}                                                           \
-return __ac_iseither(h->flags, i)? h->n_buckets : i;        \
-} else return 0;                                                \
-}                                                                   \
-static inline void kh_resize_##name(kh_##name##_t *h, khint_t new_n_buckets) \
-{                                                                   \
-uint32_t *new_flags = 0;                                        \
-khint_t j = 1;                                                  \
-{                                                               \
-khint_t t = __ac_HASH_PRIME_SIZE - 1;                       \
-while (__ac_prime_list[t] > new_n_buckets) --t;             \
-new_n_buckets = __ac_prime_list[t+1];                       \
-if (h->size >= (khint_t)(new_n_buckets * __ac_HASH_UPPER + 0.5)) j = 0; \
-else {                                                      \
-new_flags = (uint32_t*)malloc(((new_n_buckets>>4) + 1) * sizeof(uint32_t)); \
-memset(new_flags, 0xaa, ((new_n_buckets>>4) + 1) * sizeof(uint32_t)); \
-if (h->n_buckets < new_n_buckets) {                     \
-h->keys = (khkey_t*)realloc(h->keys, new_n_buckets * sizeof(khkey_t)); \
-if (kh_is_map)                                      \
-h->vals = (khval_t*)realloc(h->vals, new_n_buckets * sizeof(khval_t)); \
-}                                                       \
-}                                                           \
-}                                                               \
-if (j) {                                                        \
-for (j = 0; j != h->n_buckets; ++j) {                       \
-if (__ac_iseither(h->flags, j) == 0) {                  \
-khkey_t key = h->keys[j];                           \
-khval_t val;                                        \
-if (kh_is_map) val = h->vals[j];                    \
-__ac_set_isdel_true(h->flags, j);                   \
-while (1) {                                         \
-khint_t inc, k, i;                              \
-__hash_func(key, &k);                           \
-i = k % new_n_buckets;                          \
-inc = 1 + k % (new_n_buckets - 1);              \
-while (!__ac_isempty(new_flags, i)) {           \
-if (i + inc >= new_n_buckets) i = i + inc - new_n_buckets; \
-else i += inc;                              \
-}                                               \
-__ac_set_isempty_false(new_flags, i);           \
-if (i < h->n_buckets && __ac_iseither(h->flags, i) == 0) { \
-{ khkey_t tmp = h->keys[i]; h->keys[i] = key; key = tmp; } \
-if (kh_is_map) { khval_t tmp = h->vals[i]; h->vals[i] = val; val = tmp; } \
-__ac_set_isdel_true(h->flags, i);           \
-} else {                                        \
-h->keys[i] = key;                           \
-if (kh_is_map) h->vals[i] = val;            \
-break;                                      \
-}                                               \
-}                                                   \
-}                                                       \
-}                                                           \
-if (h->n_buckets > new_n_buckets) {                         \
-h->keys = (khkey_t*)realloc(h->keys, new_n_buckets * sizeof(khkey_t)); \
-if (kh_is_map)                                          \
-h->vals = (khval_t*)realloc(h->vals, new_n_buckets * sizeof(khval_t)); \
-}                                                           \
-free(h->flags);                                             \
-h->flags = new_flags;                                       \
-h->n_buckets = new_n_buckets;                               \
-h->n_occupied = h->size;                                    \
-h->upper_bound = (khint_t)(h->n_buckets * __ac_HASH_UPPER + 0.5); \
-}                                                               \
-}                                                                   \
-static inline khint_t kh_put_##name(kh_##name##_t *h, khkey_t key, int *ret) \
-{                                                                   \
-khint_t x;                                                      \
-if (h->n_occupied >= h->upper_bound) {                          \
-if (h->n_buckets > (h->size<<1)) kh_resize_##name(h, h->n_buckets - 1); \
-else kh_resize_##name(h, h->n_buckets + 1);                 \
-}                                                               \
-{                                                               \
-khint_t inc, k, i, site, last;                              \
-x = site = h->n_buckets; __hash_func(key, &k); i = k % h->n_buckets; \
-if (__ac_isempty(h->flags, i)) x = i;                       \
-else {                                                      \
-inc = 1 + k % (h->n_buckets - 1); last = i;             \
-bool shouldContinue = false;                                \
-if (!__ac_isempty(h->flags, i)) {                           \
-bool isEqual;                                           \
-__hash_equal(h->keys[i], key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
-}                                                           \
-while (shouldContinue) { \
-if (__ac_isdel(h->flags, i)) site = i;              \
-if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
-else i += inc;                                      \
-if (i == last) { x = site; break; }                 \
-shouldContinue = false;                             \
-if (!__ac_isempty(h->flags, i)) {                           \
-bool isEqual;                                           \
-__hash_equal(h->keys[i], key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
-}                                                           \
-}                                                       \
-if (x == h->n_buckets) {                                \
-if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \
-else x = i;                                         \
-}                                                       \
-}                                                           \
-}                                                               \
-if (__ac_isempty(h->flags, x)) {                                \
-h->keys[x] = key;                                           \
-__ac_set_isboth_false(h->flags, x);                         \
-++h->size; ++h->n_occupied;                                 \
-*ret = 1;                                                   \
-} else if (__ac_isdel(h->flags, x)) {                           \
-h->keys[x] = key;                                           \
-__ac_set_isboth_false(h->flags, x);                         \
-++h->size;                                                  \
-*ret = 2;                                                   \
-} else *ret = 0;                                                \
-return x;                                                       \
-}                                                                   \
-static inline void kh_del_##name(kh_##name##_t *h, khint_t x)       \
-{                                                                   \
-if (x != h->n_buckets && !__ac_iseither(h->flags, x)) {         \
-__ac_set_isdel_true(h->flags, x);                           \
---h->size;                                                  \
-}                                                               \
-}
-#define KHASH_INIT_FUNCTION_DEREF(name, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal) \
-static inline kh_##name##_t *kh_init_##name() {                     \
-return (kh_##name##_t*)calloc(1, sizeof(kh_##name##_t));        \
-}                                                                   \
-static inline void kh_destroy_##name(kh_##name##_t *h)              \
-{                                                                   \
-if (h) {                                                        \
-free(h->keys); free(h->flags);                              \
-free(h->vals);                                              \
-free(h);                                                    \
-}                                                               \
-}                                                                   \
-static inline void kh_clear_##name(kh_##name##_t *h)                \
-{                                                                   \
-if (h && h->flags) { \
-memset(h->flags, 0xaa, ((h->n_buckets>>4) + 1) * sizeof(uint32_t)); \
-h->size = h->n_occupied = 0;                                \
-}                                                               \
-}                                                                   \
-static inline khint_t kh_get_##name(kh_##name##_t *h, khkey_t key)  \
-{                                                                   \
-if (h->n_buckets) {                                             \
-khint_t inc, k, i, last;                                    \
-__hash_func(&key, &k); i = k % h->n_buckets;        \
-inc = 1 + k % (h->n_buckets - 1); last = i;                 \
-bool shouldContinue = false;                                \
-if (!__ac_isempty(h->flags, i)) {                           \
-bool isEqual;                                           \
-__hash_equal(&h->keys[i], &key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
-}                                                           \
-while (shouldContinue) {                                    \
-if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
-else i += inc;                                          \
-if (i == last) return h->n_buckets;                     \
-shouldContinue = false;                                 \
-if (!__ac_isempty(h->flags, i)) {                       \
-bool isEqual;                                       \
-__hash_equal(&h->keys[i], &key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual; \
-}                                                       \
-}                                                           \
-return __ac_iseither(h->flags, i)? h->n_buckets : i;        \
-} else return 0;                                                \
-}                                                                   \
-static inline void kh_resize_##name(kh_##name##_t *h, khint_t new_n_buckets) \
-{                                                                   \
-uint32_t *new_flags = 0;                                        \
-khint_t j = 1;                                                  \
-{                                                               \
-khint_t t = __ac_HASH_PRIME_SIZE - 1;                       \
-while (__ac_prime_list[t] > new_n_buckets) --t;             \
-new_n_buckets = __ac_prime_list[t+1];                       \
-if (h->size >= (khint_t)(new_n_buckets * __ac_HASH_UPPER + 0.5)) j = 0; \
-else {                                                      \
-new_flags = (uint32_t*)malloc(((new_n_buckets>>4) + 1) * sizeof(uint32_t)); \
-memset(new_flags, 0xaa, ((new_n_buckets>>4) + 1) * sizeof(uint32_t)); \
-if (h->n_buckets < new_n_buckets) {                     \
-h->keys = (khkey_t*)realloc(h->keys, new_n_buckets * sizeof(khkey_t)); \
-if (kh_is_map)                                      \
-h->vals = (khval_t*)realloc(h->vals, new_n_buckets * sizeof(khval_t)); \
-}                                                       \
-}                                                           \
-}                                                               \
-if (j) {                                                        \
-for (j = 0; j != h->n_buckets; ++j) {                       \
-if (__ac_iseither(h->flags, j) == 0) {                  \
-khkey_t key = h->keys[j];                           \
-khval_t val;                                        \
-if (kh_is_map) val = h->vals[j];                    \
-__ac_set_isdel_true(h->flags, j);                   \
-while (1) {                                         \
-khint_t inc, k, i;                              \
-__hash_func(&key, &k);                           \
-i = k % new_n_buckets;                          \
-inc = 1 + k % (new_n_buckets - 1);              \
-while (!__ac_isempty(new_flags, i)) {           \
-if (i + inc >= new_n_buckets) i = i + inc - new_n_buckets; \
-else i += inc;                              \
-}                                               \
-__ac_set_isempty_false(new_flags, i);           \
-if (i < h->n_buckets && __ac_iseither(h->flags, i) == 0) { \
-{ khkey_t tmp = h->keys[i]; h->keys[i] = key; key = tmp; } \
-if (kh_is_map) { khval_t tmp = h->vals[i]; h->vals[i] = val; val = tmp; } \
-__ac_set_isdel_true(h->flags, i);           \
-} else {                                        \
-h->keys[i] = key;                           \
-if (kh_is_map) h->vals[i] = val;            \
-break;                                      \
-}                                               \
-}                                                   \
-}                                                       \
-}                                                           \
-if (h->n_buckets > new_n_buckets) {                         \
-h->keys = (khkey_t*)realloc(h->keys, new_n_buckets * sizeof(khkey_t)); \
-if (kh_is_map)                                          \
-h->vals = (khval_t*)realloc(h->vals, new_n_buckets * sizeof(khval_t)); \
-}                                                           \
-free(h->flags);                                             \
-h->flags = new_flags;                                       \
-h->n_buckets = new_n_buckets;                               \
-h->n_occupied = h->size;                                    \
-h->upper_bound = (khint_t)(h->n_buckets * __ac_HASH_UPPER + 0.5); \
-}                                                               \
-}                                                                   \
-static inline khint_t kh_put_##name(kh_##name##_t *h, khkey_t key, int *ret) \
-{                                                                   \
-khint_t x;                                                      \
-if (h->n_occupied >= h->upper_bound) {                          \
-if (h->n_buckets > (h->size<<1)) kh_resize_##name(h, h->n_buckets - 1); \
-else kh_resize_##name(h, h->n_buckets + 1);                 \
-}                                                               \
-{                                                               \
-khint_t inc, k, i, site, last;                              \
-x = site = h->n_buckets; __hash_func(&key, &k); i = k % h->n_buckets; \
-if (__ac_isempty(h->flags, i)) x = i;                       \
-else {                                                      \
-inc = 1 + k % (h->n_buckets - 1); last = i;             \
-bool shouldContinue = false;                                \
-if (!__ac_isempty(h->flags, i)) {                           \
-bool isEqual;                                           \
-__hash_equal(&h->keys[i], &key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
-}                                                           \
-while (shouldContinue) { \
-if (__ac_isdel(h->flags, i)) site = i;              \
-if (i + inc >= h->n_buckets) i = i + inc - h->n_buckets; \
-else i += inc;                                      \
-if (i == last) { x = site; break; }                 \
-shouldContinue = false;                             \
-if (!__ac_isempty(h->flags, i)) {                           \
-bool isEqual;                                           \
-__hash_equal(&h->keys[i], &key, &isEqual);  \
-shouldContinue = __ac_isdel(h->flags, i) || !isEqual;   \
-}                                                           \
-}                                                       \
-if (x == h->n_buckets) {                                \
-if (__ac_isempty(h->flags, i) && site != h->n_buckets) x = site; \
-else x = i;                                         \
-}                                                       \
-}                                                           \
-}                                                               \
-if (__ac_isempty(h->flags, x)) {                                \
-h->keys[x] = key;                                           \
-__ac_set_isboth_false(h->flags, x);                         \
-++h->size; ++h->n_occupied;                                 \
-*ret = 1;                                                   \
-} else if (__ac_isdel(h->flags, x)) {                           \
-h->keys[x] = key;                                           \
-__ac_set_isboth_false(h->flags, x);                         \
-++h->size;                                                  \
-*ret = 2;                                                   \
-} else *ret = 0;                                                \
-return x;                                                       \
-}                                                                   \
-static inline void kh_del_##name(kh_##name##_t *h, khint_t x)       \
-{                                                                   \
-if (x != h->n_buckets && !__ac_iseither(h->flags, x)) {         \
-__ac_set_isdel_true(h->flags, x);                           \
---h->size;                                                  \
-}                                                               \
-}
-/* --- BEGIN OF HASH FUNCTIONS --- */
-#define kh_int_hash_func(key) (uint32_t)(key)
-#define kh_int_hash_equal(a, b) (a == b)
-#define kh_int64_hash_func(key) (uint32_t)((key)>>33^(key)^(key)<<11)
-#define kh_int64_hash_equal(a, b) (a == b)
-static inline khint_t __ac_X31_hash_string(const char *s)
-{
-khint_t h = *s;
-if (h) for (++s; *s; ++s) h = (h << 5) - h + *s;
-return h;
-}
-#define kh_str_hash_func(key) __ac_X31_hash_string(key)
-#define kh_str_hash_equal(a, b) (strcmp(a, b) == 0)
-/* --- END OF HASH FUNCTIONS --- */
-/* Other necessary macros... */
-#define khash_t(name) kh_##name##_t
-#define kh_init(name) kh_init_##name()
-#define kh_destroy(name, h) kh_destroy_##name(h)
-#define kh_clear(name, h) kh_clear_##name(h)
-#define kh_resize(name, h, s) kh_resize_##name(h, s)
-#define kh_put(name, h, k, r) kh_put_##name(h, k, r)
-#define kh_get(name, h, k) kh_get_##name(h, k)
-#define kh_del(name, h, k) kh_del_##name(h, k)
-#define kh_exist(h, x) (!__ac_iseither((h)->flags, (x)))
-#define kh_key(h, x) ((h)->keys[x])
-#define kh_val(h, x) ((h)->vals[x])
-#define kh_value(h, x) ((h)->vals[x])
-#define kh_begin(h) (khint_t)(0)
-#define kh_end(h) ((h)->n_buckets)
-#define kh_size(h) ((h)->size)
-#define kh_n_buckets(h) ((h)->n_buckets)
-/* More conenient interfaces */
-#define KHASH_SET_INIT_INT(name)                                        \
-KHASH_INIT(name, uint32_t, char, 0, kh_int_hash_func, kh_int_hash_equal)
-#define KHASH_MAP_INIT_INT(name, khval_t)                               \
-KHASH_INIT(name, uint32_t, khval_t, 1, kh_int_hash_func, kh_int_hash_equal)
-#define KHASH_SET_INIT_INT64(name)                                      \
-KHASH_INIT(name, uint64_t, char, 0, kh_int64_hash_func, kh_int64_hash_equal)
-#define KHASH_MAP_INIT_INT64(name, khval_t)                             \
-KHASH_INIT(name, uint64_t, khval_t, 1, kh_int64_hash_func, kh_int64_hash_equal)
-typedef const char *kh_cstr_t;
-#define KHASH_SET_INIT_STR(name)                                        \
-KHASH_INIT(name, kh_cstr_t, char, 0, kh_str_hash_func, kh_str_hash_equal)
-#define KHASH_MAP_INIT_STR(name, khval_t)                               \
-KHASH_INIT(name, kh_cstr_t, khval_t, 1, kh_str_hash_func, kh_str_hash_equal)
-#endif /* __AC_KHASH_H */
 struct td_delete_cb {
-void* _parent;
-void (*_cb)(void* _parent, void* object);
+    void* _parent;
+    void (*_cb)(void* _parent, void* object);
 };
 struct td_delete_cb_list {
-int size;
-delete_cb cb[5];
-delete_cb_list* next;
+    int size;
+    delete_cb cb[5];
+    delete_cb_list* next;
 };
 typedef struct {
-float x, y, z;    // position
-float r, g, b, a; // color
+    float x, y, z;    // position
+    float r, g, b, a; // color
 } vertex3_color4_t;	
 typedef struct {
-float x, y, z;    // position
-float s, t;       // texture
+    float x, y, z;    // position
+    float s, t;       // texture
 } vertex3_texture2_t;	
 typedef struct {
-float x, y, z;    // position
-float s, t;       // texture
-float r, g, b, a; // color
+    float x, y, z;    // position
+    float s, t;       // texture
+    float r, g, b, a; // color
 } vertex3_texture2_color3_t;	
 /**
 * Tuple of 4 ints.
@@ -687,37 +179,37 @@ float r, g, b, a; // color
 */
 typedef union
 {
-int data[4];    /**< All compoments at once     */
-struct {
-int x;      /**< Alias for first component  */
-int y;      /**< Alias for second component */
-int z;      /**< Alias for third component  */
-int w;      /**< Alias for fourht component */
-};
-struct {
-int x_;     /**< Alias for first component  */
-int y_;     /**< Alias for second component */
-int width;  /**< Alias for third component  */
-int height; /**< Alias for fourth component */
-};
-struct {
-int r;      /**< Alias for first component  */
-int g;      /**< Alias for second component */
-int b;      /**< Alias for third component  */
-int a;      /**< Alias for fourth component */
-};
-struct {
-int red;    /**< Alias for first component  */
-int green;  /**< Alias for second component */
-int blue;   /**< Alias for third component  */
-int alpha;  /**< Alias for fourth component */
-};
-struct {
-int vstart; /**< Alias for first component  */
-int vcount; /**< Alias for second component */
-int istart; /**< Alias for third component  */
-int icount; /**< Alias for fourth component */
-};
+    int data[4];    /**< All compoments at once     */
+    struct {
+        int x;      /**< Alias for first component  */
+        int y;      /**< Alias for second component */
+        int z;      /**< Alias for third component  */
+        int w;      /**< Alias for fourht component */
+    };
+    struct {
+        int x_;     /**< Alias for first component  */
+        int y_;     /**< Alias for second component */
+        int width;  /**< Alias for third component  */
+        int height; /**< Alias for fourth component */
+    };
+    struct {
+        int r;      /**< Alias for first component  */
+        int g;      /**< Alias for second component */
+        int b;      /**< Alias for third component  */
+        int a;      /**< Alias for fourth component */
+    };
+    struct {
+        int red;    /**< Alias for first component  */
+        int green;  /**< Alias for second component */
+        int blue;   /**< Alias for third component  */
+        int alpha;  /**< Alias for fourth component */
+    };
+    struct {
+        int vstart; /**< Alias for first component  */
+        int vcount; /**< Alias for second component */
+        int istart; /**< Alias for third component  */
+        int icount; /**< Alias for fourth component */
+    };
 } ivec4;
 /**
 * Tuple of 3 ints.
@@ -730,22 +222,22 @@ int icount; /**< Alias for fourth component */
 */
 typedef union
 {
-int data[3];    /**< All compoments at once     */
-struct {
-int x;      /**< Alias for first component  */
-int y;      /**< Alias for second component */
-int z;      /**< Alias for third component  */
-};
-struct {
-int r;      /**< Alias for first component  */
-int g;      /**< Alias for second component */
-int b;      /**< Alias for third component  */
-};
-struct {
-int red;    /**< Alias for first component  */
-int green;  /**< Alias for second component */
-int blue;   /**< Alias for third component  */
-};
+    int data[3];    /**< All compoments at once     */
+    struct {
+        int x;      /**< Alias for first component  */
+        int y;      /**< Alias for second component */
+        int z;      /**< Alias for third component  */
+    };
+    struct {
+        int r;      /**< Alias for first component  */
+        int g;      /**< Alias for second component */
+        int b;      /**< Alias for third component  */
+    };
+    struct {
+        int red;    /**< Alias for first component  */
+        int green;  /**< Alias for second component */
+        int blue;   /**< Alias for third component  */
+    };
 } ivec3;
 /**
 * Tuple of 2 ints.
@@ -757,19 +249,19 @@ int blue;   /**< Alias for third component  */
 */
 typedef union
 {
-int data[2];    /**< All compoments at once     */
-struct {
-int x;      /**< Alias for first component  */
-int y;      /**< Alias for second component */
-};
-struct {
-int s;      /**< Alias for first component  */
-int t;      /**< Alias for second component */
-};
-struct {
-int start;  /**< Alias for first component  */
-int end;    /**< Alias for second component */
-};
+    int data[2];    /**< All compoments at once     */
+    struct {
+        int x;      /**< Alias for first component  */
+        int y;      /**< Alias for second component */
+    };
+    struct {
+        int s;      /**< Alias for first component  */
+        int t;      /**< Alias for second component */
+    };
+    struct {
+        int start;  /**< Alias for first component  */
+        int end;    /**< Alias for second component */
+    };
 } ivec2;
 /**
 * Tuple of 4 floats.
@@ -782,31 +274,31 @@ int end;    /**< Alias for second component */
 */
 typedef union
 {
-float data[4];    /**< All compoments at once    */
-struct {
-float x;      /**< Alias for first component */
-float y;      /**< Alias for second component */
-float z;      /**< Alias for third component  */
-float w;      /**< Alias for fourth component */
-};
-struct {
-float left;   /**< Alias for first component */
-float top;    /**< Alias for second component */
-float width;  /**< Alias for third component  */
-float height; /**< Alias for fourth component */
-};
-struct {
-float r;      /**< Alias for first component */
-float g;      /**< Alias for second component */
-float b;      /**< Alias for third component  */
-float a;      /**< Alias for fourth component */
-};
-struct {
-float red;    /**< Alias for first component */
-float green;  /**< Alias for second component */
-float blue;   /**< Alias for third component  */
-float alpha;  /**< Alias for fourth component */
-};
+    float data[4];    /**< All compoments at once    */
+    struct {
+        float x;      /**< Alias for first component */
+        float y;      /**< Alias for second component */
+        float z;      /**< Alias for third component  */
+        float w;      /**< Alias for fourth component */
+    };
+    struct {
+        float left;   /**< Alias for first component */
+        float top;    /**< Alias for second component */
+        float width;  /**< Alias for third component  */
+        float height; /**< Alias for fourth component */
+    };
+    struct {
+        float r;      /**< Alias for first component */
+        float g;      /**< Alias for second component */
+        float b;      /**< Alias for third component  */
+        float a;      /**< Alias for fourth component */
+    };
+    struct {
+        float red;    /**< Alias for first component */
+        float green;  /**< Alias for second component */
+        float blue;   /**< Alias for third component  */
+        float alpha;  /**< Alias for fourth component */
+    };
 } vec4;
 /**
 * Tuple of 3 floats
@@ -818,22 +310,22 @@ float alpha;  /**< Alias for fourth component */
 */
 typedef union
 {
-float data[3];   /**< All compoments at once    */
-struct {
-float x;     /**< Alias for first component */
-float y;     /**< Alias fo second component */
-float z;     /**< Alias fo third component  */
-};
-struct {
-float r;     /**< Alias for first component */
-float g;     /**< Alias fo second component */
-float b;     /**< Alias fo third component  */
-};
-struct {
-float red;   /**< Alias for first component */
-float green; /**< Alias fo second component */
-float blue;  /**< Alias fo third component  */
-};
+    float data[3];   /**< All compoments at once    */
+    struct {
+        float x;     /**< Alias for first component */
+        float y;     /**< Alias fo second component */
+        float z;     /**< Alias fo third component  */
+    };
+    struct {
+        float r;     /**< Alias for first component */
+        float g;     /**< Alias fo second component */
+        float b;     /**< Alias fo third component  */
+    };
+    struct {
+        float red;   /**< Alias for first component */
+        float green; /**< Alias fo second component */
+        float blue;  /**< Alias fo third component  */
+    };
 } vec3;
 /**
 * Tuple of 2 floats
@@ -844,57 +336,57 @@ float blue;  /**< Alias fo third component  */
 */
 typedef union
 {
-float data[2]; /**< All components at once     */
-struct {
-float x;   /**< Alias for first component  */
-float y;   /**< Alias for second component */
-};
-struct {
-float s;   /**< Alias for first component  */
-float t;   /**< Alias for second component */
-};
+    float data[2]; /**< All components at once     */
+    struct {
+        float x;   /**< Alias for first component  */
+        float y;   /**< Alias for second component */
+    };
+    struct {
+        float s;   /**< Alias for first component  */
+        float t;   /**< Alias for second component */
+    };
 } vec2;
 /**
 * A texture atlas is used to pack several small regions into a single texture.
 */
 typedef struct texture_atlas_t
 {
-/**
-* Allocated nodes
-*/
-vector_t * nodes;
-/**
-*  Width (in pixels) of the underlying texture
-*/
-size_t width;
-/**
-* Height (in pixels) of the underlying texture
-*/
-size_t height;
-/**
-* Depth (in bytes) of the underlying texture
-*/
-size_t depth;
-/**
-* Allocated surface size
-*/
-size_t used;
-/**
-* Texture identity (OpenGL)
-*/
-unsigned int id;
-/**
-* Atlas data
-*/
-unsigned char * data;
+    /**
+    * Allocated nodes
+    */
+    vector_t * nodes;
+    /**
+    *  Width (in pixels) of the underlying texture
+    */
+    size_t width;
+    /**
+    * Height (in pixels) of the underlying texture
+    */
+    size_t height;
+    /**
+    * Depth (in bytes) of the underlying texture
+    */
+    size_t depth;
+    /**
+    * Allocated surface size
+    */
+    size_t used;
+    /**
+    * Texture identity (OpenGL)
+    */
+    unsigned int id;
+    /**
+    * Atlas data
+    */
+    unsigned char * data;
 } texture_atlas_t;    
 #undef __FTERRORS_H__
 #define FT_ERRORDEF( e, v, s )  { e, s },
 #define FT_ERROR_START_LIST     {
 #define FT_ERROR_END_LIST       { 0, 0 } };
 const struct {
-int          code;
-const char*  message;
+    int          code;
+    const char*  message;
 } FT_Errors[] =
 #include FT_ERRORS_H    
 /**
@@ -902,11 +394,11 @@ const char*  message;
 */
 typedef enum rendermode_t
 {
-RENDER_NORMAL,
-RENDER_OUTLINE_EDGE,
-RENDER_OUTLINE_POSITIVE,
-RENDER_OUTLINE_NEGATIVE,
-RENDER_SIGNED_DISTANCE_FIELD
+    RENDER_NORMAL,
+    RENDER_OUTLINE_EDGE,
+    RENDER_OUTLINE_POSITIVE,
+    RENDER_OUTLINE_NEGATIVE,
+    RENDER_SIGNED_DISTANCE_FIELD
 } rendermode_t;
 /**
 * A structure that hold a kerning value relatively to a Unicode
@@ -917,14 +409,14 @@ RENDER_SIGNED_DISTANCE_FIELD
 */
 typedef struct kerning_t
 {
-/**
-* Left Unicode codepoint in the kern pair in UTF-32 LE encoding.
-*/
-uint32_t codepoint;
-/**
-* Kerning value (in fractional pixels).
-*/
-float kerning;
+    /**
+    * Left Unicode codepoint in the kern pair in UTF-32 LE encoding.
+    */
+    uint32_t codepoint;
+    /**
+    * Kerning value (in fractional pixels).
+    */
+    float kerning;
 } kerning_t;
 /*
 * Glyph metrics:
@@ -963,69 +455,69 @@ float kerning;
 */
 typedef struct texture_glyph_t
 {
-/**
-* Unicode codepoint this glyph represents in UTF-32 LE encoding.
-*/
-uint32_t codepoint;
-/**
-* Glyph's width in pixels.
-*/
-size_t width;
-/**
-* Glyph's height in pixels.
-*/
-size_t height;
-/**
-* Glyph's left bearing expressed in integer pixels.
-*/
-int offset_x;
-/**
-* Glyphs's top bearing expressed in integer pixels.
-*
-* Remember that this is the distance from the baseline to the top-most
-* glyph scanline, upwards y coordinates being positive.
-*/
-int offset_y;
-/**
-* For horizontal text layouts, this is the horizontal distance (in
-* fractional pixels) used to increment the pen position when the glyph is
-* drawn as part of a string of text.
-*/
-float advance_x;
-/**
-* For vertical text layouts, this is the vertical distance (in fractional
-* pixels) used to increment the pen position when the glyph is drawn as
-* part of a string of text.
-*/
-float advance_y;
-/**
-* First normalized texture coordinate (x) of top-left corner
-*/
-float s0;
-/**
-* Second normalized texture coordinate (y) of top-left corner
-*/
-float t0;
-/**
-* First normalized texture coordinate (x) of bottom-right corner
-*/
-float s1;
-/**
-* Second normalized texture coordinate (y) of bottom-right corner
-*/
-float t1;
-/**
-* A vector of kerning pairs relative to this glyph.
-*/
-vector_t * kerning;
-/**
-* Mode this glyph was rendered
-*/
-rendermode_t rendermode;
-/**
-* Glyph outline thickness
-*/
-float outline_thickness;
+    /**
+    * Unicode codepoint this glyph represents in UTF-32 LE encoding.
+    */
+    uint32_t codepoint;
+    /**
+    * Glyph's width in pixels.
+    */
+    size_t width;
+    /**
+    * Glyph's height in pixels.
+    */
+    size_t height;
+    /**
+    * Glyph's left bearing expressed in integer pixels.
+    */
+    int offset_x;
+    /**
+    * Glyphs's top bearing expressed in integer pixels.
+    *
+    * Remember that this is the distance from the baseline to the top-most
+    * glyph scanline, upwards y coordinates being positive.
+    */
+    int offset_y;
+    /**
+    * For horizontal text layouts, this is the horizontal distance (in
+    * fractional pixels) used to increment the pen position when the glyph is
+    * drawn as part of a string of text.
+    */
+    float advance_x;
+    /**
+    * For vertical text layouts, this is the vertical distance (in fractional
+    * pixels) used to increment the pen position when the glyph is drawn as
+    * part of a string of text.
+    */
+    float advance_y;
+    /**
+    * First normalized texture coordinate (x) of top-left corner
+    */
+    float s0;
+    /**
+    * Second normalized texture coordinate (y) of top-left corner
+    */
+    float t0;
+    /**
+    * First normalized texture coordinate (x) of bottom-right corner
+    */
+    float s1;
+    /**
+    * Second normalized texture coordinate (y) of bottom-right corner
+    */
+    float t1;
+    /**
+    * A vector of kerning pairs relative to this glyph.
+    */
+    vector_t * kerning;
+    /**
+    * Mode this glyph was rendered
+    */
+    rendermode_t rendermode;
+    /**
+    * Glyph outline thickness
+    */
+    float outline_thickness;
 } texture_glyph_t;
 typedef struct texture_atlas_t texture_atlas_td; 
 /**
@@ -1033,105 +525,105 @@ typedef struct texture_atlas_t texture_atlas_td;
 */
 typedef struct texture_font_t
 {
-/**
-* Vector of glyphs contained in this font.
-*/
-vector_t * glyphs;
-/**
-* Atlas structure to store glyphs data.
-*/
-texture_atlas_td * atlas;
-/**
-* font location
-*/
-enum {
-TEXTURE_FONT_FILE = 0,
-TEXTURE_FONT_MEMORY,
-} location;
-union {
-/**
-* Font filename, for when location == TEXTURE_FONT_FILE
-*/
-char *filename;
-/**
-* Font memory address, for when location == TEXTURE_FONT_MEMORY
-*/
-struct {
-const void *base;
-size_t size;
-} memory;
-};
-/**
-* Font size
-*/
-float size;
-/**
-* Whether to use autohint when rendering font
-*/
-int hinting;
-/**
-* Mode the font is rendering its next glyph
-*/
-rendermode_t rendermode;
-/**
-* Outline thickness
-*/
-float outline_thickness;
-/**
-* Whether to use our own lcd filter.
-*/
-int filtering;
-/**
-* LCD filter weights
-*/
-unsigned char lcd_weights[5];
-/**
-* Whether to use kerning if available
-*/
-int kerning;
-/**
-* This field is simply used to compute a default line spacing (i.e., the
-* baseline-to-baseline distance) when writing text with this font. Note
-* that it usually is larger than the sum of the ascender and descender
-* taken as absolute values. There is also no guarantee that no glyphs
-* extend above or below subsequent baselines when using this distance.
-*/
-float height;
-/**
-* This field is the distance that must be placed between two lines of
-* text. The baseline-to-baseline distance should be computed as:
-* ascender - descender + linegap
-*/
-float linegap;
-/**
-* The ascender is the vertical distance from the horizontal baseline to
-* the highest 'character' coordinate in a font face. Unfortunately, font
-* formats define the ascender differently. For some, it represents the
-* ascent of all capital latin characters (without accents), for others it
-* is the ascent of the highest accented character, and finally, other
-* formats define it as being equal to bbox.yMax.
-*/
-float ascender;
-/**
-* The descender is the vertical distance from the horizontal baseline to
-* the lowest 'character' coordinate in a font face. Unfortunately, font
-* formats define the descender differently. For some, it represents the
-* descent of all capital latin characters (without accents), for others it
-* is the ascent of the lowest accented character, and finally, other
-* formats define it as being equal to bbox.yMin. This field is negative
-* for values below the baseline.
-*/
-float descender;
-/**
-* The position of the underline line for this face. It is the center of
-* the underlining stem. Only relevant for scalable formats.
-*/
-float underline_position;
-/**
-* The thickness of the underline for this face. Only relevant for scalable
-* formats.
-*/
-float underline_thickness;
+    /**
+    * Vector of glyphs contained in this font.
+    */
+    vector_t * glyphs;
+    /**
+    * Atlas structure to store glyphs data.
+    */
+    texture_atlas_td * atlas;
+    /**
+    * font location
+    */
+    enum {
+        TEXTURE_FONT_FILE = 0,
+        TEXTURE_FONT_MEMORY,
+    } location;
+    union {
+        /**
+        * Font filename, for when location == TEXTURE_FONT_FILE
+        */
+        char *filename;
+        /**
+        * Font memory address, for when location == TEXTURE_FONT_MEMORY
+        */
+        struct {
+            const void *base;
+            size_t size;
+        } memory;
+    };
+    /**
+    * Font size
+    */
+    float size;
+    /**
+    * Whether to use autohint when rendering font
+    */
+    int hinting;
+    /**
+    * Mode the font is rendering its next glyph
+    */
+    rendermode_t rendermode;
+    /**
+    * Outline thickness
+    */
+    float outline_thickness;
+    /**
+    * Whether to use our own lcd filter.
+    */
+    int filtering;
+    /**
+    * LCD filter weights
+    */
+    unsigned char lcd_weights[5];
+    /**
+    * Whether to use kerning if available
+    */
+    int kerning;
+    /**
+    * This field is simply used to compute a default line spacing (i.e., the
+    * baseline-to-baseline distance) when writing text with this font. Note
+    * that it usually is larger than the sum of the ascender and descender
+    * taken as absolute values. There is also no guarantee that no glyphs
+    * extend above or below subsequent baselines when using this distance.
+    */
+    float height;
+    /**
+    * This field is the distance that must be placed between two lines of
+    * text. The baseline-to-baseline distance should be computed as:
+    * ascender - descender + linegap
+    */
+    float linegap;
+    /**
+    * The ascender is the vertical distance from the horizontal baseline to
+    * the highest 'character' coordinate in a font face. Unfortunately, font
+    * formats define the ascender differently. For some, it represents the
+    * ascent of all capital latin characters (without accents), for others it
+    * is the ascent of the highest accented character, and finally, other
+    * formats define it as being equal to bbox.yMax.
+    */
+    float ascender;
+    /**
+    * The descender is the vertical distance from the horizontal baseline to
+    * the lowest 'character' coordinate in a font face. Unfortunately, font
+    * formats define the descender differently. For some, it represents the
+    * descent of all capital latin characters (without accents), for others it
+    * is the ascent of the lowest accented character, and finally, other
+    * formats define it as being equal to bbox.yMin. This field is negative
+    * for values below the baseline.
+    */
+    float descender;
+    /**
+    * The position of the underline line for this face. It is the center of
+    * the underlining stem. Only relevant for scalable formats.
+    */
+    float underline_position;
+    /**
+    * The thickness of the underline for this face. Only relevant for scalable
+    * formats.
+    */
+    float underline_thickness;
 } texture_font_t;
 /**
 *  Generic vector structure.
@@ -1140,96 +632,96 @@ float underline_thickness;
 */
 struct vector_td
 {
-/** Pointer to dynamically allocated items. */
-void * items;
-/** Number of items that can be held in currently allocated storage. */
-size_t capacity;
-/** Number of items. */
-size_t size;
-/** Size (in bytes) of a single item. */
-size_t item_size;
+    /** Pointer to dynamically allocated items. */
+    void * items;
+    /** Number of items that can be held in currently allocated storage. */
+    size_t capacity;
+    /** Number of items. */
+    size_t size;
+    /** Size (in bytes) of a single item. */
+    size_t item_size;
 };
 /**
 *  Generic vertex attribute.
 */
 struct vertex_attribute_td
 {
-/**
-*  atribute name
-*/
-GLchar * name;
-/**
-* index of the generic vertex attribute to be modified.
-*/
-GLuint index;
-/**
-* Number of components per generic vertex attribute.
-*
-* Must be 1, 2, 3, or 4. The initial value is 4.
-*/
-GLint size;
-/**
-*  data type of each component in the array.
-*
-*  Symbolic constants GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT,
-*  GL_UNSIGNED_SHORT, GL_INT, GL_UNSIGNED_INT, GL_FLOAT, or GL_DOUBLE are
-*  accepted. The initial value is GL_FLOAT.
-*/
-GLenum type;
-/**
-*  whether fixed-point data values should be normalized (GL_TRUE) or
-*  converted directly as fixed-point values (GL_FALSE) when they are
-*  accessed.
-*/
-GLboolean normalized;
-/**
-*  byte offset between consecutive generic vertex attributes.
-*
-*  If stride is 0, the generic vertex attributes are understood to be
-*  tightly packed in the array. The initial value is 0.
-*/
-GLsizei stride;
-/**
-*  pointer to the first component of the first attribute element in the
-*  array.
-*/
-GLvoid * pointer;
-/**
-* pointer to the function that enable this attribute.
-*/
-void ( * enable )(void *);
+    /**
+    *  atribute name
+    */
+    GLchar * name;
+    /**
+    * index of the generic vertex attribute to be modified.
+    */
+    GLuint index;
+    /**
+    * Number of components per generic vertex attribute.
+    *
+    * Must be 1, 2, 3, or 4. The initial value is 4.
+    */
+    GLint size;
+    /**
+    *  data type of each component in the array.
+    *
+    *  Symbolic constants GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT,
+    *  GL_UNSIGNED_SHORT, GL_INT, GL_UNSIGNED_INT, GL_FLOAT, or GL_DOUBLE are
+    *  accepted. The initial value is GL_FLOAT.
+    */
+    GLenum type;
+    /**
+    *  whether fixed-point data values should be normalized (GL_TRUE) or
+    *  converted directly as fixed-point values (GL_FALSE) when they are
+    *  accessed.
+    */
+    GLboolean normalized;
+    /**
+    *  byte offset between consecutive generic vertex attributes.
+    *
+    *  If stride is 0, the generic vertex attributes are understood to be
+    *  tightly packed in the array. The initial value is 0.
+    */
+    GLsizei stride;
+    /**
+    *  pointer to the first component of the first attribute element in the
+    *  array.
+    */
+    GLvoid * pointer;
+    /**
+    * pointer to the function that enable this attribute.
+    */
+    void ( * enable )(void *);
 };
 /**
 * Generic vertex buffer.
 */
 struct vertex_buffer_td
 {
-/** Format of the vertex buffer. */
-char * format;
-/** Vector of vertices. */
-vector_t * vertices;
-#ifdef FREETYPE_GL_USE_VAO
-/** GL identity of the Vertex Array Object */
-GLuint VAO_id;
-#endif
-/** GL identity of the vertices buffer. */
-GLuint vertices_id;
-/** Vector of indices. */
-vector_t * indices;
-/** GL identity of the indices buffer. */
-GLuint indices_id;
-/** Current size of the vertices buffer in GPU */
-size_t GPU_vsize;
-/** Current size of the indices buffer in GPU*/
-size_t GPU_isize;
-/** GL primitives to render. */
-GLenum mode;
-/** Whether the vertex buffer needs to be uploaded to GPU memory. */
-char state;
-/** Individual items */
-vector_t * items;
-/** Array of attributes. */
-vertex_attribute_t *attributes[MAX_VERTEX_ATTRIBUTE];
+    /** Format of the vertex buffer. */
+    char * format;
+    /** Vector of vertices. */
+    vector_t * vertices;
+    #ifdef FREETYPE_GL_USE_VAO
+    /** GL identity of the Vertex Array Object */
+    GLuint VAO_id;
+    #endif
+    /** GL identity of the vertices buffer. */
+    GLuint vertices_id;
+    /** Vector of indices. */
+    vector_t * indices;
+    /** GL identity of the indices buffer. */
+    GLuint indices_id;
+    /** Current size of the vertices buffer in GPU */
+    size_t GPU_vsize;
+    /** Current size of the indices buffer in GPU*/
+    size_t GPU_isize;
+    /** GL primitives to render. */
+    GLenum mode;
+    /** Whether the vertex buffer needs to be uploaded to GPU memory. */
+    char state;
+    /** Individual items */
+    vector_t * items;
+    /** Array of attributes. */
+    vertex_attribute_t *attributes[MAX_VERTEX_ATTRIBUTE];
 };
 #define sjs_object_typeId 1
 #define sjs_interface_typeId 2
@@ -1304,6 +796,7 @@ vertex_attribute_t *attributes[MAX_VERTEX_ATTRIBUTE];
 #define sjs_scenebuffer_typeId 71
 #define sjs_blureffect_typeId 72
 #define sjs_fadeeffect_typeId 73
+#define sjs_saturateeffect_typeId 74
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_interface sjs_interface;
@@ -1378,6 +871,7 @@ typedef struct td_sjs_renderbuffer sjs_renderbuffer;
 typedef struct td_sjs_scenebuffer sjs_scenebuffer;
 typedef struct td_sjs_blureffect sjs_blureffect;
 typedef struct td_sjs_fadeeffect sjs_fadeeffect;
+typedef struct td_sjs_saturateeffect sjs_saturateeffect;
 
 struct td_sjs_object {
     intptr_t _refCount;
@@ -1892,7 +1386,6 @@ struct td_sjs_scenebuffer {
 struct td_sjs_blureffect {
     int _refCount;
     float radius;
-    bool up;
     sjs_rect _rect;
     sjs_boxvertexbuffer _vertexbuffer1;
     sjs_boxvertexbuffer _vertexbuffer2;
@@ -1910,12 +1403,22 @@ struct td_sjs_fadeeffect {
     sjs_scene2d _innerscene;
 };
 
+struct td_sjs_saturateeffect {
+    int _refCount;
+    float amount;
+    sjs_rect _rect;
+    sjs_boxvertexbuffer _vertexbuffer;
+    sjs_scenebuffer _scenebuffer;
+    sjs_scene2d _innerscene;
+};
+
 sji_effect_vtbl sjs_blureffect_effect_vtbl;
 sji_element_vtbl sjs_boxelement_element_vtbl;
 sji_effect_vtbl sjs_fadeeffect_effect_vtbl;
 sji_element_vtbl sjs_filllayout_element_vtbl;
 sji_element_vtbl sjs_gridlayout_element_vtbl;
 sji_model_vtbl sjs_model_model_vtbl;
+sji_effect_vtbl sjs_saturateeffect_effect_vtbl;
 sji_element_vtbl sjs_scene3delement_element_vtbl;
 sji_element_vtbl sjs_textelement_element_vtbl;
 void halt(const char * format, ...);
@@ -2722,56 +2225,67 @@ vertex_buffer_erase( vertex_buffer_t * self,
 const size_t index );    
 int32_t result1;
 sjs_gridlayout* sjt_call1 = 0;
+sjs_gridunit sjt_call100 = { -1 };
+sjs_gridunit sjt_call101 = { -1 };
+sjs_gridunit sjt_call102 = { -1 };
+sjs_gridunit sjt_call103 = { -1 };
 sjs_filllayout* sjt_call3 = 0;
 sjs_filllayout* sjt_call62 = 0;
 sjs_blureffect* sjt_call63 = 0;
-sjs_filllayout* sjt_call85 = 0;
-sjs_fadeeffect* sjt_call86 = 0;
-sjs_gridunit sjt_call94 = { -1 };
-sjs_gridunit sjt_call95 = { -1 };
-sjs_gridunit sjt_call96 = { -1 };
-sjs_gridunit sjt_call97 = { -1 };
+sjs_filllayout* sjt_call82 = 0;
+sjs_fadeeffect* sjt_call83 = 0;
+sjs_filllayout* sjt_call91 = 0;
+sjs_saturateeffect* sjt_call92 = 0;
 sjs_gridlayout* sjt_cast1 = 0;
 sjs_filllayout* sjt_cast3 = 0;
 sjs_filllayout* sjt_cast31 = 0;
 sjs_blureffect* sjt_cast32 = 0;
 sjs_filllayout* sjt_cast37 = 0;
 sjs_fadeeffect* sjt_cast38 = 0;
+sjs_filllayout* sjt_cast39 = 0;
+sjs_saturateeffect* sjt_cast40 = 0;
 int32_t sjt_functionParam288;
 sji_element sjt_functionParam289 = { 0 };
 int32_t sjt_functionParam290;
 sji_element sjt_functionParam291 = { 0 };
 int32_t sjt_functionParam31;
 sji_element sjt_functionParam32 = { 0 };
+int32_t sjt_functionParam456;
+sji_element sjt_functionParam457 = { 0 };
+int32_t sjt_functionParam458;
+sji_element sjt_functionParam459 = { 0 };
 int32_t sjt_functionParam47;
-int32_t sjt_functionParam470;
-sji_element sjt_functionParam471 = { 0 };
-int32_t sjt_functionParam472;
-sji_element sjt_functionParam473 = { 0 };
 sji_element sjt_functionParam48 = { 0 };
-int32_t sjt_functionParam505;
-sjs_gridunit* sjt_functionParam506 = 0;
-int32_t sjt_functionParam507;
-sjs_gridunit* sjt_functionParam508 = 0;
-int32_t sjt_functionParam509;
-sjs_gridunit* sjt_functionParam510 = 0;
-int32_t sjt_functionParam511;
-sjs_gridunit* sjt_functionParam512 = 0;
+int32_t sjt_functionParam491;
+sji_element sjt_functionParam492 = { 0 };
+int32_t sjt_functionParam493;
+sji_element sjt_functionParam494 = { 0 };
+int32_t sjt_functionParam526;
+sjs_gridunit* sjt_functionParam527 = 0;
+int32_t sjt_functionParam528;
+sjs_gridunit* sjt_functionParam529 = 0;
+int32_t sjt_functionParam530;
+sjs_gridunit* sjt_functionParam531 = 0;
+int32_t sjt_functionParam532;
+sjs_gridunit* sjt_functionParam533 = 0;
 int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_negate1;
 sjs_array_heap_iface_element* sjt_parent174 = 0;
 sjs_array_heap_iface_element* sjt_parent175 = 0;
-sjs_array_heap_iface_element* sjt_parent204 = 0;
-sjs_array_heap_iface_element* sjt_parent205 = 0;
-sjs_array_gridunit* sjt_parent212 = 0;
-sjs_array_gridunit* sjt_parent213 = 0;
-sjs_array_gridunit* sjt_parent214 = 0;
+sjs_array_heap_iface_element* sjt_parent199 = 0;
+sjs_array_heap_iface_element* sjt_parent200 = 0;
+sjs_array_heap_iface_element* sjt_parent207 = 0;
+sjs_array_heap_iface_element* sjt_parent208 = 0;
 sjs_array_gridunit* sjt_parent215 = 0;
+sjs_array_gridunit* sjt_parent216 = 0;
+sjs_array_gridunit* sjt_parent217 = 0;
+sjs_array_gridunit* sjt_parent218 = 0;
 sjs_array_heap_iface_element* sjt_parent28 = 0;
 sjs_array_heap_iface_element* sjt_parent47 = 0;
 sji_effect sjt_value1 = { 0 };
 sji_effect sjt_value2 = { 0 };
+sji_effect sjt_value3 = { 0 };
 sjs_anon1 sjv_animator = { -1 };
 sjs_shader sjv_blurhorizontalshader = { -1 };
 sjs_shader sjv_blurverticalshader = { -1 };
@@ -2876,6 +2390,7 @@ sjs_shader sjv_phongtextureshader = { -1 };
 sji_element sjv_root = { 0 };
 sjs_scene2d sjv_rootscene = { -1 };
 sjs_windowrenderer sjv_rootwindowrenderer = { -1 };
+sjs_shader sjv_saturateshader = { -1 };
 sjs_anon2 sjv_style = { -1 };
 int32_t sjv_texthorizontal_center;
 int32_t sjv_texthorizontal_left;
@@ -2970,10 +2485,8 @@ void sjf_blureffect_destroy(sjs_blureffect* _this);
 void sjf_blureffect_getrect(sjs_blureffect* _parent, sjs_rect* _return);
 void sjf_blureffect_getrect_heap(sjs_blureffect* _parent, sjs_rect** _return);
 void sjf_blureffect_heap(sjs_blureffect* _this);
-void sjf_blureffect_heap_as_sji_effect(sjs_blureffect* _this, sji_effect* _return);
-void sjf_blureffect_heap_asinterface(sjs_blureffect* _this, int typeId, sjs_interface* _return);
-void sjf_blureffect_render(sjs_blureffect* _parent, sjs_scene2d* scene, sjs_array_heap_iface_element* children);
-void sjf_blureffect_setrect(sjs_blureffect* _parent, sjs_rect* rect_, sjs_array_heap_iface_element* children);
+void sjf_blureffect_render(sjs_blureffect* _parent, sjs_scene2d* scene, cb_scene2d_void cb);
+void sjf_blureffect_setrect(sjs_blureffect* _parent, sjs_rect* rect_, cb_rect_void cb);
 void sjf_boxelement(sjs_boxelement* _this);
 void sjf_boxelement_as_sji_element(sjs_boxelement* _this, sji_element* _return);
 void sjf_boxelement_asinterface(sjs_boxelement* _this, int typeId, sjs_interface* _return);
@@ -2985,8 +2498,6 @@ void sjf_boxelement_getrect_heap(sjs_boxelement* _parent, sjs_rect** _return);
 void sjf_boxelement_getsize(sjs_boxelement* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_boxelement_getsize_heap(sjs_boxelement* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_boxelement_heap(sjs_boxelement* _this);
-void sjf_boxelement_heap_as_sji_element(sjs_boxelement* _this, sji_element* _return);
-void sjf_boxelement_heap_asinterface(sjs_boxelement* _this, int typeId, sjs_interface* _return);
 void sjf_boxelement_render(sjs_boxelement* _parent, sjs_scene2d* scene);
 void sjf_boxelement_setrect(sjs_boxelement* _parent, sjs_rect* rect_);
 void sjf_boxrenderer(sjs_boxrenderer* _this);
@@ -3021,8 +2532,6 @@ void sjf_fadeeffect_destroy(sjs_fadeeffect* _this);
 void sjf_fadeeffect_getrect(sjs_fadeeffect* _parent, sjs_rect* _return);
 void sjf_fadeeffect_getrect_heap(sjs_fadeeffect* _parent, sjs_rect** _return);
 void sjf_fadeeffect_heap(sjs_fadeeffect* _this);
-void sjf_fadeeffect_heap_as_sji_effect(sjs_fadeeffect* _this, sji_effect* _return);
-void sjf_fadeeffect_heap_asinterface(sjs_fadeeffect* _this, int typeId, sjs_interface* _return);
 void sjf_fadeeffect_render(sjs_fadeeffect* _parent, sjs_scene2d* scene, cb_scene2d_void cb);
 void sjf_fadeeffect_setrect(sjs_fadeeffect* _parent, sjs_rect* rect_, cb_rect_void cb);
 void sjf_filllayout(sjs_filllayout* _this);
@@ -3036,8 +2545,6 @@ void sjf_filllayout_getrect_heap(sjs_filllayout* _parent, sjs_rect** _return);
 void sjf_filllayout_getsize(sjs_filllayout* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_filllayout_getsize_heap(sjs_filllayout* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_filllayout_heap(sjs_filllayout* _this);
-void sjf_filllayout_heap_as_sji_element(sjs_filllayout* _this, sji_element* _return);
-void sjf_filllayout_heap_asinterface(sjs_filllayout* _this, int typeId, sjs_interface* _return);
 void sjf_filllayout_render(sjs_filllayout* _parent, sjs_scene2d* scene);
 void sjf_filllayout_renderinner(sjs_filllayout* _parent, sjs_scene2d* scene);
 void sjf_filllayout_setrect(sjs_filllayout* _parent, sjs_rect* rect_);
@@ -3096,8 +2603,6 @@ void sjf_gridlayout_getrect_heap(sjs_gridlayout* _parent, sjs_rect** _return);
 void sjf_gridlayout_getsize(sjs_gridlayout* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_gridlayout_getsize_heap(sjs_gridlayout* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_gridlayout_heap(sjs_gridlayout* _this);
-void sjf_gridlayout_heap_as_sji_element(sjs_gridlayout* _this, sji_element* _return);
-void sjf_gridlayout_heap_asinterface(sjs_gridlayout* _this, int typeId, sjs_interface* _return);
 void sjf_gridlayout_render(sjs_gridlayout* _parent, sjs_scene2d* scene);
 void sjf_gridlayout_setrect(sjs_gridlayout* _parent, sjs_rect* rect_);
 void sjf_gridunit(sjs_gridunit* _this);
@@ -3194,6 +2699,8 @@ void sjf_mat4_scale(float x, float y, float z, sjs_mat4* _return);
 void sjf_mat4_scale_heap(float x, float y, float z, sjs_mat4** _return);
 void sjf_mat4_transpose(sjs_mat4* _parent, sjs_mat4* _return);
 void sjf_mat4_transpose_heap(sjs_mat4* _parent, sjs_mat4** _return);
+void sjf_model_as_sji_model(sjs_model* _this, sji_model* _return);
+void sjf_model_asinterface(sjs_model* _this, int typeId, sjs_interface* _return);
 void sjf_model_copy(sjs_model* _this, sjs_model* _from);
 void sjf_model_destroy(sjs_model* _this);
 void sjf_model_firemouseevent(sjs_model* _parent, sjs_mouseevent* mouseevent);
@@ -3203,8 +2710,6 @@ void sjf_model_getworld(sjs_model* _parent, sjs_mat4* _return);
 void sjf_model_getworld_heap(sjs_model* _parent, sjs_mat4** _return);
 void sjf_model_getz(sjs_model* _parent, float* _return);
 void sjf_model_heap(sjs_model* _this, sjs_model** _return);
-void sjf_model_heap_as_sji_model(sjs_model* _this, sji_model* _return);
-void sjf_model_heap_asinterface(sjs_model* _this, int typeId, sjs_interface* _return);
 void sjf_model_render(sjs_model* _parent);
 void sjf_model_renderorqueue(sjs_model* _parent, sjs_list_heap_iface_model* zqueue);
 void sjf_model_update(sjs_model* _parent, sjs_rect* scenerect, sjs_mat4* projection, sjs_mat4* view, sjs_mat4* world, sjs_light* light);
@@ -3233,6 +2738,16 @@ void sjf_renderbuffer_copy(sjs_renderbuffer* _this, sjs_renderbuffer* _from);
 void sjf_renderbuffer_destroy(sjs_renderbuffer* _this);
 void sjf_renderbuffer_heap(sjs_renderbuffer* _this);
 void sjf_runloop(void);
+void sjf_saturateeffect(sjs_saturateeffect* _this);
+void sjf_saturateeffect_as_sji_effect(sjs_saturateeffect* _this, sji_effect* _return);
+void sjf_saturateeffect_asinterface(sjs_saturateeffect* _this, int typeId, sjs_interface* _return);
+void sjf_saturateeffect_copy(sjs_saturateeffect* _this, sjs_saturateeffect* _from);
+void sjf_saturateeffect_destroy(sjs_saturateeffect* _this);
+void sjf_saturateeffect_getrect(sjs_saturateeffect* _parent, sjs_rect* _return);
+void sjf_saturateeffect_getrect_heap(sjs_saturateeffect* _parent, sjs_rect** _return);
+void sjf_saturateeffect_heap(sjs_saturateeffect* _this);
+void sjf_saturateeffect_render(sjs_saturateeffect* _parent, sjs_scene2d* scene, cb_scene2d_void cb);
+void sjf_saturateeffect_setrect(sjs_saturateeffect* _parent, sjs_rect* rect_, cb_rect_void cb);
 void sjf_scene2d(sjs_scene2d* _this);
 void sjf_scene2d_copy(sjs_scene2d* _this, sjs_scene2d* _from);
 void sjf_scene2d_destroy(sjs_scene2d* _this);
@@ -3251,8 +2766,6 @@ void sjf_scene3delement_getrect_heap(sjs_scene3delement* _parent, sjs_rect** _re
 void sjf_scene3delement_getsize(sjs_scene3delement* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_scene3delement_getsize_heap(sjs_scene3delement* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_scene3delement_heap(sjs_scene3delement* _this);
-void sjf_scene3delement_heap_as_sji_element(sjs_scene3delement* _this, sji_element* _return);
-void sjf_scene3delement_heap_asinterface(sjs_scene3delement* _this, int typeId, sjs_interface* _return);
 void sjf_scene3delement_render(sjs_scene3delement* _parent, sjs_scene2d* scene);
 void sjf_scene3delement_setrect(sjs_scene3delement* _parent, sjs_rect* rect_);
 void sjf_scenebuffer(sjs_scenebuffer* _this);
@@ -3299,8 +2812,6 @@ void sjf_textelement_getrect_heap(sjs_textelement* _parent, sjs_rect** _return);
 void sjf_textelement_getsize(sjs_textelement* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_textelement_getsize_heap(sjs_textelement* _parent, sjs_size* maxsize, sjs_size** _return);
 void sjf_textelement_heap(sjs_textelement* _this);
-void sjf_textelement_heap_as_sji_element(sjs_textelement* _this, sji_element* _return);
-void sjf_textelement_heap_asinterface(sjs_textelement* _this, int typeId, sjs_interface* _return);
 void sjf_textelement_render(sjs_textelement* _parent, sjs_scene2d* scene);
 void sjf_textelement_setrect(sjs_textelement* _parent, sjs_rect* rect_);
 void sjf_textrenderer(sjs_textrenderer* _this);
@@ -6258,57 +5769,57 @@ void sjf_anon1_heap(sjs_anon1* _this) {
 }
 
 void sjf_anon1_nextframe(sjs_anon1* _parent, int32_t time) {
-    int32_t sjt_compare115;
-    int32_t sjt_compare116;
-    sjs_anon1* sjt_dot1727 = 0;
-    sjs_anon1* sjt_dot1730 = 0;
-    bool sjt_ifElse62;
-    sjs_list_heap_iface_animation* sjt_parent216 = 0;
+    int32_t sjt_compare113;
+    int32_t sjt_compare114;
+    sjs_anon1* sjt_dot1755 = 0;
+    sjs_anon1* sjt_dot1758 = 0;
+    bool sjt_ifElse64;
+    sjs_list_heap_iface_animation* sjt_parent219 = 0;
 
-    sjt_dot1727 = _parent;
-    sjt_dot1727->current = time;
-    sjt_dot1730 = _parent;
-    sjt_parent216 = &(sjt_dot1730)->animations;
-    sjf_list_heap_iface_animation_getcount(sjt_parent216, &sjt_compare115);
-    sjt_compare116 = 0;
-    sjt_ifElse62 = sjt_compare115 > sjt_compare116;
-    if (sjt_ifElse62) {
+    sjt_dot1755 = _parent;
+    sjt_dot1755->current = time;
+    sjt_dot1758 = _parent;
+    sjt_parent219 = &(sjt_dot1758)->animations;
+    sjf_list_heap_iface_animation_getcount(sjt_parent219, &sjt_compare113);
+    sjt_compare114 = 0;
+    sjt_ifElse64 = sjt_compare113 > sjt_compare114;
+    if (sjt_ifElse64) {
         int32_t i;
-        sjs_anon1* sjt_dot1731 = 0;
-        int32_t sjt_forEnd28;
-        int32_t sjt_forStart28;
-        sjs_list_heap_iface_animation* sjt_parent217 = 0;
+        sjs_anon1* sjt_dot1759 = 0;
+        int32_t sjt_forEnd26;
+        int32_t sjt_forStart26;
+        sjs_list_heap_iface_animation* sjt_parent220 = 0;
 
-        sjt_forStart28 = 0;
-        sjt_dot1731 = _parent;
-        sjt_parent217 = &(sjt_dot1731)->animations;
-        sjf_list_heap_iface_animation_getcount(sjt_parent217, &sjt_forEnd28);
-        i = sjt_forEnd28 - 1;
-        while (i >= sjt_forStart28) {
-            sjs_anon1* sjt_dot1733 = 0;
-            int32_t sjt_functionParam514;
-            bool sjt_ifElse63;
-            int32_t sjt_interfaceParam21;
-            sjs_list_heap_iface_animation* sjt_parent219 = 0;
-            sji_animation sjt_parent220 = { 0 };
+        sjt_forStart26 = 0;
+        sjt_dot1759 = _parent;
+        sjt_parent220 = &(sjt_dot1759)->animations;
+        sjf_list_heap_iface_animation_getcount(sjt_parent220, &sjt_forEnd26);
+        i = sjt_forEnd26 - 1;
+        while (i >= sjt_forStart26) {
+            sjs_anon1* sjt_dot1761 = 0;
+            int32_t sjt_functionParam535;
+            bool sjt_ifElse65;
+            int32_t sjt_interfaceParam19;
+            sjs_list_heap_iface_animation* sjt_parent222 = 0;
+            sji_animation sjt_parent223 = { 0 };
             sji_animation sjv_a = { 0 };
 
-            sjt_dot1733 = _parent;
-            sjt_parent219 = &(sjt_dot1733)->animations;
-            sjt_functionParam514 = i;
-            sjf_list_heap_iface_animation_getat_heap(sjt_parent219, sjt_functionParam514, &sjv_a);
-            sjt_parent220 = sjv_a;
-            sjt_interfaceParam21 = time;
-            sjt_parent220._vtbl->nextframe(sjt_parent220._parent, sjt_interfaceParam21, &sjt_ifElse63);
-            if (sjt_ifElse63) {
-                sjs_anon1* sjt_dot1734 = 0;
-                int32_t sjt_functionParam515;
-                sjs_list_heap_iface_animation* sjt_parent221 = 0;
+            sjt_dot1761 = _parent;
+            sjt_parent222 = &(sjt_dot1761)->animations;
+            sjt_functionParam535 = i;
+            sjf_list_heap_iface_animation_getat_heap(sjt_parent222, sjt_functionParam535, &sjv_a);
+            sjt_parent223 = sjv_a;
+            sjt_interfaceParam19 = time;
+            sjt_parent223._vtbl->nextframe(sjt_parent223._parent, sjt_interfaceParam19, &sjt_ifElse65);
+            if (sjt_ifElse65) {
+                sjs_anon1* sjt_dot1762 = 0;
+                int32_t sjt_functionParam536;
+                sjs_list_heap_iface_animation* sjt_parent224 = 0;
 
-                sjt_dot1734 = _parent;
-                sjt_parent221 = &(sjt_dot1734)->animations;
-                sjt_functionParam515 = i;
-                sjf_list_heap_iface_animation_removeat(sjt_parent221, sjt_functionParam515);
+                sjt_dot1762 = _parent;
+                sjt_parent224 = &(sjt_dot1762)->animations;
+                sjt_functionParam536 = i;
+                sjf_list_heap_iface_animation_removeat(sjt_parent224, sjt_functionParam536);
             }
 
             i--;
@@ -6342,7 +5853,7 @@ void sjf_anon2_getfont_heap(sjs_anon2* _parent, sjs_font** _return) {
     sjt_call61.count = 16;
     sjt_call61.data._refCount = 1;
     sjt_call61.data.datasize = 17;
-    sjt_call61.data.data = (void*)sjg_string20;
+    sjt_call61.data.data = (void*)sjg_string22;
     sjt_call61.data._isglobal = true;
     sjt_call61.data.count = 17;
     sjf_array_char(&sjt_call61.data);
@@ -7625,7 +7136,6 @@ void sjf_blureffect_asinterface(sjs_blureffect* _this, int typeId, sjs_interface
 
 void sjf_blureffect_copy(sjs_blureffect* _this, sjs_blureffect* _from) {
     _this->radius = _from->radius;
-    _this->up = _from->up;
     _this->_rect._refCount = 1;
     sjf_rect_copy(&_this->_rect, &_from->_rect);
     _this->_vertexbuffer1._refCount = 1;
@@ -7667,783 +7177,603 @@ void sjf_blureffect_getrect_heap(sjs_blureffect* _parent, sjs_rect** _return) {
 void sjf_blureffect_heap(sjs_blureffect* _this) {
 }
 
-void sjf_blureffect_heap_as_sji_effect(sjs_blureffect* _this, sji_effect* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_blureffect_effect_vtbl;
-}
+void sjf_blureffect_render(sjs_blureffect* _parent, sjs_scene2d* scene, cb_scene2d_void cb) {
+    float sjt_compare111;
+    float sjt_compare112;
+    sjs_blureffect* sjt_dot1592 = 0;
+    bool sjt_ifElse50;
 
-void sjf_blureffect_heap_asinterface(sjs_blureffect* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_effect_typeId:  {
-            sjf_blureffect_heap_as_sji_effect(_this, (sji_effect*)_return);
-            break;
-        }
+    sjt_dot1592 = _parent;
+    sjt_compare111 = (sjt_dot1592)->radius;
+    sjt_compare112 = 0.0f;
+    sjt_ifElse50 = sjt_compare111 == sjt_compare112;
+    if (sjt_ifElse50) {
+        cb_scene2d_void sjt_callback7;
+        sjs_scene2d* sjt_functionParam378 = 0;
 
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
-}
-
-void sjf_blureffect_render(sjs_blureffect* _parent, sjs_scene2d* scene, sjs_array_heap_iface_element* children) {
-    sjs_blureffect* sjt_dot1591 = 0;
-    sjs_blureffect* sjt_dot1601 = 0;
-    sjs_blureffect* sjt_dot1607 = 0;
-    sjs_blureffect* sjt_dot1610 = 0;
-    sjs_blureffect* sjt_dot1616 = 0;
-    sjs_blureffect* sjt_dot1622 = 0;
-    sjs_blureffect* sjt_dot1623 = 0;
-    sjs_blureffect* sjt_dot1624 = 0;
-    sjs_blureffect* sjt_dot1625 = 0;
-    bool sjt_ifElse49;
-    bool sjt_ifElse52;
-    bool sjt_ifElse53;
-    bool sjt_ifElse54;
-    bool sjt_ifElse55;
-    sjs_boxvertexbuffer* sjt_isEmpty19 = 0;
-    sjs_boxvertexbuffer* sjt_isEmpty20 = 0;
-    sjs_scenebuffer* sjt_isEmpty21 = 0;
-    sjs_scenebuffer* sjt_isEmpty22 = 0;
-    bool sjt_isEmpty23;
-    sjs_scenebuffer* sjt_isEmpty24 = 0;
-    bool sjt_isEmpty25;
-    sjs_scenebuffer* sjt_isEmpty26 = 0;
-    bool sjt_isEmpty27;
-    sjs_boxvertexbuffer* sjt_isEmpty28 = 0;
-    bool sjt_isEmpty29;
-    sjs_boxvertexbuffer* sjt_isEmpty30 = 0;
-
-    sjt_dot1591 = _parent;
-    sjt_ifElse49 = (sjt_dot1591)->up;
-    if (sjt_ifElse49) {
-        float sjt_compare109;
-        float sjt_compare110;
-        sjs_blureffect* sjt_dot1592 = 0;
-        sjs_blureffect* sjt_dot1593 = 0;
-        sjs_blureffect* sjt_dot1594 = 0;
-        bool sjt_ifElse50;
-        float sjt_math2537;
-        float sjt_math2538;
-
-        sjt_dot1592 = _parent;
-        sjt_dot1593 = _parent;
-        sjt_math2537 = (sjt_dot1593)->radius;
-        sjt_math2538 = 0.03f;
-        sjt_dot1592->radius = sjt_math2537 + sjt_math2538;
-        sjt_dot1594 = _parent;
-        sjt_compare109 = (sjt_dot1594)->radius;
-        sjt_compare110 = 5.0f;
-        sjt_ifElse50 = sjt_compare109 > sjt_compare110;
-        if (sjt_ifElse50) {
-            sjs_blureffect* sjt_dot1595 = 0;
-
-            sjt_dot1595 = _parent;
-            sjt_dot1595->up = false;
-        }
+        sjt_callback7 = cb;
+        sjt_functionParam378 = scene;
+        sjt_callback7._cb(sjt_callback7._parent, sjt_functionParam378);
     } else {
-        float sjt_compare111;
-        float sjt_compare112;
-        sjs_blureffect* sjt_dot1596 = 0;
-        sjs_blureffect* sjt_dot1597 = 0;
-        sjs_blureffect* sjt_dot1598 = 0;
-        bool sjt_ifElse51;
-        float sjt_math2539;
-        float sjt_math2540;
-
-        sjt_dot1596 = _parent;
-        sjt_dot1597 = _parent;
-        sjt_math2539 = (sjt_dot1597)->radius;
-        sjt_math2540 = 0.03f;
-        sjt_dot1596->radius = sjt_math2539 - sjt_math2540;
-        sjt_dot1598 = _parent;
-        sjt_compare111 = (sjt_dot1598)->radius;
-        sjt_compare112 = 0.0f;
-        sjt_ifElse51 = sjt_compare111 <= sjt_compare112;
-        if (sjt_ifElse51) {
-            sjs_blureffect* sjt_dot1599 = 0;
-            sjs_blureffect* sjt_dot1600 = 0;
-
-            sjt_dot1599 = _parent;
-            sjt_dot1599->radius = 0.0f;
-            sjt_dot1600 = _parent;
-            sjt_dot1600->up = true;
-        }
-    }
-
-    sjt_dot1601 = _parent;
-    sjt_isEmpty19 = ((sjt_dot1601)->_vertexbuffer1._refCount != -1 ? &(sjt_dot1601)->_vertexbuffer1 : 0);
-    sjt_ifElse52 = (sjt_isEmpty19 == 0);
-    if (sjt_ifElse52) {
+        sjs_blureffect* sjt_dot1593 = 0;
+        sjs_blureffect* sjt_dot1599 = 0;
         sjs_blureffect* sjt_dot1602 = 0;
-        sjs_rect* sjt_dot1603 = 0;
-        sjs_blureffect* sjt_dot1604 = 0;
-        sjs_rect* sjt_dot1605 = 0;
-        sjs_blureffect* sjt_dot1606 = 0;
+        sjs_blureffect* sjt_dot1608 = 0;
+        sjs_blureffect* sjt_dot1614 = 0;
+        sjs_blureffect* sjt_dot1615 = 0;
+        sjs_blureffect* sjt_dot1616 = 0;
+        sjs_blureffect* sjt_dot1617 = 0;
+        bool sjt_ifElse51;
+        bool sjt_ifElse52;
+        bool sjt_ifElse53;
+        bool sjt_ifElse54;
+        sjs_boxvertexbuffer* sjt_isEmpty19 = 0;
+        sjs_boxvertexbuffer* sjt_isEmpty20 = 0;
+        sjs_scenebuffer* sjt_isEmpty21 = 0;
+        sjs_scenebuffer* sjt_isEmpty22 = 0;
+        bool sjt_isEmpty23;
+        sjs_scenebuffer* sjt_isEmpty24 = 0;
+        bool sjt_isEmpty25;
+        sjs_scenebuffer* sjt_isEmpty26 = 0;
+        bool sjt_isEmpty27;
+        sjs_boxvertexbuffer* sjt_isEmpty28 = 0;
+        bool sjt_isEmpty29;
+        sjs_boxvertexbuffer* sjt_isEmpty30 = 0;
+
+        sjt_dot1593 = _parent;
+        sjt_isEmpty19 = ((sjt_dot1593)->_vertexbuffer1._refCount != -1 ? &(sjt_dot1593)->_vertexbuffer1 : 0);
+        sjt_ifElse51 = (sjt_isEmpty19 == 0);
+        if (sjt_ifElse51) {
+            sjs_blureffect* sjt_dot1594 = 0;
+            sjs_rect* sjt_dot1595 = 0;
+            sjs_blureffect* sjt_dot1596 = 0;
+            sjs_rect* sjt_dot1597 = 0;
+            sjs_blureffect* sjt_dot1598 = 0;
+
+            sjt_dot1594 = _parent;
+            sjt_dot1594->_vertexbuffer1._refCount = 1;
+            sjt_dot1594->_vertexbuffer1.rect._refCount = 1;
+            sjt_dot1594->_vertexbuffer1.rect.x = 0;
+            sjt_dot1594->_vertexbuffer1.rect.y = 0;
+            sjt_dot1596 = _parent;
+            sjt_dot1595 = &(sjt_dot1596)->_rect;
+            sjt_dot1594->_vertexbuffer1.rect.w = (sjt_dot1595)->w;
+            sjt_dot1598 = _parent;
+            sjt_dot1597 = &(sjt_dot1598)->_rect;
+            sjt_dot1594->_vertexbuffer1.rect.h = (sjt_dot1597)->h;
+            sjf_rect(&sjt_dot1594->_vertexbuffer1.rect);
+            sjf_boxvertexbuffer(&sjt_dot1594->_vertexbuffer1);
+        }
+
+        sjt_dot1599 = _parent;
+        sjt_isEmpty20 = ((sjt_dot1599)->_vertexbuffer2._refCount != -1 ? &(sjt_dot1599)->_vertexbuffer2 : 0);
+        sjt_ifElse52 = (sjt_isEmpty20 == 0);
+        if (sjt_ifElse52) {
+            sjs_rect* sjt_copy50 = 0;
+            sjs_blureffect* sjt_dot1600 = 0;
+            sjs_blureffect* sjt_dot1601 = 0;
+
+            sjt_dot1600 = _parent;
+            sjt_dot1600->_vertexbuffer2._refCount = 1;
+            sjt_dot1601 = _parent;
+            sjt_copy50 = &(sjt_dot1601)->_rect;
+            sjt_dot1600->_vertexbuffer2.rect._refCount = 1;
+            sjf_rect_copy(&sjt_dot1600->_vertexbuffer2.rect, sjt_copy50);
+            sjf_boxvertexbuffer(&sjt_dot1600->_vertexbuffer2);
+        }
 
         sjt_dot1602 = _parent;
-        sjt_dot1602->_vertexbuffer1._refCount = 1;
-        sjt_dot1602->_vertexbuffer1.rect._refCount = 1;
-        sjt_dot1602->_vertexbuffer1.rect.x = 0;
-        sjt_dot1602->_vertexbuffer1.rect.y = 0;
-        sjt_dot1604 = _parent;
-        sjt_dot1603 = &(sjt_dot1604)->_rect;
-        sjt_dot1602->_vertexbuffer1.rect.w = (sjt_dot1603)->w;
-        sjt_dot1606 = _parent;
-        sjt_dot1605 = &(sjt_dot1606)->_rect;
-        sjt_dot1602->_vertexbuffer1.rect.h = (sjt_dot1605)->h;
-        sjf_rect(&sjt_dot1602->_vertexbuffer1.rect);
-        sjf_boxvertexbuffer(&sjt_dot1602->_vertexbuffer1);
-    }
+        sjt_isEmpty21 = ((sjt_dot1602)->_scenebuffer1._refCount != -1 ? &(sjt_dot1602)->_scenebuffer1 : 0);
+        sjt_ifElse53 = (sjt_isEmpty21 == 0);
+        if (sjt_ifElse53) {
+            sjs_blureffect* sjt_dot1603 = 0;
+            sjs_rect* sjt_dot1604 = 0;
+            sjs_blureffect* sjt_dot1605 = 0;
+            sjs_rect* sjt_dot1606 = 0;
+            sjs_blureffect* sjt_dot1607 = 0;
 
-    sjt_dot1607 = _parent;
-    sjt_isEmpty20 = ((sjt_dot1607)->_vertexbuffer2._refCount != -1 ? &(sjt_dot1607)->_vertexbuffer2 : 0);
-    sjt_ifElse53 = (sjt_isEmpty20 == 0);
-    if (sjt_ifElse53) {
-        sjs_rect* sjt_copy50 = 0;
-        sjs_blureffect* sjt_dot1608 = 0;
-        sjs_blureffect* sjt_dot1609 = 0;
-
-        sjt_dot1608 = _parent;
-        sjt_dot1608->_vertexbuffer2._refCount = 1;
-        sjt_dot1609 = _parent;
-        sjt_copy50 = &(sjt_dot1609)->_rect;
-        sjt_dot1608->_vertexbuffer2.rect._refCount = 1;
-        sjf_rect_copy(&sjt_dot1608->_vertexbuffer2.rect, sjt_copy50);
-        sjf_boxvertexbuffer(&sjt_dot1608->_vertexbuffer2);
-    }
-
-    sjt_dot1610 = _parent;
-    sjt_isEmpty21 = ((sjt_dot1610)->_scenebuffer1._refCount != -1 ? &(sjt_dot1610)->_scenebuffer1 : 0);
-    sjt_ifElse54 = (sjt_isEmpty21 == 0);
-    if (sjt_ifElse54) {
-        sjs_blureffect* sjt_dot1611 = 0;
-        sjs_rect* sjt_dot1612 = 0;
-        sjs_blureffect* sjt_dot1613 = 0;
-        sjs_rect* sjt_dot1614 = 0;
-        sjs_blureffect* sjt_dot1615 = 0;
-
-        sjt_dot1611 = _parent;
-        sjt_dot1611->_scenebuffer1._refCount = 1;
-        sjt_dot1611->_scenebuffer1.size._refCount = 1;
-        sjt_dot1613 = _parent;
-        sjt_dot1612 = &(sjt_dot1613)->_rect;
-        sjt_dot1611->_scenebuffer1.size.w = (sjt_dot1612)->w;
-        sjt_dot1615 = _parent;
-        sjt_dot1614 = &(sjt_dot1615)->_rect;
-        sjt_dot1611->_scenebuffer1.size.h = (sjt_dot1614)->h;
-        sjf_size(&sjt_dot1611->_scenebuffer1.size);
-        sjt_dot1611->_scenebuffer1.framebuffer._refCount = 1;
-        sjt_dot1611->_scenebuffer1.framebuffer.size._refCount = 1;
-        sjt_dot1611->_scenebuffer1.framebuffer.size.w = 0;
-        sjt_dot1611->_scenebuffer1.framebuffer.size.h = 0;
-        sjf_size(&sjt_dot1611->_scenebuffer1.framebuffer.size);
-        sjt_dot1611->_scenebuffer1.framebuffer.id = (uint32_t)0u;
-        sjf_framebuffer(&sjt_dot1611->_scenebuffer1.framebuffer);
-        sjt_dot1611->_scenebuffer1.texture._refCount = 1;
-        sjt_dot1611->_scenebuffer1.texture.size._refCount = 1;
-        sjt_dot1611->_scenebuffer1.texture.size.w = 0;
-        sjt_dot1611->_scenebuffer1.texture.size.h = 0;
-        sjf_size(&sjt_dot1611->_scenebuffer1.texture.size);
-        sjt_dot1611->_scenebuffer1.texture.id = (uint32_t)0u;
-        sjf_texture(&sjt_dot1611->_scenebuffer1.texture);
-        sjt_dot1611->_scenebuffer1.renderbuffer._refCount = 1;
-        sjt_dot1611->_scenebuffer1.renderbuffer.size._refCount = 1;
-        sjt_dot1611->_scenebuffer1.renderbuffer.size.w = 0;
-        sjt_dot1611->_scenebuffer1.renderbuffer.size.h = 0;
-        sjf_size(&sjt_dot1611->_scenebuffer1.renderbuffer.size);
-        sjt_dot1611->_scenebuffer1.renderbuffer.id = (uint32_t)0u;
-        sjf_renderbuffer(&sjt_dot1611->_scenebuffer1.renderbuffer);
-        sjf_scenebuffer(&sjt_dot1611->_scenebuffer1);
-    }
-
-    sjt_dot1616 = _parent;
-    sjt_isEmpty22 = ((sjt_dot1616)->_scenebuffer2._refCount != -1 ? &(sjt_dot1616)->_scenebuffer2 : 0);
-    sjt_ifElse55 = (sjt_isEmpty22 == 0);
-    if (sjt_ifElse55) {
-        sjs_blureffect* sjt_dot1617 = 0;
-        sjs_rect* sjt_dot1618 = 0;
-        sjs_blureffect* sjt_dot1619 = 0;
-        sjs_rect* sjt_dot1620 = 0;
-        sjs_blureffect* sjt_dot1621 = 0;
-
-        sjt_dot1617 = _parent;
-        sjt_dot1617->_scenebuffer2._refCount = 1;
-        sjt_dot1617->_scenebuffer2.size._refCount = 1;
-        sjt_dot1619 = _parent;
-        sjt_dot1618 = &(sjt_dot1619)->_rect;
-        sjt_dot1617->_scenebuffer2.size.w = (sjt_dot1618)->w;
-        sjt_dot1621 = _parent;
-        sjt_dot1620 = &(sjt_dot1621)->_rect;
-        sjt_dot1617->_scenebuffer2.size.h = (sjt_dot1620)->h;
-        sjf_size(&sjt_dot1617->_scenebuffer2.size);
-        sjt_dot1617->_scenebuffer2.framebuffer._refCount = 1;
-        sjt_dot1617->_scenebuffer2.framebuffer.size._refCount = 1;
-        sjt_dot1617->_scenebuffer2.framebuffer.size.w = 0;
-        sjt_dot1617->_scenebuffer2.framebuffer.size.h = 0;
-        sjf_size(&sjt_dot1617->_scenebuffer2.framebuffer.size);
-        sjt_dot1617->_scenebuffer2.framebuffer.id = (uint32_t)0u;
-        sjf_framebuffer(&sjt_dot1617->_scenebuffer2.framebuffer);
-        sjt_dot1617->_scenebuffer2.texture._refCount = 1;
-        sjt_dot1617->_scenebuffer2.texture.size._refCount = 1;
-        sjt_dot1617->_scenebuffer2.texture.size.w = 0;
-        sjt_dot1617->_scenebuffer2.texture.size.h = 0;
-        sjf_size(&sjt_dot1617->_scenebuffer2.texture.size);
-        sjt_dot1617->_scenebuffer2.texture.id = (uint32_t)0u;
-        sjf_texture(&sjt_dot1617->_scenebuffer2.texture);
-        sjt_dot1617->_scenebuffer2.renderbuffer._refCount = 1;
-        sjt_dot1617->_scenebuffer2.renderbuffer.size._refCount = 1;
-        sjt_dot1617->_scenebuffer2.renderbuffer.size.w = 0;
-        sjt_dot1617->_scenebuffer2.renderbuffer.size.h = 0;
-        sjf_size(&sjt_dot1617->_scenebuffer2.renderbuffer.size);
-        sjt_dot1617->_scenebuffer2.renderbuffer.id = (uint32_t)0u;
-        sjf_renderbuffer(&sjt_dot1617->_scenebuffer2.renderbuffer);
-        sjf_scenebuffer(&sjt_dot1617->_scenebuffer2);
-    }
-
-    sjt_dot1622 = _parent;
-    sjt_isEmpty24 = ((sjt_dot1622)->_scenebuffer1._refCount != -1 ? &(sjt_dot1622)->_scenebuffer1 : 0);
-    sjt_isEmpty23 = (sjt_isEmpty24 != 0);
-    sjt_dot1623 = _parent;
-    sjt_isEmpty26 = ((sjt_dot1623)->_scenebuffer2._refCount != -1 ? &(sjt_dot1623)->_scenebuffer2 : 0);
-    sjt_isEmpty25 = (sjt_isEmpty26 != 0);
-    sjt_dot1624 = _parent;
-    sjt_isEmpty28 = ((sjt_dot1624)->_vertexbuffer1._refCount != -1 ? &(sjt_dot1624)->_vertexbuffer1 : 0);
-    sjt_isEmpty27 = (sjt_isEmpty28 != 0);
-    sjt_dot1625 = _parent;
-    sjt_isEmpty30 = ((sjt_dot1625)->_vertexbuffer2._refCount != -1 ? &(sjt_dot1625)->_vertexbuffer2 : 0);
-    sjt_isEmpty29 = (sjt_isEmpty30 != 0);
-    if (sjt_isEmpty23 && sjt_isEmpty25 && sjt_isEmpty27 && sjt_isEmpty29) {
-        int32_t i;
-        sjs_scenebuffer* ifValue19 = 0;
-        sjs_scenebuffer* ifValue20 = 0;
-        sjs_boxvertexbuffer* ifValue21 = 0;
-        sjs_boxvertexbuffer* ifValue22 = 0;
-        sjs_string sjt_call70 = { -1 };
-        sjs_string sjt_call71 = { -1 };
-        sjs_string sjt_call72 = { -1 };
-        sjs_string sjt_call73 = { -1 };
-        sjs_string sjt_call74 = { -1 };
-        sjs_string sjt_call75 = { -1 };
-        sjs_string sjt_call76 = { -1 };
-        sjs_string sjt_call77 = { -1 };
-        sjs_string sjt_call78 = { -1 };
-        sjs_string sjt_call79 = { -1 };
-        sjs_string sjt_call80 = { -1 };
-        sjs_string sjt_call81 = { -1 };
-        sjs_string sjt_call82 = { -1 };
-        sjs_string sjt_call83 = { -1 };
-        sjs_string sjt_call84 = { -1 };
-        float sjt_compare113;
-        float sjt_compare114;
-        sjs_blureffect* sjt_dot1626 = 0;
-        sjs_blureffect* sjt_dot1627 = 0;
-        sjs_blureffect* sjt_dot1628 = 0;
-        sjs_blureffect* sjt_dot1629 = 0;
-        sjs_scenebuffer* sjt_dot1630 = 0;
-        sjs_blureffect* sjt_dot1640 = 0;
-        sjs_scenebuffer* sjt_dot1641 = 0;
-        sjs_blureffect* sjt_dot1649 = 0;
-        sjs_array_heap_iface_element* sjt_dot1650 = 0;
-        sjs_blureffect* sjt_dot1654 = 0;
-        sjs_scenebuffer* sjt_dot1655 = 0;
-        sjs_blureffect* sjt_dot1656 = 0;
-        int32_t sjt_forEnd27;
-        int32_t sjt_forStart27;
-        sjs_framebuffer* sjt_functionParam377 = 0;
-        sjs_size* sjt_functionParam388 = 0;
-        sjs_framebuffer* sjt_functionParam394 = 0;
-        bool sjt_ifElse57;
-        sjs_scene2d* sjt_parent193 = 0;
-        sjs_scene2d* sjt_parent194 = 0;
-        sjs_scene2d* sjt_parent197 = 0;
-
-        sjt_dot1626 = _parent;
-        ifValue19 = ((sjt_dot1626)->_scenebuffer1._refCount != -1 ? &(sjt_dot1626)->_scenebuffer1 : 0);
-        sjt_dot1627 = _parent;
-        ifValue20 = ((sjt_dot1627)->_scenebuffer2._refCount != -1 ? &(sjt_dot1627)->_scenebuffer2 : 0);
-        sjt_dot1628 = _parent;
-        ifValue21 = ((sjt_dot1628)->_vertexbuffer1._refCount != -1 ? &(sjt_dot1628)->_vertexbuffer1 : 0);
-        sjt_dot1629 = _parent;
-        ifValue22 = ((sjt_dot1629)->_vertexbuffer2._refCount != -1 ? &(sjt_dot1629)->_vertexbuffer2 : 0);
-        sjt_dot1630 = ifValue19;
-        sjt_functionParam377 = &(sjt_dot1630)->framebuffer;
-        sjf_glpushframebuffer(sjt_functionParam377);
-        sjt_dot1640 = _parent;
-        sjt_parent193 = &(sjt_dot1640)->_innerscene;
-        sjt_dot1641 = ifValue19;
-        sjt_functionParam388 = &(sjt_dot1641)->size;
-        sjf_scene2d_setsize(sjt_parent193, sjt_functionParam388);
-        sjt_dot1649 = _parent;
-        sjt_parent194 = &(sjt_dot1649)->_innerscene;
-        sjf_scene2d_start(sjt_parent194);
-        sjt_forStart27 = 0;
-        sjt_dot1650 = children;
-        sjt_forEnd27 = (sjt_dot1650)->count;
-        i = sjt_forStart27;
-        while (i < sjt_forEnd27) {
-            sjs_blureffect* sjt_dot1651 = 0;
-            int32_t sjt_functionParam391;
-            sjs_scene2d* sjt_interfaceParam20 = 0;
-            sjs_array_heap_iface_element* sjt_parent195 = 0;
-            sji_element sjt_parent196 = { 0 };
-            sji_element sjv_child = { 0 };
-
-            sjt_parent195 = children;
-            sjt_functionParam391 = i;
-            sjf_array_heap_iface_element_getat_heap(sjt_parent195, sjt_functionParam391, &sjv_child);
-            sjt_parent196 = sjv_child;
-            sjt_dot1651 = _parent;
-            sjt_interfaceParam20 = &(sjt_dot1651)->_innerscene;
-            sjt_parent196._vtbl->render(sjt_parent196._parent, sjt_interfaceParam20);
-            i++;
-
-            if (sjv_child._parent != 0) {
-                sjv_child._parent->_refCount--;
-                if (sjv_child._parent->_refCount <= 0) {
-                    sjv_child._vtbl->destroy(sjv_child._parent);
-                    free(sjv_child._parent);
-                }
-            }
+            sjt_dot1603 = _parent;
+            sjt_dot1603->_scenebuffer1._refCount = 1;
+            sjt_dot1603->_scenebuffer1.size._refCount = 1;
+            sjt_dot1605 = _parent;
+            sjt_dot1604 = &(sjt_dot1605)->_rect;
+            sjt_dot1603->_scenebuffer1.size.w = (sjt_dot1604)->w;
+            sjt_dot1607 = _parent;
+            sjt_dot1606 = &(sjt_dot1607)->_rect;
+            sjt_dot1603->_scenebuffer1.size.h = (sjt_dot1606)->h;
+            sjf_size(&sjt_dot1603->_scenebuffer1.size);
+            sjt_dot1603->_scenebuffer1.framebuffer._refCount = 1;
+            sjt_dot1603->_scenebuffer1.framebuffer.size._refCount = 1;
+            sjt_dot1603->_scenebuffer1.framebuffer.size.w = 0;
+            sjt_dot1603->_scenebuffer1.framebuffer.size.h = 0;
+            sjf_size(&sjt_dot1603->_scenebuffer1.framebuffer.size);
+            sjt_dot1603->_scenebuffer1.framebuffer.id = (uint32_t)0u;
+            sjf_framebuffer(&sjt_dot1603->_scenebuffer1.framebuffer);
+            sjt_dot1603->_scenebuffer1.texture._refCount = 1;
+            sjt_dot1603->_scenebuffer1.texture.size._refCount = 1;
+            sjt_dot1603->_scenebuffer1.texture.size.w = 0;
+            sjt_dot1603->_scenebuffer1.texture.size.h = 0;
+            sjf_size(&sjt_dot1603->_scenebuffer1.texture.size);
+            sjt_dot1603->_scenebuffer1.texture.id = (uint32_t)0u;
+            sjf_texture(&sjt_dot1603->_scenebuffer1.texture);
+            sjt_dot1603->_scenebuffer1.renderbuffer._refCount = 1;
+            sjt_dot1603->_scenebuffer1.renderbuffer.size._refCount = 1;
+            sjt_dot1603->_scenebuffer1.renderbuffer.size.w = 0;
+            sjt_dot1603->_scenebuffer1.renderbuffer.size.h = 0;
+            sjf_size(&sjt_dot1603->_scenebuffer1.renderbuffer.size);
+            sjt_dot1603->_scenebuffer1.renderbuffer.id = (uint32_t)0u;
+            sjf_renderbuffer(&sjt_dot1603->_scenebuffer1.renderbuffer);
+            sjf_scenebuffer(&sjt_dot1603->_scenebuffer1);
         }
 
-        sjt_dot1654 = _parent;
-        sjt_parent197 = &(sjt_dot1654)->_innerscene;
-        sjf_scene2d_end(sjt_parent197);
-        sjt_dot1655 = ifValue19;
-        sjt_functionParam394 = &(sjt_dot1655)->framebuffer;
-        sjf_glpopframebuffer(sjt_functionParam394);
-        sjt_dot1656 = _parent;
-        sjt_compare113 = (sjt_dot1656)->radius;
-        sjt_compare114 = 0.0f;
-        sjt_ifElse57 = sjt_compare113 != sjt_compare114;
-        if (sjt_ifElse57) {
+        sjt_dot1608 = _parent;
+        sjt_isEmpty22 = ((sjt_dot1608)->_scenebuffer2._refCount != -1 ? &(sjt_dot1608)->_scenebuffer2 : 0);
+        sjt_ifElse54 = (sjt_isEmpty22 == 0);
+        if (sjt_ifElse54) {
+            sjs_blureffect* sjt_dot1609 = 0;
+            sjs_rect* sjt_dot1610 = 0;
+            sjs_blureffect* sjt_dot1611 = 0;
+            sjs_rect* sjt_dot1612 = 0;
+            sjs_blureffect* sjt_dot1613 = 0;
+
+            sjt_dot1609 = _parent;
+            sjt_dot1609->_scenebuffer2._refCount = 1;
+            sjt_dot1609->_scenebuffer2.size._refCount = 1;
+            sjt_dot1611 = _parent;
+            sjt_dot1610 = &(sjt_dot1611)->_rect;
+            sjt_dot1609->_scenebuffer2.size.w = (sjt_dot1610)->w;
+            sjt_dot1613 = _parent;
+            sjt_dot1612 = &(sjt_dot1613)->_rect;
+            sjt_dot1609->_scenebuffer2.size.h = (sjt_dot1612)->h;
+            sjf_size(&sjt_dot1609->_scenebuffer2.size);
+            sjt_dot1609->_scenebuffer2.framebuffer._refCount = 1;
+            sjt_dot1609->_scenebuffer2.framebuffer.size._refCount = 1;
+            sjt_dot1609->_scenebuffer2.framebuffer.size.w = 0;
+            sjt_dot1609->_scenebuffer2.framebuffer.size.h = 0;
+            sjf_size(&sjt_dot1609->_scenebuffer2.framebuffer.size);
+            sjt_dot1609->_scenebuffer2.framebuffer.id = (uint32_t)0u;
+            sjf_framebuffer(&sjt_dot1609->_scenebuffer2.framebuffer);
+            sjt_dot1609->_scenebuffer2.texture._refCount = 1;
+            sjt_dot1609->_scenebuffer2.texture.size._refCount = 1;
+            sjt_dot1609->_scenebuffer2.texture.size.w = 0;
+            sjt_dot1609->_scenebuffer2.texture.size.h = 0;
+            sjf_size(&sjt_dot1609->_scenebuffer2.texture.size);
+            sjt_dot1609->_scenebuffer2.texture.id = (uint32_t)0u;
+            sjf_texture(&sjt_dot1609->_scenebuffer2.texture);
+            sjt_dot1609->_scenebuffer2.renderbuffer._refCount = 1;
+            sjt_dot1609->_scenebuffer2.renderbuffer.size._refCount = 1;
+            sjt_dot1609->_scenebuffer2.renderbuffer.size.w = 0;
+            sjt_dot1609->_scenebuffer2.renderbuffer.size.h = 0;
+            sjf_size(&sjt_dot1609->_scenebuffer2.renderbuffer.size);
+            sjt_dot1609->_scenebuffer2.renderbuffer.id = (uint32_t)0u;
+            sjf_renderbuffer(&sjt_dot1609->_scenebuffer2.renderbuffer);
+            sjf_scenebuffer(&sjt_dot1609->_scenebuffer2);
+        }
+
+        sjt_dot1614 = _parent;
+        sjt_isEmpty24 = ((sjt_dot1614)->_scenebuffer1._refCount != -1 ? &(sjt_dot1614)->_scenebuffer1 : 0);
+        sjt_isEmpty23 = (sjt_isEmpty24 != 0);
+        sjt_dot1615 = _parent;
+        sjt_isEmpty26 = ((sjt_dot1615)->_scenebuffer2._refCount != -1 ? &(sjt_dot1615)->_scenebuffer2 : 0);
+        sjt_isEmpty25 = (sjt_isEmpty26 != 0);
+        sjt_dot1616 = _parent;
+        sjt_isEmpty28 = ((sjt_dot1616)->_vertexbuffer1._refCount != -1 ? &(sjt_dot1616)->_vertexbuffer1 : 0);
+        sjt_isEmpty27 = (sjt_isEmpty28 != 0);
+        sjt_dot1617 = _parent;
+        sjt_isEmpty30 = ((sjt_dot1617)->_vertexbuffer2._refCount != -1 ? &(sjt_dot1617)->_vertexbuffer2 : 0);
+        sjt_isEmpty29 = (sjt_isEmpty30 != 0);
+        if (sjt_isEmpty23 && sjt_isEmpty25 && sjt_isEmpty27 && sjt_isEmpty29) {
+            sjs_scenebuffer* ifValue19 = 0;
+            sjs_scenebuffer* ifValue20 = 0;
+            sjs_boxvertexbuffer* ifValue21 = 0;
+            sjs_boxvertexbuffer* ifValue22 = 0;
+            sjs_string sjt_call70 = { -1 };
+            sjs_string sjt_call71 = { -1 };
+            sjs_string sjt_call72 = { -1 };
+            sjs_string sjt_call73 = { -1 };
+            sjs_string sjt_call74 = { -1 };
+            sjs_string sjt_call75 = { -1 };
+            sjs_string sjt_call76 = { -1 };
+            sjs_string sjt_call77 = { -1 };
+            sjs_string sjt_call78 = { -1 };
+            sjs_string sjt_call79 = { -1 };
+            sjs_string sjt_call80 = { -1 };
+            sjs_string sjt_call81 = { -1 };
+            cb_scene2d_void sjt_callback8;
             int32_t sjt_cast35;
             int32_t sjt_cast36;
-            sjs_scenebuffer* sjt_dot1657 = 0;
+            sjs_blureffect* sjt_dot1618 = 0;
+            sjs_blureffect* sjt_dot1619 = 0;
+            sjs_blureffect* sjt_dot1620 = 0;
+            sjs_blureffect* sjt_dot1621 = 0;
+            sjs_scenebuffer* sjt_dot1622 = 0;
+            sjs_blureffect* sjt_dot1632 = 0;
+            sjs_scenebuffer* sjt_dot1633 = 0;
+            sjs_blureffect* sjt_dot1641 = 0;
+            sjs_blureffect* sjt_dot1642 = 0;
+            sjs_blureffect* sjt_dot1645 = 0;
+            sjs_scenebuffer* sjt_dot1646 = 0;
+            sjs_scenebuffer* sjt_dot1647 = 0;
+            sjs_blureffect* sjt_dot1648 = 0;
+            sjs_scenebuffer* sjt_dot1649 = 0;
+            sjs_blureffect* sjt_dot1650 = 0;
+            sjs_scenebuffer* sjt_dot1651 = 0;
+            sjs_blureffect* sjt_dot1652 = 0;
+            sjs_size* sjt_dot1653 = 0;
+            sjs_scenebuffer* sjt_dot1654 = 0;
+            sjs_scene2d* sjt_dot1655 = 0;
+            sjs_blureffect* sjt_dot1656 = 0;
+            sjs_scene2d* sjt_dot1657 = 0;
             sjs_blureffect* sjt_dot1658 = 0;
-            sjs_scenebuffer* sjt_dot1659 = 0;
+            sjs_scene2d* sjt_dot1659 = 0;
             sjs_blureffect* sjt_dot1660 = 0;
-            sjs_scenebuffer* sjt_dot1661 = 0;
+            sjs_blureffect* sjt_dot1661 = 0;
             sjs_blureffect* sjt_dot1662 = 0;
-            sjs_size* sjt_dot1663 = 0;
+            sjs_scenebuffer* sjt_dot1663 = 0;
             sjs_scenebuffer* sjt_dot1664 = 0;
-            sjs_scene2d* sjt_dot1665 = 0;
-            sjs_blureffect* sjt_dot1666 = 0;
-            sjs_scene2d* sjt_dot1667 = 0;
-            sjs_blureffect* sjt_dot1668 = 0;
+            sjs_blureffect* sjt_dot1665 = 0;
+            sjs_size* sjt_dot1666 = 0;
+            sjs_scenebuffer* sjt_dot1667 = 0;
+            sjs_scene2d* sjt_dot1668 = 0;
             sjs_scene2d* sjt_dot1669 = 0;
-            sjs_blureffect* sjt_dot1670 = 0;
-            sjs_blureffect* sjt_dot1671 = 0;
-            sjs_blureffect* sjt_dot1672 = 0;
-            sjs_scenebuffer* sjt_dot1673 = 0;
-            sjs_scenebuffer* sjt_dot1674 = 0;
-            sjs_blureffect* sjt_dot1675 = 0;
-            sjs_size* sjt_dot1676 = 0;
-            sjs_scenebuffer* sjt_dot1677 = 0;
-            sjs_scene2d* sjt_dot1678 = 0;
-            sjs_scene2d* sjt_dot1679 = 0;
-            sjs_scene2d* sjt_dot1680 = 0;
-            sjs_framebuffer* sjt_functionParam395 = 0;
-            sjs_size* sjt_functionParam396 = 0;
-            int32_t sjt_functionParam397;
-            sjs_texture* sjt_functionParam398 = 0;
-            sjs_shader* sjt_functionParam399 = 0;
-            int32_t sjt_functionParam400;
+            sjs_scene2d* sjt_dot1670 = 0;
+            sjs_framebuffer* sjt_functionParam379 = 0;
+            sjs_size* sjt_functionParam390 = 0;
+            sjs_scene2d* sjt_functionParam393 = 0;
+            sjs_framebuffer* sjt_functionParam396 = 0;
+            sjs_framebuffer* sjt_functionParam397 = 0;
+            sjs_size* sjt_functionParam398 = 0;
+            int32_t sjt_functionParam399;
+            sjs_texture* sjt_functionParam400 = 0;
             sjs_shader* sjt_functionParam401 = 0;
-            sjs_string* sjt_functionParam402 = 0;
-            int32_t sjt_functionParam403;
-            int32_t sjt_functionParam404;
-            sjs_shader* sjt_functionParam405 = 0;
-            sjs_string* sjt_functionParam406 = 0;
-            float sjt_functionParam407;
-            int32_t sjt_functionParam408;
-            sjs_shader* sjt_functionParam409 = 0;
-            sjs_string* sjt_functionParam410 = 0;
-            float sjt_functionParam411;
-            int32_t sjt_functionParam412;
-            sjs_shader* sjt_functionParam413 = 0;
-            sjs_string* sjt_functionParam414 = 0;
-            sjs_mat4* sjt_functionParam415 = 0;
-            int32_t sjt_functionParam416;
-            sjs_shader* sjt_functionParam417 = 0;
-            sjs_string* sjt_functionParam418 = 0;
-            sjs_mat4* sjt_functionParam419 = 0;
-            int32_t sjt_functionParam420;
-            sjs_shader* sjt_functionParam421 = 0;
-            sjs_string* sjt_functionParam422 = 0;
-            sjs_mat4* sjt_functionParam423 = 0;
-            sjs_scene2d* sjt_functionParam424 = 0;
-            sjs_framebuffer* sjt_functionParam425 = 0;
-            int32_t sjt_functionParam426;
-            sjs_texture* sjt_functionParam427 = 0;
-            sjs_shader* sjt_functionParam428 = 0;
-            int32_t sjt_functionParam429;
+            int32_t sjt_functionParam402;
+            sjs_shader* sjt_functionParam403 = 0;
+            sjs_string* sjt_functionParam404 = 0;
+            int32_t sjt_functionParam405;
+            int32_t sjt_functionParam406;
+            sjs_shader* sjt_functionParam407 = 0;
+            sjs_string* sjt_functionParam408 = 0;
+            float sjt_functionParam409;
+            int32_t sjt_functionParam410;
+            sjs_shader* sjt_functionParam411 = 0;
+            sjs_string* sjt_functionParam412 = 0;
+            float sjt_functionParam413;
+            int32_t sjt_functionParam414;
+            sjs_shader* sjt_functionParam415 = 0;
+            sjs_string* sjt_functionParam416 = 0;
+            sjs_mat4* sjt_functionParam417 = 0;
+            int32_t sjt_functionParam418;
+            sjs_shader* sjt_functionParam419 = 0;
+            sjs_string* sjt_functionParam420 = 0;
+            sjs_mat4* sjt_functionParam421 = 0;
+            int32_t sjt_functionParam422;
+            sjs_shader* sjt_functionParam423 = 0;
+            sjs_string* sjt_functionParam424 = 0;
+            sjs_mat4* sjt_functionParam425 = 0;
+            sjs_scene2d* sjt_functionParam426 = 0;
+            sjs_framebuffer* sjt_functionParam427 = 0;
+            int32_t sjt_functionParam428;
+            sjs_texture* sjt_functionParam429 = 0;
             sjs_shader* sjt_functionParam430 = 0;
-            sjs_string* sjt_functionParam431 = 0;
-            int32_t sjt_functionParam432;
-            int32_t sjt_functionParam433;
-            sjs_shader* sjt_functionParam434 = 0;
-            sjs_string* sjt_functionParam435 = 0;
-            float sjt_functionParam436;
-            int32_t sjt_functionParam437;
-            sjs_shader* sjt_functionParam438 = 0;
-            sjs_string* sjt_functionParam439 = 0;
-            float sjt_functionParam440;
-            int32_t sjt_functionParam441;
-            sjs_shader* sjt_functionParam442 = 0;
-            sjs_string* sjt_functionParam443 = 0;
-            sjs_mat4* sjt_functionParam444 = 0;
-            int32_t sjt_functionParam445;
-            sjs_shader* sjt_functionParam446 = 0;
-            sjs_string* sjt_functionParam447 = 0;
-            sjs_mat4* sjt_functionParam448 = 0;
-            int32_t sjt_functionParam449;
-            sjs_shader* sjt_functionParam450 = 0;
-            sjs_string* sjt_functionParam451 = 0;
-            sjs_mat4* sjt_functionParam452 = 0;
-            sjs_scene2d* sjt_functionParam453 = 0;
-            float sjt_math2615;
-            float sjt_math2616;
-            float sjt_math2617;
-            float sjt_math2618;
-            sjs_scene2d* sjt_parent198 = 0;
-            sjs_scene2d* sjt_parent199 = 0;
-            sjs_boxvertexbuffer* sjt_parent200 = 0;
-            sjs_scene2d* sjt_parent201 = 0;
-            sjs_boxvertexbuffer* sjt_parent202 = 0;
+            int32_t sjt_functionParam431;
+            sjs_shader* sjt_functionParam432 = 0;
+            sjs_string* sjt_functionParam433 = 0;
+            int32_t sjt_functionParam434;
+            int32_t sjt_functionParam435;
+            sjs_shader* sjt_functionParam436 = 0;
+            sjs_string* sjt_functionParam437 = 0;
+            float sjt_functionParam438;
+            int32_t sjt_functionParam439;
+            sjs_shader* sjt_functionParam440 = 0;
+            sjs_string* sjt_functionParam441 = 0;
+            float sjt_functionParam442;
+            int32_t sjt_functionParam443;
+            sjs_shader* sjt_functionParam444 = 0;
+            sjs_string* sjt_functionParam445 = 0;
+            sjs_mat4* sjt_functionParam446 = 0;
+            int32_t sjt_functionParam447;
+            sjs_shader* sjt_functionParam448 = 0;
+            sjs_string* sjt_functionParam449 = 0;
+            sjs_mat4* sjt_functionParam450 = 0;
+            int32_t sjt_functionParam451;
+            sjs_shader* sjt_functionParam452 = 0;
+            sjs_string* sjt_functionParam453 = 0;
+            sjs_mat4* sjt_functionParam454 = 0;
+            sjs_scene2d* sjt_functionParam455 = 0;
+            float sjt_math2611;
+            float sjt_math2612;
+            float sjt_math2613;
+            float sjt_math2614;
+            sjs_scene2d* sjt_parent191 = 0;
+            sjs_scene2d* sjt_parent192 = 0;
+            sjs_scene2d* sjt_parent193 = 0;
+            sjs_scene2d* sjt_parent194 = 0;
+            sjs_scene2d* sjt_parent195 = 0;
+            sjs_boxvertexbuffer* sjt_parent196 = 0;
+            sjs_scene2d* sjt_parent197 = 0;
+            sjs_boxvertexbuffer* sjt_parent198 = 0;
 
-            sjt_dot1657 = ifValue20;
-            sjt_functionParam395 = &(sjt_dot1657)->framebuffer;
-            sjf_glpushframebuffer(sjt_functionParam395);
-            sjt_dot1658 = _parent;
-            sjt_parent198 = &(sjt_dot1658)->_innerscene;
-            sjt_dot1659 = ifValue20;
-            sjt_functionParam396 = &(sjt_dot1659)->size;
-            sjf_scene2d_setsize(sjt_parent198, sjt_functionParam396);
-            sjt_dot1660 = _parent;
-            sjt_parent199 = &(sjt_dot1660)->_innerscene;
-            sjf_scene2d_start(sjt_parent199);
-            sjt_functionParam397 = sjv_gltexture_gl_texture_2d;
-            sjt_dot1661 = ifValue19;
-            sjt_functionParam398 = &(sjt_dot1661)->texture;
-            sjf_glbindtexture(sjt_functionParam397, sjt_functionParam398);
-            sjt_functionParam399 = &sjv_blurverticalshader;
-            sjf_gluseprogram(sjt_functionParam399);
+            sjt_dot1618 = _parent;
+            ifValue19 = ((sjt_dot1618)->_scenebuffer1._refCount != -1 ? &(sjt_dot1618)->_scenebuffer1 : 0);
+            sjt_dot1619 = _parent;
+            ifValue20 = ((sjt_dot1619)->_scenebuffer2._refCount != -1 ? &(sjt_dot1619)->_scenebuffer2 : 0);
+            sjt_dot1620 = _parent;
+            ifValue21 = ((sjt_dot1620)->_vertexbuffer1._refCount != -1 ? &(sjt_dot1620)->_vertexbuffer1 : 0);
+            sjt_dot1621 = _parent;
+            ifValue22 = ((sjt_dot1621)->_vertexbuffer2._refCount != -1 ? &(sjt_dot1621)->_vertexbuffer2 : 0);
+            sjt_dot1622 = ifValue19;
+            sjt_functionParam379 = &(sjt_dot1622)->framebuffer;
+            sjf_glpushframebuffer(sjt_functionParam379);
+            sjt_dot1632 = _parent;
+            sjt_parent191 = &(sjt_dot1632)->_innerscene;
+            sjt_dot1633 = ifValue19;
+            sjt_functionParam390 = &(sjt_dot1633)->size;
+            sjf_scene2d_setsize(sjt_parent191, sjt_functionParam390);
+            sjt_dot1641 = _parent;
+            sjt_parent192 = &(sjt_dot1641)->_innerscene;
+            sjf_scene2d_start(sjt_parent192);
+            sjt_callback8 = cb;
+            sjt_dot1642 = _parent;
+            sjt_functionParam393 = &(sjt_dot1642)->_innerscene;
+            sjt_callback8._cb(sjt_callback8._parent, sjt_functionParam393);
+            sjt_dot1645 = _parent;
+            sjt_parent193 = &(sjt_dot1645)->_innerscene;
+            sjf_scene2d_end(sjt_parent193);
+            sjt_dot1646 = ifValue19;
+            sjt_functionParam396 = &(sjt_dot1646)->framebuffer;
+            sjf_glpopframebuffer(sjt_functionParam396);
+            sjt_dot1647 = ifValue20;
+            sjt_functionParam397 = &(sjt_dot1647)->framebuffer;
+            sjf_glpushframebuffer(sjt_functionParam397);
+            sjt_dot1648 = _parent;
+            sjt_parent194 = &(sjt_dot1648)->_innerscene;
+            sjt_dot1649 = ifValue20;
+            sjt_functionParam398 = &(sjt_dot1649)->size;
+            sjf_scene2d_setsize(sjt_parent194, sjt_functionParam398);
+            sjt_dot1650 = _parent;
+            sjt_parent195 = &(sjt_dot1650)->_innerscene;
+            sjf_scene2d_start(sjt_parent195);
+            sjt_functionParam399 = sjv_gltexture_gl_texture_2d;
+            sjt_dot1651 = ifValue19;
+            sjt_functionParam400 = &(sjt_dot1651)->texture;
+            sjf_glbindtexture(sjt_functionParam399, sjt_functionParam400);
             sjt_functionParam401 = &sjv_blurverticalshader;
+            sjf_gluseprogram(sjt_functionParam401);
+            sjt_functionParam403 = &sjv_blurverticalshader;
             sjt_call70._refCount = 1;
             sjt_call70.count = 7;
             sjt_call70.data._refCount = 1;
             sjt_call70.data.datasize = 8;
-            sjt_call70.data.data = (void*)sjg_string70;
+            sjt_call70.data.data = (void*)sjg_string71;
             sjt_call70.data._isglobal = true;
             sjt_call70.data.count = 8;
             sjf_array_char(&sjt_call70.data);
             sjf_string(&sjt_call70);
-            sjt_functionParam402 = &sjt_call70;
-            sjf_glgetuniformlocation(sjt_functionParam401, sjt_functionParam402, &sjt_functionParam400);
-            sjt_functionParam403 = 0;
-            sjf_gluniformi32(sjt_functionParam400, sjt_functionParam403);
-            sjt_functionParam405 = &sjv_blurverticalshader;
+            sjt_functionParam404 = &sjt_call70;
+            sjf_glgetuniformlocation(sjt_functionParam403, sjt_functionParam404, &sjt_functionParam402);
+            sjt_functionParam405 = 0;
+            sjf_gluniformi32(sjt_functionParam402, sjt_functionParam405);
+            sjt_functionParam407 = &sjv_blurverticalshader;
             sjt_call71._refCount = 1;
             sjt_call71.count = 5;
             sjt_call71.data._refCount = 1;
             sjt_call71.data.datasize = 6;
-            sjt_call71.data.data = (void*)sjg_string71;
+            sjt_call71.data.data = (void*)sjg_string72;
             sjt_call71.data._isglobal = true;
             sjt_call71.data.count = 6;
             sjf_array_char(&sjt_call71.data);
             sjf_string(&sjt_call71);
-            sjt_functionParam406 = &sjt_call71;
-            sjf_glgetuniformlocation(sjt_functionParam405, sjt_functionParam406, &sjt_functionParam404);
-            sjt_dot1662 = _parent;
-            sjt_functionParam407 = (sjt_dot1662)->radius;
-            sjf_gluniformf32(sjt_functionParam404, sjt_functionParam407);
-            sjt_functionParam409 = &sjv_blurverticalshader;
+            sjt_functionParam408 = &sjt_call71;
+            sjf_glgetuniformlocation(sjt_functionParam407, sjt_functionParam408, &sjt_functionParam406);
+            sjt_dot1652 = _parent;
+            sjt_functionParam409 = (sjt_dot1652)->radius;
+            sjf_gluniformf32(sjt_functionParam406, sjt_functionParam409);
+            sjt_functionParam411 = &sjv_blurverticalshader;
             sjt_call72._refCount = 1;
             sjt_call72.count = 8;
             sjt_call72.data._refCount = 1;
             sjt_call72.data.datasize = 9;
-            sjt_call72.data.data = (void*)sjg_string72;
+            sjt_call72.data.data = (void*)sjg_string73;
             sjt_call72.data._isglobal = true;
             sjt_call72.data.count = 9;
             sjf_array_char(&sjt_call72.data);
             sjf_string(&sjt_call72);
-            sjt_functionParam410 = &sjt_call72;
-            sjf_glgetuniformlocation(sjt_functionParam409, sjt_functionParam410, &sjt_functionParam408);
-            sjt_math2615 = 1.0f;
-            sjt_dot1664 = ifValue19;
-            sjt_dot1663 = &(sjt_dot1664)->size;
-            sjt_cast35 = (sjt_dot1663)->h;
-            sjt_math2616 = (float)sjt_cast35;
-            sjt_functionParam411 = sjt_math2615 / sjt_math2616;
-            sjf_gluniformf32(sjt_functionParam408, sjt_functionParam411);
-            sjt_functionParam413 = &sjv_blurverticalshader;
+            sjt_functionParam412 = &sjt_call72;
+            sjf_glgetuniformlocation(sjt_functionParam411, sjt_functionParam412, &sjt_functionParam410);
+            sjt_math2611 = 1.0f;
+            sjt_dot1654 = ifValue19;
+            sjt_dot1653 = &(sjt_dot1654)->size;
+            sjt_cast35 = (sjt_dot1653)->h;
+            sjt_math2612 = (float)sjt_cast35;
+            sjt_functionParam413 = sjt_math2611 / sjt_math2612;
+            sjf_gluniformf32(sjt_functionParam410, sjt_functionParam413);
+            sjt_functionParam415 = &sjv_blurverticalshader;
             sjt_call73._refCount = 1;
             sjt_call73.count = 5;
             sjt_call73.data._refCount = 1;
             sjt_call73.data.datasize = 6;
-            sjt_call73.data.data = (void*)sjg_string73;
+            sjt_call73.data.data = (void*)sjg_string74;
             sjt_call73.data._isglobal = true;
             sjt_call73.data.count = 6;
             sjf_array_char(&sjt_call73.data);
             sjf_string(&sjt_call73);
-            sjt_functionParam414 = &sjt_call73;
-            sjf_glgetuniformlocation(sjt_functionParam413, sjt_functionParam414, &sjt_functionParam412);
-            sjt_dot1666 = _parent;
-            sjt_dot1665 = &(sjt_dot1666)->_innerscene;
-            sjt_functionParam415 = &(sjt_dot1665)->model;
-            sjf_gluniformmat4(sjt_functionParam412, sjt_functionParam415);
-            sjt_functionParam417 = &sjv_blurverticalshader;
+            sjt_functionParam416 = &sjt_call73;
+            sjf_glgetuniformlocation(sjt_functionParam415, sjt_functionParam416, &sjt_functionParam414);
+            sjt_dot1656 = _parent;
+            sjt_dot1655 = &(sjt_dot1656)->_innerscene;
+            sjt_functionParam417 = &(sjt_dot1655)->model;
+            sjf_gluniformmat4(sjt_functionParam414, sjt_functionParam417);
+            sjt_functionParam419 = &sjv_blurverticalshader;
             sjt_call74._refCount = 1;
             sjt_call74.count = 4;
             sjt_call74.data._refCount = 1;
             sjt_call74.data.datasize = 5;
-            sjt_call74.data.data = (void*)sjg_string74;
+            sjt_call74.data.data = (void*)sjg_string75;
             sjt_call74.data._isglobal = true;
             sjt_call74.data.count = 5;
             sjf_array_char(&sjt_call74.data);
             sjf_string(&sjt_call74);
-            sjt_functionParam418 = &sjt_call74;
-            sjf_glgetuniformlocation(sjt_functionParam417, sjt_functionParam418, &sjt_functionParam416);
-            sjt_dot1668 = _parent;
-            sjt_dot1667 = &(sjt_dot1668)->_innerscene;
-            sjt_functionParam419 = &(sjt_dot1667)->view;
-            sjf_gluniformmat4(sjt_functionParam416, sjt_functionParam419);
-            sjt_functionParam421 = &sjv_blurverticalshader;
+            sjt_functionParam420 = &sjt_call74;
+            sjf_glgetuniformlocation(sjt_functionParam419, sjt_functionParam420, &sjt_functionParam418);
+            sjt_dot1658 = _parent;
+            sjt_dot1657 = &(sjt_dot1658)->_innerscene;
+            sjt_functionParam421 = &(sjt_dot1657)->view;
+            sjf_gluniformmat4(sjt_functionParam418, sjt_functionParam421);
+            sjt_functionParam423 = &sjv_blurverticalshader;
             sjt_call75._refCount = 1;
             sjt_call75.count = 10;
             sjt_call75.data._refCount = 1;
             sjt_call75.data.datasize = 11;
-            sjt_call75.data.data = (void*)sjg_string75;
+            sjt_call75.data.data = (void*)sjg_string76;
             sjt_call75.data._isglobal = true;
             sjt_call75.data.count = 11;
             sjf_array_char(&sjt_call75.data);
             sjf_string(&sjt_call75);
-            sjt_functionParam422 = &sjt_call75;
-            sjf_glgetuniformlocation(sjt_functionParam421, sjt_functionParam422, &sjt_functionParam420);
-            sjt_dot1670 = _parent;
-            sjt_dot1669 = &(sjt_dot1670)->_innerscene;
-            sjt_functionParam423 = &(sjt_dot1669)->projection;
-            sjf_gluniformmat4(sjt_functionParam420, sjt_functionParam423);
-            sjt_parent200 = ifValue21;
-            sjt_dot1671 = _parent;
-            sjt_functionParam424 = &(sjt_dot1671)->_innerscene;
-            sjf_boxvertexbuffer_render(sjt_parent200, sjt_functionParam424);
-            sjt_dot1672 = _parent;
-            sjt_parent201 = &(sjt_dot1672)->_innerscene;
-            sjf_scene2d_end(sjt_parent201);
-            sjt_dot1673 = ifValue20;
-            sjt_functionParam425 = &(sjt_dot1673)->framebuffer;
-            sjf_glpopframebuffer(sjt_functionParam425);
-            sjt_functionParam426 = sjv_gltexture_gl_texture_2d;
-            sjt_dot1674 = ifValue20;
-            sjt_functionParam427 = &(sjt_dot1674)->texture;
-            sjf_glbindtexture(sjt_functionParam426, sjt_functionParam427);
-            sjt_functionParam428 = &sjv_blurhorizontalshader;
-            sjf_gluseprogram(sjt_functionParam428);
+            sjt_functionParam424 = &sjt_call75;
+            sjf_glgetuniformlocation(sjt_functionParam423, sjt_functionParam424, &sjt_functionParam422);
+            sjt_dot1660 = _parent;
+            sjt_dot1659 = &(sjt_dot1660)->_innerscene;
+            sjt_functionParam425 = &(sjt_dot1659)->projection;
+            sjf_gluniformmat4(sjt_functionParam422, sjt_functionParam425);
+            sjt_parent196 = ifValue21;
+            sjt_dot1661 = _parent;
+            sjt_functionParam426 = &(sjt_dot1661)->_innerscene;
+            sjf_boxvertexbuffer_render(sjt_parent196, sjt_functionParam426);
+            sjt_dot1662 = _parent;
+            sjt_parent197 = &(sjt_dot1662)->_innerscene;
+            sjf_scene2d_end(sjt_parent197);
+            sjt_dot1663 = ifValue20;
+            sjt_functionParam427 = &(sjt_dot1663)->framebuffer;
+            sjf_glpopframebuffer(sjt_functionParam427);
+            sjt_functionParam428 = sjv_gltexture_gl_texture_2d;
+            sjt_dot1664 = ifValue20;
+            sjt_functionParam429 = &(sjt_dot1664)->texture;
+            sjf_glbindtexture(sjt_functionParam428, sjt_functionParam429);
             sjt_functionParam430 = &sjv_blurhorizontalshader;
+            sjf_gluseprogram(sjt_functionParam430);
+            sjt_functionParam432 = &sjv_blurhorizontalshader;
             sjt_call76._refCount = 1;
             sjt_call76.count = 7;
             sjt_call76.data._refCount = 1;
             sjt_call76.data.datasize = 8;
-            sjt_call76.data.data = (void*)sjg_string76;
+            sjt_call76.data.data = (void*)sjg_string77;
             sjt_call76.data._isglobal = true;
             sjt_call76.data.count = 8;
             sjf_array_char(&sjt_call76.data);
             sjf_string(&sjt_call76);
-            sjt_functionParam431 = &sjt_call76;
-            sjf_glgetuniformlocation(sjt_functionParam430, sjt_functionParam431, &sjt_functionParam429);
-            sjt_functionParam432 = 0;
-            sjf_gluniformi32(sjt_functionParam429, sjt_functionParam432);
-            sjt_functionParam434 = &sjv_blurhorizontalshader;
+            sjt_functionParam433 = &sjt_call76;
+            sjf_glgetuniformlocation(sjt_functionParam432, sjt_functionParam433, &sjt_functionParam431);
+            sjt_functionParam434 = 0;
+            sjf_gluniformi32(sjt_functionParam431, sjt_functionParam434);
+            sjt_functionParam436 = &sjv_blurhorizontalshader;
             sjt_call77._refCount = 1;
             sjt_call77.count = 5;
             sjt_call77.data._refCount = 1;
             sjt_call77.data.datasize = 6;
-            sjt_call77.data.data = (void*)sjg_string77;
+            sjt_call77.data.data = (void*)sjg_string78;
             sjt_call77.data._isglobal = true;
             sjt_call77.data.count = 6;
             sjf_array_char(&sjt_call77.data);
             sjf_string(&sjt_call77);
-            sjt_functionParam435 = &sjt_call77;
-            sjf_glgetuniformlocation(sjt_functionParam434, sjt_functionParam435, &sjt_functionParam433);
-            sjt_dot1675 = _parent;
-            sjt_functionParam436 = (sjt_dot1675)->radius;
-            sjf_gluniformf32(sjt_functionParam433, sjt_functionParam436);
-            sjt_functionParam438 = &sjv_blurhorizontalshader;
+            sjt_functionParam437 = &sjt_call77;
+            sjf_glgetuniformlocation(sjt_functionParam436, sjt_functionParam437, &sjt_functionParam435);
+            sjt_dot1665 = _parent;
+            sjt_functionParam438 = (sjt_dot1665)->radius;
+            sjf_gluniformf32(sjt_functionParam435, sjt_functionParam438);
+            sjt_functionParam440 = &sjv_blurhorizontalshader;
             sjt_call78._refCount = 1;
             sjt_call78.count = 8;
             sjt_call78.data._refCount = 1;
             sjt_call78.data.datasize = 9;
-            sjt_call78.data.data = (void*)sjg_string78;
+            sjt_call78.data.data = (void*)sjg_string79;
             sjt_call78.data._isglobal = true;
             sjt_call78.data.count = 9;
             sjf_array_char(&sjt_call78.data);
             sjf_string(&sjt_call78);
-            sjt_functionParam439 = &sjt_call78;
-            sjf_glgetuniformlocation(sjt_functionParam438, sjt_functionParam439, &sjt_functionParam437);
-            sjt_math2617 = 1.0f;
-            sjt_dot1677 = ifValue20;
-            sjt_dot1676 = &(sjt_dot1677)->size;
-            sjt_cast36 = (sjt_dot1676)->w;
-            sjt_math2618 = (float)sjt_cast36;
-            sjt_functionParam440 = sjt_math2617 / sjt_math2618;
-            sjf_gluniformf32(sjt_functionParam437, sjt_functionParam440);
-            sjt_functionParam442 = &sjv_blurhorizontalshader;
+            sjt_functionParam441 = &sjt_call78;
+            sjf_glgetuniformlocation(sjt_functionParam440, sjt_functionParam441, &sjt_functionParam439);
+            sjt_math2613 = 1.0f;
+            sjt_dot1667 = ifValue20;
+            sjt_dot1666 = &(sjt_dot1667)->size;
+            sjt_cast36 = (sjt_dot1666)->w;
+            sjt_math2614 = (float)sjt_cast36;
+            sjt_functionParam442 = sjt_math2613 / sjt_math2614;
+            sjf_gluniformf32(sjt_functionParam439, sjt_functionParam442);
+            sjt_functionParam444 = &sjv_blurhorizontalshader;
             sjt_call79._refCount = 1;
             sjt_call79.count = 5;
             sjt_call79.data._refCount = 1;
             sjt_call79.data.datasize = 6;
-            sjt_call79.data.data = (void*)sjg_string79;
+            sjt_call79.data.data = (void*)sjg_string80;
             sjt_call79.data._isglobal = true;
             sjt_call79.data.count = 6;
             sjf_array_char(&sjt_call79.data);
             sjf_string(&sjt_call79);
-            sjt_functionParam443 = &sjt_call79;
-            sjf_glgetuniformlocation(sjt_functionParam442, sjt_functionParam443, &sjt_functionParam441);
-            sjt_dot1678 = scene;
-            sjt_functionParam444 = &(sjt_dot1678)->model;
-            sjf_gluniformmat4(sjt_functionParam441, sjt_functionParam444);
-            sjt_functionParam446 = &sjv_blurhorizontalshader;
+            sjt_functionParam445 = &sjt_call79;
+            sjf_glgetuniformlocation(sjt_functionParam444, sjt_functionParam445, &sjt_functionParam443);
+            sjt_dot1668 = scene;
+            sjt_functionParam446 = &(sjt_dot1668)->model;
+            sjf_gluniformmat4(sjt_functionParam443, sjt_functionParam446);
+            sjt_functionParam448 = &sjv_blurhorizontalshader;
             sjt_call80._refCount = 1;
             sjt_call80.count = 4;
             sjt_call80.data._refCount = 1;
             sjt_call80.data.datasize = 5;
-            sjt_call80.data.data = (void*)sjg_string80;
+            sjt_call80.data.data = (void*)sjg_string81;
             sjt_call80.data._isglobal = true;
             sjt_call80.data.count = 5;
             sjf_array_char(&sjt_call80.data);
             sjf_string(&sjt_call80);
-            sjt_functionParam447 = &sjt_call80;
-            sjf_glgetuniformlocation(sjt_functionParam446, sjt_functionParam447, &sjt_functionParam445);
-            sjt_dot1679 = scene;
-            sjt_functionParam448 = &(sjt_dot1679)->view;
-            sjf_gluniformmat4(sjt_functionParam445, sjt_functionParam448);
-            sjt_functionParam450 = &sjv_blurhorizontalshader;
+            sjt_functionParam449 = &sjt_call80;
+            sjf_glgetuniformlocation(sjt_functionParam448, sjt_functionParam449, &sjt_functionParam447);
+            sjt_dot1669 = scene;
+            sjt_functionParam450 = &(sjt_dot1669)->view;
+            sjf_gluniformmat4(sjt_functionParam447, sjt_functionParam450);
+            sjt_functionParam452 = &sjv_blurhorizontalshader;
             sjt_call81._refCount = 1;
             sjt_call81.count = 10;
             sjt_call81.data._refCount = 1;
             sjt_call81.data.datasize = 11;
-            sjt_call81.data.data = (void*)sjg_string81;
+            sjt_call81.data.data = (void*)sjg_string82;
             sjt_call81.data._isglobal = true;
             sjt_call81.data.count = 11;
             sjf_array_char(&sjt_call81.data);
             sjf_string(&sjt_call81);
-            sjt_functionParam451 = &sjt_call81;
-            sjf_glgetuniformlocation(sjt_functionParam450, sjt_functionParam451, &sjt_functionParam449);
-            sjt_dot1680 = scene;
-            sjt_functionParam452 = &(sjt_dot1680)->projection;
-            sjf_gluniformmat4(sjt_functionParam449, sjt_functionParam452);
-            sjt_parent202 = ifValue22;
-            sjt_functionParam453 = scene;
-            sjf_boxvertexbuffer_render(sjt_parent202, sjt_functionParam453);
-        } else {
-            sjs_scenebuffer* sjt_dot1681 = 0;
-            sjs_scene2d* sjt_dot1682 = 0;
-            sjs_scene2d* sjt_dot1683 = 0;
-            sjs_scene2d* sjt_dot1684 = 0;
-            int32_t sjt_functionParam454;
-            sjs_texture* sjt_functionParam455 = 0;
-            sjs_shader* sjt_functionParam456 = 0;
-            int32_t sjt_functionParam457;
-            sjs_shader* sjt_functionParam458 = 0;
-            sjs_string* sjt_functionParam459 = 0;
-            sjs_mat4* sjt_functionParam460 = 0;
-            int32_t sjt_functionParam461;
-            sjs_shader* sjt_functionParam462 = 0;
-            sjs_string* sjt_functionParam463 = 0;
-            sjs_mat4* sjt_functionParam464 = 0;
-            int32_t sjt_functionParam465;
-            sjs_shader* sjt_functionParam466 = 0;
-            sjs_string* sjt_functionParam467 = 0;
-            sjs_mat4* sjt_functionParam468 = 0;
-            sjs_scene2d* sjt_functionParam469 = 0;
-            sjs_boxvertexbuffer* sjt_parent203 = 0;
+            sjt_functionParam453 = &sjt_call81;
+            sjf_glgetuniformlocation(sjt_functionParam452, sjt_functionParam453, &sjt_functionParam451);
+            sjt_dot1670 = scene;
+            sjt_functionParam454 = &(sjt_dot1670)->projection;
+            sjf_gluniformmat4(sjt_functionParam451, sjt_functionParam454);
+            sjt_parent198 = ifValue22;
+            sjt_functionParam455 = scene;
+            sjf_boxvertexbuffer_render(sjt_parent198, sjt_functionParam455);
 
-            sjt_functionParam454 = sjv_gltexture_gl_texture_2d;
-            sjt_dot1681 = ifValue19;
-            sjt_functionParam455 = &(sjt_dot1681)->texture;
-            sjf_glbindtexture(sjt_functionParam454, sjt_functionParam455);
-            sjt_functionParam456 = &sjv_imageshader;
-            sjf_gluseprogram(sjt_functionParam456);
-            sjt_functionParam458 = &sjv_imageshader;
-            sjt_call82._refCount = 1;
-            sjt_call82.count = 5;
-            sjt_call82.data._refCount = 1;
-            sjt_call82.data.datasize = 6;
-            sjt_call82.data.data = (void*)sjg_string67;
-            sjt_call82.data._isglobal = true;
-            sjt_call82.data.count = 6;
-            sjf_array_char(&sjt_call82.data);
-            sjf_string(&sjt_call82);
-            sjt_functionParam459 = &sjt_call82;
-            sjf_glgetuniformlocation(sjt_functionParam458, sjt_functionParam459, &sjt_functionParam457);
-            sjt_dot1682 = scene;
-            sjt_functionParam460 = &(sjt_dot1682)->model;
-            sjf_gluniformmat4(sjt_functionParam457, sjt_functionParam460);
-            sjt_functionParam462 = &sjv_imageshader;
-            sjt_call83._refCount = 1;
-            sjt_call83.count = 4;
-            sjt_call83.data._refCount = 1;
-            sjt_call83.data.datasize = 5;
-            sjt_call83.data.data = (void*)sjg_string68;
-            sjt_call83.data._isglobal = true;
-            sjt_call83.data.count = 5;
-            sjf_array_char(&sjt_call83.data);
-            sjf_string(&sjt_call83);
-            sjt_functionParam463 = &sjt_call83;
-            sjf_glgetuniformlocation(sjt_functionParam462, sjt_functionParam463, &sjt_functionParam461);
-            sjt_dot1683 = scene;
-            sjt_functionParam464 = &(sjt_dot1683)->view;
-            sjf_gluniformmat4(sjt_functionParam461, sjt_functionParam464);
-            sjt_functionParam466 = &sjv_imageshader;
-            sjt_call84._refCount = 1;
-            sjt_call84.count = 10;
-            sjt_call84.data._refCount = 1;
-            sjt_call84.data.datasize = 11;
-            sjt_call84.data.data = (void*)sjg_string69;
-            sjt_call84.data._isglobal = true;
-            sjt_call84.data.count = 11;
-            sjf_array_char(&sjt_call84.data);
-            sjf_string(&sjt_call84);
-            sjt_functionParam467 = &sjt_call84;
-            sjf_glgetuniformlocation(sjt_functionParam466, sjt_functionParam467, &sjt_functionParam465);
-            sjt_dot1684 = scene;
-            sjt_functionParam468 = &(sjt_dot1684)->projection;
-            sjf_gluniformmat4(sjt_functionParam465, sjt_functionParam468);
-            sjt_parent203 = ifValue22;
-            sjt_functionParam469 = scene;
-            sjf_boxvertexbuffer_render(sjt_parent203, sjt_functionParam469);
+            if (sjt_call70._refCount == 1) { sjf_string_destroy(&sjt_call70); }
+            if (sjt_call71._refCount == 1) { sjf_string_destroy(&sjt_call71); }
+            if (sjt_call72._refCount == 1) { sjf_string_destroy(&sjt_call72); }
+            if (sjt_call73._refCount == 1) { sjf_string_destroy(&sjt_call73); }
+            if (sjt_call74._refCount == 1) { sjf_string_destroy(&sjt_call74); }
+            if (sjt_call75._refCount == 1) { sjf_string_destroy(&sjt_call75); }
+            if (sjt_call76._refCount == 1) { sjf_string_destroy(&sjt_call76); }
+            if (sjt_call77._refCount == 1) { sjf_string_destroy(&sjt_call77); }
+            if (sjt_call78._refCount == 1) { sjf_string_destroy(&sjt_call78); }
+            if (sjt_call79._refCount == 1) { sjf_string_destroy(&sjt_call79); }
+            if (sjt_call80._refCount == 1) { sjf_string_destroy(&sjt_call80); }
+            if (sjt_call81._refCount == 1) { sjf_string_destroy(&sjt_call81); }
         }
-
-        if (sjt_call70._refCount == 1) { sjf_string_destroy(&sjt_call70); }
-        if (sjt_call71._refCount == 1) { sjf_string_destroy(&sjt_call71); }
-        if (sjt_call72._refCount == 1) { sjf_string_destroy(&sjt_call72); }
-        if (sjt_call73._refCount == 1) { sjf_string_destroy(&sjt_call73); }
-        if (sjt_call74._refCount == 1) { sjf_string_destroy(&sjt_call74); }
-        if (sjt_call75._refCount == 1) { sjf_string_destroy(&sjt_call75); }
-        if (sjt_call76._refCount == 1) { sjf_string_destroy(&sjt_call76); }
-        if (sjt_call77._refCount == 1) { sjf_string_destroy(&sjt_call77); }
-        if (sjt_call78._refCount == 1) { sjf_string_destroy(&sjt_call78); }
-        if (sjt_call79._refCount == 1) { sjf_string_destroy(&sjt_call79); }
-        if (sjt_call80._refCount == 1) { sjf_string_destroy(&sjt_call80); }
-        if (sjt_call81._refCount == 1) { sjf_string_destroy(&sjt_call81); }
-        if (sjt_call82._refCount == 1) { sjf_string_destroy(&sjt_call82); }
-        if (sjt_call83._refCount == 1) { sjf_string_destroy(&sjt_call83); }
-        if (sjt_call84._refCount == 1) { sjf_string_destroy(&sjt_call84); }
     }
 }
 
-void sjf_blureffect_setrect(sjs_blureffect* _parent, sjs_rect* rect_, sjs_array_heap_iface_element* children) {
-    int32_t i;
+void sjf_blureffect_setrect(sjs_blureffect* _parent, sjs_rect* rect_, cb_rect_void cb) {
     bool result8;
+    sjs_rect sjt_call69 = { -1 };
+    float sjt_compare109;
+    float sjt_compare110;
     sjs_blureffect* sjt_dot1562 = 0;
-    sjs_array_heap_iface_element* sjt_dot1586 = 0;
-    int32_t sjt_forEnd26;
-    int32_t sjt_forStart26;
+    sjs_blureffect* sjt_dot1586 = 0;
     sjs_rect* sjt_functionParam373 = 0;
     bool sjt_ifElse46;
+    bool sjt_ifElse49;
     bool sjt_not5;
     sjs_rect* sjt_parent187 = 0;
 
@@ -8563,49 +7893,43 @@ void sjf_blureffect_setrect(sjs_blureffect* _parent, sjs_rect* rect_, sjs_array_
         sjt_dot1585->_vertexbuffer2._refCount = -1;
     }
 
-    sjt_forStart26 = 0;
-    sjt_dot1586 = children;
-    sjt_forEnd26 = (sjt_dot1586)->count;
-    i = sjt_forStart26;
-    while (i < sjt_forEnd26) {
-        sjs_rect sjt_call69 = { -1 };
-        sjs_rect* sjt_dot1587 = 0;
-        sjs_blureffect* sjt_dot1588 = 0;
-        sjs_rect* sjt_dot1589 = 0;
-        sjs_blureffect* sjt_dot1590 = 0;
-        int32_t sjt_functionParam376;
-        sjs_rect* sjt_interfaceParam19 = 0;
-        sjs_array_heap_iface_element* sjt_parent190 = 0;
-        sji_element sjt_parent191 = { 0 };
-        sji_element sjv_child = { 0 };
+    sjt_dot1586 = _parent;
+    sjt_compare109 = (sjt_dot1586)->radius;
+    sjt_compare110 = 0.0f;
+    sjt_ifElse49 = sjt_compare109 == sjt_compare110;
+    if (sjt_ifElse49) {
+        cb_rect_void sjt_callback5;
+        sjs_blureffect* sjt_dot1587 = 0;
+        sjs_rect* sjt_functionParam376 = 0;
 
-        sjt_parent190 = children;
-        sjt_functionParam376 = i;
-        sjf_array_heap_iface_element_getat_heap(sjt_parent190, sjt_functionParam376, &sjv_child);
-        sjt_parent191 = sjv_child;
+        sjt_callback5 = cb;
+        sjt_dot1587 = _parent;
+        sjt_functionParam376 = &(sjt_dot1587)->_rect;
+        sjt_callback5._cb(sjt_callback5._parent, sjt_functionParam376);
+    } else {
+        cb_rect_void sjt_callback6;
+        sjs_rect* sjt_dot1588 = 0;
+        sjs_blureffect* sjt_dot1589 = 0;
+        sjs_rect* sjt_dot1590 = 0;
+        sjs_blureffect* sjt_dot1591 = 0;
+        sjs_rect* sjt_functionParam377 = 0;
+
+        sjt_callback6 = cb;
         sjt_call69._refCount = 1;
         sjt_call69.x = 0;
         sjt_call69.y = 0;
-        sjt_dot1588 = _parent;
-        sjt_dot1587 = &(sjt_dot1588)->_rect;
-        sjt_call69.w = (sjt_dot1587)->w;
-        sjt_dot1590 = _parent;
-        sjt_dot1589 = &(sjt_dot1590)->_rect;
-        sjt_call69.h = (sjt_dot1589)->h;
+        sjt_dot1589 = _parent;
+        sjt_dot1588 = &(sjt_dot1589)->_rect;
+        sjt_call69.w = (sjt_dot1588)->w;
+        sjt_dot1591 = _parent;
+        sjt_dot1590 = &(sjt_dot1591)->_rect;
+        sjt_call69.h = (sjt_dot1590)->h;
         sjf_rect(&sjt_call69);
-        sjt_interfaceParam19 = &sjt_call69;
-        sjt_parent191._vtbl->setrect(sjt_parent191._parent, sjt_interfaceParam19);
-        i++;
-
-        if (sjv_child._parent != 0) {
-            sjv_child._parent->_refCount--;
-            if (sjv_child._parent->_refCount <= 0) {
-                sjv_child._vtbl->destroy(sjv_child._parent);
-                free(sjv_child._parent);
-            }
-        }
-        if (sjt_call69._refCount == 1) { sjf_rect_destroy(&sjt_call69); }
+        sjt_functionParam377 = &sjt_call69;
+        sjt_callback6._cb(sjt_callback6._parent, sjt_functionParam377);
     }
+
+    if (sjt_call69._refCount == 1) { sjf_rect_destroy(&sjt_call69); }
 }
 
 void sjf_boxelement(sjs_boxelement* _this) {
@@ -8691,25 +8015,6 @@ void sjf_boxelement_getsize_heap(sjs_boxelement* _parent, sjs_size* maxsize, sjs
 }
 
 void sjf_boxelement_heap(sjs_boxelement* _this) {
-}
-
-void sjf_boxelement_heap_as_sji_element(sjs_boxelement* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_boxelement_element_vtbl;
-}
-
-void sjf_boxelement_heap_asinterface(sjs_boxelement* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_boxelement_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
 }
 
 void sjf_boxelement_render(sjs_boxelement* _parent, sjs_scene2d* scene) {
@@ -9080,20 +8385,20 @@ void sjf_fadeeffect_destroy(sjs_fadeeffect* _this) {
 
 void sjf_fadeeffect_getrect(sjs_fadeeffect* _parent, sjs_rect* _return) {
     sjs_rect* sjt_copy52 = 0;
-    sjs_fadeeffect* sjt_dot1685 = 0;
+    sjs_fadeeffect* sjt_dot1671 = 0;
 
-    sjt_dot1685 = _parent;
-    sjt_copy52 = &(sjt_dot1685)->_rect;
+    sjt_dot1671 = _parent;
+    sjt_copy52 = &(sjt_dot1671)->_rect;
     _return->_refCount = 1;
     sjf_rect_copy(_return, sjt_copy52);
 }
 
 void sjf_fadeeffect_getrect_heap(sjs_fadeeffect* _parent, sjs_rect** _return) {
     sjs_rect* sjt_copy53 = 0;
-    sjs_fadeeffect* sjt_dot1686 = 0;
+    sjs_fadeeffect* sjt_dot1672 = 0;
 
-    sjt_dot1686 = _parent;
-    sjt_copy53 = &(sjt_dot1686)->_rect;
+    sjt_dot1672 = _parent;
+    sjt_copy53 = &(sjt_dot1672)->_rect;
     (*_return) = (sjs_rect*)malloc(sizeof(sjs_rect));
     (*_return)->_refCount = 1;
     sjf_rect_copy((*_return), sjt_copy53);
@@ -9102,32 +8407,13 @@ void sjf_fadeeffect_getrect_heap(sjs_fadeeffect* _parent, sjs_rect** _return) {
 void sjf_fadeeffect_heap(sjs_fadeeffect* _this) {
 }
 
-void sjf_fadeeffect_heap_as_sji_effect(sjs_fadeeffect* _this, sji_effect* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_fadeeffect_effect_vtbl;
-}
-
-void sjf_fadeeffect_heap_asinterface(sjs_fadeeffect* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_effect_typeId:  {
-            sjf_fadeeffect_heap_as_sji_effect(_this, (sji_effect*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
-}
-
 void sjf_fadeeffect_render(sjs_fadeeffect* _parent, sjs_scene2d* scene, cb_scene2d_void cb) {
-    sjs_fadeeffect* sjt_dot1702 = 0;
-    sjs_fadeeffect* sjt_dot1705 = 0;
-    sjs_fadeeffect* sjt_dot1711 = 0;
-    sjs_fadeeffect* sjt_dot1712 = 0;
-    bool sjt_ifElse60;
-    bool sjt_ifElse61;
+    sjs_fadeeffect* sjt_dot1688 = 0;
+    sjs_fadeeffect* sjt_dot1691 = 0;
+    sjs_fadeeffect* sjt_dot1697 = 0;
+    sjs_fadeeffect* sjt_dot1698 = 0;
+    bool sjt_ifElse58;
+    bool sjt_ifElse59;
     sjs_boxvertexbuffer* sjt_isEmpty33 = 0;
     sjs_scenebuffer* sjt_isEmpty34 = 0;
     bool sjt_isEmpty35;
@@ -9135,342 +8421,342 @@ void sjf_fadeeffect_render(sjs_fadeeffect* _parent, sjs_scene2d* scene, cb_scene
     bool sjt_isEmpty37;
     sjs_boxvertexbuffer* sjt_isEmpty38 = 0;
 
-    sjt_dot1702 = _parent;
-    sjt_isEmpty33 = ((sjt_dot1702)->_vertexbuffer._refCount != -1 ? &(sjt_dot1702)->_vertexbuffer : 0);
-    sjt_ifElse60 = (sjt_isEmpty33 == 0);
-    if (sjt_ifElse60) {
+    sjt_dot1688 = _parent;
+    sjt_isEmpty33 = ((sjt_dot1688)->_vertexbuffer._refCount != -1 ? &(sjt_dot1688)->_vertexbuffer : 0);
+    sjt_ifElse58 = (sjt_isEmpty33 == 0);
+    if (sjt_ifElse58) {
         sjs_rect* sjt_copy55 = 0;
-        sjs_fadeeffect* sjt_dot1703 = 0;
-        sjs_fadeeffect* sjt_dot1704 = 0;
+        sjs_fadeeffect* sjt_dot1689 = 0;
+        sjs_fadeeffect* sjt_dot1690 = 0;
 
-        sjt_dot1703 = _parent;
-        sjt_dot1703->_vertexbuffer._refCount = 1;
-        sjt_dot1704 = _parent;
-        sjt_copy55 = &(sjt_dot1704)->_rect;
-        sjt_dot1703->_vertexbuffer.rect._refCount = 1;
-        sjf_rect_copy(&sjt_dot1703->_vertexbuffer.rect, sjt_copy55);
-        sjf_boxvertexbuffer(&sjt_dot1703->_vertexbuffer);
+        sjt_dot1689 = _parent;
+        sjt_dot1689->_vertexbuffer._refCount = 1;
+        sjt_dot1690 = _parent;
+        sjt_copy55 = &(sjt_dot1690)->_rect;
+        sjt_dot1689->_vertexbuffer.rect._refCount = 1;
+        sjf_rect_copy(&sjt_dot1689->_vertexbuffer.rect, sjt_copy55);
+        sjf_boxvertexbuffer(&sjt_dot1689->_vertexbuffer);
     }
 
-    sjt_dot1705 = _parent;
-    sjt_isEmpty34 = ((sjt_dot1705)->_scenebuffer._refCount != -1 ? &(sjt_dot1705)->_scenebuffer : 0);
-    sjt_ifElse61 = (sjt_isEmpty34 == 0);
-    if (sjt_ifElse61) {
-        sjs_fadeeffect* sjt_dot1706 = 0;
-        sjs_rect* sjt_dot1707 = 0;
-        sjs_fadeeffect* sjt_dot1708 = 0;
-        sjs_rect* sjt_dot1709 = 0;
-        sjs_fadeeffect* sjt_dot1710 = 0;
+    sjt_dot1691 = _parent;
+    sjt_isEmpty34 = ((sjt_dot1691)->_scenebuffer._refCount != -1 ? &(sjt_dot1691)->_scenebuffer : 0);
+    sjt_ifElse59 = (sjt_isEmpty34 == 0);
+    if (sjt_ifElse59) {
+        sjs_fadeeffect* sjt_dot1692 = 0;
+        sjs_rect* sjt_dot1693 = 0;
+        sjs_fadeeffect* sjt_dot1694 = 0;
+        sjs_rect* sjt_dot1695 = 0;
+        sjs_fadeeffect* sjt_dot1696 = 0;
 
-        sjt_dot1706 = _parent;
-        sjt_dot1706->_scenebuffer._refCount = 1;
-        sjt_dot1706->_scenebuffer.size._refCount = 1;
-        sjt_dot1708 = _parent;
-        sjt_dot1707 = &(sjt_dot1708)->_rect;
-        sjt_dot1706->_scenebuffer.size.w = (sjt_dot1707)->w;
-        sjt_dot1710 = _parent;
-        sjt_dot1709 = &(sjt_dot1710)->_rect;
-        sjt_dot1706->_scenebuffer.size.h = (sjt_dot1709)->h;
-        sjf_size(&sjt_dot1706->_scenebuffer.size);
-        sjt_dot1706->_scenebuffer.framebuffer._refCount = 1;
-        sjt_dot1706->_scenebuffer.framebuffer.size._refCount = 1;
-        sjt_dot1706->_scenebuffer.framebuffer.size.w = 0;
-        sjt_dot1706->_scenebuffer.framebuffer.size.h = 0;
-        sjf_size(&sjt_dot1706->_scenebuffer.framebuffer.size);
-        sjt_dot1706->_scenebuffer.framebuffer.id = (uint32_t)0u;
-        sjf_framebuffer(&sjt_dot1706->_scenebuffer.framebuffer);
-        sjt_dot1706->_scenebuffer.texture._refCount = 1;
-        sjt_dot1706->_scenebuffer.texture.size._refCount = 1;
-        sjt_dot1706->_scenebuffer.texture.size.w = 0;
-        sjt_dot1706->_scenebuffer.texture.size.h = 0;
-        sjf_size(&sjt_dot1706->_scenebuffer.texture.size);
-        sjt_dot1706->_scenebuffer.texture.id = (uint32_t)0u;
-        sjf_texture(&sjt_dot1706->_scenebuffer.texture);
-        sjt_dot1706->_scenebuffer.renderbuffer._refCount = 1;
-        sjt_dot1706->_scenebuffer.renderbuffer.size._refCount = 1;
-        sjt_dot1706->_scenebuffer.renderbuffer.size.w = 0;
-        sjt_dot1706->_scenebuffer.renderbuffer.size.h = 0;
-        sjf_size(&sjt_dot1706->_scenebuffer.renderbuffer.size);
-        sjt_dot1706->_scenebuffer.renderbuffer.id = (uint32_t)0u;
-        sjf_renderbuffer(&sjt_dot1706->_scenebuffer.renderbuffer);
-        sjf_scenebuffer(&sjt_dot1706->_scenebuffer);
+        sjt_dot1692 = _parent;
+        sjt_dot1692->_scenebuffer._refCount = 1;
+        sjt_dot1692->_scenebuffer.size._refCount = 1;
+        sjt_dot1694 = _parent;
+        sjt_dot1693 = &(sjt_dot1694)->_rect;
+        sjt_dot1692->_scenebuffer.size.w = (sjt_dot1693)->w;
+        sjt_dot1696 = _parent;
+        sjt_dot1695 = &(sjt_dot1696)->_rect;
+        sjt_dot1692->_scenebuffer.size.h = (sjt_dot1695)->h;
+        sjf_size(&sjt_dot1692->_scenebuffer.size);
+        sjt_dot1692->_scenebuffer.framebuffer._refCount = 1;
+        sjt_dot1692->_scenebuffer.framebuffer.size._refCount = 1;
+        sjt_dot1692->_scenebuffer.framebuffer.size.w = 0;
+        sjt_dot1692->_scenebuffer.framebuffer.size.h = 0;
+        sjf_size(&sjt_dot1692->_scenebuffer.framebuffer.size);
+        sjt_dot1692->_scenebuffer.framebuffer.id = (uint32_t)0u;
+        sjf_framebuffer(&sjt_dot1692->_scenebuffer.framebuffer);
+        sjt_dot1692->_scenebuffer.texture._refCount = 1;
+        sjt_dot1692->_scenebuffer.texture.size._refCount = 1;
+        sjt_dot1692->_scenebuffer.texture.size.w = 0;
+        sjt_dot1692->_scenebuffer.texture.size.h = 0;
+        sjf_size(&sjt_dot1692->_scenebuffer.texture.size);
+        sjt_dot1692->_scenebuffer.texture.id = (uint32_t)0u;
+        sjf_texture(&sjt_dot1692->_scenebuffer.texture);
+        sjt_dot1692->_scenebuffer.renderbuffer._refCount = 1;
+        sjt_dot1692->_scenebuffer.renderbuffer.size._refCount = 1;
+        sjt_dot1692->_scenebuffer.renderbuffer.size.w = 0;
+        sjt_dot1692->_scenebuffer.renderbuffer.size.h = 0;
+        sjf_size(&sjt_dot1692->_scenebuffer.renderbuffer.size);
+        sjt_dot1692->_scenebuffer.renderbuffer.id = (uint32_t)0u;
+        sjf_renderbuffer(&sjt_dot1692->_scenebuffer.renderbuffer);
+        sjf_scenebuffer(&sjt_dot1692->_scenebuffer);
     }
 
-    sjt_dot1711 = _parent;
-    sjt_isEmpty36 = ((sjt_dot1711)->_scenebuffer._refCount != -1 ? &(sjt_dot1711)->_scenebuffer : 0);
+    sjt_dot1697 = _parent;
+    sjt_isEmpty36 = ((sjt_dot1697)->_scenebuffer._refCount != -1 ? &(sjt_dot1697)->_scenebuffer : 0);
     sjt_isEmpty35 = (sjt_isEmpty36 != 0);
-    sjt_dot1712 = _parent;
-    sjt_isEmpty38 = ((sjt_dot1712)->_vertexbuffer._refCount != -1 ? &(sjt_dot1712)->_vertexbuffer : 0);
+    sjt_dot1698 = _parent;
+    sjt_isEmpty38 = ((sjt_dot1698)->_vertexbuffer._refCount != -1 ? &(sjt_dot1698)->_vertexbuffer : 0);
     sjt_isEmpty37 = (sjt_isEmpty38 != 0);
     if (sjt_isEmpty35 && sjt_isEmpty37) {
         sjs_scenebuffer* ifValue29 = 0;
         sjs_boxvertexbuffer* ifValue30 = 0;
+        sjs_string sjt_call86 = { -1 };
+        sjs_string sjt_call87 = { -1 };
+        sjs_string sjt_call88 = { -1 };
         sjs_string sjt_call89 = { -1 };
         sjs_string sjt_call90 = { -1 };
-        sjs_string sjt_call91 = { -1 };
-        sjs_string sjt_call92 = { -1 };
-        sjs_string sjt_call93 = { -1 };
-        cb_scene2d_void sjt_callback6;
-        sjs_fadeeffect* sjt_dot1713 = 0;
-        sjs_fadeeffect* sjt_dot1714 = 0;
-        sjs_scenebuffer* sjt_dot1715 = 0;
-        sjs_fadeeffect* sjt_dot1716 = 0;
-        sjs_scenebuffer* sjt_dot1717 = 0;
-        sjs_fadeeffect* sjt_dot1718 = 0;
-        sjs_fadeeffect* sjt_dot1719 = 0;
-        sjs_fadeeffect* sjt_dot1720 = 0;
-        sjs_scenebuffer* sjt_dot1721 = 0;
-        sjs_scenebuffer* sjt_dot1722 = 0;
-        sjs_fadeeffect* sjt_dot1723 = 0;
-        sjs_scene2d* sjt_dot1724 = 0;
-        sjs_scene2d* sjt_dot1725 = 0;
-        sjs_scene2d* sjt_dot1726 = 0;
-        sjs_framebuffer* sjt_functionParam477 = 0;
-        sjs_size* sjt_functionParam478 = 0;
-        sjs_scene2d* sjt_functionParam479 = 0;
-        sjs_framebuffer* sjt_functionParam480 = 0;
-        int32_t sjt_functionParam481;
-        sjs_texture* sjt_functionParam482 = 0;
+        cb_scene2d_void sjt_callback10;
+        sjs_fadeeffect* sjt_dot1699 = 0;
+        sjs_fadeeffect* sjt_dot1700 = 0;
+        sjs_scenebuffer* sjt_dot1701 = 0;
+        sjs_fadeeffect* sjt_dot1702 = 0;
+        sjs_scenebuffer* sjt_dot1703 = 0;
+        sjs_fadeeffect* sjt_dot1704 = 0;
+        sjs_fadeeffect* sjt_dot1705 = 0;
+        sjs_fadeeffect* sjt_dot1706 = 0;
+        sjs_scenebuffer* sjt_dot1707 = 0;
+        sjs_scenebuffer* sjt_dot1708 = 0;
+        sjs_fadeeffect* sjt_dot1709 = 0;
+        sjs_scene2d* sjt_dot1710 = 0;
+        sjs_scene2d* sjt_dot1711 = 0;
+        sjs_scene2d* sjt_dot1712 = 0;
+        sjs_framebuffer* sjt_functionParam463 = 0;
+        sjs_size* sjt_functionParam464 = 0;
+        sjs_scene2d* sjt_functionParam465 = 0;
+        sjs_framebuffer* sjt_functionParam466 = 0;
+        int32_t sjt_functionParam467;
+        sjs_texture* sjt_functionParam468 = 0;
+        sjs_shader* sjt_functionParam469 = 0;
+        int32_t sjt_functionParam470;
+        sjs_shader* sjt_functionParam471 = 0;
+        sjs_string* sjt_functionParam472 = 0;
+        int32_t sjt_functionParam473;
+        int32_t sjt_functionParam474;
+        sjs_shader* sjt_functionParam475 = 0;
+        sjs_string* sjt_functionParam476 = 0;
+        float sjt_functionParam477;
+        int32_t sjt_functionParam478;
+        sjs_shader* sjt_functionParam479 = 0;
+        sjs_string* sjt_functionParam480 = 0;
+        sjs_mat4* sjt_functionParam481 = 0;
+        int32_t sjt_functionParam482;
         sjs_shader* sjt_functionParam483 = 0;
-        int32_t sjt_functionParam484;
-        sjs_shader* sjt_functionParam485 = 0;
-        sjs_string* sjt_functionParam486 = 0;
-        int32_t sjt_functionParam487;
-        int32_t sjt_functionParam488;
-        sjs_shader* sjt_functionParam489 = 0;
-        sjs_string* sjt_functionParam490 = 0;
-        float sjt_functionParam491;
-        int32_t sjt_functionParam492;
-        sjs_shader* sjt_functionParam493 = 0;
-        sjs_string* sjt_functionParam494 = 0;
-        sjs_mat4* sjt_functionParam495 = 0;
-        int32_t sjt_functionParam496;
-        sjs_shader* sjt_functionParam497 = 0;
-        sjs_string* sjt_functionParam498 = 0;
-        sjs_mat4* sjt_functionParam499 = 0;
-        int32_t sjt_functionParam500;
-        sjs_shader* sjt_functionParam501 = 0;
-        sjs_string* sjt_functionParam502 = 0;
-        sjs_mat4* sjt_functionParam503 = 0;
-        sjs_scene2d* sjt_functionParam504 = 0;
-        sjs_scene2d* sjt_parent208 = 0;
-        sjs_scene2d* sjt_parent209 = 0;
-        sjs_scene2d* sjt_parent210 = 0;
-        sjs_boxvertexbuffer* sjt_parent211 = 0;
+        sjs_string* sjt_functionParam484 = 0;
+        sjs_mat4* sjt_functionParam485 = 0;
+        int32_t sjt_functionParam486;
+        sjs_shader* sjt_functionParam487 = 0;
+        sjs_string* sjt_functionParam488 = 0;
+        sjs_mat4* sjt_functionParam489 = 0;
+        sjs_scene2d* sjt_functionParam490 = 0;
+        sjs_scene2d* sjt_parent203 = 0;
+        sjs_scene2d* sjt_parent204 = 0;
+        sjs_scene2d* sjt_parent205 = 0;
+        sjs_boxvertexbuffer* sjt_parent206 = 0;
 
-        sjt_dot1713 = _parent;
-        ifValue29 = ((sjt_dot1713)->_scenebuffer._refCount != -1 ? &(sjt_dot1713)->_scenebuffer : 0);
-        sjt_dot1714 = _parent;
-        ifValue30 = ((sjt_dot1714)->_vertexbuffer._refCount != -1 ? &(sjt_dot1714)->_vertexbuffer : 0);
-        sjt_dot1715 = ifValue29;
-        sjt_functionParam477 = &(sjt_dot1715)->framebuffer;
-        sjf_glpushframebuffer(sjt_functionParam477);
-        sjt_dot1716 = _parent;
-        sjt_parent208 = &(sjt_dot1716)->_innerscene;
-        sjt_dot1717 = ifValue29;
-        sjt_functionParam478 = &(sjt_dot1717)->size;
-        sjf_scene2d_setsize(sjt_parent208, sjt_functionParam478);
-        sjt_dot1718 = _parent;
-        sjt_parent209 = &(sjt_dot1718)->_innerscene;
-        sjf_scene2d_start(sjt_parent209);
-        sjt_callback6 = cb;
-        sjt_dot1719 = _parent;
-        sjt_functionParam479 = &(sjt_dot1719)->_innerscene;
-        sjt_callback6._cb(sjt_callback6._parent, sjt_functionParam479);
-        sjt_dot1720 = _parent;
-        sjt_parent210 = &(sjt_dot1720)->_innerscene;
-        sjf_scene2d_end(sjt_parent210);
-        sjt_dot1721 = ifValue29;
-        sjt_functionParam480 = &(sjt_dot1721)->framebuffer;
-        sjf_glpopframebuffer(sjt_functionParam480);
-        sjt_functionParam481 = sjv_gltexture_gl_texture_2d;
-        sjt_dot1722 = ifValue29;
-        sjt_functionParam482 = &(sjt_dot1722)->texture;
-        sjf_glbindtexture(sjt_functionParam481, sjt_functionParam482);
+        sjt_dot1699 = _parent;
+        ifValue29 = ((sjt_dot1699)->_scenebuffer._refCount != -1 ? &(sjt_dot1699)->_scenebuffer : 0);
+        sjt_dot1700 = _parent;
+        ifValue30 = ((sjt_dot1700)->_vertexbuffer._refCount != -1 ? &(sjt_dot1700)->_vertexbuffer : 0);
+        sjt_dot1701 = ifValue29;
+        sjt_functionParam463 = &(sjt_dot1701)->framebuffer;
+        sjf_glpushframebuffer(sjt_functionParam463);
+        sjt_dot1702 = _parent;
+        sjt_parent203 = &(sjt_dot1702)->_innerscene;
+        sjt_dot1703 = ifValue29;
+        sjt_functionParam464 = &(sjt_dot1703)->size;
+        sjf_scene2d_setsize(sjt_parent203, sjt_functionParam464);
+        sjt_dot1704 = _parent;
+        sjt_parent204 = &(sjt_dot1704)->_innerscene;
+        sjf_scene2d_start(sjt_parent204);
+        sjt_callback10 = cb;
+        sjt_dot1705 = _parent;
+        sjt_functionParam465 = &(sjt_dot1705)->_innerscene;
+        sjt_callback10._cb(sjt_callback10._parent, sjt_functionParam465);
+        sjt_dot1706 = _parent;
+        sjt_parent205 = &(sjt_dot1706)->_innerscene;
+        sjf_scene2d_end(sjt_parent205);
+        sjt_dot1707 = ifValue29;
+        sjt_functionParam466 = &(sjt_dot1707)->framebuffer;
+        sjf_glpopframebuffer(sjt_functionParam466);
+        sjt_functionParam467 = sjv_gltexture_gl_texture_2d;
+        sjt_dot1708 = ifValue29;
+        sjt_functionParam468 = &(sjt_dot1708)->texture;
+        sjf_glbindtexture(sjt_functionParam467, sjt_functionParam468);
+        sjt_functionParam469 = &sjv_fadeshader;
+        sjf_gluseprogram(sjt_functionParam469);
+        sjt_functionParam471 = &sjv_fadeshader;
+        sjt_call86._refCount = 1;
+        sjt_call86.count = 7;
+        sjt_call86.data._refCount = 1;
+        sjt_call86.data.datasize = 8;
+        sjt_call86.data.data = (void*)sjg_string95;
+        sjt_call86.data._isglobal = true;
+        sjt_call86.data.count = 8;
+        sjf_array_char(&sjt_call86.data);
+        sjf_string(&sjt_call86);
+        sjt_functionParam472 = &sjt_call86;
+        sjf_glgetuniformlocation(sjt_functionParam471, sjt_functionParam472, &sjt_functionParam470);
+        sjt_functionParam473 = 0;
+        sjf_gluniformi32(sjt_functionParam470, sjt_functionParam473);
+        sjt_functionParam475 = &sjv_fadeshader;
+        sjt_call87._refCount = 1;
+        sjt_call87.count = 5;
+        sjt_call87.data._refCount = 1;
+        sjt_call87.data.datasize = 6;
+        sjt_call87.data.data = (void*)sjg_string96;
+        sjt_call87.data._isglobal = true;
+        sjt_call87.data.count = 6;
+        sjf_array_char(&sjt_call87.data);
+        sjf_string(&sjt_call87);
+        sjt_functionParam476 = &sjt_call87;
+        sjf_glgetuniformlocation(sjt_functionParam475, sjt_functionParam476, &sjt_functionParam474);
+        sjt_dot1709 = _parent;
+        sjt_functionParam477 = (sjt_dot1709)->alpha;
+        sjf_gluniformf32(sjt_functionParam474, sjt_functionParam477);
+        sjt_functionParam479 = &sjv_fadeshader;
+        sjt_call88._refCount = 1;
+        sjt_call88.count = 5;
+        sjt_call88.data._refCount = 1;
+        sjt_call88.data.datasize = 6;
+        sjt_call88.data.data = (void*)sjg_string97;
+        sjt_call88.data._isglobal = true;
+        sjt_call88.data.count = 6;
+        sjf_array_char(&sjt_call88.data);
+        sjf_string(&sjt_call88);
+        sjt_functionParam480 = &sjt_call88;
+        sjf_glgetuniformlocation(sjt_functionParam479, sjt_functionParam480, &sjt_functionParam478);
+        sjt_dot1710 = scene;
+        sjt_functionParam481 = &(sjt_dot1710)->model;
+        sjf_gluniformmat4(sjt_functionParam478, sjt_functionParam481);
         sjt_functionParam483 = &sjv_fadeshader;
-        sjf_gluseprogram(sjt_functionParam483);
-        sjt_functionParam485 = &sjv_fadeshader;
         sjt_call89._refCount = 1;
-        sjt_call89.count = 7;
+        sjt_call89.count = 4;
         sjt_call89.data._refCount = 1;
-        sjt_call89.data.datasize = 8;
-        sjt_call89.data.data = (void*)sjg_string97;
+        sjt_call89.data.datasize = 5;
+        sjt_call89.data.data = (void*)sjg_string98;
         sjt_call89.data._isglobal = true;
-        sjt_call89.data.count = 8;
+        sjt_call89.data.count = 5;
         sjf_array_char(&sjt_call89.data);
         sjf_string(&sjt_call89);
-        sjt_functionParam486 = &sjt_call89;
-        sjf_glgetuniformlocation(sjt_functionParam485, sjt_functionParam486, &sjt_functionParam484);
-        sjt_functionParam487 = 0;
-        sjf_gluniformi32(sjt_functionParam484, sjt_functionParam487);
-        sjt_functionParam489 = &sjv_fadeshader;
+        sjt_functionParam484 = &sjt_call89;
+        sjf_glgetuniformlocation(sjt_functionParam483, sjt_functionParam484, &sjt_functionParam482);
+        sjt_dot1711 = scene;
+        sjt_functionParam485 = &(sjt_dot1711)->view;
+        sjf_gluniformmat4(sjt_functionParam482, sjt_functionParam485);
+        sjt_functionParam487 = &sjv_fadeshader;
         sjt_call90._refCount = 1;
-        sjt_call90.count = 5;
+        sjt_call90.count = 10;
         sjt_call90.data._refCount = 1;
-        sjt_call90.data.datasize = 6;
-        sjt_call90.data.data = (void*)sjg_string98;
+        sjt_call90.data.datasize = 11;
+        sjt_call90.data.data = (void*)sjg_string99;
         sjt_call90.data._isglobal = true;
-        sjt_call90.data.count = 6;
+        sjt_call90.data.count = 11;
         sjf_array_char(&sjt_call90.data);
         sjf_string(&sjt_call90);
-        sjt_functionParam490 = &sjt_call90;
-        sjf_glgetuniformlocation(sjt_functionParam489, sjt_functionParam490, &sjt_functionParam488);
-        sjt_dot1723 = _parent;
-        sjt_functionParam491 = (sjt_dot1723)->alpha;
-        sjf_gluniformf32(sjt_functionParam488, sjt_functionParam491);
-        sjt_functionParam493 = &sjv_fadeshader;
-        sjt_call91._refCount = 1;
-        sjt_call91.count = 5;
-        sjt_call91.data._refCount = 1;
-        sjt_call91.data.datasize = 6;
-        sjt_call91.data.data = (void*)sjg_string99;
-        sjt_call91.data._isglobal = true;
-        sjt_call91.data.count = 6;
-        sjf_array_char(&sjt_call91.data);
-        sjf_string(&sjt_call91);
-        sjt_functionParam494 = &sjt_call91;
-        sjf_glgetuniformlocation(sjt_functionParam493, sjt_functionParam494, &sjt_functionParam492);
-        sjt_dot1724 = scene;
-        sjt_functionParam495 = &(sjt_dot1724)->model;
-        sjf_gluniformmat4(sjt_functionParam492, sjt_functionParam495);
-        sjt_functionParam497 = &sjv_fadeshader;
-        sjt_call92._refCount = 1;
-        sjt_call92.count = 4;
-        sjt_call92.data._refCount = 1;
-        sjt_call92.data.datasize = 5;
-        sjt_call92.data.data = (void*)sjg_string100;
-        sjt_call92.data._isglobal = true;
-        sjt_call92.data.count = 5;
-        sjf_array_char(&sjt_call92.data);
-        sjf_string(&sjt_call92);
-        sjt_functionParam498 = &sjt_call92;
-        sjf_glgetuniformlocation(sjt_functionParam497, sjt_functionParam498, &sjt_functionParam496);
-        sjt_dot1725 = scene;
-        sjt_functionParam499 = &(sjt_dot1725)->view;
-        sjf_gluniformmat4(sjt_functionParam496, sjt_functionParam499);
-        sjt_functionParam501 = &sjv_fadeshader;
-        sjt_call93._refCount = 1;
-        sjt_call93.count = 10;
-        sjt_call93.data._refCount = 1;
-        sjt_call93.data.datasize = 11;
-        sjt_call93.data.data = (void*)sjg_string101;
-        sjt_call93.data._isglobal = true;
-        sjt_call93.data.count = 11;
-        sjf_array_char(&sjt_call93.data);
-        sjf_string(&sjt_call93);
-        sjt_functionParam502 = &sjt_call93;
-        sjf_glgetuniformlocation(sjt_functionParam501, sjt_functionParam502, &sjt_functionParam500);
-        sjt_dot1726 = scene;
-        sjt_functionParam503 = &(sjt_dot1726)->projection;
-        sjf_gluniformmat4(sjt_functionParam500, sjt_functionParam503);
-        sjt_parent211 = ifValue30;
-        sjt_functionParam504 = scene;
-        sjf_boxvertexbuffer_render(sjt_parent211, sjt_functionParam504);
+        sjt_functionParam488 = &sjt_call90;
+        sjf_glgetuniformlocation(sjt_functionParam487, sjt_functionParam488, &sjt_functionParam486);
+        sjt_dot1712 = scene;
+        sjt_functionParam489 = &(sjt_dot1712)->projection;
+        sjf_gluniformmat4(sjt_functionParam486, sjt_functionParam489);
+        sjt_parent206 = ifValue30;
+        sjt_functionParam490 = scene;
+        sjf_boxvertexbuffer_render(sjt_parent206, sjt_functionParam490);
 
+        if (sjt_call86._refCount == 1) { sjf_string_destroy(&sjt_call86); }
+        if (sjt_call87._refCount == 1) { sjf_string_destroy(&sjt_call87); }
+        if (sjt_call88._refCount == 1) { sjf_string_destroy(&sjt_call88); }
         if (sjt_call89._refCount == 1) { sjf_string_destroy(&sjt_call89); }
         if (sjt_call90._refCount == 1) { sjf_string_destroy(&sjt_call90); }
-        if (sjt_call91._refCount == 1) { sjf_string_destroy(&sjt_call91); }
-        if (sjt_call92._refCount == 1) { sjf_string_destroy(&sjt_call92); }
-        if (sjt_call93._refCount == 1) { sjf_string_destroy(&sjt_call93); }
     }
 }
 
 void sjf_fadeeffect_setrect(sjs_fadeeffect* _parent, sjs_rect* rect_, cb_rect_void cb) {
     bool result16;
-    sjs_rect sjt_call88 = { -1 };
-    cb_rect_void sjt_callback5;
+    sjs_rect sjt_call85 = { -1 };
+    cb_rect_void sjt_callback9;
+    sjs_fadeeffect* sjt_dot1673 = 0;
+    sjs_rect* sjt_dot1684 = 0;
+    sjs_fadeeffect* sjt_dot1685 = 0;
+    sjs_rect* sjt_dot1686 = 0;
     sjs_fadeeffect* sjt_dot1687 = 0;
-    sjs_rect* sjt_dot1698 = 0;
-    sjs_fadeeffect* sjt_dot1699 = 0;
-    sjs_rect* sjt_dot1700 = 0;
-    sjs_fadeeffect* sjt_dot1701 = 0;
-    sjs_rect* sjt_functionParam474 = 0;
-    sjs_rect* sjt_functionParam476 = 0;
-    bool sjt_ifElse58;
+    sjs_rect* sjt_functionParam460 = 0;
+    sjs_rect* sjt_functionParam462 = 0;
+    bool sjt_ifElse56;
     bool sjt_not9;
-    sjs_rect* sjt_parent206 = 0;
+    sjs_rect* sjt_parent201 = 0;
 
-    sjt_dot1687 = _parent;
-    sjt_parent206 = &(sjt_dot1687)->_rect;
-    sjt_functionParam474 = rect_;
-    sjf_rect_isequal(sjt_parent206, sjt_functionParam474, &sjt_not9);
+    sjt_dot1673 = _parent;
+    sjt_parent201 = &(sjt_dot1673)->_rect;
+    sjt_functionParam460 = rect_;
+    sjf_rect_isequal(sjt_parent201, sjt_functionParam460, &sjt_not9);
     result16 = !sjt_not9;
-    sjt_ifElse58 = result16;
-    if (sjt_ifElse58) {
+    sjt_ifElse56 = result16;
+    if (sjt_ifElse56) {
         sjs_rect* sjt_copy54 = 0;
-        sjs_fadeeffect* sjt_dot1688 = 0;
-        sjs_fadeeffect* sjt_dot1689 = 0;
-        sjs_fadeeffect* sjt_dot1697 = 0;
+        sjs_fadeeffect* sjt_dot1674 = 0;
+        sjs_fadeeffect* sjt_dot1675 = 0;
+        sjs_fadeeffect* sjt_dot1683 = 0;
         bool sjt_isEmpty31;
         sjs_scenebuffer* sjt_isEmpty32 = 0;
 
-        sjt_dot1688 = _parent;
+        sjt_dot1674 = _parent;
         sjt_copy54 = rect_;
-        sjt_dot1688->_rect._refCount = 1;
-        sjf_rect_copy(&sjt_dot1688->_rect, sjt_copy54);
-        sjt_dot1689 = _parent;
-        sjt_isEmpty32 = ((sjt_dot1689)->_scenebuffer._refCount != -1 ? &(sjt_dot1689)->_scenebuffer : 0);
+        sjt_dot1674->_rect._refCount = 1;
+        sjf_rect_copy(&sjt_dot1674->_rect, sjt_copy54);
+        sjt_dot1675 = _parent;
+        sjt_isEmpty32 = ((sjt_dot1675)->_scenebuffer._refCount != -1 ? &(sjt_dot1675)->_scenebuffer : 0);
         sjt_isEmpty31 = (sjt_isEmpty32 != 0);
         if (sjt_isEmpty31) {
             sjs_scenebuffer* ifValue27 = 0;
             bool result17;
-            sjs_size sjt_call87 = { -1 };
-            sjs_fadeeffect* sjt_dot1690 = 0;
-            sjs_scenebuffer* sjt_dot1691 = 0;
-            sjs_rect* sjt_dot1692 = 0;
-            sjs_fadeeffect* sjt_dot1693 = 0;
-            sjs_rect* sjt_dot1694 = 0;
-            sjs_fadeeffect* sjt_dot1695 = 0;
-            sjs_size* sjt_functionParam475 = 0;
-            bool sjt_ifElse59;
+            sjs_size sjt_call84 = { -1 };
+            sjs_fadeeffect* sjt_dot1676 = 0;
+            sjs_scenebuffer* sjt_dot1677 = 0;
+            sjs_rect* sjt_dot1678 = 0;
+            sjs_fadeeffect* sjt_dot1679 = 0;
+            sjs_rect* sjt_dot1680 = 0;
+            sjs_fadeeffect* sjt_dot1681 = 0;
+            sjs_size* sjt_functionParam461 = 0;
+            bool sjt_ifElse57;
             bool sjt_not10;
-            sjs_size* sjt_parent207 = 0;
+            sjs_size* sjt_parent202 = 0;
 
-            sjt_dot1690 = _parent;
-            ifValue27 = ((sjt_dot1690)->_scenebuffer._refCount != -1 ? &(sjt_dot1690)->_scenebuffer : 0);
-            sjt_dot1691 = ifValue27;
-            sjt_parent207 = &(sjt_dot1691)->size;
-            sjt_call87._refCount = 1;
-            sjt_dot1693 = _parent;
-            sjt_dot1692 = &(sjt_dot1693)->_rect;
-            sjt_call87.w = (sjt_dot1692)->w;
-            sjt_dot1695 = _parent;
-            sjt_dot1694 = &(sjt_dot1695)->_rect;
-            sjt_call87.h = (sjt_dot1694)->h;
-            sjf_size(&sjt_call87);
-            sjt_functionParam475 = &sjt_call87;
-            sjf_size_isequal(sjt_parent207, sjt_functionParam475, &sjt_not10);
+            sjt_dot1676 = _parent;
+            ifValue27 = ((sjt_dot1676)->_scenebuffer._refCount != -1 ? &(sjt_dot1676)->_scenebuffer : 0);
+            sjt_dot1677 = ifValue27;
+            sjt_parent202 = &(sjt_dot1677)->size;
+            sjt_call84._refCount = 1;
+            sjt_dot1679 = _parent;
+            sjt_dot1678 = &(sjt_dot1679)->_rect;
+            sjt_call84.w = (sjt_dot1678)->w;
+            sjt_dot1681 = _parent;
+            sjt_dot1680 = &(sjt_dot1681)->_rect;
+            sjt_call84.h = (sjt_dot1680)->h;
+            sjf_size(&sjt_call84);
+            sjt_functionParam461 = &sjt_call84;
+            sjf_size_isequal(sjt_parent202, sjt_functionParam461, &sjt_not10);
             result17 = !sjt_not10;
-            sjt_ifElse59 = result17;
-            if (sjt_ifElse59) {
-                sjs_fadeeffect* sjt_dot1696 = 0;
+            sjt_ifElse57 = result17;
+            if (sjt_ifElse57) {
+                sjs_fadeeffect* sjt_dot1682 = 0;
 
-                sjt_dot1696 = _parent;
-                sjt_dot1696->_scenebuffer._refCount = -1;
+                sjt_dot1682 = _parent;
+                sjt_dot1682->_scenebuffer._refCount = -1;
             }
 
-            if (sjt_call87._refCount == 1) { sjf_size_destroy(&sjt_call87); }
+            if (sjt_call84._refCount == 1) { sjf_size_destroy(&sjt_call84); }
         }
 
-        sjt_dot1697 = _parent;
-        sjt_dot1697->_vertexbuffer._refCount = -1;
+        sjt_dot1683 = _parent;
+        sjt_dot1683->_vertexbuffer._refCount = -1;
     }
 
-    sjt_callback5 = cb;
-    sjt_call88._refCount = 1;
-    sjt_call88.x = 0;
-    sjt_call88.y = 0;
-    sjt_dot1699 = _parent;
-    sjt_dot1698 = &(sjt_dot1699)->_rect;
-    sjt_call88.w = (sjt_dot1698)->w;
-    sjt_dot1701 = _parent;
-    sjt_dot1700 = &(sjt_dot1701)->_rect;
-    sjt_call88.h = (sjt_dot1700)->h;
-    sjf_rect(&sjt_call88);
-    sjt_functionParam476 = &sjt_call88;
-    sjt_callback5._cb(sjt_callback5._parent, sjt_functionParam476);
+    sjt_callback9 = cb;
+    sjt_call85._refCount = 1;
+    sjt_call85.x = 0;
+    sjt_call85.y = 0;
+    sjt_dot1685 = _parent;
+    sjt_dot1684 = &(sjt_dot1685)->_rect;
+    sjt_call85.w = (sjt_dot1684)->w;
+    sjt_dot1687 = _parent;
+    sjt_dot1686 = &(sjt_dot1687)->_rect;
+    sjt_call85.h = (sjt_dot1686)->h;
+    sjf_rect(&sjt_call85);
+    sjt_functionParam462 = &sjt_call85;
+    sjt_callback9._cb(sjt_callback9._parent, sjt_functionParam462);
 
-    if (sjt_call88._refCount == 1) { sjf_rect_destroy(&sjt_call88); }
+    if (sjt_call85._refCount == 1) { sjf_rect_destroy(&sjt_call85); }
 }
 
 void sjf_filllayout(sjs_filllayout* _this) {
@@ -9694,25 +8980,6 @@ void sjf_filllayout_getsize_heap(sjs_filllayout* _parent, sjs_size* maxsize, sjs
 }
 
 void sjf_filllayout_heap(sjs_filllayout* _this) {
-}
-
-void sjf_filllayout_heap_as_sji_element(sjs_filllayout* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_filllayout_element_vtbl;
-}
-
-void sjf_filllayout_heap_asinterface(sjs_filllayout* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_filllayout_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
 }
 
 void sjf_filllayout_render(sjs_filllayout* _parent, sjs_scene2d* scene) {
@@ -10304,7 +9571,7 @@ void sjf_glpopframebuffer(sjs_framebuffer* framebuffer) {
         sjt_call65.count = 33;
         sjt_call65.data._refCount = 1;
         sjt_call65.data.datasize = 34;
-        sjt_call65.data.data = (void*)sjg_string25;
+        sjt_call65.data.data = (void*)sjg_string27;
         sjt_call65.data._isglobal = true;
         sjt_call65.data.count = 34;
         sjf_array_char(&sjt_call65.data);
@@ -10414,7 +9681,7 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
         sjt_call41.count = 30;
         sjt_call41.data._refCount = 1;
         sjt_call41.data.datasize = 31;
-        sjt_call41.data.data = (void*)sjg_string28;
+        sjt_call41.data.data = (void*)sjg_string30;
         sjt_call41.data._isglobal = true;
         sjt_call41.data.count = 31;
         sjf_array_char(&sjt_call41.data);
@@ -10642,25 +9909,6 @@ void sjf_gridlayout_getsize_heap(sjs_gridlayout* _parent, sjs_size* maxsize, sjs
 }
 
 void sjf_gridlayout_heap(sjs_gridlayout* _this) {
-}
-
-void sjf_gridlayout_heap_as_sji_element(sjs_gridlayout* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_gridlayout_element_vtbl;
-}
-
-void sjf_gridlayout_heap_asinterface(sjs_gridlayout* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_gridlayout_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
 }
 
 void sjf_gridlayout_render(sjs_gridlayout* _parent, sjs_scene2d* scene) {
@@ -11732,23 +10980,23 @@ void sjf_list_heap_iface_animation_destroy(sjs_list_heap_iface_animation* _this)
 }
 
 void sjf_list_heap_iface_animation_getat_heap(sjs_list_heap_iface_animation* _parent, int32_t index, sji_animation* _return) {
-    sjs_list_heap_iface_animation* sjt_dot1732 = 0;
-    int32_t sjt_functionParam513;
-    sjs_array_heap_iface_animation* sjt_parent218 = 0;
+    sjs_list_heap_iface_animation* sjt_dot1760 = 0;
+    int32_t sjt_functionParam534;
+    sjs_array_heap_iface_animation* sjt_parent221 = 0;
 
-    sjt_dot1732 = _parent;
-    sjt_parent218 = &(sjt_dot1732)->array;
-    sjt_functionParam513 = index;
-    sjf_array_heap_iface_animation_getat_heap(sjt_parent218, sjt_functionParam513, _return);
+    sjt_dot1760 = _parent;
+    sjt_parent221 = &(sjt_dot1760)->array;
+    sjt_functionParam534 = index;
+    sjf_array_heap_iface_animation_getat_heap(sjt_parent221, sjt_functionParam534, _return);
 }
 
 void sjf_list_heap_iface_animation_getcount(sjs_list_heap_iface_animation* _parent, int32_t* _return) {
-    sjs_array_heap_iface_animation* sjt_dot1728 = 0;
-    sjs_list_heap_iface_animation* sjt_dot1729 = 0;
+    sjs_array_heap_iface_animation* sjt_dot1756 = 0;
+    sjs_list_heap_iface_animation* sjt_dot1757 = 0;
 
-    sjt_dot1729 = _parent;
-    sjt_dot1728 = &(sjt_dot1729)->array;
-    (*_return) = (sjt_dot1728)->count;
+    sjt_dot1757 = _parent;
+    sjt_dot1756 = &(sjt_dot1757)->array;
+    (*_return) = (sjt_dot1756)->count;
 }
 
 void sjf_list_heap_iface_animation_heap(sjs_list_heap_iface_animation* _this) {
@@ -12081,25 +11329,25 @@ void sjf_list_u32_removeat(sjs_list_u32* _parent, int32_t index) {
 }
 
 void sjf_mainloop(void) {
-    bool result18;
-    sjs_size* sjt_dot1735 = 0;
-    sjs_size* sjt_dot1736 = 0;
-    int32_t sjt_functionParam516;
-    sjs_size* sjt_functionParam517 = 0;
-    sjs_rect* sjt_functionParam518 = 0;
-    bool sjt_ifElse64;
-    sjs_scene2d* sjt_interfaceParam23 = 0;
-    bool sjt_isEmpty39;
-    int32_option sjt_isEmpty40;
-    bool sjt_not11;
-    sjs_anon1* sjt_parent222 = 0;
-    sjs_windowrenderer* sjt_parent223 = 0;
-    sjs_scene2d* sjt_parent224 = 0;
-    sjs_scene2d* sjt_parent225 = 0;
-    sjs_rect* sjt_parent226 = 0;
-    sji_element sjt_parent228 = { 0 };
-    sjs_scene2d* sjt_parent229 = 0;
-    sjs_windowrenderer* sjt_parent230 = 0;
+    bool result20;
+    sjs_size* sjt_dot1763 = 0;
+    sjs_size* sjt_dot1764 = 0;
+    int32_t sjt_functionParam537;
+    sjs_size* sjt_functionParam538 = 0;
+    sjs_rect* sjt_functionParam539 = 0;
+    bool sjt_ifElse66;
+    sjs_scene2d* sjt_interfaceParam21 = 0;
+    bool sjt_isEmpty47;
+    int32_option sjt_isEmpty48;
+    bool sjt_not13;
+    sjs_anon1* sjt_parent225 = 0;
+    sjs_windowrenderer* sjt_parent226 = 0;
+    sjs_scene2d* sjt_parent227 = 0;
+    sjs_scene2d* sjt_parent228 = 0;
+    sjs_rect* sjt_parent229 = 0;
+    sji_element sjt_parent231 = { 0 };
+    sjs_scene2d* sjt_parent232 = 0;
+    sjs_windowrenderer* sjt_parent233 = 0;
     int32_option sjv_mouseeventtype;
     sjs_rect sjv_rect = { -1 };
     bool sjv_shouldcontinue;
@@ -12110,45 +11358,45 @@ void sjf_mainloop(void) {
 
     sjv_ticks = 0;
     sjv_ticks = SDL_GetTicks();
-    sjt_parent222 = &sjv_animator;
-    sjt_functionParam516 = sjv_ticks;
-    sjf_anon1_nextframe(sjt_parent222, sjt_functionParam516);
-    sjt_parent223 = &sjv_rootwindowrenderer;
-    sjf_windowrenderer_getsize(sjt_parent223, &sjv_size);
-    sjt_parent224 = &sjv_rootscene;
-    sjt_functionParam517 = &sjv_size;
-    sjf_scene2d_setsize(sjt_parent224, sjt_functionParam517);
-    sjt_parent225 = &sjv_rootscene;
-    sjf_scene2d_start(sjt_parent225);
+    sjt_parent225 = &sjv_animator;
+    sjt_functionParam537 = sjv_ticks;
+    sjf_anon1_nextframe(sjt_parent225, sjt_functionParam537);
+    sjt_parent226 = &sjv_rootwindowrenderer;
+    sjf_windowrenderer_getsize(sjt_parent226, &sjv_size);
+    sjt_parent227 = &sjv_rootscene;
+    sjt_functionParam538 = &sjv_size;
+    sjf_scene2d_setsize(sjt_parent227, sjt_functionParam538);
+    sjt_parent228 = &sjv_rootscene;
+    sjf_scene2d_start(sjt_parent228);
     sjv_rect._refCount = 1;
     sjv_rect.x = 0;
     sjv_rect.y = 0;
-    sjt_dot1735 = &sjv_size;
-    sjv_rect.w = (sjt_dot1735)->w;
-    sjt_dot1736 = &sjv_size;
-    sjv_rect.h = (sjt_dot1736)->h;
+    sjt_dot1763 = &sjv_size;
+    sjv_rect.w = (sjt_dot1763)->w;
+    sjt_dot1764 = &sjv_size;
+    sjv_rect.h = (sjt_dot1764)->h;
     sjf_rect(&sjv_rect);
-    sjt_parent226 = &sjv_looplastrect;
-    sjt_functionParam518 = &sjv_rect;
-    sjf_rect_isequal(sjt_parent226, sjt_functionParam518, &sjt_not11);
-    result18 = !sjt_not11;
-    sjt_ifElse64 = result18;
-    if (sjt_ifElse64) {
-        sjs_rect* sjt_interfaceParam22 = 0;
-        sji_element sjt_parent227 = { 0 };
+    sjt_parent229 = &sjv_looplastrect;
+    sjt_functionParam539 = &sjv_rect;
+    sjf_rect_isequal(sjt_parent229, sjt_functionParam539, &sjt_not13);
+    result20 = !sjt_not13;
+    sjt_ifElse66 = result20;
+    if (sjt_ifElse66) {
+        sjs_rect* sjt_interfaceParam20 = 0;
+        sji_element sjt_parent230 = { 0 };
 
-        sjt_parent227 = sjv_root;
-        sjt_interfaceParam22 = &sjv_rect;
-        sjt_parent227._vtbl->setrect(sjt_parent227._parent, sjt_interfaceParam22);
+        sjt_parent230 = sjv_root;
+        sjt_interfaceParam20 = &sjv_rect;
+        sjt_parent230._vtbl->setrect(sjt_parent230._parent, sjt_interfaceParam20);
     }
 
-    sjt_parent228 = sjv_root;
-    sjt_interfaceParam23 = &sjv_rootscene;
-    sjt_parent228._vtbl->render(sjt_parent228._parent, sjt_interfaceParam23);
-    sjt_parent229 = &sjv_rootscene;
-    sjf_scene2d_end(sjt_parent229);
-    sjt_parent230 = &sjv_rootwindowrenderer;
-    sjf_windowrenderer_present(sjt_parent230);
+    sjt_parent231 = sjv_root;
+    sjt_interfaceParam21 = &sjv_rootscene;
+    sjt_parent231._vtbl->render(sjt_parent231._parent, sjt_interfaceParam21);
+    sjt_parent232 = &sjv_rootscene;
+    sjf_scene2d_end(sjt_parent232);
+    sjt_parent233 = &sjv_rootwindowrenderer;
+    sjf_windowrenderer_present(sjt_parent233);
     sjv_mouseeventtype = int32_empty;
     sjv_x = 0;
     sjv_y = 0;
@@ -12181,40 +11429,40 @@ void sjf_mainloop(void) {
         }
     }
     sjv_shouldcontinue = true;
-    sjt_isEmpty40 = sjv_mouseeventtype;
-    sjt_isEmpty39 = sjt_isEmpty40.isvalid;
-    if (sjt_isEmpty39) {
+    sjt_isEmpty48 = sjv_mouseeventtype;
+    sjt_isEmpty47 = sjt_isEmpty48.isvalid;
+    if (sjt_isEmpty47) {
         int32_t ifValue5;
         int32_option sjt_getValue1;
-        bool sjt_isEmpty41;
-        sji_element sjt_isEmpty42 = { 0 };
+        bool sjt_isEmpty49;
+        sji_element sjt_isEmpty50 = { 0 };
 
         sjt_getValue1 = sjv_mouseeventtype;
         ifValue5 = sjt_getValue1.value;
-        sjt_isEmpty42 = sjv_mouse_captureelement;
-        sjt_isEmpty41 = (sjt_isEmpty42._parent != 0);
-        if (sjt_isEmpty41) {
+        sjt_isEmpty50 = sjv_mouse_captureelement;
+        sjt_isEmpty49 = (sjt_isEmpty50._parent != 0);
+        if (sjt_isEmpty49) {
             sji_element ifValue6 = { 0 };
-            sjs_mouseevent sjt_call98 = { -1 };
-            sjs_mouseevent* sjt_interfaceParam24 = 0;
-            sji_element sjt_parent231 = { 0 };
+            sjs_mouseevent sjt_call104 = { -1 };
+            sjs_mouseevent* sjt_interfaceParam22 = 0;
+            sji_element sjt_parent234 = { 0 };
 
             ifValue6 = sjv_mouse_captureelement;
             if (ifValue6._parent != 0) {
                 ifValue6._parent->_refCount++;
             }
 
-            sjt_parent231 = ifValue6;
-            sjt_call98._refCount = 1;
-            sjt_call98.type = ifValue5;
-            sjt_call98.point._refCount = 1;
-            sjt_call98.point.x = sjv_x;
-            sjt_call98.point.y = sjv_y;
-            sjf_point(&sjt_call98.point);
-            sjt_call98.iscaptured = true;
-            sjf_mouseevent(&sjt_call98);
-            sjt_interfaceParam24 = &sjt_call98;
-            sjt_parent231._vtbl->firemouseevent(sjt_parent231._parent, sjt_interfaceParam24, &sjv_shouldcontinue);
+            sjt_parent234 = ifValue6;
+            sjt_call104._refCount = 1;
+            sjt_call104.type = ifValue5;
+            sjt_call104.point._refCount = 1;
+            sjt_call104.point.x = sjv_x;
+            sjt_call104.point.y = sjv_y;
+            sjf_point(&sjt_call104.point);
+            sjt_call104.iscaptured = true;
+            sjf_mouseevent(&sjt_call104);
+            sjt_interfaceParam22 = &sjt_call104;
+            sjt_parent234._vtbl->firemouseevent(sjt_parent234._parent, sjt_interfaceParam22, &sjv_shouldcontinue);
 
             if (ifValue6._parent != 0) {
                 ifValue6._parent->_refCount--;
@@ -12223,25 +11471,25 @@ void sjf_mainloop(void) {
                     free(ifValue6._parent);
                 }
             }
-            if (sjt_call98._refCount == 1) { sjf_mouseevent_destroy(&sjt_call98); }
+            if (sjt_call104._refCount == 1) { sjf_mouseevent_destroy(&sjt_call104); }
         } else {
-            sjs_mouseevent sjt_call99 = { -1 };
-            sjs_mouseevent* sjt_interfaceParam25 = 0;
-            sji_element sjt_parent232 = { 0 };
+            sjs_mouseevent sjt_call105 = { -1 };
+            sjs_mouseevent* sjt_interfaceParam23 = 0;
+            sji_element sjt_parent235 = { 0 };
 
-            sjt_parent232 = sjv_root;
-            sjt_call99._refCount = 1;
-            sjt_call99.type = ifValue5;
-            sjt_call99.point._refCount = 1;
-            sjt_call99.point.x = sjv_x;
-            sjt_call99.point.y = sjv_y;
-            sjf_point(&sjt_call99.point);
-            sjt_call99.iscaptured = false;
-            sjf_mouseevent(&sjt_call99);
-            sjt_interfaceParam25 = &sjt_call99;
-            sjt_parent232._vtbl->firemouseevent(sjt_parent232._parent, sjt_interfaceParam25, &sjv_shouldcontinue);
+            sjt_parent235 = sjv_root;
+            sjt_call105._refCount = 1;
+            sjt_call105.type = ifValue5;
+            sjt_call105.point._refCount = 1;
+            sjt_call105.point.x = sjv_x;
+            sjt_call105.point.y = sjv_y;
+            sjf_point(&sjt_call105.point);
+            sjt_call105.iscaptured = false;
+            sjf_mouseevent(&sjt_call105);
+            sjt_interfaceParam23 = &sjt_call105;
+            sjt_parent235._vtbl->firemouseevent(sjt_parent235._parent, sjt_interfaceParam23, &sjv_shouldcontinue);
 
-            if (sjt_call99._refCount == 1) { sjf_mouseevent_destroy(&sjt_call99); }
+            if (sjt_call105._refCount == 1) { sjf_mouseevent_destroy(&sjt_call105); }
         }
     }
 
@@ -18567,6 +17815,10 @@ void sjf_mat4_multiplyvec4_heap(sjs_mat4* _parent, sjs_vec4* v, sjs_vec4** _retu
 
 void sjf_mat4_orthographic(float left, float right, float bottom, float top, float znear, float zfar, sjs_mat4* _return) {
     float result12;
+    float sjt_math2537;
+    float sjt_math2538;
+    float sjt_math2539;
+    float sjt_math2540;
     float sjt_math2541;
     float sjt_math2542;
     float sjt_math2543;
@@ -18599,72 +17851,72 @@ void sjf_mat4_orthographic(float left, float right, float bottom, float top, flo
     float sjt_math2570;
     float sjt_math2571;
     float sjt_math2572;
-    float sjt_math2573;
-    float sjt_math2574;
-    float sjt_math2575;
-    float sjt_math2576;
     float sjt_negate4;
 
     _return->_refCount = 1;
-    sjt_math2541 = 2.0f;
-    sjt_math2543 = right;
-    sjt_math2544 = left;
-    sjt_math2542 = sjt_math2543 - sjt_math2544;
-    _return->m00 = sjt_math2541 / sjt_math2542;
+    sjt_math2537 = 2.0f;
+    sjt_math2539 = right;
+    sjt_math2540 = left;
+    sjt_math2538 = sjt_math2539 - sjt_math2540;
+    _return->m00 = sjt_math2537 / sjt_math2538;
     _return->m01 = 0.0f;
     _return->m02 = 0.0f;
     _return->m03 = 0.0f;
     _return->m10 = 0.0f;
-    sjt_math2545 = 2.0f;
-    sjt_math2547 = top;
-    sjt_math2548 = bottom;
-    sjt_math2546 = sjt_math2547 - sjt_math2548;
-    _return->m11 = sjt_math2545 / sjt_math2546;
+    sjt_math2541 = 2.0f;
+    sjt_math2543 = top;
+    sjt_math2544 = bottom;
+    sjt_math2542 = sjt_math2543 - sjt_math2544;
+    _return->m11 = sjt_math2541 / sjt_math2542;
     _return->m12 = 0.0f;
     _return->m13 = 0.0f;
     _return->m20 = 0.0f;
     _return->m21 = 0.0f;
     sjt_negate4 = 2.0f;
     result12 = -sjt_negate4;
-    sjt_math2549 = result12;
-    sjt_math2551 = zfar;
-    sjt_math2552 = znear;
-    sjt_math2550 = sjt_math2551 - sjt_math2552;
-    _return->m22 = sjt_math2549 / sjt_math2550;
+    sjt_math2545 = result12;
+    sjt_math2547 = zfar;
+    sjt_math2548 = znear;
+    sjt_math2546 = sjt_math2547 - sjt_math2548;
+    _return->m22 = sjt_math2545 / sjt_math2546;
     _return->m23 = 0.0f;
-    sjt_math2553 = 0.0f;
-    sjt_math2557 = right;
-    sjt_math2558 = left;
-    sjt_math2555 = sjt_math2557 + sjt_math2558;
-    sjt_math2559 = right;
-    sjt_math2560 = left;
-    sjt_math2556 = sjt_math2559 - sjt_math2560;
-    sjt_math2554 = sjt_math2555 / sjt_math2556;
-    _return->m30 = sjt_math2553 - sjt_math2554;
-    sjt_math2561 = 0.0f;
-    sjt_math2565 = top;
-    sjt_math2566 = bottom;
-    sjt_math2563 = sjt_math2565 + sjt_math2566;
-    sjt_math2567 = top;
-    sjt_math2568 = bottom;
-    sjt_math2564 = sjt_math2567 - sjt_math2568;
-    sjt_math2562 = sjt_math2563 / sjt_math2564;
-    _return->m31 = sjt_math2561 - sjt_math2562;
-    sjt_math2569 = 0.0f;
-    sjt_math2573 = zfar;
-    sjt_math2574 = znear;
-    sjt_math2571 = sjt_math2573 + sjt_math2574;
-    sjt_math2575 = zfar;
-    sjt_math2576 = znear;
-    sjt_math2572 = sjt_math2575 - sjt_math2576;
-    sjt_math2570 = sjt_math2571 / sjt_math2572;
-    _return->m32 = sjt_math2569 - sjt_math2570;
+    sjt_math2549 = 0.0f;
+    sjt_math2553 = right;
+    sjt_math2554 = left;
+    sjt_math2551 = sjt_math2553 + sjt_math2554;
+    sjt_math2555 = right;
+    sjt_math2556 = left;
+    sjt_math2552 = sjt_math2555 - sjt_math2556;
+    sjt_math2550 = sjt_math2551 / sjt_math2552;
+    _return->m30 = sjt_math2549 - sjt_math2550;
+    sjt_math2557 = 0.0f;
+    sjt_math2561 = top;
+    sjt_math2562 = bottom;
+    sjt_math2559 = sjt_math2561 + sjt_math2562;
+    sjt_math2563 = top;
+    sjt_math2564 = bottom;
+    sjt_math2560 = sjt_math2563 - sjt_math2564;
+    sjt_math2558 = sjt_math2559 / sjt_math2560;
+    _return->m31 = sjt_math2557 - sjt_math2558;
+    sjt_math2565 = 0.0f;
+    sjt_math2569 = zfar;
+    sjt_math2570 = znear;
+    sjt_math2567 = sjt_math2569 + sjt_math2570;
+    sjt_math2571 = zfar;
+    sjt_math2572 = znear;
+    sjt_math2568 = sjt_math2571 - sjt_math2572;
+    sjt_math2566 = sjt_math2567 / sjt_math2568;
+    _return->m32 = sjt_math2565 - sjt_math2566;
     _return->m33 = 1.0f;
     sjf_mat4(_return);
 }
 
 void sjf_mat4_orthographic_heap(float left, float right, float bottom, float top, float znear, float zfar, sjs_mat4** _return) {
     float result13;
+    float sjt_math2573;
+    float sjt_math2574;
+    float sjt_math2575;
+    float sjt_math2576;
     float sjt_math2577;
     float sjt_math2578;
     float sjt_math2579;
@@ -18697,67 +17949,63 @@ void sjf_mat4_orthographic_heap(float left, float right, float bottom, float top
     float sjt_math2606;
     float sjt_math2607;
     float sjt_math2608;
-    float sjt_math2609;
-    float sjt_math2610;
-    float sjt_math2611;
-    float sjt_math2612;
     float sjt_negate5;
 
     (*_return) = (sjs_mat4*)malloc(sizeof(sjs_mat4));
     (*_return)->_refCount = 1;
-    sjt_math2577 = 2.0f;
-    sjt_math2579 = right;
-    sjt_math2580 = left;
-    sjt_math2578 = sjt_math2579 - sjt_math2580;
-    (*_return)->m00 = sjt_math2577 / sjt_math2578;
+    sjt_math2573 = 2.0f;
+    sjt_math2575 = right;
+    sjt_math2576 = left;
+    sjt_math2574 = sjt_math2575 - sjt_math2576;
+    (*_return)->m00 = sjt_math2573 / sjt_math2574;
     (*_return)->m01 = 0.0f;
     (*_return)->m02 = 0.0f;
     (*_return)->m03 = 0.0f;
     (*_return)->m10 = 0.0f;
-    sjt_math2581 = 2.0f;
-    sjt_math2583 = top;
-    sjt_math2584 = bottom;
-    sjt_math2582 = sjt_math2583 - sjt_math2584;
-    (*_return)->m11 = sjt_math2581 / sjt_math2582;
+    sjt_math2577 = 2.0f;
+    sjt_math2579 = top;
+    sjt_math2580 = bottom;
+    sjt_math2578 = sjt_math2579 - sjt_math2580;
+    (*_return)->m11 = sjt_math2577 / sjt_math2578;
     (*_return)->m12 = 0.0f;
     (*_return)->m13 = 0.0f;
     (*_return)->m20 = 0.0f;
     (*_return)->m21 = 0.0f;
     sjt_negate5 = 2.0f;
     result13 = -sjt_negate5;
-    sjt_math2585 = result13;
-    sjt_math2587 = zfar;
-    sjt_math2588 = znear;
-    sjt_math2586 = sjt_math2587 - sjt_math2588;
-    (*_return)->m22 = sjt_math2585 / sjt_math2586;
+    sjt_math2581 = result13;
+    sjt_math2583 = zfar;
+    sjt_math2584 = znear;
+    sjt_math2582 = sjt_math2583 - sjt_math2584;
+    (*_return)->m22 = sjt_math2581 / sjt_math2582;
     (*_return)->m23 = 0.0f;
-    sjt_math2589 = 0.0f;
-    sjt_math2593 = right;
-    sjt_math2594 = left;
-    sjt_math2591 = sjt_math2593 + sjt_math2594;
-    sjt_math2595 = right;
-    sjt_math2596 = left;
-    sjt_math2592 = sjt_math2595 - sjt_math2596;
-    sjt_math2590 = sjt_math2591 / sjt_math2592;
-    (*_return)->m30 = sjt_math2589 - sjt_math2590;
-    sjt_math2597 = 0.0f;
-    sjt_math2601 = top;
-    sjt_math2602 = bottom;
-    sjt_math2599 = sjt_math2601 + sjt_math2602;
-    sjt_math2603 = top;
-    sjt_math2604 = bottom;
-    sjt_math2600 = sjt_math2603 - sjt_math2604;
-    sjt_math2598 = sjt_math2599 / sjt_math2600;
-    (*_return)->m31 = sjt_math2597 - sjt_math2598;
-    sjt_math2605 = 0.0f;
-    sjt_math2609 = zfar;
-    sjt_math2610 = znear;
-    sjt_math2607 = sjt_math2609 + sjt_math2610;
-    sjt_math2611 = zfar;
-    sjt_math2612 = znear;
-    sjt_math2608 = sjt_math2611 - sjt_math2612;
-    sjt_math2606 = sjt_math2607 / sjt_math2608;
-    (*_return)->m32 = sjt_math2605 - sjt_math2606;
+    sjt_math2585 = 0.0f;
+    sjt_math2589 = right;
+    sjt_math2590 = left;
+    sjt_math2587 = sjt_math2589 + sjt_math2590;
+    sjt_math2591 = right;
+    sjt_math2592 = left;
+    sjt_math2588 = sjt_math2591 - sjt_math2592;
+    sjt_math2586 = sjt_math2587 / sjt_math2588;
+    (*_return)->m30 = sjt_math2585 - sjt_math2586;
+    sjt_math2593 = 0.0f;
+    sjt_math2597 = top;
+    sjt_math2598 = bottom;
+    sjt_math2595 = sjt_math2597 + sjt_math2598;
+    sjt_math2599 = top;
+    sjt_math2600 = bottom;
+    sjt_math2596 = sjt_math2599 - sjt_math2600;
+    sjt_math2594 = sjt_math2595 / sjt_math2596;
+    (*_return)->m31 = sjt_math2593 - sjt_math2594;
+    sjt_math2601 = 0.0f;
+    sjt_math2605 = zfar;
+    sjt_math2606 = znear;
+    sjt_math2603 = sjt_math2605 + sjt_math2606;
+    sjt_math2607 = zfar;
+    sjt_math2608 = znear;
+    sjt_math2604 = sjt_math2607 - sjt_math2608;
+    sjt_math2602 = sjt_math2603 / sjt_math2604;
+    (*_return)->m32 = sjt_math2601 - sjt_math2602;
     (*_return)->m33 = 1.0f;
     sjf_mat4_heap((*_return));
 }
@@ -19051,6 +18299,25 @@ void sjf_mat4_transpose_heap(sjs_mat4* _parent, sjs_mat4** _return) {
     sjf_mat4_heap((*_return));
 }
 
+void sjf_model_as_sji_model(sjs_model* _this, sji_model* _return) {
+    _return->_parent = (sjs_object*)_this;
+    _return->_vtbl = &sjs_model_model_vtbl;
+}
+
+void sjf_model_asinterface(sjs_model* _this, int typeId, sjs_interface* _return) {
+    switch (typeId) {
+        case sji_model_typeId:  {
+            sjf_model_as_sji_model(_this, (sji_model*)_return);
+            break;
+        }
+
+        default: {
+            _return->_parent = 0;
+            break;
+        }
+    }
+}
+
 void sjf_model_copy(sjs_model* _this, sjs_model* _from) {
     _this->vertexbuffer._refCount = 1;
     sjf_vertexbuffer_vertex_location_texture_normal_copy(&_this->vertexbuffer, &_from->vertexbuffer);
@@ -19169,25 +18436,6 @@ void sjf_model_heap(sjs_model* _this, sjs_model** _return) {
     (*_return)->_refCount++;
 }
 
-void sjf_model_heap_as_sji_model(sjs_model* _this, sji_model* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_model_model_vtbl;
-}
-
-void sjf_model_heap_asinterface(sjs_model* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_model_typeId:  {
-            sjf_model_heap_as_sji_model(_this, (sji_model*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
-}
-
 void sjf_model_render(sjs_model* _parent) {
     sjs_mat4 sjt_call46 = { -1 };
     sjs_string sjt_call47 = { -1 };
@@ -19283,7 +18531,7 @@ void sjf_model_render(sjs_model* _parent) {
     sjt_call47.count = 9;
     sjt_call47.data._refCount = 1;
     sjt_call47.data.datasize = 10;
-    sjt_call47.data.data = (void*)sjg_string55;
+    sjt_call47.data.data = (void*)sjg_string59;
     sjt_call47.data._isglobal = true;
     sjt_call47.data.count = 10;
     sjf_array_char(&sjt_call47.data);
@@ -19298,7 +18546,7 @@ void sjf_model_render(sjs_model* _parent) {
     sjt_call48.count = 9;
     sjt_call48.data._refCount = 1;
     sjt_call48.data.datasize = 10;
-    sjt_call48.data.data = (void*)sjg_string56;
+    sjt_call48.data.data = (void*)sjg_string60;
     sjt_call48.data._isglobal = true;
     sjt_call48.data.count = 10;
     sjf_array_char(&sjt_call48.data);
@@ -19313,7 +18561,7 @@ void sjf_model_render(sjs_model* _parent) {
     sjt_call49.count = 10;
     sjt_call49.data._refCount = 1;
     sjt_call49.data.datasize = 11;
-    sjt_call49.data.data = (void*)sjg_string57;
+    sjt_call49.data.data = (void*)sjg_string61;
     sjt_call49.data._isglobal = true;
     sjt_call49.data.count = 11;
     sjf_array_char(&sjt_call49.data);
@@ -19329,7 +18577,7 @@ void sjf_model_render(sjs_model* _parent) {
     sjt_call50.count = 8;
     sjt_call50.data._refCount = 1;
     sjt_call50.data.datasize = 9;
-    sjt_call50.data.data = (void*)sjg_string58;
+    sjt_call50.data.data = (void*)sjg_string62;
     sjt_call50.data._isglobal = true;
     sjt_call50.data.count = 9;
     sjf_array_char(&sjt_call50.data);
@@ -19346,7 +18594,7 @@ void sjf_model_render(sjs_model* _parent) {
     sjt_call51.count = 12;
     sjt_call51.data._refCount = 1;
     sjt_call51.data.datasize = 13;
-    sjt_call51.data.data = (void*)sjg_string59;
+    sjt_call51.data.data = (void*)sjg_string63;
     sjt_call51.data._isglobal = true;
     sjt_call51.data.count = 13;
     sjf_array_char(&sjt_call51.data);
@@ -19365,7 +18613,7 @@ void sjf_model_render(sjs_model* _parent) {
     sjt_call53.count = 9;
     sjt_call53.data._refCount = 1;
     sjt_call53.data.datasize = 10;
-    sjt_call53.data.data = (void*)sjg_string60;
+    sjt_call53.data.data = (void*)sjg_string64;
     sjt_call53.data._isglobal = true;
     sjt_call53.data.count = 10;
     sjf_array_char(&sjt_call53.data);
@@ -19672,7 +18920,7 @@ void sjf_rect_asstring(sjs_rect* _parent, sjs_string* _return) {
     sjt_call18.count = 3;
     sjt_call18.data._refCount = 1;
     sjt_call18.data.datasize = 4;
-    sjt_call18.data.data = (void*)sjg_string47;
+    sjt_call18.data.data = (void*)sjg_string51;
     sjt_call18.data._isglobal = true;
     sjt_call18.data.count = 4;
     sjf_array_char(&sjt_call18.data);
@@ -19688,7 +18936,7 @@ void sjf_rect_asstring(sjs_rect* _parent, sjs_string* _return) {
     sjt_call20.count = 4;
     sjt_call20.data._refCount = 1;
     sjt_call20.data.datasize = 5;
-    sjt_call20.data.data = (void*)sjg_string48;
+    sjt_call20.data.data = (void*)sjg_string52;
     sjt_call20.data._isglobal = true;
     sjt_call20.data.count = 5;
     sjf_array_char(&sjt_call20.data);
@@ -19706,7 +18954,7 @@ void sjf_rect_asstring(sjs_rect* _parent, sjs_string* _return) {
     sjt_call22.count = 4;
     sjt_call22.data._refCount = 1;
     sjt_call22.data.datasize = 5;
-    sjt_call22.data.data = (void*)sjg_string49;
+    sjt_call22.data.data = (void*)sjg_string53;
     sjt_call22.data._isglobal = true;
     sjt_call22.data.count = 5;
     sjf_array_char(&sjt_call22.data);
@@ -19724,7 +18972,7 @@ void sjf_rect_asstring(sjs_rect* _parent, sjs_string* _return) {
     sjt_call24.count = 4;
     sjt_call24.data._refCount = 1;
     sjt_call24.data.datasize = 5;
-    sjt_call24.data.data = (void*)sjg_string50;
+    sjt_call24.data.data = (void*)sjg_string54;
     sjt_call24.data._isglobal = true;
     sjt_call24.data.count = 5;
     sjf_array_char(&sjt_call24.data);
@@ -19796,7 +19044,7 @@ void sjf_rect_asstring_heap(sjs_rect* _parent, sjs_string** _return) {
     sjt_call32.count = 3;
     sjt_call32.data._refCount = 1;
     sjt_call32.data.datasize = 4;
-    sjt_call32.data.data = (void*)sjg_string51;
+    sjt_call32.data.data = (void*)sjg_string55;
     sjt_call32.data._isglobal = true;
     sjt_call32.data.count = 4;
     sjf_array_char(&sjt_call32.data);
@@ -19812,7 +19060,7 @@ void sjf_rect_asstring_heap(sjs_rect* _parent, sjs_string** _return) {
     sjt_call34.count = 4;
     sjt_call34.data._refCount = 1;
     sjt_call34.data.datasize = 5;
-    sjt_call34.data.data = (void*)sjg_string52;
+    sjt_call34.data.data = (void*)sjg_string56;
     sjt_call34.data._isglobal = true;
     sjt_call34.data.count = 5;
     sjf_array_char(&sjt_call34.data);
@@ -19830,7 +19078,7 @@ void sjf_rect_asstring_heap(sjs_rect* _parent, sjs_string** _return) {
     sjt_call36.count = 4;
     sjt_call36.data._refCount = 1;
     sjt_call36.data.datasize = 5;
-    sjt_call36.data.data = (void*)sjg_string53;
+    sjt_call36.data.data = (void*)sjg_string57;
     sjt_call36.data._isglobal = true;
     sjt_call36.data.count = 5;
     sjf_array_char(&sjt_call36.data);
@@ -19848,7 +19096,7 @@ void sjf_rect_asstring_heap(sjs_rect* _parent, sjs_string** _return) {
     sjt_call38.count = 4;
     sjt_call38.data._refCount = 1;
     sjt_call38.data.datasize = 5;
-    sjt_call38.data.data = (void*)sjg_string54;
+    sjt_call38.data.data = (void*)sjg_string58;
     sjt_call38.data._isglobal = true;
     sjt_call38.data.count = 5;
     sjf_array_char(&sjt_call38.data);
@@ -20081,6 +19329,419 @@ void sjf_runloop(void) {
     #endif	
 }
 
+void sjf_saturateeffect(sjs_saturateeffect* _this) {
+}
+
+void sjf_saturateeffect_as_sji_effect(sjs_saturateeffect* _this, sji_effect* _return) {
+    _return->_parent = (sjs_object*)_this;
+    _return->_vtbl = &sjs_saturateeffect_effect_vtbl;
+}
+
+void sjf_saturateeffect_asinterface(sjs_saturateeffect* _this, int typeId, sjs_interface* _return) {
+    switch (typeId) {
+        case sji_effect_typeId:  {
+            sjf_saturateeffect_as_sji_effect(_this, (sji_effect*)_return);
+            break;
+        }
+
+        default: {
+            _return->_parent = 0;
+            break;
+        }
+    }
+}
+
+void sjf_saturateeffect_copy(sjs_saturateeffect* _this, sjs_saturateeffect* _from) {
+    _this->amount = _from->amount;
+    _this->_rect._refCount = 1;
+    sjf_rect_copy(&_this->_rect, &_from->_rect);
+    _this->_vertexbuffer._refCount = 1;
+    sjf_boxvertexbuffer_copy((_this->_vertexbuffer._refCount != -1 ? &_this->_vertexbuffer : 0), (_from->_vertexbuffer._refCount != -1 ? &_from->_vertexbuffer : 0));
+    _this->_scenebuffer._refCount = 1;
+    sjf_scenebuffer_copy((_this->_scenebuffer._refCount != -1 ? &_this->_scenebuffer : 0), (_from->_scenebuffer._refCount != -1 ? &_from->_scenebuffer : 0));
+    _this->_innerscene._refCount = 1;
+    sjf_scene2d_copy(&_this->_innerscene, &_from->_innerscene);
+}
+
+void sjf_saturateeffect_destroy(sjs_saturateeffect* _this) {
+}
+
+void sjf_saturateeffect_getrect(sjs_saturateeffect* _parent, sjs_rect* _return) {
+    sjs_rect* sjt_copy56 = 0;
+    sjs_saturateeffect* sjt_dot1713 = 0;
+
+    sjt_dot1713 = _parent;
+    sjt_copy56 = &(sjt_dot1713)->_rect;
+    _return->_refCount = 1;
+    sjf_rect_copy(_return, sjt_copy56);
+}
+
+void sjf_saturateeffect_getrect_heap(sjs_saturateeffect* _parent, sjs_rect** _return) {
+    sjs_rect* sjt_copy57 = 0;
+    sjs_saturateeffect* sjt_dot1714 = 0;
+
+    sjt_dot1714 = _parent;
+    sjt_copy57 = &(sjt_dot1714)->_rect;
+    (*_return) = (sjs_rect*)malloc(sizeof(sjs_rect));
+    (*_return)->_refCount = 1;
+    sjf_rect_copy((*_return), sjt_copy57);
+}
+
+void sjf_saturateeffect_heap(sjs_saturateeffect* _this) {
+}
+
+void sjf_saturateeffect_render(sjs_saturateeffect* _parent, sjs_scene2d* scene, cb_scene2d_void cb) {
+    sjs_saturateeffect* sjt_dot1730 = 0;
+    sjs_saturateeffect* sjt_dot1733 = 0;
+    sjs_saturateeffect* sjt_dot1739 = 0;
+    sjs_saturateeffect* sjt_dot1740 = 0;
+    bool sjt_ifElse62;
+    bool sjt_ifElse63;
+    sjs_boxvertexbuffer* sjt_isEmpty41 = 0;
+    sjs_scenebuffer* sjt_isEmpty42 = 0;
+    bool sjt_isEmpty43;
+    sjs_scenebuffer* sjt_isEmpty44 = 0;
+    bool sjt_isEmpty45;
+    sjs_boxvertexbuffer* sjt_isEmpty46 = 0;
+
+    sjt_dot1730 = _parent;
+    sjt_isEmpty41 = ((sjt_dot1730)->_vertexbuffer._refCount != -1 ? &(sjt_dot1730)->_vertexbuffer : 0);
+    sjt_ifElse62 = (sjt_isEmpty41 == 0);
+    if (sjt_ifElse62) {
+        sjs_rect* sjt_copy59 = 0;
+        sjs_saturateeffect* sjt_dot1731 = 0;
+        sjs_saturateeffect* sjt_dot1732 = 0;
+
+        sjt_dot1731 = _parent;
+        sjt_dot1731->_vertexbuffer._refCount = 1;
+        sjt_dot1732 = _parent;
+        sjt_copy59 = &(sjt_dot1732)->_rect;
+        sjt_dot1731->_vertexbuffer.rect._refCount = 1;
+        sjf_rect_copy(&sjt_dot1731->_vertexbuffer.rect, sjt_copy59);
+        sjf_boxvertexbuffer(&sjt_dot1731->_vertexbuffer);
+    }
+
+    sjt_dot1733 = _parent;
+    sjt_isEmpty42 = ((sjt_dot1733)->_scenebuffer._refCount != -1 ? &(sjt_dot1733)->_scenebuffer : 0);
+    sjt_ifElse63 = (sjt_isEmpty42 == 0);
+    if (sjt_ifElse63) {
+        sjs_saturateeffect* sjt_dot1734 = 0;
+        sjs_rect* sjt_dot1735 = 0;
+        sjs_saturateeffect* sjt_dot1736 = 0;
+        sjs_rect* sjt_dot1737 = 0;
+        sjs_saturateeffect* sjt_dot1738 = 0;
+
+        sjt_dot1734 = _parent;
+        sjt_dot1734->_scenebuffer._refCount = 1;
+        sjt_dot1734->_scenebuffer.size._refCount = 1;
+        sjt_dot1736 = _parent;
+        sjt_dot1735 = &(sjt_dot1736)->_rect;
+        sjt_dot1734->_scenebuffer.size.w = (sjt_dot1735)->w;
+        sjt_dot1738 = _parent;
+        sjt_dot1737 = &(sjt_dot1738)->_rect;
+        sjt_dot1734->_scenebuffer.size.h = (sjt_dot1737)->h;
+        sjf_size(&sjt_dot1734->_scenebuffer.size);
+        sjt_dot1734->_scenebuffer.framebuffer._refCount = 1;
+        sjt_dot1734->_scenebuffer.framebuffer.size._refCount = 1;
+        sjt_dot1734->_scenebuffer.framebuffer.size.w = 0;
+        sjt_dot1734->_scenebuffer.framebuffer.size.h = 0;
+        sjf_size(&sjt_dot1734->_scenebuffer.framebuffer.size);
+        sjt_dot1734->_scenebuffer.framebuffer.id = (uint32_t)0u;
+        sjf_framebuffer(&sjt_dot1734->_scenebuffer.framebuffer);
+        sjt_dot1734->_scenebuffer.texture._refCount = 1;
+        sjt_dot1734->_scenebuffer.texture.size._refCount = 1;
+        sjt_dot1734->_scenebuffer.texture.size.w = 0;
+        sjt_dot1734->_scenebuffer.texture.size.h = 0;
+        sjf_size(&sjt_dot1734->_scenebuffer.texture.size);
+        sjt_dot1734->_scenebuffer.texture.id = (uint32_t)0u;
+        sjf_texture(&sjt_dot1734->_scenebuffer.texture);
+        sjt_dot1734->_scenebuffer.renderbuffer._refCount = 1;
+        sjt_dot1734->_scenebuffer.renderbuffer.size._refCount = 1;
+        sjt_dot1734->_scenebuffer.renderbuffer.size.w = 0;
+        sjt_dot1734->_scenebuffer.renderbuffer.size.h = 0;
+        sjf_size(&sjt_dot1734->_scenebuffer.renderbuffer.size);
+        sjt_dot1734->_scenebuffer.renderbuffer.id = (uint32_t)0u;
+        sjf_renderbuffer(&sjt_dot1734->_scenebuffer.renderbuffer);
+        sjf_scenebuffer(&sjt_dot1734->_scenebuffer);
+    }
+
+    sjt_dot1739 = _parent;
+    sjt_isEmpty44 = ((sjt_dot1739)->_scenebuffer._refCount != -1 ? &(sjt_dot1739)->_scenebuffer : 0);
+    sjt_isEmpty43 = (sjt_isEmpty44 != 0);
+    sjt_dot1740 = _parent;
+    sjt_isEmpty46 = ((sjt_dot1740)->_vertexbuffer._refCount != -1 ? &(sjt_dot1740)->_vertexbuffer : 0);
+    sjt_isEmpty45 = (sjt_isEmpty46 != 0);
+    if (sjt_isEmpty43 && sjt_isEmpty45) {
+        sjs_scenebuffer* ifValue35 = 0;
+        sjs_boxvertexbuffer* ifValue36 = 0;
+        sjs_string sjt_call95 = { -1 };
+        sjs_string sjt_call96 = { -1 };
+        sjs_string sjt_call97 = { -1 };
+        sjs_string sjt_call98 = { -1 };
+        sjs_string sjt_call99 = { -1 };
+        cb_scene2d_void sjt_callback12;
+        sjs_saturateeffect* sjt_dot1741 = 0;
+        sjs_saturateeffect* sjt_dot1742 = 0;
+        sjs_scenebuffer* sjt_dot1743 = 0;
+        sjs_saturateeffect* sjt_dot1744 = 0;
+        sjs_scenebuffer* sjt_dot1745 = 0;
+        sjs_saturateeffect* sjt_dot1746 = 0;
+        sjs_saturateeffect* sjt_dot1747 = 0;
+        sjs_saturateeffect* sjt_dot1748 = 0;
+        sjs_scenebuffer* sjt_dot1749 = 0;
+        sjs_scenebuffer* sjt_dot1750 = 0;
+        sjs_saturateeffect* sjt_dot1751 = 0;
+        sjs_scene2d* sjt_dot1752 = 0;
+        sjs_scene2d* sjt_dot1753 = 0;
+        sjs_scene2d* sjt_dot1754 = 0;
+        sjs_framebuffer* sjt_functionParam498 = 0;
+        sjs_size* sjt_functionParam499 = 0;
+        sjs_scene2d* sjt_functionParam500 = 0;
+        sjs_framebuffer* sjt_functionParam501 = 0;
+        int32_t sjt_functionParam502;
+        sjs_texture* sjt_functionParam503 = 0;
+        sjs_shader* sjt_functionParam504 = 0;
+        int32_t sjt_functionParam505;
+        sjs_shader* sjt_functionParam506 = 0;
+        sjs_string* sjt_functionParam507 = 0;
+        int32_t sjt_functionParam508;
+        int32_t sjt_functionParam509;
+        sjs_shader* sjt_functionParam510 = 0;
+        sjs_string* sjt_functionParam511 = 0;
+        float sjt_functionParam512;
+        int32_t sjt_functionParam513;
+        sjs_shader* sjt_functionParam514 = 0;
+        sjs_string* sjt_functionParam515 = 0;
+        sjs_mat4* sjt_functionParam516 = 0;
+        int32_t sjt_functionParam517;
+        sjs_shader* sjt_functionParam518 = 0;
+        sjs_string* sjt_functionParam519 = 0;
+        sjs_mat4* sjt_functionParam520 = 0;
+        int32_t sjt_functionParam521;
+        sjs_shader* sjt_functionParam522 = 0;
+        sjs_string* sjt_functionParam523 = 0;
+        sjs_mat4* sjt_functionParam524 = 0;
+        sjs_scene2d* sjt_functionParam525 = 0;
+        sjs_scene2d* sjt_parent211 = 0;
+        sjs_scene2d* sjt_parent212 = 0;
+        sjs_scene2d* sjt_parent213 = 0;
+        sjs_boxvertexbuffer* sjt_parent214 = 0;
+
+        sjt_dot1741 = _parent;
+        ifValue35 = ((sjt_dot1741)->_scenebuffer._refCount != -1 ? &(sjt_dot1741)->_scenebuffer : 0);
+        sjt_dot1742 = _parent;
+        ifValue36 = ((sjt_dot1742)->_vertexbuffer._refCount != -1 ? &(sjt_dot1742)->_vertexbuffer : 0);
+        sjt_dot1743 = ifValue35;
+        sjt_functionParam498 = &(sjt_dot1743)->framebuffer;
+        sjf_glpushframebuffer(sjt_functionParam498);
+        sjt_dot1744 = _parent;
+        sjt_parent211 = &(sjt_dot1744)->_innerscene;
+        sjt_dot1745 = ifValue35;
+        sjt_functionParam499 = &(sjt_dot1745)->size;
+        sjf_scene2d_setsize(sjt_parent211, sjt_functionParam499);
+        sjt_dot1746 = _parent;
+        sjt_parent212 = &(sjt_dot1746)->_innerscene;
+        sjf_scene2d_start(sjt_parent212);
+        sjt_callback12 = cb;
+        sjt_dot1747 = _parent;
+        sjt_functionParam500 = &(sjt_dot1747)->_innerscene;
+        sjt_callback12._cb(sjt_callback12._parent, sjt_functionParam500);
+        sjt_dot1748 = _parent;
+        sjt_parent213 = &(sjt_dot1748)->_innerscene;
+        sjf_scene2d_end(sjt_parent213);
+        sjt_dot1749 = ifValue35;
+        sjt_functionParam501 = &(sjt_dot1749)->framebuffer;
+        sjf_glpopframebuffer(sjt_functionParam501);
+        sjt_functionParam502 = sjv_gltexture_gl_texture_2d;
+        sjt_dot1750 = ifValue35;
+        sjt_functionParam503 = &(sjt_dot1750)->texture;
+        sjf_glbindtexture(sjt_functionParam502, sjt_functionParam503);
+        sjt_functionParam504 = &sjv_saturateshader;
+        sjf_gluseprogram(sjt_functionParam504);
+        sjt_functionParam506 = &sjv_saturateshader;
+        sjt_call95._refCount = 1;
+        sjt_call95.count = 7;
+        sjt_call95.data._refCount = 1;
+        sjt_call95.data.datasize = 8;
+        sjt_call95.data.data = (void*)sjg_string105;
+        sjt_call95.data._isglobal = true;
+        sjt_call95.data.count = 8;
+        sjf_array_char(&sjt_call95.data);
+        sjf_string(&sjt_call95);
+        sjt_functionParam507 = &sjt_call95;
+        sjf_glgetuniformlocation(sjt_functionParam506, sjt_functionParam507, &sjt_functionParam505);
+        sjt_functionParam508 = 0;
+        sjf_gluniformi32(sjt_functionParam505, sjt_functionParam508);
+        sjt_functionParam510 = &sjv_saturateshader;
+        sjt_call96._refCount = 1;
+        sjt_call96.count = 6;
+        sjt_call96.data._refCount = 1;
+        sjt_call96.data.datasize = 7;
+        sjt_call96.data.data = (void*)sjg_string106;
+        sjt_call96.data._isglobal = true;
+        sjt_call96.data.count = 7;
+        sjf_array_char(&sjt_call96.data);
+        sjf_string(&sjt_call96);
+        sjt_functionParam511 = &sjt_call96;
+        sjf_glgetuniformlocation(sjt_functionParam510, sjt_functionParam511, &sjt_functionParam509);
+        sjt_dot1751 = _parent;
+        sjt_functionParam512 = (sjt_dot1751)->amount;
+        sjf_gluniformf32(sjt_functionParam509, sjt_functionParam512);
+        sjt_functionParam514 = &sjv_saturateshader;
+        sjt_call97._refCount = 1;
+        sjt_call97.count = 5;
+        sjt_call97.data._refCount = 1;
+        sjt_call97.data.datasize = 6;
+        sjt_call97.data.data = (void*)sjg_string107;
+        sjt_call97.data._isglobal = true;
+        sjt_call97.data.count = 6;
+        sjf_array_char(&sjt_call97.data);
+        sjf_string(&sjt_call97);
+        sjt_functionParam515 = &sjt_call97;
+        sjf_glgetuniformlocation(sjt_functionParam514, sjt_functionParam515, &sjt_functionParam513);
+        sjt_dot1752 = scene;
+        sjt_functionParam516 = &(sjt_dot1752)->model;
+        sjf_gluniformmat4(sjt_functionParam513, sjt_functionParam516);
+        sjt_functionParam518 = &sjv_saturateshader;
+        sjt_call98._refCount = 1;
+        sjt_call98.count = 4;
+        sjt_call98.data._refCount = 1;
+        sjt_call98.data.datasize = 5;
+        sjt_call98.data.data = (void*)sjg_string108;
+        sjt_call98.data._isglobal = true;
+        sjt_call98.data.count = 5;
+        sjf_array_char(&sjt_call98.data);
+        sjf_string(&sjt_call98);
+        sjt_functionParam519 = &sjt_call98;
+        sjf_glgetuniformlocation(sjt_functionParam518, sjt_functionParam519, &sjt_functionParam517);
+        sjt_dot1753 = scene;
+        sjt_functionParam520 = &(sjt_dot1753)->view;
+        sjf_gluniformmat4(sjt_functionParam517, sjt_functionParam520);
+        sjt_functionParam522 = &sjv_saturateshader;
+        sjt_call99._refCount = 1;
+        sjt_call99.count = 10;
+        sjt_call99.data._refCount = 1;
+        sjt_call99.data.datasize = 11;
+        sjt_call99.data.data = (void*)sjg_string109;
+        sjt_call99.data._isglobal = true;
+        sjt_call99.data.count = 11;
+        sjf_array_char(&sjt_call99.data);
+        sjf_string(&sjt_call99);
+        sjt_functionParam523 = &sjt_call99;
+        sjf_glgetuniformlocation(sjt_functionParam522, sjt_functionParam523, &sjt_functionParam521);
+        sjt_dot1754 = scene;
+        sjt_functionParam524 = &(sjt_dot1754)->projection;
+        sjf_gluniformmat4(sjt_functionParam521, sjt_functionParam524);
+        sjt_parent214 = ifValue36;
+        sjt_functionParam525 = scene;
+        sjf_boxvertexbuffer_render(sjt_parent214, sjt_functionParam525);
+
+        if (sjt_call95._refCount == 1) { sjf_string_destroy(&sjt_call95); }
+        if (sjt_call96._refCount == 1) { sjf_string_destroy(&sjt_call96); }
+        if (sjt_call97._refCount == 1) { sjf_string_destroy(&sjt_call97); }
+        if (sjt_call98._refCount == 1) { sjf_string_destroy(&sjt_call98); }
+        if (sjt_call99._refCount == 1) { sjf_string_destroy(&sjt_call99); }
+    }
+}
+
+void sjf_saturateeffect_setrect(sjs_saturateeffect* _parent, sjs_rect* rect_, cb_rect_void cb) {
+    bool result18;
+    sjs_rect sjt_call94 = { -1 };
+    cb_rect_void sjt_callback11;
+    sjs_saturateeffect* sjt_dot1715 = 0;
+    sjs_rect* sjt_dot1726 = 0;
+    sjs_saturateeffect* sjt_dot1727 = 0;
+    sjs_rect* sjt_dot1728 = 0;
+    sjs_saturateeffect* sjt_dot1729 = 0;
+    sjs_rect* sjt_functionParam495 = 0;
+    sjs_rect* sjt_functionParam497 = 0;
+    bool sjt_ifElse60;
+    bool sjt_not11;
+    sjs_rect* sjt_parent209 = 0;
+
+    sjt_dot1715 = _parent;
+    sjt_parent209 = &(sjt_dot1715)->_rect;
+    sjt_functionParam495 = rect_;
+    sjf_rect_isequal(sjt_parent209, sjt_functionParam495, &sjt_not11);
+    result18 = !sjt_not11;
+    sjt_ifElse60 = result18;
+    if (sjt_ifElse60) {
+        sjs_rect* sjt_copy58 = 0;
+        sjs_saturateeffect* sjt_dot1716 = 0;
+        sjs_saturateeffect* sjt_dot1717 = 0;
+        sjs_saturateeffect* sjt_dot1725 = 0;
+        bool sjt_isEmpty39;
+        sjs_scenebuffer* sjt_isEmpty40 = 0;
+
+        sjt_dot1716 = _parent;
+        sjt_copy58 = rect_;
+        sjt_dot1716->_rect._refCount = 1;
+        sjf_rect_copy(&sjt_dot1716->_rect, sjt_copy58);
+        sjt_dot1717 = _parent;
+        sjt_isEmpty40 = ((sjt_dot1717)->_scenebuffer._refCount != -1 ? &(sjt_dot1717)->_scenebuffer : 0);
+        sjt_isEmpty39 = (sjt_isEmpty40 != 0);
+        if (sjt_isEmpty39) {
+            sjs_scenebuffer* ifValue33 = 0;
+            bool result19;
+            sjs_size sjt_call93 = { -1 };
+            sjs_saturateeffect* sjt_dot1718 = 0;
+            sjs_scenebuffer* sjt_dot1719 = 0;
+            sjs_rect* sjt_dot1720 = 0;
+            sjs_saturateeffect* sjt_dot1721 = 0;
+            sjs_rect* sjt_dot1722 = 0;
+            sjs_saturateeffect* sjt_dot1723 = 0;
+            sjs_size* sjt_functionParam496 = 0;
+            bool sjt_ifElse61;
+            bool sjt_not12;
+            sjs_size* sjt_parent210 = 0;
+
+            sjt_dot1718 = _parent;
+            ifValue33 = ((sjt_dot1718)->_scenebuffer._refCount != -1 ? &(sjt_dot1718)->_scenebuffer : 0);
+            sjt_dot1719 = ifValue33;
+            sjt_parent210 = &(sjt_dot1719)->size;
+            sjt_call93._refCount = 1;
+            sjt_dot1721 = _parent;
+            sjt_dot1720 = &(sjt_dot1721)->_rect;
+            sjt_call93.w = (sjt_dot1720)->w;
+            sjt_dot1723 = _parent;
+            sjt_dot1722 = &(sjt_dot1723)->_rect;
+            sjt_call93.h = (sjt_dot1722)->h;
+            sjf_size(&sjt_call93);
+            sjt_functionParam496 = &sjt_call93;
+            sjf_size_isequal(sjt_parent210, sjt_functionParam496, &sjt_not12);
+            result19 = !sjt_not12;
+            sjt_ifElse61 = result19;
+            if (sjt_ifElse61) {
+                sjs_saturateeffect* sjt_dot1724 = 0;
+
+                sjt_dot1724 = _parent;
+                sjt_dot1724->_scenebuffer._refCount = -1;
+            }
+
+            if (sjt_call93._refCount == 1) { sjf_size_destroy(&sjt_call93); }
+        }
+
+        sjt_dot1725 = _parent;
+        sjt_dot1725->_vertexbuffer._refCount = -1;
+    }
+
+    sjt_callback11 = cb;
+    sjt_call94._refCount = 1;
+    sjt_call94.x = 0;
+    sjt_call94.y = 0;
+    sjt_dot1727 = _parent;
+    sjt_dot1726 = &(sjt_dot1727)->_rect;
+    sjt_call94.w = (sjt_dot1726)->w;
+    sjt_dot1729 = _parent;
+    sjt_dot1728 = &(sjt_dot1729)->_rect;
+    sjt_call94.h = (sjt_dot1728)->h;
+    sjf_rect(&sjt_call94);
+    sjt_functionParam497 = &sjt_call94;
+    sjt_callback11._cb(sjt_callback11._parent, sjt_functionParam497);
+
+    if (sjt_call94._refCount == 1) { sjf_rect_destroy(&sjt_call94); }
+}
+
 void sjf_scene2d(sjs_scene2d* _this) {
 }
 
@@ -20101,16 +19762,16 @@ void sjf_scene2d_destroy(sjs_scene2d* _this) {
 }
 
 void sjf_scene2d_end(sjs_scene2d* _parent) {
-    sjs_scene2d* sjt_dot1652 = 0;
-    sjs_scene2d* sjt_dot1653 = 0;
-    sjs_rect* sjt_functionParam392 = 0;
-    sjs_rect* sjt_functionParam393 = 0;
+    sjs_scene2d* sjt_dot1643 = 0;
+    sjs_scene2d* sjt_dot1644 = 0;
+    sjs_rect* sjt_functionParam394 = 0;
+    sjs_rect* sjt_functionParam395 = 0;
 
-    sjt_dot1652 = _parent;
-    sjt_functionParam392 = &(sjt_dot1652)->windowrect;
-    sjt_dot1653 = _parent;
-    sjt_functionParam393 = &(sjt_dot1653)->windowrect;
-    sjf_glpopviewport(sjt_functionParam392, sjt_functionParam393);
+    sjt_dot1643 = _parent;
+    sjt_functionParam394 = &(sjt_dot1643)->windowrect;
+    sjt_dot1644 = _parent;
+    sjt_functionParam395 = &(sjt_dot1644)->windowrect;
+    sjf_glpopviewport(sjt_functionParam394, sjt_functionParam395);
 }
 
 void sjf_scene2d_heap(sjs_scene2d* _this) {
@@ -20118,34 +19779,32 @@ void sjf_scene2d_heap(sjs_scene2d* _this) {
 
 void sjf_scene2d_setsize(sjs_scene2d* _parent, sjs_size* size) {
     bool result11;
-    sjs_scene2d* sjt_dot1631 = 0;
-    sjs_size* sjt_functionParam378 = 0;
-    bool sjt_ifElse56;
+    sjs_scene2d* sjt_dot1623 = 0;
+    sjs_size* sjt_functionParam380 = 0;
+    bool sjt_ifElse55;
     bool sjt_not8;
-    sjs_size* sjt_parent192 = 0;
+    sjs_size* sjt_parent190 = 0;
 
-    sjt_dot1631 = _parent;
-    sjt_parent192 = &(sjt_dot1631)->_size;
-    sjt_functionParam378 = size;
-    sjf_size_isequal(sjt_parent192, sjt_functionParam378, &sjt_not8);
+    sjt_dot1623 = _parent;
+    sjt_parent190 = &(sjt_dot1623)->_size;
+    sjt_functionParam380 = size;
+    sjf_size_isequal(sjt_parent190, sjt_functionParam380, &sjt_not8);
     result11 = !sjt_not8;
-    sjt_ifElse56 = result11;
-    if (sjt_ifElse56) {
+    sjt_ifElse55 = result11;
+    if (sjt_ifElse55) {
         float result14;
         float result15;
         int32_t sjt_cast33;
         int32_t sjt_cast34;
         sjs_size* sjt_copy51 = 0;
-        sjs_scene2d* sjt_dot1632 = 0;
-        sjs_scene2d* sjt_dot1633 = 0;
-        sjs_size* sjt_dot1634 = 0;
-        sjs_scene2d* sjt_dot1635 = 0;
-        sjs_size* sjt_dot1636 = 0;
-        sjs_scene2d* sjt_dot1637 = 0;
-        sjs_scene2d* sjt_dot1638 = 0;
-        sjs_scene2d* sjt_dot1639 = 0;
-        float sjt_functionParam379;
-        float sjt_functionParam380;
+        sjs_scene2d* sjt_dot1624 = 0;
+        sjs_scene2d* sjt_dot1625 = 0;
+        sjs_size* sjt_dot1626 = 0;
+        sjs_scene2d* sjt_dot1627 = 0;
+        sjs_size* sjt_dot1628 = 0;
+        sjs_scene2d* sjt_dot1629 = 0;
+        sjs_scene2d* sjt_dot1630 = 0;
+        sjs_scene2d* sjt_dot1631 = 0;
         float sjt_functionParam381;
         float sjt_functionParam382;
         float sjt_functionParam383;
@@ -20153,72 +19812,74 @@ void sjf_scene2d_setsize(sjs_scene2d* _parent, sjs_size* size) {
         float sjt_functionParam385;
         float sjt_functionParam386;
         float sjt_functionParam387;
-        int32_t sjt_math2613;
-        int32_t sjt_math2614;
+        float sjt_functionParam388;
+        float sjt_functionParam389;
+        int32_t sjt_math2609;
+        int32_t sjt_math2610;
         float sjt_negate6;
         float sjt_negate7;
 
-        sjt_dot1632 = _parent;
+        sjt_dot1624 = _parent;
         sjt_copy51 = size;
-        sjt_dot1632->_size._refCount = 1;
-        sjf_size_copy(&sjt_dot1632->_size, sjt_copy51);
-        sjt_dot1633 = _parent;
-        sjt_functionParam379 = 0.0f;
-        sjt_dot1635 = _parent;
-        sjt_dot1634 = &(sjt_dot1635)->_size;
-        sjt_cast33 = (sjt_dot1634)->w;
-        sjt_functionParam380 = (float)sjt_cast33;
-        sjt_math2613 = 0;
-        sjt_dot1637 = _parent;
-        sjt_dot1636 = &(sjt_dot1637)->_size;
-        sjt_math2614 = (sjt_dot1636)->h;
-        sjt_cast34 = sjt_math2613 - sjt_math2614;
-        sjt_functionParam381 = (float)sjt_cast34;
-        sjt_functionParam382 = 0.0f;
+        sjt_dot1624->_size._refCount = 1;
+        sjf_size_copy(&sjt_dot1624->_size, sjt_copy51);
+        sjt_dot1625 = _parent;
+        sjt_functionParam381 = 0.0f;
+        sjt_dot1627 = _parent;
+        sjt_dot1626 = &(sjt_dot1627)->_size;
+        sjt_cast33 = (sjt_dot1626)->w;
+        sjt_functionParam382 = (float)sjt_cast33;
+        sjt_math2609 = 0;
+        sjt_dot1629 = _parent;
+        sjt_dot1628 = &(sjt_dot1629)->_size;
+        sjt_math2610 = (sjt_dot1628)->h;
+        sjt_cast34 = sjt_math2609 - sjt_math2610;
+        sjt_functionParam383 = (float)sjt_cast34;
+        sjt_functionParam384 = 0.0f;
         sjt_negate6 = 1.0f;
         result14 = -sjt_negate6;
-        sjt_functionParam383 = result14;
-        sjt_functionParam384 = 1.0f;
-        sjf_mat4_orthographic(sjt_functionParam379, sjt_functionParam380, sjt_functionParam381, sjt_functionParam382, sjt_functionParam383, sjt_functionParam384, &sjt_dot1633->projection);
-        sjt_dot1638 = _parent;
-        sjt_functionParam385 = 1.0f;
+        sjt_functionParam385 = result14;
+        sjt_functionParam386 = 1.0f;
+        sjf_mat4_orthographic(sjt_functionParam381, sjt_functionParam382, sjt_functionParam383, sjt_functionParam384, sjt_functionParam385, sjt_functionParam386, &sjt_dot1625->projection);
+        sjt_dot1630 = _parent;
+        sjt_functionParam387 = 1.0f;
         sjt_negate7 = 1.0f;
         result15 = -sjt_negate7;
-        sjt_functionParam386 = result15;
-        sjt_functionParam387 = 1.0f;
-        sjf_mat4_scale(sjt_functionParam385, sjt_functionParam386, sjt_functionParam387, &sjt_dot1638->model);
-        sjt_dot1639 = _parent;
-        sjf_mat4_identity(&sjt_dot1639->view);
+        sjt_functionParam388 = result15;
+        sjt_functionParam389 = 1.0f;
+        sjf_mat4_scale(sjt_functionParam387, sjt_functionParam388, sjt_functionParam389, &sjt_dot1630->model);
+        sjt_dot1631 = _parent;
+        sjf_mat4_identity(&sjt_dot1631->view);
     }
 }
 
 void sjf_scene2d_start(sjs_scene2d* _parent) {
-    sjs_scene2d* sjt_dot1642 = 0;
-    sjs_size* sjt_dot1643 = 0;
-    sjs_scene2d* sjt_dot1644 = 0;
-    sjs_size* sjt_dot1645 = 0;
-    sjs_scene2d* sjt_dot1646 = 0;
-    sjs_scene2d* sjt_dot1647 = 0;
-    sjs_scene2d* sjt_dot1648 = 0;
-    sjs_rect* sjt_functionParam389 = 0;
-    sjs_rect* sjt_functionParam390 = 0;
+    sjs_scene2d* sjt_dot1634 = 0;
+    sjs_size* sjt_dot1635 = 0;
+    sjs_scene2d* sjt_dot1636 = 0;
+    sjs_size* sjt_dot1637 = 0;
+    sjs_scene2d* sjt_dot1638 = 0;
+    sjs_scene2d* sjt_dot1639 = 0;
+    sjs_scene2d* sjt_dot1640 = 0;
+    sjs_rect* sjt_functionParam391 = 0;
+    sjs_rect* sjt_functionParam392 = 0;
 
-    sjt_dot1642 = _parent;
-    sjt_dot1642->windowrect._refCount = 1;
-    sjt_dot1642->windowrect.x = 0;
-    sjt_dot1642->windowrect.y = 0;
-    sjt_dot1644 = _parent;
-    sjt_dot1643 = &(sjt_dot1644)->_size;
-    sjt_dot1642->windowrect.w = (sjt_dot1643)->w;
-    sjt_dot1646 = _parent;
-    sjt_dot1645 = &(sjt_dot1646)->_size;
-    sjt_dot1642->windowrect.h = (sjt_dot1645)->h;
-    sjf_rect(&sjt_dot1642->windowrect);
-    sjt_dot1647 = _parent;
-    sjt_functionParam389 = &(sjt_dot1647)->windowrect;
-    sjt_dot1648 = _parent;
-    sjt_functionParam390 = &(sjt_dot1648)->windowrect;
-    sjf_glpushviewport(sjt_functionParam389, sjt_functionParam390);
+    sjt_dot1634 = _parent;
+    sjt_dot1634->windowrect._refCount = 1;
+    sjt_dot1634->windowrect.x = 0;
+    sjt_dot1634->windowrect.y = 0;
+    sjt_dot1636 = _parent;
+    sjt_dot1635 = &(sjt_dot1636)->_size;
+    sjt_dot1634->windowrect.w = (sjt_dot1635)->w;
+    sjt_dot1638 = _parent;
+    sjt_dot1637 = &(sjt_dot1638)->_size;
+    sjt_dot1634->windowrect.h = (sjt_dot1637)->h;
+    sjf_rect(&sjt_dot1634->windowrect);
+    sjt_dot1639 = _parent;
+    sjt_functionParam391 = &(sjt_dot1639)->windowrect;
+    sjt_dot1640 = _parent;
+    sjt_functionParam392 = &(sjt_dot1640)->windowrect;
+    sjf_glpushviewport(sjt_functionParam391, sjt_functionParam392);
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glEnable( GL_TEXTURE_2D );
     glDisable( GL_DEPTH_TEST );
@@ -20361,25 +20022,6 @@ void sjf_scene3delement_getsize_heap(sjs_scene3delement* _parent, sjs_size* maxs
 }
 
 void sjf_scene3delement_heap(sjs_scene3delement* _this) {
-}
-
-void sjf_scene3delement_heap_as_sji_element(sjs_scene3delement* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_scene3delement_element_vtbl;
-}
-
-void sjf_scene3delement_heap_asinterface(sjs_scene3delement* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_scene3delement_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
 }
 
 void sjf_scene3delement_render(sjs_scene3delement* _parent, sjs_scene2d* scene) {
@@ -20727,7 +20369,7 @@ void sjf_scenebuffer(sjs_scenebuffer* _this) {
         sjt_call64.count = 18;
         sjt_call64.data._refCount = 1;
         sjt_call64.data.datasize = 19;
-        sjt_call64.data.data = (void*)sjg_string24;
+        sjt_call64.data.data = (void*)sjg_string26;
         sjt_call64.data._isglobal = true;
         sjt_call64.data.count = 19;
         sjf_array_char(&sjt_call64.data);
@@ -20855,7 +20497,7 @@ void sjf_scenebuffer_heap(sjs_scenebuffer* _this) {
         sjt_call66.count = 18;
         sjt_call66.data._refCount = 1;
         sjt_call66.data.datasize = 19;
-        sjt_call66.data.data = (void*)sjg_string27;
+        sjt_call66.data.data = (void*)sjg_string29;
         sjt_call66.data._isglobal = true;
         sjt_call66.data.count = 19;
         sjf_array_char(&sjt_call66.data);
@@ -21449,14 +21091,14 @@ void sjf_spherevertexbuffer(int32_t slices, int32_t wedges, sjs_vec3* origin, sj
             sjt_math2264 = sjt_math2271 * sjt_math2272;
             sjv_angle = sjt_math2263 - sjt_math2264;
             sjt_functionParam232 = sjv_angle;
-            sjf_f32_cos(sjt_functionParam232, &sjt_math2275);
+            sjf_f32_sin(sjt_functionParam232, &sjt_math2275);
             sjt_math2276 = sjv_r0;
             sjt_math2273 = sjt_math2275 * sjt_math2276;
             sjt_dot1493 = radius;
             sjt_math2274 = (sjt_dot1493)->x;
             sjv_x0 = sjt_math2273 * sjt_math2274;
             sjt_functionParam233 = sjv_angle;
-            sjf_f32_sin(sjt_functionParam233, &sjt_math2279);
+            sjf_f32_cos(sjt_functionParam233, &sjt_math2279);
             sjt_math2280 = sjv_r0;
             sjt_math2277 = sjt_math2279 * sjt_math2280;
             sjt_dot1494 = radius;
@@ -21932,14 +21574,14 @@ void sjf_spherevertexbuffer_heap(int32_t slices, int32_t wedges, sjs_vec3* origi
             sjt_math2398 = sjt_math2405 * sjt_math2406;
             sjv_angle = sjt_math2397 - sjt_math2398;
             sjt_functionParam250 = sjv_angle;
-            sjf_f32_cos(sjt_functionParam250, &sjt_math2409);
+            sjf_f32_sin(sjt_functionParam250, &sjt_math2409);
             sjt_math2410 = sjv_r0;
             sjt_math2407 = sjt_math2409 * sjt_math2410;
             sjt_dot1499 = radius;
             sjt_math2408 = (sjt_dot1499)->x;
             sjv_x0 = sjt_math2407 * sjt_math2408;
             sjt_functionParam251 = sjv_angle;
-            sjf_f32_sin(sjt_functionParam251, &sjt_math2413);
+            sjf_f32_cos(sjt_functionParam251, &sjt_math2413);
             sjt_math2414 = sjv_r0;
             sjt_math2411 = sjt_math2413 * sjt_math2414;
             sjt_dot1500 = radius;
@@ -22638,7 +22280,7 @@ void sjf_testscene_heap(sji_element* _return) {
     sjt_call57.count = 14;
     sjt_call57.data._refCount = 1;
     sjt_call57.data.datasize = 15;
-    sjt_call57.data.data = (void*)sjg_string22;
+    sjt_call57.data.data = (void*)sjg_string24;
     sjt_call57.data._isglobal = true;
     sjt_call57.data.count = 15;
     sjf_array_char(&sjt_call57.data);
@@ -22839,7 +22481,7 @@ void sjf_testscene_heap(sji_element* _return) {
     sjt_call58->text.count = 5;
     sjt_call58->text.data._refCount = 1;
     sjt_call58->text.data.datasize = 6;
-    sjt_call58->text.data.data = (void*)sjg_string23;
+    sjt_call58->text.data.data = (void*)sjg_string25;
     sjt_call58->text.data._isglobal = true;
     sjt_call58->text.data.count = 6;
     sjf_array_char(&sjt_call58->text.data);
@@ -23093,25 +22735,6 @@ void sjf_textelement_getsize_heap(sjs_textelement* _parent, sjs_size* maxsize, s
 }
 
 void sjf_textelement_heap(sjs_textelement* _this) {
-}
-
-void sjf_textelement_heap_as_sji_element(sjs_textelement* _this, sji_element* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_textelement_element_vtbl;
-}
-
-void sjf_textelement_heap_asinterface(sjs_textelement* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_element_typeId:  {
-            sjf_textelement_heap_as_sji_element(_this, (sji_element*)_return);
-            break;
-        }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
-    }
 }
 
 void sjf_textelement_render(sjs_textelement* _parent, sjs_scene2d* scene) {
@@ -24193,7 +23816,7 @@ int main(int argc, char** argv) {
     sjs_gridlayout_element_vtbl.render = (void(*)(sjs_object*,sjs_scene2d*))sjf_gridlayout_render;
     sjs_gridlayout_element_vtbl.firemouseevent = (void(*)(sjs_object*,sjs_mouseevent*, bool*))sjf_gridlayout_firemouseevent;
     sjs_model_model_vtbl.destroy = (void(*)(void*))sjf_model_destroy;
-    sjs_model_model_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_model_heap_asinterface;
+    sjs_model_model_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_model_asinterface;
     sjs_model_model_vtbl.update = (void(*)(sjs_object*,sjs_rect*,sjs_mat4*,sjs_mat4*,sjs_mat4*,sjs_light*))sjf_model_update;
     sjs_model_model_vtbl.getz = (void(*)(sjs_object*, float*))sjf_model_getz;
     sjs_model_model_vtbl.getcenter = (void(*)(sjs_object*, sjs_vec3*))sjf_model_getcenter;
@@ -24203,6 +23826,12 @@ int main(int argc, char** argv) {
     sjs_model_model_vtbl.renderorqueue = (void(*)(sjs_object*,sjs_list_heap_iface_model*))sjf_model_renderorqueue;
     sjs_model_model_vtbl.render = (void(*)(sjs_object*))sjf_model_render;
     sjs_model_model_vtbl.firemouseevent = (void(*)(sjs_object*,sjs_mouseevent*))sjf_model_firemouseevent;
+    sjs_saturateeffect_effect_vtbl.destroy = (void(*)(void*))sjf_saturateeffect_destroy;
+    sjs_saturateeffect_effect_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_saturateeffect_asinterface;
+    sjs_saturateeffect_effect_vtbl.getrect = (void(*)(sjs_object*, sjs_rect*))sjf_saturateeffect_getrect;
+    sjs_saturateeffect_effect_vtbl.getrect_heap = (void(*)(sjs_object*, sjs_rect**))sjf_saturateeffect_getrect_heap;
+    sjs_saturateeffect_effect_vtbl.setrect = (void(*)(sjs_object*,sjs_rect*,cb_rect_void))sjf_saturateeffect_setrect;
+    sjs_saturateeffect_effect_vtbl.render = (void(*)(sjs_object*,sjs_scene2d*,cb_scene2d_void))sjf_saturateeffect_render;
     sjs_scene3delement_element_vtbl.destroy = (void(*)(void*))sjf_scene3delement_destroy;
     sjs_scene3delement_element_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_scene3delement_asinterface;
     sjs_scene3delement_element_vtbl.getsize = (void(*)(sjs_object*,sjs_size*, sjs_size*))sjf_scene3delement_getsize;
@@ -24631,10 +24260,30 @@ int main(int argc, char** argv) {
     sjv_vertex_location_texture_normal_format.data.count = 33;
     sjf_array_char(&sjv_vertex_location_texture_normal_format.data);
     sjf_string(&sjv_vertex_location_texture_normal_format);
+    sjv_saturateshader._refCount = 1;
+    sjv_saturateshader.vertex._refCount = 1;
+    sjv_saturateshader.vertex.count = 20;
+    sjv_saturateshader.vertex.data._refCount = 1;
+    sjv_saturateshader.vertex.data.datasize = 21;
+    sjv_saturateshader.vertex.data.data = (void*)sjg_string18;
+    sjv_saturateshader.vertex.data._isglobal = true;
+    sjv_saturateshader.vertex.data.count = 21;
+    sjf_array_char(&sjv_saturateshader.vertex.data);
+    sjf_string(&sjv_saturateshader.vertex);
+    sjv_saturateshader.pixel._refCount = 1;
+    sjv_saturateshader.pixel.count = 21;
+    sjv_saturateshader.pixel.data._refCount = 1;
+    sjv_saturateshader.pixel.data.datasize = 22;
+    sjv_saturateshader.pixel.data.data = (void*)sjg_string19;
+    sjv_saturateshader.pixel.data._isglobal = true;
+    sjv_saturateshader.pixel.data.count = 22;
+    sjf_array_char(&sjv_saturateshader.pixel.data);
+    sjf_string(&sjv_saturateshader.pixel);
+    sjf_shader(&sjv_saturateshader);
     sjt_call1 = (sjs_gridlayout*)malloc(sizeof(sjs_gridlayout));
     sjt_call1->_refCount = 1;
     sjt_call1->children._refCount = 1;
-    sjt_call1->children.datasize = 3;
+    sjt_call1->children.datasize = 4;
     sjt_call1->children.data = 0;
     sjt_call1->children._isglobal = false;
     sjt_call1->children.count = 0;
@@ -24702,8 +24351,7 @@ int main(int argc, char** argv) {
     sjf_margin(&sjt_call62->margin);
     sjt_call63 = (sjs_blureffect*)malloc(sizeof(sjs_blureffect));
     sjt_call63->_refCount = 1;
-    sjt_call63->radius = 0.5f;
-    sjt_call63->up = true;
+    sjt_call63->radius = 5.0f;
     sjt_call63->_rect._refCount = 1;
     sjt_call63->_rect.x = 0;
     sjt_call63->_rect.y = 0;
@@ -24806,131 +24454,256 @@ int main(int argc, char** argv) {
     }
 
     sjf_array_heap_iface_element_initat(sjt_parent174, sjt_functionParam288, sjt_functionParam289);
-    sjt_parent204 = array8;
-    sjt_functionParam470 = 2;
-    sjt_call85 = (sjs_filllayout*)malloc(sizeof(sjs_filllayout));
-    sjt_call85->_refCount = 1;
-    sjt_call85->children._refCount = 1;
-    sjt_call85->children.datasize = 1;
-    sjt_call85->children.data = 0;
-    sjt_call85->children._isglobal = false;
-    sjt_call85->children.count = 0;
-    sjf_array_heap_iface_element(&sjt_call85->children);
+    sjt_parent199 = array8;
+    sjt_functionParam456 = 2;
+    sjt_call82 = (sjs_filllayout*)malloc(sizeof(sjs_filllayout));
+    sjt_call82->_refCount = 1;
+    sjt_call82->children._refCount = 1;
+    sjt_call82->children.datasize = 1;
+    sjt_call82->children.data = 0;
+    sjt_call82->children._isglobal = false;
+    sjt_call82->children.count = 0;
+    sjf_array_heap_iface_element(&sjt_call82->children);
     sjs_array_heap_iface_element* array10;
-    array10 = &sjt_call85->children;
-    sjt_parent205 = array10;
-    sjt_functionParam472 = 0;
-    sjf_testscene_heap(&sjt_functionParam473);
-    sjf_array_heap_iface_element_initat(sjt_parent205, sjt_functionParam472, sjt_functionParam473);
-    sjt_call85->margin._refCount = 1;
-    sjt_call85->margin.l = 10;
-    sjt_call85->margin.t = 10;
-    sjt_call85->margin.r = 10;
-    sjt_call85->margin.b = 10;
-    sjf_margin(&sjt_call85->margin);
-    sjt_call86 = (sjs_fadeeffect*)malloc(sizeof(sjs_fadeeffect));
-    sjt_call86->_refCount = 1;
-    sjt_call86->alpha = 0.5f;
-    sjt_call86->_rect._refCount = 1;
-    sjt_call86->_rect.x = 0;
-    sjt_call86->_rect.y = 0;
-    sjt_call86->_rect.w = 0;
-    sjt_call86->_rect.h = 0;
-    sjf_rect(&sjt_call86->_rect);
-    sjt_call86->_vertexbuffer._refCount = -1;
-    sjt_call86->_scenebuffer._refCount = -1;
-    sjt_call86->_innerscene._refCount = 1;
-    sjt_call86->_innerscene._size._refCount = 1;
-    sjt_call86->_innerscene._size.w = 0;
-    sjt_call86->_innerscene._size.h = 0;
-    sjf_size(&sjt_call86->_innerscene._size);
-    sjt_call86->_innerscene.model._refCount = 1;
-    sjt_call86->_innerscene.model.m00 = 0.0f;
-    sjt_call86->_innerscene.model.m01 = 0.0f;
-    sjt_call86->_innerscene.model.m02 = 0.0f;
-    sjt_call86->_innerscene.model.m03 = 0.0f;
-    sjt_call86->_innerscene.model.m10 = 0.0f;
-    sjt_call86->_innerscene.model.m11 = 0.0f;
-    sjt_call86->_innerscene.model.m12 = 0.0f;
-    sjt_call86->_innerscene.model.m13 = 0.0f;
-    sjt_call86->_innerscene.model.m20 = 0.0f;
-    sjt_call86->_innerscene.model.m21 = 0.0f;
-    sjt_call86->_innerscene.model.m22 = 0.0f;
-    sjt_call86->_innerscene.model.m23 = 0.0f;
-    sjt_call86->_innerscene.model.m30 = 0.0f;
-    sjt_call86->_innerscene.model.m31 = 0.0f;
-    sjt_call86->_innerscene.model.m32 = 0.0f;
-    sjt_call86->_innerscene.model.m33 = 0.0f;
-    sjf_mat4(&sjt_call86->_innerscene.model);
-    sjt_call86->_innerscene.view._refCount = 1;
-    sjt_call86->_innerscene.view.m00 = 0.0f;
-    sjt_call86->_innerscene.view.m01 = 0.0f;
-    sjt_call86->_innerscene.view.m02 = 0.0f;
-    sjt_call86->_innerscene.view.m03 = 0.0f;
-    sjt_call86->_innerscene.view.m10 = 0.0f;
-    sjt_call86->_innerscene.view.m11 = 0.0f;
-    sjt_call86->_innerscene.view.m12 = 0.0f;
-    sjt_call86->_innerscene.view.m13 = 0.0f;
-    sjt_call86->_innerscene.view.m20 = 0.0f;
-    sjt_call86->_innerscene.view.m21 = 0.0f;
-    sjt_call86->_innerscene.view.m22 = 0.0f;
-    sjt_call86->_innerscene.view.m23 = 0.0f;
-    sjt_call86->_innerscene.view.m30 = 0.0f;
-    sjt_call86->_innerscene.view.m31 = 0.0f;
-    sjt_call86->_innerscene.view.m32 = 0.0f;
-    sjt_call86->_innerscene.view.m33 = 0.0f;
-    sjf_mat4(&sjt_call86->_innerscene.view);
-    sjt_call86->_innerscene.projection._refCount = 1;
-    sjt_call86->_innerscene.projection.m00 = 0.0f;
-    sjt_call86->_innerscene.projection.m01 = 0.0f;
-    sjt_call86->_innerscene.projection.m02 = 0.0f;
-    sjt_call86->_innerscene.projection.m03 = 0.0f;
-    sjt_call86->_innerscene.projection.m10 = 0.0f;
-    sjt_call86->_innerscene.projection.m11 = 0.0f;
-    sjt_call86->_innerscene.projection.m12 = 0.0f;
-    sjt_call86->_innerscene.projection.m13 = 0.0f;
-    sjt_call86->_innerscene.projection.m20 = 0.0f;
-    sjt_call86->_innerscene.projection.m21 = 0.0f;
-    sjt_call86->_innerscene.projection.m22 = 0.0f;
-    sjt_call86->_innerscene.projection.m23 = 0.0f;
-    sjt_call86->_innerscene.projection.m30 = 0.0f;
-    sjt_call86->_innerscene.projection.m31 = 0.0f;
-    sjt_call86->_innerscene.projection.m32 = 0.0f;
-    sjt_call86->_innerscene.projection.m33 = 0.0f;
-    sjf_mat4(&sjt_call86->_innerscene.projection);
-    sjt_call86->_innerscene.windowrect._refCount = 1;
-    sjt_call86->_innerscene.windowrect.x = 0;
-    sjt_call86->_innerscene.windowrect.y = 0;
-    sjt_call86->_innerscene.windowrect.w = 0;
-    sjt_call86->_innerscene.windowrect.h = 0;
-    sjf_rect(&sjt_call86->_innerscene.windowrect);
-    sjf_scene2d(&sjt_call86->_innerscene);
-    sjf_fadeeffect_heap(sjt_call86);
-    sjt_cast38 = sjt_call86;
+    array10 = &sjt_call82->children;
+    sjt_parent200 = array10;
+    sjt_functionParam458 = 0;
+    sjf_testscene_heap(&sjt_functionParam459);
+    sjf_array_heap_iface_element_initat(sjt_parent200, sjt_functionParam458, sjt_functionParam459);
+    sjt_call82->margin._refCount = 1;
+    sjt_call82->margin.l = 10;
+    sjt_call82->margin.t = 10;
+    sjt_call82->margin.r = 10;
+    sjt_call82->margin.b = 10;
+    sjf_margin(&sjt_call82->margin);
+    sjt_call83 = (sjs_fadeeffect*)malloc(sizeof(sjs_fadeeffect));
+    sjt_call83->_refCount = 1;
+    sjt_call83->alpha = 0.5f;
+    sjt_call83->_rect._refCount = 1;
+    sjt_call83->_rect.x = 0;
+    sjt_call83->_rect.y = 0;
+    sjt_call83->_rect.w = 0;
+    sjt_call83->_rect.h = 0;
+    sjf_rect(&sjt_call83->_rect);
+    sjt_call83->_vertexbuffer._refCount = -1;
+    sjt_call83->_scenebuffer._refCount = -1;
+    sjt_call83->_innerscene._refCount = 1;
+    sjt_call83->_innerscene._size._refCount = 1;
+    sjt_call83->_innerscene._size.w = 0;
+    sjt_call83->_innerscene._size.h = 0;
+    sjf_size(&sjt_call83->_innerscene._size);
+    sjt_call83->_innerscene.model._refCount = 1;
+    sjt_call83->_innerscene.model.m00 = 0.0f;
+    sjt_call83->_innerscene.model.m01 = 0.0f;
+    sjt_call83->_innerscene.model.m02 = 0.0f;
+    sjt_call83->_innerscene.model.m03 = 0.0f;
+    sjt_call83->_innerscene.model.m10 = 0.0f;
+    sjt_call83->_innerscene.model.m11 = 0.0f;
+    sjt_call83->_innerscene.model.m12 = 0.0f;
+    sjt_call83->_innerscene.model.m13 = 0.0f;
+    sjt_call83->_innerscene.model.m20 = 0.0f;
+    sjt_call83->_innerscene.model.m21 = 0.0f;
+    sjt_call83->_innerscene.model.m22 = 0.0f;
+    sjt_call83->_innerscene.model.m23 = 0.0f;
+    sjt_call83->_innerscene.model.m30 = 0.0f;
+    sjt_call83->_innerscene.model.m31 = 0.0f;
+    sjt_call83->_innerscene.model.m32 = 0.0f;
+    sjt_call83->_innerscene.model.m33 = 0.0f;
+    sjf_mat4(&sjt_call83->_innerscene.model);
+    sjt_call83->_innerscene.view._refCount = 1;
+    sjt_call83->_innerscene.view.m00 = 0.0f;
+    sjt_call83->_innerscene.view.m01 = 0.0f;
+    sjt_call83->_innerscene.view.m02 = 0.0f;
+    sjt_call83->_innerscene.view.m03 = 0.0f;
+    sjt_call83->_innerscene.view.m10 = 0.0f;
+    sjt_call83->_innerscene.view.m11 = 0.0f;
+    sjt_call83->_innerscene.view.m12 = 0.0f;
+    sjt_call83->_innerscene.view.m13 = 0.0f;
+    sjt_call83->_innerscene.view.m20 = 0.0f;
+    sjt_call83->_innerscene.view.m21 = 0.0f;
+    sjt_call83->_innerscene.view.m22 = 0.0f;
+    sjt_call83->_innerscene.view.m23 = 0.0f;
+    sjt_call83->_innerscene.view.m30 = 0.0f;
+    sjt_call83->_innerscene.view.m31 = 0.0f;
+    sjt_call83->_innerscene.view.m32 = 0.0f;
+    sjt_call83->_innerscene.view.m33 = 0.0f;
+    sjf_mat4(&sjt_call83->_innerscene.view);
+    sjt_call83->_innerscene.projection._refCount = 1;
+    sjt_call83->_innerscene.projection.m00 = 0.0f;
+    sjt_call83->_innerscene.projection.m01 = 0.0f;
+    sjt_call83->_innerscene.projection.m02 = 0.0f;
+    sjt_call83->_innerscene.projection.m03 = 0.0f;
+    sjt_call83->_innerscene.projection.m10 = 0.0f;
+    sjt_call83->_innerscene.projection.m11 = 0.0f;
+    sjt_call83->_innerscene.projection.m12 = 0.0f;
+    sjt_call83->_innerscene.projection.m13 = 0.0f;
+    sjt_call83->_innerscene.projection.m20 = 0.0f;
+    sjt_call83->_innerscene.projection.m21 = 0.0f;
+    sjt_call83->_innerscene.projection.m22 = 0.0f;
+    sjt_call83->_innerscene.projection.m23 = 0.0f;
+    sjt_call83->_innerscene.projection.m30 = 0.0f;
+    sjt_call83->_innerscene.projection.m31 = 0.0f;
+    sjt_call83->_innerscene.projection.m32 = 0.0f;
+    sjt_call83->_innerscene.projection.m33 = 0.0f;
+    sjf_mat4(&sjt_call83->_innerscene.projection);
+    sjt_call83->_innerscene.windowrect._refCount = 1;
+    sjt_call83->_innerscene.windowrect.x = 0;
+    sjt_call83->_innerscene.windowrect.y = 0;
+    sjt_call83->_innerscene.windowrect.w = 0;
+    sjt_call83->_innerscene.windowrect.h = 0;
+    sjf_rect(&sjt_call83->_innerscene.windowrect);
+    sjf_scene2d(&sjt_call83->_innerscene);
+    sjf_fadeeffect_heap(sjt_call83);
+    sjt_cast38 = sjt_call83;
     sjf_fadeeffect_as_sji_effect(sjt_cast38, &sjt_value2);
     if (sjt_value2._parent != 0) {
         sjt_value2._parent->_refCount++;
     }
 
-    sjt_call85->effect = sjt_value2;
-    if (sjt_call85->effect._parent != 0) {
-        sjt_call85->effect._parent->_refCount++;
+    sjt_call82->effect = sjt_value2;
+    if (sjt_call82->effect._parent != 0) {
+        sjt_call82->effect._parent->_refCount++;
     }
 
-    sjt_call85->_rect._refCount = 1;
-    sjt_call85->_rect.x = 0;
-    sjt_call85->_rect.y = 0;
-    sjt_call85->_rect.w = 0;
-    sjt_call85->_rect.h = 0;
-    sjf_rect(&sjt_call85->_rect);
-    sjf_filllayout_heap(sjt_call85);
-    sjt_cast37 = sjt_call85;
-    sjf_filllayout_as_sji_element(sjt_cast37, &sjt_functionParam471);
-    if (sjt_functionParam471._parent != 0) {
-        sjt_functionParam471._parent->_refCount++;
+    sjt_call82->_rect._refCount = 1;
+    sjt_call82->_rect.x = 0;
+    sjt_call82->_rect.y = 0;
+    sjt_call82->_rect.w = 0;
+    sjt_call82->_rect.h = 0;
+    sjf_rect(&sjt_call82->_rect);
+    sjf_filllayout_heap(sjt_call82);
+    sjt_cast37 = sjt_call82;
+    sjf_filllayout_as_sji_element(sjt_cast37, &sjt_functionParam457);
+    if (sjt_functionParam457._parent != 0) {
+        sjt_functionParam457._parent->_refCount++;
     }
 
-    sjf_array_heap_iface_element_initat(sjt_parent204, sjt_functionParam470, sjt_functionParam471);
+    sjf_array_heap_iface_element_initat(sjt_parent199, sjt_functionParam456, sjt_functionParam457);
+    sjt_parent207 = array8;
+    sjt_functionParam491 = 3;
+    sjt_call91 = (sjs_filllayout*)malloc(sizeof(sjs_filllayout));
+    sjt_call91->_refCount = 1;
+    sjt_call91->children._refCount = 1;
+    sjt_call91->children.datasize = 1;
+    sjt_call91->children.data = 0;
+    sjt_call91->children._isglobal = false;
+    sjt_call91->children.count = 0;
+    sjf_array_heap_iface_element(&sjt_call91->children);
+    sjs_array_heap_iface_element* array11;
+    array11 = &sjt_call91->children;
+    sjt_parent208 = array11;
+    sjt_functionParam493 = 0;
+    sjf_testscene_heap(&sjt_functionParam494);
+    sjf_array_heap_iface_element_initat(sjt_parent208, sjt_functionParam493, sjt_functionParam494);
+    sjt_call91->margin._refCount = 1;
+    sjt_call91->margin.l = 10;
+    sjt_call91->margin.t = 10;
+    sjt_call91->margin.r = 10;
+    sjt_call91->margin.b = 10;
+    sjf_margin(&sjt_call91->margin);
+    sjt_call92 = (sjs_saturateeffect*)malloc(sizeof(sjs_saturateeffect));
+    sjt_call92->_refCount = 1;
+    sjt_call92->amount = 0.2f;
+    sjt_call92->_rect._refCount = 1;
+    sjt_call92->_rect.x = 0;
+    sjt_call92->_rect.y = 0;
+    sjt_call92->_rect.w = 0;
+    sjt_call92->_rect.h = 0;
+    sjf_rect(&sjt_call92->_rect);
+    sjt_call92->_vertexbuffer._refCount = -1;
+    sjt_call92->_scenebuffer._refCount = -1;
+    sjt_call92->_innerscene._refCount = 1;
+    sjt_call92->_innerscene._size._refCount = 1;
+    sjt_call92->_innerscene._size.w = 0;
+    sjt_call92->_innerscene._size.h = 0;
+    sjf_size(&sjt_call92->_innerscene._size);
+    sjt_call92->_innerscene.model._refCount = 1;
+    sjt_call92->_innerscene.model.m00 = 0.0f;
+    sjt_call92->_innerscene.model.m01 = 0.0f;
+    sjt_call92->_innerscene.model.m02 = 0.0f;
+    sjt_call92->_innerscene.model.m03 = 0.0f;
+    sjt_call92->_innerscene.model.m10 = 0.0f;
+    sjt_call92->_innerscene.model.m11 = 0.0f;
+    sjt_call92->_innerscene.model.m12 = 0.0f;
+    sjt_call92->_innerscene.model.m13 = 0.0f;
+    sjt_call92->_innerscene.model.m20 = 0.0f;
+    sjt_call92->_innerscene.model.m21 = 0.0f;
+    sjt_call92->_innerscene.model.m22 = 0.0f;
+    sjt_call92->_innerscene.model.m23 = 0.0f;
+    sjt_call92->_innerscene.model.m30 = 0.0f;
+    sjt_call92->_innerscene.model.m31 = 0.0f;
+    sjt_call92->_innerscene.model.m32 = 0.0f;
+    sjt_call92->_innerscene.model.m33 = 0.0f;
+    sjf_mat4(&sjt_call92->_innerscene.model);
+    sjt_call92->_innerscene.view._refCount = 1;
+    sjt_call92->_innerscene.view.m00 = 0.0f;
+    sjt_call92->_innerscene.view.m01 = 0.0f;
+    sjt_call92->_innerscene.view.m02 = 0.0f;
+    sjt_call92->_innerscene.view.m03 = 0.0f;
+    sjt_call92->_innerscene.view.m10 = 0.0f;
+    sjt_call92->_innerscene.view.m11 = 0.0f;
+    sjt_call92->_innerscene.view.m12 = 0.0f;
+    sjt_call92->_innerscene.view.m13 = 0.0f;
+    sjt_call92->_innerscene.view.m20 = 0.0f;
+    sjt_call92->_innerscene.view.m21 = 0.0f;
+    sjt_call92->_innerscene.view.m22 = 0.0f;
+    sjt_call92->_innerscene.view.m23 = 0.0f;
+    sjt_call92->_innerscene.view.m30 = 0.0f;
+    sjt_call92->_innerscene.view.m31 = 0.0f;
+    sjt_call92->_innerscene.view.m32 = 0.0f;
+    sjt_call92->_innerscene.view.m33 = 0.0f;
+    sjf_mat4(&sjt_call92->_innerscene.view);
+    sjt_call92->_innerscene.projection._refCount = 1;
+    sjt_call92->_innerscene.projection.m00 = 0.0f;
+    sjt_call92->_innerscene.projection.m01 = 0.0f;
+    sjt_call92->_innerscene.projection.m02 = 0.0f;
+    sjt_call92->_innerscene.projection.m03 = 0.0f;
+    sjt_call92->_innerscene.projection.m10 = 0.0f;
+    sjt_call92->_innerscene.projection.m11 = 0.0f;
+    sjt_call92->_innerscene.projection.m12 = 0.0f;
+    sjt_call92->_innerscene.projection.m13 = 0.0f;
+    sjt_call92->_innerscene.projection.m20 = 0.0f;
+    sjt_call92->_innerscene.projection.m21 = 0.0f;
+    sjt_call92->_innerscene.projection.m22 = 0.0f;
+    sjt_call92->_innerscene.projection.m23 = 0.0f;
+    sjt_call92->_innerscene.projection.m30 = 0.0f;
+    sjt_call92->_innerscene.projection.m31 = 0.0f;
+    sjt_call92->_innerscene.projection.m32 = 0.0f;
+    sjt_call92->_innerscene.projection.m33 = 0.0f;
+    sjf_mat4(&sjt_call92->_innerscene.projection);
+    sjt_call92->_innerscene.windowrect._refCount = 1;
+    sjt_call92->_innerscene.windowrect.x = 0;
+    sjt_call92->_innerscene.windowrect.y = 0;
+    sjt_call92->_innerscene.windowrect.w = 0;
+    sjt_call92->_innerscene.windowrect.h = 0;
+    sjf_rect(&sjt_call92->_innerscene.windowrect);
+    sjf_scene2d(&sjt_call92->_innerscene);
+    sjf_saturateeffect_heap(sjt_call92);
+    sjt_cast40 = sjt_call92;
+    sjf_saturateeffect_as_sji_effect(sjt_cast40, &sjt_value3);
+    if (sjt_value3._parent != 0) {
+        sjt_value3._parent->_refCount++;
+    }
+
+    sjt_call91->effect = sjt_value3;
+    if (sjt_call91->effect._parent != 0) {
+        sjt_call91->effect._parent->_refCount++;
+    }
+
+    sjt_call91->_rect._refCount = 1;
+    sjt_call91->_rect.x = 0;
+    sjt_call91->_rect.y = 0;
+    sjt_call91->_rect.w = 0;
+    sjt_call91->_rect.h = 0;
+    sjf_rect(&sjt_call91->_rect);
+    sjf_filllayout_heap(sjt_call91);
+    sjt_cast39 = sjt_call91;
+    sjf_filllayout_as_sji_element(sjt_cast39, &sjt_functionParam492);
+    if (sjt_functionParam492._parent != 0) {
+        sjt_functionParam492._parent->_refCount++;
+    }
+
+    sjf_array_heap_iface_element_initat(sjt_parent207, sjt_functionParam491, sjt_functionParam492);
     sjt_call1->margin._refCount = 1;
     sjt_call1->margin.l = 0;
     sjt_call1->margin.t = 0;
@@ -24945,22 +24718,22 @@ int main(int argc, char** argv) {
     sjf_array_gridunit(&sjt_call1->cols);
     sjs_array_gridunit* array1;
     array1 = &sjt_call1->cols;
-    sjt_parent212 = array1;
-    sjt_functionParam505 = 0;
-    sjt_call94._refCount = 1;
-    sjt_call94.amount = 1;
-    sjt_call94.type = sjv_gridunittype_star;
-    sjf_gridunit(&sjt_call94);
-    sjt_functionParam506 = &sjt_call94;
-    sjf_array_gridunit_initat(sjt_parent212, sjt_functionParam505, sjt_functionParam506);
-    sjt_parent213 = array1;
-    sjt_functionParam507 = 1;
-    sjt_call95._refCount = 1;
-    sjt_call95.amount = 1;
-    sjt_call95.type = sjv_gridunittype_star;
-    sjf_gridunit(&sjt_call95);
-    sjt_functionParam508 = &sjt_call95;
-    sjf_array_gridunit_initat(sjt_parent213, sjt_functionParam507, sjt_functionParam508);
+    sjt_parent215 = array1;
+    sjt_functionParam526 = 0;
+    sjt_call100._refCount = 1;
+    sjt_call100.amount = 1;
+    sjt_call100.type = sjv_gridunittype_star;
+    sjf_gridunit(&sjt_call100);
+    sjt_functionParam527 = &sjt_call100;
+    sjf_array_gridunit_initat(sjt_parent215, sjt_functionParam526, sjt_functionParam527);
+    sjt_parent216 = array1;
+    sjt_functionParam528 = 1;
+    sjt_call101._refCount = 1;
+    sjt_call101.amount = 1;
+    sjt_call101.type = sjv_gridunittype_star;
+    sjf_gridunit(&sjt_call101);
+    sjt_functionParam529 = &sjt_call101;
+    sjf_array_gridunit_initat(sjt_parent216, sjt_functionParam528, sjt_functionParam529);
     sjt_call1->rows._refCount = 1;
     sjt_call1->rows.datasize = 2;
     sjt_call1->rows.data = 0;
@@ -24969,22 +24742,22 @@ int main(int argc, char** argv) {
     sjf_array_gridunit(&sjt_call1->rows);
     sjs_array_gridunit* array2;
     array2 = &sjt_call1->rows;
-    sjt_parent214 = array2;
-    sjt_functionParam509 = 0;
-    sjt_call96._refCount = 1;
-    sjt_call96.amount = 1;
-    sjt_call96.type = sjv_gridunittype_star;
-    sjf_gridunit(&sjt_call96);
-    sjt_functionParam510 = &sjt_call96;
-    sjf_array_gridunit_initat(sjt_parent214, sjt_functionParam509, sjt_functionParam510);
-    sjt_parent215 = array2;
-    sjt_functionParam511 = 1;
-    sjt_call97._refCount = 1;
-    sjt_call97.amount = 1;
-    sjt_call97.type = sjv_gridunittype_star;
-    sjf_gridunit(&sjt_call97);
-    sjt_functionParam512 = &sjt_call97;
-    sjf_array_gridunit_initat(sjt_parent215, sjt_functionParam511, sjt_functionParam512);
+    sjt_parent217 = array2;
+    sjt_functionParam530 = 0;
+    sjt_call102._refCount = 1;
+    sjt_call102.amount = 1;
+    sjt_call102.type = sjv_gridunittype_star;
+    sjf_gridunit(&sjt_call102);
+    sjt_functionParam531 = &sjt_call102;
+    sjf_array_gridunit_initat(sjt_parent217, sjt_functionParam530, sjt_functionParam531);
+    sjt_parent218 = array2;
+    sjt_functionParam532 = 1;
+    sjt_call103._refCount = 1;
+    sjt_call103.amount = 1;
+    sjt_call103.type = sjv_gridunittype_star;
+    sjf_gridunit(&sjt_call103);
+    sjt_functionParam533 = &sjt_call103;
+    sjf_array_gridunit_initat(sjt_parent218, sjt_functionParam532, sjt_functionParam533);
     sjt_call1->_rect._refCount = 1;
     sjt_call1->_rect.x = 0;
     sjt_call1->_rect.y = 0;
@@ -25033,17 +24806,29 @@ void main_destroy() {
         sjf_blureffect_destroy(sjt_call63);
         free(sjt_call63);
     }
-    sjt_call85->_refCount--;
-    if (sjt_call85->_refCount <= 0) {
-        weakptr_release(sjt_call85);
-        sjf_filllayout_destroy(sjt_call85);
-        free(sjt_call85);
+    sjt_call82->_refCount--;
+    if (sjt_call82->_refCount <= 0) {
+        weakptr_release(sjt_call82);
+        sjf_filllayout_destroy(sjt_call82);
+        free(sjt_call82);
     }
-    sjt_call86->_refCount--;
-    if (sjt_call86->_refCount <= 0) {
-        weakptr_release(sjt_call86);
-        sjf_fadeeffect_destroy(sjt_call86);
-        free(sjt_call86);
+    sjt_call83->_refCount--;
+    if (sjt_call83->_refCount <= 0) {
+        weakptr_release(sjt_call83);
+        sjf_fadeeffect_destroy(sjt_call83);
+        free(sjt_call83);
+    }
+    sjt_call91->_refCount--;
+    if (sjt_call91->_refCount <= 0) {
+        weakptr_release(sjt_call91);
+        sjf_filllayout_destroy(sjt_call91);
+        free(sjt_call91);
+    }
+    sjt_call92->_refCount--;
+    if (sjt_call92->_refCount <= 0) {
+        weakptr_release(sjt_call92);
+        sjf_saturateeffect_destroy(sjt_call92);
+        free(sjt_call92);
     }
     if (sjt_functionParam289._parent != 0) {
         sjt_functionParam289._parent->_refCount--;
@@ -25066,18 +24851,18 @@ void main_destroy() {
             free(sjt_functionParam32._parent);
         }
     }
-    if (sjt_functionParam471._parent != 0) {
-        sjt_functionParam471._parent->_refCount--;
-        if (sjt_functionParam471._parent->_refCount <= 0) {
-            sjt_functionParam471._vtbl->destroy(sjt_functionParam471._parent);
-            free(sjt_functionParam471._parent);
+    if (sjt_functionParam457._parent != 0) {
+        sjt_functionParam457._parent->_refCount--;
+        if (sjt_functionParam457._parent->_refCount <= 0) {
+            sjt_functionParam457._vtbl->destroy(sjt_functionParam457._parent);
+            free(sjt_functionParam457._parent);
         }
     }
-    if (sjt_functionParam473._parent != 0) {
-        sjt_functionParam473._parent->_refCount--;
-        if (sjt_functionParam473._parent->_refCount <= 0) {
-            sjt_functionParam473._vtbl->destroy(sjt_functionParam473._parent);
-            free(sjt_functionParam473._parent);
+    if (sjt_functionParam459._parent != 0) {
+        sjt_functionParam459._parent->_refCount--;
+        if (sjt_functionParam459._parent->_refCount <= 0) {
+            sjt_functionParam459._vtbl->destroy(sjt_functionParam459._parent);
+            free(sjt_functionParam459._parent);
         }
     }
     if (sjt_functionParam48._parent != 0) {
@@ -25085,6 +24870,20 @@ void main_destroy() {
         if (sjt_functionParam48._parent->_refCount <= 0) {
             sjt_functionParam48._vtbl->destroy(sjt_functionParam48._parent);
             free(sjt_functionParam48._parent);
+        }
+    }
+    if (sjt_functionParam492._parent != 0) {
+        sjt_functionParam492._parent->_refCount--;
+        if (sjt_functionParam492._parent->_refCount <= 0) {
+            sjt_functionParam492._vtbl->destroy(sjt_functionParam492._parent);
+            free(sjt_functionParam492._parent);
+        }
+    }
+    if (sjt_functionParam494._parent != 0) {
+        sjt_functionParam494._parent->_refCount--;
+        if (sjt_functionParam494._parent->_refCount <= 0) {
+            sjt_functionParam494._vtbl->destroy(sjt_functionParam494._parent);
+            free(sjt_functionParam494._parent);
         }
     }
     if (sjt_value1._parent != 0) {
@@ -25101,6 +24900,13 @@ void main_destroy() {
             free(sjt_value2._parent);
         }
     }
+    if (sjt_value3._parent != 0) {
+        sjt_value3._parent->_refCount--;
+        if (sjt_value3._parent->_refCount <= 0) {
+            sjt_value3._vtbl->destroy(sjt_value3._parent);
+            free(sjt_value3._parent);
+        }
+    }
     if (sjv_mouse_captureelement._parent != 0) {
         sjv_mouse_captureelement._parent->_refCount--;
         if (sjv_mouse_captureelement._parent->_refCount <= 0) {
@@ -25115,10 +24921,10 @@ void main_destroy() {
             free(sjv_root._parent);
         }
     }
-    if (sjt_call94._refCount == 1) { sjf_gridunit_destroy(&sjt_call94); }
-    if (sjt_call95._refCount == 1) { sjf_gridunit_destroy(&sjt_call95); }
-    if (sjt_call96._refCount == 1) { sjf_gridunit_destroy(&sjt_call96); }
-    if (sjt_call97._refCount == 1) { sjf_gridunit_destroy(&sjt_call97); }
+    if (sjt_call100._refCount == 1) { sjf_gridunit_destroy(&sjt_call100); }
+    if (sjt_call101._refCount == 1) { sjf_gridunit_destroy(&sjt_call101); }
+    if (sjt_call102._refCount == 1) { sjf_gridunit_destroy(&sjt_call102); }
+    if (sjt_call103._refCount == 1) { sjf_gridunit_destroy(&sjt_call103); }
     if (sjv_animator._refCount == 1) { sjf_anon1_destroy(&sjv_animator); }
     if (sjv_blurhorizontalshader._refCount == 1) { sjf_shader_destroy(&sjv_blurhorizontalshader); }
     if (sjv_blurverticalshader._refCount == 1) { sjf_shader_destroy(&sjv_blurverticalshader); }
@@ -25141,6 +24947,7 @@ void main_destroy() {
     if (sjv_phongtextureshader._refCount == 1) { sjf_shader_destroy(&sjv_phongtextureshader); }
     if (sjv_rootscene._refCount == 1) { sjf_scene2d_destroy(&sjv_rootscene); }
     if (sjv_rootwindowrenderer._refCount == 1) { sjf_windowrenderer_destroy(&sjv_rootwindowrenderer); }
+    if (sjv_saturateshader._refCount == 1) { sjf_shader_destroy(&sjv_saturateshader); }
     if (sjv_style._refCount == 1) { sjf_anon2_destroy(&sjv_style); }
     if (sjv_textshader._refCount == 1) { sjf_shader_destroy(&sjv_textshader); }
     if (sjv_vertex_location_texture_normal_format._refCount == 1) { sjf_string_destroy(&sjv_vertex_location_texture_normal_format); }
