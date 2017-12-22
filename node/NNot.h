@@ -11,7 +11,7 @@
 
 class CNotVar : public CVar {
 public:
-    CNotVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> var) : CVar(loc, scope), var(var) { }
+    CNotVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> var, bool isLogicalNot) : CVar(loc, scope), var(var), isLogicalNot(isLogicalNot) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -19,13 +19,15 @@ public:
     
 private:
     shared_ptr<CVar> var;
+    bool isLogicalNot;
 };
 
 class NNot : public NVariableBase {
 public:
     const shared_ptr<NBase> node;
+    bool isLogicalNot;
     
-    NNot(CLoc loc, shared_ptr<NBase> node) : NVariableBase(NodeType_Not, loc), node(node) { }
+    NNot(CLoc loc, shared_ptr<NBase> node, bool isLogicalNot) : NVariableBase(NodeType_Not, loc), node(node), isLogicalNot(isLogicalNot) { }
     void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 };

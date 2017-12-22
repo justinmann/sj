@@ -119,7 +119,7 @@ shared_ptr<CVar> NCompare::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
                 return operatorOverloadNode->getVar(compiler, scope, returnMode);
                 break;
             case NCompareOp::NE:
-                operatorOverloadNode =  make_shared<NNot>(loc, make_shared<NDot>(loc, leftNVar, make_shared<NCall>(loc, "isEqual", nullptr, make_shared<NodeList>(rightSide))));
+                operatorOverloadNode =  make_shared<NNot>(loc, make_shared<NDot>(loc, leftNVar, make_shared<NCall>(loc, "isEqual", nullptr, make_shared<NodeList>(rightSide))), true);
                 return operatorOverloadNode->getVar(compiler, scope, returnMode);
                 break;
             case NCompareOp::LT:

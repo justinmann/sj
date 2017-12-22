@@ -484,7 +484,9 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                     }
 
                     auto isCopy = (argType->typeMode == CTM_Stack);
-                    assert(argType->typeMode != CTM_Local);
+                    if (argType->typeMode == CTM_Local) {
+                        compiler->addError(argVar->loc, CErrorCode::InvalidType, "function argument '%s' cannot be local type", argVar->name.c_str());
+                    }
                     assert(argType->typeMode != CTM_Undefined);
                     TrStoreValue(argVar->loc, calleeScope, argType, "_this->" + argVar->name, AssignOp::create(true, true, isCopy, CTM_Undefined)).retainValue(compiler, argVar->loc, trCopyBlock.get(), make_shared<TrValue>(calleeScope, argType, "_from->" + argVar->name, false));
                 }

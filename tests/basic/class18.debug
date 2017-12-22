@@ -1,5 +1,4 @@
-func #bar ()'heap func {
-  c'weak #bar = weak this as heap #bar
+class(x'heap string:)'stack class {
   this
 }
 
@@ -679,8 +678,9 @@ global()'void {
   Invalid compiler
   #endif
   --cinclude--
-  c'weak #bar = empty'weak #bar
-  a'heap func : func(this = func())
+  c'stack class : class(this = class(
+    x'heap string : x
+  ))
   void
 }
 

@@ -5,7 +5,12 @@ bool CNotVar::getReturnThis() {
 }
 
 shared_ptr<CType> CNotVar::getType(Compiler* compiler) {
-    return compiler->typeBool;
+    if (isLogicalNot) {
+        return var->getType(compiler);
+    }
+    else {
+        return compiler->typeBool;
+    }
 }
 
 void CNotVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
@@ -13,13 +18,20 @@ void CNotVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock
     var->transpile(compiler, trOutput, trBlock, thisValue, value);
     auto resultValue = trBlock->createTempVariable(nullptr, compiler->typeBool, "result");
     stringstream line;
-    line << resultValue->name << " = !" << value->getName(trBlock);
+    line << resultValue->name << " = ";
+    if (isLogicalNot) {
+        line << "!";
+    }
+    else {
+        line << "~";
+    }
+    line << value->getName(trBlock);
     trBlock->statements.push_back(TrStatement(loc, line.str()));
     storeValue->retainValue(compiler, loc, trBlock, resultValue);
 }
 
 void CNotVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-    ss << "!";
+    ss << (isLogicalNot ? "!" : "not ");
     var->dump(compiler, functions, ss, level);
 }
 
@@ -33,6 +45,21 @@ shared_ptr<CVar> NNot::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, 
     if (!var) {
         return nullptr;
     }
-    return make_shared<CNotVar>(loc, scope, var);
+
+    auto varType = var->getType(compiler);
+    if (isLogicalNot) {
+        if (varType != compiler->typeBool) {
+            compiler->addError(loc, CErrorCode::InvalidType, "! only works for bool type");
+            return nullptr;
+        }
+    }
+    else {
+        if (varType != compiler->typeI32 && varType != compiler->typeI64 && varType != compiler->typeU32 && varType != compiler->typeU64) {
+            compiler->addError(loc, CErrorCode::InvalidType, "not only works for integer types i32, i64, u32, u64");
+            return nullptr;
+        }
+    }
+
+    return make_shared<CNotVar>(loc, scope, var, isLogicalNot);
 }
 

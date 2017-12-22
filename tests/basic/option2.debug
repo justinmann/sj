@@ -11,7 +11,7 @@ global()'void {
     x'i32 : x
   )))
   d'i32 : if isValid(if isValid(c) value(getValue(c).x) else empty'i32?) getValue(if isValid(c) value(getValue(c).x) else empty'i32?) else 0i
-  e'stack class : copy if isValid(c) getValue(c) else class(this = class(
+  e'stack class : if isValid(if isValid(c) value(copy getValue(c)) else empty'stack class?) getValue(if isValid(c) value(copy getValue(c)) else empty'stack class?) else class(this = class(
     x'i32 : x
   ))
   func(

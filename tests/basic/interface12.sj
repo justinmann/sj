@@ -1,3 +1,5 @@
+include "lib/common/common.sj"
+
 #bar(
 	getX()'i32
 )

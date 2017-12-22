@@ -18797,7 +18797,7 @@ void sjf_mainloop(void) {
 
 void sjf_mainpanel(sjs_mainpanel* _this) {
     int32_t i;
-    int32_t result6;
+    float result6;
     int32_t sjt_cast13;
     sjs_array_heap_iface_model* sjt_dot555 = 0;
     sjs_array_heap_iface_model* sjt_dot556 = 0;
@@ -18807,16 +18807,16 @@ void sjf_mainpanel(sjs_mainpanel* _this) {
     float sjt_math692;
     float sjt_math693;
     float sjt_math694;
-    int32_t sjt_negate4;
+    float sjt_negate4;
     float sjv_angle;
     float sjv_angleincrement;
 
     sjv_angleincrement = 0.08f;
     sjt_dot555 = &_this->children;
-    sjt_negate4 = (sjt_dot555)->count;
+    sjt_cast13 = (sjt_dot555)->count;
+    sjt_negate4 = (float)sjt_cast13;
     result6 = -sjt_negate4;
-    sjt_cast13 = result6;
-    sjt_math693 = (float)sjt_cast13;
+    sjt_math693 = result6;
     sjt_math694 = sjv_angleincrement;
     sjt_math691 = sjt_math693 * sjt_math694;
     sjt_math692 = 2.0f;
@@ -19051,7 +19051,7 @@ void sjf_mainpanel_getz(sjs_mainpanel* _parent, float* _return) {
 
 void sjf_mainpanel_heap(sjs_mainpanel* _this) {
     int32_t i;
-    int32_t result7;
+    float result7;
     int32_t sjt_cast14;
     sjs_array_heap_iface_model* sjt_dot640 = 0;
     sjs_array_heap_iface_model* sjt_dot641 = 0;
@@ -19061,16 +19061,16 @@ void sjf_mainpanel_heap(sjs_mainpanel* _this) {
     float sjt_math904;
     float sjt_math905;
     float sjt_math906;
-    int32_t sjt_negate5;
+    float sjt_negate5;
     float sjv_angle;
     float sjv_angleincrement;
 
     sjv_angleincrement = 0.08f;
     sjt_dot640 = &_this->children;
-    sjt_negate5 = (sjt_dot640)->count;
+    sjt_cast14 = (sjt_dot640)->count;
+    sjt_negate5 = (float)sjt_cast14;
     result7 = -sjt_negate5;
-    sjt_cast14 = result7;
-    sjt_math905 = (float)sjt_cast14;
+    sjt_math905 = result7;
     sjt_math906 = sjv_angleincrement;
     sjt_math903 = sjt_math905 * sjt_math906;
     sjt_math904 = 2.0f;

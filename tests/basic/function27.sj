@@ -1,3 +1,5 @@
+include "lib/common/common.sj"
+
 c := empty'weak #bar
 
 #bar()
