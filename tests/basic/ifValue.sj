@@ -1,3 +1,5 @@
+include "lib/common/common.sj"
+
 class(
 	d : empty'i32
 ) { this }
