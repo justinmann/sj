@@ -6,6 +6,10 @@ bool CChangeModeVar::getReturnThis() {
 
 shared_ptr<CType> CChangeModeVar::getType(Compiler* compiler) {
     auto varType = var->getType(compiler);
+    if (!varType) {
+        return nullptr;
+    }
+
     if (varType->typeMode != typeMode) {
         shared_ptr<CType> changeType = varType;
         switch (typeMode) {

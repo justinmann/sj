@@ -30,6 +30,7 @@ public:
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 
 private:
+    shared_ptr<CType> ctype;
     shared_ptr<CTypeName> typeName;
 };
 

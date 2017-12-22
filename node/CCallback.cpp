@@ -39,60 +39,115 @@ void CCallbackVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* tr
         name += ".inner";
     }
 
-    if (dotVar) {
-        if (storeValue->type->typeMode == CTM_Heap) {
-            auto parentValue = make_shared<TrStoreValue>(loc, scope.lock(), dotVar->getType(compiler)->getHeapType(), name + "._parent", AssignOp::immutableCreate);
-            parentValue->isObjectCast = true;
-            dotVar->transpile(compiler, trOutput, trBlock, thisValue, parentValue);
-            
-            auto dotType = dotVar->getType(compiler);
-            trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._destroy = (void(*)(sjs_object*))" + dotType->parent.lock()->getCDestroyFunctionName()));
-        }
-        else if (storeValue->type->typeMode == CTM_Weak) {
-            auto parentValue = make_shared<TrStoreValue>(loc, scope.lock(), dotVar->getType(compiler)->getWeakType(), name + "._parent", AssignOp::immutableCreate);
-            parentValue->isObjectCast = true;
-            dotVar->transpile(compiler, trOutput, trBlock, thisValue, parentValue);
-        }
-        else {
-            auto parentValue = make_shared<TrStoreValue>(loc, scope.lock(), dotVar->getType(compiler)->getLocalType(), name + "._parent", AssignOp::immutableCreate);
-            parentValue->isObjectCast = true;
-            dotVar->transpile(compiler, trOutput, trBlock, thisValue, parentValue);
-        }
-    }
-    else {
-        trBlock->statements.push_back(TrStatement(loc, name + "._parent = (sjs_object*)1"));
-    }
-
     auto destStackReturnType = storeValue->type->callback.lock()->stackReturnType;
     auto destHeapReturnType = storeValue->type->callback.lock()->heapReturnType;
 
-    if (destStackReturnType) {
-        if (destStackReturnType == callback->stackReturnType) {
-            string functionName = function->getCCallbackFunctionName(compiler, trOutput, CTM_Stack);
-            trBlock->statements.push_back(TrStatement(loc, name + "._cb = (" + callback->getCBName(compiler, false, CTM_Stack) + ")" + functionName));
-        }
-        else if (destStackReturnType == callback->heapReturnType) {
-            string functionName = function->getCCallbackFunctionName(compiler, trOutput, CTM_Heap);
-            trBlock->statements.push_back(TrStatement(loc, name + "._cb = (" + callback->getCBName(compiler, false, CTM_Heap) + ")" + functionName));
-        }
-        else {
-            compiler->addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match '%s'", destStackReturnType->fullName.c_str(), callback->stackReturnType->fullName.c_str());
+    if (function->classType == CFT_InterfaceMethod) {
+        if (!dotVar) {
+            compiler->addError(loc, CErrorCode::TypeMismatch, "missing dot value");
             return;
+        }
+
+        auto dotValue = trBlock->createTempStoreVariable(loc, scope.lock(), dotVar->getType(compiler), "cbdot");
+        dotVar->transpile(compiler, trOutput, trBlock, thisValue, dotValue);
+
+        trBlock->statements.push_back(TrStatement(loc, name + "._parent = " + dotValue->getName(trBlock) + "._parent"));
+        if (storeValue->type->typeMode == CTM_Heap) {
+            trBlock->statements.push_back(TrStatement(loc, "if (" + name + "._parent != 0) { " + name + "._parent->_refCount++; }"));
+        }
+        else if (storeValue->type->typeMode == CTM_Weak) {
+            auto cbName = TrBlock::nextVarName("weakptrcb");
+
+            stringstream cbStream;
+            cbStream << "delete_cb " << cbName << " = { &" << name << "._parent, weakptr_clear };";
+            trBlock->statements.push_back(TrStatement(CLoc::undefined, cbStream.str()));
+
+            stringstream lineStream;
+            lineStream << "if (" << name << "._parent != 0) { weakptr_cb_add(" << name << "._parent, " << cbName << "); }";
+            trBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
+        }
+
+        auto interfaceMethodStack = function->parent.lock()->getCFunction(compiler, CLoc::undefined, function->name, nullptr, nullptr, CTM_Stack);
+        auto interfaceMethodHeap = function->parent.lock()->getCFunction(compiler, CLoc::undefined, function->name, nullptr, nullptr, CTM_Heap);
+        if (destStackReturnType) {
+            if (destStackReturnType == interfaceMethodStack->getReturnType(compiler, CTM_Stack)) {
+                trBlock->statements.push_back(TrStatement(loc, name + "._cb = " + dotValue->getName(trBlock) + "._vtbl->" + interfaceMethodStack->name));
+            }
+            else if (destStackReturnType == interfaceMethodHeap->getReturnType(compiler, CTM_Heap)) {
+                trBlock->statements.push_back(TrStatement(loc, name + "._cb = " + dotValue->getName(trBlock) + "._vtbl->" + interfaceMethodHeap->name + "_heap"));
+            }
+            else {
+                compiler->addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match '%s'", destStackReturnType->fullName.c_str(), interfaceMethodStack->getReturnType(compiler, CTM_Stack)->fullName.c_str());
+                return;
+            }
+        }
+
+        if (destHeapReturnType) {
+            if (destHeapReturnType == interfaceMethodStack->getReturnType(compiler, CTM_Stack)) {
+                trBlock->statements.push_back(TrStatement(loc, name + "._cb_heap = " + dotValue->getName(trBlock) + "._vtbl->" + interfaceMethodStack->name));
+            }
+            else if (destHeapReturnType == interfaceMethodHeap->getReturnType(compiler, CTM_Heap)) {
+                trBlock->statements.push_back(TrStatement(loc, name + "._cb_heap = " + dotValue->getName(trBlock) + "._vtbl->" + interfaceMethodHeap->name + "_heap"));
+            }
+            else {
+                compiler->addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match '%s'", destHeapReturnType->fullName.c_str(), interfaceMethodStack->getReturnType(compiler, CTM_Stack)->fullName.c_str());
+                return;
+            }
         }
     }
+    else {
+        if (dotVar) {
+            if (storeValue->type->typeMode == CTM_Heap) {
+                auto parentValue = make_shared<TrStoreValue>(loc, scope.lock(), dotVar->getType(compiler)->getHeapType(), name + "._parent", AssignOp::immutableCreate);
+                parentValue->isObjectCast = true;
+                dotVar->transpile(compiler, trOutput, trBlock, thisValue, parentValue);
 
-    if (destHeapReturnType) {
-        if (destHeapReturnType == callback->stackReturnType) {
-            string functionName = function->getCCallbackFunctionName(compiler, trOutput, CTM_Stack);
-            trBlock->statements.push_back(TrStatement(loc, name + "._cb_heap = (" + callback->getCBName(compiler, false, CTM_Stack) + ")" + functionName));
-        }
-        else if (destHeapReturnType == callback->heapReturnType) {
-            string functionName = function->getCCallbackFunctionName(compiler, trOutput, CTM_Heap);
-            trBlock->statements.push_back(TrStatement(loc, name + "._cb_heap = (" + callback->getCBName(compiler, false, CTM_Heap) + ")" + functionName));
+                auto dotType = dotVar->getType(compiler);
+                trBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + "._destroy = (void(*)(sjs_object*))" + dotType->parent.lock()->getCDestroyFunctionName()));
+            }
+            else if (storeValue->type->typeMode == CTM_Weak) {
+                auto parentValue = make_shared<TrStoreValue>(loc, scope.lock(), dotVar->getType(compiler)->getWeakType(), name + "._parent", AssignOp::immutableCreate);
+                parentValue->isObjectCast = true;
+                dotVar->transpile(compiler, trOutput, trBlock, thisValue, parentValue);
+            }
+            else {
+                auto parentValue = make_shared<TrStoreValue>(loc, scope.lock(), dotVar->getType(compiler)->getLocalType(), name + "._parent", AssignOp::immutableCreate);
+                parentValue->isObjectCast = true;
+                dotVar->transpile(compiler, trOutput, trBlock, thisValue, parentValue);
+            }
         }
         else {
-            compiler->addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match '%s'", destHeapReturnType->fullName.c_str(), callback->heapReturnType ? callback->heapReturnType->fullName.c_str() : "UNKNOWN");
-            return;
+            trBlock->statements.push_back(TrStatement(loc, name + "._parent = (sjs_object*)1"));
+        }
+
+        if (destStackReturnType) {
+            if (destStackReturnType == callback->stackReturnType) {
+                string functionName = function->getCCallbackFunctionName(compiler, trOutput, CTM_Stack);
+                trBlock->statements.push_back(TrStatement(loc, name + "._cb = (" + callback->getCBName(compiler, false, CTM_Stack) + ")" + functionName));
+            }
+            else if (destStackReturnType == callback->heapReturnType) {
+                string functionName = function->getCCallbackFunctionName(compiler, trOutput, CTM_Heap);
+                trBlock->statements.push_back(TrStatement(loc, name + "._cb = (" + callback->getCBName(compiler, false, CTM_Heap) + ")" + functionName));
+            }
+            else {
+                compiler->addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match '%s'", destStackReturnType->fullName.c_str(), callback->stackReturnType->fullName.c_str());
+                return;
+            }
+        }
+
+        if (destHeapReturnType) {
+            if (destHeapReturnType == callback->stackReturnType) {
+                string functionName = function->getCCallbackFunctionName(compiler, trOutput, CTM_Stack);
+                trBlock->statements.push_back(TrStatement(loc, name + "._cb_heap = (" + callback->getCBName(compiler, false, CTM_Stack) + ")" + functionName));
+            }
+            else if (destHeapReturnType == callback->heapReturnType) {
+                string functionName = function->getCCallbackFunctionName(compiler, trOutput, CTM_Heap);
+                trBlock->statements.push_back(TrStatement(loc, name + "._cb_heap = (" + callback->getCBName(compiler, false, CTM_Heap) + ")" + functionName));
+            }
+            else {
+                compiler->addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match '%s'", destHeapReturnType->fullName.c_str(), callback->heapReturnType ? callback->heapReturnType->fullName.c_str() : "UNKNOWN");
+                return;
+            }
         }
     }
 
@@ -336,14 +391,33 @@ shared_ptr<CType> CCallback::getType(vector<shared_ptr<CType>> argTypes, shared_
 }
 
 shared_ptr<CVar> CCallback::getVar(Compiler* compiler, shared_ptr<CScope> scope, CLoc loc, shared_ptr<CVar> dotVar, shared_ptr<CBaseFunction> function, CTypeMode returnMode) {
-    auto stackReturnType = function->getReturnType(compiler, CTM_Stack);
-    if (stackReturnType->typeMode == CTM_Heap) {
-        stackReturnType = nullptr;
-    }
+    shared_ptr<CType> stackReturnType;
+    shared_ptr<CType> heapReturnType;
 
-    auto heapReturnType = function->getReturnType(compiler, CTM_Heap);
-    if (heapReturnType->typeMode != CTM_Heap) {
-        heapReturnType = nullptr;
+    if (function->classType == CFT_InterfaceMethod) {
+        auto interfaceMethodStack = function->parent.lock()->getCFunction(compiler, CLoc::undefined, function->name, nullptr, nullptr, CTM_Stack);
+        auto interfaceMethodHeap = function->parent.lock()->getCFunction(compiler, CLoc::undefined, function->name, nullptr, nullptr, CTM_Heap);
+
+        stackReturnType = interfaceMethodStack->getReturnType(compiler, CTM_Stack);
+        if (stackReturnType->typeMode == CTM_Heap) {
+            stackReturnType = nullptr;
+        }
+
+        heapReturnType = interfaceMethodHeap->getReturnType(compiler, CTM_Heap);
+        if (heapReturnType->typeMode != CTM_Heap) {
+            heapReturnType = nullptr;
+        }
+    }
+    else {
+        stackReturnType = function->getReturnType(compiler, CTM_Stack);
+        if (stackReturnType->typeMode == CTM_Heap) {
+            stackReturnType = nullptr;
+        }
+
+        heapReturnType = function->getReturnType(compiler, CTM_Heap);
+        if (heapReturnType->typeMode != CTM_Heap) {
+            heapReturnType = nullptr;
+        }
     }
 
     vector<shared_ptr<CType>> argTypes;

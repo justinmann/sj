@@ -1462,6 +1462,10 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, string name, bool is
 }
 
 shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
+    if (typeName->ctype) {
+        return typeName->ctype;
+    }
+    
     auto typeMode = defaultMode;
     if (typeName->typeMode != CTM_Undefined) {
         typeMode = typeName->typeMode;
@@ -1779,6 +1783,16 @@ void CScope::setLocalVar(Compiler* compiler, CLoc loc, shared_ptr<CVar> var, boo
     function->_data[returnMode].localVarsByName[currentBlock][dotNamespace][var->name] = var;
 }
 
+shared_ptr<CBaseFunction> CScope::getCFunction(Compiler* compiler, CLoc locCaller, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode) {
+    if (function) {
+        return function->getCFunction(compiler, locCaller, name, callerScope, templateTypeNames, returnMode);
+    }
+    else if (cinterface) {
+        return cinterface->getCFunction(compiler, locCaller, name, callerScope, templateTypeNames, returnMode);
+    }
+    return nullptr;
+}
+
 shared_ptr<CType> CScope::getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
     auto allNamespaces = getImportNamespacesWithRenames();
     if (function) {
@@ -1801,9 +1815,6 @@ shared_ptr<CVar> CScope::getCVar(Compiler* compiler, shared_ptr<CVar> dotVar, co
                 return cvar;
             }
         }
-    }
-    else {
-        compiler->addError(CLoc::undefined, CErrorCode::Internal, "looking up var on non-function");
     }
     return nullptr;
 }

@@ -103,6 +103,7 @@ public:
     void pushImportScope(shared_ptr<ImportScope> importScope);
     void popImportScope(shared_ptr<ImportScope> importScope);
     void setLocalVar(Compiler* compiler, CLoc loc, shared_ptr<CVar> var, bool overwrite);
+    shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CLoc locCaller, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode);
     shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
     shared_ptr<CVar> getCVar(Compiler* compiler, shared_ptr<CVar> dotVar, const string& name, VarScanMode scanMode);
     static shared_ptr<CScope> getScopeForType(Compiler* compiler, shared_ptr<CType> type);

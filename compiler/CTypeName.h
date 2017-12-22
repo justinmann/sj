@@ -41,6 +41,7 @@ public:
     shared_ptr<CTypeNameList> argTypeNames;
     shared_ptr<CTypeName> returnTypeName;
     bool isOption;
+    shared_ptr<CType> ctype;
 
     CTypeName(CTypeCategory category, CTypeMode typeMode, vector<string> packageNamespace, const string& valueName, bool isOption) : category(category), mutability(CTI_Undefined), typeMode(typeMode), packageNamespace(packageNamespace), valueName(valueName), isOption(isOption) {
         assert(valueName.find("stack ") != 0);

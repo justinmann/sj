@@ -23,8 +23,8 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
         varScope = CScope::getScopeForType(compiler, dotType);
     }
     
-    if (dotVar && varScope && varScope->function && !templateTypeNames) {
-        auto getPropertyFunction = varScope->function->getCFunction(compiler, loc, "get" + name, scope, nullptr, returnMode);
+    if (dotVar && varScope && !templateTypeNames) {
+        auto getPropertyFunction = varScope->getCFunction(compiler, loc, "get" + name, scope, nullptr, returnMode);
         if (getPropertyFunction != nullptr) {
             if (returnMode != CTM_Heap) {
                 returnMode = CTM_Stack;
@@ -35,16 +35,16 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
         }
     }
 
-    if (varScope && varScope->function) {
+    if (varScope) {
         shared_ptr<CVar> cvar;
         if (!templateTypeNames) {
             cvar = varScope->getCVar(compiler, dotVar, name, dotVar ? VSM_ThisOnly : VSM_LocalThisParent);
         }
 
         if (!cvar) {
-            auto cfunction = varScope->function->getCFunction(compiler, loc, name, varScope, templateTypeNames, returnMode);
+            auto cfunction = varScope->getCFunction(compiler, loc, name, varScope, templateTypeNames, returnMode);
             if (dotVar) {
-                auto dotFunction = dynamic_pointer_cast<CFunction>(dotVar->getType(compiler)->parent.lock());
+                auto dotFunction = dotVar->getType(compiler)->parent.lock();
                 if (dotFunction) {
                     cfunction = dotFunction->getCFunction(compiler, loc, name, varScope, templateTypeNames, returnMode);
                     if (cfunction) {
