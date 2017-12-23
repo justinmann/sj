@@ -10,7 +10,14 @@ enum textVertical(
 	center
 )
 
-textElement #element (
+#textElement(
+	getText()'string
+	setText(v : 'string)'void
+)
+
+@heap
+textElement #element #textElement (
+	id : empty'string
 	font := style.getFont()
 	text := string()
 	color := copy colors.white
@@ -25,13 +32,19 @@ textElement #element (
 		textSize.min(maxSize)	
 	}
 
-	getRect()'rect { copy _rect }
-
+	getRect() { copy _rect }
 	setRect(rect_ : 'rect)'void {
 		if _rect != rect_ {
 			_rect = copy rect_
 			_textRenderer = empty'textRenderer
 		}
+		void
+	}
+
+	getText() { copy text }
+	setText(text_ : 'string) {
+		text = copy text_
+		_textRenderer = empty'textRenderer	
 		void
 	}
 
@@ -68,4 +81,9 @@ textElement #element (
 	fireMouseEvent(mouseEvent : 'mouseEvent) {
 		true
 	}
-) { this }
+) { 
+	ifValid id {
+		elementsById[id] = this as #element
+	}
+	this 
+}

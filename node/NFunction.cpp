@@ -1719,8 +1719,10 @@ shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CLoc 
     } else {
         assert(funcParent.expired() || funcParent.lock()->definition.lock() == parent.lock());
         
+        auto implementedInterfaceDefintions = getImplementedInterfaceDefintions(compiler);
+
         shared_ptr<vector<shared_ptr<CInterface>>> interfaces;
-        if (getImplementedInterfaceDefintions(compiler)) {
+        if (implementedInterfaceDefintions) {
             interfaces = make_shared<vector<shared_ptr<CInterface>>>();
         }
 
@@ -1746,8 +1748,8 @@ shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CLoc 
             return nullptr;
         }
 
-        if (getImplementedInterfaceDefintions(compiler)) {
-            for (auto it : *getImplementedInterfaceDefintions(compiler)) {
+        if (implementedInterfaceDefintions) {
+            for (auto it : *implementedInterfaceDefintions) {
                 vector<shared_ptr<CType>> interfaceTemplateTypes;
                 if (!it.first->ninterface) {
                     compiler->addError(loc, CErrorCode::InterfaceDoesNotExist, "cannot find interface '%s'", it.first->name.c_str());
@@ -1815,6 +1817,7 @@ shared_ptr<vector<pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameLis
                 auto interface = getDefinedInterfaceDefinition(it->packageNamespace, it->valueName);
                 if (interface == nullptr) {
                     compiler->addError(loc, CErrorCode::InterfaceDoesNotExist, "cannot find interface '%s'", it->valueName.c_str());
+                    _implementedInterfaceDefinitions = nullptr;
                     return nullptr;
                 }
                 _implementedInterfaceDefinitions->push_back(pair<shared_ptr<CInterfaceDefinition>, shared_ptr<CTypeNameList>>(interface, it->templateTypeNames));

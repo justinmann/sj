@@ -4,3 +4,7 @@ margin(
 	r : 0 
 	b : 0
 ) { this }
+
+i32_asMargin(x : 'i32) {
+	margin(x, x, x, x)
+}

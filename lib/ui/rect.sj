@@ -9,7 +9,7 @@ rect(
 	}
 
 	containsPoint(point : 'point) {
-		x <= point.x && y <= point.x && point.x < x + w && point.y < y + h
+		x <= point.x && y <= point.y && point.x < x + w && point.y < y + h
 	}
 	
 	isEqual(rect: 'rect) {

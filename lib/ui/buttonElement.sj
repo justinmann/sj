@@ -1,11 +1,5 @@
-enum buttonState (
-	normal
-	hot
-	pressed
-)
-
 @heap
-buttonElement #element (
+buttonElement #element #clickable(
 	text := ""
 	textColor := copy colors.black
 	font := style.getFont()
@@ -15,30 +9,21 @@ buttonElement #element (
 	margin := margin(10, 10, 10, 10)
 	onClick := empty'heap ()void
 	_rect := rect()
-	_state := buttonState.normal
 	_textRenderer := empty'textRenderer
 	_imageRenderer := empty'imageRenderer
+	_clickGesture := clickGesture() // TODO:
 
 	getSize(maxSize : 'size) {
 		textSize : font.getTextSize(text) + margin
 		textSize.min(maxSize)	
 	}
 
-	getRect()'rect { copy _rect }
-
+	getRect() { copy _rect }
 	setRect(rect_ : 'rect) {
 		if _rect != rect_ {
 			_rect = copy rect_
+			_clickGesture.rect = copy rect_
 			_textRenderer = empty'textRenderer
-			_imageRenderer = empty'imageRenderer
-		}
-		void
-	}
-
-	getState()'buttonState { _state }
-	setState(state_ : 'buttonState) {
-		if _state != state_ {
-			_state = state_
 			_imageRenderer = empty'imageRenderer
 		}
 		void
@@ -46,10 +31,10 @@ buttonElement #element (
 
 	render(scene : 'scene2d) {
 		if isEmpty(_imageRenderer) {
-			image : switch _state {
-				buttonState.hot 	{ copy hotImage }
-				buttonState.pressed { copy pressedImage }
-				default				{ copy normalImage }
+			image : switch _clickGesture.state {
+				clickState.entered { copy hotImage }
+				clickState.pressed { copy pressedImage }
+				default			   { copy normalImage }
 			}
 
 			ifValid image {
@@ -77,45 +62,33 @@ buttonElement #element (
 		void
 	}
 
-	onMouseUp(point : 'point)'bool {
-		if mouse_hasCapture(parent as #element) {
-			mouse_release(parent as #element)
-			ifValid onClick {
-				onClick()
-			}
-			setState(buttonState.normal)
-			false
-		} else {
-			true
-		}
+	onClickGestureEnter(element : '#element) {
+		_imageRenderer = empty'imageRenderer
+		void
 	}
 
-	onMouseDown(point : 'point)'bool {
-		mouse_capture(parent as #element)
-		setState(buttonState.pressed)
-		false
+	onClickGestureLeave(element : '#element) {
+		_imageRenderer = empty'imageRenderer
+		void
 	}
 
-	onMouseMove(point : 'point)'bool {
-		if _state == buttonState.normal {
-			setState(buttonState.hot)
+	onClickGesturePress(element : '#element) {
+		_imageRenderer = empty'imageRenderer
+		void
+	}
+
+	onClickGestureClick(element : '#element) {
+		_imageRenderer = empty'imageRenderer
+		ifValid onClick {
+			onClick()
 		}
-		true
+		void
 	}
 
 	fireMouseEvent(mouseEvent : 'mouseEvent)'bool {
-		if _rect.containsPoint(mouseEvent.point) {
-			if mouseEvent.type == mouseEventType.up {
-				onMouseUp(mouseEvent.point)
-			} else if mouseEvent.type == mouseEventType.down {
-				onMouseDown(mouseEvent.point)
-			} else if mouseEvent.type == mouseEventType.move {
-				onMouseMove(mouseEvent.point)
-			} else {
-				true
-			}
-		} else {
-			true
-		}
+		_clickGesture.fireMouseEvent(mouseEvent)
 	}
-) { this }
+) { 
+	_clickGesture = clickGesture(this as #element, this as #clickable)
+	this 
+}

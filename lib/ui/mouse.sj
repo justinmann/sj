@@ -39,6 +39,7 @@ mouseEvent(
 	type : 'mouseEventType
 	point : 'point
 	isCaptured : 'bool
+	isLeftDown : 'bool
 
 	fireChildren(children : 'array!heap #element) {
 		shouldContinue := true

@@ -18,9 +18,10 @@ mainLoop() {
     rootScene.end()
     rootWindowRenderer.present()
 
-    mouseEventType := empty'mouseEventType
-    x := 0
-    y := 0
+    mouse_eventType := empty'mouseEventType
+    mouse_x := 0
+    mouse_y := 0
+    mouse_isLeftDown := false
     --c--
     SDL_Event e;
     while(SDL_PollEvent( &e ) != 0) {
@@ -30,42 +31,47 @@ mainLoop() {
                 break;
             case SDL_MOUSEBUTTONDOWN:
                 printf("SDL_MOUSEBUTTONDOWN\n");
-                sjv_mouseeventtype.isvalid = true;
-                sjv_mouseeventtype.value = sjv_mouseeventtype_down;
-                sjv_x = e.button.x;
-                sjv_y = e.button.y;
+                sjv_mouse_eventtype.isvalid = true;
+                sjv_mouse_eventtype.value = sjv_mouseeventtype_down;
+                sjv_mouse_x = e.button.x;
+                sjv_mouse_y = e.button.y;
+                sjv_mouse_isleftdown = e.button.state & SDL_BUTTON(SDL_BUTTON_LEFT);
                 break;
             case SDL_MOUSEBUTTONUP:
                 printf("SDL_MOUSEBUTTONUP\n");
-                sjv_mouseeventtype.isvalid = true;
-                sjv_mouseeventtype.value = sjv_mouseeventtype_up;
-                sjv_x = e.button.x;
-                sjv_y = e.button.y;
+                sjv_mouse_eventtype.isvalid = true;
+                sjv_mouse_eventtype.value = sjv_mouseeventtype_up;
+                sjv_mouse_x = e.button.x;
+                sjv_mouse_y = e.button.y;
+                sjv_mouse_isleftdown = e.button.state & SDL_BUTTON(SDL_BUTTON_LEFT);
                 break;
             case SDL_MOUSEMOTION:
-                sjv_mouseeventtype.isvalid = true;
-                sjv_mouseeventtype.value = sjv_mouseeventtype_move;
-                sjv_x = e.motion.x;
-                sjv_y = e.motion.y;
+                sjv_mouse_eventtype.isvalid = true;
+                sjv_mouse_eventtype.value = sjv_mouseeventtype_move;
+                sjv_mouse_x = e.motion.x;
+                sjv_mouse_y = e.motion.y;
+                sjv_mouse_isleftdown = e.button.state & SDL_BUTTON(SDL_BUTTON_LEFT);
                 break;
         }
     }
     --c--
 
     shouldContinue := true // TODO: should not need this
-    ifValid mouseEventType {
+    ifValid mouse_eventType {
         ifValid m : mouse_captureElement {
             shouldContinue = m.fireMouseEvent(mouseEvent(
-                type : mouseEventType
-                point : point(x, y)
+                type : mouse_eventType
+                point : point(mouse_x, mouse_y)
                 isCaptured : true
+                isLeftDown : mouse_isLeftDown
             )) 
             void
         } elseEmpty {
             shouldContinue = root.fireMouseEvent(mouseEvent(
-                type : mouseEventType
-                point : point(x, y)
+                type : mouse_eventType
+                point : point(mouse_x, mouse_y)
                 isCaptured : false
+                isLeftDown : mouse_isLeftDown
             )) 
             void
         }
