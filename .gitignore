@@ -78,4 +78,4 @@ sjc.ilk
 sjc.iobj
 sjc.ipdb
 *.tmp
-tests/app/main.c
+tests/app/vs/.vs/
