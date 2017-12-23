@@ -38,7 +38,8 @@ public:
     NCCode(CLoc loc, NCCodeType codeType, const char* line) : NBase(NodeType_Code, loc), codeType(codeType) { 
         lines.push_back(line);
     }
-    void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) { }
+    void initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) { }
+    void initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {}
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
     void addToStruct(Compiler* compiler, shared_ptr<CScope> scope, vector<string>& lines);
 

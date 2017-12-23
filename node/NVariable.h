@@ -31,7 +31,12 @@ class NVariableStub : public NVariableBase {
 public:
     NVariableStub(shared_ptr<NBase> node) : NVariableBase(NodeType_Variable, CLoc::undefined), node(node) {}
 
-    void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) { node->define(compiler, importNamespaces, packageNamespace, thisFunction);  }
+    void initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) { 
+        node->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+    }
+    void initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+        node->initVars(compiler, scope, returnMode);
+    }
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) { assert(dotVar == nullptr); return node->getVar(compiler, scope, returnMode); }
 
     shared_ptr<NBase> node;
@@ -40,7 +45,8 @@ public:
 class NVariable : public NVariableBase {
 public:
     NVariable(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames);
-    void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) { }
+    void initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) { }
+    void initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {}
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 
     string name;

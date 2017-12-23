@@ -81,9 +81,12 @@ void CGetValueVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, strin
 }
 
 
-void NGetValue::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
-    assert(compiler->state == CompilerState::Define);
-    node->define(compiler, importNamespaces, packageNamespace, thisFunction);
+void NGetValue::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+    node->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+}
+
+void NGetValue::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    node->initVars(compiler, scope, returnMode);
 }
 
 shared_ptr<CVar> NGetValue::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {

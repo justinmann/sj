@@ -85,10 +85,14 @@ void CCompareVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string
     rightVar->dump(compiler, functions, ss, level);
 }
 
-void NCompare::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
-    assert(compiler->state == CompilerState::Define);
-    leftSide->define(compiler, importNamespaces, packageNamespace, thisFunction);
-    rightSide->define(compiler, importNamespaces, packageNamespace, thisFunction);
+void NCompare::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+    leftSide->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+    rightSide->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+}
+
+void NCompare::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    leftSide->initVars(compiler, scope, returnMode);
+    rightSide->initVars(compiler, scope, returnMode);
 }
 
 shared_ptr<CVar> NCompare::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {

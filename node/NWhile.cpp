@@ -28,10 +28,15 @@ void CWhileVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>&
     bodyVar->dump(compiler, functions, ss, level);
 }
 
-void NWhile::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NWhile::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
-    cond->define(compiler, importNamespaces, packageNamespace, thisFunction);
-    body->define(compiler, importNamespaces, packageNamespace, thisFunction);
+    cond->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+    body->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+}
+
+void NWhile::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    cond->initVars(compiler, scope, returnMode);
+    body->initVars(compiler, scope, returnMode);
 }
 
 shared_ptr<CVar> NWhile::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {

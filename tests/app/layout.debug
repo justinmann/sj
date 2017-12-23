@@ -10,6 +10,24 @@ color(r'f32:, g'f32:, b'f32:, a'f32:)'stack color {
   this
 }
 
+glblendfunc(sfactor'glblendfunctype:, dfactor'glblendfunctype:)'void {
+  --c--
+  glBlendFunc(sfactor, dfactor);
+  --c--
+}
+
+glclearcolor(color'stack color:)'void {
+  --c--
+  glClearColor(color->r, color->g, color->b, color->a);
+  --c--
+}
+
+glenable(feature'glfeature:)'void {
+  --c--
+  glEnable(feature);
+  --c--
+}
+
 gridlayout #element (children'stack array!#element:, margin'stack margin=, cols'stack array!gridunit=, rows'stack array!gridunit=, _rect'stack rect=)'heap gridlayout {
   this
 }
@@ -155,10 +173,17 @@ windowrenderer()'stack windowrenderer {
   if (_this->ren == 0) {
   halt("SDL_CreateRenderer Error: %s\n", SDL_GetError());
   }
-  glClearColor( 0.0, 0.0, 0.0, 0.0 );
-  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-  glEnable( GL_BLEND );
   --c--
+  glclearcolor(
+    color'stack color : color
+  )
+  glblendfunc(
+    sfactor'glblendfunctype : sfactor,
+    dfactor'glblendfunctype : dfactor
+  )
+  glenable(
+    feature'glfeature : feature
+  )
   this
 }
 
@@ -1145,6 +1170,23 @@ global()'void {
     gl_framebuffer_incomplete_attachment'glframebufferstatus : 0x8CD6
     gl_framebuffer_incomplete_missing_attachment'glframebufferstatus : 0x8CD7
     gl_framebuffer_unsupported'glframebufferstatus : 0x8CDD
+  }
+  {
+    gl_zero'glblendfunctype : 0
+    gl_one'glblendfunctype : 1
+    gl_src_color'glblendfunctype : 0x0300
+    gl_one_minus_src_color'glblendfunctype : 0x0301
+    gl_dst_color'glblendfunctype : 0x0306
+    gl_one_minus_dst_color'glblendfunctype : 0x0307
+    gl_src_alpha'glblendfunctype : 0x0302
+    gl_one_minus_src_alpha'glblendfunctype : 0x0303
+    gl_dst_alpha'glblendfunctype : 0x0304
+    gl_one_minus_dst_alpha'glblendfunctype : 0x0305
+    gl_constant_color'glblendfunctype : 0x8001
+    gl_one_minus_constant_color'glblendfunctype : 0x8002
+    gl_constant_alpha'glblendfunctype : 0x8003
+    gl_one_minus_constant_alpha'glblendfunctype : 0x8004
+    gl_src_alpha_saturate'glblendfunctype : 0x0308
   }
   glviewports'stack list!rect : list!stack rect(this = list!stack rect(
     array'stack array!rect = array

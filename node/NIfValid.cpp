@@ -93,16 +93,23 @@ void CIfValidVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string
     }
 }
 
-void NIfValid::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
-    assert(compiler->state == CompilerState::Define);
-//    condition->define(compiler, thisFunction);
-
+void NIfValid::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     if (elseBlock) {
-        elseBlock->define(compiler, importNamespaces, packageNamespace, thisFunction);
+        elseBlock->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
     }
     
     if (ifBlock) {
-        ifBlock->define(compiler, importNamespaces, packageNamespace, thisFunction);
+        ifBlock->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+    }
+}
+
+void NIfValid::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    if (elseBlock) {
+        elseBlock->initVars(compiler, scope, returnMode);
+    }
+
+    if (ifBlock) {
+        ifBlock->initVars(compiler, scope, returnMode);
     }
 }
 

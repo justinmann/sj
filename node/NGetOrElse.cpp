@@ -1,7 +1,13 @@
 #include "Node.h"
 
-void NGetOrElse::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NGetOrElse::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+    left->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+    right->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+}
 
+void NGetOrElse::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    left->initVars(compiler, scope, returnMode);
+    right->initVars(compiler, scope, returnMode);
 }
 
 shared_ptr<CVar> NGetOrElse::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {

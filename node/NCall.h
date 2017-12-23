@@ -13,6 +13,22 @@
 
 class NCall;
 
+class CallArgument {
+public:
+    CallArgument(string name, AssignOp op, shared_ptr<CVar> var) : name(name), op(op), var(var) {}
+    CallArgument(shared_ptr<CVar> var) : name(name), op(AssignOp::immutableCreate), var(var) {}
+
+    static vector<CallArgument> createList(shared_ptr<CVar> var1);
+    static vector<CallArgument> createList(shared_ptr<CVar> var1, shared_ptr<CVar> var2);
+    static vector<CallArgument> createList(shared_ptr<CVar> var1, shared_ptr<CVar> var2, shared_ptr<CVar> var3);
+    static vector<CallArgument> createList(shared_ptr<CVar> var1, shared_ptr<CVar> var2, shared_ptr<CVar> var3, shared_ptr<CVar> var4);
+    static vector<CallArgument> emptyList;
+
+    string name;
+    AssignOp op;
+    shared_ptr<CVar> var;
+};
+
 class CCallVar : public CVar {
 public:
     CCallVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) : CVar(loc, scope), dotVar(dotVar), returnMode(returnMode) {}
@@ -21,7 +37,7 @@ public:
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
     void dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
-    static shared_ptr<vector<FunctionParameter>> getParameters(Compiler* compiler, CLoc loc, shared_ptr<CScope> callerScope, shared_ptr<CBaseFunction> callee, shared_ptr<NodeList> arguments, bool isHelperFunction, shared_ptr<CVar> dotVar, CTypeMode returnMode);
+    static shared_ptr<vector<FunctionParameter>> getParameters(Compiler* compiler, CLoc loc, shared_ptr<CScope> callerScope, shared_ptr<CBaseFunction> callee, vector<CallArgument> arguments, bool isHelperFunction, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 
     CTypeMode returnMode;
     shared_ptr<CVar> dotVar;
@@ -38,8 +54,9 @@ public:
     
     NCall(CLoc loc, string name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments);
 
-    virtual void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
-    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
+    void initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    void initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
+    shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
     static shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, string name, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode, bool* pisHelperFunction);
 
 private:

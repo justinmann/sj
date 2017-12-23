@@ -35,9 +35,13 @@ void CNotVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& f
     var->dump(compiler, functions, ss, level);
 }
 
-void NNot::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NNot::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
-    node->define(compiler, importNamespaces, packageNamespace, thisFunction);
+    node->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+}
+
+void NNot::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    node->initVars(compiler, scope, returnMode);
 }
 
 shared_ptr<CVar> NNot::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {

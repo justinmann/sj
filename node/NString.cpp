@@ -33,7 +33,8 @@ void CGlobalPtrVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, stri
 class NGlobalPtrVar : public NBase {
 public:
     NGlobalPtrVar(CLoc loc, const string& varName, const string& str) : NBase(NodeType_Integer, loc), varName(varName), str(str) {}
-    void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {}
+    void initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {}
+    void initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {}
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
     
 private:
@@ -46,25 +47,44 @@ shared_ptr<CVar> NGlobalPtrVar::getVarImpl(Compiler* compiler, shared_ptr<CScope
 }
 
 shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+    if (returnMode != CTM_Heap) {
+        returnMode = CTM_Stack;
+    }
+    
     auto varName = TrBlock::nextVarName("sjg_string");
 
-    auto createArray = make_shared<NCall>(
-        loc,
-        "array",
-        make_shared<CTypeNameList>(CTC_Value, CTM_Stack, emptyNamespace, compiler->typeChar->valueName, false),
-        make_shared<NodeList>(
-            make_shared<NInteger>(loc, str.size() + 1),
-            make_shared<NGlobalPtrVar>(loc, varName, str),
-            make_shared<NBool>(loc, true),
-            make_shared<NInteger>(loc, str.size() + 1)));
+    auto createArrayCallee = scope->function->getCFunction(compiler, loc, "array", scope, make_shared<CTypeNameList>(CTC_Value, CTM_Stack, emptyNamespace, compiler->typeChar->valueName, false), CTM_Stack);
+    if (!createArrayCallee) {
+        return nullptr;
+    }
 
-    auto createString = make_shared<NCall>(
-        loc,
-        "string",
-        nullptr,
-        make_shared<NodeList>(
-            make_shared<NInteger>(loc, str.size()),
-            createArray));
+    auto createArrayParameters = CCallVar::getParameters(compiler, loc, scope, createArrayCallee, 
+        CallArgument::createList(
+            make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(str.size() + 1)),
+            make_shared<CGlobalPtrVar>(loc, scope, varName, str),
+            make_shared<CConstantVar>(loc, scope, compiler->typeBool, "true"),
+            make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(str.size() + 1))
+        ), false, nullptr, CTM_Stack);
+    auto createArrayVar = CCallVar::create(compiler, loc, "array", nullptr, createArrayParameters, scope, createArrayCallee, CTM_Stack);
+    if (!createArrayVar) {
+        return nullptr;
+    }
 
-    return createString->getVar(compiler, scope, dotVar, returnMode);
+
+    auto creatStringCallee = scope->function->getCFunction(compiler, loc, "string", scope, nullptr, returnMode);
+    if (!creatStringCallee) {
+        return nullptr;
+    }
+
+    auto createStringParameters = CCallVar::getParameters(compiler, loc, scope, creatStringCallee,
+        CallArgument::createList(
+            make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(str.size())),
+            createArrayVar
+        ), false, nullptr, returnMode);
+    auto createStringVar = CCallVar::create(compiler, loc, "string", nullptr, createStringParameters, scope, creatStringCallee, returnMode);
+    if (!createStringVar) {
+        return nullptr;
+    }
+
+    return createStringVar;
 }

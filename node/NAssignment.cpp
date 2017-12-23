@@ -50,21 +50,69 @@ NAssignment::NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTy
     }
 }
 
-void NAssignment::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NAssignment::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     
     this->packageNamespace = packageNamespace;
 
     if (var) {
-        var->define(compiler, importNamespaces, packageNamespace, thisFunction);
+        var->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
     }
     
     if (nfunction) {
-        nfunction->define(compiler, importNamespaces, packageNamespace, thisFunction);
+        nfunction->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
     }
     
     if (rightSide) {
-        rightSide->define(compiler, importNamespaces, packageNamespace, thisFunction);
+        rightSide->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+    }
+}
+
+void NAssignment::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    if (var) {
+        var->initVars(compiler, scope, returnMode);
+    }
+
+    if (nfunction) {
+        nfunction->initVars(compiler, scope, returnMode);
+    }
+
+    if (rightSide) {
+        rightSide->initVars(compiler, scope, returnMode);
+    }
+
+    if (!var && !inFunctionDeclaration && op.isFirstAssignment && typeName) {
+        auto leftVar = scope->getCVar(compiler, scope, nullptr, name, VSM_LocalThisParent);
+        if (leftVar) {
+            compiler->addError(loc, CErrorCode::ImmutableAssignment, "var '%s' already exists", name.c_str());
+            return;
+        }
+
+        auto leftType = scope->getVarType(loc, compiler, typeName, CTM_Undefined);
+
+        string nameNS;
+        bool isFirst = true;
+        for (auto ns : packageNamespace) {
+            if (isFirst) {
+                isFirst = false;
+            }
+            else {
+                nameNS += "_";
+            }
+            nameNS += ns;
+        }
+        if (!isFirst) {
+            nameNS += "_";
+        }
+        nameNS += name;
+
+        if (name[0] == '_') {
+            compiler->addError(loc, CErrorCode::InvalidType, "local var cannot be private '%s'", name.c_str());
+            return;
+        }
+
+        auto leftStoreVar = make_shared<CNormalVar>(loc, scope, leftType, name, "sjv_" + nameNS, op.isMutable, CVarType::Var_Local, nullptr);
+        scope->addOrUpdateLocalVar(compiler, packageNamespace, leftStoreVar);
     }
 }
 
@@ -99,7 +147,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
             returnMode = CTM_Stack;
         }
 
-        auto parameters = CCallVar::getParameters(compiler, loc, scope, setFunction, make_shared<NodeList>(rightSide), false, nullptr, returnMode);
+        auto parameters = CCallVar::getParameters(compiler, loc, scope, setFunction, CallArgument::createList(rightSide->getVar(compiler, scope, CTM_Undefined)), false, nullptr, returnMode);
         return CCallVar::create(compiler, loc, setFunctionName, parentVar, parameters, scope, setFunction, returnMode);
     }
     else {
@@ -142,42 +190,54 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
         }
         else {
             if (op.isFirstAssignment) {
-                auto leftVar = scope->getCVar(compiler, scope, nullptr, name, VSM_LocalThisParent);
-                if (leftVar) {
-                    compiler->addError(loc, CErrorCode::ImmutableAssignment, "var '%s' already exists", name.c_str());
-                    return nullptr;
-                }
+                if (typeName) {
+                    auto leftVar = scope->getCVar(compiler, scope, nullptr, name, VSM_LocalThisParent);
+                    if (!leftVar) {
+                        compiler->addError(loc, CErrorCode::Internal, "var '%s' should have been initialized already", name.c_str());
+                        return nullptr;
+                    }
 
-                auto fun = static_pointer_cast<CFunction>(cfunction);
-
-                auto leftType = getType(compiler, scope, CVarType::Var_Local, (op.typeMode == CTM_Undefined) ? returnMode : op.typeMode);
-                if (!leftType) {
-                    return nullptr;
+                    leftStoreVar = dynamic_pointer_cast<CStoreVar>(leftVar);
                 }
-                
-                string nameNS;
-                bool isFirst = true;
-                for (auto ns : packageNamespace) {
-                    if (isFirst) {
-                        isFirst = false;
-                    } else {
+                else {
+                    auto leftVar = scope->getCVar(compiler, scope, nullptr, name, VSM_LocalThisParent);
+                    if (leftVar) {
+                        compiler->addError(loc, CErrorCode::ImmutableAssignment, "var '%s' already exists", name.c_str());
+                        return nullptr;
+                    }
+
+                    auto fun = static_pointer_cast<CFunction>(cfunction);
+
+                    auto leftType = getType(compiler, scope, CVarType::Var_Local, (op.typeMode == CTM_Undefined) ? returnMode : op.typeMode);
+                    if (!leftType) {
+                        return nullptr;
+                    }
+
+                    string nameNS;
+                    bool isFirst = true;
+                    for (auto ns : packageNamespace) {
+                        if (isFirst) {
+                            isFirst = false;
+                        }
+                        else {
+                            nameNS += "_";
+                        }
+                        nameNS += ns;
+                    }
+                    if (!isFirst) {
                         nameNS += "_";
                     }
-                    nameNS += ns;
-                }
-                if (!isFirst) {
-                    nameNS += "_";
-                }
-                nameNS += name;
+                    nameNS += name;
 
-                if (name[0] == '_') {
-                    compiler->addError(loc, CErrorCode::InvalidType, "local var cannot be private '%s'", name.c_str());
-                    return nullptr;
-                }
-                
-                leftStoreVar = make_shared<CNormalVar>(loc, scope, leftType, name, "sjv_" + nameNS, op.isMutable, CVarType::Var_Local, nullptr);
+                    if (name[0] == '_') {
+                        compiler->addError(loc, CErrorCode::InvalidType, "local var cannot be private '%s'", name.c_str());
+                        return nullptr;
+                    }
 
-                scope->addOrUpdateLocalVar(compiler, packageNamespace, leftStoreVar);
+                    leftStoreVar = make_shared<CNormalVar>(loc, scope, leftType, name, "sjv_" + nameNS, op.isMutable, CVarType::Var_Local, nullptr);
+
+                    scope->addOrUpdateLocalVar(compiler, packageNamespace, leftStoreVar);
+                }
             }
             else {
                 auto leftVar = scope->getCVar(compiler, scope, nullptr, name, VSM_LocalThisParent);

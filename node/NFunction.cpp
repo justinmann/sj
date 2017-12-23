@@ -92,7 +92,7 @@ NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnT
     }
 }
 
-void NFunction::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> parentFunction) {
+void NFunction::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> parentFunction) {
     assert(compiler->state == CompilerState::Define);
     if (invalid.size() > 0) {
         compiler->addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments, function definitions, or interface definitions");
@@ -107,39 +107,42 @@ void NFunction::defineImpl(Compiler* compiler, vector<pair<string, vector<string
     parentFunction->addChildFunction(compiler, loc, packageNamespace, name, thisFunction);
 
     for (auto it : interfaces) {
-        it->define(compiler, importNamespaces, packageNamespace, thisFunction);
+        it->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
     }
 
     for (auto it : functions) {
-        it->define(compiler, importNamespaces, packageNamespace, thisFunction);
+        it->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
     }
         
     for (auto it : assignments) {
         if (!it->op.isFirstAssignment) {
             compiler->addError(loc, CErrorCode::InvalidFunction, "assignment '%s' must be : or :=", it->name.c_str());
         }
-        it->define(compiler, importNamespaces, packageNamespace, thisFunction);
+        it->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
     }
 
     if (block) {
-        block->define(compiler, importNamespaces, packageNamespace, thisFunction);
+        block->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
     }
 
     if (copyBlock) {
-        copyBlock->define(compiler, importNamespaces, packageNamespace, thisFunction);
+        copyBlock->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
     }
 
     if (destroyBlock) {
-        destroyBlock->define(compiler, importNamespaces, packageNamespace, thisFunction);
+        destroyBlock->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
     }
 
     if (catchBlock) {
-        catchBlock->define(compiler, importNamespaces, packageNamespace, thisFunction);
+        catchBlock->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
     }
 
     if ((copyBlock == nullptr) != (destroyBlock == nullptr)) {
         compiler->addError(loc, CErrorCode::InvalidType, "function '%s' must define a copy and destroy block or neither", name.c_str());
     }
+}
+
+void NFunction::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
 }
 
 shared_ptr<CFunctionDefinition> NFunction::getFunctionDefinition(Compiler *compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string> packageNamespace, shared_ptr<CFunctionDefinition> parentFunction) {
@@ -168,6 +171,7 @@ _interfaceTypeNames(nullptr),
 _hasInitializedInterfaces(false),
 _hasTranspileDefinitions(NOTSTARTED),
 _hasTranspileStructDefinitions(NOTSTARTED),
+_hasInitArgs(false),
 _isReturnThis(false),
 hasHeapThis(hasHeapThis),
 importNamespaces(importNamespaces)
@@ -176,6 +180,8 @@ importNamespaces(importNamespaces)
 CTypeMode functionReturnModes[] = { CTM_Stack, CTM_Heap };
 
 bool CFunction::init(Compiler* compiler, shared_ptr<NFunction> node, CLoc locCaller) {
+    this->node = node;
+
     if (templateTypes.size() == 0) {
 
     }
@@ -230,12 +236,23 @@ bool CFunction::init(Compiler* compiler, shared_ptr<NFunction> node, CLoc locCal
                 index++;
             }
         }
+    }
 
+    return true;
+}
+
+void CFunction::initArgs(Compiler* compiler) {
+    if (_hasInitArgs) {
+        return;
+    }
+
+    _hasInitArgs = true;
+    if (node) {
         auto index = 0;
         for (auto it : node->assignments) {
             if (it->var) {
                 compiler->addError(it->loc, CErrorCode::InvalidDot, "cannot use '.' in variable declaration for a function: '%s'", it->name.c_str());
-                return nullptr;
+                return;
             }
 
             for (auto returnMode : functionReturnModes) {
@@ -244,7 +261,7 @@ bool CFunction::init(Compiler* compiler, shared_ptr<NFunction> node, CLoc locCal
                 auto calleeScope = getScope(compiler, returnMode);
                 auto argType = it->getType(compiler, calleeScope, cvarType, CTM_Undefined);
                 if (!argType) {
-                    return nullptr;
+                    return;
                 }
 
                 auto thisArgVar = make_shared<CNormalVar>(node->loc, calleeScope, argType, it->name, it->op.isMutable, cvarType);
@@ -259,12 +276,45 @@ bool CFunction::init(Compiler* compiler, shared_ptr<NFunction> node, CLoc locCal
             index++;
         }
     }
-
-    return true;
 }
 
 bool CFunction::initBlocks(Compiler* compiler, shared_ptr<NFunction> node) {
     if (node) {
+        for (auto returnMode : functionReturnModes) {
+            auto calleeScope = getScope(compiler, returnMode);
+
+            for (auto it : node->interfaces) {
+                it->initVars(compiler, calleeScope, returnMode);
+            }
+
+            for (auto it : node->functions) {
+                it->initVars(compiler, calleeScope, returnMode);
+            }
+
+            for (auto it : node->assignments) {
+                if (!it->op.isFirstAssignment) {
+                    compiler->addError(loc, CErrorCode::InvalidFunction, "assignment '%s' must be : or :=", it->name.c_str());
+                }
+                it->initVars(compiler, calleeScope, returnMode);
+            }
+
+            if (node->block) {
+                node->block->initVars(compiler, calleeScope, returnMode);
+            }
+
+            if (node->copyBlock) {
+                node->copyBlock->initVars(compiler, calleeScope, returnMode);
+            }
+
+            if (node->destroyBlock) {
+                node->destroyBlock->initVars(compiler, calleeScope, returnMode);
+            }
+
+            if (node->catchBlock) {
+                node->catchBlock->initVars(compiler, calleeScope, returnMode);
+            }
+        }
+
         for (auto returnMode : functionReturnModes) {
             auto calleeScope = getScope(compiler, returnMode);
 
@@ -374,6 +424,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
         }
     }
 
+    initArgs(compiler);
     transpileStructDefinition(compiler, trOutput);
     
     for (auto returnMode : functionReturnModes) {
@@ -638,6 +689,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 
 void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<CVar> parentVar, CLoc& calleeLoc, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode returnMode) {
     transpileDefinition(compiler, trOutput);
+    initArgs(compiler);
 
     assert(compiler->state == CompilerState::Compile);
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
@@ -951,6 +1003,7 @@ string CFunction::getCAsInterfaceFunctionName(Compiler* compiler, TrOutput* trOu
 void CFunction::dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level, CTypeMode returnMode) {
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
     assert(!_data[returnMode].isInvalid);
+    initArgs(compiler);
 
     ss << fullName(true);
     if (_interfaceTypeNames) {
@@ -1014,17 +1067,14 @@ shared_ptr<CThisVar> CFunction::getThisVar(Compiler* compiler, CTypeMode returnM
                         compiler->addError(loc, CErrorCode::TypeMismatch, "function return type '%s' does not match interface method return type '%s'", functionReturnType->fullName.c_str(), interfaceMethodReturnType->fullName.c_str());
                     }
 
-                    auto functionArgVars = cfunc->getArgVars(compiler, interfaceMethod->returnMode);
-                    if (!functionArgVars) {
-                        return nullptr;
-                    }
                     auto interfaceMethodArgVars = interfaceMethod->argVars;
-                    if (functionArgVars->size() != interfaceMethodArgVars.size()) {
-                        compiler->addError(loc, CErrorCode::InterfaceMethodTypeMismatch, "function has %d arguments does not match interface method arguments %d", functionArgVars->size(), interfaceMethodArgVars.size());
+                    cfunc->initArgs(compiler);
+                    if (cfunc->getArgCount(interfaceMethod->returnMode) != interfaceMethodArgVars.size()) {
+                        compiler->addError(loc, CErrorCode::InterfaceMethodTypeMismatch, "function has %d arguments does not match interface method arguments %d", cfunc->getArgCount(interfaceMethod->returnMode), interfaceMethodArgVars.size());
                     }
                     else {
-                        for (auto i = (size_t)0; i < functionArgVars->size(); i++) {
-                            auto aType = (*functionArgVars)[i]->getType(compiler);
+                        for (auto i = (size_t)0; i < interfaceMethodArgVars.size(); i++) {
+                            auto aType = cfunc->getArgVar(i, interfaceMethod->returnMode)->getType(compiler);
                             auto bType = interfaceMethodArgVars[i]->getType(compiler);
                             if (aType != bType) {
                                 compiler->addError(loc, CErrorCode::TypeMismatch, "function parameter %d type '%s' does not match interface method parameter type '%s'", i + 1, aType ? aType->fullName.c_str() : "Unknown", bType ? bType->fullName.c_str() : "Unknown");
@@ -1119,24 +1169,6 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CTypeMode returnM
     return _data[returnMode].returnType;
 }
 
-shared_ptr<vector<shared_ptr<CVar>>> CFunction::getArgVars(Compiler* compiler, CTypeMode returnMode) {
-    assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
-    assert(!_data[returnMode].isInvalid);
-
-    auto calleeVar = getThisVar(compiler, returnMode);
-    auto calleeScope = getScope(compiler, returnMode);
-    auto args = make_shared<vector<shared_ptr<CVar>>>();
-    for (auto it : argDefaultValues) {
-        if (!it.value) {
-            return nullptr;
-        }
-        auto var = it.value->getVar(compiler, calleeScope, it.op.typeMode);
-        assert(var);
-        args->push_back(var);
-    }
-    return args;
-}
-
 shared_ptr<CTypes> CFunction::getThisTypes(Compiler* compiler) {
     if (!_thisTypes) {
         _thisTypes = CType::create(compiler, static_pointer_cast<CFunctionDefinition>(definition.lock())->packageNamespace, name, safeName, shared_from_this());
@@ -1155,6 +1187,7 @@ shared_ptr<CScope> CFunction::getScope(Compiler* compiler, CTypeMode returnMode)
 
 int CFunction::getArgIndex(const string& name, CTypeMode returnMode) {
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
+    assert(_hasInitArgs);
     if (_data[returnMode].thisArgVarsByName.find(name) != _data[returnMode].thisArgVarsByName.end()) {
         return _data[returnMode].thisArgVarsByName[name].first;
     }
@@ -1163,17 +1196,20 @@ int CFunction::getArgIndex(const string& name, CTypeMode returnMode) {
 
 shared_ptr<CVar> CFunction::getArgVar(int index, CTypeMode returnMode) {
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
+    assert(_hasInitArgs);
     return _data[returnMode].thisArgVars[index];
 }
 
 int CFunction::getArgCount(CTypeMode returnMode) {
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
+    assert(_hasInitArgs);
     return (int)_data[returnMode].thisArgVars.size();
 }
 
 shared_ptr<vector<pair<string, shared_ptr<CType>>>> CFunction::getCTypeList(Compiler* compiler, CTypeMode returnMode) {
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
     assert(_hasTranspileStructDefinitions != NOTSTARTED);
+    assert(_hasInitArgs);
 
     if (_data[returnMode].isInvalid) {
         return nullptr;
@@ -1384,6 +1420,7 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, shared_ptr<CScope> calle
                 }
             }
 
+            initArgs(compiler);
             auto t2 = _data[returnMode].thisArgVarsByName.find(name);
             if (t2 != _data[returnMode].thisArgVarsByName.end()) {
                 auto thisArgVar = t2->second.second;
@@ -1412,7 +1449,7 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, shared_ptr<CScope> calle
             }
         }
 
-        if (scanMode == VSM_LocalThisParent) {
+        if (scanMode == VSM_LocalThisParent && !parent.expired()) {
             shared_ptr<CFunction> parentCheck = dynamic_pointer_cast<CFunction>(parent.lock());
             auto cvar = parentCheck->getCVar(compiler, callerScope, vector<shared_ptr<LocalVarScope>>(), ns, make_shared<CParentVar>(loc, callerScope, dotVar, parentCheck), name, VSM_FromChild, CTM_Undefined);
             if (cvar) {
@@ -1641,7 +1678,7 @@ shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, 
         c->ccodes = node->ccodes;
 
         for (auto it : node->interfaces) {
-            it->define(compiler, importNamespaces, packageNamespace, c);
+            it->initFunctions(compiler, importNamespaces, packageNamespace, c);
         }
 
         for (auto it : node->assignments) {

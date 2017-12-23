@@ -1,11 +1,16 @@
 #include "Node.h"
 
-void NTuple::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NTuple::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     for (auto element : *elements) {
-        element->define(compiler, importNamespaces, packageNamespace, thisFunction);
+        element->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
     }
 }
 
+void NTuple::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    for (auto element : *elements) {
+        element->initVars(compiler, scope, returnMode);
+    }
+}
 
 shared_ptr<CVar> NTuple::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
     if (elements->size() == 0) {

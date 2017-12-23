@@ -3,13 +3,23 @@
 NMathAssignment::NMathAssignment(CLoc loc, shared_ptr<NVariableBase> leftSide, NMathAssignmentOp op, shared_ptr<NVariableBase> numberSide) : NBase(NodeType_MathAssignment, loc), op(op), leftSide(leftSide), numberSide(numberSide) {
 }
 
-void NMathAssignment::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
-    assert(compiler->state == CompilerState::Define);
+void NMathAssignment::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     if (leftSide) {
-        leftSide->define(compiler, importNamespaces, packageNamespace, thisFunction);
+        leftSide->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
     }
+
     if (numberSide) {
-        numberSide->define(compiler, importNamespaces, packageNamespace, thisFunction);
+        numberSide->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+    }
+}
+
+void NMathAssignment::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    if (leftSide) {
+        leftSide->initVars(compiler, scope, returnMode);
+    }
+
+    if (numberSide) {
+        numberSide->initVars(compiler, scope, returnMode);
     }
 }
 

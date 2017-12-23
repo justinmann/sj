@@ -40,8 +40,8 @@ const char* sjg_string10 = "hi";
 const char* sjg_string11 = "hi";
 const char* sjg_string12 = "empty";
 const char* sjg_string2 = "hello";
-const char* sjg_string3 = "bye";
-const char* sjg_string4 = "good bye";
+const char* sjg_string3 = "good bye";
+const char* sjg_string4 = "bye";
 const char* sjg_string5 = "hi";
 const char* sjg_string6 = "empty";
 const char* sjg_string7 = "bye";
@@ -1055,7 +1055,7 @@ int main(int argc, char** argv) {
     sjt_call3.count = 3;
     sjt_call3.data._refCount = 1;
     sjt_call3.data.datasize = 4;
-    sjt_call3.data.data = (void*)sjg_string3;
+    sjt_call3.data.data = (void*)sjg_string4;
     sjt_call3.data._isglobal = true;
     sjt_call3.data.count = 4;
     sjf_array_char(&sjt_call3.data);
@@ -1065,7 +1065,7 @@ int main(int argc, char** argv) {
     sjt_call4.count = 8;
     sjt_call4.data._refCount = 1;
     sjt_call4.data.datasize = 9;
-    sjt_call4.data.data = (void*)sjg_string4;
+    sjt_call4.data.data = (void*)sjg_string3;
     sjt_call4.data._isglobal = true;
     sjt_call4.data.count = 9;
     sjf_array_char(&sjt_call4.data);

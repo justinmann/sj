@@ -29,16 +29,30 @@ public:
 };
 
 
+class CInitBlockVar : public CVar {
+public:
+    CInitBlockVar(CLoc loc, shared_ptr<CScope> scope, vector<shared_ptr<CVar>> statements);
+    bool getReturnThis();
+    shared_ptr<CType> getType(Compiler* compiler);
+    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
+    void dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
+
+private:
+    vector<shared_ptr<CVar>> statements;
+}; 
+
 class NEnum : public NVariableBase {
 public:
     NEnum(CLoc loc, string name, shared_ptr<EnumArgs> enumArgs);
-    void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    void initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    void initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 
 private:
     string name;
     shared_ptr<EnumArgs> enumArgs;
     vector<string> packageNamespace;
+    vector<shared_ptr<CNormalVar>> enumVars;
 };
 
 #endif /* NEnum_h */

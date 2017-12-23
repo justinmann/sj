@@ -58,6 +58,7 @@ public:
     map<string, shared_ptr<TrValue>> variables;
 	vector<TrStatement> statements;
     string returnLine;
+    shared_ptr<TrBlock> initBlock;
 
     void writeToStream(ostream& stream, int level);
     void writeVariablesToStream(ostream& stream, int level);

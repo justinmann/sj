@@ -27,10 +27,15 @@ void COrVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& fu
     rightVar->dump(compiler, functions, ss, level);
 }
 
-void NOr::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NOr::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
-    left->define(compiler, importNamespaces, packageNamespace, thisFunction);
-    right->define(compiler, importNamespaces, packageNamespace, thisFunction);
+    left->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+    right->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+}
+
+void NOr::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    left->initVars(compiler, scope, returnMode);
+    right->initVars(compiler, scope, returnMode);
 }
 
 shared_ptr<CVar> NOr::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {

@@ -45,10 +45,15 @@ void CBlockVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>&
 }
 
 
-void NBlock::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
-    assert(compiler->state == CompilerState::Define);
+void NBlock::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     for (auto it : statements) {
-        it->define(compiler, importNamespaces, packageNamespace, thisFunction);
+        it->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+    }
+}
+
+void NBlock::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    for (auto it : statements) {
+        it->initVars(compiler, scope, returnMode);
     }
 }
 

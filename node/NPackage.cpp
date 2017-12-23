@@ -1,6 +1,6 @@
 #include "Node.h"
 
-void NPackage::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces_, vector<string>& packageNamespace_, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NPackage::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces_, vector<string>& packageNamespace_, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     vector<string> newPackageNamespace = packageNamespace_;
     for (auto t : packageNamespace) {
@@ -11,7 +11,11 @@ void NPackage::defineImpl(Compiler* compiler, vector<pair<string, vector<string>
     vector<pair<string, vector<string>>> newImportNamespaces = importNamespaces_;
     newImportNamespaces.push_back(make_pair(string(), newPackageNamespace));
 
-    node->define(compiler, newImportNamespaces, newPackageNamespace, thisFunction);
+    node->initFunctions(compiler, newImportNamespaces, newPackageNamespace, thisFunction);
+}
+
+void NPackage::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    node->initVars(compiler, scope, returnMode);
 }
 
 shared_ptr<CVar> NPackage::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {

@@ -120,14 +120,24 @@ void CSwitchVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>
     ss << "}";
 }
 
-void NSwitchClause::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NSwitchClause::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     if (condition) {
-        condition->define(compiler, importNamespaces, packageNamespace, thisFunction);
+        condition->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
     }
 
     if (block) {
-        block->define(compiler, importNamespaces, packageNamespace, thisFunction);
+        block->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+    }
+}
+
+void NSwitchClause::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    if (condition) {
+        condition->initVars(compiler, scope, returnMode);
+    }
+
+    if (block) {
+        block->initVars(compiler, scope, returnMode);
     }
 }
 
@@ -136,14 +146,24 @@ shared_ptr<CVar> NSwitchClause::getVarImpl(Compiler* compiler, shared_ptr<CScope
     return nullptr;
 }
 
-void NSwitch::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NSwitch::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     if (value) {
-        value->define(compiler, importNamespaces, packageNamespace, thisFunction);
+        value->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
     }
 
     for (auto clause : clauses) {
-        clause->define(compiler, importNamespaces, packageNamespace, thisFunction);
+        clause->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+    }
+}
+
+void NSwitch::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    if (value) {
+        value->initVars(compiler, scope, returnMode);
+    }
+
+    for (auto clause : clauses) {
+        clause->initVars(compiler, scope, returnMode);
     }
 }
 

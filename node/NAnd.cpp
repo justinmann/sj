@@ -27,10 +27,15 @@ void CAndVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& f
     rightVar->dump(compiler, functions, ss, level);
 }
 
-void NAnd::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NAnd::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
-    left->define(compiler, importNamespaces, packageNamespace, thisFunction);
-    right->define(compiler, importNamespaces, packageNamespace, thisFunction);
+    left->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+    right->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+}
+
+void NAnd::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    left->initVars(compiler, scope, returnMode);
+    right->initVars(compiler, scope, returnMode);
 }
 
 shared_ptr<CVar> NAnd::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {

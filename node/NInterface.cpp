@@ -11,7 +11,7 @@ NInterface::NInterface(CLoc loc, const string& name, shared_ptr<CTypeNameList> t
     }
 }
 
-void NInterface::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NInterface::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     auto parentFunction = static_pointer_cast<CFunctionDefinition>(thisFunction);
     auto def = parentFunction->getDefinedInterfaceDefinition(packageNamespace, name);
     if (def != nullptr) {
@@ -23,7 +23,13 @@ void NInterface::defineImpl(Compiler* compiler, vector<pair<string, vector<strin
     def->ninterface = shared_from_this();
 
     for (auto it : methodList) {
-        it->define(compiler, importNamespaces, packageNamespace, thisFunction);
+        it->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+    }
+}
+
+void NInterface::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    for (auto it : methodList) {
+        it->initVars(compiler, scope, returnMode);
     }
 }
 

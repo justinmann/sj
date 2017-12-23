@@ -68,9 +68,13 @@ void CIsEmptyOrValidVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>,
 }
 
 
-void NIsEmptyOrValid::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NIsEmptyOrValid::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
-    node->define(compiler, importNamespaces, packageNamespace, thisFunction);
+    node->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+}
+
+void NIsEmptyOrValid::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    node->initVars(compiler, scope, returnMode);
 }
 
 shared_ptr<CVar> NIsEmptyOrValid::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {

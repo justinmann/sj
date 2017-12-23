@@ -30,7 +30,7 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
                 returnMode = CTM_Stack;
             }
 
-            auto parameters = CCallVar::getParameters(compiler, loc, scope, getPropertyFunction, make_shared<NodeList>(), false, nullptr, returnMode);
+            auto parameters = CCallVar::getParameters(compiler, loc, scope, getPropertyFunction, CallArgument::emptyList, false, nullptr, returnMode);
             return CCallVar::create(compiler, loc, name, dotVar, parameters, scope, getPropertyFunction, returnMode);
         }
     }

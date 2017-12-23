@@ -1,9 +1,56 @@
 #include "Node.h"
 
-shared_ptr<vector<FunctionParameter>> CCallVar::getParameters(Compiler* compiler, CLoc loc, shared_ptr<CScope> callerScope, shared_ptr<CBaseFunction> callee, shared_ptr<NodeList> arguments, bool isHelperFunction, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+vector<CallArgument> CallArgument::createList(shared_ptr<CVar> var1) {
+    vector<CallArgument> list;
+    CallArgument arg1(var1);
+    list.push_back(arg1);
+    return list;
+}
+
+vector<CallArgument> CallArgument::createList(shared_ptr<CVar> var1, shared_ptr<CVar> var2) {
+    vector<CallArgument> list;
+    CallArgument arg1(var1);
+    list.push_back(arg1);
+    CallArgument arg2(var2);
+    list.push_back(arg2);
+    return list;
+}
+
+vector<CallArgument> CallArgument::createList(shared_ptr<CVar> var1, shared_ptr<CVar> var2, shared_ptr<CVar> var3) {
+    vector<CallArgument> list;
+    CallArgument arg1(var1);
+    list.push_back(arg1);
+    CallArgument arg2(var2);
+    list.push_back(arg2);
+    CallArgument arg3(var3);
+    list.push_back(arg3);
+    return list;
+}
+
+vector<CallArgument> CallArgument::createList(shared_ptr<CVar> var1, shared_ptr<CVar> var2, shared_ptr<CVar> var3, shared_ptr<CVar> var4) {
+    vector<CallArgument> list;
+    CallArgument arg1(var1);
+    list.push_back(arg1);
+    CallArgument arg2(var2);
+    list.push_back(arg2);
+    CallArgument arg3(var3);
+    list.push_back(arg3);
+    CallArgument arg4(var4);
+    list.push_back(arg4);
+    return list;
+}
+
+vector<CallArgument> CallArgument::emptyList;
+
+shared_ptr<vector<FunctionParameter>> CCallVar::getParameters(Compiler* compiler, CLoc loc, shared_ptr<CScope> callerScope, shared_ptr<CBaseFunction> callee, vector<CallArgument> arguments, bool isHelperFunction, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+    auto cfunc = dynamic_pointer_cast<CFunction>(callee);
+    if (cfunc) {
+        cfunc->initArgs(compiler);
+    }
+
     auto parameters = make_shared<vector<FunctionParameter>>(callee->getArgCount(returnMode));
 
-    if (parameters->size() < arguments->size()) {
+    if (parameters->size() < arguments.size()) {
         compiler->addError(loc, CErrorCode::TooManyParameters, "too many parameters");
         return nullptr;
     }
@@ -20,24 +67,22 @@ shared_ptr<vector<FunctionParameter>> CCallVar::getParameters(Compiler* compiler
         argIndex++;
     }
 
-    for (auto it : *arguments) {
-        if (it->nodeType == NodeType_Assignment) {
-            auto parameterAssignment = static_pointer_cast<NAssignment>(it);
-            assert(parameterAssignment->inFunctionDeclaration);
-            auto index = callee->getArgIndex(parameterAssignment->name, returnMode);
+    for (auto it : arguments) {
+        if (it.name.size() > 0) {
+            auto index = callee->getArgIndex(it.name, returnMode);
             if (index < 0) {
-                compiler->addError(loc, CErrorCode::ParameterDoesNotExist, "cannot find parameter '%s'", parameterAssignment->name.c_str());
+                compiler->addError(loc, CErrorCode::ParameterDoesNotExist, "cannot find parameter '%s'", it.name.c_str());
                 return nullptr;
             }
 
             if ((*parameters)[index].var != nullptr) {
-                compiler->addError(loc, CErrorCode::ParameterRedefined, "defined parameter '%s' twice", parameterAssignment->name.c_str());
+                compiler->addError(loc, CErrorCode::ParameterRedefined, "defined parameter '%s' twice", it.name.c_str());
                 return nullptr;
             }
 
             (*parameters)[index].isDefaultValue = false;
-            (*parameters)[index].op = parameterAssignment->op;
-            (*parameters)[index].var = parameterAssignment->rightSide->getVar(compiler, callerScope, CTM_Undefined);
+            (*parameters)[index].op = it.op;
+            (*parameters)[index].var = it.var;
             hasSetByName = true;
         }
         else {
@@ -53,7 +98,7 @@ shared_ptr<vector<FunctionParameter>> CCallVar::getParameters(Compiler* compiler
 
             (*parameters)[argIndex].isDefaultValue = false;
             (*parameters)[argIndex].op = AssignOp::immutableCreate;
-            (*parameters)[argIndex].var = it->getVar(compiler, callerScope, CTM_Undefined);
+            (*parameters)[argIndex].var = it.var;
         }
         argIndex++;
     }
@@ -225,7 +270,7 @@ NCall::NCall(CLoc loc, string name, shared_ptr<CTypeNameList> templateTypeNames,
     }
 }
 
-void NCall::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NCall::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     for (auto it : *arguments) {
         if (it->nodeType == NodeType_Assignment) {
@@ -233,9 +278,24 @@ void NCall::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>&
             if (!parameterAssignment->op.isFirstAssignment) {
                 compiler->addError(loc, CErrorCode::InvalidFunction, "assignment '%s' must be : or :=", parameterAssignment->name.c_str());
             }
-            parameterAssignment->define(compiler, importNamespaces, packageNamespace, thisFunction);
+            parameterAssignment->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
         } else {
-            it->define(compiler, importNamespaces, packageNamespace, thisFunction);
+            it->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+        }
+    }
+}
+
+void NCall::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    for (auto it : *arguments) {
+        if (it->nodeType == NodeType_Assignment) {
+            auto parameterAssignment = static_pointer_cast<NAssignment>(it);
+            if (!parameterAssignment->op.isFirstAssignment) {
+                compiler->addError(loc, CErrorCode::InvalidFunction, "assignment '%s' must be : or :=", parameterAssignment->name.c_str());
+            }
+            parameterAssignment->initVars(compiler, scope, returnMode);
+        }
+        else {
+            it->initVars(compiler, scope, returnMode);
         }
     }
 }
@@ -314,6 +374,11 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
         return nullptr;
     }
 
+    auto cfunc = dynamic_pointer_cast<CFunction>(callee);
+    if (cfunc) {
+        cfunc->initArgs(compiler);
+    }
+
     if (returnMode != CTM_Heap) {
         if (callee->getIsReturnModeValid(compiler, CTM_Stack)) {
             returnMode = CTM_Stack;
@@ -329,7 +394,21 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
     }
 
     // Fill in parameters
-    auto parameters = CCallVar::getParameters(compiler, loc, scope, callee, arguments, isHelperFunction, dotVar, returnMode);
+    vector<CallArgument> callArguments;
+    for (auto it : *arguments) {
+        if (it->nodeType == NodeType_Assignment) {
+            auto parameterAssignment = static_pointer_cast<NAssignment>(it);
+            assert(parameterAssignment->inFunctionDeclaration);
+            CallArgument callArgument(parameterAssignment->name, parameterAssignment->op, parameterAssignment->rightSide->getVar(compiler, scope, CTM_Undefined));
+            callArguments.push_back(callArgument);
+        }
+        else {
+            CallArgument callArgument(it->getVar(compiler, scope, CTM_Undefined));
+            callArguments.push_back(callArgument);
+        }
+    }
+
+    auto parameters = CCallVar::getParameters(compiler, loc, scope, callee, callArguments, isHelperFunction, dotVar, returnMode);
     if (!parameters) {
         return nullptr;
     }

@@ -92,11 +92,16 @@ void CForLoopVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string
 }
 
 
-void NFor::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
-    assert(compiler->state == CompilerState::Define);
-    start->define(compiler, importNamespaces, packageNamespace, thisFunction);
-    end->define(compiler, importNamespaces, packageNamespace, thisFunction);
-    body->define(compiler, importNamespaces, packageNamespace, thisFunction);
+void NFor::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+    start->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+    end->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+    body->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+}
+
+void NFor::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    start->initVars(compiler, scope, returnMode);
+    end->initVars(compiler, scope, returnMode);
+    body->initVars(compiler, scope, returnMode);
 }
 
 shared_ptr<CVar> NFor::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {

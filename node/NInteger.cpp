@@ -35,7 +35,6 @@ void CConstantVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, strin
     }
 }
 
-
 NInteger::NInteger(CLoc loc, const char* value_) : NVariableBase(NodeType_Integer, loc), strValue(value_), hasValue(false), strBase(10) {
     if (strValue.size() > 2 && strValue[0] == '0' && strValue[1] == 'x') {
         strBase = 16;

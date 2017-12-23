@@ -53,9 +53,15 @@ void CTempVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& 
 }
 
 
-void NArray::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NArray::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     for (auto element : *elements) {
-        element->define(compiler, importNamespaces, packageNamespace, thisFunction);
+        element->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+    }
+}
+
+void NArray::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    for (auto element : *elements) {
+        element->initVars(compiler, scope, returnMode);
     }
 }
 
@@ -88,7 +94,7 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
         return nullptr;
     }
 
-    auto createArrayParameters = CCallVar::getParameters(compiler, loc, scope, createArrayCallee, make_shared<NodeList>(make_shared<NInteger>(loc, elements->size())), false, nullptr, returnMode);
+    auto createArrayParameters = CCallVar::getParameters(compiler, loc, scope, createArrayCallee, CallArgument::createList(make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(elements->size()))), false, nullptr, returnMode);
     auto createArrayVar = CCallVar::create(compiler, loc, "array", nullptr, createArrayParameters, scope, createArrayCallee, returnMode);
     if (!createArrayVar) {
         return nullptr;
@@ -104,7 +110,7 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
     auto index = 0;
     vector<shared_ptr<CVar>> initAtVars;
     for (auto element : *elements) {
-        auto initAtParameters = CCallVar::getParameters(compiler, loc, scope, initAtCallee, make_shared<NodeList>(make_shared<NInteger>(loc, index), element), false, nullptr, CTM_Stack);
+        auto initAtParameters = CCallVar::getParameters(compiler, loc, scope, initAtCallee, CallArgument::createList(make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(index)), element->getVar(compiler, scope, CTM_Undefined)), false, nullptr, CTM_Stack);
         auto initAtVar = CCallVar::create(compiler, loc, "initat", tempVar, initAtParameters, scope, initAtCallee, CTM_Stack);
         if (!initAtVar) {
             return nullptr;

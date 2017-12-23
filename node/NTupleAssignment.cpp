@@ -1,10 +1,19 @@
 #include "Node.h"
 
-void NTupleAssignment::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
-    rightSide->define(compiler, importNamespaces, packageNamespace, thisFunction);
+void NTupleAssignment::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+    rightSide->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
     for (auto arg : *args) {
         if (arg->var) {
-            arg->var->define(compiler, importNamespaces, packageNamespace, thisFunction);
+            arg->var->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+        }
+    }
+}
+
+void NTupleAssignment::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    rightSide->initVars(compiler, scope, returnMode);
+    for (auto arg : *args) {
+        if (arg->var) {
+            arg->var->initVars(compiler, scope, returnMode);
         }
     }
 }

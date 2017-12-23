@@ -143,14 +143,14 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 		anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, nullptr, "global", nullptr, nullptr, nullptr, nullptr, globalBlock, nullptr, nullptr, nullptr);
 		currentFunctionDefintion = CFunctionDefinition::create(this, importNamespaces, nullptr, FT_Public, packageNamespace, "", nullptr, nullptr);
 		state = CompilerState::Define;
-        anonFunction->define(this, importNamespaces, packageNamespace, currentFunctionDefintion);
+        anonFunction->initFunctions(this, importNamespaces, packageNamespace, currentFunctionDefintion);
 
 		if (errors.size() == 0) {
 			globalFunctionDefinition = currentFunctionDefintion->funcsByName[vector<string>()]["global"];
             NodeList includeStatements;
 			for (auto index = (size_t)0; index < includedBlocks.size(); index++) {
 				auto includedBlock = includedBlocks[index].second;
-				includedBlock->define(this, importNamespaces, packageNamespace, globalFunctionDefinition);
+				includedBlock->initFunctions(this, importNamespaces, packageNamespace, globalFunctionDefinition);
                 includeStatements.insert(includeStatements.end(), includedBlock->statements.begin(), includedBlock->statements.end());
 			}
             globalBlock->statements.insert(globalBlock->statements.begin(), includeStatements.begin(), includeStatements.end());
@@ -159,12 +159,13 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
             globalBlock->statements.push_back(make_shared<NVoid>(CLoc::undefined));
 
 			if (errors.size() == 0) {
-                state = CompilerState::Compile;
-				currentFunction = make_shared<CFunction>(importNamespaces, currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr, vector<shared_ptr<NCCode>>(), false);
-				currentFunction->init(this, nullptr, CLoc::undefined);
+                currentFunction = make_shared<CFunction>(importNamespaces, currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr, vector<shared_ptr<NCCode>>(), false);
+                currentFunction->init(this, nullptr, CLoc::undefined);
                 auto currentScope = currentFunction->getScope(this, CTM_Stack);
-				anonFunction->getVar(this, currentScope, CTM_Stack);
                 globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, CLoc::undefined, "global", nullptr, nullptr, CTM_Stack));
+
+                state = CompilerState::Compile;
+				anonFunction->getVar(this, currentScope, CTM_Stack);
                 auto globalScope = globalFunction->getScope(this, CTM_Stack);
                 auto mainLoop = static_pointer_cast<CFunction>(globalFunction->getCFunction(this, CLoc::undefined, "mainLoop", globalScope, nullptr, CTM_Stack));
 #ifdef VAR_OUTPUT
@@ -258,7 +259,7 @@ void Compiler::includeFile(const string& fileName) {
             includedBlockFileNames[fileName] = true;
 
             globalFunctionDefinition = currentFunctionDefintion->funcsByName[vector<string>()]["global"];
-            parseFile->block->define(this, importNamespaces, packageNamespace, globalFunctionDefinition);
+            parseFile->block->initFunctions(this, importNamespaces, packageNamespace, globalFunctionDefinition);
 
             includedBlocks.push_back(pair<string, shared_ptr<NBlock>>(fileName, parseFile->block));
         }

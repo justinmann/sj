@@ -37,7 +37,8 @@ private:
 class NSwitchClause : public NBase {
 public:
     NSwitchClause(CLoc loc, shared_ptr<NBase> condition, shared_ptr<NBase> block) : NBase(NodeType_SwitchClause, loc), condition(condition), block(block) { }
-    void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    void initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    void initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
 
     shared_ptr<NBase> condition;
@@ -47,7 +48,8 @@ public:
 class NSwitch : public NBase {
 public:
     NSwitch(CLoc loc, shared_ptr<NBase> value, vector<shared_ptr<NSwitchClause>> clauses) : NBase(NodeType_Switch, loc), value(value), clauses(clauses) { }
-    void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    void initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    void initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
     
 private:

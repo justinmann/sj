@@ -420,6 +420,11 @@ shared_ptr<CVar> CCallback::getVar(Compiler* compiler, shared_ptr<CScope> scope,
         }
     }
 
+    auto cfunc = dynamic_pointer_cast<CFunction>(function);
+    if (cfunc) {
+        cfunc->initArgs(compiler);
+    }
+
     vector<shared_ptr<CType>> argTypes;
     for (auto i = 0; i < function->getArgCount(CTM_Stack); i++) {
         auto argVar = function->getArgVar(i, CTM_Stack);

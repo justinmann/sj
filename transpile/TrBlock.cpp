@@ -11,6 +11,10 @@ void TrBlock::writeToStream(ostream& stream, int level) {
 }
 
 void TrBlock::writeVariablesToStream(ostream& stream, int level) {
+    if (initBlock) {
+        initBlock->writeVariablesToStream(stream, level);
+    }
+
     for (auto variable : variables)
     {
         addSpacing(stream, level);
@@ -75,6 +79,10 @@ void getLineDirective(ostream& stream, CLoc& prevLoc, CLoc& loc) {
 }
 
 void TrBlock::writeBodyToStream(ostream& stream, int level) {
+    if (initBlock) {
+        initBlock->writeBodyToStream(stream, level);
+    }
+
     CLoc previousLoc = CLoc::undefined;
     bool previousLineBlock = false;
     for (auto statement : statements)
@@ -121,6 +129,10 @@ void TrBlock::writeBodyToStream(ostream& stream, int level) {
 }
 
 void TrBlock::writeVariablesReleaseToStream(ostream& stream, int level) {
+    if (initBlock) {
+        initBlock->writeVariablesReleaseToStream(stream, level);
+    }
+
     stringstream varStream;
     for (auto variable : variables) {
         variable.second->writeReleaseToStream(varStream, level);

@@ -26,7 +26,8 @@ class NIsEmptyOrValid : public NVariableBase {
 public:
     NIsEmptyOrValid(CLoc loc, shared_ptr<NBase> node, bool isEmpty) : NVariableBase(NodeType_IsEmptyOrValid, loc), node(node), isEmpty(isEmpty) {}
     bool getReturnThis();
-    void defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    void initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    void initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 
 private:

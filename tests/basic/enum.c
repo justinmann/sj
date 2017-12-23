@@ -74,17 +74,18 @@ void weakptr_clear(void* parent, void* v);
 void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
-int32_t result1;
-int32_t sjt_math1;
-int32_t sjt_math2;
-int32_t sjt_negate1;
-int32_option sjv_b;
 int32_t sjv_bar2_a;
 int32_t sjv_bar2_b;
 int32_t sjv_bar2_c;
 int32_t sjv_bar_a;
 int32_t sjv_bar_b;
 int32_t sjv_bar_c;
+
+int32_t result1;
+int32_t sjt_math1;
+int32_t sjt_math2;
+int32_t sjt_negate1;
+int32_option sjv_b;
 void* sjv_emptystringdata;
 float sjv_f32_pi;
 int32_t sjv_i32_maxvalue;
@@ -241,6 +242,12 @@ void sjf_func(int32_option* _return) {
 }
 
 int main(int argc, char** argv) {
+    sjv_bar_a = 0;
+    sjv_bar_b = 1;
+    sjv_bar_c = 2;
+    sjv_bar2_a = 0;
+    sjv_bar2_b = 1;
+    sjv_bar2_c = 2;
     sjv_f32_pi = 3.14159265358979323846f;
     sjv_u32_maxvalue = (uint32_t)4294967295u;
     sjt_negate1 = 1;
@@ -253,12 +260,6 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
-    sjv_bar_a = 0;
-    sjv_bar_b = 1;
-    sjv_bar_c = 2;
-    sjv_bar2_a = 0;
-    sjv_bar2_b = 1;
-    sjv_bar2_c = 2;
     sjf_func(&sjv_b);
     main_destroy();
     #ifdef _DEBUG

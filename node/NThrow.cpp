@@ -16,8 +16,12 @@ void CThrowVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>&
     ss << "throw";
 }
 
-void NThrow::defineImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
-    node->define(compiler, importNamespaces, packageNamespace, thisFunction);
+void NThrow::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+    node->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+}
+
+void NThrow::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    node->initVars(compiler, scope, returnMode);
 }
 
 shared_ptr<CVar> NThrow::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
