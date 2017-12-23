@@ -90,11 +90,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>c:\src\glew-2.1.0\include;C:\src\freetype-2.8.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libpng16.lib;freetype281d.lib;sdl2.lib;sdl2main.lib;sdl2_ttf.lib;SDL2_Image.lib;glew32s.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
@@ -153,12 +153,104 @@
   <ItemGroup>
     <CustomBuild Include="..\..\..\..\..\src\sj\tests\app\nau.sj">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\src\sj\sjc.exe %(FullPath)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\src\sj\sjc.exe %(FullPath) --no-lines</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">c:\src\sj\tests\app\nau.c</Outputs>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\src\sj\tests\app\nau.c" />
+    <ClCompile Include="..\lib\ui\obj_parser.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\lib\common\array.sj" />
+    <None Include="..\lib\common\bool.sj" />
+    <None Include="..\lib\common\common.sj" />
+    <None Include="..\lib\common\console.sj" />
+    <None Include="..\lib\common\debug.sj" />
+    <None Include="..\lib\common\f32.sj" />
+    <None Include="..\lib\common\halt.sj" />
+    <None Include="..\lib\common\hash.sj" />
+    <None Include="..\lib\common\i32.sj" />
+    <None Include="..\lib\common\list.sj" />
+    <None Include="..\lib\common\string.sj" />
+    <None Include="..\lib\common\tuple.sj" />
+    <None Include="..\lib\common\weakptr.sj" />
+    <None Include="..\lib\ui\animation.sj" />
+    <None Include="..\lib\ui\blurEffect.sj" />
+    <None Include="..\lib\ui\borderLayout.sj" />
+    <None Include="..\lib\ui\boxElement.sj" />
+    <None Include="..\lib\ui\boxRenderer.sj" />
+    <None Include="..\lib\ui\boxVertexBuffer.sj" />
+    <None Include="..\lib\ui\buttonElement.sj" />
+    <None Include="..\lib\ui\centerLayout.sj" />
+    <None Include="..\lib\ui\clickGesture.sj" />
+    <None Include="..\lib\ui\color.sj" />
+    <None Include="..\lib\ui\crossFadeElement.sj" />
+    <None Include="..\lib\ui\crossHairsElement.sj" />
+    <None Include="..\lib\ui\distanceField.sj" />
+    <None Include="..\lib\ui\edtaa3func.sj" />
+    <None Include="..\lib\ui\effect.sj" />
+    <None Include="..\lib\ui\element.sj" />
+    <None Include="..\lib\ui\fadeEffect.sj" />
+    <None Include="..\lib\ui\fillLayout.sj" />
+    <None Include="..\lib\ui\flowLayout.sj" />
+    <None Include="..\lib\ui\font.sj" />
+    <None Include="..\lib\ui\framebuffer.sj" />
+    <None Include="..\lib\ui\gl.sj" />
+    <None Include="..\lib\ui\gridLayout.sj" />
+    <None Include="..\lib\ui\image.sj" />
+    <None Include="..\lib\ui\imageElement.sj" />
+    <None Include="..\lib\ui\imageRenderer.sj" />
+    <None Include="..\lib\ui\init.sj" />
+    <None Include="..\lib\ui\listLayout.sj" />
+    <None Include="..\lib\ui\loop.sj" />
+    <None Include="..\lib\ui\margin.sj" />
+    <None Include="..\lib\ui\mat4.sj" />
+    <None Include="..\lib\ui\model.sj" />
+    <None Include="..\lib\ui\mouse.sj" />
+    <None Include="..\lib\ui\panel3d.sj" />
+    <None Include="..\lib\ui\point.sj" />
+    <None Include="..\lib\ui\property.sj" />
+    <None Include="..\lib\ui\rect.sj" />
+    <None Include="..\lib\ui\renderbuffer.sj" />
+    <None Include="..\lib\ui\saturateEffect.sj" />
+    <None Include="..\lib\ui\scene2d.sj" />
+    <None Include="..\lib\ui\scene2dModel.sj" />
+    <None Include="..\lib\ui\scene3dElement.sj" />
+    <None Include="..\lib\ui\scenebuffer.sj" />
+    <None Include="..\lib\ui\shader.sj" />
+    <None Include="..\lib\ui\size.sj" />
+    <None Include="..\lib\ui\style.sj" />
+    <None Include="..\lib\ui\textElement.sj" />
+    <None Include="..\lib\ui\textRenderer.sj" />
+    <None Include="..\lib\ui\texture.sj" />
+    <None Include="..\lib\ui\textureAtlas.sj" />
+    <None Include="..\lib\ui\textureFont.sj" />
+    <None Include="..\lib\ui\ui.sj" />
+    <None Include="..\lib\ui\utf8.sj" />
+    <None Include="..\lib\ui\vec2.sj" />
+    <None Include="..\lib\ui\vec3.sj" />
+    <None Include="..\lib\ui\vec4.sj" />
+    <None Include="..\lib\ui\vector.sj" />
+    <None Include="..\lib\ui\vectorAttribute.sj" />
+    <None Include="..\lib\ui\vertexBuffer.sj" />
+    <None Include="..\lib\ui\vertexBufferBuilders.sj" />
+    <None Include="..\lib\ui\windowRenderer.sj" />
+    <None Include="..\nau\fieldScene.sj" />
+    <None Include="..\nau\init.sj" />
+    <None Include="..\nau\leafPanel.sj" />
+    <None Include="..\nau\mainPanel.sj" />
+    <None Include="..\nau\menuScene.sj" />
+    <None Include="..\nau\nauScene3dElement.sj" />
+    <None Include="..\nau\peoplePanel.sj" />
+    <None Include="..\nau\personElement.sj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\lib\common\khash.h" />
+    <ClInclude Include="..\lib\common\value_option_types.h" />
+    <ClInclude Include="..\lib\ui\obj_parser.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
