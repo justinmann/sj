@@ -72,3 +72,6 @@ tests/basic/lib
 *.psess
 lc.sh
 lang_definitions.txt
+sjc.pdb
+sjc.exe
+sjc.ilk
