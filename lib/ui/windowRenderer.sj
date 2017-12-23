@@ -55,10 +55,10 @@ windowRenderer(
         halt("SDL_CreateRenderer Error: %s\n", SDL_GetError());
     }
 
-    glClearColor( 0.0, 0.0, 0.0, 0.0 );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glEnable( GL_BLEND );
 	--c--
+    glClearColor(color(0.0f, 0.0f, 0.0f, 0.0f))
+    glBlendFunc(glBlendFuncType.GL_SRC_ALPHA, glBlendFuncType.GL_ONE_MINUS_SRC_ALPHA)
+    glEnable(glFeature.GL_BLEND)
 	this
 } copy {
 	--c--

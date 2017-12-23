@@ -80,6 +80,24 @@ enum glFramebufferStatus(
 	GL_FRAMEBUFFER_UNSUPPORTED : 0x8CDD
 )
 
+enum glBlendFuncType(
+	GL_ZERO : 0
+	GL_ONE : 1
+	GL_SRC_COLOR : 0x0300
+	GL_ONE_MINUS_SRC_COLOR : 0x0301
+	GL_DST_COLOR : 0x0306
+	GL_ONE_MINUS_DST_COLOR : 0x0307
+	GL_SRC_ALPHA : 0x0302
+	GL_ONE_MINUS_SRC_ALPHA : 0x0303
+	GL_DST_ALPHA : 0x0304
+	GL_ONE_MINUS_DST_ALPHA : 0x0305
+	GL_CONSTANT_COLOR : 0x8001
+	GL_ONE_MINUS_CONSTANT_COLOR : 0x8002
+	GL_CONSTANT_ALPHA : 0x8003
+	GL_ONE_MINUS_CONSTANT_ALPHA : 0x8004
+	GL_SRC_ALPHA_SATURATE : 0x0308
+)
+
 glEnable(feature : 'glFeature) {
 	--c--
 	glEnable(feature);
@@ -242,6 +260,19 @@ glCheckFramebufferStatus()'glFramebufferStatus {
 glBindRenderbuffer(renderbuffer : 'renderbuffer) {
 	--c--
 	glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer->id);
+	--c--
+}
+
+
+glClearColor(color : 'color) {
+	--c--
+	glClearColor(color->r, color->g, color->b, color->a);
+	--c--
+}
+
+glBlendFunc(sfactor : 'glBlendFuncType, dfactor : 'glBlendFuncType) {
+	--c--
+	glBlendFunc(sfactor, dfactor);
 	--c--
 }
 
