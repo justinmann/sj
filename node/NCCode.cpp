@@ -182,8 +182,8 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
                     returnValue->op.isCopy = true;
                 }
                 returnValue->retainValue(compiler, loc, &block, rightValue);
-                block.writeVariablesToStream(retainStream, 0);
-                block.writeBodyToStream(retainStream, 0);
+                block.writeVariablesToStream(retainStream, 0, compiler->outputLines);
+                block.writeBodyToStream(retainStream, 0, compiler->outputLines);
             }
             retainStream << "return;";
             return retainStream.str();
@@ -220,8 +220,8 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
 
             if (trOutput) {
                 returnType->transpileDefaultValue(compiler, loc, &block, returnValue);
-                block.writeVariablesToStream(retainStream, 0);
-                block.writeBodyToStream(retainStream, 0);
+                block.writeVariablesToStream(retainStream, 0, compiler->outputLines);
+                block.writeBodyToStream(retainStream, 0, compiler->outputLines);
             }
             retainStream << "return;";
             return retainStream.str();
@@ -278,8 +278,8 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
                         returnValue->retainValue(compiler, loc, &block, rightValue);
                     }
                 }
-                block.writeVariablesToStream(retainStream, 0);
-                block.writeBodyToStream(retainStream, 0);
+                block.writeVariablesToStream(retainStream, 0, compiler->outputLines);
+                block.writeBodyToStream(retainStream, 0, compiler->outputLines);
             }
             retainStream << "return;";
             return retainStream.str();
@@ -313,15 +313,15 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
                 auto rightValue = make_shared<TrValue>(scope, ctype, rightName, false);
                 if (trOutput) {
                     leftStoreValue->retainValue(compiler, loc, &block, rightValue);
-                    block.writeVariablesToStream(retainStream, 0);
-                    block.writeBodyToStream(retainStream, 0);
+                    block.writeVariablesToStream(retainStream, 0, compiler->outputLines);
+                    block.writeBodyToStream(retainStream, 0, compiler->outputLines);
                 }
             }
             else {
                 if (trOutput) {
                     rightVar->transpile(compiler, trOutput, &block, nullptr, leftStoreValue);
-                    block.writeVariablesToStream(retainStream, 0);
-                    block.writeBodyToStream(retainStream, 0);
+                    block.writeVariablesToStream(retainStream, 0, compiler->outputLines);
+                    block.writeBodyToStream(retainStream, 0, compiler->outputLines);
                 }
             }
             return retainStream.str();
@@ -347,7 +347,7 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
         auto ctype = scope->getVarType(loc, compiler, ctypeName, CTM_Undefined);
         if (ctype) {
             stringstream releaseStream;
-            TrValue(scope, ctype, varName, false).writeReleaseToStream(releaseStream, 0);
+            TrValue(scope, ctype, varName, false).writeReleaseToStream(releaseStream, 0, compiler->outputLines);
             return releaseStream.str();
         }
         else {

@@ -10,7 +10,7 @@ TrOutput::TrOutput() {
 #endif
 }
 
-void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
+void TrOutput::writeToStream(ostream& stream, bool hasMainLoop, bool outputLines) {
     for (auto ccodeInclude : ccodeIncludes) {
         stream << ccodeInclude << "\n";
     }
@@ -123,7 +123,7 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
     
     shared_ptr<TrBlock> mainFunction = functions["sjf_global"];
     
-    mainFunction->writeVariablesToStream(stream, 0);
+    mainFunction->writeVariablesToStream(stream, 0, outputLines);
 
     if (functions.size() > 0) {
 		for (auto function : functions) {
@@ -159,7 +159,7 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
             continue;
         }
         stream << function.second->definition << " {\n";
-        function.second->writeToStream(stream, 1);
+        function.second->writeToStream(stream, 1, outputLines);
         stream << "}\n";
         stream << "\n";
     }
@@ -175,7 +175,7 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
         }
     }
 
-    mainFunction->writeBodyToStream(stream, 1);
+    mainFunction->writeBodyToStream(stream, 1, outputLines);
     stream << "    main_destroy();\n";
     stream << "    #ifdef _DEBUG\n";
     stream << "    printf(\"\\npress return to end\\n\");\n";
@@ -185,7 +185,7 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop) {
     stream << "}\n";
     stream << "\n";
     stream << "void main_destroy() {\n";
-    mainFunction->writeVariablesReleaseToStream(stream, 1);
+    mainFunction->writeVariablesReleaseToStream(stream, 1, outputLines);
     stream << "}\n";
 }
 

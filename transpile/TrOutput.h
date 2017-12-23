@@ -23,5 +23,5 @@ public:
     vector<string> ccodeFunctions;
 
     TrOutput();
-	void writeToStream(ostream& stream, bool hasMainLoop);
+	void writeToStream(ostream& stream, bool hasMainLoop, bool outputLines);
 };

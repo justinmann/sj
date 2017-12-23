@@ -11,7 +11,7 @@ class AssignOp;
 class TrValue {
 public:
     TrValue(shared_ptr<CScope> scope, shared_ptr<CType> type, string name, bool isReturnValue) : scope(scope), type(type), name(name), isReturnValue(isReturnValue) { assert(type != nullptr);  }
-    void writeReleaseToStream(ostream& stream, int level);
+    void writeReleaseToStream(ostream& stream, int level, bool outputLines);
     void addInitToStatements(TrBlock* block);
     void addRetainToStatements(TrBlock* block);
     void addReleaseToStatements(TrBlock* block);
@@ -60,11 +60,11 @@ public:
     string returnLine;
     shared_ptr<TrBlock> initBlock;
 
-    void writeToStream(ostream& stream, int level);
-    void writeVariablesToStream(ostream& stream, int level);
-    void writeBodyToStream(ostream& stream, int level);
-    void writeVariablesReleaseToStream(ostream& stream, int level);
-    void writeReturnToStream(ostream& stream, int level);
+    void writeToStream(ostream& stream, int level, bool outputLines);
+    void writeVariablesToStream(ostream& stream, int level, bool outputLines);
+    void writeBodyToStream(ostream& stream, int level, bool outputLines);
+    void writeVariablesReleaseToStream(ostream& stream, int level, bool outputLines);
+    void writeReturnToStream(ostream& stream, int level, bool outputLines);
     shared_ptr<TrValue> getVariable(string name);
     shared_ptr<TrValue> createVariable(shared_ptr<CScope> scope, shared_ptr<CType> type, string name);
     shared_ptr<TrValue> createTempVariable(shared_ptr<CScope> scope, shared_ptr<CType> type, string prefix);

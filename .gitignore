@@ -75,3 +75,6 @@ lang_definitions.txt
 sjc.pdb
 sjc.exe
 sjc.ilk
+sjc.iobj
+sjc.ipdb
+*.tmp

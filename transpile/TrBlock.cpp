@@ -1,18 +1,17 @@
 #include "../node/Node.h"
 
 // #define SKIP_FREE
-// #define PRAGMA_LINE_OUTPUT
 
-void TrBlock::writeToStream(ostream& stream, int level) {
-    writeVariablesToStream(stream,level);
-    writeBodyToStream(stream, level);
-    writeVariablesReleaseToStream(stream, level);
-    writeReturnToStream(stream, level);
+void TrBlock::writeToStream(ostream& stream, int level, bool outputLines) {
+    writeVariablesToStream(stream,level, outputLines);
+    writeBodyToStream(stream, level, outputLines);
+    writeVariablesReleaseToStream(stream, level, outputLines);
+    writeReturnToStream(stream, level, outputLines);
 }
 
-void TrBlock::writeVariablesToStream(ostream& stream, int level) {
+void TrBlock::writeVariablesToStream(ostream& stream, int level, bool outputLines) {
     if (initBlock) {
-        initBlock->writeVariablesToStream(stream, level);
+        initBlock->writeVariablesToStream(stream, level, outputLines);
     }
 
     for (auto variable : variables)
@@ -59,7 +58,6 @@ void TrBlock::writeVariablesToStream(ostream& stream, int level) {
 }
 
 void getLineDirective(ostream& stream, CLoc& prevLoc, CLoc& loc) {
-#ifdef PRAGMA_LINE_OUTPUT
     if (loc.shortFileName.size() == 0) {
         if (prevLoc.line != 0) {
             stream << "#line " << prevLoc.line << "\n";
@@ -75,12 +73,11 @@ void getLineDirective(ostream& stream, CLoc& prevLoc, CLoc& loc) {
         prevLoc = loc;
         stream << "#line " << loc.line << " \"" << loc.shortFileName << "\"\n";
     }
-#endif
 }
 
-void TrBlock::writeBodyToStream(ostream& stream, int level) {
+void TrBlock::writeBodyToStream(ostream& stream, int level, bool outputLines) {
     if (initBlock) {
-        initBlock->writeBodyToStream(stream, level);
+        initBlock->writeBodyToStream(stream, level, outputLines);
     }
 
     CLoc previousLoc = CLoc::undefined;
@@ -96,12 +93,12 @@ void TrBlock::writeBodyToStream(ostream& stream, int level) {
             addSpacing(stream, level);
             stream << statement.line << " {\n";
 
-            statement.block->writeToStream(stream, level + 1);
+            statement.block->writeToStream(stream, level + 1, outputLines);
 
             if (statement.elseBlock != nullptr) {
                 addSpacing(stream, level);
                 stream << "} else {\n";
-                statement.elseBlock->writeToStream(stream, level + 1);
+                statement.elseBlock->writeToStream(stream, level + 1, outputLines);
             }
 
             addSpacing(stream, level);
@@ -114,7 +111,10 @@ void TrBlock::writeBodyToStream(ostream& stream, int level) {
             if (firstChar == '}') {
                 level--;
             }
-            getLineDirective(stream, previousLoc, statement.loc);
+
+            if (outputLines) {
+                getLineDirective(stream, previousLoc, statement.loc);
+            }
             addSpacing(stream, level);
             stream << statement.line;
             if (lastChar != ':' && lastChar != ';' && lastChar != '{' && lastChar != '}' && !statement.fromCCode) {
@@ -128,14 +128,14 @@ void TrBlock::writeBodyToStream(ostream& stream, int level) {
     }
 }
 
-void TrBlock::writeVariablesReleaseToStream(ostream& stream, int level) {
+void TrBlock::writeVariablesReleaseToStream(ostream& stream, int level, bool outputLines) {
     if (initBlock) {
-        initBlock->writeVariablesReleaseToStream(stream, level);
+        initBlock->writeVariablesReleaseToStream(stream, level, outputLines);
     }
 
     stringstream varStream;
     for (auto variable : variables) {
-        variable.second->writeReleaseToStream(varStream, level);
+        variable.second->writeReleaseToStream(varStream, level, outputLines);
     }
 
     for (auto variable : variables) {
@@ -151,7 +151,7 @@ void TrBlock::writeVariablesReleaseToStream(ostream& stream, int level) {
     }
 }
 
-void TrBlock::writeReturnToStream(ostream& stream, int level) {
+void TrBlock::writeReturnToStream(ostream& stream, int level, bool outputLines) {
     if (returnLine.size() > 0) {
         stream << "\n";
         addSpacing(stream, level);
@@ -246,10 +246,10 @@ string TrBlock::getFunctionName() {
 
 map<string, int> TrBlock::varNames;
 
-void TrValue::writeReleaseToStream(ostream& stream, int level) {
+void TrValue::writeReleaseToStream(ostream& stream, int level, bool outputLines) {
     TrBlock block;
     addReleaseToStatements(&block);
-    block.writeBodyToStream(stream, level);
+    block.writeBodyToStream(stream, level, outputLines);
 }
 
 void TrValue::addReleaseToStatements(TrBlock* block) {

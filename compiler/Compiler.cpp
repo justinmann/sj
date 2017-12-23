@@ -25,7 +25,7 @@ extern void yy_delete_buffer(YY_BUFFER_STATE, void*);
 
 CLoc CLoc::undefined = CLoc();
 
-Compiler::Compiler() {
+Compiler::Compiler(bool outputLines) : outputLines(outputLines) {
     auto ctypes = CType::create(emptyNamespace, "i32", "int32_t", "(int32_t)0", "int32_option", "int32_empty");
     typeI32 = ctypes->stackValueType;
     types["i32"] = ctypes;
@@ -96,7 +96,7 @@ shared_ptr<CParseFile> Compiler::genNode(const string& fileName, const string& c
 #endif
 
     auto parseFile = make_shared<CParseFile>();
-    auto shortName = fs::path(fileName).lexically_relative(rootPath).generic_string();
+    auto shortName = rootPath.empty() ? fs::path(fileName).generic_string() : fs::path(fileName).lexically_relative(rootPath).generic_string();
     parseFile->fullFileName = fileName;
     parseFile->shortFileName = shortName;
     parseFile->compiler = this;
@@ -220,7 +220,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                     }
 
                     if (errors.size() == 0) {
-                        output.writeToStream(stream, hasMainLoop);
+                        output.writeToStream(stream, hasMainLoop, outputLines);
                     }
 				}
 			}

@@ -136,7 +136,7 @@ class SJException : public exception { };
 class Compiler
 {
 public:
-    Compiler();
+    Compiler(bool outputLines);
 	bool transpile(const string& fileName, ostream& stream, ostream& errorStream, ostream* debugStream);
     shared_ptr<CType> getType(const string& name, bool isOption) const;
     void includeFile(const string& fileName);
@@ -173,6 +173,7 @@ public:
 #endif
     }
     
+    bool outputLines;
     boost::filesystem::path rootPath;
     CompilerState state;
     map<string, map<unsigned, map<string, CError>>> errors;
