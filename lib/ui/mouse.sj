@@ -51,5 +51,9 @@ mouseEvent(
 		}	
 		shouldContinue
 	}
+
+	asString() {
+		"point : " + point.asString() + " isCaptured : " + isCaptured.asString() + " isLeftDown : " + isLeftDown.asString()
+	}
 ) { this }
 

@@ -18,19 +18,21 @@ mainLoop() {
     rootScene.end()
     rootWindowRenderer.present()
 
-    mouse_eventType := empty'mouseEventType
-    mouse_x := 0
-    mouse_y := 0
-    mouse_isLeftDown := false
     --c--
     SDL_Event e;
     while(SDL_PollEvent( &e ) != 0) {
+    --c--
+        mouse_eventType := empty'mouseEventType
+        mouse_x := 0
+        mouse_y := 0
+        mouse_isLeftDown := false
+
+        --c--
         switch (e.type) {
             case SDL_QUIT:
                 exit(0);
                 break;
             case SDL_MOUSEBUTTONDOWN:
-                printf("SDL_MOUSEBUTTONDOWN\n");
                 sjv_mouse_eventtype.isvalid = true;
                 sjv_mouse_eventtype.value = sjv_mouseeventtype_down;
                 sjv_mouse_x = e.button.x;
@@ -38,7 +40,6 @@ mainLoop() {
                 sjv_mouse_isleftdown = e.button.state & SDL_BUTTON(SDL_BUTTON_LEFT);
                 break;
             case SDL_MOUSEBUTTONUP:
-                printf("SDL_MOUSEBUTTONUP\n");
                 sjv_mouse_eventtype.isvalid = true;
                 sjv_mouse_eventtype.value = sjv_mouseeventtype_up;
                 sjv_mouse_x = e.button.x;
@@ -50,32 +51,35 @@ mainLoop() {
                 sjv_mouse_eventtype.value = sjv_mouseeventtype_move;
                 sjv_mouse_x = e.motion.x;
                 sjv_mouse_y = e.motion.y;
-                sjv_mouse_isleftdown = e.button.state & SDL_BUTTON(SDL_BUTTON_LEFT);
+                sjv_mouse_isleftdown = SDL_GetGlobalMouseState(0, 0) & SDL_BUTTON(SDL_BUTTON_LEFT);
                 break;
         }
+        --c--
+
+        shouldContinue := true // TODO: should not need this
+        ifValid mouse_eventType {
+            ifValid m : mouse_captureElement {
+                shouldContinue = m.fireMouseEvent(mouseEvent(
+                    type : mouse_eventType
+                    point : point(mouse_x, mouse_y)
+                    isCaptured : true
+                    isLeftDown : mouse_isLeftDown
+                )) 
+                void
+            } elseEmpty {
+                shouldContinue = root.fireMouseEvent(mouseEvent(
+                    type : mouse_eventType
+                    point : point(mouse_x, mouse_y)
+                    isCaptured : false
+                    isLeftDown : mouse_isLeftDown
+                )) 
+                void
+            }
+        }
+    --c--
     }
     --c--
 
-    shouldContinue := true // TODO: should not need this
-    ifValid mouse_eventType {
-        ifValid m : mouse_captureElement {
-            shouldContinue = m.fireMouseEvent(mouseEvent(
-                type : mouse_eventType
-                point : point(mouse_x, mouse_y)
-                isCaptured : true
-                isLeftDown : mouse_isLeftDown
-            )) 
-            void
-        } elseEmpty {
-            shouldContinue = root.fireMouseEvent(mouseEvent(
-                type : mouse_eventType
-                point : point(mouse_x, mouse_y)
-                isCaptured : false
-                isLeftDown : mouse_isLeftDown
-            )) 
-            void
-        }
-    }
     void
 }
 
