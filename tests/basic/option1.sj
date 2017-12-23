@@ -3,7 +3,7 @@ include "lib/common/common.sj"
 #interface()
 #interface2()
 class #interface (
-	bob : 0
+    bob : 0
 ) { this }
 
 a : empty'i32

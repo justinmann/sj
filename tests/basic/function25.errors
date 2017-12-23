@@ -1,1 +1,1 @@
-ERROR:2 function25.sj[4:11] right type 'heap func' cannot change mode to left type 'stack func' without using a copy operator like 'a = copy b'
+function25.sj(4,11): error SJC0002: right type 'heap func' cannot change mode to left type 'stack func' without using a copy operator like 'a = copy b'

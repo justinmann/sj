@@ -3,11 +3,11 @@ include "lib/common/common.sj"
 inner() { this }
 
 class(
-	inner : inner()
+    inner : inner()
 ) { this }
 
 class2(
-	inner : valid(inner())
+    inner : valid(inner())
 ) { this }
 
 x1'stack class : class()

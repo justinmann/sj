@@ -1,7 +1,7 @@
 include "lib/common/common.sj"
 
 class(
-	d : empty'i32
+    d : empty'i32
 ) { this }
 
 a : empty'i32
@@ -9,19 +9,19 @@ b : valid(5)
 c : class()
 
 w : ifValid a {
-	a
+    a
 } elseEmpty {
-	2
+    2
 }
 
 x : ifValid b {
-	b
+    b
 } elseEmpty {
-	2
+    2
 }
 
 y : ifValid c : c.d {
-	c
+    c
 } elseEmpty {
-	1
+    1
 }

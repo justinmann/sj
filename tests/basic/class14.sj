@@ -1,7 +1,7 @@
 class(m: 1) {
-	inner() {
-		m
-	}
-	inner()
+    inner() {
+        m
+    }
+    inner()
 }
 class()

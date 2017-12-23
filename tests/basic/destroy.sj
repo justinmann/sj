@@ -1,11 +1,11 @@
 class(
-	x := 1
+    x := 1
 ) {
-	this
+    this
 } copy {
-	x = 3
+    x = 3
 } destroy {
-	x = 2
+    x = 2
 }
 
 c: class()

@@ -1,8 +1,8 @@
 include "lib/common/common.sj"
 
 a : {
-	"hi" : "hello"
-	"bye" : "good bye"
+    "hi" : "hello"
+    "bye" : "good bye"
 }
 
 debug.writeLine(a["hi"]?:"empty" + a.count.asString())

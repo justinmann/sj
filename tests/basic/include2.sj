@@ -1,11 +1,11 @@
 func() {
-	include "lib/common/common.sj"
+    include "lib/common/common.sj"
 }
 
 class(
-	bob : 1
+    bob : 1
 ) {
-	this
+    this
 }
 
 a : array!class(count := 2)

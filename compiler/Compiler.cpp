@@ -127,7 +127,7 @@ void CError::writeToStream(ostream& stream) {
         << fileName
         << "(" << line << "," << col << "): "
         << "error SJC" << setfill('0') << setw(4) << code
-        << ":" << msg;
+        << ": " << msg;
 }
 
 bool Compiler::transpile(const string& fileName, ostream& stream, ostream& errorStream, ostream* debugStream) {

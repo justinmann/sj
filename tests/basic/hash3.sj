@@ -1,11 +1,11 @@
 include "lib/common/common.sj"
 
 #interface(
-	bob()'string
+    bob()'string
 )
 
 class #interface(
-	bob() { "bob" }
+    bob() { "bob" }
 ) { this }
 
 a : hash![string, heap #interface]()

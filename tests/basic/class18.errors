@@ -1,1 +1,1 @@
-ERROR:2 class18.sj[7:11] right type 'stack string' cannot change mode to left type 'heap string' without using a copy operator like 'a = copy b'
+class18.sj(7,11): error SJC0002: right type 'stack string' cannot change mode to left type 'heap string' without using a copy operator like 'a = copy b'

@@ -1,1 +1,1 @@
-ERROR:7 class16.sj[4:15] cannot find variable 'x'
+class16.sj(4,15): error SJC0007: cannot find variable 'x'

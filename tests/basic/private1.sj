@@ -1,6 +1,6 @@
 class(
-	x : 1
-	_y : 2
+    x : 1
+    _y : 2
 ) { this }
 
 c : class()

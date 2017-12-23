@@ -1,21 +1,21 @@
 include "lib/common/common.sj"
 
 class!t(
-	item1 : 't
-	item2 : 't
-	each(cb : 'heap (:t)void) {
-		cb(item1)
-		cb(item2)
-	}
+    item1 : 't
+    item2 : 't
+    each(cb : 'heap (:t)void) {
+        cb(item1)
+        cb(item2)
+    }
 ) { this }
 
 sum(
-	total := 0
+    total := 0
 
-	invoke(a : 'i32) {
-		total += a
-		void
-	}
+    invoke(a : 'i32) {
+        total += a
+        void
+    }
 ) { this }
 
 s : heap sum()

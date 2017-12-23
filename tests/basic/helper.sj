@@ -3,7 +3,7 @@ include "lib/common/common.sj"
 class(x : 1) { this }
 
 class_asString(x : 'class) {
-	2
+    2
 }
 
 

@@ -405,7 +405,12 @@ void sjf_class_isequal(sjs_class* _parent, sjs_class* c, bool* _return) {
 }
 
 void sjf_debug_writeline(sjs_string* data) {
-    printf("%s\n", (char*)data->data.data);
+    #ifdef _WINDOWS
+    OutputDebugStringA((char*)data->data.data);
+    OutputDebugStringA("\n");
+    #else
+    fprintf(stderr, "%s\n", (char*)data->data.data);
+    #endif
 }
 
 void sjf_hash_weak_class_i32(sjs_hash_weak_class_i32* _this) {

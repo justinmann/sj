@@ -356,7 +356,12 @@ void sjf_array_char_heap(sjs_array_char* _this) {
 }
 
 void sjf_debug_writeline(sjs_string* data) {
-    printf("%s\n", (char*)data->data.data);
+    #ifdef _WINDOWS
+    OutputDebugStringA((char*)data->data.data);
+    OutputDebugStringA("\n");
+    #else
+    fprintf(stderr, "%s\n", (char*)data->data.data);
+    #endif
 }
 
 void sjf_hash_i32i32(sjs_hash_i32i32* _this) {

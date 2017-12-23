@@ -1,11 +1,11 @@
 inner() { this }
 
 class(
-	inner : inner()
+    inner : inner()
 ) { this }
 
 class2(
-	inner : valid(inner())
+    inner : valid(inner())
 ) { this }
 
 x3'stack class? : valid(class())

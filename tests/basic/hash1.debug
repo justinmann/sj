@@ -91,7 +91,12 @@ string(count'i32=, data'stack array!char=)'stack string {
 
 writeline(data'stack string:)'void {
   --c--
-  printf("%s\n", (char*)data->data.data);
+  #ifdef _WINDOWS
+  OutputDebugStringA((char*)data->data.data);
+  OutputDebugStringA("\n");
+  #else
+  fprintf(stderr, "%s\n", (char*)data->data.data);
+  #endif
   --c--
 }
 

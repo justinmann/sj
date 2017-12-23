@@ -1,39 +1,39 @@
 include "lib/common/common.sj"
 
 data(
-	x : 0
+    x : 0
 ) { this }
 
 class(
-	b : 15
-	func(a : 'i32)'data { 
-		data(a + b)
-	}
+    b : 15
+    func(a : 'i32)'data { 
+        data(a + b)
+    }
 ) { this }
 
 func(a : 'i32)'data {
-	data(a + 2)
+    data(a + 2)
 }
 
 func2![t](a : 'i32)'t {
-	t(a + 2)
+    t(a + 2)
 }
 
 class2![t](
-	b : 15
-	func(a : 'i32)'t { 
-		t(a + b)
-	}
+    b : 15
+    func(a : 'i32)'t { 
+        t(a + b)
+    }
 ) { this }
 
 getCallback()'heap (:i32)data {
-	c : heap class()
-	c.func
+    c : heap class()
+    c.func
 }
 
 callback(f : '(:i32)data)'i32 {
-	d : f(12)
-	d.x
+    d : f(12)
+    d.x
 }
 
 a : func

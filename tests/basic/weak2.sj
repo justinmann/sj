@@ -1,8 +1,8 @@
 include "lib/common/common.sj"
 
 class(
-	x : 'i32
-	asString() { x.asString() }
+    x : 'i32
+    asString() { x.asString() }
 ) { this }
 
 c := heap class(1)

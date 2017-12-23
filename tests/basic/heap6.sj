@@ -8,14 +8,14 @@ child() { this }
 global : global()
 
 class(
-	child : child()
-	returnThisVar() {
-		child
-	}
+    child : child()
+    returnThisVar() {
+        child
+    }
 
-	returnParentVar() {
-		global
-	}
+    returnParentVar() {
+        global
+    }
 ) { this }
 
 c : class()

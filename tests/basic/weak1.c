@@ -407,7 +407,12 @@ void sjf_class_heap(sjs_class* _this) {
 }
 
 void sjf_debug_writeline(sjs_string* data) {
-    printf("%s\n", (char*)data->data.data);
+    #ifdef _WINDOWS
+    OutputDebugStringA((char*)data->data.data);
+    OutputDebugStringA("\n");
+    #else
+    fprintf(stderr, "%s\n", (char*)data->data.data);
+    #endif
 }
 
 void sjf_string(sjs_string* _this) {

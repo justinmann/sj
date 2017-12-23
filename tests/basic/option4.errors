@@ -1,1 +1,1 @@
-ERROR:6 option4.sj[1:10] Something failed to parse
+option4.sj(1,10): error SJC0006: Something failed to parse

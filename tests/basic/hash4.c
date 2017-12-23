@@ -583,7 +583,12 @@ void sjf_class_isequal(sjs_class* _parent, sji_interface b, bool* _return) {
 }
 
 void sjf_debug_writeline(sjs_string* data) {
-    printf("%s\n", (char*)data->data.data);
+    #ifdef _WINDOWS
+    OutputDebugStringA((char*)data->data.data);
+    OutputDebugStringA("\n");
+    #else
+    fprintf(stderr, "%s\n", (char*)data->data.data);
+    #endif
 }
 
 void sjf_hash_heap_iface_interface_i32(sjs_hash_heap_iface_interface_i32* _this) {

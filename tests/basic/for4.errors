@@ -1,1 +1,1 @@
-ERROR:7 for4.sj[2:1] var 'x' already exists within function, must have a unique name
+for4.sj(2,1): error SJC0007: var 'x' already exists within function, must have a unique name

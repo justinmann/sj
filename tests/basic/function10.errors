@@ -1,1 +1,1 @@
-ERROR:20 function10.sj[1:29] all named parameters must be after the un-named parameters
+function10.sj(1,29): error SJC0020: all named parameters must be after the un-named parameters

@@ -2,9 +2,9 @@ include "lib/common/common.sj"
 
 @heap
 func(
-	bar() {
-		parent
-	}
+    bar() {
+        parent
+    }
 ) { this }
 
 a'heap func : func()

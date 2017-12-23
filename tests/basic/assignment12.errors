@@ -1,1 +1,1 @@
-ERROR:2 assignment12.sj[1:9] left type 'i32' does not match right type 'f64'
+assignment12.sj(1,9): error SJC0002: left type 'i32' does not match right type 'f64'

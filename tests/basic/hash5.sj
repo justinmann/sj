@@ -1,7 +1,7 @@
 include "lib/common/common.sj"
 
 class(
-	x : 1
+    x : 1
 ) { this }
 
 a : hash![i32, weak class]()

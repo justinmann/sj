@@ -1,5 +1,5 @@
 foo(
-	x : 1
+    x : 1
 ) { this }
 
 f : foo()

@@ -80,7 +80,12 @@ hash_setat(key'stack string:, val'heap #interface:)'void {
 
 writeline(data'stack string:)'void {
   --c--
-  printf("%s\n", (char*)data->data.data);
+  #ifdef _WINDOWS
+  OutputDebugStringA((char*)data->data.data);
+  OutputDebugStringA("\n");
+  #else
+  fprintf(stderr, "%s\n", (char*)data->data.data);
+  #endif
   --c--
 }
 

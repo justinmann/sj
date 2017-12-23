@@ -1,4 +1,4 @@
-ERROR:19 math2.sj[1:5] i64 '9223372036854775808' is out range
-ERROR:0 math2.sj[1:1] no right side
-ERROR:19 math2.sj[4:5] i32 '2147483648' is out range
-ERROR:0 math2.sj[4:1] no right side
+math2.sj(1,5): error SJC0019: i64 '9223372036854775808' is out range
+math2.sj(1,1): error SJC0000: no right side
+math2.sj(4,5): error SJC0019: i32 '2147483648' is out range
+math2.sj(4,1): error SJC0000: no right side

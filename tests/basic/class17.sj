@@ -1,7 +1,7 @@
 include "lib/common/common.sj"
 
 class(
-	x : 'local string
+    x : 'local string
 ) { this }
 
 c : class("hello")

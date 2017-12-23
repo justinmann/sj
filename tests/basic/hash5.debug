@@ -64,7 +64,12 @@ if (kh_val(p, k) != 0) { weakptr_cb_remove(kh_val(p, k), weakptrcb5); }
 
 writeline(data'stack string:)'void {
   --c--
-  printf("%s\n", (char*)data->data.data);
+  #ifdef _WINDOWS
+  OutputDebugStringA((char*)data->data.data);
+  OutputDebugStringA("\n");
+  #else
+  fprintf(stderr, "%s\n", (char*)data->data.data);
+  #endif
   --c--
 }
 

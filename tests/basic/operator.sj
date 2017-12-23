@@ -1,45 +1,45 @@
 fancyMath(
-	x := 'i32
+    x := 'i32
 
-	add(num :' fancyMath) {
-		fancyMath(x + num.x + 1)
-	}
+    add(num :' fancyMath) {
+        fancyMath(x + num.x + 1)
+    }
 
-	subtract(num :' fancyMath) {
-		fancyMath(x - num.x + 1)
-	}
+    subtract(num :' fancyMath) {
+        fancyMath(x - num.x + 1)
+    }
 
-	multiply(num :' fancyMath) {
-		fancyMath(x * num.x + 1)
-	}
+    multiply(num :' fancyMath) {
+        fancyMath(x * num.x + 1)
+    }
 
-	divide(num :' fancyMath) {
-		fancyMath(x / num.x + 1)
-	}
+    divide(num :' fancyMath) {
+        fancyMath(x / num.x + 1)
+    }
 
-	divideI32(num : 'i32) {
-		fancyMath(x / num + 1)
-	}
+    divideI32(num : 'i32) {
+        fancyMath(x / num + 1)
+    }
 
-	modulus(num :' fancyMath) {
-		fancyMath(x % num.x + 1)
-	}
+    modulus(num :' fancyMath) {
+        fancyMath(x % num.x + 1)
+    }
 
-	increment() {
-		fancyMath(x + 1)
-	}
+    increment() {
+        fancyMath(x + 1)
+    }
 
-	decrement() {
-		fancyMath(x - 1)
-	}
+    decrement() {
+        fancyMath(x - 1)
+    }
 
-	getX() {
-		x
-	}
+    getX() {
+        x
+    }
 
-	setBob(i : 0) {
-		x = i
-	}
+    setBob(i : 0) {
+        x = i
+    }
 ) { this }
 
 a : fancyMath(1)

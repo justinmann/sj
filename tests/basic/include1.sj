@@ -1,9 +1,9 @@
 include "lib/common/common.sj"
 
 class(
-	bob : 1
+    bob : 1
 ) {
-	this
+    this
 }
 
 a : array!class(dataSize := 2)

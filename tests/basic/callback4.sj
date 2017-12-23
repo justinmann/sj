@@ -1,10 +1,10 @@
 include "lib/common/common.sj"
 
 class(
-	run() {
-		debug.writeLine("hello")
-		valid(1)
-	}
+    run() {
+        debug.writeLine("hello")
+        valid(1)
+    }
 ) { this }
 
 c := heap class()

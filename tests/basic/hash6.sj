@@ -1,10 +1,10 @@
 include "lib/common/common.sj"
 
 class(
-	x : 1
+    x : 1
 
-	hash() { x as u32 }
-	isEqual(c : 'class) { x == c.x }
+    hash() { x as u32 }
+    isEqual(c : 'class) { x == c.x }
 ) { this }
 
 a : hash![weak class, i32]()

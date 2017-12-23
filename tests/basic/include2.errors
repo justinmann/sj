@@ -1,1 +1,1 @@
-ERROR:3 include2.sj[2:2] can only use include in the global scope
+include2.sj(2,5): error SJC0003: can only use include in the global scope

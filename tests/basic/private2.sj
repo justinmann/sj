@@ -1,6 +1,6 @@
 class(
-	x : 1
-	_func() { x }
+    x : 1
+    _func() { x }
 ) { this }
 
 c : class()

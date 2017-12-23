@@ -1,8 +1,8 @@
 included "lib/common/common.sj"
 
 enum foo(
-	abb
-	bbb
+    abb
+    bbb
 )
 
 b : valid(foo.abb)

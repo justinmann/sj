@@ -1,23 +1,23 @@
 include "lib/common/common.sj"
 
 double(x : 'i32) {
-	x as f32 * 2.0f
+    x as f32 * 2.0f
 }
 
 lessThan5(x : 'f32) {
-	x < 5.0f
+    x < 5.0f
 }
 
 add(l : 'f32, r : 'f32) {
-	l + r
+    l + r
 }
 
 sum(
-	x := 0.0f
+    x := 0.0f
 ) { this }
 
 sumAdd(sum : 'sum, x : 'f32)'sum {
-	sum(sum.x + x)
+    sum(sum.x + x)
 }
 
 a : [1, 2, 3]

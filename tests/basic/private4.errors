@@ -1,4 +1,4 @@
-ERROR:4 private4.sj[2:2] interface methods cannot be private
-ERROR:28 private4.sj[7:5] cannot find interface 'foo'
-ERROR:11 private4.sj[7:5] function 'bar' does not exist
-ERROR:0 private4.sj[7:1] no right side
+private4.sj(2,5): error SJC0004: interface methods cannot be private
+private4.sj(7,5): error SJC0028: cannot find interface 'foo'
+private4.sj(7,5): error SJC0011: function 'bar' does not exist
+private4.sj(7,1): error SJC0000: no right side

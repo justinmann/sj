@@ -1,11 +1,11 @@
 include "lib/common/common.sj"
 
 #bar(
-	getX()'i32
+    getX()'i32
 )
 
 foo #bar (
-	getX() { 0 }
+    getX() { 0 }
 ) { this }
 
 a : heap foo()

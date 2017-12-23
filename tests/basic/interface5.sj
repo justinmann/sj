@@ -6,7 +6,7 @@ include "lib/common/common.sj"
 
 
 #bar(
-	test2()'i32
+    test2()'i32
 )
 
 class!item #bar #foo!item (
@@ -15,7 +15,7 @@ class!item #bar #foo!item (
     }
 
     test2() {
-    	2
+        2
     }
 ) { this }
 

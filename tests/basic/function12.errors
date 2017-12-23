@@ -1,1 +1,1 @@
-ERROR:22 function12.sj[1:29] cannot find parameter 'q'
+function12.sj(1,29): error SJC0022: cannot find parameter 'q'

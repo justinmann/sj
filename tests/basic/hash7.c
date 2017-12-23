@@ -527,7 +527,12 @@ void sjf_array_char_setat(sjs_array_char* _parent, int32_t index, char item) {
 }
 
 void sjf_debug_writeline(sjs_string* data) {
-    printf("%s\n", (char*)data->data.data);
+    #ifdef _WINDOWS
+    OutputDebugStringA((char*)data->data.data);
+    OutputDebugStringA("\n");
+    #else
+    fprintf(stderr, "%s\n", (char*)data->data.data);
+    #endif
 }
 
 void sjf_hash_stringstring(sjs_hash_stringstring* _this) {

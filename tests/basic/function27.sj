@@ -6,12 +6,12 @@ c := empty'weak #bar
 
 @heap
 func #bar (
-	bar() {
-		weak parent
-	}
+    bar() {
+        weak parent
+    }
 ) { 
-	c = weak this as #bar
-	this 
+    c = weak this as #bar
+    this 
 }
 
 a : func()

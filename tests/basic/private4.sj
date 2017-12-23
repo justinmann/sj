@@ -1,5 +1,5 @@
 #foo(
-	_bar()'void
+    _bar()'void
 )
 
 bar #foo() { this }

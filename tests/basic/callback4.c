@@ -379,7 +379,12 @@ void sjf_class_run(sjs_class* _parent, int32_option* _return) {
 }
 
 void sjf_debug_writeline(sjs_string* data) {
-    printf("%s\n", (char*)data->data.data);
+    #ifdef _WINDOWS
+    OutputDebugStringA((char*)data->data.data);
+    OutputDebugStringA("\n");
+    #else
+    fprintf(stderr, "%s\n", (char*)data->data.data);
+    #endif
 }
 
 void sjf_i32_asstring(int32_t val, sjs_string* _return) {
