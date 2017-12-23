@@ -37,8 +37,6 @@ typedef struct td_delete_cb delete_cb;
 typedef struct td_delete_cb_list delete_cb_list;
 const char* sjg_string1 = "false";
 const char* sjg_string2 = "true";
-const char* sjg_string3 = "false";
-const char* sjg_string4 = "true";
 
 struct td_delete_cb {
     void* _parent;
@@ -377,7 +375,7 @@ void sjf_bool_asstring_heap(bool val, sjs_string** _return) {
         (*_return)->count = 4;
         (*_return)->data._refCount = 1;
         (*_return)->data.datasize = 5;
-        (*_return)->data.data = (void*)sjg_string4;
+        (*_return)->data.data = (void*)sjg_string2;
         (*_return)->data._isglobal = true;
         (*_return)->data.count = 5;
         sjf_array_char(&(*_return)->data);
@@ -388,7 +386,7 @@ void sjf_bool_asstring_heap(bool val, sjs_string** _return) {
         (*_return)->count = 5;
         (*_return)->data._refCount = 1;
         (*_return)->data.datasize = 6;
-        (*_return)->data.data = (void*)sjg_string3;
+        (*_return)->data.data = (void*)sjg_string1;
         (*_return)->data._isglobal = true;
         (*_return)->data.count = 6;
         sjf_array_char(&(*_return)->data);

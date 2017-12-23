@@ -51,7 +51,11 @@ shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, shared_ptr<CScope> scop
         returnMode = CTM_Stack;
     }
     
-    auto varName = TrBlock::nextVarName("sjg_string");
+    string varName = varNames[str];
+    if (varName.size() == 0) {
+        varName = TrBlock::nextVarName("sjg_string");
+        varNames[str] = varName;
+    }
 
     auto createArrayCallee = scope->function->getCFunction(compiler, loc, "array", scope, make_shared<CTypeNameList>(CTC_Value, CTM_Stack, emptyNamespace, compiler->typeChar->valueName, false), CTM_Stack);
     if (!createArrayCallee) {
@@ -88,3 +92,6 @@ shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, shared_ptr<CScope> scop
 
     return createStringVar;
 }
+
+
+map<string, string> NString::varNames;

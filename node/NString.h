@@ -18,6 +18,7 @@ public:
 
 private:
     string str;
+    static map<string, string> varNames;
 };
 
 #endif /* NString_h */

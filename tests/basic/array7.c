@@ -36,10 +36,8 @@ Invalid compiler
 typedef struct td_delete_cb delete_cb;
 typedef struct td_delete_cb_list delete_cb_list;
 const char* sjg_string1 = ", ";
-const char* sjg_string3 = "";
-const char* sjg_string4 = "c";
-const char* sjg_string5 = "c";
-const char* sjg_string6 = "";
+const char* sjg_string2 = "";
+const char* sjg_string3 = "c";
 
 struct td_delete_cb {
     void* _parent;
@@ -891,7 +889,7 @@ void sjf_array_class_asstring(sjs_array_class* _parent, sjs_string* sep, sjs_str
     sjv_result.count = 0;
     sjv_result.data._refCount = 1;
     sjv_result.data.datasize = 1;
-    sjv_result.data.data = (void*)sjg_string3;
+    sjv_result.data.data = (void*)sjg_string2;
     sjv_result.data._isglobal = true;
     sjv_result.data.count = 1;
     sjf_array_char(&sjv_result.data);
@@ -955,7 +953,7 @@ void sjf_array_class_asstring_heap(sjs_array_class* _parent, sjs_string* sep, sj
     sjv_result.count = 0;
     sjv_result.data._refCount = 1;
     sjv_result.data.datasize = 1;
-    sjv_result.data.data = (void*)sjg_string6;
+    sjv_result.data.data = (void*)sjg_string2;
     sjv_result.data._isglobal = true;
     sjv_result.data.count = 1;
     sjf_array_char(&sjv_result.data);
@@ -1200,7 +1198,7 @@ void sjf_class_asstring(sjs_class* _parent, sjs_string* _return) {
     sjt_call13.count = 1;
     sjt_call13.data._refCount = 1;
     sjt_call13.data.datasize = 2;
-    sjt_call13.data.data = (void*)sjg_string4;
+    sjt_call13.data.data = (void*)sjg_string3;
     sjt_call13.data._isglobal = true;
     sjt_call13.data.count = 2;
     sjf_array_char(&sjt_call13.data);
@@ -1228,7 +1226,7 @@ void sjf_class_asstring_heap(sjs_class* _parent, sjs_string** _return) {
     sjt_call15.count = 1;
     sjt_call15.data._refCount = 1;
     sjt_call15.data.datasize = 2;
-    sjt_call15.data.data = (void*)sjg_string5;
+    sjt_call15.data.data = (void*)sjg_string3;
     sjt_call15.data._isglobal = true;
     sjt_call15.data.count = 2;
     sjf_array_char(&sjt_call15.data);

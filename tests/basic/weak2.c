@@ -36,10 +36,7 @@ Invalid compiler
 typedef struct td_delete_cb delete_cb;
 typedef struct td_delete_cb_list delete_cb_list;
 const char* sjg_string1 = ", ";
-const char* sjg_string3 = "";
-const char* sjg_string4 = "";
-const char* sjg_string5 = "";
-const char* sjg_string6 = "";
+const char* sjg_string2 = "";
 
 struct td_delete_cb {
     void* _parent;
@@ -484,7 +481,7 @@ void sjf_array_weak_class_asstring(sjs_array_weak_class* _parent, sjs_string* se
     sjv_result.count = 0;
     sjv_result.data._refCount = 1;
     sjv_result.data.datasize = 1;
-    sjv_result.data.data = (void*)sjg_string3;
+    sjv_result.data.data = (void*)sjg_string2;
     sjv_result.data._isglobal = true;
     sjv_result.data.count = 1;
     sjf_array_char(&sjv_result.data);
@@ -578,7 +575,7 @@ void sjf_array_weak_class_asstring(sjs_array_weak_class* _parent, sjs_string* se
             sjt_call6.count = 0;
             sjt_call6.data._refCount = 1;
             sjt_call6.data.datasize = 1;
-            sjt_call6.data.data = (void*)sjg_string4;
+            sjt_call6.data.data = (void*)sjg_string2;
             sjt_call6.data._isglobal = true;
             sjt_call6.data.count = 1;
             sjf_array_char(&sjt_call6.data);
@@ -615,7 +612,7 @@ void sjf_array_weak_class_asstring_heap(sjs_array_weak_class* _parent, sjs_strin
     sjv_result.count = 0;
     sjv_result.data._refCount = 1;
     sjv_result.data.datasize = 1;
-    sjv_result.data.data = (void*)sjg_string5;
+    sjv_result.data.data = (void*)sjg_string2;
     sjv_result.data._isglobal = true;
     sjv_result.data.count = 1;
     sjf_array_char(&sjv_result.data);
@@ -709,7 +706,7 @@ void sjf_array_weak_class_asstring_heap(sjs_array_weak_class* _parent, sjs_strin
             sjt_call11.count = 0;
             sjt_call11.data._refCount = 1;
             sjt_call11.data.datasize = 1;
-            sjt_call11.data.data = (void*)sjg_string6;
+            sjt_call11.data.data = (void*)sjg_string2;
             sjt_call11.data._isglobal = true;
             sjt_call11.data.count = 1;
             sjf_array_char(&sjt_call11.data);

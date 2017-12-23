@@ -36,7 +36,6 @@ Invalid compiler
 typedef struct td_delete_cb delete_cb;
 typedef struct td_delete_cb_list delete_cb_list;
 const char* sjg_string1 = "bob";
-const char* sjg_string2 = "bob";
 
 struct td_delete_cb {
     void* _parent;
@@ -366,7 +365,7 @@ void sjf_func_heap(sjs_tuple2_i32_string** _return) {
     (*_return)->item2.count = 3;
     (*_return)->item2.data._refCount = 1;
     (*_return)->item2.data.datasize = 4;
-    (*_return)->item2.data.data = (void*)sjg_string2;
+    (*_return)->item2.data.data = (void*)sjg_string1;
     (*_return)->item2.data._isglobal = true;
     (*_return)->item2.data.count = 4;
     sjf_array_char(&(*_return)->item2.data);

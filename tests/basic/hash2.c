@@ -37,8 +37,7 @@ typedef struct td_delete_cb delete_cb;
 typedef struct td_delete_cb_list delete_cb_list;
 const char* sjg_string1 = "foo";
 const char* sjg_string2 = "hi";
-const char* sjg_string3 = "foo";
-const char* sjg_string4 = "not found";
+const char* sjg_string3 = "not found";
 
 struct td_delete_cb {
     void* _parent;
@@ -558,7 +557,7 @@ int main(int argc, char** argv) {
     sjt_call3.count = 3;
     sjt_call3.data._refCount = 1;
     sjt_call3.data.datasize = 4;
-    sjt_call3.data.data = (void*)sjg_string3;
+    sjt_call3.data.data = (void*)sjg_string1;
     sjt_call3.data._isglobal = true;
     sjt_call3.data.count = 4;
     sjf_array_char(&sjt_call3.data);
@@ -574,7 +573,7 @@ int main(int argc, char** argv) {
         sjt_call4.count = 9;
         sjt_call4.data._refCount = 1;
         sjt_call4.data.datasize = 10;
-        sjt_call4.data.data = (void*)sjg_string4;
+        sjt_call4.data.data = (void*)sjg_string3;
         sjt_call4.data._isglobal = true;
         sjt_call4.data.count = 10;
         sjf_array_char(&sjt_call4.data);

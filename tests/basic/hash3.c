@@ -37,9 +37,7 @@ typedef struct td_delete_cb delete_cb;
 typedef struct td_delete_cb_list delete_cb_list;
 const char* sjg_string1 = "foo";
 const char* sjg_string2 = "bob";
-const char* sjg_string3 = "bob";
-const char* sjg_string4 = "foo";
-const char* sjg_string5 = "not found";
+const char* sjg_string3 = "not found";
 
 struct td_delete_cb {
     void* _parent;
@@ -443,7 +441,7 @@ void sjf_class_bob_heap(sjs_class* _parent, sjs_string** _return) {
     (*_return)->count = 3;
     (*_return)->data._refCount = 1;
     (*_return)->data.datasize = 4;
-    (*_return)->data.data = (void*)sjg_string3;
+    (*_return)->data.data = (void*)sjg_string2;
     (*_return)->data._isglobal = true;
     (*_return)->data.count = 4;
     sjf_array_char(&(*_return)->data);
@@ -672,7 +670,7 @@ int main(int argc, char** argv) {
     sjt_call3.count = 3;
     sjt_call3.data._refCount = 1;
     sjt_call3.data.datasize = 4;
-    sjt_call3.data.data = (void*)sjg_string4;
+    sjt_call3.data.data = (void*)sjg_string1;
     sjt_call3.data._isglobal = true;
     sjt_call3.data.count = 4;
     sjf_array_char(&sjt_call3.data);
@@ -714,7 +712,7 @@ int main(int argc, char** argv) {
         sjt_call4.count = 9;
         sjt_call4.data._refCount = 1;
         sjt_call4.data.datasize = 10;
-        sjt_call4.data.data = (void*)sjg_string5;
+        sjt_call4.data.data = (void*)sjg_string3;
         sjt_call4.data._isglobal = true;
         sjt_call4.data.count = 10;
         sjf_array_char(&sjt_call4.data);

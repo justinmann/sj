@@ -36,17 +36,10 @@ Invalid compiler
 typedef struct td_delete_cb delete_cb;
 typedef struct td_delete_cb_list delete_cb_list;
 const char* sjg_string1 = "hi";
-const char* sjg_string10 = "hi";
-const char* sjg_string11 = "hi";
-const char* sjg_string12 = "empty";
 const char* sjg_string2 = "hello";
 const char* sjg_string3 = "good bye";
 const char* sjg_string4 = "bye";
-const char* sjg_string5 = "hi";
-const char* sjg_string6 = "empty";
-const char* sjg_string7 = "bye";
-const char* sjg_string8 = "hi";
-const char* sjg_string9 = "empty";
+const char* sjg_string5 = "empty";
 
 struct td_delete_cb {
     void* _parent;
@@ -1077,7 +1070,7 @@ int main(int argc, char** argv) {
     sjt_call7.count = 2;
     sjt_call7.data._refCount = 1;
     sjt_call7.data.datasize = 3;
-    sjt_call7.data.data = (void*)sjg_string5;
+    sjt_call7.data.data = (void*)sjg_string1;
     sjt_call7.data._isglobal = true;
     sjt_call7.data.count = 3;
     sjf_array_char(&sjt_call7.data);
@@ -1095,7 +1088,7 @@ int main(int argc, char** argv) {
         sjt_call9.count = 2;
         sjt_call9.data._refCount = 1;
         sjt_call9.data.datasize = 3;
-        sjt_call9.data.data = (void*)sjg_string5;
+        sjt_call9.data.data = (void*)sjg_string1;
         sjt_call9.data._isglobal = true;
         sjt_call9.data.count = 3;
         sjf_array_char(&sjt_call9.data);
@@ -1108,7 +1101,7 @@ int main(int argc, char** argv) {
         sjt_call10.count = 5;
         sjt_call10.data._refCount = 1;
         sjt_call10.data.datasize = 6;
-        sjt_call10.data.data = (void*)sjg_string6;
+        sjt_call10.data.data = (void*)sjg_string5;
         sjt_call10.data._isglobal = true;
         sjt_call10.data.count = 6;
         sjf_array_char(&sjt_call10.data);
@@ -1128,7 +1121,7 @@ int main(int argc, char** argv) {
     sjt_call12.count = 3;
     sjt_call12.data._refCount = 1;
     sjt_call12.data.datasize = 4;
-    sjt_call12.data.data = (void*)sjg_string7;
+    sjt_call12.data.data = (void*)sjg_string4;
     sjt_call12.data._isglobal = true;
     sjt_call12.data.count = 4;
     sjf_array_char(&sjt_call12.data);
@@ -1140,7 +1133,7 @@ int main(int argc, char** argv) {
     sjt_call15.count = 2;
     sjt_call15.data._refCount = 1;
     sjt_call15.data.datasize = 3;
-    sjt_call15.data.data = (void*)sjg_string8;
+    sjt_call15.data.data = (void*)sjg_string1;
     sjt_call15.data._isglobal = true;
     sjt_call15.data.count = 3;
     sjf_array_char(&sjt_call15.data);
@@ -1158,7 +1151,7 @@ int main(int argc, char** argv) {
         sjt_call17.count = 2;
         sjt_call17.data._refCount = 1;
         sjt_call17.data.datasize = 3;
-        sjt_call17.data.data = (void*)sjg_string8;
+        sjt_call17.data.data = (void*)sjg_string1;
         sjt_call17.data._isglobal = true;
         sjt_call17.data.count = 3;
         sjf_array_char(&sjt_call17.data);
@@ -1171,7 +1164,7 @@ int main(int argc, char** argv) {
         sjt_call18.count = 5;
         sjt_call18.data._refCount = 1;
         sjt_call18.data.datasize = 6;
-        sjt_call18.data.data = (void*)sjg_string9;
+        sjt_call18.data.data = (void*)sjg_string5;
         sjt_call18.data._isglobal = true;
         sjt_call18.data.count = 6;
         sjf_array_char(&sjt_call18.data);
@@ -1191,7 +1184,7 @@ int main(int argc, char** argv) {
     sjt_call20.count = 2;
     sjt_call20.data._refCount = 1;
     sjt_call20.data.datasize = 3;
-    sjt_call20.data.data = (void*)sjg_string10;
+    sjt_call20.data.data = (void*)sjg_string1;
     sjt_call20.data._isglobal = true;
     sjt_call20.data.count = 3;
     sjf_array_char(&sjt_call20.data);
@@ -1203,7 +1196,7 @@ int main(int argc, char** argv) {
     sjt_call23.count = 2;
     sjt_call23.data._refCount = 1;
     sjt_call23.data.datasize = 3;
-    sjt_call23.data.data = (void*)sjg_string11;
+    sjt_call23.data.data = (void*)sjg_string1;
     sjt_call23.data._isglobal = true;
     sjt_call23.data.count = 3;
     sjf_array_char(&sjt_call23.data);
@@ -1221,7 +1214,7 @@ int main(int argc, char** argv) {
         sjt_call25.count = 2;
         sjt_call25.data._refCount = 1;
         sjt_call25.data.datasize = 3;
-        sjt_call25.data.data = (void*)sjg_string11;
+        sjt_call25.data.data = (void*)sjg_string1;
         sjt_call25.data._isglobal = true;
         sjt_call25.data.count = 3;
         sjf_array_char(&sjt_call25.data);
@@ -1234,7 +1227,7 @@ int main(int argc, char** argv) {
         sjt_call26.count = 5;
         sjt_call26.data._refCount = 1;
         sjt_call26.data.datasize = 6;
-        sjt_call26.data.data = (void*)sjg_string12;
+        sjt_call26.data.data = (void*)sjg_string5;
         sjt_call26.data._isglobal = true;
         sjt_call26.data.count = 6;
         sjf_array_char(&sjt_call26.data);
