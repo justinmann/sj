@@ -19,6 +19,7 @@ int main(int argc, char **argv) {
         ("wasm", "output wasm (not supported yet)")
         ("app", "output app for current system (not supported yet)")
         ("debug", "output debug files")
+        ("c-file", po::value<string>(), "filename for c output - defaults to sj file with extension changed to c")
         ;
 
     po::options_description hidden_options("Hidden options");
@@ -48,16 +49,19 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    bool outputLines = vm.count("no-lines");
+    bool outputLines = vm.count("no-lines") == 0;
     bool outputWasm = vm.count("wasm");
     bool outputApp = vm.count("app");
     bool outputDebug = vm.count("debug");
-    string sjFilename = vm["sj-file"].as<string>();
+    auto cFilename = vm.count("c-file") ? vm["c-file"].as<string>() : string();
+    auto sjFilename = vm["sj-file"].as<string>();
 
     auto path = fs::path(sjFilename);
-    auto codeFileName = fs::change_extension(path, ".c");
-    ofstream code;
-    code.open(codeFileName.c_str());
+    if (cFilename.size() == 0) {
+        cFilename = fs::change_extension(path, ".c").string();
+    }
+    ofstream cStream;
+    cStream.open(cFilename.c_str());
 
     ofstream* debugStream = nullptr;
     ofstream debug;
@@ -68,7 +72,7 @@ int main(int argc, char **argv) {
     }
 
     Compiler compiler(outputLines);
-    compiler.transpile(path.string(), code, cerr, debugStream);
+    compiler.transpile(path.string(), cStream, cerr, debugStream);
 
     return 0;
 }
