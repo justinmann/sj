@@ -9,6 +9,7 @@
 #include "../node/Node.h"
 #include <fstream>
 #include <streambuf>
+#include <iomanip>
 
 namespace fs = boost::filesystem;
 
@@ -123,10 +124,10 @@ std::string ReplaceAll(std::string str, const std::string& from, const std::stri
 
 void CError::writeToStream(ostream& stream) {
     stream 
-        << "ERROR:" << code << " " 
         << fileName
-        << "[" << line << ":" << col << "] " 
-        << msg;
+        << "(" << line << "," << col << "): "
+        << "error SJC" << setfill('0') << setw(4) << code
+        << ":" << msg;
 }
 
 bool Compiler::transpile(const string& fileName, ostream& stream, ostream& errorStream, ostream* debugStream) {
