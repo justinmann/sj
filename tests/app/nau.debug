@@ -566,11 +566,6 @@ global()'void {
   float r, g, b, a; // color
   } vertex3_color4_t;	
   --cstruct--
-  {
-    normal'buttonstate : 0
-    hot'buttonstate : 1
-    pressed'buttonstate : 2
-  }
   import  {
     red'stack color : color(this = color(
       r'f32 : r,
@@ -608,6 +603,11 @@ global()'void {
       b'f32 : b,
       a'f32 : a
     ))
+  }
+  {
+    none'clickstate : 0
+    entered'clickstate : 1
+    pressed'clickstate : 2
   }
   --cdefine--
   double *

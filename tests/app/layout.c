@@ -776,13 +776,15 @@ struct vertex_buffer_td
 #define sjs_boxelement_typeId 53
 #define sjs_textrenderer_typeId 54
 #define sjs_textelement_typeId 55
-#define sjs_borderlayout_typeId 56
-#define sji_borderchild_vtbl_typeId 57
-#define sji_borderchild_typeId 58
-#define sjs_borderchild_typeId 59
-#define sjs_listlayout_typeId 60
-#define sjs_flowlayout_typeId 61
-#define sjs_centerlayout_typeId 62
+#define sji_textelement_vtbl_typeId 56
+#define sji_textelement_typeId 57
+#define sjs_borderlayout_typeId 58
+#define sji_borderchild_vtbl_typeId 59
+#define sji_borderchild_typeId 60
+#define sjs_borderchild_typeId 61
+#define sjs_listlayout_typeId 62
+#define sjs_flowlayout_typeId 63
+#define sjs_centerlayout_typeId 64
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_interface sjs_interface;
@@ -839,6 +841,8 @@ typedef struct td_sjs_boxrenderer sjs_boxrenderer;
 typedef struct td_sjs_boxelement sjs_boxelement;
 typedef struct td_sjs_textrenderer sjs_textrenderer;
 typedef struct td_sjs_textelement sjs_textelement;
+typedef struct td_sji_textelement_vtbl sji_textelement_vtbl;
+typedef struct td_sji_textelement sji_textelement;
 typedef struct td_sjs_borderlayout sjs_borderlayout;
 typedef struct td_sji_borderchild_vtbl sji_borderchild_vtbl;
 typedef struct td_sji_borderchild sji_borderchild;
@@ -970,6 +974,7 @@ struct td_sjs_mouseevent {
     int32_t type;
     sjs_point point;
     bool iscaptured;
+    bool isleftdown;
 };
 
 struct td_sji_model_vtbl {
@@ -1226,6 +1231,7 @@ struct td_sjs_textrenderer {
 
 struct td_sjs_textelement {
     int _refCount;
+    sjs_string id;
     sjs_font* font;
     sjs_string text;
     sjs_color color;
@@ -1234,6 +1240,19 @@ struct td_sjs_textelement {
     int32_t valign;
     sjs_rect _rect;
     sjs_textrenderer _textrenderer;
+};
+
+struct td_sji_textelement_vtbl {
+    void (*destroy)(void* _this);
+    void (*asinterface)(sjs_object* _this, int typeId, sjs_interface* _return);
+    void (*gettext)(sjs_object* _parent, sjs_string* _return);
+    void (*gettext_heap)(sjs_object* _parent, sjs_string** _return);
+    void (*settext)(sjs_object* _parent, sjs_string* v);
+};
+
+struct td_sji_textelement {
+    sjs_object* _parent;
+    sji_textelement_vtbl* _vtbl;
 };
 
 struct td_sjs_borderlayout {
@@ -1296,6 +1315,7 @@ sji_element_vtbl sjs_flowlayout_element_vtbl;
 sji_element_vtbl sjs_gridlayout_element_vtbl;
 sji_element_vtbl sjs_listlayout_element_vtbl;
 sji_element_vtbl sjs_textelement_element_vtbl;
+sji_textelement_vtbl sjs_textelement_textelement_vtbl;
 void halt(const char * format, ...);
 void ptr_hash(void* p, uint32_t* result);
 void ptr_isequal(void *p1, void* p2, bool* result);
@@ -2103,9 +2123,9 @@ int32_t sjv_borderposition_fill;
 int32_t sjv_borderposition_left;
 int32_t sjv_borderposition_right;
 int32_t sjv_borderposition_top;
-int32_t sjv_buttonstate_hot;
-int32_t sjv_buttonstate_normal;
-int32_t sjv_buttonstate_pressed;
+int32_t sjv_clickstate_entered;
+int32_t sjv_clickstate_none;
+int32_t sjv_clickstate_pressed;
 int32_t sjv_flowlayoutorientation_bottomtop;
 int32_t sjv_flowlayoutorientation_leftright;
 int32_t sjv_flowlayoutorientation_rightleft;
@@ -2252,27 +2272,26 @@ sjs_gridunit sjt_call92 = { -1 };
 sjs_gridunit sjt_call93 = { -1 };
 sjs_gridunit sjt_call94 = { -1 };
 sjs_gridlayout* sjt_cast1 = 0;
-sjs_borderchild* sjt_cast10 = 0;
 sjs_borderchild* sjt_cast11 = 0;
 sjs_borderchild* sjt_cast12 = 0;
 sjs_borderchild* sjt_cast13 = 0;
 sjs_borderchild* sjt_cast14 = 0;
-sjs_listlayout* sjt_cast15 = 0;
-sjs_flowlayout* sjt_cast16 = 0;
-sjs_centerlayout* sjt_cast17 = 0;
+sjs_borderchild* sjt_cast15 = 0;
+sjs_listlayout* sjt_cast16 = 0;
+sjs_flowlayout* sjt_cast17 = 0;
+sjs_centerlayout* sjt_cast18 = 0;
 sjs_gridlayout* sjt_cast3 = 0;
-sjs_borderlayout* sjt_cast7 = 0;
-int32_t sjt_functionParam100;
-sji_element sjt_functionParam101 = { 0 };
-sjs_string* sjt_functionParam102 = 0;
-int32_t sjt_functionParam103;
-sji_element sjt_functionParam104 = { 0 };
-sjs_string* sjt_functionParam105 = 0;
-int32_t sjt_functionParam106;
-sji_element sjt_functionParam107 = { 0 };
-sjs_string* sjt_functionParam108 = 0;
-int32_t sjt_functionParam109;
-sjs_gridunit* sjt_functionParam110 = 0;
+sjs_borderlayout* sjt_cast8 = 0;
+sjs_string* sjt_functionParam101 = 0;
+int32_t sjt_functionParam102;
+sji_element sjt_functionParam103 = { 0 };
+sjs_string* sjt_functionParam104 = 0;
+int32_t sjt_functionParam105;
+sji_element sjt_functionParam106 = { 0 };
+sjs_string* sjt_functionParam107 = 0;
+int32_t sjt_functionParam108;
+sji_element sjt_functionParam109 = { 0 };
+sjs_string* sjt_functionParam110 = 0;
 int32_t sjt_functionParam111;
 sjs_gridunit* sjt_functionParam112 = 0;
 int32_t sjt_functionParam113;
@@ -2280,105 +2299,105 @@ sjs_gridunit* sjt_functionParam114 = 0;
 int32_t sjt_functionParam115;
 sjs_gridunit* sjt_functionParam116 = 0;
 int32_t sjt_functionParam117;
-sji_element sjt_functionParam118 = { 0 };
-int32_t sjt_functionParam124;
-sji_element sjt_functionParam125 = { 0 };
-sjs_string* sjt_functionParam126 = 0;
-int32_t sjt_functionParam127;
-sji_element sjt_functionParam128 = { 0 };
-sjs_string* sjt_functionParam129 = 0;
-int32_t sjt_functionParam130;
-sji_element sjt_functionParam131 = { 0 };
-sjs_string* sjt_functionParam132 = 0;
-int32_t sjt_functionParam133;
-sji_element sjt_functionParam134 = { 0 };
-sjs_string* sjt_functionParam135 = 0;
-int32_t sjt_functionParam136;
-sji_element sjt_functionParam137 = { 0 };
-sjs_string* sjt_functionParam138 = 0;
-int32_t sjt_functionParam139;
-sji_element sjt_functionParam140 = { 0 };
-int32_t sjt_functionParam145;
-sji_element sjt_functionParam146 = { 0 };
-sjs_string* sjt_functionParam147 = 0;
-int32_t sjt_functionParam148;
-sji_element sjt_functionParam149 = { 0 };
-sjs_string* sjt_functionParam150 = 0;
-int32_t sjt_functionParam151;
-sji_element sjt_functionParam152 = { 0 };
-sjs_string* sjt_functionParam153 = 0;
-int32_t sjt_functionParam154;
-sji_element sjt_functionParam155 = { 0 };
-sjs_string* sjt_functionParam156 = 0;
-int32_t sjt_functionParam157;
-sji_element sjt_functionParam158 = { 0 };
-int32_t sjt_functionParam171;
-sji_element sjt_functionParam172 = { 0 };
-sjs_string* sjt_functionParam173 = 0;
-int32_t sjt_functionParam174;
-sji_element sjt_functionParam175 = { 0 };
-sjs_string* sjt_functionParam176 = 0;
-int32_t sjt_functionParam177;
-sji_element sjt_functionParam178 = { 0 };
-sjs_string* sjt_functionParam179 = 0;
-int32_t sjt_functionParam180;
-sji_element sjt_functionParam181 = { 0 };
-sjs_string* sjt_functionParam182 = 0;
-int32_t sjt_functionParam183;
-sji_element sjt_functionParam184 = { 0 };
-sjs_string* sjt_functionParam185 = 0;
-int32_t sjt_functionParam186;
-sji_element sjt_functionParam187 = { 0 };
-sjs_string* sjt_functionParam188 = 0;
-int32_t sjt_functionParam189;
-sji_element sjt_functionParam190 = { 0 };
-sjs_string* sjt_functionParam191 = 0;
-int32_t sjt_functionParam192;
-sji_element sjt_functionParam193 = { 0 };
-sjs_string* sjt_functionParam194 = 0;
-int32_t sjt_functionParam195;
-sji_element sjt_functionParam196 = { 0 };
-sjs_string* sjt_functionParam197 = 0;
-int32_t sjt_functionParam198;
-sji_element sjt_functionParam199 = { 0 };
-sjs_string* sjt_functionParam200 = 0;
-int32_t sjt_functionParam201;
-sji_element sjt_functionParam202 = { 0 };
-sjs_string* sjt_functionParam203 = 0;
-int32_t sjt_functionParam204;
-sji_element sjt_functionParam205 = { 0 };
-sjs_string* sjt_functionParam206 = 0;
-int32_t sjt_functionParam207;
-sji_element sjt_functionParam208 = { 0 };
-sjs_string* sjt_functionParam209 = 0;
-int32_t sjt_functionParam210;
-sji_element sjt_functionParam211 = { 0 };
-sjs_string* sjt_functionParam212 = 0;
-int32_t sjt_functionParam213;
-sji_element sjt_functionParam214 = { 0 };
-sjs_string* sjt_functionParam215 = 0;
-int32_t sjt_functionParam216;
-sji_element sjt_functionParam217 = { 0 };
-sjs_string* sjt_functionParam218 = 0;
-int32_t sjt_functionParam219;
-sji_element sjt_functionParam220 = { 0 };
-sjs_string* sjt_functionParam221 = 0;
-int32_t sjt_functionParam222;
-sji_element sjt_functionParam223 = { 0 };
-sjs_string* sjt_functionParam224 = 0;
-int32_t sjt_functionParam225;
-sji_element sjt_functionParam226 = { 0 };
-sjs_string* sjt_functionParam227 = 0;
-int32_t sjt_functionParam228;
-sji_element sjt_functionParam229 = { 0 };
-sjs_string* sjt_functionParam230 = 0;
-int32_t sjt_functionParam231;
-sji_element sjt_functionParam232 = { 0 };
-int32_t sjt_functionParam245;
-sji_element sjt_functionParam246 = { 0 };
-sjs_string* sjt_functionParam247 = 0;
-int32_t sjt_functionParam248;
-sjs_gridunit* sjt_functionParam249 = 0;
+sjs_gridunit* sjt_functionParam118 = 0;
+int32_t sjt_functionParam119;
+sji_element sjt_functionParam120 = { 0 };
+int32_t sjt_functionParam126;
+sji_element sjt_functionParam127 = { 0 };
+sjs_string* sjt_functionParam128 = 0;
+int32_t sjt_functionParam129;
+sji_element sjt_functionParam130 = { 0 };
+sjs_string* sjt_functionParam131 = 0;
+int32_t sjt_functionParam132;
+sji_element sjt_functionParam133 = { 0 };
+sjs_string* sjt_functionParam134 = 0;
+int32_t sjt_functionParam135;
+sji_element sjt_functionParam136 = { 0 };
+sjs_string* sjt_functionParam137 = 0;
+int32_t sjt_functionParam138;
+sji_element sjt_functionParam139 = { 0 };
+sjs_string* sjt_functionParam140 = 0;
+int32_t sjt_functionParam141;
+sji_element sjt_functionParam142 = { 0 };
+int32_t sjt_functionParam147;
+sji_element sjt_functionParam148 = { 0 };
+sjs_string* sjt_functionParam149 = 0;
+int32_t sjt_functionParam150;
+sji_element sjt_functionParam151 = { 0 };
+sjs_string* sjt_functionParam152 = 0;
+int32_t sjt_functionParam153;
+sji_element sjt_functionParam154 = { 0 };
+sjs_string* sjt_functionParam155 = 0;
+int32_t sjt_functionParam156;
+sji_element sjt_functionParam157 = { 0 };
+sjs_string* sjt_functionParam158 = 0;
+int32_t sjt_functionParam159;
+sji_element sjt_functionParam160 = { 0 };
+int32_t sjt_functionParam173;
+sji_element sjt_functionParam174 = { 0 };
+sjs_string* sjt_functionParam175 = 0;
+int32_t sjt_functionParam176;
+sji_element sjt_functionParam177 = { 0 };
+sjs_string* sjt_functionParam178 = 0;
+int32_t sjt_functionParam179;
+sji_element sjt_functionParam180 = { 0 };
+sjs_string* sjt_functionParam181 = 0;
+int32_t sjt_functionParam182;
+sji_element sjt_functionParam183 = { 0 };
+sjs_string* sjt_functionParam184 = 0;
+int32_t sjt_functionParam185;
+sji_element sjt_functionParam186 = { 0 };
+sjs_string* sjt_functionParam187 = 0;
+int32_t sjt_functionParam188;
+sji_element sjt_functionParam189 = { 0 };
+sjs_string* sjt_functionParam190 = 0;
+int32_t sjt_functionParam191;
+sji_element sjt_functionParam192 = { 0 };
+sjs_string* sjt_functionParam193 = 0;
+int32_t sjt_functionParam194;
+sji_element sjt_functionParam195 = { 0 };
+sjs_string* sjt_functionParam196 = 0;
+int32_t sjt_functionParam197;
+sji_element sjt_functionParam198 = { 0 };
+sjs_string* sjt_functionParam199 = 0;
+int32_t sjt_functionParam200;
+sji_element sjt_functionParam201 = { 0 };
+sjs_string* sjt_functionParam202 = 0;
+int32_t sjt_functionParam203;
+sji_element sjt_functionParam204 = { 0 };
+sjs_string* sjt_functionParam205 = 0;
+int32_t sjt_functionParam206;
+sji_element sjt_functionParam207 = { 0 };
+sjs_string* sjt_functionParam208 = 0;
+int32_t sjt_functionParam209;
+sji_element sjt_functionParam210 = { 0 };
+sjs_string* sjt_functionParam211 = 0;
+int32_t sjt_functionParam212;
+sji_element sjt_functionParam213 = { 0 };
+sjs_string* sjt_functionParam214 = 0;
+int32_t sjt_functionParam215;
+sji_element sjt_functionParam216 = { 0 };
+sjs_string* sjt_functionParam217 = 0;
+int32_t sjt_functionParam218;
+sji_element sjt_functionParam219 = { 0 };
+sjs_string* sjt_functionParam220 = 0;
+int32_t sjt_functionParam221;
+sji_element sjt_functionParam222 = { 0 };
+sjs_string* sjt_functionParam223 = 0;
+int32_t sjt_functionParam224;
+sji_element sjt_functionParam225 = { 0 };
+sjs_string* sjt_functionParam226 = 0;
+int32_t sjt_functionParam227;
+sji_element sjt_functionParam228 = { 0 };
+sjs_string* sjt_functionParam229 = 0;
+int32_t sjt_functionParam230;
+sji_element sjt_functionParam231 = { 0 };
+sjs_string* sjt_functionParam232 = 0;
+int32_t sjt_functionParam233;
+sji_element sjt_functionParam234 = { 0 };
+int32_t sjt_functionParam247;
+sji_element sjt_functionParam248 = { 0 };
+sjs_string* sjt_functionParam249 = 0;
 int32_t sjt_functionParam250;
 sjs_gridunit* sjt_functionParam251 = 0;
 int32_t sjt_functionParam252;
@@ -2387,22 +2406,23 @@ int32_t sjt_functionParam254;
 sjs_gridunit* sjt_functionParam255 = 0;
 int32_t sjt_functionParam256;
 sjs_gridunit* sjt_functionParam257 = 0;
+int32_t sjt_functionParam258;
+sjs_gridunit* sjt_functionParam259 = 0;
 int32_t sjt_functionParam39;
 sji_element sjt_functionParam40 = { 0 };
 int32_t sjt_functionParam41;
 sji_element sjt_functionParam42 = { 0 };
-sjs_string* sjt_functionParam99 = 0;
 int32_t sjt_math1;
 int32_t sjt_math2;
 int32_t sjt_negate1;
 sjs_array_heap_iface_element* sjt_parent100 = 0;
 sjs_array_heap_iface_element* sjt_parent101 = 0;
-sjs_array_heap_iface_element* sjt_parent115 = 0;
+sjs_array_heap_iface_element* sjt_parent102 = 0;
 sjs_array_heap_iface_element* sjt_parent116 = 0;
 sjs_array_heap_iface_element* sjt_parent117 = 0;
 sjs_array_heap_iface_element* sjt_parent118 = 0;
 sjs_array_heap_iface_element* sjt_parent119 = 0;
-sjs_array_heap_iface_element* sjt_parent133 = 0;
+sjs_array_heap_iface_element* sjt_parent120 = 0;
 sjs_array_heap_iface_element* sjt_parent134 = 0;
 sjs_array_heap_iface_element* sjt_parent135 = 0;
 sjs_array_heap_iface_element* sjt_parent136 = 0;
@@ -2423,24 +2443,24 @@ sjs_array_heap_iface_element* sjt_parent150 = 0;
 sjs_array_heap_iface_element* sjt_parent151 = 0;
 sjs_array_heap_iface_element* sjt_parent152 = 0;
 sjs_array_heap_iface_element* sjt_parent153 = 0;
-sjs_array_heap_iface_element* sjt_parent171 = 0;
-sjs_array_gridunit* sjt_parent172 = 0;
+sjs_array_heap_iface_element* sjt_parent154 = 0;
+sjs_array_heap_iface_element* sjt_parent172 = 0;
 sjs_array_gridunit* sjt_parent173 = 0;
 sjs_array_gridunit* sjt_parent174 = 0;
 sjs_array_gridunit* sjt_parent175 = 0;
 sjs_array_gridunit* sjt_parent176 = 0;
+sjs_array_gridunit* sjt_parent177 = 0;
 sjs_array_heap_iface_element* sjt_parent28 = 0;
 sjs_array_heap_iface_element* sjt_parent29 = 0;
-sjs_array_heap_iface_element* sjt_parent67 = 0;
 sjs_array_heap_iface_element* sjt_parent68 = 0;
 sjs_array_heap_iface_element* sjt_parent69 = 0;
-sjs_array_gridunit* sjt_parent70 = 0;
+sjs_array_heap_iface_element* sjt_parent70 = 0;
 sjs_array_gridunit* sjt_parent71 = 0;
 sjs_array_gridunit* sjt_parent72 = 0;
 sjs_array_gridunit* sjt_parent73 = 0;
-sjs_array_heap_iface_element* sjt_parent74 = 0;
-sjs_array_heap_iface_element* sjt_parent91 = 0;
-sjs_array_heap_iface_element* sjt_parent97 = 0;
+sjs_array_gridunit* sjt_parent74 = 0;
+sjs_array_heap_iface_element* sjt_parent75 = 0;
+sjs_array_heap_iface_element* sjt_parent92 = 0;
 sjs_array_heap_iface_element* sjt_parent98 = 0;
 sjs_array_heap_iface_element* sjt_parent99 = 0;
 float sjt_value5;
@@ -2682,6 +2702,7 @@ void sjf_hash_string_weak_iface_element__weakptrremovevalue(sjs_hash_string_weak
 void sjf_hash_string_weak_iface_element_copy(sjs_hash_string_weak_iface_element* _this, sjs_hash_string_weak_iface_element* _from);
 void sjf_hash_string_weak_iface_element_destroy(sjs_hash_string_weak_iface_element* _this);
 void sjf_hash_string_weak_iface_element_heap(sjs_hash_string_weak_iface_element* _this);
+void sjf_hash_string_weak_iface_element_setat(sjs_hash_string_weak_iface_element* _parent, sjs_string* key, sji_element val);
 void sjf_hash_string_weak_iface_model(sjs_hash_string_weak_iface_model* _this);
 void sjf_hash_string_weak_iface_model__weakptrremovekey(sjs_hash_string_weak_iface_model* _parent, sjs_string* key);
 void sjf_hash_string_weak_iface_model__weakptrremovevalue(sjs_hash_string_weak_iface_model* _parent, sji_model val);
@@ -2793,8 +2814,8 @@ void sjf_string_hash(sjs_string* _parent, uint32_t* _return);
 void sjf_string_heap(sjs_string* _this);
 void sjf_string_isequal(sjs_string* _parent, sjs_string* test, bool* _return);
 void sjf_testelement_heap(sjs_string* text, sji_element* _return);
-void sjf_textelement(sjs_textelement* _this);
 void sjf_textelement_as_sji_element(sjs_textelement* _this, sji_element* _return);
+void sjf_textelement_as_sji_textelement(sjs_textelement* _this, sji_textelement* _return);
 void sjf_textelement_asinterface(sjs_textelement* _this, int typeId, sjs_interface* _return);
 void sjf_textelement_copy(sjs_textelement* _this, sjs_textelement* _from);
 void sjf_textelement_destroy(sjs_textelement* _this);
@@ -2803,9 +2824,12 @@ void sjf_textelement_getrect(sjs_textelement* _parent, sjs_rect* _return);
 void sjf_textelement_getrect_heap(sjs_textelement* _parent, sjs_rect** _return);
 void sjf_textelement_getsize(sjs_textelement* _parent, sjs_size* maxsize, sjs_size* _return);
 void sjf_textelement_getsize_heap(sjs_textelement* _parent, sjs_size* maxsize, sjs_size** _return);
+void sjf_textelement_gettext(sjs_textelement* _parent, sjs_string* _return);
+void sjf_textelement_gettext_heap(sjs_textelement* _parent, sjs_string** _return);
 void sjf_textelement_heap(sjs_textelement* _this);
 void sjf_textelement_render(sjs_textelement* _parent, sjs_scene2d* scene);
 void sjf_textelement_setrect(sjs_textelement* _parent, sjs_rect* rect_);
+void sjf_textelement_settext(sjs_textelement* _parent, sjs_string* text_);
 void sjf_textrenderer(sjs_textrenderer* _this);
 void sjf_textrenderer_copy(sjs_textrenderer* _this, sjs_textrenderer* _from);
 void sjf_textrenderer_destroy(sjs_textrenderer* _this);
@@ -5728,55 +5752,55 @@ void sjf_anon1_heap(sjs_anon1* _this) {
 void sjf_anon1_nextframe(sjs_anon1* _parent, int32_t time) {
     int32_t sjt_compare97;
     int32_t sjt_compare98;
-    sjs_anon1* sjt_dot449 = 0;
-    sjs_anon1* sjt_dot452 = 0;
+    sjs_anon1* sjt_dot453 = 0;
+    sjs_anon1* sjt_dot456 = 0;
     bool sjt_ifElse43;
-    sjs_list_heap_iface_animation* sjt_parent177 = 0;
+    sjs_list_heap_iface_animation* sjt_parent178 = 0;
 
-    sjt_dot449 = _parent;
-    sjt_dot449->current = time;
-    sjt_dot452 = _parent;
-    sjt_parent177 = &(sjt_dot452)->animations;
-    sjf_list_heap_iface_animation_getcount(sjt_parent177, &sjt_compare97);
+    sjt_dot453 = _parent;
+    sjt_dot453->current = time;
+    sjt_dot456 = _parent;
+    sjt_parent178 = &(sjt_dot456)->animations;
+    sjf_list_heap_iface_animation_getcount(sjt_parent178, &sjt_compare97);
     sjt_compare98 = 0;
     sjt_ifElse43 = sjt_compare97 > sjt_compare98;
     if (sjt_ifElse43) {
         int32_t i;
-        sjs_anon1* sjt_dot453 = 0;
+        sjs_anon1* sjt_dot457 = 0;
         int32_t sjt_forEnd23;
         int32_t sjt_forStart23;
-        sjs_list_heap_iface_animation* sjt_parent178 = 0;
+        sjs_list_heap_iface_animation* sjt_parent179 = 0;
 
         sjt_forStart23 = 0;
-        sjt_dot453 = _parent;
-        sjt_parent178 = &(sjt_dot453)->animations;
-        sjf_list_heap_iface_animation_getcount(sjt_parent178, &sjt_forEnd23);
+        sjt_dot457 = _parent;
+        sjt_parent179 = &(sjt_dot457)->animations;
+        sjf_list_heap_iface_animation_getcount(sjt_parent179, &sjt_forEnd23);
         i = sjt_forEnd23 - 1;
         while (i >= sjt_forStart23) {
-            sjs_anon1* sjt_dot455 = 0;
-            int32_t sjt_functionParam259;
+            sjs_anon1* sjt_dot459 = 0;
+            int32_t sjt_functionParam261;
             bool sjt_ifElse44;
             int32_t sjt_interfaceParam47;
-            sjs_list_heap_iface_animation* sjt_parent180 = 0;
-            sji_animation sjt_parent181 = { 0 };
+            sjs_list_heap_iface_animation* sjt_parent181 = 0;
+            sji_animation sjt_parent182 = { 0 };
             sji_animation sjv_a = { 0 };
 
-            sjt_dot455 = _parent;
-            sjt_parent180 = &(sjt_dot455)->animations;
-            sjt_functionParam259 = i;
-            sjf_list_heap_iface_animation_getat_heap(sjt_parent180, sjt_functionParam259, &sjv_a);
-            sjt_parent181 = sjv_a;
+            sjt_dot459 = _parent;
+            sjt_parent181 = &(sjt_dot459)->animations;
+            sjt_functionParam261 = i;
+            sjf_list_heap_iface_animation_getat_heap(sjt_parent181, sjt_functionParam261, &sjv_a);
+            sjt_parent182 = sjv_a;
             sjt_interfaceParam47 = time;
-            sjt_parent181._vtbl->nextframe(sjt_parent181._parent, sjt_interfaceParam47, &sjt_ifElse44);
+            sjt_parent182._vtbl->nextframe(sjt_parent182._parent, sjt_interfaceParam47, &sjt_ifElse44);
             if (sjt_ifElse44) {
-                sjs_anon1* sjt_dot456 = 0;
-                int32_t sjt_functionParam260;
-                sjs_list_heap_iface_animation* sjt_parent182 = 0;
+                sjs_anon1* sjt_dot460 = 0;
+                int32_t sjt_functionParam262;
+                sjs_list_heap_iface_animation* sjt_parent183 = 0;
 
-                sjt_dot456 = _parent;
-                sjt_parent182 = &(sjt_dot456)->animations;
-                sjt_functionParam260 = i;
-                sjf_list_heap_iface_animation_removeat(sjt_parent182, sjt_functionParam260);
+                sjt_dot460 = _parent;
+                sjt_parent183 = &(sjt_dot460)->animations;
+                sjt_functionParam262 = i;
+                sjf_list_heap_iface_animation_removeat(sjt_parent183, sjt_functionParam262);
             }
 
             i--;
@@ -5803,8 +5827,8 @@ void sjf_anon2_destroy(sjs_anon2* _this) {
 
 void sjf_anon2_getfont_heap(sjs_anon2* _parent, sjs_font** _return) {
     sjs_string sjt_call17 = { -1 };
-    sjs_string* sjt_functionParam97 = 0;
-    float sjt_functionParam98;
+    float sjt_functionParam100;
+    sjs_string* sjt_functionParam99 = 0;
 
     sjt_call17._refCount = 1;
     sjt_call17.count = 16;
@@ -5815,9 +5839,9 @@ void sjf_anon2_getfont_heap(sjs_anon2* _parent, sjs_font** _return) {
     sjt_call17.data.count = 17;
     sjf_array_char(&sjt_call17.data);
     sjf_string(&sjt_call17);
-    sjt_functionParam97 = &sjt_call17;
-    sjt_functionParam98 = 24.0f;
-    sjf_font_load_heap(sjt_functionParam97, sjt_functionParam98, _return);
+    sjt_functionParam99 = &sjt_call17;
+    sjt_functionParam100 = 24.0f;
+    sjf_font_load_heap(sjt_functionParam99, sjt_functionParam100, _return);
 
     if (sjt_call17._refCount == 1) { sjf_string_destroy(&sjt_call17); }
 }
@@ -6269,7 +6293,7 @@ return;;
 }
 
 void sjf_array_rect_grow(sjs_array_rect* _parent, int32_t newsize, sjs_array_rect* _return) {
-    sjs_array_rect* sjt_dot486 = 0;
+    sjs_array_rect* sjt_dot490 = 0;
     void* sjv_newdata;
 
     sjv_newdata = 0;
@@ -6294,13 +6318,13 @@ sjf_rect_copy(&newp[i], &p[i]);
     _return->datasize = newsize;
     _return->data = sjv_newdata;
     _return->_isglobal = false;
-    sjt_dot486 = _parent;
-    _return->count = (sjt_dot486)->count;
+    sjt_dot490 = _parent;
+    _return->count = (sjt_dot490)->count;
     sjf_array_rect(_return);
 }
 
 void sjf_array_rect_grow_heap(sjs_array_rect* _parent, int32_t newsize, sjs_array_rect** _return) {
-    sjs_array_rect* sjt_dot487 = 0;
+    sjs_array_rect* sjt_dot491 = 0;
     void* sjv_newdata;
 
     sjv_newdata = 0;
@@ -6326,8 +6350,8 @@ sjf_rect_copy(&newp[i], &p[i]);
     (*_return)->datasize = newsize;
     (*_return)->data = sjv_newdata;
     (*_return)->_isglobal = false;
-    sjt_dot487 = _parent;
-    (*_return)->count = (sjt_dot487)->count;
+    sjt_dot491 = _parent;
+    (*_return)->count = (sjt_dot491)->count;
     sjf_array_rect_heap((*_return));
 }
 
@@ -6458,100 +6482,100 @@ void sjf_borderchild_destroy(sjs_borderchild* _this) {
 }
 
 void sjf_borderchild_firemouseevent(sjs_borderchild* _parent, sjs_mouseevent* mouseevent, bool* _return) {
-    sjs_borderchild* sjt_dot299 = 0;
+    sjs_borderchild* sjt_dot303 = 0;
     sjs_mouseevent* sjt_interfaceParam23 = 0;
-    sji_element sjt_parent96 = { 0 };
+    sji_element sjt_parent97 = { 0 };
 
-    sjt_dot299 = _parent;
-    sjt_parent96 = (sjt_dot299)->child;
+    sjt_dot303 = _parent;
+    sjt_parent97 = (sjt_dot303)->child;
     sjt_interfaceParam23 = mouseevent;
-    sjt_parent96._vtbl->firemouseevent(sjt_parent96._parent, sjt_interfaceParam23, _return);
+    sjt_parent97._vtbl->firemouseevent(sjt_parent97._parent, sjt_interfaceParam23, _return);
 }
 
 void sjf_borderchild_getposition(sjs_borderchild* _parent, int32_t* _return) {
-    sjs_borderchild* sjt_dot300 = 0;
+    sjs_borderchild* sjt_dot304 = 0;
 
-    sjt_dot300 = _parent;
-    (*_return) = (sjt_dot300)->position;
+    sjt_dot304 = _parent;
+    (*_return) = (sjt_dot304)->position;
 }
 
 void sjf_borderchild_getrect(sjs_borderchild* _parent, sjs_rect* _return) {
-    sjs_rect* sjt_copy25 = 0;
-    sjs_borderchild* sjt_dot293 = 0;
+    sjs_rect* sjt_copy28 = 0;
+    sjs_borderchild* sjt_dot297 = 0;
 
-    sjt_dot293 = _parent;
-    sjt_copy25 = &(sjt_dot293)->_rect;
+    sjt_dot297 = _parent;
+    sjt_copy28 = &(sjt_dot297)->_rect;
     _return->_refCount = 1;
-    sjf_rect_copy(_return, sjt_copy25);
+    sjf_rect_copy(_return, sjt_copy28);
 }
 
 void sjf_borderchild_getrect_heap(sjs_borderchild* _parent, sjs_rect** _return) {
-    sjs_rect* sjt_copy26 = 0;
-    sjs_borderchild* sjt_dot294 = 0;
+    sjs_rect* sjt_copy29 = 0;
+    sjs_borderchild* sjt_dot298 = 0;
 
-    sjt_dot294 = _parent;
-    sjt_copy26 = &(sjt_dot294)->_rect;
+    sjt_dot298 = _parent;
+    sjt_copy29 = &(sjt_dot298)->_rect;
     (*_return) = (sjs_rect*)malloc(sizeof(sjs_rect));
     (*_return)->_refCount = 1;
-    sjf_rect_copy((*_return), sjt_copy26);
+    sjf_rect_copy((*_return), sjt_copy29);
 }
 
 void sjf_borderchild_getsize(sjs_borderchild* _parent, sjs_size* maxsize, sjs_size* _return) {
-    sjs_borderchild* sjt_dot291 = 0;
+    sjs_borderchild* sjt_dot295 = 0;
     sjs_size* sjt_interfaceParam19 = 0;
-    sji_element sjt_parent92 = { 0 };
+    sji_element sjt_parent93 = { 0 };
 
-    sjt_dot291 = _parent;
-    sjt_parent92 = (sjt_dot291)->child;
+    sjt_dot295 = _parent;
+    sjt_parent93 = (sjt_dot295)->child;
     sjt_interfaceParam19 = maxsize;
     _return->_refCount = 1;
-    sjt_parent92._vtbl->getsize(sjt_parent92._parent, sjt_interfaceParam19, _return);
+    sjt_parent93._vtbl->getsize(sjt_parent93._parent, sjt_interfaceParam19, _return);
 }
 
 void sjf_borderchild_getsize_heap(sjs_borderchild* _parent, sjs_size* maxsize, sjs_size** _return) {
-    sjs_borderchild* sjt_dot292 = 0;
+    sjs_borderchild* sjt_dot296 = 0;
     sjs_size* sjt_interfaceParam20 = 0;
-    sji_element sjt_parent93 = { 0 };
+    sji_element sjt_parent94 = { 0 };
 
-    sjt_dot292 = _parent;
-    sjt_parent93 = (sjt_dot292)->child;
+    sjt_dot296 = _parent;
+    sjt_parent94 = (sjt_dot296)->child;
     sjt_interfaceParam20 = maxsize;
     (*_return) = (sjs_size*)malloc(sizeof(sjs_size));
     (*_return)->_refCount = 1;
-    sjt_parent93._vtbl->getsize_heap(sjt_parent93._parent, sjt_interfaceParam20, _return);
+    sjt_parent94._vtbl->getsize_heap(sjt_parent94._parent, sjt_interfaceParam20, _return);
 }
 
 void sjf_borderchild_heap(sjs_borderchild* _this) {
 }
 
 void sjf_borderchild_render(sjs_borderchild* _parent, sjs_scene2d* scene) {
-    sjs_borderchild* sjt_dot298 = 0;
+    sjs_borderchild* sjt_dot302 = 0;
     sjs_scene2d* sjt_interfaceParam22 = 0;
-    sji_element sjt_parent95 = { 0 };
+    sji_element sjt_parent96 = { 0 };
 
-    sjt_dot298 = _parent;
-    sjt_parent95 = (sjt_dot298)->child;
+    sjt_dot302 = _parent;
+    sjt_parent96 = (sjt_dot302)->child;
     sjt_interfaceParam22 = scene;
-    sjt_parent95._vtbl->render(sjt_parent95._parent, sjt_interfaceParam22);
+    sjt_parent96._vtbl->render(sjt_parent96._parent, sjt_interfaceParam22);
 }
 
 void sjf_borderchild_setrect(sjs_borderchild* _parent, sjs_rect* rect_) {
-    sjs_rect* sjt_copy27 = 0;
-    sjs_borderchild* sjt_dot295 = 0;
-    sjs_borderchild* sjt_dot296 = 0;
-    sjs_borderchild* sjt_dot297 = 0;
+    sjs_rect* sjt_copy30 = 0;
+    sjs_borderchild* sjt_dot299 = 0;
+    sjs_borderchild* sjt_dot300 = 0;
+    sjs_borderchild* sjt_dot301 = 0;
     sjs_rect* sjt_interfaceParam21 = 0;
-    sji_element sjt_parent94 = { 0 };
+    sji_element sjt_parent95 = { 0 };
 
-    sjt_dot295 = _parent;
-    sjt_copy27 = rect_;
-    sjt_dot295->_rect._refCount = 1;
-    sjf_rect_copy(&sjt_dot295->_rect, sjt_copy27);
-    sjt_dot296 = _parent;
-    sjt_parent94 = (sjt_dot296)->child;
-    sjt_dot297 = _parent;
-    sjt_interfaceParam21 = &(sjt_dot297)->_rect;
-    sjt_parent94._vtbl->setrect(sjt_parent94._parent, sjt_interfaceParam21);
+    sjt_dot299 = _parent;
+    sjt_copy30 = rect_;
+    sjt_dot299->_rect._refCount = 1;
+    sjf_rect_copy(&sjt_dot299->_rect, sjt_copy30);
+    sjt_dot300 = _parent;
+    sjt_parent95 = (sjt_dot300)->child;
+    sjt_dot301 = _parent;
+    sjt_interfaceParam21 = &(sjt_dot301)->_rect;
+    sjt_parent95._vtbl->setrect(sjt_parent95._parent, sjt_interfaceParam21);
 }
 
 void sjf_borderlayout(sjs_borderlayout* _this) {
@@ -6589,59 +6613,59 @@ void sjf_borderlayout_destroy(sjs_borderlayout* _this) {
 }
 
 void sjf_borderlayout_firemouseevent(sjs_borderlayout* _parent, sjs_mouseevent* mouseevent, bool* _return) {
-    sjs_borderlayout* sjt_dot290 = 0;
-    sjs_array_heap_iface_element* sjt_functionParam123 = 0;
-    sjs_mouseevent* sjt_parent90 = 0;
+    sjs_borderlayout* sjt_dot294 = 0;
+    sjs_array_heap_iface_element* sjt_functionParam125 = 0;
+    sjs_mouseevent* sjt_parent91 = 0;
 
-    sjt_parent90 = mouseevent;
-    sjt_dot290 = _parent;
-    sjt_functionParam123 = &(sjt_dot290)->children;
-    sjf_mouseevent_firechildren(sjt_parent90, sjt_functionParam123, _return);
+    sjt_parent91 = mouseevent;
+    sjt_dot294 = _parent;
+    sjt_functionParam125 = &(sjt_dot294)->children;
+    sjf_mouseevent_firechildren(sjt_parent91, sjt_functionParam125, _return);
 }
 
 void sjf_borderlayout_getrect(sjs_borderlayout* _parent, sjs_rect* _return) {
-    sjs_rect* sjt_copy22 = 0;
-    sjs_borderlayout* sjt_dot233 = 0;
+    sjs_rect* sjt_copy25 = 0;
+    sjs_borderlayout* sjt_dot237 = 0;
 
-    sjt_dot233 = _parent;
-    sjt_copy22 = &(sjt_dot233)->_rect;
+    sjt_dot237 = _parent;
+    sjt_copy25 = &(sjt_dot237)->_rect;
     _return->_refCount = 1;
-    sjf_rect_copy(_return, sjt_copy22);
+    sjf_rect_copy(_return, sjt_copy25);
 }
 
 void sjf_borderlayout_getrect_heap(sjs_borderlayout* _parent, sjs_rect** _return) {
-    sjs_rect* sjt_copy23 = 0;
-    sjs_borderlayout* sjt_dot234 = 0;
+    sjs_rect* sjt_copy26 = 0;
+    sjs_borderlayout* sjt_dot238 = 0;
 
-    sjt_dot234 = _parent;
-    sjt_copy23 = &(sjt_dot234)->_rect;
+    sjt_dot238 = _parent;
+    sjt_copy26 = &(sjt_dot238)->_rect;
     (*_return) = (sjs_rect*)malloc(sizeof(sjs_rect));
     (*_return)->_refCount = 1;
-    sjf_rect_copy((*_return), sjt_copy23);
+    sjf_rect_copy((*_return), sjt_copy26);
 }
 
 void sjf_borderlayout_getsize(sjs_borderlayout* _parent, sjs_size* maxsize, sjs_size* _return) {
-    sjs_size* sjt_dot229 = 0;
-    sjs_size* sjt_dot230 = 0;
+    sjs_size* sjt_dot233 = 0;
+    sjs_size* sjt_dot234 = 0;
 
     _return->_refCount = 1;
-    sjt_dot229 = maxsize;
-    _return->w = (sjt_dot229)->w;
-    sjt_dot230 = maxsize;
-    _return->h = (sjt_dot230)->h;
+    sjt_dot233 = maxsize;
+    _return->w = (sjt_dot233)->w;
+    sjt_dot234 = maxsize;
+    _return->h = (sjt_dot234)->h;
     sjf_size(_return);
 }
 
 void sjf_borderlayout_getsize_heap(sjs_borderlayout* _parent, sjs_size* maxsize, sjs_size** _return) {
-    sjs_size* sjt_dot231 = 0;
-    sjs_size* sjt_dot232 = 0;
+    sjs_size* sjt_dot235 = 0;
+    sjs_size* sjt_dot236 = 0;
 
     (*_return) = (sjs_size*)malloc(sizeof(sjs_size));
     (*_return)->_refCount = 1;
-    sjt_dot231 = maxsize;
-    (*_return)->w = (sjt_dot231)->w;
-    sjt_dot232 = maxsize;
-    (*_return)->h = (sjt_dot232)->h;
+    sjt_dot235 = maxsize;
+    (*_return)->w = (sjt_dot235)->w;
+    sjt_dot236 = maxsize;
+    (*_return)->h = (sjt_dot236)->h;
     sjf_size_heap((*_return));
 }
 
@@ -6650,31 +6674,31 @@ void sjf_borderlayout_heap(sjs_borderlayout* _this) {
 
 void sjf_borderlayout_render(sjs_borderlayout* _parent, sjs_scene2d* scene) {
     int32_t i;
-    sjs_array_heap_iface_element* sjt_dot287 = 0;
-    sjs_borderlayout* sjt_dot288 = 0;
+    sjs_array_heap_iface_element* sjt_dot291 = 0;
+    sjs_borderlayout* sjt_dot292 = 0;
     int32_t sjt_forEnd14;
     int32_t sjt_forStart14;
 
     sjt_forStart14 = 0;
-    sjt_dot288 = _parent;
-    sjt_dot287 = &(sjt_dot288)->children;
-    sjt_forEnd14 = (sjt_dot287)->count;
+    sjt_dot292 = _parent;
+    sjt_dot291 = &(sjt_dot292)->children;
+    sjt_forEnd14 = (sjt_dot291)->count;
     i = sjt_forStart14;
     while (i < sjt_forEnd14) {
-        sjs_borderlayout* sjt_dot289 = 0;
-        int32_t sjt_functionParam122;
+        sjs_borderlayout* sjt_dot293 = 0;
+        int32_t sjt_functionParam124;
         sjs_scene2d* sjt_interfaceParam18 = 0;
-        sjs_array_heap_iface_element* sjt_parent88 = 0;
-        sji_element sjt_parent89 = { 0 };
+        sjs_array_heap_iface_element* sjt_parent89 = 0;
+        sji_element sjt_parent90 = { 0 };
         sji_element sjv_child = { 0 };
 
-        sjt_dot289 = _parent;
-        sjt_parent88 = &(sjt_dot289)->children;
-        sjt_functionParam122 = i;
-        sjf_array_heap_iface_element_getat_heap(sjt_parent88, sjt_functionParam122, &sjv_child);
-        sjt_parent89 = sjv_child;
+        sjt_dot293 = _parent;
+        sjt_parent89 = &(sjt_dot293)->children;
+        sjt_functionParam124 = i;
+        sjf_array_heap_iface_element_getat_heap(sjt_parent89, sjt_functionParam124, &sjv_child);
+        sjt_parent90 = sjv_child;
         sjt_interfaceParam18 = scene;
-        sjt_parent89._vtbl->render(sjt_parent89._parent, sjt_interfaceParam18);
+        sjt_parent90._vtbl->render(sjt_parent90._parent, sjt_interfaceParam18);
         i++;
 
         if (sjv_child._parent != 0) {
@@ -6689,33 +6713,33 @@ void sjf_borderlayout_render(sjs_borderlayout* _parent, sjs_scene2d* scene) {
 
 void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
     int32_t i;
-    sjs_rect* sjt_copy24 = 0;
-    sjs_borderlayout* sjt_dot235 = 0;
-    sjs_borderlayout* sjt_dot236 = 0;
-    sjs_array_heap_iface_element* sjt_dot237 = 0;
-    sjs_borderlayout* sjt_dot238 = 0;
-    sjs_array_heap_iface_element* sjt_dot284 = 0;
-    sjs_borderlayout* sjt_dot285 = 0;
+    sjs_rect* sjt_copy27 = 0;
+    sjs_borderlayout* sjt_dot239 = 0;
+    sjs_borderlayout* sjt_dot240 = 0;
+    sjs_array_heap_iface_element* sjt_dot241 = 0;
+    sjs_borderlayout* sjt_dot242 = 0;
+    sjs_array_heap_iface_element* sjt_dot288 = 0;
+    sjs_borderlayout* sjt_dot289 = 0;
     int32_t sjt_forEnd12;
     int32_t sjt_forEnd13;
     int32_t sjt_forStart12;
     int32_t sjt_forStart13;
-    sjs_margin* sjt_functionParam119 = 0;
-    sjs_rect* sjt_parent75 = 0;
+    sjs_margin* sjt_functionParam121 = 0;
+    sjs_rect* sjt_parent76 = 0;
     sjs_rect sjv_remaining = { -1 };
 
-    sjt_dot235 = _parent;
-    sjt_copy24 = rect_;
-    sjt_dot235->_rect._refCount = 1;
-    sjf_rect_copy(&sjt_dot235->_rect, sjt_copy24);
-    sjt_parent75 = rect_;
-    sjt_dot236 = _parent;
-    sjt_functionParam119 = &(sjt_dot236)->margin;
-    sjf_rect_subtractmargin(sjt_parent75, sjt_functionParam119, &sjv_remaining);
+    sjt_dot239 = _parent;
+    sjt_copy27 = rect_;
+    sjt_dot239->_rect._refCount = 1;
+    sjf_rect_copy(&sjt_dot239->_rect, sjt_copy27);
+    sjt_parent76 = rect_;
+    sjt_dot240 = _parent;
+    sjt_functionParam121 = &(sjt_dot240)->margin;
+    sjf_rect_subtractmargin(sjt_parent76, sjt_functionParam121, &sjv_remaining);
     sjt_forStart12 = 0;
-    sjt_dot238 = _parent;
-    sjt_dot237 = &(sjt_dot238)->children;
-    sjt_forEnd12 = (sjt_dot237)->count;
+    sjt_dot242 = _parent;
+    sjt_dot241 = &(sjt_dot242)->children;
+    sjt_forEnd12 = (sjt_dot241)->count;
     i = sjt_forStart12;
     while (i < sjt_forEnd12) {
         sjs_size sjt_call27 = { -1 };
@@ -6723,63 +6747,63 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
         sjs_rect sjt_call29 = { -1 };
         sjs_rect sjt_call30 = { -1 };
         sjs_rect sjt_call31 = { -1 };
-        sji_element sjt_cast8 = { 0 };
+        sji_element sjt_cast9 = { 0 };
         int32_t sjt_compare61;
         int32_t sjt_compare62;
-        sjs_borderlayout* sjt_dot239 = 0;
-        int32_t sjt_functionParam120;
+        sjs_borderlayout* sjt_dot243 = 0;
+        int32_t sjt_functionParam122;
         bool sjt_ifElse27;
         bool sjt_ifElse28;
         bool sjt_ifElse30;
-        int32_option sjt_isEmpty13;
-        sji_borderchild sjt_isEmpty14 = { 0 };
-        sjs_array_heap_iface_element* sjt_parent76 = 0;
+        int32_option sjt_isEmpty15;
+        sji_borderchild sjt_isEmpty16 = { 0 };
+        sjs_array_heap_iface_element* sjt_parent77 = 0;
         sji_borderchild sjv_borderchild = { 0 };
         sji_element sjv_child = { 0 };
         sjs_size sjv_childsize = { -1 };
         int32_t sjv_position;
 
-        sjt_dot239 = _parent;
-        sjt_parent76 = &(sjt_dot239)->children;
-        sjt_functionParam120 = i;
-        sjf_array_heap_iface_element_getat_heap(sjt_parent76, sjt_functionParam120, &sjv_child);
-        sjt_cast8 = sjv_child;
-        sjt_cast8._vtbl->asinterface(sjt_cast8._parent, sji_borderchild_typeId, (sjs_interface*)&sjv_borderchild);
+        sjt_dot243 = _parent;
+        sjt_parent77 = &(sjt_dot243)->children;
+        sjt_functionParam122 = i;
+        sjf_array_heap_iface_element_getat_heap(sjt_parent77, sjt_functionParam122, &sjv_child);
+        sjt_cast9 = sjv_child;
+        sjt_cast9._vtbl->asinterface(sjt_cast9._parent, sji_borderchild_typeId, (sjs_interface*)&sjv_borderchild);
         if (sjv_borderchild._parent != 0) {
             sjv_borderchild._parent->_refCount++;
         }
 
-        sjt_isEmpty14 = sjv_borderchild;
-        sjt_ifElse28 = (sjt_isEmpty14._parent != 0);
+        sjt_isEmpty16 = sjv_borderchild;
+        sjt_ifElse28 = (sjt_isEmpty16._parent != 0);
         if (sjt_ifElse28) {
-            sji_borderchild sjt_parent77 = { 0 };
+            sji_borderchild sjt_parent78 = { 0 };
             int32_t sjt_value1;
             int32_option value1;
 
-            sjt_parent77 = sjv_borderchild;
-            sjt_parent77._vtbl->getposition(sjt_parent77._parent, &sjt_value1);
+            sjt_parent78 = sjv_borderchild;
+            sjt_parent78._vtbl->getposition(sjt_parent78._parent, &sjt_value1);
             value1.isvalid = true;
             value1.value = sjt_value1;
-            sjt_isEmpty13 = value1;
+            sjt_isEmpty15 = value1;
         } else {
-            sjt_isEmpty13 = int32_empty;
+            sjt_isEmpty15 = int32_empty;
         }
 
-        sjt_ifElse27 = sjt_isEmpty13.isvalid;
+        sjt_ifElse27 = sjt_isEmpty15.isvalid;
         if (sjt_ifElse27) {
             int32_option sjt_getValue1;
             bool sjt_ifElse29;
-            sji_borderchild sjt_isEmpty15 = { 0 };
+            sji_borderchild sjt_isEmpty17 = { 0 };
 
-            sjt_isEmpty15 = sjv_borderchild;
-            sjt_ifElse29 = (sjt_isEmpty15._parent != 0);
+            sjt_isEmpty17 = sjv_borderchild;
+            sjt_ifElse29 = (sjt_isEmpty17._parent != 0);
             if (sjt_ifElse29) {
-                sji_borderchild sjt_parent78 = { 0 };
+                sji_borderchild sjt_parent79 = { 0 };
                 int32_t sjt_value2;
                 int32_option value2;
 
-                sjt_parent78 = sjv_borderchild;
-                sjt_parent78._vtbl->getposition(sjt_parent78._parent, &sjt_value2);
+                sjt_parent79 = sjv_borderchild;
+                sjt_parent79._vtbl->getposition(sjt_parent79._parent, &sjt_value2);
                 value2.isvalid = true;
                 value2.value = sjt_value2;
                 sjt_getValue1 = value2;
@@ -6798,71 +6822,71 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
         if (sjt_ifElse30) {
             int32_t sjt_compare63;
             int32_t sjt_compare64;
-            sjs_rect* sjt_dot240 = 0;
-            sjs_rect* sjt_dot241 = 0;
+            sjs_rect* sjt_dot244 = 0;
+            sjs_rect* sjt_dot245 = 0;
             bool sjt_ifElse31;
             sjs_size* sjt_interfaceParam12 = 0;
-            sji_element sjt_parent79 = { 0 };
+            sji_element sjt_parent80 = { 0 };
 
-            sjt_parent79 = sjv_child;
+            sjt_parent80 = sjv_child;
             sjt_call27._refCount = 1;
-            sjt_dot240 = &sjv_remaining;
-            sjt_call27.w = (sjt_dot240)->w;
-            sjt_dot241 = &sjv_remaining;
-            sjt_call27.h = (sjt_dot241)->h;
+            sjt_dot244 = &sjv_remaining;
+            sjt_call27.w = (sjt_dot244)->w;
+            sjt_dot245 = &sjv_remaining;
+            sjt_call27.h = (sjt_dot245)->h;
             sjf_size(&sjt_call27);
             sjt_interfaceParam12 = &sjt_call27;
             sjv_childsize._refCount = 1;
-            sjt_parent79._vtbl->getsize(sjt_parent79._parent, sjt_interfaceParam12, &sjv_childsize);
+            sjt_parent80._vtbl->getsize(sjt_parent80._parent, sjt_interfaceParam12, &sjv_childsize);
             sjt_compare63 = sjv_position;
             sjt_compare64 = sjv_borderposition_left;
             sjt_ifElse31 = sjt_compare63 == sjt_compare64;
             if (sjt_ifElse31) {
-                sjs_rect* sjt_dot242 = 0;
-                sjs_rect* sjt_dot243 = 0;
-                sjs_size* sjt_dot244 = 0;
-                sjs_rect* sjt_dot245 = 0;
                 sjs_rect* sjt_dot246 = 0;
-                sjs_size* sjt_dot247 = 0;
-                sjs_rect* sjt_dot248 = 0;
+                sjs_rect* sjt_dot247 = 0;
+                sjs_size* sjt_dot248 = 0;
                 sjs_rect* sjt_dot249 = 0;
-                sjs_size* sjt_dot250 = 0;
-                sjs_rect* sjt_dot251 = 0;
+                sjs_rect* sjt_dot250 = 0;
+                sjs_size* sjt_dot251 = 0;
+                sjs_rect* sjt_dot252 = 0;
+                sjs_rect* sjt_dot253 = 0;
+                sjs_size* sjt_dot254 = 0;
+                sjs_rect* sjt_dot255 = 0;
                 sjs_rect* sjt_interfaceParam13 = 0;
                 int32_t sjt_math153;
                 int32_t sjt_math154;
                 int32_t sjt_math155;
                 int32_t sjt_math156;
-                sji_element sjt_parent80 = { 0 };
+                sji_element sjt_parent81 = { 0 };
 
-                sjt_parent80 = sjv_child;
+                sjt_parent81 = sjv_child;
                 sjt_call28._refCount = 1;
-                sjt_dot242 = &sjv_remaining;
-                sjt_call28.x = (sjt_dot242)->x;
-                sjt_dot243 = &sjv_remaining;
-                sjt_call28.y = (sjt_dot243)->y;
-                sjt_dot244 = &sjv_childsize;
-                sjt_call28.w = (sjt_dot244)->w;
-                sjt_dot245 = &sjv_remaining;
-                sjt_call28.h = (sjt_dot245)->h;
+                sjt_dot246 = &sjv_remaining;
+                sjt_call28.x = (sjt_dot246)->x;
+                sjt_dot247 = &sjv_remaining;
+                sjt_call28.y = (sjt_dot247)->y;
+                sjt_dot248 = &sjv_childsize;
+                sjt_call28.w = (sjt_dot248)->w;
+                sjt_dot249 = &sjv_remaining;
+                sjt_call28.h = (sjt_dot249)->h;
                 sjf_rect(&sjt_call28);
                 sjt_interfaceParam13 = &sjt_call28;
-                sjt_parent80._vtbl->setrect(sjt_parent80._parent, sjt_interfaceParam13);
+                sjt_parent81._vtbl->setrect(sjt_parent81._parent, sjt_interfaceParam13);
                 sjv_remaining._refCount = 1;
-                sjt_dot246 = &sjv_remaining;
-                sjt_math153 = (sjt_dot246)->x;
-                sjt_dot247 = &sjv_childsize;
-                sjt_math154 = (sjt_dot247)->w;
+                sjt_dot250 = &sjv_remaining;
+                sjt_math153 = (sjt_dot250)->x;
+                sjt_dot251 = &sjv_childsize;
+                sjt_math154 = (sjt_dot251)->w;
                 sjv_remaining.x = sjt_math153 + sjt_math154;
-                sjt_dot248 = &sjv_remaining;
-                sjv_remaining.y = (sjt_dot248)->y;
-                sjt_dot249 = &sjv_remaining;
-                sjt_math155 = (sjt_dot249)->w;
-                sjt_dot250 = &sjv_childsize;
-                sjt_math156 = (sjt_dot250)->w;
+                sjt_dot252 = &sjv_remaining;
+                sjv_remaining.y = (sjt_dot252)->y;
+                sjt_dot253 = &sjv_remaining;
+                sjt_math155 = (sjt_dot253)->w;
+                sjt_dot254 = &sjv_childsize;
+                sjt_math156 = (sjt_dot254)->w;
                 sjv_remaining.w = sjt_math155 - sjt_math156;
-                sjt_dot251 = &sjv_remaining;
-                sjv_remaining.h = (sjt_dot251)->h;
+                sjt_dot255 = &sjv_remaining;
+                sjv_remaining.h = (sjt_dot255)->h;
                 sjf_rect(&sjv_remaining);
             } else {
                 int32_t sjt_compare65;
@@ -6873,17 +6897,17 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
                 sjt_compare66 = sjv_borderposition_right;
                 sjt_ifElse32 = sjt_compare65 == sjt_compare66;
                 if (sjt_ifElse32) {
-                    sjs_rect* sjt_dot252 = 0;
-                    sjs_rect* sjt_dot253 = 0;
-                    sjs_size* sjt_dot254 = 0;
-                    sjs_rect* sjt_dot255 = 0;
-                    sjs_size* sjt_dot256 = 0;
+                    sjs_rect* sjt_dot256 = 0;
                     sjs_rect* sjt_dot257 = 0;
-                    sjs_rect* sjt_dot258 = 0;
+                    sjs_size* sjt_dot258 = 0;
                     sjs_rect* sjt_dot259 = 0;
-                    sjs_rect* sjt_dot260 = 0;
-                    sjs_size* sjt_dot261 = 0;
+                    sjs_size* sjt_dot260 = 0;
+                    sjs_rect* sjt_dot261 = 0;
                     sjs_rect* sjt_dot262 = 0;
+                    sjs_rect* sjt_dot263 = 0;
+                    sjs_rect* sjt_dot264 = 0;
+                    sjs_size* sjt_dot265 = 0;
+                    sjs_rect* sjt_dot266 = 0;
                     sjs_rect* sjt_interfaceParam14 = 0;
                     int32_t sjt_math157;
                     int32_t sjt_math158;
@@ -6891,39 +6915,39 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
                     int32_t sjt_math160;
                     int32_t sjt_math161;
                     int32_t sjt_math162;
-                    sji_element sjt_parent81 = { 0 };
+                    sji_element sjt_parent82 = { 0 };
 
-                    sjt_parent81 = sjv_child;
+                    sjt_parent82 = sjv_child;
                     sjt_call29._refCount = 1;
-                    sjt_dot252 = &sjv_remaining;
-                    sjt_math159 = (sjt_dot252)->x;
-                    sjt_dot253 = &sjv_remaining;
-                    sjt_math160 = (sjt_dot253)->w;
-                    sjt_math157 = sjt_math159 + sjt_math160;
-                    sjt_dot254 = &sjv_childsize;
-                    sjt_math158 = (sjt_dot254)->w;
-                    sjt_call29.x = sjt_math157 - sjt_math158;
-                    sjt_dot255 = &sjv_remaining;
-                    sjt_call29.y = (sjt_dot255)->y;
-                    sjt_dot256 = &sjv_childsize;
-                    sjt_call29.w = (sjt_dot256)->w;
+                    sjt_dot256 = &sjv_remaining;
+                    sjt_math159 = (sjt_dot256)->x;
                     sjt_dot257 = &sjv_remaining;
-                    sjt_call29.h = (sjt_dot257)->h;
+                    sjt_math160 = (sjt_dot257)->w;
+                    sjt_math157 = sjt_math159 + sjt_math160;
+                    sjt_dot258 = &sjv_childsize;
+                    sjt_math158 = (sjt_dot258)->w;
+                    sjt_call29.x = sjt_math157 - sjt_math158;
+                    sjt_dot259 = &sjv_remaining;
+                    sjt_call29.y = (sjt_dot259)->y;
+                    sjt_dot260 = &sjv_childsize;
+                    sjt_call29.w = (sjt_dot260)->w;
+                    sjt_dot261 = &sjv_remaining;
+                    sjt_call29.h = (sjt_dot261)->h;
                     sjf_rect(&sjt_call29);
                     sjt_interfaceParam14 = &sjt_call29;
-                    sjt_parent81._vtbl->setrect(sjt_parent81._parent, sjt_interfaceParam14);
+                    sjt_parent82._vtbl->setrect(sjt_parent82._parent, sjt_interfaceParam14);
                     sjv_remaining._refCount = 1;
-                    sjt_dot258 = &sjv_remaining;
-                    sjv_remaining.x = (sjt_dot258)->x;
-                    sjt_dot259 = &sjv_remaining;
-                    sjv_remaining.y = (sjt_dot259)->y;
-                    sjt_dot260 = &sjv_remaining;
-                    sjt_math161 = (sjt_dot260)->w;
-                    sjt_dot261 = &sjv_childsize;
-                    sjt_math162 = (sjt_dot261)->w;
-                    sjv_remaining.w = sjt_math161 - sjt_math162;
                     sjt_dot262 = &sjv_remaining;
-                    sjv_remaining.h = (sjt_dot262)->h;
+                    sjv_remaining.x = (sjt_dot262)->x;
+                    sjt_dot263 = &sjv_remaining;
+                    sjv_remaining.y = (sjt_dot263)->y;
+                    sjt_dot264 = &sjv_remaining;
+                    sjt_math161 = (sjt_dot264)->w;
+                    sjt_dot265 = &sjv_childsize;
+                    sjt_math162 = (sjt_dot265)->w;
+                    sjv_remaining.w = sjt_math161 - sjt_math162;
+                    sjt_dot266 = &sjv_remaining;
+                    sjv_remaining.h = (sjt_dot266)->h;
                     sjf_rect(&sjv_remaining);
                 } else {
                     int32_t sjt_compare67;
@@ -6934,50 +6958,50 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
                     sjt_compare68 = sjv_borderposition_top;
                     sjt_ifElse33 = sjt_compare67 == sjt_compare68;
                     if (sjt_ifElse33) {
-                        sjs_rect* sjt_dot263 = 0;
-                        sjs_rect* sjt_dot264 = 0;
-                        sjs_rect* sjt_dot265 = 0;
-                        sjs_size* sjt_dot266 = 0;
                         sjs_rect* sjt_dot267 = 0;
                         sjs_rect* sjt_dot268 = 0;
-                        sjs_size* sjt_dot269 = 0;
-                        sjs_rect* sjt_dot270 = 0;
+                        sjs_rect* sjt_dot269 = 0;
+                        sjs_size* sjt_dot270 = 0;
                         sjs_rect* sjt_dot271 = 0;
-                        sjs_size* sjt_dot272 = 0;
+                        sjs_rect* sjt_dot272 = 0;
+                        sjs_size* sjt_dot273 = 0;
+                        sjs_rect* sjt_dot274 = 0;
+                        sjs_rect* sjt_dot275 = 0;
+                        sjs_size* sjt_dot276 = 0;
                         sjs_rect* sjt_interfaceParam15 = 0;
                         int32_t sjt_math163;
                         int32_t sjt_math164;
                         int32_t sjt_math165;
                         int32_t sjt_math166;
-                        sji_element sjt_parent82 = { 0 };
+                        sji_element sjt_parent83 = { 0 };
 
-                        sjt_parent82 = sjv_child;
+                        sjt_parent83 = sjv_child;
                         sjt_call30._refCount = 1;
-                        sjt_dot263 = &sjv_remaining;
-                        sjt_call30.x = (sjt_dot263)->x;
-                        sjt_dot264 = &sjv_remaining;
-                        sjt_call30.y = (sjt_dot264)->y;
-                        sjt_dot265 = &sjv_remaining;
-                        sjt_call30.w = (sjt_dot265)->w;
-                        sjt_dot266 = &sjv_childsize;
-                        sjt_call30.h = (sjt_dot266)->h;
+                        sjt_dot267 = &sjv_remaining;
+                        sjt_call30.x = (sjt_dot267)->x;
+                        sjt_dot268 = &sjv_remaining;
+                        sjt_call30.y = (sjt_dot268)->y;
+                        sjt_dot269 = &sjv_remaining;
+                        sjt_call30.w = (sjt_dot269)->w;
+                        sjt_dot270 = &sjv_childsize;
+                        sjt_call30.h = (sjt_dot270)->h;
                         sjf_rect(&sjt_call30);
                         sjt_interfaceParam15 = &sjt_call30;
-                        sjt_parent82._vtbl->setrect(sjt_parent82._parent, sjt_interfaceParam15);
+                        sjt_parent83._vtbl->setrect(sjt_parent83._parent, sjt_interfaceParam15);
                         sjv_remaining._refCount = 1;
-                        sjt_dot267 = &sjv_remaining;
-                        sjv_remaining.x = (sjt_dot267)->x;
-                        sjt_dot268 = &sjv_remaining;
-                        sjt_math163 = (sjt_dot268)->y;
-                        sjt_dot269 = &sjv_childsize;
-                        sjt_math164 = (sjt_dot269)->h;
-                        sjv_remaining.y = sjt_math163 + sjt_math164;
-                        sjt_dot270 = &sjv_remaining;
-                        sjv_remaining.w = (sjt_dot270)->w;
                         sjt_dot271 = &sjv_remaining;
-                        sjt_math165 = (sjt_dot271)->h;
-                        sjt_dot272 = &sjv_childsize;
-                        sjt_math166 = (sjt_dot272)->h;
+                        sjv_remaining.x = (sjt_dot271)->x;
+                        sjt_dot272 = &sjv_remaining;
+                        sjt_math163 = (sjt_dot272)->y;
+                        sjt_dot273 = &sjv_childsize;
+                        sjt_math164 = (sjt_dot273)->h;
+                        sjv_remaining.y = sjt_math163 + sjt_math164;
+                        sjt_dot274 = &sjv_remaining;
+                        sjv_remaining.w = (sjt_dot274)->w;
+                        sjt_dot275 = &sjv_remaining;
+                        sjt_math165 = (sjt_dot275)->h;
+                        sjt_dot276 = &sjv_childsize;
+                        sjt_math166 = (sjt_dot276)->h;
                         sjv_remaining.h = sjt_math165 - sjt_math166;
                         sjf_rect(&sjv_remaining);
                     } else {
@@ -6989,17 +7013,17 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
                         sjt_compare70 = sjv_borderposition_bottom;
                         sjt_ifElse34 = sjt_compare69 == sjt_compare70;
                         if (sjt_ifElse34) {
-                            sjs_rect* sjt_dot273 = 0;
-                            sjs_rect* sjt_dot274 = 0;
-                            sjs_rect* sjt_dot275 = 0;
-                            sjs_size* sjt_dot276 = 0;
                             sjs_rect* sjt_dot277 = 0;
-                            sjs_size* sjt_dot278 = 0;
+                            sjs_rect* sjt_dot278 = 0;
                             sjs_rect* sjt_dot279 = 0;
-                            sjs_rect* sjt_dot280 = 0;
+                            sjs_size* sjt_dot280 = 0;
                             sjs_rect* sjt_dot281 = 0;
-                            sjs_rect* sjt_dot282 = 0;
-                            sjs_size* sjt_dot283 = 0;
+                            sjs_size* sjt_dot282 = 0;
+                            sjs_rect* sjt_dot283 = 0;
+                            sjs_rect* sjt_dot284 = 0;
+                            sjs_rect* sjt_dot285 = 0;
+                            sjs_rect* sjt_dot286 = 0;
+                            sjs_size* sjt_dot287 = 0;
                             sjs_rect* sjt_interfaceParam16 = 0;
                             int32_t sjt_math167;
                             int32_t sjt_math168;
@@ -7007,38 +7031,38 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
                             int32_t sjt_math170;
                             int32_t sjt_math171;
                             int32_t sjt_math172;
-                            sji_element sjt_parent83 = { 0 };
+                            sji_element sjt_parent84 = { 0 };
 
-                            sjt_parent83 = sjv_child;
+                            sjt_parent84 = sjv_child;
                             sjt_call31._refCount = 1;
-                            sjt_dot273 = &sjv_remaining;
-                            sjt_call31.x = (sjt_dot273)->x;
-                            sjt_dot274 = &sjv_remaining;
-                            sjt_math169 = (sjt_dot274)->y;
-                            sjt_dot275 = &sjv_remaining;
-                            sjt_math170 = (sjt_dot275)->h;
-                            sjt_math167 = sjt_math169 + sjt_math170;
-                            sjt_dot276 = &sjv_childsize;
-                            sjt_math168 = (sjt_dot276)->h;
-                            sjt_call31.y = sjt_math167 - sjt_math168;
                             sjt_dot277 = &sjv_remaining;
-                            sjt_call31.w = (sjt_dot277)->w;
-                            sjt_dot278 = &sjv_childsize;
-                            sjt_call31.h = (sjt_dot278)->h;
+                            sjt_call31.x = (sjt_dot277)->x;
+                            sjt_dot278 = &sjv_remaining;
+                            sjt_math169 = (sjt_dot278)->y;
+                            sjt_dot279 = &sjv_remaining;
+                            sjt_math170 = (sjt_dot279)->h;
+                            sjt_math167 = sjt_math169 + sjt_math170;
+                            sjt_dot280 = &sjv_childsize;
+                            sjt_math168 = (sjt_dot280)->h;
+                            sjt_call31.y = sjt_math167 - sjt_math168;
+                            sjt_dot281 = &sjv_remaining;
+                            sjt_call31.w = (sjt_dot281)->w;
+                            sjt_dot282 = &sjv_childsize;
+                            sjt_call31.h = (sjt_dot282)->h;
                             sjf_rect(&sjt_call31);
                             sjt_interfaceParam16 = &sjt_call31;
-                            sjt_parent83._vtbl->setrect(sjt_parent83._parent, sjt_interfaceParam16);
+                            sjt_parent84._vtbl->setrect(sjt_parent84._parent, sjt_interfaceParam16);
                             sjv_remaining._refCount = 1;
-                            sjt_dot279 = &sjv_remaining;
-                            sjv_remaining.x = (sjt_dot279)->x;
-                            sjt_dot280 = &sjv_remaining;
-                            sjv_remaining.y = (sjt_dot280)->y;
-                            sjt_dot281 = &sjv_remaining;
-                            sjv_remaining.w = (sjt_dot281)->w;
-                            sjt_dot282 = &sjv_remaining;
-                            sjt_math171 = (sjt_dot282)->h;
-                            sjt_dot283 = &sjv_childsize;
-                            sjt_math172 = (sjt_dot283)->h;
+                            sjt_dot283 = &sjv_remaining;
+                            sjv_remaining.x = (sjt_dot283)->x;
+                            sjt_dot284 = &sjv_remaining;
+                            sjv_remaining.y = (sjt_dot284)->y;
+                            sjt_dot285 = &sjv_remaining;
+                            sjv_remaining.w = (sjt_dot285)->w;
+                            sjt_dot286 = &sjv_remaining;
+                            sjt_math171 = (sjt_dot286)->h;
+                            sjt_dot287 = &sjv_childsize;
+                            sjt_math172 = (sjt_dot287)->h;
                             sjv_remaining.h = sjt_math171 - sjt_math172;
                             sjf_rect(&sjv_remaining);
                         }
@@ -7072,67 +7096,67 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
     }
 
     sjt_forStart13 = 0;
-    sjt_dot285 = _parent;
-    sjt_dot284 = &(sjt_dot285)->children;
-    sjt_forEnd13 = (sjt_dot284)->count;
+    sjt_dot289 = _parent;
+    sjt_dot288 = &(sjt_dot289)->children;
+    sjt_forEnd13 = (sjt_dot288)->count;
     i = sjt_forStart13;
     while (i < sjt_forEnd13) {
-        sji_element sjt_cast9 = { 0 };
+        sji_element sjt_cast10 = { 0 };
         int32_t sjt_compare71;
         int32_t sjt_compare72;
-        sjs_borderlayout* sjt_dot286 = 0;
-        int32_t sjt_functionParam121;
+        sjs_borderlayout* sjt_dot290 = 0;
+        int32_t sjt_functionParam123;
         bool sjt_ifElse35;
         bool sjt_ifElse36;
         bool sjt_ifElse38;
-        int32_option sjt_isEmpty16;
-        sji_borderchild sjt_isEmpty17 = { 0 };
-        sjs_array_heap_iface_element* sjt_parent84 = 0;
+        int32_option sjt_isEmpty18;
+        sji_borderchild sjt_isEmpty19 = { 0 };
+        sjs_array_heap_iface_element* sjt_parent85 = 0;
         sji_borderchild sjv_borderchild2 = { 0 };
         sji_element sjv_child2 = { 0 };
         int32_t sjv_position2;
 
-        sjt_dot286 = _parent;
-        sjt_parent84 = &(sjt_dot286)->children;
-        sjt_functionParam121 = i;
-        sjf_array_heap_iface_element_getat_heap(sjt_parent84, sjt_functionParam121, &sjv_child2);
-        sjt_cast9 = sjv_child2;
-        sjt_cast9._vtbl->asinterface(sjt_cast9._parent, sji_borderchild_typeId, (sjs_interface*)&sjv_borderchild2);
+        sjt_dot290 = _parent;
+        sjt_parent85 = &(sjt_dot290)->children;
+        sjt_functionParam123 = i;
+        sjf_array_heap_iface_element_getat_heap(sjt_parent85, sjt_functionParam123, &sjv_child2);
+        sjt_cast10 = sjv_child2;
+        sjt_cast10._vtbl->asinterface(sjt_cast10._parent, sji_borderchild_typeId, (sjs_interface*)&sjv_borderchild2);
         if (sjv_borderchild2._parent != 0) {
             sjv_borderchild2._parent->_refCount++;
         }
 
-        sjt_isEmpty17 = sjv_borderchild2;
-        sjt_ifElse36 = (sjt_isEmpty17._parent != 0);
+        sjt_isEmpty19 = sjv_borderchild2;
+        sjt_ifElse36 = (sjt_isEmpty19._parent != 0);
         if (sjt_ifElse36) {
-            sji_borderchild sjt_parent85 = { 0 };
+            sji_borderchild sjt_parent86 = { 0 };
             int32_t sjt_value3;
             int32_option value3;
 
-            sjt_parent85 = sjv_borderchild2;
-            sjt_parent85._vtbl->getposition(sjt_parent85._parent, &sjt_value3);
+            sjt_parent86 = sjv_borderchild2;
+            sjt_parent86._vtbl->getposition(sjt_parent86._parent, &sjt_value3);
             value3.isvalid = true;
             value3.value = sjt_value3;
-            sjt_isEmpty16 = value3;
+            sjt_isEmpty18 = value3;
         } else {
-            sjt_isEmpty16 = int32_empty;
+            sjt_isEmpty18 = int32_empty;
         }
 
-        sjt_ifElse35 = sjt_isEmpty16.isvalid;
+        sjt_ifElse35 = sjt_isEmpty18.isvalid;
         if (sjt_ifElse35) {
             int32_option sjt_getValue2;
             bool sjt_ifElse37;
-            sji_borderchild sjt_isEmpty18 = { 0 };
+            sji_borderchild sjt_isEmpty20 = { 0 };
 
-            sjt_isEmpty18 = sjv_borderchild2;
-            sjt_ifElse37 = (sjt_isEmpty18._parent != 0);
+            sjt_isEmpty20 = sjv_borderchild2;
+            sjt_ifElse37 = (sjt_isEmpty20._parent != 0);
             if (sjt_ifElse37) {
-                sji_borderchild sjt_parent86 = { 0 };
+                sji_borderchild sjt_parent87 = { 0 };
                 int32_t sjt_value4;
                 int32_option value4;
 
-                sjt_parent86 = sjv_borderchild2;
-                sjt_parent86._vtbl->getposition(sjt_parent86._parent, &sjt_value4);
+                sjt_parent87 = sjv_borderchild2;
+                sjt_parent87._vtbl->getposition(sjt_parent87._parent, &sjt_value4);
                 value4.isvalid = true;
                 value4.value = sjt_value4;
                 sjt_getValue2 = value4;
@@ -7150,11 +7174,11 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
         sjt_ifElse38 = sjt_compare71 == sjt_compare72;
         if (sjt_ifElse38) {
             sjs_rect* sjt_interfaceParam17 = 0;
-            sji_element sjt_parent87 = { 0 };
+            sji_element sjt_parent88 = { 0 };
 
-            sjt_parent87 = sjv_child2;
+            sjt_parent88 = sjv_child2;
             sjt_interfaceParam17 = &sjv_remaining;
-            sjt_parent87._vtbl->setrect(sjt_parent87._parent, sjt_interfaceParam17);
+            sjt_parent88._vtbl->setrect(sjt_parent88._parent, sjt_interfaceParam17);
         }
 
         i++;
@@ -7435,49 +7459,49 @@ void sjf_centerlayout_destroy(sjs_centerlayout* _this) {
 }
 
 void sjf_centerlayout_firemouseevent(sjs_centerlayout* _parent, sjs_mouseevent* mouseevent, bool* _return) {
-    sjs_centerlayout* sjt_dot448 = 0;
-    sjs_array_heap_iface_element* sjt_functionParam244 = 0;
-    sjs_mouseevent* sjt_parent170 = 0;
+    sjs_centerlayout* sjt_dot452 = 0;
+    sjs_array_heap_iface_element* sjt_functionParam246 = 0;
+    sjs_mouseevent* sjt_parent171 = 0;
 
-    sjt_parent170 = mouseevent;
-    sjt_dot448 = _parent;
-    sjt_functionParam244 = &(sjt_dot448)->children;
-    sjf_mouseevent_firechildren(sjt_parent170, sjt_functionParam244, _return);
+    sjt_parent171 = mouseevent;
+    sjt_dot452 = _parent;
+    sjt_functionParam246 = &(sjt_dot452)->children;
+    sjf_mouseevent_firechildren(sjt_parent171, sjt_functionParam246, _return);
 }
 
 void sjf_centerlayout_getrect(sjs_centerlayout* _parent, sjs_rect* _return) {
-    sjs_rect* sjt_copy34 = 0;
-    sjs_centerlayout* sjt_dot419 = 0;
+    sjs_rect* sjt_copy37 = 0;
+    sjs_centerlayout* sjt_dot423 = 0;
 
-    sjt_dot419 = _parent;
-    sjt_copy34 = &(sjt_dot419)->_rect;
+    sjt_dot423 = _parent;
+    sjt_copy37 = &(sjt_dot423)->_rect;
     _return->_refCount = 1;
-    sjf_rect_copy(_return, sjt_copy34);
+    sjf_rect_copy(_return, sjt_copy37);
 }
 
 void sjf_centerlayout_getrect_heap(sjs_centerlayout* _parent, sjs_rect** _return) {
-    sjs_rect* sjt_copy35 = 0;
-    sjs_centerlayout* sjt_dot420 = 0;
+    sjs_rect* sjt_copy38 = 0;
+    sjs_centerlayout* sjt_dot424 = 0;
 
-    sjt_dot420 = _parent;
-    sjt_copy35 = &(sjt_dot420)->_rect;
+    sjt_dot424 = _parent;
+    sjt_copy38 = &(sjt_dot424)->_rect;
     (*_return) = (sjs_rect*)malloc(sizeof(sjs_rect));
     (*_return)->_refCount = 1;
-    sjf_rect_copy((*_return), sjt_copy35);
+    sjf_rect_copy((*_return), sjt_copy38);
 }
 
 void sjf_centerlayout_getsize(sjs_centerlayout* _parent, sjs_size* maxsize, sjs_size* _return) {
     int32_t i;
-    sjs_centerlayout* sjt_dot409 = 0;
-    sjs_array_heap_iface_element* sjt_dot410 = 0;
-    sjs_centerlayout* sjt_dot411 = 0;
     sjs_centerlayout* sjt_dot413 = 0;
+    sjs_array_heap_iface_element* sjt_dot414 = 0;
+    sjs_centerlayout* sjt_dot415 = 0;
+    sjs_centerlayout* sjt_dot417 = 0;
     int32_t sjt_forEnd19;
     int32_t sjt_forStart19;
-    sjs_margin* sjt_functionParam233 = 0;
-    sjs_margin* sjt_functionParam236 = 0;
-    sjs_size* sjt_parent154 = 0;
-    sjs_size* sjt_parent158 = 0;
+    sjs_margin* sjt_functionParam235 = 0;
+    sjs_margin* sjt_functionParam238 = 0;
+    sjs_size* sjt_parent155 = 0;
+    sjs_size* sjt_parent159 = 0;
     sjs_size sjv_innersize = { -1 };
     sjs_size sjv_size = { -1 };
 
@@ -7485,37 +7509,37 @@ void sjf_centerlayout_getsize(sjs_centerlayout* _parent, sjs_size* maxsize, sjs_
     sjv_size.w = 0;
     sjv_size.h = 0;
     sjf_size(&sjv_size);
-    sjt_parent154 = maxsize;
-    sjt_dot409 = _parent;
-    sjt_functionParam233 = &(sjt_dot409)->margin;
-    sjf_size_subtractmargin(sjt_parent154, sjt_functionParam233, &sjv_innersize);
+    sjt_parent155 = maxsize;
+    sjt_dot413 = _parent;
+    sjt_functionParam235 = &(sjt_dot413)->margin;
+    sjf_size_subtractmargin(sjt_parent155, sjt_functionParam235, &sjv_innersize);
     sjt_forStart19 = 0;
-    sjt_dot411 = _parent;
-    sjt_dot410 = &(sjt_dot411)->children;
-    sjt_forEnd19 = (sjt_dot410)->count;
+    sjt_dot415 = _parent;
+    sjt_dot414 = &(sjt_dot415)->children;
+    sjt_forEnd19 = (sjt_dot414)->count;
     i = sjt_forStart19;
     while (i < sjt_forEnd19) {
         sjs_size sjt_call85 = { -1 };
-        sjs_centerlayout* sjt_dot412 = 0;
-        int32_t sjt_functionParam234;
-        sjs_size* sjt_functionParam235 = 0;
+        sjs_centerlayout* sjt_dot416 = 0;
+        int32_t sjt_functionParam236;
+        sjs_size* sjt_functionParam237 = 0;
         sjs_size* sjt_interfaceParam42 = 0;
-        sjs_array_heap_iface_element* sjt_parent155 = 0;
-        sjs_size* sjt_parent156 = 0;
-        sji_element sjt_parent157 = { 0 };
+        sjs_array_heap_iface_element* sjt_parent156 = 0;
+        sjs_size* sjt_parent157 = 0;
+        sji_element sjt_parent158 = { 0 };
         sji_element sjv_child = { 0 };
 
-        sjt_dot412 = _parent;
-        sjt_parent155 = &(sjt_dot412)->children;
-        sjt_functionParam234 = i;
-        sjf_array_heap_iface_element_getat_heap(sjt_parent155, sjt_functionParam234, &sjv_child);
-        sjt_parent156 = &sjv_size;
-        sjt_parent157 = sjv_child;
+        sjt_dot416 = _parent;
+        sjt_parent156 = &(sjt_dot416)->children;
+        sjt_functionParam236 = i;
+        sjf_array_heap_iface_element_getat_heap(sjt_parent156, sjt_functionParam236, &sjv_child);
+        sjt_parent157 = &sjv_size;
+        sjt_parent158 = sjv_child;
         sjt_interfaceParam42 = &sjv_innersize;
         sjt_call85._refCount = 1;
-        sjt_parent157._vtbl->getsize(sjt_parent157._parent, sjt_interfaceParam42, &sjt_call85);
-        sjt_functionParam235 = &sjt_call85;
-        sjf_size_max(sjt_parent156, sjt_functionParam235, &sjv_size);
+        sjt_parent158._vtbl->getsize(sjt_parent158._parent, sjt_interfaceParam42, &sjt_call85);
+        sjt_functionParam237 = &sjt_call85;
+        sjf_size_max(sjt_parent157, sjt_functionParam237, &sjv_size);
         i++;
 
         if (sjv_child._parent != 0) {
@@ -7528,10 +7552,10 @@ void sjf_centerlayout_getsize(sjs_centerlayout* _parent, sjs_size* maxsize, sjs_
         if (sjt_call85._refCount == 1) { sjf_size_destroy(&sjt_call85); }
     }
 
-    sjt_parent158 = &sjv_size;
-    sjt_dot413 = _parent;
-    sjt_functionParam236 = &(sjt_dot413)->margin;
-    sjf_size_addmargin(sjt_parent158, sjt_functionParam236, _return);
+    sjt_parent159 = &sjv_size;
+    sjt_dot417 = _parent;
+    sjt_functionParam238 = &(sjt_dot417)->margin;
+    sjf_size_addmargin(sjt_parent159, sjt_functionParam238, _return);
 
     if (sjv_innersize._refCount == 1) { sjf_size_destroy(&sjv_innersize); }
     if (sjv_size._refCount == 1) { sjf_size_destroy(&sjv_size); }
@@ -7539,16 +7563,16 @@ void sjf_centerlayout_getsize(sjs_centerlayout* _parent, sjs_size* maxsize, sjs_
 
 void sjf_centerlayout_getsize_heap(sjs_centerlayout* _parent, sjs_size* maxsize, sjs_size** _return) {
     int32_t i;
-    sjs_centerlayout* sjt_dot414 = 0;
-    sjs_array_heap_iface_element* sjt_dot415 = 0;
-    sjs_centerlayout* sjt_dot416 = 0;
     sjs_centerlayout* sjt_dot418 = 0;
+    sjs_array_heap_iface_element* sjt_dot419 = 0;
+    sjs_centerlayout* sjt_dot420 = 0;
+    sjs_centerlayout* sjt_dot422 = 0;
     int32_t sjt_forEnd20;
     int32_t sjt_forStart20;
-    sjs_margin* sjt_functionParam237 = 0;
-    sjs_margin* sjt_functionParam240 = 0;
-    sjs_size* sjt_parent159 = 0;
-    sjs_size* sjt_parent163 = 0;
+    sjs_margin* sjt_functionParam239 = 0;
+    sjs_margin* sjt_functionParam242 = 0;
+    sjs_size* sjt_parent160 = 0;
+    sjs_size* sjt_parent164 = 0;
     sjs_size sjv_innersize = { -1 };
     sjs_size sjv_size = { -1 };
 
@@ -7556,37 +7580,37 @@ void sjf_centerlayout_getsize_heap(sjs_centerlayout* _parent, sjs_size* maxsize,
     sjv_size.w = 0;
     sjv_size.h = 0;
     sjf_size(&sjv_size);
-    sjt_parent159 = maxsize;
-    sjt_dot414 = _parent;
-    sjt_functionParam237 = &(sjt_dot414)->margin;
-    sjf_size_subtractmargin(sjt_parent159, sjt_functionParam237, &sjv_innersize);
+    sjt_parent160 = maxsize;
+    sjt_dot418 = _parent;
+    sjt_functionParam239 = &(sjt_dot418)->margin;
+    sjf_size_subtractmargin(sjt_parent160, sjt_functionParam239, &sjv_innersize);
     sjt_forStart20 = 0;
-    sjt_dot416 = _parent;
-    sjt_dot415 = &(sjt_dot416)->children;
-    sjt_forEnd20 = (sjt_dot415)->count;
+    sjt_dot420 = _parent;
+    sjt_dot419 = &(sjt_dot420)->children;
+    sjt_forEnd20 = (sjt_dot419)->count;
     i = sjt_forStart20;
     while (i < sjt_forEnd20) {
         sjs_size sjt_call86 = { -1 };
-        sjs_centerlayout* sjt_dot417 = 0;
-        int32_t sjt_functionParam238;
-        sjs_size* sjt_functionParam239 = 0;
+        sjs_centerlayout* sjt_dot421 = 0;
+        int32_t sjt_functionParam240;
+        sjs_size* sjt_functionParam241 = 0;
         sjs_size* sjt_interfaceParam43 = 0;
-        sjs_array_heap_iface_element* sjt_parent160 = 0;
-        sjs_size* sjt_parent161 = 0;
-        sji_element sjt_parent162 = { 0 };
+        sjs_array_heap_iface_element* sjt_parent161 = 0;
+        sjs_size* sjt_parent162 = 0;
+        sji_element sjt_parent163 = { 0 };
         sji_element sjv_child = { 0 };
 
-        sjt_dot417 = _parent;
-        sjt_parent160 = &(sjt_dot417)->children;
-        sjt_functionParam238 = i;
-        sjf_array_heap_iface_element_getat_heap(sjt_parent160, sjt_functionParam238, &sjv_child);
-        sjt_parent161 = &sjv_size;
-        sjt_parent162 = sjv_child;
+        sjt_dot421 = _parent;
+        sjt_parent161 = &(sjt_dot421)->children;
+        sjt_functionParam240 = i;
+        sjf_array_heap_iface_element_getat_heap(sjt_parent161, sjt_functionParam240, &sjv_child);
+        sjt_parent162 = &sjv_size;
+        sjt_parent163 = sjv_child;
         sjt_interfaceParam43 = &sjv_innersize;
         sjt_call86._refCount = 1;
-        sjt_parent162._vtbl->getsize(sjt_parent162._parent, sjt_interfaceParam43, &sjt_call86);
-        sjt_functionParam239 = &sjt_call86;
-        sjf_size_max(sjt_parent161, sjt_functionParam239, &sjv_size);
+        sjt_parent163._vtbl->getsize(sjt_parent163._parent, sjt_interfaceParam43, &sjt_call86);
+        sjt_functionParam241 = &sjt_call86;
+        sjf_size_max(sjt_parent162, sjt_functionParam241, &sjv_size);
         i++;
 
         if (sjv_child._parent != 0) {
@@ -7599,10 +7623,10 @@ void sjf_centerlayout_getsize_heap(sjs_centerlayout* _parent, sjs_size* maxsize,
         if (sjt_call86._refCount == 1) { sjf_size_destroy(&sjt_call86); }
     }
 
-    sjt_parent163 = &sjv_size;
-    sjt_dot418 = _parent;
-    sjt_functionParam240 = &(sjt_dot418)->margin;
-    sjf_size_addmargin_heap(sjt_parent163, sjt_functionParam240, _return);
+    sjt_parent164 = &sjv_size;
+    sjt_dot422 = _parent;
+    sjt_functionParam242 = &(sjt_dot422)->margin;
+    sjf_size_addmargin_heap(sjt_parent164, sjt_functionParam242, _return);
 
     if (sjv_innersize._refCount == 1) { sjf_size_destroy(&sjv_innersize); }
     if (sjv_size._refCount == 1) { sjf_size_destroy(&sjv_size); }
@@ -7613,31 +7637,31 @@ void sjf_centerlayout_heap(sjs_centerlayout* _this) {
 
 void sjf_centerlayout_render(sjs_centerlayout* _parent, sjs_scene2d* scene) {
     int32_t i;
-    sjs_array_heap_iface_element* sjt_dot445 = 0;
-    sjs_centerlayout* sjt_dot446 = 0;
+    sjs_array_heap_iface_element* sjt_dot449 = 0;
+    sjs_centerlayout* sjt_dot450 = 0;
     int32_t sjt_forEnd22;
     int32_t sjt_forStart22;
 
     sjt_forStart22 = 0;
-    sjt_dot446 = _parent;
-    sjt_dot445 = &(sjt_dot446)->children;
-    sjt_forEnd22 = (sjt_dot445)->count;
+    sjt_dot450 = _parent;
+    sjt_dot449 = &(sjt_dot450)->children;
+    sjt_forEnd22 = (sjt_dot449)->count;
     i = sjt_forStart22;
     while (i < sjt_forEnd22) {
-        sjs_centerlayout* sjt_dot447 = 0;
-        int32_t sjt_functionParam243;
+        sjs_centerlayout* sjt_dot451 = 0;
+        int32_t sjt_functionParam245;
         sjs_scene2d* sjt_interfaceParam46 = 0;
-        sjs_array_heap_iface_element* sjt_parent168 = 0;
-        sji_element sjt_parent169 = { 0 };
+        sjs_array_heap_iface_element* sjt_parent169 = 0;
+        sji_element sjt_parent170 = { 0 };
         sji_element sjv_child = { 0 };
 
-        sjt_dot447 = _parent;
-        sjt_parent168 = &(sjt_dot447)->children;
-        sjt_functionParam243 = i;
-        sjf_array_heap_iface_element_getat_heap(sjt_parent168, sjt_functionParam243, &sjv_child);
-        sjt_parent169 = sjv_child;
+        sjt_dot451 = _parent;
+        sjt_parent169 = &(sjt_dot451)->children;
+        sjt_functionParam245 = i;
+        sjf_array_heap_iface_element_getat_heap(sjt_parent169, sjt_functionParam245, &sjv_child);
+        sjt_parent170 = sjv_child;
         sjt_interfaceParam46 = scene;
-        sjt_parent169._vtbl->render(sjt_parent169._parent, sjt_interfaceParam46);
+        sjt_parent170._vtbl->render(sjt_parent170._parent, sjt_interfaceParam46);
         i++;
 
         if (sjv_child._parent != 0) {
@@ -7652,54 +7676,54 @@ void sjf_centerlayout_render(sjs_centerlayout* _parent, sjs_scene2d* scene) {
 
 void sjf_centerlayout_setrect(sjs_centerlayout* _parent, sjs_rect* rect_) {
     int32_t i;
-    sjs_rect* sjt_copy36 = 0;
-    sjs_centerlayout* sjt_dot421 = 0;
-    sjs_centerlayout* sjt_dot422 = 0;
-    sjs_centerlayout* sjt_dot423 = 0;
-    sjs_array_heap_iface_element* sjt_dot424 = 0;
+    sjs_rect* sjt_copy39 = 0;
     sjs_centerlayout* sjt_dot425 = 0;
+    sjs_centerlayout* sjt_dot426 = 0;
+    sjs_centerlayout* sjt_dot427 = 0;
+    sjs_array_heap_iface_element* sjt_dot428 = 0;
+    sjs_centerlayout* sjt_dot429 = 0;
     int32_t sjt_forEnd21;
     int32_t sjt_forStart21;
-    sjs_margin* sjt_functionParam241 = 0;
-    sjs_rect* sjt_parent164 = 0;
+    sjs_margin* sjt_functionParam243 = 0;
+    sjs_rect* sjt_parent165 = 0;
     sjs_rect sjv_innerrect = { -1 };
 
-    sjt_dot421 = _parent;
-    sjt_copy36 = rect_;
-    sjt_dot421->_rect._refCount = 1;
-    sjf_rect_copy(&sjt_dot421->_rect, sjt_copy36);
-    sjt_dot422 = _parent;
-    sjt_parent164 = &(sjt_dot422)->_rect;
-    sjt_dot423 = _parent;
-    sjt_functionParam241 = &(sjt_dot423)->margin;
-    sjf_rect_subtractmargin(sjt_parent164, sjt_functionParam241, &sjv_innerrect);
-    sjt_forStart21 = 0;
     sjt_dot425 = _parent;
-    sjt_dot424 = &(sjt_dot425)->children;
-    sjt_forEnd21 = (sjt_dot424)->count;
+    sjt_copy39 = rect_;
+    sjt_dot425->_rect._refCount = 1;
+    sjf_rect_copy(&sjt_dot425->_rect, sjt_copy39);
+    sjt_dot426 = _parent;
+    sjt_parent165 = &(sjt_dot426)->_rect;
+    sjt_dot427 = _parent;
+    sjt_functionParam243 = &(sjt_dot427)->margin;
+    sjf_rect_subtractmargin(sjt_parent165, sjt_functionParam243, &sjv_innerrect);
+    sjt_forStart21 = 0;
+    sjt_dot429 = _parent;
+    sjt_dot428 = &(sjt_dot429)->children;
+    sjt_forEnd21 = (sjt_dot428)->count;
     i = sjt_forStart21;
     while (i < sjt_forEnd21) {
         sjs_size sjt_call87 = { -1 };
         sjs_rect sjt_call88 = { -1 };
-        sjs_centerlayout* sjt_dot426 = 0;
-        sjs_rect* sjt_dot427 = 0;
-        sjs_rect* sjt_dot428 = 0;
-        sjs_rect* sjt_dot429 = 0;
-        sjs_rect* sjt_dot430 = 0;
-        sjs_centerlayout* sjt_dot431 = 0;
-        sjs_rect* sjt_dot437 = 0;
-        sjs_rect* sjt_dot438 = 0;
-        sjs_centerlayout* sjt_dot439 = 0;
-        int32_t sjt_functionParam242;
+        sjs_centerlayout* sjt_dot430 = 0;
+        sjs_rect* sjt_dot431 = 0;
+        sjs_rect* sjt_dot432 = 0;
+        sjs_rect* sjt_dot433 = 0;
+        sjs_rect* sjt_dot434 = 0;
+        sjs_centerlayout* sjt_dot435 = 0;
+        sjs_rect* sjt_dot441 = 0;
+        sjs_rect* sjt_dot442 = 0;
+        sjs_centerlayout* sjt_dot443 = 0;
+        int32_t sjt_functionParam244;
         sjs_size* sjt_interfaceParam44 = 0;
         sjs_rect* sjt_interfaceParam45 = 0;
-        bool sjt_isEmpty19;
-        float_option sjt_isEmpty20;
         bool sjt_isEmpty21;
         float_option sjt_isEmpty22;
-        sjs_array_heap_iface_element* sjt_parent165 = 0;
-        sji_element sjt_parent166 = { 0 };
+        bool sjt_isEmpty23;
+        float_option sjt_isEmpty24;
+        sjs_array_heap_iface_element* sjt_parent166 = 0;
         sji_element sjt_parent167 = { 0 };
+        sji_element sjt_parent168 = { 0 };
         sji_element sjv_child = { 0 };
         sjs_size sjv_childsize = { -1 };
         int32_t sjv_h;
@@ -7707,36 +7731,36 @@ void sjf_centerlayout_setrect(sjs_centerlayout* _parent, sjs_rect* rect_) {
         int32_t sjv_x;
         int32_t sjv_y;
 
-        sjt_dot426 = _parent;
-        sjt_parent165 = &(sjt_dot426)->children;
-        sjt_functionParam242 = i;
-        sjf_array_heap_iface_element_getat_heap(sjt_parent165, sjt_functionParam242, &sjv_child);
-        sjt_parent166 = sjv_child;
+        sjt_dot430 = _parent;
+        sjt_parent166 = &(sjt_dot430)->children;
+        sjt_functionParam244 = i;
+        sjf_array_heap_iface_element_getat_heap(sjt_parent166, sjt_functionParam244, &sjv_child);
+        sjt_parent167 = sjv_child;
         sjt_call87._refCount = 1;
-        sjt_dot427 = &sjv_innerrect;
-        sjt_call87.w = (sjt_dot427)->w;
-        sjt_dot428 = &sjv_innerrect;
-        sjt_call87.h = (sjt_dot428)->h;
+        sjt_dot431 = &sjv_innerrect;
+        sjt_call87.w = (sjt_dot431)->w;
+        sjt_dot432 = &sjv_innerrect;
+        sjt_call87.h = (sjt_dot432)->h;
         sjf_size(&sjt_call87);
         sjt_interfaceParam44 = &sjt_call87;
         sjv_childsize._refCount = 1;
-        sjt_parent166._vtbl->getsize(sjt_parent166._parent, sjt_interfaceParam44, &sjv_childsize);
-        sjt_dot429 = &sjv_innerrect;
-        sjv_x = (sjt_dot429)->x;
-        sjt_dot430 = &sjv_innerrect;
-        sjv_w = (sjt_dot430)->w;
-        sjt_dot431 = _parent;
-        sjt_isEmpty20 = (sjt_dot431)->centerx;
-        sjt_isEmpty19 = sjt_isEmpty20.isvalid;
-        if (sjt_isEmpty19) {
-            float ifValue9;
-            float sjt_cast18;
-            int32_t sjt_cast19;
-            sjs_centerlayout* sjt_dot432 = 0;
-            sjs_rect* sjt_dot433 = 0;
-            sjs_rect* sjt_dot434 = 0;
-            sjs_size* sjt_dot435 = 0;
-            sjs_size* sjt_dot436 = 0;
+        sjt_parent167._vtbl->getsize(sjt_parent167._parent, sjt_interfaceParam44, &sjv_childsize);
+        sjt_dot433 = &sjv_innerrect;
+        sjv_x = (sjt_dot433)->x;
+        sjt_dot434 = &sjv_innerrect;
+        sjv_w = (sjt_dot434)->w;
+        sjt_dot435 = _parent;
+        sjt_isEmpty22 = (sjt_dot435)->centerx;
+        sjt_isEmpty21 = sjt_isEmpty22.isvalid;
+        if (sjt_isEmpty21) {
+            float ifValue11;
+            float sjt_cast19;
+            int32_t sjt_cast20;
+            sjs_centerlayout* sjt_dot436 = 0;
+            sjs_rect* sjt_dot437 = 0;
+            sjs_rect* sjt_dot438 = 0;
+            sjs_size* sjt_dot439 = 0;
+            sjs_size* sjt_dot440 = 0;
             float_option sjt_getValue3;
             int32_t sjt_math253;
             int32_t sjt_math254;
@@ -7745,41 +7769,41 @@ void sjf_centerlayout_setrect(sjs_centerlayout* _parent, sjs_rect* rect_) {
             int32_t sjt_math257;
             int32_t sjt_math258;
 
-            sjt_dot432 = _parent;
-            sjt_getValue3 = (sjt_dot432)->centerx;
-            ifValue9 = sjt_getValue3.value;
-            sjt_dot433 = &sjv_innerrect;
-            sjt_math253 = (sjt_dot433)->x;
-            sjt_dot434 = &sjv_innerrect;
-            sjt_math257 = (sjt_dot434)->w;
-            sjt_dot435 = &sjv_childsize;
-            sjt_math258 = (sjt_dot435)->w;
-            sjt_cast19 = sjt_math257 - sjt_math258;
-            sjt_math255 = (float)sjt_cast19;
-            sjt_math256 = ifValue9;
-            sjt_cast18 = sjt_math255 * sjt_math256;
-            sjt_math254 = (int32_t)sjt_cast18;
+            sjt_dot436 = _parent;
+            sjt_getValue3 = (sjt_dot436)->centerx;
+            ifValue11 = sjt_getValue3.value;
+            sjt_dot437 = &sjv_innerrect;
+            sjt_math253 = (sjt_dot437)->x;
+            sjt_dot438 = &sjv_innerrect;
+            sjt_math257 = (sjt_dot438)->w;
+            sjt_dot439 = &sjv_childsize;
+            sjt_math258 = (sjt_dot439)->w;
+            sjt_cast20 = sjt_math257 - sjt_math258;
+            sjt_math255 = (float)sjt_cast20;
+            sjt_math256 = ifValue11;
+            sjt_cast19 = sjt_math255 * sjt_math256;
+            sjt_math254 = (int32_t)sjt_cast19;
             sjv_x = sjt_math253 + sjt_math254;
-            sjt_dot436 = &sjv_childsize;
-            sjv_w = (sjt_dot436)->w;
+            sjt_dot440 = &sjv_childsize;
+            sjv_w = (sjt_dot440)->w;
         }
 
-        sjt_dot437 = &sjv_innerrect;
-        sjv_y = (sjt_dot437)->y;
-        sjt_dot438 = &sjv_innerrect;
-        sjv_h = (sjt_dot438)->h;
-        sjt_dot439 = _parent;
-        sjt_isEmpty22 = (sjt_dot439)->centery;
-        sjt_isEmpty21 = sjt_isEmpty22.isvalid;
-        if (sjt_isEmpty21) {
-            float ifValue10;
-            float sjt_cast20;
-            int32_t sjt_cast21;
-            sjs_centerlayout* sjt_dot440 = 0;
-            sjs_rect* sjt_dot441 = 0;
-            sjs_rect* sjt_dot442 = 0;
-            sjs_size* sjt_dot443 = 0;
-            sjs_size* sjt_dot444 = 0;
+        sjt_dot441 = &sjv_innerrect;
+        sjv_y = (sjt_dot441)->y;
+        sjt_dot442 = &sjv_innerrect;
+        sjv_h = (sjt_dot442)->h;
+        sjt_dot443 = _parent;
+        sjt_isEmpty24 = (sjt_dot443)->centery;
+        sjt_isEmpty23 = sjt_isEmpty24.isvalid;
+        if (sjt_isEmpty23) {
+            float ifValue12;
+            float sjt_cast21;
+            int32_t sjt_cast22;
+            sjs_centerlayout* sjt_dot444 = 0;
+            sjs_rect* sjt_dot445 = 0;
+            sjs_rect* sjt_dot446 = 0;
+            sjs_size* sjt_dot447 = 0;
+            sjs_size* sjt_dot448 = 0;
             float_option sjt_getValue4;
             int32_t sjt_math259;
             int32_t sjt_math260;
@@ -7788,26 +7812,26 @@ void sjf_centerlayout_setrect(sjs_centerlayout* _parent, sjs_rect* rect_) {
             int32_t sjt_math263;
             int32_t sjt_math264;
 
-            sjt_dot440 = _parent;
-            sjt_getValue4 = (sjt_dot440)->centery;
-            ifValue10 = sjt_getValue4.value;
-            sjt_dot441 = &sjv_innerrect;
-            sjt_math259 = (sjt_dot441)->y;
-            sjt_dot442 = &sjv_innerrect;
-            sjt_math263 = (sjt_dot442)->h;
-            sjt_dot443 = &sjv_childsize;
-            sjt_math264 = (sjt_dot443)->h;
-            sjt_cast21 = sjt_math263 - sjt_math264;
-            sjt_math261 = (float)sjt_cast21;
-            sjt_math262 = ifValue10;
-            sjt_cast20 = sjt_math261 * sjt_math262;
-            sjt_math260 = (int32_t)sjt_cast20;
+            sjt_dot444 = _parent;
+            sjt_getValue4 = (sjt_dot444)->centery;
+            ifValue12 = sjt_getValue4.value;
+            sjt_dot445 = &sjv_innerrect;
+            sjt_math259 = (sjt_dot445)->y;
+            sjt_dot446 = &sjv_innerrect;
+            sjt_math263 = (sjt_dot446)->h;
+            sjt_dot447 = &sjv_childsize;
+            sjt_math264 = (sjt_dot447)->h;
+            sjt_cast22 = sjt_math263 - sjt_math264;
+            sjt_math261 = (float)sjt_cast22;
+            sjt_math262 = ifValue12;
+            sjt_cast21 = sjt_math261 * sjt_math262;
+            sjt_math260 = (int32_t)sjt_cast21;
             sjv_y = sjt_math259 + sjt_math260;
-            sjt_dot444 = &sjv_childsize;
-            sjv_h = (sjt_dot444)->h;
+            sjt_dot448 = &sjv_childsize;
+            sjv_h = (sjt_dot448)->h;
         }
 
-        sjt_parent167 = sjv_child;
+        sjt_parent168 = sjv_child;
         sjt_call88._refCount = 1;
         sjt_call88.x = sjv_x;
         sjt_call88.y = sjv_y;
@@ -7815,7 +7839,7 @@ void sjf_centerlayout_setrect(sjs_centerlayout* _parent, sjs_rect* rect_) {
         sjt_call88.h = sjv_h;
         sjf_rect(&sjt_call88);
         sjt_interfaceParam45 = &sjt_call88;
-        sjt_parent167._vtbl->setrect(sjt_parent167._parent, sjt_interfaceParam45);
+        sjt_parent168._vtbl->setrect(sjt_parent168._parent, sjt_interfaceParam45);
         i++;
 
         if (sjv_child._parent != 0) {
@@ -8305,59 +8329,59 @@ void sjf_flowlayout_destroy(sjs_flowlayout* _this) {
 }
 
 void sjf_flowlayout_firemouseevent(sjs_flowlayout* _parent, sjs_mouseevent* mouseevent, bool* _return) {
-    sjs_flowlayout* sjt_dot408 = 0;
-    sjs_array_heap_iface_element* sjt_functionParam170 = 0;
-    sjs_mouseevent* sjt_parent132 = 0;
+    sjs_flowlayout* sjt_dot412 = 0;
+    sjs_array_heap_iface_element* sjt_functionParam172 = 0;
+    sjs_mouseevent* sjt_parent133 = 0;
 
-    sjt_parent132 = mouseevent;
-    sjt_dot408 = _parent;
-    sjt_functionParam170 = &(sjt_dot408)->children;
-    sjf_mouseevent_firechildren(sjt_parent132, sjt_functionParam170, _return);
+    sjt_parent133 = mouseevent;
+    sjt_dot412 = _parent;
+    sjt_functionParam172 = &(sjt_dot412)->children;
+    sjf_mouseevent_firechildren(sjt_parent133, sjt_functionParam172, _return);
 }
 
 void sjf_flowlayout_getrect(sjs_flowlayout* _parent, sjs_rect* _return) {
-    sjs_rect* sjt_copy31 = 0;
-    sjs_flowlayout* sjt_dot353 = 0;
+    sjs_rect* sjt_copy34 = 0;
+    sjs_flowlayout* sjt_dot357 = 0;
 
-    sjt_dot353 = _parent;
-    sjt_copy31 = &(sjt_dot353)->_rect;
+    sjt_dot357 = _parent;
+    sjt_copy34 = &(sjt_dot357)->_rect;
     _return->_refCount = 1;
-    sjf_rect_copy(_return, sjt_copy31);
+    sjf_rect_copy(_return, sjt_copy34);
 }
 
 void sjf_flowlayout_getrect_heap(sjs_flowlayout* _parent, sjs_rect** _return) {
-    sjs_rect* sjt_copy32 = 0;
-    sjs_flowlayout* sjt_dot354 = 0;
+    sjs_rect* sjt_copy35 = 0;
+    sjs_flowlayout* sjt_dot358 = 0;
 
-    sjt_dot354 = _parent;
-    sjt_copy32 = &(sjt_dot354)->_rect;
+    sjt_dot358 = _parent;
+    sjt_copy35 = &(sjt_dot358)->_rect;
     (*_return) = (sjs_rect*)malloc(sizeof(sjs_rect));
     (*_return)->_refCount = 1;
-    sjf_rect_copy((*_return), sjt_copy32);
+    sjf_rect_copy((*_return), sjt_copy35);
 }
 
 void sjf_flowlayout_getsize(sjs_flowlayout* _parent, sjs_size* maxsize, sjs_size* _return) {
-    sjs_size* sjt_dot349 = 0;
-    sjs_size* sjt_dot350 = 0;
+    sjs_size* sjt_dot353 = 0;
+    sjs_size* sjt_dot354 = 0;
 
     _return->_refCount = 1;
-    sjt_dot349 = maxsize;
-    _return->w = (sjt_dot349)->w;
-    sjt_dot350 = maxsize;
-    _return->h = (sjt_dot350)->h;
+    sjt_dot353 = maxsize;
+    _return->w = (sjt_dot353)->w;
+    sjt_dot354 = maxsize;
+    _return->h = (sjt_dot354)->h;
     sjf_size(_return);
 }
 
 void sjf_flowlayout_getsize_heap(sjs_flowlayout* _parent, sjs_size* maxsize, sjs_size** _return) {
-    sjs_size* sjt_dot351 = 0;
-    sjs_size* sjt_dot352 = 0;
+    sjs_size* sjt_dot355 = 0;
+    sjs_size* sjt_dot356 = 0;
 
     (*_return) = (sjs_size*)malloc(sizeof(sjs_size));
     (*_return)->_refCount = 1;
-    sjt_dot351 = maxsize;
-    (*_return)->w = (sjt_dot351)->w;
-    sjt_dot352 = maxsize;
-    (*_return)->h = (sjt_dot352)->h;
+    sjt_dot355 = maxsize;
+    (*_return)->w = (sjt_dot355)->w;
+    sjt_dot356 = maxsize;
+    (*_return)->h = (sjt_dot356)->h;
     sjf_size_heap((*_return));
 }
 
@@ -8366,31 +8390,31 @@ void sjf_flowlayout_heap(sjs_flowlayout* _this) {
 
 void sjf_flowlayout_render(sjs_flowlayout* _parent, sjs_scene2d* scene) {
     int32_t i;
-    sjs_array_heap_iface_element* sjt_dot405 = 0;
-    sjs_flowlayout* sjt_dot406 = 0;
+    sjs_array_heap_iface_element* sjt_dot409 = 0;
+    sjs_flowlayout* sjt_dot410 = 0;
     int32_t sjt_forEnd18;
     int32_t sjt_forStart18;
 
     sjt_forStart18 = 0;
-    sjt_dot406 = _parent;
-    sjt_dot405 = &(sjt_dot406)->children;
-    sjt_forEnd18 = (sjt_dot405)->count;
+    sjt_dot410 = _parent;
+    sjt_dot409 = &(sjt_dot410)->children;
+    sjt_forEnd18 = (sjt_dot409)->count;
     i = sjt_forStart18;
     while (i < sjt_forEnd18) {
-        sjs_flowlayout* sjt_dot407 = 0;
-        int32_t sjt_functionParam169;
+        sjs_flowlayout* sjt_dot411 = 0;
+        int32_t sjt_functionParam171;
         sjs_scene2d* sjt_interfaceParam41 = 0;
-        sjs_array_heap_iface_element* sjt_parent130 = 0;
-        sji_element sjt_parent131 = { 0 };
+        sjs_array_heap_iface_element* sjt_parent131 = 0;
+        sji_element sjt_parent132 = { 0 };
         sji_element sjv_child = { 0 };
 
-        sjt_dot407 = _parent;
-        sjt_parent130 = &(sjt_dot407)->children;
-        sjt_functionParam169 = i;
-        sjf_array_heap_iface_element_getat_heap(sjt_parent130, sjt_functionParam169, &sjv_child);
-        sjt_parent131 = sjv_child;
+        sjt_dot411 = _parent;
+        sjt_parent131 = &(sjt_dot411)->children;
+        sjt_functionParam171 = i;
+        sjf_array_heap_iface_element_getat_heap(sjt_parent131, sjt_functionParam171, &sjv_child);
+        sjt_parent132 = sjv_child;
         sjt_interfaceParam41 = scene;
-        sjt_parent131._vtbl->render(sjt_parent131._parent, sjt_interfaceParam41);
+        sjt_parent132._vtbl->render(sjt_parent132._parent, sjt_interfaceParam41);
         i++;
 
         if (sjv_child._parent != 0) {
@@ -8405,53 +8429,53 @@ void sjf_flowlayout_render(sjs_flowlayout* _parent, sjs_scene2d* scene) {
 
 void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
     int32_t i;
-    sjs_rect* sjt_copy33 = 0;
-    sjs_flowlayout* sjt_dot355 = 0;
-    sjs_flowlayout* sjt_dot356 = 0;
-    sjs_array_heap_iface_element* sjt_dot357 = 0;
-    sjs_flowlayout* sjt_dot358 = 0;
+    sjs_rect* sjt_copy36 = 0;
+    sjs_flowlayout* sjt_dot359 = 0;
+    sjs_flowlayout* sjt_dot360 = 0;
+    sjs_array_heap_iface_element* sjt_dot361 = 0;
+    sjs_flowlayout* sjt_dot362 = 0;
     int32_t sjt_forEnd17;
     int32_t sjt_forStart17;
-    sjs_margin* sjt_functionParam159 = 0;
-    sjs_rect* sjt_parent120 = 0;
+    sjs_margin* sjt_functionParam161 = 0;
+    sjs_rect* sjt_parent121 = 0;
     sjs_rect sjv_innerrect = { -1 };
     int32_t sjv_val1;
     int32_t sjv_val2;
     int32_t sjv_valmax;
 
-    sjt_dot355 = _parent;
-    sjt_copy33 = rect_;
-    sjt_dot355->_rect._refCount = 1;
-    sjf_rect_copy(&sjt_dot355->_rect, sjt_copy33);
-    sjt_parent120 = rect_;
-    sjt_dot356 = _parent;
-    sjt_functionParam159 = &(sjt_dot356)->margin;
-    sjf_rect_subtractmargin(sjt_parent120, sjt_functionParam159, &sjv_innerrect);
+    sjt_dot359 = _parent;
+    sjt_copy36 = rect_;
+    sjt_dot359->_rect._refCount = 1;
+    sjf_rect_copy(&sjt_dot359->_rect, sjt_copy36);
+    sjt_parent121 = rect_;
+    sjt_dot360 = _parent;
+    sjt_functionParam161 = &(sjt_dot360)->margin;
+    sjf_rect_subtractmargin(sjt_parent121, sjt_functionParam161, &sjv_innerrect);
     sjv_val1 = 0;
     sjv_val2 = 0;
     sjv_valmax = 0;
     sjt_forStart17 = 0;
-    sjt_dot358 = _parent;
-    sjt_dot357 = &(sjt_dot358)->children;
-    sjt_forEnd17 = (sjt_dot357)->count;
+    sjt_dot362 = _parent;
+    sjt_dot361 = &(sjt_dot362)->children;
+    sjt_forEnd17 = (sjt_dot361)->count;
     i = sjt_forStart17;
     while (i < sjt_forEnd17) {
         int32_t sjt_compare81;
         int32_t sjt_compare82;
-        sjs_flowlayout* sjt_dot359 = 0;
-        sjs_flowlayout* sjt_dot360 = 0;
-        int32_t sjt_functionParam160;
-        sjs_array_heap_iface_element* sjt_parent121 = 0;
+        sjs_flowlayout* sjt_dot363 = 0;
+        sjs_flowlayout* sjt_dot364 = 0;
+        int32_t sjt_functionParam162;
+        sjs_array_heap_iface_element* sjt_parent122 = 0;
         bool sjt_switch11;
         sji_element sjv_child = { 0 };
         int32_t underscore7;
 
-        sjt_dot359 = _parent;
-        sjt_parent121 = &(sjt_dot359)->children;
-        sjt_functionParam160 = i;
-        sjf_array_heap_iface_element_getat_heap(sjt_parent121, sjt_functionParam160, &sjv_child);
-        sjt_dot360 = _parent;
-        underscore7 = (sjt_dot360)->orientation;
+        sjt_dot363 = _parent;
+        sjt_parent122 = &(sjt_dot363)->children;
+        sjt_functionParam162 = i;
+        sjf_array_heap_iface_element_getat_heap(sjt_parent122, sjt_functionParam162, &sjv_child);
+        sjt_dot364 = _parent;
+        underscore7 = (sjt_dot364)->orientation;
         sjt_compare81 = underscore7;
         sjt_compare82 = sjv_flowlayoutorientation_topbottom;
         sjt_switch11 = sjt_compare81 == sjt_compare82;
@@ -8460,18 +8484,18 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
             sjs_rect sjt_call57 = { -1 };
             int32_t sjt_compare83;
             int32_t sjt_compare84;
-            sjs_rect* sjt_dot361 = 0;
-            sjs_rect* sjt_dot362 = 0;
-            sjs_size* sjt_dot363 = 0;
-            sjs_size* sjt_dot364 = 0;
             sjs_rect* sjt_dot365 = 0;
             sjs_rect* sjt_dot366 = 0;
-            sjs_rect* sjt_dot367 = 0;
+            sjs_size* sjt_dot367 = 0;
             sjs_size* sjt_dot368 = 0;
-            sjs_size* sjt_dot369 = 0;
-            sjs_size* sjt_dot370 = 0;
-            int32_t sjt_functionParam161;
-            int32_t sjt_functionParam162;
+            sjs_rect* sjt_dot369 = 0;
+            sjs_rect* sjt_dot370 = 0;
+            sjs_rect* sjt_dot371 = 0;
+            sjs_size* sjt_dot372 = 0;
+            sjs_size* sjt_dot373 = 0;
+            sjs_size* sjt_dot374 = 0;
+            int32_t sjt_functionParam163;
+            int32_t sjt_functionParam164;
             bool sjt_ifElse39;
             sjs_size* sjt_interfaceParam33 = 0;
             sjs_rect* sjt_interfaceParam34 = 0;
@@ -8483,30 +8507,30 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
             int32_t sjt_math212;
             int32_t sjt_math213;
             int32_t sjt_math214;
-            sji_element sjt_parent122 = { 0 };
             sji_element sjt_parent123 = { 0 };
+            sji_element sjt_parent124 = { 0 };
             sjs_size sjv_childsize = { -1 };
 
-            sjt_parent122 = sjv_child;
+            sjt_parent123 = sjv_child;
             sjt_call56._refCount = 1;
-            sjt_dot361 = &sjv_innerrect;
-            sjt_call56.w = (sjt_dot361)->w;
-            sjt_dot362 = &sjv_innerrect;
-            sjt_call56.h = (sjt_dot362)->h;
+            sjt_dot365 = &sjv_innerrect;
+            sjt_call56.w = (sjt_dot365)->w;
+            sjt_dot366 = &sjv_innerrect;
+            sjt_call56.h = (sjt_dot366)->h;
             sjf_size(&sjt_call56);
             sjt_interfaceParam33 = &sjt_call56;
             sjv_childsize._refCount = 1;
-            sjt_parent122._vtbl->getsize(sjt_parent122._parent, sjt_interfaceParam33, &sjv_childsize);
-            sjt_functionParam161 = sjv_valmax;
-            sjt_dot363 = &sjv_childsize;
-            sjt_functionParam162 = (sjt_dot363)->w;
-            sjf_i32_max(sjt_functionParam161, sjt_functionParam162, &sjv_valmax);
+            sjt_parent123._vtbl->getsize(sjt_parent123._parent, sjt_interfaceParam33, &sjv_childsize);
+            sjt_functionParam163 = sjv_valmax;
+            sjt_dot367 = &sjv_childsize;
+            sjt_functionParam164 = (sjt_dot367)->w;
+            sjf_i32_max(sjt_functionParam163, sjt_functionParam164, &sjv_valmax);
             sjt_math205 = sjv_val1;
-            sjt_dot364 = &sjv_childsize;
-            sjt_math206 = (sjt_dot364)->h;
+            sjt_dot368 = &sjv_childsize;
+            sjt_math206 = (sjt_dot368)->h;
             sjt_compare83 = sjt_math205 + sjt_math206;
-            sjt_dot365 = &sjv_innerrect;
-            sjt_compare84 = (sjt_dot365)->h;
+            sjt_dot369 = &sjv_innerrect;
+            sjt_compare84 = (sjt_dot369)->h;
             sjt_ifElse39 = sjt_compare83 > sjt_compare84;
             if (sjt_ifElse39) {
                 int32_t sjt_math207;
@@ -8519,26 +8543,26 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
                 sjv_valmax = 0;
             }
 
-            sjt_parent123 = sjv_child;
+            sjt_parent124 = sjv_child;
             sjt_call57._refCount = 1;
-            sjt_dot366 = &sjv_innerrect;
-            sjt_math209 = (sjt_dot366)->x;
+            sjt_dot370 = &sjv_innerrect;
+            sjt_math209 = (sjt_dot370)->x;
             sjt_math210 = sjv_val2;
             sjt_call57.x = sjt_math209 + sjt_math210;
-            sjt_dot367 = &sjv_innerrect;
-            sjt_math211 = (sjt_dot367)->y;
+            sjt_dot371 = &sjv_innerrect;
+            sjt_math211 = (sjt_dot371)->y;
             sjt_math212 = sjv_val1;
             sjt_call57.y = sjt_math211 + sjt_math212;
-            sjt_dot368 = &sjv_childsize;
-            sjt_call57.w = (sjt_dot368)->w;
-            sjt_dot369 = &sjv_childsize;
-            sjt_call57.h = (sjt_dot369)->h;
+            sjt_dot372 = &sjv_childsize;
+            sjt_call57.w = (sjt_dot372)->w;
+            sjt_dot373 = &sjv_childsize;
+            sjt_call57.h = (sjt_dot373)->h;
             sjf_rect(&sjt_call57);
             sjt_interfaceParam34 = &sjt_call57;
-            sjt_parent123._vtbl->setrect(sjt_parent123._parent, sjt_interfaceParam34);
+            sjt_parent124._vtbl->setrect(sjt_parent124._parent, sjt_interfaceParam34);
             sjt_math213 = sjv_val1;
-            sjt_dot370 = &sjv_childsize;
-            sjt_math214 = (sjt_dot370)->h;
+            sjt_dot374 = &sjv_childsize;
+            sjt_math214 = (sjt_dot374)->h;
             sjv_val1 = sjt_math213 + sjt_math214;
 
             if (sjt_call56._refCount == 1) { sjf_size_destroy(&sjt_call56); }
@@ -8557,20 +8581,20 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
                 sjs_rect sjt_call59 = { -1 };
                 int32_t sjt_compare87;
                 int32_t sjt_compare88;
-                sjs_rect* sjt_dot371 = 0;
-                sjs_rect* sjt_dot372 = 0;
-                sjs_size* sjt_dot373 = 0;
-                sjs_size* sjt_dot374 = 0;
                 sjs_rect* sjt_dot375 = 0;
                 sjs_rect* sjt_dot376 = 0;
-                sjs_rect* sjt_dot377 = 0;
-                sjs_rect* sjt_dot378 = 0;
-                sjs_size* sjt_dot379 = 0;
-                sjs_size* sjt_dot380 = 0;
-                sjs_size* sjt_dot381 = 0;
-                sjs_size* sjt_dot382 = 0;
-                int32_t sjt_functionParam163;
-                int32_t sjt_functionParam164;
+                sjs_size* sjt_dot377 = 0;
+                sjs_size* sjt_dot378 = 0;
+                sjs_rect* sjt_dot379 = 0;
+                sjs_rect* sjt_dot380 = 0;
+                sjs_rect* sjt_dot381 = 0;
+                sjs_rect* sjt_dot382 = 0;
+                sjs_size* sjt_dot383 = 0;
+                sjs_size* sjt_dot384 = 0;
+                sjs_size* sjt_dot385 = 0;
+                sjs_size* sjt_dot386 = 0;
+                int32_t sjt_functionParam165;
+                int32_t sjt_functionParam166;
                 bool sjt_ifElse40;
                 sjs_size* sjt_interfaceParam35 = 0;
                 sjs_rect* sjt_interfaceParam36 = 0;
@@ -8586,30 +8610,30 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
                 int32_t sjt_math226;
                 int32_t sjt_math227;
                 int32_t sjt_math228;
-                sji_element sjt_parent124 = { 0 };
                 sji_element sjt_parent125 = { 0 };
+                sji_element sjt_parent126 = { 0 };
                 sjs_size sjv_childsize = { -1 };
 
-                sjt_parent124 = sjv_child;
+                sjt_parent125 = sjv_child;
                 sjt_call58._refCount = 1;
-                sjt_dot371 = &sjv_innerrect;
-                sjt_call58.w = (sjt_dot371)->w;
-                sjt_dot372 = &sjv_innerrect;
-                sjt_call58.h = (sjt_dot372)->h;
+                sjt_dot375 = &sjv_innerrect;
+                sjt_call58.w = (sjt_dot375)->w;
+                sjt_dot376 = &sjv_innerrect;
+                sjt_call58.h = (sjt_dot376)->h;
                 sjf_size(&sjt_call58);
                 sjt_interfaceParam35 = &sjt_call58;
                 sjv_childsize._refCount = 1;
-                sjt_parent124._vtbl->getsize(sjt_parent124._parent, sjt_interfaceParam35, &sjv_childsize);
-                sjt_functionParam163 = sjv_valmax;
-                sjt_dot373 = &sjv_childsize;
-                sjt_functionParam164 = (sjt_dot373)->w;
-                sjf_i32_max(sjt_functionParam163, sjt_functionParam164, &sjv_valmax);
+                sjt_parent125._vtbl->getsize(sjt_parent125._parent, sjt_interfaceParam35, &sjv_childsize);
+                sjt_functionParam165 = sjv_valmax;
+                sjt_dot377 = &sjv_childsize;
+                sjt_functionParam166 = (sjt_dot377)->w;
+                sjf_i32_max(sjt_functionParam165, sjt_functionParam166, &sjv_valmax);
                 sjt_math215 = sjv_val1;
-                sjt_dot374 = &sjv_childsize;
-                sjt_math216 = (sjt_dot374)->h;
+                sjt_dot378 = &sjv_childsize;
+                sjt_math216 = (sjt_dot378)->h;
                 sjt_compare87 = sjt_math215 + sjt_math216;
-                sjt_dot375 = &sjv_innerrect;
-                sjt_compare88 = (sjt_dot375)->h;
+                sjt_dot379 = &sjv_innerrect;
+                sjt_compare88 = (sjt_dot379)->h;
                 sjt_ifElse40 = sjt_compare87 >= sjt_compare88;
                 if (sjt_ifElse40) {
                     int32_t sjt_math217;
@@ -8622,32 +8646,32 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
                     sjv_valmax = 0;
                 }
 
-                sjt_parent125 = sjv_child;
+                sjt_parent126 = sjv_child;
                 sjt_call59._refCount = 1;
-                sjt_dot376 = &sjv_innerrect;
-                sjt_math219 = (sjt_dot376)->x;
+                sjt_dot380 = &sjv_innerrect;
+                sjt_math219 = (sjt_dot380)->x;
                 sjt_math220 = sjv_val2;
                 sjt_call59.x = sjt_math219 + sjt_math220;
-                sjt_dot377 = &sjv_innerrect;
-                sjt_math225 = (sjt_dot377)->y;
-                sjt_dot378 = &sjv_innerrect;
-                sjt_math226 = (sjt_dot378)->h;
+                sjt_dot381 = &sjv_innerrect;
+                sjt_math225 = (sjt_dot381)->y;
+                sjt_dot382 = &sjv_innerrect;
+                sjt_math226 = (sjt_dot382)->h;
                 sjt_math223 = sjt_math225 + sjt_math226;
                 sjt_math224 = sjv_val1;
                 sjt_math221 = sjt_math223 - sjt_math224;
-                sjt_dot379 = &sjv_childsize;
-                sjt_math222 = (sjt_dot379)->h;
+                sjt_dot383 = &sjv_childsize;
+                sjt_math222 = (sjt_dot383)->h;
                 sjt_call59.y = sjt_math221 - sjt_math222;
-                sjt_dot380 = &sjv_childsize;
-                sjt_call59.w = (sjt_dot380)->w;
-                sjt_dot381 = &sjv_childsize;
-                sjt_call59.h = (sjt_dot381)->h;
+                sjt_dot384 = &sjv_childsize;
+                sjt_call59.w = (sjt_dot384)->w;
+                sjt_dot385 = &sjv_childsize;
+                sjt_call59.h = (sjt_dot385)->h;
                 sjf_rect(&sjt_call59);
                 sjt_interfaceParam36 = &sjt_call59;
-                sjt_parent125._vtbl->setrect(sjt_parent125._parent, sjt_interfaceParam36);
+                sjt_parent126._vtbl->setrect(sjt_parent126._parent, sjt_interfaceParam36);
                 sjt_math227 = sjv_val1;
-                sjt_dot382 = &sjv_childsize;
-                sjt_math228 = (sjt_dot382)->h;
+                sjt_dot386 = &sjv_childsize;
+                sjt_math228 = (sjt_dot386)->h;
                 sjv_val1 = sjt_math227 + sjt_math228;
 
                 if (sjt_call58._refCount == 1) { sjf_size_destroy(&sjt_call58); }
@@ -8666,18 +8690,18 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
                     sjs_rect sjt_call61 = { -1 };
                     int32_t sjt_compare91;
                     int32_t sjt_compare92;
-                    sjs_rect* sjt_dot383 = 0;
-                    sjs_rect* sjt_dot384 = 0;
-                    sjs_size* sjt_dot385 = 0;
-                    sjs_size* sjt_dot386 = 0;
                     sjs_rect* sjt_dot387 = 0;
                     sjs_rect* sjt_dot388 = 0;
-                    sjs_rect* sjt_dot389 = 0;
+                    sjs_size* sjt_dot389 = 0;
                     sjs_size* sjt_dot390 = 0;
-                    sjs_size* sjt_dot391 = 0;
-                    sjs_size* sjt_dot392 = 0;
-                    int32_t sjt_functionParam165;
-                    int32_t sjt_functionParam166;
+                    sjs_rect* sjt_dot391 = 0;
+                    sjs_rect* sjt_dot392 = 0;
+                    sjs_rect* sjt_dot393 = 0;
+                    sjs_size* sjt_dot394 = 0;
+                    sjs_size* sjt_dot395 = 0;
+                    sjs_size* sjt_dot396 = 0;
+                    int32_t sjt_functionParam167;
+                    int32_t sjt_functionParam168;
                     bool sjt_ifElse41;
                     sjs_size* sjt_interfaceParam37 = 0;
                     sjs_rect* sjt_interfaceParam38 = 0;
@@ -8689,30 +8713,30 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
                     int32_t sjt_math236;
                     int32_t sjt_math237;
                     int32_t sjt_math238;
-                    sji_element sjt_parent126 = { 0 };
                     sji_element sjt_parent127 = { 0 };
+                    sji_element sjt_parent128 = { 0 };
                     sjs_size sjv_childsize = { -1 };
 
-                    sjt_parent126 = sjv_child;
+                    sjt_parent127 = sjv_child;
                     sjt_call60._refCount = 1;
-                    sjt_dot383 = &sjv_innerrect;
-                    sjt_call60.w = (sjt_dot383)->w;
-                    sjt_dot384 = &sjv_innerrect;
-                    sjt_call60.h = (sjt_dot384)->h;
+                    sjt_dot387 = &sjv_innerrect;
+                    sjt_call60.w = (sjt_dot387)->w;
+                    sjt_dot388 = &sjv_innerrect;
+                    sjt_call60.h = (sjt_dot388)->h;
                     sjf_size(&sjt_call60);
                     sjt_interfaceParam37 = &sjt_call60;
                     sjv_childsize._refCount = 1;
-                    sjt_parent126._vtbl->getsize(sjt_parent126._parent, sjt_interfaceParam37, &sjv_childsize);
-                    sjt_functionParam165 = sjv_valmax;
-                    sjt_dot385 = &sjv_childsize;
-                    sjt_functionParam166 = (sjt_dot385)->h;
-                    sjf_i32_max(sjt_functionParam165, sjt_functionParam166, &sjv_valmax);
+                    sjt_parent127._vtbl->getsize(sjt_parent127._parent, sjt_interfaceParam37, &sjv_childsize);
+                    sjt_functionParam167 = sjv_valmax;
+                    sjt_dot389 = &sjv_childsize;
+                    sjt_functionParam168 = (sjt_dot389)->h;
+                    sjf_i32_max(sjt_functionParam167, sjt_functionParam168, &sjv_valmax);
                     sjt_math229 = sjv_val1;
-                    sjt_dot386 = &sjv_childsize;
-                    sjt_math230 = (sjt_dot386)->w;
+                    sjt_dot390 = &sjv_childsize;
+                    sjt_math230 = (sjt_dot390)->w;
                     sjt_compare91 = sjt_math229 + sjt_math230;
-                    sjt_dot387 = &sjv_innerrect;
-                    sjt_compare92 = (sjt_dot387)->w;
+                    sjt_dot391 = &sjv_innerrect;
+                    sjt_compare92 = (sjt_dot391)->w;
                     sjt_ifElse41 = sjt_compare91 > sjt_compare92;
                     if (sjt_ifElse41) {
                         int32_t sjt_math231;
@@ -8725,26 +8749,26 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
                         sjv_valmax = 0;
                     }
 
-                    sjt_parent127 = sjv_child;
+                    sjt_parent128 = sjv_child;
                     sjt_call61._refCount = 1;
-                    sjt_dot388 = &sjv_innerrect;
-                    sjt_math233 = (sjt_dot388)->x;
+                    sjt_dot392 = &sjv_innerrect;
+                    sjt_math233 = (sjt_dot392)->x;
                     sjt_math234 = sjv_val1;
                     sjt_call61.x = sjt_math233 + sjt_math234;
-                    sjt_dot389 = &sjv_innerrect;
-                    sjt_math235 = (sjt_dot389)->y;
+                    sjt_dot393 = &sjv_innerrect;
+                    sjt_math235 = (sjt_dot393)->y;
                     sjt_math236 = sjv_val2;
                     sjt_call61.y = sjt_math235 + sjt_math236;
-                    sjt_dot390 = &sjv_childsize;
-                    sjt_call61.w = (sjt_dot390)->w;
-                    sjt_dot391 = &sjv_childsize;
-                    sjt_call61.h = (sjt_dot391)->h;
+                    sjt_dot394 = &sjv_childsize;
+                    sjt_call61.w = (sjt_dot394)->w;
+                    sjt_dot395 = &sjv_childsize;
+                    sjt_call61.h = (sjt_dot395)->h;
                     sjf_rect(&sjt_call61);
                     sjt_interfaceParam38 = &sjt_call61;
-                    sjt_parent127._vtbl->setrect(sjt_parent127._parent, sjt_interfaceParam38);
+                    sjt_parent128._vtbl->setrect(sjt_parent128._parent, sjt_interfaceParam38);
                     sjt_math237 = sjv_val1;
-                    sjt_dot392 = &sjv_childsize;
-                    sjt_math238 = (sjt_dot392)->w;
+                    sjt_dot396 = &sjv_childsize;
+                    sjt_math238 = (sjt_dot396)->w;
                     sjv_val1 = sjt_math237 + sjt_math238;
 
                     if (sjt_call60._refCount == 1) { sjf_size_destroy(&sjt_call60); }
@@ -8763,20 +8787,20 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
                         sjs_rect sjt_call63 = { -1 };
                         int32_t sjt_compare95;
                         int32_t sjt_compare96;
-                        sjs_rect* sjt_dot393 = 0;
-                        sjs_rect* sjt_dot394 = 0;
-                        sjs_size* sjt_dot395 = 0;
-                        sjs_size* sjt_dot396 = 0;
                         sjs_rect* sjt_dot397 = 0;
                         sjs_rect* sjt_dot398 = 0;
-                        sjs_rect* sjt_dot399 = 0;
+                        sjs_size* sjt_dot399 = 0;
                         sjs_size* sjt_dot400 = 0;
                         sjs_rect* sjt_dot401 = 0;
-                        sjs_size* sjt_dot402 = 0;
-                        sjs_size* sjt_dot403 = 0;
+                        sjs_rect* sjt_dot402 = 0;
+                        sjs_rect* sjt_dot403 = 0;
                         sjs_size* sjt_dot404 = 0;
-                        int32_t sjt_functionParam167;
-                        int32_t sjt_functionParam168;
+                        sjs_rect* sjt_dot405 = 0;
+                        sjs_size* sjt_dot406 = 0;
+                        sjs_size* sjt_dot407 = 0;
+                        sjs_size* sjt_dot408 = 0;
+                        int32_t sjt_functionParam169;
+                        int32_t sjt_functionParam170;
                         bool sjt_ifElse42;
                         sjs_size* sjt_interfaceParam39 = 0;
                         sjs_rect* sjt_interfaceParam40 = 0;
@@ -8792,30 +8816,30 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
                         int32_t sjt_math250;
                         int32_t sjt_math251;
                         int32_t sjt_math252;
-                        sji_element sjt_parent128 = { 0 };
                         sji_element sjt_parent129 = { 0 };
+                        sji_element sjt_parent130 = { 0 };
                         sjs_size sjv_childsize = { -1 };
 
-                        sjt_parent128 = sjv_child;
+                        sjt_parent129 = sjv_child;
                         sjt_call62._refCount = 1;
-                        sjt_dot393 = &sjv_innerrect;
-                        sjt_call62.w = (sjt_dot393)->w;
-                        sjt_dot394 = &sjv_innerrect;
-                        sjt_call62.h = (sjt_dot394)->h;
+                        sjt_dot397 = &sjv_innerrect;
+                        sjt_call62.w = (sjt_dot397)->w;
+                        sjt_dot398 = &sjv_innerrect;
+                        sjt_call62.h = (sjt_dot398)->h;
                         sjf_size(&sjt_call62);
                         sjt_interfaceParam39 = &sjt_call62;
                         sjv_childsize._refCount = 1;
-                        sjt_parent128._vtbl->getsize(sjt_parent128._parent, sjt_interfaceParam39, &sjv_childsize);
-                        sjt_functionParam167 = sjv_valmax;
-                        sjt_dot395 = &sjv_childsize;
-                        sjt_functionParam168 = (sjt_dot395)->h;
-                        sjf_i32_max(sjt_functionParam167, sjt_functionParam168, &sjv_valmax);
+                        sjt_parent129._vtbl->getsize(sjt_parent129._parent, sjt_interfaceParam39, &sjv_childsize);
+                        sjt_functionParam169 = sjv_valmax;
+                        sjt_dot399 = &sjv_childsize;
+                        sjt_functionParam170 = (sjt_dot399)->h;
+                        sjf_i32_max(sjt_functionParam169, sjt_functionParam170, &sjv_valmax);
                         sjt_math239 = sjv_val1;
-                        sjt_dot396 = &sjv_childsize;
-                        sjt_math240 = (sjt_dot396)->w;
+                        sjt_dot400 = &sjv_childsize;
+                        sjt_math240 = (sjt_dot400)->w;
                         sjt_compare95 = sjt_math239 + sjt_math240;
-                        sjt_dot397 = &sjv_innerrect;
-                        sjt_compare96 = (sjt_dot397)->w;
+                        sjt_dot401 = &sjv_innerrect;
+                        sjt_compare96 = (sjt_dot401)->w;
                         sjt_ifElse42 = sjt_compare95 > sjt_compare96;
                         if (sjt_ifElse42) {
                             int32_t sjt_math241;
@@ -8828,32 +8852,32 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
                             sjv_valmax = 0;
                         }
 
-                        sjt_parent129 = sjv_child;
+                        sjt_parent130 = sjv_child;
                         sjt_call63._refCount = 1;
-                        sjt_dot398 = &sjv_innerrect;
-                        sjt_math247 = (sjt_dot398)->x;
-                        sjt_dot399 = &sjv_innerrect;
-                        sjt_math248 = (sjt_dot399)->w;
+                        sjt_dot402 = &sjv_innerrect;
+                        sjt_math247 = (sjt_dot402)->x;
+                        sjt_dot403 = &sjv_innerrect;
+                        sjt_math248 = (sjt_dot403)->w;
                         sjt_math245 = sjt_math247 + sjt_math248;
                         sjt_math246 = sjv_val1;
                         sjt_math243 = sjt_math245 - sjt_math246;
-                        sjt_dot400 = &sjv_childsize;
-                        sjt_math244 = (sjt_dot400)->w;
+                        sjt_dot404 = &sjv_childsize;
+                        sjt_math244 = (sjt_dot404)->w;
                         sjt_call63.x = sjt_math243 - sjt_math244;
-                        sjt_dot401 = &sjv_innerrect;
-                        sjt_math249 = (sjt_dot401)->y;
+                        sjt_dot405 = &sjv_innerrect;
+                        sjt_math249 = (sjt_dot405)->y;
                         sjt_math250 = sjv_val2;
                         sjt_call63.y = sjt_math249 + sjt_math250;
-                        sjt_dot402 = &sjv_childsize;
-                        sjt_call63.w = (sjt_dot402)->w;
-                        sjt_dot403 = &sjv_childsize;
-                        sjt_call63.h = (sjt_dot403)->h;
+                        sjt_dot406 = &sjv_childsize;
+                        sjt_call63.w = (sjt_dot406)->w;
+                        sjt_dot407 = &sjv_childsize;
+                        sjt_call63.h = (sjt_dot407)->h;
                         sjf_rect(&sjt_call63);
                         sjt_interfaceParam40 = &sjt_call63;
-                        sjt_parent129._vtbl->setrect(sjt_parent129._parent, sjt_interfaceParam40);
+                        sjt_parent130._vtbl->setrect(sjt_parent130._parent, sjt_interfaceParam40);
                         sjt_math251 = sjv_val1;
-                        sjt_dot404 = &sjv_childsize;
-                        sjt_math252 = (sjt_dot404)->w;
+                        sjt_dot408 = &sjv_childsize;
+                        sjt_math252 = (sjt_dot408)->w;
                         sjv_val1 = sjt_math251 + sjt_math252;
 
                         if (sjt_call62._refCount == 1) { sjf_size_destroy(&sjt_call62); }
@@ -8959,32 +8983,32 @@ void sjf_font_heap(sjs_font* _this) {
 }
 
 void sjf_font_load_heap(sjs_string* src, float size, sjs_font** _return) {
-    sjs_string* sjt_copy18 = 0;
-    sjs_fontkey* sjt_functionParam94 = 0;
-    bool sjt_isEmpty11;
-    sjs_font* sjt_isEmpty12 = 0;
-    sjs_hash_fontkey_weak_font* sjt_parent64 = 0;
+    sjs_string* sjt_copy21 = 0;
+    sjs_fontkey* sjt_functionParam96 = 0;
+    bool sjt_isEmpty13;
+    sjs_font* sjt_isEmpty14 = 0;
+    sjs_hash_fontkey_weak_font* sjt_parent65 = 0;
     sjs_font* sjv_h = 0;
     sjs_fontkey sjv_k = { -1 };
     sjs_font* sjv_w = 0;
 
     sjv_k._refCount = 1;
-    sjt_copy18 = src;
+    sjt_copy21 = src;
     sjv_k.src._refCount = 1;
-    sjf_string_copy(&sjv_k.src, sjt_copy18);
+    sjf_string_copy(&sjv_k.src, sjt_copy21);
     sjv_k.size = size;
     sjf_fontkey(&sjv_k);
-    sjt_parent64 = &sjv_fonthash;
-    sjt_functionParam94 = &sjv_k;
-    sjf_hash_fontkey_weak_font_getat(sjt_parent64, sjt_functionParam94, &sjv_w);
+    sjt_parent65 = &sjv_fonthash;
+    sjt_functionParam96 = &sjv_k;
+    sjf_hash_fontkey_weak_font_getat(sjt_parent65, sjt_functionParam96, &sjv_w);
     sjv_h = sjv_w;
     if (sjv_h != 0) {
         sjv_h->_refCount++;
     }
 
-    sjt_isEmpty12 = sjv_h;
-    sjt_isEmpty11 = (sjt_isEmpty12 != 0);
-    if (sjt_isEmpty11) {
+    sjt_isEmpty14 = sjv_h;
+    sjt_isEmpty13 = (sjt_isEmpty14 != 0);
+    if (sjt_isEmpty13) {
         sjs_font* ifValue8 = 0;
 
         ifValue8 = sjv_h;
@@ -9002,30 +9026,30 @@ void sjf_font_load_heap(sjs_string* src, float size, sjs_font** _return) {
             free(ifValue8);
         }
     } else {
-        sjs_string* sjt_copy19 = 0;
-        sjs_fontkey* sjt_functionParam95 = 0;
-        sjs_font* sjt_functionParam96 = 0;
-        sjs_hash_fontkey_weak_font* sjt_parent65 = 0;
+        sjs_string* sjt_copy22 = 0;
+        sjs_fontkey* sjt_functionParam97 = 0;
+        sjs_font* sjt_functionParam98 = 0;
+        sjs_hash_fontkey_weak_font* sjt_parent66 = 0;
         sjs_font* sjv_result = 0;
 
         sjv_result = (sjs_font*)malloc(sizeof(sjs_font));
         sjv_result->_refCount = 1;
-        sjt_copy19 = src;
+        sjt_copy22 = src;
         sjv_result->src._refCount = 1;
-        sjf_string_copy(&sjv_result->src, sjt_copy19);
+        sjf_string_copy(&sjv_result->src, sjt_copy22);
         sjv_result->size = size;
         sjf_font_heap(sjv_result);
-        sjt_parent65 = &sjv_fonthash;
-        sjt_functionParam95 = &sjv_k;
-        sjt_functionParam96 = sjv_result;
-        delete_cb weakptrcb16 = { &sjt_functionParam96, weakptr_clear };
-        if (sjt_functionParam96 != 0) { weakptr_cb_add(sjt_functionParam96, weakptrcb16); }
-        sjf_hash_fontkey_weak_font_setat(sjt_parent65, sjt_functionParam95, sjt_functionParam96);
+        sjt_parent66 = &sjv_fonthash;
+        sjt_functionParam97 = &sjv_k;
+        sjt_functionParam98 = sjv_result;
+        delete_cb weakptrcb21 = { &sjt_functionParam98, weakptr_clear };
+        if (sjt_functionParam98 != 0) { weakptr_cb_add(sjt_functionParam98, weakptrcb21); }
+        sjf_hash_fontkey_weak_font_setat(sjt_parent66, sjt_functionParam97, sjt_functionParam98);
         (*_return) = sjv_result;
         (*_return)->_refCount++;
 
-        delete_cb weakptrcb17 = { &sjt_functionParam96, weakptr_clear };
-        if (sjt_functionParam96 != 0) { weakptr_cb_remove(sjt_functionParam96, weakptrcb17); }
+        delete_cb weakptrcb22 = { &sjt_functionParam98, weakptr_clear };
+        if (sjt_functionParam98 != 0) { weakptr_cb_remove(sjt_functionParam98, weakptrcb22); }
         sjv_result->_refCount--;
         if (sjv_result->_refCount <= 0) {
             weakptr_release(sjv_result);
@@ -9042,8 +9066,8 @@ void sjf_font_load_heap(sjs_string* src, float size, sjs_font** _return) {
             free(sjv_h);
         }
     }
-    delete_cb weakptrcb18 = { &sjv_w, weakptr_clear };
-    if (sjv_w != 0) { weakptr_cb_remove(sjv_w, weakptrcb18); }
+    delete_cb weakptrcb23 = { &sjv_w, weakptr_clear };
+    if (sjv_w != 0) { weakptr_cb_remove(sjv_w, weakptrcb23); }
     if (sjv_k._refCount == 1) { sjf_fontkey_destroy(&sjv_k); }
 }
 
@@ -9128,15 +9152,15 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
     sjs_string sjt_call96 = { -1 };
     int32_t sjt_compare105;
     int32_t sjt_compare106;
-    sjs_rect* sjt_dot498 = 0;
-    sjs_rect* sjt_dot499 = 0;
-    sjs_rect* sjt_dot500 = 0;
-    sjs_rect* sjt_dot501 = 0;
     sjs_rect* sjt_dot502 = 0;
     sjs_rect* sjt_dot503 = 0;
-    int32_t sjt_functionParam283;
-    sjs_rect* sjt_functionParam284 = 0;
-    int32_t sjt_functionParam286;
+    sjs_rect* sjt_dot504 = 0;
+    sjs_rect* sjt_dot505 = 0;
+    sjs_rect* sjt_dot506 = 0;
+    sjs_rect* sjt_dot507 = 0;
+    int32_t sjt_functionParam285;
+    sjs_rect* sjt_functionParam286 = 0;
+    int32_t sjt_functionParam288;
     bool sjt_ifElse48;
     bool sjt_ifElse49;
     int32_t sjt_math345;
@@ -9148,44 +9172,44 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
     int32_t sjt_math351;
     int32_t sjt_math352;
     bool sjt_not5;
-    sjs_rect* sjt_parent194 = 0;
-    sjs_list_rect* sjt_parent196 = 0;
+    sjs_rect* sjt_parent195 = 0;
     sjs_list_rect* sjt_parent197 = 0;
     sjs_list_rect* sjt_parent198 = 0;
     sjs_list_rect* sjt_parent199 = 0;
     sjs_list_rect* sjt_parent200 = 0;
+    sjs_list_rect* sjt_parent201 = 0;
     sjs_rect sjv_newrect = { -1 };
     sjs_rect sjv_oldrect = { -1 };
 
     sjv_oldrect._refCount = 1;
-    sjt_dot498 = rect;
-    sjv_oldrect.x = (sjt_dot498)->x;
-    sjt_dot499 = scenerect;
-    sjt_math345 = (sjt_dot499)->h;
-    sjt_dot500 = rect;
-    sjt_math347 = (sjt_dot500)->y;
-    sjt_dot501 = rect;
-    sjt_math348 = (sjt_dot501)->h;
+    sjt_dot502 = rect;
+    sjv_oldrect.x = (sjt_dot502)->x;
+    sjt_dot503 = scenerect;
+    sjt_math345 = (sjt_dot503)->h;
+    sjt_dot504 = rect;
+    sjt_math347 = (sjt_dot504)->y;
+    sjt_dot505 = rect;
+    sjt_math348 = (sjt_dot505)->h;
     sjt_math346 = sjt_math347 + sjt_math348;
     sjv_oldrect.y = sjt_math345 - sjt_math346;
-    sjt_dot502 = rect;
-    sjv_oldrect.w = (sjt_dot502)->w;
-    sjt_dot503 = rect;
-    sjv_oldrect.h = (sjt_dot503)->h;
+    sjt_dot506 = rect;
+    sjv_oldrect.w = (sjt_dot506)->w;
+    sjt_dot507 = rect;
+    sjv_oldrect.h = (sjt_dot507)->h;
     sjf_rect(&sjv_oldrect);
-    sjt_parent196 = &sjv_glviewports;
     sjt_parent197 = &sjv_glviewports;
-    sjf_list_rect_getcount(sjt_parent197, &sjt_math349);
+    sjt_parent198 = &sjv_glviewports;
+    sjf_list_rect_getcount(sjt_parent198, &sjt_math349);
     sjt_math350 = 1;
-    sjt_functionParam283 = sjt_math349 - sjt_math350;
-    sjf_list_rect_getat(sjt_parent196, sjt_functionParam283, &sjt_call95);
-    sjt_parent194 = &sjt_call95;
-    sjt_functionParam284 = &sjv_oldrect;
-    sjf_rect_isequal(sjt_parent194, sjt_functionParam284, &sjt_not5);
+    sjt_functionParam285 = sjt_math349 - sjt_math350;
+    sjf_list_rect_getat(sjt_parent197, sjt_functionParam285, &sjt_call95);
+    sjt_parent195 = &sjt_call95;
+    sjt_functionParam286 = &sjv_oldrect;
+    sjf_rect_isequal(sjt_parent195, sjt_functionParam286, &sjt_not5);
     result10 = !sjt_not5;
     sjt_ifElse48 = result10;
     if (sjt_ifElse48) {
-        sjs_string* sjt_functionParam285 = 0;
+        sjs_string* sjt_functionParam287 = 0;
 
         sjt_call96._refCount = 1;
         sjt_call96.count = 30;
@@ -9196,33 +9220,33 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
         sjt_call96.data.count = 31;
         sjf_array_char(&sjt_call96.data);
         sjf_string(&sjt_call96);
-        sjt_functionParam285 = &sjt_call96;
-        sjf_halt(sjt_functionParam285);
+        sjt_functionParam287 = &sjt_call96;
+        sjf_halt(sjt_functionParam287);
     }
 
-    sjt_parent198 = &sjv_glviewports;
     sjt_parent199 = &sjv_glviewports;
-    sjf_list_rect_getcount(sjt_parent199, &sjt_math351);
-    sjt_math352 = 1;
-    sjt_functionParam286 = sjt_math351 - sjt_math352;
-    sjf_list_rect_removeat(sjt_parent198, sjt_functionParam286);
     sjt_parent200 = &sjv_glviewports;
-    sjf_list_rect_getcount(sjt_parent200, &sjt_compare105);
+    sjf_list_rect_getcount(sjt_parent200, &sjt_math351);
+    sjt_math352 = 1;
+    sjt_functionParam288 = sjt_math351 - sjt_math352;
+    sjf_list_rect_removeat(sjt_parent199, sjt_functionParam288);
+    sjt_parent201 = &sjv_glviewports;
+    sjf_list_rect_getcount(sjt_parent201, &sjt_compare105);
     sjt_compare106 = 0;
     sjt_ifElse49 = sjt_compare105 > sjt_compare106;
     if (sjt_ifElse49) {
-        int32_t sjt_functionParam287;
+        int32_t sjt_functionParam289;
         int32_t sjt_math353;
         int32_t sjt_math354;
-        sjs_list_rect* sjt_parent201 = 0;
         sjs_list_rect* sjt_parent202 = 0;
+        sjs_list_rect* sjt_parent203 = 0;
 
-        sjt_parent201 = &sjv_glviewports;
         sjt_parent202 = &sjv_glviewports;
-        sjf_list_rect_getcount(sjt_parent202, &sjt_math353);
+        sjt_parent203 = &sjv_glviewports;
+        sjf_list_rect_getcount(sjt_parent203, &sjt_math353);
         sjt_math354 = 1;
-        sjt_functionParam287 = sjt_math353 - sjt_math354;
-        sjf_list_rect_getat(sjt_parent201, sjt_functionParam287, &sjv_newrect);
+        sjt_functionParam289 = sjt_math353 - sjt_math354;
+        sjf_list_rect_getat(sjt_parent202, sjt_functionParam289, &sjv_newrect);
     } else {
         sjv_newrect._refCount = 1;
         sjv_newrect.x = 0;
@@ -9241,39 +9265,39 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
 }
 
 void sjf_glpushviewport(sjs_rect* rect, sjs_rect* scenerect) {
-    sjs_rect* sjt_dot475 = 0;
-    sjs_rect* sjt_dot476 = 0;
-    sjs_rect* sjt_dot477 = 0;
-    sjs_rect* sjt_dot478 = 0;
     sjs_rect* sjt_dot479 = 0;
     sjs_rect* sjt_dot480 = 0;
-    sjs_rect* sjt_functionParam278 = 0;
+    sjs_rect* sjt_dot481 = 0;
+    sjs_rect* sjt_dot482 = 0;
+    sjs_rect* sjt_dot483 = 0;
+    sjs_rect* sjt_dot484 = 0;
+    sjs_rect* sjt_functionParam280 = 0;
     int32_t sjt_math339;
     int32_t sjt_math340;
     int32_t sjt_math341;
     int32_t sjt_math342;
-    sjs_list_rect* sjt_parent189 = 0;
+    sjs_list_rect* sjt_parent190 = 0;
     sjs_rect sjv_newrect = { -1 };
 
     sjv_newrect._refCount = 1;
-    sjt_dot475 = rect;
-    sjv_newrect.x = (sjt_dot475)->x;
-    sjt_dot476 = scenerect;
-    sjt_math339 = (sjt_dot476)->h;
-    sjt_dot477 = rect;
-    sjt_math341 = (sjt_dot477)->y;
-    sjt_dot478 = rect;
-    sjt_math342 = (sjt_dot478)->h;
+    sjt_dot479 = rect;
+    sjv_newrect.x = (sjt_dot479)->x;
+    sjt_dot480 = scenerect;
+    sjt_math339 = (sjt_dot480)->h;
+    sjt_dot481 = rect;
+    sjt_math341 = (sjt_dot481)->y;
+    sjt_dot482 = rect;
+    sjt_math342 = (sjt_dot482)->h;
     sjt_math340 = sjt_math341 + sjt_math342;
     sjv_newrect.y = sjt_math339 - sjt_math340;
-    sjt_dot479 = rect;
-    sjv_newrect.w = (sjt_dot479)->w;
-    sjt_dot480 = rect;
-    sjv_newrect.h = (sjt_dot480)->h;
+    sjt_dot483 = rect;
+    sjv_newrect.w = (sjt_dot483)->w;
+    sjt_dot484 = rect;
+    sjv_newrect.h = (sjt_dot484)->h;
     sjf_rect(&sjv_newrect);
-    sjt_parent189 = &sjv_glviewports;
-    sjt_functionParam278 = &sjv_newrect;
-    sjf_list_rect_add(sjt_parent189, sjt_functionParam278);
+    sjt_parent190 = &sjv_glviewports;
+    sjt_functionParam280 = &sjv_newrect;
+    sjf_list_rect_add(sjt_parent190, sjt_functionParam280);
     glViewport(sjv_newrect.x, sjv_newrect.y, sjv_newrect.w, sjv_newrect.h);
 
     if (sjv_newrect._refCount == 1) { sjf_rect_destroy(&sjv_newrect); }
@@ -10119,8 +10143,8 @@ void sjf_hash_fontkey_weak_font_destroy(sjs_hash_fontkey_weak_font* _this) {
                 delete_cb cb = { p, (void(*)(void*, void*))sjf_hash_fontkey_weak_font__weakptrremovevalue };
                 weakptr_cb_remove(kh_value(p, k), cb);
                 #else
-                delete_cb weakptrcb11 = { &kh_value(p, k), weakptr_clear };
-if (kh_value(p, k) != 0) { weakptr_cb_remove(kh_value(p, k), weakptrcb11); }
+                delete_cb weakptrcb13 = { &kh_value(p, k), weakptr_clear };
+if (kh_value(p, k) != 0) { weakptr_cb_remove(kh_value(p, k), weakptrcb13); }
 ;
                 #endif
             }
@@ -10138,13 +10162,13 @@ void sjf_hash_fontkey_weak_font_getat(sjs_hash_fontkey_weak_font* _parent, sjs_f
     #endif
     if (k == kh_end(p)) {
         (*_return) = 0;
-delete_cb weakptrcb12 = { &(*_return), weakptr_clear };
-if ((*_return) != 0) { weakptr_cb_add((*_return), weakptrcb12); }
+delete_cb weakptrcb17 = { &(*_return), weakptr_clear };
+if ((*_return) != 0) { weakptr_cb_add((*_return), weakptrcb17); }
 return;
     }
     (*_return) = kh_val(p, k);
-delete_cb weakptrcb13 = { &(*_return), weakptr_clear };
-if ((*_return) != 0) { weakptr_cb_add((*_return), weakptrcb13); }
+delete_cb weakptrcb18 = { &(*_return), weakptr_clear };
+if ((*_return) != 0) { weakptr_cb_add((*_return), weakptrcb18); }
 return;;
 }
 
@@ -10160,8 +10184,8 @@ void sjf_hash_fontkey_weak_font_setat(sjs_hash_fontkey_weak_font* _parent, sjs_f
     khiter_t k = kh_get(fontkey_weak_font_hash_type, p, key);
     #endif
     if (k != kh_end(p)) {            
-    delete_cb weakptrcb14 = { &kh_val(p, k), weakptr_clear };
-if (kh_val(p, k) != 0) { weakptr_cb_remove(kh_val(p, k), weakptrcb14); }
+    delete_cb weakptrcb19 = { &kh_val(p, k), weakptr_clear };
+if (kh_val(p, k) != 0) { weakptr_cb_remove(kh_val(p, k), weakptrcb19); }
 ;
 }
 int ret;
@@ -10186,8 +10210,8 @@ weakptr_cb_add(val, cb);
 kh_val(p, k) = val;
 #else
 kh_val(p, k) = val;
-delete_cb weakptrcb15 = { &kh_val(p, k), weakptr_clear };
-if (kh_val(p, k) != 0) { weakptr_cb_add(kh_val(p, k), weakptrcb15); }
+delete_cb weakptrcb20 = { &kh_val(p, k), weakptr_clear };
+if (kh_val(p, k) != 0) { weakptr_cb_add(kh_val(p, k), weakptrcb20); }
 ;
 #endif
 }
@@ -10240,8 +10264,8 @@ void sjf_hash_string_weak_iface_element_destroy(sjs_hash_string_weak_iface_eleme
                 delete_cb cb = { p, (void(*)(void*, void*))sjf_hash_string_weak_iface_element__weakptrremovevalue };
                 weakptr_cb_remove(kh_value(p, k)._parent, cb);
                 #else
-                delete_cb weakptrcb10 = { &kh_value(p, k)._parent, weakptr_clear };
-if (kh_value(p, k)._parent != 0) { weakptr_cb_remove(kh_value(p, k)._parent, weakptrcb10); }
+                delete_cb weakptrcb12 = { &kh_value(p, k)._parent, weakptr_clear };
+if (kh_value(p, k)._parent != 0) { weakptr_cb_remove(kh_value(p, k)._parent, weakptrcb12); }
 ;
                 #endif
             }
@@ -10252,6 +10276,46 @@ if (kh_value(p, k)._parent != 0) { weakptr_cb_remove(kh_value(p, k)._parent, wea
 
 void sjf_hash_string_weak_iface_element_heap(sjs_hash_string_weak_iface_element* _this) {
     _this->_hash = kh_init(string_weak_iface_element_hash_type);
+}
+
+void sjf_hash_string_weak_iface_element_setat(sjs_hash_string_weak_iface_element* _parent, sjs_string* key, sji_element val) {
+    khash_t(string_weak_iface_element_hash_type)* p = (khash_t(string_weak_iface_element_hash_type)*)_parent->_hash;
+    #if true
+    khiter_t k = kh_get(string_weak_iface_element_hash_type, p, *key);
+    #else
+    khiter_t k = kh_get(string_weak_iface_element_hash_type, p, key);
+    #endif
+    if (k != kh_end(p)) {            
+    delete_cb weakptrcb14 = { &kh_val(p, k)._parent, weakptr_clear };
+if (kh_val(p, k)._parent != 0) { weakptr_cb_remove(kh_val(p, k)._parent, weakptrcb14); }
+;
+}
+int ret;
+#if true
+k = kh_put(string_weak_iface_element_hash_type, _parent->_hash, *key, &ret);
+#else
+k = kh_put(string_weak_iface_element_hash_type, _parent->_hash, key, &ret);
+#endif
+if (!ret) kh_del(string_weak_iface_element_hash_type, p, k);
+#if false
+delete_cb cb = { _parent, (void(*)(void*, void*))sjf_hash_string_weak_iface_element__weakptrremovekey };
+weakptr_cb_add(key, cb);
+#else
+sjs_string t;
+t._refCount = 1;
+sjf_string_copy(&t, key);
+;
+#endif
+#if true
+delete_cb cb = { _parent, (void(*)(void*, void*))sjf_hash_string_weak_iface_element__weakptrremovevalue };
+weakptr_cb_add(val._parent, cb);
+kh_val(p, k) = val;
+#else
+kh_val(p, k) = val;
+delete_cb weakptrcb15 = { &kh_val(p, k)._parent, weakptr_clear };
+if (kh_val(p, k)._parent != 0) { weakptr_cb_add(kh_val(p, k)._parent, weakptrcb15); }
+;
+#endif
 }
 
 void sjf_hash_string_weak_iface_model(sjs_hash_string_weak_iface_model* _this) {
@@ -10302,8 +10366,8 @@ void sjf_hash_string_weak_iface_model_destroy(sjs_hash_string_weak_iface_model* 
                 delete_cb cb = { p, (void(*)(void*, void*))sjf_hash_string_weak_iface_model__weakptrremovevalue };
                 weakptr_cb_remove(kh_value(p, k)._parent, cb);
                 #else
-                delete_cb weakptrcb9 = { &kh_value(p, k)._parent, weakptr_clear };
-if (kh_value(p, k)._parent != 0) { weakptr_cb_remove(kh_value(p, k)._parent, weakptrcb9); }
+                delete_cb weakptrcb11 = { &kh_value(p, k)._parent, weakptr_clear };
+if (kh_value(p, k)._parent != 0) { weakptr_cb_remove(kh_value(p, k)._parent, weakptrcb11); }
 ;
                 #endif
             }
@@ -10369,23 +10433,23 @@ void sjf_list_heap_iface_animation_destroy(sjs_list_heap_iface_animation* _this)
 }
 
 void sjf_list_heap_iface_animation_getat_heap(sjs_list_heap_iface_animation* _parent, int32_t index, sji_animation* _return) {
-    sjs_list_heap_iface_animation* sjt_dot454 = 0;
-    int32_t sjt_functionParam258;
-    sjs_array_heap_iface_animation* sjt_parent179 = 0;
+    sjs_list_heap_iface_animation* sjt_dot458 = 0;
+    int32_t sjt_functionParam260;
+    sjs_array_heap_iface_animation* sjt_parent180 = 0;
 
-    sjt_dot454 = _parent;
-    sjt_parent179 = &(sjt_dot454)->array;
-    sjt_functionParam258 = index;
-    sjf_array_heap_iface_animation_getat_heap(sjt_parent179, sjt_functionParam258, _return);
+    sjt_dot458 = _parent;
+    sjt_parent180 = &(sjt_dot458)->array;
+    sjt_functionParam260 = index;
+    sjf_array_heap_iface_animation_getat_heap(sjt_parent180, sjt_functionParam260, _return);
 }
 
 void sjf_list_heap_iface_animation_getcount(sjs_list_heap_iface_animation* _parent, int32_t* _return) {
-    sjs_array_heap_iface_animation* sjt_dot450 = 0;
-    sjs_list_heap_iface_animation* sjt_dot451 = 0;
+    sjs_array_heap_iface_animation* sjt_dot454 = 0;
+    sjs_list_heap_iface_animation* sjt_dot455 = 0;
 
-    sjt_dot451 = _parent;
-    sjt_dot450 = &(sjt_dot451)->array;
-    (*_return) = (sjt_dot450)->count;
+    sjt_dot455 = _parent;
+    sjt_dot454 = &(sjt_dot455)->array;
+    (*_return) = (sjt_dot454)->count;
 }
 
 void sjf_list_heap_iface_animation_heap(sjs_list_heap_iface_animation* _this) {
@@ -10422,57 +10486,57 @@ void sjf_list_rect(sjs_list_rect* _this) {
 void sjf_list_rect_add(sjs_list_rect* _parent, sjs_rect* item) {
     int32_t sjt_compare103;
     int32_t sjt_compare104;
-    sjs_array_rect* sjt_dot481 = 0;
-    sjs_list_rect* sjt_dot482 = 0;
-    sjs_array_rect* sjt_dot483 = 0;
-    sjs_list_rect* sjt_dot484 = 0;
-    sjs_list_rect* sjt_dot491 = 0;
-    sjs_array_rect* sjt_dot492 = 0;
-    sjs_list_rect* sjt_dot493 = 0;
-    int32_t sjt_functionParam276;
-    sjs_rect* sjt_functionParam277 = 0;
+    sjs_array_rect* sjt_dot485 = 0;
+    sjs_list_rect* sjt_dot486 = 0;
+    sjs_array_rect* sjt_dot487 = 0;
+    sjs_list_rect* sjt_dot488 = 0;
+    sjs_list_rect* sjt_dot495 = 0;
+    sjs_array_rect* sjt_dot496 = 0;
+    sjs_list_rect* sjt_dot497 = 0;
+    int32_t sjt_functionParam278;
+    sjs_rect* sjt_functionParam279 = 0;
     bool sjt_ifElse46;
-    sjs_array_rect* sjt_parent188 = 0;
+    sjs_array_rect* sjt_parent189 = 0;
 
-    sjt_dot482 = _parent;
-    sjt_dot481 = &(sjt_dot482)->array;
-    sjt_compare103 = (sjt_dot481)->count;
-    sjt_dot484 = _parent;
-    sjt_dot483 = &(sjt_dot484)->array;
-    sjt_compare104 = (sjt_dot483)->datasize;
+    sjt_dot486 = _parent;
+    sjt_dot485 = &(sjt_dot486)->array;
+    sjt_compare103 = (sjt_dot485)->count;
+    sjt_dot488 = _parent;
+    sjt_dot487 = &(sjt_dot488)->array;
+    sjt_compare104 = (sjt_dot487)->datasize;
     sjt_ifElse46 = sjt_compare103 >= sjt_compare104;
     if (sjt_ifElse46) {
-        sjs_list_rect* sjt_dot485 = 0;
-        sjs_list_rect* sjt_dot488 = 0;
-        sjs_array_rect* sjt_dot489 = 0;
-        sjs_list_rect* sjt_dot490 = 0;
-        int32_t sjt_functionParam273;
-        int32_t sjt_functionParam274;
+        sjs_list_rect* sjt_dot489 = 0;
+        sjs_list_rect* sjt_dot492 = 0;
+        sjs_array_rect* sjt_dot493 = 0;
+        sjs_list_rect* sjt_dot494 = 0;
         int32_t sjt_functionParam275;
+        int32_t sjt_functionParam276;
+        int32_t sjt_functionParam277;
         int32_t sjt_math343;
         int32_t sjt_math344;
-        sjs_array_rect* sjt_parent187 = 0;
+        sjs_array_rect* sjt_parent188 = 0;
 
-        sjt_dot485 = _parent;
-        sjt_dot488 = _parent;
-        sjt_parent187 = &(sjt_dot488)->array;
-        sjt_functionParam274 = 10;
-        sjt_dot490 = _parent;
-        sjt_dot489 = &(sjt_dot490)->array;
-        sjt_math343 = (sjt_dot489)->datasize;
+        sjt_dot489 = _parent;
+        sjt_dot492 = _parent;
+        sjt_parent188 = &(sjt_dot492)->array;
+        sjt_functionParam276 = 10;
+        sjt_dot494 = _parent;
+        sjt_dot493 = &(sjt_dot494)->array;
+        sjt_math343 = (sjt_dot493)->datasize;
         sjt_math344 = 2;
-        sjt_functionParam275 = sjt_math343 * sjt_math344;
-        sjf_i32_max(sjt_functionParam274, sjt_functionParam275, &sjt_functionParam273);
-        sjf_array_rect_grow(sjt_parent187, sjt_functionParam273, &sjt_dot485->array);
+        sjt_functionParam277 = sjt_math343 * sjt_math344;
+        sjf_i32_max(sjt_functionParam276, sjt_functionParam277, &sjt_functionParam275);
+        sjf_array_rect_grow(sjt_parent188, sjt_functionParam275, &sjt_dot489->array);
     }
 
-    sjt_dot491 = _parent;
-    sjt_parent188 = &(sjt_dot491)->array;
-    sjt_dot493 = _parent;
-    sjt_dot492 = &(sjt_dot493)->array;
-    sjt_functionParam276 = (sjt_dot492)->count;
-    sjt_functionParam277 = item;
-    sjf_array_rect_initat(sjt_parent188, sjt_functionParam276, sjt_functionParam277);
+    sjt_dot495 = _parent;
+    sjt_parent189 = &(sjt_dot495)->array;
+    sjt_dot497 = _parent;
+    sjt_dot496 = &(sjt_dot497)->array;
+    sjt_functionParam278 = (sjt_dot496)->count;
+    sjt_functionParam279 = item;
+    sjf_array_rect_initat(sjt_parent189, sjt_functionParam278, sjt_functionParam279);
 }
 
 void sjf_list_rect_copy(sjs_list_rect* _this, sjs_list_rect* _from) {
@@ -10484,23 +10548,23 @@ void sjf_list_rect_destroy(sjs_list_rect* _this) {
 }
 
 void sjf_list_rect_getat(sjs_list_rect* _parent, int32_t index, sjs_rect* _return) {
-    sjs_list_rect* sjt_dot504 = 0;
-    int32_t sjt_functionParam282;
-    sjs_array_rect* sjt_parent195 = 0;
+    sjs_list_rect* sjt_dot508 = 0;
+    int32_t sjt_functionParam284;
+    sjs_array_rect* sjt_parent196 = 0;
 
-    sjt_dot504 = _parent;
-    sjt_parent195 = &(sjt_dot504)->array;
-    sjt_functionParam282 = index;
-    sjf_array_rect_getat(sjt_parent195, sjt_functionParam282, _return);
+    sjt_dot508 = _parent;
+    sjt_parent196 = &(sjt_dot508)->array;
+    sjt_functionParam284 = index;
+    sjf_array_rect_getat(sjt_parent196, sjt_functionParam284, _return);
 }
 
 void sjf_list_rect_getcount(sjs_list_rect* _parent, int32_t* _return) {
-    sjs_array_rect* sjt_dot505 = 0;
-    sjs_list_rect* sjt_dot506 = 0;
+    sjs_array_rect* sjt_dot509 = 0;
+    sjs_list_rect* sjt_dot510 = 0;
 
-    sjt_dot506 = _parent;
-    sjt_dot505 = &(sjt_dot506)->array;
-    (*_return) = (sjt_dot505)->count;
+    sjt_dot510 = _parent;
+    sjt_dot509 = &(sjt_dot510)->array;
+    (*_return) = (sjt_dot509)->count;
 }
 
 void sjf_list_rect_heap(sjs_list_rect* _this) {
@@ -10567,59 +10631,59 @@ void sjf_listlayout_destroy(sjs_listlayout* _this) {
 }
 
 void sjf_listlayout_firemouseevent(sjs_listlayout* _parent, sjs_mouseevent* mouseevent, bool* _return) {
-    sjs_listlayout* sjt_dot348 = 0;
-    sjs_array_heap_iface_element* sjt_functionParam144 = 0;
-    sjs_mouseevent* sjt_parent114 = 0;
+    sjs_listlayout* sjt_dot352 = 0;
+    sjs_array_heap_iface_element* sjt_functionParam146 = 0;
+    sjs_mouseevent* sjt_parent115 = 0;
 
-    sjt_parent114 = mouseevent;
-    sjt_dot348 = _parent;
-    sjt_functionParam144 = &(sjt_dot348)->children;
-    sjf_mouseevent_firechildren(sjt_parent114, sjt_functionParam144, _return);
+    sjt_parent115 = mouseevent;
+    sjt_dot352 = _parent;
+    sjt_functionParam146 = &(sjt_dot352)->children;
+    sjf_mouseevent_firechildren(sjt_parent115, sjt_functionParam146, _return);
 }
 
 void sjf_listlayout_getrect(sjs_listlayout* _parent, sjs_rect* _return) {
-    sjs_rect* sjt_copy28 = 0;
-    sjs_listlayout* sjt_dot305 = 0;
+    sjs_rect* sjt_copy31 = 0;
+    sjs_listlayout* sjt_dot309 = 0;
 
-    sjt_dot305 = _parent;
-    sjt_copy28 = &(sjt_dot305)->_rect;
+    sjt_dot309 = _parent;
+    sjt_copy31 = &(sjt_dot309)->_rect;
     _return->_refCount = 1;
-    sjf_rect_copy(_return, sjt_copy28);
+    sjf_rect_copy(_return, sjt_copy31);
 }
 
 void sjf_listlayout_getrect_heap(sjs_listlayout* _parent, sjs_rect** _return) {
-    sjs_rect* sjt_copy29 = 0;
-    sjs_listlayout* sjt_dot306 = 0;
+    sjs_rect* sjt_copy32 = 0;
+    sjs_listlayout* sjt_dot310 = 0;
 
-    sjt_dot306 = _parent;
-    sjt_copy29 = &(sjt_dot306)->_rect;
+    sjt_dot310 = _parent;
+    sjt_copy32 = &(sjt_dot310)->_rect;
     (*_return) = (sjs_rect*)malloc(sizeof(sjs_rect));
     (*_return)->_refCount = 1;
-    sjf_rect_copy((*_return), sjt_copy29);
+    sjf_rect_copy((*_return), sjt_copy32);
 }
 
 void sjf_listlayout_getsize(sjs_listlayout* _parent, sjs_size* maxsize, sjs_size* _return) {
-    sjs_size* sjt_dot301 = 0;
-    sjs_size* sjt_dot302 = 0;
+    sjs_size* sjt_dot305 = 0;
+    sjs_size* sjt_dot306 = 0;
 
     _return->_refCount = 1;
-    sjt_dot301 = maxsize;
-    _return->w = (sjt_dot301)->w;
-    sjt_dot302 = maxsize;
-    _return->h = (sjt_dot302)->h;
+    sjt_dot305 = maxsize;
+    _return->w = (sjt_dot305)->w;
+    sjt_dot306 = maxsize;
+    _return->h = (sjt_dot306)->h;
     sjf_size(_return);
 }
 
 void sjf_listlayout_getsize_heap(sjs_listlayout* _parent, sjs_size* maxsize, sjs_size** _return) {
-    sjs_size* sjt_dot303 = 0;
-    sjs_size* sjt_dot304 = 0;
+    sjs_size* sjt_dot307 = 0;
+    sjs_size* sjt_dot308 = 0;
 
     (*_return) = (sjs_size*)malloc(sizeof(sjs_size));
     (*_return)->_refCount = 1;
-    sjt_dot303 = maxsize;
-    (*_return)->w = (sjt_dot303)->w;
-    sjt_dot304 = maxsize;
-    (*_return)->h = (sjt_dot304)->h;
+    sjt_dot307 = maxsize;
+    (*_return)->w = (sjt_dot307)->w;
+    sjt_dot308 = maxsize;
+    (*_return)->h = (sjt_dot308)->h;
     sjf_size_heap((*_return));
 }
 
@@ -10628,31 +10692,31 @@ void sjf_listlayout_heap(sjs_listlayout* _this) {
 
 void sjf_listlayout_render(sjs_listlayout* _parent, sjs_scene2d* scene) {
     int32_t i;
-    sjs_array_heap_iface_element* sjt_dot345 = 0;
-    sjs_listlayout* sjt_dot346 = 0;
+    sjs_array_heap_iface_element* sjt_dot349 = 0;
+    sjs_listlayout* sjt_dot350 = 0;
     int32_t sjt_forEnd16;
     int32_t sjt_forStart16;
 
     sjt_forStart16 = 0;
-    sjt_dot346 = _parent;
-    sjt_dot345 = &(sjt_dot346)->children;
-    sjt_forEnd16 = (sjt_dot345)->count;
+    sjt_dot350 = _parent;
+    sjt_dot349 = &(sjt_dot350)->children;
+    sjt_forEnd16 = (sjt_dot349)->count;
     i = sjt_forStart16;
     while (i < sjt_forEnd16) {
-        sjs_listlayout* sjt_dot347 = 0;
-        int32_t sjt_functionParam143;
+        sjs_listlayout* sjt_dot351 = 0;
+        int32_t sjt_functionParam145;
         sjs_scene2d* sjt_interfaceParam32 = 0;
-        sjs_array_heap_iface_element* sjt_parent112 = 0;
-        sji_element sjt_parent113 = { 0 };
+        sjs_array_heap_iface_element* sjt_parent113 = 0;
+        sji_element sjt_parent114 = { 0 };
         sji_element sjv_child = { 0 };
 
-        sjt_dot347 = _parent;
-        sjt_parent112 = &(sjt_dot347)->children;
-        sjt_functionParam143 = i;
-        sjf_array_heap_iface_element_getat_heap(sjt_parent112, sjt_functionParam143, &sjv_child);
-        sjt_parent113 = sjv_child;
+        sjt_dot351 = _parent;
+        sjt_parent113 = &(sjt_dot351)->children;
+        sjt_functionParam145 = i;
+        sjf_array_heap_iface_element_getat_heap(sjt_parent113, sjt_functionParam145, &sjv_child);
+        sjt_parent114 = sjv_child;
         sjt_interfaceParam32 = scene;
-        sjt_parent113._vtbl->render(sjt_parent113._parent, sjt_interfaceParam32);
+        sjt_parent114._vtbl->render(sjt_parent114._parent, sjt_interfaceParam32);
         i++;
 
         if (sjv_child._parent != 0) {
@@ -10667,62 +10731,62 @@ void sjf_listlayout_render(sjs_listlayout* _parent, sjs_scene2d* scene) {
 
 void sjf_listlayout_setrect(sjs_listlayout* _parent, sjs_rect* rect_) {
     int32_t i;
-    sjs_rect* sjt_copy30 = 0;
-    sjs_listlayout* sjt_dot307 = 0;
-    sjs_listlayout* sjt_dot308 = 0;
-    sjs_array_heap_iface_element* sjt_dot309 = 0;
-    sjs_listlayout* sjt_dot310 = 0;
+    sjs_rect* sjt_copy33 = 0;
+    sjs_listlayout* sjt_dot311 = 0;
+    sjs_listlayout* sjt_dot312 = 0;
+    sjs_array_heap_iface_element* sjt_dot313 = 0;
+    sjs_listlayout* sjt_dot314 = 0;
     int32_t sjt_forEnd15;
     int32_t sjt_forStart15;
-    sjs_margin* sjt_functionParam141 = 0;
-    sjs_rect* sjt_parent102 = 0;
+    sjs_margin* sjt_functionParam143 = 0;
+    sjs_rect* sjt_parent103 = 0;
     sjs_rect sjv_innerrect = { -1 };
     int32_t sjv_val;
 
-    sjt_dot307 = _parent;
-    sjt_copy30 = rect_;
-    sjt_dot307->_rect._refCount = 1;
-    sjf_rect_copy(&sjt_dot307->_rect, sjt_copy30);
-    sjt_parent102 = rect_;
-    sjt_dot308 = _parent;
-    sjt_functionParam141 = &(sjt_dot308)->margin;
-    sjf_rect_subtractmargin(sjt_parent102, sjt_functionParam141, &sjv_innerrect);
+    sjt_dot311 = _parent;
+    sjt_copy33 = rect_;
+    sjt_dot311->_rect._refCount = 1;
+    sjf_rect_copy(&sjt_dot311->_rect, sjt_copy33);
+    sjt_parent103 = rect_;
+    sjt_dot312 = _parent;
+    sjt_functionParam143 = &(sjt_dot312)->margin;
+    sjf_rect_subtractmargin(sjt_parent103, sjt_functionParam143, &sjv_innerrect);
     sjv_val = 0;
     sjt_forStart15 = 0;
-    sjt_dot310 = _parent;
-    sjt_dot309 = &(sjt_dot310)->children;
-    sjt_forEnd15 = (sjt_dot309)->count;
+    sjt_dot314 = _parent;
+    sjt_dot313 = &(sjt_dot314)->children;
+    sjt_forEnd15 = (sjt_dot313)->count;
     i = sjt_forStart15;
     while (i < sjt_forEnd15) {
         int32_t sjt_compare73;
         int32_t sjt_compare74;
-        sjs_listlayout* sjt_dot311 = 0;
-        sjs_listlayout* sjt_dot312 = 0;
-        int32_t sjt_functionParam142;
-        sjs_array_heap_iface_element* sjt_parent103 = 0;
+        sjs_listlayout* sjt_dot315 = 0;
+        sjs_listlayout* sjt_dot316 = 0;
+        int32_t sjt_functionParam144;
+        sjs_array_heap_iface_element* sjt_parent104 = 0;
         bool sjt_switch7;
         sji_element sjv_child = { 0 };
         int32_t underscore5;
 
-        sjt_dot311 = _parent;
-        sjt_parent103 = &(sjt_dot311)->children;
-        sjt_functionParam142 = i;
-        sjf_array_heap_iface_element_getat_heap(sjt_parent103, sjt_functionParam142, &sjv_child);
-        sjt_dot312 = _parent;
-        underscore5 = (sjt_dot312)->orientation;
+        sjt_dot315 = _parent;
+        sjt_parent104 = &(sjt_dot315)->children;
+        sjt_functionParam144 = i;
+        sjf_array_heap_iface_element_getat_heap(sjt_parent104, sjt_functionParam144, &sjv_child);
+        sjt_dot316 = _parent;
+        underscore5 = (sjt_dot316)->orientation;
         sjt_compare73 = underscore5;
         sjt_compare74 = sjv_listlayoutorientation_topbottom;
         sjt_switch7 = sjt_compare73 == sjt_compare74;
         if (sjt_switch7) {
             sjs_size sjt_call43 = { -1 };
             sjs_rect sjt_call44 = { -1 };
-            sjs_rect* sjt_dot313 = 0;
-            sjs_rect* sjt_dot314 = 0;
-            sjs_rect* sjt_dot315 = 0;
-            sjs_rect* sjt_dot316 = 0;
             sjs_rect* sjt_dot317 = 0;
-            sjs_size* sjt_dot318 = 0;
-            sjs_size* sjt_dot319 = 0;
+            sjs_rect* sjt_dot318 = 0;
+            sjs_rect* sjt_dot319 = 0;
+            sjs_rect* sjt_dot320 = 0;
+            sjs_rect* sjt_dot321 = 0;
+            sjs_size* sjt_dot322 = 0;
+            sjs_size* sjt_dot323 = 0;
             sjs_size* sjt_interfaceParam24 = 0;
             sjs_rect* sjt_interfaceParam25 = 0;
             int32_t sjt_math173;
@@ -10731,40 +10795,40 @@ void sjf_listlayout_setrect(sjs_listlayout* _parent, sjs_rect* rect_) {
             int32_t sjt_math176;
             int32_t sjt_math177;
             int32_t sjt_math178;
-            sji_element sjt_parent104 = { 0 };
             sji_element sjt_parent105 = { 0 };
+            sji_element sjt_parent106 = { 0 };
             sjs_size sjv_childsize = { -1 };
 
-            sjt_parent104 = sjv_child;
+            sjt_parent105 = sjv_child;
             sjt_call43._refCount = 1;
-            sjt_dot313 = &sjv_innerrect;
-            sjt_call43.w = (sjt_dot313)->w;
-            sjt_dot314 = &sjv_innerrect;
-            sjt_math173 = (sjt_dot314)->h;
+            sjt_dot317 = &sjv_innerrect;
+            sjt_call43.w = (sjt_dot317)->w;
+            sjt_dot318 = &sjv_innerrect;
+            sjt_math173 = (sjt_dot318)->h;
             sjt_math174 = sjv_val;
             sjt_call43.h = sjt_math173 - sjt_math174;
             sjf_size(&sjt_call43);
             sjt_interfaceParam24 = &sjt_call43;
             sjv_childsize._refCount = 1;
-            sjt_parent104._vtbl->getsize(sjt_parent104._parent, sjt_interfaceParam24, &sjv_childsize);
-            sjt_parent105 = sjv_child;
+            sjt_parent105._vtbl->getsize(sjt_parent105._parent, sjt_interfaceParam24, &sjv_childsize);
+            sjt_parent106 = sjv_child;
             sjt_call44._refCount = 1;
-            sjt_dot315 = &sjv_innerrect;
-            sjt_call44.x = (sjt_dot315)->x;
-            sjt_dot316 = &sjv_innerrect;
-            sjt_math175 = (sjt_dot316)->y;
+            sjt_dot319 = &sjv_innerrect;
+            sjt_call44.x = (sjt_dot319)->x;
+            sjt_dot320 = &sjv_innerrect;
+            sjt_math175 = (sjt_dot320)->y;
             sjt_math176 = sjv_val;
             sjt_call44.y = sjt_math175 + sjt_math176;
-            sjt_dot317 = &sjv_innerrect;
-            sjt_call44.w = (sjt_dot317)->w;
-            sjt_dot318 = &sjv_childsize;
-            sjt_call44.h = (sjt_dot318)->h;
+            sjt_dot321 = &sjv_innerrect;
+            sjt_call44.w = (sjt_dot321)->w;
+            sjt_dot322 = &sjv_childsize;
+            sjt_call44.h = (sjt_dot322)->h;
             sjf_rect(&sjt_call44);
             sjt_interfaceParam25 = &sjt_call44;
-            sjt_parent105._vtbl->setrect(sjt_parent105._parent, sjt_interfaceParam25);
+            sjt_parent106._vtbl->setrect(sjt_parent106._parent, sjt_interfaceParam25);
             sjt_math177 = sjv_val;
-            sjt_dot319 = &sjv_childsize;
-            sjt_math178 = (sjt_dot319)->h;
+            sjt_dot323 = &sjv_childsize;
+            sjt_math178 = (sjt_dot323)->h;
             sjv_val = sjt_math177 + sjt_math178;
 
             if (sjt_call43._refCount == 1) { sjf_size_destroy(&sjt_call43); }
@@ -10781,15 +10845,15 @@ void sjf_listlayout_setrect(sjs_listlayout* _parent, sjs_rect* rect_) {
             if (sjt_switch8) {
                 sjs_size sjt_call45 = { -1 };
                 sjs_rect sjt_call46 = { -1 };
-                sjs_rect* sjt_dot320 = 0;
-                sjs_rect* sjt_dot321 = 0;
-                sjs_rect* sjt_dot322 = 0;
-                sjs_rect* sjt_dot323 = 0;
                 sjs_rect* sjt_dot324 = 0;
-                sjs_size* sjt_dot325 = 0;
+                sjs_rect* sjt_dot325 = 0;
                 sjs_rect* sjt_dot326 = 0;
-                sjs_size* sjt_dot327 = 0;
-                sjs_size* sjt_dot328 = 0;
+                sjs_rect* sjt_dot327 = 0;
+                sjs_rect* sjt_dot328 = 0;
+                sjs_size* sjt_dot329 = 0;
+                sjs_rect* sjt_dot330 = 0;
+                sjs_size* sjt_dot331 = 0;
+                sjs_size* sjt_dot332 = 0;
                 sjs_size* sjt_interfaceParam26 = 0;
                 sjs_rect* sjt_interfaceParam27 = 0;
                 int32_t sjt_math179;
@@ -10802,46 +10866,46 @@ void sjf_listlayout_setrect(sjs_listlayout* _parent, sjs_rect* rect_) {
                 int32_t sjt_math186;
                 int32_t sjt_math187;
                 int32_t sjt_math188;
-                sji_element sjt_parent106 = { 0 };
                 sji_element sjt_parent107 = { 0 };
+                sji_element sjt_parent108 = { 0 };
                 sjs_size sjv_childsize = { -1 };
 
-                sjt_parent106 = sjv_child;
+                sjt_parent107 = sjv_child;
                 sjt_call45._refCount = 1;
-                sjt_dot320 = &sjv_innerrect;
-                sjt_call45.w = (sjt_dot320)->w;
-                sjt_dot321 = &sjv_innerrect;
-                sjt_math179 = (sjt_dot321)->h;
+                sjt_dot324 = &sjv_innerrect;
+                sjt_call45.w = (sjt_dot324)->w;
+                sjt_dot325 = &sjv_innerrect;
+                sjt_math179 = (sjt_dot325)->h;
                 sjt_math180 = sjv_val;
                 sjt_call45.h = sjt_math179 - sjt_math180;
                 sjf_size(&sjt_call45);
                 sjt_interfaceParam26 = &sjt_call45;
                 sjv_childsize._refCount = 1;
-                sjt_parent106._vtbl->getsize(sjt_parent106._parent, sjt_interfaceParam26, &sjv_childsize);
-                sjt_parent107 = sjv_child;
+                sjt_parent107._vtbl->getsize(sjt_parent107._parent, sjt_interfaceParam26, &sjv_childsize);
+                sjt_parent108 = sjv_child;
                 sjt_call46._refCount = 1;
-                sjt_dot322 = &sjv_innerrect;
-                sjt_call46.x = (sjt_dot322)->x;
-                sjt_dot323 = &sjv_innerrect;
-                sjt_math185 = (sjt_dot323)->y;
-                sjt_dot324 = &sjv_innerrect;
-                sjt_math186 = (sjt_dot324)->h;
+                sjt_dot326 = &sjv_innerrect;
+                sjt_call46.x = (sjt_dot326)->x;
+                sjt_dot327 = &sjv_innerrect;
+                sjt_math185 = (sjt_dot327)->y;
+                sjt_dot328 = &sjv_innerrect;
+                sjt_math186 = (sjt_dot328)->h;
                 sjt_math183 = sjt_math185 + sjt_math186;
                 sjt_math184 = sjv_val;
                 sjt_math181 = sjt_math183 - sjt_math184;
-                sjt_dot325 = &sjv_childsize;
-                sjt_math182 = (sjt_dot325)->h;
+                sjt_dot329 = &sjv_childsize;
+                sjt_math182 = (sjt_dot329)->h;
                 sjt_call46.y = sjt_math181 - sjt_math182;
-                sjt_dot326 = &sjv_innerrect;
-                sjt_call46.w = (sjt_dot326)->w;
-                sjt_dot327 = &sjv_childsize;
-                sjt_call46.h = (sjt_dot327)->h;
+                sjt_dot330 = &sjv_innerrect;
+                sjt_call46.w = (sjt_dot330)->w;
+                sjt_dot331 = &sjv_childsize;
+                sjt_call46.h = (sjt_dot331)->h;
                 sjf_rect(&sjt_call46);
                 sjt_interfaceParam27 = &sjt_call46;
-                sjt_parent107._vtbl->setrect(sjt_parent107._parent, sjt_interfaceParam27);
+                sjt_parent108._vtbl->setrect(sjt_parent108._parent, sjt_interfaceParam27);
                 sjt_math187 = sjv_val;
-                sjt_dot328 = &sjv_childsize;
-                sjt_math188 = (sjt_dot328)->h;
+                sjt_dot332 = &sjv_childsize;
+                sjt_math188 = (sjt_dot332)->h;
                 sjv_val = sjt_math187 + sjt_math188;
 
                 if (sjt_call45._refCount == 1) { sjf_size_destroy(&sjt_call45); }
@@ -10858,13 +10922,13 @@ void sjf_listlayout_setrect(sjs_listlayout* _parent, sjs_rect* rect_) {
                 if (sjt_switch9) {
                     sjs_size sjt_call47 = { -1 };
                     sjs_rect sjt_call48 = { -1 };
-                    sjs_rect* sjt_dot329 = 0;
-                    sjs_rect* sjt_dot330 = 0;
-                    sjs_rect* sjt_dot331 = 0;
-                    sjs_rect* sjt_dot332 = 0;
-                    sjs_size* sjt_dot333 = 0;
+                    sjs_rect* sjt_dot333 = 0;
                     sjs_rect* sjt_dot334 = 0;
-                    sjs_size* sjt_dot335 = 0;
+                    sjs_rect* sjt_dot335 = 0;
+                    sjs_rect* sjt_dot336 = 0;
+                    sjs_size* sjt_dot337 = 0;
+                    sjs_rect* sjt_dot338 = 0;
+                    sjs_size* sjt_dot339 = 0;
                     sjs_size* sjt_interfaceParam28 = 0;
                     sjs_rect* sjt_interfaceParam29 = 0;
                     int32_t sjt_math189;
@@ -10873,40 +10937,40 @@ void sjf_listlayout_setrect(sjs_listlayout* _parent, sjs_rect* rect_) {
                     int32_t sjt_math192;
                     int32_t sjt_math193;
                     int32_t sjt_math194;
-                    sji_element sjt_parent108 = { 0 };
                     sji_element sjt_parent109 = { 0 };
+                    sji_element sjt_parent110 = { 0 };
                     sjs_size sjv_childsize = { -1 };
 
-                    sjt_parent108 = sjv_child;
+                    sjt_parent109 = sjv_child;
                     sjt_call47._refCount = 1;
-                    sjt_dot329 = &sjv_innerrect;
-                    sjt_math189 = (sjt_dot329)->w;
+                    sjt_dot333 = &sjv_innerrect;
+                    sjt_math189 = (sjt_dot333)->w;
                     sjt_math190 = sjv_val;
                     sjt_call47.w = sjt_math189 - sjt_math190;
-                    sjt_dot330 = &sjv_innerrect;
-                    sjt_call47.h = (sjt_dot330)->h;
+                    sjt_dot334 = &sjv_innerrect;
+                    sjt_call47.h = (sjt_dot334)->h;
                     sjf_size(&sjt_call47);
                     sjt_interfaceParam28 = &sjt_call47;
                     sjv_childsize._refCount = 1;
-                    sjt_parent108._vtbl->getsize(sjt_parent108._parent, sjt_interfaceParam28, &sjv_childsize);
-                    sjt_parent109 = sjv_child;
+                    sjt_parent109._vtbl->getsize(sjt_parent109._parent, sjt_interfaceParam28, &sjv_childsize);
+                    sjt_parent110 = sjv_child;
                     sjt_call48._refCount = 1;
-                    sjt_dot331 = &sjv_innerrect;
-                    sjt_math191 = (sjt_dot331)->x;
+                    sjt_dot335 = &sjv_innerrect;
+                    sjt_math191 = (sjt_dot335)->x;
                     sjt_math192 = sjv_val;
                     sjt_call48.x = sjt_math191 + sjt_math192;
-                    sjt_dot332 = &sjv_innerrect;
-                    sjt_call48.y = (sjt_dot332)->y;
-                    sjt_dot333 = &sjv_childsize;
-                    sjt_call48.w = (sjt_dot333)->w;
-                    sjt_dot334 = &sjv_innerrect;
-                    sjt_call48.h = (sjt_dot334)->h;
+                    sjt_dot336 = &sjv_innerrect;
+                    sjt_call48.y = (sjt_dot336)->y;
+                    sjt_dot337 = &sjv_childsize;
+                    sjt_call48.w = (sjt_dot337)->w;
+                    sjt_dot338 = &sjv_innerrect;
+                    sjt_call48.h = (sjt_dot338)->h;
                     sjf_rect(&sjt_call48);
                     sjt_interfaceParam29 = &sjt_call48;
-                    sjt_parent109._vtbl->setrect(sjt_parent109._parent, sjt_interfaceParam29);
+                    sjt_parent110._vtbl->setrect(sjt_parent110._parent, sjt_interfaceParam29);
                     sjt_math193 = sjv_val;
-                    sjt_dot335 = &sjv_childsize;
-                    sjt_math194 = (sjt_dot335)->w;
+                    sjt_dot339 = &sjv_childsize;
+                    sjt_math194 = (sjt_dot339)->w;
                     sjv_val = sjt_math193 + sjt_math194;
 
                     if (sjt_call47._refCount == 1) { sjf_size_destroy(&sjt_call47); }
@@ -10923,15 +10987,15 @@ void sjf_listlayout_setrect(sjs_listlayout* _parent, sjs_rect* rect_) {
                     if (sjt_switch10) {
                         sjs_size sjt_call49 = { -1 };
                         sjs_rect sjt_call50 = { -1 };
-                        sjs_rect* sjt_dot336 = 0;
-                        sjs_rect* sjt_dot337 = 0;
-                        sjs_rect* sjt_dot338 = 0;
-                        sjs_rect* sjt_dot339 = 0;
-                        sjs_size* sjt_dot340 = 0;
+                        sjs_rect* sjt_dot340 = 0;
                         sjs_rect* sjt_dot341 = 0;
-                        sjs_size* sjt_dot342 = 0;
+                        sjs_rect* sjt_dot342 = 0;
                         sjs_rect* sjt_dot343 = 0;
                         sjs_size* sjt_dot344 = 0;
+                        sjs_rect* sjt_dot345 = 0;
+                        sjs_size* sjt_dot346 = 0;
+                        sjs_rect* sjt_dot347 = 0;
+                        sjs_size* sjt_dot348 = 0;
                         sjs_size* sjt_interfaceParam30 = 0;
                         sjs_rect* sjt_interfaceParam31 = 0;
                         int32_t sjt_math195;
@@ -10944,46 +11008,46 @@ void sjf_listlayout_setrect(sjs_listlayout* _parent, sjs_rect* rect_) {
                         int32_t sjt_math202;
                         int32_t sjt_math203;
                         int32_t sjt_math204;
-                        sji_element sjt_parent110 = { 0 };
                         sji_element sjt_parent111 = { 0 };
+                        sji_element sjt_parent112 = { 0 };
                         sjs_size sjv_childsize = { -1 };
 
-                        sjt_parent110 = sjv_child;
+                        sjt_parent111 = sjv_child;
                         sjt_call49._refCount = 1;
-                        sjt_dot336 = &sjv_innerrect;
-                        sjt_math195 = (sjt_dot336)->w;
+                        sjt_dot340 = &sjv_innerrect;
+                        sjt_math195 = (sjt_dot340)->w;
                         sjt_math196 = sjv_val;
                         sjt_call49.w = sjt_math195 - sjt_math196;
-                        sjt_dot337 = &sjv_innerrect;
-                        sjt_call49.h = (sjt_dot337)->h;
+                        sjt_dot341 = &sjv_innerrect;
+                        sjt_call49.h = (sjt_dot341)->h;
                         sjf_size(&sjt_call49);
                         sjt_interfaceParam30 = &sjt_call49;
                         sjv_childsize._refCount = 1;
-                        sjt_parent110._vtbl->getsize(sjt_parent110._parent, sjt_interfaceParam30, &sjv_childsize);
-                        sjt_parent111 = sjv_child;
+                        sjt_parent111._vtbl->getsize(sjt_parent111._parent, sjt_interfaceParam30, &sjv_childsize);
+                        sjt_parent112 = sjv_child;
                         sjt_call50._refCount = 1;
-                        sjt_dot338 = &sjv_innerrect;
-                        sjt_math201 = (sjt_dot338)->x;
-                        sjt_dot339 = &sjv_innerrect;
-                        sjt_math202 = (sjt_dot339)->w;
+                        sjt_dot342 = &sjv_innerrect;
+                        sjt_math201 = (sjt_dot342)->x;
+                        sjt_dot343 = &sjv_innerrect;
+                        sjt_math202 = (sjt_dot343)->w;
                         sjt_math199 = sjt_math201 + sjt_math202;
                         sjt_math200 = sjv_val;
                         sjt_math197 = sjt_math199 - sjt_math200;
-                        sjt_dot340 = &sjv_childsize;
-                        sjt_math198 = (sjt_dot340)->w;
+                        sjt_dot344 = &sjv_childsize;
+                        sjt_math198 = (sjt_dot344)->w;
                         sjt_call50.x = sjt_math197 - sjt_math198;
-                        sjt_dot341 = &sjv_innerrect;
-                        sjt_call50.y = (sjt_dot341)->y;
-                        sjt_dot342 = &sjv_childsize;
-                        sjt_call50.w = (sjt_dot342)->w;
-                        sjt_dot343 = &sjv_innerrect;
-                        sjt_call50.h = (sjt_dot343)->h;
+                        sjt_dot345 = &sjv_innerrect;
+                        sjt_call50.y = (sjt_dot345)->y;
+                        sjt_dot346 = &sjv_childsize;
+                        sjt_call50.w = (sjt_dot346)->w;
+                        sjt_dot347 = &sjv_innerrect;
+                        sjt_call50.h = (sjt_dot347)->h;
                         sjf_rect(&sjt_call50);
                         sjt_interfaceParam31 = &sjt_call50;
-                        sjt_parent111._vtbl->setrect(sjt_parent111._parent, sjt_interfaceParam31);
+                        sjt_parent112._vtbl->setrect(sjt_parent112._parent, sjt_interfaceParam31);
                         sjt_math203 = sjv_val;
-                        sjt_dot344 = &sjv_childsize;
-                        sjt_math204 = (sjt_dot344)->w;
+                        sjt_dot348 = &sjv_childsize;
+                        sjt_math204 = (sjt_dot348)->w;
                         sjv_val = sjt_math203 + sjt_math204;
 
                         if (sjt_call49._refCount == 1) { sjf_size_destroy(&sjt_call49); }
@@ -11010,76 +11074,78 @@ void sjf_listlayout_setrect(sjs_listlayout* _parent, sjs_rect* rect_) {
 
 void sjf_mainloop(void) {
     bool result9;
-    sjs_size* sjt_dot496 = 0;
-    sjs_size* sjt_dot497 = 0;
-    int32_t sjt_functionParam261;
-    sjs_size* sjt_functionParam272 = 0;
-    sjs_rect* sjt_functionParam281 = 0;
+    sjs_size* sjt_dot500 = 0;
+    sjs_size* sjt_dot501 = 0;
+    int32_t sjt_functionParam263;
+    sjs_size* sjt_functionParam274 = 0;
+    sjs_rect* sjt_functionParam283 = 0;
     bool sjt_ifElse47;
     sjs_scene2d* sjt_interfaceParam49 = 0;
-    bool sjt_isEmpty23;
-    int32_option sjt_isEmpty24;
+    bool sjt_isEmpty25;
+    int32_option sjt_isEmpty26;
     bool sjt_not4;
-    sjs_anon1* sjt_parent183 = 0;
-    sjs_windowrenderer* sjt_parent184 = 0;
-    sjs_scene2d* sjt_parent186 = 0;
-    sjs_scene2d* sjt_parent190 = 0;
-    sjs_rect* sjt_parent191 = 0;
-    sji_element sjt_parent193 = { 0 };
-    sjs_scene2d* sjt_parent203 = 0;
-    sjs_windowrenderer* sjt_parent204 = 0;
-    int32_option sjv_mouseeventtype;
+    sjs_anon1* sjt_parent184 = 0;
+    sjs_windowrenderer* sjt_parent185 = 0;
+    sjs_scene2d* sjt_parent187 = 0;
+    sjs_scene2d* sjt_parent191 = 0;
+    sjs_rect* sjt_parent192 = 0;
+    sji_element sjt_parent194 = { 0 };
+    sjs_scene2d* sjt_parent204 = 0;
+    sjs_windowrenderer* sjt_parent205 = 0;
+    int32_option sjv_mouse_eventtype;
+    bool sjv_mouse_isleftdown;
+    int32_t sjv_mouse_x;
+    int32_t sjv_mouse_y;
     sjs_rect sjv_rect = { -1 };
     bool sjv_shouldcontinue;
     sjs_size sjv_size = { -1 };
     int32_t sjv_ticks;
-    int32_t sjv_x;
-    int32_t sjv_y;
 
     sjv_ticks = 0;
     sjv_ticks = SDL_GetTicks();
-    sjt_parent183 = &sjv_animator;
-    sjt_functionParam261 = sjv_ticks;
-    sjf_anon1_nextframe(sjt_parent183, sjt_functionParam261);
-    sjt_parent184 = &sjv_rootwindowrenderer;
-    sjf_windowrenderer_getsize(sjt_parent184, &sjv_size);
-    sjt_parent186 = &sjv_rootscene;
-    sjt_functionParam272 = &sjv_size;
-    sjf_scene2d_setsize(sjt_parent186, sjt_functionParam272);
-    sjt_parent190 = &sjv_rootscene;
-    sjf_scene2d_start(sjt_parent190);
+    sjt_parent184 = &sjv_animator;
+    sjt_functionParam263 = sjv_ticks;
+    sjf_anon1_nextframe(sjt_parent184, sjt_functionParam263);
+    sjt_parent185 = &sjv_rootwindowrenderer;
+    sjf_windowrenderer_getsize(sjt_parent185, &sjv_size);
+    sjt_parent187 = &sjv_rootscene;
+    sjt_functionParam274 = &sjv_size;
+    sjf_scene2d_setsize(sjt_parent187, sjt_functionParam274);
+    sjt_parent191 = &sjv_rootscene;
+    sjf_scene2d_start(sjt_parent191);
     sjv_rect._refCount = 1;
     sjv_rect.x = 0;
     sjv_rect.y = 0;
-    sjt_dot496 = &sjv_size;
-    sjv_rect.w = (sjt_dot496)->w;
-    sjt_dot497 = &sjv_size;
-    sjv_rect.h = (sjt_dot497)->h;
+    sjt_dot500 = &sjv_size;
+    sjv_rect.w = (sjt_dot500)->w;
+    sjt_dot501 = &sjv_size;
+    sjv_rect.h = (sjt_dot501)->h;
     sjf_rect(&sjv_rect);
-    sjt_parent191 = &sjv_looplastrect;
-    sjt_functionParam281 = &sjv_rect;
-    sjf_rect_isequal(sjt_parent191, sjt_functionParam281, &sjt_not4);
+    sjt_parent192 = &sjv_looplastrect;
+    sjt_functionParam283 = &sjv_rect;
+    sjf_rect_isequal(sjt_parent192, sjt_functionParam283, &sjt_not4);
     result9 = !sjt_not4;
     sjt_ifElse47 = result9;
     if (sjt_ifElse47) {
         sjs_rect* sjt_interfaceParam48 = 0;
-        sji_element sjt_parent192 = { 0 };
+        sji_element sjt_parent193 = { 0 };
 
-        sjt_parent192 = sjv_root;
+        sjt_parent193 = sjv_root;
         sjt_interfaceParam48 = &sjv_rect;
-        sjt_parent192._vtbl->setrect(sjt_parent192._parent, sjt_interfaceParam48);
+        sjt_parent193._vtbl->setrect(sjt_parent193._parent, sjt_interfaceParam48);
     }
 
-    sjt_parent193 = sjv_root;
+    sjt_parent194 = sjv_root;
     sjt_interfaceParam49 = &sjv_rootscene;
-    sjt_parent193._vtbl->render(sjt_parent193._parent, sjt_interfaceParam49);
-    sjt_parent203 = &sjv_rootscene;
-    sjf_scene2d_end(sjt_parent203);
-    sjt_parent204 = &sjv_rootwindowrenderer;
-    sjf_windowrenderer_present(sjt_parent204);
-    sjv_mouseeventtype = int32_empty;
-    sjv_x = 0;
-    sjv_y = 0;
+    sjt_parent194._vtbl->render(sjt_parent194._parent, sjt_interfaceParam49);
+    sjt_parent204 = &sjv_rootscene;
+    sjf_scene2d_end(sjt_parent204);
+    sjt_parent205 = &sjv_rootwindowrenderer;
+    sjf_windowrenderer_present(sjt_parent205);
+    sjv_mouse_eventtype = int32_empty;
+    sjv_mouse_x = 0;
+    sjv_mouse_y = 0;
+    sjv_mouse_isleftdown = false;
     SDL_Event e;
     while(SDL_PollEvent( &e ) != 0) {
         switch (e.type) {
@@ -11088,86 +11154,91 @@ void sjf_mainloop(void) {
             break;
             case SDL_MOUSEBUTTONDOWN:
             printf("SDL_MOUSEBUTTONDOWN\n");
-            sjv_mouseeventtype.isvalid = true;
-            sjv_mouseeventtype.value = sjv_mouseeventtype_down;
-            sjv_x = e.button.x;
-            sjv_y = e.button.y;
+            sjv_mouse_eventtype.isvalid = true;
+            sjv_mouse_eventtype.value = sjv_mouseeventtype_down;
+            sjv_mouse_x = e.button.x;
+            sjv_mouse_y = e.button.y;
+            sjv_mouse_isleftdown = e.button.state & SDL_BUTTON(SDL_BUTTON_LEFT);
             break;
             case SDL_MOUSEBUTTONUP:
             printf("SDL_MOUSEBUTTONUP\n");
-            sjv_mouseeventtype.isvalid = true;
-            sjv_mouseeventtype.value = sjv_mouseeventtype_up;
-            sjv_x = e.button.x;
-            sjv_y = e.button.y;
+            sjv_mouse_eventtype.isvalid = true;
+            sjv_mouse_eventtype.value = sjv_mouseeventtype_up;
+            sjv_mouse_x = e.button.x;
+            sjv_mouse_y = e.button.y;
+            sjv_mouse_isleftdown = e.button.state & SDL_BUTTON(SDL_BUTTON_LEFT);
             break;
             case SDL_MOUSEMOTION:
-            sjv_mouseeventtype.isvalid = true;
-            sjv_mouseeventtype.value = sjv_mouseeventtype_move;
-            sjv_x = e.motion.x;
-            sjv_y = e.motion.y;
+            sjv_mouse_eventtype.isvalid = true;
+            sjv_mouse_eventtype.value = sjv_mouseeventtype_move;
+            sjv_mouse_x = e.motion.x;
+            sjv_mouse_y = e.motion.y;
+            sjv_mouse_isleftdown = e.button.state & SDL_BUTTON(SDL_BUTTON_LEFT);
             break;
         }
     }
     sjv_shouldcontinue = true;
-    sjt_isEmpty24 = sjv_mouseeventtype;
-    sjt_isEmpty23 = sjt_isEmpty24.isvalid;
-    if (sjt_isEmpty23) {
-        int32_t ifValue13;
+    sjt_isEmpty26 = sjv_mouse_eventtype;
+    sjt_isEmpty25 = sjt_isEmpty26.isvalid;
+    if (sjt_isEmpty25) {
+        int32_t ifValue15;
         int32_option sjt_getValue5;
-        bool sjt_isEmpty25;
-        sji_element sjt_isEmpty26 = { 0 };
+        bool sjt_isEmpty27;
+        sji_element sjt_isEmpty28 = { 0 };
 
-        sjt_getValue5 = sjv_mouseeventtype;
-        ifValue13 = sjt_getValue5.value;
-        sjt_isEmpty26 = sjv_mouse_captureelement;
-        sjt_isEmpty25 = (sjt_isEmpty26._parent != 0);
-        if (sjt_isEmpty25) {
-            sji_element ifValue14 = { 0 };
+        sjt_getValue5 = sjv_mouse_eventtype;
+        ifValue15 = sjt_getValue5.value;
+        sjt_isEmpty28 = sjv_mouse_captureelement;
+        sjt_isEmpty27 = (sjt_isEmpty28._parent != 0);
+        if (sjt_isEmpty27) {
+            sji_element ifValue16 = { 0 };
             sjs_mouseevent sjt_call97 = { -1 };
             sjs_mouseevent* sjt_interfaceParam50 = 0;
-            sji_element sjt_parent205 = { 0 };
+            sji_element sjt_parent206 = { 0 };
 
-            ifValue14 = sjv_mouse_captureelement;
-            if (ifValue14._parent != 0) {
-                ifValue14._parent->_refCount++;
+            ifValue16 = sjv_mouse_captureelement;
+            if (ifValue16._parent != 0) {
+                ifValue16._parent->_refCount++;
             }
 
-            sjt_parent205 = ifValue14;
+            sjt_parent206 = ifValue16;
             sjt_call97._refCount = 1;
-            sjt_call97.type = ifValue13;
+            sjt_call97.type = ifValue15;
             sjt_call97.point._refCount = 1;
-            sjt_call97.point.x = sjv_x;
-            sjt_call97.point.y = sjv_y;
+            sjt_call97.point.x = sjv_mouse_x;
+            sjt_call97.point.y = sjv_mouse_y;
             sjf_point(&sjt_call97.point);
             sjt_call97.iscaptured = true;
+            sjt_call97.isleftdown = sjv_mouse_isleftdown;
             sjf_mouseevent(&sjt_call97);
             sjt_interfaceParam50 = &sjt_call97;
-            sjt_parent205._vtbl->firemouseevent(sjt_parent205._parent, sjt_interfaceParam50, &sjv_shouldcontinue);
+            sjt_parent206._vtbl->firemouseevent(sjt_parent206._parent, sjt_interfaceParam50, &sjv_shouldcontinue);
 
-            if (ifValue14._parent != 0) {
-                ifValue14._parent->_refCount--;
-                if (ifValue14._parent->_refCount <= 0) {
-                    ifValue14._vtbl->destroy(ifValue14._parent);
-                    free(ifValue14._parent);
+            if (ifValue16._parent != 0) {
+                ifValue16._parent->_refCount--;
+                if (ifValue16._parent->_refCount <= 0) {
+                    ifValue16._vtbl->destroy(ifValue16._parent);
+                    free(ifValue16._parent);
                 }
             }
             if (sjt_call97._refCount == 1) { sjf_mouseevent_destroy(&sjt_call97); }
         } else {
             sjs_mouseevent sjt_call98 = { -1 };
             sjs_mouseevent* sjt_interfaceParam51 = 0;
-            sji_element sjt_parent206 = { 0 };
+            sji_element sjt_parent207 = { 0 };
 
-            sjt_parent206 = sjv_root;
+            sjt_parent207 = sjv_root;
             sjt_call98._refCount = 1;
-            sjt_call98.type = ifValue13;
+            sjt_call98.type = ifValue15;
             sjt_call98.point._refCount = 1;
-            sjt_call98.point.x = sjv_x;
-            sjt_call98.point.y = sjv_y;
+            sjt_call98.point.x = sjv_mouse_x;
+            sjt_call98.point.y = sjv_mouse_y;
             sjf_point(&sjt_call98.point);
             sjt_call98.iscaptured = false;
+            sjt_call98.isleftdown = sjv_mouse_isleftdown;
             sjf_mouseevent(&sjt_call98);
             sjt_interfaceParam51 = &sjt_call98;
-            sjt_parent206._vtbl->firemouseevent(sjt_parent206._parent, sjt_interfaceParam51, &sjv_shouldcontinue);
+            sjt_parent207._vtbl->firemouseevent(sjt_parent207._parent, sjt_interfaceParam51, &sjv_shouldcontinue);
 
             if (sjt_call98._refCount == 1) { sjf_mouseevent_destroy(&sjt_call98); }
         }
@@ -11512,6 +11583,7 @@ void sjf_mouseevent_copy(sjs_mouseevent* _this, sjs_mouseevent* _from) {
     _this->point._refCount = 1;
     sjf_point_copy(&_this->point, &_from->point);
     _this->iscaptured = _from->iscaptured;
+    _this->isleftdown = _from->isleftdown;
 }
 
 void sjf_mouseevent_destroy(sjs_mouseevent* _this) {
@@ -11785,16 +11857,16 @@ void sjf_scene2d_destroy(sjs_scene2d* _this) {
 }
 
 void sjf_scene2d_end(sjs_scene2d* _parent) {
-    sjs_scene2d* sjt_dot507 = 0;
-    sjs_scene2d* sjt_dot508 = 0;
-    sjs_rect* sjt_functionParam288 = 0;
-    sjs_rect* sjt_functionParam289 = 0;
+    sjs_scene2d* sjt_dot511 = 0;
+    sjs_scene2d* sjt_dot512 = 0;
+    sjs_rect* sjt_functionParam290 = 0;
+    sjs_rect* sjt_functionParam291 = 0;
 
-    sjt_dot507 = _parent;
-    sjt_functionParam288 = &(sjt_dot507)->windowrect;
-    sjt_dot508 = _parent;
-    sjt_functionParam289 = &(sjt_dot508)->windowrect;
-    sjf_glpopviewport(sjt_functionParam288, sjt_functionParam289);
+    sjt_dot511 = _parent;
+    sjt_functionParam290 = &(sjt_dot511)->windowrect;
+    sjt_dot512 = _parent;
+    sjt_functionParam291 = &(sjt_dot512)->windowrect;
+    sjf_glpopviewport(sjt_functionParam290, sjt_functionParam291);
 }
 
 void sjf_scene2d_heap(sjs_scene2d* _this) {
@@ -11802,34 +11874,32 @@ void sjf_scene2d_heap(sjs_scene2d* _this) {
 
 void sjf_scene2d_setsize(sjs_scene2d* _parent, sjs_size* size) {
     bool result4;
-    sjs_scene2d* sjt_dot461 = 0;
-    sjs_size* sjt_functionParam262 = 0;
+    sjs_scene2d* sjt_dot465 = 0;
+    sjs_size* sjt_functionParam264 = 0;
     bool sjt_ifElse45;
     bool sjt_not3;
-    sjs_size* sjt_parent185 = 0;
+    sjs_size* sjt_parent186 = 0;
 
-    sjt_dot461 = _parent;
-    sjt_parent185 = &(sjt_dot461)->_size;
-    sjt_functionParam262 = size;
-    sjf_size_isequal(sjt_parent185, sjt_functionParam262, &sjt_not3);
+    sjt_dot465 = _parent;
+    sjt_parent186 = &(sjt_dot465)->_size;
+    sjt_functionParam264 = size;
+    sjf_size_isequal(sjt_parent186, sjt_functionParam264, &sjt_not3);
     result4 = !sjt_not3;
     sjt_ifElse45 = result4;
     if (sjt_ifElse45) {
         float result7;
         float result8;
-        int32_t sjt_cast22;
         int32_t sjt_cast23;
-        sjs_size* sjt_copy37 = 0;
-        sjs_scene2d* sjt_dot462 = 0;
-        sjs_scene2d* sjt_dot463 = 0;
-        sjs_size* sjt_dot464 = 0;
-        sjs_scene2d* sjt_dot465 = 0;
-        sjs_size* sjt_dot466 = 0;
+        int32_t sjt_cast24;
+        sjs_size* sjt_copy40 = 0;
+        sjs_scene2d* sjt_dot466 = 0;
         sjs_scene2d* sjt_dot467 = 0;
-        sjs_scene2d* sjt_dot468 = 0;
+        sjs_size* sjt_dot468 = 0;
         sjs_scene2d* sjt_dot469 = 0;
-        float sjt_functionParam263;
-        float sjt_functionParam264;
+        sjs_size* sjt_dot470 = 0;
+        sjs_scene2d* sjt_dot471 = 0;
+        sjs_scene2d* sjt_dot472 = 0;
+        sjs_scene2d* sjt_dot473 = 0;
         float sjt_functionParam265;
         float sjt_functionParam266;
         float sjt_functionParam267;
@@ -11837,72 +11907,74 @@ void sjf_scene2d_setsize(sjs_scene2d* _parent, sjs_size* size) {
         float sjt_functionParam269;
         float sjt_functionParam270;
         float sjt_functionParam271;
+        float sjt_functionParam272;
+        float sjt_functionParam273;
         int32_t sjt_math337;
         int32_t sjt_math338;
         float sjt_negate4;
         float sjt_negate5;
 
-        sjt_dot462 = _parent;
-        sjt_copy37 = size;
-        sjt_dot462->_size._refCount = 1;
-        sjf_size_copy(&sjt_dot462->_size, sjt_copy37);
-        sjt_dot463 = _parent;
-        sjt_functionParam263 = 0.0f;
-        sjt_dot465 = _parent;
-        sjt_dot464 = &(sjt_dot465)->_size;
-        sjt_cast22 = (sjt_dot464)->w;
-        sjt_functionParam264 = (float)sjt_cast22;
-        sjt_math337 = 0;
+        sjt_dot466 = _parent;
+        sjt_copy40 = size;
+        sjt_dot466->_size._refCount = 1;
+        sjf_size_copy(&sjt_dot466->_size, sjt_copy40);
         sjt_dot467 = _parent;
-        sjt_dot466 = &(sjt_dot467)->_size;
-        sjt_math338 = (sjt_dot466)->h;
-        sjt_cast23 = sjt_math337 - sjt_math338;
-        sjt_functionParam265 = (float)sjt_cast23;
-        sjt_functionParam266 = 0.0f;
+        sjt_functionParam265 = 0.0f;
+        sjt_dot469 = _parent;
+        sjt_dot468 = &(sjt_dot469)->_size;
+        sjt_cast23 = (sjt_dot468)->w;
+        sjt_functionParam266 = (float)sjt_cast23;
+        sjt_math337 = 0;
+        sjt_dot471 = _parent;
+        sjt_dot470 = &(sjt_dot471)->_size;
+        sjt_math338 = (sjt_dot470)->h;
+        sjt_cast24 = sjt_math337 - sjt_math338;
+        sjt_functionParam267 = (float)sjt_cast24;
+        sjt_functionParam268 = 0.0f;
         sjt_negate4 = 1.0f;
         result7 = -sjt_negate4;
-        sjt_functionParam267 = result7;
-        sjt_functionParam268 = 1.0f;
-        sjf_mat4_orthographic(sjt_functionParam263, sjt_functionParam264, sjt_functionParam265, sjt_functionParam266, sjt_functionParam267, sjt_functionParam268, &sjt_dot463->projection);
-        sjt_dot468 = _parent;
-        sjt_functionParam269 = 1.0f;
+        sjt_functionParam269 = result7;
+        sjt_functionParam270 = 1.0f;
+        sjf_mat4_orthographic(sjt_functionParam265, sjt_functionParam266, sjt_functionParam267, sjt_functionParam268, sjt_functionParam269, sjt_functionParam270, &sjt_dot467->projection);
+        sjt_dot472 = _parent;
+        sjt_functionParam271 = 1.0f;
         sjt_negate5 = 1.0f;
         result8 = -sjt_negate5;
-        sjt_functionParam270 = result8;
-        sjt_functionParam271 = 1.0f;
-        sjf_mat4_scale(sjt_functionParam269, sjt_functionParam270, sjt_functionParam271, &sjt_dot468->model);
-        sjt_dot469 = _parent;
-        sjf_mat4_identity(&sjt_dot469->view);
+        sjt_functionParam272 = result8;
+        sjt_functionParam273 = 1.0f;
+        sjf_mat4_scale(sjt_functionParam271, sjt_functionParam272, sjt_functionParam273, &sjt_dot472->model);
+        sjt_dot473 = _parent;
+        sjf_mat4_identity(&sjt_dot473->view);
     }
 }
 
 void sjf_scene2d_start(sjs_scene2d* _parent) {
-    sjs_scene2d* sjt_dot470 = 0;
-    sjs_size* sjt_dot471 = 0;
-    sjs_scene2d* sjt_dot472 = 0;
-    sjs_size* sjt_dot473 = 0;
     sjs_scene2d* sjt_dot474 = 0;
-    sjs_scene2d* sjt_dot494 = 0;
-    sjs_scene2d* sjt_dot495 = 0;
-    sjs_rect* sjt_functionParam279 = 0;
-    sjs_rect* sjt_functionParam280 = 0;
+    sjs_size* sjt_dot475 = 0;
+    sjs_scene2d* sjt_dot476 = 0;
+    sjs_size* sjt_dot477 = 0;
+    sjs_scene2d* sjt_dot478 = 0;
+    sjs_scene2d* sjt_dot498 = 0;
+    sjs_scene2d* sjt_dot499 = 0;
+    sjs_rect* sjt_functionParam281 = 0;
+    sjs_rect* sjt_functionParam282 = 0;
 
-    sjt_dot470 = _parent;
-    sjt_dot470->windowrect._refCount = 1;
-    sjt_dot470->windowrect.x = 0;
-    sjt_dot470->windowrect.y = 0;
-    sjt_dot472 = _parent;
-    sjt_dot471 = &(sjt_dot472)->_size;
-    sjt_dot470->windowrect.w = (sjt_dot471)->w;
     sjt_dot474 = _parent;
-    sjt_dot473 = &(sjt_dot474)->_size;
-    sjt_dot470->windowrect.h = (sjt_dot473)->h;
-    sjf_rect(&sjt_dot470->windowrect);
-    sjt_dot494 = _parent;
-    sjt_functionParam279 = &(sjt_dot494)->windowrect;
-    sjt_dot495 = _parent;
-    sjt_functionParam280 = &(sjt_dot495)->windowrect;
-    sjf_glpushviewport(sjt_functionParam279, sjt_functionParam280);
+    sjt_dot474->windowrect._refCount = 1;
+    sjt_dot474->windowrect.x = 0;
+    sjt_dot474->windowrect.y = 0;
+    sjt_dot476 = _parent;
+    sjt_dot475 = &(sjt_dot476)->_size;
+    sjt_dot474->windowrect.w = (sjt_dot475)->w;
+    sjt_dot478 = _parent;
+    sjt_dot477 = &(sjt_dot478)->_size;
+    sjt_dot474->windowrect.h = (sjt_dot477)->h;
+    sjf_rect(&sjt_dot474->windowrect);
+    sjt_dot498 = _parent;
+    sjt_functionParam281 = &(sjt_dot498)->windowrect;
+    sjt_dot499 = _parent;
+    sjt_functionParam282 = &(sjt_dot499)->windowrect;
+    sjf_glpushviewport(sjt_functionParam281, sjt_functionParam282);
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glEnable( GL_TEXTURE_2D );
     glDisable( GL_DEPTH_TEST );
@@ -12025,20 +12097,20 @@ void sjf_size_isequal(sjs_size* _parent, sjs_size* size, bool* _return) {
     int32_t sjt_compare101;
     int32_t sjt_compare102;
     int32_t sjt_compare99;
-    sjs_size* sjt_dot457 = 0;
-    sjs_size* sjt_dot458 = 0;
-    sjs_size* sjt_dot459 = 0;
-    sjs_size* sjt_dot460 = 0;
+    sjs_size* sjt_dot461 = 0;
+    sjs_size* sjt_dot462 = 0;
+    sjs_size* sjt_dot463 = 0;
+    sjs_size* sjt_dot464 = 0;
 
-    sjt_dot457 = _parent;
-    sjt_compare99 = (sjt_dot457)->w;
-    sjt_dot458 = size;
-    sjt_compare100 = (sjt_dot458)->w;
+    sjt_dot461 = _parent;
+    sjt_compare99 = (sjt_dot461)->w;
+    sjt_dot462 = size;
+    sjt_compare100 = (sjt_dot462)->w;
     sjt_and9 = sjt_compare99 == sjt_compare100;
-    sjt_dot459 = _parent;
-    sjt_compare101 = (sjt_dot459)->h;
-    sjt_dot460 = size;
-    sjt_compare102 = (sjt_dot460)->h;
+    sjt_dot463 = _parent;
+    sjt_compare101 = (sjt_dot463)->h;
+    sjt_dot464 = size;
+    sjt_compare102 = (sjt_dot464)->h;
     sjt_and10 = sjt_compare101 == sjt_compare102;
     (*_return) = sjt_and9 && sjt_and10;
 }
@@ -12358,8 +12430,8 @@ void sjf_testelement_heap(sjs_string* text, sji_element* _return) {
     sjs_filllayout* sjt_cast4 = 0;
     sjs_boxelement* sjt_cast5 = 0;
     sjs_textelement* sjt_cast6 = 0;
-    sjs_string* sjt_copy20 = 0;
-    sjs_color* sjt_copy21 = 0;
+    sjs_string* sjt_copy23 = 0;
+    sjs_color* sjt_copy24 = 0;
     int32_t sjt_functionParam57;
     sji_element sjt_functionParam58 = { 0 };
     int32_t sjt_functionParam63;
@@ -12374,7 +12446,7 @@ void sjf_testelement_heap(sjs_string* text, sji_element* _return) {
     int32_t sjt_math132;
     sjs_array_heap_iface_element* sjt_parent48 = 0;
     sjs_array_heap_iface_element* sjt_parent53 = 0;
-    sjs_anon2* sjt_parent66 = 0;
+    sjs_anon2* sjt_parent67 = 0;
 
     sjt_call6 = (sjs_filllayout*)malloc(sizeof(sjs_filllayout));
     sjt_call6->_refCount = 1;
@@ -12427,14 +12499,15 @@ void sjf_testelement_heap(sjs_string* text, sji_element* _return) {
     sjt_functionParam63 = 1;
     sjt_call10 = (sjs_textelement*)malloc(sizeof(sjs_textelement));
     sjt_call10->_refCount = 1;
-    sjt_parent66 = &sjv_style;
-    sjf_anon2_getfont_heap(sjt_parent66, &sjt_call10->font);
-    sjt_copy20 = text;
+    sjt_call10->id._refCount = -1;
+    sjt_parent67 = &sjv_style;
+    sjf_anon2_getfont_heap(sjt_parent67, &sjt_call10->font);
+    sjt_copy23 = text;
     sjt_call10->text._refCount = 1;
-    sjf_string_copy(&sjt_call10->text, sjt_copy20);
-    sjt_copy21 = &sjv_colors_white;
+    sjf_string_copy(&sjt_call10->text, sjt_copy23);
+    sjt_copy24 = &sjv_colors_white;
     sjt_call10->color._refCount = 1;
-    sjf_color_copy(&sjt_call10->color, sjt_copy21);
+    sjf_color_copy(&sjt_call10->color, sjt_copy24);
     sjt_call10->margin._refCount = 1;
     sjt_call10->margin.l = 4;
     sjt_call10->margin.t = 4;
@@ -12512,18 +12585,25 @@ void sjf_testelement_heap(sjs_string* text, sji_element* _return) {
     }
 }
 
-void sjf_textelement(sjs_textelement* _this) {
-}
-
 void sjf_textelement_as_sji_element(sjs_textelement* _this, sji_element* _return) {
     _return->_parent = (sjs_object*)_this;
     _return->_vtbl = &sjs_textelement_element_vtbl;
+}
+
+void sjf_textelement_as_sji_textelement(sjs_textelement* _this, sji_textelement* _return) {
+    _return->_parent = (sjs_object*)_this;
+    _return->_vtbl = &sjs_textelement_textelement_vtbl;
 }
 
 void sjf_textelement_asinterface(sjs_textelement* _this, int typeId, sjs_interface* _return) {
     switch (typeId) {
         case sji_element_typeId:  {
             sjf_textelement_as_sji_element(_this, (sji_element*)_return);
+            break;
+        }
+
+        case sji_textelement_typeId:  {
+            sjf_textelement_as_sji_textelement(_this, (sji_textelement*)_return);
             break;
         }
 
@@ -12535,6 +12615,8 @@ void sjf_textelement_asinterface(sjs_textelement* _this, int typeId, sjs_interfa
 }
 
 void sjf_textelement_copy(sjs_textelement* _this, sjs_textelement* _from) {
+    _this->id._refCount = 1;
+    sjf_string_copy((_this->id._refCount != -1 ? &_this->id : 0), (_from->id._refCount != -1 ? &_from->id : 0));
     _this->font = _from->font;
     _this->font->_refCount++;
     _this->text._refCount = 1;
@@ -12590,26 +12672,26 @@ void sjf_textelement_getsize(sjs_textelement* _parent, sjs_size* maxsize, sjs_si
     sjs_textelement* sjt_dot188 = 0;
     sjs_textelement* sjt_dot189 = 0;
     sjs_textelement* sjt_dot190 = 0;
-    sjs_string* sjt_functionParam65 = 0;
-    sjs_margin* sjt_functionParam66 = 0;
-    sjs_size* sjt_functionParam67 = 0;
-    sjs_size* sjt_parent54 = 0;
-    sjs_font* sjt_parent55 = 0;
-    sjs_size* sjt_parent56 = 0;
+    sjs_string* sjt_functionParam67 = 0;
+    sjs_margin* sjt_functionParam68 = 0;
+    sjs_size* sjt_functionParam69 = 0;
+    sjs_size* sjt_parent55 = 0;
+    sjs_font* sjt_parent56 = 0;
+    sjs_size* sjt_parent57 = 0;
     sjs_size sjv_textsize = { -1 };
 
     sjt_dot188 = _parent;
-    sjt_parent55 = (sjt_dot188)->font;
+    sjt_parent56 = (sjt_dot188)->font;
     sjt_dot189 = _parent;
-    sjt_functionParam65 = &(sjt_dot189)->text;
-    sjf_font_gettextsize(sjt_parent55, sjt_functionParam65, &sjt_call11);
-    sjt_parent54 = &sjt_call11;
+    sjt_functionParam67 = &(sjt_dot189)->text;
+    sjf_font_gettextsize(sjt_parent56, sjt_functionParam67, &sjt_call11);
+    sjt_parent55 = &sjt_call11;
     sjt_dot190 = _parent;
-    sjt_functionParam66 = &(sjt_dot190)->margin;
-    sjf_size_addmargin(sjt_parent54, sjt_functionParam66, &sjv_textsize);
-    sjt_parent56 = &sjv_textsize;
-    sjt_functionParam67 = maxsize;
-    sjf_size_min(sjt_parent56, sjt_functionParam67, _return);
+    sjt_functionParam68 = &(sjt_dot190)->margin;
+    sjf_size_addmargin(sjt_parent55, sjt_functionParam68, &sjv_textsize);
+    sjt_parent57 = &sjv_textsize;
+    sjt_functionParam69 = maxsize;
+    sjf_size_min(sjt_parent57, sjt_functionParam69, _return);
 
     if (sjt_call11._refCount == 1) { sjf_size_destroy(&sjt_call11); }
     if (sjv_textsize._refCount == 1) { sjf_size_destroy(&sjv_textsize); }
@@ -12620,32 +12702,77 @@ void sjf_textelement_getsize_heap(sjs_textelement* _parent, sjs_size* maxsize, s
     sjs_textelement* sjt_dot191 = 0;
     sjs_textelement* sjt_dot192 = 0;
     sjs_textelement* sjt_dot193 = 0;
-    sjs_string* sjt_functionParam68 = 0;
-    sjs_margin* sjt_functionParam69 = 0;
-    sjs_size* sjt_functionParam70 = 0;
-    sjs_size* sjt_parent57 = 0;
-    sjs_font* sjt_parent58 = 0;
-    sjs_size* sjt_parent59 = 0;
+    sjs_string* sjt_functionParam70 = 0;
+    sjs_margin* sjt_functionParam71 = 0;
+    sjs_size* sjt_functionParam72 = 0;
+    sjs_size* sjt_parent58 = 0;
+    sjs_font* sjt_parent59 = 0;
+    sjs_size* sjt_parent60 = 0;
     sjs_size sjv_textsize = { -1 };
 
     sjt_dot191 = _parent;
-    sjt_parent58 = (sjt_dot191)->font;
+    sjt_parent59 = (sjt_dot191)->font;
     sjt_dot192 = _parent;
-    sjt_functionParam68 = &(sjt_dot192)->text;
-    sjf_font_gettextsize(sjt_parent58, sjt_functionParam68, &sjt_call12);
-    sjt_parent57 = &sjt_call12;
+    sjt_functionParam70 = &(sjt_dot192)->text;
+    sjf_font_gettextsize(sjt_parent59, sjt_functionParam70, &sjt_call12);
+    sjt_parent58 = &sjt_call12;
     sjt_dot193 = _parent;
-    sjt_functionParam69 = &(sjt_dot193)->margin;
-    sjf_size_addmargin(sjt_parent57, sjt_functionParam69, &sjv_textsize);
-    sjt_parent59 = &sjv_textsize;
-    sjt_functionParam70 = maxsize;
-    sjf_size_min_heap(sjt_parent59, sjt_functionParam70, _return);
+    sjt_functionParam71 = &(sjt_dot193)->margin;
+    sjf_size_addmargin(sjt_parent58, sjt_functionParam71, &sjv_textsize);
+    sjt_parent60 = &sjv_textsize;
+    sjt_functionParam72 = maxsize;
+    sjf_size_min_heap(sjt_parent60, sjt_functionParam72, _return);
 
     if (sjt_call12._refCount == 1) { sjf_size_destroy(&sjt_call12); }
     if (sjv_textsize._refCount == 1) { sjf_size_destroy(&sjv_textsize); }
 }
 
+void sjf_textelement_gettext(sjs_textelement* _parent, sjs_string* _return) {
+    sjs_string* sjt_copy18 = 0;
+    sjs_textelement* sjt_dot229 = 0;
+
+    sjt_dot229 = _parent;
+    sjt_copy18 = &(sjt_dot229)->text;
+    _return->_refCount = 1;
+    sjf_string_copy(_return, sjt_copy18);
+}
+
+void sjf_textelement_gettext_heap(sjs_textelement* _parent, sjs_string** _return) {
+    sjs_string* sjt_copy19 = 0;
+    sjs_textelement* sjt_dot230 = 0;
+
+    sjt_dot230 = _parent;
+    sjt_copy19 = &(sjt_dot230)->text;
+    (*_return) = (sjs_string*)malloc(sizeof(sjs_string));
+    (*_return)->_refCount = 1;
+    sjf_string_copy((*_return), sjt_copy19);
+}
+
 void sjf_textelement_heap(sjs_textelement* _this) {
+    sjs_string* sjt_isEmpty10 = 0;
+    bool sjt_isEmpty9;
+
+    sjt_isEmpty10 = (_this->id._refCount != -1 ? &_this->id : 0);
+    sjt_isEmpty9 = (sjt_isEmpty10 != 0);
+    if (sjt_isEmpty9) {
+        sjs_string* ifValue10 = 0;
+        sjs_textelement* sjt_cast7 = 0;
+        sjs_string* sjt_functionParam65 = 0;
+        sji_element sjt_functionParam66 = { 0 };
+        sjs_hash_string_weak_iface_element* sjt_parent54 = 0;
+
+        ifValue10 = (_this->id._refCount != -1 ? &_this->id : 0);
+        sjt_parent54 = &sjv_elementsbyid;
+        sjt_functionParam65 = ifValue10;
+        sjt_cast7 = _this;
+        sjf_textelement_as_sji_element(sjt_cast7, &sjt_functionParam66);
+        delete_cb weakptrcb16 = { &sjt_functionParam66._parent, weakptr_clear };
+        if (sjt_functionParam66._parent != 0) { weakptr_cb_add(sjt_functionParam66._parent, weakptrcb16); }
+        sjf_hash_string_weak_iface_element_setat(sjt_parent54, sjt_functionParam65, sjt_functionParam66);
+
+        delete_cb weakptrcb24 = { &sjt_functionParam66._parent, weakptr_clear };
+        if (sjt_functionParam66._parent != 0) { weakptr_cb_remove(sjt_functionParam66._parent, weakptrcb24); }
+    }
 }
 
 void sjf_textelement_render(sjs_textelement* _parent, sjs_scene2d* scene) {
@@ -12653,14 +12780,14 @@ void sjf_textelement_render(sjs_textelement* _parent, sjs_scene2d* scene) {
     sjs_textelement* sjt_dot224 = 0;
     bool sjt_ifElse25;
     bool sjt_ifElse26;
-    sjs_textrenderer* sjt_isEmpty10 = 0;
-    sjs_textrenderer* sjt_isEmpty9 = 0;
+    sjs_textrenderer* sjt_isEmpty11 = 0;
+    sjs_textrenderer* sjt_isEmpty12 = 0;
     sjs_rect sjv_innerrect = { -1 };
     sjs_size sjv_textsize = { -1 };
 
     sjt_dot199 = _parent;
-    sjt_isEmpty9 = ((sjt_dot199)->_textrenderer._refCount != -1 ? &(sjt_dot199)->_textrenderer : 0);
-    sjt_ifElse25 = (sjt_isEmpty9 == 0);
+    sjt_isEmpty11 = ((sjt_dot199)->_textrenderer._refCount != -1 ? &(sjt_dot199)->_textrenderer : 0);
+    sjt_ifElse25 = (sjt_isEmpty11 == 0);
     if (sjt_ifElse25) {
         int32_t sjt_compare49;
         int32_t sjt_compare50;
@@ -12679,10 +12806,10 @@ void sjf_textelement_render(sjs_textelement* _parent, sjs_scene2d* scene) {
         sjs_textelement* sjt_dot221 = 0;
         sjs_textelement* sjt_dot222 = 0;
         sjs_textelement* sjt_dot223 = 0;
-        sjs_string* sjt_functionParam72 = 0;
-        sjs_margin* sjt_functionParam73 = 0;
-        sjs_font* sjt_parent61 = 0;
-        sjs_rect* sjt_parent62 = 0;
+        sjs_string* sjt_functionParam74 = 0;
+        sjs_margin* sjt_functionParam75 = 0;
+        sjs_font* sjt_parent62 = 0;
+        sjs_rect* sjt_parent63 = 0;
         bool sjt_switch1;
         bool sjt_switch4;
         int32_t sjv_x;
@@ -12691,15 +12818,15 @@ void sjf_textelement_render(sjs_textelement* _parent, sjs_scene2d* scene) {
         int32_t underscore2;
 
         sjt_dot200 = _parent;
-        sjt_parent61 = (sjt_dot200)->font;
+        sjt_parent62 = (sjt_dot200)->font;
         sjt_dot201 = _parent;
-        sjt_functionParam72 = &(sjt_dot201)->text;
-        sjf_font_gettextsize(sjt_parent61, sjt_functionParam72, &sjv_textsize);
+        sjt_functionParam74 = &(sjt_dot201)->text;
+        sjf_font_gettextsize(sjt_parent62, sjt_functionParam74, &sjv_textsize);
         sjt_dot202 = _parent;
-        sjt_parent62 = &(sjt_dot202)->_rect;
+        sjt_parent63 = &(sjt_dot202)->_rect;
         sjt_dot203 = _parent;
-        sjt_functionParam73 = &(sjt_dot203)->margin;
-        sjf_rect_subtractmargin(sjt_parent62, sjt_functionParam73, &sjv_innerrect);
+        sjt_functionParam75 = &(sjt_dot203)->margin;
+        sjf_rect_subtractmargin(sjt_parent63, sjt_functionParam75, &sjv_innerrect);
         sjt_dot204 = _parent;
         underscore1 = (sjt_dot204)->halign;
         sjt_compare49 = underscore1;
@@ -12862,17 +12989,17 @@ void sjf_textelement_render(sjs_textelement* _parent, sjs_scene2d* scene) {
     }
 
     sjt_dot224 = _parent;
-    sjt_isEmpty10 = ((sjt_dot224)->_textrenderer._refCount != -1 ? &(sjt_dot224)->_textrenderer : 0);
-    sjt_ifElse26 = (sjt_isEmpty10 != 0);
+    sjt_isEmpty12 = ((sjt_dot224)->_textrenderer._refCount != -1 ? &(sjt_dot224)->_textrenderer : 0);
+    sjt_ifElse26 = (sjt_isEmpty12 != 0);
     if (sjt_ifElse26) {
         sjs_textelement* sjt_dot228 = 0;
-        sjs_scene2d* sjt_functionParam93 = 0;
-        sjs_textrenderer* sjt_parent63 = 0;
+        sjs_scene2d* sjt_functionParam95 = 0;
+        sjs_textrenderer* sjt_parent64 = 0;
 
         sjt_dot228 = _parent;
-        sjt_parent63 = ((sjt_dot228)->_textrenderer._refCount != -1 ? &(sjt_dot228)->_textrenderer : 0);
-        sjt_functionParam93 = scene;
-        sjf_textrenderer_render(sjt_parent63, sjt_functionParam93);
+        sjt_parent64 = ((sjt_dot228)->_textrenderer._refCount != -1 ? &(sjt_dot228)->_textrenderer : 0);
+        sjt_functionParam95 = scene;
+        sjf_textrenderer_render(sjt_parent64, sjt_functionParam95);
     }
 
     if (sjv_innerrect._refCount == 1) { sjf_rect_destroy(&sjv_innerrect); }
@@ -12882,15 +13009,15 @@ void sjf_textelement_render(sjs_textelement* _parent, sjs_scene2d* scene) {
 void sjf_textelement_setrect(sjs_textelement* _parent, sjs_rect* rect_) {
     bool result3;
     sjs_textelement* sjt_dot196 = 0;
-    sjs_rect* sjt_functionParam71 = 0;
+    sjs_rect* sjt_functionParam73 = 0;
     bool sjt_ifElse24;
     bool sjt_not2;
-    sjs_rect* sjt_parent60 = 0;
+    sjs_rect* sjt_parent61 = 0;
 
     sjt_dot196 = _parent;
-    sjt_parent60 = &(sjt_dot196)->_rect;
-    sjt_functionParam71 = rect_;
-    sjf_rect_isequal(sjt_parent60, sjt_functionParam71, &sjt_not2);
+    sjt_parent61 = &(sjt_dot196)->_rect;
+    sjt_functionParam73 = rect_;
+    sjf_rect_isequal(sjt_parent61, sjt_functionParam73, &sjt_not2);
     result3 = !sjt_not2;
     sjt_ifElse24 = result3;
     if (sjt_ifElse24) {
@@ -12905,6 +13032,19 @@ void sjf_textelement_setrect(sjs_textelement* _parent, sjs_rect* rect_) {
         sjt_dot198 = _parent;
         sjt_dot198->_textrenderer._refCount = -1;
     }
+}
+
+void sjf_textelement_settext(sjs_textelement* _parent, sjs_string* text_) {
+    sjs_string* sjt_copy20 = 0;
+    sjs_textelement* sjt_dot231 = 0;
+    sjs_textelement* sjt_dot232 = 0;
+
+    sjt_dot231 = _parent;
+    sjt_copy20 = text_;
+    sjt_dot231->text._refCount = 1;
+    sjf_string_copy(&sjt_dot231->text, sjt_copy20);
+    sjt_dot232 = _parent;
+    sjt_dot232->_textrenderer._refCount = -1;
 }
 
 void sjf_textrenderer(sjs_textrenderer* _this) {
@@ -12952,33 +13092,33 @@ void sjf_textrenderer_render(sjs_textrenderer* _parent, sjs_scene2d* scene) {
     sjs_scene2d* sjt_dot225 = 0;
     sjs_scene2d* sjt_dot226 = 0;
     sjs_scene2d* sjt_dot227 = 0;
-    sjs_shader* sjt_functionParam74 = 0;
-    int32_t sjt_functionParam75;
-    int32_t sjt_functionParam76;
+    sjs_shader* sjt_functionParam76 = 0;
     int32_t sjt_functionParam77;
-    sjs_shader* sjt_functionParam78 = 0;
-    sjs_string* sjt_functionParam79 = 0;
-    int32_t sjt_functionParam80;
-    int32_t sjt_functionParam81;
-    sjs_shader* sjt_functionParam82 = 0;
-    sjs_string* sjt_functionParam83 = 0;
-    sjs_mat4* sjt_functionParam84 = 0;
-    int32_t sjt_functionParam85;
-    sjs_shader* sjt_functionParam86 = 0;
-    sjs_string* sjt_functionParam87 = 0;
-    sjs_mat4* sjt_functionParam88 = 0;
-    int32_t sjt_functionParam89;
-    sjs_shader* sjt_functionParam90 = 0;
-    sjs_string* sjt_functionParam91 = 0;
-    sjs_mat4* sjt_functionParam92 = 0;
+    int32_t sjt_functionParam78;
+    int32_t sjt_functionParam79;
+    sjs_shader* sjt_functionParam80 = 0;
+    sjs_string* sjt_functionParam81 = 0;
+    int32_t sjt_functionParam82;
+    int32_t sjt_functionParam83;
+    sjs_shader* sjt_functionParam84 = 0;
+    sjs_string* sjt_functionParam85 = 0;
+    sjs_mat4* sjt_functionParam86 = 0;
+    int32_t sjt_functionParam87;
+    sjs_shader* sjt_functionParam88 = 0;
+    sjs_string* sjt_functionParam89 = 0;
+    sjs_mat4* sjt_functionParam90 = 0;
+    int32_t sjt_functionParam91;
+    sjs_shader* sjt_functionParam92 = 0;
+    sjs_string* sjt_functionParam93 = 0;
+    sjs_mat4* sjt_functionParam94 = 0;
 
     glBindTexture(GL_TEXTURE_2D, _parent->font.atlas->id);
-    sjt_functionParam74 = &sjv_textshader;
-    sjf_gluseprogram(sjt_functionParam74);
-    sjt_functionParam75 = sjv_glblendfunctype_gl_src_alpha;
-    sjt_functionParam76 = sjv_glblendfunctype_gl_one_minus_src_alpha;
-    sjf_glblendfunc(sjt_functionParam75, sjt_functionParam76);
-    sjt_functionParam78 = &sjv_textshader;
+    sjt_functionParam76 = &sjv_textshader;
+    sjf_gluseprogram(sjt_functionParam76);
+    sjt_functionParam77 = sjv_glblendfunctype_gl_src_alpha;
+    sjt_functionParam78 = sjv_glblendfunctype_gl_one_minus_src_alpha;
+    sjf_glblendfunc(sjt_functionParam77, sjt_functionParam78);
+    sjt_functionParam80 = &sjv_textshader;
     sjt_call13._refCount = 1;
     sjt_call13.count = 7;
     sjt_call13.data._refCount = 1;
@@ -12988,11 +13128,11 @@ void sjf_textrenderer_render(sjs_textrenderer* _parent, sjs_scene2d* scene) {
     sjt_call13.data.count = 8;
     sjf_array_char(&sjt_call13.data);
     sjf_string(&sjt_call13);
-    sjt_functionParam79 = &sjt_call13;
-    sjf_glgetuniformlocation(sjt_functionParam78, sjt_functionParam79, &sjt_functionParam77);
-    sjt_functionParam80 = 0;
-    sjf_gluniformi32(sjt_functionParam77, sjt_functionParam80);
-    sjt_functionParam82 = &sjv_textshader;
+    sjt_functionParam81 = &sjt_call13;
+    sjf_glgetuniformlocation(sjt_functionParam80, sjt_functionParam81, &sjt_functionParam79);
+    sjt_functionParam82 = 0;
+    sjf_gluniformi32(sjt_functionParam79, sjt_functionParam82);
+    sjt_functionParam84 = &sjv_textshader;
     sjt_call14._refCount = 1;
     sjt_call14.count = 5;
     sjt_call14.data._refCount = 1;
@@ -13002,12 +13142,12 @@ void sjf_textrenderer_render(sjs_textrenderer* _parent, sjs_scene2d* scene) {
     sjt_call14.data.count = 6;
     sjf_array_char(&sjt_call14.data);
     sjf_string(&sjt_call14);
-    sjt_functionParam83 = &sjt_call14;
-    sjf_glgetuniformlocation(sjt_functionParam82, sjt_functionParam83, &sjt_functionParam81);
+    sjt_functionParam85 = &sjt_call14;
+    sjf_glgetuniformlocation(sjt_functionParam84, sjt_functionParam85, &sjt_functionParam83);
     sjt_dot225 = scene;
-    sjt_functionParam84 = &(sjt_dot225)->model;
-    sjf_gluniformmat4(sjt_functionParam81, sjt_functionParam84);
-    sjt_functionParam86 = &sjv_textshader;
+    sjt_functionParam86 = &(sjt_dot225)->model;
+    sjf_gluniformmat4(sjt_functionParam83, sjt_functionParam86);
+    sjt_functionParam88 = &sjv_textshader;
     sjt_call15._refCount = 1;
     sjt_call15.count = 4;
     sjt_call15.data._refCount = 1;
@@ -13017,12 +13157,12 @@ void sjf_textrenderer_render(sjs_textrenderer* _parent, sjs_scene2d* scene) {
     sjt_call15.data.count = 5;
     sjf_array_char(&sjt_call15.data);
     sjf_string(&sjt_call15);
-    sjt_functionParam87 = &sjt_call15;
-    sjf_glgetuniformlocation(sjt_functionParam86, sjt_functionParam87, &sjt_functionParam85);
+    sjt_functionParam89 = &sjt_call15;
+    sjf_glgetuniformlocation(sjt_functionParam88, sjt_functionParam89, &sjt_functionParam87);
     sjt_dot226 = scene;
-    sjt_functionParam88 = &(sjt_dot226)->view;
-    sjf_gluniformmat4(sjt_functionParam85, sjt_functionParam88);
-    sjt_functionParam90 = &sjv_textshader;
+    sjt_functionParam90 = &(sjt_dot226)->view;
+    sjf_gluniformmat4(sjt_functionParam87, sjt_functionParam90);
+    sjt_functionParam92 = &sjv_textshader;
     sjt_call16._refCount = 1;
     sjt_call16.count = 10;
     sjt_call16.data._refCount = 1;
@@ -13032,11 +13172,11 @@ void sjf_textrenderer_render(sjs_textrenderer* _parent, sjs_scene2d* scene) {
     sjt_call16.data.count = 11;
     sjf_array_char(&sjt_call16.data);
     sjf_string(&sjt_call16);
-    sjt_functionParam91 = &sjt_call16;
-    sjf_glgetuniformlocation(sjt_functionParam90, sjt_functionParam91, &sjt_functionParam89);
+    sjt_functionParam93 = &sjt_call16;
+    sjf_glgetuniformlocation(sjt_functionParam92, sjt_functionParam93, &sjt_functionParam91);
     sjt_dot227 = scene;
-    sjt_functionParam92 = &(sjt_dot227)->projection;
-    sjf_gluniformmat4(sjt_functionParam89, sjt_functionParam92);
+    sjt_functionParam94 = &(sjt_dot227)->projection;
+    sjf_gluniformmat4(sjt_functionParam91, sjt_functionParam94);
     vertex_buffer_render(_parent->buffer, GL_TRIANGLES);
 
     if (sjt_call13._refCount == 1) { sjf_string_destroy(&sjt_call13); }
@@ -13298,14 +13438,19 @@ int main(int argc, char** argv) {
     sjs_textelement_element_vtbl.setrect = (void(*)(sjs_object*,sjs_rect*))sjf_textelement_setrect;
     sjs_textelement_element_vtbl.render = (void(*)(sjs_object*,sjs_scene2d*))sjf_textelement_render;
     sjs_textelement_element_vtbl.firemouseevent = (void(*)(sjs_object*,sjs_mouseevent*, bool*))sjf_textelement_firemouseevent;
+    sjs_textelement_textelement_vtbl.destroy = (void(*)(void*))sjf_textelement_destroy;
+    sjs_textelement_textelement_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_textelement_asinterface;
+    sjs_textelement_textelement_vtbl.gettext = (void(*)(sjs_object*, sjs_string*))sjf_textelement_gettext;
+    sjs_textelement_textelement_vtbl.gettext_heap = (void(*)(sjs_object*, sjs_string**))sjf_textelement_gettext_heap;
+    sjs_textelement_textelement_vtbl.settext = (void(*)(sjs_object*,sjs_string*))sjf_textelement_settext;
     sjv_borderposition_fill = 0;
     sjv_borderposition_left = 1;
     sjv_borderposition_right = 2;
     sjv_borderposition_top = 3;
     sjv_borderposition_bottom = 4;
-    sjv_buttonstate_normal = 0;
-    sjv_buttonstate_hot = 1;
-    sjv_buttonstate_pressed = 2;
+    sjv_clickstate_none = 0;
+    sjv_clickstate_entered = 1;
+    sjv_clickstate_pressed = 2;
     sjv_flowlayoutorientation_topbottom = 0;
     sjv_flowlayoutorientation_leftright = 1;
     sjv_flowlayoutorientation_bottomtop = 2;
@@ -13776,11 +13921,11 @@ int main(int argc, char** argv) {
     sjt_call18.data.count = 2;
     sjf_array_char(&sjt_call18.data);
     sjf_string(&sjt_call18);
-    sjt_functionParam99 = &sjt_call18;
-    sjf_testelement_heap(sjt_functionParam99, &sjt_functionParam42);
+    sjt_functionParam101 = &sjt_call18;
+    sjf_testelement_heap(sjt_functionParam101, &sjt_functionParam42);
     sjf_array_heap_iface_element_initat(sjt_parent29, sjt_functionParam41, sjt_functionParam42);
-    sjt_parent67 = array7;
-    sjt_functionParam100 = 1;
+    sjt_parent68 = array7;
+    sjt_functionParam102 = 1;
     sjt_call19._refCount = 1;
     sjt_call19.count = 1;
     sjt_call19.data._refCount = 1;
@@ -13790,11 +13935,11 @@ int main(int argc, char** argv) {
     sjt_call19.data.count = 2;
     sjf_array_char(&sjt_call19.data);
     sjf_string(&sjt_call19);
-    sjt_functionParam102 = &sjt_call19;
-    sjf_testelement_heap(sjt_functionParam102, &sjt_functionParam101);
-    sjf_array_heap_iface_element_initat(sjt_parent67, sjt_functionParam100, sjt_functionParam101);
-    sjt_parent68 = array7;
-    sjt_functionParam103 = 2;
+    sjt_functionParam104 = &sjt_call19;
+    sjf_testelement_heap(sjt_functionParam104, &sjt_functionParam103);
+    sjf_array_heap_iface_element_initat(sjt_parent68, sjt_functionParam102, sjt_functionParam103);
+    sjt_parent69 = array7;
+    sjt_functionParam105 = 2;
     sjt_call20._refCount = 1;
     sjt_call20.count = 1;
     sjt_call20.data._refCount = 1;
@@ -13804,11 +13949,11 @@ int main(int argc, char** argv) {
     sjt_call20.data.count = 2;
     sjf_array_char(&sjt_call20.data);
     sjf_string(&sjt_call20);
-    sjt_functionParam105 = &sjt_call20;
-    sjf_testelement_heap(sjt_functionParam105, &sjt_functionParam104);
-    sjf_array_heap_iface_element_initat(sjt_parent68, sjt_functionParam103, sjt_functionParam104);
-    sjt_parent69 = array7;
-    sjt_functionParam106 = 3;
+    sjt_functionParam107 = &sjt_call20;
+    sjf_testelement_heap(sjt_functionParam107, &sjt_functionParam106);
+    sjf_array_heap_iface_element_initat(sjt_parent69, sjt_functionParam105, sjt_functionParam106);
+    sjt_parent70 = array7;
+    sjt_functionParam108 = 3;
     sjt_call21._refCount = 1;
     sjt_call21.count = 1;
     sjt_call21.data._refCount = 1;
@@ -13818,9 +13963,9 @@ int main(int argc, char** argv) {
     sjt_call21.data.count = 2;
     sjf_array_char(&sjt_call21.data);
     sjf_string(&sjt_call21);
-    sjt_functionParam108 = &sjt_call21;
-    sjf_testelement_heap(sjt_functionParam108, &sjt_functionParam107);
-    sjf_array_heap_iface_element_initat(sjt_parent69, sjt_functionParam106, sjt_functionParam107);
+    sjt_functionParam110 = &sjt_call21;
+    sjf_testelement_heap(sjt_functionParam110, &sjt_functionParam109);
+    sjf_array_heap_iface_element_initat(sjt_parent70, sjt_functionParam108, sjt_functionParam109);
     sjt_call5->margin._refCount = 1;
     sjt_call5->margin.l = 10;
     sjt_call5->margin.t = 10;
@@ -13835,22 +13980,22 @@ int main(int argc, char** argv) {
     sjf_array_gridunit(&sjt_call5->cols);
     sjs_array_gridunit* array4;
     array4 = &sjt_call5->cols;
-    sjt_parent70 = array4;
-    sjt_functionParam109 = 0;
+    sjt_parent71 = array4;
+    sjt_functionParam111 = 0;
     sjt_call22._refCount = 1;
     sjt_call22.amount = 1;
     sjt_call22.type = sjv_gridunittype_star;
     sjf_gridunit(&sjt_call22);
-    sjt_functionParam110 = &sjt_call22;
-    sjf_array_gridunit_initat(sjt_parent70, sjt_functionParam109, sjt_functionParam110);
-    sjt_parent71 = array4;
-    sjt_functionParam111 = 1;
+    sjt_functionParam112 = &sjt_call22;
+    sjf_array_gridunit_initat(sjt_parent71, sjt_functionParam111, sjt_functionParam112);
+    sjt_parent72 = array4;
+    sjt_functionParam113 = 1;
     sjt_call23._refCount = 1;
     sjt_call23.amount = 50;
     sjt_call23.type = sjv_gridunittype_fixed;
     sjf_gridunit(&sjt_call23);
-    sjt_functionParam112 = &sjt_call23;
-    sjf_array_gridunit_initat(sjt_parent71, sjt_functionParam111, sjt_functionParam112);
+    sjt_functionParam114 = &sjt_call23;
+    sjf_array_gridunit_initat(sjt_parent72, sjt_functionParam113, sjt_functionParam114);
     sjt_call5->rows._refCount = 1;
     sjt_call5->rows.datasize = 2;
     sjt_call5->rows.data = 0;
@@ -13859,22 +14004,22 @@ int main(int argc, char** argv) {
     sjf_array_gridunit(&sjt_call5->rows);
     sjs_array_gridunit* array3;
     array3 = &sjt_call5->rows;
-    sjt_parent72 = array3;
-    sjt_functionParam113 = 0;
+    sjt_parent73 = array3;
+    sjt_functionParam115 = 0;
     sjt_call24._refCount = 1;
     sjt_call24.amount = 50;
     sjt_call24.type = sjv_gridunittype_fixed;
     sjf_gridunit(&sjt_call24);
-    sjt_functionParam114 = &sjt_call24;
-    sjf_array_gridunit_initat(sjt_parent72, sjt_functionParam113, sjt_functionParam114);
-    sjt_parent73 = array3;
-    sjt_functionParam115 = 1;
+    sjt_functionParam116 = &sjt_call24;
+    sjf_array_gridunit_initat(sjt_parent73, sjt_functionParam115, sjt_functionParam116);
+    sjt_parent74 = array3;
+    sjt_functionParam117 = 1;
     sjt_call25._refCount = 1;
     sjt_call25.amount = 1;
     sjt_call25.type = sjv_gridunittype_star;
     sjf_gridunit(&sjt_call25);
-    sjt_functionParam116 = &sjt_call25;
-    sjf_array_gridunit_initat(sjt_parent73, sjt_functionParam115, sjt_functionParam116);
+    sjt_functionParam118 = &sjt_call25;
+    sjf_array_gridunit_initat(sjt_parent74, sjt_functionParam117, sjt_functionParam118);
     sjt_call5->_rect._refCount = 1;
     sjt_call5->_rect.x = 0;
     sjt_call5->_rect.y = 0;
@@ -13889,8 +14034,8 @@ int main(int argc, char** argv) {
     }
 
     sjf_array_heap_iface_element_initat(sjt_parent28, sjt_functionParam39, sjt_functionParam40);
-    sjt_parent74 = array8;
-    sjt_functionParam117 = 1;
+    sjt_parent75 = array8;
+    sjt_functionParam119 = 1;
     sjt_call26 = (sjs_borderlayout*)malloc(sizeof(sjs_borderlayout));
     sjt_call26->_refCount = 1;
     sjt_call26->children._refCount = 1;
@@ -13901,8 +14046,8 @@ int main(int argc, char** argv) {
     sjf_array_heap_iface_element(&sjt_call26->children);
     sjs_array_heap_iface_element* array9;
     array9 = &sjt_call26->children;
-    sjt_parent91 = array9;
-    sjt_functionParam124 = 0;
+    sjt_parent92 = array9;
+    sjt_functionParam126 = 0;
     sjt_call32 = (sjs_borderchild*)malloc(sizeof(sjs_borderchild));
     sjt_call32->_refCount = 1;
     sjt_call33._refCount = 1;
@@ -13914,8 +14059,8 @@ int main(int argc, char** argv) {
     sjt_call33.data.count = 5;
     sjf_array_char(&sjt_call33.data);
     sjf_string(&sjt_call33);
-    sjt_functionParam126 = &sjt_call33;
-    sjf_testelement_heap(sjt_functionParam126, &sjt_call32->child);
+    sjt_functionParam128 = &sjt_call33;
+    sjf_testelement_heap(sjt_functionParam128, &sjt_call32->child);
     sjt_call32->position = sjv_borderposition_left;
     sjt_call32->_rect._refCount = 1;
     sjt_call32->_rect.x = 0;
@@ -13924,15 +14069,15 @@ int main(int argc, char** argv) {
     sjt_call32->_rect.h = 0;
     sjf_rect(&sjt_call32->_rect);
     sjf_borderchild_heap(sjt_call32);
-    sjt_cast10 = sjt_call32;
-    sjf_borderchild_as_sji_element(sjt_cast10, &sjt_functionParam125);
-    if (sjt_functionParam125._parent != 0) {
-        sjt_functionParam125._parent->_refCount++;
+    sjt_cast11 = sjt_call32;
+    sjf_borderchild_as_sji_element(sjt_cast11, &sjt_functionParam127);
+    if (sjt_functionParam127._parent != 0) {
+        sjt_functionParam127._parent->_refCount++;
     }
 
-    sjf_array_heap_iface_element_initat(sjt_parent91, sjt_functionParam124, sjt_functionParam125);
-    sjt_parent97 = array9;
-    sjt_functionParam127 = 1;
+    sjf_array_heap_iface_element_initat(sjt_parent92, sjt_functionParam126, sjt_functionParam127);
+    sjt_parent98 = array9;
+    sjt_functionParam129 = 1;
     sjt_call34 = (sjs_borderchild*)malloc(sizeof(sjs_borderchild));
     sjt_call34->_refCount = 1;
     sjt_call35._refCount = 1;
@@ -13944,8 +14089,8 @@ int main(int argc, char** argv) {
     sjt_call35.data.count = 7;
     sjf_array_char(&sjt_call35.data);
     sjf_string(&sjt_call35);
-    sjt_functionParam129 = &sjt_call35;
-    sjf_testelement_heap(sjt_functionParam129, &sjt_call34->child);
+    sjt_functionParam131 = &sjt_call35;
+    sjf_testelement_heap(sjt_functionParam131, &sjt_call34->child);
     sjt_call34->position = sjv_borderposition_bottom;
     sjt_call34->_rect._refCount = 1;
     sjt_call34->_rect.x = 0;
@@ -13954,15 +14099,15 @@ int main(int argc, char** argv) {
     sjt_call34->_rect.h = 0;
     sjf_rect(&sjt_call34->_rect);
     sjf_borderchild_heap(sjt_call34);
-    sjt_cast11 = sjt_call34;
-    sjf_borderchild_as_sji_element(sjt_cast11, &sjt_functionParam128);
-    if (sjt_functionParam128._parent != 0) {
-        sjt_functionParam128._parent->_refCount++;
+    sjt_cast12 = sjt_call34;
+    sjf_borderchild_as_sji_element(sjt_cast12, &sjt_functionParam130);
+    if (sjt_functionParam130._parent != 0) {
+        sjt_functionParam130._parent->_refCount++;
     }
 
-    sjf_array_heap_iface_element_initat(sjt_parent97, sjt_functionParam127, sjt_functionParam128);
-    sjt_parent98 = array9;
-    sjt_functionParam130 = 2;
+    sjf_array_heap_iface_element_initat(sjt_parent98, sjt_functionParam129, sjt_functionParam130);
+    sjt_parent99 = array9;
+    sjt_functionParam132 = 2;
     sjt_call36 = (sjs_borderchild*)malloc(sizeof(sjs_borderchild));
     sjt_call36->_refCount = 1;
     sjt_call37._refCount = 1;
@@ -13974,8 +14119,8 @@ int main(int argc, char** argv) {
     sjt_call37.data.count = 4;
     sjf_array_char(&sjt_call37.data);
     sjf_string(&sjt_call37);
-    sjt_functionParam132 = &sjt_call37;
-    sjf_testelement_heap(sjt_functionParam132, &sjt_call36->child);
+    sjt_functionParam134 = &sjt_call37;
+    sjf_testelement_heap(sjt_functionParam134, &sjt_call36->child);
     sjt_call36->position = sjv_borderposition_top;
     sjt_call36->_rect._refCount = 1;
     sjt_call36->_rect.x = 0;
@@ -13984,15 +14129,15 @@ int main(int argc, char** argv) {
     sjt_call36->_rect.h = 0;
     sjf_rect(&sjt_call36->_rect);
     sjf_borderchild_heap(sjt_call36);
-    sjt_cast12 = sjt_call36;
-    sjf_borderchild_as_sji_element(sjt_cast12, &sjt_functionParam131);
-    if (sjt_functionParam131._parent != 0) {
-        sjt_functionParam131._parent->_refCount++;
+    sjt_cast13 = sjt_call36;
+    sjf_borderchild_as_sji_element(sjt_cast13, &sjt_functionParam133);
+    if (sjt_functionParam133._parent != 0) {
+        sjt_functionParam133._parent->_refCount++;
     }
 
-    sjf_array_heap_iface_element_initat(sjt_parent98, sjt_functionParam130, sjt_functionParam131);
-    sjt_parent99 = array9;
-    sjt_functionParam133 = 3;
+    sjf_array_heap_iface_element_initat(sjt_parent99, sjt_functionParam132, sjt_functionParam133);
+    sjt_parent100 = array9;
+    sjt_functionParam135 = 3;
     sjt_call38 = (sjs_borderchild*)malloc(sizeof(sjs_borderchild));
     sjt_call38->_refCount = 1;
     sjt_call39._refCount = 1;
@@ -14004,8 +14149,8 @@ int main(int argc, char** argv) {
     sjt_call39.data.count = 6;
     sjf_array_char(&sjt_call39.data);
     sjf_string(&sjt_call39);
-    sjt_functionParam135 = &sjt_call39;
-    sjf_testelement_heap(sjt_functionParam135, &sjt_call38->child);
+    sjt_functionParam137 = &sjt_call39;
+    sjf_testelement_heap(sjt_functionParam137, &sjt_call38->child);
     sjt_call38->position = sjv_borderposition_right;
     sjt_call38->_rect._refCount = 1;
     sjt_call38->_rect.x = 0;
@@ -14014,15 +14159,15 @@ int main(int argc, char** argv) {
     sjt_call38->_rect.h = 0;
     sjf_rect(&sjt_call38->_rect);
     sjf_borderchild_heap(sjt_call38);
-    sjt_cast13 = sjt_call38;
-    sjf_borderchild_as_sji_element(sjt_cast13, &sjt_functionParam134);
-    if (sjt_functionParam134._parent != 0) {
-        sjt_functionParam134._parent->_refCount++;
+    sjt_cast14 = sjt_call38;
+    sjf_borderchild_as_sji_element(sjt_cast14, &sjt_functionParam136);
+    if (sjt_functionParam136._parent != 0) {
+        sjt_functionParam136._parent->_refCount++;
     }
 
-    sjf_array_heap_iface_element_initat(sjt_parent99, sjt_functionParam133, sjt_functionParam134);
-    sjt_parent100 = array9;
-    sjt_functionParam136 = 4;
+    sjf_array_heap_iface_element_initat(sjt_parent100, sjt_functionParam135, sjt_functionParam136);
+    sjt_parent101 = array9;
+    sjt_functionParam138 = 4;
     sjt_call40 = (sjs_borderchild*)malloc(sizeof(sjs_borderchild));
     sjt_call40->_refCount = 1;
     sjt_call41._refCount = 1;
@@ -14034,8 +14179,8 @@ int main(int argc, char** argv) {
     sjt_call41.data.count = 5;
     sjf_array_char(&sjt_call41.data);
     sjf_string(&sjt_call41);
-    sjt_functionParam138 = &sjt_call41;
-    sjf_testelement_heap(sjt_functionParam138, &sjt_call40->child);
+    sjt_functionParam140 = &sjt_call41;
+    sjf_testelement_heap(sjt_functionParam140, &sjt_call40->child);
     sjt_call40->position = sjv_borderposition_fill;
     sjt_call40->_rect._refCount = 1;
     sjt_call40->_rect.x = 0;
@@ -14044,13 +14189,13 @@ int main(int argc, char** argv) {
     sjt_call40->_rect.h = 0;
     sjf_rect(&sjt_call40->_rect);
     sjf_borderchild_heap(sjt_call40);
-    sjt_cast14 = sjt_call40;
-    sjf_borderchild_as_sji_element(sjt_cast14, &sjt_functionParam137);
-    if (sjt_functionParam137._parent != 0) {
-        sjt_functionParam137._parent->_refCount++;
+    sjt_cast15 = sjt_call40;
+    sjf_borderchild_as_sji_element(sjt_cast15, &sjt_functionParam139);
+    if (sjt_functionParam139._parent != 0) {
+        sjt_functionParam139._parent->_refCount++;
     }
 
-    sjf_array_heap_iface_element_initat(sjt_parent100, sjt_functionParam136, sjt_functionParam137);
+    sjf_array_heap_iface_element_initat(sjt_parent101, sjt_functionParam138, sjt_functionParam139);
     sjt_call26->margin._refCount = 1;
     sjt_call26->margin.l = 10;
     sjt_call26->margin.t = 10;
@@ -14064,15 +14209,15 @@ int main(int argc, char** argv) {
     sjt_call26->_rect.h = 0;
     sjf_rect(&sjt_call26->_rect);
     sjf_borderlayout_heap(sjt_call26);
-    sjt_cast7 = sjt_call26;
-    sjf_borderlayout_as_sji_element(sjt_cast7, &sjt_functionParam118);
-    if (sjt_functionParam118._parent != 0) {
-        sjt_functionParam118._parent->_refCount++;
+    sjt_cast8 = sjt_call26;
+    sjf_borderlayout_as_sji_element(sjt_cast8, &sjt_functionParam120);
+    if (sjt_functionParam120._parent != 0) {
+        sjt_functionParam120._parent->_refCount++;
     }
 
-    sjf_array_heap_iface_element_initat(sjt_parent74, sjt_functionParam117, sjt_functionParam118);
-    sjt_parent101 = array8;
-    sjt_functionParam139 = 2;
+    sjf_array_heap_iface_element_initat(sjt_parent75, sjt_functionParam119, sjt_functionParam120);
+    sjt_parent102 = array8;
+    sjt_functionParam141 = 2;
     sjt_call42 = (sjs_listlayout*)malloc(sizeof(sjs_listlayout));
     sjt_call42->_refCount = 1;
     sjt_call42->children._refCount = 1;
@@ -14083,8 +14228,8 @@ int main(int argc, char** argv) {
     sjf_array_heap_iface_element(&sjt_call42->children);
     sjs_array_heap_iface_element* array10;
     array10 = &sjt_call42->children;
-    sjt_parent115 = array10;
-    sjt_functionParam145 = 0;
+    sjt_parent116 = array10;
+    sjt_functionParam147 = 0;
     sjt_call51._refCount = 1;
     sjt_call51.count = 1;
     sjt_call51.data._refCount = 1;
@@ -14094,11 +14239,11 @@ int main(int argc, char** argv) {
     sjt_call51.data.count = 2;
     sjf_array_char(&sjt_call51.data);
     sjf_string(&sjt_call51);
-    sjt_functionParam147 = &sjt_call51;
-    sjf_testelement_heap(sjt_functionParam147, &sjt_functionParam146);
-    sjf_array_heap_iface_element_initat(sjt_parent115, sjt_functionParam145, sjt_functionParam146);
-    sjt_parent116 = array10;
-    sjt_functionParam148 = 1;
+    sjt_functionParam149 = &sjt_call51;
+    sjf_testelement_heap(sjt_functionParam149, &sjt_functionParam148);
+    sjf_array_heap_iface_element_initat(sjt_parent116, sjt_functionParam147, sjt_functionParam148);
+    sjt_parent117 = array10;
+    sjt_functionParam150 = 1;
     sjt_call52._refCount = 1;
     sjt_call52.count = 1;
     sjt_call52.data._refCount = 1;
@@ -14108,11 +14253,11 @@ int main(int argc, char** argv) {
     sjt_call52.data.count = 2;
     sjf_array_char(&sjt_call52.data);
     sjf_string(&sjt_call52);
-    sjt_functionParam150 = &sjt_call52;
-    sjf_testelement_heap(sjt_functionParam150, &sjt_functionParam149);
-    sjf_array_heap_iface_element_initat(sjt_parent116, sjt_functionParam148, sjt_functionParam149);
-    sjt_parent117 = array10;
-    sjt_functionParam151 = 2;
+    sjt_functionParam152 = &sjt_call52;
+    sjf_testelement_heap(sjt_functionParam152, &sjt_functionParam151);
+    sjf_array_heap_iface_element_initat(sjt_parent117, sjt_functionParam150, sjt_functionParam151);
+    sjt_parent118 = array10;
+    sjt_functionParam153 = 2;
     sjt_call53._refCount = 1;
     sjt_call53.count = 1;
     sjt_call53.data._refCount = 1;
@@ -14122,11 +14267,11 @@ int main(int argc, char** argv) {
     sjt_call53.data.count = 2;
     sjf_array_char(&sjt_call53.data);
     sjf_string(&sjt_call53);
-    sjt_functionParam153 = &sjt_call53;
-    sjf_testelement_heap(sjt_functionParam153, &sjt_functionParam152);
-    sjf_array_heap_iface_element_initat(sjt_parent117, sjt_functionParam151, sjt_functionParam152);
-    sjt_parent118 = array10;
-    sjt_functionParam154 = 3;
+    sjt_functionParam155 = &sjt_call53;
+    sjf_testelement_heap(sjt_functionParam155, &sjt_functionParam154);
+    sjf_array_heap_iface_element_initat(sjt_parent118, sjt_functionParam153, sjt_functionParam154);
+    sjt_parent119 = array10;
+    sjt_functionParam156 = 3;
     sjt_call54._refCount = 1;
     sjt_call54.count = 1;
     sjt_call54.data._refCount = 1;
@@ -14136,9 +14281,9 @@ int main(int argc, char** argv) {
     sjt_call54.data.count = 2;
     sjf_array_char(&sjt_call54.data);
     sjf_string(&sjt_call54);
-    sjt_functionParam156 = &sjt_call54;
-    sjf_testelement_heap(sjt_functionParam156, &sjt_functionParam155);
-    sjf_array_heap_iface_element_initat(sjt_parent118, sjt_functionParam154, sjt_functionParam155);
+    sjt_functionParam158 = &sjt_call54;
+    sjf_testelement_heap(sjt_functionParam158, &sjt_functionParam157);
+    sjf_array_heap_iface_element_initat(sjt_parent119, sjt_functionParam156, sjt_functionParam157);
     sjt_call42->margin._refCount = 1;
     sjt_call42->margin.l = 10;
     sjt_call42->margin.t = 10;
@@ -14153,15 +14298,15 @@ int main(int argc, char** argv) {
     sjt_call42->_rect.h = 0;
     sjf_rect(&sjt_call42->_rect);
     sjf_listlayout_heap(sjt_call42);
-    sjt_cast15 = sjt_call42;
-    sjf_listlayout_as_sji_element(sjt_cast15, &sjt_functionParam140);
-    if (sjt_functionParam140._parent != 0) {
-        sjt_functionParam140._parent->_refCount++;
+    sjt_cast16 = sjt_call42;
+    sjf_listlayout_as_sji_element(sjt_cast16, &sjt_functionParam142);
+    if (sjt_functionParam142._parent != 0) {
+        sjt_functionParam142._parent->_refCount++;
     }
 
-    sjf_array_heap_iface_element_initat(sjt_parent101, sjt_functionParam139, sjt_functionParam140);
-    sjt_parent119 = array8;
-    sjt_functionParam157 = 3;
+    sjf_array_heap_iface_element_initat(sjt_parent102, sjt_functionParam141, sjt_functionParam142);
+    sjt_parent120 = array8;
+    sjt_functionParam159 = 3;
     sjt_call55 = (sjs_flowlayout*)malloc(sizeof(sjs_flowlayout));
     sjt_call55->_refCount = 1;
     sjt_call55->children._refCount = 1;
@@ -14172,8 +14317,8 @@ int main(int argc, char** argv) {
     sjf_array_heap_iface_element(&sjt_call55->children);
     sjs_array_heap_iface_element* array11;
     array11 = &sjt_call55->children;
-    sjt_parent133 = array11;
-    sjt_functionParam171 = 0;
+    sjt_parent134 = array11;
+    sjt_functionParam173 = 0;
     sjt_call64._refCount = 1;
     sjt_call64.count = 1;
     sjt_call64.data._refCount = 1;
@@ -14183,11 +14328,11 @@ int main(int argc, char** argv) {
     sjt_call64.data.count = 2;
     sjf_array_char(&sjt_call64.data);
     sjf_string(&sjt_call64);
-    sjt_functionParam173 = &sjt_call64;
-    sjf_testelement_heap(sjt_functionParam173, &sjt_functionParam172);
-    sjf_array_heap_iface_element_initat(sjt_parent133, sjt_functionParam171, sjt_functionParam172);
-    sjt_parent134 = array11;
-    sjt_functionParam174 = 1;
+    sjt_functionParam175 = &sjt_call64;
+    sjf_testelement_heap(sjt_functionParam175, &sjt_functionParam174);
+    sjf_array_heap_iface_element_initat(sjt_parent134, sjt_functionParam173, sjt_functionParam174);
+    sjt_parent135 = array11;
+    sjt_functionParam176 = 1;
     sjt_call65._refCount = 1;
     sjt_call65.count = 1;
     sjt_call65.data._refCount = 1;
@@ -14197,11 +14342,11 @@ int main(int argc, char** argv) {
     sjt_call65.data.count = 2;
     sjf_array_char(&sjt_call65.data);
     sjf_string(&sjt_call65);
-    sjt_functionParam176 = &sjt_call65;
-    sjf_testelement_heap(sjt_functionParam176, &sjt_functionParam175);
-    sjf_array_heap_iface_element_initat(sjt_parent134, sjt_functionParam174, sjt_functionParam175);
-    sjt_parent135 = array11;
-    sjt_functionParam177 = 2;
+    sjt_functionParam178 = &sjt_call65;
+    sjf_testelement_heap(sjt_functionParam178, &sjt_functionParam177);
+    sjf_array_heap_iface_element_initat(sjt_parent135, sjt_functionParam176, sjt_functionParam177);
+    sjt_parent136 = array11;
+    sjt_functionParam179 = 2;
     sjt_call66._refCount = 1;
     sjt_call66.count = 1;
     sjt_call66.data._refCount = 1;
@@ -14211,11 +14356,11 @@ int main(int argc, char** argv) {
     sjt_call66.data.count = 2;
     sjf_array_char(&sjt_call66.data);
     sjf_string(&sjt_call66);
-    sjt_functionParam179 = &sjt_call66;
-    sjf_testelement_heap(sjt_functionParam179, &sjt_functionParam178);
-    sjf_array_heap_iface_element_initat(sjt_parent135, sjt_functionParam177, sjt_functionParam178);
-    sjt_parent136 = array11;
-    sjt_functionParam180 = 3;
+    sjt_functionParam181 = &sjt_call66;
+    sjf_testelement_heap(sjt_functionParam181, &sjt_functionParam180);
+    sjf_array_heap_iface_element_initat(sjt_parent136, sjt_functionParam179, sjt_functionParam180);
+    sjt_parent137 = array11;
+    sjt_functionParam182 = 3;
     sjt_call67._refCount = 1;
     sjt_call67.count = 1;
     sjt_call67.data._refCount = 1;
@@ -14225,11 +14370,11 @@ int main(int argc, char** argv) {
     sjt_call67.data.count = 2;
     sjf_array_char(&sjt_call67.data);
     sjf_string(&sjt_call67);
-    sjt_functionParam182 = &sjt_call67;
-    sjf_testelement_heap(sjt_functionParam182, &sjt_functionParam181);
-    sjf_array_heap_iface_element_initat(sjt_parent136, sjt_functionParam180, sjt_functionParam181);
-    sjt_parent137 = array11;
-    sjt_functionParam183 = 4;
+    sjt_functionParam184 = &sjt_call67;
+    sjf_testelement_heap(sjt_functionParam184, &sjt_functionParam183);
+    sjf_array_heap_iface_element_initat(sjt_parent137, sjt_functionParam182, sjt_functionParam183);
+    sjt_parent138 = array11;
+    sjt_functionParam185 = 4;
     sjt_call68._refCount = 1;
     sjt_call68.count = 1;
     sjt_call68.data._refCount = 1;
@@ -14239,11 +14384,11 @@ int main(int argc, char** argv) {
     sjt_call68.data.count = 2;
     sjf_array_char(&sjt_call68.data);
     sjf_string(&sjt_call68);
-    sjt_functionParam185 = &sjt_call68;
-    sjf_testelement_heap(sjt_functionParam185, &sjt_functionParam184);
-    sjf_array_heap_iface_element_initat(sjt_parent137, sjt_functionParam183, sjt_functionParam184);
-    sjt_parent138 = array11;
-    sjt_functionParam186 = 5;
+    sjt_functionParam187 = &sjt_call68;
+    sjf_testelement_heap(sjt_functionParam187, &sjt_functionParam186);
+    sjf_array_heap_iface_element_initat(sjt_parent138, sjt_functionParam185, sjt_functionParam186);
+    sjt_parent139 = array11;
+    sjt_functionParam188 = 5;
     sjt_call69._refCount = 1;
     sjt_call69.count = 1;
     sjt_call69.data._refCount = 1;
@@ -14253,11 +14398,11 @@ int main(int argc, char** argv) {
     sjt_call69.data.count = 2;
     sjf_array_char(&sjt_call69.data);
     sjf_string(&sjt_call69);
-    sjt_functionParam188 = &sjt_call69;
-    sjf_testelement_heap(sjt_functionParam188, &sjt_functionParam187);
-    sjf_array_heap_iface_element_initat(sjt_parent138, sjt_functionParam186, sjt_functionParam187);
-    sjt_parent139 = array11;
-    sjt_functionParam189 = 6;
+    sjt_functionParam190 = &sjt_call69;
+    sjf_testelement_heap(sjt_functionParam190, &sjt_functionParam189);
+    sjf_array_heap_iface_element_initat(sjt_parent139, sjt_functionParam188, sjt_functionParam189);
+    sjt_parent140 = array11;
+    sjt_functionParam191 = 6;
     sjt_call70._refCount = 1;
     sjt_call70.count = 1;
     sjt_call70.data._refCount = 1;
@@ -14267,11 +14412,11 @@ int main(int argc, char** argv) {
     sjt_call70.data.count = 2;
     sjf_array_char(&sjt_call70.data);
     sjf_string(&sjt_call70);
-    sjt_functionParam191 = &sjt_call70;
-    sjf_testelement_heap(sjt_functionParam191, &sjt_functionParam190);
-    sjf_array_heap_iface_element_initat(sjt_parent139, sjt_functionParam189, sjt_functionParam190);
-    sjt_parent140 = array11;
-    sjt_functionParam192 = 7;
+    sjt_functionParam193 = &sjt_call70;
+    sjf_testelement_heap(sjt_functionParam193, &sjt_functionParam192);
+    sjf_array_heap_iface_element_initat(sjt_parent140, sjt_functionParam191, sjt_functionParam192);
+    sjt_parent141 = array11;
+    sjt_functionParam194 = 7;
     sjt_call71._refCount = 1;
     sjt_call71.count = 1;
     sjt_call71.data._refCount = 1;
@@ -14281,11 +14426,11 @@ int main(int argc, char** argv) {
     sjt_call71.data.count = 2;
     sjf_array_char(&sjt_call71.data);
     sjf_string(&sjt_call71);
-    sjt_functionParam194 = &sjt_call71;
-    sjf_testelement_heap(sjt_functionParam194, &sjt_functionParam193);
-    sjf_array_heap_iface_element_initat(sjt_parent140, sjt_functionParam192, sjt_functionParam193);
-    sjt_parent141 = array11;
-    sjt_functionParam195 = 8;
+    sjt_functionParam196 = &sjt_call71;
+    sjf_testelement_heap(sjt_functionParam196, &sjt_functionParam195);
+    sjf_array_heap_iface_element_initat(sjt_parent141, sjt_functionParam194, sjt_functionParam195);
+    sjt_parent142 = array11;
+    sjt_functionParam197 = 8;
     sjt_call72._refCount = 1;
     sjt_call72.count = 1;
     sjt_call72.data._refCount = 1;
@@ -14295,11 +14440,11 @@ int main(int argc, char** argv) {
     sjt_call72.data.count = 2;
     sjf_array_char(&sjt_call72.data);
     sjf_string(&sjt_call72);
-    sjt_functionParam197 = &sjt_call72;
-    sjf_testelement_heap(sjt_functionParam197, &sjt_functionParam196);
-    sjf_array_heap_iface_element_initat(sjt_parent141, sjt_functionParam195, sjt_functionParam196);
-    sjt_parent142 = array11;
-    sjt_functionParam198 = 9;
+    sjt_functionParam199 = &sjt_call72;
+    sjf_testelement_heap(sjt_functionParam199, &sjt_functionParam198);
+    sjf_array_heap_iface_element_initat(sjt_parent142, sjt_functionParam197, sjt_functionParam198);
+    sjt_parent143 = array11;
+    sjt_functionParam200 = 9;
     sjt_call73._refCount = 1;
     sjt_call73.count = 1;
     sjt_call73.data._refCount = 1;
@@ -14309,11 +14454,11 @@ int main(int argc, char** argv) {
     sjt_call73.data.count = 2;
     sjf_array_char(&sjt_call73.data);
     sjf_string(&sjt_call73);
-    sjt_functionParam200 = &sjt_call73;
-    sjf_testelement_heap(sjt_functionParam200, &sjt_functionParam199);
-    sjf_array_heap_iface_element_initat(sjt_parent142, sjt_functionParam198, sjt_functionParam199);
-    sjt_parent143 = array11;
-    sjt_functionParam201 = 10;
+    sjt_functionParam202 = &sjt_call73;
+    sjf_testelement_heap(sjt_functionParam202, &sjt_functionParam201);
+    sjf_array_heap_iface_element_initat(sjt_parent143, sjt_functionParam200, sjt_functionParam201);
+    sjt_parent144 = array11;
+    sjt_functionParam203 = 10;
     sjt_call74._refCount = 1;
     sjt_call74.count = 1;
     sjt_call74.data._refCount = 1;
@@ -14323,11 +14468,11 @@ int main(int argc, char** argv) {
     sjt_call74.data.count = 2;
     sjf_array_char(&sjt_call74.data);
     sjf_string(&sjt_call74);
-    sjt_functionParam203 = &sjt_call74;
-    sjf_testelement_heap(sjt_functionParam203, &sjt_functionParam202);
-    sjf_array_heap_iface_element_initat(sjt_parent143, sjt_functionParam201, sjt_functionParam202);
-    sjt_parent144 = array11;
-    sjt_functionParam204 = 11;
+    sjt_functionParam205 = &sjt_call74;
+    sjf_testelement_heap(sjt_functionParam205, &sjt_functionParam204);
+    sjf_array_heap_iface_element_initat(sjt_parent144, sjt_functionParam203, sjt_functionParam204);
+    sjt_parent145 = array11;
+    sjt_functionParam206 = 11;
     sjt_call75._refCount = 1;
     sjt_call75.count = 1;
     sjt_call75.data._refCount = 1;
@@ -14337,11 +14482,11 @@ int main(int argc, char** argv) {
     sjt_call75.data.count = 2;
     sjf_array_char(&sjt_call75.data);
     sjf_string(&sjt_call75);
-    sjt_functionParam206 = &sjt_call75;
-    sjf_testelement_heap(sjt_functionParam206, &sjt_functionParam205);
-    sjf_array_heap_iface_element_initat(sjt_parent144, sjt_functionParam204, sjt_functionParam205);
-    sjt_parent145 = array11;
-    sjt_functionParam207 = 12;
+    sjt_functionParam208 = &sjt_call75;
+    sjf_testelement_heap(sjt_functionParam208, &sjt_functionParam207);
+    sjf_array_heap_iface_element_initat(sjt_parent145, sjt_functionParam206, sjt_functionParam207);
+    sjt_parent146 = array11;
+    sjt_functionParam209 = 12;
     sjt_call76._refCount = 1;
     sjt_call76.count = 1;
     sjt_call76.data._refCount = 1;
@@ -14351,11 +14496,11 @@ int main(int argc, char** argv) {
     sjt_call76.data.count = 2;
     sjf_array_char(&sjt_call76.data);
     sjf_string(&sjt_call76);
-    sjt_functionParam209 = &sjt_call76;
-    sjf_testelement_heap(sjt_functionParam209, &sjt_functionParam208);
-    sjf_array_heap_iface_element_initat(sjt_parent145, sjt_functionParam207, sjt_functionParam208);
-    sjt_parent146 = array11;
-    sjt_functionParam210 = 13;
+    sjt_functionParam211 = &sjt_call76;
+    sjf_testelement_heap(sjt_functionParam211, &sjt_functionParam210);
+    sjf_array_heap_iface_element_initat(sjt_parent146, sjt_functionParam209, sjt_functionParam210);
+    sjt_parent147 = array11;
+    sjt_functionParam212 = 13;
     sjt_call77._refCount = 1;
     sjt_call77.count = 1;
     sjt_call77.data._refCount = 1;
@@ -14365,11 +14510,11 @@ int main(int argc, char** argv) {
     sjt_call77.data.count = 2;
     sjf_array_char(&sjt_call77.data);
     sjf_string(&sjt_call77);
-    sjt_functionParam212 = &sjt_call77;
-    sjf_testelement_heap(sjt_functionParam212, &sjt_functionParam211);
-    sjf_array_heap_iface_element_initat(sjt_parent146, sjt_functionParam210, sjt_functionParam211);
-    sjt_parent147 = array11;
-    sjt_functionParam213 = 14;
+    sjt_functionParam214 = &sjt_call77;
+    sjf_testelement_heap(sjt_functionParam214, &sjt_functionParam213);
+    sjf_array_heap_iface_element_initat(sjt_parent147, sjt_functionParam212, sjt_functionParam213);
+    sjt_parent148 = array11;
+    sjt_functionParam215 = 14;
     sjt_call78._refCount = 1;
     sjt_call78.count = 1;
     sjt_call78.data._refCount = 1;
@@ -14379,11 +14524,11 @@ int main(int argc, char** argv) {
     sjt_call78.data.count = 2;
     sjf_array_char(&sjt_call78.data);
     sjf_string(&sjt_call78);
-    sjt_functionParam215 = &sjt_call78;
-    sjf_testelement_heap(sjt_functionParam215, &sjt_functionParam214);
-    sjf_array_heap_iface_element_initat(sjt_parent147, sjt_functionParam213, sjt_functionParam214);
-    sjt_parent148 = array11;
-    sjt_functionParam216 = 15;
+    sjt_functionParam217 = &sjt_call78;
+    sjf_testelement_heap(sjt_functionParam217, &sjt_functionParam216);
+    sjf_array_heap_iface_element_initat(sjt_parent148, sjt_functionParam215, sjt_functionParam216);
+    sjt_parent149 = array11;
+    sjt_functionParam218 = 15;
     sjt_call79._refCount = 1;
     sjt_call79.count = 1;
     sjt_call79.data._refCount = 1;
@@ -14393,11 +14538,11 @@ int main(int argc, char** argv) {
     sjt_call79.data.count = 2;
     sjf_array_char(&sjt_call79.data);
     sjf_string(&sjt_call79);
-    sjt_functionParam218 = &sjt_call79;
-    sjf_testelement_heap(sjt_functionParam218, &sjt_functionParam217);
-    sjf_array_heap_iface_element_initat(sjt_parent148, sjt_functionParam216, sjt_functionParam217);
-    sjt_parent149 = array11;
-    sjt_functionParam219 = 16;
+    sjt_functionParam220 = &sjt_call79;
+    sjf_testelement_heap(sjt_functionParam220, &sjt_functionParam219);
+    sjf_array_heap_iface_element_initat(sjt_parent149, sjt_functionParam218, sjt_functionParam219);
+    sjt_parent150 = array11;
+    sjt_functionParam221 = 16;
     sjt_call80._refCount = 1;
     sjt_call80.count = 1;
     sjt_call80.data._refCount = 1;
@@ -14407,11 +14552,11 @@ int main(int argc, char** argv) {
     sjt_call80.data.count = 2;
     sjf_array_char(&sjt_call80.data);
     sjf_string(&sjt_call80);
-    sjt_functionParam221 = &sjt_call80;
-    sjf_testelement_heap(sjt_functionParam221, &sjt_functionParam220);
-    sjf_array_heap_iface_element_initat(sjt_parent149, sjt_functionParam219, sjt_functionParam220);
-    sjt_parent150 = array11;
-    sjt_functionParam222 = 17;
+    sjt_functionParam223 = &sjt_call80;
+    sjf_testelement_heap(sjt_functionParam223, &sjt_functionParam222);
+    sjf_array_heap_iface_element_initat(sjt_parent150, sjt_functionParam221, sjt_functionParam222);
+    sjt_parent151 = array11;
+    sjt_functionParam224 = 17;
     sjt_call81._refCount = 1;
     sjt_call81.count = 1;
     sjt_call81.data._refCount = 1;
@@ -14421,11 +14566,11 @@ int main(int argc, char** argv) {
     sjt_call81.data.count = 2;
     sjf_array_char(&sjt_call81.data);
     sjf_string(&sjt_call81);
-    sjt_functionParam224 = &sjt_call81;
-    sjf_testelement_heap(sjt_functionParam224, &sjt_functionParam223);
-    sjf_array_heap_iface_element_initat(sjt_parent150, sjt_functionParam222, sjt_functionParam223);
-    sjt_parent151 = array11;
-    sjt_functionParam225 = 18;
+    sjt_functionParam226 = &sjt_call81;
+    sjf_testelement_heap(sjt_functionParam226, &sjt_functionParam225);
+    sjf_array_heap_iface_element_initat(sjt_parent151, sjt_functionParam224, sjt_functionParam225);
+    sjt_parent152 = array11;
+    sjt_functionParam227 = 18;
     sjt_call82._refCount = 1;
     sjt_call82.count = 1;
     sjt_call82.data._refCount = 1;
@@ -14435,11 +14580,11 @@ int main(int argc, char** argv) {
     sjt_call82.data.count = 2;
     sjf_array_char(&sjt_call82.data);
     sjf_string(&sjt_call82);
-    sjt_functionParam227 = &sjt_call82;
-    sjf_testelement_heap(sjt_functionParam227, &sjt_functionParam226);
-    sjf_array_heap_iface_element_initat(sjt_parent151, sjt_functionParam225, sjt_functionParam226);
-    sjt_parent152 = array11;
-    sjt_functionParam228 = 19;
+    sjt_functionParam229 = &sjt_call82;
+    sjf_testelement_heap(sjt_functionParam229, &sjt_functionParam228);
+    sjf_array_heap_iface_element_initat(sjt_parent152, sjt_functionParam227, sjt_functionParam228);
+    sjt_parent153 = array11;
+    sjt_functionParam230 = 19;
     sjt_call83._refCount = 1;
     sjt_call83.count = 1;
     sjt_call83.data._refCount = 1;
@@ -14449,9 +14594,9 @@ int main(int argc, char** argv) {
     sjt_call83.data.count = 2;
     sjf_array_char(&sjt_call83.data);
     sjf_string(&sjt_call83);
-    sjt_functionParam230 = &sjt_call83;
-    sjf_testelement_heap(sjt_functionParam230, &sjt_functionParam229);
-    sjf_array_heap_iface_element_initat(sjt_parent152, sjt_functionParam228, sjt_functionParam229);
+    sjt_functionParam232 = &sjt_call83;
+    sjf_testelement_heap(sjt_functionParam232, &sjt_functionParam231);
+    sjf_array_heap_iface_element_initat(sjt_parent153, sjt_functionParam230, sjt_functionParam231);
     sjt_call55->margin._refCount = 1;
     sjt_call55->margin.l = 10;
     sjt_call55->margin.t = 10;
@@ -14466,15 +14611,15 @@ int main(int argc, char** argv) {
     sjt_call55->_rect.h = 0;
     sjf_rect(&sjt_call55->_rect);
     sjf_flowlayout_heap(sjt_call55);
-    sjt_cast16 = sjt_call55;
-    sjf_flowlayout_as_sji_element(sjt_cast16, &sjt_functionParam158);
-    if (sjt_functionParam158._parent != 0) {
-        sjt_functionParam158._parent->_refCount++;
+    sjt_cast17 = sjt_call55;
+    sjf_flowlayout_as_sji_element(sjt_cast17, &sjt_functionParam160);
+    if (sjt_functionParam160._parent != 0) {
+        sjt_functionParam160._parent->_refCount++;
     }
 
-    sjf_array_heap_iface_element_initat(sjt_parent119, sjt_functionParam157, sjt_functionParam158);
-    sjt_parent153 = array8;
-    sjt_functionParam231 = 4;
+    sjf_array_heap_iface_element_initat(sjt_parent120, sjt_functionParam159, sjt_functionParam160);
+    sjt_parent154 = array8;
+    sjt_functionParam233 = 4;
     sjt_call84 = (sjs_centerlayout*)malloc(sizeof(sjs_centerlayout));
     sjt_call84->_refCount = 1;
     sjt_call84->children._refCount = 1;
@@ -14485,8 +14630,8 @@ int main(int argc, char** argv) {
     sjf_array_heap_iface_element(&sjt_call84->children);
     sjs_array_heap_iface_element* array12;
     array12 = &sjt_call84->children;
-    sjt_parent171 = array12;
-    sjt_functionParam245 = 0;
+    sjt_parent172 = array12;
+    sjt_functionParam247 = 0;
     sjt_call89._refCount = 1;
     sjt_call89.count = 1;
     sjt_call89.data._refCount = 1;
@@ -14496,9 +14641,9 @@ int main(int argc, char** argv) {
     sjt_call89.data.count = 2;
     sjf_array_char(&sjt_call89.data);
     sjf_string(&sjt_call89);
-    sjt_functionParam247 = &sjt_call89;
-    sjf_testelement_heap(sjt_functionParam247, &sjt_functionParam246);
-    sjf_array_heap_iface_element_initat(sjt_parent171, sjt_functionParam245, sjt_functionParam246);
+    sjt_functionParam249 = &sjt_call89;
+    sjf_testelement_heap(sjt_functionParam249, &sjt_functionParam248);
+    sjf_array_heap_iface_element_initat(sjt_parent172, sjt_functionParam247, sjt_functionParam248);
     sjt_call84->margin._refCount = 1;
     sjt_call84->margin.l = 10;
     sjt_call84->margin.t = 10;
@@ -14520,13 +14665,13 @@ int main(int argc, char** argv) {
     sjt_call84->_rect.h = 0;
     sjf_rect(&sjt_call84->_rect);
     sjf_centerlayout_heap(sjt_call84);
-    sjt_cast17 = sjt_call84;
-    sjf_centerlayout_as_sji_element(sjt_cast17, &sjt_functionParam232);
-    if (sjt_functionParam232._parent != 0) {
-        sjt_functionParam232._parent->_refCount++;
+    sjt_cast18 = sjt_call84;
+    sjf_centerlayout_as_sji_element(sjt_cast18, &sjt_functionParam234);
+    if (sjt_functionParam234._parent != 0) {
+        sjt_functionParam234._parent->_refCount++;
     }
 
-    sjf_array_heap_iface_element_initat(sjt_parent153, sjt_functionParam231, sjt_functionParam232);
+    sjf_array_heap_iface_element_initat(sjt_parent154, sjt_functionParam233, sjt_functionParam234);
     sjt_call3->margin._refCount = 1;
     sjt_call3->margin.l = 0;
     sjt_call3->margin.t = 0;
@@ -14541,30 +14686,30 @@ int main(int argc, char** argv) {
     sjf_array_gridunit(&sjt_call3->cols);
     sjs_array_gridunit* array1;
     array1 = &sjt_call3->cols;
-    sjt_parent172 = array1;
-    sjt_functionParam248 = 0;
+    sjt_parent173 = array1;
+    sjt_functionParam250 = 0;
     sjt_call90._refCount = 1;
     sjt_call90.amount = 1;
     sjt_call90.type = sjv_gridunittype_star;
     sjf_gridunit(&sjt_call90);
-    sjt_functionParam249 = &sjt_call90;
-    sjf_array_gridunit_initat(sjt_parent172, sjt_functionParam248, sjt_functionParam249);
-    sjt_parent173 = array1;
-    sjt_functionParam250 = 1;
+    sjt_functionParam251 = &sjt_call90;
+    sjf_array_gridunit_initat(sjt_parent173, sjt_functionParam250, sjt_functionParam251);
+    sjt_parent174 = array1;
+    sjt_functionParam252 = 1;
     sjt_call91._refCount = 1;
     sjt_call91.amount = 1;
     sjt_call91.type = sjv_gridunittype_star;
     sjf_gridunit(&sjt_call91);
-    sjt_functionParam251 = &sjt_call91;
-    sjf_array_gridunit_initat(sjt_parent173, sjt_functionParam250, sjt_functionParam251);
-    sjt_parent174 = array1;
-    sjt_functionParam252 = 2;
+    sjt_functionParam253 = &sjt_call91;
+    sjf_array_gridunit_initat(sjt_parent174, sjt_functionParam252, sjt_functionParam253);
+    sjt_parent175 = array1;
+    sjt_functionParam254 = 2;
     sjt_call92._refCount = 1;
     sjt_call92.amount = 1;
     sjt_call92.type = sjv_gridunittype_star;
     sjf_gridunit(&sjt_call92);
-    sjt_functionParam253 = &sjt_call92;
-    sjf_array_gridunit_initat(sjt_parent174, sjt_functionParam252, sjt_functionParam253);
+    sjt_functionParam255 = &sjt_call92;
+    sjf_array_gridunit_initat(sjt_parent175, sjt_functionParam254, sjt_functionParam255);
     sjt_call3->rows._refCount = 1;
     sjt_call3->rows.datasize = 2;
     sjt_call3->rows.data = 0;
@@ -14573,22 +14718,22 @@ int main(int argc, char** argv) {
     sjf_array_gridunit(&sjt_call3->rows);
     sjs_array_gridunit* array2;
     array2 = &sjt_call3->rows;
-    sjt_parent175 = array2;
-    sjt_functionParam254 = 0;
+    sjt_parent176 = array2;
+    sjt_functionParam256 = 0;
     sjt_call93._refCount = 1;
     sjt_call93.amount = 1;
     sjt_call93.type = sjv_gridunittype_star;
     sjf_gridunit(&sjt_call93);
-    sjt_functionParam255 = &sjt_call93;
-    sjf_array_gridunit_initat(sjt_parent175, sjt_functionParam254, sjt_functionParam255);
-    sjt_parent176 = array2;
-    sjt_functionParam256 = 1;
+    sjt_functionParam257 = &sjt_call93;
+    sjf_array_gridunit_initat(sjt_parent176, sjt_functionParam256, sjt_functionParam257);
+    sjt_parent177 = array2;
+    sjt_functionParam258 = 1;
     sjt_call94._refCount = 1;
     sjt_call94.amount = 1;
     sjt_call94.type = sjv_gridunittype_star;
     sjf_gridunit(&sjt_call94);
-    sjt_functionParam257 = &sjt_call94;
-    sjf_array_gridunit_initat(sjt_parent176, sjt_functionParam256, sjt_functionParam257);
+    sjt_functionParam259 = &sjt_call94;
+    sjf_array_gridunit_initat(sjt_parent177, sjt_functionParam258, sjt_functionParam259);
     sjt_call3->_rect._refCount = 1;
     sjt_call3->_rect.x = 0;
     sjt_call3->_rect.y = 0;
@@ -14679,263 +14824,263 @@ void main_destroy() {
         sjf_centerlayout_destroy(sjt_call84);
         free(sjt_call84);
     }
-    if (sjt_functionParam101._parent != 0) {
-        sjt_functionParam101._parent->_refCount--;
-        if (sjt_functionParam101._parent->_refCount <= 0) {
-            sjt_functionParam101._vtbl->destroy(sjt_functionParam101._parent);
-            free(sjt_functionParam101._parent);
+    if (sjt_functionParam103._parent != 0) {
+        sjt_functionParam103._parent->_refCount--;
+        if (sjt_functionParam103._parent->_refCount <= 0) {
+            sjt_functionParam103._vtbl->destroy(sjt_functionParam103._parent);
+            free(sjt_functionParam103._parent);
         }
     }
-    if (sjt_functionParam104._parent != 0) {
-        sjt_functionParam104._parent->_refCount--;
-        if (sjt_functionParam104._parent->_refCount <= 0) {
-            sjt_functionParam104._vtbl->destroy(sjt_functionParam104._parent);
-            free(sjt_functionParam104._parent);
+    if (sjt_functionParam106._parent != 0) {
+        sjt_functionParam106._parent->_refCount--;
+        if (sjt_functionParam106._parent->_refCount <= 0) {
+            sjt_functionParam106._vtbl->destroy(sjt_functionParam106._parent);
+            free(sjt_functionParam106._parent);
         }
     }
-    if (sjt_functionParam107._parent != 0) {
-        sjt_functionParam107._parent->_refCount--;
-        if (sjt_functionParam107._parent->_refCount <= 0) {
-            sjt_functionParam107._vtbl->destroy(sjt_functionParam107._parent);
-            free(sjt_functionParam107._parent);
+    if (sjt_functionParam109._parent != 0) {
+        sjt_functionParam109._parent->_refCount--;
+        if (sjt_functionParam109._parent->_refCount <= 0) {
+            sjt_functionParam109._vtbl->destroy(sjt_functionParam109._parent);
+            free(sjt_functionParam109._parent);
         }
     }
-    if (sjt_functionParam118._parent != 0) {
-        sjt_functionParam118._parent->_refCount--;
-        if (sjt_functionParam118._parent->_refCount <= 0) {
-            sjt_functionParam118._vtbl->destroy(sjt_functionParam118._parent);
-            free(sjt_functionParam118._parent);
+    if (sjt_functionParam120._parent != 0) {
+        sjt_functionParam120._parent->_refCount--;
+        if (sjt_functionParam120._parent->_refCount <= 0) {
+            sjt_functionParam120._vtbl->destroy(sjt_functionParam120._parent);
+            free(sjt_functionParam120._parent);
         }
     }
-    if (sjt_functionParam125._parent != 0) {
-        sjt_functionParam125._parent->_refCount--;
-        if (sjt_functionParam125._parent->_refCount <= 0) {
-            sjt_functionParam125._vtbl->destroy(sjt_functionParam125._parent);
-            free(sjt_functionParam125._parent);
+    if (sjt_functionParam127._parent != 0) {
+        sjt_functionParam127._parent->_refCount--;
+        if (sjt_functionParam127._parent->_refCount <= 0) {
+            sjt_functionParam127._vtbl->destroy(sjt_functionParam127._parent);
+            free(sjt_functionParam127._parent);
         }
     }
-    if (sjt_functionParam128._parent != 0) {
-        sjt_functionParam128._parent->_refCount--;
-        if (sjt_functionParam128._parent->_refCount <= 0) {
-            sjt_functionParam128._vtbl->destroy(sjt_functionParam128._parent);
-            free(sjt_functionParam128._parent);
+    if (sjt_functionParam130._parent != 0) {
+        sjt_functionParam130._parent->_refCount--;
+        if (sjt_functionParam130._parent->_refCount <= 0) {
+            sjt_functionParam130._vtbl->destroy(sjt_functionParam130._parent);
+            free(sjt_functionParam130._parent);
         }
     }
-    if (sjt_functionParam131._parent != 0) {
-        sjt_functionParam131._parent->_refCount--;
-        if (sjt_functionParam131._parent->_refCount <= 0) {
-            sjt_functionParam131._vtbl->destroy(sjt_functionParam131._parent);
-            free(sjt_functionParam131._parent);
+    if (sjt_functionParam133._parent != 0) {
+        sjt_functionParam133._parent->_refCount--;
+        if (sjt_functionParam133._parent->_refCount <= 0) {
+            sjt_functionParam133._vtbl->destroy(sjt_functionParam133._parent);
+            free(sjt_functionParam133._parent);
         }
     }
-    if (sjt_functionParam134._parent != 0) {
-        sjt_functionParam134._parent->_refCount--;
-        if (sjt_functionParam134._parent->_refCount <= 0) {
-            sjt_functionParam134._vtbl->destroy(sjt_functionParam134._parent);
-            free(sjt_functionParam134._parent);
+    if (sjt_functionParam136._parent != 0) {
+        sjt_functionParam136._parent->_refCount--;
+        if (sjt_functionParam136._parent->_refCount <= 0) {
+            sjt_functionParam136._vtbl->destroy(sjt_functionParam136._parent);
+            free(sjt_functionParam136._parent);
         }
     }
-    if (sjt_functionParam137._parent != 0) {
-        sjt_functionParam137._parent->_refCount--;
-        if (sjt_functionParam137._parent->_refCount <= 0) {
-            sjt_functionParam137._vtbl->destroy(sjt_functionParam137._parent);
-            free(sjt_functionParam137._parent);
+    if (sjt_functionParam139._parent != 0) {
+        sjt_functionParam139._parent->_refCount--;
+        if (sjt_functionParam139._parent->_refCount <= 0) {
+            sjt_functionParam139._vtbl->destroy(sjt_functionParam139._parent);
+            free(sjt_functionParam139._parent);
         }
     }
-    if (sjt_functionParam140._parent != 0) {
-        sjt_functionParam140._parent->_refCount--;
-        if (sjt_functionParam140._parent->_refCount <= 0) {
-            sjt_functionParam140._vtbl->destroy(sjt_functionParam140._parent);
-            free(sjt_functionParam140._parent);
+    if (sjt_functionParam142._parent != 0) {
+        sjt_functionParam142._parent->_refCount--;
+        if (sjt_functionParam142._parent->_refCount <= 0) {
+            sjt_functionParam142._vtbl->destroy(sjt_functionParam142._parent);
+            free(sjt_functionParam142._parent);
         }
     }
-    if (sjt_functionParam146._parent != 0) {
-        sjt_functionParam146._parent->_refCount--;
-        if (sjt_functionParam146._parent->_refCount <= 0) {
-            sjt_functionParam146._vtbl->destroy(sjt_functionParam146._parent);
-            free(sjt_functionParam146._parent);
+    if (sjt_functionParam148._parent != 0) {
+        sjt_functionParam148._parent->_refCount--;
+        if (sjt_functionParam148._parent->_refCount <= 0) {
+            sjt_functionParam148._vtbl->destroy(sjt_functionParam148._parent);
+            free(sjt_functionParam148._parent);
         }
     }
-    if (sjt_functionParam149._parent != 0) {
-        sjt_functionParam149._parent->_refCount--;
-        if (sjt_functionParam149._parent->_refCount <= 0) {
-            sjt_functionParam149._vtbl->destroy(sjt_functionParam149._parent);
-            free(sjt_functionParam149._parent);
+    if (sjt_functionParam151._parent != 0) {
+        sjt_functionParam151._parent->_refCount--;
+        if (sjt_functionParam151._parent->_refCount <= 0) {
+            sjt_functionParam151._vtbl->destroy(sjt_functionParam151._parent);
+            free(sjt_functionParam151._parent);
         }
     }
-    if (sjt_functionParam152._parent != 0) {
-        sjt_functionParam152._parent->_refCount--;
-        if (sjt_functionParam152._parent->_refCount <= 0) {
-            sjt_functionParam152._vtbl->destroy(sjt_functionParam152._parent);
-            free(sjt_functionParam152._parent);
+    if (sjt_functionParam154._parent != 0) {
+        sjt_functionParam154._parent->_refCount--;
+        if (sjt_functionParam154._parent->_refCount <= 0) {
+            sjt_functionParam154._vtbl->destroy(sjt_functionParam154._parent);
+            free(sjt_functionParam154._parent);
         }
     }
-    if (sjt_functionParam155._parent != 0) {
-        sjt_functionParam155._parent->_refCount--;
-        if (sjt_functionParam155._parent->_refCount <= 0) {
-            sjt_functionParam155._vtbl->destroy(sjt_functionParam155._parent);
-            free(sjt_functionParam155._parent);
+    if (sjt_functionParam157._parent != 0) {
+        sjt_functionParam157._parent->_refCount--;
+        if (sjt_functionParam157._parent->_refCount <= 0) {
+            sjt_functionParam157._vtbl->destroy(sjt_functionParam157._parent);
+            free(sjt_functionParam157._parent);
         }
     }
-    if (sjt_functionParam158._parent != 0) {
-        sjt_functionParam158._parent->_refCount--;
-        if (sjt_functionParam158._parent->_refCount <= 0) {
-            sjt_functionParam158._vtbl->destroy(sjt_functionParam158._parent);
-            free(sjt_functionParam158._parent);
+    if (sjt_functionParam160._parent != 0) {
+        sjt_functionParam160._parent->_refCount--;
+        if (sjt_functionParam160._parent->_refCount <= 0) {
+            sjt_functionParam160._vtbl->destroy(sjt_functionParam160._parent);
+            free(sjt_functionParam160._parent);
         }
     }
-    if (sjt_functionParam172._parent != 0) {
-        sjt_functionParam172._parent->_refCount--;
-        if (sjt_functionParam172._parent->_refCount <= 0) {
-            sjt_functionParam172._vtbl->destroy(sjt_functionParam172._parent);
-            free(sjt_functionParam172._parent);
+    if (sjt_functionParam174._parent != 0) {
+        sjt_functionParam174._parent->_refCount--;
+        if (sjt_functionParam174._parent->_refCount <= 0) {
+            sjt_functionParam174._vtbl->destroy(sjt_functionParam174._parent);
+            free(sjt_functionParam174._parent);
         }
     }
-    if (sjt_functionParam175._parent != 0) {
-        sjt_functionParam175._parent->_refCount--;
-        if (sjt_functionParam175._parent->_refCount <= 0) {
-            sjt_functionParam175._vtbl->destroy(sjt_functionParam175._parent);
-            free(sjt_functionParam175._parent);
+    if (sjt_functionParam177._parent != 0) {
+        sjt_functionParam177._parent->_refCount--;
+        if (sjt_functionParam177._parent->_refCount <= 0) {
+            sjt_functionParam177._vtbl->destroy(sjt_functionParam177._parent);
+            free(sjt_functionParam177._parent);
         }
     }
-    if (sjt_functionParam178._parent != 0) {
-        sjt_functionParam178._parent->_refCount--;
-        if (sjt_functionParam178._parent->_refCount <= 0) {
-            sjt_functionParam178._vtbl->destroy(sjt_functionParam178._parent);
-            free(sjt_functionParam178._parent);
+    if (sjt_functionParam180._parent != 0) {
+        sjt_functionParam180._parent->_refCount--;
+        if (sjt_functionParam180._parent->_refCount <= 0) {
+            sjt_functionParam180._vtbl->destroy(sjt_functionParam180._parent);
+            free(sjt_functionParam180._parent);
         }
     }
-    if (sjt_functionParam181._parent != 0) {
-        sjt_functionParam181._parent->_refCount--;
-        if (sjt_functionParam181._parent->_refCount <= 0) {
-            sjt_functionParam181._vtbl->destroy(sjt_functionParam181._parent);
-            free(sjt_functionParam181._parent);
+    if (sjt_functionParam183._parent != 0) {
+        sjt_functionParam183._parent->_refCount--;
+        if (sjt_functionParam183._parent->_refCount <= 0) {
+            sjt_functionParam183._vtbl->destroy(sjt_functionParam183._parent);
+            free(sjt_functionParam183._parent);
         }
     }
-    if (sjt_functionParam184._parent != 0) {
-        sjt_functionParam184._parent->_refCount--;
-        if (sjt_functionParam184._parent->_refCount <= 0) {
-            sjt_functionParam184._vtbl->destroy(sjt_functionParam184._parent);
-            free(sjt_functionParam184._parent);
+    if (sjt_functionParam186._parent != 0) {
+        sjt_functionParam186._parent->_refCount--;
+        if (sjt_functionParam186._parent->_refCount <= 0) {
+            sjt_functionParam186._vtbl->destroy(sjt_functionParam186._parent);
+            free(sjt_functionParam186._parent);
         }
     }
-    if (sjt_functionParam187._parent != 0) {
-        sjt_functionParam187._parent->_refCount--;
-        if (sjt_functionParam187._parent->_refCount <= 0) {
-            sjt_functionParam187._vtbl->destroy(sjt_functionParam187._parent);
-            free(sjt_functionParam187._parent);
+    if (sjt_functionParam189._parent != 0) {
+        sjt_functionParam189._parent->_refCount--;
+        if (sjt_functionParam189._parent->_refCount <= 0) {
+            sjt_functionParam189._vtbl->destroy(sjt_functionParam189._parent);
+            free(sjt_functionParam189._parent);
         }
     }
-    if (sjt_functionParam190._parent != 0) {
-        sjt_functionParam190._parent->_refCount--;
-        if (sjt_functionParam190._parent->_refCount <= 0) {
-            sjt_functionParam190._vtbl->destroy(sjt_functionParam190._parent);
-            free(sjt_functionParam190._parent);
+    if (sjt_functionParam192._parent != 0) {
+        sjt_functionParam192._parent->_refCount--;
+        if (sjt_functionParam192._parent->_refCount <= 0) {
+            sjt_functionParam192._vtbl->destroy(sjt_functionParam192._parent);
+            free(sjt_functionParam192._parent);
         }
     }
-    if (sjt_functionParam193._parent != 0) {
-        sjt_functionParam193._parent->_refCount--;
-        if (sjt_functionParam193._parent->_refCount <= 0) {
-            sjt_functionParam193._vtbl->destroy(sjt_functionParam193._parent);
-            free(sjt_functionParam193._parent);
+    if (sjt_functionParam195._parent != 0) {
+        sjt_functionParam195._parent->_refCount--;
+        if (sjt_functionParam195._parent->_refCount <= 0) {
+            sjt_functionParam195._vtbl->destroy(sjt_functionParam195._parent);
+            free(sjt_functionParam195._parent);
         }
     }
-    if (sjt_functionParam196._parent != 0) {
-        sjt_functionParam196._parent->_refCount--;
-        if (sjt_functionParam196._parent->_refCount <= 0) {
-            sjt_functionParam196._vtbl->destroy(sjt_functionParam196._parent);
-            free(sjt_functionParam196._parent);
+    if (sjt_functionParam198._parent != 0) {
+        sjt_functionParam198._parent->_refCount--;
+        if (sjt_functionParam198._parent->_refCount <= 0) {
+            sjt_functionParam198._vtbl->destroy(sjt_functionParam198._parent);
+            free(sjt_functionParam198._parent);
         }
     }
-    if (sjt_functionParam199._parent != 0) {
-        sjt_functionParam199._parent->_refCount--;
-        if (sjt_functionParam199._parent->_refCount <= 0) {
-            sjt_functionParam199._vtbl->destroy(sjt_functionParam199._parent);
-            free(sjt_functionParam199._parent);
+    if (sjt_functionParam201._parent != 0) {
+        sjt_functionParam201._parent->_refCount--;
+        if (sjt_functionParam201._parent->_refCount <= 0) {
+            sjt_functionParam201._vtbl->destroy(sjt_functionParam201._parent);
+            free(sjt_functionParam201._parent);
         }
     }
-    if (sjt_functionParam202._parent != 0) {
-        sjt_functionParam202._parent->_refCount--;
-        if (sjt_functionParam202._parent->_refCount <= 0) {
-            sjt_functionParam202._vtbl->destroy(sjt_functionParam202._parent);
-            free(sjt_functionParam202._parent);
+    if (sjt_functionParam204._parent != 0) {
+        sjt_functionParam204._parent->_refCount--;
+        if (sjt_functionParam204._parent->_refCount <= 0) {
+            sjt_functionParam204._vtbl->destroy(sjt_functionParam204._parent);
+            free(sjt_functionParam204._parent);
         }
     }
-    if (sjt_functionParam205._parent != 0) {
-        sjt_functionParam205._parent->_refCount--;
-        if (sjt_functionParam205._parent->_refCount <= 0) {
-            sjt_functionParam205._vtbl->destroy(sjt_functionParam205._parent);
-            free(sjt_functionParam205._parent);
+    if (sjt_functionParam207._parent != 0) {
+        sjt_functionParam207._parent->_refCount--;
+        if (sjt_functionParam207._parent->_refCount <= 0) {
+            sjt_functionParam207._vtbl->destroy(sjt_functionParam207._parent);
+            free(sjt_functionParam207._parent);
         }
     }
-    if (sjt_functionParam208._parent != 0) {
-        sjt_functionParam208._parent->_refCount--;
-        if (sjt_functionParam208._parent->_refCount <= 0) {
-            sjt_functionParam208._vtbl->destroy(sjt_functionParam208._parent);
-            free(sjt_functionParam208._parent);
+    if (sjt_functionParam210._parent != 0) {
+        sjt_functionParam210._parent->_refCount--;
+        if (sjt_functionParam210._parent->_refCount <= 0) {
+            sjt_functionParam210._vtbl->destroy(sjt_functionParam210._parent);
+            free(sjt_functionParam210._parent);
         }
     }
-    if (sjt_functionParam211._parent != 0) {
-        sjt_functionParam211._parent->_refCount--;
-        if (sjt_functionParam211._parent->_refCount <= 0) {
-            sjt_functionParam211._vtbl->destroy(sjt_functionParam211._parent);
-            free(sjt_functionParam211._parent);
+    if (sjt_functionParam213._parent != 0) {
+        sjt_functionParam213._parent->_refCount--;
+        if (sjt_functionParam213._parent->_refCount <= 0) {
+            sjt_functionParam213._vtbl->destroy(sjt_functionParam213._parent);
+            free(sjt_functionParam213._parent);
         }
     }
-    if (sjt_functionParam214._parent != 0) {
-        sjt_functionParam214._parent->_refCount--;
-        if (sjt_functionParam214._parent->_refCount <= 0) {
-            sjt_functionParam214._vtbl->destroy(sjt_functionParam214._parent);
-            free(sjt_functionParam214._parent);
+    if (sjt_functionParam216._parent != 0) {
+        sjt_functionParam216._parent->_refCount--;
+        if (sjt_functionParam216._parent->_refCount <= 0) {
+            sjt_functionParam216._vtbl->destroy(sjt_functionParam216._parent);
+            free(sjt_functionParam216._parent);
         }
     }
-    if (sjt_functionParam217._parent != 0) {
-        sjt_functionParam217._parent->_refCount--;
-        if (sjt_functionParam217._parent->_refCount <= 0) {
-            sjt_functionParam217._vtbl->destroy(sjt_functionParam217._parent);
-            free(sjt_functionParam217._parent);
+    if (sjt_functionParam219._parent != 0) {
+        sjt_functionParam219._parent->_refCount--;
+        if (sjt_functionParam219._parent->_refCount <= 0) {
+            sjt_functionParam219._vtbl->destroy(sjt_functionParam219._parent);
+            free(sjt_functionParam219._parent);
         }
     }
-    if (sjt_functionParam220._parent != 0) {
-        sjt_functionParam220._parent->_refCount--;
-        if (sjt_functionParam220._parent->_refCount <= 0) {
-            sjt_functionParam220._vtbl->destroy(sjt_functionParam220._parent);
-            free(sjt_functionParam220._parent);
+    if (sjt_functionParam222._parent != 0) {
+        sjt_functionParam222._parent->_refCount--;
+        if (sjt_functionParam222._parent->_refCount <= 0) {
+            sjt_functionParam222._vtbl->destroy(sjt_functionParam222._parent);
+            free(sjt_functionParam222._parent);
         }
     }
-    if (sjt_functionParam223._parent != 0) {
-        sjt_functionParam223._parent->_refCount--;
-        if (sjt_functionParam223._parent->_refCount <= 0) {
-            sjt_functionParam223._vtbl->destroy(sjt_functionParam223._parent);
-            free(sjt_functionParam223._parent);
+    if (sjt_functionParam225._parent != 0) {
+        sjt_functionParam225._parent->_refCount--;
+        if (sjt_functionParam225._parent->_refCount <= 0) {
+            sjt_functionParam225._vtbl->destroy(sjt_functionParam225._parent);
+            free(sjt_functionParam225._parent);
         }
     }
-    if (sjt_functionParam226._parent != 0) {
-        sjt_functionParam226._parent->_refCount--;
-        if (sjt_functionParam226._parent->_refCount <= 0) {
-            sjt_functionParam226._vtbl->destroy(sjt_functionParam226._parent);
-            free(sjt_functionParam226._parent);
+    if (sjt_functionParam228._parent != 0) {
+        sjt_functionParam228._parent->_refCount--;
+        if (sjt_functionParam228._parent->_refCount <= 0) {
+            sjt_functionParam228._vtbl->destroy(sjt_functionParam228._parent);
+            free(sjt_functionParam228._parent);
         }
     }
-    if (sjt_functionParam229._parent != 0) {
-        sjt_functionParam229._parent->_refCount--;
-        if (sjt_functionParam229._parent->_refCount <= 0) {
-            sjt_functionParam229._vtbl->destroy(sjt_functionParam229._parent);
-            free(sjt_functionParam229._parent);
+    if (sjt_functionParam231._parent != 0) {
+        sjt_functionParam231._parent->_refCount--;
+        if (sjt_functionParam231._parent->_refCount <= 0) {
+            sjt_functionParam231._vtbl->destroy(sjt_functionParam231._parent);
+            free(sjt_functionParam231._parent);
         }
     }
-    if (sjt_functionParam232._parent != 0) {
-        sjt_functionParam232._parent->_refCount--;
-        if (sjt_functionParam232._parent->_refCount <= 0) {
-            sjt_functionParam232._vtbl->destroy(sjt_functionParam232._parent);
-            free(sjt_functionParam232._parent);
+    if (sjt_functionParam234._parent != 0) {
+        sjt_functionParam234._parent->_refCount--;
+        if (sjt_functionParam234._parent->_refCount <= 0) {
+            sjt_functionParam234._vtbl->destroy(sjt_functionParam234._parent);
+            free(sjt_functionParam234._parent);
         }
     }
-    if (sjt_functionParam246._parent != 0) {
-        sjt_functionParam246._parent->_refCount--;
-        if (sjt_functionParam246._parent->_refCount <= 0) {
-            sjt_functionParam246._vtbl->destroy(sjt_functionParam246._parent);
-            free(sjt_functionParam246._parent);
+    if (sjt_functionParam248._parent != 0) {
+        sjt_functionParam248._parent->_refCount--;
+        if (sjt_functionParam248._parent->_refCount <= 0) {
+            sjt_functionParam248._vtbl->destroy(sjt_functionParam248._parent);
+            free(sjt_functionParam248._parent);
         }
     }
     if (sjt_functionParam40._parent != 0) {

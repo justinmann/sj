@@ -79,6 +79,7 @@ scene2dModel #model (
 				type : mouseEvent.type
 				point : copy scenePoint
 				isCaptured : mouseEvent.isCaptured
+				isLeftDown : mouseEvent.isLeftDown
 			)
 
 			newMouseEvent.fireChildren(children)
