@@ -53,6 +53,7 @@ fadeEffect #effect (
 
 			glBindTexture(glTexture.GL_TEXTURE_2D, f1.texture)
 			glUseProgram(fadeShader)
+			glBlendFunc(glBlendFuncType.GL_ONE, glBlendFuncType.GL_ONE_MINUS_SRC_ALPHA)
 	        glUniformI32(glGetUniformLocation(fadeShader, "texture"), 0)
 			glUniformF32(glGetUniformLocation(fadeShader, "alpha"), alpha)
 	        glUniformMat4(glGetUniformLocation(fadeShader, "model"), scene.model)

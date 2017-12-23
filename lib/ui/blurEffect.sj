@@ -83,6 +83,7 @@ blurEffect #effect (
 				
 		        glBindTexture(glTexture.GL_TEXTURE_2D, f1.texture)
 		        glUseProgram(blurVerticalShader)
+				glBlendFunc(glBlendFuncType.GL_ONE, glBlendFuncType.GL_ONE_MINUS_SRC_ALPHA)
 		        glUniformI32(glGetUniformLocation(blurVerticalShader, "texture"), 0)
 		        glUniformF32(glGetUniformLocation(blurVerticalShader, "sigma"), radius)
 		        glUniformF32(glGetUniformLocation(blurVerticalShader, "blurSize"), 1.0f / f1.size.h as f32)
@@ -96,6 +97,7 @@ blurEffect #effect (
 
 		        glBindTexture(glTexture.GL_TEXTURE_2D, f2.texture)
 		        glUseProgram(blurHorizontalShader)
+		        glBlendFunc(glBlendFuncType.GL_ONE, glBlendFuncType.GL_ONE_MINUS_SRC_ALPHA)
 		        glUniformI32(glGetUniformLocation(blurHorizontalShader, "texture"), 0)
 		        glUniformF32(glGetUniformLocation(blurHorizontalShader, "sigma"), radius)
 		        glUniformF32(glGetUniformLocation(blurHorizontalShader, "blurSize"), 1.0f / f2.size.w as f32)

@@ -4,5 +4,5 @@ varying mediump vec2 v_textureCoordinate;
 
 void main() {
     mediump vec4 color = texture2D(texture, v_textureCoordinate);
-    gl_FragColor = vec4(color.rgb, alpha);
+    gl_FragColor = vec4(color.rgb * alpha, alpha);
 }

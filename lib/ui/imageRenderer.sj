@@ -8,6 +8,7 @@ imageRenderer(
     render(scene : 'scene2d)'void {
         --c--
         glBindTexture(GL_TEXTURE_2D, _parent->image.texture.id);
+        glBlendFunc(glBlendFuncType.GL_SRC_ALPHA, glBlendFuncType.GL_ONE_MINUS_SRC_ALPHA)
         glUseProgram(sjv_imageshader.id);
         glUniform1i(glGetUniformLocation(sjv_imageshader.id, "texture" ), 0 );
         glUniformMatrix4fv(glGetUniformLocation(sjv_imageshader.id, "model" ), 1, 0, (GLfloat*)&scene->model.m00);

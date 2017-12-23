@@ -57,6 +57,7 @@ scene2dModel #model (
 		viewWorld : _view * _world * model
 		normalMat : viewWorld.invert().transpose()
 		glUseProgram(shader)
+		glBlendFunc(glBlendFuncType.GL_ONE, glBlendFuncType.GL_ONE_MINUS_SRC_ALPHA)
         glBindTexture(glTexture.GL_TEXTURE_2D, _texture)
         glUniformMat4(glGetUniformLocation(shader, "viewModel"), viewWorld)
         glUniformMat4(glGetUniformLocation(shader, "normalMat"), normalMat)

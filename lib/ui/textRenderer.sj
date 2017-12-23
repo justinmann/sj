@@ -10,11 +10,14 @@ textRenderer(
     render(scene : 'scene2d)'void {
         --c--
         glBindTexture(GL_TEXTURE_2D, _parent->font.atlas->id);
-        glUseProgram(sjv_textshader.id);
-        glUniform1i(glGetUniformLocation(sjv_textshader.id, "texture" ), 0 );
-        glUniformMatrix4fv(glGetUniformLocation(sjv_textshader.id, "model" ), 1, 0, &scene->model.m00);
-        glUniformMatrix4fv(glGetUniformLocation(sjv_textshader.id, "view" ), 1, 0, &scene->view.m00);
-        glUniformMatrix4fv(glGetUniformLocation(sjv_textshader.id, "projection" ), 1, 0, &scene->projection.m00);
+        --c--
+        glUseProgram(textShader);
+        glBlendFunc(glBlendFuncType.GL_SRC_ALPHA, glBlendFuncType.GL_ONE_MINUS_SRC_ALPHA)
+        glUniformI32(glGetUniformLocation(textShader, "texture"), 0)
+        glUniformMat4(glGetUniformLocation(textShader, "model"),  scene.model)
+        glUniformMat4(glGetUniformLocation(textShader, "view"), scene.view)
+        glUniformMat4(glGetUniformLocation(textShader, "projection"), scene.projection)
+        --c--
         vertex_buffer_render(_parent->buffer, GL_TRIANGLES);
         --c--
         void

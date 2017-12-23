@@ -53,6 +53,7 @@ saturateEffect #effect (
 
 			glBindTexture(glTexture.GL_TEXTURE_2D, f1.texture)
 			glUseProgram(saturateShader)
+			glBlendFunc(glBlendFuncType.GL_SRC_ALPHA, glBlendFuncType.GL_ONE_MINUS_SRC_ALPHA)
 	        glUniformI32(glGetUniformLocation(saturateShader, "texture"), 0)
 			glUniformF32(glGetUniformLocation(saturateShader, "amount"), amount)
 	        glUniformMat4(glGetUniformLocation(saturateShader, "model"), scene.model)
