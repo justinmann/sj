@@ -19,6 +19,7 @@ int main(int argc, char **argv) {
         ("wasm", "output wasm (not supported yet)")
         ("app", "output app for current system (not supported yet)")
         ("debug", "output debug files")
+        ("vs-errors", "output vs compatible error format")
         ("c-file", po::value<string>(), "filename for c output - defaults to sj file with extension changed to c")
         ;
 
@@ -53,6 +54,7 @@ int main(int argc, char **argv) {
     bool outputWasm = vm.count("wasm");
     bool outputApp = vm.count("app");
     bool outputDebug = vm.count("debug");
+    bool outputVSErrors = vm.count("vs-errors");
     auto cFilename = vm.count("c-file") ? vm["c-file"].as<string>() : string();
     auto sjFilename = vm["sj-file"].as<string>();
 
@@ -71,7 +73,7 @@ int main(int argc, char **argv) {
         debugStream = &debug;
     }
 
-    Compiler compiler(outputLines);
+    Compiler compiler(outputLines, outputVSErrors);
     compiler.transpile(path.string(), cStream, cerr, debugStream);
 
     return 0;

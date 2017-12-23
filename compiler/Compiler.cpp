@@ -26,7 +26,7 @@ extern void yy_delete_buffer(YY_BUFFER_STATE, void*);
 
 CLoc CLoc::undefined = CLoc();
 
-Compiler::Compiler(bool outputLines) : outputLines(outputLines) {
+Compiler::Compiler(bool outputLines, bool outputVSErrors) : outputLines(outputLines), outputVSErrors(outputVSErrors) {
     auto ctypes = CType::create(emptyNamespace, "i32", "int32_t", "(int32_t)0", "int32_option", "int32_empty");
     typeI32 = ctypes->stackValueType;
     types["i32"] = ctypes;

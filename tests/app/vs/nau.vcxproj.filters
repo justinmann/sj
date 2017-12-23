@@ -18,6 +18,9 @@
     <Filter Include="Source Files\ui">
       <UniqueIdentifier>{1d128cca-063e-405f-ab06-83d82e035617}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\shaders">
+      <UniqueIdentifier>{9e75cb9b-fea1-41e6-b764-c8837c1417f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\..\..\..\src\sj\tests\app\nau.sj">
@@ -278,6 +281,75 @@
     </None>
     <None Include="..\lib\ui\windowRenderer.sj">
       <Filter>Source Files\ui</Filter>
+    </None>
+    <None Include="..\shaders\blur-horizontal.frag">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\shaders\blur-vertical.frag">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\shaders\cube.frag">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\shaders\cube.vert">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\shaders\distance-field.frag">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\shaders\distance-field.vert">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\shaders\distance-field-2.frag">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\shaders\fade.frag">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\shaders\saturate.frag">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\shaders\text.frag">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\shaders\text.vert">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\shaders\v3f-c4f.frag">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\shaders\v3f-c4f.vert">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\shaders\v3f-n3f.frag">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\shaders\v3f-n3f.vert">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\shaders\v3f-n3f-phong.frag">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\shaders\v3f-n3f-phong.vert">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\shaders\v3f-t2f.frag">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\shaders\v3f-t2f.vert">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\shaders\v3f-t2f-c4f.frag">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\shaders\v3f-t2f-c4f.vert">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\shaders\v3f-t2f-n3f-phong.frag">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\shaders\v3f-t2f-n3f-phong.vert">
+      <Filter>Source Files\shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

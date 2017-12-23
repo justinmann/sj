@@ -25,6 +25,7 @@
 #define YY_NO_UNISTD_H
 
 using namespace std;
+namespace fs = boost::filesystem;
 
 class CLoc {
 public:
@@ -136,7 +137,7 @@ class SJException : public exception { };
 class Compiler
 {
 public:
-    Compiler(bool outputLines);
+    Compiler(bool outputLines, bool outputVSErrors);
 	bool transpile(const string& fileName, ostream& stream, ostream& errorStream, ostream* debugStream);
     shared_ptr<CType> getType(const string& name, bool isOption) const;
     void includeFile(const string& fileName);
@@ -148,7 +149,7 @@ public:
         printf("ERROR: %d:%d %s\n", loc.line, loc.col, str.c_str());
 #endif
         errors[loc.fullFileName][loc.line][str].code = code;
-        errors[loc.fullFileName][loc.line][str].fileName = loc.shortFileName;
+        errors[loc.fullFileName][loc.line][str].fileName = outputVSErrors ? fs::path(loc.fullFileName).string() : loc.shortFileName;
         errors[loc.fullFileName][loc.line][str].line = loc.line;
         errors[loc.fullFileName][loc.line][str].col = loc.col;
         errors[loc.fullFileName][loc.line][str].msg = str;
@@ -163,7 +164,7 @@ public:
         string str = strprintf(format, args...);
 
         warnings[loc.fullFileName][loc.line][str].code = code;
-        warnings[loc.fullFileName][loc.line][str].fileName = loc.shortFileName;
+        warnings[loc.fullFileName][loc.line][str].fileName = outputVSErrors ? fs::path(loc.fullFileName).string() : loc.shortFileName;
         warnings[loc.fullFileName][loc.line][str].line = loc.line;
         warnings[loc.fullFileName][loc.line][str].col = loc.col;
         warnings[loc.fullFileName][loc.line][str].msg = str;
@@ -174,6 +175,7 @@ public:
     }
     
     bool outputLines;
+    bool outputVSErrors;
     boost::filesystem::path rootPath;
     CompilerState state;
     map<string, map<unsigned, map<string, CError>>> errors;
