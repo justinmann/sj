@@ -18360,18 +18360,17 @@ void sjf_mainloop(void) {
     sjf_scene2d_end(sjt_parent488);
     sjt_parent489 = &sjv_rootwindowrenderer;
     sjf_windowrenderer_present(sjt_parent489);
-    sjv_mouse_eventtype = int32_empty;
-    sjv_mouse_x = 0;
-    sjv_mouse_y = 0;
-    sjv_mouse_isleftdown = false;
     SDL_Event e;
     while(SDL_PollEvent( &e ) != 0) {
+        sjv_mouse_eventtype = int32_empty;
+        sjv_mouse_x = 0;
+        sjv_mouse_y = 0;
+        sjv_mouse_isleftdown = false;
         switch (e.type) {
             case SDL_QUIT:
             exit(0);
             break;
             case SDL_MOUSEBUTTONDOWN:
-            printf("SDL_MOUSEBUTTONDOWN\n");
             sjv_mouse_eventtype.isvalid = true;
             sjv_mouse_eventtype.value = sjv_mouseeventtype_down;
             sjv_mouse_x = e.button.x;
@@ -18379,7 +18378,6 @@ void sjf_mainloop(void) {
             sjv_mouse_isleftdown = e.button.state & SDL_BUTTON(SDL_BUTTON_LEFT);
             break;
             case SDL_MOUSEBUTTONUP:
-            printf("SDL_MOUSEBUTTONUP\n");
             sjv_mouse_eventtype.isvalid = true;
             sjv_mouse_eventtype.value = sjv_mouseeventtype_up;
             sjv_mouse_x = e.button.x;
@@ -18391,75 +18389,76 @@ void sjf_mainloop(void) {
             sjv_mouse_eventtype.value = sjv_mouseeventtype_move;
             sjv_mouse_x = e.motion.x;
             sjv_mouse_y = e.motion.y;
-            sjv_mouse_isleftdown = e.button.state & SDL_BUTTON(SDL_BUTTON_LEFT);
+            sjv_mouse_isleftdown = SDL_GetGlobalMouseState(0, 0) & SDL_BUTTON(SDL_BUTTON_LEFT);
             break;
         }
-    }
-    sjv_shouldcontinue = true;
-    sjt_isEmpty68 = sjv_mouse_eventtype;
-    sjt_isEmpty67 = sjt_isEmpty68.isvalid;
-    if (sjt_isEmpty67) {
-        int32_t ifValue45;
-        int32_option sjt_getValue5;
-        bool sjt_isEmpty69;
-        sji_element sjt_isEmpty70 = { 0 };
+        sjv_shouldcontinue = true;
+        sjt_isEmpty68 = sjv_mouse_eventtype;
+        sjt_isEmpty67 = sjt_isEmpty68.isvalid;
+        if (sjt_isEmpty67) {
+            int32_t ifValue45;
+            int32_option sjt_getValue5;
+            bool sjt_isEmpty69;
+            sji_element sjt_isEmpty70 = { 0 };
 
-        sjt_getValue5 = sjv_mouse_eventtype;
-        ifValue45 = sjt_getValue5.value;
-        sjt_isEmpty70 = sjv_mouse_captureelement;
-        sjt_isEmpty69 = (sjt_isEmpty70._parent != 0);
-        if (sjt_isEmpty69) {
-            sji_element ifValue46 = { 0 };
-            sjs_mouseevent sjt_call389 = { -1 };
-            sjs_mouseevent* sjt_interfaceParam74 = 0;
-            sji_element sjt_parent490 = { 0 };
+            sjt_getValue5 = sjv_mouse_eventtype;
+            ifValue45 = sjt_getValue5.value;
+            sjt_isEmpty70 = sjv_mouse_captureelement;
+            sjt_isEmpty69 = (sjt_isEmpty70._parent != 0);
+            if (sjt_isEmpty69) {
+                sji_element ifValue46 = { 0 };
+                sjs_mouseevent sjt_call389 = { -1 };
+                sjs_mouseevent* sjt_interfaceParam74 = 0;
+                sji_element sjt_parent490 = { 0 };
 
-            ifValue46 = sjv_mouse_captureelement;
-            if (ifValue46._parent != 0) {
-                ifValue46._parent->_refCount++;
-            }
-
-            sjt_parent490 = ifValue46;
-            sjt_call389._refCount = 1;
-            sjt_call389.type = ifValue45;
-            sjt_call389.point._refCount = 1;
-            sjt_call389.point.x = sjv_mouse_x;
-            sjt_call389.point.y = sjv_mouse_y;
-            sjf_point(&sjt_call389.point);
-            sjt_call389.iscaptured = true;
-            sjt_call389.isleftdown = sjv_mouse_isleftdown;
-            sjf_mouseevent(&sjt_call389);
-            sjt_interfaceParam74 = &sjt_call389;
-            sjt_parent490._vtbl->firemouseevent(sjt_parent490._parent, sjt_interfaceParam74, &sjv_shouldcontinue);
-
-            if (ifValue46._parent != 0) {
-                ifValue46._parent->_refCount--;
-                if (ifValue46._parent->_refCount <= 0) {
-                    ifValue46._vtbl->destroy(ifValue46._parent);
-                    free(ifValue46._parent);
+                ifValue46 = sjv_mouse_captureelement;
+                if (ifValue46._parent != 0) {
+                    ifValue46._parent->_refCount++;
                 }
+
+                sjt_parent490 = ifValue46;
+                sjt_call389._refCount = 1;
+                sjt_call389.type = ifValue45;
+                sjt_call389.point._refCount = 1;
+                sjt_call389.point.x = sjv_mouse_x;
+                sjt_call389.point.y = sjv_mouse_y;
+                sjf_point(&sjt_call389.point);
+                sjt_call389.iscaptured = true;
+                sjt_call389.isleftdown = sjv_mouse_isleftdown;
+                sjf_mouseevent(&sjt_call389);
+                sjt_interfaceParam74 = &sjt_call389;
+                sjt_parent490._vtbl->firemouseevent(sjt_parent490._parent, sjt_interfaceParam74, &sjv_shouldcontinue);
+
+                if (ifValue46._parent != 0) {
+                    ifValue46._parent->_refCount--;
+                    if (ifValue46._parent->_refCount <= 0) {
+                        ifValue46._vtbl->destroy(ifValue46._parent);
+                        free(ifValue46._parent);
+                    }
+                }
+                if (sjt_call389._refCount == 1) { sjf_mouseevent_destroy(&sjt_call389); }
+            } else {
+                sjs_mouseevent sjt_call390 = { -1 };
+                sjs_mouseevent* sjt_interfaceParam75 = 0;
+                sji_element sjt_parent491 = { 0 };
+
+                sjt_parent491 = sjv_root;
+                sjt_call390._refCount = 1;
+                sjt_call390.type = ifValue45;
+                sjt_call390.point._refCount = 1;
+                sjt_call390.point.x = sjv_mouse_x;
+                sjt_call390.point.y = sjv_mouse_y;
+                sjf_point(&sjt_call390.point);
+                sjt_call390.iscaptured = false;
+                sjt_call390.isleftdown = sjv_mouse_isleftdown;
+                sjf_mouseevent(&sjt_call390);
+                sjt_interfaceParam75 = &sjt_call390;
+                sjt_parent491._vtbl->firemouseevent(sjt_parent491._parent, sjt_interfaceParam75, &sjv_shouldcontinue);
+
+                if (sjt_call390._refCount == 1) { sjf_mouseevent_destroy(&sjt_call390); }
             }
-            if (sjt_call389._refCount == 1) { sjf_mouseevent_destroy(&sjt_call389); }
-        } else {
-            sjs_mouseevent sjt_call390 = { -1 };
-            sjs_mouseevent* sjt_interfaceParam75 = 0;
-            sji_element sjt_parent491 = { 0 };
-
-            sjt_parent491 = sjv_root;
-            sjt_call390._refCount = 1;
-            sjt_call390.type = ifValue45;
-            sjt_call390.point._refCount = 1;
-            sjt_call390.point.x = sjv_mouse_x;
-            sjt_call390.point.y = sjv_mouse_y;
-            sjf_point(&sjt_call390.point);
-            sjt_call390.iscaptured = false;
-            sjt_call390.isleftdown = sjv_mouse_isleftdown;
-            sjf_mouseevent(&sjt_call390);
-            sjt_interfaceParam75 = &sjt_call390;
-            sjt_parent491._vtbl->firemouseevent(sjt_parent491._parent, sjt_interfaceParam75, &sjv_shouldcontinue);
-
-            if (sjt_call390._refCount == 1) { sjf_mouseevent_destroy(&sjt_call390); }
         }
+
     }
 
     if (sjv_rect._refCount == 1) { sjf_rect_destroy(&sjv_rect); }
