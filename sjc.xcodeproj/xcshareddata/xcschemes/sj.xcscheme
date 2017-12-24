@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "9C64AD541E0F823300340A7D"
-               BuildableName = "sj"
-               BlueprintName = "sj"
-               ReferencedContainer = "container:sj.xcodeproj">
+               BuildableName = "sjc"
+               BlueprintName = "sjc"
+               ReferencedContainer = "container:sjc.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -34,9 +34,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9C64AD541E0F823300340A7D"
-            BuildableName = "sj"
-            BlueprintName = "sj"
-            ReferencedContainer = "container:sj.xcodeproj">
+            BuildableName = "sjc"
+            BlueprintName = "sjc"
+            ReferencedContainer = "container:sjc.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -59,9 +59,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9C64AD541E0F823300340A7D"
-            BuildableName = "sj"
-            BlueprintName = "sj"
-            ReferencedContainer = "container:sj.xcodeproj">
+            BuildableName = "sjc"
+            BlueprintName = "sjc"
+            ReferencedContainer = "container:sjc.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -70,8 +70,8 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "interface"
-            isEnabled = "NO">
+            argument = "package1"
+            isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>
@@ -88,9 +88,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9C64AD541E0F823300340A7D"
-            BuildableName = "sj"
-            BlueprintName = "sj"
-            ReferencedContainer = "container:sj.xcodeproj">
+            BuildableName = "sjc"
+            BlueprintName = "sjc"
+            ReferencedContainer = "container:sjc.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
