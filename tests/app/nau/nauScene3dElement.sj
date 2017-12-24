@@ -100,11 +100,11 @@ nauScene3dElement #element (
             mouseEventType.down {
                 _startDrag = copy mouseEvent.point
                 _lookAtDrag = copy _lookAt
-                mouse_capture(heap parent as #element)
+                mouse_capture(parent as #element)
             }
 
             mouseEventType.move {
-                if mouse_hasCapture(heap parent as #element) {
+                if mouse_hasCapture(parent as #element) {
                     _lookAt = vec3_min(lookAtMax, vec3_max(lookAtMin, _lookAtDrag + vec3(
                         (_startDrag.x - mouseEvent.point.x) as f32 / _rect.w as f32 * 2.0f
                         (mouseEvent.point.y - _startDrag.y) as f32 / _rect.h as f32 * 2.0f
@@ -117,11 +117,11 @@ nauScene3dElement #element (
             }
 
             mouseEventType.up {
-                mouse_release(heap parent as #element)
+                mouse_release(parent as #element)
             }
         }
 
-        if !mouseEvent.isCaptured {
+        if !mouse_hasCapture(parent as #element) {
             for i : 0 to children.count {
                 child : children[i]
                 child.fireMouseEvent(mouseEvent)

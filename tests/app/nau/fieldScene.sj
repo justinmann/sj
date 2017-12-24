@@ -1,4 +1,31 @@
-fieldScene := heap nauScene3dElement()
+fieldBuyElement = heap fillLayout(
+    margin : margin(10, 100, 10, 10)
+    effect : valid(heap fadeEffect(0.0f) as #effect)
+    children : [
+        heap borderLayout(
+            children : [
+                heap borderChild(
+                    position : borderPosition.bottom
+                    child : heap buttonElement(
+                        text : "Buy me!"
+                    ) as #element
+                ) as #element
+                heap borderChild(
+                    position : borderPosition.right
+                    child : heap fillLayout(
+                        children : [
+                            heap textElement(
+                                idealSize : valid(size(250, 100))
+                                text : "Product description"
+                                color : copy colors.black
+                            ) as #element
+                        ]
+                    ) as #element
+                ) as #element
+            ]
+        ) as #element
+    ]
+)
 
 fieldScene = heap nauScene3dElement(
     lookAtMin := vec3(-16.0f, -1.0f, 0.0f)
@@ -187,4 +214,19 @@ fieldScene = heap nauScene3dElement(
     ]
 )
 
-fieldTexture : texture_fromElement(fieldScene as #element, size(800, 352))
+fieldElement = heap fillLayout(
+    children : [
+        fieldScene as #element
+        fieldBuyElement as #element
+        heap flowLayout(
+            children : [
+                heap buttonElement(
+                    text : "back"
+                    onClick : fieldController.onBack
+                ) as #element
+            ]
+        ) as #element
+    ]
+) as #element
+
+fieldTexture : texture_fromElement(fieldElement, size(800, 352))

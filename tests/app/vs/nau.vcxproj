@@ -163,6 +163,8 @@
     <None Include="..\..\..\..\..\src\sj\tests\app\nau.sj">
       <FileType>Document</FileType>
     </None>
+    <None Include="..\nau\fieldController.sj" />
+    <None Include="..\nau\menuController.sj" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\src\sj\tests\app\nau.c" />
