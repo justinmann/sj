@@ -86,33 +86,101 @@ fieldScene = heap nauScene3dElement(
                     ]
                 ) as #model
 
-/*                      person(
-                    texture : texture_fromPng("assets/forestperson1.png")
+                heap scene2dModel(
+                    id : valid("person3")
+                    vertexBuffer : planeVertexBuffer()  
+                    shader : copy phongTextureShader
+                    hasAlpha : true
+                    children : [
+                        heap personElement(
+                            id : valid("person3")
+                        ) as #element
+                        heap imageElement(
+                            image : image(texture : texture_fromPng("assets/forestperson3.png"))
+                            stretch : imageStretch.aspectRatio
+                        ) as #element
+                    ]
                 ) as #model
 
-                person(
-                    texture : texture_fromPng("assets/forestperson2.png")
+                heap scene2dModel(
+                    id : valid("person4")
+                    vertexBuffer : planeVertexBuffer()  
+                    shader : copy phongTextureShader
+                    hasAlpha : true
+                    children : [
+                        heap personElement(
+                            id : valid("person4")
+                        ) as #element
+                        heap imageElement(
+                            image : image(texture : texture_fromPng("assets/forestperson4.png"))
+                            stretch : imageStretch.aspectRatio
+                        ) as #element
+                    ]
                 ) as #model
 
-                person(
-                    texture : texture_fromPng("assets/forestperson3.png")
+                heap scene2dModel(
+                    id : valid("person5")
+                    vertexBuffer : planeVertexBuffer()  
+                    shader : copy phongTextureShader
+                    hasAlpha : true
+                    children : [
+                        heap personElement(
+                            id : valid("person5")
+                        ) as #element
+                        heap imageElement(
+                            image : image(texture : texture_fromPng("assets/forestperson5.png"))
+                            stretch : imageStretch.aspectRatio
+                        ) as #element
+                    ]
                 ) as #model
 
-                person(
-                    texture : texture_fromPng("assets/forestperson4.png")
+                heap scene2dModel(
+                    id : valid("person6")
+                    vertexBuffer : planeVertexBuffer()  
+                    shader : copy phongTextureShader
+                    hasAlpha : true
+                    children : [
+                        heap personElement(
+                            id : valid("person6")
+                        ) as #element
+                        heap imageElement(
+                            image : image(texture : texture_fromPng("assets/forestperson6.png"))
+                            stretch : imageStretch.aspectRatio
+                        ) as #element
+                    ]
                 ) as #model
 
-                person(
-                    texture : texture_fromPng("assets/forestperson5.png")
+                heap scene2dModel(
+                    id : valid("person7")
+                    vertexBuffer : planeVertexBuffer()  
+                    shader : copy phongTextureShader
+                    hasAlpha : true
+                    children : [
+                        heap personElement(
+                            id : valid("person7")
+                        ) as #element
+                        heap imageElement(
+                            image : image(texture : texture_fromPng("assets/forestperson7.png"))
+                            stretch : imageStretch.aspectRatio
+                        ) as #element
+                    ]
                 ) as #model
 
-                person(
-                    texture : texture_fromPng("assets/forestperson7.png")
+                heap scene2dModel(
+                    id : valid("person8")
+                    vertexBuffer : planeVertexBuffer()  
+                    shader : copy phongTextureShader
+                    hasAlpha : true
+                    children : [
+                        heap personElement(
+                            id : valid("person8")
+                        ) as #element
+                        heap imageElement(
+                            image : image(texture : texture_fromPng("assets/forestperson8.png"))
+                            stretch : imageStretch.aspectRatio
+                        ) as #element
+                    ]
                 ) as #model
-
-                person(
-                    texture : texture_fromPng("assets/forestperson8.png")
-                ) as #model */
             ]
         ) as #model
 
