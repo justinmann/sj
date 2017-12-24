@@ -7,11 +7,70 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9CF118821FEF6CA200281579 /* layout.c in Sources */ = {isa = PBXBuildFile; fileRef = 9CF118781FEF6A5600281579 /* layout.c */; };
 		9CF118841FEF6CA200281579 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CF1187E1FEF6C0600281579 /* SDL2.framework */; };
 		9CF118851FEF6CA200281579 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CF1187C1FEF6ADE00281579 /* libfreetype.a */; };
 		9CF118861FEF6CA200281579 /* libpng16.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CF1187A1FEF6AC900281579 /* libpng16.a */; };
+		9CF1188F1FEF6E4500281579 /* layout.sj in Sources */ = {isa = PBXBuildFile; fileRef = 9CF1188E1FEF6E3C00281579 /* layout.sj */; };
+		9CF118951FEF716B00281579 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CF1187E1FEF6C0600281579 /* SDL2.framework */; };
+		9CF118961FEF716B00281579 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CF1187C1FEF6ADE00281579 /* libfreetype.a */; };
+		9CF118971FEF716B00281579 /* libpng16.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CF1187A1FEF6AC900281579 /* libpng16.a */; };
+		9CF1189E1FEF717700281579 /* nau.sj in Sources */ = {isa = PBXBuildFile; fileRef = 9CF118901FEF715800281579 /* nau.sj */; };
+		9CF118A51FEF71F000281579 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CF1187E1FEF6C0600281579 /* SDL2.framework */; };
+		9CF118A61FEF71F000281579 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CF1187C1FEF6ADE00281579 /* libfreetype.a */; };
+		9CF118A71FEF71F000281579 /* libpng16.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CF1187A1FEF6AC900281579 /* libpng16.a */; };
+		9CF118B21FEF71F100281579 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CF1187E1FEF6C0600281579 /* SDL2.framework */; };
+		9CF118B31FEF71F100281579 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CF1187C1FEF6ADE00281579 /* libfreetype.a */; };
+		9CF118B41FEF71F100281579 /* libpng16.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CF1187A1FEF6AC900281579 /* libpng16.a */; };
+		9CF118BB1FEF720900281579 /* effect.sj in Sources */ = {isa = PBXBuildFile; fileRef = 9CF1189F1FEF71E500281579 /* effect.sj */; };
+		9CF118BC1FEF720F00281579 /* button.sj in Sources */ = {isa = PBXBuildFile; fileRef = 9CF118A01FEF71E500281579 /* button.sj */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXBuildRule section */
+		9CF1188D1FEF6DAC00281579 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.sj";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(INPUT_FILE_BASE).c",
+			);
+			script = "pwd\necho $INPUT_FILE_BASE.c\n../../../sjc $INPUT_FILE_DIR/$INPUT_FILE_NAME --c-file $DERIVED_SOURCES_DIR/$INPUT_FILE_BASE.c";
+		};
+		9CF118991FEF716B00281579 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.sj";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(INPUT_FILE_BASE).c",
+			);
+			script = "pwd\necho $INPUT_FILE_BASE.c\n../../../sjc $INPUT_FILE_DIR/$INPUT_FILE_NAME --c-file $DERIVED_SOURCES_DIR/$INPUT_FILE_BASE.c";
+		};
+		9CF118A91FEF71F000281579 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.sj";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(INPUT_FILE_BASE).c",
+			);
+			script = "pwd\necho $INPUT_FILE_BASE.c\n../../../sjc $INPUT_FILE_DIR/$INPUT_FILE_NAME --c-file $DERIVED_SOURCES_DIR/$INPUT_FILE_BASE.c";
+		};
+		9CF118B61FEF71F100281579 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.sj";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(INPUT_FILE_BASE).c",
+			);
+			script = "pwd\necho $INPUT_FILE_BASE.c\n../../../sjc $INPUT_FILE_DIR/$INPUT_FILE_NAME --c-file $DERIVED_SOURCES_DIR/$INPUT_FILE_BASE.c";
+		};
+/* End PBXBuildRule section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		9CF118871FEF6CA200281579 /* CopyFiles */ = {
@@ -23,14 +82,47 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
+		9CF118981FEF716B00281579 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		9CF118A81FEF71F000281579 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		9CF118B51FEF71F100281579 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		9CF118781FEF6A5600281579 /* layout.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = layout.c; path = ../layout.c; sourceTree = "<group>"; };
 		9CF1187A1FEF6AC900281579 /* libpng16.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng16.a; path = ../../../../../../../usr/local/Cellar/libpng/1.6.34/lib/libpng16.a; sourceTree = "<group>"; };
 		9CF1187C1FEF6ADE00281579 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../../../../../../../usr/local/Cellar/freetype/2.8.1/lib/libfreetype.a; sourceTree = "<group>"; };
 		9CF1187E1FEF6C0600281579 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		9CF1188B1FEF6CA200281579 /* layout */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = layout; sourceTree = BUILT_PRODUCTS_DIR; };
+		9CF1188E1FEF6E3C00281579 /* layout.sj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = layout.sj; path = ../layout.sj; sourceTree = "<group>"; };
+		9CF118901FEF715800281579 /* nau.sj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = nau.sj; path = ../nau.sj; sourceTree = "<group>"; };
+		9CF1189D1FEF716B00281579 /* nau */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = nau; sourceTree = BUILT_PRODUCTS_DIR; };
+		9CF1189F1FEF71E500281579 /* effect.sj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = effect.sj; path = ../effect.sj; sourceTree = "<group>"; };
+		9CF118A01FEF71E500281579 /* button.sj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = button.sj; path = ../button.sj; sourceTree = "<group>"; };
+		9CF118AD1FEF71F000281579 /* button */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = button; sourceTree = BUILT_PRODUCTS_DIR; };
+		9CF118BA1FEF71F100281579 /* effect */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = effect; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +133,36 @@
 				9CF118841FEF6CA200281579 /* SDL2.framework in Frameworks */,
 				9CF118851FEF6CA200281579 /* libfreetype.a in Frameworks */,
 				9CF118861FEF6CA200281579 /* libpng16.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9CF118941FEF716B00281579 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9CF118951FEF716B00281579 /* SDL2.framework in Frameworks */,
+				9CF118961FEF716B00281579 /* libfreetype.a in Frameworks */,
+				9CF118971FEF716B00281579 /* libpng16.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9CF118A41FEF71F000281579 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9CF118A51FEF71F000281579 /* SDL2.framework in Frameworks */,
+				9CF118A61FEF71F000281579 /* libfreetype.a in Frameworks */,
+				9CF118A71FEF71F000281579 /* libpng16.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9CF118B11FEF71F100281579 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9CF118B21FEF71F100281579 /* SDL2.framework in Frameworks */,
+				9CF118B31FEF71F100281579 /* libfreetype.a in Frameworks */,
+				9CF118B41FEF71F100281579 /* libpng16.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -60,7 +182,10 @@
 		9CE83C681FB2555C0045B0C6 = {
 			isa = PBXGroup;
 			children = (
-				9CF118781FEF6A5600281579 /* layout.c */,
+				9CF118A01FEF71E500281579 /* button.sj */,
+				9CF1189F1FEF71E500281579 /* effect.sj */,
+				9CF118901FEF715800281579 /* nau.sj */,
+				9CF1188E1FEF6E3C00281579 /* layout.sj */,
 				9CE83C721FB2555C0045B0C6 /* Products */,
 				9C666B8A1FD326C5001241FF /* Frameworks */,
 			);
@@ -70,6 +195,9 @@
 			isa = PBXGroup;
 			children = (
 				9CF1188B1FEF6CA200281579 /* layout */,
+				9CF1189D1FEF716B00281579 /* nau */,
+				9CF118AD1FEF71F000281579 /* button */,
+				9CF118BA1FEF71F100281579 /* effect */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -86,12 +214,67 @@
 				9CF118871FEF6CA200281579 /* CopyFiles */,
 			);
 			buildRules = (
+				9CF1188D1FEF6DAC00281579 /* PBXBuildRule */,
 			);
 			dependencies = (
 			);
 			name = layout;
 			productName = sjTest;
 			productReference = 9CF1188B1FEF6CA200281579 /* layout */;
+			productType = "com.apple.product-type.tool";
+		};
+		9CF118911FEF716B00281579 /* nau */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9CF1189A1FEF716B00281579 /* Build configuration list for PBXNativeTarget "nau" */;
+			buildPhases = (
+				9CF118921FEF716B00281579 /* Sources */,
+				9CF118941FEF716B00281579 /* Frameworks */,
+				9CF118981FEF716B00281579 /* CopyFiles */,
+			);
+			buildRules = (
+				9CF118991FEF716B00281579 /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = nau;
+			productName = sjTest;
+			productReference = 9CF1189D1FEF716B00281579 /* nau */;
+			productType = "com.apple.product-type.tool";
+		};
+		9CF118A11FEF71F000281579 /* button */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9CF118AA1FEF71F000281579 /* Build configuration list for PBXNativeTarget "button" */;
+			buildPhases = (
+				9CF118A21FEF71F000281579 /* Sources */,
+				9CF118A41FEF71F000281579 /* Frameworks */,
+				9CF118A81FEF71F000281579 /* CopyFiles */,
+			);
+			buildRules = (
+				9CF118A91FEF71F000281579 /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = button;
+			productName = sjTest;
+			productReference = 9CF118AD1FEF71F000281579 /* button */;
+			productType = "com.apple.product-type.tool";
+		};
+		9CF118AE1FEF71F100281579 /* effect */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9CF118B71FEF71F100281579 /* Build configuration list for PBXNativeTarget "effect" */;
+			buildPhases = (
+				9CF118AF1FEF71F100281579 /* Sources */,
+				9CF118B11FEF71F100281579 /* Frameworks */,
+				9CF118B51FEF71F100281579 /* CopyFiles */,
+			);
+			buildRules = (
+				9CF118B61FEF71F100281579 /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = effect;
+			productName = sjTest;
+			productReference = 9CF118BA1FEF71F100281579 /* effect */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -104,6 +287,15 @@
 				ORGANIZATIONNAME = "Mann, Justin";
 				TargetAttributes = {
 					9CF118801FEF6CA200281579 = {
+						ProvisioningStyle = Automatic;
+					};
+					9CF118911FEF716B00281579 = {
+						ProvisioningStyle = Automatic;
+					};
+					9CF118A11FEF71F000281579 = {
+						ProvisioningStyle = Automatic;
+					};
+					9CF118AE1FEF71F100281579 = {
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -121,6 +313,9 @@
 			projectRoot = "";
 			targets = (
 				9CF118801FEF6CA200281579 /* layout */,
+				9CF118911FEF716B00281579 /* nau */,
+				9CF118A11FEF71F000281579 /* button */,
+				9CF118AE1FEF71F100281579 /* effect */,
 			);
 		};
 /* End PBXProject section */
@@ -130,7 +325,31 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9CF118821FEF6CA200281579 /* layout.c in Sources */,
+				9CF1188F1FEF6E4500281579 /* layout.sj in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9CF118921FEF716B00281579 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9CF1189E1FEF717700281579 /* nau.sj in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9CF118A21FEF71F000281579 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9CF118BC1FEF720F00281579 /* button.sj in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9CF118AF1FEF71F100281579 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9CF118BB1FEF720900281579 /* effect.sj in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -286,6 +505,144 @@
 			};
 			name = Release;
 		};
+		9CF1189B1FEF716B00281579 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/freetype2,
+					/usr/local/include/libpng16,
+					..,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/freetype/2.8.1/lib,
+					/usr/local/lib,
+					/usr/local/Cellar/libpng/1.6.34/lib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		9CF1189C1FEF716B00281579 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/freetype2,
+					/usr/local/include/libpng16,
+					..,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/freetype/2.8.1/lib,
+					/usr/local/lib,
+					/usr/local/Cellar/libpng/1.6.34/lib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		9CF118AB1FEF71F000281579 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/freetype2,
+					/usr/local/include/libpng16,
+					..,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/freetype/2.8.1/lib,
+					/usr/local/lib,
+					/usr/local/Cellar/libpng/1.6.34/lib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		9CF118AC1FEF71F000281579 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/freetype2,
+					/usr/local/include/libpng16,
+					..,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/freetype/2.8.1/lib,
+					/usr/local/lib,
+					/usr/local/Cellar/libpng/1.6.34/lib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		9CF118B81FEF71F100281579 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/freetype2,
+					/usr/local/include/libpng16,
+					..,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/freetype/2.8.1/lib,
+					/usr/local/lib,
+					/usr/local/Cellar/libpng/1.6.34/lib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		9CF118B91FEF71F100281579 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/freetype2,
+					/usr/local/include/libpng16,
+					..,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/freetype/2.8.1/lib,
+					/usr/local/lib,
+					/usr/local/Cellar/libpng/1.6.34/lib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -303,6 +660,33 @@
 			buildConfigurations = (
 				9CF118891FEF6CA200281579 /* Debug */,
 				9CF1188A1FEF6CA200281579 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9CF1189A1FEF716B00281579 /* Build configuration list for PBXNativeTarget "nau" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9CF1189B1FEF716B00281579 /* Debug */,
+				9CF1189C1FEF716B00281579 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9CF118AA1FEF71F000281579 /* Build configuration list for PBXNativeTarget "button" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9CF118AB1FEF71F000281579 /* Debug */,
+				9CF118AC1FEF71F000281579 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9CF118B71FEF71F100281579 /* Build configuration list for PBXNativeTarget "effect" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9CF118B81FEF71F100281579 /* Debug */,
+				9CF118B91FEF71F100281579 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
