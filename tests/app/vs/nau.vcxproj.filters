@@ -357,6 +357,12 @@
     <None Include="..\nau\menuController.sj">
       <Filter>Source Files\nau</Filter>
     </None>
+    <None Include="..\nau\forestController.sj">
+      <Filter>Source Files\nau</Filter>
+    </None>
+    <None Include="..\nau\forestScene.sj">
+      <Filter>Source Files\nau</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lib\common\khash.h">

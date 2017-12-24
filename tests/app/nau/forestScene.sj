@@ -1,4 +1,4 @@
-fieldBuyElement = heap fillLayout(
+forestBuyElement = heap fillLayout(
     margin : margin(10, 100, 10, 10)
     effect : valid(heap fadeEffect(0.0f) as #effect)
     children : [
@@ -27,12 +27,12 @@ fieldBuyElement = heap fillLayout(
     ]
 )
 
-fieldScene = heap nauScene3dElement(
+forestScene = heap nauScene3dElement(
     lookAtMin := vec3(-16.0f, -1.0f, 0.0f)
     lookAtMax := vec3(16.0f, 1.0f, 6.0f)
     children: [
         heap model(
-            texture : texture_fromPng("assets/clouds.png")
+            texture : texture_fromPng("assets/forest_backdrop.png")
             shader : copy phongTextureShader
             model : mat4_translate(vec3(0.0f, 8.0f, 20.0f)) * mat4_scale(12.0f, 12.0f, 12.0f)
             vertexBuffer : planeVertexBuffer(x0 : -6.3f, y0 : -1.0f, x1 : 6.3f, y1 : 1.0f) 
@@ -40,28 +40,27 @@ fieldScene = heap nauScene3dElement(
 
         heap leafPanel(
             textures : [
-                texture_fromPng("assets/whitestar1.png")
-                texture_fromPng("assets/whitestar2.png")
-                texture_fromPng("assets/whitestar1.png")
-                texture_fromPng("assets/whitestar2.png")
-                texture_fromPng("assets/whitestar1.png")
-                texture_fromPng("assets/whitestar2.png")
-                texture_fromPng("assets/whitestar1.png")
-                texture_fromPng("assets/whitestar2.png")
+                texture_fromPng("assets/leaf11.png")
+                texture_fromPng("assets/leaf12.png")
+                texture_fromPng("assets/leaf13.png")
+                texture_fromPng("assets/leaf11.png")
+                texture_fromPng("assets/leaf11.png")
+                texture_fromPng("assets/leaf12.png")
+                texture_fromPng("assets/leaf13.png")
             ]
         ) as #model
 
         heap peoplePanel(
-            model : mat4_translate(vec3(0.0f, 0.0f, 0.0f))
+            model : mat4_translate(vec3(0.0f, -1.3f, 0.0f))
             children : [
                 heap scene2dModel(
-                    id : valid("person1")
+                    id : valid("forest_person1")
                     vertexBuffer : planeVertexBuffer()  
                     shader : copy phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
-                            id : valid("person1")
+                            id : valid("forest_person1")
                         ) as #element
                         heap imageElement(
                             image : image(texture : texture_fromPng("assets/forestperson1.png"))
@@ -71,13 +70,13 @@ fieldScene = heap nauScene3dElement(
                 ) as #model
 
                 heap scene2dModel(
-                    id : valid("person2")
+                    id : valid("forest_person2")
                     vertexBuffer : planeVertexBuffer()  
                     shader : copy phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
-                            id : valid("person2")
+                            id : valid("forest_person2")
                         ) as #element
                         heap imageElement(
                             image : image(texture : texture_fromPng("assets/forestperson2.png"))
@@ -87,13 +86,13 @@ fieldScene = heap nauScene3dElement(
                 ) as #model
 
                 heap scene2dModel(
-                    id : valid("person3")
+                    id : valid("forest_person3")
                     vertexBuffer : planeVertexBuffer()  
                     shader : copy phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
-                            id : valid("person3")
+                            id : valid("forest_person3")
                         ) as #element
                         heap imageElement(
                             image : image(texture : texture_fromPng("assets/forestperson3.png"))
@@ -103,13 +102,13 @@ fieldScene = heap nauScene3dElement(
                 ) as #model
 
                 heap scene2dModel(
-                    id : valid("person4")
+                    id : valid("forest_person4")
                     vertexBuffer : planeVertexBuffer()  
                     shader : copy phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
-                            id : valid("person4")
+                            id : valid("forest_person4")
                         ) as #element
                         heap imageElement(
                             image : image(texture : texture_fromPng("assets/forestperson4.png"))
@@ -119,13 +118,13 @@ fieldScene = heap nauScene3dElement(
                 ) as #model
 
                 heap scene2dModel(
-                    id : valid("person5")
+                    id : valid("forest_person5")
                     vertexBuffer : planeVertexBuffer()  
                     shader : copy phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
-                            id : valid("person5")
+                            id : valid("forest_person5")
                         ) as #element
                         heap imageElement(
                             image : image(texture : texture_fromPng("assets/forestperson5.png"))
@@ -135,13 +134,13 @@ fieldScene = heap nauScene3dElement(
                 ) as #model
 
                 heap scene2dModel(
-                    id : valid("person6")
+                    id : valid("forest_person6")
                     vertexBuffer : planeVertexBuffer()  
                     shader : copy phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
-                            id : valid("person6")
+                            id : valid("forest_person6")
                         ) as #element
                         heap imageElement(
                             image : image(texture : texture_fromPng("assets/forestperson6.png"))
@@ -151,13 +150,13 @@ fieldScene = heap nauScene3dElement(
                 ) as #model
 
                 heap scene2dModel(
-                    id : valid("person7")
+                    id : valid("forest_person7")
                     vertexBuffer : planeVertexBuffer()  
                     shader : copy phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
-                            id : valid("person7")
+                            id : valid("forest_person7")
                         ) as #element
                         heap imageElement(
                             image : image(texture : texture_fromPng("assets/forestperson7.png"))
@@ -167,13 +166,13 @@ fieldScene = heap nauScene3dElement(
                 ) as #model
 
                 heap scene2dModel(
-                    id : valid("person8")
+                    id : valid("forest_person8")
                     vertexBuffer : planeVertexBuffer()  
                     shader : copy phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
-                            id : valid("person8")
+                            id : valid("forest_person8")
                         ) as #element
                         heap imageElement(
                             image : image(texture : texture_fromPng("assets/forestperson8.png"))
@@ -184,97 +183,85 @@ fieldScene = heap nauScene3dElement(
             ]
         ) as #model
 
+        heap model(
+            texture : texture_fromPng("assets/floor.png")
+            shader : copy phongTextureShader
+            model : mat4_translate(vec3(0.0f, -2.3f, 0.0f)) *  mat4_scale(40.0f, 40.0f, 40.0f) * mat4_rotate(90.0f, vec3(1.0f, 0.0f, 0.0f))
+            vertexBuffer : planeVertexBuffer() 
+        ) as #model
+
         heap panel3d(
             model : mat4_translate(vec3(0.0f, -1.3f, 0.0f))
             children : [
                 heap model(
-                    id : valid("grass6.2")
-                    texture : texture_fromPng("assets/grass.png")
+                    texture : texture_fromPng("assets/tree1.png")
                     shader : copy phongTextureShader
-                    model : mat4_translate(vec3(-8.6f, 0.0f, 6.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
-                    vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
-                    hasAlpha : true
-                ) as #model
-
-
-                heap model(
-                    id : valid("grass6.2")
-                    texture : texture_fromPng("assets/grass.png")
-                    shader : copy phongTextureShader
-                    model : mat4_translate(vec3(8.6f, 0.0f, 6.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
-                    vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
+                    model : mat4_translate(vec3(0.0f, 0.0f, 0.6f))
+                    vertexBuffer : planeVertexBuffer(y1 : 6.0f) 
                     hasAlpha : true
                 ) as #model
 
                 heap model(
-                    id : valid("grass4.2")
-                    texture : texture_fromPng("assets/grass.png")
+                    texture : texture_fromPng("assets/tree3.png")
                     shader : copy phongTextureShader
-                    model : mat4_translate(vec3(-8.6f, 0.0f, 4.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
-                    vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
+                    model : mat4_translate(vec3(-2.0f, 0.0f, 2.3f))
+                    vertexBuffer : planeVertexBuffer(y1 : 7.34f) 
                     hasAlpha : true
                 ) as #model
 
                 heap model(
-                    id : valid("grass4.2")
-                    texture : texture_fromPng("assets/grass.png")
+                    texture : texture_fromPng("assets/tree4.png")
                     shader : copy phongTextureShader
-                    model : mat4_translate(vec3(8.6f, 0.0f, 4.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
-                    vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
+                    model : mat4_translate(vec3(-8.0f, 0.0f, 3.4f))
+                    vertexBuffer : planeVertexBuffer(y1 : 9.18f) 
                     hasAlpha : true
                 ) as #model
 
                 heap model(
-                    id : valid("grass2.2")
-                    texture : texture_fromPng("assets/grass.png")
+                    texture : texture_fromPng("assets/tree3.png")
                     shader : copy phongTextureShader
-                    model : mat4_translate(vec3(-9.6f, 0.0f, 2.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
-                    vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
+                    model : mat4_translate(vec3(9.0f, 0.0f, 2.3f))
+                    vertexBuffer : planeVertexBuffer(y1 : 7.34f) 
                     hasAlpha : true
                 ) as #model
 
                 heap model(
-                    id : valid("grass2.2")
-                    texture : texture_fromPng("assets/grass.png")
+                    texture : texture_fromPng("assets/tree2.png")
                     shader : copy phongTextureShader
-                    model : mat4_translate(vec3(7.6f, 0.0f, 2.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
-                    vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
+                    model : mat4_translate(vec3(-6.0f, 0.0f, 5.1f))
+                    vertexBuffer : planeVertexBuffer(y1 : 7.0f) 
                     hasAlpha : true
                 ) as #model
 
                 heap model(
-                    id : valid("grass0.2")
-                    texture : texture_fromPng("assets/grass.png")
+                    texture : texture_fromPng("assets/tree3.png")
                     shader : copy phongTextureShader
-                    model : mat4_translate(vec3(-10.6f, 0.0f, 0.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
-                    vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
+                    model : mat4_translate(vec3(-7.5f, 0.0f, 6.3f))
+                    vertexBuffer : planeVertexBuffer(y1 : 7.34f) 
                     hasAlpha : true
                 ) as #model
 
                 heap model(
-                    id : valid("grass0.2")
-                    texture : texture_fromPng("assets/grass.png")
+                    texture : texture_fromPng("assets/tree4.png")
                     shader : copy phongTextureShader
-                    model : mat4_translate(vec3(6.6f, 0.0f, 0.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
-                    vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
+                    model : mat4_translate(vec3(0.0f, 0.0f, 7.4f))
+                    vertexBuffer : planeVertexBuffer(y1 : 9.18f) 
                     hasAlpha : true
                 ) as #model
 
                 heap model(
-                    id : valid("grass-1.8")
-                    texture : texture_fromPng("assets/grass.png")
+                    texture : texture_fromPng("assets/tree2.png")
                     shader : copy phongTextureShader
-                    model : mat4_translate(vec3(-8.6f, 0.0f, -1.8f)) * mat4_scale(2.0f, 2.0f, 2.0f)
-                    vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
+                    model : mat4_translate(vec3(-7.5f, 0.0f, 5.1f))
+                    vertexBuffer : planeVertexBuffer(y1 : 7.0f) 
                     hasAlpha : true
                 ) as #model
-
+                
                 heap model(
-                    id : valid("grass-1.8")
-                    texture : texture_fromPng("assets/grass.png")
+                    texture : texture_fromPng("assets/tree2.png")
                     shader : copy phongTextureShader
-                    model : mat4_translate(vec3(8.6f, 0.0f, -1.8f)) * mat4_scale(2.0f, 2.0f, 2.0f)
-                    vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
+                    model : mat4_translate(vec3(-10.5f, 0.0f, 5.6f))
+                    vertexBuffer : planeVertexBuffer(y1 : 7.0f) 
                     hasAlpha : true
                 ) as #model
             ]
@@ -282,19 +269,19 @@ fieldScene = heap nauScene3dElement(
     ]
 )
 
-fieldElement = heap fillLayout(
+forestElement = heap fillLayout(
     children : [
-        fieldScene as #element
-        fieldBuyElement as #element
+        forestScene as #element
+        forestBuyElement as #element
         heap flowLayout(
             children : [
                 heap buttonElement(
                     text : "back"
-                    onClick : fieldController.onBack
+                    onClick : forestController.onBack
                 ) as #element
             ]
         ) as #element
     ]
 ) as #element
 
-fieldTexture : texture_fromElement(fieldElement, size(800, 352))
+forestTexture : texture_fromElement(forestElement, size(800, 352))

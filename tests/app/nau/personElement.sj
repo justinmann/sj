@@ -25,6 +25,7 @@ personElement #element #clickable (
     onClickGestureClick(element : '#element) { 
         ifValid id {
             fieldController.selectPerson(id)
+            forestController.selectPerson(id)
         }
         void 
     }

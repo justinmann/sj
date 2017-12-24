@@ -164,6 +164,8 @@
       <FileType>Document</FileType>
     </None>
     <None Include="..\nau\fieldController.sj" />
+    <None Include="..\nau\forestController.sj" />
+    <None Include="..\nau\forestScene.sj" />
     <None Include="..\nau\menuController.sj" />
   </ItemGroup>
   <ItemGroup>
