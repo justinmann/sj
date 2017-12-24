@@ -198,6 +198,10 @@ color(r'f32:, g'f32:, b'f32:, a'f32:)'stack color {
   this
 }
 
+fieldcontroller()'heap fieldcontroller {
+  this
+}
+
 filllayout #element (children'stack array!#element:, margin'stack margin=, effect'heap #effect?=, _rect'stack rect=)'heap filllayout {
   this
 }
@@ -1130,7 +1134,8 @@ global()'void {
   #define __LINUX__
   #define __32__
   #else
-  Invalid bits
+  #define __LINUX__
+  #define __32__
   #endif
   #elif _MSC_VER
   #if _WIN64 
@@ -1140,10 +1145,10 @@ global()'void {
   #define __WINDOWS__
   #define __32__
   #else
-  Invalid bits
+  #error "WINDOWS UNSUPPORTED BITS"
   #endif
   #else
-  Invalid compiler
+  #error "UNKNOWN PLATFORM"
   #endif
   --cinclude--
   --cinclude--
@@ -5518,46 +5523,6 @@ global()'void {
     vertex'stack string : vertex,
     pixel'stack string : pixel
   ))
-  fieldscene'heap nauscene3delement = heap nauscene3delement(this = nauscene3delement(
-    children'stack array!#model : children,
-    lookatmin'stack vec3 = lookatmin,
-    lookatmax'stack vec3 = lookatmax,
-    cameradistance'f32 = cameradistance,
-    fieldofview'f32 = fieldofview,
-    znear'f32 = znear,
-    zfar'f32 = zfar,
-    light'stack light = light,
-    projection'stack mat4 = projection,
-    view'stack mat4 = view,
-    world'stack mat4 = world,
-    _rect'stack rect = _rect,
-    _isdragging'bool = _isdragging,
-    _startdrag'stack point = _startdrag,
-    _lookat'stack vec3 = _lookat,
-    _lookatdrag'stack vec3 = _lookatdrag
-  ))
-  fieldscene'heap nauscene3delement = heap nauscene3delement(this = nauscene3delement(
-    children'stack array!#model : children,
-    lookatmin'stack vec3 = lookatmin,
-    lookatmax'stack vec3 = lookatmax,
-    cameradistance'f32 = cameradistance,
-    fieldofview'f32 = fieldofview,
-    znear'f32 = znear,
-    zfar'f32 = zfar,
-    light'stack light = light,
-    projection'stack mat4 = projection,
-    view'stack mat4 = view,
-    world'stack mat4 = world,
-    _rect'stack rect = _rect,
-    _isdragging'bool = _isdragging,
-    _startdrag'stack point = _startdrag,
-    _lookat'stack vec3 = _lookat,
-    _lookatdrag'stack vec3 = _lookatdrag
-  ))
-  fieldtexture'stack texture : texture_fromelement(
-    element'local #element : element,
-    size'stack size : size
-  )
   root'heap #element = heap filllayout(this = filllayout(
     children'stack array!#element : children,
     margin'stack margin = margin,
@@ -5582,7 +5547,78 @@ global()'void {
     _lookat'stack vec3 = _lookat,
     _lookatdrag'stack vec3 = _lookatdrag
   ))
+  menuelement'heap #element = heap filllayout(this = filllayout(
+    children'stack array!#element : children,
+    margin'stack margin = margin,
+    effect'heap #effect? = effect,
+    _rect'stack rect = _rect
+  )) as heap #element
+  fieldscene'heap nauscene3delement = heap nauscene3delement(this = nauscene3delement(
+    children'stack array!#model : children,
+    lookatmin'stack vec3 = lookatmin,
+    lookatmax'stack vec3 = lookatmax,
+    cameradistance'f32 = cameradistance,
+    fieldofview'f32 = fieldofview,
+    znear'f32 = znear,
+    zfar'f32 = zfar,
+    light'stack light = light,
+    projection'stack mat4 = projection,
+    view'stack mat4 = view,
+    world'stack mat4 = world,
+    _rect'stack rect = _rect,
+    _isdragging'bool = _isdragging,
+    _startdrag'stack point = _startdrag,
+    _lookat'stack vec3 = _lookat,
+    _lookatdrag'stack vec3 = _lookatdrag
+  ))
+  fieldelement'heap #element = heap filllayout(this = filllayout(
+    children'stack array!#element : children,
+    margin'stack margin = margin,
+    effect'heap #effect? = effect,
+    _rect'stack rect = _rect
+  )) as heap #element
+  fieldbuyelement'heap filllayout = heap filllayout(this = filllayout(
+    children'stack array!#element : children,
+    margin'stack margin = margin,
+    effect'heap #effect? = effect,
+    _rect'stack rect = _rect
+  ))
   menucontroller'heap menucontroller : heap menucontroller(this = menucontroller())
+  fieldcontroller'heap fieldcontroller : heap fieldcontroller(this = fieldcontroller())
+  fieldbuyelement'heap filllayout = heap filllayout(this = filllayout(
+    children'stack array!#element : children,
+    margin'stack margin = margin,
+    effect'heap #effect? = effect,
+    _rect'stack rect = _rect
+  ))
+  fieldscene'heap nauscene3delement = heap nauscene3delement(this = nauscene3delement(
+    children'stack array!#model : children,
+    lookatmin'stack vec3 = lookatmin,
+    lookatmax'stack vec3 = lookatmax,
+    cameradistance'f32 = cameradistance,
+    fieldofview'f32 = fieldofview,
+    znear'f32 = znear,
+    zfar'f32 = zfar,
+    light'stack light = light,
+    projection'stack mat4 = projection,
+    view'stack mat4 = view,
+    world'stack mat4 = world,
+    _rect'stack rect = _rect,
+    _isdragging'bool = _isdragging,
+    _startdrag'stack point = _startdrag,
+    _lookat'stack vec3 = _lookat,
+    _lookatdrag'stack vec3 = _lookatdrag
+  ))
+  fieldelement'heap #element = heap filllayout(this = filllayout(
+    children'stack array!#element : children,
+    margin'stack margin = margin,
+    effect'heap #effect? = effect,
+    _rect'stack rect = _rect
+  )) as heap #element
+  fieldtexture'stack texture : texture_fromelement(
+    element'local #element : element,
+    size'stack size : size
+  )
   menuscene'heap nauscene3delement = heap nauscene3delement(this = nauscene3delement(
     children'stack array!#model : children,
     lookatmin'stack vec3 = lookatmin,
@@ -5601,10 +5637,16 @@ global()'void {
     _lookat'stack vec3 = _lookat,
     _lookatdrag'stack vec3 = _lookatdrag
   ))
+  menuelement'heap #element = heap filllayout(this = filllayout(
+    children'stack array!#element : children,
+    margin'stack margin = margin,
+    effect'heap #effect? = effect,
+    _rect'stack rect = _rect
+  )) as heap #element
   menucontroller_start(
     parent: this
   )
-  root'heap #element = heap menuscene as heap #element
+  root'heap #element = menuelement
   runloop()
   void
 }

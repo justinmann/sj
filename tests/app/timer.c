@@ -6,7 +6,8 @@
 #define __LINUX__
 #define __32__
 #else
-Invalid bits
+#define __LINUX__
+#define __32__
 #endif
 #elif _MSC_VER
 #if _WIN64 
@@ -16,10 +17,10 @@ Invalid bits
 #define __WINDOWS__
 #define __32__
 #else
-Invalid bits
+#error "WINDOWS UNSUPPORTED BITS"
 #endif
 #else
-Invalid compiler
+#error "UNKNOWN PLATFORM"
 #endif
 #ifdef WIN32
 #pragma warning(disable:4996)
