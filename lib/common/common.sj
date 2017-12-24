@@ -1,26 +1,26 @@
 --cinclude--
 ##ifdef __GNUC__
-	##if __x86_64__ 
-		##define __LINUX__
-		##define __64__
-	##elif __i386__ 
-		##define __LINUX__
-		##define __32__
-	##else
-		Invalid bits
-	##endif
+    ##if __x86_64__ 
+        ##define __LINUX__
+        ##define __64__
+    ##elif __i386__ 
+        ##define __LINUX__
+        ##define __32__
+    ##else
+        Invalid bits
+    ##endif
 ##elif _MSC_VER
-	##if _WIN64 
-		##define __WINDOWS__
-		##define __64__
-	##elif _WIN32 
-		##define __WINDOWS__
-		##define __32__
-	##else
-		Invalid bits
-	##endif
+    ##if _WIN64 
+        ##define __WINDOWS__
+        ##define __64__
+    ##elif _WIN32 
+        ##define __WINDOWS__
+        ##define __32__
+    ##else
+        Invalid bits
+    ##endif
 ##else
-	Invalid compiler
+    Invalid compiler
 ##endif
 
 

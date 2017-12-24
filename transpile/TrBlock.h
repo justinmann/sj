@@ -53,10 +53,10 @@ public:
     TrBlock() : localVarParent(nullptr) { }
     
     TrBlock* localVarParent;
-	bool hasThis;
+    bool hasThis;
     string definition;
     map<string, shared_ptr<TrValue>> variables;
-	vector<TrStatement> statements;
+    vector<TrStatement> statements;
     string returnLine;
     shared_ptr<TrBlock> initBlock;
 

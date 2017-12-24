@@ -84,15 +84,15 @@ mainLoop() {
 }
 
 runLoop() {
-	--c--
+    --c--
 ##ifdef EMSCRIPTEN
-	emscripten_set_main_loop((em_callback_func)sjf_mainloop, 0, 0);
-	exit(0);
+    emscripten_set_main_loop((em_callback_func)sjf_mainloop, 0, 0);
+    exit(0);
 ##else
-	bool quit = false;
+    bool quit = false;
     while (!quit) {
         #functionStack(mainLoop)();
     }
-##endif	
-	--c--
+##endif 
+    --c--
 }

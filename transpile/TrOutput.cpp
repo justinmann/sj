@@ -82,8 +82,8 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop, bool outputLines
         stream << "\n";
 
         for (auto t : structOrder) {
-			stream << "struct td_" << t << " {\n";
-			for (auto line : structs[t]) {
+            stream << "struct td_" << t << " {\n";
+            for (auto line : structs[t]) {
                 if (line.size() == 0) {
                     continue;
                 }
@@ -92,11 +92,11 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop, bool outputLines
                     stream << ";";
                 }
                 stream << "\n";
-			}
+            }
             stream << "};\n";
-			stream << "\n";
-		}
-	}
+            stream << "\n";
+        }
+    }
     
     if (vtbls.size() > 0) {
         for (auto t : vtbls) {
@@ -126,13 +126,13 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop, bool outputLines
     mainFunction->writeVariablesToStream(stream, 0, outputLines);
 
     if (functions.size() > 0) {
-		for (auto function : functions) {
+        for (auto function : functions) {
             if (function.second == mainFunction) {
                 continue;
             }
             stream << function.second->definition << ";\n";
-		}
-	}
+        }
+    }
         
     stream << "void main_destroy(void);\n";
     stream << "\n";

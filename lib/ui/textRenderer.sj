@@ -52,11 +52,11 @@ typedef struct {
     float x, y, z;    // position
     float s, t;       // texture
     float r, g, b, a; // color
-} vertex3_texture2_color3_t;	
+} vertex3_texture2_color3_t;    
 --cstruct--
 
 --cdefine--
-void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen);	
+void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen);   
 vec2 get_text_size(texture_font_t * font, char *text);
 --cdefine--
 
@@ -95,7 +95,7 @@ void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 
             pen->x += glyph->advance_x;
         }
     }
-}	
+}   
 
 vec2 get_text_size(texture_font_t * font, char *text) {
     vec2 size = {{ 0, font->height }};

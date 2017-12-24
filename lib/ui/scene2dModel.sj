@@ -1,63 +1,63 @@
 @heap
 scene2dModel #model (
-	id : empty'string
-	vertexBuffer : 'vertexBuffer!vertex_location_texture_normal
-	shader : 'shader
-	textureSize : size(512, 512)
-	children : array!heap #element()
-	hasAlpha : false
-	center : vec3()
-	model := mat4_identity()
-	_innerScene : scene2d()
-	_sceneRect := rect()
-	_projection := mat4()
-	_world := mat4()
-	_view := mat4()
-	_light := light()
-	_projectedCenter := vec4()
-	_framebuffer := framebuffer()
+    id : empty'string
+    vertexBuffer : 'vertexBuffer!vertex_location_texture_normal
+    shader : 'shader
+    textureSize : size(512, 512)
+    children : array!heap #element()
+    hasAlpha : false
+    center : vec3()
+    model := mat4_identity()
+    _innerScene : scene2d()
+    _sceneRect := rect()
+    _projection := mat4()
+    _world := mat4()
+    _view := mat4()
+    _light := light()
+    _projectedCenter := vec4()
+    _framebuffer := framebuffer()
     _texture := texture()
     _renderbuffer := renderbuffer()
 
-	update(sceneRect : 'rect, projection : 'mat4, view : 'mat4, world : 'mat4, light : 'light)'void {
-		_sceneRect = copy sceneRect
-		_projection = copy projection
-		_view = copy view
-		_world = copy world
-		_light = copy light
-		_projectedCenter = _projection * _view * _world * model * vec4(center.x, center.y, center.z, 1.0f)
-		void
-	}
+    update(sceneRect : 'rect, projection : 'mat4, view : 'mat4, world : 'mat4, light : 'light)'void {
+        _sceneRect = copy sceneRect
+        _projection = copy projection
+        _view = copy view
+        _world = copy world
+        _light = copy light
+        _projectedCenter = _projection * _view * _world * model * vec4(center.x, center.y, center.z, 1.0f)
+        void
+    }
 
-	getZ() { _projectedCenter.z }
-	getCenter() { copy center }
-	getWorld() { _world * model }
+    getZ() { _projectedCenter.z }
+    getCenter() { copy center }
+    getWorld() { _world * model }
 
-	renderOrQueue(alphaModels : 'list!heap #model) {
-		if hasAlpha {
-			alphaModels.add(parent as #model)
-		} else {
-			render()
-		}
-	}
+    renderOrQueue(alphaModels : 'list!heap #model) {
+        if hasAlpha {
+            alphaModels.add(parent as #model)
+        } else {
+            render()
+        }
+    }
 
-	render()'void {
-		glPushFramebuffer(_framebuffer)
+    render()'void {
+        glPushFramebuffer(_framebuffer)
 
-		_innerScene.start()
-		for i : 0 to children.count {
-			child : children[i]
-			child.render(_innerScene)
-		}
-		_innerScene.end()
+        _innerScene.start()
+        for i : 0 to children.count {
+            child : children[i]
+            child.render(_innerScene)
+        }
+        _innerScene.end()
 
-		glPopFramebuffer(_framebuffer)
+        glPopFramebuffer(_framebuffer)
 
-		glEnable(glFeature.GL_DEPTH_TEST)
-		viewWorld : _view * _world * model
-		normalMat : viewWorld.invert().transpose()
-		glUseProgram(shader)
-		glBlendFunc(glBlendFuncType.GL_ONE, glBlendFuncType.GL_ONE_MINUS_SRC_ALPHA)
+        glEnable(glFeature.GL_DEPTH_TEST)
+        viewWorld : _view * _world * model
+        normalMat : viewWorld.invert().transpose()
+        glUseProgram(shader)
+        glBlendFunc(glBlendFuncType.GL_ONE, glBlendFuncType.GL_ONE_MINUS_SRC_ALPHA)
         glBindTexture(glTexture.GL_TEXTURE_2D, _texture)
         glUniformMat4(glGetUniformLocation(shader, "viewModel"), viewWorld)
         glUniformMat4(glGetUniformLocation(shader, "normalMat"), normalMat)
@@ -65,31 +65,31 @@ scene2dModel #model (
         glUniformVec3(glGetUniformLocation(shader, "lightPos"), _light.pos)
         glUniformVec3(glGetUniformLocation(shader, "diffuseColor"), _light.diffuseColor.asVec3())
         glUniformVec3(glGetUniformLocation(shader, "specColor"), _light.specColor.asVec3())
-		vertexBuffer.render()
-	}
+        vertexBuffer.render()
+    }
 
-	fireMouseEvent(mouseEvent : 'mouseEvent)'void {
-		texture : vertexBuffer.translateScreenToTexture(mouseEvent.point, _sceneRect, _projection, _view, _world * model)
-		ifValid texture {
-			scenePoint : point(
-				(texture.x * textureSize.w as f32) as i32
-				textureSize.h - 1 - (texture.y * textureSize.h as f32) as i32)
+    fireMouseEvent(mouseEvent : 'mouseEvent)'void {
+        texture : vertexBuffer.translateScreenToTexture(mouseEvent.point, _sceneRect, _projection, _view, _world * model)
+        ifValid texture {
+            scenePoint : point(
+                (texture.x * textureSize.w as f32) as i32
+                textureSize.h - 1 - (texture.y * textureSize.h as f32) as i32)
 
-			newMouseEvent : mouseEvent(
-				type : mouseEvent.type
-				point : copy scenePoint
-				isCaptured : mouseEvent.isCaptured
-				isLeftDown : mouseEvent.isLeftDown
-			)
+            newMouseEvent : mouseEvent(
+                type : mouseEvent.type
+                point : copy scenePoint
+                isCaptured : mouseEvent.isCaptured
+                isLeftDown : mouseEvent.isLeftDown
+            )
 
-			newMouseEvent.fireChildren(children)
-			void // TODO: should not be required
-		}
-	}
+            newMouseEvent.fireChildren(children)
+            void // TODO: should not be required
+        }
+    }
 ) { 
-	ifValid id {
-		modelsById[id] = weak (this as #model)
-	}
+    ifValid id {
+        modelsById[id] = weak (this as #model)
+    }
 
     _framebuffer = glGenFramebuffer(textureSize)
     _texture = glGenTexture(textureSize)
@@ -114,11 +114,11 @@ scene2dModel #model (
     }
     glPopFramebuffer(_framebuffer)
 
-	_innerScene.setSize(textureSize)
-	rect : rect(0, 0, textureSize.w, textureSize.h)
-	for i : 0 to children.count {
-		child : children[i]
-		child.setRect(rect)
-	}
-	this 
+    _innerScene.setSize(textureSize)
+    rect : rect(0, 0, textureSize.w, textureSize.h)
+    for i : 0 to children.count {
+        child : children[i]
+        child.setRect(rect)
+    }
+    this 
 }

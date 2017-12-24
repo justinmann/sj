@@ -1103,7 +1103,7 @@ texture_font_get_glyph( texture_font_t * self,
 // ------------------------------------------------- texture_font_enlarge_atlas ---
 void
 texture_font_enlarge_atlas( texture_font_t * self, size_t width_new,
-			    size_t height_new)
+                size_t height_new)
 {
     assert(self);
     assert(self->atlas);
@@ -1122,7 +1122,7 @@ texture_font_enlarge_atlas( texture_font_t * self, size_t width_new,
     ta->height = height_new;
     //add node reflecting the gained space on the right
     if(width_new>width_old){
-    	ivec3 node;
+        ivec3 node;
         node.x = width_old - 1;
         node.y = 1;
         node.z = width_new - width_old;
@@ -1138,11 +1138,11 @@ texture_font_enlarge_atlas( texture_font_t * self, size_t width_new,
     float mulh = (float)height_old / height_new;
     size_t i;
     for (i = 0; i < vector_size(self->glyphs); i++) {
-    	texture_glyph_t* g = *(texture_glyph_t**)vector_get(self->glyphs, i);
-    	g->s0 *= mulw;
-    	g->s1 *= mulw;
-    	g->t0 *= mulh;
-    	g->t1 *= mulh;
+        texture_glyph_t* g = *(texture_glyph_t**)vector_get(self->glyphs, i);
+        g->s0 *= mulw;
+        g->s1 *= mulw;
+        g->t0 *= mulh;
+        g->t1 *= mulh;
     }
 }
 --cfunction--

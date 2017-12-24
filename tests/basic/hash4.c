@@ -426,7 +426,7 @@ void sjf_array_char_getat(sjs_array_char* _parent, int32_t index, char* _return)
     }
     char* p = (char*)_parent->data;
     (*_return) = p[index];
-return;;		
+return;;       
 }
 
 void sjf_array_char_grow(sjs_array_char* _parent, int32_t newsize, sjs_array_char* _return) {
@@ -504,7 +504,7 @@ void sjf_array_char_heap(sjs_array_char* _this) {
 
 void sjf_array_char_initat(sjs_array_char* _parent, int32_t index, char item) {
     if (index != _parent->count) {
-        halt("initAt: can only initialize last element\n");		
+        halt("initAt: can only initialize last element\n");     
     }
     if (index >= _parent->datasize || index < 0) {
         halt("initAt: out of bounds %d:%d\n", index, _parent->datasize);

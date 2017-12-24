@@ -10,8 +10,8 @@ public:
 
 class TrOutput {
 public:
-	map<string, shared_ptr<TrBlock>> functions;
-	map<string, vector<string>> structs;
+    map<string, shared_ptr<TrBlock>> functions;
+    map<string, vector<string>> structs;
     map<string, shared_ptr<TrVtbl>> vtbls;
     vector<string> structOrder;
     map<string, string> strings;
@@ -23,5 +23,5 @@ public:
     vector<string> ccodeFunctions;
 
     TrOutput();
-	void writeToStream(ostream& stream, bool hasMainLoop, bool outputLines);
+    void writeToStream(ostream& stream, bool hasMainLoop, bool outputLines);
 };

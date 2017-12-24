@@ -311,7 +311,7 @@ void sjf_array_heap_class_getat_heap(sjs_array_heap_class* _parent, int32_t inde
     sjs_class** p = (sjs_class**)_parent->data;
     (*_return) = p[index];
 (*_return)->_refCount++;
-return;;		
+return;;       
 }
 
 void sjf_array_heap_class_heap(sjs_array_heap_class* _this) {
@@ -328,7 +328,7 @@ void sjf_array_heap_class_heap(sjs_array_heap_class* _this) {
 
 void sjf_array_heap_class_initat(sjs_array_heap_class* _parent, int32_t index, sjs_class* item) {
     if (index != _parent->count) {
-        halt("initAt: can only initialize last element\n");		
+        halt("initAt: can only initialize last element\n");     
     }
     if (index >= _parent->datasize || index < 0) {
         halt("initAt: out of bounds %d:%d\n", index, _parent->datasize);

@@ -1,6 +1,6 @@
 scenebuffer(
-	size : size()
-	framebuffer := framebuffer()
+    size : size()
+    framebuffer := framebuffer()
     texture := texture()
     renderbuffer := renderbuffer()
 ) {
@@ -27,5 +27,5 @@ scenebuffer(
     }
     glPopFramebuffer(framebuffer)
 
-	this
+    this
 }

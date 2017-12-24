@@ -398,7 +398,7 @@ void sjf_array_char_isequal(sjs_array_char* _parent, sjs_array_char* test, bool*
     }
     bool result = memcmp(_parent->data, test->data, _parent->count * sizeof(char)) == 0;
     (*_return) = result;
-return;;		
+return;;      
 }
 
 void sjf_class(sjs_class* _this) {

@@ -192,5 +192,5 @@ imageRenderer(
 typedef struct {
     float x, y, z;    // position
     float s, t;       // texture
-} vertex3_texture2_t;	
+} vertex3_texture2_t;   
 --cstruct--

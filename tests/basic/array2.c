@@ -292,7 +292,7 @@ void sjf_array_i32_getat(sjs_array_i32* _parent, int32_t index, int32_t* _return
     }
     int32_t* p = (int32_t*)_parent->data;
     (*_return) = p[index];
-return;;		
+return;;       
 }
 
 void sjf_array_i32_heap(sjs_array_i32* _this) {
@@ -309,7 +309,7 @@ void sjf_array_i32_heap(sjs_array_i32* _this) {
 
 void sjf_array_i32_initat(sjs_array_i32* _parent, int32_t index, int32_t item) {
     if (index != _parent->count) {
-        halt("initAt: can only initialize last element\n");		
+        halt("initAt: can only initialize last element\n");     
     }
     if (index >= _parent->datasize || index < 0) {
         halt("initAt: out of bounds %d:%d\n", index, _parent->datasize);

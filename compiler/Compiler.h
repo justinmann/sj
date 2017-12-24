@@ -116,7 +116,7 @@ public:
     unsigned col;
     string msg;
     
-	void writeToStream(ostream& stream);
+    void writeToStream(ostream& stream);
 };
 
 enum CompilerState {
@@ -138,7 +138,7 @@ class Compiler
 {
 public:
     Compiler(bool outputLines, bool outputVSErrors);
-	bool transpile(const string& fileName, ostream& stream, ostream& errorStream, ostream* debugStream);
+    bool transpile(const string& fileName, ostream& stream, ostream& errorStream, ostream* debugStream);
     shared_ptr<CType> getType(const string& name, bool isOption) const;
     void includeFile(const string& fileName);
 

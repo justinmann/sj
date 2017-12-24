@@ -74,9 +74,9 @@
 
 int yyerror(YYLTYPE *locp, void *scanner, Compiler* compiler, CParseFile* parseFile, const char *msg) {
   if (locp) {
-  	compiler->addWarning(CLoc(parseFile->fullFileName, parseFile->shortFileName, locp->first_line, locp->first_column), CErrorCode::Parser, msg);
+    compiler->addWarning(CLoc(parseFile->fullFileName, parseFile->shortFileName, locp->first_line, locp->first_column), CErrorCode::Parser, msg);
   } else {
-  	compiler->addWarning(CLoc::undefined, CErrorCode::Parser, msg);
+    compiler->addWarning(CLoc::undefined, CErrorCode::Parser, msg);
   }
   return (0);
 }
@@ -86,12 +86,12 @@ extern int yylex(YYSTYPE * yylval_param,YYLTYPE * yylloc_param , void *scanner);
 #define YYPRINT yyprint
 
 void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
-	switch (v1) {
-		case TIDENTIFIER:
+    switch (v1) {
+        case TIDENTIFIER:
         case TINTEGER:
         case TDOUBLE:
-			fprintf(file, "%s", type.string->c_str());
-	}				
+            fprintf(file, "%s", type.string->c_str());
+    }               
 }
 
 
@@ -128,8 +128,8 @@ extern int yydebug;
 
 
 struct OPTIONANDTYPELIST {
-	bool isOption;
-	CTypeNameList* templateTypeNames;	
+    bool isOption;
+    CTypeNameList* templateTypeNames;   
 };
 
 
@@ -253,31 +253,31 @@ union YYSTYPE
 {
 
 
-	NBase* node;
-	NBlock* block;
-	NVariableBase* var;
-	NodeList* exprvec;
-	std::string* string;
-	CTypeName* typeName;
-	CTypeNameList* templateTypeNames;
-	int token;
-	AssignOp assignOp;
-	OPTIONANDTYPELIST optionAndTypeList;
-	NTupleAssignmentArgList* tupleAssignmentArgList;
-	NTupleAssignmentArg* tupleAssignmentArg;
-	CTypeMode typeMode;
-	EnumArg* enumArg;
-	EnumArgs* enumArgs;
-	std::vector<std::string>* strings;
-	std::vector<std::pair<std::string, std::vector<std::string>>>* import_namespaces;
-	std::pair<std::string, std::vector<std::string>>* import_namespace;
-	NCCode* ccode;
-	CTypeNameParts* typeNameParts;
-	vector<shared_ptr<NSwitchClause>>* switchClauses;
-	NSwitchClause* switchClause;
-	vector<pair<shared_ptr<NBase>, shared_ptr<NBase>>>* hashArgs;
-	pair<shared_ptr<NBase>, shared_ptr<NBase>>* hashArg;
-	CFunctionName* functionName;
+    NBase* node;
+    NBlock* block;
+    NVariableBase* var;
+    NodeList* exprvec;
+    std::string* string;
+    CTypeName* typeName;
+    CTypeNameList* templateTypeNames;
+    int token;
+    AssignOp assignOp;
+    OPTIONANDTYPELIST optionAndTypeList;
+    NTupleAssignmentArgList* tupleAssignmentArgList;
+    NTupleAssignmentArg* tupleAssignmentArg;
+    CTypeMode typeMode;
+    EnumArg* enumArg;
+    EnumArgs* enumArgs;
+    std::vector<std::string>* strings;
+    std::vector<std::pair<std::string, std::vector<std::string>>>* import_namespaces;
+    std::pair<std::string, std::vector<std::string>>* import_namespace;
+    NCCode* ccode;
+    CTypeNameParts* typeNameParts;
+    vector<shared_ptr<NSwitchClause>>* switchClauses;
+    NSwitchClause* switchClause;
+    vector<pair<shared_ptr<NBase>, shared_ptr<NBase>>>* hashArgs;
+    pair<shared_ptr<NBase>, shared_ptr<NBase>>* hashArg;
+    CFunctionName* functionName;
 
 
 };
@@ -2434,41 +2434,41 @@ yyreduce:
   case 57:
 
     { 
-						(yyval.node) = new NFunction(LOC, FT_Private, nullptr, (yyvsp[-5].functionName)->name.c_str(), (yyvsp[-5].functionName)->templateTypeNames, (yyvsp[-5].functionName)->attributes, 
-							nullptr, shared_ptr<NodeList>((yyvsp[-4].exprvec)), 
-							shared_ptr<NBase>((yyvsp[-3].node)), shared_ptr<NBase>((yyvsp[-2].node)), shared_ptr<NBase>((yyvsp[-1].node)), shared_ptr<NBase>((yyvsp[0].node)));
-						delete (yyvsp[-5].functionName); 
-					}
+                        (yyval.node) = new NFunction(LOC, FT_Private, nullptr, (yyvsp[-5].functionName)->name.c_str(), (yyvsp[-5].functionName)->templateTypeNames, (yyvsp[-5].functionName)->attributes, 
+                            nullptr, shared_ptr<NodeList>((yyvsp[-4].exprvec)), 
+                            shared_ptr<NBase>((yyvsp[-3].node)), shared_ptr<NBase>((yyvsp[-2].node)), shared_ptr<NBase>((yyvsp[-1].node)), shared_ptr<NBase>((yyvsp[0].node)));
+                        delete (yyvsp[-5].functionName); 
+                    }
 
     break;
 
   case 58:
 
     { 
-						(yyval.node) = new NFunction(LOC, FT_Private, nullptr, (yyvsp[-6].functionName)->name.c_str(), (yyvsp[-6].functionName)->templateTypeNames, (yyvsp[-6].functionName)->attributes, 
-							shared_ptr<CTypeNameList>((yyvsp[-5].templateTypeNames)), shared_ptr<NodeList>((yyvsp[-4].exprvec)), 
-							shared_ptr<NBase>((yyvsp[-3].node)), shared_ptr<NBase>((yyvsp[-2].node)), shared_ptr<NBase>((yyvsp[-1].node)), shared_ptr<NBase>((yyvsp[0].node))); 
-					}
+                        (yyval.node) = new NFunction(LOC, FT_Private, nullptr, (yyvsp[-6].functionName)->name.c_str(), (yyvsp[-6].functionName)->templateTypeNames, (yyvsp[-6].functionName)->attributes, 
+                            shared_ptr<CTypeNameList>((yyvsp[-5].templateTypeNames)), shared_ptr<NodeList>((yyvsp[-4].exprvec)), 
+                            shared_ptr<NBase>((yyvsp[-3].node)), shared_ptr<NBase>((yyvsp[-2].node)), shared_ptr<NBase>((yyvsp[-1].node)), shared_ptr<NBase>((yyvsp[0].node))); 
+                    }
 
     break;
 
   case 59:
 
     { 
-						(yyval.node) = new NFunction(LOC, FT_Private, shared_ptr<CTypeName>((yyvsp[-4].typeName)), (yyvsp[-6].functionName)->name.c_str(), (yyvsp[-6].functionName)->templateTypeNames, (yyvsp[-6].functionName)->attributes, 
-							nullptr, shared_ptr<NodeList>((yyvsp[-5].exprvec)), 
-							shared_ptr<NBase>((yyvsp[-3].node)), shared_ptr<NBase>((yyvsp[-2].node)), shared_ptr<NBase>((yyvsp[-1].node)), shared_ptr<NBase>((yyvsp[0].node))); 
-					}
+                        (yyval.node) = new NFunction(LOC, FT_Private, shared_ptr<CTypeName>((yyvsp[-4].typeName)), (yyvsp[-6].functionName)->name.c_str(), (yyvsp[-6].functionName)->templateTypeNames, (yyvsp[-6].functionName)->attributes, 
+                            nullptr, shared_ptr<NodeList>((yyvsp[-5].exprvec)), 
+                            shared_ptr<NBase>((yyvsp[-3].node)), shared_ptr<NBase>((yyvsp[-2].node)), shared_ptr<NBase>((yyvsp[-1].node)), shared_ptr<NBase>((yyvsp[0].node))); 
+                    }
 
     break;
 
   case 60:
 
     { 
-						(yyval.node) = new NFunction(LOC, FT_Private, shared_ptr<CTypeName>((yyvsp[-4].typeName)), (yyvsp[-7].functionName)->name.c_str(), (yyvsp[-7].functionName)->templateTypeNames, (yyvsp[-7].functionName)->attributes, 
-							shared_ptr<CTypeNameList>((yyvsp[-6].templateTypeNames)), shared_ptr<NodeList>((yyvsp[-5].exprvec)), 
-							shared_ptr<NBase>((yyvsp[-3].node)), shared_ptr<NBase>((yyvsp[-2].node)), shared_ptr<NBase>((yyvsp[-1].node)), shared_ptr<NBase>((yyvsp[0].node))); 
-					}
+                        (yyval.node) = new NFunction(LOC, FT_Private, shared_ptr<CTypeName>((yyvsp[-4].typeName)), (yyvsp[-7].functionName)->name.c_str(), (yyvsp[-7].functionName)->templateTypeNames, (yyvsp[-7].functionName)->attributes, 
+                            shared_ptr<CTypeNameList>((yyvsp[-6].templateTypeNames)), shared_ptr<NodeList>((yyvsp[-5].exprvec)), 
+                            shared_ptr<NBase>((yyvsp[-3].node)), shared_ptr<NBase>((yyvsp[-2].node)), shared_ptr<NBase>((yyvsp[-1].node)), shared_ptr<NBase>((yyvsp[0].node))); 
+                    }
 
     break;
 

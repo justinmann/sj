@@ -320,7 +320,7 @@ void sjf_array_char_getat(sjs_array_char* _parent, int32_t index, char* _return)
     }
     char* p = (char*)_parent->data;
     (*_return) = p[index];
-return;;		
+return;;       
 }
 
 void sjf_array_char_heap(sjs_array_char* _this) {
@@ -341,13 +341,13 @@ void sjf_array_char_isequal(sjs_array_char* _parent, sjs_array_char* test, bool*
     }
     bool result = memcmp(_parent->data, test->data, _parent->count * sizeof(char)) == 0;
     (*_return) = result;
-return;;		
+return;;      
 }
 
 void sjf_array_char_islessorequal(sjs_array_char* _parent, sjs_array_char* test, bool* _return) {
-    bool result = memcmp(_parent->data, test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(char)) <= 0;		
+    bool result = memcmp(_parent->data, test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(char)) <= 0;     
     (*_return) = result;
-return;;		
+return;;      
 }
 
 void sjf_string(sjs_string* _this) {

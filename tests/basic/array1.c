@@ -286,7 +286,7 @@ void sjf_array_i32_getat(sjs_array_i32* _parent, int32_t index, int32_t* _return
     }
     int32_t* p = (int32_t*)_parent->data;
     (*_return) = p[index];
-return;;		
+return;;       
 }
 
 void sjf_array_i32_heap(sjs_array_i32* _this) {

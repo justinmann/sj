@@ -4,7 +4,7 @@ array_getat(index'i32:)'char {
   halt("getAt: out of bounds\n");
   }
   char* p = (char*)_parent->data;
-  return;;		
+  return;;       
   --c--
 }
 
@@ -14,14 +14,14 @@ array_isequal(test'stack array!char:)'bool {
   *_return = false;
   }
   bool result = memcmp(_parent->data, test->data, _parent->count * sizeof(char)) == 0;
-  return;;		
+  return;;      
   --c--
 }
 
 array_islessorequal(test'stack array!char:)'bool {
   --c--
-  bool result = memcmp(_parent->data, test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(char)) <= 0;		
-  return;;		
+  bool result = memcmp(_parent->data, test->data, (_parent->count < test->count ? _parent->count : test->count) * sizeof(char)) <= 0;     
+  return;;      
   --c--
 }
 

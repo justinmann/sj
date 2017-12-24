@@ -31,11 +31,11 @@ fontKey(
 ) { this }
 
 font(
-	src : 'string
-	size : 'f32
+    src : 'string
+    size : 'f32
     --cvar--
-	texture_font_t* font;
-	texture_atlas_t* atlas;
+    texture_font_t* font;
+    texture_atlas_t* atlas;
     --cvar--
 
     getTexture()'texture {
@@ -66,7 +66,7 @@ font(
     _this->font = texture_font_new_from_file(_this->atlas, _this->size, (char*)_this->src.data.data);
     if (_this->font == 0) {
         printf("texture_font_new_from_file Error\n");
-    }	
+    }   
 
     glGenTextures( 1, &_this->atlas->id );
     glBindTexture( GL_TEXTURE_2D, _this->atlas->id );
@@ -76,7 +76,7 @@ font(
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, (int)_this->atlas->width, (int)_this->atlas->height, 0, GL_RGB, GL_UNSIGNED_BYTE, _this->atlas->data );
     --c--
-	this
+    this
 } copy {
     --c--
     _this->atlas = _from->atlas;
@@ -88,11 +88,11 @@ font(
 } destroy {
     --c--
     if (ptr_release(_this->atlas)) {
-	   texture_atlas_delete(_this->atlas);
+       texture_atlas_delete(_this->atlas);
     }
 
     if (ptr_release(_this->font)) {
-	   texture_font_delete(_this->font);
+       texture_font_delete(_this->font);
     }
     --c--
 }

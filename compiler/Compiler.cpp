@@ -114,12 +114,12 @@ shared_ptr<CParseFile> Compiler::genNode(const string& fileName, const string& c
 }
 
 std::string ReplaceAll(std::string str, const std::string& from, const std::string& to) {
-	size_t start_pos = 0;
-	while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
-		str.replace(start_pos, from.length(), to);
-		start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
-	}
-	return str;
+    size_t start_pos = 0;
+    while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+    }
+    return str;
 }
 
 void CError::writeToStream(ostream& stream) {
@@ -134,46 +134,46 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
     rootPath = fs::path(fileName).remove_filename();
     
     TrOutput output;
-	auto templateTypes = vector<shared_ptr<CType>>();
-	shared_ptr<CFunction> currentFunction;
-	shared_ptr<CFunction> globalFunction;
+    auto templateTypes = vector<shared_ptr<CType>>();
+    shared_ptr<CFunction> currentFunction;
+    shared_ptr<CFunction> globalFunction;
 
-	auto globalFile = genNodeFile(fileName);
-	if (errors.size() == 0) {
+    auto globalFile = genNodeFile(fileName);
+    if (errors.size() == 0) {
         auto globalBlock = globalFile->block;
-		anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, nullptr, "global", nullptr, nullptr, nullptr, nullptr, globalBlock, nullptr, nullptr, nullptr);
-		currentFunctionDefintion = CFunctionDefinition::create(this, importNamespaces, nullptr, FT_Public, packageNamespace, "", nullptr, nullptr);
-		state = CompilerState::Define;
+        anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, nullptr, "global", nullptr, nullptr, nullptr, nullptr, globalBlock, nullptr, nullptr, nullptr);
+        currentFunctionDefintion = CFunctionDefinition::create(this, importNamespaces, nullptr, FT_Public, packageNamespace, "", nullptr, nullptr);
+        state = CompilerState::Define;
         anonFunction->initFunctions(this, importNamespaces, packageNamespace, currentFunctionDefintion);
 
-		if (errors.size() == 0) {
-			globalFunctionDefinition = currentFunctionDefintion->funcsByName[vector<string>()]["global"];
+        if (errors.size() == 0) {
+            globalFunctionDefinition = currentFunctionDefintion->funcsByName[vector<string>()]["global"];
             NodeList includeStatements;
-			for (auto index = (size_t)0; index < includedBlocks.size(); index++) {
-				auto includedBlock = includedBlocks[index].second;
-				includedBlock->initFunctions(this, importNamespaces, packageNamespace, globalFunctionDefinition);
+            for (auto index = (size_t)0; index < includedBlocks.size(); index++) {
+                auto includedBlock = includedBlocks[index].second;
+                includedBlock->initFunctions(this, importNamespaces, packageNamespace, globalFunctionDefinition);
                 includeStatements.insert(includeStatements.end(), includedBlock->statements.begin(), includedBlock->statements.end());
-			}
+            }
             globalBlock->statements.insert(globalBlock->statements.begin(), includeStatements.begin(), includeStatements.end());
 
             // Force global function to have void return
             globalBlock->statements.push_back(make_shared<NVoid>(CLoc::undefined));
 
-			if (errors.size() == 0) {
+            if (errors.size() == 0) {
                 currentFunction = make_shared<CFunction>(importNamespaces, currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr, vector<shared_ptr<NCCode>>(), false);
                 currentFunction->init(this, nullptr, CLoc::undefined);
                 auto currentScope = currentFunction->getScope(this, CTM_Stack);
                 globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, CLoc::undefined, "global", nullptr, nullptr, CTM_Stack));
 
                 state = CompilerState::Compile;
-				anonFunction->getVar(this, currentScope, CTM_Stack);
+                anonFunction->getVar(this, currentScope, CTM_Stack);
                 auto globalScope = globalFunction->getScope(this, CTM_Stack);
                 auto mainLoop = static_pointer_cast<CFunction>(globalFunction->getCFunction(this, CLoc::undefined, "mainLoop", globalScope, nullptr, CTM_Stack));
 #ifdef VAR_OUTPUT
-				currentFunction->dump(this, 0);
+                currentFunction->dump(this, 0);
 #endif
 
-				if (errors.size() == 0) {
+                if (errors.size() == 0) {
                     if (debugStream) {
                         map<shared_ptr<CBaseFunction>, string> functionDumps;
                         stringstream ss;
@@ -196,7 +196,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                         *debugStream << ss.str() << "\n\n";
                     }
 
-					state = CompilerState::Compile;  
+                    state = CompilerState::Compile;  
 
                     // Create the default object struct, all other object structs must have these variables
                     string structName = "sjs_object";
@@ -223,24 +223,24 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                     if (errors.size() == 0) {
                         output.writeToStream(stream, hasMainLoop, outputLines);
                     }
-				}
-			}
-		}
-	}
+                }
+            }
+        }
+    }
 
-	if (errors.size() > 0) {
-		for (auto it : errors)
-		{
+    if (errors.size() > 0) {
+        for (auto it : errors)
+        {
             for (auto it2 : it.second) {
                 for (auto it3 : it2.second) {
                     it3.second.writeToStream(errorStream);
                     errorStream << "\n";
                 }
             }
-		}
-		return false;
-	}
-	return true;
+        }
+        return false;
+    }
+    return true;
 }
 
 shared_ptr<CType> Compiler::getType(const string& name, bool isOption) const {

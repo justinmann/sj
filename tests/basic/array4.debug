@@ -19,7 +19,7 @@ array_getat(index'i32:)'stack class {
   halt("getAt: out of bounds\n");
   }
   sjs_class* p = (sjs_class*)_parent->data;
-  return;;		
+  return;;       
   --c--
 }
 

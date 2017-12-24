@@ -127,7 +127,7 @@ runloop()'void {
   while (!quit) {
   sjf_mainloop();
   }
-  #endif	
+  #endif 
   --c--
 }
 
@@ -450,7 +450,7 @@ global()'void {
   typedef struct {
   float x, y, z;    // position
   float r, g, b, a; // color
-  } vertex3_color4_t;	
+  } vertex3_color4_t; 
   --cstruct--
   import  {
     red'stack color : color(this = color(
@@ -1257,7 +1257,7 @@ global()'void {
   typedef struct {
   float x, y, z;    // position
   float s, t;       // texture
-  } vertex3_texture2_t;	
+  } vertex3_texture2_t;   
   --cstruct--
   {
     topbottom'listlayoutorientation : 0
@@ -1510,10 +1510,10 @@ global()'void {
   float x, y, z;    // position
   float s, t;       // texture
   float r, g, b, a; // color
-  } vertex3_texture2_color3_t;	
+  } vertex3_texture2_color3_t;    
   --cstruct--
   --cdefine--
-  void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen);	
+  void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen);   
   vec2 get_text_size(texture_font_t * font, char *text);
   --cdefine--
   --cfunction--
@@ -1551,7 +1551,7 @@ global()'void {
   pen->x += glyph->advance_x;
   }
   }
-  }	
+  }   
   vec2 get_text_size(texture_font_t * font, char *text) {
   vec2 size = {{ 0, font->height }};
   size_t i;

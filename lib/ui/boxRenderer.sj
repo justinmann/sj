@@ -52,5 +52,5 @@ boxRenderer(
 typedef struct {
     float x, y, z;    // position
     float r, g, b, a; // color
-} vertex3_color4_t;	
+} vertex3_color4_t; 
 --cstruct--

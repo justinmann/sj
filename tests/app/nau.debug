@@ -21,6 +21,56 @@ array!heap #animation(datasize'i32:, data'ptr:, _isglobal'bool:, count'i32:)'sta
   this
 }
 
+array!stack rect(datasize'i32:, data'ptr:, _isglobal'bool:, count'i32:)'stack array!rect {
+  --c--
+  if (_this->datasize < 0) {
+  halt("size is less than zero");
+  }
+  if (!_this->data) {
+  _this->data = malloc(_this->datasize * sizeof(sjs_rect));
+  if (!_this->data) {
+  halt("grow: out of memory\n");
+  }
+  }
+  --c--
+  this
+}
+
+array!u32(datasize'i32:, data'ptr:, _isglobal'bool:, count'i32:)'stack array!u32 {
+  --c--
+  if (_this->datasize < 0) {
+  halt("size is less than zero");
+  }
+  if (!_this->data) {
+  _this->data = malloc(_this->datasize * sizeof(uint32_t));
+  if (!_this->data) {
+  halt("grow: out of memory\n");
+  }
+  }
+  --c--
+  this
+}
+
+array_getat(index'i32:)'stack rect {
+  --c--
+  if (index >= _parent->count || index < 0) {
+  halt("getAt: out of bounds\n");
+  }
+  sjs_rect* p = (sjs_rect*)_parent->data;
+  return;;       
+  --c--
+}
+
+array_getat(index'i32:)'u32 {
+  --c--
+  if (index >= _parent->count || index < 0) {
+  halt("getAt: out of bounds\n");
+  }
+  uint32_t* p = (uint32_t*)_parent->data;
+  return;;       
+  --c--
+}
+
 array_grow(newsize'i32:)'stack array!#animation {
   newdata'ptr = 0
   --c--
@@ -48,15 +98,97 @@ array_grow(newsize'i32:)'stack array!#animation {
   ))
 }
 
+array_grow(newsize'i32:)'stack array!rect {
+  newdata'ptr = 0
+  --c--
+  if (_parent->datasize != newsize) {
+  if (newsize < _parent->datasize) {
+  halt("grow: new size smaller than old _parent->datasize %d:%d\n", newsize, _parent->datasize);
+  }
+  sjv_newdata = malloc(newsize * sizeof(sjs_rect));
+  if (!_parent->data) {
+  halt("grow: out of memory\n");
+  }
+  sjs_rect* p = (sjs_rect*)_parent->data;
+  sjs_rect* newp = (sjs_rect*)sjv_newdata;
+  int count = _parent->count;
+  for (int i = 0; i < count; i++) {
+  ;
+  }
+  }
+  --c--
+  array!stack rect(this = array!stack rect(
+    datasize'i32 : datasize,
+    data'ptr : data,
+    _isglobal'bool : _isglobal,
+    count'i32 : count
+  ))
+}
+
+array_grow(newsize'i32:)'stack array!u32 {
+  newdata'ptr = 0
+  --c--
+  if (_parent->datasize != newsize) {
+  if (newsize < _parent->datasize) {
+  halt("grow: new size smaller than old _parent->datasize %d:%d\n", newsize, _parent->datasize);
+  }
+  sjv_newdata = malloc(newsize * sizeof(uint32_t));
+  if (!_parent->data) {
+  halt("grow: out of memory\n");
+  }
+  uint32_t* p = (uint32_t*)_parent->data;
+  uint32_t* newp = (uint32_t*)sjv_newdata;
+  int count = _parent->count;
+  for (int i = 0; i < count; i++) {
+  ;
+  }
+  }
+  --c--
+  array!u32(this = array!u32(
+    datasize'i32 : datasize,
+    data'ptr : data,
+    _isglobal'bool : _isglobal,
+    count'i32 : count
+  ))
+}
+
 array_initat(index'i32:, item'heap #animation:)'void {
   --c--
   if (index != _parent->count) {
-  halt("initAt: can only initialize last element\n");		
+  halt("initAt: can only initialize last element\n");     
   }
   if (index >= _parent->datasize || index < 0) {
   halt("initAt: out of bounds %d:%d\n", index, _parent->datasize);
   }
   sji_animation* p = (sji_animation*)_parent->data;
+  ;
+  _parent->count = index + 1;
+  --c--
+}
+
+array_initat(index'i32:, item'stack rect:)'void {
+  --c--
+  if (index != _parent->count) {
+  halt("initAt: can only initialize last element\n");     
+  }
+  if (index >= _parent->datasize || index < 0) {
+  halt("initAt: out of bounds %d:%d\n", index, _parent->datasize);
+  }
+  sjs_rect* p = (sjs_rect*)_parent->data;
+  ;
+  _parent->count = index + 1;
+  --c--
+}
+
+array_initat(index'i32:, item'u32:)'void {
+  --c--
+  if (index != _parent->count) {
+  halt("initAt: can only initialize last element\n");     
+  }
+  if (index >= _parent->datasize || index < 0) {
+  halt("initAt: out of bounds %d:%d\n", index, _parent->datasize);
+  }
+  uint32_t* p = (uint32_t*)_parent->data;
   ;
   _parent->count = index + 1;
   --c--
@@ -70,10 +202,34 @@ filllayout #element (children'stack array!#element:, margin'stack margin=, effec
   this
 }
 
+framebuffer(size'stack size:, id'u32:)'stack framebuffer {
+  this
+}
+
+glbindrenderbuffer(renderbuffer'stack renderbuffer:)'void {
+  --c--
+  glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer->id);
+  --c--
+}
+
+glbindtexture(type'gltexture:, texture'stack texture:)'void {
+  --c--
+  glBindTexture(type, texture->id);
+  --c--
+}
+
 glblendfunc(sfactor'glblendfunctype:, dfactor'glblendfunctype:)'void {
   --c--
   glBlendFunc(sfactor, dfactor);
   --c--
+}
+
+glcheckframebufferstatus()'glframebufferstatus {
+  status'glframebufferstatus = gl_framebuffer_unsupported
+  --c--
+  sjv_status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+  --c--
+  status
 }
 
 glclearcolor(color'stack color:)'void {
@@ -85,6 +241,168 @@ glclearcolor(color'stack color:)'void {
 glenable(feature'glfeature:)'void {
   --c--
   glEnable(feature);
+  --c--
+}
+
+glframebufferrenderbuffer(attachment'glframebufferattachment:, renderbuffer'stack renderbuffer:)'void {
+  --c--
+  glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, renderbuffer->id);
+  --c--
+}
+
+glframebuffertexture2d(attachment'glframebufferattachment:, target'glframebuffertexture:, texture'stack texture:, level'i32:)'void {
+  --c--
+  glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, target, texture->id, level);
+  --c--
+}
+
+glgenframebuffer(size'stack size:)'stack framebuffer {
+  id'u32 = (uint32_t)0uu
+  --c--
+  glGenFramebuffers(1, &sjv_id);
+  --c--
+  framebuffer(this = framebuffer(
+    size'stack size : size,
+    id'u32 : id
+  ))
+}
+
+glgenrenderbuffer(size'stack size:)'stack renderbuffer {
+  id'u32 = (uint32_t)0uu
+  --c--
+  glGenRenderbuffers(1, &sjv_id); 
+  --c--
+  renderbuffer(this = renderbuffer(
+    size'stack size : size,
+    id'u32 : id
+  ))
+}
+
+glgentexture(size'stack size:)'stack texture {
+  id'u32 = (uint32_t)0uu
+  --c--
+  glGenTextures(1, &sjv_id);
+  --c--
+  texture(this = texture(
+    size'stack size : size,
+    id'u32 : id
+  ))
+}
+
+glpopframebuffer(framebuffer'stack framebuffer:)'void {
+  if list_getat(
+    parent: this,
+    index'i32 : index
+  ) != framebuffer.id {
+    halt(
+      reason'stack string : reason
+    )
+  }
+  list_removeat(
+    parent: this,
+    index'i32 : index
+  )
+  id'u32 : if list_getcount(
+    parent: this
+  ) > 0i {
+    list_getat(
+      parent: this,
+      index'i32 : index
+    )
+  } else {
+    (uint32_t)0uu
+  }
+  --c--
+  glBindFramebuffer(GL_FRAMEBUFFER, sjv_id);
+  --c--
+}
+
+glpopviewport(rect'stack rect:, scenerect'stack rect:)'void {
+  oldrect'stack rect : rect(this = rect(
+    x'i32 : x,
+    y'i32 : y,
+    w'i32 : w,
+    h'i32 : h
+  ))
+  if !rect_isequal(
+    parent: this,
+    rect'stack rect : rect
+  ) {
+    halt(
+      reason'stack string : reason
+    )
+  }
+  list_removeat(
+    parent: this,
+    index'i32 : index
+  )
+  newrect'stack rect : if list_getcount(
+    parent: this
+  ) > 0i {
+    list_getat(
+      parent: this,
+      index'i32 : index
+    )
+  } else {
+    rect(this = rect(
+      x'i32 : x,
+      y'i32 : y,
+      w'i32 : w,
+      h'i32 : h
+    ))
+  }
+  --c--
+  glViewport(sjv_newrect.x, sjv_newrect.y, sjv_newrect.w, sjv_newrect.h);
+  --c--
+}
+
+glpushframebuffer(framebuffer'stack framebuffer:)'void {
+  list_add(
+    parent: this,
+    item'u32 : item
+  )
+  --c--
+  glBindFramebuffer(GL_FRAMEBUFFER, framebuffer->id);
+  --c--
+}
+
+glpushviewport(rect'stack rect:, scenerect'stack rect:)'void {
+  newrect'stack rect : rect(this = rect(
+    x'i32 : x,
+    y'i32 : y,
+    w'i32 : w,
+    h'i32 : h
+  ))
+  list_add(
+    parent: this,
+    item'stack rect : item
+  )
+  --c--
+  glViewport(sjv_newrect.x, sjv_newrect.y, sjv_newrect.w, sjv_newrect.h);
+  --c--
+}
+
+glrenderbufferstorage(format'glrenderbufferformat:, size'stack size:)'void {
+  --c--
+  glRenderbufferStorage(GL_RENDERBUFFER, format, size->w, size->h);
+  --c--
+}
+
+glteximage2d(type'gltexture:, level'i32:, format'gltextureformat:, size'stack size:, datatype'gltexturetype:, data'ptr:)'void {
+  --c--
+  glTexImage2D(type, level, format, size->w, size->h, 0, format, datatype, data);
+  --c--
+}
+
+gltexparameteri(type'gltexture:, attribute'gltextureattribute:, val'gltexturevalue:)'void {
+  --c--
+  glTexParameteri(type, attribute, val);
+  --c--
+}
+
+halt(reason'stack string:)'void {
+  --c--
+  halt("%s\n", (char*)reason->data.data);
   --c--
 }
 
@@ -180,39 +498,161 @@ list_add(item'heap #animation:)'void {
   )
 }
 
-menucontroller(scene'weak nauscene3delement=)'heap menucontroller {
+list_add(item'stack rect:)'void {
+  if parent.array.count >= parent.array.datasize {
+    parent.array'stack array!rect = array_grow(
+      parent: this,
+      newsize'i32 : newsize
+    )
+    void
+  }
+  array_initat(
+    parent: this,
+    index'i32 : index,
+    item'stack rect : item
+  )
+}
+
+list_add(item'u32:)'void {
+  if parent.array.count >= parent.array.datasize {
+    parent.array'stack array!u32 = array_grow(
+      parent: this,
+      newsize'i32 : newsize
+    )
+    void
+  }
+  array_initat(
+    parent: this,
+    index'i32 : index,
+    item'u32 : item
+  )
+}
+
+list_getat(index'i32:)'stack rect {
+  array_getat(
+    parent: this,
+    index'i32 : index
+  )
+}
+
+list_getat(index'i32:)'u32 {
+  array_getat(
+    parent: this,
+    index'i32 : index
+  )
+}
+
+list_getcount()'i32 {
+  parent.array.count
+}
+
+list_getcount()'i32 {
+  parent.array.count
+}
+
+list_removeat(index'i32:)'void {
+  --c--
+  if (index < 0 || index >= _parent->array.count) {
+  halt("removeAt: out of bounds %d:%d\n", index, _parent->array.count);
+  }
+  sjs_rect* p = (sjs_rect*)_parent->array.data;
+  if (index != _parent->array.count - 1) {
+  memcpy(p + index, p + index + 1, (_parent->array.count - index - 1) * sizeof(sjs_rect));
+  }
+  _parent->array.count--;
+  --c--
+}
+
+list_removeat(index'i32:)'void {
+  --c--
+  if (index < 0 || index >= _parent->array.count) {
+  halt("removeAt: out of bounds %d:%d\n", index, _parent->array.count);
+  }
+  uint32_t* p = (uint32_t*)_parent->array.data;
+  if (index != _parent->array.count - 1) {
+  memcpy(p + index, p + index + 1, (_parent->array.count - index - 1) * sizeof(uint32_t));
+  }
+  _parent->array.count--;
+  --c--
+}
+
+mat4(m00'f32:, m01'f32:, m02'f32:, m03'f32:, m10'f32:, m11'f32:, m12'f32:, m13'f32:, m20'f32:, m21'f32:, m22'f32:, m23'f32:, m30'f32:, m31'f32:, m32'f32:, m33'f32:)'stack mat4 {
   this
 }
 
-menuscene()'heap nauscene3delement {
-  controller'heap menucontroller : heap menucontroller(this = menucontroller(
-    scene'weak nauscene3delement = scene
+mat4_identity()'stack mat4 {
+  mat4(this = mat4(
+    m00'f32 : m00,
+    m01'f32 : m01,
+    m02'f32 : m02,
+    m03'f32 : m03,
+    m10'f32 : m10,
+    m11'f32 : m11,
+    m12'f32 : m12,
+    m13'f32 : m13,
+    m20'f32 : m20,
+    m21'f32 : m21,
+    m22'f32 : m22,
+    m23'f32 : m23,
+    m30'f32 : m30,
+    m31'f32 : m31,
+    m32'f32 : m32,
+    m33'f32 : m33
   ))
-  result'heap nauscene3delement : heap nauscene3delement(this = nauscene3delement(
-    children'stack array!#model : children,
-    lookatmin'stack vec3 = lookatmin,
-    lookatmax'stack vec3 = lookatmax,
-    cameradistance'f32 = cameradistance,
-    fieldofview'f32 = fieldofview,
-    znear'f32 = znear,
-    zfar'f32 = zfar,
-    light'stack light = light,
-    projection'stack mat4 = projection,
-    view'stack mat4 = view,
-    world'stack mat4 = world,
-    _rect'stack rect = _rect,
-    _isdragging'bool = _isdragging,
-    _startdrag'stack point = _startdrag,
-    _lookat'stack vec3 = _lookat,
-    _lookatdrag'stack vec3 = _lookatdrag
+}
+
+mat4_orthographic(left'f32:, right'f32:, bottom'f32:, top'f32:, znear'f32:, zfar'f32:)'stack mat4 {
+  mat4(this = mat4(
+    m00'f32 : m00,
+    m01'f32 : m01,
+    m02'f32 : m02,
+    m03'f32 : m03,
+    m10'f32 : m10,
+    m11'f32 : m11,
+    m12'f32 : m12,
+    m13'f32 : m13,
+    m20'f32 : m20,
+    m21'f32 : m21,
+    m22'f32 : m22,
+    m23'f32 : m23,
+    m30'f32 : m30,
+    m31'f32 : m31,
+    m32'f32 : m32,
+    m33'f32 : m33
   ))
+}
+
+mat4_scale(x'f32:, y'f32:, z'f32:)'stack mat4 {
+  mat4(this = mat4(
+    m00'f32 : m00,
+    m01'f32 : m01,
+    m02'f32 : m02,
+    m03'f32 : m03,
+    m10'f32 : m10,
+    m11'f32 : m11,
+    m12'f32 : m12,
+    m13'f32 : m13,
+    m20'f32 : m20,
+    m21'f32 : m21,
+    m22'f32 : m22,
+    m23'f32 : m23,
+    m30'f32 : m30,
+    m31'f32 : m31,
+    m32'f32 : m32,
+    m33'f32 : m33
+  ))
+}
+
+menucontroller()'heap menucontroller {
+  this
+}
+
+menucontroller_start()'void {
   nauscene3delement_animatelookat(
     parent: this,
     v'stack vec3 : v,
     duration'i32 : duration
   )
-  controller.scene'weak nauscene3delement = weak result
-  result
 }
 
 nauscene3delement #element (children'stack array!#model:, lookatmin'stack vec3=, lookatmax'stack vec3=, cameradistance'f32=, fieldofview'f32=, znear'f32=, zfar'f32=, light'stack light=, projection'stack mat4=, view'stack mat4=, world'stack mat4=, _rect'stack rect=, _isdragging'bool=, _startdrag'stack point=, _lookat'stack vec3=, _lookatdrag'stack vec3=)'heap nauscene3delement {
@@ -231,6 +671,16 @@ rect(x'i32:, y'i32:, w'i32:, h'i32:)'stack rect {
   this
 }
 
+rect_isequal(rect'stack rect:)'bool {
+  parent.x == rect.x && parent.y == rect.y && parent.w == rect.w && parent.h == rect.h
+}
+
+
+
+renderbuffer(size'stack size:, id'u32:)'stack renderbuffer {
+  this
+}
+
 runloop()'void {
   --c--
   #ifdef EMSCRIPTEN
@@ -241,13 +691,139 @@ runloop()'void {
   while (!quit) {
   sjf_mainloop();
   }
-  #endif	
+  #endif 
   --c--
 }
 
 scene2d(_size'stack size=, model'stack mat4=, view'stack mat4=, projection'stack mat4=, windowrect'stack rect=)'stack scene2d {
   this
 }
+
+scene2d_end()'void {
+  glpopviewport(
+    rect'stack rect : rect,
+    scenerect'stack rect : scenerect
+  )
+}
+
+scene2d_setsize(size'stack size:)'void {
+  if !size_isequal(
+    parent: this,
+    size'stack size : size
+  ) {
+    parent._size'stack size = copy size
+    parent.projection'stack mat4 = mat4_orthographic(
+      left'f32 : left,
+      right'f32 : right,
+      bottom'f32 : bottom,
+      top'f32 : top,
+      znear'f32 : znear,
+      zfar'f32 : zfar
+    )
+    parent.model'stack mat4 = mat4_scale(
+      x'f32 : x,
+      y'f32 : y,
+      z'f32 : z
+    )
+    parent.view'stack mat4 = mat4_identity()
+  }
+  void
+}
+
+scene2d_start()'void {
+  parent.windowrect'stack rect = rect(this = rect(
+    x'i32 : x,
+    y'i32 : y,
+    w'i32 : w,
+    h'i32 : h
+  ))
+  glpushviewport(
+    rect'stack rect : rect,
+    scenerect'stack rect : scenerect
+  )
+  --c--
+  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+  glEnable( GL_TEXTURE_2D );
+  glDisable( GL_DEPTH_TEST );
+  --c--
+  void
+}
+
+scenebuffer(size'stack size:, framebuffer'stack framebuffer=, texture'stack texture=, renderbuffer'stack renderbuffer=)'stack scenebuffer {
+  framebuffer'stack framebuffer = glgenframebuffer(
+    size'stack size : size
+  )
+  texture'stack texture = glgentexture(
+    size'stack size : size
+  )
+  renderbuffer'stack renderbuffer = glgenrenderbuffer(
+    size'stack size : size
+  )
+  glpushframebuffer(
+    framebuffer'stack framebuffer : framebuffer
+  )
+  glbindtexture(
+    type'gltexture : type,
+    texture'stack texture : texture
+  )
+  gltexparameteri(
+    type'gltexture : type,
+    attribute'gltextureattribute : attribute,
+    val'gltexturevalue : val
+  )
+  gltexparameteri(
+    type'gltexture : type,
+    attribute'gltextureattribute : attribute,
+    val'gltexturevalue : val
+  )
+  gltexparameteri(
+    type'gltexture : type,
+    attribute'gltextureattribute : attribute,
+    val'gltexturevalue : val
+  )
+  gltexparameteri(
+    type'gltexture : type,
+    attribute'gltextureattribute : attribute,
+    val'gltexturevalue : val
+  )
+  glteximage2d(
+    type'gltexture : type,
+    level'i32 : level,
+    format'gltextureformat : format,
+    size'stack size : size,
+    datatype'gltexturetype : datatype,
+    data'ptr : data
+  )
+  glframebuffertexture2d(
+    attachment'glframebufferattachment : attachment,
+    target'glframebuffertexture : target,
+    texture'stack texture : texture,
+    level'i32 : level
+  )
+  glbindrenderbuffer(
+    renderbuffer'stack renderbuffer : renderbuffer
+  )
+  glrenderbufferstorage(
+    format'glrenderbufferformat : format,
+    size'stack size : size
+  )
+  glframebufferrenderbuffer(
+    attachment'glframebufferattachment : attachment,
+    renderbuffer'stack renderbuffer : renderbuffer
+  )
+  status'glframebufferstatus : glcheckframebufferstatus()
+  if status != gl_framebuffer_complete {
+    halt(
+      reason'stack string : reason
+    )
+  }
+  glpopframebuffer(
+    framebuffer'stack framebuffer : framebuffer
+  )
+  this
+}
+
+
 
 shader(vertex'stack string:, pixel'stack string:)'stack shader {
   --c--
@@ -256,8 +832,57 @@ shader(vertex'stack string:, pixel'stack string:)'stack shader {
   this
 }
 
+size_isequal(size'stack size:)'bool {
+  parent.w == size.w && parent.h == size.h
+}
+
 string(count'i32=, data'stack array!char=)'stack string {
   this
+}
+
+texture(size'stack size:, id'u32:)'stack texture {
+  this
+}
+
+texture_fromelement(element'local #element:, size'stack size:)'stack texture {
+  scenebuffer'stack scenebuffer : scenebuffer(this = scenebuffer(
+    size'stack size : size,
+    framebuffer'stack framebuffer = framebuffer,
+    texture'stack texture = texture,
+    renderbuffer'stack renderbuffer = renderbuffer
+  ))
+  setrect(
+    parent: this,
+    rect'stack rect : interfaceArg
+  )
+  scene'stack scene2d : scene2d(this = scene2d(
+    _size'stack size = _size,
+    model'stack mat4 = model,
+    view'stack mat4 = view,
+    projection'stack mat4 = projection,
+    windowrect'stack rect = windowrect
+  ))
+  scene2d_setsize(
+    parent: this,
+    size'stack size : size
+  )
+  glpushframebuffer(
+    framebuffer'stack framebuffer : framebuffer
+  )
+  scene2d_start(
+    parent: this
+  )
+  render(
+    parent: this,
+    scene'stack scene2d : interfaceArg
+  )
+  scene2d_end(
+    parent: this
+  )
+  glpopframebuffer(
+    framebuffer'stack framebuffer : framebuffer
+  )
+  copy scenebuffer.texture
 }
 
 windowrenderer()'stack windowrenderer {
@@ -564,7 +1189,7 @@ global()'void {
   typedef struct {
   float x, y, z;    // position
   float r, g, b, a; // color
-  } vertex3_color4_t;	
+  } vertex3_color4_t; 
   --cstruct--
   import  {
     red'stack color : color(this = color(
@@ -1371,7 +1996,7 @@ global()'void {
   typedef struct {
   float x, y, z;    // position
   float s, t;       // texture
-  } vertex3_texture2_t;	
+  } vertex3_texture2_t;   
   --cstruct--
   {
     topbottom'listlayoutorientation : 0
@@ -1624,10 +2249,10 @@ global()'void {
   float x, y, z;    // position
   float s, t;       // texture
   float r, g, b, a; // color
-  } vertex3_texture2_color3_t;	
+  } vertex3_texture2_color3_t;    
   --cstruct--
   --cdefine--
-  void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen);	
+  void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen);   
   vec2 get_text_size(texture_font_t * font, char *text);
   --cdefine--
   --cfunction--
@@ -1665,7 +2290,7 @@ global()'void {
   pen->x += glyph->advance_x;
   }
   }
-  }	
+  }   
   vec2 get_text_size(texture_font_t * font, char *text) {
   vec2 size = {{ 0, font->height }};
   size_t i;
@@ -4893,13 +5518,7 @@ global()'void {
     vertex'stack string : vertex,
     pixel'stack string : pixel
   ))
-  root'heap #element = heap filllayout(this = filllayout(
-    children'stack array!#element : children,
-    margin'stack margin = margin,
-    effect'heap #effect? = effect,
-    _rect'stack rect = _rect
-  )) as heap #element
-  nauscene'heap nauscene3delement = heap nauscene3delement(this = nauscene3delement(
+  fieldscene'heap nauscene3delement = heap nauscene3delement(this = nauscene3delement(
     children'stack array!#model : children,
     lookatmin'stack vec3 = lookatmin,
     lookatmax'stack vec3 = lookatmax,
@@ -4917,8 +5536,75 @@ global()'void {
     _lookat'stack vec3 = _lookat,
     _lookatdrag'stack vec3 = _lookatdrag
   ))
-  nauscene'heap nauscene3delement = menuscene()
-  root'heap #element = heap nauscene as heap #element
+  fieldscene'heap nauscene3delement = heap nauscene3delement(this = nauscene3delement(
+    children'stack array!#model : children,
+    lookatmin'stack vec3 = lookatmin,
+    lookatmax'stack vec3 = lookatmax,
+    cameradistance'f32 = cameradistance,
+    fieldofview'f32 = fieldofview,
+    znear'f32 = znear,
+    zfar'f32 = zfar,
+    light'stack light = light,
+    projection'stack mat4 = projection,
+    view'stack mat4 = view,
+    world'stack mat4 = world,
+    _rect'stack rect = _rect,
+    _isdragging'bool = _isdragging,
+    _startdrag'stack point = _startdrag,
+    _lookat'stack vec3 = _lookat,
+    _lookatdrag'stack vec3 = _lookatdrag
+  ))
+  fieldtexture'stack texture : texture_fromelement(
+    element'local #element : element,
+    size'stack size : size
+  )
+  root'heap #element = heap filllayout(this = filllayout(
+    children'stack array!#element : children,
+    margin'stack margin = margin,
+    effect'heap #effect? = effect,
+    _rect'stack rect = _rect
+  )) as heap #element
+  menuscene'heap nauscene3delement = heap nauscene3delement(this = nauscene3delement(
+    children'stack array!#model : children,
+    lookatmin'stack vec3 = lookatmin,
+    lookatmax'stack vec3 = lookatmax,
+    cameradistance'f32 = cameradistance,
+    fieldofview'f32 = fieldofview,
+    znear'f32 = znear,
+    zfar'f32 = zfar,
+    light'stack light = light,
+    projection'stack mat4 = projection,
+    view'stack mat4 = view,
+    world'stack mat4 = world,
+    _rect'stack rect = _rect,
+    _isdragging'bool = _isdragging,
+    _startdrag'stack point = _startdrag,
+    _lookat'stack vec3 = _lookat,
+    _lookatdrag'stack vec3 = _lookatdrag
+  ))
+  menucontroller'heap menucontroller : heap menucontroller(this = menucontroller())
+  menuscene'heap nauscene3delement = heap nauscene3delement(this = nauscene3delement(
+    children'stack array!#model : children,
+    lookatmin'stack vec3 = lookatmin,
+    lookatmax'stack vec3 = lookatmax,
+    cameradistance'f32 = cameradistance,
+    fieldofview'f32 = fieldofview,
+    znear'f32 = znear,
+    zfar'f32 = zfar,
+    light'stack light = light,
+    projection'stack mat4 = projection,
+    view'stack mat4 = view,
+    world'stack mat4 = world,
+    _rect'stack rect = _rect,
+    _isdragging'bool = _isdragging,
+    _startdrag'stack point = _startdrag,
+    _lookat'stack vec3 = _lookat,
+    _lookatdrag'stack vec3 = _lookatdrag
+  ))
+  menucontroller_start(
+    parent: this
+  )
+  root'heap #element = heap menuscene as heap #element
   runloop()
   void
 }

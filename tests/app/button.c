@@ -126,16 +126,16 @@ struct td_delete_cb_list {
 typedef struct {
     float x, y, z;    // position
     float r, g, b, a; // color
-} vertex3_color4_t;	
+} vertex3_color4_t; 
 typedef struct {
     float x, y, z;    // position
     float s, t;       // texture
-} vertex3_texture2_t;	
+} vertex3_texture2_t;   
 typedef struct {
     float x, y, z;    // position
     float s, t;       // texture
     float r, g, b, a; // color
-} vertex3_texture2_color3_t;	
+} vertex3_texture2_color3_t;    
 /**
 * Tuple of 4 ints.
 *
@@ -1343,7 +1343,7 @@ const GLenum type );
 GLuint
 shader_load( const char * vert_filename,
 const char * frag_filename );    
-void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen);	
+void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen);   
 vec2 get_text_size(texture_font_t * font, char *text);
 /**
 * Creates a new empty texture atlas.
@@ -2508,11 +2508,11 @@ void sjf_textrenderer_render(sjs_textrenderer* _parent, sjs_scene2d* scene);
 void sjf_texture(sjs_texture* _this);
 void sjf_texture_copy(sjs_texture* _this, sjs_texture* _from);
 void sjf_texture_destroy(sjs_texture* _this);
+void sjf_texture_frompng(sjs_string* filename, sjs_texture* _return);
+void sjf_texture_frompng_heap(sjs_string* filename, sjs_texture** _return);
 void sjf_texture_getsize(sjs_texture* _parent, sjs_size* _return);
 void sjf_texture_getsize_heap(sjs_texture* _parent, sjs_size** _return);
 void sjf_texture_heap(sjs_texture* _this);
-void sjf_texturefrompng(sjs_string* filename, sjs_texture* _return);
-void sjf_texturefrompng_heap(sjs_string* filename, sjs_texture** _return);
 void sjf_vec3(sjs_vec3* _this);
 void sjf_vec3_copy(sjs_vec3* _this, sjs_vec3* _from);
 void sjf_vec3_destroy(sjs_vec3* _this);
@@ -3496,7 +3496,7 @@ shader_read( const char *filename )
                 pen->x += glyph->advance_x;
             }
         }
-    }	
+    }   
     vec2 get_text_size(texture_font_t * font, char *text) {
         vec2 size = {{ 0, font->height }};
         size_t i;
@@ -5568,7 +5568,7 @@ void sjf_array_char_getat(sjs_array_char* _parent, int32_t index, char* _return)
     }
     char* p = (char*)_parent->data;
     (*_return) = p[index];
-return;;		
+return;;       
 }
 
 void sjf_array_char_grow(sjs_array_char* _parent, int32_t newsize, sjs_array_char* _return) {
@@ -5646,7 +5646,7 @@ void sjf_array_char_heap(sjs_array_char* _this) {
 
 void sjf_array_char_initat(sjs_array_char* _parent, int32_t index, char item) {
     if (index != _parent->count) {
-        halt("initAt: can only initialize last element\n");		
+        halt("initAt: can only initialize last element\n");     
     }
     if (index >= _parent->datasize || index < 0) {
         halt("initAt: out of bounds %d:%d\n", index, _parent->datasize);
@@ -5663,7 +5663,7 @@ void sjf_array_char_isequal(sjs_array_char* _parent, sjs_array_char* test, bool*
     }
     bool result = memcmp(_parent->data, test->data, _parent->count * sizeof(char)) == 0;
     (*_return) = result;
-return;;		
+return;;      
 }
 
 void sjf_array_char_setat(sjs_array_char* _parent, int32_t index, char item) {
@@ -5718,7 +5718,7 @@ void sjf_array_gridunit_getat(sjs_array_gridunit* _parent, int32_t index, sjs_gr
     sjs_gridunit* p = (sjs_gridunit*)_parent->data;
     _return->_refCount = 1;
 sjf_gridunit_copy(_return, &p[index]);
-return;;		
+return;;       
 }
 
 void sjf_array_gridunit_heap(sjs_array_gridunit* _this) {
@@ -5735,7 +5735,7 @@ void sjf_array_gridunit_heap(sjs_array_gridunit* _this) {
 
 void sjf_array_gridunit_initat(sjs_array_gridunit* _parent, int32_t index, sjs_gridunit* item) {
     if (index != _parent->count) {
-        halt("initAt: can only initialize last element\n");		
+        halt("initAt: can only initialize last element\n");     
     }
     if (index >= _parent->datasize || index < 0) {
         halt("initAt: out of bounds %d:%d\n", index, _parent->datasize);
@@ -5798,7 +5798,7 @@ void sjf_array_heap_iface_animation_getat_heap(sjs_array_heap_iface_animation* _
 if ((*_return)._parent != 0) {
     (*_return)._parent->_refCount++;
 }
-return;;		
+return;;       
 }
 
 void sjf_array_heap_iface_animation_heap(sjs_array_heap_iface_animation* _this) {
@@ -5864,7 +5864,7 @@ void sjf_array_heap_iface_element_getat_heap(sjs_array_heap_iface_element* _pare
 if ((*_return)._parent != 0) {
     (*_return)._parent->_refCount++;
 }
-return;;		
+return;;       
 }
 
 void sjf_array_heap_iface_element_heap(sjs_array_heap_iface_element* _this) {
@@ -5881,7 +5881,7 @@ void sjf_array_heap_iface_element_heap(sjs_array_heap_iface_element* _this) {
 
 void sjf_array_heap_iface_element_initat(sjs_array_heap_iface_element* _parent, int32_t index, sji_element item) {
     if (index != _parent->count) {
-        halt("initAt: can only initialize last element\n");		
+        halt("initAt: can only initialize last element\n");     
     }
     if (index >= _parent->datasize || index < 0) {
         halt("initAt: out of bounds %d:%d\n", index, _parent->datasize);
@@ -5990,7 +5990,7 @@ void sjf_array_i32_getat(sjs_array_i32* _parent, int32_t index, int32_t* _return
     }
     int32_t* p = (int32_t*)_parent->data;
     (*_return) = p[index];
-return;;		
+return;;       
 }
 
 void sjf_array_i32_heap(sjs_array_i32* _this) {
@@ -6007,7 +6007,7 @@ void sjf_array_i32_heap(sjs_array_i32* _this) {
 
 void sjf_array_i32_initat(sjs_array_i32* _parent, int32_t index, int32_t item) {
     if (index != _parent->count) {
-        halt("initAt: can only initialize last element\n");		
+        halt("initAt: can only initialize last element\n");     
     }
     if (index >= _parent->datasize || index < 0) {
         halt("initAt: out of bounds %d:%d\n", index, _parent->datasize);
@@ -6060,7 +6060,7 @@ void sjf_array_rect_getat(sjs_array_rect* _parent, int32_t index, sjs_rect* _ret
     sjs_rect* p = (sjs_rect*)_parent->data;
     _return->_refCount = 1;
 sjf_rect_copy(_return, &p[index]);
-return;;		
+return;;       
 }
 
 void sjf_array_rect_grow(sjs_array_rect* _parent, int32_t newsize, sjs_array_rect* _return) {
@@ -6140,7 +6140,7 @@ void sjf_array_rect_heap(sjs_array_rect* _this) {
 
 void sjf_array_rect_initat(sjs_array_rect* _parent, int32_t index, sjs_rect* item) {
     if (index != _parent->count) {
-        halt("initAt: can only initialize last element\n");		
+        halt("initAt: can only initialize last element\n");     
     }
     if (index >= _parent->datasize || index < 0) {
         halt("initAt: out of bounds %d:%d\n", index, _parent->datasize);
@@ -7249,7 +7249,12 @@ void sjf_controller_heap(sjs_controller* _this) {
 }
 
 void sjf_debug_writeline(sjs_string* data) {
-    printf("%s\n", (char*)data->data.data);
+    #ifdef _WINDOWS
+    OutputDebugStringA((char*)data->data.data);
+    OutputDebugStringA("\n");
+    #else
+    fprintf(stderr, "%s\n", (char*)data->data.data);
+    #endif
 }
 
 void sjf_f32_hash(float val, uint32_t* _return) {
@@ -7266,7 +7271,7 @@ void sjf_font(sjs_font* _this) {
     _this->font = texture_font_new_from_file(_this->atlas, _this->size, (char*)_this->src.data.data);
     if (_this->font == 0) {
         printf("texture_font_new_from_file Error\n");
-    }	
+    }   
     glGenTextures( 1, &_this->atlas->id );
     glBindTexture( GL_TEXTURE_2D, _this->atlas->id );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
@@ -7331,7 +7336,7 @@ void sjf_font_heap(sjs_font* _this) {
     _this->font = texture_font_new_from_file(_this->atlas, _this->size, (char*)_this->src.data.data);
     if (_this->font == 0) {
         printf("texture_font_new_from_file Error\n");
-    }	
+    }   
     glGenTextures( 1, &_this->atlas->id );
     glBindTexture( GL_TEXTURE_2D, _this->atlas->id );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
@@ -10510,7 +10515,7 @@ void sjf_runloop(void) {
     while (!quit) {
         sjf_mainloop();
     }
-    #endif	
+    #endif 
 }
 
 void sjf_scene2d(sjs_scene2d* _this) {
@@ -11784,6 +11789,43 @@ void sjf_texture_destroy(sjs_texture* _this) {
     }
 }
 
+void sjf_texture_frompng(sjs_string* filename, sjs_texture* _return) {
+    int32_t sjv_h;
+    uint32_t sjv_id;
+    int32_t sjv_w;
+
+    sjv_id = (uint32_t)0u;
+    sjv_w = 0;
+    sjv_h = 0;
+    sjv_id = png_texture_load((char*)filename->data.data, &sjv_w, &sjv_h);
+    _return->_refCount = 1;
+    _return->size._refCount = 1;
+    _return->size.w = sjv_w;
+    _return->size.h = sjv_h;
+    sjf_size(&_return->size);
+    _return->id = sjv_id;
+    sjf_texture(_return);
+}
+
+void sjf_texture_frompng_heap(sjs_string* filename, sjs_texture** _return) {
+    int32_t sjv_h;
+    uint32_t sjv_id;
+    int32_t sjv_w;
+
+    sjv_id = (uint32_t)0u;
+    sjv_w = 0;
+    sjv_h = 0;
+    sjv_id = png_texture_load((char*)filename->data.data, &sjv_w, &sjv_h);
+    (*_return) = (sjs_texture*)malloc(sizeof(sjs_texture));
+    (*_return)->_refCount = 1;
+    (*_return)->size._refCount = 1;
+    (*_return)->size.w = sjv_w;
+    (*_return)->size.h = sjv_h;
+    sjf_size(&(*_return)->size);
+    (*_return)->id = sjv_id;
+    sjf_texture_heap((*_return));
+}
+
 void sjf_texture_getsize(sjs_texture* _parent, sjs_size* _return) {
     sjs_size* sjt_dot87 = 0;
     sjs_texture* sjt_dot88 = 0;
@@ -11818,43 +11860,6 @@ void sjf_texture_getsize_heap(sjs_texture* _parent, sjs_size** _return) {
 }
 
 void sjf_texture_heap(sjs_texture* _this) {
-}
-
-void sjf_texturefrompng(sjs_string* filename, sjs_texture* _return) {
-    int32_t sjv_h;
-    uint32_t sjv_id;
-    int32_t sjv_w;
-
-    sjv_id = (uint32_t)0u;
-    sjv_w = 0;
-    sjv_h = 0;
-    sjv_id = png_texture_load((char*)filename->data.data, &sjv_w, &sjv_h);
-    _return->_refCount = 1;
-    _return->size._refCount = 1;
-    _return->size.w = sjv_w;
-    _return->size.h = sjv_h;
-    sjf_size(&_return->size);
-    _return->id = sjv_id;
-    sjf_texture(_return);
-}
-
-void sjf_texturefrompng_heap(sjs_string* filename, sjs_texture** _return) {
-    int32_t sjv_h;
-    uint32_t sjv_id;
-    int32_t sjv_w;
-
-    sjv_id = (uint32_t)0u;
-    sjv_w = 0;
-    sjv_h = 0;
-    sjv_id = png_texture_load((char*)filename->data.data, &sjv_w, &sjv_h);
-    (*_return) = (sjs_texture*)malloc(sizeof(sjs_texture));
-    (*_return)->_refCount = 1;
-    (*_return)->size._refCount = 1;
-    (*_return)->size.w = sjv_w;
-    (*_return)->size.h = sjv_h;
-    sjf_size(&(*_return)->size);
-    (*_return)->id = sjv_id;
-    sjf_texture_heap((*_return));
 }
 
 void sjf_vec3(sjs_vec3* _this) {
@@ -12552,7 +12557,7 @@ int main(int argc, char** argv) {
     sjf_array_char(&sjt_call21.data);
     sjf_string(&sjt_call21);
     sjt_functionParam107 = &sjt_call21;
-    sjf_texturefrompng(sjt_functionParam107, &sjt_call5->normalimage.texture);
+    sjf_texture_frompng(sjt_functionParam107, &sjt_call5->normalimage.texture);
     sjt_call5->normalimage.rect._refCount = 1;
     sjt_call5->normalimage.rect.x = 0;
     sjt_call5->normalimage.rect.y = 0;
@@ -12577,7 +12582,7 @@ int main(int argc, char** argv) {
     sjf_array_char(&sjt_call22.data);
     sjf_string(&sjt_call22);
     sjt_functionParam108 = &sjt_call22;
-    sjf_texturefrompng(sjt_functionParam108, &sjt_call5->hotimage.texture);
+    sjf_texture_frompng(sjt_functionParam108, &sjt_call5->hotimage.texture);
     sjt_call5->hotimage.rect._refCount = 1;
     sjt_call5->hotimage.rect.x = 0;
     sjt_call5->hotimage.rect.y = 0;
@@ -12602,7 +12607,7 @@ int main(int argc, char** argv) {
     sjf_array_char(&sjt_call23.data);
     sjf_string(&sjt_call23);
     sjt_functionParam109 = &sjt_call23;
-    sjf_texturefrompng(sjt_functionParam109, &sjt_call5->pressedimage.texture);
+    sjf_texture_frompng(sjt_functionParam109, &sjt_call5->pressedimage.texture);
     sjt_call5->pressedimage.rect._refCount = 1;
     sjt_call5->pressedimage.rect.x = 0;
     sjt_call5->pressedimage.rect.y = 0;
