@@ -278,12 +278,14 @@ string CInterface::getCTypeIdName() {
 
 string CInterface::getCCastFunctionName(Compiler* compiler, TrOutput* trOutput, shared_ptr<CBaseFunction> fromFunction, CTypeMode returnMode) {
     stringstream line;
-    line << fromFunction->getCFunctionName(compiler, trOutput, CTM_Stack) << "_as_" << getCStructName(CTM_Stack);
+    if (fromFunction) {
+        line << fromFunction->getCFunctionName(compiler, trOutput, CTM_Stack) << "_as_" << getCStructName(CTM_Stack);
+    }
     return line.str();
 }
 
 void CInterface::transpileCast(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> fromValue, shared_ptr<TrStoreValue> toValue) {
-    if (fromValue->type->parent.lock()->classType == CFT_Interface) {
+    if (!fromValue->type->parent.expired() && fromValue->type->parent.lock()->classType == CFT_Interface) {
         auto fromInterface = static_pointer_cast<CInterface>(fromValue->type->parent.lock());
         stringstream line;
         line << fromValue->name << "._vtbl->asinterface(" << fromValue->name << "._parent, " << getCTypeIdName() << ", (sjs_interface*)&" << toValue->getName(trBlock) << ")";
