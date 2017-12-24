@@ -44,7 +44,7 @@ clickGesture(
                             }
                             clickable?.onClickGestureEnter(e)
                         }
-                        mouse_hasCapture(e)
+                        !mouse_hasCapture(e)
                     }
                     default { 
                         true
@@ -60,7 +60,7 @@ clickGesture(
                     mouse_release(e)    
                     false               
                 } else {
-                    mouse_hasCapture(e)
+                    !mouse_hasCapture(e)
                 }
             }
         } elseEmpty {
